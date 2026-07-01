@@ -2145,6 +2145,278 @@ def test_p1_2_round10_close_kernel_full_pin_enforcement() -> None:
     )
 
 
+def test_p1_2_round11_close_kernel_def_time_and_class_body_hardening(tmp_path: Path) -> None:
+    l0_source = check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+        encoding="utf-8"
+    )
+    l0_tree = ast.parse(l0_source)
+    child_tree = ast.parse(
+        check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+            encoding="utf-8"
+        )
+    )
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_tree = ast.parse(exact_source)
+
+    exact_with_relative_import_alias = exact_source.replace(
+        "from dataclasses import dataclass\n",
+        "from .dataclasses import dataclass\n",
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_relative_import_alias),
+    )
+    assert any("close-kernel import drift" in error for error in errors)
+
+    exact_with_decorator_side_effect = exact_source.replace(
+        "@dataclass\nclass ExactCampaign:",
+        (
+            "@(globals().__setitem__('terminal_frontier_evidence_violation', "
+            "lambda **_: None) or dataclass)\n"
+            "class ExactCampaign:"
+        ),
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_decorator_side_effect),
+    )
+    assert any("dynamic import-time call globals" in error and "ExactCampaign" in error for error in errors)
+
+    mutated_exact_path = tmp_path / "exact_campaign.py"
+    mutated_exact_path.write_text(exact_with_decorator_side_effect, encoding="utf-8")
+    mutated_exact_tree = ast.parse(exact_with_decorator_side_effect)
+    errors = check_p1_2_proof_obligations._check_exact_runtime_tcb_source_pins(
+        mutated_exact_tree,
+        check_p1_2_proof_obligations._class_def(
+            mutated_exact_tree,
+            "ExactCampaign",
+            path=mutated_exact_path,
+        ),
+        path=mutated_exact_path,
+    )
+    assert any("source sha256 drifted for ExactCampaign" in error for error in errors)
+
+    exact_with_base = exact_source.replace(
+        "@dataclass\nclass ExactCampaign:",
+        "@dataclass\nclass ExactCampaign(BendersCut):",
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_base),
+    )
+    assert any("def-time bases/keywords drifted" in error for error in errors)
+
+    exact_with_constant_side_effect = exact_source.replace(
+        'TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "search_exhausted_all_candidates"',
+        (
+            "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "
+            "(globals().__setitem__('terminal_frontier_evidence_violation', "
+            "lambda **_: None) or 'search_exhausted_all_candidates')"
+        ),
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_constant_side_effect),
+    )
+    assert any("dynamic import-time call globals" in error for error in errors)
+
+    exact_with_helper_side_effect = exact_source.replace(
+        "    source_root = Path(__file__).resolve().parent.parent.parent\n",
+        (
+            "    globals().__setitem__('terminal_frontier_evidence_violation', "
+            "lambda **_: None)\n"
+            "    source_root = Path(__file__).resolve().parent.parent.parent\n"
+        ),
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_helper_side_effect),
+    )
+    assert any(
+        "module constant->_discover_certified_exact_source_hash_files" in error
+        and "dynamic import-time call globals" in error
+        for error in errors
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        ast.parse(l0_source + "\nasync def __round11_async_unpinned():\n    return None\n"),
+        child_tree,
+        exact_tree,
+    )
+    assert any("unexpected top-level AsyncFunctionDef" in error for error in errors)
+
+    exact_with_class_async = exact_source.replace(
+        "    def best_certified_result(self) -> Optional[Dict[str, Any]]:\n",
+        (
+            "    async def __round11_async_smuggle("
+            "_=globals().__setitem__('terminal_frontier_evidence_violation', "
+            "lambda **_: None)):\n"
+            "        pass\n\n"
+            "    def best_certified_result(self) -> Optional[Dict[str, Any]]:\n"
+        ),
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_class_async),
+    )
+    assert any("method not source-pinned: ExactCampaign.__round11_async_smuggle" in error for error in errors)
+    assert any("dynamic import-time call globals" in error for error in errors)
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_source + "\n    save = lambda self: None\n"),
+    )
+    assert any("class binding must be unique: ExactCampaign.save" in error for error in errors)
+    assert any("class binding shadows source-pinned member: ExactCampaign.save" in error for error in errors)
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_source + "\n    def save(self) -> None:\n        return None\n"),
+    )
+    assert any("class binding must be unique: ExactCampaign.save" in error for error in errors)
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_source + "\n    class _Round11Nested:\n        def hollow(self):\n            return None\n"),
+    )
+    assert any("nested class not source-pinned: ExactCampaign._Round11Nested" in error for error in errors)
+    assert any("method not source-pinned: ExactCampaign._Round11Nested.hollow" in error for error in errors)
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_source + "\n    if True:\n        save = lambda self: None\n"),
+    )
+    assert any("class ExactCampaign has an unexpected body If" in error for error in errors)
+
+
+def test_p1_2_round11_close_kernel_import_dependency_shape_rejects_import_time_mutation(
+    tmp_path: Path,
+) -> None:
+    root_rel_path = "src/search/exact_campaign.py"
+    root_path = tmp_path / root_rel_path
+    root_path.parent.mkdir(parents=True)
+    root_path.write_text(
+        "from src.io.strict_json import loads_strict_json\n",
+        encoding="utf-8",
+    )
+
+    rel_path = "src/io/strict_json.py"
+    dependency_path = tmp_path / rel_path
+    dependency_path.parent.mkdir(parents=True)
+    dependency_path.write_text(
+        "\n".join(
+            [
+                "from __future__ import annotations",
+                "globals().__setitem__('terminal_frontier_evidence_violation', lambda **_: None)",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    closure = check_p1_2_proof_obligations._close_kernel_import_time_closure_source_paths(
+        project_root=tmp_path,
+        roots=(root_rel_path,),
+    )
+    assert rel_path in closure
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_import_dependency_import_time_shape(
+        project_root=tmp_path,
+        roots=(root_rel_path,),
+    )
+
+    assert any("dynamic import-time call globals" in error for error in errors)
+
+
+def test_p1_2_close_kernel_source_floor_covers_import_time_closure() -> None:
+    closure = check_p1_2_proof_obligations._close_kernel_import_time_closure_source_paths()
+    for rel_path in (
+        "src/interchange/preprocess_context.py",
+        "src/io/strict_json.py",
+        "src/models/_cpsat_compat.py",
+        "src/models/cp_sat_worker_config.py",
+        "src/models/port_binding.py",
+        "src/models/pose_bool_exact_master.py",
+        "src/models/solution_hint_parser.py",
+        "src/preprocess/operation_profiles.py",
+        "src/search/commodity_throughput.py",
+    ):
+        assert rel_path in closure
+        assert (
+            rel_path
+            in check_p1_2_proof_obligations.CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH
+        )
+
+
+def test_p1_2_close_kernel_rejects_import_time_dependency_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root_rel_path = "src/search/exact_campaign.py"
+    root_path = tmp_path / root_rel_path
+    root_path.parent.mkdir(parents=True)
+    root_path.write_text(
+        "from src.io.strict_json import loads_strict_json\n",
+        encoding="utf-8",
+    )
+    strict_json_path = tmp_path / "src/io/strict_json.py"
+    strict_json_path.parent.mkdir(parents=True)
+    strict_json_path.write_text(
+        "from __future__ import annotations\n# mutated import-time dependency\n",
+        encoding="utf-8",
+    )
+    for rel_path in (
+        "src/search/pr2_l0_micro_verifier_core.py",
+        "src/search/pr2_l0_true_verifier_child.py",
+    ):
+        path = tmp_path / rel_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("", encoding="utf-8")
+    floor = {
+        root_rel_path: check_p1_2_proof_obligations._sha256_file(root_path),
+        "src/search/pr2_l0_micro_verifier_core.py": check_p1_2_proof_obligations._sha256_file(
+            tmp_path / "src/search/pr2_l0_micro_verifier_core.py"
+        ),
+        "src/search/pr2_l0_true_verifier_child.py": check_p1_2_proof_obligations._sha256_file(
+            tmp_path / "src/search/pr2_l0_true_verifier_child.py"
+        ),
+        "src/io/strict_json.py": "0" * 64,
+    }
+    monkeypatch.setattr(
+        check_p1_2_proof_obligations,
+        "CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH",
+        floor,
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_v99_static_floor(
+        tokens=tuple(check_p1_2_proof_obligations.CLOSE_KERNEL_V99_REQUIRED_PROOF_BEARING_TOKENS),
+        scan_roots=tuple(check_p1_2_proof_obligations.CLOSE_KERNEL_V99_REQUIRED_SCAN_ROOTS),
+        excluded_subpaths=(),
+        critical_gate_files=tuple(check_p1_2_proof_obligations.CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES),
+        registered={},
+        project_root=tmp_path,
+    )
+
+    assert any("src/io/strict_json.py current source hash drifted" in error for error in errors)
+
+
 @pytest.mark.parametrize(
     ("source_kind", "mutator", "expected_error"),
     [
@@ -2489,7 +2761,7 @@ def test_p1_2_checker_rejects_pr2_5_round6_structural_bypasses(
             "child",
             _child_class_body_side_effect,
             "body contains import-time executable statement",
-            False,
+            True,
         ),
         ("l0", _l0_object_setattr_forges_child_verdict, "mutator/reflection hook", False),
         ("l0", _l0_domain_update_after_assignment, "mutator/reflection hook", False),
@@ -3329,6 +3601,42 @@ def test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call(tmp_pa
     )
 
     assert "proof-obligation checker main must call _check_close_kernel_contract" in errors
+
+
+def test_p1_2_close_kernel_self_binding_rejects_dead_branch_calls(tmp_path: Path) -> None:
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(encoding="utf-8")
+
+    checker_path = tmp_path / "check_p1_2_proof_obligations_dead_forced.py"
+    checker_path.write_text(
+        source.replace(
+            "    errors.extend(\n"
+            "        _check_close_kernel_files_fully_pinned(l0_tree, child_tree, exact_tree)\n"
+            "    )\n",
+            "    if False:\n"
+            "        errors.extend(\n"
+            "            _check_close_kernel_files_fully_pinned(l0_tree, child_tree, exact_tree)\n"
+            "        )\n",
+        ),
+        encoding="utf-8",
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path
+    )
+    assert "candidate sink replay contract must call _check_close_kernel_files_fully_pinned" in errors
+
+    checker_path = tmp_path / "check_p1_2_proof_obligations_dead_main.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_candidate_sink_replay_contract())\n",
+            "        if False:\n"
+            "            errors.extend(_check_candidate_sink_replay_contract())\n",
+        ),
+        encoding="utf-8",
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path
+    )
+    assert "proof-obligation checker main must call _check_candidate_sink_replay_contract" in errors
 
 
 def test_p1_2_checker_detects_multiline_public_certified_return() -> None:

@@ -768,6 +768,60 @@ def test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witne
     assert reason is not None
 
 
+def test_fixed_witness_capsule_projection_rejects_publishable_non_feasible_statuses() -> None:
+    state = _state()
+    identity = fixed_witness_module._identity_from_current_records(
+        fixed_witness_module._copy_candidate_records(state["candidates"]),
+        state["final_result"],
+    )
+    base_verdict = fixed_witness_module.TerminalFixedWitnessVerdict(
+        schema_version=fixed_witness_module.TERMINAL_FIXED_WITNESS_VERIFIER_SCHEMA_VERSION,
+        authority=fixed_witness_module.TERMINAL_FIXED_WITNESS_VERIFIER_AUTHORITY,
+        fresh_run_token="child-token",
+        publishable=True,
+        projected_status=RUN_STATUS_CERTIFIED,
+        candidate_key=identity.candidate_key,
+        solution_digest=identity.solution_digest,
+        ghost_rect_digest=identity.ghost_rect_digest,
+        ghost_cells_digest=identity.ghost_cells_digest,
+        witness_input_digest=identity.witness_input_digest,
+        binding_assignment_digest="0" * 64,
+        port_specs_digest="0" * 64,
+        routing_occupancy_digest="0" * 64,
+        binding_status="FEASIBLE",
+        routing_status="FEASIBLE",
+        reason=None,
+        details={},
+    )
+
+    cases = [
+        (
+            replace(base_verdict, binding_status="INFEASIBLE"),
+            "terminal_fixed_witness_binding_status_invalid",
+        ),
+        (
+            replace(base_verdict, routing_status="TIMEOUT"),
+            "terminal_fixed_witness_routing_status_invalid",
+        ),
+        (
+            replace(base_verdict, projected_status="UNPROVEN"),
+            "terminal_fixed_witness_projected_status_invalid",
+        ),
+    ]
+    for verdict, expected_reason in cases:
+        projection = fixed_witness_module._project_terminal_fixed_witness_records_from_capsule(
+            candidate_records=_json_copy(state["candidates"]),
+            final_result=state["final_result"],
+            verdict=verdict,
+        )
+
+        assert projection.publishable is False
+        assert projection.rejected_reason == expected_reason
+        assert projection.candidate_records["1x1"]["status"] == "UNPROVEN"
+        assert "solution" not in projection.candidate_records["1x1"]
+        assert CANDIDATE_PROOF_FIELD not in projection.candidate_records["1x1"]
+
+
 def test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

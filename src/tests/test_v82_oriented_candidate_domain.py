@@ -148,3 +148,34 @@ def test_v82_terminal_frontier_dominance_keeps_smaller_pending_candidate_canary(
 
     assert pending_candidate in projection["potential_domain"]
     assert pending_candidate in projection["frontier"]
+
+
+def test_v82_terminal_frontier_certified_prune_keeps_one_wider_pending_candidate_canary() -> None:
+    certified_candidate = (4, 2, 2)
+    pending_candidate = (6, 3, 2)
+
+    projection = compute_terminal_frontier_projection(
+        candidates=[pending_candidate, certified_candidate],
+        candidate_records={
+            candidate_key(certified_candidate): {
+                "status": RUN_STATUS_CERTIFIED,
+                "solution": {"ghost_rect": {"w": 2, "h": 2, "area": 4}},
+            }
+        },
+    )
+
+    assert pending_candidate in projection["potential_domain"]
+    assert pending_candidate in projection["frontier"]
+
+
+def test_v82_terminal_frontier_shape_frontier_keeps_transposed_equal_area_canary() -> None:
+    horizontal_candidate = (6, 3, 2)
+    vertical_candidate = (6, 2, 3)
+
+    projection = compute_terminal_frontier_projection(
+        candidates=[horizontal_candidate, vertical_candidate],
+        candidate_records={},
+    )
+
+    assert projection["potential_domain"] == [horizontal_candidate, vertical_candidate]
+    assert projection["frontier"] == [horizontal_candidate, vertical_candidate]

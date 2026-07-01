@@ -206,6 +206,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema",
             "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
             "test_full_frontier_candidate_domain_keeps_oriented_dimensions",
+            "test_v82_terminal_frontier_certified_prune_keeps_one_wider_pending_candidate_canary",
+            "test_v82_terminal_frontier_shape_frontier_keeps_transposed_equal_area_canary",
             "test_save_rejects_dict_subclass_that_mutates_after_guard",
         }
     ),
@@ -353,6 +355,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_fixed_witness_accepts_valid_r_star_pi_star",
             "test_fixed_witness_rejects_connector_cell_occupied_by_other_body",
             "test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witness",
+            "test_fixed_witness_capsule_projection_rejects_publishable_non_feasible_statuses",
+            "test_child_publishable_capsule_verdict_requires_feasible_statuses",
             "test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict",
             "test_build_then_verify_uses_fresh_projection_without_status_digest_mismatch",
             "test_fixed_witness_unproven_durable_record_keeps_solution_bytes",
@@ -374,6 +378,11 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
             "test_p1_2_close_kernel_manifest_is_strict_json",
             "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
+            "test_p1_2_close_kernel_self_binding_rejects_dead_branch_calls",
+            "test_p1_2_round11_close_kernel_def_time_and_class_body_hardening",
+            "test_p1_2_round11_close_kernel_import_dependency_shape_rejects_import_time_mutation",
+            "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
+            "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
             "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
             "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift",
             "test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources",
@@ -491,10 +500,36 @@ def _top_level_binding_points(tree: ast.Module, name: str) -> list[ast.stmt]:
     return points
 
 
+def _import_bound_names(stmt: ast.Import | ast.ImportFrom) -> set[str]:
+    if isinstance(stmt, ast.Import):
+        return {alias.asname or alias.name.split(".", 1)[0] for alias in stmt.names}
+    return {alias.asname or alias.name for alias in stmt.names}
+
+
+def _class_stmt_bound_names(stmt: ast.stmt) -> set[str]:
+    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        return {stmt.name}
+    if isinstance(stmt, ast.Assign):
+        return {target.id for target in stmt.targets if isinstance(target, ast.Name)}
+    if isinstance(stmt, (ast.AnnAssign, ast.AugAssign)):
+        return {stmt.target.id} if isinstance(stmt.target, ast.Name) else set()
+    if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+        return _import_bound_names(stmt)
+    return set()
+
+
+def _class_body_binding_points(class_node: ast.ClassDef, name: str) -> list[ast.stmt]:
+    return [stmt for stmt in class_node.body if name in _class_stmt_bound_names(stmt)]
+
+
+def _format_binding_lines(nodes: Sequence[ast.AST]) -> str:
+    return ", ".join(str(getattr(node, "lineno", "?")) for node in nodes)
+
+
 def _function_def(tree: ast.Module, name: str, *, path: Path = LIFECYCLE_PATH) -> ast.FunctionDef:
     binding_points = _top_level_binding_points(tree, name)
     if len(binding_points) > 1:
-        lines = ", ".join(str(getattr(node, "lineno", "?")) for node in binding_points)
+        lines = _format_binding_lines(binding_points)
         raise CheckError(f"top-level binding for {_rel(path)}::{name} must be unique; found lines {lines}")
     if len(binding_points) == 1:
         node = binding_points[0]
@@ -505,32 +540,85 @@ def _function_def(tree: ast.Module, name: str, *, path: Path = LIFECYCLE_PATH) -
 
 
 def _class_def(tree: ast.Module, name: str, *, path: Path) -> ast.ClassDef:
-    for node in tree.body:
-        if isinstance(node, ast.ClassDef) and node.name == name:
+    binding_points = _top_level_binding_points(tree, name)
+    if len(binding_points) > 1:
+        lines = _format_binding_lines(binding_points)
+        raise CheckError(f"top-level binding for {_rel(path)}::{name} must be unique; found lines {lines}")
+    if len(binding_points) == 1:
+        node = binding_points[0]
+        if isinstance(node, ast.ClassDef):
             return node
+        raise CheckError(f"top-level binding for {_rel(path)}::{name} is not a ClassDef")
     raise CheckError(f"class not found in {_rel(path)}: {name}")
 
 
 def _method_def(class_node: ast.ClassDef, name: str, *, path: Path) -> ast.FunctionDef:
-    for node in class_node.body:
-        if isinstance(node, ast.FunctionDef) and node.name == name:
+    binding_points = _class_body_binding_points(class_node, name)
+    qualified = f"{class_node.name}.{name}"
+    if len(binding_points) > 1:
+        lines = _format_binding_lines(binding_points)
+        raise CheckError(f"class binding for {_rel(path)}::{qualified} must be unique; found lines {lines}")
+    if len(binding_points) == 1:
+        node = binding_points[0]
+        if isinstance(node, ast.FunctionDef):
             return node
-    raise CheckError(f"method not found in {_rel(path)}: {class_node.name}.{name}")
+        raise CheckError(f"class binding for {_rel(path)}::{qualified} is not a FunctionDef")
+    raise CheckError(f"method not found in {_rel(path)}: {qualified}")
+
+
+def _resolve_class_source_pin_node(
+    class_node: ast.ClassDef,
+    parts: Sequence[str],
+    *,
+    path: Path,
+    prefix: str,
+) -> ast.AST:
+    if not parts:
+        return class_node
+    member_name = parts[0]
+    qualified = f"{prefix}.{member_name}"
+    binding_points = _class_body_binding_points(class_node, member_name)
+    if len(binding_points) > 1:
+        lines = _format_binding_lines(binding_points)
+        raise CheckError(f"class binding for {_rel(path)}::{qualified} must be unique; found lines {lines}")
+    if len(binding_points) != 1:
+        raise CheckError(f"source pin target not uniquely resolvable in {_rel(path)}: {qualified}")
+    node = binding_points[0]
+    if len(parts) == 1:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            return node
+        raise CheckError(f"source pin target in {_rel(path)} is not a def/class: {qualified}")
+    if isinstance(node, ast.ClassDef):
+        return _resolve_class_source_pin_node(
+            node,
+            parts[1:],
+            path=path,
+            prefix=qualified,
+        )
+    raise CheckError(
+        f"source pin target not uniquely resolvable in {_rel(path)}: "
+        f"{qualified}.{'.'.join(parts[1:])}"
+    )
 
 
 def _resolve_source_pin_node(tree: ast.Module, name: str, *, path: Path) -> ast.AST:
     """Resolve a source-pin key to its AST node.
 
-    Supports three key forms used by the close-kernel TCB source maps:
-      * ``"Class.method"`` -> that method's FunctionDef,
-      * ``"Class"`` (a top-level class) -> the whole ClassDef (covers fields/decorators/bases),
-      * ``"func"`` -> a top-level FunctionDef.
+    Supports top-level functions/classes, class methods, async members, and
+    nested class members. Duplicate or later rebinding of a pinned class member
+    fails closed before a hash can be taken from the wrong binding.
     """
     if "." in name:
-        class_name, method_name = name.split(".", 1)
-        return _method_def(_class_def(tree, class_name, path=path), method_name, path=path)
+        class_name, rest = name.split(".", 1)
+        class_node = _class_def(tree, class_name, path=path)
+        return _resolve_class_source_pin_node(
+            class_node,
+            rest.split("."),
+            path=path,
+            prefix=class_name,
+        )
     points = _top_level_binding_points(tree, name)
-    if len(points) == 1 and isinstance(points[0], (ast.FunctionDef, ast.ClassDef)):
+    if len(points) == 1 and isinstance(points[0], (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
         return points[0]
     raise CheckError(f"source pin target not uniquely resolvable in {_rel(path)}: {name}")
 
@@ -540,6 +628,57 @@ def _calls_function(node: ast.AST, name: str) -> bool:
         if isinstance(child, ast.Call) and isinstance(child.func, ast.Name) and child.func.id == name:
             return True
     return False
+
+
+def _is_errors_extend_call_statement(stmt: ast.stmt, function_name: str) -> bool:
+    if not isinstance(stmt, ast.Expr) or not isinstance(stmt.value, ast.Call):
+        return False
+    call = stmt.value
+    if call.keywords or len(call.args) != 1:
+        return False
+    if not (
+        isinstance(call.func, ast.Attribute)
+        and call.func.attr == "extend"
+        and isinstance(call.func.value, ast.Name)
+        and call.func.value.id == "errors"
+    ):
+        return False
+    value = call.args[0]
+    return isinstance(value, ast.Call) and isinstance(value.func, ast.Name) and value.func.id == function_name
+
+
+def _statement_sequence_has_live_errors_extend_call(
+    statements: Sequence[ast.stmt],
+    function_name: str,
+    *,
+    allow_outer_try: bool = False,
+) -> bool:
+    for stmt in statements:
+        if _is_errors_extend_call_statement(stmt, function_name):
+            return True
+        if allow_outer_try and isinstance(stmt, (ast.Try, ast.TryStar)):
+            if _statement_sequence_has_live_errors_extend_call(
+                stmt.body,
+                function_name,
+                allow_outer_try=False,
+            ):
+                return True
+        if isinstance(stmt, (ast.Return, ast.Raise)):
+            return False
+    return False
+
+
+def _has_live_errors_extend_call(
+    function: ast.FunctionDef,
+    function_name: str,
+    *,
+    allow_outer_try: bool = False,
+) -> bool:
+    return _statement_sequence_has_live_errors_extend_call(
+        function.body,
+        function_name,
+        allow_outer_try=allow_outer_try,
+    )
 
 
 def _calls_function_with_keyword_constant(
@@ -1157,6 +1296,15 @@ def _raises_value_error(node: ast.AST) -> bool:
 
 def _source_text(path: Path, node: ast.AST) -> str:
     source = path.read_text(encoding="utf-8")
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.decorator_list:
+        start_lineno = min(
+            getattr(decorator, "lineno", getattr(node, "lineno", 1))
+            for decorator in node.decorator_list
+        )
+        end_lineno = getattr(node, "end_lineno", None)
+        if end_lineno is not None:
+            lines = source.splitlines(keepends=True)
+            return "".join(lines[start_lineno - 1 : end_lineno])
     return ast.get_source_segment(source, node) or ""
 
 
@@ -2203,12 +2351,12 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
         "_check_exact_session_atomic_snapshot_contract",
         "_check_independent_infeasibility_reverifier_contract",
     ):
-        if not _calls_function(main_fn, required_call):
+        if not _has_live_errors_extend_call(main_fn, required_call, allow_outer_try=True):
             errors.append(f"proof-obligation checker main must call {required_call}")
     sink_replay_fn = _function_def(
         tree, "_check_candidate_sink_replay_contract", path=checker_path
     )
-    if not _calls_function(sink_replay_fn, "_check_close_kernel_files_fully_pinned"):
+    if not _has_live_errors_extend_call(sink_replay_fn, "_check_close_kernel_files_fully_pinned"):
         errors.append(
             "candidate sink replay contract must call _check_close_kernel_files_fully_pinned"
         )
@@ -4413,14 +4561,14 @@ _PR2_L0_RUN_SUPERVISOR_SEAL_BODY = (
         return _reject(nonce, f"parent_exception:{type(exc).__name__}:{exc}")''',
 )
 _PR2_L0_TCB_FUNCTION_SOURCE_SHA256 = {
-    "L0MicroVerdict": "7d19560d7d91b68458a8719f10056258af4a4c3434aa06667875e1b5dc399aa1",
-    "L0SupervisorSealRequest": "b04714144abbca01f131818d5a31885610a8ca2658a6c9f48e63658e446a29ae",
+    "L0MicroVerdict": "8db2ad64d98d763800b5c86235b129bf636b798483150eedfbdd27a34f43fc07",
+    "L0SupervisorSealRequest": "73fe4c7cf6a53bc9034584cd0fe2eb8afb47ddc9ac535f0fb01bc2d39cc10233",
     "_atomic_json_bytes": "54dcce4647f5a113e3eaf0b8403bcac4901f22629ed7e7b48dc57ba61c3a15da",
     "_atomic_replace_bytes": "56db2e99dd91259add629655664eda9dee64ab97dacd322a1f5f7a1b43edf8e7",
     "_canonical_bytes": "b4db84319aa7517fc03f6ee151f703ab0ea45d3ed309c5780659728478d5672a",
     "_canonical_digest": "8c05dd916c7f2615e0bb2fbb4ed5a6cac62cce500f7fee05ccc89e91869659aa",
     "_certified_state_payload_sha256_l0": "252327a9f21bcec55299fca6c83c9dce4ffa43118054b4348aa96781faa6bd13",
-    "_checkpoint_write_lock_l0": "6a095d1c13de27852c08947b850c10527bdd741f0b77c3d46d996b08c9b4d071",
+    "_checkpoint_write_lock_l0": "00dfd3beffaf69900295f94434cd48ec752d7bf9a1422c263d40fceb63e9e4ca",
     "_child_env": "950e48d22bee9d0f0048eb2bb0f4e12b22fd157b7a69d4eeb2b32e3ec7628300",
     "_dependency_file_top_level": "bbd81b3a8476689a5f8835820952e3131f51a584e54954dd751fb3544ed33c4c",
     "_dependency_floor_root": "0768d2a1aea729323527c198a067431e011fc9bf3f7074e139c5dbaa189a82af",
@@ -4586,15 +4734,15 @@ _PR2_L0_ALLOWED_IMPORT_BINDINGS = {
     "Sequence": ("from", "typing", "Sequence"),
 }
 _PR2_EXACT_TCB_SOURCE_SHA256 = {
-    "ExactCampaign": "35eb5eb02d57cd24c17d6589d686e8c84292f1f78fd5cc6ae813b74c41508e6d",
+    "ExactCampaign": "70a32c787de0abe4e4dc9407dc747c72ecbd460bd073ac1f6c532a5199c309ce",
     "ExactCampaign._assert_proposal_marker_still_current": "3d10cf234a0735c502b15e33ec9689ff00c3a1fb2bf78d3174ef5d6bc83d64b5",
     "ExactCampaign._clear_proposal_ready_marker_if_unchanged": "daf25bf754ab1c9d19103437f42dd2af40851eba46fe626c20d1a313a15199ec",
     "ExactCampaign._load_supervisor_proposal_authority": "a7cdd131ef01765990b206d71f8cbdb9d4b55ac7f906cc17c402af048cfabc5f",
     "ExactCampaign._mark_candidate_result_from_verified_producer": "a33d7803375d438f99e04b5cfb640f671dd7219afdd7af8c185f40b1cdfb5911",
     "ExactCampaign._validate_supervisor_certified_state_before_commit": "4e413c5a849ffacbd97342f918142dd042fe5d63dc592e4356a2bc7bab278d92",
-    "ExactCampaign.artifact_hashes": "cd4e7304ff583b762a7fcf7a125bf97437815905ce7bd12b9c0ddf7bbe5b2099",
+    "ExactCampaign.artifact_hashes": "dd2f3a8c73fcf68a673db67dd9275e151118c8ac8d3fd7e88c5d69566463b253",
     "ExactCampaign.best_certified_result": "b1a29ea660eb727fae3dfadf3d6931e6181675c3fd829c0b00c77584b6fe7553",
-    "ExactCampaign.campaign_hours": "1b5c72fd5c89d953daab8b363ecd664ff292260c61e617e83db5761986e88bef",
+    "ExactCampaign.campaign_hours": "368292448266b53a3ae0771da0de390858b4818ce05130039cbac1718c51c884",
     "ExactCampaign.clear_proposal_ready_marker": "93df4638ea2abb25c24c7ee87f015aa9e27d9b80adcff9d5dc1c3c9f941219a0",
     "ExactCampaign.elapsed_seconds": "0a10b3c4cb40687ff1ec2a6e3e12e725c80d7f4c18add315c59d5b41e9240910",
     "ExactCampaign.get_audit_log": "bdd4f0634775ba836bc1417422c21be2a9a7d31ca2892eef446c0ff5443b1a3e",
@@ -4602,13 +4750,13 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "ExactCampaign.get_candidate_cuts": "20930219a5451ebcf1d240aedeb91bc85b05f1a4b6238ae54da3bbe29f41320a",
     "ExactCampaign.get_candidate_record": "4bb677bd720f5d694f4800dcad3c633d0327a974ce8eda88491d0a870bfa78a7",
     "ExactCampaign.is_compatible_with_current_hashes": "b77688d529b9247cbc4b8489bc7d88907fdaaa810bcac7316c8378c57e82a558",
-    "ExactCampaign.load_or_create": "a2ef0e779b25ae9afd1cc10ce09b887b54ac104be0312473b7c9fa47e8d68df7",
+    "ExactCampaign.load_or_create": "420bc70a229049048b39edf56d6e6b87b0d00cdaa0212fe476c678c520d57a4c",
     "ExactCampaign.mark_campaign_stopped": "cac850cbadee274259ba9c22fbf004f0a97403d809e98501ad21bf833adbe35a",
     "ExactCampaign.mark_candidate_result": "5a3349e5e0fc118d776f7314cc79ce1b79dfcd9461c1c3977ed02e5af11bcb2d",
     "ExactCampaign.mark_candidate_started": "00a7cb22fd3cd235908867ddad425eaffec0a5b7036f13f38891d394be6b52e2",
-    "ExactCampaign.proposal_ready_marker_path": "af703b527d10b25b9f5f553d438c1cc853be6d1d22ed86d186005d4685e98a67",
+    "ExactCampaign.proposal_ready_marker_path": "e1dee6c63023b1da53f9b42f8bb41e50aa0df7562a2b5393690249396dbed493",
     "ExactCampaign.remaining_seconds": "ed261f09594be2adc28ad89b850e457746943d3a0da7dd0c933cca131f242e23",
-    "ExactCampaign.reset_reason": "bae9c47545c572cff450dc03d3135a579809a85e60120bbf243bc41017977233",
+    "ExactCampaign.reset_reason": "8f3035d6e3baec97186b894294571ac9a65515aef183f83c4fd4e19a4f1bb223",
     "ExactCampaign.save": "d069c600b6040fbccc86b1a479d8c3439ffdd9e9be2fe0c99e863d247b0d5d64",
     "ExactCampaign.set_supervisor_proposal_run_id": "231dbd964485c78a2b0a74816b2feefbbc288872b1079fd13b48edf7fe58103e",
     "ExactCampaign.supervisor_seal": "70ccaa80366b5873bd14b65e75c10e7b6b33fe2170d82a8a2eea9d0058115c43",
@@ -4626,7 +4774,7 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "_candidate_proposed_resume_authority_violation": "75d4f8934e2d37cfcc6a46207f272befc0f0fe860499ac79d56b9ea19f898e4a",
     "_canonical_digest": "0aab947c8f0c14f1dfa2a14984c1d2a99ce862bb70908aaa8381d982bb31ff99",
     "_certified_state_payload_sha256": "e25fe7fea36684825230a67189bf82bf573f1828610877b6ce1bc365df91aada",
-    "_checkpoint_write_lock": "c447cf4d908f1887e07ba67a56386430f585baf679ab527bf738c46dc5930499",
+    "_checkpoint_write_lock": "1e60c3cd076def414ccfd006c0af03ca6127df19bd2ddd1bf9ae94f3bc7d884c",
     "_clear_certified_delivery_surface_artifacts_for_campaign_resume": "268378d78c281929b8075c7bbd65c91e35fd8d277dddc77c285815d333cd5e43",
     "_default_master_domain_contract": "f30cf366d102149c0ace83d39b035364bb17e2afc850bfc42f4fb50b97f83f8c",
     "_demote_candidate_proposed_resume_state": "693000e2e616227633fed718951c2123f2d12ca9b7d4482331c4a75caa050a1f",
@@ -5779,10 +5927,7 @@ def _check_exact_runtime_tcb_source_pins(
 ) -> list[str]:
     errors: list[str] = []
     for name, expected_sha256 in sorted(_PR2_EXACT_TCB_SOURCE_SHA256.items()):
-        if name.startswith("ExactCampaign."):
-            function = _method_def(exact_class, name.split(".", 1)[1], path=path)
-        else:
-            function = _resolve_source_pin_node(exact_tree, name, path=path)
+        function = _resolve_source_pin_node(exact_tree, name, path=path)
         if _normalized_source_sha256(path, function) != expected_sha256:
             errors.append(f"ExactCampaign save TCB source sha256 drifted for {name}")
     for name, expected_source in sorted(_PR2_EXACT_TCB_CONSTANT_SOURCES.items()):
@@ -5802,6 +5947,626 @@ _PR2_CLOSE_KERNEL_SPECIAL_CONSTANTS: dict[str, frozenset[str]] = {
     "PR2 true verifier child": frozenset(),
     "PR2 exact campaign": frozenset(),
 }
+
+
+_PR2_CLOSE_KERNEL_CLASS_DEF_SHAPES: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
+    "PR2 L0 micro-verifier.L0MicroVerdict": ((), ()),
+    "PR2 L0 micro-verifier.L0SupervisorSealRequest": ((), ()),
+    "PR2 true verifier child._StdlibOnlyPathFinder": ((), ()),
+    "PR2 true verifier child._RestrictedThirdPartyFinder": ((), ()),
+    "PR2 true verifier child._RehashingSourceFileLoader": (
+        ("importlib.machinery.SourceFileLoader",),
+        (),
+    ),
+    "PR2 true verifier child._RehashingExtensionFileLoader": (
+        ("importlib.machinery.ExtensionFileLoader",),
+        (),
+    ),
+    "PR2 exact campaign.ExactCampaign": ((), ()),
+}
+
+_PR2_CLOSE_KERNEL_CLASS_FIELD_SOURCES: dict[str, tuple[str, ...]] = {
+    "PR2 L0 micro-verifier.L0MicroVerdict": (
+        "status: str",
+        "nonce: str",
+        "reason: str",
+        "floor_digest: str | None = None",
+        "response: Mapping[str, Any] = field(default_factory=dict)",
+    ),
+    "PR2 L0 micro-verifier.L0SupervisorSealRequest": (
+        "project_root: Path",
+        "campaign_path: Path",
+        "marker_path: Path",
+        "expected_campaign_instance_id: str",
+        "timeout_seconds: float = 3600.0",
+    ),
+    "PR2 true verifier child._StdlibOnlyPathFinder": (),
+    "PR2 true verifier child._RestrictedThirdPartyFinder": (),
+    "PR2 true verifier child._RehashingSourceFileLoader": (),
+    "PR2 true verifier child._RehashingExtensionFileLoader": (),
+    "PR2 exact campaign.ExactCampaign": (
+        "project_root: Path",
+        "path: Path",
+        "state: Dict[str, Any]",
+        "resumed: bool",
+        "compatible_hashes: bool",
+    ),
+}
+
+_PR2_CLOSE_KERNEL_IMPORT_CLOSURE_ROOT_REL_PATHS: tuple[str, ...] = (
+    "src/search/exact_campaign.py",
+    "src/search/pr2_l0_micro_verifier_core.py",
+    "src/search/pr2_l0_true_verifier_child.py",
+)
+
+_PR2_IMPORT_TIME_DYNAMIC_CALL_NAMES = frozenset(
+    {
+        "globals",
+        "locals",
+        "vars",
+        "setattr",
+        "delattr",
+        "object.__setattr__",
+        "type.__setattr__",
+        "exec",
+        "eval",
+        "compile",
+        "__import__",
+        "importlib.import_module",
+    }
+)
+
+_PR2_DYNAMIC_NAMESPACE_MUTATOR_METHODS = frozenset(
+    {"__setitem__", "update", "setdefault", "pop", "popitem", "clear"}
+)
+
+
+def _is_docstring_stmt(stmt: ast.stmt) -> bool:
+    return (
+        isinstance(stmt, ast.Expr)
+        and isinstance(stmt.value, ast.Constant)
+        and isinstance(stmt.value.value, str)
+    )
+
+
+def _function_default_nodes(function: ast.FunctionDef | ast.AsyncFunctionDef) -> list[ast.AST]:
+    return [
+        *function.decorator_list,
+        *function.args.defaults,
+        *[node for node in function.args.kw_defaults if node is not None],
+    ]
+
+
+def _expr_is_sys_modules_ref(node: ast.AST) -> bool:
+    return (
+        isinstance(node, ast.Attribute)
+        and node.attr == "modules"
+        and isinstance(node.value, ast.Name)
+        and node.value.id == "sys"
+    )
+
+
+def _expr_is_module_namespace_object(node: ast.AST) -> bool:
+    if _expr_is_sys_modules_ref(node):
+        return True
+    if isinstance(node, ast.Subscript) and _expr_is_sys_modules_ref(node.value):
+        return True
+    if isinstance(node, ast.Attribute) and node.attr == "__dict__":
+        value = node.value
+        if isinstance(value, ast.Subscript) and _expr_is_sys_modules_ref(value.value):
+            return True
+        if isinstance(value, ast.Call) and _call_func_name(value) == "importlib.import_module":
+            return True
+    return False
+
+
+def _call_is_dynamic_namespace_mutator(call: ast.Call) -> bool:
+    if not isinstance(call.func, ast.Attribute):
+        return False
+    if call.func.attr not in _PR2_DYNAMIC_NAMESPACE_MUTATOR_METHODS:
+        return False
+    value = call.func.value
+    if (
+        isinstance(value, ast.Call)
+        and _call_func_name(value) in {"globals", "locals", "vars"}
+        and not value.args
+        and not value.keywords
+    ):
+        return True
+    if _expr_is_module_namespace_object(value):
+        return True
+    return False
+
+
+def _call_is_import_time_dynamic(call: ast.Call) -> bool:
+    return (
+        (_call_func_name(call) in _PR2_IMPORT_TIME_DYNAMIC_CALL_NAMES)
+        or _call_is_dynamic_namespace_mutator(call)
+    )
+
+
+def _expr_dynamic_execution_reasons(node: ast.AST) -> list[str]:
+    reasons: list[str] = []
+    for child in ast.walk(node):
+        if isinstance(child, ast.Call) and _call_is_import_time_dynamic(child):
+            reasons.append(_call_func_name(child) or ast.unparse(child.func))
+    return reasons
+
+
+def _target_module_namespace_writes(target: ast.AST) -> set[str]:
+    namespaces: set[str] = set()
+    for node in ast.walk(target):
+        if _expr_is_module_namespace_object(node):
+            namespaces.add("module namespace")
+        if isinstance(node, ast.Attribute):
+            value = node.value
+            if isinstance(value, ast.Subscript) and ast.unparse(value.value) == "sys.modules":
+                namespaces.add("sys.modules")
+            if isinstance(value, ast.Attribute) and value.attr == "__dict__":
+                namespaces.add("module.__dict__")
+        if isinstance(node, ast.Subscript):
+            value = node.value
+            if isinstance(value, ast.Attribute) and value.attr == "__dict__":
+                namespaces.add("module.__dict__")
+    return namespaces
+
+
+def _stmt_dynamic_namespace_writes(stmt: ast.stmt) -> list[str]:
+    targets: list[ast.AST] = []
+    if isinstance(stmt, ast.Assign):
+        targets.extend(stmt.targets)
+    elif isinstance(stmt, ast.AnnAssign):
+        targets.append(stmt.target)
+    elif isinstance(stmt, ast.AugAssign):
+        targets.append(stmt.target)
+    elif isinstance(stmt, ast.Delete):
+        targets.extend(stmt.targets)
+    namespaces: list[str] = []
+    for target in targets:
+        namespaces.extend(sorted(_target_dynamic_namespace_writes(target)))
+        namespaces.extend(sorted(_target_module_namespace_writes(target)))
+    return namespaces
+
+
+def _first_party_module_to_rel_path(module: str, *, project_root: Path) -> str | None:
+    if not (module == "src" or module.startswith("src.")):
+        return None
+    module_path = Path(*module.split("."))
+    file_path = project_root / module_path.with_suffix(".py")
+    if file_path.is_file():
+        return file_path.relative_to(project_root).as_posix()
+    package_path = project_root / module_path / "__init__.py"
+    if package_path.is_file():
+        return package_path.relative_to(project_root).as_posix()
+    return None
+
+
+def _module_name_for_rel_path(rel_path: str) -> str:
+    parts = Path(rel_path).with_suffix("").parts
+    if parts[-1] == "__init__":
+        parts = parts[:-1]
+    return ".".join(parts)
+
+
+def _resolve_import_from_base_module(stmt: ast.ImportFrom, *, current_rel_path: str) -> str | None:
+    module = stmt.module or ""
+    if stmt.level == 0:
+        return module
+    current_module_parts = _module_name_for_rel_path(current_rel_path).split(".")
+    package_parts = current_module_parts[:-1]
+    if stmt.level > len(package_parts) + 1:
+        return None
+    base_parts = package_parts[: len(package_parts) - stmt.level + 1]
+    if module:
+        base_parts.extend(module.split("."))
+    return ".".join(part for part in base_parts if part)
+
+
+def _first_party_import_modules_from_stmt(
+    stmt: ast.stmt,
+    *,
+    current_rel_path: str,
+    project_root: Path,
+) -> set[str]:
+    modules: set[str] = set()
+    if isinstance(stmt, ast.Import):
+        for alias in stmt.names:
+            name = alias.name
+            if _first_party_module_to_rel_path(name, project_root=project_root) is not None:
+                modules.add(name)
+        return modules
+    if not isinstance(stmt, ast.ImportFrom):
+        return modules
+    base_module = _resolve_import_from_base_module(stmt, current_rel_path=current_rel_path)
+    if not base_module:
+        return modules
+    if _first_party_module_to_rel_path(base_module, project_root=project_root) is not None:
+        modules.add(base_module)
+    if base_module == "src" or base_module.startswith("src."):
+        for alias in stmt.names:
+            if alias.name == "*":
+                continue
+            candidate = f"{base_module}.{alias.name}"
+            if _first_party_module_to_rel_path(candidate, project_root=project_root) is not None:
+                modules.add(candidate)
+    return modules
+
+
+def _iter_import_time_child_statements(stmt: ast.stmt) -> Iterator[ast.stmt]:
+    if isinstance(stmt, ast.If):
+        yield from stmt.body
+        yield from stmt.orelse
+    elif isinstance(stmt, (ast.For, ast.AsyncFor, ast.While)):
+        yield from stmt.body
+        yield from stmt.orelse
+    elif isinstance(stmt, (ast.With, ast.AsyncWith)):
+        yield from stmt.body
+    elif isinstance(stmt, ast.Try):
+        yield from stmt.body
+        yield from stmt.orelse
+        yield from stmt.finalbody
+        for handler in stmt.handlers:
+            yield from handler.body
+    elif isinstance(stmt, ast.ClassDef):
+        yield from stmt.body
+
+
+def _first_party_import_time_modules(
+    tree: ast.Module,
+    *,
+    current_rel_path: str,
+    project_root: Path,
+) -> set[str]:
+    modules: set[str] = set()
+    stack = list(tree.body)
+    while stack:
+        stmt = stack.pop()
+        modules.update(
+            _first_party_import_modules_from_stmt(
+                stmt,
+                current_rel_path=current_rel_path,
+                project_root=project_root,
+            )
+        )
+        stack.extend(reversed(list(_iter_import_time_child_statements(stmt))))
+    return modules
+
+
+def _close_kernel_import_time_closure_source_paths(
+    *,
+    project_root: Path = PROJECT_ROOT,
+    roots: Sequence[str] = _PR2_CLOSE_KERNEL_IMPORT_CLOSURE_ROOT_REL_PATHS,
+) -> tuple[str, ...]:
+    closure: set[str] = set()
+    stack = list(reversed(tuple(roots)))
+    while stack:
+        rel_path = stack.pop().replace("\\", "/")
+        if rel_path in closure:
+            continue
+        path = project_root / rel_path
+        if not path.is_file():
+            raise CheckError(f"close-kernel import-time closure file missing: {rel_path}")
+        closure.add(rel_path)
+        tree = _parse_python(path)
+        for module in sorted(
+            _first_party_import_time_modules(
+                tree,
+                current_rel_path=rel_path,
+                project_root=project_root,
+            )
+        ):
+            imported_rel_path = _first_party_module_to_rel_path(
+                module,
+                project_root=project_root,
+            )
+            if imported_rel_path is not None and imported_rel_path not in closure:
+                stack.append(imported_rel_path)
+    return tuple(sorted(closure))
+
+
+def _direct_simple_call_names(node: ast.AST) -> set[str]:
+    names: set[str] = set()
+    for child in ast.walk(node):
+        if isinstance(child, ast.Call) and isinstance(child.func, ast.Name):
+            names.add(child.func.id)
+    return names
+
+
+def _check_import_time_expression(
+    node: ast.AST,
+    *,
+    label: str,
+    local_functions: Mapping[str, ast.FunctionDef] | None = None,
+    seen: set[str] | None = None,
+) -> list[str]:
+    errors: list[str] = []
+    for call_name in sorted(set(_expr_dynamic_execution_reasons(node))):
+        errors.append(f"{label} must not execute dynamic import-time call {call_name}")
+    if local_functions is None:
+        return errors
+    if seen is None:
+        seen = set()
+    for call_name in sorted(_direct_simple_call_names(node)):
+        function = local_functions.get(call_name)
+        if function is None or call_name in seen:
+            continue
+        seen.add(call_name)
+        for stmt in function.body:
+            errors.extend(
+                _check_import_time_statement(
+                    stmt,
+                    label=f"{label}->{call_name}",
+                    local_functions=local_functions,
+                    seen=seen,
+                )
+            )
+    return errors
+
+
+def _check_import_time_statement(
+    stmt: ast.stmt,
+    *,
+    label: str,
+    local_functions: Mapping[str, ast.FunctionDef] | None = None,
+    seen: set[str] | None = None,
+) -> list[str]:
+    errors: list[str] = []
+    for namespace in _stmt_dynamic_namespace_writes(stmt):
+        suffix = "()" if namespace in {"globals", "locals", "vars"} else ""
+        errors.append(f"{label} must not write through {namespace}{suffix} at import/def time")
+    if isinstance(stmt, ast.Expr):
+        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, ast.Assign):
+        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, ast.AnnAssign) and stmt.value is not None:
+        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, ast.AugAssign):
+        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        for node in _function_default_nodes(stmt):
+            errors.extend(_check_import_time_expression(node, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, ast.ClassDef):
+        for node in [*stmt.decorator_list, *stmt.bases, *[kw.value for kw in stmt.keywords]]:
+            errors.extend(_check_import_time_expression(node, label=label, local_functions=local_functions, seen=seen))
+        for item in stmt.body:
+            if _is_docstring_stmt(item):
+                continue
+            if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                for node in _function_default_nodes(item):
+                    errors.extend(_check_import_time_expression(node, label=label, local_functions=local_functions, seen=seen))
+            else:
+                errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, ast.Return) and stmt.value is not None:
+        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, ast.If):
+        errors.extend(_check_import_time_expression(stmt.test, label=label, local_functions=local_functions, seen=seen))
+        for item in [*stmt.body, *stmt.orelse]:
+            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, ast.While):
+        errors.extend(_check_import_time_expression(stmt.test, label=label, local_functions=local_functions, seen=seen))
+        for item in [*stmt.body, *stmt.orelse]:
+            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, (ast.For, ast.AsyncFor)):
+        errors.extend(_check_import_time_expression(stmt.iter, label=label, local_functions=local_functions, seen=seen))
+        for item in [*stmt.body, *stmt.orelse]:
+            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, (ast.With, ast.AsyncWith)):
+        for item in stmt.items:
+            errors.extend(_check_import_time_expression(item.context_expr, label=label, local_functions=local_functions, seen=seen))
+            if item.optional_vars is not None:
+                for namespace in _target_dynamic_namespace_writes(item.optional_vars):
+                    errors.append(f"{label} must not write through {namespace}() at import/def time")
+        for item in stmt.body:
+            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+    elif isinstance(stmt, ast.Try):
+        for item in [*stmt.body, *stmt.orelse, *stmt.finalbody]:
+            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+        for handler in stmt.handlers:
+            if handler.type is not None:
+                errors.extend(_check_import_time_expression(handler.type, label=label, local_functions=local_functions, seen=seen))
+            for item in handler.body:
+                errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+    return errors
+
+
+def _check_close_kernel_class_def_time_shape(
+    class_node: ast.ClassDef,
+    *,
+    label: str,
+    local_functions: Mapping[str, ast.FunctionDef],
+) -> list[str]:
+    errors: list[str] = []
+    expected_shape = _PR2_CLOSE_KERNEL_CLASS_DEF_SHAPES.get(label)
+    actual_bases = tuple(ast.unparse(base) for base in class_node.bases)
+    actual_keywords = tuple(f"{kw.arg}={ast.unparse(kw.value)}" for kw in class_node.keywords)
+    if expected_shape is None:
+        errors.append(f"{label} class def-time base/keyword allowlist missing")
+    elif (actual_bases, actual_keywords) != expected_shape:
+        errors.append(
+            f"{label} def-time bases/keywords drifted: expected {expected_shape!r}, "
+            f"found {(actual_bases, actual_keywords)!r}"
+        )
+    for node in [*class_node.decorator_list, *class_node.bases, *[kw.value for kw in class_node.keywords]]:
+        errors.extend(
+            _check_import_time_expression(
+                node,
+                label=f"{label} class def-time shape",
+                local_functions=local_functions,
+            )
+        )
+    return errors
+
+
+def _class_field_value(stmt: ast.Assign | ast.AnnAssign) -> ast.AST | None:
+    if isinstance(stmt, ast.Assign):
+        return stmt.value
+    return stmt.value
+
+
+def _close_kernel_class_field_value_allowed(value: ast.AST) -> bool:
+    if _inert_default_value(value):
+        return True
+    if not isinstance(value, ast.Call) or _call_func_name(value) != "field" or value.args:
+        return False
+    for keyword in value.keywords:
+        if keyword.arg == "default" and _inert_default_value(keyword.value):
+            continue
+        if (
+            keyword.arg == "default_factory"
+            and isinstance(keyword.value, ast.Name)
+            and keyword.value.id in {"dict", "list", "set", "tuple"}
+        ):
+            continue
+        return False
+    return True
+
+
+def _check_close_kernel_class_body_fully_pinned(
+    label: str,
+    fmap: Mapping[str, str],
+    class_node: ast.ClassDef,
+    *,
+    prefix: str,
+    local_functions: Mapping[str, ast.FunctionDef],
+) -> list[str]:
+    errors: list[str] = []
+    seen: dict[str, list[ast.stmt]] = {}
+    actual_fields: list[str] = []
+    saw_non_field = False
+    for item in class_node.body:
+        for bound_name in _class_stmt_bound_names(item):
+            seen.setdefault(bound_name, []).append(item)
+    for bound_name, bindings in sorted(seen.items()):
+        if len(bindings) > 1:
+            errors.append(
+                f"{label} close-kernel class binding must be unique: "
+                f"{prefix}.{bound_name} at lines {_format_binding_lines(bindings)}"
+            )
+
+    for index, item in enumerate(class_node.body):
+        if index == 0 and _is_docstring_stmt(item):
+            continue
+        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            saw_non_field = True
+            key = f"{prefix}.{item.name}"
+            if key not in fmap:
+                errors.append(f"{label} close-kernel method not source-pinned: {key}")
+            for node in _function_default_nodes(item):
+                errors.extend(
+                    _check_import_time_expression(
+                        node,
+                        label=f"{label}.{key}",
+                        local_functions=local_functions,
+                    )
+                )
+            continue
+        if isinstance(item, ast.ClassDef):
+            saw_non_field = True
+            key = f"{prefix}.{item.name}"
+            if key not in fmap:
+                errors.append(f"{label} close-kernel nested class not source-pinned: {key}")
+            errors.extend(
+                _check_close_kernel_class_def_time_shape(
+                    item,
+                    label=f"{label}.{key}",
+                    local_functions=local_functions,
+                )
+            )
+            errors.extend(
+                _check_close_kernel_class_body_fully_pinned(
+                    label,
+                    fmap,
+                    item,
+                    prefix=key,
+                    local_functions=local_functions,
+                )
+            )
+            continue
+        if isinstance(item, (ast.Assign, ast.AnnAssign)):
+            targets = item.targets if isinstance(item, ast.Assign) else [item.target]
+            for target in targets:
+                if not isinstance(target, ast.Name):
+                    errors.append(
+                        f"{label} close-kernel class binding must be a plain name at line "
+                        f"{getattr(item, 'lineno', '?')}"
+                    )
+                    continue
+                key = f"{prefix}.{target.id}"
+                if key in fmap:
+                    errors.append(
+                        f"{label} close-kernel class binding shadows source-pinned member: {key}"
+                    )
+            value = _class_field_value(item)
+            if value is not None:
+                errors.extend(
+                    _check_import_time_expression(
+                        value,
+                        label=f"{label} class field",
+                        local_functions=local_functions,
+                    )
+                )
+                if not _close_kernel_class_field_value_allowed(value):
+                    errors.append(
+                        f"{label} close-kernel class field default must be inert at line "
+                        f"{getattr(item, 'lineno', '?')}"
+                    )
+            if saw_non_field:
+                errors.append(
+                    f"{label} close-kernel class {prefix} has an unexpected body "
+                    f"{type(item).__name__} at line {getattr(item, 'lineno', '?')}"
+                )
+            else:
+                actual_fields.append(ast.unparse(item))
+            continue
+        errors.append(
+            f"{label} close-kernel class {prefix} has an unexpected body "
+            f"{type(item).__name__} at line {getattr(item, 'lineno', '?')}"
+        )
+    expected_fields = _PR2_CLOSE_KERNEL_CLASS_FIELD_SOURCES.get(f"{label}.{prefix}")
+    if expected_fields is None:
+        errors.append(f"{label}.{prefix} class def-time field layout allowlist missing")
+    elif tuple(actual_fields) != expected_fields:
+        errors.append(
+            f"{label}.{prefix} class def-time field layout drifted: "
+            f"expected {expected_fields!r}, found {tuple(actual_fields)!r}"
+        )
+    return errors
+
+
+def _check_close_kernel_import_dependency_import_time_shape(
+    *,
+    project_root: Path = PROJECT_ROOT,
+    roots: Sequence[str] = _PR2_CLOSE_KERNEL_IMPORT_CLOSURE_ROOT_REL_PATHS,
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        closure_paths = _close_kernel_import_time_closure_source_paths(
+            project_root=project_root,
+            roots=roots,
+        )
+    except CheckError as exc:
+        return [str(exc)]
+    for rel_path in closure_paths:
+        path = project_root / rel_path
+        tree = _parse_python(path)
+        local_functions = {
+            stmt.name: stmt
+            for stmt in tree.body
+            if isinstance(stmt, ast.FunctionDef)
+        }
+        for index, stmt in enumerate(tree.body):
+            if index == 0 and _is_docstring_stmt(stmt):
+                continue
+            if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+                continue
+            errors.extend(
+                _check_import_time_statement(
+                    stmt,
+                    label=f"{rel_path}:{getattr(stmt, 'lineno', '?')}",
+                    local_functions=local_functions,
+                )
+            )
+    return errors
 
 
 def _check_close_kernel_files_fully_pinned(
@@ -5838,9 +6603,11 @@ def _check_close_kernel_files_fully_pinned(
     ]:
         if isinstance(stmt, ast.Import):
             return _imp(*((alias.name, alias.asname) for alias in stmt.names))
-        return _from(
+        return (
+            "from",
+            stmt.level,
             stmt.module or "",
-            *((alias.name, alias.asname) for alias in stmt.names),
+            tuple((alias.name, alias.asname) for alias in stmt.names),
         )
 
     specs = (
@@ -5968,30 +6735,59 @@ def _check_close_kernel_files_fully_pinned(
     )
     for label, filename, tree, fmap, cmap, expected_imports in specs:
         special = _PR2_CLOSE_KERNEL_SPECIAL_CONSTANTS[label]
+        local_functions = {
+            node.name: node
+            for node in tree.body
+            if isinstance(node, ast.FunctionDef)
+        }
         past_import_block = False
         import_index = 0
         for index, stmt in enumerate(tree.body):
             if isinstance(stmt, ast.FunctionDef):
                 past_import_block = True
+                for expr in _function_default_nodes(stmt):
+                    errors.extend(
+                        _check_import_time_expression(
+                            expr,
+                            label=f"{label}.{stmt.name}",
+                            local_functions=local_functions,
+                        )
+                    )
                 if stmt.name not in fmap:
                     errors.append(
                         f"{label} close-kernel function not source-pinned: {stmt.name}"
                     )
             elif isinstance(stmt, ast.ClassDef):
                 past_import_block = True
+                errors.extend(
+                    _check_close_kernel_class_def_time_shape(
+                        stmt,
+                        label=f"{label}.{stmt.name}",
+                        local_functions=local_functions,
+                    )
+                )
                 if stmt.name not in fmap:
                     errors.append(
                         f"{label} close-kernel class not source-pinned: {stmt.name}"
                     )
-                for item in stmt.body:
-                    if isinstance(item, ast.FunctionDef):
-                        key = f"{stmt.name}.{item.name}"
-                        if key not in fmap:
-                            errors.append(
-                                f"{label} close-kernel method not source-pinned: {key}"
-                            )
+                errors.extend(
+                    _check_close_kernel_class_body_fully_pinned(
+                        label,
+                        fmap,
+                        stmt,
+                        prefix=stmt.name,
+                        local_functions=local_functions,
+                    )
+                )
             elif isinstance(stmt, (ast.Assign, ast.AnnAssign)):
                 past_import_block = True
+                errors.extend(
+                    _check_import_time_statement(
+                        stmt,
+                        label=f"{label} module constant",
+                        local_functions=local_functions,
+                    )
+                )
                 targets = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
                 for target in targets:
                     if not isinstance(target, ast.Name):
@@ -6024,12 +6820,7 @@ def _check_close_kernel_files_fully_pinned(
                         )
                     import_index += 1
                 continue
-            elif (
-                index == 0
-                and isinstance(stmt, ast.Expr)
-                and isinstance(stmt.value, ast.Constant)
-                and isinstance(stmt.value.value, str)
-            ):
+            elif index == 0 and _is_docstring_stmt(stmt):
                 continue  # module docstring
             else:
                 errors.append(
@@ -7316,6 +8107,7 @@ def _check_candidate_sink_replay_contract(
     errors.extend(
         _check_close_kernel_files_fully_pinned(l0_tree, child_tree, exact_tree)
     )
+    errors.extend(_check_close_kernel_import_dependency_import_time_shape())
     errors.extend(
         _check_true_verifier_entrypoint_body(
             _function_def(child_tree, "verify", path=pr2_true_child_path)
@@ -8759,8 +9551,12 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/io/delivery_manifest.py': '19d2bb353f4bfbc1a4473ec6a4aa2e214dd47083b94d516d4f70962e05e79a09',
     'src/io/output_schema.py': '78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c',
     'src/io/serializer.py': 'f40ede9bacee8fbfd1526973eb5f9985184930b70f84d946bb8b8c80d9e4fa9d',
+    'src/io/strict_json.py': '65293ed7c0a108e906b16bee206acb1ca7f598040aa85b372023dc954574c45a',
+    'src/interchange/preprocess_context.py': '5fa213035b9ac3e3ae78f0f12f8293e16c08d3cd913824f45bb34197fcb9f5d0',
+    'src/models/_cpsat_compat.py': 'c8e4ae4b9df87bb7b3bb3f823974b940a6c10e4d651ab811be13ca1d10810d89',
     'src/models/abstract_routing_layer.py': '1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16',
     'src/models/binding_subproblem.py': '9af9a256c03ebfd937642248fd329ca9b307f28a0fec8280dc76634b8910cac1',
+    'src/models/cp_sat_worker_config.py': '4f9a4847f179f1ed15d61b17bcdc2340c82c1ec2494abd1eb7402f919c84ba50',
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
     'src/models/cut_manager.py': '50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01',
     'src/models/d2_commodity_flow_core.py': '55aee97d9162541efd0014c5f4682c1d4d60c1fb0ef9246a657dfbb3ff17775e',
@@ -8770,9 +9566,13 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/models/highs_master_model.py': 'ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a',
     'src/models/master_model.py': '1c72cc6e5b042900975cc18b8284c75531f01d3ca4f46ef553dcbea49b61710f',
     'src/models/patch_routing_core.py': '371cdf69c6d30a1499dbd596750dfc1802eb4e1aa652e3042c044c3136c17b98',
+    'src/models/port_binding.py': '18e9c586e615ce3172d1ee32a89f7f3961b14e6fe386467ff5ea714930c01163',
+    'src/models/pose_bool_exact_master.py': '00c82b8758c7d859f9dfc9d3936516738ed48bf3bb5c1ad73477a183e848d0ed',
     'src/models/power_placement_subproblem.py': '88573b3ebdf26a334d740d718d4f90a5216745936291ef6b87b877f99594a597',
     'src/models/routing_subproblem.py': '25c56e1f5f383f8696f93d876282f1cd5c26a37e610e6bc7d6ca8ffcd737ba49',
     'src/models/scip_master_model.py': 'd3590b07088e4e67c5b714aca78e39acddd0da8b59a7b96a68ae7b4b270f2bea',
+    'src/models/solution_hint_parser.py': '3767cbdae4ae7f560f4bb3ddfc3197f8958484e42b575fa357ec16d4efa34a32',
+    'src/preprocess/operation_profiles.py': 'e9a89a4a6483bebeeb42096867390eb31f80bc5819c206b35a9d87387a925c6c',
     'src/render/industrial_planner_exact_status.py': '22875159909302a5d5dde77bd832539be1b01a10e40606d8d459996714c56183',
     'src/render/industrial_planner_single_base_delivery_entrypoints.py': 'e80cc8d6c4badadad9c23a2c6c8c645e653425b2b0002879baadb29c3dd6759c',
     'src/render/industrial_planner_single_base_delivery_frontdoor.py': '5e530baaa4e49e149755c96452521daa93ece7a3c29b6e05545fcd5819530fdb',
@@ -8789,6 +9589,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
+    'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
     'src/search/exact_campaign.py': '3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
@@ -8923,6 +9724,20 @@ def _check_close_kernel_v99_static_floor(
             errors.append(
                 f"{rel_path} is structurally checked by P1.2 gates but missing from "
                 "the v99 source-hash floor"
+            )
+
+    try:
+        import_time_closure_paths = _close_kernel_import_time_closure_source_paths(
+            project_root=project_root
+        )
+    except CheckError as exc:
+        errors.append(str(exc))
+        import_time_closure_paths = ()
+    for rel_path in import_time_closure_paths:
+        if rel_path not in CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH:
+            errors.append(
+                f"{rel_path} is in the close-kernel first-party import-time closure "
+                "but missing from the v99 source-hash floor"
             )
 
     for rel_path, expected_sha256 in sorted(CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH.items()):

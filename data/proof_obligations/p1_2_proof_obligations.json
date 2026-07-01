@@ -251,6 +251,8 @@
         "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
         "test_full_frontier_candidate_domain_keeps_oriented_dimensions",
         "test_v82_terminal_frontier_dominance_keeps_smaller_pending_candidate_canary",
+        "test_v82_terminal_frontier_certified_prune_keeps_one_wider_pending_candidate_canary",
+        "test_v82_terminal_frontier_shape_frontier_keeps_transposed_equal_area_canary",
         "test_save_rejects_dict_subclass_that_mutates_after_guard"
       ],
       "evidence_paths": [
@@ -515,6 +517,11 @@
         "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
         "test_p1_2_close_kernel_manifest_is_strict_json",
         "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
+        "test_p1_2_close_kernel_self_binding_rejects_dead_branch_calls",
+        "test_p1_2_round11_close_kernel_def_time_and_class_body_hardening",
+        "test_p1_2_round11_close_kernel_import_dependency_shape_rejects_import_time_mutation",
+        "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
+        "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
         "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
         "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift",
         "test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources",
@@ -644,6 +651,8 @@
         "test_fixed_witness_accepts_valid_r_star_pi_star",
         "test_fixed_witness_rejects_connector_cell_occupied_by_other_body",
         "test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witness",
+        "test_fixed_witness_capsule_projection_rejects_publishable_non_feasible_statuses",
+        "test_child_publishable_capsule_verdict_requires_feasible_statuses",
         "test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict",
         "test_build_then_verify_uses_fresh_projection_without_status_digest_mismatch",
         "test_fixed_witness_unproven_durable_record_keeps_solution_bytes"
@@ -916,7 +925,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-          "source_sha256": "0fe58e1aceb74729ccd9924c642191f59425695262c9f748c070e72c4a110f88",
+          "source_sha256": "c100f8f48c45d7da0e68831931c11af25f3851cee8a157257b4d1fc34220aa9d",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
