@@ -1677,6 +1677,19 @@ def _function_shadows_name(
                 ):
                     continue
                 return True
+        if isinstance(child, ast.Call):
+            call_func = child.func
+            # round-16 (BLOCK 3): a proof direct-call witness function that runs
+            # dynamic code (``exec("<name> = ...", globals())`` /
+            # ``__import__("builtins").exec(...)``) can rebind the fixed-witness
+            # symbol at runtime while the syntactic direct call still appears
+            # present.  Treat any dynamic-execution primitive in the witness body
+            # as a shadow (fail closed): proof witnesses have no legitimate need
+            # for exec/eval/__import__.
+            if isinstance(call_func, ast.Name) and call_func.id in {"exec", "eval", "__import__"}:
+                return True
+            if isinstance(call_func, ast.Attribute) and call_func.attr in {"exec", "eval"}:
+                return True
     return False
 
 
@@ -3788,17 +3801,90 @@ def _check_error_collector_return_shape(
     return errors
 
 
+_IMPORT_TIME_REBIND_NAME_PRIMITIVES = frozenset(
+    {
+        "__import__",
+        "compile",
+        "delattr",
+        "eval",
+        "exec",
+        "globals",
+        "locals",
+        "setattr",
+        "vars",
+    }
+)
+_IMPORT_TIME_REBIND_ATTR_PRIMITIVES = frozenset(
+    {"__delattr__", "__dict__", "__setattr__", "__setitem__"}
+)
+
+
+def _expr_contains_import_time_rebind_primitive(node: ast.AST | None) -> str | None:
+    """round-16 (BLOCK 1): report a namespace-write/dynamic-exec primitive inside
+    an import-time-evaluated expression.
+
+    The checker module top-level closed-world previously only checked statement
+    *type*; a namespace-write hidden in an *allowed* statement's import-time
+    expression (``_x = globals().__setitem__("main", lambda: 0)``, a
+    ``FunctionDef`` default ``def f(_x=globals().__setitem__(...))``, or a
+    ``ClassDef`` body ``class C: globals()["main"] = lambda: 0``) still rebinds a
+    protected global at module exec time, before the canonical entrypoint runs.
+    Reject any of these primitives in import-time-evaluated positions.
+    """
+    if node is None:
+        return None
+    for child in ast.walk(node):
+        if isinstance(child, ast.Name) and child.id in _IMPORT_TIME_REBIND_NAME_PRIMITIVES:
+            return child.id
+        if isinstance(child, ast.Attribute) and child.attr in _IMPORT_TIME_REBIND_ATTR_PRIMITIVES:
+            return child.attr
+    return None
+
+
 def _checker_module_top_level_statement_allowed(
     stmt: ast.stmt, *, is_first: bool, is_last: bool
 ) -> bool:
-    if isinstance(stmt, (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.ClassDef)):
+    if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+        return True
+    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        for expr in (
+            *stmt.decorator_list,
+            *stmt.args.defaults,
+            *(default for default in stmt.args.kw_defaults if default is not None),
+            stmt.returns,
+        ):
+            if _expr_contains_import_time_rebind_primitive(expr) is not None:
+                return False
+        for arg in (*stmt.args.posonlyargs, *stmt.args.args, *stmt.args.kwonlyargs):
+            if _expr_contains_import_time_rebind_primitive(arg.annotation) is not None:
+                return False
+        return True
+    if isinstance(stmt, ast.ClassDef):
+        for expr in (
+            *stmt.decorator_list,
+            *stmt.bases,
+            *(keyword.value for keyword in stmt.keywords),
+        ):
+            if _expr_contains_import_time_rebind_primitive(expr) is not None:
+                return False
+        for body_stmt in stmt.body:
+            if _expr_contains_import_time_rebind_primitive(body_stmt) is not None:
+                return False
         return True
     if isinstance(stmt, ast.Assign):
-        return bool(stmt.targets) and all(isinstance(target, ast.Name) for target in stmt.targets)
+        if not (bool(stmt.targets) and all(isinstance(target, ast.Name) for target in stmt.targets)):
+            return False
+        return _expr_contains_import_time_rebind_primitive(stmt.value) is None
     if isinstance(stmt, ast.AnnAssign):
-        return isinstance(stmt.target, ast.Name)
+        if not isinstance(stmt.target, ast.Name):
+            return False
+        if _expr_contains_import_time_rebind_primitive(stmt.annotation) is not None:
+            return False
+        return _expr_contains_import_time_rebind_primitive(stmt.value) is None
     if isinstance(stmt, ast.AugAssign):
-        return isinstance(stmt.target, ast.Name)
+        if not isinstance(stmt.target, ast.Name):
+            return False
+        return _expr_contains_import_time_rebind_primitive(stmt.value) is None
     if (
         is_first
         and isinstance(stmt, ast.Expr)
@@ -8692,12 +8778,25 @@ _PR2_CLOSE_KERNEL_RUNTIME_REFLECTION_NAME_PRIMITIVES = frozenset(
 )
 _PR2_CLOSE_KERNEL_RUNTIME_REFLECTION_ATTR_PRIMITIVES = frozenset(
     {
+        "__bases__",
         "__class__",
+        "__closure__",
+        "__code__",
+        "__defaults__",
         "__delattr__",
         "__dict__",
+        "__func__",
         "__getattr__",
         "__getattribute__",
+        "__globals__",
+        "__init_subclass__",
+        "__kwdefaults__",
+        "__mro__",
+        "__self__",
+        "__set_name__",
         "__setattr__",
+        "__subclasses__",
+        "__wrapped__",
     }
 )
 _PR2_CLOSE_KERNEL_RUNTIME_DYNAMIC_MODULE_PRIMITIVES = frozenset({"ctypes", "gc", "inspect"})
@@ -12187,7 +12286,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
-    'src/search/certified_artifact_contract.py': '308bf8232b28db839476fbc1a7a59c98264f2acf774d8d30c991ed4b62334313',
+    'src/search/certified_artifact_contract.py': 'dd0f46de53eaefa95d52f4fa2d1c6f4e3b15dab10bc0c44eef78ce03ca599cd2',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',

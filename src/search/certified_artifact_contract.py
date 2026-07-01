@@ -396,17 +396,84 @@ def _locked_checker_has_canonical_entrypoint(tree: ast.Module) -> bool:
     )
 
 
+_LOCKED_IMPORT_TIME_REBIND_NAME_PRIMITIVES = frozenset(
+    {
+        "__import__",
+        "compile",
+        "delattr",
+        "eval",
+        "exec",
+        "globals",
+        "locals",
+        "setattr",
+        "vars",
+    }
+)
+_LOCKED_IMPORT_TIME_REBIND_ATTR_PRIMITIVES = frozenset(
+    {"__delattr__", "__dict__", "__setattr__", "__setitem__"}
+)
+
+
+def _locked_expr_contains_import_time_rebind_primitive(node: ast.AST | None) -> str | None:
+    # round-16 (BLOCK 1): reject a namespace-write/dynamic-exec primitive hidden
+    # in an import-time-evaluated expression of an otherwise-allowed top-level
+    # statement (``_x = globals().__setitem__("main", lambda: 0)``, a FunctionDef
+    # default, or a ClassDef body), which would rebind a protected global before
+    # the canonical entrypoint runs.
+    if node is None:
+        return None
+    for child in ast.walk(node):
+        if isinstance(child, ast.Name) and child.id in _LOCKED_IMPORT_TIME_REBIND_NAME_PRIMITIVES:
+            return child.id
+        if isinstance(child, ast.Attribute) and child.attr in _LOCKED_IMPORT_TIME_REBIND_ATTR_PRIMITIVES:
+            return child.attr
+    return None
+
+
 def _locked_checker_top_level_statement_allowed(
     stmt: ast.stmt, *, is_first: bool, is_last: bool
 ) -> bool:
-    if isinstance(stmt, (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.ClassDef)):
+    if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+        return True
+    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        for expr in (
+            *stmt.decorator_list,
+            *stmt.args.defaults,
+            *(default for default in stmt.args.kw_defaults if default is not None),
+            stmt.returns,
+        ):
+            if _locked_expr_contains_import_time_rebind_primitive(expr) is not None:
+                return False
+        for arg in (*stmt.args.posonlyargs, *stmt.args.args, *stmt.args.kwonlyargs):
+            if _locked_expr_contains_import_time_rebind_primitive(arg.annotation) is not None:
+                return False
+        return True
+    if isinstance(stmt, ast.ClassDef):
+        for expr in (
+            *stmt.decorator_list,
+            *stmt.bases,
+            *(keyword.value for keyword in stmt.keywords),
+        ):
+            if _locked_expr_contains_import_time_rebind_primitive(expr) is not None:
+                return False
+        for body_stmt in stmt.body:
+            if _locked_expr_contains_import_time_rebind_primitive(body_stmt) is not None:
+                return False
         return True
     if isinstance(stmt, ast.Assign):
-        return bool(stmt.targets) and all(isinstance(target, ast.Name) for target in stmt.targets)
+        if not (bool(stmt.targets) and all(isinstance(target, ast.Name) for target in stmt.targets)):
+            return False
+        return _locked_expr_contains_import_time_rebind_primitive(stmt.value) is None
     if isinstance(stmt, ast.AnnAssign):
-        return isinstance(stmt.target, ast.Name)
+        if not isinstance(stmt.target, ast.Name):
+            return False
+        if _locked_expr_contains_import_time_rebind_primitive(stmt.annotation) is not None:
+            return False
+        return _locked_expr_contains_import_time_rebind_primitive(stmt.value) is None
     if isinstance(stmt, ast.AugAssign):
-        return isinstance(stmt.target, ast.Name)
+        if not isinstance(stmt.target, ast.Name):
+            return False
+        return _locked_expr_contains_import_time_rebind_primitive(stmt.value) is None
     if (
         is_first
         and isinstance(stmt, ast.Expr)
