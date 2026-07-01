@@ -2642,7 +2642,7 @@ def test_p1_2_round13_close_kernel_rejects_import_and_builtin_shadow(
         child_tree,
         ast.parse(exact_with_class_builtin_shadow),
     )
-    assert any(
+    assert not any(
         "class binding must not shadow import/builtin name ExactCampaign.property" in error
         for error in errors
     )
@@ -2699,7 +2699,7 @@ def test_p1_2_round13_checker_error_collector_integrity(tmp_path: Path) -> None:
     errors = check_p1_2_proof_obligations._check_error_collector_integrity(
         checker_path=checker_path
     )
-    assert any("must not destructively mutate errors" in error for error in errors)
+    assert any("non-whitelisted errors reference" in error for error in errors)
 
     checker_path = tmp_path / "checker_errors_clear_method_alias.py"
     checker_path.write_text(
@@ -2716,7 +2716,7 @@ def test_p1_2_round13_checker_error_collector_integrity(tmp_path: Path) -> None:
     errors = check_p1_2_proof_obligations._check_error_collector_integrity(
         checker_path=checker_path
     )
-    assert any("must not alias errors destructive method" in error for error in errors)
+    assert any("non-whitelisted errors reference" in error for error in errors)
 
     checker_path = tmp_path / "checker_errors_clear_getattr_alias.py"
     checker_path.write_text(
@@ -2733,7 +2733,7 @@ def test_p1_2_round13_checker_error_collector_integrity(tmp_path: Path) -> None:
     errors = check_p1_2_proof_obligations._check_error_collector_integrity(
         checker_path=checker_path
     )
-    assert any("must not alias errors destructive method" in error for error in errors)
+    assert any("reflection/dynamic primitive getattr" in error for error in errors)
 
     checker_path = tmp_path / "checker_errors_for_rebind.py"
     checker_path.write_text(
@@ -2750,7 +2750,7 @@ def test_p1_2_round13_checker_error_collector_integrity(tmp_path: Path) -> None:
     errors = check_p1_2_proof_obligations._check_error_collector_integrity(
         checker_path=checker_path
     )
-    assert any("main must not rebind errors" in error for error in errors)
+    assert any("non-whitelisted errors reference" in error for error in errors)
 
     checker_path = tmp_path / "checker_shadow_callee.py"
     checker_path.write_text(
@@ -2811,8 +2811,8 @@ def test_p1_2_round13_self_binding_requires_new_gates_and_self_call(
     checker_path = tmp_path / "checker_removed_self_binding.py"
     checker_path.write_text(
         source.replace(
-            "        errors.extend(_check_close_kernel_checker_self_binding())\n",
-            "        # mutation: removed self-binding call\n",
+            "    preflight_errors.extend(_check_close_kernel_checker_self_binding())\n",
+            "    # mutation: removed self-binding call\n",
             1,
         ),
         encoding="utf-8",
@@ -2880,6 +2880,358 @@ def test_p1_2_round13_source_text_includes_parenthesized_decorator_start(
     assert isinstance(function, ast.FunctionDef)
 
     assert check_p1_2_proof_obligations._source_text(source_path, function).startswith("@(\n")
+
+
+def test_p1_2_round14_close_kernel_rejects_lambda_default_walrus_hidden_bindings(
+    tmp_path: Path,
+) -> None:
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_with_top_level_hidden = exact_source.replace(
+        "_RESUME_INFEASIBLE_REPLAY_REASON = (\n"
+        '    "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume"\n'
+        ")\n",
+        "_RESUME_INFEASIBLE_REPLAY_REASON = (\n"
+        "    ((_round14_hidden := 1),\n"
+        '     "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume")[1]\n'
+        ")\n",
+        1,
+    )
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_with_top_level_hidden,
+    )
+    assert any("top-level hidden binding is forbidden: _round14_hidden" in error for error in errors)
+
+    exact_with_class_lambda_default = exact_source.replace(
+        "    def save(self) -> None:\n",
+        "    def save(self, _probe=(lambda _=(supervisor_seal := None): None)) -> None:\n",
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        ast.parse(
+            check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+                encoding="utf-8"
+            )
+        ),
+        ast.parse(
+            check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+                encoding="utf-8"
+            )
+        ),
+        ast.parse(exact_with_class_lambda_default),
+    )
+    assert any(
+        "class hidden binding is forbidden: ExactCampaign.supervisor_seal" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round14_close_kernel_rejects_runtime_member_hooks_and_writes(
+    tmp_path: Path,
+) -> None:
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_source + "\n    def __getattr__(self, name):\n        return None\n",
+    )
+    assert any("class runtime member must not define hook __getattr__" in error for error in errors)
+
+    exact_with_member_write = exact_source.replace(
+        "    def save(self) -> None:\n",
+        "    def save(self) -> None:\n"
+        "        self.supervisor_seal = None\n",
+        1,
+    )
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_with_member_write,
+    )
+    assert any("must not write runtime member supervisor_seal" in error for error in errors)
+
+    exact_with_dynamic_member_write = exact_source.replace(
+        "    def save(self) -> None:\n",
+        "    def save(self) -> None:\n"
+        '        object.__setattr__(self, "supervisor_seal", None)\n',
+        1,
+    )
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_with_dynamic_member_write,
+    )
+    assert any("must not dynamically write runtime member supervisor_seal" in error for error in errors)
+
+
+def test_p1_2_round14_function_shadow_guard_rejects_walrus_and_match_capture() -> None:
+    tree = ast.parse(
+        "def probe(value):\n"
+        "    if (reverify_whole_layout_infeasibility := value):\n"
+        "        return None\n"
+    )
+    function = tree.body[0]
+    assert isinstance(function, ast.FunctionDef)
+    assert check_p1_2_proof_obligations._function_shadows_name(
+        function,
+        "reverify_whole_layout_infeasibility",
+    )
+
+    tree = ast.parse(
+        "def probe(value):\n"
+        "    match value:\n"
+        "        case reverify_whole_layout_infeasibility:\n"
+        "            return None\n"
+    )
+    function = tree.body[0]
+    assert isinstance(function, ast.FunctionDef)
+    assert check_p1_2_proof_obligations._function_shadows_name(
+        function,
+        "reverify_whole_layout_infeasibility",
+    )
+
+
+def test_p1_2_round14_strong_status_allowlist_bytes_are_pinned(tmp_path: Path) -> None:
+    allowlist_path = tmp_path / check_p1_2_proof_obligations.STRONG_STATUS_WRITE_ALLOWLIST_REL
+    allowlist_path.parent.mkdir(parents=True)
+    allowlist_bytes = check_p1_2_proof_obligations.STRONG_STATUS_WRITE_ALLOWLIST_PATH.read_bytes()
+    allowlist_path.write_bytes(allowlist_bytes)
+    assert check_p1_2_proof_obligations._check_strong_status_write_allowlist_bytes(
+        project_root=tmp_path,
+    ) == []
+
+    mutated = bytearray(allowlist_bytes)
+    mutated[-1] = mutated[-1] ^ 1
+    allowlist_path.write_bytes(bytes(mutated))
+    errors = check_p1_2_proof_obligations._check_strong_status_write_allowlist_bytes(
+        project_root=tmp_path,
+    )
+    assert any("strong-status write allowlist hash drift" in error for error in errors)
+
+
+def test_p1_2_round14_checker_errors_whitelist_rejects_alias_reflection_and_mutation(
+    tmp_path: Path,
+) -> None:
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(
+        encoding="utf-8"
+    )
+    checker_path = tmp_path / "checker_errors_alias_reflection.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_close_kernel_contract(manifest))\n",
+            "        errors.extend(_check_close_kernel_contract(manifest))\n"
+            "        _round14_alias = errors\n"
+            '        sys._getframe().f_locals["errors"] = []\n',
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    errors = check_p1_2_proof_obligations._check_error_collector_integrity(
+        checker_path=checker_path,
+    )
+
+    assert any("non-whitelisted errors reference" in error for error in errors)
+    assert any("sys._getframe" in error for error in errors)
+    assert any("f_locals" in error for error in errors)
+
+
+def test_p1_2_round14_checker_self_integrity_preflight_is_fail_fast(
+    tmp_path: Path,
+) -> None:
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(
+        encoding="utf-8"
+    )
+    checker_path = tmp_path / "checker_preflight_removed.py"
+    checker_path.write_text(
+        source.replace(
+            "    preflight_errors.extend(_check_close_kernel_checker_self_binding())\n",
+            "    # mutation: removed fail-fast self-binding preflight\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    errors = check_p1_2_proof_obligations._check_main_self_integrity_preflight_shape(
+        checker_path=checker_path,
+    )
+
+    assert any("fail-fast self-integrity preflight" in error for error in errors)
+
+
+def test_p1_2_round14_checker_failure_gate_rejects_exit_and_none_returns(
+    tmp_path: Path,
+) -> None:
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(
+        encoding="utf-8"
+    )
+    checker_path = tmp_path / "checker_exit_gate.py"
+    checker_path.write_text(
+        source.replace(
+            "    if errors:\n        return 1\n",
+            "    if errors:\n        sys.exit(1)\n        return 1\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_main_error_reporting_shape(
+        checker_path=checker_path,
+    )
+    assert any("process exit" in error or "failure gate body" in error for error in errors)
+
+    checker_path = tmp_path / "checker_return_none.py"
+    checker_path.write_text(
+        source.replace("    return 0\n", "    return None\n", 1),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_main_error_reporting_shape(
+        checker_path=checker_path,
+    )
+    assert any("return only integer literals 0, 1, or 2" in error for error in errors)
+
+
+def test_p1_2_round14_checker_required_callee_floor_rejects_rebind_and_shrink(
+    tmp_path: Path,
+) -> None:
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(
+        encoding="utf-8"
+    )
+    checker_path = tmp_path / "checker_required_tuple_shrink.py"
+    head, marker, tail = source.partition("_PR2_CHECKER_MAIN_REQUIRED_CALLS = (\n")
+    assert marker
+    checker_path.write_text(
+        head
+        + marker
+        + tail.replace(
+            '    "_check_close_kernel_contract",\n'
+            '    "_check_phase_gate_provenance_contract",\n',
+            '    "_check_phase_gate_provenance_contract",\n',
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path,
+    )
+    assert any("runtime tuple shrank below floor: _check_close_kernel_contract" in error for error in errors)
+
+    checker_path = tmp_path / "checker_required_callee_decorated.py"
+    checker_path.write_text(
+        source.replace(
+            "def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path = PROJECT_ROOT) -> list[str]:\n",
+            "@staticmethod\n"
+            "def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path = PROJECT_ROOT) -> list[str]:\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path,
+    )
+    assert any("required callee _check_close_kernel_contract must be undecorated" in error for error in errors)
+
+
+def test_p1_2_round14_runtime_anchor_rejects_manifest_semantic_projection_mismatch(
+    tmp_path: Path,
+) -> None:
+    from src.search.certified_artifact_contract import locked_p1_2_close_kernel_violation
+
+    (tmp_path / "PROJECT_LOCK.md").write_text("locked\n", encoding="utf-8")
+    manifest_path = tmp_path / "data/proof_obligations/p1_2_proof_obligations.json"
+    manifest_path.parent.mkdir(parents=True)
+    manifest_path.write_text(
+        '{"semantic_projection_sha256": "0"}\n',
+        encoding="utf-8",
+        newline="\n",
+    )
+    allowlist_path = tmp_path / "data/proof_obligations/strong_status_write_allowlist.json"
+    allowlist_path.write_text("[]\n", encoding="utf-8", newline="\n")
+    checker_path = tmp_path / "scripts/check_p1_2_proof_obligations.py"
+    checker_path.parent.mkdir()
+    checker_path.write_text("raise SystemExit(0)\n", encoding="utf-8", newline="\n")
+
+    assert (
+        locked_p1_2_close_kernel_violation(tmp_path)
+        == "locked_p1_2_close_kernel_semantic_projection_mismatch"
+    )
+
+
+def test_p1_2_round14_close_kernel_accepts_class_builtin_member_without_def_time_use(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_with_builtin_member = exact_source.replace(
+        "    compatible_hashes: bool\n",
+        "    compatible_hashes: bool\n"
+        "    id: int = 0\n",
+        1,
+    )
+    field_sources = dict(check_p1_2_proof_obligations._PR2_CLOSE_KERNEL_CLASS_FIELD_SOURCES)
+    field_sources["PR2 exact campaign.ExactCampaign"] = (
+        *field_sources["PR2 exact campaign.ExactCampaign"],
+        "id: int = 0",
+    )
+    runtime_layouts = dict(
+        check_p1_2_proof_obligations._PR2_CLOSE_KERNEL_CLASS_RUNTIME_MEMBER_LAYOUTS
+    )
+    exact_layout = list(runtime_layouts["PR2 exact campaign.ExactCampaign"])
+    exact_layout.insert(5, ("field", "id"))
+    runtime_layouts["PR2 exact campaign.ExactCampaign"] = tuple(exact_layout)
+    monkeypatch.setattr(
+        check_p1_2_proof_obligations,
+        "_PR2_CLOSE_KERNEL_CLASS_FIELD_SOURCES",
+        field_sources,
+    )
+    monkeypatch.setattr(
+        check_p1_2_proof_obligations,
+        "_PR2_CLOSE_KERNEL_CLASS_RUNTIME_MEMBER_LAYOUTS",
+        runtime_layouts,
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        ast.parse(
+            check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+                encoding="utf-8"
+            )
+        ),
+        ast.parse(
+            check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+                encoding="utf-8"
+            )
+        ),
+        ast.parse(exact_with_builtin_member),
+    )
+
+    assert not any("ExactCampaign.id" in error for error in errors)
+
+
+def test_p1_2_round14_checker_accepts_errors_iadd_required_call(tmp_path: Path) -> None:
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(
+        encoding="utf-8"
+    )
+    checker_path = tmp_path / "checker_iadd_required.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_close_kernel_contract(manifest))\n",
+            "        errors += _check_close_kernel_contract(manifest)\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    assert check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path,
+    ) == []
 
 
 def test_p1_2_close_kernel_source_floor_covers_import_time_closure() -> None:

@@ -38,8 +38,10 @@ PR2_L0_TRUE_VERIFIER_CHILD_PATH = (
 )
 PR2_DEPENDENCY_FLOOR_MANIFEST_REL = "data/proof_obligations/pr2_dependency_floor_manifest.json"
 PR2_DEPENDENCY_FLOOR_GENERATOR_REL = "scripts/generate_pr2_dependency_floor_manifest.py"
+STRONG_STATUS_WRITE_ALLOWLIST_REL = "data/proof_obligations/strong_status_write_allowlist.json"
 PR2_DEPENDENCY_FLOOR_MANIFEST_PATH = PROJECT_ROOT / PR2_DEPENDENCY_FLOOR_MANIFEST_REL
 PR2_DEPENDENCY_FLOOR_GENERATOR_PATH = PROJECT_ROOT / PR2_DEPENDENCY_FLOOR_GENERATOR_REL
+STRONG_STATUS_WRITE_ALLOWLIST_PATH = PROJECT_ROOT / STRONG_STATUS_WRITE_ALLOWLIST_REL
 PR2_DEPENDENCY_FLOOR_AUTHORITY = "pr2_l0_dependency_floor_manifest_v1"
 PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256 = (
     "41008dbb0bf03e1b413c493a96f5a5f47719721cc33112b353ed7c6bea240b90"
@@ -52,6 +54,10 @@ PR2_DEPENDENCY_FLOOR_PROVENANCE_STATUS = (
 PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
+STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
+    "a33b2bad840bc5eabcea630d62d06994ce92a38089cae2c99982c2264c84f064"
+)
+STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
     PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
 )
@@ -389,6 +395,17 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_round13_self_binding_requires_new_gates_and_self_call",
             "test_p1_2_round13_manifest_semantic_projection_rejects_resealed_gutting",
             "test_p1_2_round13_source_text_includes_parenthesized_decorator_start",
+            "test_p1_2_round14_close_kernel_rejects_lambda_default_walrus_hidden_bindings",
+            "test_p1_2_round14_close_kernel_rejects_runtime_member_hooks_and_writes",
+            "test_p1_2_round14_function_shadow_guard_rejects_walrus_and_match_capture",
+            "test_p1_2_round14_strong_status_allowlist_bytes_are_pinned",
+            "test_p1_2_round14_checker_errors_whitelist_rejects_alias_reflection_and_mutation",
+            "test_p1_2_round14_checker_self_integrity_preflight_is_fail_fast",
+            "test_p1_2_round14_checker_failure_gate_rejects_exit_and_none_returns",
+            "test_p1_2_round14_checker_required_callee_floor_rejects_rebind_and_shrink",
+            "test_p1_2_round14_runtime_anchor_rejects_manifest_semantic_projection_mismatch",
+            "test_p1_2_round14_close_kernel_accepts_class_builtin_member_without_def_time_use",
+            "test_p1_2_round14_checker_accepts_errors_iadd_required_call",
             "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
             "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
             "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
@@ -560,7 +577,11 @@ def _collect_current_scope_namedexpr_targets(node: ast.AST) -> set[str]:
             return
 
         def visit_Lambda(self, child: ast.Lambda) -> None:
-            return
+            for default in child.args.defaults:
+                self.visit(default)
+            for default in child.args.kw_defaults:
+                if default is not None:
+                    self.visit(default)
 
         def visit_NamedExpr(self, child: ast.NamedExpr) -> None:
             names.update(_target_name_bindings(child.target))
@@ -649,6 +670,25 @@ def _current_scope_bound_names(stmt: ast.stmt) -> set[str]:
         names.update(_collect_current_scope_namedexpr_targets(stmt))
     names.update(_type_alias_bound_names(stmt))
     return names
+
+
+def _direct_statement_bound_names(stmt: ast.stmt) -> set[str]:
+    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        return {stmt.name}
+    if isinstance(stmt, ast.Assign):
+        names: set[str] = set()
+        for target in stmt.targets:
+            names.update(_target_name_bindings(target))
+        return names
+    if isinstance(stmt, ast.AnnAssign):
+        return _target_name_bindings(stmt.target)
+    if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+        return _import_bound_names(stmt)
+    return _type_alias_bound_names(stmt)
+
+
+def _hidden_current_scope_bound_names(stmt: ast.stmt) -> set[str]:
+    return _current_scope_bound_names(stmt) - _direct_statement_bound_names(stmt)
 
 
 def _top_level_binding_points(tree: ast.Module, name: str) -> list[ast.stmt]:
@@ -791,21 +831,44 @@ def _calls_function(node: ast.AST, name: str) -> bool:
     return False
 
 
-def _is_errors_extend_call_statement(stmt: ast.stmt, function_name: str) -> bool:
-    if not isinstance(stmt, ast.Expr) or not isinstance(stmt.value, ast.Call):
-        return False
-    call = stmt.value
-    if call.keywords or len(call.args) != 1:
-        return False
-    if not (
-        isinstance(call.func, ast.Attribute)
-        and call.func.attr == "extend"
-        and isinstance(call.func.value, ast.Name)
-        and call.func.value.id == "errors"
+def _direct_name_call(value: ast.AST) -> ast.Call | None:
+    if isinstance(value, ast.Call) and isinstance(value.func, ast.Name):
+        return value
+    return None
+
+
+def _accumulator_callee_call_from_statement(
+    stmt: ast.stmt,
+    *,
+    accumulator_names: frozenset[str],
+) -> ast.Call | None:
+    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
+        call = stmt.value
+        if (
+            not call.keywords
+            and len(call.args) == 1
+            and isinstance(call.func, ast.Attribute)
+            and call.func.attr == "extend"
+            and isinstance(call.func.value, ast.Name)
+            and call.func.value.id in accumulator_names
+        ):
+            return _direct_name_call(call.args[0])
+    if (
+        isinstance(stmt, ast.AugAssign)
+        and isinstance(stmt.op, ast.Add)
+        and isinstance(stmt.target, ast.Name)
+        and stmt.target.id in accumulator_names
     ):
-        return False
-    value = call.args[0]
-    return isinstance(value, ast.Call) and isinstance(value.func, ast.Name) and value.func.id == function_name
+        return _direct_name_call(stmt.value)
+    return None
+
+
+def _is_errors_extend_call_statement(stmt: ast.stmt, function_name: str) -> bool:
+    call = _accumulator_callee_call_from_statement(
+        stmt,
+        accumulator_names=frozenset({"errors"}),
+    )
+    return call is not None and call.func.id == function_name
 
 
 def _statement_sequence_has_live_errors_extend_call(
@@ -814,17 +877,39 @@ def _statement_sequence_has_live_errors_extend_call(
     *,
     allow_outer_try: bool = False,
 ) -> bool:
+    return _statement_sequence_has_live_accumulator_call(
+        statements,
+        function_name,
+        accumulator_names=frozenset({"errors"}),
+        allow_outer_try=allow_outer_try,
+    )
+
+
+def _statement_sequence_has_live_accumulator_call(
+    statements: Sequence[ast.stmt],
+    function_name: str,
+    *,
+    accumulator_names: frozenset[str],
+    allow_outer_try: bool = False,
+) -> bool:
     for stmt in statements:
-        if _is_errors_extend_call_statement(stmt, function_name):
+        call = _accumulator_callee_call_from_statement(
+            stmt,
+            accumulator_names=accumulator_names,
+        )
+        if call is not None and call.func.id == function_name:
             return True
         if allow_outer_try and isinstance(stmt, (ast.Try, ast.TryStar)):
-            if _statement_sequence_has_live_errors_extend_call(
+            if _statement_sequence_has_live_accumulator_call(
                 stmt.body,
                 function_name,
+                accumulator_names=accumulator_names,
                 allow_outer_try=False,
             ):
                 return True
-        if isinstance(stmt, (ast.Return, ast.Raise)):
+        if isinstance(stmt, (ast.Return, ast.Raise)) or (
+            not isinstance(stmt, (ast.Try, ast.TryStar)) and _stmt_has_control_exit(stmt)
+        ):
             return False
     return False
 
@@ -838,6 +923,21 @@ def _has_live_errors_extend_call(
     return _statement_sequence_has_live_errors_extend_call(
         function.body,
         function_name,
+        allow_outer_try=allow_outer_try,
+    )
+
+
+def _has_live_accumulator_call(
+    function: ast.FunctionDef,
+    function_name: str,
+    *,
+    accumulator_names: frozenset[str],
+    allow_outer_try: bool = False,
+) -> bool:
+    return _statement_sequence_has_live_accumulator_call(
+        function.body,
+        function_name,
+        accumulator_names=accumulator_names,
         allow_outer_try=allow_outer_try,
     )
 
@@ -1171,7 +1271,11 @@ def _reachable_direct_call(node: ast.AST, predicate: Callable[[ast.Call], bool])
             return
 
         def visit_Lambda(self, child: ast.Lambda) -> None:
-            return
+            for default in child.args.defaults:
+                self.visit(default)
+            for default in child.args.kw_defaults:
+                if default is not None:
+                    self.visit(default)
 
         def visit_Assign(self, child: ast.Assign) -> None:
             self.visit(child.value)
@@ -1362,6 +1466,13 @@ def _function_shadows_name(
             continue
         if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and child.name == name:
             return True
+        if isinstance(child, ast.NamedExpr):
+            if name in _target_name_bindings(child.target):
+                return True
+        if isinstance(child, ast.Match):
+            for case in child.cases:
+                if name in _pattern_bound_names(case.pattern):
+                    return True
         if isinstance(child, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
             targets: list[ast.AST] = []
             if isinstance(child, ast.Assign):
@@ -2499,7 +2610,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "d116e7b3dd358a8270bfe3521c92c5f006af95dd49cfedf02111dfcd48f3c0a7"
+    "35a351e26b6524ba1363bf14e767f907cf9a9ceef2215cd819126cafa1975c47"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -2514,12 +2625,13 @@ _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "obligations",
     "close_kernel_contract",
 )
-_PR2_CHECKER_MAIN_REQUIRED_CALLS = (
+_PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR = (
     "_check_candidate_sink_replay_contract",
     "_check_certified_publication_boundary_contract",
     "_check_strong_status_write_allowlist_gate",
     "_check_close_kernel_checker_self_binding",
     "_check_error_collector_integrity",
+    "_check_main_self_integrity_preflight_shape",
     "_check_main_error_reporting_shape",
     "_check_error_collector_return_shape",
     "_check_proof_obligation_manifest_semantic_projection",
@@ -2528,6 +2640,25 @@ _PR2_CHECKER_MAIN_REQUIRED_CALLS = (
     "_check_phase_anchor",
     "_check_exact_session_atomic_snapshot_contract",
     "_check_independent_infeasibility_reverifier_contract",
+)
+_PR2_CHECKER_MAIN_REQUIRED_CALLS = (
+    "_check_candidate_sink_replay_contract",
+    "_check_certified_publication_boundary_contract",
+    "_check_strong_status_write_allowlist_gate",
+    "_check_close_kernel_checker_self_binding",
+    "_check_error_collector_integrity",
+    "_check_main_self_integrity_preflight_shape",
+    "_check_main_error_reporting_shape",
+    "_check_error_collector_return_shape",
+    "_check_proof_obligation_manifest_semantic_projection",
+    "_check_close_kernel_contract",
+    "_check_phase_gate_provenance_contract",
+    "_check_phase_anchor",
+    "_check_exact_session_atomic_snapshot_contract",
+    "_check_independent_infeasibility_reverifier_contract",
+)
+_PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS_FLOOR = (
+    "_check_close_kernel_files_fully_pinned",
 )
 _PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS = (
     "_check_close_kernel_files_fully_pinned",
@@ -2545,7 +2676,23 @@ _PR2_ERROR_DESTRUCTIVE_METHODS = frozenset(
         "sort",
     }
 )
-_PR2_DYNAMIC_EXECUTION_NAMES = frozenset({"eval", "exec", "globals", "locals", "vars"})
+_PR2_DYNAMIC_EXECUTION_NAMES = frozenset(
+    {
+        "__import__",
+        "compile",
+        "delattr",
+        "eval",
+        "exec",
+        "getattr",
+        "globals",
+        "locals",
+        "object.__setattr__",
+        "setattr",
+        "type.__setattr__",
+        "vars",
+    }
+)
+_PR2_DYNAMIC_EXECUTION_ATTRS = frozenset({"f_globals", "f_locals", "f_back"})
 
 
 def _clone_json_value(value: Any) -> Any:
@@ -2653,116 +2800,15 @@ def _function_local_binding_names(function: ast.FunctionDef) -> set[str]:
     return names
 
 
-def _assign_targets_error_name(stmt: ast.AST) -> bool:
-    if isinstance(stmt, ast.Assign):
-        return any("errors" in _target_name_bindings(target) for target in stmt.targets)
-    if isinstance(stmt, (ast.AnnAssign, ast.AugAssign)):
-        return "errors" in _target_name_bindings(stmt.target)
-    if isinstance(stmt, ast.NamedExpr):
-        return "errors" in _target_name_bindings(stmt.target)
-    return False
-
-
 def _is_errors_literal_list_initialization(stmt: ast.AST) -> bool:
-    if isinstance(stmt, ast.Assign):
-        return (
-            len(stmt.targets) == 1
-            and isinstance(stmt.targets[0], ast.Name)
-            and stmt.targets[0].id == "errors"
-            and isinstance(stmt.value, ast.List)
-            and not stmt.value.elts
-        )
     if isinstance(stmt, ast.AnnAssign):
         return (
             isinstance(stmt.target, ast.Name)
             and stmt.target.id == "errors"
+            and ast.unparse(stmt.annotation) == "list[str]"
             and isinstance(stmt.value, ast.List)
             and not stmt.value.elts
         )
-    return False
-
-
-def _expr_is_errors_alias(value: ast.AST) -> bool:
-    return isinstance(value, ast.Name) and value.id == "errors"
-
-
-def _expr_aliases_errors_destructive_method(value: ast.AST) -> bool:
-    for node in ast.walk(value):
-        if (
-            isinstance(node, ast.Attribute)
-            and isinstance(node.value, ast.Name)
-            and node.value.id == "errors"
-            and node.attr in _PR2_ERROR_DESTRUCTIVE_METHODS
-        ):
-            return True
-        if (
-            isinstance(node, ast.Call)
-            and _call_func_name(node) == "getattr"
-            and len(node.args) >= 2
-            and isinstance(node.args[0], ast.Name)
-            and node.args[0].id == "errors"
-            and isinstance(node.args[1], ast.Constant)
-            and node.args[1].value in _PR2_ERROR_DESTRUCTIVE_METHODS
-        ):
-            return True
-    return False
-
-
-def _current_function_errors_binding_nodes(function: ast.FunctionDef) -> list[ast.stmt]:
-    return [
-        node
-        for node in _iter_current_function_scope_nodes(function)
-        if node is not function
-        and isinstance(node, ast.stmt)
-        and "errors" in _current_scope_bound_names(node)
-    ]
-
-
-def _target_writes_errors_subscript(target: ast.AST) -> bool:
-    for node in ast.walk(target):
-        if isinstance(node, ast.Subscript) and isinstance(node.value, ast.Name) and node.value.id == "errors":
-            return True
-    return False
-
-
-def _call_is_errors_destructive_mutator(call: ast.Call) -> bool:
-    if (
-        isinstance(call.func, ast.Attribute)
-        and isinstance(call.func.value, ast.Name)
-        and call.func.value.id == "errors"
-        and call.func.attr in _PR2_ERROR_DESTRUCTIVE_METHODS
-    ):
-        return True
-    if (
-        isinstance(call.func, ast.Attribute)
-        and isinstance(call.func.value, ast.Name)
-        and call.func.value.id == "list"
-        and call.func.attr in _PR2_ERROR_DESTRUCTIVE_METHODS
-        and call.args
-        and isinstance(call.args[0], ast.Name)
-        and call.args[0].id == "errors"
-    ):
-        return True
-    if isinstance(call.func, ast.Call) and _call_func_name(call.func) == "getattr":
-        getattr_call = call.func
-        if (
-            len(getattr_call.args) >= 2
-            and isinstance(getattr_call.args[0], ast.Name)
-            and getattr_call.args[0].id == "errors"
-            and isinstance(getattr_call.args[1], ast.Constant)
-            and getattr_call.args[1].value in _PR2_ERROR_DESTRUCTIVE_METHODS
-        ):
-            return True
-    return False
-
-
-def _call_passes_errors_as_argument(call: ast.Call) -> bool:
-    for arg in call.args:
-        if isinstance(arg, ast.Name) and arg.id == "errors":
-            return True
-    for keyword in call.keywords:
-        if isinstance(keyword.value, ast.Name) and keyword.value.id == "errors":
-            return True
     return False
 
 
@@ -2771,18 +2817,13 @@ def _statement_is_errors_failure_gate(stmt: ast.stmt) -> bool:
         return False
     if not (isinstance(stmt.test, ast.Name) and stmt.test.id == "errors"):
         return False
-    return any(
-        isinstance(item, ast.Return)
-        and isinstance(item.value, ast.Constant)
-        and item.value.value == 1
-        for item in stmt.body
-    )
+    return len(stmt.body) == 1 and not stmt.orelse and _direct_return_value(stmt.body[0], 1)
 
 
-def _errors_failure_gate_lineno(function: ast.FunctionDef) -> int | None:
+def _errors_failure_gate(function: ast.FunctionDef) -> ast.If | None:
     for stmt in function.body:
         if _statement_is_errors_failure_gate(stmt):
-            return stmt.lineno
+            return stmt
     return None
 
 
@@ -2794,87 +2835,313 @@ def _direct_return_value(stmt: ast.stmt, value: object) -> bool:
     )
 
 
+def _enclosing_statement(node: ast.AST) -> ast.stmt | None:
+    current = node
+    while True:
+        parent = getattr(current, "_p1_2_parent", None)
+        if parent is None:
+            return None
+        if isinstance(parent, ast.stmt):
+            return parent
+        current = parent
+
+
+def _is_errors_append_statement(stmt: ast.stmt) -> bool:
+    return (
+        isinstance(stmt, ast.Expr)
+        and isinstance(stmt.value, ast.Call)
+        and isinstance(stmt.value.func, ast.Attribute)
+        and stmt.value.func.attr == "append"
+        and isinstance(stmt.value.func.value, ast.Name)
+        and stmt.value.func.value.id == "errors"
+    )
+
+
+def _is_errors_extend_or_iadd_callee_statement(stmt: ast.stmt) -> bool:
+    return (
+        _accumulator_callee_call_from_statement(
+            stmt,
+            accumulator_names=frozenset({"errors"}),
+        )
+        is not None
+    )
+
+
+def _errors_name_reference_is_whitelisted(
+    node: ast.Name,
+    *,
+    function_name: str,
+) -> bool:
+    stmt = _enclosing_statement(node)
+    if stmt is None:
+        return False
+    parent = getattr(node, "_p1_2_parent", None)
+    if _is_errors_literal_list_initialization(stmt):
+        return isinstance(stmt, ast.AnnAssign) and stmt.target is node
+    if _is_errors_extend_or_iadd_callee_statement(stmt):
+        if isinstance(stmt, ast.AugAssign):
+            return stmt.target is node
+        return (
+            isinstance(parent, ast.Attribute)
+            and parent.value is node
+            and parent.attr == "extend"
+        )
+    if _is_errors_append_statement(stmt):
+        return (
+            isinstance(parent, ast.Attribute)
+            and parent.value is node
+            and parent.attr == "append"
+        )
+    if _statement_is_errors_failure_gate(stmt):
+        return isinstance(stmt, ast.If) and stmt.test is node
+    if function_name == "_check_candidate_sink_replay_contract":
+        return isinstance(stmt, ast.Return) and stmt.value is node
+    return False
+
+
+def _call_is_dynamic_checker_primitive(call: ast.Call) -> str | None:
+    call_name = _call_func_name(call)
+    if call_name in _PR2_DYNAMIC_EXECUTION_NAMES:
+        return call_name
+    if call_name is not None and call_name.startswith("importlib."):
+        return call_name
+    if call_name in {"sys._getframe", "inspect.currentframe"}:
+        return call_name
+    return None
+
+
+def _node_references_dynamic_checker_namespace(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Attribute):
+        if node.attr in _PR2_DYNAMIC_EXECUTION_ATTRS:
+            return node.attr
+        if node.attr == "_getframe" and isinstance(node.value, ast.Name) and node.value.id == "sys":
+            return "sys._getframe"
+        if node.attr == "modules" and isinstance(node.value, ast.Name) and node.value.id == "sys":
+            return "sys.modules"
+        if isinstance(node.value, ast.Name) and node.value.id == "importlib":
+            return f"importlib.{node.attr}"
+    if (
+        isinstance(node, ast.Subscript)
+        and isinstance(node.value, ast.Attribute)
+        and node.value.attr == "modules"
+        and isinstance(node.value.value, ast.Name)
+        and node.value.value.id == "sys"
+    ):
+        return "sys.modules[...]"
+    return None
+
+
+def _check_function_errors_whitelist(function: ast.FunctionDef, *, label: str) -> list[str]:
+    errors: list[str] = []
+    init_count = 0
+    for node in ast.walk(function):
+        if node is function:
+            continue
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
+            errors.append(f"{label} must not define nested executable scope at line {getattr(node, 'lineno', '?')}")
+        if isinstance(node, ast.Name) and node.id == "errors":
+            if not _errors_name_reference_is_whitelisted(node, function_name=function.name):
+                errors.append(
+                    f"{label} has non-whitelisted errors reference at line "
+                    f"{getattr(node, 'lineno', '?')}"
+                )
+        if isinstance(node, ast.AnnAssign) and _is_errors_literal_list_initialization(node):
+            init_count += 1
+        if isinstance(node, ast.Call):
+            primitive = _call_is_dynamic_checker_primitive(node)
+            if primitive is not None:
+                errors.append(f"{label} must not use reflection/dynamic primitive {primitive}")
+        namespace = _node_references_dynamic_checker_namespace(node)
+        if namespace is not None:
+            errors.append(f"{label} must not reference reflection/dynamic namespace {namespace}")
+    if init_count != 1:
+        errors.append(f"{label} must initialize errors exactly once as errors: list[str] = []")
+    return errors
+
+
+def _literal_str_tuple_top_level(
+    tree: ast.Module,
+    name: str,
+    *,
+    path: Path,
+) -> tuple[tuple[str, ...] | None, list[str]]:
+    errors: list[str] = []
+    bindings = [
+        stmt
+        for stmt in tree.body
+        if isinstance(stmt, (ast.Assign, ast.AnnAssign))
+        and name in _direct_statement_bound_names(stmt)
+    ]
+    if len(bindings) != 1:
+        return None, [f"{_rel(path)} must define {name} exactly once"]
+    stmt = bindings[0]
+    value = stmt.value
+    if not isinstance(value, ast.Tuple):
+        return None, [f"{_rel(path)} {name} must be a literal tuple floor"]
+    items: list[str] = []
+    for item in value.elts:
+        if not isinstance(item, ast.Constant) or not isinstance(item.value, str):
+            errors.append(f"{_rel(path)} {name} must contain only string literals")
+            continue
+        items.append(item.value)
+    return tuple(items), errors
+
+
+def _check_required_call_tuple_floor(
+    tree: ast.Module,
+    *,
+    path: Path,
+    floor_name: str,
+    runtime_name: str,
+    expected_floor: tuple[str, ...],
+    label: str,
+) -> tuple[tuple[str, ...], list[str]]:
+    errors: list[str] = []
+    parsed_floor, floor_errors = _literal_str_tuple_top_level(tree, floor_name, path=path)
+    errors.extend(floor_errors)
+    parsed_runtime, runtime_errors = _literal_str_tuple_top_level(tree, runtime_name, path=path)
+    errors.extend(runtime_errors)
+    if parsed_floor is None:
+        parsed_floor = ()
+    if parsed_runtime is None:
+        parsed_runtime = ()
+    for callee in sorted(set(expected_floor) - set(parsed_floor)):
+        errors.append(f"{label} required-call floor missing {callee}")
+    for callee in sorted(set(parsed_floor) - set(parsed_runtime)):
+        errors.append(f"{label} required-call runtime tuple shrank below floor: {callee}")
+    return parsed_runtime, errors
+
+
+def _check_required_callee_definitions(
+    tree: ast.Module,
+    callees: Sequence[str],
+    *,
+    path: Path,
+    label: str,
+) -> list[str]:
+    errors: list[str] = []
+    for callee in sorted(set(callees)):
+        definitions = [
+            stmt
+            for stmt in tree.body
+            if isinstance(stmt, ast.FunctionDef) and stmt.name == callee
+        ]
+        if len(definitions) != 1:
+            errors.append(f"{label} required callee {callee} must resolve to exactly one top-level FunctionDef")
+            continue
+        if definitions[0].decorator_list:
+            errors.append(f"{label} required callee {callee} must be undecorated")
+    return errors
+
+
+def _main_preflight_prefix_matches(main_fn: ast.FunctionDef) -> bool:
+    expected = (
+        "preflight_errors: list[str] = []",
+        "preflight_errors.extend(_check_close_kernel_checker_self_binding())",
+        "preflight_errors.extend(_check_error_collector_integrity())",
+        "if preflight_errors:\n"
+        "    _print_p1_2_errors(preflight_errors)\n"
+        "    return 1",
+    )
+    return len(main_fn.body) >= len(expected) and all(
+        _stmt_matches_source(stmt, source)
+        for stmt, source in zip(main_fn.body, expected)
+    )
+
+
+def _main_preflight_prefix_len(main_fn: ast.FunctionDef) -> int:
+    return 4 if _main_preflight_prefix_matches(main_fn) else 0
+
+
+def _stmt_has_control_exit(stmt: ast.stmt) -> bool:
+    for node in ast.walk(stmt):
+        if isinstance(node, (ast.Return, ast.Raise)):
+            return True
+        if isinstance(node, ast.Call) and _call_func_name(node) in {"exit", "quit", "os._exit", "sys.exit"}:
+            return True
+    return False
+
+
+def _main_has_live_required_call(main_fn: ast.FunctionDef, required_call: str) -> bool:
+    preflight_required = {
+        "_check_close_kernel_checker_self_binding",
+        "_check_error_collector_integrity",
+    }
+    if required_call in preflight_required:
+        return _statement_sequence_has_live_accumulator_call(
+            main_fn.body[:3],
+            required_call,
+            accumulator_names=frozenset({"preflight_errors"}),
+            allow_outer_try=False,
+        )
+    prefix_len = _main_preflight_prefix_len(main_fn)
+    return _statement_sequence_has_live_accumulator_call(
+        main_fn.body[prefix_len:],
+        required_call,
+        accumulator_names=frozenset({"errors"}),
+        allow_outer_try=True,
+    )
+
+
+def _required_call_statement_linenos(
+    statements: Sequence[ast.stmt],
+    required_call: str,
+    *,
+    accumulator_names: frozenset[str],
+    allow_outer_try: bool,
+) -> list[int]:
+    lines: list[int] = []
+    for stmt in statements:
+        call = _accumulator_callee_call_from_statement(
+            stmt,
+            accumulator_names=accumulator_names,
+        )
+        if call is not None and call.func.id == required_call:
+            lines.append(getattr(stmt, "lineno", getattr(call, "lineno", -1)))
+        if allow_outer_try and isinstance(stmt, (ast.Try, ast.TryStar)):
+            lines.extend(
+                _required_call_statement_linenos(
+                    stmt.body,
+                    required_call,
+                    accumulator_names=accumulator_names,
+                    allow_outer_try=False,
+                )
+            )
+    return lines
+
+
 def _check_error_collector_integrity(
     *,
     checker_path: Path = Path(__file__).resolve(),
 ) -> list[str]:
     errors: list[str] = []
     tree = _parse_python(checker_path)
-    functions_and_required_calls = (
-        (
-            _function_def(tree, "main", path=checker_path),
-            frozenset(_PR2_CHECKER_MAIN_REQUIRED_CALLS),
-            _errors_failure_gate_lineno(_function_def(tree, "main", path=checker_path)),
-            "main",
-        ),
-        (
-            _function_def(tree, "_check_candidate_sink_replay_contract", path=checker_path),
-            frozenset(_PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS),
-            None,
-            "_check_candidate_sink_replay_contract",
-        ),
-    )
-    for function, required_calls, gate_lineno, label in functions_and_required_calls:
-        binding_nodes = _current_function_errors_binding_nodes(function)
-        init_nodes = [
-            node for node in binding_nodes if _is_errors_literal_list_initialization(node)
-        ]
-        for node in binding_nodes:
-            if node in init_nodes:
-                continue
-            if isinstance(node, ast.Delete):
-                errors.append(f"{label} must not delete errors at line {getattr(node, 'lineno', '?')}")
-            else:
-                errors.append(f"{label} must not rebind errors at line {getattr(node, 'lineno', '?')}")
+    for function_name in ("main", "_check_candidate_sink_replay_contract"):
+        function = _function_def(tree, function_name, path=checker_path)
+        required_calls = (
+            _PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR
+            if function_name == "main"
+            else _PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS_FLOOR
+        )
         local_bindings = _function_local_binding_names(function)
-        shadowed_callees = sorted(required_calls & local_bindings)
-        for callee in shadowed_callees:
-            errors.append(f"{label} must not locally shadow required callee {callee}")
-        for node in _iter_current_function_scope_nodes(function):
-            if node is function:
-                continue
-            if isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign, ast.NamedExpr)):
-                if isinstance(node, (ast.Assign, ast.AnnAssign, ast.NamedExpr)):
-                    value = node.value
-                    if _expr_is_errors_alias(value):
-                        errors.append(f"{label} must not alias errors at line {getattr(node, 'lineno', '?')}")
-                    if _expr_aliases_errors_destructive_method(value):
-                        errors.append(
-                            f"{label} must not alias errors destructive method at line "
-                            f"{getattr(node, 'lineno', '?')}"
-                        )
-                targets = node.targets if isinstance(node, ast.Assign) else [node.target]
-                for target in targets:
-                    if _target_writes_errors_subscript(target):
-                        errors.append(
-                            f"{label} must not write through errors subscript at line "
-                            f"{getattr(node, 'lineno', '?')}"
-                        )
-            elif isinstance(node, ast.Delete):
-                for target in node.targets:
-                    if _target_writes_errors_subscript(target):
-                        errors.append(f"{label} must not delete errors at line {getattr(node, 'lineno', '?')}")
-            elif isinstance(node, ast.Call):
-                call_name = _call_func_name(node)
-                if call_name in _PR2_DYNAMIC_EXECUTION_NAMES:
-                    errors.append(
-                        f"{label} must not use dynamic execution or namespace call {call_name}"
-                    )
-                if _call_is_errors_destructive_mutator(node):
-                    errors.append(
-                        f"{label} must not destructively mutate errors at line "
-                        f"{getattr(node, 'lineno', '?')}"
-                    )
-                if _call_passes_errors_as_argument(node) and (
-                    gate_lineno is None or getattr(node, "lineno", 10**9) < gate_lineno
-                ):
-                    errors.append(
-                        f"{label} must not pass errors to helper before the failure gate at line "
-                        f"{getattr(node, 'lineno', '?')}"
-                    )
-        if len(init_nodes) != 1:
-            errors.append(f"{label} must initialize errors exactly once as literal []")
+        for callee in sorted(set(required_calls) & local_bindings):
+            errors.append(f"{function_name} must not locally shadow required callee {callee}")
+        errors.extend(_check_function_errors_whitelist(function, label=function_name))
     return errors
+
+
+def _check_main_self_integrity_preflight_shape(
+    *,
+    checker_path: Path = Path(__file__).resolve(),
+) -> list[str]:
+    tree = _parse_python(checker_path)
+    main_fn = _function_def(tree, "main", path=checker_path)
+    if _main_preflight_prefix_matches(main_fn):
+        return []
+    return [
+        "proof-obligation checker main must start with fail-fast self-integrity "
+        "preflight before shared errors"
+    ]
 
 
 def _check_main_error_reporting_shape(
@@ -2885,48 +3152,82 @@ def _check_main_error_reporting_shape(
     tree = _parse_python(checker_path)
     main_fn = _function_def(tree, "main", path=checker_path)
     required_call_lines: list[int] = []
-    for required_call in _PR2_CHECKER_MAIN_REQUIRED_CALLS:
-        if not _has_live_errors_extend_call(main_fn, required_call, allow_outer_try=True):
+    prefix_len = _main_preflight_prefix_len(main_fn)
+    preflight_required = {
+        "_check_close_kernel_checker_self_binding",
+        "_check_error_collector_integrity",
+    }
+    for required_call in _PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR:
+        if required_call in preflight_required:
+            lines = _required_call_statement_linenos(
+                main_fn.body[:3],
+                required_call,
+                accumulator_names=frozenset({"preflight_errors"}),
+                allow_outer_try=False,
+            )
+        else:
+            lines = _required_call_statement_linenos(
+                main_fn.body[prefix_len:],
+                required_call,
+                accumulator_names=frozenset({"errors"}),
+                allow_outer_try=True,
+            )
+        if not lines:
             continue
-        for node in ast.walk(main_fn):
-            if (
-                isinstance(node, ast.Call)
-                and isinstance(node.func, ast.Attribute)
-                and node.func.attr == "extend"
-                and isinstance(node.func.value, ast.Name)
-                and node.func.value.id == "errors"
-                and node.args
-                and isinstance(node.args[0], ast.Call)
-                and isinstance(node.args[0].func, ast.Name)
-                and node.args[0].func.id == required_call
-            ):
-                required_call_lines.append(node.lineno)
-    gate_lineno = _errors_failure_gate_lineno(main_fn)
-    if gate_lineno is None:
+        required_call_lines.extend(lines)
+    failure_gate = _errors_failure_gate(main_fn)
+    gate_lineno = None if failure_gate is None else failure_gate.lineno
+    if failure_gate is None:
         errors.append("proof-obligation checker main must have reachable if errors: return 1")
     elif required_call_lines and gate_lineno <= max(required_call_lines):
         errors.append("proof-obligation checker main failure gate must follow required calls")
-    handler_returns_two = False
-    for node in ast.walk(main_fn):
-        if not isinstance(node, ast.ExceptHandler):
-            continue
-        if isinstance(node.type, ast.Name) and node.type.id == "CheckError":
-            handler_returns_two = handler_returns_two or any(
-                _direct_return_value(stmt, 2) for stmt in node.body
-            )
-    if not handler_returns_two:
-        errors.append("proof-obligation checker main CheckError handler must return 2")
-    return_zero_lines = [
-        node.lineno
+    check_error_handlers = [
+        node
         for node in ast.walk(main_fn)
-        if isinstance(node, ast.Return)
-        and isinstance(node.value, ast.Constant)
-        and node.value.value == 0
+        if isinstance(node, ast.ExceptHandler)
+        and isinstance(node.type, ast.Name)
+        and node.type.id == "CheckError"
     ]
+    if len(check_error_handlers) != 1:
+        errors.append("proof-obligation checker main must have exactly one CheckError handler")
+    else:
+        handler = check_error_handlers[0]
+        if len(handler.body) != 1 or not _direct_return_value(handler.body[0], 2):
+            errors.append("proof-obligation checker main CheckError handler must only return 2")
+    return_zero_lines: list[int] = []
+    for node in ast.walk(main_fn):
+        if isinstance(node, ast.Return):
+            if not isinstance(node.value, ast.Constant) or type(node.value.value) is not int:
+                errors.append(
+                    "proof-obligation checker main must return only integer literals 0, 1, or 2"
+                )
+                continue
+            if node.value.value not in {0, 1, 2}:
+                errors.append(
+                    "proof-obligation checker main must return only integer literals 0, 1, or 2"
+                )
+            if node.value.value == 0:
+                return_zero_lines.append(node.lineno)
+        if isinstance(node, ast.Raise):
+            exc = node.exc
+            if isinstance(exc, ast.Name) and exc.id == "SystemExit":
+                errors.append("proof-obligation checker main must not raise SystemExit")
+            if isinstance(exc, ast.Call) and _call_func_name(exc) == "SystemExit":
+                errors.append("proof-obligation checker main must not raise SystemExit")
+        if isinstance(node, ast.Call) and _call_func_name(node) in {"exit", "quit", "os._exit", "sys.exit"}:
+            errors.append("proof-obligation checker main must not call process exit before failure gate")
+    if failure_gate is not None and (failure_gate.body != [failure_gate.body[0]] or not _direct_return_value(failure_gate.body[0], 1) or failure_gate.orelse):
+        errors.append("proof-obligation checker main failure gate body must only return 1")
     if not return_zero_lines:
         errors.append("proof-obligation checker main must have success return 0")
     elif gate_lineno is not None and any(line < gate_lineno for line in return_zero_lines):
         errors.append("proof-obligation checker main must not return 0 before errors gate")
+    if failure_gate is not None:
+        for stmt in main_fn.body[prefix_len:]:
+            if stmt is failure_gate:
+                break
+            if _stmt_has_control_exit(stmt) and not isinstance(stmt, (ast.Try, ast.TryStar)):
+                errors.append("proof-obligation checker main must not exit before errors gate")
     return errors
 
 
@@ -2939,13 +3240,17 @@ def _check_error_collector_return_shape(
     if not function.body:
         return ["_check_candidate_sink_replay_contract must end with return errors"]
     tail = function.body[-1]
+    errors: list[str] = []
+    returns = [node for node in ast.walk(function) if isinstance(node, ast.Return)]
     if not (
         isinstance(tail, ast.Return)
         and isinstance(tail.value, ast.Name)
         and tail.value.id == "errors"
     ):
-        return ["_check_candidate_sink_replay_contract must end with direct return errors"]
-    return []
+        errors.append("_check_candidate_sink_replay_contract must end with direct return errors")
+    if returns != [tail]:
+        errors.append("_check_candidate_sink_replay_contract must have only the final return errors")
+    return errors
 
 
 def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file__).resolve()) -> list[str]:
@@ -2958,27 +3263,77 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
     """
     errors: list[str] = []
     tree = _parse_python(checker_path)
+    main_calls, main_tuple_errors = _check_required_call_tuple_floor(
+        tree,
+        path=checker_path,
+        floor_name="_PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR",
+        runtime_name="_PR2_CHECKER_MAIN_REQUIRED_CALLS",
+        expected_floor=_PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR,
+        label="proof-obligation checker main",
+    )
+    errors.extend(main_tuple_errors)
+    sink_calls, sink_tuple_errors = _check_required_call_tuple_floor(
+        tree,
+        path=checker_path,
+        floor_name="_PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS_FLOOR",
+        runtime_name="_PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS",
+        expected_floor=_PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS_FLOOR,
+        label="candidate sink replay contract",
+    )
+    errors.extend(sink_tuple_errors)
+    errors.extend(
+        _check_required_callee_definitions(
+            tree,
+            (*main_calls, *sink_calls),
+            path=checker_path,
+            label="proof-obligation checker",
+        )
+    )
     main_fn = _function_def(tree, "main", path=checker_path)
-    for required_call in _PR2_CHECKER_MAIN_REQUIRED_CALLS:
-        if not _has_live_errors_extend_call(main_fn, required_call, allow_outer_try=True):
+    for required_call in _PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR:
+        if not _main_has_live_required_call(main_fn, required_call):
             errors.append(f"proof-obligation checker main must call {required_call}")
     sink_replay_fn = _function_def(
         tree, "_check_candidate_sink_replay_contract", path=checker_path
     )
-    if not _has_live_errors_extend_call(
-        sink_replay_fn,
-        "_check_close_kernel_files_fully_pinned",
-    ):
-        errors.append(
-            "candidate sink replay contract must call _check_close_kernel_files_fully_pinned"
-        )
+    for required_call in _PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS_FLOOR:
+        if not _has_live_errors_extend_call(sink_replay_fn, required_call):
+            errors.append(f"candidate sink replay contract must call {required_call}")
+    errors.extend(_check_main_self_integrity_preflight_shape(checker_path=checker_path))
     errors.extend(_check_error_collector_integrity(checker_path=checker_path))
     errors.extend(_check_main_error_reporting_shape(checker_path=checker_path))
     errors.extend(_check_error_collector_return_shape(checker_path=checker_path))
     return errors
 
 
+def _check_strong_status_write_allowlist_bytes(
+    *,
+    project_root: Path = PROJECT_ROOT,
+) -> list[str]:
+    path = project_root / STRONG_STATUS_WRITE_ALLOWLIST_REL
+    if not path.exists():
+        return [f"strong-status write allowlist missing: {STRONG_STATUS_WRITE_ALLOWLIST_REL}"]
+    allowlist_bytes = path.read_bytes()
+    size = len(allowlist_bytes)
+    sha256 = hashlib.sha256(allowlist_bytes).hexdigest()
+    errors: list[str] = []
+    if size != STRONG_STATUS_WRITE_ALLOWLIST_SIZE:
+        errors.append(
+            "strong-status write allowlist size drift reopens P1.2 close claim: "
+            f"{size} != {STRONG_STATUS_WRITE_ALLOWLIST_SIZE}"
+        )
+    if sha256 != STRONG_STATUS_WRITE_ALLOWLIST_SHA256:
+        errors.append(
+            "strong-status write allowlist hash drift reopens P1.2 close claim: "
+            f"{sha256} != {STRONG_STATUS_WRITE_ALLOWLIST_SHA256}"
+        )
+    return errors
+
+
 def _check_strong_status_write_allowlist_gate() -> list[str]:
+    byte_errors = _check_strong_status_write_allowlist_bytes()
+    if byte_errors:
+        return byte_errors
     script_path = PROJECT_ROOT / "scripts" / "check_strong_status_write_allowlist.py"
     pycache_prefix = tempfile.mkdtemp(prefix="zmd_strong_status_allowlist_pycache_")
     try:
@@ -3008,7 +3363,7 @@ def _check_strong_status_write_allowlist_gate() -> list[str]:
         if len(detail) > 1000:
             detail = detail[:1000] + "..."
         return [f"strong-status write allowlist checker failed: {detail}"]
-    return []
+    return _check_strong_status_write_allowlist_bytes()
 
 
 _PR2_CHILD_ELEVATION_SLOTS = frozenset(
@@ -6607,6 +6962,83 @@ _PR2_CLOSE_KERNEL_CLASS_FIELD_SOURCES: dict[str, tuple[str, ...]] = {
         "compatible_hashes: bool",
     ),
 }
+_PR2_CLOSE_KERNEL_FORBIDDEN_CLASS_RUNTIME_HOOKS = frozenset(
+    {
+        "__delattr__",
+        "__getattr__",
+        "__getattribute__",
+        "__post_init__",
+        "__setattr__",
+    }
+)
+_PR2_CLOSE_KERNEL_CLASS_RUNTIME_MEMBER_LAYOUTS: dict[str, tuple[tuple[str, str], ...]] = {
+    "PR2 L0 micro-verifier.L0MicroVerdict": (
+        ("field", "status"),
+        ("field", "nonce"),
+        ("field", "reason"),
+        ("field", "floor_digest"),
+        ("field", "response"),
+    ),
+    "PR2 L0 micro-verifier.L0SupervisorSealRequest": (
+        ("field", "project_root"),
+        ("field", "campaign_path"),
+        ("field", "marker_path"),
+        ("field", "expected_campaign_instance_id"),
+        ("field", "timeout_seconds"),
+    ),
+    "PR2 true verifier child._StdlibOnlyPathFinder": (
+        ("method", "__init__"),
+        ("method", "find_spec"),
+    ),
+    "PR2 true verifier child._RestrictedThirdPartyFinder": (
+        ("method", "__init__"),
+        ("method", "find_spec"),
+    ),
+    "PR2 true verifier child._RehashingSourceFileLoader": (
+        ("method", "__init__"),
+        ("method", "get_data"),
+        ("method", "get_code"),
+    ),
+    "PR2 true verifier child._RehashingExtensionFileLoader": (
+        ("method", "__init__"),
+        ("method", "create_module"),
+    ),
+    "PR2 exact campaign.ExactCampaign": (
+        ("field", "project_root"),
+        ("field", "path"),
+        ("field", "state"),
+        ("field", "resumed"),
+        ("field", "compatible_hashes"),
+        ("method", "load_or_create"),
+        ("method", "artifact_hashes"),
+        ("method", "campaign_hours"),
+        ("method", "reset_reason"),
+        ("method", "remaining_seconds"),
+        ("method", "elapsed_seconds"),
+        ("method", "is_compatible_with_current_hashes"),
+        ("method", "get_candidate_record"),
+        ("method", "get_candidate_cuts"),
+        ("method", "get_candidate_bound_state"),
+        ("method", "update_candidate_bound_state"),
+        ("method", "get_audit_log"),
+        ("method", "mark_candidate_started"),
+        ("method", "mark_candidate_result"),
+        ("method", "_mark_candidate_result_from_verified_producer"),
+        ("method", "update_candidate_running_proof_summary"),
+        ("method", "proposal_ready_marker_path"),
+        ("method", "set_supervisor_proposal_run_id"),
+        ("method", "clear_proposal_ready_marker"),
+        ("method", "write_proposal_ready_marker"),
+        ("method", "_load_supervisor_proposal_authority"),
+        ("method", "_assert_proposal_marker_still_current"),
+        ("method", "_clear_proposal_ready_marker_if_unchanged"),
+        ("method", "_validate_supervisor_certified_state_before_commit"),
+        ("method", "supervisor_seal"),
+        ("method", "mark_campaign_stopped"),
+        ("method", "best_certified_result"),
+        ("method", "save"),
+    ),
+}
 _PR2_CLOSE_KERNEL_DECORATOR_SOURCES: dict[str, tuple[str, ...]] = {
     "PR2 exact campaign.ExactCampaign": ("dataclass",),
     "PR2 exact campaign.ExactCampaign.artifact_hashes": ("property",),
@@ -7544,6 +7976,151 @@ def _class_field_value(stmt: ast.Assign | ast.AnnAssign) -> ast.AST | None:
     return stmt.value
 
 
+def _class_runtime_member_layout(class_node: ast.ClassDef) -> tuple[tuple[str, str], ...]:
+    members: list[tuple[str, str]] = []
+    for index, item in enumerate(class_node.body):
+        if index == 0 and _is_docstring_stmt(item):
+            continue
+        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            members.append(("method", item.name))
+        elif isinstance(item, ast.ClassDef):
+            members.append(("class", item.name))
+        elif isinstance(item, ast.Assign):
+            for target in item.targets:
+                if isinstance(target, ast.Name):
+                    members.append(("field", target.id))
+        elif isinstance(item, ast.AnnAssign) and isinstance(item.target, ast.Name):
+            members.append(("field", item.target.id))
+    return tuple(members)
+
+
+def _close_kernel_protected_runtime_member_names(
+    label: str,
+    prefix: str,
+) -> frozenset[str]:
+    layout = _PR2_CLOSE_KERNEL_CLASS_RUNTIME_MEMBER_LAYOUTS.get(f"{label}.{prefix}", ())
+    method_names = {name for kind, name in layout if kind in {"method", "class"}}
+    return frozenset(method_names) | _PR2_CLOSE_KERNEL_FORBIDDEN_CLASS_RUNTIME_HOOKS
+
+
+def _target_writes_close_kernel_instance_dict(target: ast.AST) -> bool:
+    for node in ast.walk(target):
+        if isinstance(node, ast.Attribute) and node.attr == "__dict__":
+            return True
+        if isinstance(node, ast.Call) and _call_func_name(node) == "vars":
+            return True
+    return False
+
+
+def _target_writes_close_kernel_protected_member(
+    target: ast.AST,
+    protected_names: frozenset[str],
+) -> str | None:
+    for node in ast.walk(target):
+        if isinstance(node, ast.Attribute) and node.attr in protected_names:
+            return node.attr
+    return None
+
+
+def _call_writes_close_kernel_runtime_member(
+    call: ast.Call,
+    protected_names: frozenset[str],
+) -> str | None:
+    call_name = _call_func_name(call)
+    if call_name in {"setattr", "delattr"}:
+        if len(call.args) >= 2 and isinstance(call.args[1], ast.Constant):
+            return str(call.args[1].value)
+        return "<dynamic>"
+    if call_name in {"object.__setattr__", "object.__delattr__", "type.__setattr__"}:
+        if len(call.args) >= 2 and isinstance(call.args[1], ast.Constant):
+            return str(call.args[1].value)
+        return "<dynamic>"
+    if isinstance(call.func, ast.Attribute) and call.func.attr in {"__setattr__", "__delattr__"}:
+        return call.func.attr
+    if isinstance(call.func, ast.Attribute) and call.func.attr in {"__setitem__", "update"}:
+        if _target_writes_close_kernel_instance_dict(call.func.value):
+            return "__dict__"
+    for arg in call.args:
+        if _target_writes_close_kernel_instance_dict(arg):
+            return "__dict__"
+    for keyword in call.keywords:
+        if _target_writes_close_kernel_instance_dict(keyword.value):
+            return "__dict__"
+    return None
+
+
+def _check_close_kernel_class_runtime_layout(
+    label: str,
+    prefix: str,
+    class_node: ast.ClassDef,
+) -> list[str]:
+    errors: list[str] = []
+    key = f"{label}.{prefix}"
+    expected_layout = _PR2_CLOSE_KERNEL_CLASS_RUNTIME_MEMBER_LAYOUTS.get(key)
+    actual_layout = _class_runtime_member_layout(class_node)
+    if expected_layout is None:
+        errors.append(f"{key} class runtime member layout floor missing")
+    elif actual_layout != expected_layout:
+        errors.append(
+            f"{key} class runtime member layout drifted: "
+            f"expected {expected_layout!r}, found {actual_layout!r}"
+        )
+    for kind, name in actual_layout:
+        if kind in {"method", "field", "class"} and name in _PR2_CLOSE_KERNEL_FORBIDDEN_CLASS_RUNTIME_HOOKS:
+            errors.append(f"{key} class runtime member must not define hook {name}")
+    return errors
+
+
+def _check_close_kernel_runtime_member_writes(
+    label: str,
+    prefix: str,
+    function: ast.FunctionDef | ast.AsyncFunctionDef,
+) -> list[str]:
+    errors: list[str] = []
+    protected_names = _close_kernel_protected_runtime_member_names(label, prefix)
+    for stmt in function.body:
+        for node in ast.walk(stmt):
+            if isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+                targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+                for target in targets:
+                    if _target_writes_close_kernel_instance_dict(target):
+                        errors.append(
+                            f"{label}.{prefix}.{function.name} must not write through instance __dict__"
+                        )
+                    protected_name = _target_writes_close_kernel_protected_member(
+                        target,
+                        protected_names,
+                    )
+                    if protected_name is not None:
+                        errors.append(
+                            f"{label}.{prefix}.{function.name} must not write runtime member "
+                            f"{protected_name}"
+                        )
+            elif isinstance(node, ast.Delete):
+                for target in node.targets:
+                    if _target_writes_close_kernel_instance_dict(target):
+                        errors.append(
+                            f"{label}.{prefix}.{function.name} must not delete through instance __dict__"
+                        )
+                    protected_name = _target_writes_close_kernel_protected_member(
+                        target,
+                        protected_names,
+                    )
+                    if protected_name is not None:
+                        errors.append(
+                            f"{label}.{prefix}.{function.name} must not delete runtime member "
+                            f"{protected_name}"
+                        )
+            elif isinstance(node, ast.Call):
+                written_name = _call_writes_close_kernel_runtime_member(node, protected_names)
+                if written_name is not None:
+                    errors.append(
+                        f"{label}.{prefix}.{function.name} must not dynamically write runtime "
+                        f"member {written_name}"
+                    )
+    return errors
+
+
 def _close_kernel_class_field_value_allowed(value: ast.AST) -> bool:
     if _inert_default_value(value):
         return True
@@ -7572,6 +8149,7 @@ def _check_close_kernel_class_body_fully_pinned(
     forbidden_shadow_names: frozenset[str],
 ) -> list[str]:
     errors: list[str] = []
+    errors.extend(_check_close_kernel_class_runtime_layout(label, prefix, class_node))
     seen: dict[str, list[ast.stmt]] = {}
     class_bound_names: set[str] = set()
     actual_fields: list[str] = []
@@ -7597,15 +8175,16 @@ def _check_close_kernel_class_body_fully_pinned(
             )
         )
         bound_names = _class_stmt_bound_names(item)
-        for bound_name in sorted(bound_names & forbidden_shadow_names):
+        for bound_name in sorted(_hidden_current_scope_bound_names(item)):
             errors.append(
-                f"{label} close-kernel class binding must not shadow import/builtin "
-                f"name {prefix}.{bound_name}"
+                f"{label} close-kernel class hidden binding is forbidden: "
+                f"{prefix}.{bound_name} at line {getattr(item, 'lineno', '?')}"
             )
         if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
             saw_non_field = True
             key = f"{prefix}.{item.name}"
             errors.extend(_check_close_kernel_decorator_sources(label, key, item))
+            errors.extend(_check_close_kernel_runtime_member_writes(label, prefix, item))
             if key not in fmap:
                 errors.append(f"{label} close-kernel method not source-pinned: {key}")
             for node in _function_default_nodes(item):
@@ -7918,6 +8497,11 @@ def _check_close_kernel_files_fully_pinned(
                 index == 0 and _is_docstring_stmt(stmt)
             ):
                 forbidden_shadow_names = _forbidden_shadow_names(import_bound_names)
+                for bound_name in sorted(_hidden_current_scope_bound_names(stmt)):
+                    errors.append(
+                        f"{label} close-kernel top-level hidden binding is forbidden: "
+                        f"{bound_name} at line {getattr(stmt, 'lineno', '?')}"
+                    )
                 for bound_name in sorted(_current_scope_bound_names(stmt) & forbidden_shadow_names):
                     errors.append(
                         f"{label} close-kernel top-level binding must not shadow "
@@ -10687,6 +11271,7 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
         "scripts/check_strong_status_write_allowlist.py",
         PR2_DEPENDENCY_FLOOR_GENERATOR_REL,
         "data/proof_obligations/p1_2_proof_obligations.json",
+        STRONG_STATUS_WRITE_ALLOWLIST_REL,
         PR2_DEPENDENCY_FLOOR_MANIFEST_REL,
         "src/search/certified_surface.py",
         "src/search/certified_artifact_contract.py",
@@ -10795,7 +11380,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
-    'src/search/certified_artifact_contract.py': 'e45f4ded38b209601ec5306bc9ab6152ab3dca34a86bb5b0827212d59563cd07',
+    'src/search/certified_artifact_contract.py': '799f52c4212b0efdeea6ed5de4e50a700c08302be1ff3ba866ab43a9378f48c6',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
@@ -11633,17 +12218,29 @@ def _check_exact_session_atomic_snapshot_contract(
     return errors
 
 
+def _print_p1_2_errors(messages: Sequence[str]) -> None:
+    print(f"P1.2 proof obligation check failed: {len(messages)} issue(s)")
+    for message in messages[:50]:
+        print(f"  - {message}")
+    if len(messages) > 50:
+        print(f"  ... {len(messages) - 50} more")
+
+
 def main() -> int:
+    preflight_errors: list[str] = []
+    preflight_errors.extend(_check_close_kernel_checker_self_binding())
+    preflight_errors.extend(_check_error_collector_integrity())
+    if preflight_errors:
+        _print_p1_2_errors(preflight_errors)
+        return 1
     try:
         manifest = _load_json(MANIFEST_PATH)
         errors: list[str] = []
-        try:
-            schema_version = _require_int(manifest.get("schema_version"), "schema_version")
-        except CheckError as exc:
-            errors.append(str(exc))
-        else:
-            if schema_version != 1:
-                errors.append("schema_version must be 1")
+        schema_version = manifest.get("schema_version")
+        if isinstance(schema_version, bool) or not isinstance(schema_version, int):
+            errors.append("schema_version must be an integer")
+        elif schema_version != 1:
+            errors.append("schema_version must be 1")
         if manifest.get("gate_id") != "p1_2_proof_obligation_consolidation":
             errors.append("gate_id must be p1_2_proof_obligation_consolidation")
         lifecycle_tree = _parse_lifecycle()
@@ -11657,26 +12254,19 @@ def main() -> int:
         errors.extend(_check_strong_status_write_allowlist_gate())
         errors.extend(_check_isolated_exec_bytecode_binding_contract())
         errors.extend(_check_evidence_and_tests(manifest))
-        errors.extend(_check_error_collector_integrity())
+        errors.extend(_check_main_self_integrity_preflight_shape())
         errors.extend(_check_main_error_reporting_shape())
         errors.extend(_check_error_collector_return_shape())
         errors.extend(_check_proof_obligation_manifest_semantic_projection(manifest))
-        errors.extend(_check_close_kernel_checker_self_binding())
         errors.extend(_check_close_kernel_contract(manifest))
         errors.extend(_check_phase_gate_provenance_contract())
         errors.extend(_check_phase_anchor(manifest))
         errors.extend(_check_exact_session_atomic_snapshot_contract())
         errors.extend(_check_independent_infeasibility_reverifier_contract())
-    except CheckError as exc:
-        print(f"P1.2 proof obligation check failed: {exc}", file=sys.stderr)
+    except CheckError:
         return 2
 
     if errors:
-        print(f"P1.2 proof obligation check failed: {len(errors)} issue(s)")
-        for error in errors[:50]:
-            print(f"  - {error}")
-        if len(errors) > 50:
-            print(f"  ... {len(errors) - 50} more")
         return 1
 
     obligations = len(manifest.get("obligations", []))

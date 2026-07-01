@@ -12,18 +12,23 @@ contract applies to the source checkout itself and to project roots that carry
 
 from __future__ import annotations
 
+import json
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Mapping, Optional
+from typing import Any, Mapping, Optional
 
 LOCKED_EXACT_PROJECT_MARKER = "PROJECT_LOCK.md"
 
 LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS = (
     "data/proof_obligations/p1_2_proof_obligations.json",
+    "data/proof_obligations/strong_status_write_allowlist.json",
     "scripts/check_p1_2_proof_obligations.py",
+)
+LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256 = (
+    "35a351e26b6524ba1363bf14e767f907cf9a9ceef2215cd819126cafa1975c47"
 )
 
 LOCKED_EXACT_ARTIFACT_PATHS = {
@@ -88,6 +93,41 @@ def _path_has_symlink_component(path: Path) -> bool:
     return False
 
 
+def _reject_locked_json_constant(value: str) -> None:
+    raise ValueError(f"invalid JSON constant: {value}")
+
+
+def _locked_json_object_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON object key: {key}")
+        result[key] = value
+    return result
+
+
+def _load_locked_close_kernel_manifest(path: Path) -> dict[str, Any]:
+    value = json.loads(
+        path.read_text(encoding="utf-8"),
+        object_pairs_hook=_locked_json_object_pairs,
+        parse_constant=_reject_locked_json_constant,
+    )
+    if not isinstance(value, dict):
+        raise ValueError("manifest must be a JSON object")
+    return value
+
+
+def _locked_close_kernel_manifest_projection_violation(path: Path) -> str | None:
+    try:
+        manifest = _load_locked_close_kernel_manifest(path)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return "locked_p1_2_close_kernel_manifest_invalid"
+    declared = manifest.get("semantic_projection_sha256")
+    if declared != LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256:
+        return "locked_p1_2_close_kernel_semantic_projection_mismatch"
+    return None
+
+
 def locked_p1_2_close_kernel_violation(
     project_root: Path,
     *,
@@ -111,7 +151,14 @@ def locked_p1_2_close_kernel_violation(
         if _path_has_symlink_component(path) or not path.is_file():
             return f"locked_p1_2_close_kernel_not_regular:{relative_path}"
 
-    checker_relative_path = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS[1]
+    manifest_relative_path = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS[0]
+    manifest_violation = _locked_close_kernel_manifest_projection_violation(
+        root / manifest_relative_path
+    )
+    if manifest_violation is not None:
+        return manifest_violation
+
+    checker_relative_path = "scripts/check_p1_2_proof_obligations.py"
     checker_path = root / checker_relative_path
     # No "am I the checker?" self-skip: always re-verify by running the pinned
     # checker in a fresh isolated subprocess.  An identity-based skip (whether

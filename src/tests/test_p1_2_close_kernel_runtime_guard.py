@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -9,6 +10,7 @@ import pytest
 
 from src.search.certified_artifact_contract import (
     LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS,
+    LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256,
     LockedExactArtifactContractError,
     locked_p1_2_close_kernel_violation,
 )
@@ -18,6 +20,36 @@ from src.search.exact_campaign import compute_exact_artifact_hashes
 def _write(path: Path, text: str = "{}\n") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
+
+
+def _seed_locked_close_kernel_data(root: Path) -> str:
+    """Seed a synthetic locked project so the runtime guard's presence and
+    semantic-projection anchor checks pass, and return the checker relative path
+    for the caller to populate.
+
+    round-14 (C6/B1) grew ``LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS`` from
+    (manifest, checker) to (manifest, strong-status allowlist, checker) and made
+    the runtime guard reject a manifest whose declared ``semantic_projection_sha256``
+    does not match the runtime-pinned digest.  The guard only reads that one
+    declared field (it does not recompute the projection) and only requires the
+    allowlist to be a regular file (its byte floor lives in the checker), so a
+    minimal manifest carrying the pinned digest plus an empty allowlist file is
+    sufficient to exercise the downstream checker-subprocess behaviours.
+    """
+    manifest_rel, allowlist_rel, checker_rel = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS
+    _write(
+        root / manifest_rel,
+        json.dumps(
+            {
+                "semantic_projection_sha256": (
+                    LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256
+                )
+            }
+        )
+        + "\n",
+    )
+    _write(root / allowlist_rel)
+    return checker_rel
 
 
 def test_locked_fresh_campaign_fails_before_self_sealing_without_close_kernel(
@@ -38,8 +70,7 @@ def test_locked_close_kernel_presence_guard_rejects_symlink_authority(
 ) -> None:
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
-    manifest_rel, checker_rel = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS
-    _write(root / manifest_rel)
+    checker_rel = _seed_locked_close_kernel_data(root)
     checker_target = tmp_path / "checker.py"
     _write(checker_target, "raise SystemExit(0)\n")
     checker_path = root / checker_rel
@@ -56,8 +87,7 @@ def test_locked_close_kernel_checker_rejection_blocks_fresh_authority(
 ) -> None:
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
-    manifest_rel, checker_rel = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS
-    _write(root / manifest_rel)
+    checker_rel = _seed_locked_close_kernel_data(root)
     _write(root / checker_rel, "raise SystemExit(7)\n")
 
     assert locked_p1_2_close_kernel_violation(root) == (
@@ -70,8 +100,7 @@ def test_locked_close_kernel_checker_acceptance_allows_hashing_to_continue(
 ) -> None:
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
-    manifest_rel, checker_rel = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS
-    _write(root / manifest_rel)
+    checker_rel = _seed_locked_close_kernel_data(root)
     _write(root / checker_rel, "raise SystemExit(0)\n")
 
     assert locked_p1_2_close_kernel_violation(root) is None
@@ -100,8 +129,7 @@ def test_locked_close_kernel_argv0_spoof_does_not_bypass_subprocess(
     """
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
-    manifest_rel, checker_rel = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS
-    _write(root / manifest_rel)
+    checker_rel = _seed_locked_close_kernel_data(root)
     _write(root / checker_rel, "raise SystemExit(7)\n")
     checker_path = (root / checker_rel).resolve()
 
@@ -125,8 +153,7 @@ def test_locked_close_kernel_runs_subprocess_even_when_main_is_checker(
     """
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
-    manifest_rel, checker_rel = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS
-    _write(root / manifest_rel)
+    checker_rel = _seed_locked_close_kernel_data(root)
     _write(root / checker_rel, "raise SystemExit(7)\n")
     checker_path = (root / checker_rel).resolve()
 
@@ -145,8 +172,7 @@ def test_locked_close_kernel_ignores_parent_sitecustomize_bypass(
 
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
-    manifest_rel, checker_rel = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS
-    _write(root / manifest_rel)
+    checker_rel = _seed_locked_close_kernel_data(root)
     _write(
         root / checker_rel,
         (
@@ -185,8 +211,7 @@ def test_locked_close_kernel_identityless_process_modes_do_not_bypass_subprocess
     """
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
-    manifest_rel, checker_rel = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS
-    _write(root / manifest_rel)
+    checker_rel = _seed_locked_close_kernel_data(root)
     _write(root / checker_rel, "raise SystemExit(7)\n")
 
     monkeypatch.setattr(sys, "argv", ["-c"])
