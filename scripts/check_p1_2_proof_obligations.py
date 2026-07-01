@@ -9,6 +9,7 @@ local, duplicated proof checks.
 from __future__ import annotations
 
 import ast
+import builtins
 import hashlib
 import json
 import shutil
@@ -381,6 +382,13 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_close_kernel_self_binding_rejects_dead_branch_calls",
             "test_p1_2_round11_close_kernel_def_time_and_class_body_hardening",
             "test_p1_2_round11_close_kernel_import_dependency_shape_rejects_import_time_mutation",
+            "test_p1_2_round13_current_scope_binding_walker_rejects_walrus_and_delete_smuggling",
+            "test_p1_2_round13_close_kernel_rejects_import_and_builtin_shadow",
+            "test_p1_2_round13_close_kernel_rejects_decorator_drift",
+            "test_p1_2_round13_checker_error_collector_integrity",
+            "test_p1_2_round13_self_binding_requires_new_gates_and_self_call",
+            "test_p1_2_round13_manifest_semantic_projection_rejects_resealed_gutting",
+            "test_p1_2_round13_source_text_includes_parenthesized_decorator_start",
             "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
             "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
             "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
@@ -485,37 +493,170 @@ def _parse_lifecycle() -> ast.Module:
     return _parse_python(LIFECYCLE_PATH)
 
 
-def _top_level_binding_points(tree: ast.Module, name: str) -> list[ast.stmt]:
-    points: list[ast.stmt] = []
-    for node in tree.body:
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-            if node.name == name:
-                points.append(node)
-        elif isinstance(node, ast.Assign):
-            if any(isinstance(target, ast.Name) and target.id == name for target in node.targets):
-                points.append(node)
-        elif isinstance(node, ast.AnnAssign):
-            if isinstance(node.target, ast.Name) and node.target.id == name:
-                points.append(node)
-    return points
-
-
 def _import_bound_names(stmt: ast.Import | ast.ImportFrom) -> set[str]:
     if isinstance(stmt, ast.Import):
         return {alias.asname or alias.name.split(".", 1)[0] for alias in stmt.names}
     return {alias.asname or alias.name for alias in stmt.names}
 
 
-def _class_stmt_bound_names(stmt: ast.stmt) -> set[str]:
-    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-        return {stmt.name}
-    if isinstance(stmt, ast.Assign):
-        return {target.id for target in stmt.targets if isinstance(target, ast.Name)}
-    if isinstance(stmt, (ast.AnnAssign, ast.AugAssign)):
-        return {stmt.target.id} if isinstance(stmt.target, ast.Name) else set()
-    if isinstance(stmt, (ast.Import, ast.ImportFrom)):
-        return _import_bound_names(stmt)
+def _target_name_bindings(target: ast.AST) -> set[str]:
+    if isinstance(target, ast.Name):
+        return {target.id}
+    if isinstance(target, (ast.Tuple, ast.List)):
+        names: set[str] = set()
+        for element in target.elts:
+            names.update(_target_name_bindings(element))
+        return names
+    if isinstance(target, ast.Starred):
+        return _target_name_bindings(target.value)
     return set()
+
+
+def _pattern_bound_names(pattern: ast.AST) -> set[str]:
+    names: set[str] = set()
+
+    class Visitor(ast.NodeVisitor):
+        def visit_MatchAs(self, node: ast.MatchAs) -> None:
+            if node.name is not None:
+                names.add(node.name)
+            if node.pattern is not None:
+                self.visit(node.pattern)
+
+        def visit_MatchStar(self, node: ast.MatchStar) -> None:
+            if node.name is not None:
+                names.add(node.name)
+
+        def visit_MatchMapping(self, node: ast.MatchMapping) -> None:
+            if node.rest is not None:
+                names.add(node.rest)
+            for pattern_node in node.patterns:
+                self.visit(pattern_node)
+
+    Visitor().visit(pattern)
+    return names
+
+
+def _type_alias_bound_names(stmt: ast.stmt) -> set[str]:
+    type_alias_cls = getattr(ast, "TypeAlias", None)
+    if type_alias_cls is None or not isinstance(stmt, type_alias_cls):
+        return set()
+    name_node = getattr(stmt, "name", None)
+    if isinstance(name_node, ast.Name):
+        return {name_node.id}
+    return set()
+
+
+def _collect_current_scope_namedexpr_targets(node: ast.AST) -> set[str]:
+    names: set[str] = set()
+
+    class Visitor(ast.NodeVisitor):
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            return
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            return
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            return
+
+        def visit_Lambda(self, child: ast.Lambda) -> None:
+            return
+
+        def visit_NamedExpr(self, child: ast.NamedExpr) -> None:
+            names.update(_target_name_bindings(child.target))
+            self.visit(child.value)
+
+    Visitor().visit(node)
+    return names
+
+
+def _function_def_time_nodes(
+    node: ast.FunctionDef | ast.AsyncFunctionDef,
+) -> list[ast.AST]:
+    values: list[ast.AST] = [*node.decorator_list]
+    values.extend(node.args.defaults)
+    values.extend(default for default in node.args.kw_defaults if default is not None)
+    values.extend(arg.annotation for arg in node.args.posonlyargs if arg.annotation is not None)
+    values.extend(arg.annotation for arg in node.args.args if arg.annotation is not None)
+    values.extend(arg.annotation for arg in node.args.kwonlyargs if arg.annotation is not None)
+    if node.args.vararg is not None and node.args.vararg.annotation is not None:
+        values.append(node.args.vararg.annotation)
+    if node.args.kwarg is not None and node.args.kwarg.annotation is not None:
+        values.append(node.args.kwarg.annotation)
+    if node.returns is not None:
+        values.append(node.returns)
+    values.extend(getattr(node, "type_params", ()))
+    return values
+
+
+def _class_def_time_nodes(node: ast.ClassDef) -> list[ast.AST]:
+    values: list[ast.AST] = [*node.decorator_list, *node.bases]
+    values.extend(keyword.value for keyword in node.keywords)
+    values.extend(getattr(node, "type_params", ()))
+    return values
+
+
+def _current_scope_bound_names(stmt: ast.stmt) -> set[str]:
+    names: set[str] = set()
+    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        names.add(stmt.name)
+        for node in _function_def_time_nodes(stmt):
+            names.update(_collect_current_scope_namedexpr_targets(node))
+        return names
+    if isinstance(stmt, ast.ClassDef):
+        names.add(stmt.name)
+        for node in _class_def_time_nodes(stmt):
+            names.update(_collect_current_scope_namedexpr_targets(node))
+        return names
+    if isinstance(stmt, ast.Assign):
+        for target in stmt.targets:
+            names.update(_target_name_bindings(target))
+        names.update(_collect_current_scope_namedexpr_targets(stmt.value))
+    elif isinstance(stmt, ast.AnnAssign):
+        names.update(_target_name_bindings(stmt.target))
+        if stmt.annotation is not None:
+            names.update(_collect_current_scope_namedexpr_targets(stmt.annotation))
+        if stmt.value is not None:
+            names.update(_collect_current_scope_namedexpr_targets(stmt.value))
+    elif isinstance(stmt, ast.AugAssign):
+        names.update(_target_name_bindings(stmt.target))
+        names.update(_collect_current_scope_namedexpr_targets(stmt.value))
+    elif isinstance(stmt, (ast.Import, ast.ImportFrom)):
+        names.update(_import_bound_names(stmt))
+    elif isinstance(stmt, ast.Delete):
+        for target in stmt.targets:
+            names.update(_target_name_bindings(target))
+    elif isinstance(stmt, (ast.For, ast.AsyncFor)):
+        names.update(_target_name_bindings(stmt.target))
+        names.update(_collect_current_scope_namedexpr_targets(stmt.iter))
+    elif isinstance(stmt, (ast.With, ast.AsyncWith)):
+        for item in stmt.items:
+            if item.optional_vars is not None:
+                names.update(_target_name_bindings(item.optional_vars))
+            names.update(_collect_current_scope_namedexpr_targets(item.context_expr))
+    elif isinstance(stmt, ast.Try):
+        for handler in stmt.handlers:
+            if handler.name is not None:
+                names.add(handler.name)
+    elif isinstance(stmt, ast.Match):
+        names.update(_collect_current_scope_namedexpr_targets(stmt.subject))
+        for case in stmt.cases:
+            names.update(_pattern_bound_names(case.pattern))
+            if case.guard is not None:
+                names.update(_collect_current_scope_namedexpr_targets(case.guard))
+    else:
+        names.update(_type_alias_bound_names(stmt))
+        names.update(_collect_current_scope_namedexpr_targets(stmt))
+    names.update(_type_alias_bound_names(stmt))
+    return names
+
+
+def _top_level_binding_points(tree: ast.Module, name: str) -> list[ast.stmt]:
+    return [node for node in tree.body if name in _current_scope_bound_names(node)]
+
+
+def _class_stmt_bound_names(stmt: ast.stmt) -> set[str]:
+    return _current_scope_bound_names(stmt)
 
 
 def _class_body_binding_points(class_node: ast.ClassDef, name: str) -> list[ast.stmt]:
@@ -534,6 +675,10 @@ def _function_def(tree: ast.Module, name: str, *, path: Path = LIFECYCLE_PATH) -
     if len(binding_points) == 1:
         node = binding_points[0]
         if isinstance(node, ast.FunctionDef):
+            if node.name != name:
+                raise CheckError(
+                    f"top-level binding for {_rel(path)}::{name} resolved to {node.name}"
+                )
             return node
         raise CheckError(f"top-level binding for {_rel(path)}::{name} is not a FunctionDef")
     raise CheckError(f"function not found in {_rel(path)}: {name}")
@@ -547,6 +692,10 @@ def _class_def(tree: ast.Module, name: str, *, path: Path) -> ast.ClassDef:
     if len(binding_points) == 1:
         node = binding_points[0]
         if isinstance(node, ast.ClassDef):
+            if node.name != name:
+                raise CheckError(
+                    f"top-level binding for {_rel(path)}::{name} resolved to {node.name}"
+                )
             return node
         raise CheckError(f"top-level binding for {_rel(path)}::{name} is not a ClassDef")
     raise CheckError(f"class not found in {_rel(path)}: {name}")
@@ -561,6 +710,10 @@ def _method_def(class_node: ast.ClassDef, name: str, *, path: Path) -> ast.Funct
     if len(binding_points) == 1:
         node = binding_points[0]
         if isinstance(node, ast.FunctionDef):
+            if node.name != name:
+                raise CheckError(
+                    f"class binding for {_rel(path)}::{qualified} resolved to {node.name}"
+                )
             return node
         raise CheckError(f"class binding for {_rel(path)}::{qualified} is not a FunctionDef")
     raise CheckError(f"method not found in {_rel(path)}: {qualified}")
@@ -586,6 +739,10 @@ def _resolve_class_source_pin_node(
     node = binding_points[0]
     if len(parts) == 1:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if node.name != member_name:
+                raise CheckError(
+                    f"source pin target in {_rel(path)} resolved to {node.name}: {qualified}"
+                )
             return node
         raise CheckError(f"source pin target in {_rel(path)} is not a def/class: {qualified}")
     if isinstance(node, ast.ClassDef):
@@ -619,6 +776,10 @@ def _resolve_source_pin_node(tree: ast.Module, name: str, *, path: Path) -> ast.
         )
     points = _top_level_binding_points(tree, name)
     if len(points) == 1 and isinstance(points[0], (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        if points[0].name != name:
+            raise CheckError(
+                f"source pin target in {_rel(path)} resolved to {points[0].name}: {name}"
+            )
         return points[0]
     raise CheckError(f"source pin target not uniquely resolvable in {_rel(path)}: {name}")
 
@@ -1304,6 +1465,12 @@ def _source_text(path: Path, node: ast.AST) -> str:
         end_lineno = getattr(node, "end_lineno", None)
         if end_lineno is not None:
             lines = source.splitlines(keepends=True)
+            while start_lineno > 1 and not lines[start_lineno - 1].lstrip().startswith("@"):
+                previous = lines[start_lineno - 2]
+                if previous.lstrip().startswith("@"):
+                    start_lineno -= 1
+                    break
+                start_lineno -= 1
             return "".join(lines[start_lineno - 1 : end_lineno])
     return ast.get_source_segment(source, node) or ""
 
@@ -2330,6 +2497,457 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
     return errors
 
 
+P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
+P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
+    "d116e7b3dd358a8270bfe3521c92c5f006af95dd49cfedf02111dfcd48f3c0a7"
+)
+_P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
+    "schema_version",
+    "gate_id",
+    "status",
+    "review_anchor",
+    "summary",
+    "phase_gate_required_anchor",
+    "step_7_contract",
+    "source_digest_contract",
+    "certified_cut_replay_contract",
+    "obligations",
+    "close_kernel_contract",
+)
+_PR2_CHECKER_MAIN_REQUIRED_CALLS = (
+    "_check_candidate_sink_replay_contract",
+    "_check_certified_publication_boundary_contract",
+    "_check_strong_status_write_allowlist_gate",
+    "_check_close_kernel_checker_self_binding",
+    "_check_error_collector_integrity",
+    "_check_main_error_reporting_shape",
+    "_check_error_collector_return_shape",
+    "_check_proof_obligation_manifest_semantic_projection",
+    "_check_close_kernel_contract",
+    "_check_phase_gate_provenance_contract",
+    "_check_phase_anchor",
+    "_check_exact_session_atomic_snapshot_contract",
+    "_check_independent_infeasibility_reverifier_contract",
+)
+_PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS = (
+    "_check_close_kernel_files_fully_pinned",
+)
+_PR2_ERROR_DESTRUCTIVE_METHODS = frozenset(
+    {
+        "__delitem__",
+        "__init__",
+        "__setitem__",
+        "clear",
+        "insert",
+        "pop",
+        "remove",
+        "reverse",
+        "sort",
+    }
+)
+_PR2_DYNAMIC_EXECUTION_NAMES = frozenset({"eval", "exec", "globals", "locals", "vars"})
+
+
+def _clone_json_value(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {
+            key: _clone_json_value(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, list):
+        return [_clone_json_value(item) for item in value]
+    return value
+
+
+def _proof_obligation_manifest_semantic_projection(manifest: dict[str, Any]) -> dict[str, Any]:
+    projection: dict[str, Any] = {}
+    for field in _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS:
+        value = _clone_json_value(manifest.get(field))
+        if field == "close_kernel_contract" and isinstance(value, dict):
+            sink_files = value.get("sink_files")
+            if isinstance(sink_files, list):
+                value["sink_files"] = [
+                    {
+                        key: item
+                        for key, item in sink.items()
+                        if key != "source_sha256"
+                    }
+                    if isinstance(sink, dict)
+                    else sink
+                    for sink in sink_files
+                ]
+        projection[field] = value
+    return projection
+
+
+def _proof_obligation_manifest_semantic_projection_sha256(manifest: dict[str, Any]) -> str:
+    canonical = json.dumps(
+        _proof_obligation_manifest_semantic_projection(manifest),
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _check_proof_obligation_manifest_semantic_projection(
+    manifest: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    declared = manifest.get(P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD)
+    if declared != P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256:
+        errors.append(
+            "proof-obligation manifest semantic projection digest field must match "
+            "the checker-reviewed P1.2 floor"
+        )
+    actual = _proof_obligation_manifest_semantic_projection_sha256(manifest)
+    if actual != P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256:
+        errors.append(
+            "proof-obligation manifest semantic projection drifted from the reviewed P1.2 floor"
+        )
+    return errors
+
+
+def _iter_current_function_scope_nodes(function: ast.FunctionDef) -> Iterator[ast.AST]:
+    class Visitor(ast.NodeVisitor):
+        def __init__(self) -> None:
+            self.nodes: list[ast.AST] = []
+
+        def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+            if node is function:
+                self.nodes.append(node)
+                for stmt in node.body:
+                    self.visit(stmt)
+                return
+            self.nodes.append(node)
+
+        def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+            self.nodes.append(node)
+
+        def visit_ClassDef(self, node: ast.ClassDef) -> None:
+            self.nodes.append(node)
+
+        def visit_Lambda(self, node: ast.Lambda) -> None:
+            self.nodes.append(node)
+
+        def generic_visit(self, node: ast.AST) -> None:
+            self.nodes.append(node)
+            super().generic_visit(node)
+
+    visitor = Visitor()
+    visitor.visit(function)
+    return iter(visitor.nodes)
+
+
+def _function_local_binding_names(function: ast.FunctionDef) -> set[str]:
+    names = set(_function_scope_binding_names(function))
+    for node in _iter_current_function_scope_nodes(function):
+        if isinstance(node, ast.NamedExpr):
+            names.update(_target_name_bindings(node.target))
+        elif isinstance(node, ast.Delete):
+            for target in node.targets:
+                names.update(_target_name_bindings(target))
+        elif isinstance(node, ast.Match):
+            for case in node.cases:
+                names.update(_pattern_bound_names(case.pattern))
+    return names
+
+
+def _assign_targets_error_name(stmt: ast.AST) -> bool:
+    if isinstance(stmt, ast.Assign):
+        return any("errors" in _target_name_bindings(target) for target in stmt.targets)
+    if isinstance(stmt, (ast.AnnAssign, ast.AugAssign)):
+        return "errors" in _target_name_bindings(stmt.target)
+    if isinstance(stmt, ast.NamedExpr):
+        return "errors" in _target_name_bindings(stmt.target)
+    return False
+
+
+def _is_errors_literal_list_initialization(stmt: ast.AST) -> bool:
+    if isinstance(stmt, ast.Assign):
+        return (
+            len(stmt.targets) == 1
+            and isinstance(stmt.targets[0], ast.Name)
+            and stmt.targets[0].id == "errors"
+            and isinstance(stmt.value, ast.List)
+            and not stmt.value.elts
+        )
+    if isinstance(stmt, ast.AnnAssign):
+        return (
+            isinstance(stmt.target, ast.Name)
+            and stmt.target.id == "errors"
+            and isinstance(stmt.value, ast.List)
+            and not stmt.value.elts
+        )
+    return False
+
+
+def _expr_is_errors_alias(value: ast.AST) -> bool:
+    return isinstance(value, ast.Name) and value.id == "errors"
+
+
+def _expr_aliases_errors_destructive_method(value: ast.AST) -> bool:
+    for node in ast.walk(value):
+        if (
+            isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "errors"
+            and node.attr in _PR2_ERROR_DESTRUCTIVE_METHODS
+        ):
+            return True
+        if (
+            isinstance(node, ast.Call)
+            and _call_func_name(node) == "getattr"
+            and len(node.args) >= 2
+            and isinstance(node.args[0], ast.Name)
+            and node.args[0].id == "errors"
+            and isinstance(node.args[1], ast.Constant)
+            and node.args[1].value in _PR2_ERROR_DESTRUCTIVE_METHODS
+        ):
+            return True
+    return False
+
+
+def _current_function_errors_binding_nodes(function: ast.FunctionDef) -> list[ast.stmt]:
+    return [
+        node
+        for node in _iter_current_function_scope_nodes(function)
+        if node is not function
+        and isinstance(node, ast.stmt)
+        and "errors" in _current_scope_bound_names(node)
+    ]
+
+
+def _target_writes_errors_subscript(target: ast.AST) -> bool:
+    for node in ast.walk(target):
+        if isinstance(node, ast.Subscript) and isinstance(node.value, ast.Name) and node.value.id == "errors":
+            return True
+    return False
+
+
+def _call_is_errors_destructive_mutator(call: ast.Call) -> bool:
+    if (
+        isinstance(call.func, ast.Attribute)
+        and isinstance(call.func.value, ast.Name)
+        and call.func.value.id == "errors"
+        and call.func.attr in _PR2_ERROR_DESTRUCTIVE_METHODS
+    ):
+        return True
+    if (
+        isinstance(call.func, ast.Attribute)
+        and isinstance(call.func.value, ast.Name)
+        and call.func.value.id == "list"
+        and call.func.attr in _PR2_ERROR_DESTRUCTIVE_METHODS
+        and call.args
+        and isinstance(call.args[0], ast.Name)
+        and call.args[0].id == "errors"
+    ):
+        return True
+    if isinstance(call.func, ast.Call) and _call_func_name(call.func) == "getattr":
+        getattr_call = call.func
+        if (
+            len(getattr_call.args) >= 2
+            and isinstance(getattr_call.args[0], ast.Name)
+            and getattr_call.args[0].id == "errors"
+            and isinstance(getattr_call.args[1], ast.Constant)
+            and getattr_call.args[1].value in _PR2_ERROR_DESTRUCTIVE_METHODS
+        ):
+            return True
+    return False
+
+
+def _call_passes_errors_as_argument(call: ast.Call) -> bool:
+    for arg in call.args:
+        if isinstance(arg, ast.Name) and arg.id == "errors":
+            return True
+    for keyword in call.keywords:
+        if isinstance(keyword.value, ast.Name) and keyword.value.id == "errors":
+            return True
+    return False
+
+
+def _statement_is_errors_failure_gate(stmt: ast.stmt) -> bool:
+    if not isinstance(stmt, ast.If):
+        return False
+    if not (isinstance(stmt.test, ast.Name) and stmt.test.id == "errors"):
+        return False
+    return any(
+        isinstance(item, ast.Return)
+        and isinstance(item.value, ast.Constant)
+        and item.value.value == 1
+        for item in stmt.body
+    )
+
+
+def _errors_failure_gate_lineno(function: ast.FunctionDef) -> int | None:
+    for stmt in function.body:
+        if _statement_is_errors_failure_gate(stmt):
+            return stmt.lineno
+    return None
+
+
+def _direct_return_value(stmt: ast.stmt, value: object) -> bool:
+    return (
+        isinstance(stmt, ast.Return)
+        and isinstance(stmt.value, ast.Constant)
+        and stmt.value.value == value
+    )
+
+
+def _check_error_collector_integrity(
+    *,
+    checker_path: Path = Path(__file__).resolve(),
+) -> list[str]:
+    errors: list[str] = []
+    tree = _parse_python(checker_path)
+    functions_and_required_calls = (
+        (
+            _function_def(tree, "main", path=checker_path),
+            frozenset(_PR2_CHECKER_MAIN_REQUIRED_CALLS),
+            _errors_failure_gate_lineno(_function_def(tree, "main", path=checker_path)),
+            "main",
+        ),
+        (
+            _function_def(tree, "_check_candidate_sink_replay_contract", path=checker_path),
+            frozenset(_PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS),
+            None,
+            "_check_candidate_sink_replay_contract",
+        ),
+    )
+    for function, required_calls, gate_lineno, label in functions_and_required_calls:
+        binding_nodes = _current_function_errors_binding_nodes(function)
+        init_nodes = [
+            node for node in binding_nodes if _is_errors_literal_list_initialization(node)
+        ]
+        for node in binding_nodes:
+            if node in init_nodes:
+                continue
+            if isinstance(node, ast.Delete):
+                errors.append(f"{label} must not delete errors at line {getattr(node, 'lineno', '?')}")
+            else:
+                errors.append(f"{label} must not rebind errors at line {getattr(node, 'lineno', '?')}")
+        local_bindings = _function_local_binding_names(function)
+        shadowed_callees = sorted(required_calls & local_bindings)
+        for callee in shadowed_callees:
+            errors.append(f"{label} must not locally shadow required callee {callee}")
+        for node in _iter_current_function_scope_nodes(function):
+            if node is function:
+                continue
+            if isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign, ast.NamedExpr)):
+                if isinstance(node, (ast.Assign, ast.AnnAssign, ast.NamedExpr)):
+                    value = node.value
+                    if _expr_is_errors_alias(value):
+                        errors.append(f"{label} must not alias errors at line {getattr(node, 'lineno', '?')}")
+                    if _expr_aliases_errors_destructive_method(value):
+                        errors.append(
+                            f"{label} must not alias errors destructive method at line "
+                            f"{getattr(node, 'lineno', '?')}"
+                        )
+                targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+                for target in targets:
+                    if _target_writes_errors_subscript(target):
+                        errors.append(
+                            f"{label} must not write through errors subscript at line "
+                            f"{getattr(node, 'lineno', '?')}"
+                        )
+            elif isinstance(node, ast.Delete):
+                for target in node.targets:
+                    if _target_writes_errors_subscript(target):
+                        errors.append(f"{label} must not delete errors at line {getattr(node, 'lineno', '?')}")
+            elif isinstance(node, ast.Call):
+                call_name = _call_func_name(node)
+                if call_name in _PR2_DYNAMIC_EXECUTION_NAMES:
+                    errors.append(
+                        f"{label} must not use dynamic execution or namespace call {call_name}"
+                    )
+                if _call_is_errors_destructive_mutator(node):
+                    errors.append(
+                        f"{label} must not destructively mutate errors at line "
+                        f"{getattr(node, 'lineno', '?')}"
+                    )
+                if _call_passes_errors_as_argument(node) and (
+                    gate_lineno is None or getattr(node, "lineno", 10**9) < gate_lineno
+                ):
+                    errors.append(
+                        f"{label} must not pass errors to helper before the failure gate at line "
+                        f"{getattr(node, 'lineno', '?')}"
+                    )
+        if len(init_nodes) != 1:
+            errors.append(f"{label} must initialize errors exactly once as literal []")
+    return errors
+
+
+def _check_main_error_reporting_shape(
+    *,
+    checker_path: Path = Path(__file__).resolve(),
+) -> list[str]:
+    errors: list[str] = []
+    tree = _parse_python(checker_path)
+    main_fn = _function_def(tree, "main", path=checker_path)
+    required_call_lines: list[int] = []
+    for required_call in _PR2_CHECKER_MAIN_REQUIRED_CALLS:
+        if not _has_live_errors_extend_call(main_fn, required_call, allow_outer_try=True):
+            continue
+        for node in ast.walk(main_fn):
+            if (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "extend"
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "errors"
+                and node.args
+                and isinstance(node.args[0], ast.Call)
+                and isinstance(node.args[0].func, ast.Name)
+                and node.args[0].func.id == required_call
+            ):
+                required_call_lines.append(node.lineno)
+    gate_lineno = _errors_failure_gate_lineno(main_fn)
+    if gate_lineno is None:
+        errors.append("proof-obligation checker main must have reachable if errors: return 1")
+    elif required_call_lines and gate_lineno <= max(required_call_lines):
+        errors.append("proof-obligation checker main failure gate must follow required calls")
+    handler_returns_two = False
+    for node in ast.walk(main_fn):
+        if not isinstance(node, ast.ExceptHandler):
+            continue
+        if isinstance(node.type, ast.Name) and node.type.id == "CheckError":
+            handler_returns_two = handler_returns_two or any(
+                _direct_return_value(stmt, 2) for stmt in node.body
+            )
+    if not handler_returns_two:
+        errors.append("proof-obligation checker main CheckError handler must return 2")
+    return_zero_lines = [
+        node.lineno
+        for node in ast.walk(main_fn)
+        if isinstance(node, ast.Return)
+        and isinstance(node.value, ast.Constant)
+        and node.value.value == 0
+    ]
+    if not return_zero_lines:
+        errors.append("proof-obligation checker main must have success return 0")
+    elif gate_lineno is not None and any(line < gate_lineno for line in return_zero_lines):
+        errors.append("proof-obligation checker main must not return 0 before errors gate")
+    return errors
+
+
+def _check_error_collector_return_shape(
+    *,
+    checker_path: Path = Path(__file__).resolve(),
+) -> list[str]:
+    tree = _parse_python(checker_path)
+    function = _function_def(tree, "_check_candidate_sink_replay_contract", path=checker_path)
+    if not function.body:
+        return ["_check_candidate_sink_replay_contract must end with return errors"]
+    tail = function.body[-1]
+    if not (
+        isinstance(tail, ast.Return)
+        and isinstance(tail.value, ast.Name)
+        and tail.value.id == "errors"
+    ):
+        return ["_check_candidate_sink_replay_contract must end with direct return errors"]
+    return []
+
+
 def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file__).resolve()) -> list[str]:
     """Fail closed if the proof-obligation checker stops invoking its close-kernel.
 
@@ -2341,25 +2959,22 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
     errors: list[str] = []
     tree = _parse_python(checker_path)
     main_fn = _function_def(tree, "main", path=checker_path)
-    for required_call in (
-        "_check_candidate_sink_replay_contract",
-        "_check_certified_publication_boundary_contract",
-        "_check_strong_status_write_allowlist_gate",
-        "_check_close_kernel_contract",
-        "_check_phase_gate_provenance_contract",
-        "_check_phase_anchor",
-        "_check_exact_session_atomic_snapshot_contract",
-        "_check_independent_infeasibility_reverifier_contract",
-    ):
+    for required_call in _PR2_CHECKER_MAIN_REQUIRED_CALLS:
         if not _has_live_errors_extend_call(main_fn, required_call, allow_outer_try=True):
             errors.append(f"proof-obligation checker main must call {required_call}")
     sink_replay_fn = _function_def(
         tree, "_check_candidate_sink_replay_contract", path=checker_path
     )
-    if not _has_live_errors_extend_call(sink_replay_fn, "_check_close_kernel_files_fully_pinned"):
+    if not _has_live_errors_extend_call(
+        sink_replay_fn,
+        "_check_close_kernel_files_fully_pinned",
+    ):
         errors.append(
             "candidate sink replay contract must call _check_close_kernel_files_fully_pinned"
         )
+    errors.extend(_check_error_collector_integrity(checker_path=checker_path))
+    errors.extend(_check_main_error_reporting_shape(checker_path=checker_path))
+    errors.extend(_check_error_collector_return_shape(checker_path=checker_path))
     return errors
 
 
@@ -5992,6 +6607,18 @@ _PR2_CLOSE_KERNEL_CLASS_FIELD_SOURCES: dict[str, tuple[str, ...]] = {
         "compatible_hashes: bool",
     ),
 }
+_PR2_CLOSE_KERNEL_DECORATOR_SOURCES: dict[str, tuple[str, ...]] = {
+    "PR2 exact campaign.ExactCampaign": ("dataclass",),
+    "PR2 exact campaign.ExactCampaign.artifact_hashes": ("property",),
+    "PR2 exact campaign.ExactCampaign.campaign_hours": ("property",),
+    "PR2 exact campaign.ExactCampaign.load_or_create": ("classmethod",),
+    "PR2 exact campaign.ExactCampaign.proposal_ready_marker_path": ("property",),
+    "PR2 exact campaign.ExactCampaign.reset_reason": ("property",),
+    "PR2 exact campaign._checkpoint_write_lock": ("contextmanager",),
+    "PR2 L0 micro-verifier.L0MicroVerdict": ("dataclass(frozen=True)",),
+    "PR2 L0 micro-verifier.L0SupervisorSealRequest": ("dataclass(frozen=True)",),
+    "PR2 L0 micro-verifier._checkpoint_write_lock_l0": ("contextmanager",),
+}
 
 _PR2_CLOSE_KERNEL_IMPORT_CLOSURE_ROOT_REL_PATHS: tuple[str, ...] = (
     "src/search/exact_campaign.py",
@@ -6792,6 +7419,97 @@ def _check_import_time_statement(
     return errors
 
 
+def _runtime_import_bound_names(stmt: ast.Import | ast.ImportFrom) -> set[str]:
+    if isinstance(stmt, ast.ImportFrom) and stmt.module == "__future__":
+        return set()
+    return _import_bound_names(stmt)
+
+
+def _non_dunder_builtin_names() -> frozenset[str]:
+    return frozenset(
+        name
+        for name in dir(builtins)
+        if not (name.startswith("__") and name.endswith("__"))
+    )
+
+
+def _forbidden_shadow_names(import_bound_names: set[str]) -> frozenset[str]:
+    return frozenset(import_bound_names) | _non_dunder_builtin_names()
+
+
+def _decorator_sources(node: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef) -> tuple[str, ...]:
+    return tuple(ast.unparse(decorator) for decorator in node.decorator_list)
+
+
+def _check_close_kernel_decorator_sources(
+    label: str,
+    qualified_name: str,
+    node: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
+) -> list[str]:
+    key = f"{label}.{qualified_name}"
+    expected = _PR2_CLOSE_KERNEL_DECORATOR_SOURCES.get(key, ())
+    actual = _decorator_sources(node)
+    if actual != expected:
+        return [f"{key} decorators drifted: expected {expected!r}, found {actual!r}"]
+    return []
+
+
+def _expr_loads_any_name(node: ast.AST, names: set[str] | frozenset[str]) -> set[str]:
+    loaded: set[str] = set()
+
+    class Visitor(ast.NodeVisitor):
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            return
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            return
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            return
+
+        def visit_Lambda(self, child: ast.Lambda) -> None:
+            return
+
+        def visit_Name(self, child: ast.Name) -> None:
+            if isinstance(child.ctx, ast.Load) and child.id in names:
+                loaded.add(child.id)
+
+    Visitor().visit(node)
+    return loaded
+
+
+def _stmt_def_time_nodes(stmt: ast.stmt) -> list[ast.AST]:
+    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return _function_def_time_nodes(stmt)
+    if isinstance(stmt, ast.ClassDef):
+        return _class_def_time_nodes(stmt)
+    if isinstance(stmt, ast.Assign):
+        return [stmt.value]
+    if isinstance(stmt, ast.AnnAssign):
+        nodes: list[ast.AST] = [stmt.annotation]
+        if stmt.value is not None:
+            nodes.append(stmt.value)
+        return nodes
+    return []
+
+
+def _check_class_def_time_local_resolution(
+    item: ast.stmt,
+    *,
+    label: str,
+    class_bound_names: set[str],
+) -> list[str]:
+    errors: list[str] = []
+    if not class_bound_names:
+        return errors
+    for node in _stmt_def_time_nodes(item):
+        for name in sorted(_expr_loads_any_name(node, class_bound_names)):
+            errors.append(
+                f"{label} def-time expression must not resolve to prior class local {name}"
+            )
+    return errors
+
+
 def _check_close_kernel_class_def_time_shape(
     class_node: ast.ClassDef,
     *,
@@ -6851,9 +7569,11 @@ def _check_close_kernel_class_body_fully_pinned(
     *,
     prefix: str,
     local_functions: Mapping[str, ast.FunctionDef],
+    forbidden_shadow_names: frozenset[str],
 ) -> list[str]:
     errors: list[str] = []
     seen: dict[str, list[ast.stmt]] = {}
+    class_bound_names: set[str] = set()
     actual_fields: list[str] = []
     saw_non_field = False
     for item in class_node.body:
@@ -6869,9 +7589,23 @@ def _check_close_kernel_class_body_fully_pinned(
     for index, item in enumerate(class_node.body):
         if index == 0 and _is_docstring_stmt(item):
             continue
+        errors.extend(
+            _check_class_def_time_local_resolution(
+                item,
+                label=f"{label}.{prefix}",
+                class_bound_names=class_bound_names,
+            )
+        )
+        bound_names = _class_stmt_bound_names(item)
+        for bound_name in sorted(bound_names & forbidden_shadow_names):
+            errors.append(
+                f"{label} close-kernel class binding must not shadow import/builtin "
+                f"name {prefix}.{bound_name}"
+            )
         if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
             saw_non_field = True
             key = f"{prefix}.{item.name}"
+            errors.extend(_check_close_kernel_decorator_sources(label, key, item))
             if key not in fmap:
                 errors.append(f"{label} close-kernel method not source-pinned: {key}")
             for node in _function_default_nodes(item):
@@ -6882,10 +7616,12 @@ def _check_close_kernel_class_body_fully_pinned(
                         local_functions=local_functions,
                     )
                 )
+            class_bound_names.update(bound_names)
             continue
         if isinstance(item, ast.ClassDef):
             saw_non_field = True
             key = f"{prefix}.{item.name}"
+            errors.extend(_check_close_kernel_decorator_sources(label, key, item))
             if key not in fmap:
                 errors.append(f"{label} close-kernel nested class not source-pinned: {key}")
             errors.extend(
@@ -6902,8 +7638,10 @@ def _check_close_kernel_class_body_fully_pinned(
                     item,
                     prefix=key,
                     local_functions=local_functions,
+                    forbidden_shadow_names=forbidden_shadow_names,
                 )
             )
+            class_bound_names.update(bound_names)
             continue
         if isinstance(item, (ast.Assign, ast.AnnAssign)):
             targets = item.targets if isinstance(item, ast.Assign) else [item.target]
@@ -6940,11 +7678,13 @@ def _check_close_kernel_class_body_fully_pinned(
                 )
             else:
                 actual_fields.append(ast.unparse(item))
+            class_bound_names.update(bound_names)
             continue
         errors.append(
             f"{label} close-kernel class {prefix} has an unexpected body "
             f"{type(item).__name__} at line {getattr(item, 'lineno', '?')}"
         )
+        class_bound_names.update(bound_names)
     expected_fields = _PR2_CLOSE_KERNEL_CLASS_FIELD_SOURCES.get(f"{label}.{prefix}")
     if expected_fields is None:
         errors.append(f"{label}.{prefix} class def-time field layout allowlist missing")
@@ -7170,10 +7910,22 @@ def _check_close_kernel_files_fully_pinned(
             if isinstance(node, ast.FunctionDef)
         }
         past_import_block = False
+        import_bound_names: set[str] = set()
+        import_binding_lines: dict[str, int] = {}
         import_index = 0
         for index, stmt in enumerate(tree.body):
+            if not isinstance(stmt, (ast.Import, ast.ImportFrom)) and not (
+                index == 0 and _is_docstring_stmt(stmt)
+            ):
+                forbidden_shadow_names = _forbidden_shadow_names(import_bound_names)
+                for bound_name in sorted(_current_scope_bound_names(stmt) & forbidden_shadow_names):
+                    errors.append(
+                        f"{label} close-kernel top-level binding must not shadow "
+                        f"import/builtin name {bound_name}"
+                    )
             if isinstance(stmt, ast.FunctionDef):
                 past_import_block = True
+                errors.extend(_check_close_kernel_decorator_sources(label, stmt.name, stmt))
                 for expr in _function_default_nodes(stmt):
                     errors.extend(
                         _check_import_time_expression(
@@ -7188,6 +7940,7 @@ def _check_close_kernel_files_fully_pinned(
                     )
             elif isinstance(stmt, ast.ClassDef):
                 past_import_block = True
+                errors.extend(_check_close_kernel_decorator_sources(label, stmt.name, stmt))
                 errors.extend(
                     _check_close_kernel_class_def_time_shape(
                         stmt,
@@ -7206,6 +7959,7 @@ def _check_close_kernel_files_fully_pinned(
                         stmt,
                         prefix=stmt.name,
                         local_functions=local_functions,
+                        forbidden_shadow_names=_forbidden_shadow_names(import_bound_names),
                     )
                 )
             elif isinstance(stmt, (ast.Assign, ast.AnnAssign)):
@@ -7231,6 +7985,15 @@ def _check_close_kernel_files_fully_pinned(
                             f"{label} close-kernel module constant not pinned: {target.id}"
                         )
             elif isinstance(stmt, (ast.Import, ast.ImportFrom)):
+                for bound_name in sorted(_runtime_import_bound_names(stmt)):
+                    previous_line = import_binding_lines.get(bound_name)
+                    if previous_line is not None:
+                        errors.append(
+                            f"{label} close-kernel import binding must be unique: "
+                            f"{bound_name} at lines {previous_line}, {getattr(stmt, 'lineno', '?')}"
+                        )
+                    import_binding_lines[bound_name] = getattr(stmt, "lineno", -1)
+                    import_bound_names.add(bound_name)
                 if past_import_block:
                     errors.append(
                         f"tail import after definitions in {filename}: {ast.dump(stmt)}"
@@ -10894,6 +11657,10 @@ def main() -> int:
         errors.extend(_check_strong_status_write_allowlist_gate())
         errors.extend(_check_isolated_exec_bytecode_binding_contract())
         errors.extend(_check_evidence_and_tests(manifest))
+        errors.extend(_check_error_collector_integrity())
+        errors.extend(_check_main_error_reporting_shape())
+        errors.extend(_check_error_collector_return_shape())
+        errors.extend(_check_proof_obligation_manifest_semantic_projection(manifest))
         errors.extend(_check_close_kernel_checker_self_binding())
         errors.extend(_check_close_kernel_contract(manifest))
         errors.extend(_check_phase_gate_provenance_contract())

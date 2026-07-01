@@ -4,6 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-26",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
+  "semantic_projection_sha256": "d116e7b3dd358a8270bfe3521c92c5f006af95dd49cfedf02111dfcd48f3c0a7",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -524,6 +525,13 @@
         "test_p1_2_round12_close_kernel_import_closure_follows_helper_body_import",
         "test_p1_2_round12_close_kernel_rejects_dynamic_import_alias",
         "test_p1_2_round12_close_kernel_rejects_namespace_mutator_target",
+        "test_p1_2_round13_current_scope_binding_walker_rejects_walrus_and_delete_smuggling",
+        "test_p1_2_round13_close_kernel_rejects_import_and_builtin_shadow",
+        "test_p1_2_round13_close_kernel_rejects_decorator_drift",
+        "test_p1_2_round13_checker_error_collector_integrity",
+        "test_p1_2_round13_self_binding_requires_new_gates_and_self_call",
+        "test_p1_2_round13_manifest_semantic_projection_rejects_resealed_gutting",
+        "test_p1_2_round13_source_text_includes_parenthesized_decorator_start",
         "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
         "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
         "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
@@ -929,7 +937,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-          "source_sha256": "e84067b8874d84b1979ff0f96c6eb49e7567fb4608e067a9ec28a560b0c53550",
+          "source_sha256": "8d02d8691dddcc5e841e04dafe537c7ec397381b37d5e04c822e260cb3eb3796",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

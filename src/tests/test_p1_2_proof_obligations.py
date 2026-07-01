@@ -23,7 +23,14 @@ def test_p1_2_proof_obligation_gate_passes() -> None:
         cwd=PROJECT_ROOT,
         capture_output=True,
         text=True,
-        timeout=30,
+        # The checker runs ~15s standalone (full AST analysis of the 3
+        # close-kernel files + 60-file import-time closure hashing + an
+        # isolated sub-checker subprocess). Under `pytest -n auto` the suite
+        # saturates every core, so this redundant subprocess re-run of the
+        # gate can be starved well past a tight 30s budget even though the
+        # gate itself passes directly (preflight step 14) and standalone.
+        # Give generous headroom so parallel execution does not false-red.
+        timeout=180,
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "P1.2 proof obligation check passed: 14 obligations anchored" in result.stdout
@@ -172,6 +179,13 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_round12_close_kernel_import_closure_follows_helper_body_import" in close_kernel_tests
     assert "test_p1_2_round12_close_kernel_rejects_dynamic_import_alias" in close_kernel_tests
     assert "test_p1_2_round12_close_kernel_rejects_namespace_mutator_target" in close_kernel_tests
+    assert "test_p1_2_round13_current_scope_binding_walker_rejects_walrus_and_delete_smuggling" in close_kernel_tests
+    assert "test_p1_2_round13_close_kernel_rejects_import_and_builtin_shadow" in close_kernel_tests
+    assert "test_p1_2_round13_close_kernel_rejects_decorator_drift" in close_kernel_tests
+    assert "test_p1_2_round13_checker_error_collector_integrity" in close_kernel_tests
+    assert "test_p1_2_round13_self_binding_requires_new_gates_and_self_call" in close_kernel_tests
+    assert "test_p1_2_round13_manifest_semantic_projection_rejects_resealed_gutting" in close_kernel_tests
+    assert "test_p1_2_round13_source_text_includes_parenthesized_decorator_start" in close_kernel_tests
     assert "test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses" in close_kernel_tests
     assert "test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows" in close_kernel_tests
     assert "test_p1_2_empty_rect_leaf_math_oracle" in close_kernel_tests
@@ -2519,6 +2533,355 @@ def test_p1_2_round12_close_kernel_rejects_namespace_mutator_target(
     assert any("must not write through globals() at import/def time" in error for error in errors)
 
 
+def test_p1_2_round13_current_scope_binding_walker_rejects_walrus_and_delete_smuggling(
+    tmp_path: Path,
+) -> None:
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_with_module_walrus = exact_source.replace(
+        '_RESUME_INFEASIBLE_REPLAY_REASON = (\n'
+        '    "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume"\n'
+        ')\n',
+        "_RESUME_INFEASIBLE_REPLAY_REASON = (\n"
+        "    ((_supervisor_seal_state_violation := (lambda *args, **kwargs: None)),\n"
+        '     "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume")[1]\n'
+        ")\n",
+        1,
+    )
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_with_module_walrus,
+    )
+    assert any(
+        error.endswith(
+            "exact_campaign.py: _supervisor_seal_state_violation"
+        )
+        and "source pin target not uniquely resolvable" in error
+        for error in errors
+    )
+
+    exact_with_class_walrus = exact_source.replace(
+        "    def save(self) -> None:\n",
+        "    def save(self, _=(supervisor_seal := (lambda self, **kwargs: None))) -> None:\n",
+        1,
+    )
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_with_class_walrus,
+    )
+    assert any(
+        "class binding for" in error
+        and "ExactCampaign.supervisor_seal must be unique" in error
+        for error in errors
+    )
+
+    exact_with_delete = exact_source.replace(
+        "\n@dataclass\nclass ExactCampaign:",
+        "\ndel _supervisor_seal_state_violation\n\n@dataclass\nclass ExactCampaign:",
+        1,
+    )
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_with_delete,
+    )
+    assert any(
+        error.endswith(
+            "exact_campaign.py: _supervisor_seal_state_violation"
+        )
+        and "source pin target not uniquely resolvable" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round13_close_kernel_rejects_import_and_builtin_shadow(
+    tmp_path: Path,
+) -> None:
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    l0_tree = ast.parse(
+        check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+            encoding="utf-8"
+        )
+    )
+    child_tree = ast.parse(
+        check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+            encoding="utf-8"
+        )
+    )
+
+    exact_with_import_shadow = exact_source.replace(
+        "\ndef _atomic_json_bytes(",
+        "\ndef terminal_frontier_evidence_violation(*args, **kwargs):\n"
+        "    return None\n\n"
+        "def _atomic_json_bytes(",
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_import_shadow),
+    )
+    assert any(
+        "top-level binding must not shadow import/builtin name "
+        "terminal_frontier_evidence_violation" in error
+        for error in errors
+    )
+
+    exact_with_class_builtin_shadow = exact_source.replace(
+        "    @property\n    def artifact_hashes(self) -> Dict[str, str]:\n",
+        "    def property(fn):\n"
+        "        return fn\n\n"
+        "    @property\n"
+        "    def artifact_hashes(self) -> Dict[str, str]:\n",
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_class_builtin_shadow),
+    )
+    assert any(
+        "class binding must not shadow import/builtin name ExactCampaign.property" in error
+        for error in errors
+    )
+    assert any(
+        "def-time expression must not resolve to prior class local property" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round13_close_kernel_rejects_decorator_drift() -> None:
+    l0_source = check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+        encoding="utf-8"
+    )
+    l0_with_decorator = l0_source.replace(
+        "def run_l0_supervisor_seal(",
+        "@contextmanager\ndef run_l0_supervisor_seal(",
+        1,
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        ast.parse(l0_with_decorator),
+        ast.parse(
+            check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+                encoding="utf-8"
+            )
+        ),
+        ast.parse(
+            check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+                encoding="utf-8"
+            )
+        ),
+    )
+    assert any(
+        "PR2 L0 micro-verifier.run_l0_supervisor_seal decorators drifted" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round13_checker_error_collector_integrity(tmp_path: Path) -> None:
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(
+        encoding="utf-8"
+    )
+
+    checker_path = tmp_path / "checker_errors_clear.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_close_kernel_contract(manifest))\n",
+            "        errors.extend(_check_close_kernel_contract(manifest))\n"
+            "        errors.clear()\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_error_collector_integrity(
+        checker_path=checker_path
+    )
+    assert any("must not destructively mutate errors" in error for error in errors)
+
+    checker_path = tmp_path / "checker_errors_clear_method_alias.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_close_kernel_contract(manifest))\n",
+            "        errors.extend(_check_close_kernel_contract(manifest))\n"
+            "        _sink = errors.clear\n"
+            "        _sink()\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_error_collector_integrity(
+        checker_path=checker_path
+    )
+    assert any("must not alias errors destructive method" in error for error in errors)
+
+    checker_path = tmp_path / "checker_errors_clear_getattr_alias.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_close_kernel_contract(manifest))\n",
+            "        errors.extend(_check_close_kernel_contract(manifest))\n"
+            '        _sink = getattr(errors, "clear")\n'
+            "        _sink()\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_error_collector_integrity(
+        checker_path=checker_path
+    )
+    assert any("must not alias errors destructive method" in error for error in errors)
+
+    checker_path = tmp_path / "checker_errors_for_rebind.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors: list[str] = []\n",
+            "        errors: list[str] = []\n"
+            "        for errors in ([],):\n"
+            "            pass\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_error_collector_integrity(
+        checker_path=checker_path
+    )
+    assert any("main must not rebind errors" in error for error in errors)
+
+    checker_path = tmp_path / "checker_shadow_callee.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors: list[str] = []\n",
+            "        errors: list[str] = []\n"
+            "        _check_close_kernel_contract = lambda manifest: []\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_error_collector_integrity(
+        checker_path=checker_path
+    )
+    assert any(
+        "must not locally shadow required callee _check_close_kernel_contract" in error
+        for error in errors
+    )
+
+    checker_path = tmp_path / "checker_return_empty.py"
+    checker_path.write_text(
+        source.replace(
+            "    return errors\n\n\ndef _check_isolated_exec_bytecode_binding_contract",
+            "    return []\n\n\ndef _check_isolated_exec_bytecode_binding_contract",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_error_collector_return_shape(
+        checker_path=checker_path
+    )
+    assert "_check_candidate_sink_replay_contract must end with direct return errors" in errors
+
+    checker_path = tmp_path / "checker_dead_error_gate.py"
+    checker_path.write_text(
+        source.replace(
+            "    if errors:\n",
+            "    if False and errors:\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_main_error_reporting_shape(
+        checker_path=checker_path
+    )
+    assert "proof-obligation checker main must have reachable if errors: return 1" in errors
+
+
+def test_p1_2_round13_self_binding_requires_new_gates_and_self_call(
+    tmp_path: Path,
+) -> None:
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(
+        encoding="utf-8"
+    )
+    checker_path = tmp_path / "checker_removed_self_binding.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_close_kernel_checker_self_binding())\n",
+            "        # mutation: removed self-binding call\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path
+    )
+    assert "proof-obligation checker main must call _check_close_kernel_checker_self_binding" in errors
+
+    checker_path = tmp_path / "checker_removed_semantic_projection.py"
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_proof_obligation_manifest_semantic_projection(manifest))\n",
+            "        # mutation: removed semantic projection call\n",
+            1,
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path
+    )
+    assert (
+        "proof-obligation checker main must call "
+        "_check_proof_obligation_manifest_semantic_projection"
+    ) in errors
+
+
+def test_p1_2_round13_manifest_semantic_projection_rejects_resealed_gutting() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    manifest["summary"] = "GUTTED"
+    manifest["obligations"][0]["title"] = "GUTTED"
+    manifest[check_p1_2_proof_obligations.P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD] = (
+        check_p1_2_proof_obligations._proof_obligation_manifest_semantic_projection_sha256(
+            manifest
+        )
+    )
+
+    errors = check_p1_2_proof_obligations._check_proof_obligation_manifest_semantic_projection(
+        manifest
+    )
+
+    assert (
+        "proof-obligation manifest semantic projection drifted from the reviewed P1.2 floor"
+        in errors
+    )
+
+
+def test_p1_2_round13_source_text_includes_parenthesized_decorator_start(
+    tmp_path: Path,
+) -> None:
+    source_path = tmp_path / "decorator_probe.py"
+    source_path.write_text(
+        "@(\n"
+        "    contextmanager\n"
+        ")\n"
+        "def decorated():\n"
+        "    yield\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    function = tree.body[0]
+    assert isinstance(function, ast.FunctionDef)
+
+    assert check_p1_2_proof_obligations._source_text(source_path, function).startswith("@(\n")
+
+
 def test_p1_2_close_kernel_source_floor_covers_import_time_closure() -> None:
     closure = check_p1_2_proof_obligations._close_kernel_import_time_closure_source_paths()
     for rel_path in (
@@ -2922,7 +3285,7 @@ def test_p1_2_checker_rejects_pr2_5_round6_structural_bypasses(
             "source pin target not uniquely resolvable",
             False,
         ),
-        ("child", _child_decorated_verify_supervisor_domain, "must not use decorators", False),
+        ("child", _child_decorated_verify_supervisor_domain, "must not use decorators", True),
         (
             "child",
             _child_top_level_rebinds_verify,
@@ -3035,8 +3398,10 @@ def test_p1_2_checker_rejects_pr2_5_closed_world_reachability_bypasses(
     )
 
     if round10_full_pin_independently_rejects:
-        # round-10 full-pin is an independent defense-in-depth line: it still
-        # rejects this bypass after the old closed-world guard is disabled.
+        # round-10 full-pin — and, for decorator mutations, the round-13
+        # decorator allowlist (FIX-3) — is an independent defense-in-depth line:
+        # it still rejects this bypass after the old closed-world guard is
+        # disabled.
         assert legacy_errors != []
     else:
         assert legacy_errors == []
