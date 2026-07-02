@@ -2007,6 +2007,8 @@ class RoutingSubproblem:
                 "uses": uses,
                 "flow_in": list(flow_in),
                 "flow_out": list(flow_out),
+                # 嵌套 flow 仅作 output_schema normalize 的 fallback 兼容位;
+                # 顶层 flow_in/flow_out 是权威来源(生产 serializer 只读顶层)。
                 "flow": {
                     "flow_in": list(flow_in),
                     "flow_out": list(flow_out),
