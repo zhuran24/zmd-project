@@ -1594,6 +1594,40 @@ def _dynamic_namespace_write_shadows_name(node: ast.AST, name: str) -> bool:
     return False
 
 
+# round-17 (A4 convergence): a proof direct-call witness function rebinds its
+# fixed-witness symbol only by writing the module global namespace, which must
+# route through one of a finite set of namespace/dynamic-exec/reflection
+# primitives.  round-16 only caught ``exec``/``eval``/``__import__``; the panel
+# then found ``operator.setitem(globals(), ...)`` / ``dict.__setitem__(globals(),
+# ...)`` / ``getattr(globals(), "__setitem__")`` / ``types.FunctionType(compile(
+# ...), globals())()``.  Rather than keep enumerating call shapes (a denylist
+# that keeps leaking), fail closed on *any reference* to the whole primitive
+# surface inside a witness body -- every rebind construction names at least one
+# of these.  All current proof witnesses reference none of them.
+_PR2_WITNESS_BODY_FORBIDDEN_NAMES = frozenset(
+    {
+        "__import__",
+        "compile",
+        "ctypes",
+        "delattr",
+        "eval",
+        "exec",
+        "gc",
+        "globals",
+        "importlib",
+        "inspect",
+        "locals",
+        "operator",
+        "setattr",
+        "types",
+        "vars",
+    }
+)
+_PR2_WITNESS_BODY_FORBIDDEN_ATTRS = frozenset(
+    {"__delattr__", "__dict__", "__setattr__", "__setitem__"}
+)
+
+
 def _function_shadows_name(
     node: ast.FunctionDef,
     name: str,
@@ -1677,19 +1711,10 @@ def _function_shadows_name(
                 ):
                     continue
                 return True
-        if isinstance(child, ast.Call):
-            call_func = child.func
-            # round-16 (BLOCK 3): a proof direct-call witness function that runs
-            # dynamic code (``exec("<name> = ...", globals())`` /
-            # ``__import__("builtins").exec(...)``) can rebind the fixed-witness
-            # symbol at runtime while the syntactic direct call still appears
-            # present.  Treat any dynamic-execution primitive in the witness body
-            # as a shadow (fail closed): proof witnesses have no legitimate need
-            # for exec/eval/__import__.
-            if isinstance(call_func, ast.Name) and call_func.id in {"exec", "eval", "__import__"}:
-                return True
-            if isinstance(call_func, ast.Attribute) and call_func.attr in {"exec", "eval"}:
-                return True
+        if isinstance(child, ast.Name) and child.id in _PR2_WITNESS_BODY_FORBIDDEN_NAMES:
+            return True
+        if isinstance(child, ast.Attribute) and child.attr in _PR2_WITNESS_BODY_FORBIDDEN_ATTRS:
+            return True
     return False
 
 
