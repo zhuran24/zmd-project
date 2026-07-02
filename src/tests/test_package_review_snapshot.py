@@ -45,7 +45,6 @@ def test_package_review_snapshot_excludes_agent_memory_and_review_packets() -> N
     cases = {
         "AGENTS.md": "agent_instruction_file",
         "docs/sub/CLAUDE.md": "agent_instruction_file",
-        "cc_memory/memory.db": "excluded_package_prefix",
         "docs/external_review/old_packet.md": "old_review_packet_path",
         "notes/review_request.md": "prompt_like_path",
         "archives/pr1.7z": "archive_path",
@@ -88,8 +87,6 @@ def test_package_review_snapshot_binds_commit_tree_and_dirty_state(tmp_path: Pat
     (repo / "docs" / "项目说明").mkdir(parents=True)
     (repo / "docs" / "项目说明" / "soundness_gap_roadmap.md").write_text("sentinel\n", encoding="utf-8")
     (repo / "AGENTS.md").write_text("<INSTRUCTIONS>agent rules</INSTRUCTIONS>\n", encoding="utf-8")
-    (repo / "cc_memory").mkdir()
-    (repo / "cc_memory" / "memory.db").write_bytes(b"sqlite")
     (repo / "docs" / "external_review").mkdir()
     (repo / "docs" / "external_review" / "old.md").write_text("old review packet\n", encoding="utf-8")
     _commit_all(repo)
@@ -111,7 +108,6 @@ def test_package_review_snapshot_binds_commit_tree_and_dirty_state(tmp_path: Pat
     assert "src/app.py" in inventory_paths
     assert "AGENTS.md" not in inventory_paths
     assert excluded_paths["AGENTS.md"] == "agent_instruction_file"
-    assert excluded_paths["cc_memory/memory.db"] == "excluded_package_prefix"
     assert excluded_paths["docs/external_review/old.md"] == "old_review_packet_path"
     assert (destination / "src" / "app.py").read_text(encoding="utf-8") == "VALUE = 'committed'\n"
 

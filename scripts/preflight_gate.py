@@ -9,7 +9,7 @@ Preflight gate — 提交前自动门禁检查。
 
 当前检查面：
     冻结/外部制品、禁止路径、AI 与 exact/exploratory 隔离、调研覆盖、行尾、
-    secret、artifact boundary、Phase review gate、P1.2 obligations、按 scope 的 cc_memory、
+    secret、artifact boundary、Phase review gate、P1.2 obligations、
     strong-status allowlist、mypy、ruff 与 pytest lanes。
 
     旧的文档主体投影/文档树脚本已退役，本 gate 不运行
@@ -517,28 +517,6 @@ def check_p1_2_proof_obligations(gate: GateResult) -> None:
     )
 
 
-def check_cc_memory_consistency(gate: GateResult) -> None:
-    """cc_memory 协作记忆一致性硬闸 (layer-3 of the hook backstop).
-
-    Scope-gated: only runs when this change touches cc_memory/. When it does, the
-    committed memory.db must pass `mem.py check` (schema/edges/cycle/no unreviewed
-    high-score suggestions) and exports/MEMORY.md must be in sync with it. Pure SQLite,
-    no GPU — CI-safe.
-    """
-    print("\n[cc_memory] 协作记忆一致性检查")
-    touched = [f for f in get_staged_files() if f.startswith("cc_memory/")]
-    if not touched:
-        gate.ok("cc_memory 未在本次变更范围内 — 跳过")
-        return
-    _run_script_check(
-        gate,
-        title="cc_memory consistency",
-        script_name="check_cc_memory_consistency.py",
-        ok_prefix="cc_memory consistency check",
-        timeout=180,
-    )
-
-
 def check_strong_status_write_allowlist(gate: GateResult) -> None:
     print("\n[15/18] P1.2 strong-status write allowlist 检查")
     _run_script_check(
@@ -823,7 +801,6 @@ def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, slow_t
         check_artifact_boundaries(gate)
         check_phase_review_gate(gate)
         check_p1_2_proof_obligations(gate)
-        check_cc_memory_consistency(gate)
         check_strong_status_write_allowlist(gate)
         check_mypy(gate)
         check_ruff(gate)

@@ -37,7 +37,6 @@ PACKAGE_EXCLUDED_PATH_PREFIXES = (
     "P1_2_TECHNICAL_CLOSE_PACKET/",
     "_cc_live_memory/",
     "cc_context/",
-    "cc_memory/",
     "补丁包/",
 )
 PACKAGE_EXCLUDED_PATH_SEGMENTS = frozenset(
