@@ -245,7 +245,7 @@ def test_serve_viewer_copies_blueprint_and_keeps_legacy_fallback(
     }
     assert json.loads((viewer_dir / "optimal_blueprint.json").read_text(encoding="utf-8"))[
         "metadata"
-    ]["version"] == "1.0.0"
+    ]["version"] == "1.1.0"
     assert opened_urls == ["http://localhost:9999"]
 
 

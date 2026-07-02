@@ -357,11 +357,26 @@ def resolve_routing_device(
     flow_in = tuple(str(direction) for direction in cell.get("flow_in", []) if str(direction))
     flow_out = tuple(str(direction) for direction in cell.get("flow_out", []) if str(direction))
     connected = frozenset(flow_in) | frozenset(flow_out)
-    commodity = str(cell.get("commodity", "[TBD]"))
-    is_liquid = is_liquid_like_commodity(commodity)
+    commodities = _routing_cell_commodities(cell)
+    liquid_commodities = tuple(
+        commodity for commodity in commodities if is_liquid_like_commodity(commodity)
+    )
+    is_mixed = len(commodities) > 1
+    if is_mixed and liquid_commodities:
+        raise ValueError(
+            "mixed routing cell contains liquid-like commodities and cannot be "
+            "safely projected into IndustrialPlanner logistics: "
+            + ", ".join(liquid_commodities)
+        )
+    is_liquid = bool(liquid_commodities)
     warnings: list[str] = []
     classification = "direct"
     reason = "routing cell converted into a target-side logistics device"
+    if is_mixed:
+        warnings.append(
+            "mixed item-like routing cell exported as belt-family logistics device "
+            f"for commodities {', '.join(commodities)}"
+        )
 
     if layer_name == "L1_elevated" or component_type == "bridge":
         classification = "lossy"
@@ -427,6 +442,15 @@ def resolve_routing_device(
         reason="complex routing shape flattened to a generic connector",
         warnings=tuple(warnings),
     )
+
+
+def _routing_cell_commodities(cell: Mapping[str, Any]) -> tuple[str, ...]:
+    raw_commodities = cell.get("commodities")
+    if isinstance(raw_commodities, Sequence) and not isinstance(raw_commodities, (str, bytes)):
+        commodities = tuple(sorted({str(item) for item in raw_commodities}))
+        if commodities:
+            return commodities
+    return (str(cell.get("commodity", "[TBD]")),)
 
 
 def _resolve_boundary_storage_port_device(

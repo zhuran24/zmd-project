@@ -10,6 +10,15 @@ import pytest
 
 import scripts.export_industrial_planner_bundle as export_bundle_script
 import src.adapters.industrial_planner.export_blueprint as export_blueprint_module
+from src.adapters.base_planner.outer_deployment_plan import (
+    BoundaryDemandSummary,
+    ExportMapping,
+    OuterBaseDeploymentPlan,
+    Point,
+)
+from src.adapters.industrial_planner.deployment_transform import (
+    materialize_outer_deployed_blueprint_payload,
+)
 from src.adapters.industrial_planner.export_blueprint import (
     INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME,
     INDUSTRIAL_PLANNER_BUNDLE_FILENAMES,
@@ -119,6 +128,24 @@ def _sample_blueprint_payload() -> dict[str, object]:
                 "4,0": {
                     "type": "belt",
                     "commodity": "item_liquid_water",
+                    "flow_in": ["W"],
+                    "flow_out": ["E"],
+                },
+                "6,0": {
+                    "type": "belt",
+                    "commodities": ["iron_plate", "copper_plate"],
+                    "uses": [
+                        {
+                            "commodity": "iron_plate",
+                            "flow_in": ["W"],
+                            "flow_out": ["E"],
+                        },
+                        {
+                            "commodity": "copper_plate",
+                            "flow_in": ["W"],
+                            "flow_out": ["E"],
+                        },
+                    ],
                     "flow_in": ["W"],
                     "flow_out": ["E"],
                 },
@@ -251,6 +278,68 @@ def test_build_industrial_planner_export_bundle_shapes_target_payload_and_valida
     assert "clean" not in bundle["throughput_report"]
     assert "# IndustrialPlanner Throughput Audit Report" in bundle["throughput_report_markdown"]
     assert any("protocol_core" in warning for warning in bundle["warnings"])
+    assert any("mixed item-like routing cell exported as belt-family" in warning for warning in bundle["warnings"])
+
+
+def test_industrial_export_rejects_mixed_routing_cell_with_liquid_like_commodity() -> None:
+    blueprint_payload = _sample_blueprint_payload()
+    blueprint_payload["routing_network"]["L0_ground"]["7,0"] = {
+        "type": "belt",
+        "commodities": ["iron_plate", "item_liquid_water"],
+        "uses": [
+            {"commodity": "iron_plate", "flow_in": ["W"], "flow_out": ["E"]},
+            {"commodity": "item_liquid_water", "flow_in": ["W"], "flow_out": ["E"]},
+        ],
+        "flow_in": ["W"],
+        "flow_out": ["E"],
+    }
+
+    with pytest.raises(ValueError, match="mixed routing cell contains liquid-like"):
+        build_industrial_planner_export_bundle(blueprint_payload=blueprint_payload)
+
+
+def test_outer_deployment_transform_preserves_mixed_routing_witness_fields() -> None:
+    blueprint_payload = _sample_blueprint_payload()
+    export_mappings = []
+    for facility in blueprint_payload["facilities"]:
+        anchor = facility["anchor"]
+        export_mappings.append(
+            ExportMapping(
+                canonical_instance_id=str(facility["instance_id"]),
+                exported_type_id=None,
+                exported_origin=Point(x=int(anchor["x"]) + 10, y=int(anchor["y"]) + 20),
+                exported_rotation=int(facility["orientation"]),
+                mapping_mode="identity",
+            )
+        )
+    plan = OuterBaseDeploymentPlan(
+        plan_version="test",
+        planning_status="planned_outer_deployment",
+        base_id="valley4_protocol_core",
+        base_lot_size=100,
+        canonical_contract_size=70,
+        inner_island_origin=Point(x=10, y=20),
+        inner_island_size=70,
+        foundation_bus_edges=(),
+        boundary_demand_summary=BoundaryDemandSummary(
+            required_boundary_output_slots=0,
+            required_boundary_input_slots=0,
+        ),
+        export_mappings=tuple(export_mappings),
+    )
+
+    transformed = materialize_outer_deployed_blueprint_payload(
+        blueprint_payload=blueprint_payload,
+        deployment_plan=plan,
+    )
+
+    mixed_cell = transformed["routing_network"]["L0_ground"]["16,20"]
+    assert mixed_cell["commodities"] == ["copper_plate", "iron_plate"]
+    assert "commodity" not in mixed_cell
+    assert mixed_cell["uses"] == [
+        {"commodity": "copper_plate", "flow_in": ["W"], "flow_out": ["E"]},
+        {"commodity": "iron_plate", "flow_in": ["W"], "flow_out": ["E"]},
+    ]
 
 
 def test_precision_fixture_emits_loader_admission_binding_auxiliary_devices() -> None:

@@ -14,6 +14,8 @@ from src.io.output_schema import (
 )
 from src.search.exact_campaign import atomic_write_json
 
+_DIRECTION_ORDER = {"N": 0, "E": 1, "S": 2, "W": 3}
+
 
 def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> Dict[str, Any]:
     payload: Dict[str, Any] = {}
@@ -358,26 +360,145 @@ def _build_routing_network(
         else:
             component_type = "belt"
 
-        entry = {
-            "type": component_type,
-            "commodity": str(segment.get("commodity", "[TBD]")),
-            "flow_in": flow_in,
-            "flow_out": flow_out,
-        }
-        if layer == 1:
-            l1[key] = entry
-        else:
-            l0[key] = entry
+        commodities, uses = _segment_commodities_and_uses(
+            segment,
+            default_flow_in=flow_in,
+            default_flow_out=flow_out,
+        )
+        entry = _routing_entry(
+            component_type=component_type,
+            flow_in=flow_in,
+            flow_out=flow_out,
+            commodities=commodities,
+            uses=uses,
+        )
+        layer_map = l1 if layer == 1 else l0
+        existing = layer_map.get(key)
+        if existing is None:
+            layer_map[key] = entry
+            continue
+        existing_pattern = (
+            str(existing.get("type", "")),
+            tuple(existing.get("flow_in", [])),
+            tuple(existing.get("flow_out", [])),
+        )
+        incoming_pattern = (component_type, tuple(flow_in), tuple(flow_out))
+        if existing_pattern != incoming_pattern:
+            raise ValueError(
+                "multiple physical routing patterns for "
+                f"cell ({x},{y}) layer {layer}: {existing_pattern!r} vs {incoming_pattern!r}"
+            )
+        layer_map[key] = _routing_entry(
+            component_type=component_type,
+            flow_in=flow_in,
+            flow_out=flow_out,
+            commodities=sorted({str(item) for item in existing["commodities"]} | set(commodities)),
+            uses=_merge_routing_uses(existing["uses"], uses),
+        )
     return {"L0_ground": l0, "L1_elevated": l1}
 
 
 def _normalize_flow_list(raw: Any, *, fallback_key: str, segment: Mapping[str, Any]) -> list[str]:
     if isinstance(raw, list):
-        return [str(item) for item in raw]
+        return _sort_directions([str(item) for item in raw])
     fallback = segment.get(fallback_key)
     if fallback is None:
         return []
-    return [str(fallback)]
+    return _sort_directions([str(fallback)])
+
+
+def _sort_directions(values: list[str]) -> list[str]:
+    return sorted(values, key=lambda value: _DIRECTION_ORDER.get(value, 99))
+
+
+def _segment_commodities_and_uses(
+    segment: Mapping[str, Any],
+    *,
+    default_flow_in: list[str],
+    default_flow_out: list[str],
+) -> tuple[list[str], list[Dict[str, Any]]]:
+    raw_commodities = segment.get("commodities")
+    if isinstance(raw_commodities, list):
+        commodities = sorted({str(item) for item in raw_commodities})
+        if not commodities:
+            raise ValueError("routing segment commodities must be non-empty")
+    else:
+        commodities = [str(segment.get("commodity", "[TBD]"))]
+
+    raw_uses = segment.get("uses")
+    if raw_uses is None:
+        if len(commodities) > 1:
+            raise ValueError("mixed-commodity routing segments require uses witnesses")
+        uses = [
+            {
+                "commodity": commodities[0],
+                "flow_in": list(default_flow_in),
+                "flow_out": list(default_flow_out),
+            }
+        ]
+    elif isinstance(raw_uses, list):
+        uses = []
+        for raw_use in raw_uses:
+            if not isinstance(raw_use, Mapping):
+                raise ValueError("routing segment use must be a mapping")
+            if "commodity" not in raw_use:
+                raise ValueError("routing segment use commodity is required")
+            uses.append(
+                {
+                    "commodity": str(raw_use["commodity"]),
+                    "flow_in": _normalize_flow_list(raw_use.get("flow_in"), fallback_key="dir_in", segment=raw_use),
+                    "flow_out": _normalize_flow_list(raw_use.get("flow_out"), fallback_key="dir_out", segment=raw_use),
+                }
+            )
+        uses = _merge_routing_uses(uses)
+    else:
+        raise ValueError("routing segment uses must be a list")
+
+    use_commodities = sorted({str(use["commodity"]) for use in uses})
+    if use_commodities != commodities:
+        raise ValueError("routing segment commodities must match uses commodities")
+    return commodities, uses
+
+
+def _routing_entry(
+    *,
+    component_type: str,
+    flow_in: list[str],
+    flow_out: list[str],
+    commodities: list[str],
+    uses: list[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    entry: Dict[str, Any] = {
+        "type": str(component_type),
+        "commodities": list(commodities),
+        "uses": [dict(use) for use in uses],
+        "flow_in": list(flow_in),
+        "flow_out": list(flow_out),
+    }
+    if len(commodities) == 1:
+        entry["commodity"] = commodities[0]
+    return entry
+
+
+def _merge_routing_uses(
+    *use_groups: Sequence[Mapping[str, Any]],
+) -> list[Dict[str, Any]]:
+    merged: dict[tuple[str, tuple[str, ...], tuple[str, ...]], Dict[str, Any]] = {}
+    for uses in use_groups:
+        for raw_use in uses:
+            commodity = str(raw_use["commodity"])
+            flow_in = _sort_directions([str(item) for item in raw_use.get("flow_in", [])])
+            flow_out = _sort_directions([str(item) for item in raw_use.get("flow_out", [])])
+            key = (commodity, tuple(flow_in), tuple(flow_out))
+            merged[key] = {
+                "commodity": commodity,
+                "flow_in": flow_in,
+                "flow_out": flow_out,
+            }
+    return [
+        merged[key]
+        for key in sorted(merged)
+    ]
 
 
 def _routing_solution_from_result(result: Mapping[str, Any]) -> Sequence[Mapping[str, Any]]:
