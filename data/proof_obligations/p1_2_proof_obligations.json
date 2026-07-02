@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-26",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "6d82c0ca5f94e1f985b8f909a8f0c23bd04a90655188e3598e32dbf2fe17c3b7",
+  "semantic_projection_sha256": "8bfce5cf6a5e1d2cf36cf216a5d4c4bb4a25fe9e63b7f5e4df65f0941482c5a6",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -556,6 +556,11 @@
         "test_p1_2_round15_checker_rejects_side_effectful_errors_append_args",
         "test_p1_2_round15_checker_rejects_floor_tuple_walrus_rebind",
         "test_p1_2_round15_try_star_and_literal_accumulator_concern_canaries",
+        "test_p1_2_round18_checker_rejects_class_body_import_time_main_rebind",
+        "test_p1_2_round18_checker_rejects_checkerror_shadowing_handler",
+        "test_p1_2_round18_checker_rejects_process_exit_aliases_before_error_gate",
+        "test_p1_2_round18_checker_rejects_accumulator_alias_frame_escape",
+        "test_locked_close_kernel_rejects_import_time_class_body_main_rebind",
         "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
         "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
         "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
@@ -966,7 +971,7 @@
         "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "1e49c70e21f8483f54b37aefbd3c50ecdbb1b7408d72a7c91e6c0808abab6e63",
+        "source_sha256": "1aab536c87e7fb589d5ef4e76391c868079f79e82c7afe2b20970cf3ee5d991a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -983,7 +988,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "dd0f46de53eaefa95d52f4fa2d1c6f4e3b15dab10bc0c44eef78ce03ca599cd2",
+        "source_sha256": "352fd085a9340cc94c08b926e0e74ef1c8de141d887999a8dff4eeb424ba7422",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

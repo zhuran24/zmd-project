@@ -208,6 +208,10 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_round15_checker_rejects_side_effectful_errors_append_args" in close_kernel_tests
     assert "test_p1_2_round15_checker_rejects_floor_tuple_walrus_rebind" in close_kernel_tests
     assert "test_p1_2_round15_try_star_and_literal_accumulator_concern_canaries" in close_kernel_tests
+    assert "test_p1_2_round18_checker_rejects_class_body_import_time_main_rebind" in close_kernel_tests
+    assert "test_p1_2_round18_checker_rejects_checkerror_shadowing_handler" in close_kernel_tests
+    assert "test_p1_2_round18_checker_rejects_process_exit_aliases_before_error_gate" in close_kernel_tests
+    assert "test_p1_2_round18_checker_rejects_accumulator_alias_frame_escape" in close_kernel_tests
 
 
 def _publisher_scan_paths() -> list[Path]:
@@ -3200,7 +3204,9 @@ def test_p1_2_round14_checker_required_callee_floor_rejects_rebind_and_shrink(
         + marker
         + tail.replace(
             '    "_check_close_kernel_contract",\n'
+            '    "_check_certified_artifact_contract_runtime_anchor",\n'
             '    "_check_phase_gate_provenance_contract",\n',
+            '    "_check_certified_artifact_contract_runtime_anchor",\n'
             '    "_check_phase_gate_provenance_contract",\n',
             1,
         ),
@@ -3589,6 +3595,125 @@ def test_p1_2_round15_checker_top_level_closed_world_rejects_dynamic_namespace_r
         "module top level contains disallowed statement Assign" in error
         for error in errors
     )
+
+
+def test_p1_2_round18_checker_rejects_class_body_import_time_main_rebind(
+    tmp_path: Path,
+) -> None:
+    source = _checker_source()
+    checker_source = _checker_source_before_entrypoint(
+        source,
+        "_round18_modules = sys.modules\n"
+        "class _Round18Probe:\n"
+        "    _round18_modules[__name__].main = lambda: 0\n",
+    )
+
+    violation = _locked_close_kernel_violation_for_checker_source(
+        tmp_path / "class_body_main_rebind", checker_source
+    )
+    assert violation is not None
+    assert violation.startswith(
+        "locked_p1_2_close_kernel_checker_top_level_disallowed:ClassDef"
+    )
+
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path,
+        checker_source,
+        name="checker_class_body_main_rebind.py",
+    )
+    assert any(
+        "module top level contains disallowed statement ClassDef" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round18_checker_rejects_checkerror_shadowing_handler(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _checker_source(),
+        "    except CheckError:\n"
+        "        return 2\n"
+        "\n"
+        "    if errors:\n",
+        "    except Exception:\n"
+        "        pass\n"
+        "    except CheckError:\n"
+        "        return 2\n"
+        "\n"
+        "    if errors:\n",
+    )
+
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path,
+        source,
+        name="checker_broad_except_shadow.py",
+    )
+
+    assert any("main must have exactly one exception handler" in error for error in errors)
+
+
+def test_p1_2_round18_checker_rejects_process_exit_aliases_before_error_gate(
+    tmp_path: Path,
+) -> None:
+    source = _checker_source_before_entrypoint(
+        _checker_source(),
+        "_round18_exit = sys.exit\n",
+    )
+    source = _replace_once(
+        source,
+        "        errors: list[str] = []\n",
+        "        errors: list[str] = []\n"
+        "        _round18_exit(0)\n",
+    )
+
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path,
+        source,
+        name="checker_top_level_exit_alias.py",
+    )
+
+    assert any("module top level contains disallowed statement Assign" in error for error in errors)
+    assert any("main must not call process exit before failure gate" in error for error in errors)
+    assert any("main must not exit before errors gate" in error for error in errors)
+
+    source = _replace_once(
+        _checker_source(),
+        "        errors: list[str] = []\n",
+        "        errors: list[str] = []\n"
+        "        _round18_exit = sys.exit\n"
+        "        _round18_exit(0)\n",
+    )
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path,
+        source,
+        name="checker_local_exit_alias.py",
+    )
+    assert any("main must not call process exit before failure gate" in error for error in errors)
+
+
+def test_p1_2_round18_checker_rejects_accumulator_alias_frame_escape(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _checker_source(),
+        "def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:\n"
+        "    errors: list[str] = []\n",
+        "def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:\n"
+        '    _frame = getattr(sys, "_get" + "frame")()\n'
+        '    _locs = getattr(_frame, "f_" + "locals")\n'
+        '    if "errors" in _locs:\n'
+        '        _locs["errors"].clear()\n'
+        "    errors: list[str] = []\n",
+    )
+
+    errors = _checker_error_integrity_errors_for_source(
+        tmp_path,
+        source,
+        name="checker_alias_frame_escape.py",
+    )
+
+    assert any("caller-frame/dynamic primitive getattr f_locals" in error for error in errors)
 
 
 def test_p1_2_round15_close_kernel_rejects_ctypes_native_member_write(
@@ -4909,6 +5034,51 @@ def test_p1_2_close_kernel_strong_status_gate_ignores_parent_sitecustomize(
 
     assert any("strong-status write allowlist checker failed" in error for error in errors)
 
+
+
+def test_p1_2_close_kernel_rejects_runtime_parent_anchor_noop(tmp_path: Path) -> None:
+    contract_path = tmp_path / "certified_artifact_contract.py"
+    source = (PROJECT_ROOT / "src" / "search" / "certified_artifact_contract.py").read_text(
+        encoding="utf-8"
+    )
+    contract_path.write_text(
+        source.replace(
+            "def validate_locked_p1_2_close_kernel(project_root: Path) -> None:\n"
+            "    \"\"\"Fail closed before a locked project can self-seal a fresh campaign.\"\"\"\n\n"
+            "    reason = locked_p1_2_close_kernel_violation(project_root)",
+            "def validate_locked_p1_2_close_kernel(project_root: Path) -> None:\n"
+            "    \"\"\"Fail closed before a locked project can self-seal a fresh campaign.\"\"\"\n\n"
+            "    return\n"
+            "    reason = locked_p1_2_close_kernel_violation(project_root)",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = check_p1_2_proof_obligations._check_certified_artifact_contract_runtime_anchor(
+        path=contract_path
+    )
+
+    assert "validate_locked_p1_2_close_kernel must keep reason-gate-raise body shape" in errors
+
+
+def test_p1_2_close_kernel_rejects_runtime_parent_checker_subprocess_noop(tmp_path: Path) -> None:
+    contract_path = tmp_path / "certified_artifact_contract.py"
+    source = (PROJECT_ROOT / "src" / "search" / "certified_artifact_contract.py").read_text(
+        encoding="utf-8"
+    )
+    contract_path.write_text(
+        source.replace(
+            "    pycache_prefix = tempfile.mkdtemp(prefix=\"zmd_p1_2_close_kernel_pycache_\")",
+            "    return None\n\n    pycache_prefix = tempfile.mkdtemp(prefix=\"zmd_p1_2_close_kernel_pycache_\")",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = check_p1_2_proof_obligations._check_certified_artifact_contract_runtime_anchor(
+        path=contract_path
+    )
+
+    assert any("locked_p1_2_close_kernel_violation" in error for error in errors)
 
 def test_p1_2_close_kernel_source_floor_pins_runtime_guard_and_l0_floor_loader() -> None:
     floor = check_p1_2_proof_obligations.CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH

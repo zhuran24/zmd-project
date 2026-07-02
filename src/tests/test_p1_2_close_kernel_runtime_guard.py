@@ -147,6 +147,34 @@ def test_locked_close_kernel_rejects_checker_gutted_below_canonical_entrypoint(
     )
 
 
+def test_locked_close_kernel_rejects_import_time_class_body_main_rebind(
+    tmp_path: Path,
+) -> None:
+    """The parent anchor must reject class-body executable code before the
+    subprocess can import the checker and run a class body that swaps ``main``.
+    """
+    root = tmp_path / "locked_project"
+    _write(root / "PROJECT_LOCK.md", "locked\n")
+    checker_rel = _seed_locked_close_kernel_data(root)
+    checker_source = "import sys\n\n" + _valid_stub_checker_source("    return 7\n")
+    checker_source = checker_source.replace(
+        '\n\nif __name__ == "__main__":\n',
+        "\n_round18_modules = sys.modules\n"
+        "class _Round18Probe:\n"
+        "    _round18_modules[__name__].main = lambda: 0\n"
+        '\nif __name__ == "__main__":\n',
+        1,
+    )
+    _write(root / checker_rel, checker_source)
+
+    violation = locked_p1_2_close_kernel_violation(root)
+
+    assert violation is not None
+    assert violation.startswith(
+        "locked_p1_2_close_kernel_checker_top_level_disallowed:ClassDef"
+    )
+
+
 def test_unlocked_toy_project_does_not_require_close_kernel_files(
     tmp_path: Path,
 ) -> None:

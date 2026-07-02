@@ -29,7 +29,7 @@ LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS = (
     "scripts/check_p1_2_proof_obligations.py",
 )
 LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256 = (
-    "6d82c0ca5f94e1f985b8f909a8f0c23bd04a90655188e3598e32dbf2fe17c3b7"
+    "8bfce5cf6a5e1d2cf36cf216a5d4c4bb4a25fe9e63b7f5e4df65f0941482c5a6"
 )
 LOCKED_P1_2_CHECKER_PROTECTED_CALLEES = (
     "_check_step7_contract",
@@ -49,6 +49,7 @@ LOCKED_P1_2_CHECKER_PROTECTED_CALLEES = (
     "_check_error_collector_return_shape",
     "_check_proof_obligation_manifest_semantic_projection",
     "_check_close_kernel_contract",
+    "_check_certified_artifact_contract_runtime_anchor",
     "_check_phase_gate_provenance_contract",
     "_check_phase_anchor",
     "_check_exact_session_atomic_snapshot_contract",
@@ -396,6 +397,57 @@ def _locked_checker_has_canonical_entrypoint(tree: ast.Module) -> bool:
     )
 
 
+_LOCKED_CHECKER_ALLOWED_IMPORTS = frozenset(
+    {
+        "ast",
+        "builtins",
+        "hashlib",
+        "json",
+        "shutil",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "textwrap",
+        "weakref",
+    }
+)
+_LOCKED_CHECKER_ALLOWED_FROM_IMPORTS = {
+    "__future__": frozenset({"annotations"}),
+    "pathlib": frozenset({"Path"}),
+    "typing": frozenset({"Any", "Callable", "Iterator", "Mapping", "NoReturn", "Sequence"}),
+}
+
+
+_LOCKED_PROCESS_EXIT_CALL_NAMES = frozenset(
+    {"exit", "quit", "os._exit", "sys.exit", "builtins.exit", "builtins.quit"}
+)
+_LOCKED_PROCESS_EXIT_ATTRS = frozenset({"_exit", "exit", "quit"})
+
+
+def _locked_expr_qualified_name(node: ast.AST | None) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        parts = [node.attr]
+        value = node.value
+        while isinstance(value, ast.Attribute):
+            parts.append(value.attr)
+            value = value.value
+        if isinstance(value, ast.Name):
+            parts.append(value.id)
+            return ".".join(reversed(parts))
+    return None
+
+
+def _locked_expr_is_process_exit_callable(node: ast.AST | None) -> str | None:
+    name = _locked_expr_qualified_name(node)
+    if name in _LOCKED_PROCESS_EXIT_CALL_NAMES:
+        return name
+    if isinstance(node, ast.Attribute) and node.attr in _LOCKED_PROCESS_EXIT_ATTRS:
+        return name or node.attr
+    return None
+
+
 _LOCKED_IMPORT_TIME_REBIND_NAME_PRIMITIVES = frozenset(
     {
         "__import__",
@@ -430,11 +482,53 @@ def _locked_expr_contains_import_time_rebind_primitive(node: ast.AST | None) -> 
     return None
 
 
+def _locked_checker_import_statement_allowed(stmt: ast.Import | ast.ImportFrom) -> bool:
+    if isinstance(stmt, ast.Import):
+        return all(
+            alias.asname is None and alias.name in _LOCKED_CHECKER_ALLOWED_IMPORTS
+            for alias in stmt.names
+        )
+    if stmt.level != 0 or stmt.module not in _LOCKED_CHECKER_ALLOWED_FROM_IMPORTS:
+        return False
+    allowed_names = _LOCKED_CHECKER_ALLOWED_FROM_IMPORTS[stmt.module]
+    return all(alias.asname is None and alias.name in allowed_names for alias in stmt.names)
+
+
+def _locked_checker_class_body_statement_allowed(stmt: ast.stmt, *, is_first: bool) -> bool:
+    if isinstance(stmt, ast.Pass):
+        return True
+    return (
+        is_first
+        and isinstance(stmt, ast.Expr)
+        and isinstance(stmt.value, ast.Constant)
+        and isinstance(stmt.value.value, str)
+    )
+
+
+def _locked_checker_top_level_class_is_inert_exception(stmt: ast.ClassDef) -> bool:
+    """Only the checker exception carrier may be a top-level class.
+
+    A top-level class body executes at import time, so ``global main; main = ...``
+    inside one would silently rebind the module's runtime object while the pinned
+    ``FunctionDef`` still passes the binding scan.  Reject every top-level class
+    except the inert ``CheckError`` carrier.
+    """
+
+    return (
+        stmt.name == "CheckError"
+        and not stmt.decorator_list
+        and tuple(ast.unparse(base) for base in stmt.bases) == ("RuntimeError",)
+        and not stmt.keywords
+        and len(stmt.body) == 1
+        and isinstance(stmt.body[0], ast.Pass)
+    )
+
+
 def _locked_checker_top_level_statement_allowed(
     stmt: ast.stmt, *, is_first: bool, is_last: bool
 ) -> bool:
     if isinstance(stmt, (ast.Import, ast.ImportFrom)):
-        return True
+        return _locked_checker_import_statement_allowed(stmt)
     if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
         for expr in (
             *stmt.decorator_list,
@@ -449,31 +543,27 @@ def _locked_checker_top_level_statement_allowed(
                 return False
         return True
     if isinstance(stmt, ast.ClassDef):
-        for expr in (
-            *stmt.decorator_list,
-            *stmt.bases,
-            *(keyword.value for keyword in stmt.keywords),
-        ):
-            if _locked_expr_contains_import_time_rebind_primitive(expr) is not None:
-                return False
-        for body_stmt in stmt.body:
-            if _locked_expr_contains_import_time_rebind_primitive(body_stmt) is not None:
-                return False
-        return True
+        return _locked_checker_top_level_class_is_inert_exception(stmt)
     if isinstance(stmt, ast.Assign):
         if not (bool(stmt.targets) and all(isinstance(target, ast.Name) for target in stmt.targets)):
             return False
-        return _locked_expr_contains_import_time_rebind_primitive(stmt.value) is None
+        if _locked_expr_contains_import_time_rebind_primitive(stmt.value) is not None:
+            return False
+        return _locked_expr_is_process_exit_callable(stmt.value) is None
     if isinstance(stmt, ast.AnnAssign):
         if not isinstance(stmt.target, ast.Name):
             return False
         if _locked_expr_contains_import_time_rebind_primitive(stmt.annotation) is not None:
             return False
-        return _locked_expr_contains_import_time_rebind_primitive(stmt.value) is None
+        if _locked_expr_contains_import_time_rebind_primitive(stmt.value) is not None:
+            return False
+        return _locked_expr_is_process_exit_callable(stmt.value) is None
     if isinstance(stmt, ast.AugAssign):
         if not isinstance(stmt.target, ast.Name):
             return False
-        return _locked_expr_contains_import_time_rebind_primitive(stmt.value) is None
+        if _locked_expr_contains_import_time_rebind_primitive(stmt.value) is not None:
+            return False
+        return _locked_expr_is_process_exit_callable(stmt.value) is None
     if (
         is_first
         and isinstance(stmt, ast.Expr)

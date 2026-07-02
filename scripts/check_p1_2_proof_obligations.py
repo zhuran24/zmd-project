@@ -33,6 +33,7 @@ EXACT_CAMPAIGN_INSPECTOR_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaig
 CERTIFIED_FRONTIER_PATH = PROJECT_ROOT / "src" / "search" / "certified_frontier.py"
 CERTIFIED_SURFACE_PATH = PROJECT_ROOT / "src" / "search" / "certified_surface.py"
 CANDIDATE_PROOF_REPLAY_PATH = PROJECT_ROOT / "src" / "search" / "candidate_proof_replay.py"
+CERTIFIED_ARTIFACT_CONTRACT_PATH = PROJECT_ROOT / "src" / "search" / "certified_artifact_contract.py"
 PR2_L0_MICRO_VERIFIER_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_micro_verifier_core.py"
 PR2_L0_TRUE_VERIFIER_CHILD_PATH = (
     PROJECT_ROOT / "src" / "search" / "pr2_l0_true_verifier_child.py"
@@ -1061,14 +1062,122 @@ def _calls_function_with_keyword_expr(
     return False
 
 
+def _top_level_import_stmt_imports_exact_name(
+    stmt: ast.stmt, *, module: str, name: str
+) -> bool:
+    if not isinstance(stmt, ast.ImportFrom) or stmt.level != 0 or stmt.module != module:
+        return False
+    return any(alias.name == name and alias.asname is None for alias in stmt.names)
+
+
 def _top_level_imports_exact_name(tree: ast.Module, *, module: str, name: str) -> bool:
-    for node in tree.body:
-        if not isinstance(node, ast.ImportFrom) or node.level != 0 or node.module != module:
-            continue
-        for alias in node.names:
-            if alias.name == name and alias.asname is None:
-                return True
+    return any(
+        _top_level_import_stmt_imports_exact_name(node, module=module, name=name)
+        for node in tree.body
+    )
+
+
+def _class_body_exec_scope_has_global_or_nonlocal(
+    class_node: ast.ClassDef, names: set[str] | None = None
+) -> bool:
+    """Detect class-body global/nonlocal declarations that execute at import time.
+
+    A top-level class body is executable module code with a temporary local
+    namespace.  ``global main; main = ...`` therefore rebinds the module's
+    runtime object while remaining invisible to plain top-level binding scans.
+    Do not descend into function/lambda bodies, which are definition-time only;
+    do descend into nested class bodies because they execute while the outer
+    class body executes.
+    """
+
+    class Visitor(ast.NodeVisitor):
+        def __init__(self) -> None:
+            self.found = False
+
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            return
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            return
+
+        def visit_Lambda(self, child: ast.Lambda) -> None:
+            return
+
+        def visit_Global(self, child: ast.Global) -> None:
+            if names is None or any(name in names for name in child.names):
+                self.found = True
+
+        def visit_Nonlocal(self, child: ast.Nonlocal) -> None:
+            if names is None or any(name in names for name in child.names):
+                self.found = True
+
+    visitor = Visitor()
+    for body_stmt in class_node.body:
+        visitor.visit(body_stmt)
+        if visitor.found:
+            return True
     return False
+
+
+def _checker_top_level_class_is_inert_exception(stmt: ast.ClassDef) -> bool:
+    """Only the checker exception carrier may be a top-level class."""
+
+    return (
+        stmt.name == "CheckError"
+        and not stmt.decorator_list
+        and tuple(ast.unparse(base) for base in stmt.bases) == ("RuntimeError",)
+        and not stmt.keywords
+        and len(stmt.body) == 1
+        and isinstance(stmt.body[0], ast.Pass)
+    )
+
+
+def _top_level_class_global_binding_points(tree: ast.Module, name: str) -> list[ast.ClassDef]:
+    return [
+        node
+        for node in tree.body
+        if isinstance(node, ast.ClassDef)
+        and _class_body_exec_scope_has_global_or_nonlocal(node, {name})
+    ]
+
+
+def _module_global_or_nonlocal_declaration_points(
+    tree: ast.Module, name: str
+) -> list[ast.Global | ast.Nonlocal]:
+    return [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.Global, ast.Nonlocal)) and name in node.names
+    ]
+
+
+def _top_level_exact_import_runtime_binding_errors(
+    tree: ast.Module,
+    *,
+    module: str,
+    name: str,
+    path: Path,
+    label: str,
+) -> list[str]:
+    bindings: list[ast.stmt] = list(_top_level_binding_points(tree, name))
+    bindings.extend(_top_level_class_global_binding_points(tree, name))
+    exact_imports = [
+        node
+        for node in bindings
+        if _top_level_import_stmt_imports_exact_name(node, module=module, name=name)
+    ]
+    global_declarations = _module_global_or_nonlocal_declaration_points(tree, name)
+    if len(bindings) == 1 and len(exact_imports) == 1 and not global_declarations:
+        return []
+    lines = _format_binding_lines(bindings) if bindings else "none"
+    declaration_lines = (
+        _format_binding_lines(global_declarations) if global_declarations else "none"
+    )
+    return [
+        f"{label} imported symbol {_rel(path)}::{name} must have exactly one "
+        f"module-level runtime binding, the exact import from {module}; "
+        f"found binding lines {lines}; global/nonlocal declaration lines {declaration_lines}"
+    ]
 
 
 def _function_imports_exact_name(node: ast.AST, *, module: str, name: str) -> bool:
@@ -1764,6 +1873,26 @@ def _imported_direct_call_errors(
     if not has_top_level_import and not has_local_import:
         errors.append(
             f"{function_label} must import {name} from {module} without aliasing"
+        )
+    if has_top_level_import:
+        errors.extend(
+            _top_level_exact_import_runtime_binding_errors(
+                tree, module=module, name=name, path=path, label=function_label
+            )
+        )
+    if function.decorator_list:
+        errors.append(
+            f"{function_label} must be undecorated so its runtime binding is the "
+            f"checked FunctionDef in {_rel(path)}"
+        )
+    function_global_declarations = _module_global_or_nonlocal_declaration_points(
+        tree, function.name
+    )
+    if function_global_declarations:
+        errors.append(
+            f"{function_label} checked function {_rel(path)}::{function.name} must not "
+            "be named by module-level global/nonlocal declarations; found lines "
+            f"{_format_binding_lines(function_global_declarations)}"
         )
     allowed_module = module if allow_local_import else None
     if _function_shadows_name(function, name, allowed_import_module=allowed_module):
@@ -2845,7 +2974,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "6d82c0ca5f94e1f985b8f909a8f0c23bd04a90655188e3598e32dbf2fe17c3b7"
+    "8bfce5cf6a5e1d2cf36cf216a5d4c4bb4a25fe9e63b7f5e4df65f0941482c5a6"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -2885,6 +3014,7 @@ _PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR = (
     "_check_error_collector_return_shape",
     "_check_proof_obligation_manifest_semantic_projection",
     "_check_close_kernel_contract",
+    "_check_certified_artifact_contract_runtime_anchor",
     "_check_phase_gate_provenance_contract",
     "_check_phase_anchor",
     "_check_exact_session_atomic_snapshot_contract",
@@ -2908,6 +3038,7 @@ _PR2_CHECKER_MAIN_REQUIRED_CALLS = (
     "_check_error_collector_return_shape",
     "_check_proof_obligation_manifest_semantic_projection",
     "_check_close_kernel_contract",
+    "_check_certified_artifact_contract_runtime_anchor",
     "_check_phase_gate_provenance_contract",
     "_check_phase_anchor",
     "_check_exact_session_atomic_snapshot_contract",
@@ -3445,6 +3576,12 @@ def _errors_binding_integrity_errors(function: ast.FunctionDef, *, label: str) -
 _PR2_ACCUMULATOR_CALLEE_DYNAMIC_MODULES = frozenset(
     {"ctypes", "operator", "functools", "importlib"}
 )
+_PR2_ACCUMULATOR_CALLEE_DYNAMIC_IMPORT_MODULES = frozenset(
+    {"ctypes", "operator", "functools", "importlib", "inspect", "gc", "sys"}
+)
+_PR2_ACCUMULATOR_CALLEE_DYNAMIC_BUILTINS = frozenset(
+    {"__import__", "compile", "delattr", "eval", "exec", "globals", "locals", "setattr", "vars"}
+)
 _PR2_ACCUMULATOR_CALLEE_FRAME_CALLS = frozenset(
     {
         "sys._getframe",
@@ -3457,8 +3594,47 @@ _PR2_ACCUMULATOR_CALLEE_FRAME_CALLS = frozenset(
     }
 )
 _PR2_ACCUMULATOR_CALLEE_FRAME_ATTRS = frozenset(
-    {"f_locals", "f_globals", "f_back", "tb_frame"}
+    {"__dict__", "__getattribute__", "f_locals", "f_globals", "f_back", "tb_frame"}
 )
+
+
+def _static_string_value(node: ast.AST | None) -> str | None:
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+        left = _static_string_value(node.left)
+        right = _static_string_value(node.right)
+        if left is not None and right is not None:
+            return left + right
+    if isinstance(node, ast.JoinedStr):
+        parts: list[str] = []
+        for value in node.values:
+            if not isinstance(value, ast.Constant) or not isinstance(value.value, str):
+                return None
+            parts.append(value.value)
+        return "".join(parts)
+    return None
+
+
+def _accumulator_getattr_dynamic_primitive(call: ast.Call) -> str | None:
+    if _call_func_name(call) != "getattr":
+        return None
+    if len(call.args) < 2:
+        return "getattr dynamic member name"
+    receiver = call.args[0]
+    member_name = _static_string_value(call.args[1])
+    receiver_name = receiver.id if isinstance(receiver, ast.Name) else None
+    if receiver_name in {"sys", "inspect", "gc"} and member_name is None:
+        return "getattr dynamic member name"
+    if member_name in _PR2_ACCUMULATOR_CALLEE_FRAME_ATTRS:
+        return f"getattr {member_name}"
+    if receiver_name == "sys" and member_name in {"_getframe", "_current_frames"}:
+        return f"getattr sys.{member_name}"
+    if receiver_name == "inspect" and member_name in {"currentframe", "stack", "trace"}:
+        return f"getattr inspect.{member_name}"
+    if receiver_name == "gc" and member_name in {"get_objects", "get_referrers"}:
+        return f"getattr gc.{member_name}"
+    return None
 
 
 def _accumulator_callee_body_dynamic_primitive(node: ast.AST) -> str | None:
@@ -3466,10 +3642,15 @@ def _accumulator_callee_body_dynamic_primitive(node: ast.AST) -> str | None:
         for alias in node.names:
             root = alias.name.split(".", 1)[0]
             module = root if isinstance(node, ast.Import) else (node.module or "").split(".", 1)[0]
-            if root in _PR2_ACCUMULATOR_CALLEE_DYNAMIC_MODULES or module in _PR2_ACCUMULATOR_CALLEE_DYNAMIC_MODULES:
-                return root if root in _PR2_ACCUMULATOR_CALLEE_DYNAMIC_MODULES else module
+            if root in _PR2_ACCUMULATOR_CALLEE_DYNAMIC_IMPORT_MODULES or module in _PR2_ACCUMULATOR_CALLEE_DYNAMIC_IMPORT_MODULES:
+                return root if root in _PR2_ACCUMULATOR_CALLEE_DYNAMIC_IMPORT_MODULES else module
     if isinstance(node, ast.Call):
         call_name = _call_func_name(node)
+        if call_name in _PR2_ACCUMULATOR_CALLEE_DYNAMIC_BUILTINS:
+            return call_name
+        getattr_primitive = _accumulator_getattr_dynamic_primitive(node)
+        if getattr_primitive is not None:
+            return getattr_primitive
         if call_name in _PR2_ACCUMULATOR_CALLEE_FRAME_CALLS:
             return call_name
         if call_name is not None and call_name.startswith("importlib."):
@@ -3531,6 +3712,8 @@ def _check_function_errors_whitelist(function: ast.FunctionDef, *, label: str) -
             continue
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
             errors.append(f"{label} must not define nested executable scope at line {getattr(node, 'lineno', '?')}")
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            errors.append(f"{label} must not import inside error collector at line {getattr(node, 'lineno', '?')}")
         if isinstance(node, ast.stmt):
             errors.extend(_errors_append_purity_errors(node, label=label))
         if isinstance(node, ast.Name) and node.id == "errors":
@@ -3640,11 +3823,106 @@ def _main_preflight_prefix_len(main_fn: ast.FunctionDef) -> int:
     return 4 if _main_preflight_prefix_matches(main_fn) else 0
 
 
-def _stmt_has_control_exit(stmt: ast.stmt) -> bool:
+_PR2_PROCESS_EXIT_CALL_NAMES = frozenset(
+    {"exit", "quit", "os._exit", "sys.exit", "builtins.exit", "builtins.quit"}
+)
+_PR2_PROCESS_EXIT_ATTRS = frozenset({"_exit", "exit", "quit"})
+
+
+def _expr_qualified_name(node: ast.AST | None) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        parts = [node.attr]
+        value = node.value
+        while isinstance(value, ast.Attribute):
+            parts.append(value.attr)
+            value = value.value
+        if isinstance(value, ast.Name):
+            parts.append(value.id)
+            return ".".join(reversed(parts))
+    return None
+
+
+def _expr_is_process_exit_callable(
+    node: ast.AST | None,
+    *,
+    process_exit_aliases: frozenset[str] = frozenset(),
+) -> str | None:
+    name = _expr_qualified_name(node)
+    if name in process_exit_aliases:
+        return name
+    if name in _PR2_PROCESS_EXIT_CALL_NAMES:
+        return name
+    if isinstance(node, ast.Attribute) and node.attr in _PR2_PROCESS_EXIT_ATTRS:
+        return name or node.attr
+    return None
+
+
+def _process_exit_alias_names(
+    nodes: Sequence[ast.AST],
+    *,
+    initial_aliases: frozenset[str] = frozenset(),
+) -> frozenset[str]:
+    aliases = set(initial_aliases)
+    walk_nodes = [child for node in nodes for child in ast.walk(node)]
+    changed = True
+    while changed:
+        changed = False
+        for node in walk_nodes:
+            if isinstance(node, ast.ImportFrom) and node.module in {"builtins", "os", "sys"}:
+                for alias in node.names:
+                    qualified = f"{node.module}.{alias.name}"
+                    if qualified in _PR2_PROCESS_EXIT_CALL_NAMES or alias.name in _PR2_PROCESS_EXIT_ATTRS:
+                        bound = alias.asname or alias.name
+                        if bound not in aliases:
+                            aliases.add(bound)
+                            changed = True
+            elif isinstance(node, ast.Assign) and _expr_is_process_exit_callable(
+                node.value,
+                process_exit_aliases=frozenset(aliases),
+            ):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id not in aliases:
+                        aliases.add(target.id)
+                        changed = True
+            elif isinstance(node, ast.AnnAssign) and _expr_is_process_exit_callable(
+                node.value,
+                process_exit_aliases=frozenset(aliases),
+            ):
+                if isinstance(node.target, ast.Name) and node.target.id not in aliases:
+                    aliases.add(node.target.id)
+                    changed = True
+    return frozenset(aliases)
+
+
+def _call_is_process_exit(
+    call: ast.Call,
+    *,
+    process_exit_aliases: frozenset[str] = frozenset(),
+) -> str | None:
+    if isinstance(call.func, ast.Name) and call.func.id in process_exit_aliases:
+        return call.func.id
+    call_name = _call_func_name(call)
+    if call_name in _PR2_PROCESS_EXIT_CALL_NAMES:
+        return call_name
+    if isinstance(call.func, ast.Attribute) and call.func.attr in _PR2_PROCESS_EXIT_ATTRS:
+        return call_name or call.func.attr
+    return None
+
+
+def _stmt_has_control_exit(
+    stmt: ast.stmt,
+    *,
+    process_exit_aliases: frozenset[str] = frozenset(),
+) -> bool:
     for node in ast.walk(stmt):
         if isinstance(node, (ast.Return, ast.Raise)):
             return True
-        if isinstance(node, ast.Call) and _call_func_name(node) in {"exit", "quit", "os._exit", "sys.exit"}:
+        if isinstance(node, ast.Call) and _call_is_process_exit(
+            node,
+            process_exit_aliases=process_exit_aliases,
+        ) is not None:
             return True
     return False
 
@@ -3776,23 +4054,32 @@ def _check_main_error_reporting_shape(
         if not lines:
             continue
         required_call_lines.extend(lines)
+    process_exit_aliases = _process_exit_alias_names(
+        main_fn.body,
+        initial_aliases=_process_exit_alias_names(tree.body),
+    )
     failure_gate = _errors_failure_gate(main_fn)
     gate_lineno = None if failure_gate is None else failure_gate.lineno
     if failure_gate is None:
         errors.append("proof-obligation checker main must have reachable if errors: return 1")
     elif required_call_lines and gate_lineno <= max(required_call_lines):
         errors.append("proof-obligation checker main failure gate must follow required calls")
-    check_error_handlers = [
-        node
+    exception_handlers = [
+        handler
         for node in ast.walk(main_fn)
-        if isinstance(node, ast.ExceptHandler)
-        and isinstance(node.type, ast.Name)
-        and node.type.id == "CheckError"
+        if isinstance(node, (ast.Try, ast.TryStar))
+        for handler in node.handlers
     ]
-    if len(check_error_handlers) != 1:
-        errors.append("proof-obligation checker main must have exactly one CheckError handler")
+    if len(exception_handlers) != 1:
+        errors.append("proof-obligation checker main must have exactly one exception handler")
     else:
-        handler = check_error_handlers[0]
+        handler = exception_handlers[0]
+        if not (
+            isinstance(handler.type, ast.Name)
+            and handler.type.id == "CheckError"
+            and handler.name is None
+        ):
+            errors.append("proof-obligation checker main exception handler must catch only CheckError")
         if len(handler.body) != 1 or not _direct_return_value(handler.body[0], 2):
             errors.append("proof-obligation checker main CheckError handler must only return 2")
     return_zero_lines: list[int] = []
@@ -3815,7 +4102,10 @@ def _check_main_error_reporting_shape(
                 errors.append("proof-obligation checker main must not raise SystemExit")
             if isinstance(exc, ast.Call) and _call_func_name(exc) == "SystemExit":
                 errors.append("proof-obligation checker main must not raise SystemExit")
-        if isinstance(node, ast.Call) and _call_func_name(node) in {"exit", "quit", "os._exit", "sys.exit"}:
+        if isinstance(node, ast.Call) and _call_is_process_exit(
+            node,
+            process_exit_aliases=process_exit_aliases,
+        ) is not None:
             errors.append("proof-obligation checker main must not call process exit before failure gate")
     if failure_gate is not None and (
         not _errors_failure_gate_has_allowed_body(failure_gate) or failure_gate.orelse
@@ -3829,7 +4119,17 @@ def _check_main_error_reporting_shape(
         for stmt in main_fn.body[prefix_len:]:
             if stmt is failure_gate:
                 break
-            if _stmt_has_control_exit(stmt) and not isinstance(stmt, (ast.Try, ast.TryStar)):
+            if isinstance(stmt, (ast.Try, ast.TryStar)):
+                checked_bodies = [*stmt.body, *stmt.orelse, *stmt.finalbody]
+                if any(
+                    _stmt_has_control_exit(
+                        inner_stmt,
+                        process_exit_aliases=process_exit_aliases,
+                    )
+                    for inner_stmt in checked_bodies
+                ):
+                    errors.append("proof-obligation checker main must not exit before errors gate")
+            elif _stmt_has_control_exit(stmt, process_exit_aliases=process_exit_aliases):
                 errors.append("proof-obligation checker main must not exit before errors gate")
     return errors
 
@@ -3854,6 +4154,27 @@ def _check_error_collector_return_shape(
     if returns != [tail]:
         errors.append("_check_candidate_sink_replay_contract must have only the final return errors")
     return errors
+
+
+_CHECKER_ALLOWED_IMPORTS = frozenset(
+    {
+        "ast",
+        "builtins",
+        "hashlib",
+        "json",
+        "shutil",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "textwrap",
+        "weakref",
+    }
+)
+_CHECKER_ALLOWED_FROM_IMPORTS = {
+    "__future__": frozenset({"annotations"}),
+    "pathlib": frozenset({"Path"}),
+    "typing": frozenset({"Any", "Callable", "Iterator", "Mapping", "NoReturn", "Sequence"}),
+}
 
 
 _IMPORT_TIME_REBIND_NAME_PRIMITIVES = frozenset(
@@ -3896,11 +4217,34 @@ def _expr_contains_import_time_rebind_primitive(node: ast.AST | None) -> str | N
     return None
 
 
+def _checker_import_statement_allowed(stmt: ast.Import | ast.ImportFrom) -> bool:
+    if isinstance(stmt, ast.Import):
+        return all(
+            alias.asname is None and alias.name in _CHECKER_ALLOWED_IMPORTS
+            for alias in stmt.names
+        )
+    if stmt.level != 0 or stmt.module not in _CHECKER_ALLOWED_FROM_IMPORTS:
+        return False
+    allowed_names = _CHECKER_ALLOWED_FROM_IMPORTS[stmt.module]
+    return all(alias.asname is None and alias.name in allowed_names for alias in stmt.names)
+
+
+def _checker_class_body_statement_allowed(stmt: ast.stmt, *, is_first: bool) -> bool:
+    if isinstance(stmt, ast.Pass):
+        return True
+    return (
+        is_first
+        and isinstance(stmt, ast.Expr)
+        and isinstance(stmt.value, ast.Constant)
+        and isinstance(stmt.value.value, str)
+    )
+
+
 def _checker_module_top_level_statement_allowed(
     stmt: ast.stmt, *, is_first: bool, is_last: bool
 ) -> bool:
     if isinstance(stmt, (ast.Import, ast.ImportFrom)):
-        return True
+        return _checker_import_statement_allowed(stmt)
     if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
         for expr in (
             *stmt.decorator_list,
@@ -3915,31 +4259,27 @@ def _checker_module_top_level_statement_allowed(
                 return False
         return True
     if isinstance(stmt, ast.ClassDef):
-        for expr in (
-            *stmt.decorator_list,
-            *stmt.bases,
-            *(keyword.value for keyword in stmt.keywords),
-        ):
-            if _expr_contains_import_time_rebind_primitive(expr) is not None:
-                return False
-        for body_stmt in stmt.body:
-            if _expr_contains_import_time_rebind_primitive(body_stmt) is not None:
-                return False
-        return True
+        return _checker_top_level_class_is_inert_exception(stmt)
     if isinstance(stmt, ast.Assign):
         if not (bool(stmt.targets) and all(isinstance(target, ast.Name) for target in stmt.targets)):
             return False
-        return _expr_contains_import_time_rebind_primitive(stmt.value) is None
+        if _expr_contains_import_time_rebind_primitive(stmt.value) is not None:
+            return False
+        return _expr_is_process_exit_callable(stmt.value) is None
     if isinstance(stmt, ast.AnnAssign):
         if not isinstance(stmt.target, ast.Name):
             return False
         if _expr_contains_import_time_rebind_primitive(stmt.annotation) is not None:
             return False
-        return _expr_contains_import_time_rebind_primitive(stmt.value) is None
+        if _expr_contains_import_time_rebind_primitive(stmt.value) is not None:
+            return False
+        return _expr_is_process_exit_callable(stmt.value) is None
     if isinstance(stmt, ast.AugAssign):
         if not isinstance(stmt.target, ast.Name):
             return False
-        return _expr_contains_import_time_rebind_primitive(stmt.value) is None
+        if _expr_contains_import_time_rebind_primitive(stmt.value) is not None:
+            return False
+        return _expr_is_process_exit_callable(stmt.value) is None
     if (
         is_first
         and isinstance(stmt, ast.Expr)
@@ -12341,7 +12681,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
-    'src/search/certified_artifact_contract.py': 'dd0f46de53eaefa95d52f4fa2d1c6f4e3b15dab10bc0c44eef78ce03ca599cd2',
+    'src/search/certified_artifact_contract.py': '352fd085a9340cc94c08b926e0e74ef1c8de141d887999a8dff4eeb424ba7422',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
@@ -12636,6 +12976,338 @@ def _check_dependency_floor_provenance_contract(
     return errors
 
 
+
+def _literal_tuple_constant_assignment(
+    tree: ast.Module,
+    name: str,
+    *,
+    path: Path,
+) -> tuple[object, ...] | None:
+    bindings = _top_level_binding_points(tree, name)
+    if len(bindings) != 1:
+        return None
+    stmt = bindings[0]
+    value: ast.AST | None = None
+    if isinstance(stmt, ast.Assign):
+        if len(stmt.targets) == 1 and isinstance(stmt.targets[0], ast.Name) and stmt.targets[0].id == name:
+            value = stmt.value
+    elif isinstance(stmt, ast.AnnAssign):
+        if isinstance(stmt.target, ast.Name) and stmt.target.id == name:
+            value = stmt.value
+    if value is None:
+        return None
+    try:
+        literal = ast.literal_eval(value)
+    except (SyntaxError, ValueError):
+        return None
+    if not isinstance(literal, tuple):
+        return None
+    return literal
+
+
+def _literal_str_constant_assignment(
+    tree: ast.Module,
+    name: str,
+    *,
+    path: Path,
+) -> str | None:
+    bindings = _top_level_binding_points(tree, name)
+    if len(bindings) != 1:
+        return None
+    stmt = bindings[0]
+    value: ast.AST | None = None
+    if isinstance(stmt, ast.Assign):
+        if len(stmt.targets) == 1 and isinstance(stmt.targets[0], ast.Name) and stmt.targets[0].id == name:
+            value = stmt.value
+    elif isinstance(stmt, ast.AnnAssign):
+        if isinstance(stmt.target, ast.Name) and stmt.target.id == name:
+            value = stmt.value
+    if value is None:
+        return None
+    try:
+        literal = ast.literal_eval(value)
+    except (SyntaxError, ValueError):
+        return None
+    return literal if isinstance(literal, str) else None
+
+
+def _contract_function_has_statement(function: ast.FunctionDef, source: str) -> bool:
+    return any(_stmt_matches_source(stmt, source) for stmt in function.body)
+
+
+def _contract_executable_body(function: ast.FunctionDef) -> list[ast.stmt]:
+    body = list(function.body)
+    if (
+        body
+        and isinstance(body[0], ast.Expr)
+        and isinstance(body[0].value, ast.Constant)
+        and isinstance(body[0].value.value, str)
+    ):
+        return body[1:]
+    return body
+
+
+def _contract_statement_sequence_matches(
+    function: ast.FunctionDef,
+    expected_sources: Sequence[str],
+) -> bool:
+    body = _contract_executable_body(function)
+    return len(body) == len(expected_sources) and all(
+        _stmt_matches_source(stmt, source)
+        for stmt, source in zip(body, expected_sources)
+    )
+
+
+def _contract_reachable_call_count(function: ast.FunctionDef, call_name: str) -> int:
+    return sum(
+        1
+        for child in ast.walk(function)
+        if isinstance(child, ast.Call) and _call_func_name(child) == call_name
+    )
+
+
+def _contract_has_subprocess_checker_invocation(function: ast.FunctionDef) -> bool:
+    calls = [
+        child
+        for child in ast.walk(function)
+        if isinstance(child, ast.Call) and _call_func_name(child) == "subprocess.run"
+    ]
+    if len(calls) != 1:
+        return False
+    call = calls[0]
+    if not call.args or not isinstance(call.args[0], ast.List):
+        return False
+    argv = call.args[0].elts
+    required_argv_shapes = (
+        "sys.executable",
+        "'-I'",
+        "'-S'",
+        "'-B'",
+        "'-X'",
+        "f'pycache_prefix={pycache_prefix}'",
+        "str(checker_path)",
+    )
+    for expected in required_argv_shapes:
+        if not any(_expr_matches_source(item, expected) for item in argv):
+            return False
+    keywords = {keyword.arg: keyword.value for keyword in call.keywords if keyword.arg is not None}
+    expected_keywords = {
+        "cwd": "str(root)",
+        "capture_output": "True",
+        "text": "True",
+        "timeout": "float(checker_timeout_seconds)",
+        "check": "False",
+    }
+    return all(
+        name in keywords and _expr_matches_source(keywords[name], expected)
+        for name, expected in expected_keywords.items()
+    )
+
+
+def _check_certified_artifact_contract_runtime_anchor(
+    *,
+    path: Path = CERTIFIED_ARTIFACT_CONTRACT_PATH,
+) -> list[str]:
+    """Statically anchor the runtime parent gate that runs this checker.
+
+    ``src/search/certified_artifact_contract.py`` is not merely another sink: it is
+    the parent process that decides whether a locked campaign must execute the
+    checker before self-sealing.  Source-sha floors make edits visible, but a
+    faithful floor reseal would still allow a one-line parent no-op unless the
+    checker also verifies the parent anchor's own control-flow skeleton.
+    """
+
+    errors: list[str] = []
+    try:
+        tree = _parse_python(path)
+    except CheckError as exc:
+        return [str(exc)]
+
+    expected_required_paths = (
+        "data/proof_obligations/p1_2_proof_obligations.json",
+        "data/proof_obligations/strong_status_write_allowlist.json",
+        "scripts/check_p1_2_proof_obligations.py",
+    )
+    actual_required_paths = _literal_tuple_constant_assignment(
+        tree,
+        "LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS",
+        path=path,
+    )
+    if actual_required_paths != expected_required_paths:
+        errors.append(
+            "certified artifact runtime anchor must hard-code the close-kernel required paths"
+        )
+
+    actual_projection_sha = _literal_str_constant_assignment(
+        tree,
+        "LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256",
+        path=path,
+    )
+    if actual_projection_sha != P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256:
+        errors.append(
+            "certified artifact runtime anchor semantic projection sha must match checker floor"
+        )
+
+    expected_protected_callees = tuple(
+        dict.fromkeys(
+            (*_PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR, *_PR2_CHECKER_CANDIDATE_SINK_REQUIRED_CALLS_FLOOR)
+        )
+    )
+    actual_protected_callees = _literal_tuple_constant_assignment(
+        tree,
+        "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES",
+        path=path,
+    )
+    if actual_protected_callees != expected_protected_callees:
+        errors.append(
+            "certified artifact runtime anchor must protect every checker main/sink callee"
+        )
+
+    try:
+        uses_locked = _function_def(
+            tree,
+            "certified_project_uses_locked_artifact_contract",
+            path=path,
+        )
+        manifest_projection = _function_def(
+            tree,
+            "_locked_close_kernel_manifest_projection_violation",
+            path=path,
+        )
+        checker_ast_anchor = _function_def(
+            tree,
+            "_locked_close_kernel_checker_ast_anchor_violation",
+            path=path,
+        )
+        violation = _function_def(tree, "locked_p1_2_close_kernel_violation", path=path)
+        validate = _function_def(tree, "validate_locked_p1_2_close_kernel", path=path)
+    except CheckError as exc:
+        errors.append(str(exc))
+        return errors
+
+    uses_locked_required = (
+        "root = Path(project_root).resolve()",
+        "source_root = Path(__file__).resolve().parents[2]",
+        "if root == source_root:\n    return True",
+        "marker = root / LOCKED_EXACT_PROJECT_MARKER",
+        "return marker.exists() or marker.is_symlink()",
+    )
+    if not _contract_statement_sequence_matches(uses_locked, uses_locked_required):
+        errors.append(
+            "certified_project_uses_locked_artifact_contract lost locked-source/marker shape"
+        )
+
+    manifest_projection_required = (
+        "try:\n"
+        "    manifest = _load_locked_close_kernel_manifest(path)\n"
+        "except (OSError, ValueError, json.JSONDecodeError):\n"
+        "    return \"locked_p1_2_close_kernel_manifest_invalid\"",
+        'declared = manifest.get("semantic_projection_sha256")',
+        "if declared != LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256:\n"
+        "    return \"locked_p1_2_close_kernel_semantic_projection_mismatch\"",
+        "return None",
+    )
+    if not _contract_statement_sequence_matches(manifest_projection, manifest_projection_required):
+        errors.append("locked close-kernel manifest projection guard lost semantic shape")
+
+    checker_ast_required = (
+        "try:\n"
+        "    tree = ast.parse(checker_path.read_text(encoding=\"utf-8-sig\"))\n"
+        "except (OSError, SyntaxError, ValueError):\n"
+        "    return \"locked_p1_2_close_kernel_checker_ast_invalid\"",
+        "if not _locked_checker_has_canonical_entrypoint(tree):\n"
+        "    return \"locked_p1_2_close_kernel_checker_entrypoint_invalid\"",
+        "top_level_violation = _locked_checker_top_level_closed_world_violation(tree)",
+        "if top_level_violation is not None:\n    return top_level_violation",
+        'for name in ("main", *LOCKED_P1_2_CHECKER_PROTECTED_CALLEES):\n'
+        "    bindings = _locked_top_level_binding_points(tree, name)\n"
+        "    if len(bindings) != 1:\n"
+        "        return f\"locked_p1_2_close_kernel_checker_protected_binding:{name}\"\n"
+        "    binding = bindings[0]\n"
+        "    if not isinstance(binding, ast.FunctionDef) or binding.name != name:\n"
+        "        return f\"locked_p1_2_close_kernel_checker_protected_binding:{name}\"\n"
+        "    if binding.decorator_list:\n"
+        "        return f\"locked_p1_2_close_kernel_checker_protected_binding:{name}\"",
+        "return None",
+    )
+    if not _contract_statement_sequence_matches(checker_ast_anchor, checker_ast_required):
+        errors.append("locked close-kernel checker AST parent anchor lost protected-binding shape")
+
+    violation_required = (
+        "if not certified_project_uses_locked_artifact_contract(project_root):\n    return None",
+        "root = Path(project_root)",
+        "for relative_path in LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS:\n"
+        "    path = root / relative_path\n"
+        "    if not path.exists():\n"
+        "        return f\"locked_p1_2_close_kernel_missing:{relative_path}\"\n"
+        "    if _path_has_symlink_component(path) or not path.is_file():\n"
+        "        return f\"locked_p1_2_close_kernel_not_regular:{relative_path}\"",
+        "manifest_relative_path = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS[0]",
+        "manifest_violation = _locked_close_kernel_manifest_projection_violation(\n"
+        "    root / manifest_relative_path\n"
+        ")",
+        "if manifest_violation is not None:\n    return manifest_violation",
+        "checker_relative_path = \"scripts/check_p1_2_proof_obligations.py\"",
+        "checker_path = root / checker_relative_path",
+        "checker_anchor_violation = _locked_close_kernel_checker_ast_anchor_violation(checker_path)",
+        "if checker_anchor_violation is not None:\n    return checker_anchor_violation",
+        "pycache_prefix = tempfile.mkdtemp(prefix=\"zmd_p1_2_close_kernel_pycache_\")",
+        "try:\n"
+        "    result = subprocess.run(\n"
+        "        [\n"
+        "            sys.executable,\n"
+        "            \"-I\",\n"
+        "            \"-S\",\n"
+        "            \"-B\",\n"
+        "            \"-X\",\n"
+        "            f\"pycache_prefix={pycache_prefix}\",\n"
+        "            str(checker_path),\n"
+        "        ],\n"
+        "        cwd=str(root),\n"
+        "        capture_output=True,\n"
+        "        text=True,\n"
+        "        timeout=float(checker_timeout_seconds),\n"
+        "        check=False,\n"
+        "    )\n"
+        "except subprocess.TimeoutExpired:\n"
+        "    return \"locked_p1_2_close_kernel_checker_timeout\"\n"
+        "except OSError as exc:\n"
+        "    return f\"locked_p1_2_close_kernel_checker_error:{type(exc).__name__}\"\n"
+        "finally:\n"
+        "    shutil.rmtree(pycache_prefix, ignore_errors=True)",
+        "if result.returncode != 0:\n"
+        "    return f\"locked_p1_2_close_kernel_checker_rejected:{result.returncode}\"",
+        "return None",
+    )
+    if not _contract_statement_sequence_matches(violation, violation_required):
+        errors.append("locked_p1_2_close_kernel_violation lost fail-closed parent-gate shape")
+    if _contract_reachable_call_count(violation, "subprocess.run") != 1:
+        errors.append("locked_p1_2_close_kernel_violation must run exactly one checker subprocess")
+    elif not _contract_has_subprocess_checker_invocation(violation):
+        errors.append("locked_p1_2_close_kernel_violation checker subprocess lost isolated argv/keyword shape")
+
+    validate_body = _contract_executable_body(validate)
+    if len(validate_body) != 3:
+        errors.append("validate_locked_p1_2_close_kernel must keep reason-gate-raise body shape")
+    else:
+        if not _stmt_matches_source(
+            validate_body[0],
+            "reason = locked_p1_2_close_kernel_violation(project_root)",
+        ):
+            errors.append("validate_locked_p1_2_close_kernel must call violation helper first")
+        if not _stmt_matches_source(validate_body[1], "if reason is None:\n    return"):
+            errors.append("validate_locked_p1_2_close_kernel must return only after a clean violation helper")
+        final_stmt = validate_body[2]
+        if not (
+            isinstance(final_stmt, ast.Raise)
+            and isinstance(final_stmt.exc, ast.Call)
+            and isinstance(final_stmt.exc.func, ast.Name)
+            and final_stmt.exc.func.id == "LockedExactArtifactContractError"
+        ):
+            errors.append("validate_locked_p1_2_close_kernel must raise LockedExactArtifactContractError")
+
+    return errors
+
 def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path = PROJECT_ROOT) -> list[str]:
     """Check the P1.2 close-kernel contract.
 
@@ -12910,12 +13582,32 @@ def _check_independent_infeasibility_reverifier_contract(
             "whole-layout nogood funnel must import reverify_whole_layout_infeasibility "
             "from src.search.independent_infeasibility_reverifier without aliasing"
         )
+    else:
+        errors.extend(
+            _top_level_exact_import_runtime_binding_errors(
+                benders_tree,
+                module="src.search.independent_infeasibility_reverifier",
+                name="reverify_whole_layout_infeasibility",
+                path=benders_loop_path,
+                label="whole-layout nogood funnel",
+            )
+        )
     controller_class = _class_def(benders_tree, "LBBDController", path=benders_loop_path)
+    if controller_class.decorator_list or controller_class.bases or controller_class.keywords:
+        errors.append(
+            "whole-layout nogood controller class must have no decorators, bases, "
+            "or metaclass keywords so checked methods resolve on LBBDController itself"
+        )
     funnel_fn = _method_def(
         controller_class,
         "_add_exact_whole_layout_nogood",
         path=benders_loop_path,
     )
+    if funnel_fn.decorator_list:
+        errors.append(
+            "whole-layout nogood funnel must be undecorated so its runtime binding "
+            "is the checked FunctionDef"
+        )
     if _function_shadows_name(funnel_fn, "reverify_whole_layout_infeasibility"):
         errors.append("whole-layout nogood funnel shadows the independent reverifier")
     funnel_source = _source_text(benders_loop_path, funnel_fn)
@@ -13220,6 +13912,7 @@ def main() -> int:
         errors.extend(_check_error_collector_return_shape())
         errors.extend(_check_proof_obligation_manifest_semantic_projection(manifest))
         errors.extend(_check_close_kernel_contract(manifest))
+        errors.extend(_check_certified_artifact_contract_runtime_anchor())
         errors.extend(_check_phase_gate_provenance_contract())
         errors.extend(_check_phase_anchor(manifest))
         errors.extend(_check_exact_session_atomic_snapshot_contract())
