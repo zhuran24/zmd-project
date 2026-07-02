@@ -1623,8 +1623,29 @@ _PR2_WITNESS_BODY_FORBIDDEN_NAMES = frozenset(
         "vars",
     }
 )
+# round-18 (owner decision 2026-07-02): the A4 witness-body dynamic-reflection
+# rebind surface does NOT converge as a denylist -- ``func.__globals__[name]=`` /
+# ``sys._getframe().f_globals[name]=`` / ``sys.modules[__name__].name=`` all reach
+# the module namespace by yet another primitive.  The witness source files are
+# byte-pinned (source_sha256 / V99 floor), so editing a witness body to rebind is
+# a conspicuous diff caught by human clean-review -- the SAME accepted-residual
+# class as F (#5-F import-time execution integrity) and the checker-self residual.
+# Per owner ruling this is treated as a BEST-EFFORT gate + conspicuous-edit /
+# clean-review residual, NOT a release blocker.  These sets catch the known forms
+# (dynamic-exec + namespace/frame/function-object reach + attribute-target rebind);
+# completeness of the reflection surface is a clean-review responsibility.
 _PR2_WITNESS_BODY_FORBIDDEN_ATTRS = frozenset(
-    {"__delattr__", "__dict__", "__setattr__", "__setitem__"}
+    {
+        "__delattr__",
+        "__dict__",
+        "__globals__",
+        "__setattr__",
+        "__setitem__",
+        "f_back",
+        "f_globals",
+        "f_locals",
+        "tb_frame",
+    }
 )
 
 
@@ -1681,6 +1702,15 @@ def _function_shadows_name(
             else:
                 targets.append(child.target)
             if any(name in _store_target_names(target) for target in targets):
+                return True
+            # round-18 (owner best-effort residual): ``<module-expr>.<name> = ...``
+            # (an Attribute-target assign whose attr is the witness symbol, e.g.
+            # ``sys.modules[__name__].build_terminal_... = fake``) rebinds the
+            # module global via attribute write; catch it as a shadow.
+            if any(
+                isinstance(target, ast.Attribute) and target.attr == name
+                for target in targets
+            ):
                 return True
         if isinstance(child, (ast.For, ast.AsyncFor, ast.With, ast.AsyncWith)):
             targets = []
