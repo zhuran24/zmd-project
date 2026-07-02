@@ -1,0 +1,460 @@
+我：
+memory_system_session_summary_20260626.md
+
+当前这个项目的记忆系统，现在我发现还是有些问题，或者说当时设计的时候有很多地方还是没有注意到。跟当前这个会话附带的 MD 文件，算是我当时设计这个系统时的讨论过程，当然，实际情况你还是要看文件库里的那个项目包
+
+首先，最严重的问题就是：这是一个数据库。如果你不自己主动去查，你就不会知道这里面有什么内容；但如果你不知道这里面有什么内容，你就不会主动去查。
+
+这个悖论是目前遇到的最重要的问题，它的召回率可以说是 0，后面我尝试了一些其他方法来进行绕过，或者说补强吧。
+
+但是怎么说呢？这个召回率的提升，由于它底子上就有问题，那就算再做再多的补强也很难起到大用。
+
+其次，则是这个 GPU 加速用的查询模型，它是一个二分模型（要么输出 1 相关，要么输出 0 不相关），不能输出连续的评分。关于这一点，我已经试过很多方法了，但是甚至哪怕换模型也没有用。
+
+这样的话，这个问题也是需要解决的；不然系统在节点多了之后，维护起来会非常吃力，因为这导致现在的候选只能通过机械式的程序来提供，但这样产出的候选质量很差，甚至比不上使用该系统的模型自己去造。那这样的话，相当于这个系统没有达成一开始预期的目的，也就是将系统的维护交由系统自身来进行
+
+而且我发现，或者说我感觉到，当前的这个落地的记忆系统似乎还在某些其他方面（具体哪些方面我也说不上来），没有达成我最开始构思这个系统时想要的目标。关于这个，你也帮我仔细找找
+
+我想让你做的是，重新再给出一版全新的记忆系统设计。不要基于现有的系统补补改改，而是完全推翻，重新再来一版
+gpt：
+我看完后的结论比较硬：**当前系统不是“还缺一个更强的 GPU 检索器”，而是“记忆没有真正进入 Agent 的控制流”。**
+
+你说的那个悖论非常准确：数据库只有在被查询时才存在；而要查询它，Agent 必须先知道该查什么。上一版系统虽然已经从 Markdown 树走到了 `memory.db`、typed edges、relation suggestions、GPU embedding/rerank、hook finalize，但它仍然更像一个“可维护的资料库”，不是一个会在任务流里主动发光的记忆器官。
+
+我整理了一份完整的新设计文档，不是补当前 `cc_memory/mem.py`，而是重新定义下一代系统：
+
+[下载完整设计文档：zmd_memory_system_rewrite_design_vnext.md](sandbox:/mnt/data/zmd_memory_system_rewrite_design_vnext.md)
+
+这次我没有修改项目代码，所以没有补丁包。
+
+---
+
+## 核心判断
+
+随附 MD 里最重要的一句话其实已经把问题框死了：记忆系统的目标不是让使用者或当前 Agent 更会想，而是让系统承担关系维护，能在事实、条目、事件、依赖之间主动发现候选关系。也就是说，新增记忆时，系统应该主动找候选相关项，而不是等 Agent 想起来再查。
+
+上一版做了 `relation_suggestions`，方向是对的：系统生成候选，使用者或 Agent 审阅，高置信 pending 没处理时 `check` 失败。 但它仍然是在“写入之后”帮你整理关系，而不是在“每次任务开始、每次用户输入、每次读写文件、每次出错、每次准备回答”时主动判断什么记忆应该进入工作区。
+
+所以新系统我不再叫它“memory database”，而是叫：
+
+**Active Memory Kernel，主动记忆内核。**
+
+它不是搜索工具，而是一个持续运行的准入系统。它的核心问题不是：
+
+```text
+query -> search -> results
+```
+
+而是：
+
+```text
+当前上下文发生了什么？
+哪些记忆应该被强制带入工作区？
+哪些记忆只作为背景？
+哪些记忆现在应该沉默？
+哪些旧记忆被新事实冲突、替代、污染或需要回填？
+```
+
+---
+
+## 我在当前项目里看到的现状
+
+你说 GPU 已经落地，我在项目包里也确认了。当前 `cc_memory` 已经有 `embed_helper.py`、`rerank_helper.py`、`embedding_models`、`node_embeddings`，并且库里有 CUDA 设备记录和活跃节点 embedding。换句话说，这已经不是“还没接上语义检索”的阶段。
+
+但落地之后暴露出来的东西也很清楚：
+
+`search` 仍然是 LIKE 子串搜索，不是语义搜索。语义层更多参与 `suggest`、写入建议和可选召回，而不是成为所有任务入口的默认记忆准入层。
+
+当前 `memory.db` 里我统计到，accepted 的 relation suggestions 绝大多数是 `RELATED_TO`，硬依赖很少。大致是 `RELATED_TO 177` 对 `DEPENDS_ON 9`。这说明系统确实能产出“看起来相关”的边，但它没有把维护重心转成“哪些内容会影响行为、哪些事实变化会让旧结论失效”。
+
+当前活跃节点约 110 个，其中仍有一批节点没有硬边。它比早期好了，但还没变成一个能自我维护依赖、冲突、适用范围、触发条件的系统。
+
+最关键的是，项目内的记忆本身也已经记录了几个危险事实：semantic 低采用、LIKE 搜索多词会落空、reranker 对没有锚点的抽象查询会近似二分化剪空、旧节点不会因为新节点写入自动回填。于是，继续调 rerank floor、换 embedding 模型、加更多 pending suggestions，都只是在给同一个迷宫换墙纸。
+
+---
+
+## 为什么上一版没有达到最初目标
+
+随附 MD 里旧系统的问题包括：wikilink 不是 typed edge，多棵树同步让系统臃肿，缺事件层和变更事务层，旧 Markdown fact 也不是结构化事实对象。 Slim rewrite 后确实解决了“多棵树”和“单一真相源”的问题，还明确了 GPU 只能是可选检索后端，不能成为新的记忆系统。
+
+但我认为还漏了四个更深的设计维度。
+
+第一，**记忆缺少适用条件**。
+一条记忆不只应该说“内容是什么”，还应该说“什么时候必须出现”。例如某条记忆是路径规则、求解器约束、历史坑、用户偏好、项目状态、依赖安装禁忌，它们应该各自有 trigger。没有 trigger，系统只能靠相似度。
+
+第二，**记忆缺少准入等级**。
+现在召回结果基本是“相关或不相关”。但真正的记忆系统需要区分：必须打断当前流程、进入工作区、作为背景、只做维护、完全压制。否则它要么太吵，要么沉默如矿井。
+
+第三，**写入时没有强制重审旧知识**。
+新事实写入不是结束，而是开始。它应该触发 duplicate、supersedes、contradicts、depends、old-node-backfill、archive/cooldown 这类 reconciliation。现在的 relation suggestions 更像“新旧节点相似度候选”，没有成为旧知识维护流水线。
+
+第四，**评分不应该交给二分 reranker**。
+你提到 GPU 查询模型只能输出 0/1，这件事不该继续硬掰。新设计里二分模型只作为一个特征，不作为最终裁判。最终分数来自连续特征组合：路径命中、符号命中、BM25/ngram、embedding cosine、图距离、边类型、时间、优先级、适用范围、历史采用率、历史误报率、冲突惩罚、reranker yes/no。这样即使 reranker 只能吐 0/1，也不会把系统拖成二进制闸门。
+
+这也和近年的 agent memory 方向一致：Zep/Graphiti 这类 temporal knowledge graph 记忆系统强调时间化、来源和图结构，Mem0 也把长期记忆从单纯上下文堆叠推进到抽取、整合、检索的持久记忆结构；而 2026 年关于 trustworthy memory search 的研究进一步指出，记忆搜索不是单纯相似度问题，而是一个信任边界问题，裸相似度会带来跨域泄漏和工具漂移风险。([arXiv][1])
+
+---
+
+## 新系统的骨架
+
+我建议新系统不再以 `memory.db` 作为唯一真相，而是改成：
+
+```text
+append-only ledger 是真相
+SQLite / vector index / Markdown / READFIRST 都是投影
+```
+
+也就是：
+
+```text
+cc_mem2/
+  memctl.py
+  memd.py
+  ledger/
+  objects/
+  ontology/
+  policies/
+  projections/
+  runtime/
+  eval/
+```
+
+为什么要从 SQLite 真相改成 ledger 真相？因为这个项目是代码仓库，长期多人、多会话、多 Agent 维护，SQLite 二进制文件不适合作为可审计、可 merge、可 diff 的唯一历史。SQLite 仍然保留，但它只是可重建投影。真正的真相是 append-only JSONL 事件流。
+
+这不是回退到文本树。ledger 不是 Markdown 记忆条目，它是结构化事件：
+
+```json
+{
+  "event_id": "evt_...",
+  "event_type": "node.upsert",
+  "time": "2026-06-26T...",
+  "actor": "agent",
+  "payload": {
+    "node_id": "mem_...",
+    "node_type": "hazard",
+    "title": "...",
+    "body_hash": "...",
+    "applicability": {...},
+    "negative_scope": {...}
+  }
+}
+```
+
+数据库、语义向量、导出文档、触发索引、统计报表全部可以从 ledger 重建。这样它既有数据库的可查询性，又有 Git 友好的历史、审计和回放能力。
+
+---
+
+## 最关键的新概念：Cue Frame
+
+要打破“你不查就不知道”的悖论，不能从 query 开始，而要从当前上下文自动生成 cue frame。
+
+每次用户输入、SessionStart、PreToolUse、PostToolUse、Stop、PreCompact，系统都抽取一份 cue frame：
+
+```text
+用户这句话在问什么
+当前打开/修改/读取了哪些路径
+最近失败的测试和 traceback 是什么
+当前 git diff 涉及哪些模块
+当前任务阶段是设计、实现、验证、打包还是复盘
+当前 Agent 角色是什么
+系统/开发者指令里有哪些硬约束
+最近读过哪些文件
+最近写过哪些文件
+```
+
+然后不是让 Agent 主动 search，而是系统自动跑 admission：
+
+```text
+cue frame -> candidate generators -> scorer -> admission packet
+```
+
+admission packet 不是搜索结果页，而是分层进入工作区：
+
+```text
+INTERRUPT      必须看，否则容易犯错
+WORKING_SET    应该放进当前上下文
+BACKGROUND     可展开背景
+MAINTENANCE    只用于维护，不打扰任务
+SUPPRESSED      当前不适用，压制
+```
+
+这样记忆就从“地下档案馆”变成“任务雷达”。不是 Agent 想起图书馆，图书馆才开门；而是任务风向一变，相关记忆自己亮灯。
+
+---
+
+## 节点不再只有 fact / entry
+
+上一版的 `facts` 和 `entries` 还不够。新系统里节点类型至少分成：
+
+```text
+episode     原始经历或会话事件
+claim       可验证事实或项目状态
+policy      行为规则、用户偏好、工程约束
+procedure   可重复操作流程
+hazard      已踩坑、禁忌、危险路径
+artifact    文件、脚本、数据库、模型、工件
+state       当前状态、冻结数据、版本状态
+decision    已接受的设计判断
+summary     可重建摘要视图
+```
+
+这一步很重要。因为不同类型的记忆应该有不同的生命周期、触发逻辑和审查规则。
+
+例如 `hazard` 没有 trigger 就几乎没用。
+`claim` 没有 evidence 就不该通过 check。
+`procedure` 没有适用范围就容易误用。
+`decision` 如果被新事实 contradict，就必须进入重审队列。
+`artifact` 应该和路径、符号、文件 hash 绑定，不应该只靠自然语言相似度。
+
+---
+
+## 边不只是关系，而是带行为的处理器
+
+上一版已经明确了 typed edges 的价值：`DEPENDS_ON`、`DERIVED_FROM`、`SUPERSEDES`、`CONTRADICTS`、`SUPPORTS`、`MENTIONS`、`RELATED_TO` 不能混成普通链接。 新系统继续保留 typed edges，但进一步要求每种边都有行为。
+
+例如：
+
+```text
+SUPERSEDES
+  新节点接受后，旧节点 validity 自动关闭，旧节点不再默认召回。
+
+CONTRADICTS
+  两边都不自动删除，但相关任务必须同时提示冲突，直到审阅解决。
+
+DEPENDS_ON
+  目标变化时，来源进入 impacted review。
+
+TRIGGERS_ON
+  更新触发索引，让记忆在对应路径、命令、错误、阶段自动出现。
+
+APPLIES_TO
+  控制适用范围，防止跨域误召回。
+
+OWNS_DOMAIN
+  建立领域入口，解决抽象查询找不到入口的问题。
+```
+
+这样图不只是可视化关系网，而是维护引擎。边不是彩带，是齿轮。
+
+---
+
+## 二分 GPU 模型的处理方式
+
+你说的第二个严重问题是查询模型只能 0/1，这确实会让候选维护非常难。我的建议不是继续逼它输出连续分，而是把它降级成一个“弱特征”。
+
+新 scorer 这样设计：
+
+```text
+final_score =
+  w1 * trigger_exact
++ w2 * path_overlap
++ w3 * symbol_overlap
++ w4 * lexical_score
++ w5 * cjk_ngram_score
++ w6 * embedding_cosine
++ w7 * graph_activation
++ w8 * recency
++ w9 * priority
++ w10 * historical_accept_rate
++ w11 * binary_rerank_yes
+- p1 * stale_penalty
+- p2 * negative_scope_penalty
+- p3 * contradiction_penalty
+- p4 * historical_dismiss_penalty
+```
+
+这个 scorer 可以先用手写权重起步，然后用现有 `accepted/rejected relation_suggestions`、read 记录、dismiss 记录、missed memory 反馈做在线校准。哪怕只用 Python stdlib + SQLite，也能先做 logistic / pairwise ranking 的小模型。GPU reranker 输出 1，只是加一点分；输出 0，也不能直接否决路径强命中、trigger 强命中、高优先级 hazard。
+
+这能解决你说的“候选质量甚至不如模型自己造”的问题。因为候选不再来自单一二分模型，而来自多源证据合成。
+
+---
+
+## 写入流程必须变成“记忆维护事务”
+
+新系统里不能再是：
+
+```text
+add-entry -> suggest relation -> review
+```
+
+而应该是：
+
+```text
+remember draft
+-> extract nodes
+-> infer triggers
+-> find duplicates
+-> find supersedes / contradicts
+-> find hard deps
+-> backfill old nodes
+-> produce reconciliation packet
+-> review
+-> commit ledger events
+-> rebuild projections
+```
+
+review 也不应该只问“accept/reject”。它应该迫使审阅者选择语义：
+
+```text
+这是硬依赖？
+这是替代旧事实？
+这是冲突？
+这是证据？
+这是触发条件？
+只是背景？
+完全无关？
+```
+
+这会直接提高图质量。当前系统里软边太容易堆积，硬边太少，最后图会变成“相关性苔藓”，到处绿，但踩上去不承重。新系统要让审阅结果变成可执行维护行为。
+
+---
+
+## 生命周期和遗忘机制
+
+当前系统已经有 archive，但还不够。新系统应该有温度和状态：
+
+```text
+hot           最近高频使用，默认进入候选
+warm          正常活跃
+cold          很少命中，只在强触发时出现
+archived      默认不召回，但可追溯
+superseded    被新记忆替代
+contradicted  存在未解决冲突
+deleted       逻辑删除，ledger 保留 tombstone
+```
+
+温度由行为驱动：
+
+```text
+被 admission 采用 -> 升温
+被 Agent 展开阅读 -> 升温
+多次被压制/忽略 -> 降温
+长期无 trigger 命中 -> 降温
+高严重度 hazard -> 不因时间自然归零
+```
+
+这解决另一个隐形问题：记忆越多，系统越容易被自己淹没。不是所有记忆都该永久平等地叫喊。
+
+---
+
+## Hooks 的定位也要变
+
+当前 hook/finalize 已经能做一致性收尾，这是好事。但新系统里 hook 不是“提醒 Agent 查记忆”，而是直接喂 cue frame 给 admission engine。
+
+建议：
+
+```text
+SessionStart
+  生成项目级 readfirst / pinned / domain map admission
+
+UserPromptSubmit
+  基于用户输入主动准入
+
+PreToolUse
+  根据即将读取/修改/执行的路径、命令、测试准入
+
+PostToolUse
+  根据 diff、错误、输出、生成文件准入和维护
+
+Stop
+  检查是否有未处理 reconciliation、未落盘事件、未审冲突
+
+PreCompact
+  生成下一会话可恢复 state packet
+```
+
+这样系统不是“启动时吐一大段文档”，而是“每个动作前后都判断哪条记忆会改变行为”。
+
+---
+
+## 迁移路线
+
+我不建议一次性替换。应该用 shadow mode 驯化它。
+
+第一阶段，把当前 `cc_memory/memory.db` 转成 ledger 初始事件。旧库不再被视为未来真相，只是迁移输入。
+
+第二阶段，实现 projection builder，证明从 ledger 可以重建 SQLite、Markdown、READFIRST、DOMAIN_MAP、trigger index。
+
+第三阶段，做 shadow admission。旧系统仍照常用，新系统只记录“如果由我准入，我会提示哪些记忆”。用这个阶段收集 missed / useful / noisy 标签。
+
+第四阶段，用现有 relation_suggestions 的 accepted/rejected 数据训练初版 scorer。现有数据虽然有偏，但足够当冷启动燃料。
+
+第五阶段，把 procedural、hazard、policy、artifact 这几类高价值记忆优先迁到 trigger-first 结构。先别迁全部，先迁会影响行为的骨架记忆。
+
+第六阶段，启用 INTERRUPT / WORKING_SET admission。到这一步，旧 `cc_memory` 才应该冻结为只读，最后 sunset。
+
+---
+
+## 我认为新系统必须用这些指标验收
+
+不要再用“check OK”作为主要成功标准。新系统应该看：
+
+```text
+Action Recall@K
+某个任务真正需要的记忆，在行动前是否进入 WORKING_SET 或 INTERRUPT。
+
+Missed-memory rate
+出错复盘时，有多少错误本可被已有记忆阻止。
+
+False interrupt rate
+INTERRUPT 里有多少是噪音。
+
+Hard-edge coverage
+policy / hazard / decision / claim 中有多少具备硬边、证据或 trigger。
+
+Reconciliation coverage
+新增记忆后，重复、替代、冲突、硬依赖、旧节点回填是否被检查。
+
+Stale latency
+事实变化到受影响记忆被标脏的延迟。
+
+Manual search dependency
+Agent 需要主动 search 才能找到关键记忆的比例。
+
+Projection reproducibility
+删掉 projections 后能否完全重建。
+```
+
+这比 Recall@20 更贴近真实目标。因为你的问题不是搜索竞赛，而是“记忆有没有在该救场的时候出现”。
+
+---
+
+## 最小 MVP
+
+我建议新系统第一版只做这些，不要一上来追全量华丽：
+
+```text
+append-only ledger
+projection SQLite
+cue_extractor
+trigger index
+activator
+continuous scorer
+admission packet
+reconciliation packet
+review command
+projection rebuild
+eval labels / retrieval_runs
+```
+
+GPU 继续留着，但只当 `embedding_cosine` 和 `binary_rerank_yes` 两个特征来源。它不是核心，不是裁判，不是灵魂。灵魂是 cue、trigger、admission、reconciliation。
+
+---
+
+## 一句话版
+
+旧系统的形态是：
+
+```text
+Agent 想起来 -> 查库 -> 读结果 -> 手动维护关系
+```
+
+新系统应该变成：
+
+```text
+上下文变化 -> 系统生成 cue -> 主动准入记忆 -> 行动前提示 -> 写入时自动重审旧知识 -> 反馈训练 scorer
+```
+
+这才真正绕开你说的数据库悖论。不是把数据库搜得更快，而是让记忆不再等人敲门。
+
+[1]: https://arxiv.org/abs/2501.13956?utm_source=chatgpt.com "Zep: A Temporal Knowledge Graph Architecture for Agent Memory"
