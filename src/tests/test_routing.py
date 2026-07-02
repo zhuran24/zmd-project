@@ -113,6 +113,12 @@ def _tiny_domain_analysis(active_cells_by_commodity):
     }
 
 
+def _force_exact_route_states(routing, selected_states):
+    assert selected_states <= set(routing.r_vars)
+    for key, var in routing.r_vars.items():
+        routing.model.Add(var == (1 if key in selected_states else 0))
+
+
 def test_sink_front_consumes_against_outward_normal_on_straight_corridor(project_root):
     """An input port's front cell must send back toward the facility connector."""
     import sys
@@ -158,8 +164,8 @@ def test_sink_front_consumes_against_outward_normal_on_straight_corridor(project
     assert any(seg["flow_out"] == ["E"] for seg in sink_front_segments)
 
 
-def test_bridge_overlap_cannot_duplicate_single_edge_channel(project_root):
-    """L0/L1 overlap cannot create a hidden 1-to-2 channel fork."""
+def test_bridge_overlap_rejects_same_axis_l0_l1_crossing(project_root):
+    """L0/L1 overlap is now rejected directly by the perpendicularity rule."""
     import sys
 
     sys.path.insert(0, str(project_root))
@@ -190,8 +196,134 @@ def test_bridge_overlap_cannot_duplicate_single_edge_channel(project_root):
         (3, 0, 0, ("W",), ("E",), "ore"),
     }
     assert illegal_duplicate <= set(routing.r_vars)
-    for key, var in routing.r_vars.items():
-        routing.model.Add(var == (1 if key in illegal_duplicate else 0))
+    _force_exact_route_states(routing, illegal_duplicate)
+
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+
+
+def test_two_commodities_can_share_same_straight_belt_phys(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+
+    allowed = {(1, 0), (2, 0), (3, 0)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "iron_src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "iron"},
+        {"instance_id": "iron_sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "iron"},
+        {"instance_id": "copper_src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "copper"},
+        {"instance_id": "copper_sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "copper"},
+    ]
+    routing = RoutingSubproblem(
+        RoutingGrid(occupied, port_specs),
+        ["iron", "copper"],
+        domain_analysis=_tiny_domain_analysis({"iron": allowed, "copper": allowed}),
+    )
+    routing.build()
+
+    selected = {
+        (x, 0, 0, ("W",), ("E",), commodity)
+        for x in (1, 2, 3)
+        for commodity in ("iron", "copper")
+    }
+    _force_exact_route_states(routing, selected)
+
+    assert routing.solve(time_limit=5.0) == "FEASIBLE"
+    shared_cells = {
+        (segment["x"], segment["y"])
+        for segment in routing.extract_routes()
+        if segment["commodities"] == ["copper", "iron"]
+        and "commodity" not in segment
+        and segment["uses"] == [
+            {"commodity": "copper", "flow_in": ["W"], "flow_out": ["E"]},
+            {"commodity": "iron", "flow_in": ["W"], "flow_out": ["E"]},
+        ]
+    }
+    assert shared_cells == allowed
+
+
+def test_perpendicular_l0_l1_crossing_is_feasible(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+
+    ore_cells = {(1, 2), (2, 2), (3, 2)}
+    water_cells = {(2, 1), (2, 2), (2, 3)}
+    allowed = ore_cells | water_cells
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "ore_src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 4, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "water_src", "x": 2, "y": 0, "dir": "N", "type": "out", "commodity": "water"},
+        {"instance_id": "water_sink", "x": 2, "y": 4, "dir": "S", "type": "in", "commodity": "water"},
+    ]
+    routing = RoutingSubproblem(
+        RoutingGrid(occupied, port_specs),
+        ["ore", "water"],
+        domain_analysis=_tiny_domain_analysis({"ore": ore_cells, "water": water_cells}),
+    )
+    routing.build()
+
+    selected = {
+        (1, 2, 0, ("W",), ("E",), "ore"),
+        (2, 2, 0, ("W",), ("E",), "ore"),
+        (3, 2, 0, ("W",), ("E",), "ore"),
+        (2, 1, 0, ("S",), ("N",), "water"),
+        (2, 2, 1, ("S",), ("N",), "water"),
+        (2, 3, 0, ("S",), ("N",), "water"),
+    }
+    _force_exact_route_states(routing, selected)
+
+    assert routing.solve(time_limit=5.0) == "FEASIBLE"
+
+
+def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+
+    allowed = {(1, 2), (2, 2), (3, 2)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "ore_src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 4, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "coal_src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "coal"},
+        {"instance_id": "coal_sink", "x": 4, "y": 2, "dir": "W", "type": "in", "commodity": "coal"},
+    ]
+    routing = RoutingSubproblem(
+        RoutingGrid(occupied, port_specs),
+        ["ore", "coal"],
+        domain_analysis=_tiny_domain_analysis({"ore": allowed, "coal": allowed}),
+    )
+    routing.build()
+
+    selected = {
+        (1, 2, 0, ("W",), ("E",), "ore"),
+        (2, 2, 0, ("W",), ("E",), "ore"),
+        (3, 2, 0, ("W",), ("E",), "ore"),
+        (1, 2, 0, ("W",), ("E",), "coal"),
+        (2, 2, 1, ("W",), ("E",), "coal"),
+        (3, 2, 0, ("W",), ("E",), "coal"),
+    }
+    _force_exact_route_states(routing, selected)
 
     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
 
@@ -295,6 +427,54 @@ def test_same_commodity_disconnected_source_sink_islands_are_routable(project_ro
     assert routing.build_stats["port_adherence"]["exact_links"] == len(port_specs)
     assert routing.solve(time_limit=5.0) == "FEASIBLE"
     assert routing.build_stats["last_solve"]["connectivity"]["failure_count"] == 0
+
+
+def test_orphan_selected_route_witness_is_rejected_with_nogood_fallback(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+
+    connected_path = {
+        (1, 0, 0, ("W",), ("E",), "ore"),
+        (2, 0, 0, ("W",), ("E",), "ore"),
+        (3, 0, 0, ("W",), ("E",), "ore"),
+        (4, 0, 0, ("W",), ("E",), "ore"),
+        (5, 0, 0, ("W",), ("E",), "ore"),
+    }
+    orphan_loop = {
+        (1, 3, 0, ("E",), ("N",), "ore"),
+        (1, 4, 0, ("S",), ("E",), "ore"),
+        (2, 4, 0, ("W",), ("S",), "ore"),
+        (2, 3, 0, ("N",), ("W",), "ore"),
+    }
+    incumbent = connected_path | orphan_loop
+    active_cells = {(int(state[0]), int(state[1])) for state in incumbent}
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    routing = RoutingSubproblem(
+        RoutingGrid(set(), port_specs),
+        ["ore"],
+        domain_analysis=_tiny_domain_analysis({"ore": active_cells}),
+    )
+    routing.build()
+    _force_exact_route_states(routing, incumbent)
+
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+    guard = routing.build_stats["last_solve"]["connectivity_guard"]
+    assert guard["rejected_incumbents"] == 1
+    assert guard["fallback_nogoods"]
+    connectivity = guard["attempts"][0]["connectivity"]
+    failure = connectivity["failures"][0]
+    assert failure["orphan_selected_route_state_count"] == len(orphan_loop)
+    assert {tuple(item["flow_out"]) for item in failure["orphan_selected_route_states"]} == {
+        ("E",),
+        ("N",),
+        ("S",),
+        ("W",),
+    }
 
 
 def test_unverified_domain_analysis_status_fails_closed_unknown(project_root):

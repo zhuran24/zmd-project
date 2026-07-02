@@ -127,6 +127,7 @@ class D2CommodityFlowCore:
                     )
 
         # capacity: sum_k u[k, c] ≤ 1 per cell
+        # 生产 routing 已允许混流,本模型语义滞后,仅作 precheck 确证后的 core 缩小器
         for (x, y) in self._free_cells:
             cell_u_vars = [self._u_vars[(k, x, y)] for k in self._commodities]
             if cell_u_vars:

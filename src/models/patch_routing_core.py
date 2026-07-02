@@ -1,5 +1,8 @@
 """PCR-CUT Phase 1 — Patch-restricted exact belt CP-SAT.
 
+语义滞后于生产 routing(未实现混流共享与十字垂直性),over-approximation/diagnostic-only,
+接入生产前必须先重构。
+
 跟 routing_subproblem.RoutingSubproblem 同结构, 但:
 - 只在 patch.cells 内建 vars
 - 出 patch boundary 用 boundary_out/in 虚拟 vars 不约束总数 (over-approx, 保

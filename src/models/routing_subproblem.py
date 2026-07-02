@@ -38,6 +38,7 @@ ROUTING_DOMAIN_MISSING_STATUS = "MISSING_STATUS"
 
 
 RouteStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
+PhysicalStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
 
 
 @dataclass
@@ -102,6 +103,14 @@ def _is_straight_state(flow_in: Tuple[str, ...], flow_out: Tuple[str, ...]) -> b
         and len(flow_out) == 1
         and DIR_OPP[flow_in[0]] == flow_out[0]
     )
+
+
+def _state_axis(flow_in: Tuple[str, ...], flow_out: Tuple[str, ...]) -> Optional[str]:
+    if set(flow_in) | set(flow_out) == {"E", "W"}:
+        return "H"
+    if set(flow_in) | set(flow_out) == {"N", "S"}:
+        return "V"
+    return None
 
 
 def _sorted_cells(cells: Iterable[Tuple[int, int]]) -> List[List[int]]:
@@ -737,18 +746,25 @@ class RoutingSubproblem:
         self.commodities = commodities
         self.model = cp_model.CpModel()
 
-        self.r_vars: Dict[RouteStateKey, Any] = {}
-        self._vars_by_cell_layer: Dict[Tuple[int, int, int], List[Any]] = defaultdict(list)
-        self._vars_by_cell_layer_dir_out_commodity: Dict[
+        self.use_vars: Dict[RouteStateKey, Any] = {}
+        # Compatibility alias: legacy callers/tests treat r_vars as selected
+        # commodity route states, which are now the use layer.
+        self.r_vars = self.use_vars
+        self.phys_vars: Dict[PhysicalStateKey, Any] = {}
+        self._use_to_phys_key: Dict[RouteStateKey, PhysicalStateKey] = {}
+        self._phys_uses: Dict[PhysicalStateKey, List[Any]] = defaultdict(list)
+        self._phys_by_cell_layer: Dict[Tuple[int, int, int], List[Any]] = defaultdict(list)
+        self._phys_keys_by_cell: Dict[Tuple[int, int], List[PhysicalStateKey]] = defaultdict(list)
+        self._use_by_cell_layer_dir_out_commodity: Dict[
             Tuple[int, int, int, str, str], List[Any]
         ] = defaultdict(list)
-        self._vars_by_cell_layer_dir_in_commodity: Dict[
+        self._use_by_cell_layer_dir_in_commodity: Dict[
             Tuple[int, int, int, str, str], List[Any]
         ] = defaultdict(list)
-        self._vars_by_cell_dir_out_commodity: Dict[Tuple[int, int, str, str], List[Any]] = defaultdict(list)
-        self._vars_by_cell_dir_in_commodity: Dict[Tuple[int, int, str, str], List[Any]] = defaultdict(list)
-        self._l1_vars: Dict[Tuple[int, int], List[Any]] = defaultdict(list)
-        self._l0_nonstraight_vars: Dict[Tuple[int, int], List[Any]] = defaultdict(list)
+        self._use_by_cell_dir_out_commodity: Dict[Tuple[int, int, str, str], List[Any]] = defaultdict(list)
+        self._use_by_cell_dir_in_commodity: Dict[Tuple[int, int, str, str], List[Any]] = defaultdict(list)
+        self._l1_phys_vars: Dict[Tuple[int, int], List[Any]] = defaultdict(list)
+        self._phys_meta: Dict[PhysicalStateKey, Dict[str, Any]] = {}
         self._state_meta: Dict[RouteStateKey, Dict[str, Any]] = {}
         self._solver: Optional[cp_model.CpSolver] = None
         self._status = None
@@ -993,28 +1009,52 @@ class RoutingSubproblem:
                             local_pattern_pruned_states += 1
                             continue
 
-                        var = self.model.NewBoolVar(
-                            f"r_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{commodity}"
+                        phys_key: PhysicalStateKey = (
+                            x,
+                            y,
+                            layer,
+                            flow_in,
+                            flow_out,
+                            component_type,
+                        )
+                        if phys_key not in self.phys_vars:
+                            phys_var = self.model.NewBoolVar(
+                                f"phys_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{component_type}"
+                            )
+                            self.phys_vars[phys_key] = phys_var
+                            self._phys_meta[phys_key] = {
+                                "flow_in": flow_in,
+                                "flow_out": flow_out,
+                                "component_type": component_type,
+                            }
+                            self._phys_by_cell_layer[(x, y, layer)].append(phys_var)
+                            self._phys_keys_by_cell[(x, y)].append(phys_key)
+                            if layer == ELEVATED_LAYER:
+                                self._l1_phys_vars[(x, y)].append(phys_var)
+
+                        use_var = self.model.NewBoolVar(
+                            f"use_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{commodity}"
                         )
                         key: RouteStateKey = (x, y, layer, flow_in, flow_out, commodity)
-                        self.r_vars[key] = var
+                        self.use_vars[key] = use_var
+                        self._use_to_phys_key[key] = phys_key
+                        self._phys_uses[phys_key].append(use_var)
                         self._state_meta[key] = {
                             "flow_in": flow_in,
                             "flow_out": flow_out,
                             "component_type": component_type,
                         }
-                        self._vars_by_cell_layer[(x, y, layer)].append(var)
+                        self.model.Add(use_var <= self.phys_vars[phys_key])
                         for d_out in flow_out:
-                            self._vars_by_cell_layer_dir_out_commodity[(x, y, layer, d_out, commodity)].append(var)
-                            self._vars_by_cell_dir_out_commodity[(x, y, d_out, commodity)].append(var)
+                            self._use_by_cell_layer_dir_out_commodity[(x, y, layer, d_out, commodity)].append(use_var)
+                            self._use_by_cell_dir_out_commodity[(x, y, d_out, commodity)].append(use_var)
                         for d_in in flow_in:
-                            self._vars_by_cell_layer_dir_in_commodity[(x, y, layer, d_in, commodity)].append(var)
-                            self._vars_by_cell_dir_in_commodity[(x, y, d_in, commodity)].append(var)
-                        if layer == ELEVATED_LAYER:
-                            self._l1_vars[(x, y)].append(var)
-                        elif component_type != "belt" or not _is_straight_state(flow_in, flow_out):
-                            self._l0_nonstraight_vars[(x, y)].append(var)
+                            self._use_by_cell_layer_dir_in_commodity[(x, y, layer, d_in, commodity)].append(use_var)
+                            self._use_by_cell_dir_in_commodity[(x, y, d_in, commodity)].append(use_var)
                         state_counter[(layer, component_type)] += 1
+
+        for phys_key, use_vars in self._phys_uses.items():
+            self.model.AddMaxEquality(self.phys_vars[phys_key], use_vars)
 
         self._record_state_space_stats(state_counter, local_pattern_pruned_states)
 
@@ -1037,7 +1077,9 @@ class RoutingSubproblem:
 
         self.build_stats["state_space"] = {
             "commodities": len(self.commodities),
-            "vars": len(self.r_vars),
+            "vars": len(self.use_vars),
+            "use_vars": len(self.use_vars),
+            "phys_vars": len(self.phys_vars),
             "ground_belt_states": int(state_counter.get((GROUND_LAYER, "belt"), 0)),
             "ground_splitter_states": int(state_counter.get((GROUND_LAYER, "splitter"), 0)),
             "ground_merger_states": int(state_counter.get((GROUND_LAYER, "merger"), 0)),
@@ -1056,22 +1098,30 @@ class RoutingSubproblem:
         return
 
     def _add_capacity_constraints(self):
-        for vars_on_cell_layer in self._vars_by_cell_layer.values():
-            if vars_on_cell_layer:
-                self.model.AddAtMostOne(vars_on_cell_layer)
+        for phys_vars_on_cell_layer in self._phys_by_cell_layer.values():
+            if phys_vars_on_cell_layer:
+                self.model.AddAtMostOne(phys_vars_on_cell_layer)
 
     def _add_bridge_constraints(self):
-        for cell, l1_vars in self._l1_vars.items():
-            if not l1_vars:
+        for cell, phys_keys in self._phys_keys_by_cell.items():
+            l0_keys = [key for key in phys_keys if key[2] == GROUND_LAYER]
+            l1_keys = [key for key in phys_keys if key[2] == ELEVATED_LAYER]
+            if not l0_keys or not l1_keys:
                 continue
-            l0_nonstraight = self._l0_nonstraight_vars.get(cell, [])
-            if not l0_nonstraight:
-                continue
-            x, y = cell
-            l1_any = self.model.NewBoolVar(f"l1_any_{x}_{y}")
-            self.model.AddMaxEquality(l1_any, l1_vars)
-            for var in l0_nonstraight:
-                self.model.AddImplication(l1_any, var.Not())
+            for l0_key in l0_keys:
+                _x0, _y0, _layer0, l0_flow_in, l0_flow_out, l0_component_type = l0_key
+                l0_axis = _state_axis(l0_flow_in, l0_flow_out)
+                l0_is_crossable = (
+                    l0_component_type == "belt"
+                    and _is_straight_state(l0_flow_in, l0_flow_out)
+                    and l0_axis is not None
+                )
+                for l1_key in l1_keys:
+                    _x1, _y1, _layer1, l1_flow_in, l1_flow_out, _l1_component_type = l1_key
+                    l1_axis = _state_axis(l1_flow_in, l1_flow_out)
+                    if l0_is_crossable and l1_axis is not None and l0_axis != l1_axis:
+                        continue
+                    self.model.Add(self.phys_vars[l0_key] + self.phys_vars[l1_key] <= 1)
 
     def _add_bridge_count_hint(self):
         """P1 #9 hint 1 (Endfield player consensus): prefer routings that
@@ -1084,7 +1134,7 @@ class RoutingSubproblem:
         constraining anything. Per AI Safety Contract: order_only / hint
         only, no checkpoint writes, no proof-source modification.
         """
-        for cell_vars in self._l1_vars.values():
+        for cell_vars in self._l1_phys_vars.values():
             for var in cell_vars:
                 self.model.AddHint(var, 0)
 
@@ -1132,11 +1182,11 @@ class RoutingSubproblem:
                     if self._source_port_fronts.get((nx, ny, recv_dir, commodity), 0) > 0:
                         continue
 
-                    send_vars = self._vars_by_cell_dir_out_commodity.get(
+                    send_vars = self._use_by_cell_dir_out_commodity.get(
                         (x, y, d_out, commodity),
                         [],
                     )
-                    recv_vars = self._vars_by_cell_dir_in_commodity.get(
+                    recv_vars = self._use_by_cell_dir_in_commodity.get(
                         (nx, ny, recv_dir, commodity),
                         [],
                     )
@@ -1157,7 +1207,7 @@ class RoutingSubproblem:
         d_out: str,
         commodity: str,
     ) -> None:
-        out_vars = self._vars_by_cell_layer_dir_out_commodity.get((x, y, layer, d_out, commodity), [])
+        out_vars = self._use_by_cell_layer_dir_out_commodity.get((x, y, layer, d_out, commodity), [])
         if not out_vars:
             return
 
@@ -1177,7 +1227,7 @@ class RoutingSubproblem:
                 self.model.Add(var == 0)
             return
 
-        recv_vars = self._vars_by_cell_dir_in_commodity.get((nx, ny, recv_dir, commodity), [])
+        recv_vars = self._use_by_cell_dir_in_commodity.get((nx, ny, recv_dir, commodity), [])
         if not recv_vars:
             for var in out_vars:
                 self.model.Add(var == 0)
@@ -1195,7 +1245,7 @@ class RoutingSubproblem:
         d_in: str,
         commodity: str,
     ) -> None:
-        in_vars = self._vars_by_cell_layer_dir_in_commodity.get((x, y, layer, d_in, commodity), [])
+        in_vars = self._use_by_cell_layer_dir_in_commodity.get((x, y, layer, d_in, commodity), [])
         if not in_vars:
             return
 
@@ -1215,7 +1265,7 @@ class RoutingSubproblem:
                 self.model.Add(var == 0)
             return
 
-        send_vars = self._vars_by_cell_dir_out_commodity.get((px, py, send_dir, commodity), [])
+        send_vars = self._use_by_cell_dir_out_commodity.get((px, py, send_dir, commodity), [])
         if not send_vars:
             for var in in_vars:
                 self.model.Add(var == 0)
@@ -1243,13 +1293,13 @@ class RoutingSubproblem:
 
             if str(ps["type"]) == "out":
                 recv_dir = DIR_OPP[direction]
-                vars_for_port = self._vars_by_cell_layer_dir_in_commodity.get(
+                vars_for_port = self._use_by_cell_layer_dir_in_commodity.get(
                     (fx, fy, GROUND_LAYER, recv_dir, commodity),
                     [],
                 )
             else:
                 send_dir = DIR_OPP[direction]
-                vars_for_port = self._vars_by_cell_layer_dir_out_commodity.get(
+                vars_for_port = self._use_by_cell_layer_dir_out_commodity.get(
                     (fx, fy, GROUND_LAYER, send_dir, commodity),
                     [],
                 )
@@ -1289,7 +1339,7 @@ class RoutingSubproblem:
 
     def _selected_route_keys(self, solver: cp_model.CpSolver) -> Set[RouteStateKey]:
         selected: Set[RouteStateKey] = set()
-        for key, var in self.r_vars.items():
+        for key, var in self.use_vars.items():
             if solver.Value(var) == 1:
                 selected.add(key)
         return selected
@@ -1302,6 +1352,26 @@ class RoutingSubproblem:
             [int(x), int(y), str(direction)]
             for x, y, direction in sorted(triples)
         ]
+
+    def _route_state_keys_for_diagnostic(
+        self,
+        keys: Iterable[RouteStateKey],
+        *,
+        limit: int = 8,
+    ) -> List[Dict[str, Any]]:
+        diagnostics: List[Dict[str, Any]] = []
+        for x, y, layer, flow_in, flow_out, commodity in sorted(keys)[:limit]:
+            diagnostics.append(
+                {
+                    "x": int(x),
+                    "y": int(y),
+                    "layer": int(layer),
+                    "flow_in": list(flow_in),
+                    "flow_out": list(flow_out),
+                    "commodity": str(commodity),
+                }
+            )
+        return diagnostics
 
     def _route_state_input_index(
         self,
@@ -1405,7 +1475,7 @@ class RoutingSubproblem:
         return sink_nodes_by_plain_front
 
     def _potential_route_keys_for_commodity(self, commodity: str) -> Set[RouteStateKey]:
-        return {key for key in self.r_vars if str(key[5]) == str(commodity)}
+        return {key for key in self.use_vars if str(key[5]) == str(commodity)}
 
     def _compute_selected_source_side_closure(
         self,
@@ -1607,7 +1677,7 @@ class RoutingSubproblem:
                 "diagnostics": diagnostics,
             }
 
-        cut_vars = [self.r_vars[key] for key in sorted(crossing)]
+        cut_vars = [self.use_vars[key] for key in sorted(crossing)]
         if cut_vars:
             self.model.Add(sum(cut_vars) >= 1)
         else:
@@ -1641,10 +1711,15 @@ class RoutingSubproblem:
             sink_fronts,
         )
         adjacency = self._route_state_adjacency(selected, sink_fronts)
+        reverse_adjacency: Dict[RouteStateKey, Set[RouteStateKey]] = defaultdict(set)
+        for src, dsts in adjacency.items():
+            for dst in dsts:
+                reverse_adjacency[dst].add(src)
 
         failures: List[Dict[str, Any]] = []
         commodities_to_check = sorted(set(source_fronts) | set(sink_fronts) | set(self.commodities))
         for commodity in commodities_to_check:
+            selected_for_commodity = {key for key in selected if str(key[5]) == commodity}
             expected_sources = set(source_fronts.get(commodity, set()))
             expected_sinks = set(sink_fronts.get(commodity, set()))
             if not expected_sources and not expected_sinks:
@@ -1675,6 +1750,9 @@ class RoutingSubproblem:
                 all_sink_nodes.update(nodes)
 
             reachable_from_any_source = self._reachable_route_states(all_source_nodes, adjacency)
+            sink_reaches_back = self._reachable_route_states(all_sink_nodes, reverse_adjacency)
+            valid_witness_closure = reachable_from_any_source & sink_reaches_back
+            orphan_selected_route_states = selected_for_commodity - valid_witness_closure
             unreachable_sinks = {
                 front
                 for front, nodes in sink_nodes_by_plain_front.items()
@@ -1693,6 +1771,7 @@ class RoutingSubproblem:
                 or missing_sinks
                 or unreachable_sinks
                 or source_fronts_without_sink
+                or orphan_selected_route_states
                 or not expected_sources
                 or not expected_sinks
             ):
@@ -1706,6 +1785,10 @@ class RoutingSubproblem:
                         "unreachable_sink_fronts": self._front_triples_for_diagnostic(unreachable_sinks),
                         "source_fronts_without_sink": self._front_triples_for_diagnostic(
                             source_fronts_without_sink
+                        ),
+                        "orphan_selected_route_state_count": int(len(orphan_selected_route_states)),
+                        "orphan_selected_route_states": self._route_state_keys_for_diagnostic(
+                            orphan_selected_route_states
                         ),
                     }
                 )
@@ -1721,8 +1804,8 @@ class RoutingSubproblem:
     def _add_selected_route_nogood(self, solver: cp_model.CpSolver) -> int:
         selected_vars = [
             var
-            for key, var in self.r_vars.items()
-            if solver.Value(var) == 1 and key in self.r_vars
+            for key, var in self.use_vars.items()
+            if solver.Value(var) == 1 and key in self.use_vars
         ]
         if selected_vars:
             self.model.AddBoolOr([var.Not() for var in selected_vars])
@@ -1896,20 +1979,41 @@ class RoutingSubproblem:
         ):
             return []
 
-        routes = []
-        for (x, y, layer, flow_in, flow_out, commodity), var in self.r_vars.items():
+        routes_by_phys: Dict[PhysicalStateKey, List[RouteStateKey]] = defaultdict(list)
+        for key, var in self.use_vars.items():
             if self._solver is None or self._solver.Value(var) != 1:
                 continue
-            meta = self._state_meta[(x, y, layer, flow_in, flow_out, commodity)]
+            routes_by_phys[self._use_to_phys_key[key]].append(key)
+
+        routes = []
+        for phys_key, use_keys in sorted(routes_by_phys.items()):
+            x, y, layer, flow_in, flow_out, component_type = phys_key
+            uses = [
+                {
+                    "commodity": str(commodity),
+                    "flow_in": list(use_flow_in),
+                    "flow_out": list(use_flow_out),
+                }
+                for _ux, _uy, _ulayer, use_flow_in, use_flow_out, commodity in sorted(use_keys)
+            ]
+            commodities = sorted({str(use["commodity"]) for use in uses})
             route = {
                 "x": x,
                 "y": y,
                 "layer": layer,
-                "commodity": commodity,
-                "component_type": meta["component_type"],
+                "type": component_type,
+                "component_type": component_type,
+                "commodities": commodities,
+                "uses": uses,
                 "flow_in": list(flow_in),
                 "flow_out": list(flow_out),
+                "flow": {
+                    "flow_in": list(flow_in),
+                    "flow_out": list(flow_out),
+                },
             }
+            if len(commodities) == 1:
+                route["commodity"] = commodities[0]
             if len(flow_in) == 1:
                 route["dir_in"] = flow_in[0]
             if len(flow_out) == 1:
