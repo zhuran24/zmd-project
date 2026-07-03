@@ -1,0 +1,73 @@
+---
+id: agent-role-division-and-codex-collaboration
+kind: decision
+title: 多代理分工——Fable5=数学面负责人(定方向)、Opus leader=发布面负责人+半队长(协调+发布面直做)、实现优先派 codex 省额度;codex 一次性执行任务书 / 矛盾指令按序执行 / 冲突停下澄清 / 改动真实落盘
+summary: owner 2026-07-03 定的多代理分工模型 + 同日亲历的 codex 协作特性。**分工**:①**Fable5=数学面负责人**——数学面(routing/CP-SAT/canonical/生成器/loader 这类非对抗)的方向、计划、技术选择由它定,leader 不指挥不干预,最多给"当前情况说明"(leader 去指挥数学面反而拖累负责人);②**Opus leader(我)=发布面负责人+半个队长**——发布面(checker/reseal/close-kernel/外审 triage)直接做,队长那半=协调/派活/跨面编排,但对数学面只协调不指挥;③**具体实现优先派 codex 省额度**,不让负责人亲自写;方向已定的纯实现活直接 codex,只有需要定数学面方向/计划时才请 Fable5 出场、leader 只给情况不插手方向。判据:数学面任务"方向已拍板、纯执行"→ 直接 codex;"要定方向/计划"→ Fable5 定、codex 实现。**codex 协作特性**(2026-07-03 亲历):codex 子代理按**原始任务书一次性执行**,能收中途 SendMessage 但**按到达顺序执行**——发了自相矛盾两条(先"撤 X"后"别撤 X"),它先执行先到的、遇后到冲突时**停下来讲清楚、不默默处理**(很负责);铁律=**派 codex 指令一次写全、别指望中途改**。codex 改动**真实落盘**(别误判成 sandbox 隔离不同步——2026-07-03 我误判过,实为它忠实执行我"撤 T1"指令)。
+scope:
+  domains:
+    - multi-agent
+    - orchestration
+    - collaboration
+  paths: []
+  symbols: []
+status: active
+priority: P1
+triggers:
+  intents:
+    - divide-agent-roles
+    - delegate-implementation
+    - spawn-codex-subagent
+    - assign-math-vs-publish-work
+  keywords:
+    - 分工
+    - 数学面负责人
+    - 发布面负责人
+    - 半队长
+    - Fable5
+    - codex
+    - 实现优先
+    - 省额度
+    - 派活
+    - 方向
+    - 矛盾指令
+    - 一次性执行
+    - 落盘
+    - sandbox
+    - 指挥
+  negative_keywords: []
+  paths: []
+  symbols: []
+  error_regex: []
+  examples:
+    - 这个数学面小任务派谁做
+    - codex 收到我中途改的指令吗
+    - 数学面方向该我定还是 Fable5 定
+    - 为什么 codex 的改动不见了
+activation:
+  layer_hint: L1
+  must_know: false
+  reason: 派数学面/实现活、或派 codex 时该想起——分工搞错(leader 越权指挥数学面方向、或让负责人做纯实现浪费额度)、或对 codex 指令中途改导致矛盾,都是自然会犯的;2026-07-03 当天多次实犯并被 owner 纠正。
+provenance:
+  op: record
+  reason: owner 2026-07-03 明确的多代理分工模型(Fable5=数学面负责人 / 我=发布面负责人+半队长 / 实现优先 codex),及同日 codex 协作特性(矛盾指令按序执行+冲突停下澄清+改动真实落盘)的亲历。
+  evidence:
+    - "2026-07-03 批次3:owner 纠正'别给 Fable5 当数学面指挥''实现优先 codex 省额度''Fable5 是数学面负责人、你是发布面负责人兼半队长';据此停 Fable5、批次3 纯实现改派 codex。"
+    - "2026-07-03 codex-batch3:我先发'撤出 T1'又发'别撤 T1 我要 reseal',codex 按序先撤 T1+提交 T2+T3、遇第二条冲突停下澄清;我一度把 T1 丢失误判为 codex sandbox 不落盘,实为 codex 忠实执行我矛盾指令。"
+  updated_at: "2026-07-03"
+---
+多代理分工模型 + codex 协作特性(owner 2026-07-03 定 + 当天亲历)。
+
+== 分工模型 ==
+- **Fable5 = 数学面负责人**:数学面(routing/CP-SAT 建模、canonical 语义、生成器、loader 这类不含对抗性语料的活)的**方向、计划、技术选择**由它定;leader 不指挥、不干预,最多给它"当前情况说明"。理由:leader 去当数学面指挥反而拖累负责人自主发挥。
+- **Opus leader(我)= 发布面负责人 + 半个队长**:发布面(checker 硬化、reseal、close-kernel 登记面、外审 triage)直接做(Opus 不被分类器降级);"半队长" = 协调、派活、跨面编排,但**对数学面只协调不指挥**。
+- **具体实现优先派 codex 省额度**:不让负责人(Fable5)亲自写实现。方向已定的纯实现活 → 直接 codex;只有需要定数学面方向/计划时才请 Fable5 出场、且 leader 只给情况不插手方向。
+
+== 判据 ==
+数学面任务:**方向已拍板、纯执行** → 直接派 codex(省额度);**要定方向/计划** → Fable5 定、codex 实现。凡碰 checker/reseal/对抗性 = 发布面 = leader 自己做(leader=Opus 口径见 [[guardrail-delegate-adversarial-reads]])。
+
+== codex 子代理协作特性(2026-07-03 亲历)==
+- **一次性执行任务书**:codex 按你派它时的原始任务书跑;它**能收到**中途 SendMessage,但按**到达顺序执行**。
+- **矛盾指令按序执行 + 冲突停下澄清**:我先发"撤出 T1"、后发"别撤 T1 我要基于它 reseal",codex 先执行先到的(撤 T1、提交 T2+T3),遇到后到的冲突时**停下来把冲突讲清楚、不默默处理**(很负责)。→ 铁律:**派 codex 指令一次写全,别指望中途改**;真要改就明确标"以此条为最终"。
+- **改动真实落盘**:codex 的文件改动是真的(不是 sandbox 隔离不同步)。2026-07-03 我一度把"T1 改动不见了"误判成 codex sandbox bug,实际是 codex 忠实执行了我"撤 T1"的指令——**别把自己指令的后果甩锅给工具**。
+
+与 [[guardrail-delegate-adversarial-reads]](隔离/降级)、[[agent-longrun-wait-wake-protocol]](teammate 唤醒)同族,一起构成多代理协作基建。

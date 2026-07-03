@@ -83,5 +83,8 @@ provenance:
 - 代理归属原则:已沾过 reseal/checker 对抗性语料的子代理**不要**转 Fable5(降级残留),要留 Fable5 就**全新起**只喂纯数学面。
 **所以"发布面默认进子代理"这条现在只在 leader=Fable5 时成立;leader=Opus 时反过来,发布面归 leader。** 判断当前口径先看 leader 模型。
 
+== 无缝降级的检测(owner 2026-07-03 教)==
+降级**不是**输出被掐断 / 会话中断——它是**模型被无缝换掉**(换成受分类器约束更强的受限模型),会话照常、输出不截断。所以想确认某子代理有没有被降级,**看"输出完不完整 / 有没有被掐"是错的靶子**(对无缝降级无效)。正确信号 = **读它 transcript 里每条 assistant 消息的 `model` 字段**:transcript 在 `~/.claude/projects/<proj>/<session>/subagents/agent-<name>-<id>.jsonl`(用 `es` / glob 按 agent 名或 team-session id 搜);逐条取 `message.model`,全程是预期模型(如 `claude-fable-5`)= 没降级,某点后变成别的 = 那点被降级(变化点 ≈ 触发点)。实例:2026-07-03 math-batch3(Fable5)在数学面任务里意外撞到 T1 发布面(读了 V99 sha 清单 / checker / reseal),owner 让我查它降级没——读 transcript,132 条 assistant **全程 `claude-fable-5`、零变化** = 没降级;推测因它碰得浅(定位 loader → 判断撞 V99 → 立即停下上报,没深读对抗 payload)。但这次侥幸**不改分工**:仍让 Fable5 远离发布面。
+
 == 判据 ==
 leader=Fable5 时:一段内容若"很长 + 满是绕过/篡改/exec 字样"或整个发布面工作,默认进子代理。leader=Opus 时:发布面归 leader 直接做,只有纯数学面才派(Fable5)子代理。写审计提示词的受众纪律见 [[review-prompt-audience-purity]];外审剪贴板 staging 规程见 [[relay-review-clipboard-staging]]。
