@@ -75,7 +75,7 @@
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
 | `scripts/preflight_gate.py` | STRUCTURAL_GATE | repository preflight；不运行已退役 doc-subject sync |
 | production supervisor entrypoint | LANDED | `scripts/run_supervisor_seal.py` 是独立生产命令；`main.py` 仍只提交 `CANDIDATE_PROPOSED`；入口存在 ≠ P1.2 closed |
-| `scripts/package_review_snapshot.py` | OPEN | metadata 解析到 commit，但仍需改成从 resolved commit 物化并补齐 archive policy |
+| `scripts/package_review_snapshot.py` | CURRENT_CODE_ALIGNED | resolve-once：treeish 一次解析为 immutable commit，provenance/manifest/物化三处统一用它（TOCTOU 回归测试钉住）；archive policy 覆盖完整性仍是 OPEN 边界 |
 
 ## Documentation and memory
 

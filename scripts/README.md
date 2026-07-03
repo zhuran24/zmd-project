@@ -52,7 +52,8 @@ drift.
 implementation resolves the caller-supplied `treeish` to an immutable commit SHA once, then uses
 that same resolved commit for provenance metadata, the manifest `treeish` field, and tree
 materialization — so a mutable ref moving between those steps no longer opens a
-manifest-vs-archive gap (no dedicated TOCTOU regression test pins this yet). Its default targeted
+manifest-vs-archive gap (pinned by the ref-move TOCTOU regression test in
+`src/tests/test_package_review_snapshot.py`). Its default targeted
 test list is not the full P1.2 or repository test suite. Package output must retain these
 limitations in its manifest and release notes.
 

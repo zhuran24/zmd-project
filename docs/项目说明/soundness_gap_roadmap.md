@@ -15,7 +15,7 @@
 | PYC execution/source binding | **IMPLEMENTED** | isolated replay/capsule 使用 `-B -X pycache_prefix=<fresh>`；obligation `PO-ISOLATED-EXEC-BYTECODE-BINDING` | Python、stdlib、OR-Tools native extension、父 relay、OS 隔离仍是命名 TCB |
 | proof obligation close-kernel | **IMPLEMENTED structural gate** | 14 active obligations；checker + sink hashes/guards/allowlist | PASS 只表示登记结构一致，不证明 owner 已 close 或 full suite 已过 |
 | PR2 small/read-once verifier TCB | **OPEN** | 设计文档有目标，当前无完整 controlled-loader/read-once implementation | P1.2 关闭前仍需实现、红测和重新封存 |
-| immutable review snapshot | **PARTIAL（代码已修，缺专门回归测试）** | `package_review_snapshot.py` 的 `build_package()` 已将 treeish 一次 resolve 为 immutable commit，provenance/manifest/`_materialize_tree` 三处统一用该 resolved commit | 补一条 mutable-ref TOCTOU 回归测试后才算正式收口；PROJECT_LOCK §1A 对应旧表述待 Update-Rule 同步 |
+| immutable review snapshot | **IMPLEMENTED** | `package_review_snapshot.py` 的 `build_package()` 将 treeish 一次 resolve 为 immutable commit，provenance/manifest/`_materialize_tree` 三处统一用该 resolved commit；回归测试 `test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit` 钉住 ref-move TOCTOU 场景 | archive policy 覆盖完整性另见下一行（仍 PARTIAL）；IMPLEMENTED ≠ P1.2 CLOSED |
 | archive policy completeness | **PARTIAL** | 已过滤 prompt、旧包、嵌套 archive、`.artifacts`/packet 等 | 仍需按 review policy 补齐敏感/非审查面覆盖，并加回归 |
 | boundary-placement independent rederive | **OPEN/PARTIAL** | generation-time guard + pinned artifact；没有统一 terminal rule rederive | 进入 P1.2 close 判断前按 owner scope 决定是否列入 required verifier |
 | canonical→geometry shared primitives | **PARTIAL / NAMED TCB** | active path 有局部重导；cut helpers 仍可能各自解释覆盖/方向 | 在 F1–F9 真接入 certified master 前必须统一 canonical primitives |

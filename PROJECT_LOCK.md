@@ -132,8 +132,10 @@ checks as certified proof"）。
 supervisor 调 `supervisor_seal()`），补上了 done-condition 的「supervisor 可执行入口」这一条
 机器条件；但 `main.py` 普通完成仍止于 `CANDIDATE_PROPOSED`（seal 是独立命令、不由 main.py
 顺手做），入口存在**不等于** P1.2 closed——其余机器条件与 owner 门仍未满足；PR2 的更小、
-read-once/controlled-loader verification TCB 尚未实现；review snapshot 打包器仍从原始 mutable
-`treeish` 物化而非已解析 commit，且归档策略覆盖仍不完整；roadmap 中其它 OPEN/PARTIAL 几何/规格
+read-once/controlled-loader verification TCB 尚未实现；review snapshot 打包器已把 mutable `treeish`
+一次解析为 immutable commit 并统一用于 provenance/manifest/物化（TOCTOU 窗口已闭，由
+`test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit` 回归钉住），但归档策略
+覆盖仍不完整；roadmap 中其它 OPEN/PARTIAL 几何/规格
 边界仍需按 principle/implementation/red-test 状态处理。connector/body 的已知公开发布缺口已由终端
 fixed-witness 拒绝路径关闭，不应继续列作未实现项。人类文档称下一阶段为 **P1.3**；
 现有 `p1_3b_*` 字段仅为历史机器兼容标识。任何 checker PASS、局部回归 PASS 或内部 supervisor
