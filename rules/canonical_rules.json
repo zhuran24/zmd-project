@@ -1,7 +1,7 @@
 {
   "$schema": "./canonical_rules.schema.json",
   "metadata": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Canonical static rules, preprocess recipe truth, production targets, and facility templates for Arknights: Endfield. Certified runtime still consumes frozen data/preprocessed artifacts."
   },
   "globals": {
@@ -397,6 +397,46 @@
       "source_kind": "cycle_internal",
       "sink_kind": "none",
       "cycle_group": "sandleaf_cycle"
+    }
+  },
+  "semantics": {
+    "_note": "Descriptive, machine-anchored clarifications for external review / proof-audience alignment. NOT consumed by the demand solver, instance builder, placement generator, or any certified solve path. Editing keys here changes only this file's frozen hash (freeze-ritual), never the derived preprocess artifacts. Predicate IDs refer to the 6 CERTIFIED predicates in PROJECT_LOCK.md.",
+    "boundary_placement": {
+      "applies_to": "facility_templates.boundary_storage_port",
+      "placement_rule": "left_or_bottom_boundary",
+      "statement": "The left/bottom boundary lane INCLUDES the (0,0) corner: both the left-baseline vertical poses and the bottom-baseline horizontal poses admit the corner anchor. The candidate domain enumerates all such poses and MUST NOT pre-delete mutually-exclusive corner poses during generation; mutual exclusion is enforced downstream by cell-exclusivity in the master, not by pruning the candidate pool.",
+      "generator": "src/placement/placement_generator.py:gen_boundary_ports"
+    },
+    "routing_cross_junction": {
+      "applies_to": "routing_rules.layers, routing_rules.bridge_mechanics",
+      "statement": "The 'elevated'/L1 and 'ground'/L0 layers are a MODELING representation of a single-cell cross-junction component (two mutually perpendicular straight through-channels sharing one cell). There is no physical ramp, elevation, or layer transition. The two channels may carry DIFFERENT commodities but must be perpendicular when co-located; a bridge cannot turn (can_turn=false) and cannot host a non-straight component on the same cell.",
+      "clarifies": "The prior 'elevated bridge' wording was read literally as a 3D ramp; it is not."
+    },
+    "mixed_commodity_flow": {
+      "applies_to": "routing_rules",
+      "statement": "A single physical belt / routing component may be SHARED by multiple commodities. Commodity mixing on one component is allowed. Throughput / bandwidth / discrete capacity remain OUT-OF-SCOPE (PROJECT_LOCK.md 1A B): the certified predicates constrain connectivity and geometry only, not flow volume."
+    },
+    "connectivity_quantifier": {
+      "applies_to": "certified_predicate_5_routing_connectivity",
+      "statement": "Predicate 5 ('routing connectivity') means: per commodity, every SINK front is reachable from SOME source front AND every SOURCE front can reach SOME sink front. Multiple independent connected islands of the same commodity are ALLOWED. It is NOT a single-spanning-component requirement and NOT a throughput guarantee."
+    },
+    "machine_min_clearance": {
+      "applies_to": "globals.logistics.machine_min_clearance_cells",
+      "predicate_status": "non_predicate",
+      "statement": "machine_min_clearance_cells is NOT one of the 6 CERTIFIED predicates. Adjudicated meaning: a facility's port connector FRONT cell must be empty (clear) so the port can route; enforced via port-clearance / front-cell modeling, NOT as a generic N-cell moat around every machine body. Repeated external reviews misread it as body-clearance; it is not.",
+      "adjudication_ref": "PROJECT_LOCK.md:117-120"
+    },
+    "power_coverage_stencil": {
+      "applies_to": "facility_templates.power_pole",
+      "power_coverage_radius": 5,
+      "anchor_footprint": { "w": 2, "h": 2 },
+      "coverage_shape": {
+        "kind": "axis_aligned_square",
+        "width": 12,
+        "height": 12,
+        "definition": "For a 2x2 pole anchored at (x,y): covered cells are X in [x-5, x+6], Y in [y-5, y+6], clipped to the 70x70 grid."
+      },
+      "generator": "src/placement/placement_generator.py:gen_power_pole"
     }
   }
 }

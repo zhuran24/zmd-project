@@ -227,17 +227,27 @@ def test_boundary_port_anchoring(facility_pools):
         )
 
 
-def test_boundary_port_no_corner_overlap(facility_pools):
-    """边界口不应出现在 (0, 0) 拐角处（§6.4.3 起点从 1 开始）。"""
+def test_boundary_port_includes_corner_poses(facility_pools):
+    """边界口候选域应包含左下角 (0,0) 锚点的 pose（左基线竖 1×3 + 下基线横 3×1）。
+
+    §6.4.3 旧规则"起点从 1 开始、避开拐角重叠"已撤销：(0,0) 是合法的边界口摆放，
+    certified-exact 的候选域须完整枚举全部合法 pose（漏枚举 = 潜在最优性缺口）。
+    这两个拐角 pose 都占 (0,0) 格、彼此互斥；互斥由 master 的 cell-exclusivity 下游
+    强制，不在枚举期预删候选。
+    """
     if "boundary_storage_port" not in facility_pools:
         pytest.skip("无 boundary_storage_port 池")
 
-    for pose in facility_pools["boundary_storage_port"]:
-        ax = pose["anchor"]["x"]
-        ay = pose["anchor"]["y"]
-        assert not (ax == 0 and ay == 0), (
-            f"边界口 {pose['pose_id']} 出现在 (0, 0) 拐角"
-        )
+    corner_poses = [
+        pose
+        for pose in facility_pools["boundary_storage_port"]
+        if pose["anchor"]["x"] == 0 and pose["anchor"]["y"] == 0
+    ]
+    assert len(corner_poses) == 2, (
+        f"预期左下角 (0,0) 恰有 2 个互斥 boundary pose，实得 {len(corner_poses)}"
+    )
+    for pose in corner_poses:
+        assert (0, 0) in {tuple(cell) for cell in pose["occupied_cells"]}
 
 
 # ============================================================================

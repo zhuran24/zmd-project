@@ -58,7 +58,7 @@ def raw_plan_dict() -> dict:
 def test_default_preprocess_context_loads_expected_counts() -> None:
     context = load_default_preprocess_context()
 
-    assert context.metadata["source_rules_version"] == "1.1.0"
+    assert context.metadata["source_rules_version"] == "1.2.0"
     assert context.metadata["source_plan_version"] == "0.2.0"
     assert context.metadata["recipe_source"] == "canonical_rules"
     assert float(context.tick_interval_seconds) == 2.0

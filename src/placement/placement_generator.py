@@ -421,22 +421,23 @@ def gen_boundary_ports() -> List[Dict]:
     port_rule=inward_facing: 端口固定朝场内方向。
     placement_rule=left_or_bottom_boundary。
 
-    左基线: x=0, 竖向 1×3, y ∈ [1, 67)。中间格向右出向。
-    下基线: y=0, 横向 3×1, x ∈ [1, 67)。中间格向上出向。
-    起点从 1 开始，避开左下角 (0, 0) 的拐角重叠。
+    左基线: x=0, 竖向 1×3, y ∈ [0, 67)。中间格向右出向。
+    下基线: y=0, 横向 3×1, x ∈ [0, 67)。中间格向上出向。
+    起点从 0 开始，左下角 (0, 0) 拐角的两个 pose 均纳入候选域；
+    互斥由 master 的 cell-exclusivity 下游强制，不在枚举期预删。
 
     注意：边界口的端口方向是"对场内供料"，因此算作 output_port_cells。
     """
     placements = []
 
-    # 左基线: x=0, w=1, h=3, y ∈ [1, 67]
-    for y in range(1, GRID_H - 3 + 1):
+    # 左基线: x=0, w=1, h=3, y ∈ [0, 67]
+    for y in range(0, GRID_H - 3 + 1):
         # 端口在中间格 (0, y+1)，向右 (E) 供料给场内
         out_p = [{"x": 1, "y": y + 1, "dir": "E"}]
         placements.append(build_placement_obj(0, y, 0, 'left_base', 1, 3, [], out_p))
 
-    # 下基线: y=0, w=3, h=1, x ∈ [1, 67]
-    for x in range(1, GRID_W - 3 + 1):
+    # 下基线: y=0, w=3, h=1, x ∈ [0, 67]
+    for x in range(0, GRID_W - 3 + 1):
         # 端口在中间格 (x+1, 0)，向上 (N) 供料给场内
         out_p = [{"x": x + 1, "y": 1, "dir": "N"}]
         placements.append(build_placement_obj(x, 0, 1, 'bottom_base', 3, 1, [], out_p))

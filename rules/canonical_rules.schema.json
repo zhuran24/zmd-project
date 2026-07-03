@@ -392,6 +392,11 @@
         }
       },
       "additionalProperties": false
+    },
+    "semantics": {
+      "type": "object",
+      "description": "Descriptive semantic clarifications; not consumed by any solver. Hash-pinned with the rest of the file.",
+      "additionalProperties": true
     }
   },
   "additionalProperties": false

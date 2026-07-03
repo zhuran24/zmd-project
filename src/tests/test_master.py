@@ -1878,7 +1878,7 @@ def test_load_project_data_separates_exact_and_exploratory(project_root: Path) -
 
     assert len(exploratory_instances) == 326
     assert sum(1 for inst in exploratory_instances if not inst["is_mandatory"]) == 60
-    assert sum(len(pool) for pool in pools.values()) == 66403
+    assert sum(len(pool) for pool in pools.values()) == 66405
     assert rules["globals"]["grid"]["width"] == 70
     assert rules["globals"]["grid"]["height"] == 70
 
