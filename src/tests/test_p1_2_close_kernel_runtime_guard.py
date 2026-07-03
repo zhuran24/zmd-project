@@ -290,3 +290,31 @@ def test_locked_close_kernel_identityless_process_modes_do_not_bypass_subprocess
     assert locked_p1_2_close_kernel_violation(root) == (
         "locked_p1_2_close_kernel_checker_rejected:7"
     )
+
+
+def test_locked_close_kernel_rejects_main_rebind_hidden_in_argument_annotation(
+    tmp_path: Path,
+) -> None:
+    """round-20 (G1): the parent binding walker must enumerate the same def-time
+    nodes as the checker's own walker, including ``*args``/``**kwargs`` argument
+    annotations.  A ``(main := lambda: 0)`` namedexpr hidden in a ``**kwargs``
+    annotation (with future annotations off it evaluates at def time, before the
+    canonical entrypoint) must count as a second top-level binding of ``main`` so
+    the parent gate rejects the checker instead of running one whose ``main`` was
+    silently swapped.
+    """
+    root = tmp_path / "locked_project"
+    _write(root / "PROJECT_LOCK.md", "locked\n")
+    checker_rel = _seed_locked_close_kernel_data(root)
+    checker_source = _valid_stub_checker_source("    return 0\n").replace(
+        '\n\nif __name__ == "__main__":\n',
+        "\n\ndef _round20_probe(**_kw: (main := (lambda: 0))) -> None:\n"
+        "    return None\n"
+        '\n\nif __name__ == "__main__":\n',
+        1,
+    )
+    _write(root / checker_rel, checker_source)
+
+    assert locked_p1_2_close_kernel_violation(root) == (
+        "locked_p1_2_close_kernel_checker_protected_binding:main"
+    )

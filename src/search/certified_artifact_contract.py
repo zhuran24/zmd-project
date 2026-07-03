@@ -29,7 +29,7 @@ LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS = (
     "scripts/check_p1_2_proof_obligations.py",
 )
 LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256 = (
-    "8bfce5cf6a5e1d2cf36cf216a5d4c4bb4a25fe9e63b7f5e4df65f0941482c5a6"
+    "a1543ee1e6b3db90d2a757340db8f9388630213464355c0ee9892d3d3b734714"
 )
 LOCKED_P1_2_CHECKER_PROTECTED_CALLEES = (
     "_check_step7_contract",
@@ -282,24 +282,52 @@ def _locked_child_statement_bound_names(statements: Sequence[ast.stmt]) -> set[s
     return names
 
 
+def _locked_function_def_time_nodes(
+    node: ast.FunctionDef | ast.AsyncFunctionDef,
+) -> list[ast.AST]:
+    # round-20 (G1): mirror the checker's ``_function_def_time_nodes`` exactly so
+    # the parent binding walker and the parent closed-world scan see every
+    # def-time-evaluated expression -- including ``*args``/``**kwargs`` argument
+    # annotations, which the previous manual list omitted.  A hidden
+    # ``def f(*a: (main := 0))`` namedexpr (with future annotations off) would
+    # otherwise rebind ``main`` at import time while the parent counted only one
+    # top-level ``FunctionDef`` binding, making the parent mirror strictly wider
+    # than the checker it decides to run.
+    values: list[ast.AST] = [*node.decorator_list]
+    values.extend(node.args.defaults)
+    values.extend(default for default in node.args.kw_defaults if default is not None)
+    values.extend(arg.annotation for arg in node.args.posonlyargs if arg.annotation is not None)
+    values.extend(arg.annotation for arg in node.args.args if arg.annotation is not None)
+    values.extend(arg.annotation for arg in node.args.kwonlyargs if arg.annotation is not None)
+    if node.args.vararg is not None and node.args.vararg.annotation is not None:
+        values.append(node.args.vararg.annotation)
+    if node.args.kwarg is not None and node.args.kwarg.annotation is not None:
+        values.append(node.args.kwarg.annotation)
+    if node.returns is not None:
+        values.append(node.returns)
+    values.extend(getattr(node, "type_params", ()))
+    return values
+
+
+def _locked_class_def_time_nodes(node: ast.ClassDef) -> list[ast.AST]:
+    values: list[ast.AST] = [*node.decorator_list, *node.bases]
+    values.extend(keyword.value for keyword in node.keywords)
+    values.extend(getattr(node, "type_params", ()))
+    return values
+
+
 def _locked_current_scope_bound_names(stmt: ast.stmt) -> set[str]:
     names: set[str] = set()
     if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
         names.add(stmt.name)
         names.update(_locked_type_param_bound_names(stmt))
-        for value in (
-            *stmt.decorator_list,
-            *stmt.args.defaults,
-            *(default for default in stmt.args.kw_defaults if default is not None),
-        ):
+        for value in _locked_function_def_time_nodes(stmt):
             names.update(_locked_namedexpr_targets(value))
-        if stmt.returns is not None:
-            names.update(_locked_namedexpr_targets(stmt.returns))
         return names
     if isinstance(stmt, ast.ClassDef):
         names.add(stmt.name)
         names.update(_locked_type_param_bound_names(stmt))
-        for value in (*stmt.decorator_list, *stmt.bases, *(keyword.value for keyword in stmt.keywords)):
+        for value in _locked_class_def_time_nodes(stmt):
             names.update(_locked_namedexpr_targets(value))
         return names
     if isinstance(stmt, ast.Assign):
@@ -337,9 +365,18 @@ def _locked_current_scope_bound_names(stmt: ast.stmt) -> set[str]:
         names.update(_locked_child_statement_bound_names(stmt.orelse))
         names.update(_locked_child_statement_bound_names(stmt.finalbody))
         for handler in stmt.handlers:
+            if handler.type is not None:
+                names.update(_locked_namedexpr_targets(handler.type))
             if handler.name is not None:
                 names.add(handler.name)
             names.update(_locked_child_statement_bound_names(handler.body))
+    elif isinstance(stmt, ast.While):
+        # round-20 (G2): a ``while`` body executes at import/class-exec time, so a
+        # rebind inside it (``while True: witness = _noop; break``) must count as a
+        # scope binding just like ``if``/``for``/``with``.
+        names.update(_locked_namedexpr_targets(stmt.test))
+        names.update(_locked_child_statement_bound_names(stmt.body))
+        names.update(_locked_child_statement_bound_names(stmt.orelse))
     elif isinstance(stmt, ast.If):
         names.update(_locked_namedexpr_targets(stmt.test))
         names.update(_locked_child_statement_bound_names(stmt.body))
@@ -530,16 +567,13 @@ def _locked_checker_top_level_statement_allowed(
     if isinstance(stmt, (ast.Import, ast.ImportFrom)):
         return _locked_checker_import_statement_allowed(stmt)
     if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
-        for expr in (
-            *stmt.decorator_list,
-            *stmt.args.defaults,
-            *(default for default in stmt.args.kw_defaults if default is not None),
-            stmt.returns,
-        ):
+        # round-20 (G1): scan every def-time-evaluated expression, including
+        # ``*args``/``**kwargs`` annotations and type params, for an import-time
+        # rebind primitive.  The previous manual list omitted vararg/kwarg
+        # annotations, letting ``def f(**kw: globals().__setitem__("main", ...))``
+        # slip a namespace write past the closed world.
+        for expr in _locked_function_def_time_nodes(stmt):
             if _locked_expr_contains_import_time_rebind_primitive(expr) is not None:
-                return False
-        for arg in (*stmt.args.posonlyargs, *stmt.args.args, *stmt.args.kwonlyargs):
-            if _locked_expr_contains_import_time_rebind_primitive(arg.annotation) is not None:
                 return False
         return True
     if isinstance(stmt, ast.ClassDef):

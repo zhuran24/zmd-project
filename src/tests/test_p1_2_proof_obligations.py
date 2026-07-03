@@ -212,6 +212,25 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_round18_checker_rejects_checkerror_shadowing_handler" in close_kernel_tests
     assert "test_p1_2_round18_checker_rejects_process_exit_aliases_before_error_gate" in close_kernel_tests
     assert "test_p1_2_round18_checker_rejects_accumulator_alias_frame_escape" in close_kernel_tests
+    assert "test_locked_close_kernel_rejects_import_time_class_body_main_rebind" in close_kernel_tests
+    assert "test_p1_2_round20_parent_anchor_rejects_decorated_parent_gate_function" in close_kernel_tests
+    assert "test_p1_2_round20_parent_anchor_rejects_top_level_dynamic_namespace_write" in close_kernel_tests
+    assert "test_p1_2_round20_parent_anchor_rejects_critical_name_attribute_monkeypatch" in close_kernel_tests
+    assert "test_p1_2_round20_parent_anchor_rejects_critical_name_rebind" in close_kernel_tests
+    assert "test_p1_2_round20_witness_binding_rejects_while_body_rebind" in close_kernel_tests
+    assert "test_p1_2_round20_witness_binding_rejects_wildcard_import" in close_kernel_tests
+    assert "test_p1_2_round20_benders_contract_rejects_class_attribute_method_rebind" in close_kernel_tests
+    assert "test_p1_2_round20_benders_contract_rejects_instance_lookup_hook" in close_kernel_tests
+    assert "test_p1_2_round20_witness_carrier_rejects_function_code_swap" in close_kernel_tests
+    assert (
+        "test_p1_2_round20_checker_closed_world_rejects_vararg_annotation_primitive"
+        in close_kernel_tests
+    )
+    assert "test_p1_2_round20_parent_binding_walker_mirrors_checker" in close_kernel_tests
+    assert (
+        "test_locked_close_kernel_rejects_main_rebind_hidden_in_argument_annotation"
+        in close_kernel_tests
+    )
 
 
 def _publisher_scan_paths() -> list[Path]:
@@ -5379,3 +5398,248 @@ def test_p1_2_checker_rejects_frontier_sink_replay_bypass(tmp_path: Path) -> Non
         "frontier must adopt replay demotions/rebindings before candidate lifecycle "
         "decisions"
     ) in outer_errors
+
+
+# ---------------------------------------------------------------------------
+# round-20: parent-anchor symmetry (G1), shared-walker completeness (G2), and
+# witness-carrier dynamic-rebind backstop (G3).  Threat model (owner, 2026-07-03):
+# a reseal-capable half-trusted adversary who recomputes every pinned hash, so a
+# structural mutation must be caught by the anchors, not merely made visible by
+# the source-sha floor.
+# ---------------------------------------------------------------------------
+
+_CERTIFIED_ARTIFACT_CONTRACT_PATH = (
+    PROJECT_ROOT / "src" / "search" / "certified_artifact_contract.py"
+)
+_BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
+_CERTIFIED_FRONTIER_PATH = PROJECT_ROOT / "src" / "search" / "certified_frontier.py"
+
+_BENDERS_REVERIFIER_IMPORT = (
+    "from src.search.independent_infeasibility_reverifier import (\n"
+    "    REVERIFY_STATUS_DIVERGED_FEASIBLE,\n"
+    "    reverify_whole_layout_infeasibility,\n"
+    ")\n"
+)
+
+
+def _parent_source() -> str:
+    return _CERTIFIED_ARTIFACT_CONTRACT_PATH.read_text(encoding="utf-8")
+
+
+def _contract_anchor_errors_for_parent_source(tmp_path: Path, source: str) -> list[str]:
+    parent_path = tmp_path / "certified_artifact_contract.py"
+    parent_path.write_text(source, encoding="utf-8", newline="\n")
+    return check_p1_2_proof_obligations._check_certified_artifact_contract_runtime_anchor(
+        path=parent_path
+    )
+
+
+def _benders_source() -> str:
+    return _BENDERS_LOOP_PATH.read_text(encoding="utf-8")
+
+
+def _reverifier_contract_errors_for_benders_source(tmp_path: Path, source: str) -> list[str]:
+    benders_path = tmp_path / "benders_loop.py"
+    benders_path.write_text(source, encoding="utf-8", newline="\n")
+    return check_p1_2_proof_obligations._check_independent_infeasibility_reverifier_contract(
+        benders_loop_path=benders_path
+    )
+
+
+def test_p1_2_round20_parent_anchor_rejects_decorated_parent_gate_function(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _parent_source(),
+        "def validate_locked_p1_2_close_kernel(project_root: Path) -> None:",
+        "def _r20_noop_dec(fn):\n    return fn\n\n\n@_r20_noop_dec\n"
+        "def validate_locked_p1_2_close_kernel(project_root: Path) -> None:",
+    )
+    errors = _contract_anchor_errors_for_parent_source(tmp_path, source)
+    assert any(
+        "must be undecorated so its runtime binding is the" in error for error in errors
+    )
+
+
+def test_p1_2_round20_parent_anchor_rejects_top_level_dynamic_namespace_write(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _parent_source(),
+        'LOCKED_EXACT_PROJECT_MARKER = "PROJECT_LOCK.md"\n',
+        'LOCKED_EXACT_PROJECT_MARKER = "PROJECT_LOCK.md"\n'
+        'globals()["validate_locked_p1_2_close_kernel"] = lambda project_root: None\n',
+    )
+    errors = _contract_anchor_errors_for_parent_source(tmp_path, source)
+    assert any(
+        "must not dynamically write a module or class namespace" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round20_parent_anchor_rejects_critical_name_attribute_monkeypatch(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _parent_source(),
+        'LOCKED_EXACT_PROJECT_MARKER = "PROJECT_LOCK.md"\n',
+        'LOCKED_EXACT_PROJECT_MARKER = "PROJECT_LOCK.md"\n'
+        "subprocess.run = lambda *a, **k: None\n",
+    )
+    errors = _contract_anchor_errors_for_parent_source(tmp_path, source)
+    assert any(
+        "must not rebind a protected symbol via an attribute write" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round20_parent_anchor_rejects_critical_name_rebind(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _parent_source(),
+        "import subprocess\n",
+        "import subprocess\nsubprocess = subprocess\n",
+    )
+    errors = _contract_anchor_errors_for_parent_source(tmp_path, source)
+    assert any(
+        "must have exactly one module-level binding" in error for error in errors
+    )
+
+
+def test_p1_2_round20_witness_binding_rejects_while_body_rebind(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _benders_source(),
+        _BENDERS_REVERIFIER_IMPORT,
+        _BENDERS_REVERIFIER_IMPORT
+        + "while True:\n    reverify_whole_layout_infeasibility = None\n    break\n",
+    )
+    errors = _reverifier_contract_errors_for_benders_source(tmp_path, source)
+    assert any(
+        "must have exactly one module-level runtime binding" in error for error in errors
+    )
+
+
+def test_p1_2_round20_witness_binding_rejects_wildcard_import(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _benders_source(),
+        _BENDERS_REVERIFIER_IMPORT,
+        _BENDERS_REVERIFIER_IMPORT + "from json import *\n",
+    )
+    errors = _reverifier_contract_errors_for_benders_source(tmp_path, source)
+    assert any(
+        "must not share the module top level with a wildcard import" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round20_benders_contract_rejects_class_attribute_method_rebind(
+    tmp_path: Path,
+) -> None:
+    source = (
+        _benders_source()
+        + "\n\ndef _r20_noop_nogood(self, **kwargs):\n    return True\n\n\n"
+        "LBBDController._add_exact_whole_layout_nogood = _r20_noop_nogood\n"
+    )
+    errors = _reverifier_contract_errors_for_benders_source(tmp_path, source)
+    assert any(
+        "must not rebind a protected symbol via an attribute write" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round20_benders_contract_rejects_instance_lookup_hook(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _benders_source(),
+        "class LBBDController:",
+        "class LBBDController:\n"
+        "    def __getattribute__(self, name):\n"
+        "        return object.__getattribute__(self, name)\n",
+    )
+    errors = _reverifier_contract_errors_for_benders_source(tmp_path, source)
+    assert any(
+        "must not define instance attribute lookup/write hooks" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round20_witness_carrier_rejects_function_code_swap() -> None:
+    source = (
+        _CERTIFIED_FRONTIER_PATH.read_text(encoding="utf-8")
+        + "\n\ndef _r20_noop_ev(*a, **k):\n    return {}\n\n\n"
+        "build_sink_verified_terminal_frontier_evidence.__code__ = _r20_noop_ev.__code__\n"
+    )
+    tree = ast.parse(source)
+    function = check_p1_2_proof_obligations._function_def(
+        tree,
+        "build_sink_verified_terminal_frontier_evidence",
+        path=_CERTIFIED_FRONTIER_PATH,
+    )
+    errors = check_p1_2_proof_obligations._imported_direct_call_errors(
+        tree=tree,
+        function=function,
+        path=_CERTIFIED_FRONTIER_PATH,
+        function_label="terminal frontier evidence",
+        module="src.search.terminal_fixed_witness_capsule",
+        name="build_terminal_fixed_witness_projection_at_sink",
+    )
+    assert any(
+        "must not rebind a protected symbol via an attribute write" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round20_checker_closed_world_rejects_vararg_annotation_primitive(
+    tmp_path: Path,
+) -> None:
+    source = _checker_source_before_entrypoint(
+        _checker_source(),
+        'def _r20_vararg(**_kw: globals().__setitem__("main", lambda: 0)) -> None:\n'
+        "    return None\n",
+    )
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path, source, name="checker_vararg_annotation_primitive.py"
+    )
+    assert any(
+        "module top level contains disallowed statement FunctionDef" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round20_parent_binding_walker_mirrors_checker() -> None:
+    from src.search import certified_artifact_contract as cac
+
+    checker_walker = check_p1_2_proof_obligations._current_scope_bound_names
+    parent_walker = cac._locked_current_scope_bound_names
+    walker_samples = (
+        "def f(*a: (x := 0), **k: (y := 1)) -> None:\n    pass\n",
+        "def f(p: (z := 2)) -> None:\n    pass\n",
+        "while True:\n    w = None\n    break\n",
+        "try:\n    pass\nexcept (e := ValueError):\n    pass\n",
+        "class C(B, metaclass=(m := type)):\n    pass\n",
+        "with open('x') as g:\n    pass\n",
+        "for q in [(r := 0)]:\n    s = None\n",
+    )
+    for src in walker_samples:
+        node = ast.parse(src).body[0]
+        assert checker_walker(node) == parent_walker(node), src
+
+    checker_closed_world = check_p1_2_proof_obligations._checker_module_top_level_statement_allowed
+    parent_closed_world = cac._locked_checker_top_level_statement_allowed
+    closed_world_samples = (
+        'def f(**k: globals().__setitem__("main", lambda: 0)) -> int:\n    return 0\n',
+        "def f(*a: setattr) -> int:\n    return 0\n",
+        "x = 1\n",
+        "import sys\n",
+    )
+    for src in closed_world_samples:
+        node = ast.parse(src).body[0]
+        assert checker_closed_world(
+            node, is_first=False, is_last=False
+        ) == parent_closed_world(node, is_first=False, is_last=False), src

@@ -716,9 +716,18 @@ def _current_scope_bound_names(stmt: ast.stmt) -> set[str]:
         names.update(_child_statement_scope_bound_names(stmt.orelse))
         names.update(_child_statement_scope_bound_names(stmt.finalbody))
         for handler in stmt.handlers:
+            if handler.type is not None:
+                names.update(_collect_current_scope_namedexpr_targets(handler.type))
             if handler.name is not None:
                 names.add(handler.name)
             names.update(_child_statement_scope_bound_names(handler.body))
+    elif isinstance(stmt, ast.While):
+        # round-20 (G2): a ``while`` body executes at import/class-exec time, so a
+        # rebind inside it (``while True: witness = _noop; break``) must count as a
+        # scope binding just like ``if``/``for``/``with``.
+        names.update(_collect_current_scope_namedexpr_targets(stmt.test))
+        names.update(_child_statement_scope_bound_names(stmt.body))
+        names.update(_child_statement_scope_bound_names(stmt.orelse))
     elif isinstance(stmt, ast.If):
         names.update(_collect_current_scope_namedexpr_targets(stmt.test))
         names.update(_child_statement_scope_bound_names(stmt.body))
@@ -1167,16 +1176,133 @@ def _top_level_exact_import_runtime_binding_errors(
         if _top_level_import_stmt_imports_exact_name(node, module=module, name=name)
     ]
     global_declarations = _module_global_or_nonlocal_declaration_points(tree, name)
-    if len(bindings) == 1 and len(exact_imports) == 1 and not global_declarations:
-        return []
-    lines = _format_binding_lines(bindings) if bindings else "none"
-    declaration_lines = (
-        _format_binding_lines(global_declarations) if global_declarations else "none"
+    # round-20 (G2): a ``from other import *`` after the exact import can shadow
+    # ``name`` at runtime while contributing no ``Name`` binding point, and a
+    # multi-alias ``from M import name, fake as name`` binds ``name`` twice inside
+    # a single statement (one binding point, but the second alias wins at runtime).
+    # Neither was caught by the statement-level binding count.
+    wildcard_imports = [
+        stmt
+        for stmt in tree.body
+        if isinstance(stmt, ast.ImportFrom)
+        and any(alias.name == "*" for alias in stmt.names)
+    ]
+    unclean_exact_imports = [
+        node for node in exact_imports if not _import_from_binds_name_cleanly(node, name)
+    ]
+    errors: list[str] = []
+    if not (len(bindings) == 1 and len(exact_imports) == 1 and not global_declarations):
+        lines = _format_binding_lines(bindings) if bindings else "none"
+        declaration_lines = (
+            _format_binding_lines(global_declarations) if global_declarations else "none"
+        )
+        errors.append(
+            f"{label} imported symbol {_rel(path)}::{name} must have exactly one "
+            f"module-level runtime binding, the exact import from {module}; "
+            f"found binding lines {lines}; global/nonlocal declaration lines {declaration_lines}"
+        )
+    if wildcard_imports:
+        errors.append(
+            f"{label} imported symbol {_rel(path)}::{name} must not share the module "
+            f"top level with a wildcard import (from ... import *); found lines "
+            f"{_format_binding_lines(wildcard_imports)}"
+        )
+    if unclean_exact_imports:
+        errors.append(
+            f"{label} imported symbol {_rel(path)}::{name} must be bound by a single "
+            f"unaliased exact import from {module}; the import statement also rebinds "
+            f"{name} via a second alias"
+        )
+    return errors
+
+
+def _import_from_binds_name_cleanly(stmt: ast.stmt, name: str) -> bool:
+    """round-20 (G2): whether ``stmt`` binds ``name`` via exactly one unaliased
+    ``from M import name`` alias and no other alias in the same statement rebinds
+    ``name`` (``from M import name, fake as name``)."""
+    if not isinstance(stmt, ast.ImportFrom):
+        return False
+    binding_aliases = [alias for alias in stmt.names if (alias.asname or alias.name) == name]
+    return (
+        len(binding_aliases) == 1
+        and binding_aliases[0].asname is None
+        and binding_aliases[0].name == name
     )
+
+
+def _top_level_protected_binding_rebind_errors(
+    tree: ast.Module,
+    *,
+    path: Path,
+    label: str,
+    protected_names: frozenset[str],
+) -> list[str]:
+    """round-20 (G3): fail closed on a module-top-level dynamic rebind of a
+    protected witness/carrier symbol in a witness-carrier file.
+
+    The witness-binding contract counts ``Name`` binding points, but a carrier
+    file can rebind a protected symbol without producing a ``Name`` binding: via
+    a dynamic namespace write (``globals()["witness"] = _noop``), a module/class
+    attribute write (``LBBDController._add_exact_whole_layout_nogood = _noop``,
+    ``carrier.__code__ = other.__code__``), a bare ``setattr(...)``, or an
+    import-time ``_x = globals().__setitem__("witness", _noop)`` on an otherwise
+    ``Name``-target assignment.  Carriers are large real modules, so unlike the
+    checker's own whitelist closed world this is a targeted denylist keyed on the
+    protected names -- it leaves unrelated top-level attribute writes alone.
+    """
+    errors: list[str] = []
+    for stmt in tree.body:
+        if isinstance(stmt, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+            targets = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
+            for target in targets:
+                if isinstance(target, ast.Subscript):
+                    errors.append(
+                        f"{label} {_rel(path)} must not dynamically write a module or "
+                        f"class namespace at module top level (line {stmt.lineno})"
+                    )
+                elif isinstance(target, ast.Attribute):
+                    base_is_protected = (
+                        isinstance(target.value, ast.Name)
+                        and target.value.id in protected_names
+                    )
+                    if target.attr in protected_names or base_is_protected:
+                        errors.append(
+                            f"{label} {_rel(path)} must not rebind a protected symbol via "
+                            f"an attribute write at module top level (line {stmt.lineno})"
+                        )
+            if _expr_contains_import_time_rebind_primitive(getattr(stmt, "value", None)) is not None:
+                errors.append(
+                    f"{label} {_rel(path)} must not evaluate a namespace-write primitive "
+                    f"at module top level (line {stmt.lineno})"
+                )
+            if _expr_contains_import_time_rebind_primitive(getattr(stmt, "annotation", None)) is not None:
+                errors.append(
+                    f"{label} {_rel(path)} must not evaluate a namespace-write primitive "
+                    f"in a module-top-level annotation (line {stmt.lineno})"
+                )
+        elif isinstance(stmt, ast.Expr):
+            if _expr_contains_import_time_rebind_primitive(stmt.value) is not None:
+                errors.append(
+                    f"{label} {_rel(path)} must not call a namespace-write primitive "
+                    f"at module top level (line {stmt.lineno})"
+                )
+    return errors
+
+
+_PROTECTED_CLASS_LOOKUP_HOOK_NAMES = frozenset(
+    {"__getattribute__", "__getattr__", "__setattr__", "__delattr__"}
+)
+
+
+def _class_defines_attribute_lookup_hooks(class_node: ast.ClassDef) -> list[str]:
+    """round-20 (G3): names of instance attribute lookup/write hooks defined on a
+    class body.  Such a hook can redirect ``self.<method>(...)`` at runtime even
+    though the checked ``FunctionDef`` for ``<method>`` is unchanged."""
     return [
-        f"{label} imported symbol {_rel(path)}::{name} must have exactly one "
-        f"module-level runtime binding, the exact import from {module}; "
-        f"found binding lines {lines}; global/nonlocal declaration lines {declaration_lines}"
+        member.name
+        for member in class_node.body
+        if isinstance(member, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and member.name in _PROTECTED_CLASS_LOOKUP_HOOK_NAMES
     ]
 
 
@@ -1904,6 +2030,14 @@ def _imported_direct_call_errors(
             f"{function_label} must call imported fixed-witness capsule symbol {name} "
             f"on the reachable main path in {_rel(path)}"
         )
+    errors.extend(
+        _top_level_protected_binding_rebind_errors(
+            tree,
+            path=path,
+            label=function_label,
+            protected_names=frozenset({name, function.name}),
+        )
+    )
     return errors
 
 
@@ -2974,7 +3108,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "8bfce5cf6a5e1d2cf36cf216a5d4c4bb4a25fe9e63b7f5e4df65f0941482c5a6"
+    "a1543ee1e6b3db90d2a757340db8f9388630213464355c0ee9892d3d3b734714"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -4246,16 +4380,13 @@ def _checker_module_top_level_statement_allowed(
     if isinstance(stmt, (ast.Import, ast.ImportFrom)):
         return _checker_import_statement_allowed(stmt)
     if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
-        for expr in (
-            *stmt.decorator_list,
-            *stmt.args.defaults,
-            *(default for default in stmt.args.kw_defaults if default is not None),
-            stmt.returns,
-        ):
+        # round-20 (G1): scan every def-time-evaluated expression, including
+        # ``*args``/``**kwargs`` annotations and type params, for an import-time
+        # rebind primitive.  The previous manual list omitted vararg/kwarg
+        # annotations; mirror ``_function_def_time_nodes`` so this closed world and
+        # the parent's ``_locked_checker_top_level_statement_allowed`` stay aligned.
+        for expr in _function_def_time_nodes(stmt):
             if _expr_contains_import_time_rebind_primitive(expr) is not None:
-                return False
-        for arg in (*stmt.args.posonlyargs, *stmt.args.args, *stmt.args.kwonlyargs):
-            if _expr_contains_import_time_rebind_primitive(arg.annotation) is not None:
                 return False
         return True
     if isinstance(stmt, ast.ClassDef):
@@ -12681,7 +12812,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
-    'src/search/certified_artifact_contract.py': '352fd085a9340cc94c08b926e0e74ef1c8de141d887999a8dff4eeb424ba7422',
+    'src/search/certified_artifact_contract.py': '7b3f6aca8d0ab1fca5f659dfa3252006fdda06e372423f1aaddf7f60db728db4',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
@@ -13104,6 +13235,27 @@ def _contract_has_subprocess_checker_invocation(function: ast.FunctionDef) -> bo
     )
 
 
+_LOCKED_CONTRACT_ANCHORED_FUNCTION_NAMES = (
+    "certified_project_uses_locked_artifact_contract",
+    "_locked_close_kernel_manifest_projection_violation",
+    "_locked_close_kernel_checker_ast_anchor_violation",
+    "locked_p1_2_close_kernel_violation",
+    "validate_locked_p1_2_close_kernel",
+)
+# round-20 (G1): imports the parent gate resolves at runtime while running the
+# checker subprocess.  A module-top-level rebind of any of these (``subprocess =
+# _fake`` -> second binding, or ``subprocess.run = _noop`` -> attribute write)
+# would let the gate ``subprocess.run([...])`` call resolve to a forged object
+# even though the pinned call shape is unchanged, so the anchor pins each to a
+# single module-level binding and forbids dynamic writes against them.
+_LOCKED_CONTRACT_CRITICAL_RUNTIME_NAMES = frozenset(
+    {"ast", "json", "shutil", "subprocess", "sys", "tempfile", "Path"}
+)
+_LOCKED_CONTRACT_PROTECTED_RUNTIME_NAMES = _LOCKED_CONTRACT_CRITICAL_RUNTIME_NAMES | frozenset(
+    _LOCKED_CONTRACT_ANCHORED_FUNCTION_NAMES
+)
+
+
 def _check_certified_artifact_contract_runtime_anchor(
     *,
     path: Path = CERTIFIED_ARTIFACT_CONTRACT_PATH,
@@ -13184,6 +13336,40 @@ def _check_certified_artifact_contract_runtime_anchor(
     except CheckError as exc:
         errors.append(str(exc))
         return errors
+
+    # round-20 (G1): the anchor already requires each checker protected callee to
+    # be an undecorated top-level FunctionDef; make the parent gate's own five
+    # anchored functions symmetric -- a ``@_noop`` decorator would leave the body
+    # sequence intact while replacing the runtime object with a wrapper.
+    for anchored_fn in (uses_locked, manifest_projection, checker_ast_anchor, violation, validate):
+        if anchored_fn.decorator_list:
+            errors.append(
+                f"certified artifact runtime anchor parent gate function "
+                f"{anchored_fn.name} must be undecorated so its runtime binding is the "
+                f"checked FunctionDef"
+            )
+
+    # round-20 (G1): the parent module has no top-level closed world of its own --
+    # only its five function bodies were pinned.  A ``globals()["validate_..."] =
+    # _noop`` (Subscript-target assign) or ``subprocess.run = _noop`` (attribute
+    # write) at parent top level rebinds the runtime object without a ``Name``
+    # binding point, so the checker enforces the same denylist the parent applies
+    # to the checker it runs, plus single-binding uniqueness for the runtime names
+    # the gate resolves.
+    errors.extend(
+        _top_level_protected_binding_rebind_errors(
+            tree,
+            path=path,
+            label="certified artifact runtime anchor parent gate",
+            protected_names=_LOCKED_CONTRACT_PROTECTED_RUNTIME_NAMES,
+        )
+    )
+    for critical_name in sorted(_LOCKED_CONTRACT_CRITICAL_RUNTIME_NAMES):
+        if len(_top_level_binding_points(tree, critical_name)) != 1:
+            errors.append(
+                f"certified artifact runtime anchor parent module runtime name "
+                f"{critical_name} must have exactly one module-level binding"
+            )
 
     uses_locked_required = (
         "root = Path(project_root).resolve()",
@@ -13598,6 +13784,27 @@ def _check_independent_infeasibility_reverifier_contract(
             "whole-layout nogood controller class must have no decorators, bases, "
             "or metaclass keywords so checked methods resolve on LBBDController itself"
         )
+    lookup_hooks = _class_defines_attribute_lookup_hooks(controller_class)
+    if lookup_hooks:
+        errors.append(
+            "whole-layout nogood controller class must not define instance attribute "
+            "lookup/write hooks (" + ", ".join(sorted(lookup_hooks)) + ") that could "
+            "redirect the checked method at runtime"
+        )
+    errors.extend(
+        _top_level_protected_binding_rebind_errors(
+            benders_tree,
+            path=benders_loop_path,
+            label="whole-layout nogood funnel",
+            protected_names=frozenset(
+                {
+                    "reverify_whole_layout_infeasibility",
+                    "LBBDController",
+                    "_add_exact_whole_layout_nogood",
+                }
+            ),
+        )
+    )
     funnel_fn = _method_def(
         controller_class,
         "_add_exact_whole_layout_nogood",
