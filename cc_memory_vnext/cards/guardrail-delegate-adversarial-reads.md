@@ -75,5 +75,13 @@ provenance:
 == 泛化(owner 2026-07-02 晚补充)==
 口径不止"读对抗性语料"一种情形:**发布面(certified 链/checker 硬化/外审补丁消化)相关的具体工作整体默认走子代理**——主线程只看抽象大概、只做方向引导(给目标/验收标准/纪律,收结论,做决策),细节工作(读源码、跑诊断、改代码、跑验证)都在 fresh-context 子代理里发生;**子代理的汇报同样只许抽象结论**(过/没过 + 数字、失败性质分类、需要什么决策),不带 payload,派活时把这条汇报纪律写死在任务书里。**数学面(算法核心/CP-SAT 编码/binding/routing/master)不受此限**,主线程可直接看细节。
 
+== 架构演进(owner 2026-07-03:leader 换 Opus,隔离方式反转)==
+上面"发布面进子代理"的隔离**前提是 leader 自己是 Fable5**(分类器对 Fable5 敏感、发布面对抗性语料会持续降级它)。owner 2026-07-03 把 leader(主线程)模型换成 **Opus**——Opus 不受该分类器强度困扰,所以隔离方式**反转**:
+- **发布面/对抗性工作(checker 硬化、reseal、close-kernel 登记面、外审对抗性报告 triage)由 Opus leader 直接做,不再派发布面子代理**(隔离的成本没了、上下文也不断)。
+- **只保留 Fable5 子代理做纯数学面**(routing/CP-SAT 建模、canonical 语义、生成器、loader 这类**不含对抗性语料**的活),永不碰 checker/reseal/外审报告——防止 Fable5 被降级。
+- 分界铁律:凡碰 checker/reseal/对抗性 = 发布面 = Opus leader;纯建模/规则/非对抗 = 数学面 = 可派 Fable5。
+- 代理归属原则:已沾过 reseal/checker 对抗性语料的子代理**不要**转 Fable5(降级残留),要留 Fable5 就**全新起**只喂纯数学面。
+**所以"发布面默认进子代理"这条现在只在 leader=Fable5 时成立;leader=Opus 时反过来,发布面归 leader。** 判断当前口径先看 leader 模型。
+
 == 判据 ==
-一段内容若"很长 + 满是绕过/篡改/exec 字样",默认进子代理,不进主上下文;发布面的具体工作则整体默认进子代理。写审计提示词的受众纪律见 [[review-prompt-audience-purity]];外审剪贴板 staging 规程见 [[relay-review-clipboard-staging]]。
+leader=Fable5 时:一段内容若"很长 + 满是绕过/篡改/exec 字样"或整个发布面工作,默认进子代理。leader=Opus 时:发布面归 leader 直接做,只有纯数学面才派(Fable5)子代理。写审计提示词的受众纪律见 [[review-prompt-audience-purity]];外审剪贴板 staging 规程见 [[relay-review-clipboard-staging]]。

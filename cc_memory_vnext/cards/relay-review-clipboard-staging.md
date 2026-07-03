@@ -68,4 +68,12 @@ updated_at: "2026-07-02"
 4. **相同文本去重置顶**——历史不会因重跑产生重复条目,重跑 = 理顺顺序,安全。
 5. 前提:`HKCU:\Software\Microsoft\Clipboard` 的 `EnableClipboardHistory=1`(本机已开;若关闭需先提示 owner 打开)。
 
+== relay 准备各步时长基线(2026-07-03 round-19 实测,checker 变大后的新常态)==
+round-19 给 checker +769 行/新语义门后,凡"跑完整 checker"的测试全部变慢一个量级,别再用 round-18 前的旧经验判断"卡死":
+- 打包解包自测(package_review_snapshot 内嵌 pytest):**~30 分钟级**(旧经验"几分钟"已作废);
+- close-kernel 定向回归(test_p1_2_proof_obligations 等):394 tests ≈ **16 分钟**;
+- preflight --slow-tests(slow lane):44 tests ≈ **16 分钟**(旧 13 分钟基线偏短);
+- preflight --full 的 fast pytest:3741 tests ≈ 5.5 分钟(变化不大)。
+等这些步骤时把等待器/超时阈值按上述放宽;进程活着且 CPU 在持续消耗 = 在正常跑,别 kill。
+
 背景:外审 relay 流程本身(codex 本地审修 → GPT Pro relay、owner 仓库外手动跑、回传 union+triage)见 README 第 4/6 章;原项目 AGENTS.md 的 relay UI 约束**未随交付副本迁入**,故这条操作规程记在本卡。
