@@ -17,10 +17,11 @@ import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Set
 
 from ortools.sat.python import cp_model
 
+from src.io.strict_json import load_strict_json, loads_strict_json
 from src.models.cp_sat_worker_config import (
     DEFAULT_BINDING_CP_SAT_WORKERS,
     apply_subproblem_memory_cap,
@@ -66,29 +67,12 @@ def _is_non_facility_placement_marker(instance_id: str) -> bool:
     return str(instance_id) in NON_FACILITY_PLACEMENT_MARKER_IDS
 
 
-def _reject_duplicate_json_keys(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
-    payload: Dict[str, Any] = {}
-    for key, value in pairs:
-        if key in payload:
-            raise ValueError(f"duplicate JSON key: {key}")
-        payload[key] = value
-    return payload
-
-
-def _reject_json_constant(value: str) -> None:
-    raise ValueError(f"invalid JSON constant: {value}")
-
-
 def _loads_strict_json(text: str) -> Any:
-    return json.loads(
-        text,
-        object_pairs_hook=_reject_duplicate_json_keys,
-        parse_constant=_reject_json_constant,
-    )
+    return loads_strict_json(text)
 
 
 def _load_strict_json(path: Path) -> Any:
-    return _loads_strict_json(path.read_text(encoding="utf-8"))
+    return load_strict_json(path)
 
 
 def _normalize_wireless_sink_generic_input_slots(
@@ -827,7 +811,7 @@ class PortBindingModel:
             rules = self._canonical_rules_payload
         else:
             rules_path = self.project_root / "rules" / "canonical_rules.json"
-            rules = json.loads(rules_path.read_text(encoding="utf-8"))
+            rules = _load_strict_json(rules_path)
         instances = list(self.instances_by_id.values())
         throughput = compute_commodity_throughput(rules, instances)
         self._overload_classification_cache = classify_commodity_flow(

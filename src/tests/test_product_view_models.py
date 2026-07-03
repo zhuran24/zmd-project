@@ -64,6 +64,7 @@ def _sample_blueprint_payload() -> dict:
         },
         routing_solution=[
             {"x": 5, "y": 3, "layer": 0, "component_type": "belt", "commodity": "iron_plate", "flow_in": ["W"], "flow_out": ["E"]},
+            {"x": 5, "y": 3, "layer": 0, "component_type": "belt", "commodity": "copper_plate", "flow_in": ["W"], "flow_out": ["E"]},
             {"x": 6, "y": 3, "layer": 1, "component_type": "bridge", "commodity": "iron_plate", "flow_in": ["W"], "flow_out": ["E"]},
         ],
         ghost_rect={"w": 6, "h": 5, "area": 30, "anchor_x": 10, "anchor_y": 11},
@@ -89,6 +90,10 @@ def test_viewer_report_builds_cards_warnings_and_defaults() -> None:
     assert report["metadata"]["version"] == "0.1.0"
     assert len(report["cards"]) == 5
     assert report["summary"]["routing"]["total_cells"] == 2
+    assert report["summary"]["routing"]["L0_ground"]["commodities"] == [
+        {"name": "copper_plate", "count": 1},
+        {"name": "iron_plate", "count": 1},
+    ]
     assert report["summary"]["ports"]["total_active_ports"] == 2
     assert report["viewer_defaults"]["layers"]["routingGround"] is True
 

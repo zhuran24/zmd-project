@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping, Tuple
 
-BLUEPRINT_SCHEMA_VERSION = "1.0.0"
+BLUEPRINT_SCHEMA_VERSION = "1.1.0"
 BLUEPRINT_FILENAME = "optimal_blueprint.json"
 _VALID_PORT_TYPES = {"input", "output"}
 _VALID_DIRECTIONS = {"N", "S", "E", "W"}
@@ -184,14 +184,86 @@ def _normalize_routing_cell(raw: Any, *, layer_name: str) -> Dict[str, Any]:
     if layer_name == "L1_elevated" and component_type != "bridge":
         raise ValueError("L1_elevated cells must use bridge components")
 
-    flow_in = _normalize_direction_list(raw.get("flow_in", []))
-    flow_out = _normalize_direction_list(raw.get("flow_out", []))
-    return {
+    flow_payload = raw.get("flow") if isinstance(raw.get("flow"), Mapping) else {}
+    flow_in = _normalize_direction_list(raw.get("flow_in", flow_payload.get("flow_in", [])))
+    flow_out = _normalize_direction_list(raw.get("flow_out", flow_payload.get("flow_out", [])))
+    commodities = _normalize_cell_commodities(raw)
+    uses_provided = "uses" in raw
+    uses = _normalize_routing_uses(raw.get("uses"), default_flow_in=flow_in, default_flow_out=flow_out)
+    if not uses:
+        if uses_provided:
+            raise ValueError("routing uses must be non-empty")
+        if "commodities" in raw:
+            raise ValueError("routing cells with commodities require uses witnesses")
+        uses = [
+            {
+                "commodity": commodities[0],
+                "flow_in": flow_in,
+                "flow_out": flow_out,
+            }
+        ]
+    use_commodities = _normalize_commodity_list([entry["commodity"] for entry in uses])
+    if use_commodities != commodities:
+        raise ValueError("routing cell commodities must match uses commodities")
+
+    cell = {
         "type": component_type,
-        "commodity": str(raw.get("commodity", "[TBD]")),
+        "commodities": commodities,
+        "uses": uses,
         "flow_in": flow_in,
         "flow_out": flow_out,
     }
+    if len(commodities) == 1:
+        cell["commodity"] = commodities[0]
+    return cell
+
+
+def _normalize_cell_commodities(raw: Mapping[str, Any]) -> list[str]:
+    if "commodities" in raw:
+        return _normalize_commodity_list(raw.get("commodities"))
+    return _normalize_commodity_list([raw.get("commodity", "[TBD]")])
+
+
+def _normalize_commodity_list(raw: Any) -> list[str]:
+    if not isinstance(raw, list):
+        raise ValueError("routing commodities must be a list")
+    values = sorted({str(item) for item in raw})
+    if not values:
+        raise ValueError("routing commodities must be non-empty")
+    return values
+
+
+def _normalize_routing_uses(
+    raw: Any,
+    *,
+    default_flow_in: list[str],
+    default_flow_out: list[str],
+) -> list[Dict[str, Any]]:
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise ValueError("routing uses must be a list")
+    uses: list[Dict[str, Any]] = []
+    for entry in raw:
+        if not isinstance(entry, Mapping):
+            raise ValueError("routing use entry must be a mapping")
+        if "commodity" not in entry:
+            raise ValueError("routing use entry commodity is required")
+        uses.append(
+            {
+                "commodity": str(entry["commodity"]),
+                "flow_in": _normalize_direction_list(entry.get("flow_in", default_flow_in)),
+                "flow_out": _normalize_direction_list(entry.get("flow_out", default_flow_out)),
+            }
+        )
+    uses.sort(
+        key=lambda entry: (
+            str(entry["commodity"]),
+            tuple(entry["flow_in"]),
+            tuple(entry["flow_out"]),
+        )
+    )
+    return uses
 
 
 def _normalize_direction_list(raw: Any) -> list[str]:

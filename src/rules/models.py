@@ -15,7 +15,7 @@ Status: CURRENT_CODE_ALIGNED
 
 from __future__ import annotations
 
-from typing import Dict, Literal, Optional
+from typing import Any, Dict, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, PositiveFloat
 
@@ -172,3 +172,4 @@ class CanonicalRulesDocument(StrictBaseModel):
     production_targets: Dict[str, ProductionTarget]
     commodity_metadata: Dict[str, CommodityMetadata]
     recipes: Dict[str, Recipe]
+    semantics: Optional[Dict[str, Any]] = None

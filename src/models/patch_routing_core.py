@@ -1,14 +1,23 @@
 """PCR-CUT Phase 1 — Patch-restricted exact belt CP-SAT.
 
-跟 routing_subproblem.RoutingSubproblem 同结构, 但:
+语义滞后于生产 routing,且两个方向相反的偏差并存:
+- boundary_out/in 虚拟 vars 不约束总数 = 对可行性的放松(over-approximation);
+- 未实现混流共享与十字垂直性 = 对可行性的收紧(under-approximation)——生产
+  routing 已允许多 commodity 共享同一物理组件,本模型仍按单商品独占建模。
+
+因此下方历史 "Sound guarantee"(全图 FEASIBLE ⇒ patch FEASIBLE)在混流语义下
+【不再成立】:全图可能靠混流可行而本模型 INFEASIBLE。本模型 diagnostic-only、
+未接入 certified/生产链;其 INFEASIBLE 不得当作真 INFEASIBLE 消费,接入生产前
+必须先按 phys/use 拆层重构。
+
+跟 routing_subproblem.RoutingSubproblem 旧版同结构, 但:
 - 只在 patch.cells 内建 vars
-- 出 patch boundary 用 boundary_out/in 虚拟 vars 不约束总数 (over-approx, 保
-  INFEASIBLE sound)
+- 出 patch boundary 用 boundary_out/in 虚拟 vars 不约束总数
 - 每个 owner 的 binding pattern 选择是 assumption literal — patch INFEASIBLE
   时从 UNSAT core 抽 PoseAssumption.
 
-Sound guarantee: 全图 routing FEASIBLE ⇒ patch routing FEASIBLE.
-逆否: patch routing INFEASIBLE ⇒ 全图也 INFEASIBLE 给定那组 pose+binding pattern.
+历史 Sound guarantee(仅在旧的单商品独占语义下成立, 混流语义下已失效):
+全图 routing FEASIBLE ⇒ patch routing FEASIBLE.
 """
 
 from __future__ import annotations

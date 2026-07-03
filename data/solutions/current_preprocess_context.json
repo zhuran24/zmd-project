@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.2.0",
     "description": "Additive preprocess overlay for cycle groups, utility operations, and optional future overrides after canonical rules consolidation.",
-    "source_rules_version": "1.1.0",
+    "source_rules_version": "1.2.0",
     "source_plan_version": "0.2.0",
     "recipe_source": "canonical_rules",
     "target_source": "canonical_rules",

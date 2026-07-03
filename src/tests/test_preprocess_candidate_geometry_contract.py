@@ -158,5 +158,5 @@ def test_template_pool_counts_match_front_safe_closed_forms():
         "protocol_core": 2 * 58 * 58,
         "protocol_storage_box": 68 * 68,
         "power_pole": 69 * 69,
-        "boundary_storage_port": 2 * 67,
+        "boundary_storage_port": 2 * 68,
     }

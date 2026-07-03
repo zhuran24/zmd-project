@@ -140,7 +140,8 @@ def _build_routing_summary(routing_network: Mapping[str, Any]) -> dict[str, Any]
             if not isinstance(cell, Mapping):
                 continue
             component_counts[str(cell.get("type", "unknown"))] += 1
-            commodity_counts[str(cell.get("commodity", "[TBD]"))] += 1
+            for commodity in _routing_cell_commodities(cell):
+                commodity_counts[commodity] += 1
         summary[layer_name] = {
             "cell_count": len(raw_layer),
             "components": _counter_items(component_counts),
@@ -155,3 +156,12 @@ def _counter_items(counter: Counter[str]) -> list[dict[str, Any]]:
         {"name": name, "count": int(count)}
         for name, count in sorted(counter.items(), key=lambda item: (-item[1], item[0]))
     ]
+
+
+def _routing_cell_commodities(cell: Mapping[str, Any]) -> tuple[str, ...]:
+    raw_commodities = cell.get("commodities")
+    if isinstance(raw_commodities, list):
+        commodities = tuple(sorted({str(item) for item in raw_commodities}))
+        if commodities:
+            return commodities
+    return (str(cell.get("commodity", "[TBD]")),)

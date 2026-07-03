@@ -35,7 +35,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BASELINE_PATH = PROJECT_ROOT / "scripts" / "preflight_baseline.json"
 
 FROZEN_ARTIFACTS = {
-    "rules/canonical_rules.json": "36A461884FDD2451DFEAD8AD2C19C053F17D74F573A53A6F851A4E0B3CE6015D",
+    "rules/canonical_rules.json": "32664AAC6C075AF7D57E001A0A2B11B9A8B9304D8513739414AAA7ED4501BCB3",
     # R6-F-01: the plan feeds runtime operation profiles / binding utility slots,
     # so it is hash-bound like the canonical rules (also in campaign hash closure).
     "rules/preprocess_plan.json": "1BCF0D13E1709CD7E04DDEA439EE005E837584F2F66A1A921159D198019C9ED8",
@@ -48,8 +48,8 @@ EXTERNAL_FROZEN_ARTIFACTS = {
     # The current audited working tree includes it. Whenever present, preflight verifies
     # exact bytes; when absent, a certified run must restore/verify it before solve time.
     "data/preprocessed/candidate_placements.json": {
-        "sha256": "ADCC2A6E8A1DAAA9DEA6CAE68883301AD07CE123FA286B55DCBE79CA2F34BEC0",
-        "size_bytes": 45_773_799,
+        "sha256": "A914BA6348544B7EF44D0834629C6DCF90F39FA5564E0CD4C50AF6AF550C444B",
+        "size_bytes": 45_774_305,
         "policy_doc": "PROJECT_LOCK.md",
     },
 }
