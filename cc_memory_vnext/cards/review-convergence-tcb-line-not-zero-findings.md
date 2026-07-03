@@ -2,7 +2,7 @@
 id: review-convergence-tcb-line-not-zero-findings
 kind: decision
 title: 外审"审到零发现"永远做不到、不是收敛判据——真收敛=画冻一条 TCB 线、修线以上全部、线下新发现算受信假设→owner 拍板可停;2026-07-03 owner 判 round-20 close-kernel 强度够、在此画线收口、停外审循环
-summary: 项目头号硬教训(README §3/§7、cc_memory `p1-2-review-converged-tcb-start-p1-3`):对抗式外审**永远能再剥一层"信任洋葱"**(witness→发布闸/artifact 载入→验证器执行的字节码→解释器→OS→硬件),逐个打补丁总能被推到下一层,所以**"审到零发现"不可能、更不是收敛判据**。真正的收敛是三步:①显式画+冻一条 **TCB 线**(声明"这些选择信任、不再证":解释器/stdlib/OR-Tools native/OS 隔离/冻结几何字节等)②把线**以上**的洞全修掉 ③之后新发现要么落在线**以下**(=已声明的受信假设,不算数)、要么是已知 done 实例 → **可停审**。判断"该不该继续外审"的唯一尺子:**再剥出的东西还在不在 TCB 线以上**——线上的 soundness 洞(能盖假章)必审,线下的"对更强假想对手能否更严"是强度选择、无限可加、不该追。**结束靠 owner 主动画线+拍板(P1.2 是手动门、clean-streak 故意存仓库外),不是等外审次数自然归零。** 防混淆:TCB 架构(L0/L1 隔离子进程 micro-verifier)落地**之前**(PR1/capsule 时期)外审剥出的是**真能盖假章的洞**(verdict 可同进程伪造 `TerminalFixedWitnessVerdict(publishable=True)`、guard 按函数名认可绕、hash 可自 reseal),owner 拍板上隔离验证器才从"逐个补丁"升级为"架构上不可伪造"——那才是真危险;而 2026-07-03 这次 close-kernel(round-14→20)剥出的是"门能否对更强内部对手更严",危险等级低得多,但"审不完"机理同源。**本次拍板(owner 2026-07-03)**:判 round-20 close-kernel 作为"防半可信内部对手"的门强度**够了**,在此画 TCB 线;**停止 close-kernel 外审循环**(round-19/round-20 外审都不发)、进入 P1.2 owner 手动门收口。数学面同轮已收敛(8 份报告真 BLOCK 只剩拐角、已修,余为假阳性/降级/表达债;canonical 四语义已机器化在 mixflow 分支),数学面收口=写 canonical(已做),不靠外审。
+summary: 项目头号硬教训(README §3/§7、cc_memory `p1-2-review-converged-tcb-start-p1-3`):对抗式外审**永远能再剥一层"信任洋葱"**(witness→发布闸/artifact 载入→验证器执行的字节码→解释器→OS→硬件),逐个打补丁总能被推到下一层,所以**"审到零发现"不可能、更不是收敛判据**。真正的收敛是三步:①显式画+冻一条 **TCB 线**(声明"这些选择信任、不再证":解释器/stdlib/OR-Tools native/OS 隔离/冻结几何字节等)②把线**以上**的洞全修掉 ③之后新发现要么落在线**以下**(=已声明的受信假设,不算数)、要么是已知 done 实例 → **可停审**。判断"该不该继续外审"的唯一尺子:**再剥出的东西还在不在 TCB 线以上**——线上的 soundness 洞(能盖假章)必审,线下的"对更强假想对手能否更严"是强度选择、无限可加、不该追。**结束靠 owner 主动画线+拍板(P1.2 是手动门、clean-streak 故意存仓库外),不是等外审次数自然归零。** 防混淆:TCB 架构(L0/L1 隔离子进程 micro-verifier)落地**之前**(PR1/capsule 时期)外审剥出的是**真能盖假章的洞**(verdict 可同进程伪造 `TerminalFixedWitnessVerdict(publishable=True)`、guard 按函数名认可绕、hash 可自 reseal),owner 拍板上隔离验证器才从"逐个补丁"升级为"架构上不可伪造"——那才是真危险;而 2026-07-03 这次 close-kernel(round-14→20)剥出的是"门能否对更强内部对手更严",危险等级低得多,但"审不完"机理同源。**本次拍板(owner 2026-07-03)**:判 round-20 close-kernel 作为"防半可信内部对手"的门强度**够了**,在此画 TCB 线;**停止 close-kernel 外审循环**(round-19/round-20 外审都不发)、进入 P1.2 owner 手动门收口。数学面同轮已收敛(8 份报告真 BLOCK 只剩拐角、已修,余为假阳性/降级/表达债;canonical 四语义已机器化在 mixflow 分支),数学面收口=写 canonical(已做),不靠外审。**适用范围澄清(owner 2026-07-04)**:画线只管"外审循环停不停",**不等于**把 PR2 深化项(#1/#2/#3/#5 独立枚举/#8/#9)标成已完成或从账上划掉——owner 原话意思是"#7 可以填上了,其他部分还没做、没做自然不能填上";它们仍是真实 backlog、将来要做几轮才能填,只是不挡当前收口、现在不排期。
 scope:
   domains:
     - external-review
@@ -56,7 +56,8 @@ provenance:
   evidence:
     - "2026-07-03:数学面 8 份外审终裁真 BLOCK 仅剩拐角(已修 d1845dc),余为假阳性(被 PROJECT_LOCK 否)/降级 guarded/canonical 表达债/witness 卫生——收敛信号;发布面 close-kernel round-20(2413cc2)双 checker 绿、owner 判强度足、画线收口。"
     - "史料:README:506/604/757-765 '对抗审查总能再剥一层信任洋葱,审到零发现不是收敛判据';收敛=画冻 TCB 线+修线上+线下算受信假设(cc_memory `p1-2-review-converged-tcb-start-p1-3`)。TCB 落地前假 CERTIFIED 大问题见 README §3/§5(可伪造 verdict / name-based guard / self-reseal hash)。"
-  updated_at: "2026-07-03"
+    - "2026-07-04:两个代理(主线线程+状态调查会话)先后把画线读过头成'PR2 深化项被取消/违背拍板',owner 被搞懵后当面澄清:画线≠划掉 backlog,#7 已填、#1/#2/#3/#5独立枚举/#8/#9 还没做、以后仍要做;据此补适用范围段。"
+  updated_at: "2026-07-04"
 ---
 外审何时结束的收敛判据 + 2026-07-03 owner 画线收口拍板(本轮方向性最大的一个决定)。
 
@@ -82,4 +83,10 @@ provenance:
 == 防重蹈 ==
 未来任何会话:**别再无脑起 round-21**、别拿"还能审出东西"当"没结束"的信号(永远能)。要判该不该再审,只问"再剥出的在不在 TCB 线以上"。外审的历史使命(挖净能盖假章的 soundness 洞、逼出 TCB 架构)已完成;剩下的是画线决定,归 owner。
 
-四条游戏语义拍板见 [[routing-game-semantics-rulings]];close-kernel 防谁(半可信内部对手)见 [[close-kernel-threat-model-reseal-adversary]];外审对抗性语料的上下文卫生见 [[guardrail-delegate-adversarial-reads]];外审 relay 剪贴板规程(本次收口后暂不触发)见 [[relay-review-clipboard-staging]]。
+== 适用范围澄清:画线 ≠ 取消 PR2 深化 backlog(owner 2026-07-04)==
+2026-07-04 两个代理先后把这张卡的"画线收口"读过头:主线线程说 PR2 #1/#2/#3/#5 深化"跟画线精神有张力",状态调查会话更直接说"重开这些等于违背收敛拍板"——owner 被搞懵后当面澄清,两个问题别搅在一起:
+- **"做没做?"**——没做完。#7(supervisor seal 生产入口)已填上(349c56c);#1/#2/#3 是 partial、#5 独立枚举/#8/#9 基本没动。**没有任何一项被画线标成"已完成",也没有被划掉。**
+- **"现在排不排?"**——不排。画线管的只有一件事:**外审循环停**,收口不等这些空格填满。
+owner 原话意思:"第 7 部分是可以填上了,但其他部分还没做,还没做自然不能填上"——这些深化项仍是**真实 backlog**,预期将来要"做上一段时间/做上几轮"才能填;何时排期归 owner,届时明说重开即可,**不需要**推翻画线拍板(两者不矛盾,是先后与优先级)。代理别把"线下的活现在不做"外推成"这批活永久取消/碰它就是违背拍板"。
+
+四条游戏语义拍板见 [[routing-game-semantics-rulings]];close-kernel 防谁(半可信内部对手)见 [[close-kernel-threat-model-reseal-adversary]];#7 入口通电的设计边界见 [[pr2-7-supervisor-seal-entrypoint-design]];外审对抗性语料的上下文卫生见 [[guardrail-delegate-adversarial-reads]];外审 relay 剪贴板规程(本次收口后暂不触发)见 [[relay-review-clipboard-staging]]。
