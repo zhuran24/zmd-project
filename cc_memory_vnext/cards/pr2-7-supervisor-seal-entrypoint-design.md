@@ -66,7 +66,7 @@ provenance:
 PR2 #7 生产 supervisor certify 入口的设计与安全边界(2026-07-04 owner 拍板通电、亲历落地)。
 
 == 缺口与入口 ==
-PROJECT_LOCK §1C(C5) 把"生产 supervisor 可执行入口"列为 P1.2 done-condition 的机器条件,并记它当前不存在:normal `main.py` 完成只落 `CANDIDATE_PROPOSED`(producer 只产提案 + 写 `*.proposal_ready.json` marker),唯一 durable `CERTIFIED` mint 是 `ExactCampaign.supervisor_seal()`,此前 23 处调用全在 tests。通电 = 补这个入口。
+PROJECT_LOCK §1C(C5) 把"生产 supervisor 可执行入口"列为 P1.2 done-condition 的机器条件,并曾记它不存在(通电前口径;`349c56c` 落地、`ae6646e` 文档同步后已为"已建"):normal `main.py` 完成只落 `CANDIDATE_PROPOSED`(producer 只产提案 + 写 `*.proposal_ready.json` marker),唯一 durable `CERTIFIED` mint 是 `ExactCampaign.supervisor_seal()`,此前 23 处调用全在 tests。通电 = 补这个入口。
 
 **入口 = `scripts/run_supervisor_seal.py`,薄独立命令**:
 ```

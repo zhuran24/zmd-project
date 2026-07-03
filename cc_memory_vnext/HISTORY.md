@@ -1,11 +1,11 @@
 # 记忆系统档案 — 来历 / 现状 / 路线 / 未解
 
 > 这份档案存在的理由很反讽:这套主动记忆系统,本来记不住自己的故事。背景、重写过程、关键裁决、待做未做,过去只散在易丢的 download 文档 + 各次对话里。本文是**单一连贯入口**;一手设计语料在同目录 `design/`(已随仓库存活)。
-> 最后更新:2026-06-27。
+> 最后更新:2026-07-04。
 
 ## 0. 一句话
 
-记忆从「一条条存、靠人/Agent 自己 grep 关联」一路演进到「SQLite 单一真相 + 系统主动发现关系 + GPU 语义」,但仍卡在**被动数据库悖论**(得先知道有记忆才会查);v-next 把它改成「每回合 hook 确定性编译注入的**主动卡片系统**」。现状 = v-next MVP-0 上线;旧 cc_memory 设计意图是降为只读 legacy,但实际仍被写(过渡态,见 §4 的口径矛盾)。
+记忆从「一条条存、靠人/Agent 自己 grep 关联」一路演进到「SQLite 单一真相 + 系统主动发现关系 + GPU 语义」,但仍卡在**被动数据库悖论**(得先知道有记忆才会查);v-next 把它改成「每回合 hook 确定性编译注入的**主动卡片系统**」。现状 = v-next MVP-0 上线;旧 cc_memory **仍现役可写**——2026-06-30 已裁定三层互补共存、整库迁移非目标,"冻结"=按条 archive-on-promotion(裁定见 `memory-three-layer-coexistence-decided` 卡;§4 里的口径打架已由该裁定收口,那段保留作史料)。
 
 ## 1. 完整演进链(背景 = 重写前)
 
@@ -33,7 +33,7 @@
 
 | 层 | 是什么 | 状态 |
 |---|---|---|
-| **旧 cc_memory**(SQLite,~106 条) | 协作库,`mem.py` 驱动;**设计意图=只读 legacy/history 源** | **过渡态:意图只读、实际仍被写**(v-next 仅覆盖一小切片;未迁移项/项目状态仍落旧库——见 §4) |
+| **旧 cc_memory**(SQLite,~106 条) | 协作库,`mem.py` 驱动;全量低摩擦历史库+写入收件箱 | **现役可写**(2026-06-30 裁定三层互补共存;"冻结"=按条 archive-on-promotion,整库迁移非目标——见 `memory-three-layer-coexistence-decided` 卡) |
 | **新 v-next**(`cc_memory_vnext/`,卡数以 `zmem verify` 为准) | 主动注入层,叠在旧库之上 | **MVP-0 上线**(见下) |
 | **harness 记忆**(`~/.claude/.../memory/*.md`) | 跨项目、本地、不进仓库 | 活(MiMo/precompact 等 route-time 反射规则) |
 
@@ -54,7 +54,7 @@
 
 ## 4. 未解 / 待澄清(诚实标注)
 
-- **冻结时机:三处口径打架 = 真未解**(不是已定论)。`MASTER_PLAN` 写"旧 cc_memory **上线即冻只读**绝不双活";`council_B` 写"memory.db 当 legacy 读真相、**迁移延后无时间表**";`CLAUDE.md` 又仍称 cc_memory 为 "authoritative collaboration memory"(=活)。**而实际操作仍在写旧库**(本会话 + 分支线程都写过)。可行的**按条解读**(防漂移):某条知识做成卡后,别再更新它旧库副本——但这≠整库已冻。"整库迁移成只读"是 V2 里程碑、未到、且上面三处得先对齐。(`entry:v-next` 里"冻只读不动"的措辞偏笼统,待校准。)
+- **冻结时机:三处口径打架——【已于 2026-06-30 裁定收口,本条转史料】**三层互补共存、整库迁移非目标、冻结=按条 archive-on-promotion(`memory-three-layer-coexistence-decided` 卡,三处文档口径已对齐);以下为裁定前的原始记录。`MASTER_PLAN` 写"旧 cc_memory **上线即冻只读**绝不双活";`council_B` 写"memory.db 当 legacy 读真相、**迁移延后无时间表**";`CLAUDE.md` 又仍称 cc_memory 为 "authoritative collaboration memory"(=活)。**而实际操作仍在写旧库**(本会话 + 分支线程都写过)。可行的**按条解读**(防漂移):某条知识做成卡后,别再更新它旧库副本——但这≠整库已冻。"整库迁移成只读"是 V2 里程碑、未到、且上面三处得先对齐。(`entry:v-next` 里"冻只读不动"的措辞偏笼统,待校准。)
 - claim_guards 是关键词子串匹配,金标准外的改写措辞可能漏(泛化属 V2 dense)。
 - 残留话题邻近 flood(共享关键词的卡偶尔同现)未全清。
 - **捕获≠召回(2026-06-28 元层血泪,被动悖论咬到系统自己)**:本会话开了两场六代理大会重推「召回触发(③)」「老系统整合(①)」,而那套"判官/看守"结论 + 分档门槛(Action Recall@L1≥80% 等)+ 冻结/迁移路线,**早就写在本档 §5 + `design/council_B` + `MASTER_PLAN`**。为什么还重推:① 24115 那次压缩的【摘要有损】,把整个 V2 路线图/判官/遥测洞见摘没了,只留 precompact-B;② 写下来的那几份在 `HISTORY`/`design` = **"拉"层、无人推**,我开 ③ 时没被推到;③ 那次的记忆更新回合 + 判官回合**没失职**(判官 GAP=0 是对的——确实没"漏记")——**因为这是召回缺口、不是捕获缺口**。教训:记忆更新回合 + 判官修的是捕获,修不了召回;"重推已记过的"只有 ③ 那个"读输出 cross-check 全量记忆"的看守逮得住。**已止血**:把 `vnext-self-history` 卡触发拓宽到"设计/重推记忆系统功能"那一刻(原只在"问历史"时弹)+ 加金标准 frame,让"先读 HISTORY/design"进【推】通道(否则只写本档 = 重蹈这条覆辙)。
@@ -64,7 +64,7 @@
 - **近(纯离线、随时推)**:持续把新踩的坑补进金标准(自喂养);卡 17→更多;扩金标准;三硬类保持 100%。
 - **MVP-1a:已落地(2026-07-03)** — `pre_tool_risk_gate.py` 高危 deny/ask + ZMEM_PROOF 解锁(详 §3「2026-07-03 衍生操作召回批」)。
 - **判官层(V2 测量)**:小模型/廉价 API 读 transcript,经**遥测预筛**只看可疑切片 → 抓漏召回/纠正 → **起草** frame/卡(过 verify/eval 闸 + 抽检才落,绝不自动改卡)。遥测=它的省钱阀门。
-- **V2(凭指标)**:dense 语义召回;necessity-LLM(只产建议);行为日志 + 在线权重校准(明文 git 可回退);生命周期温度;**存储真相源整库迁移**(council_B:第二档达标后再评估、不设时间表)。
+- **V2(凭指标)**:dense 语义召回;necessity-LLM(只产建议);行为日志 + 在线权重校准(明文 git 可回退);生命周期温度;~~存储真相源整库迁移~~(**2026-06-30 已裁定非目标**——三层互补共存,只做按条 archive-on-promotion;原 council_B 口径"第二档达标后再评估"作废)。
 - **⭐ ③ 召回触发的【真地基】= 可观测提交点记忆闸(Observable-Commitment Gate,2026-06-28)**:owner 拿本会话 ③ 讨论喂 ChatGPT 后的 reframe,**取代/修正 ③ 的 framing**——真问题不是"自动推卡"(③ 的看守=push),是"**逼模型在提交点真去查**"(带门的 pull):`zmem search` 吐 `ZMEM_PROOF` token,PreToolUse/Stop 闸**查 transcript 有没有 proof**、没 proof 不准把想法变成动作/结论;`skip` 须显式留痕。地基层 = 每张卡声明 `observable_from`、`verify --coverage` 强制(没可观测触发面的卡不准算自动召回保证)。三目标别混:(a)念头那刻=无解,(b)没查不准提交=提交点闸=近期键石,(c)中途多查=改 agent loop=未来。**详 `design/observable-commitment-gate-20260628.md`(+ 源 `design/chatgpt-...source-20260628.md`)。** 它治"读了没连上"(逼判断那刻重查、记忆落当下)。③ 的看守降为第四档。**(2026-07-03 进展:`zmem search` + `ZMEM_PROOF` + PreToolUse proof 检查已落第一版;Stop 输出闸、skip 显式留痕、observable_from 契约/coverage 仍未做。)**
 - **解锁关口**:MVP-0 三硬类 StrictHitRate 100%(含纯脚本基线)**已达成**;各 V2 件仍按各自指标门槛逐项推进。
 

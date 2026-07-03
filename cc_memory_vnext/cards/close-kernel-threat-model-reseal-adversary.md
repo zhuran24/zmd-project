@@ -2,7 +2,7 @@
 id: close-kernel-threat-model-reseal-adversary
 kind: decision
 title: close-kernel 结构门的威胁模型【纳入】"能跑 reseal 仪式的半可信/内部对手"——这些 AST 结构锚只在"改被钉字节+忠实重算所有 hash"之后才可利用,故 round-19 三块新门覆盖不对称/缺兜底的缺口判 must-fix(走 round-20)、不归入既有 import-time·反射·checker-self 三类残余
-summary: owner 2026-07-03 拍板:close-kernel 结构门的防护目标**明确纳入**"能执行 reseal 仪式的半可信/内部对手"(能改任一被字节 sha 钉死的源文件、并重算重钉所有 hash 的提交者)。依据:这些控制流/绑定/顶层封闭世界 AST 锚对**纯外部对手本就无意义**(外部对手改不动被钉字节)——它们唯一的用武之地就是"忠实 reseal 之后"这一层,即字节 sha 只让改动**可见**、锚才让改动**无害**;历轮 close-kernel 硬化一贯隐含此对手,故这次显式纳入是**一致选择、非扩围**。据此裁定:round-19 三块新结构门(父门↔checker 镜像判定、共享绑定 walker 的顶层语法覆盖、witness 承载文件的顶层封闭世界兜底)存在**覆盖不对称/缺兜底**的缺口,性质是"新块覆盖不完整/边界画错"、属 **must-fix**,**不**归入已显式登记的三类"语言本身不可闭合"残余(F import-time / A4 反射 / checker-self)。修复走 round-20,范围有界:对齐两侧镜像枚举、补齐 walker 顶层绑定语法、给承载文件加针对性顶层重绑兜底、加一条强制镜像等价测试、补一条此前遗漏的登记断言。规模中小。
+summary: owner 2026-07-03 拍板:close-kernel 结构门的防护目标**明确纳入**"能执行 reseal 仪式的半可信/内部对手"(能改任一被字节 sha 钉死的源文件、并重算重钉所有 hash 的提交者)。依据:这些控制流/绑定/顶层封闭世界 AST 锚对**纯外部对手本就无意义**(外部对手改不动被钉字节)——它们唯一的用武之地就是"忠实 reseal 之后"这一层,即字节 sha 只让改动**可见**、锚才让改动**无害**;历轮 close-kernel 硬化一贯隐含此对手,故这次显式纳入是**一致选择、非扩围**。据此裁定:round-19 三块新结构门(父门↔checker 镜像判定、共享绑定 walker 的顶层语法覆盖、witness 承载文件的顶层封闭世界兜底)存在**覆盖不对称/缺兜底**的缺口,性质是"新块覆盖不完整/边界画错"、属 **must-fix**,**不**归入已显式登记的三类"语言本身不可闭合"残余(F import-time / A4 反射 / checker-self)。修复走 round-20,范围有界:对齐两侧镜像枚举、补齐 walker 顶层绑定语法、给承载文件加针对性顶层重绑兜底、加一条强制镜像等价测试、补一条此前遗漏的登记断言。规模中小。(2026-07-04 注:round-20 已完成 `2413cc2` 并随 pr2-5 `6e06922` 合入 main;owner 已在 round-20 画线停止 close-kernel 外审循环,见 [[review-convergence-tcb-line-not-zero-findings]]。)
 scope:
   domains:
     - checker-hardening
@@ -52,7 +52,7 @@ provenance:
   reason: owner 2026-07-03 拍板把 reseal 级半可信对手纳入 close-kernel 防护目标;两份独立终裁(triage)都据此推荐 NOT CLEAN → round-20。
   evidence:
     - "2026-07-03:pr2-5 round-19 外审 triage 终裁 NOT CLEAN;owner 拍板'防'(纳入半可信 reseal 对手),三块新门覆盖不对称缺口判 must-fix、走 round-20。"
-  updated_at: "2026-07-03"
+  updated_at: "2026-07-04"
 ---
 close-kernel 结构门"防谁"的定性决定(owner 2026-07-03 拍板)。判某个外审发现是 must-fix 还是可归入残余时,先看这条。
 
@@ -67,7 +67,7 @@ close-kernel 结构门(父门运行时闸 + 结构 checker + 两者互为镜像�
 == 它明确/推翻了什么 ==
 - round-19 引入三块新结构门,但它们之间**覆盖不对称、且有一块缺顶层兜底**:①一侧镜像判定器比另一侧**更宽**(更宽的一侧是负责"要不要放行"的那一侧,方向危险);②共享的顶层绑定枚举**漏认若干顶层绑定语法**;③承载 witness 直呼的运行时文件一侧**没有**另一块已有的顶层封闭世界兜底,只靠绑定计数。
 - 这些缺口的性质是"**新块覆盖不完整/边界画错**"——即某类顶层语法形态的重绑,能在镜像不对称处或无兜底处**漏判**、从而在忠实 reseal 之后仍让门放行。**不是**"语言本身不可闭合"的那种残余。
-- 因此它们判 **must-fix**,**不**归入已显式登记的三类"接受残余"(见下)。据此第 13 轮外审 triage 定 **NOT CLEAN → round-20**。
+- 因此它们判 **must-fix**,**不**归入已显式登记的三类"接受残余"(见下)。据此第 13 轮外审 triage 定 **NOT CLEAN → round-20**。(round-20 已完成并合入 main `6e06922`;外审循环随后由 owner 画线停止。)
 
 （受众纪律:本卡只做定性,**不记录任何具体的重绑/绕过/exec 构造**——那些是对抗性 payload,详见 [[guardrail-delegate-adversarial-reads]] 的上下文卫生纪律。)
 

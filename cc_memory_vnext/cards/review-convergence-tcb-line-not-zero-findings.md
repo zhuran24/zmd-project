@@ -2,7 +2,7 @@
 id: review-convergence-tcb-line-not-zero-findings
 kind: decision
 title: 外审"审到零发现"永远做不到、不是收敛判据——真收敛=画冻一条 TCB 线、修线以上全部、线下新发现算受信假设→owner 拍板可停;2026-07-03 owner 判 round-20 close-kernel 强度够、在此画线收口、停外审循环
-summary: 项目头号硬教训(README §3/§7、cc_memory `p1-2-review-converged-tcb-start-p1-3`):对抗式外审**永远能再剥一层"信任洋葱"**(witness→发布闸/artifact 载入→验证器执行的字节码→解释器→OS→硬件),逐个打补丁总能被推到下一层,所以**"审到零发现"不可能、更不是收敛判据**。真正的收敛是三步:①显式画+冻一条 **TCB 线**(声明"这些选择信任、不再证":解释器/stdlib/OR-Tools native/OS 隔离/冻结几何字节等)②把线**以上**的洞全修掉 ③之后新发现要么落在线**以下**(=已声明的受信假设,不算数)、要么是已知 done 实例 → **可停审**。判断"该不该继续外审"的唯一尺子:**再剥出的东西还在不在 TCB 线以上**——线上的 soundness 洞(能盖假章)必审,线下的"对更强假想对手能否更严"是强度选择、无限可加、不该追。**结束靠 owner 主动画线+拍板(P1.2 是手动门、clean-streak 故意存仓库外),不是等外审次数自然归零。** 防混淆:TCB 架构(L0/L1 隔离子进程 micro-verifier)落地**之前**(PR1/capsule 时期)外审剥出的是**真能盖假章的洞**(verdict 可同进程伪造 `TerminalFixedWitnessVerdict(publishable=True)`、guard 按函数名认可绕、hash 可自 reseal),owner 拍板上隔离验证器才从"逐个补丁"升级为"架构上不可伪造"——那才是真危险;而 2026-07-03 这次 close-kernel(round-14→20)剥出的是"门能否对更强内部对手更严",危险等级低得多,但"审不完"机理同源。**本次拍板(owner 2026-07-03)**:判 round-20 close-kernel 作为"防半可信内部对手"的门强度**够了**,在此画 TCB 线;**停止 close-kernel 外审循环**(round-19/round-20 外审都不发)、进入 P1.2 owner 手动门收口。数学面同轮已收敛(8 份报告真 BLOCK 只剩拐角、已修,余为假阳性/降级/表达债;canonical 四语义已机器化在 mixflow 分支),数学面收口=写 canonical(已做),不靠外审。**适用范围澄清(owner 2026-07-04)**:画线只管"外审循环停不停",**不等于**把 PR2 深化项(#1/#2/#3/#5 独立枚举/#8/#9)标成已完成或从账上划掉——owner 原话意思是"#7 可以填上了,其他部分还没做、没做自然不能填上";它们仍是真实 backlog、将来要做几轮才能填,只是不挡当前收口、现在不排期。
+summary: 项目头号硬教训(README §3/§7、cc_memory `p1-2-review-converged-tcb-start-p1-3`):对抗式外审**永远能再剥一层"信任洋葱"**(witness→发布闸/artifact 载入→验证器执行的字节码→解释器→OS→硬件),逐个打补丁总能被推到下一层,所以**"审到零发现"不可能、更不是收敛判据**。真正的收敛是三步:①显式画+冻一条 **TCB 线**(声明"这些选择信任、不再证":解释器/stdlib/OR-Tools native/OS 隔离/冻结几何字节等)②把线**以上**的洞全修掉 ③之后新发现要么落在线**以下**(=已声明的受信假设,不算数)、要么是已知 done 实例 → **可停审**。判断"该不该继续外审"的唯一尺子:**再剥出的东西还在不在 TCB 线以上**——线上的 soundness 洞(能盖假章)必审,线下的"对更强假想对手能否更严"是强度选择、无限可加、不该追。**结束靠 owner 主动画线+拍板(P1.2 是手动门、clean-streak 故意存仓库外),不是等外审次数自然归零。** 防混淆:TCB 架构(L0/L1 隔离子进程 micro-verifier)落地**之前**(PR1/capsule 时期)外审剥出的是**真能盖假章的洞**(verdict 可同进程伪造 `TerminalFixedWitnessVerdict(publishable=True)`、guard 按函数名认可绕、hash 可自 reseal),owner 拍板上隔离验证器才从"逐个补丁"升级为"架构上不可伪造"——那才是真危险;而 2026-07-03 这次 close-kernel(round-14→20)剥出的是"门能否对更强内部对手更严",危险等级低得多,但"审不完"机理同源。**本次拍板(owner 2026-07-03)**:判 round-20 close-kernel 作为"防半可信内部对手"的门强度**够了**,在此画 TCB 线;**停止 close-kernel 外审循环**(round-19/round-20 外审都不发)、进入 P1.2 owner 手动门收口。数学面同轮已收敛(8 份报告真 BLOCK 只剩拐角、已修,余为假阳性/降级/表达债;canonical 四语义已机器化并随 mixflow-routing 合入 main `3c99ed0`),数学面收口=写 canonical(已做),不靠外审。**适用范围澄清(owner 2026-07-04)**:画线只管"外审循环停不停",**不等于**把 PR2 深化项(#1/#2/#3/#5 独立枚举/#8/#9)标成已完成或从账上划掉——owner 原话意思是"#7 可以填上了,其他部分还没做、没做自然不能填上";它们仍是真实 backlog、将来要做几轮才能填,只是不挡当前收口、现在不排期。
 scope:
   domains:
     - external-review
@@ -77,8 +77,8 @@ provenance:
 
 == 本次拍板(owner 2026-07-03)==
 - **发布面**:round-20 close-kernel(`2413cc2`,双 checker 绿)作为"防半可信内部对手"的门,**强度够了 → 在此画 TCB 线**。**停止 close-kernel 外审循环**:round-19、round-20 外审**都不发**(不是没审出东西,是再剥就落 TCB 线下了);进入 **P1.2 owner 手动门**收口。
-- **数学面**:同轮 8 份外审**已收敛**——真 BLOCK 只剩拐角(已修 `d1845dc`),其余假阳性/降级 guarded/表达债/witness 卫生。收口 = 把四条游戏语义写进 canonical(**已机器化在 mixflow 分支**),**不靠外审**。
-- **收口后残余**(非外审):① mixflow 合入 main 的时机(owner 定,前置=pr2-5 那条大分支近期合不合 main,两分支有 4 个 close-kernel 文件交集会冲突);② 批次 3 三个数学面小尾巴(loader parity / I1 文档降级 / 方向常量 anti-drift,派 Fable5,不碰敏感面)。
+- **数学面**:同轮 8 份外审**已收敛**——真 BLOCK 只剩拐角(已修 `d1845dc`),其余假阳性/降级 guarded/表达债/witness 卫生。收口 = 把四条游戏语义写进 canonical(**已机器化,随 mixflow-routing 合入 main `3c99ed0`**),**不靠外审**。
+- **收口后残余**(非外审):① mixflow 合入 main 的时机(owner 定,前置=pr2-5 那条大分支近期合不合 main,两分支有 4 个 close-kernel 文件交集会冲突);② 批次 3 三个数学面小尾巴(loader parity / I1 文档降级 / 方向常量 anti-drift,派 Fable5,不碰敏感面)。**(2026-07-04 注:两项均已闭——pr2-5 `6e06922`、mixflow `3c99ed0` 先后合入 main;批次3尾巴 `9aa4176`/`a8ea631` 落地,当初另行推迟的 I1 overload 参数化也由 `a731764` 补齐。)**
 
 == 防重蹈 ==
 未来任何会话:**别再无脑起 round-21**、别拿"还能审出东西"当"没结束"的信号(永远能)。要判该不该再审,只问"再剥出的在不在 TCB 线以上"。外审的历史使命(挖净能盖假章的 soundness 洞、逼出 TCB 架构)已完成;剩下的是画线决定,归 owner。

@@ -1,8 +1,8 @@
 ---
 id: routing-game-semantics-rulings
 kind: decision
-title: owner 2026-07-02 对算法核心的四项游戏语义拍板(拐角 pose / 十字传送格子 / 混流 / 连通量词)——canonical 落地前的唯一权威记录
-summary: 数学面外审(algo_core_audit baa2142,8 份报告)triage 后 owner 拍板四项游戏语义,全部是 canonical_rules.json 没写、代码硬编码在承担的语义。①拐角 pose:恢复 boundary_storage_port 两个 (0,0) pose(left_base 竖占 {(0,0),(0,1),(0,2)}、bottom_base 横占 {(0,0),(1,0),(2,0)}),互斥归 no-overlap 管,候选域预删是过紧 BLOCK;修复=生成器循环 1→0 + 重冻结 candidate_placements(freeze-ritual,预期 66,403→66,405 pose)。②"elevated bridge"真实语义=十字传送格子:单格部件、两条互相垂直的直通道(纵向占上/下口、横向占左/右口),两通道互不接触、可分属不同货;一格只有四个口→平行双流物理不可能(owner:显然)。当前 L0/L1 双层建模是其等价表示,layer-blind 邻接是**正确**的(不存在真实的"层",无坡道概念),单格使用合法;但当前编码(routing_subproblem.py:1063-1074)缺垂直性约束、允许同格平行 overlap=物理不可能状态,要补。③混流允许:一条 belt 可先后运多种货(A-B-A-B 排队);现编码 AddAtMostOne per (cell,layer) 跨 commodity 互斥=真·过紧 BLOCK(威胁 lex 最优性),修复=拆 phys(物理组件)/use(商品借道)两层变量;canonical 全部 17 配方单产物→binding"每口一货"不受冲击。④连通量词维持现判据:每 sink 从某 source 可达+每 source 能到某 sink,允许同商品多个独立岛;witness 孤岛后验检查(每个 selected state 须在 source→sink 闭包内)是卫生修复,直接做。这些语义在批次 1 freeze-ritual 中写入 canonical 前,以本卡为准;落进 canonical 后本卡转历史记录。
+title: owner 2026-07-02 对算法核心的四项游戏语义拍板(拐角 pose / 十字传送格子 / 混流 / 连通量词)——已全部机器化落地并合入 main(3c99ed0),本卡为语义决策的历史权威
+summary: 数学面外审(algo_core_audit baa2142,8 份报告)triage 后 owner 拍板四项游戏语义,全部是 canonical_rules.json 没写、代码硬编码在承担的语义。①拐角 pose:恢复 boundary_storage_port 两个 (0,0) pose(left_base 竖占 {(0,0),(0,1),(0,2)}、bottom_base 横占 {(0,0),(1,0),(2,0)}),互斥归 no-overlap 管,候选域预删是过紧 BLOCK;修复=生成器循环 1→0 + 重冻结 candidate_placements(freeze-ritual,预期 66,403→66,405 pose)。②"elevated bridge"真实语义=十字传送格子:单格部件、两条互相垂直的直通道(纵向占上/下口、横向占左/右口),两通道互不接触、可分属不同货;一格只有四个口→平行双流物理不可能(owner:显然)。当前 L0/L1 双层建模是其等价表示,layer-blind 邻接是**正确**的(不存在真实的"层",无坡道概念),单格使用合法;但当前编码(routing_subproblem.py:1063-1074)缺垂直性约束、允许同格平行 overlap=物理不可能状态,要补。③混流允许:一条 belt 可先后运多种货(A-B-A-B 排队);现编码 AddAtMostOne per (cell,layer) 跨 commodity 互斥=真·过紧 BLOCK(威胁 lex 最优性),修复=拆 phys(物理组件)/use(商品借道)两层变量;canonical 全部 17 配方单产物→binding"每口一货"不受冲击。④连通量词维持现判据:每 sink 从某 source 可达+每 source 能到某 sink,允许同商品多个独立岛;witness 孤岛后验检查(每个 selected state 须在 source→sink 闭包内)是卫生修复,直接做。(2026-07-04 注:四项已全部落地——批次1 freeze-ritual `d1845dc`,批次2+3 随 mixflow-routing 合入 main `3c99ed0`;语义权威已转到 canonical_rules.json+代码,本卡转历史记录,但修 routing/生成器前仍该读,防把刻意语义当 bug。)
 scope:
   domains:
     - algorithm-core
@@ -62,16 +62,16 @@ triggers:
 activation:
   layer_hint: L1
   must_know: false
-  reason: 修 routing/生成器/canonical 时若不知道这四项拍板,会把"正确的 layer-blind"当 bug 修、或把"过紧的 commodity 互斥"当规则保留——方向直接反掉。canonical 落地前这是唯一权威记录。
+  reason: 修 routing/生成器/canonical 时若不知道这四项拍板,会把"正确的 layer-blind"当 bug 修、或把"过紧的 commodity 互斥"当规则保留——方向直接反掉。canonical 已落地(3c99ed0)后本卡是语义决策的历史权威,改相关代码前仍先读。
 provenance:
   op: record
   reason: 2026-07-02 数学面外审 triage,owner 逐条拍板;十字格子语义是 owner 纠正外审(GPT 把部件理解成了高架桥,owner 当时没纠正);混流用 A-B-A-B 生产场景确认;垂直性由"一格四口"直接推出。
   evidence:
     - "核实 workflow(5 路 codex 回源码):corner pose 预删 confirmed(canonical/schema 无拐角排除表达、LOCK:317 互斥归 no-overlap);layer-blind 邻接/AddAtMostOne 跨 commodity/witness 孤岛判据缺失 全部 confirmed(routing_subproblem.py:1058-1061,1063-1074,1636-1698);clearance 假阳性(PROJECT_LOCK.md:117-120 已裁非 P 谓词);I1 overload env 降级 guarded(env 在 certified forbidden 类)。"
     - "canonical_rules.json recipes 节 grep:全部 outputs 单商品。"
-  updated_at: "2026-07-02"
+  updated_at: "2026-07-04"
 ---
-数学面外审 triage 后 owner 的四项游戏语义拍板(2026-07-02),全部是 canonical 没写、代码硬编码承担的语义。修复排期:批次 1 = freeze-ritual 一次打包(拐角 pose 恢复 + candidate_placements 重冻结 + canonical 语义机器化四项;pinned hash 更新与 reseal 属发布面,走子代理);批次 2 = routing 拆层重构(phys/use + 垂直性 + 孤岛检查,认证核心改动必跑 --slow-tests);批次 3 = loader parity、I1 文档降格、anti-drift 测试;推迟 = I1 overload 参数化(动 benders_loop,等 pr2-5 merge 后做,避免撞 round-19 witness 门双倍 reseal)。
+数学面外审 triage 后 owner 的四项游戏语义拍板(2026-07-02),全部是 canonical 没写、代码硬编码承担的语义。修复排期:批次 1 = freeze-ritual 一次打包(拐角 pose 恢复 + candidate_placements 重冻结 + canonical 语义机器化四项;pinned hash 更新与 reseal 属发布面,走子代理);批次 2 = routing 拆层重构(phys/use + 垂直性 + 孤岛检查,认证核心改动必跑 --slow-tests);批次 3 = loader parity、I1 文档降格、anti-drift 测试;推迟 = I1 overload 参数化(动 benders_loop,等 pr2-5 merge 后做,避免撞 round-19 witness 门双倍 reseal)。**(2026-07-04 注:排期已全部执行完——批次1 `d1845dc`;批次2+3 随 mixflow-routing 合入 main `3c99ed0`,尾巴 `9aa4176`/`a8ea631`;推迟的 I1 overload 参数化由 `a731764` 落地(use_overload_separation 参数,I1 独立复验显式传 False);pr2-5 也已于 `6e06922` 合入。)**
 
 == 四项拍板细节 ==
 
