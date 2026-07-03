@@ -93,8 +93,8 @@ P1.2 OPEN-GATE、独立 whole-layout reverify、中央公开发布器和生产 s
   campaign→seal 实跑记录；
 - owner manual gate 仍是 `blocked_manual_review_count`；
 - PR2 的 smaller/read-once/controlled-loader verification TCB 尚未完成；
-- review snapshot 已改为从 resolved immutable commit 物化（缺专门 TOCTOU 回归测试），归档策略
-  覆盖仍需补齐；
+- review snapshot 已改为从 resolved immutable commit 物化（ref-move TOCTOU 回归测试已钉住），归档
+  策略覆盖仍需补齐；
 - 其它 roadmap 中仍为 OPEN/PARTIAL 的规格与几何边界尚未全部关闭。
 
 现有机器字段 `p1_3b_*` 是历史兼容名。人类文档把后续 master integration 称为 P1.3。
