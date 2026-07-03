@@ -33,6 +33,7 @@ python -m pytest -p no:randomly --basetemp=.pytest_tmp/one src/tests/test_exact_
 # 求解（正常链终点是 CANDIDATE_PROPOSED，不会产出 CERTIFIED）
 python main.py                                # 默认 certified_exact；--campaign-hours >= 24 触发 production gate
 # 生产跑走 wrapper：scripts/run_campaign_linux.sh（Linux）/ scripts/run_prod_*.ps1（Windows）
+# supervisor seal 生产入口是独立命令 scripts/run_supervisor_seal.py（从已提交 proposal marker 驱动，不由 main.py 顺手执行）
 
 # 外部大工件（candidate_placements.json，45,774,305 字节，SHA256 a914ba63...；45,773,799/adcc 是拐角修复前 superseded/hash-incompatible 旧版；lightweight checkout 可能缺失）
 python scripts/check_external_artifacts.py --require candidate_placements
@@ -79,7 +80,7 @@ CERTIFIED 证明的是 6 个谓词（ghost 内无设施 / 两两不重叠 / plac
 
 ```
 producer（outer_search.py）        只能提交 CANDIDATE_PROPOSED + proposal 材料
-  → [缺口：无生产 supervisor 入口]
+  → scripts/run_supervisor_seal.py（生产入口，独立命令，从 marker 驱动）
   → ExactCampaign.supervisor_seal()（exact_campaign.py:3566）唯一 durable CERTIFIED mint
        委托 pr2_l0_micro_verifier_core.run_l0_supervisor_seal()
        → 隔离子进程（-I -S -B -X pycache_prefix）跑 pr2_l0_true_verifier_child.verify()
@@ -87,7 +88,7 @@ producer（outer_search.py）        只能提交 CANDIDATE_PROPOSED + proposal 
        stage→commit→verify→rollback 四段事务；resolve_p1_2_publish_open_gate() 在链上被查 3 次
 ```
 
-反绕过守卫是硬编码的：`mark_campaign_stopped(status="CERTIFIED")` 直接 raise；`save()` 检测三处 unsupervised CERTIFIED claim 并 raise（`exact_campaign.py:2564-2579, 3658-3661`）。**`supervisor_seal()` 当前只有测试调用（23 处全在 `src/tests/`），跑完 `main.py` 只会得到 `CANDIDATE_PROPOSED`**——这是刻意留开的操作链缺口（PR2 #7 "最后通电"），不是 bug。
+反绕过守卫是硬编码的：`mark_campaign_stopped(status="CERTIFIED")` 直接 raise；`save()` 检测三处 unsupervised CERTIFIED claim 并 raise（`exact_campaign.py:2564-2579, 3658-3661`）。**`supervisor_seal()` 的生产入口是 `scripts/run_supervisor_seal.py`（独立命令，从 marker 驱动）；跑完 `main.py` 仍只会得到 `CANDIDATE_PROPOSED`**——这是刻意留开的操作链缺口（PR2 #7 "最后通电"），且 #7 通电已于 2026-07-04 落地；不是 bug，也不是 P1.2 closure。
 
 ### 4. P1.2 release-blocked：任何绿灯都不等于"已认证/已发布"
 

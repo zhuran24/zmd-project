@@ -21,7 +21,7 @@ main.py
        -> src/search/terminal_fixed_witness_verifier.py
           固定发布 witness 的 binding/routing 复验
        -> src/search/exact_campaign.py
-          checkpoint/resume + ExactCampaign.supervisor_seal() 唯一终端 CERTIFIED mint（当前无生产 caller）
+          checkpoint/resume + ExactCampaign.supervisor_seal() 唯一终端 CERTIFIED mint（生产 caller = scripts/run_supervisor_seal.py 独立命令；main.py 普通完成仍止于 CANDIDATE_PROPOSED）
        -> src/search/certified_surface.py
           P1.2 open gate + sealed campaign 验证 + canonical public publisher
 ```
@@ -31,7 +31,7 @@ main.py
 ```text
 CANDIDATE_PROPOSED checkpoint
   -> proposal-ready marker
-  -> [OPEN: production supervisor CLI/launcher]
+  -> scripts/run_supervisor_seal.py（独立生产命令，从 marker 驱动 supervisor；非 main.py 顺手）
   -> ExactCampaign.supervisor_seal()
   -> supervisor-sealed disk authority
   -> publish_verified_certified_delivery_surface()

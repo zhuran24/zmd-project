@@ -4,10 +4,15 @@ This file is the canonical home for dated engineering history that used to be
 split between `PROJECT_LOCK.md` and `FILE_STATUS.md`. Date-stamped test counts and
 status claims below are historical snapshots, not assertions about the current worktree.
 
+## 2026-07-04
+
+- Landed the production supervisor certify entrypoint `scripts/run_supervisor_seal.py`: an independent command that resumes a committed `CANDIDATE_PROPOSED` proposal, validates the proposal-ready marker before sealing, calls `ExactCampaign.supervisor_seal()` for the real isolated L0 recheck, and exits according to success/error.
+- Kept the release boundary unchanged: `main.py` ordinary completion still stops at `CANDIDATE_PROPOSED`; this entrypoint only satisfies PR2 #7 and does not imply P1.2 closed, publication allowed, P1.3 allowed, or owner gate approval.
+
 ## 2026-06-26
 
 - Reconciled all living release-boundary documentation with the uncommitted PR1 worktree: the outer-search producer now commits `CANDIDATE_PROPOSED`, `ExactCampaign.supervisor_seal()` is the sole durable terminal `CERTIFIED` mint, and `publish_verified_certified_delivery_surface()` is the sole public certified publisher.
-- Recorded the remaining operational gap: `main.py` and current launchers do not invoke `supervisor_seal()`, so the worktree has authority methods but not a supported end-to-end supervisor command.
+- Recorded the then-remaining operational gap: `main.py` and then-current launchers did not invoke `supervisor_seal()`, so the worktree had authority methods but not a supported end-to-end supervisor command.
 - Recorded the landed fixed-witness capsule/verifier, fail-closed P1.2 OPEN-GATE, connector/body terminal check, isolated-source bytecode binding, and independent whole-layout infeasibility reverifier without converting those safeguards into a P1.2 closure claim.
 - Kept P1.2 OPEN/BLOCKED: the owner gate remains `blocked_manual_review_count`, PR2's smaller/read-once/controlled-loader TCB is unfinished, and review snapshot immutability/archive-policy work remains open.
 - Corrected artifact and test inventory: `candidate_placements.json` is present at 45,774,305 bytes with pinned SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`; the prior 45,773,799-byte / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact predates the boundary `(0,0)` corner-pose fix and is superseded/hash-incompatible. Pytest collection is 425 files / 3450 tests, with no full-suite pass claim from this audit.

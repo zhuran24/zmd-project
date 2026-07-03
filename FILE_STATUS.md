@@ -1,7 +1,7 @@
 # FILE_STATUS.md
 
 **Status:** CURRENT_INVENTORY  
-**Updated:** 2026-06-26  
+**Updated:** 2026-07-04  
 **Release state:** P1.2 OPEN / BLOCKED  
 **History**: Engineering history lives in [CHANGELOG.md](CHANGELOG.md).
 
@@ -16,13 +16,14 @@
 - `DIAGNOSTIC_ONLY`：诊断或研究路径，不能产生 proof-bearing 结论。
 - `HISTORICAL_OR_PLAN`：历史快照或后续设计。
 - `OPEN`：已知未完成边界。
+- `LANDED`：已落地的入口/能力；不等同于 soundness 或 release 结论。
 
 ## 认证发布链
 
 | Path | Status | 当前角色 |
 |---|---|---|
 | `src/search/outer_search.py` | CURRENT_CODE_ALIGNED | producer；terminal success 只提交 `CANDIDATE_PROPOSED` 与绑定证据，不铸 durable `CERTIFIED` |
-| `src/search/exact_campaign.py` | CURRENT_CODE_ALIGNED | campaign authority、resume validation；`supervisor_seal()` 是唯一 durable terminal `CERTIFIED` mint，但当前无生产 CLI/launcher 调用它 |
+| `src/search/exact_campaign.py` | CURRENT_CODE_ALIGNED | campaign authority、resume validation；`supervisor_seal()` 是唯一 durable terminal `CERTIFIED` mint；生产入口是独立的 `scripts/run_supervisor_seal.py` |
 | `src/search/terminal_fixed_witness_capsule.py` | CURRENT_CODE_ALIGNED | 隔离子进程 fixed-witness authority，nonce-bound response |
 | `src/search/terminal_fixed_witness_verifier.py` | CURRENT_CODE_ALIGNED | 对提案中确切 witness 复验 geometry/binding/routing/power/connector-body |
 | `src/search/candidate_proof_replay.py` | CURRENT_CODE_ALIGNED | candidate strong-status sink replay；不替代 fixed-witness identity check |
@@ -73,7 +74,7 @@
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
 | `scripts/preflight_gate.py` | STRUCTURAL_GATE | repository preflight；不运行已退役 doc-subject sync |
-| production supervisor entrypoint | OPEN | `main.py` 只提交 `CANDIDATE_PROPOSED`；仓库没有受支持的 supervisor seal CLI/launcher |
+| production supervisor entrypoint | LANDED | `scripts/run_supervisor_seal.py` 是独立生产命令；`main.py` 仍只提交 `CANDIDATE_PROPOSED`；入口存在 ≠ P1.2 closed |
 | `scripts/package_review_snapshot.py` | OPEN | metadata 解析到 commit，但仍需改成从 resolved commit 物化并补齐 archive policy |
 
 ## Documentation and memory

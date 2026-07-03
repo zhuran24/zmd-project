@@ -127,8 +127,11 @@ checks as certified proof"）。
 `independent_infeasibility_reverifier.py` 在 whole-layout nogood 落 cut 前独立复验并在不确认时升
 `UNKNOWN`。这些修复关闭了相应已知实现缺口，但**不等于 P1.2 closed**。
 
-当前 P1.2 仍为 OPEN/BLOCKED：owner manual gate 仍是 `blocked_manual_review_count`；当前仓库没有
-生产 supervisor CLI/launcher 调用 `supervisor_seal()`，`main.py` 终点仍是 `CANDIDATE_PROPOSED`；PR2 的更小、
+当前 P1.2 仍为 OPEN/BLOCKED：owner manual gate 仍是 `blocked_manual_review_count`；生产 supervisor 入口
+`scripts/run_supervisor_seal.py` 已落地（独立命令，从 proposal-ready marker 驱动独立
+supervisor 调 `supervisor_seal()`），补上了 done-condition 的「supervisor 可执行入口」这一条
+机器条件；但 `main.py` 普通完成仍止于 `CANDIDATE_PROPOSED`（seal 是独立命令、不由 main.py
+顺手做），入口存在**不等于** P1.2 closed——其余机器条件与 owner 门仍未满足；PR2 的更小、
 read-once/controlled-loader verification TCB 尚未实现；review snapshot 打包器仍从原始 mutable
 `treeish` 物化而非已解析 commit，且归档策略覆盖仍不完整；roadmap 中其它 OPEN/PARTIAL 几何/规格
 边界仍需按 principle/implementation/red-test 状态处理。connector/body 的已知公开发布缺口已由终端
@@ -139,8 +142,9 @@ seal 都不得改写为 owner 已关闭 release gate。
 ### C. P1.2 done-condition (C5)
 
 > **当前状态（2026-06-26）：OPEN / BLOCKED。** PR1 的 producer/supervisor mint split、fixed-witness
-> 终端复验、P1.2 fail-closed 发布闸和 I1 独立复验已实现；但生产 supervisor 调度入口不存在，owner
-> manual gate、PR2 TCB 收缩和发布包 immutability/policy 收口也尚未完成。不得因类方法或局部修复存在而宣称 P1.2 closed。
+> 终端复验、P1.2 fail-closed 发布闸和 I1 独立复验已实现；生产 supervisor 调度入口也已落地
+> （`scripts/run_supervisor_seal.py`，done-condition 之一），但 owner manual gate、PR2 TCB 收缩
+> 和发布包 immutability/policy 收口仍尚未完成。不得因类方法、局部修复或该入口存在而宣称 P1.2 closed。
 
 P1.2 可被诚实宣布闭合，仅表示当前 `PROJECT_LOCK §1A` 命题 P 的机器边界、发布链和 owner 手动闸
 同时满足。它不是吞吐定理，也不自动打开 P1.3。
@@ -151,7 +155,7 @@ P1.2 可被诚实宣布闭合，仅表示当前 `PROJECT_LOCK §1A` 命题 P 的
 - producer/mint 分权：`outer_search.py` 只能落 `CANDIDATE_PROPOSED`；唯一 durable terminal
   `CERTIFIED` mint 是 `ExactCampaign.supervisor_seal()`，其它 `mark_campaign_stopped(...,
   "CERTIFIED")` 调用必须被拒。
-- supervisor 可执行入口：受支持的生产命令/launcher 必须从 proposal-ready marker 驱动独立 supervisor；当前仓库尚无该入口，普通 `main.py` 完成不能被记成 seal 成功。
+- supervisor 可执行入口：受支持的生产命令/launcher 必须从 proposal-ready marker 驱动独立 supervisor。该入口已由 `scripts/run_supervisor_seal.py` 满足（独立命令，非 `main.py` 顺手完成）；普通 `main.py` 完成仍不能被记成 seal 成功，且入口存在只补此机器条件、不打开 owner 门、不推导 P1.2 closed。
 - fixed-witness 身份绑定：supervisor 必须读取已提交提案字节，用固定 witness capsule/verifier 对提案的
   `(R*, π*)` 本身复跑 binding/routing，而不是只证明同尺寸另有某个可行布局；复验拒绝或材料缺失必须
   fail-closed。
