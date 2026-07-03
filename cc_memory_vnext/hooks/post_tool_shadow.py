@@ -67,7 +67,8 @@ def main() -> int:
 
         errors_text = response_text(payload)
         if errors_text:
-            frame["errors"] = [errors_text]
+            # 与 error_recall 同构: 命令前缀拼进 errors,影子测的即真投影。
+            frame["errors"] = [f"$ {extra_text}\n{errors_text}" if extra_text else errors_text]
 
         index = zmem.load_index(zmem.DEFAULT_INDEX_PATH)
         normalized = zmem.normalize_frame(frame)

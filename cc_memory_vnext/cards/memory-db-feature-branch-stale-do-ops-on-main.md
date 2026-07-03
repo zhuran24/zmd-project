@@ -3,7 +3,7 @@ id: memory-db-feature-branch-stale-do-ops-on-main
 kind: pitfall
 title: feature 分支的 memory.db 可能早于 main → 记忆读写要在 main 权威库做
 summary: 在 feature 分支上 search/read cc_memory 可能【假 no-match】,因为该分支的 cc_memory/memory.db 比 main 旧、缺 main 上新建的条目;cc_memory 读写应切到 main 权威库做。
-error_regex: ["no matches"]
+error_regex: ["(mem\\.py|cc_memory)[\\s\\S]{0,300}no match"]
 scope:
   domains: [cc-memory-branch]
   paths: [cc_memory/memory.db]
@@ -16,7 +16,7 @@ triggers:
   negative_keywords: []
   paths: [cc_memory/memory.db]
   symbols: []
-  error_regex: ["no matches"]
+  error_regex: ["(mem\\.py|cc_memory)[\\s\\S]{0,300}no match"]
   examples:
     - 在 feature/PR 分支上 mem.py search 自己之前建的条目却 no matches
     - 当前分支的 cc_memory/memory.db 比 main 旧、缺最近建的条目
@@ -29,7 +29,7 @@ provenance:
   op: record
   reason: 记录 2026-06-30 在 pr2-5 分支上 search 本会话条目假 no-match 的实测坑。
   evidence: ["2026-06-30 实测：在 pr2-5-domain-frontier-gate 分支上 `python cc_memory/mem.py search` 找本会话在 main 建的 pr2-5 条目，返回 no matches；根因=pr2-5 的 memory.db 还是 d68bdc9 版、早于 main、缺那些条目"]
-updated_at: "2026-06-30"
+updated_at: "2026-07-03"
 ---
 `cc_memory/memory.db` 是 SQLite 二进制,各分支各有一份、**不会自动跟 main 同步**。在一条 feature / PR 分支上做记忆操作时,该分支的 `memory.db` 可能是早先从 main 分出来的旧版本——比 main 落后好几个提交,**缺 main 上后来新建的条目**。
 

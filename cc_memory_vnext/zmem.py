@@ -83,8 +83,10 @@ TOKEN_RE = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.:/-]*|[\u4e00-\u9fff]+")
 # projection hooks. Only intents that actually exist in the card index are
 # emitted, so unused mappings are inert. Additive-only, zero-LLM.
 RISK_VERB_INTENTS: dict[str, tuple[str, ...]] = {
-    "git-commit": ("git commit", "git add", "\u6682\u5b58", "\u63d0\u4ea4"),
-    "git-push": ("git push", "\u63a8\u9001"),
+    # \u53ea\u8ba4\u547d\u4ee4\u5f62\u6001/\u5f3a\u8bed\u5883\u8bcd\u3002\u88f8\u300c\u63d0\u4ea4/\u63a8\u9001\u300d\u4f1a\u628a"\u63d0\u4ea4\u4e00\u4efd\u62a5\u544a"\u8fd9\u7c7b\u975e git \u4efb\u52a1
+    # \u8bef\u6620\u5c04\u6210 git intents(2026-07-03 \u5bf9\u6297\u5ba1\u67e5\u5b9e\u6d4b),\u4e0d\u8981\u52a0\u56de\u6765\u3002
+    "git-commit": ("git commit", "git add", "\u6682\u5b58"),
+    "git-push": ("git push",),
     "memory-write": ("set-fact", "add-entry", "\u5199\u8fdb\u8bb0\u5fc6", "\u8bb0\u8fdb\u8bb0\u5fc6"),
 }
 
@@ -987,13 +989,14 @@ def cmd_context(args: argparse.Namespace) -> int:
     return 0
 
 
-def append_jsonl(path: Path, record: dict[str, Any]) -> None:
+def append_jsonl(path: Path, record: dict[str, Any]) -> bool:
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+        return True
     except Exception:
-        return
+        return False
 
 
 def cmd_search(args: argparse.Namespace) -> int:
@@ -1005,8 +1008,7 @@ def cmd_search(args: argparse.Namespace) -> int:
     """
     try:
         index = load_context_index(args)
-        extra_domains = [d.strip() for d in (args.domains or "").split(",") if d.strip()]
-        frame = normalize_frame({"prompt": args.query, "domains": extra_domains})
+        frame = normalize_frame({"prompt": args.query})
         frame = enrich_frame(frame, index)
         packet = compile_context(index, frame, dense_enabled=False)
     except (ZmemError, json.JSONDecodeError) as exc:
@@ -1019,19 +1021,16 @@ def cmd_search(args: argparse.Namespace) -> int:
     import os
 
     selected = [item for layer in ("L0", "L1") for item in packet["layers"].get(layer, [])]
-    domains: set[str] = set(extra_domains)
+    # proof domains 只来自 query 真实命中卡的 scope。不接受自报 domain 标签:
+    # 实测自报 domain 会进 frame 制造 scope 命中、把解锁变成自助声明(2026-07-03)。
+    domains: set[str] = set()
     for item in selected:
         domains.update(normalize_list(as_dict(item.get("scope")).get("domains")))
     ts = datetime.datetime.now().isoformat(timespec="seconds")
     session = args.session or os.environ.get("CLAUDE_SESSION_ID", "")
     digest = str(packet.get("frame_digest", ""))[:16]
     domains_csv = ",".join(sorted(domains)) or "-"
-    print()
-    print(
-        f"ZMEM_PROOF ts={ts} session={session or '-'} domains={domains_csv} "
-        f"frame_digest={digest} cards={len(selected)}"
-    )
-    append_jsonl(
+    written = append_jsonl(
         Path(args.proof_log),
         {
             "ts": ts,
@@ -1041,6 +1040,15 @@ def cmd_search(args: argparse.Namespace) -> int:
             "frame_digest": digest,
             "cards": [str(item.get("id")) for item in selected],
         },
+    )
+    print()
+    if not written:
+        # proof 是 gate 要消费的凭证,落盘失败必须可见,不能伪装成已生效。
+        print(f"SEARCH FAIL: proof log not writable: {args.proof_log}", file=sys.stderr)
+        return 1
+    print(
+        f"ZMEM_PROOF ts={ts} session={session or '-'} domains={domains_csv} "
+        f"frame_digest={digest} cards={len(selected)}"
     )
     return 0
 
@@ -1137,7 +1145,6 @@ def build_parser() -> argparse.ArgumentParser:
 
     search = sub.add_parser("search", help="model-initiated lookup; prints packet + ZMEM_PROOF line")
     search.add_argument("query", help="free-text query (deterministically enriched, no LLM)")
-    search.add_argument("--domains", default="", help="comma-separated extra proof domains")
     search.add_argument("--session", default="", help="session id to stamp into the proof")
     search.add_argument("--cards-dir", default=str(DEFAULT_CARDS_DIR))
     search.add_argument("--index", default=str(DEFAULT_INDEX_PATH))

@@ -14,7 +14,7 @@
 - **真相源 = 人读卡片 `cards/*.md`**(YAML frontmatter + 正文)+ git history 当 byte 级审计轨。
 - **索引/嵌入 = 可重建缓存**(`.index/`,gitignored,删了能重建)。彻底告别 SQLite 当真相源。
 - **召回 = 确定性激活**(trigger / scope 集合匹配,**0 模型、无 LLM**),reranker 降级、不当裁判。
-- **hook 强注入**(SessionStart 注 L0 / UserPromptSubmit 编 L0+L1 **含 `--enrich-frame` 确定性富化**),不靠模型自觉 boot。**2026-07-03 起补齐工具侧通道**(治「回合中途衍生操作不触发注入」缺口,按 `design/recall-trigger-discussion-20260628.md` 四层 + `design/observable-commitment-gate-20260628.md` 地基):PostToolUse 撞错召回(error_regex→additionalContext)、PostToolUse 影子测量(只记不注)、PreToolUse 高危窄门(deny/ask + ZMEM_PROOF 解锁)、`zmem search` 吐 `ZMEM_PROOF`。
+- **hook 强注入**(SessionStart 注 L0 / UserPromptSubmit 编 L0+L1 **含 `--enrich-frame` 确定性富化**),不靠模型自觉 boot。**2026-07-03 起补齐工具侧通道**(治「回合中途衍生操作不触发注入」缺口,按 `design/recall-trigger-discussion-20260628.md` 四层 + `design/observable-commitment-gate-20260628.md` 地基):PostToolUse 撞错召回(error_regex→additionalContext)、PostToolUse 影子测量(只记不注)、PreToolUse 高危窄门(deny/ask + ZMEM_PROOF 解锁)、`zmem search` 吐 `ZMEM_PROOF`。**注意:hook 脚本生效与否取决于 `.claude/settings.local.json` 接线(该文件不入 git)——脚本在库里 ≠ 事件流里已挂上,核对以 settings 实际注册为准。
 - **召回可测**:金标准回归集来自真实事故 / owner 纠正史,`eval` 跑 StrictHitRate,CI 可 fail-closed。
 
 ### 分层

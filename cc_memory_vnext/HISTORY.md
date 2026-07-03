@@ -47,6 +47,8 @@
 - **ZMEM_PROOF 第一版**(commitment-gate 键石):`zmem search "<query>"` 打包激活结果 + 吐 `ZMEM_PROOF` 行(留 transcript 审计)+ 落 `logs/proofs.jsonl`;窄门对 ask 类动作先查本会话 45min 内 domain 相交的 proof,有则放行 = 「没查不准提交」最小闭环。**未做**:Stop 输出闸、`memory.skip` 显式留痕、`observable_from` 卡契约 / `verify --coverage`(仍在 §5 路线)。
 - **影子测量**(measurement 席「先测后建」):`hooks/post_tool_shadow.py`(PostToolUse async,全工具)把 tool_input/response 确定性投影成 frame(prompt="" → bm25 恒 0),只记「本会注哪些卡」到 `logs/shadow_activations.jsonl`、一张不真注——「prompt 没注、动作会注」的真实载荷从此有数据。enrich 正向金标准按 red-line A 等影子挖出真实事故再补、不反填。
 - 每回合看守(第四档)维持不买:先拿影子数据量残余缝。eval 19→24 全绿;三 hook 共 20 条决策路径实测通过(deny/ask/allow 边界、proof 解锁闭环、账本去重、影子落盘)。
+- **同日四视角 codex 对抗审查(16 findings)后加固**:窄门重写为 quote-aware tokenize(修 `git -C <dir> add -A`、`git add "."` 两个 deny 绕过 blocker;rm 递归/强制标志分开解析,`--force` 不再误判);ALLOW_RISK_GATE 只降 ask、对 deny 无效且 deny 文案不再教绕过;proof 规则收紧(身份不明不认署名 proof;未署名 proof 只给 10min 短窗;proof domain 只来自 query 真实命中卡的 scope——自报 `--domains` 参数整个移除,实测它会进 frame 制造 scope 命中把解锁变成自助声明;proof 落盘失败显式报错不吐假 proof);无 pathspec 裸 commit 补 ask(worktree 私有 index 豁免);冻结工件按目录限定路径匹配(root 级要求同目录 PROJECT_LOCK.md,fixtures 同名不再误拦);error_recall 账本文件名白名单清洗防路径穿越;两张卡过宽 error_regex 收窄(non-fast-forward 归 push-conflict 专属;裸 no matches 要求 mem.py/cc_memory 语境),hook 给 errors 文本加命令前缀供正则锚定;RISK_VERB_INTENTS 去掉裸「提交/推送」防非 git prompt 误映射。eval 24→27(3 条新增负向/语境金标准均源自审查实测假阳性 + 真实 2026-06-30 事故投影形状)。**已知债(minor,记录不修)**:proofs/shadow 日志无轮转(gate 已 tail-read 64KB 缓解);同步 hook 冷启 ~170-195ms/次;未加引号的 echo 字面量危险串会误 ask。
+- **接线状态**:hook 脚本在库里 ≠ 已生效;实际注册在 `.claude/settings.local.json`(不入 git),主 checkout 接线与本批同日完成,核对以 settings 为准。
 
 ## 4. 未解 / 待澄清(诚实标注)
 

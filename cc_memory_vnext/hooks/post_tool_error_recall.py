@@ -13,6 +13,7 @@ observable-commitment-gate: post_tool_use = result_driven_recall。
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -61,6 +62,12 @@ def main() -> int:
         if not errors_text:
             return 0
 
+        tool_input = payload.get("tool_input") or {}
+        command = str(tool_input.get("command") or "") if isinstance(tool_input, dict) else ""
+        # 把命令前缀拼进 errors 文本,让卡的 error_regex 能锚定命令语境
+        # (例: mem\.py[\s\S]*no match),避免裸短语误触发(2026-07-03 审查)。
+        error_blob = (f"$ {command}\n{errors_text}" if command else errors_text)
+
         index = zmem.load_index(zmem.DEFAULT_INDEX_PATH)
 
         # Cheap union pre-filter before any packet work.
@@ -71,15 +78,13 @@ def main() -> int:
             patterns = zmem.normalize_list(triggers.get("error_regex")) + zmem.normalize_list(
                 meta.get("error_regex")
             )
-            if zmem.error_regex_hit(patterns, [errors_text]):
+            if zmem.error_regex_hit(patterns, [error_blob]):
                 any_hit = True
                 break
         if not any_hit:
             return 0
 
-        tool_input = payload.get("tool_input") or {}
-        command = str(tool_input.get("command") or "") if isinstance(tool_input, dict) else ""
-        frame = zmem.normalize_frame({"prompt": "", "errors": [errors_text]})
+        frame = zmem.normalize_frame({"prompt": "", "errors": [error_blob]})
         if command:
             frame = zmem.enrich_frame(frame, index, extra_text=command)
         packet = zmem.compile_context(index, frame, dense_enabled=False)
@@ -91,8 +96,10 @@ def main() -> int:
         if not hits:
             return 0
 
-        session = str(payload.get("session_id") or "nosession")
-        ledger_path = ROOT / "logs" / LEDGER_DIR_NAME / f"{session[:32]}.json"
+        # 白名单清洗 session 再进文件名,防路径穿越(2026-07-03 审查)。
+        session_raw = str(payload.get("session_id") or "nosession")
+        session = re.sub(r"[^A-Za-z0-9_-]", "_", session_raw)[:32] or "nosession"
+        ledger_path = ROOT / "logs" / LEDGER_DIR_NAME / f"{session}.json"
         seen = load_ledger(ledger_path)
         fresh = [item for item in hits if str(item.get("id")) not in seen]
         if not fresh:

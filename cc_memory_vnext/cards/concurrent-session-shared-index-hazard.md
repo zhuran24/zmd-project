@@ -16,7 +16,8 @@ scope:
 status: active
 priority: P0
 error_regex:
-  - "(shared index|non-fast-forward|index.lock|staged|pathspec)"
+  - "index\\.lock"
+  - "shared index"
 triggers:
   intents:
     - git-commit
@@ -37,7 +38,8 @@ triggers:
     - git_commit_pathspec
     - shared_index_hazard
   error_regex:
-    - "(shared index|non-fast-forward|index.lock|staged|pathspec)"
+    - "index\\.lock"
+    - "shared index"
   examples:
     - 准备提交当前修复但工作区有别的会话改动
     - 为什么不能 git commit -m 不带 pathspec
