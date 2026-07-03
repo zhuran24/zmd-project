@@ -14,7 +14,7 @@
 - **真相源 = 人读卡片 `cards/*.md`**(YAML frontmatter + 正文)+ git history 当 byte 级审计轨。
 - **索引/嵌入 = 可重建缓存**(`.index/`,gitignored,删了能重建)。彻底告别 SQLite 当真相源。
 - **召回 = 确定性激活**(trigger / scope 集合匹配,**0 模型、无 LLM**),reranker 降级、不当裁判。
-- **hook 强注入**(SessionStart 注 L0 / UserPromptSubmit 编 L0+L1 **含 `--enrich-frame` 确定性富化**),不靠模型自觉 boot。**2026-07-03 起补齐工具侧通道**(治「回合中途衍生操作不触发注入」缺口,按 `design/recall-trigger-discussion-20260628.md` 四层 + `design/observable-commitment-gate-20260628.md` 地基):PostToolUse 撞错召回(error_regex→additionalContext)、PostToolUse 影子测量(只记不注)、PreToolUse 高危窄门(deny/ask + ZMEM_PROOF 解锁)、`zmem search` 吐 `ZMEM_PROOF`。**注意:hook 脚本生效与否取决于 `.claude/settings.local.json` 接线(该文件不入 git)——脚本在库里 ≠ 事件流里已挂上,核对以 settings 实际注册为准。
+- **hook 强注入**(SessionStart 注 L0 / UserPromptSubmit 编 L0+L1 **含 `--enrich-frame` 确定性富化**),不靠模型自觉 boot。**2026-07-03 起补齐工具侧通道**(治「回合中途衍生操作不触发注入」缺口,按 `design/recall-trigger-discussion-20260628.md` 四层 + `design/observable-commitment-gate-20260628.md` 地基):PostToolUse 撞错召回(error_regex→additionalContext)、PostToolUse 影子测量(只记不注)、PreToolUse 高危窄门(绝对 deny + 「默认阻止→自查→120s 重发确认」+ ZMEM_PROOF 解锁)、`zmem search` 吐 `ZMEM_PROOF`。**注意:hook 脚本生效与否取决于 `.claude/settings.local.json` 接线(该文件不入 git)——脚本在库里 ≠ 事件流里已挂上,核对以 settings 实际注册为准。
 - **召回可测**:金标准回归集来自真实事故 / owner 纠正史,`eval` 跑 StrictHitRate,CI 可 fail-closed。
 
 ### 分层
@@ -68,7 +68,7 @@ python cc_memory_vnext/zmem.py eval            # 跑金标准回归(StrictHitRat
 ## 8. V2 路线(全部凭指标解锁,不在 MVP-0/1a)
 
 解锁关口 = MVP-0 三硬类 StrictHitRate 100%(含纯脚本基线)**已达成**;以下仍按各自指标门槛逐项推进:
-- **MVP-1a:已落地(2026-07-03)**——`hooks/pre_tool_risk_gate.py`(git add -A/commit -a deny;push --force/rm -rf/冻结工件写 ask;ZMEM_PROOF 45min 域交集解锁;fail-open)。
+- **MVP-1a:已落地(2026-07-03)**——`hooks/pre_tool_risk_gate.py`(git add -A/commit -a 绝对 deny;push --force/rm -rf/裸 commit/冻结工件写 = 默认阻止+自查问题+**同会话 120s 原样重发即确认放行**(owner 裁决:不弹人工审核框);ZMEM_PROOF 域交集解锁;fail-open)。
 - **V2**:dense 语义召回;necessity-LLM(**只产建议、经 verify 闸或人确认,绝不自动改卡**);行为日志 + 在线校准(权重明文 git 可回退);生命周期温度。
 
 权威设计:`记忆系统-3/MASTER_PLAN.md`(合成版)+ 分支终裁 `memory_redesign_council_final_draft.md`。

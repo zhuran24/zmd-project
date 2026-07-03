@@ -12,14 +12,16 @@ Design 依据:
 引号(会被 `git -C x add -A`、`git add "."` 绕过,也会把 echo 字符串误伤)。改为
 quote-aware 分段 tokenize,跳过 git 全局选项后定位真实子命令,再按 token 判定。
 
-决策:
-- deny : git add -A|--all|-u|.  /  git commit -a|-am|--all
+决策(owner 2026-07-03 裁决:高危类不弹人工审核框,改「默认阻止+限时重发确认」):
+- 绝对 deny : git add -A|--all|-u|.  /  git commit -a|-am|--all
          (共享 .git/index 铁律,卡 concurrent-session-shared-index-hazard;
-          deny 是绝对的,不被 proof/账本/文本标记压掉)
-- ask  : git push --force / rm -rf / Remove-Item -Recurse -Force / 无 pathspec
-         plain commit(worktree 私有 index 除外) / 冻结工件 Write|Edit
-         其中前四类可被 ZMEM_PROOF 解锁;冻结工件永远 ask。
-- ALLOW_RISK_GATE 标记只把 ask 降为 allow(人工明示),对 deny 无效。
+          无任何放行通道,不被 proof/账本/文本标记/重发压掉)
+- 默认阻止+重发确认 : git push --force / rm -rf / Remove-Item -Recurse -Force /
+         无 pathspec plain commit(worktree 私有 index 除外) / 冻结工件 Write|Edit。
+         第一次一律 deny + 抛回自查问题(「你确定这不是别的会话的产物吗?」),
+         同一会话在 RESEND_WINDOW_SECONDS(120s)内【原样重发同一命令】= 确认,放行。
+         ZMEM_PROOF 覆盖 domain 或 ALLOW_RISK_GATE 标记仍可直接放行(冻结工件除外,
+         它只认重发确认——freeze-ritual 必须是有意识动作)。
 
 Fail-open: 检测/解析失败一律放行,绝不挡正常工具流。
 """
@@ -27,6 +29,7 @@ Fail-open: 检测/解析失败一律放行,绝不挡正常工具流。
 from __future__ import annotations
 
 import datetime
+import hashlib
 import json
 import os
 import sys
@@ -37,9 +40,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PROOF_LOG = ROOT / "logs" / "proofs.jsonl"
 DECISION_LOG = ROOT / "logs" / "risk_gate_decisions.jsonl"
+PENDING_DIR = ROOT / "logs" / "risk_gate_pending"
 PROOF_TTL_SIGNED = 45 * 60
 PROOF_TTL_UNSIGNED = 10 * 60  # 未署名 proof 只当「同一意图链」的短窗近似
 PROOF_TAIL_BYTES = 64 * 1024
+RESEND_WINDOW_SECONDS = 120  # 默认阻止后,同会话同命令的重发确认窗口
 
 # 目录限定的冻结工件(后缀边界匹配,不再按裸 basename 误伤 fixtures)
 FROZEN_REL_PATHS = (
@@ -100,13 +105,91 @@ def emit_decision(decision: str, msg: str, shape: str, session: str) -> None:
     sys.exit(0)
 
 
-def ask_or_unlock(msg: str, shape: str, session: str, domains: set[str], hatch: bool) -> None:
-    """ask 类出口: ALLOW_RISK_GATE 人工标记或 ZMEM_PROOF 覆盖可放行;deny 永不走这里。"""
+def _sanitize_session(session: str) -> str:
+    cleaned = "".join(c if (c.isalnum() or c in "_-") else "_" for c in session)[:32]
+    return cleaned or "nosession"
+
+
+def _pending_path(session: str) -> Path:
+    return PENDING_DIR / (_sanitize_session(session) + ".json")
+
+
+def pending_token(session: str, shape: str, key_text: str) -> str:
+    normalized = " ".join(key_text.split())
+    return hashlib.sha256(f"{session}|{shape}|{normalized}".encode("utf-8")).hexdigest()[:16]
+
+
+def pending_recent(session: str, token: str) -> bool:
+    try:
+        data = json.loads(_pending_path(session).read_text(encoding="utf-8"))
+        ts = datetime.datetime.fromisoformat(str(data.get(token)))
+        return (datetime.datetime.now() - ts).total_seconds() <= RESEND_WINDOW_SECONDS
+    except Exception:
+        return False
+
+
+def record_pending(session: str, token: str) -> None:
+    try:
+        path = _pending_path(session)
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(data, dict):
+                data = {}
+        except Exception:
+            data = {}
+        now = datetime.datetime.now()
+        pruned: dict[str, str] = {}
+        for key, value in data.items():
+            try:
+                if (now - datetime.datetime.fromisoformat(str(value))).total_seconds() <= RESEND_WINDOW_SECONDS:
+                    pruned[key] = str(value)
+            except Exception:
+                continue
+        pruned[token] = now.isoformat(timespec="seconds")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(pruned, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+
+
+def stop_or_unlock(
+    question: str,
+    shape: str,
+    session: str,
+    domains: set[str] | None,
+    hatch: bool,
+    key_text: str,
+    proof_query: str = "",
+) -> None:
+    """高危(非绝对 deny)出口:默认阻止,发起方自查确认后限时重发放行。
+
+    owner 2026-07-03 裁决:不弹人工审核框——第一次一律 deny + 抛回自查问题,
+    同一会话在 RESEND_WINDOW_SECONDS 内【原样重发同一命令】= 确认,放行。
+    ALLOW_RISK_GATE 与 ZMEM_PROOF(若给了 domains)仍可直接放行;
+    绝对 deny(git add -A 等)不走这里、无任何放行通道。
+    """
     if hatch:
         emit_allow("escape-hatch:" + shape)
-    if recent_proof_covers(domains, session):
+    if domains and recent_proof_covers(domains, session):
         emit_allow("proof-covered:" + shape)
-    emit_decision("ask", msg, shape, session)
+    token = pending_token(session, shape, key_text)
+    if pending_recent(session, token):
+        _log_decision({"decision": "resend_confirmed_allow", "shape": shape, "session": session})
+        emit_allow("resend-confirmed:" + shape)
+    record_pending(session, token)
+    hint = (
+        f';或先 python cc_memory_vnext/zmem.py search "{proof_query}" 拿 ZMEM_PROOF'
+        if proof_query and domains
+        else ""
+    )
+    emit_decision(
+        "deny",
+        f"⛔ 已默认阻止(高危: {shape})。先自查一遍:{question}"
+        f" 确认无误 → {RESEND_WINDOW_SECONDS} 秒内【原样重发同一命令】即放行"
+        f"(只认本会话、同一命令){hint}。",
+        shape + ":await-resend",
+        session,
+    )
 
 
 def recent_proof_covers(domains: set[str], session: str) -> bool:
@@ -288,26 +371,28 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
                         session,
                     )
                 if not commit_has_pathspec(rest) and not in_worktree:
-                    ask_or_unlock(
-                        "本 repo 共享 .git/index,无 pathspec 的裸 commit 可能把别的会话 staged 的"
-                        "文件一起带走(卡 concurrent-session-shared-index-hazard)。先 git status"
-                        " --short 确认 staged 只有自己的,或改带 pathspec 提交;查库拿 proof:"
-                        " python cc_memory_vnext/zmem.py search \"提交 并发会话 暂存\"",
+                    stop_or_unlock(
+                        "本 repo 共享 .git/index——你确定 staged 里只有你自己的改动、不会把"
+                        "【别的会话】的文件一起提交吗?(git status --short 看一眼,或改带精确"
+                        " pathspec 提交)",
                         "git-commit-no-pathspec",
                         session,
                         GIT_DOMAINS,
                         hatch,
+                        cmd,
+                        "提交 并发会话 暂存",
                     )
             elif sub == "push":
                 if any(t in ("--force", "-f", "--force-with-lease") for t in rest):
-                    ask_or_unlock(
-                        "高危: git push --force 不可逆,且本 repo 有并发会话在推同一主线。先查库:"
-                        " python cc_memory_vnext/zmem.py search \"push 冲突 并发会话\" 拿 ZMEM_PROOF"
-                        "(署名 45min/未署名 10min 内有效),或人工确认放行。",
+                    stop_or_unlock(
+                        "强推不可逆,且本 repo 有并发会话在推同一主线——你确定不会覆盖掉"
+                        "【别的会话/别处】已经推上去的提交吗?",
                         "git-push-force",
                         session,
                         GIT_DOMAINS,
                         hatch,
+                        cmd,
+                        "push 冲突 并发会话",
                     )
             continue
 
@@ -317,14 +402,15 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
             recursive = any(t == "--recursive" or combined_flag_has(t, "rR") for t in flags)
             force = any(t == "--force" or combined_flag_has(t, "f") for t in flags)
             if recursive and force:
-                ask_or_unlock(
-                    "高危: rm 递归强删。确认目标不含别的会话的工作产物/检查点;查库:"
-                    " python cc_memory_vnext/zmem.py search \"并发会话 工作区 删除\" 拿 ZMEM_PROOF,"
-                    "或人工确认。",
+                stop_or_unlock(
+                    "递归强删——你确定要删的目标不是【别的会话】的工作产物/检查点吗?"
+                    "(本机常有并发会话共用工作区)",
                     "rm-rf",
                     session,
                     FS_DOMAINS,
                     hatch,
+                    cmd,
+                    "并发会话 工作区 删除",
                 )
 
         low_tokens = [t.lower() for t in tokens]
@@ -332,14 +418,15 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
             has_recurse = any(t.startswith("-recurse") for t in low_tokens)
             has_force = any(t.startswith("-force") for t in low_tokens)
             if has_recurse and has_force:
-                ask_or_unlock(
-                    "高危: Remove-Item -Recurse -Force 递归强删。确认目标不含别的会话的工作产物/"
-                    "检查点;查库: python cc_memory_vnext/zmem.py search \"并发会话 工作区 删除\""
-                    " 拿 ZMEM_PROOF,或人工确认。",
+                stop_or_unlock(
+                    "递归强删——你确定要删的目标不是【别的会话】的工作产物/检查点吗?"
+                    "(本机常有并发会话共用工作区)",
                     "remove-item-recurse-force",
                     session,
                     FS_DOMAINS,
                     hatch,
+                    cmd,
+                    "并发会话 工作区 删除",
                 )
 
     emit_allow("no-dangerous-shape")
@@ -363,13 +450,15 @@ def check_file_write(file_path: str, session: str) -> None:
             except Exception:
                 frozen_hit = ""
     if frozen_hit:
-        emit_decision(
-            "ask",
-            f"⚠️ {frozen_hit} 是被字节级 hash 钉死的冻结工件(PROJECT_LOCK/freeze-ritual)。"
-            "改它必须走完整 freeze-ritual: 更新 pinned hash -> 重生成依赖产物 -> 重跑 gate;"
-            "reseal 按 LF 字节算 sha、绝不 write_text 直写。确认要走 ritual 再放行。",
+        stop_or_unlock(
+            f"{frozen_hit} 是被字节级 hash 钉死的冻结工件——你确定要改它、并走完整"
+            " freeze-ritual(更新 pinned hash -> 重生成依赖产物 -> 重跑 gate;LF 字节算 sha、"
+            "绝不 write_text 直写)吗?",
             "frozen-artifact-write",
             session,
+            None,  # 冻结工件不认 proof,只认重发确认(ritual 必须是有意识动作)
+            False,  # 文件写没有命令文本,无 hatch 通道
+            file_path,
         )
     emit_allow("not-frozen")
 
