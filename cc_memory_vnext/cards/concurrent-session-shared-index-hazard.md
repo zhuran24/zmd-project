@@ -42,15 +42,17 @@ triggers:
     - 准备提交当前修复但工作区有别的会话改动
     - 为什么不能 git commit -m 不带 pathspec
 activation:
-  layer_hint: L1
-  must_know: false
-  reason: 提交风险会把别的会话改动扫进当前提交。
+  layer_hint: L0
+  session_start_l0: true
+  must_know: true
+  reason: 提交风险会把别的会话改动扫进当前提交；git 操作是回合中途自发衍生的典型动作，prompt 召回逮不到，升常驻（recall-trigger 讨论 resident-design 席「最该常驻」裁决，2026-07-03 落地）。
 provenance:
   op: record
   reason: 从旧 cc_memory fact concurrent-session-shared-index-hazard-20260617 提炼。
   evidence:
     - python cc_memory/mem.py read concurrent-session-shared-index-hazard-20260617 --body
-updated_at: "2026-06-26"
+    - design/recall-trigger-discussion-20260628.md §3.2 resident-design 席三卡裁决
+updated_at: "2026-07-03"
 ---
 这个仓库经常有多个会话共用同一工作区和同一个 `.git/index`。另一个会话 `git add/rm` 的文件可能已经在共享 index 里；如果当前会话直接 `git commit -m ...`，会把别人 staged 的核心文件一起提交。
 

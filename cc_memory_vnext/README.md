@@ -14,7 +14,7 @@
 - **真相源 = 人读卡片 `cards/*.md`**(YAML frontmatter + 正文)+ git history 当 byte 级审计轨。
 - **索引/嵌入 = 可重建缓存**(`.index/`,gitignored,删了能重建)。彻底告别 SQLite 当真相源。
 - **召回 = 确定性激活**(trigger / scope 集合匹配,**0 模型、无 LLM**),reranker 降级、不当裁判。
-- **hook 强注入**(SessionStart 注 L0 / UserPromptSubmit 编 L0+L1),不靠模型自觉 boot。
+- **hook 强注入**(SessionStart 注 L0 / UserPromptSubmit 编 L0+L1 **含 `--enrich-frame` 确定性富化**),不靠模型自觉 boot。**2026-07-03 起补齐工具侧通道**(治「回合中途衍生操作不触发注入」缺口,按 `design/recall-trigger-discussion-20260628.md` 四层 + `design/observable-commitment-gate-20260628.md` 地基):PostToolUse 撞错召回(error_regex→additionalContext)、PostToolUse 影子测量(只记不注)、PreToolUse 高危窄门(deny/ask + ZMEM_PROOF 解锁)、`zmem search` 吐 `ZMEM_PROOF`。
 - **召回可测**:金标准回归集来自真实事故 / owner 纠正史,`eval` 跑 StrictHitRate,CI 可 fail-closed。
 
 ### 分层
@@ -48,7 +48,7 @@ python cc_memory_vnext/zmem.py eval            # 跑金标准回归(StrictHitRat
 
 ## 5. 红线(MVP-0 焊死)
 
-- **无 LLM、无行为日志、无 PreToolUse/PostToolUse**(MVP-0 只读编译 + 2 hook)。
+- **无 LLM**(同步召回路径 0 模型,永久);「无 PreToolUse/PostToolUse」是 **MVP-0 阶段红线,2026-07-03 已按设计解锁**(MVP-1a 窄门 + 撞错召回 + 影子测量,见 §2)。行为日志仍无——`logs/` 下的 shadow/proof/decision jsonl 是**可删遥测**(gitignored、非真相源),≠被 MASTER_PLAN 砍掉的 append-only 行为 ledger。
 - **dense 默认关**:三硬类纯集合匹配,不依赖 dense(`--enable-dense` 是 V2 预留)。
 - **金标准防自证(red-line A)**:回归 frame 取自真实事故 / owner 纠正的**原始信号**,由**非触发规则作者**(codex 写卡 → claude 盲写 frame)构造,**禁照 scope.paths/symbols 反填** → 三硬类纯脚本 100% 不是"规则匹配自己"。
 - 旧 `cc_memory/`:**与 vnext 互补共存**(全量可查库,仍现役可写);"冻结"=按条 archive-on-promotion、整库迁移非目标(2026-06-30 定调,详 `cards/memory-three-layer-coexistence-decided.md`)。
@@ -68,7 +68,7 @@ python cc_memory_vnext/zmem.py eval            # 跑金标准回归(StrictHitRat
 ## 8. V2 路线(全部凭指标解锁,不在 MVP-0/1a)
 
 解锁关口 = MVP-0 三硬类 StrictHitRate 100%(含纯脚本基线)**已达成**;以下仍按各自指标门槛逐项推进:
-- **MVP-1a**:PreToolUse 高危只读阻断(不引日志/LLM)。
+- **MVP-1a:已落地(2026-07-03)**——`hooks/pre_tool_risk_gate.py`(git add -A/commit -a deny;push --force/rm -rf/冻结工件写 ask;ZMEM_PROOF 45min 域交集解锁;fail-open)。
 - **V2**:dense 语义召回;necessity-LLM(**只产建议、经 verify 闸或人确认,绝不自动改卡**);行为日志 + 在线校准(权重明文 git 可回退);生命周期温度。
 
 权威设计:`记忆系统-3/MASTER_PLAN.md`(合成版)+ 分支终裁 `memory_redesign_council_final_draft.md`。

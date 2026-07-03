@@ -1,9 +1,13 @@
 #!/usr/bin/env python
-"""zmem MVP-0 CLI.
+"""zmem CLI (MVP-0 core + derived-ops recall extensions).
 
 Truth source: cards/*.md.
 Caches: .index/*.json, fully rebuildable.
-No LLM, no behavior log, no PreToolUse/PostToolUse path.
+Deterministic activation only — no LLM anywhere in the synchronous path.
+Beyond the MVP-0 hook pair (SessionStart / UserPromptSubmit), frames may now
+come from tool-derived signals (PostToolUse shadow / error-recall, PreToolUse
+risk gate) per design/recall-trigger-discussion-20260628.md and
+design/observable-commitment-gate-20260628.md.
 """
 
 from __future__ import annotations
@@ -73,6 +77,24 @@ TYPE_PRIORITY = {
 }
 
 TOKEN_RE = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.:/-]*|[\u4e00-\u9fff]+")
+
+# --- derived-ops recall: deterministic frame enrichment -----------------------
+# Risk-verb \u2192 intent projection shared by the UPS enrichment and the tool-input
+# projection hooks. Only intents that actually exist in the card index are
+# emitted, so unused mappings are inert. Additive-only, zero-LLM.
+RISK_VERB_INTENTS: dict[str, tuple[str, ...]] = {
+    "git-commit": ("git commit", "git add", "\u6682\u5b58", "\u63d0\u4ea4"),
+    "git-push": ("git push", "\u63a8\u9001"),
+    "memory-write": ("set-fact", "add-entry", "\u5199\u8fdb\u8bb0\u5fc6", "\u8bb0\u8fdb\u8bb0\u5fc6"),
+}
+
+PATH_TOKEN_RE = re.compile(
+    r"(?:[A-Za-z]:)?[\w.\u4e00-\u9fff()~-]*(?:[\\/][\w.\u4e00-\u9fff()~-]+)+"
+)
+BARE_FILE_RE = re.compile(
+    r"\b[\w\u4e00-\u9fff-]+\.(?:py|pyi|md|json|jsonl|yml|yaml|ps1|psm1|sh|bat|toml|ini|cfg|db|txt|csv|lock)\b",
+    re.IGNORECASE,
+)
 
 
 class ZmemError(Exception):
@@ -454,7 +476,7 @@ def normalize_frame(frame: dict[str, Any]) -> dict[str, Any]:
     prompt = str(frame.get("prompt") or frame.get("user_prompt") or frame.get("text") or "")
     normalized = dict(frame)
     normalized["prompt"] = prompt
-    for key in ("intents", "keywords", "paths", "symbols", "domains", "claims"):
+    for key in ("intents", "keywords", "paths", "symbols", "domains", "claims", "errors"):
         normalized[key] = normalize_list(frame.get(key))
     normalized["phase"] = str(frame.get("phase", ""))
     normalized["now"] = str(frame.get("now", ""))
@@ -490,6 +512,108 @@ def path_glob_hit(patterns: list[str], paths: list[str]) -> bool:
 
 def overlap(left: list[str], right: list[str]) -> bool:
     return bool({item.lower() for item in left} & {item.lower() for item in right})
+
+
+def error_regex_hit(patterns: list[str], errors: list[str]) -> bool:
+    for pattern in patterns:
+        if not pattern:
+            continue
+        try:
+            compiled = re.compile(pattern, re.IGNORECASE)
+        except re.error:
+            # A broken card regex must never break activation; verify/lifecycle
+            # owns card quality, the runtime stays fail-safe.
+            continue
+        for err in errors:
+            if err and compiled.search(err):
+                return True
+    return False
+
+
+def extract_paths_from_text(text: str) -> list[str]:
+    """Deterministically pull path-shaped tokens out of free text.
+
+    Conservative by design: only tokens with a real separator or a known file
+    extension count. Noise tokens are harmless — they match no card glob.
+    """
+    if not text:
+        return []
+    found: list[str] = []
+    for match in PATH_TOKEN_RE.finditer(text):
+        token = match.group(0).strip("，。、；：\"'()[]{}<>“”‘’")
+        if not token or token.startswith(("/", "\\")):
+            continue
+        if token.lower().startswith(("http:", "https:")):
+            continue
+        found.append(token)
+    for match in BARE_FILE_RE.finditer(text):
+        found.append(match.group(0))
+    seen: set[str] = set()
+    out: list[str] = []
+    for token in found:
+        key = token.lower()
+        if key not in seen:
+            seen.add(key)
+            out.append(token)
+    return out
+
+
+def index_symbol_vocab(index: dict[str, Any]) -> set[str]:
+    vocab: set[str] = set()
+    for card_data in index.get("cards", []):
+        meta = as_dict(card_data.get("meta"))
+        scope = as_dict(meta.get("scope"))
+        triggers = as_dict(meta.get("triggers"))
+        for value in normalize_list(scope.get("symbols")) + normalize_list(triggers.get("symbols")):
+            if value:
+                vocab.add(value)
+    return vocab
+
+
+def index_intent_vocab(index: dict[str, Any]) -> set[str]:
+    vocab: set[str] = set()
+    for card_data in index.get("cards", []):
+        triggers = as_dict(as_dict(card_data.get("meta")).get("triggers"))
+        for value in normalize_list(triggers.get("intents")):
+            if value:
+                vocab.add(value)
+    return vocab
+
+
+def enrich_frame(frame: dict[str, Any], index: dict[str, Any], extra_text: str = "") -> dict[str, Any]:
+    """Deterministic frame enrichment (design: recall-trigger 'Layer 0 UPS 富化').
+
+    Extracts path tokens, index-known symbols, and risk-verb intents from the
+    prompt text (plus optional extra text such as a tool command). Additive
+    only — caller-supplied structured signals are preserved; zero LLM.
+    """
+    enriched = dict(frame)
+    text = "\n".join(part for part in (str(frame.get("prompt") or ""), extra_text) if part)
+    if not text:
+        return enriched
+    lowered = text.lower()
+
+    paths = list(normalize_list(frame.get("paths")))
+    for token in extract_paths_from_text(text):
+        if token not in paths:
+            paths.append(token)
+    enriched["paths"] = paths
+
+    symbols = list(normalize_list(frame.get("symbols")))
+    for symbol in sorted(index_symbol_vocab(index)):
+        if symbol.lower() in lowered and symbol not in symbols:
+            symbols.append(symbol)
+    enriched["symbols"] = symbols
+
+    intents = list(normalize_list(frame.get("intents")))
+    known_intents = index_intent_vocab(index)
+    for intent in sorted(RISK_VERB_INTENTS):
+        if intent not in known_intents or intent in intents:
+            continue
+        if any(verb.lower() in lowered for verb in RISK_VERB_INTENTS[intent]):
+            intents.append(intent)
+    enriched["intents"] = intents
+    return enriched
 
 
 def card_negative_blocked(card_data: dict[str, Any], frame: dict[str, Any]) -> bool:
@@ -584,6 +708,14 @@ def force_reason(card_data: dict[str, Any], frame: dict[str, Any]) -> str | None
 
     if activation.get("session_start_l0") is True and "session-start" in normalize_list(frame.get("intents")):
         return "session_start_l0"
+
+    # "遇到什么" recall (design: recall-trigger §4.1): tool-result / error text
+    # matching the card's error_regex is a must-see moment for any kind.
+    frame_errors = normalize_list(frame.get("errors"))
+    if frame_errors:
+        error_patterns = normalize_list(triggers.get("error_regex")) + normalize_list(meta.get("error_regex"))
+        if error_regex_hit(error_patterns, frame_errors):
+            return "error_regex_hit"
 
     if kind == "constraint":
         if path_glob_hit(normalize_list(scope.get("paths")) + normalize_list(triggers.get("paths")), normalize_list(frame.get("paths"))):
@@ -837,6 +969,8 @@ def cmd_context(args: argparse.Namespace) -> int:
     try:
         frame = frame_from_args(args)
         index = load_context_index(args)
+        if getattr(args, "enrich_frame", False):
+            frame = enrich_frame(frame, index)
         packet = compile_context(index, frame, dense_enabled=args.enable_dense)
         packet = filter_layers(packet, args.layers.split(","))
     except (ZmemError, json.JSONDecodeError) as exc:
@@ -850,6 +984,64 @@ def cmd_context(args: argparse.Namespace) -> int:
         print(format_packet_text(packet))
     else:
         print(json.dumps(packet, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
+def append_jsonl(path: Path, record: dict[str, Any]) -> None:
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception:
+        return
+
+
+def cmd_search(args: argparse.Namespace) -> int:
+    """Model-initiated lookup that leaves an auditable ZMEM_PROOF trail.
+
+    Design: observable-commitment-gate-20260628.md — gates (PreToolUse/Stop)
+    never guess whether memory was consulted; they check for a proof. The
+    proof line lands in the transcript, the JSONL record feeds the risk gate.
+    """
+    try:
+        index = load_context_index(args)
+        extra_domains = [d.strip() for d in (args.domains or "").split(",") if d.strip()]
+        frame = normalize_frame({"prompt": args.query, "domains": extra_domains})
+        frame = enrich_frame(frame, index)
+        packet = compile_context(index, frame, dense_enabled=False)
+    except (ZmemError, json.JSONDecodeError) as exc:
+        print(f"SEARCH FAIL: {exc}", file=sys.stderr)
+        return 1
+
+    print(format_packet_text(packet))
+
+    import datetime
+    import os
+
+    selected = [item for layer in ("L0", "L1") for item in packet["layers"].get(layer, [])]
+    domains: set[str] = set(extra_domains)
+    for item in selected:
+        domains.update(normalize_list(as_dict(item.get("scope")).get("domains")))
+    ts = datetime.datetime.now().isoformat(timespec="seconds")
+    session = args.session or os.environ.get("CLAUDE_SESSION_ID", "")
+    digest = str(packet.get("frame_digest", ""))[:16]
+    domains_csv = ",".join(sorted(domains)) or "-"
+    print()
+    print(
+        f"ZMEM_PROOF ts={ts} session={session or '-'} domains={domains_csv} "
+        f"frame_digest={digest} cards={len(selected)}"
+    )
+    append_jsonl(
+        Path(args.proof_log),
+        {
+            "ts": ts,
+            "session": session,
+            "query_sha16": sha256_text(str(args.query))[:16],
+            "domains": sorted(domains),
+            "frame_digest": digest,
+            "cards": [str(item.get("id")) for item in selected],
+        },
+    )
     return 0
 
 
@@ -883,6 +1075,8 @@ def cmd_eval(args: argparse.Namespace) -> int:
         try:
             case = json.loads(stripped)
             frame = normalize_frame(as_dict(case.get("frame")))
+            if case.get("enrich") is True:
+                frame = enrich_frame(frame, index)
             expected = set(normalize_list(case.get("expected_cards")))
             forbidden = set(normalize_list(case.get("forbidden_cards")))
             packet = compile_context(index, frame, dense_enabled=False)
@@ -934,7 +1128,22 @@ def build_parser() -> argparse.ArgumentParser:
     context.add_argument("--enable-dense", action="store_true", help="reserved; disabled by default in MVP-0")
     context.add_argument("--require-index", action="store_true")
     context.add_argument("--log", help="append activation telemetry (one JSON line) to this path")
+    context.add_argument(
+        "--enrich-frame",
+        action="store_true",
+        help="deterministically enrich frame from prompt text (paths / index symbols / risk-verb intents)",
+    )
     context.set_defaults(func=cmd_context)
+
+    search = sub.add_parser("search", help="model-initiated lookup; prints packet + ZMEM_PROOF line")
+    search.add_argument("query", help="free-text query (deterministically enriched, no LLM)")
+    search.add_argument("--domains", default="", help="comma-separated extra proof domains")
+    search.add_argument("--session", default="", help="session id to stamp into the proof")
+    search.add_argument("--cards-dir", default=str(DEFAULT_CARDS_DIR))
+    search.add_argument("--index", default=str(DEFAULT_INDEX_PATH))
+    search.add_argument("--require-index", action="store_true")
+    search.add_argument("--proof-log", default=str(ROOT / "logs" / "proofs.jsonl"))
+    search.set_defaults(func=cmd_search)
 
     eval_cmd = sub.add_parser("eval", help="run activation regression frames")
     eval_cmd.add_argument("--cards-dir", default=str(DEFAULT_CARDS_DIR))

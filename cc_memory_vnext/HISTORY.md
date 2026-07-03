@@ -39,6 +39,15 @@
 
 **MVP-0 已落地实况**(均 push main;卡/金标准/eval 数实时以 `zmem verify`/`eval` 为准,本文不钉具体数字防漂移)/ **三硬类 StrictHitRate=100%(纯脚本基线)** / 编译器 flood 收口(L1 准入要 trigger 或 scope>0,codex 跨模型审 CLEAN)/ 2 hook 实时注入(已接 `.claude/settings.local.json`)/ **最小遥测**(`zmem context --log` → `logs/activation_decisions.jsonl`;**本地、gitignored、非真相源、≠被 MASTER 砍掉的 append-only 行为 ledger**——只记每回合注入了哪些卡,可删重建)/ **自喂养纪律 institutionalize**(CLAUDE.md + `vnext-maintenance-discipline` 卡:被纠正/踩坑→补金标准+卡)。判官机制已实证可行(blind 模型四条全中)。
 
+**2026-07-03 衍生操作召回批**(owner 重提「vnext 只认提示词、回合中途衍生操作不触发注入」= ③ 已知缺口;按 recall-trigger 四层方案 + commitment-gate 地基落第一批):
+- **UPS frame 富化**(Layer 0):`zmem context --enrich-frame` 确定性抽 prompt 里的路径 token / 索引已知 symbols / 风险动词 intents(零 LLM、additive-only),UPS hook 已启用;eval 支持逐 case `"enrich": true`,两条真实事故 frame 当富化回归护栏。
+- **error_regex 通道通电**(「遇到什么」召回,recall-trigger §4.1):frame 新增 `errors` 字段,任何卡的 triggers/顶层 error_regex 命中 → force L0(reason=`error_regex_hit`);`hooks/post_tool_error_recall.py`(PostToolUse sync)撞错当场注 additionalContext,会话级账本同卡只弹一次(账本只活在建议通道、绝不参与 deny)。
+- **L0 常驻**(Layer 1):`concurrent-session-shared-index-hazard` 升 `session_start_l0`(resident-design 席「最该常驻」裁决;session-start 常驻批已入 eval)。
+- **PreToolUse 高危窄门**(= MVP-1a,Layer 2):`hooks/pre_tool_risk_gate.py` — git add -A/./-u、commit -a/-am → deny;push --force、rm -rf、Remove-Item -Recurse -Force、冻结工件 Write/Edit → ask;只认结构信号(先剥引号防 echo 误伤)、fail-open、`ALLOW_RISK_GATE` 逃生门。
+- **ZMEM_PROOF 第一版**(commitment-gate 键石):`zmem search "<query>"` 打包激活结果 + 吐 `ZMEM_PROOF` 行(留 transcript 审计)+ 落 `logs/proofs.jsonl`;窄门对 ask 类动作先查本会话 45min 内 domain 相交的 proof,有则放行 = 「没查不准提交」最小闭环。**未做**:Stop 输出闸、`memory.skip` 显式留痕、`observable_from` 卡契约 / `verify --coverage`(仍在 §5 路线)。
+- **影子测量**(measurement 席「先测后建」):`hooks/post_tool_shadow.py`(PostToolUse async,全工具)把 tool_input/response 确定性投影成 frame(prompt="" → bm25 恒 0),只记「本会注哪些卡」到 `logs/shadow_activations.jsonl`、一张不真注——「prompt 没注、动作会注」的真实载荷从此有数据。enrich 正向金标准按 red-line A 等影子挖出真实事故再补、不反填。
+- 每回合看守(第四档)维持不买:先拿影子数据量残余缝。eval 19→24 全绿;三 hook 共 20 条决策路径实测通过(deny/ask/allow 边界、proof 解锁闭环、账本去重、影子落盘)。
+
 ## 4. 未解 / 待澄清(诚实标注)
 
 - **冻结时机:三处口径打架 = 真未解**(不是已定论)。`MASTER_PLAN` 写"旧 cc_memory **上线即冻只读**绝不双活";`council_B` 写"memory.db 当 legacy 读真相、**迁移延后无时间表**";`CLAUDE.md` 又仍称 cc_memory 为 "authoritative collaboration memory"(=活)。**而实际操作仍在写旧库**(本会话 + 分支线程都写过)。可行的**按条解读**(防漂移):某条知识做成卡后,别再更新它旧库副本——但这≠整库已冻。"整库迁移成只读"是 V2 里程碑、未到、且上面三处得先对齐。(`entry:v-next` 里"冻只读不动"的措辞偏笼统,待校准。)
@@ -49,10 +58,10 @@
 ## 5. 路线 / 待做未做(全凭指标解锁)
 
 - **近(纯离线、随时推)**:持续把新踩的坑补进金标准(自喂养);卡 17→更多;扩金标准;三硬类保持 100%。
-- **MVP-1a**:PreToolUse 高危只读阻断(不引日志/LLM)。
+- **MVP-1a:已落地(2026-07-03)** — `pre_tool_risk_gate.py` 高危 deny/ask + ZMEM_PROOF 解锁(详 §3「2026-07-03 衍生操作召回批」)。
 - **判官层(V2 测量)**:小模型/廉价 API 读 transcript,经**遥测预筛**只看可疑切片 → 抓漏召回/纠正 → **起草** frame/卡(过 verify/eval 闸 + 抽检才落,绝不自动改卡)。遥测=它的省钱阀门。
 - **V2(凭指标)**:dense 语义召回;necessity-LLM(只产建议);行为日志 + 在线权重校准(明文 git 可回退);生命周期温度;**存储真相源整库迁移**(council_B:第二档达标后再评估、不设时间表)。
-- **⭐ ③ 召回触发的【真地基】= 可观测提交点记忆闸(Observable-Commitment Gate,2026-06-28)**:owner 拿本会话 ③ 讨论喂 ChatGPT 后的 reframe,**取代/修正 ③ 的 framing**——真问题不是"自动推卡"(③ 的看守=push),是"**逼模型在提交点真去查**"(带门的 pull):`zmem search` 吐 `ZMEM_PROOF` token,PreToolUse/Stop 闸**查 transcript 有没有 proof**、没 proof 不准把想法变成动作/结论;`skip` 须显式留痕。地基层 = 每张卡声明 `observable_from`、`verify --coverage` 强制(没可观测触发面的卡不准算自动召回保证)。三目标别混:(a)念头那刻=无解,(b)没查不准提交=提交点闸=近期键石,(c)中途多查=改 agent loop=未来。**详 `design/observable-commitment-gate-20260628.md`(+ 源 `design/chatgpt-...source-20260628.md`)。** 它治"读了没连上"(逼判断那刻重查、记忆落当下)。③ 的看守降为第四档。
+- **⭐ ③ 召回触发的【真地基】= 可观测提交点记忆闸(Observable-Commitment Gate,2026-06-28)**:owner 拿本会话 ③ 讨论喂 ChatGPT 后的 reframe,**取代/修正 ③ 的 framing**——真问题不是"自动推卡"(③ 的看守=push),是"**逼模型在提交点真去查**"(带门的 pull):`zmem search` 吐 `ZMEM_PROOF` token,PreToolUse/Stop 闸**查 transcript 有没有 proof**、没 proof 不准把想法变成动作/结论;`skip` 须显式留痕。地基层 = 每张卡声明 `observable_from`、`verify --coverage` 强制(没可观测触发面的卡不准算自动召回保证)。三目标别混:(a)念头那刻=无解,(b)没查不准提交=提交点闸=近期键石,(c)中途多查=改 agent loop=未来。**详 `design/observable-commitment-gate-20260628.md`(+ 源 `design/chatgpt-...source-20260628.md`)。** 它治"读了没连上"(逼判断那刻重查、记忆落当下)。③ 的看守降为第四档。**(2026-07-03 进展:`zmem search` + `ZMEM_PROOF` + PreToolUse proof 检查已落第一版;Stop 输出闸、skip 显式留痕、observable_from 契约/coverage 仍未做。)**
 - **解锁关口**:MVP-0 三硬类 StrictHitRate 100%(含纯脚本基线)**已达成**;各 V2 件仍按各自指标门槛逐项推进。
 
 ## 6. 东西都在哪

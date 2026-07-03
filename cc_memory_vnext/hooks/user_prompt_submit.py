@@ -56,6 +56,7 @@ def main() -> int:
         str(ZMEM),
         "context",
         "--require-index",
+        "--enrich-frame",
         "--layers",
         "L0,L1",
         "--format",
