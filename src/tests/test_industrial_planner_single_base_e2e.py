@@ -4,63 +4,47 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
-from scripts.audit_industrial_planner_full_demand_support_suite_inventory import (
-    write_full_demand_support_suite_inventory_outputs,
+from scripts.run_industrial_planner_single_base_e2e import (
+    SingleBaseE2EAssemblyStageResults,
+    assemble_single_base_e2e_result,
+    run_single_base_e2e_workflow,
 )
-from scripts.run_industrial_planner_single_base_e2e import run_single_base_e2e_workflow
-from src.search.exact_campaign import atomic_write_json
 
 
-_BLUEPRINT_RELATIVE_PATH = "data/examples/industrial_planner/full_demand_recipe_capacity_canonical_blueprint.json"
-
-
-def _write_support_inventory(tmp_path: Path, output_dir: Path) -> Path:
-    inventory_path = tmp_path / "full_demand_support_suite_inventory.json"
-    atomic_write_json(
-        inventory_path,
-        {
-            "inventory_version": 1,
-            "entries": [
-                {
-                    "report_set_id": "default_full_demand_support_suite",
-                    "blueprint_path": _BLUEPRINT_RELATIVE_PATH,
-                    "output_dir": str(output_dir),
-                }
-            ],
+def _synthetic_stage_results(**overrides: Any) -> SingleBaseE2EAssemblyStageResults:
+    fields: dict[str, Any] = {
+        "planning_summary": {"status": "proven_equivalent", "synthetic_for_test": True},
+        "export_summary": {"status": "written", "synthetic_for_test": True},
+        "validation_summary": {
+            "delivery_validation_status": "validator_acceptable_with_warnings",
+            "is_import_compatible": True,
+            "is_layout_healthy": True,
+            "synthetic_for_test": True,
         },
-    )
-    return inventory_path
-
-
-
-def _write_family_inventory(tmp_path: Path, support_inventory_path: Path) -> Path:
-    inventory_path = tmp_path / "checked_artifact_family_inventory.json"
-    atomic_write_json(
-        inventory_path,
-        {
-            "inventory_version": 1,
-            "entries": [
-                {
-                    "family_id": "full_demand_support_suite",
-                    "family_label": "IndustrialPlanner full-demand support report sets",
-                    "inventory_path": str(support_inventory_path),
-                    "result_builder": (
-                        "scripts.audit_industrial_planner_full_demand_support_suite_inventory:"
-                        "build_full_demand_support_suite_inventory_result"
-                    ),
-                    "scope_label_singular": "report set",
-                    "checked_scope_count_attr": "checked_report_set_count",
-                    "clean_scope_count_attr": "clean_report_set_count",
-                }
-            ],
+        "throughput_summary": {"status": "proven_equivalent", "synthetic_for_test": True},
+        "fresh_support_suite_summary": {"status": "written", "synthetic_for_test": True},
+        "checked_in_support_suite_summary": {
+            "status": "clean",
+            "drift_entry_count": 0,
+            "synthetic_for_test": True,
         },
-    )
-    return inventory_path
-
+        "checked_artifact_suite_summary": {
+            "status": "clean",
+            "drift_entry_count": 0,
+            "synthetic_for_test": True,
+        },
+        "artifacts": (),
+        "notes": ("synthetic assembly test input; no release artifacts written.",),
+        "synthetic_for_test": True,
+    }
+    fields.update(overrides)
+    return SingleBaseE2EAssemblyStageResults(**fields)
 
 
 def test_single_base_e2e_workflow_writes_successful_active_contract_bundle(tmp_path: Path) -> None:
+    # Sentinel: this is the only test in this file that runs the real full workflow.
     run_dir = tmp_path / "single_base_e2e"
 
     result = run_single_base_e2e_workflow(run_dir=run_dir)
@@ -106,11 +90,28 @@ def test_single_base_e2e_workflow_writes_successful_active_contract_bundle(tmp_p
     assert "Full-scale exact `CERTIFIED` status: `open`" in markdown
 
 
+def test_single_base_e2e_assembly_fails_closed_on_contract_ceiling_debug_base(
+    tmp_path: Path,
+) -> None:
+    run_dir = tmp_path / "synthetic_single_base_e2e"
+    stage_results = _synthetic_stage_results(
+        planning_summary={
+            "status": "unsupported_by_canonical_contract",
+            "synthetic_for_test": True,
+        },
+        export_summary={"status": "skipped", "synthetic_for_test": True},
+        validation_summary={
+            "delivery_validation_status": "skipped",
+            "synthetic_for_test": True,
+        },
+        throughput_summary={"status": "skipped", "synthetic_for_test": True},
+    )
 
-def test_single_base_e2e_workflow_fails_closed_on_contract_ceiling_debug_base(tmp_path: Path) -> None:
-    run_dir = tmp_path / "single_base_e2e"
-
-    result = run_single_base_e2e_workflow(run_dir=run_dir, base_id="wuling_protocol_core")
+    result = assemble_single_base_e2e_result(
+        run_dir=run_dir,
+        requested_base_id="wuling_protocol_core",
+        stage_results=stage_results,
+    )
 
     assert result.overall_status == "planning_failed"
     assert result.failure_stage == "planning"
@@ -121,33 +122,34 @@ def test_single_base_e2e_workflow_fails_closed_on_contract_ceiling_debug_base(tm
     assert result.export_summary["status"] == "skipped"
     assert result.validation_summary["delivery_validation_status"] == "skipped"
     assert result.throughput_summary["status"] == "skipped"
+    assert stage_results.synthetic_for_test is True
+    assert result.planning_summary["synthetic_for_test"] is True
 
-    assert (run_dir / "canonical" / "full_demand_fixture_plan_report.json").exists()
-    assert not (run_dir / "bundle" / "industrial_planner.blueprint.json").exists()
-    assert (run_dir / "support_suite" / "full_demand_support_overview.json").exists()
-
-    summary_payload = json.loads((run_dir / "run_summary.json").read_text(encoding="utf-8"))
+    assert not run_dir.exists()
+    summary_payload = result.to_dict()
     assert summary_payload["overall_status"] == "planning_failed"
     assert summary_payload["failure_classification"] == "unsupported_by_canonical_contract"
 
 
-
-def test_single_base_e2e_workflow_surfaces_checked_in_support_drift(tmp_path: Path) -> None:
-    checked_support_dir = tmp_path / "checked_support"
-    support_inventory_path = _write_support_inventory(tmp_path, checked_support_dir)
-    family_inventory_path = _write_family_inventory(tmp_path, support_inventory_path)
-
-    write_full_demand_support_suite_inventory_outputs(inventory_path=support_inventory_path)
-    (checked_support_dir / "full_demand_support_overview.md").write_text(
-        "stale support overview",
-        encoding="utf-8",
+def test_single_base_e2e_assembly_surfaces_checked_in_support_drift(tmp_path: Path) -> None:
+    run_dir = tmp_path / "synthetic_single_base_e2e"
+    stage_results = _synthetic_stage_results(
+        checked_in_support_suite_summary={
+            "status": "drift_detected",
+            "drift_entry_count": 1,
+            "synthetic_for_test": True,
+        },
+        checked_artifact_suite_summary={
+            "status": "drift_detected",
+            "drift_entry_count": 1,
+            "synthetic_for_test": True,
+        },
     )
 
-    run_dir = tmp_path / "single_base_e2e"
-    result = run_single_base_e2e_workflow(
+    result = assemble_single_base_e2e_result(
         run_dir=run_dir,
-        support_inventory_path=support_inventory_path,
-        family_inventory_path=family_inventory_path,
+        requested_base_id="valley4_protocol_core",
+        stage_results=stage_results,
     )
 
     assert result.overall_status == "checked_in_support_drift_detected"
@@ -157,8 +159,11 @@ def test_single_base_e2e_workflow_surfaces_checked_in_support_drift(tmp_path: Pa
     assert result.checked_in_support_suite_summary["status"] == "drift_detected"
     assert result.checked_in_support_suite_summary["drift_entry_count"] == 1
     assert result.checked_artifact_suite_summary["status"] == "drift_detected"
+    assert stage_results.synthetic_for_test is True
+    assert result.checked_in_support_suite_summary["synthetic_for_test"] is True
 
-    summary_payload = json.loads((run_dir / "run_summary.json").read_text(encoding="utf-8"))
+    assert not run_dir.exists()
+    summary_payload = result.to_dict()
     assert summary_payload["overall_status"] == "checked_in_support_drift_detected"
     assert summary_payload["checked_in_support_suite_inventory"]["status"] == "drift_detected"
     assert summary_payload["checked_artifact_suite"]["status"] == "drift_detected"

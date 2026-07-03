@@ -32,16 +32,23 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from scripts.audit_industrial_planner_checked_artifact_suite import (  # noqa: E402
     _DEFAULT_FAMILY_INVENTORY_PATH,
-    build_checked_artifact_suite_result,
+    _SUPPORT_RESULT_BUILDER,
+    CheckedArtifactFamilyEntryResult,
+    IndustrialPlannerCheckedArtifactSuiteResult,
+    _build_family_entry_result,
+    load_checked_artifact_family_inventory,
 )
 from scripts.audit_industrial_planner_full_demand_support_suite import (  # noqa: E402
+    _DEFAULT_BLUEPRINT as _DEFAULT_SUPPORT_BLUEPRINT,
     build_full_demand_support_overview,
     check_full_demand_support_suite_outputs,
     write_full_demand_support_suite_outputs,
 )
 from scripts.audit_industrial_planner_full_demand_support_suite_inventory import (  # noqa: E402
     _DEFAULT_INVENTORY_PATH,
-    build_full_demand_support_suite_inventory_result,
+    FullDemandSupportSuiteInventoryEntryResult,
+    FullDemandSupportSuiteInventoryResult,
+    load_full_demand_support_suite_inventory,
 )
 from scripts.build_industrial_planner_full_demand_fixture import (  # noqa: E402
     FullDemandFixturePlanReport,
@@ -320,6 +327,67 @@ class _SummaryPaths:
     checked_artifact_console: Path
 
 
+@dataclass(frozen=True)
+class SingleBaseE2EAssemblyStageResults:
+    planning_summary: dict[str, Any]
+    export_summary: dict[str, Any]
+    validation_summary: dict[str, Any]
+    throughput_summary: dict[str, Any]
+    fresh_support_suite_summary: dict[str, Any]
+    checked_in_support_suite_summary: dict[str, Any]
+    checked_artifact_suite_summary: dict[str, Any]
+    artifacts: tuple[SingleBaseE2EArtifact, ...] = ()
+    notes: tuple[str, ...] = ()
+    synthetic_for_test: bool = False
+
+
+@dataclass(frozen=True)
+class _SupportOverviewCache:
+    report: Any
+    base_ids: tuple[str, ...] | None
+    blueprint_path: Path
+
+
+@dataclass(frozen=True)
+class _PlanningStageResult:
+    blueprint_payload: dict[str, Any] | None
+    summary: dict[str, Any]
+    fixture_written: bool
+    notes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class _ExportStageResult:
+    export_written: Any | None
+    summary: dict[str, Any]
+    validation_summary: dict[str, Any]
+    throughput_summary: dict[str, Any]
+    notes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class _FreshSupportStageResult:
+    report: Any | None
+    output_paths: Mapping[str, Path] | None
+    summary: dict[str, Any]
+    cache: _SupportOverviewCache | None
+    notes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class _CheckedSupportStageResult:
+    result: Any | None
+    summary: dict[str, Any]
+    notes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class _CheckedArtifactStageResult:
+    result: Any | None
+    summary: dict[str, Any]
+    notes: tuple[str, ...] = ()
+
+
 def _display_path(path: Path) -> str:
     try:
         return str(path.resolve().relative_to(PROJECT_ROOT.resolve()))
@@ -455,6 +523,34 @@ def _fresh_support_scope(base_id: str) -> Sequence[str] | None:
     return None if base_id == DEFAULT_BASE_ID else (base_id,)
 
 
+def _normalized_base_scope(base_ids: Sequence[str] | None) -> tuple[str, ...] | None:
+    if base_ids is None:
+        return None
+    normalized = tuple(str(base_id) for base_id in base_ids)
+    return normalized or None
+
+
+def _same_resolved_path(left: Path, right: Path) -> bool:
+    try:
+        return left.resolve() == right.resolve()
+    except OSError:  # pragma: no cover - defensive fallback for odd Windows paths.
+        return left.absolute() == right.absolute()
+
+
+def _support_cache_matches(
+    cache: _SupportOverviewCache | None,
+    *,
+    base_ids: Sequence[str] | None,
+    blueprint_path: Path,
+) -> bool:
+    if cache is None:
+        return False
+    return (
+        cache.base_ids == _normalized_base_scope(base_ids)
+        and _same_resolved_path(cache.blueprint_path, Path(blueprint_path))
+    )
+
+
 def _fresh_support_state(
     *,
     support_report: Any | None,
@@ -553,6 +649,71 @@ def _checked_artifact_state(result: Any | None, *, layout: _RunLayout, error_tex
         "summary_markdown_path": _display_path(layout.checked_artifact_summary_markdown_path),
         "summary_console_path": _display_path(layout.checked_artifact_summary_console_path),
     }
+
+
+def _build_support_inventory_result_with_run_cache(
+    *,
+    inventory_path: Path,
+    support_cache: _SupportOverviewCache | None,
+) -> FullDemandSupportSuiteInventoryResult:
+    entries = load_full_demand_support_suite_inventory(inventory_path)
+    entry_results: list[FullDemandSupportSuiteInventoryEntryResult] = []
+    for entry in entries:
+        entry_base_ids = entry.base_ids or None
+        if _support_cache_matches(
+            support_cache,
+            base_ids=entry_base_ids,
+            blueprint_path=entry.blueprint_path,
+        ):
+            report = support_cache.report
+        else:
+            report = build_full_demand_support_overview(
+                base_ids=entry_base_ids,
+                blueprint_path=entry.blueprint_path,
+            )
+        check_result = check_full_demand_support_suite_outputs(
+            output_dir=entry.output_dir,
+            report=report,
+        )
+        entry_results.append(
+            FullDemandSupportSuiteInventoryEntryResult(
+                inventory_entry=entry,
+                overview_summary=dict(report.summary),
+                check_result=check_result,
+            )
+        )
+    return FullDemandSupportSuiteInventoryResult(
+        inventory_path=Path(inventory_path),
+        entries=tuple(entry_results),
+    )
+
+
+def _build_checked_artifact_result_with_run_cache(
+    *,
+    family_inventory_path: Path,
+    support_inventory_path: Path,
+    support_result: Any | None,
+) -> IndustrialPlannerCheckedArtifactSuiteResult:
+    family_entries = load_checked_artifact_family_inventory(family_inventory_path)
+    entry_results: list[CheckedArtifactFamilyEntryResult] = []
+    for entry in family_entries:
+        if (
+            support_result is not None
+            and entry.result_builder == _SUPPORT_RESULT_BUILDER
+            and _same_resolved_path(entry.inventory_path, Path(support_inventory_path))
+        ):
+            entry_results.append(
+                CheckedArtifactFamilyEntryResult(
+                    inventory_entry=entry,
+                    family_result=support_result,
+                )
+            )
+            continue
+        entry_results.append(_build_family_entry_result(entry))
+    return IndustrialPlannerCheckedArtifactSuiteResult(
+        family_inventory_path=Path(family_inventory_path),
+        entries=tuple(entry_results),
+    )
 
 
 def _build_artifacts(
@@ -893,26 +1054,17 @@ def _derive_deliverable_status(
     return "bundle_ready_repo_reports_drifting"
 
 
-def run_single_base_e2e_workflow(
-    *,
-    run_dir: Path = _DEFAULT_RUN_DIR,
-    base_id: str = DEFAULT_BASE_ID,
-    support_inventory_path: Path = _DEFAULT_INVENTORY_PATH,
-    family_inventory_path: Path = _DEFAULT_FAMILY_INVENTORY_PATH,
-) -> SingleBaseE2EResult:
-    layout = _ensure_layout(Path(run_dir))
+def _run_planning_stage(*, requested_base_id: str, layout: _RunLayout) -> _PlanningStageResult:
     notes: list[str] = []
-
-    requested_base_id = str(base_id)
-    requested_base_is_active_contract = requested_base_id == DEFAULT_BASE_ID
-
     plan_report: FullDemandFixturePlanReport | None = None
     blueprint_payload: dict[str, Any] | None = None
     planning_error_text: str | None = None
     fixture_written = False
 
     try:
-        blueprint_payload, plan_report = plan_full_demand_recipe_capacity_fixture(base_id=requested_base_id)
+        blueprint_payload, plan_report = plan_full_demand_recipe_capacity_fixture(
+            base_id=requested_base_id
+        )
     except FullDemandFixturePlanningError as exc:
         plan_report = exc.report
         planning_error_text = exc.report.error_message or exc.report.status
@@ -934,6 +1086,26 @@ def run_single_base_e2e_workflow(
         atomic_write_json(layout.fixture_path, blueprint_payload)
         fixture_written = True
 
+    return _PlanningStageResult(
+        blueprint_payload=blueprint_payload,
+        summary=_planning_summary(
+            report=plan_report,
+            layout=layout,
+            error_text=planning_error_text,
+            fixture_written=fixture_written,
+        ),
+        fixture_written=fixture_written,
+        notes=tuple(notes),
+    )
+
+
+def _run_export_stage(
+    *,
+    requested_base_id: str,
+    layout: _RunLayout,
+    blueprint_payload: dict[str, Any] | None,
+) -> _ExportStageResult:
+    notes: list[str] = []
     export_written: Any | None = None
     export_error_text: str | None = None
     if blueprint_payload is not None:
@@ -950,19 +1122,32 @@ def run_single_base_e2e_workflow(
     else:
         notes.append("Export step skipped because no canonical fixture payload was produced.")
 
-    validation_summary = _validation_state(
-        export_written.validation_report if export_written is not None else None
-    )
-    throughput_summary = _throughput_state(
-        export_written.throughput_report if export_written is not None else None
+    return _ExportStageResult(
+        export_written=export_written,
+        summary=_export_summary(export_written, layout=layout, error_text=export_error_text),
+        validation_summary=_validation_state(
+            export_written.validation_report if export_written is not None else None
+        ),
+        throughput_summary=_throughput_state(
+            export_written.throughput_report if export_written is not None else None
+        ),
+        notes=tuple(notes),
     )
 
+
+def _run_fresh_support_stage(
+    *,
+    requested_base_id: str,
+    layout: _RunLayout,
+) -> _FreshSupportStageResult:
+    notes: list[str] = []
     fresh_support_report: Any | None = None
     fresh_support_output_paths: Mapping[str, Path] | None = None
     fresh_support_check_result: Any | None = None
     fresh_support_error_text: str | None = None
+    support_scope = _fresh_support_scope(requested_base_id)
     try:
-        fresh_support_report = build_full_demand_support_overview(base_ids=_fresh_support_scope(requested_base_id))
+        fresh_support_report = build_full_demand_support_overview(base_ids=support_scope)
         fresh_support_output_paths = write_full_demand_support_suite_outputs(
             output_dir=layout.support_dir,
             report=fresh_support_report,
@@ -972,17 +1157,50 @@ def run_single_base_e2e_workflow(
             report=fresh_support_report,
         )
         if not bool(fresh_support_check_result.is_clean):
-            notes.append("Fresh support-suite output drift was detected immediately after writing; inspect the support-suite directory.")
+            notes.append(
+                "Fresh support-suite output drift was detected immediately after writing; inspect the support-suite directory."
+            )
     except Exception as exc:  # pragma: no cover - defensive guard.
         fresh_support_error_text = _safe_exception_text(exc)
         notes.append(f"Support-suite regeneration failed: {fresh_support_error_text}")
         notes.append(traceback.format_exc().strip())
 
+    cache = (
+        _SupportOverviewCache(
+            report=fresh_support_report,
+            base_ids=_normalized_base_scope(support_scope),
+            blueprint_path=_DEFAULT_SUPPORT_BLUEPRINT,
+        )
+        if fresh_support_report is not None
+        else None
+    )
+    return _FreshSupportStageResult(
+        report=fresh_support_report,
+        output_paths=fresh_support_output_paths,
+        summary=_fresh_support_state(
+            support_report=fresh_support_report,
+            support_output_paths=fresh_support_output_paths,
+            support_check_result=fresh_support_check_result,
+            error_text=fresh_support_error_text,
+        ),
+        cache=cache,
+        notes=tuple(notes),
+    )
+
+
+def _run_checked_in_support_stage(
+    *,
+    layout: _RunLayout,
+    support_inventory_path: Path,
+    support_cache: _SupportOverviewCache | None,
+) -> _CheckedSupportStageResult:
+    notes: list[str] = []
     checked_in_support_result: Any | None = None
     checked_in_support_error_text: str | None = None
     try:
-        checked_in_support_result = build_full_demand_support_suite_inventory_result(
-            inventory_path=Path(support_inventory_path)
+        checked_in_support_result = _build_support_inventory_result_with_run_cache(
+            inventory_path=Path(support_inventory_path),
+            support_cache=support_cache,
         )
         _write_support_inventory_summary(checked_in_support_result, layout=layout)
     except Exception as exc:  # pragma: no cover - defensive guard.
@@ -990,11 +1208,32 @@ def run_single_base_e2e_workflow(
         notes.append(f"Checked-in support-suite inventory check failed: {checked_in_support_error_text}")
         notes.append(traceback.format_exc().strip())
 
+    return _CheckedSupportStageResult(
+        result=checked_in_support_result,
+        summary=_checked_in_support_state(
+            checked_in_support_result,
+            layout=layout,
+            error_text=checked_in_support_error_text,
+        ),
+        notes=tuple(notes),
+    )
+
+
+def _run_checked_artifact_stage(
+    *,
+    layout: _RunLayout,
+    family_inventory_path: Path,
+    support_inventory_path: Path,
+    checked_in_support_result: Any | None,
+) -> _CheckedArtifactStageResult:
+    notes: list[str] = []
     checked_artifact_result: Any | None = None
     checked_artifact_error_text: str | None = None
     try:
-        checked_artifact_result = build_checked_artifact_suite_result(
-            family_inventory_path=Path(family_inventory_path)
+        checked_artifact_result = _build_checked_artifact_result_with_run_cache(
+            family_inventory_path=Path(family_inventory_path),
+            support_inventory_path=Path(support_inventory_path),
+            support_result=checked_in_support_result,
         )
         _write_checked_artifact_summary(checked_artifact_result, layout=layout)
     except Exception as exc:  # pragma: no cover - defensive guard.
@@ -1002,29 +1241,99 @@ def run_single_base_e2e_workflow(
         notes.append(f"Checked-artifact suite check failed: {checked_artifact_error_text}")
         notes.append(traceback.format_exc().strip())
 
-    planning_summary = _planning_summary(
-        report=plan_report,
+    return _CheckedArtifactStageResult(
+        result=checked_artifact_result,
+        summary=_checked_artifact_state(
+            checked_artifact_result,
+            layout=layout,
+            error_text=checked_artifact_error_text,
+        ),
+        notes=tuple(notes),
+    )
+
+
+def _run_single_base_e2e_stages(
+    *,
+    layout: _RunLayout,
+    requested_base_id: str,
+    support_inventory_path: Path,
+    family_inventory_path: Path,
+) -> SingleBaseE2EAssemblyStageResults:
+    planning_stage = _run_planning_stage(
+        requested_base_id=requested_base_id,
         layout=layout,
-        error_text=planning_error_text,
-        fixture_written=fixture_written,
     )
-    export_summary = _export_summary(export_written, layout=layout, error_text=export_error_text)
-    fresh_support_suite_summary = _fresh_support_state(
-        support_report=fresh_support_report,
-        support_output_paths=fresh_support_output_paths,
-        support_check_result=fresh_support_check_result,
-        error_text=fresh_support_error_text,
-    )
-    checked_in_support_suite_summary = _checked_in_support_state(
-        checked_in_support_result,
+    export_stage = _run_export_stage(
+        requested_base_id=requested_base_id,
         layout=layout,
-        error_text=checked_in_support_error_text,
+        blueprint_payload=planning_stage.blueprint_payload,
     )
-    checked_artifact_suite_summary = _checked_artifact_state(
-        checked_artifact_result,
+    fresh_support_stage = _run_fresh_support_stage(
+        requested_base_id=requested_base_id,
         layout=layout,
-        error_text=checked_artifact_error_text,
     )
+    checked_support_stage = _run_checked_in_support_stage(
+        layout=layout,
+        support_inventory_path=Path(support_inventory_path),
+        support_cache=fresh_support_stage.cache,
+    )
+    checked_artifact_stage = _run_checked_artifact_stage(
+        layout=layout,
+        family_inventory_path=Path(family_inventory_path),
+        support_inventory_path=Path(support_inventory_path),
+        checked_in_support_result=checked_support_stage.result,
+    )
+    artifacts = _build_artifacts(
+        layout=layout,
+        export_written=export_stage.export_written,
+        fresh_support_output_paths=fresh_support_stage.output_paths,
+        include_support_checks=checked_support_stage.result is not None,
+        include_checked_artifact_checks=checked_artifact_stage.result is not None,
+    )
+    notes = tuple(
+        dict.fromkeys(
+            note
+            for stage_notes in (
+                planning_stage.notes,
+                export_stage.notes,
+                fresh_support_stage.notes,
+                checked_support_stage.notes,
+                checked_artifact_stage.notes,
+            )
+            for note in stage_notes
+            if str(note).strip()
+        )
+    )
+    return SingleBaseE2EAssemblyStageResults(
+        planning_summary=planning_stage.summary,
+        export_summary=export_stage.summary,
+        validation_summary=export_stage.validation_summary,
+        throughput_summary=export_stage.throughput_summary,
+        fresh_support_suite_summary=fresh_support_stage.summary,
+        checked_in_support_suite_summary=checked_support_stage.summary,
+        checked_artifact_suite_summary=checked_artifact_stage.summary,
+        artifacts=artifacts,
+        notes=notes,
+    )
+
+
+def assemble_single_base_e2e_result(
+    *,
+    run_dir: Path,
+    requested_base_id: str,
+    stage_results: SingleBaseE2EAssemblyStageResults,
+    active_contract_base_id: str = DEFAULT_BASE_ID,
+    scope_statement: str = _DEFAULT_SCOPE_STATEMENT,
+) -> SingleBaseE2EResult:
+    normalized_requested_base_id = str(requested_base_id)
+    normalized_active_contract_base_id = str(active_contract_base_id)
+    planning_summary = dict(stage_results.planning_summary)
+    export_summary = dict(stage_results.export_summary)
+    validation_summary = dict(stage_results.validation_summary)
+    throughput_summary = dict(stage_results.throughput_summary)
+    fresh_support_suite_summary = dict(stage_results.fresh_support_suite_summary)
+    checked_in_support_suite_summary = dict(stage_results.checked_in_support_suite_summary)
+    checked_artifact_suite_summary = dict(stage_results.checked_artifact_suite_summary)
 
     overall_status, failure_stage, failure_classification = _derive_failure(
         planning_summary=planning_summary,
@@ -1043,20 +1352,14 @@ def run_single_base_e2e_workflow(
         checked_artifact_suite_summary=checked_artifact_suite_summary,
     )
 
-    artifacts = _build_artifacts(
-        layout=layout,
-        export_written=export_written,
-        fresh_support_output_paths=fresh_support_output_paths,
-        include_support_checks=checked_in_support_result is not None,
-        include_checked_artifact_checks=checked_artifact_result is not None,
-    )
-
-    result = SingleBaseE2EResult(
-        requested_base_id=requested_base_id,
-        active_contract_base_id=DEFAULT_BASE_ID,
-        run_dir=layout.run_dir,
-        scope_statement=_DEFAULT_SCOPE_STATEMENT,
-        requested_base_is_active_contract=requested_base_is_active_contract,
+    return SingleBaseE2EResult(
+        requested_base_id=normalized_requested_base_id,
+        active_contract_base_id=normalized_active_contract_base_id,
+        run_dir=Path(run_dir),
+        scope_statement=scope_statement,
+        requested_base_is_active_contract=(
+            normalized_requested_base_id == normalized_active_contract_base_id
+        ),
         overall_status=overall_status,
         failure_stage=failure_stage,
         failure_classification=failure_classification,
@@ -1070,8 +1373,32 @@ def run_single_base_e2e_workflow(
         fresh_support_suite_summary=fresh_support_suite_summary,
         checked_in_support_suite_summary=checked_in_support_suite_summary,
         checked_artifact_suite_summary=checked_artifact_suite_summary,
-        artifacts=artifacts,
-        notes=tuple(dict.fromkeys(note for note in notes if str(note).strip())),
+        artifacts=tuple(stage_results.artifacts),
+        notes=tuple(
+            dict.fromkeys(note for note in stage_results.notes if str(note).strip())
+        ),
+    )
+
+
+def run_single_base_e2e_workflow(
+    *,
+    run_dir: Path = _DEFAULT_RUN_DIR,
+    base_id: str = DEFAULT_BASE_ID,
+    support_inventory_path: Path = _DEFAULT_INVENTORY_PATH,
+    family_inventory_path: Path = _DEFAULT_FAMILY_INVENTORY_PATH,
+) -> SingleBaseE2EResult:
+    layout = _ensure_layout(Path(run_dir))
+    requested_base_id = str(base_id)
+    stage_results = _run_single_base_e2e_stages(
+        layout=layout,
+        requested_base_id=requested_base_id,
+        support_inventory_path=Path(support_inventory_path),
+        family_inventory_path=Path(family_inventory_path),
+    )
+    result = assemble_single_base_e2e_result(
+        run_dir=layout.run_dir,
+        requested_base_id=requested_base_id,
+        stage_results=stage_results,
     )
 
     atomic_write_json(layout.run_summary_json_path, result.to_dict())
