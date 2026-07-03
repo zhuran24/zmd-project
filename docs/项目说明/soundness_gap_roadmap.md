@@ -10,7 +10,7 @@
 | producer/supervisor mint split | **IMPLEMENTED** | `outer_search.py:855-954`; `exact_campaign.py:3399-3593` | producer 内部 candidate verdict 不能被误写成 durable/public CERTIFIED |
 | supervisor operational wiring | **OPEN/HIGH** | 全仓生产代码无 `supervisor_seal()` caller；`main.py` 只返回 proposal | method/test 存在不等于受支持的 seal service 或端到端发布流程 |
 | central public publisher | **IMPLEMENTED** | `certified_surface.py:563-680` | generic writer、viewer/report、adapter、compat export 均非认证 authority |
-| I1 whole-layout independent reverify | **IMPLEMENTED** | `benders_loop.py:7538-7585`; `independent_infeasibility_reverifier.py` | 只覆盖登记的 whole-layout nogood 路径，不自动证明未来 cut family |
+| I1 whole-layout independent reverify | **IMPLEMENTED** | `benders_loop.py:7538-7585`; `independent_infeasibility_reverifier.py` | 只覆盖登记的 whole-layout nogood 路径，不自动证明未来 cut family。I1 重建的 binding 子问题与生产侧共读 `EXACT_BINDING_USE_OVERLOAD_SEPARATION`——此项为 **guarded、非 live**：该 env 不在 certified operational allowlist，certified 入口（`benders_loop.py` 闭合白名单守卫）对其开启 fail-closed 拒绝，故 certified 运行中 I1 不可能被该 env 污染；残余仅是深度防御少一层（I1 调用点未显式强制关闭该开关），参数化加固推迟到 pr2-5 merge 后做 |
 | connector cell body exclusion | **IMPLEMENTED at terminal fixed-witness boundary** | `terminal_fixed_witness_verifier.py:863-866`; fixed-witness tests | solve-time 更早拒绝仍可作为性能/纵深增强，但 public false-CERTIFIED 路径已被终端闸拦截 |
 | PYC execution/source binding | **IMPLEMENTED** | isolated replay/capsule 使用 `-B -X pycache_prefix=<fresh>`；obligation `PO-ISOLATED-EXEC-BYTECODE-BINDING` | Python、stdlib、OR-Tools native extension、父 relay、OS 隔离仍是命名 TCB |
 | proof obligation close-kernel | **IMPLEMENTED structural gate** | 14 active obligations；checker + sink hashes/guards/allowlist | PASS 只表示登记结构一致，不证明 owner 已 close 或 full suite 已过 |
