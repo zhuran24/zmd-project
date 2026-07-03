@@ -294,6 +294,14 @@ def run_l0_supervisor_seal(request: L0SupervisorSealRequest) -> L0MicroVerdict:
         scratch_state = dict(authority_state)
         scratch_state["final_result"] = dict(domain["final_result"])  # type: ignore[index]
         scratch_state["final_status"] = "CERTIFIED"
+        # PR2 #5 review hardening: the durable CERTIFIED checkpoint must carry the
+        # same strict terminal label the child precheck proved under -- otherwise a
+        # producer that ships declare_mode="best_effort" lets the parent mint a
+        # final_status="CERTIFIED" state that FAILS its own terminal-evidence gate
+        # (has_terminal_full_frontier_certified_evidence requires declare_mode=="strict"),
+        # i.e. a self-contradictory durable CERTIFIED. declare_mode is a supervisor-owned
+        # terminal label here, not a producer fact (the child already proved the substance).
+        scratch_state["declare_mode"] = "strict"
         scratch_state["last_stop_reason"] = {
             "reason": TERMINAL_CERTIFIED_REASON,
             "status": "CERTIFIED",
@@ -836,6 +844,12 @@ def _supervisor_certified_transition_violation_l0(
         return "supervisor_seal_proposal_campaign_instance_id_mismatch"
     expected = dict(proposal_state)
     expected["final_status"] = "CERTIFIED"
+    # PR2 #5 review hardening: the durable CERTIFIED transition canonicalizes
+    # declare_mode to the supervisor-owned strict terminal label (matching the
+    # parent mint above), so a producer's declare_mode="best_effort" cannot be
+    # carried into the sealed state -- and so this byte-equality transition gate
+    # does not falsely reject the now-strict durable state.
+    expected["declare_mode"] = "strict"
     final_result = proposal_state.get("final_result")
     if not isinstance(final_result, Mapping):
         return "supervisor_seal_proposal_final_result_invalid"
@@ -984,6 +998,12 @@ def _postwrite_state_violation(
 ) -> str | None:
     if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:
         return "supervisor_seal_certified_state_sha256_mismatch"
+    # PR2 #5 review hardening (defense in depth): the durable CERTIFIED state on
+    # disk must self-satisfy the terminal-evidence gate, whose first requirement is
+    # declare_mode=="strict". Fail closed if the mint ever regresses and persists a
+    # producer-controlled non-strict declare_mode alongside final_status=="CERTIFIED".
+    if str(disk_state.get("declare_mode")) != "strict":
+        return "postwrite_declare_mode_not_strict"
     if _canonical_digest(disk_state.get("final_result")) != expected_domain.get("final_result_digest"):
         return "postwrite_final_result_digest_mismatch"
     if _canonical_digest(disk_state.get("terminal_frontier_evidence")) != expected_domain.get("terminal_frontier_evidence_digest"):

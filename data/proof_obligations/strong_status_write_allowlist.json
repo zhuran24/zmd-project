@@ -196,9 +196,9 @@
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.mark_campaign_stopped",
-      "line": 3619,
+      "line": 3624,
       "justification": "Campaign stop writer records non-CERTIFIED terminal/nonterminal statuses only; CERTIFIED stops fail closed and must be minted by the PR2 L0 supervisor seal.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "final_status"
       ]
@@ -208,9 +208,9 @@
       "pattern": "candidate_status_update_dynamic",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.mark_candidate_result",
-      "line": 3298,
+      "line": 3303,
       "justification": "Result persistence copies existing candidate data before the explicit status write; the record remains data-only until a sink replays candidate_proof.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "status"
       ]
@@ -220,9 +220,9 @@
       "pattern": "candidate_status",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.mark_candidate_result",
-      "line": 3301,
+      "line": 3306,
       "justification": "Public candidate status persistence may store CERTIFIED/INFEASIBLE as untrusted data plus a replay request; frontier and publication authority remains sink replay.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "status"
       ]
@@ -232,9 +232,9 @@
       "pattern": "candidate_status_update_dynamic",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.mark_candidate_started",
-      "line": 3224,
+      "line": 3229,
       "justification": "Candidate start copies existing data before a RUNNING rewrite; strong records short-circuit after sink projection, and no writer identity is proof authority.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "status"
       ]
@@ -244,18 +244,18 @@
       "pattern": "state_key_write_dynamic",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.set_supervisor_proposal_run_id",
-      "line": 3411,
+      "line": 3416,
       "justification": "Records supervisor proposal authority metadata under a dynamic campaign-state key for the proposal_ready handoff; it does not mint CERTIFIED proof authority.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c"
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4"
     },
     {
       "id": "src_search_exact_campaign_py_exactcampaign_update_candidate_running_proof_summary_candidate_status_update_dynamic_3219",
       "pattern": "candidate_status_update_dynamic",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.update_candidate_running_proof_summary",
-      "line": 3386,
+      "line": 3391,
       "justification": "Running proof-summary updates preserve and write back only RUNNING records; they do not mint a proof-bearing status.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "status"
       ]
@@ -267,7 +267,7 @@
       "qualname": "_supervisor_certified_transition_violation",
       "line": 1880,
       "justification": "Builds an expected certified-state clone solely to compare the allowed P-to-Q transition against sealed authority bytes; it does not persist or publish.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "final_status"
       ]
@@ -277,9 +277,9 @@
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
       "qualname": "_supervisor_certified_transition_violation",
-      "line": 1886,
+      "line": 1891,
       "justification": "Builds an expected certified-state clone solely to compare the allowed P-to-Q transition against sealed authority bytes; it does not persist or publish.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "final_result"
       ]
@@ -289,9 +289,9 @@
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
       "qualname": "_supervisor_certified_transition_violation",
-      "line": 1898,
+      "line": 1903,
       "justification": "Builds an expected certified-state clone solely to compare the allowed P-to-Q transition against sealed authority bytes; copying last_stop_reason here does not persist or publish.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "last_stop_reason"
       ]
@@ -301,9 +301,9 @@
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.mark_campaign_stopped",
-      "line": 3617,
+      "line": 3622,
       "justification": "Campaign stop writer records last_stop_reason only after normalizing the requested status; CERTIFIED is rejected before the assignment and durable save rejects CERTIFIED export claims outside the PR2 L0 supervisor seal.",
-      "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+      "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
       "keys": [
         "last_stop_reason"
       ]
@@ -793,7 +793,7 @@
       "keys": [
         "final_result"
       ],
-          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
@@ -805,115 +805,127 @@
       "keys": [
         "final_status"
       ],
-          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
       "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_297_last_stop_reason",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 297,
+      "line": 305,
       "qualname": "run_l0_supervisor_seal",
       "keys": [
         "last_stop_reason"
       ],
-          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
       "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_303_terminal_frontier_evidence",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 303,
+      "line": 311,
       "qualname": "run_l0_supervisor_seal",
       "keys": [
         "terminal_frontier_evidence"
       ],
-          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
       "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_838_final_status",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 838,
+      "line": 846,
       "qualname": "_supervisor_certified_transition_violation_l0",
       "keys": [
         "final_status"
       ],
-          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
       "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_844_final_result",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 844,
+      "line": 858,
       "qualname": "_supervisor_certified_transition_violation_l0",
       "keys": [
         "final_result"
       ],
-          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
       "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_855_last_stop_reason",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 855,
+      "line": 869,
       "qualname": "_supervisor_certified_transition_violation_l0",
       "keys": [
         "last_stop_reason"
       ],
-          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
-      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_430_final_result",
+      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_433_final_result",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_true_verifier_child.py",
-      "line": 430,
+      "line": 433,
       "qualname": "_verify_supervisor_domain",
       "keys": [
         "final_result"
       ],
-      "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
-      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_431_final_status",
+      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_434_final_status",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_true_verifier_child.py",
-      "line": 431,
+      "line": 434,
       "qualname": "_verify_supervisor_domain",
       "keys": [
         "final_status"
       ],
-      "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
-      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_432_terminal_frontier_evidence",
+      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_450_last_stop_reason",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_true_verifier_child.py",
-      "line": 432,
+      "line": 450,
+      "qualname": "_verify_supervisor_domain",
+      "keys": [
+        "last_stop_reason"
+      ],
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
+      "justification": "PR2 #5: child completes the proposal-to-certified scratch-state elevation by asserting the strict terminal last_stop_reason (status=CERTIFIED, reason=search_exhausted_all_candidates), so the terminal full-frontier exhaustion / best-candidate / canonical candidate-domain validation runs unconditionally instead of being gated off by a producer-controlled last_stop_reason. The write is child-local scratch state only; durable seal and publication authority remain with L0/certified surface gates."
+    },
+    {
+      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_454_terminal_frontier_evidence",
+      "pattern": "state_key_write",
+      "module": "src/search/pr2_l0_true_verifier_child.py",
+      "line": 454,
       "qualname": "_verify_supervisor_domain",
       "keys": [
         "terminal_frontier_evidence"
       ],
-      "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
-      "id": "src_search_pr2_l0_true_verifier_child_py__run_fixed_witness_direct_state_key_write_612_final_result",
+      "id": "src_search_pr2_l0_true_verifier_child_py__run_fixed_witness_direct_state_key_write_634_final_result",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_true_verifier_child.py",
-      "line": 612,
+      "line": 634,
       "qualname": "_run_fixed_witness_direct",
       "keys": [
         "final_result"
       ],
-      "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
       "justification": "PR2 true verifier child constructs fixed-witness verifier input inside the domain check; this is child-local data, with publication and durable seal authority retained by L0/certified surface gates."
     }
   ]

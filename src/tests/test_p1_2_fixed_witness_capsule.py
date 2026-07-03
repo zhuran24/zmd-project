@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 import hashlib
 import json
 import subprocess
@@ -357,6 +358,49 @@ def test_projection_symbol_monkeypatch_cannot_publish(
     )
 
     assert reason == "terminal_certified_disk_authority_not_certified"
+
+
+def test_child_publishable_capsule_verdict_requires_feasible_statuses(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = _build_tiny_project(tmp_path / "project")
+    state = _prepare_state(root)
+    base_verdict = _forged_publishable_verdict(state)
+    cases = [
+        (
+            replace(base_verdict, projected_status="UNPROVEN"),
+            "terminal_fixed_witness_capsule_projected_status_invalid",
+        ),
+        (
+            replace(base_verdict, binding_status="INFEASIBLE"),
+            "terminal_fixed_witness_capsule_binding_status_invalid",
+        ),
+        (
+            replace(base_verdict, routing_status="TIMEOUT"),
+            "terminal_fixed_witness_capsule_routing_status_invalid",
+        ),
+    ]
+
+    for verdict, expected_reason in cases:
+        _install_capsule_response(
+            monkeypatch,
+            root=root,
+            state=state,
+            verdict=verdict,
+        )
+
+        projection = build_terminal_fixed_witness_projection_at_sink(
+            state=state,
+            project_root=root,
+            candidate_records=_json_copy(state["candidates"]),
+            final_result=state["final_result"],
+        )
+
+        assert projection.publishable is False
+        assert projection.rejected_reason == expected_reason
+        assert projection.candidate_records["1x1"]["status"] == "UNPROVEN"
+        assert "solution" not in projection.candidate_records["1x1"]
 
 
 def test_child_nonce_mismatch_fails_closed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

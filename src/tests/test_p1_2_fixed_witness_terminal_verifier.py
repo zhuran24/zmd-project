@@ -24,6 +24,7 @@ from src.search.certified_frontier import (
     build_terminal_frontier_evidence,
     candidate_generation_kwargs,
     generate_candidate_sizes,
+    terminal_frontier_evidence_violation,
 )
 from src.search.exact_campaign import (
     CANDIDATE_PROPOSED_STATUS,
@@ -767,6 +768,60 @@ def test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witne
     assert reason is not None
 
 
+def test_fixed_witness_capsule_projection_rejects_publishable_non_feasible_statuses() -> None:
+    state = _state()
+    identity = fixed_witness_module._identity_from_current_records(
+        fixed_witness_module._copy_candidate_records(state["candidates"]),
+        state["final_result"],
+    )
+    base_verdict = fixed_witness_module.TerminalFixedWitnessVerdict(
+        schema_version=fixed_witness_module.TERMINAL_FIXED_WITNESS_VERIFIER_SCHEMA_VERSION,
+        authority=fixed_witness_module.TERMINAL_FIXED_WITNESS_VERIFIER_AUTHORITY,
+        fresh_run_token="child-token",
+        publishable=True,
+        projected_status=RUN_STATUS_CERTIFIED,
+        candidate_key=identity.candidate_key,
+        solution_digest=identity.solution_digest,
+        ghost_rect_digest=identity.ghost_rect_digest,
+        ghost_cells_digest=identity.ghost_cells_digest,
+        witness_input_digest=identity.witness_input_digest,
+        binding_assignment_digest="0" * 64,
+        port_specs_digest="0" * 64,
+        routing_occupancy_digest="0" * 64,
+        binding_status="FEASIBLE",
+        routing_status="FEASIBLE",
+        reason=None,
+        details={},
+    )
+
+    cases = [
+        (
+            replace(base_verdict, binding_status="INFEASIBLE"),
+            "terminal_fixed_witness_binding_status_invalid",
+        ),
+        (
+            replace(base_verdict, routing_status="TIMEOUT"),
+            "terminal_fixed_witness_routing_status_invalid",
+        ),
+        (
+            replace(base_verdict, projected_status="UNPROVEN"),
+            "terminal_fixed_witness_projected_status_invalid",
+        ),
+    ]
+    for verdict, expected_reason in cases:
+        projection = fixed_witness_module._project_terminal_fixed_witness_records_from_capsule(
+            candidate_records=_json_copy(state["candidates"]),
+            final_result=state["final_result"],
+            verdict=verdict,
+        )
+
+        assert projection.publishable is False
+        assert projection.rejected_reason == expected_reason
+        assert projection.candidate_records["1x1"]["status"] == "UNPROVEN"
+        assert "solution" not in projection.candidate_records["1x1"]
+        assert CANDIDATE_PROOF_FIELD not in projection.candidate_records["1x1"]
+
+
 def test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -861,3 +916,119 @@ def test_fixed_witness_unproven_durable_record_keeps_solution_bytes(
     assert public_record["status"] == "UNPROVEN"
     assert "solution" not in public_record
     assert CANDIDATE_PROOF_FIELD not in public_record
+
+
+def _sliced_domain_state() -> dict[str, Any]:
+    """A terminal-shaped state whose candidate_generation claims a narrower grid
+    (max_w=1) than the canonical 2-wide tiny project, i.e. a sliced candidate
+    domain that must be rejected by the canonical anti-slice grid check."""
+    state = _state()
+    generation = _candidate_generation()
+    generation["max_w"] = 1
+    candidates = generate_candidate_sizes(**candidate_generation_kwargs(generation))
+    state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=state["candidates"],
+        final_result=state["final_result"],
+        candidate_generation=generation,
+    )
+    return state
+
+
+def test_pr2_5_child_elevation_runs_frontier_validation_on_sliced_domain(
+    tmp_path: Path,
+) -> None:
+    """PR2 #5: the L0 true-verifier child elevates a CANDIDATE_PROPOSED proposal to
+    the strict terminal labels (declare_mode="strict" +
+    last_stop_reason.status=CERTIFIED) before calling
+    terminal_certified_final_result_project_precheck_violation, so the
+    frontier-exhaustion / canonical candidate-domain check runs UNCONDITIONALLY.
+
+    Without that elevation the gate has_terminal_full_frontier_certified_evidence()
+    is False (an honest proposal arrives final_status=CANDIDATE_PROPOSED and -- because
+    mark_campaign_stopped forbids a producer-minted CERTIFIED stop --
+    last_stop_reason.status=CANDIDATE_PROPOSED), so the precheck SILENTLY skips the
+    frontier check and a producer could seal a sliced candidate_generation.  This pins
+    both halves: the strict-labelled state rejects the slice; the raw proposal does not.
+    """
+    root = _build_tiny_project(tmp_path / "project")
+
+    # Honest canonical state already carries the strict terminal labels the child
+    # asserts onto its scratch_state -> the full-domain proof passes.
+    assert (
+        terminal_certified_final_result_project_precheck_violation(_state(), project_root=root)
+        is None
+    )
+
+    # FIX under test: with the strict terminal labels (what the child elevates to),
+    # the sliced candidate_generation fails the canonical anti-slice grid check.
+    sliced = _sliced_domain_state()
+    reason = terminal_certified_final_result_project_precheck_violation(sliced, project_root=root)
+    assert reason is not None
+    assert reason.startswith("terminal_frontier"), reason
+
+    # GAP it closes: strip the strict labels back to the raw proposal shape a producer
+    # actually ships (final_status=CANDIDATE_PROPOSED, no declare_mode,
+    # last_stop_reason.status=CANDIDATE_PROPOSED).  The SAME sliced domain now slips past
+    # the frontier check -- which is exactly why the child must elevate before validating.
+    raw_proposal = _json_copy(sliced)
+    raw_proposal["final_status"] = CANDIDATE_PROPOSED_STATUS
+    raw_proposal.pop("declare_mode", None)
+    raw_proposal["last_stop_reason"]["status"] = CANDIDATE_PROPOSED_STATUS
+    raw_reason = terminal_certified_final_result_project_precheck_violation(
+        raw_proposal, project_root=root
+    )
+    assert raw_reason is None or not raw_reason.startswith("terminal_frontier"), raw_reason
+
+
+def test_pr2_5_terminal_frontier_evidence_violation_rejects_non_exhausted_domain() -> None:
+    """PR2 #5 companion (exhaustion dimension): terminal_frontier_evidence_violation
+    -- the validator the child now invokes unconditionally after elevation -- must
+    fail closed when the canonical candidate domain is NOT exhausted: a strictly
+    more-optimal candidate has no resolved status, even though the candidate_generation
+    params match canonical grid/min-side/safe-area exactly.  The integration test above
+    covers the anti-slice dimension of the same gate; this pins the exhaustion dimension
+    on a function that previously had no direct coverage.
+    """
+    generation = {
+        "max_w": 2,
+        "max_h": 2,
+        "min_side": 1,
+        "max_aspect_ratio": None,
+        "area_upper_bound": 3,
+        "start_area": None,
+        "domain_authority": TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
+        "safe_area_upper_bound": 3,
+        "min_side_admissibility": 1,
+    }
+    candidates = generate_candidate_sizes(**candidate_generation_kwargs(generation))
+    # Only the 1x1 winner is resolved; the strictly larger 1x2 / 2x1 candidates carry
+    # no status -> they stay in the potential domain -> the frontier is not exhausted.
+    candidate_records = {
+        "1x1": {
+            "ghost_rect": {"w": 1, "h": 1, "area": 1},
+            "status": RUN_STATUS_CERTIFIED,
+            "solution": {"ghost_pick": {"facility_type": "ghost_rect"}},
+        }
+    }
+    final_result = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 0, "anchor_y": 0},
+        "placement_solution": {},
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    evidence = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=candidate_records,
+        final_result=final_result,
+        candidate_generation=generation,
+    )
+    reason = terminal_frontier_evidence_violation(
+        evidence=evidence,
+        candidate_records=candidate_records,
+        final_result=final_result,
+        grid_dimensions=(2, 2),
+        safe_area_upper_bound=3,
+        min_side_admissibility=1,
+    )
+    assert reason is not None
+    assert "not_exhausted" in reason, reason

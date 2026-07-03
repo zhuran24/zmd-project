@@ -176,6 +176,7 @@ def accepting_l0_supervisor_seal_for_test(*, project_root: Path):
         scratch_state = dict(authority_state)
         scratch_state["final_result"] = certified_final_result
         scratch_state["final_status"] = RUN_STATUS_CERTIFIED
+        scratch_state["declare_mode"] = "strict"
         scratch_state["last_stop_reason"] = {
             "reason": l0.TERMINAL_CERTIFIED_REASON,
             "status": RUN_STATUS_CERTIFIED,
