@@ -162,7 +162,7 @@ def _reverify_binding_infeasible(
         project_root=project_root,
         **dict(binding_kwargs or {}),
     )
-    binding_model.build()
+    binding_model.build(use_overload_separation=False)
     binding_summary = binding_model.extract_conflict_summary()
     invalid_reasons = list(binding_summary.get("invalid_binding_input_reasons", []) or [])
     if invalid_reasons:

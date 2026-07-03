@@ -772,7 +772,7 @@ class PortBindingModel:
         reasons.extend(invalid_metadata_reasons)
         self._conflict_summary["invalid_binding_input_reasons"] = reasons
 
-    def build(self) -> None:
+    def build(self, *, use_overload_separation: Optional[bool] = None) -> None:
         self._build_fixed_operation_domains()
         self._build_generic_input_domains()
         self._build_generic_output_domains()
@@ -788,10 +788,19 @@ class PortBindingModel:
         # high-prod-low-demand and low-prod-high-demand commodities in the
         # same storage box. Default OFF — requires caller-side fallback
         # ladder when enabled (handle INFEASIBLE by retrying without nogood).
-        overload_env = os.environ.get(
-            "EXACT_BINDING_USE_OVERLOAD_SEPARATION", ""
-        ).strip().lower()
-        if overload_env in {"1", "true", "yes", "on"}:
+        # use_overload_separation overrides the env when not None: I1 independent
+        # reverify passes False to force this heuristic OFF regardless of env, so
+        # the independent binding model never carries a feasible-solution-cutting
+        # nogood (depth-defense — the reverifier must not inherit a heuristic that
+        # could turn a feasible layout into a heuristic-INFEASIBLE sealed as a cut).
+        if use_overload_separation is None:
+            overload_env = os.environ.get(
+                "EXACT_BINDING_USE_OVERLOAD_SEPARATION", ""
+            ).strip().lower()
+            enabled = overload_env in {"1", "true", "yes", "on"}
+        else:
+            enabled = bool(use_overload_separation)
+        if enabled:
             nogood_count = self._add_storage_box_overload_nogoods()
             self._conflict_summary["overload_separation_enabled"] = True
             self._conflict_summary["overload_nogoods_added"] = int(nogood_count)
