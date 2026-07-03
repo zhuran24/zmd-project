@@ -100,8 +100,10 @@ owner: placement-preprocess
 > 当前 GitHub `main` 是 lightweight checkout：production
 > `data/preprocessed/candidate_placements.json` 当前存在于工作树中，且仍是 certified
 > exact 必需输入。2026-06-12 F-01/F-02 修复后的恢复/再生成结果应匹配
-> size `45,773,799` bytes, SHA256
-> `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`。旧 size `53,594,995` bytes / SHA256
+> size `45,774,305` bytes, SHA256
+> `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。拐角修复前的 size
+> `45,773,799` bytes / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`
+> 已 superseded，且 hash-incompatible。旧 size `53,594,995` bytes / SHA256
 > `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 已 superseded。
 
 当前闭式池计数：

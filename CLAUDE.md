@@ -34,7 +34,7 @@ python -m pytest -p no:randomly --basetemp=.pytest_tmp/one src/tests/test_exact_
 python main.py                                # 默认 certified_exact；--campaign-hours >= 24 触发 production gate
 # 生产跑走 wrapper：scripts/run_campaign_linux.sh（Linux）/ scripts/run_prod_*.ps1（Windows）
 
-# 外部大工件（candidate_placements.json，45,773,799 字节，lightweight checkout 可能缺失）
+# 外部大工件（candidate_placements.json，45,774,305 字节，SHA256 a914ba63...；45,773,799/adcc 是拐角修复前 superseded/hash-incompatible 旧版；lightweight checkout 可能缺失）
 python scripts/check_external_artifacts.py --require candidate_placements
 python scripts/restore_external_artifacts.py candidate_placements --source <file> --force
 ```
@@ -95,7 +95,7 @@ release 由 owner 手动门管辖：`data/review_gates/phase_1_2_spike_close.jso
 
 ### 5. Frozen artifacts 与 freeze-ritual
 
-proof 输入被字节级 hash 钉死（`scripts/preflight_gate.py` 的 `FROZEN_ARTIFACTS` + `EXTERNAL_FROZEN_ARTIFACTS`；runtime 侧 `certified_artifact_contract.py` 把路径/sha/size 写死在源码常量里）：`rules/canonical_rules.json`、`rules/preprocess_plan.json`（additive-only：出现顶层 `recipes`/`production_targets`/`commodity_roles` 即 fail-closed，`src/interchange/preprocess_context.py`）、`data/preprocessed/mandatory_exact_instances.json`（266 实例）、`generic_io_requirements.json`、`candidate_placements.json`（45,773,799 字节；旧的 53,594,995 字节版本必须被 `artifact_hash_mismatch` 拒绝，**别"好心"更新 expected hash**）。
+proof 输入被字节级 hash 钉死（`scripts/preflight_gate.py` 的 `FROZEN_ARTIFACTS` + `EXTERNAL_FROZEN_ARTIFACTS`；runtime 侧 `certified_artifact_contract.py` 把路径/sha/size 写死在源码常量里）：`rules/canonical_rules.json`、`rules/preprocess_plan.json`（additive-only：出现顶层 `recipes`/`production_targets`/`commodity_roles` 即 fail-closed，`src/interchange/preprocess_context.py`）、`data/preprocessed/mandatory_exact_instances.json`（266 实例）、`generic_io_requirements.json`、`candidate_placements.json`（45,774,305 字节，SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`；拐角修复前的 45,773,799 字节 / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本 superseded、hash-incompatible；旧的 53,594,995 字节版本必须被 `artifact_hash_mismatch` 拒绝，**别"好心"更新 expected hash**）。
 
 **改任何被钉文件 = freeze-ritual**：更新 pinned hash → 重生成依赖产物 → 重跑 gate。改 close-kernel sealed 文件还要走完整 reseal 连锁（V99 floor 常量、obligations JSON、strong-status allowlist、checker 自钉**最后**算）。**reseal 铁律**：pin sha 按 LF 字节算（`git show HEAD:<file> | sha256`），绝不用 Python `write_text`/`json.dump` 直接写 tracked 文件（Windows 会写 CRLF，`.gitattributes` 强制 LF → 本地绿 CI 挂）；提交 pathspec 必须覆盖 reseal 全集。
 

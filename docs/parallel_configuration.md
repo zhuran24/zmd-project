@@ -40,8 +40,11 @@ A conservative 48GB profile is `parallel_processes=4`, `master=4`, `local_capaci
 ## Current artifact prerequisite
 
 `data/preprocessed/candidate_placements.json` is present in the audited working tree. Before a
-certified run, verify size 45,773,799 bytes and SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`.
+certified run, verify size 45,774,305 bytes and SHA256
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`.
+The superseded 45,773,799-byte / SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact predates
+the boundary `(0,0)` corner-pose fix and is hash-incompatible.
 A lightweight distribution is permitted to omit it, but that distribution policy is not a runtime
 waiver.
 

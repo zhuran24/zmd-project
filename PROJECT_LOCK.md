@@ -197,10 +197,13 @@ The certified path is grounded in:
 - provenance-complete exact-safe cuts
 
 The current worktree contains `data/preprocessed/candidate_placements.json`. Its required
-bytes are size `45,773,799` and SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`. A lightweight
+bytes are size `45,774,305` and SHA256
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`. A lightweight
 distribution may externalize this file, but that packaging choice does not change the certified
-contract: the pinned bytes must be restored or regenerated before a certified run. The former
+contract: the pinned bytes must be restored or regenerated before a certified run. The immediately
+previous artifact (size `45,773,799`, SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`) predates the boundary
+`(0,0)` corner-pose fix, is superseded, and is hash-incompatible. The former
 artifact (size `53,594,995`, SHA256
 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`) is superseded and
 must fail resume with `artifact_hash_mismatch`. Regeneration source is

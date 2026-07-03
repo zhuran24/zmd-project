@@ -41,7 +41,7 @@
 - **canonical rules**：`rules/canonical_rules.json` 的 owner-reviewed 语义真源。
 - **preprocess plan**：`rules/preprocess_plan.json`，既参与 regeneration，也被当前 runtime/hash
   closure 消费。
-- **candidate placements**：当前工作树中存在的 45,773,799-byte hash-bound pose artifact。
+- **candidate placements**：当前工作树中存在的 45,774,305-byte hash-bound pose artifact；拐角修复前的 45,773,799-byte / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本已 superseded，且 hash-incompatible。
 - **campaign resume compatibility**：checkpoint 与当前规则、artifact 和 proof-bearing source
   closure 一致；不一致必须 reset/新建证据链。
 - **compatibility export / viewer / adapter output**：派生消费面。即使文件名或字段看起来像

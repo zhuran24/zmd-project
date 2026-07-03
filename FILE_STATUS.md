@@ -51,7 +51,7 @@
 | `rules/preprocess_plan.json` | CURRENT_CODE_ALIGNED | additive preprocess plan，不能覆盖 recipe/target/commodity truth |
 | `data/preprocessed/mandatory_exact_instances.json` | CURRENT_CODE_ALIGNED | mandatory instances |
 | `data/preprocessed/generic_io_requirements.json` | CURRENT_CODE_ALIGNED | validated generic I/O requirements |
-| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | 当前存在；45,773,799 bytes；SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` |
+| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | 当前存在；45,774,305 bytes；SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`；45,773,799 bytes / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 是拐角修复前 superseded、hash-incompatible 旧版 |
 
 轻量分发可以 externalize candidate placements，但当前工作树不缺它，certified contract 也始终要求 pinned bytes。
 

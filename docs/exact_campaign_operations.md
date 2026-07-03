@@ -80,8 +80,11 @@ markers. A supervisor seal always rereads canonical disk state rather than trust
 
 The current `data/preprocessed/candidate_placements.json` is present and is expected to be exactly:
 
-- size: `45,773,799` bytes;
-- SHA256: `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`.
+- size: `45,774,305` bytes;
+- SHA256: `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`.
+
+The superseded pre-corner-fix artifact (size `45,773,799`, SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`) is hash-incompatible.
 
 Changes to canonical rules, preprocess plan, candidate placements, mandatory instances, generic I/O,
 or other campaign-bound sources require reset or a newly established proof chain. The superseded

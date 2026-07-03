@@ -10,7 +10,7 @@ status claims below are historical snapshots, not assertions about the current w
 - Recorded the remaining operational gap: `main.py` and current launchers do not invoke `supervisor_seal()`, so the worktree has authority methods but not a supported end-to-end supervisor command.
 - Recorded the landed fixed-witness capsule/verifier, fail-closed P1.2 OPEN-GATE, connector/body terminal check, isolated-source bytecode binding, and independent whole-layout infeasibility reverifier without converting those safeguards into a P1.2 closure claim.
 - Kept P1.2 OPEN/BLOCKED: the owner gate remains `blocked_manual_review_count`, PR2's smaller/read-once/controlled-loader TCB is unfinished, and review snapshot immutability/archive-policy work remains open.
-- Corrected artifact and test inventory: `candidate_placements.json` is present at 45,773,799 bytes with the pinned SHA256; pytest collection is 425 files / 3450 tests, with no full-suite pass claim from this audit.
+- Corrected artifact and test inventory: `candidate_placements.json` is present at 45,774,305 bytes with pinned SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`; the prior 45,773,799-byte / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact predates the boundary `(0,0)` corner-pose fix and is superseded/hash-incompatible. Pytest collection is 425 files / 3450 tests, with no full-suite pass claim from this audit.
 - Retired stale documentation-projection instructions, aligned specs/runbooks/comments/docstrings/allowlist/obligations, and updated active cc_memory nodes, facts, and edges through the memory CLI.
 
 ## 2026-06-16

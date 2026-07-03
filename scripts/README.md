@@ -37,8 +37,12 @@ Important focused checks include:
 - `check_cc_memory_consistency.py`: runs only when cc_memory is in the selected change scope;
 - `check_external_artifacts.py`: validates the artifact manifest and current presence/bytes.
 
-The current `candidate_placements.json` is present at the expected 45,773,799-byte SHA256. Scripts
-must still fail closed on byte drift.
+The current `candidate_placements.json` is present at the expected 45,774,305 bytes, SHA256
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`. The superseded
+45,773,799-byte / SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact predates the
+boundary `(0,0)` corner-pose fix and is hash-incompatible. Scripts must still fail closed on byte
+drift.
 
 ## Review snapshot packaging
 

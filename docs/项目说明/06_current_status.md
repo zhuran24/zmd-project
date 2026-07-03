@@ -85,9 +85,11 @@ allowlist 和关键 gate 文件。它是结构边界检查，不是“P1.2 已 s
 
 ## 输入状态
 
-`data/preprocessed/candidate_placements.json` 当前存在，45,773,799 字节，SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`。轻量分发可外置，但当前
-工作树并不缺该文件。
+`data/preprocessed/candidate_placements.json` 当前存在，45,774,305 字节，SHA256
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。轻量分发可外置，但当前
+工作树并不缺该文件。拐角修复前的 45,773,799 字节 / SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本已 superseded，且
+hash-incompatible。
 
 ## 阶段命名
 

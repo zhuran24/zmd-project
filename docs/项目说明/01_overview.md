@@ -97,9 +97,11 @@ P1.2 OPEN-GATE、独立 whole-layout reverify 和中央公开发布器。P1.2 �
 
 ## 1.7 输入与规模
 
-`data/preprocessed/candidate_placements.json` 当前存在于工作树，大小 45,773,799 字节，SHA256 为
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`。某些轻量分发包可能将其
-externalize，但 certified contract 始终要求同一 pinned bytes。
+`data/preprocessed/candidate_placements.json` 当前存在于工作树，大小 45,774,305 字节，SHA256 为
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。某些轻量分发包可能将其
+externalize，但 certified contract 始终要求同一 pinned bytes。拐角修复前的 45,773,799 字节 /
+SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本已 superseded，且
+hash-incompatible。
 
 组合空间很大，exact campaign 依赖 candidate-frontier 枚举、CP-SAT、LBBD 和受验证 cut 来缩小搜索。
 性能瓶颈或 168h 预算不是证明捷径，跑得久也不会自动把 open/unknown 变成 certified。

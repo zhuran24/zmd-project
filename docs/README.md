@@ -31,7 +31,7 @@ preflight 也没有执行上述工具。修改现行文本时直接编辑目标�
 
 ## 冻结输入提示
 
-当前工作树包含 `data/preprocessed/candidate_placements.json`，大小 `45,773,799` bytes，SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`。其它轻量发行包可以省略它，但 certified exact 运行前必须恢复同一字节。旧 hash 工件不能作为当前 campaign authority。
+当前工作树包含 `data/preprocessed/candidate_placements.json`，大小 `45,774,305` bytes，SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。其它轻量发行包可以省略它，但 certified exact 运行前必须恢复同一字节。拐角修复前的 `45,773,799` bytes / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 旧 hash 工件已 superseded、hash-incompatible，不能作为当前 campaign authority。
 
 ## 主要入口
 

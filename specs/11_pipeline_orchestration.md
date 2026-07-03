@@ -27,8 +27,11 @@ The exact path consumes and hash-binds, among other project inputs:
 - proof-bearing source and obligation material named by the campaign contract.
 
 `candidate_placements.json` is present in this working tree. Its expected current artifact is
-45,773,799 bytes with SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`.
+45,774,305 bytes with SHA256
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`.
+The superseded 45,773,799-byte / SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact predates
+the boundary `(0,0)` corner-pose fix and is hash-incompatible.
 A different byte set reopens resume compatibility; old campaign evidence must not be reused across
 an artifact-hash mismatch.
 

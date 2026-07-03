@@ -166,13 +166,13 @@ The certified path is grounded in frozen inputs whose bytes are hash-pinned by t
 
 | Artifact | Role | Size (Codex, bytes) | SHA256 (Codex, upper-hex) |
 |---|---|---:|---|
-| `rules/canonical_rules.json` | canonical recipes / targets / commodity roles / objective (`min_side_admissibility=6`) | 9,155 | `36A461884FDD2451DFEAD8AD2C19C053F17D74F573A53A6F851A4E0B3CE6015D` |
+| `rules/canonical_rules.json` | canonical recipes / targets / commodity roles / objective (`min_side_admissibility=6`) | 12,795 | `32664AAC6C075AF7D57E001A0A2B11B9A8B9304D8513739414AAA7ED4501BCB3` |
 | `rules/preprocess_plan.json` | additive overlay only (cycle groups / utility operations) | 1,387 | `1BCF0D13E1709CD7E04DDEA439EE005E837584F2F66A1A921159D198019C9ED8` |
 | `data/preprocessed/mandatory_exact_instances.json` | 266 frozen mandatory instances | 88,261 | `545B98C2B4F96643F1346B423EDF2DC8E300A0C815B6CF821776CEED03CD4CD6` |
 | `data/preprocessed/generic_io_requirements.json` | frozen generic I/O demand (outputs 34+18=52, inputs 1+1) | 561 | `AD5125B50E607A7F3F3BF0B54FEA64F93EDF87CEDB62E8D24F5590E1C895C44E` |
-| `data/preprocessed/candidate_placements.json` | candidate pose pool (geometry TCB) | 45,773,799 | `ADCC2A6E8A1DAAA9DEA6CAE68883301AD07CE123FA286B55DCBE79CA2F34BEC0` |
+| `data/preprocessed/candidate_placements.json` | candidate pose pool (geometry TCB) | 45,774,305 | `A914BA6348544B7EF44D0834629C6DCF90F39FA5564E0CD4C50AF6AF550C444B` |
 
-**Both passes agree on `candidate_placements.json`:** size **45,773,799 bytes**, SHA256 (lower-hex) `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` — matches the pinned contract exactly. It is part of the certified contract even though some lightweight distributions externalize it; only then should it be regenerated/restored (`scripts/restore_external_artifacts.py`, or regenerated via `python src/placement/placement_generator.py`), and an archive is a valid restore source **only after** its bytes pass the pinned hash check (PROJECT_LOCK §2 lines 199-208).
+**Current pinned `candidate_placements.json`:** size **45,774,305 bytes**, SHA256 (lower-hex) `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b` — matches the pinned contract exactly. It is part of the certified contract even though some lightweight distributions externalize it; only then should it be regenerated/restored (`scripts/restore_external_artifacts.py`, or regenerated via `python src/placement/placement_generator.py`), and an archive is a valid restore source **only after** its bytes pass the pinned hash check (PROJECT_LOCK §2 lines 199-208). The immediately previous `45,773,799`-byte artifact, SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`, predates the boundary `(0,0)` corner-pose fix and is superseded/hash-incompatible.
 
 **Superseded artifact (must fail-closed):** the older `candidate_placements.json` of size **53,594,995 bytes**, SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`, is hash-incompatible; campaign resume must reject it with `artifact_hash_mismatch`. If the old size/hash appears, fail closed — do **not** "helpfully update the expected hash" (PROJECT_LOCK §2 lines 204-206; CLAUDE.md).
 
@@ -1367,10 +1367,10 @@ preflight 硬钉四个普通冻结输入的精确字节 SHA256，在 `scripts/pr
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 
-第五个大文件在 `EXTERNAL_FROZEN_ARTIFACTS` 单独钉住：`data/preprocessed/candidate_placements.json`，expected **45,773,799 字节**，SHA256（完整值见 `CLAUDE.md`：`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`）。
+第五个大文件在 `EXTERNAL_FROZEN_ARTIFACTS` 单独钉住：`data/preprocessed/candidate_placements.json`，expected **45,774,305 字节**，SHA256（完整值见 `CLAUDE.md`：`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`）。
 - **⚠ 行号：** Opus 称 `EXTERNAL_FROZEN_ARTIFACTS` 在 `:46-55`；Codex 称 `:46-54`。
-- **⚠ hash 缩写大小写：** Opus 写 `ADCC2A6E...F2A34BEC0`（大写）；Codex 写 `adcc...bec0`（小写）——同一值的缩写。
-- 它属于 certified 合约，但分发策略允许 lightweight checkout 省略它。存在时 preflight 校验精确字节；缺失时 certified run 必须在解算前用 `scripts/restore_external_artifacts.py` 恢复/校验。旧的 **53,594,995 字节** artifact 与 hash 不兼容——campaign resume 必须拒绝它。
+- **⚠ hash 缩写大小写：** Opus 写 `A914BA63...C50C444B`（大写）；Codex 写 `a914...444b`（小写）——同一值的缩写。
+- 它属于 certified 合约，但分发策略允许 lightweight checkout 省略它。存在时 preflight 校验精确字节；缺失时 certified run 必须在解算前用 `scripts/restore_external_artifacts.py` 恢复/校验。拐角修复前的 **45,773,799 字节** / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact 是 superseded、hash-incompatible；旧的 **53,594,995 字节** artifact 与 hash 不兼容——campaign resume 必须拒绝它。
 - runtime 侧也把这些 frozen artifact 的 SHA/size 放进 certified artifact contract，避免只靠 preflight 静态检查：`src/search/certified_artifact_contract.py:96-105`（Codex 提供此行号）。
 
 ### 检查函数（Codex 提供，Opus 未给）

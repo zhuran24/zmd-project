@@ -100,7 +100,8 @@ settings.local.json
 _codex_archive/
 
 # ----------------------------------------------------------------------------
-# THE BIG OMITTED ARTIFACT (~43.65 MB, sha256 adcc2a6e...)
+# THE BIG OMITTED ARTIFACT (~43.65 MB, sha256 a914ba63...)
+# Superseded pre-corner-fix artifact: 45,773,799 bytes, sha256 adcc2a6e...; hash-incompatible.
 # EXTERNAL_FROZEN_ARTIFACT per data/external_artifacts.json. Restore before
 # certified runs:  python src/placement/placement_generator.py
 # Anchored to the leading slash so the small 363.9 KB viewer FIXTURE at
