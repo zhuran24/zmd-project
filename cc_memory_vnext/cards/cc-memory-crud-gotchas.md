@@ -16,7 +16,7 @@ scope:
 status: active
 priority: P0
 error_regex:
-  - "(--force|SUPERSEDES|CONTRADICTS|pending|semantic.*exit 0|relation)"
+  - "\\$ [^\\n]*mem\\.py[^\\n]*(set-fact|add-entry|--force|supersede|propose|relation)"
 triggers:
   intents:
     - memory-write
@@ -41,7 +41,7 @@ triggers:
     - add-entry
     - supersede
   error_regex:
-    - "(--force|SUPERSEDES|CONTRADICTS|pending|semantic.*exit 0|relation)"
+    - "\\$ [^\\n]*mem\\.py[^\\n]*(set-fact|add-entry|--force|supersede|propose|relation)"
   examples:
     - 重新设计记忆系统时要避免旧 mem.py 的 CRUD 静默坑
     - 用 set-fact --force 更新旧节点会不会丢 SUPERSEDES 语义

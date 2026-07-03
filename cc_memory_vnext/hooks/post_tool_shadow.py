@@ -95,6 +95,9 @@ def main() -> int:
                     "symbols": normalized.get("symbols", []),
                     "errors_len": len(errors_text),
                 },
+                "response_keys": sorted((payload.get("tool_response") or {}).keys())
+                if isinstance(payload.get("tool_response"), dict)
+                else type(payload.get("tool_response")).__name__,
                 "would_inject": would_inject,
             },
         )

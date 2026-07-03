@@ -3,7 +3,7 @@ id: memory-db-cross-session-push-conflict
 kind: pitfall
 title: 多会话提交共享 memory.db 会触发非快进二进制冲突
 summary: 多个会话或 checkout 同时把 cc_memory/memory.db 提交到同一 main 时，第二个 push 容易遇到 non-fast-forward，且 SQLite 二进制文件无法被 git 自动合并。
-error_regex: ["non-fast-forward", "CONFLICT.*memory\\.db"]
+error_regex: ["\\$ [^\\n]*git[\\s\\S]{0,800}non-fast-forward", "\\$ [^\\n]*git[\\s\\S]{0,800}CONFLICT[^\\n]{0,160}memory\\.db"]
 scope:
   domains: [cc-memory-git]
   paths: [cc_memory/memory.db]
@@ -16,7 +16,7 @@ triggers:
   negative_keywords: []
   paths: [cc_memory/memory.db]
   symbols: []
-  error_regex: ["non-fast-forward", "CONFLICT.*memory\\.db"]
+  error_regex: ["\\$ [^\\n]*git[\\s\\S]{0,800}non-fast-forward", "\\$ [^\\n]*git[\\s\\S]{0,800}CONFLICT[^\\n]{0,160}memory\\.db"]
   examples:
     - 多个 Codex 会话都改了 cc_memory/memory.db 后准备 push 到 main
     - push 失败提示 non-fast-forward，并且变更里包含 cc_memory/memory.db

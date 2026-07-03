@@ -3,7 +3,7 @@ id: memory-db-feature-branch-stale-do-ops-on-main
 kind: pitfall
 title: feature 分支的 memory.db 可能早于 main → 记忆读写要在 main 权威库做
 summary: 在 feature 分支上 search/read cc_memory 可能【假 no-match】,因为该分支的 cc_memory/memory.db 比 main 旧、缺 main 上新建的条目;cc_memory 读写应切到 main 权威库做。
-error_regex: ["(mem\\.py|cc_memory)[\\s\\S]{0,300}no match"]
+error_regex: ["\\$ [^\\n]*mem\\.py[\\s\\S]{0,400}no match"]
 scope:
   domains: [cc-memory-branch]
   paths: [cc_memory/memory.db]
@@ -16,7 +16,7 @@ triggers:
   negative_keywords: []
   paths: [cc_memory/memory.db]
   symbols: []
-  error_regex: ["(mem\\.py|cc_memory)[\\s\\S]{0,300}no match"]
+  error_regex: ["\\$ [^\\n]*mem\\.py[\\s\\S]{0,400}no match"]
   examples:
     - 在 feature/PR 分支上 mem.py search 自己之前建的条目却 no matches
     - 当前分支的 cc_memory/memory.db 比 main 旧、缺最近建的条目

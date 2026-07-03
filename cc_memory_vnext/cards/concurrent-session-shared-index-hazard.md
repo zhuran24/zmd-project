@@ -16,8 +16,7 @@ scope:
 status: active
 priority: P0
 error_regex:
-  - "index\\.lock"
-  - "shared index"
+  - "\\$ [^\\n]*git[\\s\\S]{0,800}index\\.lock"
 triggers:
   intents:
     - git-commit
