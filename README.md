@@ -14,9 +14,11 @@
 - **项目:** 为《明日方舟:终末地》70×70 基地(266 个 mandatory 设施)求解【certified-exact 最大空矩形】,目标 `max_lex(area, min_side)`。核心铁律 = `certified_exact`(唯一能产证明材料的路径)与 `exploratory`(启发式 / 诊断,**永不能升为证明**)两条路径严格隔离。
 - **P1.2 = 当前认证里程碑,状态 = RELEASE-BLOCKED:** 被一道【owner 仓库外人工 clean-review 计数】的手动门卡住(该 clean-review 计数 **owner-maintained outside the repo**;`next_allowed=false`);`main.py` 只停在 `CANDIDATE_PROPOSED`——生产 supervisor seal 入口已由 `scripts/run_supervisor_seal.py` 落地为独立命令,不会由 `main.py` 自动铸出 durable `CERTIFIED`。**别把"seal 方法存在 / 某测试调用过 / 生产入口存在"当成 owner 批准的 release closure。**
 - **近期主线 = PR2 硬化**,尤其 **PR2 #5「close-kernel 第二道门」**:一套 AST / source-sha checker(`scripts/check_p1_2_proof_obligations.py`)+ runtime 父进程锚(`src/search/certified_artifact_contract.py`),防"能 reseal checker 的恶意维护者保 checker 全绿却掏空 runtime proof"。经 round-8→18 的多轮外审(GPT Pro panel)+ 本地 codex 对抗审,**结构性 BLOCK 已清零**;剩 3 类【已被 owner 裁定接受】的残余(详见第 4、6 章):**F**(import-time 执行完整性,图灵完备无界,单列专门线 #5-F)/ **checker-self**(checker 无法递归自证自己)/ **A4 witness-body 动态反射重绑**——三类共同兜底 = "相关源文件已被 source-sha 逐字节钉死 → 改它必留显眼 diff → 人工 clean-review"。
-- **当前 HEAD:** PR2 #5 在 `pr2-5-domain-frontier-gate` 分支 **round-18(commit `9bbb3a6`)**;⚠ **该分支未 push、只在原机器本地 `.git`**;正等第 12 轮 GPT Pro 6-panel 外审回传(包 `zmd_pr2_5_round18_9bbb3a6.7z`)。`main` 在 `b35e5f9`(记忆 commit)。3 个 close-kernel runtime 文件(`exact_campaign.py` / `pr2_l0_micro_verifier_core.py` / `pr2_l0_true_verifier_child.py`)字节全程未动(V99 whole-file floor,blob `2f55bc65` / `af276679` / `da326456`)。
-- **PR2 剩余项:** #2/#3(loader / read-once 精化)、#1(最小 TCB 闭包,含 #5-F import-time 专门线)、#9b/#9c(OS 写隔离 / 原生 TOCTOU)。#7(certify 生产入口 = go-live 最后通电)已于 2026-07-04 由 `scripts/run_supervisor_seal.py` 落地,但只补"supervisor 可执行入口"这一条机器条件。
+- **当前 HEAD(2026-07-04 更新):** PR2 #5 close-kernel 经 round-19/20 硬化后已由合并提交 `6e06922` **合入 main**(round-20 = `2413cc2`);mixflow-routing 数学面修复批次 1+2+3 也已合入(`3c99ed0`)。本文大量段落记录的是合入前快照(round-18 `9bbb3a6`、main `b35e5f9`——这些 hash 在本交付副本均不可解析,只当叙事线索;V99 blob 断言同属当时快照)。核对现状一律以 `git log` 实测为准。
+- **PR2 剩余项(真实 backlog、当前不排期——owner 2026-07-04 澄清:round-20 画 TCB 线只停外审循环,不取消这些待办):** #1(最小 TCB 闭包,含 #5-F import-time 专门线)、#2/#3(loader / read-once 精化)、#5 独立枚举(候选域独立重推导)、#8(argv0/contract digest)、#9b/#9c(OS 写隔离 / 原生 TOCTOU)。#7(certify 生产入口 = go-live 最后通电)已于 2026-07-04 由 `scripts/run_supervisor_seal.py` 落地,但只补"supervisor 可执行入口"这一条机器条件。
 - **一个部署前必做:** `pr2_dependency_floor_manifest.json` 现在钉的是【审计 Linux env 字节的占位】、非生产 canonical;生产前必须在 CachyOS + Py3.13 venv 重生成 + 审 + 重钉。
+
+> **📌 2026-07-04 事实更新(后于正文六章的调查基线,读正文前先看这段):** 正文六章按 2026-07-02 前后的调查快照写成,其中三件事后来已发生——① `pr2-5-domain-frontier-gate`(PR2 #5 close-kernel)经 round-19/20 后已由 `6e06922` **合入 main**,owner 已画 TCB 线**停止 close-kernel 外审循环**(round-19/20 外审不发;画线≠取消 PR2 深化 backlog,见上「PR2 剩余项」);② mixflow-routing 数学面修复批次 1+2+3 已由 `3c99ed0` 合入,批次 3 尾巴与推迟项已关闭(`9aa4176`/`a8ea631`/`a731764`);③ PR2 #7 supervisor seal 生产入口已由 `349c56c` 落地。**因此正文中一切"未合入 / 等第 12 轮外审 / round-18 是当前进度 / main=`b35e5f9` / 新机器拿不到 `9bbb3a6`"的表述均为合入前史料快照,以本节为准。** P1.2 仍 OPEN/BLOCKED(owner 手动门),这一点没变。
 
 ## 目录
 
@@ -201,7 +203,7 @@ Do not read any safeguard above as "the project is done / published" (PROJECT_LO
 - **P1.2 is OPEN / BLOCKED.** The owner manual gate `data/review_gates/phase_1_2_spike_close.json` is currently `blocked_manual_review_count` (`next_phase_entry.allowed=false`; compat field `p1_3b_entry_allowed=false`). It opens only by the owner's explicit `owner_manual_decision`. The repo must **not** auto-derive P1.2-closed / P1.3-allowed from a receipt, report, package metadata, source-tree manifest, clean-count, or an internal supervisor seal.
 - **`main.py` stops at `CANDIDATE_PROPOSED`.** The production supervisor entry is now `scripts/run_supervisor_seal.py`: an independent command that resumes a committed `CANDIDATE_PROPOSED` proposal, validates the proposal-ready marker first, calls `ExactCampaign.supervisor_seal()` (real isolated L0 recheck), and exits success/error. A normal `main.py` completion is still *not* a seal success — the single biggest "looks done but isn't" trap; entrypoint availability is not P1.2 closure (cc_memory `fact:fact-p1-2-supervisor-operability-20260626`, `entry:p1-2-supervisor-production-entry-gap-20260626`; main.py:51-88; `scripts/run_supervisor_seal.py`, commit `349c56c`, 2026-07-04).
 - **preflight/checker green ≠ soundness.** cc_memory `entry:p1-2-current-validation-20260626` records ~3346 passed / 0 failed while the same memory set still marks P1.2 blocked.
-- **PR2 (TCB shrink) is unfinished.** The smaller read-once / controlled-loader verification TCB is not implemented; the review-snapshot packager still materializes from a mutable `treeish` rather than a resolved immutable commit; archive-policy coverage is incomplete (PROJECT_LOCK §1A lines 131-134). *(An in-flight PR2 hardening line — the "close-kernel" AST-pin work, L0/L1 supervisor, controlled loader, read-once — is tracked in collaboration memory as still-converging residual risk; its round-by-round detail belongs to other handoff dimensions. The durable lesson relevant here, from cc_memory `entry:close-kernel-ast-pin-structural-vs-semantic-boundary`: an AST pin can protect **structure** (the sole durable-mint chokepoint, entry reachability, gate result-flow) but **cannot protect "the proof math is correct"** — leaf numeric helpers are consciously delegated to the sha source-floor + frozen-artifact hash + human re-pin review, and that boundary is honestly labeled, not papered over. Do not treat the structural checker as a substitute for human review.)*
+- **PR2 (TCB shrink) is unfinished.** The smaller read-once / controlled-loader verification TCB is not implemented (still-open backlog: #1/#2/#3, #5 independent enumeration, #8, #9b/#9c — real to-dos, currently unscheduled per the owner's 2026-07-04 clarification). The review-snapshot packager has since been fixed to resolve the caller-supplied `treeish` to an immutable commit once and materialize from that same resolved commit (`scripts/package_review_snapshot.py`; PROJECT_LOCK §1A's older "still materializes a mutable treeish" wording predates this fix and awaits its Update-Rule sync); archive-policy coverage remains to be confirmed. *(The "close-kernel" AST-pin hardening line has since converged — merged to main at `6e06922` after round-19/20; the owner drew the TCB line on 2026-07-03 and stopped the external-review loop. The durable lesson relevant here, from cc_memory `entry:close-kernel-ast-pin-structural-vs-semantic-boundary`: an AST pin can protect **structure** (the sole durable-mint chokepoint, entry reachability, gate result-flow) but **cannot protect "the proof math is correct"** — leaf numeric helpers are consciously delegated to the sha source-floor + frozen-artifact hash + human re-pin review, and that boundary is honestly labeled, not papered over. Do not treat the structural checker as a substitute for human review.)*
 - **What was closed (but does not close P1.2):** the PR1 producer/supervisor/publisher split; fixed-witness terminal re-verification; the fail-closed P1.2 OPEN-GATE (`resolve_p1_2_publish_open_gate()`); the connector/body terminal check; isolated-source bytecode binding (`PO-ISOLATED-EXEC-BYTECODE-BINDING`: verifier subprocess uses `-B -X pycache_prefix=<fresh>` from source-digest-protected `.py`); and the I1 independent whole-layout reverifier (CHANGELOG 2026-06-26). Python/stdlib/OR-Tools native extensions, the parent relay, and OS process/file isolation remain **named TCB** — never write "TCB fully eliminated" (PROJECT_LOCK §1A lines 169-171).
 
 **Honest framing:** P1.2 "closed" would mean *only* that the §1A proposition-P machine boundary, the publication chain, and the owner manual gate are simultaneously satisfied. It is **not** a throughput theorem and does **not** auto-open the next phase (humans call it P1.3; `p1_3b_*` fields are legacy machine-compat identifiers) (PROJECT_LOCK §1A lines 139-146).
@@ -227,20 +229,20 @@ Do not read any safeguard above as "the project is done / published" (PROJECT_LO
 - **"Blank-slate de-biased review" rounds R2–R5 (PROJECT_LOCK §3 lines 350-358 — Opus detail, showing real failure modes that actually bit):**
   - **F-GM-BS-R2-01:** the boundary-storage-port feasibility screen used `occupied ∪ port_connector_cells` as its hard-infeasibility premise; on canonical geometry (134 boundary poses with occupied cells on the grid edge, connector one cell inward) a corner-region ghost falsely pruned a master-legal, routing-feasible candidate → false-CERTIFIED of optimality. Fix: premise uses `occupied_cells` only. Red→green `test_boundary_port_precheck_soundness.py`.
   - **F-SCHED-BS-R3-01 / R4-01 / R5-01 / R5-02:** a *family* of parallel-scheduler worker-crash timing bugs (worker queues its final RESULT then dies non-zero: end-of-wave, mid-wave respawn, success-path shutdown TOCTOU, and the resume "preserve→persist→resume" residual). Each let a crashed worker's false `INFEASIBLE` become a sticky strong status that permanently prunes a true maximal rectangle → smaller rectangle certified as optimal → false-CERTIFIED. All default-env on the documented `main.py --parallel-processes` path, none behind an `EXACT_*` knob; upheld by multi-agent adversarial convergence (commit `3bc08b0` for R3's seal). **Lesson:** terminal validators are self-consistency over persisted statuses, not independent re-verification — they do not backstop a poisoned per-candidate status.
-- **Current HEAD (⚠ only Codex states it):** at read time `b35e5f9`; memory/harness still record P1.2 as blocked, not a certified release (cc_memory `fact:fact-p1-2-release-gate-status-20260626`, `entry:p1-2-current-publication-surface-status-20260626`; harness resume `p1-2-resume-state-20260621.md:42-66`).
+- **Current HEAD (⚠ only Codex states it):** at read time `b35e5f9`; memory/harness still record P1.2 as blocked, not a certified release (cc_memory `fact:fact-p1-2-release-gate-status-20260626`, `entry:p1-2-current-publication-surface-status-20260626`; harness resume `p1-2-resume-state-20260621.md:42-66`). *(2026-07-04: HEAD has moved on — pr2-5 and mixflow merges landed; `b35e5f9` is unresolvable in this delivery copy. Check `git log`.)*
 
 ---
 
 ## 9. Open problems, residuals, known limits (do NOT treat as closed)
 
 1. **P1.2 not closed; `main.py` ends at `CANDIDATE_PROPOSED`** (§7). Headline open item. Gate = `blocked_manual_review_count; next_phase_entry.allowed=false`.
-2. **`scripts/run_supervisor_seal.py` is the production supervisor entrypoint, but this only lands PR2 #7.** It is an independent marker-driven command to call `supervisor_seal()`; it does not make `main.py` seal, does not satisfy PR2 #1/#2/#3/#5-F/#9, and does not open the owner gate.
+2. **`scripts/run_supervisor_seal.py` is the production supervisor entrypoint, but this only lands PR2 #7.** It is an independent marker-driven command to call `supervisor_seal()`; it does not make `main.py` seal, does not satisfy PR2 #1/#2/#3/#5-independent-enumeration/#5-F/#8/#9, and does not open the owner gate.
 3. **preflight/checker green is not a soundness conclusion** (~3346 passed / 0 failed alongside P1.2 blocked).
 4. **Discrete throughput / belt bandwidth / capacity-flow at high density is unproven and out of scope** — needs a new predicate + new proof chain, not opening `flow_subproblem.py` (B-1, B-2).
 5. **Candidate geometry is a hash-pinned TCB** — the current theorem does not re-derive all candidate geometry from canonical rules; `candidate_placements.json` bytes are themselves inside the TCB.
 6. **`src/cuts/` F1–F9 cut lifecycle is not integrated** — `step_8_apply_to_master` raises `NotImplementedError`; seeing `src/cuts/` does not imply F1–F9 can participate in certified pruning (F-CUT-BS-R3-01).
 7. **Routing-exhaustion independent re-verification stays conservative** — FIX-4 is soundness-first; a legitimate cut may fail to land and fall back to UNKNOWN.
-8. **PR2 / L0 / L1 / loader / read-once / close-kernel work is still residual-risk** — the harness resume records close-kernel rounds as still converging; do not treat the structural checker as a substitute for human review.
+8. **PR2 / L0 / L1 / loader / read-once residual-risk remains** — the close-kernel rounds have since converged (merged at `6e06922`; owner drew the TCB line and stopped the review loop, 2026-07-03), while #1/#2/#3/#5-independent-enumeration/#8/#9 deepening stay real-but-unscheduled backlog; do not treat the structural checker as a substitute for human review.
 9. **Named TCB remains:** interpreter, stdlib, OR-Tools native extensions, parent relay, OS process/file isolation, the on-disk sink verifier/protected source, and the frozen-geometry pose bytes (trusted via generation-time contract + hash pin). "TCB fully eliminated" is never a true statement here.
 10. **`EXACT_POWER_PLACEMENT_SUBPROBLEM=1` is forbidden on any certified/production path** — exploratory only; the production readiness gate and `run_campaign_linux.sh` both block when set. Three known exactness gaps persist (live ghost-conditioned cut: implemented; persisted cut replay: implemented; **feasible-path pole alternatives: NOT implemented**, current stop-gap fail-closes to `UNKNOWN`) (PROJECT_LOCK §4 lines 460-465). A chain of CUT-R12..R16-H1 clauses hardens its obligations "the moment that channel is opened."
 11. **`EXACT_*` env knobs are deny-unknown in `certified_exact`:** only documented allowlist entries; proof-semantics knobs stay at canonical default; unknown/future names block the run. `docs/env_variable_index.md` is **incomplete** — grep source for `os.environ`/`getenv` on `EXACT_` for the real set (CLAUDE.md; PROJECT_LOCK §3 line 303).
@@ -258,7 +260,7 @@ Recommended order (don't just trust this document):
 3. `binding_subproblem.py`, `routing_subproblem.py`, `flow_subproblem.py` — confirm each layer's proof boundary.
 4. `preprocess_context.py` + `scripts/preflight_gate.py` — confirm frozen artifacts and additive-only plan.
 5. cc_memory ids: `p1-2-c3-kernel-audit-3source-20260620`, `p1-2-witness-split-block-2026-06-21` (note hyphenated date), `fix-4-fix-5-i1-toctou`, `p1-2-fix-4-landed-44089a3`, `p1-2-supervisor-l0-l1-design-meeting-20260623`, `p1-2-current-publication-surface-status-20260626`, `p1-2-current-validation-20260626`, `p1-2-supervisor-production-entry-gap-20260626`, `close-kernel-ast-pin-structural-vs-semantic-boundary`; facts: `fact-p1-2-release-gate-status-20260626`, `fact-p1-2-supervisor-operability-20260626`, `fact-certified-exact-proof-path-has-confirmed-unpatched-soundness-critical-bugs` (now CLOSED/patched); rejected-alt: `project_highs_rewrite_blocker`.
-6. git commits — separate "code done" from "certification closed": `44089a3` (FIX-4), PR1 landings `ddb3b5a` / `d3f9009` / `2904a81` / `072265a` / `1817c71`, confirmed-fixed-bug merges `a8b18d8` / `f226a55` / `44ef95e`, scheduler R3 seal `3bc08b0`, current HEAD `b35e5f9`.
+6. git commits — separate "code done" from "certification closed": `44089a3` (FIX-4), PR1 landings `ddb3b5a` / `d3f9009` / `2904a81` / `072265a` / `1817c71`, confirmed-fixed-bug merges `a8b18d8` / `f226a55` / `44ef95e`, scheduler R3 seal `3bc08b0`, read-time HEAD `b35e5f9`(已过时,现状以 `git log` 为准).
 
 **Authority/navigation index:** `PROJECT_LOCK.md` §1/§1A/§1A-C/§2/§2A/§2B/§3A/§3/§4/§5; `NAV_MAP.md` (call + publish chains, reading order); `CLAUDE.md` (overview + conventions); `CHANGELOG.md` dated history (esp. 2026-06-26 PR1 split, 2026-06-16 source digest, 2026-06-04 v28 era, 2026-03-23/03-25/04-14).
 
@@ -560,7 +562,7 @@ PR2 是仍开放的工作：真隔离 L0/L1 进程、controlled loader / 两段 
   - 成 claim-guard 卡 **`close-kernel-pin-reaches-runtime`**：① "现状没钉" ≠ "不需 reseal"——让文件成信任锚就必须钉；② "gate 钉" ≠ "runtime 钉"——pin 必须到 runtime 消费点 + fail-closed，否则 gate↔runtime "读了但不再验" 的 TOCTOU 打开。
   - **⚠ Deploy-pending 注意（仍开放）**：被钉的 `pr2_dependency_floor_manifest.json`（sha `41008dbb…`，size 574082）是**GPT sandbox 里生成的 audited-Linux-env 占位、非生产审过的 canonical**。`close_kernel_contract.dependency_floor_provenance.manifest_provenance_status = "deploy_pending_placeholder_regenerate_on_production_cachyos_py313"`。生产前**必须**在 CachyOS + Py3.13 重生成、审、重钉（PR2 task #6）。开发机是 WSL/Ubuntu，无 CachyOS distro、无 Py3.13 venv，**本机生不了**。`mutation_policy` 为 `dependency_floor_drift_reopens_p1_2_close_claim`。
 
-- **PR2 #5 —— "close-kernel" AST-pin 长征（最长线，仍 WAITING_EXTERNAL）**。分支 `pr2-5-domain-frontier-gate`。起因：L0 child 升格 proposal 为 `CERTIFIED` 时漏设 `declare_mode`/`last_stop_reason`（只改 `final_status`），使 frontier-exhaustion / domain-canonical 校验在 durable seal 路径上成**死代码**——恶意 producer 可对切片 / 非穷尽域铸 false durable CERTIFIED（`pr2-5-seal-frontier-gate-landed`）。修复本身直接；**长征**是其后一切，也是信任洋葱问题最好的例证：
+- **PR2 #5 —— "close-kernel" AST-pin 长征（最长线;后续已收口:round-19/20 完成后由 `6e06922` 合入 main,外审循环 2026-07-03 画线停止——本小节其余为合入前史料）**。分支 `pr2-5-domain-frontier-gate`。起因：L0 child 升格 proposal 为 `CERTIFIED` 时漏设 `declare_mode`/`last_stop_reason`（只改 `final_status`），使 frontier-exhaustion / domain-canonical 校验在 durable seal 路径上成**死代码**——恶意 producer 可对切片 / 非穷尽域铸 false durable CERTIFIED（`pr2-5-seal-frontier-gate-landed`）。修复本身直接；**长征**是其后一切，也是信任洋葱问题最好的例证：
   - **⚠ round 提交链出入（保留两版全部）**：
     - **Opus 版完整链**：`2ec8954`→`2c258c6`→`4410b6a`→`dbd1d72`→`b6d41c6`→(main `d816b8b`)→`cce5dd5`→`dbe27c0`(r7)→`c115f31`(r8)→`7851c1e`(r9)→`a5a5e64`(r10)→`adeddc5`(r11)→`8714ee7`(r12)→`504b3f8`(r13)→`d1a59ad`(r14)→`1b90285`→`c96a601`(r16)→`2ca6864`(r17)→`9bbb3a6`(r18，分支当前 HEAD)。
     - **Codex 版**（仅列出核对到的子集）：`504b3f8`(r13)、`d1a59ad`(r14)、`9bbb3a6`(r18)。两版对 r13/r14/r18 一致；Opus 给出更全的中间链。
@@ -569,10 +571,10 @@ PR2 是仍开放的工作：真隔离 L0/L1 进程、controlled loader / 两段 
   - **F 线单列（owner option 1，2026-07-01）**："import-time execution integrity" 子问题（`.pyw`/`scripts.*`/`importlib.__dict__`/def-time 隐式副作用）经枚举证明**不收敛**——"import-time 图灵完备，穷举不完"。owner 决定把 F **单列成专门线 PR2 #5-F**，紧邻 #1；round-12 的 F 代码作为 best-effort 留门里，但 F 的完整性**不是 merge blocker**。（harness `pr2-5-F-line-import-time-integrity-schedule`，cc_memory `pr2-5-round10-11-12-fspinout`，教训卡 `close-kernel-ast-checker-design-lessons`。）scope = ① import-machinery 完整性（有界）② 动态 import 完整性（有界）③ 非-import import-time 副作用（开放，设计 spike：追全 / 最小化 import-time TCB / 接受残余 + floor + 人审）。
   - **A4 dynamic-reflection rebind —— owner 接受为残余（2026-07-02）**：rounds 15-17 不断找到新形态（`exec` → `operator.setitem(globals(),…)`/`types.FunctionType` → `.__globals__[...]` → `sys._getframe().f_globals` → `sys.modules[__name__].witness=`），一次 5-lens codex 对抗 workflow 确认 A4 denylist **不确定性收敛**（每加一个 attr 只是掀开下一个）。因 witness 函数已被逐字节 source-sha 钉死（改它们 = clean-review 抓得到的显眼 diff），owner **（AskUserQuestion）决定接受 A4 dynamic reflection 为 best-effort / conspicuous-edit 残余——与 F、checker-self 同类——不再把 A4 完全闭合当 release blocker**。round-18（`9bbb3a6`）加了已知形态的 best-effort 覆盖。
   - **根本边界**（`close-kernel-ast-pin-structural-vs-semantic-boundary`）：AST/source-sha "第二道门" 能保护**结构**（防未来维护者一边保持 checker 绿 + 重钉 floor、一边掏空 elevation 语义），但**保护不了证明数学**——叶子 occupancy/mandatory/power 数学终归 bottom out 到 sha 楼面 + frozen-artifact hash + 人工重钉审查。owner 接受此边界并要我诚实标注。
-  - **⚠ 当前状态出入（2026-07-02，WAITING_EXTERNAL）**：
+  - **⚠ 当时状态出入（2026-07-02 快照,WAITING_EXTERNAL;后续:第 12 轮外审未再发,round-19/20 本地收口后 `6e06922` 合入 main）**：
     - **Opus 版**：round-18 `9bbb3a6` 绿（full preflight PASSED，**3734 pytest**，3 runtime 文件字节未动，committed blob sha == pins，CI-safe）。第 12 轮 GPT-Pro relay 包已备（`zmd_pr2_5_round18_9bbb3a6.7z`，sha `5a59999f…`）含 6 角度提示词，等 owner 跑。**结构 BLOCK 在 rounds 15-18 后归零**（3 外审 panel + 本地 codex 5-lens + owner 残余裁定）；剩余残余明确三类、全靠 conspicuous-diff + 人工 clean-review 兜底：(i) import-time #5-F、(ii) checker-self（改 checker 本身的维护者）、(iii) A4 dynamic reflection。CLEAN 回：merge `pr2-5`→main（CI @slow）→ 续 PR2 #2/#3/#1(含 #5-F)/#9b/#9c/#7。若出**新**的静默 / 可约结构 BLOCK：round-19。
     - **Codex 版**：round-18 `9bbb3a6` 在 `pr2-5` worktree/branch 通过 preflight，准备第 12 轮 GPT Pro relay；但反复强调 P1.2 仍 release-blocked，且 **`9bbb3a6` 是另一 worktree/branch 状态、当前 cwd main（`b35e5f9`）不应自动继承该结论**；当前 cwd checker 输出 59 sinks，而 round-18 报告 60 sinks（见 §0 的 ⚠）。
-    - 两版一致：round-18 是当前分支进度、WAITING 第 12 轮外审、不改变 release-blocked。
+    - 两版一致（当时）：round-18 是当时分支进度、WAITING 第 12 轮外审、不改变 release-blocked。（实际后续走向:外审不再发,round-19 `5ff31ac` / round-20 `2413cc2` 本地收口,`6e06922` 合入 main。）
   - **元教训（提出，非定论）**：RESUME 锚明写——"逐形态 denylist 对图灵完备/反射面永不收敛,该早识别并归 conspicuous-edit 残余而非无限迭代."。新工程师可合理质疑 rounds-10→18 是否该更早收敛到"接受 + conspicuous-edit 残余"。此判断留开。
 
 ---
@@ -599,11 +601,11 @@ PR2 是仍开放的工作：真隔离 L0/L1 进程、controlled loader / 两段 
 3. **V99 锚是时间点快照。** post-V99 工作树改动不被旧 source-hash seal 覆盖，任何 close claim 前须重新 reseal（`phase_1_2_spike_close.json:7`, `:30`）。
 4. **dependency-floor manifest 是 deploy-pending 占位**（audited Linux env 字节，非生产 canonical）；生产前必须在 CachyOS/Py3.13 重生成 + 审 + 重钉（PR2 #6）——当前 WSL/Ubuntu 主机做不了。
 5. **close-kernel 残余仅按 conspicuous-edit 接受**（非架构闭合）：import-time execution integrity（#5-F）、checker-self 变异、A4 dynamic reflection rebind。靠人工 clean-review 抓显眼 diff 兜底。
-6. **PR2 仍开放：** #5（WAITING 第 12 轮外审）→ #2/#3（loader min-snapshot+fd / read-once）→ #1（最小 TCB 闭包，含 #5-F）→ #9b/#9c（OS write 隔离 / native `.pyd/.so` TOCTOU）。#7（production certify 入口）已于 2026-07-04 由 `scripts/run_supervisor_seal.py` 落地，但不关闭这些剩余项。另有押后的 **resume-envelope finding**（`pr2-resume-envelope-deferred-finding`，commit `05a2a85`）：非证明字段如 `created_at` 克隆进 durable state 能过终态门但 resume 时自拒——判真但越界、押后到 #2/#3。
+6. **PR2 仍开放（真实 backlog、当前不排期）：** #2/#3（loader min-snapshot+fd / read-once）→ #1（最小 TCB 闭包，含 #5-F）→ #5 独立枚举 → #8 深化 → #9b/#9c（OS write 隔离 / native `.pyd/.so` TOCTOU）。#5 close-kernel 结构门已不在此列（round-19/20 后 `6e06922` 合入 main,外审画线停止）。#7（production certify 入口）已于 2026-07-04 由 `scripts/run_supervisor_seal.py` 落地，但不关闭这些剩余项。另有押后的 **resume-envelope finding**（`pr2-resume-envelope-deferred-finding`，commit `05a2a85`）：非证明字段如 `created_at` 克隆进 durable state 能过终态门但 resume 时自拒——判真但越界、押后到 #2/#3。
 7. **收敛问题哲学上开放。** "审到零发现"明确**不是**收敛判据；收敛 = 画并冻一条 TCB 线、在其上修、把线下新发现声明为受信假设或 done-instance（`p1-2-review-converged-tcb-start-p1-3`）。当前 TCB 线是否画对是新审查者该压的活问题。
 8. **certified scope 窄、不得过度声称。** 只有 `valley4_protocol_core`（70×70）active；6 个 predicate 证的是**几何 + 端口精确计数 + 连通 + 供电覆盖**，**不是**吞吐 / 带宽 / 离散容量流（`PROJECT_LOCK.md:100-116`）。flow model 只诊断、永不 gate。
 9. **A4 / F / checker-self 的"必须显眼改才能绕"残余分类**是历史 owner/codex/GPT Pro 互动下的工程裁定，**不是数学消除**。新工程师可重新挑战该分类。
-10. **⚠ 分支 vs main 状态未同步。** round-18 `9bbb3a6` 是 `pr2-5-domain-frontier-gate` worktree 状态；当前 cwd main 是 `b35e5f9`（`origin/main` `5ab006f`）。PR2 剩余项中有些可能已在别的 branch/worktree 有进展，新工程师应从当前 git branch、review gate、PROJECT_LOCK 和实际 tests 重新核，不要自动继承。
+10. **⚠ 分支 vs main 状态未同步（2026-07-02 快照;此警告已随 `6e06922` 合并失效——close-kernel 工作已全在 main）。** round-18 `9bbb3a6` 是 `pr2-5-domain-frontier-gate` worktree 状态；当时 cwd main 是 `b35e5f9`（`origin/main` `5ab006f`）。PR2 剩余项中有些可能已在别的 branch/worktree 有进展，新工程师应从当前 git branch、review gate、PROJECT_LOCK 和实际 tests 重新核，不要自动继承。
 
 ---
 
@@ -637,7 +639,7 @@ main.py
         -> 仍被 P1.2 manual gate 拦住，除非 owner 打开
 ```
 
-代码有三个真实、有测试、source-pinned 的权限接缝 + 一套深 obligation/allowlist 脚手架——但 P1.2 是 **OPEN/BLOCKED**，**无**端到端生产 seal，review 锚是时间点快照，dependency floor 是占位，三类残余攻击面仅在"conspicuous-edit + 人工 clean-review"下被接受。把任何"它过了 / 方法存在"当作**必要不充分**。V-阶梯是这套姿态"挣来的、不是偏执"的证据。
+代码有三个真实、有测试、source-pinned 的权限接缝 + 一套深 obligation/allowlist 脚手架——但 P1.2 是 **OPEN/BLOCKED**，**无**端到端生产 seal 实跑记录（`run_supervisor_seal.py` 入口已存在,但从未有真实 campaign→seal 走通），review 锚是时间点快照，dependency floor 是占位，三类残余攻击面仅在"conspicuous-edit + 人工 clean-review"下被接受。把任何"它过了 / 方法存在"当作**必要不充分**。V-阶梯是这套姿态"挣来的、不是偏执"的证据。
 
 
 ---
@@ -673,7 +675,7 @@ main.py
 - **P1.2-FIX** = 三/四/五轮外审挖出的 soundness 必修（fixed-witness verifier + 不可变执行 capsule + OPEN-GATE 机器发布闸 + I1 独立复验 + TOCTOU 修复 + doc↔code 漂移红测）——是闭 P1.2 的前提，**不是** P1.3。
 - **P1.3** = 把 `src/cuts/lifecycle.py` 的 `step_8_apply_to_master` 真正接进活 master（PoseBoolExactMaster LBBD 集成）。owner 手动闸打开前不准动。旧文档里的"P1.3B / P1.3A 主体"都指同一坨 master 集成活；机器闸标识符 `p1_3b_*` 是历史名、不动（改名要碰 close-kernel = 另一次 freeze-ritual）。
 - **顺序**：先做 P1.2-FIX 闭 P1.2 → 再开 P1.3。
-- **PR1 / PR2**：supervisor 重做被切成两个 PR。PR1 = supervisor_seal + 剥发布权 + resume 语义 + producer 侧 BLOCK-D + marker + 复验迁移 + 发布面事务化/checker 硬化。PR2 = L0/L1 最小 TCB micro-verifier + 受控 import loader + 两段式自举 + child read-once + import-closure + certify 生产入口 + AST 闸。**PR2 至今没完**（接手时它在 #5 那一坨的第 14/15 轮外审里，属维度 4/5），本章只讲到 PR1 落地为止。
+- **PR1 / PR2**：supervisor 重做被切成两个 PR。PR1 = supervisor_seal + 剥发布权 + resume 语义 + producer 侧 BLOCK-D + marker + 复验迁移 + 发布面事务化/checker 硬化。PR2 = L0/L1 最小 TCB micro-verifier + 受控 import loader + 两段式自举 + child read-once + import-closure + certify 生产入口 + AST 闸。**PR2 至今没完**（接手时它在 #5 那一坨的第 14/15 轮外审里，属维度 4/5;后续 #5 close-kernel 已走到 round-20 并由 `6e06922` 合入 main,"没完"的含义转为 #1/#2/#3/#5独立枚举/#8/#9 未排期 backlog），本章只讲到 PR1 落地为止。
 - **close-kernel / V99 floor**：用 `source_sha256` 把"强状态出口 sink"钉死的机制（详见 §1.2），后面反复出现。
 - **外审 = GPT Pro**：多个独立 reviewer（常 3 个）盲审（blind A-G）打包好的仓库快照，owner 中转提示词与回复。这是本项目**收敛判据的核心工具**。
 
@@ -1037,7 +1039,7 @@ P1.2 是一个断言：solver 的 certified-exact 结果**可被 durably sealed 
 
 ⚠ 分歧（史料覆盖面）：设计会议 `p1-2-supervisor-l0-l1-design-meeting-20260623`、PR2-b 具体 commit（`69980b3`/`592ea13`）、resume-envelope deferred finding 三块**只有 Opus 版挖到并展开**；Codex 版未覆盖这三块（但覆盖了 PR2-b 的 B1/B2 内容、只是没给 commit hash）。反之，cc_memory id `pr2-5-round14-11th-review-block-round15` **只有 Codex 版显式引用**（Opus 版把 round-15~18 统归「RESUME anchor」）。两版都作为并集保留。
 
-## 0.2 本稿写作时自核的实时仓库事实（2026-07-02）
+## 0.2 本稿写作时自核的实时仓库事实（2026-07-02 快照;2026-07-04 后 pr2-5 已 `6e06922` 合入 main,以下 branch-vs-main 对比已被合并事件取代,现状以 `git log` 为准）
 
 - `main` HEAD = `b35e5f9`；PR2 #8/#9a 硬化更早已合于 `099f5a3`（PR #2）。`main` 上 `099f5a3` 之后的所有 commit 都是 memory/vnext 记账。
 - `pr2-5-domain-frontier-gate` HEAD = `9bbb3a6`（round-18），**未合并到 main**。
@@ -1092,7 +1094,7 @@ P1.2 是一个断言：solver 的 certified-exact 结果**可被 durably sealed 
 
 **#6 决定（理由 + 被否方案）**：曾考虑建独立「AST 可达性闸」，后**决定不建**。checker 自己的注释承认可达性是冗余层，主防线——source-sha 楼面——已被 #8-B 强化。另建会加一份更弱的、我们已在强制的属性的第二份拷贝。新工程师可不同意；支持建它的论点是「自承冗余层」是跳过一个纵深防御控制的软理由。
 
-**推荐执行序（轻→重、go-live 最后）**：#8 argv0 → #9a floor pin → 定 #6（大概率接受 source-hash 为主防线 = 跳）→ #5 B2 枚举 + #2/#3 loader/read-once 精化 → #1 最小 TCB 闭包 → #9b OS 隔离（+#9c）→ **#7 certify 入口（最后「通电」= P1.2 收敛点）**。
+**推荐执行序（轻→重、go-live 最后）**：#8 argv0 → #9a floor pin → 定 #6（大概率接受 source-hash 为主防线 = 跳）→ #5 B2 枚举 + #2/#3 loader/read-once 精化 → #1 最小 TCB 闭包 → #9b OS 隔离（+#9c）→ **#7 certify 入口（最后「通电」= P1.2 收敛点）**。（2026-07-04 注:此序为当时计划。后续实际:#7 已通电落地——但入口落地≠P1.2 收敛,收敛仍卡 owner 手动门;#5 close-kernel 已 `6e06922` 合入 main;其余深化项转未排期 backlog、不取消。）
 
 **入口里带的诚实警告**：剩余项列表**会增长**——后续跨模型审剥更多信任洋葱（「trust onion」原理——对抗审总能再剥一层；「审到零发现」*不是*收敛判据；见 `p1-2-review-converged-tcb-start-p1-3`）。
 
@@ -1143,7 +1145,7 @@ P1.2 是一个断言：solver 的 certified-exact 结果**可被 durably sealed 
 
 ## 5. PR2 #5「close-kernel 第二道门」—— 定义与威胁模型
 
-这是 #5 项（B2 候选域独立枚举），但它远超原 scope、长成一个自检门的 18 轮对抗硬化。**全在分支 `pr2-5-domain-frontier-gate`，未合并，HEAD `9bbb3a6`。**
+这是 #5 项（B2 候选域独立枚举），但它远超原 scope、长成一个自检门的 18 轮对抗硬化。**写作时全在分支 `pr2-5-domain-frontier-gate`（HEAD `9bbb3a6`,未合并;后续 round-19/20 完成后已由 `6e06922` 合入 main）。**
 
 ### 5.1 两个 artifact
 
@@ -1212,7 +1214,7 @@ panel（5 会话）发现 2 个 codex 本地审 *和* 我都漏的真 BLOCK：
 
 **round-18 分支 commit 链（Codex 版给全链）**：`2ec8954`→`b6d41c6`→`cce5dd5`→`2fa42b9`→`66511ce`→`9c06ab8`→`ad73e4f/dbe27c0`→`c115f31`→`7851c1e`→`a5a5e64`→`adeddc5`→`8714ee7`→`504b3f8`→`d1a59ad`→`1b90285`→`c96a601`→`2ca6864`→`9bbb3a6`。⚠ 注：此链未含 round-3/4 的 `44c8da6`（及 Codex 版另提的 `7a6cd8c`/`eb93637`）、`4410b6a`/`dbd1d72`、Opus 版的 `2c258c6`——这些在逐轮正文里被提及但不在 Codex 给的显式链里，交终审用 `git log --oneline main..pr2-5-domain-frontier-gate` 核完整拓扑。
 
-### 5.6 PR2 #5 当前状态（WAITING_EXTERNAL，截至 2026-07-02）
+### 5.6 PR2 #5 当时状态（WAITING_EXTERNAL，截至 2026-07-02——历史快照;后续:第 12 轮外审未发,round-19/20 收口后 `6e06922` 合入 main,外审循环画线停止）
 
 - HEAD `9bbb3a6`（round-18），分支 `pr2-5-domain-frontier-gate`，**未合并**。
 - **第 12 轮 GPT Pro relay 已备好、staged 待 owner 跑**（经剪贴板/Win+V；owner 在仓库外跑 GPT Pro、回传报告）。包 `C:\Users\22957\pr2_pkg\zmd_pr2_5_round18_9bbb3a6.7z`（sha `5a59999f…`）+ 6 提示词 `C:\Users\22957\pr2_5_round18_review_entry_{1..6}_*.md`。提示词明确告诉 reviewer：A4 dynamic reflection 是*owner 裁定的 best-effort/clean-review 残余（同 F）*、请**别**再举已接受的 A4 dynamic 形态，而是查残余边界是否画对、以及是否存在任何*新的* 静默 / runtime-gut-without-checker-edit 结构 BLOCK。
@@ -1286,7 +1288,7 @@ panel（5 会话）发现 2 个 codex 本地审 *和* 我都漏的真 BLOCK：
 
 ## 10. PR2 剩余项 —— 内容 + 推荐序（带细节）
 
-（完整状态表在 §2；此处给 #2/#3/#1/#9b/#9c/#7 + deferred resume-envelope 的实质。来源 `pr2b-landed-pr2-remaining-status-20260628`、`p1-2-resume-state-20260621.md:36`。注意 #8/#9a 已合 main，#5 分支到 round-18 但未主线发布。）
+（完整状态表在 §2；此处给 #2/#3/#1/#9b/#9c/#7 + deferred resume-envelope 的实质。来源 `pr2b-landed-pr2-remaining-status-20260628`、`p1-2-resume-state-20260621.md:36`。注意 #8/#9a 已合 main;#5 close-kernel 写作时在分支 round-18、后续已于 `6e06922` 合入 main。）
 
 - **#2（受控 loader 最小快照 + fd）**：当前快照扫全 `src/`/`scripts/`；需变成最小、fd-based 快照。partial。
 - **#3（B3 fd-held read-once 全程）**：当前是 path re-read（re-open）而非单 fd 持有 read-once——一个 TOCTOU 窗口。partial。与 #2 强相关。
@@ -1296,7 +1298,7 @@ panel（5 会话）发现 2 个 codex 本地审 *和* 我都漏的真 BLOCK：
 - **#7（生产 `certify` 入口）**：operational-chain gap（`p1-2-supervisor-production-entry-gap-20260626`，CHANGELOG line 10）已于 2026-07-04 落地为 `scripts/run_supervisor_seal.py`（commit `349c56c`）：独立命令 resume 已提交的 `CANDIDATE_PROPOSED` proposal → 校验 proposal-ready marker 前置 → 调 `ExactCampaign.supervisor_seal()`（真实隔离 L0 复验）→ 按成功/异常退出码。`main.py` 仍停在 `CANDIDATE_PROPOSED`；该入口存在不推导 P1.2 closed / 可发布 / P1.3 allowed。
 - **Deferred 跨项发现 —— resume-envelope（`pr2-resume-envelope-deferred-finding`；仅 Opus 版展开）**：GPT Pro 会话 05（1/5）发现 parent durable mint 无检查地复制 producer proposal 的非-proof *envelope* 字段（`created_at`、`schema_version`、`master_domain_contract`、`campaign_hours`、`reset_reason`）。对手可把 `created_at` 设成非法值 → durable state 过终态门但**过不了自己的 resume validator** = 自相矛盾证书（`exact_campaign.py:~2399-2402` 拒它）。**判真但对 #5 越界**（它是*不同*不变量——checkpoint-envelope 自洽、非 declare_mode/穷尽 soundness、也非假-proof）。owner 裁定：**deferred 到 #2/#3 envelope 硬化或新项。** 做时：seal 前 fail-closed 校验 producer envelope 字段；注意别过度扩 child TCB（会话 05 的 probe-copy 修法把 `validate_exact_campaign_resume_state` + `compute_exact_artifact_hashes` import 进 child，逆着 #5 缩 child 的目标）；验证法 = 篡改 `created_at` + 重算 sha → seal 应被 REJECTED。
 
-**推荐序（restated）**：#8 → #9a → 定 #6（大概率接受 source-hash 为主防线 = 跳）→ #5（B2 枚举）+ #2/#3 → #1（+ #5-F parts 1+2）→ #9b（+#9c）。#8/#9a 已落 main；#7 已于 2026-07-04 落地；#5 是分支、等第 12 轮 relay。
+**推荐序（restated）**：#8 → #9a → 定 #6（大概率接受 source-hash 为主防线 = 跳）→ #5（B2 枚举）+ #2/#3 → #1（+ #5-F parts 1+2）→ #9b（+#9c）。#8/#9a 已落 main；#7 已于 2026-07-04 落地；#5 close-kernel 已 `6e06922` 合入 main、不再等 relay（#5 的 B2 独立枚举部分仍未做,与其余深化项同为未排期 backlog）。
 
 ---
 
@@ -1312,13 +1314,13 @@ panel（5 会话）发现 2 个 codex 本地审 *和* 我都漏的真 BLOCK：
 - **trust onion 永不见底。** 对抗审总能再剥一层；「零发现」非收敛判据。收敛 = 画 + 冻一条 TCB 线、在其上修、让新发现落其下（声明信任）或成为 done-criteria 实例（`p1-2-review-converged-tcb-start-p1-3`）。
 - **给新工程师的开放问题（也是找你来的原因）**：我们对*能 reseal 的维护者*硬化 checker 18 轮。鉴于 release gate 本就是人工计数，这是否是值得花这么多的正确威胁模型？#1 的 option (B)——架构上最小化 close-kernel TCB 的 import-time 执行——会否*溶解*掉大部分 F/A4 而非巡逻它们？这些正是我们在圈内可能判错的 call。
 
-**Codex 版另列的诚实接手点**（并集补充）：round-18 三类 residual 边界是否画对，尤其 A4 是否真的只能靠显眼 witness diff + clean-review；#5-F 是否被过早单列（若能提出有限、可验证、不打地鼠的 import-time closure 模型 = 实质突破）；`certified_artifact_contract.py` runtime anchor 是否足以把静默 data-file 信道从「只改 JSON」变成「必须动 runtime/checker/source floor」；`pr2-5-domain-frontier-gate` 未合 main，当前主线代码只能证 #8/#9a 已合、别拿分支 `9bbb3a6` 的 file:line 当 main 状态。
+**Codex 版另列的诚实接手点**（并集补充）：round-18 三类 residual 边界是否画对，尤其 A4 是否真的只能靠显眼 witness diff + clean-review；#5-F 是否被过早单列（若能提出有限、可验证、不打地鼠的 import-time closure 模型 = 实质突破）；`certified_artifact_contract.py` runtime anchor 是否足以把静默 data-file 信道从「只改 JSON」变成「必须动 runtime/checker/source floor」；`pr2-5-domain-frontier-gate` 未合 main，当前主线代码只能证 #8/#9a 已合、别拿分支 `9bbb3a6` 的 file:line 当 main 状态。（2026-07-04 注:已 `6e06922` 合入 main,此条转史料;「file:line 会漂移、以当前源码为准」的警告仍然成立。）
 
 ---
 
 ## 12. 可追溯性索引
 
-- 分支 `pr2-5-domain-frontier-gate` @ `9bbb3a6`（未合并，round-18）；`main` @ `b35e5f9`（PR2 #8/#9a 合于 `099f5a3`，PR #2）；PR1 @ `b085a75`。
+- 分支 `pr2-5-domain-frontier-gate` @ `9bbb3a6`（当时未合并，round-18;后续 `6e06922` 合入 main）；当时 `main` @ `b35e5f9`（PR2 #8/#9a 合于 `099f5a3`，PR #2）；PR1 @ `b085a75`。
 - 分支 #5 commit 链：`2ec8954`（+ Opus 版 `2c258c6`）→ `4410b6a`→`dbd1d72`→`b6d41c6`→`cce5dd5`→（round-3：⚠ Codex 版 `7a6cd8c`/`eb93637`）→`44c8da6`→`2fa42b9`→`66511ce`→`9c06ab8`→`ad73e4f`/`dbe27c0`→`c115f31`→`7851c1e`→`a5a5e64`→`adeddc5`→`8714ee7`→`504b3f8`→`d1a59ad`→`1b90285`→`c96a601`→`2ca6864`→`9bbb3a6`。（⚠ 完整拓扑以 `git log --oneline main..pr2-5-domain-frontier-gate` 为准。）
 - #8/#9a 组成：`be5ed93`（#8）、`507f213`（#9a）、`0657872`（GPT Pro 硬化）、`ec7dc52`（deploy-pending 标记）。PR2-b：`69980b3`+`592ea13`（仅 Opus 版给）。
 - checker：`scripts/check_p1_2_proof_obligations.py`（分支 ⚠ 行数：Opus ~12,235 / Codex ≥12,647）。
@@ -1704,20 +1706,20 @@ GPT Pro review 是 adversarial review、不是 formal proof；三份 review 或�
 
 ## 一、证据基线与主源（读这段先搞清"最新状态活在哪里"）
 
-- **当前最新状态（round-15→18）主要活在 harness RESUME 锚里，尚未完整沉淀进 cc_memory。** 主源文件：`C:\Users\22957\.claude\projects\C--claude-pj-zmd-pj\memory\p1-2-resume-state-20260621.md`，顶部 `▶▶▶` 段最新、已完整读取。**⚠ Codex 版特别指出**：该 RESUME 自己在 round-18 段末尾写有"待记 cc_memory：round-15..18 完整故事"（`p1-2-resume-state-20260621.md:12-14`），即 **cc_memory DB 里只记到 round-14 / 更早的余项表**，最新的 round-15→18 只在 RESUME + git commit message 里。新工程师用 `cc_memory search` 查不到最新几轮，必须读 RESUME + git log。
+- **写作时的最新状态（round-15→18）主要活在 harness RESUME 锚里，尚未完整沉淀进 cc_memory**（2026-07-04 注:round-19/20 与合并 `6e06922` 已进 main 历史,`git log` 即可看到,不再只活在 RESUME）。主源文件：`C:\Users\22957\.claude\projects\C--claude-pj-zmd-pj\memory\p1-2-resume-state-20260621.md`，顶部 `▶▶▶` 段最新、已完整读取。**⚠ Codex 版特别指出**：该 RESUME 自己在 round-18 段末尾写有"待记 cc_memory：round-15..18 完整故事"（`p1-2-resume-state-20260621.md:12-14`），即 **cc_memory DB 里只记到 round-14 / 更早的余项表**，最新的 round-15→18 只在 RESUME + git commit message 里。新工程师用 `cc_memory search` 查不到最新几轮，必须读 RESUME + git log。
 - **两版都读了 harness RESUME + 本地 git + cc_memory + PROJECT_LOCK 作证据**；结论高度一致，差异点已在下文用 ⚠ 标注。
 - **⚠ 一个引用可读性差异**：Opus 版把 `pr2-5-F-line-import-time-integrity-schedule` 当作权威来源引用（它确实作为 **harness 记忆 markdown 文件** `pr2-5-F-line-import-time-integrity-schedule.md` 存在，登记在 MEMORY.md 索引里）；Codex 版尝试用 cc_memory CLI 读同名 **DB 节点** 失败（报 `unknown node`），判定它"只能作为其它条目正文中提到的历史引用名，不能当作已读独立 cc_memory 条目"。**结论**：它是一个 harness 侧的 .md 文件、不是 cc_memory DB 里的节点；F 线的可读 cc_memory 正文集中在 `pr2-5-round10-11-12-fspinout`。
 
 ---
 
-## 二、当前 HEAD / 分支位置 / 未 push 风险（接手第一硬阻碍）
+## 二、当时 HEAD / 分支位置 / 未 push 风险（2026-07-02 快照;接手硬阻碍已随 `6e06922` 合并解除——close-kernel 工作已全在 main,不再依赖未 push 分支）
 
 - **`main` = `b35e5f9`**（两版一致，git 核过）。它是一条**纯记忆（memory）提交**（"PR2 #5 round-14 第11轮外审 triage — NOT sound（收敛 BLOCK）→ round-15"），**不含任何 PR2 #5 的代码硬化**。main 上最后的实质代码进展是更早合入的 PR2-b（`69980b3`+`592ea13`）和 PR2 #8/#9a（merge `099f5a3`）。
 - **⚠ main 相对 origin 的位置**：Opus 版只说"origin 上最新是 `5ab006f`，更旧"；Codex 版明确 **本地 `main` 相对 `origin/main=5ab006f` 是 ahead 2**。两者不冲突，Codex 补了"ahead 2"这个精确量。
 - **`pr2-5-domain-frontier-gate` = `9bbb3a6`**（两版一致，git 核过，分支 HEAD）。这是 PR2 #5 全部 close-kernel 硬化所在。
   - Opus 版：`git rev-list --count main..pr2-5-domain-frontier-gate` = **26**，即领先 main 26 个 commit（Codex 版未给此数，只说"相对 origin/main 有完整 round-7→18 线性硬化序列"，不冲突）。
   - **⚠ 工作树位置**：Codex 版补充该分支工作在 worktree `C:\claude pj\zmd_pj\.claude\worktrees\pr2-5-round10`（Opus 版未提）。
-- **🔴 关键接手障碍（两版一致）：`9bbb3a6` 未 push 到任何 remote。** `git branch -r --contains 9bbb3a6` 为空；origin 上最新是 `5ab006f`（更旧）。**整个 PR2 #5 的 26 个 commit 只活在本地 `.git` 里。** 新机器 clone origin 只会看到 `origin/main=5ab006f` 和 `origin/pr2-8-9a-batch=ec7dc52`（后者仅 Codex 版列出），**拿不到 `9bbb3a6` 的任何工作**。交接必须由 owner 把这条本地分支带过去（打包 `.git`、`git bundle`、或 push），否则这段状态全丢。
+- **🔴 关键接手障碍（两版一致）：`9bbb3a6` 未 push 到任何 remote。** `git branch -r --contains 9bbb3a6` 为空；origin 上最新是 `5ab006f`（更旧）。**整个 PR2 #5 的 26 个 commit 只活在本地 `.git` 里。** 新机器 clone origin 只会看到 `origin/main=5ab006f` 和 `origin/pr2-8-9a-batch=ec7dc52`（后者仅 Codex 版列出），**拿不到 `9bbb3a6` 的任何工作**。交接必须由 owner 把这条本地分支带过去（打包 `.git`、`git bundle`、或 push），否则这段状态全丢。（2026-07-04 注:此风险已解除——round-19/20 收口后 `6e06922` 合入 main,close-kernel 工作随 main 交付。）
 - **⚠ 工作树 dirty 状态**：Codex 版补充——PR2 worktree 的 `cc_memory/memory.db` dirty；主 checkout 也有 `cc_memory/memory.db` dirty + 大量未跟踪日志。**别把"commit 存在"误读成"所有工作树干净"。**（Opus 版未强调此点。）
 
 **分支上 round-by-round 的 commit 链**（Opus 版 `git log` 核过；Codex 版核了各轮 commit stat，与文件范围吻合）：
@@ -1739,7 +1741,7 @@ dbe27c0 round-7  lint fix ...
 
 ---
 
-## 三、round-18 状态 + 当前在等什么（WAITING_EXTERNAL）
+## 三、round-18 状态 + 当时在等什么（WAITING_EXTERNAL,2026-07-02 快照;后续:第 12 轮外审未发,owner 画线停止外审循环,round-19/20 收口后 `6e06922` 合入 main）
 
 round-18（`9bbb3a6`）已完成、已备好第 12 轮 GPT Pro 外审包等 owner 手动跑：
 
@@ -1866,7 +1868,7 @@ round-18 后 close-kernel 第二道门把残余明确归为三类，**边界从�
 | 4 | B4 `-I -S -B` 子进程隔离 | ✅ done | 小 | 已闭 |
 | 8 | argv0/contract 内容 digest | greenfield | 小 | `certified_artifact_contract.py:112-123` 仍全信 `sys.argv[0]` 认 checker 身份 |
 | 9a | floor 清单+生成器 close-kernel pin | partial | 中 | 生成器曾未进 pin map；#8/#9a 硬化已合 main（见 §七） |
-| 5 | B2 候选域独立枚举 | **partial（=本轮 close-kernel 门所在）** | 中 | `pr2_l0_true_verifier_child` ~403-417 仍信 producer candidate_generation |
+| 5 | B2 候选域独立枚举 | **partial（close-kernel 结构门部分已 `6e06922` 合入 main;B2 独立枚举本身仍未做、未排期）** | 中 | `pr2_l0_true_verifier_child` ~403-417 仍信 producer candidate_generation |
 | 2 | 受控 loader 最小快照+fd | partial | 中 | 快照仍扫全 src；当前未达设计标准的最小 TCB 闭包 |
 | 3 | B3 全程 fd-held read-once | partial | 中 | 现在是 path re-read（two-points-in-time 风险），非 fd 持有；需把读入+验证绑到 fd-held snapshot |
 | 7 | certify 生产入口 | ✅ landed 2026-07-04（`scripts/run_supervisor_seal.py`） | 中 | **`main.py` 仍停在 `CANDIDATE_PROPOSED`，seal 由独立命令从 marker 驱动**；通电只补 supervisor 可执行入口，不等于 P1.2 closed |
@@ -1881,7 +1883,7 @@ round-18 后 close-kernel 第二道门把残余明确归为三类，**边界从�
 - ③ **非-import import-time 副作用（开放，需设计 spike）**：metaclass/`__init_subclass__`/descriptor 副作用等——AST shape 扫描穷举不完，三选一：(A) 继续追完整、(B) 重构让 close-kernel TCB 的 import-time 执行最小化（减攻击面）、(C) 接受为残余 + V99 whole-file floor + 人工 reseal 复审兜底。
 - **归属**：紧邻 #1（本质是 #1 的 import-time 子 scope），非 release 关键路径。
 
-**推荐执行序（owner 方向，轻→重，go-live 最后）**：第 12 轮 CLEAN 后先 merge #5 结构门 → #8 argv0 → #9a floor pin → #5 B2 枚举 + #2/#3 loader/read-once 精化 → #1 最小 TCB 闭包（含 #5-F part1+2、part3 设计 spike）→ #9b OS 隔离（+#9c）→ **#7 certify 入口（最后通电）**。硬骨头 = #1/#9b/#9c + #5。参考 `p1-2-resume-state-20260621.md:14`。
+**推荐执行序（owner 方向，轻→重，go-live 最后）**：第 12 轮 CLEAN 后先 merge #5 结构门 → #8 argv0 → #9a floor pin → #5 B2 枚举 + #2/#3 loader/read-once 精化 → #1 最小 TCB 闭包（含 #5-F part1+2、part3 设计 spike）→ #9b OS 隔离（+#9c）→ **#7 certify 入口（最后通电）**。硬骨头 = #1/#9b/#9c + #5。参考 `p1-2-resume-state-20260621.md:14`。（2026-07-04 注:此为当时方向。实际后续:#5 结构门未再走第 12 轮、round-19/20 本地收口后直接合入 `6e06922`;#7 已通电 `349c56c`;其余深化项转未排期真实 backlog——owner 澄清画 TCB 线只停外审循环、不取消这些待办。）
 
 ---
 
@@ -1967,7 +1969,7 @@ round-18 后 close-kernel 第二道门把残余明确归为三类，**边界从�
 
 ### 盲点 H：状态分裂（操作风险，Codex 版强调）
 
-最新 round-18 只活在 harness RESUME + 本地 branch；cc_memory 只记到 round-14 / 更早；`main` 和 PR2 branch 都有本地 ahead/dirty；PR2 branch 未 push。新工程师若从 GitHub 克隆，只看到 `origin/main=5ab006f` 和 `origin/pr2-8-9a-batch=ec7dc52`，**不会自动拿到 `9bbb3a6`**。交接包若没含 `.git` 或没明确带上 branch/commit bundle，这段状态会丢。（呼应 §二 的未 push 风险。）
+最新 round-18 只活在 harness RESUME + 本地 branch；cc_memory 只记到 round-14 / 更早；`main` 和 PR2 branch 都有本地 ahead/dirty；PR2 branch 未 push。新工程师若从 GitHub 克隆，只看到 `origin/main=5ab006f` 和 `origin/pr2-8-9a-batch=ec7dc52`，**不会自动拿到 `9bbb3a6`**。交接包若没含 `.git` 或没明确带上 branch/commit bundle，这段状态会丢。（呼应 §二 的未 push 风险。2026-07-04 注:已随 `6e06922` 合并解除;「记忆层滞后于 git」的模式警告仍值得记取。）
 
 ---
 
@@ -1978,7 +1980,7 @@ round-18 后 close-kernel 第二道门把残余明确归为三类，**边界从�
 3. **`main.py` 正常链止于 `CANDIDATE_PROPOSED`**；`supervisor_seal()` 的生产调用方是独立的 `scripts/run_supervisor_seal.py`；**别把"方法存在 / 测试调过 / 入口存在"当"已发布 CERTIFIED"**。
 4. **改 frozen 工件 / v99 sealed sink = freeze-ritual**：更新 `scripts/preflight_gate.py` 的 hash + 重封 allowlist/obligations/checker 自钉，**LF only**（CRLF 会导致本地过 / CI 挂，cc_memory `p1-2-fix-1-close-kernel-crlf` 有血教训）。
 5. **status 矩阵**：`docs/项目说明/soundness_gap_roadmap.md` 是所有 soundness gap 的 IMPLEMENTED/OPEN/PARTIAL/OUT-OF-SCOPE 权威表（**IMPLEMENTED ≠ P1.2 CLOSED**）。
-6. **接手障碍提醒**：PR2 #5 全部 26 个 commit 在本地分支 `pr2-5-domain-frontier-gate`（HEAD `9bbb3a6`，worktree `.claude/worktrees/pr2-5-round10`）、**未 push**——新机器拿不到，需 owner 把这条分支带过去；且最新 round-15→18 完整故事只在 harness RESUME + git、尚未进 cc_memory。
+6. **接手障碍提醒**：PR2 #5 全部 26 个 commit 在本地分支 `pr2-5-domain-frontier-gate`（HEAD `9bbb3a6`，worktree `.claude/worktrees/pr2-5-round10`）、**未 push**——新机器拿不到，需 owner 把这条分支带过去；且最新 round-15→18 完整故事只在 harness RESUME + git、尚未进 cc_memory。（2026-07-04 注:此条已失效——`6e06922` 合入后 main 自带全部 close-kernel 工作。）
 
 
 ---

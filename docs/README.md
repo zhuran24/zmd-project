@@ -12,7 +12,7 @@
 
 ## 现行发布链
 
-producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint 字节复验并铸造持久化终端 `CERTIFIED`，但当前仓库没有生产 CLI/launcher 调用该方法，普通 `main.py` 运行不会 seal。`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的 campaign authority 事务式发布 canonical solution、blueprint 和 manifest。fixed-witness verifier 与 P1.2 open gate 已落地，但 supervisor 调度入口、PR2 的 L0/L1 受控 loader/read-once/TCB 收敛、review package 剩余问题和 owner 手动 gate 仍未闭。
+producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint 字节复验并铸造持久化终端 `CERTIFIED`；其生产入口是独立命令 `scripts/run_supervisor_seal.py`（从 proposal-ready marker 驱动，`349c56c`），普通 `main.py` 运行不会 seal。`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的 campaign authority 事务式发布 canonical solution、blueprint 和 manifest。fixed-witness verifier、P1.2 open gate 与 supervisor 调度入口均已落地，但 PR2 的 L0/L1 受控 loader/read-once/TCB 收敛、review package 剩余问题和 owner 手动 gate 仍未闭。
 
 ## 历史 subject/projection 文本
 

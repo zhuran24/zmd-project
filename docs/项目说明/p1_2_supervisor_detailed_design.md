@@ -34,8 +34,8 @@ proposal 是待审数据，不是证明 authority。
 
 `mark_campaign_stopped(..., "CERTIFIED")` 只有 supervisor 的私有 token 路径可用。普通调用必须报错。
 
-当前实现缺少生产调度面：全仓只有测试直接调用 `supervisor_seal()`，`main.py`/campaign wrappers 不调用。
-所以 PR1 “mint 方法已实现”不能写成“supervisor 服务/命令已上线”。
+生产调度面已于 2026-07-04 补上：`scripts/run_supervisor_seal.py`（`349c56c`）是 `supervisor_seal()`
+的独立生产命令；`main.py`/campaign wrappers 仍不调用。入口存在只满足一条机器条件，不等于 P1.2 closed。
 
 ## 4. Fixed-witness capsule
 
@@ -67,8 +67,8 @@ report builder 等外围写入面收拢到 central publisher 或显式 non-autho
 
 ## 7. PR2 未完成项
 
-PR1/PR2 之后仍需先补一个受支持的 production supervisor entrypoint，明确读取 proposal-ready marker、
-失败码、幂等性与操作审计。PR2 的目标仍包括：
+受支持的 production supervisor entrypoint 已落地（`scripts/run_supervisor_seal.py`：读取
+proposal-ready marker、区分退出码、二次运行 fail-closed）。PR2 的目标仍包括：
 
 - 更小的 supervisor/verifier import closure；
 - controlled loader，拒绝不必要的 runtime import/mutable module state；

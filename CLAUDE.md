@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 2. **`README.md`** 是完整的项目 handoff 史料（六章决策记录：架构、认证链、PR1/PR2 saga、坑、开放问题）。它是记录不是命令，凡涉及证明/认证的断言先对源码自查。
 3. `NAV_MAP.md` 是调用链导航（注意：只列了主链约 7 个 `src/search` 模块，实际认证链还依赖 `certified_artifact_contract.py`、`candidate_proof_replay.py`、`pr2_l0_micro_verifier_core.py`、`pr2_l0_true_verifier_child.py`、`exact_parallel_scheduler.py` 等十余个未列出模块）。
 
-**⚠ 本仓库是交付副本，git 历史被重建过**：README 里引用的所有 commit hash（`b35e5f9`、`9bbb3a6`、`099f5a3`…）在本仓库 `git cat-file` 均不可解析——它们是原机器的历史，只能当叙事线索，不能 `git show`。本仓库无 remote。分支：`main`、`pr2-5-domain-frontier-gate`（close-kernel 硬化线，round-19/20 全吸收后已于 `6e06922` **合入 main**，分支指针保留、已是 main 祖先）、`topology-opt`（S0-S3 diagnostic 模块已进 main 历史，同为 main 祖先；生产接线未做）。核对 HEAD 以实测为准，别死认文档里记的 hash。
+**⚠ 本仓库是交付副本，git 历史被重建过**：README 里引用的所有 commit hash（`b35e5f9`、`9bbb3a6`、`099f5a3`…）在本仓库 `git cat-file` 均不可解析——它们是原机器的历史，只能当叙事线索，不能 `git show`。本仓库无 remote。分支：`main`、`topology-opt`（S0-S3 diagnostic 模块已进 main 历史，是 main 祖先；生产接线未做）。原 `pr2-5-domain-frontier-gate`（close-kernel 硬化线）已于 `6e06922` 合入 main（round-19/20 全吸收）、分支指针已删。核对 HEAD 以实测为准，别死认文档里记的 hash。
 
 ## 常用命令
 

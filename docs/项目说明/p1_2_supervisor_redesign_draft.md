@@ -23,7 +23,8 @@
 - public publisher：`publish_verified_certified_delivery_surface()`
 
 当前工作树只实现上述 Python authority 边界；没有 production supervisor CLI/launcher。`main.py` 终点仍是
-`CANDIDATE_PROPOSED`，这项操作接线属于未完成工作。
+`CANDIDATE_PROPOSED`，这项操作接线属于未完成工作。（2026-07-04 注：此句为草案当时状态——操作接线已由
+`scripts/run_supervisor_seal.py`（`349c56c`）补上；`main.py` 终点不变。）
 
 ## 尚未落地的草案目标
 

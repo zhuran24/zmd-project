@@ -27,9 +27,10 @@ material 和 proposal marker。它不再直接铸造 durable terminal `CERTIFIED
 
 其它路径调用 `mark_campaign_stopped(..., "CERTIFIED")` 会被拒绝。
 
-**未接入项：**仓库没有生产 supervisor CLI/launcher，`main.py` 和 runtime wrappers 都不调用
-`supervisor_seal()`；目前实际终点是 proposal-ready 的 `CANDIDATE_PROPOSED`。测试中的直接方法调用不能
-替代生产调度面。
+**生产入口（2026-07-04 已接入）：**`scripts/run_supervisor_seal.py`（`349c56c`）是 `supervisor_seal()`
+的独立生产命令，从 proposal-ready marker 驱动；`main.py` 和 runtime wrappers 仍不调用
+`supervisor_seal()`，普通 solve 的实际终点仍是 `CANDIDATE_PROPOSED`。入口存在只满足一条机器条件，
+不等于 P1.2 closed。
 
 ### 3. fixed-witness 与 connector/body 复验
 
@@ -64,7 +65,7 @@ allowlist 和关键 gate 文件。它是结构边界检查，不是“P1.2 已 s
 
 ## 仍未关闭的边界
 
-1. 当前没有受支持的生产 supervisor seal 命令/launcher；普通 solver run 不会从 proposal 自动晋升。
+1. 普通 solver run 不会从 proposal 自动晋升（生产 supervisor seal 命令已存在：`scripts/run_supervisor_seal.py`；但尚无真实生产 campaign→seal 实跑记录）。
 2. `data/review_gates/phase_1_2_spike_close.json` 仍为 `blocked_manual_review_count`，兼容字段
    `p1_3b_entry_allowed=false`。内部 supervisor seal 不能自动翻转 owner gate。
 3. PR2 的较小 verification TCB、controlled loader、read-once/one-snapshot 设计仍未实现完整。

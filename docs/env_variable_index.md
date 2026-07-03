@@ -144,7 +144,7 @@
 
 | Name | Type | Default | Reader | 作用 |
 |---|---|---|---|---|
-| `EXACT_BINDING_USE_OVERLOAD_SEPARATION` | bool | 0 | binding_subproblem.py | binding overload separation (multi-occur cut)。不在 certified operational allowlist——certified 入口对其开启 fail-closed 拒绝；I1 复验器共读此 env 属 guarded 深度防御缺口 (非 live), I1 侧强制关闭的参数化推迟到 pr2-5 merge 后 |
+| `EXACT_BINDING_USE_OVERLOAD_SEPARATION` | bool | 0 | binding_subproblem.py | binding overload separation (multi-occur cut)。不在 certified operational allowlist——certified 入口对其开启 fail-closed 拒绝；I1 复验器已不再共读此 env（`a731764`：`PortBindingModel.build()` 加 `use_overload_separation` 参数，I1 调用点显式传 `False`，深度防御缺口已补齐） |
 | `EXACT_BINDING_DUMP_STATE` | bool | 0 | binding_subproblem.py | binding 调试 state dump (开发用) |
 | `EXACT_SUBPROBLEM_MAX_MEMORY_MB` | int | (内部) | cp_sat_worker_config.py | subproblem 内存 cap |
 | `EXACT_SUBPROBLEM_PARAMS` | json | (内部) | cp_sat_worker_config.py | subproblem CP-SAT 参数 override |

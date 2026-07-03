@@ -13,8 +13,10 @@ not daily authority entrypoints.
 | `campaign_watchdog.sh`, `stop_campaign.sh`, `temp_logger.sh` | Process/telemetry operations only |
 | `inspect_exact_campaign_state.py` | Read-only or report-producing inspector; never a proof source |
 
-The producer/supervisor/publication boundary lives in Python source. No current launcher invokes
-`ExactCampaign.supervisor_seal()`; `main.py` and campaign wrappers stop at `CANDIDATE_PROPOSED`.
+The producer/supervisor/publication boundary lives in Python source. The production supervisor
+launcher is `scripts/run_supervisor_seal.py` (independent marker-driven command, landed
+2026-07-04); `main.py` and campaign wrappers still stop at `CANDIDATE_PROPOSED` and never seal
+as a side effect.
 A wrapper must not convert candidate success into terminal or public `CERTIFIED`, and method
 existence must not be documented as an operational supervisor service.
 
@@ -47,10 +49,12 @@ drift.
 ## Review snapshot packaging
 
 `package_review_snapshot.py` is a review convenience, not certification authority. The current
-implementation resolves a commit for metadata but still materializes the caller-supplied `treeish`;
-there is therefore an open immutable-materialization gap if a mutable ref moves between those
-steps. Its default targeted test list is not the full P1.2 or repository test suite. Package output
-must retain these limitations in its manifest and release notes.
+implementation resolves the caller-supplied `treeish` to an immutable commit SHA once, then uses
+that same resolved commit for provenance metadata, the manifest `treeish` field, and tree
+materialization — so a mutable ref moving between those steps no longer opens a
+manifest-vs-archive gap (no dedicated TOCTOU regression test pins this yet). Its default targeted
+test list is not the full P1.2 or repository test suite. Package output must retain these
+limitations in its manifest and release notes.
 
 ## IndustrialPlanner and viewer scripts
 

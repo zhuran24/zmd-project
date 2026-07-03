@@ -116,9 +116,9 @@ terminal evidence and current hashes. Only a successful supervisor transition ma
 terminal `CERTIFIED` state.
 
 There is no documentation shortcut that can substitute for calling the actual supervisor path.
-The current repository does not provide a production supervisor CLI or launcher, and `main.py`
-stops at `CANDIDATE_PROPOSED`. A proposal-ready marker therefore means “awaiting an external,
-explicit supervisor invocation”, not “sealed”.
+The production supervisor launcher is `scripts/run_supervisor_seal.py` (independent, marker-driven,
+landed 2026-07-04), and `main.py` still stops at `CANDIDATE_PROPOSED`. A proposal-ready marker
+therefore means “awaiting an external, explicit supervisor invocation”, not “sealed”.
 
 ## 8. Public publication
 

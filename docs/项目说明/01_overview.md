@@ -48,7 +48,7 @@ main.py
        枚举候选并运行 benders_loop
        terminal success 只提交 CANDIDATE_PROPOSED + replay/fixed-witness material
   -> exact_campaign.py
-       [当前无生产 supervisor CLI/launcher]
+       [生产 supervisor 入口 = scripts/run_supervisor_seal.py（独立命令、proposal-ready marker 驱动）]
        supervisor_seal() 需由独立 supervisor 显式调用，从磁盘重读提案并执行 sink replay、fixed-witness 与终端证据复验
        唯一 durable terminal CERTIFIED mint
   -> certified_surface.py
@@ -61,7 +61,8 @@ main.py
 终态，更不是公开发布权。generic serializers、viewer/report builders、IndustrialPlanner adapters 和
 compatibility exports 都是派生面，不能自行把数据命名为 certified。
 
-当前 `main.py` 只到 `CANDIDATE_PROPOSED`，仓库没有生产 supervisor 调度入口。因此上图是已实现的
+当前 `main.py` 只到 `CANDIDATE_PROPOSED`；生产 supervisor 调度入口是独立命令
+`scripts/run_supervisor_seal.py`（`349c56c`，2026-07-04），不由 `main.py` 顺手执行。上图是已实现的
 authority API 顺序，不是当前已打通的一键发布流程。
 
 ## 1.4 求解内核
@@ -84,13 +85,16 @@ validator 和 shadow tests，但 `step_8_apply_to_master` 仍不是当前 produc
 
 ## 1.6 当前发布状态
 
-截至 2026-06-26，工作树已有 producer/supervisor split、fixed-witness capsule、fail-closed
-P1.2 OPEN-GATE、独立 whole-layout reverify 和中央公开发布器。P1.2 仍为 OPEN/BLOCKED，原因包括：
+截至 2026-07-04，工作树已有 producer/supervisor split、fixed-witness capsule、fail-closed
+P1.2 OPEN-GATE、独立 whole-layout reverify、中央公开发布器和生产 supervisor 入口
+（`scripts/run_supervisor_seal.py`）。P1.2 仍为 OPEN/BLOCKED，原因包括：
 
-- 没有受支持的 production supervisor CLI/launcher；普通 solve run 不会自动 seal；
+- 普通 solve run 不会自动 seal；supervisor 入口是独立命令、仅满足一条机器条件，且尚无真实生产
+  campaign→seal 实跑记录；
 - owner manual gate 仍是 `blocked_manual_review_count`；
 - PR2 的 smaller/read-once/controlled-loader verification TCB 尚未完成；
-- review snapshot 仍需从 resolved immutable commit 物化，并补齐归档策略覆盖；
+- review snapshot 已改为从 resolved immutable commit 物化（缺专门 TOCTOU 回归测试），归档策略
+  覆盖仍需补齐；
 - 其它 roadmap 中仍为 OPEN/PARTIAL 的规格与几何边界尚未全部关闭。
 
 现有机器字段 `p1_3b_*` 是历史兼容名。人类文档把后续 master integration 称为 P1.3。

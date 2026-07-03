@@ -29,7 +29,7 @@ candidate records
        + terminal frontier evidence
        + sink replay request
        + fixed-witness capsule/material
-  -> [未实现：production supervisor CLI/launcher]
+  -> scripts/run_supervisor_seal.py（生产 supervisor 入口，独立命令、marker 驱动，不由 main.py 顺手执行）
   -> ExactCampaign.supervisor_seal()
        + canonical disk reread
        + current hash check
