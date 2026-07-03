@@ -46,7 +46,6 @@ from __future__ import annotations
 
 import copy
 import functools
-import json
 import math
 import os
 import time
@@ -57,6 +56,7 @@ from typing import Any, Callable, Collection, DefaultDict, Dict, FrozenSet, Iter
 
 from ortools.sat.python import cp_model
 
+from src.io.strict_json import load_strict_json, loads_strict_json
 from src.models.cp_sat_worker_config import (
     DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS,
     DEFAULT_MASTER_CP_SAT_WORKERS,
@@ -1934,29 +1934,12 @@ class _PowerSupportBucketRecord:
     coverers: Tuple[int, ...]
 
 
-def _reject_duplicate_json_keys(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
-    payload: Dict[str, Any] = {}
-    for key, value in pairs:
-        if key in payload:
-            raise ValueError(f"duplicate JSON key: {key}")
-        payload[key] = value
-    return payload
-
-
-def _reject_json_constant(value: str) -> None:
-    raise ValueError(f"invalid JSON constant: {value}")
-
-
 def _loads_strict_json(text: str) -> Any:
-    return json.loads(
-        text,
-        object_pairs_hook=_reject_duplicate_json_keys,
-        parse_constant=_reject_json_constant,
-    )
+    return loads_strict_json(text)
 
 
 def _load_json(path: Path) -> Any:
-    return _loads_strict_json(path.read_text(encoding="utf-8"))
+    return load_strict_json(path)
 
 
 def _normalize_generic_io_requirement_section(

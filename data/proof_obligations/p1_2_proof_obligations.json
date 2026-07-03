@@ -903,7 +903,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "9fd20bc0b1790ed348786d261870b60920aedb79d971e4da87c5285644ead892",
+        "source_sha256": "c5b23af128adae493738377c9c7af25960bb0e7d5ae268ec179ab4a106fa044e",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1135,7 +1135,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "9af9a256c03ebfd937642248fd329ca9b307f28a0fec8280dc76634b8910cac1",
+        "source_sha256": "e61cd1f9cf14bc434c66a651bfa4007ad8307d6e3afc393b6f99dce87df3e1c8",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1245,7 +1245,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "1c72cc6e5b042900975cc18b8284c75531f01d3ca4f46ef553dcbea49b61710f",
+        "source_sha256": "83fce8ace56a97e237ba467a127e0d7de532ef7e62790cb72258a0eb7bbfe26b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
