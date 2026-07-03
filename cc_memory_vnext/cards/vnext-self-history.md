@@ -50,7 +50,7 @@ provenance:
   evidence:
     - "cc_memory_vnext/HISTORY.md"
     - "cc_memory_vnext/design/ (8 份一手设计语料,143KB)"
-updated_at: "2026-06-28"
+updated_at: "2026-07-03"
 ---
 凡是问到"记忆系统的来历 / 重写前是什么样 / 整个重写过程怎么走的 / 现在什么状态 / 还有哪些待做未做(路线)"——别去散落信息里重新拼,先读 `cc_memory_vnext/HISTORY.md`:那是这套系统自己故事的单一连贯入口(背景演进链 → 重写关键裁决 → 现状三层并存 → 未解矛盾 → V2 路线 → 东西都在哪)。
 
@@ -58,4 +58,4 @@ updated_at: "2026-06-28"
 
 **设计、讨论或重推记忆系统功能前，先读 `cc_memory_vnext/HISTORY.md §5`、`design/MASTER_PLAN` 和 `design/council_B`；「判官/看守」结论、「冻结/迁移」路线和分档门槛(Action Recall@L1≥80%、误拦率<15%)已有既定方案。**但压缩摘要把它丢了、`HISTORY`/`design` 又是"拉"层没人推 → 我没召回到、重新昂贵推了一遍。**教训:捕获≠召回——东西记下来了不等于用到的时候会出现。所以要【设计/讨论/重推记忆系统任何功能】前,先读 `HISTORY.md` + `design/`(尤其 `MASTER_PLAN`/`council_B`),十有八九计划已在那。** 别再用一场大会重推已经定过的东西。
 
-**深入教训(2026-06-28 owner 点出)**:涉及记忆系统设计判断时，summary 深度不足；必须 plan-depth 深读 `MASTER_PLAN`/`council_B` 原文，并把相关章节显式映射到当前问题。教训:**查记忆 on 你要动手的话题,summary 深度不够 → 要 plan 深度**(读 `MASTER_PLAN`/`council_B` 原文,不是扫 dossier 叙事),而且**读完要把它【连】到当前问题**(我读了 §5 却没连到 ③ = 纯被动悖论)。最后这"连接"一环卡片推指针保证不了——**当前更强的解是「可观测提交点记忆闸(ZMEM_PROOF)」**:做设计判断/下结论前必须有"查过记忆"的证明,否则 Stop/PreToolUse 闸挡回去先查(详 `design/observable-commitment-gate-20260628.md`);③ 的「看守」已**降为第四档**(只管"外露了计划但还没变成动作/结论"那块的 cross-check),不再是 ③ 的主解。
+**深入教训(2026-06-28 owner 点出)**:涉及记忆系统设计判断时，summary 深度不足；必须 plan-depth 深读 `MASTER_PLAN`/`council_B` 原文，并把相关章节显式映射到当前问题。教训:**查记忆 on 你要动手的话题,summary 深度不够 → 要 plan 深度**(读 `MASTER_PLAN`/`council_B` 原文,不是扫 dossier 叙事),而且**读完要把它【连】到当前问题**(我读了 §5 却没连到 ③ = 纯被动悖论)。最后这"连接"一环卡片推指针保证不了——**当前更强的解是「可观测提交点记忆闸(ZMEM_PROOF)」**:做设计判断/下结论前必须有"查过记忆"的证明,没证明就在提交点被挡回去先查(详 `design/observable-commitment-gate-20260628.md`);③ 的「看守」已**降为第四档**(只管"外露了计划但还没变成动作/结论"那块的 cross-check),不再是 ③ 的主解。**落地进度(2026-07-03)**:`zmem search` 吐 proof + PreToolUse 高危闸查 proof 已落第一版,同批还落了 UPS 富化/error_regex 撞错召回/影子测量;**Stop 输出闸、skip 留痕、observable_from 契约仍未做**——现状细节以 `HISTORY.md §3「2026-07-03 衍生操作召回批」`为准,别把闸描述当已全部实现。
