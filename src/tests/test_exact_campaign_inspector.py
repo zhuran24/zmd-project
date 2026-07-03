@@ -36,7 +36,11 @@ from src.search.exact_campaign import (
     has_terminal_full_frontier_certified_evidence,
 )
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
-from src.search.phase3b.b5a.b5_anchor_sprint import build_phase3b_b5_anchor_sprint_summary
+from src.search.phase3b.b5a import b5_anchor_sprint as b5a_module
+from src.search.phase3b.b5a.b5_anchor_sprint import (
+    build_phase3b_b5_anchor_sprint_summary,
+    build_phase3b_b5_anchor_sprint_summary_from_inspection,
+)
 from src.tests.certified_frontier_helpers import (
     attach_terminal_frontier_evidence,
     forge_legacy_terminal_certified_stop,
@@ -170,6 +174,157 @@ def _build_exact_project(project_root: Path) -> Path:
         {"required_generic_outputs": {}, "required_generic_inputs": {}},
     )
     return project_root
+
+
+def _campaign_state_display_path(project_root: Path, campaign_path: Path) -> str:
+    try:
+        return str(campaign_path.resolve().relative_to(project_root)).replace("\\", "/")
+    except Exception:
+        return str(campaign_path)
+
+
+def _forged_b5a_inspection(
+    project_root: Path,
+    *,
+    campaign_path: Path | None = None,
+    candidate_count: int = 0,
+) -> dict[str, object]:
+    campaign_path = campaign_path or project_root / "data/checkpoints/exact_campaign_state.json"
+    return {
+        "metadata": {
+            "source": b5a_module.INSPECTION_SCHEMA_SOURCE,
+            "generated_at": "2026-01-01T00:00:00Z",
+            "project_root": str(project_root),
+        },
+        "paths": {
+            "campaign_state": _campaign_state_display_path(project_root, campaign_path),
+            "campaign_telemetry": "data/checkpoints/exact_campaign_telemetry.json",
+            "delivery_manifest": "data/solutions/certified_delivery_manifest.json",
+            "final_solution": "data/solutions/final_solution.json",
+            "optimal_blueprint": "data/blueprints/optimal_blueprint.json",
+        },
+        "campaign": {
+            "present": bool(candidate_count),
+            "final_status": None,
+            "last_stop_reason": None,
+            "candidate_count": candidate_count,
+            "candidate_status_counts": {},
+            "best_certified_result": None,
+        },
+        "telemetry": {"present": False, "wave_count": 0, "aggregate": None},
+        "delivery_manifest": {
+            "present": False,
+            "terminal_full_frontier_certified": False,
+        },
+        "certified_surface": {
+            "source": b5a_module.CERTIFIED_SURFACE_VERIFIER_SOURCE,
+            "publishable": False,
+            "blocked_reason": "unit_fixture_not_publishable",
+        },
+        "checks": [],
+    }
+
+
+def _install_fast_b5a_side_inputs(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        b5a_module,
+        "build_phase3b_unknown_triage_inventory",
+        lambda **_kwargs: {"summary": {}, "blockers": []},
+    )
+    monkeypatch.setattr(
+        b5a_module,
+        "build_phase3b_operating_profile_summary",
+        lambda _project_root: {"defaults": {}, "policy": {}},
+    )
+
+
+def test_b5a_from_inspection_reuses_matching_inspection_without_second_inspection(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project").resolve()
+    inspection = _forged_b5a_inspection(project_root)
+    _install_fast_b5a_side_inputs(monkeypatch)
+    calls = 0
+
+    def _fallback_inspection(**_kwargs):
+        nonlocal calls
+        calls += 1
+        return _forged_b5a_inspection(project_root, candidate_count=5)
+
+    monkeypatch.setattr(
+        b5a_module,
+        "build_exact_campaign_inspection",
+        _fallback_inspection,
+    )
+
+    summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=inspection,
+    )
+
+    assert calls == 0
+    assert summary["campaign"]["candidate_count"] == 0
+    assert summary["status"]["certified_surface_publishable"] is False
+    assert summary["status"]["anchor_found"] is False
+
+
+@pytest.mark.parametrize(
+    "mismatch",
+    [
+        "inspection_source",
+        "project_root",
+        "campaign_state_path",
+        "certified_surface_source",
+    ],
+)
+def test_b5a_from_inspection_falls_back_when_reuse_guard_mismatches(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mismatch: str,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project").resolve()
+    campaign_path = project_root / "data/checkpoints/exact_campaign_state.json"
+    inspection = _forged_b5a_inspection(project_root, campaign_path=campaign_path)
+    invalid_inspection = json.loads(json.dumps(inspection))
+    if mismatch == "inspection_source":
+        invalid_inspection["metadata"]["source"] = "wrong_inspector"
+    elif mismatch == "project_root":
+        invalid_inspection["metadata"]["project_root"] = str(project_root / "other")
+    elif mismatch == "campaign_state_path":
+        invalid_inspection["paths"]["campaign_state"] = "data/checkpoints/other.json"
+    elif mismatch == "certified_surface_source":
+        invalid_inspection["certified_surface"]["source"] = "wrong_surface"
+    else:  # pragma: no cover - parametrization sanity.
+        raise AssertionError(mismatch)
+    _install_fast_b5a_side_inputs(monkeypatch)
+    calls = 0
+
+    def _fallback_inspection(**kwargs):
+        nonlocal calls
+        calls += 1
+        assert kwargs["project_root"] == project_root
+        assert kwargs["campaign_state_path"] == campaign_path
+        return _forged_b5a_inspection(
+            project_root,
+            campaign_path=campaign_path,
+            candidate_count=5,
+        )
+
+    monkeypatch.setattr(
+        b5a_module,
+        "build_exact_campaign_inspection",
+        _fallback_inspection,
+    )
+
+    summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=invalid_inspection,
+    )
+
+    assert calls == 1
+    assert summary["campaign"]["candidate_count"] == 5
+    assert summary["status"]["anchor_found"] is False
 
 
 def _certified_placement() -> dict[str, object]:
@@ -669,7 +824,10 @@ def test_v70_inspector_and_b5a_reject_stale_terminal_after_artifact_hash_mismatc
     _write_json(rules_path, rules_payload)
 
     inspection = build_exact_campaign_inspection(project_root)
-    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=inspection,
+    )
 
     assert inspection["campaign"]["resume_compatible_with_current_hashes"] is False
     assert inspection["campaign"]["resume_validation_reason"] == "artifact_hash_mismatch"
@@ -721,7 +879,10 @@ def test_v70_inspector_and_b5a_reject_terminal_manifest_without_current_delivery
 
     (project_root / "data" / "solutions" / "final_solution.json").unlink()
     inspection = build_exact_campaign_inspection(project_root)
-    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=inspection,
+    )
 
     assert inspection["campaign"]["terminal_full_frontier_certified"] is False
     assert inspection["campaign"]["best_certified_result"] is None
@@ -779,7 +940,10 @@ def test_v71_inspector_and_b5a_reject_manifest_with_stale_artifact_table(
     _write_json(manifest_path, manifest_payload)
 
     inspection = build_exact_campaign_inspection(project_root)
-    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=inspection,
+    )
 
     assert inspection["campaign"]["terminal_full_frontier_certified"] is False
     assert inspection["campaign"]["best_certified_result"] is None
@@ -842,7 +1006,10 @@ def _assert_certified_surface_verdict_is_single_gate_for_inspector_and_b5a(
     _export_current_certified_surface(project_root, monkeypatch)
 
     inspection = build_exact_campaign_inspection(project_root)
-    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=inspection,
+    )
 
     assert inspection["certified_surface"]["source"] == "certified_surface_verifier_v1"
     assert inspection["certified_surface"]["publishable"] is True
@@ -855,7 +1022,10 @@ def _assert_certified_surface_verdict_is_single_gate_for_inspector_and_b5a(
     delivery_manifest_output_path(project_root).unlink()
 
     stale_inspection = build_exact_campaign_inspection(project_root)
-    stale_b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+    stale_b5a_summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=stale_inspection,
+    )
 
     assert stale_inspection["certified_surface"]["publishable"] is False
     assert stale_inspection["certified_surface"]["blocked_reason"] == "delivery_manifest_missing"
@@ -892,6 +1062,7 @@ def test_v73_b5a_uses_certified_surface_verifier_for_anchor_publication(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     project_root = tmp_path / "b5a_certified_surface_verifier"
+    # Sentinel: keep the default B5A entry on a freshly published surface.
     _export_current_certified_surface(project_root, monkeypatch)
 
     current_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
@@ -916,13 +1087,17 @@ def test_v73_certified_surface_rejects_non_regular_manifest_path(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     project_root = tmp_path / "non_regular_certified_manifest"
+    # Sentinel: keep one real publisher/currentness integration in this file.
     _export_current_certified_surface(project_root, monkeypatch)
     manifest_path = delivery_manifest_output_path(project_root)
     manifest_path.unlink()
     manifest_path.mkdir()
 
     inspection = build_exact_campaign_inspection(project_root)
-    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=inspection,
+    )
 
     assert inspection["certified_surface"]["publishable"] is False
     assert inspection["certified_surface"]["delivery_manifest_regular_file"] is False
@@ -1026,7 +1201,10 @@ def test_v74_inspector_rejects_duplicate_key_delivery_manifest(
     )
 
     inspection = build_exact_campaign_inspection(project_root)
-    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary_from_inspection(
+        project_root,
+        inspection=inspection,
+    )
 
     assert inspection["certified_surface"]["publishable"] is False
     assert inspection["certified_surface"]["blocked_reason"].startswith(

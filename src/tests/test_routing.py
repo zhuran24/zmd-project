@@ -6,10 +6,11 @@ Status: ACCEPTED_DRAFT
 注意：全量路由求解太耗时，仅测试模型构建和小规模求解。
 """
 
-import json
 import pytest
 from pathlib import Path
 from typing import Dict, Any
+
+from src.tests.artifact_pack_support import get_repo_facility_pools_readonly
 
 # ============================================================================
 # 夹具
@@ -585,11 +586,7 @@ def test_packaging_battery_pose_binding_domain(project_root):
     sys.path.insert(0, str(project_root))
     from src.models.port_binding import enumerate_pose_level_port_bindings
 
-    pools = json.loads(
-        (project_root / "data" / "preprocessed" / "candidate_placements.json").read_text(
-            encoding="utf-8"
-        )
-    )["facility_pools"]
+    pools = get_repo_facility_pools_readonly()
     pose = pools["manufacturing_6x4"][0]
 
     bindings = enumerate_pose_level_port_bindings("packaging_battery", pose)
@@ -610,11 +607,7 @@ def test_crusher_sandleaf_pose_binding_domain(project_root):
     sys.path.insert(0, str(project_root))
     from src.models.port_binding import enumerate_pose_level_port_bindings
 
-    pools = json.loads(
-        (project_root / "data" / "preprocessed" / "candidate_placements.json").read_text(
-            encoding="utf-8"
-        )
-    )["facility_pools"]
+    pools = get_repo_facility_pools_readonly()
     pose = pools["manufacturing_3x3"][0]
 
     bindings = enumerate_pose_level_port_bindings("crusher_sandleaf", pose)
@@ -634,11 +627,7 @@ def test_generic_hub_binding_is_not_locally_enumerable(project_root):
         supports_exact_pose_level_binding,
     )
 
-    pools = json.loads(
-        (project_root / "data" / "preprocessed" / "candidate_placements.json").read_text(
-            encoding="utf-8"
-        )
-    )["facility_pools"]
+    pools = get_repo_facility_pools_readonly()
     pose = pools["protocol_core"][0]
 
     assert supports_exact_pose_level_binding("protocol_core") is False

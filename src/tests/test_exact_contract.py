@@ -78,6 +78,7 @@ from src.tests.certified_frontier_helpers import (
     install_accepting_l0_supervisor_seal,
     write_closed_phase_review_gate,
 )
+from src.tests.artifact_pack_support import get_repo_facility_pools_readonly
 
 
 
@@ -4126,12 +4127,10 @@ def test_binding_missing_instance_metadata_returns_unknown_before_routing(
     tmp_path: Path,
 ) -> None:
     project_root = Path(__file__).resolve().parent.parent.parent
-    candidate_path = project_root / "data" / "preprocessed" / "candidate_placements.json"
-    if not candidate_path.exists():
+    try:
+        facility_pools = get_repo_facility_pools_readonly()
+    except FileNotFoundError:
         pytest.skip("requires external candidate_placements.json artifact (absent in CI)")
-    facility_pools = json.loads(
-        candidate_path.read_text(encoding="utf-8")
-    )["facility_pools"]
     pose = facility_pools["manufacturing_6x4"][0]
 
     class MasterStub(_CertifiedBindingMasterRulesMixin):

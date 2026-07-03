@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 
+from src.tests.artifact_pack_support import get_repo_facility_pools_readonly
+
 
 @pytest.fixture(scope="session")
 def project_root() -> Path:
@@ -14,13 +16,8 @@ def project_root() -> Path:
 
 
 @pytest.fixture(scope="session")
-def facility_pools(project_root):
-    data = json.loads(
-        (project_root / "data" / "preprocessed" / "candidate_placements.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    return data["facility_pools"]
+def facility_pools():
+    return get_repo_facility_pools_readonly()
 
 
 CANONICAL_GENERIC_INPUTS = {"valley_battery": 1, "qiaoyu_capsule": 1}

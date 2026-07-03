@@ -15,6 +15,7 @@ from src.models.master_model import (
     load_generic_io_requirements_artifact,
     load_project_data,
 )
+from src.tests.artifact_pack_support import load_project_instances_and_rules
 from src.search.benders_loop import (
     compute_exact_static_area_lower_bound,
     compute_mandatory_area_lower_bound,
@@ -274,8 +275,14 @@ def test_generic_io_requirements_are_generated_from_preprocess() -> None:
 
 def test_exact_static_area_lower_bound_excludes_power_pole_area_heuristic() -> None:
     project_root = Path(__file__).resolve().parent.parent.parent
-    exact_instances, _pools, rules = load_project_data(project_root, solve_mode="certified_exact")
-    exploratory_instances, _pools2, _rules2 = load_project_data(project_root, solve_mode="exploratory")
+    exact_instances, rules = load_project_instances_and_rules(
+        project_root,
+        solve_mode="certified_exact",
+    )
+    exploratory_instances, _rules2 = load_project_instances_and_rules(
+        project_root,
+        solve_mode="exploratory",
+    )
 
     lower_bound = compute_mandatory_area_lower_bound(exact_instances, rules)
     manual = 0
@@ -291,7 +298,10 @@ def test_exact_static_area_lower_bound_excludes_power_pole_area_heuristic() -> N
 
 def test_exact_static_area_lower_bound_includes_protocol_storage_box_minimum_area_lower_bound() -> None:
     project_root = Path(__file__).resolve().parent.parent.parent
-    exact_instances, _pools, rules = load_project_data(project_root, solve_mode="certified_exact")
+    exact_instances, rules = load_project_instances_and_rules(
+        project_root,
+        solve_mode="certified_exact",
+    )
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
 
     mandatory_lower_bound = compute_mandatory_area_lower_bound(exact_instances, rules)

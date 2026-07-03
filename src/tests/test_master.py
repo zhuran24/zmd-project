@@ -53,6 +53,7 @@ from src.models.master_model import (
     load_generic_io_requirements_artifact,
     load_project_data,
 )
+from src.tests.artifact_pack_support import load_project_instances_and_rules
 from src.models.cp_sat_worker_config import (
     DEFAULT_BINDING_CP_SAT_WORKERS,
     DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS,
@@ -1869,8 +1870,15 @@ def test_master_solver_worker_override_changes_only_solver_parameter(
 
 
 def test_load_project_data_separates_exact_and_exploratory(project_root: Path) -> None:
-    exact_instances, pools, rules = load_project_data(project_root, solve_mode="certified_exact")
-    exploratory_instances, _, _ = load_project_data(project_root, solve_mode="exploratory")
+    exact_instances, rules = load_project_instances_and_rules(
+        project_root,
+        solve_mode="certified_exact",
+    )
+    exploratory_instances, _ = load_project_instances_and_rules(
+        project_root,
+        solve_mode="exploratory",
+    )
+    _, pools, _ = load_project_data(project_root, solve_mode="certified_exact")
 
     assert len(exact_instances) == 266
     assert all(inst["is_mandatory"] for inst in exact_instances)

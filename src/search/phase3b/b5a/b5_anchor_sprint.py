@@ -8,8 +8,12 @@ from typing import Any, Dict, Iterable, Mapping, Optional
 from src.io.delivery_manifest import delivery_manifest_output_path
 from src.search.campaign_telemetry import campaign_telemetry_output_path
 from src.search.campaign_triage import build_phase3b_unknown_triage_inventory
+from src.search.certified_surface import CERTIFIED_SURFACE_VERIFIER_SOURCE
 from src.search.exact_campaign import now_iso
-from src.search.exact_campaign_inspector import build_exact_campaign_inspection
+from src.search.exact_campaign_inspector import (
+    INSPECTION_SCHEMA_SOURCE,
+    build_exact_campaign_inspection,
+)
 from src.search.phase3b.operating_profile.operating_profile import build_phase3b_operating_profile_summary
 
 B5_ANCHOR_SPRINT_SCHEMA_SOURCE = "phase3b_b5_anchor_sprint_summary_v1"
@@ -32,12 +36,71 @@ def build_phase3b_b5_anchor_sprint_summary(
         project_root,
         campaign_state_path if campaign_state_path is not None else DEFAULT_CAMPAIGN_STATE_PATH,
     )
-    telemetry_path = campaign_telemetry_output_path(campaign_path)
-    manifest_path = delivery_manifest_output_path(project_root)
     inspection = build_exact_campaign_inspection(
         project_root=project_root,
         campaign_state_path=campaign_path,
     )
+    return _build_phase3b_b5_anchor_sprint_summary(
+        project_root=project_root,
+        campaign_path=campaign_path,
+        inspection=inspection,
+    )
+
+
+def build_phase3b_b5_anchor_sprint_summary_from_inspection(
+    project_root: Path,
+    campaign_state_path: Optional[Path] = None,
+    *,
+    inspection: Mapping[str, Any],
+) -> Dict[str, Any]:
+    project_root = Path(project_root).resolve()
+    campaign_path = _resolve_path(
+        project_root,
+        campaign_state_path if campaign_state_path is not None else DEFAULT_CAMPAIGN_STATE_PATH,
+    )
+    if not _inspection_matches_current_b5a_surface(
+        project_root=project_root,
+        campaign_path=campaign_path,
+        inspection=inspection,
+    ):
+        inspection = build_exact_campaign_inspection(
+            project_root=project_root,
+            campaign_state_path=campaign_path,
+        )
+    return _build_phase3b_b5_anchor_sprint_summary(
+        project_root=project_root,
+        campaign_path=campaign_path,
+        inspection=inspection,
+    )
+
+
+def _inspection_matches_current_b5a_surface(
+    *,
+    project_root: Path,
+    campaign_path: Path,
+    inspection: Mapping[str, Any],
+) -> bool:
+    if not isinstance(inspection, Mapping):
+        return False
+    metadata = _mapping(inspection.get("metadata"))
+    paths = _mapping(inspection.get("paths"))
+    certified_surface = _mapping(inspection.get("certified_surface"))
+    return (
+        metadata.get("source") == INSPECTION_SCHEMA_SOURCE
+        and metadata.get("project_root") == str(project_root)
+        and paths.get("campaign_state") == _display_path(project_root, campaign_path)
+        and certified_surface.get("source") == CERTIFIED_SURFACE_VERIFIER_SOURCE
+    )
+
+
+def _build_phase3b_b5_anchor_sprint_summary(
+    *,
+    project_root: Path,
+    campaign_path: Path,
+    inspection: Mapping[str, Any],
+) -> Dict[str, Any]:
+    telemetry_path = campaign_telemetry_output_path(campaign_path)
+    manifest_path = delivery_manifest_output_path(project_root)
     triage = build_phase3b_unknown_triage_inventory(
         project_root=project_root,
         campaign_state_path=campaign_path,

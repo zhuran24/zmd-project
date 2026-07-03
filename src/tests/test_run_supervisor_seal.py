@@ -1,74 +1,115 @@
-"""Tests for the PR2 #7 production supervisor certify entrypoint
-(scripts/run_supervisor_seal.py).
+"""Tests for the PR2 #7 production supervisor certify entrypoint.
 
-The entrypoint is a thin wiring layer: resume an already-committed
-CANDIDATE_PROPOSED proposal and drive it through ExactCampaign.supervisor_seal()
-(the real isolated L0 path). These tests exercise the *wiring* — a committed
-proposal seals to a durable campaign CERTIFIED, the entrypoint never itself
-publishes a delivery surface, an already-sealed campaign is not re-sealable, and
-missing preconditions fail closed — not the L0 seal semantics (covered by
-test_p1_2_supervisor_pr1 / test_pr2_l0_*).
-
-Real seals here need the host's dependency floor (the repo-pinned floor manifest
-is a deploy-pending placeholder that won't match this machine's stdlib/deps), so
-sealing tests patch it exactly like test_p1_2_supervisor_pr1's autouse fixture.
+The entrypoint is a thin CLI wiring layer: find an already-committed
+CANDIDATE_PROPOSED proposal, call ExactCampaign.supervisor_seal(), avoid
+publishing a delivery surface, and fail closed when preconditions are missing.
+True seal E2E sentinels live in test_p1_2_supervisor_pr1.py, including direct
+campaign.supervisor_seal() coverage around lines 323-350 and 439-446; this file
+does not test the isolated L0 seal semantics.
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
-from src.search import pr2_l0_micro_verifier_core as l0_module
 from src.search.exact_campaign import (
     CANDIDATE_PROPOSED_STATUS,
     ExactCampaign,
+    TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     proposal_ready_marker_path_for_campaign,
 )
 from src.tests.test_exact_contract import _build_toy_exact_project
-from src.tests.test_p1_2_supervisor_pr1 import _run_toy_candidate_proposal
 from scripts import run_supervisor_seal
-from scripts.generate_pr2_dependency_floor_manifest import build_manifest
-
-
-@pytest.fixture(scope="session")
-def _host_floor_bytes() -> tuple[bytes, int, str]:
-    raw = (
-        json.dumps(build_manifest(), indent=2, sort_keys=True, ensure_ascii=False) + "\n"
-    ).encode("utf-8")
-    return raw, len(raw), hashlib.sha256(raw).hexdigest()
-
-
-@pytest.fixture
-def _host_floor_patched(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-    _host_floor_bytes: tuple[bytes, int, str],
-) -> None:
-    raw, size_bytes, sha256 = _host_floor_bytes
-    manifest_path = tmp_path / "host_floor_manifest.json"
-    manifest_path.write_bytes(raw)
-    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_REL", str(manifest_path))
-    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES", size_bytes)
-    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_SHA256", sha256)
 
 
 def _campaign_checkpoint(project_root: Path) -> Path:
     return project_root / "data" / "checkpoints" / "exact_campaign_state.json"
 
 
+def _proposal_final_result() -> dict[str, Any]:
+    return {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
+        "placement_solution": {
+            "tiny_001": {
+                "facility_type": "tiny_facility",
+                "pose_idx": 0,
+                "pose_id": "tiny_left",
+                "anchor": {"x": 0, "y": 0},
+                "orientation": 0,
+                "port_mode": "default",
+            }
+        },
+        "search_status": CANDIDATE_PROPOSED_STATUS,
+        "search_stats": {"solve_mode": "certified_exact", "campaign_resumed": False},
+    }
+
+
+def _proposal_terminal_frontier_evidence() -> dict[str, Any]:
+    return {"candidate_generation": {"domain_authority": "test_cli_wiring"}}
+
+
+def _prepare_candidate_proposed_campaign(
+    project_root: Path,
+    *,
+    run_id: str,
+    write_marker: bool = True,
+) -> ExactCampaign:
+    campaign = ExactCampaign.load_or_create(
+        project_root,
+        campaign_hours=1.0,
+        resume=False,
+    )
+    campaign.set_supervisor_proposal_run_id(run_id)
+    campaign.state["final_result"] = _proposal_final_result()
+    campaign.mark_campaign_stopped(
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        status=CANDIDATE_PROPOSED_STATUS,
+    )
+    campaign.state["terminal_frontier_evidence"] = _proposal_terminal_frontier_evidence()
+    campaign.save()
+    if write_marker:
+        campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
+    return campaign
+
+
 def test_seals_proposal_and_second_run_fails_closed(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, _host_floor_patched: None
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     project_root = _build_toy_exact_project(tmp_path / "seal_ok")
-    _run_toy_candidate_proposal(project_root)
+    _prepare_candidate_proposed_campaign(
+        project_root,
+        run_id="test-run-supervisor-seal-cli-wiring",
+    )
 
     pre = ExactCampaign.load_or_create(project_root, resume=True)
     assert pre.state["final_status"] == CANDIDATE_PROPOSED_STATUS
+
+    seal_calls: list[Path] = []
+
+    def fake_supervisor_seal(self: ExactCampaign) -> None:
+        seal_calls.append(self.project_root)
+        final_result = dict(self.state["final_result"])
+        final_result["search_status"] = RUN_STATUS_CERTIFIED
+        self.state["final_result"] = final_result
+        self.state["final_status"] = RUN_STATUS_CERTIFIED
+        self.state["last_stop_reason"] = {
+            "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+            "status": RUN_STATUS_CERTIFIED,
+            "updated_at": "2000-01-01T00:00:00+00:00",
+        }
+        self.state["test_cli_wiring_fake_seal"] = True
+        self.path.write_text(
+            json.dumps(self.state, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        proposal_ready_marker_path_for_campaign(self.path).unlink(missing_ok=True)
+
+    monkeypatch.setattr(ExactCampaign, "supervisor_seal", fake_supervisor_seal)
 
     # 通电≠发布: spy the central publisher so we assert the entrypoint itself never
     # publishes a delivery surface during the seal (file existence is a poor proxy —
@@ -76,20 +117,20 @@ def test_seals_proposal_and_second_run_fails_closed(
     import src.search.certified_surface as certified_surface_module
 
     publish_calls: list[tuple] = []
-    real_publish = certified_surface_module.publish_verified_certified_delivery_surface
     monkeypatch.setattr(
         certified_surface_module,
         "publish_verified_certified_delivery_surface",
-        lambda *a, **k: publish_calls.append((a, k)) or real_publish(*a, **k),
+        lambda *a, **k: publish_calls.append((a, k)),
     )
 
     assert run_supervisor_seal.main(["--project-root", str(project_root)]) == 0
+    assert seal_calls == [project_root.resolve()]
     assert publish_calls == []  # the seal entrypoint must not publish
 
-    sealed = ExactCampaign.load_or_create(project_root, resume=True)
-    assert sealed.state["final_status"] == RUN_STATUS_CERTIFIED
-    assert sealed.state["final_result"]["search_status"] == RUN_STATUS_CERTIFIED
-    assert "supervisor_seal" in sealed.state
+    sealed = json.loads(_campaign_checkpoint(project_root).read_text(encoding="utf-8"))
+    assert sealed["final_status"] == RUN_STATUS_CERTIFIED
+    assert sealed["final_result"]["search_status"] == RUN_STATUS_CERTIFIED
+    assert sealed["test_cli_wiring_fake_seal"] is True
     # marker consumed on a successful seal
     assert not proposal_ready_marker_path_for_campaign(
         _campaign_checkpoint(project_root)
@@ -105,8 +146,11 @@ def test_missing_checkpoint_fails_closed(tmp_path: Path) -> None:
 
 def test_missing_marker_fails_closed(tmp_path: Path) -> None:
     project_root = _build_toy_exact_project(tmp_path / "no_marker")
-    _run_toy_candidate_proposal(project_root)
-    proposal_ready_marker_path_for_campaign(_campaign_checkpoint(project_root)).unlink()
+    _prepare_candidate_proposed_campaign(
+        project_root,
+        run_id="test-run-supervisor-seal-no-marker",
+        write_marker=False,
+    )
 
     assert run_supervisor_seal.main(["--project-root", str(project_root)]) == 2
     # main returns before any resume, so the on-disk proposal is untouched — still

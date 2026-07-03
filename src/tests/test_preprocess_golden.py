@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Any, Mapping
@@ -45,10 +46,25 @@ def _load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _file_size_and_sha256(path: Path) -> tuple[int, str]:
+    digest = hashlib.sha256()
+    size = 0
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+            size += len(chunk)
+    return size, digest.hexdigest()
+
+
 def _write_candidate_placements(path: Path, facility_pools: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        json.dumps({"facility_pools": facility_pools}, ensure_ascii=False, separators=(",", ":")),
+        json.dumps(
+            {"facility_pools": facility_pools},
+            ensure_ascii=False,
+            separators=(",", ":"),
+            allow_nan=False,
+        ),
         encoding="utf-8",
     )
 
@@ -86,7 +102,7 @@ def test_preprocess_chain_regenerates_frozen_artifacts_from_source_code(tmp_path
         generate_all_pools(load_templates()),
     )
 
-    expected_files = [
+    expected_semantic_files = [
         "commodity_demands.json",
         "machine_counts.json",
         "port_budget.json",
@@ -94,12 +110,24 @@ def test_preprocess_chain_regenerates_frozen_artifacts_from_source_code(tmp_path
         "mandatory_exact_instances.json",
         "exploratory_optional_caps.json",
         "all_facility_instances.json",
-        "candidate_placements.json",
     ]
-    for filename in expected_files:
+    for filename in expected_semantic_files:
         assert _canonicalize_jsonish(_load_json(regen_dir / filename)) == _canonicalize_jsonish(
             _load_json(golden_dir / filename)
         ), f"semantic drift detected in {filename}"
+
+    # candidate_placements.json 是字节级 hash 钉死的 frozen artifact(45MB):
+    # 对两棵对象树做递归 canonicalize 一次要 ~65s,而该工件的契约本来就是
+    # 精确字节,size+SHA256 比较更严格也更快。失败时报双方签名便于诊断。
+    regen_candidate = regen_dir / "candidate_placements.json"
+    golden_candidate = golden_dir / "candidate_placements.json"
+    regen_signature = _file_size_and_sha256(regen_candidate)
+    golden_signature = _file_size_and_sha256(golden_candidate)
+    assert regen_signature == golden_signature, (
+        "byte-level drift detected in candidate_placements.json: "
+        f"regenerated (size={regen_signature[0]}, sha256={regen_signature[1]}) != "
+        f"golden (size={golden_signature[0]}, sha256={golden_signature[1]})"
+    )
 
 
 def test_regenerated_instance_distribution_matches_machine_counts() -> None:

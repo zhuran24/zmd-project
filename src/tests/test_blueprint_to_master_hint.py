@@ -7,11 +7,15 @@ source + project pose data on 2026-05-16.
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
 import pytest
+
+from src.tests.artifact_pack_support import (
+    CANDIDATE_PLACEMENTS_PATH,
+    get_repo_candidate_placements_payload_readonly,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
@@ -21,9 +25,6 @@ from blueprint_to_master_hint import (  # noqa: E402
     build_pose_lookup,
     rotation_to_orient_mode,
 )
-
-CANDIDATE_PLACEMENTS_PATH = PROJECT_ROOT / "data" / "preprocessed" / "candidate_placements.json"
-
 
 # Each row: (typeId, rotation, origin, expected_orientation, expected_port_mode, expected_pose_id)
 # Hand-derived 2026-05-16 from IP v2 registry.ts ports0 + project pose data.
@@ -123,7 +124,7 @@ HAND_VERIFIED_SAMPLES = [
 def candidate_placements() -> dict:
     if not CANDIDATE_PLACEMENTS_PATH.exists():
         pytest.skip("candidate_placements.json not present")
-    return json.loads(CANDIDATE_PLACEMENTS_PATH.read_text())
+    return get_repo_candidate_placements_payload_readonly()
 
 
 @pytest.fixture(scope="module")

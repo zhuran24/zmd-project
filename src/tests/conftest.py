@@ -92,9 +92,7 @@ _SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
     {
         # >= 8s call-time heavyweight solver / integration tests
         "test_regression.py::test_parallel_and_serial_preserve_same_best_certified_result",
-        "test_regression.py::test_campaign_resume_reconstructs_frontier_without_reinvoking_solver",
         "test_regression.py::test_aspect_ratio_sliced_search_cannot_claim_terminal_certified",
-        "test_preprocess_golden.py::test_preprocess_chain_regenerates_frozen_artifacts_from_source_code",
         "test_regression.py::test_parallel_outer_search_matches_serial_on_controlled_small_frontier",
         "test_parallel_scheduler.py::test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier",
         "test_regression.py::test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts",
@@ -134,15 +132,13 @@ _SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
         "test_delivery_manifest.py::test_v69_delivery_manifest_rejects_stale_final_solution_artifact",
         "test_delivery_manifest.py::test_delivery_manifest_exports_best_certified_result_and_repo_relative_artifacts",
         "test_exact_campaign_inspector.py::test_v74_certified_surface_rejects_memory_campaign_when_disk_checkpoint_differs",
-        # Task A v86/v88/v89 accept tests: now route through ④b isolated replay
-        # (fresh -I subprocess re-solve), which makes them multi-second.
+        # Task A v86/v88/v89 accept tests. Only v88 exercises the real ④b
+        # isolated replay (fresh -I subprocess re-solve); v86/v89 monkeypatch
+        # the authority validator away and are precheck-only — still
+        # multi-second because they build a real toy proposal on disk.
         "test_v86_terminal_power_witness_validation.py::test_terminal_project_validator_accepts_selected_power_coverer",
         "test_v88_terminal_ghost_anchor_required.py::test_terminal_solution_match_ignores_candidate_record_ghost_marker",
         "test_v89_terminal_ghost_pick_protocol_validation.py::test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor",
-        # PR2 #7 production supervisor seal entrypoint: real outer_search proposal
-        # + real isolated L0 seal subprocess (multi-second).
-        "test_run_supervisor_seal.py::test_seals_proposal_and_second_run_fails_closed",
-        "test_run_supervisor_seal.py::test_missing_marker_fails_closed",
     }
 )
 

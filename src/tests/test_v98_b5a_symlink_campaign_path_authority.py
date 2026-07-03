@@ -1,19 +1,24 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
 
 from src.search.phase3b.b5a.b5_anchor_sprint import build_phase3b_b5_anchor_sprint_summary
-from src.tests.test_p1_2_open_gate_publish_block import _build_publishable_surface
+from src.tests.certified_surface_fixtures import (
+    ClonedCertifiedSurface,
+    clone_surface_tree,  # noqa: F401 - imported fixture for pytest discovery.
+    golden_publishable_surface,  # noqa: F401 - imported fixture dependency.
+)
 
 
 def test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier(
     tmp_path: Path,
+    clone_surface_tree: Callable[[Path], ClonedCertifiedSurface],  # noqa: F811 - fixture shadows its import.
 ) -> None:
-    project_root, campaign, _manifest = _build_publishable_surface(
-        tmp_path / "b5a_symlink_alias"
-    )
+    surface = clone_surface_tree(tmp_path / "b5a_symlink_alias")
+    project_root = surface.project_root
     alias_path = project_root / "data" / "checkpoints" / "alias_exact_campaign_state.json"
-    alias_path.symlink_to(campaign.path.name)
+    alias_path.symlink_to(surface.campaign_path.name)
 
     summary = build_phase3b_b5_anchor_sprint_summary(
         project_root,
