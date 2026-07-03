@@ -139,6 +139,10 @@ _SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
         "test_v86_terminal_power_witness_validation.py::test_terminal_project_validator_accepts_selected_power_coverer",
         "test_v88_terminal_ghost_anchor_required.py::test_terminal_solution_match_ignores_candidate_record_ghost_marker",
         "test_v89_terminal_ghost_pick_protocol_validation.py::test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor",
+        # PR2 #7 production supervisor seal entrypoint: real outer_search proposal
+        # + real isolated L0 seal subprocess (multi-second).
+        "test_run_supervisor_seal.py::test_seals_proposal_and_second_run_fails_closed",
+        "test_run_supervisor_seal.py::test_missing_marker_fails_closed",
     }
 )
 
