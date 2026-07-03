@@ -11,9 +11,9 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 4
-- entries: 3
+- entries: 4
 - hard edges: 6
-- pending relation suggestions: 0
+- pending relation suggestions: 1
 
 ## Start Here
 
@@ -30,3 +30,4 @@ python cc_memory/mem.py boot
 ## Entries
 
 - `codex-needs-explicit-read-memory` — Codex 记忆 2026-06: RULE, 子代理不会自动读 CLAUDE/cc_memory, 提示词要写明。
+- `test-suite-speedup-2026-07-04` — 2026-07-04 提速线四个 commit 落地;slow 登记实测对时;三个假红坑;剩余项绑批2a/2b/#5-F spike/#1,不再独立推进(sealed 名单核实为据)

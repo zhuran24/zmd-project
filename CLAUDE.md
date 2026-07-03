@@ -30,6 +30,9 @@ python scripts/check_strong_status_write_allowlist.py # 通过输出: 65 AST nod
 # 单跑一个测试（固定顺序 + 独立 basetemp，避免并发互踩）
 python -m pytest -p no:randomly --basetemp=.pytest_tmp/one src/tests/test_exact_contract.py::test_name -q
 
+# 开发期 advisory 测试选择器（codegraph affected 算受影响闭包；碰锁面/checker/frozen 工件一律 exit 2 建议跑全量；不进 CI 硬门）
+python scripts/select_tests_for_paths.py <改动文件...>   # 或 --git-diff
+
 # 求解（正常链终点是 CANDIDATE_PROPOSED，不会产出 CERTIFIED）
 python main.py                                # 默认 certified_exact；--campaign-hours >= 24 触发 production gate
 # 生产跑走 wrapper：scripts/run_campaign_linux.sh（Linux）/ scripts/run_prod_*.ps1（Windows）
@@ -44,7 +47,7 @@ python scripts/restore_external_artifacts.py candidate_placements --source <file
 
 - **preflight 退出码只有 0/1**。docstring 和旧文档声称 "exit 2 = pass with warnings"，代码里根本没有返回 2 的分支（`GateResult.exit_code`，`scripts/preflight_gate.py:117-121`）。
 - **`--full` ≠ 全部测试**：仍带 `-m "not slow"`。改认证核心（producer/seal/publish/checker）后必须单独跑 `--slow-tests`，否则慢 soundness 测试是盲区。
-- `@slow` 不是散落的装饰器，而是**集中登记**在 `src/tests/conftest.py` 的 `_SLOW_TEST_NODEIDS` 集合（~46 条 nodeid）。新写 ≥8s 的慢测试必须去 conftest 登记，否则会被 fast lane 意外跑到。
+- `@slow` 不是散落的装饰器，而是**集中登记**在 `src/tests/conftest.py` 的 `_SLOW_TEST_NODEIDS` 集合（2026-07-04 按实测全量对时后 19 条，只留真慢的）。新写 ≥8s 的慢测试必须去 conftest 登记，否则会被 fast lane 意外跑到；retune 用无并发串行的 `-m slow --durations` 全量扫描，别在有并发 pytest 时测时长（会挤出假红/虚高）。
 - `pytest.ini` 的全局 `--basetemp=.pytest_tmp` 意味着**并发跑 pytest 会互删临时目录**——多窗口/并发时各自覆盖 `--basetemp` 为独立子目录。
 - `requirements.txt` 声明了 `pytest-randomly` 但当前环境未必装了它；想稳定复现顺序永远显式加 `-p no:randomly`。
 - `candidate_placements.json` 缺失时部分测试（`test_binding.py`、`test_routing.py` 的一些用例）会在 fixture 阶段抛 `FileNotFoundError` 硬失败而非优雅 skip——排查"一批测试莫名 error"先查这个工件在不在。
