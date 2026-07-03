@@ -17,13 +17,13 @@
   ],
   "allowlist": [
     {
-      "id": "src_io_serializer_py_export_certified_blueprint_artifact_write_166",
+      "id": "src_io_serializer_py_export_certified_blueprint_artifact_write_168",
       "pattern": "artifact_write",
       "module": "src/io/serializer.py",
       "qualname": "export_certified_blueprint",
-      "line": 166,
+      "line": 168,
       "justification": "Public blueprint exporter writes via write_blueprint_payload, whose canonical optimal_blueprint.json path guard now rejects writes unless the verified publisher is used.",
-      "source_sha256": "f40ede9bacee8fbfd1526973eb5f9985184930b70f84d946bb8b8c80d9e4fa9d",
+      "source_sha256": "be00f5f05fb640afc47ed49829521d6aa6e7aaaea04e0694073c1cce257c60b5",
       "callee": "write_blueprint_payload"
     },
     {
