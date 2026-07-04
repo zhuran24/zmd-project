@@ -93,8 +93,7 @@ theorem std_domain_collapse
   intro a b hD
   exact hUp 6 6 a b hD.1 hD.2.2.1 h66
 
-/-- 一致性 sanity:(6,6) 本身在标准域内且是其极小元
-    (机器确认"标准域的最小反链 = 单点"这半句)。 -/
+/-- 一致性 sanity:(6,6) 本身在标准域内且是其极小元。 -/
 theorem std_domain_minimal_66 : MinimalIn StdDomain 6 6 := by
   constructor
   · exact ⟨Nat.le_refl _, by omega, Nat.le_refl _, by omega⟩
@@ -102,5 +101,19 @@ theorem std_domain_minimal_66 : MinimalIn StdDomain 6 6 := by
     have := hD.1
     have := hD.2.2.1
     omega
+
+/-- 标准域的极小元集合确为单点 {(6,6)}。
+    这条才是 README 中“标准域最小反链 = 单点”的完整机器陈述。 -/
+theorem std_domain_minimal_iff (a b : Nat) :
+    MinimalIn StdDomain a b ↔ a = 6 ∧ b = 6 := by
+  constructor
+  · intro h
+    have h66 : StdDomain 6 6 :=
+      ⟨Nat.le_refl _, by omega, Nat.le_refl _, by omega⟩
+    have hbelow := h.2 6 6 h66 h.1.1 h.1.2.2.1
+    exact ⟨hbelow.1.symm, hbelow.2.symm⟩
+  · intro h
+    rcases h with ⟨rfl, rfl⟩
+    exact std_domain_minimal_66
 
 end ZmdFormal.Tns

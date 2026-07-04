@@ -5,14 +5,17 @@ ZmdFormal.F5OrbitLift — F5 轨道提升 soundness 与去重坍缩陷阱（机�
   docs/research/p1_3_f5_orbit_lift_soundness_design_v2.md (v3)
   · 定理 1 前提 P-HOM(谓词对同组换位不变) —— 本文件作为假设 `hHom` 接入,
     模型侧成立性由设计稿的逐谓词审计表 + 266 实例机器验证 + 结构门承担。
-  · 定理 2(轨道提升 soundness):对具名 slot 的 whole-layout nogood,
-    沿保群变换搬运后仍 sound —— `labeled_orbit_lift`。
+  · 定理 2 的具名字面搬运核心:对具名 slot 的 whole-layout nogood,
+    沿 P-preserving 重标搬运后仍 sound —— `labeled_orbit_lift`;
+    带“同组置换”显式前提的包装陈述为 `labeled_orbit_lift_group_preserving`。
+    完整匿名 multiset 包含 ⇒ cut sound 还需要有限群延拓引理(`anon_lift_sound`,待 mathlib)。
   · 匿名(presence/multiset)语义:pattern 实现要求**不同 slot 的单射指派**,
-    该语义下实现关系沿保群单射搬运 —— `realizes_comp`;结合 P-HOM 得
+    该语义下实现关系沿保群单射搬运 —— `realizes_comp`;结合已给定的匿名 nogood 得
     "模掉重标后匹配即被排除" —— `nogood_mod_relabel`。
-  · 定理 2 前提"禁重复 (group,pose)"为什么是定理前提而非工程洁癖:
-    multiplicity≥2 的 pattern 经 boolean presence 去重会**变强**(误杀合法布局),
-    `dedup_collapse_strengthens` 给出机器检查的反例。
+  · 定理 2 前提"禁重复 (group,pose/attach-key)"为什么是定理前提而非工程洁癖:
+    multiplicity≥2 的 pattern 经 boolean presence 去重会**变强**;
+    `dedup_collapse_can_false_reject` 给出抽象 P 下的机器检查误杀反例。
+    `presence_key_alias_can_false_reject` 覆盖 v3 补强的 attach presence-key alias 风险。
 
 抽象约定: Layout = Slot → Pose(mandatory 全指派);组用谓词 G : Slot → Prop;
 谓词 P : Layout → Prop 是六谓词合取的抽象。
@@ -28,7 +31,13 @@ def Matches {Slot Pose : Type} (L : Slot → Pose)
     (p : List (Slot × Pose)) : Prop :=
   ∀ sp ∈ p, L sp.1 = sp.2
 
-/-- 定理 2(具名形态):设 σ 是 slot 变换,P-HOM 给出 P L → P (L ∘ σ)。
+/-- σ 不跨组:每个 slot 的 group id 在 σ 后保持不变。
+    这只表达“保群”这一设计稿前提;置换性另用 `Function.Bijective σ`。 -/
+def GroupPreserving {Slot Group : Type} (grp : Slot → Group)
+    (σ : Slot → Slot) : Prop :=
+  ∀ s, grp (σ s) = grp s
+
+/-- 定理 2 的具名字面核心:设 σ 是 slot 变换,P-HOM 给出 P L → P (L ∘ σ)。
     若 pattern p 的 whole-layout nogood sound(匹配 p 的布局全不满足 P),
     则沿 σ 搬运后的 pattern(字面 slot 各取 σ)nogood 也 sound。
     注意:此方向甚至不需要 σ 可逆——单向 P-HOM 已足;实际系统中 σ 取
@@ -47,6 +56,22 @@ theorem labeled_orbit_lift {Slot Pose : Type}
     List.mem_map.mpr ⟨sp, hsp, rfl⟩
   exact hM (σ sp.1, sp.2) hmem
 
+/-- 带设计稿“保群置换”显式前提的包装版。
+    证明仍只消耗 `hHom`:保群/双射前提的作用在前提审计层,用于证明 `hHom`
+    以及从匿名 multiset 匹配构造 σ;这里把它们写进陈述,避免把核心引理误读为
+    “任意函数 σ 已经是 F5 群作用”。 -/
+theorem labeled_orbit_lift_group_preserving {Slot Pose Group : Type}
+    (grp : Slot → Group)
+    (P : (Slot → Pose) → Prop)
+    (σ τ : Slot → Slot)
+    (_hInv : (∀ s, τ (σ s) = s) ∧ (∀ s, σ (τ s) = s))
+    (_hGroup : GroupPreserving grp σ)
+    (hHom : ∀ L, P L → P (fun s => L (σ s)))
+    (p : List (Slot × Pose))
+    (hNogood : ∀ L, Matches L p → ¬ P L) :
+    ∀ L, Matches L (p.map (fun sp => (σ sp.1, sp.2))) → ¬ P L := by
+  exact labeled_orbit_lift P σ hHom p hNogood
+
 /-- 匿名 pattern(多重集形态,列表带重数)在组 G 内被布局实现:
     存在**单射** f 把 pattern 的每个位置指派到互不相同的组内 slot,
     且各 slot 上的 pose 与 pattern 一致。单射 = "同一字面不重用同一 slot",
@@ -55,6 +80,13 @@ def Realizes {Slot Pose : Type} (L : Slot → Pose) (G : Slot → Prop)
     (p : List Pose) : Prop :=
   ∃ f : Fin p.length → Slot,
     Function.Injective f ∧ (∀ i, G (f i)) ∧ ∀ i, L (f i) = p.get i
+
+/-- attach/master presence key 层的匿名实现关系。
+    当 `key` 不是单射时,不同 pose_id 可在 master presence 层 alias。 -/
+def RealizesKey {Slot Pose Key : Type} (L : Slot → Pose) (G : Slot → Prop)
+    (key : Pose → Key) (p : List Key) : Prop :=
+  ∃ f : Fin p.length → Slot,
+    Function.Injective f ∧ (∀ i, G (f i)) ∧ ∀ i, key (L (f i)) = p.get i
 
 /-- 实现关系沿保群单射变换搬运:若 L ∘ σ 实现 p,则 L 实现 p。
     (σ 单射且把组映进组;实际系统中 σ 是同组置换,自动满足。) -/
@@ -127,5 +159,53 @@ theorem dedup_collapse_strengthens :
     have h01 := hInj hf
     have hv : (0 : Nat) = 1 := congrArg Fin.val h01
     exact absurd hv (by decide)
+
+/-- 更强的误杀形态:存在一个抽象合法性谓词 P,使 [v,v] 的 nogood 是 sound 的,
+    但把它 presence 去重成 [v] 会排除一个满足 P 的布局。 -/
+theorem dedup_collapse_can_false_reject :
+    ∃ (L : Bool → Bool) (P : (Bool → Bool) → Prop),
+      (∀ L', Realizes L' (fun _ => True) [true, true] → ¬ P L') ∧
+      Realizes L (fun _ => True) [true] ∧
+      P L := by
+  obtain ⟨L, hOne, hNotTwo⟩ := dedup_collapse_strengthens
+  refine ⟨L, (fun L' => ¬ Realizes L' (fun _ => True) [true, true]), ?_, hOne, hNotTwo⟩
+  intro L' hR hNotR
+  exact hNotR hR
+
+/-- presence-key alias 的语义坍缩:两个不同 pose 可映到同一个 attach key。
+    下面布局触发去重后的单 key presence,但并不实现原始 [true,false] pose pattern。 -/
+theorem presence_key_alias_collapse_strengthens :
+    ∃ (L : Bool → Bool) (key : Bool → Unit),
+      key true = key false ∧
+      RealizesKey L (fun _ => True) key [key true] ∧
+      ¬ Realizes L (fun _ => True) [true, false] := by
+  refine ⟨(fun _ => true), (fun _ => ()), rfl, ?_, ?_⟩
+  · refine ⟨fun _ => true, ?_, ?_, ?_⟩
+    · intro i j _
+      apply Fin.ext
+      have hi := i.isLt
+      have hj := j.isLt
+      simp only [List.length_cons, List.length_nil] at hi hj
+      omega
+    · intro _
+      trivial
+    · intro _
+      exact Subsingleton.elim _ _
+  · rintro ⟨f, -, -, hL⟩
+    have hFalse : true = false := by
+      simpa using hL ⟨1, by decide⟩
+    cases hFalse
+
+/-- presence-key alias 的误杀形态:原始 [true,false] nogood 可以是 sound 的,
+    但 alias 后的单 key presence 会排除满足 P 的布局。 -/
+theorem presence_key_alias_can_false_reject :
+    ∃ (L : Bool → Bool) (key : Bool → Unit) (P : (Bool → Bool) → Prop),
+      (∀ L', Realizes L' (fun _ => True) [true, false] → ¬ P L') ∧
+      RealizesKey L (fun _ => True) key [key true] ∧
+      P L := by
+  obtain ⟨L, key, _, hKey, hNotOriginal⟩ := presence_key_alias_collapse_strengthens
+  refine ⟨L, key, (fun L' => ¬ Realizes L' (fun _ => True) [true, false]), ?_, hKey, hNotOriginal⟩
+  intro L' hR hNotR
+  exact hNotR hR
 
 end ZmdFormal.F5
