@@ -1,7 +1,7 @@
 # P2.0 吞吐认证范式设计稿 v2
 
 **Status:** HISTORICAL_OR_PLAN（研究层设计稿，不改生产代码/锁面）
-**Authored:** 2026-07-04（v2，取代 `p2_0_throughput_certification_paradigm_design_v1.md`）
+**Authored:** 2026-07-04（v2，取代 `p2_0_throughput_certification_paradigm_design_v1.md`；同日 v2.1 修订——本地三路独立核查回收：CE4 独立成公理 A13、"消解公理"表述收敛、若干 PARTIAL 补齐）
 **Scope authority:** 在本稿落地并走完 freeze-ritual 之前，`PROJECT_LOCK.md` §1A B 块与 `rules/canonical_rules.json:415-417` 的 out-of-scope 声明**继续有效**。
 
 **v2 修订输入**（原件归档于 `p2_design_external_reviews_20260704/`）：
@@ -34,11 +34,11 @@
 
 给定已过六谓词的候选终态 (R\*, π\*, B\*, S\*)：
 
-- **M\*** = 已放置且 `operation_type ∈ canonical_rules.recipes` 的 recipe-backed 机器实例。只有 M\* 有 `ticks_per_cycle`、输入/输出量和利用率变量 `u[i]`。
+- **M\*** = 已放置且 `operation_type ∈ canonical_rules.recipes` 的 recipe-backed 机器实例。只有 M\* 有 `ticks_per_cycle`、输入/输出量和利用率变量 `u[i]`。utility 实例（schema key：`boundary_io`/`protocol_core`/`power_supply`/`wireless_sink`）无 recipe、不进机器耦合。
 - **U_src(B\*)** = binding 选出的 generic output source slots（来自 `utility_operations.*.generic_output_slots > 0` 的 utility 实例；当前 = boundary_io + protocol_core）。
 - **U_sink(B\*)** = routing-free 的 wireless sink virtual generic input slots（终产品，不进路由图，仍有 per-slot 容量）。
 - **K_route / K_rf_sink**：进路由图的商品 / routing-free 终产品（`commodity_metadata` 的 sink_kind 判别）。
-- **G⁺(B\*, S\*)** = 扩展路由图：selected route states 的邻接重建（同 connectivity guard 语义，`routing_subproblem.py:1413-1432`）**加 terminal arcs**——route-visible 输出/源口 `terminal(p) → 首 route state`、输入/汇口 `末 route state → terminal(p)`。同一 front cell 多物理端口时保留多个 terminal 节点，不得沿用 guard 的 front 去重（容量建模需要逐口）。
+- **G⁺(B\*, S\*)** = 扩展路由图：selected route states 的邻接重建（同 connectivity guard 语义，`routing_subproblem.py:1413-1432`）**加 terminal arcs**——route-visible 输出/源口 `terminal(p) → 首 route state`、输入/汇口 `末 route state → terminal(p)`。同一 front cell 多物理端口时保留多个 terminal 节点，不得沿用 guard 的 front 去重（容量建模需要逐口）。注：当前 accepted routing 对重复 `(front, dir, commodity, type)` 本就 fail-closed（`routing_subproblem.py:151-160, 413-427`）——逐口保留主要是对未来语义扩展与恶意 witness 的防护，不是当前常态修正。
 
 ### 2.2 TP7-S：静态平均带宽层（必要条件层）
 
@@ -53,7 +53,7 @@
 | T5 | 每 production target t：`Σ_{p∈target 输出承载} r[p] = target_rate(t)`（**精确等式**——避免未声明的溢出/void sink；若游戏允许过产丢弃需另立公理，见开放问题） | 盲设计裁定采纳 |
 | T6 | routing-free sink 平衡：k∈K_rf_sink 的 `Σ_{生产口} r[p] = Σ_{virtual sink slots} r[p]`，右侧逐 slot 过 T3；外部注入只可来自 source_kind=external_boundary 的 U_src slot | 防无限黑洞 |
 
-**TP7-S(B\*,S\*) :≡ ∃ 有理 (φ,r,u) 满足 T1–T6。** 设计要点保留 v1：只约束原始 targets，不把 `commodity_demands.json` 当 demand 等式（它多约束终品、漏 seed 循环商品；中间/循环商品速率由守恒涌现，多解时 witness 任选其一）。
+**TP7-S(B\*,S\*) :≡ ∃ 有理 (φ,r,u) 满足 T1–T6。** 设计要点保留 v1：只约束原始 targets，不把 `commodity_demands.json` 当 demand 等式（它多约束终品、漏 seed 循环商品）；中间/循环商品速率**由 T4 机器耦合 + K_route 网络平衡 + T6 routing-free sink 平衡共同诱导**，存在多个可行循环流时 witness 任选其一、verifier 只查 T1–T6 与目标。
 
 **TP7-S 的地位**：任何离散周期运行按周期平均必满足 T1–T6 ⇒ **TP7-S 不可行是固定 (B\*,S\*) 吞吐不可行的 sound 证据**（Farkas 证书，§4.3）；TP7-S 可行**不是**发布依据（CE1–CE4 实证了 fluid-可行 ≠ 离散可达）。
 
@@ -67,7 +67,7 @@
 
 **发布判定**：publishable CERTIFIED′ 要求 TP7-D 证书被复验接受。TP7-S 可行而无 TP7-D ⇒ `UNKNOWN`（fail-closed）。
 
-**TP7-D 消解了哪些 v1 公理**：调度由证书显式给出 ⇒ 不再需要"merger 公平仲裁存在""splitter 比例可实现""占空比收敛"这类**存在性**公理；残余公理（§3）只需断言"游戏能实现证书指定的确定性调度"与容量参数的真实性。
+**TP7-D 改变了公理的分工（表述精确版）**：调度**存在性**由证书显式证明（不再假设"存在某种公平仲裁使流量可达"）；但"游戏能**执行**证书指定的确定性调度"仍是公理（A7/A8 的可实现性半边），由 `throughput_semantics` 机器化与 FIFO trace 终裁共同承担——TP7-D 不是单独消解，是把公理从"存在性+可实现性"缩到只剩"可实现性"。
 
 ### 2.4 量词、scope 与回退语义
 
@@ -101,13 +101,14 @@ TP7-D 承担调度存在性后，残余公理收敛为「参数真实性 + 调�
 | A5 混货 | 共享组件除聚合容量与 FIFO 序外无额外禁忌 | D8 |
 | A6 FIFO | path-phase 的"每组件每 tick ≤1 in-flight"是游戏可容纳的保守模型 | D6 |
 | A7 splitter | 证书指定的输出选择游戏可实现（若强制轮转比例，`throughput_semantics.splitter_policy` 加约束） | CE2 实证 type-blind 分流失败属此类；D3 |
-| A8 merger/注入调度 | 证书指定的输入选择/注入相位游戏可实现 | CE1（优先级饿死）、**CE4（多输入队首阻塞——最宽容语义仍失败，fluid 层不可消解；path-phase 证明交错调度存在，可实现性归 A8；争议场景用 FIFO trace 终裁；静态充分条件：多输入机器前最后一段不混商品）** |
+| A8 merger/注入调度 | 证书指定的输入选择/注入相位游戏可实现 | CE1（优先级饿死）实证属此 |
+| **A13 多输入同步可调度性**（v2.1 独立成条，原误折入 A8） | 对任何需要 ≥2 种输入商品的机器：witness 中进入该机器的平均输入流，必须存在有限周期离散序列使有限 FIFO、输入槽容量与启动规则**不产生队首阻塞（head-of-line blocking）**。静态充分条件：多输入机器前最后一段 FIFO 不混商品，或存在过滤/分商品队列/覆盖最大突发的输入缓存 | **CE4 实证：最宽容语义下仍失败——这是 fluid 层不可消解、也非普通仲裁问题的独立机制**；path-phase 证书证明交错调度存在（A13 前半），游戏能否实现该交错是 A8/A13 的可实现性半边；争议场景 FIFO trace 终裁 |
 | A9 cross-junction | 两垂直通道同格不互相阻塞、不共享容量 | D7 实测；若否定 T2 改 per-cell 聚合 |
 | A10 machine | 聚合模式下机器可实现平均速率；cycle_trace 模式下 timing 与游戏一致 | D5 |
 | A11 wireless sink | 终品接收容量由 virtual slots 给出、不占路由图 | 规则已定（preprocess_plan） |
 | A12 warm-up | 稳态命题接受周期初态；若要求空网启动，另给 finite startup trace（种子循环 bootstrap 属此）| CE3 实证：空启动死锁、补 WIP 后达标 |
 
-**实证小结**（仿真器与实例见归档 patch）：CE1→A8、CE2→A7、CE3→A12、CE4→A8 新增内容；对照实验证明 belt 迟延只影响 warmup（G1 数学消解成立）、分数速率无节拍锁死（A2 成立）。公理组由"纸面清单"升级为"经反例狩猎校准的清单"。
+**实证小结**（仿真器与实例见归档 patch）：CE1→A8、CE2→A7、CE3→A12、**CE4→A13（新机制，独立成条）**；对照实验证明 belt 迟延只影响 warmup（G1 数学消解成立）、分数速率无节拍锁死（A2 成立）。公理组由"纸面清单"升级为"经反例狩猎校准的清单"。
 
 ## 4. 证书格式（要点；完整字段表实施期出 schema JSON）
 
@@ -115,7 +116,7 @@ TP7-D 承担调度存在性后，残余公理收敛为「参数真实性 + 调�
 
 自包含、closed-world、layout-bound。digest 集与 terminal fixed-witness stable fields 全对齐：`candidate_key / solution_digest / ghost_rect_digest / ghost_cells_digest / binding_assignment_digest / port_specs_digest / routing_occupancy_digest`，加 `selected_route_states`（**闭世界列表，verifier 由此独立重建 G⁺ 并重算 selected_graph_digest，不信 witness 边表**）与 `throughput_inputs_digest`（覆盖 canonical_rules 速率投影 + `commodity_metadata` 角色 + `preprocess_plan.utility_operations` + `generic_io_requirements` + mandatory instance→operation 映射——v1 只盖 canonical_rules 是漏洞）与 `throughput_semantics_digest`（§6 新 frozen artifact）。
 
-数值规范：有理数 `{num,den}`，den>0、既约、零=`{0,1}`；float/NaN/未知字段/重复 key 一律拒。`flows`/`port_rates` closed-world：缺省=0，重复/未知边/未知口拒绝；route-visible 口的 `r[p]` 必须等于 terminal arc 流量。
+数值规范：有理数 `{num,den}`，den>0、既约、零=`{0,1}`；float/NaN/未知字段/重复 key 一律拒。`flows`/`port_rates` closed-world：缺省=0，重复/未知边/**未知商品**/未知口拒绝；route-visible 口的 `r[p]` 必须等于 terminal arc 流量。（完整字段级 schema JSON 属实施期交付——这是本稿已声明的未闭合面，不是遗漏。）
 
 ### 4.2 可行侧
 
@@ -152,7 +153,7 @@ D1 belt 移速（tick 层需要）；D2 merger 仲裁；D3 splitter 分配与混
 
 ## 10. 验收判据与分期
 
-- **P2.0a（已完成大半）**：范式设计过五路外审 ✓；反例集建立且逐个归因公理 ✓（CE1-4）；剩余：v2 复审（可选）、toy path-phase 证书 + 原型 checker 端到端。
+- **P2.0a（进行中）**：v1 过五路外审 ✓；反例集建立且逐个归因 ✓（CE1-3 归 A8/A7/A12，CE4 独立成 A13）；v2 本地三路独立核查 ✓（2026-07-04，发现项已并入本 v2.1）；**剩余（必须，非可选）**：GPT Pro 对 v2.1 的终审 + toy path-phase 证书 + 原型 checker 端到端。
 - **P2.0b（P1.3 后）**：§6 全清单落地；红测含证书伪造全谱（脱钩 digest、伪 Farkas、重复边、多口去重漏洞、targets 篡改）。
 - **P2.0c**：throughput_semantics 实测填充（D1-D8），公理逐条消解；FIFO trace 语义与游戏对齐验证。
 - 开放问题（承 v1 + 盲设计）：①TP7-S→TP7-D 的 bounded-period lift 定理；②过产/溢出语义公理；③吞吐失败引导 routing 找低拥塞替代图的 cut 设计；④证书压缩（run-length/bitset）；⑤人类可读吞吐审计报告。

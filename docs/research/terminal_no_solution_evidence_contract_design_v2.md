@@ -1,7 +1,7 @@
 # Terminal 全域无解证书合同设计稿 v2
 
 **Status:** HISTORICAL_OR_PLAN（研究层设计稿，不改生产代码/锁面）
-**Authored:** 2026-07-04（v2，取代 `terminal_no_solution_evidence_contract_design_v1.md`）
+**Authored:** 2026-07-04（v2，取代 `terminal_no_solution_evidence_contract_design_v1.md`；同日 v2.1 修订——本地独立核查回收：负向复验门的独立性收紧到编码路径层、resume 例外补 currentness 前置、红测补 O-13~O-15、引用改函数名锚定）
 **v2 修订输入**：GPT Pro 对抗审查（4 BLOCK + 5 CONCERN + 2 NOTE，归档 `p2_design_external_reviews_20260704/tns_*`）。审查总判定：引理层修后可靠、合同层与接线层需重设计——v2 按此重做后两层。
 
 **v1→v2 关键变更**：
@@ -16,7 +16,7 @@
 
 ## 1. 事实基线（v1 §1 继承，补两条）
 
-- 正向 terminal validator 已拒 sliced domain（`certified_frontier.py:421-454`：start_area/max_aspect_ratio/非 authoritative min_side/非 safe area_upper_bound 均拒）——负向侧的 BLOCK-1 有现成镜像。
+- 正向 terminal validator 已拒 sliced domain（函数 `resolve_terminal_frontier_evidence_error` 的域校验段：start_area/max_aspect_ratio/非 authoritative min_side/非 safe area_upper_bound 均拒；行号锚提示——2026-07-04 起 frontier 核心在重构中，该逻辑可能从 `certified_frontier.py` 迁至 `pr2_l0_frontier_core.py`，以函数名与语义为锚）——负向侧的 BLOCK-1 有现成镜像。
 - 现有 `_candidate_status_digest` 对缺失记录用 `_MISSING_STATUS` 表示——稀疏证据是既有风格（CONCERN-3 的落点）。
 
 ## 2. 数学骨架（引理修正版 + 覆盖坍缩保留）
@@ -36,7 +36,7 @@
 
 故 (R,π\*,B\*,S\*) 可行 ⇒ (w,h) 可行，矛盾。∎
 
-**前提的机器化（CONCERN-1）**：引理依赖"无谓词对 ghost 做正向（存在性/接触性）引用"。这不能靠研究稿断言——实施时建 **ghost-use inventory**：登记源码中全部 ghost_rect 消费点及其方向性（排空/避障/无关 = 负向 ✓；存在性/接触性 = 正向 ✗），产出 `ghost_use_inventory_digest` 进证据 scope；发现正向或未分类引用 fail-closed。v1 的 O-5（PROJECT_LOCK F-* 条款）保留，inventory 是它的机器面。
+**前提的机器化（CONCERN-1）**：引理依赖"无谓词对 ghost 做正向（存在性/接触性）引用"。这不能靠研究稿断言——实施时建 **ghost-use inventory**：登记源码中全部 ghost_rect 消费点及其方向性（排空/避障/无关 = 负向 ✓；存在性/接触性 = 正向 ✗），产出 `ghost_use_inventory_digest` 进证据 scope；发现正向或未分类引用 fail-closed。**覆盖范围警告（v2.1）**：inventory 不得只扫 no-overlap 与 routing——master 还有 ghost 条件化的 power/signature 收紧路径（`exact_coordinate_master.py` 约 3943-3988、4758-4761、4831-4834、5064-5067），初判为"缩小 R 不收紧"的负向派生约束，但它们必须逐个进 inventory 被显式分类，漏登记 = 引理前提无据。v1 的 O-5（PROJECT_LOCK F-* 条款）保留，inventory 是它的机器面。
 
 ### 2.2 最小覆盖证书（保留，加 oriented 纪律）
 
@@ -78,14 +78,14 @@
 ### 4.1 producer：`NO_SOLUTION_PROPOSED` 生命周期（BLOCK-3）
 
 - 终止分支产出 `final_status=NO_SOLUTION_PROPOSED` + `terminal_no_solution_evidence` + **专用 proposal marker**（镜像现有 marker：schema_version/authority=`certified_exact_no_solution_proposal_ready_v1`/run_id/exit_code/**checkpoint_sha256**/campaign_instance_id）。`final_result` 恒为 None。
-- **resume 规则**（v1 空白，现有 sanitizer 会把强状态降级、证据清空）：`NO_SOLUTION_PROPOSED` checkpoint 载入时——若 marker 存在且 checkpoint_sha256 与磁盘一致、domain authority 校验通过，则**证据与覆盖 proof 原样保留、等待 seal**（proposal 是密封输入，不是搜索中间态）；任一绑定不符 ⇒ 整体降级 UNKNOWN + 证据清空 + 走正常 resume 卫生（防 stale/伪造 proposal 跨源码漂移续命）。resume validation 新分支：`NO_SOLUTION_PROPOSED` 要求证据存在、禁 final_result、禁任何 candidate solution 残留。
+- **resume 规则**（v1 空白，现有 sanitizer 会把强状态降级、证据清空）：`NO_SOLUTION_PROPOSED` checkpoint 载入时——**前置条件（v2.1 显式化）：必须先通过现有 resume validation 的 current source/artifact hash 校验**（`_validate_resume_state` 一族；hash 不符按现有语义直接拒，不进入任何保留分支）；通过后，若 marker 存在且 checkpoint_sha256 与磁盘一致、domain authority 校验通过，则证据与覆盖 proof 原样保留、**且保留态只能作为 supervisor seal 的输入，绝不进入 search/pruning/frontier 状态**（这是对"checkpoint 强状态必须 fresh replay"铁律的一个显式声明的例外：例外面窄——只延后到 seal 时的 L0 隔离重放，不是跳过重放）；任一绑定不符 ⇒ 整体降级 UNKNOWN + 证据清空 + 走正常 resume 卫生。resume validation 新分支：`NO_SOLUTION_PROPOSED` 要求证据存在、禁 final_result、禁任何 candidate solution 残留。
 
 ### 4.2 supervisor：负向复验硬门（BLOCK-2）
 
 `supervisor_seal` 第二路径 `proposal_to_terminal_infeasible_v1`，L0 隔离内依次：
 1. marker/checkpoint/域 authority 绑定复验；
 2. §3 验证器全流程（含覆盖集 sink replay）；
-3. **`candidate_wide_no_solution_reverifier_v1`（硬前置，不是选项）**：对覆盖集每个候选用**异构 solver profile**（不同 CP-SAT 参数族/种子/worker 拓扑，独立重建模型）完整重解；结论枚举 `CONFIRMED_INFEASIBLE / FEASIBLE_FOUND / DIVERGED / UNKNOWN / PROFILE_UNSUPPORTED`——**只有 CONFIRMED_INFEASIBLE 可继续**，其余全部 fail-closed 不 seal。定位说明：现有 I1 只复验单布局 nogood，不是候选级全 anchor 空间负向复验，不能顶替。此门的理由：负向结论无 witness 可独立几何检查，(6,6) 单点证书把全部信任压在一次求解上，同管线 replay 防不了编码级系统性 false-INFEASIBLE（`08_phase_1_2_plan.md:17-24` 裁定 false-INFEASIBLE 不低于 false-CERTIFIED）；异构复验 + 编码忠实性定向审计是最低可接受强度。
+3. **`candidate_wide_no_solution_reverifier_v1`（硬前置，不是选项）**：对覆盖集每个候选完整重解，结论枚举 `CONFIRMED_INFEASIBLE / FEASIBLE_FOUND / DIVERGED / UNKNOWN / PROFILE_UNSUPPORTED`——**只有 CONFIRMED_INFEASIBLE 可继续**，其余全部 fail-closed 不 seal。**独立性要求（v2.1 收紧）**：仅换 CP-SAT 参数族/种子/worker 拓扑**不够**——系统性 false-INFEASIBLE 的根在建模代码，同一模型构造器上跑一万个 profile 会一致地错。门的独立性必须落在编码路径层，二选一（或并用）：(a) 复验器走**独立重建的模型构造路径**（不 import 生产 master 的构造代码，从 canonical 规则独立重推约束——与 PR2 #5 B2 独立枚举同一哲学）；(b) 附带**编码忠实性定向审计产物**（针对覆盖集候选的 master/binding/routing 编码逐约束审计回执，作为门的输入之一，缺则不 seal）。定位说明：现有 I1 只复验单布局 nogood，不是候选级全 anchor 空间负向复验，不能顶替。此门的理由：负向结论无 witness 可独立几何检查，(6,6) 单点证书把全部信任压在一次求解上，同管线 replay 防不了编码级系统性 false-INFEASIBLE（`08_phase_1_2_plan.md:17-24` 裁定 false-INFEASIBLE 不低于 false-CERTIFIED）。
 4. mint terminal `INFEASIBLE`。反绕过：`save()` 守卫扩展为同时挡「INFEASIBLE + TNS 证据」的 unsupervised claim；无证据的普通 INFEASIBLE 停机保持现状（合法、不可发布）。
 
 ### 4.3 publisher：manifest-only 面与互斥（CONCERN-4）
@@ -108,7 +108,9 @@
 - **O-10 sink replay 伪造**：raw INFEASIBLE record 无有效 proof / proof digest 漂移 / replay 实际返回 UNKNOWN → 覆盖必拒。
 - **O-11 负向复验门**：reverifier 返回 FEASIBLE_FOUND/DIVERGED/UNKNOWN 时 seal 必拒；CONFIRMED 路径端到端可过。
 - **O-12 stale 正向产物**：残留 final_solution.json 时无解发布必拒；发布事务清理可验证。
-- 另：并行调度器路径的 TNS 触发一致性、direct-writer guard 三处 INFEASIBLE+证据 site 登记，随 O-4 批次。
+- **O-13 稀疏审计语义**（v2.1）：合法 sparse 证据（MISSING:4224）必须被接受；合成 UNKNOWN 占位 record（无时间戳/无 schema 的伪 record）必须被 record 校验拒绝。
+- **O-14 并行路径一致性**（v2.1）：并行调度器（exact_parallel_scheduler）路径下 TNS 触发条件与串行路径逐字段一致；并行 worker 不得各自宣告 NO_SOLUTION_PROPOSED。
+- **O-15 direct-writer guard**（v2.1）：「终局 INFEASIBLE + TNS 证据」的三处 unsupervised 写点（对称于 CERTIFIED 三处）逐个登记进 save() 守卫并出红测。
 
 ## 7. 开放问题（v1 三条的 v2 状态）
 
