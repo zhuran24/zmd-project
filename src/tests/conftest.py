@@ -120,6 +120,11 @@ _SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
         # validator away (precheck-only, ~1s) and left the slow set in the
         # 2026-07-04 retune.
         "test_v88_terminal_ghost_anchor_required.py::test_terminal_solution_match_ignores_candidate_record_ghost_marker",
+        # P1 backlog #1 redlines: real L0 supervisor child/seal semantics.
+        "test_p1_min_tcb_closure_redlines.py::test_golden_toy_supervisor_seal_semantic_digests",
+        "test_p1_min_tcb_closure_redlines.py::test_malicious_fixture_fail_closed",
+        "test_p1_min_tcb_closure_redlines.py::test_target_l0_child_runtime_excludes_scripts_from_snapshot",
+        "test_p1_min_tcb_closure_redlines.py::test_target_l0_snapshot_manifest_is_explicit_minimal_whitelist",
     }
 )
 
