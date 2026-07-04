@@ -71,4 +71,4 @@ Fable-5 约 2026-07-07 下线。owner 授权把 backlog 里最吃推理的部分
 1. 带宽范式 v1(`p2_0_throughput_certification_paradigm_design_v1.md`,35791c3);
 2. F5 orbit lifting v1(`p1_3_f5_orbit_lift_soundness_design_v1.md`,c2644a4)——修正"132!"叙事(真实轨道=8个 operation_type 组)、定理1谓词不变性+P-HOM 机器化前提、定理2轨道提升 soundness、与 master 序复合引理;发现提升机械已存在一半(AnonymousSlotRef/multiset evaluator/master presence nogood 标签擦除),缺的是定理与前提守门;
 3. terminal 全域无解证书 v1(`terminal_no_solution_evidence_contract_design_v1.md`,f5a95be)——逐维反单调引理+最小覆盖坍缩(标准域下证书=单个 (6,6) 的 replay-verified INFEASIBLE);地基盘点:候选级 INFEASIBLE 已是可 sink-replay 强状态;诚实声明 false-INFEASIBLE 无 fixed-witness 等价兜底(P-TNS-H 增强选项待 owner 定级)。
-GPT Pro(无限额度+沙箱)当三角色用:盲设计对照/对抗审查/反例实验。全部工作包与提示词在 C:\Users\22957\pr2_pkg\p2_0_throughput\(吞吐盲设计+吞吐对抗审+吞吐沙箱反例+F5 审查+TNS 审查,共 4 zip 6 prompt);结果回来做 union+triage 出各稿 v2。
+GPT Pro(无限额度+沙箱)当三角色用:盲设计对照/对抗审查/反例实验。全部工作包与提示词在 C:\Users\22957\pr2_pkg\p2_0_throughput\(吞吐盲设计+吞吐对抗审+吞吐沙箱反例+F5 审查+TNS 审查,共 4 zip 5 prompt;2026-07-04 已通过手机文件通道发给 owner);结果回来做 union+triage 出各稿 v2。
