@@ -37,6 +37,8 @@ CERTIFIED_ARTIFACT_CONTRACT_PATH = PROJECT_ROOT / "src" / "search" / "certified_
 PR2_L0_MICRO_VERIFIER_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_micro_verifier_core.py"
 PR2_L0_ARTIFACT_CORE_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_artifact_core.py"
 PR2_L0_FRONTIER_CORE_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_frontier_core.py"
+PR2_L0_REPLAY_CORE_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_replay_core.py"
+PR2_L0_FIXED_WITNESS_CORE_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_fixed_witness_core.py"
 PR2_L0_TRUE_VERIFIER_CHILD_PATH = (
     PROJECT_ROOT / "src" / "search" / "pr2_l0_true_verifier_child.py"
 )
@@ -59,7 +61,7 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "f8b444b696322d53deab39d27d345e07d095553898baa646e47cf3adbbee68a1"
+    "70409fd28748b1dca2a87df8ac7dbe54cee50d1aa2bebc10afc3a80c8a186fac"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
@@ -3110,7 +3112,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "cf6dcd88cb36d78915f2b7f8da0d0778e5a8c517849a32f93b06164d820edbe6"
+    "4b6d973b120c38da25ea5302a03ee792b42d82644ccec02766690bfed12e8304"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -4941,10 +4943,10 @@ _PR2_CHILD_RESERVED_SHADOW_NAMES = _PR2_CHILD_RESERVED_RUNTIME_NAMES - frozenset
 )
 _PR2_CHILD_HELPER_IMPORTFROM_ALLOWLIST = frozenset(
     {
-        "src.search.candidate_proof_replay",
         "src.search.pr2_l0_artifact_core",
+        "src.search.pr2_l0_fixed_witness_core",
         "src.search.pr2_l0_frontier_core",
-        "src.search.terminal_fixed_witness_verifier",
+        "src.search.pr2_l0_replay_core",
     }
 )
 
@@ -6476,7 +6478,7 @@ _PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY = (
     'return {\n        "schema_version": DOMAIN_SCHEMA_VERSION,\n        "authority": DOMAIN_AUTHORITY,\n        "nonce": nonce,\n        "verdict": SEALED,\n        "reason": "domain_verified",\n        "strong_keys": list(strong_keys),\n        "final_result": certified_final_result,\n        "terminal_frontier_evidence": evidence,\n        "candidate_records": durable_records,\n        "final_result_digest": final_digest,\n        "terminal_frontier_evidence_digest": evidence_digest,\n        "candidate_records_digest": records_digest,\n        "fixed_witness_publishable": bool(getattr(fixed_verdict, "publishable", False)),\n        "sink_replay_violations": {},\n        "fixed_witness_violations": {},\n        "tcb": {\n            "python_interpreter": "NAMED-TCB",\n            "stdlib": "NAMED-TCB",\n            "third_party_native": "NAMED-TCB",\n            "os_process_file_isolation": "NAMED-TCB",\n            "windows_write_isolation_residual": "protocol_only_child_snapshot_no_write_fd_pr2c_linux_uid_namespace_pending",\n        },\n    }',
 )
 _PR2_CHILD_PROJECT_RECORDS_BODY = (
-    'from src.search.candidate_proof_replay import (\n        CANDIDATE_PROOF_AUTHORITY,\n        CANDIDATE_PROOF_FIELD,\n        CANDIDATE_PROOF_SCHEMA_VERSION,\n        _execute_isolated_replay_request,\n        _json_copy,\n        _replay_response_violation,\n        candidate_proof_shape_violation,\n        canonical_digest,\n    )',
+    'from src.search.pr2_l0_replay_core import (\n        CANDIDATE_PROOF_AUTHORITY,\n        CANDIDATE_PROOF_FIELD,\n        CANDIDATE_PROOF_SCHEMA_VERSION,\n        _execute_isolated_replay_request,\n        _json_copy,\n        _replay_response_violation,\n        candidate_proof_shape_violation,\n        canonical_digest,\n    )',
     'raw_records = state.get("candidates")',
     'if not isinstance(raw_records, Mapping):\n        return {}, {"*": "candidate_sink_replay_records_missing"}',
     'expected_proofs: dict[str, dict[str, Any]] = {}',
@@ -6500,9 +6502,9 @@ _PR2_CHILD_PROJECT_RECORDS_BODY = (
     'return projected, {}',
 )
 _PR2_CHILD_FIXED_WITNESS_BODY = (
-    'from src.search.candidate_proof_replay import _materialize_replay_snapshot',
+    'from src.search.pr2_l0_replay_core import _materialize_replay_snapshot',
     'from src.search.pr2_l0_artifact_core import compute_exact_artifact_hashes',
-    'from src.search.terminal_fixed_witness_verifier import (\n        _apply_terminal_fixed_witness_audit_fields,\n        _copy_candidate_records,\n        _identity_from_current_records,\n        _project_terminal_fixed_witness_records_from_capsule,\n        canonical_state_bytes_for_fixed_witness,\n        verify_terminal_fixed_witness,\n    )',
+    'from src.search.pr2_l0_fixed_witness_core import (\n        _apply_terminal_fixed_witness_audit_fields,\n        _copy_candidate_records,\n        _identity_from_current_records,\n        _project_terminal_fixed_witness_records_from_capsule,\n        canonical_state_bytes_for_fixed_witness,\n        verify_terminal_fixed_witness,\n    )',
     'authority_state = _json_copy(state)',
     'authority_state["candidates"] = _json_copy(candidate_records)',
     'authority_state["final_result"] = _json_copy(final_result)',
@@ -6846,9 +6848,9 @@ _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
     "_is_within_any": "79abd86e1e8a39d021a225212b009b307adb74928e192652e20e6b1545dc63de",
     "_json_copy": "71d6048581ec811d9d28f4c60b69287aaa2fee791246e8e50850e9db54380f8e",
     "_materialize_import_default_artifacts": "ec2a13d3338721ffd5819e6d0098685f51a81f5b1c00da39cde1c368f19f09e5",
-    "_project_candidate_records_direct": "7748a533fbe9cde5454ed540400e457b6626efc46d259e8b0129b1f5b902fa22",
+    "_project_candidate_records_direct": "64a63a6414baa50658ee8ee9ce5b78cd09dad80aa074c7cdb335dbad00bc38a9",
     "_require_mapping": "104f33d630f36f0f78076bf3c859fc86367f92237002231fd653d943699bdd44",
-    "_run_fixed_witness_direct": "b338f3d5db07657f2edbfcdf32f5f7921396849b231185dc0d22545c13a6d889",
+    "_run_fixed_witness_direct": "eb9c35e49ec0d7a2c35d9caf688042b84c7641fe4a623b95680252f9d9c22af7",
     "_safe_rel": "510d425350d3e866ea0523fbfce04af46793936ff22503f4e2390d0782e7c957",
     "_stable_fixed_witness_candidate_records": "1e1a8147e512e9d3c200be076bd6fb3178090d3be21e7a98a627cade94b5ac11",
     "_stable_fixed_witness_payload": "698f25a09ab52aed1857169733588790c3db9eb1f73bddadf571e3b657729af3",
@@ -10851,6 +10853,7 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
 def _check_candidate_sink_replay_contract(
     *,
     candidate_replay_path: Path = CANDIDATE_PROOF_REPLAY_PATH,
+    candidate_replay_core_path: Path = PR2_L0_REPLAY_CORE_PATH,
     exact_campaign_path: Path = EXACT_CAMPAIGN_PATH,
     certified_frontier_path: Path = CERTIFIED_FRONTIER_PATH,
     pr2_artifact_core_path: Path = PR2_L0_ARTIFACT_CORE_PATH,
@@ -10873,13 +10876,22 @@ def _check_candidate_sink_replay_contract(
 
     errors: list[str] = []
     replay_tree = _parse_python(candidate_replay_path)
-    replay_source = candidate_replay_path.read_text(encoding="utf-8")
+    replay_core_tree = _parse_python(candidate_replay_core_path)
+    replay_source = (
+        candidate_replay_path.read_text(encoding="utf-8")
+        + "\n"
+        + candidate_replay_core_path.read_text(encoding="utf-8")
+    )
     for function_name in (
         "build_candidate_replay_proof",
-        "candidate_proof_shape_violation",
         "verify_candidate_records_at_sink",
         "project_candidate_records_for_sink",
         "_invoke_isolated_replay",
+        "isolated_replay_main",
+    ):
+        _function_def(replay_tree, function_name, path=candidate_replay_path)
+    for function_name in (
+        "candidate_proof_shape_violation",
         "_replay_response_violation",
         "_validate_child_proof",
         "_replay_one_proof",
@@ -10887,7 +10899,7 @@ def _check_candidate_sink_replay_contract(
         "_execute_isolated_replay_request",
         "isolated_replay_main",
     ):
-        _function_def(replay_tree, function_name, path=candidate_replay_path)
+        _function_def(replay_core_tree, function_name, path=candidate_replay_core_path)
 
     for token in (
         "CANDIDATE_PROOF_AUTHORITY",
@@ -10966,11 +10978,11 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"sink projection must demote rejected strong claims: {token}")
 
     snapshot_fn = _function_def(
-        replay_tree,
+        replay_core_tree,
         "_materialize_replay_snapshot",
-        path=candidate_replay_path,
+        path=candidate_replay_core_path,
     )
-    snapshot_source = _source_text(candidate_replay_path, snapshot_fn)
+    snapshot_source = _source_text(candidate_replay_core_path, snapshot_fn)
     if not _calls_attr(snapshot_fn, "copyfile"):
         errors.append("isolated replay must copy hash-bound project inputs into a snapshot")
     if not _calls_function(snapshot_fn, "compute_exact_artifact_hashes"):
@@ -10984,11 +10996,11 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"isolated replay snapshot binding is missing: {token}")
 
     child_request_fn = _function_def(
-        replay_tree,
+        replay_core_tree,
         "_execute_isolated_replay_request",
-        path=candidate_replay_path,
+        path=candidate_replay_core_path,
     )
-    child_request_source = _source_text(candidate_replay_path, child_request_fn)
+    child_request_source = _source_text(candidate_replay_core_path, child_request_fn)
     for token in (
         "compute_exact_artifact_hashes",
         "create_exact_search_session",
@@ -11001,8 +11013,12 @@ def _check_candidate_sink_replay_contract(
         if token not in child_request_source:
             errors.append(f"isolated child must recompute exact proof context: {token}")
 
-    replay_one_fn = _function_def(replay_tree, "_replay_one_proof", path=candidate_replay_path)
-    replay_one_source = _source_text(candidate_replay_path, replay_one_fn)
+    replay_one_fn = _function_def(
+        replay_core_tree,
+        "_replay_one_proof",
+        path=candidate_replay_core_path,
+    )
+    replay_one_source = _source_text(candidate_replay_core_path, replay_one_fn)
     if not _calls_function(replay_one_fn, "run_benders_for_ghost_rect"):
         errors.append("isolated child must replay via run_benders_for_ghost_rect")
     for token in (
@@ -11015,11 +11031,11 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"isolated solver replay is missing fixed certified configuration: {token}")
 
     child_proof_fn = _function_def(
-        replay_tree,
+        replay_core_tree,
         "_validate_child_proof",
-        path=candidate_replay_path,
+        path=candidate_replay_core_path,
     )
-    child_proof_source = _source_text(candidate_replay_path, child_proof_fn)
+    child_proof_source = _source_text(candidate_replay_core_path, child_proof_fn)
     for token in (
         "project_binding",
         "artifact_hashes",
@@ -11760,6 +11776,10 @@ def _check_phase_gate_provenance_contract() -> list[str]:
     if not _uses_name(presence_fn, "FIXED_WITNESS_VERIFIER_PATH"):
         errors.append(
             "fixed-witness verifier presence check must read FIXED_WITNESS_VERIFIER_PATH"
+        )
+    if not _uses_name(presence_fn, "FIXED_WITNESS_CORE_PATH"):
+        errors.append(
+            "fixed-witness verifier presence check must read FIXED_WITNESS_CORE_PATH"
         )
     if not _uses_name(presence_fn, "FIXED_WITNESS_CAPSULE_PATH"):
         errors.append(
@@ -12746,8 +12766,10 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/search/outer_search.py': 'p1_2_certified_path',
     'src/search/patch_conflict_separator.py': 'p1_2_certified_path',
     'src/search/pr2_l0_artifact_core.py': 'p1_2_certified_path',
+    'src/search/pr2_l0_fixed_witness_core.py': 'p1_2_certified_path',
     'src/search/pr2_l0_frontier_core.py': 'p1_2_certified_path',
     'src/search/pr2_l0_micro_verifier_core.py': 'p1_2_certified_path',
+    'src/search/pr2_l0_replay_core.py': 'p1_2_certified_path',
     'src/search/pr2_l0_true_verifier_child.py': 'p1_2_certified_path',
     'src/search/smt_mt_outer_pruning.py': 'p1_2_certified_path',
     'src/search/terminal_fixed_witness_capsule.py': 'p1_2_public_surface',
@@ -12771,6 +12793,7 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
         "src/search/pr2_l0_artifact_core.py",
         "src/search/pr2_l0_frontier_core.py",
         "src/search/pr2_l0_micro_verifier_core.py",
+        "src/search/pr2_l0_replay_core.py",
         "src/search/pr2_l0_true_verifier_child.py",
         "src/search/outer_search.py",
         "src/search/exact_parallel_scheduler.py",
@@ -12791,6 +12814,7 @@ CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
         "src/search/certified_frontier.py",
         "src/search/certified_surface.py",
         "src/search/exact_campaign.py",
+        "src/search/pr2_l0_fixed_witness_core.py",
         "src/search/pr2_l0_micro_verifier_core.py",
         "src/search/pr2_l0_true_verifier_child.py",
         "src/io/delivery_manifest.py",
@@ -12870,8 +12894,8 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
-    'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
-    'src/search/certified_artifact_contract.py': '7b9761728997500904680cd2f014edbe0335a952af5c7ff0e62c9e8e03b9e6ef',
+    'src/search/candidate_proof_replay.py': '6e4bda05468f168d830332898752b6656b064111b07476bb701a032387454137',
+    'src/search/certified_artifact_contract.py': 'ecdcff733275506aa3ab4a40a808536c54c64fefb87812537306b79d9635c32b',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
@@ -12888,14 +12912,16 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/phase3b/anchor119/guarded_precheck_runtime.py': '4c8ebb13c4c9e0fd9e3c6e614a185183e975fd365421ef95cbf2eb5ae5098aa2',
     'src/search/phase3b/anchor119/guarded_precheck_spec.py': '2a8c414eedaf42e6685a58922a9812e8a531821cadbe5fdfce860948fea3f86c',
     'src/search/pr2_l0_artifact_core.py': '818475b12c3ab3db38fdfa274b21cdb77e4fa085ea28db2ea368646f4c0735a7',
+    'src/search/pr2_l0_fixed_witness_core.py': 'abce5361619402d340e2a849999cda259ac6f054f0fb100bc0dcba1806f6845f',
     'src/search/pr2_l0_frontier_core.py': 'b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b',
     'src/search/pr2_l0_micro_verifier_core.py': '20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a',
-    'src/search/pr2_l0_true_verifier_child.py': '84c904f1e0e2b1835c983978cefae6329d6b592d75c1735e8b67163b5ff7300e',
+    'src/search/pr2_l0_replay_core.py': '49ca9657c787f7d40bdd9b1dadfe25fb99a2e98818b5e4cbb230e576a691f3d3',
+    'src/search/pr2_l0_true_verifier_child.py': '2f74f24bb3f3a2aeaf4a67bec9015802d84db1962bfa2fa5a9a08446f6f50f79',
     'src/search/routing_deletion_core_minimizer.py': '9bfa5588d5b56dc098800d9b88a7f65df6a1552d21ad752b6a3a828af576af26',
     'src/search/separator_capacity_separator.py': '1fd8a3c694f0c4a406c7eb7a46f7ddc290dcc8fc41e2f518977975fa98f58229',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
-    'src/search/terminal_fixed_witness_verifier.py': '2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531'
+    'src/search/terminal_fixed_witness_verifier.py': 'f27828f6b5ee001e9a6c98a6e39b9bf0a24cf5a55e85b89ace8bacb3dc0a3386'
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
 

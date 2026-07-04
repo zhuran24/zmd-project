@@ -503,7 +503,7 @@ def _project_candidate_records_direct(
     project_root: Path,
     strong_keys: list[str],
 ) -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
-    from src.search.candidate_proof_replay import (
+    from src.search.pr2_l0_replay_core import (
         CANDIDATE_PROOF_AUTHORITY,
         CANDIDATE_PROOF_FIELD,
         CANDIDATE_PROOF_SCHEMA_VERSION,
@@ -618,9 +618,9 @@ def _run_fixed_witness_direct(
     candidate_records: dict[str, dict[str, Any]],
     final_result: Mapping[str, Any],
 ) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]], Any]:
-    from src.search.candidate_proof_replay import _materialize_replay_snapshot
+    from src.search.pr2_l0_replay_core import _materialize_replay_snapshot
     from src.search.pr2_l0_artifact_core import compute_exact_artifact_hashes
-    from src.search.terminal_fixed_witness_verifier import (
+    from src.search.pr2_l0_fixed_witness_core import (
         _apply_terminal_fixed_witness_audit_fields,
         _copy_candidate_records,
         _identity_from_current_records,

@@ -108,14 +108,20 @@ def test_fix_3_phase_checker_rejects_two_empty_function_verifier_stub(
     tmp_path: Path,
     monkeypatch,
 ) -> None:
-    stub = _write(
+    verifier_stub = _write(
         tmp_path / "terminal_fixed_witness_verifier.py",
-        "def verify_terminal_fixed_witness(*args, **kwargs):\n"
-        "    return None\n\n"
         "def project_terminal_fixed_witness_records_for_sink(*args, **kwargs):\n"
         "    return None\n",
     )
-    monkeypatch.setattr(check_phase_review_gate, "FIXED_WITNESS_VERIFIER_PATH", stub)
+    core_stub = _write(
+        tmp_path / "pr2_l0_fixed_witness_core.py",
+        "def verify_terminal_fixed_witness(*args, **kwargs):\n"
+        "    return None\n\n"
+        "def _project_terminal_fixed_witness_records_from_capsule(*args, **kwargs):\n"
+        "    return None\n",
+    )
+    monkeypatch.setattr(check_phase_review_gate, "FIXED_WITNESS_VERIFIER_PATH", verifier_stub)
+    monkeypatch.setattr(check_phase_review_gate, "FIXED_WITNESS_CORE_PATH", core_stub)
 
     _summary, errors = check_phase_review_gate.check_gate(GATE_PATH)
 

@@ -254,6 +254,7 @@ def _candidate_sink_replay_errors_for_sources(
     l0_source: str | None = None,
     exact_source: str | None = None,
     artifact_core_source: str | None = None,
+    replay_core_source: str | None = None,
 ) -> list[str]:
     tmp_path.mkdir(parents=True, exist_ok=True)
     source_root = Path(tempfile.mkdtemp(prefix="zmd_candidate_sink_sources_"))
@@ -262,6 +263,7 @@ def _candidate_sink_replay_errors_for_sources(
         l0_path = source_root / "pr2_l0_micro_verifier_core.py"
         exact_path = source_root / "exact_campaign.py"
         artifact_core_path = source_root / "pr2_l0_artifact_core.py"
+        replay_core_path = source_root / "pr2_l0_replay_core.py"
         child_path.write_text(
             child_source
             if child_source is not None
@@ -298,9 +300,19 @@ def _candidate_sink_replay_errors_for_sources(
             encoding="utf-8",
             newline="\n",
         )
+        replay_core_path.write_text(
+            replay_core_source
+            if replay_core_source is not None
+            else check_p1_2_proof_obligations.PR2_L0_REPLAY_CORE_PATH.read_text(
+                encoding="utf-8"
+            ),
+            encoding="utf-8",
+            newline="\n",
+        )
         try:
             return check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
                 exact_campaign_path=exact_path,
+                candidate_replay_core_path=replay_core_path,
                 pr2_artifact_core_path=artifact_core_path,
                 pr2_l0_path=l0_path,
                 pr2_true_child_path=child_path,
@@ -1313,9 +1325,9 @@ def _child_project_records_return_before_replay(source: str) -> str:
 def _child_fixed_witness_returns_early(source: str) -> str:
     return _replace_once(
         source,
-        "    from src.search.candidate_proof_replay import _materialize_replay_snapshot\n",
+        "    from src.search.pr2_l0_replay_core import _materialize_replay_snapshot\n",
         "    return {}, {}, None\n"
-        "    from src.search.candidate_proof_replay import _materialize_replay_snapshot\n",
+        "    from src.search.pr2_l0_replay_core import _materialize_replay_snapshot\n",
     )
 
 
@@ -5343,9 +5355,12 @@ def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path)
 
     assert 'candidate replay subprocess boundary missing: "-I"' in errors
 
-    snapshot_path = tmp_path / "candidate_proof_replay_snapshot_bypass.py"
+    replay_core_source = check_p1_2_proof_obligations.PR2_L0_REPLAY_CORE_PATH.read_text(
+        encoding="utf-8"
+    )
+    snapshot_path = tmp_path / "pr2_l0_replay_core_snapshot_bypass.py"
     snapshot_path.write_text(
-        source.replace(
+        replay_core_source.replace(
             "normalized_replay_hashes != normalized_current_hashes",
             "False",
             1,
@@ -5354,7 +5369,7 @@ def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path)
     )
     snapshot_errors = (
         check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
-            candidate_replay_path=snapshot_path
+            candidate_replay_core_path=snapshot_path
         )
     )
     assert (

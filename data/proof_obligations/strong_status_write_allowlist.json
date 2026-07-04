@@ -877,7 +877,7 @@
       "keys": [
         "final_result"
       ],
-      "source_sha256": "84c904f1e0e2b1835c983978cefae6329d6b592d75c1735e8b67163b5ff7300e",
+      "source_sha256": "2f74f24bb3f3a2aeaf4a67bec9015802d84db1962bfa2fa5a9a08446f6f50f79",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
@@ -889,7 +889,7 @@
       "keys": [
         "final_status"
       ],
-      "source_sha256": "84c904f1e0e2b1835c983978cefae6329d6b592d75c1735e8b67163b5ff7300e",
+      "source_sha256": "2f74f24bb3f3a2aeaf4a67bec9015802d84db1962bfa2fa5a9a08446f6f50f79",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
@@ -901,7 +901,7 @@
       "keys": [
         "last_stop_reason"
       ],
-      "source_sha256": "84c904f1e0e2b1835c983978cefae6329d6b592d75c1735e8b67163b5ff7300e",
+      "source_sha256": "2f74f24bb3f3a2aeaf4a67bec9015802d84db1962bfa2fa5a9a08446f6f50f79",
       "justification": "PR2 #5: child completes the proposal-to-certified scratch-state elevation by asserting the strict terminal last_stop_reason (status=CERTIFIED, reason=search_exhausted_all_candidates), so the terminal full-frontier exhaustion / best-candidate / canonical candidate-domain validation runs unconditionally instead of being gated off by a producer-controlled last_stop_reason. The write is child-local scratch state only; durable seal and publication authority remain with L0/certified surface gates."
     },
     {
@@ -913,7 +913,7 @@
       "keys": [
         "terminal_frontier_evidence"
       ],
-      "source_sha256": "84c904f1e0e2b1835c983978cefae6329d6b592d75c1735e8b67163b5ff7300e",
+      "source_sha256": "2f74f24bb3f3a2aeaf4a67bec9015802d84db1962bfa2fa5a9a08446f6f50f79",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
@@ -925,7 +925,7 @@
       "keys": [
         "final_result"
       ],
-      "source_sha256": "84c904f1e0e2b1835c983978cefae6329d6b592d75c1735e8b67163b5ff7300e",
+      "source_sha256": "2f74f24bb3f3a2aeaf4a67bec9015802d84db1962bfa2fa5a9a08446f6f50f79",
       "justification": "PR2 true verifier child constructs fixed-witness verifier input inside the domain check; this is child-local data, with publication and durable seal authority retained by L0/certified surface gates."
     }
   ]

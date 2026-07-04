@@ -10,6 +10,7 @@ import pytest
 
 import src.search.certified_frontier as certified_frontier_module
 import src.search.exact_campaign as exact_campaign_module
+import src.search.pr2_l0_fixed_witness_core as fixed_witness_core_module
 import src.search.terminal_fixed_witness_capsule as fixed_witness_capsule_module
 import src.search.terminal_fixed_witness_verifier as fixed_witness_module
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
@@ -414,7 +415,7 @@ def test_fixed_witness_rejects_binding_routing_witness_split(
             return "FEASIBLE"
 
     monkeypatch.setattr(
-        fixed_witness_module,
+        fixed_witness_core_module,
         "RoutingSubproblem",
         SplitRoutingSubproblem,
     )
@@ -467,7 +468,7 @@ def test_fixed_witness_timeout_unknown_demotes_unproven(
         def solve(self, *, time_limit_seconds: float) -> str:
             return "TIMEOUT"
 
-    monkeypatch.setattr(fixed_witness_module, "PortBindingModel", TimeoutBindingModel)
+    monkeypatch.setattr(fixed_witness_core_module, "PortBindingModel", TimeoutBindingModel)
 
     verdict = verify_terminal_fixed_witness(
         state=state,
@@ -504,7 +505,7 @@ def test_fixed_witness_binding_infeasible_demotes_unproven_not_infeasible(
         def solve(self, *, time_limit_seconds: float) -> str:
             return "INFEASIBLE"
 
-    monkeypatch.setattr(fixed_witness_module, "PortBindingModel", InfeasibleBindingModel)
+    monkeypatch.setattr(fixed_witness_core_module, "PortBindingModel", InfeasibleBindingModel)
 
     verdict = verify_terminal_fixed_witness(
         state=state,
@@ -571,7 +572,7 @@ def test_fixed_witness_rejects_consistent_tamper_after_precheck_accepts(
     )
 
     monkeypatch.setattr(
-        fixed_witness_module,
+        fixed_witness_core_module,
         "PortBindingModel",
         InfeasibleOnTamperedBindingModel,
     )
@@ -718,7 +719,7 @@ def test_fixed_witness_rejects_connector_cell_occupied_by_other_body(
             ]
 
     monkeypatch.setattr(
-        fixed_witness_module,
+        fixed_witness_core_module,
         "PortBindingModel",
         PortCollisionBindingModel,
     )
@@ -757,7 +758,7 @@ def test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witne
         def solve(self, *, time_limit_seconds: float) -> str:
             return "TIMEOUT"
 
-    monkeypatch.setattr(fixed_witness_module, "PortBindingModel", TimeoutBindingModel)
+    monkeypatch.setattr(fixed_witness_core_module, "PortBindingModel", TimeoutBindingModel)
 
     reason = terminal_certified_final_result_violation_for_project(
         state,

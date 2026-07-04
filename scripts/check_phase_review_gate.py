@@ -24,9 +24,11 @@ LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
 FIXED_WITNESS_VERIFIER_PATH = (
     PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_verifier.py"
 )
+FIXED_WITNESS_CORE_PATH = (
+    PROJECT_ROOT / "src" / "search" / "pr2_l0_fixed_witness_core.py"
+)
 FIXED_WITNESS_CAPSULE_PATH = PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
 REQUIRED_FIXED_WITNESS_VERIFIER_FUNCTIONS = (
-    "verify_terminal_fixed_witness",
     "project_terminal_fixed_witness_records_for_sink",
 )
 
@@ -717,10 +719,16 @@ def _function_imports_exact_name(node: ast.AST, *, module: str, name: str) -> bo
     return found
 
 
-def _fixed_witness_verifier_semantics_errors(*, tree: ast.Module, path: Path) -> list[str]:
+def _fixed_witness_verifier_semantics_errors(
+    *,
+    verifier_tree: ast.Module,
+    verifier_path: Path,
+    core_tree: ast.Module,
+    core_path: Path,
+) -> list[str]:
     errors: list[str] = []
-    verify_fn = _function_def(tree, "verify_terminal_fixed_witness", path=path)
-    verify_source = _source_text(path, verify_fn)
+    verify_fn = _function_def(core_tree, "verify_terminal_fixed_witness", path=core_path)
+    verify_source = _source_text(core_path, verify_fn)
     if not (
         _direct_calls_name(verify_fn, "PortBindingModel")
         and _direct_calls_attr(verify_fn, "from_placement_core")
@@ -735,15 +743,23 @@ def _fixed_witness_verifier_semantics_errors(*, tree: ast.Module, path: Path) ->
     if "_accept(" not in verify_source or "_reject(" not in verify_source:
         errors.append("verify_terminal_fixed_witness must return explicit accept/reject verdicts")
 
-    project_fn = _function_def(tree, "project_terminal_fixed_witness_records_for_sink", path=path)
+    project_fn = _function_def(
+        verifier_tree,
+        "project_terminal_fixed_witness_records_for_sink",
+        path=verifier_path,
+    )
     if not _direct_calls_name(project_fn, "_project_terminal_fixed_witness_records_for_unverified_verdict"):
         errors.append("public fixed-witness projection wrapper must reject unverified in-process verdicts")
     try:
-        projection_fn = _function_def(tree, "_project_terminal_fixed_witness_records_from_capsule", path=path)
+        projection_fn = _function_def(
+            core_tree,
+            "_project_terminal_fixed_witness_records_from_capsule",
+            path=core_path,
+        )
     except GateError:
         errors.append("fixed-witness projection must demote rejected terminal records")
     else:
-        projection_source = _source_text(path, projection_fn)
+        projection_source = _source_text(core_path, projection_fn)
         for token in (
             'record["status"] = _PROJECTED_UNPROVEN',
             'record.pop("solution", None)',
@@ -840,14 +856,26 @@ def _fixed_witness_verifier_functions_present() -> list[str]:
     """
     if not FIXED_WITNESS_VERIFIER_PATH.exists():
         return [f"fixed-witness terminal verifier missing: {rel(FIXED_WITNESS_VERIFIER_PATH)}"]
+    if not FIXED_WITNESS_CORE_PATH.exists():
+        return [f"fixed-witness terminal verifier core missing: {rel(FIXED_WITNESS_CORE_PATH)}"]
     try:
-        tree = _parse_python(FIXED_WITNESS_VERIFIER_PATH)
+        verifier_tree = _parse_python(FIXED_WITNESS_VERIFIER_PATH)
     except GateError as exc:
         return [f"cannot parse {rel(FIXED_WITNESS_VERIFIER_PATH)}: {exc}"]
-    defined = {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
+    try:
+        core_tree = _parse_python(FIXED_WITNESS_CORE_PATH)
+    except GateError as exc:
+        return [f"cannot parse {rel(FIXED_WITNESS_CORE_PATH)}: {exc}"]
+    verifier_defined = {node.name for node in verifier_tree.body if isinstance(node, ast.FunctionDef)}
+    core_defined = {node.name for node in core_tree.body if isinstance(node, ast.FunctionDef)}
     errors: list[str] = []
+    if "verify_terminal_fixed_witness" not in core_defined:
+        errors.append(
+            "fixed-witness terminal verifier core must define verify_terminal_fixed_witness "
+            "(P1.2-FIX-1 publish-path binding)"
+        )
     for required in REQUIRED_FIXED_WITNESS_VERIFIER_FUNCTIONS:
-        if required not in defined:
+        if required not in verifier_defined:
             errors.append(
                 f"fixed-witness terminal verifier must define {required} "
                 f"(P1.2-FIX-1 publish-path binding)"
@@ -855,8 +883,10 @@ def _fixed_witness_verifier_functions_present() -> list[str]:
     try:
         errors.extend(
             _fixed_witness_verifier_semantics_errors(
-                tree=tree,
-                path=FIXED_WITNESS_VERIFIER_PATH,
+                verifier_tree=verifier_tree,
+                verifier_path=FIXED_WITNESS_VERIFIER_PATH,
+                core_tree=core_tree,
+                core_path=FIXED_WITNESS_CORE_PATH,
             )
         )
     except GateError as exc:
