@@ -1,8 +1,8 @@
 # F5 orbit-aware lifting soundness 论证与实施规格 v2
 
 **Status:** HISTORICAL_OR_PLAN（研究层设计稿；F5 生产接入属 P1.3）
-**Authored:** 2026-07-04（v2，取代 `p1_3_f5_orbit_lift_soundness_design_v1.md`；同日 v2.1 修订——本地独立核查回收：P-HOM 验证状态措辞收敛、谓词审计表内联自 v1）
-**v2 修订输入**：GPT Pro 对抗审查（2 BLOCK + 4 CONCERN + 2 NOTE，归档 `p2_design_external_reviews_20260704/f5_*`），其复核脚本在真实数据上跑通（P-HOM 全量验证、计数复核、两个 toy FP 复现）。
+**Authored:** 2026-07-04（v2，取代 v1；v2.1 = 本地核查回收；**v3 = GPT Pro 终审回收**——immutable_scope 白/黑名单明文化、presence-key alias 禁令、canonical_relabel 禁静默去重、现状/MUST 分离。终审总判定：定理层与实施规格层均"修后可靠"；原件归档 `p2_design_external_reviews_20260704/final_round/`）
+**v2 修订输入**：GPT Pro 对抗审查（2 BLOCK + 4 CONCERN + 2 NOTE，归档 `p2_design_external_reviews_20260704/f5_*`），其复核脚本在真实数据上跑通（P-HOM 的 **mandatory 记录侧**验证、计数复核、两个 toy FP 复现）。
 
 **v1→v2 关键变更**：
 - 【BLOCK-1】定理 2 增加 **liftable-reject 前提**（原 v1"开放问题 1"升级为定理前提）：oracle 的 INFEASIBLE 必须是"任何扩展 π₀ 的完整解均不可行"的封闭核判决；依赖 core 外 mutable state 的判决不得生成 F5 cut。
@@ -50,8 +50,8 @@
 **前提**（三条缺一不可，每条对应红测）：
 
 1. **P-HOM**（§2.2）。
-2. **无重复约束（BLOCK-2 / 方案 A）**：cert 内禁止重复 `(group_id, slot_index)`（既有）**且禁止重复 `(group_id, pose_id)`**（v2 新增）。理由：同组两 slot 同 pose 在几何上必重叠（谓词 2 平凡不可行），此类核的 INFEASIBLE 是平凡真；multiset 提升后（"该 pose 出现 ≥1 即禁"）严格强于 oracle 所证（"出现 ≥2 才不可行"），错剪合法解。此类几何平凡由 no-overlap/F6 承担，不进 F5。若未来需要 multiplicity≥2 的 cut，必须先给 master cardinality-aware attach（count/threshold literal），在此之前方案 A 是唯一安全形态——master 现有 alias fail-close 也恰好挡住这类 cut 的表达。
-3. **liftable reject（BLOCK-1）**：oracle 的 INFEASIBLE 必须证明"任何完整解，只要扩展 π₀ 的**任一带标签代表**，即不可行"。现行 adapter 协议 `query(core, state, deadline)` 允许读取 state 中 core 外的 mutable 上下文（当前 incumbent 的其他已选 pose、cell owner、routing blocker）——此时判决是"core ∧ 上下文不可行"，**不是轨道不变命题**（toy 复现：同一 core 在含 blocker 的 S1 判不可行、删 blocker 的 S2 可行；F5 cut 只记 core，在 S2 误触发 = FP）。实施契约：adapter 升级为 `query_liftable(core, immutable_scope, deadline)`——immutable_scope 只含冻结工件与候选级常量（ghost rect 经 scope 绑定）；若不可行性论证需要 mutable 上下文，要么把上下文提升为 core literal（cut 变大但 sound），要么该判决禁止生成 F5。
+2. **无重复约束（BLOCK-2 / 方案 A）**：cert 内禁止重复 `(group_id, slot_index)`（既有）、禁止重复 `(group_id, pose_id)`（v2 新增）、**且禁止 master attach 抽象后的 presence-key alias（v3 终审补强）**——真正承重的键是 `(group_id, attach_pose_key(pose_id))`：若两个不同 pose_id 解析到同一 attach presence key，boolean presence 仍会坍缩；现有 exact master 对重复 presence key fail-close（`_conflict_pose_entries` 返回空、attach 失败关闭，`exact_coordinate_master.py:7013-7016, 7034-7037, 7056-7058`），本规格将其升为必须保持的不变量 + 红测。不同 pose 的组合 pattern（如 `[(g,0,p),(g,1,q)]`，p≠q 且不 alias）不受禁令影响——multiset 评估与 presence nogood 对它语义一致，不误杀。理由：同组两 slot 同 pose 在几何上必重叠（谓词 2 平凡不可行），此类核的 INFEASIBLE 是平凡真；multiset 提升后（"该 pose 出现 ≥1 即禁"）严格强于 oracle 所证（"出现 ≥2 才不可行"），错剪合法解。此类几何平凡由 no-overlap/F6 承担，不进 F5。若未来需要 multiplicity≥2 的 cut，必须先给 master cardinality-aware attach（count/threshold literal），在此之前方案 A 是唯一安全形态——master 现有 alias fail-close 也恰好挡住这类 cut 的表达。
+3. **liftable reject（BLOCK-1）**：oracle 的 INFEASIBLE 必须证明"任何完整解，只要扩展 π₀ 的**任一带标签代表**，即不可行"。现行 adapter 协议 `query(core, state, deadline)` 允许读取 state 中 core 外的 mutable 上下文（当前 incumbent 的其他已选 pose、cell owner、routing blocker）——此时判决是"core ∧ 上下文不可行"，**不是轨道不变命题**（toy 复现：同一 core 在含 blocker 的 S1 判不可行、删 blocker 的 S2 可行；F5 cut 只记 core，在 S2 误触发 = FP）。实施契约：adapter 升级为 `query_liftable(core, immutable_scope, deadline)`。**immutable_scope 白/黑名单（v3 明文化，不再留给 P1.3）**——白名单：frozen artifacts（source_digest 七件套所覆盖的规则/实例/池/需求数据）、候选级常量（ghost_rect/blocked_cells/exterior_blocks，且必须经 `CutScope` 字段绑定——无 scope 绑定的 ghost 依赖判决不得 lift）、组结构常量（group demand、pose_domain）。黑名单：`selected_poses`、`cell_owner`、任何 incumbent 派生状态、任何搜索期可变量（现有 BState 明确含这些 mutable 字段且 digest 刻意排除 `selected_poses`，`lifecycle.py:405-409, 487-500`——这正是黑名单必须写死的证据）。若不可行性论证需要黑名单项，要么把它提升为 core literal（cut 变大但 sound），要么该判决禁止生成 F5。
 
 **命题**：满足前提 1–3 时，oracle 对 π₀ 的 INFEASIBLE ⇒ 任意带标签解 A，若其逐组被选 pose 多重集包含 [π₀]，则 A 不可行。
 
@@ -67,8 +67,10 @@
 
 ## 4. 实施规格（v2 修订版，P1.3 执行）
 
+**现状/MUST 分离表（v3，终审 NEW-CONCERN-D）**——当前源码是 pre-P1.3 形态，下列每项都是"现状不满足、实施必须改"的 MUST，不是已有事实：validator 无 `(group,pose)` 检查（现只禁 slot 复用）；oracle 协议仍是 `query(core,state)`（读 mutable state）；canonical 层仍是 sort+dedup（无重标）；cert schema 无 `orbit_homogeneity_digest` 字段。谓词审计表（§2.2）各行的证据状态：placement_rule/profile/power 三行已对源码核实；binding domain 与 routing port specs 两行的 label-invariance 以红测（σ-重标 verdict 不变性）为最终锚，表中引用是设计期证据不是结构门。
+
 1. **P-HOM 结构门**（范围扩大版，§2.2）：三件套 + `orbit_homogeneity_digest` 进 preflight 与 cut scope。
-2. **canonical_relabel（CONCERN-1 修正）**：定义 idempotent 函数——逐组按 `(pose_id, occurrence_serial)` 排序后把占用 slot **重标为 0..k_g−1**（现有 `canonical_sort_assignment` 只排序去重、留 slot gap，不足）。应用点：generator 初始 full assignment、deletion minimizer 每个 trial core、oracle query 输入、cert 存储。
+2. **canonical_relabel（CONCERN-1 修正，v3 补强）**：定义 idempotent 函数——逐组按 `(pose_id, occurrence_serial)` 排序后把占用 slot **重标为 0..k_g−1**（现有 `canonical_sort_assignment` 只排序去重、留 slot gap，不足）。两条硬规则：**①禁静默去重**——重复项是 multiplicity 审计信号，必须显式拒绝而非 `dict.fromkeys` 吞掉；**②每次重标后必须重新过 oracle 复验**——validator 对非规范形 cert 只能拒绝（schema_err），不得"重标后继续"。应用点：generator 初始 full assignment、deletion minimizer 每个 trial core、oracle query 输入、cert 存储。
 3. **validator 增补**：既有检查 + 禁重复 `(group_id, pose_id)`（前提 2）+ `cert == canonical_relabel(cert)`（非规范形 = schema_err）。
 4. **oracle adapter 生产化**：`query_liftable` 契约（前提 3）；每 adapter 两条红测——σ-重标 verdict 不变性、上下文依赖判决被拒。
 5. **master attach**：presence nogood 机械直接承载（前提 2 保证无 multiplicity≥2 pattern；alias fail-close 保留为纵深）。

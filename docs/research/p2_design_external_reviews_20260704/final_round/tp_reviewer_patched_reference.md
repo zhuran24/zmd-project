@@ -1,7 +1,7 @@
 # P2.0 吞吐认证范式设计稿 v2
 
 **Status:** HISTORICAL_OR_PLAN（研究层设计稿，不改生产代码/锁面）
-**Authored:** 2026-07-04（v2，取代 v1；v2.1 = 本地三路核查回收；**v3 = GPT Pro 终审回收**——TP7-D 验证器补 A13/HOL 验收义务、selected-solution nogood 改完整 0/1 等式键、envelope 强制 scope/kind、Farkas 绑定行族清单。终审总判定："修复所列问题后可作为 P2.0b 实现规格"；终审原件与审查方修订参考版归档 `p2_design_external_reviews_20260704/final_round/`）
+**Authored:** 2026-07-04（v2，取代 `p2_0_throughput_certification_paradigm_design_v1.md`；同日 v2.1 修订——本地三路独立核查回收：CE4 独立成公理 A13、"消解公理"表述收敛、若干 PARTIAL 补齐）
 **Scope authority:** 在本稿落地并走完 freeze-ritual 之前，`PROJECT_LOCK.md` §1A B 块与 `rules/canonical_rules.json:415-417` 的 out-of-scope 声明**继续有效**。
 
 **v2 修订输入**（原件归档于 `p2_design_external_reviews_20260704/`）：
@@ -10,13 +10,13 @@
 ③ GPT Pro 沙箱反例（tick 仿真器实证 CE1–CE4，验证公理组必要性并暴露一个未覆盖机制）。
 
 **v1→v2 关键变更**：
-- 【结构】单层 fluid+公理 → **两层**：TP7-S 静态平均层（必要条件 + Farkas 不可行证书）+ TP7-D 离散周期调度层（**发布级可行证书**）。TP7-D 用逐 tick 整数日历自证调度存在性，把 v1 里 merger 仲裁/splitter 比例/占空比可实现类公理从"假设"变成"证书内容"。
+- 【结构】单层 fluid+公理 → **两层**：TP7-S 静态平均层（必要条件 + Farkas 不可行证书）+ TP7-D 离散周期调度层（**发布级可行证书**）。TP7-D 只把“是否存在一份离散周期调度”移入证书；splitter/merger/机器输入 FIFO/相位选择等机制，必须在证书日历或 FIFO trace 中显式模拟并由 `throughput_semantics` 绑定后才算已证明。剩余公理是游戏执行该已绑定语义，而不是把可实现性凭空假设掉。
 - 【BLOCK-1】外部源口修正：= `boundary_io`(46×1) **+ `protocol_core`(1×6)** = 52 slot，恰等于需求 34+18；utility 实例（boundary_io/protocol_core/power/wireless_sink）无 recipe、不进机器耦合约束。
 - 【BLOCK-2】端口速率 `r[p]` 显式定义并经 terminal arcs 与路由流 φ 绑定（扩展图 G⁺），封死"机器吞吐与路由流脱钩"的 false-CERTIFIED 洞。
 - 【BLOCK-3】迁移规则收紧：只有结论形如 ¬P(x) 的旧证据可继承；旧 CERTIFIED incumbent 及**依赖它的 frontier dominance skip 全部失效**。
 - 【BLOCK-4】witness 升为自包含 closed-world 证书，digest 集扩到与 terminal fixed-witness stable fields 全对齐。
 - 【BLOCK-5】Farkas 侧给出完整规范形（Ax≤b、等式拆行、bounds 入行、canonical constraint_id 由 verifier 重建）。
-- 【CONCERN-1+CE4】公理组扩为 A1–A12（含端口 handoff、组件速率同质、cross-junction 通道独立、多输入同步、全局混流可分）；CE4（多输入队首阻塞）实证为 fluid 层不可消解、由 TP7-D+A8 或 FIFO trace 承担。
+- 【CONCERN-1+CE4】公理组扩为 A1–A13（含端口 handoff、组件速率同质、cross-junction 通道独立、多输入同步/队首阻塞、全局混流可分）；CE4（多输入队首阻塞）实证为 fluid 层不可消解，必须由 TP7-D 的机器输入日历 / HOL-free 静态前提 / FIFO trace 承担。
 - 【CONCERN-2】§8 满带论断软化为组件级局部结论。
 
 ---
@@ -59,16 +59,16 @@
 
 ### 2.3 TP7-D：离散周期调度层（发布级可行证书）
 
-证书 = 周期 P∈Z₊ 的 **path-phase schedule**（盲设计首选格式采纳）：
+证书 = 周期 P∈Z₊ 的离散调度证书。P2.0b 接受以下三类，但每类都必须把 CE4/A13 的机器输入队首阻塞语义封进 verifier 可检查内容：
 
-- 列出路径 `path_j = (commodity, source port, 组件序列 p_1..p_L, sink port)` 与注入相位集 `Φ_j ⊆ {0..P-1}`；相位 φ 的 item 在 tick `(φ+h) mod P` 占用第 h+1 个组件。
-- verifier 逐 tick 重算整数日历：每组件每 tick 占用 ≤ belt 容量（当前=1）、每端口每 tick ≤1、每机器周期内输入/输出计数与 recipe 精确平衡、目标商品周期计数 = P×target_rate（须为整数）、in-flight 集合周期闭合（tick 0 = tick P）。
-- **A13/HOL 验收义务（v3，终审 BLOCK）**：周期计数平衡**不**排除多输入机器前共享 FIFO 的队首阻塞（CE4：A,A,B,B 喂 A+B 机器，计数平衡但第二个 A 卡死 B）。verifier 对每台多输入机器必须二选一：(a) 按 `throughput_semantics` 的输入槽/缓冲模型逐 tick 模拟该机器的进料接纳（拒绝任何 tick 上"到达但不可接纳"的证书）；或 (b) 验证 HOL-free 静态前置（该机器每种输入商品的最后一段 FIFO 不混商品，或证书声明的过滤/分商品队列存在）。两者都不满足 ⇒ 证书拒绝（UNKNOWN，非 FEASIBLE）。红测：CE4 实例的 path-phase 证书必须被拒。
-- 备选格式：**FIFO trace**（显式逐 tick 队列模拟，用于机制争议场景——CE4 类多输入同步问题的最终裁决格式）；**static-flow-with-lift**（TP7-S 解 + 路径分解 + 相位着色，便于求解器输出）。
+- **path-phase schedule**（盲设计首选格式）：列出路径 `path_j = (commodity, source port, 组件序列 p_1..p_L, sink port)` 与注入相位集 `Φ_j ⊆ {0..P-1}`；相位 φ 的 item 在 tick `(φ+h) mod P` 占用第 h+1 个组件。verifier 逐 tick 重算组件/端口/in-flight 日历，并检查目标商品周期计数 `P×target_rate` 为整数且被精确满足。
+- path-phase 对每个 recipe-backed 机器还必须满足二选一：① payload 带 `machine_calendar`（input_accept、per-commodity buffer occupancy、cycle_start、consume、produce、blocked-output 事件），verifier 在 `throughput_semantics.machine_timing` 和有限输入槽容量下逐 tick 复算，拒绝任何 head-of-line blocking、输入槽溢出或非法启动；② verifier 能独立证明静态 HOL-free 前提，例如该机器每个输入商品在最后 FIFO 段上不混货，或存在显式过滤/分商品队列/足以覆盖最大突发的输入缓存。若两者都没有，path-phase 证书拒绝，必须改用 FIFO trace。
+- **FIFO trace**：显式逐 tick 队列模拟，是机制争议场景和所有无法静态证明 HOL-free 的多输入机器场景的终裁格式。
+- **static-flow-with-lift**：TP7-S 解 + 路径分解 + 相位着色；lift 的输出仍必须落成上述 path-phase 或 FIFO trace，并接受同样的机器输入检查。
 
 **发布判定**：publishable CERTIFIED′ 要求 TP7-D 证书被复验接受。TP7-S 可行而无 TP7-D ⇒ `UNKNOWN`（fail-closed）。
 
-**TP7-D 改变了公理的分工（表述精确版）**：调度**存在性**由证书显式证明（不再假设"存在某种公平仲裁使流量可达"）；但"游戏能**执行**证书指定的确定性调度"仍是公理（A7/A8 的可实现性半边），由 `throughput_semantics` 机器化与 FIFO trace 终裁共同承担——TP7-D 不是单独消解，是把公理从"存在性+可实现性"缩到只剩"可实现性"。
+**TP7-D 改变了公理的分工（精确版）**：调度**存在性**只在证书显式列出的事件、资源与队列语义范围内由 verifier 证明；splitter/merger/机器输入 FIFO/输出阻塞等机制必须由 `throughput_semantics` 绑定并被证书日历消费。剩余公理是“游戏真实执行与 `throughput_semantics` 一致”，不是“存在某种未列出的公平/过滤/缓冲策略”。
 
 ### 2.4 量词、scope 与回退语义
 
@@ -76,7 +76,7 @@
 
 固定候选的回退循环（CONCERN-3 收紧版）：
 
-1. TP7-D 找不到 → 试 TP7-S；TP7-S INFEASIBLE（规范形 Farkas 在手）→ 落 selected-solution nogood。**nogood 形态（v3 收紧，终审 BLOCK）**：必须是对完整 0/1 离散赋值的**等式键**——`Σ_{x∈S1}(1−x) + Σ_{x∈S0}x ≥ 1`（S1=选中、S0=未选中的 binding choice/generic slot assignment/route use-vars 全集 + graph 语法版本）。只禁选中集（`∨¬x_selected`）是**过切**：Farkas 只证明了图 S 不可行，不证明超集 S′ 不可行（玩具反例：S 一条半容量路不够，S′ 加一条并行路就够了）——选中集式 nogood 会把含 S 的可行超集一并错剪 = false-INFEASIBLE。要禁超集，必须另有独立 exact-rational 泛化证明（同第 2 条）；
+1. TP7-D 找不到 → 试 TP7-S；TP7-S INFEASIBLE（规范形 Farkas 在手）→ 只可对**完整离散选择键**落 selected-solution nogood。键必须含 recipe port binding choice、generic I/O slot assignment、graph 语法版本，以及 route-use 变量的**完整 0/1 向量**。CP-SAT replay 中的精确 nogood 形式为 `Σ_{x∈S1}(1-x) + Σ_{x∈S0}x ≥ 1`；只写 `∨_{x∈S1}¬x` 会把包含旧图的严格超集 S′ 一并剪掉，而 TP7-S/Farkas 对 S 不证明 S′ 不可行。若要剪超集或抽象容量瓶颈，必须走第 2 步的独立 exact-rational 泛化证明；
 2. 泛化 cut（如容量割集）必须自带独立 exact-rational 证明，heuristic bottleneck 不是 exact-safe cut；
 3. 候选级 P7-INFEASIBLE 只在 CP-SAT 加入全部已复验 nogood 后返回 INFEASIBLE、且 whole-layout replay 能重建同一模型+cut 序列+结论时才成立；否则 UNKNOWN fail-closed。
 4. TP7-S 可行但 TP7-D 反复找不到 → UNKNOWN（不落 cut；bounded-period 分支证书只作解释性材料，不剪候选）。
@@ -89,7 +89,7 @@
 
 迁移程序：旧 CERTIFIED 全部降级 `P7_PENDING`；被 dominance 跳过且无结构性不可行证明的候选恢复 `UNRESOLVED_UNDER_P7`；粒度不可区分时保守只继承可独立复验的 exact-safe cut。**正向捷径**（盲设计 §6.2）：若旧 lex 最优候选补到 TP7-D 证书，则"无 lex 更优新可行解"自动成立（新可行集 ⊆ 旧可行集），无需重跑 frontier——只需 schema 升版重 seal。
 
-## 3. 离散语义鸿沟：公理组 A1–A12 与反例实证
+## 3. 离散语义鸿沟：公理组 A1–A13 与反例实证
 
 TP7-D 承担调度存在性后，残余公理收敛为「参数真实性 + 调度可实现性 + 语义完整性」三类（编号沿盲设计，内容并入对抗审 A6-A9）：
 
@@ -115,9 +115,11 @@ TP7-D 承担调度存在性后，残余公理收敛为「参数真实性 + 调�
 
 ### 4.1 公共 envelope（BLOCK-4 修正版）
 
-自包含、closed-world、layout-bound。**必含字段（v3）**：`scope`（v1 实现只接受 `selected_route_graph`，其余值 fail-closed——scope 是 schema 字段不是文档默契，防未来 all-alternatives 证书被错投）与 `kind`（证书类型判别）。digest 集与 terminal fixed-witness stable fields 全对齐：`candidate_key / solution_digest / ghost_rect_digest / ghost_cells_digest / binding_assignment_digest / port_specs_digest / routing_occupancy_digest`，加 `selected_route_states`（**闭世界列表，verifier 由此独立重建 G⁺ 并重算 selected_graph_digest，不信 witness 边表**）与 `throughput_inputs_digest`（覆盖 canonical_rules 速率投影 + `commodity_metadata` 角色 + `preprocess_plan.utility_operations` + `generic_io_requirements` + mandatory instance→operation 映射——v1 只盖 canonical_rules 是漏洞）与 `throughput_semantics_digest`（§6 新 frozen artifact）。
+自包含、closed-world、layout-bound。公共 envelope 必须显式携带：`schema_version`、`authority`、`kind`、`scope`、`candidate_key`、stable digest 集、`selected_route_states`、`throughput_inputs_digest`、`throughput_semantics_digest` 与证书 payload。P2.0b 只接受 `scope="selected_route_graph"`；`binding`、`placement`、`candidate_frontier` 仅为未来 schema 保留值，除非 payload 同时给出 §2.4 所述 all-alternatives cover 证书并由 supervisor 独立复验，否则 fail-closed。terminal verdict 的 `throughput_scope` 必须由 verifier 从已接受证书派生，不能信任 producer 自报。
 
-数值规范：有理数 `{num,den}`，den>0、既约、零=`{0,1}`；float/NaN/未知字段/重复 key 一律拒。`flows`/`port_rates` closed-world：缺省=0，重复/未知边/**未知商品**/未知口拒绝；route-visible 口的 `r[p]` 必须等于 terminal arc 流量。（完整字段级 schema JSON 属实施期交付——这是本稿已声明的未闭合面，不是遗漏。）
+stable digest 集与 terminal fixed-witness stable fields 全对齐：`candidate_key / solution_digest / ghost_rect_digest / ghost_cells_digest / binding_assignment_digest / port_specs_digest / routing_occupancy_digest`，加 `selected_route_states`（**闭世界列表，必须等于 terminal routing verifier 接受的 selected graph；verifier 由此独立重建 G⁺ 并重算 selected_graph_digest，不信 witness 边表**）、`throughput_inputs_digest`（覆盖 canonical_rules 速率投影 + `commodity_metadata` 角色 + `preprocess_plan.utility_operations` + `generic_io_requirements` + mandatory instance→operation 映射）与 `throughput_semantics_digest`（§6 新 frozen artifact）。routing-free producer output ports 与 virtual generic sink slots 不在 route `port_specs` 中，但必须由 verifier 从 B*、canonical recipes、commodity roles 与 utility slot 规则重建，并纳入 `port_rates` 闭世界。
+
+数值规范：有理数 `{num,den}`，den>0、既约、零=`{0,1}`；float/NaN/未知字段/重复 key 一律拒。`flows`/`port_rates` closed-world：缺省=0，重复/未知边/**未知商品**/未知口拒绝；route-visible 口的 `r[p]` 必须等于 terminal arc 流量。字段级 schema JSON 可在实施期物化，但不得改变本节的必备字段、scope 量词与 fail-closed 规则。
 
 ### 4.2 可行侧
 
@@ -125,7 +127,17 @@ TP7-D 承担调度存在性后，残余公理收敛为「参数真实性 + 调�
 
 ### 4.3 不可行侧（BLOCK-5 修正版）
 
-`infeasible_static_farkas_v1`：verifier 先把 TP7-S 全约束**独立规范化**为 `A x ≤ b`——等式拆两行、`≥` 取负、变量下界 `-x≤0` 入行、全部上界（u≤1、r≤port_max、组件容量）入行、每行 canonical `constraint_id` 由 verifier 重建（不信 producer 自报），产出 `lp_digest`。**行族清单（v3，终审 CONCERN）**：`lp_digest` 必须绑定与 T1–T6 逐条对应的显式 row-family manifest（T1 守恒行族、T2 组件容量行族、T3 端口容量+terminal 等式行族、T4 机器耦合等式行族、T5 目标行族、T6 routing-free 平衡行族、变量 bounds 行族）——没有枚举清单，两个实现可以各自声称"Ax≤b"而行集不同，producer/verifier 漂移会放伪 Farkas 或拒真 Farkas。证书 = `{constraint_id: λ}` 非负有理乘子；检查 `λ≥0 ∧ Σλ·A=0（逐列）∧ Σλ·b<0`。未知/重复 constraint_id、未引用行乘子非零歧义、非既约有理数全部 fail-closed。**由 §2.2 平均化引理，该证书同时否定 TP7-D。**
+`infeasible_static_farkas_v1`：verifier 先把 TP7-S 全约束**独立规范化**为 `A x ≤ b`，并把变量列顺序、row-family 清单和 `constraint_id` 一起写入 `lp_digest`。变量列为：`φ[(edge,k)]`（G⁺ 中每条 edge 与 `k∈K_route`）、`r[p]`（所有 recipe port、generic source slot、virtual generic sink slot）、`u[i]`（`i∈M*`）。row-family 必须与 T1–T6 精确对应：
+
+- `LB_phi/LB_r/LB_u`：所有变量下界 `-x≤0`；`UB_u`：`u[i]≤1`。
+- `T1_route_balance(k,v)`：每个 `k∈K_route`、每个非终端 route node 的守恒等式拆两行。
+- `T2_component_capacity(s)`：每个 selected physical state 的 `through(φ,s)≤belt_capacity_per_tick`。
+- `T3_port_capacity(p)`：每个端口/slot 的 `r[p]≤port_max_throughput_per_tick`；`T3_terminal_arc(p,k)`：每个 route-visible 口的 `r[p]=φ[terminal_arc(p),k]` 拆两行。未知口、无 incident selected state 的正吞吐、重复 terminal key 是输入拒绝，不是可省略行。
+- `T4_machine_input/output(i,k)`：每个 `i∈M*`、每个 recipe 商品的机器耦合等式拆两行；utility 实例无此行。
+- `T5_target(t)`：每个 production target 的精确目标等式拆两行。
+- `T6_rf_sink(k)`：每个 `k∈K_rf_sink` 的 producer output 口总量 = virtual generic sink slot 总量，拆两行；外部源 slot 仅允许绑定 `source_kind=external_boundary` 商品，这属于 B*/输入校验，校验失败直接拒绝而不是生成 LP。
+
+等式一律拆成 `aᵀx≤β` 与 `-aᵀx≤-β`，`≥` 一律取负。证书 = `{constraint_id: λ}` 非负有理乘子；检查 `λ≥0 ∧ Σλ·A=0（逐列）∧ Σλ·b<0`。未知/重复 constraint_id、证书引用非本 `lp_digest` 行、非既约有理数全部 fail-closed。**由 §2.2 平均化引理，该证书同时否定 TP7-D。**
 
 `infeasible_periodic_branch_farkas_v1`（bounded-period 分支树）：只证"无周期 P 的调度"，无 period bound 定理时不得用于剪候选。
 
@@ -142,7 +154,7 @@ TP7-D 承担调度存在性后，残余公理收敛为「参数真实性 + 调�
 
 ## 7. 复杂度（CONCERN-3 修正）
 
-单次 TP7-S LP 与证书复验成本可忽略（选中图 ~10³ 组件、17 商品）；**但 LBBD 内环不可忽略**——selected-solution nogood 最坏枚举指数级 (B,S)，收敛性只有"有限空间理论终止"，可发布终止还要 cut transcript 可复验。P2.0b 不得承诺每候选新增成本可忽略；Farkas→容量割集泛化 cut 的强度是内环收敛的决定因素，列头号算法问题。
+单次 TP7-S LP 与证书复验成本可忽略（选中图 ~10³ 组件、17 商品）；**但 LBBD 内环不可忽略**——selected-solution nogood 最坏枚举指数级 (B,S)，且 route-use 维度必须是完整 0/1 等值 nogood，不能用 selected-only 子集 cut 偷换成超集剪枝。可发布终止还要 cut transcript 可复验。P2.0b 不得承诺每候选新增成本可忽略；Farkas→容量割集泛化 cut 的强度是内环收敛的决定因素，列头号算法问题。
 
 ## 8. 对最优性的实质影响（CONCERN-2 软化版）
 
