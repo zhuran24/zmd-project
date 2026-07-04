@@ -1,5 +1,9 @@
 # Terminal 全域无解证书合同设计稿 v1
 
+> **⚠ SUPERSEDED（2026-07-04）**：本稿已被 `terminal_no_solution_evidence_contract_design_v2.md` 取代
+> （外审后重做合同层与接线层：authoritative 域绑定、负向复验硬门、resume 生命周期、sink projection；
+> 引理证明的 routing/ghost 前提表述修正）。本文件保留为历史快照；实现以 v2 为准。
+
 **Status:** HISTORICAL_OR_PLAN（研究层设计稿，不改生产代码/锁面）
 **Authored:** 2026-07-04
 **填的洞：** `src/search/outer_search.py:1982-1989`——候选域穷尽但无任何 certified 候选时，当前 terminal-frontier 证据 schema 只支持正向 CERTIFIED final result，系统只能 fail-closed 返回 `UNPROVEN`。「所有 admissible 候选均不可行」这一与 CERTIFIED 同等 proof-bearing 的终局结论（`exact_campaign.py:2548-2551` 自述）目前**说不出来**。若生产 campaign 的真实答案是"min_side≥6 无解"，这就是最终交付物的形状——本稿设计它的可重放证据合同。
