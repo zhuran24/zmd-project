@@ -1,7 +1,7 @@
 # F5 orbit-aware lifting soundness 论证与实施规格 v2
 
 **Status:** HISTORICAL_OR_PLAN（研究层设计稿；F5 生产接入属 P1.3）
-**Authored:** 2026-07-04（v2，取代 `p1_3_f5_orbit_lift_soundness_design_v1.md`）
+**Authored:** 2026-07-04（v2，取代 `p1_3_f5_orbit_lift_soundness_design_v1.md`；同日 v2.1 修订——本地独立核查回收：P-HOM 验证状态措辞收敛、谓词审计表内联自 v1）
 **v2 修订输入**：GPT Pro 对抗审查（2 BLOCK + 4 CONCERN + 2 NOTE，归档 `p2_design_external_reviews_20260704/f5_*`），其复核脚本在真实数据上跑通（P-HOM 全量验证、计数复核、两个 toy FP 复现）。
 
 **v1→v2 关键变更**：
@@ -10,7 +10,7 @@
 - 【CONCERN-1】规范重标从"排序去重"升级为 **idempotent canonical_relabel**（slot 重标 0..k-1）。
 - 【CONCERN-2】P-HOM 门范围扩到运行时 `candidate_placements.json` 工件本体 + `orbit_homogeneity_digest` 注入 preflight 与 cut replay scope。
 - 【CONCERN-4】计数修正：8 组阶乘积 = **10^123.47**（v1 误写 10^105）；(34)_8 = **7.32×10^11**（v1 误写 2×10^12）；两种计数口径分列。
-- 【NOTE-1】P-HOM 前提已在真实数据上机器验证：266 条记录、19 组、modulo instance_id 逐字段违例 **0**。
+- 【NOTE-1】P-HOM 前提的 **mandatory 记录侧**已在真实数据上机器验证（266 条、19 组、modulo instance_id 逐字段违例 0）；**runtime pose 池工件侧未验证**，属 P-HOM 结构门待建范围——两侧都闭合前不得宣称"P-HOM 已验证"。
 
 ---
 
@@ -27,9 +27,19 @@
 
 组 g 的实例集 = 匿名 slot 集 S_g；G = Π_g S_{n_g} 逐组作用于带标签解。pattern π = 各组 pose 多重集；带标签代表 = 多重集到具体 slot 的一个注入赋值。
 
-### 2.2 定理 1（谓词不变性）——前提已机器验证，守门待建
+### 2.2 定理 1（谓词不变性）——前提 mandatory 侧已验证，pose 池侧与守门待建
 
-σ∈G、A 为带标签（完整或部分）解 ⇒ A 与 σ(A) 谓词满足性等价、目标值相同。逐谓词数据依赖审计表同 v1 §2.2（placement/binding/routing/power/P7 前瞻全部 label-invariant）。
+σ∈G、A 为带标签（完整或部分）解 ⇒ A 与 σ(A) 谓词满足性等价、目标值相同。逐谓词数据依赖审计表（v2.1 起内联，原 v1 §2.2；每行是独立证明义务，实施时逐条出红测）：
+
+| 谓词 | 语义依赖的数据 | label-invariance 依据 |
+|---|---|---|
+| (1) ghost 空 / (2) 不重叠 | 被选 pose 几何 | pose 池按 template 共享（`placement_generator.py:485-501`），几何谓词只看 pose cell 集——多重集不变 |
+| (3) placement_rule | template 级规则 | 实例记录仅 7 字段、无 per-instance 规则（`instance_builder.py:62-68`） |
+| (4) binding 精确计数 | operation profile + pose | domain 由 `(operation_type, pose)` 枚举（`binding_subproblem.py:985-1000`）；需求按 operation_type 聚合；变量名含 instance_id 但仅命名不进语义 |
+| (5) routing 连通 | port specs 的 (commodity, 几何) | commodity 由 profile 定、坐标由 pose 定；instance_id 只进诊断标签（`routing_subproblem.py:451-472, 994-1039`） |
+| (6) power 覆盖 | template 级 needs_power + pose 几何 | power 索引按 template/pose（`master_model.py:2422-2424, 3733-3744`） |
+| (P7 吞吐，前瞻) | operation 速率 + selected graph | 速率按 operation_type——与吞吐稿 v2 兼容 |
+| 目标 | 仅 ghost rect | 与标签无关 |
 
 **前提 P-HOM 的现状与守门**：
 - mandatory 记录：**已全量机器验证**——19 组 266 条 modulo instance_id 零违例（外审复核脚本 `f5_verify_review_claims_gpt.py`）。

@@ -14,3 +14,7 @@
 对应设计稿：`../p2_0_throughput_certification_paradigm_design_v1.md`（→v2）、
 `../p1_3_f5_orbit_lift_soundness_design_v1.md`（→v2）、
 `../terminal_no_solution_evidence_contract_design_v1.md`（→v2）。
+
+注：`f5_verify_review_claims_gpt.py` 的 `ROOT` 写死为脚本所在目录，直接运行会 `FileNotFoundError`——
+复跑时需把 ROOT 指到仓库根（或从仓库根以相对路径调数据）。其结论（19 组/266 条/0 违例、计数值）
+已由 2026-07-04 本地核查用独立方法复核为真。
