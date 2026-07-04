@@ -1,7 +1,7 @@
 ---
 id: project-bottleneck-audit-20260702-map
 kind: reference
-title: 2026-07-02 全项目瓶颈审计(12 条,逐条核实)已归档——读它先看时效对照;仓库备份现状(bundle×2+E: 副本,远端 main 停 07-01)
+title: 2026-07-02 全项目瓶颈审计(12 条,逐条核实)已归档——读它先看时效对照;仓库备份现状(bundle×2+E盘副本,远端 main 停 07-01)
 summary: 另一会话 37-agent 工作流对全项目做的「最终目标瓶颈」审计:8 维度×fable/codex 16 份报告 → 12 条瓶颈 → 逐条独立核查(VERDICT+file:line)。已归档 docs/research/project_bottleneck_audit_20260702/(main a91acc6),README 带逐条时效对照——**快照(07-02 深夜)早于 07-03 画线与 07-04 合并/通电批次,直接引用条目结论前必看对照表**。仍成立的硬骨头:算力硬墙(第一多米诺)、CP-SAT 编码忠实性单点(复验同构造器同库,无异构编码)、F1-F9 未接入、dependency floor manifest 占位、168h 执行层债、冻结输入只证「没变」不证「正确」、P1.2 手动门。已过时:seal 校验跳过+pr2-5 未合(6e06922 已合)、#7 通电缺口(349c56c 已通)、clean-review 无终止循环(07-03 画线)。
 scope:
   domains:
