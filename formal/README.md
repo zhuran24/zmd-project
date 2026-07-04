@@ -15,14 +15,14 @@ cd formal
 lake update          # 首次:拉 mathlib v4.31.0 及依赖(lake-manifest.json 已锁 rev)
 lake exe cache get   # 首次:拉 mathlib 预编译缓存(~4.5GB,不拉则本地编译数小时)
 lake build           # 应输出 Build completed successfully
-lake env lean axiom_audit.lean   # 公理审计(30 条,应全部仅经典三公理或无公理)
+lake env lean axiom_audit.lean   # 公理审计(45 条,应全部仅经典三公理或无公理)
 ```
 
 **自 2026-07-05 起依赖 mathlib**（钉 `v4.31.0` tag，与工具链同版）：
-`TnsCoverage.lean` / `F5OrbitLift.lean` 仍是 core-only，`DesignStatements.lean`
-用到 `Finset`/`Multiset`/`Equiv` 库。
+`TnsCoverage.lean` / `F5OrbitLift.lean` 仍是 core-only，`DesignStatements.lean` /
+`CutFamilies.lean` 用到 `Finset`/`Multiset`/`Equiv`/`Relation` 库。
 
-## 内容与对应表（30 条定理，三个模块）
+## 内容与对应表（45 条定理，四个模块）
 
 ### `TnsCoverage.lean` + `F5OrbitLift.lean`（首批 14 条，谓词/函数式表示，core-only）
 
@@ -69,8 +69,35 @@ lake env lean axiom_audit.lean   # 公理审计(30 条,应全部仅经典三公�
 | `Orbit.boolean_presence_lift_soundness_from_named_representative` | boolean master attach 形态的完整 soundness（方案 A 的定理形状） | 经典三公理 |
 | `NoRepeatCounterexample.presence_dedup_strengthens_cut_counterexample` | v3 §2.3 BLOCK-2 反例：presence 去重把重数-2 cut 强化成重数-1（具体构造） | 经典三公理 |
 
+### `CutFamilies.lean`（15 条，第一梯队 6 个 family 的当前实现核心，需 mathlib）
+
+**来源**：陈述由本方按可开工地图
+（`docs/research/p3_0b_family_formalizability_survey_20260705/`）的抽象核心
+定理表写就，每条 docstring 锚到对应 survey 报告（那里有 spec/impl 的
+file:line）。**待独立复审**（与首批同流程：先落库，后送盲对拼/对抗审）。
+每个 family 给 bound（容量上界）与 infeasible（fire 条件逆否 = cut soundness
+数学核）两个形态；抽象层不绑 70×70。
+
+| Lean 定理 | 对应 survey 命题 | 公理依赖 |
+|---|---|---|
+| `CutFamilies.f9_area_bound` | F9：well-formed ⇒ \|A∩W\| ≤ \|W\B\|（面积上界） | 经典三公理 |
+| `CutFamilies.f9_overflow_infeasible` | F9 fire：witness 面积超 safe bound ⇒ 非 well-formed | 经典三公理 |
+| `CutFamilies.f1_occupancy_bound` | F1：互斥放置格子需求总和 ≤ 区域自由格数 | 经典三公理 |
+| `CutFamilies.f1_demand_overflow_infeasible` | F1 fire：Σ demand·cells > \|R\blocked\| ⇒ 无合法放置 | 经典三公理 |
+| `CutFamilies.f7_cover_filter_monotone` | F7：候选覆盖集随自由集单调 | propext, Quot.sound |
+| `CutFamilies.f7_empty_cover_monotone` | F7 fire 传递：empty-cover 对更堵状态保持为空 | 经典三公理 |
+| `CutFamilies.f4_closed_set_absorbs_reach` | F4：邻接封闭集装下全部可达点 | 无 |
+| `CutFamilies.f4_unreachable_outside_closed` | F4 fire：目标在封闭集外 ⇒ 无路可达 | 无 |
+| `CutFamilies.f4_subgraph_reach_mono` | F4：子图可达 ⊆ 原图可达（阻挡单调） | 无 |
+| `CutFamilies.f6_strip_capacity` | F6：单自由区间内互斥 L-段 ≤ ⌊len/L⌋ | 经典三公理 |
+| `CutFamilies.f6_packing_bound` | F6：不跨阻挡 ⇒ 可放数 ≤ Σ ⌊len/L⌋（分桶鸽笼） | 经典三公理 |
+| `CutFamilies.f6_packing_overflow_infeasible` | F6 fire：需求超 Σ floor ⇒ 无合法放置 | 经典三公理 |
+| `CutFamilies.f6_cross_side_lower_bound` | F6：对侧下界 max(0, D−C')（截断减法） | propext, Quot.sound |
+| `CutFamilies.f2_cutset_bound` | F2 弱方向：边不相交必过割的路线数 ≤ \|δ\|（**不需要** MFMC） | 经典三公理 |
+| `CutFamilies.f2_demand_overflow_infeasible` | F2 fire：demand > \|δ\| ⇒ 无边不相交合法路由 | 经典三公理 |
+
 "经典三公理" = `propext`、`Classical.choice`、`Quot.sound`（Lean/mathlib 标准信任基）。
-无任何 `sorry`，无 `native_decide`/`ofReduceBool`（30/30 见 `axiom_audit.lean`）。
+无任何 `sorry`，无 `native_decide`/`ofReduceBool`（45/45 见 `axiom_audit.lean`）。
 
 ## 陈述层修改记录（施工中，均已过编译+公理审计）
 
@@ -105,10 +132,13 @@ lake env lean axiom_audit.lean   # 公理审计(30 条,应全部仅经典三公�
 
 1. ~~`anon_lift_sound`~~ **已完成**（2026-07-05，见 `DesignStatements.lean`
    `Orbit.anon_multiset_lift_soundness_from_named_representative` 全链）。
-2. 第一梯队 family 核心定理（照可开工地图
-   `docs/research/p3_0b_family_formalizability_survey_20260705/`
-   顺序：F9 面积计数 → F1 容量鸽笼 → F7 空覆盖单调性 → F4 图可达 →
-   F6 区间 floor 计数 → F2 割边计数；mathlib 已就位，`Finset` 基数工具齐）。
-3. F5 复合安全引理（轨道 cut × master 对称序不删光合法类）。
-4. TNS lex 序 frontier 支配骨架（CERTIFIED 剪 lex 更差候选的 soundness）。
-5. 吞吐 TP7-S nogood 完整 0/1 等式键的过切/欠切边界（v3 终审 BLOCK-2 的正反两面）。
+2. ~~第一梯队 family 核心定理~~ **已完成**（2026-07-05，见 `CutFamilies.lean`
+   15 条：F9/F1/F7/F4/F6/F2 各 bound+infeasible 形态；待独立复审）。
+3. 第二梯队：F3 port_exposure（带显式 all-ports-active 前提做，方向原语
+   N/S 翻转坑见 survey）；F8 power_grid_reach **等 P1.3 欧氏 vs 12×12
+   stencil reconcile 后再做**（代码自认 landmine，先形式化 = 铸错误几何）。
+4. F5 复合安全引理（轨道 cut × master 对称序不删光合法类）。
+5. TNS lex 序 frontier 支配骨架（CERTIFIED 剪 lex 更差候选的 soundness）。
+6. 吞吐 TP7-S nogood 完整 0/1 等式键的过切/欠切边界（v3 终审 BLOCK-2 的正反两面）。
+7. 完备性 Q1：**不是 Lean 任务**——先写「不可行类分类学」设计稿（走独立审查链），
+   theorem domain 都还没定义（八个定义层缺口见 survey/completeness.md）。

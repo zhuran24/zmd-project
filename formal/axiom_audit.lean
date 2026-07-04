@@ -33,3 +33,19 @@ import ZmdFormal
 #print axioms ZmdDesignStatements.Orbit.boolean_presence_lift_soundness_from_named_representative
 -- C. no-repeat 反例（decide 版，无 native_decide）
 #print axioms ZmdDesignStatements.NoRepeatCounterexample.presence_dedup_strengthens_cut_counterexample
+-- CutFamilies（第一梯队 6 family 核心，2026-07-05）
+#print axioms ZmdFormal.CutFamilies.f9_area_bound
+#print axioms ZmdFormal.CutFamilies.f9_overflow_infeasible
+#print axioms ZmdFormal.CutFamilies.f1_occupancy_bound
+#print axioms ZmdFormal.CutFamilies.f1_demand_overflow_infeasible
+#print axioms ZmdFormal.CutFamilies.f7_cover_filter_monotone
+#print axioms ZmdFormal.CutFamilies.f7_empty_cover_monotone
+#print axioms ZmdFormal.CutFamilies.f4_closed_set_absorbs_reach
+#print axioms ZmdFormal.CutFamilies.f4_unreachable_outside_closed
+#print axioms ZmdFormal.CutFamilies.f4_subgraph_reach_mono
+#print axioms ZmdFormal.CutFamilies.f6_strip_capacity
+#print axioms ZmdFormal.CutFamilies.f6_packing_bound
+#print axioms ZmdFormal.CutFamilies.f6_packing_overflow_infeasible
+#print axioms ZmdFormal.CutFamilies.f6_cross_side_lower_bound
+#print axioms ZmdFormal.CutFamilies.f2_cutset_bound
+#print axioms ZmdFormal.CutFamilies.f2_demand_overflow_infeasible
