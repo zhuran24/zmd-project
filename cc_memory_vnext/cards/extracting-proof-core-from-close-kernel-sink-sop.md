@@ -95,4 +95,17 @@ ruff 修 core(unused import 等)或 checker(F841 dead var)会动字节 → 所�
 3. 修 ruff 会连锁 reseal → 和抽取一起做、一次 reseal。
 4. 每个子代理"说绿"都 leader 独立重跑/逐行读 diff 复核。
 
+== 第二批补充(抽 replay/fixed-witness core,2026-07-05,commit d05d242)==
+第二批比第一批多踩这些【第一批没有的】,未来抽 core 必须补勘察:
+
+1. **不止 check_p1_2 一个 checker 绑被抽函数**:还有 `scripts/check_phase_review_gate.py`(owner-governance gate,P1.2-FIX-1 publish-path binding)用 ast FunctionDef **硬绑 verify_terminal_fixed_witness 的完整 FunctionDef+语义必须在 verifier 原文件**。facade 化把 verify 搬 core → 该 gate 实测红(`fixed-witness terminal verifier must define verify_terminal_fixed_witness`)。**抽 core 前勘察【所有】checker(不只 check_p1_2)对被抽函数的结构绑定**,facade 化会破坏的一并改指向 core(同强度:加 CORE_PATH、verify 检查 verifier→core、token/强度一字不改、project 类留 verifier)。这是 governance 面 → 动前显式交底 owner + 严格逐行验同强度 + 标可逆。
+
+2. **第二类攻击面 = test-double monkeypatch(不只 assert-old-in-source 源码注入)**:功能/对抗测试用 `monkeypatch.setattr(fixed_witness_module, "PortBindingModel", 替身)` 注入替身。函数搬 core 后 verify 用 **core 的 globals**,patch 旧 facade module 打不到真跑代码 → 测试**假绿**(替身没生效、跑了真模型)。patch 目标必须同步改到 core module。**扫对抗测试时两类都扫**:①源码注入 mutator(assert old in source)②test-double setattr 注入点。
+
+3. **facade re-export 撞 ruff F401 → 别 --fix**:facade `from new_core import (一堆)` 转发,ruff 报 unused-import。**无脑 `ruff --fix` 删转发会破坏 capsule/测试的 `from 旧模块 import X` 兼容**。给 facade 加 `__all__` 列全转发符号(ruff 认 re-export、不报)。只删真 unused 纯 stdlib(搬走函数后本地不用的,如 hashlib)。
+
+4. **抽取漏 import → ruff F821**:抽函数到 core,函数体用的 typing/符号(如 Sequence/Tuple)要一起 import,codex 易漏(注解因 `from __future__ import annotations` 是字符串不求值 → pytest 不 NameError,但 F821 静态抓)。
+
+5. **抽前查验收门实际状态、定准价值别过度宣称**:git show HEAD 查被抽模块【顶层 import】。若顶层已干净(不拉三大禁模块),抽 core 对"child sys.modules 无三大模块"验收门**边际=0**(第一批砍的顶层脏模块才有 sys.modules 收益;第二批两模块顶层纯 stdlib/binding-routing)。第二批真价值=**importable 可达代码面收窄**(child import 精确最小 core、不把大模块全部 producer/sink 逻辑拉进可信面,~2200 行→~几百行)。价值叙事对齐,别宣称"TCB 变纯小核"(求解器栈是验证本质砍不掉)。
+
 关联:reseal 实操 [[close-kernel-reseal-execution-sop]];主线计划 [[p1-2-closeout-then-tcb-backlog-order]];阶段3 spike(#1 目标/A 路径/fused 校正)[[stage3-spike-fused-5f-part3-findings]];分工(实现优先 codex、leader 验收)[[agent-role-division-and-codex-collaboration]]。
