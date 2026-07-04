@@ -48,7 +48,7 @@ provenance:
   evidence:
     - "设计稿 commit 35791c3(docs/research/p2_0_throughput_certification_paradigm_design_v1.md,217 行)"
     - "GPT Pro 三工作包已 staged:C:\\Users\\22957\\pr2_pkg\\p2_0_throughput\\(盲设计对照/对抗审查/沙箱反例狩猎)"
-updated_at: "2026-07-04"
+updated_at: "2026-07-05"
 ---
 owner 2026-07-04 两项相关拍板:
 
@@ -75,9 +75,9 @@ GPT Pro(无限额度+沙箱)当三角色用:盲设计对照/对抗审查/反例�
 - 外审原件归档 `docs/research/p2_design_external_reviews_20260704/`(84ca691);
 - **v2 = 实现基准**(68cdccc;v1 已标 superseded):吞吐 v2 主结构换两层范式(TP7-S 平均层 Farkas 不可行证书 + TP7-D 离散周期 path-phase 为发布级可行证书)+修 5 BLOCK(源口=boundary_io+protocol_core=52 等);F5 v2 定理前提收紧(liftable-reject、禁重复 (group,pose))+P-HOM 已全量机器验证(266条0违例);TNS v2 合同/接线层重做(authoritative 域、负向异构复验硬门、resume 生命周期、sink projection)。
 - 沙箱 CE1-CE4 反例集校准公理组(CE4 多输入队首阻塞=新机制,归 A8+FIFO trace)。
-- 注意:同内容提交 e7e0425/c01750b 存在于 pr2-1-min-tcb-closure 分支(共享工作区被并发会话切了分支,已分别 cherry-pick 到 main 68cdccc/0c65cdf,分支上的留待合并自动消解,勿重复处理)。
+- 注意:同内容提交 e7e0425/c01750b/739fdd7 存在于 pr2-1-min-tcb-closure 分支(共享工作区被并发会话切了分支,已分别 cherry-pick 到 main 68cdccc/0c65cdf/bc5fd96,分支上的留待合并自动消解,勿重复处理)。
 
-== 审查链已收口(2026-07-04 终审回收,v3 = 实现基准)==
+== 审查链已收口(2026-07-05 凌晨终审回收,v3 = 实现基准)==
 完整审查链:v1 五路外审 → v2 重写 → v2 本地三路核查(31 项 24 FIXED/7 PARTIAL/0 MISSED)→ v2.1 → **GPT Pro v2.1 终审(三会话)→ v3(main bc5fd96)**。
 终审总判定:三稿均"修后可靠/修后可作实现规格",0 项定理级翻案;发现已全部回收进 v3(文件名仍为 *_v2.md,版本注记在头部)。终审关键增量:吞吐 TP7-D 补 A13/HOL 验收义务 + nogood 完整 0/1 等式键(选中集式会错剪超集);F5 immutable_scope 白/黑名单 + presence-key alias 禁令;TNS 证据分层 proposal_core/sealed_public + digest 绑定链 + 禁共享 canonical parser + seal-only handle;**一般域最小反链非单点**(终审随机域实验 3~11 元;标准域 (6,6) 单点仍成立);master ghost 路径被终审逐行验证"缩小不收紧"。
 终审原件+审查方修订参考版归档 `docs/research/p2_design_external_reviews_20260704/final_round/`(实施期字段展开对照材料,规范性以主稿 v3 为准)。
