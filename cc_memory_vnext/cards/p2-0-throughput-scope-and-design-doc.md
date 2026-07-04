@@ -71,4 +71,8 @@ Fable-5 约 2026-07-07 下线。owner 授权把 backlog 里最吃推理的部分
 1. 带宽范式 v1(`p2_0_throughput_certification_paradigm_design_v1.md`,35791c3);
 2. F5 orbit lifting v1(`p1_3_f5_orbit_lift_soundness_design_v1.md`,c2644a4)——修正"132!"叙事(真实轨道=8个 operation_type 组)、定理1谓词不变性+P-HOM 机器化前提、定理2轨道提升 soundness、与 master 序复合引理;发现提升机械已存在一半(AnonymousSlotRef/multiset evaluator/master presence nogood 标签擦除),缺的是定理与前提守门;
 3. terminal 全域无解证书 v1(`terminal_no_solution_evidence_contract_design_v1.md`,f5a95be)——逐维反单调引理+最小覆盖坍缩(标准域下证书=单个 (6,6) 的 replay-verified INFEASIBLE);地基盘点:候选级 INFEASIBLE 已是可 sink-replay 强状态;诚实声明 false-INFEASIBLE 无 fixed-witness 等价兜底(P-TNS-H 增强选项待 owner 定级)。
-GPT Pro(无限额度+沙箱)当三角色用:盲设计对照/对抗审查/反例实验。全部工作包与提示词在 C:\Users\22957\pr2_pkg\p2_0_throughput\(吞吐盲设计+吞吐对抗审+吞吐沙箱反例+F5 审查+TNS 审查,共 4 zip 5 prompt;2026-07-04 已通过手机文件通道发给 owner);结果回来做 union+triage 出各稿 v2。
+GPT Pro(无限额度+沙箱)当三角色用:盲设计对照/对抗审查/反例实验(共 4 zip 5 prompt,owner 手机通道收发)。**五会话结果已回收、triage 完成、三稿 v2 已落 main(2026-07-04)**:
+- 外审原件归档 `docs/research/p2_design_external_reviews_20260704/`(84ca691);
+- **v2 = 实现基准**(68cdccc;v1 已标 superseded):吞吐 v2 主结构换两层范式(TP7-S 平均层 Farkas 不可行证书 + TP7-D 离散周期 path-phase 为发布级可行证书)+修 5 BLOCK(源口=boundary_io+protocol_core=52 等);F5 v2 定理前提收紧(liftable-reject、禁重复 (group,pose))+P-HOM 已全量机器验证(266条0违例);TNS v2 合同/接线层重做(authoritative 域、负向异构复验硬门、resume 生命周期、sink projection)。
+- 沙箱 CE1-CE4 反例集校准公理组(CE4 多输入队首阻塞=新机制,归 A8+FIFO trace)。
+- 注意:同内容提交 e7e0425 存在于 pr2-1-min-tcb-closure 分支(提交时共享工作区被并发会话切了分支,已 cherry-pick 到 main 68cdccc,分支上的留待合并自动消解,勿重复处理)。
