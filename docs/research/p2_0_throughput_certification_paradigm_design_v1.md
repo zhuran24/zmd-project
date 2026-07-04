@@ -1,5 +1,9 @@
 # P2.0 吞吐认证范式设计稿 v1
 
+> **⚠ SUPERSEDED（2026-07-04）**：本稿已被 `p2_0_throughput_certification_paradigm_design_v2.md` 取代
+> （五路外审后重写：两层 TP7-S/TP7-D 结构、源口修正、端口-路由流绑定等 5 BLOCK 修复）。
+> 本文件保留为历史快照；实现以 v2 为准。外审原件见 `p2_design_external_reviews_20260704/`。
+
 **Status:** HISTORICAL_OR_PLAN（研究层设计稿，不是生产实现，不改变任何锁边界）
 **Authored:** 2026-07-04
 **Scope authority:** 在本稿全部落地并走完 freeze-ritual 之前，`PROJECT_LOCK.md` §1A B 块（吞吐/带宽/离散容量流 OUT-OF-SCOPE）与 `rules/canonical_rules.json:415-417`（mixed_commodity_flow 的 out-of-scope 声明）**继续有效**。本稿存在 ≠ scope 已改。

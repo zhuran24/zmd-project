@@ -1,5 +1,9 @@
 # F5 orbit-aware lifting soundness 论证与实施规格 v1
 
+> **⚠ SUPERSEDED（2026-07-04）**：本稿已被 `p1_3_f5_orbit_lift_soundness_design_v2.md` 取代
+> （外审后修订：定理 2 增加 liftable-reject 前提、禁重复 (group,pose)、canonical_relabel、计数修正）。
+> 本文件保留为历史快照；实现以 v2 为准。
+
 **Status:** HISTORICAL_OR_PLAN（研究层设计稿；F5 生产接入属 P1.3，本稿不改生产代码、不动锁面）
 **Authored:** 2026-07-04
 **先例定位：** `PROJECT_LOCK.md` §3A（2026-05-22）已强制 "state 必走 group-orbit 而非 per-instance，消 10^134 label symmetry；AnonymousSlotRef multiset 包含语义跨 candidate enumeration order 必 sound（slot_index 仅 debug/serialization 用，不参与 soundness 推理）"。本稿不是提出新方向，而是**给已锁定的方向补上它欠的 soundness 定理、机器可查前提和实施规格**——历史文档（`docs/项目说明/05_open_questions.md:459-483`）推荐了方案 A（orbit-aware pattern lift）但明说 true interchangeability 未被形式化证明（`manufacturing_cluster_trap.md:86-99`）。
