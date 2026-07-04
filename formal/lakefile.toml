@@ -1,0 +1,5 @@
+name = "zmdformal"
+defaultTargets = ["ZmdFormal"]
+
+[[lean_lib]]
+name = "ZmdFormal"
