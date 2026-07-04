@@ -2,7 +2,7 @@
 id: p3-0-formal-verification-head-start
 kind: decision
 title: P3.0 形式化证明已开头(owner 2026-07-05)——formal/ 9 条 Lean 定理落 main,双轴架构定稿,GPT Pro 三包已 staged;锁面不动
-summary: owner 2026-07-05 授权把 Q14(框架形式化证明,原 P3 defer)提前开头。已落地——①`formal/`(Lean 4.31 core,零 mathlib,零 sorry,公理审计仅经典三公理)9 条定理过机器检查(main fb771ff+计数修正 7a3f1ff;fb771ff 提交信息里的"7 条"是笔误,实为 9)——TNS 覆盖论证/乘积序极小元/一般域反链证书/标准域 (6,6) 单点坍缩 + F5 具名轨道提升(发现只需单向 P-HOM)/匿名 multiset 搬运/「禁重复」前提的机器反例;②双轴设计稿 `docs/research/p3_0_formal_verification_head_start_design_v1.md`(轴A定理侧 Lean/轴B证书侧 VeriPB-VIPR 按文献 R4/R6/R7 裁定;抽象边界纪律=模型侧前提作假设接入;P3.0a-d 阶梯);③GPT Pro 三包 staged(盲形式化/陈述保真对抗审/证书侧路线深研)。**锁面不动**——16_workflow_review §6.4「不用形式化 proof system」政策继续有效,本线是前瞻投资不改任何 gate 验收标准。
+summary: owner 2026-07-05 授权把 Q14(框架形式化证明,原 P3 defer)提前开头,当日完成首轮全闭环。①`formal/`(Lean 4.31 core,零 mathlib,零 sorry,公理审计仅经典公理)**14 条定理**过机器检查(fb771ff 首批 9→三路审查回收后 5560c39 扩到 14;fb771ff 提交信息"7 条"是笔误)——TNS 覆盖论证/极小元/一般域反链/标准域单点坍缩+minimal_iff 唯一性;F5 具名轨道提升核心引理(只需单向 P-HOM)+保群包装+去重与 attach-key alias 的「严格变强/真误杀」两组反例。**诚实边界:F5 定理 2 完整形态(anon_lift_sound)未形式化,盲形式化交付已给 mathlib 陈述分解,P3.0b 第一块砖**。②设计稿 v2(文件名仍 _v1.md):轴 B 六处事实错误按联网深研修正(Pumpkin=DRCP 非 VeriPB 原生/SCIP10 exact/检查器三桶 cake_lpr:CNF、CakePB:PB、cake_vipr:MIP/LP-Farkas 独立有理路线),P3.0c 重排七阶段(第一落点=binding PB sidecar 4-8 周)。③三路审查归档 `p3_0_formal_reviews_20260705/`;④F1-F9+完备性可开工地图归档 `p3_0b_family_formalizability_survey_20260705/`(main 40f6941)——第一梯队 7 family 核心可立即进 Lean,F8 等几何 reconcile,完备性 Q1 缺定义先写分类学设计稿。**锁面不动**——16_workflow_review §6.4 政策继续有效。
 scope:
   domains:
     - formal-verification
@@ -61,8 +61,8 @@ Q14(框架 completeness/soundness 形式化)原判 P3 defer(投资数年级)。o
 - 扩展纪律:任何定理**陈述**的修改必须对照设计稿定理原文,且过独立复审(设计稿修订版复审纪律的延伸;对应表在 formal/README.md)。
 - formal/ 永不进 CI 硬门(设计稿 §6 开放问题 2 的预判)。
 
-== 下一批砖(按序,README「下一批砖」一致)==
-anon_lift_sound(需 mathlib Equiv/Fintype:部分单射延拓成有限群置换)→ F5 复合安全引理 → TNS lex 序 frontier 支配骨架 → TP7-S nogood 完整键过切/欠切边界。
+== 下一批砖(按序;首轮三包已回收闭环 2026-07-05,原件归档)==
+P3.0b 开工顺序:①装 mathlib(缓存数 GB,独立会话)→ ②anon_lift_sound(照盲形式化交付 ZmdDesignStatements.lean 的分解施工:anonMultisetExtends→occurrence matching→部分置换延拓;含 NoPresenceKeyAlias)→ ③第一梯队 family 核心 F9→F1→F7→F4→F6→F2(全是初等计数/图论,见可开工地图;F6 当前版不用 Hall、F2 只需弱方向不用 MFMC)→ ④F5 复合安全引理/TNS lex 支配/TP7-S nogood 键边界。F8 等 P1.3 欧氏 vs 12×12 方形 stencil reconcile;F3 带显式 all-ports-active 前提做。完备性 Q1 = 先写「不可行类分类学」设计稿(走独立审查链),不是 Lean 任务(theorem domain 都没定义,八个定义层缺口列在 survey/completeness.md)。
 
-== GPT Pro 三包(staged 待 owner 跑)==
-剪贴板 Win+V 顶→底=包1路径/提示词1/包2路径/提示词2/包3路径/提示词3。包1盲形式化(只给设计稿,回收对拼抓 formalization gap);包2陈述保真对抗审(审 Lean 陈述 vs 设计稿原文,含「σ 任意函数 vs 同组约束是发现还是错译」这类点);包3证书侧路线深研(可联网,2026 生态现状+接口可行性)。回收处理=对拼 triage→修订→(若改陈述)重编译+公理审计+复审。
+== 首轮审查回收要点(纪律沿用)==
+盲形式化与本方全部抽象选择收敛零矛盾;对抗审 1 BLOCK=覆盖面夸大(教训:README 对应表别把核心引理写成完整定理);证书侧深研修正六处混桶。补丁不盲 apply——lean 补丁经本地重编译+公理审计采纳(实修一处:Lean core 无 Function.Bijective,改双侧逆)。陈述改动必须重过「编译+公理审计+对照设计稿原文」三件套。
