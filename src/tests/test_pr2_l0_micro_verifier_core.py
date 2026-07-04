@@ -904,7 +904,8 @@ def test_true_verifier_child_precheck_receives_strict_certified_scratch_state(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    from src.search import certified_frontier as certified_frontier_module
+    from src.search import pr2_l0_artifact_core as artifact_core_module
+    from src.search import pr2_l0_frontier_core as frontier_core_module
 
     candidate_generation = {"domain_authority": "test_child_precheck"}
     proposal_evidence = {"candidate_generation": candidate_generation}
@@ -941,13 +942,13 @@ def test_true_verifier_child_precheck_receives_strict_certified_scratch_state(
         lambda **_kwargs: ({}, {}, SimpleNamespace(publishable=True)),
     )
     monkeypatch.setattr(
-        certified_frontier_module,
+        frontier_core_module,
         "candidate_generation_kwargs",
         lambda _candidate_generation: {},
     )
-    monkeypatch.setattr(certified_frontier_module, "generate_candidate_sizes", lambda **_kwargs: [])
+    monkeypatch.setattr(frontier_core_module, "generate_candidate_sizes", lambda **_kwargs: [])
     monkeypatch.setattr(
-        certified_frontier_module,
+        frontier_core_module,
         "build_terminal_frontier_evidence",
         lambda **_kwargs: certified_evidence,
     )
@@ -958,7 +959,7 @@ def test_true_verifier_child_precheck_receives_strict_certified_scratch_state(
         return None
 
     monkeypatch.setattr(
-        exact_campaign_module,
+        artifact_core_module,
         "terminal_certified_final_result_project_precheck_violation",
         capture_precheck,
     )

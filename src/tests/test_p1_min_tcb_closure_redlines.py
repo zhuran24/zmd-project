@@ -37,10 +37,10 @@ from src.tests.test_p1_2_supervisor_pr1 import _run_toy_candidate_proposal
 
 
 GOLDEN_CANDIDATE_REPLAY_RECORDS_DIGEST = (
-    "cd9db9b2f68c053759f948581d02ea4af781afe3c19398ed443462af328064c5"
+    "8a8a7653fc4e42b1641c1c41a027a29d612ba20e840b3930ccbfbcdaaea05ca1"
 )
 GOLDEN_FIXED_WITNESS_PROJECTION_DIGEST = (
-    "a1770e6d14dd400dd62b38cbbb7ac5a4e8fd4ec0a9a57b323022011b177c08fa"
+    "c78f341ce2baab3fdf735b9d506391b44546c02e2f69060afc8cb74405d9056f"
 )
 GOLDEN_TERMINAL_FRONTIER_EVIDENCE_DIGEST = (
     "9ad6f5d08fe9ccc940f284f27e47f2ecdcab996ba505dee18d1db67480d86f6e"
@@ -68,6 +68,13 @@ _VOLATILE_RECORD_KEYS = frozenset(
         "wall_time",
     }
 )
+_SOURCE_TREE_FINGERPRINT_KEYS = frozenset(
+    {
+        "certified_exact_source_tree",
+        "source_digest",
+    }
+)
+_SOURCE_TREE_FINGERPRINT_PLACEHOLDER = "<SOURCE_TREE_FINGERPRINT>"
 _FIXED_WITNESS_PROJECTION_FIELDS = frozenset(
     {
         "candidate_records",
@@ -179,6 +186,24 @@ def _normalize_path_bound_values(
     return payload
 
 
+def _normalize_source_tree_fingerprints(payload: Any) -> Any:
+    # Full-src tree fingerprints belong to reseal/V99 floor coverage: extracting
+    # core files mechanically changes them, while source binding drift stays
+    # locked by the source_digest_drift malicious fixture below.
+    if isinstance(payload, dict):
+        normalized: dict[str, Any] = {}
+        for key, value in payload.items():
+            key_str = str(key)
+            if key_str in _SOURCE_TREE_FINGERPRINT_KEYS:
+                normalized[key_str] = _SOURCE_TREE_FINGERPRINT_PLACEHOLDER
+            else:
+                normalized[key_str] = _normalize_source_tree_fingerprints(value)
+        return normalized
+    if isinstance(payload, list):
+        return [_normalize_source_tree_fingerprints(value) for value in payload]
+    return payload
+
+
 def _stable_candidate_records_digest(
     records: dict[str, Any],
     *,
@@ -191,6 +216,7 @@ def _stable_candidate_records_digest(
         project_root=project_root,
         campaign_path=campaign_path,
     )
+    normalized = _normalize_source_tree_fingerprints(normalized)
     if isinstance(normalized, dict):
         for record in normalized.values():
             if not isinstance(record, dict):
@@ -255,15 +281,18 @@ def _stable_fixed_witness_capsule_response_payload(
     assert set(payload) == expected_fields
     nonce = payload["nonce"]
     assert isinstance(nonce, str) and nonce
+    stable_fields = {
+        field: _normalize_path_bound_values(
+            payload[field],
+            project_root=project_root,
+            campaign_path=campaign_path,
+        )
+        for field in _FIXED_WITNESS_CAPSULE_RESPONSE_FIELDS
+    }
+    stable_fields = _normalize_source_tree_fingerprints(stable_fields)
+    assert isinstance(stable_fields, dict)
     return {
-        **{
-            field: _normalize_path_bound_values(
-                payload[field],
-                project_root=project_root,
-                campaign_path=campaign_path,
-            )
-            for field in _FIXED_WITNESS_CAPSULE_RESPONSE_FIELDS
-        },
+        **stable_fields,
         "nonce_present": True,
         "verdict_fresh_run_token_present": _fixed_witness_fresh_run_token_present(
             payload["verdict"]

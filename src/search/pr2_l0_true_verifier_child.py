@@ -404,12 +404,12 @@ def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict
         first_key = sorted(fixed_violations)[0]
         raise ValueError(f"terminal fixed witness verifier failed:{fixed_violations[first_key]}")
 
-    from src.search.certified_frontier import (
+    from src.search.pr2_l0_frontier_core import (
         build_terminal_frontier_evidence,
         candidate_generation_kwargs,
         generate_candidate_sizes,
     )
-    from src.search.exact_campaign import (
+    from src.search.pr2_l0_artifact_core import (
         TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
         terminal_certified_final_result_project_precheck_violation,
     )
@@ -619,7 +619,7 @@ def _run_fixed_witness_direct(
     final_result: Mapping[str, Any],
 ) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]], Any]:
     from src.search.candidate_proof_replay import _materialize_replay_snapshot
-    from src.search.exact_campaign import compute_exact_artifact_hashes
+    from src.search.pr2_l0_artifact_core import compute_exact_artifact_hashes
     from src.search.terminal_fixed_witness_verifier import (
         _apply_terminal_fixed_witness_audit_fields,
         _copy_candidate_records,
