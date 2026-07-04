@@ -1,0 +1,63 @@
+{
+  "candidate_placements": {
+    "checked_paths": [
+      "/mnt/data/f5_review_work/data/preprocessed/candidate_placements.json",
+      "/mnt/data/f5_review_work/data/candidate_placements.json",
+      "/mnt/data/f5_review_work/candidate_placements.json"
+    ],
+    "status": "UNKNOWN_MISSING_ARTIFACT"
+  },
+  "counts": {
+    "falling_factorial_34_8": 732058145280
+  },
+  "current_f5_code_shape": {
+    "canonical_sort_only_sort_dedup": true,
+    "cert_schema_has_orbit_homogeneity_digest": false,
+    "oracle_protocol_still_takes_state": true,
+    "validator_has_seen_group_pose_check": false,
+    "validator_has_seen_slots": true
+  },
+  "mandatory": {
+    "groups": 19,
+    "log10_factorial_product_all_mandatory_groups": 243.5039160328895,
+    "log10_factorial_product_manufacturing_3x3": 123.4708919507474,
+    "manufacturing_3x3_counts": {
+      "crusher_blue_iron": 34,
+      "crusher_buckwheat": 6,
+      "crusher_sandleaf": 11,
+      "crusher_source": 18,
+      "molding_bottle": 6,
+      "parts_maker": 6,
+      "refinery_blue_iron": 34,
+      "refinery_steel": 17
+    },
+    "manufacturing_3x3_total": 132,
+    "records": 266,
+    "violations_mod_instance_id": 0
+  },
+  "root": "/mnt/data/f5_review_work",
+  "source_refs": {
+    "src/placement/placement_generator.py": {
+      "checked": [
+        "src/placement/placement_generator.py"
+      ],
+      "present": false
+    },
+    "src/subproblems/binding_subproblem.py": {
+      "checked": [
+        "src/subproblems/binding_subproblem.py",
+        "src/binding_subproblem.py",
+        "src/models/binding_subproblem.py"
+      ],
+      "present": false
+    },
+    "src/subproblems/routing_subproblem.py": {
+      "checked": [
+        "src/subproblems/routing_subproblem.py",
+        "src/routing_subproblem.py",
+        "src/models/routing_subproblem.py"
+      ],
+      "present": false
+    }
+  }
+}
