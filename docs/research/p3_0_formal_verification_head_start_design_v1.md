@@ -4,7 +4,7 @@
 > 原 P3 defer）提前开头。**锁面不动**：项目政策"数学 sound 用工程 verify、不用形式化
 > proof system"（`docs/项目说明/16_workflow_review.md` §6.4）在本稿存在期间继续有效;
 > 本线是前瞻投资,不改变 P1.2/P1.3/P2.0 任何 gate 的验收标准。
-> 首批产物：`formal/`（Lean 4,7 条定理,零 sorry,公理审计干净）。
+> 首批产物：`formal/`（Lean 4,9 条定理,零 sorry,公理审计干净）。
 
 ## 1. 双轴架构（这条线到底在证什么）
 
@@ -51,7 +51,7 @@ ghost-use inventory + master"缩小不收紧"审计（终审已逐行验过一�
 
 ## 3. 首批成果（P3.0a,已落库）
 
-`formal/` 7 条定理,Lean 4.31.0 core（零 mathlib 依赖）,`lake build` 绿,
+`formal/` 9 条定理,Lean 4.31.0 core（零 mathlib 依赖）,`lake build` 绿,
 无 sorry,公理依赖仅经典三公理（propext/Classical.choice/Quot.sound,部分定理零公理）。
 清单与对应表见 `formal/README.md`。要点:
 
