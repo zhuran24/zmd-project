@@ -89,4 +89,7 @@ provenance:
 - **"现在排不排?"**——不排。画线管的只有一件事:**外审循环停**,收口不等这些空格填满。
 owner 原话意思:"第 7 部分是可以填上了,但其他部分还没做,还没做自然不能填上"——这些深化项仍是**真实 backlog**,预期将来要"做上一段时间/做上几轮"才能填;何时排期归 owner,届时明说重开即可,**不需要**推翻画线拍板(两者不矛盾,是先后与优先级)。代理别把"线下的活现在不做"外推成"这批活永久取消/碰它就是违背拍板"。
 
+== 再澄清:P1.2 收口的前提【包含 #1 最小 TCB 闭包】(owner 2026-07-04 晚,收窄"收口不等空格填满")==
+2026-07-04 晚 owner 质疑"为什么 #1~#9 没做完就打审包收口",澄清一个此前被会话推广过头的点:**那条 TCB 线是 2026-07-03 关于 close-kernel(round-20)画的,只管"close-kernel 外审循环停不停",声明的受信假设是基础设施层(解释器/stdlib/OR-Tools/OS 隔离/冻结几何字节);它【不】授权"P1.2 整体收口不等所有 TCB 深化"。** 上面那句"收口不等这些空格填满"是会话替 owner 记的,被 owner 本人收窄:**P1.2 收口的前提【至少包含 #1 最小 TCB 闭包(child 不再 import 项目域、快照不扫全 src)】——TCB 没真正做到最小(隔离验证 child 还 import certified_frontier/exact_campaign 等一大堆项目域)时,不能算 P1.2 收口。** 正确顺序修正为:**先做深化(至少 #1,以 #1 为枢纽、带 #5-F-B + fused 一批)→ 做完再走收口外审**,不是"先收口后深化"。(#2/#3/#8/#9b 等是否也是收口前提 owner 未逐一明确;至少 #1 是。)本条推翻 [[p1-2-closeout-then-tcb-backlog-order]] 的"先收口后深化"前置板——那张卡已同步修正。
+
 四条游戏语义拍板见 [[routing-game-semantics-rulings]];close-kernel 防谁(半可信内部对手)见 [[close-kernel-threat-model-reseal-adversary]];#7 入口通电的设计边界见 [[pr2-7-supervisor-seal-entrypoint-design]];外审对抗性语料的上下文卫生见 [[guardrail-delegate-adversarial-reads]];外审 relay 剪贴板规程(本次收口后暂不触发)见 [[relay-review-clipboard-staging]]。
