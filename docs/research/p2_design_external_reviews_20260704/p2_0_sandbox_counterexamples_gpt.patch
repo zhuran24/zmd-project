@@ -1,0 +1,2455 @@
+diff -ruN orig/docs/research/p2_0_sandbox_counterexamples_report.md mod/docs/research/p2_0_sandbox_counterexamples_report.md
+--- orig/docs/research/p2_0_sandbox_counterexamples_report.md	1970-01-01 00:00:00.000000000 +0000
++++ mod/docs/research/p2_0_sandbox_counterexamples_report.md	2026-07-04 11:19:44.066087824 +0000
+@@ -0,0 +1,450 @@
++# P2.0 fluid 吞吐抽象离散反例沙箱报告
++
++本报告只基于 `p2_0_prompt_3_sandbox_counterexamples.md` 和 `p2_0_throughput_with_design_v1.zip` 中的设计稿/规则内容。新增代码是一个自足 Python tick 仿真器、手工 fluid witness 校验器、实例 JSON 导出和复现实验脚本。
++
++复现命令：
++
++```bash
++python3 experiments/p2_0_discrete_counterexamples.py
++python3 experiments/p2_0_discrete_counterexamples.py --json
++python3 experiments/p2_0_discrete_counterexamples.py --dump-instances
++```
++
++输出文件：
++
++- `experiments/p2_0_discrete_counterexamples.py`：仿真器 + fluid witness checker + 案例套件。
++- `experiments/p2_0_discrete_counterexample_instances.json`：全部 JSON 实例。
++- `experiments/p2_0_discrete_counterexample_results.json`：本次 12000 tick / 2000 warmup 的复现实测结果。
++
++## 仿真语义假设
++
++- One tick has two phases: components first try to emit queued/output items, then internal state advances.
++- A belt is a FIFO pipeline with one-item cell capacity and one-cell-per-tick motion.
++- A source offers at most one item/tick. Rate sources use an accumulator; pattern sources repeat exactly and stall when backpressured.
++- A merger has one-slot input buffers and one-slot output buffer; policy is fixed-priority or round-robin.
++- A splitter has one input slot. Type-blind mode ignores commodity; filter mode maps commodity to an output port.
++- A machine waits until all recipe inputs are buffered, runs for ticks_per_cycle, and blocks completion if its output queue is full.
++- Machine input capacity is explicit per instance; the default is the recipe count for that commodity.
++- Sink measurements count accepted items after warmup; sinks in toy misrouting cases accept all commodities so wrong deliveries are visible instead of hidden as backpressure.
++
++敏感性标注：belt 速度采用“每 tick 移动 1 格”，这是设计稿 D1 未知量的一个沙箱假设。CE1/CE2/CE3 的结论主要依赖仲裁、分流、初始库存，不依赖具体 belt 速度；CE4 依赖有限 FIFO、不可绕行、机器每商品输入槽有限。如果真实游戏机器有无限分商品库存、自动过滤/旁路，CE4 会消失；如果只是速度或路径长度变化，CE4 可以通过调整 FIFO 长度/突发长度复现。
++
++fluid 判定器说明：小实例采用手工构造的 `fluid_witness`，代码逐项校验 T1 守恒、T2/T3 容量、T4 机器耦合、T5 目标满足、T6 源口上限。它不是通用 LP 优化器，但满足本任务允许的“小实例直接手工构造流”。
++
++## 总览
++
++- 默认/对抗语义下，fluid 可行但离散短缺的实例数：**4**。
++- 最宽容语义（公平轮询 merger + blocked-skip splitter + 可过滤 splitter）下仍剩：**2**。剩下的是 `CE3` 的 A4 bootstrap 问题和 `CE4` 的新 FIFO-HOL/机器同步问题。
++
++| 实例 | 归类 | fluid | 默认实测目标 | 默认判定 | 宽容实测目标 | 宽容判定 |
++|---|---|---:|---|---|---|---|
++| `CE1_merger_fixed_priority_starves_low_branch` | A2 merger fairness violation | 可行 | `{'sink:sink_a': {'A': 1.0}, 'sink:sink_b': {'B': 0.0}}` | 短缺 | `{'sink:sink_a': {'A': 0.5}, 'sink:sink_b': {'B': 0.5}}` | 达标 |
++| `CE2_type_blind_splitter_cannot_demix_shared_fifo` | A3 splitter mixed-commodity separability violation | 可行 | `{'sink:sink_a': {'A': 0.25}, 'sink:sink_b': {'B': 0.25}}` | 短缺 | `{'sink:sink_a': {'A': 0.5}, 'sink:sink_b': {'B': 0.5}}` | 达标 |
++| `CE3_cycle_bootstrap_empty_start_deadlocks` | A4 bootstrap reachability violation | 可行 | `{'machine:m_ab': {'B': 0.0}, 'machine:m_ba': {'A': 0.0}}` | 短缺 | `{'machine:m_ab': {'B': 0.0}, 'machine:m_ba': {'A': 0.0}}` | 短缺 |
++| `CTRL_cycle_bootstrap_sufficient_wip_reaches_fluid_rate` | control: A4 bootstrap witness supplies sufficient initial WIP | 可行 | `{'machine:m_ab': {'B': 1.0}, 'machine:m_ba': {'A': 1.0}}` | 达标 | `{'machine:m_ab': {'B': 1.0}, 'machine:m_ba': {'A': 1.0}}` | 达标 |
++| `CE4_mixed_fifo_head_of_line_blocks_synchronizing_machine` | NEW: finite FIFO head-of-line blocking at synchronizing machine input | 可行 | `{'sink:sink_c': {'C': 0.0}}` | 短缺 | `{'sink:sink_c': {'C': 0.0}}` | 短缺 |
++| `CTRL_sync_path_length_skew_is_transient_only` | control: no counterexample under per-commodity input buffers | 可行 | `{'sink:sink_c': {'C': 0.5}}` | 达标 | `{'sink:sink_c': {'C': 0.5}}` | 达标 |
++| `CTRL_fractional_055_single_commodity_converges` | control: no counterexample for one commodity with accumulator scheduling | 可行 | `{'sink:sink_a': {'A': 0.55}}` | 达标 | `{'sink:sink_a': {'A': 0.55}}` | 达标 |
++
++## 反例目录
++
++### CE1_merger_fixed_priority_starves_low_branch
++
++结构族：two nominal half-rate commodities share one merger then split apart。
++判定：**A2 merger fairness violation**。
++
++实例 JSON：
++
++```json
++{
++  "components": {
++    "merge": {
++      "input_ports": [
++        "in0",
++        "in1"
++      ],
++      "policy": "fixed_priority",
++      "type": "merger"
++    },
++    "sink_a": {
++      "accepts": "*",
++      "type": "sink"
++    },
++    "sink_b": {
++      "accepts": "*",
++      "type": "sink"
++    },
++    "split": {
++      "blocked": "skip",
++      "filter": {
++        "A": "out0",
++        "B": "out1"
++      },
++      "mode": "filter",
++      "type": "splitter"
++    },
++    "src_a": {
++      "commodity": "A",
++      "rate": 1.0,
++      "type": "source"
++    },
++    "src_b": {
++      "commodity": "B",
++      "rate": 1.0,
++      "type": "source"
++    }
++  },
++  "connections": [
++    "src_a:out->merge:in0",
++    "src_b:out->merge:in1",
++    "merge:out->split:in",
++    "split:out0->sink_a:in",
++    "split:out1->sink_b:in"
++  ],
++  "fluid_witness": {
++    "edge_rates": {
++      "merge:out->split:in": {
++        "A": 0.5,
++        "B": 0.5
++      },
++      "split:out0->sink_a:in": {
++        "A": 0.5
++      },
++      "split:out1->sink_b:in": {
++        "B": 0.5
++      },
++      "src_a:out->merge:in0": {
++        "A": 0.5
++      },
++      "src_b:out->merge:in1": {
++        "B": 0.5
++      }
++    },
++    "machine_utilization": {}
++  },
++  "machine_output_targets": {},
++  "name": "CE1_merger_fixed_priority_starves_low_branch",
++  "targets": {
++    "sink_a": {
++      "A": 0.5
++    },
++    "sink_b": {
++      "B": 0.5
++    }
++  }
++}
++```
++
++fluid 判定：`feasible = True`。默认离散实测目标：`{'sink:sink_a': {'A': 1.0}, 'sink:sink_b': {'B': 0.0}}`，目标差距：`{'sink:sink_a': {'A': -0.5}, 'sink:sink_b': {'B': 0.5}}`。宽容语义实测目标：`{'sink:sink_a': {'A': 0.5}, 'sink:sink_b': {'B': 0.5}}`，目标差距：`{'sink:sink_a': {'A': 0.0}, 'sink:sink_b': {'B': 0.0}}`。
++解释：fluid 证书只需要从两条源支各取 0.5/tick，汇入 1.0/tick 的共享组件后再按商品过滤到两个汇。固定优先级 merger 在两个输入同时有货时永远取 `in0`，导致 A 达到 1.0/tick、B 为 0。这是设计稿已点名的 A2 公平性缺口；一旦切到公平轮询，实测变为 A=0.5、B=0.5。
++
++### CE2_type_blind_splitter_cannot_demix_shared_fifo
++
++结构族：mixed commodity belt must be separated at a type-blind splitter。
++判定：**A3 splitter mixed-commodity separability violation**。
++
++实例 JSON：
++
++```json
++{
++  "components": {
++    "belt": {
++      "length": 1,
++      "type": "belt"
++    },
++    "sink_a": {
++      "accepts": "*",
++      "type": "sink"
++    },
++    "sink_b": {
++      "accepts": "*",
++      "type": "sink"
++    },
++    "split": {
++      "blocked": "skip",
++      "filter": {
++        "A": "out0",
++        "B": "out1"
++      },
++      "initial_rr_index": 0,
++      "mode": "type_blind",
++      "type": "splitter"
++    },
++    "src_mix": {
++      "pattern": [
++        "A",
++        "A",
++        "B",
++        "B"
++      ],
++      "type": "source"
++    }
++  },
++  "connections": [
++    "src_mix:out->belt:in",
++    "belt:out->split:in",
++    "split:out0->sink_a:in",
++    "split:out1->sink_b:in"
++  ],
++  "fluid_witness": {
++    "edge_rates": {
++      "belt:out->split:in": {
++        "A": 0.5,
++        "B": 0.5
++      },
++      "split:out0->sink_a:in": {
++        "A": 0.5
++      },
++      "split:out1->sink_b:in": {
++        "B": 0.5
++      },
++      "src_mix:out->belt:in": {
++        "A": 0.5,
++        "B": 0.5
++      }
++    },
++    "machine_utilization": {}
++  },
++  "machine_output_targets": {},
++  "name": "CE2_type_blind_splitter_cannot_demix_shared_fifo",
++  "targets": {
++    "sink_a": {
++      "A": 0.5
++    },
++    "sink_b": {
++      "B": 0.5
++    }
++  }
++}
++```
++
++fluid 判定：`feasible = True`。默认离散实测目标：`{'sink:sink_a': {'A': 0.25}, 'sink:sink_b': {'B': 0.25}}`，目标差距：`{'sink:sink_a': {'A': 0.25}, 'sink:sink_b': {'B': 0.25}}`。宽容语义实测目标：`{'sink:sink_a': {'A': 0.5}, 'sink:sink_b': {'B': 0.5}}`，目标差距：`{'sink:sink_a': {'A': 0.0}, 'sink:sink_b': {'B': 0.0}}`。
++解释：fluid witness 把共享 belt 上的 A/B 平均流看成可在 splitter 处按商品独立分离。type-blind splitter 只看轮询位置，不看商品；A,A,B,B 序列被分成两个口各一半 A、一半 B，所以每个正确商品只到 0.25/tick。这正是 A3 的“混流可分性”假设；切到可过滤后达标。
++
++### CE3_cycle_bootstrap_empty_start_deadlocks
++
++结构族：cyclic commodity group with a feasible steady circulation but no initial seed。
++判定：**A4 bootstrap reachability violation**。
++
++实例 JSON：
++
++```json
++{
++  "components": {
++    "belt_a": {
++      "length": 1,
++      "type": "belt"
++    },
++    "belt_b": {
++      "length": 1,
++      "type": "belt"
++    },
++    "m_ab": {
++      "inputs": {
++        "A": 1
++      },
++      "outputs": {
++        "B": 1
++      },
++      "ticks_per_cycle": 1,
++      "type": "machine"
++    },
++    "m_ba": {
++      "inputs": {
++        "B": 1
++      },
++      "outputs": {
++        "A": 1
++      },
++      "ticks_per_cycle": 1,
++      "type": "machine"
++    }
++  },
++  "connections": [
++    "m_ab:out->belt_b:in",
++    "belt_b:out->m_ba:in",
++    "m_ba:out->belt_a:in",
++    "belt_a:out->m_ab:in"
++  ],
++  "fluid_witness": {
++    "edge_rates": {
++      "belt_a:out->m_ab:in": {
++        "A": 1.0
++      },
++      "belt_b:out->m_ba:in": {
++        "B": 1.0
++      },
++      "m_ab:out->belt_b:in": {
++        "B": 1.0
++      },
++      "m_ba:out->belt_a:in": {
++        "A": 1.0
++      }
++    },
++    "machine_utilization": {
++      "m_ab": 1.0,
++      "m_ba": 1.0
++    }
++  },
++  "machine_output_targets": {
++    "m_ab": {
++      "B": 1.0
++    },
++    "m_ba": {
++      "A": 1.0
++    }
++  },
++  "name": "CE3_cycle_bootstrap_empty_start_deadlocks",
++  "targets": {}
++}
++```
++
++fluid 判定：`feasible = True`。默认离散实测目标：`{'machine:m_ab': {'B': 0.0}, 'machine:m_ba': {'A': 0.0}}`，目标差距：`{'machine:m_ab': {'B': 1.0}, 'machine:m_ba': {'A': 1.0}}`。宽容语义实测目标：`{'machine:m_ab': {'B': 0.0}, 'machine:m_ba': {'A': 0.0}}`，目标差距：`{'machine:m_ab': {'B': 1.0}, 'machine:m_ba': {'A': 1.0}}`。
++解释：两个机器构成 A→B→A 的循环商品组，稳态 circulation 速率 1.0/tick 满足 fluid 约束。但空启动没有任何机器能先开工，系统永远停在全空状态。带上足够 bootstrap WIP 的控制例可达到 1.0/tick，因此这是 A4 bootstrap/初始库存可达性问题，而不是容量问题。
++
++### CE4_mixed_fifo_head_of_line_blocks_synchronizing_machine
++
++结构族：multi-input machine synchronization behind one mixed FIFO belt。
++判定：**NEW: finite FIFO head-of-line blocking at synchronizing machine input**。
++
++实例 JSON：
++
++```json
++{
++  "components": {
++    "assembler": {
++      "input_capacity": {
++        "A": 1,
++        "B": 1
++      },
++      "inputs": {
++        "A": 1,
++        "B": 1
++      },
++      "outputs": {
++        "C": 1
++      },
++      "ticks_per_cycle": 2,
++      "type": "machine"
++    },
++    "belt": {
++      "length": 2,
++      "type": "belt"
++    },
++    "merge": {
++      "input_ports": [
++        "in0",
++        "in1"
++      ],
++      "policy": "round_robin",
++      "type": "merger"
++    },
++    "sink_c": {
++      "accepts": "*",
++      "type": "sink"
++    },
++    "src_a": {
++      "pattern": [
++        "A",
++        "A",
++        null,
++        null
++      ],
++      "type": "source"
++    },
++    "src_b": {
++      "pattern": [
++        null,
++        null,
++        "B",
++        "B"
++      ],
++      "type": "source"
++    }
++  },
++  "connections": [
++    "src_a:out->merge:in0",
++    "src_b:out->merge:in1",
++    "merge:out->belt:in",
++    "belt:out->assembler:in",
++    "assembler:out->sink_c:in"
++  ],
++  "fluid_witness": {
++    "edge_rates": {
++      "assembler:out->sink_c:in": {
++        "C": 0.5
++      },
++      "belt:out->assembler:in": {
++        "A": 0.5,
++        "B": 0.5
++      },
++      "merge:out->belt:in": {
++        "A": 0.5,
++        "B": 0.5
++      },
++      "src_a:out->merge:in0": {
++        "A": 0.5
++      },
++      "src_b:out->merge:in1": {
++        "B": 0.5
++      }
++    },
++    "machine_utilization": {
++      "assembler": 1.0
++    }
++  },
++  "machine_output_targets": {},
++  "name": "CE4_mixed_fifo_head_of_line_blocks_synchronizing_machine",
++  "targets": {
++    "sink_c": {
++      "C": 0.5
++    }
++  }
++}
++```
++
++fluid 判定：`feasible = True`。默认离散实测目标：`{'sink:sink_c': {'C': 0.0}}`，目标差距：`{'sink:sink_c': {'C': 0.5}}`。宽容语义实测目标：`{'sink:sink_c': {'C': 0.0}}`，目标差距：`{'sink:sink_c': {'C': 0.5}}`。
++解释：两个合法半速源的相位组合为 A,A,_,_ 与 _,_,B,B，经公平 merger 后形成 A,A,B,B 的共享 FIFO。机器需要 A 和 B 各 1 个才能开工，且每商品只有 1 个等待槽。第一个 A 被机器收下后，第二个 A 卡在 FIFO 队首；机器此时需要 B，但 B 在第二个 A 后面，无法绕行，系统进入无环 head-of-line 死锁。这个实例没有固定优先级饿死、没有 type-blind splitter、也不是商品循环；最宽容 splitter/merger 语义仍失败。它暴露的是“同步消费机器前的有限 FIFO 混流可调度性”遗漏。
++
++## 覆盖族里的非反例/校准控制
++
++- `CTRL_cycle_bootstrap_sufficient_wip_reaches_fluid_rate`：control: A4 bootstrap witness supplies sufficient initial WIP。默认实测 `{'machine:m_ab': {'B': 1.0}, 'machine:m_ba': {'A': 1.0}}`，宽容实测 `{'machine:m_ab': {'B': 1.0}, 'machine:m_ba': {'A': 1.0}}`。
++- `CTRL_sync_path_length_skew_is_transient_only`：control: no counterexample under per-commodity input buffers。默认实测 `{'sink:sink_c': {'C': 0.5}}`，宽容实测 `{'sink:sink_c': {'C': 0.5}}`。
++- `CTRL_fractional_055_single_commodity_converges`：control: no counterexample for one commodity with accumulator scheduling。默认实测 `{'sink:sink_a': {'A': 0.55}}`，宽容实测 `{'sink:sink_a': {'A': 0.55}}`。
++
++两个控制结论值得单独拿出来：
++
++第一，单纯“两条独立输入路径长度悬殊”没有形成稳态反例。在每个 commodity 有独立等待槽的机器语义下，路径长度只改变 warmup；12k tick 测得 C=0.5/tick，匹配 fluid。
++
++第二，单商品 0.55/tick 的分数速率由 accumulator 占空比实现，长期平均精确收敛到 0.55/tick，没有节拍锁死。分数速率本身不是问题；问题出现在分数/突发序列与有限 FIFO、同步消费、不可重排组合时。
++
++## 对 A2–A5 完备性的判定
++
++A2、A3、A4 都被实验击中，且对应反例在切到相应宽容语义或加入 bootstrap witness 后消失，说明这些公理确实是必要的命名 TCB。A5 在本沙箱中没有被单商品分数速率或独立输入路径 skew 推翻；这些机制看起来可以被“启动后周期平均”论证消解。
++
++但是，A2–A5 **不完备**。CE4 是无环拓扑、fair merger、无 splitter 或可过滤 splitter、fluid witness 合法，但离散系统因为共享 FIFO 队首阻塞与多输入机器同步消费而永久 0 产出。把它硬塞进 A5 会让 A5 变成“所有 tick 可达性问题都算我头上”的总兜底，失去 §3 表格逐机制列举的意义；更好的做法是新增一条显式公理/约束。
++
++建议新增设计稿 §3 表格行：
++
++| ID | 机制 | 风险 | 处置方式 |
++|---|---|---|---|
++| G7 | synchronizing consumer + finite FIFO head-of-line blocking | 多商品共享 FIFO 直接喂给需要多种输入同时到位的机器时，机器某商品等待槽已满会拒收队首商品，导致后续所需商品无法越过队首；无环、fair merger、可过滤 splitter 下仍可能稳态 0 产出。单纯路径长度差在独立输入槽下只影响瞬态。 | 新增 **A6 机器输入可调度性 / HOL-free demux**，或收紧 P7：多输入机器前的最后 FIFO 段不得混商品，除非存在过滤/分商品队列/足够输入库存，或提交 tick 周期 witness 证明无 HOL 阻塞。 |
++
++建议新增公理文本：
++
++> **A6 synchronizing-input schedulability.** 对任意需要两种及以上输入商品的机器，fluid witness 中进入该机器的平均输入流必须存在一个有限周期离散序列，使有限 FIFO、输入槽容量与机器启动规则不会产生 head-of-line 阻塞；一个充分静态条件是：直接喂给该机器的最后一段 FIFO 不混合多种所需商品，或该段之后存在按商品过滤/分队列/足够覆盖最大突发长度的输入库存。
++
++建议新增数据缺口行：
++
++| ID | 缺口 | 裁定来源 | 阻塞影响 |
++|---|---|---|---|
++| D6 | 机器输入口是否自动按商品过滤、内部输入库存容量/栈大小、同一物理输入口多商品 FIFO 是否允许后项绕行 | 游戏实测 | 若机器有无限分商品库存或自动旁路过滤，G7 可数学消解；否则 P7 必须加入 A6 或 tick-level 周期 witness。 |
++
++## 校准问题回答
++
++在“公平轮询 + blocked-skip + 可过滤”的最宽容语义下，反例实例还剩 **2 个**：
++
++1. `CE3_cycle_bootstrap_empty_start_deadlocks`，被 A4 覆盖。
++2. `CE4_mixed_fifo_head_of_line_blocks_synchronizing_machine`，不被 A2/A3/A4 明确覆盖，建议新增 A6/G7。
++
++因此，“公理组全部成立时 fluid 抽象是否安全”的沙箱答案是：如果只取 A2–A5，不安全；如果再排除 G7/HOL 或要求 tick 周期 witness，本批最小实例里没有剩余反例。
+\ No newline at end of file
+diff -ruN orig/experiments/p2_0_discrete_counterexample_instances.json mod/experiments/p2_0_discrete_counterexample_instances.json
+--- orig/experiments/p2_0_discrete_counterexample_instances.json	1970-01-01 00:00:00.000000000 +0000
++++ mod/experiments/p2_0_discrete_counterexample_instances.json	2026-07-04 11:19:42.817399454 +0000
+@@ -0,0 +1,589 @@
++[
++  {
++    "assumptions": [
++      "Boundary sources are aggressive and offer one item/tick when not backpressured.",
++      "The fixed-priority merger always services in0 before in1 when both are ready."
++    ],
++    "classification": "A2 merger fairness violation",
++    "components": {
++      "merge": {
++        "input_ports": [
++          "in0",
++          "in1"
++        ],
++        "policy": "fixed_priority",
++        "type": "merger"
++      },
++      "sink_a": {
++        "accepts": "*",
++        "type": "sink"
++      },
++      "sink_b": {
++        "accepts": "*",
++        "type": "sink"
++      },
++      "split": {
++        "blocked": "skip",
++        "filter": {
++          "A": "out0",
++          "B": "out1"
++        },
++        "mode": "filter",
++        "type": "splitter"
++      },
++      "src_a": {
++        "commodity": "A",
++        "rate": 1.0,
++        "type": "source"
++      },
++      "src_b": {
++        "commodity": "B",
++        "rate": 1.0,
++        "type": "source"
++      }
++    },
++    "connections": [
++      "src_a:out->merge:in0",
++      "src_b:out->merge:in1",
++      "merge:out->split:in",
++      "split:out0->sink_a:in",
++      "split:out1->sink_b:in"
++    ],
++    "family": "two nominal half-rate commodities share one merger then split apart",
++    "fluid_witness": {
++      "edge_rates": {
++        "merge:out->split:in": {
++          "A": 0.5,
++          "B": 0.5
++        },
++        "split:out0->sink_a:in": {
++          "A": 0.5
++        },
++        "split:out1->sink_b:in": {
++          "B": 0.5
++        },
++        "src_a:out->merge:in0": {
++          "A": 0.5
++        },
++        "src_b:out->merge:in1": {
++          "B": 0.5
++        }
++      },
++      "machine_utilization": {}
++    },
++    "name": "CE1_merger_fixed_priority_starves_low_branch",
++    "order": [
++      "src_a",
++      "src_b",
++      "merge",
++      "split",
++      "sink_a",
++      "sink_b"
++    ],
++    "targets": {
++      "sink_a": {
++        "A": 0.5
++      },
++      "sink_b": {
++        "B": 0.5
++      }
++    }
++  },
++  {
++    "assumptions": [
++      "The shared upstream belt carries a periodic A,A,B,B sequence at aggregate one item/tick.",
++      "Sinks consume misdelivered items for measurement instead of blocking the whole toy network."
++    ],
++    "classification": "A3 splitter mixed-commodity separability violation",
++    "components": {
++      "belt": {
++        "length": 1,
++        "type": "belt"
++      },
++      "sink_a": {
++        "accepts": "*",
++        "type": "sink"
++      },
++      "sink_b": {
++        "accepts": "*",
++        "type": "sink"
++      },
++      "split": {
++        "blocked": "skip",
++        "filter": {
++          "A": "out0",
++          "B": "out1"
++        },
++        "initial_rr_index": 0,
++        "mode": "type_blind",
++        "type": "splitter"
++      },
++      "src_mix": {
++        "pattern": [
++          "A",
++          "A",
++          "B",
++          "B"
++        ],
++        "type": "source"
++      }
++    },
++    "connections": [
++      "src_mix:out->belt:in",
++      "belt:out->split:in",
++      "split:out0->sink_a:in",
++      "split:out1->sink_b:in"
++    ],
++    "family": "mixed commodity belt must be separated at a type-blind splitter",
++    "fluid_witness": {
++      "edge_rates": {
++        "belt:out->split:in": {
++          "A": 0.5,
++          "B": 0.5
++        },
++        "split:out0->sink_a:in": {
++          "A": 0.5
++        },
++        "split:out1->sink_b:in": {
++          "B": 0.5
++        },
++        "src_mix:out->belt:in": {
++          "A": 0.5,
++          "B": 0.5
++        }
++      },
++      "machine_utilization": {}
++    },
++    "name": "CE2_type_blind_splitter_cannot_demix_shared_fifo",
++    "order": [
++      "src_mix",
++      "belt",
++      "split",
++      "sink_a",
++      "sink_b"
++    ],
++    "targets": {
++      "sink_a": {
++        "A": 0.5
++      },
++      "sink_b": {
++        "B": 0.5
++      }
++    }
++  },
++  {
++    "assumptions": [
++      "The cycle starts empty; no hidden initial inventory is injected.",
++      "Machines store the exact recipe input counts and block when required input is absent."
++    ],
++    "classification": "A4 bootstrap reachability violation",
++    "components": {
++      "belt_a": {
++        "length": 1,
++        "type": "belt"
++      },
++      "belt_b": {
++        "length": 1,
++        "type": "belt"
++      },
++      "m_ab": {
++        "inputs": {
++          "A": 1
++        },
++        "outputs": {
++          "B": 1
++        },
++        "ticks_per_cycle": 1,
++        "type": "machine"
++      },
++      "m_ba": {
++        "inputs": {
++          "B": 1
++        },
++        "outputs": {
++          "A": 1
++        },
++        "ticks_per_cycle": 1,
++        "type": "machine"
++      }
++    },
++    "connections": [
++      "m_ab:out->belt_b:in",
++      "belt_b:out->m_ba:in",
++      "m_ba:out->belt_a:in",
++      "belt_a:out->m_ab:in"
++    ],
++    "family": "cyclic commodity group with a feasible steady circulation but no initial seed",
++    "fluid_witness": {
++      "edge_rates": {
++        "belt_a:out->m_ab:in": {
++          "A": 1.0
++        },
++        "belt_b:out->m_ba:in": {
++          "B": 1.0
++        },
++        "m_ab:out->belt_b:in": {
++          "B": 1.0
++        },
++        "m_ba:out->belt_a:in": {
++          "A": 1.0
++        }
++      },
++      "machine_utilization": {
++        "m_ab": 1.0,
++        "m_ba": 1.0
++      }
++    },
++    "machine_output_targets": {
++      "m_ab": {
++        "B": 1.0
++      },
++      "m_ba": {
++        "A": 1.0
++      }
++    },
++    "name": "CE3_cycle_bootstrap_empty_start_deadlocks",
++    "order": [
++      "m_ab",
++      "belt_b",
++      "m_ba",
++      "belt_a"
++    ]
++  },
++  {
++    "assumptions": [
++      "Both machines and both return belts begin with enough WIP to saturate the circulation.",
++      "This is the same topology and fluid witness as CE3, with only initial inventory changed."
++    ],
++    "classification": "control: A4 bootstrap witness supplies sufficient initial WIP",
++    "components": {
++      "belt_a": {
++        "initial_cells": [
++          "A"
++        ],
++        "length": 1,
++        "type": "belt"
++      },
++      "belt_b": {
++        "initial_cells": [
++          "B"
++        ],
++        "length": 1,
++        "type": "belt"
++      },
++      "m_ab": {
++        "initial_inputs": {
++          "A": 1
++        },
++        "inputs": {
++          "A": 1
++        },
++        "outputs": {
++          "B": 1
++        },
++        "ticks_per_cycle": 1,
++        "type": "machine"
++      },
++      "m_ba": {
++        "initial_inputs": {
++          "B": 1
++        },
++        "inputs": {
++          "B": 1
++        },
++        "outputs": {
++          "A": 1
++        },
++        "ticks_per_cycle": 1,
++        "type": "machine"
++      }
++    },
++    "connections": [
++      "m_ab:out->belt_b:in",
++      "belt_b:out->m_ba:in",
++      "m_ba:out->belt_a:in",
++      "belt_a:out->m_ab:in"
++    ],
++    "family": "cyclic commodity group with enough initial WIP",
++    "fluid_witness": {
++      "edge_rates": {
++        "belt_a:out->m_ab:in": {
++          "A": 1.0
++        },
++        "belt_b:out->m_ba:in": {
++          "B": 1.0
++        },
++        "m_ab:out->belt_b:in": {
++          "B": 1.0
++        },
++        "m_ba:out->belt_a:in": {
++          "A": 1.0
++        }
++      },
++      "machine_utilization": {
++        "m_ab": 1.0,
++        "m_ba": 1.0
++      }
++    },
++    "machine_output_targets": {
++      "m_ab": {
++        "B": 1.0
++      },
++      "m_ba": {
++        "A": 1.0
++      }
++    },
++    "name": "CTRL_cycle_bootstrap_sufficient_wip_reaches_fluid_rate",
++    "order": [
++      "m_ab",
++      "belt_b",
++      "m_ba",
++      "belt_a"
++    ]
++  },
++  {
++    "assumptions": [
++      "The assembler has one shared ingress and one internal slot for each required commodity.",
++      "FIFO belts cannot reorder or let a later B bypass an earlier A.",
++      "Two legal half-rate external sources are phase-aligned as A,A,_,_ and _,_,B,B, creating an A,A,B,B merged FIFO sequence."
++    ],
++    "classification": "NEW: finite FIFO head-of-line blocking at synchronizing machine input",
++    "components": {
++      "assembler": {
++        "input_capacity": {
++          "A": 1,
++          "B": 1
++        },
++        "inputs": {
++          "A": 1,
++          "B": 1
++        },
++        "outputs": {
++          "C": 1
++        },
++        "ticks_per_cycle": 2,
++        "type": "machine"
++      },
++      "belt": {
++        "length": 2,
++        "type": "belt"
++      },
++      "merge": {
++        "input_ports": [
++          "in0",
++          "in1"
++        ],
++        "policy": "round_robin",
++        "type": "merger"
++      },
++      "sink_c": {
++        "accepts": "*",
++        "type": "sink"
++      },
++      "src_a": {
++        "pattern": [
++          "A",
++          "A",
++          null,
++          null
++        ],
++        "type": "source"
++      },
++      "src_b": {
++        "pattern": [
++          null,
++          null,
++          "B",
++          "B"
++        ],
++        "type": "source"
++      }
++    },
++    "connections": [
++      "src_a:out->merge:in0",
++      "src_b:out->merge:in1",
++      "merge:out->belt:in",
++      "belt:out->assembler:in",
++      "assembler:out->sink_c:in"
++    ],
++    "family": "multi-input machine synchronization behind one mixed FIFO belt",
++    "fluid_witness": {
++      "edge_rates": {
++        "assembler:out->sink_c:in": {
++          "C": 0.5
++        },
++        "belt:out->assembler:in": {
++          "A": 0.5,
++          "B": 0.5
++        },
++        "merge:out->belt:in": {
++          "A": 0.5,
++          "B": 0.5
++        },
++        "src_a:out->merge:in0": {
++          "A": 0.5
++        },
++        "src_b:out->merge:in1": {
++          "B": 0.5
++        }
++      },
++      "machine_utilization": {
++        "assembler": 1.0
++      }
++    },
++    "name": "CE4_mixed_fifo_head_of_line_blocks_synchronizing_machine",
++    "order": [
++      "src_a",
++      "src_b",
++      "merge",
++      "belt",
++      "assembler",
++      "sink_c"
++    ],
++    "targets": {
++      "sink_c": {
++        "C": 0.5
++      }
++    }
++  },
++  {
++    "assumptions": [
++      "Inputs use separate belts/ports; each required commodity has one waiting slot.",
++      "Path length is the only skew; no shared FIFO head-of-line blocking."
++    ],
++    "classification": "control: no counterexample under per-commodity input buffers",
++    "components": {
++      "assembler": {
++        "input_capacity": {
++          "A": 1,
++          "B": 1
++        },
++        "inputs": {
++          "A": 1,
++          "B": 1
++        },
++        "outputs": {
++          "C": 1
++        },
++        "ticks_per_cycle": 2,
++        "type": "machine"
++      },
++      "belt_a": {
++        "length": 1,
++        "type": "belt"
++      },
++      "belt_b": {
++        "length": 9,
++        "type": "belt"
++      },
++      "sink_c": {
++        "accepts": "*",
++        "type": "sink"
++      },
++      "src_a": {
++        "commodity": "A",
++        "rate": 0.5,
++        "type": "source"
++      },
++      "src_b": {
++        "commodity": "B",
++        "initial_accumulator": 0.5,
++        "rate": 0.5,
++        "type": "source"
++      }
++    },
++    "connections": [
++      "src_a:out->belt_a:in",
++      "belt_a:out->assembler:in",
++      "src_b:out->belt_b:in",
++      "belt_b:out->assembler:in",
++      "assembler:out->sink_c:in"
++    ],
++    "family": "two separate input paths with different lengths feed a synchronizing machine",
++    "fluid_witness": {
++      "edge_rates": {
++        "assembler:out->sink_c:in": {
++          "C": 0.5
++        },
++        "belt_a:out->assembler:in": {
++          "A": 0.5
++        },
++        "belt_b:out->assembler:in": {
++          "B": 0.5
++        },
++        "src_a:out->belt_a:in": {
++          "A": 0.5
++        },
++        "src_b:out->belt_b:in": {
++          "B": 0.5
++        }
++      },
++      "machine_utilization": {
++        "assembler": 1.0
++      }
++    },
++    "name": "CTRL_sync_path_length_skew_is_transient_only",
++    "order": [
++      "src_a",
++      "src_b",
++      "belt_a",
++      "belt_b",
++      "assembler",
++      "sink_c"
++    ],
++    "targets": {
++      "sink_c": {
++        "C": 0.5
++      }
++    }
++  },
++  {
++    "assumptions": [
++      "The source realizes 0.55/tick by a deterministic accumulator schedule.",
++      "One item moves at most one belt cell per tick; this only changes warmup latency."
++    ],
++    "classification": "control: no counterexample for one commodity with accumulator scheduling",
++    "components": {
++      "belt": {
++        "length": 5,
++        "type": "belt"
++      },
++      "sink_a": {
++        "accepts": "*",
++        "type": "sink"
++      },
++      "src_a": {
++        "commodity": "A",
++        "rate": 0.55,
++        "type": "source"
++      }
++    },
++    "connections": [
++      "src_a:out->belt:in",
++      "belt:out->sink_a:in"
++    ],
++    "family": "sub-full fractional rate in an integer item world",
++    "fluid_witness": {
++      "edge_rates": {
++        "belt:out->sink_a:in": {
++          "A": 0.55
++        },
++        "src_a:out->belt:in": {
++          "A": 0.55
++        }
++      },
++      "machine_utilization": {}
++    },
++    "name": "CTRL_fractional_055_single_commodity_converges",
++    "order": [
++      "src_a",
++      "belt",
++      "sink_a"
++    ],
++    "targets": {
++      "sink_a": {
++        "A": 0.55
++      }
++    }
++  }
++]
+diff -ruN orig/experiments/p2_0_discrete_counterexample_results.json mod/experiments/p2_0_discrete_counterexample_results.json
+--- orig/experiments/p2_0_discrete_counterexample_results.json	1970-01-01 00:00:00.000000000 +0000
++++ mod/experiments/p2_0_discrete_counterexample_results.json	2026-07-04 11:19:41.672771665 +0000
+@@ -0,0 +1,555 @@
++{
++  "cases": [
++    {
++      "assumptions": [
++        "Boundary sources are aggressive and offer one item/tick when not backpressured.",
++        "The fixed-priority merger always services in0 before in1 when both are ready."
++      ],
++      "classification": "A2 merger fairness violation",
++      "default": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": true,
++        "measured_targets": {
++          "sink:sink_a": {
++            "A": 1.0
++          },
++          "sink:sink_b": {
++            "B": 0.0
++          }
++        },
++        "profile": "default",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {
++            "sink_a": {
++              "A": 1.0
++            }
++          },
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_a": {
++            "A": -0.5
++          },
++          "sink:sink_b": {
++            "B": 0.5
++          }
++        }
++      },
++      "family": "two nominal half-rate commodities share one merger then split apart",
++      "name": "CE1_merger_fixed_priority_starves_low_branch",
++      "permissive": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": false,
++        "measured_targets": {
++          "sink:sink_a": {
++            "A": 0.5
++          },
++          "sink:sink_b": {
++            "B": 0.5
++          }
++        },
++        "profile": "permissive",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {
++            "sink_a": {
++              "A": 0.5
++            },
++            "sink_b": {
++              "B": 0.5
++            }
++          },
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_a": {
++            "A": 0.0
++          },
++          "sink:sink_b": {
++            "B": 0.0
++          }
++        }
++      }
++    },
++    {
++      "assumptions": [
++        "The shared upstream belt carries a periodic A,A,B,B sequence at aggregate one item/tick.",
++        "Sinks consume misdelivered items for measurement instead of blocking the whole toy network."
++      ],
++      "classification": "A3 splitter mixed-commodity separability violation",
++      "default": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": true,
++        "measured_targets": {
++          "sink:sink_a": {
++            "A": 0.25
++          },
++          "sink:sink_b": {
++            "B": 0.25
++          }
++        },
++        "profile": "default",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {
++            "sink_a": {
++              "A": 0.25,
++              "B": 0.25
++            },
++            "sink_b": {
++              "A": 0.25,
++              "B": 0.25
++            }
++          },
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_a": {
++            "A": 0.25
++          },
++          "sink:sink_b": {
++            "B": 0.25
++          }
++        }
++      },
++      "family": "mixed commodity belt must be separated at a type-blind splitter",
++      "name": "CE2_type_blind_splitter_cannot_demix_shared_fifo",
++      "permissive": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": false,
++        "measured_targets": {
++          "sink:sink_a": {
++            "A": 0.5
++          },
++          "sink:sink_b": {
++            "B": 0.5
++          }
++        },
++        "profile": "permissive",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {
++            "sink_a": {
++              "A": 0.5
++            },
++            "sink_b": {
++              "B": 0.5
++            }
++          },
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_a": {
++            "A": 0.0
++          },
++          "sink:sink_b": {
++            "B": 0.0
++          }
++        }
++      }
++    },
++    {
++      "assumptions": [
++        "The cycle starts empty; no hidden initial inventory is injected.",
++        "Machines store the exact recipe input counts and block when required input is absent."
++      ],
++      "classification": "A4 bootstrap reachability violation",
++      "default": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": true,
++        "measured_targets": {
++          "machine:m_ab": {
++            "B": 0.0
++          },
++          "machine:m_ba": {
++            "A": 0.0
++          }
++        },
++        "profile": "default",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {},
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "machine:m_ab": {
++            "B": 1.0
++          },
++          "machine:m_ba": {
++            "A": 1.0
++          }
++        }
++      },
++      "family": "cyclic commodity group with a feasible steady circulation but no initial seed",
++      "name": "CE3_cycle_bootstrap_empty_start_deadlocks",
++      "permissive": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": true,
++        "measured_targets": {
++          "machine:m_ab": {
++            "B": 0.0
++          },
++          "machine:m_ba": {
++            "A": 0.0
++          }
++        },
++        "profile": "permissive",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {},
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "machine:m_ab": {
++            "B": 1.0
++          },
++          "machine:m_ba": {
++            "A": 1.0
++          }
++        }
++      }
++    },
++    {
++      "assumptions": [
++        "Both machines and both return belts begin with enough WIP to saturate the circulation.",
++        "This is the same topology and fluid witness as CE3, with only initial inventory changed."
++      ],
++      "classification": "control: A4 bootstrap witness supplies sufficient initial WIP",
++      "default": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": false,
++        "measured_targets": {
++          "machine:m_ab": {
++            "B": 1.0
++          },
++          "machine:m_ba": {
++            "A": 1.0
++          }
++        },
++        "profile": "default",
++        "sim": {
++          "machine_output_rates": {
++            "m_ab": {
++              "B": 1.0
++            },
++            "m_ba": {
++              "A": 1.0
++            }
++          },
++          "machine_start_rates": {
++            "m_ab": 1.0,
++            "m_ba": 1.0
++          },
++          "sink_rates": {},
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "machine:m_ab": {
++            "B": 0.0
++          },
++          "machine:m_ba": {
++            "A": 0.0
++          }
++        }
++      },
++      "family": "cyclic commodity group with enough initial WIP",
++      "name": "CTRL_cycle_bootstrap_sufficient_wip_reaches_fluid_rate",
++      "permissive": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": false,
++        "measured_targets": {
++          "machine:m_ab": {
++            "B": 1.0
++          },
++          "machine:m_ba": {
++            "A": 1.0
++          }
++        },
++        "profile": "permissive",
++        "sim": {
++          "machine_output_rates": {
++            "m_ab": {
++              "B": 1.0
++            },
++            "m_ba": {
++              "A": 1.0
++            }
++          },
++          "machine_start_rates": {
++            "m_ab": 1.0,
++            "m_ba": 1.0
++          },
++          "sink_rates": {},
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "machine:m_ab": {
++            "B": 0.0
++          },
++          "machine:m_ba": {
++            "A": 0.0
++          }
++        }
++      }
++    },
++    {
++      "assumptions": [
++        "The assembler has one shared ingress and one internal slot for each required commodity.",
++        "FIFO belts cannot reorder or let a later B bypass an earlier A.",
++        "Two legal half-rate external sources are phase-aligned as A,A,_,_ and _,_,B,B, creating an A,A,B,B merged FIFO sequence."
++      ],
++      "classification": "NEW: finite FIFO head-of-line blocking at synchronizing machine input",
++      "default": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": true,
++        "measured_targets": {
++          "sink:sink_c": {
++            "C": 0.0
++          }
++        },
++        "profile": "default",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {},
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_c": {
++            "C": 0.5
++          }
++        }
++      },
++      "family": "multi-input machine synchronization behind one mixed FIFO belt",
++      "name": "CE4_mixed_fifo_head_of_line_blocks_synchronizing_machine",
++      "permissive": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": true,
++        "measured_targets": {
++          "sink:sink_c": {
++            "C": 0.0
++          }
++        },
++        "profile": "permissive",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {},
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_c": {
++            "C": 0.5
++          }
++        }
++      }
++    },
++    {
++      "assumptions": [
++        "Inputs use separate belts/ports; each required commodity has one waiting slot.",
++        "Path length is the only skew; no shared FIFO head-of-line blocking."
++      ],
++      "classification": "control: no counterexample under per-commodity input buffers",
++      "default": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": false,
++        "measured_targets": {
++          "sink:sink_c": {
++            "C": 0.5
++          }
++        },
++        "profile": "default",
++        "sim": {
++          "machine_output_rates": {
++            "assembler": {
++              "C": 0.5
++            }
++          },
++          "machine_start_rates": {
++            "assembler": 0.5
++          },
++          "sink_rates": {
++            "sink_c": {
++              "C": 0.5
++            }
++          },
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_c": {
++            "C": 0.0
++          }
++        }
++      },
++      "family": "two separate input paths with different lengths feed a synchronizing machine",
++      "name": "CTRL_sync_path_length_skew_is_transient_only",
++      "permissive": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": false,
++        "measured_targets": {
++          "sink:sink_c": {
++            "C": 0.5
++          }
++        },
++        "profile": "permissive",
++        "sim": {
++          "machine_output_rates": {
++            "assembler": {
++              "C": 0.5
++            }
++          },
++          "machine_start_rates": {
++            "assembler": 0.5
++          },
++          "sink_rates": {
++            "sink_c": {
++              "C": 0.5
++            }
++          },
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_c": {
++            "C": 0.0
++          }
++        }
++      }
++    },
++    {
++      "assumptions": [
++        "The source realizes 0.55/tick by a deterministic accumulator schedule.",
++        "One item moves at most one belt cell per tick; this only changes warmup latency."
++      ],
++      "classification": "control: no counterexample for one commodity with accumulator scheduling",
++      "default": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": false,
++        "measured_targets": {
++          "sink:sink_a": {
++            "A": 0.55
++          }
++        },
++        "profile": "default",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {
++            "sink_a": {
++              "A": 0.55
++            }
++          },
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_a": {
++            "A": 0.0
++          }
++        }
++      },
++      "family": "sub-full fractional rate in an integer item world",
++      "name": "CTRL_fractional_055_single_commodity_converges",
++      "permissive": {
++        "fluid": {
++          "errors": [],
++          "feasible": true
++        },
++        "fluid_feasible_discrete_shortfall": false,
++        "measured_targets": {
++          "sink:sink_a": {
++            "A": 0.55
++          }
++        },
++        "profile": "permissive",
++        "sim": {
++          "machine_output_rates": {},
++          "machine_start_rates": {},
++          "sink_rates": {
++            "sink_a": {
++              "A": 0.55
++            }
++          },
++          "ticks": 12000,
++          "warmup": 2000
++        },
++        "target_gaps": {
++          "sink:sink_a": {
++            "A": 0.0
++          }
++        }
++      }
++    }
++  ],
++  "default_counterexamples": 4,
++  "permissive_remaining_counterexamples": 2,
++  "simulator_assumptions": [
++    "One tick has two phases: components first try to emit queued/output items, then internal state advances.",
++    "A belt is a FIFO pipeline with one-item cell capacity and one-cell-per-tick motion.",
++    "A source offers at most one item/tick. Rate sources use an accumulator; pattern sources repeat exactly and stall when backpressured.",
++    "A merger has one-slot input buffers and one-slot output buffer; policy is fixed-priority or round-robin.",
++    "A splitter has one input slot. Type-blind mode ignores commodity; filter mode maps commodity to an output port.",
++    "A machine waits until all recipe inputs are buffered, runs for ticks_per_cycle, and blocks completion if its output queue is full.",
++    "Machine input capacity is explicit per instance; the default is the recipe count for that commodity.",
++    "Sink measurements count accepted items after warmup; sinks in toy misrouting cases accept all commodities so wrong deliveries are visible instead of hidden as backpressure."
++  ],
++  "ticks": 12000,
++  "warmup": 2000
++}
+diff -ruN orig/experiments/p2_0_discrete_counterexamples.py mod/experiments/p2_0_discrete_counterexamples.py
+--- orig/experiments/p2_0_discrete_counterexamples.py	1970-01-01 00:00:00.000000000 +0000
++++ mod/experiments/p2_0_discrete_counterexamples.py	2026-07-04 11:19:40.184566904 +0000
+@@ -0,0 +1,844 @@
++#!/usr/bin/env python3
++"""
++Tick-level sandbox for attacking the P2.0 fluid throughput abstraction.
++
++The instances are deliberately tiny.  Each one carries an explicit fluid
++witness; the checker verifies the T1-T6-shaped equalities/capacities on that
++witness, while the simulator executes a deterministic finite-buffer tick model.
++
++Run:
++    python experiments/p2_0_discrete_counterexamples.py --json
++    python experiments/p2_0_discrete_counterexamples.py --dump-instances
++"""
++from __future__ import annotations
++
++import argparse
++import copy
++import json
++from collections import defaultdict
++from dataclasses import dataclass, field
++from typing import Any, Optional
++
++EPS = 1e-9
++
++
++def _rates() -> dict[str, float]:
++    return defaultdict(float)  # type: ignore[return-value]
++
++
++def add_rate(dst: dict[str, float], commodity: str, amount: float) -> None:
++    dst[commodity] = dst.get(commodity, 0.0) + float(amount)
++
++
++def parse_rate_key(key: str) -> tuple[str, str, str, str]:
++    """Parse 'src:out->dst:in'."""
++    left, right = key.split("->", 1)
++    src, out_port = left.split(":", 1)
++    dst, in_port = right.split(":", 1)
++    return src, out_port, dst, in_port
++
++
++@dataclass
++class World:
++    components: dict[str, "Component"]
++    order: list[str]
++    connections: dict[tuple[str, str], tuple[str, str]]
++    tick: int = 0
++    warmup: int = 0
++    sink_counts: dict[str, dict[str, int]] = field(default_factory=lambda: defaultdict(lambda: defaultdict(int)))
++    machine_outputs: dict[str, dict[str, int]] = field(default_factory=lambda: defaultdict(lambda: defaultdict(int)))
++    machine_starts: dict[str, int] = field(default_factory=lambda: defaultdict(int))
++
++    def in_measurement_window(self) -> bool:
++        return self.tick >= self.warmup
++
++    def emit_to(self, src: str, out_port: str, item: str) -> bool:
++        dst_ref = self.connections.get((src, out_port))
++        if dst_ref is None:
++            return False
++        dst, in_port = dst_ref
++        return self.components[dst].accept(in_port, item, self)
++
++    def run(self, ticks: int, warmup: int) -> dict[str, Any]:
++        self.warmup = warmup
++        for t in range(ticks):
++            self.tick = t
++            for cid in self.order:
++                self.components[cid].emit(self)
++            for cid in self.order:
++                self.components[cid].update(self)
++        denom = max(1, ticks - warmup)
++        return {
++            "ticks": ticks,
++            "warmup": warmup,
++            "sink_rates": {
++                sid: {k: v / denom for k, v in sorted(counts.items())}
++                for sid, counts in sorted(self.sink_counts.items())
++            },
++            "machine_output_rates": {
++                mid: {k: v / denom for k, v in sorted(counts.items())}
++                for mid, counts in sorted(self.machine_outputs.items())
++            },
++            "machine_start_rates": {
++                mid: v / denom for mid, v in sorted(self.machine_starts.items())
++            },
++        }
++
++
++class Component:
++    def __init__(self, cid: str, cfg: dict[str, Any]) -> None:
++        self.id = cid
++        self.cfg = cfg
++
++    def accept(self, in_port: str, item: str, world: World) -> bool:
++        raise NotImplementedError
++
++    def emit(self, world: World) -> None:
++        return None
++
++    def update(self, world: World) -> None:
++        return None
++
++
++class Source(Component):
++    def __init__(self, cid: str, cfg: dict[str, Any]) -> None:
++        super().__init__(cid, cfg)
++        self.pending: Optional[str] = None
++        self.acc = float(cfg.get("initial_accumulator", 0.0))
++        self.phase = int(cfg.get("initial_phase", 0))
++
++    def accept(self, in_port: str, item: str, world: World) -> bool:
++        return False
++
++    def emit(self, world: World) -> None:
++        if self.pending is not None and world.emit_to(self.id, "out", self.pending):
++            self.pending = None
++
++    def update(self, world: World) -> None:
++        if self.pending is not None:
++            return
++        if "pattern" in self.cfg:
++            pattern = self.cfg["pattern"]
++            token = pattern[self.phase % len(pattern)]
++            self.phase += 1
++            if token is not None:
++                self.pending = str(token)
++            return
++        rate = float(self.cfg.get("rate", 1.0))
++        self.acc += rate
++        if self.acc + EPS >= 1.0:
++            self.acc -= 1.0
++            self.pending = str(self.cfg["commodity"])
++
++
++class Sink(Component):
++    def accept(self, in_port: str, item: str, world: World) -> bool:
++        accepts = self.cfg.get("accepts", "*")
++        if accepts != "*" and item not in set(accepts):
++            return False
++        if world.in_measurement_window():
++            world.sink_counts[self.id][item] += 1
++        return True
++
++
++class Belt(Component):
++    def __init__(self, cid: str, cfg: dict[str, Any]) -> None:
++        super().__init__(cid, cfg)
++        n = int(cfg.get("length", 1))
++        if n < 1:
++            raise ValueError(f"belt {cid!r} length must be >= 1")
++        initial = list(cfg.get("initial_cells", []))
++        self.cells: list[Optional[str]] = [None] * n
++        for i, token in enumerate(initial[:n]):
++            self.cells[i] = None if token is None else str(token)
++
++    def accept(self, in_port: str, item: str, world: World) -> bool:
++        if self.cells[0] is None:
++            self.cells[0] = item
++            return True
++        return False
++
++    def emit(self, world: World) -> None:
++        last = len(self.cells) - 1
++        item = self.cells[last]
++        if item is not None and world.emit_to(self.id, "out", item):
++            self.cells[last] = None
++
++    def update(self, world: World) -> None:
++        for i in range(len(self.cells) - 2, -1, -1):
++            if self.cells[i] is not None and self.cells[i + 1] is None:
++                self.cells[i + 1] = self.cells[i]
++                self.cells[i] = None
++
++
++class Merger(Component):
++    def __init__(self, cid: str, cfg: dict[str, Any]) -> None:
++        super().__init__(cid, cfg)
++        self.ports = list(cfg.get("input_ports", ["in0", "in1"]))
++        self.inputs: dict[str, Optional[str]] = {p: None for p in self.ports}
++        self.out_item: Optional[str] = None
++        self.rr_idx = int(cfg.get("initial_rr_index", 0)) % len(self.ports)
++
++    def accept(self, in_port: str, item: str, world: World) -> bool:
++        if in_port not in self.inputs:
++            return False
++        if self.inputs[in_port] is None:
++            self.inputs[in_port] = item
++            return True
++        return False
++
++    def emit(self, world: World) -> None:
++        if self.out_item is not None and world.emit_to(self.id, "out", self.out_item):
++            self.out_item = None
++
++    def update(self, world: World) -> None:
++        if self.out_item is not None:
++            return
++        policy = self.cfg.get("policy", "round_robin")
++        chosen: Optional[int] = None
++        if policy == "fixed_priority":
++            for i, port in enumerate(self.ports):
++                if self.inputs[port] is not None:
++                    chosen = i
++                    break
++        elif policy == "round_robin":
++            for offset in range(len(self.ports)):
++                i = (self.rr_idx + offset) % len(self.ports)
++                if self.inputs[self.ports[i]] is not None:
++                    chosen = i
++                    break
++        else:
++            raise ValueError(f"unknown merger policy: {policy}")
++        if chosen is not None:
++            port = self.ports[chosen]
++            self.out_item = self.inputs[port]
++            self.inputs[port] = None
++            if policy == "round_robin":
++                self.rr_idx = (chosen + 1) % len(self.ports)
++
++
++class Splitter(Component):
++    def __init__(self, cid: str, cfg: dict[str, Any]) -> None:
++        super().__init__(cid, cfg)
++        self.ports = list(cfg.get("output_ports", ["out0", "out1"]))
++        self.in_item: Optional[str] = None
++        self.next_idx = int(cfg.get("initial_rr_index", 0)) % len(self.ports)
++
++    def accept(self, in_port: str, item: str, world: World) -> bool:
++        if in_port != "in":
++            return False
++        if self.in_item is None:
++            self.in_item = item
++            return True
++        return False
++
++    def update(self, world: World) -> None:
++        if self.in_item is None:
++            return
++        mode = self.cfg.get("mode", "type_blind")
++        blocked = self.cfg.get("blocked", "skip")
++        item = self.in_item
++        if mode == "filter":
++            fmap = self.cfg.get("filter", {})
++            if item not in fmap:
++                return
++            candidates = [str(fmap[item])]
++        elif mode == "type_blind":
++            if blocked == "wait":
++                candidates = [self.ports[self.next_idx]]
++            elif blocked == "skip":
++                candidates = [self.ports[(self.next_idx + j) % len(self.ports)] for j in range(len(self.ports))]
++            else:
++                raise ValueError(f"unknown splitter blocked policy: {blocked}")
++        else:
++            raise ValueError(f"unknown splitter mode: {mode}")
++
++        for port in candidates:
++            if world.emit_to(self.id, port, item):
++                self.in_item = None
++                if port in self.ports:
++                    self.next_idx = (self.ports.index(port) + 1) % len(self.ports)
++                return
++
++
++class Machine(Component):
++    def __init__(self, cid: str, cfg: dict[str, Any]) -> None:
++        super().__init__(cid, cfg)
++        self.inputs = {str(k): int(v) for k, v in cfg.get("inputs", {}).items()}
++        self.outputs = {str(k): int(v) for k, v in cfg.get("outputs", {}).items()}
++        self.tpc = int(cfg.get("ticks_per_cycle", 1))
++        self.input_capacity = {
++            str(k): int(v)
++            for k, v in cfg.get("input_capacity", self.inputs).items()
++        }
++        self.input_buf = {k: 0 for k in self.inputs}
++        for k, v in cfg.get("initial_inputs", {}).items():
++            if k not in self.input_buf:
++                raise ValueError(f"machine {cid} initial input for non-required commodity {k}")
++            self.input_buf[k] = int(v)
++        self.output_capacity = int(cfg.get("output_capacity", max(1, sum(self.outputs.values()))))
++        self.output_queue: list[str] = list(cfg.get("initial_outputs", []))
++        self.remaining = 0
++        self.completed_pending: list[str] = []
++
++    def accept(self, in_port: str, item: str, world: World) -> bool:
++        if item not in self.inputs:
++            return False
++        if self.input_buf[item] < self.input_capacity.get(item, self.inputs[item]):
++            self.input_buf[item] += 1
++            return True
++        return False
++
++    def emit(self, world: World) -> None:
++        if self.output_queue and world.emit_to(self.id, "out", self.output_queue[0]):
++            self.output_queue.pop(0)
++
++    def _make_outputs(self) -> list[str]:
++        out: list[str] = []
++        for commodity, count in self.outputs.items():
++            out.extend([commodity] * count)
++        return out
++
++    def _flush_completed(self, world: World) -> bool:
++        if not self.completed_pending:
++            return True
++        if len(self.output_queue) + len(self.completed_pending) > self.output_capacity:
++            return False
++        self.output_queue.extend(self.completed_pending)
++        if world.in_measurement_window():
++            for item in self.completed_pending:
++                world.machine_outputs[self.id][item] += 1
++        self.completed_pending = []
++        return True
++
++    def update(self, world: World) -> None:
++        if self.completed_pending:
++            if not self._flush_completed(world):
++                return
++        if self.remaining > 0:
++            self.remaining -= 1
++            if self.remaining == 0:
++                self.completed_pending = self._make_outputs()
++                if not self._flush_completed(world):
++                    return
++        if self.remaining == 0 and not self.completed_pending:
++            if all(self.input_buf.get(k, 0) >= need for k, need in self.inputs.items()):
++                for k, need in self.inputs.items():
++                    self.input_buf[k] -= need
++                self.remaining = self.tpc
++                if world.in_measurement_window():
++                    world.machine_starts[self.id] += 1
++
++
++COMPONENT_TYPES = {
++    "source": Source,
++    "sink": Sink,
++    "belt": Belt,
++    "merger": Merger,
++    "splitter": Splitter,
++    "machine": Machine,
++}
++
++
++def build_world(instance: dict[str, Any], profile: str = "default") -> World:
++    cfg = copy.deepcopy(instance)
++    if profile == "permissive":
++        for c in cfg["components"].values():
++            if c["type"] == "merger":
++                c["policy"] = "round_robin"
++            elif c["type"] == "splitter":
++                c["mode"] = "filter"
++                c["blocked"] = "skip"
++    elif profile != "default":
++        raise ValueError(f"unknown profile {profile!r}")
++
++    components: dict[str, Component] = {}
++    order = list(cfg.get("order", cfg["components"].keys()))
++    for cid in order:
++        ccfg = cfg["components"][cid]
++        cls = COMPONENT_TYPES[ccfg["type"]]
++        components[cid] = cls(cid, ccfg)
++    connections: dict[tuple[str, str], tuple[str, str]] = {}
++    for edge in cfg["connections"]:
++        src, out_port, dst, in_port = parse_rate_key(edge)
++        connections[(src, out_port)] = (dst, in_port)
++    return World(components=components, order=order, connections=connections)
++
++
++def check_fluid_witness(instance: dict[str, Any]) -> dict[str, Any]:
++    edge_rates: dict[str, dict[str, float]] = instance.get("fluid_witness", {}).get("edge_rates", {})
++    u: dict[str, float] = instance.get("fluid_witness", {}).get("machine_utilization", {})
++    components = instance["components"]
++    connections = set(instance["connections"])
++    errors: list[str] = []
++    incoming: dict[str, dict[str, float]] = defaultdict(_rates)
++    outgoing: dict[str, dict[str, float]] = defaultdict(_rates)
++
++    for key, rates in edge_rates.items():
++        if key not in connections:
++            errors.append(f"fluid witness mentions non-instance edge {key}")
++            continue
++        src, _out, dst, _in = parse_rate_key(key)
++        total = sum(float(x) for x in rates.values())
++        if total > 1.0 + EPS:
++            errors.append(f"edge {key} aggregate rate {total:.6f} exceeds port/belt cap 1")
++        for k, v in rates.items():
++            add_rate(outgoing[src], str(k), float(v))
++            add_rate(incoming[dst], str(k), float(v))
++
++    for key in connections:
++        if key not in edge_rates:
++            # Zero-rate edges are allowed but must be explicit enough for audit.
++            edge_rates.setdefault(key, {})
++
++    for cid, ccfg in components.items():
++        ctype = ccfg["type"]
++        in_rates = incoming[cid]
++        out_rates = outgoing[cid]
++        in_total = sum(in_rates.values())
++        out_total = sum(out_rates.values())
++
++        if ctype == "source":
++            cap = float(ccfg.get("source_cap", 1.0))
++            if out_total > cap + EPS:
++                errors.append(f"source {cid} out rate {out_total:.6f} exceeds cap {cap}")
++        elif ctype == "sink":
++            pass
++        elif ctype in {"belt", "splitter", "merger"}:
++            if max(in_total, out_total) > 1.0 + EPS:
++                errors.append(f"{ctype} {cid} aggregate throughput exceeds cap 1")
++            keys = set(in_rates) | set(out_rates)
++            for k in keys:
++                if abs(in_rates.get(k, 0.0) - out_rates.get(k, 0.0)) > 1e-7:
++                    errors.append(
++                        f"conservation fails at {ctype} {cid} for {k}: "
++                        f"in {in_rates.get(k, 0.0):.6f}, out {out_rates.get(k, 0.0):.6f}"
++                    )
++        elif ctype == "machine":
++            util = float(u.get(cid, 0.0))
++            if not (0.0 - EPS <= util <= 1.0 + EPS):
++                errors.append(f"machine {cid} utilization {util} outside [0,1]")
++            tpc = float(ccfg.get("ticks_per_cycle", 1))
++            for k, need in ccfg.get("inputs", {}).items():
++                expected = util * float(need) / tpc
++                got = in_rates.get(k, 0.0)
++                if abs(got - expected) > 1e-7:
++                    errors.append(f"machine {cid} input {k}: got {got:.6f}, expected {expected:.6f}")
++            for k, amount in ccfg.get("outputs", {}).items():
++                expected = util * float(amount) / tpc
++                got = out_rates.get(k, 0.0)
++                if abs(got - expected) > 1e-7:
++                    errors.append(f"machine {cid} output {k}: got {got:.6f}, expected {expected:.6f}")
++        else:
++            errors.append(f"unknown component type in fluid checker: {ctype}")
++
++    for sink_id, demands in instance.get("targets", {}).items():
++        for k, target in demands.items():
++            got = incoming[sink_id].get(k, 0.0)
++            if got + EPS < float(target):
++                errors.append(f"target {sink_id}.{k}: got {got:.6f}, target {float(target):.6f}")
++    for mid, demands in instance.get("machine_output_targets", {}).items():
++        util = float(u.get(mid, 0.0))
++        ccfg = components[mid]
++        tpc = float(ccfg.get("ticks_per_cycle", 1))
++        for k, target in demands.items():
++            expected = util * float(ccfg.get("outputs", {}).get(k, 0.0)) / tpc
++            if expected + EPS < float(target):
++                errors.append(f"machine target {mid}.{k}: got {expected:.6f}, target {float(target):.6f}")
++
++    return {"feasible": not errors, "errors": errors}
++
++
++def target_rates_from_sim(instance: dict[str, Any], sim: dict[str, Any]) -> dict[str, dict[str, float]]:
++    measured: dict[str, dict[str, float]] = {}
++    for sink_id, demands in instance.get("targets", {}).items():
++        measured[f"sink:{sink_id}"] = {
++            k: sim.get("sink_rates", {}).get(sink_id, {}).get(k, 0.0)
++            for k in demands
++        }
++    for mid, demands in instance.get("machine_output_targets", {}).items():
++        measured[f"machine:{mid}"] = {
++            k: sim.get("machine_output_rates", {}).get(mid, {}).get(k, 0.0)
++            for k in demands
++        }
++    return measured
++
++
++def target_gaps(instance: dict[str, Any], sim: dict[str, Any]) -> dict[str, dict[str, float]]:
++    gaps: dict[str, dict[str, float]] = {}
++    for sink_id, demands in instance.get("targets", {}).items():
++        label = f"sink:{sink_id}"
++        gaps[label] = {}
++        for k, target in demands.items():
++            actual = sim.get("sink_rates", {}).get(sink_id, {}).get(k, 0.0)
++            gaps[label][k] = float(target) - actual
++    for mid, demands in instance.get("machine_output_targets", {}).items():
++        label = f"machine:{mid}"
++        gaps[label] = {}
++        for k, target in demands.items():
++            actual = sim.get("machine_output_rates", {}).get(mid, {}).get(k, 0.0)
++            gaps[label][k] = float(target) - actual
++    return gaps
++
++
++def has_shortfall(gaps: dict[str, dict[str, float]], tolerance: float = 0.02) -> bool:
++    return any(v > tolerance for group in gaps.values() for v in group.values())
++
++
++def run_instance(instance: dict[str, Any], profile: str, ticks: int, warmup: int) -> dict[str, Any]:
++    fluid = check_fluid_witness(copy.deepcopy(instance))
++    world = build_world(instance, profile=profile)
++    sim = world.run(ticks=ticks, warmup=warmup)
++    gaps = target_gaps(instance, sim)
++    return {
++        "profile": profile,
++        "fluid": fluid,
++        "sim": sim,
++        "measured_targets": target_rates_from_sim(instance, sim),
++        "target_gaps": gaps,
++        "fluid_feasible_discrete_shortfall": bool(fluid["feasible"] and has_shortfall(gaps)),
++    }
++
++
++def edge(src: str, out_port: str, dst: str, in_port: str) -> str:
++    return f"{src}:{out_port}->{dst}:{in_port}"
++
++
++CASES: list[dict[str, Any]] = [
++    {
++        "name": "CE1_merger_fixed_priority_starves_low_branch",
++        "family": "two nominal half-rate commodities share one merger then split apart",
++        "classification": "A2 merger fairness violation",
++        "assumptions": [
++            "Boundary sources are aggressive and offer one item/tick when not backpressured.",
++            "The fixed-priority merger always services in0 before in1 when both are ready.",
++        ],
++        "order": ["src_a", "src_b", "merge", "split", "sink_a", "sink_b"],
++        "components": {
++            "src_a": {"type": "source", "commodity": "A", "rate": 1.0},
++            "src_b": {"type": "source", "commodity": "B", "rate": 1.0},
++            "merge": {"type": "merger", "input_ports": ["in0", "in1"], "policy": "fixed_priority"},
++            "split": {
++                "type": "splitter",
++                "mode": "filter",
++                "blocked": "skip",
++                "filter": {"A": "out0", "B": "out1"},
++            },
++            "sink_a": {"type": "sink", "accepts": "*"},
++            "sink_b": {"type": "sink", "accepts": "*"},
++        },
++        "connections": [
++            edge("src_a", "out", "merge", "in0"),
++            edge("src_b", "out", "merge", "in1"),
++            edge("merge", "out", "split", "in"),
++            edge("split", "out0", "sink_a", "in"),
++            edge("split", "out1", "sink_b", "in"),
++        ],
++        "targets": {"sink_a": {"A": 0.5}, "sink_b": {"B": 0.5}},
++        "fluid_witness": {
++            "machine_utilization": {},
++            "edge_rates": {
++                edge("src_a", "out", "merge", "in0"): {"A": 0.5},
++                edge("src_b", "out", "merge", "in1"): {"B": 0.5},
++                edge("merge", "out", "split", "in"): {"A": 0.5, "B": 0.5},
++                edge("split", "out0", "sink_a", "in"): {"A": 0.5},
++                edge("split", "out1", "sink_b", "in"): {"B": 0.5},
++            },
++        },
++    },
++    {
++        "name": "CE2_type_blind_splitter_cannot_demix_shared_fifo",
++        "family": "mixed commodity belt must be separated at a type-blind splitter",
++        "classification": "A3 splitter mixed-commodity separability violation",
++        "assumptions": [
++            "The shared upstream belt carries a periodic A,A,B,B sequence at aggregate one item/tick.",
++            "Sinks consume misdelivered items for measurement instead of blocking the whole toy network.",
++        ],
++        "order": ["src_mix", "belt", "split", "sink_a", "sink_b"],
++        "components": {
++            "src_mix": {"type": "source", "pattern": ["A", "A", "B", "B"]},
++            "belt": {"type": "belt", "length": 1},
++            "split": {
++                "type": "splitter",
++                "mode": "type_blind",
++                "blocked": "skip",
++                "initial_rr_index": 0,
++                "filter": {"A": "out0", "B": "out1"},
++            },
++            "sink_a": {"type": "sink", "accepts": "*"},
++            "sink_b": {"type": "sink", "accepts": "*"},
++        },
++        "connections": [
++            edge("src_mix", "out", "belt", "in"),
++            edge("belt", "out", "split", "in"),
++            edge("split", "out0", "sink_a", "in"),
++            edge("split", "out1", "sink_b", "in"),
++        ],
++        "targets": {"sink_a": {"A": 0.5}, "sink_b": {"B": 0.5}},
++        "fluid_witness": {
++            "machine_utilization": {},
++            "edge_rates": {
++                edge("src_mix", "out", "belt", "in"): {"A": 0.5, "B": 0.5},
++                edge("belt", "out", "split", "in"): {"A": 0.5, "B": 0.5},
++                edge("split", "out0", "sink_a", "in"): {"A": 0.5},
++                edge("split", "out1", "sink_b", "in"): {"B": 0.5},
++            },
++        },
++    },
++    {
++        "name": "CE3_cycle_bootstrap_empty_start_deadlocks",
++        "family": "cyclic commodity group with a feasible steady circulation but no initial seed",
++        "classification": "A4 bootstrap reachability violation",
++        "assumptions": [
++            "The cycle starts empty; no hidden initial inventory is injected.",
++            "Machines store the exact recipe input counts and block when required input is absent.",
++        ],
++        "order": ["m_ab", "belt_b", "m_ba", "belt_a"],
++        "components": {
++            "m_ab": {"type": "machine", "inputs": {"A": 1}, "outputs": {"B": 1}, "ticks_per_cycle": 1},
++            "belt_b": {"type": "belt", "length": 1},
++            "m_ba": {"type": "machine", "inputs": {"B": 1}, "outputs": {"A": 1}, "ticks_per_cycle": 1},
++            "belt_a": {"type": "belt", "length": 1},
++        },
++        "connections": [
++            edge("m_ab", "out", "belt_b", "in"),
++            edge("belt_b", "out", "m_ba", "in"),
++            edge("m_ba", "out", "belt_a", "in"),
++            edge("belt_a", "out", "m_ab", "in"),
++        ],
++        "machine_output_targets": {"m_ab": {"B": 1.0}, "m_ba": {"A": 1.0}},
++        "fluid_witness": {
++            "machine_utilization": {"m_ab": 1.0, "m_ba": 1.0},
++            "edge_rates": {
++                edge("m_ab", "out", "belt_b", "in"): {"B": 1.0},
++                edge("belt_b", "out", "m_ba", "in"): {"B": 1.0},
++                edge("m_ba", "out", "belt_a", "in"): {"A": 1.0},
++                edge("belt_a", "out", "m_ab", "in"): {"A": 1.0},
++            },
++        },
++    },
++    {
++        "name": "CTRL_cycle_bootstrap_sufficient_wip_reaches_fluid_rate",
++        "family": "cyclic commodity group with enough initial WIP",
++        "classification": "control: A4 bootstrap witness supplies sufficient initial WIP",
++        "assumptions": [
++            "Both machines and both return belts begin with enough WIP to saturate the circulation.",
++            "This is the same topology and fluid witness as CE3, with only initial inventory changed.",
++        ],
++        "order": ["m_ab", "belt_b", "m_ba", "belt_a"],
++        "components": {
++            "m_ab": {"type": "machine", "inputs": {"A": 1}, "outputs": {"B": 1}, "ticks_per_cycle": 1, "initial_inputs": {"A": 1}},
++            "belt_b": {"type": "belt", "length": 1, "initial_cells": ["B"]},
++            "m_ba": {"type": "machine", "inputs": {"B": 1}, "outputs": {"A": 1}, "ticks_per_cycle": 1, "initial_inputs": {"B": 1}},
++            "belt_a": {"type": "belt", "length": 1, "initial_cells": ["A"]},
++        },
++        "connections": [
++            edge("m_ab", "out", "belt_b", "in"),
++            edge("belt_b", "out", "m_ba", "in"),
++            edge("m_ba", "out", "belt_a", "in"),
++            edge("belt_a", "out", "m_ab", "in"),
++        ],
++        "machine_output_targets": {"m_ab": {"B": 1.0}, "m_ba": {"A": 1.0}},
++        "fluid_witness": {
++            "machine_utilization": {"m_ab": 1.0, "m_ba": 1.0},
++            "edge_rates": {
++                edge("m_ab", "out", "belt_b", "in"): {"B": 1.0},
++                edge("belt_b", "out", "m_ba", "in"): {"B": 1.0},
++                edge("m_ba", "out", "belt_a", "in"): {"A": 1.0},
++                edge("belt_a", "out", "m_ab", "in"): {"A": 1.0},
++            },
++        },
++    },
++    {
++        "name": "CE4_mixed_fifo_head_of_line_blocks_synchronizing_machine",
++        "family": "multi-input machine synchronization behind one mixed FIFO belt",
++        "classification": "NEW: finite FIFO head-of-line blocking at synchronizing machine input",
++        "assumptions": [
++            "The assembler has one shared ingress and one internal slot for each required commodity.",
++            "FIFO belts cannot reorder or let a later B bypass an earlier A.",
++            "Two legal half-rate external sources are phase-aligned as A,A,_,_ and _,_,B,B, creating an A,A,B,B merged FIFO sequence.",
++        ],
++        "order": ["src_a", "src_b", "merge", "belt", "assembler", "sink_c"],
++        "components": {
++            "src_a": {"type": "source", "pattern": ["A", "A", None, None]},
++            "src_b": {"type": "source", "pattern": [None, None, "B", "B"]},
++            "merge": {"type": "merger", "input_ports": ["in0", "in1"], "policy": "round_robin"},
++            "belt": {"type": "belt", "length": 2},
++            "assembler": {
++                "type": "machine",
++                "inputs": {"A": 1, "B": 1},
++                "outputs": {"C": 1},
++                "ticks_per_cycle": 2,
++                "input_capacity": {"A": 1, "B": 1},
++            },
++            "sink_c": {"type": "sink", "accepts": "*"},
++        },
++        "connections": [
++            edge("src_a", "out", "merge", "in0"),
++            edge("src_b", "out", "merge", "in1"),
++            edge("merge", "out", "belt", "in"),
++            edge("belt", "out", "assembler", "in"),
++            edge("assembler", "out", "sink_c", "in"),
++        ],
++        "targets": {"sink_c": {"C": 0.5}},
++        "fluid_witness": {
++            "machine_utilization": {"assembler": 1.0},
++            "edge_rates": {
++                edge("src_a", "out", "merge", "in0"): {"A": 0.5},
++                edge("src_b", "out", "merge", "in1"): {"B": 0.5},
++                edge("merge", "out", "belt", "in"): {"A": 0.5, "B": 0.5},
++                edge("belt", "out", "assembler", "in"): {"A": 0.5, "B": 0.5},
++                edge("assembler", "out", "sink_c", "in"): {"C": 0.5},
++            },
++        },
++    },
++    {
++        "name": "CTRL_sync_path_length_skew_is_transient_only",
++        "family": "two separate input paths with different lengths feed a synchronizing machine",
++        "classification": "control: no counterexample under per-commodity input buffers",
++        "assumptions": [
++            "Inputs use separate belts/ports; each required commodity has one waiting slot.",
++            "Path length is the only skew; no shared FIFO head-of-line blocking.",
++        ],
++        "order": ["src_a", "src_b", "belt_a", "belt_b", "assembler", "sink_c"],
++        "components": {
++            "src_a": {"type": "source", "commodity": "A", "rate": 0.5},
++            "src_b": {"type": "source", "commodity": "B", "rate": 0.5, "initial_accumulator": 0.5},
++            "belt_a": {"type": "belt", "length": 1},
++            "belt_b": {"type": "belt", "length": 9},
++            "assembler": {
++                "type": "machine",
++                "inputs": {"A": 1, "B": 1},
++                "outputs": {"C": 1},
++                "ticks_per_cycle": 2,
++                "input_capacity": {"A": 1, "B": 1},
++            },
++            "sink_c": {"type": "sink", "accepts": "*"},
++        },
++        "connections": [
++            edge("src_a", "out", "belt_a", "in"),
++            edge("belt_a", "out", "assembler", "in"),
++            edge("src_b", "out", "belt_b", "in"),
++            edge("belt_b", "out", "assembler", "in"),
++            edge("assembler", "out", "sink_c", "in"),
++        ],
++        "targets": {"sink_c": {"C": 0.5}},
++        "fluid_witness": {
++            "machine_utilization": {"assembler": 1.0},
++            "edge_rates": {
++                edge("src_a", "out", "belt_a", "in"): {"A": 0.5},
++                edge("belt_a", "out", "assembler", "in"): {"A": 0.5},
++                edge("src_b", "out", "belt_b", "in"): {"B": 0.5},
++                edge("belt_b", "out", "assembler", "in"): {"B": 0.5},
++                edge("assembler", "out", "sink_c", "in"): {"C": 0.5},
++            },
++        },
++    },
++    {
++        "name": "CTRL_fractional_055_single_commodity_converges",
++        "family": "sub-full fractional rate in an integer item world",
++        "classification": "control: no counterexample for one commodity with accumulator scheduling",
++        "assumptions": [
++            "The source realizes 0.55/tick by a deterministic accumulator schedule.",
++            "One item moves at most one belt cell per tick; this only changes warmup latency.",
++        ],
++        "order": ["src_a", "belt", "sink_a"],
++        "components": {
++            "src_a": {"type": "source", "commodity": "A", "rate": 0.55},
++            "belt": {"type": "belt", "length": 5},
++            "sink_a": {"type": "sink", "accepts": "*"},
++        },
++        "connections": [
++            edge("src_a", "out", "belt", "in"),
++            edge("belt", "out", "sink_a", "in"),
++        ],
++        "targets": {"sink_a": {"A": 0.55}},
++        "fluid_witness": {
++            "machine_utilization": {},
++            "edge_rates": {
++                edge("src_a", "out", "belt", "in"): {"A": 0.55},
++                edge("belt", "out", "sink_a", "in"): {"A": 0.55},
++            },
++        },
++    },
++]
++
++
++def strip_runtime_keys(case: dict[str, Any]) -> dict[str, Any]:
++    keep = copy.deepcopy(case)
++    return keep
++
++
++def run_all(ticks: int, warmup: int) -> dict[str, Any]:
++    results = []
++    permissive_remaining = 0
++    default_counterexamples = 0
++    for case in CASES:
++        default = run_instance(case, "default", ticks=ticks, warmup=warmup)
++        permissive = run_instance(case, "permissive", ticks=ticks, warmup=warmup)
++        if default["fluid_feasible_discrete_shortfall"]:
++            default_counterexamples += 1
++        if permissive["fluid_feasible_discrete_shortfall"]:
++            permissive_remaining += 1
++        results.append(
++            {
++                "name": case["name"],
++                "family": case["family"],
++                "classification": case["classification"],
++                "assumptions": case.get("assumptions", []),
++                "default": default,
++                "permissive": permissive,
++            }
++        )
++    return {
++        "simulator_assumptions": [
++            "One tick has two phases: components first try to emit queued/output items, then internal state advances.",
++            "A belt is a FIFO pipeline with one-item cell capacity and one-cell-per-tick motion.",
++            "A source offers at most one item/tick. Rate sources use an accumulator; pattern sources repeat exactly and stall when backpressured.",
++            "A merger has one-slot input buffers and one-slot output buffer; policy is fixed-priority or round-robin.",
++            "A splitter has one input slot. Type-blind mode ignores commodity; filter mode maps commodity to an output port.",
++            "A machine waits until all recipe inputs are buffered, runs for ticks_per_cycle, and blocks completion if its output queue is full.",
++            "Machine input capacity is explicit per instance; the default is the recipe count for that commodity.",
++            "Sink measurements count accepted items after warmup; sinks in toy misrouting cases accept all commodities so wrong deliveries are visible instead of hidden as backpressure.",
++        ],
++        "ticks": ticks,
++        "warmup": warmup,
++        "default_counterexamples": default_counterexamples,
++        "permissive_remaining_counterexamples": permissive_remaining,
++        "cases": results,
++    }
++
++
++def main() -> None:
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--ticks", type=int, default=12000)
++    ap.add_argument("--warmup", type=int, default=2000)
++    ap.add_argument("--json", action="store_true", help="emit full result JSON")
++    ap.add_argument("--dump-instances", action="store_true", help="emit JSON instance definitions only")
++    args = ap.parse_args()
++
++    if args.dump_instances:
++        print(json.dumps([strip_runtime_keys(c) for c in CASES], indent=2, ensure_ascii=False, sort_keys=True))
++        return
++
++    result = run_all(args.ticks, args.warmup)
++    if args.json:
++        print(json.dumps(result, indent=2, ensure_ascii=False, sort_keys=True))
++        return
++
++    print("P2.0 discrete counterexample sandbox")
++    print(f"ticks={args.ticks} warmup={args.warmup}")
++    print(f"default counterexamples: {result['default_counterexamples']}")
++    print(f"permissive remaining: {result['permissive_remaining_counterexamples']}")
++    for case in result["cases"]:
++        d = case["default"]
++        p = case["permissive"]
++        print(f"\n{case['name']}")
++        print(f"  classification: {case['classification']}")
++        print(f"  fluid feasible: {d['fluid']['feasible']}")
++        print(f"  default shortfall: {d['fluid_feasible_discrete_shortfall']} targets={d['measured_targets']} gaps={d['target_gaps']}")
++        print(f"  permissive shortfall: {p['fluid_feasible_discrete_shortfall']} targets={p['measured_targets']} gaps={p['target_gaps']}")
++
++
++if __name__ == "__main__":
++    main()
