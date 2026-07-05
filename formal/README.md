@@ -15,14 +15,14 @@ cd formal
 lake update          # 首次:拉 mathlib v4.31.0 及依赖(lake-manifest.json 已锁 rev)
 lake exe cache get   # 首次:拉 mathlib 预编译缓存(~4.5GB,不拉则本地编译数小时)
 lake build           # 应输出 Build completed successfully
-lake env lean axiom_audit.lean   # 公理审计(45 条,应全部仅经典三公理或无公理)
+lake env lean axiom_audit.lean   # 公理审计(56 条,应全部仅经典三公理或无公理)
 ```
 
 **自 2026-07-05 起依赖 mathlib**（钉 `v4.31.0` tag，与工具链同版）：
-`TnsCoverage.lean` / `F5OrbitLift.lean` 仍是 core-only，`DesignStatements.lean` /
-`CutFamilies.lean` 用到 `Finset`/`Multiset`/`Equiv`/`Relation` 库。
+`TnsCoverage.lean` / `F5OrbitLift.lean` 仍是 core-only，其余模块用到
+`Finset`/`Multiset`/`Equiv`/`Relation` 库。
 
-## 内容与对应表（45 条定理，四个模块）
+## 内容与对应表（56 条定理，五个模块）
 
 ### `TnsCoverage.lean` + `F5OrbitLift.lean`（首批 14 条，谓词/函数式表示，core-only）
 
@@ -95,9 +95,30 @@ file:line）。**待独立复审**（与首批同流程：先落库，后送盲�
 | `CutFamilies.f6_cross_side_lower_bound` | F6：对侧下界 max(0, D−C')（截断减法） | propext, Quot.sound |
 | `CutFamilies.f2_cutset_bound` | F2 弱方向：边不相交必过割的路线数 ≤ \|δ\|（**不需要** MFMC） | 经典三公理 |
 | `CutFamilies.f2_demand_overflow_infeasible` | F2 fire：demand > \|δ\| ⇒ 无边不相交合法路由 | 经典三公理 |
+| `CutFamilies.f3_blocked_port_infeasible` | F3（第二梯队）：required port front 被选中 pose 占据 ⇒ 违反（`PortExposureFree` 对 ports 全量化 = **all-ports-active 显式假设**；`frontCell` 抽象参数 = 方向原语坑不进定理） | propext, Quot.sound |
+| `CutFamilies.f3_pair_literal_cut_sound` | F3 双 literal nogood：{A,B} 同选即 fire，与其他 literal 无关（literal 子多重集匹配语义的数学核） | 经典三公理 |
+
+### `FrameworkLemmas.lean`（9 条，搜索框架层承重骨架，需 mathlib）
+
+**来源**：F5 复合安全 = `p1_3_f5_orbit_lift_soundness_design_v1.md` §2.4 引理
+原文（v2 声明"同 v1"）；TP7-S 键边界 = `p2_0_throughput_certification_paradigm_design_v2.md`
+v3 终审 BLOCK（回退循环第 1/2 条）；frontier 剪枝 = 项目 max_lex 目标的搜索剪枝
+soundness。**待独立复审**（与 CutFamilies 同批送审）。
+
+| Lean 定理 | 对应命题 | 公理依赖 |
+|---|---|---|
+| `Framework.f5_compound_safety` | F5 v1 §2.4：P-HOM + 序代表选择 + cut 逐点 sound ⇒ 复合不删光合法类 | **无** |
+| `Framework.f5_compound_needs_phom` | v1 §2.4 反方向陷阱的机器反例：无 P-HOM 则复合删光合法类（"标签敏感 cut + 序"红测的数学面） | propext |
+| `Framework.frontier_prune_dominates` | 剪枝支配：被剪候选由 in-hand witness 支配 | 经典三公理 |
+| `Framework.frontier_prune_preserves_max` | 剪枝保最优：幸存集 ∪ {w₀} 的 max = 全集 max（任意线性序） | 经典三公理 |
+| `Framework.frontier_prune_preserves_max_lex` | 具体化：max_lex(area, min_side) = `ℕ ×ₗ ℕ` 特例 | 经典三公理 |
+| `Framework.eq_key_violated_iff` | TP7-S 等式键排除集刻画：恰排除 A = S 一个赋值 | 经典三公理 |
+| `Framework.tp7s_eq_key_sound` | 等式键 sound：Farkas 证 S 不可行 ⇒ 排除集全不可行 | 经典三公理 |
+| `Framework.tp7s_eq_key_no_overcut` | 等式键不过切：真超集不触发（排除超集需独立证明） | 经典三公理 |
+| `Framework.tp7s_selected_set_nogood_overcuts` | 选中集式 nogood 过切玩具反例（半容量路 + 并行路）的机器版 | propext, Quot.sound |
 
 "经典三公理" = `propext`、`Classical.choice`、`Quot.sound`（Lean/mathlib 标准信任基）。
-无任何 `sorry`，无 `native_decide`/`ofReduceBool`（45/45 见 `axiom_audit.lean`）。
+无任何 `sorry`，无 `native_decide`/`ofReduceBool`（56/56 见 `axiom_audit.lean`）。
 
 ## 陈述层修改记录（施工中，均已过编译+公理审计）
 
@@ -132,13 +153,17 @@ file:line）。**待独立复审**（与首批同流程：先落库，后送盲�
 
 1. ~~`anon_lift_sound`~~ **已完成**（2026-07-05，见 `DesignStatements.lean`
    `Orbit.anon_multiset_lift_soundness_from_named_representative` 全链）。
-2. ~~第一梯队 family 核心定理~~ **已完成**（2026-07-05，见 `CutFamilies.lean`
+2. ~~第一梯队 family 核心定理~~ **已完成**（2026-07-05，`CutFamilies.lean`
    15 条：F9/F1/F7/F4/F6/F2 各 bound+infeasible 形态；待独立复审）。
-3. 第二梯队：F3 port_exposure（带显式 all-ports-active 前提做，方向原语
-   N/S 翻转坑见 survey）；F8 power_grid_reach **等 P1.3 欧氏 vs 12×12
-   stencil reconcile 后再做**（代码自认 landmine，先形式化 = 铸错误几何）。
-4. F5 复合安全引理（轨道 cut × master 对称序不删光合法类）。
-5. TNS lex 序 frontier 支配骨架（CERTIFIED 剪 lex 更差候选的 soundness）。
-6. 吞吐 TP7-S nogood 完整 0/1 等式键的过切/欠切边界（v3 终审 BLOCK-2 的正反两面）。
-7. 完备性 Q1：**不是 Lean 任务**——先写「不可行类分类学」设计稿（走独立审查链），
+3. ~~第二梯队 F3~~ **已完成**（2026-07-05，`CutFamilies.lean` F3 节 2 条，
+   all-ports-active 显式量化 + frontCell 抽象参数）；F8 power_grid_reach
+   **继续等 P1.3 欧氏 vs 12×12 stencil reconcile**（代码自认 landmine）。
+4. ~~F5 复合安全引理~~ / ~~TNS lex 支配~~ / ~~TP7-S 键边界~~ **已完成**
+   （2026-07-05，`FrameworkLemmas.lean` 9 条，各带正反两面；待独立复审）。
+5. 完备性 Q1：**不是 Lean 任务**——先写「不可行类分类学」设计稿（走独立审查链），
    theorem domain 都还没定义（八个定义层缺口见 survey/completeness.md）。
+6. 送审：CutFamilies + FrameworkLemmas 两模块的陈述保真对抗审 + 盲对拼
+   （与首批同流程，打包给 GPT Pro）。
+7. 更远的砖：F5 复合引理与轨道 lift 定理的**组合定理**（把 `f5_compound_safety`
+   的 `hcut_sound` 用 `anon_lift_sound` 实例化，打通"oracle 判决 → cut 排除
+   → 搜索空间安全"全链）；TP7-D 周期日历证书的可判定验收语义。

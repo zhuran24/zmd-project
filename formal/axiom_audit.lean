@@ -49,3 +49,16 @@ import ZmdFormal
 #print axioms ZmdFormal.CutFamilies.f6_cross_side_lower_bound
 #print axioms ZmdFormal.CutFamilies.f2_cutset_bound
 #print axioms ZmdFormal.CutFamilies.f2_demand_overflow_infeasible
+-- CutFamilies 第二梯队 F3（2026-07-05）
+#print axioms ZmdFormal.CutFamilies.f3_blocked_port_infeasible
+#print axioms ZmdFormal.CutFamilies.f3_pair_literal_cut_sound
+-- FrameworkLemmas（F5 复合安全 / frontier lex 剪枝 / TP7-S 键边界，2026-07-05）
+#print axioms ZmdFormal.Framework.f5_compound_safety
+#print axioms ZmdFormal.Framework.f5_compound_needs_phom
+#print axioms ZmdFormal.Framework.frontier_prune_dominates
+#print axioms ZmdFormal.Framework.frontier_prune_preserves_max
+#print axioms ZmdFormal.Framework.frontier_prune_preserves_max_lex
+#print axioms ZmdFormal.Framework.eq_key_violated_iff
+#print axioms ZmdFormal.Framework.tp7s_eq_key_sound
+#print axioms ZmdFormal.Framework.tp7s_eq_key_no_overcut
+#print axioms ZmdFormal.Framework.tp7s_selected_set_nogood_overcuts

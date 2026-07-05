@@ -210,4 +210,47 @@ theorem f2_demand_overflow_infeasible {ι ε : Type*} [DecidableEq ι] [Decidabl
   rintro ⟨hhit, hdisj⟩
   exact absurd (f2_cutset_bound routes edges δ hhit hdisj) (Nat.not_le.mpr hfire)
 
+/-! ## F3 port_exposure — 格邻接 + 双 literal nogood（survey: f3_port_exposure.md，第二梯队）
+
+第二梯队条件已按 survey 裁定显式化：
+- **all-ports-active 假设**（SPEC:161-164 自认 open，`active_port_witness`
+  未实现是 P1.5 硬门）内嵌为 `PortExposureFree` 对 `ports i` 的**全量化**——
+  若真实语义中某 port 可 inactive，本前提偏强，届时定理要改量化域；
+- **方向原语坑**（helper 自认 N/S 与 canonical DIR_DELTA 相反，shared
+  primitives 前 no cert）：`frontCell` 是抽象参数，"c + dir(d) 算得对"
+  是工程侧义务，不进定理；
+- 只覆盖当前 validator 实际执行的 `cell_owner` blocker 分支（VAL:79-112）；
+  spec 的 `front ∉ free_cells` 广义分支实现里没有（ORACLE:205-215），不形式化。 -/
+
+/-- F3 约束谓词：每个选中 pose 的每个 required port 的 front cell 不被任何
+选中 pose 占据（对 `ports i` 全量化 = all-ports-active 显式假设）。 -/
+def PortExposureFree {ι π α : Type*} (selected : Finset ι) (occupied : ι → Finset α)
+    (ports : ι → Finset π) (frontCell : π → α) : Prop :=
+  ∀ i ∈ selected, ∀ q ∈ ports i, ∀ j ∈ selected, frontCell q ∉ occupied j
+
+/-- F3 infeasible：某选中 pose 的 required port front 被另一选中 pose 占据
+⇒ 违反 port exposure（SPEC:14-28 的可执行分支）。 -/
+theorem f3_blocked_port_infeasible {ι π α : Type*}
+    (selected : Finset ι) (occupied : ι → Finset α)
+    (ports : ι → Finset π) (frontCell : π → α)
+    {A B : ι} {p : π}
+    (hA : A ∈ selected) (hB : B ∈ selected)
+    (hp : p ∈ ports A) (hblock : frontCell p ∈ occupied B) :
+    ¬ PortExposureFree selected occupied ports frontCell :=
+  fun hfree => hfree A hA p hp B hB hblock
+
+/-- F3 literal cut soundness：双 literal nogood `{A, B}` 在**任何**同时选中
+这两个 literal 的状态上 fire 都 sound，与其他被选 literal 无关——这是
+literal 子多重集匹配语义（LIFE:1014-1027）的数学核。 -/
+theorem f3_pair_literal_cut_sound {ι π α : Type*} [DecidableEq ι]
+    (occupied : ι → Finset α) (ports : ι → Finset π) (frontCell : π → α)
+    {A B : ι} {p : π}
+    (hp : p ∈ ports A) (hblock : frontCell p ∈ occupied B) :
+    ∀ selected : Finset ι, {A, B} ⊆ selected →
+      ¬ PortExposureFree selected occupied ports frontCell := by
+  intro selected hsub
+  have h := Finset.insert_subset_iff.mp hsub
+  exact f3_blocked_port_infeasible selected occupied ports frontCell
+    h.1 (h.2 (Finset.mem_singleton_self B)) hp hblock
+
 end ZmdFormal.CutFamilies
