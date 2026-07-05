@@ -1098,6 +1098,21 @@ P1.2 是一个断言：solver 的 certified-exact 结果**可被 durably sealed 
 
 **入口里带的诚实警告**：剩余项列表**会增长**——后续跨模型审剥更多信任洋葱（「trust onion」原理——对抗审总能再剥一层；「审到零发现」*不是*收敛判据；见 `p1-2-review-converged-tcb-start-p1-3`）。
 
+**2026-07-05 状态更新**（supersedes 上表「状态」列；触发 = (b)/① 落地 + owner 暂缓拍板；源 = codex 逐项对当前 git/代码复核 + 本会话 commits，下列 hash 均在本仓库可解析）：
+
+- **#1 最小 TCB 闭包 —— (a)+(b)/① done，整体仍 partial**：(a) runtime 隔离 `4388494`（child 主进程不 import 项目域大模块）；(b)/① 快照**模块清单**最小化 `9d224d8`（`_discover_project_snapshot_modules` 672→硬编码 24 白名单；child `_SnapshotFinder` 只服务白名单 + `sys.path` 仅 stdlib → child 误 import 三禁真 fail-closed；red-line 两条转硬断言）。**仍未闭**：②物理源闭包（三禁/`scripts` 的 `@source:` 文件仍物理留在快照供孙进程 replay）明确 defer；且语义 TCB 有「求解器硬地板」——replay 必须重跑 benders 证 frontier 耗尽/全局最优、fixed-witness 单独不够，故字面「全闭包」要 proof-carrying 第四路（不在 scope）。详见卡 `tcb-has-solver-hard-floor-replay-mandatory`。
+- **#2 受控 loader 最小快照 + fd —— 残余 ≈ #3**：「最小快照」由 (b)/① 覆盖；「read-once + fd」= 暂缓的 #3。
+- **#3 fd-held read-once / TOCTOU —— deferred**（owner 2026-07-05 拍板暂缓；判据 + 何时该翻转见卡 `deferred-verifier-hardening-toctou-os-isolation`）。
+- **#4 —— done**（不变）。
+- **#5 B2 候选域独立枚举 —— open（当前最实的未闭 soundness 项）**：close-kernel 硬化线 `6e06922` 合入 main（≠ B2）；replay 虽重跑求解器，但用的仍是 proposal 给的候选域，故 B2（不信 proposal `candidate_placements`、独立重推候选域）未闭。**#5-F part3**（import-time 副作用）仍 open spike，但 soundness 已被 V99 whole-file floor 兜住（TCB 线下、非 release-blocking，见卡 `stage3-spike-fused-5f-part3-findings`）。
+- **#6 AST 可达性闸 —— 决定不建**（不变）。
+- **#7 生产 certify 入口 —— done as machine entrypoint** `349c56c`（`scripts/run_supervisor_seal.py` 驱动 `supervisor_seal()`）；≠ P1.2 closed（仍卡 owner 手动门）。
+- **#8 —— 子项 done，类别未判全 done**：「删自跳过」`52c1e8d`；深化项仍列 backlog。（上表 `099f5a3` 在当前对象库**不可解析**——git 历史被重建过，那是原机器 hash、只当叙事线索。）
+- **#9a floor manifest + generator pin —— 机制 done，production bytes deploy-pending**（可解析 commits `016e126`/`9ef5974`/`30f9ee2`）。
+- **#9b OS 写隔离 / #9c 原生 `.pyd`/`.so` TOCTOU —— deferred**（与 #3 同批暂缓，卡 `deferred-verifier-hardening-toctou-os-isolation`）。
+
+**一句话**：除 #3/#9b/#9c（暂缓）与 #6（决定不建）外，仍 open/partial 的是 #1 整体闭包（受求解器硬地板 + ② defer 限）、#2 残余（≈#3）、**#5 B2 独立枚举**、#5-F part3（floor 兜住）、#8 深化、#9a production bytes（deploy-pending）。**不是「除暂缓项外全 done」。**
+
 ---
 
 ## 3. PR2-b（B1/B2 假-CERTIFIED 信道）—— 已落 `69980b3`+`592ea13`
