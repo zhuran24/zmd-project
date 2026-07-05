@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 sys.path.insert(0, str(Path(__file__).parent))
+from canonical_witness_checker import check_canonical_witness  # noqa: E402
 from emitter import EmitterReject, emit  # noqa: E402
 from runner import run_sidecar_chain  # noqa: E402
 from witness_checker import check_witness  # noqa: E402
@@ -267,7 +268,14 @@ def apply_mutation(opb: str, kind: str) -> str:
 
 
 # ---------------------------------------------------------------- 主流程
-def run_one(sample_id: str, opb_text: str, results: List[Dict[str, Any]]) -> Dict[str, Any]:
+def run_one(
+    sample_id: str,
+    opb_text: str,
+    results: List[Dict[str, Any]],
+    *,
+    emitted: Dict[str, Any] | None = None,
+    model_input: Dict[str, Any] | None = None,
+) -> Dict[str, Any]:
     d = WORK / sample_id
     d.mkdir(parents=True, exist_ok=True)
     opb_path = d / "instance.opb"
@@ -280,7 +288,19 @@ def run_one(sample_id: str, opb_text: str, results: List[Dict[str, Any]]) -> Dic
         else:
             chk = check_witness(opb_text, wit)
             record["witness_check"] = chk
-            record["status"] = "DIVERGED_OPB_ONLY" if chk["ok"] else "SIDE_SAT_UNTRUSTED"
+            if not chk["ok"]:
+                record["status"] = "SIDE_SAT_UNTRUSTED"
+            elif emitted is not None and model_input is not None:
+                # 二段升级：canonical-level（v2 §5.2）
+                cchk = check_canonical_witness(
+                    model_input, emitted["varmap"], emitted["patterns"], wit
+                )
+                record["canonical_witness_check"] = cchk
+                record["status"] = (
+                    "DIVERGED_CANDIDATE" if cchk["ok"] else "SIDE_SAT_UNTRUSTED"
+                )
+            else:
+                record["status"] = "DIVERGED_OPB_ONLY"
     (d / "verdict.json").write_text(json.dumps(record, indent=1, default=str), encoding="utf-8")
     return record
 
@@ -289,6 +309,7 @@ def main() -> int:
     WORK.mkdir(exist_ok=True)
     results: List[Dict[str, Any]] = []
     opb_cache: Dict[str, str] = {}
+    sat_cache: Dict[str, tuple] = {}  # sid -> (emitted, model_input, witness)
     fails = 0
 
     for sample in build_samples():
@@ -310,10 +331,13 @@ def main() -> int:
         d.mkdir(parents=True, exist_ok=True)
         (d / "varmap.json").write_text(json.dumps(emitted["varmap"], indent=1), encoding="utf-8")
         (d / "conmap.json").write_text(json.dumps(emitted["conmap"], indent=1), encoding="utf-8")
-        record = run_one(sid, emitted["opb"], results)
+        record = run_one(sid, emitted["opb"], results,
+                         emitted=emitted, model_input=sample["input"])
         got = record["status"]
+        if got in ("DIVERGED_CANDIDATE", "DIVERGED_OPB_ONLY") and record.get("witness_values"):
+            sat_cache[sid] = (emitted, sample["input"], dict(record["witness_values"]))
         ok = (expect == "CONFIRMED" and got == "CONFIRMED") or (
-            expect == "SAT" and got == "DIVERGED_OPB_ONLY"
+            expect == "SAT" and got == "DIVERGED_CANDIDATE"
         )
         results.append({"id": sid, "expect": expect, "got": got,
                         "subcode": record.get("subcode"), "ok": ok})
@@ -332,6 +356,66 @@ def main() -> int:
         results.append({"id": mut["id"], "expect": f"!= {mut['expect_flip_from']}",
                         "got": got, "subcode": record.get("subcode"), "ok": flipped})
         fails += 0 if flipped else 1
+
+    # ---- W 组：canonical witness checker 自身红测（单元级，四类篡改必须被拒）
+    import copy as _copy
+    if "C5_mixed_full_model" in sat_cache:
+        emitted, model_input, wit0 = sat_cache["C5_mixed_full_model"]
+        variables = emitted["varmap"]["variables"]
+
+        def _cchk(patterns, wit):
+            return check_canonical_witness(model_input, emitted["varmap"], patterns, wit)
+
+        w_cases: List[tuple] = []
+        # W1: 槽 commodity 换成 unused（保持槽内恰一，破坏计数）
+        wit = dict(wit0)
+        swapped = False
+        for num, sem in enumerate(variables, start=1):
+            if sem["kind"] == "generic_input" and sem["commodity"] != "__unused__" and wit0.get(num) == 1:
+                slot = sem["slot"]["slot_id"]
+                for num2, sem2 in enumerate(variables, start=1):
+                    if (sem2["kind"] == "generic_input" and sem2["commodity"] == "__unused__"
+                            and sem2["slot"]["slot_id"] == slot):
+                        wit[num], wit[num2] = 0, 1
+                        swapped = True
+                        break
+            if swapped:
+                break
+        w_cases.append(("W1_swap_slot_to_unused", emitted["patterns"], wit, swapped))
+        # W2: binding 双选
+        wit = dict(wit0)
+        doubled = False
+        for num, sem in enumerate(variables, start=1):
+            if sem["kind"] == "binding_choice" and wit0.get(num) == 0:
+                wit[num] = 1
+                doubled = True
+                break
+        w_cases.append(("W2_double_binding_choice", emitted["patterns"], wit, doubled))
+        # W3: 选中 pattern 的 cell 挪出 pose
+        pat = _copy.deepcopy(emitted["patterns"])
+        moved = False
+        for plist in pat["by_instance"].values():
+            for assign in plist:
+                if assign["input"]:
+                    assign["input"][0]["x"] += 999
+                    moved = True
+        w_cases.append(("W3_pattern_cell_off_pose", pat, dict(wit0), moved))
+        # W4: witness 漏最后一个变量
+        wit = dict(wit0)
+        wit.pop(len(variables), None)
+        w_cases.append(("W4_witness_missing_var", emitted["patterns"], wit, True))
+
+        for wid, pats, wit, prepared in w_cases:
+            if not prepared:
+                results.append({"id": wid, "expect": "rejected", "got": "SETUP_FAILED", "ok": False})
+                fails += 1
+                continue
+            chk = _cchk(pats, wit)
+            ok = not chk["ok"]
+            results.append({"id": wid, "expect": "rejected",
+                            "got": "rejected" if not chk["ok"] else "ACCEPTED(!)",
+                            "subcode": (chk["failures"][:1] or [""])[0][:60], "ok": ok})
+            fails += 0 if ok else 1
 
     report = {"schema": "binding_sidecar_acceptance_v1", "results": results,
               "total": len(results), "failed": fails}

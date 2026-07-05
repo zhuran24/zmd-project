@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+from canonical_witness_checker import check_canonical_witness  # noqa: E402
 from emitter import EmitterReject, emit  # noqa: E402
 from frontend import build_model_input, load_artifact  # noqa: E402
 from runner import run_sidecar_chain  # noqa: E402
@@ -72,13 +73,21 @@ def main() -> int:
         record = run_sidecar_chain(opb_path, d, solve_timeout_s=300, check_timeout_s=600)
         got = record["status"]
         if got == "SIDE_SAT_RAW":
-            chk = check_witness(emitted["opb"], record.get("witness_values") or {})
-            got = "DIVERGED_OPB_ONLY" if chk["ok"] else "SIDE_SAT_UNTRUSTED"
+            wit = record.get("witness_values") or {}
+            chk = check_witness(emitted["opb"], wit)
             record["witness_check"] = {k2: v for k2, v in chk.items() if k2 != "failed_rows"} | {
                 "failed_rows_count": len(chk["failed_rows"])}
+            if not chk["ok"]:
+                got = "SIDE_SAT_UNTRUSTED"
+            else:
+                cchk = check_canonical_witness(
+                    model_input, emitted["varmap"], emitted["patterns"], wit
+                )
+                record["canonical_witness_check"] = cchk
+                got = "DIVERGED_CANDIDATE" if cchk["ok"] else "SIDE_SAT_UNTRUSTED"
         (d / "verdict.json").write_text(json.dumps(record, indent=1, default=str), encoding="utf-8")
         ok = (expect == "CONFIRMED" and got == "CONFIRMED") or (
-            expect == "SAT" and got == "DIVERGED_OPB_ONLY")
+            expect == "SAT" and got == "DIVERGED_CANDIDATE")
         print(f"[{'PASS' if ok else 'FAIL'}] {sample_id}: expect={expect} got={got}"
               f"{'/' + str(record.get('subcode')) if record.get('subcode') else ''} "
               f"solver={record['solver']['wall_seconds']:.1f}s"

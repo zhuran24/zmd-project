@@ -16,6 +16,7 @@
 | `sidecar/emitter.py` | 独立 OPB emitter（**零 import src/**；输入校验 fail-closed + 域枚举独立重实现 + 结构化 varmap/conmap + 组合护栏） |
 | `sidecar/runner.py` | WSL 求解检查链（判定协议：结论行 anchored 唯一匹配，禁退出码判定） |
 | `sidecar/witness_checker.py` | OPB-level witness 独立复验（不调用 emitter 约束生成） |
+| `sidecar/canonical_witness_checker.py` | canonical-level witness 复验（从原始输入语义独立验证；应有对象集合第二实现；SAT 二段升级 → DIVERGED_CANDIDATE） |
 | `sidecar/run_acceptance.py` | 合成样本验收 harness（21 样本五件套：UNSAT/canaries/INPUT_INVALID/双向突变/工具链红测） |
 | `sidecar/frontend.py` | 冻结工件解析前端（**零 import src/**；strict-JSON exact-decimal + operation profile 独立重推 + 五工件全长 sha256） |
 | `sidecar/parity_check.py` | profiles 对拍脚本（⚠ 刻意 import 生产当 oracle，是验证 harness 非 sidecar 组件；PARITY OK: 21/21 profiles 精确一致） |
@@ -24,12 +25,19 @@
 
 ## 状态（2026-07-05）
 
-- **验收 21/21 全绿**（合成样本；`run_acceptance.py` 输出 `work/acceptance_report.json`，
+- **验收 25/25 全绿**（合成样本；`run_acceptance.py` 输出 `work/acceptance_report.json`，
   work/ 为生成产物不入库）。
 - 覆盖：UNSAT 4 类（计数鸽笼/多商品溢出/正需求零槽哨兵编码）全 CONFIRMED
   （真 proof + veripb `s VERIFIED UNSATISFIABLE`）；FEASIBLE canaries 5 全
-  SAT+witness 通过；非法输入 8 类全 fail-closed 拒绝；双向突变红测 4/4 被抓
-  （含 over-constraint 使 canary 翻 UNSAT——sidecar 最危险 bug 类的哨兵）。
+  SAT + 双层 witness 复验（OPB-level + canonical-level）升 `DIVERGED_CANDIDATE`；
+  非法输入 8 类全 fail-closed 拒绝；双向突变红测 4/4 被抓（含 over-constraint
+  使 canary 翻 UNSAT——sidecar 最危险 bug 类的哨兵）；canonical checker 自身
+  红测 4/4（篡改计数/双选/cell 出 pose/漏变量全被精准拒）。
+- **CakePB（第四层纵深）**：二进制构建通、OPB 输入面兼容；`veripb --elaborate`
+  的 kernel proof 被其预编译版（2026-04-15）拒在 output 段语法——版本错配已
+  登记（cake_pb 失败时 exit 亦为 0，同类怪癖），等上游配套或读 CakeML 源码
+  确认 kernel 语法后接入；不阻塞 Phase 1（判定权威 = veripb 本体）。
+- **Phase 0 采集侧 = P1.2 收口后再落**（owner 2026-07-05 拍板，选项 b）。
 - **冻结工件解析前端已落地**（frontend.py）：五工件 strict-JSON exact-decimal
   独立解析、operation profile 独立重推（Fraction 精确 ceil），与生产
   OPERATION_PORT_PROFILES 对拍 **21/21 精确一致**（parity_check.py）；

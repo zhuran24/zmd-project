@@ -290,6 +290,7 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
 
     # ---- binding 域组（instance_id 字典序）
     binding_domains: Dict[str, int] = {}   # instance_id -> pattern count（>1 才有变量）
+    materialized_patterns: Dict[str, List[Dict[str, Any]]] = {}
     fixed_choices: Dict[str, int] = {}
     domain_estimates: Dict[str, int] = {}
     exo_bind_rows: List[Tuple[str, List[int]]] = []
@@ -324,6 +325,24 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
         out_patterns = _side_patterns(len(out_cells), out_counts, "output", instance_id)
         n_patterns = len(in_patterns) * len(out_patterns)
         binding_domains[instance_id] = n_patterns
+        # patterns 物化（canonical witness checker 用：idx→具体分配；两侧笛卡尔积
+        # 的 idx 序 = out 侧快变，与变量分配序一致）
+        materialized_patterns[instance_id] = [
+            {
+                "input": [
+                    {"x": in_cells[i][0], "y": in_cells[i][1], "dir": in_cells[i][2],
+                     "commodity": c}
+                    for i, c in in_pat
+                ],
+                "output": [
+                    {"x": out_cells[i][0], "y": out_cells[i][1], "dir": out_cells[i][2],
+                     "commodity": c}
+                    for i, c in out_pat
+                ],
+            }
+            for in_pat in in_patterns
+            for out_pat in out_patterns
+        ]
         if n_patterns == 0:
             # semantics_v1 §3 推论：纯模型不可达；防御性保留（EMPTY false row 由 conmap 标注）
             exo_bind_rows.append((instance_id, []))
@@ -472,5 +491,10 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
         "opb": "\n".join(opb_lines) + "\n",
         "varmap": {"schema": "binding_sidecar_varmap_v1", "variables": varmap},
         "conmap": {"schema": "binding_sidecar_conmap_v1", "constraints": conmap},
+        "patterns": {
+            "schema": "binding_sidecar_patterns_v1",
+            "fixed_choices": fixed_choices,
+            "by_instance": materialized_patterns,
+        },
         "report": report,
     }
