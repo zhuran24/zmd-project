@@ -3,3 +3,4 @@ import ZmdFormal.F5OrbitLift
 import ZmdFormal.DesignStatements
 import ZmdFormal.CutFamilies
 import ZmdFormal.FrameworkLemmas
+import ZmdFormal.WCompleteness

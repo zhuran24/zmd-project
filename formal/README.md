@@ -15,14 +15,14 @@ cd formal
 lake update          # 首次:拉 mathlib v4.31.0 及依赖(lake-manifest.json 已锁 rev)
 lake exe cache get   # 首次:拉 mathlib 预编译缓存(~4.5GB,不拉则本地编译数小时)
 lake build           # 应输出 Build completed successfully
-lake env lean axiom_audit.lean   # 公理审计(56 条,应全部仅经典三公理或无公理)
+lake env lean axiom_audit.lean   # 公理审计(59 条,应全部仅经典三公理或无公理)
 ```
 
 **自 2026-07-05 起依赖 mathlib**（钉 `v4.31.0` tag，与工具链同版）：
 `TnsCoverage.lean` / `F5OrbitLift.lean` 仍是 core-only，其余模块用到
 `Finset`/`Multiset`/`Equiv`/`Relation` 库。
 
-## 内容与对应表（56 条定理，五个模块）
+## 内容与对应表（59 条定理，六个模块）
 
 ### `TnsCoverage.lean` + `F5OrbitLift.lean`（首批 14 条，谓词/函数式表示，core-only）
 
@@ -117,8 +117,21 @@ soundness。**待独立复审**（与 CutFamilies 同批送审）。
 | `Framework.tp7s_eq_key_no_overcut` | 等式键不过切：真超集不触发（排除超集需独立证明） | 经典三公理 |
 | `Framework.tp7s_selected_set_nogood_overcuts` | 选中集式 nogood 过切玩具反例（半容量路 + 并行路）的机器版 | propext, Quot.sound |
 
+### `WCompleteness.lean`（3 条，Q1 分类学 W-完备骨架，需 mathlib）
+
+**来源**：`docs/research/q1_infeasibility_class_taxonomy_design_v1.md` §5/§7
+的 Lean 化。**Lean 化自查发现**：设计稿 v1 §5 "完整赋值的扩展=自身"论证
+隐含两个未点名前提（Feasible⊆Complete、Complete 间无真包含），已在本模块
+显式化——设计稿 v2 修订时应补进 §5 工程条件清单。**待独立复审**。
+
+| Lean 定理 | 对应命题 | 公理依赖 |
+|---|---|---|
+| `WCompleteness.complete_infeasible_liftable_reject` | 完整+不可行 ⇒ liftable-reject（"扩展=自身"的显式前提版） | propext, Quot.sound |
+| `WCompleteness.w_completeness_f5_fallback` | W-完备单点见证：D_cut 成员必有 sound 且排除自身的 F5 fallback nogood | 经典三公理 |
+| `WCompleteness.incomplete_assignment_fallback_unsound` | 反面：无完整性语义则 fallback 会误剪可行扩展（最小构造） | propext, Quot.sound |
+
 "经典三公理" = `propext`、`Classical.choice`、`Quot.sound`（Lean/mathlib 标准信任基）。
-无任何 `sorry`，无 `native_decide`/`ofReduceBool`（56/56 见 `axiom_audit.lean`）。
+无任何 `sorry`，无 `native_decide`/`ofReduceBool`（59/59 见 `axiom_audit.lean`）。
 
 ## 陈述层修改记录（施工中，均已过编译+公理审计）
 
@@ -160,10 +173,12 @@ soundness。**待独立复审**（与 CutFamilies 同批送审）。
    **继续等 P1.3 欧氏 vs 12×12 stencil reconcile**（代码自认 landmine）。
 4. ~~F5 复合安全引理~~ / ~~TNS lex 支配~~ / ~~TP7-S 键边界~~ **已完成**
    （2026-07-05，`FrameworkLemmas.lean` 9 条，各带正反两面；待独立复审）。
-5. 完备性 Q1：**不是 Lean 任务**——先写「不可行类分类学」设计稿（走独立审查链），
-   theorem domain 都还没定义（八个定义层缺口见 survey/completeness.md）。
-6. 送审：CutFamilies + FrameworkLemmas 两模块的陈述保真对抗审 + 盲对拼
-   （与首批同流程，打包给 GPT Pro）。
+5. ~~完备性 Q1 分类学设计稿~~ **v1 已写**（2026-07-05，
+   `docs/research/q1_infeasibility_class_taxonomy_design_v1.md`，待外审）；
+   ~~W-完备 Lean 骨架~~ **已完成**（`WCompleteness.lean` 3 条）。
+6. 送审：CutFamilies + FrameworkLemmas + WCompleteness + 分类学设计稿
+   （四包已备好待跑）。
 7. 更远的砖：F5 复合引理与轨道 lift 定理的**组合定理**（把 `f5_compound_safety`
    的 `hcut_sound` 用 `anon_lift_sound` 实例化，打通"oracle 判决 → cut 排除
-   → 搜索空间安全"全链）；TP7-D 周期日历证书的可判定验收语义。
+   → 搜索空间安全"全链）；TP7-D 周期日历证书的可判定验收语义；
+   F8 等 P1.3 stencil reconcile。

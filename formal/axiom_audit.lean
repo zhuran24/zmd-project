@@ -62,3 +62,7 @@ import ZmdFormal
 #print axioms ZmdFormal.Framework.tp7s_eq_key_sound
 #print axioms ZmdFormal.Framework.tp7s_eq_key_no_overcut
 #print axioms ZmdFormal.Framework.tp7s_selected_set_nogood_overcuts
+-- WCompleteness（Q1 分类学 W-完备骨架，2026-07-05）
+#print axioms ZmdFormal.WCompleteness.complete_infeasible_liftable_reject
+#print axioms ZmdFormal.WCompleteness.w_completeness_f5_fallback
+#print axioms ZmdFormal.WCompleteness.incomplete_assignment_fallback_unsound
