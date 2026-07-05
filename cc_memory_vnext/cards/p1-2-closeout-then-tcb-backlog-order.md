@@ -1,8 +1,8 @@
 ---
 id: p1-2-closeout-then-tcb-backlog-order
 kind: decision
-title: PR2 深化(至少 #1)先行、后走 P1.2 收口 + TCB backlog 四阶段执行序 + 测试提速线全部溶进主线(owner 2026-07-04 拍板;当晚修正为先深化后收口,见正文)
-summary: owner 2026-07-04 定的主线推进计划。**前置板(当晚修正版,正文为准):先做深化「至少 #1 最小 TCB 闭包」,再走 P1.2 收口外审**——原拍「先收口后深化」当晚被 owner 修正:P1.2 收口前提至少包含 #1(child 不再 import 项目域),否则收口外审审的是将被大改的靶。(本 summary 曾与正文修正不一致,2026-07-05 盘点修正。)**backlog 四阶段(轻→重,child 内容→child 闭包→OS 边界,每步给下步铺面不返工):①#8 argv0/contract digest + #9a 仓库侧收尾 + #6 维持不建;②#2+#3(loader 最小快照+fd-held read-once,同一接缝一起做)→ #5 的 B2 候选域独立枚举(长在 fd-held 语义上);③#5-F part3 设计 spike 三选一(追全/重构最小化 import-time 执行/接受残余)必须在 #1 动工前拍 → #1 最小 TCB 闭包(快照不扫全 src、child 不 import 项目域、吸收 #5-F part1+2);④#9b OS 级写隔离 + #9c 原生 TOCTOU。** **测试提速线全部溶进主线、不独立成批**:硬依据=提速任务动的文件(outer_search/exact_campaign/certified_frontier/benders_loop/candidate_proof_replay/terminal_fixed_witness_*/pr2_l0_*)全在 60 条 close-kernel sink 名单里,改它必走 reseal,reseal 是最贵固定成本,独立小批=每批白付一次;故收编进同文件面主线批合批。绑定:resume 清洗+frontier/replay 纯核心抽取→批2a(#2/#3);outer_search 非授权编排接缝→批2b(B2);306s aspect_ratio 巨无霸→批2b 尾巴(测试文件、不触 reseal);l0-snapshot 拆分+lazy import→并入 #1(#1 自动覆盖/消解);fused child→收益实验进 #5-F spike、成立(≥10s 固定税)则与 #1 同批、不成立(<3s)降为 #1 结构选项;搁置类(mini pack/cache-reset/sharded sidecar)维持搁置。总图与拍板台账见 docs/项目说明/00_master_roadmap.md(2026-07-05 立)。**backlog 四阶段(轻→重,child 内容→child 闭包→OS 边界,每步给下步铺面不返工):①#8 argv0/contract digest + #9a 仓库侧收尾 + #6 维持不建;②#2+#3(loader 最小快照+fd-held read-once,同一接缝一起做)→ #5 的 B2 候选域独立枚举(长在 fd-held 语义上);③#5-F part3 设计 spike 三选一(追全/重构最小化 import-time 执行/接受残余)必须在 #1 动工前拍 → #1 最小 TCB 闭包(快照不扫全 src、child 不 import 项目域、吸收 #5-F part1+2);④#9b OS 级写隔离 + #9c 原生 TOCTOU。** **测试提速线全部溶进主线、不独立成批**:硬依据=提速任务动的文件(outer_search/exact_campaign/certified_frontier/benders_loop/candidate_proof_replay/terminal_fixed_witness_*/pr2_l0_*)全在 60 条 close-kernel sink 名单里,改它必走 reseal,reseal 是最贵固定成本,独立小批=每批白付一次;故收编进同文件面主线批合批。绑定:resume 清洗+frontier/replay 纯核心抽取→批2a(#2/#3);outer_search 非授权编排接缝→批2b(B2);306s aspect_ratio 巨无霸→批2b 尾巴(测试文件、不触 reseal);l0-snapshot 拆分+lazy import→并入 #1(#1 自动覆盖/消解);fused child→收益实验进 #5-F spike、成立(≥10s 固定税)则与 #1 同批、不成立(<3s)降为 #1 结构选项;搁置类(mini pack/cache-reset/sharded sidecar)维持搁置。**收口第一步、当前动作**:本地 codex 多镜头对抗审 P1.2 认证发布链 soundness(不起外审 round-21,画线拍板还站着);GPT Pro relay / clean 计数 / 手动门拍板归 owner。
+title: PR2 深化(整条 backlog)先行、后走 P1.2 收口 + TCB backlog 四阶段执行序 + 测试提速线全部溶进主线(owner 2026-07-04 拍板;07-04 晚修正为先深化后收口;07-06 扩认收口前提=全 backlog、澄清"三连 clean"非硬判据)
+summary: owner 2026-07-04 定的主线推进计划(本 summary 已按 07-04 晚与 07-06 两次修正同步)。**前置板(现行版):先做完整条 TCB backlog 深化,再走 P1.2 收口**——owner 07-04 晚推翻"先收口后深化"(TCB 没做到最小时收口审的是将被大改的靶);07-06 再拍板:收口前提=**全部 backlog 编码项**(#8、#2/#3、#5-B2、#5-F spike、#1、#9b/#9c),不只 #1;#9a 生产字节重钉维持部署时点、不阻塞收口判定。**"三连 clean review"语义澄清(owner 07-06):那是图方便的说法、非硬判据——实际=外审到 owner 判定合适为止(轮数可多可少),唯一权威动作是 owner 手动关门;gate JSON 的 3 与关门确认字段字样保留为机器兼容值(checker pin 死,同 p1_3b_* 模式)。****backlog 四阶段(轻→重,child 内容→child 闭包→OS 边界,每步给下步铺面不返工):①#8 argv0/contract digest + #9a 仓库侧收尾 + #6 维持不建;②#2+#3(loader 最小快照+fd-held read-once,同一接缝一起做)→ #5 的 B2 候选域独立枚举(长在 fd-held 语义上);③#5-F part3 设计 spike 三选一(追全/重构最小化 import-time 执行/接受残余)必须在 #1 动工前拍 → #1 最小 TCB 闭包(快照不扫全 src、child 不 import 项目域、吸收 #5-F part1+2);④#9b OS 级写隔离 + #9c 原生 TOCTOU。** **测试提速线全部溶进主线、不独立成批**:硬依据=提速任务动的文件(outer_search/exact_campaign/certified_frontier/benders_loop/candidate_proof_replay/terminal_fixed_witness_*/pr2_l0_*)全在 60 条 close-kernel sink 名单里,改它必走 reseal,reseal 是最贵固定成本,独立小批=每批白付一次;故收编进同文件面主线批合批。绑定:resume 清洗+frontier/replay 纯核心抽取→批2a(#2/#3);outer_search 非授权编排接缝→批2b(B2);306s aspect_ratio 巨无霸→批2b 尾巴(测试文件、不触 reseal);l0-snapshot 拆分+lazy import→并入 #1(#1 自动覆盖/消解);fused child→收益实验进 #5-F spike、成立(≥10s 固定税)则与 #1 同批、不成立(<3s)降为 #1 结构选项;搁置类(mini pack/cache-reset/sharded sidecar)维持搁置。总图与拍板台账见 docs/项目说明/00_master_roadmap.md(2026-07-05 立)。**backlog 四阶段(轻→重,child 内容→child 闭包→OS 边界,每步给下步铺面不返工):①#8 argv0/contract digest + #9a 仓库侧收尾 + #6 维持不建;②#2+#3(loader 最小快照+fd-held read-once,同一接缝一起做)→ #5 的 B2 候选域独立枚举(长在 fd-held 语义上);③#5-F part3 设计 spike 三选一(追全/重构最小化 import-time 执行/接受残余)必须在 #1 动工前拍 → #1 最小 TCB 闭包(快照不扫全 src、child 不 import 项目域、吸收 #5-F part1+2);④#9b OS 级写隔离 + #9c 原生 TOCTOU。** **测试提速线全部溶进主线、不独立成批**:硬依据=提速任务动的文件(outer_search/exact_campaign/certified_frontier/benders_loop/candidate_proof_replay/terminal_fixed_witness_*/pr2_l0_*)全在 60 条 close-kernel sink 名单里,改它必走 reseal,reseal 是最贵固定成本,独立小批=每批白付一次;故收编进同文件面主线批合批。绑定:resume 清洗+frontier/replay 纯核心抽取→批2a(#2/#3);outer_search 非授权编排接缝→批2b(B2);306s aspect_ratio 巨无霸→批2b 尾巴(测试文件、不触 reseal);l0-snapshot 拆分+lazy import→并入 #1(#1 自动覆盖/消解);fused child→收益实验进 #5-F spike、成立(≥10s 固定税)则与 #1 同批、不成立(<3s)降为 #1 结构选项;搁置类(mini pack/cache-reset/sharded sidecar)维持搁置。**收口动作(排在全 backlog 完成之后)**:代码冻结+fresh reseal → 收口外审(本地 codex 多镜头对抗审,不起外审 round-21;GPT Pro relay 按 owner 需要发)→ 审到 owner 判定合适 → owner 手动关门。
 scope:
   domains:
     - release-engineering
@@ -66,19 +66,21 @@ activation:
   reason: 规划 P1.2 收口 / 挑下一个 TCB 深化项 / 决定测试提速任务排到哪、fused child 做不做时该想起——这是 owner 2026-07-04 拍定的主线执行序与提速绑定,顺序和绑定理由都不显然(靠 sealed 名单+reseal 固定成本推出来),照它走才不会白付 reseal 或做返工的闭包。
 provenance:
   op: record
-  reason: 2026-07-04 owner 拍定"先收口 P1.2 → 四阶段 backlog"主线序,并把 pytest 提速线程的剩余任务全部绑定进主线(依据 close-kernel sink 名单),含 fused child 收益实验设计与判据。
+  reason: 2026-07-04 owner 拍定主线序(原始拍板为"先收口 P1.2 → 四阶段 backlog",当晚修正为先深化后收口,07-06 再扩收口前提=全 backlog,见正文),并把 pytest 提速线程的剩余任务全部绑定进主线(依据 close-kernel sink 名单),含 fused child 收益实验设计与判据。
   evidence:
     - "2026-07-04 owner(问过 Fable + pytest 提速线程)给出完整绑定方案:提速任务动的文件全在 60 sink 名单→必走 reseal→全溶进主线合批;fused child 唯一收益未定,用现状代码量第二个 child 固定税(<3s 不成立/≥10s 成立,审查曾疑全仓 hash 18.8s 被第二 child 重复付),实验并进 #5-F spike;l0-snapshot(实测省 0.1-0.35s/seal)、lazy import(slow lane<1%)并入 #1。提速侧任务权威记录在 cc_memory(pytest 线程 2026-07-04 更新)。"
-  updated_at: "2026-07-04"
+    - "2026-07-06 owner 两拍板(P1.2 方案完整性评估后):①对'#2/#3/#8/#9b 是否也算收口前提'答'算'→收口前提=全 backlog 编码项、收口外审移到阶段4 之后;②'三连 clean'是图方便的说法非硬判据,实际=外审到 owner 判定合适为止,gate JSON 的 3 与关门确认字段字样保留为机器兼容(checker pin 死)。落盘批 main 03ea2be(gate JSON 叙述字段/总图 1a+1b/本卡/收敛卡/stage3 卡/CLOSE_GATE/12 号/08 号/README);本分支卡片同步于同日。"
+  updated_at: "2026-07-06"
 ---
 owner 2026-07-04 拍定的主线推进计划(问过 Fable + pytest 提速线程)。这是"下一步做什么"的排期权威。
 
-== 前置板(owner 2026-07-04 晚修正:先做深化「至少 #1」再收口)==
-**先做深化(至少 #1 最小 TCB 闭包),再走 P1.2 收口外审。**
+== 前置板(owner 07-04 晚修正 + 07-06 扩认:先做完整条 backlog 深化,再收口)==
+**先做完整条 TCB backlog 深化,再走 P1.2 收口外审。**
 - **修正历史**:本卡原记"先收口后深化",依据是"#1~#9 都在 TCB 线下、收口不等它们"。2026-07-04 晚 owner 质疑并澄清:那条 TCB 线是 2026-07-03 关于 **close-kernel 外审停** 画的、只管 close-kernel 外审循环,**不**授权"P1.2 整体收口不等所有 TCB 深化";**P1.2 收口的前提至少包含 #1(最小 TCB 闭包、child 不再 import 项目域)**——TCB 没真正做到最小时不能算收口。详见 [[review-convergence-tcb-line-not-zero-findings]] "再澄清"段。
-- **正确顺序**:阶段3 以 #1 为枢纽(带 #5-F-B + fused 一批)先做 → 做完 #1 等深化 → 再走收口外审(本地 codex 多镜头 + GPT Pro relay + 三连计数 + owner 手动门)。**不起外审 round-21**(close-kernel 画线仍站着)。
-- 收口外审的本地素材(12 镜头审报告 + 中立提示词)已备,留到深化做完、代码重新冻结后再用(那时审的才是含 #1 的最终 TCB)。
-- (#2/#3/#8/#9b 等是否也是收口前提 owner 未逐一明确;至少 #1 是。)
+- **修正历史②(07-06,回答"P1.2 方案完整性评估"里的悬空点)**:owner 明确 **#2/#3/#8/#9b 也算收口前提**——即收口前提=整条四阶段 backlog 编码项(#8、#2/#3、#5-B2、#5-F spike、#1、#9b/#9c)全部完成,收口外审排在阶段4 之后;#9a 生产字节重钉维持部署时点定位、不阻塞收口判定(既有绑定:#9c 随 #9b 同批、#6 为零工程决策确认)。原括号句"(#2/#3/#8/#9b 等是否也是收口前提 owner 未逐一明确;至少 #1 是)"就此作废。
+- **"三连 clean"语义澄清(owner 07-06)**:「三连 clean 计数」是 owner 当时图方便的说法,**不是硬判据**——实际判据=收口外审进行到 **owner 判定合适为止**(轮数可多可少);gate JSON `required_consecutive_clean_full_reviews=3` 及关门确认字段的 "three clean reviews" 字样保留为**机器兼容值**(checker `check_phase_review_gate.py` pin 死该数字,改值=checker+tests 连锁手术,同 `p1_3b_*` 兼容模式),唯一权威关门动作=gate JSON `owner_manual_decision`。
+- **正确顺序**:阶段1→批2a→批2b(已 DONE)→#5-F spike→#1(阶段3 枢纽,带 #5-F-B + fused 一批)→阶段4(#9b/#9c)→ 代码重新冻结+fresh reseal → 收口外审(本地 codex 多镜头 + GPT Pro relay 按需 + owner 判定合适 + owner 手动门)。**不起外审 round-21**(close-kernel 画线仍站着)。
+- 收口外审的本地素材(12 镜头审报告 + 中立提示词)已备,留到深化做完、代码重新冻结后再用(那时审的才是含全 backlog 的最终 TCB)。
 
 == backlog 四阶段执行序(轻→重;child 内容→child 闭包→OS 边界,每步给下步铺面不返工)==
 **阶段1(轻,一次 reseal 批打包)**
@@ -139,7 +141,7 @@ owner 2026-07-04 拍定的主线推进计划(问过 Fable + pytest 提速线程)
 - #9a 生产字节重钉(dependency-floor manifest 在 CachyOS+Py3.13 重生成重钉)。
 - 真实 campaign→seal 实跑(`scripts/run_supervisor_seal.py` 从真 marker 驱动)。
 
-== 一句话版 ==
-收口 P1.2 → 阶段1(#8+#9a尾+#6确认)→ 批2a(#2/#3 带两条纯核心抽取,先抽核心后改语义)→ 批2b(B2 带 outer_search 接缝,批后收 306s 巨无霸)→ #5-F spike(带 fused child 固定税实验并拍板)→ #1 最小闭包(吞 l0-snapshot/lazy import/若成立的 fused child)→ 阶段4(#9b/#9c)。提速线整体溶解进主线,一次 reseal 都不多付。
+== 一句话版(07-06 版)==
+阶段1(#8+#9a尾+#6确认)→ 批2a(#2/#3 带两条纯核心抽取,先抽核心后改语义)→ 批2b(B2 带 outer_search 接缝,批后收 306s 巨无霸;已 DONE)→ #5-F spike(带 fused child 固定税实验并拍板)→ #1 最小闭包(吞 l0-snapshot/lazy import/若成立的 fused child)→ 阶段4(#9b/#9c)→ **收口 P1.2**(冻结+fresh reseal→外审到 owner 判定合适→owner 关手动门)。提速线整体溶解进主线,一次 reseal 都不多付。
 
 关联:画线≠取消 backlog、外审收敛判据见 [[review-convergence-tcb-line-not-zero-findings]];#7 已通电见 [[pr2-7-supervisor-seal-entrypoint-design]];每批 reseal 实操见 [[close-kernel-reseal-execution-sop]];批后扫文档见 [[ship-then-sweep-docs-for-stale-narrative]]。提速侧任务的实测数字/细节权威记录在 cc_memory(pytest 线程 2026-07-04 更新)。
