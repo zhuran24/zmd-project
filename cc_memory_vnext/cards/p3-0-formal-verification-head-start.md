@@ -53,7 +53,7 @@ updated_at: "2026-07-05"
 == 这条线是什么 ==
 Q14(框架 completeness/soundness 形式化)原判 P3 defer(投资数年级)。owner 2026-07-05 授权开头。策略=**双轴拆分**(详见设计稿):
 - **轴 A 定理侧**(已开工):范式数学定理进 Lean。抽象边界纪律=形式化在抽象层,模型侧前提(反单调/P-HOM)作为**假设**接入,成立性由设计稿的机器可查义务(ghost inventory/逐谓词审计/结构门)承担。三层分工:抽象定理层(Lean)+前提审计层(结构门)+工程层(validator/replay)。
-- **轴 B 证书侧**(只做了任务书):求解结果的 proof log+经形式化验证的检查器(VeriPB 3.0/VIPR/cake_lpr 方向,文献 R4/R6/R7 已裁定;OR-Tools 无原生 proof log,要旁路重解)。它是瓶颈审计「编码忠实性单点」的终极解,与 I1 异构第二编码是同一笔投资,待 GPT Pro 包 3 回收后合并设计。
+- **轴 B 证书侧**(路线图定型,**已排入总路线图支线 2b、待开工**——owner 2026-07-05 确认意向):求解结果的 proof log+经形式化验证的检查器。七阶段见 P3.0 设计稿 §P3.0c;**第一落点 = Phase 0+1:binding 子问题 PB 独立重建 + VeriPB sidecar 复验(2-5 周 PoC)**。三条已拍定的设计约束:①**独立重建**编码(不从生产代码导出,保持异构交叉验证价值——与 PR2 #5-B2、I1 是同一笔投资的三个面);②纯旁路,不写生产路径、不碰锁面,与 PR2 主线零文件交集;③开发照 formal/ 模式(仓库外做,绿了经 worktree 落 main)。工具链(RoundingSat/VeriPB 生态偏 Linux)本机走 WSL/CachyOS。它是瓶颈审计「编码忠实性单点」的终极解。执行位=数学面线程。
 
 == 工具链与工作方式(实操必读)==
 - elan 经 scoop 装(`scoop install elan`),工具链钉 v4.31.0(formal/lean-toolchain);`cd formal && lake build` 即验证。

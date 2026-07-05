@@ -50,7 +50,7 @@ updated_at: "2026-06-27"
 v-next 卡片的增改删,按"知识到底发生了什么"选操作,别一律覆盖:
 
 - **新建**:出现一条还没被覆盖的 route-time 可注入知识(owner 纠正 / 新坑 / 新红线 / 新当前态 / 新参考),**且写得出 ≥1 个具体 trigger example**(写不出的不进 active recall)。选对 `kind`(constraint/decision/status/pitfall/open_obligation/file_local/reference)。
-- **就地更新(订正)**:同一条知识没变错、只是更精确 / 补全 / 小修(如放宽 claim_guards、改个数值)。卡片就是真相,直接编辑那个 `.md`。
+- **就地更新(订正)**:同一条知识没变错、只是更精确 / 补全 / 小修(如放宽 claim_guards、改个数值)。卡片就是真相,直接编辑那个 `.md`。**订正正文时 title/summary 必须同步改**——摘要是注入层、正文不一定被读;实例:排期卡正文记了 owner 当晚修正(先深化后收口)而 title/summary 还是原拍(先收口后深化),只读摘要会得出与 owner 最终裁决**相反**的结论(2026-07-05 盘点抓到并修正)。
 - **supersede(取代)**:这条知识**真的变了**——旧内容现在是错的,不是不精确。旧卡 `status: superseded`,新卡 `provenance.op: supersede` + `supersedes:[旧id]` + `reason` + `evidence`。**禁止 belief 变了却静默覆盖正文**(那是旧系统漂移的根因)。
 - **archive / 删**:知识不再成立/不再相关。软删 = `status: archived`(不 active → 不注入、不进索引,git 留史);硬删 = 删掉 `.md`(git log 仍保留)。别留一张内容已死却还 `active` 的卡。
 
