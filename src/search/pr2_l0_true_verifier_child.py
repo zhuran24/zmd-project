@@ -504,10 +504,8 @@ def _project_candidate_records_direct(
     strong_keys: list[str],
 ) -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
     from src.search.pr2_l0_replay_core import (
-        CANDIDATE_PROOF_AUTHORITY,
         CANDIDATE_PROOF_FIELD,
-        CANDIDATE_PROOF_SCHEMA_VERSION,
-        _execute_isolated_replay_request,
+        _invoke_isolated_replay,
         _json_copy,
         _replay_response_violation,
         candidate_proof_shape_violation,
@@ -547,14 +545,10 @@ def _project_candidate_records_direct(
             for key, value in raw_records.items()
             if isinstance(value, Mapping)
         }, {}
-    request = {
-        "schema_version": CANDIDATE_PROOF_SCHEMA_VERSION,
-        "authority": CANDIDATE_PROOF_AUTHORITY,
-        "nonce": hashlib.sha256(_canonical_bytes(expected_proofs)).hexdigest(),
-        "project_root": str(project_root),
-        "expected_proofs": [_json_copy(expected_proofs[key]) for key in sorted(expected_proofs)],
-    }
-    response = _execute_isolated_replay_request(request)
+    response = _invoke_isolated_replay(
+        project_root=project_root,
+        expected_proofs=expected_proofs,
+    )
     envelope_violation = _replay_response_violation(
         response=response,
         project_root=project_root,

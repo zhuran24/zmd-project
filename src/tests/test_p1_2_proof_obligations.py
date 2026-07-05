@@ -1312,13 +1312,19 @@ def _exact_ghost_pick_returns_none_early(source: str) -> str:
 def _child_project_records_return_before_replay(source: str) -> str:
     return _replace_once(
         source,
-        "    response = _execute_isolated_replay_request(request)\n",
+        "    response = _invoke_isolated_replay(\n"
+        "        project_root=project_root,\n"
+        "        expected_proofs=expected_proofs,\n"
+        "    )\n",
         "    return {\n"
         "        str(key): _json_copy(value)\n"
         "        for key, value in raw_records.items()\n"
         "        if isinstance(value, Mapping)\n"
         "    }, {}\n"
-        "    response = _execute_isolated_replay_request(request)\n",
+        "    response = _invoke_isolated_replay(\n"
+        "        project_root=project_root,\n"
+        "        expected_proofs=expected_proofs,\n"
+        "    )\n",
     )
 
 
@@ -5340,8 +5346,8 @@ def run_outer_search():
 
 
 def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path) -> None:
-    replay_path = tmp_path / "candidate_proof_replay.py"
-    source = check_p1_2_proof_obligations.CANDIDATE_PROOF_REPLAY_PATH.read_text(
+    replay_path = tmp_path / "pr2_l0_replay_core_isolation_bypass.py"
+    source = check_p1_2_proof_obligations.PR2_L0_REPLAY_CORE_PATH.read_text(
         encoding="utf-8"
     )
     replay_path.write_text(
@@ -5350,7 +5356,7 @@ def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path)
     )
 
     errors = check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
-        candidate_replay_path=replay_path
+        candidate_replay_core_path=replay_path
     )
 
     assert 'candidate replay subprocess boundary missing: "-I"' in errors

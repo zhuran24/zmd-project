@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
+import secrets
 import shutil
+import subprocess
 import sys
 import tempfile
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
@@ -19,6 +22,7 @@ __all__ = (
     "candidate_proof_shape_violation",
     "isolated_replay_main",
     "_execute_isolated_replay_request",
+    "_invoke_isolated_replay",
     "_json_copy",
     "_materialize_replay_snapshot",
     "_replay_one_proof",
@@ -595,6 +599,84 @@ def _materialize_replay_snapshot(
     if normalized_replay_hashes != normalized_current_hashes:
         raise ValueError("replay snapshot artifact binding mismatch")
     return normalized_replay_hashes
+
+
+def _invoke_isolated_replay(
+    *,
+    project_root: Path,
+    expected_proofs: Mapping[str, Mapping[str, Any]],
+) -> Mapping[str, Any]:
+    source_root = Path(__file__).resolve().parent.parent.parent
+    nonce = secrets.token_hex(32)
+    request = {
+        "schema_version": CANDIDATE_PROOF_SCHEMA_VERSION,
+        "authority": CANDIDATE_PROOF_AUTHORITY,
+        "nonce": nonce,
+        "project_root": str(project_root.resolve()),
+        "expected_proofs": [
+            _json_copy(expected_proofs[key]) for key in sorted(expected_proofs)
+        ],
+    }
+    # Do not inherit arbitrary loader, Python, solver, or test-runner state from
+    # the producer process.  The child receives only a small operational
+    # environment plus sink-fixed deterministic solver controls.
+    env = {
+        "PATH": os.defpath,
+        "PYTHONHASHSEED": "0",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+    }
+    env["EXACT_CP_SAT_WORKERS"] = "1"
+    env["EXACT_MASTER_CP_SAT_WORKERS"] = "1"
+    env["EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS"] = "1"
+    env["EXACT_BINDING_CP_SAT_WORKERS"] = "1"
+    env["EXACT_ROUTING_CP_SAT_WORKERS"] = "1"
+    env["EXACT_D2_CP_SAT_WORKERS"] = "1"
+    env["EXACT_PATCH_ROUTING_CP_SAT_WORKERS"] = "1"
+    env["EXACT_MASTER_RANDOM_SEED"] = "0"
+    env["EXACT_MASTER_RANDOM_SEED_BASE"] = "0"
+    executable = Path(os.path.abspath(sys.executable))
+    pycache_prefix_dir = tempfile.mkdtemp(prefix="zmd_candidate_replay_pycache_")
+    try:
+        # -I implies -E, so PYTHONPYCACHEPREFIX would be ignored.  The CLI
+        # -X pycache_prefix flag redirects bytecode lookup to this fresh empty
+        # directory; -B keeps it empty, forcing execution from hashed .py source.
+        completed = subprocess.run(
+            [
+                str(executable),
+                "-I",
+                "-B",
+                "-X",
+                f"pycache_prefix={pycache_prefix_dir}",
+                "-c",
+                _ISOLATED_REPLAY_BOOTSTRAP,
+                str(source_root),
+            ],
+            input=json.dumps(request, sort_keys=True, separators=(",", ":"), allow_nan=False),
+            text=True,
+            capture_output=True,
+            env=env,
+            cwd=str(source_root),
+            timeout=max(900.0, 300.0 * len(expected_proofs)),
+            check=False,
+        )
+    finally:
+        shutil.rmtree(pycache_prefix_dir, ignore_errors=True)
+    if completed.returncode != 0:
+        detail = (completed.stderr or completed.stdout or "").strip()[-2000:]
+        raise RuntimeError(f"isolated replay exited {completed.returncode}: {detail}")
+    lines = [line.strip() for line in completed.stdout.splitlines() if line.strip()]
+    if not lines:
+        raise RuntimeError("isolated replay returned no response")
+    try:
+        response = _strict_json_loads(lines[-1])
+    except Exception as exc:
+        raise RuntimeError("isolated replay response is not JSON") from exc
+    if not isinstance(response, Mapping):
+        raise RuntimeError("isolated replay response must be an object")
+    if str(response.get("nonce", "")) != nonce:
+        raise RuntimeError("isolated replay nonce mismatch")
+    return response
 
 
 def _execute_isolated_replay_request(request: Mapping[str, Any]) -> Dict[str, Any]:

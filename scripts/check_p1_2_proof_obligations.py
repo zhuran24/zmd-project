@@ -61,7 +61,7 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "70409fd28748b1dca2a87df8ac7dbe54cee50d1aa2bebc10afc3a80c8a186fac"
+    "abd932961d2ab0f91300c4a28f4d5c8b6d2aaa47a81b195b80e2c30959259a2e"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
@@ -3112,7 +3112,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "4b6d973b120c38da25ea5302a03ee792b42d82644ccec02766690bfed12e8304"
+    "44c0113b2adaaafb3b2abebfd92dba1c799d1f18d637947ba9d603ed0775f0a3"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -6478,7 +6478,7 @@ _PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY = (
     'return {\n        "schema_version": DOMAIN_SCHEMA_VERSION,\n        "authority": DOMAIN_AUTHORITY,\n        "nonce": nonce,\n        "verdict": SEALED,\n        "reason": "domain_verified",\n        "strong_keys": list(strong_keys),\n        "final_result": certified_final_result,\n        "terminal_frontier_evidence": evidence,\n        "candidate_records": durable_records,\n        "final_result_digest": final_digest,\n        "terminal_frontier_evidence_digest": evidence_digest,\n        "candidate_records_digest": records_digest,\n        "fixed_witness_publishable": bool(getattr(fixed_verdict, "publishable", False)),\n        "sink_replay_violations": {},\n        "fixed_witness_violations": {},\n        "tcb": {\n            "python_interpreter": "NAMED-TCB",\n            "stdlib": "NAMED-TCB",\n            "third_party_native": "NAMED-TCB",\n            "os_process_file_isolation": "NAMED-TCB",\n            "windows_write_isolation_residual": "protocol_only_child_snapshot_no_write_fd_pr2c_linux_uid_namespace_pending",\n        },\n    }',
 )
 _PR2_CHILD_PROJECT_RECORDS_BODY = (
-    'from src.search.pr2_l0_replay_core import (\n        CANDIDATE_PROOF_AUTHORITY,\n        CANDIDATE_PROOF_FIELD,\n        CANDIDATE_PROOF_SCHEMA_VERSION,\n        _execute_isolated_replay_request,\n        _json_copy,\n        _replay_response_violation,\n        candidate_proof_shape_violation,\n        canonical_digest,\n    )',
+    'from src.search.pr2_l0_replay_core import (\n        CANDIDATE_PROOF_FIELD,\n        _invoke_isolated_replay,\n        _json_copy,\n        _replay_response_violation,\n        candidate_proof_shape_violation,\n        canonical_digest,\n    )',
     'raw_records = state.get("candidates")',
     'if not isinstance(raw_records, Mapping):\n        return {}, {"*": "candidate_sink_replay_records_missing"}',
     'expected_proofs: dict[str, dict[str, Any]] = {}',
@@ -6487,8 +6487,7 @@ _PR2_CHILD_PROJECT_RECORDS_BODY = (
     'if set(expected_proofs) | set(violations) != set(strong_keys):\n        violations["*"] = "candidate_sink_replay_strong_key_coverage_mismatch"',
     'if violations:\n        return {}, violations',
     'if not expected_proofs:\n        return {\n            str(key): _json_copy(value)\n            for key, value in raw_records.items()\n            if isinstance(value, Mapping)\n        }, {}',
-    'request = {\n        "schema_version": CANDIDATE_PROOF_SCHEMA_VERSION,\n        "authority": CANDIDATE_PROOF_AUTHORITY,\n        "nonce": hashlib.sha256(_canonical_bytes(expected_proofs)).hexdigest(),\n        "project_root": str(project_root),\n        "expected_proofs": [_json_copy(expected_proofs[key]) for key in sorted(expected_proofs)],\n    }',
-    'response = _execute_isolated_replay_request(request)',
+    'response = _invoke_isolated_replay(\n        project_root=project_root,\n        expected_proofs=expected_proofs,\n    )',
     'envelope_violation = _replay_response_violation(\n        response=response,\n        project_root=project_root,\n        expected_proofs=expected_proofs,\n    )',
     'if envelope_violation is not None:\n        return {}, {key: envelope_violation for key in expected_proofs}',
     'results = response.get("results")',
@@ -6848,7 +6847,7 @@ _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
     "_is_within_any": "79abd86e1e8a39d021a225212b009b307adb74928e192652e20e6b1545dc63de",
     "_json_copy": "71d6048581ec811d9d28f4c60b69287aaa2fee791246e8e50850e9db54380f8e",
     "_materialize_import_default_artifacts": "ec2a13d3338721ffd5819e6d0098685f51a81f5b1c00da39cde1c368f19f09e5",
-    "_project_candidate_records_direct": "64a63a6414baa50658ee8ee9ce5b78cd09dad80aa074c7cdb335dbad00bc38a9",
+    "_project_candidate_records_direct": "dbffd63bdb911b624dabd127ef7a45a3a8aabcf17b7d82000433e8e042f1753e",
     "_require_mapping": "104f33d630f36f0f78076bf3c859fc86367f92237002231fd653d943699bdd44",
     "_run_fixed_witness_direct": "eb9c35e49ec0d7a2c35d9caf688042b84c7641fe4a623b95680252f9d9c22af7",
     "_safe_rel": "510d425350d3e866ea0523fbfce04af46793936ff22503f4e2390d0782e7c957",
@@ -10481,7 +10480,7 @@ def _check_child_project_candidate_records_direct_structure(function: ast.Functi
             function,
             frozenset(
                 {
-                    "_execute_isolated_replay_request",
+                    "_invoke_isolated_replay",
                     "_replay_response_violation",
                     "candidate_proof_shape_violation",
                     "canonical_digest",
@@ -10509,11 +10508,11 @@ def _check_child_project_candidate_records_direct_structure(function: ast.Functi
             label=label,
         )
     )
-    replay_index = _top_level_assignment_index(function, "response", "_execute_isolated_replay_request")
+    replay_index = _top_level_assignment_index(function, "response", "_invoke_isolated_replay")
     if replay_index is None:
         errors.append(
             "PR2 child candidate projection must assign response exactly once from "
-            "_execute_isolated_replay_request(...)"
+            "_invoke_isolated_replay(...)"
         )
     else:
         for stmt in body[:replay_index]:
@@ -10877,8 +10876,9 @@ def _check_candidate_sink_replay_contract(
     errors: list[str] = []
     replay_tree = _parse_python(candidate_replay_path)
     replay_core_tree = _parse_python(candidate_replay_core_path)
+    replay_facade_source = candidate_replay_path.read_text(encoding="utf-8")
     replay_source = (
-        candidate_replay_path.read_text(encoding="utf-8")
+        replay_facade_source
         + "\n"
         + candidate_replay_core_path.read_text(encoding="utf-8")
     )
@@ -10886,8 +10886,6 @@ def _check_candidate_sink_replay_contract(
         "build_candidate_replay_proof",
         "verify_candidate_records_at_sink",
         "project_candidate_records_for_sink",
-        "_invoke_isolated_replay",
-        "isolated_replay_main",
     ):
         _function_def(replay_tree, function_name, path=candidate_replay_path)
     for function_name in (
@@ -10896,10 +10894,19 @@ def _check_candidate_sink_replay_contract(
         "_validate_child_proof",
         "_replay_one_proof",
         "_materialize_replay_snapshot",
+        "_invoke_isolated_replay",
         "_execute_isolated_replay_request",
         "isolated_replay_main",
     ):
         _function_def(replay_core_tree, function_name, path=candidate_replay_core_path)
+    for facade_token in (
+        "_invoke_isolated_replay,",
+        "isolated_replay_main,",
+        '"_invoke_isolated_replay"',
+        '"isolated_replay_main"',
+    ):
+        if facade_token not in replay_facade_source:
+            errors.append(f"candidate replay facade must re-export replay core symbol: {facade_token}")
 
     for token in (
         "CANDIDATE_PROOF_AUTHORITY",
@@ -10918,8 +10925,12 @@ def _check_candidate_sink_replay_contract(
         if token not in replay_source:
             errors.append(f"candidate replay authority is missing fail-closed token: {token}")
 
-    invoke_fn = _function_def(replay_tree, "_invoke_isolated_replay", path=candidate_replay_path)
-    invoke_source = _source_text(candidate_replay_path, invoke_fn)
+    invoke_fn = _function_def(
+        replay_core_tree,
+        "_invoke_isolated_replay",
+        path=candidate_replay_core_path,
+    )
+    invoke_source = _source_text(candidate_replay_core_path, invoke_fn)
     if not _calls_attr(invoke_fn, "run"):
         errors.append("candidate replay must launch an external subprocess")
     for token in (
@@ -11458,7 +11469,7 @@ def _check_candidate_sink_replay_contract(
     child_project_source = _source_text(pr2_true_child_path, child_project_fn)
     for required_call in (
         "candidate_proof_shape_violation",
-        "_execute_isolated_replay_request",
+        "_invoke_isolated_replay",
         "_replay_response_violation",
     ):
         if not _calls_function(child_project_fn, required_call):
@@ -11684,6 +11695,7 @@ def _check_candidate_sink_replay_contract(
 def _check_isolated_exec_bytecode_binding_contract(
     *,
     candidate_replay_path: Path = CANDIDATE_PROOF_REPLAY_PATH,
+    candidate_replay_core_path: Path = PR2_L0_REPLAY_CORE_PATH,
     terminal_capsule_path: Path = TERMINAL_FIXED_WITNESS_CAPSULE_PATH,
 ) -> list[str]:
     """Require certified isolated replay children to execute source-derived bytecode.
@@ -11696,16 +11708,16 @@ def _check_isolated_exec_bytecode_binding_contract(
     """
 
     errors: list[str] = []
-    replay_tree = _parse_python(candidate_replay_path)
+    replay_tree = _parse_python(candidate_replay_core_path)
     replay_invoke = _function_def(
         replay_tree,
         "_invoke_isolated_replay",
-        path=candidate_replay_path,
+        path=candidate_replay_core_path,
     )
     errors.extend(
         _check_isolated_pycache_hardened_argv(
             function=replay_invoke,
-            path=candidate_replay_path,
+            path=candidate_replay_core_path,
             label="candidate replay",
         )
     )
@@ -12894,8 +12906,8 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
-    'src/search/candidate_proof_replay.py': '6e4bda05468f168d830332898752b6656b064111b07476bb701a032387454137',
-    'src/search/certified_artifact_contract.py': 'ecdcff733275506aa3ab4a40a808536c54c64fefb87812537306b79d9635c32b',
+    'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
+    'src/search/certified_artifact_contract.py': '2200d231b6aa93a59d2fd96bb1ec761cddf7e190c522e703e4dd1e8d2a92ba5d',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
@@ -12915,8 +12927,8 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/pr2_l0_fixed_witness_core.py': 'abce5361619402d340e2a849999cda259ac6f054f0fb100bc0dcba1806f6845f',
     'src/search/pr2_l0_frontier_core.py': 'b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b',
     'src/search/pr2_l0_micro_verifier_core.py': '20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a',
-    'src/search/pr2_l0_replay_core.py': '49ca9657c787f7d40bdd9b1dadfe25fb99a2e98818b5e4cbb230e576a691f3d3',
-    'src/search/pr2_l0_true_verifier_child.py': '2f74f24bb3f3a2aeaf4a67bec9015802d84db1962bfa2fa5a9a08446f6f50f79',
+    'src/search/pr2_l0_replay_core.py': 'f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2',
+    'src/search/pr2_l0_true_verifier_child.py': '5d633290dfb5f0aa13d9ca4c6b1ff9ed8cb2a26e0f126b95a0e2f49c3d6e83c9',
     'src/search/routing_deletion_core_minimizer.py': '9bfa5588d5b56dc098800d9b88a7f65df6a1552d21ad752b6a3a828af576af26',
     'src/search/separator_capacity_separator.py': '1fd8a3c694f0c4a406c7eb7a46f7ddc290dcc8fc41e2f518977975fa98f58229',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',

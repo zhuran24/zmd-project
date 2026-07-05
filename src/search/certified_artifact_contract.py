@@ -29,7 +29,7 @@ LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS = (
     "scripts/check_p1_2_proof_obligations.py",
 )
 LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256 = (
-    "4b6d973b120c38da25ea5302a03ee792b42d82644ccec02766690bfed12e8304"
+    "44c0113b2adaaafb3b2abebfd92dba1c799d1f18d637947ba9d603ed0775f0a3"
 )
 LOCKED_P1_2_CHECKER_PROTECTED_CALLEES = (
     "_check_step7_contract",
