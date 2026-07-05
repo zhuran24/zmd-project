@@ -1,8 +1,8 @@
 ---
 id: p3-0-formal-verification-head-start
 kind: decision
-title: P3.0 形式化线 68 条定理+Q1 分类学设计稿 v2(2026-07-05)——两轮外审全部回收闭环(main 2f6df03);Q1a 定名+七前提清单;锁面不动
-summary: owner 2026-07-05 授权把 Q14(框架形式化证明,原 P3 defer)提前开头,当日 Lean 侧排队项全部清空。①`formal/` **56 条定理**过机器检查、零 sorry、公理审计 56/56 仅经典三公理或无公理(fb771ff 9→5560c39 14→517dbda 30→37965f6 45→ba17355 56;fb771ff 提交信息"7 条"是笔误),五个模块:TnsCoverage+F5OrbitLift(core-only)=TNS 覆盖链+F5 轨道提升与反例;DesignStatements=盲方陈述+本方施工——**anon_lift_sound 全链落地**;CutFamilies=**七个 family 核心 17 条**(第一梯队 F9/F1/F7/F4/F6/F2 各 bound+infeasible+第二梯队 F3 带 all-ports-active 显式量化);FrameworkLemmas=**框架层 9 条**(F5 复合安全引理(零公理)+无 P-HOM 删光反例/frontier lex 剪枝保最优+max_lex 具体化/TP7-S 等式键 sound·不过切·选中集式过切反例)。陈述层修改仅两处(README 记录)。**mathlib v4.31.0 已接入**。②设计稿 v2:轴 B 修正+P3.0c 七阶段(第一落点=binding PB sidecar 4-8 周)。③三路审查归档 `p3_0_formal_reviews_20260705/`;④可开工地图归档 `p3_0b_family_formalizability_survey_20260705/`。**CutFamilies+FrameworkLemmas 26 条待独立复审**(陈述本方写,未走盲对拼)。**锁面不动**——16_workflow_review §6.4 政策继续有效。
+title: P3.0 形式化线 68 条定理+Q1 分类学设计稿 v2(2026-07-05)——两轮外审全部回收闭环(main 2f6df03);轴 B 证书侧已开工(Day 1 工具链+玩具链路+设计稿 v1);锁面不动
+summary: owner 2026-07-05 授权把 Q14(框架形式化证明,原 P3 defer)提前开头,当日 Lean 侧排队项全部清空。①`formal/` **56 条定理**过机器检查、零 sorry、公理审计 56/56 仅经典三公理或无公理(fb771ff 9→5560c39 14→517dbda 30→37965f6 45→ba17355 56;fb771ff 提交信息"7 条"是笔误),五个模块:TnsCoverage+F5OrbitLift(core-only)=TNS 覆盖链+F5 轨道提升与反例;DesignStatements=盲方陈述+本方施工——**anon_lift_sound 全链落地**;CutFamilies=**七个 family 核心 17 条**(第一梯队 F9/F1/F7/F4/F6/F2 各 bound+infeasible+第二梯队 F3 带 all-ports-active 显式量化);FrameworkLemmas=**框架层 9 条**(F5 复合安全引理(零公理)+无 P-HOM 删光反例/frontier lex 剪枝保最优+max_lex 具体化/TP7-S 等式键 sound·不过切·选中集式过切反例)。陈述层修改仅两处(README 记录)。**mathlib v4.31.0 已接入**。②设计稿 v2:轴 B 修正+P3.0c 七阶段(第一落点=binding PB sidecar 4-8 周);**轴 B 已开工(07-05 Day 1):WSL 工具链落地(RoundingSat+veripb 3.0.2 Rust 主线)+玩具链路正反验证+binding PB 编码设计稿 v1 成稿待外审,开发目录 zmd_cert_dev**。③三路审查归档 `p3_0_formal_reviews_20260705/`;④可开工地图归档 `p3_0b_family_formalizability_survey_20260705/`。**CutFamilies+FrameworkLemmas 26 条待独立复审**(陈述本方写,未走盲对拼)。**锁面不动**——16_workflow_review §6.4 政策继续有效。
 scope:
   domains:
     - formal-verification
@@ -53,7 +53,7 @@ updated_at: "2026-07-05"
 == 这条线是什么 ==
 Q14(框架 completeness/soundness 形式化)原判 P3 defer(投资数年级)。owner 2026-07-05 授权开头。策略=**双轴拆分**(详见设计稿):
 - **轴 A 定理侧**(已开工):范式数学定理进 Lean。抽象边界纪律=形式化在抽象层,模型侧前提(反单调/P-HOM)作为**假设**接入,成立性由设计稿的机器可查义务(ghost inventory/逐谓词审计/结构门)承担。三层分工:抽象定理层(Lean)+前提审计层(结构门)+工程层(validator/replay)。
-- **轴 B 证书侧**(路线图定型,**已排入总路线图支线 2b、待开工**——owner 2026-07-05 确认意向):求解结果的 proof log+经形式化验证的检查器。七阶段见 P3.0 设计稿 §P3.0c;**第一落点 = Phase 0+1:binding 子问题 PB 独立重建 + VeriPB sidecar 复验(2-5 周 PoC)**。三条已拍定的设计约束:①**独立重建**编码(不从生产代码导出,保持异构交叉验证价值——与 PR2 #5-B2、I1 是同一笔投资的三个面);②纯旁路,不写生产路径、不碰锁面,与 PR2 主线零文件交集;③开发照 formal/ 模式(仓库外做,绿了经 worktree 落 main)。工具链(RoundingSat/VeriPB 生态偏 Linux)本机走 WSL/CachyOS。它是瓶颈审计「编码忠实性单点」的终极解。执行位=数学面线程。
+- **轴 B 证书侧**(总路线图支线 2b,**已开工——owner 2026-07-05「嗯,开始吧」,Day 1 三件套完成**):求解结果的 proof log+经形式化验证的检查器。七阶段见 P3.0 设计稿 §P3.0c;**第一落点 = Phase 0+1:binding 子问题 PB 独立重建 + VeriPB sidecar 复验(2-5 周 PoC)**。三条已拍定的设计约束:①**独立重建**编码(不从生产代码导出,保持异构交叉验证价值——与 PR2 #5-B2、I1 是同一笔投资的三个面);②纯旁路,不写生产路径、不碰锁面,与 PR2 主线零文件交集;③开发照 formal/ 模式(仓库外做,绿了经 worktree 落 main)。**Day 1 落地(2026-07-05)**:WSL Ubuntu-24.04 工具链(RoundingSat master 本地编译+veripb 3.0.2——**主线已是 Rust 实现**,深研报告"Python 参考版"口径过时);玩具鸽笼链路正反验证(VERIFIED + 两类假证书被拒);**binding PB 编码设计稿 v1 成稿待外审**(scope=形态①纯 binding INFEASIBLE、与 I1 同对象异构对拍;送审包已 staged)。开发目录 `C:\Users\22957\zmd_cert_dev\`(NOTES.md 有实测坑清单:**veripb 失败时 exit code 仍 0,判定必须解析 `s VERIFIED UNSATISFIABLE` 结论行 fail-closed**;OPB 扩展头 #equal 必须精确=等式行数,intsize 被忽略)。执行位=数学面线程。
 
 == 工具链与工作方式(实操必读)==
 - elan 经 scoop 装(`scoop install elan`),工具链钉 v4.31.0(formal/lean-toolchain);`cd formal && lake build` 即验证。
