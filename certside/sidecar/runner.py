@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Optional
 WSL = ["wsl", "-d", "Ubuntu-24.04", "--"]
 ROUNDINGSAT = "/root/cert_toolchain/roundingsat/build/roundingsat"
 VERIPB = "/root/.cargo/bin/veripb"
+CAKEPB = "/root/cert_toolchain/CakePB/cake_pb"
 WORK_WSL = "/root/cert_toolchain/sidecar_work"
 
 _S_LINE = re.compile(r"^s (.+?)\s*$", re.MULTILINE)
@@ -63,6 +64,7 @@ def run_sidecar_chain(
     *,
     solve_timeout_s: float = 60.0,
     check_timeout_s: float = 120.0,
+    with_cakepb: bool = True,
 ) -> Dict[str, Any]:
     """OPB → RoundingSat(proof) → veripb。返回 verdict record（v2 §5 状态机）."""
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -129,6 +131,34 @@ def run_sidecar_chain(
         record.update(status="UNKNOWN", subcode="PROOF_REJECTED",
                       detail=f"checker s-lines={verified}")
         return record
+
+    # 第四层（可选深度检查，默认开）：elaborate → kernel → CakePB（形式化验证 checker）。
+    # fail-closed：启用后任一环节不出唯一 `s VERIFIED UNSATISFIABLE` → 降级 UNKNOWN。
+    if with_cakepb:
+        kernel_path = work_dir / (opb_path.stem + ".kernel.pbp")
+        if kernel_path.exists():
+            kernel_path.unlink()
+        kernel_wsl = _to_wsl_path(kernel_path)
+        elab = _run(
+            WSL + [VERIPB, "--elaborate", kernel_wsl, opb_wsl, proof_wsl], check_timeout_s
+        )
+        record["elaborator"] = elab
+        if elab["timed_out"] or not kernel_path.is_file() or kernel_path.stat().st_size == 0:
+            record.update(status="UNKNOWN", subcode="ELABORATE_FAILED")
+            return record
+        record["kernel_sha256"] = _sha256(kernel_path)
+        cake = _run(WSL + [CAKEPB, opb_wsl, kernel_wsl], check_timeout_s)
+        record["cakepb"] = cake
+        cake_combined = cake["stdout"] + "\n" + cake["stderr"]
+        if (
+            cake["timed_out"]
+            or any(mark in cake_combined for mark in ERROR_MARKS)
+            or "Checking failed" in cake_combined
+            or _status_lines(cake["stdout"]) != ["VERIFIED UNSATISFIABLE"]
+        ):
+            record.update(status="UNKNOWN", subcode="CAKEPB_REJECTED")
+            return record
+        record["cakepb_verified"] = True
 
     record.update(status="CONFIRMED", subcode=None)
     return record

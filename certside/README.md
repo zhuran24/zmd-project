@@ -33,10 +33,12 @@
   非法输入 8 类全 fail-closed 拒绝；双向突变红测 4/4 被抓（含 over-constraint
   使 canary 翻 UNSAT——sidecar 最危险 bug 类的哨兵）；canonical checker 自身
   红测 4/4（篡改计数/双选/cell 出 pose/漏变量全被精准拒）。
-- **CakePB（第四层纵深）**：二进制构建通、OPB 输入面兼容；`veripb --elaborate`
-  的 kernel proof 被其预编译版（2026-04-15）拒在 output 段语法——版本错配已
-  登记（cake_pb 失败时 exit 亦为 0，同类怪癖），等上游配套或读 CakeML 源码
-  确认 kernel 语法后接入；不阻塞 Phase 1（判定权威 = veripb 本体）。
+- **CakePB（第四层纵深）已接入且默认开**：每个 CONFIRMED 都经过
+  RoundingSat → veripb → elaborate(kernel) → **cake_pb（形式化验证 checker）**
+  四层，任一环节非唯一 `s VERIFIED UNSATISFIABLE` 结论行即降级 UNKNOWN
+  （cake_pb 失败时 exit code 亦为 0，判定只认输出文本）。含 17k 变量真实模型
+  实测通过。前置依赖 = RoundingSat 本地补丁 **v2**（rup 必须在 output 段之前，
+  kernel parser 严格按段序——见 patch_rs_logger.py）。
 - **Phase 0 采集侧 = P1.2 收口后再落**（owner 2026-07-05 拍板，选项 b）。
 - **冻结工件解析前端已落地**（frontend.py）：五工件 strict-JSON exact-decimal
   独立解析、operation profile 独立重推（Fraction 精确 ceil），与生产
