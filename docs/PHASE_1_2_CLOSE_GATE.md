@@ -27,9 +27,16 @@ manifests are informational; they do not calculate clean credit and cannot open 
 explicit `owner_manual_decision` with the required acknowledgements may set the next-stage state
 to allowed.
 
-Prerequisite scope (owner ruling 2026-07-06): the closeout prerequisite is the full PR2 TCB
-deepening backlog (#8, #2/#3, #5-B2, #5-F spike, #1, #9b/#9c) — not just #1. Production byte
-re-pinning (#9a) remains a deployment-time task that does not block the closeout verdict.
+Prerequisite scope (owner rulings 2026-07-06, twice on the same day — the evening ruling
+governs): the morning ruling briefly widened the closeout prerequisite to the full PR2 TCB
+deepening backlog; the same evening, after distinguishing accidental corruption (already caught
+fail-closed by the always-on byte-sha floor) from deliberate insider tampering (the only adversary
+the structural anchors/TOCTOU/OS-isolation hardenings address), the owner deferred all
+deliberate-insider-only hardenings (#8 deepening, #2/#3, #5-F, #9b/#9c, #5 Option B) to release
+time and ruled them not prerequisites for P1.2 closure. Net effect: the coding-type closeout
+prerequisites are substantively cleared; what remains is the closeout external review plus the
+owner manual gate. Production byte re-pinning (#9a) remains a deployment-time task. Details in
+memory card `deliberate-insider-hardening-deferred-to-release`.
 
 The checker should pass while the gate is blocked. That PASS means the repository is consistently
 fail-closed, not that P1.2 is ready.

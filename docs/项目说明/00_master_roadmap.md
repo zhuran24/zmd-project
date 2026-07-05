@@ -39,17 +39,23 @@ PR2 深化(四阶段执行序) → P1.2 收口 → P1.3A spike → P1.3 主体 �
 l0-snapshot 拆分 + lazy import）→ 阶段4：#9b OS 级写隔离 + #9c 原生 TOCTOU。
 pytest 提速余项已全部溶进上述批次（不独立成批，绑定表见排期卡）。
 **owner 修正（07-04 晚）：P1.2 收口前提至少含 #1**——先深化再收口。
-**owner 再拍板（07-06）：收口前提 = 整条 backlog 编码项**（#8、#2/#3、#5-B2、
-#5-F spike、#1、#9b/#9c 全部完成），不只 #1；#9a 生产字节重钉维持部署时点
-定位、不阻塞收口判定。即收口外审排在阶段4 之后。
+**owner 再拍板（07-06，同日两变、以晚间为准）**：早间曾扩「收口前提=整条
+backlog 编码项」；**同日晚间收窄**——厘清「内鬼=故意而非手滑」后（手滑/外部
+篡改已被常开的字节 sha floor 拦死；结构锚/TOCTOU/OS 隔离只对忠实 reseal 后
+的蓄意内鬼有意义），所有「仅防蓄意内鬼」硬化（#8 深化/#2/#3/#5-F/#9b/#9c/
+Option B）**延期到发布时点、非 P1.2 收口前提**→编码前提实质清空（#1 核心
+已做、剩余全在延期桶内），四阶段序转为发布时点执行序。#9a 维持部署时点。
+详见记忆卡 deliberate-insider-hardening-deferred-to-release。
 
 ### 1b. P1.2 收口
 
-十项 close 条件见 [12_go_criteria](12_go_criteria.md)（PR2 TCB 收缩是第 10 项）。
-路径（owner 2026-07-06 拍板版）：**整条 backlog 编码项完成**（含阶段4 #9b/#9c，
-见 1a 尾注）→ 代码冻结 + fresh reseal → 收口外审（本地多镜头对抗审 + GPT Pro
-relay，按 owner 需要发）→ **审到 owner 判定足够为止** → owner 关手动门
-（gate JSON `owner_manual_decision`）。
+十项 close 条件见 [12_go_criteria](12_go_criteria.md)（PR2 TCB 收缩是第 10 项；
+07-06 晚 owner 已行使该条「或 owner 明确修改 close scope」活口——防蓄意内鬼类
+硬化延期到发布时点、非收口前提，见 1a 尾注）。
+路径（owner 2026-07-06 晚拍板版，编码前提已实质清空）：冻结仪式 → 收口外审
+（GPT Pro relay 按 owner 需要发）→ **审到 owner 判定足够为止** → owner 关手动门
+（gate JSON `owner_manual_decision`）。07-06 冻结仪式已在主线分支执行（冻结树
+`c9b41b3`、门禁全绿、送审包+7 切面提示词已备，剩 owner 手动上传）。
 **「三连 clean 计数」语义澄清（owner 2026-07-06）**：那是 owner 当时图方便的
 说法，不是硬判据——实际判据就是「外审到 owner 觉得合适为止」，轮数可多可少；
 gate JSON 的 `required_consecutive_clean_full_reviews=3` 与关门确认字段里的

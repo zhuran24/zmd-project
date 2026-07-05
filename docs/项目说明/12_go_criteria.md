@@ -68,8 +68,11 @@ owner gate。反过来，owner gate 关闭也不能掩盖未修复的 false-CERT
 > 现行判据：收口外审进行到 owner 判定足够为止（轮数可多可少），唯一权威关门动作是 gate
 > JSON 的 `owner_manual_decision`。机器字段 `required_consecutive_clean_full_reviews=3` 与
 > 关门确认字段中的 "three clean reviews" 字样保留为 checker 兼容值（同 `p1_3b_*` 模式）。
-> 同日 owner 定界：收口前提 = 整条 PR2 TCB backlog 编码项（#8、#2/#3、#5-B2、#5-F spike、
-> #1、#9b/#9c），不只 #1（即 §12.2 第 10 条的 "PR2 规定的" 范围就此闭合）。
+> 同日 owner 对收口前提两次定界、**以晚间为准**：早间曾扩为整条 PR2 TCB backlog 编码项；
+> 晚间厘清「内鬼=故意而非手滑」后收窄——所有「仅防蓄意内鬼」硬化（#8 深化/#2/#3/#5-F/
+> #9b/#9c/Option B）延期到发布时点、非 P1.2 收口前提，**编码前提实质清空**（即行使
+> §12.2 第 10 条「或 owner 明确修改 close scope」活口；详见记忆卡
+> `deliberate-insider-hardening-deferred-to-release`）。
 
 当前 gate：
 
