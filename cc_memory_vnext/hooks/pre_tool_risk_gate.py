@@ -15,7 +15,8 @@ quote-aware 分段 tokenize,跳过 git 全局选项后定位真实子命令,再�
 决策(owner 2026-07-03 裁决:高危类不弹人工审核框,改「默认阻止+限时重发确认」):
 - 绝对 deny : git add -A|--all|-u|.  /  git commit -a|-am|--all
          (共享 .git/index 铁律,卡 concurrent-session-shared-index-hazard;
-          无任何放行通道,不被 proof/账本/文本标记/重发压掉)
+          无任何放行通道,不被 proof/账本/文本标记/重发压掉;
+          但受下述多会话总开关辖制——单会话时形状本身不生效)
 - 默认阻止+重发确认 : git push --force / rm -rf / Remove-Item -Recurse -Force /
          无 pathspec plain commit(worktree 私有 index 除外) / 冻结工件 Write|Edit。
          第一次一律 deny + 抛回自查问题(「你确定这不是别的会话的产物吗?」),
@@ -23,7 +24,21 @@ quote-aware 分段 tokenize,跳过 git 全局选项后定位真实子命令,再�
          ZMEM_PROOF 覆盖 domain 或 ALLOW_RISK_GATE 标记仍可直接放行(冻结工件除外,
          它只认重发确认——freeze-ritual 必须是有意识动作)。
 
-Fail-open: 检测/解析失败一律放行,绝不挡正常工具流。
+多会话总开关(owner 2026-07-06 指令):所有并发会话动机的形状(git-add-broad /
+git-commit-all / git-commit-no-pathspec / git-push-force / rm-rf /
+remove-item-recurse-force)只在检测到多个 CC 会话时生效——单会话没有「共享 index
+被别人 staged / 误删他会话产物」的冲突对象,不该拦。检测两探针:
+① CLI 进程计数(Win32_Process 数所有 claude.exe,反向排除 Claude Desktop 特征
+   路径 AnthropicClaude;.local/bin 与自更新 AppData/.../claude-code/current 两条
+   真实 CLI 路径都计入,未知新路径也计入——退化方向=过度保护,不是漏保护);
+② 进程数=1 时再看本项目 transcript 目录近 30min 有无其他会话活跃(覆盖「会话刚
+   退出、staged 残留还躺在共享 index」的窗口);三态:无法判定(transcript 缺失/
+   未落盘/异常)≠ 确认没有,按多会话处理。
+探针异常/连自己都数不到 → 一律按多会话处理(此处 fail 方向与 hook 总体 fail-open
+相反:检测 bug 不得静默关掉整条防线)。frozen-artifact-write 与并发无关,不受此
+开关影响,单会话照拦。
+
+Fail-open: 检测/解析失败一律放行,绝不挡正常工具流(多会话探针除外,见上)。
 """
 
 from __future__ import annotations
@@ -32,6 +47,7 @@ import datetime
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import tempfile
 import time
@@ -45,6 +61,12 @@ PROOF_TTL_SIGNED = 45 * 60
 PROOF_TTL_UNSIGNED = 10 * 60  # 未署名 proof 只当「同一意图链」的短窗近似
 PROOF_TAIL_BYTES = 64 * 1024
 RESEND_WINDOW_SECONDS = 120  # 默认阻止后,同会话同命令的重发确认窗口
+SESSION_RECENT_WINDOW_SECONDS = 30 * 60  # 刚退出的会话留在共享 index 的 staged 残留仍算风险窗口
+# Claude Desktop(Electron)安装目录特征——进程计数用【反向排除】:排除已知 Desktop,
+# 其余 claude.exe(含 .local/bin 与自更新的 AppData/Roaming/Claude/claude-code/current
+# 两条真实 CLI 路径)一律计为 CC 会话。未知新路径的退化方向 = 多计 → 过度保护,
+# 好过正向白名单漏计 → 漏保护(2026-07-06 对抗审查 major finding)。
+DESKTOP_PATH_MARKER = "anthropicclaude"
 
 # 目录限定的冻结工件(后缀边界匹配,不再按裸 basename 误伤 fixtures)
 FROZEN_REL_PATHS = (
@@ -342,7 +364,105 @@ def combined_flag_has(token: str, letters: str) -> bool:
     return token.startswith("-") and not token.startswith("--") and any(c in token[1:] for c in letters)
 
 
-def check_shell(cmd: str, session: str, cwd: str) -> None:
+_MULTI_SESSION_CACHE: bool | None = None  # 本次 hook 进程内探针结果缓存(True=多会话/不确定)
+
+
+def _count_cli_processes() -> int:
+    """数本机活着的 Claude Code CLI 进程:所有 claude.exe,反向排除 Claude Desktop
+    特征路径;拿不到 ExecutablePath 的照计(多计 → 保护开启)。返回 0 = 检测异常
+    (至少本会话自己该在列),由调用方按多会话 fail-safe 处理。"""
+    ps = subprocess.run(
+        [
+            "powershell",
+            "-NoProfile",
+            "-NonInteractive",
+            "-Command",
+            "Get-CimInstance Win32_Process -Filter \"Name='claude.exe'\" | "
+            "Select-Object ProcessId,ExecutablePath | ConvertTo-Json -Compress",
+        ],
+        capture_output=True,
+        text=True,
+        timeout=8,
+    )
+    raw = (ps.stdout or "").strip()
+    if not raw:
+        return 0
+    parsed = json.loads(raw)
+    if isinstance(parsed, dict):
+        parsed = [parsed]
+    if not isinstance(parsed, list):
+        return 0
+    count = 0
+    for proc in parsed:
+        path = str((proc or {}).get("ExecutablePath") or "").replace("\\", "/").lower()
+        if DESKTOP_PATH_MARKER in path:
+            continue
+        count += 1
+    return count
+
+
+def _recent_other_session_transcript(transcript_path: str) -> bool | None:
+    """本项目 transcript 目录里除本会话外是否有近期活跃的会话(顶层 <uuid>.jsonl;
+    子代理 transcript 在 <uuid>/ 子目录里,不参与计数)。覆盖「会话刚退出、staged
+    残留还躺在共享 index」的窗口。
+
+    三态语义(2026-07-06 对抗审查 major finding:「无法判定」不得折叠成「确认无
+    其他会话」):True = 确认有近期其他会话;False = 探测完成、确认没有;
+    None = 无法判定(transcript_path 缺失 / 文件未落盘 / 读取异常),调用方必须
+    按多会话 fail-safe 处理。"""
+    try:
+        if not transcript_path:
+            return None
+        me = Path(transcript_path)
+        if not me.is_file():
+            return None
+        now = time.time()
+        for sibling in me.parent.glob("*.jsonl"):
+            if sibling.name == me.name:
+                continue
+            if now - sibling.stat().st_mtime <= SESSION_RECENT_WINDOW_SECONDS:
+                return True
+    except Exception:
+        return None
+    return False
+
+
+def concurrency_shape_active(shape: str, session: str, transcript_path: str) -> bool:
+    """并发会话冲突形状的总开关(owner 2026-07-06):确认单会话(唯一 CLI 进程且近
+    30min 无其他会话 transcript)→ 形状不生效,记 single_session_skip 后放行;
+    多会话或检测不确定 → 形状照常生效。
+
+    fail 方向与 hook 总体的 fail-open 相反:探针异常/连自己都数不到 → 按多会话
+    处理,否则检测 bug 会静默关掉整条防线。frozen-artifact-write 与并发无关,
+    不走本开关。只在命中危险形状时才被调用(lazy),正常命令零探针开销。
+    """
+    global _MULTI_SESSION_CACHE
+    if _MULTI_SESSION_CACHE is None:
+        multi = True
+        probe = "failsafe"
+        try:
+            n = _count_cli_processes()
+            if n >= 2:
+                probe = f"procs={n}"
+            elif n == 1:
+                recent = _recent_other_session_transcript(transcript_path)
+                if recent is None:
+                    probe = "procs=1,transcript-probe-unavailable"  # 无法判定 → 维持多会话
+                else:
+                    multi = recent
+                    probe = "procs=1,recent-transcript" if recent else "procs=1"
+            else:
+                probe = "procs=0(anomaly)"
+        except Exception as exc:
+            probe = "probe-error:" + type(exc).__name__
+        _MULTI_SESSION_CACHE = multi
+        _dbg("SESSION_PROBE " + probe + " -> multi=" + str(multi))
+    if not _MULTI_SESSION_CACHE:
+        _log_decision({"decision": "single_session_skip", "shape": shape, "session": session})
+    return _MULTI_SESSION_CACHE
+
+
+def check_shell(cmd: str, session: str, cwd: str, transcript_path: str) -> None:
     hatch = "ALLOW_RISK_GATE" in cmd
     in_worktree = "/.claude/worktrees/" in cwd.replace("\\", "/").lower()
 
@@ -351,7 +471,9 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
         if gi >= 0:
             sub, rest = git_subcommand(tokens, gi)
             if sub == "add":
-                if any(t in ("-A", "--all", "-u", "--update", ".", "./") for t in rest):
+                if any(t in ("-A", "--all", "-u", "--update", ".", "./") for t in rest) and concurrency_shape_active(
+                    "git-add-broad", session, transcript_path
+                ):
                     emit_decision(
                         "deny",
                         "⚠️ 本 repo 多会话共享 .git/index,git add -A/./-u 会把别的会话的改动扫进来"
@@ -361,7 +483,9 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
                         session,
                     )
             elif sub == "commit":
-                if any(t == "--all" or combined_flag_has(t, "a") for t in rest if t != "--"):
+                if any(t == "--all" or combined_flag_has(t, "a") for t in rest if t != "--") and concurrency_shape_active(
+                    "git-commit-all", session, transcript_path
+                ):
                     emit_decision(
                         "deny",
                         "⚠️ git commit -a/-am 绕过 pathspec 纪律,在共享 index 下会连别人 staged 的"
@@ -370,7 +494,11 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
                         "git-commit-all",
                         session,
                     )
-                if not commit_has_pathspec(rest) and not in_worktree:
+                if (
+                    not commit_has_pathspec(rest)
+                    and not in_worktree
+                    and concurrency_shape_active("git-commit-no-pathspec", session, transcript_path)
+                ):
                     stop_or_unlock(
                         "本 repo 共享 .git/index——你确定 staged 里只有你自己的改动、不会把"
                         "【别的会话】的文件一起提交吗?(git status --short 看一眼,或改带精确"
@@ -383,7 +511,9 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
                         "提交 并发会话 暂存",
                     )
             elif sub == "push":
-                if any(t in ("--force", "-f", "--force-with-lease") for t in rest):
+                if any(t in ("--force", "-f", "--force-with-lease") for t in rest) and concurrency_shape_active(
+                    "git-push-force", session, transcript_path
+                ):
                     stop_or_unlock(
                         "强推不可逆,且本 repo 有并发会话在推同一主线——你确定不会覆盖掉"
                         "【别的会话/别处】已经推上去的提交吗?",
@@ -401,7 +531,7 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
             flags = [t for t in tokens[ri + 1 :] if t.startswith("-")]
             recursive = any(t == "--recursive" or combined_flag_has(t, "rR") for t in flags)
             force = any(t == "--force" or combined_flag_has(t, "f") for t in flags)
-            if recursive and force:
+            if recursive and force and concurrency_shape_active("rm-rf", session, transcript_path):
                 stop_or_unlock(
                     "递归强删——你确定要删的目标不是【别的会话】的工作产物/检查点吗?"
                     "(本机常有并发会话共用工作区)",
@@ -417,7 +547,9 @@ def check_shell(cmd: str, session: str, cwd: str) -> None:
         if any(t == "remove-item" for t in low_tokens):
             has_recurse = any(t.startswith("-recurse") for t in low_tokens)
             has_force = any(t.startswith("-force") for t in low_tokens)
-            if has_recurse and has_force:
+            if has_recurse and has_force and concurrency_shape_active(
+                "remove-item-recurse-force", session, transcript_path
+            ):
                 stop_or_unlock(
                     "递归强删——你确定要删的目标不是【别的会话】的工作产物/检查点吗?"
                     "(本机常有并发会话共用工作区)",
@@ -475,12 +607,13 @@ def main() -> None:
             tool_input = {}
         session = str(payload.get("session_id") or "")
         cwd = str(payload.get("cwd") or "")
+        transcript_path = str(payload.get("transcript_path") or "")
 
         if tool_name in {"Bash", "PowerShell"}:
             cmd = str(tool_input.get("command") or "")
             if not cmd:
                 emit_allow("emptycmd")
-            check_shell(cmd, session, cwd)
+            check_shell(cmd, session, cwd, transcript_path)
         elif tool_name in {"Write", "Edit"}:
             file_path = str(tool_input.get("file_path") or "")
             if not file_path:
