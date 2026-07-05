@@ -793,7 +793,7 @@
       "keys": [
         "final_result"
       ],
-      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
+      "source_sha256": "c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
@@ -805,7 +805,7 @@
       "keys": [
         "final_status"
       ],
-      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
+      "source_sha256": "c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
@@ -817,7 +817,7 @@
       "keys": [
         "last_stop_reason"
       ],
-      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
+      "source_sha256": "c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
@@ -829,43 +829,43 @@
       "keys": [
         "terminal_frontier_evidence"
       ],
-      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
+      "source_sha256": "c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
       "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_838_final_status",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 846,
+      "line": 860,
       "qualname": "_supervisor_certified_transition_violation_l0",
       "keys": [
         "final_status"
       ],
-      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
+      "source_sha256": "c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
       "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_844_final_result",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 858,
+      "line": 872,
       "qualname": "_supervisor_certified_transition_violation_l0",
       "keys": [
         "final_result"
       ],
-      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
+      "source_sha256": "c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
       "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_855_last_stop_reason",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 869,
+      "line": 883,
       "qualname": "_supervisor_certified_transition_violation_l0",
       "keys": [
         "last_stop_reason"
       ],
-      "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
+      "source_sha256": "c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {

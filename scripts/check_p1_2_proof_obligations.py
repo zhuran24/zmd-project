@@ -61,7 +61,7 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "abd932961d2ab0f91300c4a28f4d5c8b6d2aaa47a81b195b80e2c30959259a2e"
+    "692519fd6e228df0602aa1627628ed9b54aec177a4615b8c063534273094359f"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
@@ -6776,7 +6776,7 @@ _PR2_L0_TCB_FUNCTION_SOURCE_SHA256 = {
     "_dependency_file_top_level": "bbd81b3a8476689a5f8835820952e3131f51a584e54954dd751fb3544ed33c4c",
     "_dependency_floor_root": "0768d2a1aea729323527c198a067431e011fc9bf3f7074e139c5dbaa189a82af",
     "_dependency_named_tcb_violation": "24bf66ab8b3f2fcc7d000e7149dd15958cc8baab25b21f53300a7b6ea30bff94",
-    "_discover_project_snapshot_modules": "d4ef471a0dbbdf6703ad2d7de86dfd4440787667e1b2d2537b3a31af618de82a",
+    "_discover_project_snapshot_modules": "bf55d1d4c5a9b8c1483eac41b79ed72fcab7dabfe57c03421d51128f4525dbb0",
     "_domain_response_violation": "a58fcb21065c7aab4b4a0b0a4779cb2c93e397aaef6e031cd98b37b594d4eedb",
     "_floor_digest": "f99a8a573213baec45deba01692d5f12d07ff150f85a886c484dce260187b4fb",
     "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
@@ -12926,7 +12926,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/pr2_l0_artifact_core.py': '818475b12c3ab3db38fdfa274b21cdb77e4fa085ea28db2ea368646f4c0735a7',
     'src/search/pr2_l0_fixed_witness_core.py': 'abce5361619402d340e2a849999cda259ac6f054f0fb100bc0dcba1806f6845f',
     'src/search/pr2_l0_frontier_core.py': 'b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b',
-    'src/search/pr2_l0_micro_verifier_core.py': '20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a',
+    'src/search/pr2_l0_micro_verifier_core.py': 'c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b',
     'src/search/pr2_l0_replay_core.py': 'f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2',
     'src/search/pr2_l0_true_verifier_child.py': '5d633290dfb5f0aa13d9ca4c6b1ff9ed8cb2a26e0f126b95a0e2f49c3d6e83c9',
     'src/search/routing_deletion_core_minimizer.py': '9bfa5588d5b56dc098800d9b88a7f65df6a1552d21ad752b6a3a828af576af26',

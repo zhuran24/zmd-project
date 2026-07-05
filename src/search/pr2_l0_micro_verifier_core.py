@@ -419,24 +419,38 @@ def _snapshot_module_paths(
 
 
 def _discover_project_snapshot_modules(source_root: Path) -> tuple[str, ...]:
-    modules: set[str] = {__name__, TRUE_VERIFIER_MODULE}
-    for root_name in ("src", "scripts"):
-        root = source_root / root_name
-        if not root.exists():
-            continue
-        for path in root.rglob("*.py"):
-            relative = path.relative_to(source_root)
-            parts = list(relative.with_suffix("").parts)
-            if parts[:2] == ["src", "tests"]:
-                continue
-            if parts[-1] == "__init__":
-                continue
-            if all(part.isidentifier() for part in parts):
-                modules.add(".".join(parts))
-    for path in source_root.glob("*.py"):
-        if path.stem.isidentifier():
-            modules.add(path.stem)
-    return tuple(sorted(modules))
+    modules = (
+        __name__,
+        TRUE_VERIFIER_MODULE,
+        "src.interchange.preprocess_context",
+        "src.io.strict_json",
+        "src.models._cpsat_compat",
+        "src.models.binding_subproblem",
+        "src.models.cp_sat_worker_config",
+        "src.models.exact_coordinate_master",
+        "src.models.master_model",
+        "src.models.patch_routing_core",
+        "src.models.port_binding",
+        "src.models.pose_bool_exact_master",
+        "src.models.routing_binding_context",
+        "src.models.routing_subproblem",
+        "src.models.separator_capacity_hull",
+        "src.models.solution_hint_parser",
+        "src.preprocess.operation_profiles",
+        "src.search.certified_artifact_contract",
+        "src.search.commodity_throughput",
+        "src.search.master_hint_persistence",
+        "src.search.pr2_l0_artifact_core",
+        "src.search.pr2_l0_fixed_witness_core",
+        "src.search.pr2_l0_frontier_core",
+        "src.search.pr2_l0_replay_core",
+    )
+    unique_modules = tuple(dict.fromkeys(modules))
+    for module in unique_modules:
+        path = (source_root / _module_relpath(module)).resolve()
+        if not path.is_file():
+            raise FileNotFoundError(f"snapshot module missing: {module}")
+    return unique_modules
 
 
 def _module_relpath(module: str) -> Path:

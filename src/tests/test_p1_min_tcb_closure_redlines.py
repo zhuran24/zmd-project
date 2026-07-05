@@ -666,7 +666,6 @@ def test_malicious_fixture_fail_closed(
     )
 
 
-@pytest.mark.xfail(reason="#1 抽 core 后转 pass", strict=False)
 def test_target_l0_child_runtime_excludes_scripts_from_snapshot() -> None:
     source_root = Path(l0_module.__file__).resolve().parents[2]
     snapshot_modules = l0_module._discover_project_snapshot_modules(source_root)  # type: ignore[attr-defined]
@@ -681,7 +680,6 @@ def test_target_l0_child_runtime_excludes_scripts_from_snapshot() -> None:
     assert "ModuleNotFoundError" in verdict.reason
 
 
-@pytest.mark.xfail(reason="#1 抽 core 后转 pass", strict=False)
 def test_target_l0_snapshot_manifest_is_explicit_minimal_whitelist() -> None:
     source_root = Path(l0_module.__file__).resolve().parents[2]
     snapshot_modules = set(l0_module._discover_project_snapshot_modules(source_root))  # type: ignore[attr-defined]
