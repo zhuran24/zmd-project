@@ -1,8 +1,8 @@
 ---
 id: p3-0-formal-verification-head-start
 kind: decision
-title: P3.0 形式化线推进至 45 条定理(2026-07-05)——anon_lift_sound+第一梯队 6 family 核心全落 main,mathlib 已接入;锁面不动
-summary: owner 2026-07-05 授权把 Q14(框架形式化证明,原 P3 defer)提前开头,当日推进三级。①`formal/` **45 条定理**过机器检查、零 sorry、公理审计 45/45 仅经典三公理或无公理(fb771ff 首批 9→5560c39 扩 14→517dbda 扩 30→37965f6 扩 45;fb771ff 提交信息"7 条"是笔误):TnsCoverage+F5OrbitLift(core-only,谓词式)=TNS 覆盖链+F5 轨道提升与反例;`DesignStatements.lean`(mathlib,Finset 式)=盲形式化陈述+本方填 12 sorry——**anon_lift_sound(F5 定理 2 完整形态)全链落地**;`CutFamilies.lean`=**第一梯队 6 family 核心 15 条**(F9 面积/F1 容量鸽笼/F7 空覆盖单调/F4 图可达(零公理)/F6 区间floor+跨侧/F2 割边鸽笼,各 bound+infeasible 形态,陈述锚 survey 报告,**待独立复审**)。陈述层修改仅两处(README 记录):hExtend universe 特化 max v w+native_decide→decide。**mathlib v4.31.0 已接入**(manifest 锁 rev,cache ~4.5GB)。②设计稿 v2(文件名仍 _v1.md):轴 B 六处修正+P3.0c 七阶段(第一落点=binding PB sidecar 4-8 周)。③三路审查归档 `p3_0_formal_reviews_20260705/`;④可开工地图归档 `p3_0b_family_formalizability_survey_20260705/`(main 40f6941)。**锁面不动**——16_workflow_review §6.4 政策继续有效。
+title: P3.0 形式化线推进至 56 条定理(2026-07-05)——anon_lift_sound+F1-F7 七 family 核心+框架层引理全落 main;Lean 侧排队项已清空,剩送审与分类学设计稿;锁面不动
+summary: owner 2026-07-05 授权把 Q14(框架形式化证明,原 P3 defer)提前开头,当日 Lean 侧排队项全部清空。①`formal/` **56 条定理**过机器检查、零 sorry、公理审计 56/56 仅经典三公理或无公理(fb771ff 9→5560c39 14→517dbda 30→37965f6 45→ba17355 56;fb771ff 提交信息"7 条"是笔误),五个模块:TnsCoverage+F5OrbitLift(core-only)=TNS 覆盖链+F5 轨道提升与反例;DesignStatements=盲方陈述+本方施工——**anon_lift_sound 全链落地**;CutFamilies=**七个 family 核心 17 条**(第一梯队 F9/F1/F7/F4/F6/F2 各 bound+infeasible+第二梯队 F3 带 all-ports-active 显式量化);FrameworkLemmas=**框架层 9 条**(F5 复合安全引理(零公理)+无 P-HOM 删光反例/frontier lex 剪枝保最优+max_lex 具体化/TP7-S 等式键 sound·不过切·选中集式过切反例)。陈述层修改仅两处(README 记录)。**mathlib v4.31.0 已接入**。②设计稿 v2:轴 B 修正+P3.0c 七阶段(第一落点=binding PB sidecar 4-8 周)。③三路审查归档 `p3_0_formal_reviews_20260705/`;④可开工地图归档 `p3_0b_family_formalizability_survey_20260705/`。**CutFamilies+FrameworkLemmas 26 条待独立复审**(陈述本方写,未走盲对拼)。**锁面不动**——16_workflow_review §6.4 政策继续有效。
 scope:
   domains:
     - formal-verification
@@ -61,8 +61,9 @@ Q14(框架 completeness/soundness 形式化)原判 P3 defer(投资数年级)。o
 - 扩展纪律:任何定理**陈述**的修改必须对照设计稿定理原文,且过独立复审(设计稿修订版复审纪律的延伸;对应表在 formal/README.md)。
 - formal/ 永不进 CI 硬门(设计稿 §6 开放问题 2 的预判)。
 
-== 下一批砖(按序;①②③已完成 2026-07-05,main 517dbda+37965f6)==
-P3.0b 开工顺序:~~①装 mathlib~~ ✓(v4.31.0 tag=工具链同版,manifest 锁 rev 入库;zmd_formal_dev 有 ~4.5GB 缓存,新环境 `lake exe cache get`)→ ~~②anon_lift_sound~~ ✓(DesignStatements.lean 全链,含 NoPresenceKeyAlias/boolean attach)→ ~~③第一梯队 family 核心~~ ✓(CutFamilies.lean 15 条:F9/F1/F7/F4/F6/F2 各 bound+infeasible,一轮编译绿,**待独立复审**——陈述是本方按可开工地图写的,还没走盲对拼/对抗审)→ ④第二梯队 F3(带显式 all-ports-active 前提)→ ⑤F5 复合安全引理/TNS lex 支配/TP7-S nogood 键边界。F8 等 P1.3 欧氏 vs 12×12 方形 stencil reconcile。完备性 Q1 = 先写「不可行类分类学」设计稿(走独立审查链),不是 Lean 任务(theorem domain 都没定义,八个定义层缺口列在 survey/completeness.md)。
+== 下一批砖(2026-07-05 当日 Lean 侧排队项①-⑤全部清空,main 517dbda→37965f6→ba17355)==
+已完成:~~①装 mathlib~~ ✓(v4.31.0,manifest 锁 rev;zmd_formal_dev 有 ~4.5GB 缓存)→ ~~②anon_lift_sound~~ ✓(DesignStatements.lean 全链)→ ~~③第一梯队 6 family 核心~~ ✓(CutFamilies 15 条)→ ~~④F3~~ ✓(all-ports-active 显式量化+frontCell 抽象参数)→ ~~⑤F5 复合安全(零公理)+frontier lex 剪枝+TP7-S 等式键边界~~ ✓(FrameworkLemmas 9 条,各带正反两面:无 P-HOM 删光反例/选中集式 nogood 过切反例)。
+剩余(按序):❶**送审**——CutFamilies+FrameworkLemmas 两模块 26 条的陈述是本方写的(锚 survey 报告/设计稿原文),没走盲对拼/对抗审,与首批同流程打包 GPT Pro;❷完备性 Q1 =「不可行类分类学」设计稿(非 Lean,走独立审查链;八个定义层缺口在 survey/completeness.md);❸组合定理(f5_compound_safety 的 hcut_sound 用 anon_lift_sound 实例化,打通 oracle→cut→搜索空间全链);❹F8 等 P1.3 stencil reconcile;❺TP7-D 周期日历证书验收语义。
 Lean 施工经验(30 条趟出来的,后续照用):▸ 的 motive 搜索会丢类型 ascription→包 private def(castSnd 模式)走 unifier defeq;`{ι : Type*}` 在 def 里=下游定理的刚性 universe 参数→下游特化 .{u,v,max v w};依赖 cast 用「先 subst 后显式化」引理组(groupSlot_cast/atom_cast_eq);fiber 拼装用 Equiv.sigmaFiberEquiv+Embedding.sigmaMap(双参,第一个传 refl)全程 defeq,别用 generalize+subst 碰依赖上下文;native_decide 引 ofReduceBool 公理,小反例一律纯 decide(先 show 展开 def 才能合成 Decidable 实例)。
 
 == 首轮审查回收要点(纪律沿用)==
