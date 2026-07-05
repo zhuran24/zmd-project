@@ -1113,6 +1113,9 @@ P1.2 是一个断言：solver 的 certified-exact 结果**可被 durably sealed 
 
 **一句话**：除 #3/#9b/#9c（暂缓）与 #6（决定不建）外，仍 open/partial 的是 #1 整体闭包（受求解器硬地板 + ② defer 限）、#2 残余（≈#3）、**#5 B2 独立枚举**、#5-F part3（floor 兜住）、#8 深化、#9a production bytes（deploy-pending）。**不是「除暂缓项外全 done」。**
 
+**2026-07-06 更新（PR2 #5 B2 Option A 落地 `16495f4`；文档注 `25e530c`）**：#5 B2 的**字节级**独立枚举已闭——child 在 terminal precheck 后**无条件**从冻结 `canonical_rules` 用 `placement_generator.generate_all_pools` 重推 candidate 几何、断言 `sha256 == 被钉 candidate_placements 字节`，不等即 fail-closed（受信基由「信 45MB 不透明字节」收缩为「信生成器源码〔已入 V99 floor〕 + canonical_rules」；命根子实测：生成器 ~1.5s 逐字节复现被钉字节）。checker 结构性钉死该 gate（进 child 期望 tail + 必调列表）。故上文 1107/1114「#5 B2 open／最实的未闭」**降级为「字节级已闭、下述残余 owner-only」**。**仍 open 的 B2 残余**：把 candidate_placements 彻底移出证明权威（Option B／契约迁移，`PROJECT_LOCK §1A`）是 owner-only；且这是**同生成器重推证字节等值、非独立重实现**。详见卡 `pr2-5-b2-candidate-geometry-rederivation-landed`。
+> ⚠ **术语撞车**（坑过多次）：此「B2」= PR2 **#5** 候选**几何**域（candidate_placements）；**≠** §3「PR2-b B2」mint-floor 假-CERTIFIED 信道（早落 `69980b3`）；也 **≠** frontier **尺寸**域 `candidate_generation`（那个 anti-slice/穷尽早已独立锚定、有 PR2#5 切片拒绝测试）。三者同名不同物。
+
 ---
 
 ## 3. PR2-b（B1/B2 假-CERTIFIED 信道）—— 已落 `69980b3`+`592ea13`

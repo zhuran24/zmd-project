@@ -88,7 +88,7 @@ owner 2026-07-04 拍定的主线推进计划(问过 Fable + pytest 提速线程)
 
 **阶段2(中,两个 reseal 批)**
 - **批2a = #2+#3 一起**:受控 loader 最小快照 + fd-held read-once 是同一条接缝(child 怎么读字节),拆开做互相返工;顺手收押后的 resume-envelope finding(README 归到 #2/#3 envelope 硬化)。
-- **批2b = #5 的 B2 候选域独立枚举**:child 不再全信 producer 的 candidate_generation(`pr2_l0_true_verifier_child` ~403-417)。放 #2/#3 之后,让 B2 新读取逻辑直接长在 fd-held 语义上,不先写 path-read 再改一遍。
+- **批2b = #5 的 B2 候选域独立枚举** —— **DONE(Option A)2026-07-06 `16495f4`**:B2 真实内容是 child 独立重推 **candidate_placements 几何**、断言 sha == 被钉字节(**不是** candidate_generation 尺寸域——那早已从冻结 canonical_rules 独立锚定;本行原文"不信 candidate_generation ~403-417"是**误框**,曾坑本会话两次,见 [[pr2-5-b2-candidate-geometry-rederivation-landed]])。#3 defer 后"长在 fd-held 语义上"的前置不再成立,B2 直接长在当前 path-read 语义落地,无返工。残余 = Option B(把 candidate_placements 移出证明权威=契约迁移)owner-only、未做。
 
 **阶段3(硬骨头,child 内容定型后)**
 - 先 **#5-F part3 设计 spike**:给 owner 三选一(A 追全 import-time 副作用 / B 重构最小化 close-kernel TCB 的 import-time 执行 / C 接受残余+V99 whole-file floor+人工 reseal 兜底)。**必须在 #1 动工前拍**——选 B 会直接改 #1 的做法,且 README 提过 #1 重构路线可能顺手溶解大半 F/A4 残余,比逐形态巡逻划算。
