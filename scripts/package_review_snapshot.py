@@ -30,6 +30,12 @@ PACKAGE_EXCLUDED_EXACT_NAMES = frozenset(
         "claude.md",
     }
 )
+# Agent/collaboration infrastructure that is NOT part of the reviewed project artifact and must
+# never leak into an external review snapshot: agent settings/hooks (.claude/, .codex/), live
+# session scratch (_cc_live_memory/, cc_context/), and the two persistent memory subsystems
+# (cc_memory/ = pull-type SQLite history incl. owner rulings/internal reasoning; cc_memory_vnext/
+# = push-type cards incl. internal gap maps). These are the same category as the already-excluded
+# siblings; they were simply missing from this list. The reviewed surface is src/rules/data/docs.
 PACKAGE_EXCLUDED_PATH_PREFIXES = (
     ".artifacts/",
     ".claude/",
@@ -37,6 +43,8 @@ PACKAGE_EXCLUDED_PATH_PREFIXES = (
     "P1_2_TECHNICAL_CLOSE_PACKET/",
     "_cc_live_memory/",
     "cc_context/",
+    "cc_memory/",
+    "cc_memory_vnext/",
     "补丁包/",
 )
 PACKAGE_EXCLUDED_PATH_SEGMENTS = frozenset(
