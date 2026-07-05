@@ -17,8 +17,8 @@
 | PR2 small/read-once verifier TCB | **OPEN** | 设计文档有目标，当前无完整 controlled-loader/read-once implementation | P1.2 关闭前仍需实现、红测和重新封存 |
 | immutable review snapshot | **IMPLEMENTED** | `package_review_snapshot.py` 的 `build_package()` 将 treeish 一次 resolve 为 immutable commit，provenance/manifest/`_materialize_tree` 三处统一用该 resolved commit；回归测试 `test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit` 钉住 ref-move TOCTOU 场景 | archive policy 覆盖完整性另见下一行（仍 PARTIAL）；IMPLEMENTED ≠ P1.2 CLOSED |
 | archive policy completeness | **PARTIAL** | 已过滤 prompt、旧包、嵌套 archive、`.artifacts`/packet 等 | 仍需按 review policy 补齐敏感/非审查面覆盖，并加回归 |
-| boundary-placement independent rederive | **OPEN/PARTIAL** | generation-time guard + pinned artifact；没有统一 terminal rule rederive | 进入 P1.2 close 判断前按 owner scope 决定是否列入 required verifier |
-| canonical→geometry shared primitives | **PARTIAL / NAMED TCB** | active path 有局部重导；cut helpers 仍可能各自解释覆盖/方向 | 在 F1–F9 真接入 certified master 前必须统一 canonical primitives |
+| boundary-placement independent rederive | **OPEN/PARTIAL** | generation-time guard + pinned artifact + 封印期字节重推 gate（`16495f4`，child 无条件、同生成器重推全 pools 断言 sha==被钉字节） | 统一 terminal 字节重推已补；独立重实现 / 移出证明权威（Option B）仍 open，按 owner scope 决定 |
+| canonical→geometry shared primitives | **PARTIAL / NAMED TCB** | **字节级** canonical→geometry 已由重推 gate 交叉验证（`16495f4`）；active path 有局部重导；cut helpers 仍可能各自解释覆盖/方向（语义未统一） | 在 F1–F9 真接入 certified master 前必须统一 canonical primitives |
 | discrete throughput / belt bandwidth | **OUT OF SCOPE BY DESIGN** | `flow_subproblem.py` diagnostic-only；benders 不以 flow verdict gate | 不是“待补一条测试”的 gap；若要纳入需改变 theorem scope 和新 proof paradigm |
 | P1.2 owner gate | **BLOCKED** | `status=blocked_manual_review_count`, `p1_3b_entry_allowed=false` | 只有 owner 显式 decision 可打开，仓库不得从测试、receipt 或 seal 自动推导 |
 

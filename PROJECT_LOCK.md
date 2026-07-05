@@ -96,6 +96,14 @@ checks as certified proof"）。
 > canonical 规则 → 几何字节的映射（例如 `power_coverage_radius=5` 对应 12×12 方形覆盖，
 > `placement_generator.py:400-415`）是 owner 确认的规格事实和命名 TCB；它不是 P1.2 已由代码
 > 自动证明的定理。
+>
+> **2026-07-06 更新（PR2 #5 B2 / `16495f4`）**：candidate_placements 的**字节**已被封印期重推 gate
+> `canonical_candidate_geometry_rederivation_violation`（`pr2_l0_artifact_core.py`，L0 true child 在
+> terminal precheck 后无条件调用）交叉验证——verifier 从冻结 `canonical_rules` 用
+> `placement_generator.generate_all_pools` 重推、精确紧凑序列化、断言 `sha256 == LOCKED_EXACT_ARTIFACT_SHA256["candidate_placements"]`，
+> 不等即 fail-closed。受信基由「信 45MB 不透明字节」收缩为「信生成器源码（已入 V99 floor 整文件钉死）+ canonical_rules」。
+> **仍为命名 TCB**：生成器源码本身、及 canonical 规则 → 几何**语义**映射（非字节）未被独立重实现证明；
+> 把 candidate_placements 彻底移出证明权威（Option B / 契约迁移，本文件 §1A「certified 立足于…」）未做。
 
 ### B. EXPLICITLY OUT-OF-SCOPE（certified 不证、不得冒充）
 
