@@ -103,7 +103,10 @@ checks as certified proof"）。
 > `placement_generator.generate_all_pools` 重推、精确紧凑序列化、断言 `sha256 == LOCKED_EXACT_ARTIFACT_SHA256["candidate_placements"]`，
 > 不等即 fail-closed。受信基由「信 45MB 不透明字节」收缩为「信生成器源码（已入 V99 floor 整文件钉死）+ canonical_rules」。
 > **仍为命名 TCB**：生成器源码本身、及 canonical 规则 → 几何**语义**映射（非字节）未被独立重实现证明；
-> 把 candidate_placements 彻底移出证明权威（Option B / 契约迁移，本文件 §1A「certified 立足于…」）未做。
+> 把 candidate_placements 彻底移出证明权威（Option B / 契约迁移，本文件 §1A「certified 立足于…」）未做——
+> 暂缓判据（2026-07-06 派 3 路 codex 核实：P1.2 close 不要求它、按 owner scope 决定；它比 Option A 多关的是**窄 TOCTOU/
+> 多读一致性残余**〔terminal precheck 活读未被 A digest 专绑；主求解器/fixed-witness 已 snapshot-bound〕、与已暂缓 #3/#9b
+> 同族；迁移成本 ~20 文件/9 子系统）见记忆卡 `pr2-5-b2-candidate-geometry-rederivation-landed`。
 
 ### B. EXPLICITLY OUT-OF-SCOPE（certified 不证、不得冒充）
 
