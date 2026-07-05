@@ -61,4 +61,6 @@ updated_at: "2026-07-06"
 
 **hook 强制层已改为条件生效（owner 2026-07-06 指令）**：`pre_tool_risk_gate.py` 的并发形状（git-add-broad / git-commit-all / git-commit-no-pathspec / git-push-force / rm-rf / remove-item-recurse-force）现在只在检测到多个 CC 会话时拦（CLI 进程计数 + 本项目 transcript 近 30min 活跃探针；检测异常按多会话 fail-safe）。所以**单会话环境 hook 不拦 ≠ 纪律失效**——机器判定单会话时冲突对象不存在，`git add -A` 等才被放行；一旦多会话，拦截照旧。frozen-artifact-write 与并发无关，任何时候都拦。
 
+**单会话残留 staged 关卡（owner 2026-07-06 二次追加）**：已退出会话 staged 进共享 index 的内容不随会话消失、也超出 30min transcript 窗口——所以单会话判定后 commit 类形状（裸 commit / commit -a）还要过一道「购物车检查」：`git diff --cached --name-only` 空才直接放行；非空或查不出 → 默认阻止 + 列出 staged 清单让自查 + 120s 内原样重发确认放行。带精确 pathspec 的提交、add 类、worktree 私有 index 不查。
+
 **对偶坑（2026-06-28 PR2-b 实证）：pathspec 不仅别多扫、也别漏。** 显式 pathspec 提交 reseal/close-kernel 类改动时，若 pins 引用的被修改文件未一并提交，就会出现提交树里 pins 期望新 sha、文件仍是旧版，CI close-kernel checker 报 source-hash drift（本地 `--full` 读磁盘工作树会过、CI 读已提交树才挂）。所以 pathspec 要【精确等于】这次逻辑改动的完整一致集：用 `git status` 枚举所有相关 `M`（尤其建在别会话未提交改动之上时），push 前核对 `git show HEAD:<file>` 的 sha = 钉死表期望值。详 cc_memory `pathspec-must-cover-full-reseal-set`。
