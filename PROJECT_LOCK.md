@@ -152,6 +152,8 @@ fixed-witness 拒绝路径关闭，不应继续列作未实现项。人类文档
 现有 `p1_3b_*` 字段仅为历史机器兼容标识。任何 checker PASS、局部回归 PASS 或内部 supervisor
 seal 都不得改写为 owner 已关闭 release gate。
 
+**2026-07-06 close-scope 修改（owner，行使 `docs/项目说明/12_go_criteria.md:30`「或 owner 明确修改 close scope」）**：上文列为未决的「PR2 更小/read-once/controlled-loader verification TCB」及其同类——凡**只防「能执行 reseal 仪式的蓄意内鬼」**的硬化（#8 深化、#3 fd-held read-once、#9b OS 写隔离、#9c 原生 TOCTOU、#5-F import-time 完整性、#5 Option B、#2）——owner 统一**暂缓到发布时点、明确不作为 P1.2 闭合的必要条件**。判据：手滑/无心之失与外部篡改已被字节 sha floor 常开拦死（不延期、是核心），这些锚只对忠实 reseal 后的蓄意内鬼有意义（威胁模型定性见 `close-kernel-threat-model-reseal-adversary`）。提取全集＋判据＋何时翻转见记忆卡 `deliberate-insider-hardening-deferred-to-release`。此修改**不**改写 P1.2 仍 OPEN/BLOCKED（owner 手动门未关）；它只把这些从「收口编码前提」移到发布时点。
+
 ### C. P1.2 done-condition (C5)
 
 > **当前状态（2026-06-26）：OPEN / BLOCKED。** PR1 的 producer/supervisor mint split、fixed-witness

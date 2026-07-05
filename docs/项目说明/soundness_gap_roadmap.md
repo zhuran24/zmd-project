@@ -29,7 +29,7 @@ P1.2 只有在以下条件同时成立时才能改写为 closed：
 1. producer 只提交 proposal，并存在受支持、可审计的独立 supervisor invocation surface；public publisher 保持单入口；
 2. fixed-witness、sink replay、terminal evidence 和 disk-current checks 全部 fail-closed；
 3. P1.2 publish gate 明确 owner-closed；
-4. PR2 TCB、snapshot immutability 和 archive policy 未决项完成并有红测；
+4. PR2 TCB、snapshot immutability 和 archive policy 未决项完成并有红测；（owner 2026-07-06：其中「仅防蓄意内鬼」的 PR2 TCB 硬化——#8 深化/#3/#9b/#9c/#5-F/Option B/#2——已移至**发布时点、非 P1.2 close 前提**，见卡 `deliberate-insider-hardening-deferred-to-release`；此处 PR2 TCB 未决项不再含它们，snapshot immutability/archive policy 等常开项照旧。）
 5. close-kernel checker、targeted soundness tests 和要求的 full gate 在同一工作树通过；
 6. owner 显式关闭 manual gate。
 
