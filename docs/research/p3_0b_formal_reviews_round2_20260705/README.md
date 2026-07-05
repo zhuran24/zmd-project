@@ -1,8 +1,15 @@
 # P3.0b 第二轮独立审查归档（2026-07-05）
 
-**对象**：`formal/ZmdFormal/CutFamilies.lean`（17 条）+ `FrameworkLemmas.lean`
+**对象一**：`formal/ZmdFormal/CutFamilies.lean`（17 条）+ `FrameworkLemmas.lean`
 （9 条）的陈述保真。三路：对抗审 CutFamilies（双会话）、对抗审
 FrameworkLemmas（双会话）、盲形式化对拼（26 条独立陈述）。
+**对象二**（后续回传）：Q1 不可行类分类学设计稿 v1 的对抗审（双会话，
+`taxonomy_audit_session1/2.md`）——会话 1 判"架构级重写"、会话 2 判
+"修复后可作 Q1a 基准"，实质收敛：量词层错位（Q1 原文是 partial
+assignment）、语义/观测域分层、C6 双重身份、owner lemma 缺 refinement
+与两状态 scope、S 裁定过强。v2 已按两份修复文本重写
+（`docs/research/q1_infeasibility_class_taxonomy_design_v1.md` 头部标 v2，
+修订记录见其 §10）。
 
 **回收结论**：三方高度收敛——盲方在未见我方 Lean 的情况下独立做出的
 关键抽象选择（F3 用 multiset、F6 fire 用跨侧组合、F5 用删整类前提 +
