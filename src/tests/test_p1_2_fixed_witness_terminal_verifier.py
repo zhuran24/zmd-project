@@ -35,6 +35,9 @@ from src.search.exact_campaign import (
     terminal_certified_final_result_project_precheck_violation,
     terminal_certified_final_result_violation_for_project,
 )
+from src.search.pr2_l0_artifact_core import (
+    canonical_candidate_geometry_rederivation_violation,
+)
 from src.search.terminal_fixed_witness_capsule import (
     TERMINAL_FIXED_WITNESS_CAPSULE_AUTHORITY,
     TERMINAL_FIXED_WITNESS_CAPSULE_RESPONSE_SCHEMA_VERSION,
@@ -53,6 +56,51 @@ def _write_json(path: Path, payload: object) -> None:
     path.write_text(
         json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
         encoding="utf-8",
+    )
+
+
+def test_canonical_candidate_geometry_rederivation_matches_real_project_root() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+
+    assert canonical_candidate_geometry_rederivation_violation(project_root=project_root) is None
+
+
+def test_canonical_candidate_geometry_rederivation_fails_closed_for_mismatch_and_invalid(
+    tmp_path: Path,
+) -> None:
+    mismatch_root = tmp_path / "mismatch"
+    mismatch_root.mkdir()
+    (mismatch_root / "PROJECT_LOCK.md").write_text("locked test root\n", encoding="utf-8")
+    _write_json(
+        mismatch_root / "rules" / "canonical_rules.json",
+        {
+            "facility_templates": {
+                "power_pole": {
+                    "dimensions": {"w": 2, "h": 2},
+                    "is_solid_z": True,
+                    "needs_power": False,
+                    "port_rule": "none",
+                    "power_coverage_radius": 5,
+                    "rotatable": False,
+                }
+            }
+        },
+    )
+    assert (
+        canonical_candidate_geometry_rederivation_violation(project_root=mismatch_root)
+        == "canonical_candidate_geometry_rederivation_mismatch"
+    )
+
+    invalid_root = tmp_path / "invalid"
+    invalid_root.mkdir()
+    (invalid_root / "PROJECT_LOCK.md").write_text("locked test root\n", encoding="utf-8")
+    _write_json(
+        invalid_root / "rules" / "canonical_rules.json",
+        {"facility_templates": []},
+    )
+    assert (
+        canonical_candidate_geometry_rederivation_violation(project_root=invalid_root)
+        == "canonical_candidate_geometry_rederivation_invalid"
     )
 
 

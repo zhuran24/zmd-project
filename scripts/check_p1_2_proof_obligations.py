@@ -61,7 +61,7 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "692519fd6e228df0602aa1627628ed9b54aec177a4615b8c063534273094359f"
+    "8705174356d9eb24079faec665fe7bd2b9a5d124e358b214175a1931b31326c2"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
@@ -4625,6 +4625,7 @@ _PR2_MUTATING_MAPPING_METHODS = frozenset(
 _PR2_CHILD_AUTHORITY_IMPORT_MODULE = "src.search.pr2_l0_artifact_core"
 _PR2_CHILD_AUTHORITY_NAMES = frozenset(
     {
+        "canonical_candidate_geometry_rederivation_violation",
         "terminal_certified_final_result_project_precheck_violation",
         "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
     }
@@ -4669,6 +4670,7 @@ _PR2_CHILD_DOMAIN_IMPORTFROM_ALLOWLIST = {
     "src.search.pr2_l0_artifact_core": frozenset(
         {
             "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
+            "canonical_candidate_geometry_rederivation_violation",
             "terminal_certified_final_result_project_precheck_violation",
         }
     ),
@@ -5302,6 +5304,18 @@ def _is_precheck_assign(stmt: ast.AST) -> tuple[str, ast.Call] | None:
     return None
 
 
+def _is_geometry_rederivation_assign(stmt: ast.AST) -> tuple[str, ast.Call] | None:
+    if (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and isinstance(stmt.targets[0], ast.Name)
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "canonical_candidate_geometry_rederivation_violation"
+    ):
+        return stmt.targets[0].id, stmt.value
+    return None
+
+
 def _if_consumes_precheck_result(stmt: ast.AST, result_name: str) -> bool:
     if not isinstance(stmt, ast.If):
         return False
@@ -5435,6 +5449,20 @@ def _check_child_precheck_call_exact(call: ast.Call) -> list[str]:
     ]
 
 
+def _check_child_geometry_rederivation_call_exact(call: ast.Call) -> list[str]:
+    if (
+        not call.args
+        and len(call.keywords) == 1
+        and call.keywords[0].arg == "project_root"
+        and _is_name(call.keywords[0].value, "project_root")
+    ):
+        return []
+    return [
+        "PR2 true verifier child candidate-geometry rederivation call must be exactly "
+        "canonical_candidate_geometry_rederivation_violation(project_root=project_root)"
+    ]
+
+
 def _check_child_post_precheck_tail(body: Sequence[ast.stmt], consume_idx: int) -> list[str]:
     errors: list[str] = []
     expected_arg_records = ast.Call(
@@ -5443,6 +5471,18 @@ def _check_child_post_precheck_tail(body: Sequence[ast.stmt], consume_idx: int) 
         keywords=[],
     )
     expected_tail: list[tuple[str, Callable[[ast.stmt], bool]]] = [
+        (
+            "geometry_reason = canonical_candidate_geometry_rederivation_violation(project_root=project_root)",
+            lambda stmt: (
+                (assign := _is_geometry_rederivation_assign(stmt)) is not None
+                and assign[0] == "geometry_reason"
+                and not _check_child_geometry_rederivation_call_exact(assign[1])
+            ),
+        ),
+        (
+            "if geometry_reason is not None: raise ...",
+            lambda stmt: _if_consumes_precheck_result(stmt, "geometry_reason"),
+        ),
         (
             "final_digest = _canonical_digest(certified_final_result)",
             lambda stmt: _canonical_digest_assign(
@@ -5488,7 +5528,8 @@ def _check_child_post_precheck_tail(body: Sequence[ast.stmt], consume_idx: int) 
     if len(tail) != len(expected_tail):
         errors.append(
             "PR2 true verifier child post-precheck tail must be exactly "
-            "3 digest assignments, 3 digest mismatch raises, and the final return"
+            "the geometry rederivation gate, 3 digest assignments, "
+            "3 digest mismatch raises, and the final return"
         )
         return errors
     for offset, (description, predicate) in enumerate(expected_tail):
@@ -6454,7 +6495,7 @@ _PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY = (
     'if getattr(fixed_verdict, "publishable", False) is not True:\n        fixed_violations[str(getattr(fixed_verdict, "candidate_key", None) or "*")] = str(\n            getattr(fixed_verdict, "reason", None) or "terminal_fixed_witness_rejected"\n        )',
     'if fixed_violations:\n        first_key = sorted(fixed_violations)[0]\n        raise ValueError(f"terminal fixed witness verifier failed:{fixed_violations[first_key]}")',
     'from src.search.pr2_l0_frontier_core import (\n        build_terminal_frontier_evidence,\n        candidate_generation_kwargs,\n        generate_candidate_sizes,\n    )',
-    'from src.search.pr2_l0_artifact_core import (\n        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n        terminal_certified_final_result_project_precheck_violation,\n    )',
+    'from src.search.pr2_l0_artifact_core import (\n        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n        canonical_candidate_geometry_rederivation_violation,\n        terminal_certified_final_result_project_precheck_violation,\n    )',
     'proposal_evidence = _require_mapping(\n        authority_state.get("terminal_frontier_evidence"),\n        "terminal_frontier_evidence",\n    )',
     'candidate_generation = _require_mapping(\n        proposal_evidence.get("candidate_generation"),\n        "candidate_generation",\n    )',
     'candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))',
@@ -6469,6 +6510,8 @@ _PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY = (
     'scratch_state.pop("supervisor_proposal", None)',
     'precheck_reason = terminal_certified_final_result_project_precheck_violation(\n        scratch_state,\n        project_root=project_root,\n    )',
     'if precheck_reason is not None:\n        raise ValueError(f"terminal project precheck failed:{precheck_reason}")',
+    'geometry_reason = canonical_candidate_geometry_rederivation_violation(\n        project_root=project_root,\n    )',
+    'if geometry_reason is not None:\n        raise ValueError(\n            f"terminal candidate geometry rederivation failed:{geometry_reason}"\n        )',
     'final_digest = _canonical_digest(certified_final_result)',
     'evidence_digest = _canonical_digest(evidence)',
     'records_digest = _canonical_digest(_stable_fixed_witness_candidate_records(durable_records))',
@@ -6776,7 +6819,7 @@ _PR2_L0_TCB_FUNCTION_SOURCE_SHA256 = {
     "_dependency_file_top_level": "bbd81b3a8476689a5f8835820952e3131f51a584e54954dd751fb3544ed33c4c",
     "_dependency_floor_root": "0768d2a1aea729323527c198a067431e011fc9bf3f7074e139c5dbaa189a82af",
     "_dependency_named_tcb_violation": "24bf66ab8b3f2fcc7d000e7149dd15958cc8baab25b21f53300a7b6ea30bff94",
-    "_discover_project_snapshot_modules": "bf55d1d4c5a9b8c1483eac41b79ed72fcab7dabfe57c03421d51128f4525dbb0",
+    "_discover_project_snapshot_modules": "9da720e1f3da63efc98fb2e1730c4b267ab979e62d739c8411dd0eb4765daf8f",
     "_domain_response_violation": "a58fcb21065c7aab4b4a0b0a4779cb2c93e397aaef6e031cd98b37b594d4eedb",
     "_floor_digest": "f99a8a573213baec45deba01692d5f12d07ff150f85a886c484dce260187b4fb",
     "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
@@ -6858,7 +6901,7 @@ _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
     "_strict_string": "0eb6e1751b768a278a8056f2327d16fae030eb5c2fb5bfdec3bb6b8eaafaa103",
     "_string_list": "3e11de384e5809b24713779aae4ce234ba8278b3831ef2ea567333bfc0a5c00a",
     "_valid_top_level_name": "1d0d7e89abcb04884eb05becb12fbf4f75f48d14eb296ebd1feec8f7f73e2ba7",
-    "_verify_supervisor_domain": "be5a90199b94b4aadd1ab591d90eed8f8ba9ac93251a0e00a81cc496c3d5eb8a",
+    "_verify_supervisor_domain": "0b5fa0b48282dd4eca526cf4682fd2380758d6a7bbc75a0c08cb260077c3e81f",
     "verify": "1bcf13acf3e89d51a1cb4707ad8927e9218ba09b7875857d3ca60c75c6738b76",
 }
 _PR2_L0_TCB_CONSTANT_SOURCES = {
@@ -7045,6 +7088,7 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "_validated_mandatory_exact_instances_payload": "b307dd5161420576911d556b064c97d7957e36f0d5c7f760d4d8fbe71c3fe276",
     "atomic_write_json": "557fc8ea38e175d35898f7028cc97849e8deafe8e27287486580c59126582bd0",
     "candidate_key": "0a3b51c9d97a58f62dc099850c417c5927b3cf397458836997abd0ebfbd4b1be",
+    "canonical_candidate_geometry_rederivation_violation": "978f918a852e80a108cdda7912ba2e1495ac76ae61430c227090104db49acf28",
     "certified_terminal_evidence_violation": "04acdf7b4a65cc32014e8a5ef8c916a88204f52b5e477dd487bf573701cc81bf",
     "compute_certified_exact_source_digest": "b255a4ed3c05bbde4fe4a1db1968c06aba7dacaf46af361b67e89c86b949c2c9",
     "compute_exact_artifact_hashes": "db24b961f4836f373d9078117936ed34760dfecc7b9fb888dd64a62f6e8be130",
@@ -7070,6 +7114,7 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
 _PR2_EXACT_TCB_ARTIFACT_CORE_SOURCE_PIN_NAMES = frozenset(
     {
         "compute_exact_artifact_hashes",
+        "canonical_candidate_geometry_rederivation_violation",
         "terminal_certified_final_result_project_precheck_violation",
     }
 )
@@ -11406,6 +11451,7 @@ def _check_candidate_sink_replay_contract(
         "_project_candidate_records_direct",
         "_run_fixed_witness_direct",
         "build_terminal_frontier_evidence",
+        "canonical_candidate_geometry_rederivation_violation",
         "terminal_certified_final_result_project_precheck_violation",
     ):
         if not _calls_function(child_domain_fn, required_call):
@@ -12923,12 +12969,13 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/phase3b/anchor119/guard_controls.py': '505490c75a1ee029cc378b8ff784b213d01b3f8c0da425fea21d504e3f434c9a',
     'src/search/phase3b/anchor119/guarded_precheck_runtime.py': '4c8ebb13c4c9e0fd9e3c6e614a185183e975fd365421ef95cbf2eb5ae5098aa2',
     'src/search/phase3b/anchor119/guarded_precheck_spec.py': '2a8c414eedaf42e6685a58922a9812e8a531821cadbe5fdfce860948fea3f86c',
-    'src/search/pr2_l0_artifact_core.py': '818475b12c3ab3db38fdfa274b21cdb77e4fa085ea28db2ea368646f4c0735a7',
+    'src/placement/placement_generator.py': '2bab6ebfd15244c3c221674b9feb6dc320804dd4e408ed8c9408015d6962e6e8',
+    'src/search/pr2_l0_artifact_core.py': '9f66ea0af358d24413a49b0cbc0c9db750109537444453eba577002b72bca81f',
     'src/search/pr2_l0_fixed_witness_core.py': 'abce5361619402d340e2a849999cda259ac6f054f0fb100bc0dcba1806f6845f',
     'src/search/pr2_l0_frontier_core.py': 'b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b',
-    'src/search/pr2_l0_micro_verifier_core.py': 'c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b',
+    'src/search/pr2_l0_micro_verifier_core.py': '996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544',
     'src/search/pr2_l0_replay_core.py': 'f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2',
-    'src/search/pr2_l0_true_verifier_child.py': '5d633290dfb5f0aa13d9ca4c6b1ff9ed8cb2a26e0f126b95a0e2f49c3d6e83c9',
+    'src/search/pr2_l0_true_verifier_child.py': 'a62927ea934d135af820c4880f96c729caaf0c1c9f3e7cd97502f2e8708362cf',
     'src/search/routing_deletion_core_minimizer.py': '9bfa5588d5b56dc098800d9b88a7f65df6a1552d21ad752b6a3a828af576af26',
     'src/search/separator_capacity_separator.py': '1fd8a3c694f0c4a406c7eb7a46f7ddc290dcc8fc41e2f518977975fa98f58229',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',

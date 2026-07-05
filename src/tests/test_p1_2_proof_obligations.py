@@ -623,6 +623,7 @@ def _child_local_def_shadow_precheck(source: str) -> str:
     import_block = (
         "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
@@ -647,6 +648,7 @@ def _child_setattr_monkeypatches_precheck(source: str) -> str:
     import_block = (
         "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
@@ -912,6 +914,7 @@ def _child_code_object_monkeypatches_precheck(source: str) -> str:
     import_block = (
         "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
@@ -929,6 +932,7 @@ def _child_globals_monkeypatches_precheck(source: str) -> str:
     import_block = (
         "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
@@ -946,6 +950,7 @@ def _child_importfrom_builtins_setattr_alias(source: str) -> str:
     import_block = (
         "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )

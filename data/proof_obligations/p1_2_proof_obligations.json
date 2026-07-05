@@ -986,7 +986,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "3c2d476ee7d086efaede1955c8f7c0a6e3fb0b667e44bc2b525f956716ecbe57",
+      "source_sha256": "f999f1cfb2453680e66bf9e5aad18308c14b025901e16552dd1e5193045264f3",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1809,7 +1809,7 @@
       {
         "path": "src/search/pr2_l0_artifact_core.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "818475b12c3ab3db38fdfa274b21cdb77e4fa085ea28db2ea368646f4c0735a7",
+      "source_sha256": "9f66ea0af358d24413a49b0cbc0c9db750109537444453eba577002b72bca81f",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
@@ -1874,7 +1874,7 @@
       {
         "path": "src/search/pr2_l0_micro_verifier_core.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "c584cbd2f1c3937df0104de3c53316fc18a56c6865b862b35218f06411a37a5b",
+      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
@@ -1932,7 +1932,7 @@
       {
         "path": "src/search/pr2_l0_true_verifier_child.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "5d633290dfb5f0aa13d9ca4c6b1ff9ed8cb2a26e0f126b95a0e2f49c3d6e83c9",
+      "source_sha256": "a62927ea934d135af820c4880f96c729caaf0c1c9f3e7cd97502f2e8708362cf",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",

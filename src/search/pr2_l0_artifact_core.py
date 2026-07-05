@@ -14,7 +14,9 @@ from src.models.master_model import (
     load_generic_io_requirements_artifact,
 )
 from src.search.certified_artifact_contract import (
+    LOCKED_EXACT_ARTIFACT_SHA256,
     LOCKED_EXACT_ARTIFACT_PATHS,
+    certified_project_uses_locked_artifact_contract,
     validate_locked_exact_artifact_contract,
     validate_locked_p1_2_close_kernel,
 )
@@ -119,6 +121,7 @@ __all__ = (
     "EXACT_HASH_FILES",
     "MISSING_OPTIONAL_EXACT_ARTIFACT_HASH",
     "OPTIONAL_EXACT_HASH_FILES",
+    "canonical_candidate_geometry_rederivation_violation",
     "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
     "compute_certified_exact_source_digest",
     "compute_exact_artifact_hashes",
@@ -614,6 +617,35 @@ def _load_exact_facility_templates(project_root: Path) -> Dict[str, Dict[str, An
             raise ValueError(f"facility template {facility_type!r} must be a JSON object")
         templates[str(facility_type)] = dict(raw_template)
     return templates
+
+
+def canonical_candidate_geometry_rederivation_violation(*, project_root: Path) -> Optional[str]:
+    try:
+        resolved_project_root = Path(project_root).resolve()
+        if not certified_project_uses_locked_artifact_contract(resolved_project_root):
+            return None
+        rules_path = resolved_project_root / EXACT_HASH_FILES["canonical_rules"]
+        payload = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
+        if not isinstance(payload, Mapping):
+            raise ValueError("canonical_rules must be a JSON object")
+        raw_templates = payload.get("facility_templates")
+        if not isinstance(raw_templates, Mapping):
+            raise ValueError("canonical_rules.facility_templates must be a JSON object")
+        facility_templates = dict(raw_templates)
+        from src.placement.placement_generator import generate_all_pools
+
+        pools = generate_all_pools(facility_templates)
+        blob = json.dumps(
+            {"facility_pools": pools},
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+        sha256 = hashlib.sha256(blob).hexdigest()
+        if sha256 != LOCKED_EXACT_ARTIFACT_SHA256["candidate_placements"]:
+            return "canonical_candidate_geometry_rederivation_mismatch"
+        return None
+    except Exception:
+        return "canonical_candidate_geometry_rederivation_invalid"
 
 
 def _pose_occupied_cells(pose: Mapping[str, Any], *, field: str) -> list[tuple[int, int]]:

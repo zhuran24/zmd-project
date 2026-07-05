@@ -411,6 +411,7 @@ def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict
     )
     from src.search.pr2_l0_artifact_core import (
         TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        canonical_candidate_geometry_rederivation_violation,
         terminal_certified_final_result_project_precheck_violation,
     )
 
@@ -460,6 +461,13 @@ def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict
     )
     if precheck_reason is not None:
         raise ValueError(f"terminal project precheck failed:{precheck_reason}")
+    geometry_reason = canonical_candidate_geometry_rederivation_violation(
+        project_root=project_root,
+    )
+    if geometry_reason is not None:
+        raise ValueError(
+            f"terminal candidate geometry rederivation failed:{geometry_reason}"
+        )
 
     final_digest = _canonical_digest(certified_final_result)
     evidence_digest = _canonical_digest(evidence)

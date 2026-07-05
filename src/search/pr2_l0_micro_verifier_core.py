@@ -436,6 +436,7 @@ def _discover_project_snapshot_modules(source_root: Path) -> tuple[str, ...]:
         "src.models.routing_subproblem",
         "src.models.separator_capacity_hull",
         "src.models.solution_hint_parser",
+        "src.placement.placement_generator",
         "src.preprocess.operation_profiles",
         "src.search.certified_artifact_contract",
         "src.search.commodity_throughput",
