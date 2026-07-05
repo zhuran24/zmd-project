@@ -10,6 +10,11 @@
 - **OWNER-CLOSED**：owner gate 显式记录关闭。
 - **P1.2 CLOSED**：技术边界、要求的验证、包材边界与 owner gate 同时满足。
 - **SUPERVISOR OPERABLE**：存在受支持、可审计的生产 supervisor invocation surface；当前不成立。
+  （2026-07-05 注：本行"当前不成立"基于 2026-06-26 基线。生产入口
+  `scripts/run_supervisor_seal.py` 已于 2026-07-04 落地——"invocation surface
+  存在"这一机器条件已补；但 OPERABLE 与 P1.2 closed 的判定关系以
+  `PROJECT_LOCK.md` 口径为准：入口存在只补机器条件、不打开 owner 门、
+  不推导 P1.2 closed。）
 
 这些词不能互换。当前状态是 **P1.2 OPEN/BLOCKED**。
 

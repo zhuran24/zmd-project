@@ -33,6 +33,15 @@
 
 **defer trigger**: Phase 2+ 决策 (当前 Phase 1.2/1.3 实施前不解, 用 Phase 1.5+ telemetry 数据反推)
 
+> **(2026-07-05 更新)** Q1 的定义层已有正式设计稿
+> （`docs/research/q1_infeasibility_class_taxonomy_design_v1.md`，v2 = 双会话
+> 对抗审回收版）：建议拆为 **Q1a_complete_candidate_W**（完整候选 +
+> replay-verified 观测域上的弱完备——F5 兜底使之近乎结构性成立，数学核已在
+> `formal/` 机器证明）与 **Q1p**（partial assignment 原量词域，仍 open）；
+> 强进展性拆三层（S_i-progress = 逐类定理义务、S_residual = telemetry、
+> S_global = 实验命题）。**拆分与本条状态改写待 owner 裁定**——见
+> [00_master_roadmap](00_master_roadmap.md) §4 拍板台账。
+
 **最坏情况**: 9 family 不充分 → 加 F10+ (LOCK §3A 9 family frozen 的约束需重审, paradigm shift 入口)
 
 #### Q2 — cut framework convergence guarantee? **P1**
@@ -399,6 +408,16 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 - 形式化 proof 需 Coq / Lean / Isabelle 工具 — 项目当前不投资
 
 **defer trigger**: Phase 2+ 决策 (paradigm 投资 ≥ 数月)
+
+> **(2026-07-05 更新)** Q14 已由 owner 授权提前"头启动"（P3.0 双轴）——
+> **"项目当前不投资"口径作废**：轴 A（范式数学的 Lean 机器检查）已落 main
+> `formal/` **68 条定理**（零 sorry、公理审计仅经典三公理、两轮独立外审
+> 回收闭环）；轴 B（证书侧 proof logging：PB/VeriPB + 经形式化验证的检查器）
+> 七阶段路线图定型、第一落点 binding PB sidecar 待开工。但注意：
+> `16_workflow_review.md` §6.4 政策条款（数学 sound 用工程 verify、formal/
+> **不进认证 TCB**、不改任何 gate）**原样有效**——头启动是前瞻投资，
+> 不是信任底座切换；本条 P3 分级是否改判待 owner 裁定。
+> 总图见 [00_master_roadmap](00_master_roadmap.md) §2a/§2b。
 
 #### Q15 — 跨 base transfer 可行性 **P3**
 
