@@ -55,7 +55,9 @@ theorem f1_occupancy_bound {ι α : Type*} [DecidableEq ι] [DecidableEq α]
     _ = (S.biUnion occ).card := (Finset.card_biUnion hdisj).symm
     _ ≤ Free.card := Finset.card_le_card (Finset.biUnion_subset.mpr hsub)
 
-/-- F1 infeasible：格子需求超过区域容量 ⇒ 不存在合法互斥放置。 -/
+/-- F1 infeasible：格子需求超过区域容量 ⇒ 不存在合法互斥放置。
+（instance 级形态；group-demand 级见下一条——`S` 必须是需求的完整展开
+这一绑定义务由下一条显式化。） -/
 theorem f1_demand_overflow_infeasible {ι α : Type*} [DecidableEq ι] [DecidableEq α]
     (S : Finset ι) (occ : ι → Finset α) (Free : Finset α) (cells : ι → ℕ)
     (hfire : Free.card < ∑ i ∈ S, cells i) :
@@ -65,6 +67,44 @@ theorem f1_demand_overflow_infeasible {ι α : Type*} [DecidableEq ι] [Decidabl
   rintro ⟨hsub, hdisj, hcells⟩
   exact absurd (f1_occupancy_bound S occ Free cells hsub hdisj hcells)
     (Nat.not_le.mpr hfire)
+
+/-- F1 group-demand 版（2026-07-05 外审修订：survey proposition 的原始
+形态是 `Σ_g demand(g)·cells_per_pose(g) > cap_R`——本版把"实例集 `S`
+是需求的完整展开"这一绑定义务显式写进前提 `hexp`，堵住把 `S` 错误
+实例化成需求子集导致证过小命题的口子）：group 级需求超过区域容量 ⇒
+不存在满足展开完整性的合法互斥放置。 -/
+theorem f1_group_demand_overflow_infeasible {γ ι α : Type*}
+    [DecidableEq γ] [DecidableEq ι] [DecidableEq α]
+    (G : Finset γ) (demand cellsPerPose : γ → ℕ) (Free : Finset α)
+    (S : Finset ι) (occ : ι → Finset α) (grp : ι → γ)
+    (hgrp : ∀ i ∈ S, grp i ∈ G)
+    (hexp : ∀ g ∈ G, demand g ≤ (S.filter (fun i => grp i = g)).card)
+    (hcells : ∀ i ∈ S, cellsPerPose (grp i) ≤ (occ i).card)
+    (hsub : ∀ i ∈ S, occ i ⊆ Free)
+    (hdisj : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → Disjoint (occ i) (occ j))
+    (hfire : Free.card < ∑ g ∈ G, demand g * cellsPerPose g) : False := by
+  have hbound : ∑ g ∈ G, demand g * cellsPerPose g ≤ Free.card := by
+    calc ∑ g ∈ G, demand g * cellsPerPose g
+        ≤ ∑ g ∈ G, (S.filter (fun i => grp i = g)).card * cellsPerPose g := by
+          apply Finset.sum_le_sum
+          intro g hg
+          exact Nat.mul_le_mul_right _ (hexp g hg)
+      _ = ∑ g ∈ G, ∑ _i ∈ S.filter (fun i => grp i = g), cellsPerPose g := by
+          apply Finset.sum_congr rfl
+          intro g _
+          rw [Finset.sum_const, smul_eq_mul, Nat.mul_comm]
+      _ = ∑ g ∈ G, ∑ i ∈ S.filter (fun i => grp i = g), cellsPerPose (grp i) := by
+          apply Finset.sum_congr rfl
+          intro g _
+          apply Finset.sum_congr rfl
+          intro i hi
+          rw [(Finset.mem_filter.mp hi).2]
+      _ = ∑ i ∈ S, cellsPerPose (grp i) :=
+          Finset.sum_fiberwise_of_maps_to hgrp _
+      _ ≤ Free.card :=
+          f1_occupancy_bound S occ Free (fun i => cellsPerPose (grp i))
+            hsub hdisj hcells
+  exact absurd hbound (Nat.not_le.mpr hfire)
 
 /-! ## F7 power_hitting_set（empty-cover 版）— 集合单调性（survey: f7_power_hitting_set.md）
 
@@ -80,7 +120,14 @@ theorem f7_cover_filter_monotone {α : Type*} [DecidableEq α]
     Free'.filter CanCover ⊆ Free.filter CanCover :=
   Finset.filter_subset_filter _ hsub
 
-/-- F7 infeasible 传递：覆盖集在 `Free` 上已空 ⇒ 任何更小的自由集上仍空。 -/
+/-- F7 infeasible 传递：覆盖集在 `Free` 上已空 ⇒ 任何更小的自由集上仍空。
+
+**调用方义务（2026-07-05 外审点名）**：`hsub : Free' ⊆ Free` 只在 `Free`
+是 **replay-stable 的 ghost-only scope** 时对搜索过程恒成立——若把
+`Free` 取成含当前 `cell_owner` 阻挡的 full-free 集，回溯移走 blocker
+后未来 free 集**不是**它的子集，本定理前提断裂（这正是 survey 点名
+"ghost-only empty-cover 才能出 single-literal cut"的原因）。定理本身
+是真单调性引理；scope 选择是工程侧 fail-closed 义务。 -/
 theorem f7_empty_cover_monotone {α : Type*} [DecidableEq α]
     (CanCover : α → Prop) [DecidablePred CanCover]
     (Free Free' : Finset α) (hsub : Free' ⊆ Free)
@@ -174,6 +221,50 @@ theorem f6_cross_side_lower_bound (D C' x y : ℕ)
     (htotal : D ≤ x + y) (hother : y ≤ C') : D - C' ≤ x := by
   omega
 
+/-- F6 bound 的存在式前提版（2026-07-05 外审修订）：validator 侧的
+"不跨阻挡"语义是**存在**某个自由区间容纳该 pose（`∀ i, ∃ j`），不是
+外部预给的全局 bucket 函数——本版把 `f6_packing_bound` 的 bucket 前提
+降为存在式，choice 在证明内部完成，不留给工程侧当白证义务。 -/
+theorem f6_packing_bound_exists_bucket {ι κ α : Type*}
+    [DecidableEq ι] [DecidableEq κ] [DecidableEq α]
+    (S : Finset ι) (J : Finset κ) (seg : ι → Finset α) (interval : κ → Finset α)
+    (L : ℕ) (hL : 0 < L)
+    (hsub : ∀ i ∈ S, ∃ j ∈ J, seg i ⊆ interval j)
+    (hcard : ∀ i ∈ S, (seg i).card = L)
+    (hdisj : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → Disjoint (seg i) (seg j)) :
+    S.card ≤ ∑ j ∈ J, (interval j).card / L := by
+  classical
+  choose bucket hbJ hbsub using hsub
+  -- 把部分函数补全成全函数（S 外取值任意，不影响结论）。
+  by_cases hJ : J.Nonempty
+  · obtain ⟨j₀, hj₀⟩ := hJ
+    let bk : ι → κ := fun i => if h : i ∈ S then bucket i h else j₀
+    apply f6_packing_bound S J seg interval L hL bk
+    · intro i hi
+      simp only [bk, dif_pos hi]
+      exact hbJ i hi
+    · intro i hi
+      simp only [bk, dif_pos hi]
+      exact hbsub i hi
+    · exact hcard
+    · exact hdisj
+  · -- J 空 ⇒ S 空（每个成员都需要一个区间）⇒ 平凡。
+    have hS : S = ∅ := by
+      by_contra hne
+      obtain ⟨i, hi⟩ := Finset.nonempty_iff_ne_empty.mpr hne
+      exact hJ ⟨bucket i hi, hbJ i hi⟩
+    simp [hS]
+
+/-- F6 组合 fire（2026-07-05 外审修订，validator 当前真实 fire 形态
+`C_R < d_R ≤ D − C_R'` 的 soundness 合成）：本侧容量 C（由
+`f6_packing_bound` 给出）、对侧容量 C'、总需求 D、证书下界 d 满足
+`C < d ≤ D − C'` 时，任何"本侧放 x 个、对侧放 y 个、合计覆盖需求"
+的放置方案都矛盾。 -/
+theorem f6_cross_side_fire_infeasible (C C' D d x y : ℕ)
+    (hcert : C < d) (hd : d ≤ D - C')
+    (hsplit : D ≤ x + y) (hx : x ≤ C) (hy : y ≤ C') : False := by
+  omega
+
 /-! ## F2 cutset — 割边计数（survey: f2_cutset.md）
 
 cut soundness 只需**弱方向**（不需要 Menger/max-flow）：每条路线必用割集
@@ -201,13 +292,17 @@ theorem f2_cutset_bound {ι ε : Type*} [DecidableEq ι] [DecidableEq ε]
   rw [heq] at h1
   exact Finset.disjoint_left.mp (hdisj x.1 x.2 y.1 y.2 hxy) h1 h2
 
-/-- F2 infeasible：需求路线数超过割边数 ⇒ 不存在边不相交的合法路由。 -/
+/-- F2 infeasible（2026-07-05 外审修订：**分离性移到前提侧**——`hhit`
+（每条路必过割）由 δ 的分离性构造保证，是 A/B 分割 + enclosure 的
+**工程验证义务**，不是被否定的合法性成分；原版把它放进被否定合取里，
+δ 取空集时结论平凡真、分离性义务被静默吞掉）：在分离性成立的前提下，
+需求路线数超过割边数 ⇒ 这批路线不可能边不相交。 -/
 theorem f2_demand_overflow_infeasible {ι ε : Type*} [DecidableEq ι] [DecidableEq ε]
     (routes : Finset ι) (edges : ι → Finset ε) (δ : Finset ε)
+    (hhit : ∀ i ∈ routes, ∃ e ∈ edges i, e ∈ δ)
     (hfire : δ.card < routes.card) :
-    ¬ ((∀ i ∈ routes, ∃ e ∈ edges i, e ∈ δ) ∧
-       (∀ i ∈ routes, ∀ j ∈ routes, i ≠ j → Disjoint (edges i) (edges j))) := by
-  rintro ⟨hhit, hdisj⟩
+    ¬ (∀ i ∈ routes, ∀ j ∈ routes, i ≠ j → Disjoint (edges i) (edges j)) := by
+  intro hdisj
   exact absurd (f2_cutset_bound routes edges δ hhit hdisj) (Nat.not_le.mpr hfire)
 
 /-! ## F3 port_exposure — 格邻接 + 双 literal nogood（survey: f3_port_exposure.md，第二梯队）
@@ -239,18 +334,29 @@ theorem f3_blocked_port_infeasible {ι π α : Type*}
     ¬ PortExposureFree selected occupied ports frontCell :=
   fun hfree => hfree A hA p hp B hB hblock
 
-/-- F3 literal cut soundness：双 literal nogood `{A, B}` 在**任何**同时选中
-这两个 literal 的状态上 fire 都 sound，与其他被选 literal 无关——这是
-literal 子多重集匹配语义（LIFE:1014-1027）的数学核。 -/
+/-- F3 约束谓词的 multiset 版（2026-07-05 外审修订）：lifecycle evaluator
+的 literal 语义是**匿名 slot 的 multiset**（重复 `(group,pose)` literal
+带重数），Finset 会折叠重数——literal cut 定理必须在 Multiset 上陈述。 -/
+def PortExposureFreeMS {ι π α : Type*} (selected : Multiset ι)
+    (occupied : ι → Finset α) (ports : ι → Finset π) (frontCell : π → α) : Prop :=
+  ∀ i ∈ selected, ∀ q ∈ ports i, ∀ j ∈ selected, frontCell q ∉ occupied j
+
+/-- F3 literal cut soundness（2026-07-05 外审修订：`selected` 与 cut body
+均改 **Multiset**——原版用 Finset `{A,B} ⊆ selected` 会折叠重复 literal，
+与 docstring 声称的"子多重集匹配语义"不符）：双 literal nogood `[A, B]`
+在任何以 ≥ 该重数选中这两个 literal 的状态上 fire 都 sound，与其他被选
+literal 无关。 -/
 theorem f3_pair_literal_cut_sound {ι π α : Type*} [DecidableEq ι]
     (occupied : ι → Finset α) (ports : ι → Finset π) (frontCell : π → α)
     {A B : ι} {p : π}
     (hp : p ∈ ports A) (hblock : frontCell p ∈ occupied B) :
-    ∀ selected : Finset ι, {A, B} ⊆ selected →
-      ¬ PortExposureFree selected occupied ports frontCell := by
-  intro selected hsub
-  have h := Finset.insert_subset_iff.mp hsub
-  exact f3_blocked_port_infeasible selected occupied ports frontCell
-    h.1 (h.2 (Finset.mem_singleton_self B)) hp hblock
+    ∀ selected : Multiset ι, ({A, B} : Multiset ι) ≤ selected →
+      ¬ PortExposureFreeMS selected occupied ports frontCell := by
+  intro selected hsub hfree
+  have hA : A ∈ selected :=
+    Multiset.mem_of_le hsub (Multiset.mem_cons_self A _)
+  have hB : B ∈ selected :=
+    Multiset.mem_of_le hsub (Multiset.mem_cons_of_mem (Multiset.mem_singleton_self B))
+  exact hfree A hA p hp B hB hblock
 
 end ZmdFormal.CutFamilies

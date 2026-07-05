@@ -15,14 +15,48 @@ cd formal
 lake update          # 首次:拉 mathlib v4.31.0 及依赖(lake-manifest.json 已锁 rev)
 lake exe cache get   # 首次:拉 mathlib 预编译缓存(~4.5GB,不拉则本地编译数小时)
 lake build           # 应输出 Build completed successfully
-lake env lean axiom_audit.lean   # 公理审计(60 条,应全部仅经典三公理或无公理)
+lake env lean axiom_audit.lean   # 公理审计(68 条,应全部仅经典三公理或无公理)
 ```
 
 **自 2026-07-05 起依赖 mathlib**（钉 `v4.31.0` tag，与工具链同版）：
 `TnsCoverage.lean` / `F5OrbitLift.lean` 仍是 core-only，其余模块用到
 `Finset`/`Multiset`/`Equiv`/`Relation` 库。
 
-## 内容与对应表（60 条定理，六个模块）
+## 外审回收修订记录（2026-07-05，三包 triage）
+
+CutFamilies + FrameworkLemmas 的 26 条经两路对抗审（各双会话）+ 盲对拼
+（26 条独立陈述）回收，三方高度收敛。修订全部本地重写、重编译、重审计
+（补丁未盲 apply）：
+
+**陈述层修改（7 条）**：
+- `f5_compound_safety`：重写为忠实版——补"cut 删整类"前提（`hCutClass`）
+  与类局部结论（原版证的是"已给逐点 sound cut 的组合"，绕过了 lift 桥）；
+- `f3_pair_literal_cut_sound`：Finset → **Multiset**（原版折叠重复 literal，
+  与 lifecycle 的多重集匹配语义不符；盲方独立选择了 multiset，双审同判 BLOCK）；
+- `f2_demand_overflow_infeasible`：`hhit`（必过割）从被否定合取**移到前提侧**
+  （分离性是工程验证义务；原版 δ 取空集时结论平凡真、义务被吞）；
+- `eq_key_violated_iff` / `tp7s_eq_key_sound` / `tp7s_eq_key_no_overcut`：
+  `EqKeyViolated` def 硬化（全集约束内置），iff 形态相应调整；
+- `tp7s_selected_set_nogood_overcuts`：补显式容量/需求语义与
+  `SelectedSetNogoodViolated` 谓词（原版只是 card 形状反例，docstring 超卖）。
+
+**新增（8 条）**：`f5_compound_safety_from_pointwise_sound`（弱化变体，
+组合接口定位）、`f5_compound_needs_cut_invariance`（v1 §2.4 点名红测的
+忠实反例——原 `needs_phom` 证的是相邻边界，已改判定位保留）、
+`frontier_prune_preserves_certified_argmax`（+lex 版；原 preserves_max
+只保值不保 certified witness，docstring 已收窄）、
+`frontier_dominance_skip_not_migratable`（谓词迁移红测）、
+`f6_packing_bound_exists_bucket`（∃ 式前提版）、`f6_cross_side_fire_infeasible`
+（validator 真实 fire 形态 `C<d≤D−C'` 的合成）、
+`f1_group_demand_overflow_infeasible`（group-demand 展开义务显式化）。
+
+**docstring 强化（不改陈述）**：`f7_empty_cover_monotone`（ghost-only
+scope 调用方义务）、`frontier_prune_dominates`（非剪枝 soundness 单证）、
+模块头（F5 反例定位澄清）。
+
+外审原件归档 `docs/research/p3_0b_formal_reviews_round2_20260705/`。
+
+## 内容与对应表（68 条定理，六个模块）
 
 ### `TnsCoverage.lean` + `F5OrbitLift.lean`（首批 14 条，谓词/函数式表示，core-only）
 
@@ -132,7 +166,9 @@ soundness。**待独立复审**（与 CutFamilies 同批送审）。
 | `WCompleteness.oracle_nogood_compound_search_safety` | **全链组合**：oracle liftable-reject → anon nogood → 与代表选择复合后搜索空间仍含可行解（`anon_lift_sound` × `f5_compound_safety` 组装） | 经典三公理 |
 
 "经典三公理" = `propext`、`Classical.choice`、`Quot.sound`（Lean/mathlib 标准信任基）。
-无任何 `sorry`，无 `native_decide`/`ofReduceBool`（60/60 见 `axiom_audit.lean`）。
+无任何 `sorry`，无 `native_decide`/`ofReduceBool`（68/68 见 `axiom_audit.lean`）。
+注：2026-07-05 外审回收修订后，上表 CutFamilies / FrameworkLemmas 两节中
+被修订条目以修订记录节 + 源码 docstring 为准。
 
 ## 陈述层修改记录（施工中，均已过编译+公理审计）
 

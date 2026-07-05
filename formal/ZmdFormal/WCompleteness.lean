@@ -82,11 +82,12 @@ theorem incomplete_assignment_fallback_unsound :
 /-! ## 组合定理：oracle 判决 → cut 排除 → 搜索空间安全的全链 -/
 
 /-- 全链组合定理：F5 lift 链（oracle 的 liftable reject → 匿名 multiset
-nogood）与复合安全引理（序代表 × cut 不删光合法类）的组装——把
-`ZmdFormal.Framework.f5_compound_safety` 的抽象 `Cut` 与 `hcut_sound`
-用 `anon_lift_sound` 的产物实例化。结论：oracle 验证过的 pattern nogood
-作为 cut，与任何代表选择复合后，搜索空间（代表 ∩ 未被 cut 排除）内
-仍有可行解（只要全空间有）。 -/
+nogood）与复合安全引理**弱化变体**（`f5_compound_safety_from_pointwise_sound`，
+消费已复验的逐点 sound cut——本定理的 cut 恰好由 `anon_lift_sound`
+现场复验，故弱化变体正是正确的接口；类不变性版本见
+`Framework.f5_compound_safety`）的组装。结论：oracle 验证过的 pattern
+nogood 作为 cut，与任何代表选择复合后，搜索空间（代表 ∩ 未被 cut
+排除）内仍有可行解（只要全空间有）。 -/
 theorem oracle_nogood_compound_search_safety
     [DecidableEq GroupId] [∀ g, DecidableEq (Slot g)] [∀ g, DecidableEq (Pose g)]
     (Feasible : Layout GroupId Slot Pose → Prop)
@@ -105,7 +106,7 @@ theorem oracle_nogood_compound_search_safety
   have hnogood : AnonMultisetNogood Feasible P :=
     anon_multiset_lift_soundness_from_named_representative hExtend hPHOM
       hWellFormed hReject hPslots
-  exact ZmdFormal.Framework.f5_compound_safety equiv Feasible Sel
+  exact ZmdFormal.Framework.f5_compound_safety_from_pointwise_sound equiv Feasible Sel
     (fun A => AnonMultisetExtends P A)
     hEquivPHOM hSel
     (fun A hc hF => hnogood A hF hc)

@@ -1,0 +1,274 @@
+import Mathlib
+
+/-!
+FrameworkLemmas 陈述保真补丁片段。
+
+状态：未经编译。本沙盒没有 lean/lake，所以下列段落按 Lean 4/mathlib 习惯写成，
+需要在项目 mathlib v4.31.0 环境中落地校验。
+
+用法：不要整文件直接替换。请把对应 theorem/docstring 段落替换到
+ZmdFormal.Framework namespace 的相应 section 中。
+-/
+
+namespace ZmdFormal.Framework
+
+/-! ## F5: 替换 f5_compound_safety -/
+
+section CompoundSafetyPatch
+
+variable {σ : Type*}
+
+/--
+复合安全引理的保真版：显式要求 `equiv` 真的是 G-等价关系，要求 cut 对等价类
+不变，也就是删整类，并要求 cut 逐点 sound。于是全空间存在可行解时，存在一个
+被 master 序保留的代表，该代表可行、未被 cut 删，且它所在等价类内没有任何点被
+cut 删除。
+
+注意：最后一个结论 `∀ t, equiv t r → ¬ Cut t` 是为了把设计稿中的
+“未被 cut 删的类，其序代表仍存活”落到类级语义上。
+-/
+theorem f5_compound_safety
+    (equiv : σ → σ → Prop) (Feasible : σ → Prop) (Sel Cut : σ → Prop)
+    (hEquiv : Equivalence equiv)
+    (hPHOM : ∀ {s t}, equiv s t → (Feasible s ↔ Feasible t))
+    (hSel : ∀ s, ∃ r, equiv s r ∧ Sel r)
+    (hCutInv : ∀ {s t}, equiv s t → (Cut s ↔ Cut t))
+    (hcut_sound : ∀ s, Cut s → ¬ Feasible s)
+    {s₀ : σ} (hs₀ : Feasible s₀) :
+    ∃ r, Sel r ∧ Feasible r ∧ ¬ Cut r ∧ ∀ t, equiv t r → ¬ Cut t := by
+  obtain ⟨r, hequiv, hsel⟩ := hSel s₀
+  have hfr : Feasible r := (hPHOM hequiv).mp hs₀
+  have hnr : ¬ Cut r := fun hc => hcut_sound r hc hfr
+  refine ⟨r, hsel, hfr, hnr, ?_⟩
+  intro t htr hct
+  have hrt : equiv r t := hEquiv.symm htr
+  have hcr : Cut r := (hCutInv hrt).mpr hct
+  exact hnr hcr
+
+/--
+设计稿点名的红测保真版：P-HOM 和代表选择仍成立，但 cut 读标签、非 G-不变，
+刚好删掉 master 唯一保留的代表。于是原问题有可行解，剪后搜索空间却没有可行解。
+
+这比“去掉 P-HOM”更贴近原文“非 G-不变 cut，读 slot 身份”的陷阱。
+-/
+theorem f5_compound_non_invariant_cut_overcuts :
+    ∃ (equiv : Bool → Bool → Prop) (Feasible Sel Cut : Bool → Prop),
+      Equivalence equiv ∧
+      (∀ {s t}, equiv s t → (Feasible s ↔ Feasible t)) ∧
+      (∀ s, ∃ r, equiv s r ∧ Sel r) ∧
+      (∃ s, Feasible s) ∧
+      (∃ s t, equiv s t ∧ Cut s ∧ ¬ Cut t) ∧
+      ¬ ∃ r, Sel r ∧ ¬ Cut r ∧ Feasible r := by
+  refine ⟨fun _ _ => True, fun _ => True, fun b => b = true, fun b => b = true,
+    ?_, ?_, ?_, ⟨true, trivial⟩, ?_, ?_⟩
+  · constructor
+    · intro b
+      trivial
+    · intro a b _
+      trivial
+    · intro a b c _ _
+      trivial
+  · intro s t _
+    exact Iff.rfl
+  · intro s
+    exact ⟨true, trivial, rfl⟩
+  · refine ⟨true, false, trivial, rfl, ?_⟩
+    simp
+  · rintro ⟨r, hsel, hncut, _hfeas⟩
+    exact hncut hsel
+
+end CompoundSafetyPatch
+
+/-! ## frontier: 替换三条剪枝定理，并增加迁移红测 -/
+
+section FrontierPrunePatch
+
+variable {ι β : Type*} [LinearOrder β] [DecidableEq ι]
+
+/--
+固定同一个可行性谓词 `Feasible` 时的剪枝支配：任何可行候选都被
+“严格优于 in-hand certified witness 的幸存集 ∪ {w₀}”中的某个可行元素支配。
+等值候选归入被剪侧，由 `w₀` 这个已认证 witness 负责支配。
+-/
+theorem frontier_prune_dominates
+    (F : Finset ι) (value : ι → β) (Feasible : ι → Prop)
+    {w₀ : ι} (_hw₀ : w₀ ∈ F) (hfw₀ : Feasible w₀) :
+    ∀ c ∈ F, Feasible c →
+      ∃ c' ∈ F.filter (fun c' => value w₀ < value c') ∪ {w₀},
+        Feasible c' ∧ value c ≤ value c' := by
+  intro c hc hfc
+  by_cases h : value c ≤ value w₀
+  · exact ⟨w₀, Finset.mem_union_right _ (Finset.mem_singleton_self w₀), hfw₀, h⟩
+  · exact ⟨c,
+      Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨hc, not_le.mp h⟩),
+      hfc, le_refl _⟩
+
+/--
+固定同一个可行性谓词 `Feasible` 时，剪枝保留“可行候选中的最大目标值”。
+本定理不能跨 schema 或谓词收紧迁移使用；迁移时必须重新验证 `w₀` 仍 certified。
+-/
+theorem frontier_prune_preserves_max
+    (F : Finset ι) (value : ι → β) (Feasible : ι → Prop)
+    [DecidablePred Feasible] {w₀ : ι} (hw₀ : w₀ ∈ F) (hfw₀ : Feasible w₀) :
+    ((F.filter (fun c' => value w₀ < value c') ∪ {w₀}).filter Feasible).sup'
+        ⟨w₀, Finset.mem_filter.mpr
+          ⟨Finset.mem_union_right _ (Finset.mem_singleton_self w₀), hfw₀⟩⟩ value
+      = (F.filter Feasible).sup'
+        ⟨w₀, Finset.mem_filter.mpr ⟨hw₀, hfw₀⟩⟩ value := by
+  apply le_antisymm
+  · apply Finset.sup'_le
+    intro c hc
+    rcases Finset.mem_filter.mp hc with ⟨hcSurv, hcFeas⟩
+    rcases Finset.mem_union.mp hcSurv with hcBetter | hcW
+    · exact Finset.le_sup' value
+        (Finset.mem_filter.mpr ⟨(Finset.mem_filter.mp hcBetter).1, hcFeas⟩)
+    · rw [Finset.mem_singleton.mp hcW]
+      exact Finset.le_sup' value (Finset.mem_filter.mpr ⟨hw₀, hfw₀⟩)
+  · apply Finset.sup'_le
+    intro c hc
+    rcases Finset.mem_filter.mp hc with ⟨hcF, hcFeas⟩
+    by_cases h : value c ≤ value w₀
+    · exact le_trans h (Finset.le_sup' value (Finset.mem_filter.mpr
+        ⟨Finset.mem_union_right _ (Finset.mem_singleton_self w₀), hfw₀⟩))
+    · exact Finset.le_sup' value (Finset.mem_filter.mpr
+        ⟨Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨hcF, not_le.mp h⟩),
+          hcFeas⟩)
+
+/--
+保 witness 版本：如果 `best` 是原候选集中某个可行 argmax，那么剪枝后仍存在一个
+可行 argmax witness。若 `best` 严格优于 `w₀`，它自己幸存；否则 `w₀` 充当 witness。
+-/
+theorem frontier_prune_preserves_argmax_witness
+    (F : Finset ι) (value : ι → β) (Feasible : ι → Prop)
+    {w₀ best : ι} (hw₀ : w₀ ∈ F) (hfw₀ : Feasible w₀)
+    (hbestF : best ∈ F) (hbestFeas : Feasible best)
+    (hbest : ∀ c ∈ F, Feasible c → value c ≤ value best) :
+    ∃ best' ∈ F.filter (fun c' => value w₀ < value c') ∪ {w₀},
+      Feasible best' ∧ ∀ c ∈ F, Feasible c → value c ≤ value best' := by
+  by_cases hlt : value w₀ < value best
+  · refine ⟨best, Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨hbestF, hlt⟩),
+      hbestFeas, hbest⟩
+  · have hbest_le_w0 : value best ≤ value w₀ := le_of_not_gt hlt
+    refine ⟨w₀, Finset.mem_union_right _ (Finset.mem_singleton_self w₀), hfw₀, ?_⟩
+    intro c hc hfc
+    exact le_trans (hbest c hc hfc) hbest_le_w0
+
+/-- 具体化到项目目标：`max_lex(area, min_side)`，并显式绑定同一个可行性谓词。 -/
+theorem frontier_prune_preserves_max_lex {ι : Type*} [DecidableEq ι]
+    (F : Finset ι) (area minSide : ι → ℕ) (Feasible : ι → Prop)
+    [DecidablePred Feasible] {w₀ : ι} (hw₀ : w₀ ∈ F) (hfw₀ : Feasible w₀) :
+    ((F.filter (fun c' =>
+        toLex (area w₀, minSide w₀) < toLex (area c', minSide c')) ∪ {w₀}).filter
+        Feasible).sup'
+        ⟨w₀, Finset.mem_filter.mpr
+          ⟨Finset.mem_union_right _ (Finset.mem_singleton_self w₀), hfw₀⟩⟩
+        (fun c => toLex (area c, minSide c))
+      = (F.filter Feasible).sup' ⟨w₀, Finset.mem_filter.mpr ⟨hw₀, hfw₀⟩⟩
+        (fun c => toLex (area c, minSide c)) :=
+  frontier_prune_preserves_max F (fun c => toLex (area c, minSide c)) Feasible hw₀ hfw₀
+
+/--
+迁移红测：旧谓词下由 incumbent 支配而跳过的候选，在收紧后的新谓词下可能成为最优。
+因此 dominance skip/search stop/terminal frontier evidence 不能跨谓词继承。
+-/
+theorem frontier_dominance_skip_not_migratable :
+    ∃ (P P' : Bool → Prop) (value : Bool → Nat) (w₀ b : Bool),
+      P w₀ ∧ P b ∧ value b ≤ value w₀ ∧ ¬ P' w₀ ∧ P' b := by
+  refine ⟨fun _ => True, fun x => x = false,
+    (fun x => if x then 100 else 90), true, false, ?_⟩
+  decide
+
+end FrontierPrunePatch
+
+/-! ## TP7-S: 补强边界定理和反例表述 -/
+
+section Tp7sNogoodPatch
+
+variable {V : Type*} [DecidableEq V]
+
+/-- 完整 0/1 等式键的违反条件。`A` 表示全集 `U` 内被置 1 的变量集合。 -/
+def EqKeyViolated (U S A : Finset V) : Prop :=
+  (∀ x ∈ S, x ∈ A) ∧ (∀ x ∈ U \ S, x ∉ A)
+
+/--
+若允许 `A` 带有 `U` 外变量，等式键只刻画 `A` 在 `U` 上的投影等于 `S`。
+这条边界定理用于防止把“投影等于 S”误读成裸 Finset 等于 S。
+-/
+theorem eq_key_violated_iff_inter {U S A : Finset V} (hSU : S ⊆ U) :
+    EqKeyViolated U S A ↔ U ∩ A = S := by
+  constructor
+  · rintro ⟨h1, h0⟩
+    ext x
+    constructor
+    · intro hx
+      rcases Finset.mem_inter.mp hx with ⟨hxU, hxA⟩
+      by_contra hxS
+      exact h0 x (Finset.mem_sdiff.mpr ⟨hxU, hxS⟩) hxA
+    · intro hxS
+      exact Finset.mem_inter.mpr ⟨hSU hxS, h1 x hxS⟩
+  · intro h
+    constructor
+    · intro x hxS
+      have hxInter : x ∈ U ∩ A := by
+        rw [h]
+        exact hxS
+      exact (Finset.mem_inter.mp hxInter).2
+    · intro x hxUS hxA
+      have hxInter : x ∈ U ∩ A := Finset.mem_inter.mpr ⟨(Finset.mem_sdiff.mp hxUS).1, hxA⟩
+      have hxS : x ∈ S := by
+        rw [h] at hxInter
+        exact hxInter
+      exact (Finset.mem_sdiff.mp hxUS).2 hxS
+
+/-- 等式键排除集刻画：在完整赋值空间 `A ⊆ U` 内，等式键恰好排除 `A = S`。 -/
+theorem eq_key_violated_iff {U S A : Finset V} (hSU : S ⊆ U) (hAU : A ⊆ U) :
+    EqKeyViolated U S A ↔ A = S := by
+  constructor
+  · intro hviol
+    have hProj : U ∩ A = S := (eq_key_violated_iff_inter hSU).mp hviol
+    apply Finset.Subset.antisymm
+    · intro x hxA
+      have hxInter : x ∈ U ∩ A := Finset.mem_inter.mpr ⟨hAU hxA, hxA⟩
+      rw [hProj] at hxInter
+      exact hxInter
+    · intro x hxS
+      exact hviol.1 x hxS
+  · rintro rfl
+    exact ⟨fun _ hx => hx, fun x hx => (Finset.mem_sdiff.mp hx).2⟩
+
+/-- 等式键不过切：`U` 内真超集不触发等式键。 -/
+theorem tp7s_eq_key_no_overcut {U S A : Finset V} (hSU : S ⊆ U) (hAU : A ⊆ U)
+    (hss : S ⊂ A) : ¬ EqKeyViolated U S A := by
+  intro hviol
+  rw [eq_key_violated_iff hSU hAU] at hviol
+  exact hss.ne hviol.symm
+
+/--
+如果遗漏 `A ⊆ U`，裸 Finset 真超集可能仍违反同一个等式键，因为 U 外变量被 PB key 忽略。
+-/
+theorem tp7s_eq_key_no_overcut_needs_assignment_subset :
+    ∃ (U S A : Finset Bool), S ⊂ A ∧ EqKeyViolated U S A := by
+  refine ⟨{false}, {false}, {false, true}, ?_, ?_⟩
+  · decide
+  · decide
+
+/-- 只禁选中集的 nogood 违反条件：候选 A 包含原选中集 S。 -/
+def SelectedSetNogoodViolated (S A : Finset V) : Prop := S ⊆ A
+
+/--
+选中集式 nogood 过切的抽象玩具版：存在一个 U 内真超集 A，S 本身不可行，A 可行，
+但 `∨_{x∈S} ¬x` 式 selected-set nogood 仍会禁止 A。
+-/
+theorem tp7s_selected_set_nogood_overcuts :
+    ∃ (U : Finset Bool) (Feasible : Finset Bool → Prop) (S A : Finset Bool),
+      S ⊂ A ∧ A ⊆ U ∧ ¬ Feasible S ∧ Feasible A ∧ SelectedSetNogoodViolated S A := by
+  refine ⟨{false, true}, fun X => 2 ≤ X.card, {false}, {false, true}, ?_, ?_, ?_, ?_, ?_⟩
+  · decide
+  · decide
+  · decide
+  · decide
+  · decide
+
+end Tp7sNogoodPatch
+
+end ZmdFormal.Framework

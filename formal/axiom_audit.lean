@@ -67,3 +67,12 @@ import ZmdFormal
 #print axioms ZmdFormal.WCompleteness.w_completeness_f5_fallback
 #print axioms ZmdFormal.WCompleteness.incomplete_assignment_fallback_unsound
 #print axioms ZmdFormal.WCompleteness.oracle_nogood_compound_search_safety
+-- 2026-07-05 外审回收修订新增（三包 triage）
+#print axioms ZmdFormal.Framework.f5_compound_safety_from_pointwise_sound
+#print axioms ZmdFormal.Framework.f5_compound_needs_cut_invariance
+#print axioms ZmdFormal.Framework.frontier_prune_preserves_certified_argmax
+#print axioms ZmdFormal.Framework.frontier_prune_preserves_certified_argmax_lex
+#print axioms ZmdFormal.Framework.frontier_dominance_skip_not_migratable
+#print axioms ZmdFormal.CutFamilies.f6_packing_bound_exists_bucket
+#print axioms ZmdFormal.CutFamilies.f6_cross_side_fire_infeasible
+#print axioms ZmdFormal.CutFamilies.f1_group_demand_overflow_infeasible
