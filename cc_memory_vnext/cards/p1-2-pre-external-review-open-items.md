@@ -1,0 +1,75 @@
+---
+id: p1-2-pre-external-review-open-items
+kind: reference
+title: P1.2 外审前真实未闭项只两件(归档策略 PARTIAL + 冻结仪式)+ P1.2/P1.3 边界辨析(生产 seal 跑通=P1.3 算力墙、canonical→geometry 骑墙)——2026-07-06 两次 codex 审计厘清
+summary: 2026-07-06 owner 问"计划中 P1.2 外审前所有闭合条件都满足了吗",两路 codex 审计(workflow wkmq9z3r8 逐条核 go_criteria/PROJECT_LOCK/roadmap/review_gate 的 close 条件 + wqxdms1hu 核 P1.2/P1.3 边界)后厘清。答案:【不是全满足】。去掉"蓄意内鬼延期桶"([[deliberate-insider-hardening-deferred-to-release]])后,真正还开的**只两件**——**(甲)归档策略完整性 archive policy = PARTIAL**(roadmap:19;非内鬼类、今天延期令明确"照旧"没动它;go_criteria #9/PROJECT_LOCK §C5 要求送审快照满足归档策略——唯一现在就能推进的真活);**(乙)"冻结那一轮"仪式**(fresh reseal + 冻结树上重跑 full/slow 留命令/exit/日志证据 + 从冻结树物化不可变送审包;go_criteria #7/#8/#9;现工作树还脏〔并发会话未提交文件〕、HEAD commit 自己写"不触 frozen/reseal"、无绑当前 HEAD 的 full/slow 证据→现在必不满足,等真要外审时走)。**我之前列糙、其实不算 P1.2 外审前项的两个(更正)**:①"无真实生产 campaign→seal 跑通记录"(06_current_status:68)=**P1.3/算力墙**——P1.2 只证"如果有证明就别说谎、不是吞吐定理"(PROJECT_LOCK:164、08_phase_1_2_plan:33 排除纯 UNKNOWN/解不出来),而全尺度求解撞算力硬墙、从未产出过 FEASIBLE("物理上不可达",bottlenecks:1/4;baseline 14h 0 FEASIBLE)、没真 CANDIDATE_PROPOSED 可封;seal **入口存在**=已满足的 P1.2 机器条件,真**产出**全尺度 CERTIFIED 才是 P1.3;②canonical→geometry **骑墙**——字节半(candidate_placements)已由 16495f4 落=P1.2,语义半(F1-F9 cut helper 几何统一)在 step_8 接入前不可测=**P1.3-before-F1-F9**,非 P1.2 外审前 blocker。**P1.2/P1.3 边界一句话**:P1.2=认证管线 soundness(有证明就别说谎、别把 UNKNOWN 当 CERTIFIED),P1.3=master/cut 集成+算力(能不能真解出来)。owner 手动 review 门+close-scope 拍板是外审/关门本身、不算"编码前提"。
+scope:
+  domains:
+    - release-engineering
+    - certified-exact
+    - pr2
+  paths:
+    - docs/项目说明/12_go_criteria.md
+    - docs/项目说明/soundness_gap_roadmap.md
+    - docs/项目说明/06_current_status.md
+    - PROJECT_LOCK.md
+  symbols: []
+status: active
+priority: P1
+triggers:
+  intents:
+    - check-p1-2-pre-review-conditions
+    - judge-if-item-is-p1-2-pre-review-prereq
+    - distinguish-p1-2-vs-p1-3
+    - assess-production-seal-run-status
+  keywords:
+    - P1.2 外审前条件
+    - 归档策略 archive policy
+    - 冻结仪式 fresh reseal
+    - 生产 seal 跑通记录
+    - 算力硬墙
+    - P1.2 vs P1.3 边界
+    - canonical→geometry 骑墙
+    - 不是吞吐定理
+  negative_keywords: []
+  paths:
+    - docs/项目说明/12_go_criteria.md
+  symbols: []
+  error_regex: []
+  examples:
+    - P1.2 外审前条件都满足了吗 / 还差什么
+    - 为什么没有生产 seal 跑通记录 / 它是 P1.2 还是 P1.3
+    - canonical→geometry 是 P1.2 还是 P1.3 项
+    - P1.2 和 P1.3 到底各管什么
+activation:
+  layer_hint: L1
+  must_know: false
+  reason: 问"P1.2 外审前条件满足没/还差什么"、或判某项属 P1.2 还是 P1.3 时该读——记了两次审计厘清的结果:外审前真实只剩归档策略+冻结仪式两件,以及"生产 seal 跑通"(算力墙 P1.3)、"canonical→geometry 语义半"(F1-F9 前置 P1.3)不算 P1.2 外审前项,和 P1.2/P1.3 边界。不读易把 P1.3/算力墙项误当 P1.2 外审前 blocker、或反过来漏掉归档策略这块真活。
+provenance:
+  op: record
+  reason: 2026-07-06 owner 追问"外审前条件是否全满足"+"生产 seal 跑通为何是 P1.3"+"canonical→geometry 定位是否尴尬",两次 codex 审计厘清后固化结果与边界,并更正我此前把两个 P1.3 项列进外审前清单的糙处。
+  evidence:
+    - "2026-07-06:workflow wkmq9z3r8(2 路:逐条核 close 条件 + 唱反调)总判 overall_can_claim_satisfied=no,树 not-frozen/dirty;真开项=archive policy PARTIAL + 冻结仪式。workflow wqxdms1hu(2 路:P1.2/P1.3 边界 + canonical→geometry 定位)判 seal-run=P1.3 算力墙(P1.2 非吞吐定理,PROJECT_LOCK:164、08_phase_1_2_plan:33;bottlenecks:1/4 物理不可达)、canonical→geometry where_it_sits=straddles(字节半 16495f4=P1.2、语义半 F1-F9=P1.3,step_8 仍 NotImplementedError)。roadmap:21 已按骑墙重标。"
+  updated_at: "2026-07-06"
+---
+2026-07-06 owner 追问"计划中 P1.2 外审前所有闭合条件都满足了吗",两路 codex 审计后厘清。**答案:不是全满足。** 记结果 + P1.2/P1.3 边界,并更正我此前把两个 P1.3 项列进外审前清单的糙处。
+
+== P1.2 外审前真实还开的只两件(去掉蓄意内鬼延期桶后)==
+- **甲 · 归档策略完整性(archive policy)= PARTIAL**(`soundness_gap_roadmap.md:19`;`go_criteria #9`;`PROJECT_LOCK §C5`)。管的是送审快照里敏感/非审查面覆盖 + 回归。**不是内鬼硬化**,今天那条延期令明确写了"snapshot immutability/archive policy 等常开项照旧"、没延期它。→ **唯一现在就能实做推进的真缺口。**
+- **乙 · "冻结那一轮"仪式**(`go_criteria #7/#8/#9`;`PROJECT_LOCK §C5`)：代码冻结 + fresh reseal + 在冻结树上重跑 targeted/full/slow 留命令/exit/日志证据 + 从冻结树物化不可变送审包。现工作树还脏(并发会话未提交文件)、HEAD commit 自己写"不触 frozen/reseal"、repo 里无绑当前 HEAD 的 full/slow 证据 → **现在必不满足**;这是"真要外审时才走"的动作,不是现在的缺口。
+
+== 我之前列糙、其实不算 P1.2 外审前项的两个(更正)==
+- **① "无真实生产 campaign→seal 跑通记录"(`06_current_status:68`)= P1.3/算力墙,不是 P1.2。**
+  - P1.2 只证"**如果**手上有合法证明,链会正确封/发、并拒绝不合法的"= soundness;**PROJECT_LOCK:164 明写"不是吞吐定理"**;`08_phase_1_2_plan:33` 把纯 UNKNOWN/TIMEOUT/解不出来排除在 P1.2 外。
+  - 全尺度求解**撞算力硬墙**:求解器**从未在全尺度产出过 FEASIBLE**(`bottlenecks:1` 原话"物理上不可达";baseline 14h 0 FEASIBLE)→ **没真 CANDIDATE_PROPOSED 可封**;"链后面 seal/publish/门再完美也没东西可 seal"(`bottlenecks:4`)。
+  - seal **入口存在** = 已满足的 P1.2 机器条件;真**产出**一个全尺度 sealed CERTIFIED = P1.3/算力墙(而那墙"唯一没有已知工程路径",可能比 P1.3 待办更深)。
+- **② canonical→geometry shared primitives = 骑墙,非 P1.2 外审前 blocker。**
+  - 字节半(candidate_placements 字节须等于 canonical 重推)= **P1.2 相关,今天 `16495f4` 已落**。
+  - 语义半(把 canonical→几何在 F1-F9 cut helper 间统一;它们各用旧欧氏覆盖模型)= 在 F1-F9 真接进 certified master(`step_8` 仍 NotImplementedError = **P1.3 主体**)之前**不可测/不可做** = **P1.3-before-F1-F9 前置**。`roadmap:21` 已按此重标。
+
+== P1.2 / P1.3 边界(一句话记牢)==
+- **P1.2 = 认证管线 soundness**:有证明就别说谎、别把 UNKNOWN 当 CERTIFIED、发布链单入口、owner 手动门。**不要求真把 70×70 解出来。**
+- **P1.3 = master/cut 集成 + 算力/吞吐**:step_8 把 F1-F9 接进 master、以及"能不能在全尺度真解出来"。
+- owner 手动 review 门 + close-scope 拍板 = 外审/关门本身,不算"编码前提"。
+
+关联:蓄意内鬼延期桶 [[deliberate-insider-hardening-deferred-to-release]];算力墙审计 [[project-bottleneck-audit-20260702-map]];主线收口序 [[p1-2-closeout-then-tcb-backlog-order]];B2 字节 gate [[pr2-5-b2-candidate-geometry-rederivation-landed]]。
