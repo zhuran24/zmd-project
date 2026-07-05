@@ -39,11 +39,22 @@ PR2 深化(四阶段执行序) → P1.2 收口 → P1.3A spike → P1.3 主体 �
 l0-snapshot 拆分 + lazy import）→ 阶段4：#9b OS 级写隔离 + #9c 原生 TOCTOU。
 pytest 提速余项已全部溶进上述批次（不独立成批，绑定表见排期卡）。
 **owner 修正（07-04 晚）：P1.2 收口前提至少含 #1**——先深化再收口。
+**owner 再拍板（07-06）：收口前提 = 整条 backlog 编码项**（#8、#2/#3、#5-B2、
+#5-F spike、#1、#9b/#9c 全部完成），不只 #1；#9a 生产字节重钉维持部署时点
+定位、不阻塞收口判定。即收口外审排在阶段4 之后。
 
 ### 1b. P1.2 收口
 
 十项 close 条件见 [12_go_criteria](12_go_criteria.md)（PR2 TCB 收缩是第 10 项）。
-路径：#1 完成 → 一次收口外审 → 三连 clean 计数 → owner 关手动门。
+路径（owner 2026-07-06 拍板版）：**整条 backlog 编码项完成**（含阶段4 #9b/#9c，
+见 1a 尾注）→ 代码冻结 + fresh reseal → 收口外审（本地多镜头对抗审 + GPT Pro
+relay，按 owner 需要发）→ **审到 owner 判定足够为止** → owner 关手动门
+（gate JSON `owner_manual_decision`）。
+**「三连 clean 计数」语义澄清（owner 2026-07-06）**：那是 owner 当时图方便的
+说法，不是硬判据——实际判据就是「外审到 owner 觉得合适为止」，轮数可多可少；
+gate JSON 的 `required_consecutive_clean_full_reviews=3` 与关门确认字段里的
+"three clean reviews" 字样保留为机器兼容值（同 `p1_3b_*` 模式），checker pin
+死了这个数字，改字段值属于 checker+tests 连锁手术、留待收口批一并考虑或不做。
 配套部署时点任务（不阻塞收口判定、但在真发布前必做）：#9a 生产字节重钉、
 真实 campaign→seal 实跑、dependency floor manifest 在 CachyOS 生产机重生成。
 

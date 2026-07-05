@@ -64,6 +64,13 @@ P1.2 close 至少要求：
 owner gate。反过来，owner gate 关闭也不能掩盖未修复的 false-CERTIFIED / false-INFEASIBLE
 路径。
 
+> **（2026-07-06 owner 澄清）**「连续 3 次 clean review」的字面数字是历史方便说法，不是
+> 现行判据：收口外审进行到 owner 判定足够为止（轮数可多可少），唯一权威关门动作是 gate
+> JSON 的 `owner_manual_decision`。机器字段 `required_consecutive_clean_full_reviews=3` 与
+> 关门确认字段中的 "three clean reviews" 字样保留为 checker 兼容值（同 `p1_3b_*` 模式）。
+> 同日 owner 定界：收口前提 = 整条 PR2 TCB backlog 编码项（#8、#2/#3、#5-B2、#5-F spike、
+> #1、#9b/#9c），不只 #1（即 §12.2 第 10 条的 "PR2 规定的" 范围就此闭合）。
+
 当前 gate：
 
 ```text

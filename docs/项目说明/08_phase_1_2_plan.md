@@ -36,7 +36,8 @@ P1.2 范围定义**；最终分类看问题是否会污染当前默认 certified
   evidence。
 
 给 GPT Pro / 外部 reviewer 的最短提示：**请审当前默认 `certified_exact` 是否可能产生或
-持久化错误的 proof-bearing 强结论；不要把 owner 门禁、三次 clean 计数、P1.3 开门（机器字段仍为 `p1_3b_*`）、
+持久化错误的 proof-bearing 强结论；不要把 owner 门禁、owner 场外 clean 计数（2026-07-06 澄清：
+「三次 clean」字面数字仅机器兼容值，实际=审到 owner 判定足够为止）、P1.3 开门（机器字段仍为 `p1_3b_*`）、
 或 Step 8 production integration 当作 P1.2 职责来审。**
 
 **2026-06-17 V99 historical close-kernel seal**：该封存只对当时 source hashes 有效；后续 PR1 修改已重开并要求重新封存。现行机器封口仍由：

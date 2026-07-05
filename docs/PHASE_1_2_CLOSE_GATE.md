@@ -16,10 +16,20 @@ the next stage **P1.3**.
 
 ## Authority model
 
-The three-clean-review standard is maintained by the project owner outside the repository. Review
-receipts, Markdown reports, package metadata, tests and Git/package manifests are informational;
-they do not calculate clean credit and cannot open the gate. Only an explicit `owner_manual_decision`
-with the required acknowledgements may set the next-stage state to allowed.
+The clean-review standard is maintained by the project owner outside the repository. Owner
+clarification (2026-07-06): the literal "three consecutive clean reviews" figure is a historical
+convenience baseline, not the operative criterion — closeout review continues until the owner
+judges it sufficient (possibly more or fewer than three rounds). The machine field
+`required_consecutive_clean_full_reviews=3` and the "three clean reviews" wording in the closing
+acknowledgement field are retained for checker compatibility only (the same pattern as the
+`p1_3b_*` fields). Review receipts, Markdown reports, package metadata, tests and Git/package
+manifests are informational; they do not calculate clean credit and cannot open the gate. Only an
+explicit `owner_manual_decision` with the required acknowledgements may set the next-stage state
+to allowed.
+
+Prerequisite scope (owner ruling 2026-07-06): the closeout prerequisite is the full PR2 TCB
+deepening backlog (#8, #2/#3, #5-B2, #5-F spike, #1, #9b/#9c) — not just #1. Production byte
+re-pinning (#9a) remains a deployment-time task that does not block the closeout verdict.
 
 The checker should pass while the gate is blocked. That PASS means the repository is consistently
 fail-closed, not that P1.2 is ready.
@@ -44,7 +54,8 @@ Therefore:
 A future close requires both technical and owner conditions. The technical side includes no
 producer-side durable/public mint, supervisor disk-current replay and fixed-witness validation,
 independent reverify for proof-bearing whole-layout eliminations, a single transactional canonical
-publisher, current package/policy boundaries, PR2 TCB work as scoped by the owner, and required tests
+publisher, current package/policy boundaries, PR2 TCB work as scoped by the owner (2026-07-06: the
+full deepening backlog — see Authority model above), and required tests
 on the same worktree.
 
 The governance side requires the explicit owner manual decision. Neither side substitutes for the
