@@ -17,6 +17,9 @@
 | `sidecar/runner.py` | WSL 求解检查链（判定协议：结论行 anchored 唯一匹配，禁退出码判定） |
 | `sidecar/witness_checker.py` | OPB-level witness 独立复验（不调用 emitter 约束生成） |
 | `sidecar/run_acceptance.py` | 合成样本验收 harness（21 样本五件套：UNSAT/canaries/INPUT_INVALID/双向突变/工具链红测） |
+| `sidecar/frontend.py` | 冻结工件解析前端（**零 import src/**；strict-JSON exact-decimal + operation profile 独立重推 + 五工件全长 sha256） |
+| `sidecar/parity_check.py` | profiles 对拍脚本（⚠ 刻意 import 生产当 oracle，是验证 harness 非 sidecar 组件；PARITY OK: 21/21 profiles 精确一致） |
+| `sidecar/real_sample.py` | 真实工件端到端样本（266 mandatory 实例全放；R1 无储存箱→CONFIRMED、R2 补箱→SAT+witness） |
 | `sidecar/patch_rs_logger.py` | RoundingSat 上游缺陷本地补丁（见下） |
 
 ## 状态（2026-07-05）
@@ -27,11 +30,15 @@
   （真 proof + veripb `s VERIFIED UNSATISFIABLE`）；FEASIBLE canaries 5 全
   SAT+witness 通过；非法输入 8 类全 fail-closed 拒绝；双向突变红测 4/4 被抓
   （含 over-constraint 使 canary 翻 UNSAT——sidecar 最危险 bug 类的哨兵）。
-- **真实生产样本尚不可对账**（by design）：需要 canonical sample record
+- **冻结工件解析前端已落地**（frontend.py）：五工件 strict-JSON exact-decimal
+  独立解析、operation profile 独立重推（Fraction 精确 ceil），与生产
+  OPERATION_PORT_PROFILES 对拍 **21/21 精确一致**（parity_check.py）；
+  真实规模端到端已验（real_sample.py：17k 变量模型，emit+solve+check < 10s，
+  R1 无储存箱 CONFIRMED / R2 补箱 SAT+witness 通过）。
+- **真实生产判决对账仍不可做**（by design）：需要 canonical sample record
   （verdict/scope/ordinal 字段）——采集侧改造动生产文件，属 Phase 0、待 owner 批。
-  当前真实样本一律 `NOT_REPLAYABLE`。
-- 冻结工件解析前端（operation profile 从 canonical_rules/preprocess_plan 独立
-  重推）未落地——合成样本直给规范化输入，不触发 `SPEC_INCOMPLETE`。
+  在此之前 frontend 能对任意布局出 OPB 并跑链路，但产出只是 sidecar 自身判定、
+  不与生产 verdict 关联。
 
 ## 工具链复现（WSL Ubuntu-24.04）
 
