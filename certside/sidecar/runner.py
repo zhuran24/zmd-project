@@ -9,7 +9,6 @@ Windows 侧调 WSL 的 roundingsat/veripb。判定 fail-closed：
 from __future__ import annotations
 
 import hashlib
-import json
 import re
 import subprocess
 import time

@@ -6,11 +6,10 @@
 
 from __future__ import annotations
 
-import copy
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 sys.path.insert(0, str(Path(__file__).parent))
 from emitter import EmitterReject, emit  # noqa: E402
@@ -128,7 +127,8 @@ def build_samples() -> List[Dict[str, Any]]:
     samples.append({"id": "U2_input_pigeonhole", "input": p, "expect": "CONFIRMED"})
 
     p = with_dock(base_input(), out_cells=3)
-    out_commodity(p, "a"); out_commodity(p, "b")
+    out_commodity(p, "a")
+    out_commodity(p, "b")
     p["required_generic_outputs"].update({"a": 2, "b": 2})
     samples.append({"id": "U3_multi_commodity_overflow", "input": p, "expect": "CONFIRMED"})
 
@@ -173,11 +173,13 @@ def build_samples() -> List[Dict[str, Any]]:
     samples.append({"id": "I1_unused_sentinel", "input": p,
                     "expect": "REJECT", "subcode": "UNUSED_SENTINEL_IN_REQUIREMENTS"})
 
-    p = with_dock(base_input(), out_cells=1); out_commodity(p, "a")
+    p = with_dock(base_input(), out_cells=1)
+    out_commodity(p, "a")
     p["required_generic_outputs"]["a"] = True
     samples.append({"id": "I2_bool_count", "input": p, "expect": "REJECT", "subcode": "NON_INT_FIELD"})
 
-    p = with_dock(base_input(), out_cells=1); out_commodity(p, "a")
+    p = with_dock(base_input(), out_cells=1)
+    out_commodity(p, "a")
     p["required_generic_outputs"]["a"] = -1
     samples.append({"id": "I3_negative_count", "input": p, "expect": "REJECT", "subcode": "NEGATIVE_FIELD"})
 
@@ -186,7 +188,8 @@ def build_samples() -> List[Dict[str, Any]]:
     p["required_generic_outputs"]["a"] = 1
     samples.append({"id": "I4_role_mismatch", "input": p, "expect": "REJECT", "subcode": "OUTPUT_ROLE_MISMATCH"})
 
-    p = with_dock(base_input(), out_cells=1); out_commodity(p, "a")
+    p = with_dock(base_input(), out_cells=1)
+    out_commodity(p, "a")
     p["required_generic_outputs"]["a"] = 1
     p["commodity_metadata"]["ghost_food"] = {"sink_kind": "generic_input"}  # req_in 漏它
     samples.append({"id": "I5_completeness_gap", "input": p,

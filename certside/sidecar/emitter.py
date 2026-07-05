@@ -13,9 +13,8 @@ from __future__ import annotations
 
 import json
 import math
-from fractions import Fraction
-from itertools import combinations, product
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+from itertools import combinations
+from typing import Any, Dict, List, Mapping, Sequence, Tuple
 
 SCHEMA_INPUT = "binding_sidecar_model_input_v1"
 
