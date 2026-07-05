@@ -1,4 +1,5 @@
 import ZmdFormal.DesignStatements
+import ZmdFormal.FrameworkLemmas
 
 /-!
 # W-完备骨架（Q1 分类学设计稿 §7 的 Lean 化，2026-07-05）
@@ -77,5 +78,37 @@ theorem incomplete_assignment_fallback_unsound :
       {⟨(), (true, ())⟩, ⟨(), (false, ())⟩}
     decide
   exact hLR {⟨(), (true, ())⟩, ⟨(), (false, ())⟩} (by decide) hsub
+
+/-! ## 组合定理：oracle 判决 → cut 排除 → 搜索空间安全的全链 -/
+
+/-- 全链组合定理：F5 lift 链（oracle 的 liftable reject → 匿名 multiset
+nogood）与复合安全引理（序代表 × cut 不删光合法类）的组装——把
+`ZmdFormal.Framework.f5_compound_safety` 的抽象 `Cut` 与 `hcut_sound`
+用 `anon_lift_sound` 的产物实例化。结论：oracle 验证过的 pattern nogood
+作为 cut，与任何代表选择复合后，搜索空间（代表 ∩ 未被 cut 排除）内
+仍有可行解（只要全空间有）。 -/
+theorem oracle_nogood_compound_search_safety
+    [DecidableEq GroupId] [∀ g, DecidableEq (Slot g)] [∀ g, DecidableEq (Pose g)]
+    (Feasible : Layout GroupId Slot Pose → Prop)
+    (equiv : Layout GroupId Slot Pose → Layout GroupId Slot Pose → Prop)
+    (Sel : Layout GroupId Slot Pose → Prop)
+    (hEquivPHOM : ∀ {s t}, equiv s t → (Feasible s ↔ Feasible t))
+    (hSel : ∀ s, ∃ r, equiv s r ∧ Sel r)
+    {P : Layout GroupId Slot Pose}
+    (hExtend : PartialSlotPermExtends.{u, v, max v w} (GroupId := GroupId) Slot)
+    (hPHOM : P_HOM Feasible)
+    (hWellFormed : ∀ A, Feasible A → NoDuplicateNamedSlots A)
+    (hReject : LiftableReject Feasible P)
+    (hPslots : NoDuplicateNamedSlots P)
+    {s₀ : Layout GroupId Slot Pose} (hs₀ : Feasible s₀) :
+    ∃ r, Sel r ∧ ¬ AnonMultisetExtends P r ∧ Feasible r := by
+  have hnogood : AnonMultisetNogood Feasible P :=
+    anon_multiset_lift_soundness_from_named_representative hExtend hPHOM
+      hWellFormed hReject hPslots
+  exact ZmdFormal.Framework.f5_compound_safety equiv Feasible Sel
+    (fun A => AnonMultisetExtends P A)
+    hEquivPHOM hSel
+    (fun A hc hF => hnogood A hF hc)
+    hs₀
 
 end ZmdFormal.WCompleteness

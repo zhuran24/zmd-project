@@ -66,3 +66,4 @@ import ZmdFormal
 #print axioms ZmdFormal.WCompleteness.complete_infeasible_liftable_reject
 #print axioms ZmdFormal.WCompleteness.w_completeness_f5_fallback
 #print axioms ZmdFormal.WCompleteness.incomplete_assignment_fallback_unsound
+#print axioms ZmdFormal.WCompleteness.oracle_nogood_compound_search_safety
