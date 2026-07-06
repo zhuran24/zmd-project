@@ -64,7 +64,7 @@ checks as certified proof"）。
   字面即连通、不得读成「带宽达标」。
 - **(6) power_coverage feasible（最强谓词：master 强制 + 独立 terminal 复验）** — (A) master 硬约束
   `exact_coordinate_master.py:5827`：每 powered slot 的 cover-choice witness 强制被选塔覆盖矩形几何
-  包含 slot footprint（`.OnlyEnforceIf(active)`，`:5275-5352`）+ 被选塔 `active` 守卫（`:5470-5499`）
+  与 slot footprint 几何**相交**（**owner 2026-07-07 裁定:供电覆盖谓词=相交 intersection——受电设施 footprint 与被选塔覆盖矩形 ≥1 格重叠即算覆盖,非 containment/全包含**;master 侧=双轴区间重叠 `exact_coordinate_master.py:5330-5344`,terminal 侧=`any(cell in coverage_cells)` `pr2_l0_artifact_core.py:1023-1030`;`.OnlyEnforceIf(active)`，`:5275-5352`）+ 被选塔 `active` 守卫（`:5470-5499`）
   + 无塔时 powered slot `active==0`（`:5845-5848`）。(B) terminal 独立 replay
   `exact_campaign.py:1131-1157`：从冻结 artifact 原始 pose 字节**独立重算**覆盖格 cell 级匹配 + 无冗余
   塔，missing / unforced 一律 fail-closed（**不信 solver 内部变量**——routing/binding 无此第二道）。

@@ -38,6 +38,10 @@ triggers:
     - 已裁定延期
     - 假阳性
     - c9b41b3
+    - 供电覆盖 intersection
+    - power coverage 相交 vs 包含
+    - 游戏语义裁定
+    - round-2 语义轴
   negative_keywords: []
   paths:
     - data/review_gates/phase_1_2_spike_close.json
@@ -60,7 +64,8 @@ provenance:
     - "cluster-3 实证:exact_campaign.py:2521-2542 has_certified_export_surface 含 INFEASIBLE;2863-2879 certified_terminal_evidence_violation has_export_surface∧¬terminal_certified_evidence→fail-closed;test_v101_terminal_infeasible_surface_soundness.py。"
     - "cluster-4 实证:pr2_l0_replay_core.py:644-662 _invoke_isolated_replay 用 -I -B -X pycache_prefix、无 -S(需 import ortools)、env 极简。"
     - "cluster-6 实证:certified_surface.py:497-546 resolve_p1_2_publish_open_gate 路径硬绑+4 字段精确匹配;弱于 scripts/check_phase_review_gate.py。"
-  updated_at: "2026-07-06"
+    - "2026-07-07 round-2:换轴到数学语义(Fable 写提示词),9 报告→7 簇(wf_afe548cd-05d),Opus 亲验;仍 0 真洞。C2/C3 供电覆盖 intersection vs containment=文档自相矛盾,owner 裁定=相交,改 PROJECT_LOCK:65-67 + overview §1.1 措辞;C1/C4/C5/C6/C7 假阳(codex 行为验证 reachable=不能)。"
+  updated_at: "2026-07-07"
 ---
 2026-07-06 P1.2 收口外审第 1 轮 triage(冻结树 `c9b41b3`、包 SHA `1296f981…`)。8 份 GPT Pro 报告 → 去重 11 簇 → Opus leader 亲读源码验真(codex verify 占位/失败不可信,按 [[guardrail-delegate-adversarial-reads]] leader=Opus 亲做)。
 
@@ -90,5 +95,16 @@ public publisher 的 `resolve_p1_2_publish_open_gate()`(certified_surface.py)原
 == round-2:换轴到"验证语义等价性"(Fable 2026-07-06,应 owner"线上零发现存疑、换人写提示词"之令)==
 - **为什么换轴**:round-1 的 7 切面全是发布链**权限结构**轴(REVIEW_PLAN 自述"不是数学"),且 entry 把守卫锚点连 file:line 带正确行为喂给了 reviewer(考生沿地图验完守卫都在→只剩线下可挖)。所以"0 条上-TCB 发现"是**切面盲区**,不能当"线上已闭合"的证据——历史真洞(v79-v99)几乎全是数学语义洞(v82 半域/v85 漏箱/v86 不复验电力/v94 过剩箱)。
 - **round-2 提示词 = 4 份**(初稿单份 8 靶区,owner 问"多几条会不会更好"后按注意力预算/审查手法从零重推拆 4——语义深审费注意力,8 靶区塞一会话必摊薄;按所需心智模型分组):`pr2_pkg\p1_2_closeout_20260706\entry_8a_predicates.md`(谓词语义等价:几何/计数/供电/退化,双向对照法)、`entry_8b_routing.md`(routing 图构造等价+存在性 vs 所选路径语义差+两层判定严格序)、`entry_8c_optimality.md`(lex 穷尽性推理链逐环+UNKNOWN 记账+resume/wave 合并+false-INFEASIBLE 侧,v79/81/82/83/84 同族区)、`entry_8d_crosscut.md`(精确算术/字节↔语义解释层/状态时间一致性+不设边界自由狩猎兜三份切缝)。共同设计:审"判定者的数学"非"谁能绕过判定者"、不给守卫地图、历史真洞校准(读包内 v79-v99 找同族下一个)、**覆盖矩阵硬性要求**(零发现须交"审了什么凭什么判闭合")、排除 round-1 全部 11 簇同族噪声。同一送审包(冻结树未变)。已按 relay 规程 staged 剪贴板(顶→底=包路径,8a,8b,8c,8d,逐条回读核验),剩 owner 手动上传、四份各开独立会话。
+
+== round-2 triage 结果(Opus leader 亲验 + codex 行为验证,2026-07-07)==
+9 报告回传(含多份 reviewer 补丁)。workflow wf_afe548cd-05d:12 发现→7 簇→codex 行为验证(这轮 verdict 是真分析、非占位)。**最终仍 0 个真·上-TCB 洞**——但换轴有价值:翻出一个真实语义歧义(供电覆盖措辞),经 owner 裁定消除。
+- **C2+C3 供电覆盖 intersection vs containment(reviewer ×4 最高共识 + 补丁 + codex 在冻结 candidate_placements 找到真实 partial-cover pair)**:代码全链路统一 **intersection**——master `exact_coordinate_master.py:5330-5344`(双轴区间重叠 facility_left≤cov_right ∧ cov_left≤facility_right)+ terminal `pr2_l0_artifact_core.py:1023-1030`(`any(cell in coverage_cells)`);但 `PROJECT_LOCK:65-67` 误写 containment("覆盖矩形几何包含 slot footprint")、`:86` 又写"覆盖相交"、`overview §1.1`"被覆盖"偏 containment = **权威文档自相矛盾**。→ **owner 2026-07-07 裁定:供电覆盖谓词 = 相交(intersection,footprint 与塔覆盖区 ≥1 格重叠即算覆盖,非全包含)**,故代码正确、**非 soundness 洞**;已改 PROJECT_LOCK:65-67 + overview §1.1 措辞对齐(纯文档,不动代码/reseal)。属 [[routing-game-semantics-rulings]] 同类(canonical 没写死、代码硬编码承担的游戏语义)。
+- **C1 routing-free 终品 output connector 漏终端 connector/body 复验**:假阳。谓词(5)只管 **routed** commodity 的 front(overview §1.1 + PROJECT_LOCK B-4"端口 front 格由 routing 强制");qiaoyu_capsule 等是 wireless/routing-free 终品、非 routed→其 output connector 本不需空;`extract_port_specs` 跳过它+终端 `_connector_body_exclusion_violation` 吃该投影,行为属实但语义正确(Opus 亲验)。
+- **C4 局部 strict loader 收 1e999→inf**:假阳/已修(=round-1 cluster-10,`6b41ebf` 已给 `_load_strict_json_mapping` 加 parse_float;codex reachable=不能)。
+- **C5 非监督 terminal INFEASIBLE 可持久化**:假阳(=round-1 cluster-3;`has_certified_export_surface`+`certified_terminal_evidence_violation` fail-close;reachable=不能)。
+- **C6 routing in-loop 只查 port front cell、未同层拒 connector 被 body 占**:假阳(求解层候选过宽,但所有走 public CERTIFIED 的路径〔outer_search 提交前/capsule/supervisor seal child/publish〕都重跑终端 `_connector_body_exclusion_violation` 拦下;codex 实证不穿透)。
+- **C7 terminal 接受 superdomain evidence(min_side 可低于 admissibility)**:假阳(超集穷尽不漏 admissible 子域更优解 + 独立 final-result-below-admissibility 检查 `pr2_l0_frontier_core.py:375-380`/`exact_campaign.py:2626-2629` 拦;真松点、非可利用)。
+
+**round-1 vs round-2 合论**:两轮换轴(权限结构轴 / 数学语义轴)共 18 簇,**0 个真·上-TCB soundness 洞**;唯二实做=cluster-6 治理门 split-brain(`6b41ebf`)+ 供电覆盖措辞对齐(纯文档);其余全假阳/已裁定延期/线下。是否据此判收敛收口 = owner 画线拍板。
 
 关联:收敛判据 [[review-convergence-tcb-line-not-zero-findings]];延期桶 [[deliberate-insider-hardening-deferred-to-release]];对抗语料上下文卫生 [[guardrail-delegate-adversarial-reads]];外审前未闭项(乙冻结仪式已执行)[[p1-2-pre-external-review-open-items]]。
