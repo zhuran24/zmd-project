@@ -105,12 +105,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_stage_verified_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 628,
+      "line": 670,
       "keys": [
         "final_solution.json"
       ],
       "callee": "atomic_write_json",
-      "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
       "justification": "Verified publisher writes final_solution.json only to a same-parent staging path after disk checkpoint authority, terminal evidence replay, and publish-open gate checks pass; the staged bytes are later atomically committed as a three-file transaction."
     },
     {
@@ -118,12 +118,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_stage_verified_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 633,
+      "line": 675,
       "keys": [
         "optimal_blueprint.json"
       ],
       "callee": "atomic_write_json",
-      "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
       "justification": "Verified publisher writes optimal_blueprint.json only to a staging path derived from the verified terminal result; generic blueprint writers still reject the canonical certified path."
     },
     {
@@ -131,12 +131,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_stage_verified_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 649,
+      "line": 691,
       "keys": [
         "certified_delivery_manifest.json"
       ],
       "callee": "atomic_write_json",
-      "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
       "justification": "Verified publisher writes the manifest only to a staging path after rebuilding it from disk authority and binding hashes to the staged final/blueprint bytes with canonical logical paths."
     },
     {
@@ -144,12 +144,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_commit_staged_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 742,
+      "line": 784,
       "keys": [
         "final_solution.json"
       ],
       "callee": "replace",
-      "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
       "justification": "Verified publisher atomically replaces canonical final_solution.json from prevalidated staged bytes after rollback backups have been prepared."
     },
     {
@@ -157,12 +157,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_commit_staged_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 745,
+      "line": 787,
       "keys": [
         "optimal_blueprint.json"
       ],
       "callee": "replace",
-      "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
       "justification": "Verified publisher atomically replaces canonical optimal_blueprint.json from prevalidated staged bytes after rollback backups have been prepared."
     },
     {
@@ -170,12 +170,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_commit_staged_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 748,
+      "line": 790,
       "keys": [
         "certified_delivery_manifest.json"
       ],
       "callee": "replace",
-      "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
       "justification": "Verified publisher commits certified_delivery_manifest.json last from prevalidated staged bytes, so partial commits cannot advertise a forged complete surface."
     },
     {
@@ -183,12 +183,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "export_and_verify_certified_delivery_manifest",
       "pattern": "artifact_write",
-      "line": 928,
+      "line": 970,
       "keys": [
         "certified_delivery_manifest.json"
       ],
       "callee": "atomic_write_json",
-      "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
       "justification": "Non-publisher manifest export writes only non-publishable manifests; payloads containing best_certified_result fail closed and must use publish_verified_certified_delivery_surface."
     },
     {

@@ -61,7 +61,7 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "8705174356d9eb24079faec665fe7bd2b9a5d124e358b214175a1931b31326c2"
+    "61f775cdcc7b6917830c7b48bc741af619f3f6890fff0964e21caaa339dc463f"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
@@ -12955,7 +12955,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
     'src/search/certified_artifact_contract.py': '2200d231b6aa93a59d2fd96bb1ec761cddf7e190c522e703e4dd1e8d2a92ba5d',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
-    'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
+    'src/search/certified_surface.py': '3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
     'src/search/exact_campaign.py': 'a478e61f023e47557faf7eda16fbbc4b3cc95e0fc607471e0b0a35fe3157b9f4',

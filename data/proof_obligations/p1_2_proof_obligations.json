@@ -986,7 +986,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-      "source_sha256": "f999f1cfb2453680e66bf9e5aad18308c14b025901e16552dd1e5193045264f3",
+      "source_sha256": "d4734f2c76607f2bf44b3a389f01fb96896d345f5aa8a314abc0b2f59918f0a2",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1656,7 +1656,7 @@
           "publish_verified_certified_delivery_surface",
           "_load_verified_surface_snapshot"
         ],
-        "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+        "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
