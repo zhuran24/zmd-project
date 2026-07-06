@@ -125,6 +125,16 @@ owner 2026-07-04 拍定的主线推进计划(问过 Fable + pytest 提速线程)
 - **判据**:固定税 <3s/次 → 提速价值不成立,fused 降级为 #1 的一个设计选项(只剩 TCB 结构简化价值);≥10s(如审查曾怀疑的"全仓 hash 18.8s 被第二个 child 重复付"属实)→ 提速价值成立,正式纳入阶段3手术范围。
 - **放哪**:时间线并入 #5-F part3 设计 spike(该 spike 本就是给阶段3做三选一调查,fused child 数据正是"重构最小化"选项的直接输入,不单开调查批)。环境:本机 Windows 够用(固定税=启动/import/hash,量级可信),CachyOS 就绪后复测校准一次。
 
+== 收口外审(2026-07-06 第 1 轮)线下发现的搭车归属 ==
+triage 判 **0 上-TCB 洞**(全表见 [[p1-2-closeout-review-round1-triage]]);下列真·线下项(非 soundness、不急、推迟零风险)按**同文件面搭车、绝不独立 reseal**(同"提速线收编"逻辑):
+| 线下发现 | 文件(sealed) | 搭到 |
+|---|---|---|
+| cluster-4 嵌套 replay 子进程无 `-S` / 未带 dependency floor | `pr2_l0_replay_core.py` | **批2a**(与 replay 纯核心抽取同文件面) |
+| cluster-7 L0 checkpoint replace/marker unlink 缺父目录 fsync | `pr2_l0_micro_verifier_core.py` | **阶段4 OS 边界批**(#9b/#9c 本就动 L0 隔离/OS 面) |
+| cluster-10 局部 strict JSON loader 缺 parse_float | `certified_surface.py` | **不单记**——搭 cluster-6 修复(owner 选方案 b、同动 certified_surface.py)当次 reseal 免费带走 |
+
+(cluster-6 治理门 split-brain 本身**不是 backlog 项**:owner 2026-07-06 选方案 b〔publish 路径也调 authoritative gate 检查〕,即刻由发布面 leader 实做 + reseal,不排进四阶段。)
+
 == 分工归属(owner 2026-07-04 拍板:两不沾 / 偏数学面的交 Fable)==
 - **Fable 负责**:搁置类三项(mini pack / cache-reset / sharded sidecar,纯 pytest 运行器基建、两不沾)+ aspect_ratio 306s 巨无霸测试改造(纯测试文件、偏数学面,改它要懂数学语义)。
 - **发布面(Opus)负责**:其余全部——整条 TCB backlog 本体,以及提速里碰 sealed 认证文件的(resume/frontier/replay 纯核心抽取、outer_search 接缝、l0-snapshot、lazy import、fused child);动机虽是提速,但手术面在认证核心 + 善后是 reseal 连锁,属发布面。
