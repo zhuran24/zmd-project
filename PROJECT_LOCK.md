@@ -156,10 +156,14 @@ seal 都不得改写为 owner 已关闭 release gate。
 
 ### C. P1.2 done-condition (C5)
 
-> **当前状态（2026-06-26）：OPEN / BLOCKED。** PR1 的 producer/supervisor mint split、fixed-witness
-> 终端复验、P1.2 fail-closed 发布闸和 I1 独立复验已实现；生产 supervisor 调度入口也已落地
-> （`scripts/run_supervisor_seal.py`，done-condition 之一），但 owner manual gate、PR2 TCB 收缩
-> 和发布包 immutability/policy 收口仍尚未完成。不得因类方法、局部修复或该入口存在而宣称 P1.2 closed。
+> **当前状态（2026-07-07）：CLOSED。owner 显式 owner_manual_decision 关闭 P1.2、开启 P1.3B。** PR1 的
+> producer/supervisor mint split、fixed-witness 终端复验、P1.2 fail-closed 发布闸、I1 独立复验、生产
+> supervisor 调度入口（`scripts/run_supervisor_seal.py`）均已实现;三轮收口外审（权限结构 / 数学语义 /
+> TCB 线诚实性）0 上-TCB soundness 洞;`_check_phase_gate_fixed_witness_close_binding` 的 stay-blocked
+> sentinel 已按其 docstring 预期的转换撤除（fixed-witness publish binding 保留、无条件强制），gate =
+> `closed_manual_owner_decision` + `next_allowed=true`,close-kernel checker / full / slow 已 reseal 通过。
+> 「仅防蓄意内鬼」的 PR2 TCB 深化项按 2026-07-06 令移至发布时点（见上 close-scope 修改段）。**此关闭是
+> owner 显式手动决定,非自动推导**;历史"不得因类方法/局部修复/入口存在而自动宣称 closed"的纪律仍成立。
 
 P1.2 可被诚实宣布闭合，仅表示当前 `PROJECT_LOCK §1A` 命题 P 的机器边界、发布链和 owner 手动闸
 同时满足。它不是吞吐定理，也不自动打开 P1.3。

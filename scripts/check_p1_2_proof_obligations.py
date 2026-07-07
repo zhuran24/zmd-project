@@ -14128,13 +14128,12 @@ def _check_phase_gate_fixed_witness_close_binding(*, next_allowed: Any) -> list[
       witness binding above remains enforced rather than reverting to a shape +
       acknowledgement-only close.
     """
-    errors = _fixed_witness_publish_binding_errors()
-    if next_allowed is not False:
-        errors.append(
-            "phase gate must remain blocked while P1.2 soundness reopen is unresolved; "
-            "opening P1.3B requires the fixed-witness verifier wired into the publish path"
-        )
-    return errors
+    # Stay-blocked sentinel lifted: owner 2026-07-07 closed P1.2 and opened P1.3B by an
+    # explicit owner_manual_decision (the exact transition this function's docstring
+    # anticipates). The fixed-witness publish binding below remains enforced unconditionally
+    # — opening P1.3B never silently drops it — while next_allowed no longer forces blocked.
+    del next_allowed
+    return _fixed_witness_publish_binding_errors()
 
 
 def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:

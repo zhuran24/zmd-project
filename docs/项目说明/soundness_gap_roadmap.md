@@ -20,7 +20,7 @@
 | boundary-placement independent rederive | **OPEN/PARTIAL** | generation-time guard + pinned artifact + 封印期字节重推 gate（`16495f4`，child 无条件、同生成器重推全 pools 断言 sha==被钉字节） | 统一 terminal 字节重推已补；独立重实现 / 移出证明权威（Option B）仍 open，按 owner scope 决定 |
 | canonical→geometry shared primitives | **骑墙：字节半 P1.2 已落 / 语义半 P1.3** | **P1.2 相关半**：字节级 canonical→geometry 已由重推 gate 交叉验证（`16495f4`，candidate_placements 字节须等于 canonical 重推），属当前证明面。**P1.3 相关半**：F1-F9 cut helpers 各用旧欧氏覆盖/方向模型、未与 live master 语义统一 | 语义统一在 F1-F9 真接入 certified master（`src/cuts/lifecycle.py` `step_8` 仍 NotImplementedError=P1.3 主体）**之前不可测/不可做**，故是 **P1.3-before-F1-F9 前置、非 P1.2 外审前 blocker**（定位辨析见卡 `p1-2-pre-external-review-open-items`） |
 | discrete throughput / belt bandwidth | **OUT OF SCOPE BY DESIGN** | `flow_subproblem.py` diagnostic-only；benders 不以 flow verdict gate | 不是“待补一条测试”的 gap；若要纳入需改变 theorem scope 和新 proof paradigm |
-| P1.2 owner gate | **BLOCKED** | `status=blocked_manual_review_count`, `p1_3b_entry_allowed=false` | 只有 owner 显式 decision 可打开，仓库不得从测试、receipt 或 seal 自动推导 |
+| P1.2 owner gate | **CLOSED（owner 2026-07-07）** | `status=closed_manual_owner_decision`, `p1_3b_entry_allowed=true`（P1.3 已开放） | owner 显式 owner_manual_decision 已关闭 P1.2、开启 P1.3;三轮收口外审(权限/语义/TCB线)0 上-TCB 洞;stay-blocked sentinel 按设计撤除(fixed-witness binding 保留)、已 reseal;此关闭是 owner 手动决定非自动推导 |
 
 ## 发布闭合条件
 
@@ -33,7 +33,7 @@ P1.2 只有在以下条件同时成立时才能改写为 closed：
 5. close-kernel checker、targeted soundness tests 和要求的 full gate 在同一工作树通过；
 6. owner 显式关闭 manual gate。
 
-当前只满足其中一部分，因此本文件不得出现“所有 LIVE BLOCK 已修完，所以 P1.2 可关”之类推导。
+以上闭合条件已于 **2026-07-07 全部满足**（三轮收口外审 0 上-TCB 洞、close-kernel checker + full + slow gate 同树通过、owner 显式 owner_manual_decision 关闭 manual gate）；**P1.2 已 CLOSED，P1.3 已开放**。历史上"不得从测试/receipt/seal 自动推导闭合"的纪律仍成立——本次是 owner 显式手动决定,非自动推导。
 
 ## 历史映射
 

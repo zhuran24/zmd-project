@@ -2,9 +2,9 @@
   "schema_version": 2,
   "gate_id": "phase_1_2_spike_close",
   "phase": "Phase 1.2 spike close",
-  "status": "blocked_manual_review_count",
-  "updated_at": "2026-06-17",
-  "summary": "P1.2 remains manually blocked. v99 is the last owner-approved review anchor and a point-in-time close-kernel seal; later working-tree PR1 publication-boundary changes are not covered by that old source-hash seal and require fresh resealing/validation. Owner clean-review count remains outside the repo.",
+  "status": "closed_manual_owner_decision",
+  "updated_at": "2026-07-07",
+  "summary": "P1.2 owner-closed and P1.3 opened on 2026-07-07 by explicit owner_manual_decision, after three consecutive clean closeout external-review rounds (permission-structure, math-semantics, TCB-line-honesty axes; all zero above-TCB soundness findings). v99 remains the approved review anchor. Owner clean-review count remains outside the repo.",
   "current_review_anchor": "v99_p1_2_close_kernel_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
@@ -21,19 +21,29 @@
     "policy_note": "Review receipts and reports are informational. They are not machine authority for clean credit or P1.3 entry. Machine field names containing p1_3b are retained for compatibility; owner decision is the only entry authority."
   },
   "owner_manual_state": {
-    "p1_2_close_status": "not_closed",
-    "p1_3b_entry_allowed": false,
+    "p1_2_close_status": "closed",
+    "p1_3b_entry_allowed": true,
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
     "current_review_anchor": "v99_p1_2_close_kernel_sealing",
-    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count. v99 remains the last approved anchor, but post-v99 working-tree changes require a fresh technical seal before any close claim; no owner decision currently allows P1.3 entry."
+    "note": "Owner closed P1.2 and opened P1.3 on 2026-07-07 after three consecutive clean closeout external-review rounds. The repo intentionally does not record or compute the clean-review count (0/3..3/3); the owner keeps it outside the repo. v99 remains the approved review anchor."
+  },
+  "owner_manual_decision": {
+    "p1_3b_entry_allowed": true,
+    "counting_authority": "owner_manual_count_outside_repo",
+    "decision_id": "owner-p1-2-close-p1-3-open-20260707",
+    "decided_by": "zhuran24",
+    "decided_at": "2026-07-07",
+    "decision_note": "Owner formally declares P1.2 complete and P1.3 open, after three consecutive clean closeout external-review rounds (permission-structure, math-semantics, and TCB-line-honesty axes; all triaged to zero above-TCB soundness findings). Clean-review count is owner-maintained outside the repo.",
+    "acknowledges_repo_does_not_prove_clean_count": true,
+    "acknowledges_owner_verified_three_clean_reviews": true
   },
   "next_phase_entry": {
     "phase": "P1.3 production master integration (machine compatibility id: p1_3b)",
-    "allowed": false,
+    "allowed": true,
     "authority": "owner_manual_decision_only",
-    "reason": "Blocked by default. P1.3 entry requires an explicit owner_manual_decision; receipts, tests, structural checker passes, or an obsolete point-in-time seal cannot open this gate."
+    "reason": "Opened by explicit owner_manual_decision on 2026-07-07 (owner declared P1.2 complete and P1.3 open). P1.3 entry is permission to begin P1.3 (production master/cut integration, step_8); it does not assert P1.3 work is done."
   },
   "informational_history": [
     {

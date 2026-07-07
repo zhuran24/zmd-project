@@ -524,8 +524,12 @@ def test_fix_3_structure_gate_sources_must_be_in_v99_source_floor(monkeypatch) -
 
 
 def test_fix_3_current_phase_gate_stays_blocked() -> None:
+    # Historical name. Owner 2026-07-07 closed P1.2 and opened P1.3 via an explicit
+    # owner_manual_decision (the only mechanism PO-PHASE-GATE-PROVENANCE permits); the
+    # committed gate is now a valid owner-closed shape. This guards that the committed
+    # gate stays structurally valid and owner-decision-authored (not auto-derived).
     summary, errors = check_phase_review_gate.check_gate(GATE_PATH)
 
     assert errors == []
-    assert "status=blocked_manual_review_count" in summary
-    assert "next_allowed=False" in summary
+    assert "status=closed_manual_owner_decision" in summary
+    assert "next_allowed=True" in summary
