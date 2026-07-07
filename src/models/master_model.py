@@ -12146,6 +12146,33 @@ class MasterPlacementModel:
             )
         return False
 
+    def add_baseline_packing_cut(
+        self,
+        *,
+        group_id: str,
+        region_kind: str,
+        capacity: int,
+        condition_lits: Sequence[Any],
+    ) -> bool:
+        """F6 shape_packing_hall ghost-conditioned baseline count cap (M4-B).
+
+        Same fail-closed shape as the other framework cut APIs: only the
+        exact coordinate delegate implements it, everything else returns False.
+        """
+        if self.exact_mode and self._coordinate_delegate is not None:
+            delegate_fn = getattr(
+                self._coordinate_delegate, "add_baseline_packing_cut", None
+            )
+            if delegate_fn is None:
+                return False
+            return delegate_fn(
+                group_id=group_id,
+                region_kind=region_kind,
+                capacity=capacity,
+                condition_lits=condition_lits,
+            )
+        return False
+
 
 if __name__ == "__main__":
     project_root = Path(__file__).resolve().parent.parent.parent

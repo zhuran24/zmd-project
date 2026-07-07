@@ -66,7 +66,9 @@ def _boundary_overflow_state():
         ghost_cells=frozenset({(10, 0), (11, 0), (10, 1), (11, 1)}),
         exterior_blocks=frozenset(),
         artifact_hashes={"canonical_rules.json": "h1"},
-        available_oracle_versions=frozenset({"region_capacity_v1"}),
+        available_oracle_versions=frozenset(
+            {"region_capacity_v1", "shape_packing_hall_v1"}
+        ),
         canonical_rules=CANONICAL_RULES,
         facility_templates=FACILITY_TEMPLATES,
         instance_to_facility_type=INSTANCE_TO_FT,
@@ -80,6 +82,7 @@ class _SpyMaster:
     def __init__(self) -> None:
         self.build_stats: Dict[str, Any] = {}
         self.region_capacity_calls: list = []
+        self.baseline_packing_calls: list = []
 
     def add_region_capacity_cut(
         self,
@@ -91,6 +94,24 @@ class _SpyMaster:
         self.region_capacity_calls.append(
             {
                 "group_cell_weights": dict(group_cell_weights),
+                "capacity": capacity,
+                "condition_lits": tuple(condition_lits),
+            }
+        )
+        return True
+
+    def add_baseline_packing_cut(
+        self,
+        *,
+        group_id: str,
+        region_kind: str,
+        capacity: int,
+        condition_lits: Any = (),
+    ) -> bool:
+        self.baseline_packing_calls.append(
+            {
+                "group_id": group_id,
+                "region_kind": region_kind,
                 "capacity": capacity,
                 "condition_lits": tuple(condition_lits),
             }
@@ -196,7 +217,12 @@ def test_full_chain_generates_validates_and_attaches() -> None:
             attached = controller._maybe_attach_framework_cuts(
                 trigger="binding_infeasible", iteration=7
             )
-    assert attached == 1
+    # F1 overflow cut + one F6 Hall cut. The 2×2 ghost at (10,0) bites the
+    # left baseline: left packable 10//3+58//3=22 < SoT bound 46-23=23 → cut.
+    # The bottom side's bound 46-22=24 exceeds the single-side physical cap
+    # 70//3=23, so the oracle's sane-bound guard deliberately skips it (the
+    # left cut already refutes this anchor).
+    assert attached == 2
     assert len(spy.region_capacity_calls) == 1
     call = spy.region_capacity_calls[0]
     assert call["group_cell_weights"] == {"boundary_io": 3}
@@ -204,12 +230,18 @@ def test_full_chain_generates_validates_and_attaches() -> None:
     # The overflow cut is ghost-bound (ghost bites the union), so M4-A
     # conditioning must forward the selected ghost literal.
     assert call["condition_lits"] == (_GHOST_U_VAR_SENTINEL,)
+    assert len(spy.baseline_packing_calls) == 1
+    f6_call = spy.baseline_packing_calls[0]
+    assert f6_call["region_kind"] == "left_baseline"
+    assert f6_call["capacity"] == 22
+    assert f6_call["group_id"] == "boundary_io"
+    assert f6_call["condition_lits"] == (_GHOST_U_VAR_SENTINEL,)
     stats = spy.build_stats["cut_framework_attach_last"]
     assert stats == {
         "trigger": "binding_infeasible",
         "iteration": 7,
-        "generated": 1,
-        "attached": 1,
+        "generated": 2,
+        "attached": 2,
     }
 
 

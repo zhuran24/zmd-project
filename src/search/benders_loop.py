@@ -7633,7 +7633,11 @@ class LBBDController:
             exterior_blocks=frozenset(),
             artifact_hashes=dict(self.artifact_hashes or {}),
             available_oracle_versions=frozenset(
-                {"region_capacity_v1", "power_cover_v2_stencil"}
+                {
+                    "region_capacity_v1",
+                    "power_cover_v2_stencil",
+                    "shape_packing_hall_v1",
+                }
             ),
             canonical_rules=rules,
             instance_to_facility_type=instance_to_facility_type,
@@ -7722,6 +7726,10 @@ class LBBDController:
         from src.cuts.oracles.region_capacity_oracle import (
             generate_region_capacity_cuts,
         )
+        from src.cuts.oracles.shape_packing_hall_oracle import (
+            compute_sot_region_demand_overrides,
+            generate_shape_packing_hall_cuts,
+        )
         from src.cuts.replay import FAMILY_VALIDATORS
 
         stats = getattr(self.master, "build_stats", None)
@@ -7767,6 +7775,17 @@ class LBBDController:
                         state, target_poses=target_poses, iter_index=iteration
                     )
                 )
+        # F6 (M4-B): overrides are the source-of-truth pigeonhole bounds —
+        # pure state geometry, no incumbent counting needed.
+        f6_overrides = compute_sot_region_demand_overrides(state)
+        if f6_overrides:
+            cuts.extend(
+                generate_shape_packing_hall_cuts(
+                    state,
+                    region_demand_overrides=f6_overrides,
+                    iter_index=iteration,
+                )
+            )
         attached = 0
         for cut in cuts:
             if budget_used + attached >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:

@@ -986,7 +986,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-      "source_sha256": "5b258acabbe8a2b52e9d7442ae230d60927d6fd19526be123d185a6af261212d",
+      "source_sha256": "4c2000ccffcb5a1fcc7c6c3f5ed09eb339d3d201984e5c8a49196e00217eacf6",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1108,7 +1108,7 @@
         "required_guard_tokens": [
           "proof-bearing"
         ],
-        "source_sha256": "274e8401b981457b2d1bec8c39e4c2e69704cf83d223443143cb27a3a84c3c97",
+        "source_sha256": "87a49ce0bd821cdc0d3bccd0745c06814784afaf49cd77f96db436ea7a6afdad",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1160,7 +1160,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934",
+        "source_sha256": "2588b968c5e867f1669720acd9a46b7fc28d130a325e2fd9298ac31c1e225e0d",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1291,7 +1291,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "b28244164e769910c140dd88e0c5ac604e7c49d65f1657838a0fa939fa68c3d9",
+        "source_sha256": "8a680b42479d751d9ec425716912f893f25d19a53029b7265db947c3ba6e20bf",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1345,7 +1345,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "fcaba2fb6eb0790cc7ee02d2462b692e8db4559fb89d8e813b0efd4dd2805e2d",
+        "source_sha256": "1abfe98d6d9740a217ad67b6d26a94a5aa89d6fccf89e98eddbe36f270085ee8",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1555,7 +1555,7 @@
           "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
           "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE"
         ],
-        "source_sha256": "ee43f484093979c85a45a97935f44d7135931df7c7a4d79c36f51306e53d3b28",
+        "source_sha256": "3c01ea8b93757bf42e3faefc0e4e835bd6df53ddcddf7f8473f2b11af08ec041",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

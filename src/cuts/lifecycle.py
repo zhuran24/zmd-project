@@ -1140,6 +1140,16 @@ class MasterModelLike(Protocol):
     ) -> bool:
         ...
 
+    def add_baseline_packing_cut(
+        self,
+        *,
+        group_id: str,
+        region_kind: str,
+        capacity: int,
+        condition_lits: Sequence[Any],
+    ) -> bool:
+        ...
+
 
 def step_8_apply_to_master(
     cut: Cut,
@@ -1275,6 +1285,53 @@ def step_8_apply_to_master(
         if not applied:
             raise RuntimeError(
                 "step_8: master rejected power_hitting_set cut (fail-closed; "
+                "no partial constraint was attached)"
+            )
+        return
+    if cut.family == "shape_packing_hall":
+        if cut.cert is None:
+            raise ValueError(
+                "step_8: shape_packing_hall cut carries no cert (fail-closed)"
+            )
+        cert = validate_cert_payload("shape_packing_hall", cut.cert.cert_payload)
+        contributing_group = cert["contributing_group"]
+        region_kind = cert["region_kind"]
+        total_packable = cert["total_packable"]
+        if not isinstance(contributing_group, str) or not contributing_group:
+            raise ValueError("step_8: contributing_group must be a non-empty str")
+        if region_kind not in ("left_baseline", "bottom_baseline"):
+            raise ValueError(f"step_8: unknown region_kind {region_kind!r}")
+        if (
+            isinstance(total_packable, bool)
+            or not isinstance(total_packable, int)
+            or total_packable < 0
+        ):
+            raise ValueError("step_8: total_packable must be a non-negative int")
+        # region_demand/group_demand are pigeonhole reasoning values (validated
+        # in steps 5-7); only the re-derived combinatorial cap enters the master.
+        if cut.scope is None:
+            raise ValueError(
+                "step_8: shape_packing_hall cut carries no scope (fail-closed)"
+            )
+        if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+            raise RuntimeError(
+                "step_8: shape_packing_hall cut must be ghost-bound "
+                "(fail-closed; the baseline segments are an anchor function)"
+            )
+        if not ghost_condition_lits:
+            raise RuntimeError(
+                "step_8: ghost-bound shape_packing_hall cut requires the "
+                "selected ghost literal(s) (fail-closed)"
+            )
+        applied = master_model.add_baseline_packing_cut(
+            group_id=contributing_group,
+            region_kind=region_kind,
+            capacity=total_packable,
+            condition_lits=tuple(ghost_condition_lits),
+        )
+        if not applied:
+            raise RuntimeError(
+                "step_8: master rejected shape_packing_hall cut (fail-closed; "
                 "no partial constraint was attached)"
             )
         return

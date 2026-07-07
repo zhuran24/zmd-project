@@ -112,6 +112,42 @@ def _proven_region_demand_lower_bound(
     return max(0, group_demand - other_capacity)
 
 
+def compute_sot_region_demand_overrides(
+    state: BState,
+) -> Dict[Tuple[GroupId, RegionKind], int]:
+    """Source-of-truth per-region demand lower bounds for the M4 wiring.
+
+    For every auto-detected boundary group and each baseline, the pigeonhole
+    bound ``max(0, group_demand - capacity(other_baseline))`` is the largest
+    region demand a Phase 1.2 cert may carry (anything larger is rejected by
+    the generator's own guard and by validator phase 7). Feeding exactly this
+    bound back as the override makes the generator fire whenever the ghost
+    bites a baseline hard enough that the group provably cannot fit — no
+    incumbent-side counting, no proof obligations beyond what the cert
+    already re-derives. Zero bounds are omitted (missing key = "master may
+    plan 0 poses on this side", the generator's skip contract).
+    """
+    overrides: Dict[Tuple[GroupId, RegionKind], int] = {}
+    if state.ghost_rect is None:
+        return overrides
+    for group_id in _auto_detect_boundary_groups(state):
+        if group_id not in state.groups:
+            continue
+        pose_length = _facility_template_length(state, group_id)
+        if pose_length is None or pose_length < 2:
+            continue
+        group_demand = state.groups[group_id].demand
+        if group_demand < 1:
+            continue
+        for region_kind in _DEFAULT_REGION_KINDS:
+            bound = _proven_region_demand_lower_bound(
+                state, region_kind, group_demand, pose_length
+            )
+            if bound >= 1:
+                overrides[(group_id, region_kind)] = bound
+    return overrides
+
+
 def generate_shape_packing_hall_cuts(
     state: BState,
     *,

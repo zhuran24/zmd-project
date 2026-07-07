@@ -7347,3 +7347,90 @@ class CoordinateExactMasterDelegate:
         self.owner._solver = None
         self.owner._status = None
         return True
+
+    def add_baseline_packing_cut(
+        self,
+        *,
+        group_id: str,
+        region_kind: str,
+        capacity: int,
+        condition_lits: Sequence[cp_model.IntVar],
+    ) -> bool:
+        # F6 shape_packing_hall master attach (M4-B, step_8 translation).
+        # The validated cert re-derived total_packable = Σ⌊ℓ_i/L⌋ over the
+        # baseline segments left by ghost+exterior — the combinatorial maximum
+        # of disjoint 1×L bodies on that baseline under the CURRENT anchor.
+        # Translation: count the group's poses whose body lies entirely on
+        # that baseline and cap them at total_packable, enforced ONLY under
+        # the selected ghost literal(s) (the segment structure is a function
+        # of the anchor; F6 certs are always ghost-bound). The cert's
+        # region_demand/group_demand are pigeonhole reasoning values and
+        # deliberately never enter the master.
+        if not condition_lits:
+            return False
+        cap = int(capacity)
+        if cap < 0:
+            return False
+        if region_kind == "left_baseline":
+            # canonical helper semantics: left baseline = cells (x, 0)
+            def _on_baseline(cell: Tuple[int, int]) -> bool:
+                return int(cell[1]) == 0
+        elif region_kind == "bottom_baseline":
+            # bottom baseline = cells (0, y)
+            def _on_baseline(cell: Tuple[int, int]) -> bool:
+                return int(cell[0]) == 0
+        else:
+            return False
+        gid = str(group_id)
+        tpl = next(
+            (
+                str(group["facility_type"])
+                for group in self.owner._mandatory_groups
+                if str(group["group_id"]) == gid
+            ),
+            None,
+        )
+        if tpl is None:
+            return False
+        slots = list(self.mandatory_slots.get(gid, []))
+        if not slots:
+            return False
+        pool = list(self.owner.facility_pools.get(tpl, []))
+        pose_tuples = self._template_pose_tuple_by_idx.get(tpl, {})
+        if not pool or not pose_tuples:
+            return False
+        terms: List[cp_model.IntVar] = []
+        for pose_idx in sorted(pose_tuples):
+            if not (0 <= pose_idx < len(pool)):
+                return False
+            pose = pool[pose_idx]
+            occupied = pose.get("occupied_cells") or []
+            if not occupied:
+                return False
+            if not all(_on_baseline((int(c[0]), int(c[1]))) for c in occupied):
+                continue  # pose not on this baseline — not counted by the cap
+            lit = self._pose_present_literal(slots, pose_tuples[pose_idx])
+            if lit is None:
+                continue  # unrepresentable pose can never be realized (zero term)
+            terms.append(lit)
+        if not terms:
+            # No representable pose on this baseline at all: the constraint
+            # would be vacuous; refuse so step_8 fails closed on a wiring gap.
+            return False
+        constraint = self.model.Add(sum(terms) <= cap)
+        constraint.OnlyEnforceIf(list(condition_lits))
+        self.owner.build_stats["coordinate_framework_cut_count"] = (
+            int(self.owner.build_stats.get("coordinate_framework_cut_count", 0)) + 1
+        )
+        self.owner.build_stats["coordinate_baseline_packing_last_cut"] = {
+            "group_id": gid,
+            "region_kind": str(region_kind),
+            "capacity": cap,
+            "presence_terms": len(terms),
+            "semantics": "baseline_packing_count_ghost_conditioned_v1",
+        }
+        # F-GM-R6-01 witness invalidation.
+        self.owner._last_solution = None
+        self.owner._solver = None
+        self.owner._status = None
+        return True
