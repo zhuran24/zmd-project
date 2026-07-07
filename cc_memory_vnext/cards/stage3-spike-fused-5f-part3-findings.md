@@ -57,7 +57,7 @@ provenance:
   reason: 2026-07-04 owner 离线期阶段3 spike 前期调查(fused 固定税实验 + hash 段补测 + #5-F 三选一设计,均零代码改动)的客观发现固化。
   evidence:
     - "2026-07-04:fused 固定税补测 n=5 生产规模,compute_exact_artifact_hashes median 18.14s(close-kernel 17.22s / source digest 0.87s / artifact SHA 0.033s),+~4s 启动 = ~22.14s → speedup-holds;调用点 pr2_l0_true_verifier_child.py:635。#5-F 调查:60 sink 里 53、92 V99 floor 里 74 有非平凡 import-time 执行;part3 被 V99 whole-file floor 字节兜底(TCB 线下);推荐 B+interim C。全程 git status -- src data 空。决策包 + #5-F 报告已 SendUserFile 给 owner。"
-  updated_at: "2026-07-06"
+  updated_at: "2026-07-07"
 ---
 阶段3 spike 调查发现(2026-07-04 owner 离线期,纯取证/设计、零代码改动)。三选一 owner 2026-07-04 已拍板采纳推荐;以下是客观发现 + 已采纳的推荐。
 
@@ -78,7 +78,7 @@ provenance:
 == 综合:阶段3 枢纽 = #1(最小 TCB 闭包)==
 - 两调查殊途同归:**#1 是阶段3核心手术**。#1 往"child 不 import 项目域、快照不扫全 src"重构 → 顺带塌缩 #5-F part3 大半攻击面(#5-F 选 B)+ child 结构简化容纳 fused(省 ~22s/次)。
 - 阶段3 **= 一次以 #1 为核心的重构**,#5-F-B + fused 是两个受益面,一批做(同一次 reseal)。
-- 都属**真·深化**(改认证核心 sealed 代码 + reseal);**#1 曾是 P1.2 收口前提**(owner 2026-07-04 晚修正:先做 #1 再收口;07-06 早间曾扩"全 backlog=前提"、同日晚间收窄:防蓄意内鬼类延期到发布时点、编码前提实质清空——#1 核心 (a)(b) 已做、剩余全在延期桶内,阶段3/④ 改为发布时点执行序;详见 [[review-convergence-tcb-line-not-zero-findings]] "再澄清"+"三澄清"段、[[deliberate-insider-hardening-deferred-to-release]])。#5-F part3 的 soundness 虽有 V99 floor 兜底(C interim),但 #1 最小 TCB 闭包本身是收口前提。
+- 都属**真·深化**(改认证核心 sealed 代码 + reseal);**#1 曾是 P1.2 收口前提**(owner 2026-07-04 晚修正:先做 #1 再收口;07-06 早间曾扩"全 backlog=前提",同日晚收窄令将其剩余阶段3/④移出 P1.2 前提:防蓄意内鬼类延期到发布时点、编码前提实质清空——#1 核心 (a)(b) 已做、剩余全在延期桶内,阶段3/④ 改为发布时点执行序;P1.2 已于 2026-07-07 由 owner_manual_decision 关门;详见 [[review-convergence-tcb-line-not-zero-findings]] "再澄清"+"三澄清"段、[[deliberate-insider-hardening-deferred-to-release]])。#5-F part3 的 soundness 有 V99 floor 兜底(C interim);剩余阶段3/④按发布时点安排。
 - **#1 实施(owner 2026-07-04 拍板 A + 认可 4 阶段)**:走 A 路径——只缩 child【执行面】到最小白名单、保留 source provenance floor 作 non-import digest(不改证明架构;理由:B 把 source floor 责任移到 checker self-TCB=更难自证的地方,长远更脆)。4 阶段:①冻验收+红线测试(只加测试不 reseal)→②抽 proof-core(pr2_l0_artifact_core/frontier_core/candidate_replay_core/fixed_witness_core,child 不再 import certified_frontier/exact_campaign/capsule)→③最小 execution snapshot(=#2,显式白名单替代扫全 src)→④fd-held read-once loader(=#3),每阶段一轮完整 reseal。验收硬门:child runtime sys.modules 无那三大模块 + snapshot 非全 src + replay/fixed-witness 语义等价或更强。**fused 校正**:当前 main 上 L0 child 已同进程 direct 调用 replay+fixed-witness、【无第二子进程可省】;之前测的 ~22s 是另一条公开 sink 路径的 standalone capsule child、跟 #1 不是一回事;fused 性能收益须在当前 main 重测,#1 收益以 TCB 从 668 模块/33 万行砍到最小为主。规划报告见 scratchpad/backlog_1_min_tcb_closure_plan.md。
 
 报告(2026-07-04 session scratchpad,已 SendUserFile 给 owner):决策包 `p1-2-stage3-spike-decision-pack.md`;#5-F 详细 `5f-part3-tradeoff-investigation.md`;fused 脚本 `measure_fused_child_fixed_tax.py` / `measure_production_hash_segment.py`。

@@ -55,7 +55,7 @@ provenance:
   reason: '2026-07-06 owner 令"再继续做到底",重开工程线做 #5 B2 并驱动到完成(实现+验收+提交+文档注)。存档:B2 真实内容(消歧)、Option A 落地事实与边界、Option B 残余,供未来重估与防同名混淆。'
   evidence:
     - "2026-07-06:实现+reseal commit 16495f4(10 文件),文档注 25e530c。codex 深查(a6f8430b)对 README:242/1107/1886 + PROJECT_LOCK:92-98/196-203 + soundness_gap_roadmap:20-21 坐实 B2=candidate_placements 几何、open。命根子:重生成脚本逐字节复现被钉 a914ba63。验收:双 checker/--full 3822/--slow 30 全绿。"
-  updated_at: "2026-07-06"
+  updated_at: "2026-07-07"
 ---
 2026-07-06 owner 令「再继续做到底」，重开工程线做 PR2 #5 B2 并驱动到完成。存事实 + 边界 + 消歧，供未来重估。
 
@@ -83,7 +83,7 @@ provenance:
 1. **P1.2 close 不要求它**（finding-1，read-only 核 `12_go_criteria`/`PROJECT_LOCK`/`soundness_gap_roadmap`/`06_current_status`/`review_gates`）：Option A 的字节级重推已满足「统一 terminal 字节重推」；full Option B 明确「按 owner scope 决定」、非硬 close 前置。**一处张力须诚实标**：`soundness_gap_roadmap.md:32`「PR2 TCB…未决项完成」措辞宽到*原则上*可被读成包含 Option B——若 owner 把 close scope 定成「未决项全清」，B 就变必须。=owner-scope 决定。
 2. **它比 Option A 多关的是窄的 TOCTOU/多读一致性残余**（finding-2，gain=real-residual-gap 但**窄**）：主求解器路径（`benders_loop.py:2205-2216`/`exact_campaign.py:441-475` 一次读+hash）与 fixed-witness 路径都已 **snapshot-bound**、Option A 落地后已等效于用重推结果；**唯一残余** = terminal precheck 的 `_load_exact_facility_pools`（`pr2_l0_artifact_core.py:585-587`）另做一次 `candidate_placements` **活读**（用于 `:930-973` 验解的 pose/占格），这次读只被既有 artifact hash-pin 钉、**没被 Option A 的 digest 专门绑**。**这与已暂缓的 #3 read-once/TOCTOU、#9b OS 隔离是同一族、同威胁模型**（封印瞬间能往机器写盘 + 卡时机掉包的攻击者），故同判据暂缓 → [[deferred-verifier-hardening-toctou-os-isolation]]。
 3. **成本大**（finding-3）：~20 文件/9 子系统的 proof-base 迁移（契约定义 `certified_artifact_contract`、campaign+L0 **两份** EXACT_HASH_FILES 镜像、solver ingestion `benders_loop`/`master_model`、fixed-witness/replay snapshot、preflight/external-artifact policy、cut/source-digest 语义、三处 checker 自钉、PROJECT_LOCK/README）。急着做还会撞 `exact_campaign` 的原子快照/resume 保证。
-4. **推不动真瓶颈**（P1.2 owner 手动 review 门）。
+4. **推不动真瓶颈**（07-06 时点判断:P1.2 owner 手动 review 门;门已于 2026-07-07 由 owner_manual_decision 关闭。Option B 仍按发布时点/不可信机器/契约迁移触发）。
 
 三路 codex 独立结论均 **defer_defensible=true**、「非当前 soundness blocker、是 proof-base 简化 + governance cleanup」。
 

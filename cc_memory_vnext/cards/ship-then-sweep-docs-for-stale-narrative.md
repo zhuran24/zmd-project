@@ -55,7 +55,7 @@ provenance:
   reason: 2026-07-04 PR2 #7 通电后 owner 再次问「README/CLAUDE 更新了吗」,坐实这是第二次同类遗漏,固化收尾纪律。
   evidence:
     - "2026-07-04 两次同类遗漏坐实:candidate_placements 重生成后 17 文档写旧字节(commit b9043f6 才对齐)、PR2 #7 通电(349c56c)后 README/CLAUDE/FILE_STATUS/CHANGELOG/PROJECT_LOCK/NAV_MAP 还说入口不存在(commit ae6646e 才对齐);两次都是 owner 主动问才补。文档更新守红线:P1.2 OPEN、main.py 止于 CANDIDATE_PROPOSED、通电≠closed≠发布 全程未削弱,preflight --full 19 passed。"
-  updated_at: "2026-07-04"
+  updated_at: "2026-07-07"
 ---
 做完「改变既成事实」的工程后,主动扫文档层有没有过时叙述(2026-07 两次同类遗漏后固化)。
 
@@ -72,7 +72,7 @@ provenance:
 - 搜该事实的**旧状态叙述**(如「不存在 / 无 caller / OPEN / 旧字节 / DOES NOT EXIST / 尚无」),逐处对齐现状。
 
 == 改 release 契约(PROJECT_LOCK)时的红线纪律 ==
-- 状态从「缺口存在」→「已补」只是**补一条机器条件**,不是 closure。红线**一字不松、甚至强化**:P1.2 仍 OPEN/BLOCKED、`main.py` 普通完成仍止于 `CANDIDATE_PROPOSED`、通电/入口存在 **≠** closed **≠** 发布、反绕过守卫、producer/mint 分权、OPEN-GATE、internal seal necessary-but-not-sufficient。
+- 状态从「缺口存在」→「已补」只是**补一条机器条件**,不是 closure。红线例句历史化(2026-07-04 时点;P1.2 已于 2026-07-07 owner_manual_decision 关闭):当时 P1.2 仍 OPEN/BLOCKED;纪律本身仍有效=绿灯/通电/入口存在 **≠** 自动 closure **≠** 发布、`main.py` 普通完成仍止于 `CANDIDATE_PROPOSED`、反绕过守卫、producer/mint 分权、OPEN-GATE、internal seal necessary-but-not-sufficient。
 - **历史叙事保留 + 加时点**(改过去时 + 补「后续已于 <date> 落地」),别删历史。
 - 分工:描述性文档(README/CLAUDE/FILE_STATUS/CHANGELOG)可派 codex 批量 + leader 逐处验收红线;**最高权威(PROJECT_LOCK/NAV_MAP)leader 亲改**守红线。
 

@@ -2,7 +2,7 @@
 id: project-bottleneck-audit-20260702-map
 kind: reference
 title: 2026-07-02 全项目瓶颈审计(12 条,逐条核实)已归档——读它先看时效对照;仓库备份现状(bundle×2+E盘副本,远端 main 停 07-01)
-summary: 另一会话 37-agent 工作流对全项目做的「最终目标瓶颈」审计:8 维度×fable/codex 16 份报告 → 12 条瓶颈 → 逐条独立核查(VERDICT+file:line)。已归档 docs/research/project_bottleneck_audit_20260702/(main a91acc6),README 带逐条时效对照——**快照(07-02 深夜)早于 07-03 画线与 07-04 合并/通电批次,直接引用条目结论前必看对照表**。仍成立的硬骨头:算力硬墙(第一多米诺)、CP-SAT 编码忠实性单点(复验同构造器同库,无异构编码)、F1-F9 未接入、dependency floor manifest 占位、168h 执行层债、冻结输入只证「没变」不证「正确」、P1.2 手动门。已过时:seal 校验跳过+pr2-5 未合(6e06922 已合)、#7 通电缺口(349c56c 已通)、clean-review 无终止循环(07-03 画线)。
+summary: 另一会话 37-agent 工作流对全项目做的「最终目标瓶颈」审计:8 维度×fable/codex 16 份报告 → 12 条瓶颈 → 逐条独立核查(VERDICT+file:line)。已归档 docs/research/project_bottleneck_audit_20260702/(main a91acc6),README 带逐条时效对照——**快照(07-02 深夜)早于 07-03 画线、07-04 合并/通电批次与 07-07 owner_manual_decision 关门,直接引用条目结论前必看对照表**。仍成立的硬骨头:算力硬墙(第一多米诺)、CP-SAT 编码忠实性单点(复验同构造器同库,无异构编码)、F1-F9 未接入、dependency floor manifest 占位、168h 执行层债、冻结输入只证「没变」不证「正确」。已过时/时点更新:seal 校验跳过+pr2-5 未合(6e06922 已合)、#7 通电缺口(349c56c 已通)、clean-review 无终止循环(07-03 画线)、P1.2 手动门(07-02/07-05 快照瓶颈,07-07 已由 owner_manual_decision 关闭,不再是当前瓶颈)。
 scope:
   domains:
     - roadmap
@@ -45,19 +45,19 @@ provenance:
   evidence:
     - "归档 main a91acc6(分支同内容 24c96ab,合并自动消解)"
     - "备份实测:zmd_git_backup_2026-07-05 bundle verify okay;E: 副本 hash 一致"
-updated_at: "2026-07-05"
+updated_at: "2026-07-07"
 ---
 == 审计是什么、怎么读 ==
 另一会话(5d3c7602)2026-07-02 深夜跑的 37-agent 工作流:8 维度(history/cert-chain/solver-math/gates/branches/release/tests/ops)× fable/codex 双模型独立阅读 → 合成 12 条「挡最终目标」瓶颈 → 每条由独立核查员回源码逐条验证(VERDICT: CONFIRMED/PARTLY + severity 复核 + file:line)。质量高、证据密,但**快照早于 07-03 owner 画线与 07-04 合并/通电批次**——归档 README(docs/research/project_bottleneck_audit_20260702/README.md)有逐条时效对照表,引用任何条目前先看它,别把已解决项(seal 校验跳过、#7 通电、clean-review 循环)当现状复述。
 
-== 仍成立的硬骨头(2026-07-05 实测口径,按审计排序)==
+== 仍成立的硬骨头(2026-07-05 实测口径,按审计排序;P1.2 手动门已 2026-07-07 owner-closed)==
 1. 算力硬墙:全尺度 0 端到端 certified FEASIBLE、27 lever 全死、UNKNOWN=terminal stop;唯一没有已知工程路径的环节(B1 已证 master 单层可破,墙在 LBBD cut 收敛)。
 2. CP-SAT 编码忠实性单点:I1/fixed-witness 复验与生产共用同一构造器+同一 CP-SAT 库,false-INFEASIBLE 方向同错同过;placement-local cut 甚至不过 I1(binding overload 侧 a731764 已补)。与 TNS v3 稿「禁共享 parser/异构复验 TCB 纪律」同根,PR2 #5 B2 独立枚举是同方向排期项。
 3. F1-F9 未接入(step_8 仍 NotImplementedError)= P1.3 主体;F5 置换墙数学已由设计稿 v3 预先覆盖。
 4. dependency floor manifest 是 dev/CI 占位字节,重生成只能在 CachyOS 生产机做(fail-closed 不静默,但是生产前硬前置)。
 5. 168h 执行层债:48GB -p≥2 OOM vs watchdog 硬编码 -p4、无缓存全量 re-replay、墙钟含死亡时间、Windows wrapper 不默认 resume。
 6. 冻结输入只证「没变」不证「正确」:pose 池枚举完整性零机制覆盖(「该有的 pose 在不在」没人检)。
-7. P1.2 手动门 owner-only(设计如此)。
+7. P1.2 手动门 owner-only(设计如此;07-02/07-05 快照瓶颈,已于 2026-07-07 由 owner_manual_decision 关闭,不再是当前瓶颈)。
 8. 文档漂移残留:PROJECT_LOCK §1A binding 锚 :930/:976/:1022 实际 +117 行,仍未修。
 
 == 备份现状(2026-07-05 实测,别重复做/别误判)==

@@ -2,7 +2,7 @@
 id: deliberate-insider-hardening-deferred-to-release
 kind: decision
 title: 【策略】所有"仅防故意内鬼"的 verifier 硬化统一延期到发布时点、明确非 P1.2 闭合前提(owner 2026-07-06 拍板;判据=手滑/外部已被字节 sha floor 拦死,结构锚/TOCTOU/OS/import-time 残余只对能 reseal 的蓄意内鬼有意义)
-summary: owner 2026-07-06 拍板:**所有"仅防故意内鬼(能执行 reseal 仪式的半可信/内部对手)"的硬化项,统一暂缓到发布时点再做,且明确【不作为 P1.2 闭合的必要条件】。** 判据(与 owner 当天亲自厘清的二分一致)：手滑/无心之失 + 纯外部篡改**早被第一层字节 sha floor 拦死**(改任一被钉文件→sha mismatch→fail-closed,当场红、轮不到人审);结构 AST 锚/TOCTOU/OS 隔离/import-time 完整性这些**只对"忠实 reseal 之后的蓄意内鬼"才有额外意义**(见 [[close-kernel-threat-model-reseal-adversary]] owner 2026-07-03 定性)。故这类在单 owner、自可信机器现实里防的是理论人物,真正变现实=发布/把 CERTIFIED 交给"不信任维护者本人"的第三方那一刻——所以放到发布时点做、正当。**延期桶(提取全集)**：#8 深化(父级锚点独立验 checker 的 byte-digest/projection/nucleus 镜像——现状父级信 checker 自报,补法有界见下)、#3 fd-held read-once/TOCTOU、#9b OS 写隔离、#9c 原生 .pyd/.so TOCTOU、#5-F(part1/2/3 import-time 完整性,part3 已被 V99 floor 兜到 TCB 线下)、#5 Option B(把 candidate_placements 移出证明权威=契约迁移)、#2(残余≡#3)。**不进桶(核心/防手滑外部/已做,常开不可延期)**：字节 sha floor 本身、#1 的 (a)(b)、#5-B2 Option A(16495f4)、#8 self-skip 删除(52c1e8d)、#4、#7；#9a 生产字节维持部署时点。**连带结论**：#1 剩余工程=阶段3 重构(=#5-F)+阶段④(=#3)+out-of-scope 硬地板,全在桶内或范围外→#1 无独立于桶外的前提工作;故此令一下,P1.2 的"编码类前提"实质清空,剩下=owner 手动 review 门+close-scope 拍板(≠P1.2 可关,关是手动门的事)。**这修订了 backlog 卡 07-06"收口前提=全 backlog 编码项"的说法**：现行=收口前提剔除全部"仅防故意内鬼"类,go_criteria:30"…或 owner 明确修改 close scope"正被行使。
+summary: owner 2026-07-06 拍板:**所有"仅防故意内鬼(能执行 reseal 仪式的半可信/内部对手)"的硬化项,统一暂缓到发布时点再做,且明确【不作为 P1.2 闭合的必要条件】。** 判据(与 owner 当天亲自厘清的二分一致)：手滑/无心之失 + 纯外部篡改**早被第一层字节 sha floor 拦死**(改任一被钉文件→sha mismatch→fail-closed,当场红、轮不到人审);结构 AST 锚/TOCTOU/OS 隔离/import-time 完整性这些**只对"忠实 reseal 之后的蓄意内鬼"才有额外意义**(见 [[close-kernel-threat-model-reseal-adversary]] owner 2026-07-03 定性)。故这类在单 owner、自可信机器现实里防的是理论人物,真正变现实=发布/把 CERTIFIED 交给"不信任维护者本人"的第三方那一刻——所以放到发布时点做、正当。**延期桶(提取全集)**：#8 深化(父级锚点独立验 checker 的 byte-digest/projection/nucleus 镜像——现状父级信 checker 自报,补法有界见下)、#3 fd-held read-once/TOCTOU、#9b OS 写隔离、#9c 原生 .pyd/.so TOCTOU、#5-F(part1/2/3 import-time 完整性,part3 已被 V99 floor 兜到 TCB 线下)、#5 Option B(把 candidate_placements 移出证明权威=契约迁移)、#2(残余≡#3)。**不进桶(核心/防手滑外部/已做,常开不可延期)**：字节 sha floor 本身、#1 的 (a)(b)、#5-B2 Option A(16495f4)、#8 self-skip 删除(52c1e8d)、#4、#7；#9a 生产字节维持部署时点。**连带结论**：#1 剩余工程=阶段3 重构(=#5-F)+阶段④(=#3)+out-of-scope 硬地板,全在桶内或范围外→#1 无独立于桶外的前提工作;故此令一下,07-06 时点 P1.2 的"编码类前提"实质清空,剩下=owner 手动 review 门+close-scope 拍板(≠P1.2 可关,关是手动门的事);该手动门已于 2026-07-07 由 owner_manual_decision 关闭(P1.2 CLOSED/P1.3 开启),延期桶仍留到发布时点。**这修订了 backlog 卡 07-06"收口前提=全 backlog 编码项"的说法**：现行=收口前提剔除全部"仅防故意内鬼"类,go_criteria:30"…或 owner 明确修改 close scope"正被行使。
 scope:
   domains:
     - release-engineering
@@ -60,7 +60,7 @@ provenance:
   reason: 2026-07-06 owner 听完"内鬼=故意还是手滑"的厘清后拍板:所有仅防故意内鬼的硬化延期到发布、非 P1.2 前提,并令"提取全集写进文件与记忆"。
   evidence:
     - "2026-07-06:owner 问'内鬼指故意还是不小心'→ 我据 [[close-kernel-threat-model-reseal-adversary]](owner 2026-07-03 定性=半可信 reseal 对手)+ 三路 codex 对 checker 自绑的挖掘(workflow w3ya0tzqw:13 道自绑机制、绝大多数篡改 code-caught、唯一残余=保结构不变+重写函数体 return[]+reseal)厘清二分:手滑/外部被字节 sha floor 拦、结构锚只咬蓄意内鬼。owner 据此拍板延期全类到发布、非 P1.2 前提。#8 深化的可做项(父级独立验 checker byte-digest/projection/nucleus 镜像,现状父级信 checker 自报)由 workflow w3ya0tzqw constructive 路给出、判 few-reachable-hardenings。"
-  updated_at: "2026-07-06"
+  updated_at: "2026-07-07"
 ---
 2026-07-06 owner 拍板:**所有"仅防故意内鬼"的 verifier 硬化,统一暂缓到发布时点,且不作为 P1.2 闭合的必要条件。** 令我提取全集、写进文件与记忆。
 
@@ -88,7 +88,7 @@ provenance:
 == 连带结论:P1.2 编码前提实质清空 ==
 - **#1 的剩余工程 = 阶段3 重构(吸收 #5-F)+ 阶段④(=#3)+ out-of-scope 求解器硬地板**——全在桶内或范围外。故 **#1 没有独立于延期桶之外、还等着做的前提工作**。
 - 所以此令一下,原 backlog 卡(07-06)列的"收口前提=全 backlog 编码项(#8/#2/#3/#5-B2/#5-F/#1/#9b/#9c)"里,除已做的外**全部进了发布时点延期桶**。
-- **净效果:P1.2 的编码类前提实质清空,剩下卡着的 = owner 手动 review 门 + close-scope 拍板。** `go_criteria:30`"…TCB 收缩完成,**或 owner 明确修改 close scope**"正被行使——本决定即那个 scope 修改。
+- **净效果:07-06 时点 P1.2 的编码类前提实质清空,剩下卡着的 = owner 手动 review 门 + close-scope 拍板。** 该手动门已于 2026-07-07 由 owner_manual_decision 关闭(P1.2 CLOSED/P1.3 开启);延期桶仍留到发布时点。`go_criteria:30`"…TCB 收缩完成,**或 owner 明确修改 close scope**"正被行使——本决定即那个 scope 修改。
 - **不 overclaim**:这**不等于**"P1.2 可关"。关不关是 owner 手动门的事;绿灯/前提清 ≠ 已认证已发布(PROJECT_LOCK 铁律)。只是"被当作收口前提的编码 backlog"现在实质清了。
 
 == #8 深化真到发布时做时、可做项已探明(免得届时重查)==

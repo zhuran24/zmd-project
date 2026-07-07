@@ -2,7 +2,7 @@
 id: p2-0-throughput-scope-and-design-doc
 kind: decision
 title: 吞吐认证是项目必做 scope(owner 2026-07-04)——范式设计稿 v1 已落 docs/research,锁边界暂不动
-summary: owner 2026-07-04 拍板:离散吞吐/带宽认证从「out-of-scope 零排期」转为**必做的 planned P2.0**(原话意:不做吞吐这项目怎么实现)。但排期仍在 P1.2 close → PR2 深化 → P1.3 之后;PROJECT_LOCK §1A B 块与 canonical_rules semantics.mixed_commodity_flow 的 out-of-scope 声明**在 P2.0b 落地走完 freeze-ritual 前继续有效**——设计稿存在 ≠ scope 已改。范式设计稿 v1 = docs/research/p2_0_throughput_certification_paradigm_design_v1.md(commit 35791c3):fluid P7(T1-T6,建于 selected route graph)+ 显式公理组 A2-A5 + 双侧有理证书(FEASIBLE=有理流/INFEASIBLE=Farkas)+ 单调性引理(旧不可行剪枝保留、旧 CERTIFIED 降级未决)。动机:Fable-5 模型 2026-07-07 前后下线,把「难想的」提前做成设计稿,实现留给后续模型照稿做。
+summary: owner 2026-07-04 拍板:离散吞吐/带宽认证从「out-of-scope 零排期」转为**必做的 planned P2.0**(原话意:不做吞吐这项目怎么实现)。P1.2 已于 2026-07-07 close;现排 P1.3(master/cut 集成)与发布时点硬化桶之后,位次不变;PROJECT_LOCK §1A B 块与 canonical_rules semantics.mixed_commodity_flow 的 out-of-scope 声明**在 P2.0b 落地走完 freeze-ritual 前继续有效**——设计稿存在 ≠ scope 已改。范式设计稿 v1 = docs/research/p2_0_throughput_certification_paradigm_design_v1.md(commit 35791c3):fluid P7(T1-T6,建于 selected route graph)+ 显式公理组 A2-A5 + 双侧有理证书(FEASIBLE=有理流/INFEASIBLE=Farkas)+ 单调性引理(旧不可行剪枝保留、旧 CERTIFIED 降级未决)。动机:Fable-5 模型 2026-07-07 前后下线,把「难想的」提前做成设计稿,实现留给后续模型照稿做。
 scope:
   domains:
     - certification-scope
@@ -48,14 +48,14 @@ provenance:
   evidence:
     - "设计稿 commit 35791c3(docs/research/p2_0_throughput_certification_paradigm_design_v1.md,217 行)"
     - "GPT Pro 三工作包已 staged:C:\\Users\\22957\\pr2_pkg\\p2_0_throughput\\(盲设计对照/对抗审查/沙箱反例狩猎)"
-updated_at: "2026-07-05"
+updated_at: "2026-07-07"
 ---
 owner 2026-07-04 两项相关拍板:
 
 == ① scope 改判:吞吐认证必做 ==
 离散吞吐/带宽认证从「OUT-OF-SCOPE BY DESIGN、Phase2+ 研究级、零排期」改判为**项目最终必做的 planned P2.0**。理由(owner 原话意):不证吞吐,项目的最终目的就没实现。
 但注意两条边界:
-- **排期不变**:仍在 P1.2 close → PR2 深化四阶段 → P1.3 cut 接入之后;不是现在实现。
+- **排期不变**:P1.2 已于 2026-07-07 close;现排 P1.3(master/cut 集成)与发布时点硬化桶之后,位次不变;不是现在实现。
 - **锁面未动**:PROJECT_LOCK §1A B 块、canonical_rules.json:415-417(mixed_commodity_flow 的 out-of-scope 声明)在 P2.0b 走完 freeze-ritual 前继续有效。引用口径:「已定为必做、范式已设计、scope 待正式解冻」。
 
 == ② 范式设计稿 v1(照稿实现,别重推范式)==
