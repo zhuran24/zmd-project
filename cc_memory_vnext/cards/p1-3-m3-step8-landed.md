@@ -76,6 +76,7 @@ P1.3 M3(step_8 落地大批)2026-07-08 收口。四子批 commit 与内容见 su
 - **helper-vs-master 等价回归**(M2 尾巴+升格前置):F7 stencil 的 attach 期一致性回归。
 - **exterior_blocks**:生产无此输入,BState 填空集是正确值;若未来 outer_search 引入界外封锁概念要回来接。
 - **收敛实测**:M5(全项目唯一无理论保证处,L11 退路挂 owner)。
+- **生产 worker model 生命周期核查**(M1 暴露面):M1 v2 实测「同进程连续建 model 时旧 model 内存不即时回收」(del 后 RSS 滞留 13.9GB 起跑,whole 场景 1073s solve 数据因此作废)——M5 收敛实测前要查 campaign worker 的 per-attempt model 释放路径是否受同一问题影响。verdict.md 有记载,但属 M4/M5 待办,不查会在长 campaign 里累积成 OOM。
 
 == 纪律要点(后续会话必知) ==
 
