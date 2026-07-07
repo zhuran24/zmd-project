@@ -115,104 +115,16 @@ def _lookup_canonical_pole_radius(state: "BState") -> Optional[float]:
     return lookup_canonical_pole_radius(state)
 
 
-def verify_power_pole_jump_radius(state: "BState", value: str) -> bool:
-    """Assumption "power_pole_jump_radius": F8 source-of-truth binding.
-
-    value format: "R=<float>". Gemini F8 round 3 Finding #2 (CRITICAL):
-    validator cannot trust caller-supplied ``pole_jump_radius`` from the
-    cert payload — a malicious prover could forge R=0.001 to fake a BFS
-    disconnect. The active_assumption check (attach-scope step 6) re-reads
-    canonical_rules and rejects any cert whose radius doesn't match.
-
-    Phase 1.2 single-case: canonical_rules.facility_templates.power_pole
-    exposes ``power_coverage_radius`` (pole→facility, 5.0 in real data).
-    Phase 1.5+ will introduce a dedicated pole-to-pole jump radius field;
-    until then, the simplification "pole-to-pole = power_coverage_radius"
-    is documented in spec §1c, and this verifier enforces that link.
-
-    Fail-closed: malformed value / canonical layers missing / mismatch.
-    """
-    cert_radius = _parse_radius_value(value)
-    if cert_radius is None:
-        return False
-    canonical_radius = _lookup_canonical_pole_radius(state)
-    if canonical_radius is None:
-        return False
-    return canonical_radius == cert_radius
-
-
-def _parse_position_value(value: str) -> Optional[tuple[int, int]]:
-    """Parse "(x,y)" assumption value as (int, int). None on malformed."""
-    if not (value.startswith("(") and value.endswith(")")):
-        return None
-    inner = value[1:-1]
-    parts = inner.split(",", 1)
-    if len(parts) != 2:
-        return None
-    try:
-        ax = int(parts[0].strip())
-        ay = int(parts[1].strip())
-    except ValueError:
-        return None
-    return (ax, ay)
-
-
-def _protocol_core_footprint_owned(
-    state: "BState", anchor: tuple[int, int], pc_size: int
-) -> bool:
-    """True iff every cell in the 9×9 footprint at ``anchor`` is owned by a
-    group mapped to facility_type=protocol_core in state.cell_owner."""
-    instance_to_facility_type = state.instance_to_facility_type
-    cell_owner = state.cell_owner
-    if instance_to_facility_type is None or not cell_owner:
-        return False
-    for dx in range(pc_size):
-        for dy in range(pc_size):
-            owner = cell_owner.get((anchor[0] + dx, anchor[1] + dy))
-            if owner is None:
-                return False
-            gid = owner[0] if isinstance(owner, tuple) else owner
-            if instance_to_facility_type.get(gid) != "protocol_core":
-                return False
-    return True
-
-
-def verify_protocol_core_position(state: "BState", value: str) -> bool:
-    """Assumption "protocol_core_position": F8 anchor binding.
-
-    value format: "(<x>,<y>)". Gemini F8 round 3 Finding #2 (CRITICAL):
-    cert's ``protocol_core_cell`` must match master_solution. A forged
-    anchor (e.g., off-grid corner) can produce an artificially disconnected
-    BFS without reflecting any real placement.
-
-    Phase 1.2 single-case (fail-closed):
-    - parse "(x,y)" — fail on malformed format
-    - bounds: 0 ≤ x, y AND x + 9 ≤ 70 AND y + 9 ≤ 70 (protocol_core is 9×9
-      and must fit in the 70×70 grid)
-    - cross-check with state: the canonical 9×9 footprint at (x, y) must have
-      every cell in ``state.cell_owner`` mapped to (group_id, _) where the
-      ``state.instance_to_facility_type[group_id] == "protocol_core"``. Missing
-      ``cell_owner`` / instance mapping is not a certificate; fail closed.
-
-    Phase 1.5+: this remains the full master-state cross-check, wired from the
-    real master placement source instead of Phase 1.2 fixture state.
-    """
-    parsed = _parse_position_value(value)
-    if parsed is None:
-        return False
-    ax, ay = parsed
-    grid_size = 70
-    pc_size = 9
-    if ax < 0 or ay < 0 or ax + pc_size > grid_size or ay + pc_size > grid_size:
-        return False
-    return _protocol_core_footprint_owned(state, (ax, ay), pc_size)
+# The F8-only assumption verifiers ("power_pole_jump_radius" and
+# "protocol_core_position") were deleted with the power_grid_reach family
+# 2026-07-08 — retired on a false game-rule premise (poles need no
+# pole-to-pole network). See memory card p1-3-m2-coverage-stencil-ruling.
+# Unknown assumption keys stay fail-closed via lookup_verifier() → None.
 
 
 _VERIFIERS: Dict[str, Verifier] = {
     "placement_rule": verify_placement_rule,
     "left_or_bottom_boundary_saturation": verify_boundary_saturation,
-    "power_pole_jump_radius": verify_power_pole_jump_radius,
-    "protocol_core_position": verify_protocol_core_position,
 }
 
 

@@ -8,6 +8,6 @@ One module per family per PHASE_1_PLAN §2 src 路径表:
 - pattern_nogood (F5)         — Phase 1.2 P1.11
 - shape_packing_hall (F6)     — Phase 1.2 P1.12
 - power_hitting_set (F7)      — Phase 1.2 P1.13
-- power_grid_reach (F8)       — Phase 1.2 P1.14
+- power_grid_reach (F8)       — DELETED 2026-07-08 (retired, false premise)
 - density_envelope (F9)       — Phase 1.2 P1.15
 """

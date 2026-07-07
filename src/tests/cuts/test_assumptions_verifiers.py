@@ -196,109 +196,28 @@ def test_assumption_holds_no_rules_fails_closed():
 
 
 # ----------------------------------------------------------------------------
-# F8 verifiers (Gemini F8 round 3 Finding #2 / #3)
+# Deleted-family assumption keys stay fail-closed (F8 deleted 2026-07-08)
 # ----------------------------------------------------------------------------
 
 
-_F8_CANONICAL_RULES = {
-    "facility_templates": {
-        "power_pole": {
-            "dimensions": {"w": 2, "h": 2},
-            "needs_power": False,
-            "power_coverage_radius": 5,
+def test_deleted_f8_assumption_keys_fail_closed() -> None:
+    """The F8-only verifiers ("power_pole_jump_radius" /
+    "protocol_core_position") were deleted with the power_grid_reach family
+    (retired on a false game-rule premise). Any surviving cert carrying these
+    assumption keys must fail closed as unknown keys, not silently pass.
+    """
+    state = BState(
+        groups={
+            "manufacturing_3x3": GroupState(
+                group_id="manufacturing_3x3",
+                demand=1,
+                pose_domain=frozenset(),
+                selected_poses=[],
+            )
         },
-        "protocol_core": {
-            "dimensions": {"w": 9, "h": 9},
-            "needs_power": False,
-        },
-    },
-}
-
-
-def _make_f8_state(*, with_rules: bool = True, with_owner: bool = False) -> BState:
-    groups = {"manufacturing_3x3": GroupState(
-        group_id="manufacturing_3x3", demand=1, pose_domain=frozenset(), selected_poses=[]
-    )}
-    cell_owner: dict[tuple[int, int], tuple[str, int]] = {}
-    instance_map: dict[str, str] | None = None
-    if with_owner:
-        instance_map = {"protocol_core_singleton": "protocol_core"}
-        for dx in range(9):
-            for dy in range(9):
-                cell_owner[(10 + dx, 10 + dy)] = ("protocol_core_singleton", 0)
-    return BState(
-        groups=groups,
-        canonical_rules=_F8_CANONICAL_RULES if with_rules else None,
-        cell_owner=cell_owner,
-        instance_to_facility_type=instance_map,
     )
-
-
-def test_verify_power_pole_jump_radius_match() -> None:
-    state = _make_f8_state()
-    assumption = Assumption(key="power_pole_jump_radius", value="R=5")
-    assert assumption_holds(state, assumption) is True
-
-
-def test_verify_power_pole_jump_radius_mismatch_rejects_malicious_cert() -> None:
-    """Gemini F8 round 3 Finding #2: malicious cert with R=0.001 to fake a
-    BFS disconnect must be rejected at attach-scope."""
-    state = _make_f8_state()
-    assumption = Assumption(key="power_pole_jump_radius", value="R=0.001")
-    assert assumption_holds(state, assumption) is False
-
-
-def test_verify_power_pole_jump_radius_no_rules_fails_closed() -> None:
-    state = _make_f8_state(with_rules=False)
-    assumption = Assumption(key="power_pole_jump_radius", value="R=5")
-    assert assumption_holds(state, assumption) is False
-
-
-def test_verify_power_pole_jump_radius_malformed_value() -> None:
-    state = _make_f8_state()
-    for bad in ("R=abc", "X=5", "5", "", "R=-1", "R=0"):
-        assert assumption_holds(
-            state, Assumption(key="power_pole_jump_radius", value=bad)
-        ) is False, f"value={bad!r}"
-
-
-def test_verify_protocol_core_position_fails_closed_when_owner_absent() -> None:
-    """v29 regression: bounds-only protocol_core anchor is not certified SoT."""
-    state = _make_f8_state(with_owner=False)
-    assert assumption_holds(
-        state, Assumption(key="protocol_core_position", value="(10,10)")
-    ) is False
-
-
-def test_verify_protocol_core_position_out_of_grid() -> None:
-    state = _make_f8_state(with_owner=False)
-    # footprint at (65, 65) extends to (73, 73) — overflows 70×70 grid
-    assert assumption_holds(
-        state, Assumption(key="protocol_core_position", value="(65,65)")
-    ) is False
-
-
-def test_verify_protocol_core_position_master_cross_check_match() -> None:
-    """When cell_owner is available, the verifier cross-checks the 9×9
-    footprint owners match facility_type=protocol_core."""
-    state = _make_f8_state(with_owner=True)
-    assert assumption_holds(
-        state, Assumption(key="protocol_core_position", value="(10,10)")
-    ) is True
-
-
-def test_verify_protocol_core_position_master_cross_check_mismatch() -> None:
-    """If cell_owner exists but anchor doesn't match a placed protocol_core,
-    fail (anchor (0,0) has no cell_owner mapping at all in this state)."""
-    state = _make_f8_state(with_owner=True)
-    assert assumption_holds(
-        state, Assumption(key="protocol_core_position", value="(0,0)")
-    ) is False
-
-
-def test_verify_protocol_core_position_malformed() -> None:
-    state = _make_f8_state()
-    for bad in ("10,10", "(10)", "(a,b)", "()", "(10,10,5)"):
-        assert assumption_holds(
-            state, Assumption(key="protocol_core_position", value=bad)
-        ) is False, f"value={bad!r}"
+    for key, value in (
+        ("power_pole_jump_radius", "R=5"),
+        ("protocol_core_position", "(10,10)"),
+    ):
+        assert assumption_holds(state, Assumption(key=key, value=value)) is False, key

@@ -18,7 +18,9 @@ Family validators currently wired:
 - region_capacity → step_5_validate_region_capacity (P1.1 framework)
 
 Phase 1.1+ adds: cutset / port_exposure / component_reach / pattern_nogood /
-shape_packing_hall / power_hitting_set / power_grid_reach / density_envelope.
+shape_packing_hall / power_hitting_set / density_envelope.
+(power_grid_reach was deleted 2026-07-08 — retired on a false game-rule
+premise; see memory card ``p1-3-m2-coverage-stencil-ruling``.)
 
 Refs:
 - docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md v3.2.2 §4
@@ -34,7 +36,6 @@ from src.cuts.families.cutset import validate_cutset
 from src.cuts.families.density_envelope import validate_density_envelope
 from src.cuts.families.pattern_nogood import validate_pattern_nogood
 from src.cuts.families.port_exposure import validate_port_exposure
-from src.cuts.families.power_grid_reach import validate_power_grid_reach
 from src.cuts.families.power_hitting_set import validate_power_hitting_set
 from src.cuts.families.region_capacity import validate_region_capacity
 from src.cuts.families.shape_packing_hall import validate_shape_packing_hall
@@ -68,7 +69,6 @@ FAMILY_VALIDATORS: Dict[str, FamilyValidator] = {
     "density_envelope": validate_density_envelope,
     "shape_packing_hall": validate_shape_packing_hall,
     "power_hitting_set": validate_power_hitting_set,
-    "power_grid_reach": validate_power_grid_reach,
 }
 
 

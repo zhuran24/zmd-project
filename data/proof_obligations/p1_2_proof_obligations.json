@@ -986,7 +986,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-      "source_sha256": "2a61f0177022f83c5f6b69e5531cb0e677b90e4c136d8d7e738e551c2ed0653c",
+      "source_sha256": "f8e174d63da9c4ad79ca937e35a2d776bb71d541bbe2a674d53a36c4b047ed8a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1056,7 +1056,7 @@
         "path": "src/cuts/cert_schema.py",
         "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
-        "source_sha256": "e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e",
+        "source_sha256": "e5b46431ac2b4e81cb884dcad3c9564f797b938b9d6b3bb7022c87aa35b4226b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim",
         "terms": [
           "proof-bearing",
@@ -1108,7 +1108,7 @@
         "required_guard_tokens": [
           "proof-bearing"
         ],
-        "source_sha256": "430bf565af94490972b92599a0c85de18ea7ea94a3cad87463019be3f908d29d",
+        "source_sha256": "a0926d7ea58f4b33b11fa3963485898b04225c5db39d073b5816e11e9b47c47c",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1555,7 +1555,7 @@
           "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
           "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE"
         ],
-        "source_sha256": "67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a",
+        "source_sha256": "c625ed027a4bb70328e73778e810bf26c7de8da5cd59ec880d6ab0f06cdc7865",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

@@ -33,7 +33,6 @@ ORACLE_BY_FAMILY: Mapping[str, str] = {
     "pattern_nogood": "pattern_nogood_v1",
     "shape_packing_hall": "shape_packing_hall_v1",
     "power_hitting_set": "power_cover_v1",
-    "power_grid_reach": "power_grid_reach_v1",
     "density_envelope": "density_envelope_v1",
 }
 
@@ -146,17 +145,6 @@ def _minimal_payload(family: str) -> Dict[str, Any]:
             "facility_cells": [[0, 0]],
             "pole_radius": 1.0,
             "pole_shape_canonical": "2x2_rigid",
-            "ghost_rect_repr": [0, 0, 1, 1],
-            "exterior_blocks_digest": "",
-        },
-        "power_grid_reach": {
-            "cert_kind": "power_pole_bfs_disconnect_ghost",
-            "facility_group": "g",
-            "facility_pose_id": "p",
-            "facility_cells": [[0, 0]],
-            "pole_jump_radius": 1.0,
-            "pole_shape_canonical": "2x2_rigid",
-            "protocol_core_cell": [0, 0],
             "ghost_rect_repr": [0, 0, 1, 1],
             "exterior_blocks_digest": "",
         },

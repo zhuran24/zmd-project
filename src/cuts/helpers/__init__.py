@@ -1,9 +1,9 @@
 """Geometric / combinatorial helpers for cut family validators.
 
 Phase 1.0 P1.4 modules:
-- ghost_geometry: Liang-Barsky line-AABB intersection (Family 8 power_grid_reach)
 - baseline_partition: contiguous-unblocked partition lens (Family 6 shape_packing_hall)
-- power_network: pole adjacency + bfs_component (Family 8 power_grid_reach)
+(ghost_geometry + power_network were F8-only and were deleted with the F8
+family 2026-07-08 — retired on a false game-rule premise.)
 
 Phase 1.1+ family validators (src/cuts/families/*) consume these helpers.
 """

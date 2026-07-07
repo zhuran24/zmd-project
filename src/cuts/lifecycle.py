@@ -70,9 +70,11 @@ CutFamily = Literal[
     "pattern_nogood",        # F5 (literal)
     "shape_packing_hall",    # F6 (geometric)
     "power_hitting_set",     # F7 (literal)
-    "power_grid_reach",      # F8 (geometric)
     "density_envelope",      # F9 (geometric)
 ]
+# F8 power_grid_reach was deleted 2026-07-08: retired on a false game-rule
+# premise (poles need no pole-to-pole network; the protocol core links to
+# every placed pole automatically). See card p1-3-m2-coverage-stencil-ruling.
 
 # Family ↔ mode mapping enforces XOR (literal-based vs geometric-based).
 # PROJECT_LOCK §3A invariant 3 (family↔mode 不可改).
@@ -84,7 +86,6 @@ _FAMILY_MODE_MAP: Dict[str, Literal["literal", "geometric"]] = {
     "pattern_nogood":        "literal",
     "shape_packing_hall":    "geometric",
     "power_hitting_set":     "literal",
-    "power_grid_reach":      "geometric",
     "density_envelope":      "geometric",
 }
 
@@ -1092,7 +1093,6 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
         from src.cuts.families.component_reach import evaluate_geometric_component_reach
         from src.cuts.families.cutset import evaluate_geometric_cutset
         from src.cuts.families.density_envelope import evaluate_geometric_density_envelope
-        from src.cuts.families.power_grid_reach import evaluate_geometric_power_grid_reach
         from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
         from src.cuts.families.shape_packing_hall import evaluate_geometric_shape_packing_hall
         if cut.family == "region_capacity":
@@ -1105,8 +1105,6 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
             return evaluate_geometric_density_envelope(cut, state)
         if cut.family == "shape_packing_hall":
             return evaluate_geometric_shape_packing_hall(cut, state)
-        if cut.family == "power_grid_reach":
-            return evaluate_geometric_power_grid_reach(cut, state)
         raise NotImplementedError(
             f"family={cut.family} geometric evaluator 未注册."
         )

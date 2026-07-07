@@ -57,17 +57,8 @@ CANONICAL_SOT_REGISTRY = {
             "test_validator_rejects_power_pole_dimension_drift",
         ],
     },
-    "power_grid_reach.py": {
-        "guards": [
-            "power_pole.power_coverage_radius",
-            "power_pole.dimensions",
-            "protocol_core.dimensions",
-        ],
-        "behavioral_tests": [
-            "test_validator_rejects_power_pole_dimension_drift",
-            "test_validator_rejects_protocol_core_dimension_drift",
-        ],
-    },
+    # power_grid_reach.py (F8) was deleted 2026-07-08 — retired on a false
+    # game-rule premise; its registry entry left with the family.
 }
 
 # Matches get('...')/get("...") and ['...']/["..."] subscript access of the canonical

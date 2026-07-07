@@ -44,7 +44,7 @@ def _make_cut(
 ) -> Cut:
     """Construct a minimal valid Cut for store tests."""
     if family in ("region_capacity", "cutset", "component_reach",
-                  "shape_packing_hall", "power_grid_reach", "density_envelope"):
+                  "shape_packing_hall", "density_envelope"):
         if use_literals:
             raise ValueError("geometric family — literals not allowed")
         kw = {"geometric_payload": b'{"k":1}', "literals": None}

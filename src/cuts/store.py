@@ -7,13 +7,13 @@ Central data structure for B Design v2:
 - ``quarantined``: cut_id → QuarantineReason (audit-only, 不 active)
 - ``held``: cut_id set (HOLD decision retention, 等下次 scope match)
 - 6-dim watcher index (avoid scanning all cuts on state change):
-  - ``by_cell_watcher``: F1/F2/F3/F4/F6/F7/F8/F9
+  - ``by_cell_watcher``: F1/F2/F3/F4/F6/F7/F9
   - ``by_group_watcher``: F3/F5/F6/F7/F9
-  - ``by_pose_watcher``: F3/F5/F7/F8
+  - ``by_pose_watcher``: F3/F5/F7
   - ``by_commodity_watcher``: F2/F4
   - ``by_region_watcher``: F1/F6
-  - ``by_ghost_watcher``: F2/F4/F5/F6/F7/F8/F9 (not F1/F3 — F1 ghost-agnostic,
-    F3 spec §5 明定 ghost-blocked front 不发 cut)
+  - ``by_ghost_watcher``: F2/F4/F5/F6/F7/F9 (not F1/F3 — F1 ghost-agnostic,
+    F3 spec §5 明定 ghost-blocked front 不发 cut; F8 deleted 2026-07-08)
 
 Watcher 添加规则 (cut_lifecycle_v2 §7 table) 是 family-specific; ``add_cut``
 接口允许 caller (Phase 1.1+ family validator) 传 watcher keys per family rule.

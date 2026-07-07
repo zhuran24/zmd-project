@@ -19,7 +19,6 @@ CERT_PAYLOAD_CERT_KIND_BY_FAMILY: Mapping[str, str] = {
     "pattern_nogood": "bounded_deletion_core",
     "shape_packing_hall": "hall_interval_witness",
     "power_hitting_set": "power_cover_emptyset_ghost",
-    "power_grid_reach": "power_pole_bfs_disconnect_ghost",
     "density_envelope": "density_envelope_v1",
 }
 
@@ -96,17 +95,6 @@ CERT_PAYLOAD_ALLOWED_FIELDS: Mapping[str, FrozenSet[str]] = {
         "facility_cells",
         "pole_radius",
         "pole_shape_canonical",
-        "ghost_rect_repr",
-        "exterior_blocks_digest",
-    }),
-    "power_grid_reach": frozenset({
-        "cert_kind",
-        "facility_group",
-        "facility_pose_id",
-        "facility_cells",
-        "pole_jump_radius",
-        "pole_shape_canonical",
-        "protocol_core_cell",
         "ghost_rect_repr",
         "exterior_blocks_digest",
     }),
