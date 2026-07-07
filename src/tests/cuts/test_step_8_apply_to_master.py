@@ -1,29 +1,34 @@
-"""Step 8 apply-to-master — F1 region_capacity translation (M3-3, P1.3).
+"""Step 8 apply-to-master — F1 region_capacity + F7 power_hitting_set (M3-3/M4-A).
 
-Covers the first wired family end-to-end on a REAL coordinate master (the
+Covers the wired families end-to-end on a REAL coordinate master (the
 lightweight 2-miner/3-pose fixture from the presence-nogood regression), plus
 the fail-closed dispatch surface:
 
-- F1 weighted-presence capacity constraint actually prunes: capacity 1 with a
+- F1 GHOST_AGNOSTIC capacity constraint actually prunes: capacity 1 with a
   2-miner mandatory demand → INFEASIBLE; capacity 2 → still solvable.
+- F1 ghost-bound cut is anchor-conditioned (M4-A fix): attach only binds under
+  the supplied ghost literal — pinning that anchor makes the model INFEASIBLE,
+  leaving the anchor free lets the solver escape to another anchor; a
+  ghost-bound cut without ghost literals raises (fail-closed).
+- F7 presence exclusion under ghost literals, with the master-side coverer
+  re-check gate (live coverer → refuse; missing table → refuse).
 - master rejecting the push (unknown group) → step_8 raises RuntimeError.
 - un-wired families (F3 literal et al.) → NotImplementedError (M4 ladder).
 - malformed cert numerics → ValueError before touching the master.
 
 Scope/staleness gating deliberately NOT exercised here: that lives in
-lifecycle steps 5-7; step_8 only translates an already-validated cut. The
-attached inequality is physically valid for any feasible layout, so attach
-soundness does not depend on cert freshness (see step_8 docstring).
+lifecycle steps 5-7; step_8 only translates an already-validated cut.
 """
 from __future__ import annotations
 
 import hashlib
-from typing import Mapping
+from typing import Any, Mapping, Sequence
 
 import pytest
 from ortools.sat.python import cp_model
 
 from src.cuts.lifecycle import (
+    GHOST_AGNOSTIC,
     AnonymousSlotRef,
     Cut,
     CutLiteral,
@@ -60,7 +65,7 @@ def _f1_cert_payload(
     return step_0_canonicalize(cert_dict)
 
 
-def _f1_cut(payload: bytes) -> Cut:
+def _f1_cut(payload: bytes, *, ghost_rect_id: str = GHOST_AGNOSTIC) -> Cut:
     cert_hash = hashlib.sha256(payload).hexdigest()
     return Cut(
         cut_id=f"f1_test_{cert_hash[:8]}",
@@ -68,7 +73,7 @@ def _f1_cut(payload: bytes) -> Cut:
         literals=None,
         geometric_payload=payload,
         scope=CutScope(
-            ghost_rect_id="ghost_test",
+            ghost_rect_id=ghost_rect_id,
             blocked_cells_hash="h_blocked",
             exterior_blocks_hash="h_ext",
             source_digest="h_source",
@@ -159,6 +164,230 @@ def test_step_8_f1_capacity_prunes_end_to_end() -> None:
         cp_model.OPTIMAL,
         cp_model.FEASIBLE,
     )
+
+
+def test_step_8_f1_ghost_bound_requires_condition_lits() -> None:
+    """M4-A: ghost-bound F1 cut without ghost literals must raise, not attach.
+
+    A ghost-deducted capacity is only true under the triggering anchor; the
+    master keeps the anchor as a decision variable, so an unconditional attach
+    would over-prune after an anchor switch.
+    """
+    master = _build_fixture_master()
+    group_id = str(master._group_id_by_instance["miner_001"])
+    cut = _f1_cut(
+        _f1_cert_payload(group_id=group_id, cells_per_pose=1, cap_r=1, demand_r=2),
+        ghost_rect_id="ghost_bound_test",
+    )
+    with pytest.raises(RuntimeError, match="ghost-bound"):
+        step_8_apply_to_master(cut, master)
+
+
+def test_step_8_f1_ghost_bound_cut_is_anchor_conditioned() -> None:
+    """M4-A conditioning semantics on a real multi-anchor master.
+
+    The 5×1 fixture enumerates 5 ghost anchors (u_vars). A ghost-bound
+    capacity cut attached under anchor-0's literal must only bind when the
+    solver picks anchor 0: with the anchor left free the solver escapes to
+    another anchor (still solvable); with anchor 0 pinned the capacity bites
+    (INFEASIBLE). This is the behavioural proof that the M3 unconditional
+    attach hole is closed.
+    """
+    master = _build_fixture_master()
+    group_id = str(master._group_id_by_instance["miner_001"])
+    u_vars = master.u_vars
+    assert len(u_vars) == 5  # 5×1 grid, 1×1 ghost → 5 anchors
+    u0 = u_vars[0]
+
+    cut = _f1_cut(
+        _f1_cert_payload(group_id=group_id, cells_per_pose=1, cap_r=1, demand_r=2),
+        ghost_rect_id="ghost_bound_test",
+    )
+    step_8_apply_to_master(cut, master, ghost_condition_lits=(u0,))
+    # Anchor free: the solver escapes to an anchor where the cut is dormant.
+    assert master.solve(time_limit_seconds=5.0) in (
+        cp_model.OPTIMAL,
+        cp_model.FEASIBLE,
+    )
+    # Pin the conditioning anchor: capacity 1 vs demand 2 now bites.
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    delegate.model.Add(u0 == 1)
+    assert master.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
+
+
+# ---------------------------------------------------------------------------
+# F7 power_hitting_set (M4-A)
+# ---------------------------------------------------------------------------
+
+
+def _f7_cert_payload(*, group_id: str, pose_id: str) -> bytes:
+    cert_dict = {
+        "cert_kind": "power_cover_emptyset_ghost",
+        "facility_group": group_id,
+        "facility_pose_id": pose_id,
+        "facility_cells": [[0, 0]],
+        "pole_radius": 5.0,
+        "pole_shape_canonical": "2x2_rigid",
+        "ghost_rect_repr": [0, 0, 1, 1],
+        "exterior_blocks_digest": "h_ext",
+    }
+    return step_0_canonicalize(cert_dict)
+
+
+def _f7_cut(
+    payload: bytes,
+    *,
+    group_id: str,
+    pose_id: str,
+    ghost_rect_id: str = "ghost_bound_test",
+) -> Cut:
+    cert_hash = hashlib.sha256(payload).hexdigest()
+    return Cut(
+        cut_id=f"f7_test_{cert_hash[:8]}",
+        family="power_hitting_set",
+        literals=(
+            CutLiteral(
+                slot_ref=AnonymousSlotRef(group_id=group_id, slot_index=0),
+                pose_id=pose_id,
+            ),
+        ),
+        geometric_payload=None,
+        scope=CutScope(
+            ghost_rect_id=ghost_rect_id,
+            blocked_cells_hash="h_blocked",
+            exterior_blocks_hash="h_ext",
+            source_digest="h_source",
+            oracle_abstraction_version="power_cover_v2_stencil",
+            artifact_hashes={},
+        ),
+        cert=OracleCert(
+            cert_kind="power_cover_emptyset_ghost",
+            cert_payload=payload,
+            cert_hash=cert_hash,
+        ),
+        oracle_name="power_cover_v2_stencil",
+    )
+
+
+def test_step_8_f7_fail_closed_surfaces() -> None:
+    """GHOST_AGNOSTIC / missing lits / missing blocked_cells all raise."""
+    master = _build_fixture_master()
+    group_id = str(master._group_id_by_instance["miner_001"])
+    payload = _f7_cert_payload(group_id=group_id, pose_id="pose_left")
+
+    agnostic = _f7_cut(
+        payload, group_id=group_id, pose_id="pose_left", ghost_rect_id=GHOST_AGNOSTIC
+    )
+    with pytest.raises(RuntimeError, match="ghost-bound"):
+        step_8_apply_to_master(
+            agnostic,
+            master,
+            ghost_condition_lits=(master.u_vars[0],),
+            ghost_blocked_cells=frozenset(),
+        )
+
+    bound = _f7_cut(payload, group_id=group_id, pose_id="pose_left")
+    with pytest.raises(RuntimeError, match="ghost literal"):
+        step_8_apply_to_master(bound, master, ghost_blocked_cells=frozenset())
+    with pytest.raises(RuntimeError, match="ghost_blocked_cells"):
+        step_8_apply_to_master(
+            bound, master, ghost_condition_lits=(master.u_vars[0],)
+        )
+
+
+def test_step_8_f7_missing_coverer_table_refused() -> None:
+    """skip_power_coverage fixture has no coverer table → master returns False
+    → step_8 raises (no re-check, no attach)."""
+    master = _build_fixture_master()
+    group_id = str(master._group_id_by_instance["miner_001"])
+    cut = _f7_cut(
+        _f7_cert_payload(group_id=group_id, pose_id="pose_left"),
+        group_id=group_id,
+        pose_id="pose_left",
+    )
+    # skip_power_coverage builds the template entry but no per-pose coverers —
+    # a missing pose entry means "no re-check possible" and must refuse.
+    assert master._power_coverers_by_template_pose.get("miner") == {}
+    with pytest.raises(RuntimeError, match="fail-closed"):
+        step_8_apply_to_master(
+            cut,
+            master,
+            ghost_condition_lits=(master.u_vars[0],),
+            ghost_blocked_cells=frozenset({(0, 0)}),
+        )
+
+
+def test_step_8_f7_live_coverer_gate_refuses() -> None:
+    """A coverer pole whose footprint survives the blocked cells means the
+    master still sees a powering witness → attach refused."""
+    master = _build_fixture_master()
+    group_id = str(master._group_id_by_instance["miner_001"])
+    # Inject a coverer table + a pole pool entry whose footprint does NOT
+    # intersect the blocked cells (live coverer).
+    master._power_coverers_by_template_pose = {"miner": {0: [0]}}
+    master.facility_pools["power_pole"] = [
+        {"pose_id": "pole_p", "occupied_cells": [[4, 0], [4, 1]]}
+    ]
+    cut = _f7_cut(
+        _f7_cert_payload(group_id=group_id, pose_id="pose_left"),
+        group_id=group_id,
+        pose_id="pose_left",
+    )
+    with pytest.raises(RuntimeError, match="fail-closed"):
+        step_8_apply_to_master(
+            cut,
+            master,
+            ghost_condition_lits=(master.u_vars[0],),
+            ghost_blocked_cells=frozenset({(0, 0)}),
+        )
+
+
+def test_step_8_f7_excludes_pose_under_pinned_anchor() -> None:
+    """Happy path: dead coverers → attach; exclusion binds only under the
+    conditioning anchor.
+
+    With anchor 0 pinned the ghost occupies (0,0), killing pose_left by
+    no-overlap; the F7 cut additionally excludes pose_mid — two miners then
+    fight over the single remaining pose → INFEASIBLE proves the cut bit.
+    Without the pin the solver escapes to another anchor (cut dormant).
+    """
+    master = _build_fixture_master()
+    group_id = str(master._group_id_by_instance["miner_001"])
+    # Coverer whose footprint IS wiped by the blocked cells → gate passes.
+    # pose_mid is pose_idx 1 (pool order left/mid/right).
+    master._power_coverers_by_template_pose = {"miner": {1: [0]}}
+    master.facility_pools["power_pole"] = [
+        {"pose_id": "pole_p", "occupied_cells": [[4, 0], [4, 1]]}
+    ]
+    cut = _f7_cut(
+        _f7_cert_payload(group_id=group_id, pose_id="pose_mid"),
+        group_id=group_id,
+        pose_id="pose_mid",
+    )
+    u0 = master.u_vars[0]
+    step_8_apply_to_master(
+        cut,
+        master,
+        ghost_condition_lits=(u0,),
+        ghost_blocked_cells=frozenset({(4, 0), (4, 1)}),
+    )
+    assert (
+        master.build_stats["coordinate_power_pose_exclusion_last_cut"]["pose_idx"]
+        == 1
+    )
+    assert master.build_stats["coordinate_framework_cut_count"] == 1
+    # Anchor free: solver escapes to another anchor where the cut is dormant.
+    assert master.solve(time_limit_seconds=5.0) in (
+        cp_model.OPTIMAL,
+        cp_model.FEASIBLE,
+    )
+    # Pin the conditioning anchor: ghost kills pose_left, the cut kills
+    # pose_mid, two miners cannot share pose_right → INFEASIBLE.
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    delegate.model.Add(u0 == 1)
+    assert master.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
 
 
 def test_step_8_f1_unknown_group_raises_fail_closed() -> None:

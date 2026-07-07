@@ -32,7 +32,7 @@ import json
 import time
 from collections import Counter  # noqa: F401  (state_machine_v2 后续用)
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, FrozenSet, List, Literal, Mapping, Optional, Protocol, Tuple
+from typing import Any, Callable, Dict, FrozenSet, Iterable, List, Literal, Mapping, Optional, Protocol, Sequence, Tuple
 
 from src.cuts.cert_schema import validate_cert_payload as _validate_cert_payload
 
@@ -1126,11 +1126,28 @@ class MasterModelLike(Protocol):
         *,
         group_cell_weights: Mapping[str, int],
         capacity: int,
+        condition_lits: Sequence[Any] = (),
+    ) -> bool:
+        ...
+
+    def add_power_pose_exclusion_cut(
+        self,
+        *,
+        group_id: str,
+        pose_id: str,
+        blocked_cells: Iterable[Cell],
+        condition_lits: Sequence[Any],
     ) -> bool:
         ...
 
 
-def step_8_apply_to_master(cut: Cut, master_model: MasterModelLike) -> None:
+def step_8_apply_to_master(
+    cut: Cut,
+    master_model: MasterModelLike,
+    *,
+    ghost_condition_lits: Sequence[Any] = (),
+    ghost_blocked_cells: Optional[FrozenSet[Cell]] = None,
+) -> None:
     """Step 8 — push cut as constraint to CP-SAT master (M3-3, P1.3).
 
     Family dispatch is fail-closed: only families with a reviewed master
@@ -1138,17 +1155,36 @@ def step_8_apply_to_master(cut: Cut, master_model: MasterModelLike) -> None:
     reach the master without its own translation (F2-F7+F9 land family by
     family in the M4 ladder).
 
+    Ghost conditioning (M4-A): the master keeps the ghost anchor as a
+    decision variable, so any cut whose truth depends on the CURRENT ghost
+    cells (scope.ghost_rect_id != GHOST_AGNOSTIC) must be attached under the
+    selected ghost literal(s) supplied via ``ghost_condition_lits`` — an
+    unconditional attach would keep constraining the model after the solver
+    switches anchors and over-prune. Missing conditioning for a ghost-bound
+    cut raises (fail-closed) instead of silently attaching unconditionally.
+    The literals are opaque ``Any`` handles: src/cuts stays import-isolated
+    from the CP-SAT types; step_8 only forwards them.
+
     F1 ``region_capacity``: the cert (validated in steps 5-7) witnesses
     ``demand_R > cap_R`` for a region R with ``P(g) ⊆ R`` for every
     contributing group. The attached constraint is the valid inequality
 
         sum_g cells_per_pose[g] * sum_{p ∈ domain(g)} presence(g, p) <= cap_R
 
-    which is physically true for ANY feasible layout of this master (the
-    non-blocked cells of R cannot be over-occupied; pose bodies are disjoint
-    under the master's no-overlap). Attach soundness therefore never depends
-    on cert freshness — staleness/scope gating stays in steps 5-7, and the
+    which — for a GHOST_AGNOSTIC cut (ghost∩R = ∅, cap carries no ghost
+    deduction) — is physically true for ANY feasible layout of this master
+    (the non-blocked cells of R cannot be over-occupied; pose bodies are
+    disjoint under the master's no-overlap), so it attaches unconditionally.
+    A ghost-bound cap is only true under its anchor and attaches under the
+    ghost literal(s). Staleness/scope gating stays in steps 5-7, and the
     master rejecting the push (False) is treated as fail-closed.
+
+    F7 ``power_hitting_set`` (M4-A): the cert witnesses an empty CoverSet —
+    under the current ghost+exterior no valid pole anchor can power pose
+    (facility_group, facility_pose_id). Translation: presence == 0 under the
+    ghost literal(s). F7 cuts are always ghost-bound (the oracle refuses
+    GHOST_AGNOSTIC), and the master re-checks its own coverer table against
+    ``ghost_blocked_cells`` before accepting (runtime helper-vs-master gate).
     """
     if cut.family == "region_capacity":
         if cut.cert is None:
@@ -1174,12 +1210,71 @@ def step_8_apply_to_master(cut: Cut, master_model: MasterModelLike) -> None:
         cap = cert["cap_R"]
         if isinstance(cap, bool) or not isinstance(cap, int) or cap < 0:
             raise ValueError("step_8: cap_R must be a non-negative int")
+        if cut.scope is None:
+            raise ValueError("step_8: region_capacity cut carries no scope (fail-closed)")
+        ghost_bound = cut.scope.ghost_rect_id != GHOST_AGNOSTIC
+        if ghost_bound and not ghost_condition_lits:
+            raise RuntimeError(
+                "step_8: ghost-bound region_capacity cut requires the selected "
+                "ghost literal(s) (fail-closed) — its capacity carries a ghost "
+                "deduction that is only true under the triggering anchor"
+            )
         applied = master_model.add_region_capacity_cut(
-            group_cell_weights=group_cell_weights, capacity=cap
+            group_cell_weights=group_cell_weights,
+            capacity=cap,
+            condition_lits=tuple(ghost_condition_lits) if ghost_bound else (),
         )
         if not applied:
             raise RuntimeError(
                 "step_8: master rejected region_capacity cut (fail-closed; "
+                "no partial constraint was attached)"
+            )
+        return
+    if cut.family == "power_hitting_set":
+        if cut.cert is None:
+            raise ValueError(
+                "step_8: power_hitting_set cut carries no cert (fail-closed)"
+            )
+        cert = validate_cert_payload("power_hitting_set", cut.cert.cert_payload)
+        facility_group = cert["facility_group"]
+        facility_pose_id = cert["facility_pose_id"]
+        if (
+            not isinstance(facility_group, str)
+            or not facility_group
+            or not isinstance(facility_pose_id, str)
+            or not facility_pose_id
+        ):
+            raise ValueError(
+                "step_8: facility_group/facility_pose_id must be non-empty str"
+            )
+        if cut.scope is None:
+            raise ValueError(
+                "step_8: power_hitting_set cut carries no scope (fail-closed)"
+            )
+        if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+            raise RuntimeError(
+                "step_8: power_hitting_set cut must be ghost-bound "
+                "(fail-closed; CoverSet emptiness is not ghost-monotone)"
+            )
+        if not ghost_condition_lits:
+            raise RuntimeError(
+                "step_8: ghost-bound power_hitting_set cut requires the "
+                "selected ghost literal(s) (fail-closed)"
+            )
+        if ghost_blocked_cells is None:
+            raise RuntimeError(
+                "step_8: power_hitting_set attach requires ghost_blocked_cells "
+                "for the master-side coverer re-check (fail-closed)"
+            )
+        applied = master_model.add_power_pose_exclusion_cut(
+            group_id=facility_group,
+            pose_id=facility_pose_id,
+            blocked_cells=ghost_blocked_cells,
+            condition_lits=tuple(ghost_condition_lits),
+        )
+        if not applied:
+            raise RuntimeError(
+                "step_8: master rejected power_hitting_set cut (fail-closed; "
                 "no partial constraint was attached)"
             )
         return

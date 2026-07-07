@@ -934,6 +934,16 @@ EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV = (
     "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST"
 )
 EXACT_CUT_FRAMEWORK_ATTACH_ENV = "EXACT_CUT_FRAMEWORK_ATTACH"
+# M4-A active-framework-cut budget (M1 verdict hard prerequisite #2).
+# Counts every constraint the framework pushed into the CURRENT master via
+# step_8 (unified counter coordinate_framework_cut_count). Once reached,
+# _maybe_attach_framework_cuts stops emitting: CP-SAT constraints cannot be
+# removed once added, so "stop attaching" is the only sound eviction that
+# does not rebuild the master. Framework cuts are optional strengthening —
+# stopping only weakens pruning, never soundness. Conservative thousand-level
+# anchor per verdict.md (§3 前置 2); raising it needs a fresh before/after
+# production re-measurement, not just the synthetic-load extrapolation.
+EXACT_CUT_FRAMEWORK_ATTACH_BUDGET = 2000
 
 _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES = {"", "0", "false", "no", "off"}
 _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
@@ -6044,7 +6054,9 @@ class LBBDController:
             # blocked in certified runs (see _cut_framework_attach_enabled).
             proof_summary["cut_framework_attached"] = (
                 self._maybe_attach_framework_cuts(
-                    trigger="binding_infeasible", iteration=iteration
+                    trigger="binding_infeasible",
+                    iteration=iteration,
+                    solution=solution,
                 )
             )
             cut_applied = self._add_exact_whole_layout_nogood(
@@ -7177,7 +7189,7 @@ class LBBDController:
         }
         # M3-4: see the binding-INFEASIBLE branch note.
         proof_summary["cut_framework_attached"] = self._maybe_attach_framework_cuts(
-            trigger="routing_exhausted", iteration=iteration
+            trigger="routing_exhausted", iteration=iteration, solution=solution
         )
         cut_applied = self._add_exact_whole_layout_nogood(
             solution=solution,
@@ -7524,7 +7536,11 @@ class LBBDController:
         raw = os.environ.get(EXACT_CUT_FRAMEWORK_ATTACH_ENV, "")
         return raw.strip().lower() not in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES
 
-    def _build_cut_framework_state(self) -> Optional[Any]:
+    def _build_cut_framework_state(
+        self,
+        *,
+        solution: Optional[Mapping[str, Mapping[str, Any]]] = None,
+    ) -> Optional[Any]:
         """Assemble the cut-framework BState from master-side materials.
 
         All fields derive from the master/session; ``exterior_blocks`` is the
@@ -7570,6 +7586,18 @@ class LBBDController:
         except (TypeError, ValueError):
             return None
 
+        # M4-A: incumbent selected poses per group (from the master solution
+        # that the subproblem just refuted). Literal-family cuts (F7) are
+        # evaluated in step_7 as a multiset test against selected_poses — the
+        # M3-4 empty list made every literal cut evaluate False. Deliberately
+        # NOT part of the scope/source digest (lifecycle keeps mutable
+        # incumbent state out of SOURCE_DIGEST_FIELD_NAMES), so injecting it
+        # does not narrow replay scope.
+        selected_by_group: Dict[str, List[str]] = {}
+        if solution is not None:
+            for raw_iid, pose_id in self._framework_target_poses(solution):
+                selected_by_group.setdefault(raw_iid, []).append(pose_id)
+
         groups: Dict[str, Any] = {}
         instance_to_facility_type: Dict[str, str] = {}
         for group in mandatory_groups:
@@ -7593,7 +7621,7 @@ class LBBDController:
                 group_id=gid,
                 demand=demand,
                 pose_domain=pose_domain,
-                selected_poses=[],
+                selected_poses=list(selected_by_group.get(gid, [])),
             )
             instance_to_facility_type[gid] = facility_type
 
@@ -7604,21 +7632,81 @@ class LBBDController:
             ghost_cells=frozenset(ghost_cells),
             exterior_blocks=frozenset(),
             artifact_hashes=dict(self.artifact_hashes or {}),
-            available_oracle_versions=frozenset({"region_capacity_v1"}),
+            available_oracle_versions=frozenset(
+                {"region_capacity_v1", "power_cover_v2_stencil"}
+            ),
             canonical_rules=rules,
             instance_to_facility_type=instance_to_facility_type,
             facility_templates=templates,
             candidate_placements={"facility_pools": facility_pools},
         )
 
-    def _maybe_attach_framework_cuts(self, *, trigger: str, iteration: int) -> int:
-        """Generate + fully re-validate + attach F1 framework cuts (M3-4).
+    def _framework_target_poses(
+        self, solution: Mapping[str, Mapping[str, Any]]
+    ) -> List[Tuple[str, str]]:
+        """Incumbent (group_id, pose_id) pairs for pose-targeted oracles (F7).
+
+        Resolves each solution entry's pose_idx back to the pose_id string via
+        the SAME facility_pools list the master indexed (shared object, shared
+        order). Malformed entries are skipped — target selection only steers
+        which poses the oracle EXAMINES; every emitted cut still passes the
+        full validator/scope/evaluate gauntlet, so skipping is lossless.
+        """
+        pools = getattr(self.master, "facility_pools", None) or {}
+        group_by_instance = getattr(self.master, "_group_id_by_instance", None) or {}
+        targets: List[Tuple[str, str]] = []
+        for raw_instance_id, entry in solution.items():
+            instance_id = str(raw_instance_id)
+            # V88: ghost_pick carries the ghost rect index, not a facility pose.
+            if instance_id == "ghost_pick":
+                continue
+            if not isinstance(entry, Mapping):
+                continue
+            # Solution keys are instance-level; BState groups (and the F7
+            # oracle's group lookup) are group-level — resolve via the same
+            # mapping _conflict_pose_entries uses.
+            group_id = group_by_instance.get(instance_id)
+            if group_id is None:
+                continue
+            template = str(entry.get("facility_type", ""))
+            try:
+                pose_idx = int(entry["pose_idx"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            pool = pools.get(template)
+            if not isinstance(pool, list) or not (0 <= pose_idx < len(pool)):
+                continue
+            pose = pool[pose_idx]
+            if not isinstance(pose, Mapping):
+                continue
+            pose_id = str(pose.get("pose_id", ""))
+            if not pose_id:
+                continue
+            targets.append((str(group_id), pose_id))
+        return sorted(targets)
+
+    def _maybe_attach_framework_cuts(
+        self,
+        *,
+        trigger: str,
+        iteration: int,
+        solution: Optional[Mapping[str, Mapping[str, Any]]] = None,
+    ) -> int:
+        """Generate + fully re-validate + attach framework cuts (M3-4/M4-A).
 
         Runs the complete lifecycle gauntlet per cut — integrity, family
         validator, step-6 attach-scope, step-7 evaluate — before step_8. A cut
         failing any gate is skipped (framework cuts are optional strengthening;
         skipping only reduces pruning). step_8 failures propagate: the master
         rejecting a validated cut is a wiring defect, not a data condition.
+
+        M4-A additions: F7 power_hitting_set generation targeted at the
+        incumbent poses; ghost conditioning (ghost-bound cuts attach under the
+        selected ghost literal so an anchor switch retires them); and the
+        active-cut budget — at EXACT_CUT_FRAMEWORK_ATTACH_BUDGET attached
+        constraints the framework stops emitting (constraints cannot be
+        removed from CP-SAT, so stop-emitting is the only sound eviction
+        without a master rebuild).
         """
         if not self._cut_framework_attach_enabled():
             return 0
@@ -7628,19 +7716,61 @@ class LBBDController:
             step_8_apply_to_master,
             validate_cut_integrity,
         )
+        from src.cuts.oracles.power_cover_oracle import (
+            generate_power_hitting_set_cuts,
+        )
         from src.cuts.oracles.region_capacity_oracle import (
             generate_region_capacity_cuts,
         )
         from src.cuts.replay import FAMILY_VALIDATORS
 
-        state = self._build_cut_framework_state()
+        stats = getattr(self.master, "build_stats", None)
+        budget_used = 0
+        if isinstance(stats, dict):
+            budget_used = int(stats.get("coordinate_framework_cut_count", 0))
+        if budget_used >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:
+            if isinstance(stats, dict):
+                stats["cut_framework_attach_last"] = {
+                    "trigger": trigger,
+                    "iteration": int(iteration),
+                    "generated": 0,
+                    "attached": 0,
+                    "budget_exhausted": True,
+                    "budget": int(EXACT_CUT_FRAMEWORK_ATTACH_BUDGET),
+                }
+            return 0
+
+        state = self._build_cut_framework_state(solution=solution)
         if state is None:
             return 0
-        cuts = generate_region_capacity_cuts(
-            state, state.canonical_rules or {}, iter_index=iteration
+        ghost_ctx = self._selected_ghost_context()
+        if ghost_ctx is None:
+            # State building above already required a unique selected ghost;
+            # losing it between the two calls is a fail-closed no-attach.
+            return 0
+        _rect_idx, ghost_u_var, _anchor, ghost_cells = ghost_ctx
+        ghost_condition_lits = (ghost_u_var,)
+        ghost_blocked_cells = frozenset(
+            (int(x), int(y)) for x, y in ghost_cells
+        ) | frozenset(state.exterior_blocks)
+
+        cuts = list(
+            generate_region_capacity_cuts(
+                state, state.canonical_rules or {}, iter_index=iteration
+            )
         )
+        if solution is not None:
+            target_poses = self._framework_target_poses(solution)
+            if target_poses:
+                cuts.extend(
+                    generate_power_hitting_set_cuts(
+                        state, target_poses=target_poses, iter_index=iteration
+                    )
+                )
         attached = 0
         for cut in cuts:
+            if budget_used + attached >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:
+                break
             validate_cut_integrity(cut)
             validator = FAMILY_VALIDATORS.get(cut.family)
             if validator is None:
@@ -7652,9 +7782,13 @@ class LBBDController:
                 continue
             if not step_7_evaluate_cut(cut, state):
                 continue
-            step_8_apply_to_master(cut, self.master)
+            step_8_apply_to_master(
+                cut,
+                self.master,
+                ghost_condition_lits=ghost_condition_lits,
+                ghost_blocked_cells=ghost_blocked_cells,
+            )
             attached += 1
-        stats = getattr(self.master, "build_stats", None)
         if isinstance(stats, dict):
             stats["cut_framework_attach_last"] = {
                 "trigger": trigger,

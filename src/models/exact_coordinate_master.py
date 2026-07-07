@@ -788,6 +788,11 @@ class CoordinateExactMasterDelegate:
         self._pose_present_cache: Dict[
             Tuple[Tuple[str, ...], Tuple[int, int, int]], Optional[cp_model.IntVar]
         ] = {}
+        # pose_id (cut-side string identity) -> pose_idx, per template. Value
+        # None marks a poisoned template (duplicate pose_id in the pool):
+        # binding to either copy could translate a cut onto the wrong pose,
+        # which is a soundness fault, so the whole template resolves to None.
+        self._pose_idx_by_pose_id_cache: Dict[str, Optional[Dict[str, int]]] = {}
 
         self._mandatory_group_mode_rect_domains: Dict[str, Dict[int, ModeRectDomain]] = {}
         self._required_optional_mode_rect_domains: Dict[str, Dict[int, ModeRectDomain]] = {}
@@ -7139,6 +7144,7 @@ class CoordinateExactMasterDelegate:
         *,
         group_cell_weights: Mapping[str, int],
         capacity: int,
+        condition_lits: Sequence[cp_model.IntVar] = (),
     ) -> bool:
         # F1 region_capacity master attach (M3-3, step_8 translation).
         # Valid inequality: for a region R with static capacity `capacity`
@@ -7147,8 +7153,16 @@ class CoordinateExactMasterDelegate:
         # steps 5-7), any feasible layout satisfies
         #   sum_g weight_g * sum_{p ∈ domain(g)} presence(g, p) <= capacity
         # because each placed pose occupies weight_g = cells_per_pose disjoint
-        # cells of R under the master's no-overlap. Physically true regardless
-        # of the triggering cert, so attaching is always sound.
+        # cells of R under the master's no-overlap.
+        #
+        # M4-A conditioning fix: that argument is unconditional ONLY when the
+        # capacity carries no ghost deduction (GHOST_AGNOSTIC cut, ghost∩R=∅).
+        # A ghost-bound capacity |R| - |ghost∩R| is computed for ONE anchor,
+        # while this master keeps the anchor as a decision variable (u_vars +
+        # AddExactlyOne) — an unconditional Add would keep constraining the
+        # model after the solver switches anchors and over-prune layouts that
+        # are feasible under other anchors. Callers must pass the selected
+        # ghost literal(s) for ghost-bound cuts; step_8 enforces this.
         #
         # Fail-closed shape: unknown group / no slots / empty pose domain /
         # non-positive weight or capacity → False with NO partial constraint.
@@ -7197,8 +7211,13 @@ class CoordinateExactMasterDelegate:
         cut_index = int(
             self.owner.build_stats.get("coordinate_region_capacity_cut_count", 0)
         )
-        self.model.Add(sum(w * lit for w, lit in terms) <= cap)
+        constraint = self.model.Add(sum(w * lit for w, lit in terms) <= cap)
+        if condition_lits:
+            constraint.OnlyEnforceIf(list(condition_lits))
         self.owner.build_stats["coordinate_region_capacity_cut_count"] = cut_index + 1
+        self.owner.build_stats["coordinate_framework_cut_count"] = (
+            int(self.owner.build_stats.get("coordinate_framework_cut_count", 0)) + 1
+        )
         self.owner.build_stats["coordinate_region_capacity_last_cut"] = {
             "groups": len(group_cell_weights),
             "presence_terms": len(terms),
@@ -7207,6 +7226,123 @@ class CoordinateExactMasterDelegate:
         }
         # Same witness-invalidation obligation as add_benders_cut
         # (F-GM-R6-01): a new constraint invalidates any prior solver response.
+        self.owner._last_solution = None
+        self.owner._solver = None
+        self.owner._status = None
+        return True
+
+    def _resolve_pose_idx_by_pose_id(self, tpl: str, pose_id: str) -> Optional[int]:
+        # pose_id -> pose_idx by enumerating the SAME owner.facility_pools list
+        # that _prepare_template_domains indexed, so the mapping shares its
+        # index domain with pose_idx by construction (never recompute
+        # PoseTuple/mode_id outside the master — those are private and drift).
+        if tpl not in self._pose_idx_by_pose_id_cache:
+            mapping: Optional[Dict[str, int]] = {}
+            for idx, pose in enumerate(self.owner.facility_pools.get(tpl, [])):
+                if not isinstance(pose, Mapping):
+                    mapping = None
+                    break
+                pid = str(pose.get("pose_id", ""))
+                if not pid:
+                    continue
+                assert mapping is not None
+                if pid in mapping:
+                    # Duplicate pose_id: binding to either copy could hit the
+                    # wrong pose (soundness fault) — poison the template.
+                    mapping = None
+                    break
+                mapping[pid] = int(idx)
+            self._pose_idx_by_pose_id_cache[tpl] = mapping
+        cached = self._pose_idx_by_pose_id_cache[tpl]
+        if cached is None:
+            return None
+        return cached.get(str(pose_id))
+
+    def add_power_pose_exclusion_cut(
+        self,
+        *,
+        group_id: str,
+        pose_id: str,
+        blocked_cells: Iterable[Tuple[int, int]],
+        condition_lits: Sequence[cp_model.IntVar],
+    ) -> bool:
+        # F7 power_hitting_set master attach (M4-A, step_8 translation).
+        # The validated cert asserts: under the CURRENT ghost anchor, pose
+        # (group_id, pose_id) can never be powered — no valid 2x2 pole anchor
+        # whose 12x12 stencil reaches the pose survives ghost+exterior.
+        # Translation: presence(g, p) == 0, enforced ONLY under the selected
+        # ghost literal(s). F7 truth depends on the ghost cells, so an
+        # unconditional Add would outlive an anchor switch and over-prune;
+        # empty condition_lits is therefore rejected, not defaulted.
+        #
+        # Runtime gate (defence-in-depth beyond the helper-vs-master
+        # regressions): re-check against the master's OWN coverer table. If
+        # any coverer pole pose of this pose has a footprint disjoint from
+        # blocked_cells, the master still sees a powering witness and the
+        # helper-derived cut contradicts master power semantics → refuse
+        # (False → step_8 raises fail-closed). A missing table entry is a
+        # refusal too: no re-check, no attach.
+        if not condition_lits:
+            return False
+        gid = str(group_id)
+        tpl = next(
+            (
+                str(group["facility_type"])
+                for group in self.owner._mandatory_groups
+                if str(group["group_id"]) == gid
+            ),
+            None,
+        )
+        if tpl is None:
+            return False
+        slots = list(self.mandatory_slots.get(gid, []))
+        if not slots:
+            return False
+        pose_idx = self._resolve_pose_idx_by_pose_id(tpl, str(pose_id))
+        if pose_idx is None:
+            return False
+        pose_tuple = self._template_pose_tuple_by_idx.get(tpl, {}).get(pose_idx)
+        if pose_tuple is None:
+            return False
+        coverer_table = getattr(
+            self.owner, "_power_coverers_by_template_pose", None
+        )
+        if not isinstance(coverer_table, dict):
+            return False
+        template_coverers = coverer_table.get(tpl)
+        if not isinstance(template_coverers, dict):
+            return False
+        coverers = template_coverers.get(int(pose_idx))
+        if coverers is None:
+            return False
+        pole_pool = list(self.owner.facility_pools.get("power_pole", []))
+        blocked = {(int(cell[0]), int(cell[1])) for cell in blocked_cells}
+        for raw_pole_idx in coverers:
+            idx = int(raw_pole_idx)
+            if idx < 0 or idx >= len(pole_pool):
+                return False
+            occupied = pole_pool[idx].get("occupied_cells") or []
+            footprint = {(int(c[0]), int(c[1])) for c in occupied}
+            if not footprint:
+                return False
+            if footprint.isdisjoint(blocked):
+                # Master still sees a live coverer under this ghost.
+                return False
+        lit = self._pose_present_literal(slots, pose_tuple)
+        if lit is None:
+            return False
+        constraint = self.model.Add(lit == 0)
+        constraint.OnlyEnforceIf(list(condition_lits))
+        self.owner.build_stats["coordinate_framework_cut_count"] = (
+            int(self.owner.build_stats.get("coordinate_framework_cut_count", 0)) + 1
+        )
+        self.owner.build_stats["coordinate_power_pose_exclusion_last_cut"] = {
+            "group_id": gid,
+            "pose_idx": int(pose_idx),
+            "coverers_checked": len(list(coverers)),
+            "semantics": "power_pose_exclusion_ghost_conditioned_v1",
+        }
+        # F-GM-R6-01 witness invalidation, same as add_region_capacity_cut.
         self.owner._last_solution = None
         self.owner._solver = None
         self.owner._status = None

@@ -12097,12 +12097,14 @@ class MasterPlacementModel:
         *,
         group_cell_weights: Mapping[str, int],
         capacity: int,
+        condition_lits: Sequence[Any] = (),
     ) -> bool:
         """F1 region_capacity weighted-presence constraint (M3-3, step_8).
 
         Only the exact coordinate delegate implements this translation; every
         other backend (pose-bool delegate, non-exact modes) fails closed
-        (False → step_8 raises, no partial attach).
+        (False → step_8 raises, no partial attach). ``condition_lits`` carries
+        the selected ghost literal(s) for ghost-bound cuts (M4-A conditioning).
         """
         if self.exact_mode and self._coordinate_delegate is not None:
             delegate_fn = getattr(
@@ -12111,7 +12113,36 @@ class MasterPlacementModel:
             if delegate_fn is None:
                 return False
             return delegate_fn(
-                group_cell_weights=group_cell_weights, capacity=capacity
+                group_cell_weights=group_cell_weights,
+                capacity=capacity,
+                condition_lits=condition_lits,
+            )
+        return False
+
+    def add_power_pose_exclusion_cut(
+        self,
+        *,
+        group_id: str,
+        pose_id: str,
+        blocked_cells: Iterable[Tuple[int, int]],
+        condition_lits: Sequence[Any],
+    ) -> bool:
+        """F7 power_hitting_set ghost-conditioned presence exclusion (M4-A).
+
+        Same fail-closed shape as add_region_capacity_cut: only the exact
+        coordinate delegate implements it, everything else returns False.
+        """
+        if self.exact_mode and self._coordinate_delegate is not None:
+            delegate_fn = getattr(
+                self._coordinate_delegate, "add_power_pose_exclusion_cut", None
+            )
+            if delegate_fn is None:
+                return False
+            return delegate_fn(
+                group_id=group_id,
+                pose_id=pose_id,
+                blocked_cells=blocked_cells,
+                condition_lits=condition_lits,
             )
         return False
 
