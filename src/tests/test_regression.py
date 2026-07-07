@@ -1103,10 +1103,14 @@ def test_aspect_ratio_sliced_search_cannot_claim_terminal_certified(
         staticmethod(lambda project_root, solve_mode="certified_exact": object()),
     )
 
+    # max_attempts: 每次 attempt 都走同一条「假结果→隔离子进程重放→降级」路径
+    # (重放 child ~5s/次是本测试的主耗时), 8 次已足够覆盖 max_attempts_exhausted
+    # 退出与降级不变量; 原 64 无额外语义(feasible 小候选按 lex 降序排在 64 次之外,
+    # 从未被触达), 只是 8 倍时长。
     status, result = run_outer_search(
         project_root=project_root,
         solve_mode="certified_exact",
-        max_attempts=64,
+        max_attempts=8,
         min_side=1,
         max_aspect_ratio=3.0,
         master_seconds=0.01,
