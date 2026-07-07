@@ -1,0 +1,9 @@
+{"event": "core_built", "seconds": 39.235, "rss_mb": 2444.8}
+{"event": "add_batch", "batch": 100, "added_ok": 100, "cuts_total": 100, "add_wall_seconds": 5.584, "ms_per_cut": 55.837, "rss_mb": 4330.1}
+{"event": "solve", "cuts_total": 100, "python_wall_seconds": 66.849, "solver_wall": 64.1, "overhead_seconds": 2.75, "rss_mb": 4375.9}
+{"event": "add_batch", "batch": 900, "added_ok": 900, "cuts_total": 1000, "add_wall_seconds": 48.785, "ms_per_cut": 54.206, "rss_mb": 4575.1}
+{"event": "solve", "cuts_total": 1000, "python_wall_seconds": 84.749, "solver_wall": 80.618, "overhead_seconds": 4.131, "rss_mb": 4664.6}
+{"event": "add_batch", "batch": 4000, "added_ok": 4000, "cuts_total": 5000, "add_wall_seconds": 245.499, "ms_per_cut": 61.375, "rss_mb": 5332.5}
+{"event": "solve", "cuts_total": 5000, "python_wall_seconds": 271.959, "solver_wall": 263.342, "overhead_seconds": 8.617, "rss_mb": 5576.6}
+{"event": "cache_stats", "eq_literals": 36692, "match_literals": 587608, "present_literals": 30560, "rss_mb": 5576.6}
+{"event": "all_done", "rss_mb": 5576.6}

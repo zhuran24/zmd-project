@@ -770,6 +770,25 @@ class CoordinateExactMasterDelegate:
         self._template_full_mode_rect_domains: Dict[str, Dict[int, ModeRectDomain]] = {}
         self._template_uses_domain_table: Dict[str, bool] = {}
 
+        # M3-2 (P1.3): content-addressed reuse caches for Benders-cut presence
+        # literals. Pre-M3 every add_benders_cut call rebuilt the reified
+        # equality / match / presence literals from scratch with a per-cut tag
+        # baked into their identity — the M1 sizing spike measured that as the
+        # dominant super-linear cost (66→252 ms/cut, ~0.9 MB RSS/cut, and the
+        # model-proto bloat behind the 232 s solve-side transfer overhead at
+        # 10K cuts). Identity is now purely content-addressed: same
+        # (variable, value) / (slot, pose) / (slot-set, pose) → same literal.
+        # Lifetime is tied to this delegate's model; caches are never
+        # invalidated because the cached constraints are state-independent
+        # definitions (reified equalities over build-time variable bindings).
+        self._eq_literal_cache: Dict[Tuple[int, int], cp_model.IntVar] = {}
+        self._slot_pose_match_cache: Dict[
+            Tuple[str, Tuple[int, int, int]], Optional[cp_model.IntVar]
+        ] = {}
+        self._pose_present_cache: Dict[
+            Tuple[Tuple[str, ...], Tuple[int, int, int]], Optional[cp_model.IntVar]
+        ] = {}
+
         self._mandatory_group_mode_rect_domains: Dict[str, Dict[int, ModeRectDomain]] = {}
         self._required_optional_mode_rect_domains: Dict[str, Dict[int, ModeRectDomain]] = {}
         self._mandatory_group_bucket_regions: Dict[str, Dict[str, List[SignatureRegion]]] = {}
@@ -6902,76 +6921,97 @@ class CoordinateExactMasterDelegate:
     def _eq_literal(
         self, var: cp_model.IntVar, value: int, name: str
     ) -> cp_model.IntVar:
+        # Content-addressed: one reified equality per (variable, value). The
+        # `name` argument is only used the first time the literal is minted;
+        # the definition is identical for every caller, so reuse is exact.
+        key = (var.Index(), int(value))
+        cached = self._eq_literal_cache.get(key)
+        if cached is not None:
+            return cached
         lit = self.model.NewBoolVar(name)
         self.model.Add(var == int(value)).OnlyEnforceIf(lit)
         self.model.Add(var != int(value)).OnlyEnforceIf(lit.Not())
+        self._eq_literal_cache[key] = lit
         return lit
 
     def _slot_pose_match_literal(
         self,
         slot: CoordinateSlotSpec,
         pose_tuple: PoseTuple,
-        *,
-        cut_tag: str,
     ) -> Optional[cp_model.IntVar]:
         # lit ⇔ slot realizes pose_tuple. Residual optional slots additionally
         # require active==1 (so the cut only fires when the optional is on).
+        # Content-addressed on (slot.key, pose): the definition depends only on
+        # build-time variable bindings and the pose constants, never on which
+        # cut requested it, so cross-cut reuse is exact (M3-2). A None result
+        # (slot cannot take the pose) is equally state-independent and cached.
+        normalized = (
+            int(pose_tuple[0]), int(pose_tuple[1]), int(pose_tuple[2])
+        )
+        cache_key = (str(slot.key), normalized)
+        if cache_key in self._slot_pose_match_cache:
+            return self._slot_pose_match_cache[cache_key]
+
         if slot.x is None or slot.y is None or slot.mode is None:
+            self._slot_pose_match_cache[cache_key] = None
             return None
         if not self._slot_can_take_pose(slot, pose_tuple):
+            self._slot_pose_match_cache[cache_key] = None
             return None
 
-        x_val = int(pose_tuple[0])
-        y_val = int(pose_tuple[1])
-        mode_id = int(pose_tuple[2])
-        tag = self._cut_name_token(cut_tag)
+        x_val, y_val, mode_id = normalized
         slot_tag = self._cut_name_token(slot.key)
         pose_tag = f"{x_val}_{y_val}_{mode_id}"
 
         conditions: List[cp_model.IntVar] = [
-            self._eq_literal(slot.x, x_val, f"eq_x__{tag}__{slot_tag}__{pose_tag}"),
-            self._eq_literal(slot.y, y_val, f"eq_y__{tag}__{slot_tag}__{pose_tag}"),
-            self._eq_literal(slot.mode, mode_id, f"eq_m__{tag}__{slot_tag}__{pose_tag}"),
+            self._eq_literal(slot.x, x_val, f"eq_x__{slot_tag}__{pose_tag}"),
+            self._eq_literal(slot.y, y_val, f"eq_y__{slot_tag}__{pose_tag}"),
+            self._eq_literal(slot.mode, mode_id, f"eq_m__{slot_tag}__{pose_tag}"),
         ]
         if slot.active is not None:
             conditions.append(
-                self._eq_literal(
-                    slot.active, 1, f"eq_a__{tag}__{slot_tag}__{pose_tag}"
-                )
+                self._eq_literal(slot.active, 1, f"eq_a__{slot_tag}__{pose_tag}")
             )
 
-        match = self.model.NewBoolVar(f"match_pose__{tag}__{slot_tag}__{pose_tag}")
+        match = self.model.NewBoolVar(f"match_pose__{slot_tag}__{pose_tag}")
         for cond in conditions:
             self.model.AddImplication(match, cond)
         self.model.AddBoolOr([cond.Not() for cond in conditions] + [match])
+        self._slot_pose_match_cache[cache_key] = match
         return match
 
     def _pose_present_literal(
         self,
         slots: Sequence[CoordinateSlotSpec],
         pose_tuple: PoseTuple,
-        *,
-        cut_tag: str,
     ) -> Optional[cp_model.IntVar]:
-        # lit ⇔ any slot in `slots` realizes pose_tuple.
+        # lit ⇔ any slot in `slots` realizes pose_tuple. Content-addressed on
+        # (sorted slot keys, pose) — see the cache-field comment in __init__.
+        normalized = (
+            int(pose_tuple[0]), int(pose_tuple[1]), int(pose_tuple[2])
+        )
+        slot_keys = tuple(sorted(str(slot.key) for slot in slots))
+        cache_key = (slot_keys, normalized)
+        if cache_key in self._pose_present_cache:
+            return self._pose_present_cache[cache_key]
+
         match_lits: List[cp_model.IntVar] = []
         for slot in slots:
-            lit = self._slot_pose_match_literal(slot, pose_tuple, cut_tag=cut_tag)
+            lit = self._slot_pose_match_literal(slot, pose_tuple)
             if lit is not None:
                 match_lits.append(lit)
         if not match_lits:
+            self._pose_present_cache[cache_key] = None
             return None
 
-        tag = self._cut_name_token(cut_tag)
-        pose_tag = (
-            f"{int(pose_tuple[0])}_{int(pose_tuple[1])}_{int(pose_tuple[2])}"
-        )
+        pose_tag = f"{normalized[0]}_{normalized[1]}_{normalized[2]}"
         present = self.model.NewBoolVar(
-            f"pose_present__{tag}__{pose_tag}__{len(match_lits)}"
+            f"pose_present__{self._cut_name_token(slot_keys[0])}__{pose_tag}__{len(match_lits)}"
         )
         for match in match_lits:
             self.model.AddImplication(match, present)
         self.model.AddBoolOr(match_lits).OnlyEnforceIf(present)
+        self._pose_present_cache[cache_key] = present
         return present
 
     def _conflict_pose_entries(
@@ -7058,13 +7098,12 @@ class CoordinateExactMasterDelegate:
             return False
 
         cut_index = int(self.owner.build_stats.get("coordinate_benders_cut_count", 0))
-        cut_tag = f"benders_{cut_index}_{len(entries)}"
 
         present_lits: List[cp_model.IntVar] = []
         for _scope_key, pose_idx, slots, pose_tuple in entries:
-            lit = self._pose_present_literal(
-                slots, pose_tuple, cut_tag=f"{cut_tag}_{pose_idx}"
-            )
+            # M3-2: presence literals are content-addressed (reused across
+            # cuts); cut_tag no longer participates in literal identity.
+            lit = self._pose_present_literal(slots, pose_tuple)
             if lit is None:
                 return False
             present_lits.append(lit)

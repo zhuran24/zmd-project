@@ -12922,7 +12922,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
     'src/models/cut_manager.py': '50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01',
     'src/models/d2_commodity_flow_core.py': 'eb875b3e5be2e6ec65a5e7b84a22fee075ccd64b1fe1e543053603a893aec853',
-    'src/models/exact_coordinate_master.py': '8d4d9f1c09f8f2d2e16b4507f0f42444e327b737764a76d64124e6c32abaca9f',
+    'src/models/exact_coordinate_master.py': '32fbbbcdd57e0d3d692ea656f80de6d7c6c5fb6690df79e6de202c4b6c1bc297',
     'src/models/flow_subproblem.py': '1d3d0f174e23feb6df01858941cb713af6f8f676315bba7568211b9d45f9e94d',
     'src/models/highs_candidate_evaluator.py': '1709e1536a49f11ed057ab6dc1e904d9acac8d25c910c4299789b5309986f419',
     'src/models/highs_master_model.py': 'ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a',

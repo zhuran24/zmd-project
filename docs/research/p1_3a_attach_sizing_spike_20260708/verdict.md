@@ -112,6 +112,27 @@ warm-start hint（`build_exact_candidate_warm_start`），本 spike 裸跑。
 - solve time limit 的 presolve 粒度问题：大模型下 60s 预算实际可能跑
   95s+，M5 收敛实测时 wall-clock 统计要按实测 wall 不按预算值。
 
+## 5b. M3-2 落地后的 after 复测（2026-07-08 追记，raw_m32_after.jsonl）
+
+§3 前置 1（content-addressed literal 复用）已随 M3-2 落地
+（`exact_coordinate_master.py`：eq/match/present 三层缓存，cut_tag 退出
+literal 身份）。同 seed 同负载复测 pattern 挡位：
+
+| 累计 cut | add ms/条 (before→after) | solve 劈叉 (before→after) | RSS 增量 (before→after) |
+|---|---|---|---|
+| 100 | 66.7 → 55.8 | 3.5s → 2.8s | — |
+| 1,000 | 94.3 → 54.2 | 8.7s → 4.1s | — |
+| 5,000 | 116.9 → 61.4 | 70.5s → **8.6s** | +4.7GB → +1.2GB |
+
+- add 成本曲线平坦化（before 递增 75%，after 基本平坦）；
+- **solve 劈叉在 5K 挡降 88%**——50% 退化线从裸实现的 ~2.5-3K cut 外推到
+  ~15-20K cut；
+- RSS 增量降 ~75%；
+- 合成负载 pose 随机采样下 present literal 复用率仅 ~24%（30,560 唯一 /
+  40,000 引用）；生产 LBBD 相邻迭代 pose 高复用，实际收益更大。
+- 前置 2（active cut 总量预算）仍保留：余量大了一个量级，但不取消预算。
+- solver 内部 wall 超 time limit 的 presolve 粒度问题依旧（与本刀无关）。
+
 ## 6. 边界声明
 
 - spike GO ≠ P1.3 主体完成、≠ 收敛保证、≠ 解禁 27 lever paradigm 边界。
