@@ -1,8 +1,8 @@
 ---
 id: p1-3-kickoff-recon-facts
 kind: reference
-title: P1.3 开工侦察硬事实(2026-07-07):生产 master 是增量 add 不是每轮 rebuild;旧 spike 设计针对已换掉的 pose-bool master 且从未实施;EXACT_B_DESIGN_V2 代码里不存在;coordinate master 0-cut 基线数字
-summary: P1.3 开工前五路侦察(cuts 代码/锁条款/排期 gap/新规格/master 接口面)+基线实测的硬事实集。核心纠偏三条:①09_phase_1_3_plan 假设的"每轮 rebuild master"不符现状——生产是 per-attempt build_exact_core→from_exact_core 克隆+LBBD 轮内 add_benders_cut 增量加约束(exact_coordinate_master.py:7044-7078,presence nogood sum≤N-1+OnlyEnforceIf,带 witness 失效 :7088-7095),whole-layout nogood 已是"cut 进 master"的活生产先例,与 F3/F5/F7 literal family 翻译形态同构→attach 的 API 风险已被生产验证,剩规模问题;②2026-05 prod-scale spike(8 路设计+MERGER+3 轮 Gemini)最终收窄成 sizing-only 但从未实施,且针对 PoseBoolExactMaster(81K BoolVar)——该 master 已被 CoordinateExactMasterDelegate 取代,全部 sizing 数字作废;③EXACT_B_DESIGN_V2 只存在于 docs,src 里没有,P1.3 的 cut 开关要按 env 白名单五件套新建(known_names+分类 map+3 测试+checker+锁,语义开关必须 canonical-default false 不能进 operational)。coordinate master 0-cut 基线(2026-07-07 实测):build_exact_core 38.9s,64,103 var/108,024 constr(coordinate_exact_v2),RSS 2.4GB;from_exact_core 克隆 26.8s(8x8)/35.7s(12x10)/53.6s(20x16)——per-attempt 固定成本已 27-54s,cut 注入退化与此同轴比。
+title: P1.3 开工侦察硬事实(2026-07-07)+M1 attach sizing spike verdict=GO(2026-07-08):生产 master 是增量 add 不是每轮 rebuild;旧 spike 设计过时未实施;EXACT_B_DESIGN_V2 不存在;literal 零复用是首要瓶颈(50% 退化线在裸实现 ~2.5-3K cut)
+summary: P1.3 开工前五路侦察(cuts 代码/锁条款/排期 gap/新规格/master 接口面)+基线实测的硬事实集。【M1 verdict 2026-07-08,docs/research/p1_3a_attach_sizing_spike_20260708/verdict.md】attach spike 判 GO(增量 add 形态)带两硬前置:①presence literal 必须 content-addressed 复用(_pose_present_literal 零复用是 add 66→252ms/条超线性+RSS 0.9MB/条+solve proto 劈叉 2.8→232s 的共同根因);②active cut 总量预算(裸实现 50% 退化线在 ~2.5-3K cut,literal 复用落地后复测再放宽)。三 PoC 裁决:增量 add=主路线/rebuild=退路/C++ propagator 维持 defer。核心纠偏三条:①09_phase_1_3_plan 假设的"每轮 rebuild master"不符现状——生产是 per-attempt build_exact_core→from_exact_core 克隆+LBBD 轮内 add_benders_cut 增量加约束(exact_coordinate_master.py:7044-7078,presence nogood sum≤N-1+OnlyEnforceIf,带 witness 失效 :7088-7095),whole-layout nogood 已是"cut 进 master"的活生产先例,与 F3/F5/F7 literal family 翻译形态同构→attach 的 API 风险已被生产验证,剩规模问题;②2026-05 prod-scale spike(8 路设计+MERGER+3 轮 Gemini)最终收窄成 sizing-only 但从未实施,且针对 PoseBoolExactMaster(81K BoolVar)——该 master 已被 CoordinateExactMasterDelegate 取代,全部 sizing 数字作废;③EXACT_B_DESIGN_V2 只存在于 docs,src 里没有,P1.3 的 cut 开关要按 env 白名单五件套新建(known_names+分类 map+3 测试+checker+锁,语义开关必须 canonical-default false 不能进 operational)。coordinate master 0-cut 基线(2026-07-07 实测):build_exact_core 38.9s,64,103 var/108,024 constr(coordinate_exact_v2),RSS 2.4GB;from_exact_core 克隆 26.8s(8x8)/35.7s(12x10)/53.6s(20x16)——per-attempt 固定成本已 27-54s,cut 注入退化与此同轴比。
 scope:
   domains:
     - p1-3-master-cut-integration
@@ -59,7 +59,7 @@ provenance:
     - "侦察 workflow wf_30d2d244-8c3(5 codex agents):cuts 代码/PROJECT_LOCK 条款/排期卡+soundness_gap/F5+Q1a+F7F8 规格/master 接口面。"
     - "基线实测 m1_baseline_0cut.py(2026-07-07,本机):build 38.931s,64103 var,108024 constr,clone 26.8/35.7/53.6s,RSS 2443MB(core)→4650MB(3 clones)。"
     - "src/cuts↔src/search 双向零 import(grep 0 命中);step_8 NotImplementedError=lifecycle.py:1121-1126;step_2 minimize 也是 NotImplementedError(非关键路径)。"
-  updated_at: "2026-07-07"
+  updated_at: "2026-07-08"
 ---
 
 P1.3 开工侦察(2026-07-07)的硬事实集,全部实测/源码坐实,不依赖 owner 拍板。
@@ -87,3 +87,7 @@ canonical→geometry 语义半:F1-F9 helper 用旧欧氏覆盖/方向模型,cert
 | from_exact_core | 26.8s(8×8) / 35.7s(12×10) / 53.6s(20×16) |
 | RSS | 2.4GB(core) / +~0.7GB per clone |
 | solve 生产预算 | 60s/轮(master_model.py:11424 默认) |
+
+== M1 attach sizing spike verdict(2026-07-08,GO) ==
+
+完整数据与边界声明见 `docs/research/p1_3a_attach_sizing_spike_20260708/verdict.md`(commit 47540ea)。核心:pattern 型(8-literal)注入挡位 0/100/1K/5K/10K → add 66.7/94.3/116.9/252ms/条(超线性),solve 的 python↔C++ proto 劈叉 2.8/3.5/8.7/70.5/232s,RSS 0.9MB/条。根因=\_pose_present_literal(exact_coordinate_master.py:6949)每 cut 每 pose 重建 literal+channeling(名字带 cut_tag)。**step_8 两硬前置**:content-addressed literal 复用(key=(slot 集合,pose_tuple),cut_tag 只留 telemetry;与 alias fail-closed 纪律正交)+active cut 千级总量预算(配 CutStore held/eviction 最简版提前到 F5 接线批)。已作废数据别引用:v1 whole 型 99.99% 被拒=合成负载 alias(组内撞 pose,生产不会);v2 whole 0-cut solve 1073s=内存滞留污染(del 后 proto 不即时回收——生产 worker 连续 task 有同暴露面,M3 检查)。updated_at 同步 07-08。
