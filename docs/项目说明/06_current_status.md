@@ -97,5 +97,10 @@ hash-incompatible。
 ## 阶段命名
 
 - P1.2：当前认证发布链 soundness 与 release gate 收口已于 2026-07-07 owner-closed。
-- P1.3：已开放；后续真正的 master/cut integration 仍待完成。
+- P1.3：已开放且实质推进（2026-07-08 M1-M3）：`step_8_apply_to_master` 已通电
+  （F1 region_capacity 首族翻译落地，其余族 fail-closed 待 M4 阶梯）；LBBD 接线
+  经 `EXACT_CUT_FRAMEWORK_ATTACH`（unsafe map，certified 下开启即 fail-closed，
+  升格需 M4 阶梯+等价回归+owner 决定）；cut framework 16 模块进 V99 floor。
+  F8 power_grid_reach 已整族退役删除（owner 游戏规则拍板：电杆不需连网）。
+  详见记忆卡 `p1-3-m3-step8-landed` 与 `p1-3-m2-coverage-stencil-ruling`。
 - `p1_3b_*`：只作为既有 JSON/CLI 兼容字段保留，不代表人类路线图仍分 A/B。
