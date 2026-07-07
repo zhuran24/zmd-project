@@ -46,7 +46,11 @@ Cut-family LBBD work must respect the cut object lifecycle: generation, validati
 - Lazy → hard constraint 转化, 跟 master CP-SAT model 真集成
 - **风险**: master 加 lazy constraint 可能影响 master.solve 收敛 (constraint
   push 太多导致 propagator overhead). mitigation: 阶梯式启用, 先 F1 single
-  family 跑通后逐步 F2-F9 wire
+  family 跑通后逐步 F2-F9 wire（**2026-07-08 注**：F8 已整族退役——owner 游戏
+  规则确认其 pole-jump 前提为假，接线序列为 F2-F7+F9；F8 物理删除搭 step_8
+  reseal 批。另 M1 sizing spike 已修订本节"每轮 rebuild"假设：生产 master 是
+  per-attempt build + 轮内增量 add，见
+  `docs/research/p1_3a_attach_sizing_spike_20260708/verdict.md`）
 
 ### 12.2 evaluate hot path perf opt
 GPT v3 Gemini r35 已识别, Step H 加 TODO docstring 留好:

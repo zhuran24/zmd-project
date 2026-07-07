@@ -259,6 +259,11 @@
 
 #### F8 — Liang-Barsky 退化 case **P1**
 
+> **【已随 F8 退役关闭，2026-07-08】** owner 游戏规则确认电杆不需连网
+> （协议核心自动无线连接），F8 整族前提为假、retired-false-premise——本问题
+> 与下一个「power network 独立性」问题均不再有对象。见卡
+> `p1-3-m2-coverage-stencil-ruling` 与 02 号 §3.8 退役注。
+
 **问题**: F8 用 Liang-Barsky line-segment AABB intersection. 退化 case (零长度 / 共线 / 正交) 数学边界?
 
 **当前 understanding**:
@@ -528,8 +533,8 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 | F6-2D | 2D Hall (interior) | P2 | Phase 1.5+ trial 看必要 | 数学 |
 | F7-LP | LP relax ln(n) factor | P1 | Phase 1.2 P1.2B-F7 | 工程 |
 | F7-master | 跟 master.power_coverage | P1 | Phase 1.3 propagator | 工程 |
-| F8-deg | Liang-Barsky 退化 case | P1 | Phase 1.2 P1.2B-F8 | 数学 |
-| F8-ind | power/belt 独立性 | P2 | Phase 1.5+ telemetry | 数学 |
+| F8-deg | ~~Liang-Barsky 退化 case~~ | ~~P1~~ 已关闭 | F8 整族退役（前提为假，2026-07-08） | 数学 |
+| F8-ind | ~~power/belt 独立性~~ | ~~P2~~ 已关闭 | 同上（见 §F8 退役注） | 数学 |
 | F9-base | envelope baseline 紧度 | P0 | Phase 1.2 P1.2B-F9 | 数学 |
 | F9-F1 | 跟 F1 数学独立性 | P1 | Phase 1.2 P1.2B-F9 spec | 数学 |
 | Q7 | attach point 选择 | P0 | 后续 P1.3 | 工程 |

@@ -79,7 +79,12 @@ spike 只回答一个问题：CP-SAT Python 路径能否把 cut 及时变成有�
 - F5 orbit lift 实施规格七项（F5 稿 §4：P-HOM 结构门 / canonical_relabel /
   validator 增补 / query_liftable / master attach / telemetry / 红测⑥⑦⑧）；
 - Q1a 工程桥（Q1 分类学稿 v2：owner lemma 五段合同 + 红测 R1-R10）；
-- F7/F8 欧氏 vs 12×12 stencil 语义 reconcile（这也是形式化 F8 的解锁条件）。
+- ~~F7/F8 欧氏 vs 12×12 stencil 语义 reconcile~~（**已完成，2026-07-08 M2**：
+  F7 CoverSet 已统一 12×12 stencil（owner 裁定）；F8 整族退役——owner 游戏
+  规则确认「电杆不需连网，协议核心自动无线连接」，其 pole-jump 前提为假；
+  形式化 F8 相应**取消**而非解锁。F8 物理删除搭 M3 step_8 reseal 批。
+  F3 方向表同批修正（N/S 曾与 canonical 相反）。详见卡
+  `p1-3-m2-coverage-stencil-ruling` 与 soundness_gap_roadmap 对应行）。
 
 ### 1d. P1.5+ 生产集成（[10](10_phase_1_5_plan.md)，未变）
 
@@ -100,7 +105,8 @@ P2.0c：D1-D8 实测与 FIFO/game 语义对齐。
 现状：六模块 68 条、公理审计干净、两轮独立外审（7 会话+盲对拼）全回收。
 余项（不依赖主线）：盲方 T1-T6 必要性定理族、C5b 覆盖容量 owner lemma、
 TP7-D 验收语义、工程 W 定理对象（availableCuts/SoundAtScope）形式化。
-等待解锁的：F8（等 1c 的 stencil reconcile）。
+~~等待解锁的：F8~~（**取消，2026-07-08**：owner 游戏规则确认 F8 前提为假
+（电杆不需连网），整族退役，形式化 F8 不再有对象；见 1c 注）。
 纪律不变：formal/ 不进认证 TCB、不改 gate（16 号 §6.4 政策原样有效）。
 
 ### 2b. P3.0c 轴 B：证书侧 proof logging（**本次排入**，待开工）

@@ -436,6 +436,14 @@ cert:
 
 ### 3.8 F8 power_grid_reach — Liang-Barsky AABB intersection
 
+> **【F8 已退役，2026-07-08（前提为假）】** owner 以游戏规则确认：电线杆
+> 不需要连电网——协议核心自动无线连接每个已放置的电杆。本节的全部前提
+> （「power_pole 之间需 line-of-sight 连接」「power network 连通性」）描述
+> 的游戏机制不存在，任何 F8 cut 都会错剪游戏允许的合法布局。certified 主链
+> 无恙（六谓词只要求设施被电杆 12×12 stencil 覆盖，从未要求电杆连通）。
+> F8 整族 retired-false-premise，物理删除搭 M3 step_8 reseal 批；形式化 F8
+> 取消。本节自此为史料。裁定：卡 `p1-3-m2-coverage-stencil-ruling`。
+
 **数学根据**: Liang-Barsky line clipping algorithm (Liang-Barsky 1984) — 2D 线段跟轴向 rectangle (AABB, Axis-Aligned Bounding Box) intersection 的 closed-form 解.
 
 项目用: power_pole 之间需 line-of-sight 连接 (不被 ghost / facility 阻挡). 若 ghost 的 AABB block 两 power_pole 之间所有可能 line segment → power network 不连通.
