@@ -54,6 +54,7 @@ provenance:
     - "owner 原话(2026-07-08):「嗯,选方形」;批 B:「那些电线杆是不需要连电网的。或者说,在基地内,协议核心会自动连上它们」。"
     - "F8 假前提史料链(codex 查证 2026-07-08,防复活):前提源自 Gemini round 14 构造反例(gemini_round_14_cut_families.md:43-67),round 15 建议独立成族;从无游戏规则引用;Gemini round 5 曾明确质疑(canonical 无 pole-to-pole 字段,p1_2b_f8_power_grid_reach_gemini_round5_20260525/),当时被「接受为 Phase 1.2 简化」搁置——教训:外审接受≠游戏规则确认,规则问题必须问 owner。"
     - "主链 coverage-only 确认:master_model.py:4881-4910 约束=sum(coverer poles)>=facility_selected,无 BFS/component/core-source;protocol_core needs_power:false 且不参与供电语义(pr2_l0_artifact_core.py:984-999 只认 power_pole 为覆盖者)。"
+    - "owner 追加确认(2026-07-08):协议核心(=基地核心,9×9 最大单位)不会直接给周围设施供电——主链供电谓词(设施须被电杆 stencil 覆盖)与游戏规则完全一致,不松不严:电杆是唯一供电者、放下即生效。供电覆盖谓词的忠实性自此有 owner 玩家确认背书,该语义面无遗留悬念。"
     - "背景:soundness_gap_roadmap.md:21 canonical→geometry 语义半=P1.3-before-F1-F9 前置;docs/research/p3_0b_family_formalizability_survey_20260705/ f7/f8 文档标 landmine;PROJECT_LOCK 相关条款(F7/F8 footprint SoT fail-closed)。"
     - "承接裁定:供电覆盖谓词=相交(owner 2026-07-07,见 commit fdbf98c 所记)。"
   updated_at: "2026-07-08"
