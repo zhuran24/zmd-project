@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-07-03",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "a1543ee1e6b3db90d2a757340db8f9388630213464355c0ee9892d3d3b734714",
+  "semantic_projection_sha256": "44c0113b2adaaafb3b2abebfd92dba1c799d1f18d637947ba9d603ed0775f0a3",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -916,7 +916,10 @@
       "src/search/exact_campaign.py",
       "src/search/exact_parallel_scheduler.py",
       "src/search/outer_search.py",
+      "src/search/pr2_l0_artifact_core.py",
+      "src/search/pr2_l0_frontier_core.py",
       "src/search/pr2_l0_micro_verifier_core.py",
+      "src/search/pr2_l0_replay_core.py",
       "src/search/pr2_l0_true_verifier_child.py",
       "src/search/terminal_fixed_witness_capsule.py"
     ],
@@ -971,19 +974,19 @@
           "_check_candidate_sink_replay_contract",
           "CANDIDATE_PROOF_REPLAY_PATH",
           "_check_close_kernel_contract",
-        "_check_dependency_floor_provenance_contract",
-        "PR2_DEPENDENCY_FLOOR_MANIFEST_REL",
-        "PR2_DEPENDENCY_FLOOR_GENERATOR_REL",
-        "STRONG_STATUS_WRITE_ALLOWLIST_REL",
-        "_check_strong_status_write_allowlist_bytes",
-        "_PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR",
-        "_check_main_self_integrity_preflight_shape",
-        "source_sha256_drift_reopens_p1_2_close_claim",
-        "_check_certified_publication_boundary_contract",
-        "PR2_L0_MICRO_VERIFIER_PATH",
+          "_check_dependency_floor_provenance_contract",
+          "PR2_DEPENDENCY_FLOOR_MANIFEST_REL",
+          "PR2_DEPENDENCY_FLOOR_GENERATOR_REL",
+          "STRONG_STATUS_WRITE_ALLOWLIST_REL",
+          "_check_strong_status_write_allowlist_bytes",
+          "_PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR",
+          "_check_main_self_integrity_preflight_shape",
+          "source_sha256_drift_reopens_p1_2_close_claim",
+          "_check_certified_publication_boundary_contract",
+          "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "d53731f26284156d3c679be1a51908a81bbef1fa774fe4b53ae4bf59aac8e1fe",
+      "source_sha256": "effdc55a60cfdfb4d69c4e2dbecde9347decc25bf3cfdcbf9b969726d4ee9a7e",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1000,7 +1003,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "255d24e36cc23cabae822f8da3d61d6861f89d75899f362c1f6af121cb9fe720",
+        "source_sha256": "2200d231b6aa93a59d2fd96bb1ec761cddf7e190c522e703e4dd1e8d2a92ba5d",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1601,16 +1604,14 @@
         ],
         "required_guard_tokens": [
           "CANDIDATE_PROOF_AUTHORITY",
-          "certified_exact_isolated_solver_replay_v1",
-          "_invoke_isolated_replay",
-          "\"-I\"",
-          "compute_exact_artifact_hashes",
-          "run_benders_for_ghost_rect",
+          "build_candidate_replay_proof",
+          "verify_candidate_records_at_sink",
           "project_candidate_records_for_sink",
-          "record[\"status\"] = \"UNPROVEN\"",
+          "_invoke_isolated_replay",
+          "isolated_replay_main",
           "candidate_sink_replay_status_mismatch"
         ],
-        "source_sha256": "841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5",
+        "source_sha256": "0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1632,7 +1633,7 @@
           "require_record_solution_match=True",
           "terminal_frontier_evidence_violation"
         ],
-        "source_sha256": "80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74",
+        "source_sha256": "b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1655,7 +1656,7 @@
           "publish_verified_certified_delivery_surface",
           "_load_verified_surface_snapshot"
         ],
-        "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
+        "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1697,7 +1698,7 @@
           "self.mark_candidate_result",
           "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
+        "source_sha256": "a478e61f023e47557faf7eda16fbbc4b3cc95e0fc607471e0b0a35fe3157b9f4",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1806,9 +1807,74 @@
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
+        "path": "src/search/pr2_l0_artifact_core.py",
+        "classification": "p1_2_certified_path",
+      "source_sha256": "9f66ea0af358d24413a49b0cbc0c9db750109537444453eba577002b72bca81f",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "terminal_frontier_evidence",
+          "certified_exact_source_tree",
+          "final_result"
+        ],
+        "required_guard_tokens": [
+          "compute_exact_artifact_hashes",
+          "compute_certified_exact_source_digest",
+          "terminal_certified_final_result_project_precheck_violation",
+          "terminal_certified_final_result_violation",
+          "has_valid_terminal_full_frontier_certified_evidence"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/pr2_l0_fixed_witness_core.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "abce5361619402d340e2a849999cda259ac6f054f0fb100bc0dcba1806f6845f",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "UNPROVEN",
+          "terminal_fixed_witness",
+          "PortBindingModel",
+          "RoutingSubproblem"
+        ],
+        "required_guard_tokens": [
+          "verify_terminal_fixed_witness",
+          "_project_terminal_fixed_witness_records_from_capsule",
+          "record[\"status\"] = _PROJECTED_UNPROVEN",
+          "record.pop(\"solution\", None)",
+          "loads_strict_json",
+          "PortBindingModel",
+          "RoutingSubproblem",
+          "terminal_fixed_witness_binding_routing_v1"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/pr2_l0_frontier_core.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "terminal_frontier_evidence",
+          "TERMINAL_FRONTIER_EVIDENCE_SOURCE"
+        ],
+        "required_guard_tokens": [
+          "build_terminal_frontier_evidence",
+          "terminal_frontier_evidence_violation",
+          "compute_terminal_frontier_projection",
+          "normalize_terminal_frontier_domain_contract",
+          "TERMINAL_FRONTIER_DOMAIN_AUTHORITY",
+          "TERMINAL_FRONTIER_OBJECTIVE"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
         "path": "src/search/pr2_l0_micro_verifier_core.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
+      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
@@ -1836,9 +1902,37 @@
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
+        "path": "src/search/pr2_l0_replay_core.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2",
+        "obligation_id": "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "candidate_proof",
+          "candidate_sink_replay",
+          "certified_exact_isolated_solver_replay_v1"
+        ],
+        "required_guard_tokens": [
+          "CANDIDATE_PROOF_AUTHORITY",
+          "certified_exact_isolated_solver_replay_v1",
+          "candidate_proof_shape_violation",
+          "_replay_response_violation",
+          "_replay_one_proof",
+          "_materialize_replay_snapshot",
+          "_invoke_isolated_replay",
+          "_execute_isolated_replay_request",
+          "\"-I\"",
+          "compute_exact_artifact_hashes",
+          "run_benders_for_ghost_rect",
+          "candidate_sink_replay_response_artifact_binding_mismatch"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
         "path": "src/search/pr2_l0_true_verifier_child.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
+      "source_sha256": "a62927ea934d135af820c4880f96c729caaf0c1c9f3e7cd97502f2e8708362cf",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
@@ -1849,7 +1943,7 @@
         ],
         "required_guard_tokens": [
           "_project_candidate_records_direct",
-          "_execute_isolated_replay_request",
+          "_invoke_isolated_replay",
           "_run_fixed_witness_direct",
           "build_terminal_frontier_evidence",
           "terminal candidate sink replay failed",
@@ -1906,16 +2000,15 @@
           "RoutingSubproblem"
         ],
         "required_guard_tokens": [
+          "from src.search.pr2_l0_fixed_witness_core import (",
           "verify_terminal_fixed_witness",
           "project_terminal_fixed_witness_records_for_sink",
-          "record[\"status\"] = _PROJECTED_UNPROVEN",
-          "record.pop(\"solution\", None)",
-          "loads_strict_json",
-          "PortBindingModel",
-          "RoutingSubproblem",
-          "terminal_fixed_witness_binding_routing_v1"
+          "_project_terminal_fixed_witness_records_from_capsule",
+          "_apply_terminal_fixed_witness_audit_fields",
+          "terminal_fixed_witness_capsule_required",
+          "loads_strict_json"
         ],
-        "source_sha256": "2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531",
+        "source_sha256": "f27828f6b5ee001e9a6c98a6e39b9bf0a24cf5a55e85b89ace8bacb3dc0a3386",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       }
     ]

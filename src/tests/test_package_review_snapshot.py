@@ -62,6 +62,14 @@ def test_package_review_snapshot_excludes_agent_memory_and_review_packets() -> N
         "docs/external_review/old_packet.md": "old_review_packet_path",
         "notes/review_request.md": "prompt_like_path",
         "archives/pr1.7z": "archive_path",
+        # Persistent collaboration-memory subsystems are agent infrastructure, not the reviewed
+        # artifact: cc_memory/ (pull-type SQLite history incl. owner rulings/internal reasoning)
+        # and cc_memory_vnext/ (push-type cards incl. internal gap maps) must be dropped by the
+        # same path-prefix mechanism as .claude/ / .codex/ / _cc_live_memory/ / cc_context/.
+        "cc_memory/memory.db": "excluded_package_prefix",
+        "cc_memory/exports/MEMORY.md": "excluded_package_prefix",
+        "cc_memory_vnext/cards/deliberate-insider-hardening-deferred-to-release.md": "excluded_package_prefix",
+        "cc_memory_vnext/.index/frame.json": "excluded_package_prefix",
     }
     for rel_path, reason in cases.items():
         assert package_review_snapshot._package_exclusion_reason(rel_path) == reason

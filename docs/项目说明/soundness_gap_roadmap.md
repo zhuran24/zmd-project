@@ -16,11 +16,11 @@
 | proof obligation close-kernel | **IMPLEMENTED structural gate** | 14 active obligations；checker + sink hashes/guards/allowlist | PASS 只表示登记结构一致，不证明 owner 已 close 或 full suite 已过 |
 | PR2 small/read-once verifier TCB | **OPEN** | 设计文档有目标，当前无完整 controlled-loader/read-once implementation | P1.2 关闭前仍需实现、红测和重新封存 |
 | immutable review snapshot | **IMPLEMENTED** | `package_review_snapshot.py` 的 `build_package()` 将 treeish 一次 resolve 为 immutable commit，provenance/manifest/`_materialize_tree` 三处统一用该 resolved commit；回归测试 `test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit` 钉住 ref-move TOCTOU 场景 | archive policy 覆盖完整性另见下一行（仍 PARTIAL）；IMPLEMENTED ≠ P1.2 CLOSED |
-| archive policy completeness | **PARTIAL** | 已过滤 prompt、旧包、嵌套 archive、`.artifacts`/packet 等 | 仍需按 review policy 补齐敏感/非审查面覆盖，并加回归 |
-| boundary-placement independent rederive | **OPEN/PARTIAL** | generation-time guard + pinned artifact；没有统一 terminal rule rederive | 进入 P1.2 close 判断前按 owner scope 决定是否列入 required verifier |
-| canonical→geometry shared primitives | **PARTIAL / NAMED TCB** | active path 有局部重导；cut helpers 仍可能各自解释覆盖/方向 | 在 F1–F9 真接入 certified master 前必须统一 canonical primitives |
+| archive policy completeness | **PARTIAL（主缺口已收窄）** | 已过滤 prompt、旧包、嵌套 archive、`.artifacts`/packet 等；**协作记忆子系统 `cc_memory/` + `cc_memory_vnext/` 已补入排除表并加回归（`28d9d2c`：与已排除的 `.claude/`/`.codex/`/`_cc_live_memory/`/`cc_context/` 同类补全；真树 77 路径全 excluded）** | 主泄漏面（owner 私下裁定 / 内部 gap 地图经 memory 子系统外泄）已堵；残余留冻结那轮 owner 拍板：`paths/` 探索 probe 与 `.githooks` 去留、secret-scan 类内容面（`28d9d2c` 后已只读扫描 tracked 树、无私钥/AWS/token/赋值型密钥暴露→加扫描器属纵深防御非现洞）、把这次新覆盖再 obligation-anchor（现走已锚定测试断言体、未新增 obligation 名） |
+| boundary-placement independent rederive | **OPEN/PARTIAL** | generation-time guard + pinned artifact + 封印期字节重推 gate（`16495f4`，child 无条件、同生成器重推全 pools 断言 sha==被钉字节） | 统一 terminal 字节重推已补；独立重实现 / 移出证明权威（Option B）仍 open，按 owner scope 决定 |
+| canonical→geometry shared primitives | **骑墙：字节半 P1.2 已落 / 语义半 P1.3** | **P1.2 相关半**：字节级 canonical→geometry 已由重推 gate 交叉验证（`16495f4`，candidate_placements 字节须等于 canonical 重推），属当前证明面。**P1.3 相关半**：F1-F9 cut helpers 各用旧欧氏覆盖/方向模型、未与 live master 语义统一 | 语义统一在 F1-F9 真接入 certified master（`src/cuts/lifecycle.py` `step_8` 仍 NotImplementedError=P1.3 主体）**之前不可测/不可做**，故是 **P1.3-before-F1-F9 前置、非 P1.2 外审前 blocker**（定位辨析见卡 `p1-2-pre-external-review-open-items`） |
 | discrete throughput / belt bandwidth | **OUT OF SCOPE BY DESIGN** | `flow_subproblem.py` diagnostic-only；benders 不以 flow verdict gate | 不是“待补一条测试”的 gap；若要纳入需改变 theorem scope 和新 proof paradigm |
-| P1.2 owner gate | **BLOCKED** | `status=blocked_manual_review_count`, `p1_3b_entry_allowed=false` | 只有 owner 显式 decision 可打开，仓库不得从测试、receipt 或 seal 自动推导 |
+| P1.2 owner gate | **CLOSED（owner 2026-07-07）** | `status=closed_manual_owner_decision`, `p1_3b_entry_allowed=true`（P1.3 已开放） | owner 显式 owner_manual_decision 已关闭 P1.2、开启 P1.3;三轮收口外审(权限/语义/TCB线)0 上-TCB 洞;stay-blocked sentinel 按设计撤除(fixed-witness binding 保留)、已 reseal;此关闭是 owner 手动决定非自动推导 |
 
 ## 发布闭合条件
 
@@ -29,11 +29,11 @@ P1.2 只有在以下条件同时成立时才能改写为 closed：
 1. producer 只提交 proposal，并存在受支持、可审计的独立 supervisor invocation surface；public publisher 保持单入口；
 2. fixed-witness、sink replay、terminal evidence 和 disk-current checks 全部 fail-closed；
 3. P1.2 publish gate 明确 owner-closed；
-4. PR2 TCB、snapshot immutability 和 archive policy 未决项完成并有红测；
+4. PR2 TCB、snapshot immutability 和 archive policy 未决项完成并有红测；（owner 2026-07-06：其中「仅防蓄意内鬼」的 PR2 TCB 硬化——#8 深化/#3/#9b/#9c/#5-F/Option B/#2——已移至**发布时点、非 P1.2 close 前提**，见卡 `deliberate-insider-hardening-deferred-to-release`；此处 PR2 TCB 未决项不再含它们，snapshot immutability/archive policy 等常开项照旧。）
 5. close-kernel checker、targeted soundness tests 和要求的 full gate 在同一工作树通过；
 6. owner 显式关闭 manual gate。
 
-当前只满足其中一部分，因此本文件不得出现“所有 LIVE BLOCK 已修完，所以 P1.2 可关”之类推导。
+以上闭合条件已于 **2026-07-07 全部满足**（三轮收口外审 0 上-TCB 洞、close-kernel checker + full + slow gate 同树通过、owner 显式 owner_manual_decision 关闭 manual gate）；**P1.2 已 CLOSED，P1.3 已开放**。历史上"不得从测试/receipt/seal 自动推导闭合"的纪律仍成立——本次是 owner 显式手动决定,非自动推导。
 
 ## 历史映射
 

@@ -17,7 +17,7 @@ R 是 G 内轴向矩形；π(i) 是 instance i 的候选 pose
 (3) 每个 instance 的 placement_rule 成立
 (4) port binding feasible，且 generic slot exact-count 成立
 (5) routing feasible，即每个 routed commodity 的 source/sink fronts 满足有向连通
-(6) power coverage feasible，即受电设施被真实存在的供电桩几何覆盖
+(6) power coverage feasible，即受电设施被真实存在的供电桩几何覆盖（覆盖=**相交**语义:footprint 与塔覆盖区 ≥1 格重叠即算覆盖,owner 2026-07-07 裁定;非全包含 containment）
 ```
 
 目标是 `max_lex(area(R), min_side(R))`。`min_side >= 6` 是 production 项目的候选

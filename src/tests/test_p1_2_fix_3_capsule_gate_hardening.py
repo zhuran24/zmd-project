@@ -108,14 +108,20 @@ def test_fix_3_phase_checker_rejects_two_empty_function_verifier_stub(
     tmp_path: Path,
     monkeypatch,
 ) -> None:
-    stub = _write(
+    verifier_stub = _write(
         tmp_path / "terminal_fixed_witness_verifier.py",
-        "def verify_terminal_fixed_witness(*args, **kwargs):\n"
-        "    return None\n\n"
         "def project_terminal_fixed_witness_records_for_sink(*args, **kwargs):\n"
         "    return None\n",
     )
-    monkeypatch.setattr(check_phase_review_gate, "FIXED_WITNESS_VERIFIER_PATH", stub)
+    core_stub = _write(
+        tmp_path / "pr2_l0_fixed_witness_core.py",
+        "def verify_terminal_fixed_witness(*args, **kwargs):\n"
+        "    return None\n\n"
+        "def _project_terminal_fixed_witness_records_from_capsule(*args, **kwargs):\n"
+        "    return None\n",
+    )
+    monkeypatch.setattr(check_phase_review_gate, "FIXED_WITNESS_VERIFIER_PATH", verifier_stub)
+    monkeypatch.setattr(check_phase_review_gate, "FIXED_WITNESS_CORE_PATH", core_stub)
 
     _summary, errors = check_phase_review_gate.check_gate(GATE_PATH)
 
@@ -518,8 +524,12 @@ def test_fix_3_structure_gate_sources_must_be_in_v99_source_floor(monkeypatch) -
 
 
 def test_fix_3_current_phase_gate_stays_blocked() -> None:
+    # Historical name. Owner 2026-07-07 closed P1.2 and opened P1.3 via an explicit
+    # owner_manual_decision (the only mechanism PO-PHASE-GATE-PROVENANCE permits); the
+    # committed gate is now a valid owner-closed shape. This guards that the committed
+    # gate stays structurally valid and owner-decision-authored (not auto-derived).
     summary, errors = check_phase_review_gate.check_gate(GATE_PATH)
 
     assert errors == []
-    assert "status=blocked_manual_review_count" in summary
-    assert "next_allowed=False" in summary
+    assert "status=closed_manual_owner_decision" in summary
+    assert "next_allowed=True" in summary

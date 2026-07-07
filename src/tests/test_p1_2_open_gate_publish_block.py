@@ -484,3 +484,174 @@ def test_resolve_p1_2_publish_open_gate_fail_closed_branches(
 
     assert is_open is True
     assert reason == f"{P1_2_PUBLISH_OPEN_GATE_REASON_PREFIX}:{expected_suffix}"
+
+
+def _full_closed_gate_payload() -> dict[str, Any]:
+    """A fully owner-closed gate carrying every field the authoritative phase-review
+    gate checker (scripts/check_phase_review_gate.py) requires for the closed state."""
+
+    return {
+        "schema_version": 2,
+        "gate_id": "phase_1_2_spike_close",
+        "status": "closed_manual_owner_decision",
+        "current_review_anchor": "v99_p1_2_close_kernel_sealing",
+        "next_phase_entry": {"allowed": True},
+        "owner_manual_state": {
+            "counting_authority": "owner_manual_count_outside_repo",
+            "current_review_anchor": "v99_p1_2_close_kernel_sealing",
+            "owner_clean_count_status": "maintained_outside_repo",
+            "repo_derives_clean_count_from_receipts": False,
+        },
+        "owner_manual_decision": {
+            "p1_3b_entry_allowed": True,
+            "counting_authority": "owner_manual_count_outside_repo",
+            "decision_id": "owner_decision_1",
+            "decided_by": "owner",
+            "decided_at": "2026-01-01T00:00:00Z",
+            "decision_note": "closed",
+            "acknowledges_repo_does_not_prove_clean_count": True,
+            "acknowledges_owner_verified_three_clean_reviews": True,
+        },
+    }
+
+
+def _closed_gate_but(mutate: Any) -> dict[str, Any]:
+    payload = _full_closed_gate_payload()
+    mutate(payload)
+    return payload
+
+
+def test_resolve_p1_2_publish_open_gate_full_owner_closed_opens(tmp_path: Path) -> None:
+    """Positive path: a gate carrying the FULL authoritative owner-closed shape opens."""
+
+    project_root = tmp_path / "full_closed"
+    project_root.mkdir()
+    _write_gate_payload(project_root, _full_closed_gate_payload())
+
+    assert resolve_p1_2_publish_open_gate(project_root=project_root) == (False, None)
+
+
+def test_resolve_p1_2_publish_open_gate_rejects_pre_hardening_minimal_closed_gate(
+    tmp_path: Path,
+) -> None:
+    """Split-brain regression: the exact 4-field gate the PRE-hardening resolver
+    treated as open (gate_id + closed status + next_phase_entry.allowed +
+    owner_manual_decision.p1_3b_entry_allowed) must now be REJECTED, because it omits
+    the owner counting authority / approved review anchor / owner_manual_state that the
+    authoritative check_phase_review_gate.py requires."""
+
+    project_root = tmp_path / "pre_hardening_minimal"
+    project_root.mkdir()
+    _write_gate_payload(
+        project_root,
+        _minimal_gate_payload(
+            status="closed_manual_owner_decision",
+            next_allowed=True,
+            owner_decision={"p1_3b_entry_allowed": True},
+        ),
+    )
+
+    is_open, reason = resolve_p1_2_publish_open_gate(project_root=project_root)
+    assert is_open is True
+    assert reason is not None
+    assert reason.endswith(("review_anchor_mismatch", "owner_state_missing"))
+
+
+@pytest.mark.parametrize(
+    ("mutate", "expected_suffix"),
+    [
+        pytest.param(
+            lambda p: p.__setitem__("current_review_anchor", "not_the_anchor"),
+            "review_anchor_mismatch",
+            id="review_anchor_mismatch",
+        ),
+        pytest.param(lambda p: p.pop("owner_manual_state"), "owner_state_missing", id="owner_state_missing"),
+        pytest.param(
+            lambda p: p["owner_manual_state"].__setitem__("counting_authority", "x"),
+            "owner_state_counting_authority",
+            id="owner_state_counting_authority",
+        ),
+        pytest.param(
+            lambda p: p["owner_manual_state"].__setitem__("current_review_anchor", "x"),
+            "owner_state_review_anchor",
+            id="owner_state_review_anchor",
+        ),
+        pytest.param(
+            lambda p: p["owner_manual_state"].__setitem__("owner_clean_count_status", "x"),
+            "owner_state_clean_count_status",
+            id="owner_state_clean_count_status",
+        ),
+        pytest.param(
+            lambda p: p["owner_manual_state"].__setitem__("repo_derives_clean_count_from_receipts", True),
+            "owner_state_repo_derives_clean_count",
+            id="owner_state_repo_derives_clean_count",
+        ),
+        pytest.param(
+            lambda p: p["owner_manual_decision"].__setitem__("counting_authority", "x"),
+            "decision_counting_authority",
+            id="decision_counting_authority",
+        ),
+        pytest.param(
+            lambda p: p["owner_manual_decision"].pop("decision_id"),
+            "decision_decision_id_missing",
+            id="decision_id_missing",
+        ),
+        pytest.param(
+            lambda p: p["owner_manual_decision"].__setitem__("decided_by", "  "),
+            "decision_decided_by_missing",
+            id="decision_decided_by_blank",
+        ),
+        pytest.param(
+            lambda p: p["owner_manual_decision"].__setitem__("acknowledges_repo_does_not_prove_clean_count", False),
+            "decision_ack_repo_not_clean_count",
+            id="decision_ack_repo_not_clean_count",
+        ),
+        pytest.param(
+            lambda p: p["owner_manual_decision"].__setitem__("acknowledges_owner_verified_three_clean_reviews", False),
+            "decision_ack_three_clean_reviews",
+            id="decision_ack_three_clean_reviews",
+        ),
+    ],
+)
+def test_resolve_p1_2_publish_open_gate_authoritative_hardening_branches(
+    tmp_path: Path,
+    mutate: Any,
+    expected_suffix: str,
+) -> None:
+    """Each field the authoritative phase-review gate checker requires for the closed
+    state must independently fail-close the runtime publish resolver (no split-brain)."""
+
+    project_root = tmp_path / expected_suffix
+    project_root.mkdir()
+    _write_gate_payload(project_root, _closed_gate_but(mutate))
+
+    is_open, reason = resolve_p1_2_publish_open_gate(project_root=project_root)
+    assert is_open is True
+    assert reason == f"{P1_2_PUBLISH_OPEN_GATE_REASON_PREFIX}:{expected_suffix}"
+
+
+def test_resolve_p1_2_publish_open_gate_rejects_non_finite_number(tmp_path: Path) -> None:
+    """cluster-10: the local strict-JSON loader must reject a non-finite number token
+    (e.g. 1e999999 → float('inf')) so a malformed gate cannot be parsed as valid."""
+
+    project_root = tmp_path / "inf"
+    project_root.mkdir()
+    _write_gate_text(
+        project_root,
+        '{"gate_id":"phase_1_2_spike_close","status":1e999999}\n',
+    )
+
+    is_open, reason = resolve_p1_2_publish_open_gate(project_root=project_root)
+    assert is_open is True
+    assert reason == f"{P1_2_PUBLISH_OPEN_GATE_REASON_PREFIX}:json_error"
+
+
+def test_publish_open_gate_matches_authoritative_gate_constants() -> None:
+    """Drift guard: the runtime publish resolver's owner-closed constants MUST stay
+    equal to the authoritative phase-review gate checker's, otherwise the two could
+    diverge into a split-brain again."""
+
+    from scripts.check_phase_review_gate import APPROVED_REVIEW_ANCHOR, COUNTING_AUTHORITY
+
+    assert certified_surface_module._P1_2_GATE_COUNTING_AUTHORITY == COUNTING_AUTHORITY
+    assert certified_surface_module._P1_2_GATE_APPROVED_REVIEW_ANCHOR == APPROVED_REVIEW_ANCHOR

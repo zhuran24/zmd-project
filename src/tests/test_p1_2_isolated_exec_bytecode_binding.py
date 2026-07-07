@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-import src.search.candidate_proof_replay as candidate_replay_module
+import src.search.pr2_l0_replay_core as candidate_replay_core_module
 import src.search.terminal_fixed_witness_capsule as capsule_module
 from scripts import check_p1_2_proof_obligations
 
@@ -61,9 +61,9 @@ def test_candidate_replay_isolated_subprocess_uses_fresh_pycache_prefix(
             stderr="",
         )
 
-    monkeypatch.setattr(candidate_replay_module.subprocess, "run", fake_run)
+    monkeypatch.setattr(candidate_replay_core_module.subprocess, "run", fake_run)
 
-    candidate_replay_module._invoke_isolated_replay(
+    candidate_replay_core_module._invoke_isolated_replay(
         project_root=tmp_path,
         expected_proofs={"1x1": {"candidate": {"key": "1x1", "w": 1, "h": 1, "area": 1}}},
     )
@@ -169,8 +169,8 @@ def test_isolated_replay_ignores_repo_pycache_bytecode_injection(tmp_path: Path)
 def test_p1_2_checker_rejects_isolated_exec_bytecode_binding_removal(
     tmp_path: Path,
 ) -> None:
-    candidate_path = tmp_path / "candidate_proof_replay.py"
-    candidate_source = check_p1_2_proof_obligations.CANDIDATE_PROOF_REPLAY_PATH.read_text(
+    candidate_path = tmp_path / "pr2_l0_replay_core.py"
+    candidate_source = check_p1_2_proof_obligations.PR2_L0_REPLAY_CORE_PATH.read_text(
         encoding="utf-8"
     )
     candidate_path.write_text(
@@ -178,7 +178,7 @@ def test_p1_2_checker_rejects_isolated_exec_bytecode_binding_removal(
         encoding="utf-8",
     )
     candidate_errors = check_p1_2_proof_obligations._check_isolated_exec_bytecode_binding_contract(
-        candidate_replay_path=candidate_path,
+        candidate_replay_core_path=candidate_path,
     )
     assert any("candidate replay" in error and "-B" in error for error in candidate_errors)
 
@@ -189,7 +189,7 @@ def test_p1_2_checker_rejects_isolated_exec_bytecode_binding_removal(
     )
     fake_executable_errors = (
         check_p1_2_proof_obligations._check_isolated_exec_bytecode_binding_contract(
-            candidate_replay_path=fake_executable_path,
+            candidate_replay_core_path=fake_executable_path,
         )
     )
     assert (
@@ -208,7 +208,7 @@ def test_p1_2_checker_rejects_isolated_exec_bytecode_binding_removal(
     )
     fake_prefix_errors = (
         check_p1_2_proof_obligations._check_isolated_exec_bytecode_binding_contract(
-            candidate_replay_path=fake_prefix_path,
+            candidate_replay_core_path=fake_prefix_path,
         )
     )
     assert (

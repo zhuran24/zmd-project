@@ -8,6 +8,7 @@ import pytest
 
 from scripts import preflight_gate
 from src.search import exact_campaign as exact_campaign_module
+from src.search import pr2_l0_artifact_core as artifact_core_module
 from src.search.certified_artifact_contract import (
     LOCKED_EXACT_ARTIFACT_PATHS,
     LOCKED_EXACT_ARTIFACT_SHA256,
@@ -69,7 +70,7 @@ def test_v102_locked_fresh_campaign_rejects_self_pinned_weakened_theorem(
     root = tmp_path / "locked_weakened_project"
     _write_weakened_exact_project(root, locked=True)
     monkeypatch.setattr(
-        exact_campaign_module,
+        artifact_core_module,
         "validate_locked_p1_2_close_kernel",
         lambda _project_root: None,
     )
@@ -137,7 +138,7 @@ def test_v102_unlocked_toy_campaign_still_supports_model_regressions(
     root = tmp_path / "unlocked_toy_project"
     _write_weakened_exact_project(root, locked=False)
     monkeypatch.setattr(
-        exact_campaign_module,
+        artifact_core_module,
         "compute_certified_exact_source_digest",
         lambda: "test-source-digest",
     )

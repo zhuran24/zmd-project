@@ -10,6 +10,7 @@ import pytest
 
 import src.search.certified_frontier as certified_frontier_module
 import src.search.exact_campaign as exact_campaign_module
+import src.search.pr2_l0_fixed_witness_core as fixed_witness_core_module
 import src.search.terminal_fixed_witness_capsule as fixed_witness_capsule_module
 import src.search.terminal_fixed_witness_verifier as fixed_witness_module
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
@@ -34,6 +35,9 @@ from src.search.exact_campaign import (
     terminal_certified_final_result_project_precheck_violation,
     terminal_certified_final_result_violation_for_project,
 )
+from src.search.pr2_l0_artifact_core import (
+    canonical_candidate_geometry_rederivation_violation,
+)
 from src.search.terminal_fixed_witness_capsule import (
     TERMINAL_FIXED_WITNESS_CAPSULE_AUTHORITY,
     TERMINAL_FIXED_WITNESS_CAPSULE_RESPONSE_SCHEMA_VERSION,
@@ -52,6 +56,51 @@ def _write_json(path: Path, payload: object) -> None:
     path.write_text(
         json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
         encoding="utf-8",
+    )
+
+
+def test_canonical_candidate_geometry_rederivation_matches_real_project_root() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+
+    assert canonical_candidate_geometry_rederivation_violation(project_root=project_root) is None
+
+
+def test_canonical_candidate_geometry_rederivation_fails_closed_for_mismatch_and_invalid(
+    tmp_path: Path,
+) -> None:
+    mismatch_root = tmp_path / "mismatch"
+    mismatch_root.mkdir()
+    (mismatch_root / "PROJECT_LOCK.md").write_text("locked test root\n", encoding="utf-8")
+    _write_json(
+        mismatch_root / "rules" / "canonical_rules.json",
+        {
+            "facility_templates": {
+                "power_pole": {
+                    "dimensions": {"w": 2, "h": 2},
+                    "is_solid_z": True,
+                    "needs_power": False,
+                    "port_rule": "none",
+                    "power_coverage_radius": 5,
+                    "rotatable": False,
+                }
+            }
+        },
+    )
+    assert (
+        canonical_candidate_geometry_rederivation_violation(project_root=mismatch_root)
+        == "canonical_candidate_geometry_rederivation_mismatch"
+    )
+
+    invalid_root = tmp_path / "invalid"
+    invalid_root.mkdir()
+    (invalid_root / "PROJECT_LOCK.md").write_text("locked test root\n", encoding="utf-8")
+    _write_json(
+        invalid_root / "rules" / "canonical_rules.json",
+        {"facility_templates": []},
+    )
+    assert (
+        canonical_candidate_geometry_rederivation_violation(project_root=invalid_root)
+        == "canonical_candidate_geometry_rederivation_invalid"
     )
 
 
@@ -414,7 +463,7 @@ def test_fixed_witness_rejects_binding_routing_witness_split(
             return "FEASIBLE"
 
     monkeypatch.setattr(
-        fixed_witness_module,
+        fixed_witness_core_module,
         "RoutingSubproblem",
         SplitRoutingSubproblem,
     )
@@ -467,7 +516,7 @@ def test_fixed_witness_timeout_unknown_demotes_unproven(
         def solve(self, *, time_limit_seconds: float) -> str:
             return "TIMEOUT"
 
-    monkeypatch.setattr(fixed_witness_module, "PortBindingModel", TimeoutBindingModel)
+    monkeypatch.setattr(fixed_witness_core_module, "PortBindingModel", TimeoutBindingModel)
 
     verdict = verify_terminal_fixed_witness(
         state=state,
@@ -504,7 +553,7 @@ def test_fixed_witness_binding_infeasible_demotes_unproven_not_infeasible(
         def solve(self, *, time_limit_seconds: float) -> str:
             return "INFEASIBLE"
 
-    monkeypatch.setattr(fixed_witness_module, "PortBindingModel", InfeasibleBindingModel)
+    monkeypatch.setattr(fixed_witness_core_module, "PortBindingModel", InfeasibleBindingModel)
 
     verdict = verify_terminal_fixed_witness(
         state=state,
@@ -571,7 +620,7 @@ def test_fixed_witness_rejects_consistent_tamper_after_precheck_accepts(
     )
 
     monkeypatch.setattr(
-        fixed_witness_module,
+        fixed_witness_core_module,
         "PortBindingModel",
         InfeasibleOnTamperedBindingModel,
     )
@@ -718,7 +767,7 @@ def test_fixed_witness_rejects_connector_cell_occupied_by_other_body(
             ]
 
     monkeypatch.setattr(
-        fixed_witness_module,
+        fixed_witness_core_module,
         "PortBindingModel",
         PortCollisionBindingModel,
     )
@@ -757,7 +806,7 @@ def test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witne
         def solve(self, *, time_limit_seconds: float) -> str:
             return "TIMEOUT"
 
-    monkeypatch.setattr(fixed_witness_module, "PortBindingModel", TimeoutBindingModel)
+    monkeypatch.setattr(fixed_witness_core_module, "PortBindingModel", TimeoutBindingModel)
 
     reason = terminal_certified_final_result_violation_for_project(
         state,

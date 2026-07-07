@@ -904,7 +904,8 @@ def test_true_verifier_child_precheck_receives_strict_certified_scratch_state(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    from src.search import certified_frontier as certified_frontier_module
+    from src.search import pr2_l0_artifact_core as artifact_core_module
+    from src.search import pr2_l0_frontier_core as frontier_core_module
 
     candidate_generation = {"domain_authority": "test_child_precheck"}
     proposal_evidence = {"candidate_generation": candidate_generation}
@@ -941,13 +942,13 @@ def test_true_verifier_child_precheck_receives_strict_certified_scratch_state(
         lambda **_kwargs: ({}, {}, SimpleNamespace(publishable=True)),
     )
     monkeypatch.setattr(
-        certified_frontier_module,
+        frontier_core_module,
         "candidate_generation_kwargs",
         lambda _candidate_generation: {},
     )
-    monkeypatch.setattr(certified_frontier_module, "generate_candidate_sizes", lambda **_kwargs: [])
+    monkeypatch.setattr(frontier_core_module, "generate_candidate_sizes", lambda **_kwargs: [])
     monkeypatch.setattr(
-        certified_frontier_module,
+        frontier_core_module,
         "build_terminal_frontier_evidence",
         lambda **_kwargs: certified_evidence,
     )
@@ -958,9 +959,14 @@ def test_true_verifier_child_precheck_receives_strict_certified_scratch_state(
         return None
 
     monkeypatch.setattr(
-        exact_campaign_module,
+        artifact_core_module,
         "terminal_certified_final_result_project_precheck_violation",
         capture_precheck,
+    )
+    monkeypatch.setattr(
+        artifact_core_module,
+        "canonical_candidate_geometry_rederivation_violation",
+        lambda *, project_root: None,
     )
     payload = {
         "action": "supervisor_domain",
@@ -989,3 +995,88 @@ def test_true_verifier_child_precheck_receives_strict_certified_scratch_state(
     }
     assert "supervisor_proposal" not in scratch_state
     assert domain["verdict"] == true_child.SEALED
+
+
+def test_true_verifier_child_verify_rejects_geometry_rederivation_mismatch(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from src.search import pr2_l0_artifact_core as artifact_core_module
+    from src.search import pr2_l0_frontier_core as frontier_core_module
+
+    candidate_generation = {"domain_authority": "test_child_geometry_gate"}
+    proposal_evidence = {"candidate_generation": candidate_generation}
+    certified_evidence = {
+        "candidate_generation": candidate_generation,
+        "candidate_records": {},
+        "final_result": {"search_status": "CERTIFIED"},
+    }
+    authority_state = {
+        "final_result": {"search_status": l0.CANDIDATE_PROPOSED_STATUS},
+        "final_status": l0.CANDIDATE_PROPOSED_STATUS,
+        "terminal_frontier_evidence": proposal_evidence,
+        "candidates": {},
+        "supervisor_proposal": {"run_id": "producer-owned"},
+    }
+    certified_final_result = {"search_status": "CERTIFIED"}
+    authority_bytes = json.dumps(
+        authority_state,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+
+    monkeypatch.setattr(true_child, "_install_third_party_floor", lambda _floor: None)
+    monkeypatch.setattr(true_child, "_materialize_import_default_artifacts", lambda _root: None)
+    monkeypatch.setattr(
+        true_child,
+        "_project_candidate_records_direct",
+        lambda **_kwargs: ({}, {}),
+    )
+    monkeypatch.setattr(
+        true_child,
+        "_run_fixed_witness_direct",
+        lambda **_kwargs: ({}, {}, SimpleNamespace(publishable=True)),
+    )
+    monkeypatch.setattr(
+        frontier_core_module,
+        "candidate_generation_kwargs",
+        lambda _candidate_generation: {},
+    )
+    monkeypatch.setattr(frontier_core_module, "generate_candidate_sizes", lambda **_kwargs: [])
+    monkeypatch.setattr(
+        frontier_core_module,
+        "build_terminal_frontier_evidence",
+        lambda **_kwargs: certified_evidence,
+    )
+    monkeypatch.setattr(
+        artifact_core_module,
+        "terminal_certified_final_result_project_precheck_violation",
+        lambda _state, *, project_root: None,
+    )
+    monkeypatch.setattr(
+        artifact_core_module,
+        "canonical_candidate_geometry_rederivation_violation",
+        lambda *, project_root: "canonical_candidate_geometry_rederivation_mismatch",
+    )
+    payload = {
+        "action": "supervisor_domain",
+        "schema_version": true_child.DOMAIN_SCHEMA_VERSION,
+        "authority": true_child.DOMAIN_AUTHORITY,
+        "project_root": str(tmp_path),
+        "authority_state": authority_state,
+        "authority_state_b64": base64.b64encode(authority_bytes).decode("ascii"),
+        "strong_keys": [],
+        "proposal_final_result_digest": true_child._canonical_digest(certified_final_result),  # type: ignore[attr-defined]
+        "proposal_terminal_frontier_evidence_digest": true_child._canonical_digest(certified_evidence),  # type: ignore[attr-defined]
+        "proposal_candidate_records_digest": true_child._canonical_digest({}),  # type: ignore[attr-defined]
+        "dependency_floor": {"test": "unused-by-patched-install"},
+    }
+
+    response = true_child.verify({"nonce": "nonce", "payload": payload})
+
+    assert response["verdict"] == true_child.REJECTED
+    assert (
+        "terminal candidate geometry rederivation failed:"
+        "canonical_candidate_geometry_rederivation_mismatch"
+    ) in response["reason"]

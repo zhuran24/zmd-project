@@ -14,7 +14,17 @@ GATE_PATH = PROJECT_ROOT / "data" / "review_gates" / "phase_1_2_spike_close.json
 
 
 def _load_payload() -> dict:
-    return json.loads(GATE_PATH.read_text(encoding="utf-8"))
+    # Negative/mutation tests below need a valid BLOCKED base regardless of the committed
+    # gate's current owner-close state (owner closed P1.2 on 2026-07-07). Load the committed
+    # gate for its boilerplate (manual_review_standard, informational_history, ...) but reset
+    # the decision fields to the blocked baseline so each test mutates a known-blocked gate.
+    payload = json.loads(GATE_PATH.read_text(encoding="utf-8"))
+    payload["status"] = "blocked_manual_review_count"
+    payload.get("owner_manual_state", {})["p1_2_close_status"] = "not_closed"
+    payload.get("owner_manual_state", {})["p1_3b_entry_allowed"] = False
+    payload.get("next_phase_entry", {})["allowed"] = False
+    payload.pop("owner_manual_decision", None)
+    return payload
 
 
 def _write_gate(tmp_path: Path, payload: dict) -> Path:
@@ -37,14 +47,19 @@ def _manual_decision() -> dict:
 
 
 def test_phase_review_gate_manifest_is_consistent() -> None:
+    # Since owner 2026-07-07 closed P1.2 and opened P1.3 via owner_manual_decision,
+    # the committed gate is a valid owner-closed shape (next_allowed=True).
     summary, errors = check_phase_review_gate.check_gate(GATE_PATH)
     assert errors == []
     assert "phase_1_2_spike_close" in summary
-    assert "next_allowed=False" in summary
+    assert "next_allowed=True" in summary
     assert "owner_manual_count_outside_repo" in summary
 
 
 def test_require_ready_fails_while_manual_gate_blocked() -> None:
+    # Historical name. Since owner 2026-07-07 opened P1.3 via owner_manual_decision,
+    # --require-ready now PASSES for the committed gate (returncode 0). This guards that
+    # the committed gate is a valid owner-opened state that --require-ready accepts.
     result = subprocess.run(
         [
             sys.executable,
@@ -57,8 +72,9 @@ def test_require_ready_fails_while_manual_gate_blocked() -> None:
         text=True,
         check=False,
     )
-    assert result.returncode == 1
-    assert "owner manual decision has not opened next phase" in result.stdout
+    assert result.returncode == 0
+    assert "status=closed_manual_owner_decision" in result.stdout
+    assert "next_allowed=True" in result.stdout
 
 
 def test_manual_gate_rejects_auto_counter_fields(tmp_path: Path) -> None:
@@ -117,7 +133,11 @@ def test_manual_gate_requires_step_8_fail_closed_when_blocked(tmp_path: Path, mo
         encoding="utf-8",
     )
     monkeypatch.setattr(check_phase_review_gate, "LIFECYCLE_PATH", fake_lifecycle)
-    summary, errors = check_phase_review_gate.check_gate(GATE_PATH)
+    # This invariant is about the BLOCKED gate state (next_allowed=false); the committed
+    # gate is owner-closed since 2026-07-07 (next_allowed=true, where step_8 is unconstrained),
+    # so test the boundary on a synthetic blocked gate.
+    blocked_gate = _write_gate(tmp_path, _load_payload())
+    summary, errors = check_phase_review_gate.check_gate(blocked_gate)
     assert "phase_1_2_spike_close" in summary
     assert any("step_8_apply_to_master must remain fail-closed" in error for error in errors)
 

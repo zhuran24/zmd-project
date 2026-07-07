@@ -64,7 +64,7 @@ checks as certified proof"）。
   字面即连通、不得读成「带宽达标」。
 - **(6) power_coverage feasible（最强谓词：master 强制 + 独立 terminal 复验）** — (A) master 硬约束
   `exact_coordinate_master.py:5827`：每 powered slot 的 cover-choice witness 强制被选塔覆盖矩形几何
-  包含 slot footprint（`.OnlyEnforceIf(active)`，`:5275-5352`）+ 被选塔 `active` 守卫（`:5470-5499`）
+  与 slot footprint 几何**相交**（**owner 2026-07-07 裁定:供电覆盖谓词=相交 intersection——受电设施 footprint 与被选塔覆盖矩形 ≥1 格重叠即算覆盖,非 containment/全包含**;master 侧=双轴区间重叠 `exact_coordinate_master.py:5330-5344`,terminal 侧=`any(cell in coverage_cells)` `pr2_l0_artifact_core.py:1023-1030`;`.OnlyEnforceIf(active)`，`:5275-5352`）+ 被选塔 `active` 守卫（`:5470-5499`）
   + 无塔时 powered slot `active==0`（`:5845-5848`）。(B) terminal 独立 replay
   `exact_campaign.py:1131-1157`：从冻结 artifact 原始 pose 字节**独立重算**覆盖格 cell 级匹配 + 无冗余
   塔，missing / unforced 一律 fail-closed（**不信 solver 内部变量**——routing/binding 无此第二道）。
@@ -96,6 +96,17 @@ checks as certified proof"）。
 > canonical 规则 → 几何字节的映射（例如 `power_coverage_radius=5` 对应 12×12 方形覆盖，
 > `placement_generator.py:400-415`）是 owner 确认的规格事实和命名 TCB；它不是 P1.2 已由代码
 > 自动证明的定理。
+>
+> **2026-07-06 更新（PR2 #5 B2 / `16495f4`）**：candidate_placements 的**字节**已被封印期重推 gate
+> `canonical_candidate_geometry_rederivation_violation`（`pr2_l0_artifact_core.py`，L0 true child 在
+> terminal precheck 后无条件调用）交叉验证——verifier 从冻结 `canonical_rules` 用
+> `placement_generator.generate_all_pools` 重推、精确紧凑序列化、断言 `sha256 == LOCKED_EXACT_ARTIFACT_SHA256["candidate_placements"]`，
+> 不等即 fail-closed。受信基由「信 45MB 不透明字节」收缩为「信生成器源码（已入 V99 floor 整文件钉死）+ canonical_rules」。
+> **仍为命名 TCB**：生成器源码本身、及 canonical 规则 → 几何**语义**映射（非字节）未被独立重实现证明；
+> 把 candidate_placements 彻底移出证明权威（Option B / 契约迁移，本文件 §1A「certified 立足于…」）未做——
+> 暂缓判据（2026-07-06 派 3 路 codex 核实：P1.2 close 不要求它、按 owner scope 决定；它比 Option A 多关的是**窄 TOCTOU/
+> 多读一致性残余**〔terminal precheck 活读未被 A digest 专绑；主求解器/fixed-witness 已 snapshot-bound〕、与已暂缓 #3/#9b
+> 同族；迁移成本 ~20 文件/9 子系统）见记忆卡 `pr2-5-b2-candidate-geometry-rederivation-landed`。
 
 ### B. EXPLICITLY OUT-OF-SCOPE（certified 不证、不得冒充）
 
@@ -141,12 +152,18 @@ fixed-witness 拒绝路径关闭，不应继续列作未实现项。人类文档
 现有 `p1_3b_*` 字段仅为历史机器兼容标识。任何 checker PASS、局部回归 PASS 或内部 supervisor
 seal 都不得改写为 owner 已关闭 release gate。
 
+**2026-07-06 close-scope 修改（owner，行使 `docs/项目说明/12_go_criteria.md:30`「或 owner 明确修改 close scope」）**：上文列为未决的「PR2 更小/read-once/controlled-loader verification TCB」及其同类——凡**只防「能执行 reseal 仪式的蓄意内鬼」**的硬化（#8 深化、#3 fd-held read-once、#9b OS 写隔离、#9c 原生 TOCTOU、#5-F import-time 完整性、#5 Option B、#2）——owner 统一**暂缓到发布时点、明确不作为 P1.2 闭合的必要条件**。判据：手滑/无心之失与外部篡改已被字节 sha floor 常开拦死（不延期、是核心），这些锚只对忠实 reseal 后的蓄意内鬼有意义（威胁模型定性见 `close-kernel-threat-model-reseal-adversary`）。提取全集＋判据＋何时翻转见记忆卡 `deliberate-insider-hardening-deferred-to-release`。此修改**不**改写 P1.2 仍 OPEN/BLOCKED（owner 手动门未关）；它只把这些从「收口编码前提」移到发布时点。
+
 ### C. P1.2 done-condition (C5)
 
-> **当前状态（2026-06-26）：OPEN / BLOCKED。** PR1 的 producer/supervisor mint split、fixed-witness
-> 终端复验、P1.2 fail-closed 发布闸和 I1 独立复验已实现；生产 supervisor 调度入口也已落地
-> （`scripts/run_supervisor_seal.py`，done-condition 之一），但 owner manual gate、PR2 TCB 收缩
-> 和发布包 immutability/policy 收口仍尚未完成。不得因类方法、局部修复或该入口存在而宣称 P1.2 closed。
+> **当前状态（2026-07-07）：CLOSED。owner 显式 owner_manual_decision 关闭 P1.2、开启 P1.3B。** PR1 的
+> producer/supervisor mint split、fixed-witness 终端复验、P1.2 fail-closed 发布闸、I1 独立复验、生产
+> supervisor 调度入口（`scripts/run_supervisor_seal.py`）均已实现;三轮收口外审（权限结构 / 数学语义 /
+> TCB 线诚实性）0 上-TCB soundness 洞;`_check_phase_gate_fixed_witness_close_binding` 的 stay-blocked
+> sentinel 已按其 docstring 预期的转换撤除（fixed-witness publish binding 保留、无条件强制），gate =
+> `closed_manual_owner_decision` + `next_allowed=true`,close-kernel checker / full / slow 已 reseal 通过。
+> 「仅防蓄意内鬼」的 PR2 TCB 深化项按 2026-07-06 令移至发布时点（见上 close-scope 修改段）。**此关闭是
+> owner 显式手动决定,非自动推导**;历史"不得因类方法/局部修复/入口存在而自动宣称 closed"的纪律仍成立。
 
 P1.2 可被诚实宣布闭合，仅表示当前 `PROJECT_LOCK §1A` 命题 P 的机器边界、发布链和 owner 手动闸
 同时满足。它不是吞吐定理，也不自动打开 P1.3。

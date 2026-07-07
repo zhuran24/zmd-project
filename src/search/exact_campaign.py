@@ -42,6 +42,11 @@ from src.search.certified_frontier import (
     TERMINAL_FRONTIER_OBJECTIVE,
     terminal_frontier_evidence_violation,
 )
+from src.search.pr2_l0_artifact_core import (
+    TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    compute_exact_artifact_hashes,
+    terminal_certified_final_result_project_precheck_violation,
+)
 from src.search.candidate_proof_replay import (
     CANDIDATE_PROOF_FIELD,
     project_candidate_records_for_sink,
@@ -59,7 +64,6 @@ DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
 CAMPAIGN_SCHEMA_VERSION = 6
 MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION = 1
 PROOF_SUMMARY_SCHEMA_VERSION = 1
-TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "search_exhausted_all_candidates"
 CANDIDATE_PROPOSED_STATUS = "CANDIDATE_PROPOSED"
 SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION = 2
 PROPOSAL_READY_MARKER_SCHEMA_VERSION = 2
@@ -414,34 +418,6 @@ def compute_certified_exact_source_digest() -> str:
         digest.update(sha256_file(path).encode("ascii"))
         digest.update(b"\n")
     return digest.hexdigest()
-
-
-def compute_exact_artifact_hashes(project_root: Path) -> Dict[str, str]:
-    project_root = Path(project_root)
-    validate_locked_p1_2_close_kernel(project_root)
-    hashes: Dict[str, str] = {}
-    artifact_sizes: Dict[str, int] = {}
-    for key, relative_path in EXACT_HASH_FILES.items():
-        artifact_path = project_root / relative_path
-        hashes[key] = sha256_file(artifact_path)
-        artifact_sizes[key] = int(artifact_path.stat().st_size)
-    for key, relative_path in OPTIONAL_EXACT_HASH_FILES.items():
-        artifact_path = project_root / relative_path
-        if artifact_path.exists() or _path_has_symlink_component(artifact_path):
-            hashes[key] = sha256_file(artifact_path)
-            artifact_sizes[key] = int(artifact_path.stat().st_size)
-        else:
-            hashes[key] = MISSING_OPTIONAL_EXACT_ARTIFACT_HASH
-    # A campaign hash is a continuity check, not authority to choose the theorem
-    # on first launch. Validate the frozen input contract before recording any
-    # process-local source digest or creating checkpoint/export surfaces.
-    validate_locked_exact_artifact_contract(
-        project_root=project_root,
-        artifact_hashes=hashes,
-        artifact_sizes=artifact_sizes,
-    )
-    hashes[CERTIFIED_EXACT_SOURCE_DIGEST_KEY] = compute_certified_exact_source_digest()
-    return hashes
 
 
 def _read_once_regular_file_bytes(path: Path) -> bytes:
@@ -2714,56 +2690,6 @@ def has_valid_terminal_full_frontier_certified_evidence(state: Mapping[str, Any]
         has_terminal_full_frontier_certified_evidence(state)
         and terminal_certified_final_result_violation(state) is None
     )
-
-
-def terminal_certified_final_result_project_precheck_violation(
-    state: Mapping[str, Any],
-    *,
-    project_root: Path,
-) -> Optional[str]:
-    """Return local project/witness errors without granting proof authority.
-
-    This precheck exists only to preserve precise fail-closed diagnostics before
-    disk-currentness and isolated replay.  A ``None`` result is never sufficient
-    for certification; every accepting caller must still execute the sink replay
-    validator below.
-    """
-
-    try:
-        resolved_project_root = Path(project_root).resolve()
-        grid_dimensions = _load_exact_grid_dimensions(resolved_project_root)
-        safe_area_upper_bound = _load_exact_safe_area_upper_bound(resolved_project_root)
-    except Exception:
-        return "canonical_grid_invalid"
-    try:
-        min_side_admissibility = _load_exact_min_side_admissibility(resolved_project_root)
-    except Exception:
-        return "canonical_min_side_admissibility_invalid"
-
-    reason = terminal_certified_final_result_violation(
-        state,
-        grid_dimensions=grid_dimensions,
-        safe_area_upper_bound=safe_area_upper_bound,
-        min_side_admissibility=min_side_admissibility,
-    )
-    if reason is not None:
-        return reason
-    final_result = state.get("final_result")
-    if isinstance(final_result, Mapping):
-        solution_reason = _validate_terminal_solution_against_project(
-            final_result=final_result,
-            project_root=resolved_project_root,
-            grid_dimensions=grid_dimensions,
-            min_side_admissibility=min_side_admissibility,
-        )
-        if solution_reason is not None:
-            return solution_reason
-        return _terminal_candidate_ghost_pick_binding_violation(
-            state,
-            final_result=final_result,
-            grid_dimensions=grid_dimensions,
-        )
-    return None
 
 
 def _terminal_certified_proof_surface_digest(state: Mapping[str, Any]) -> str:

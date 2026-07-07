@@ -34,6 +34,8 @@ P1.2 close 至少要求：
 9. review snapshot 从 resolved immutable commit 物化，并满足发布/归档策略；
 10. PR2 规定的 controlled-loader/read-once/TCB 收缩完成，或 owner 明确修改 close scope。
 
+> **owner 2026-07-06 已行使后者（close-scope 修改）**：所有「仅防能执行 reseal 仪式的蓄意内鬼」的硬化——#8 深化、#3 fd-held read-once/TOCTOU、#9b OS 写隔离、#9c 原生 .pyd/.so TOCTOU、#5-F import-time 完整性、#5 Option B、#2——**暂缓到发布时点、明确不作为本条件（及 P1.2 close）的必要项**。判据：手滑/无心之失与外部篡改已被第一层字节 sha floor 常开拦死（不在此列），这些锚只对「忠实 reseal 之后的蓄意内鬼」有意义，真正变现实＝发布／把 CERTIFIED 交给不信任维护者本人的第三方那一刻。提取全集＋判据＋何时翻转见记忆卡 `deliberate-insider-hardening-deferred-to-release`。此修改**不**改写 P1.2 仍 OPEN/BLOCKED（owner 手动门未关）。
+
 当前 1–6 的主要 PR1 实现已在工作树落地；7 需在本次文本/source reseal 后重跑；8–10
 尚不能写成满足。
 

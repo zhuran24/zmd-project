@@ -10,6 +10,7 @@ from typing import Any, Mapping
 import pytest
 
 import src.search.pr2_l0_micro_verifier_core as l0_module
+import src.search.pr2_l0_fixed_witness_core as fixed_witness_core_module
 import src.search.terminal_fixed_witness_capsule as capsule_module
 import src.search.terminal_fixed_witness_verifier as fixed_witness_module
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
@@ -594,7 +595,7 @@ def test_same_owner_connector_body_collision_demotes_unproven(
             ]
 
     monkeypatch.setattr(
-        fixed_witness_module,
+        fixed_witness_core_module,
         "PortBindingModel",
         SameOwnerPortCollisionBindingModel,
     )

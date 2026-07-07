@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import shutil
 import tempfile
 from dataclasses import dataclass
@@ -44,6 +45,16 @@ CERTIFIED_SURFACE_BLOCKED_REASON = "certified_delivery_surface_not_current"
 P1_2_PUBLISH_OPEN_GATE_REASON_PREFIX = "p1_2_publish_open_gate_open"
 P1_2_PUBLISH_GATE_ID = "phase_1_2_spike_close"
 P1_2_PUBLISH_GATE_CLOSED_STATUS = "closed_manual_owner_decision"
+# The runtime publish authority below must enforce the SAME owner-closed invariants
+# as the authoritative phase-review gate checker (scripts/check_phase_review_gate.py),
+# otherwise a gate that satisfies only the coarse publish fields but omits the owner
+# counting authority / approved review anchor / explicit decision acknowledgements
+# would open publication here while the authoritative checker rejects it (split-brain).
+# These constants are pinned equal to the checker's by
+# test_publish_open_gate_matches_authoritative_gate_constants.
+_P1_2_GATE_COUNTING_AUTHORITY = "owner_manual_count_outside_repo"
+_P1_2_GATE_APPROVED_REVIEW_ANCHOR = "v99_p1_2_close_kernel_sealing"
+_P1_2_GATE_OWNER_CLEAN_COUNT_STATUS = "maintained_outside_repo"
 
 
 @dataclass(frozen=True)
@@ -540,6 +551,37 @@ def resolve_p1_2_publish_open_gate(
             return True, _publish_open_gate_reason("decision_missing")
         if owner_decision.get("p1_3b_entry_allowed") is not True:
             return True, _publish_open_gate_reason("decision_not_allowed")
+
+        # Split-brain hardening: enforce the SAME owner-closed invariants the
+        # authoritative phase-review gate checker requires, so a gate that passes
+        # only the coarse fields above (but omits the owner counting authority, the
+        # approved review anchor, or the explicit owner decision acknowledgements)
+        # cannot open publication here while the authoritative checker rejects it.
+        if gate.get("current_review_anchor") != _P1_2_GATE_APPROVED_REVIEW_ANCHOR:
+            return True, _publish_open_gate_reason("review_anchor_mismatch")
+
+        owner_state = gate.get("owner_manual_state")
+        if not isinstance(owner_state, Mapping):
+            return True, _publish_open_gate_reason("owner_state_missing")
+        if owner_state.get("counting_authority") != _P1_2_GATE_COUNTING_AUTHORITY:
+            return True, _publish_open_gate_reason("owner_state_counting_authority")
+        if owner_state.get("current_review_anchor") != _P1_2_GATE_APPROVED_REVIEW_ANCHOR:
+            return True, _publish_open_gate_reason("owner_state_review_anchor")
+        if owner_state.get("owner_clean_count_status") != _P1_2_GATE_OWNER_CLEAN_COUNT_STATUS:
+            return True, _publish_open_gate_reason("owner_state_clean_count_status")
+        if owner_state.get("repo_derives_clean_count_from_receipts") is not False:
+            return True, _publish_open_gate_reason("owner_state_repo_derives_clean_count")
+
+        if owner_decision.get("counting_authority") != _P1_2_GATE_COUNTING_AUTHORITY:
+            return True, _publish_open_gate_reason("decision_counting_authority")
+        for _decision_field in ("decision_id", "decided_by", "decided_at", "decision_note"):
+            field_value = owner_decision.get(_decision_field)
+            if not isinstance(field_value, str) or not field_value.strip():
+                return True, _publish_open_gate_reason(f"decision_{_decision_field}_missing")
+        if owner_decision.get("acknowledges_repo_does_not_prove_clean_count") is not True:
+            return True, _publish_open_gate_reason("decision_ack_repo_not_clean_count")
+        if owner_decision.get("acknowledges_owner_verified_three_clean_reviews") is not True:
+            return True, _publish_open_gate_reason("decision_ack_three_clean_reviews")
 
         return False, None
     except Exception:  # noqa: BLE001 - publication governance must fail closed.
@@ -1081,11 +1123,19 @@ def _reject_json_constant(value: str) -> None:
     raise ValueError(f"invalid JSON constant: {value}")
 
 
+def _reject_non_finite_json_float(value: str) -> float:
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError(f"non-finite JSON number: {value}")
+    return number
+
+
 def _load_strict_json_mapping(path: Path) -> Dict[str, Any]:
     payload = json.loads(
         Path(path).read_text(encoding="utf-8"),
         object_pairs_hook=_reject_duplicate_json_keys,
         parse_constant=_reject_json_constant,
+        parse_float=_reject_non_finite_json_float,
     )
     if not isinstance(payload, Mapping):
         raise ValueError("json_payload_not_object")

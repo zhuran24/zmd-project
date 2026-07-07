@@ -34,12 +34,33 @@ def write_closed_phase_review_gate(project_root: Path) -> Path:
     # in place (writing through a symlink would keep the path non-regular).
     if gate_path.is_symlink() or gate_path.exists():
         gate_path.unlink()
+    # Full owner-closed shape: the runtime publish authority now enforces the same
+    # owner-closed invariants as the authoritative phase-review gate checker
+    # (counting authority, approved review anchor, owner_manual_state, and the
+    # explicit owner_manual_decision acknowledgements), so a minimal 4-field gate no
+    # longer opens publication.  A test-only "closed" gate must carry the full shape.
     payload = {
         "schema_version": 2,
         "gate_id": "phase_1_2_spike_close",
         "status": "closed_manual_owner_decision",
+        "current_review_anchor": "v99_p1_2_close_kernel_sealing",
         "next_phase_entry": {"allowed": True},
-        "owner_manual_decision": {"p1_3b_entry_allowed": True},
+        "owner_manual_state": {
+            "counting_authority": "owner_manual_count_outside_repo",
+            "current_review_anchor": "v99_p1_2_close_kernel_sealing",
+            "owner_clean_count_status": "maintained_outside_repo",
+            "repo_derives_clean_count_from_receipts": False,
+        },
+        "owner_manual_decision": {
+            "p1_3b_entry_allowed": True,
+            "counting_authority": "owner_manual_count_outside_repo",
+            "decision_id": "test_owner_decision",
+            "decided_by": "owner_test",
+            "decided_at": "2026-01-01T00:00:00Z",
+            "decision_note": "test-only closed gate",
+            "acknowledges_repo_does_not_prove_clean_count": True,
+            "acknowledges_owner_verified_three_clean_reviews": True,
+        },
     }
     gate_path.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n",

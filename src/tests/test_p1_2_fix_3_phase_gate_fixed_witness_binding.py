@@ -60,20 +60,15 @@ def test_p1_2_fix_3_phase_gate_requires_fixed_witness_close_binding_call() -> No
 
 
 def test_p1_2_fix_3_phase_gate_witness_bound_close_condition_stays_blocked() -> None:
-    # next_allowed=True keeps the gate blocked (P1.2 soundness reopen unresolved).
-    blocked = check_p1_2_proof_obligations._check_phase_gate_fixed_witness_close_binding(
-        next_allowed=True
-    )
-    assert any(
-        "must remain blocked while P1.2 soundness reopen is unresolved" in error
-        for error in blocked
-    )
-    # The current blocked gate (next_allowed=False) passes: verifier is wired and
-    # the stay-blocked sentinel does not fire.
-    open_state = check_p1_2_proof_obligations._check_phase_gate_fixed_witness_close_binding(
-        next_allowed=False
-    )
-    assert open_state == []
+    # Historical name. Owner 2026-07-07 closed P1.2 / opened P1.3B, so the stay-blocked
+    # sentinel is lifted (next_allowed=True no longer forces a "must remain blocked" error).
+    # What REMAINS enforced — unconditionally, per the function's design — is the fixed-witness
+    # publish binding; it passes for BOTH gate states here because the real publish path is wired.
+    for next_allowed in (True, False):
+        binding = check_p1_2_proof_obligations._check_phase_gate_fixed_witness_close_binding(
+            next_allowed=next_allowed
+        )
+        assert binding == []
 
 
 def test_p1_2_fix_3_publish_binding_detects_unwired_verifier(tmp_path: Path) -> None:

@@ -22,8 +22,6 @@ if __package__ in {None, ""}:
     if str(PROJECT_ROOT) not in sys.path:
         sys.path.insert(0, str(PROJECT_ROOT))
 
-from jsonschema import validate as validate_json_schema
-
 from src.io.strict_json import load_strict_json
 
 # ==========================================
@@ -474,6 +472,8 @@ def _load_canonical_rules_schema() -> Dict[str, Any]:
 
 def load_templates(rules_path: Optional[Path] = None) -> Dict[str, Any]:
     """从 canonical_rules.json 动态加载模板定义。"""
+    from jsonschema import validate as validate_json_schema
+
     if rules_path is None:
         project_root = Path(__file__).resolve().parent.parent.parent
         rules_path = project_root / "rules" / "canonical_rules.json"

@@ -35,6 +35,10 @@ CERTIFIED_SURFACE_PATH = PROJECT_ROOT / "src" / "search" / "certified_surface.py
 CANDIDATE_PROOF_REPLAY_PATH = PROJECT_ROOT / "src" / "search" / "candidate_proof_replay.py"
 CERTIFIED_ARTIFACT_CONTRACT_PATH = PROJECT_ROOT / "src" / "search" / "certified_artifact_contract.py"
 PR2_L0_MICRO_VERIFIER_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_micro_verifier_core.py"
+PR2_L0_ARTIFACT_CORE_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_artifact_core.py"
+PR2_L0_FRONTIER_CORE_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_frontier_core.py"
+PR2_L0_REPLAY_CORE_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_replay_core.py"
+PR2_L0_FIXED_WITNESS_CORE_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_fixed_witness_core.py"
 PR2_L0_TRUE_VERIFIER_CHILD_PATH = (
     PROJECT_ROOT / "src" / "search" / "pr2_l0_true_verifier_child.py"
 )
@@ -57,7 +61,7 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "856eba7dd7313e0506dedcf251986a14566e2dd5a3c09b52266d6e48d1004aa0"
+    "61f775cdcc7b6917830c7b48bc741af619f3f6890fff0964e21caaa339dc463f"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
@@ -3108,7 +3112,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "a1543ee1e6b3db90d2a757340db8f9388630213464355c0ee9892d3d3b734714"
+    "44c0113b2adaaafb3b2abebfd92dba1c799d1f18d637947ba9d603ed0775f0a3"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -4618,9 +4622,10 @@ _PR2_MUTATING_MAPPING_METHODS = frozenset(
         "popitem",
     }
 )
-_PR2_CHILD_AUTHORITY_IMPORT_MODULE = "src.search.exact_campaign"
+_PR2_CHILD_AUTHORITY_IMPORT_MODULE = "src.search.pr2_l0_artifact_core"
 _PR2_CHILD_AUTHORITY_NAMES = frozenset(
     {
+        "canonical_candidate_geometry_rederivation_violation",
         "terminal_certified_final_result_project_precheck_violation",
         "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
     }
@@ -4655,16 +4660,17 @@ _PR2_CHILD_DYNAMIC_MODULE_CALLS = frozenset(
 _PR2_CHILD_FRAME_CALLS = frozenset({"sys._getframe", "inspect.currentframe"})
 _PR2_CHILD_FRAME_ATTRS = frozenset({"f_locals", "f_globals", "f_back"})
 _PR2_CHILD_DOMAIN_IMPORTFROM_ALLOWLIST = {
-    "src.search.certified_frontier": frozenset(
+    "src.search.pr2_l0_frontier_core": frozenset(
         {
             "build_terminal_frontier_evidence",
             "candidate_generation_kwargs",
             "generate_candidate_sizes",
         }
     ),
-    "src.search.exact_campaign": frozenset(
+    "src.search.pr2_l0_artifact_core": frozenset(
         {
             "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
+            "canonical_candidate_geometry_rederivation_violation",
             "terminal_certified_final_result_project_precheck_violation",
         }
     ),
@@ -4939,10 +4945,10 @@ _PR2_CHILD_RESERVED_SHADOW_NAMES = _PR2_CHILD_RESERVED_RUNTIME_NAMES - frozenset
 )
 _PR2_CHILD_HELPER_IMPORTFROM_ALLOWLIST = frozenset(
     {
-        "src.search.candidate_proof_replay",
-        "src.search.certified_frontier",
-        "src.search.exact_campaign",
-        "src.search.terminal_fixed_witness_verifier",
+        "src.search.pr2_l0_artifact_core",
+        "src.search.pr2_l0_fixed_witness_core",
+        "src.search.pr2_l0_frontier_core",
+        "src.search.pr2_l0_replay_core",
     }
 )
 
@@ -5298,6 +5304,18 @@ def _is_precheck_assign(stmt: ast.AST) -> tuple[str, ast.Call] | None:
     return None
 
 
+def _is_geometry_rederivation_assign(stmt: ast.AST) -> tuple[str, ast.Call] | None:
+    if (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and isinstance(stmt.targets[0], ast.Name)
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "canonical_candidate_geometry_rederivation_violation"
+    ):
+        return stmt.targets[0].id, stmt.value
+    return None
+
+
 def _if_consumes_precheck_result(stmt: ast.AST, result_name: str) -> bool:
     if not isinstance(stmt, ast.If):
         return False
@@ -5431,6 +5449,20 @@ def _check_child_precheck_call_exact(call: ast.Call) -> list[str]:
     ]
 
 
+def _check_child_geometry_rederivation_call_exact(call: ast.Call) -> list[str]:
+    if (
+        not call.args
+        and len(call.keywords) == 1
+        and call.keywords[0].arg == "project_root"
+        and _is_name(call.keywords[0].value, "project_root")
+    ):
+        return []
+    return [
+        "PR2 true verifier child candidate-geometry rederivation call must be exactly "
+        "canonical_candidate_geometry_rederivation_violation(project_root=project_root)"
+    ]
+
+
 def _check_child_post_precheck_tail(body: Sequence[ast.stmt], consume_idx: int) -> list[str]:
     errors: list[str] = []
     expected_arg_records = ast.Call(
@@ -5439,6 +5471,18 @@ def _check_child_post_precheck_tail(body: Sequence[ast.stmt], consume_idx: int) 
         keywords=[],
     )
     expected_tail: list[tuple[str, Callable[[ast.stmt], bool]]] = [
+        (
+            "geometry_reason = canonical_candidate_geometry_rederivation_violation(project_root=project_root)",
+            lambda stmt: (
+                (assign := _is_geometry_rederivation_assign(stmt)) is not None
+                and assign[0] == "geometry_reason"
+                and not _check_child_geometry_rederivation_call_exact(assign[1])
+            ),
+        ),
+        (
+            "if geometry_reason is not None: raise ...",
+            lambda stmt: _if_consumes_precheck_result(stmt, "geometry_reason"),
+        ),
         (
             "final_digest = _canonical_digest(certified_final_result)",
             lambda stmt: _canonical_digest_assign(
@@ -5484,7 +5528,8 @@ def _check_child_post_precheck_tail(body: Sequence[ast.stmt], consume_idx: int) 
     if len(tail) != len(expected_tail):
         errors.append(
             "PR2 true verifier child post-precheck tail must be exactly "
-            "3 digest assignments, 3 digest mismatch raises, and the final return"
+            "the geometry rederivation gate, 3 digest assignments, "
+            "3 digest mismatch raises, and the final return"
         )
         return errors
     for offset, (description, predicate) in enumerate(expected_tail):
@@ -6449,8 +6494,8 @@ _PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY = (
     'fixed_violations: dict[str, str] = {}',
     'if getattr(fixed_verdict, "publishable", False) is not True:\n        fixed_violations[str(getattr(fixed_verdict, "candidate_key", None) or "*")] = str(\n            getattr(fixed_verdict, "reason", None) or "terminal_fixed_witness_rejected"\n        )',
     'if fixed_violations:\n        first_key = sorted(fixed_violations)[0]\n        raise ValueError(f"terminal fixed witness verifier failed:{fixed_violations[first_key]}")',
-    'from src.search.certified_frontier import (\n        build_terminal_frontier_evidence,\n        candidate_generation_kwargs,\n        generate_candidate_sizes,\n    )',
-    'from src.search.exact_campaign import (\n        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n        terminal_certified_final_result_project_precheck_violation,\n    )',
+    'from src.search.pr2_l0_frontier_core import (\n        build_terminal_frontier_evidence,\n        candidate_generation_kwargs,\n        generate_candidate_sizes,\n    )',
+    'from src.search.pr2_l0_artifact_core import (\n        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n        canonical_candidate_geometry_rederivation_violation,\n        terminal_certified_final_result_project_precheck_violation,\n    )',
     'proposal_evidence = _require_mapping(\n        authority_state.get("terminal_frontier_evidence"),\n        "terminal_frontier_evidence",\n    )',
     'candidate_generation = _require_mapping(\n        proposal_evidence.get("candidate_generation"),\n        "candidate_generation",\n    )',
     'candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))',
@@ -6465,6 +6510,8 @@ _PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY = (
     'scratch_state.pop("supervisor_proposal", None)',
     'precheck_reason = terminal_certified_final_result_project_precheck_violation(\n        scratch_state,\n        project_root=project_root,\n    )',
     'if precheck_reason is not None:\n        raise ValueError(f"terminal project precheck failed:{precheck_reason}")',
+    'geometry_reason = canonical_candidate_geometry_rederivation_violation(\n        project_root=project_root,\n    )',
+    'if geometry_reason is not None:\n        raise ValueError(\n            f"terminal candidate geometry rederivation failed:{geometry_reason}"\n        )',
     'final_digest = _canonical_digest(certified_final_result)',
     'evidence_digest = _canonical_digest(evidence)',
     'records_digest = _canonical_digest(_stable_fixed_witness_candidate_records(durable_records))',
@@ -6474,7 +6521,7 @@ _PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY = (
     'return {\n        "schema_version": DOMAIN_SCHEMA_VERSION,\n        "authority": DOMAIN_AUTHORITY,\n        "nonce": nonce,\n        "verdict": SEALED,\n        "reason": "domain_verified",\n        "strong_keys": list(strong_keys),\n        "final_result": certified_final_result,\n        "terminal_frontier_evidence": evidence,\n        "candidate_records": durable_records,\n        "final_result_digest": final_digest,\n        "terminal_frontier_evidence_digest": evidence_digest,\n        "candidate_records_digest": records_digest,\n        "fixed_witness_publishable": bool(getattr(fixed_verdict, "publishable", False)),\n        "sink_replay_violations": {},\n        "fixed_witness_violations": {},\n        "tcb": {\n            "python_interpreter": "NAMED-TCB",\n            "stdlib": "NAMED-TCB",\n            "third_party_native": "NAMED-TCB",\n            "os_process_file_isolation": "NAMED-TCB",\n            "windows_write_isolation_residual": "protocol_only_child_snapshot_no_write_fd_pr2c_linux_uid_namespace_pending",\n        },\n    }',
 )
 _PR2_CHILD_PROJECT_RECORDS_BODY = (
-    'from src.search.candidate_proof_replay import (\n        CANDIDATE_PROOF_AUTHORITY,\n        CANDIDATE_PROOF_FIELD,\n        CANDIDATE_PROOF_SCHEMA_VERSION,\n        _execute_isolated_replay_request,\n        _json_copy,\n        _replay_response_violation,\n        candidate_proof_shape_violation,\n        canonical_digest,\n    )',
+    'from src.search.pr2_l0_replay_core import (\n        CANDIDATE_PROOF_FIELD,\n        _invoke_isolated_replay,\n        _json_copy,\n        _replay_response_violation,\n        candidate_proof_shape_violation,\n        canonical_digest,\n    )',
     'raw_records = state.get("candidates")',
     'if not isinstance(raw_records, Mapping):\n        return {}, {"*": "candidate_sink_replay_records_missing"}',
     'expected_proofs: dict[str, dict[str, Any]] = {}',
@@ -6483,8 +6530,7 @@ _PR2_CHILD_PROJECT_RECORDS_BODY = (
     'if set(expected_proofs) | set(violations) != set(strong_keys):\n        violations["*"] = "candidate_sink_replay_strong_key_coverage_mismatch"',
     'if violations:\n        return {}, violations',
     'if not expected_proofs:\n        return {\n            str(key): _json_copy(value)\n            for key, value in raw_records.items()\n            if isinstance(value, Mapping)\n        }, {}',
-    'request = {\n        "schema_version": CANDIDATE_PROOF_SCHEMA_VERSION,\n        "authority": CANDIDATE_PROOF_AUTHORITY,\n        "nonce": hashlib.sha256(_canonical_bytes(expected_proofs)).hexdigest(),\n        "project_root": str(project_root),\n        "expected_proofs": [_json_copy(expected_proofs[key]) for key in sorted(expected_proofs)],\n    }',
-    'response = _execute_isolated_replay_request(request)',
+    'response = _invoke_isolated_replay(\n        project_root=project_root,\n        expected_proofs=expected_proofs,\n    )',
     'envelope_violation = _replay_response_violation(\n        response=response,\n        project_root=project_root,\n        expected_proofs=expected_proofs,\n    )',
     'if envelope_violation is not None:\n        return {}, {key: envelope_violation for key in expected_proofs}',
     'results = response.get("results")',
@@ -6498,9 +6544,9 @@ _PR2_CHILD_PROJECT_RECORDS_BODY = (
     'return projected, {}',
 )
 _PR2_CHILD_FIXED_WITNESS_BODY = (
-    'from src.search.candidate_proof_replay import _materialize_replay_snapshot',
-    'from src.search.exact_campaign import compute_exact_artifact_hashes',
-    'from src.search.terminal_fixed_witness_verifier import (\n        _apply_terminal_fixed_witness_audit_fields,\n        _copy_candidate_records,\n        _identity_from_current_records,\n        _project_terminal_fixed_witness_records_from_capsule,\n        canonical_state_bytes_for_fixed_witness,\n        verify_terminal_fixed_witness,\n    )',
+    'from src.search.pr2_l0_replay_core import _materialize_replay_snapshot',
+    'from src.search.pr2_l0_artifact_core import compute_exact_artifact_hashes',
+    'from src.search.pr2_l0_fixed_witness_core import (\n        _apply_terminal_fixed_witness_audit_fields,\n        _copy_candidate_records,\n        _identity_from_current_records,\n        _project_terminal_fixed_witness_records_from_capsule,\n        canonical_state_bytes_for_fixed_witness,\n        verify_terminal_fixed_witness,\n    )',
     'authority_state = _json_copy(state)',
     'authority_state["candidates"] = _json_copy(candidate_records)',
     'authority_state["final_result"] = _json_copy(final_result)',
@@ -6773,7 +6819,7 @@ _PR2_L0_TCB_FUNCTION_SOURCE_SHA256 = {
     "_dependency_file_top_level": "bbd81b3a8476689a5f8835820952e3131f51a584e54954dd751fb3544ed33c4c",
     "_dependency_floor_root": "0768d2a1aea729323527c198a067431e011fc9bf3f7074e139c5dbaa189a82af",
     "_dependency_named_tcb_violation": "24bf66ab8b3f2fcc7d000e7149dd15958cc8baab25b21f53300a7b6ea30bff94",
-    "_discover_project_snapshot_modules": "d4ef471a0dbbdf6703ad2d7de86dfd4440787667e1b2d2537b3a31af618de82a",
+    "_discover_project_snapshot_modules": "9da720e1f3da63efc98fb2e1730c4b267ab979e62d739c8411dd0eb4765daf8f",
     "_domain_response_violation": "a58fcb21065c7aab4b4a0b0a4779cb2c93e397aaef6e031cd98b37b594d4eedb",
     "_floor_digest": "f99a8a573213baec45deba01692d5f12d07ff150f85a886c484dce260187b4fb",
     "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
@@ -6844,9 +6890,9 @@ _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
     "_is_within_any": "79abd86e1e8a39d021a225212b009b307adb74928e192652e20e6b1545dc63de",
     "_json_copy": "71d6048581ec811d9d28f4c60b69287aaa2fee791246e8e50850e9db54380f8e",
     "_materialize_import_default_artifacts": "ec2a13d3338721ffd5819e6d0098685f51a81f5b1c00da39cde1c368f19f09e5",
-    "_project_candidate_records_direct": "7748a533fbe9cde5454ed540400e457b6626efc46d259e8b0129b1f5b902fa22",
+    "_project_candidate_records_direct": "dbffd63bdb911b624dabd127ef7a45a3a8aabcf17b7d82000433e8e042f1753e",
     "_require_mapping": "104f33d630f36f0f78076bf3c859fc86367f92237002231fd653d943699bdd44",
-    "_run_fixed_witness_direct": "356d0cbab74e8c02ce76f6867b11eb3df9b217c3171f85622cc774c198a3b972",
+    "_run_fixed_witness_direct": "eb9c35e49ec0d7a2c35d9caf688042b84c7641fe4a623b95680252f9d9c22af7",
     "_safe_rel": "510d425350d3e866ea0523fbfce04af46793936ff22503f4e2390d0782e7c957",
     "_stable_fixed_witness_candidate_records": "1e1a8147e512e9d3c200be076bd6fb3178090d3be21e7a98a627cade94b5ac11",
     "_stable_fixed_witness_payload": "698f25a09ab52aed1857169733588790c3db9eb1f73bddadf571e3b657729af3",
@@ -6855,7 +6901,7 @@ _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
     "_strict_string": "0eb6e1751b768a278a8056f2327d16fae030eb5c2fb5bfdec3bb6b8eaafaa103",
     "_string_list": "3e11de384e5809b24713779aae4ce234ba8278b3831ef2ea567333bfc0a5c00a",
     "_valid_top_level_name": "1d0d7e89abcb04884eb05becb12fbf4f75f48d14eb296ebd1feec8f7f73e2ba7",
-    "_verify_supervisor_domain": "db527d918e1956b34d1e45a886bd1907e5c5c6d5be4098b1c6591fab9fef5c03",
+    "_verify_supervisor_domain": "0b5fa0b48282dd4eca526cf4682fd2380758d6a7bbc75a0c08cb260077c3e81f",
     "verify": "1bcf13acf3e89d51a1cb4707ad8927e9218ba09b7875857d3ca60c75c6738b76",
 }
 _PR2_L0_TCB_CONSTANT_SOURCES = {
@@ -7042,6 +7088,7 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "_validated_mandatory_exact_instances_payload": "b307dd5161420576911d556b064c97d7957e36f0d5c7f760d4d8fbe71c3fe276",
     "atomic_write_json": "557fc8ea38e175d35898f7028cc97849e8deafe8e27287486580c59126582bd0",
     "candidate_key": "0a3b51c9d97a58f62dc099850c417c5927b3cf397458836997abd0ebfbd4b1be",
+    "canonical_candidate_geometry_rederivation_violation": "978f918a852e80a108cdda7912ba2e1495ac76ae61430c227090104db49acf28",
     "certified_terminal_evidence_violation": "04acdf7b4a65cc32014e8a5ef8c916a88204f52b5e477dd487bf573701cc81bf",
     "compute_certified_exact_source_digest": "b255a4ed3c05bbde4fe4a1db1968c06aba7dacaf46af361b67e89c86b949c2c9",
     "compute_exact_artifact_hashes": "db24b961f4836f373d9078117936ed34760dfecc7b9fb888dd64a62f6e8be130",
@@ -7064,6 +7111,13 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "terminal_certified_final_result_violation_for_project": "b8a7cdc965e54ef8dcd2a7204de0539c566118e9bce63bbe9ead75b3824f9d38",
     "validate_exact_campaign_resume_state": "425fe007ae9120094c6994e368bddf7e5f93053e1e8c020e6ea6056e73c6dfe3",
 }
+_PR2_EXACT_TCB_ARTIFACT_CORE_SOURCE_PIN_NAMES = frozenset(
+    {
+        "compute_exact_artifact_hashes",
+        "canonical_candidate_geometry_rederivation_violation",
+        "terminal_certified_final_result_project_precheck_violation",
+    }
+)
 
 _PR2_EXACT_TCB_CONSTANT_SOURCES = {
     'CAMPAIGN_INSTANCE_ID_KEY': 'CAMPAIGN_INSTANCE_ID_KEY = "campaign_instance_id"',
@@ -7107,6 +7161,11 @@ _PR2_EXACT_TCB_CONSTANT_SOURCES = {
     '_SUPERVISOR_SEAL_STATE_KEYS': '_SUPERVISOR_SEAL_STATE_KEYS = frozenset(\n    {\n        "schema_version",\n        "authority",\n        "transition",\n        "proposal_run_id",\n        "proposal_checkpoint_sha256",\n        "proposal_authority_b64",\n        CAMPAIGN_INSTANCE_ID_KEY,\n        "certified_state_sha256",\n        "sealed_at",\n    }\n)',
     '_SUPERVISOR_SEAL_TOKEN': '_SUPERVISOR_SEAL_TOKEN = object()',
 }
+_PR2_EXACT_TCB_ARTIFACT_CORE_CONSTANT_NAMES = frozenset(
+    {
+        "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
+    }
+)
 
 
 def _check_top_level_prefix_closed_world(
@@ -8124,20 +8183,44 @@ def _check_exact_runtime_tcb_source_pins(
     exact_class: ast.ClassDef,
     *,
     path: Path,
+    artifact_core_tree: ast.Module | None = None,
+    artifact_core_path: Path = PR2_L0_ARTIFACT_CORE_PATH,
 ) -> list[str]:
     errors: list[str] = []
+    if artifact_core_tree is None:
+        artifact_core_tree = _parse_python(artifact_core_path)
     for name, expected_sha256 in sorted(_PR2_EXACT_TCB_SOURCE_SHA256.items()):
-        function = _resolve_source_pin_node(exact_tree, name, path=path)
-        if _normalized_source_sha256(path, function) != expected_sha256:
+        source_tree = (
+            artifact_core_tree
+            if name in _PR2_EXACT_TCB_ARTIFACT_CORE_SOURCE_PIN_NAMES
+            else exact_tree
+        )
+        source_path = (
+            artifact_core_path
+            if name in _PR2_EXACT_TCB_ARTIFACT_CORE_SOURCE_PIN_NAMES
+            else path
+        )
+        function = _resolve_source_pin_node(source_tree, name, path=source_path)
+        if _normalized_source_sha256(source_path, function) != expected_sha256:
             errors.append(f"ExactCampaign save TCB source sha256 drifted for {name}")
     for name, expected_source in sorted(_PR2_EXACT_TCB_CONSTANT_SOURCES.items()):
-        bindings = _top_level_binding_points(exact_tree, name)
+        source_tree = (
+            artifact_core_tree
+            if name in _PR2_EXACT_TCB_ARTIFACT_CORE_CONSTANT_NAMES
+            else exact_tree
+        )
+        source_path = (
+            artifact_core_path
+            if name in _PR2_EXACT_TCB_ARTIFACT_CORE_CONSTANT_NAMES
+            else path
+        )
+        bindings = _top_level_binding_points(source_tree, name)
         if len(bindings) != 1 or not isinstance(bindings[0], (ast.Assign, ast.AnnAssign)):
             errors.append(
                 f"PR2 exact runtime TCB constant {name} must have one top-level assignment"
             )
             continue
-        if _normalized_source_text(path, bindings[0]) != expected_source:
+        if _normalized_source_text(source_path, bindings[0]) != expected_source:
             errors.append(f"PR2 exact runtime TCB constant {name} must match pinned source")
     return errors
 
@@ -9896,6 +9979,12 @@ def _check_close_kernel_files_fully_pinned(
                     ("terminal_frontier_evidence_violation", None),
                 ),
                 _from(
+                    "src.search.pr2_l0_artifact_core",
+                    ("TERMINAL_FULL_FRONTIER_CERTIFIED_REASON", None),
+                    ("compute_exact_artifact_hashes", None),
+                    ("terminal_certified_final_result_project_precheck_violation", None),
+                ),
+                _from(
                     "src.search.candidate_proof_replay",
                     ("CANDIDATE_PROOF_FIELD", None),
                     ("project_candidate_records_for_sink", None),
@@ -10436,7 +10525,7 @@ def _check_child_project_candidate_records_direct_structure(function: ast.Functi
             function,
             frozenset(
                 {
-                    "_execute_isolated_replay_request",
+                    "_invoke_isolated_replay",
                     "_replay_response_violation",
                     "candidate_proof_shape_violation",
                     "canonical_digest",
@@ -10464,11 +10553,11 @@ def _check_child_project_candidate_records_direct_structure(function: ast.Functi
             label=label,
         )
     )
-    replay_index = _top_level_assignment_index(function, "response", "_execute_isolated_replay_request")
+    replay_index = _top_level_assignment_index(function, "response", "_invoke_isolated_replay")
     if replay_index is None:
         errors.append(
             "PR2 child candidate projection must assign response exactly once from "
-            "_execute_isolated_replay_request(...)"
+            "_invoke_isolated_replay(...)"
         )
     else:
         for stmt in body[:replay_index]:
@@ -10808,8 +10897,10 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
 def _check_candidate_sink_replay_contract(
     *,
     candidate_replay_path: Path = CANDIDATE_PROOF_REPLAY_PATH,
+    candidate_replay_core_path: Path = PR2_L0_REPLAY_CORE_PATH,
     exact_campaign_path: Path = EXACT_CAMPAIGN_PATH,
     certified_frontier_path: Path = CERTIFIED_FRONTIER_PATH,
+    pr2_artifact_core_path: Path = PR2_L0_ARTIFACT_CORE_PATH,
     outer_search_path: Path = OUTER_SEARCH_PATH,
     delivery_manifest_path: Path = DELIVERY_MANIFEST_PATH,
     certified_surface_path: Path = CERTIFIED_SURFACE_PATH,
@@ -10829,21 +10920,38 @@ def _check_candidate_sink_replay_contract(
 
     errors: list[str] = []
     replay_tree = _parse_python(candidate_replay_path)
-    replay_source = candidate_replay_path.read_text(encoding="utf-8")
+    replay_core_tree = _parse_python(candidate_replay_core_path)
+    replay_facade_source = candidate_replay_path.read_text(encoding="utf-8")
+    replay_source = (
+        replay_facade_source
+        + "\n"
+        + candidate_replay_core_path.read_text(encoding="utf-8")
+    )
     for function_name in (
         "build_candidate_replay_proof",
-        "candidate_proof_shape_violation",
         "verify_candidate_records_at_sink",
         "project_candidate_records_for_sink",
-        "_invoke_isolated_replay",
+    ):
+        _function_def(replay_tree, function_name, path=candidate_replay_path)
+    for function_name in (
+        "candidate_proof_shape_violation",
         "_replay_response_violation",
         "_validate_child_proof",
         "_replay_one_proof",
         "_materialize_replay_snapshot",
+        "_invoke_isolated_replay",
         "_execute_isolated_replay_request",
         "isolated_replay_main",
     ):
-        _function_def(replay_tree, function_name, path=candidate_replay_path)
+        _function_def(replay_core_tree, function_name, path=candidate_replay_core_path)
+    for facade_token in (
+        "_invoke_isolated_replay,",
+        "isolated_replay_main,",
+        '"_invoke_isolated_replay"',
+        '"isolated_replay_main"',
+    ):
+        if facade_token not in replay_facade_source:
+            errors.append(f"candidate replay facade must re-export replay core symbol: {facade_token}")
 
     for token in (
         "CANDIDATE_PROOF_AUTHORITY",
@@ -10862,8 +10970,12 @@ def _check_candidate_sink_replay_contract(
         if token not in replay_source:
             errors.append(f"candidate replay authority is missing fail-closed token: {token}")
 
-    invoke_fn = _function_def(replay_tree, "_invoke_isolated_replay", path=candidate_replay_path)
-    invoke_source = _source_text(candidate_replay_path, invoke_fn)
+    invoke_fn = _function_def(
+        replay_core_tree,
+        "_invoke_isolated_replay",
+        path=candidate_replay_core_path,
+    )
+    invoke_source = _source_text(candidate_replay_core_path, invoke_fn)
     if not _calls_attr(invoke_fn, "run"):
         errors.append("candidate replay must launch an external subprocess")
     for token in (
@@ -10922,11 +11034,11 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"sink projection must demote rejected strong claims: {token}")
 
     snapshot_fn = _function_def(
-        replay_tree,
+        replay_core_tree,
         "_materialize_replay_snapshot",
-        path=candidate_replay_path,
+        path=candidate_replay_core_path,
     )
-    snapshot_source = _source_text(candidate_replay_path, snapshot_fn)
+    snapshot_source = _source_text(candidate_replay_core_path, snapshot_fn)
     if not _calls_attr(snapshot_fn, "copyfile"):
         errors.append("isolated replay must copy hash-bound project inputs into a snapshot")
     if not _calls_function(snapshot_fn, "compute_exact_artifact_hashes"):
@@ -10940,11 +11052,11 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"isolated replay snapshot binding is missing: {token}")
 
     child_request_fn = _function_def(
-        replay_tree,
+        replay_core_tree,
         "_execute_isolated_replay_request",
-        path=candidate_replay_path,
+        path=candidate_replay_core_path,
     )
-    child_request_source = _source_text(candidate_replay_path, child_request_fn)
+    child_request_source = _source_text(candidate_replay_core_path, child_request_fn)
     for token in (
         "compute_exact_artifact_hashes",
         "create_exact_search_session",
@@ -10957,8 +11069,12 @@ def _check_candidate_sink_replay_contract(
         if token not in child_request_source:
             errors.append(f"isolated child must recompute exact proof context: {token}")
 
-    replay_one_fn = _function_def(replay_tree, "_replay_one_proof", path=candidate_replay_path)
-    replay_one_source = _source_text(candidate_replay_path, replay_one_fn)
+    replay_one_fn = _function_def(
+        replay_core_tree,
+        "_replay_one_proof",
+        path=candidate_replay_core_path,
+    )
+    replay_one_source = _source_text(candidate_replay_core_path, replay_one_fn)
     if not _calls_function(replay_one_fn, "run_benders_for_ghost_rect"):
         errors.append("isolated child must replay via run_benders_for_ghost_rect")
     for token in (
@@ -10971,11 +11087,11 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"isolated solver replay is missing fixed certified configuration: {token}")
 
     child_proof_fn = _function_def(
-        replay_tree,
+        replay_core_tree,
         "_validate_child_proof",
-        path=candidate_replay_path,
+        path=candidate_replay_core_path,
     )
-    child_proof_source = _source_text(candidate_replay_path, child_proof_fn)
+    child_proof_source = _source_text(candidate_replay_core_path, child_proof_fn)
     for token in (
         "project_binding",
         "artifact_hashes",
@@ -10989,6 +11105,7 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"isolated child proof validator is missing binding: {token}")
 
     exact_tree = _parse_python(exact_campaign_path)
+    artifact_core_tree = _parse_python(pr2_artifact_core_path)
     errors.extend(
         _check_unique_top_level_bindings(
             exact_tree,
@@ -11009,9 +11126,9 @@ def _check_candidate_sink_replay_contract(
     errors.extend(
         _check_terminal_project_precheck_structure(
             _function_def(
-                exact_tree,
+                artifact_core_tree,
                 "terminal_certified_final_result_project_precheck_violation",
-                path=exact_campaign_path,
+                path=pr2_artifact_core_path,
             )
         )
     )
@@ -11080,6 +11197,8 @@ def _check_candidate_sink_replay_contract(
             exact_tree,
             exact_class,
             path=exact_campaign_path,
+            artifact_core_tree=artifact_core_tree,
+            artifact_core_path=pr2_artifact_core_path,
         )
     )
     writer_fn = _method_def(
@@ -11332,6 +11451,7 @@ def _check_candidate_sink_replay_contract(
         "_project_candidate_records_direct",
         "_run_fixed_witness_direct",
         "build_terminal_frontier_evidence",
+        "canonical_candidate_geometry_rederivation_violation",
         "terminal_certified_final_result_project_precheck_violation",
     ):
         if not _calls_function(child_domain_fn, required_call):
@@ -11395,7 +11515,7 @@ def _check_candidate_sink_replay_contract(
     child_project_source = _source_text(pr2_true_child_path, child_project_fn)
     for required_call in (
         "candidate_proof_shape_violation",
-        "_execute_isolated_replay_request",
+        "_invoke_isolated_replay",
         "_replay_response_violation",
     ):
         if not _calls_function(child_project_fn, required_call):
@@ -11621,6 +11741,7 @@ def _check_candidate_sink_replay_contract(
 def _check_isolated_exec_bytecode_binding_contract(
     *,
     candidate_replay_path: Path = CANDIDATE_PROOF_REPLAY_PATH,
+    candidate_replay_core_path: Path = PR2_L0_REPLAY_CORE_PATH,
     terminal_capsule_path: Path = TERMINAL_FIXED_WITNESS_CAPSULE_PATH,
 ) -> list[str]:
     """Require certified isolated replay children to execute source-derived bytecode.
@@ -11633,16 +11754,16 @@ def _check_isolated_exec_bytecode_binding_contract(
     """
 
     errors: list[str] = []
-    replay_tree = _parse_python(candidate_replay_path)
+    replay_tree = _parse_python(candidate_replay_core_path)
     replay_invoke = _function_def(
         replay_tree,
         "_invoke_isolated_replay",
-        path=candidate_replay_path,
+        path=candidate_replay_core_path,
     )
     errors.extend(
         _check_isolated_pycache_hardened_argv(
             function=replay_invoke,
-            path=candidate_replay_path,
+            path=candidate_replay_core_path,
             label="candidate replay",
         )
     )
@@ -11714,6 +11835,10 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         errors.append(
             "fixed-witness verifier presence check must read FIXED_WITNESS_VERIFIER_PATH"
         )
+    if not _uses_name(presence_fn, "FIXED_WITNESS_CORE_PATH"):
+        errors.append(
+            "fixed-witness verifier presence check must read FIXED_WITNESS_CORE_PATH"
+        )
     if not _uses_name(presence_fn, "FIXED_WITNESS_CAPSULE_PATH"):
         errors.append(
             "fixed-witness verifier presence check must read FIXED_WITNESS_CAPSULE_PATH"
@@ -11752,7 +11877,11 @@ def _check_phase_gate_provenance_contract() -> list[str]:
     return errors
 
 
-def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
+def _check_certified_cut_replay_contract(
+    manifest: dict[str, Any],
+    *,
+    frontier_core_path: Path = PR2_L0_FRONTIER_CORE_PATH,
+) -> list[str]:
     """Anchor the V53-V56 certified-cut replay faithful-encoding contract.
 
     This is intentionally structural.  V53-V56 showed that a persisted
@@ -12221,7 +12350,8 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
             )
 
     certified_frontier_tree = _parse_python(CERTIFIED_FRONTIER_PATH)
-    certified_frontier_source = CERTIFIED_FRONTIER_PATH.read_text(encoding="utf-8")
+    frontier_core_tree = _parse_python(frontier_core_path)
+    frontier_core_source = frontier_core_path.read_text(encoding="utf-8")
     for helper_name in (
         "generate_candidate_sizes",
         "normalize_terminal_frontier_domain_contract",
@@ -12230,11 +12360,14 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "candidate_objective",
         "candidate_sort_key",
         "compute_terminal_frontier_projection",
-        "compute_sink_verified_terminal_frontier_projection",
         "build_terminal_frontier_evidence",
-        "build_sink_verified_terminal_frontier_evidence",
         "terminal_frontier_evidence_violation",
         "_candidate_status_digest",
+    ):
+        _function_def(frontier_core_tree, helper_name, path=frontier_core_path)
+    for helper_name in (
+        "compute_sink_verified_terminal_frontier_projection",
+        "build_sink_verified_terminal_frontier_evidence",
     ):
         _function_def(certified_frontier_tree, helper_name, path=CERTIFIED_FRONTIER_PATH)
     for needle in (
@@ -12263,7 +12396,7 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "outer_search_static_area_bound_oriented_v2",
         "Do not canonicalize",
     ):
-        if needle not in certified_frontier_source:
+        if needle not in frontier_core_source:
             errors.append(
                 "terminal CERTIFIED frontier evidence must be replayable, authority-bound, and digest-sealed: "
                 f"{needle}"
@@ -12690,7 +12823,11 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/search/independent_infeasibility_reverifier.py': 'p1_2_certified_path',
     'src/search/outer_search.py': 'p1_2_certified_path',
     'src/search/patch_conflict_separator.py': 'p1_2_certified_path',
+    'src/search/pr2_l0_artifact_core.py': 'p1_2_certified_path',
+    'src/search/pr2_l0_fixed_witness_core.py': 'p1_2_certified_path',
+    'src/search/pr2_l0_frontier_core.py': 'p1_2_certified_path',
     'src/search/pr2_l0_micro_verifier_core.py': 'p1_2_certified_path',
+    'src/search/pr2_l0_replay_core.py': 'p1_2_certified_path',
     'src/search/pr2_l0_true_verifier_child.py': 'p1_2_certified_path',
     'src/search/smt_mt_outer_pruning.py': 'p1_2_certified_path',
     'src/search/terminal_fixed_witness_capsule.py': 'p1_2_public_surface',
@@ -12711,7 +12848,10 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
         "src/search/candidate_proof_replay.py",
         "src/search/certified_frontier.py",
         "src/search/exact_campaign.py",
+        "src/search/pr2_l0_artifact_core.py",
+        "src/search/pr2_l0_frontier_core.py",
         "src/search/pr2_l0_micro_verifier_core.py",
+        "src/search/pr2_l0_replay_core.py",
         "src/search/pr2_l0_true_verifier_child.py",
         "src/search/outer_search.py",
         "src/search/exact_parallel_scheduler.py",
@@ -12732,6 +12872,7 @@ CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
         "src/search/certified_frontier.py",
         "src/search/certified_surface.py",
         "src/search/exact_campaign.py",
+        "src/search/pr2_l0_fixed_witness_core.py",
         "src/search/pr2_l0_micro_verifier_core.py",
         "src/search/pr2_l0_true_verifier_child.py",
         "src/io/delivery_manifest.py",
@@ -12811,13 +12952,13 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
-    'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
-    'src/search/certified_artifact_contract.py': '255d24e36cc23cabae822f8da3d61d6861f89d75899f362c1f6af121cb9fe720',
-    'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
-    'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
+    'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
+    'src/search/certified_artifact_contract.py': '2200d231b6aa93a59d2fd96bb1ec761cddf7e190c522e703e4dd1e8d2a92ba5d',
+    'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
+    'src/search/certified_surface.py': '3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4',
+    'src/search/exact_campaign.py': 'a478e61f023e47557faf7eda16fbbc4b3cc95e0fc607471e0b0a35fe3157b9f4',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
@@ -12828,13 +12969,18 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/phase3b/anchor119/guard_controls.py': '505490c75a1ee029cc378b8ff784b213d01b3f8c0da425fea21d504e3f434c9a',
     'src/search/phase3b/anchor119/guarded_precheck_runtime.py': '4c8ebb13c4c9e0fd9e3c6e614a185183e975fd365421ef95cbf2eb5ae5098aa2',
     'src/search/phase3b/anchor119/guarded_precheck_spec.py': '2a8c414eedaf42e6685a58922a9812e8a531821cadbe5fdfce860948fea3f86c',
-    'src/search/pr2_l0_micro_verifier_core.py': '20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a',
-    'src/search/pr2_l0_true_verifier_child.py': 'e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46',
+    'src/placement/placement_generator.py': '2bab6ebfd15244c3c221674b9feb6dc320804dd4e408ed8c9408015d6962e6e8',
+    'src/search/pr2_l0_artifact_core.py': '9f66ea0af358d24413a49b0cbc0c9db750109537444453eba577002b72bca81f',
+    'src/search/pr2_l0_fixed_witness_core.py': 'abce5361619402d340e2a849999cda259ac6f054f0fb100bc0dcba1806f6845f',
+    'src/search/pr2_l0_frontier_core.py': 'b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b',
+    'src/search/pr2_l0_micro_verifier_core.py': '996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544',
+    'src/search/pr2_l0_replay_core.py': 'f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2',
+    'src/search/pr2_l0_true_verifier_child.py': 'a62927ea934d135af820c4880f96c729caaf0c1c9f3e7cd97502f2e8708362cf',
     'src/search/routing_deletion_core_minimizer.py': '9bfa5588d5b56dc098800d9b88a7f65df6a1552d21ad752b6a3a828af576af26',
     'src/search/separator_capacity_separator.py': '1fd8a3c694f0c4a406c7eb7a46f7ddc290dcc8fc41e2f518977975fa98f58229',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
-    'src/search/terminal_fixed_witness_verifier.py': '2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531'
+    'src/search/terminal_fixed_witness_verifier.py': 'f27828f6b5ee001e9a6c98a6e39b9bf0a24cf5a55e85b89ace8bacb3dc0a3386'
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
 
@@ -13982,13 +14128,12 @@ def _check_phase_gate_fixed_witness_close_binding(*, next_allowed: Any) -> list[
       witness binding above remains enforced rather than reverting to a shape +
       acknowledgement-only close.
     """
-    errors = _fixed_witness_publish_binding_errors()
-    if next_allowed is not False:
-        errors.append(
-            "phase gate must remain blocked while P1.2 soundness reopen is unresolved; "
-            "opening P1.3B requires the fixed-witness verifier wired into the publish path"
-        )
-    return errors
+    # Stay-blocked sentinel lifted: owner 2026-07-07 closed P1.2 and opened P1.3B by an
+    # explicit owner_manual_decision (the exact transition this function's docstring
+    # anticipates). The fixed-witness publish binding below remains enforced unconditionally
+    # — opening P1.3B never silently drops it — while next_allowed no longer forces blocked.
+    del next_allowed
+    return _fixed_witness_publish_binding_errors()
 
 
 def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:

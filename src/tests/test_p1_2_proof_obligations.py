@@ -4,8 +4,10 @@ from __future__ import annotations
 import ast
 import copy
 import json
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -251,45 +253,74 @@ def _candidate_sink_replay_errors_for_sources(
     child_source: str | None = None,
     l0_source: str | None = None,
     exact_source: str | None = None,
+    artifact_core_source: str | None = None,
+    replay_core_source: str | None = None,
 ) -> list[str]:
-    child_path = tmp_path / "pr2_l0_true_verifier_child.py"
-    l0_path = tmp_path / "pr2_l0_micro_verifier_core.py"
-    exact_path = tmp_path / "exact_campaign.py"
-    child_path.write_text(
-        child_source
-        if child_source is not None
-        else check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
-            encoding="utf-8"
-        ),
-        encoding="utf-8",
-        newline="\n",
-    )
-    l0_path.write_text(
-        l0_source
-        if l0_source is not None
-        else check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
-            encoding="utf-8"
-        ),
-        encoding="utf-8",
-        newline="\n",
-    )
-    exact_path.write_text(
-        exact_source
-        if exact_source is not None
-        else check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
-            encoding="utf-8"
-        ),
-        encoding="utf-8",
-        newline="\n",
-    )
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    source_root = Path(tempfile.mkdtemp(prefix="zmd_candidate_sink_sources_"))
     try:
-        return check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
-            exact_campaign_path=exact_path,
-            pr2_l0_path=l0_path,
-            pr2_true_child_path=child_path,
+        child_path = source_root / "pr2_l0_true_verifier_child.py"
+        l0_path = source_root / "pr2_l0_micro_verifier_core.py"
+        exact_path = source_root / "exact_campaign.py"
+        artifact_core_path = source_root / "pr2_l0_artifact_core.py"
+        replay_core_path = source_root / "pr2_l0_replay_core.py"
+        child_path.write_text(
+            child_source
+            if child_source is not None
+            else check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+                encoding="utf-8"
+            ),
+            encoding="utf-8",
+            newline="\n",
         )
-    except check_p1_2_proof_obligations.CheckError as exc:
-        return [str(exc)]
+        l0_path.write_text(
+            l0_source
+            if l0_source is not None
+            else check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+                encoding="utf-8"
+            ),
+            encoding="utf-8",
+            newline="\n",
+        )
+        exact_path.write_text(
+            exact_source
+            if exact_source is not None
+            else check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+                encoding="utf-8"
+            ),
+            encoding="utf-8",
+            newline="\n",
+        )
+        artifact_core_path.write_text(
+            artifact_core_source
+            if artifact_core_source is not None
+            else check_p1_2_proof_obligations.PR2_L0_ARTIFACT_CORE_PATH.read_text(
+                encoding="utf-8"
+            ),
+            encoding="utf-8",
+            newline="\n",
+        )
+        replay_core_path.write_text(
+            replay_core_source
+            if replay_core_source is not None
+            else check_p1_2_proof_obligations.PR2_L0_REPLAY_CORE_PATH.read_text(
+                encoding="utf-8"
+            ),
+            encoding="utf-8",
+            newline="\n",
+        )
+        try:
+            return check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+                exact_campaign_path=exact_path,
+                candidate_replay_core_path=replay_core_path,
+                pr2_artifact_core_path=artifact_core_path,
+                pr2_l0_path=l0_path,
+                pr2_true_child_path=child_path,
+            )
+        except check_p1_2_proof_obligations.CheckError as exc:
+            return [str(exc)]
+    finally:
+        shutil.rmtree(source_root, ignore_errors=True)
 
 
 def _checker_source() -> str:
@@ -590,8 +621,9 @@ def _child_global_globals_setitem(source: str) -> str:
 
 def _child_local_def_shadow_precheck(source: str) -> str:
     import_block = (
-        "    from src.search.exact_campaign import (\n"
+        "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
@@ -607,23 +639,24 @@ def _child_local_def_shadow_precheck(source: str) -> str:
 def _child_imports_fake_precheck_module(source: str) -> str:
     return _replace_once(
         source,
-        "    from src.search.exact_campaign import (\n",
-        "    from fake.search.exact_campaign import (\n",
+        "    from src.search.pr2_l0_artifact_core import (\n",
+        "    from fake.search.pr2_l0_artifact_core import (\n",
     )
 
 
 def _child_setattr_monkeypatches_precheck(source: str) -> str:
     import_block = (
-        "    from src.search.exact_campaign import (\n"
+        "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
     return _replace_once(
         source,
         import_block,
-        "    import src.search.exact_campaign as exact_campaign_module\n"
-        '    setattr(exact_campaign_module, "terminal_certified_final_result_project_precheck_violation", lambda *_args, **_kwargs: None)\n'
+        "    import src.search.pr2_l0_artifact_core as artifact_core_module\n"
+        '    setattr(artifact_core_module, "terminal_certified_final_result_project_precheck_violation", lambda *_args, **_kwargs: None)\n'
         + import_block,
     )
 
@@ -785,7 +818,7 @@ def _child_globals_subscript_rebinds_precheck(source: str) -> str:
 def _child_import_alias_rebinds_precheck(source: str) -> str:
     return _insert_child_before_proposal_evidence(
         source,
-        "    import src.search.exact_campaign as _authority_module\n"
+        "    import src.search.pr2_l0_artifact_core as _authority_module\n"
         "    _authority_module.terminal_certified_final_result_project_precheck_violation = "
         "terminal_certified_final_result_project_precheck_violation\n",
     )
@@ -879,8 +912,9 @@ def _child_early_return_before_precheck(source: str) -> str:
 
 def _child_code_object_monkeypatches_precheck(source: str) -> str:
     import_block = (
-        "    from src.search.exact_campaign import (\n"
+        "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
@@ -896,8 +930,9 @@ def _child_code_object_monkeypatches_precheck(source: str) -> str:
 
 def _child_globals_monkeypatches_precheck(source: str) -> str:
     import_block = (
-        "    from src.search.exact_campaign import (\n"
+        "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
@@ -913,8 +948,9 @@ def _child_globals_monkeypatches_precheck(source: str) -> str:
 
 def _child_importfrom_builtins_setattr_alias(source: str) -> str:
     import_block = (
-        "    from src.search.exact_campaign import (\n"
+        "    from src.search.pr2_l0_artifact_core import (\n"
         "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        canonical_candidate_geometry_rederivation_violation,\n"
         "        terminal_certified_final_result_project_precheck_violation,\n"
         "    )\n"
     )
@@ -938,7 +974,7 @@ def _child_module_top_level_monkeypatch(source: str) -> str:
     return _replace_once(
         source,
         "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n",
-        "from src.search import exact_campaign as _m\n"
+        "from src.search import pr2_l0_artifact_core as _m\n"
         "_m.terminal_certified_final_result_project_precheck_violation = lambda *_args, **_kwargs: None\n"
         "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n",
     )
@@ -1281,22 +1317,28 @@ def _exact_ghost_pick_returns_none_early(source: str) -> str:
 def _child_project_records_return_before_replay(source: str) -> str:
     return _replace_once(
         source,
-        "    response = _execute_isolated_replay_request(request)\n",
+        "    response = _invoke_isolated_replay(\n"
+        "        project_root=project_root,\n"
+        "        expected_proofs=expected_proofs,\n"
+        "    )\n",
         "    return {\n"
         "        str(key): _json_copy(value)\n"
         "        for key, value in raw_records.items()\n"
         "        if isinstance(value, Mapping)\n"
         "    }, {}\n"
-        "    response = _execute_isolated_replay_request(request)\n",
+        "    response = _invoke_isolated_replay(\n"
+        "        project_root=project_root,\n"
+        "        expected_proofs=expected_proofs,\n"
+        "    )\n",
     )
 
 
 def _child_fixed_witness_returns_early(source: str) -> str:
     return _replace_once(
         source,
-        "    from src.search.candidate_proof_replay import _materialize_replay_snapshot\n",
+        "    from src.search.pr2_l0_replay_core import _materialize_replay_snapshot\n",
         "    return {}, {}, None\n"
-        "    from src.search.candidate_proof_replay import _materialize_replay_snapshot\n",
+        "    from src.search.pr2_l0_replay_core import _materialize_replay_snapshot\n",
     )
 
 
@@ -1813,12 +1855,12 @@ _PR2_ROUND9_GATE_HELPERS = (
     ("exact", "_validated_mandatory_exact_instances_payload"),
     ("exact", "candidate_key"),
     ("exact", "compute_certified_exact_source_digest"),
-    ("exact", "compute_exact_artifact_hashes"),
+    ("artifact_core", "compute_exact_artifact_hashes"),
     ("exact", "has_terminal_full_frontier_certified_evidence"),
     ("exact", "now_iso"),
     ("exact", "now_ts"),
     ("exact", "sha256_file"),
-    ("exact", "terminal_certified_final_result_project_precheck_violation"),
+    ("artifact_core", "terminal_certified_final_result_project_precheck_violation"),
     ("exact", "terminal_certified_final_result_violation"),
     ("l0", "_atomic_json_bytes"),
     ("l0", "_canonical_bytes"),
@@ -1902,7 +1944,7 @@ def test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows(
     source_kind: str,
     helper_name: str,
 ) -> None:
-    child_source = l0_source = exact_source = None
+    child_source = l0_source = exact_source = artifact_core_source = None
     if source_kind == "child":
         child_source = _hollow_round9_helper(
             check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
@@ -1922,6 +1964,13 @@ def test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows(
             check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8"),
             helper_name,
         )
+    elif source_kind == "artifact_core":
+        artifact_core_source = _hollow_round9_helper(
+            check_p1_2_proof_obligations.PR2_L0_ARTIFACT_CORE_PATH.read_text(
+                encoding="utf-8"
+            ),
+            helper_name,
+        )
     else:  # pragma: no cover - parametrization guard
         raise AssertionError(source_kind)
 
@@ -1930,6 +1979,7 @@ def test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows(
         child_source=child_source,
         l0_source=l0_source,
         exact_source=exact_source,
+        artifact_core_source=artifact_core_source,
     )
 
     expected_error = f"source sha256 drifted for {helper_name}"
@@ -2291,6 +2341,9 @@ def test_p1_2_round11_close_kernel_def_time_and_class_body_hardening(tmp_path: P
         encoding="utf-8"
     )
     exact_tree = ast.parse(exact_source)
+    artifact_core_source = check_p1_2_proof_obligations.PR2_L0_ARTIFACT_CORE_PATH.read_text(
+        encoding="utf-8"
+    )
 
     exact_with_relative_import_alias = exact_source.replace(
         "from dataclasses import dataclass\n",
@@ -2346,21 +2399,24 @@ def test_p1_2_round11_close_kernel_def_time_and_class_body_hardening(tmp_path: P
     )
     assert any("def-time bases/keywords drifted" in error for error in errors)
 
-    exact_with_constant_side_effect = exact_source.replace(
+    artifact_core_with_constant_side_effect = _replace_once(
+        artifact_core_source,
         'TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "search_exhausted_all_candidates"',
         (
             "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "
             "(globals().__setitem__('terminal_frontier_evidence_violation', "
             "lambda **_: None) or 'search_exhausted_all_candidates')"
         ),
-        1,
     )
-    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
-        l0_tree,
-        child_tree,
-        ast.parse(exact_with_constant_side_effect),
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        artifact_core_source=artifact_core_with_constant_side_effect,
     )
-    assert any("dynamic import-time call globals" in error for error in errors)
+    assert any(
+        "PR2 exact runtime TCB constant TERMINAL_FULL_FRONTIER_CERTIFIED_REASON must match pinned source"
+        in error
+        for error in errors
+    )
 
     exact_with_helper_side_effect = exact_source.replace(
         "    source_root = Path(__file__).resolve().parent.parent.parent\n",
@@ -4037,7 +4093,7 @@ def test_p1_2_close_kernel_rejects_import_time_dependency_drift(
             "must only return canonical fail-closed reasons",
         ),
         (
-            "exact",
+            "artifact_core",
             _exact_terminal_precheck_raises_before_reason,
             "must not raise",
         ),
@@ -4078,7 +4134,7 @@ def test_p1_2_checker_rejects_pr2_5_round7_result_flow_bypasses(
     expected_error: str,
 ) -> None:
     assert callable(mutator)
-    child_source = l0_source = exact_source = None
+    child_source = l0_source = exact_source = artifact_core_source = None
     if source_kind == "child":
         child_source = mutator(  # type: ignore[operator]
             check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
@@ -4095,6 +4151,12 @@ def test_p1_2_checker_rejects_pr2_5_round7_result_flow_bypasses(
         exact_source = mutator(  # type: ignore[operator]
             check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8")
         )
+    elif source_kind == "artifact_core":
+        artifact_core_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.PR2_L0_ARTIFACT_CORE_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
     else:  # pragma: no cover - parametrization guard
         raise AssertionError(source_kind)
 
@@ -4103,6 +4165,7 @@ def test_p1_2_checker_rejects_pr2_5_round7_result_flow_bypasses(
         child_source=child_source,
         l0_source=l0_source,
         exact_source=exact_source,
+        artifact_core_source=artifact_core_source,
     )
 
     assert any(expected_error in error for error in errors), errors
@@ -4122,7 +4185,7 @@ def test_p1_2_checker_rejects_pr2_5_round7_result_flow_bypasses(
             "terminal certified final result validator must start",
         ),
         (
-            "exact",
+            "artifact_core",
             _exact_terminal_precheck_returns_none_before_reason,
             "terminal certified final result project precheck must not return None",
         ),
@@ -4221,15 +4284,21 @@ def test_p1_2_checker_rejects_pr2_5_round6_structural_bypasses(
     base_exact = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
         encoding="utf-8"
     )
+    base_artifact_core = check_p1_2_proof_obligations.PR2_L0_ARTIFACT_CORE_PATH.read_text(
+        encoding="utf-8"
+    )
     child_source = base_child
     l0_source = base_l0
     exact_source = base_exact
+    artifact_core_source = base_artifact_core
     if source_kind == "child":
         child_source = mutator(base_child)  # type: ignore[operator]
     elif source_kind == "l0":
         l0_source = mutator(base_l0)  # type: ignore[operator]
     elif source_kind == "exact":
         exact_source = mutator(base_exact)  # type: ignore[operator]
+    elif source_kind == "artifact_core":
+        artifact_core_source = mutator(base_artifact_core)  # type: ignore[operator]
     else:  # pragma: no cover - parametrization guard
         raise AssertionError(source_kind)
 
@@ -4238,6 +4307,7 @@ def test_p1_2_checker_rejects_pr2_5_round6_structural_bypasses(
         child_source=child_source,
         l0_source=l0_source,
         exact_source=exact_source,
+        artifact_core_source=artifact_core_source,
     )
 
     assert any(expected_error in error for error in errors), errors
@@ -4578,7 +4648,7 @@ def test_p1_2_checker_rejects_pr2_5_g6_constant_true_prefix_bypasses(
         (
             "child",
             _child_imports_fake_precheck_module,
-            "authority imports must come directly from src.search.exact_campaign",
+            "must import authority name exactly once from src.search.pr2_l0_artifact_core",
         ),
         ("child", _child_setattr_monkeypatches_precheck, "dynamic module capability setattr"),
         ("child", _child_rebinds_project_root, "must not shadow/rebind project_root"),
@@ -5281,8 +5351,8 @@ def run_outer_search():
 
 
 def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path) -> None:
-    replay_path = tmp_path / "candidate_proof_replay.py"
-    source = check_p1_2_proof_obligations.CANDIDATE_PROOF_REPLAY_PATH.read_text(
+    replay_path = tmp_path / "pr2_l0_replay_core_isolation_bypass.py"
+    source = check_p1_2_proof_obligations.PR2_L0_REPLAY_CORE_PATH.read_text(
         encoding="utf-8"
     )
     replay_path.write_text(
@@ -5291,14 +5361,17 @@ def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path)
     )
 
     errors = check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
-        candidate_replay_path=replay_path
+        candidate_replay_core_path=replay_path
     )
 
     assert 'candidate replay subprocess boundary missing: "-I"' in errors
 
-    snapshot_path = tmp_path / "candidate_proof_replay_snapshot_bypass.py"
+    replay_core_source = check_p1_2_proof_obligations.PR2_L0_REPLAY_CORE_PATH.read_text(
+        encoding="utf-8"
+    )
+    snapshot_path = tmp_path / "pr2_l0_replay_core_snapshot_bypass.py"
     snapshot_path.write_text(
-        source.replace(
+        replay_core_source.replace(
             "normalized_replay_hashes != normalized_current_hashes",
             "False",
             1,
@@ -5307,7 +5380,7 @@ def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path)
     )
     snapshot_errors = (
         check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
-            candidate_replay_path=snapshot_path
+            candidate_replay_core_path=snapshot_path
         )
     )
     assert (

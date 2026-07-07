@@ -404,13 +404,14 @@ def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict
         first_key = sorted(fixed_violations)[0]
         raise ValueError(f"terminal fixed witness verifier failed:{fixed_violations[first_key]}")
 
-    from src.search.certified_frontier import (
+    from src.search.pr2_l0_frontier_core import (
         build_terminal_frontier_evidence,
         candidate_generation_kwargs,
         generate_candidate_sizes,
     )
-    from src.search.exact_campaign import (
+    from src.search.pr2_l0_artifact_core import (
         TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        canonical_candidate_geometry_rederivation_violation,
         terminal_certified_final_result_project_precheck_violation,
     )
 
@@ -460,6 +461,13 @@ def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict
     )
     if precheck_reason is not None:
         raise ValueError(f"terminal project precheck failed:{precheck_reason}")
+    geometry_reason = canonical_candidate_geometry_rederivation_violation(
+        project_root=project_root,
+    )
+    if geometry_reason is not None:
+        raise ValueError(
+            f"terminal candidate geometry rederivation failed:{geometry_reason}"
+        )
 
     final_digest = _canonical_digest(certified_final_result)
     evidence_digest = _canonical_digest(evidence)
@@ -503,11 +511,9 @@ def _project_candidate_records_direct(
     project_root: Path,
     strong_keys: list[str],
 ) -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
-    from src.search.candidate_proof_replay import (
-        CANDIDATE_PROOF_AUTHORITY,
+    from src.search.pr2_l0_replay_core import (
         CANDIDATE_PROOF_FIELD,
-        CANDIDATE_PROOF_SCHEMA_VERSION,
-        _execute_isolated_replay_request,
+        _invoke_isolated_replay,
         _json_copy,
         _replay_response_violation,
         candidate_proof_shape_violation,
@@ -547,14 +553,10 @@ def _project_candidate_records_direct(
             for key, value in raw_records.items()
             if isinstance(value, Mapping)
         }, {}
-    request = {
-        "schema_version": CANDIDATE_PROOF_SCHEMA_VERSION,
-        "authority": CANDIDATE_PROOF_AUTHORITY,
-        "nonce": hashlib.sha256(_canonical_bytes(expected_proofs)).hexdigest(),
-        "project_root": str(project_root),
-        "expected_proofs": [_json_copy(expected_proofs[key]) for key in sorted(expected_proofs)],
-    }
-    response = _execute_isolated_replay_request(request)
+    response = _invoke_isolated_replay(
+        project_root=project_root,
+        expected_proofs=expected_proofs,
+    )
     envelope_violation = _replay_response_violation(
         response=response,
         project_root=project_root,
@@ -618,9 +620,9 @@ def _run_fixed_witness_direct(
     candidate_records: dict[str, dict[str, Any]],
     final_result: Mapping[str, Any],
 ) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]], Any]:
-    from src.search.candidate_proof_replay import _materialize_replay_snapshot
-    from src.search.exact_campaign import compute_exact_artifact_hashes
-    from src.search.terminal_fixed_witness_verifier import (
+    from src.search.pr2_l0_replay_core import _materialize_replay_snapshot
+    from src.search.pr2_l0_artifact_core import compute_exact_artifact_hashes
+    from src.search.pr2_l0_fixed_witness_core import (
         _apply_terminal_fixed_witness_audit_fields,
         _copy_candidate_records,
         _identity_from_current_records,

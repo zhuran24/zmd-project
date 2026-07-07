@@ -66,9 +66,9 @@ PR1 publication-boundary hardening                IMPLEMENTED in worktree
 fixed-witness + independent whole-layout replay   IMPLEMENTED in worktree
 publish-open gate + central publisher             IMPLEMENTED in worktree
 PR2 controlled/read-once verifier TCB              OPEN
-review package immutable commit materialization    OPEN
+review package immutable commit materialization   IMPLEMENTED in worktree
 archive/review policy completeness                 PARTIAL
-owner manual close decision                        BLOCKED
+owner manual close decision                        CLOSED (owner 2026-07-07)
 ```
 
 这些条件不能互相替代。机器 checker 通过不等于 owner gate 关闭；owner 决定也不能替代技术
