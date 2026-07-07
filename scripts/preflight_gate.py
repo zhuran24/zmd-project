@@ -667,14 +667,17 @@ def check_tests(gate: GateResult, *, full: bool = False) -> None:
     print(f"\n[18/18] 测试门禁（{label}）")
     test_target = "src/tests/" if full else None
     test_files = None if full else CORE_TEST_FILES
-    timeout = 1200 if full else 120
+    timeout = 1200 if full else 240
 
     cmd = [sys.executable, "-m", "pytest", "-q", "--tb=short", "--no-header"]
     # 慢测试(@pytest.mark.slow)由专用慢 lane (preflight_gate.py --slow-tests) 用长超时真跑;
-    # 快 gate 用 -m "not slow" 跳过它们, 否则慢集成测试会撑爆 120s/600s 超时、把失败掩盖掉
+    # 快 gate 用 -m "not slow" 跳过它们, 否则慢集成测试会撑爆超时、把失败掩盖掉
     # —— 这正是让 ④b-stale 测试藏住的 C5 done-condition 盲区根因。
-    # -n auto: 剔掉慢测试后快 lane 全是隔离单元测试, pytest-xdist 跨核并行(实测 CORE
-    # 92s→23s, ~4x), 用满硬件 + 给 120s 留足余量。慢 lane 刻意不并行(见 check_slow_tests)。
+    # -n auto: 剔掉慢测试后快 lane 全是隔离单元测试, pytest-xdist 跨核并行, 用满硬件。
+    # 慢 lane 刻意不并行(见 check_slow_tests)。
+    # timeout 2026-07-08 从 120s 提到 240s: CORE_TEST_FILES 已随 close-gate 膨胀到
+    # ~1035 条(src/tests/cuts 整目录进核心门禁后), -n auto 实测 118s, 120s 上限从
+    # 「5 倍余量」退化成了「贴线必炸」;240s 恢复 ~2 倍余量。集合再膨胀先想拆分, 别只加时。
     # xdist 是提速, 不是语义前提: 插件不可用时退回串行, 避免 CI 因未知 -n 参数假失败。
     cmd += ["-m", "not slow"]
     if _pytest_xdist_available():
