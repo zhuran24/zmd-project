@@ -1,5 +1,7 @@
 # P1.2 V56 certified cut replay faithfulness consolidation
 
+> **[Snapshot note]** Written before the P1.2 close. Statements like "P1.2 remains blocked" reflect the state at writing time; P1.2 was closed by explicit owner_manual_decision on 2026-07-07 (P1.3 opened). Current authority: data/review_gates/phase_1_2_spike_close.json.
+
 Date: 2026-06-08
 
 Status: **NOT CLEAN / consolidation anchor**.  This document records the V53-V56 postmortem and turns those four sibling findings into one P1.2 proof obligation: exact-safe persisted `BendersCut` replay must be strictly parsed, all-or-nothing, and faithfully encoded by every certified master backend.

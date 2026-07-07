@@ -6,13 +6,13 @@
 
 1. `PROJECT_LOCK.md`: exactness、命题 P、发布边界、Accepted Invariants 和 Forbidden Changes。
 2. `data/proof_obligations/p1_2_proof_obligations.json`: P1.2 机器义务、proof-bearing sink inventory 和 source/hash floor。
-3. `data/review_gates/phase_1_2_spike_close.json`: owner 手动 phase gate。当前仍为 blocked，不能由测试、receipt 或 Markdown 自动打开。
+3. `data/review_gates/phase_1_2_spike_close.json`: owner 手动 phase gate。当前为 `closed_manual_owner_decision`，P1.3 entry allowed；但不能由测试、receipt 或 Markdown 自动打开，2026-07-07 的关门动作只认显式 `owner_manual_decision`。
 4. `docs/项目说明/06_current_status.md` 与 `docs/项目说明/soundness_gap_roadmap.md`: 当前实现状态和未闭边界。
 5. 其它 `docs/`、`specs/` 和 runbook: 在上述边界内解释具体组件。
 
 ## 现行发布链
 
-producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint 字节复验并铸造持久化终端 `CERTIFIED`；其生产入口是独立命令 `scripts/run_supervisor_seal.py`（从 proposal-ready marker 驱动，`349c56c`），普通 `main.py` 运行不会 seal。`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的 campaign authority 事务式发布 canonical solution、blueprint 和 manifest。fixed-witness verifier、P1.2 open gate 与 supervisor 调度入口均已落地;owner 已于 2026-07-07 以显式 owner_manual_decision 关闭 P1.2、开启 P1.3B（三轮收口外审 0 上-TCB 洞、gate=`closed_manual_owner_decision`）。「仅防蓄意内鬼」的 PR2 L0/L1 受控 loader/read-once/TCB 深化项按 2026-07-06 令移至发布时点、非 P1.2 闭合前提。
+producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint 字节复验并铸造持久化终端 `CERTIFIED`；其生产入口是独立命令 `scripts/run_supervisor_seal.py`（从 proposal-ready marker 驱动，`349c56c`），普通 `main.py` 运行不会 seal。`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的 campaign authority 事务式发布 canonical solution、blueprint 和 manifest。fixed-witness verifier、P1.2 open gate 与 supervisor 调度入口均已落地；owner 已于 2026-07-07 以显式 owner_manual_decision 关闭 P1.2、开启 P1.3（三轮收口外审 0 上-TCB 洞、gate=`closed_manual_owner_decision`）。「仅防蓄意内鬼」的 PR2 L0/L1 受控 loader/read-once/TCB 深化项按 2026-07-06 令移至发布时点、非 P1.2 闭合前提。
 
 ## 历史 subject/projection 文本
 

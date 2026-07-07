@@ -63,11 +63,12 @@ UNKNOWN 并拒绝落 proof-bearing cut。
 `scripts/check_p1_2_proof_obligations.py` 绑定 proof-bearing sink inventory、source hashes、guard tokens、
 allowlist 和关键 gate 文件。它是结构边界检查，不是“P1.2 已 sound/已发布”的证明。
 
-## 仍未关闭的边界
+## 已关闭后的剩余边界
 
 1. 普通 solver run 不会从 proposal 自动晋升（生产 supervisor seal 命令已存在：`scripts/run_supervisor_seal.py`；但尚无真实生产 campaign→seal 实跑记录）。
-2. `data/review_gates/phase_1_2_spike_close.json` 仍为 `blocked_manual_review_count`，兼容字段
-   `p1_3b_entry_allowed=false`。内部 supervisor seal 不能自动翻转 owner gate。
+2. `data/review_gates/phase_1_2_spike_close.json` 已为 `closed_manual_owner_decision`，兼容字段
+   `p1_3b_entry_allowed=true`。这是 2026-07-07 owner 真实输入的 `owner_manual_decision`；
+   内部 supervisor seal 不能自动翻转 owner gate，clean 计数仍保存在仓库外。
 3. PR2 的较小 verification TCB、controlled loader、read-once/one-snapshot 设计仍未实现完整（其中「仅防能执行 reseal 仪式的蓄意内鬼」的硬化 owner 2026-07-06 已暂缓到发布时点、明确非 P1.2 闭合前提，见 PROJECT_LOCK §C5 close-scope 修改）。
 4. `scripts/package_review_snapshot.py` 的 resolve-once 已把 treeish 一次解析为不可变 commit 并同时用于
    provenance 与物化（ref-move TOCTOU 已闭，回归 `test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit`）；
@@ -95,6 +96,6 @@ hash-incompatible。
 
 ## 阶段命名
 
-- P1.2：当前认证发布链 soundness 与 release gate 收口，仍未闭合。
-- P1.3：后续真正的 master/cut integration。
+- P1.2：当前认证发布链 soundness 与 release gate 收口已于 2026-07-07 owner-closed。
+- P1.3：已开放；后续真正的 master/cut integration 仍待完成。
 - `p1_3b_*`：只作为既有 JSON/CLI 兼容字段保留，不代表人类路线图仍分 A/B。

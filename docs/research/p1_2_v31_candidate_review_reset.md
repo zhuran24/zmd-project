@@ -1,5 +1,7 @@
 # P1.2 v31 candidate review reset evidence
 
+> **[Snapshot note]** Written before the P1.2 close. Statements like "P1.2 remains blocked" reflect the state at writing time; P1.2 was closed by explicit owner_manual_decision on 2026-07-07 (P1.3 opened). Current authority: data/review_gates/phase_1_2_spike_close.json.
+
 Status: NOT CLEAN.
 
 The v31 candidate review found major/soundness issues that block counting this review as clean:

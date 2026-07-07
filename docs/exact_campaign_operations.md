@@ -19,7 +19,9 @@ The campaign checkpoint is the persistent proof state, but three roles must rema
    requires the P1.2 publish-open gate to be owner-closed.
 
 A proposal, a candidate-level `RUN_STATUS_CERTIFIED`, or a schema-valid output file is not public
-certification. P1.2 is currently blocked by the manual owner gate.
+certification. The P1.2 owner gate was closed on 2026-07-07 by explicit
+`owner_manual_decision`; public certification still requires the supervisor-sealed disk authority
+and verified publisher.
 
 ## 2. Read-only inspection
 
@@ -34,7 +36,7 @@ reader, not a proof source. Review at least:
 - `final_status`, proposal state and stop reason;
 - resume compatibility with current artifact/source hashes;
 - terminal frontier and fixed-witness verification;
-- public certified-surface verdict and its blocked reason;
+- public certified-surface verdict and publication-gate reason;
 - telemetry wave/outcome counts.
 
 Do not infer public certification from checkpoint fields without the central certified-surface
@@ -122,10 +124,10 @@ therefore means “awaiting an external, explicit supervisor invocation”, not 
 
 ## 8. Public publication
 
-Canonical publication uses the verified publisher and is expected to fail while the current P1.2
-open gate remains blocked. Generic serializers, report/viewer builders and adapter exports may emit
-non-authoritative copies but must not write the canonical three-file surface or preserve
-proof-bearing language.
+Canonical publication uses the verified publisher. As of 2026-07-07, the P1.2 open-gate check
+should pass on the explicit owner decision; all other publisher preconditions still apply. Generic
+serializers, report/viewer builders and adapter exports may emit non-authoritative copies but must
+not write the canonical three-file surface or preserve proof-bearing language.
 
 The canonical set is:
 
@@ -145,4 +147,4 @@ A campaign handoff should state, without collapsing the distinctions:
 - public-surface verifier result and publish-gate state;
 - unresolved candidates, worker failures and budgets;
 - tests/checkers actually run in the same worktree;
-- known open P1.2 items, including PR2 and package-policy work.
+- post-P1.2 / release-time items, including PR2 deliberate-insider hardening and package-policy work.

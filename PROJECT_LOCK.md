@@ -138,21 +138,22 @@ checks as certified proof"）。
 `independent_infeasibility_reverifier.py` 在 whole-layout nogood 落 cut 前独立复验并在不确认时升
 `UNKNOWN`。这些修复关闭了相应已知实现缺口，但**不等于 P1.2 closed**。
 
-当前 P1.2 仍为 OPEN/BLOCKED：owner manual gate 仍是 `blocked_manual_review_count`；生产 supervisor 入口
+**P1.2 已于 2026-07-07 由 owner 显式 `owner_manual_decision` 关闭**（gate = `closed_manual_owner_decision`、
+`next_phase_entry.allowed=true`，详见下 §C5 现状框）。本段其余事实仍然成立：生产 supervisor 入口
 `scripts/run_supervisor_seal.py` 已落地（独立命令，从 proposal-ready marker 驱动独立
 supervisor 调 `supervisor_seal()`），补上了 done-condition 的「supervisor 可执行入口」这一条
-机器条件；但 `main.py` 普通完成仍止于 `CANDIDATE_PROPOSED`（seal 是独立命令、不由 main.py
-顺手做），入口存在**不等于** P1.2 closed——其余机器条件与 owner 门仍未满足；PR2 的更小、
-read-once/controlled-loader verification TCB 尚未实现；review snapshot 打包器已把 mutable `treeish`
+机器条件；`main.py` 普通完成仍止于 `CANDIDATE_PROPOSED`（seal 是独立命令、不由 main.py
+顺手做），入口存在与 seal 成功都**不是**关门动作本身；PR2 的更小、
+read-once/controlled-loader verification TCB（仅防蓄意内鬼）已按 2026-07-06 owner 令移至发布时点（见下段）；review snapshot 打包器已把 mutable `treeish`
 一次解析为 immutable commit 并统一用于 provenance/manifest/物化（TOCTOU 窗口已闭，由
-`test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit` 回归钉住），但归档策略
-覆盖仍不完整；roadmap 中其它 OPEN/PARTIAL 几何/规格
+`test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit` 回归钉住），归档策略已按
+`28d9d2c` 收窄；roadmap 中其它 OPEN/PARTIAL 几何/规格
 边界仍需按 principle/implementation/red-test 状态处理。connector/body 的已知公开发布缺口已由终端
-fixed-witness 拒绝路径关闭，不应继续列作未实现项。人类文档称下一阶段为 **P1.3**；
+fixed-witness 拒绝路径关闭，不应继续列作未实现项。当前阶段为 **P1.3**；
 现有 `p1_3b_*` 字段仅为历史机器兼容标识。任何 checker PASS、局部回归 PASS 或内部 supervisor
-seal 都不得改写为 owner 已关闭 release gate。
+seal 都不得改写为 owner 关门动作——关门权威只在 owner_manual_decision（已于 2026-07-07 行使）。
 
-**2026-07-06 close-scope 修改（owner，行使 `docs/项目说明/12_go_criteria.md:30`「或 owner 明确修改 close scope」）**：上文列为未决的「PR2 更小/read-once/controlled-loader verification TCB」及其同类——凡**只防「能执行 reseal 仪式的蓄意内鬼」**的硬化（#8 深化、#3 fd-held read-once、#9b OS 写隔离、#9c 原生 TOCTOU、#5-F import-time 完整性、#5 Option B、#2）——owner 统一**暂缓到发布时点、明确不作为 P1.2 闭合的必要条件**。判据：手滑/无心之失与外部篡改已被字节 sha floor 常开拦死（不延期、是核心），这些锚只对忠实 reseal 后的蓄意内鬼有意义（威胁模型定性见 `close-kernel-threat-model-reseal-adversary`）。提取全集＋判据＋何时翻转见记忆卡 `deliberate-insider-hardening-deferred-to-release`。此修改**不**改写 P1.2 仍 OPEN/BLOCKED（owner 手动门未关）；它只把这些从「收口编码前提」移到发布时点。
+**2026-07-06 close-scope 修改（owner，行使 `docs/项目说明/12_go_criteria.md:30`「或 owner 明确修改 close scope」）**：上文列为未决的「PR2 更小/read-once/controlled-loader verification TCB」及其同类——凡**只防「能执行 reseal 仪式的蓄意内鬼」**的硬化（#8 深化、#3 fd-held read-once、#9b OS 写隔离、#9c 原生 TOCTOU、#5-F import-time 完整性、#5 Option B、#2）——owner 统一**暂缓到发布时点、明确不作为 P1.2 闭合的必要条件**。判据：手滑/无心之失与外部篡改已被字节 sha floor 常开拦死（不延期、是核心），这些锚只对忠实 reseal 后的蓄意内鬼有意义（威胁模型定性见 `close-kernel-threat-model-reseal-adversary`）。提取全集＋判据＋何时翻转见记忆卡 `deliberate-insider-hardening-deferred-to-release`。（时点注：此修改做出时 P1.2 尚未关闭、且它本身**不**是关门动作——只把这些项从「收口编码前提」移到发布时点；P1.2 后于 2026-07-07 由 owner_manual_decision 关闭。）
 
 ### C. P1.2 done-condition (C5)
 
@@ -204,8 +205,9 @@ owner 手动条件：
 - `data/review_gates/phase_1_2_spike_close.json` 只能由 owner 的显式 `owner_manual_decision` 打开；仓库
   不得从 receipt、报告、package metadata、source-tree manifest、clean-count 或内部 supervisor seal
   自动推导 P1.2 closed / P1.3 allowed。
-- 当前 gate 为 `blocked_manual_review_count`，兼容字段 `p1_3b_entry_allowed=false`。在 owner 明确改闸且
-  机器条件全部满足前，公开发布与下一阶段入口都保持关闭。
+- 当前 gate 为 `closed_manual_owner_decision`（owner 2026-07-07 显式关闭 P1.2、开启 P1.3），兼容字段
+  `p1_3b_entry_allowed=true`。该关闭是 owner 真实手动输入；此前在 owner 明确改闸前，公开发布与下一阶段
+  入口一直保持关闭（fail-closed 机制本身不变，未来任何 gate 变更仍只认 owner_manual_decision）。
 
 
 ## 2. Certified Source of Truth

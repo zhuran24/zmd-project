@@ -1,5 +1,7 @@
 # formal/ — 范式定理的机器检查层（Lean 4）
 
+> 注：本文各处「待独立复审 / 待外审 / 送审」均指 formal 形式化产物自身的质量复审队列（P3.0 轴 A），与 P1.2 收口外审无关——P1.2 已于 2026-07-07 由 owner_manual_decision 正式 CLOSED。
+
 **性质**：研究层前瞻投资（P3.0 头启动，对应 open question Q14）。**不进认证 TCB、
 不改变任何 gate 的验收标准**——项目政策"数学 sound 用工程 verify"（`16_workflow_review.md`
 §6.4）继续有效；本目录是给该政策将来 reconsider 时的地基，锁面未动。
@@ -108,7 +110,7 @@ scope 调用方义务）、`frontier_prune_dominates`（非剪枝 soundness 单�
 **来源**：陈述由本方按可开工地图
 （`docs/research/p3_0b_family_formalizability_survey_20260705/`）的抽象核心
 定理表写就，每条 docstring 锚到对应 survey 报告（那里有 spec/impl 的
-file:line）。**待独立复审**（与首批同流程：先落库，后送盲对拼/对抗审）。
+file:line）。**待独立复审（formal 自身队列）**（与首批同流程：先落库，后送盲对拼/对抗审）。
 每个 family 给 bound（容量上界）与 infeasible（fire 条件逆否 = cut soundness
 数学核）两个形态；抽象层不绑 70×70。
 
@@ -137,7 +139,7 @@ file:line）。**待独立复审**（与首批同流程：先落库，后送盲�
 **来源**：F5 复合安全 = `p1_3_f5_orbit_lift_soundness_design_v1.md` §2.4 引理
 原文（v2 声明"同 v1"）；TP7-S 键边界 = `p2_0_throughput_certification_paradigm_design_v2.md`
 v3 终审 BLOCK（回退循环第 1/2 条）；frontier 剪枝 = 项目 max_lex 目标的搜索剪枝
-soundness。**待独立复审**（与 CutFamilies 同批送审）。
+soundness。**待独立复审（formal 自身队列）**（与 CutFamilies 同批送审）。
 
 | Lean 定理 | 对应命题 | 公理依赖 |
 |---|---|---|
@@ -156,7 +158,7 @@ soundness。**待独立复审**（与 CutFamilies 同批送审）。
 **来源**：`docs/research/q1_infeasibility_class_taxonomy_design_v1.md` §5/§7
 的 Lean 化。**Lean 化自查发现**：设计稿 v1 §5 "完整赋值的扩展=自身"论证
 隐含两个未点名前提（Feasible⊆Complete、Complete 间无真包含），已在本模块
-显式化——设计稿 v2 修订时应补进 §5 工程条件清单。**待独立复审**。
+显式化——设计稿 v2 修订时应补进 §5 工程条件清单。**待独立复审（formal 自身队列）**。
 
 | Lean 定理 | 对应命题 | 公理依赖 |
 |---|---|---|
@@ -204,16 +206,16 @@ soundness。**待独立复审**（与 CutFamilies 同批送审）。
 1. ~~`anon_lift_sound`~~ **已完成**（2026-07-05，见 `DesignStatements.lean`
    `Orbit.anon_multiset_lift_soundness_from_named_representative` 全链）。
 2. ~~第一梯队 family 核心定理~~ **已完成**（2026-07-05，`CutFamilies.lean`
-   15 条：F9/F1/F7/F4/F6/F2 各 bound+infeasible 形态；待独立复审）。
+   15 条：F9/F1/F7/F4/F6/F2 各 bound+infeasible 形态；待独立复审（formal 自身队列））。
 3. ~~第二梯队 F3~~ **已完成**（2026-07-05，`CutFamilies.lean` F3 节 2 条，
    all-ports-active 显式量化 + frontCell 抽象参数）；F8 power_grid_reach
-   **继续等 P1.3 欧氏 vs 12×12 stencil reconcile**（代码自认 landmine）。
+   **P1.3 已开启；等 P1.3 内欧氏 vs 12×12 stencil reconcile 完成**（代码自认 landmine）。
 4. ~~F5 复合安全引理~~ / ~~TNS lex 支配~~ / ~~TP7-S 键边界~~ **已完成**
-   （2026-07-05，`FrameworkLemmas.lean` 9 条，各带正反两面；待独立复审）。
+   （2026-07-05，`FrameworkLemmas.lean` 9 条，各带正反两面；待独立复审（formal 自身队列））。
 5. ~~完备性 Q1 分类学设计稿~~ **v1 已写**（2026-07-05，
-   `docs/research/q1_infeasibility_class_taxonomy_design_v1.md`，待外审）；
+   `docs/research/q1_infeasibility_class_taxonomy_design_v1.md`，待外审（formal 自身队列））；
    ~~W-完备 Lean 骨架~~ **已完成**（`WCompleteness.lean` 3 条）。
-6. 送审：CutFamilies + FrameworkLemmas + WCompleteness + 分类学设计稿
+6. 送审（formal 自身队列）：CutFamilies + FrameworkLemmas + WCompleteness + 分类学设计稿
    （四包已备好待跑）。
 7. ~~组合定理~~ **已完成**（`WCompleteness.oracle_nogood_compound_search_safety`）。
-   更远的砖：TP7-D 周期日历证书的可判定验收语义；F8 等 P1.3 stencil reconcile。
+   更远的砖：TP7-D 周期日历证书的可判定验收语义；F8 等 P1.3 内 stencil reconcile 完成。

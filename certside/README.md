@@ -39,14 +39,15 @@
   （cake_pb 失败时 exit code 亦为 0，判定只认输出文本）。含 17k 变量真实模型
   实测通过。前置依赖 = RoundingSat 本地补丁 **v2**（rup 必须在 output 段之前，
   kernel parser 严格按段序——见 patch_rs_logger.py）。
-- **Phase 0 采集侧 = P1.2 收口后再落**（owner 2026-07-05 拍板，选项 b）。
+- **P1.2 已于 2026-07-07 收口；Phase 0 采集侧待单独排期**（owner 2026-07-05 拍板，选项 b）。
 - **冻结工件解析前端已落地**（frontend.py）：五工件 strict-JSON exact-decimal
   独立解析、operation profile 独立重推（Fraction 精确 ceil），与生产
   OPERATION_PORT_PROFILES 对拍 **21/21 精确一致**（parity_check.py）；
   真实规模端到端已验（real_sample.py：17k 变量模型，emit+solve+check < 10s，
   R1 无储存箱 CONFIRMED / R2 补箱 SAT+witness 通过）。
 - **真实生产判决对账仍不可做**（by design）：需要 canonical sample record
-  （verdict/scope/ordinal 字段）——采集侧改造动生产文件，属 Phase 0、待 owner 批。
+  （verdict/scope/ordinal 字段）——采集侧改造动生产文件，属 P3.0c 轴 B 的
+  Phase 0 自身排期、待 owner 批；与已关闭的 P1.2 无关。
   在此之前 frontend 能对任意布局出 OPB 并跑链路，但产出只是 sidecar 自身判定、
   不与生产 verdict 关联。
 

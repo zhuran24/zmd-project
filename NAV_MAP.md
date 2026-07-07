@@ -48,13 +48,13 @@ generic serializer、blueprint exporter、manifest writer、viewer/report builde
 |---|---|
 | `src/search/` | outer producer、campaign、frontier、fixed-witness、supervisor seal、中央发布面 |
 | `src/models/` | master、binding、routing；flow 为诊断模块 |
-| `src/cuts/` | cut 生成、校验与生命周期；`step_8_apply_to_master` 仍是后续 P1.3 集成边界 |
+| `src/cuts/` | cut 生成、校验与生命周期；`step_8_apply_to_master` 是 P1.3（已于 2026-07-07 开启）阶段待完成的生产 master/cut 集成边界 |
 | `src/io/` | strict JSON、序列化和 delivery manifest 基础设施，不单独拥有公开认证权 |
 | `src/render/`, `src/adapters/` | postprocess/delivery surface，必须消费中央验证后的 authority |
 | `src/tests/` | 单元、回归和 soundness 红测 |
 | `rules/`, `data/preprocessed/` | canonical rules 与冻结输入 |
 | `data/proof_obligations/` | P1.2 机器义务、sink inventory、allowlist |
-| `data/review_gates/` | owner 手动 phase gate；当前仍阻塞 |
+| `data/review_gates/` | owner 手动 phase gate；P1.2 已由 `owner_manual_decision` 关闭，P1.3 entry allowed |
 
 ## 建议阅读顺序
 

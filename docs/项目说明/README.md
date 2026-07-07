@@ -11,9 +11,11 @@
 4. `docs/项目说明/soundness_gap_roadmap.md`：已实现、部分实现、未实现和 scope-exclusion 矩阵。
 5. 其余 phase plan / historical review / research 文档：设计或历史上下文，不能覆盖上述现状。
 
-截至 2026-06-26，P1.2 仍为 OPEN/BLOCKED。当前工作树已落 producer/supervisor split、fixed-witness、
-OPEN-GATE、whole-layout independent reverify 和 central publisher，但 manual gate、PR2、immutable package
-materialization 与策略收口仍未完成。
+截至 2026-07-07，P1.2 已由 owner 显式 `owner_manual_decision` 关闭
+（`closed_manual_owner_decision`，`p1_3b_entry_allowed=true`），P1.3 已开放。当前工作树已落
+producer/supervisor split、fixed-witness、OPEN-GATE、whole-layout independent reverify 和 central
+publisher；manual gate 已完成。#9a 为部署时点任务，防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/
+#9b/#9c/Option B）另列发布时点，非 P1.2 blocker。
 
 ## 推荐阅读
 

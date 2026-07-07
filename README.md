@@ -12,18 +12,18 @@
 ## 现状速览(一分钟看懂当前在哪)
 
 - **项目:** 为《明日方舟:终末地》70×70 基地(266 个 mandatory 设施)求解【certified-exact 最大空矩形】,目标 `max_lex(area, min_side)`。核心铁律 = `certified_exact`(唯一能产证明材料的路径)与 `exploratory`(启发式 / 诊断,**永不能升为证明**)两条路径严格隔离。
-- **P1.2 = 当前认证里程碑,状态 = RELEASE-BLOCKED:** 被一道【owner 仓库外人工 clean-review 计数】的手动门卡住(该 clean-review 计数 **owner-maintained outside the repo**;`next_allowed=false`;2026-07-06 owner 澄清:「三次 clean」字面数字只是机器兼容基准,实际判据=收口外审到 owner 判定足够为止,详见 gate JSON policy_note 与 `docs/PHASE_1_2_CLOSE_GATE.md`);`main.py` 只停在 `CANDIDATE_PROPOSED`——生产 supervisor seal 入口已由 `scripts/run_supervisor_seal.py` 落地为独立命令,不会由 `main.py` 自动铸出 durable `CERTIFIED`。**别把"seal 方法存在 / 某测试调用过 / 生产入口存在"当成 owner 批准的 release closure。**
+- **P1.2 = 已由 owner 关闭的认证里程碑;P1.3 = 已准许开工:** `data/review_gates/phase_1_2_spike_close.json` 当前为 `status="closed_manual_owner_decision"`、`owner_manual_state.p1_2_close_status="closed"`、`owner_manual_state.p1_3b_entry_allowed=true`、`next_phase_entry.allowed=true`。该关门动作已于 2026-07-07 由 owner 真实输入完成,clean-review 计数仍 **owner-maintained outside the repo**;repo 仍不得从 receipt / test / seal / checker 绿灯自动推导 closed/released。`main.py` 只停在 `CANDIDATE_PROPOSED`——生产 supervisor seal 入口已由 `scripts/run_supervisor_seal.py` 落地为独立命令,不会由 `main.py` 自动铸出 durable `CERTIFIED`。P1.3 开启 = 准许开始 `step_8_apply_to_master` 生产 master/cut 集成,**不是** P1.3 已完成。
 - **近期主线 = PR2 硬化**,尤其 **PR2 #5「close-kernel 第二道门」**:一套 AST / source-sha checker(`scripts/check_p1_2_proof_obligations.py`)+ runtime 父进程锚(`src/search/certified_artifact_contract.py`),防"能 reseal checker 的恶意维护者保 checker 全绿却掏空 runtime proof"。经 round-8→18 的多轮外审(GPT Pro panel)+ 本地 codex 对抗审,**结构性 BLOCK 已清零**;剩 3 类【已被 owner 裁定接受】的残余(详见第 4、6 章):**F**(import-time 执行完整性,图灵完备无界,单列专门线 #5-F)/ **checker-self**(checker 无法递归自证自己)/ **A4 witness-body 动态反射重绑**——三类共同兜底 = "相关源文件已被 source-sha 逐字节钉死 → 改它必留显眼 diff → 人工 clean-review"。
 - **当前 HEAD(2026-07-04 更新):** PR2 #5 close-kernel 经 round-19/20 硬化后已由合并提交 `6e06922` **合入 main**(round-20 = `2413cc2`);mixflow-routing 数学面修复批次 1+2+3 也已合入(`3c99ed0`)。本文大量段落记录的是合入前快照(round-18 `9bbb3a6`、main `b35e5f9`——这些 hash 在本交付副本均不可解析,只当叙事线索;V99 blob 断言同属当时快照)。核对现状一律以 `git log` 实测为准。
 - **PR2 剩余项(真实 backlog;2026-07-06 owner 同日两拍板、以晚间为准:所有「仅防蓄意内鬼」硬化延期到发布时点、非 P1.2 收口前提——编码前提实质清空;round-20 画 TCB 线只停外审循环,这些待办不取消、转为发布时点执行序):** #1(最小 TCB 闭包,含 #5-F import-time 专门线)、#2/#3(loader / read-once 精化)、#5 独立枚举(候选域独立重推导)、#8(argv0/contract digest)、#9b/#9c(OS 写隔离 / 原生 TOCTOU)。#7(certify 生产入口 = go-live 最后通电)已于 2026-07-04 由 `scripts/run_supervisor_seal.py` 落地,但只补"supervisor 可执行入口"这一条机器条件。
 - **一个部署前必做:** `pr2_dependency_floor_manifest.json` 现在钉的是【审计 Linux env 字节的占位】、非生产 canonical;生产前必须在 CachyOS + Py3.13 venv 重生成 + 审 + 重钉。
 
-> **📌 2026-07-04 事实更新(后于正文六章的调查基线,读正文前先看这段):** 正文六章按 2026-07-02 前后的调查快照写成,其中三件事后来已发生——① `pr2-5-domain-frontier-gate`(PR2 #5 close-kernel)经 round-19/20 后已由 `6e06922` **合入 main**,owner 已画 TCB 线**停止 close-kernel 外审循环**(round-19/20 外审不发;画线≠取消 PR2 深化 backlog,见上「PR2 剩余项」);② mixflow-routing 数学面修复批次 1+2+3 已由 `3c99ed0` 合入,批次 3 尾巴与推迟项已关闭(`9aa4176`/`a8ea631`/`a731764`);③ PR2 #7 supervisor seal 生产入口已由 `349c56c` 落地。**因此正文中一切"未合入 / 等第 12 轮外审 / round-18 是当前进度 / main=`b35e5f9` / 新机器拿不到 `9bbb3a6`"的表述均为合入前史料快照,以本节为准。** P1.2 仍 OPEN/BLOCKED(owner 手动门),这一点没变。
+> **📌 2026-07-07 事实更新(后于正文六章的调查基线,读正文前先看这段):** 正文六章按 2026-07-02 前后的调查快照写成,其中三件事后来已发生——① `pr2-5-domain-frontier-gate`(PR2 #5 close-kernel)经 round-19/20 后已由 `6e06922` **合入 main**,owner 已画 TCB 线**停止 close-kernel 外审循环**(round-19/20 外审不发;画线≠取消 PR2 深化 backlog,见上「PR2 剩余项」);② mixflow-routing 数学面修复批次 1+2+3 已由 `3c99ed0` 合入,批次 3 尾巴与推迟项已关闭(`9aa4176`/`a8ea631`/`a731764`);③ PR2 #7 supervisor seal 生产入口已由 `349c56c` 落地;④ P1.2 已由 owner 于 2026-07-07 通过显式 `owner_manual_decision` 正式 CLOSED,同时 P1.3 opened。**因此正文中一切"未合入 / 等第 12 轮外审 / round-18 是当前进度 / main=`b35e5f9` / 新机器拿不到 `9bbb3a6` / P1.2 仍被 owner 手动门阻塞"的表述均为收口前史料快照,以本节和 gate JSON 为准。** P1.3 主体工作仍待做:开启只表示准许开工,不是生产 master/cut 集成已完成。
 
 ## 目录
 
 1. **项目本质、架构与认证边界** —— 这项目是什么、`certified_exact` vs `exploratory`、solve pipeline 每层证什么、frozen artifacts。
-2. **认证 / 发布链、P1.2 与为什么 release-blocked** —— producer→supervisor seal→publisher 三分、手动门、proof-obligation gate。
+2. **认证 / 发布链、P1.2 与为何曾 release-blocked** —— producer→supervisor seal→publisher 三分、手动门、proof-obligation gate。
 3. **早期史** —— PR1 soundness 三轮外审、capsule 架构推翻、supervisor L0/L1 重做、算法核心 / 吞吐认证死路。
 4. **PR2 完整 saga** —— #8/#9a + close-kernel 第二道门 round-8→18 + denylist 不收敛→3 类残余 + reseal ritual + 剩余项。
 5. **不变量、坑与工具 / 工作流** —— reseal/LF/V99 floor/strict JSON/preflight/记忆系统/codex 路由/es/codegraph。
@@ -196,17 +196,17 @@ The certified path is grounded in frozen inputs whose bytes are hash-pinned by t
 
 ---
 
-## 7. The release boundary — honest current status (P1.2 is OPEN / BLOCKED)
+## 7. The release boundary — honest current status (P1.2 CLOSED / P1.3 OPENED)
 
 Do not read any safeguard above as "the project is done / published" (PROJECT_LOCK §1A/C lines 122-186; cc_memory `fact:fact-p1-2-release-gate-status-20260626`):
 
-- **P1.2 is OPEN / BLOCKED.** The owner manual gate `data/review_gates/phase_1_2_spike_close.json` is currently `blocked_manual_review_count` (`next_phase_entry.allowed=false`; compat field `p1_3b_entry_allowed=false`). It opens only by the owner's explicit `owner_manual_decision`. The repo must **not** auto-derive P1.2-closed / P1.3-allowed from a receipt, report, package metadata, source-tree manifest, clean-count, or an internal supervisor seal.
+- **P1.2 is CLOSED by explicit owner manual decision; P1.3 entry is OPENED.** The owner manual gate `data/review_gates/phase_1_2_spike_close.json` is currently `closed_manual_owner_decision` (`owner_manual_state.p1_2_close_status="closed"`; `next_phase_entry.allowed=true`; compat field `p1_3b_entry_allowed=true`). It opened on 2026-07-07 only by the owner's explicit `owner_manual_decision` (`decision_id="owner-p1-2-close-p1-3-open-20260707"`). The repo must **not** auto-derive P1.2-closed / P1.3-allowed from a receipt, report, package metadata, source-tree manifest, clean-count, or an internal supervisor seal.
 - **`main.py` stops at `CANDIDATE_PROPOSED`.** The production supervisor entry is now `scripts/run_supervisor_seal.py`: an independent command that resumes a committed `CANDIDATE_PROPOSED` proposal, validates the proposal-ready marker first, calls `ExactCampaign.supervisor_seal()` (real isolated L0 recheck), and exits success/error. A normal `main.py` completion is still *not* a seal success — the single biggest "looks done but isn't" trap; entrypoint availability is not P1.2 closure (cc_memory `fact:fact-p1-2-supervisor-operability-20260626`, `entry:p1-2-supervisor-production-entry-gap-20260626`; main.py:51-88; `scripts/run_supervisor_seal.py`, commit `349c56c`, 2026-07-04).
-- **preflight/checker green ≠ soundness.** cc_memory `entry:p1-2-current-validation-20260626` records ~3346 passed / 0 failed while the same memory set still marks P1.2 blocked.
+- **preflight/checker green ≠ soundness.** cc_memory `entry:p1-2-current-validation-20260626` records ~3346 passed / 0 failed while the same memory set still marked P1.2 blocked at that historical point; the 2026-07-07 closure comes from owner input, not those green checks.
 - **PR2 (TCB shrink) is unfinished.** The smaller read-once / controlled-loader verification TCB is not implemented (still-open backlog: #1/#2/#3, #5 independent enumeration, #8, #9b/#9c — real to-dos; per the owner's 2026-07-06 evening ruling the deliberate-insider-only ones are deferred to release time and are NOT P1.2 closeout prerequisites). The review-snapshot packager has since been fixed to resolve the caller-supplied `treeish` to an immutable commit once and materialize from that same resolved commit (`scripts/package_review_snapshot.py`; pinned by a ref-move TOCTOU regression test, and PROJECT_LOCK §1A was synced accordingly on 2026-07-04); archive-policy coverage remains to be confirmed. *(The "close-kernel" AST-pin hardening line has since converged — merged to main at `6e06922` after round-19/20; the owner drew the TCB line on 2026-07-03 and stopped the external-review loop. The durable lesson relevant here, from cc_memory `entry:close-kernel-ast-pin-structural-vs-semantic-boundary`: an AST pin can protect **structure** (the sole durable-mint chokepoint, entry reachability, gate result-flow) but **cannot protect "the proof math is correct"** — leaf numeric helpers are consciously delegated to the sha source-floor + frozen-artifact hash + human re-pin review, and that boundary is honestly labeled, not papered over. Do not treat the structural checker as a substitute for human review.)*
 - **What was closed (but does not close P1.2):** the PR1 producer/supervisor/publisher split; fixed-witness terminal re-verification; the fail-closed P1.2 OPEN-GATE (`resolve_p1_2_publish_open_gate()`); the connector/body terminal check; isolated-source bytecode binding (`PO-ISOLATED-EXEC-BYTECODE-BINDING`: verifier subprocess uses `-B -X pycache_prefix=<fresh>` from source-digest-protected `.py`); and the I1 independent whole-layout reverifier (CHANGELOG 2026-06-26). Python/stdlib/OR-Tools native extensions, the parent relay, and OS process/file isolation remain **named TCB** — never write "TCB fully eliminated" (PROJECT_LOCK §1A lines 169-171).
 
-**Honest framing:** P1.2 "closed" would mean *only* that the §1A proposition-P machine boundary, the publication chain, and the owner manual gate are simultaneously satisfied. It is **not** a throughput theorem and does **not** auto-open the next phase (humans call it P1.3; `p1_3b_*` fields are legacy machine-compat identifiers) (PROJECT_LOCK §1A lines 139-146).
+**Honest framing:** the 2026-07-07 P1.2 "closed" state means *only* that the §1A proposition-P machine boundary, the publication chain, and the owner manual gate have been accepted by explicit owner decision. It is **not** a throughput theorem and does **not** mean the next phase is done (humans call it P1.3; `p1_3b_*` fields are legacy machine-compat identifiers) (PROJECT_LOCK §1A lines 139-146).
 
 ---
 
@@ -235,9 +235,9 @@ Do not read any safeguard above as "the project is done / published" (PROJECT_LO
 
 ## 9. Open problems, residuals, known limits (do NOT treat as closed)
 
-1. **P1.2 not closed; `main.py` ends at `CANDIDATE_PROPOSED`** (§7). Headline open item. Gate = `blocked_manual_review_count; next_phase_entry.allowed=false`.
-2. **`scripts/run_supervisor_seal.py` is the production supervisor entrypoint, but this only lands PR2 #7.** It is an independent marker-driven command to call `supervisor_seal()`; it does not make `main.py` seal, does not satisfy PR2 #1/#2/#3/#5-independent-enumeration/#5-F/#8/#9, and does not open the owner gate.
-3. **preflight/checker green is not a soundness conclusion** (~3346 passed / 0 failed alongside P1.2 blocked).
+1. **P1.2 was owner-closed on 2026-07-07; `main.py` still ends at `CANDIDATE_PROPOSED`** (§7). Remaining release-surface caveat: no public end-to-end production seal/publish record is implied by that closure. Gate = `closed_manual_owner_decision; next_phase_entry.allowed=true`.
+2. **`scripts/run_supervisor_seal.py` is the production supervisor entrypoint, but this only lands PR2 #7.** It is an independent marker-driven command to call `supervisor_seal()`; it does not make `main.py` seal, does not satisfy PR2 #1/#2/#3/#5-independent-enumeration/#5-F/#8/#9, and did not itself open the owner gate. The owner gate opened later by explicit 2026-07-07 `owner_manual_decision`.
+3. **preflight/checker green is not a soundness conclusion** (~3346 passed / 0 failed in the historical then-blocked state; current closure still rests only on owner decision).
 4. **Discrete throughput / belt bandwidth / capacity-flow at high density is unproven and out of scope** — needs a new predicate + new proof chain, not opening `flow_subproblem.py` (B-1, B-2).
 5. **Candidate geometry is a hash-pinned TCB** — the current theorem does not re-derive all candidate geometry from canonical rules; `candidate_placements.json` bytes are themselves inside the TCB.
 6. **`src/cuts/` F1–F9 cut lifecycle is not integrated** — `step_8_apply_to_master` raises `NotImplementedError`; seeing `src/cuts/` does not imply F1–F9 can participate in certified pruning (F-CUT-BS-R3-01).
@@ -267,7 +267,7 @@ Recommended order (don't just trust this document):
 
 ---
 
-# 第 2 章 · 认证 / 发布链、P1.2 与为什么仍 release-blocked
+# 第 2 章 · 认证 / 发布链、P1.2 与收口前为何 release-blocked（史料）
 
 > **本章定位**：把一次求解运行变成公开 `CERTIFIED` 结果的**权限链（authority chain）**、管辖 release 关闭的**owner 手动闸**，以及这条链被硬化出来的完整（且诚实、包含死路的）历史。这是给另一台机器、从零接手的新工程师的**唯一上下文**——完整优先于简洁。凡涉及"我们决定了 X"，请当作**一条你可以重新裁定的既往决策证据**，不是你必须采纳的结论。所有条目尽量追溯到 `file:line`、git 短哈希、`cc_memory` 条目 id 或数据文件。
 >
@@ -303,13 +303,13 @@ python scripts/check_p1_2_proof_obligations.py
 
 ## 1. 支配一切的单一事实
 
-**当前不存在任何公开 `CERTIFIED` 结果，且正常求解 `main.py` 运行今天也铸不出。** 求解器默认入口停在 `CANDIDATE_PROPOSED`；能铸 durable 终态 `CERTIFIED` 的方法（`ExactCampaign.supervisor_seal()`）存在且有测试，生产入口已由 `scripts/run_supervisor_seal.py` 落地为独立命令：从 proposal-ready marker 驱动 supervisor seal，而不是由 `main.py` 顺手调用。即便有一个合法的内部 seal，也**不是 release**：release 关闭由一个**默认关闭的 owner 手动闸**管辖，其 clean-review 计数刻意保存在**仓库之外**。
+**当前不存在任何公开 `CERTIFIED` 结果，且正常求解 `main.py` 运行今天也铸不出。** 求解器默认入口停在 `CANDIDATE_PROPOSED`；能铸 durable 终态 `CERTIFIED` 的方法（`ExactCampaign.supervisor_seal()`）存在且有测试，生产入口已由 `scripts/run_supervisor_seal.py` 落地为独立命令：从 proposal-ready marker 驱动 supervisor seal，而不是由 `main.py` 顺手调用。即便有一个合法的内部 seal，也**不是 release**：P1.2 release 关闭只认 owner 手动闸；该闸已于 2026-07-07 由 owner 真实输入关闭,其 clean-review 计数仍刻意保存在**仓库之外**。
 
 三把串联的锁：
 
 1. **Producer 只能提案**（不能认证）。
 2. **只有 supervisor seal 能铸 durable `CERTIFIED`**——生产侧入口是独立的 `scripts/run_supervisor_seal.py`，不是 producer / `main.py` 自动调用。
-3. **即便 seal 也"必要不充分"**：owner 手动闸必须独立打开，而它当前是 `blocked_manual_review_count` / `next_allowed=false`。
+3. **即便 seal 也"必要不充分"**：owner 手动闸必须独立打开；当前 gate 是 `closed_manual_owner_decision` / `next_phase_entry.allowed=true`，且该状态来自 2026-07-07 owner 真实输入。
 
 不要把"seal 方法存在 / 某个测试调用过它 / 结构 checker 通过"当成"owner 已批准 release 关闭"。`PROJECT_LOCK.md:136-137` 明写：*"任何 checker PASS、局部回归 PASS 或内部 supervisor seal 都不得改写为 owner 已关闭 release gate."*
 
@@ -330,10 +330,10 @@ main.py
      -> ExactCampaign.supervisor_seal()   唯一 durable 终态 CERTIFIED mint
         -> run_l0_supervisor_seal (L0 child verifier)
      -> publish_verified_certified_delivery_surface()  唯一公开 certified 发布口
-        -> 由 resolve_p1_2_publish_open_gate 拦，除非 owner 打开 P1.2 manual gate
+        -> 由 resolve_p1_2_publish_open_gate 检查 P1.2 manual gate；当前 gate 已由 owner 于 2026-07-07 打开
 ```
 
-2026-07-04 后当前链应读作 `CANDIDATE_PROPOSED checkpoint -> proposal-ready marker -> scripts/run_supervisor_seal.py -> supervisor_seal() -> publish_verified_certified_delivery_surface()`；`scripts/run_supervisor_seal.py` 补的是 supervisor 可执行入口，不是 owner gate 或 publisher 放行。
+2026-07-04 后当前链应读作 `CANDIDATE_PROPOSED checkpoint -> proposal-ready marker -> scripts/run_supervisor_seal.py -> supervisor_seal() -> publish_verified_certified_delivery_surface()`；`scripts/run_supervisor_seal.py` 补的是 supervisor 可执行入口，不是 owner gate 或 publisher 放行。owner gate 已于 2026-07-07 另由显式 `owner_manual_decision` 打开。
 
 ### 2.1 Producer 边界 — 只提案（`F-CAM-PR1-01`）
 
@@ -409,38 +409,36 @@ main.py
 
 - P1.2 的 done-condition：*`PROJECT_LOCK §1A` 命题 P 的机器边界、发布链、和 owner 手动闸同时满足*（`PROJECT_LOCK.md:145-146`）。命题 P 是那条 certified claim：70×70 `valley4_protocol_core` 底盘上 `max_lex(area, min_side)` 下的最大空矩形，由 **6 个 predicate** 把关（placement / no-overlap / per-instance placement_rule / port-binding exact-count / routing connectivity / power coverage —— `PROJECT_LOCK.md:38-98`）。
 - **P1.2 明确不是吞吐定理，也不自动打开 P1.3**（`:146`）。吞吐 / 传送带带宽 / 离散容量流**显式 out-of-scope**（`PROJECT_LOCK.md:100-116`，B-1..B-3）；flow model 只诊断、永不 gate（`flow_subproblem.py:4-9`）。
-- **两版视角互补**：Opus 强调 P1.2 是"命题 P 的 6-predicate 几何 + 端口精确计数 + 连通 + 供电覆盖"；Codex 强调 P1.2 本质是"**certification-chain soundness closure**"——producer/mint/publication 分权、candidate sink replay、fixed-witness、public surface currentness、phase gate、proof-bearing sink inventory、review/package provenance 等边界能否可靠关闭。二者是同一事物的两面：命题 P 是被认证的**内容**，认证链闭合是能否**可信声称**它。`CLAUDE.md:10-11`、`CHANGELOG.md:9-12` 均记录"已有 chain + fail-closed layers 但 P1.2 仍 blocked"。
+- **两版视角互补**：Opus 强调 P1.2 是"命题 P 的 6-predicate 几何 + 端口精确计数 + 连通 + 供电覆盖"；Codex 强调 P1.2 本质是"**certification-chain soundness closure**"——producer/mint/publication 分权、candidate sink replay、fixed-witness、public surface currentness、phase gate、proof-bearing sink inventory、review/package provenance 等边界能否可靠关闭。二者是同一事物的两面：命题 P 是被认证的**内容**，认证链闭合是能否**可信声称**它。`CLAUDE.md:10-11`、`CHANGELOG.md:9-12` 曾记录收口前状态；今日以 gate JSON 的 `closed_manual_owner_decision` / `owner_manual_state.p1_2_close_status="closed"` 为准。
 
 ### 4.2 命名注意（`naming-p1-3-vs-p1-2-fix`）
 
-- 人类叫的下一阶段是 **P1.3**（PoseBoolExactMaster / production master integration）；机器字段里含 `p1_3b` 的名字仅为兼容保留，**不是**入口许可（`phase_1_2_spike_close.json:33-36`, `PROJECT_LOCK.md:181-185`）。
+- 人类叫的下一阶段是 **P1.3**（PoseBoolExactMaster / production master integration）；机器字段里含 `p1_3b` 的名字仅为兼容保留，入口权威仍是 `owner_manual_decision`（`phase_1_2_spike_close.json`, `PROJECT_LOCK.md:181-185`）。
 - "P1.2-FIX" 是当前"闭合 P1.2 soundness"的工作。
 
 ---
 
 ## 5. 手动闸 —— 权威文件 `data/review_gates/phase_1_2_spike_close.json`
 
-当前状态（逐字读取）：
+当前状态（2026-07-07 按 gate JSON 逐字段读取）：
 
-- `:5` `status: "blocked_manual_review_count"`
-- `:8`, `:29` `current_review_anchor: "v99_p1_2_close_kernel_sealing"`
-- `:9-13` `manual_review_standard`：`required_consecutive_clean_full_reviews: 3`，**`counting_authority: "owner_manual_count_outside_repo"`**，`repo_derives_clean_count_from_receipts: false`，`receipt_role: "informational_record_only"`（另见 `:404-408`）
-- `:11` `counting_authority = owner_manual_count_outside_repo`（Codex 单列）
-- `:14-20` 打断 clean-review streak 的五类 finding：`unsound_cut`、`certified_false_negative`、`proof_obligation_bypass`、`fake_certified_claim`、`reachable_phase_gate_false_ready`
-- `:21` review receipts/reports 仅 informational，不是 clean credit 或 P1.3 entry 的机器 authority（Codex）
-- `:24` `owner_manual_state.p1_2_close_status: "not_closed"`
-- `:25` `p1_3b_entry_allowed: false`
-- `:30` repo **不记录也不计算** 0/3、1/3、2/3、3/3；owner 保留计数
-- `:32-37` / `:33-36` `next_phase_entry.allowed: false`，`authority: "owner_manual_decision_only"`，reason："Blocked by default. P1.3 entry requires an explicit owner_manual_decision; receipts, tests, structural checker passes, or an obsolete point-in-time seal cannot open this gate."；下一阶段名 "P1.3 production master integration"，机器兼容 id `p1_3b`
-- `:38-386` `informational_history`（V28→V99 全史，见 §7.2）
-- `:378` V99 sealing 只是 proof-bearing sink inventory / source hash / guard-token / TCB boundary；owner clean-streak 仍在 repo 外，P1.3 blocked；**并警告 post-V99 工作树改动不被旧 source-hash seal 覆盖，需重新 reseal**（另见 `:7`, `:30`）
+- `status: "closed_manual_owner_decision"`
+- `updated_at: "2026-07-07"`
+- `current_review_anchor: "v99_p1_2_close_kernel_sealing"`
+- `manual_review_standard`：`required_consecutive_clean_full_reviews: 3`，**`counting_authority: "owner_manual_count_outside_repo"`**，`repo_derives_clean_count_from_receipts: false`，`receipt_role: "informational_record_only"`
+- 打断 clean-review streak 的五类 finding 仍是：`unsound_cut`、`certified_false_negative`、`proof_obligation_bypass`、`fake_certified_claim`、`reachable_phase_gate_false_ready`
+- `owner_manual_state.p1_2_close_status: "closed"`，`owner_manual_state.p1_3b_entry_allowed: true`，`owner_manual_state.owner_clean_count_status: "maintained_outside_repo"`，`owner_manual_state.repo_derives_clean_count_from_receipts: false`
+- `owner_manual_decision.decision_id: "owner-p1-2-close-p1-3-open-20260707"`，`decided_by: "zhuran24"`，`decided_at: "2026-07-07"`，`acknowledges_repo_does_not_prove_clean_count: true`，`acknowledges_owner_verified_three_clean_reviews: true`
+- `next_phase_entry.phase: "P1.3 production master integration (machine compatibility id: p1_3b)"`，`next_phase_entry.allowed: true`，`next_phase_entry.authority: "owner_manual_decision_only"`；reason 明写 P1.3 entry 是 permission to begin P1.3，不断言 P1.3 work is done
+- `receipt_policy.role: "informational_record_only"`，`receipt_policy.can_open_p1_3b: false`
+- `informational_history` 仍保留 V28→V99 全史（见 §7.2）；其中收口前的历史摘要不覆盖以上当前字段
 
-**闸是 fail-closed by design**：repo 刻意不存进度计数，owner 在纸面 / repo 外记。cc_memory 锚：`fact-p1-2-release-gate-status-20260626`、`p1-2-current-publication-surface-status-20260626`（标题："P1.2 仍未闭合、人工 gate 仍 blocked;局部修复不得升级为 P1.2 CERTIFIED"）。
+**闸是 fail-closed by design**：repo 刻意不存进度计数，owner 在纸面 / repo 外记；该关门动作已于 2026-07-07 由 owner 真实输入完成。历史 cc_memory 锚 `fact-p1-2-release-gate-status-20260626`、`p1-2-current-publication-surface-status-20260626` 记录的是收口前口径，不得拿来覆盖当前 gate JSON。
 
-**为什么闸仍 blocked（诚实理由，`PROJECT_LOCK.md:130-137`）**——#7 supervisor 可执行入口已落地，但 P1.2 仍被这些条件卡住：
-1. PR2 的其余机器条件仍未满足：#1 最小 TCB 闭包、#2/#3 loader / read-once、#5-F import-time 专门线、#9b/#9c OS 写隔离 / 原生 TOCTOU。
-2. review-snapshot packager 仍从可变 `treeish` 物化而非已解析 commit，archive-policy 覆盖不全（PR1 GAP 部分已闭 —— §7.4）。
-3. owner 未做、且按策略不能被自动催促做手动关闭决定；`blocked_manual_review_count` 仍是 release-block。
+**闸为何曾经 blocked（历史理由，`PROJECT_LOCK.md:130-137`）以及今日状态**——#7 supervisor 可执行入口已落地；收口前 P1.2 曾被这些条件卡住：
+1. PR2 的其余机器条件仍未满足：#1 最小 TCB 闭包、#2/#3 loader / read-once、#5-F import-time 专门线、#9b/#9c OS 写隔离 / 原生 TOCTOU。（2026-07-06 owner 已裁定「仅防蓄意内鬼」硬化延期到发布时点，非 P1.2 收口前提。）
+2. review-snapshot packager 曾从可变 `treeish` 物化而非已解析 commit，archive-policy 覆盖不全（PR1 GAP 部分已闭 —— §7.4）。
+3. owner 当时尚未做手动关闭决定；今日事实是 owner 已于 2026-07-07 通过 `owner_manual_decision` 正式关闭 P1.2 并开启 P1.3。
 
 `PROJECT_LOCK.md:141-146` 进一步强调：PR1 split、fixed-witness、publish gate、I1 reverifier 是**已实现的 safeguard，不是 P1.2 closed**。
 
@@ -528,7 +526,7 @@ cc_memory `p1-2-closure-path-verdict-20260619`（Codex 版）：P1.2 可经 cons
   - V82：候选 domain 被 `h<=w` canonical 化而 master feasibility 对朝向敏感 → "只证了半个 domain 的穷尽"（在 3×3 toy 上演示了错误最优）；伪造 checkpoint cut 剪掉唯一可行 pose。
   - V83：伪造 checkpoint 发布几何不可能的空矩形；whole-layout nogoods 升级为候选 INFEASIBLE；loader 静默缩小 mandatory 集。**注意 reviewer-patch 缺陷**（把 ghost_pick 计为 occupancy 会拒绝**每一个**真结果）在 landing 时被抓。
   - V84-V98：witness scan 只证存在不证最优；artifact hashing 跟随项目外 symlink；伪造 occupancy blockers；required-optional（protocol_storage_box）遗漏；power-witness 从不 replay；unforced poles 计为 occupancy；ghost_rect anchor 从不 replay；final_result 字段 allowlist / 嵌套字段 sealing；release-status token bypass；symlink-ancestor 边界；canonical-checkpoint authority；B5A wrapper 预解析 symlink。多个 reviewer patch **弄坏了真实 solver 路径**，在 landing 时被纠正（V88：五个下游 consumer 把新 marker 当成了 facility）。
-- **V99（当前锚）** —— `v99_p1_2_close_kernel_sealing`：seal proof-bearing sink inventory，加 `source_sha256` 漂移检测、guard-token 检查、显式 TCB / non-claim 边界。证据：`docs/research/p1_2_v99_close_kernel_sealing.md`、proof-obligations JSON、`check_p1_2_proof_obligations.py`、`src/tests/test_p1_2_proof_obligations.py`。**owner clean-streak 仍在 repo 外，P1.3 仍 blocked**（`:378`）。
+- **V99（当前锚）** —— `v99_p1_2_close_kernel_sealing`：seal proof-bearing sink inventory，加 `source_sha256` 漂移检测、guard-token 检查、显式 TCB / non-claim 边界。证据：`docs/research/p1_2_v99_close_kernel_sealing.md`、proof-obligations JSON、`check_p1_2_proof_obligations.py`、`src/tests/test_p1_2_proof_obligations.py`。**owner clean-streak 计数仍在 repo 外；P1.3 已由 2026-07-07 `owner_manual_decision` 开启**（V99 的旧阻塞语句属于 `informational_history` 史料）。
 
 新审查者的要点：V-阶梯**就是**没人信"它过了"的原因。每个 Vnn 都是承认前一个"已 sealed"claim 有可达的 false-CERTIFIED（或 false-INFEASIBLE → false-optimal）路径。
 
@@ -573,8 +571,8 @@ PR2 是仍开放的工作：真隔离 L0/L1 进程、controlled loader / 两段 
   - **根本边界**（`close-kernel-ast-pin-structural-vs-semantic-boundary`）：AST/source-sha "第二道门" 能保护**结构**（防未来维护者一边保持 checker 绿 + 重钉 floor、一边掏空 elevation 语义），但**保护不了证明数学**——叶子 occupancy/mandatory/power 数学终归 bottom out 到 sha 楼面 + frozen-artifact hash + 人工重钉审查。owner 接受此边界并要我诚实标注。
   - **⚠ 当时状态出入（2026-07-02 快照,WAITING_EXTERNAL;后续:第 12 轮外审未再发,round-19/20 本地收口后 `6e06922` 合入 main）**：
     - **Opus 版**：round-18 `9bbb3a6` 绿（full preflight PASSED，**3734 pytest**，3 runtime 文件字节未动，committed blob sha == pins，CI-safe）。第 12 轮 GPT-Pro relay 包已备（`zmd_pr2_5_round18_9bbb3a6.7z`，sha `5a59999f…`）含 6 角度提示词，等 owner 跑。**结构 BLOCK 在 rounds 15-18 后归零**（3 外审 panel + 本地 codex 5-lens + owner 残余裁定）；剩余残余明确三类、全靠 conspicuous-diff + 人工 clean-review 兜底：(i) import-time #5-F、(ii) checker-self（改 checker 本身的维护者）、(iii) A4 dynamic reflection。CLEAN 回：merge `pr2-5`→main（CI @slow）→ 续 PR2 #2/#3/#1(含 #5-F)/#9b/#9c/#7。若出**新**的静默 / 可约结构 BLOCK：round-19。
-    - **Codex 版**：round-18 `9bbb3a6` 在 `pr2-5` worktree/branch 通过 preflight，准备第 12 轮 GPT Pro relay；但反复强调 P1.2 仍 release-blocked，且 **`9bbb3a6` 是另一 worktree/branch 状态、当前 cwd main（`b35e5f9`）不应自动继承该结论**；当前 cwd checker 输出 59 sinks，而 round-18 报告 60 sinks（见 §0 的 ⚠）。
-    - 两版一致（当时）：round-18 是当时分支进度、WAITING 第 12 轮外审、不改变 release-blocked。（实际后续走向:外审不再发,round-19 `5ff31ac` / round-20 `2413cc2` 本地收口,`6e06922` 合入 main。）
+    - **Codex 版**：round-18 `9bbb3a6` 在 `pr2-5` worktree/branch 通过 preflight，准备第 12 轮 GPT Pro relay；但反复强调 P1.2 在当时处于 release-blocked，且 **`9bbb3a6` 是另一 worktree/branch 状态、当前 cwd main（`b35e5f9`）不应自动继承该结论**；当前 cwd checker 输出 59 sinks，而 round-18 报告 60 sinks（见 §0 的 ⚠）。
+    - 两版一致（当时）：round-18 是当时分支进度、WAITING 第 12 轮外审、不改变当时的 release-blocked 状态。（实际后续走向:外审不再发,round-19 `5ff31ac` / round-20 `2413cc2` 本地收口,`6e06922` 合入 main;P1.2 于 2026-07-07 owner-closed。）
   - **元教训（提出，非定论）**：RESUME 锚明写——"逐形态 denylist 对图灵完备/反射面永不收敛,该早识别并归 conspicuous-edit 残余而非无限迭代."。新工程师可合理质疑 rounds-10→18 是否该更早收敛到"接受 + conspicuous-edit 残余"。此判断留开。
 
 ---
@@ -597,7 +595,7 @@ PR2 是仍开放的工作：真隔离 L0/L1 进程、controlled loader / 两段 
 ## 9. 诚实的开放残余、死路、已知边界
 
 1. **生产 seal 入口已落地，但不是 release closure。** `scripts/run_supervisor_seal.py` 是 `supervisor_seal()` 的生产 caller；`main.py` 终点仍是 `CANDIDATE_PROPOSED`。PR2 #7（certify 入口）已于 2026-07-04 通电，且只补这一条机器条件。
-2. **P1.2 闸默认关闭、owner 手动、在 repo 外。** repo 不能开；只有显式 `owner_manual_decision` 能开；owner 场外掌握收口外审进度（2026-07-06 澄清：「3 连续 clean」字面数字仅机器兼容基准，实际判据=收口外审到 owner 判定足够为止）。
+2. **P1.2 闸默认关闭、owner 手动、在 repo 外。** repo 不能开；只有显式 `owner_manual_decision` 能开；owner 场外掌握收口外审进度（2026-07-06 澄清：「3 连续 clean」字面数字仅机器兼容基准，实际判据=收口外审到 owner 判定足够为止）。该 owner decision 已于 2026-07-07 真实输入。
 3. **V99 锚是时间点快照。** post-V99 工作树改动不被旧 source-hash seal 覆盖，任何 close claim 前须重新 reseal（`phase_1_2_spike_close.json:7`, `:30`）。
 4. **dependency-floor manifest 是 deploy-pending 占位**（audited Linux env 字节，非生产 canonical）；生产前必须在 CachyOS/Py3.13 重生成 + 审 + 重钉（PR2 #6）——当前 WSL/Ubuntu 主机做不了。
 5. **close-kernel 残余仅按 conspicuous-edit 接受**（非架构闭合）：import-time execution integrity（#5-F）、checker-self 变异、A4 dynamic reflection rebind。靠人工 clean-review 抓显眼 diff 兜底。
@@ -620,7 +618,7 @@ PR2 是仍开放的工作：真隔离 L0/L1 进程、controlled loader / 两段 
   - argv0 LIVE：`certified_artifact_contract:115`。
 - **Gate**：`scripts/check_p1_2_proof_obligations.py`（⚠ Opus 记 4442 行、docstring `:2-6`；Codex 记自述 `:4247-4252`、`:4054-4060`；检查行段 `:76-87,369-386,1402-1457,1604-1657,2133-2149,2158-2188,3772-3816,4384-4387,4788-4834`）+ `data/proof_obligations/p1_2_proof_obligations.json`（14 obligations + close_kernel_contract 59 sinks；manifest 行段 `:506-556,792-814,880-907,910-927,1542-1562,1578-1604,1674-1696`）；`data/proof_obligations/strong_status_write_allowlist.json`（schema v2，82 entries / 64 registered AST nodes）；经 `scripts/preflight_gate.py:510`（`:117-121` exit code）运行。（`production_readiness_gate.py` 只 gate **campaign 启动**——freeze/venv/OOM——**不** gate P1.2 closure。）
 - **cc_memory（读 `--body`）**：`fact-p1-2-release-gate-status-20260626`、`fact-p1-2-supervisor-operability-20260626`、`p1-2-supervisor-production-entry-gap-20260626`、`p1-2-current-publication-surface-status-20260626`、`p1-2-supervisor-l0-l1-design-meeting-20260623`、`p1-2-closure-path-verdict-20260619`、`p1-2-closegate-obligation-mechanism`、`pr1-supervisor-mint-preflight`、`pr1-publication-blocks-abc-fixed`、`pr1-1c-external-review-7-blocks-unclosed`、`pr1-soundness-b085a75-ci`、`mock-based-patch-mock-unproven-preflight`、`21a9dda-argv0-live-12`、`p1-2-capsule-f492690-fix-1-3-fix-5`、`p1-2-pyc-exec-digest-landed-88b2d32`、`p1-2-fix-*`（族）、`naming-p1-3-vs-p1-2-fix`、`pr2b-landed-pr2-remaining-status-20260628`、`pr2-8-9a-hardened-landed-099f5a3`、`pr2-b-codex-2-false-certified-opus-0-pr2-b-sound-tcb-b1-owner`、`pr2-5-seal-frontier-gate-landed`、`pr2-5-round8-9-converged-relayed-20260630`、`pr2-5-round10-11-12-fspinout`、`pr2-5-round13-14-whitelist-landed`、`pr2-5-round14-11th-review-block-round15`、`close-kernel-block-convergence-trend-20260630`、`close-kernel-ast-pin-structural-vs-semantic-boundary`、`close-kernel-pin-reaches-runtime`、`close-kernel-ast-checker-design-lessons`、`pr2-resume-envelope-deferred-finding`、`p1-2-review-converged-tcb-start-p1-3`。
-- **关键 commit**：`ddb3b5a`（PR1 foundation）、`1817c71`/`b085a75`（PR1 union soundness）、`072265a`（PR1 测试债 HEAD、被 pr1-4 挖 7 blocks）、`099f5a3`（PR2 #8/#9a，PR#2）、`69980b3`/`592ea13`（PR2-b）、`21a9dda`（三审 argv0 LIVE）、`05a2a85`（resume-envelope 押后）、`d816b8b`（pr2-5 故事 / main）、`d68bdc9`（memory.db 版本参照）；分支 `pr2-5-domain-frontier-gate` HEAD `9bbb3a6`（close-kernel round-18，未合入）；第 12 轮 relay 包 `zmd_pr2_5_round18_9bbb3a6.7z`（sha `5a59999f…`）。**⚠ 当前 cwd main HEAD `b35e5f9`、`origin/main` `5ab006f`**（Codex 观测）。
+- **关键 commit**：`ddb3b5a`（PR1 foundation）、`1817c71`/`b085a75`（PR1 union soundness）、`072265a`（PR1 测试债 HEAD、被 pr1-4 挖 7 blocks）、`099f5a3`（PR2 #8/#9a，PR#2）、`69980b3`/`592ea13`（PR2-b）、`21a9dda`（三审 argv0 LIVE）、`05a2a85`（resume-envelope 押后）、`d816b8b`（pr2-5 故事 / main）、`d68bdc9`（memory.db 版本参照）；分支 `pr2-5-domain-frontier-gate` HEAD `9bbb3a6`（close-kernel round-18，当时未合入；2026-07-04 后已随 `6e06922` 合入 main）；第 12 轮 relay 包 `zmd_pr2_5_round18_9bbb3a6.7z`（sha `5a59999f…`）为历史 relay 索引。**⚠ 当时 cwd main HEAD `b35e5f9`、`origin/main` `5ab006f`**（Codex 观测；今日核对以实际 `git log` 为准）。
 - **RESUME 锚（最新逐轮细节）**：`C:\Users\22957\.claude\projects\C--claude-pj-zmd-pj\memory\p1-2-resume-state-20260621.md`（顶部 ▶▶▶▶ 段最新；round-18 状态在 `:12-16`）。另 harness 线 `pr2-5-F-line-import-time-integrity-schedule`。
 - **docs**：`docs/research/p1_2_v99_close_kernel_sealing.md`、`src/tests/test_p1_2_proof_obligations.py`、`src/tests/test_p1_2_fixed_witness_terminal_verifier.py:309`。
 
@@ -636,10 +634,10 @@ main.py
   -> scripts/run_supervisor_seal.py      生产 supervisor/certify 入口；独立命令，从 marker 驱动
      -> ExactCampaign.supervisor_seal()  唯一 durable 终态 CERTIFIED mint
      -> publish_verified_certified_delivery_surface()  唯一公开 certified publisher
-        -> 仍被 P1.2 manual gate 拦住，除非 owner 打开
+        -> P1.2 manual gate 已由 2026-07-07 owner_manual_decision 打开；仍需真实生产 seal/publish 记录
 ```
 
-代码有三个真实、有测试、source-pinned 的权限接缝 + 一套深 obligation/allowlist 脚手架——但 P1.2 是 **OPEN/BLOCKED**，**无**端到端生产 seal 实跑记录（`run_supervisor_seal.py` 入口已存在,但从未有真实 campaign→seal 走通），review 锚是时间点快照，dependency floor 是占位，三类残余攻击面仅在"conspicuous-edit + 人工 clean-review"下被接受。把任何"它过了 / 方法存在"当作**必要不充分**。V-阶梯是这套姿态"挣来的、不是偏执"的证据。
+代码有三个真实、有测试、source-pinned 的权限接缝 + 一套深 obligation/allowlist 脚手架——P1.2 已由 owner 于 2026-07-07 CLOSED，但这不同于**已有端到端生产 seal/publish 记录**（`run_supervisor_seal.py` 入口已存在,但本文未记录真实 campaign→seal→publish 走通），review 锚是时间点快照，dependency floor 是占位，三类残余攻击面仅在"conspicuous-edit + 人工 clean-review"下被接受。把任何"它过了 / 方法存在"当作**必要不充分**。V-阶梯是这套姿态"挣来的、不是偏执"的证据。
 
 
 ---
@@ -673,8 +671,8 @@ main.py
 
 - **P1.2** = 闭 certified soundness（**不新增证明能力**，只堵漏）。
 - **P1.2-FIX** = 三/四/五轮外审挖出的 soundness 必修（fixed-witness verifier + 不可变执行 capsule + OPEN-GATE 机器发布闸 + I1 独立复验 + TOCTOU 修复 + doc↔code 漂移红测）——是闭 P1.2 的前提，**不是** P1.3。
-- **P1.3** = 把 `src/cuts/lifecycle.py` 的 `step_8_apply_to_master` 真正接进活 master（PoseBoolExactMaster LBBD 集成）。owner 手动闸打开前不准动。旧文档里的"P1.3B / P1.3A 主体"都指同一坨 master 集成活；机器闸标识符 `p1_3b_*` 是历史名、不动（改名要碰 close-kernel = 另一次 freeze-ritual）。
-- **顺序**：先做 P1.2-FIX 闭 P1.2 → 再开 P1.3。
+- **P1.3** = 把 `src/cuts/lifecycle.py` 的 `step_8_apply_to_master` 真正接进活 master（PoseBoolExactMaster LBBD 集成）。gate 已于 2026-07-07 打开，P1.3 工作可以开始；"开启"不是 master/cut 集成已完成。旧文档里的"P1.3B / P1.3A 主体"都指同一坨 master 集成活；机器闸标识符 `p1_3b_*` 是历史名、不动（改名要碰 close-kernel = 另一次 freeze-ritual）。
+- **顺序**：P1.2 已于 2026-07-07 owner-closed → 现在可开 P1.3；P1.3 主体仍是待实施工作。
 - **PR1 / PR2**：supervisor 重做被切成两个 PR。PR1 = supervisor_seal + 剥发布权 + resume 语义 + producer 侧 BLOCK-D + marker + 复验迁移 + 发布面事务化/checker 硬化。PR2 = L0/L1 最小 TCB micro-verifier + 受控 import loader + 两段式自举 + child read-once + import-closure + certify 生产入口 + AST 闸。**PR2 至今没完**（接手时它在 #5 那一坨的第 14/15 轮外审里，属维度 4/5;后续 #5 close-kernel 已走到 round-20 并由 `6e06922` 合入 main,"没完"的含义转为 #1/#2/#3/#5独立枚举/#8/#9 未排期 backlog），本章只讲到 PR1 落地为止。
 - **close-kernel / V99 floor**：用 `source_sha256` 把"强状态出口 sink"钉死的机制（详见 §1.2），后面反复出现。
 - **外审 = GPT Pro**：多个独立 reviewer（常 3 个）盲审（blind A-G）打包好的仓库快照，owner 中转提示词与回复。这是本项目**收敛判据的核心工具**。
@@ -917,7 +915,7 @@ GPT Pro 对 `0bc36db` 做**三轮独立外审 + 三份补丁（互冲不能叠�
 - 工作树已实现 `ExactCampaign.supervisor_seal()`，producer 终态降为 `CANDIDATE_PROPOSED`；
 - 生产入口现为 `scripts/run_supervisor_seal.py`：独立命令，从 proposal-ready marker 驱动 `supervisor_seal()`；`main.py` 正常链路**止于 proposal**，不能被描述为已 supervisor-sealed 或已公开 CERTIFIED。这补上的是**操作链缺口**，不等于 release closure。（Codex 佐证：`PROJECT_LOCK.md:130-136`, `:141-154`。）
 - CHANGELOG 顶部（⚠ Codex 给 `CHANGELOG.md:9-11`；另引 `:126-131`）的 2026-06-26 历史快照确认：producer commits `CANDIDATE_PROPOSED`；`supervisor_seal()` sole durable terminal CERTIFIED mint；`publish_verified_certified_delivery_surface()` sole public publisher；当时 `main.py` 和 launchers 不 invoke `supervisor_seal()`。2026-07-04 更新：`scripts/run_supervisor_seal.py` 提供生产入口；方法、入口与 safeguard 存在仍**不转换为 P1.2 closure claim**。
-- **P1.2 仍 blocked**：owner gate = `blocked_manual_review_count`（仓库外人工 clean-review 计数），fail-closed（Codex：`PROJECT_LOCK.md:130-146`）。PR2 的更小/read-once/受控 loader TCB 未完成。**局部修复不得升级为 P1.2 CERTIFIED。**
+- **P1.2 当前已 owner-closed（2026-07-07）**：owner gate = `closed_manual_owner_decision`（仓库外人工 clean-review 计数仍不入库），由显式 owner 输入关闭（Codex：`PROJECT_LOCK.md:130-146` 的自动推导禁令仍有效）。PR2 的更小/read-once/受控 loader TCB 不因局部修复自动完成。**局部修复不得升级为 P1.2 CERTIFIED；本次关闭只认 owner_manual_decision。**
 
 ---
 
@@ -976,7 +974,7 @@ GPT Pro 对 `0bc36db` 做**三轮独立外审 + 三份补丁（互冲不能叠�
 
 到 PR1 落地（约 2026-06-26）为止仍开着的：
 
-1. **P1.2 未闭、仍 release-blocked**：owner 手动 gate = `blocked_manual_review_count`（仓库外人工 clean-review 计数），fail-closed。无任何公开 CERTIFIED。
+1. **历史：P1.2 当时未闭、处于 release-blocked**：owner 手动 gate 由仓库外人工 clean-review 计数管辖，fail-closed。今日事实：P1.2 已于 2026-07-07 由 owner 关闭；仍无本文可引用的公开 CERTIFIED 生产发布记录。
 2. **supervisor 操作链缺口（当时）**：到 PR1 落地时，`supervisor_seal()` 有实现但**无生产入口**，`main.py` 止于 `CANDIDATE_PROPOSED`。这是 PR2 #7（certify 生产入口 = go-live 最后通电）要做的；该 #7 已于 2026-07-04 由 `scripts/run_supervisor_seal.py` 落地。
 3. **PR2 整条未完**：L0/L1 最小 TCB micro-verifier、受控 import loader（child 经 fd 从 L0 已核字节快照 import）、两段式自举、child read-once、import-closure、AST 闸、argv0/contract digest 硬钉、B2 候选域 L0 独立枚举、B4 `-I -S -B`。（接手时 PR2 在 #5 那一坨的第 14/15 轮外审里——属维度 4/5。）
 4. **算法核心欠正面审（审查面失衡）**：18 轮火力全压表层认证发布层，深层算法核心只有 C3 那一次正面审。**I1 只补了 binding-INFEASIBLE 独立复验；routing 穷尽仍 phase-1 保守（sound 但伤收敛）。I2 master 域编码 PARTIAL（缺编码语义等价证明 + `occupied_cells==bbox` 断言，当前实心矩形数据不触发）。** ← 这块最可能藏着我们没发现的盲点。
@@ -1021,11 +1019,11 @@ GPT Pro 对 `0bc36db` 做**三轮独立外审 + 三份补丁（互冲不能叠�
 P1.2 是一个断言：solver 的 certified-exact 结果**可被 durably sealed 成 CERTIFIED 并发布**。该断言在外审判定旧「capsule」发布架构 unsound 后被重开。owner 的修法是**把 supervisor 重做拆成两个 PR**：
 
 - **PR1**（已落 `main`，commit `b085a75`）重塑了「谁有权 mint 一个 durable terminal `CERTIFIED` 状态」：`ExactCampaign.supervisor_seal()` 现在是唯一的 durable mint；outer-search producer 只提交 `CANDIDATE_PROPOSED`；`publish_verified_certified_delivery_surface()` 是唯一公开发布器。
-- **PR2**（仍未完成的另一半）：建一个真正最小、verified-not-trusted 的 L0/L1 可信计算基（TCB）、受控 import loader、独立域枚举——以及吞掉大部分日历时间的那部分，**「close-kernel 第二道门」（PR2 #5）**，它试图约束「一个能重新 seal checker 的恶意未来维护者」还能做到什么。生产 `certify` 入口 #7 已于 2026-07-04 由 `scripts/run_supervisor_seal.py` 落地，但不关闭 #1/#2/#3/#5/#9 或 owner gate。
+- **PR2**（仍未完成的另一半）：建一个真正最小、verified-not-trusted 的 L0/L1 可信计算基（TCB）、受控 import loader、独立域枚举——以及吞掉大部分日历时间的那部分，**「close-kernel 第二道门」（PR2 #5）**，它试图约束「一个能重新 seal checker 的恶意未来维护者」还能做到什么。生产 `certify` 入口 #7 已于 2026-07-04 由 `scripts/run_supervisor_seal.py` 落地，但不关闭 #1/#2/#3/#5/#9；owner gate 另于 2026-07-07 由显式 `owner_manual_decision` 关闭。
 
-**无论上述任何进展，P1.2 仍 release-blocked** —— release gate 是 owner 控制的、仓库外的人工 clean-review 计数（`blocked_manual_review_count`，`next_allowed=false`）。下文没有任何东西「认证」或「发布」了任何结果；它只把 soundness 硬化到「将来某次发布**可能**被信任」的程度。
+**无论上述任何进展，都不得自动推出 P1.2 closed/released；P1.2 的关闭已经另由 owner 于 2026-07-07 显式完成** —— release gate 是 owner 控制的、仓库外的人工 clean-review 计数（当前 `status="closed_manual_owner_decision"`，`next_phase_entry.allowed=true`）。下文没有任何东西「认证」或「发布」了任何结果；它只把 soundness 硬化到「将来某次发布**可能**被信任」的程度。
 
-当前权威边界（两版一致，Codex 版给出精确行号）：producer 只到 `CANDIDATE_PROPOSED`、`scripts/run_supervisor_seal.py` 是独立生产 caller、公开发布必须走中央 publisher、owner gate 仍阻塞。见 `PROJECT_LOCK.md:130`、`NAV_MAP.md:23`、`CHANGELOG.md:7`。**不要**把 checker 绿 / preflight 绿 / branch 绿 / 外审 clean / supervisor 入口落地当成 owner release gate 已过。
+当前权威边界（两版一致，Codex 版给出精确行号）：producer 只到 `CANDIDATE_PROPOSED`、`scripts/run_supervisor_seal.py` 是独立生产 caller、公开发布必须走中央 publisher、owner gate 已于 2026-07-07 由 owner 真实输入通过。见 `PROJECT_LOCK.md:130`、`NAV_MAP.md:23`、`CHANGELOG.md:7`。**不要**把 checker 绿 / preflight 绿 / branch 绿 / 外审 clean / supervisor 入口落地当成 owner release gate 已过；本次通过只认 gate JSON 的 `owner_manual_decision`。
 
 ---
 
@@ -1094,7 +1092,7 @@ P1.2 是一个断言：solver 的 certified-exact 结果**可被 durably sealed 
 
 **#6 决定（理由 + 被否方案）**：曾考虑建独立「AST 可达性闸」，后**决定不建**。checker 自己的注释承认可达性是冗余层，主防线——source-sha 楼面——已被 #8-B 强化。另建会加一份更弱的、我们已在强制的属性的第二份拷贝。新工程师可不同意；支持建它的论点是「自承冗余层」是跳过一个纵深防御控制的软理由。
 
-**推荐执行序（轻→重、go-live 最后）**：#8 argv0 → #9a floor pin → 定 #6（大概率接受 source-hash 为主防线 = 跳）→ #5 B2 枚举 + #2/#3 loader/read-once 精化 → #1 最小 TCB 闭包 → #9b OS 隔离（+#9c）→ **#7 certify 入口（最后「通电」= P1.2 收敛点）**。（2026-07-04 注:此序为当时计划。后续实际:#7 已通电落地——但入口落地≠P1.2 收敛,收敛仍卡 owner 手动门;#5 close-kernel 已 `6e06922` 合入 main;其余深化项转未排期 backlog、不取消。）
+**推荐执行序（轻→重、go-live 最后）**：#8 argv0 → #9a floor pin → 定 #6（大概率接受 source-hash 为主防线 = 跳）→ #5 B2 枚举 + #2/#3 loader/read-once 精化 → #1 最小 TCB 闭包 → #9b OS 隔离（+#9c）→ **#7 certify 入口（最后「通电」= P1.2 收敛点）**。（2026-07-04 注:此序为当时计划。后续实际:#7 已通电落地,但入口落地本身≠P1.2 收敛;P1.2 又于 2026-07-07 由 owner_manual_decision 关闭;#5 close-kernel 已 `6e06922` 合入 main;其余深化项转未排期 backlog、不取消。）
 
 **入口里带的诚实警告**：剩余项列表**会增长**——后续跨模型审剥更多信任洋葱（「trust onion」原理——对抗审总能再剥一层；「审到零发现」*不是*收敛判据；见 `p1-2-review-converged-tcb-start-p1-3`）。
 
@@ -1106,7 +1104,7 @@ P1.2 是一个断言：solver 的 certified-exact 结果**可被 durably sealed 
 - **#4 —— done**（不变）。
 - **#5 B2 候选域独立枚举 —— open（当前最实的未闭 soundness 项）**：close-kernel 硬化线 `6e06922` 合入 main（≠ B2）；replay 虽重跑求解器，但用的仍是 proposal 给的候选域，故 B2（不信 proposal `candidate_placements`、独立重推候选域）未闭。**#5-F part3**（import-time 副作用）仍 open spike，但 soundness 已被 V99 whole-file floor 兜住（TCB 线下、非 release-blocking，见卡 `stage3-spike-fused-5f-part3-findings`）。
 - **#6 AST 可达性闸 —— 决定不建**（不变）。
-- **#7 生产 certify 入口 —— done as machine entrypoint** `349c56c`（`scripts/run_supervisor_seal.py` 驱动 `supervisor_seal()`）；≠ P1.2 closed（仍卡 owner 手动门）。
+- **#7 生产 certify 入口 —— done as machine entrypoint** `349c56c`（`scripts/run_supervisor_seal.py` 驱动 `supervisor_seal()`）；#7 通电本身 ≠ P1.2 closed，P1.2 已由 owner 于 2026-07-07 另行关闭。
 - **#8 —— 子项 done，类别未判全 done**：「删自跳过」`52c1e8d`；深化项仍列 backlog。（上表 `099f5a3` 在当前对象库**不可解析**——git 历史被重建过，那是原机器 hash、只当叙事线索。）
 - **#9a floor manifest + generator pin —— 机制 done，production bytes deploy-pending**（可解析 commits `016e126`/`9ef5974`/`30f9ee2`）。
 - **#9b OS 写隔离 / #9c 原生 `.pyd`/`.so` TOCTOU —— deferred**（与 #3 同批暂缓，卡 `deferred-verifier-hardening-toctou-os-isolation`）。
@@ -1322,7 +1320,7 @@ panel（5 会话）发现 2 个 codex 本地审 *和* 我都漏的真 BLOCK：
 
 ## 11. 诚实的局限、死路、反转、开放问题
 
-- **P1.2 与所有 PR2 工作无关地 release-blocked。** gate 是 `blocked_manual_review_count`、`next_allowed=false`——owner 仓库外人工 clean-review 计数。任何 PR2 硬化都翻不动它；PR2 让将来某次 release *可信*、不*授予*一次。别把「checker 绿 / preflight 过 / 方法存在 / 入口落地」当「certified/released」。
+- **P1.2 与所有 PR2 工作无关地由 owner 关闭。** gate 现为 `closed_manual_owner_decision`、`next_phase_entry.allowed=true`——owner 仓库外人工 clean-review 计数仍不入库。任何 PR2 硬化都不能自动翻动它；PR2 让将来某次 release *可信*、不*授予*一次。本次关闭只来自 2026-07-07 owner 真实输入。别把「checker 绿 / preflight 过 / 方法存在 / 入口落地」当「certified/released」。
 - **我们过早宣布收敛且错了。** round-8/9「123/123、收敛」判断（`close-kernel-block-convergence-trend-20260630`）被 round 10–14 证伪。对当前任何「零结构 block」断言持同样怀疑。
 - **18 轮黑名单追逐本身就是警世故事**（`close-kernel-ast-checker-design-lessons`）：对反射面逐形态黑名单收益递减；早识别、转 whitelist/closed-world/compute-coverage，或把无界部分单列（如 F）。我们是花大代价学会的。
 - **三类已接受残余**（F / checker-self / A4 dynamic reflection）*未关*——靠显眼-diff + 人审。该兜底是否足够是特定威胁模型下的判断、可重审。
@@ -1370,7 +1368,7 @@ panel（5 会话）发现 2 个 codex 本地审 *和* 我都漏的真 BLOCK：
 
 **证据边界（务必先读）：** 当前主工作树 `C:\claude pj\zmd_pj` 的 `HEAD` 是 `b35e5f9`。PR2 #5 close-kernel 的最新隔离工作树在 `C:\claude pj\zmd_pj\.claude\worktrees\pr2-5-round10`，其 `HEAD` 是 `9bbb3a6`（round-18）。大量 round-by-round close-kernel 史料来自这个隔离工作树和 harness resume 锚 `C:\Users\22957\.claude\projects\C--claude-pj-zmd-pj\memory\p1-2-resume-state-20260621.md`（顶部 `▶▶▶` 段是最新）——**这不代表当前主线已等价包含全部 round-18 状态**。任何"round-18 已修"的说法都要先确认目标 clone/branch 是否含这些 commit。
 
-**颜色一切的提醒：** 即便全绿 preflight + CI 也**不**铸公开 CERTIFIED 结果。`main.py` 停在 `CANDIDATE_PROPOSED`；只有 supervisor seal 铸 durable terminal status、只有中心 publisher 公开它；P1.2 被 release-block 在 owner 侧、仓库外、任何门禁都满足不了的人工 clean-review 计数后面。
+**颜色一切的提醒：** 即便全绿 preflight + CI 也**不**铸公开 CERTIFIED 结果。`main.py` 停在 `CANDIDATE_PROPOSED`；只有 supervisor seal 铸 durable terminal status、只有中心 publisher 公开它；P1.2 已由 owner 于 2026-07-07 手动关闭，但这个事实仍不能从任何门禁绿灯自动推出。
 
 ---
 
@@ -1499,7 +1497,7 @@ V99 whole-file floor 的核心经验：只钉 manifest 的某些语义字段、c
 - 让 checker 递归证明自己。
 
 ### 当前状态/残余边界
-round-18 把很多 close-kernel 结构面推成 sealed floor，但 P1.2 仍非 formally closed：`scripts/run_supervisor_seal.py` 已补上独立生产入口，`main.py` 仍停在 `CANDIDATE_PROPOSED`，checker/local tests/入口落地都不是 release closure。**Opus 补**：该分支 HEAD 在最后 resume 更新时为 `9bbb3a6`（round-18），第 12 轮 GPT-Pro relay 已 staged、等 owner 跑。
+round-18 把很多 close-kernel 结构面推成 sealed floor；当时 P1.2 尚非 formally closed，后续已于 2026-07-07 由 owner 手动关闭。`scripts/run_supervisor_seal.py` 已补上独立生产入口，`main.py` 仍停在 `CANDIDATE_PROPOSED`，checker/local tests/入口落地都不是 release closure。**Opus 补**：该分支 HEAD 在最后 resume 更新时为 `9bbb3a6`（round-18），第 12 轮 GPT-Pro relay 已 staged、等 owner 跑（史料）。
 
 ---
 
@@ -1695,7 +1693,7 @@ GPT Pro review 是 adversarial review、不是 formal proof；三份 review 或�
 
 ## 开放问题 / 文档-实现不一致 / 未决残余（诚实收尾，两版并集）
 
-1. **P1.2 仍 OPEN/BLOCKED**（`PROJECT_LOCK.md:130-137`）：producer 可提交 `CANDIDATE_PROPOSED`；`ExactCampaign.supervisor_seal()` 是唯一 durable terminal `CERTIFIED` mint，生产入口是独立的 `scripts/run_supervisor_seal.py`，`main.py` 仍停在 `CANDIDATE_PROPOSED`。别把 checker 绿、targeted tests 绿、方法存在、wrapper 能跑、入口落地解读成 P1.2 closed/released。P1.2 被 release-block 在 owner 侧、仓库外的人工 clean-review 计数后面。
+1. **P1.2 已由 owner 于 2026-07-07 CLOSED，P1.3 已 opened**（`PROJECT_LOCK.md:130-137` 的自动推导禁令仍保留）：producer 可提交 `CANDIDATE_PROPOSED`；`ExactCampaign.supervisor_seal()` 是唯一 durable terminal `CERTIFIED` mint，生产入口是独立的 `scripts/run_supervisor_seal.py`，`main.py` 仍停在 `CANDIDATE_PROPOSED`。别把 checker 绿、targeted tests 绿、方法存在、wrapper 能跑、入口落地解读成 P1.2 closed/released；本次 closed/released 边界只认 2026-07-07 gate JSON 的 `owner_manual_decision`。
 2. **`preflight_gate.py` exit code 文档 ≠ 实现**：docstring/`CLAUDE.md` 说 `2 = warnings/no blockers`，但 `GateResult.exit_code`（`:117-121`）只返回 `1`/`0`。依赖 warning exit 前先修不一致或更新文档。
 3. **reseal 的 index/HEAD/working-tree 操作细则尚无单一权威 runbook**：cc_memory 有 CRLF、pathspec、committed-tree 事故条目，harness `p1-2-resume-state-20260621.md:16` 有 `git show :path` 读 index 坑，但无单独"reseal algorithm"条目覆盖全部。做 close-kernel reseal 时在操作记录明说 hash 来源、用 `git show HEAD:<path> | sha256` 或 staged blob 对账。
 4. **PR2 #5 round-18 是隔离工作树史料、不等价当前主线**：`9bbb3a6` 在 `.claude\worktrees\pr2-5-round10`；主工作树当前 `b35e5f9`。"round-18 已修"要先确认目标 clone/branch 是否含这些 commit。
@@ -1844,22 +1842,22 @@ round-18 后 close-kernel 第二道门把残余明确归为三类，**边界从�
 
 ---
 
-## 六、release 仍被手动门卡死
+## 六、release 手动门已关闭（保留历史边界）
 
 **⚠ 两版从不同权威文件引同一事实，均保留（互补，不冲突）。**
 
 **Opus 版**（直接读了 gate JSON 全文）：`data/review_gates/phase_1_2_spike_close.json`
-- `"status": "blocked_manual_review_count"`，`owner_manual_state.p1_2_close_status: "not_closed"`，`p1_3b_entry_allowed: false`。
+- `"status": "closed_manual_owner_decision"`，`owner_manual_state.p1_2_close_status: "closed"`，`owner_manual_state.p1_3b_entry_allowed: true`，`next_phase_entry.allowed: true`。
 - **计数权威在仓库外**：`counting_authority: "owner_manual_count_outside_repo"`，`repo_derives_clean_count_from_receipts: false`。仓库**故意不记录也不计算** 0/3、1/3、2/3、3/3。
 - 标准：`required_consecutive_clean_full_reviews: 3`（机器兼容基准值，checker pin 死；2026-07-06 owner 澄清：字面「三次」非硬判据，实际=收口外审到 owner 判定足够为止，同 `p1_3b_*` 兼容模式）。
 - 打破 clean 的 finding 类：`unsound_cut` / `certified_false_negative` / `proof_obligation_bypass` / `fake_certified_claim` / `reachable_phase_gate_false_ready`。
 - **receipt / report 只是 informational**，不是 machine authority，开不了门。`main.py` 结构 checker PASS / 测试通过 / 一个 seal 方法调用**都不能**推导出 P1.2 已 close。
 - `current_review_anchor: "v99_p1_2_close_kernel_sealing"`——v99 是最后一个 owner 批准的锚点；v99 之后的工作树改动（PR1 发布面、PR2 全部）**都不被那个旧 source-hash seal 覆盖**，需要 fresh 重封 / 重验。
-- **发布闭合的 6 个必要条件同时成立才能改 closed**：①producer 只提 proposal + 存在受支持可审计的独立 supervisor invocation surface（PR2 #7 已由 `scripts/run_supervisor_seal.py` 满足）②fixed-witness / sink replay / terminal evidence / disk-current 全 fail-closed ③publish gate 明确 owner-closed ④PR2 TCB / snapshot immutability / archive policy 未决项完成并有红测 ⑤close-kernel checker + targeted soundness tests + full gate 在同一工作树通过 ⑥owner 显式关闭 manual gate。**当前只满足其中一部分。**
+- **发布闭合纪律仍保留**：不得从 receipt / 报告 / package metadata / source-tree manifest / clean-count / 内部 seal 自动推导 P1.2 closed / P1.3 allowed；本次改 closed 的唯一原因是 2026-07-07 owner 显式关闭 manual gate。PR2 硬化桶中仅防蓄意内鬼的深化项已延期到发布时点；这不等于已有公开生产 `CERTIFIED` 发布记录。
 
-**Codex 版**（引 PROJECT_LOCK 行号）：`PROJECT_LOCK.md:130-137`——owner manual gate 仍是 `blocked_manual_review_count`；`main.py` 终点仍 `CANDIDATE_PROPOSED`；任何 checker PASS / 局部回归 PASS / 内部 supervisor seal 都不得改写为 owner 已关闭 release gate。2026-07-04 更新：生产 supervisor 调度入口已由 `scripts/run_supervisor_seal.py` 落地，但 owner manual gate 未开、PR2 TCB 收缩 + release snapshot/policy 收口仍未完成。`PROJECT_LOCK.md:179-184`——不得从 receipt / 报告 / package metadata / source-tree manifest / clean-count / 内部 seal 自动推导 P1.2 closed / P1.3 allowed。发布链结构见 `NAV_MAP.md:31-43`；`CLAUDE.md:8-31` 同口径。
+**Codex 版**（引 PROJECT_LOCK 行号）：`PROJECT_LOCK.md:130-137`——`main.py` 终点仍 `CANDIDATE_PROPOSED`；任何 checker PASS / 局部回归 PASS / 内部 supervisor seal 都不得改写为 owner 已关闭 release gate。2026-07-04 更新：生产 supervisor 调度入口已由 `scripts/run_supervisor_seal.py` 落地；2026-07-07 更新：owner manual gate 已由显式 `owner_manual_decision` 关闭，P1.3 entry allowed。`PROJECT_LOCK.md:179-184`——不得从 receipt / 报告 / package metadata / source-tree manifest / clean-count / 内部 seal 自动推导 P1.2 closed / P1.3 allowed。发布链结构见 `NAV_MAP.md:31-43`；`CLAUDE.md:8-31` 同口径。
 
-**共识**：round-18 即使第 12 轮 GPT Pro CLEAN，也只支持"merge PR2 #5 这部分 hardening"，**不支持"P1.2 已认证 / 已发布"**。
+**共识**：round-18 即使第 12 轮 GPT Pro CLEAN，也只支持"merge PR2 #5 这部分 hardening"，**不支持自动推出 P1.2 closed / public release**。P1.2 的 closed 来自 2026-07-07 owner 决定，仍不同于公开生产发布记录。
 
 ---
 
@@ -1975,7 +1973,7 @@ round-18 后 close-kernel 第二道门把残余明确归为三类，**边界从�
 - **原生 .pyd/.so TOCTOU（#9c）**：OR-Tools native extension 目前 NAMED-TCB（声明信任），`_RehashingExtensionFileLoader` 只尽力重核。
 - **dependency floor 生产 host 字节**（见 §七，deploy-pending）。
 - **cut-family 若未来接入 certified path 的完整生命周期**（见盲点 E F7/F8/F3）。
-- **certify 生产入口（#7）本身**：`scripts/run_supervisor_seal.py` 已存在，但这是新落地的 go-live 通电点；它只补 supervisor 可执行入口，不能替代 PR2 #1/#2/#3/#5/#9、publisher gate 或 owner 手动门审查。
+- **certify 生产入口（#7）本身**：`scripts/run_supervisor_seal.py` 已存在，但这是新落地的 go-live 通电点；它只补 supervisor 可执行入口，不能替代 PR2 #1/#2/#3/#5/#9、publisher gate 或 owner_manual_decision 纪律。
 - **解释器 / stdlib / OS / 硬件**：一律命名 TCB（cc_memory `p1-2-review-converged-tcb-start-p1-3` 的核心认识：对抗审"永远能再剥一层信任洋葱"，witness→发布闸→验证器执行字节码→解释器→OS→硬件；**"审到零发现"不是收敛判据**）。
 - 导航参考：`NAV_MAP.md:7-26`（当前 solve chain）、`NAV_MAP.md:43-50`（adapter/exporter 不是独立 authority）。
 

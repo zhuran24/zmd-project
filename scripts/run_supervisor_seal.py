@@ -17,10 +17,10 @@ HARD BOUNDARIES (do not relax — enforced by PROJECT_LOCK + close-kernel + test
     P1.2 owner manual gate.
   * A successful seal only makes the *campaign checkpoint* durably ``CERTIFIED``.
     Public delivery (``final_solution.json`` / ``optimal_blueprint.json`` /
-    ``certified_delivery_manifest.json``) stays fail-closed behind
-    ``resolve_p1_2_publish_open_gate()`` (currently
-    ``blocked_manual_review_count``). A seal here is **never** P1.2 closed and
-    **never** authorizes publishing.
+    ``certified_delivery_manifest.json``) is governed by
+    ``resolve_p1_2_publish_open_gate()`` against the authoritative owner gate
+    file. A seal here is **never** the owner close action and **never**
+    authorizes publishing by itself.
   * It calls ``ExactCampaign.supervisor_seal()`` with **no** caller-supplied
     authority args (no proposal bytes, marker path, campaign_instance_id, or
     dependency-floor overrides). All proof re-verification runs inside the
@@ -143,10 +143,11 @@ def main(argv: "list[str] | None" = None) -> int:
     print(f"  final_status  = {campaign.state.get('final_status')}")
     print(
         "  NOTE: this is a campaign-level CERTIFIED checkpoint ONLY. It is NOT "
-        "P1.2 closed and does NOT publish any public delivery surface. Public "
-        "delivery stays fail-closed behind the P1.2 owner manual gate "
-        "(resolve_p1_2_publish_open_gate); opening it requires an explicit owner "
-        "decision in data/review_gates/phase_1_2_spike_close.json."
+        "an owner gate action and does NOT publish any public delivery surface. "
+        "Public delivery is governed by the P1.2 owner manual gate "
+        "(resolve_p1_2_publish_open_gate) against "
+        "data/review_gates/phase_1_2_spike_close.json; only an explicit owner "
+        "decision recorded there authorizes publication."
     )
     return _EXIT_SEALED
 

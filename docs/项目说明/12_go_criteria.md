@@ -16,7 +16,7 @@
   `PROJECT_LOCK.md` 口径为准：入口存在只补机器条件、不打开 owner 门、
   不推导 P1.2 closed。）
 
-这些词不能互换。当前状态是 **P1.2 OPEN/BLOCKED**。
+这些词不能互换。当前状态是 **P1.2 CLOSED / P1.3 open（准许开工，非完成）**。
 
 ## 12.2 技术 close 必要条件
 
@@ -34,10 +34,10 @@ P1.2 close 至少要求：
 9. review snapshot 从 resolved immutable commit 物化，并满足发布/归档策略；
 10. PR2 规定的 controlled-loader/read-once/TCB 收缩完成，或 owner 明确修改 close scope。
 
-> **owner 2026-07-06 已行使后者（close-scope 修改）**：所有「仅防能执行 reseal 仪式的蓄意内鬼」的硬化——#8 深化、#3 fd-held read-once/TOCTOU、#9b OS 写隔离、#9c 原生 .pyd/.so TOCTOU、#5-F import-time 完整性、#5 Option B、#2——**暂缓到发布时点、明确不作为本条件（及 P1.2 close）的必要项**。判据：手滑/无心之失与外部篡改已被第一层字节 sha floor 常开拦死（不在此列），这些锚只对「忠实 reseal 之后的蓄意内鬼」有意义，真正变现实＝发布／把 CERTIFIED 交给不信任维护者本人的第三方那一刻。提取全集＋判据＋何时翻转见记忆卡 `deliberate-insider-hardening-deferred-to-release`。此修改**不**改写 P1.2 仍 OPEN/BLOCKED（owner 手动门未关）。
+> **owner 2026-07-06 已行使后者（close-scope 修改）**：所有「仅防能执行 reseal 仪式的蓄意内鬼」的硬化——#8 深化、#3 fd-held read-once/TOCTOU、#9b OS 写隔离、#9c 原生 .pyd/.so TOCTOU、#5-F import-time 完整性、#5 Option B、#2——**暂缓到发布时点、明确不作为本条件（及 P1.2 close）的必要项**。判据：手滑/无心之失与外部篡改已被第一层字节 sha floor 常开拦死（不在此列），这些锚只对「忠实 reseal 之后的蓄意内鬼」有意义，真正变现实＝发布／把 CERTIFIED 交给不信任维护者本人的第三方那一刻。提取全集＋判据＋何时翻转见记忆卡 `deliberate-insider-hardening-deferred-to-release`。此修改已被 2026-07-07 `owner_manual_decision` 消费为 close scope：P1.2 已 CLOSED，但硬化桶仍属发布时点延期项。
 
-当前 1–6 的主要 PR1 实现已在工作树落地；7 需在本次文本/source reseal 后重跑；8–10
-尚不能写成满足。
+当前 1–10 已由 owner 判定满足并于 2026-07-07 关门；该判断不来自测试、receipt、seal
+或 checker 绿灯自动推导，而是 `owner_manual_decision`。
 
 ## 12.3 Machine gate 的正确解释
 
@@ -70,6 +70,7 @@ owner gate。反过来，owner gate 关闭也不能掩盖未修复的 false-CERT
 > 现行判据：收口外审进行到 owner 判定足够为止（轮数可多可少），唯一权威关门动作是 gate
 > JSON 的 `owner_manual_decision`。机器字段 `required_consecutive_clean_full_reviews=3` 与
 > 关门确认字段中的 "three clean reviews" 字样保留为 checker 兼容值（同 `p1_3b_*` 模式）。
+> 该 owner 判定已于 2026-07-07 作出，clean 计数仍保存在仓库外。
 > 同日 owner 对收口前提两次定界、**以晚间为准**：早间曾扩为整条 PR2 TCB backlog 编码项；
 > 晚间厘清「内鬼=故意而非手滑」后收窄——所有「仅防蓄意内鬼」硬化（#8 深化/#2/#3/#5-F/
 > #9b/#9c/Option B）延期到发布时点、非 P1.2 收口前提，**编码前提实质清空**（即行使
@@ -79,8 +80,8 @@ owner gate。反过来，owner gate 关闭也不能掩盖未修复的 false-CERT
 当前 gate：
 
 ```text
-status = blocked_manual_review_count
-p1_3b_entry_allowed = false
+status = closed_manual_owner_decision
+p1_3b_entry_allowed = true
 ```
 
 `p1_3b_*` 是机器兼容字段；面向人的后续阶段名称统一写 **P1.3**。

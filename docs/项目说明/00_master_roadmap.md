@@ -16,21 +16,24 @@
 > 文档没有它们的位置。08/09/10/13 是"史料+现行混排"的 ledger，**保持
 > 原样加注、不重写**；总图由本文档承担。
 
-## 0. 一句话现状（2026-07-05）
+## 0. 一句话现状（2026-07-07）
 
-P1.2 认证链 **OPEN/BLOCKED**（owner 手动门 `blocked_manual_review_count`）；
+P1.2 认证链 **CLOSED**（owner 手动门 `closed_manual_owner_decision`，P1.3 已开放）；
 close-kernel 外审已画线收口（2026-07-03），PR2 #5 合入 / #7 通电（07-04）；
-主线在 PR2 深化阶段（枢纽 = #1 最小 TCB 闭包，先深化再收口外审）；
+三轮换轴收口外审（权限结构 / 数学语义 / TCB 线诚实性）共 24 簇、
+0 个真·上-TCB soundness 洞，owner 已于 2026-07-07 显式 `owner_manual_decision` 关门；
+P1.3 主体（`step_8_apply_to_master` 生产 master/cut 集成）已准许开工但仍待完成；
+防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
 设计稿 v2(含 v3 终审) 完成；证书侧（P3.0c 轴 B）路线图定型、待开工。
 
 ## 1. 主线（关键路径，串行）
 
 ```
-PR2 深化(四阶段执行序) → P1.2 收口 → P1.3A spike → P1.3 主体 → P1.5+ → P2.0b
+P1.2 CLOSED → P1.3 主体 → P1.5+ → P2.0b → 部署时点 #9a / 发布时点防蓄意内鬼硬化桶
 ```
 
-### 1a. PR2 深化（进行中；执行序 = 排期卡正文，此处仅摘要）
+### 1a. PR2 硬化桶（已裁定延期到发布时点；执行序 = 排期卡正文，此处仅摘要）
 
 阶段1（轻）：#8 argv0/contract digest + #9a 仓库侧收尾 + #6 决策确认 →
 批2a：#2 受控 loader + #3 read-once（带 resume/frontier/replay 纯核心抽取）→
@@ -47,20 +50,22 @@ Option B）**延期到发布时点、非 P1.2 收口前提**→编码前提实�
 已做、剩余全在延期桶内），四阶段序转为发布时点执行序。#9a 维持部署时点。
 详见记忆卡 deliberate-insider-hardening-deferred-to-release。
 
-### 1b. P1.2 收口
+### 1b. P1.2 收口（2026-07-07 CLOSED）
 
 十项 close 条件见 [12_go_criteria](12_go_criteria.md)（PR2 TCB 收缩是第 10 项；
 07-06 晚 owner 已行使该条「或 owner 明确修改 close scope」活口——防蓄意内鬼类
 硬化延期到发布时点、非收口前提，见 1a 尾注）。
 路径（owner 2026-07-06 晚拍板版，编码前提已实质清空）：冻结仪式 → 收口外审
-（GPT Pro relay 按 owner 需要发）→ **审到 owner 判定足够为止** → owner 关手动门
-（gate JSON `owner_manual_decision`）。07-06 冻结仪式已在主线分支执行（冻结树
-`c9b41b3`、门禁全绿、送审包+7 切面提示词已备，剩 owner 手动上传）。
+（GPT Pro relay 按 owner 需要发）→ **审到 owner 判定足够为止** → owner 关手动门。
+该关门动作已于 2026-07-07 由 owner 真实输入完成（gate JSON `owner_manual_decision`，
+`status=closed_manual_owner_decision`）；三轮换轴收口外审共 24 簇、
+0 个真·上-TCB soundness 洞。07-06 冻结仪式已在主线分支执行（冻结树
+`c9b41b3`、门禁全绿、送审包+7 切面提示词已备）。
 **「三连 clean 计数」语义澄清（owner 2026-07-06）**：那是 owner 当时图方便的
 说法，不是硬判据——实际判据就是「外审到 owner 觉得合适为止」，轮数可多可少；
 gate JSON 的 `required_consecutive_clean_full_reviews=3` 与关门确认字段里的
 "three clean reviews" 字样保留为机器兼容值（同 `p1_3b_*` 模式），checker pin
-死了这个数字，改字段值属于 checker+tests 连锁手术、留待收口批一并考虑或不做。
+死了这个数字，改字段值属于 checker+tests 连锁手术；字段保留为机器兼容值，不再是待收口事项。
 配套部署时点任务（不阻塞收口判定、但在真发布前必做）：#9a 生产字节重钉、
 真实 campaign→seal 实跑、dependency floor manifest 在 CachyOS 生产机重生成。
 

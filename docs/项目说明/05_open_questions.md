@@ -5,7 +5,7 @@
 
 本节列**当前没答案**的数学问题. 按级别标:
 
-- **P0 (critical)** — 数学层 paradigm 决定性问题, 不解 Phase 1.2/1.3/1.5 推不动
+- **P0 (critical)** — 数学层 paradigm 决定性问题, 不解会阻 P1.3/P1.5 实现推进；非 P1.2 owner-close blocker
 - **P1 (defer-Phase)** — 实施时 verify, 不阻 paradigm 但阻具体 family
 - **P2 (informational)** — 知识层问题, 答了好但不阻
 - **P3 (defer-future)** — Phase 2+ 才碰
@@ -546,7 +546,7 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 | Q18 | cut quality metric | P2 | Phase 1.3 telemetry | 工程 |
 | Q19 | registry schema decoupling | P1 | Phase 1.5+ | 工程 |
 
-**当前 P0 critical (不解阻 Phase 推进)**:
+**当前 P0 critical (不解阻 P1.3/P1.5 实现推进；非 P1.2 close blocker)**:
 - Q1 (9 family completeness — 用 telemetry 反推)
 - Q3 (sound vs over-prune 边界 — per-family verify)
 - F5-mfg (132! permutation — Phase 1.2 P1.2B-F5 必同步 orbit-aware lift)
@@ -575,4 +575,3 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 6. F5 minimize NP-hard 超时阈值 — Phase 1.2 §11.1 实施时定
 
 ---
-

@@ -1,5 +1,7 @@
 # P1.2 V76 project-bound terminal evidence review
 
+> **[Snapshot note]** Written before the P1.2 close. Statements like "P1.2 remains blocked" reflect the state at writing time; P1.2 was closed by explicit owner_manual_decision on 2026-07-07 (P1.3 opened). Current authority: data/review_gates/phase_1_2_spike_close.json.
+
 Date: 2026-06-10
 
 Review anchor: `v76_project_bound_terminal_evidence`

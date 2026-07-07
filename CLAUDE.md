@@ -94,9 +94,9 @@ producer（outer_search.py）        只能提交 CANDIDATE_PROPOSED + proposal 
 
 反绕过守卫是硬编码的：`mark_campaign_stopped(status="CERTIFIED")` 直接 raise；`save()` 检测三处 unsupervised CERTIFIED claim 并 raise（`exact_campaign.py:2564-2579, 3658-3661`）。**`supervisor_seal()` 的生产入口是 `scripts/run_supervisor_seal.py`（独立命令，从 marker 驱动）；跑完 `main.py` 仍只会得到 `CANDIDATE_PROPOSED`**——这是刻意留开的操作链缺口（PR2 #7 "最后通电"），且 #7 通电已于 2026-07-04 落地；不是 bug，也不是 P1.2 closure。
 
-### 4. P1.2 release-blocked：任何绿灯都不等于"已认证/已发布"
+### 4. P1.2 手动门（已关，2026-07-07）：任何绿灯仍不等于"owner 关门动作"
 
-release 由 owner 手动门管辖：`data/review_gates/phase_1_2_spike_close.json` 当前 `status: "blocked_manual_review_count"`，clean-review 计数**保存在仓库外**、仓库刻意不推导。checker PASS、preflight 绿、测试全过、seal 方法存在——都不得改写为 release closure（`PROJECT_LOCK.md:130-137`）。同理 close-kernel 结构门只证"登记结构未漂移"，不证明求解数学正确。
+release 由 owner 手动门管辖：`data/review_gates/phase_1_2_spike_close.json`。**P1.2 已于 2026-07-07 由 owner 显式 `owner_manual_decision` 关闭**（`status: "closed_manual_owner_decision"`、`next_phase_entry.allowed=true`），当前阶段为 **P1.3**（生产 master/cut 集成，`step_8_apply_to_master` 待做）。纪律不变：clean-review 计数**保存在仓库外**、仓库刻意不推导；checker PASS、preflight 绿、测试全过、seal 方法存在——都不得改写为 owner 关门动作或 release closure（`PROJECT_LOCK.md:130-137`）——本次关闭是 owner 真实手动输入，不是自动推导。同理 close-kernel 结构门只证"登记结构未漂移"，不证明求解数学正确。
 
 ### 5. Frozen artifacts 与 freeze-ritual
 

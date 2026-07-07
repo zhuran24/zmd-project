@@ -85,14 +85,19 @@ validator 和 shadow tests，但 `step_8_apply_to_master` 仍不是当前 produc
 
 ## 1.6 当前发布状态
 
-截至 2026-07-04，工作树已有 producer/supervisor split、fixed-witness capsule、fail-closed
+截至 2026-07-07，工作树已有 producer/supervisor split、fixed-witness capsule、fail-closed
 P1.2 OPEN-GATE、独立 whole-layout reverify、中央公开发布器和生产 supervisor 入口
-（`scripts/run_supervisor_seal.py`）。P1.2 仍为 OPEN/BLOCKED，原因包括：
+（`scripts/run_supervisor_seal.py`）。P1.2 已由 owner 显式 `owner_manual_decision`
+关闭（`status=closed_manual_owner_decision`，`p1_3b_entry_allowed=true`，P1.3 已开放）。
+这不是从测试、receipt、seal 或 checker 绿灯自动推导；clean 计数仍保存在仓库外。
+后续边界包括：
 
 - 普通 solve run 不会自动 seal；supervisor 入口是独立命令、仅满足一条机器条件，且尚无真实生产
-  campaign→seal 实跑记录；
-- owner manual gate 仍是 `blocked_manual_review_count`；
-- PR2 的 smaller/read-once/controlled-loader verification TCB 尚未完成；
+  campaign→seal 实跑记录（部署时点任务，非 P1.2 close blocker）；
+- owner manual gate 已是 `closed_manual_owner_decision`；唯一权威关门动作仍只认
+  owner 手动决定；
+- PR2 的 smaller/read-once/controlled-loader verification TCB 属发布时点硬化残项，非
+  P1.2 blocker；
 - review snapshot 已改为从 resolved immutable commit 物化（ref-move TOCTOU 回归测试已钉住），归档
   策略覆盖仍需补齐；
 - 其它 roadmap 中仍为 OPEN/PARTIAL 的规格与几何边界尚未全部关闭。

@@ -1,5 +1,7 @@
 # P1.2 V81 partial-precheck and release-claim sealing
 
+> **[Snapshot note]** Written before the P1.2 close. Statements like "P1.2 remains blocked" reflect the state at writing time; P1.2 was closed by explicit owner_manual_decision on 2026-07-07 (P1.3 opened). Current authority: data/review_gates/phase_1_2_spike_close.json.
+
 Date: 2026-06-11
 
 Review anchor: `v81_partial_precheck_and_release_claim_sealing`

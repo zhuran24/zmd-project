@@ -1,4 +1,7 @@
 ## [critical] votes=4 | 算力硬墙：求解器从未在全尺度产出过一次 FEASIBLE，terminal full-frontier（约 4225 个 oriented 候选全部终局）物理上不可达——第一多米诺
+
+> **[时点标注]** 本文为收口前快照；文中「P1.2 仍 blocked / blocked_manual_review_count」等现状描述已过时——P1.2 已于 2026-07-07 由 owner_manual_decision 正式 CLOSED（P1.3 已开启），现状以 data/review_gates/phase_1_2_spike_close.json 为准。
+
 lenses: chain, compute
 evidence: docs/lever_verdicts.md:9（baseline 8 workers/1800s 跑 14h、51-78 候选 0 FEASIBLE）；:117-189（把用户手调正确答案整套 798 AddHint 喂给 27×15 候选，3600s×8 P-core 满载仍 UNKNOWN，三种配置矩阵全 UNKNOWN）；:209-231（2464 anchor 分片每片仍 UNKNOWN、5.5M branches、锁 anchor 后仍剩 3,853,132 个 mandatory pose literal，完整 partition 估 205h/候选，判『物理不可行』）；:5（27 条加速 lever 全部实测否决）；:348-364（真瓶颈=master 内 power_coverage/port/boundary 耦合：skip_power_coverage 后 65.9s 完成 vs 完整 master 30min UNKNOWN，src/models/exact_coordinate_master.py:3448-3452 默认仍加该约束）；src/search/certified_frontier.py:82-83（候选域 w,h∈[6,70] 不做规范化=4225 个候选全要终局）；交付副本 data/ 下无任何 checkpoints/telemetry 长跑证据（实测）
 why: 最终目标不是找一个好布局，而是证明『所有 lex 更优候选全部 INFEASIBLE』——INFEASIBLE 证明比 FEASIBLE 更贵（timeout 只得 UNKNOWN）。现状是拿着正确答案都验证不完一个候选，而完整证明要成百上千个候选逐个穷尽；且 UNKNOWN=terminal stop 使 campaign 结构性无法推进（解不动→UNKNOWN→短命退出→watchdog 重启→撞同一个 UNKNOWN）。这是唯一没有已知工程路径的环节：其他缺口都是『排期未做』，这个是『做了 27 次都失败』。链上后面的 seal、publish、手动门再完美也没有东西可 seal——所有排期决策应先过这一关，否则后续工程都是给一个解不出的问题修发布管道。

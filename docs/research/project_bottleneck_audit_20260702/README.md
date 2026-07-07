@@ -1,5 +1,7 @@
 # 2026-07-02 全项目瓶颈审计归档（多代理工作流，37 agent）
 
+> **[时点标注]** 本文为收口前快照；文中「P1.2 仍 blocked / blocked_manual_review_count」等现状描述已过时——P1.2 已于 2026-07-07 由 owner_manual_decision 正式 CLOSED（P1.3 已开启），现状以 data/review_gates/phase_1_2_spike_close.json 为准。
+
 **性质**：HISTORICAL_OR_PLAN 审计档案。另一会话于 2026-07-02 深夜运行的全项目「历史 + 最终目标瓶颈」
 调查工作流产物：8 个维度 × fable/codex 双模型独立阅读（16 份维度报告，`dims.md`），继而合成 12 条
 瓶颈、逐条由独立核查员回源码验证（`bottlenecks.md`，每条带 VERDICT: CONFIRMED/PARTLY、
@@ -31,6 +33,8 @@ dossier HTML）不入仓库，另存两份：`C:\Users\22957\zmd_bottleneck_audi
 （设计如此）、CP-SAT 编码忠实性单点、F1-F9 未接入生产（`step_8_apply_to_master` 实测仍
 NotImplementedError）、dependency floor manifest 占位（deploy_pending_placeholder）、
 168h 执行层工程债、冻结输入只证「没变」不证「正确」。
+
+> **[superseded]** 其中「P1.2 owner 手动门」作为 2026-07-05 现状条目已过时：P1.2 已于 2026-07-07 由 owner_manual_decision 正式 CLOSED（P1.3 已开启），现状以 data/review_gates/phase_1_2_spike_close.json 为准；手动门纪律本身仍有效，仍不得从测试/receipt/seal/checker 绿灯自动推导 closed/released。
 
 ## 与「先想后做」三设计稿的关系
 

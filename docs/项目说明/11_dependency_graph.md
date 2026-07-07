@@ -56,7 +56,8 @@ supervisor-sealed campaign
   -> full surface re-verification
 ```
 
-当前 owner gate 为 `blocked_manual_review_count`，所以 public publication 应 fail closed。
+当前 owner gate 为 `closed_manual_owner_decision`（2026-07-07 owner 手动输入），所以 public publication
+不再因 owner gate 本身 fail closed；但不得从测试、receipt、seal 或 checker 绿灯自动推导 release。
 serializer、adapter、viewer、report 和 compatibility export 只能生成非权威派生物。
 
 ## 11.4 P1.2 open-work dependency

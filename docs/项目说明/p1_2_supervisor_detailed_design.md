@@ -1,6 +1,6 @@
 # P1.2 supervisor 设计与当前实现
 
-**实现状态：PR1 已在当前工作树落地；P1.2 尚未关闭；PR2 未完成。**
+**实现状态：PR1 已在当前工作树落地；P1.2 已于 2026-07-07 owner-closed；P1.3 已开放；PR2 发布时点硬化桶未完成。**
 
 ## 1. 目标
 
@@ -81,5 +81,6 @@ proposal-ready marker、区分退出码、二次运行 fail-closed）。PR2 的�
 
 ## 8. Gate 与状态
 
-内部 supervisor seal 是发布的必要条件，不是 owner release approval。当前
-`phase_1_2_spike_close.json` 仍 blocked，因此 public publisher 必须拒发，P1.3 也保持关闭。
+内部 supervisor seal 是发布的必要条件，不是 owner release approval；不能自动翻转 owner gate。
+当前 `phase_1_2_spike_close.json` 已由 `owner_manual_decision` 关闭，P1.3 已开放；public
+publisher 仍必须只接受完整 sealed campaign + gate 条件，不能因 seal/checker 绿灯旁路。

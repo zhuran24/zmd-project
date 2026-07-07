@@ -18,9 +18,11 @@
   manifest、当前 hashes 与 publish gate 共同组成的 fail-closed surface。
 - **central verified publisher**：`publish_verified_certified_delivery_surface()`，唯一 canonical
   public writer；失败清理三件套。
-- **OPEN-GATE / publish-open gate**：owner 控制的 P1.2 发布闸。当前实现已存在，但状态仍 open/
-  blocked；“gate implemented”不等于“gate closed”。
-- **P1.2 CLOSED**：技术 close、要求验证、包材边界和 owner gate 同时满足。当前不成立。
+- **OPEN-GATE / publish-open gate**：owner 控制的 P1.2 发布闸。当前实现已存在，且已于
+  2026-07-07 owner-closed；“gate implemented”不等于“gate closed”，本次 closed 只认
+  `owner_manual_decision`，不得从测试、receipt、seal 或 checker 绿灯自动推导。
+- **P1.2 CLOSED**：技术 close、要求验证、包材边界和 owner gate 同时满足。当前已成立
+  （2026-07-07 `owner_manual_decision`）。
 
 ## 求解层
 

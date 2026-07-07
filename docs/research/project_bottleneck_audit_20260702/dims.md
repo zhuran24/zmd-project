@@ -1,4 +1,7 @@
 # DIM history — 历史与决策叙事
+
+> **[时点标注]** 本文为收口前快照；文中「P1.2 仍 blocked / blocked_manual_review_count」等现状描述已过时——P1.2 已于 2026-07-07 由 owner_manual_decision 正式 CLOSED（P1.3 已开启），现状以 data/review_gates/phase_1_2_spike_close.json 为准。
+
 ## fable summary
 项目演进可分六阶段。(一)算法建设期(2026-03~05,仅存于 README/CHANGELOG 史料,本仓库 git 无此段):建 certified_exact/exploratory 双轨、锁定目标 max_lex(area,min_side)、坐标 master+binding/routing/flow 子问题、并行调度器;HiGHS/SCIP 重写试过判死路;05-22 B Design v2 冻结 F1-F9 cut 生命周期并锁"宁可漏割不可错割"(FP=0),但至今未接入生产。(二)v28→V99 soundness 重置阶梯(05~06 中):约 70+ 轮外审几乎每轮找到真洞并把 owner clean-review 计数清零,最终产物是"仓库不自动计数、owner 仓库外手动 3 连 clean 才能关门"的手动闸。(三)P1.2-FIX(06-19~23):C3 三源内核审判定"当前不能建立完整 soundness 定理";修 witness-split/OPEN-GATE/PYC/I1 独立复验;capsule 根治方案被第 5 轮外审用同进程 monkeypatch PoC 推翻,逼出 supervisor L0/L1 重做。(四)PR1(06-26):producer(只能提案)/supervisor_seal(唯一 durable CERTIFIED 铸造)/publisher(唯一发布口)三权分立落地。(五)PR2(进行中):#8/#9a 已合 main;#5 close-kernel 第二道门在分支上打了 19 轮——黑名单被证不收敛,转白名单/closed-world/pin-all,owner 接受 F/checker-self/A4 三类残余靠"显眼 diff+人工审"兜底;本仓库分支顶端是 README 未记载的 round-19(第 12 轮外审挖出"护门的父锚和 witness 直呼文件自己没进门"),外审包已 staged 等 owner 跑第 13 轮。(六)交付副本期(07-02):git 历史重建、README 定为 handoff 史料。贯穿主题:对抗审总能再剥一层信任洋葱,"审到零发现"不是收敛判据;main.py 至今止于 CANDIDATE_PROPOSED,release 被 owner 仓库外手动门卡死。
 ### key_facts
