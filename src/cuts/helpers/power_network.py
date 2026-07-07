@@ -13,13 +13,14 @@ Phase 1.0 P1.4 scope:
 - Pure data-structure helper (no oracle wiring — Phase 1.2 P1.14 接 Family 8
   validator + ``compute_cover_set`` for full F8 cut generation).
 
-Semantics status (M2 reconcile, 2026-07-08): the facility-coverage half of F8
-(``power_cover.compute_cover_set``) now follows the canonical 12×12 square
-stencil. THIS module — the pole-to-pole jump graph (Euclidean ``pole_radius``
-cutoff + Liang-Barsky segment/ghost-AABB blocking) — is still the legacy
-model, and its ``pole_jump_radius`` has no canonical_rules backing at all.
-Pending the M2 batch-B ruling (game-rule evidence for pole linking), this
-graph must not be treated as certified semantics; F8 stays non-certified.
+RETIRED — FALSE PREMISE (owner game-rule ruling 2026-07-08, M2 batch B):
+poles do not need any pole-to-pole network; the protocol core links to every
+placed pole wirelessly and automatically. The pole-jump graph this module
+builds models a game mechanic that does not exist, and its
+``pole_jump_radius`` never had canonical_rules backing. Kept only as an
+inert tombstone until the F8 family is physically deleted (rides the M3
+step_8 reseal batch). Do not wire this into any certified or production
+path. See memory card ``p1-3-m2-coverage-stencil-ruling``.
 
 Refs:
 - docs/research/p3_b_design_v2_20260521/cut_family_specs/08_power_grid_reach.md v1.1

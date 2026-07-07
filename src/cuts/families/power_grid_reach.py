@@ -1,5 +1,15 @@
 """Family 8 power_grid_reach — empty BFS-disconnect validator + watcher (P1.2B-F8).
 
+RETIRED — FALSE PREMISE (owner game-rule ruling 2026-07-08, M2 batch B):
+poles need no pole-to-pole network — the protocol core links to every placed
+pole wirelessly and automatically, so "CoverSet non-empty but pole-jump BFS
+cannot reach protocol_core" describes a game mechanic that does not exist and
+any F8 cut is a potential false-INFEASIBLE. The certified predicate chain is
+unaffected (it never required pole connectivity). Inert tombstone until
+physical deletion rides the M3 step_8 reseal batch; never enable on any
+certified or production path. See memory card
+``p1-3-m2-coverage-stencil-ruling``. Invariants below are pre-ruling history.
+
 PROJECT_LOCK §3A locked invariants (Phase 1.2 single-case scope):
 - **Single cert_kind**: only ``"power_pole_bfs_disconnect_ghost"``. The
   ``cell_owner``-causes case (``"power_pole_bfs_disconnect_cell_owner"``)

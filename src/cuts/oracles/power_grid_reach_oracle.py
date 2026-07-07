@@ -18,13 +18,19 @@ Fail-closed contract:
   from a canonical_rules field that does not yet exist)
 - protocol_core anchor unknown / not in state.cell_owner → []
 
-Coverage-semantics status (M2 reconcile, owner ruling 2026-07-08): the
-facility CoverSet consumed here follows the canonical 12×12 square stencil
-(shared helper ``power_cover.compute_cover_set``). The pole-jump reachability
-graph (``power_network``) still uses the legacy Euclidean/segment model and
-its ``pole_jump_radius`` has NO canonical_rules backing — that half is
-pending the M2 batch-B ruling (game-rule evidence for pole-to-pole linking).
-F8 stays non-certified until batch B closes.
+RETIRED — FALSE PREMISE (owner game-rule ruling 2026-07-08, M2 batch B):
+"电线杆不需要连电网……协议核心会自动连上它们" — poles power up the moment
+they are placed; the protocol core links to them wirelessly and automatically.
+This family's founding premise (poles must reach protocol_core through a
+pole-jump chain to deliver power) is FALSE under the real game rules, so any
+F8 cut is a potential false-INFEASIBLE against layouts the game allows.
+The certified predicate chain never required pole connectivity (facility ∩
+pole 12×12 stencil is the whole power predicate), so nothing upstream is
+affected. This generator must NEVER be enabled on any certified or production
+path. Physical deletion of the F8 family (cert_schema kind map / lifecycle
+family map / replay dispatch are on the reseal-pinned surface) rides the M3
+step_8 reseal batch; until then this module stays as an inert, default-
+disabled tombstone. See memory card ``p1-3-m2-coverage-stencil-ruling``.
 
 Refs:
 - docs/项目说明/08_phase_1_2_plan.md §P1.2B-F8

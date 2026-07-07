@@ -1,8 +1,8 @@
 ---
 id: p1-3-m2-coverage-stencil-ruling
 kind: decision
-title: owner 拍板(2026-07-08):F1-F9 cut helper 覆盖语义统一到 12×12 square stencil(弃欧氏)——M2 语义前置的核心裁定
-summary: P1.3 M2(F7/F8 coverage reconcile + canonical→geometry 统一)的 owner 裁定,2026-07-08 owner 原话「选方形」。内容:F7(power_hitting_set)/F8(power_grid_reach)及全体 F1-F9 helper 的供电覆盖几何统一到 certified 主链现役的 12×12 square coverage stencil,覆盖谓词=相交(承接 owner 2026-07-07 相交裁定);helper 现存的欧氏 cell-distance/Liang-Barsky/AABB 覆盖判定退役,不得再作任何 certified 语义来源。后果:①F7/F8 的 helper/oracle/validator/cert payload 换 stencil 谓词,补 helper-vs-master 判定一致性回归测试后方可进 certified/attach;②形式化 F8 定理(P3.0 轴 A 等待项)由此解锁;③若某处保留欧氏实现只能作 non-certified 遥测且必须显式标注。裁定理由:游戏真实规则=正方形(主链已按其冻结认证),欧氏是早期 helper 直觉实现,无数学收益;选欧氏则 F7/F8 永久出局 certified、电力不可行只能靠 whole-layout nogood 兜底。实施按 M2 盘点清单(改动面盘点 agent 进行中,落地后在此补指针)。
+title: owner 双拍板(2026-07-08):①F1-F9 覆盖语义统一 12×12 stencil(弃欧氏,批 A 已落地);②电杆不需连电网(协议核心自动无线连)→F8 前提为假、retired-false-premise、物理删除搭 M3 车
+summary: P1.3 M2(F7/F8 coverage reconcile + canonical→geometry 统一)的两项 owner 裁定(2026-07-08)。裁定②(批 B):owner 玩家确认「电线杆不需要连电网,协议核心自动连上它们」→F8 power_grid_reach 整个 family 的数学前提为假=retired-false-premise(非改几何);主链六谓词无洞(从未要求电杆连通);F7 前提仍真;F8 物理删除搭 M3 reseal 车,当前先退役标注;形式化 F8 取消。裁定①(批 A,原文):内容:F7(power_hitting_set)/F8(power_grid_reach)及全体 F1-F9 helper 的供电覆盖几何统一到 certified 主链现役的 12×12 square coverage stencil,覆盖谓词=相交(承接 owner 2026-07-07 相交裁定);helper 现存的欧氏 cell-distance/Liang-Barsky/AABB 覆盖判定退役,不得再作任何 certified 语义来源。后果:①F7/F8 的 helper/oracle/validator/cert payload 换 stencil 谓词,补 helper-vs-master 判定一致性回归测试后方可进 certified/attach;②形式化 F8 定理(P3.0 轴 A 等待项)由此解锁;③若某处保留欧氏实现只能作 non-certified 遥测且必须显式标注。裁定理由:游戏真实规则=正方形(主链已按其冻结认证),欧氏是早期 helper 直觉实现,无数学收益;选欧氏则 F7/F8 永久出局 certified、电力不可行只能靠 whole-layout nogood 兜底。实施按 M2 盘点清单(改动面盘点 agent 进行中,落地后在此补指针)。
 scope:
   domains:
     - p1-3-master-cut-integration
@@ -69,7 +69,7 @@ provenance:
 == 落地进度 ==
 
 - **批 A 已落地(2026-07-08,commit 03c7f4e)**:CoverSet helper 换 stencil(Chebyshev/矩形,与 gen_power_pole 逐字同构)、oracle 版本 bump(power_cover_v2_stencil / power_grid_reach_v2_coverset_stencil)、19 条等价回归(test_helpers_power_cover_stencil.py,含方圆差异带 case)、F8 混合状态标注、survey 文档 banner。注意 power_cover_oracle.py 在 PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS 钉面,本批已走一轮 reseal(V99 dict+obligations JSON+checker 自钉)——「src/cuts 不触 sealed」的旧认知是错的,见 [[p1-3-kickoff-recon-facts]] 更正段。
-- **批 B 待做**:F8 pole-jump graph(欧氏 cutoff+Liang-Barsky)语义查证——pole_jump_radius 在 canonical_rules 无依据字段,需查游戏规则依据后裁定(可能上升 owner)。
+- **批 B 已由 owner 游戏规则确认关闭(2026-07-08)**:owner 原话「那些电线杆是不需要连电网的。或者说,在基地内,协议核心会自动连上它们」——**F8 power_grid_reach 的数学前提(电杆须经 pole-jump 链连通 protocol_core 才供电)为假**。游戏规则=电杆放下即自动无线连核心。处置:①F8 定性为 retired-false-premise,不是改几何而是退役;②certified 主链无洞(六谓词只要求设施被 stencil 覆盖,从未要求电杆连通,与游戏规则一致);③F7 前提仍真(它就是主链覆盖谓词的 cut 化),批 A 修的几何继续有效;④物理删除 F8(cert_schema/lifecycle family map/replay dispatch 都在 reseal 钉面)**搭 M3 的 reseal 车**,现阶段先做退役标注(oracle/family/helper docstring+文档终态化,这些文件不在钉面零 reseal);⑤形式化 F8(P3.0 轴 A 等待项)取消而非解锁,要知会形式化线。
 - **批 C 待做**:F3 方向 offset 统一到 canonical DIR_DELTA(helper 自知 N/S 相反)+F2/F4 私有 4-neighbor graph 对照测试+F1/F6/F9 原语 SoT 对照。
 
 == 直接后果 ==
