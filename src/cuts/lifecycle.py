@@ -32,7 +32,7 @@ import json
 import time
 from collections import Counter  # noqa: F401  (state_machine_v2 后续用)
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, FrozenSet, List, Literal, Optional, Protocol, Tuple
+from typing import Any, Callable, Dict, FrozenSet, List, Literal, Mapping, Optional, Protocol, Tuple
 
 from src.cuts.cert_schema import validate_cert_payload as _validate_cert_payload
 
@@ -1113,14 +1113,77 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
 
 
 class MasterModelLike(Protocol):
-    """Structural placeholder for the future CP-SAT master integration."""
+    """Structural contract for the CP-SAT master consumed by Step 8.
+
+    Implemented by ``MasterPlacementModel`` (which forwards to the exact
+    coordinate delegate). Kept as a Protocol so ``src/cuts`` stays
+    import-isolated from ``src/models``/``src/search`` — the master is passed
+    in duck-typed by the LBBD wiring (M3-4).
+    """
+
+    def add_region_capacity_cut(
+        self,
+        *,
+        group_cell_weights: Mapping[str, int],
+        capacity: int,
+    ) -> bool:
+        ...
 
 
 def step_8_apply_to_master(cut: Cut, master_model: MasterModelLike) -> None:
-    """Step 8 — push cut as constraint to CP-SAT master."""
-    del master_model
+    """Step 8 — push cut as constraint to CP-SAT master (M3-3, P1.3).
+
+    Family dispatch is fail-closed: only families with a reviewed master
+    translation are wired; every other family raises so it cannot silently
+    reach the master without its own translation (F2-F7+F9 land family by
+    family in the M4 ladder).
+
+    F1 ``region_capacity``: the cert (validated in steps 5-7) witnesses
+    ``demand_R > cap_R`` for a region R with ``P(g) ⊆ R`` for every
+    contributing group. The attached constraint is the valid inequality
+
+        sum_g cells_per_pose[g] * sum_{p ∈ domain(g)} presence(g, p) <= cap_R
+
+    which is physically true for ANY feasible layout of this master (the
+    non-blocked cells of R cannot be over-occupied; pose bodies are disjoint
+    under the master's no-overlap). Attach soundness therefore never depends
+    on cert freshness — staleness/scope gating stays in steps 5-7, and the
+    master rejecting the push (False) is treated as fail-closed.
+    """
+    if cut.family == "region_capacity":
+        cert = validate_cert_payload("region_capacity", cut.cert.cert_payload)
+        raw_contributing = cert["contributing_groups"]
+        raw_cpp = cert["cells_per_pose"]
+        if not isinstance(raw_contributing, list) or not raw_contributing:
+            raise ValueError("step_8: contributing_groups must be a non-empty list")
+        if not isinstance(raw_cpp, dict):
+            raise ValueError("step_8: cells_per_pose must be a dict")
+        group_cell_weights: Dict[str, int] = {}
+        for item in raw_contributing:
+            if not isinstance(item, list) or len(item) != 2:
+                raise ValueError("step_8: contributing_groups entry malformed")
+            gid = str(item[0])
+            weight = raw_cpp.get(gid)
+            if isinstance(weight, bool) or not isinstance(weight, int) or weight <= 0:
+                raise ValueError(
+                    f"step_8: cells_per_pose[{gid!r}] must be a positive int"
+                )
+            group_cell_weights[gid] = weight
+        cap = cert["cap_R"]
+        if isinstance(cap, bool) or not isinstance(cap, int) or cap < 0:
+            raise ValueError("step_8: cap_R must be a non-negative int")
+        applied = master_model.add_region_capacity_cut(
+            group_cell_weights=group_cell_weights, capacity=cap
+        )
+        if not applied:
+            raise RuntimeError(
+                "step_8: master rejected region_capacity cut (fail-closed; "
+                "no partial constraint was attached)"
+            )
+        return
     raise NotImplementedError(
-        "Step 8 apply-to-master 在 Phase 1.3 P1.21 (benders_loop integration) 实施."
+        f"step_8: family={cut.family!r} 的 master 翻译尚未接线 — "
+        "P1.3 M4 阶梯逐族实施, 未接线族 fail-closed."
     )
 
 

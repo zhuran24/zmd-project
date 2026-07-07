@@ -7133,3 +7133,81 @@ class CoordinateExactMasterDelegate:
         self.owner._solver = None
         self.owner._status = None
         return True
+
+    def add_region_capacity_cut(
+        self,
+        *,
+        group_cell_weights: Mapping[str, int],
+        capacity: int,
+    ) -> bool:
+        # F1 region_capacity master attach (M3-3, step_8 translation).
+        # Valid inequality: for a region R with static capacity `capacity`
+        # (= |R| - |blocked ∩ R|) and contributing MANDATORY groups whose full
+        # pose domain lies inside R (P(g) ⊆ R, verified upstream in lifecycle
+        # steps 5-7), any feasible layout satisfies
+        #   sum_g weight_g * sum_{p ∈ domain(g)} presence(g, p) <= capacity
+        # because each placed pose occupies weight_g = cells_per_pose disjoint
+        # cells of R under the master's no-overlap. Physically true regardless
+        # of the triggering cert, so attaching is always sound.
+        #
+        # Fail-closed shape: unknown group / no slots / empty pose domain /
+        # non-positive weight or capacity → False with NO partial constraint.
+        # Unlike conflict nogoods (where dropping a member over-strengthens),
+        # omitting a pose whose presence literal cannot exist is lossless here:
+        # such a pose can never be realized, so its occupancy term is
+        # identically zero — but a group with NO representable pose at all is
+        # rejected as a deeper inconsistency.
+        cap = int(capacity)
+        if cap < 0:
+            return False
+        terms: List[Tuple[int, cp_model.IntVar]] = []
+        for group_id in sorted(group_cell_weights):
+            weight = int(group_cell_weights[group_id])
+            if weight <= 0:
+                return False
+            gid = str(group_id)
+            tpl = next(
+                (
+                    str(group["facility_type"])
+                    for group in self.owner._mandatory_groups
+                    if str(group["group_id"]) == gid
+                ),
+                None,
+            )
+            if tpl is None:
+                return False
+            slots = list(self.mandatory_slots.get(gid, []))
+            if not slots:
+                return False
+            pose_tuples = self._template_pose_tuple_by_idx.get(tpl, {})
+            if not pose_tuples:
+                return False
+            group_terms: List[Tuple[int, cp_model.IntVar]] = []
+            for pose_idx in sorted(pose_tuples):
+                lit = self._pose_present_literal(slots, pose_tuples[pose_idx])
+                if lit is None:
+                    continue
+                group_terms.append((weight, lit))
+            if not group_terms:
+                return False
+            terms.extend(group_terms)
+        if not terms:
+            return False
+
+        cut_index = int(
+            self.owner.build_stats.get("coordinate_region_capacity_cut_count", 0)
+        )
+        self.model.Add(sum(w * lit for w, lit in terms) <= cap)
+        self.owner.build_stats["coordinate_region_capacity_cut_count"] = cut_index + 1
+        self.owner.build_stats["coordinate_region_capacity_last_cut"] = {
+            "groups": len(group_cell_weights),
+            "presence_terms": len(terms),
+            "capacity": cap,
+            "semantics": "region_capacity_weighted_presence_v1",
+        }
+        # Same witness-invalidation obligation as add_benders_cut
+        # (F-GM-R6-01): a new constraint invalidates any prior solver response.
+        self.owner._last_solution = None
+        self.owner._solver = None
+        self.owner._status = None
+        return True

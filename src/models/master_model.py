@@ -12092,6 +12092,29 @@ class MasterPlacementModel:
         self._status = None
         return True
 
+    def add_region_capacity_cut(
+        self,
+        *,
+        group_cell_weights: Mapping[str, int],
+        capacity: int,
+    ) -> bool:
+        """F1 region_capacity weighted-presence constraint (M3-3, step_8).
+
+        Only the exact coordinate delegate implements this translation; every
+        other backend (pose-bool delegate, non-exact modes) fails closed
+        (False → step_8 raises, no partial attach).
+        """
+        if self.exact_mode and self._coordinate_delegate is not None:
+            delegate_fn = getattr(
+                self._coordinate_delegate, "add_region_capacity_cut", None
+            )
+            if delegate_fn is None:
+                return False
+            return delegate_fn(
+                group_cell_weights=group_cell_weights, capacity=capacity
+            )
+        return False
+
 
 if __name__ == "__main__":
     project_root = Path(__file__).resolve().parent.parent.parent
