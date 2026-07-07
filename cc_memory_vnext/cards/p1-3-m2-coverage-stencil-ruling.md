@@ -73,7 +73,8 @@ provenance:
 
 - **批 A 已落地(2026-07-08,commit 03c7f4e)**:CoverSet helper 换 stencil(Chebyshev/矩形,与 gen_power_pole 逐字同构)、oracle 版本 bump(power_cover_v2_stencil / power_grid_reach_v2_coverset_stencil)、19 条等价回归(test_helpers_power_cover_stencil.py,含方圆差异带 case)、F8 混合状态标注、survey 文档 banner。注意 power_cover_oracle.py 在 PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS 钉面,本批已走一轮 reseal(V99 dict+obligations JSON+checker 自钉)——「src/cuts 不触 sealed」的旧认知是错的,见 [[p1-3-kickoff-recon-facts]] 更正段。
 - **批 B 已由 owner 游戏规则确认关闭(2026-07-08)**:owner 原话「那些电线杆是不需要连电网的。或者说,在基地内,协议核心会自动连上它们」——**F8 power_grid_reach 的数学前提(电杆须经 pole-jump 链连通 protocol_core 才供电)为假**。游戏规则=电杆放下即自动无线连核心。处置:①F8 定性为 retired-false-premise,不是改几何而是退役;②certified 主链无洞(六谓词只要求设施被 stencil 覆盖,从未要求电杆连通,与游戏规则一致);③F7 前提仍真(它就是主链覆盖谓词的 cut 化),批 A 修的几何继续有效;④物理删除 F8(cert_schema/lifecycle family map/replay dispatch 都在 reseal 钉面)**搭 M3 的 reseal 车**,现阶段先做退役标注(oracle/family/helper docstring+文档终态化,这些文件不在钉面零 reseal);⑤形式化 F8(P3.0 轴 A 等待项)取消而非解锁,要知会形式化线。
-- **批 C 待做**:F3 方向 offset 统一到 canonical DIR_DELTA(helper 自知 N/S 相反)+F2/F4 私有 4-neighbor graph 对照测试+F1/F6/F9 原语 SoT 对照。
+- **批 C-1 已落地(2026-07-08,commit c4326f1)**:DIRECTION_OFFSETS N/S 对齐 canonical(旧表对真实工件彻底错误——全量 599,384 port 实测,N/S 的 front cell 旧表下全落进设施体内;oracle/validator 共享错表自洽+测试全用 E/W 双层掩盖);port_exposure_v2_canonical_dirs;3 条 N/S 钉子测试。F2/F4 确认不受影响(无标签 4-邻接,无方向标签语义)。
+- **批 C-2 待做**:F1/F6/F9 几何原语的 SoT 对照测试(region/baseline/window 是 family 私有数学对象不必统一,但 occupied_cells/canonical dims 消费点补对照钉子)。
 
 == 直接后果 ==
 
