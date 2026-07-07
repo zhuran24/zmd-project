@@ -167,6 +167,44 @@ def test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session(
     assert state.get("candidates") == {}
 
 
+def test_outer_search_blocks_cut_framework_attach_env_before_session(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    """M3-4 (P1.3): EXACT_CUT_FRAMEWORK_ATTACH is unsafe for certified runs
+    until the M4 family ladder + owner promotion (ladder gate)."""
+    project_root = _build_frontier_project(tmp_path / "project", width=2, height=2)
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH", "1")
+
+    def fail_if_session_constructed(*_args, **_kwargs):  # pragma: no cover - assertion path
+        raise AssertionError("ExactSearchSession constructed before unsafe env guard")
+
+    monkeypatch.setattr(
+        outer_search_module,
+        "create_exact_search_session",
+        fail_if_session_constructed,
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        min_side=1,
+        area_upper_bound=4,
+        max_attempts=1,
+        parallel_processes=1,
+        resume_campaign=False,
+    )
+
+    state = _read_state(project_root)
+    stop = state.get("last_stop_reason", {})
+    assert status == RUN_STATUS_UNPROVEN
+    assert result is None
+    assert stop.get("reason") == "unsafe_certified_exact_master_domain_env"
+    assert stop.get("status") == RUN_STATUS_UNPROVEN
+    assert stop.get("blockers", [{}])[0].get("env") == "EXACT_CUT_FRAMEWORK_ATTACH"
+    assert state.get("candidates") == {}
+
+
 @pytest.mark.parametrize(
     "env_name",
     [

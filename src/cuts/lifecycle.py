@@ -1151,6 +1151,8 @@ def step_8_apply_to_master(cut: Cut, master_model: MasterModelLike) -> None:
     master rejecting the push (False) is treated as fail-closed.
     """
     if cut.family == "region_capacity":
+        if cut.cert is None:
+            raise ValueError("step_8: region_capacity cut carries no cert (fail-closed)")
         cert = validate_cert_payload("region_capacity", cut.cert.cert_payload)
         raw_contributing = cert["contributing_groups"]
         raw_cpp = cert["cells_per_pose"]

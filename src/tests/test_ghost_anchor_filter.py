@@ -238,6 +238,45 @@ def test_certified_exact_blocks_pose_bool_master_env_before_session(
     ]
 
 
+def test_certified_exact_blocks_cut_framework_attach_env_before_session(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """M3-4 (P1.3): the cut-framework attach env is a non-certified master
+    mutation until the M4 family ladder + owner promotion; a certified run
+    with it enabled must fail closed before any session/master is built."""
+    monkeypatch.delenv(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, raising=False)
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH", "1")
+
+    def _forbidden_session_factory(*_args, **_kwargs):  # pragma: no cover - failure sentinel
+        raise AssertionError("certified exact domain env blocker must run before ExactSearchSession")
+
+    monkeypatch.setattr(
+        "src.search.benders_loop.create_exact_search_session",
+        _forbidden_session_factory,
+    )
+
+    status, solution = run_benders_for_ghost_rect(
+        ghost_w=1,
+        ghost_h=1,
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+        max_iterations=1,
+    )
+
+    metadata = run_benders_for_ghost_rect.last_run_metadata
+    assert status == "UNPROVEN"
+    assert solution is None
+    assert metadata["exact_safe_cuts"] == []
+    assert metadata["generated_exact_safe_cut_count"] == 0
+    assert metadata["proof_summary"]["master_status"] == "BLOCKED"
+    blockers = metadata["proof_summary"]["blockers"]
+    assert len(blockers) == 1
+    assert blockers[0]["code"] == "cut_framework_attach_not_certified"
+    assert blockers[0]["env"] == "EXACT_CUT_FRAMEWORK_ATTACH"
+    assert blockers[0]["value"] == "1"
+
+
 def test_certified_exact_blocks_power_pole_slot_override_before_session(
     tmp_path,
     monkeypatch: pytest.MonkeyPatch,

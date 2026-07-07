@@ -933,6 +933,7 @@ EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV = "EXACT_POWER_PLACEMENT_SUBPROBLEM"
 EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV = (
     "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST"
 )
+EXACT_CUT_FRAMEWORK_ATTACH_ENV = "EXACT_CUT_FRAMEWORK_ATTACH"
 
 _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES = {"", "0", "false", "no", "off"}
 _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
@@ -963,6 +964,12 @@ _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
     "EXACT_OUTER_SKIP_UNKNOWN": (
         "outer_skip_unknown_not_certified",
         "skipping UNKNOWN frontier candidates makes strict terminal certification unsound",
+    ),
+    EXACT_CUT_FRAMEWORK_ATTACH_ENV: (
+        "cut_framework_attach_not_certified",
+        "F1-F9 cut-framework master attach is not certified until the M4 "
+        "family ladder + helper-vs-master regressions land and the owner "
+        "promotes it (P1.3 M3-4 wiring; ladder gate)",
     ),
 }
 _CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS: Mapping[str, tuple[str, str, str]] = {
@@ -1041,6 +1048,7 @@ _CERTIFIED_KNOWN_ENV_NAMES = frozenset(
         "EXACT_COORDINATE_MASTER_SEARCH_PROFILE",
         "EXACT_COORDINATE_MASTER_SEARCH_PROFILES",
         "EXACT_CP_SAT_WORKERS",
+        "EXACT_CUT_FRAMEWORK_ATTACH",
         "EXACT_D2_CP_SAT_WORKERS",
         "EXACT_EPSILON_STAGE",
         "EXACT_EPSILON_STAGE1_END_HOURS",
@@ -6031,6 +6039,14 @@ class LBBDController:
                 **self._subproblem_reuse_summary(),
                 **self._exact_cut_ladder_summary(),
             }
+            # M3-4: framework cuts (F1 ladder) are optional strengthening on
+            # top of the whole-layout nogood, env-gated off by default and
+            # blocked in certified runs (see _cut_framework_attach_enabled).
+            proof_summary["cut_framework_attached"] = (
+                self._maybe_attach_framework_cuts(
+                    trigger="binding_infeasible", iteration=iteration
+                )
+            )
             cut_applied = self._add_exact_whole_layout_nogood(
                 solution=solution,
                 iteration=iteration,
@@ -7159,6 +7175,10 @@ class LBBDController:
             **self._routing_shrink_summary(),
             **self._exact_cut_ladder_summary(),
         }
+        # M3-4: see the binding-INFEASIBLE branch note.
+        proof_summary["cut_framework_attached"] = self._maybe_attach_framework_cuts(
+            trigger="routing_exhausted", iteration=iteration
+        )
         cut_applied = self._add_exact_whole_layout_nogood(
             solution=solution,
             iteration=iteration,
@@ -7493,6 +7513,156 @@ class LBBDController:
             return False
         self.generated_exact_safe_cuts.append(cut)
         return True
+
+    def _cut_framework_attach_enabled(self) -> bool:
+        # M3-4 (P1.3): master attach of F1-F9 framework cuts. The same env is
+        # registered in _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES, so a
+        # certified/production run with it enabled fail-closes long before this
+        # method can matter — the wiring below is reachable only from direct
+        # (non-certified) invocations and unit tests until the owner promotes
+        # the framework after the M4 family ladder lands.
+        raw = os.environ.get(EXACT_CUT_FRAMEWORK_ATTACH_ENV, "")
+        return raw.strip().lower() not in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES
+
+    def _build_cut_framework_state(self) -> Optional[Any]:
+        """Assemble the cut-framework BState from master-side materials.
+
+        All fields derive from the master/session; ``exterior_blocks`` is the
+        empty set because no exterior-blocking input exists in this production
+        state (a cut-framework-only concept) — an over-estimated region
+        capacity only weakens F1 cuts, never over-prunes. Returns None
+        fail-open (no cuts attached) when any material is missing.
+        """
+        # Lazy import: this method is the single sanctioned src/search →
+        # src/cuts seam (M3-4); module-level import would couple the certified
+        # loop to the framework for every run.
+        from src.cuts.lifecycle import BState, GroupState
+
+        master = self.master
+        mandatory_groups = getattr(master, "_mandatory_groups", None)
+        facility_pools = getattr(master, "facility_pools", None)
+        templates = getattr(master, "templates", None)
+        rules = getattr(master, "rules", None)
+        ghost_wh = getattr(master, "ghost_rect", None)
+        if (
+            not mandatory_groups
+            or not facility_pools
+            or not templates
+            or rules is None
+            or ghost_wh is None
+        ):
+            return None
+        context = self._selected_ghost_context()
+        if context is None:
+            return None
+        _rect_idx, _u_var, anchor_raw, ghost_cells = context
+        if not isinstance(anchor_raw, Mapping):
+            return None
+        anchor_x_raw = anchor_raw.get("x")
+        anchor_y_raw = anchor_raw.get("y")
+        if anchor_x_raw is None or anchor_y_raw is None:
+            return None
+        try:
+            anchor_x = int(anchor_x_raw)
+            anchor_y = int(anchor_y_raw)
+            ghost_w = int(ghost_wh[0])
+            ghost_h = int(ghost_wh[1])
+        except (TypeError, ValueError):
+            return None
+
+        groups: Dict[str, Any] = {}
+        instance_to_facility_type: Dict[str, str] = {}
+        for group in mandatory_groups:
+            if not isinstance(group, Mapping):
+                return None
+            gid = str(group.get("group_id") or "")
+            facility_type = str(group.get("facility_type") or "")
+            try:
+                demand = int(group.get("count", 0))
+            except (TypeError, ValueError):
+                return None
+            pool = facility_pools.get(facility_type) or []
+            pose_domain = frozenset(
+                str(pose.get("pose_id"))
+                for pose in pool
+                if isinstance(pose, Mapping) and pose.get("pose_id")
+            )
+            if not gid or not facility_type or demand <= 0 or not pose_domain:
+                return None
+            groups[gid] = GroupState(
+                group_id=gid,
+                demand=demand,
+                pose_domain=pose_domain,
+                selected_poses=[],
+            )
+            instance_to_facility_type[gid] = facility_type
+
+        return BState(
+            groups=groups,
+            cell_owner={},
+            ghost_rect=(anchor_x, anchor_y, ghost_h, ghost_w),
+            ghost_cells=frozenset(ghost_cells),
+            exterior_blocks=frozenset(),
+            artifact_hashes=dict(self.artifact_hashes or {}),
+            available_oracle_versions=frozenset({"region_capacity_v1"}),
+            canonical_rules=rules,
+            instance_to_facility_type=instance_to_facility_type,
+            facility_templates=templates,
+            candidate_placements={"facility_pools": facility_pools},
+        )
+
+    def _maybe_attach_framework_cuts(self, *, trigger: str, iteration: int) -> int:
+        """Generate + fully re-validate + attach F1 framework cuts (M3-4).
+
+        Runs the complete lifecycle gauntlet per cut — integrity, family
+        validator, step-6 attach-scope, step-7 evaluate — before step_8. A cut
+        failing any gate is skipped (framework cuts are optional strengthening;
+        skipping only reduces pruning). step_8 failures propagate: the master
+        rejecting a validated cut is a wiring defect, not a data condition.
+        """
+        if not self._cut_framework_attach_enabled():
+            return 0
+        from src.cuts.lifecycle import (
+            step_6_attach_scope_check,
+            step_7_evaluate_cut,
+            step_8_apply_to_master,
+            validate_cut_integrity,
+        )
+        from src.cuts.oracles.region_capacity_oracle import (
+            generate_region_capacity_cuts,
+        )
+        from src.cuts.replay import FAMILY_VALIDATORS
+
+        state = self._build_cut_framework_state()
+        if state is None:
+            return 0
+        cuts = generate_region_capacity_cuts(
+            state, state.canonical_rules or {}, iter_index=iteration
+        )
+        attached = 0
+        for cut in cuts:
+            validate_cut_integrity(cut)
+            validator = FAMILY_VALIDATORS.get(cut.family)
+            if validator is None:
+                continue
+            result = validator(cut, state, state.canonical_rules or {})
+            if getattr(result, "kind", None) != "ok":
+                continue
+            if step_6_attach_scope_check(cut, state) != "ATTACH":
+                continue
+            if not step_7_evaluate_cut(cut, state):
+                continue
+            step_8_apply_to_master(cut, self.master)
+            attached += 1
+        stats = getattr(self.master, "build_stats", None)
+        if isinstance(stats, dict):
+            stats["cut_framework_attach_last"] = {
+                "trigger": trigger,
+                "iteration": int(iteration),
+                "generated": len(cuts),
+                "attached": attached,
+            }
+        return attached
 
     def _add_exact_whole_layout_nogood(
         self,
