@@ -107,4 +107,9 @@ public publisher 的 `resolve_p1_2_publish_open_gate()`(certified_surface.py)原
 
 **round-1 vs round-2 合论**:两轮换轴(权限结构轴 / 数学语义轴)共 18 簇,**0 个真·上-TCB soundness 洞**;唯二实做=cluster-6 治理门 split-brain(`6b41ebf`)+ 供电覆盖措辞对齐(纯文档);其余全假阳/已裁定延期/线下。是否据此判收敛收口 = owner 画线拍板。
 
+== round-3 triage 结果(换轴 TCB 线诚实性,codex 抽取+Opus 判,2026-07-07)==
+2 会话+1 patch(dependency_floor_root)。codex 子代理抽取+行为验证、Opus 定判。**仍 0 个新真·上-TCB 洞**。6 条:①dependency_floor parent/`-S` child root 分叉=**已裁定 #9a 部署时点**(child 重验 manifest digest/root/每文件 size+sha fail-closed;manifest 已标 `deploy_pending_placeholder`;reachable=不能);②public "thin gate"=**已修**(=cluster-6 `6b41ebf`;codex 实测 4 字段 gate 返 `review_anchor_mismatch` 阻塞——reviewer 报告是修复前旧态);③送审包 manifest 列出被排除路径名=**归档策略小信息披露**(泄的是排除项名字非内容、非 soundness 洞;留 owner 定是否 redact);④TCB 线文档口径漂移=**doc drift、已扫**(specs/11「无生产 CLI」→已有 run_supervisor_seal;11_dependency_graph immutable-materialization OPEN→IMPLEMENTED;06_current_status resolve TOCTOU→已闭、归档主缺口→已堵、PR2 TCB 加延期交叉引用);⑤run_supervisor_seal 不在 critical_gate_files=非洞(seal 权威在 supervisor_seal/L0,改 CLI 伪造不了 CERTIFIED、certified source digest 已绑 scripts/**/*.py);⑥非监督 INFEASIBLE=假阳(=round-1 cluster-3 重报,sink projection 缺 proof 降 UNPROVEN)。
+
+**三轮合论(2026-07-06~07)**:三个正交轴(权限结构 / 数学语义 / TCB 线诚实性)全剥完,**0 个真·上-TCB soundness 洞**。实做=cluster-6 split-brain(`6b41ebf`)+ 供电覆盖措辞裁定(`f2ee48b`)+ round-3 doc drift 扫;唯一留 owner 定的小策略点=送审包 manifest 是否 redact 被排除路径名(非洞)。收敛信号极强(三轴皆剥不出线上洞);是否据此收口归 owner 画线 + 手动门。
+
 关联:收敛判据 [[review-convergence-tcb-line-not-zero-findings]];延期桶 [[deliberate-insider-hardening-deferred-to-release]];对抗语料上下文卫生 [[guardrail-delegate-adversarial-reads]];外审前未闭项(乙冻结仪式已执行)[[p1-2-pre-external-review-open-items]]。

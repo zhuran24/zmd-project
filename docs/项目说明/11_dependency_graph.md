@@ -66,7 +66,7 @@ PR1 publication-boundary hardening                IMPLEMENTED in worktree
 fixed-witness + independent whole-layout replay   IMPLEMENTED in worktree
 publish-open gate + central publisher             IMPLEMENTED in worktree
 PR2 controlled/read-once verifier TCB              OPEN
-review package immutable commit materialization    OPEN
+review package immutable commit materialization   IMPLEMENTED in worktree
 archive/review policy completeness                 PARTIAL
 owner manual close decision                        BLOCKED
 ```

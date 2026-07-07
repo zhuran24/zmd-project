@@ -68,9 +68,10 @@ allowlist 和关键 gate 文件。它是结构边界检查，不是“P1.2 已 s
 1. 普通 solver run 不会从 proposal 自动晋升（生产 supervisor seal 命令已存在：`scripts/run_supervisor_seal.py`；但尚无真实生产 campaign→seal 实跑记录）。
 2. `data/review_gates/phase_1_2_spike_close.json` 仍为 `blocked_manual_review_count`，兼容字段
    `p1_3b_entry_allowed=false`。内部 supervisor seal 不能自动翻转 owner gate。
-3. PR2 的较小 verification TCB、controlled loader、read-once/one-snapshot 设计仍未实现完整。
-4. `scripts/package_review_snapshot.py` 会先解析 treeish 得到 commit metadata，但物化时仍使用原 treeish；
-   mutable ref 在两步之间变化时，包内容不一定等于记录的 commit。归档排除策略也仍有未覆盖面。
+3. PR2 的较小 verification TCB、controlled loader、read-once/one-snapshot 设计仍未实现完整（其中「仅防能执行 reseal 仪式的蓄意内鬼」的硬化 owner 2026-07-06 已暂缓到发布时点、明确非 P1.2 闭合前提，见 PROJECT_LOCK §C5 close-scope 修改）。
+4. `scripts/package_review_snapshot.py` 的 resolve-once 已把 treeish 一次解析为不可变 commit 并同时用于
+   provenance 与物化（ref-move TOCTOU 已闭，回归 `test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit`）；
+   归档排除策略主缺口已堵（协作记忆 `cc_memory/`+`cc_memory_vnext/` 已排除，`28d9d2c`），残余仅策略细化（`paths/`/`.githooks` 去留、secret-scan 纵深、manifest 是否列出被排除路径名）。
 5. roadmap 中标为 OPEN/PARTIAL 的 canonical→geometry、boundary-placement 等项目仍需按各自验收条件处理。
 6. flow/throughput 仍明确在命题 P 之外。不能把 diagnostic flow PASS 写成 certified throughput guarantee。
 

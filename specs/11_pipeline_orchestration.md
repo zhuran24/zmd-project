@@ -58,8 +58,9 @@ fixed-witness capsule and rechecks disk state before and after the transition. O
 `mark_campaign_stopped(..., "CERTIFIED")` calls are rejected.
 
 The sealed campaign checkpoint is proof authority, but it is not by itself a public delivery
-surface. The current repository has no production supervisor CLI/launcher: `main.py` ends after
-writing `CANDIDATE_PROPOSED`, and repository callers of `supervisor_seal()` are tests. An operator
+surface. The production supervisor entry is the standalone command `scripts/run_supervisor_seal.py`
+(driven from a proposal-ready marker, `349c56c`, PR2 #7); `main.py` still ends after writing
+`CANDIDATE_PROPOSED` and does not seal, and no real production campaign→seal run has been recorded yet. An operator
 must not infer a seal from a successful solve process.
 
 ### 4.3 Verified public publisher
