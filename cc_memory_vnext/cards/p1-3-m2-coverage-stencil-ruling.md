@@ -66,6 +66,12 @@ provenance:
 - F7/F8 attach 进 certified master 的前置 = 换谓词完成 + helper-vs-master 判定一致性回归测试在位。
 - 全体 F1-F9 helper 的其余自有几何原语(覆盖/方向/相邻/footprint)同批盘点统一(canonical→geometry 语义半的完整履行,不只 F7/F8)。
 
+== 落地进度 ==
+
+- **批 A 已落地(2026-07-08,commit 03c7f4e)**:CoverSet helper 换 stencil(Chebyshev/矩形,与 gen_power_pole 逐字同构)、oracle 版本 bump(power_cover_v2_stencil / power_grid_reach_v2_coverset_stencil)、19 条等价回归(test_helpers_power_cover_stencil.py,含方圆差异带 case)、F8 混合状态标注、survey 文档 banner。注意 power_cover_oracle.py 在 PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS 钉面,本批已走一轮 reseal(V99 dict+obligations JSON+checker 自钉)——「src/cuts 不触 sealed」的旧认知是错的,见 [[p1-3-kickoff-recon-facts]] 更正段。
+- **批 B 待做**:F8 pole-jump graph(欧氏 cutoff+Liang-Barsky)语义查证——pole_jump_radius 在 canonical_rules 无依据字段,需查游戏规则依据后裁定(可能上升 owner)。
+- **批 C 待做**:F3 方向 offset 统一到 canonical DIR_DELTA(helper 自知 N/S 相反)+F2/F4 私有 4-neighbor graph 对照测试+F1/F6/F9 原语 SoT 对照。
+
 == 直接后果 ==
 
 1. M2 可以全速实施(盘点清单出来即列小计划动手)。
