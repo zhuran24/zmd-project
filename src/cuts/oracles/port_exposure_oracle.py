@@ -58,7 +58,7 @@ from src.cuts.lifecycle import (
 _logger = logging.getLogger(__name__)
 
 
-ORACLE_NAME: str = "port_exposure_v1"
+ORACLE_NAME: str = "port_exposure_v2_canonical_dirs"
 FAMILY_VERSION: str = "v1.0"
 VALIDATOR_VERSION: str = "v1.0"
 CERT_KIND: str = "port_exposure_blocked"

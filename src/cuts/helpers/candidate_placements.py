@@ -54,11 +54,16 @@ from src.cuts.lifecycle import BState, GroupId, PoseId
 
 
 # Direction encoding (N/S/E/W) → (dx, dy) cell offset.
-# Gap 11 修 (round 31): 真数据实测 — y is row, x is col.
-# Roadmap I7 latent landmine: N/S oppose canonical DIR_DELTA; no cert before shared primitives.
+# M2 batch C reconcile (2026-07-08): aligned to canonical DIR_DELTA
+# (placement_generator.py DIR_DELTA / master_model.py:86) — the single
+# source-of-truth for port direction geometry. The pre-M2 table had N/S
+# inverted ("roadmap I7 latent landmine"): against the real frozen artifact
+# every N/S port's front cell landed INSIDE its own facility body (verified
+# across all 599,384 ports, 2026-07-08). Regression pins:
+# src/tests/cuts/test_helpers_direction_offsets.py.
 DIRECTION_OFFSETS = {
-    "N": (0, -1),
-    "S": (0, 1),
+    "N": (0, 1),
+    "S": (0, -1),
     "E": (1, 0),
     "W": (-1, 0),
 }

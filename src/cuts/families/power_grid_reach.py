@@ -4,7 +4,7 @@ RETIRED — FALSE PREMISE (owner game-rule ruling 2026-07-08, M2 batch B):
 poles need no pole-to-pole network — the protocol core links to every placed
 pole wirelessly and automatically, so "CoverSet non-empty but pole-jump BFS
 cannot reach protocol_core" describes a game mechanic that does not exist and
-any F8 cut is a potential false-INFEASIBLE. The certified predicate chain is
+any F8 cut can wrongly prune layouts the game allows. The certified predicate chain is
 unaffected (it never required pole connectivity). Inert tombstone until
 physical deletion rides the M3 step_8 reseal batch; never enable on any
 certified or production path. See memory card

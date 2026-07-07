@@ -23,7 +23,8 @@ RETIRED — FALSE PREMISE (owner game-rule ruling 2026-07-08, M2 batch B):
 they are placed; the protocol core links to them wirelessly and automatically.
 This family's founding premise (poles must reach protocol_core through a
 pole-jump chain to deliver power) is FALSE under the real game rules, so any
-F8 cut is a potential false-INFEASIBLE against layouts the game allows.
+F8 cut can wrongly prune layouts the game allows (a false infeasibility
+claim — the exact hole type the exhaustiveness proof cannot tolerate).
 The certified predicate chain never required pole connectivity (facility ∩
 pole 12×12 stencil is the whole power predicate), so nothing upstream is
 affected. This generator must NEVER be enabled on any certified or production
