@@ -12903,7 +12903,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/helpers/bounded_core_minimizer.py': 'da3184e860ea49fa88a45da2db09c7b09fd742fc7eb10b6f7018eb1e5b98985b',
     'src/cuts/lifecycle.py': '430bf565af94490972b92599a0c85de18ea7ea94a3cad87463019be3f908d29d',
     'src/cuts/oracles/pattern_nogood_oracle.py': '019d808d18619c9fc3e3692d476040cad3c8b360b5671bce54c6b8ac9003ef37',
-    'src/cuts/oracles/power_cover_oracle.py': '161e513cde4fbfa0fd5dc30039f067e705728b2ff0a9d0125a39dd3d284457b9',
+    'src/cuts/oracles/power_cover_oracle.py': '0f2d899d3a24cec8dd95397d454903a61c3ca781a995d09328d2d43bca47583d',
     'src/cuts/oracles/region_capacity_oracle.py': '52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83',
     'src/cuts/oracles/shape_packing_hall_oracle.py': '44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934',
     'src/interchange/compatibility_manifest.py': '2ceba41d6be16fa15b252f50538a378f054b85270d06a08ad38f9adcbb5efaea',

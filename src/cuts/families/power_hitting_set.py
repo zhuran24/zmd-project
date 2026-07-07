@@ -18,12 +18,15 @@ PROJECT_LOCK §3A locked invariants (Phase 1.2 single-case scope):
   (NOT 1×1 as the v1.1 spec text reads). ``pole_shape_canonical`` cert field
   is locked to ``"2x2_rigid"``. ``pole_radius`` cert field is the float carried
   from ``canonical_rules.facility_templates.power_pole.power_coverage_radius``.
-  This F7 validator/helper stack currently interprets that value through the
-  older Euclidean ``compute_cover_set`` model, while the active certified path
-  and frozen pose geometry use the owner-confirmed 12x12 square coverage
-  stencil.  F7/F8 are not certified master inputs until P1.3 reconciles that
-  semantic split; this docstring must not be read as making Euclidean coverage
-  the project authority.
+  Since the M2 reconcile (owner ruling 2026-07-08) this F7 validator/helper
+  stack interprets that value through the canonical 12×12 square coverage
+  stencil (``compute_cover_set`` Chebyshev semantics) — the same rectangle as
+  the frozen pose geometry and the live certified master. The pre-M2 Euclidean
+  model is retired; certs minted under it carry
+  ``oracle_abstraction_version="power_cover_v1"`` and are isolated by the
+  step-6 oracle-version scope check (current: ``"power_cover_v2_stencil"``).
+  F7 remains a non-certified master input until the P1.3 step_8 wiring batch
+  lands its helper-vs-master equivalence regressions.
 - **needs_power gate**: validator rejects facilities whose
   ``facility_templates[ft].needs_power`` is not True (Gemini F7 adversarial
   audit catch — a F7 cert against a non-powered facility is bogus).

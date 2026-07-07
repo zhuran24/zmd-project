@@ -48,7 +48,7 @@ from src.cuts.lifecycle import (
 )
 
 
-ORACLE_NAME: str = "power_cover_v1"
+ORACLE_NAME: str = "power_cover_v2_stencil"
 FAMILY_VERSION: str = "v1.0"
 VALIDATOR_VERSION: str = "v1.0"
 CERT_KIND: str = "power_cover_emptyset_ghost"
@@ -180,8 +180,10 @@ def generate_power_hitting_set_cuts(
             Phase 1.5+ wiring will derive these from ``master_solution`` (the
             poses the master picked). Phase 1.2 fixture tests pass explicit
             lists; without overrides the generator skips all.
-        pole_radius: explicit Euclidean radius. When None, the generator pulls
-            from ``state.facility_templates["power_pole"].power_coverage_radius``.
+        pole_radius: canonical stencil half-extent (``power_coverage_radius``,
+            12×12 square stencil semantics — owner ruling 2026-07-08). When
+            None, the generator pulls from
+            ``state.facility_templates["power_pole"].power_coverage_radius``.
         iter_index: outer-loop iteration tag for cut_id provenance.
     """
     if not _env_enabled():

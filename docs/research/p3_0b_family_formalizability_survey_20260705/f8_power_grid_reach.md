@@ -1,3 +1,5 @@
+> **【时点注 2026-07-08，M2 批 A 半落地】** 本文是 2026-07-05 对 pre-M2 代码的调研快照。F8 的两半几何语义现状已分化：**CoverSet 半**（共享 helper `power_cover.compute_cover_set`）已随 M2 批 A 统一到 canonical 12×12 square stencil（owner 裁定 2026-07-08，记忆卡 `p1-3-m2-coverage-stencil-ruling`；oracle 版本 bump 至 `power_grid_reach_v2_coverset_stencil`）；**pole-jump graph 半**（`power_network` 的欧氏 cutoff + Liang-Barsky/ghost-AABB 遮挡）仍是本文所记的旧模型，且其 `pole_jump_radius` 在 canonical_rules 中无任何依据字段——待 M2 批 B 裁定（电杆连网的游戏规则依据）。批 B 关闭前 F8 维持 non-certified，本文对 graph 半的观察仍有效、对 CoverSet 半的欧氏描述为史料。形式化 F8 的解锁条件相应改为"批 B 关闭"。
+
 # Family 8: power_grid_reach（几何 cut family，处理"powered facility 的 CoverSet 非空，但从 protocol_core 出发的 pole-jump BFS 到不了任何覆盖该 facility 的 pole"这一全局电力连通性不可达情形）。
 
 原文依据：

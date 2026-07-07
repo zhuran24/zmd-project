@@ -1,3 +1,5 @@
+> **【时点注 2026-07-08，M2 批 A 已落地】** 本文是 2026-07-05 对 pre-M2 代码的调研快照。其中"F7 helper 用欧氏距离模型、与主链 12×12 stencil 语义分裂"的观察（§formalization_needs 倒数第二条、§latent_issues "coverage semantics split" 条）已由 M2 reconcile 解决：owner 2026-07-08 裁定统一到 canonical 12×12 square stencil（记忆卡 `p1-3-m2-coverage-stencil-ruling`），`power_cover.compute_cover_set` 已改为 Chebyshev/stencil 判定（与 `gen_power_pole`、canonical `power_coverage_stencil` 逐字同构），oracle 版本 bump 至 `power_cover_v2_stencil`，等价回归在 `src/tests/cuts/test_helpers_power_cover_stencil.py`（含方圆差异带 case）。正文欧氏描述与行号引用均为 pre-M2 史料，形式化 F7 时以 stencil 语义为准。
+
 # F7 power_hitting_set。spec 标题："Cut Family 7 — power_hitting_set" (docs/research/p3_b_design_v2_20260521/cut_family_specs/07_power_hitting_set.md:1)；实现文件 docstring 也写 "Family 7 power_hitting_set" (src/cuts/families/power_hitting_set.py:1)。该 family 是 literal mode：spec 标 "Mode: literal" (07_power_hitting_set.md:5)，实现说 evaluator 委托给 literal multiset (power_hitting_set.py:41-42)。
 
 ## proposition

@@ -18,6 +18,14 @@ Fail-closed contract:
   from a canonical_rules field that does not yet exist)
 - protocol_core anchor unknown / not in state.cell_owner → []
 
+Coverage-semantics status (M2 reconcile, owner ruling 2026-07-08): the
+facility CoverSet consumed here follows the canonical 12×12 square stencil
+(shared helper ``power_cover.compute_cover_set``). The pole-jump reachability
+graph (``power_network``) still uses the legacy Euclidean/segment model and
+its ``pole_jump_radius`` has NO canonical_rules backing — that half is
+pending the M2 batch-B ruling (game-rule evidence for pole-to-pole linking).
+F8 stays non-certified until batch B closes.
+
 Refs:
 - docs/项目说明/08_phase_1_2_plan.md §P1.2B-F8
 - docs/研究/p3_b_design_v2_20260521/cut_family_specs/08_power_grid_reach.md v1.1
@@ -47,7 +55,7 @@ from src.cuts.lifecycle import (
 )
 
 
-ORACLE_NAME: str = "power_grid_reach_v1"
+ORACLE_NAME: str = "power_grid_reach_v2_coverset_stencil"
 FAMILY_VERSION: str = "v1.0"
 VALIDATOR_VERSION: str = "v1.0"
 CERT_KIND: str = "power_pole_bfs_disconnect_ghost"

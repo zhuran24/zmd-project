@@ -1,8 +1,8 @@
 """F7 power_hitting_set CoverSet helper.
 
 Computes ``CoverSet(facility_pose, state)``: the set of pole anchor cells that
-(a) host a 2×2 pole entirely within ``free_cells`` and (b) place at least one
-of the pole's cells within ``pole_radius`` of at least one facility cell.
+(a) host a 2×2 pole entirely within ``free_cells`` and (b) cover at least one
+facility cell under the canonical 12×12 square coverage stencil.
 
 Two variants:
 - ``compute_cover_set(...)``: pole anchors against the FULL free-cell mask
@@ -11,22 +11,28 @@ Two variants:
   ``facility_cells`` exclusion (Gemini F7 round 1 BLOCKER #1 fix) is visible
   at each call site (validator phase 6/7 + oracle generator).
 
+Coverage semantics (owner ruling 2026-07-08, M2 reconcile): the single
+source-of-truth is the canonical 12×12 square stencil with intersection
+predicate — a 2×2 pole anchored at ``(px, py)`` covers exactly the cells
+``X ∈ [px-R, px+1+R], Y ∈ [py-R, py+1+R]`` with canonical
+``power_coverage_radius R = 5`` (Chebyshev expansion of the pole footprint).
+This is byte-for-byte the same rectangle as
+``rules/canonical_rules.json:power_coverage_stencil``,
+``placement_generator.gen_power_pole`` (frozen candidate geometry) and
+``ExactCoordinateMaster._supports_rectangular_power_coverage`` (live master).
+The pre-M2 Euclidean cell-distance model is retired and must not be
+reintroduced anywhere on a certified path (see memory card
+``p1-3-m2-coverage-stencil-ruling``).
+
 Per ``canonical_rules.facility_templates.power_pole``: dimensions w=2, h=2.
-This helper uses the older F7/F8 Euclidean cell-distance model for
-``power_coverage_radius``.  The active certified path and frozen candidate
-geometry use the owner-confirmed 12x12 square coverage stencil instead
-(``placement_generator.gen_power_pole`` and
-``ExactCoordinateMaster._supports_rectangular_power_coverage``).  F7/F8 remain
-non-certified / not applied to the master until P1.3 reconciles this landmine;
-do not treat this helper as the canonical live coverage semantics.
 
 Refs:
+- rules/canonical_rules.json ``power_coverage_stencil`` (authoritative rectangle)
 - docs/research/p3_b_design_v2_20260521/cut_family_specs/07_power_hitting_set.md v1.1
 - docs/项目说明/08_phase_1_2_plan.md §P1.2B-F7
 """
 from __future__ import annotations
 
-import math
 from typing import FrozenSet, Iterable, Tuple
 
 
@@ -42,21 +48,26 @@ def _pole_cells(anchor: Cell, pole_size: int = _POLE_SIZE) -> Tuple[Cell, ...]:
     return tuple((px + dx, py + dy) for dx in range(pole_size) for dy in range(pole_size))
 
 
-def _min_cell_distance(facility_cell: Cell, anchor: Cell, pole_size: int = _POLE_SIZE) -> float:
-    """Min Euclidean distance from one facility cell to any cell of a pole.
+def _stencil_covers_cell(
+    anchor: Cell,
+    facility_cell: Cell,
+    coverage_radius: float,
+    pole_size: int = _POLE_SIZE,
+) -> bool:
+    """Canonical 12×12 square stencil membership for one facility cell.
 
-    A 2×2 pole at ``anchor`` occupies (anchor + (0..1, 0..1)). Coverage is
-    computed cell-to-cell (cell centers are integer coordinates).
+    A ``pole_size × pole_size`` pole anchored at ``(px, py)`` covers the
+    rectangle ``X ∈ [px-R, px+(pole_size-1)+R], Y ∈ [py-R, py+(pole_size-1)+R]``
+    (Chebyshev distance ≤ R from the nearest pole cell). With the canonical
+    R=5 and a 2×2 pole this is exactly the 12×12 stencil of
+    ``placement_generator.gen_power_pole``.
     """
     fx, fy = facility_cell
     px, py = anchor
-    min_sq = (fx - px) ** 2 + (fy - py) ** 2
-    for dx in range(pole_size):
-        for dy in range(pole_size):
-            sq = (fx - (px + dx)) ** 2 + (fy - (py + dy)) ** 2
-            if sq < min_sq:
-                min_sq = sq
-    return math.sqrt(min_sq)
+    reach = float(coverage_radius) + float(pole_size - 1)
+    return (px - coverage_radius <= fx <= px + reach) and (
+        py - coverage_radius <= fy <= py + reach
+    )
 
 
 def _covers_any_facility_cell(
@@ -66,7 +77,7 @@ def _covers_any_facility_cell(
     pole_size: int = _POLE_SIZE,
 ) -> bool:
     for fc in facility_cells:
-        if _min_cell_distance(fc, anchor, pole_size) <= pole_radius:
+        if _stencil_covers_cell(anchor, fc, pole_radius, pole_size):
             return True
     return False
 
@@ -106,10 +117,12 @@ def compute_cover_set(
     grid_size: int = _DEFAULT_GRID_SIZE,
     pole_size: int = _POLE_SIZE,
 ) -> FrozenSet[Cell]:
-    """Return pole anchor cells covering ``facility_cells`` within ``pole_radius``.
+    """Return pole anchors whose 12×12 stencil intersects ``facility_cells``.
 
-    ``free_cells`` is the full mask (grid minus ghost, exterior, cell_owner).
-    Empty result ⇒ facility cannot be powered in the current state.
+    ``pole_radius`` is the canonical ``power_coverage_radius`` (5), i.e. the
+    stencil half-extent, NOT a Euclidean radius. ``free_cells`` is the full
+    mask (grid minus ghost, exterior, cell_owner). Empty result ⇒ facility
+    cannot be powered in the current state.
     """
     facility_list = list(facility_cells)
     if not facility_list:
