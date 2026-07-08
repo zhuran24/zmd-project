@@ -27,7 +27,7 @@ from src.cuts.helpers.bounded_core_minimizer import (
     LiteralAssignment,
     MinimizerBudget,
     OracleVerdict,
-    canonical_sort_assignment,
+    canonical_relabel,
     deletion_minimize_core,
 )
 from src.cuts.lifecycle import (
@@ -185,10 +185,27 @@ def generate_pattern_nogood_cuts(
     except Exception:  # noqa: BLE001 — fail-closed against any adapter bug
         return []
 
+    # M4-D1 (orbit-lift design v2 §4 ②③): the cert carries the CANONICALLY
+    # RELABELLED core, and whatever is emitted must itself have been verified
+    # INFEASIBLE by the oracle — re-query after relabelling instead of
+    # assuming slot-label invariance of the adapter.
+    try:
+        relabelled_core = canonical_relabel(result.core)
+    except ValueError:
+        return []
+    if _has_duplicate_group_pose(relabelled_core):
+        # BLOCK-2: a multiset pattern («two copies of (g, p) needed to be
+        # infeasible») cannot be represented faithfully by boolean presence;
+        # emitting it would collapse "≥2 copies" into "≥1 copy" (over-prune).
+        return []
+    if oracle_cb(relabelled_core) != "INFEASIBLE":
+        return []
+
     try:
         cut = _build_pattern_nogood_cut(
             state=state,
             sub_problem_oracle=sub_problem_oracle,
+            relabelled_core=relabelled_core,
             result=result,
             iter_index=iter_index,
         )
@@ -197,10 +214,16 @@ def generate_pattern_nogood_cuts(
     return [cut]
 
 
+def _has_duplicate_group_pose(core: Tuple[LiteralAssignment, ...]) -> bool:
+    pairs = [(g, p) for (g, _s, p) in core]
+    return len(set(pairs)) != len(pairs)
+
+
 def _build_pattern_nogood_cut(
     *,
     state: BState,
     sub_problem_oracle: SubProblemOracleAdapter,
+    relabelled_core: Tuple[LiteralAssignment, ...],
     result: CoreMinimizeResult,
     iter_index: int,
 ) -> Cut:
@@ -226,9 +249,9 @@ def _build_pattern_nogood_cut(
     return INFEASIBLE on the cert literals, regardless of what witness bytes
     it emits.
     """
-    canonical_core = canonical_sort_assignment(result.core)
-    # canonical_sort_assignment now dedups; this remains explicit for clarity.
-    deduped_core: Tuple[LiteralAssignment, ...] = canonical_core
+    # M4-D1: the caller supplies the canonically relabelled, oracle re-verified
+    # core; the cert serialises exactly what was verified.
+    deduped_core: Tuple[LiteralAssignment, ...] = relabelled_core
 
     cert_payload_dict: Dict[str, Any] = {
         "cert_kind": CERT_KIND,

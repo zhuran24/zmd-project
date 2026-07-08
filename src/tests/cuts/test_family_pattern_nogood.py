@@ -500,6 +500,7 @@ def test_F5_timeout_last_verified_core():
     from src.cuts.helpers.bounded_core_minimizer import (
         CoreMinimizeResult,
         CoreStoppedReason,
+        canonical_relabel,
     )
 
     # Construct a result mimicking a TIMEOUT-stopped minimizer
@@ -521,6 +522,7 @@ def test_F5_timeout_last_verified_core():
     cut = _build_pattern_nogood_cut(
         state=state,
         sub_problem_oracle=adapter,
+        relabelled_core=canonical_relabel(result.core),
         result=result,
         iter_index=0,
     )
@@ -690,3 +692,95 @@ def test_validate_unsound_forbidden_pose_pattern_reuses_same_slot_for_different_
     vr = validate_pattern_nogood(tampered, state, canonical_rules={})
     assert vr.kind == "unsound"
     assert "reuses slot" in (vr.detail or "")
+
+
+# ---------------------------------------------------------------------------
+# M4-D1 red tests: orbit-lift design v2 red tests ⑥ (duplicate (group, pose))
+# and ⑧ (canonical_relabel idempotence / explicit duplicate rejection)
+# ---------------------------------------------------------------------------
+
+
+def test_validate_schema_err_duplicate_group_pose_across_slots():
+    """Red test ⑥: a multiset pattern — same (group, pose) on two DIFFERENT
+    slots — must be rejected at the schema (BLOCK-2 plan A). Translating it
+    to boolean presence would collapse "≥2 copies infeasible" into "≥1 copy
+    forbidden" and over-prune layouts the oracle never refuted."""
+    state = _make_state()
+    cut, _ = _build_happy_cut(state)
+
+    def _alter(d):
+        d["forbidden_pose_pattern"] = [["g1", 0, "pA"], ["g1", 1, "pA"]]
+        d["core_minimization"]["size_after"] = 2
+
+    tampered = _tamper_cert(cut, _alter)
+    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "duplicate (group_id, pose_id)" in (vr.detail or "")
+
+
+def test_generator_refuses_multiset_core():
+    """Red test ⑥ (generator side): if minimization lands on a core that
+    needs two copies of the same (group, pose), the generator must emit
+    nothing rather than a collapsed boolean cut."""
+    from src.cuts.oracles.pattern_nogood_oracle import generate_pattern_nogood_cuts
+    from src.cuts.lifecycle import AnonymousSlotRef, CutLiteral
+
+    state = _make_state()
+    lits = (
+        CutLiteral(slot_ref=AnonymousSlotRef(group_id="g1", slot_index=0), pose_id="pA"),
+        CutLiteral(slot_ref=AnonymousSlotRef(group_id="g1", slot_index=1), pose_id="pA"),
+    )
+    adapter = FakeAdapter(name="binding_v1", version="v1.0", verdict_map={})
+    adapter.default_verdict = ("INFEASIBLE", b"w")
+    register_sub_problem_oracle(adapter)
+    cuts = generate_pattern_nogood_cuts(
+        state, sub_problem_oracle=adapter, full_assignment_literals=lits
+    )
+    assert cuts == []
+
+
+def test_validate_schema_err_non_canonical_slot_labels():
+    """Red test ⑧ (validator side): cert must equal canonical_relabel(cert) —
+    slot labels not renumbered 0..k-1 in canonical order are rejected."""
+    state = _make_state()
+    cut, _ = _build_happy_cut(state)
+
+    def _alter(d):
+        # Same orbit, non-canonical serialisation (slots 1,0 instead of 0,1).
+        pattern = d["forbidden_pose_pattern"]
+        if len(pattern) == 1:
+            pattern[0][1] = 1  # single literal must be slot 0
+        else:
+            for i, entry in enumerate(reversed(range(len(pattern)))):
+                pattern[i][1] = entry
+
+    tampered = _tamper_cert(cut, _alter)
+    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "canonical" in (vr.detail or "")
+
+
+def test_canonical_relabel_idempotent_and_rejects_duplicates():
+    """Red test ⑧ (helper side): relabel is idempotent; exact duplicates raise."""
+    from src.cuts.helpers.bounded_core_minimizer import (
+        canonical_relabel,
+        canonical_sort_assignment,
+    )
+    import pytest as _pytest
+
+    messy = (("g2", 7, "pX"), ("g1", 5, "pB"), ("g1", 2, "pA"))
+    once = canonical_relabel(messy)
+    assert once == canonical_relabel(once)  # idempotent
+    # per-group slots renumbered 0..k-1 in (pose_id, slot) order
+    assert once == (("g1", 0, "pA"), ("g1", 1, "pB"), ("g2", 0, "pX"))
+
+    # multiset (same (g, p), different slots) is LEGAL for the relabeller —
+    # rejecting it is the validator's job, not the helper's
+    multiset = (("g1", 3, "pA"), ("g1", 9, "pA"))
+    assert canonical_relabel(multiset) == (("g1", 0, "pA"), ("g1", 1, "pA"))
+
+    dup = (("g1", 0, "pA"), ("g1", 0, "pA"))
+    with _pytest.raises(ValueError, match="duplicate"):
+        canonical_relabel(dup)
+    with _pytest.raises(ValueError, match="duplicate"):
+        canonical_sort_assignment(dup)

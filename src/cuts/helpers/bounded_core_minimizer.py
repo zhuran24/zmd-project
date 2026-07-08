@@ -115,14 +115,61 @@ class CoreMinimizeResult:
 def canonical_sort_assignment(
     assignment: Tuple[LiteralAssignment, ...],
 ) -> Tuple[LiteralAssignment, ...]:
-    """Sort by (group_id, slot_index, pose_id) lex + dedup.
+    """Sort by (group_id, slot_index, pose_id) lex; duplicates raise.
 
-    Dedup is defense-in-depth: caller may pass duplicates by accident; without
-    dedup the minimizer's deletion loop would waste oracle calls re-evaluating
-    the same trial_core after a FEASIBLE response (per Gemini F5 review #5).
+    M4-D1 (orbit-lift design v2 §4 item ②): a duplicated exact triple is an
+    audit signal — silently merging it would hide a caller bug and could turn
+    a weaker intended pattern into a stronger emitted one. Explicit rejection
+    replaces the historical dict.fromkeys dedup (the minimizer still never
+    re-evaluates a triple, because inputs are now guaranteed duplicate-free).
+
+    Raises:
+        ValueError: assignment contains a duplicated exact triple.
     """
     sorted_tuple = tuple(sorted(assignment, key=lambda lit: (lit[0], lit[1], lit[2])))
-    return tuple(dict.fromkeys(sorted_tuple))
+    if len(set(sorted_tuple)) != len(sorted_tuple):
+        raise ValueError(
+            "canonical_sort_assignment: duplicate literal triple in assignment "
+            "(audit signal — refusing to silently dedup)"
+        )
+    return sorted_tuple
+
+
+def canonical_relabel(
+    assignment: Tuple[LiteralAssignment, ...],
+) -> Tuple[LiteralAssignment, ...]:
+    """Idempotent canonical relabelling of anonymous slot indices (M4-D1, ②).
+
+    Slot indices are anonymous within a group (PROJECT_LOCK: slot_index never
+    participates in soundness reasoning) — the canonical form relabels them
+    per group to 0..k-1 in (pose_id, original slot_index) order so that every
+    orbit representative serialises identically. Idempotent by construction:
+    a second application sorts an already-relabelled tuple into the same
+    order and assigns the same indices.
+
+    Duplicated exact triples raise (same audit-signal contract as
+    canonical_sort_assignment). Duplicate (group_id, pose_id) pairs across
+    DIFFERENT slots are legal here — rejecting multiset patterns is the
+    validator's job (BLOCK-2), not the relabeller's.
+
+    Raises:
+        ValueError: assignment empty or contains a duplicated exact triple.
+    """
+    if not assignment:
+        raise ValueError("canonical_relabel: assignment must be non-empty")
+    if len(set(assignment)) != len(assignment):
+        raise ValueError(
+            "canonical_relabel: duplicate literal triple in assignment "
+            "(audit signal — refusing to silently dedup)"
+        )
+    ordered = sorted(assignment, key=lambda lit: (lit[0], lit[2], lit[1]))
+    next_slot: dict = {}
+    relabelled = []
+    for group_id, _slot, pose_id in ordered:
+        slot = next_slot.get(group_id, 0)
+        next_slot[group_id] = slot + 1
+        relabelled.append((group_id, slot, pose_id))
+    return tuple(relabelled)
 
 
 def deletion_minimize_core(

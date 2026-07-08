@@ -192,6 +192,7 @@ def _validate_forbidden_pose_pattern(
     triples: List[Tuple[str, int, str]] = []
     seen: set[Tuple[str, int, str]] = set()
     seen_slots: set[Tuple[str, int]] = set()
+    seen_group_pose: set[Tuple[str, str]] = set()
     per_group_count: Dict[str, int] = {}
     for idx, entry in enumerate(raw):
         if not isinstance(entry, list) or len(entry) != 3:
@@ -263,6 +264,24 @@ def _validate_forbidden_pose_pattern(
                 None,
             )
         seen_slots.add(slot_key)
+        # M4-D1 (BLOCK-2 plan A): duplicate (group_id, pose_id) across
+        # different slots is a MULTISET pattern («at least 2 copies of this
+        # pose needed for infeasibility»). Boolean presence in the master —
+        # and the boolean half of the multiset evaluator — cannot represent
+        # multiplicity, so translating it would collapse "≥2 copies" into
+        # "≥1 copy" and over-prune legal layouts. Fail closed at the schema.
+        group_pose_key = (triple[0], triple[2])
+        if group_pose_key in seen_group_pose:
+            return (
+                _vr(
+                    "schema_err",
+                    t0,
+                    f"forbidden_pose_pattern duplicate (group_id, pose_id) {group_pose_key!r}; "
+                    "multiset patterns are not representable by boolean presence (BLOCK-2)",
+                ),
+                None,
+            )
+        seen_group_pose.add(group_pose_key)
         per_group_count[triple[0]] = per_group_count.get(triple[0], 0) + 1
         if per_group_count[triple[0]] > group_state.demand:
             return (
@@ -285,6 +304,21 @@ def _validate_forbidden_pose_pattern(
             )
         seen.add(triple)
         triples.append(triple)
+    # M4-D1 (design v2 §4 ③): the cert must already be in canonical relabelled
+    # form — cert == canonical_relabel(cert). A non-canonical serialisation of
+    # the same orbit would hash differently and defeat dedup/audit.
+    from src.cuts.helpers.bounded_core_minimizer import canonical_relabel
+
+    if tuple(triples) != canonical_relabel(tuple(triples)):
+        return (
+            _vr(
+                "schema_err",
+                t0,
+                "forbidden_pose_pattern is not in canonical relabelled form "
+                "(cert != canonical_relabel(cert))",
+            ),
+            None,
+        )
     return None, tuple(triples)
 
 
