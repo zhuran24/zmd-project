@@ -7625,13 +7625,31 @@ class LBBDController:
             )
             instance_to_facility_type[gid] = facility_type
 
+        # M4-D4 (P-HOM structural gate): the F5 presence translation is
+        # orbit-level, sound only while every mandatory group is homogeneous.
+        # A failed check refuses to build any framework state (fail-closed);
+        # the digest rides CutScope.artifact_hashes so step-6 quarantines
+        # stale cuts when the homogeneity surface drifts.
+        from src.search.orbit_homogeneity import (
+            ORBIT_HOMOGENEITY_DIGEST_KEY,
+            compute_orbit_homogeneity_digest,
+        )
+
+        homogeneity_digest = compute_orbit_homogeneity_digest(
+            getattr(master, "source_instances", None) or [], facility_pools
+        )
+        if homogeneity_digest is None:
+            return None
+        artifact_hashes = dict(self.artifact_hashes or {})
+        artifact_hashes[ORBIT_HOMOGENEITY_DIGEST_KEY] = homogeneity_digest
+
         return BState(
             groups=groups,
             cell_owner={},
             ghost_rect=(anchor_x, anchor_y, ghost_h, ghost_w),
             ghost_cells=frozenset(ghost_cells),
             exterior_blocks=frozenset(),
-            artifact_hashes=dict(self.artifact_hashes or {}),
+            artifact_hashes=artifact_hashes,
             available_oracle_versions=frozenset(
                 {
                     "region_capacity_v1",
