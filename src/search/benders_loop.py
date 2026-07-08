@@ -7860,6 +7860,7 @@ class LBBDController:
                     )
                 )
         attached = 0
+        attached_by_family: Dict[str, int] = {}
         for cut in cuts:
             if budget_used + attached >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:
                 break
@@ -7881,12 +7882,18 @@ class LBBDController:
                 ghost_blocked_cells=ghost_blocked_cells,
             )
             attached += 1
+            family = str(cut.family)
+            attached_by_family[family] = attached_by_family.get(family, 0) + 1
         if isinstance(stats, dict):
+            # R3 (minimal form): per-family attach telemetry for the M5
+            # convergence measurements; the full C6 three-way split waits on
+            # the Q1a recognizer taxonomy (M4-E assessment item).
             stats["cut_framework_attach_last"] = {
                 "trigger": trigger,
                 "iteration": int(iteration),
                 "generated": len(cuts),
                 "attached": attached,
+                "attached_by_family": dict(sorted(attached_by_family.items())),
             }
         return attached
 

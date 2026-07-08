@@ -242,6 +242,10 @@ def test_full_chain_generates_validates_and_attaches() -> None:
         "iteration": 7,
         "generated": 2,
         "attached": 2,
+        "attached_by_family": {
+            "region_capacity": 1,
+            "shape_packing_hall": 1,
+        },
     }
 
 
@@ -421,3 +425,106 @@ def test_full_chain_f5_binding_empty_domain_end_to_end() -> None:
     assert f5_stats is not None
     # deletion minimisation converges to a single dead literal
     assert f5_stats["pattern_size"] == 1
+
+
+def test_r10_f5_cut_is_rejected_on_drifted_state() -> None:
+    """R10 (two-state scope soundness, F5 instance): a cut generated on state
+    A must NOT re-attach on a state B whose ghost anchor or homogeneity
+    surface differs — step-6 must answer HOLD/QUARANTINE, never ATTACH."""
+    import pytest as _pytest
+
+    from src.cuts.lifecycle import step_6_attach_scope_check
+    from src.cuts.oracles.pattern_nogood_oracle import (
+        clear_sub_problem_oracle_registry,
+        generate_pattern_nogood_cuts,
+        register_sub_problem_oracle,
+    )
+    from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+    from src.search.f5_binding_empty_domain_adapter import (
+        build_binding_empty_domain_adapter,
+    )
+    from src.search.orbit_homogeneity import ORBIT_HOMOGENEITY_DIGEST_KEY
+
+    op = None
+    for cand, profile in sorted(OPERATION_PORT_PROFILES.items()):
+        if profile.generic_input_slots or profile.generic_output_slots:
+            continue
+        if sum(profile.input_slots.values()) + sum(profile.output_slots.values()) > 0:
+            op = cand
+            break
+    if op is None:
+        _pytest.skip("no exact-binding operation with port slots in profiles")
+
+    instances = [
+        {
+            "instance_id": f"miner_{i:03d}",
+            "facility_type": "miner",
+            "operation_type": op,
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+        for i in (1, 2)
+    ]
+    pools = {
+        "miner": [
+            {
+                "pose_id": f"pose_{tag}",
+                "anchor": {"x": x, "y": 0},
+                "occupied_cells": [[x, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+            for tag, x in (("left", 0), ("mid", 2), ("right", 4))
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 5, "height": 1}},
+        "facility_templates": {
+            "miner": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+        },
+    }
+    core = MasterPlacementModel.build_exact_core(
+        instances, pools, rules, skip_power_coverage=True
+    )
+    master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
+    assert master.solve(time_limit_seconds=5.0) in (
+        cp_model.OPTIMAL,
+        cp_model.FEASIBLE,
+    )
+    controller = _controller(master)
+    solution = {
+        "miner_001": {"facility_type": "miner", "pose_idx": 0},
+        "miner_002": {"facility_type": "miner", "pose_idx": 1},
+    }
+    clear_sub_problem_oracle_registry()
+    try:
+        state_a = controller._build_cut_framework_state(solution=solution)
+        assert state_a is not None
+        adapter = build_binding_empty_domain_adapter(master._mandatory_groups)
+        register_sub_problem_oracle(adapter)
+        literals = controller._framework_full_assignment_literals(solution)
+        cuts = generate_pattern_nogood_cuts(
+            state_a, sub_problem_oracle=adapter, full_assignment_literals=literals
+        )
+        assert len(cuts) == 1
+        cut = cuts[0]
+        # Same state → ATTACH (sanity).
+        assert step_6_attach_scope_check(cut, state_a) == "ATTACH"
+
+        # Drift 1: different ghost anchor → HOLD (ghost-bound scope mismatch).
+        state_b = controller._build_cut_framework_state(solution=solution)
+        assert state_b is not None
+        object.__setattr__(state_b, "ghost_rect", (3, 0, 1, 1))
+        object.__setattr__(state_b, "ghost_cells", frozenset({(3, 0)}))
+        assert step_6_attach_scope_check(cut, state_b) != "ATTACH"
+
+        # Drift 2: homogeneity surface changed → artifact-hash mismatch.
+        state_c = controller._build_cut_framework_state(solution=solution)
+        assert state_c is not None
+        drifted_hashes = dict(state_c.artifact_hashes)
+        drifted_hashes[ORBIT_HOMOGENEITY_DIGEST_KEY] = "0" * 64
+        object.__setattr__(state_c, "artifact_hashes", drifted_hashes)
+        assert step_6_attach_scope_check(cut, state_c) != "ATTACH"
+    finally:
+        clear_sub_problem_oracle_registry()
