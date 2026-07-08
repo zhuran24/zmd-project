@@ -459,3 +459,111 @@ def test_step_8_f1_malformed_numerics_raise_before_master() -> None:
     )
     with pytest.raises(ValueError, match="cap_R"):
         step_8_apply_to_master(bad_cap, _ExplodingMaster())
+
+
+# ---------------------------------------------------------------------------
+# F5 pattern_nogood (M4-D3)
+# ---------------------------------------------------------------------------
+
+
+def _f5_cert_payload(pattern) -> bytes:
+    cert_dict = {
+        "cert_kind": "bounded_deletion_core",
+        "sub_problem_oracle_name": "binding_empty_domain_v1",
+        "sub_problem_oracle_version": "v1.0",
+        "forbidden_pose_pattern": [list(t) for t in pattern],
+        "core_minimization": {
+            "size_before": len(pattern),
+            "size_after": len(pattern),
+            "calls": 1,
+            "stopped_reason": "INFEASIBLE_VERIFIED",
+            "is_verified_infeasible": True,
+        },
+    }
+    return step_0_canonicalize(cert_dict)
+
+
+def _f5_cut(payload: bytes, pattern, *, ghost_rect_id: str = "ghost_bound_test") -> Cut:
+    cert_hash = hashlib.sha256(payload).hexdigest()
+    return Cut(
+        cut_id=f"f5_test_{cert_hash[:8]}",
+        family="pattern_nogood",
+        literals=tuple(
+            CutLiteral(
+                slot_ref=AnonymousSlotRef(group_id=g, slot_index=s), pose_id=p
+            )
+            for (g, s, p) in pattern
+        ),
+        geometric_payload=None,
+        scope=CutScope(
+            ghost_rect_id=ghost_rect_id,
+            blocked_cells_hash="h_blocked",
+            exterior_blocks_hash="h_ext",
+            source_digest="h_source",
+            oracle_abstraction_version="binding_empty_domain_v1",
+            artifact_hashes={},
+        ),
+        cert=OracleCert(
+            cert_kind="bounded_deletion_core",
+            cert_payload=payload,
+            cert_hash=cert_hash,
+        ),
+        oracle_name="pattern_nogood_v1",
+    )
+
+
+def test_step_8_f5_nogood_prunes_combination_under_pinned_anchor() -> None:
+    """Forbid {pose_left, pose_mid} together (same group, two miners). Under
+    the pinned far anchor both poses remain physically available, so the only
+    surviving assignments avoid the pair — and forbidding both pairs that
+    cover pose_left+pose_mid and pose_left+pose_right forces mid+right."""
+    master = _build_fixture_master()
+    group_id = str(master._group_id_by_instance["miner_001"])
+    u_pin = master.u_vars[4]  # anchor x=4: ghost sits on pose_right's cell
+
+    pattern = ((group_id, 0, "pose_left"), (group_id, 1, "pose_mid"))
+    cut = _f5_cut(_f5_cert_payload(pattern), pattern)
+    step_8_apply_to_master(cut, master, ghost_condition_lits=(u_pin,))
+    assert master.build_stats["coordinate_pattern_nogood_last_cut"] == {
+        "pattern_size": 2,
+        "semantics": "pattern_nogood_presence_ghost_conditioned_v1",
+    }
+    # Anchor free: solver escapes (cut dormant) → solvable.
+    assert master.solve(time_limit_seconds=5.0) in (
+        cp_model.OPTIMAL,
+        cp_model.FEASIBLE,
+    )
+    # Pin anchor 4: ghost occupies (4,0) killing pose_right by no-overlap;
+    # the two miners then need exactly {pose_left, pose_mid} — the forbidden
+    # pair → INFEASIBLE proves the nogood bit.
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    delegate.model.Add(u_pin == 1)
+    assert master.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
+
+
+def test_step_8_f5_fail_closed_surfaces() -> None:
+    master = _build_fixture_master()
+    group_id = str(master._group_id_by_instance["miner_001"])
+
+    # duplicate (group_id, pose_id) — multiset pattern must be rejected
+    dup = ((group_id, 0, "pose_left"), (group_id, 1, "pose_left"))
+    cut = _f5_cut(_f5_cert_payload(dup), dup)
+    with pytest.raises(ValueError, match="duplicate"):
+        step_8_apply_to_master(
+            cut, master, ghost_condition_lits=(master.u_vars[0],)
+        )
+
+    # ghost-bound without ghost literals
+    pattern = ((group_id, 0, "pose_left"),)
+    bound = _f5_cut(_f5_cert_payload(pattern), pattern)
+    with pytest.raises(RuntimeError, match="ghost literal"):
+        step_8_apply_to_master(bound, master)
+
+    # unknown pose_id — master must reject the whole cut (no partial attach)
+    ghost_pattern = ((group_id, 0, "pose_ghostly"),)
+    unknown = _f5_cut(_f5_cert_payload(ghost_pattern), ghost_pattern)
+    with pytest.raises(RuntimeError, match="fail-closed"):
+        step_8_apply_to_master(
+            unknown, master, ghost_condition_lits=(master.u_vars[0],)
+        )

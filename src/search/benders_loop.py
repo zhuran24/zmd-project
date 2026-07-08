@@ -7637,6 +7637,7 @@ class LBBDController:
                     "region_capacity_v1",
                     "power_cover_v2_stencil",
                     "shape_packing_hall_v1",
+                    "binding_empty_domain_v1",
                 }
             ),
             canonical_rules=rules,
@@ -7688,6 +7689,29 @@ class LBBDController:
                 continue
             targets.append((str(group_id), pose_id))
         return sorted(targets)
+
+    def _framework_full_assignment_literals(
+        self, solution: Mapping[str, Mapping[str, Any]]
+    ) -> Tuple[Any, ...]:
+        """Incumbent assignment as CutLiteral tuple for the F5 generator.
+
+        Slot indices are anonymous within a group; assign 0..k-1 per group in
+        sorted-instance order (the F5 canonical layer renumbers them anyway —
+        slot labels never participate in soundness)."""
+        from src.cuts.lifecycle import AnonymousSlotRef, CutLiteral
+
+        next_slot: Dict[str, int] = {}
+        literals: List[Any] = []
+        for group_id, pose_id in self._framework_target_poses(solution):
+            slot = next_slot.get(group_id, 0)
+            next_slot[group_id] = slot + 1
+            literals.append(
+                CutLiteral(
+                    slot_ref=AnonymousSlotRef(group_id=group_id, slot_index=slot),
+                    pose_id=pose_id,
+                )
+            )
+        return tuple(literals)
 
     def _maybe_attach_framework_cuts(
         self,
@@ -7786,6 +7810,37 @@ class LBBDController:
                     iter_index=iteration,
                 )
             )
+        # F5 (M4-D3): distil the refuted incumbent into a minimal forbidden
+        # pattern via the liftable binding adapter. The adapter only ever
+        # answers INFEASIBLE for verdicts derivable from frozen artifacts
+        # (empty binding domain) — demand-equality failures refuse to lift.
+        if solution is not None:
+            from src.cuts.oracles.pattern_nogood_oracle import (
+                generate_pattern_nogood_cuts,
+                lookup_sub_problem_oracle,
+                register_sub_problem_oracle,
+            )
+            from src.search.f5_binding_empty_domain_adapter import (
+                ADAPTER_NAME,
+                build_binding_empty_domain_adapter,
+            )
+
+            adapter = lookup_sub_problem_oracle(ADAPTER_NAME)
+            if adapter is None:
+                adapter = build_binding_empty_domain_adapter(
+                    getattr(self.master, "_mandatory_groups", None) or []
+                )
+                register_sub_problem_oracle(adapter)
+            full_literals = self._framework_full_assignment_literals(solution)
+            if full_literals:
+                cuts.extend(
+                    generate_pattern_nogood_cuts(
+                        state,
+                        sub_problem_oracle=adapter,
+                        full_assignment_literals=full_literals,
+                        iter_index=iteration,
+                    )
+                )
         attached = 0
         for cut in cuts:
             if budget_used + attached >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:

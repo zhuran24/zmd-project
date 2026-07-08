@@ -1150,6 +1150,14 @@ class MasterModelLike(Protocol):
     ) -> bool:
         ...
 
+    def add_pattern_nogood_cut(
+        self,
+        *,
+        pattern: Sequence[Tuple[str, str]],
+        condition_lits: Sequence[Any],
+    ) -> bool:
+        ...
+
 
 def step_8_apply_to_master(
     cut: Cut,
@@ -1332,6 +1340,59 @@ def step_8_apply_to_master(
         if not applied:
             raise RuntimeError(
                 "step_8: master rejected shape_packing_hall cut (fail-closed; "
+                "no partial constraint was attached)"
+            )
+        return
+    if cut.family == "pattern_nogood":
+        if cut.cert is None:
+            raise ValueError(
+                "step_8: pattern_nogood cut carries no cert (fail-closed)"
+            )
+        cert = validate_cert_payload("pattern_nogood", cut.cert.cert_payload)
+        raw_pattern = cert["forbidden_pose_pattern"]
+        if not isinstance(raw_pattern, list) or not raw_pattern:
+            raise ValueError(
+                "step_8: forbidden_pose_pattern must be a non-empty list"
+            )
+        pattern: List[Tuple[str, str]] = []
+        seen_group_pose: set = set()
+        for entry in raw_pattern:
+            if not isinstance(entry, list) or len(entry) != 3:
+                raise ValueError(
+                    "step_8: forbidden_pose_pattern entry malformed"
+                )
+            gid, _slot, pose_id = entry
+            if not isinstance(gid, str) or not gid or not isinstance(pose_id, str) or not pose_id:
+                raise ValueError(
+                    "step_8: forbidden_pose_pattern group_id/pose_id must be non-empty str"
+                )
+            key = (gid, pose_id)
+            if key in seen_group_pose:
+                # D1 validator forbids this (BLOCK-2); re-check here so a
+                # multiset pattern can never reach the boolean translation.
+                raise ValueError(
+                    f"step_8: duplicate (group_id, pose_id) {key!r} — multiset "
+                    "pattern not representable by boolean presence (fail-closed)"
+                )
+            seen_group_pose.add(key)
+            pattern.append(key)
+        if cut.scope is None:
+            raise ValueError(
+                "step_8: pattern_nogood cut carries no scope (fail-closed)"
+            )
+        ghost_bound = cut.scope.ghost_rect_id != GHOST_AGNOSTIC
+        if ghost_bound and not ghost_condition_lits:
+            raise RuntimeError(
+                "step_8: ghost-bound pattern_nogood cut requires the selected "
+                "ghost literal(s) (fail-closed)"
+            )
+        applied = master_model.add_pattern_nogood_cut(
+            pattern=pattern,
+            condition_lits=tuple(ghost_condition_lits) if ghost_bound else (),
+        )
+        if not applied:
+            raise RuntimeError(
+                "step_8: master rejected pattern_nogood cut (fail-closed; "
                 "no partial constraint was attached)"
             )
         return

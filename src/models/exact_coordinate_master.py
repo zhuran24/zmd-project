@@ -7348,6 +7348,78 @@ class CoordinateExactMasterDelegate:
         self.owner._status = None
         return True
 
+    def add_pattern_nogood_cut(
+        self,
+        *,
+        pattern: Sequence[Tuple[str, str]],
+        condition_lits: Sequence[cp_model.IntVar],
+    ) -> bool:
+        # F5 pattern_nogood master attach (M4-D3, step_8 translation).
+        # The validated cert carries a canonically-relabelled forbidden core;
+        # the D1 validator guarantees no duplicate (group_id, pose_id), so the
+        # boolean presence translation sum(presence) <= n-1 is FAITHFUL (no
+        # multiset collapse). Conditioned under the selected ghost literal(s):
+        # the oracle binds F5 certs to the triggering ghost scope.
+        #
+        # All-or-nothing is STRICTER here than for the capacity families:
+        # dropping one unrepresentable member would dilute a nogood over
+        # {A, B} into a stronger nogood over {A} and over-prune (same
+        # discipline as _conflict_pose_entries) — any literal that cannot be
+        # built rejects the whole cut.
+        if not condition_lits:
+            return False
+        entries: List[Tuple[str, str]] = []
+        for raw_group, raw_pose in pattern:
+            entries.append((str(raw_group), str(raw_pose)))
+        if not entries:
+            return False
+        lits: List[cp_model.IntVar] = []
+        seen_keys: Set[Tuple[str, Tuple[int, int, int]]] = set()
+        for gid, pose_id in entries:
+            tpl = next(
+                (
+                    str(group["facility_type"])
+                    for group in self.owner._mandatory_groups
+                    if str(group["group_id"]) == gid
+                ),
+                None,
+            )
+            if tpl is None:
+                return False
+            slots = list(self.mandatory_slots.get(gid, []))
+            if not slots:
+                return False
+            pose_idx = self._resolve_pose_idx_by_pose_id(tpl, pose_id)
+            if pose_idx is None:
+                return False
+            pose_tuple = self._template_pose_tuple_by_idx.get(tpl, {}).get(pose_idx)
+            if pose_tuple is None:
+                return False
+            alias_key = (gid, pose_tuple)
+            if alias_key in seen_keys:
+                # Two distinct pattern members aliasing to one presence
+                # literal cannot be represented faithfully — reject whole cut.
+                return False
+            seen_keys.add(alias_key)
+            lit = self._pose_present_literal(slots, pose_tuple)
+            if lit is None:
+                return False
+            lits.append(lit)
+        constraint = self.model.Add(sum(lits) <= len(lits) - 1)
+        constraint.OnlyEnforceIf(list(condition_lits))
+        self.owner.build_stats["coordinate_framework_cut_count"] = (
+            int(self.owner.build_stats.get("coordinate_framework_cut_count", 0)) + 1
+        )
+        self.owner.build_stats["coordinate_pattern_nogood_last_cut"] = {
+            "pattern_size": len(lits),
+            "semantics": "pattern_nogood_presence_ghost_conditioned_v1",
+        }
+        # F-GM-R6-01 witness invalidation.
+        self.owner._last_solution = None
+        self.owner._solver = None
+        self.owner._status = None
+        return True
+
     def add_baseline_packing_cut(
         self,
         *,

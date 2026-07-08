@@ -338,3 +338,86 @@ def test_state_assembly_from_solved_coordinate_master() -> None:
     ax, ay, gh, gw = state.ghost_rect
     assert (gh, gw) == (1, 1)
     assert state.ghost_cells == {(ax, ay)}
+
+
+def test_full_chain_f5_binding_empty_domain_end_to_end() -> None:
+    """M4-D3: incumbent → liftable binding adapter → minimizer → F5 cut →
+    validator/scope/evaluate gauntlet → real master presence nogood.
+
+    The fixture poses carry no port cells; with an exact-binding operation
+    whose profile requires ports, every pose has an empty binding domain —
+    the adapter refutes the incumbent, the minimizer shrinks to a single
+    literal, and the attach chain lands a real constraint on the master.
+    """
+    import pytest as _pytest
+
+    from src.cuts.oracles.pattern_nogood_oracle import (
+        clear_sub_problem_oracle_registry,
+    )
+    from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+
+    op = None
+    for cand, profile in sorted(OPERATION_PORT_PROFILES.items()):
+        if profile.generic_input_slots or profile.generic_output_slots:
+            continue
+        if sum(profile.input_slots.values()) + sum(profile.output_slots.values()) > 0:
+            op = cand
+            break
+    if op is None:
+        _pytest.skip("no exact-binding operation with port slots in profiles")
+
+    instances = [
+        {
+            "instance_id": f"miner_{i:03d}",
+            "facility_type": "miner",
+            "operation_type": op,
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+        for i in (1, 2)
+    ]
+    pools = {
+        "miner": [
+            {
+                "pose_id": f"pose_{tag}",
+                "anchor": {"x": x, "y": 0},
+                "occupied_cells": [[x, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+            for tag, x in (("left", 0), ("mid", 2), ("right", 4))
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 5, "height": 1}},
+        "facility_templates": {
+            "miner": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+        },
+    }
+    core = MasterPlacementModel.build_exact_core(
+        instances, pools, rules, skip_power_coverage=True
+    )
+    master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
+    assert master.solve(time_limit_seconds=5.0) in (
+        cp_model.OPTIMAL,
+        cp_model.FEASIBLE,
+    )
+    controller = _controller(master)
+    solution = {
+        "miner_001": {"facility_type": "miner", "pose_idx": 0},
+        "miner_002": {"facility_type": "miner", "pose_idx": 1},
+    }
+    clear_sub_problem_oracle_registry()
+    try:
+        with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
+            attached = controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=2, solution=solution
+            )
+    finally:
+        clear_sub_problem_oracle_registry()
+    assert attached >= 1
+    f5_stats = master.build_stats.get("coordinate_pattern_nogood_last_cut")
+    assert f5_stats is not None
+    # deletion minimisation converges to a single dead literal
+    assert f5_stats["pattern_size"] == 1

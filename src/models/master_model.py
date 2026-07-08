@@ -12173,6 +12173,29 @@ class MasterPlacementModel:
             )
         return False
 
+    def add_pattern_nogood_cut(
+        self,
+        *,
+        pattern: Sequence[Tuple[str, str]],
+        condition_lits: Sequence[Any],
+    ) -> bool:
+        """F5 pattern_nogood ghost-conditioned presence nogood (M4-D3).
+
+        Same fail-closed shape as the other framework cut APIs: only the
+        exact coordinate delegate implements it, everything else returns False.
+        """
+        if self.exact_mode and self._coordinate_delegate is not None:
+            delegate_fn = getattr(
+                self._coordinate_delegate, "add_pattern_nogood_cut", None
+            )
+            if delegate_fn is None:
+                return False
+            return delegate_fn(
+                pattern=pattern,
+                condition_lits=condition_lits,
+            )
+        return False
+
 
 if __name__ == "__main__":
     project_root = Path(__file__).resolve().parent.parent.parent
