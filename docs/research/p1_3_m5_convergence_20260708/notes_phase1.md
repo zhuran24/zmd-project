@@ -21,13 +21,47 @@
 
 **结论 3（M5 第一批产出）**：「本机 workers=4 / 600s 解不动 prod-scale master 单轮」本身就是可行性数据点，直接决定实测排期形态。
 
-## 进行中：生产轴预算验证
+## 生产轴预算验证（26×26，已完成）
 
-26×26 ghost、master 1800s / binding 600s / routing 600s、max_iterations 3、workers 4、attach on——分离 pwsh 进程跑（2026-07-08 11:01 启动，最坏 ~2.5h），输出 `results_scan/cell_g26x26_prod_on.json`，完成时 `scan_progress.log` 追加 `=== 26x26_prod done ===`。
+26×26 ghost、master 1800s / binding 600s / routing 600s、max_iterations 3、workers 4、attach on（`results_scan/cell_g26x26_prod_on.json`）：**仍 UNKNOWN**——master 烧满 1800s（lbbd_wall 1829.7s，1 轮），binding/routing 未开审，attach 零触发。
+
+**结论 4**：本机（Windows / 24 逻辑核 / workers=4）连生产轴预算（1800s）都解不动 26×26 的冷启动 prod-scale master 单轮。600s→1800s 三倍预算无任何进展信号。
+
+## 进行中：降尺寸扫描（8/12/16 见方，workers=12）
+
+思路：ghost 越小 → 留给 266 设施的面积越大 → master 打包越容易。之前扫描下界只到 20×20；若 8×8/12×12 能出解，LBBD 真正转起来，那就是 attach 的有效战场（M5 测的是 attach 机制的收敛影响，任何能让 LBBD 迭代的 cell 都是有效数据点）。同时把 workers 提到 12（可行性优先，归因其次）。
 
 分支预案：
-- master 出解（status 非 UNKNOWN、binding_status 非 None）→ 锁定该配置为 A/B 战场，`m5_ab_driver` 跑正式 on/off 对照矩阵（过夜级）。
-- 仍 UNKNOWN → 实测需要资源方案拍板（更长预算 / Linux 生产机 / 降规模中间验证），带完整数据呈 owner。
+- 小 ghost 出解 → 锁定尺寸带跑正式 on/off A/B 矩阵。
+- 全 UNKNOWN → 「本机任何 ghost 尺寸都解不动冷启动 master」成立；排查生产是否依赖跨 ghost warm-start（孤立 cell 测量设计可能需改 mini-campaign 形态），带完整数据向 owner 要资源方案（Linux 机 / 超长预算 / 测量形态改造）。
+
+## warm-start 机制诊断（探针实测 + 源码，2026-07-08）
+
+探针（`build_exact_candidate_warm_start` 只建不解，`scratchpad/m5_warmstart_probe.py`）坐实：
+
+1. **greedy hint 存在且完整**：266 实例全量 hint，0.4s 建成，`mandatory_hint_occupied_cell_count=3544`——设施占 4900 格的 72%（布局不变量：全盘空格恒 1356，ghost 面积上限 ≈36×36）。
+2. **ghost-aware 修复机器整体被跳过**：`EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS=64`（`master_model.py:89`），而 26×26 有 2025 anchor、8×8 有 3969 → 任何现实 ghost 都 `skipped_anchor_limit`，pose-order portfolio / local repair / coordinate validation 全零尝试。master 拿到的 hint 永远「不管 ghost」，要自己在 72% 满的盘上腾洞。
+3. **生产同样如此**：wrapper 只设 `EXACT_CP_SAT_WORKERS`/`EXACT_PARALLEL_PROCESSES`，不抬 anchor 限——生产靠 24h+ 时长 + 多进程多 ghost 并行硬磨。
+4. **worker 链正常**：stage env → `EXACT_CP_SAT_WORKERS` → 默认 8（`cp_sat_worker_config.py:52-60`），harness 设置有传导。
+5. **早退 UNKNOWN 已解释（headline 发现）**：16×16 的 `last_solve` 显示 `wall_time=530.9s、user_time=530.9s（单线程）、deterministic_time=18.8、branches=0、conflicts=0、booleans=0`——**CP-SAT 全程卡在单线程 presolve，搜索根本没开始**（0 布尔变量 = presolve 未完成即返回），12 workers 全程闲置。solve() 在 exact 模式强制 `probing_level>=3`、`symmetry_level>=3`（`master_model.py:11527,11533`），9196 interval 的模型上正是 presolve 时间黑洞。**600s 预算 ≈ 全交 presolve 税；生产轴 1800s 也要先交 ~500s+ 税**（26×26 prod cell 烧满 1829s，presolve 后的实际搜索时间未知——当时无 last_solve 遥测）。
+
+可试旋钮（全在 `_CERTIFIED_OPERATIONAL_ENV_ALLOWLIST`，certified 合法）：`EXACT_MASTER_CP_MODEL_PRESOLVE`（关 presolve）、`EXACT_MASTER_CP_MODEL_PROBING_LEVEL` / `EXACT_MASTER_SYMMETRY_LEVEL`（压到 1，绕开强制 >=3）、`EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS`（解锁 ghost-aware）、`EXACT_GHOST_AWARE_COORDINATE_VALIDATION_MAX_ANCHORS`（默认 8，每 anchor 验证 2s）、`EXACT_MASTER_SEARCH_BRANCHING`（默认 fixed）、`LBBDController(disable_master_warm_start=True)`。
+
+**presolve 探针矩阵（进行中）**：P1 = probing1+symmetry1；P2 = presolve 全关；P3 = presolve 关 + ghost-aware 解锁（anchor 4096/验 32）；P4 = P1 + branching=automatic。各 8×8/600s/w12。另有 build-only 探针单测 ghost-aware 解锁后的修复机器遥测。原 K2/K3 在 presolve 税下无意义已撤销。
+
+**ghost-aware 解锁探针结果（headline 4，`probes/ghostaware_probe_8x8.txt`）**：anchor 限抬到 4096 后修复机器真跑了——161 anchor 尝试重建、32 个重建出**完整布局**（798 字段全钉死）进坐标验证；但验证 mini-solve（`EXACT_GHOST_AWARE_COORDINATE_VALIDATION_SECONDS=2.0`，profile 带 presolve on/probing2/symmetry2）**32 个全部 UNKNOWN、branches=0、deterministic≈0.01**——全钉死的模型本该毫秒级传播出 FEASIBLE/INFEASIBLE，2s 全花在 presolve 上。修复机器不是坏的，是它的验证器也在交 presolve 税 ⇒ `none_compatible` 是假阴性。总耗时 423s（anchor 4096/验 32 的 bound 生效）。**验证 profile 追查结论**：调用传的是空 profile，采样值 probing2/symmetry2/presolve-on 全是 CP-SAT 默认——**没有关验证 presolve 的旋钮**，唯二 env = `..._VALIDATION_SECONDS`（默认 2.0）与 `..._VALIDATION_MAX_ANCHORS`（默认 8）。出路 = SECONDS 抬到 presolve 完成量级（~600-900s/anchor）× MAX_ANCHORS 压到 2——贵但决定性：验证 FEASIBLE 一个 anchor = 拿到「已验证可行」完整 hint，master 从可行解起步。
+
+**P2/P4 并发 OOM 崩溃（教训）**：P2（presolve off）与并行加发的 P4（automatic branching）12:36:31 同刻死于 0xC0000409（ucrtbase.dll abort = 原生 `bad_alloc`→terminate 形态，WER 双记录）；本机 47.7GB RAM，两个 prod-scale master 并发 solve 吃穿内存。**教训：master solve 必须串行（一次一个）**；P4 单独重跑排队在 P3 后，带 `EXACT_SUBPROBLEM_MAX_MEMORY_MB=28000` 自限（白名单 env，`master_model.py` solve 里 `apply_subproblem_memory_cap` 消费）。P2（presolve off 是否本身可行）由 P3 的 solve 段代答——P3 独占跑同款 presolve-off。
+
+**P1 结果（headline 2+3）**：probing/symmetry 压到 1 → presolve 税消失，搜索真跑起来（booleans 2.13M、branches 5.59M、conflicts 23.9K、propagations 5.05 亿），但 743s 仍无可行解。`restarts: 0`——fixed 策略无重启。（初判「user_time==wall_time ⇒ 单线程」**存疑收回**：OR-Tools response 的 user_time 未必是聚合 CPU 时间，所有 run 两值微秒级相等更像 wrapper 行为；多线程是否真生效待用任务管理器/Get-Counter 级证据。）
+
+**P4r 结果（单独跑 + 内存帽，exit 0）**：automatic branching 生效（restarts: 5），667s 搜 4.98M branches——与 fixed 无质差。**汇总：fixed/automatic × presolve on-diet/off，8×8 均 ~600-750s 搜索无解**；配置旋钮已基本穷举，剩下的变量只有【更小 ghost（6×6 历史战场）】与【更长预算】。
+
+## 历史战场坐标（headline 5，仓库出土）
+
+`data/solutions/cuts_*.json`（历史 CutManager checkpoint，tracked）：15x15/25x9/36x35/37x36/45x5/70x70 全空 `[]`，**唯 `cuts_6x6.json` 有 5 条真 cut**（whole-layout conflict_set、266 实例、`cut_type: micro`、`iteration: 1`）——历史实跑在 **ghost 6×6**（最小合法尺寸）master 至少出过 5 个候选、全被 binding/routing 否决 = attach 触发点真实发生过的地方。M5 战场坐标 = 6×6 及邻近最小尺寸带；本轮扫描原只探到 8×8。6×6 cell（P1 配置 + 内存帽）已排队在 P4r 之后。
+
+**P3 结果**：presolve-off 单独跑不崩（P2 之死 = 并发 OOM 坐实）；搜索即刻开跑（772s 搜 7.17M branches / 7.7 亿 propagations），仍无可行解；ghost-aware 同样 none_compatible（验证税，同探针）。fixed 单线程无重启的可行性搜索在 8×8 上 ~750s 量级不够。
 
 ## 判据（M4 卡记载，verdict 时对照）
 

@@ -47,6 +47,57 @@ def main() -> int:
         default=1,
         help="EXACT_CP_SAT_WORKERS; 1 = clean attribution, 4 = production axis",
     )
+    # Feasibility knobs (all on _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST — legal
+    # in certified mode; see benders_loop.py allowlist):
+    parser.add_argument(
+        "--master-branching",
+        choices=("fixed", "automatic", "portfolio"),
+        default=None,
+        help="EXACT_MASTER_SEARCH_BRANCHING (default: fixed)",
+    )
+    parser.add_argument(
+        "--anchor-precheck-limit",
+        type=int,
+        default=None,
+        help="EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS (default 64; raise to "
+        "unlock the ghost-aware warm-start rebuild pipeline)",
+    )
+    parser.add_argument(
+        "--ghost-aware-validation-max-anchors",
+        type=int,
+        default=None,
+        help="EXACT_GHOST_AWARE_COORDINATE_VALIDATION_MAX_ANCHORS (default 8)",
+    )
+    parser.add_argument(
+        "--disable-warm-start",
+        action="store_true",
+        help="LBBDController(disable_master_warm_start=True) — cold master",
+    )
+    parser.add_argument(
+        "--master-presolve",
+        choices=("0", "1"),
+        default=None,
+        help="EXACT_MASTER_CP_MODEL_PRESOLVE (unset = CP-SAT default on)",
+    )
+    parser.add_argument(
+        "--probing-level",
+        type=int,
+        default=None,
+        help="EXACT_MASTER_CP_MODEL_PROBING_LEVEL (solve forces >=3 when unset)",
+    )
+    parser.add_argument(
+        "--symmetry-level",
+        type=int,
+        default=None,
+        help="EXACT_MASTER_SYMMETRY_LEVEL (solve forces >=3 when unset)",
+    )
+    parser.add_argument(
+        "--max-memory-mb",
+        type=int,
+        default=None,
+        help="EXACT_SUBPROBLEM_MAX_MEMORY_MB — CP-SAT soft cap; prevents the "
+        "native OOM abort (0xC0000409) seen when two masters ran concurrently",
+    )
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
 
@@ -54,6 +105,24 @@ def main() -> int:
     # attach env (unsafe map), so it must be absent now.
     os.environ.pop("EXACT_CUT_FRAMEWORK_ATTACH", None)
     os.environ["EXACT_CP_SAT_WORKERS"] = str(args.workers)
+    if args.master_branching:
+        os.environ["EXACT_MASTER_SEARCH_BRANCHING"] = args.master_branching
+    if args.anchor_precheck_limit is not None:
+        os.environ["EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS"] = str(
+            args.anchor_precheck_limit
+        )
+    if args.ghost_aware_validation_max_anchors is not None:
+        os.environ["EXACT_GHOST_AWARE_COORDINATE_VALIDATION_MAX_ANCHORS"] = str(
+            args.ghost_aware_validation_max_anchors
+        )
+    if args.master_presolve is not None:
+        os.environ["EXACT_MASTER_CP_MODEL_PRESOLVE"] = args.master_presolve
+    if args.probing_level is not None:
+        os.environ["EXACT_MASTER_CP_MODEL_PROBING_LEVEL"] = str(args.probing_level)
+    if args.symmetry_level is not None:
+        os.environ["EXACT_MASTER_SYMMETRY_LEVEL"] = str(args.symmetry_level)
+    if args.max_memory_mb is not None:
+        os.environ["EXACT_SUBPROBLEM_MAX_MEMORY_MB"] = str(args.max_memory_mb)
 
     from src.models.cut_manager import CutManager
     from src.models.master_model import MasterPlacementModel
@@ -67,6 +136,13 @@ def main() -> int:
         "routing_seconds": args.routing_seconds,
         "max_iterations": args.max_iterations,
         "workers": args.workers,
+        "master_branching": args.master_branching,
+        "anchor_precheck_limit": args.anchor_precheck_limit,
+        "ghost_aware_validation_max_anchors": args.ghost_aware_validation_max_anchors,
+        "disable_warm_start": bool(args.disable_warm_start),
+        "master_presolve": args.master_presolve,
+        "probing_level": args.probing_level,
+        "symmetry_level": args.symmetry_level,
     }
 
     t0 = time.perf_counter()
@@ -90,6 +166,7 @@ def main() -> int:
         routing_seconds=args.routing_seconds,
         max_iterations=args.max_iterations,
         artifact_hashes=session.artifact_hashes,
+        disable_master_warm_start=bool(args.disable_warm_start),
     )
 
     # Only NOW is the attach switch allowed to appear (direct invocation —
@@ -108,7 +185,24 @@ def main() -> int:
         result["exception"] = f"{type(exc).__name__}: {exc}"
     result["lbbd_wall_seconds"] = round(time.perf_counter() - t2, 3)
 
+    # Warm-start telemetry (private controller attrs, diagnostic-only):
+    # distinguishes "hint applied but master still hard" from "no compatible
+    # hint -> effectively cold start" (the two read identically in status).
+    for attr in (
+        "_greedy_hint_instances",
+        "_used_greedy_hint",
+        "_master_hinted_literals",
+        "_ghost_anchor_hint_applied",
+        "_ghost_anchor_hint_status",
+    ):
+        result[attr.lstrip("_")] = getattr(controller, attr, None)
+
     summary = getattr(controller, "last_proof_summary", None) or {}
+    # Full summary dump: early-UNKNOWN aborts (e.g. power-placement abort)
+    # record their reason here, not in the selected keys below.
+    result["proof_summary"] = {
+        k: v for k, v in summary.items() if isinstance(v, (str, int, float, bool, type(None)))
+    }
     result["benders_iterations"] = summary.get("benders_iterations")
     result["binding_status"] = summary.get("binding_status")
     result["routing_status"] = summary.get("routing_status")
@@ -116,6 +210,13 @@ def main() -> int:
         "cut_framework_attached"
     )
     stats = getattr(master, "build_stats", {}) or {}
+    last_solve = stats.get("last_solve")
+    if isinstance(last_solve, dict):
+        result["last_solve"] = {
+            k: v
+            for k, v in last_solve.items()
+            if isinstance(v, (str, int, float, bool, type(None)))
+        }
     result["coordinate_framework_cut_count"] = stats.get(
         "coordinate_framework_cut_count", 0
     )

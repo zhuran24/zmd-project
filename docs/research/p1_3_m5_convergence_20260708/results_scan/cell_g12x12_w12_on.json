@@ -1,0 +1,32 @@
+{
+  "ghost_rect": [
+    12,
+    12
+  ],
+  "attach": "on",
+  "master_seconds": 600.0,
+  "binding_seconds": 600.0,
+  "routing_seconds": 600.0,
+  "max_iterations": 3,
+  "workers": 12,
+  "session_build_seconds": 59.127,
+  "master_build_seconds": 36.347,
+  "status": "UNKNOWN",
+  "has_solution": false,
+  "lbbd_wall_seconds": 528.78,
+  "greedy_hint_instances": 266,
+  "used_greedy_hint": true,
+  "master_hinted_literals": 798,
+  "ghost_anchor_hint_applied": false,
+  "ghost_anchor_hint_status": "skipped_anchor_limit",
+  "benders_iterations": 1,
+  "binding_status": null,
+  "routing_status": null,
+  "cut_framework_attached_last_trigger": null,
+  "coordinate_framework_cut_count": 0,
+  "cut_framework_attach_last": null,
+  "coordinate_pattern_nogood_last_cut": null,
+  "coordinate_baseline_packing_last_cut": null,
+  "coordinate_power_pose_exclusion_last_cut": null,
+  "coordinate_region_capacity_cut_count": 0
+}
