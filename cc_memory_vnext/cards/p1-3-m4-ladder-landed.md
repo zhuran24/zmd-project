@@ -62,7 +62,7 @@ provenance:
   evidence:
     - "commits: aad0a7a(A)/c4a0130(B)/73fa1cf(D1)/d9ceb15(D2)/38195e0(D3)/dadee58(D4)/951b4f2(D5);每批慢 lane 绿;双 checker 绿(14 obligations/65 sinks)。"
     - "F5 全链端到端: test_cut_framework_attach_wiring.py::test_full_chain_f5_binding_empty_domain_end_to_end(死端口 incumbent→adapter 判死→minimizer 收敛单字面→关卡链→真 master 落约束)。"
-    - "M4 侦察材料: scratchpad m4recon/(f4f2/f5/f6/f3f7/poseMap/budget/f9/d2_binding_adapter)——七路 Fable+一路 codex;D2 核心发现=binding demand 型 INFEASIBLE 反单调不可 lift。"
+    - "M4 侦察材料(九份行号级报告,含 F2/F3/F9/F4 的 owner 拍板材料): docs/research/p1_3_m4_recon_20260708/——七路 Fable+一路 codex;D2 核心发现=binding demand 型 INFEASIBLE 反单调不可 lift。"
   updated_at: "2026-07-08"
 ---
 
