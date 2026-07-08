@@ -1,18 +1,17 @@
-# M5 第一阶段 verdict（草案，2026-07-08）
+# M5 第一阶段 verdict（定稿，2026-07-08）
 
-> 状态：**草案**——终极 cell（`g6x6_presolve_then_portfolio_3600`）结果出来后定稿。
 > 原始数据：`results_smoke/`、`results_scan/`、`probes/`；过程记录：`notes_phase1.md`。
 
-## 一句话结论（待终极 cell 确认）
+## 一句话结论
 
-本机（Windows 11 / 24 逻辑核 / 47.7GB RAM）在 ≤1800s 单 master 预算内，**任何合法配置组合都无法产出第一个 master 候选**——LBBD 循环卡在第 1 步，binding/routing 永不开审，attach 战场打不开。M5 收敛 A/B 实测在本机现有预算形态下不可行；需要 owner 在资源方案中拍板。
+本机（Windows 11 / 24 逻辑核 / 47.7GB RAM）在 ≤3600s 单 master 预算内，**任何配置组合都无法产出第一个 master 候选**——LBBD 卡在第 1 步，binding/routing 永不开审，attach 战场打不开；唯一有理论出路的组合（presolve 出头后 automatic portfolio）在本机 OR-Tools 上**原生段错误**（两发、`ortools.dll` 内 0xC0000005、不同偏移）。M5 收敛 A/B 实测在本机不可行，转生产机窗口或过夜多小时预算需 owner 拍板。
 
 ## 覆盖的配置空间（穷举证据）
 
 | 维度 | 试过的值 |
 |---|---|
 | ghost 尺寸 | 6×6（历史战场）/ 8×8 / 12×12 / 16×16 / 20×20 / 26×26 / 32×32 / 40×40 |
-| master 预算 | 90s / 600s / 1800s /（3600s 终极 cell 进行中）|
+| master 预算 | 90s / 600s / 1800s / 3600s |
 | workers | 1 / 4 / 12 |
 | presolve | 默认（probing/symmetry 强制≥3）/ diet（=1）/ 全关 |
 | 分支策略 | fixed（生产默认）/ automatic |
@@ -34,22 +33,24 @@
 
 `data/solutions/cuts_6x6.json`（tracked，历史 CutManager checkpoint）：5 条 whole-layout conflict_set（266 实例）——历史实跑在 **ghost 6×6** master 至少出过 5 个候选、全被 binding/routing 否决 = attach 触发点真实发生过。其余尺寸的 cuts 文件全空。历史机器/预算/master 表示版本未知（当前 `coordinate_exact_v2` 是 Phase 3C 重做的）。
 
-## 终极 cell（结果待填）
+## 终极 cell（两发）
 
-`g6x6_presolve_then_portfolio_3600`：probing1/symmetry1（presolve 保留但减税）+ automatic + 无过滤 + w12 + 3600s——赌 presolve 在 900-1200s 内出头、剩余时间跑真 portfolio（带 feasibility-jump）。
+`g6x6_presolve_then_portfolio_3600`（probing1/symmetry1 + automatic + **无过滤** + w12 + 3600s）：**solve ~28min 处 `ortools.dll` 原生段错误**（0xC0000005，独占跑、非 OOM）——头号嫌疑 = 旁路放回的 `violation_ls`/`feasibility_pump` 触发 OR-Tools 原生 bug。若坐实，Phase 3C 过滤清单意外有避崩价值（生产复核材料 +1）。
 
-- [ ] 结果：______
+`g6x6_filtered_portfolio_3600`（同配置去掉旁路，隔离验证 + 继续测「presolve 出头后 portfolio」）：**同样 `ortools.dll` 内 0xC0000005**（solve ~11min 处，不同偏移 0x80e689 vs 0x7ae290）——旁路排除，崩因锁定为 **6×6 模型 + automatic 分支 + presolve 开** 的组合在本机 OR-Tools 上原生不稳定（对照：P4r 同参数在 8×8/600s 干净退出）。不同偏移 ⇒ 非单点确定性 bug，更像该组合下的内存压力/worker 竞态。
+
+**推论**：本机逃逸路径全部封死——presolve 开 → 卡死或崩溃；presolve 关 → portfolio 塌缩单路搜索（1800s/7.2M branches 无解）。
 
 ## 资源方案选项（owner 拍板材料）
 
 按「打开战场」的路径分：
 
 1. **Linux 生产机跑 M5**（原设计轴）：生产 wrapper 是 Linux 导向；原历史候选大概率产自更长时间轴（campaign ≥24h、`EXACT_PARALLEL_PROCESSES` 多 ghost 并行）。M5 的 A/B 矩阵天然适合搬过去。成本 = 需要那台机器。
-2. **本机过夜级单 solve**（4-8h/cell）：终极 cell 若显示 presolve 能出头，过夜预算或许够一个候选；A/B 矩阵（≥8 cell）则是数天级。慢但零依赖。
+2. **本机过夜级单 solve**（4-8h/cell）：仅剩 fixed+presolve-diet 超长预算一条缝（automatic 会崩、presolve-off 已证 1800s 无解）——presolve 若在 1-2h 内出头、fixed 搜索还得靠 propagation 红利翻盘，胜率低。A/B 矩阵（≥8 cell）数天级。慢、胜率低、但零依赖。
 3. **先收可收的**：M5 拆两半——「attach 机制开销测量」（M1 已给出：literal 复用后 50% 退化线 15-20K cut）与「收敛增益 A/B」（依赖战场）。前者已完成；后者标 BLOCKED_ON_COMPUTE，M5 以「可行性 verdict + 四层税诊断 + harness 交付」收口，A/B 等生产机窗口。
 4. **性能税修复线**（独立于 M5，反哺生产）：presolve 强制 ≥3 的档位、subsolver 过滤清单、ghost-aware 验证 profile 无旋钮、anchor 限 64——四项都值得生产侧复核（改动碰 sealed 面，走正常 reseal 流程，属 P1.3/P1.21 性能债范畴）。**注意**：这些默认值可能是 Phase 3C 在「已有 incumbent 后的增量求解」场景下调优的，对「冷启动首解」不利不等于对生产错——复核时要分场景。
 
-推荐：**3 + 4 组合**（M5 第一阶段按实测现实收口、诊断反哺生产），A/B 实测挂 1 的窗口。2 仅在终极 cell 显示 presolve 可出头时值得追加一发过夜验证。
+推荐：**3 + 4 组合**（M5 第一阶段按实测现实收口、诊断反哺生产），A/B 实测挂 1 的窗口。2 不推荐（终极两发已证 automatic 崩、唯一剩缝胜率低）。**4 的补充警示**：subsolver 过滤清单在本机意外有避崩价值存疑（两次崩溃偏移不同、且过滤版也崩）——生产复核时把「过滤清单」与「Windows OR-Tools 该版本在 prod-scale 模型上的稳定性」分开评估，勿混为一谈。
 
 ## attach 链自身状态
 

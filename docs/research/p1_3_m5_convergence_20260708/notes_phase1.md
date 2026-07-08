@@ -73,6 +73,8 @@
 
 另备 `--search-profile`（三档：guided_branching_v4 / ghost_after_counts_v1 / ghost_first_v1，allowlist env）未试。
 
+**6×6 第四发（presolve-then-portfolio 3600s，重启后重跑）**：solve ~28min 处 `ortools.dll` 内 ACCESS_VIOLATION（0xC0000005，WER 坐实；独占跑、35GB 空闲、非 OOM）——头号嫌疑是 `--no-subsolver-filter` 放回的 `violation_ls`/`feasibility_pump` 在此模型触发 OR-Tools 原生 bug（若坐实，Phase 3C 的过滤清单意外起到了避崩作用，值得记入生产复核材料）。**第五发（隔离验证，最后一发）**：同配置去掉旁路（过滤 portfolio），3600s——**同样 `ortools.dll` 0xC0000005**（solve ~11min，偏移 0x80e689 ≠ 第四发 0x7ae290）。旁路排除；崩因 = 6×6 + automatic + presolve-on 组合在本机 OR-Tools 原生不稳定（P4r 同参数 8×8/600s 干净退出为对照）。**本机逃逸路径全部封死** ⇒ verdict 定稿（见 `m5_phase1_verdict.md`）。
+
 ## 判据（M4 卡记载，verdict 时对照）
 
 收敛判据 + telemetry 阈值：cut 计数 >10^5 = 撞墙，<10^3 = 工作区间（`attached_by_family` 数据源已就位）。
