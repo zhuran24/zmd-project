@@ -20,7 +20,8 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Any, Dict, List, Optional, Protocol, Tuple
+from dataclasses import dataclass
+from typing import Any, Dict, FrozenSet, List, Mapping, Optional, Protocol, Tuple
 
 from src.cuts.helpers.bounded_core_minimizer import (
     CoreMinimizeResult,
@@ -59,21 +60,72 @@ CERT_KIND: str = "bounded_deletion_core"
 # ============================================================================
 
 
-class SubProblemOracleAdapter(Protocol):
-    """Sub-problem oracle adapter contract.
+@dataclass(frozen=True)
+class LiftableScope:
+    """Whitelist projection of BState handed to sub-problem oracle adapters.
 
-    Phase 1.5+ binding_subproblem / routing_subproblem / pcr_cut / d2_separator
-    each implement this protocol so the F5 generator and validator can re-verify
-    via a uniform API. Phase 1.2: no real implementations; tests inject fakes.
+    M4-D2 (orbit-lift design v2 §4 ④): an F5 verdict is only liftable if it
+    was derived WITHOUT reading incumbent-derived mutable state. The old
+    ``query(core, state: BState, ...)`` contract handed adapters the whole
+    BState — including ``groups[*].selected_poses`` and ``cell_owner`` — so
+    the whitelist was merely verbal. This projection makes it structural:
+    the blacklisted fields do not exist on the object an adapter receives.
+
+    Whitelist rationale per field: frozen-artifact snapshots
+    (candidate_placements / canonical_rules / facility_templates /
+    artifact_hashes), group-structure constants (instance_to_facility_type,
+    group_demands, group_pose_domains). Candidate-level constants (ghost,
+    exterior) are deliberately NOT included — a verdict depending on them
+    must be scope-bound via CutScope, which pattern_nogood does not do.
     """
 
-    name: str  # registry key (e.g. "binding_v1"); validator membership-checks
+    facility_pools: Mapping[str, Any]
+    canonical_rules: Mapping[str, Any]
+    instance_to_facility_type: Mapping[str, str]
+    facility_templates: Mapping[str, Any]
+    group_demands: Mapping[str, int]
+    group_pose_domains: Mapping[str, FrozenSet[str]]
+    artifact_hashes: Mapping[str, str]
+
+
+def build_liftable_scope(state: BState) -> LiftableScope:
+    """Project a BState onto the adapter whitelist (drops selected_poses,
+    cell_owner, ghost/exterior and every other incumbent-derived field)."""
+    placements = state.candidate_placements or {}
+    pools = placements.get("facility_pools") if isinstance(placements, dict) else {}
+    return LiftableScope(
+        facility_pools=pools or {},
+        canonical_rules=state.canonical_rules or {},
+        instance_to_facility_type=dict(state.instance_to_facility_type or {}),
+        facility_templates=state.facility_templates or {},
+        group_demands={
+            gid: int(group.demand) for gid, group in state.groups.items()
+        },
+        group_pose_domains={
+            gid: frozenset(group.pose_domain) for gid, group in state.groups.items()
+        },
+        artifact_hashes=dict(state.artifact_hashes or {}),
+    )
+
+
+class SubProblemOracleAdapter(Protocol):
+    """Sub-problem oracle adapter contract (M4-D2: liftable form).
+
+    binding_subproblem / routing_subproblem / pcr_cut / d2_separator adapters
+    implement this protocol so the F5 generator and validator can re-verify
+    via a uniform API. The verdict MUST be a function of (core, whitelisted
+    scope) only — the LiftableScope projection structurally withholds
+    incumbent state, and an adapter whose verdict would depend on anything
+    else must return FEASIBLE/ERROR (refuse to lift) instead.
+    """
+
+    name: str  # registry key (e.g. "binding_empty_domain_v1"); validator membership-checks
     version: str  # validator strict-equals at re-verify time
 
-    def query(
+    def query_liftable(
         self,
         core: Tuple[LiteralAssignment, ...],
-        state: BState,
+        scope: LiftableScope,
         *,
         deadline_seconds: float,
     ) -> Tuple[OracleVerdict, Optional[bytes]]:
@@ -81,7 +133,7 @@ class SubProblemOracleAdapter(Protocol):
 
         witness_blob may be ``None`` or empty bytes — validator does not bind
         on witness identity (per Gemini F5 round 1 fix #1), only the verdict
-        matters. Phase 1.5+ adapters are not required to extract IIS/Core bytes.
+        matters. Adapters are not required to extract IIS/Core bytes.
         """
         ...
 
@@ -161,6 +213,10 @@ def generate_pattern_nogood_cuts(
 
     gen_t0 = _time.monotonic()
 
+    # M4-D2: adapters only ever see the whitelist projection — never the
+    # BState with its incumbent-derived fields (selected_poses, cell_owner).
+    liftable_scope = build_liftable_scope(state)
+
     def oracle_cb(core: Tuple[LiteralAssignment, ...]) -> OracleVerdict:
         remaining = budget.max_seconds - (_time.monotonic() - gen_t0)
         if remaining <= 0.0:
@@ -170,8 +226,8 @@ def generate_pattern_nogood_cuts(
             # Returning TIMEOUT lets the minimizer's wall-clock check exit
             # cleanly on the next iteration with stopped_reason=TIMEOUT.
             return "TIMEOUT"
-        verdict, _blob = sub_problem_oracle.query(
-            core, state, deadline_seconds=remaining
+        verdict, _blob = sub_problem_oracle.query_liftable(
+            core, liftable_scope, deadline_seconds=remaining
         )
         # witness_blob unused: per Gemini F5 round 1 review #1, sub-problem
         # witness bytes are non-deterministic; validator re-queries oracle for

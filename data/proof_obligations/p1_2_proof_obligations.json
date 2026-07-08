@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-07-03",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "44c0113b2adaaafb3b2abebfd92dba1c799d1f18d637947ba9d603ed0775f0a3",
+  "semantic_projection_sha256": "2a355b76801d7c8e2f78f65a20c67ab0b1e66d1313a501935e2f9653dbf63362",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -986,7 +986,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-      "source_sha256": "29ced7124d1334d988cb9eb7cb33510784d329c24b90c35019e3ace29b4d1e25",
+      "source_sha256": "1ac26f096afd4c1cd10009cf92a587bbfe519b58a22df9f5e2698b6c338b0196",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1003,7 +1003,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "2200d231b6aa93a59d2fd96bb1ec761cddf7e190c522e703e4dd1e8d2a92ba5d",
+        "source_sha256": "64c4cdbf3ce9a5c3be87ce8337d74dd291095f9471decc3efca1b2d6990a95ca",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1082,7 +1082,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "19341971f97a75b171cad4acc8d1684ad111bf49e3d76795b9664aa36f22c57f",
+        "source_sha256": "30b0dea92503d2b8c015b3e06e47d893af93a19b9569963658d56acb28e15e41",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1112,6 +1112,21 @@
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
+        "path": "src/search/f5_binding_empty_domain_adapter.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE",
+          "supports_exact_pose_level_binding",
+          "_ROUTING_AWARE_BINDING_ENV"
+        ],
+        "source_sha256": "76d072161b85f8ce5e87682769434291b5c7ccdb005623dc8a3265fb4c48b6df",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
         "path": "src/cuts/oracles/pattern_nogood_oracle.py",
         "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
@@ -1121,7 +1136,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "386303af1a833f5db572b0c079ca7ae143578c131aa2a429abd457f5df32d4be",
+        "source_sha256": "16a570d7b5df8a69f8d7dfdbb5736e47ed790227b2b1ffd5ad83f90e00578fca",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

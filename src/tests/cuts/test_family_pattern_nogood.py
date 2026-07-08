@@ -80,14 +80,14 @@ class FakeAdapter:
     def __post_init__(self) -> None:
         self.calls = []
 
-    def query(
+    def query_liftable(
         self,
         core: Tuple[LiteralAssignment, ...],
-        state: BState,
+        scope,  # LiftableScope — fake adapter ignores (and CANNOT read incumbent)
         *,
         deadline_seconds: float,
     ) -> Tuple[OracleVerdict, bytes]:
-        del state, deadline_seconds  # fake adapter ignores
+        del scope, deadline_seconds  # fake adapter ignores
         self.calls.append(core)
         if self.raise_on_query:
             raise RuntimeError("fake adapter blew up")

@@ -370,9 +370,13 @@ def _reverify_sub_problem_oracle(
     soundness contract is the INFEASIBLE verdict alone.
     """
     try:
-        verdict, _witness_blob = adapter.query(
+        # M4-D2: the validator hands adapters the same whitelist projection as
+        # the generator — a re-verify must not peek at incumbent state either.
+        from src.cuts.oracles.pattern_nogood_oracle import build_liftable_scope
+
+        verdict, _witness_blob = adapter.query_liftable(
             cert_triples,
-            state,
+            build_liftable_scope(state),
             deadline_seconds=_VALIDATOR_REVERIFY_DEADLINE_SECONDS,
         )
     except Exception as e:  # noqa: BLE001 — oracle is untrusted

@@ -3112,7 +3112,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "44c0113b2adaaafb3b2abebfd92dba1c799d1f18d637947ba9d603ed0775f0a3"
+    "2a355b76801d7c8e2f78f65a20c67ab0b1e66d1313a501935e2f9653dbf63362"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -12812,6 +12812,7 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/render/report_builder.py': 'non_authoritative_projection',
     'src/render/serve.py': 'non_authoritative_projection',
     'src/search/benders_loop.py': 'p1_2_certified_path',
+    'src/search/f5_binding_empty_domain_adapter.py': 'out_of_scope_future_phase3b',
     'src/search/campaign_telemetry.py': 'diagnostic_or_telemetry_non_authority',
     'src/search/campaign_triage.py': 'diagnostic_or_telemetry_non_authority',
     'src/search/candidate_proof_replay.py': 'p1_2_certified_path',
@@ -12905,7 +12906,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/families/component_reach.py': 'e1ca76d1606c8b761e09126288edf4c5e380c35b87d0d281ffc641b62fcc28f2',
     'src/cuts/families/cutset.py': 'f3a2f264dd1441f2bfb2dcf7ffe00f7769aca180020774ff4b4f10d55d1da9b2',
     'src/cuts/families/density_envelope.py': '57daae04775fd3c7c9d73ec6a2447fd061f39fd97c4e7a8822e8d515469f0886',
-    'src/cuts/families/pattern_nogood.py': '19341971f97a75b171cad4acc8d1684ad111bf49e3d76795b9664aa36f22c57f',
+    'src/cuts/families/pattern_nogood.py': '30b0dea92503d2b8c015b3e06e47d893af93a19b9569963658d56acb28e15e41',
     'src/cuts/families/port_exposure.py': '4bdfe24641697f0652a35c66546e7058e167e32d68f8e28afe6be5ad118714e2',
     'src/cuts/families/power_hitting_set.py': 'ea589082db2e59db254ab41f0a92f76b2160e075b022b321c213ef030e0b510c',
     'src/cuts/families/region_capacity.py': 'c0a05ffacb3e9117db14f1e4ab10285560edaeabfe6febda4d06a877ddd9aeaa',
@@ -12918,7 +12919,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/helpers/canonical_sot.py': '8cedd39192a319e6179e52c53fe7dc420dc0917f92b3ca75747f1a0868c4dc1d',
     'src/cuts/helpers/power_cover.py': '4b574d736f701d5cf0219ecb6145d11ff8e2c21751cff27c486b9c84e6f16e93',
     'src/cuts/lifecycle.py': '87a49ce0bd821cdc0d3bccd0745c06814784afaf49cd77f96db436ea7a6afdad',
-    'src/cuts/oracles/pattern_nogood_oracle.py': '386303af1a833f5db572b0c079ca7ae143578c131aa2a429abd457f5df32d4be',
+    'src/cuts/oracles/pattern_nogood_oracle.py': '16a570d7b5df8a69f8d7dfdbb5736e47ed790227b2b1ffd5ad83f90e00578fca',
     'src/cuts/oracles/power_cover_oracle.py': '0f2d899d3a24cec8dd95397d454903a61c3ca781a995d09328d2d43bca47583d',
     'src/cuts/oracles/region_capacity_oracle.py': '52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83',
     'src/cuts/oracles/shape_packing_hall_oracle.py': '2588b968c5e867f1669720acd9a46b7fc28d130a325e2fd9298ac31c1e225e0d',
@@ -12968,10 +12969,11 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/serve.py': '45a03f847c80595ef72b3e859eeccf01169ed16e87faebd7b75be4c788ff7262',
     'src/runtime/subproblem_invocation_counter.py': '6f5ac40b2674a1a2b99d9932dc262e4c57c2f622e27e4b83dc39d9bcc270c759',
     'src/search/benders_loop.py': '3c01ea8b93757bf42e3faefc0e4e835bd6df53ddcddf7f8473f2b11af08ec041',
+    'src/search/f5_binding_empty_domain_adapter.py': '76d072161b85f8ce5e87682769434291b5c7ccdb005623dc8a3265fb4c48b6df',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
-    'src/search/certified_artifact_contract.py': '2200d231b6aa93a59d2fd96bb1ec761cddf7e190c522e703e4dd1e8d2a92ba5d',
+    'src/search/certified_artifact_contract.py': '64c4cdbf3ce9a5c3be87ce8337d74dd291095f9471decc3efca1b2d6990a95ca',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': '3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
