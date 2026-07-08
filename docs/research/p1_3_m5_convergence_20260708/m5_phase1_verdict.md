@@ -55,3 +55,26 @@
 ## attach 链自身状态
 
 M4 四族全通电、telemetry（attached_by_family/预算闸/per-family last_cut）就位、四层关卡链全绿——**attach 链本身没有任何已知缺陷在等 M5**；M5 是它的效果计量，不是它的正确性验收（正确性由 M4 的测试与等价回归背书）。升格三前置仍是「只剩 owner 显式决定」。
+
+---
+
+# Linux 增补（2026-07-09 凌晨，同一硬件 CachyOS 侧）
+
+## 增补后的一句话结论（2026-07-09 凌晨经三镜头对抗复核修订）
+
+**「战场打不开」在跨 OS 层面进一步坐实，但「穷举」不成立**：同一台机器的 Linux 侧排除了 Windows 崩溃干扰（组合不毒、真多核并行确认），在 1800-7200s × {automatic 多核、3 随机种子、重建布局直喂、修复上限放宽} 下 6×6 master 首解不可达。对抗复核出土**五族从未试过的白名单旋钮**：no_overlap_2d 传播器四件套（`EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC/_TIMETABLING/_TRY_EDGE/_BOOLEAN_RELATIONS_LIMIT`——模型正是 no_overlap_2d-heavy，源码自述 packing 提速 10-20%，最对症）、`EXACT_MASTER_IGNORE_LP_SUBSOLVERS`、`EXACT_MASTER_LINEARIZATION_LEVEL`、`EXACT_SUBPROBLEM_PARAMS`（通用 CP-SAT 参数注入口）、PORTFOLIO 分支值——已组 **Q3 队列**实测中。Q3 全负后剩余路径才收敛为【外部更强算力（注意：原选项 1 的 ≥24h 多 ghost campaign 轴同样未测）】与【可行性瓶颈诊断（病因未定）】。
+
+## Linux 新证据（细节见 notes；标 ▲ 的经对抗复核修订）
+
+1. Windows 段错误组合在 Linux 干净跑完 → 崩溃是 Windows OR-Tools 构建特有。
+2. `deterministic/wall ≈ 5.2`（vs Windows ≤2.1）→ Linux 上 automatic 真多核；即便如此 7200s 仍 UNKNOWN。
+3. ▲ 种子赌注（s7/s13/s42 三发）未中，且**受控对照显示搜索地形对种子高度均匀**（conflicts 812/838/818，差约 3%）——种子路线死得比预想彻底。此前引用的「453→85008 两个数量级方差」是跨配置比较（85008 来自 restarts=41 的 ghost-aware 发，不同机制），作废。
+4. ▲ **重建布局直喂**：hint 全量加载、分支吞吐 3 倍，仍 UNKNOWN。原推断「布局在完整模型下不可行（供电容量病因）」**撤回**——UNKNOWN≠INFEASIBLE（solver 纯超时、未证伪任何东西），且 hint 仅覆盖 798/1,549,300 个变量（<0.06%，只 hint 每实例 x/y/mode 整数，海量打包布尔未被约束）——**hint 密度过低是更简单的解释**，也指出一个潜在改进面（hint 机制增密）。
+5. ▲ **q2b 崩溃改判「疑似假崩」待复现**：对抗复核源码论证——崩点上一行 `coeff = int(...)` 恒为 int、该函数对所有 profile 无条件调用、q2a 默认档同一行跑通——更像热重启撕裂 `__pycache__` 的又一形态而非 profile 潜伏 bug。Q3z（清缓存后复跑 ghost_first 档）裁决：复现 = 真 bug 进 reseal 批；不复现 = 假崩坐实、撤销 bug 记录。
+6. 硬件注记：硅脂老化，满载 95-98°C，两晚 3 次热重启杀实验；BIOS 已恢复默认（降频期数据不与调参期/换硅脂后混比）；热重启会撕裂 `__pycache__`（清缓存 SOP 已入记忆）。
+
+## 对资源方案的修正（经对抗复核修订）
+
+- ▲ 原选项 1「Linux 生产机窗口」：其「同硬件 / 单 ghost / ≤2h 预算」切片已执行并证伪（本增补即其产物）；但选项 1 的核心轴——**≥24h campaign + `EXACT_PARALLEL_PROCESSES` 多 ghost 并行**——尚未测，不能宣布整个选项证伪。外部更强算力（核数/频率/散热）的预期收益按 7200s 数据外推仍属未知数。
+- ▲ **选项 5（可行性瓶颈诊断，病因开放）**：把「master 首解为何这么难」立为诊断课题——但不预设病因（q2a 证据无区分性；候选假设：约束紧度【供电容量/覆盖/端口皆可能】、hint 密度过低、纯组合规模）。诊断产出决定后续方向（warm-start 修复增强 / hint 增密 / 模型加固），属生产代码工作，与四层税修复线同批呈 owner。M5 A/B 挂其后。
+- 推荐组合更新为 **3 + 4 + 5**：M5 第一阶段按实测收口；性能税发现反哺生产复核（q2b 是否入列待 Q3z 裁决）；可行性诊断立项挂 owner 排期。Q3 若意外命中则全盘转入 A/B 矩阵。

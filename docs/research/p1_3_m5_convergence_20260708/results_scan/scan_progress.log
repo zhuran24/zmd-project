@@ -18,3 +18,26 @@ PRESOLVE_PROBE_ALL_DONE 2026-07-08T13:00:24.8892291+08:00
 === g6x6_fullportfolio_1800 done exit=0 2026-07-08T14:41:43.2366263+08:00 ===
 === g6x6_presolve_then_portfolio_3600 done exit=-1073741819 2026-07-08T16:34:55.0472012+08:00 ===
 === g6x6_filtered_portfolio_3600 done exit=-1073741819 2026-07-08T16:48:55.1200089+08:00 ===
+=== g6x6_linux_p4cfg done exit=1 2026-07-08T20:02:48+08:00 ===
+=== g6x6_linux_p4cfg done exit=0 2026-07-08T21:01:47+08:00 ===
+=== g6x6_linux_ghostaware done exit=0 2026-07-08T21:34:47+08:00 ===
+=== g6x6_linux_ghostaware_b done exit=0 2026-07-08T22:47:34+08:00 ===
+=== g6x6_ovn_7200_on done exit=0 2026-07-09T01:31:36+08:00 ===
+=== g6x6_ovn_s7_on done exit=0 2026-07-09T02:02:30+08:00 ===
+=== g6x6_ovn_s13_on done exit=0 2026-07-09T02:33:24+08:00 ===
+=== g6x6_ovn_s42_on done exit=0 2026-07-09T03:04:18+08:00 ===
+=== OVERNIGHT_QUEUE_DONE winner=none 2026-07-09T03:04:18+08:00 ===
+=== g6x6_q2a_bluehint done exit=0 2026-07-09T03:43:43+08:00 ===
+=== g6x6_q2b_ghostfirst done exit=1 2026-07-09T03:44:24+08:00 ===
+=== g6x6_q2c_hintlimit done exit=0 2026-07-09T04:15:35+08:00 ===
+=== Q2_QUEUE_DONE winner=none 2026-07-09T04:15:35+08:00 ===
+=== g6x6_q3z_ghostfirst_retry done exit=137 2026-07-09T04:47:57+08:00 ===
+=== g6x6_q3a_no2d_props done exit=0 2026-07-09T05:19:07+08:00 ===
+=== g6x6_q3b_nolp done exit=1 2026-07-09T05:19:38+08:00 ===
+=== g6x6_q3c_portfolio done exit=139 2026-07-09T05:20:21+08:00 ===
+=== g6x6_q3d_combo done exit=0 2026-07-09T05:51:35+08:00 ===
+=== Q3_QUEUE_DONE winner=none 2026-07-09T05:51:36+08:00 ===
+=== g6x6_q4a_nolp_retry done exit=0 2026-07-09T06:26:35+08:00 ===
+=== g6x6_q4b_portfolio_retry done exit=0 2026-07-09T06:57:29+08:00 ===
+=== g6x6_q4c_ghostfirst_w12 done exit=139 2026-07-09T06:58:03+08:00 ===
+=== Q4_QUEUE_DONE 2026-07-09T06:58:03+08:00 ===
