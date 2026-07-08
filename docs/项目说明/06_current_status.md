@@ -97,10 +97,16 @@ hash-incompatible。
 ## 阶段命名
 
 - P1.2：当前认证发布链 soundness 与 release gate 收口已于 2026-07-07 owner-closed。
-- P1.3：已开放且实质推进（2026-07-08 M1-M3）：`step_8_apply_to_master` 已通电
-  （F1 region_capacity 首族翻译落地，其余族 fail-closed 待 M4 阶梯）；LBBD 接线
-  经 `EXACT_CUT_FRAMEWORK_ATTACH`（unsafe map，certified 下开启即 fail-closed，
-  升格需 M4 阶梯+等价回归+owner 决定）；cut framework 16 模块进 V99 floor。
+- P1.3：已开放且实质推进（2026-07-08 M1-M4）：attach 链四族通电——F1
+  region_capacity（含 ghost 条件化修复）、F7 power_hitting_set（运行时闸+
+  等价回归）、F6 shape_packing_hall（SoT 下界 override）、F5 pattern_nogood
+  （query_liftable 合同+binding_empty_domain_v1 真 adapter+P-HOM 结构门）；
+  cut 总量预算（2000 满即停发）。F2/F3/F9/F4 保持 fail-closed（终态理由见
+  记忆卡：F2 吞吐锁+桥语义、F3 缺 active_port_witness、F9 tight-K 绞死、
+  F4 缺 route registry——均非遗漏）。总开关 `EXACT_CUT_FRAMEWORK_ATTACH`
+  仍在 unsafe map（certified 下开启即 fail-closed）；升格三前置中阶梯与
+  等价回归已齐，仅剩 owner 显式决定。close-kernel 现 65 sinks。
   F8 power_grid_reach 已整族退役删除（owner 游戏规则拍板：电杆不需连网）。
-  详见记忆卡 `p1-3-m3-step8-landed` 与 `p1-3-m2-coverage-stencil-ruling`。
+  详见记忆卡 `p1-3-m4-ladder-landed`/`p1-3-m3-step8-landed`/
+  `p1-3-m2-coverage-stencil-ruling`。
 - `p1_3b_*`：只作为既有 JSON/CLI 兼容字段保留，不代表人类路线图仍分 A/B。

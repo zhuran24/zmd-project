@@ -22,14 +22,18 @@ P1.2 认证链 **CLOSED**（owner 手动门 `closed_manual_owner_decision`，P1.
 close-kernel 外审已画线收口（2026-07-03），PR2 #5 合入 / #7 通电（07-04）；
 三轮换轴收口外审（权限结构 / 数学语义 / TCB 线诚实性）共 24 簇、
 0 个真·上-TCB soundness 洞，owner 已于 2026-07-07 显式 `owner_manual_decision` 关门；
-**P1.3 已实质推进（2026-07-08 单日 M1-M3）**：attach sizing spike GO
+**P1.3 已实质推进（2026-07-08 单日 M1-M4）**：attach sizing spike GO
 （verdict 见 `docs/research/p1_3a_attach_sizing_spike_20260708/`）；M2 语义
 前置三批（F7 stencil 统一 / F8 整族退役-owner 游戏规则拍板 / F3 方向表修正）；
 M3 四批（F8 物理删除 / literal 复用缓存 solve 开销 -88% /
 `step_8_apply_to_master` 通电+F1 首族翻译 / LBBD 接线+`EXACT_CUT_FRAMEWORK_ATTACH`
-unsafe 默认关）；cut framework 16 模块进 V99 floor（通电即封印）；
-**M4（F2-F7+F9 逐族阶梯）待 owner 发话开工**（升格出 unsafe map 需 M4 阶梯+
-等价回归+owner 决定）；
+unsafe 默认关）；**M4 七批完成（owner 2026-07-08 发话后同日收口）**：attach 链
+四族通电（F1 ghost 条件化修复 / F7+等价回归+运行时闸 / F6 SoT override /
+F5 全链——BLOCK-2 封口+canonical_relabel+query_liftable 合同+
+binding_empty_domain_v1 真 adapter+P-HOM 结构门）+cut 预算闸（2000 满即停发）；
+F2/F3/F9/F4 保持 fail-closed（终态理由见 `p1-3-m4-ladder-landed` 卡，非遗漏）；
+close-kernel 现 65 sinks；**升格三前置中阶梯与等价回归已齐，仅剩 owner 显式
+决定**；M5（收敛实测，L11 退路挂 owner）待开工；
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
 设计稿 v2(含 v3 终审) 完成；证书侧（P3.0c 轴 B）路线图定型、待开工。
