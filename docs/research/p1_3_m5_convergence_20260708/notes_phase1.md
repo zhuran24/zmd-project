@@ -63,6 +63,16 @@
 
 **P3 结果**：presolve-off 单独跑不崩（P2 之死 = 并发 OOM 坐实）；搜索即刻开跑（772s 搜 7.17M branches / 7.7 亿 propagations），仍无可行解；ghost-aware 同样 none_compatible（验证税，同探针）。fixed 单线程无重启的可行性搜索在 8×8 上 ~750s 量级不够。
 
+**6×6 第一发（p1cfg：probing1/symmetry1/600s）**：UNKNOWN 且 branches=0——probing1/symmetry1 在 8×8 够用，在 6×6（interval 11596、anchor 4225，模型更大）又卡回 presolve 死区；deterministic_time 停在 18.759，与默认配置卡死的 16×16（18.7588）同指纹——presolve 的 wall 黑洞对 probing/symmetry 级别只部分敏感、对模型规模强敏感。P3 已证 presolve-off 是唯一可靠让搜索立刻开跑的配置 ⇒ 第二发 = 6×6 + presolve off + master 1800s（搜索独占）+ 内存帽。（另：runner 结果回显此前漏了 max_memory_mb 键，已补——6×6 第一发实际带 28000 帽。）
+
+**6×6 第二发（presolve-off/1800s）**：搜索满跑 2010s（7.17M branches / 2.18M booleans）仍无解。可疑指纹：branches/conflicts 与 8×8 P3 几乎一致（7.17M/~3025）——guided fixed search 不管 ghost 尺寸都走进同一泥潭。
+
+**headline 6：subsolver 过滤器砍掉了首解主力。**`MASTER_IGNORE_SUBSOLVERS_FOR_MAX_LEX`（`cp_sat_worker_config.py`）过滤 `feasibility_pump`/`violation_ls`（= CP-SAT feasibility-jump，现代首解发现主力）——Phase 3C 为 max_lex 目标调参的决定，但对「找第一个可行解」正好是反向优化。过滤器在 solve() 硬调用、无 env。harness 加 `--no-subsolver-filter`（测量专用 monkeypatch，结果 JSON 透明记录，绝非 certified 旋钮）。
+
+**6×6 第三发（全火力，进行中）**：presolve-off + automatic + 无过滤 portfolio + w12 + 1800s + 内存帽 = 本机可用的最大火力可行性尝试。它若再失败，「本机 <=1800s 单 master 无首解」的 verdict 证据链完整（配置空间已穷举：presolve on/diet/off × fixed/automatic × 过滤/全 portfolio × hint 有/无 × ghost 6-40 × 90-1800s）。
+
+另备 `--search-profile`（三档：guided_branching_v4 / ghost_after_counts_v1 / ghost_first_v1，allowlist env）未试。
+
 ## 判据（M4 卡记载，verdict 时对照）
 
 收敛判据 + telemetry 阈值：cut 计数 >10^5 = 撞墙，<10^3 = 工作区间（`attached_by_family` 数据源已就位）。

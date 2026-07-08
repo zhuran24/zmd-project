@@ -98,6 +98,19 @@ def main() -> int:
         help="EXACT_SUBPROBLEM_MAX_MEMORY_MB — CP-SAT soft cap; prevents the "
         "native OOM abort (0xC0000409) seen when two masters ran concurrently",
     )
+    parser.add_argument(
+        "--no-subsolver-filter",
+        action="store_true",
+        help="MEASUREMENT-ONLY: monkeypatch away MASTER_IGNORE_SUBSOLVERS_FOR_"
+        "MAX_LEX so the CP-SAT portfolio keeps feasibility_pump/violation_ls "
+        "(the first-solution workhorses). Never a certified-path knob.",
+    )
+    parser.add_argument(
+        "--search-profile",
+        default=None,
+        help="EXACT_COORDINATE_MASTER_SEARCH_PROFILE (guided_branching_v4 / "
+        "ghost_after_counts_v1 / ghost_first_v1)",
+    )
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
 
@@ -123,10 +136,17 @@ def main() -> int:
         os.environ["EXACT_MASTER_SYMMETRY_LEVEL"] = str(args.symmetry_level)
     if args.max_memory_mb is not None:
         os.environ["EXACT_SUBPROBLEM_MAX_MEMORY_MB"] = str(args.max_memory_mb)
+    if args.search_profile:
+        os.environ["EXACT_COORDINATE_MASTER_SEARCH_PROFILE"] = args.search_profile
 
     from src.models.cut_manager import CutManager
     from src.models.master_model import MasterPlacementModel
     from src.search.benders_loop import ExactSearchSession, LBBDController
+
+    if args.no_subsolver_filter:
+        import src.models.master_model as _mm
+
+        _mm.apply_master_cp_sat_subsolver_filter = lambda solver: ()
 
     result = {
         "ghost_rect": [args.ghost_w, args.ghost_h],
@@ -143,6 +163,9 @@ def main() -> int:
         "master_presolve": args.master_presolve,
         "probing_level": args.probing_level,
         "symmetry_level": args.symmetry_level,
+        "max_memory_mb": args.max_memory_mb,
+        "no_subsolver_filter": bool(args.no_subsolver_filter),
+        "search_profile_arg": args.search_profile,
     }
 
     t0 = time.perf_counter()

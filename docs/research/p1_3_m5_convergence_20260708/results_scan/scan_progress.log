@@ -13,3 +13,6 @@ SMALL_SCAN_ALL_DONE 2026-07-08T12:08:10.6760473+08:00
 === p3_nopresolve_ghostaware done exit=0 2026-07-08T13:00:24.8872985+08:00 ===
 PRESOLVE_PROBE_ALL_DONE 2026-07-08T13:00:24.8892291+08:00
 === p4r_autobranch_solo done exit=0 2026-07-08T13:13:46.9841468+08:00 ===
+=== g6x6_p1cfg done exit=0 2026-07-08T13:25:42.7488855+08:00 ===
+=== g6x6_nopresolve_1800 done exit=0 2026-07-08T14:03:08.5131353+08:00 ===
+=== g6x6_fullportfolio_1800 done exit=0 2026-07-08T14:41:43.2366263+08:00 ===
