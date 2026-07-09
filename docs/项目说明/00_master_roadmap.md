@@ -37,9 +37,19 @@ close-kernel 现 65 sinks；**升格三前置中阶梯与等价回归已齐，�
 `p1-3-m5-phase1-verdict` 卡）；**M6 诊断课题（owner 2026-07-09 立项）已收口——
 首解之墙 = 供电覆盖约束及其 witness 编码（八实验隔离、单一主墙，终报
 `docs/research/p1_3_m6_diagnosis_20260709/07_final_diagnosis.md` 与
-`p1-3-m6-power-encoding-diagnosis` 卡）；修复方向挂 owner 拍板：A=供电编码手术
-（reseal 量级，B1 34× + 隔离证据双背书）/ B=power-aware 构造启发式（不碰 sealed，
-验收管线已打通）/ C=顺手修冗余双 no_overlap_2d；M5 A/B 挂 A/B 任一落地后**；
+`p1-3-m6-power-encoding-diagnosis` 卡）；修复方向 owner 已拍板 a+c（2026-07-09）：
+**C 修复当日落地（dedup+reseal，`c3d64c4`）；A 批 0 头对头当夜破墙——C1（杆侧
+pose 布尔+cov 通道）在完整 266 实例 + 6×6 ghost 上产出项目史首个 master 解
+（OPTIMAL@541s/w6，独立复验六项全过含 unforced，w12/w24 OOM 内存条款成立；
+C6 判负；`docs/research/p1_3_a_batch0_20260709/README.md`）；M6 头号悬案
+「供电可行布局存在性」关闭；同夜 GPT Pro 双轨外审（全项目 bug 审 3 份 + 工具链
+评估 3 份）——生产证明链零 BLOCK 三重背书，产出硬化批（attach integrity P0
+bypass 修复+dedup 去 proto 反射+footprint clone 绑定，`c7cd6a0`）；批 1
+（C1 certified 化）owner 拍板开工：任务书 1A-1F
+（`docs/research/p1_3_batch1_design_20260710/00_batch1_workplan.md`）,
+1A 骨架已落地（开关默认关、双审 3 BUG 拦截、慢 lane 绿，`b755e80`）,
+1B 编码语义替换待开工;旧 witness 保留与否挂 owner（仅阻塞 1D）;
+M5 A/B 战场随首解解锁,挂批 1 完成后**;
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
 设计稿 v2(含 v3 终审) 完成；证书侧（P3.0c 轴 B）路线图定型、待开工。
