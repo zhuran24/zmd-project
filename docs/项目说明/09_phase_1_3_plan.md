@@ -37,11 +37,11 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 
 ### 12.1 step_8_apply_to_master 实施
 
-<!-- DOC-SUBJECT:certified_exact_contract FIELD:cut_lifecycle_contract START sha256:4787489db07f2d910aa3066abf723b63e692046e047f7ae31e1c4109ba7cf8c6 -->
-Cut-family LBBD work must respect the cut object lifecycle: generation, validation, replay, quarantine, storage, and master application are separate trust steps. `step_8_apply_to_master` is intentionally the unresolved integration boundary until the true master-integration phase starts.
+<!-- DOC-SUBJECT:certified_exact_contract FIELD:cut_lifecycle_contract START sha256:ac9b8b30f3c6e91cec861742a270b31ed802cf6563c32519858c622fe5495c7c -->
+Cut-family LBBD work must respect the cut object lifecycle: generation, validation, replay, quarantine, storage, and master application are separate trust steps. `step_8_apply_to_master` now carries F1/F5/F6/F7 master application (remaining families fail closed with `NotImplementedError`); direct attach stays gated behind `EXACT_CUT_FRAMEWORK_ATTACH` and is forbidden in certified runs.
 <!-- DOC-SUBJECT:certified_exact_contract FIELD:cut_lifecycle_contract END -->
 
-- 当前 `lifecycle.py::step_8_apply_to_master` NotImplementedError
+- ~~当前 `lifecycle.py::step_8_apply_to_master` NotImplementedError~~（2026-07-08 M3 起已接 F1/F7/F6/F5，其余族 fallback `NotImplementedError`；2026-07-10 外审后 direct attach 增加 integrity fail-closed + 拒绝分桶 telemetry）
 - 接 `benders_loop` hook (env flag `EXACT_B_DESIGN_V2=1` 切新框架)
 - Lazy → hard constraint 转化, 跟 master CP-SAT model 真集成
 - **风险**: master 加 lazy constraint 可能影响 master.solve 收敛 (constraint

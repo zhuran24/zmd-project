@@ -78,7 +78,7 @@ main.py → run_solve() → outer_search.run_outer_search()
       └ independent_infeasibility_reverifier.py  whole-layout nogood 落 cut 前的独立复验（I1）
 ```
 
-CERTIFIED 证明的是 6 个谓词（ghost 内无设施 / 两两不重叠 / placement_rule / 端口精确计数 / 路由连通 / 供电覆盖）+ lex 最优性；**吞吐/带宽/离散容量流明确 OUT-OF-SCOPE**（`PROJECT_LOCK.md` §1A B 块）。`src/cuts/` 的 F1-F9 cut lifecycle **未接入生产**：`step_8_apply_to_master` 仍 `raise NotImplementedError`（`src/cuts/lifecycle.py:1121-1126`），生产 src 零 import `src.cuts`。
+CERTIFIED 证明的是 6 个谓词（ghost 内无设施 / 两两不重叠 / placement_rule / 端口精确计数 / 路由连通 / 供电覆盖）+ lex 最优性；**吞吐/带宽/离散容量流明确 OUT-OF-SCOPE**（`PROJECT_LOCK.md` §1A B 块）。`src/cuts/` 的 cut lifecycle **部分接通、certified 下禁用**（截至 2026-07-10）：`step_8_apply_to_master` 已接 F1/F5/F6/F7（其余族 fallback `NotImplementedError`）；`benders_loop` 的 direct attach（`_maybe_attach_framework_cuts`）由 `EXACT_CUT_FRAMEWORK_ATTACH` 门控且在 certified unsafe-map 里禁用；F8 已从 `CutFamily` 退役。
 
 ### 3. 认证三权分立（需跨 4-6 个文件才能看清）
 

@@ -60,6 +60,10 @@ updated_at: "2026-07-09"
 3. **repeated 字段 append 损坏内部状态**：往包装 proto 的 repeated 字段直接 append/extend 会让 CP-SAT 报 `MODEL_INVALID "Interval 0 does not refer to a supported interval constraint"`。别用 proto 面做"加约束"。
 4. **合法的删除**：`constraint.clear_no_overlap_2d()` 整字段清空后该约束成为合法 no-op（玩具验证过），生产 dedup（`_dedup_subsumed_core_no_overlap`）就用它。
 
+## 第四坑：has_*() 反射在部分 proto 形态下直接段错误（2026-07-10 外审复现+本机坐实）
+
+最小模型（2 个 IntVar + 2 个 interval + AddNoOverlap2D）上调 `constraint.has_no_overlap_2d()` **进程级段错误**（SIGSEGV，faulthandler 定位在调用行；`NewIntervalVar`/`NewFixedSizeIntervalVar` 形态都复现）。而完整 build 的生产模型上同一调用长期稳定（dedup 单测+全天生产实证）——触发条件未完全定界。**结论：证明语义热路径禁止依赖 proto 反射判型**。替代姿势 = 自己建约束时记下 `constraint.Index()`，之后按 index 定位（类型已知，直接读字段安全）；修复 C 的 dedup 已于 2026-07-10 按此重写（`_core_no_overlap_constraint_index` + 逐 interval 子集校验）。测量探针里仍可用 has_*()（如 `_live_no_overlap_count`），但要接受它可能在极简模型上炸——探针炸只损失一次测量，证明构建炸是生产事故。
+
 ## 适用面
 
 任何 proto 级模型检查/手术：测量探针数约束、dedup 类修复、编码原型的 build 对照。批 0/批 1 的 C6/C1 工作都会反复碰。

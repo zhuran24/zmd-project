@@ -164,3 +164,55 @@ def test_no_ghost_path_keeps_core_no_overlap() -> None:
         cp_model.OPTIMAL,
         cp_model.FEASIBLE,
     )
+
+
+def test_dedup_refuses_non_subsuming_and_recleared() -> None:
+    """外审修订回归：dedup 只清「被组合约束逐 interval 蕴含」的前身。
+
+    场景一（C1 事故形态）：组合约束不含 core 全部 interval → 拒绝清除。
+    场景二：core-only 已被清空（重复调用）→ 拒绝重清。
+    """
+    # 场景一：无 ghost 的 master，core-only 健在；喂一个空的组合 interval 集
+    master = _build_master(pose_xs=[0, 2, 4], ghost_rect=None)
+    delegate = master._coordinate_delegate
+    core_idx = delegate._core_no_overlap_constraint_index
+    assert core_idx is not None
+    assert (
+        delegate._dedup_subsumed_core_no_overlap(
+            combined_constraint_index=core_idx + 1,
+            combined_x_indices=[],
+            combined_y_indices=[],
+        )
+        is False
+    )
+    proto = delegate.model.Proto()
+    assert len(proto.constraints[core_idx].no_overlap_2d.x_intervals) > 0
+
+    # 场景二：带 ghost 的 master，overlay 已清过 core-only；重调必须拒绝
+    master2 = _build_master(pose_xs=[0, 2, 4])
+    delegate2 = master2._coordinate_delegate
+    assert master2.build_stats["ghost_rect"]["core_no_overlap_deduped"] is True
+    assert (
+        delegate2._dedup_subsumed_core_no_overlap(
+            combined_constraint_index=delegate2._core_no_overlap_constraint_index + 1,
+            combined_x_indices=[0],
+            combined_y_indices=[0],
+        )
+        is False
+    )
+
+
+def test_clone_rebinds_footprint_channel() -> None:
+    """外审 3/3 共识回归：clone 侧 slot 必须恢复 footprint 通道变量。
+
+    此前 bind_from_core 只重绑 active/x/y/mode/order_key/signature/family，
+    footprint 全为 None → _all_powered_slots() 静默过滤受电槽。
+    """
+    master = _build_master(pose_xs=[0, 2, 4])
+    delegate = master._coordinate_delegate
+    slots = [s for specs in delegate.mandatory_slots.values() for s in specs]
+    assert slots
+    for slot in slots:
+        assert slot.footprint_x_start is not None, f"{slot.key} footprint 未重绑"
+        assert slot.footprint_width is not None
+        assert slot.footprint_y_end is not None

@@ -246,7 +246,60 @@ def test_full_chain_generates_validates_and_attaches() -> None:
             "region_capacity": 1,
             "shape_packing_hall": 1,
         },
+        "rejected": {
+            "integrity": 0,
+            "validator_missing": 0,
+            "validator_not_ok": 0,
+            "scope": 0,
+            "evaluate": 0,
+        },
     }
+
+
+def test_integrity_drift_cut_is_rejected_not_attached() -> None:
+    """cert/oracle hash 漂移的 cut 必须被 direct attach 一票否决（外审 P0 回归）。
+
+    2026-07-09 外审 3/3 共识：此前 attach 循环调 validate_cut_integrity() 却
+    丢弃返回值——漂移 cut 照走 validator/Step8。本测试钉死拒绝语义与
+    rejected.integrity telemetry。
+    """
+    import dataclasses
+
+    from src.cuts.oracles import region_capacity_oracle
+
+    spy = _SpyMaster()
+    controller = _controller(spy)
+    state = _boundary_overflow_state()
+    real_generate = region_capacity_oracle.generate_region_capacity_cuts
+
+    def tampered_generate(*args: Any, **kwargs: Any):
+        cuts = list(real_generate(*args, **kwargs))
+        assert cuts, "fixture 应产出至少一条 F1 cut"
+        # oracle_cert_hash 与 cert.cert_hash 不一致 = integrity drift
+        cuts[0] = dataclasses.replace(cuts[0], oracle_cert_hash="0" * 64)
+        return cuts
+
+    with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
+        with mock.patch.object(
+            LBBDController, "_build_cut_framework_state", return_value=state
+        ), mock.patch.object(
+            LBBDController,
+            "_selected_ghost_context",
+            return_value=_mock_ghost_context(),
+        ), mock.patch.object(
+            region_capacity_oracle,
+            "generate_region_capacity_cuts",
+            side_effect=tampered_generate,
+        ):
+            attached = controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=7
+            )
+    stats = spy.build_stats["cut_framework_attach_last"]
+    assert stats["rejected"]["integrity"] == 1
+    # F1 那条被拒；F6 Hall cut 不受影响仍可 attach
+    assert "region_capacity" not in stats["attached_by_family"]
+    assert len(spy.region_capacity_calls) == 0
+    assert attached == stats["attached"] == 1
 
 
 def test_full_chain_no_overflow_attaches_nothing() -> None:

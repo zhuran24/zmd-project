@@ -66,7 +66,7 @@ assumption 6 个 sub-check 各有 fail-closed 语义. 任一漏验 = lifecycle �
 2. **cut.scope + cert + literals XOR geometric_payload 必填** — __post_init__ 强制
 3. **GHOST_AGNOSTIC sentinel** — 不能跟普通 ghost_id 混用, validator 必验
    scope.ghost_rect_id 是否真合法 (Step O P0 修)
-4. **9 family list frozen** — 无 symmetry_lift (Phase 0 final), 含 F1-F9
+4. **family registry 显式登记** — 无 symmetry_lift (Phase 0 final)；原「9 family frozen」口径已随 F8 整族退役（2026-07-08，owner 确认 pole-jump 前提为假）更新为 8 个在册族（F1-F7+F9），退役需 owner 级确认并同步 spec/src/test
 5. **ASSUMPTION_VERIFIERS dispatch** — 必经 verifiers module, 不准 inline
 6. **multiset eval 不看 slot index** — state_machine §5 anonymity, slot 是
    group 内 anonymous reorderable; 但 validator 内部 binding 阶段 slot

@@ -7861,19 +7861,34 @@ class LBBDController:
                 )
         attached = 0
         attached_by_family: Dict[str, int] = {}
+        # 拒绝分桶：与 replay 路径同一 fail-closed 语义（integrity 非 None 一票否决），
+        # direct-attach 不得比 CutStore/replay 宽（2026-07-09 外审 P0：此前返回值被丢弃）。
+        rejected: Dict[str, int] = {
+            "integrity": 0,
+            "validator_missing": 0,
+            "validator_not_ok": 0,
+            "scope": 0,
+            "evaluate": 0,
+        }
         for cut in cuts:
             if budget_used + attached >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:
                 break
-            validate_cut_integrity(cut)
+            if validate_cut_integrity(cut) is not None:
+                rejected["integrity"] += 1
+                continue
             validator = FAMILY_VALIDATORS.get(cut.family)
             if validator is None:
+                rejected["validator_missing"] += 1
                 continue
             result = validator(cut, state, state.canonical_rules or {})
             if getattr(result, "kind", None) != "ok":
+                rejected["validator_not_ok"] += 1
                 continue
             if step_6_attach_scope_check(cut, state) != "ATTACH":
+                rejected["scope"] += 1
                 continue
             if not step_7_evaluate_cut(cut, state):
+                rejected["evaluate"] += 1
                 continue
             step_8_apply_to_master(
                 cut,
@@ -7894,6 +7909,7 @@ class LBBDController:
                 "generated": len(cuts),
                 "attached": attached,
                 "attached_by_family": dict(sorted(attached_by_family.items())),
+                "rejected": {k: int(v) for k, v in rejected.items()},
             }
         return attached
 

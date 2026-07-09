@@ -117,8 +117,9 @@ checks as certified proof"）。
   test_exact_mode_uses_flow_only_as_diagnostic` monkeypatch flow→INFEASIBLE 仍断言 CERTIFIED + 零
   exact_safe cut——**刻意锁死的契约**、非疏漏。
 - **(B-2) capacity / 连通 (ii)(iii)（98% 密度离散流墙，研究级）** — open research problem；F1–F9 cut
-  family（region_capacity / density_envelope 等）是**面积/空间密度 packing cut、非吞吐 cut**，且
-  `src/cuts/` 尚未集成进生产 master（`lifecycle.py step_8_apply_to_master` 仍 `NotImplementedError`），
+  family（region_capacity / density_envelope 等）是**面积/空间密度 packing cut、非吞吐 cut**（截至
+  2026-07-10：`step_8_apply_to_master` 已接 F1/F5/F6/F7、其余族 fallback `NotImplementedError`，
+  attach 在 certified 下仍被 `EXACT_CUT_FRAMEWORK_ATTACH` unsafe-map 禁用），
   无 cut family 表达「离散容量流够不够」。进 certified 需**新范式**（改 6 谓词定义 + 新增离散容量
   子问题），**非「关现有 gap」**。
 - **(B-3)「资源数量够」三种精度、证明地位完全不同、不得混成一句**：① 端口级 exact-count（谓词4，binding

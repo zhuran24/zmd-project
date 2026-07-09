@@ -2772,6 +2772,7 @@ class CoordinateExactMasterDelegate:
                 "mode": int(slot.mode.Index()),
                 "signature": int(slot.signature.Index()),
             }
+            self._record_slot_footprint_binding(slot)
             self._interval_binding[slot.key] = (int(slot.x_interval.Index()), int(slot.y_interval.Index()))
 
             all_region_lits: List[cp_model.IntVar] = []
@@ -2858,6 +2859,7 @@ class CoordinateExactMasterDelegate:
                 "order_key": int(slot.order_key.Index()),
                 "signature": int(slot.signature.Index()),
             }
+            self._record_slot_footprint_binding(slot)
             self._interval_binding[slot.key] = (
                 int(slot.x_interval.Index()),
                 int(slot.y_interval.Index()),
@@ -2909,6 +2911,7 @@ class CoordinateExactMasterDelegate:
                 "y": int(slot.y.Index()),
                 "mode": int(slot.mode.Index()),
             }
+            self._record_slot_footprint_binding(slot)
             self._interval_binding[slot.key] = (int(slot.x_interval.Index()), int(slot.y_interval.Index()))
 
     def _create_mandatory_slot_vars(self) -> None:
@@ -3068,6 +3071,7 @@ class CoordinateExactMasterDelegate:
                         "mode": int(slot.mode.Index()),
                         "order_key": int(slot.order_key.Index()),
                     }
+                    self._record_slot_footprint_binding(slot)
                     self._interval_binding[slot.key] = (
                         int(slot.x_interval.Index()),
                         int(slot.y_interval.Index()),
@@ -3412,6 +3416,7 @@ class CoordinateExactMasterDelegate:
                 "mode": int(slot.mode.Index()),
                 "family": int(slot.family.Index()),
             }
+            self._record_slot_footprint_binding(slot)
             self._interval_binding[slot.key] = (int(slot.x_interval.Index()), int(slot.y_interval.Index()))
 
             if not family_lits_by_int:
@@ -3465,7 +3470,13 @@ class CoordinateExactMasterDelegate:
         self._create_power_pole_slot_vars()
         self._add_coordinate_symmetry_breaking()
         if self._core_x_intervals:
-            self.model.AddNoOverlap2D(self._core_x_intervals, self._core_y_intervals)
+            core_no_overlap = self.model.AddNoOverlap2D(
+                self._core_x_intervals, self._core_y_intervals
+            )
+            # 记录 proto index 供 ghost overlay 的 dedup 精确定位——绝不通过
+            # proto 反射扫描（has_no_overlap_2d() 在部分 proto 形态下段错误，
+            # 2026-07-09 外审复现 + 本机坐实）。
+            self._core_no_overlap_constraint_index = int(core_no_overlap.Index())
         self._add_ghost_constraints()
         lazy_completion = self._lazy_power_completion_enabled()
         if (
@@ -3493,6 +3504,31 @@ class CoordinateExactMasterDelegate:
         self._add_search_guidance()
         self._finalize_build_stats()
 
+    # footprint 通道：build 路径创建的这组变量此前不进 core binding，clone 侧
+    # 恢复的 slot 上全为 None——_all_powered_slots() 会静默过滤掉受电槽、
+    # footprint 几何编码会报 missing channel（2026-07-09 外审 3/3 共识；与同日
+    # C1 原型 clone 丢杆 interval 同族的 build/clone 语义分叉）。修复：写入时
+    # 记录、恢复时重绑，两侧都是「有则带上」——无 footprint 的槽自然缺席。
+    _SLOT_FOOTPRINT_BINDING_ATTRS: Tuple[str, ...] = (
+        "footprint_dx_min",
+        "footprint_dy_min",
+        "footprint_width",
+        "footprint_height",
+        "footprint_x_start",
+        "footprint_y_start",
+        "footprint_x_end",
+        "footprint_y_end",
+    )
+
+    def _record_slot_footprint_binding(self, slot: CoordinateSlotSpec) -> None:
+        updates: Dict[str, int] = {}
+        for attr in self._SLOT_FOOTPRINT_BINDING_ATTRS:
+            var = getattr(slot, attr, None)
+            if var is None:
+                return
+            updates[attr] = int(var.Index())
+        self._slot_binding.setdefault(slot.key, {}).update(updates)
+
     def _bind_slot_specs(
         self,
         slot_specs: Iterable[CoordinateSlotSpec],
@@ -3512,6 +3548,13 @@ class CoordinateExactMasterDelegate:
                 slot.signature = self.model.GetIntVarFromProtoIndex(int(slot_binding["signature"]))
             if "family" in slot_binding:
                 slot.family = self.model.GetIntVarFromProtoIndex(int(slot_binding["family"]))
+            for attr in self._SLOT_FOOTPRINT_BINDING_ATTRS:
+                if attr in slot_binding:
+                    setattr(
+                        slot,
+                        attr,
+                        self.model.GetIntVarFromProtoIndex(int(slot_binding[attr])),
+                    )
             x_iv_idx, y_iv_idx = interval_binding[str(slot.key)]
             slot.x_interval = self.model.GetIntervalVarFromProtoIndex(int(x_iv_idx))
             slot.y_interval = self.model.GetIntervalVarFromProtoIndex(int(y_iv_idx))
@@ -3561,6 +3604,10 @@ class CoordinateExactMasterDelegate:
                 if slot.x_interval is not None and slot.y_interval is not None:
                     self._core_x_intervals.append(slot.x_interval)
                     self._core_y_intervals.append(slot.y_interval)
+        raw_core_no_overlap_idx = coordinate_binding.get("core_no_overlap_constraint_index")
+        self._core_no_overlap_constraint_index = (
+            int(raw_core_no_overlap_idx) if raw_core_no_overlap_idx is not None else None
+        )
 
     def export_core_binding(self) -> Dict[str, Any]:
         return {
@@ -3590,6 +3637,11 @@ class CoordinateExactMasterDelegate:
             "power_pole_family_count_vars": {
                 str(family_name): int(var.Index()) for family_name, var in self.power_pole_family_count_vars.items()
             },
+            "core_no_overlap_constraint_index": (
+                int(self._core_no_overlap_constraint_index)
+                if getattr(self, "_core_no_overlap_constraint_index", None) is not None
+                else None
+            ),
         }
 
     def _add_coordinate_symmetry_breaking(self) -> None:
@@ -3768,9 +3820,13 @@ class CoordinateExactMasterDelegate:
         self.model.AddExactlyOne(list(self.owner.u_vars.values()))
         combined_x_intervals = [*self._core_x_intervals, *self._ghost_x_intervals]
         combined_y_intervals = [*self._core_y_intervals, *self._ghost_y_intervals]
-        self.model.AddNoOverlap2D(combined_x_intervals, combined_y_intervals)
+        combined_no_overlap = self.model.AddNoOverlap2D(
+            combined_x_intervals, combined_y_intervals
+        )
         core_no_overlap_deduped = self._dedup_subsumed_core_no_overlap(
-            expected_combined_size=len(combined_x_intervals)
+            combined_constraint_index=int(combined_no_overlap.Index()),
+            combined_x_indices=[int(iv.Index()) for iv in combined_x_intervals],
+            combined_y_indices=[int(iv.Index()) for iv in combined_y_intervals],
         )
         self.owner.build_stats["ghost_rect"] = {
             "enabled": True,
@@ -3793,36 +3849,46 @@ class CoordinateExactMasterDelegate:
             "core_no_overlap_deduped": bool(core_no_overlap_deduped),
         }
 
-    def _dedup_subsumed_core_no_overlap(self, *, expected_combined_size: int) -> bool:
+    def _dedup_subsumed_core_no_overlap(
+        self,
+        *,
+        combined_constraint_index: int,
+        combined_x_indices: Sequence[int],
+        combined_y_indices: Sequence[int],
+    ) -> bool:
         """清空被 ghost 组合 no_overlap_2d 严格蕴含的 core-only 前身约束。
 
         build()/克隆两条构造路径都会在 overlay 之前放入 core-only
-        AddNoOverlap2D；上面的组合约束（core+ghost interval 全集）严格蕴含它，
-        留着 = 最重 propagator 双份传播（M6 诊断出土的纯冗余）。语义保证：
-        组合约束对全部 core interval 两两不重叠的强制 ⊇ core-only 约束。
+        AddNoOverlap2D；组合约束（core+ghost interval 全集）严格蕴含它时，
+        留着 = 最重 propagator 双份传播（M6 诊断出土的纯冗余）。
 
-        fail-closed 纪律：候选不是恰好一个（或组合约束形状对不上）就拒绝去重、
-        保留冗余——宁可慢，绝不误清语义约束。
+        定位与校验纪律（2026-07-09 外审修订）：
+        - 绝不做 proto 反射扫描——has_no_overlap_2d() 在部分 proto 形态下
+          段错误（外审最小复现 + 本机坐实）；改用 build 时记录的约束 index。
+        - 蕴含性逐 interval 校验：被清约束的 x/y interval 集必须是组合约束
+          的子集（同日 C1 原型事故：clone 路径丢杆 interval 后组合约束不再
+          蕴含 core-only 前身，按个数判断会误清、放开杆体重叠）。
+        任一校验不过 → 拒绝去重、保留冗余——宁可慢，绝不误清语义约束。
         """
-        proto = self.model.Proto()
-        combined_idx = len(proto.constraints) - 1
-        combined_constraint = proto.constraints[combined_idx]
-        # oneof 判别必须走 has_no_overlap_2d()——包装 proto 对未设置字段的
-        # 子消息访问会读到未定义内容（实测误判 interval 约束为 no_overlap_2d）。
-        if not combined_constraint.has_no_overlap_2d():
+        core_idx = getattr(self, "_core_no_overlap_constraint_index", None)
+        if core_idx is None or int(core_idx) == int(combined_constraint_index):
             return False
-        if len(combined_constraint.no_overlap_2d.x_intervals) != int(
-            expected_combined_size
+        proto = self.model.Proto()
+        if not (0 <= int(core_idx) < len(proto.constraints)):
+            return False
+        core_constraint = proto.constraints[int(core_idx)]
+        # index 是自己建约束时记录的，类型已知为 no_overlap_2d——直接读字段，
+        # 不调 has_*()。已被清空过（重复调用）时 interval 列表为空，拒绝重清。
+        core_x = [int(v) for v in core_constraint.no_overlap_2d.x_intervals]
+        core_y = [int(v) for v in core_constraint.no_overlap_2d.y_intervals]
+        if not core_x or len(core_x) != len(core_y):
+            return False
+        if not (
+            set(core_x) <= {int(v) for v in combined_x_indices}
+            and set(core_y) <= {int(v) for v in combined_y_indices}
         ):
             return False
-        stale = [
-            idx
-            for idx in range(combined_idx)
-            if proto.constraints[idx].has_no_overlap_2d()
-        ]
-        if len(stale) != 1:
-            return False
-        proto.constraints[stale[0]].clear_no_overlap_2d()
+        core_constraint.clear_no_overlap_2d()
         return True
 
     def _apply_ghost_anchor_power_capacity_screen(self) -> None:
