@@ -81,3 +81,6 @@ diff 语义审查、修复批独立审查、preflight「改核心文件建议 AI
 == 更新 2026-07-10（owner 补充）：审查环节按 CC 额度弹性调度 ==
 修订上一条「审查一律 codex」：**看当时 CC 额度**——额度多 → **opus 与 codex 双审并行**（暂行观察：若两者耗时差距过大——大概率 codex 更慢——则退为单走 opus）；额度少 → 单走 codex。owner 理由：主会话最后总会复核一遍，此环节「说重要也重要说不重要也不重要」，适合灵活变化。计划书=亲写、实现=codex 两条不变。
 
+
+### 审查阵容暂时升级 fable+codex(owner 2026-07-10 凌晨,CC 额度刷新期)
+owner:「现在wf可以随便派fable了(暂时),那审查就暂时换成fable+codex」——弹性制的「额度多」档从 opus+codex 升级为 **fable+codex**,自 1C 起生效;额度紧张时回落按原弹性制。同期实测背书:gpt-5.6(codex 侧新模型)双 effort 考试大胜——xhigh 抓到 opus/5.5/主会话三方全漏的交叉场景 BUG,ultra 再多抓跨文件交互 bug(nogood 断链)+边角输入(重复 pose_id),零误判;codex 侧默认 xhigh、手术核心批可上 ultra("max 推理+自动任务委托")。
