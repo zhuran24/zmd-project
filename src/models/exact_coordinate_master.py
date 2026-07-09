@@ -3766,9 +3766,11 @@ class CoordinateExactMasterDelegate:
         self._apply_ghost_anchor_signature_bucket_tightening()
         self._apply_ghost_anchor_residual_signature_bucket_tightening()
         self.model.AddExactlyOne(list(self.owner.u_vars.values()))
-        self.model.AddNoOverlap2D(
-            [*self._core_x_intervals, *self._ghost_x_intervals],
-            [*self._core_y_intervals, *self._ghost_y_intervals],
+        combined_x_intervals = [*self._core_x_intervals, *self._ghost_x_intervals]
+        combined_y_intervals = [*self._core_y_intervals, *self._ghost_y_intervals]
+        self.model.AddNoOverlap2D(combined_x_intervals, combined_y_intervals)
+        core_no_overlap_deduped = self._dedup_subsumed_core_no_overlap(
+            expected_combined_size=len(combined_x_intervals)
         )
         self.owner.build_stats["ghost_rect"] = {
             "enabled": True,
@@ -3788,7 +3790,40 @@ class CoordinateExactMasterDelegate:
             ),
             "anchor_filter_applied": anchor_filter is not None,
             "anchor_filter_skipped": int(anchor_filter_skipped),
+            "core_no_overlap_deduped": bool(core_no_overlap_deduped),
         }
+
+    def _dedup_subsumed_core_no_overlap(self, *, expected_combined_size: int) -> bool:
+        """清空被 ghost 组合 no_overlap_2d 严格蕴含的 core-only 前身约束。
+
+        build()/克隆两条构造路径都会在 overlay 之前放入 core-only
+        AddNoOverlap2D；上面的组合约束（core+ghost interval 全集）严格蕴含它，
+        留着 = 最重 propagator 双份传播（M6 诊断出土的纯冗余）。语义保证：
+        组合约束对全部 core interval 两两不重叠的强制 ⊇ core-only 约束。
+
+        fail-closed 纪律：候选不是恰好一个（或组合约束形状对不上）就拒绝去重、
+        保留冗余——宁可慢，绝不误清语义约束。
+        """
+        proto = self.model.Proto()
+        combined_idx = len(proto.constraints) - 1
+        combined_constraint = proto.constraints[combined_idx]
+        # oneof 判别必须走 has_no_overlap_2d()——包装 proto 对未设置字段的
+        # 子消息访问会读到未定义内容（实测误判 interval 约束为 no_overlap_2d）。
+        if not combined_constraint.has_no_overlap_2d():
+            return False
+        if len(combined_constraint.no_overlap_2d.x_intervals) != int(
+            expected_combined_size
+        ):
+            return False
+        stale = [
+            idx
+            for idx in range(combined_idx)
+            if proto.constraints[idx].has_no_overlap_2d()
+        ]
+        if len(stale) != 1:
+            return False
+        proto.constraints[stale[0]].clear_no_overlap_2d()
+        return True
 
     def _apply_ghost_anchor_power_capacity_screen(self) -> None:
         family_bound_formulation = resolve_ghost_conditioned_family_bound_formulation()
