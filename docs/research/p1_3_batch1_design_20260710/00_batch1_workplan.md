@@ -202,6 +202,7 @@
 ## 六、风险与回滚(旧 witness 编码是否保留为 env 对照及其白名单代价;w6 内存条款怎么进生产配置)
 
 1. 旧 witness 编码是否保留：
+   - **owner 已拍板（2026-07-10）：不保留**——certified 层不保留 runtime env 对照/回退；旧 witness 函数本体可暂留代码中仅供等价性测试直接调用（无 env 开关、certified 生产路径不可达），1D 不为它建任何 EXACT_* 面。以下为拍板前的推荐论证，留作依据：
    - 推荐 certified 默认不保留 runtime env 回退。理由：旧 witness 连“钉入已知可行布局再搜杆”都 `UNKNOWN @600s`（`README.md:51-57`），作为 production fallback 实用价值低；保留 env 会扩大 EXACT_* allowlist/canonical/test/reseal 面。
    - 若保留旧 witness 作为研究对照，只能是 certified unsafe 或明确 canonical-locked 的有限值。任何 `EXACT_POWER_COVERAGE_*` env 让 certified 切换语义，都必须进入 `_CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS`、known env、unsafe/canonical lock、tests（`src/search/benders_loop.py:985-1021`, `1328-1420`）。
    - 回滚优先级：把 C1 model surgery 单独提交，出现性能/内存/semantic regression 时 revert 该提交与 env pins；解级 dominance normalization 是 representation-independent，可独立保留，前提是 proof obligation 已通过。
@@ -246,7 +247,7 @@
    - 行号锚点：extract path `src/search/benders_loop.py:5180-5189`，return path `5375-5383`/`7000-7017`，outer sink `src/search/outer_search.py:2470-2493`/`2673-2741`。
 
 4. 批 1D：canonical env / attach gate / F5 TCB reseal
-   - 内容：更新 C1 certified 默认 env 面、EXACT_* allowlist/canonical tests、attach regression tests、F5 adapter TCB classification。
+   - 内容：更新 C1 certified 默认 env 面、EXACT_* allowlist/canonical tests、attach regression tests、F5 adapter TCB classification。**owner 拍板（2026-07-10）旧 witness 不留**：不为旧 witness 新建任何 EXACT_* 对照 env；`_CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS` 中 witness-only 锁按 C1 默认化后的实况收缩/移除。
    - 验收：unknown `EXACT_*` fail-closed；noncanonical witness env 拒绝；F1/F5/F6/F7 attach 全部经过 validated gate；F5 adapter classification/source pins 更新。
    - 行号锚点：canonical env `src/search/benders_loop.py:985-1021`，env guard `1328-1420`，attach gate `7734-7914`，F5 adapter floor `scripts/check_p1_2_proof_obligations.py:12815`。
 

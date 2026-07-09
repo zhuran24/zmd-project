@@ -48,7 +48,8 @@ bypass 修复+dedup 去 proto 反射+footprint clone 绑定，`c7cd6a0`）；批
 （C1 certified 化）owner 拍板开工：任务书 1A-1F
 （`docs/research/p1_3_batch1_design_20260710/00_batch1_workplan.md`）,
 1A 骨架已落地（开关默认关、双审 3 BUG 拦截、慢 lane 绿，`b755e80`）,
-1B 编码语义替换待开工;旧 witness 保留与否挂 owner（仅阻塞 1D）;
+1B 编码语义替换开工中;旧 witness 编码 owner 已拍板不留
+（2026-07-10：certified 层不保留 runtime env 对照/回退，1D 无阻塞）;
 M5 A/B 战场随首解解锁,挂批 1 完成后**;
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
