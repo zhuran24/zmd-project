@@ -84,3 +84,7 @@ diff 语义审查、修复批独立审查、preflight「改核心文件建议 AI
 
 ### 审查阵容暂时升级 fable+codex(owner 2026-07-10 凌晨,CC 额度刷新期)
 owner:「现在wf可以随便派fable了(暂时),那审查就暂时换成fable+codex」——弹性制的「额度多」档从 opus+codex 升级为 **fable+codex**,自 1C 起生效;额度紧张时回落按原弹性制。同期实测背书:gpt-5.6(codex 侧新模型)双 effort 考试大胜——xhigh 抓到 opus/5.5/主会话三方全漏的交叉场景 BUG,ultra 再多抓跨文件交互 bug(nogood 断链)+边角输入(重复 pose_id),零误判;codex 侧默认 xhigh、手术核心批可上 ultra("max 推理+自动任务委托")。
+
+### fable+codex 首战战绩 + GPT-5.6 Pro 复审代差实证(2026-07-10 深夜)
+**1C 双审首战(fable+codex)**:两家结论冲突(fable PASS_WITH_NOTES/codex BLOCK),终审裁决 codex 两 BLOCK 全实锤(缺杆模板 fail-closed 漏洞+调用链异常屏障,均附最小复现);fable 零 BLOCK 但侦察极扎实(5 NOTE 全带实验数据:中间层 stub 真剪实验/pinned 工件 4761 pose 统计/checker 静默退 1 定位),其一次性实验被固化为 T14 回归。**互补形态定型:codex 管"往死里挑",fable 管"把现场摸透"**。
+**GPT-5.6 Pro vs 5.5 Pro 复审对比(cut framework 同题材同快照)**:5.6 抓到 5.5 的同一 P0(integrity bypass,已被 c7cd6a0 拦)+**两个 5.5 漏掉的可复现问题**(ghost 轴反置 BLOCKER/scope 自删,当前 HEAD 仍复现,修复批规格书 ce6f703 已备)+3 份 RFC+4 补丁,交付形态=完整工程包(SHA256/evidence/repro 脚本/patched 测试日志)。结论:5.6 系对 5.5 系是审查代差,强项=测试盲区型 bug(square 掩盖非方形/组合负例失真),与本地 codex 5.6 在 1B/1C 的表现同向。
