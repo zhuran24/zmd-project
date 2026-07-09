@@ -62,7 +62,7 @@ M4 四族全通电、telemetry（attached_by_family/预算闸/per-family last_cu
 
 ## 增补后的一句话结论（2026-07-09 凌晨经三镜头对抗复核修订）
 
-**「战场打不开」在跨 OS 层面进一步坐实，但「穷举」不成立**：同一台机器的 Linux 侧排除了 Windows 崩溃干扰（组合不毒、真多核并行确认），在 1800-7200s × {automatic 多核、3 随机种子、重建布局直喂、修复上限放宽} 下 6×6 master 首解不可达。对抗复核出土**五族从未试过的白名单旋钮**：no_overlap_2d 传播器四件套（`EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC/_TIMETABLING/_TRY_EDGE/_BOOLEAN_RELATIONS_LIMIT`——模型正是 no_overlap_2d-heavy，源码自述 packing 提速 10-20%，最对症）、`EXACT_MASTER_IGNORE_LP_SUBSOLVERS`、`EXACT_MASTER_LINEARIZATION_LEVEL`、`EXACT_SUBPROBLEM_PARAMS`（通用 CP-SAT 参数注入口）、PORTFOLIO 分支值——已组 **Q3 队列**实测中。Q3 全负后剩余路径才收敛为【外部更强算力（注意：原选项 1 的 ≥24h 多 ghost campaign 轴同样未测）】与【可行性瓶颈诊断（病因未定）】。
+**「战场打不开」在跨 OS 层面进一步坐实，但「穷举」不成立**：同一台机器的 Linux 侧排除了 Windows 崩溃干扰（组合不毒、真多核并行确认），在 1800-7200s × {automatic 多核、3 随机种子、重建布局直喂、修复上限放宽} 下 6×6 master 首解不可达。对抗复核出土**五族从未试过的白名单旋钮**：no_overlap_2d 传播器四件套（`EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC/_TIMETABLING/_TRY_EDGE/_BOOLEAN_RELATIONS_LIMIT`——模型正是 no_overlap_2d-heavy，源码自述 packing 提速 10-20%，最对症）、`EXACT_MASTER_IGNORE_LP_SUBSOLVERS`、`EXACT_MASTER_LINEARIZATION_LEVEL`、`EXACT_SUBPROBLEM_PARAMS`（通用 CP-SAT 参数注入口）、PORTFOLIO 分支值——经 **Q3-Q5 三波队列实测（07-09 04:37-08:06）**：可测得的全部为负（no_overlap_2d 套装真生效但轨迹几乎不变、无 LP、portfolio、linearization=2、组合拳、冷启动——后者以 19.35M branches 全场最高吞吐证明 hint 反而拖慢探索）；三项因本机硅脂期原生层不稳**未测得**（linearization=0 遇校验竞态 gremlin、ghost_first/after_counts 两档三跑三死、`EXACT_SUBPROBLEM_PARAMS` 未及）。**Linux 侧最终 14 个干净 cell 全 UNKNOWN**。剩余路径收敛为【外部更强算力（含原选项 1 未测的 ≥24h 多 ghost campaign 轴）】与【可行性瓶颈诊断（病因未定）】——已停止本机新发射，待换硅脂。
 
 ## Linux 新证据（细节见 notes；标 ▲ 的经对抗复核修订）
 

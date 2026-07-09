@@ -41,3 +41,8 @@ PRESOLVE_PROBE_ALL_DONE 2026-07-08T13:00:24.8892291+08:00
 === g6x6_q4b_portfolio_retry done exit=0 2026-07-09T06:57:29+08:00 ===
 === g6x6_q4c_ghostfirst_w12 done exit=139 2026-07-09T06:58:03+08:00 ===
 === Q4_QUEUE_DONE 2026-07-09T06:58:03+08:00 ===
+=== g6x6_q5a_lin0 done exit=1 2026-07-09T07:04:27+08:00 ===
+=== g6x6_q5b_lin2 done exit=0 2026-07-09T07:35:25+08:00 ===
+=== g6x6_q5c_aftercounts done exit=139 2026-07-09T07:35:47+08:00 ===
+=== g6x6_q5d_coldstart done exit=0 2026-07-09T08:06:42+08:00 ===
+=== Q5_QUEUE_DONE 2026-07-09T08:06:42+08:00 ===

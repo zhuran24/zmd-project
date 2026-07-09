@@ -129,3 +129,13 @@
 - **q4b（portfolio，清缓存复跑）**：干净跑满，UNKNOWN（4.90M/809）——q3c 的段错误亦缓存鬼。PORTFOLIO 分支 = 有效负结果。
 - **q4c（ghost_first w12，清缓存）**：34s SIGSEGV（coredump 在案，死于 import/session 构建段）。**ghost_first 档三跑三死死法各异**（q2b 缓存鬼 TypeError@41s / q3z OOM@10min / q4c 段错误@34s）——本机不可测，关停此线；硅脂期热应力下的硬件级随机错误无法排除（机器同期有 95-100°C 历史）。
 - 夜战 Linux 侧有效 cell 总账：12 个干净数据点全 UNKNOWN（p4cfg/v600b/7200s/s7/s13/s42/q2a/q2c/q3a/q3d/q4a/q4b），配置维度覆盖 presolve×branching×hint×LP×传播器×种子×预算(0.5-2h)。
+
+## Q5 终扫（07:02-08:06）与停机决定
+
+- **q5b（linearization=2）**：干净跑满 UNKNOWN（4.90M/763）——有效负结果。
+- **q5d（冷启动，无 warm-start hint）**：干净跑满 UNKNOWN，但 branches 19.35M = 带 hint 各发的 ~4 倍吞吐——**hint 在拖慢探索**（solver 在 hint 邻域空耗），呼应复核的 hint 密度观察；对「hint 增密」改进面是重要参考：增密方向若错，可能更糟。
+- **q5a（linearization=0）**：90s 死于 close-kernel 校验 exit 1 拒绝——树完好（独立复跑 checker 全绿），又一晨间 gremlin（疑清缓存后重编译与校验子进程竞态）。**未测得**。
+- **q5c（after_counts 档）**：22s 段错误，崩溃栈 = 解释器级内存损坏（PyObject_GetOptionalAttr + 栈帧 0xfffffffffffffffc）。**第二个非默认 profile 早期原生崩**——与 ghost_first 合并为「非默认 profile 本机不可测」。
+- **停机决定**：gremlin 全部集中在进程启动段、跑起来的 solve 零中途错误 → 14 个干净 cell 的数据可信；但硅脂期本机原生层点火不稳，**停止一切新发射直到换硅脂**。剩余未测：linearization=0、after_counts/ghost_first 两档、EXACT_SUBPROBLEM_PARAMS 注入口——verdict 如实标注，不称穷举。
+
+**Linux 侧最终总账：14 个干净 cell 全 UNKNOWN**（p4cfg/v600b/7200s/s7/s13/s42/q2a/q2c/q3a/q3d/q4a/q4b/q5b/q5d），跨 presolve×分支×种子×hint 三态×LP×传播器×linearization×预算轴。

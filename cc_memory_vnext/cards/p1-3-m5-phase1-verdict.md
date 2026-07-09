@@ -83,3 +83,11 @@ M5 第一阶段(可行性侦察)2026-07-08 收口。核心结论与四层税见 
 2. `EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS=64` 使 ghost-aware warm-start 对一切现实 ghost 失效;its 验证 profile 无旋钮(空 profile=CP-SAT 默认),唯二 env = VALIDATION_SECONDS/MAX_ANCHORS。
 3. `MASTER_IGNORE_SUBSOLVERS_FOR_MAX_LEX` 含 feasibility_pump/violation_ls——对首解反向优化;复核时与 Windows OR-Tools 稳定性问题分开评估。
 4. 生产 wrapper 不设任何以上 env——生产靠 EXACT_PARALLEL_PROCESSES 多 ghost 并行 + >=24h 硬磨。
+
+== Linux 侧终章（2026-07-09，cachy 本机）==
+
+- **14 个干净 cell 全 UNKNOWN**（0.5-2h × presolve/分支/种子/hint三态/LP/no_overlap_2d传播器/linearization/冷启动）——跨 OS 坐实「本机战场打不开」；Windows 段错误组合 Linux 不崩（构建特有）、automatic 真多核（dtime/wall≈5.2）。
+- **对抗复核（3 opus 镜头工作流）三修正**：种子地形均匀（812/838/818，方差赌注错比作废）；q2a「布局不可行」推断撤回（hint 密度 798/1.55M<0.06% 更简单，且 q5d 冷启动 19.35M branches 全场最高——hint 在拖慢探索）；q2b「潜伏 bug」误诊撤销（假崩）。
+- **缓存鬼谱系**：热重启与 OOM-SIGKILL 都撕裂写入中 .pyc，伪装成 checker SIGSEGV/KeyError/builtins 级 TypeError/段错误——队列 SOP = 每 cell 前清缓存；启动段 gremlin 不污染跑满 cell 的数据。
+- **未测三项**（硅脂期原生层不稳，如实标注非穷举）：linearization=0、ghost_first/after_counts 两档（三跑三死）、EXACT_SUBPROBLEM_PARAMS。
+- 推荐组合 3+4+5 不变；新增候选改进面：hint 机制增密（慎，方向错更糟）、≥24h 多 ghost campaign 轴（生产 wrapper 原生跑法，owner 拍板）。材料：verdict Linux 增补章 + notes Q2-Q5 各节。
