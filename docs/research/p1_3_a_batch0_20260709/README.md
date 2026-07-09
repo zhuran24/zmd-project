@@ -55,3 +55,12 @@ no-op 但仍必须在链上）+ 内存条款（worker 上限或 RSS 监控）+ �
 （钉布局搜杆）都溺死——M6 病灶的又一佐证；交叉验证通道因此不可用，首解的语义背书以独立
 覆盖复验（`03_b0_4r_independent_verify.py`，终端验证器同语义）为准。复验脚本本身已列入
 GPT Pro 外审对象。
+
+## 附：b0_6 C1 w24 硬帽实验（w24 承诺兑现，2026-07-09 深夜）
+
+C1 自由 w24 + systemd-run cgroup MemoryMax=42G：**9min03s 被 cgroup OOM kill**（journal:
+anon-rss 43.9GB，`Failed with result 'oom-kill'`，系统无恙）。RSS 曲线
+（`b0_6_free_c1_w24.rss.log`）揭示死法：稳态 11-16.6GB 九分钟 → **3 秒内 +26GB 断崖尖峰**。
+死亡时刻与 b0_4r（w6）的出解时刻（541s≈9min）几乎重合——嫌疑为 CP-SAT 接近解/阶段切换
+时的大分配被 worker 数放大。批 1 内存条款定稿依据：**C1 内存危险是事件尖峰不是稳态**，
+w24 不可用、w12 两连死、w6 安全（含出解全程）；worker 上探需以 cgroup 硬帽为标配。
