@@ -3176,6 +3176,267 @@ def evaluate_exact_candidate_pre_master_precheck(
     }
 
 
+def normalize_certified_power_pole_dominance(
+    solution: Mapping[str, Mapping[str, Any]],
+    *,
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    templates: Mapping[str, Mapping[str, Any]],
+    grid_w: int,
+    grid_h: int,
+    required_power_pole_count: int,
+) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+    """Prune dominance-redundant optional power poles, failing closed on drift."""
+
+    summary: Dict[str, Any] = {
+        "verdict": "power_pole_solution_invalid",
+        "pole_count_before": 0,
+        "pole_count_after": 0,
+        "pruned_pole_count": 0,
+        "prune_iterations": 0,
+        "powered_instance_count": 0,
+        "required_power_pole_count": 0,
+        "mandatory_pole_count": 0,
+    }
+
+    def _fail(reason: str) -> Tuple[None, Dict[str, Any]]:
+        summary["verdict"] = str(reason)
+        return None, summary
+
+    def _strict_cells(raw_cells: Any) -> Optional[Set[Tuple[int, int]]]:
+        if not isinstance(raw_cells, list):
+            return None
+        cells: Set[Tuple[int, int]] = set()
+        for raw_cell in raw_cells:
+            if (
+                isinstance(raw_cell, (str, bytes))
+                or not isinstance(raw_cell, Sequence)
+                or len(raw_cell) != 2
+            ):
+                return None
+            x, y = raw_cell
+            if (
+                isinstance(x, bool)
+                or not isinstance(x, int)
+                or isinstance(y, bool)
+                or not isinstance(y, int)
+            ):
+                return None
+            cells.add((int(x), int(y)))
+        return cells
+
+    if (
+        isinstance(grid_w, bool)
+        or not isinstance(grid_w, int)
+        or int(grid_w) <= 0
+        or isinstance(grid_h, bool)
+        or not isinstance(grid_h, int)
+        or int(grid_h) <= 0
+    ):
+        return _fail("power_pole_grid_invalid")
+    if (
+        isinstance(required_power_pole_count, bool)
+        or not isinstance(required_power_pole_count, int)
+        or int(required_power_pole_count) < 0
+    ):
+        return _fail("required_power_pole_count_invalid")
+    summary["required_power_pole_count"] = int(required_power_pole_count)
+    if not isinstance(solution, Mapping):
+        return _fail("power_pole_solution_invalid")
+
+    normalized: Dict[str, Any] = {}
+    pole_coverage: Dict[str, Set[Tuple[int, int]]] = {}
+    powered_occupied: Dict[str, Set[Tuple[int, int]]] = {}
+    candidate_poles: Set[str] = set()
+    mandatory_poles: Set[str] = set()
+    pose_optional_poles: Set[str] = set()
+
+    try:
+        for instance_id, raw_entry in solution.items():
+            if not isinstance(instance_id, str) or not isinstance(raw_entry, Mapping):
+                return _fail("power_pole_solution_invalid")
+            entry = dict(raw_entry)
+            normalized[instance_id] = entry
+            facility_type = entry.get("facility_type")
+            if not isinstance(facility_type, str) or not facility_type:
+                return _fail("power_pole_solution_invalid")
+
+            is_power_pole = facility_type == "power_pole"
+            template = templates.get(facility_type)
+            if not isinstance(template, Mapping):
+                if (
+                    not is_power_pole
+                    and instance_id == "ghost_pick"
+                    and facility_type == "ghost_rect"
+                ):
+                    continue
+                return _fail(
+                    "power_pole_pose_invalid"
+                    if is_power_pole
+                    else "power_pole_solution_invalid"
+                )
+            is_powered = (
+                not is_power_pole
+                and isinstance(template, Mapping)
+                and bool(template.get("needs_power", False))
+            )
+            if not is_power_pole and not is_powered:
+                continue
+
+            pose_idx = entry.get("pose_idx")
+            if (
+                isinstance(pose_idx, bool)
+                or not isinstance(pose_idx, int)
+                or int(pose_idx) < 0
+            ):
+                return _fail(
+                    "power_pole_pose_invalid"
+                    if is_power_pole
+                    else "powered_instance_pose_invalid"
+                )
+            pool = facility_pools.get(facility_type)
+            if (
+                isinstance(pool, (str, bytes))
+                or not isinstance(pool, Sequence)
+                or int(pose_idx) >= len(pool)
+            ):
+                return _fail(
+                    "power_pole_pose_invalid"
+                    if is_power_pole
+                    else "powered_instance_pose_invalid"
+                )
+            pose = pool[int(pose_idx)]
+            if not isinstance(pose, Mapping) or entry.get("pose_id") != pose.get(
+                "pose_id"
+            ):
+                return _fail(
+                    "power_pole_pose_invalid"
+                    if is_power_pole
+                    else "powered_instance_pose_invalid"
+                )
+
+            if is_power_pole:
+                coverage_cells = _strict_cells(pose.get("power_coverage_cells"))
+                if coverage_cells is None:
+                    return _fail("power_pole_pose_invalid")
+                pole_coverage[instance_id] = {
+                    (x, y)
+                    for x, y in coverage_cells
+                    if 0 <= x < int(grid_w) and 0 <= y < int(grid_h)
+                }
+                if entry.get("is_mandatory") is True or entry.get(
+                    "bound_type"
+                ) == "exact":
+                    mandatory_poles.add(instance_id)
+                elif (
+                    entry.get("is_mandatory") is not True
+                    and entry.get("bound_type") == "exact_pose_optional"
+                ):
+                    candidate_poles.add(instance_id)
+                if entry.get("bound_type") == "exact_pose_optional":
+                    pose_optional_poles.add(instance_id)
+            else:
+                occupied_cells = _strict_cells(pose.get("occupied_cells"))
+                if not occupied_cells:
+                    return _fail("powered_instance_pose_invalid")
+                powered_occupied[instance_id] = occupied_cells
+    except Exception:
+        return _fail("power_pole_solution_invalid")
+
+    summary.update(
+        {
+            "pole_count_before": len(pole_coverage),
+            "pole_count_after": len(pole_coverage),
+            "powered_instance_count": len(powered_occupied),
+            "mandatory_pole_count": len(mandatory_poles),
+        }
+    )
+    remaining_poles = set(pole_coverage)
+
+    def _coverers_by_powered_instance() -> Dict[str, Set[str]]:
+        return {
+            powered_instance_id: {
+                pole_instance_id
+                for pole_instance_id in remaining_poles
+                if pole_coverage[pole_instance_id].intersection(occupied_cells)
+            }
+            for powered_instance_id, occupied_cells in powered_occupied.items()
+        }
+
+    if int(required_power_pole_count) == 0:
+        while True:
+            coverers = _coverers_by_powered_instance()
+            removable_pole = next(
+                (
+                    pole_instance_id
+                    for pole_instance_id in sorted(
+                        candidate_poles.intersection(remaining_poles)
+                    )
+                    if not any(
+                        powered_coverers == {pole_instance_id}
+                        for powered_coverers in coverers.values()
+                    )
+                ),
+                None,
+            )
+            if removable_pole is None:
+                break
+            remaining_poles.remove(removable_pole)
+            normalized.pop(removable_pole, None)
+            summary["prune_iterations"] = int(summary["prune_iterations"]) + 1
+
+    coverers = _coverers_by_powered_instance()
+    summary["pole_count_after"] = len(remaining_poles)
+    summary["pruned_pole_count"] = (
+        int(summary["pole_count_before"]) - int(summary["pole_count_after"])
+    )
+
+    reverify_failed = False
+    if any(not powered_coverers for powered_coverers in coverers.values()):
+        reverify_failed = True
+    if len(remaining_poles) > len(powered_occupied):
+        reverify_failed = True
+    for pole_instance_id in remaining_poles:
+        covered_powered_instances = {
+            powered_instance_id
+            for powered_instance_id, powered_coverers in coverers.items()
+            if pole_instance_id in powered_coverers
+        }
+        if not covered_powered_instances or not any(
+            coverers[powered_instance_id] == {pole_instance_id}
+            for powered_instance_id in covered_powered_instances
+        ):
+            reverify_failed = True
+            break
+    if (
+        len(remaining_poles.intersection(pose_optional_poles))
+        < int(required_power_pole_count)
+    ):
+        reverify_failed = True
+
+    input_non_poles = {
+        instance_id: dict(entry)
+        for instance_id, entry in solution.items()
+        if entry.get("facility_type") != "power_pole"
+    }
+    output_non_poles = {
+        instance_id: dict(entry)
+        for instance_id, entry in normalized.items()
+        if entry.get("facility_type") != "power_pole"
+    }
+    if input_non_poles != output_non_poles:
+        reverify_failed = True
+
+    if reverify_failed:
+        if int(required_power_pole_count) > 0:
+            return _fail("required_power_pole_reverify_failed")
+        return _fail("power_pole_dominance_reverify_failed")
+
+    summary["verdict"] = (
+        "normalized" if int(summary["pruned_pole_count"]) > 0 else "noop"
+    )
+    return normalized, summary
+
+
 class LBBDController:
     """Orchestrator connecting the master model to exploratory or exact subproblems."""
 
@@ -3392,6 +3653,49 @@ class LBBDController:
             self._heartbeat_callback(payload)
         except Exception:
             return
+
+    def _normalize_certified_solution_power_poles(
+        self,
+        *,
+        solution: Mapping[str, Mapping[str, Any]],
+        iteration: int,
+    ) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+        raw_required_counts = getattr(
+            self.master,
+            "_exact_required_pose_optional_counts",
+            None,
+        )
+        required_source_missing = not isinstance(raw_required_counts, Mapping)
+        required_counts = (
+            raw_required_counts if isinstance(raw_required_counts, Mapping) else {}
+        )
+        required_power_pole_count = required_counts.get("power_pole", 0)
+        self._emit_heartbeat(
+            stage="power_pole_dominance_normalization",
+            event="start",
+            iteration=iteration,
+            extra={
+                "solution_instance_count": len(solution),
+                "required_power_pole_count": required_power_pole_count,
+                "required_source_missing": bool(required_source_missing),
+            },
+        )
+        normalized, summary = normalize_certified_power_pole_dominance(
+            solution,
+            facility_pools=self.master.facility_pools,
+            templates=self.master.templates,
+            grid_w=self.master.grid_w,
+            grid_h=self.master.grid_h,
+            required_power_pole_count=required_power_pole_count,
+        )
+        summary["required_source_missing"] = bool(required_source_missing)
+        self._emit_heartbeat(
+            stage="power_pole_dominance_normalization",
+            event="complete",
+            iteration=iteration,
+            extra=summary,
+        )
+        return normalized, summary
 
     def _exact_warm_start_summary(self) -> Dict[str, Any]:
         summary: Dict[str, Any] = {
@@ -6998,6 +7302,40 @@ class LBBDController:
             routing_status = routing_model.solve(time_limit=self.routing_seconds)
 
             if routing_status == "FEASIBLE":
+                try:
+                    normalized, prune_summary = (
+                        self._normalize_certified_solution_power_poles(
+                            solution=solution,
+                            iteration=iteration,
+                        )
+                    )
+                except Exception as exc:
+                    normalized = None
+                    prune_summary = {
+                        "verdict": "power_pole_normalization_exception",
+                        "exception_type": type(exc).__name__,
+                    }
+                if normalized is None:
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "FEASIBLE",
+                        "routing_status": "FEASIBLE",
+                        "stage": "power_pole_dominance_normalization",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_summary": binding_model.extract_conflict_summary(),
+                        "routing_summary": dict(routing_model.build_stats),
+                        "power_pole_dominance": prune_summary,
+                        "master_follow_up": "fail_closed_unknown",
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._routing_shrink_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
                 self.last_proof_summary = {
                     "mode": "certified_exact",
                     "benders_iterations": iteration,
@@ -7009,12 +7347,13 @@ class LBBDController:
                     "routing_attempts": routing_attempts,
                     "binding_summary": binding_model.extract_conflict_summary(),
                     "routing_summary": dict(routing_model.build_stats),
+                    "power_pole_dominance": prune_summary,
                     **self._exact_warm_start_summary(),
                     **self._subproblem_reuse_summary(),
                     **self._routing_shrink_summary(),
                     **self._exact_cut_ladder_summary(),
                 }
-                return RUN_STATUS_CERTIFIED, solution
+                return RUN_STATUS_CERTIFIED, normalized
 
             if routing_status == "TIMEOUT":
                 self.last_proof_summary = {
