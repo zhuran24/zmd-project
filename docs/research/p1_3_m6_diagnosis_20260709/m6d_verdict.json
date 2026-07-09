@@ -1,0 +1,7 @@
+{
+ "status_code": 4,
+ "status": "OPTIMAL",
+ "wall": 110.3,
+ "branches": 388442,
+ "conflicts": 2067
+}

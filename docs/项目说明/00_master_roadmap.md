@@ -33,11 +33,13 @@ F5 全链——BLOCK-2 封口+canonical_relabel+query_liftable 合同+
 binding_empty_domain_v1 真 adapter+P-HOM 结构门）+cut 预算闸（2000 满即停发）；
 F2/F3/F9/F4 保持 fail-closed（终态理由见 `p1-3-m4-ladder-landed` 卡，非遗漏）；
 close-kernel 现 65 sinks；**升格三前置中阶梯与等价回归已齐，仅剩 owner 显式
-决定**；M5 第一阶段（可行性实测）2026-07-08 收口——本机穷举配置无法产出首个
-master 候选（四层性能税诊断 + 6×6 历史战场出土，verdict 见
-`docs/research/p1_3_m5_convergence_20260708/m5_phase1_verdict.md` 与
-`p1-3-m5-phase1-verdict` 卡），**A/B 收敛实测 BLOCKED_ON_COMPUTE、资源方案挂
-owner 拍板（推荐 3+4：按实测收口 + 税诊断反哺生产，A/B 挂 Linux 生产机窗口）**；
+决定**；M5 第一阶段（可行性实测）2026-07-08 收口（本机+Linux 同硬件全配置无首解，
+`p1-3-m5-phase1-verdict` 卡）；**M6 诊断课题（owner 2026-07-09 立项）已收口——
+首解之墙 = 供电覆盖约束及其 witness 编码（八实验隔离、单一主墙，终报
+`docs/research/p1_3_m6_diagnosis_20260709/07_final_diagnosis.md` 与
+`p1-3-m6-power-encoding-diagnosis` 卡）；修复方向挂 owner 拍板：A=供电编码手术
+（reseal 量级，B1 34× + 隔离证据双背书）/ B=power-aware 构造启发式（不碰 sealed，
+验收管线已打通）/ C=顺手修冗余双 no_overlap_2d；M5 A/B 挂 A/B 任一落地后**；
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
 设计稿 v2(含 v3 终审) 完成；证书侧（P3.0c 轴 B）路线图定型、待开工。

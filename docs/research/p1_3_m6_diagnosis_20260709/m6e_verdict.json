@@ -1,0 +1,17 @@
+{
+ "stage1": {
+  "status": "OPTIMAL",
+  "wall": 110.2,
+  "n_instances": 383,
+  "hint_len": 266,
+  "anchor_idx": null
+ },
+ "stage2": {
+  "status": "INFEASIBLE",
+  "accepted": false,
+  "reason": "infeasible",
+  "wall": 332.7,
+  "forced": 798,
+  "branches": 2914549
+ }
+}

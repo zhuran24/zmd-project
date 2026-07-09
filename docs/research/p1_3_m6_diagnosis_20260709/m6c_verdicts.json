@@ -1,0 +1,35 @@
+[
+ {
+  "anchor_xy": [
+   0,
+   0
+  ],
+  "status_code": 3,
+  "status": "INFEASIBLE",
+  "wall": 186.6,
+  "branches": 7178808,
+  "conflicts": 3040
+ },
+ {
+  "anchor_xy": [
+   2,
+   2
+  ],
+  "status_code": 0,
+  "status": "UNKNOWN",
+  "wall": 605.1,
+  "branches": 7187776,
+  "conflicts": 3057
+ },
+ {
+  "anchor_xy": [
+   32,
+   32
+  ],
+  "status_code": 0,
+  "status": "UNKNOWN",
+  "wall": 605.2,
+  "branches": 7258150,
+  "conflicts": 7464
+ }
+]
