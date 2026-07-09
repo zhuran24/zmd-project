@@ -36,14 +36,14 @@ SUPERVISOR_DOMAIN_AUTHORITY = "pr2_l0_true_supervisor_domain_v1"
 SUPERVISOR_DOMAIN_SCHEMA_VERSION = 1
 DEPENDENCY_FLOOR_MANIFEST_REL = "data/proof_obligations/pr2_dependency_floor_manifest.json"
 DEPENDENCY_FLOOR_ROOT_SENTINEL = "PYTHON_SYSCONFIG_PURELIB"
-# Deploy-pending provenance note: these pinned manifest bytes are a dev/CI
-# placeholder from an audit Linux environment, not the production-reviewed
-# canonical floor. Before production deployment, regenerate with
-# scripts/generate_pr2_dependency_floor_manifest.py under the CachyOS Python 3.13
-# venv, review the bytes, then re-pin this SHA/size pair. The runtime byte-pin
-# and fail-closed behavior below are host-independent soundness hardening.
-DEPENDENCY_FLOOR_MANIFEST_SHA256 = "41008dbb0bf03e1b413c493a96f5a5f47719721cc33112b353ed7c6bea240b90"
-DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES = 574082
+# Provenance: regenerated 2026-07-10 with
+# scripts/generate_pr2_dependency_floor_manifest.py under the CachyOS
+# Python 3.13 venv (uv-installed; the previous pin was a pip-era dev/CI
+# placeholder whose dist-info metadata never matched this host). 3620 files,
+# 15 allowed top-level packages. The runtime byte-pin and fail-closed
+# behavior below are host-independent soundness hardening.
+DEPENDENCY_FLOOR_MANIFEST_SHA256 = "a0fe4bdc520cf8aa4b142eb23cf5dc1933c061d973df0be9f3fe1cca1adc2a74"
+DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES = 567602
 CANDIDATE_PROPOSED_STATUS = "CANDIDATE_PROPOSED"
 TERMINAL_CERTIFIED_REASON = "search_exhausted_all_candidates"
 CAMPAIGN_INSTANCE_ID_KEY = "campaign_instance_id"

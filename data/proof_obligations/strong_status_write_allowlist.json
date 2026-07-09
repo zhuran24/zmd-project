@@ -793,7 +793,7 @@
       "keys": [
         "final_result"
       ],
-      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
+      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
@@ -805,7 +805,7 @@
       "keys": [
         "final_status"
       ],
-      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
+      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
@@ -817,7 +817,7 @@
       "keys": [
         "last_stop_reason"
       ],
-      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
+      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
@@ -829,7 +829,7 @@
       "keys": [
         "terminal_frontier_evidence"
       ],
-      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
+      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
@@ -841,7 +841,7 @@
       "keys": [
         "final_status"
       ],
-      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
+      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
@@ -853,7 +853,7 @@
       "keys": [
         "final_result"
       ],
-      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
+      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
@@ -865,7 +865,7 @@
       "keys": [
         "last_stop_reason"
       ],
-      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
+      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {

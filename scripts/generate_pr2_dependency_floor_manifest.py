@@ -208,14 +208,35 @@ def _distribution_names(top_level_names: Iterable[str]) -> set[str]:
     return names
 
 
+# Installer-provenance metadata inside *.dist-info varies byte-wise with the
+# install tool and environment (pip vs uv INSTALLER; RECORD hashes entry-point
+# scripts whose shebang embeds an absolute interpreter path) while never being
+# imported at runtime. Excluding it keeps the floor pinned to the actual import
+# surface and lets one manifest hold across the venv (parent install-time check)
+# and the base interpreter purelib (child -I -S load-time check) on this host.
+_INSTALLER_VOLATILE_DIST_INFO_FILES = frozenset({"INSTALLER", "RECORD", "REQUESTED"})
+
+
+def _is_installer_volatile_metadata(path: Path) -> bool:
+    return (
+        path.parent.name.endswith(".dist-info")
+        and path.name in _INSTALLER_VOLATILE_DIST_INFO_FILES
+    )
+
+
 def _iter_files(roots: Iterable[Path]) -> Iterable[Path]:
     for root in roots:
         if root.is_file():
-            if "__pycache__" not in root.parts:
+            if "__pycache__" not in root.parts and not _is_installer_volatile_metadata(root):
                 yield root.resolve()
             continue
         for path in root.rglob("*"):
-            if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
+            if (
+                path.is_file()
+                and "__pycache__" not in path.parts
+                and path.suffix != ".pyc"
+                and not _is_installer_volatile_metadata(path)
+            ):
                 yield path.resolve()
 
 

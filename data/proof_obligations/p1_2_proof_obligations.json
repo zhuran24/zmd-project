@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-07-03",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "2a355b76801d7c8e2f78f65a20c67ab0b1e66d1313a501935e2f9653dbf63362",
+  "semantic_projection_sha256": "a5f60b8be9d4d8d261ffeee0737cc054b573aa9328e35cd6a9e4cde04ef0a415",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -926,11 +926,11 @@
     "dependency_floor_provenance": {
       "schema_version": 1,
       "manifest_path": "data/proof_obligations/pr2_dependency_floor_manifest.json",
-      "manifest_sha256": "41008dbb0bf03e1b413c493a96f5a5f47719721cc33112b353ed7c6bea240b90",
-      "manifest_size": 574082,
+      "manifest_sha256": "a0fe4bdc520cf8aa4b142eb23cf5dc1933c061d973df0be9f3fe1cca1adc2a74",
+      "manifest_size": 567602,
       "manifest_authority": "pr2_l0_dependency_floor_manifest_v1",
       "generator_path": "scripts/generate_pr2_dependency_floor_manifest.py",
-      "generator_sha256": "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c",
+      "generator_sha256": "9efbc3f2f32a56e6b9746604346efd7b6e1ef394fdd3ac9fa6fa7ece3ad33d8c",
       "loader_constant": "DEPENDENCY_FLOOR_MANIFEST_REL",
       "mutation_policy": "dependency_floor_drift_reopens_p1_2_close_claim",
       "manifest_floor_root": "PYTHON_SYSCONFIG_PURELIB",
@@ -986,7 +986,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-      "source_sha256": "1b36807fddc0629820a7451165a91d1e902cd3b1ece0d35d10febcdc4051d5c9",
+      "source_sha256": "3471bf6004448caecf85da285f78876c2c0b595c61608140b0e2b151ba7b710e",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1003,7 +1003,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "64c4cdbf3ce9a5c3be87ce8337d74dd291095f9471decc3efca1b2d6990a95ca",
+        "source_sha256": "aa0a4d80aeb9c9903490fb741997da2871c9cd1e64eff5a93a1c3335f5c0141b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1889,7 +1889,7 @@
       {
         "path": "src/search/pr2_l0_micro_verifier_core.py",
         "classification": "p1_2_certified_path",
-      "source_sha256": "996a1cd8f13ddb924504e86230a2d490cf97a148b60ce707afd31e26d041f544",
+      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
