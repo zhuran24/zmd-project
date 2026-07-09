@@ -1,0 +1,10 @@
+{
+ "cell": "b0_5_witness_crosscheck",
+ "encoding": "geometric_element_witness_v1",
+ "status": "UNKNOWN",
+ "accepted": false,
+ "reason": "unknown",
+ "wall": 607.6,
+ "branches": 7256178,
+ "conflicts": 7087
+}

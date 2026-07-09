@@ -47,3 +47,11 @@ M6 头号悬案「供电可行布局存在性」关闭（存在，且可带 6×6
 + benders_loop canonical env 面 + EXACT_* 三件套）+ 池完整性 fail-closed 断言 + 解级 dominance
 剪杆步（对抗审查修订一；b0_4r 实测 unforced=0 说明 CP-SAT 自发给出极简杆集，剪杆步可能常为
 no-op 但仍必须在链上）+ 内存条款（worker 上限或 RSS 监控）+ 新旧编码等价性单测。
+
+## 附：b0_5 witness 交叉验证（2026-07-09 深夜补）
+
+把 b0_4r 布局钉进无 patch 生产 witness 编码、放开杆让它自己找覆盖方案：**UNKNOWN @600s**
+（7.26M branches / 7087 conflicts，`b0_5_witness_crosscheck.json`）。witness 连「验证已知可行解」
+（钉布局搜杆）都溺死——M6 病灶的又一佐证；交叉验证通道因此不可用，首解的语义背书以独立
+覆盖复验（`03_b0_4r_independent_verify.py`，终端验证器同语义）为准。复验脚本本身已列入
+GPT Pro 外审对象。
