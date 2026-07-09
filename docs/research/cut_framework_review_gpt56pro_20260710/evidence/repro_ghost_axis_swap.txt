@@ -1,0 +1,1 @@
+{'master_ghost_wh': (2, 1), 'state_ghost_rect': (1, 0, 1, 2)}
