@@ -323,6 +323,19 @@ def test_c1_power_pole_pool_integrity_fail_closed(
         )
 
 
+def test_c1_power_pole_pool_rejects_duplicate_pose_ids() -> None:
+    duplicate_ids = [
+        {**pose, "pose_id": "dup"}
+        for pose in _power_pole_pool()
+    ]
+
+    with pytest.raises(RuntimeError, match="duplicate pose_id"):
+        _build_c1_core(
+            pools={"machine": _machine_pool(), "power_pole": duplicate_ids},
+            rules=_rules(),
+        )
+
+
 def test_c1_bind_from_core_requires_c1_binding_when_pool_nonempty() -> None:
     pools = {"power_pole": _power_pole_pool()}
     rules = _rules(machine_needs_power=False)
@@ -355,9 +368,12 @@ def test_c1_bind_from_core_requires_c1_binding_when_pool_nonempty() -> None:
 
 
 def test_c1_clone_rebinds_intervals_for_ghost_overlay_no_overlap() -> None:
-    pools = {"power_pole": _power_pole_pool(width=5, height=5)}
-    rules = _rules(width=5, height=5, machine_needs_power=False)
-    core = _build_c1_core(pools=pools, rules=rules, instances=[])
+    pools = {
+        "machine": _machine_pool(0, 0),
+        "power_pole": _power_pole_pool(width=5, height=5),
+    }
+    rules = _rules(width=5, height=5, machine_needs_power=True)
+    core = _build_c1_core(pools=pools, rules=rules, instances=_machine_instances())
 
     blocked = MasterPlacementModel.from_exact_core(
         core,
@@ -376,19 +392,31 @@ def test_c1_clone_rebinds_intervals_for_ghost_overlay_no_overlap() -> None:
     assert clear.solve(time_limit_seconds=5.0) in {cp_model.OPTIMAL, cp_model.FEASIBLE}
 
 
-def test_c1_required_power_pole_slots_fail_closed() -> None:
-    with pytest.raises(RuntimeError, match="required.*power_pole"):
-        MasterPlacementModel.build_exact_core(
-            [],
-            {"power_pole": _power_pole_pool(width=2, height=1)},
-            _rules(width=2, height=1, machine_needs_power=False),
-            skip_power_coverage=True,
-            c1_power_pole_representation=True,
-            exact_required_pose_optional_counts={"power_pole": 1},
-        )
+def test_c1_required_power_pole_uses_pose_bool_pool() -> None:
+    model = MasterPlacementModel(
+        _machine_instances(),
+        {
+            "machine": _machine_pool(),
+            "power_pole": _power_pole_pool(width=2, height=1),
+        },
+        _rules(width=2, height=1),
+        solve_mode="certified_exact",
+        skip_power_coverage=True,
+        c1_power_pole_representation=True,
+        exact_required_pose_optional_counts={"power_pole": 1},
+    )
+
+    assert model.solve(time_limit_seconds=2.0) in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    delegate = model._coordinate_delegate
+    assert delegate is not None
+    assert "power_pole" not in delegate.required_optional_slots
+    assert "power_pole" not in delegate.residual_optional_slots
+    assert sum(
+        model._solver.Value(var) for _pose_idx, var, _coverage in delegate._c1_pole_bools
+    ) == 1
 
 
-def test_c1_coverage_path_is_explicitly_blocked_until_batch_1b() -> None:
+def test_c1_coverage_path_builds_cov_channel_stats() -> None:
     model = MasterPlacementModel(
         instances=[],
         facility_pools={"power_pole": _power_pole_pool()},
@@ -398,5 +426,11 @@ def test_c1_coverage_path_is_explicitly_blocked_until_batch_1b() -> None:
         c1_power_pole_representation=True,
     )
 
-    with pytest.raises(NotImplementedError, match="C1 coverage lands in batch 1B"):
-        model.build()
+    model.build()
+
+    power_coverage = model.build_stats["power_coverage"]
+    assert power_coverage["representation"] == "coordinate_geometric"
+    assert power_coverage["encoding"] == "c1_pose_bool_cov_channel_v1"
+    assert power_coverage["powered_slots"] == 0
+    assert power_coverage["pole_pose_bools"] == 9
+    assert power_coverage["cov_channel_literals"] == 9

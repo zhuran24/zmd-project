@@ -31,7 +31,7 @@ import copy
 import os
 import re
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from typing import Any, DefaultDict, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple
 
@@ -1064,12 +1064,18 @@ class CoordinateExactMasterDelegate:
         }
 
     def _c1_power_pole_expected_anchor_lattice(self) -> Set[Tuple[int, int]]:
-        expected: Set[Tuple[int, int]] = set()
-        for domain in self._template_full_mode_rect_domains.get("power_pole", {}).values():
-            for x_val in range(int(domain.x_min), int(domain.x_max) + 1):
-                for y_val in range(int(domain.y_min), int(domain.y_max) + 1):
-                    expected.add((int(x_val), int(y_val)))
-        return expected
+        dims = dict(self.owner.templates.get("power_pole", {}).get("dimensions", {}))
+        width = int(dims.get("w", 1))
+        height = int(dims.get("h", 1))
+        if width <= 0 or height <= 0:
+            raise RuntimeError("C1 power_pole template dimensions must be positive")
+        if width > int(self.grid_w) or height > int(self.grid_h):
+            return set()
+        return {
+            (int(x_val), int(y_val))
+            for x_val in range(0, int(self.grid_w) - int(width) + 1)
+            for y_val in range(0, int(self.grid_h) - int(height) + 1)
+        }
 
     def _validate_c1_power_pole_pool(self) -> None:
         pool = list(self.owner.facility_pools.get("power_pole", []))
@@ -1078,13 +1084,27 @@ class CoordinateExactMasterDelegate:
         domains = dict(self._template_full_mode_rect_domains.get("power_pole", {}))
         if not domains:
             raise RuntimeError("C1 power_pole pool has poses but no coordinate domain")
+        mode_tokens = list(self._template_mode_tokens.get("power_pole", []))
+        if len(mode_tokens) != 1 or len(domains) != 1:
+            raise RuntimeError(
+                "C1 power_pole pool requires exactly one pose mode per anchor"
+            )
+        only_mode_id = int(next(iter(domains)))
         expected_anchors = self._c1_power_pole_expected_anchor_lattice()
         anchors: List[Tuple[int, int]] = []
         dims = dict(self.owner.templates.get("power_pole", {}).get("dimensions", {}))
         width = int(dims.get("w", 1))
         height = int(dims.get("h", 1))
         pose_tuple_by_idx = self._template_pose_tuple_by_idx.get("power_pole", {})
+        pose_ids: Set[str] = set()
         for pose_idx, pose in enumerate(pool):
+            pose_id = str(pose.get("pose_id", ""))
+            if pose_id in pose_ids:
+                raise RuntimeError(
+                    "C1 power_pole pool requires unique pose_id values: "
+                    f"duplicate pose_id={pose_id!r}"
+                )
+            pose_ids.add(pose_id)
             anchor_xy = self._strict_c1_pose_anchor(pose, pose_idx=int(pose_idx))
             anchors.append(anchor_xy)
             pose_tuple = pose_tuple_by_idx.get(int(pose_idx))
@@ -1095,15 +1115,17 @@ class CoordinateExactMasterDelegate:
                     "C1 power_pole pose tuple does not match anchor: "
                     f"pose_idx={pose_idx}"
                 )
+            if int(pose_tuple[2]) != int(only_mode_id):
+                raise RuntimeError(
+                    "C1 power_pole pose references more than one mode: "
+                    f"pose_idx={pose_idx}"
+                )
             domain = domains.get(int(pose_tuple[2]))
             if domain is None:
                 raise RuntimeError(
                     f"C1 power_pole pose references missing domain: pose_idx={pose_idx}"
                 )
-            if not (
-                int(domain.x_min) <= int(anchor_xy[0]) <= int(domain.x_max)
-                and int(domain.y_min) <= int(anchor_xy[1]) <= int(domain.y_max)
-            ):
+            if anchor_xy not in expected_anchors:
                 raise RuntimeError(
                     "C1 power_pole anchor is outside its coordinate domain: "
                     f"pose_idx={pose_idx}"
@@ -1140,8 +1162,11 @@ class CoordinateExactMasterDelegate:
                     f"pose_idx={pose_idx} actual={len(actual_coverage)} "
                     f"expected={len(expected_coverage)}"
                 )
-        anchor_set = set(anchors)
-        if len(anchors) != len(anchor_set) or anchor_set != expected_anchors:
+        anchor_counts = Counter(anchors)
+        anchor_set = set(anchor_counts)
+        # C1 equivalence lemma precondition: every legal anchor has exactly one
+        # pose bool. Multi-mode or duplicate-anchor pole pools are rejected.
+        if any(int(count) != 1 for count in anchor_counts.values()) or anchor_set != expected_anchors:
             raise RuntimeError(
                 "C1 power_pole anchor pool is not the complete coordinate lattice: "
                 f"pool={len(anchors)} unique={len(anchor_set)} expected={len(expected_anchors)}"
@@ -1835,12 +1860,20 @@ class CoordinateExactMasterDelegate:
         family_name = str(family_name)
         family_size = int(self._power_pole_family_pose_counts.get(family_name, 0))
         if self.c1_power_pole_representation:
-            configured_upper_bound = int(self._power_pole_slot_upper_bound)
-            slot_pool_upper_bound = (
-                configured_upper_bound
-                if configured_upper_bound > 0
-                else int(len(self.owner.facility_pools.get("power_pole", [])))
+            required_power_pole_count = int(
+                self.owner._exact_required_pose_optional_counts.get("power_pole", 0)
             )
+            if required_power_pole_count > 0:
+                slot_pool_upper_bound = int(
+                    len(self.owner.facility_pools.get("power_pole", []))
+                )
+            else:
+                configured_upper_bound = int(self._power_pole_slot_upper_bound)
+                slot_pool_upper_bound = (
+                    configured_upper_bound
+                    if configured_upper_bound > 0
+                    else int(len(self.owner.facility_pools.get("power_pole", [])))
+                )
         else:
             slot_pool_upper_bound = int(len(self._all_power_pole_slots()))
         return int(min(family_size, slot_pool_upper_bound))
@@ -2537,6 +2570,7 @@ class CoordinateExactMasterDelegate:
                 self.residual_optional_slots[str(tpl)] = slot_specs
 
         if self.c1_power_pole_representation:
+            self.required_optional_slots.pop("power_pole", None)
             self.residual_optional_slots.pop("power_pole", None)
             mandatory_power_pole_slots = [
                 slot
@@ -2544,10 +2578,10 @@ class CoordinateExactMasterDelegate:
                 for slot in slot_specs
                 if str(slot.template) == "power_pole"
             ]
-            if self.required_optional_slots.get("power_pole") or mandatory_power_pole_slots:
+            if mandatory_power_pole_slots:
                 raise RuntimeError(
-                    "C1 power_pole representation does not support required "
-                    "or mandatory power_pole slots in batch 1A"
+                    "C1 power_pole representation does not support mandatory "
+                    "power_pole slots in batch 1B"
                 )
 
     def _new_interval_end(
@@ -3278,7 +3312,12 @@ class CoordinateExactMasterDelegate:
             family_name: [] for family_name in self._power_pole_family_name_by_int.values()
         }
         pool = list(self.owner.facility_pools.get("power_pole", []))
+        required_power_pole_count = int(
+            self.owner._exact_required_pose_optional_counts.get("power_pole", 0)
+        )
         if not pool:
+            if required_power_pole_count > 0:
+                self.model.Add(0 >= int(required_power_pole_count))
             return
         self._validate_c1_power_pole_pool()
 
@@ -3325,8 +3364,13 @@ class CoordinateExactMasterDelegate:
                     pole_var
                 )
 
-        upper_bound = int(self._power_pole_slot_upper_bound)
-        if upper_bound > 0:
+        if required_power_pole_count > 0:
+            self.model.Add(
+                sum(var for _pose_idx, var, _coverage in self._c1_pole_bools)
+                == int(required_power_pole_count)
+            )
+        else:
+            upper_bound = int(self._power_pole_slot_upper_bound)
             self.model.Add(
                 sum(var for _pose_idx, var, _coverage in self._c1_pole_bools)
                 <= int(upper_bound)
@@ -3689,8 +3733,6 @@ class CoordinateExactMasterDelegate:
             self.power_pole_family_count_vars[family_name] = count_var
 
     def build(self) -> None:
-        if self.c1_power_pole_representation and not self.owner.skip_power_coverage:
-            raise NotImplementedError("C1 coverage lands in batch 1B")
         # PROJECT_LOCK L4a: 旧 EXACT_POWER_PLACEMENT_SUBPROBLEM 在 certified mode
         # 必须 fail-closed. 它会从 master 拿走 power_pole slot, 让 downstream cut
         # 无法 resolve runtime literal. 新路径用 EXACT_LAZY_POWER_COMPLETION (L4b).
@@ -3728,7 +3770,10 @@ class CoordinateExactMasterDelegate:
             and not self._delegate_power_placement_to_subproblem()
             and not lazy_completion
         ):
-            self._add_geometric_power_coverage_constraints()
+            if self.c1_power_pole_representation:
+                self._add_c1_power_coverage_constraints()
+            else:
+                self._add_geometric_power_coverage_constraints()
         elif lazy_completion:
             # L4b: 留 pole slot, 跳 coverage witness. completion 由 subproblem 接管.
             self.owner.build_stats["power_coverage"] = {
@@ -6259,6 +6304,113 @@ class CoordinateExactMasterDelegate:
         )
         return 1, element_count
 
+    def _add_c1_power_coverage_constraints(self) -> None:
+        powered_slots = self._all_powered_slots()
+        pole_bools = list(self._c1_pole_bools)
+        radius = self._power_coverage_radius()
+        if not self._supports_rectangular_power_coverage():
+            raise NotImplementedError("C1 非矩形回退不在批 1B 范围")
+
+        if not pole_bools:
+            for powered_slot in powered_slots:
+                if powered_slot.active is not None:
+                    self.model.Add(powered_slot.active == 0)
+                else:
+                    self.model.Add(0 >= 1)
+            self.owner.build_stats["power_coverage"] = {
+                "representation": "coordinate_geometric",
+                "encoding": "c1_pose_bool_cov_channel_v1",
+                "powered_slots": int(len(powered_slots)),
+                "pole_slots": 0,
+                "cover_literals": 0,
+                "witness_indices": 0,
+                "element_constraints": 0,
+                "radius": int(radius),
+                "pole_pose_bools": 0,
+                "cov_channel_literals": 0,
+                "constant_pole_intervals": 0,
+                "dominance_bound_terms": 0,
+            }
+            return
+
+        grid_w, grid_h = int(self.grid_w), int(self.grid_h)
+        coverers_by_cell: DefaultDict[Tuple[int, int], List[cp_model.IntVar]] = (
+            defaultdict(list)
+        )
+        for _pose_idx, pole_var, coverage in pole_bools:
+            for cell_x, cell_y in coverage:
+                coverers_by_cell[(int(cell_x), int(cell_y))].append(pole_var)
+
+        cov: List[cp_model.IntVar] = []
+        channel_constraints = 0
+        for cy in range(grid_h):
+            for cx in range(grid_w):
+                cov_lit = self.model.NewBoolVar(f"c1cov__{cx}_{cy}")
+                coverers = coverers_by_cell.get((int(cx), int(cy)), [])
+                if coverers:
+                    self.model.Add(cov_lit <= sum(coverers))
+                else:
+                    self.model.Add(cov_lit == 0)
+                channel_constraints += 1
+                cov.append(cov_lit)
+
+        witness_indices = 0
+        element_constraints = 0
+        for powered_slot in powered_slots:
+            footprint_x = self._slot_footprint_x_start(powered_slot)
+            footprint_y = self._slot_footprint_y_start(powered_slot)
+            footprint_w = self._slot_footprint_width(powered_slot)
+            footprint_h = self._slot_footprint_height(powered_slot)
+            witness_x = self.model.NewIntVar(
+                0,
+                max(0, grid_w - 1),
+                f"c1wx__{powered_slot.key}",
+            )
+            witness_y = self.model.NewIntVar(
+                0,
+                max(0, grid_h - 1),
+                f"c1wy__{powered_slot.key}",
+            )
+            bounds = [
+                self.model.Add(witness_x >= footprint_x),
+                self.model.Add(witness_x <= footprint_x + footprint_w - 1),
+                self.model.Add(witness_y >= footprint_y),
+                self.model.Add(witness_y <= footprint_y + footprint_h - 1),
+            ]
+            flat = self.model.NewIntVar(
+                0,
+                max(0, grid_w * grid_h - 1),
+                f"c1flat__{powered_slot.key}",
+            )
+            self.model.Add(flat == witness_x + witness_y * grid_w)
+            target = self.model.NewBoolVar(f"c1cover__{powered_slot.key}")
+            self.model.AddElement(flat, cov, target)
+            if powered_slot.active is not None:
+                for constraint in bounds:
+                    constraint.OnlyEnforceIf(powered_slot.active)
+                self.model.Add(target == 1).OnlyEnforceIf(powered_slot.active)
+            else:
+                self.model.Add(target == 1)
+            witness_indices += 1
+            element_constraints += 1
+
+        self.owner.build_stats["power_coverage"] = {
+            "representation": "coordinate_geometric",
+            "encoding": "c1_pose_bool_cov_channel_v1",
+            "powered_slots": int(len(powered_slots)),
+            "pole_slots": int(len(pole_bools)),
+            "cover_literals": int(channel_constraints),
+            "witness_indices": int(witness_indices),
+            "element_constraints": int(element_constraints),
+            "radius": int(radius),
+            "pole_pose_bools": int(len(pole_bools)),
+            "cov_channel_literals": int(len(cov)),
+            "constant_pole_intervals": int(
+                2 * len(self._c1_pole_intervals_by_pose_idx)
+            ),
+            "dominance_bound_terms": 0,
+        }
+
     def _add_geometric_power_coverage_constraints(self) -> None:
         powered_slots = self._all_powered_slots()
         pole_slots = self._all_power_pole_slots()
@@ -6694,25 +6846,63 @@ class CoordinateExactMasterDelegate:
                 "optional_powered_templates": optional_powered_templates,
             }
         )
+        required_optional_powered_count = sum(
+            len(slot_specs)
+            for tpl, slot_specs in self.required_optional_slots.items()
+            if str(tpl) in self.owner._powered_templates and str(tpl) != "power_pole"
+        )
+        residual_powered_optional_terms = [
+            slot.active
+            for tpl, slot_specs in self.residual_optional_slots.items()
+            if str(tpl) in self.owner._powered_templates and str(tpl) != "power_pole"
+            for slot in slot_specs
+            if slot.active is not None
+        ]
+        required_power_pole_count = int(
+            self.owner._exact_required_pose_optional_counts.get("power_pole", 0)
+        )
+        dominance_bound_applies = bool(
+            self.residual_optional_slots.get("power_pole")
+        ) or bool(
+            self.c1_power_pole_representation
+            and self._c1_pole_bools
+            and int(self._power_pole_slot_upper_bound) > 0
+            and required_power_pole_count <= 0
+        )
+        dominance_bound_terms = (
+            int(mandatory_powered_nonpole)
+            + int(required_optional_powered_count)
+            + int(len(residual_powered_optional_terms))
+            if dominance_bound_applies
+            else 0
+        )
         if self.residual_optional_slots.get("power_pole"):
-            required_optional_powered_count = sum(
-                len(slot_specs)
-                for tpl, slot_specs in self.required_optional_slots.items()
-                if str(tpl) in self.owner._powered_templates and str(tpl) != "power_pole"
-            )
-            residual_powered_optional_terms = [
-                slot.active
-                for tpl, slot_specs in self.residual_optional_slots.items()
-                if str(tpl) in self.owner._powered_templates and str(tpl) != "power_pole"
-                for slot in slot_specs
-                if slot.active is not None
-            ]
             self.model.Add(
                 sum(slot.active for slot in self.residual_optional_slots["power_pole"] if slot.active is not None)
                 <= int(mandatory_powered_nonpole)
                 + int(required_optional_powered_count)
                 + sum(residual_powered_optional_terms)
             )
+        elif (
+            self.c1_power_pole_representation
+            and self._c1_pole_bools
+            and dominance_bound_applies
+        ):
+            self.model.Add(
+                sum(var for _pose_idx, var, _coverage in self._c1_pole_bools)
+                <= int(mandatory_powered_nonpole)
+                + int(required_optional_powered_count)
+                + sum(residual_powered_optional_terms)
+            )
+        if self.c1_power_pole_representation:
+            stats["optional_cardinality_bounds"]["power_pole"][
+                "dominance_bound_terms"
+            ] = int(dominance_bound_terms)
+            power_coverage_stats = self.owner.build_stats.get("power_coverage")
+            if isinstance(power_coverage_stats, dict):
+                power_coverage_stats["dominance_bound_terms"] = int(
+                    dominance_bound_terms
+                )
 
         stats["fixed_required_optional_demands"] = dict(self.owner._exact_fixed_required_optional_powered_demands())
         stats["lower_bound_optional_powered_demands"] = dict(self.owner._lower_bound_optional_powered_demands())
@@ -7083,6 +7273,10 @@ class CoordinateExactMasterDelegate:
             + int(required_optional_slot_count)
             + int(residual_optional_slot_count)
             + len(self.owner.u_vars)
+            + int(len(self._c1_pole_intervals_by_pose_idx))
+        )
+        c1_pole_pose_bool_count = (
+            int(len(self._c1_pole_bools)) if self.c1_power_pole_representation else 0
         )
         guidance = dict(self.owner.build_stats.get("search_guidance", {}))
         mode_literals = int(guidance.get("mandatory_mode_literals", 0)) + int(guidance.get("required_optional_mode_literals", 0)) + int(guidance.get("residual_optional_mode_literals", 0))
@@ -7119,6 +7313,13 @@ class CoordinateExactMasterDelegate:
                 residual_optional_slot_count
             ),
         }
+        if self.c1_power_pole_representation:
+            domain_activation["c1_power_pole_pose_bool_count"] = int(
+                c1_pole_pose_bool_count
+            )
+            domain_activation["c1_power_pole_constant_interval_count"] = int(
+                2 * len(self._c1_pole_intervals_by_pose_idx)
+            )
         self.owner.build_stats["master_representation"] = self.master_representation
         self.owner.build_stats["master_domain_encoding"] = "mode_rect_factorized_v1"
         self.owner.build_stats["master_domain_table_rows"] = int(self._domain_table_row_count)
@@ -7152,7 +7353,23 @@ class CoordinateExactMasterDelegate:
         self.owner.build_stats["domain_activation"] = domain_activation
         self.owner.build_stats["master_interval_count"] = int(interval_count)
         self.owner.build_stats["master_mode_literals"] = int(mode_literals)
-        self.owner.build_stats["master_pose_bool_literals"] = 0
+        self.owner.build_stats["master_pose_bool_literals"] = int(
+            c1_pole_pose_bool_count
+        )
+        if self.c1_power_pole_representation:
+            self.owner.build_stats["c1_power_pole_representation"] = {
+                "enabled": True,
+                "pole_pose_bools": int(c1_pole_pose_bool_count),
+                "constant_pole_intervals": int(
+                    2 * len(self._c1_pole_intervals_by_pose_idx)
+                ),
+                "required_power_pole_count": int(
+                    self.owner._exact_required_pose_optional_counts.get(
+                        "power_pole",
+                        0,
+                    )
+                ),
+            }
         proto = self.model.Proto()
         self.owner.build_stats["exact_core_profile"] = {
             "proto_vars": len(proto.variables),
@@ -7220,6 +7437,26 @@ class CoordinateExactMasterDelegate:
                     "instance_id": synthetic_id,
                     "facility_type": tpl,
                     "operation_type": optional_operations[tpl],
+                    "pose_idx": int(pose_idx),
+                    "pose_id": pose["pose_id"],
+                    "anchor": dict(pose["anchor"]),
+                    "is_mandatory": False,
+                    "bound_type": "exact_pose_optional",
+                    "solve_mode": self.owner.solve_mode,
+                }
+        if self.c1_power_pole_representation:
+            for pose_idx, pole_var, _coverage in sorted(
+                self._c1_pole_bools,
+                key=lambda item: int(item[0]),
+            ):
+                if self.owner._solver.Value(pole_var) != 1:
+                    continue
+                pose = self.owner.facility_pools["power_pole"][int(pose_idx)]
+                synthetic_id = f"pose_optional::power_pole::{pose['pose_id']}"
+                solution[synthetic_id] = {
+                    "instance_id": synthetic_id,
+                    "facility_type": "power_pole",
+                    "operation_type": optional_operations["power_pole"],
                     "pose_idx": int(pose_idx),
                     "pose_id": pose["pose_id"],
                     "anchor": dict(pose["anchor"]),
@@ -7516,10 +7753,21 @@ class CoordinateExactMasterDelegate:
         cut_index = int(self.owner.build_stats.get("coordinate_benders_cut_count", 0))
 
         present_lits: List[cp_model.IntVar] = []
-        for _scope_key, pose_idx, slots, pose_tuple in entries:
+        c1_pole_var_by_pose_idx = {
+            int(pose_idx): var for pose_idx, var, _coverage in self._c1_pole_bools
+        }
+        for scope_key, pose_idx, slots, pose_tuple in entries:
             # M3-2: presence literals are content-addressed (reused across
             # cuts); cut_tag no longer participates in literal identity.
-            lit = self._pose_present_literal(slots, pose_tuple)
+            if (
+                self.c1_power_pole_representation
+                and scope_key == "optional::power_pole"
+            ):
+                # The C1 pool has one stable BoolVar per validated pose_idx;
+                # p_k is itself the exact, content-addressed presence literal.
+                lit = c1_pole_var_by_pose_idx.get(int(pose_idx))
+            else:
+                lit = self._pose_present_literal(slots, pose_tuple)
             if lit is None:
                 return False
             present_lits.append(lit)
