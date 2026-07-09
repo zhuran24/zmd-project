@@ -46,3 +46,6 @@ PRESOLVE_PROBE_ALL_DONE 2026-07-08T13:00:24.8892291+08:00
 === g6x6_q5c_aftercounts done exit=139 2026-07-09T07:35:47+08:00 ===
 === g6x6_q5d_coldstart done exit=0 2026-07-09T08:06:42+08:00 ===
 === Q5_QUEUE_DONE 2026-07-09T08:06:42+08:00 ===
+=== b0_1_pinned_c6 done exit=0 2026-07-09T19:04:21+08:00 ===
+=== b0_2_free_c6 done exit=0 2026-07-09T19:35:33+08:00 ===
+=== B0_QUEUE_DONE 2026-07-09T19:35:33+08:00 ===
