@@ -50,7 +50,10 @@ bypass 修复+dedup 去 proto 反射+footprint clone 绑定，`c7cd6a0`）；批
 1A 骨架已落地（开关默认关、双审 3 BUG 拦截、慢 lane 绿，`b755e80`）,
 1B 已落地(cov 通道+witness cell 语义,三轮审查链修 7 实锤,`705ee73`;
 seal 依赖 floor 按 CachyOS 宿主重钉+redlines 首次全绿,`a02862a`;慢 lane 30/30);
-1C 解级 dominance 剪杆待开工(审查阵容 fable+codex);旧 witness 编码 owner 已拍板不留
+1C 解级 dominance 剪杆已落地(normalize_certified_power_pole_dominance 纯函数+routing
+FEASIBLE 唯一生产点接线,fable+codex 双审首战 6 项修复单全落,`3cc3cf4`;golden digest
+双 pin 重钉——proof_summary 新增 power_pole_dominance 审计 key 的预期漂移,`fbc315a`;
+慢 lane 30/30);1D canonical env 待开工;旧 witness 编码 owner 已拍板不留
 （2026-07-10：certified 层不保留 runtime env 对照/回退，1D 无阻塞）;
 M5 A/B 战场随首解解锁,挂批 1 完成后**;
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
