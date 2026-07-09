@@ -259,3 +259,13 @@
    - 内容：以 w6/cgroup 硬帽运行 b0_4r 等价 replay 或完整 certified smoke；记录 wall time、RSS、proof_summary、terminal verifier；把 worker 上限写入 production profile/wrapper。
    - 验收：w6 不 OOM，剪杆后 solution terminal verifier 通过，proof artifacts 可重放；w12/w24 只做 optional perf lane，不作为 release gate。
    - 行号锚点：batch0 w6/w12/w24 evidence `README.md:29-41`, `59-66`，worker config caveat `src/models/cp_sat_worker_config.py:140-149`。
+
+## 九、1A 双审移交 1B 的发现（2026-07-10 凌晨，opus+codex 双审产出）
+
+1A 内放行、1B 落地覆盖约束前**必须**处理的三项（放行论证：1A 无覆盖约束，杆只进 no-overlap/Σ≤cap/family count，池缩水最多少几个杆 bool，不产生假判决；1B 覆盖强制选杆后同样的缺陷会变成假 INFEASIBLE=穷尽性威胁）：
+
+1. **池完整性校验是自证式的（opus CONCERN-1）**：`_validate_c1_power_pole_pool` 的期望格阵来自 `_template_full_mode_rect_domains`，而该域本身从同一个池的 anchor min/max 现算——「整体均匀缩小但仍完整的格阵」（如只覆盖 [0,50]²）会通过。1B 修法：把独立的域 bbox pin（或 69×69 计数断言）纳入 C1 build 路径本身，不依赖外部 geometry contract。
+2. **空池静默放行（opus NOTE-2）**：校验与建变量对空池都 `return`。1B 需保证「存在 mandatory powered 但池空」在 C1 路径 fail-closed（与现 witness 语义对齐：optional powered 禁用、mandatory powered infeasible）。
+3. **单 anchor 单 pose 隐含假设（opus NOTE-3）**：多 mode 杆会被误判为重复 anchor → fail-closed。方向安全（宁拒不放），但若工件演化出现多朝向杆，C1 拒建——1B 时显式记录该假设为引理或解除。
+
+（1A 内已修：codex 三 BUG——binding 缺键 fail-closed、anchor 严格解析、coverage cells 逐点校验；opus NOTE-5 测试加强。）

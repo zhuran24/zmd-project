@@ -2295,6 +2295,7 @@ class ExactMasterCore:
     group_id_by_instance: Mapping[str, str]
     skip_power_coverage: bool
     enable_symmetry_breaking: bool
+    c1_power_pole_representation: bool = False
     canonical_commodity_metadata: Mapping[str, Any] = field(default_factory=dict)
     master_representation: str = "pose_bool_v1"
     coordinate_binding: Mapping[str, Any] = field(default_factory=dict)
@@ -2311,6 +2312,7 @@ class MasterPlacementModel:
         rules: Mapping[str, Any],
         ghost_rect: Optional[Tuple[int, int]] = None,
         skip_power_coverage: bool = False,
+        c1_power_pole_representation: bool = False,
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
         wireless_sink_generic_input_slots: Optional[int] = None,
@@ -2385,6 +2387,7 @@ class MasterPlacementModel:
             else None
         )
         self.skip_power_coverage = skip_power_coverage
+        self.c1_power_pole_representation = bool(c1_power_pole_representation)
         self.enable_symmetry_breaking = enable_symmetry_breaking
         _record_model_shell_subphase(
             "constructor_enter_to_instance_copy",
@@ -2624,6 +2627,7 @@ class MasterPlacementModel:
         rules: Mapping[str, Any],
         *,
         skip_power_coverage: bool = False,
+        c1_power_pole_representation: bool = False,
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
         wireless_sink_generic_input_slots: Optional[int] = None,
@@ -2637,6 +2641,7 @@ class MasterPlacementModel:
             rules,
             ghost_rect=None,
             skip_power_coverage=skip_power_coverage,
+            c1_power_pole_representation=c1_power_pole_representation,
             enable_symmetry_breaking=enable_symmetry_breaking,
             generic_io_requirements=generic_io_requirements,
             wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
@@ -2704,6 +2709,7 @@ class MasterPlacementModel:
             mandatory_groups=model._mandatory_groups,
             group_id_by_instance=dict(model._group_id_by_instance),
             skip_power_coverage=bool(model.skip_power_coverage),
+            c1_power_pole_representation=bool(model.c1_power_pole_representation),
             enable_symmetry_breaking=bool(model.enable_symmetry_breaking),
             canonical_commodity_metadata=dict(model.canonical_commodity_metadata),
             master_representation=str(model.build_stats.get("master_representation", "pose_bool_v1")),
@@ -2803,6 +2809,9 @@ class MasterPlacementModel:
             core.rules,
             ghost_rect=ghost_rect,
             skip_power_coverage=core.skip_power_coverage,
+            c1_power_pole_representation=bool(
+                getattr(core, "c1_power_pole_representation", False)
+            ),
             enable_symmetry_breaking=core.enable_symmetry_breaking,
             generic_io_requirements=core.generic_io_requirements,
             wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
