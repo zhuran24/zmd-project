@@ -71,3 +71,6 @@ provenance:
 - **改动真实落盘**:codex 的文件改动是真的(不是 sandbox 隔离不同步)。2026-07-03 我一度把"T1 改动不见了"误判成 codex sandbox bug,实际是 codex 忠实执行了我"撤 T1"的指令——**别把自己指令的后果甩锅给工具**。
 
 与 [[guardrail-delegate-adversarial-reads]](隔离/降级)、[[agent-longrun-wait-wake-protocol]](teammate 唤醒)同族,一起构成多代理协作基建。
+
+== 更新 2026-07-10（owner 拍板）：审查类活也默认 codex ==
+diff 语义审查、修复批独立审查、preflight「改核心文件建议 AI 语义审查」WARN 的响应审查——**以后默认派 codex，不再用 opus**（owner 原话「审查以后也交给codex来」）。战绩背书：2026-07-09 codex 独立审查 C1 patch 在生产 cell 点火前抓出 clone 杆裸奔致命 bug；同日 GPT Pro bug 审的 dedup 段错误雷也是外部模型抓的。opus 审查（如 2026-07-10 硬化批 SEMANTICS_PRESERVED 那次）是该拍板前的最后一次。通道：codex MCP（会话启动时验 `ToolSearch "+codex"`）或 CLI `codex exec --sandbox read-only`（回退，见 cachy 环境卡）。审查提示词纪律照旧走 [[review-prompt-audience-purity]]。
