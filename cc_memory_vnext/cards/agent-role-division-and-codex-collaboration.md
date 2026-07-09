@@ -74,3 +74,6 @@ provenance:
 
 == 更新 2026-07-10（owner 拍板）：审查类活也默认 codex ==
 diff 语义审查、修复批独立审查、preflight「改核心文件建议 AI 语义审查」WARN 的响应审查——**以后默认派 codex，不再用 opus**（owner 原话「审查以后也交给codex来」）。战绩背书：2026-07-09 codex 独立审查 C1 patch 在生产 cell 点火前抓出 clone 杆裸奔致命 bug；同日 GPT Pro bug 审的 dedup 段错误雷也是外部模型抓的。opus 审查（如 2026-07-10 硬化批 SEMANTICS_PRESERVED 那次）是该拍板前的最后一次。通道：codex MCP（会话启动时验 `ToolSearch "+codex"`）或 CLI `codex exec --sandbox read-only`（回退，见 cachy 环境卡）。审查提示词纪律照旧走 [[review-prompt-audience-purity]]。
+
+== 更新 2026-07-10 深夜（owner 拍板）：计划书/任务书主会话自己写 ==
+三类活的分工判据定稿（owner 推理原话大意：计划书需要先了解背景、且是流程大头，跟审查「必须派另一个模型」、实现「大头在具体工作」都不同）：**①计划书/任务书 = 主会话自己写**——背景理解与方向判断是大头，全在主会话上下文里零成本；外包 codex 则「喂背景的派单提示词本身≈半份计划书」，且它只知道被告知的（2026-07-10 批 1 任务书实例：codex 草稿质量高但四条关键修订全是主会话背景型判断补的）。**②审查 = 必须另一个模型**（codex/GPT Pro，独立性是本质）。**③实现 = codex**（工作量大头，省额度）。
