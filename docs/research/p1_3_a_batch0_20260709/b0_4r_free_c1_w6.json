@@ -1,0 +1,17 @@
+{
+ "mode": "free",
+ "encoding": "c1",
+ "master_seconds": 1800.0,
+ "workers": 6,
+ "core_build_seconds": 10.5,
+ "master_build_seconds": 15.5,
+ "power_coverage_encoding": "c1_pose_bool_cov_channel_v1_prototype",
+ "cover_literals": 4900,
+ "free": {
+  "status": "OPTIMAL",
+  "wall": 541.3,
+  "branches": 4953549,
+  "conflicts": 1077,
+  "deterministic_time": 139.1403205048669
+ }
+}

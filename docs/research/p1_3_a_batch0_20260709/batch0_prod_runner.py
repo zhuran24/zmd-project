@@ -21,6 +21,7 @@ os.environ.pop("EXACT_CUT_FRAMEWORK_ATTACH", None)
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=("pinned", "free"), required=True)
+    ap.add_argument("--encoding", choices=("c6", "c1"), default="c6")
     ap.add_argument("--master-seconds", type=float, default=1800.0)
     ap.add_argument("--workers", type=int, default=12)
     ap.add_argument("--out", required=True)
@@ -35,14 +36,19 @@ def main() -> int:
 
     from src.models.master_model import MasterPlacementModel
     from src.search.benders_loop import ExactSearchSession
-    import c6_encoding_patch
+    if args.encoding == "c6":
+        import c6_encoding_patch as encoding_patch
+        apply_patch = encoding_patch.apply_c6_patch
+    else:
+        import c1_encoding_patch as encoding_patch
+        apply_patch = encoding_patch.apply_c1_patch
 
-    res = {"mode": args.mode, "encoding": "c6_pairwise_cover_v0_prototype",
+    res = {"mode": args.mode, "encoding": args.encoding,
            "master_seconds": args.master_seconds, "workers": args.workers}
     session = ExactSearchSession.create("/home/zhuran24/zmd-pj", solve_mode="certified_exact")
     print("session ready", flush=True)
 
-    c6_encoding_patch.apply_c6_patch()
+    apply_patch()
     t0 = time.perf_counter()
     core = MasterPlacementModel.build_exact_core(
         session.instances,
@@ -76,10 +82,10 @@ def main() -> int:
             ghost_anchor_hint_idx=132,
             time_limit_seconds=args.master_seconds,
             solver_parameter_profile={
-                "profile_id": "b0_presolve_off_fixed",
+                "profile_id": "b0_presolve_off",
                 "cp_model_presolve": 0,
-                "search_branching": "fixed",
-                "worker_count": 1,
+                "search_branching": "fixed" if args.workers == 1 else "automatic",
+                "worker_count": args.workers,
             },
         )
         res["pinned"] = {
@@ -108,6 +114,17 @@ def main() -> int:
             sol = master.extract_solution()
             layout = {str(s): int(e["pose_idx"]) for s, e in sol.items()
                       if isinstance(e, dict) and e.get("pose_idx") is not None}
+            # C1 的杆不在 slot 面上，extract_solution 拿不到——从 p_k 直读补齐
+            # （覆盖复验材料需要杆位置）。
+            delegate = getattr(master, "_coordinate_delegate", None)
+            c1_bools = list(getattr(delegate, "_c1_pole_bools", []) or [])
+            if c1_bools:
+                pool = list(session.facility_pools.get("power_pole", []))
+                layout["__c1_active_poles__"] = [
+                    {"pose_idx": int(i), "anchor": dict(pool[i].get("anchor", {}))}
+                    for i, var, _ in c1_bools
+                    if master._solver.Value(var) == 1
+                ]
             json.dump(layout, open(str(args.out) + ".solution.json", "w"))
             print(f"SOLUTION SAVED ({len(layout)} entries)", flush=True)
 

@@ -12,7 +12,7 @@ from src.models.master_model import MasterPlacementModel
 import c6_encoding_patch
 
 
-def build_toy(*, pole_xs, block_pole_cells=False):
+def build_toy(*, pole_xs, block_pole_cells=False, ghost_rect=None, ghost_anchor_filter=None):
     """3×3 盘、1 个需电 miner（唯一 pose 在 (0,0)）、杆池在指定位置。"""
     instances = [
         {
@@ -93,7 +93,9 @@ def build_toy(*, pole_xs, block_pole_cells=False):
         },
     }
     core = MasterPlacementModel.build_exact_core(instances, pools, rules)
-    return MasterPlacementModel.from_exact_core(core, ghost_rect=None)
+    return MasterPlacementModel.from_exact_core(
+        core, ghost_rect=ghost_rect, ghost_anchor_filter=ghost_anchor_filter
+    )
 
 
 def solve_status(master):
