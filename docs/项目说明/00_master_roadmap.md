@@ -60,6 +60,14 @@ FEASIBLE 唯一生产点接线,fable+codex 双审首战 6 项修复单全落,`3c
 reseal 不动点长链 semantic projection+runtime anchor 首次触发;golden 双 pin 重钉;
 慢 lane 30/30);1E 义务层 reseal 已落地(第 15 条义务 PO-CERTIFIED-POWER-POLE-DOMINANCE-NORMALIZATION 入册——14 required_tests+domain faithfulness 追加 1D witness env 负例,checker 双注册,reseal 一轮收敛,字面锚对时 15/65,`4d98314`;验证=义务文件 347 测分族全覆盖+0871b10 对照洗清(解释器间歇病 7 崩三形态物理证据入 memory);慢 lane 30/30);旧 witness
 编码 owner 已拍板不留（2026-07-10：certified 层不保留 runtime env 对照/回退）;
+1F 生产 replay 与内存条款已落地(A 段=wrapper cgroup 硬帽(--scope+expand-env=no+连通性
+探测+值校验 fail-closed)+w6 注入+gate RSS 三档分层(runtime resolver 单一真相源)+C1 真
+工件回归,fable+codex 双审第三战 codex 6 BLOCK 全实锤+8 项修复,`f0a7cd4`;B 段 smoke 五连
+实验=**重大发现:产品化 C1 内存+求解双回归**——6×6 直建 >42G 撞帽未出解 vs b0_4r 原型
+<20G OPTIMAL@541s,cov 规模同 4900、jemalloc/campaign 链均洗清,嫌疑=搜索 profile/约束
+结构;gate w6 档按内核实测回填 44G(本机恒 BLOCK=诚实态,解除=回归修复后重测),evidence=
+07_batch1f_evidence.md,`882287b`)。**批 1 六批(1A-1F)全部落地**;M5 开工首项由 A/B 实验
+改为 C1 回归归因(worktree 回 batch0 HEAD 复刻原型对照+profile 二分);
 M5 A/B 战场随首解解锁,挂批 1 完成后**;
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、

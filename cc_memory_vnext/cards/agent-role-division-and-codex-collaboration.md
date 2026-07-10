@@ -91,3 +91,6 @@ owner:「现在wf可以随便派fable了(暂时),那审查就暂时换成fable+c
 
 ### 1D 双审战绩(2026-07-10 上午,fable+codex 第二战)
 互补形态再验证:**codex BLOCK=pre-1A checkpoint 恢复路径混搭旧 witness proto**(504 绿测试全没覆盖的恢复×表示交叉场景,第四次「规格盲区靠审查抓」实证;修复=方案 A direct rebuild);**fable=checker needle 连锁 handoff 级预警**(21 项 witness env needle 硬编码会被 S2 打断+旧测试名双 pin——把主会话终审必撞的墙提前拆了)。终审自身又挖出第五/六次盲区(v62 文件族+慢 lane witness 真实工件回归,全量扫描+slow 直跑抓出 16+1 失败,含一个源码级边界缺陷=C1 空 powered 义务撞非矩形挡板)。教训沉淀:**规格书 §2 验收清单必须包含「全量 fast lane+全量 slow 直跑」两条,不能只列受影响文件**——四批下来盲区全出在"不在清单里的测试"。
+
+### 1F 双审战绩(2026-07-10 中午,fable+codex 第三战)
+互补形态三连验证:**codex BLOCK×6 全实锤**(systemd-run $VAR 二次展开改写 argv/CAMPAIGN_MEMORY_MAX=infinity 静默脱帽/user manager 不可连无回退——前 3 项本批引入,终审抽验坐实;另 3 项既有 fail-open 顺手封死);**fable=PASS_WITH_NOTES 现场极扎实**(退出码三值实测透传/degraded user systemd 下 scope 仍工作实证/双 checker 绿),其 NOTE 2 前提(env 不在 allowlist)被实现者用契约测试反转——教训:**审计 allowlist 成员必须 python print 集合或跑契约测试,grep 字面量会被拼接字符串骗过**(benders_loop:1248 的 "EX" "ACT_" 拼接条目,auto-memory 卡 zmd-allowlist-split-string-grep-trap)。终审自身贡献=allowlist 事实定案+两复现亲手抽验。B 段 smoke 五连实验主会话直做(实验设计/二分归因=发布面侦察,归因修复=数学面 M5)。
