@@ -32,6 +32,30 @@ import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _resolve_timeout_scale() -> float:
+    """PREFLIGHT_TIMEOUT_SCALE: 慢执行环境(如 2 核 CI runner)对子检查超时的统一放大系数。
+
+    默认 1.0(本机行为逐字节不变)。非法值 fail-closed 直接退出——门禁的超时参数
+    被静默改坏比跑得慢更危险。2026-07-11 起因: 仓库长大后 checker(>30s)与快 lane
+    pytest(>240s)在 GitHub 2 核 runner 上双超时, 而同批本机与 CI slow job 全绿。
+    """
+    raw = os.environ.get("PREFLIGHT_TIMEOUT_SCALE")
+    if raw is None or raw.strip() == "":
+        return 1.0
+    try:
+        scale = float(raw)
+    except ValueError:
+        print(f"FATAL: Unsupported PREFLIGHT_TIMEOUT_SCALE: {raw!r}; expected a positive number.")
+        sys.exit(1)
+    if not (scale > 0) or scale != scale or scale == float("inf"):
+        print(f"FATAL: Unsupported PREFLIGHT_TIMEOUT_SCALE: {raw!r}; expected a positive finite number.")
+        sys.exit(1)
+    return scale
+
+
+_TIMEOUT_SCALE = _resolve_timeout_scale()
 BASELINE_PATH = PROJECT_ROOT / "scripts" / "preflight_baseline.json"
 
 FROZEN_ARTIFACTS = {
@@ -458,6 +482,7 @@ def check_research_audit_coverage(gate: GateResult) -> None:
 
 
 def _run_script_check(gate: GateResult, *, title: str, script_name: str, ok_prefix: str, timeout: int = 30, args: list[str] | None = None) -> None:
+    timeout = max(1, int(timeout * _TIMEOUT_SCALE))
     script = PROJECT_ROOT / "scripts" / script_name
     if not script.exists():
         gate.block(f"{ok_prefix} 脚本不存在: scripts/{script_name}")
@@ -667,7 +692,7 @@ def check_tests(gate: GateResult, *, full: bool = False) -> None:
     print(f"\n[18/18] 测试门禁（{label}）")
     test_target = "src/tests/" if full else None
     test_files = None if full else CORE_TEST_FILES
-    timeout = 1200 if full else 240
+    timeout = max(1, int((1200 if full else 240) * _TIMEOUT_SCALE))
 
     cmd = [sys.executable, "-m", "pytest", "-q", "--tb=short", "--no-header"]
     # 慢测试(@pytest.mark.slow)由专用慢 lane (preflight_gate.py --slow-tests) 用长超时真跑;

@@ -22,7 +22,7 @@ concurrency:
 jobs:
   project-foundation-gate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
 
     steps:
       - name: Check out repository
@@ -48,6 +48,11 @@ jobs:
         run: python -m py_compile scripts/preflight_gate.py
 
       - name: Run project foundation gate
+        env:
+          # 2 核 runner 对本机(24 核)的子检查超时放大: checker 本机 11s、快 lane
+          # pytest(-n auto) 本机 ~70s, 仓库长大后 30s/240s 上限在 runner 上双超时
+          # (2026-07-11 两连红实测), slow job 与本机门禁同批全绿。
+          PREFLIGHT_TIMEOUT_SCALE: "6"
         run: |
           BASE_REF="${{ github.event.pull_request.base.sha || github.event.before }}"
           if [ -z "$BASE_REF" ] || [ "$BASE_REF" = "0000000000000000000000000000000000000000" ]; then
