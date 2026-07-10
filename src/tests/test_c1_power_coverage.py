@@ -739,3 +739,50 @@ def test_c1_nonrectangular_powered_footprint_fails_closed() -> None:
             pools=pools,
             rules=rules,
         )
+
+
+def test_c1_no_powered_slots_skips_coverage_without_pole_template() -> None:
+    # 批 1D 验收盲区实锤（test_v62_candidate_frontier_contract 全族撞挡板）：
+    # 无 power_pole 模板 + 无 needs_power 设施的退化实例，coverage 义务空真，
+    # C1 必须与 witness 时代 table 回退语义平价（跳过编码而非 fail-closed）。
+    # 挡板负例 test_c1_nonrectangular_powered_footprint_fails_closed 钉住
+    # 「非空义务 + 非矩形仍 fail-closed」的另一半。
+    instances = [
+        {
+            "instance_id": "machine_0",
+            "facility_type": "machine",
+            "operation_type": "crafting",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+    ]
+    pools = {
+        "machine": [
+            {
+                "pose_id": "machine_0_0",
+                "anchor": {"x": 0, "y": 0},
+                "pose_params": {"orientation": "north", "port_mode": "none"},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+    }
+    rules = _rules(width=2, height=2, machine_needs_power=False)
+    del rules["facility_templates"]["power_pole"]
+
+    status, model = _solve_coordinate(
+        c1=True,
+        instances=instances,
+        pools=pools,
+        rules=rules,
+    )
+    assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    stats = model.build_stats["power_coverage"]
+    assert stats["encoding"] == "c1_pose_bool_cov_channel_v1"
+    assert stats["powered_slots"] == 0
+    assert stats["pole_slots"] == 0
+    assert stats["witness_indices"] == 0
+    assert stats["element_constraints"] == 0
+    assert stats["cov_channel_literals"] == 0

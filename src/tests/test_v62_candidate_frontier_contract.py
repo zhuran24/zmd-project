@@ -11,6 +11,9 @@ import src.search.outer_search as outer_search_module
 from src.io.delivery_manifest import delivery_manifest_output_path
 from src.io.output_schema import blueprint_output_path
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_UNKNOWN, RUN_STATUS_UNPROVEN
+from src.tests.test_exact_contract import (
+    _patch_frontier_sink_replay_accepts_mock_records,
+)
 from src.search.exact_campaign import (
     CANDIDATE_PROPOSED_STATUS,
     ExactCampaign,
@@ -458,6 +461,7 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
 ) -> None:
     project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
     write_closed_phase_review_gate(project_root)
+    _patch_frontier_sink_replay_accepts_mock_records(monkeypatch)
 
     def fake_run_benders_for_ghost_rect(**kwargs):
         fake_run_benders_for_ghost_rect.last_run_metadata = {
@@ -535,6 +539,7 @@ def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
     monkeypatch,
 ) -> None:
     project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+    _patch_frontier_sink_replay_accepts_mock_records(monkeypatch)
     final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
     blueprint_path = blueprint_output_path(project_root)
     manifest_path = delivery_manifest_output_path(project_root)
@@ -740,6 +745,7 @@ def test_v68_terminal_commit_failure_clears_stale_certified_delivery_artifacts(
     monkeypatch,
 ) -> None:
     project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+    _patch_frontier_sink_replay_accepts_mock_records(monkeypatch)
     final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
     blueprint_path = blueprint_output_path(project_root)
     manifest_path = delivery_manifest_output_path(project_root)

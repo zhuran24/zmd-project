@@ -164,7 +164,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member",
             "test_whole_layout_cut_dilution_fails_closed_when_synthetic_pole_loses_literal",
             "test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member",
-            "test_routing_front_blocked_unencodable_optional_conflict_fails_closed",
+            "test_routing_front_blocked_c1_optional_conflict_emits_exact_safe_cut",
             "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
             "test_pose_bool_replay_alias_collision_fails_closed",
             "test_legacy_benders_cut_alias_collision_fails_closed",
@@ -3112,7 +3112,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "a5f60b8be9d4d8d261ffeee0737cc054b573aa9328e35cd6a9e4cde04ef0a415"
+    "bb25ce8cc3e8f4d3b15481b8c2fca901993669e8833c3d130cfd5cbcb3957783"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -12628,31 +12628,50 @@ def _check_certified_cut_replay_contract(
                 "certified exact master-domain env blocker must retain the declared env/code symbol: "
                 f"{needle}"
             )
-    for needle in (
-        "EXACT_POWER_FAMILY_LOOKUP_ENCODING_ENV",
-        "power_family_lookup_encoding_not_certified",
-        "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV",
-        "power_pole_shell_distance_encoding_not_certified",
-        "EXACT_POWER_COVERAGE_WITNESS_ENCODING_ENV",
-        "power_coverage_witness_encoding_not_certified",
-        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV",
-        "power_coverage_witness_block_geometry_not_certified",
-        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE_ENV",
-        "power_coverage_witness_block_size_not_certified",
-        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES_ENV",
-        "power_coverage_witness_block_templates_not_certified",
-        "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV",
-        "power_coverage_selected_interval_encoding_not_certified",
+    # Batch 1D (owner decision 2026-07-10): C1 is the certified-default power
+    # representation and the seven legacy witness-only representation envs were
+    # removed from BOTH the canonical power-witness defaults and the certified
+    # known-name allowlist, so they now fail closed as unknown EXACT_* names.
+    # The obligation direction flips: these env names must NOT reappear in any
+    # certified env classification surface.  Re-adding one to the known names
+    # or the operational allowlist without a canonical lock would silently
+    # downgrade it to unvalidated pass-through, which is strictly weaker than
+    # both the pre-1D canonical lock and the post-1D unknown fail-closed state.
+    known_env_names_source = _assignment_source(
+        benders_tree,
+        "_CERTIFIED_KNOWN_ENV_NAMES",
+        path=BENDERS_LOOP_PATH,
+    )
+    operational_allowlist_source = _assignment_source(
+        benders_tree,
+        "_CERTIFIED_OPERATIONAL_ENV_ALLOWLIST",
+        path=BENDERS_LOOP_PATH,
+    )
+    for legacy_witness_env_name in (
+        "EXACT_POWER_FAMILY_LOOKUP_ENCODING",
+        "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING",
+        "EXACT_POWER_COVERAGE_WITNESS_ENCODING",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES",
+        "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING",
     ):
-        if needle not in forbidden_env_source and needle not in power_witness_env_map_source:
+        quoted = f'"{legacy_witness_env_name}"'
+        if quoted in known_env_names_source:
             errors.append(
-                "certified exact power-witness env blocker must reject every non-canonical representation override: "
-                f"{needle}"
+                "legacy power-witness env must stay unknown/fail-closed in certified runs "
+                "(batch 1D owner decision): remove from _CERTIFIED_KNOWN_ENV_NAMES: "
+                f"{legacy_witness_env_name}"
             )
-        if needle not in benders_loop_source:
+        if quoted in operational_allowlist_source:
             errors.append(
-                "certified exact power-witness env blocker must retain the declared env/code symbol: "
-                f"{needle}"
+                "legacy power-witness env must never become an operational allowlist entry: "
+                f"{legacy_witness_env_name}"
+            )
+        if legacy_witness_env_name in power_witness_env_map_source:
+            errors.append(
+                "legacy power-witness env must not regain a canonical certified default: "
+                f"{legacy_witness_env_name}"
             )
     resolve_condition_fn = _function_def(
         benders_tree,
@@ -12941,11 +12960,11 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
     'src/models/cut_manager.py': '50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01',
     'src/models/d2_commodity_flow_core.py': 'eb875b3e5be2e6ec65a5e7b84a22fee075ccd64b1fe1e543053603a893aec853',
-    'src/models/exact_coordinate_master.py': '5a079951e2670fc1d6aa6cd2e75558f5dce9d5f31af5260f004315dde1df96d4',
+    'src/models/exact_coordinate_master.py': 'f1be8da10d20cd84e9a2ba96ef807c7e42dd00910e71f0dfe624614dd9e08d7a',
     'src/models/flow_subproblem.py': '1d3d0f174e23feb6df01858941cb713af6f8f676315bba7568211b9d45f9e94d',
     'src/models/highs_candidate_evaluator.py': '1709e1536a49f11ed057ab6dc1e904d9acac8d25c910c4299789b5309986f419',
     'src/models/highs_master_model.py': 'ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a',
-    'src/models/master_model.py': '8d18a5d57d8db21af82d0e2f1d17eeb0f8b63dde2f5fac0778352c09b33ec3db',
+    'src/models/master_model.py': 'abd9a1a1ff0e9df6562ddef2ca5cd2f06be415e69869c7e14cc526e01ca0cedd',
     'src/models/patch_routing_core.py': '117c5a326e5bd025c8ea18bff27ed5bf7525b0e5919abef6e2a5b729f99b05ff',
     'src/models/port_binding.py': '18e9c586e615ce3172d1ee32a89f7f3961b14e6fe386467ff5ea714930c01163',
     'src/models/pose_bool_exact_master.py': '00c82b8758c7d859f9dfc9d3936516738ed48bf3bb5c1ad73477a183e848d0ed',
@@ -12968,13 +12987,13 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/report_builder.py': '860ff758d6c64ac0029f2e22ad087c6b520d37d40e0264a8b464302a36c7cff6',
     'src/render/serve.py': '45a03f847c80595ef72b3e859eeccf01169ed16e87faebd7b75be4c788ff7262',
     'src/runtime/subproblem_invocation_counter.py': '6f5ac40b2674a1a2b99d9932dc262e4c57c2f622e27e4b83dc39d9bcc270c759',
-    'src/search/benders_loop.py': 'd9baa976f98201662602417f01db1a60ed9486b43a7dff13037fbf11495c6d81',
+    'src/search/benders_loop.py': '59fc88b70b41a38044c6c257cd1bf447427db6c8c27d6c275b2caf9db3362832',
     'src/search/f5_binding_empty_domain_adapter.py': '76d072161b85f8ce5e87682769434291b5c7ccdb005623dc8a3265fb4c48b6df',
     'src/search/orbit_homogeneity.py': '633d41eae5a2b6db987a350ca6862324df9a8551dd0191f1f3ffa264b71cc4c9',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
-    'src/search/certified_artifact_contract.py': 'aa0a4d80aeb9c9903490fb741997da2871c9cd1e64eff5a93a1c3335f5c0141b',
+    'src/search/certified_artifact_contract.py': 'ae750a43e10a7c4ced2a68f61920b2d78bf03f1843b458f973ad6aa2b347c5e3',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': '3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',

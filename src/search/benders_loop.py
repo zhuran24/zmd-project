@@ -70,7 +70,7 @@ from src.models.cut_manager import (
     _parse_ghost_anchor_condition_key,
 )
 from src.models.flow_subproblem import FlowSubproblem, build_flow_network
-from src.models.exact_coordinate_master import (
+from src.models.exact_coordinate_master import (  # noqa: F401
     EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_BOUNDS,
     EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV,
     EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV,
@@ -982,43 +982,13 @@ _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
         "promotes it (P1.3 M3-4 wiring; ladder gate)",
     ),
 }
-_CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS: Mapping[str, tuple[str, str, str]] = {
-    EXACT_POWER_FAMILY_LOOKUP_ENCODING_ENV: (
-        EXACT_POWER_FAMILY_LOOKUP_ENCODING_TABLE,
-        "power_family_lookup_encoding_not_certified",
-        "power family lookup encoding changes certified master power-witness representation",
-    ),
-    EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV: (
-        EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ELEMENT,
-        "power_pole_shell_distance_encoding_not_certified",
-        "power pole shell-distance encoding changes certified master power-witness representation",
-    ),
-    EXACT_POWER_COVERAGE_WITNESS_ENCODING_ENV: (
-        EXACT_POWER_COVERAGE_WITNESS_ENCODING_ELEMENT,
-        "power_coverage_witness_encoding_not_certified",
-        "power coverage witness encoding changes certified master power-witness representation",
-    ),
-    EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV: (
-        EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_FINAL_TARGET,
-        "power_coverage_witness_block_geometry_not_certified",
-        "power coverage block-witness geometry changes certified witness representation",
-    ),
-    EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE_ENV: (
-        "128",
-        "power_coverage_witness_block_size_not_certified",
-        "power coverage block-witness size changes certified witness representation",
-    ),
-    EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES_ENV: (
-        "",
-        "power_coverage_witness_block_templates_not_certified",
-        "power coverage block-witness template filtering changes certified witness representation",
-    ),
-    EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV: (
-        EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_BOUNDS,
-        "power_coverage_selected_interval_encoding_not_certified",
-        "power coverage selected-interval encoding changes certified master power-witness representation",
-    ),
-}
+# Owner decision 2026-07-10: after C1 became the certified default, the legacy
+# witness path is unreachable in certified runs.  Its seven witness-only env
+# locks therefore have no canonical certified values; they now fail closed as
+# unknown EXACT_* names.  Keep this constant and the guard loop below intact.
+_CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS: Mapping[
+    str, tuple[str, str, str]
+] = {}
 
 
 _CERTIFIED_KNOWN_ENV_NAMES = frozenset(
@@ -1205,29 +1175,23 @@ _CERTIFIED_KNOWN_ENV_NAMES = frozenset(
         "EXACT_PATCH_ROUTING_CP_SAT_WORKERS",
         "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE",
         "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV",
-        "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING",
         "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODINGS",
         "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_BOUNDS",
         "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_DELTA",
         "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRIES",
-        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_FINAL_TARGET",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_SELECTED_BLOCK",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_SELECTED_BLOCK_ACTIVE_GUARD",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_SELECTED_BLOCK_ACTIVE_GUARD_GROUPED_XY",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_SELECTED_BLOCK_ACTIVE_GUARD_JOINED_XY",
-        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE_ENV",
-        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES",
         "EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES_ENV",
-        "EXACT_POWER_COVERAGE_WITNESS_ENCODING",
         "EXACT_POWER_COVERAGE_WITNESS_ENCODINGS",
         "EXACT_POWER_COVERAGE_WITNESS_ENCODING_BLOCK_ELEMENT",
         "EXACT_POWER_COVERAGE_WITNESS_ENCODING_ELEMENT",
         "EXACT_POWER_COVERAGE_WITNESS_ENCODING_ENV",
-        "EXACT_POWER_FAMILY_LOOKUP_ENCODING",
         "EXACT_POWER_FAMILY_LOOKUP_ENCODINGS",
         "EXACT_POWER_FAMILY_LOOKUP_ENCODING_ENV",
         "EXACT_POWER_FAMILY_LOOKUP_ENCODING_LINEAR_SHELL_GUARDS",
@@ -1237,7 +1201,6 @@ _CERTIFIED_KNOWN_ENV_NAMES = frozenset(
         "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST",
         "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV",
         "EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV",
-        "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING",
         "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODINGS",
         "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ELEMENT",
         "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV",
@@ -8694,6 +8657,57 @@ def run_benders_for_ghost_rect(
         # 自动钩子 (受 EXACT_MASTER_HINT_PERSISTENCE env 开关控制, default off).
         master.set_hint_persistence_context(project_root, candidate_key)
         master.build()
+
+    if solve_mode == "certified_exact":
+        coordinate_delegate = getattr(master, "_coordinate_delegate", None)
+        if (
+            getattr(
+                coordinate_delegate,
+                "c1_power_pole_representation",
+                False,
+            )
+            is not True
+        ):
+            blocker_code = "power_witness_representation_not_certified"
+            blocker = {
+                "code": blocker_code,
+                "detail": (
+                    "certified_exact requires the C1 native power-pole "
+                    "representation"
+                ),
+            }
+            _emit_campaign_heartbeat(
+                {
+                    "stage": "master_representation_contract",
+                    "event": "blocked",
+                    "blocker_code": blocker_code,
+                }
+            )
+            proof_summary = _merge_reuse_metadata(
+                {
+                    "mode": "certified_exact",
+                    "benders_iterations": 0,
+                    "master_status": RUN_STATUS_UNKNOWN,
+                    "diagnostic_flow_status": "NOT_RUN",
+                    "enumerated_bindings": 0,
+                    "routing_attempts": 0,
+                    "stage": "master_representation_contract",
+                    "blocker_code": blocker_code,
+                    "blockers": [blocker],
+                },
+                used_exact_core_reuse=used_exact_core_reuse,
+                core_build_seconds=core_build_seconds,
+                overlay_build_seconds=overlay_build_seconds,
+                ghost_constraint_seconds=ghost_constraint_seconds,
+                cut_replay_seconds=0.0,
+            )
+            _publish_last_run_metadata(
+                proof_summary,
+                loaded_exact_safe_cuts,
+                loaded_exact_safe_cut_count=0,
+                generated_exact_safe_cut_count=0,
+            )
+            return RUN_STATUS_UNKNOWN, None
 
     cut_replay_started = time.perf_counter()
     raw_candidate_cuts: Sequence[Mapping[str, Any]] = []

@@ -203,6 +203,9 @@ def test_flag_off_baseline_master_still_carries_power_pole_slots() -> None:
     with mock.patch.dict(os.environ, {"EXACT_POWER_PLACEMENT_SUBPROBLEM": ""}):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
+            # L4 委托是 witness 时代 exploratory-only 功能；C1 表示（1D 起 certified
+            # 默认）的杆 pose 完整性校验会拒本 fixture 的手搓 coverage 数据，显式退回。
+            c1_power_pole_representation=False,
         )
     slot_counts = core.build_stats.get("master_slot_counts", {})
     assert slot_counts.get("residual_optionals", {}).get("power_pole", 0) >= 1
@@ -221,6 +224,9 @@ def test_flag_on_master_drops_power_pole_residual_slots() -> None:
     ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
+            # L4 委托是 witness 时代 exploratory-only 功能；C1 表示（1D 起 certified
+            # 默认）的杆 pose 完整性校验会拒本 fixture 的手搓 coverage 数据，显式退回。
+            c1_power_pole_representation=False,
         )
     slot_counts = core.build_stats.get("master_slot_counts", {})
     assert "power_pole" not in slot_counts.get("residual_optionals", {})
@@ -240,6 +246,9 @@ def test_flag_on_end_to_end_master_solve_plus_power_subproblem_feasible() -> Non
     ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
+            # L4 委托是 witness 时代 exploratory-only 功能；C1 表示（1D 起 certified
+            # 默认）的杆 pose 完整性校验会拒本 fixture 的手搓 coverage 数据，显式退回。
+            c1_power_pole_representation=False,
         )
         overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
         status = overlay.solve(time_limit_seconds=5.0)

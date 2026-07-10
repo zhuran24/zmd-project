@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-07-03",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "a5f60b8be9d4d8d261ffeee0737cc054b573aa9328e35cd6a9e4cde04ef0a415",
+  "semantic_projection_sha256": "bb25ce8cc3e8f4d3b15481b8c2fca901993669e8833c3d130cfd5cbcb3957783",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -145,7 +145,7 @@
         "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member",
         "test_whole_layout_cut_dilution_fails_closed_when_synthetic_pole_loses_literal",
         "test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member",
-        "test_routing_front_blocked_unencodable_optional_conflict_fails_closed",
+        "test_routing_front_blocked_c1_optional_conflict_emits_exact_safe_cut",
         "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
         "test_pose_bool_replay_alias_collision_fails_closed",
         "test_legacy_benders_cut_alias_collision_fails_closed",
@@ -986,7 +986,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-      "source_sha256": "2bfe63102a61e2b01b56bcf2f9ec7f258c1ac6fb31daf1db4794f6244df84f5a",
+      "source_sha256": "0c728de0c17c239f018c28fcbfe41cbd65772afa5d729c99ef474d5e77b121fa",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1003,7 +1003,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "aa0a4d80aeb9c9903490fb741997da2871c9cd1e64eff5a93a1c3335f5c0141b",
+        "source_sha256": "ae750a43e10a7c4ced2a68f61920b2d78bf03f1843b458f973ad6aa2b347c5e3",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1306,7 +1306,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "5a079951e2670fc1d6aa6cd2e75558f5dce9d5f31af5260f004315dde1df96d4",
+        "source_sha256": "f1be8da10d20cd84e9a2ba96ef807c7e42dd00910e71f0dfe624614dd9e08d7a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1360,7 +1360,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "8d18a5d57d8db21af82d0e2f1d17eeb0f8b63dde2f5fac0778352c09b33ec3db",
+        "source_sha256": "abd9a1a1ff0e9df6562ddef2ca5cd2f06be415e69869c7e14cc526e01ca0cedd",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1570,7 +1570,7 @@
           "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
           "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE"
         ],
-        "source_sha256": "d9baa976f98201662602417f01db1a60ed9486b43a7dff13037fbf11495c6d81",
+        "source_sha256": "59fc88b70b41a38044c6c257cd1bf447427db6c8c27d6c275b2caf9db3362832",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

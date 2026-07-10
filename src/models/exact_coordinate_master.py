@@ -761,7 +761,7 @@ class CoordinateExactMasterDelegate:
         self.grid_h = int(owner.grid_h)
         self.master_representation = "coordinate_exact_v2"
         self.c1_power_pole_representation = bool(
-            getattr(owner, "c1_power_pole_representation", False)
+            getattr(owner, "c1_power_pole_representation", True)
         )
 
         self._template_mode_tokens: Dict[str, List[ModeToken]] = {}
@@ -6308,6 +6308,28 @@ class CoordinateExactMasterDelegate:
         powered_slots = self._all_powered_slots()
         pole_bools = list(self._c1_pole_bools)
         radius = self._power_coverage_radius()
+        if not powered_slots:
+            # 无受电槽 = coverage 义务空真，无需任何编码；矩形性判定对空义务
+            # 无意义（无 power_pole 模板的退化实例会被误判非矩形而 fail-closed，
+            # witness 时代同形态走 table 回退自然为空——语义平价要求这里跳过）。
+            # 挡板仍对一切非空义务的非矩形形态 fail-closed。
+            self.owner.build_stats["power_coverage"] = {
+                "representation": "coordinate_geometric",
+                "encoding": "c1_pose_bool_cov_channel_v1",
+                "powered_slots": 0,
+                "pole_slots": int(len(pole_bools)),
+                "cover_literals": 0,
+                "witness_indices": 0,
+                "element_constraints": 0,
+                "radius": int(radius),
+                "pole_pose_bools": int(len(pole_bools)),
+                "cov_channel_literals": 0,
+                "constant_pole_intervals": int(
+                    2 * len(self._c1_pole_intervals_by_pose_idx)
+                ),
+                "dominance_bound_terms": 0,
+            }
+            return
         if not self._supports_rectangular_power_coverage():
             raise NotImplementedError("C1 非矩形回退不在批 1B 范围")
 

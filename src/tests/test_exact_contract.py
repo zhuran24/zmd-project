@@ -120,6 +120,11 @@ def _build_toy_exact_project(project_root: Path) -> Path:
             "globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+                "power_pole": {
+                    "dimensions": {"w": 1, "h": 1},
+                    "needs_power": False,
+                    "power_coverage_radius": 1,
+                },
             },
         },
     )
@@ -136,7 +141,18 @@ def _build_toy_exact_project(project_root: Path) -> Path:
                         "output_port_cells": [],
                         "power_coverage_cells": None,
                     }
-                ]
+                ],
+                "power_pole": [
+                    {
+                        "pose_id": f"pole_{x}",
+                        "anchor": {"x": x, "y": 0},
+                        "occupied_cells": [[x, 0]],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                        "power_coverage_cells": [[0, 0], [1, 0]],
+                    }
+                    for x in range(2)
+                ],
             }
         },
     )
@@ -515,7 +531,11 @@ def _build_required_protocol_box_project(project_root: Path) -> Path:
         {
             "globals": {"grid": {"width": 2, "height": 2}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
-                "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+                "power_pole": {
+                    "dimensions": {"w": 1, "h": 1},
+                    "needs_power": False,
+                    "power_coverage_radius": 1,
+                },
                 "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
             },
             "commodity_metadata": {
@@ -529,13 +549,19 @@ def _build_required_protocol_box_project(project_root: Path) -> Path:
             "facility_pools": {
                 "power_pole": [
                     {
-                        "pose_id": "pole_0",
-                        "anchor": {"x": 1, "y": 1},
-                        "occupied_cells": [[1, 1]],
+                        "pose_id": f"pole_{x}_{y}",
+                        "anchor": {"x": x, "y": y},
+                        "occupied_cells": [[x, y]],
                         "input_port_cells": [],
                         "output_port_cells": [],
-                        "power_coverage_cells": [[0, 0]],
+                        "power_coverage_cells": [
+                            [cell_x, cell_y]
+                            for cell_x in range(2)
+                            for cell_y in range(2)
+                        ],
                     }
+                    for y in range(2)
+                    for x in range(2)
                 ],
                 "protocol_storage_box": [
                     {
@@ -682,7 +708,15 @@ def _build_multi_pose_exact_project(
 
     facility_templates = {
         "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+        "power_pole": {
+            "dimensions": {"w": 1, "h": 1},
+            "needs_power": False,
+            "power_coverage_radius": 0,
+        },
     }
+    pole_anchor_order = list(range(grid_width))
+    if include_pole_block:
+        pole_anchor_order = [1, *[x for x in pole_anchor_order if x != 1]]
     pools: dict[str, list[dict]] = {
         "tiny_facility": [
             {
@@ -694,24 +728,26 @@ def _build_multi_pose_exact_project(
                 "power_coverage_cells": None,
             }
             for anchor in pose_anchors
-        ]
-    }
-    if include_pole_block:
-        facility_templates["power_pole"] = {
-            "dimensions": {"w": 1, "h": 1},
-            "needs_power": False,
-        }
-        pools["power_pole"] = [
+        ],
+        "power_pole": [
             {
-                "pose_id": "pole_block",
-                "anchor": {"x": 1, "y": 0},
-                "occupied_cells": [[1, 0]],
+                "pose_id": (
+                    "pole_block"
+                    if include_pole_block and anchor == 1
+                    else f"pole_{anchor}"
+                ),
+                "anchor": {"x": anchor, "y": 0},
+                "occupied_cells": [[anchor, 0]],
                 "input_port_cells": [],
                 "output_port_cells": [],
-                "power_coverage_cells": [[1, 0]],
+                "power_coverage_cells": [
+                    [cell_x, 0]
+                    for cell_x in range(anchor, min(grid_width - 1, anchor + 1) + 1)
+                ],
             }
-        ]
-        pools["protocol_storage_box"] = []
+            for anchor in pole_anchor_order
+        ],
+    }
 
     _write_json(
         rules_dir / "canonical_rules.json",
@@ -3626,6 +3662,7 @@ def test_ghost_rect_can_screen_high_capacity_pole_in_exact_master() -> None:
         pools,
         rules,
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
     )
     baseline_model.build()
     assert baseline_model.solve(time_limit_seconds=5.0) in (cp_model.OPTIMAL, cp_model.FEASIBLE)
@@ -3636,6 +3673,7 @@ def test_ghost_rect_can_screen_high_capacity_pole_in_exact_master() -> None:
         rules,
         solve_mode="certified_exact",
         ghost_rect=(1, 1),
+        c1_power_pole_representation=False,
     )
     ghost_model.build()
     forced_anchor_idx = next(
@@ -6210,7 +6248,7 @@ def test_binding_domain_empty_generates_singleton_cut_and_continues_master_loop(
     assert metadata["exact_safe_cuts"][0]["proof_summary"]["binding_domain_empty_cut_count"] == 1
 
 
-def test_routing_front_blocked_unencodable_optional_conflict_fails_closed(
+def test_routing_front_blocked_c1_optional_conflict_emits_exact_safe_cut(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -6333,12 +6371,13 @@ def test_routing_front_blocked_unencodable_optional_conflict_fails_closed(
 
     assert status == RUN_STATUS_UNKNOWN
     assert result is None
-    assert metadata["generated_exact_safe_cut_count"] == 0
-    assert metadata["fine_grained_exact_safe_cut_count"] == 0
+    assert metadata["generated_exact_safe_cut_count"] == 1
+    assert metadata["fine_grained_exact_safe_cut_count"] == 1
     assert metadata["binding_domain_empty_cut_count"] == 0
-    assert metadata["routing_front_blocked_cut_count"] == 0
-    assert metadata["exact_safe_cuts"] == []
-    assert metadata["proof_summary"]["master_follow_up"] == "cut_stall"
+    assert metadata["routing_front_blocked_cut_count"] == 1
+    assert len(metadata["exact_safe_cuts"]) == 1
+    assert metadata["exact_safe_cuts"][0]["cut_type"] == "routing_front_blocked_nogood"
+    assert metadata["proof_summary"]["master_follow_up"] == "fail_closed_unknown"
 
 
 def test_relaxed_disconnected_only_rejects_binding_selection_without_persisted_cut(
@@ -6810,6 +6849,7 @@ def test_unknown_stop_does_not_persist_incumbent_certified_result_to_outputs(
         "create",
         staticmethod(lambda project_root, solve_mode="certified_exact": object()),
     )
+    _patch_frontier_sink_replay_accepts_mock_records(monkeypatch)
 
     status, result = run_outer_search(
         project_root=project_root,
@@ -8350,7 +8390,7 @@ def test_exact_path_publishes_core_reuse_metadata(tmp_path: Path) -> None:
     assert "binding_domain_cache_hits" in metadata
     assert "binding_domain_cache_misses" in metadata
     assert metadata["master_representation"] == "coordinate_exact_v2"
-    assert metadata["master_pose_bool_literals"] == 0
+    assert metadata["master_pose_bool_literals"] == 2
     assert metadata["master_domain_encoding"] == "mode_rect_factorized_v1"
     assert metadata["master_domain_table_rows"] == 0
     assert "power_coverage_representation" in metadata
@@ -8432,7 +8472,9 @@ def test_exact_path_publishes_core_reuse_metadata(tmp_path: Path) -> None:
     assert "signature_bucket_distinct_keys" in metadata
     assert "geometry_cache_templates" in metadata
     assert metadata["power_capacity_oracle"] == "compact_rect_cpsat_v2"
-    assert metadata["power_coverage_encoding"] == "table_pairwise_witness_v1"
+    assert metadata["power_coverage_encoding"] == "c1_pose_bool_cov_channel_v1"
+    # toy 项目无 needs_power 设施：空 powered 义务自 1D 终审起提前返回、
+    # 不再为空义务建 cov channel（此前 C1 主路径对空义务也建 grid 格数个）。
     assert metadata["power_coverage_cover_literals"] == 0
     assert metadata["power_coverage_witness_indices"] == 0
 
@@ -9083,6 +9125,40 @@ def test_v80_certified_exact_env_guard_blocks_unclassified_exact_knob(monkeypatc
     ]
 
 
+@pytest.mark.parametrize(
+    ("env_name", "canonical_legacy_value"),
+    [
+        ("EXACT_POWER_FAMILY_LOOKUP_ENCODING", "table"),
+        ("EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING", "element"),
+        ("EXACT_POWER_COVERAGE_WITNESS_ENCODING", "element"),
+        ("EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY", "final_target"),
+        ("EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE", "128"),
+        ("EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES", ""),
+        ("EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING", "bounds"),
+    ],
+)
+def test_batch1d_certified_env_guard_treats_legacy_witness_envs_as_unknown(
+    monkeypatch,
+    env_name: str,
+    canonical_legacy_value: str,
+) -> None:
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv(env_name, canonical_legacy_value)
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert benders_loop_module._CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS == {}
+    assert env_name not in benders_loop_module._CERTIFIED_KNOWN_ENV_NAMES
+    assert blockers == [
+        {
+            "code": "unclassified_exact_env_not_certified",
+            "env": env_name,
+            "value": canonical_legacy_value,
+            "detail": "unknown EXACT_* env is not on the certified_exact allowlist",
+        }
+    ]
+
+
 def test_v80_certified_exact_env_guard_blocks_known_proof_knob(monkeypatch) -> None:
     _clear_exact_env_for_v80_guard(monkeypatch)
     monkeypatch.setenv("EXACT_B1_SEPARATOR_HULL", "1")
@@ -9329,6 +9405,7 @@ def _assert_run_benders_drifted_precheck_reaches_controller(
                 "ghost_constraint_seconds": 0.0,
             }
         }
+        _coordinate_delegate = SimpleNamespace(c1_power_pole_representation=True)
 
         def set_hint_persistence_context(self, *args, **kwargs):
             del args, kwargs

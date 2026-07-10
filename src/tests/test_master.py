@@ -996,6 +996,7 @@ def _build_exact_power_capacity_model(
         rules,
         solve_mode=solve_mode,
         ghost_rect=ghost_rect,
+        c1_power_pole_representation=False,
     )
 
 
@@ -1060,6 +1061,7 @@ def _build_exact_single_family_upper_bound_model() -> MasterPlacementModel:
         pools,
         rules,
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
     )
 
 
@@ -1136,6 +1138,7 @@ def _build_exact_ghost_conditioned_family_upper_bound_model(
         rules,
         solve_mode="certified_exact",
         ghost_rect=ghost_rect,
+        c1_power_pole_representation=False,
     )
 
 
@@ -1780,6 +1783,7 @@ def _build_exact_geometric_power_coverage_model() -> MasterPlacementModel:
         pools,
         rules,
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
     )
 
 
@@ -1931,6 +1935,7 @@ def test_exact_mode_optional_pose_variables_ignore_provisional_caps() -> None:
         rules,
         solve_mode="certified_exact",
         skip_power_coverage=True,
+        c1_power_pole_representation=False,
     )
     exact_model.build()
     assert exact_model.build_stats["master_representation"] == "coordinate_exact_v2"
@@ -3173,6 +3178,7 @@ def test_from_exact_core_seeds_precomputed_boundary_feasibility_cache(
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     precomputed_boundary = MasterPlacementModel.evaluate_boundary_port_feasibility_from_screen_spec(
@@ -3418,6 +3424,7 @@ def test_exact_core_overlay_recomputes_domain_activation_stats() -> None:
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
@@ -3493,6 +3500,7 @@ def test_exact_master_search_guidance_profile_is_exposed() -> None:
         solve_mode="certified_exact",
         ghost_rect=(1, 1),
         skip_power_coverage=True,
+        c1_power_pole_representation=False,
     )
     model.build()
 
@@ -3841,6 +3849,7 @@ def test_exact_search_guidance_separates_required_and_residual_optionals() -> No
         },
         solve_mode="certified_exact",
         skip_power_coverage=True,
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -5379,6 +5388,7 @@ def test_exact_core_overlay_signature_bucket_mandatory_region_counting_matches_l
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(env_var, raising=False)
@@ -5418,6 +5428,7 @@ def test_exact_core_overlay_signature_bucket_mandatory_region_fallback_instrumen
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(region_env_var, raising=False)
@@ -5461,6 +5472,7 @@ def test_exact_core_overlay_signature_bucket_template_footprint_support_matches_
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(region_env_var, raising=False)
@@ -5510,6 +5522,7 @@ def test_exact_core_overlay_signature_bucket_template_footprint_support_gap_inst
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(region_env_var, raising=False)
@@ -5561,6 +5574,7 @@ def test_exact_core_overlay_signature_bucket_payload_footprint_stability_matches
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(region_env_var, raising=False)
@@ -7246,6 +7260,7 @@ def test_exact_power_capacity_lower_bound_excludes_pole_overlapping_pose() -> No
         pools,
         rules,
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
     )
     model.build()
 
@@ -7463,6 +7478,7 @@ def test_exact_optional_cardinality_bound_limits_power_poles_to_powered_faciliti
         rules,
         solve_mode="certified_exact",
         skip_power_coverage=True,
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -7518,6 +7534,7 @@ def test_coordinate_exact_v2_emits_factorized_domain_and_shell_metadata() -> Non
         },
         solve_mode="certified_exact",
         skip_power_coverage=True,
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -7580,6 +7597,7 @@ def test_coordinate_exact_power_family_lookup_linear_shell_guard_encoding(
         },
         solve_mode="certified_exact",
         skip_power_coverage=True,
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -7636,6 +7654,7 @@ def test_coordinate_exact_power_family_lookup_shell_pair_index_encoding(
             },
         },
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -7706,6 +7725,7 @@ def test_coordinate_exact_power_pole_shell_distance_linear_minmax_encoding(
         },
         solve_mode="certified_exact",
         skip_power_coverage=True,
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -7791,6 +7811,7 @@ def test_coordinate_exact_power_coverage_block_element_witness_encoding(
             },
         },
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -7917,6 +7938,7 @@ def _build_block64_power_coverage_equivalence_model(
             },
         },
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -8620,6 +8642,7 @@ def _build_power_coverage_selected_interval_fixture() -> MasterPlacementModel:
             },
         },
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -8774,6 +8797,7 @@ def test_exact_power_capacity_lower_bound_includes_protocol_storage_box_lower_bo
             },
         },
         solve_mode="certified_exact",
+        c1_power_pole_representation=False,
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
@@ -9090,6 +9114,7 @@ def test_exact_core_overlay_applies_ghost_anchor_power_capacity_screen() -> None
         pools,
         rules,
         skip_power_coverage=False,
+        c1_power_pole_representation=False,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
     stats = overlay.build_stats["global_valid_inequalities"]["ghost_aware_via_pole_feasibility"]
@@ -9181,6 +9206,7 @@ def test_exact_core_overlay_applies_ghost_conditioned_family_upper_bounds() -> N
         pools,
         rules,
         skip_power_coverage=False,
+        c1_power_pole_representation=False,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
     stats = overlay.build_stats["global_valid_inequalities"]["ghost_aware_via_pole_feasibility"]
@@ -9208,6 +9234,7 @@ def test_exact_core_overlay_applies_ghost_conditioned_mandatory_signature_bucket
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
@@ -9247,6 +9274,7 @@ def test_exact_core_overlay_applies_ghost_conditioned_required_optional_signatur
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
         exact_required_pose_optional_counts=base_model.build_stats["exact_required_optionals"],
     )
@@ -9291,6 +9319,7 @@ def test_exact_core_overlay_signature_bucket_tightening_instrumentation_default_
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     baseline = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
@@ -9327,6 +9356,7 @@ def test_exact_core_overlay_signature_bucket_tightening_instrumentation_records_
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     baseline = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
@@ -9378,6 +9408,7 @@ def test_exact_core_overlay_signature_bucket_tightening_instrumentation_records_
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
         exact_required_pose_optional_counts=base_model.build_stats["exact_required_optionals"],
     )
@@ -9423,6 +9454,7 @@ def test_exact_core_overlay_signature_bucket_residual_overlay_instrumentation_de
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(residual_env_var, raising=False)
@@ -9451,6 +9483,7 @@ def test_exact_core_overlay_signature_bucket_residual_overlay_instrumentation_re
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(inst_env_var, raising=False)
@@ -9531,6 +9564,7 @@ def test_exact_core_overlay_signature_bucket_residual_overlay_instrumentation_re
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(residual_env_var, raising=False)
@@ -9574,6 +9608,7 @@ def test_exact_core_overlay_signature_bucket_model_shell_instrumentation_default
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(model_shell_env_var, raising=False)
@@ -9607,6 +9642,7 @@ def test_exact_core_overlay_signature_bucket_model_shell_instrumentation_records
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(model_shell_env_var, raising=False)
@@ -9661,6 +9697,7 @@ def test_exact_core_overlay_signature_bucket_model_shell_instrumentation_rejects
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -9684,6 +9721,7 @@ def test_exact_core_overlay_signature_bucket_port_profile_cache_instrumentation_
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(env_var, raising=False)
@@ -9722,6 +9760,7 @@ def test_exact_core_overlay_signature_bucket_port_profile_cache_instrumentation_
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     monkeypatch.delenv(env_var, raising=False)
@@ -9792,6 +9831,7 @@ def test_exact_core_overlay_signature_bucket_port_profile_cache_instrumentation_
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -9815,6 +9855,7 @@ def test_exact_core_overlay_signature_bucket_powered_support_coverer_instrumenta
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -9861,6 +9902,7 @@ def test_exact_core_overlay_signature_bucket_powered_support_coverer_instrumenta
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -9937,6 +9979,7 @@ def test_exact_core_overlay_signature_bucket_powered_support_coverer_instrumenta
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -9960,6 +10003,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_optimization_default_o
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10015,6 +10059,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_optimization_matches_l
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10082,6 +10127,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_optimization_rejects_u
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10108,6 +10154,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_batched_counter_defaul
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10163,6 +10210,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_batched_counter_matche
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10249,6 +10297,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_detail_instrumentation
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10301,6 +10350,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_detail_instrumentation
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10399,6 +10449,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_detail_instrumentation
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10419,6 +10470,7 @@ def test_exact_core_overlay_signature_bucket_compact_item_batched_counter_reject
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10437,6 +10489,7 @@ def test_exact_core_overlay_signature_bucket_residual_overlay_instrumentation_re
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
 
@@ -10452,6 +10505,7 @@ def test_exact_core_overlay_applies_mandatory_signature_monotonic_symmetry() -> 
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
@@ -10473,6 +10527,7 @@ def test_exact_core_overlay_applies_required_optional_signature_monotonic_symmet
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
         exact_required_pose_optional_counts=base_model.build_stats["exact_required_optionals"],
     )
@@ -10495,6 +10550,7 @@ def test_exact_core_overlay_applies_ghost_conditioned_residual_optional_signatur
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
@@ -10538,6 +10594,7 @@ def test_exact_core_overlay_applies_residual_optional_signature_monotonic_symmet
         base_model.facility_pools,
         base_model.rules,
         skip_power_coverage=base_model.skip_power_coverage,
+        c1_power_pole_representation=base_model.c1_power_pole_representation,
         generic_io_requirements=base_model.generic_io_requirements,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))

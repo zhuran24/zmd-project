@@ -201,7 +201,7 @@ def _c1_pole_bool_for_anchor(master: MasterPlacementModel, anchor: Tuple[int, in
     raise AssertionError(f"missing C1 pole bool for anchor {anchor!r}")
 
 
-def test_default_off_keeps_residual_power_pole_coordinate_slots() -> None:
+def test_default_core_uses_c1_without_residual_power_pole_coordinate_slots() -> None:
     pools = {"machine": _machine_pool(), "power_pole": _power_pole_pool()}
 
     core = MasterPlacementModel.build_exact_core(
@@ -212,12 +212,52 @@ def test_default_off_keeps_residual_power_pole_coordinate_slots() -> None:
     )
 
     residual_counts = core.build_stats["master_slot_counts"]["residual_optionals"]
-    assert residual_counts["power_pole"] == 1
-    assert any(
+    assert "power_pole" not in residual_counts
+    assert not any(
         str(key).startswith("residual_optional::power_pole::")
         for key in core.coordinate_binding["slot_binding"]
     )
-    assert core.coordinate_binding["c1_power_pole_binding"]["enabled"] is False
+    assert core.c1_power_pole_representation is True
+    assert core.coordinate_binding["c1_power_pole_binding"]["enabled"] is True
+    assert core.build_stats["c1_power_pole_representation"]["enabled"] is True
+
+
+def test_default_master_construction_enables_c1_power_pole_representation() -> None:
+    model = MasterPlacementModel(
+        _machine_instances(),
+        {"machine": _machine_pool(), "power_pole": _power_pole_pool()},
+        _rules(),
+        solve_mode="certified_exact",
+        skip_power_coverage=True,
+    )
+
+    assert model.c1_power_pole_representation is True
+    assert model._coordinate_delegate is not None
+    assert model._coordinate_delegate.c1_power_pole_representation is True
+
+
+def test_skip_power_coverage_with_c1_omits_coverage_channel_constraints() -> None:
+    core = MasterPlacementModel.build_exact_core(
+        _machine_instances(),
+        {"machine": _machine_pool(), "power_pole": _power_pole_pool()},
+        _rules(),
+        skip_power_coverage=True,
+    )
+
+    proto_variable_names = set(_proto_variable_names_by_index(core.proto).values())
+    assert any(name.startswith("c1pole__") for name in proto_variable_names)
+    assert not any(
+        name.startswith(("c1cov__", "c1wx__", "c1wy__", "c1flat__", "c1cover__"))
+        for name in proto_variable_names
+    )
+    assert "power_coverage" not in core.build_stats
+    valid_inequalities = core.build_stats["global_valid_inequalities"]
+    assert valid_inequalities["power_capacity_families"]["reason"] == (
+        "power_coverage_skipped"
+    )
+    assert valid_inequalities["aggregated_power_capacity_terms"]["reason"] == (
+        "power_coverage_skipped"
+    )
 
 
 def test_c1_creates_pose_bools_without_residual_power_pole_slots() -> None:
@@ -367,6 +407,78 @@ def test_c1_bind_from_core_requires_c1_binding_when_pool_nonempty() -> None:
         delegate.bind_from_core(disabled_binding)
 
 
+def test_pre_1a_coordinate_core_without_c1_binding_rebuilds_as_native_c1() -> None:
+    pools = {"machine": _machine_pool(), "power_pole": _power_pole_pool()}
+    rules = _rules()
+    legacy_core = MasterPlacementModel.build_exact_core(
+        _machine_instances(),
+        pools,
+        rules,
+        skip_power_coverage=True,
+        c1_power_pole_representation=False,
+    )
+    legacy_core.__dict__.pop("c1_power_pole_representation", None)
+    legacy_core.coordinate_binding = {
+        key: value
+        for key, value in legacy_core.coordinate_binding.items()
+        if key != "c1_power_pole_binding"
+    }
+    assert "c1_power_pole_representation" not in legacy_core.__dict__
+    assert "c1_power_pole_binding" not in legacy_core.coordinate_binding
+
+    restored = MasterPlacementModel.from_exact_core(
+        legacy_core,
+        ghost_rect=(1, 1),
+        ghost_anchor_filter=[(2, 2)],
+    )
+
+    delegate = restored._coordinate_delegate
+    assert restored.c1_power_pole_representation is True
+    assert delegate is not None
+    assert delegate.c1_power_pole_representation is True
+    assert "power_pole" not in delegate.required_optional_slots
+    assert "power_pole" not in delegate.residual_optional_slots
+    assert len(delegate._c1_pole_bools) == len(pools["power_pole"])
+    reuse_stats = restored.build_stats["exact_core_reuse"]
+    assert reuse_stats["used"] is False
+    assert reuse_stats["reason"] == (
+        "coordinate_exact_core_missing_native_c1_binding_direct_rebuild"
+    )
+    assert reuse_stats["proto_reused"] is False
+    assert reuse_stats["core_c1_binding_present"] is False
+    assert reuse_stats["core_c1_binding_usable"] is False
+    assert restored.solve(time_limit_seconds=5.0) in {
+        cp_model.OPTIMAL,
+        cp_model.FEASIBLE,
+    }
+
+
+def test_current_c1_coordinate_core_still_reuses_native_binding() -> None:
+    pools = {"machine": _machine_pool(), "power_pole": _power_pole_pool()}
+    core = MasterPlacementModel.build_exact_core(
+        _machine_instances(),
+        pools,
+        _rules(),
+        skip_power_coverage=True,
+    )
+
+    restored = MasterPlacementModel.from_exact_core(
+        core,
+        ghost_rect=(1, 1),
+        ghost_anchor_filter=[(2, 2)],
+    )
+
+    delegate = restored._coordinate_delegate
+    assert restored.build_stats["exact_core_reuse"]["used"] is True
+    assert delegate is not None
+    assert delegate.c1_power_pole_representation is True
+    assert len(delegate._c1_pole_bools) == len(pools["power_pole"])
+    assert restored.solve(time_limit_seconds=5.0) in {
+        cp_model.OPTIMAL,
+        cp_model.FEASIBLE,
+    }
+
+
 def test_c1_clone_rebinds_intervals_for_ghost_overlay_no_overlap() -> None:
     pools = {
         "machine": _machine_pool(0, 0),
@@ -417,10 +529,16 @@ def test_c1_required_power_pole_uses_pose_bool_pool() -> None:
 
 
 def test_c1_coverage_path_builds_cov_channel_stats() -> None:
+    # fixture 必须带真实受电槽：空 powered 义务自 1D 终审起提前返回、不再建
+    # cov channel（见 test_c1_no_powered_slots_skips_coverage_without_pole_template），
+    # 本测试要验证的是「非空义务走 cov channel 编码」的记账形态。
     model = MasterPlacementModel(
-        instances=[],
-        facility_pools={"power_pole": _power_pole_pool()},
-        rules=_rules(machine_needs_power=False),
+        instances=_machine_instances(),
+        facility_pools={
+            "machine": _machine_pool(),
+            "power_pole": _power_pole_pool(),
+        },
+        rules=_rules(),
         solve_mode="certified_exact",
         skip_power_coverage=False,
         c1_power_pole_representation=True,
@@ -431,6 +549,6 @@ def test_c1_coverage_path_builds_cov_channel_stats() -> None:
     power_coverage = model.build_stats["power_coverage"]
     assert power_coverage["representation"] == "coordinate_geometric"
     assert power_coverage["encoding"] == "c1_pose_bool_cov_channel_v1"
-    assert power_coverage["powered_slots"] == 0
+    assert power_coverage["powered_slots"] == 1
     assert power_coverage["pole_pose_bools"] == 9
     assert power_coverage["cov_channel_literals"] == 9

@@ -101,6 +101,9 @@ def test_whole_layout_cut_dilution_fails_closed_when_synthetic_pole_loses_litera
     ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
+            # witness cut dilution 语境：手搓 fixture 过不了 C1（1D 起 certified 默认）
+            # 的杆 pose 完整性校验，显式退回 witness 表示。
+            c1_power_pole_representation=False,
         )
         slot_counts = core.build_stats.get("master_slot_counts", {})
         residuals = slot_counts.get("residual_optionals", {})
@@ -147,6 +150,9 @@ def test_whole_layout_nogood_fails_closed_when_flag_on_with_synthetic_pole():
     ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
+            # witness cut dilution 语境：手搓 fixture 过不了 C1（1D 起 certified 默认）
+            # 的杆 pose 完整性校验，显式退回 witness 表示。
+            c1_power_pole_representation=False,
         )
         master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
         master.solve(time_limit_seconds=5.0)
@@ -227,6 +233,9 @@ def test_whole_layout_nogood_normal_path_flag_off():
     ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
+            # witness cut dilution 语境：手搓 fixture 过不了 C1（1D 起 certified 默认）
+            # 的杆 pose 完整性校验，显式退回 witness 表示。
+            c1_power_pole_representation=False,
         )
         master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
         master.solve(time_limit_seconds=5.0)
@@ -262,6 +271,9 @@ def test_whole_layout_nogood_declined_when_reverify_unconfirmed():
     ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
+            # witness cut dilution 语境：手搓 fixture 过不了 C1（1D 起 certified 默认）
+            # 的杆 pose 完整性校验，显式退回 witness 表示。
+            c1_power_pole_representation=False,
         )
         master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
         master.solve(time_limit_seconds=5.0)
@@ -296,6 +308,8 @@ def test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member()
     instances, pools, rules = _fixture_one_powered_one_pole()
     core = MasterPlacementModel.build_exact_core(
         instances, pools, rules, skip_power_coverage=True,
+        # 同上：witness 语境显式 c1=False。
+        c1_power_pole_representation=False,
     )
     master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
     master.solve(time_limit_seconds=5.0)
@@ -759,6 +773,9 @@ def test_power_subproblem_infeasible_cut_keeps_unpowered_occupancy_support():
     ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
+            # witness cut dilution 语境：手搓 fixture 过不了 C1（1D 起 certified 默认）
+            # 的杆 pose 完整性校验，显式退回 witness 表示。
+            c1_power_pole_representation=False,
         )
         master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
         status = master.solve(time_limit_seconds=5.0)

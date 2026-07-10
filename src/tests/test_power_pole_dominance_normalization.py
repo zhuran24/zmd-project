@@ -644,23 +644,38 @@ def test_t10_c1_certified_endpoint_returns_normalized_power_poles(
 
 
 # T11
-def test_t11_legacy_witness_certified_endpoint_uses_same_normalizer(
+def test_t11_legacy_witness_certified_endpoint_is_rejected_fail_closed(
     tmp_path: Path,
 ) -> None:
-    solution, proof_summary, pools, core = _run_certified_endpoint(
-        c1=False,
-        tmp_path=tmp_path,
+    session, _pools = _endpoint_fixture(c1=False, project_root=tmp_path)
+
+    status, solution = run_benders_for_ghost_rect(
+        ghost_w=1,
+        ghost_h=1,
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+        session=session,
+        max_iterations=1,
+        master_seconds=5.0,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+        flow_seconds=1.0,
+    )
+    proof_summary = dict(
+        run_benders_for_ghost_rect.last_run_metadata["proof_summary"]
     )
 
-    assert core.c1_power_pole_representation is False
-    assert core.build_stats["power_coverage"]["encoding"] == (
+    assert status == benders_loop_module.RUN_STATUS_UNKNOWN
+    assert solution is None
+    assert session.core.c1_power_pole_representation is False
+    assert session.core.build_stats["power_coverage"]["encoding"] == (
         "geometric_element_witness_v1"
     )
-    assert _terminal_power_rules_accept(solution, pools, grid_w=4, grid_h=2)
-    assert proof_summary["power_pole_dominance"]["verdict"] in {
-        "normalized",
-        "noop",
-    }
+    assert proof_summary["master_status"] == benders_loop_module.RUN_STATUS_UNKNOWN
+    assert proof_summary["stage"] == "master_representation_contract"
+    assert proof_summary["blocker_code"] == (
+        "power_witness_representation_not_certified"
+    )
 
 
 # T12

@@ -46,13 +46,14 @@
   test_t8_malformed_pose_data_always_fails_closed
   test_t9_normalization_is_byte_deterministic
   test_t10_c1_certified_endpoint_returns_normalized_power_poles
-  test_t11_legacy_witness_certified_endpoint_uses_same_normalizer
+  test_t11_legacy_witness_certified_endpoint_is_rejected_fail_closed
   test_t12_reverification_matches_terminal_r1_r3_semantics
   test_t13_normalization_failure_turns_feasible_routing_into_unknown
   test_t14_s3_certified_path_prunes_redundant_pole_without_mutating_input
   ```
-  ⚠ 1D 会把 t11 改造为「certified 下旧编码被防御断言拒绝」的回归钉（1D 规格 S5）——1E 落
-  条目时以 1D 后的实名/语义为准，若更名需同步此清单。
+  ✅ t11 更名已同步（2026-07-10 1D 终审期核实实名）：1D 按规格 S5 把 t11 改造为
+  「certified 下旧编码被防御断言拒绝」的回归钉，原名
+  `test_t11_legacy_witness_certified_endpoint_uses_same_normalizer` 已不存在。
 - **v_findings**: 空起（新条目）。
 
 ## 1E 其余工作面备忘（非本稿范围，1E 规格书定稿）

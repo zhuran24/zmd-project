@@ -2295,7 +2295,7 @@ class ExactMasterCore:
     group_id_by_instance: Mapping[str, str]
     skip_power_coverage: bool
     enable_symmetry_breaking: bool
-    c1_power_pole_representation: bool = False
+    c1_power_pole_representation: bool = True
     canonical_commodity_metadata: Mapping[str, Any] = field(default_factory=dict)
     master_representation: str = "pose_bool_v1"
     coordinate_binding: Mapping[str, Any] = field(default_factory=dict)
@@ -2312,7 +2312,7 @@ class MasterPlacementModel:
         rules: Mapping[str, Any],
         ghost_rect: Optional[Tuple[int, int]] = None,
         skip_power_coverage: bool = False,
-        c1_power_pole_representation: bool = False,
+        c1_power_pole_representation: bool = True,
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
         wireless_sink_generic_input_slots: Optional[int] = None,
@@ -2627,7 +2627,7 @@ class MasterPlacementModel:
         rules: Mapping[str, Any],
         *,
         skip_power_coverage: bool = False,
-        c1_power_pole_representation: bool = False,
+        c1_power_pole_representation: bool = True,
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
         wireless_sink_generic_input_slots: Optional[int] = None,
@@ -2790,8 +2790,35 @@ class MasterPlacementModel:
         exact_required_pose_optional_counts_for_overlay: Mapping[str, Any] = (
             core.exact_required_pose_optional_counts
         )
+        core_master_representation = str(core.master_representation)
+        core_c1_power_pole_representation = bool(
+            getattr(core, "c1_power_pole_representation", True)
+        )
+        raw_coordinate_binding = getattr(core, "coordinate_binding", {})
+        coordinate_binding = (
+            dict(raw_coordinate_binding)
+            if isinstance(raw_coordinate_binding, Mapping)
+            else {}
+        )
+        raw_c1_binding = coordinate_binding.get("c1_power_pole_binding")
+        c1_binding = dict(raw_c1_binding) if isinstance(raw_c1_binding, Mapping) else {}
+        raw_c1_entries = c1_binding.get("entries")
+        c1_entries_are_sequence = isinstance(raw_c1_entries, Sequence) and not isinstance(
+            raw_c1_entries,
+            (str, bytes, bytearray),
+        )
+        expected_c1_entry_count = len(core.facility_pools.get("power_pole", []))
+        has_native_c1_binding = bool(c1_binding.get("enabled") is True) and bool(
+            c1_entries_are_sequence
+            and len(cast("Sequence[Any]", raw_c1_entries)) == expected_c1_entry_count
+        )
+        coordinate_core_requires_c1_direct_rebuild = bool(
+            core_master_representation.startswith("coordinate_exact_v")
+            and core_c1_power_pole_representation
+            and not has_native_c1_binding
+        )
         if (
-            str(core.master_representation).startswith("pose_bool_exact_v")
+            core_master_representation.startswith("pose_bool_exact_v")
             and not dict(exact_required_pose_optional_counts_for_overlay)
         ):
             exact_required_pose_optional_counts_for_overlay = (
@@ -2809,9 +2836,7 @@ class MasterPlacementModel:
             core.rules,
             ghost_rect=ghost_rect,
             skip_power_coverage=core.skip_power_coverage,
-            c1_power_pole_representation=bool(
-                getattr(core, "c1_power_pole_representation", False)
-            ),
+            c1_power_pole_representation=core_c1_power_pole_representation,
             enable_symmetry_breaking=core.enable_symmetry_breaking,
             generic_io_requirements=core.generic_io_requirements,
             wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
@@ -2836,25 +2861,43 @@ class MasterPlacementModel:
             else {}
         )
 
-        if str(core.master_representation).startswith("pose_bool_exact_v"):
+        direct_rebuild_reason: Optional[str] = None
+        if core_master_representation.startswith("pose_bool_exact_v"):
             # Pose-bool exact cores intentionally carry a no-op proto: the backend
             # does not participate in coordinate proto sharing.  Treating that
             # empty proto as a reusable master drops mandatory/optional/no-overlap
             # constraints, so rebuild a concrete overlay instead of cloning it.
+            direct_rebuild_reason = (
+                "pose_bool_exact_core_proto_is_packaging_noop_direct_rebuild"
+            )
+        elif coordinate_core_requires_c1_direct_rebuild:
+            # Pre-1A coordinate cores have a legacy witness proto/binding and no
+            # native C1 binding.  The missing core flag defaults to C1 under the
+            # current contract, so cloning that proto would mix representations.
+            # Rebuild solely from the core's source snapshots before any proto
+            # clone/bind operation, matching the pose-bool packaging path.
+            direct_rebuild_reason = (
+                "coordinate_exact_core_missing_native_c1_binding_direct_rebuild"
+            )
+
+        if direct_rebuild_reason is not None:
             direct_rebuild_started = time.perf_counter()
             model.build()
             direct_rebuild_seconds = time.perf_counter() - direct_rebuild_started
             overlay_build_seconds = time.perf_counter() - overlay_started
             model.build_stats["exact_core_reuse"] = {
                 "used": False,
-                "reason": "pose_bool_exact_core_proto_is_packaging_noop_direct_rebuild",
-                "core_master_representation": str(core.master_representation),
+                "reason": direct_rebuild_reason,
+                "core_master_representation": core_master_representation,
                 "core_proto_variables": len(core.proto.variables),
                 "core_proto_constraints": len(core.proto.constraints),
                 "overlay_build_seconds": float(overlay_build_seconds),
                 "ghost_constraint_seconds": 0.0,
                 "direct_rebuild_seconds": float(direct_rebuild_seconds),
                 "proto_reused": False,
+                "core_c1_binding_present": "c1_power_pole_binding"
+                in coordinate_binding,
+                "core_c1_binding_usable": bool(has_native_c1_binding),
             }
             if precomputed_boundary_port_feasibility is not None:
                 model._exact_candidate_boundary_port_feasibility_cache = (

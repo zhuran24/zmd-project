@@ -494,12 +494,14 @@ def test_geometric_power_coverage_falls_back_for_mixed_powered_footprints() -> N
         },
     }
     generic_io_requirements = {"required_generic_inputs": {"ore": 1}, "required_generic_outputs": {}}
+    # 同 nonrectangular 测试：钉 witness table 回退语义，1D 后须显式 c1=False。
     core = MasterPlacementModel.build_exact_core(
         instances,
         pools,
         rules,
         generic_io_requirements=generic_io_requirements,
         enable_symmetry_breaking=False,
+        c1_power_pole_representation=False,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=None)
 
@@ -697,12 +699,15 @@ def test_geometric_power_coverage_falls_back_for_nonrectangular_powered_footprin
         },
     }
     generic_io_requirements = {"required_generic_inputs": {"ore": 1}, "required_generic_outputs": {}}
+    # 本测试钉 witness 几何路径的 table 回退语义——1D 起 C1 是 certified 默认，
+    # 须显式退回 witness 表示（C1 对非矩形 powered 是 fail-closed 挡板而非回退）。
     core = MasterPlacementModel.build_exact_core(
         instances,
         pools,
         rules,
         generic_io_requirements=generic_io_requirements,
         enable_symmetry_breaking=False,
+        c1_power_pole_representation=False,
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=None)
 
