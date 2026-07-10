@@ -12,7 +12,7 @@ spike GO（`02_spike_evidence.md`）证明的是**工程开销可行**（10K att
 - 默认推荐 (a)：exploratory 修复工作量大且修完仍是非生产 master 形态,对「生产通电」的验证价值有限。
 
 **PIC-1 三硬门（spike §3 拍板原文保留，不因 GO 消失）**：
-1. RFC-001 原子封口：spike 级安全面=F3 step_8 入口 integrity 纵深+接线层 fail-closed（c7cd6a0）；通电前须正式评估「纵深是否足以替代原子封口」并成文（设计评审级,双审）。
+1. RFC-001 原子封口 ✅评估已成文并过双审(2026-07-11,`02_rfc_adoption_assessment.md` 正式判定节,opus+codex 双 AGREE_WITH_AMENDMENTS 修正后定稿)：判定=纵深不替代原子封口;通电第一批=RFC-001 阶段 B(封 state 侧 validate/compile 漂移——cut 侧已 frozen 结构性关闭);叠加 lock:487 三前置之上;spike 级活动不受阻。
 2. RFC-002 F5 独立 verifier：通电族=F1/F6/F7,F5 保持 shadow/不 mutate master；F5 转正的前置=独立 verifier 落地。
 3. RFC-003 ledger+dedup+epoch：spike 是单 epoch 单 master 豁免；生产 campaign 多 rect 多 epoch 场景必须落 ledger+dedup（跨 solve cut 池账本）。
 
@@ -31,7 +31,7 @@ spike GO（`02_spike_evidence.md`）证明的是**工程开销可行**（10K att
 ## §2 批次划分建议
 
 - **批 A（可立即,不依赖 PIC-0）**：PIC-3 ✅（`b9fcca9`）；PIC-6 明确改为搭车项——单独为纯卫生残留做 reseal 轮不值,留给下一个碰 lifecycle.py 的批（C/D）顺带。
-- **批 B（设计评审）**：PIC-0 宿主拍板 + PIC-1.1 原子封口评估成文——owner 参与度高,放 owner 在场时段。
+- **批 B（设计评审）✅完成(2026-07-11)**：PIC-0 owner 拍板=(a) certified promote 路线；PIC-1.1 评估成文+双审定稿。
 - **批 C（实测,依赖 B）**：PIC-4+PIC-5。
 - **批 D（F5 线,可与 C 并行）**：PIC-1.2+PIC-2。
 - **批 E（账本）**：PIC-1.3。
