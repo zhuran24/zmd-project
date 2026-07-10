@@ -390,11 +390,62 @@ def test_state_assembly_from_solved_coordinate_master() -> None:
     assert state.candidate_placements == {"facility_pools": master.facility_pools}
     assert state.exterior_blocks == frozenset()
     assert "region_capacity_v1" in state.available_oracle_versions
-    # ghost: (anchor_x, anchor_y, h, w) with cells matching the 1×1 ghost
+    # ghost: (anchor_x, anchor_y, width, height), matching BState's
+    # (x, y, x_span, y_span) contract.
     assert len(state.ghost_cells) == 1
-    ax, ay, gh, gw = state.ghost_rect
-    assert (gh, gw) == (1, 1)
+    ax, ay, gw, gh = state.ghost_rect
+    assert (gw, gh) == (1, 1)
     assert state.ghost_cells == {(ax, ay)}
+
+
+def test_state_assembly_preserves_rectangular_ghost_axis_order() -> None:
+    """A square ghost masks width/height swaps; keep a rectangular red test."""
+    master = _build_miner_master()
+    master.ghost_rect = (2, 1)  # master convention: (width, height)
+    controller = _controller(master)
+    context = (
+        0,
+        _GHOST_U_VAR_SENTINEL,
+        {"x": 1, "y": 0},
+        {(1, 0), (2, 0)},
+    )
+    with mock.patch.object(
+        LBBDController, "_selected_ghost_context", return_value=context
+    ):
+        state = controller._build_cut_framework_state()
+
+    assert state is not None
+    assert state.ghost_rect == (1, 0, 2, 1)
+    assert state.ghost_cells == {(1, 0), (2, 0)}
+
+
+def test_rectangular_ghost_scope_attaches_only_with_matching_axis_order() -> None:
+    """A ghost-bound cut must distinguish (width, height) from its transpose."""
+    from src.cuts.lifecycle import (
+        GHOST_AGNOSTIC,
+        compute_ghost_rect_id,
+        step_6_attach_scope_check,
+    )
+    from src.cuts.oracles.region_capacity_oracle import (
+        generate_region_capacity_cuts,
+    )
+
+    state = _boundary_overflow_state()
+    state.ghost_rect = (10, 0, 2, 1)
+    state.ghost_cells = frozenset({(10, 0), (11, 0)})
+    cuts = generate_region_capacity_cuts(state, state.canonical_rules)
+
+    assert len(cuts) == 1
+    cut = cuts[0]
+    assert cut.scope is not None
+    assert cut.scope.ghost_rect_id != GHOST_AGNOSTIC
+    assert cut.scope.ghost_rect_id == compute_ghost_rect_id((10, 0, 2, 1))
+    assert step_6_attach_scope_check(cut, state) == "ATTACH"
+
+    # The occupied cells are intentionally unchanged: the axis-aware scope ID
+    # alone must prevent replay under the transposed rectangular geometry.
+    state.ghost_rect = (10, 0, 1, 2)
+    assert step_6_attach_scope_check(cut, state) == "HOLD"
 
 
 def test_full_chain_f5_binding_empty_domain_end_to_end() -> None:

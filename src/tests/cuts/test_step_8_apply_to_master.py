@@ -17,11 +17,13 @@ the fail-closed dispatch surface:
 - malformed cert numerics → ValueError before touching the master.
 
 Scope/staleness gating deliberately NOT exercised here: that lives in
-lifecycle steps 5-7; step_8 only translates an already-validated cut.
+lifecycle steps 5-7. Step 8 still seals internal cut integrity before it
+translates the cert at the irreversible master boundary.
 """
 from __future__ import annotations
 
 import hashlib
+from dataclasses import replace
 from typing import Any, Mapping, Sequence
 
 import pytest
@@ -164,6 +166,54 @@ def test_step_8_f1_capacity_prunes_end_to_end() -> None:
         cp_model.OPTIMAL,
         cp_model.FEASIBLE,
     )
+
+
+def test_step_8_rejects_split_brain_cert_before_master() -> None:
+    """Direct Step 8 callers cannot compile a cert different from the body."""
+
+    class _SpyMaster:
+        def __init__(self) -> None:
+            self.calls: list[dict[str, Any]] = []
+
+        def add_region_capacity_cut(
+            self,
+            *,
+            group_cell_weights: Mapping[str, int],
+            capacity: int,
+            condition_lits: Sequence[Any] = (),
+        ) -> bool:
+            self.calls.append(
+                {
+                    "group_cell_weights": dict(group_cell_weights),
+                    "capacity": capacity,
+                    "condition_lits": tuple(condition_lits),
+                }
+            )
+            return True
+
+    safe_payload = _f1_cert_payload(
+        group_id="g", cells_per_pose=1, cap_r=1, demand_r=2
+    )
+    malicious_payload = _f1_cert_payload(
+        group_id="g", cells_per_pose=1, cap_r=0, demand_r=2
+    )
+    cut = _f1_cut(safe_payload)
+    assert cut.cert is not None
+    malicious_hash = hashlib.sha256(malicious_payload).hexdigest()
+    tampered = replace(
+        cut,
+        cert=replace(
+            cut.cert,
+            cert_payload=malicious_payload,
+            cert_hash=malicious_hash,
+        ),
+        oracle_cert_hash=malicious_hash,
+    )
+
+    master = _SpyMaster()
+    with pytest.raises(ValueError, match="cut integrity failed"):
+        step_8_apply_to_master(tampered, master)
+    assert master.calls == []
 
 
 def test_step_8_f1_ghost_bound_requires_condition_lits() -> None:

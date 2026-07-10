@@ -38,7 +38,7 @@ Cert payload schema (canonical JSON, sorted keys, no Optionals):
     facility_cells: list of [int, int] (sorted lex, dedup, in-grid)
     pole_radius: float (> 0)
     pole_shape_canonical: "2x2_rigid"
-    ghost_rect_repr: [x, y, h, w] (4 strict int, byte-equal state.ghost_rect)
+    ghost_rect_repr: [x, y, w, h] (4 strict int, byte-equal state.ghost_rect (x, y, x_span, y_span))
     exterior_blocks_digest: sha256 hex of sorted exterior_blocks canonical
 
 Evaluator: F7 is literal-based; delegated to

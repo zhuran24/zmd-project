@@ -7948,7 +7948,7 @@ class LBBDController:
         return BState(
             groups=groups,
             cell_owner={},
-            ghost_rect=(anchor_x, anchor_y, ghost_h, ghost_w),
+            ghost_rect=(anchor_x, anchor_y, ghost_w, ghost_h),
             ghost_cells=frozenset(ghost_cells),
             exterior_blocks=frozenset(),
             artifact_hashes=artifact_hashes,

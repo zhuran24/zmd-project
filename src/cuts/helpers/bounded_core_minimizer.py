@@ -163,7 +163,7 @@ def canonical_relabel(
             "(audit signal — refusing to silently dedup)"
         )
     ordered = sorted(assignment, key=lambda lit: (lit[0], lit[2], lit[1]))
-    next_slot: dict = {}
+    next_slot: dict[GroupId, int] = {}
     relabelled = []
     for group_id, _slot, pose_id in ordered:
         slot = next_slot.get(group_id, 0)

@@ -21,7 +21,7 @@ Cert payload schema (canonical JSON, sorted keys):
     oracle_assignment_witness: list of [group_id, pose_id]; all group_id ==
         cert.group_id; pose_id ∈ state.groups[group_id].pose_domain;
         multiset count per pose ≤ state.groups[g].demand
-    ghost_rect_repr: [x, y, h, w] byte-equal state.ghost_rect
+    ghost_rect_repr: [x, y, w, h] byte-equal state.ghost_rect (x, y, x_span, y_span)
 
 Evaluator dispatches via ``lifecycle.step_7_evaluate_cut``.
 

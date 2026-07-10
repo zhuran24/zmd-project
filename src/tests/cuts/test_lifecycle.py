@@ -354,6 +354,58 @@ def test_attach_scope_ghost_agnostic_quarantine_when_exterior_changed():
     assert decision == "QUARANTINE"
 
 
+def test_attach_scope_quarantines_cut_with_omitted_artifact_dependency():
+    """A cut cannot opt out of a dependency by deleting its artifact key."""
+    state = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    assert cut is not None
+    assert cut.scope is not None
+
+    incomplete_artifacts = dict(cut.scope.artifact_hashes)
+    incomplete_artifacts.pop("canonical_rules.json")
+    incomplete_cut = replace(
+        cut,
+        scope=replace(cut.scope, artifact_hashes=incomplete_artifacts),
+    )
+
+    assert step_6_attach_scope_check(incomplete_cut, state) == "QUARANTINE"
+
+
+def test_attach_scope_quarantines_cut_with_unknown_artifact_dependency():
+    """A cut cannot add a dependency absent from the authoritative state."""
+    state = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    assert cut is not None
+    assert cut.scope is not None
+
+    extra_artifacts = {
+        **cut.scope.artifact_hashes,
+        "nonexistent-artifact.json": "untrusted-hash",
+    }
+    overreported_cut = replace(
+        cut,
+        scope=replace(cut.scope, artifact_hashes=extra_artifacts),
+    )
+
+    assert step_6_attach_scope_check(overreported_cut, state) == "QUARANTINE"
+
+
+def test_attach_scope_accepts_complete_matching_artifact_snapshot():
+    state = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    assert cut is not None
+    assert cut.scope is not None
+    assert cut.scope.artifact_hashes == state.artifact_hashes
+
+    assert step_6_attach_scope_check(cut, state) == "ATTACH"
+
+
 def test_attach_scope_ghost_bound_hold_when_ghost_changed():
     """v3.2.2 dispatch: ghost-bound cut + ghost 变 → HOLD (step 2 fail)."""
     s = make_state_with_crusher_on_left_baseline()

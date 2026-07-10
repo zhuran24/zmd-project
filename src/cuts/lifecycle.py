@@ -968,10 +968,11 @@ def step_6_attach_scope_check(cut: Cut, state: BState) -> AttachDecision:
         if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
             return "QUARANTINE"
 
-    # Step 4: artifact_hashes
-    for fname, h in cut.scope.artifact_hashes.items():
-        if state.artifact_hashes.get(fname) != h:
-            return "QUARANTINE"
+    # Step 4: artifact_hashes. Schema v1 scopes snapshot the complete
+    # authoritative artifact map, so missing, extra, or changed entries are
+    # all replay failures.
+    if cut.scope.artifact_hashes != state.artifact_hashes:
+        return "QUARANTINE"
 
     # Step 5: oracle version
     if cut.scope.oracle_abstraction_version not in state.available_oracle_versions:
@@ -1204,6 +1205,15 @@ def step_8_apply_to_master(
     GHOST_AGNOSTIC), and the master re-checks its own coverer table against
     ``ghost_blocked_cells`` before accepting (runtime helper-vs-master gate).
     """
+    # Step 8 is the irreversible trust boundary. Keep this final guard local
+    # so a direct or future caller cannot validate one body and compile a
+    # different cert, even if it bypasses the production wiring checks.
+    integrity_error = validate_cut_integrity(cut)
+    if integrity_error is not None:
+        raise ValueError(
+            f"step_8: cut integrity failed (fail-closed): {integrity_error}"
+        )
+
     if cut.family == "region_capacity":
         if cut.cert is None:
             raise ValueError("step_8: region_capacity cut carries no cert (fail-closed)")
@@ -1355,7 +1365,7 @@ def step_8_apply_to_master(
                 "step_8: forbidden_pose_pattern must be a non-empty list"
             )
         pattern: List[Tuple[str, str]] = []
-        seen_group_pose: set = set()
+        seen_group_pose: set[Tuple[str, str]] = set()
         for entry in raw_pattern:
             if not isinstance(entry, list) or len(entry) != 3:
                 raise ValueError(
