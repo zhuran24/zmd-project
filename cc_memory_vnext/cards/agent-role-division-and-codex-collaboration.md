@@ -88,3 +88,6 @@ owner:「现在wf可以随便派fable了(暂时),那审查就暂时换成fable+c
 ### fable+codex 首战战绩 + GPT-5.6 Pro 复审代差实证(2026-07-10 深夜)
 **1C 双审首战(fable+codex)**:两家结论冲突(fable PASS_WITH_NOTES/codex BLOCK),终审裁决 codex 两 BLOCK 全实锤(缺杆模板 fail-closed 漏洞+调用链异常屏障,均附最小复现);fable 零 BLOCK 但侦察极扎实(5 NOTE 全带实验数据:中间层 stub 真剪实验/pinned 工件 4761 pose 统计/checker 静默退 1 定位),其一次性实验被固化为 T14 回归。**互补形态定型:codex 管"往死里挑",fable 管"把现场摸透"**。
 **GPT-5.6 Pro vs 5.5 Pro 复审对比(cut framework 同题材同快照)**:5.6 抓到 5.5 的同一 P0(integrity bypass,已被 c7cd6a0 拦)+**两个 5.5 漏掉的可复现问题**(ghost 轴反置 BLOCKER/scope 自删,当前 HEAD 仍复现,修复批规格书 ce6f703 已备)+3 份 RFC+4 补丁,交付形态=完整工程包(SHA256/evidence/repro 脚本/patched 测试日志)。结论:5.6 系对 5.5 系是审查代差,强项=测试盲区型 bug(square 掩盖非方形/组合负例失真),与本地 codex 5.6 在 1B/1C 的表现同向。
+
+### 1D 双审战绩(2026-07-10 上午,fable+codex 第二战)
+互补形态再验证:**codex BLOCK=pre-1A checkpoint 恢复路径混搭旧 witness proto**(504 绿测试全没覆盖的恢复×表示交叉场景,第四次「规格盲区靠审查抓」实证;修复=方案 A direct rebuild);**fable=checker needle 连锁 handoff 级预警**(21 项 witness env needle 硬编码会被 S2 打断+旧测试名双 pin——把主会话终审必撞的墙提前拆了)。终审自身又挖出第五/六次盲区(v62 文件族+慢 lane witness 真实工件回归,全量扫描+slow 直跑抓出 16+1 失败,含一个源码级边界缺陷=C1 空 powered 义务撞非矩形挡板)。教训沉淀:**规格书 §2 验收清单必须包含「全量 fast lane+全量 slow 直跑」两条,不能只列受影响文件**——四批下来盲区全出在"不在清单里的测试"。
