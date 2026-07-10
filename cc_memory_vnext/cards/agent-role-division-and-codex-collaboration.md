@@ -113,3 +113,6 @@ owner:「现在wf可以随便派fable了(暂时),那审查就暂时换成fable+c
 
 ### 侦察=codex 的头对头实证（2026-07-10 M5 归因侦察，sonnet vs codex 同题）
 codex 三个关键发现 sonnet 全漏：①harness 层 env 差异（b0_4r runner 自设 automatic/probing1/symmetry1，纠正了 sonnet「solve 参数逐字节相同」的误导性结论）②产品独有 family×ghost-anchor big-M 网络（4225×F 规模，比 sonnet 找到的 family 段大两个数量级）③跨面证据（翻会话 JSONL 确认 taskset、指出 OOM 跑无 snapshot 的工具盲区）。sonnet 头号发现正确但深度止步单文件比对。——owner「侦察交给 codex」拍板的当场验证。
+
+### opus+codex 正常档首战（2026-07-10 晚，cut 修复批双审）
+双 PASS_WITH_NOTES 零 BLOCK（四批以来首次无修复轮）。互补形态在回落阵容下保持：opus=注入旧 bug 验证红测真实性+运行时 monkeypatch 验证守卫 load-bearing+精确 reseal 清单（6 条 checker 错逐条定性全为 sha 漂移）；codex=发现 replay 诊断 subset 残留（生产不可达,记 TRIAGE）+真实求解 2×1 master 越过 seam 测试验证。Workflow 编排双审首战跑通（parallel 双 agent,14min 收齐）。

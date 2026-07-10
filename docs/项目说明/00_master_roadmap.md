@@ -69,8 +69,11 @@ reseal 不动点长链 semantic projection+runtime anchor 首次触发;golden �
 498 万/conflicts 逐位同=solve 确定性),第四刀产品+原型参数+无帽同样出解(506s)——真相=
 **C1 出解时刻有固有 ~60G 级大分配尖峰(RSS>42G+swap 18G),42G 帽+禁 swap 恰好斩断生路**,
 「w6 温和<20G」是 30s 空采样假象;产品与原型同分布,family×ghost 网络无害;归因文档=
-m5_c1_memory_attribution_20260710.md;**M5 A/B 战场正式解锁**(条款修订:允许 swap 吸收
-尖峰,第五刀验证中);
+m5_c1_memory_attribution_20260710.md;**M5 A/B 战场正式解锁**(条款修订已落:wrapper CAMPAIGN_SWAP_MAX 默认 20G+gate 稳态
+模型,第五刀实测背书,`b25ba1d`);cut framework 通电前修复批已落地(F1 ghost 轴反置
+soundness 修复+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深+F4 类型卫生+docstring
+轴序双修,opus+codex 双审首次零 BLOCK+Workflow 编排首战,慢 lane 31/31,`68b4557`;
+replay 诊断残留记 TRIAGE 留通电线);
 M5 A/B 战场随首解解锁,挂批 1 完成后**;
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
