@@ -132,3 +132,19 @@ run_outer_search (outer_search.py:2879)
 ### E1' 正式基线落地（2026-07-10 22:53）
 
 harness 直建（`--cuts 0`，42G 帽+20G swap+第五刀参数）：**OPTIMAL@513.5s**，core build 11.0s + master build 16.0s，branches 4,879,651 / conflicts 486——与第五刀（512.9s / 4,898,023）同分布，harness 本体自证通过。基线三元组（build 27s / attach 0 / solve 513.5s）即 E2' 对照的分母；GO 线（<50% 退化）= E2' 总 wall < ~810s。E2' 待 codex 侦察（step_8 直调材料）回填 harness attach 段后执行。
+
+### E2' 设计定稿（2026-07-10 23:20，codex 侦察六问全答后拍板）
+
+**关键侦察事实**：step_8 裸调只需 Cut+master（无 BState/validator/预算 cap，10K 不被挡）；当前工件自然 cut 空间仅 ~257 条（F1=129 碰边 anchor+F6=128 边界 anchor，F5/F7=0）；CP-SAT 约束不可卸载→对照必须两个全新 master（分进程跑，已满足）；ghost-conditioned cut 挂单 anchor 会被 solver 绕开而低估退化。
+
+**主 workload 拍板 = `static-overlap-f5-10k`**：harness-local F5 direct-lowering——两个不同 mandatory group（同 facility template，如 manufacturing_3x3 8 组）共享同一真实 pose_id 的二元 pattern，occupied cells 完全相同 → NoOverlap2D 必禁 → cut 数学冗余（不改可行集），组合空间 >10K 条内容各不同；`ghost_rect=None` 静态 BState → GHOST_AGNOSTIC → step_8 无条件 attach（全部活跃，规避单 anchor 低估）。计时口径：cut 预制+integrity/validator/Step6 预验全在计时区外；attach 计时=纯 step_8 循环；solve 同基线口径。附加对照（可选）`natural-duplicate`（257 条真自然 F1/F6 重复到 10K）测 production-like 每条成本。
+
+**F5 治理冲突裁决（codex 风险 #14）**：本规格前段三硬门拍板的「F5 shadow、不 mutate master」是**生产通电**的治理豁免条款，继续有效；E2' 的 F5 direct-lowering 仅是 **spike workload 构造手段**（借 F5 的 lowering 形态制造 10K 条各不相同的数学冗余约束测工程开销），不预演生产 F5 治理形态、不宣称模拟生产 convergence（Step 7 在真实 incumbent 上对这些 pattern 恒假）。GO 报告须复述本裁决。
+
+**harness 落点**：`docs/research/p1_3a_attach_power_on_spike_20260710/e2_harness.py`（调研工件，同 batch0_prod_runner 定位）；实现=codex（续侦察 thread）；正式跑=主会话（单发铁律+42G/20G 条款+第五刀参数）。断言三件套（exact_mode/coordinate delegate/c1 representation）+ `coordinate_framework_cut_count` 增量核对 + 不设 `EXACT_CUT_FRAMEWORK_ATTACH`/`EXACT_F7_GENERATOR_ENABLED`/`EXACT_USE_POSE_BOOL_MASTER`/`EXACT_MASTER_HINT_PERSISTENCE`。
+
+**E2' 实现期拍板（23:35，codex 发现规格硬冲突）**：GHOST_AGNOSTIC F5 在 lifecycle step_8 走无条件 attach 分支（lifecycle.py:1393-1402 传空 condition_lits），但 coordinate delegate 对 F5 空条件直接拒（exact_coordinate_master.py:8050-8051 `if not condition_lits: return False`）→ step_8 fail-closed RuntimeError——**agnostic F5 attach 路径在生产代码上从未打通**。裁决=harness-only master shim（空条件→共享恒真 literal 后调真实 delegate；约束形态多一层 `OnlyEnforceIf(恒真)`，presolve 预期消除，报告须注明形态差异并对照 proto 约束数）；拒绝 ghost-bound（单 anchor 被 solver 绕开=风险 #10）与改生产 delegate（sealed 文件 reseal 长链，为 spike 不值）。**TRIAGE 记录**：lifecycle 与 delegate 间的 agnostic-F5 语义缝（fail-closed 安全、无 soundness 问题，但 attach 通电线落地 F5 时须二选一：delegate 支持空条件或 lifecycle 禁止 agnostic F5 进 step_8），与 cut 修复批 replay 诊断残留同级，留通电线处理。
+
+### 判决(2026-07-10 深夜):GO——证据与效度边界见 02_spike_evidence.md
+
+E2' 10K 对照:solve OPTIMAL@534.8s(基线 513.5s,+4.1%),attach 16.55s,总 wall +6.9%(GO 线 <50%);proto 约束 ×4.15 而 solve 几乎无感。四条效度注脚+agnostic-F5 TRIAGE 随判决移交通电线。

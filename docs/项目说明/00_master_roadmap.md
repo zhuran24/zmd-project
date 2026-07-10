@@ -75,7 +75,7 @@ soundness 修复+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深+F
 轴序双修,opus+codex 双审首次零 BLOCK+Workflow 编排首战,慢 lane 31/31,`68b4557`;
 replay 诊断残留记 TRIAGE 留通电线);
 M5 A/B 战场随首解解锁,挂批 1 完成后**;
-**P1.3A attach 通电 spike 进行中(2026-07-10 晚)**:规格书 `docs/research/p1_3a_attach_power_on_spike_20260710/01_spike_spec.md`(`90be2c6`+追加);E1 端到端 exploratory 路线四连死破案(py-spy 抓栈实锤 `_add_port_clearance_constraints` exploratory-only 启发式 prod-scale 爆炸+legacy master/all_facility 双重不可比,教训入 memory 卡)→**形态修订为 certified 直建 harness+step_8 直调**(sanctioned direct 通路);E1' 基线已落(OPTIMAL@513.5s,与第五刀同分布);E2' 通电对照待 codex 侦察回填 cut 构造材料;GO 线=E2' 总 wall <~810s;
+**P1.3A attach 通电 spike 进行中(2026-07-10 晚)**:规格书 `docs/research/p1_3a_attach_power_on_spike_20260710/01_spike_spec.md`(`90be2c6`+追加);E1 端到端 exploratory 路线四连死破案(py-spy 抓栈实锤 `_add_port_clearance_constraints` exploratory-only 启发式 prod-scale 爆炸+legacy master/all_facility 双重不可比,教训入 memory 卡)→**形态修订为 certified 直建 harness+step_8 直调**(sanctioned direct 通路);E1' 基线已落(OPTIMAL@513.5s,与第五刀同分布);E2' 通电对照已完成——**判决 GO**(10K cut attach 16.6s+solve +4.1%,总 wall +6.9% 远低于 50% 线;proto 约束 ×4.15 无感;效度边界四条+agnostic-F5 语义缝 TRIAGE 见 02_spike_evidence.md);下一步=production integration checklist(三硬门保留)+M5 独立前置(产品默认 solve 参数病态);
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
 设计稿 v2(含 v3 终审) 完成；证书侧（P3.0c 轴 B）路线图定型、待开工。
