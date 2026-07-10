@@ -395,6 +395,11 @@ def test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts() -
         rules,
         solve_mode="certified_exact",
         generic_io_requirements=generic_io_requirements,
+        # 本测试钉 witness 表示在真实工件上的完整 build 形态（geometric_element_witness
+        # 编码/杆槽 family 引导/零 pose bool），1D 起 C1 是 certified 默认，须显式退回。
+        # C1 真实工件 build 形态回归由 1F smoke 补位（C1 下 family 引导刻意未接=
+        # b0 破墙基线形态，接入属 M5 性能实验项，不在表示翻转批顺手做）。
+        c1_power_pole_representation=False,
     )
     model.build()
 
