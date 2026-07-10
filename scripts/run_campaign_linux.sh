@@ -184,9 +184,25 @@ if [[ ! "$CAMPAIGN_MEMORY_MAX" =~ ^([0-9]+([.][0-9]+)?[KMGT]|[0-9]+)$ ]]; then
     exit 4
 fi
 
+# M5 attribution verdict (2026-07-10, m5_c1_memory_attribution_20260710.md): the
+# C1 master has an inherent ~60G-class allocation spike at solution time
+# (RSS >42G + ~18G swap overflow). MemorySwapMax=0 severed the only escape
+# route and killed every capped run; MemorySwapMax=20G lets zram absorb the
+# spike (measured: OPTIMAL@512.9s, HWM 41.93G, swap peak 18.08G — no wall
+# regression). 0 is still accepted to explicitly forbid swap.
+if [[ ! -v CAMPAIGN_SWAP_MAX ]]; then
+    CAMPAIGN_SWAP_MAX=20G
+fi
+if [[ ! "$CAMPAIGN_SWAP_MAX" =~ ^([0-9]+([.][0-9]+)?[KMGT]|[0-9]+)$ ]]; then
+    printf 'ERROR: invalid CAMPAIGN_SWAP_MAX=%q; expected integer bytes or digits[.digits][KMGT].\n' \
+        "$CAMPAIGN_SWAP_MAX" >&2
+    echo "       CAMPAIGN_NO_CGROUP=1 is the only explicit opt-out from the cgroup hard cap." >&2
+    exit 4
+fi
+
 if ! command -v systemd-run >/dev/null 2>&1; then
     echo "WARN: systemd-run unavailable — running without cgroup memory hard cap." >&2
-    echo "      MemoryMax=$CAMPAIGN_MEMORY_MAX and MemorySwapMax=0 are NOT enforced." >&2
+    echo "      MemoryMax=$CAMPAIGN_MEMORY_MAX and MemorySwapMax=$CAMPAIGN_SWAP_MAX are NOT enforced." >&2
     echo "[run_campaign_linux] exec $launch_description"
     exec "${launch_cmd[@]}"
 elif ! systemd-run --user --scope --quiet --collect \
@@ -196,14 +212,14 @@ elif ! systemd-run --user --scope --quiet --collect \
     # fail-closed and its command exit status is passed through unchanged.
     echo "WARN: systemd user manager/DBus unavailable or cannot create a user scope." >&2
     echo "      Running without cgroup memory hard cap." >&2
-    echo "      MemoryMax=$CAMPAIGN_MEMORY_MAX and MemorySwapMax=0 are NOT enforced." >&2
+    echo "      MemoryMax=$CAMPAIGN_MEMORY_MAX and MemorySwapMax=$CAMPAIGN_SWAP_MAX are NOT enforced." >&2
     echo "[run_campaign_linux] exec $launch_description"
     exec "${launch_cmd[@]}"
 else
-    echo "[run_campaign_linux] exec systemd-run --user --scope --expand-environment=no -p MemoryMax=$CAMPAIGN_MEMORY_MAX -p MemorySwapMax=0 $launch_description"
+    echo "[run_campaign_linux] exec systemd-run --user --scope --expand-environment=no -p MemoryMax=$CAMPAIGN_MEMORY_MAX -p MemorySwapMax=$CAMPAIGN_SWAP_MAX $launch_description"
     exec systemd-run --user --scope \
         --expand-environment=no \
         -p "MemoryMax=$CAMPAIGN_MEMORY_MAX" \
-        -p MemorySwapMax=0 \
+        -p "MemorySwapMax=$CAMPAIGN_SWAP_MAX" \
         "${launch_cmd[@]}"
 fi

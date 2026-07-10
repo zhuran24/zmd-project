@@ -126,16 +126,23 @@ MemorySwapMax=0 恰好低于该尖峰的真实需求，把 b0_4r 时代靠余量
   几乎相同）；参数默认值差异（fixed/probing3/symmetry3）未单测但已非阻塞项——
   A/B 实验设计自选参数即可。**M5 A/B 战场正式解锁**。
 
-## 第五刀：修订条款验证（42G 帽 + MemorySwapMax=20G，进行中）
+## 第五刀：修订条款验证（42G 帽 + MemorySwapMax=20G）—— 绿，条款定稿
 
-- 目的：给 wrapper 条款修订（禁 swap → 允许 20G swap 吸收尖峰溢出）拿实测背书。
-- 预期：RSS 被帽压在 42G 内、溢出走 swap，~8.5min 出解。
-- 结果：待填。
+- 结果：**OPTIMAL@512.9s，branches 4,898,023，conflicts 1076，HWM 41.93G（帽内），
+  swap 峰值 18.08G（zram 吸收）**——wall 无损失。修订条款实测可行。
+- 已落地（同日）：wrapper `MemorySwapMax` 0→可配 `CAMPAIGN_SWAP_MAX`（默认 20G，
+  同款白名单校验 fail-closed，0 仍合法=显式禁 swap）；gate w6 档语义重写
+  44→20（=稳态 17G+余量；**尖峰生存责任转移给 cgroup 条款**，gate 只守
+  「稳态×parallel+host 不挤爆物理」）；dry-run 三形态验证过（新属性上链/
+  infinity exit4/0 合法）。大 anchor（70×19+）在新条款下仍不可行（尖峰需求更高），
+  本机 campaign 需限 anchor 或等 M5 降尖峰。
 
-## 派生行动
+## 派生行动（全部落地，2026-07-10 晚）
 
-- 1F 条款修订：42G 帽+禁 swap 不可行。修订=保留 MemoryMax 42G+`MemorySwapMax=20G`
-  （待第五刀背书；zram 吸收尖峰溢出，三/四刀实测性能损失可忽略——wall 反而更快）。
-- `07_batch1f_evidence.md` 归因后记已落；roadmap 同步（撤「双回归」）。
-- gate w6 档 44G 数值保留（42G 帽下的死值仍是诚实下界）但注释理由改写。
-- M5 A/B 解锁通知 owner；「C1 family 引导接入」等性能实验按 A/B 框架推进。
+- ✅ 1F 条款修订：wrapper `MemorySwapMax=20G` 默认（可配 `CAMPAIGN_SWAP_MAX`，
+  第五刀实测背书）。
+- ✅ gate w6 档语义重写 44→20（稳态模型，尖峰责任归 cgroup 条款），27 测绿。
+- ✅ `07_batch1f_evidence.md` 归因后记；roadmap 撤「双回归」。
+- ✅ memory 卡 `c1-solve-peak-memory-truth`（尖峰真相+采样纪律）。
+- → M5 A/B 解锁；「C1 family 引导接入」等性能实验按 A/B 框架推进；
+  大 anchor 尖峰治理（降尖峰机理定位）列 M5 议题。

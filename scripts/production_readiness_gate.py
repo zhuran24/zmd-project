@@ -341,16 +341,18 @@ def check_oom_headroom(gate: Gate) -> None:
     缺省 4 且下限为 1。Master worker 解析复用运行时的
     stage-specific → global → default 优先级。
     """
-    # Batch 1F smoke backfill (2026-07-10, 07_batch1f_evidence.md): production
-    # C1 master solve hit the 42G cgroup cap at kernel anon-rss 43.9G in all
-    # three runs (70x19 campaign / 6x6 campaign / 6x6 direct build) — the w6
-    # tier is therefore 44G (honest measured value; on this 47.7G host that
-    # means parallel=1 needs 52G and the gate always BLOCKs, which reflects
-    # reality until the C1 memory regression is fixed and this is re-measured).
-    # Batch0's "w6 mild" (<20G, b0_4r) only held for the prototype C1 patch.
-    # Constrained experiments: use EXACT_GATE_WORKER_PEAK_RSS_GIB (gate-only,
-    # unset before launching a campaign).
-    WORKER_PEAK_RSS_GIB_W6 = 44.0
+    # M5 attribution verdict (2026-07-10, m5_c1_memory_attribution_20260710.md):
+    # the C1 master has an inherent ~60G-class allocation spike at solution
+    # time (steady state 11-17G; spike RSS >42G plus ~18G swap overflow). The
+    # spike is handled by the wrapper's cgroup terms (MemoryMax=42G +
+    # MemorySwapMax=20G, zram absorbs the overflow — measured OPTIMAL@512.9s
+    # with no wall regression), NOT by this gate. The w6 tier therefore models
+    # the STEADY-STATE RSS (17G + margin = 20G): the gate guards "steady state
+    # × parallel + host fits in physical RAM"; spike survival is the cgroup's
+    # job. The interim 44G value (42G-cap kill evidence, batch 1F) was replaced
+    # after the verdict showed it conflated the capped death value with steady
+    # demand. Large anchors (70x19+) exceed even the spike terms on this host.
+    WORKER_PEAK_RSS_GIB_W6 = 20.0
     WORKER_PEAK_RSS_GIB_W12 = 47.0
     WORKER_PEAK_RSS_GIB_GT12 = 47.0
     HOST_OVERHEAD_GIB = 8.0
