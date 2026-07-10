@@ -32,6 +32,7 @@ spike GO（`02_spike_evidence.md`）证明的是**工程开销可行**（10K att
 
 - **批 A（可立即,不依赖 PIC-0）**：PIC-3 ✅（`b9fcca9`）；PIC-6 明确改为搭车项——单独为纯卫生残留做 reseal 轮不值,留给下一个碰 lifecycle.py 的批（C/D）顺带。
 - **批 B（设计评审）✅完成(2026-07-11)**：PIC-0 owner 拍板=(a) certified promote 路线；PIC-1.1 评估成文+双审定稿。
+- **阶段 B 工程批（通电线主线,规格书✅定稿 2026-07-11)**：`../cut_framework_review_gpt56pro_20260710/03_stage_b_implementation_spec.md`（v3,codex 三条侦察供料+两轮 opus/codex 双审 53 条全采纳）。批次序列 B0(契约测试壳)→B1(FrozenArtifactBundle+snapshot 层)→B1.5(typed 平台+F5 shadow 通路)→B2/B3/B4(F1/F6/F7 逐族纵切,与旧路径并存)→B5(wiring cut-over,≈16 pinned 文件 reseal,PIC-6 搭车)→B6(promotion=owner)。B0-B4 不碰 sealed、可与批 C 并行。
 - **批 C（实测,依赖 B）**：PIC-4+PIC-5。
 - **批 D（F5 线,可与 C 并行）**：PIC-1.2+PIC-2。
 - **批 E（账本）**：PIC-1.3。
