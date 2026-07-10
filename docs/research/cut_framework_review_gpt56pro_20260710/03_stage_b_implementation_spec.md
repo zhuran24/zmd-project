@@ -74,6 +74,16 @@ B0 新增,见 §6。)**修订拍板**:
   投影,src/cuts/assumptions/verifiers.py:48/:72),归入公共动态层/family_inputs。
 - 增 `groups: Mapping[str, GroupSnapshot]`(GroupSnapshot 含 `selected_poses:
   tuple[str, ...]`——Step 7 literal evaluator 读它,必须冻入)与 `cell_owner` 投影。
+- **公共动态层显式含 `ghost_cells`/`exterior_blocks` 本体**(B1 实现上报补,2026-07-11:
+  F7 validator 的 full/ghost-only CoverSet 直接读 `state.ghost_cells`
+  (power_hitting_set.py:365 域),ghost_rect 无法还原任意 ghost_cells;F1 同读本体)——
+  frozenset 深冻结进公共层,所有族共享,不在 family_inputs 重复;RFC 的
+  `blocked_cells_digest`/`exterior_blocks_digest` 字段保留作身份。下方 F1/F7 清单中的
+  ghost_cells/exterior_blocks 项即指向公共层,不另存副本。
+- **builder 两原则**(同批拍板):①groups 投影**全量**(builder 与 proof 解耦,不预知
+  contributing 集,由 proof/validator 选择);②candidate pose 投影以
+  `(facility_type, pose_id)` 为键(与生产 pose cache 键形态一致,防跨设施类型 pose ID
+  冲突)。
 
 动态层深冻结拷贝(ghost/groups/cell_owner/artifact_hashes/oracle_capabilities),静态层
 经 bundle(§2.1)。**snapshot 私有构造与 CompiledCut 同款 AST 门**(双审 #26:RFC 明文
