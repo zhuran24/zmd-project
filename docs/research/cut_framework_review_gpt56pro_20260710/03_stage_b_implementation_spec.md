@@ -220,6 +220,13 @@ B0 实现方上报:§6 的同一对象 id 断言类测试需要可拦截 seam,�
   调用」在入口层天然成立;B0 可测形态=**step_8 类型拒绝**(raw Cut/ShadowValidated 传入
   新 step_8 被拒,与钉④合流);编排层(_maybe_attach 三路 match 的零调用)是 B5 接线后
   的补充测试,B0 只留骨架注释。
+- **B0 双审补拍板(2026-07-11)**:①xfail 一律带 **condition 哨兵**(目标模块/符号
+  不存在时才 xfail;符号落地后标记自动失效、断言错当场红——封 strict xfail「只防意外
+  转绿不防永远红」的盲区);②B0 拒绝类测试只断言**异常类型**(TypeError/ValueError 级),
+  不写死文案;拒绝异常的精确类型/错误码由 B5 实现定稿并回写本规格;③三连校验的负例
+  必须**单项不匹配**(仅错①/仅错②/仅错③各一,错绑用例保持另两维一致——负例的单变量
+  纪律);④B1.5 解除 shadow xfail 时须补「生产 registry+真实 F5 envelope」测试(spy 版
+  只证 dispatch);B5 解除时须新增 _maybe_attach 编排零调用独立测试,不能只靠骨架转绿。
 
 ## 3. 单入口与执行序
 
@@ -278,7 +285,8 @@ RFC-003 面,留 hook 位不实现)。项目化:
 
 ### 5.1 F1(小到中)
 Step 8 现 cert→参数段(lifecycle.py:1217-1254)抽成纯 compiler;ghost scope 归 binding;
-lowering 保留(4.11 的 precheck 前移除外)。
+lowering 保留。**4.11 的 precheck 前移属 B5**(动 sealed master 文件;B2 明确不 mutate
+master——B0 双审曾误归 B2,此处消歧)。
 
 ### 5.2 F6(中)
 domain_fingerprint 按 §2.4 v2 定义(covering facility_pools digest+slot 结构+pose-tuple
