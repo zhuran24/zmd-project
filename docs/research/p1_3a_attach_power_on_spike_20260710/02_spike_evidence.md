@@ -24,7 +24,7 @@ prod-scale(266 mandatory 实例,70×70,C1 coordinate master)+ 10K cut 直调 `st
 1. **workload 是数学冗余合成 F5**(static-overlap:同 pose 双 group pattern,被 NoOverlap2D 天然禁止)——测的是 attach/presence/proto/solve 工程开销,**不模拟生产 convergence 语义**(Step 7 在真实 incumbent 上对这些 pattern 恒假)。
 2. **harness shim 形态**:GHOST_AGNOSTIC F5 经 harness-only shim(空条件→共享恒真 literal)attach,每条约束多一层 `OnlyEnforceIf(恒真)`;presolve 消化良好(见 solve 退化),但与未来原生 unconditional lowering 不逐位等价。
 3. **F5 治理裁决**(规格书 §E2' 拍板):生产通电时 F5 仍走 shadow(三硬门条款有效);本实验借 F5 lowering 形态造 workload,不预演生产 F5 治理。
-4. **solve 参数形态**:两轮均用原型参数(automatic/probing1/symmetry1/软cap,第五刀绿配方)——「产品默认 solve 参数(FIXED+probing3+symmetry3)在 C1 上不可用」是 M5 线待解的**独立前置**,不被本 GO 掩盖。
+4. **solve 参数形态**:两轮均用原型参数(automatic/probing1/symmetry1/软cap,第五刀绿配方)。~~「产品默认参数不可用」独立前置~~——**2026-07-11 M5 A/B 四刀已证伪该前置**(smoke#4 实死于禁 swap 旧条款;修订条款下默认组合 OPTIMAL@649s):残余仅为默认组合 +26.4% wall 的性能注记,不阻塞通电(见 `../p1_3_m5_convergence_20260708/m5_ab_param_bisect_20260711.md`)。
 5. **单 rect 单 solve**:6×6 ghost 直建,非 campaign 多 rect 序列;跨 solve 的 cut 池演化/淘汰行为未测(通电线 checklist 项)。
 
 ## TRIAGE 移交(通电线处理)

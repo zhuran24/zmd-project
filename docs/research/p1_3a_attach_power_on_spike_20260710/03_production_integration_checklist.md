@@ -26,7 +26,7 @@ spike GO（`02_spike_evidence.md`）证明的是**工程开销可行**（10K att
 
 **PIC-6 replay 诊断 subset 残留清理**（cut 修复批 TRIAGE）：生产不可达,顺通电批一并清。
 
-**PIC-7 M5 独立前置——产品默认 solve 参数病态归因**：默认 FIXED_SEARCH+probing3+symmetry3 在 C1 上持续吃内存不出解（M5 五刀+E1 系列双重实锤）,当前一切 prod-scale 实验靠原型参数 env 续命。通电的 wall 判断最终要在「生产可用参数形态」上重做一次轻量对照;归因与修法归 M5 线（A/B 实验已解锁）,此处为排期依赖登记。
+**PIC-7 M5 独立前置 ✅已归因关闭(2026-07-11 凌晨,M5 A/B 四刀)**：「默认参数病态」证伪——smoke#4 死于当时的 42G+禁 swap 条款(<60G 尖峰),双变量混杂误读;修订条款(62G)下完整默认组合 fixed+p3+s3 OPTIMAL@649s(+26.4% wall)。通电对照可直接用生产默认参数,残余仅为 +26% 性能注记(优化机会,非阻塞)。证据 `../p1_3_m5_convergence_20260708/m5_ab_param_bisect_20260711.md`。
 
 ## §2 批次划分建议
 
