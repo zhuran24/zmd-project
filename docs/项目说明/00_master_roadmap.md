@@ -58,7 +58,7 @@ FEASIBLE 唯一生产点接线,fable+codex 双审首战 6 项修复单全落,`3c
 双审第四次规格盲区实证,`a1ae1ed`;终审扩展面:C1 空 powered 义务提前返回+验收盲区
 16+1 失败全修——第五/六次盲区实证,含慢 lane witness 真实工件回归显式退回 `fecb495`;
 reseal 不动点长链 semantic projection+runtime anchor 首次触发;golden 双 pin 重钉;
-慢 lane 30/30);1E 义务层 reseal 接续(草案 `ad838ad`,t11 实名已同步);旧 witness
+慢 lane 30/30);1E 义务层 reseal 已落地(第 15 条义务 PO-CERTIFIED-POWER-POLE-DOMINANCE-NORMALIZATION 入册——14 required_tests+domain faithfulness 追加 1D witness env 负例,checker 双注册,reseal 一轮收敛,字面锚对时 15/65,`4d98314`;验证=义务文件 347 测分族全覆盖+0871b10 对照洗清(解释器间歇病 7 崩三形态物理证据入 memory);慢 lane 30/30);旧 witness
 编码 owner 已拍板不留（2026-07-10：certified 层不保留 runtime env 对照/回退）;
 M5 A/B 战场随首解解锁,挂批 1 完成后**;
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
