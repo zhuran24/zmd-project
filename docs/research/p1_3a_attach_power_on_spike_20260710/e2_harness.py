@@ -639,6 +639,10 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--solve-limit", type=float, default=1800.0, help="CP-SAT seconds")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help="result JSON path")
+    parser.add_argument(
+        "--ghost", type=int, nargs=2, default=(6, 6), metavar=("W", "H"),
+        help="ghost rect (w h); default 6 6 = spike baseline shape",
+    )
     args = parser.parse_args()
     if args.cuts < 0:
         parser.error("--cuts must be non-negative")
@@ -680,7 +684,7 @@ def main() -> int:
     result["core_build_seconds"] = round(time.perf_counter() - core_started, 3)
 
     master_started = time.perf_counter()
-    master = MasterPlacementModel.from_exact_core(core, ghost_rect=(6, 6))
+    master = MasterPlacementModel.from_exact_core(core, ghost_rect=tuple(args.ghost))
     if not getattr(master, "_built", False):
         master.build()
     result["master_build_seconds"] = round(time.perf_counter() - master_started, 3)

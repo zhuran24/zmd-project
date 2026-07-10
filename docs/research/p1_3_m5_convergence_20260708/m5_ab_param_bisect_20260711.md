@@ -44,3 +44,11 @@ M5 归因判决(`m5_c1_memory_attribution_20260710.md`)与 attach spike E1 系�
 2. spike GO 效度注脚 #4 减负:默认参数可用性不再是独立前置,仅剩 wall +26% 的性能注记(优化机会,非阻塞)。
 3. memory 卡 c1-solve-peak-memory-truth 同步(参数无病态)。
 4. M5 线下一步:参数病态线关闭;M5 回到性能收敛主线(probing3 的 +27.8% 是最大单变量代价,默认组合 +26.4%——参数调优的收益面已量化,是否追优先级归 roadmap 排期)。
+
+## 附:大 anchor(70×19)修订条款重测(2026-07-11 01:10)
+
+harness 直建 `--ghost 70 19` @62G 预算+原型参数:**INFEASIBLE@557.5s**(build 25.4s,branches 4,731,094,尖峰 39.9G RSS+17.1G swap=57G 域,swap 正常吸收)。三个推论:
+
+1. **70×19 的正确求解结果就是 INFEASIBLE**(266 mandatory 下该矩形放不下)——不存在「解不动」问题。
+2. **smoke#1 死亡真相补全**:当年 9min47s 撞死于禁 swap 旧条款,离 INFEASIBLE 判决(9.3min)只差 ~30s——campaign 本会正常排除该候选推进。`07_batch1f_evidence.md` 的「本机大 anchor campaign 现阶段不可行」结论作废。
+3. **本机真 campaign(不限 anchor)在修订条款下预期全程可行**:frontier 大候选逐个 INFEASIBLE 排除(~9min/57G 每个)→ 小候选出解(~9min/60G)。下一步=修订条款下 campaign 端到端冒烟。

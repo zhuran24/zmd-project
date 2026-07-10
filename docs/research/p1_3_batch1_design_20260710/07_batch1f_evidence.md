@@ -111,3 +111,8 @@ M5 归因线（`../p1_3_m5_convergence_20260708/m5_c1_memory_attribution_2026071
 条款派生：42G 帽+禁 swap 不可行；修订方向=允许 zram 吸收尖峰溢出（第三刀实测 wall
 525s 比原版还快，短暂尖峰的 swap 性能损失可忽略）。gate w6 档 44G 是「42G 帽下死值」
 的诚实下界，数值保留、理由见归因文档。
+
+
+## 后记 2(2026-07-11 凌晨):「本机大 anchor campaign 不可行」结论作废
+
+修订条款(42G+20G swap)下 70×19 直建重测:**INFEASIBLE@557.5s,尖峰 57G 域被 swap 正常吸收**——smoke#1 当年死于禁 swap 旧条款,离 INFEASIBLE 判决只差 ~30s。大 anchor 的正确结果是被排除(放不下),不是解不动;修订条款下真 campaign 预期全程可行。证据:`../p1_3_m5_convergence_20260708/m5_ab_param_bisect_20260711.md` 附节。
