@@ -65,16 +65,16 @@ def test_oom_headroom_block_when_overcommit(monkeypatch):
 
 
 def test_oom_headroom_warn_when_tight(monkeypatch):
-    """w6 tier: 2 processes × 20 GiB + 8 GiB vs 52 GiB is a tight margin."""
+    """w6 tier (44G backfill): 2 × 44 GiB + 8 GiB = 96 vs 100 GiB is tight."""
     monkeypatch.setenv("EXACT_PARALLEL_PROCESSES", "2")
     monkeypatch.setenv("EXACT_MASTER_CP_SAT_WORKERS", "6")
-    with _patched_meminfo(52 * 1024 * 1024):
+    with _patched_meminfo(100 * 1024 * 1024):
         gate = _make_gate()
         prg.check_oom_headroom(gate)
     warned = [c for c in gate.checks if c[0] == "WARN" and c[1] == "OOM headroom"]
     assert len(warned) == 1
     assert "tight margin" in warned[0][2]
-    assert "2 × 20GB/worker" in warned[0][2]
+    assert "2 × 44GB/worker" in warned[0][2]
     assert "w<=6 tier" in warned[0][2]
 
 
@@ -104,7 +104,7 @@ def test_oom_headroom_parallel_is_clamped_to_one(monkeypatch, parallel):
     with _patched_meminfo(128 * 1024 * 1024):
         gate = _make_gate()
         prg.check_oom_headroom(gate)
-    assert "parallel=1 × 20GB/worker" in _oom_message(gate)
+    assert "parallel=1 × 44GB/worker" in _oom_message(gate)
 
 
 @pytest.mark.parametrize(
@@ -154,7 +154,7 @@ def test_oom_headroom_global_worker_env_selects_w6_tier(monkeypatch):
         gate = _make_gate()
         prg.check_oom_headroom(gate)
     message = _oom_message(gate)
-    assert "1 × 20GB/worker" in message
+    assert "1 × 44GB/worker" in message
     assert "source=EXACT_CP_SAT_WORKERS" in message
 
 
@@ -194,7 +194,7 @@ def test_oom_headroom_invalid_peak_override_falls_back_to_worker_tier(
     with _patched_meminfo(128 * 1024 * 1024):
         gate = _make_gate()
         prg.check_oom_headroom(gate)
-    assert "1 × 20GB/worker" in _oom_message(gate)
+    assert "1 × 44GB/worker" in _oom_message(gate)
 
 
 def test_oom_headroom_warn_when_meminfo_missing(monkeypatch):

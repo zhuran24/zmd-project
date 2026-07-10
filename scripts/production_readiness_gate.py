@@ -341,10 +341,16 @@ def check_oom_headroom(gate: Gate) -> None:
     缺省 4 且下限为 1。Master worker 解析复用运行时的
     stage-specific → global → default 优先级。
     """
-    # Batch0 evidence: w6 was mild; w12 died twice; w24 breached the hard cap.
-    # The w6 tier is provisional until the batch 1F B-segment smoke measurement
-    # is available for backfill.
-    WORKER_PEAK_RSS_GIB_W6 = 20.0
+    # Batch 1F smoke backfill (2026-07-10, 07_batch1f_evidence.md): production
+    # C1 master solve hit the 42G cgroup cap at kernel anon-rss 43.9G in all
+    # three runs (70x19 campaign / 6x6 campaign / 6x6 direct build) — the w6
+    # tier is therefore 44G (honest measured value; on this 47.7G host that
+    # means parallel=1 needs 52G and the gate always BLOCKs, which reflects
+    # reality until the C1 memory regression is fixed and this is re-measured).
+    # Batch0's "w6 mild" (<20G, b0_4r) only held for the prototype C1 patch.
+    # Constrained experiments: use EXACT_GATE_WORKER_PEAK_RSS_GIB (gate-only,
+    # unset before launching a campaign).
+    WORKER_PEAK_RSS_GIB_W6 = 44.0
     WORKER_PEAK_RSS_GIB_W12 = 47.0
     WORKER_PEAK_RSS_GIB_GT12 = 47.0
     HOST_OVERHEAD_GIB = 8.0
