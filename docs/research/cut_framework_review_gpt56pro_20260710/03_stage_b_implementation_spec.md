@@ -104,6 +104,27 @@ B0 新增,见 §6。)**修订拍板**:
 字段的规范化/digest 覆盖规则在 B1 实现时随 schema 定稿,但**字段集以本清单为准**,增删
 须回写本规格。
 
+**B1 双审后补拍板(2026-07-11)**:
+- `family_inputs` 正式定性为**纯派生字段**(由 bundle/groups/ghost/cell_owner 确定性
+  派生,非独立身份来源,不进 digest preimage);该假设由等价性测试钉死(从 snapshot
+  其他字段重构造 family_inputs,断言相等)。
+- **builder 原子捕获**:先对 BState 动态字段做**一次性冻结投影**,source digest 输入、
+  groups、family_inputs 全部从同一份投影派生(封 side-effect 容器在两次遍历间改值的
+  hybrid snapshot 缝);调 `compute_source_digest` 前对 source payload 严格验证
+  (exact-str keys/精确标量类型/有限数,fail-closed)——旧编码的 str() 化 key 与
+  NaN 接受性不得进入身份层。
+- **bundle 工厂只吃四工件显式入参**(移除 from-BState 入口——B1 任务书曾写「可从
+  BState 投影」与 §2.1 冲突,以规格为准)。
+- **公开 digest primitive 单射性**:`snapshot_digest_v1` 对外接受域收严(type-tagged
+  canonicalizer 或拒绝非 exact 类型),防 key coercion/容器折叠碰撞。
+- **残余风险入档(按 owner 2026-07-06「仅防故意内鬼的硬化暂缓到发布时点」拍板)**:
+  ①构造 token 是可导入模块全局,进程内显式引用可绕过(AST 门补钉「生产代码引用 token
+  即红」的便宜防线;运行时防护缓);②Python frozen dataclass 可被重跑 `__init__` 原地
+  篡改(全项目 frozen dataclass 通病,含 Cut/CutScope;真一次性构造风格留发布硬化批)。
+- **性能实测**(codex,45MB candidate_placements):bundle 构造 ~15s、峰值 RSS ~2.3GiB、
+  snapshot builder ~4.2s——「每 session 一次」可接受;B5 接线时 bundle 构造须放
+  session 建立期(master build 前的内存低谷),不得进 benders 迭代路径。
+
 ### 2.3 snapshot builder(唯一)与 digest 编码
 
 ```python
