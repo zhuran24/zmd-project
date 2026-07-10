@@ -9187,10 +9187,17 @@ def test_v80_certified_exact_env_guard_allows_production_wrapper_operational_env
     monkeypatch.setenv("EXACT_OUTER_SKIP_UNKNOWN", "0")
     monkeypatch.setenv("EXACT_COMMUNITY_BLUEPRINT_HINT_PATH", "/tmp/community_hint.json")
     monkeypatch.setenv("EXACT_PARALLEL_PROCESSES", "2")
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", "3")
 
     blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
 
     assert blockers == []
+    # 双注册的 known 集侧无法被上面 collector 覆盖(allowlist 命中即 continue),
+    # 直接钉 membership(双审 codex LOW#2)
+    assert (
+        "EXACT_CUT_FRAMEWORK_ATTACH_BUDGET"
+        in benders_loop_module._CERTIFIED_KNOWN_ENV_NAMES
+    )
 
 
 def test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible() -> None:

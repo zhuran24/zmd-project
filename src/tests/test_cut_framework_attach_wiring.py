@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any, Dict, Mapping
 from unittest import mock
 
+import pytest
 from ortools.sat.python import cp_model
 
 from src.models.cut_manager import CutManager
@@ -324,11 +325,13 @@ def test_full_chain_no_overflow_attaches_nothing() -> None:
     assert spy.region_capacity_calls == []
 
 
-def test_attach_budget_exhausted_stops_emitting() -> None:
+def test_attach_budget_exhausted_stops_emitting(monkeypatch) -> None:
     """M4-A budget gate: at EXACT_CUT_FRAMEWORK_ATTACH_BUDGET attached
     constraints the framework stops before generating anything."""
     from src.search.benders_loop import EXACT_CUT_FRAMEWORK_ATTACH_BUDGET
 
+    # hermetic: 外部 shell 若设了合法 BUDGET 覆盖会假红(双审 codex LOW#1)
+    monkeypatch.delenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", raising=False)
     spy = _SpyMaster()
     spy.build_stats["coordinate_framework_cut_count"] = (
         EXACT_CUT_FRAMEWORK_ATTACH_BUDGET
@@ -349,6 +352,101 @@ def test_attach_budget_exhausted_stops_emitting() -> None:
     assert stats["budget_exhausted"] is True
     assert stats["budget"] == EXACT_CUT_FRAMEWORK_ATTACH_BUDGET
     assert stats["attached"] == 0
+
+
+def test_attach_budget_env_override_stops_at_three_and_reports_budget(
+    monkeypatch,
+) -> None:
+    spy = _SpyMaster()
+    spy.build_stats["coordinate_framework_cut_count"] = 2
+    controller = _controller(spy)
+    state = _boundary_overflow_state()
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH", "1")
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", "3")
+    with mock.patch.object(
+        LBBDController, "_build_cut_framework_state", return_value=state
+    ), mock.patch.object(
+        LBBDController,
+        "_selected_ghost_context",
+        return_value=_mock_ghost_context(),
+    ):
+        attached = controller._maybe_attach_framework_cuts(
+            trigger="binding_infeasible", iteration=4
+        )
+
+    assert attached == 1
+    assert 2 + attached == 3
+    assert len(spy.region_capacity_calls) == 1
+    assert spy.baseline_packing_calls == []
+
+    spy.build_stats["coordinate_framework_cut_count"] = 3
+    with mock.patch.object(
+        LBBDController,
+        "_build_cut_framework_state",
+        side_effect=AssertionError("env budget gate must fire before state build"),
+    ):
+        assert (
+            controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=5
+            )
+            == 0
+        )
+    stats = spy.build_stats["cut_framework_attach_last"]
+    assert stats["budget_exhausted"] is True
+    assert stats["budget"] == 3
+
+
+@pytest.mark.parametrize("raw_value", ["0", "-1", "abc", "5 junk"])
+def test_attach_budget_resolver_rejects_invalid_values(
+    monkeypatch, raw_value: str
+) -> None:
+    from src.search.benders_loop import _resolve_cut_framework_attach_budget
+
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", raw_value)
+    with pytest.raises(
+        ValueError,
+        match=r"EXACT_CUT_FRAMEWORK_ATTACH_BUDGET.*expected a positive integer",
+    ):
+        _resolve_cut_framework_attach_budget()
+
+
+def test_attach_budget_resolver_uses_default_when_env_unset(monkeypatch) -> None:
+    from src.search.benders_loop import (
+        EXACT_CUT_FRAMEWORK_ATTACH_BUDGET,
+        _resolve_cut_framework_attach_budget,
+    )
+
+    monkeypatch.delenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", raising=False)
+    assert _resolve_cut_framework_attach_budget() == 2000
+    assert _resolve_cut_framework_attach_budget() == EXACT_CUT_FRAMEWORK_ATTACH_BUDGET
+
+
+def test_attach_budget_resolver_empty_and_surrounding_whitespace(monkeypatch) -> None:
+    from src.search.benders_loop import (
+        EXACT_CUT_FRAMEWORK_ATTACH_BUDGET,
+        _resolve_cut_framework_attach_budget,
+    )
+
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", "")
+    assert _resolve_cut_framework_attach_budget() == EXACT_CUT_FRAMEWORK_ATTACH_BUDGET
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", "   ")
+    assert _resolve_cut_framework_attach_budget() == EXACT_CUT_FRAMEWORK_ATTACH_BUDGET
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", " 5 ")
+    assert _resolve_cut_framework_attach_budget() == 5
+
+
+def test_attach_entrance_propagates_invalid_budget_value(monkeypatch) -> None:
+    """ATTACH=1 + 非法 BUDGET 时 ValueError 必须从入口传播(双审 codex LOW#3)。"""
+    spy = _SpyMaster()
+    controller = _controller(spy)
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH", "1")
+    monkeypatch.setenv("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET", "not_an_int")
+    with pytest.raises(
+        ValueError, match=r"EXACT_CUT_FRAMEWORK_ATTACH_BUDGET"
+    ):
+        controller._maybe_attach_framework_cuts(
+            trigger="binding_infeasible", iteration=1
+        )
 
 
 def test_framework_target_poses_resolves_groups_and_pose_ids() -> None:

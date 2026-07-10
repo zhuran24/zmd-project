@@ -943,7 +943,25 @@ EXACT_CUT_FRAMEWORK_ATTACH_ENV = "EXACT_CUT_FRAMEWORK_ATTACH"
 # stopping only weakens pruning, never soundness. Conservative thousand-level
 # anchor per verdict.md (§3 前置 2); raising it needs a fresh before/after
 # production re-measurement, not just the synthetic-load extrapolation.
+# Operational knob: certified attach is unsafe-map-disabled, so allowlisting it is inert.
 EXACT_CUT_FRAMEWORK_ATTACH_BUDGET = 2000
+
+
+def _resolve_cut_framework_attach_budget() -> int:
+    raw_value = os.environ.get("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET")
+    if raw_value is None or str(raw_value).strip() == "":
+        return EXACT_CUT_FRAMEWORK_ATTACH_BUDGET
+    try:
+        budget = int(str(raw_value).strip())
+        if budget <= 0:
+            raise ValueError
+    except ValueError:
+        raise ValueError(
+            "Unsupported EXACT_CUT_FRAMEWORK_ATTACH_BUDGET: "
+            f"{raw_value!r}; expected a positive integer."
+        ) from None
+    return budget
+
 
 _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES = {"", "0", "false", "no", "off"}
 _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
@@ -1029,6 +1047,7 @@ _CERTIFIED_KNOWN_ENV_NAMES = frozenset(
         "EXACT_COORDINATE_MASTER_SEARCH_PROFILES",
         "EXACT_CP_SAT_WORKERS",
         "EXACT_CUT_FRAMEWORK_ATTACH",
+        "EXACT_CUT_FRAMEWORK_ATTACH_BUDGET",
         "EXACT_D2_CP_SAT_WORKERS",
         "EXACT_EPSILON_STAGE",
         "EXACT_EPSILON_STAGE1_END_HOURS",
@@ -1243,6 +1262,7 @@ _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST = frozenset(
         "EXACT_COMMUNITY_BLUEPRINT_HINT_PATH",
         "EXACT_COORDINATE_MASTER_SEARCH_PROFILE",
         "EXACT_CP_SAT_WORKERS",
+        "EXACT_CUT_FRAMEWORK_ATTACH_BUDGET",
         "EXACT_D2_CP_SAT_WORKERS",
         "EXACT_FRONTIER_PROBE_MAX_ANCHORS",
         "EX" "ACT_" "GATE_WORKER_PEAK_RSS_GIB",
@@ -8058,6 +8078,7 @@ class LBBDController:
         """
         if not self._cut_framework_attach_enabled():
             return 0
+        attach_budget = _resolve_cut_framework_attach_budget()
         from src.cuts.lifecycle import (
             step_6_attach_scope_check,
             step_7_evaluate_cut,
@@ -8080,7 +8101,7 @@ class LBBDController:
         budget_used = 0
         if isinstance(stats, dict):
             budget_used = int(stats.get("coordinate_framework_cut_count", 0))
-        if budget_used >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:
+        if budget_used >= attach_budget:
             if isinstance(stats, dict):
                 stats["cut_framework_attach_last"] = {
                     "trigger": trigger,
@@ -8088,7 +8109,7 @@ class LBBDController:
                     "generated": 0,
                     "attached": 0,
                     "budget_exhausted": True,
-                    "budget": int(EXACT_CUT_FRAMEWORK_ATTACH_BUDGET),
+                    "budget": attach_budget,
                 }
             return 0
 
@@ -8173,7 +8194,7 @@ class LBBDController:
             "evaluate": 0,
         }
         for cut in cuts:
-            if budget_used + attached >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:
+            if budget_used + attached >= attach_budget:
                 break
             if validate_cut_integrity(cut) is not None:
                 rejected["integrity"] += 1
