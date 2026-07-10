@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import math
 import os
 import shutil
 import subprocess
@@ -39,6 +40,10 @@ from typing import List, Tuple
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from src.models.cp_sat_worker_config import (  # noqa: E402
+    DEFAULT_MASTER_CP_SAT_WORKERS,
+    resolve_exact_cp_sat_worker_profile_details,
+)
 from src.runtime.campaign_freeze_monitor import (  # noqa: E402
     FREEZE_MARKER,
     PACMAN_CONF,
@@ -320,15 +325,9 @@ def check_power_subproblem_disabled(gate: Gate) -> None:
 def check_oom_headroom(gate: Gate) -> None:
     """Estimate whether parallel workers fit in RAM with safety buffer.
 
-    2026-05-14 双轮实测:
-    - baseline -p 4 (commit b4bf175 前): 9 min global_oom kill, 单 worker
-      ~8-16.8 GB avg/peak (但跑被打断没到稳态 peak)
-    - baseline -p 2 (commit b4bf175 后 retry): 3 min 单 worker 飙到 28 GB,
-      avail 跌到 1.8 GB, swap 5.5 GB used → swap thrash + 近 OOM,人工 abort.
-
-    所以单 worker peak RSS 比初版估 12 GB 大很多 — 30 GB 才是接近实测的
-    保守值. Host overhead 也提到 8 GB (实测 host 满 5.4 GB 已用 + KDE/Claude
-    Code 长跑会涨).
+    Batch0 C1 evidence shows a mild w6 run, two w12 deaths, and a w24
+    hard-cap breach. Peak RSS is therefore tiered by the resolved master
+    CP-SAT worker count. Host overhead remains 8 GiB.
 
     Formula:
         needed   = parallel × WORKER_PEAK_RSS_GIB + HOST_OVERHEAD_GIB
@@ -339,26 +338,67 @@ def check_oom_headroom(gate: Gate) -> None:
     OK    otherwise.
 
     parallel 从 EXACT_PARALLEL_PROCESSES env (跟 main.py / wrapper 一致),
-    缺省 4. 48 GB 本机现状: -p 1 marginal, -p ≥ 2 必 OOM.
+    缺省 4 且下限为 1。Master worker 解析复用运行时的
+    stage-specific → global → default 优先级。
     """
-    # 2026-05-15 spike#5 (workers=2) plateau 16.4 GB (vs baseline 30 GB at workers=8).
-    # 加 env override 让 production 跑 workers≠8 时 set tight peak (worker-aware).
-    # Default 30 GB 保持 baseline 行为不变 (backwards compatible).
-    # 详 [[project_30gb_real_culprit_power_coverage]].
-    WORKER_PEAK_RSS_GIB_DEFAULT = 30.0
+    # Batch0 evidence: w6 was mild; w12 died twice; w24 breached the hard cap.
+    # The w6 tier is provisional until the batch 1F B-segment smoke measurement
+    # is available for backfill.
+    WORKER_PEAK_RSS_GIB_W6 = 20.0
+    WORKER_PEAK_RSS_GIB_W12 = 47.0
+    WORKER_PEAK_RSS_GIB_GT12 = 47.0
     HOST_OVERHEAD_GIB = 8.0
+
+    try:
+        master_details = resolve_exact_cp_sat_worker_profile_details()["master"]
+    except ValueError:
+        master_workers = DEFAULT_MASTER_CP_SAT_WORKERS
+        worker_peak_default = WORKER_PEAK_RSS_GIB_W12
+        worker_tier_note = (
+            "CP-SAT worker env invalid; "
+            f"current default workers={master_workers}; conservative 47GB tier"
+        )
+    else:
+        master_workers = int(master_details["workers"])
+        master_worker_source = str(master_details["source"])
+        if master_worker_source == "default":
+            worker_peak_default = WORKER_PEAK_RSS_GIB_W12
+            worker_tier_note = (
+                "EXACT_MASTER_CP_SAT_WORKERS and EXACT_CP_SAT_WORKERS unset; "
+                f"current default workers={master_workers}; conservative 47GB tier"
+            )
+        elif master_workers <= 6:
+            worker_peak_default = WORKER_PEAK_RSS_GIB_W6
+            worker_tier_note = (
+                f"master_workers={master_workers} (w<=6 tier; source={master_worker_source})"
+            )
+        elif master_workers <= 12:
+            worker_peak_default = WORKER_PEAK_RSS_GIB_W12
+            worker_tier_note = (
+                f"master_workers={master_workers} (6<w<=12 tier; source={master_worker_source})"
+            )
+        else:
+            worker_peak_default = WORKER_PEAK_RSS_GIB_GT12
+            worker_tier_note = (
+                f"master_workers={master_workers} (w>12 tier; source={master_worker_source})"
+            )
+
+    # Gate-only estimate override, not a solver/cgroup limit: use a one-command
+    # standalone gate prefix or unset it before launching a campaign so
+    # calibration state cannot leak into the campaign environment.
     peak_override = os.environ.get("EXACT_GATE_WORKER_PEAK_RSS_GIB", "").strip()
     try:
-        WORKER_PEAK_RSS_GIB = float(peak_override) if peak_override else WORKER_PEAK_RSS_GIB_DEFAULT
-        if WORKER_PEAK_RSS_GIB <= 0:
-            WORKER_PEAK_RSS_GIB = WORKER_PEAK_RSS_GIB_DEFAULT
+        WORKER_PEAK_RSS_GIB = float(peak_override) if peak_override else worker_peak_default
+        if not math.isfinite(WORKER_PEAK_RSS_GIB) or WORKER_PEAK_RSS_GIB <= 0:
+            WORKER_PEAK_RSS_GIB = worker_peak_default
     except ValueError:
-        WORKER_PEAK_RSS_GIB = WORKER_PEAK_RSS_GIB_DEFAULT
+        WORKER_PEAK_RSS_GIB = worker_peak_default
     parallel_str = os.environ.get("EXACT_PARALLEL_PROCESSES", "4")
     try:
         parallel = int(parallel_str)
     except ValueError:
         parallel = 4
+    parallel = max(1, parallel)
 
     try:
         meminfo_text = Path("/proc/meminfo").read_text(encoding="utf-8")
@@ -385,13 +425,13 @@ def check_oom_headroom(gate: Gate) -> None:
     msg_base = (
         f"parallel={parallel} × {WORKER_PEAK_RSS_GIB:.0f}GB/worker + "
         f"{HOST_OVERHEAD_GIB:.0f}GB host = 需 {needed_gib:.1f}GB; "
-        f"available={available_gib:.1f}GB"
+        f"available={available_gib:.1f}GB; {worker_tier_note}"
     )
     if needed_gib > available_gib:
         gate.block(
             "OOM headroom",
-            f"{msg_base} — 168h 撞 global OOM 风险 (2026-05-14 baseline 已实测 4×worker 9min OOM). "
-            f"降 parallel 或释 host RAM",
+            f"{msg_base} — global OOM 风险：C1 batch0 已见 w12 两连死、w24 硬帽击穿。"
+            f"降 parallel/master workers 或释 host RAM",
         )
     elif needed_gib > available_gib * 0.9:
         gate.warn(

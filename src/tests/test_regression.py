@@ -2443,3 +2443,46 @@ def test_resume_does_not_replay_persisted_exact_safe_cuts_into_master(
     assert metadata["loaded_exact_safe_cut_count"] == 0
     assert metadata["persisted_exact_safe_cut_replay_input_count"] == 1
     assert metadata["persisted_exact_safe_cut_replay_enabled"] is False
+
+
+def test_c1_default_build_shape_with_preprocessed_artifacts() -> None:
+    project_root = Path(__file__).resolve().parent.parent.parent
+    candidate_placements_path = (
+        project_root / "data" / "preprocessed" / "candidate_placements.json"
+    )
+    if not candidate_placements_path.is_file():
+        pytest.skip("real candidate_placements.json artifact is unavailable")
+
+    exact_instances, pools, rules = load_project_data(
+        project_root,
+        solve_mode="certified_exact",
+    )
+    generic_io_requirements = load_generic_io_requirements_artifact(project_root)
+    model = MasterPlacementModel(
+        exact_instances,
+        pools,
+        rules,
+        solve_mode="certified_exact",
+        generic_io_requirements=generic_io_requirements,
+    )
+
+    assert model.c1_power_pole_representation is True
+    model.build()
+
+    c1_stats = model.build_stats["c1_power_pole_representation"]
+    family_stats = model.build_stats["global_valid_inequalities"][
+        "power_capacity_families"
+    ]
+    power_coverage = model.build_stats["power_coverage"]
+    assert c1_stats["enabled"] is True
+    assert c1_stats["pole_pose_bools"] > 0
+    assert model.build_stats["master_pose_bool_literals"] == c1_stats["pole_pose_bools"]
+    # C1 刻意不把杆接到 residual-slot search guidance；钉的是 p_k 家族计数变量本身。
+    assert family_stats["applied"] is True
+    assert family_stats["family_count"] == len(model._power_pole_family_count_vars) > 0
+    assert power_coverage["representation"] == "coordinate_geometric"
+    assert power_coverage["encoding"] == "c1_pose_bool_cov_channel_v1"
+    assert power_coverage["powered_slots"] > 0
+    assert power_coverage["pole_pose_bools"] == c1_stats["pole_pose_bools"]
+    assert power_coverage["cov_channel_literals"] > 0
+    assert power_coverage["constant_pole_intervals"] > 0

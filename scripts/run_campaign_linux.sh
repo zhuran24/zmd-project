@@ -16,6 +16,11 @@
 #   bash scripts/run_campaign_linux.sh --skip-readiness-gate --campaign-hours 1.0  # 调试
 #
 # 参数透传给 python main.py。
+#
+# WARNING: EXACT_GATE_WORKER_PEAK_RSS_GIB is a gate-only estimate override,
+# not a solver or cgroup limit. Keep it scoped to a one-command standalone
+# production_readiness_gate.py run, or unset it before launching a campaign;
+# do not let calibration state leak into the campaign environment.
 
 set -euo pipefail
 
@@ -140,16 +145,65 @@ if [[ -n "$parallel_value" ]]; then
     echo "[run_campaign_linux] EXACT_PARALLEL_PROCESSES=$parallel_value (forwarded for readiness gate)"
 fi
 
+# Batch 1F production profile: cap the C1 master at the batch0-safe worker count.
+# Preserve an explicitly configured non-empty value for optional perf lanes.
+: "${EXACT_MASTER_CP_SAT_WORKERS:=6}"
+export EXACT_MASTER_CP_SAT_WORKERS
+echo "[run_campaign_linux] EXACT_MASTER_CP_SAT_WORKERS=$EXACT_MASTER_CP_SAT_WORKERS"
+
 # ---------------------------------------------------------------------------
-# Launch: prefer taskset (always available, no systemd dependency); fall back
-# to plain exec if no P-cores detected.
+# Launch: prefer taskset, then wrap either launch shape in a foreground
+# transient scope so systemd enforces the campaign memory hard cap.
 # ---------------------------------------------------------------------------
 cd "$PROJECT_ROOT"
 
 if [[ -n "$P_CORE_LIST" ]] && command -v taskset >/dev/null 2>&1; then
-    echo "[run_campaign_linux] exec taskset -c $P_CORE_LIST $PYTHON_BIN main.py ${args[*]}"
-    exec taskset -c "$P_CORE_LIST" "$PYTHON_BIN" main.py "${args[@]}"
+    launch_cmd=(taskset -c "$P_CORE_LIST" "$PYTHON_BIN" main.py "${args[@]}")
+    launch_description="taskset -c $P_CORE_LIST $PYTHON_BIN main.py ${args[*]}"
 else
-    echo "[run_campaign_linux] exec $PYTHON_BIN main.py ${args[*]} (no cpuset pinning)"
-    exec "$PYTHON_BIN" main.py "${args[@]}"
+    launch_cmd=("$PYTHON_BIN" main.py "${args[@]}")
+    launch_description="$PYTHON_BIN main.py ${args[*]} (no cpuset pinning)"
+fi
+
+if [[ "${CAMPAIGN_NO_CGROUP:-0}" == "1" ]]; then
+    echo "[run_campaign_linux] CAMPAIGN_NO_CGROUP=1 — cgroup memory hard cap explicitly disabled"
+    echo "[run_campaign_linux] exec $launch_description"
+    exec "${launch_cmd[@]}"
+fi
+
+# An unset value gets the production default; an explicitly empty or malformed
+# value fails closed. This whitelist accepts integer bytes, or a K/M/G/T value
+# with an optional decimal fraction (the syntax accepted by this wrapper).
+if [[ ! -v CAMPAIGN_MEMORY_MAX ]]; then
+    CAMPAIGN_MEMORY_MAX=42G
+fi
+if [[ ! "$CAMPAIGN_MEMORY_MAX" =~ ^([0-9]+([.][0-9]+)?[KMGT]|[0-9]+)$ ]]; then
+    printf 'ERROR: invalid CAMPAIGN_MEMORY_MAX=%q; expected integer bytes or digits[.digits][KMGT].\n' \
+        "$CAMPAIGN_MEMORY_MAX" >&2
+    echo "       CAMPAIGN_NO_CGROUP=1 is the only explicit opt-out from the cgroup hard cap." >&2
+    exit 4
+fi
+
+if ! command -v systemd-run >/dev/null 2>&1; then
+    echo "WARN: systemd-run unavailable — running without cgroup memory hard cap." >&2
+    echo "      MemoryMax=$CAMPAIGN_MEMORY_MAX and MemorySwapMax=0 are NOT enforced." >&2
+    echo "[run_campaign_linux] exec $launch_description"
+    exec "${launch_cmd[@]}"
+elif ! systemd-run --user --scope --quiet --collect \
+    --expand-environment=no true >/dev/null 2>&1; then
+    # The short-lived probe scope is automatically collected. Only a probe
+    # failure may fall back; the real property-bearing scope below stays
+    # fail-closed and its command exit status is passed through unchanged.
+    echo "WARN: systemd user manager/DBus unavailable or cannot create a user scope." >&2
+    echo "      Running without cgroup memory hard cap." >&2
+    echo "      MemoryMax=$CAMPAIGN_MEMORY_MAX and MemorySwapMax=0 are NOT enforced." >&2
+    echo "[run_campaign_linux] exec $launch_description"
+    exec "${launch_cmd[@]}"
+else
+    echo "[run_campaign_linux] exec systemd-run --user --scope --expand-environment=no -p MemoryMax=$CAMPAIGN_MEMORY_MAX -p MemorySwapMax=0 $launch_description"
+    exec systemd-run --user --scope \
+        --expand-environment=no \
+        -p "MemoryMax=$CAMPAIGN_MEMORY_MAX" \
+        -p MemorySwapMax=0 \
+        "${launch_cmd[@]}"
 fi
