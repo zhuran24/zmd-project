@@ -63,11 +63,14 @@ reseal 不动点长链 semantic projection+runtime anchor 首次触发;golden �
 1F 生产 replay 与内存条款已落地(A 段=wrapper cgroup 硬帽(--scope+expand-env=no+连通性
 探测+值校验 fail-closed)+w6 注入+gate RSS 三档分层(runtime resolver 单一真相源)+C1 真
 工件回归,fable+codex 双审第三战 codex 6 BLOCK 全实锤+8 项修复,`f0a7cd4`;B 段 smoke 五连
-实验=**重大发现:产品化 C1 内存+求解双回归**——6×6 直建 >42G 撞帽未出解 vs b0_4r 原型
-<20G OPTIMAL@541s,cov 规模同 4900、jemalloc/campaign 链均洗清,嫌疑=搜索 profile/约束
-结构;gate w6 档按内核实测回填 44G(本机恒 BLOCK=诚实态,解除=回归修复后重测),evidence=
-07_batch1f_evidence.md,`882287b`)。**批 1 六批(1A-1F)全部落地**;M5 开工首项由 A/B 实验
-改为 C1 回归归因(worktree 回 batch0 HEAD 复刻原型对照+profile 二分);
+实验暴露 42G 帽下 6×6 直建撞帽,初判「产品化双回归」,gate w6 档按死值回填 44G,evidence=
+07_batch1f_evidence.md,`882287b`)。**批 1 六批(1A-1F)全部落地**;**M5 归因线四刀判决
+(2026-07-10 晚)推翻双回归**:第三刀 88f65a5+原型完美复现 b0_4r(OPTIMAL@525s/branches
+498 万/conflicts 逐位同=solve 确定性),第四刀产品+原型参数+无帽同样出解(506s)——真相=
+**C1 出解时刻有固有 ~60G 级大分配尖峰(RSS>42G+swap 18G),42G 帽+禁 swap 恰好斩断生路**,
+「w6 温和<20G」是 30s 空采样假象;产品与原型同分布,family×ghost 网络无害;归因文档=
+m5_c1_memory_attribution_20260710.md;**M5 A/B 战场正式解锁**(条款修订:允许 swap 吸收
+尖峰,第五刀验证中);
 M5 A/B 战场随首解解锁,挂批 1 完成后**;
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、

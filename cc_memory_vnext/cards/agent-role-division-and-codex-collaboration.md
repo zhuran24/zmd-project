@@ -94,3 +94,22 @@ owner:「现在wf可以随便派fable了(暂时),那审查就暂时换成fable+c
 
 ### 1F 双审战绩(2026-07-10 中午,fable+codex 第三战)
 互补形态三连验证:**codex BLOCK×6 全实锤**(systemd-run $VAR 二次展开改写 argv/CAMPAIGN_MEMORY_MAX=infinity 静默脱帽/user manager 不可连无回退——前 3 项本批引入,终审抽验坐实;另 3 项既有 fail-open 顺手封死);**fable=PASS_WITH_NOTES 现场极扎实**(退出码三值实测透传/degraded user systemd 下 scope 仍工作实证/双 checker 绿),其 NOTE 2 前提(env 不在 allowlist)被实现者用契约测试反转——教训:**审计 allowlist 成员必须 python print 集合或跑契约测试,grep 字面量会被拼接字符串骗过**(benders_loop:1248 的 "EX" "ACT_" 拼接条目,auto-memory 卡 zmd-allowlist-split-string-grep-trap)。终审自身贡献=allowlist 事实定案+两复现亲手抽验。B 段 smoke 五连实验主会话直做(实验设计/二分归因=发布面侦察,归因修复=数学面 M5)。
+
+### 更新 2026-07-10 下午（owner 拍板）：fan-out 用 Workflow 编排 + 侦察也默认 codex
+①**多 agent fan-out（双审/多路并行）直接用 Workflow 工具编排**，不手动 Agent×2 逐个派（owner 原话「这里你直接派wf不就好了」，针对 1F 双审手动双派场景）；②**侦察/调查类工作也默认派 codex**（此前审查=codex、实现=codex，现在侦察也归 codex；owner 原话「另外侦察的工作也交给codex」——当时我把 C1 差异面侦察派了 sonnet Explore）。计划书/任务书主会话亲写、终审 reseal 主会话直做不变。
+
+### 更新 2026-07-10 下午（owner 拍板）：审查阵容回落 opus+codex
+额度回到常态，「fable+codex」临时档结束（该档三战战绩：1C 首战/1D 第二战/1F 第三战，互补形态已定型入卡）。**审查回弹性制正常档=opus+codex 双审**；额度紧张时按原弹性制单走 codex。Fable 回归「单点难题」定位（ultracode-fable-spawn-discipline）。
+
+### 四类活判据总表（2026-07-10 下午定稿，此前三类判据漏了侦察类——owner 点破补上）
+| 活类 | 派谁 | 依据 |
+|---|---|---|
+| 计划书/任务书 | 主会话亲写 | 背景理解是大头，外包≈半份计划书 |
+| 侦察/调查/差异分析 | codex | owner 07-10「侦察的工作也交给codex」（此前判据表缺这类，曾误派 sonnet Explore） |
+| 实现 | codex | 工作量大头省额度，指令一次写全 |
+| 审查 | opus+codex 双审（额度紧=单 codex） | 独立性是本质；fable+codex 是已结束的临时档 |
+| 终审 reseal/close-kernel | 主会话直做 | 发布面负责人不外包 |
+多路 fan-out（双审/并行侦察）用 Workflow 编排，不手动 Agent 逐个派。
+
+### 侦察=codex 的头对头实证（2026-07-10 M5 归因侦察，sonnet vs codex 同题）
+codex 三个关键发现 sonnet 全漏：①harness 层 env 差异（b0_4r runner 自设 automatic/probing1/symmetry1，纠正了 sonnet「solve 参数逐字节相同」的误导性结论）②产品独有 family×ghost-anchor big-M 网络（4225×F 规模，比 sonnet 找到的 family 段大两个数量级）③跨面证据（翻会话 JSONL 确认 taskset、指出 OOM 跑无 snapshot 的工具盲区）。sonnet 头号发现正确但深度止步单文件比对。——owner「侦察交给 codex」拍板的当场验证。

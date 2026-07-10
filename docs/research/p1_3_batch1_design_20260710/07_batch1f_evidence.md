@@ -94,3 +94,20 @@ w6 档 20G 占位改按实测回填 **44G**（三次 OOM 的内核 anon-rss 证�
   不限 anchor 的 C1 campaign。受限跑用 EXACT_GATE_WORKER_PEAK_RSS_GIB override
   （gate-only env，用后 unset，勿泄漏进 campaign 环境——见 wrapper 头部 WARNING）。
 - 待 smoke#2 出稳态/峰值实测后定稿 w6 档数值与注释。
+
+## 归因后记（2026-07-10 晚，M5 归因线三刀判决——本文件「双回归」结论已被推翻）
+
+M5 归因线（`../p1_3_m5_convergence_20260708/m5_c1_memory_attribution_20260710.md`）
+三刀实验终判：**无代码回归**。第三刀（88f65a5+原型 patch+runner 全套 env+无 cgroup 帽）
+完美复现 b0_4r：OPTIMAL@525.4s、branches 4,982,981、conflicts 1077（逐位相同=solve
+确定性），资源证据 HWM 41.58G+VmSwap 峰值 18.57G。
+
+本文件「定位总结」段的正确读法：smoke#1-4 六连灭的共同死因不是产品化回归，而是
+**42G 帽+MemorySwapMax=0 低于 C1 solve 出解时刻的固有大分配尖峰**（RSS 需求 >42G、
+含 swap 总需求 ~60G 级）；b0_4r 的「w6 温和 <20G」是 30s 空采样只见稳态的观察假象。
+产品与原型的结构差异（solve 参数默认值、family×ghost big-M 网络）与撞帽根因解耦，
+是否影响产品出解分布待第四刀（产品+原型参数+无帽）验证。
+
+条款派生：42G 帽+禁 swap 不可行；修订方向=允许 zram 吸收尖峰溢出（第三刀实测 wall
+525s 比原版还快，短暂尖峰的 swap 性能损失可忽略）。gate w6 档 44G 是「42G 帽下死值」
+的诚实下界，数值保留、理由见归因文档。
