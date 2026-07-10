@@ -196,6 +196,31 @@ ShadowValidated 分支)、F8→`RETIRED`、F2/F3/F4/F9→`VALIDATED`(legacy diag
 §4.2)。无族 `ENABLED`(=promotion=B6/owner)。CI 一致性校验(registry vs dispatch 表
 vs step_8 分支 vs 文档);**不触碰 PROJECT_LOCK CUT-\* 权威**,冲突时 lock 赢。
 
+### 2.9 测试 seam 与模块路径拍板(B0 实现上报后补,2026-07-11)
+
+B0 实现方上报:§6 的同一对象 id 断言类测试需要可拦截 seam,黑盒 API 观察不到。根源=v3
+漏列 RFC-001 §3 的 family plugin 链为显式类型,现补拍板:
+
+- **FamilyPlugin 协议正式化**(RFC 原文四方法,作为 typed 平台的显式 Protocol):
+  `parse_and_validate_proof(proof_payload, snapshot) -> FrozenProof` /
+  `derive_body(proof)` / `compile(body, proof, snapshot) -> ConstraintPlan` /
+  `validate_plan(plan, proof, snapshot)`。单入口按 registry 中的 plugin dispatch。
+  **测试 seam = 构造 registry 时注入 spy 包装的 plugin**(装饰器记录入参 id)——
+  不是后门:registry 本就是单入口的显式参数,依赖注入是既有设计用足。
+- **registry 构造协议**:`FamilyCapabilityRegistry` 显式构造(capability+plugin 映射);
+  生产唯一工厂 `build_production_registry()`(AST 钉生产调用点恰一处);测试直接构造
+  实例。**不设 `for_testing` 类后门方法**。
+- **模块路径**:bundle=`src/cuts/frozen_artifacts.py`(`FrozenArtifactBundle`+工厂
+  `build_frozen_artifact_bundle(...)`,实例带 `digest` 属性与各工件只读 accessor);
+  snapshot=`src/cuts/state_snapshot.py`(§2.3);typed 平台=`src/cuts/typed_platform.py`
+  (envelope/plan/compiled/shadow/rejection/plugin 协议/registry/单入口/v1 adapter)。
+- **digest 访问**:bundle/snapshot/plan/compiled 的 digest 一律为 frozen dataclass 字段
+  (构造时算定),无独立 accessor 协议。
+- **通用钉③的 B0 形态澄清**:单入口是纯函数不接 master,「rejection/shadow 零 master
+  调用」在入口层天然成立;B0 可测形态=**step_8 类型拒绝**(raw Cut/ShadowValidated 传入
+  新 step_8 被拒,与钉④合流);编排层(_maybe_attach 三路 match 的零调用)是 B5 接线后
+  的补充测试,B0 只留骨架注释。
+
 ## 3. 单入口与执行序
 
 ```python
