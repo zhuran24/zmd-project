@@ -31,6 +31,18 @@ _BSTATE_STATIC_ARTIFACT_FIELDS = frozenset(
         "instance_to_facility_type",
     }
 )
+_FORBIDDEN_PRODUCTION_SYMBOLS = frozenset({"_SNAPSHOT_CONSTRUCTION_TOKEN"})
+_PRIVATE_SYMBOL_OWNER_FILES = {
+    "_SNAPSHOT_CONSTRUCTION_TOKEN": "src/cuts/state_snapshot.py",
+}
+_PRIVATE_SYMBOL_OWNER_SCOPES = {
+    "_SNAPSHOT_CONSTRUCTION_TOKEN": frozenset(
+        {
+            ("ValidatedStateSnapshot", "__init__"),
+            (None, "build_validated_state_snapshot"),
+        }
+    ),
+}
 # Deliberately field-name based instead of attempting static BState type
 # resolution.  A same-named attribute on another type may be a false positive;
 # the conservative breadth is intentional at this trust boundary.
@@ -133,6 +145,8 @@ class _ArtifactMutationAnalyzer(ast.NodeVisitor):
         self.filename = filename
         self.violations: list[str] = []
         self._alias_scopes: list[set[str]] = [set()]
+        self._function_scopes: list[str | None] = [None]
+        self._class_scopes: list[str | None] = [None]
 
     @property
     def _aliases(self) -> set[str]:
@@ -140,6 +154,14 @@ class _ArtifactMutationAnalyzer(ast.NodeVisitor):
 
     def _record(self, node: ast.AST, kind: str) -> None:
         self.violations.append(f"{self.filename}:{node.lineno}: {kind}: {ast.unparse(node)}")
+
+    def _record_forbidden_symbol(self, node: ast.AST, symbol: str) -> None:
+        if (
+            self.filename == _PRIVATE_SYMBOL_OWNER_FILES[symbol]
+            and (self._class_scopes[-1], self._function_scopes[-1]) in _PRIVATE_SYMBOL_OWNER_SCOPES[symbol]
+        ):
+            return
+        self._record(node, f"ForbiddenSymbol.{symbol}")
 
     def _target_is_artifact(self, target: ast.AST, *, allow_bare_alias: bool = False) -> bool:
         if isinstance(target, ast.Name):
@@ -173,8 +195,10 @@ class _ArtifactMutationAnalyzer(ast.NodeVisitor):
 
     def _visit_function_body(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         self._alias_scopes.append(set())
+        self._function_scopes.append(node.name)
         for statement in node.body:
             self.visit(statement)
+        self._function_scopes.pop()
         self._alias_scopes.pop()
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
@@ -190,8 +214,10 @@ class _ArtifactMutationAnalyzer(ast.NodeVisitor):
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         self._visit_definition_header(node)
         self._alias_scopes.append(set())
+        self._class_scopes.append(node.name)
         for statement in node.body:
             self.visit(statement)
+        self._class_scopes.pop()
         self._alias_scopes.pop()
         self._aliases.discard(node.name)
 
@@ -240,10 +266,32 @@ class _ArtifactMutationAnalyzer(ast.NodeVisitor):
         aliases_else = set(self._aliases)
         self._alias_scopes[-1] = aliases_body | aliases_else
 
+    def visit_Name(self, node: ast.Name) -> None:
+        if isinstance(node.ctx, ast.Load) and node.id in _FORBIDDEN_PRODUCTION_SYMBOLS:
+            self._record_forbidden_symbol(node, node.id)
+
+    def visit_Attribute(self, node: ast.Attribute) -> None:
+        if isinstance(node.ctx, ast.Load) and node.attr in _FORBIDDEN_PRODUCTION_SYMBOLS:
+            self._record_forbidden_symbol(node, node.attr)
+        self.generic_visit(node)
+
+    def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+        for imported in node.names:
+            if imported.name in _FORBIDDEN_PRODUCTION_SYMBOLS:
+                self._record_forbidden_symbol(node, imported.name)
+
     def visit_Call(self, node: ast.Call) -> None:
         aliases = frozenset(self._aliases)
         func = node.func
         if (
+            isinstance(func, ast.Name)
+            and func.id == "getattr"
+            and len(node.args) >= 2
+            and isinstance(node.args[1], ast.Constant)
+            and node.args[1].value in _FORBIDDEN_PRODUCTION_SYMBOLS
+        ):
+            self._record_forbidden_symbol(node, node.args[1].value)
+        elif (
             isinstance(func, ast.Attribute)
             and func.attr in _MUTATION_METHODS
             and _references_static_artifact_target(func.value, aliases)
@@ -285,7 +333,7 @@ def _production_python_files() -> list[Path]:
     return [path for path in sorted(SRC_ROOT.rglob("*.py")) if path != TESTS_ROOT and TESTS_ROOT not in path.parents]
 
 
-def test_bstate_static_artifacts_have_no_production_writes_or_mutations() -> None:
+def test_bstate_static_artifacts_and_snapshot_token_have_no_production_escapes() -> None:
     """B0 immediately effective; production was clean when scanned 2026-07-11."""
 
     # B0 立即生效，生产现状为净（2026-07-11 已扫描验证）。
@@ -298,7 +346,7 @@ def test_bstate_static_artifacts_have_no_production_writes_or_mutations() -> Non
 
     assert production_files, "production AST scan unexpectedly covered no Python files"
     assert SRC_ROOT / "cuts" / "lifecycle.py" in production_files
-    assert not violations, "BState static artifact mutation(s) found:\n" + "\n".join(violations)
+    assert not violations, "Stage-B production AST violation(s) found:\n" + "\n".join(violations)
 
 
 def test_static_artifact_analyzer_catches_alias_and_reflection_escapes() -> None:
@@ -351,6 +399,51 @@ def inspect_artifacts(state, container):
     return state.facility_templates, first
 """
     assert _artifact_mutation_violations(legitimate_reads, filename="legitimate_reads.py") == []
+
+    token_attacks = """
+from src.cuts.state_snapshot import _SNAPSHOT_CONSTRUCTION_TOKEN as leaked_token
+import src.cuts.state_snapshot as snapshot_module
+
+direct = _SNAPSHOT_CONSTRUCTION_TOKEN
+via_module = snapshot_module._SNAPSHOT_CONSTRUCTION_TOKEN
+via_getattr = getattr(snapshot_module, "_SNAPSHOT_CONSTRUCTION_TOKEN")
+"""
+    token_violations = _artifact_mutation_violations(token_attacks, filename="src/cuts/token_attack.py")
+    rendered_tokens = "\n".join(token_violations)
+    assert len(token_violations) == 4, rendered_tokens
+    assert "from src.cuts.state_snapshot import _SNAPSHOT_CONSTRUCTION_TOKEN" in rendered_tokens
+    assert "token_attack.py:5: ForbiddenSymbol._SNAPSHOT_CONSTRUCTION_TOKEN" in rendered_tokens
+    assert "snapshot_module._SNAPSHOT_CONSTRUCTION_TOKEN" in rendered_tokens
+    assert "getattr(snapshot_module, '_SNAPSHOT_CONSTRUCTION_TOKEN')" in rendered_tokens
+
+    owner_source = """
+_SNAPSHOT_CONSTRUCTION_TOKEN = object()
+
+class ValidatedStateSnapshot:
+    def __init__(self):
+        return _SNAPSHOT_CONSTRUCTION_TOKEN
+
+def build_validated_state_snapshot():
+    return _SNAPSHOT_CONSTRUCTION_TOKEN
+"""
+    assert (
+        _artifact_mutation_violations(
+            owner_source,
+            filename="src/cuts/state_snapshot.py",
+        )
+        == []
+    )
+
+    owner_leak = """
+class OtherSnapshot:
+    def __init__(self):
+        return _SNAPSHOT_CONSTRUCTION_TOKEN
+"""
+    owner_violations = _artifact_mutation_violations(
+        owner_leak,
+        filename="src/cuts/state_snapshot.py",
+    )
+    assert len(owner_violations) == 1, owner_violations
 
 
 def _mutable_stage_b_sources(
