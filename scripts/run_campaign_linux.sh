@@ -75,41 +75,62 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# (c) Auto-detect P-cores by max CPU frequency
+# (c) P-core cpuset: explicit override or auto-detect by CPU frequency
 # ---------------------------------------------------------------------------
-# Collect (cpu_id, max_freq) and select the cores with the global max freq.
-# On i9-13900KS HT-off this gives cpu0-7 (P-core 5600 MHz); E-cores are 4500.
-declare -A cpu_freq
-max_freq=0
-for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*; do
-    cpu_id="${cpu_dir##*/cpu}"
-    freq_file="${cpu_dir}/cpufreq/cpuinfo_max_freq"
-    if [[ -r "$freq_file" ]]; then
-        freq="$(cat "$freq_file")"
-        cpu_freq[$cpu_id]="$freq"
-        if (( freq > max_freq )); then
-            max_freq=$freq
-        fi
-    fi
-done
-
-if (( max_freq == 0 )); then
-    echo "WARN: could not read cpufreq info — cpuset pinning skipped." >&2
-    P_CORE_LIST=""
-else
-    p_cores=()
-    for cpu_id in "${!cpu_freq[@]}"; do
-        if [[ "${cpu_freq[$cpu_id]}" == "$max_freq" ]]; then
-            p_cores+=("$cpu_id")
+# An unset or empty CAMPAIGN_CPUSET auto-detects P-cores by selecting CPUs whose
+# max frequency is at least 90% of the global max (freq * 10 >= max_freq * 9).
+# CachyOS 24-logical-core example: cpu4-5 are 6000 MHz, six other P-cores are
+# 5600 MHz, and 16 E-cores are 4300 MHz; the 5400 MHz cutoff selects all eight.
+# i9-13900KS HT-off example: eight P-cores are 5600 MHz and E-cores are 4500
+# MHz; the 5040 MHz cutoff still excludes every E-core.
+P_CORE_LIST=""
+if [[ -z "${CAMPAIGN_CPUSET:-}" ]]; then
+    declare -A cpu_freq
+    max_freq=0
+    for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*; do
+        cpu_id="${cpu_dir##*/cpu}"
+        freq_file="${cpu_dir}/cpufreq/cpuinfo_max_freq"
+        if [[ -r "$freq_file" ]]; then
+            freq="$(cat "$freq_file")"
+            cpu_freq[$cpu_id]="$freq"
+            if (( freq > max_freq )); then
+                max_freq=$freq
+            fi
         fi
     done
-    # Sort numerically
-    IFS=$'\n' p_cores_sorted=($(sort -n <<<"${p_cores[*]}"))
-    unset IFS
-    # Build comma-separated list (taskset accepts both ranges and lists; we
-    # use list form for transparency since the count is small).
-    P_CORE_LIST="$(IFS=,; echo "${p_cores_sorted[*]}")"
-    echo "[run_campaign_linux] detected P-cores (${max_freq} kHz): $P_CORE_LIST"
+
+    if (( max_freq == 0 )); then
+        echo "WARN: could not read cpufreq info — cpuset pinning skipped." >&2
+        echo "[run_campaign_linux] cpuset source=auto-detect: none (cpufreq unavailable)"
+    else
+        p_cores=()
+        for cpu_id in "${!cpu_freq[@]}"; do
+            freq="${cpu_freq[$cpu_id]}"
+            if (( freq * 10 >= max_freq * 9 )); then
+                p_cores+=("$cpu_id")
+            fi
+        done
+        # Sort numerically
+        IFS=$'\n' p_cores_sorted=($(sort -n <<<"${p_cores[*]}"))
+        unset IFS
+        # Build comma-separated list (taskset accepts both ranges and lists; we
+        # use list form for transparency since the count is small).
+        P_CORE_LIST="$(IFS=,; echo "${p_cores_sorted[*]}")"
+        echo "[run_campaign_linux] cpuset source=auto-detect (${max_freq} kHz max): $P_CORE_LIST"
+    fi
+elif [[ "$CAMPAIGN_CPUSET" == "none" ]]; then
+    echo "[run_campaign_linux] cpuset source=none: pinning disabled"
+else
+    # ASCII 负断言先行:zh_CN 等 locale 下 [0-9] 按 collation 会放行全角/其他
+    # Unicode 数字(双审 opus NOTE,taskset 层虽 fail-closed 但报错面不精确)。
+    if [[ "$CAMPAIGN_CPUSET" == *[!0-9,-]* ]] \
+        || [[ ! "$CAMPAIGN_CPUSET" =~ ^[0-9]+([,-][0-9]+)*$ ]]; then
+        printf 'ERROR: invalid CAMPAIGN_CPUSET=%q; expected "none" or a CPU list matching ^[0-9]+([,-][0-9]+)*$ (for example 4,5,6-11).\n' \
+            "$CAMPAIGN_CPUSET" >&2
+        exit 4
+    fi
+    P_CORE_LIST="$CAMPAIGN_CPUSET"
+    echo "[run_campaign_linux] cpuset source=explicit: $P_CORE_LIST"
 fi
 
 # ---------------------------------------------------------------------------
