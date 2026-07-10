@@ -68,3 +68,67 @@ spike=exploratory 实验非生产通电，三硬门是 production integration �
 实验设计+规格书=主会话（本稿）；E1/E2 执行+判定=主会话（prod-scale 长跑+终审）；
 E3 预算 env 化小改=codex（几行+测试）；E3 后 reseal=主会话。审查=E3 改动走
 opus+codex 双审（纯实验记录不需审）。
+
+## 附：E1 执行记录（2026-07-10 夜，基线首跑失败与重设计）
+
+- E1 首跑（wrapper 全套=jemalloc no-decay 注入）：**exit 137 OOM @21.5min**，死状
+  RSS 39G+HWM 41G+**swap 顶满 20.00G**；且被 wrapper 自动 `--resume-campaign` 恢复了
+  smoke#3 旧 checkpoint（实验不干净，state 已存证 spike_e1_smoke3_resumed_state.json）。
+- 死点仍是 6×6 master_solve iter1——但 M5 第五刀（同条款同参数 master-only 直建、
+  **无 jemalloc**）512.9s 绿。头号嫌疑=wrapper 的 `JEMALLOC_CONF dirty/muzzy_decay_ms=-1`
+  （「内存只增不减」的 witness 时代延迟优化）在 swap 条款下把 62G 总预算累积吃穿。
+- **E1b（进行中）**：同条款同参数、绕 wrapper 去 jemalloc、干净 state。
+  活=jemalloc no-decay 实锤 → wrapper 修订（decay 改有限值或加开关）后重跑 E1；
+  死=exploratory campaign master 本身内存需求高于 master-only → 深挖装配差异。
+
+### E1b 结果（2026-07-10 21:25）：jemalloc 假说证伪，死因收敛到 master solve 默认参数
+
+E1b（绕 wrapper 无 jemalloc + 干净 state + 42G 帽 + 20G swap + exploratory 6×6）：**exit 137 oom-kill @26.5min**，RSS 峰值 40.2G + swap 顶满 20G（scope 记账 40.2G peak/20G swap peak），死前未写出任何 checkpoint（第一个 master solve 未完成）。RSS 曲线为完美线性爬升（~2.2G/min，16 分钟到帽后溢出全进 swap）。
+
+- **jemalloc no-decay 假说证伪**：E1（有 jemalloc）21.5min 死、E1b（无 jemalloc）26.5min 死，同型。
+- **重新归因**：campaign 链 master solve 用产品默认参数（FIXED_SEARCH+probing3+symmetry3）——与 M5 归因判决完全一致（smoke#2/#4 同型死；第四/五刀同代码+原型参数 `automatic/probing1/symmetry1/EXACT_SUBPROBLEM_MAX_MEMORY_MB=28000` 分别 506s/513s 绿）。线性内存增长是该 solve 的搜索状态常态（第五刀也爬到 41.9G+18.1G swap），分野只在出解时机：原型参数 ~8.5min 出解赶在吃穿前，默认参数不出解先吃穿。
+- **E1c 设计**：E1 形态（wrapper 42G+20G swap+exploratory --campaign-hours 1 --area-upper-bound 36+干净 state）+ 原型参数 env 注入（四个 env 均在 benders operational allowlist；exploratory 下无 deny-unknown 问题）。预期：首个 6×6 solve ~9min 出解、campaign 继续推进、1h 预算耗尽正常退出。若仍死 → campaign 链还有装配差异（guided profile 候选）继续二分。
+- **spike 含义**：E1/E2 的 wall 对照将在原型参数形态下进行——这不损害 spike 效度（GO/NO-GO 看 attach on/off 的相对退化，两轮同参数），但 GO 判定报告须注明「产品默认 solve 参数在 C1 上不可用」是 M5 线待解的独立前置。
+
+### 更正（2026-07-10 21:55）：E1b 归因有误——E1b 已带原型参数，「默认参数死因」被证伪
+
+转录核查发现 E1b 的实际启动命令**已注入原型参数 env**（probing1/symmetry1/automatic/软cap）且带 `taskset -c 4,5`。因此上节「重新归因到产品默认参数」不成立——E1b 带原型参数照样 26.5min 死。E1c（=E1b+jemalloc，因误判参数缺失而设计）无新信息量，预期同死（跑到 23min 时 swap 15.4G 在涨，与 E1b 同轨）。
+
+修正后的干净二分矩阵：
+
+| 实验 | 参数 | CPU | 形态 | 结果 |
+|---|---|---|---|---|
+| 第五刀 | 原型 | 全核（无 taskset） | 直建单 solve | 绿 512.9s |
+| E1b | 原型 | 2 核 taskset | exploratory campaign | 死 26.5min |
+| E1c | 原型 | 2 核 taskset | 同上（+jemalloc） | （待死亡确认） |
+
+剩余变量只有两个：**① wrapper taskset -c 4,5（本机 P-core 检测只选出 2 个最高频核，6 workers 挤 2 核）②campaign 装配 vs 直建**。机理估算支持 ①：2 核让 automatic 搜索 ~3 倍慢（出解点 9.6min→~29min），而内存 ~2.3G/min 线性增长在 ~27min 吃穿 62G 预算——E1b 26.5min 死与此吻合（死在出解线之前一步）。**E1d**：原型参数+全核（绕 wrapper 的 taskset）+campaign+同条款——绿=taskset 实锤（wrapper 需加 pin opt-out 或修 P-core 检测），死=campaign 装配差异实锤。
+
+### E1d/E1e 终局（2026-07-10 22:35）：破案——E1 系列死因=--exploratory 模式本身；spike 形态修订为直建 harness
+
+**E1d**（原型参数+全核+campaign）：oom-kill@24.75min，41.4G+20G swap，与 E1b/E1c 同型——taskset 假说证伪。死亡记账暴露关键线索：CPU/wall≈0.98（纯单线程），24 分钟根本不在 CP-SAT solve（多线程）里。
+
+**E1e**（py-spy 抓栈，4.5min 处双 dump 同栈）：
+
+```
+_add_port_clearance_constraints (master_model.py:4912)
+build (master_model.py:4715)
+run_benders_for_ghost_rect (benders_loop.py:8659)
+run_outer_search (outer_search.py:2879)
+```
+
+**死因闭环**：`_add_port_clearance_constraints` 是 exploratory-only 启发式（docstring 自述"exact 模式跳过"），对每 pose×每 front cell 构造含全格占用项的约束——prod-scale 实例上三重组合爆炸，单线程 ~2.25G/min 线性吃内存直到吃穿 62G。E1 系列四连死与 42G 帽/jemalloc/solve 参数/taskset/C1/campaign 结构全部无关。
+
+**exploratory 模式在 prod-scale 上的三重不可比（决定 spike 弃用该路线）**：
+1. master 走 legacy build（`_coordinate_delegate` 构造条件是 `if self.exact_mode:`，master_model.py:2605）——非 C1 生产 master；
+2. 实例集是 all_facility_instances（非 266 mandatory）——问题本身更大；
+3. port clearance 启发式无开关（build :4715 无条件调用）——prod-scale 下 build 阶段即死。
+
+**spike 形态修订（owner 授权范围内自主拍板，理由如上实锤）**：弃「exploratory campaign 端到端」，改 **certified_exact 直建 harness 对照**（= 代码注释 benders_loop.py:7830 sanctioned 的 "direct (non-certified) invocations and unit tests" 通路；harness 为 docs/research 实验脚本，不改生产代码、不产证明材料）：
+- **E1'基线**：certified 直建 C1 master（266 mandatory）+ 第五刀配方 build+solve——**第五刀 512.9s 数据直接复用**；
+- **E2'通电**：同 harness，master build 后按 `test_step_8_apply_to_master.py` 的现成形态构造代表性 cut 集（目标 ~10K，F1/F5/F6/F7 已接线族），走 `step_8_apply_to_master` 唯一生产 apply 通路计 attach wall，再 solve 计退化；
+- **GO 判据不变**：attach 开销+solve 退化 <50%。
+
+### E1' 正式基线落地（2026-07-10 22:53）
+
+harness 直建（`--cuts 0`，42G 帽+20G swap+第五刀参数）：**OPTIMAL@513.5s**，core build 11.0s + master build 16.0s，branches 4,879,651 / conflicts 486——与第五刀（512.9s / 4,898,023）同分布，harness 本体自证通过。基线三元组（build 27s / attach 0 / solve 513.5s）即 E2' 对照的分母；GO 线（<50% 退化）= E2' 总 wall < ~810s。E2' 待 codex 侦察（step_8 直调材料）回填 harness attach 段后执行。
