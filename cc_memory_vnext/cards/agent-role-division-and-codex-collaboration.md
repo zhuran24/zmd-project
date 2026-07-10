@@ -116,3 +116,9 @@ codex 三个关键发现 sonnet 全漏：①harness 层 env 差异（b0_4r runne
 
 ### opus+codex 正常档首战（2026-07-10 晚，cut 修复批双审）
 双 PASS_WITH_NOTES 零 BLOCK（四批以来首次无修复轮）。互补形态在回落阵容下保持：opus=注入旧 bug 验证红测真实性+运行时 monkeypatch 验证守卫 load-bearing+精确 reseal 清单（6 条 checker 错逐条定性全为 sha 漂移）；codex=发现 replay 诊断 subset 残留（生产不可达,记 TRIAGE）+真实求解 2×1 master 越过 seam 测试验证。Workflow 编排双审首战跑通（parallel 双 agent,14min 收齐）。
+
+== 2026-07-10 深夜追加:spike 三轮协作战绩(侦察→实现→卡点拍板闭环) ==
+P1.3A attach spike 的 codex 协作全链(同一 thread 三轮,threadId 复用零重复喂背景):①侦察六问全答(step_8 契约/cut 字段/自然空间只有 257 条/14 条风险清单,质量与 M5 头对头持平);②实现前**主动暂停上报规格硬冲突**(GHOST_AGNOSTIC F5 被 delegate 拒空条件,给三选一带证据链)——这是 codex 首次在动手前拦下规格错误,比实现后返工省一轮;③拍板(harness shim)后一次交付全绿(冒烟两组+断言套+ruff)。范式确认:**侦察和实现用同一 codex thread 是高杠杆形态**——实现方带着自己的侦察记忆,任务书只需写增量拍板。主会话职责=拍板卡点(三选一裁决)+终审+正式跑(单发铁律)。
+
+== 2026-07-11 追加:规格书两轮双审范式(阶段 B 实现规格书首用) ==
+主会话亲写的大规格书(10+ sealed 文件批总纲)过审形态:**一轮打事实,二轮打闭合性**。一轮双审(opus 7+codex 27,6 BLOCK)抓的全是初稿事实错误与依据失真(臆造字段/迁移面低估/「不可实现的校验」);按 fix 重写 v2 后,**二轮必须做**——v2 的新拍板一轮审查者没见过,二轮(opus 6+codex 13,4 BLOCK)恰好全打在 v2 新拍板的闭合缝上(同型病换字段名/类型冲突/批次依赖断头)。两轮 53 条全采纳无一驳回,codex 连续两轮 verdict=BLOCK 都是真 BLOCK(证据全实)。教训:大规格一轮过审=假收敛;v3 里自己新加的拍板要么取审查者 fix 方向、要么标注实现批首件验证。
