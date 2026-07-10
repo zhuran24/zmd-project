@@ -18,7 +18,7 @@ spike GO（`02_spike_evidence.md`）证明的是**工程开销可行**（10K att
 
 **PIC-2 agnostic-F5 语义缝二选一**（spike TRIAGE 移交）：lifecycle:1393-1402 对 GHOST_AGNOSTIC F5 走无条件 attach 但 delegate:8050 拒空条件 → fail-closed。落地 F5 时二选一：delegate 支持空条件（改 sealed 文件）或 lifecycle 禁 agnostic F5 进 step_8。与 RFC-002 同批处理。
 
-**PIC-3 E3 预算 env 化**（spike 规格原 §2 遗留）：`EXACT_CUT_FRAMEWORK_ATTACH_BUDGET=2000` 硬编码（benders_loop.py:946）→ env 可配。碰 benders_loop sealed 文件=reseal 链；新增 EXACT_* env=allowlist+lock+tests 三同步（CLAUDE.md §6 铁律）。小批次,可先行。
+**PIC-3 E3 预算 env 化 ✅已落地(2026-07-11 凌晨,`b9fcca9`)**（spike 规格原 §2 遗留）：`EXACT_CUT_FRAMEWORK_ATTACH_BUDGET=2000` 硬编码（benders_loop.py:946）→ env 可配。碰 benders_loop sealed 文件=reseal 链；新增 EXACT_* env=allowlist+lock+tests 三同步（CLAUDE.md §6 铁律）。小批次,可先行。
 
 **PIC-4 跨 solve cut 池演化实测**（spike 效度边界 #5）：campaign 多 rect 序列下 cut 生成→scope 检查→attach→anchor 切换退役（M4-A ghost conditioning）的端到端行为从未在 prod-scale 实测。依赖 PIC-0 宿主。
 
@@ -30,7 +30,7 @@ spike GO（`02_spike_evidence.md`）证明的是**工程开销可行**（10K att
 
 ## §2 批次划分建议
 
-- **批 A（可立即,不依赖 PIC-0）**：PIC-3（E3 预算 env 化,小批全流程练 reseal）+ PIC-6（顺手）。
+- **批 A（可立即,不依赖 PIC-0）**：PIC-3 ✅（`b9fcca9`）；PIC-6 明确改为搭车项——单独为纯卫生残留做 reseal 轮不值,留给下一个碰 lifecycle.py 的批（C/D）顺带。
 - **批 B（设计评审）**：PIC-0 宿主拍板 + PIC-1.1 原子封口评估成文——owner 参与度高,放 owner 在场时段。
 - **批 C（实测,依赖 B）**：PIC-4+PIC-5。
 - **批 D（F5 线,可与 C 并行）**：PIC-1.2+PIC-2。
