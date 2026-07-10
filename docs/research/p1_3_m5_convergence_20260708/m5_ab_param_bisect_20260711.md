@@ -52,3 +52,9 @@ harness 直建 `--ghost 70 19` @62G 预算+原型参数:**INFEASIBLE@557.5s**(bu
 1. **70×19 的正确求解结果就是 INFEASIBLE**(266 mandatory 下该矩形放不下)——不存在「解不动」问题。
 2. **smoke#1 死亡真相补全**:当年 9min47s 撞死于禁 swap 旧条款,离 INFEASIBLE 判决(9.3min)只差 ~30s——campaign 本会正常排除该候选推进。`07_batch1f_evidence.md` 的「本机大 anchor campaign 现阶段不可行」结论作废。
 3. **本机真 campaign(不限 anchor)在修订条款下预期全程可行**:frontier 大候选逐个 INFEASIBLE 排除(~9min/57G 每个)→ 小候选出解(~9min/60G)。下一步=修订条款下 campaign 端到端冒烟。
+
+## 附 2:修订条款 certified campaign 端到端冒烟(2026-07-11 02:18)
+
+wrapper 完整生产形态(jemalloc+taskset 4,5+42G/20G+原型参数 env)+`--campaign-hours 1` 不限 anchor:**1h4min 全程无 OOM**(峰值 40.8G RSS+14.5G swap),frontier 正常推进——`70x19 → INFEASIBLE`(campaign 链内正常排除,与直建重测一致)、`19x70 → UNPROVEN`(预算到点 `campaign_time_budget_exhausted` 优雅截断,checkpoint 277K 落盘可恢复)。**修订条款下真 campaign 生产可行性冒烟通过**;state 已存证 `~/m5_runs/campaign_smoke_newterms_state.json` 并清理。
+
+**遗留注记(wall 税,非阻塞)**:wrapper P-core 检测在本机(24 核 CachyOS)只选出 2 个最高频核(taskset -c 4,5),每候选 wall ≈ 全核 3 倍(~30min vs 9.3min)。生产长跑 wall 效率的 wrapper 修订(检测逻辑或 CAMPAIGN_CPUSET 开关)值得一议,归 owner 拍板(生产 wrapper 语义变更)。
