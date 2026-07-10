@@ -100,9 +100,28 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-TERMINAL-FIXED-WITNESS-VERIFIER",
         "PO-EXACT-ARTIFACT-ATOMIC-SNAPSHOT",
         "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "PO-CERTIFIED-POWER-POLE-DOMINANCE-NORMALIZATION",
     }
 )
 REQUIRED_TESTS_BY_OBLIGATION_ID = {
+    "PO-CERTIFIED-POWER-POLE-DOMINANCE-NORMALIZATION": frozenset(
+        {
+            "test_t1_redundant_power_pole_is_pruned_and_non_poles_are_unchanged",
+            "test_t2_minimal_covering_set_is_a_noop",
+            "test_t3_pruning_iterates_to_a_deterministic_fixed_point",
+            "test_t4_all_optional_poles_are_pruned_when_nothing_needs_power",
+            "test_t5_mandatory_poles_are_never_pruned_but_affect_reverification",
+            "test_t6_positive_required_count_skips_pruning_and_reverifies",
+            "test_t7_required_layout_with_unforced_pole_fails_closed",
+            "test_t8_malformed_pose_data_always_fails_closed",
+            "test_t9_normalization_is_byte_deterministic",
+            "test_t10_c1_certified_endpoint_returns_normalized_power_poles",
+            "test_t11_legacy_witness_certified_endpoint_is_rejected_fail_closed",
+            "test_t12_reverification_matches_terminal_r1_r3_semantics",
+            "test_t13_normalization_failure_turns_feasible_routing_into_unknown",
+            "test_t14_s3_certified_path_prunes_redundant_pole_without_mutating_input",
+        }
+    ),
     "PO-INDEPENDENT-INFEASIBILITY-REVERIFY": frozenset(
         {
             "test_independent_infeasibility_reverify_confirms_binding_infeasible_allows_cut",
@@ -194,6 +213,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible",
             "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible",
             "test_v83_certified_loader_rejects_non_mandatory_record_in_mandatory_exact_artifact",
+            "test_batch1d_certified_env_guard_treats_legacy_witness_envs_as_unknown",
         }
     ),
     "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE": frozenset(
@@ -3112,7 +3132,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "bb25ce8cc3e8f4d3b15481b8c2fca901993669e8833c3d130cfd5cbcb3957783"
+    "2c6888dd7cca4adc3d87e8124af4e910a4cefbc4c789f7756467947c80221919"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -12993,7 +13013,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
-    'src/search/certified_artifact_contract.py': 'ae750a43e10a7c4ced2a68f61920b2d78bf03f1843b458f973ad6aa2b347c5e3',
+    'src/search/certified_artifact_contract.py': 'c2f2b656e0452e8bfa12901a5a7e4cf3b944738fb9a47768ee411c95146bdcb9',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': '3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',

@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-07-03",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "bb25ce8cc3e8f4d3b15481b8c2fca901993669e8833c3d130cfd5cbcb3957783",
+  "semantic_projection_sha256": "2c6888dd7cca4adc3d87e8124af4e910a4cefbc4c789f7756467947c80221919",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -198,7 +198,8 @@
         "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs",
         "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible",
         "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible",
-        "test_v83_certified_loader_rejects_non_mandatory_record_in_mandatory_exact_artifact"
+        "test_v83_certified_loader_rejects_non_mandatory_record_in_mandatory_exact_artifact",
+        "test_batch1d_certified_env_guard_treats_legacy_witness_envs_as_unknown"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v60_master_domain_contract.md",
@@ -771,6 +772,33 @@
         "docs/项目说明/soundness_gap_roadmap.md"
       ],
       "policy": "Before _add_exact_whole_layout_nogood may mint a proof-bearing whole-layout cut, the certified path must call independent_infeasibility_reverifier. Binding-INFEASIBLE is confirmed only by a freshly constructed binding feasibility model solved by an independent heterogeneous CP-SAT solver. Independent FEASIBLE, TIMEOUT, exception, malformed input, or unsupported routing-exhaustion proof returns fail-closed UNKNOWN and emits no cut. Phase 1 intentionally treats routing ALL-INFEASIBLE conservatively: without a full independent exhaustion proof, the cut is skipped even when the original routing exhaustion may be legitimate."
+    },
+    {
+      "id": "PO-CERTIFIED-POWER-POLE-DOMINANCE-NORMALIZATION",
+      "title": "Every certified_exact CERTIFIED solution passes power-pole dominance normalization at the unique routing-FEASIBLE production point with terminal-equivalent reverification; any exception or reverify failure fails closed to UNKNOWN and never mints CERTIFIED",
+      "v_findings": [],
+      "required_tests": [
+        "test_t1_redundant_power_pole_is_pruned_and_non_poles_are_unchanged",
+        "test_t2_minimal_covering_set_is_a_noop",
+        "test_t3_pruning_iterates_to_a_deterministic_fixed_point",
+        "test_t4_all_optional_poles_are_pruned_when_nothing_needs_power",
+        "test_t5_mandatory_poles_are_never_pruned_but_affect_reverification",
+        "test_t6_positive_required_count_skips_pruning_and_reverifies",
+        "test_t7_required_layout_with_unforced_pole_fails_closed",
+        "test_t8_malformed_pose_data_always_fails_closed",
+        "test_t9_normalization_is_byte_deterministic",
+        "test_t10_c1_certified_endpoint_returns_normalized_power_poles",
+        "test_t11_legacy_witness_certified_endpoint_is_rejected_fail_closed",
+        "test_t12_reverification_matches_terminal_r1_r3_semantics",
+        "test_t13_normalization_failure_turns_feasible_routing_into_unknown",
+        "test_t14_s3_certified_path_prunes_redundant_pole_without_mutating_input"
+      ],
+      "evidence_paths": [
+        "src/search/benders_loop.py",
+        "src/search/exact_campaign.py",
+        "src/tests/test_power_pole_dominance_normalization.py",
+        "docs/research/p1_3_batch1_design_20260710/02_batch1c_spec.md"
+      ]
     }
   ],
   "certified_cut_replay_contract": {
@@ -986,7 +1014,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-      "source_sha256": "0c728de0c17c239f018c28fcbfe41cbd65772afa5d729c99ef474d5e77b121fa",
+        "source_sha256": "163be9b492280c60f8fbb3b60d373bab5eb26c73332e75b516fb043e80fa7c71",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1003,7 +1031,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "ae750a43e10a7c4ced2a68f61920b2d78bf03f1843b458f973ad6aa2b347c5e3",
+        "source_sha256": "c2f2b656e0452e8bfa12901a5a7e4cf3b944738fb9a47768ee411c95146bdcb9",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1824,7 +1852,7 @@
       {
         "path": "src/search/pr2_l0_artifact_core.py",
         "classification": "p1_2_certified_path",
-      "source_sha256": "9f66ea0af358d24413a49b0cbc0c9db750109537444453eba577002b72bca81f",
+        "source_sha256": "9f66ea0af358d24413a49b0cbc0c9db750109537444453eba577002b72bca81f",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
@@ -1889,7 +1917,7 @@
       {
         "path": "src/search/pr2_l0_micro_verifier_core.py",
         "classification": "p1_2_certified_path",
-      "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
+        "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
@@ -1947,7 +1975,7 @@
       {
         "path": "src/search/pr2_l0_true_verifier_child.py",
         "classification": "p1_2_certified_path",
-      "source_sha256": "a62927ea934d135af820c4880f96c729caaf0c1c9f3e7cd97502f2e8708362cf",
+        "source_sha256": "a62927ea934d135af820c4880f96c729caaf0c1c9f3e7cd97502f2e8708362cf",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",

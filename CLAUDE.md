@@ -25,7 +25,7 @@ python scripts/preflight_gate.py --slow-tests # 独立慢 soundness lane（串�
 python scripts/preflight_gate.py --ci --base-ref origin/main   # CI diff 模式
 
 # 两个结构 checker（注意：均无 argparse，传 --help 也会直接跑完整检查）
-python scripts/check_p1_2_proof_obligations.py        # 通过输出: 14 obligations anchored; 60 proof-bearing sink files sealed
+python scripts/check_p1_2_proof_obligations.py        # 通过输出: 15 obligations anchored; 65 proof-bearing sink files sealed
 python scripts/check_strong_status_write_allowlist.py # 通过输出: 65 AST nodes, 83 allowlist entries
 
 # 单跑一个测试（固定顺序 + 独立 basetemp，避免并发互踩）
