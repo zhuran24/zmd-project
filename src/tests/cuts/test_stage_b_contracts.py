@@ -1,0 +1,1543 @@
+"""RFC-001 Stage B0 contract shells.
+
+The AST guard is effective immediately.  Runtime contracts for the Stage-B
+types are strict xfails until the implementation batch named in each reason
+lands; imports intentionally stay inside those tests.
+"""
+
+from __future__ import annotations
+
+import ast
+import hashlib
+import importlib
+import importlib.util
+import inspect
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+import pytest
+
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+SRC_ROOT = REPO_ROOT / "src"
+TESTS_ROOT = SRC_ROOT / "tests"
+
+_BSTATE_STATIC_ARTIFACT_FIELDS = frozenset(
+    {
+        "canonical_rules",
+        "candidate_placements",
+        "facility_templates",
+        "instance_to_facility_type",
+    }
+)
+# Deliberately field-name based instead of attempting static BState type
+# resolution.  A same-named attribute on another type may be a false positive;
+# the conservative breadth is intentional at this trust boundary.
+_MUTATION_METHODS = frozenset(
+    {
+        "__delitem__",
+        "__iand__",
+        "__ior__",
+        "__isub__",
+        "__ixor__",
+        "__setitem__",
+        "add",
+        "append",
+        "clear",
+        "difference_update",
+        "discard",
+        "extend",
+        "insert",
+        "intersection_update",
+        "pop",
+        "popitem",
+        "remove",
+        "reverse",
+        "setdefault",
+        "sort",
+        "symmetric_difference_update",
+        "update",
+    }
+)
+
+
+def _stage_b_missing(module_path: str, symbol: str | None = None) -> bool:
+    try:
+        spec = importlib.util.find_spec(module_path)
+    except ModuleNotFoundError:
+        return True
+    if spec is None:
+        return True
+    if symbol is None:
+        return False
+    module = importlib.import_module(module_path)
+    return not hasattr(module, symbol)
+
+
+def _stage_b5_apply_missing() -> bool:
+    # Coarse B5 beacon: once the resolver lands, every B5 assertion executes.
+    # Do not use the exact step_8 signature as the condition, or a bad signature
+    # would remain xfailed forever instead of turning red.
+    return _stage_b_missing("src.cuts.lifecycle", "_resolve_model_scope_binding")
+
+
+def _literal_artifact_field(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        if node.value in _BSTATE_STATIC_ARTIFACT_FIELDS:
+            return node.value
+    return None
+
+
+def _references_static_artifact_target(
+    node: ast.AST,
+    aliases: frozenset[str] = frozenset(),
+) -> bool:
+    """Follow only the assigned/updated value path, never subscript keys."""
+
+    if isinstance(node, ast.Name):
+        return node.id in aliases
+    if isinstance(node, ast.Attribute):
+        return node.attr in _BSTATE_STATIC_ARTIFACT_FIELDS or _references_static_artifact_target(node.value, aliases)
+    if isinstance(node, ast.Subscript):
+        return _references_static_artifact_target(node.value, aliases)
+    if isinstance(node, ast.Call):
+        if (
+            isinstance(node.func, ast.Name)
+            and node.func.id == "getattr"
+            and len(node.args) >= 2
+            and _literal_artifact_field(node.args[1]) is not None
+        ):
+            return True
+        if isinstance(node.func, ast.Attribute) and node.func.attr in {"get", "setdefault"}:
+            return _references_static_artifact_target(node.func.value, aliases)
+    if isinstance(node, ast.Starred):
+        return _references_static_artifact_target(node.value, aliases)
+    if isinstance(node, (ast.List, ast.Tuple)):
+        return any(_references_static_artifact_target(item, aliases) for item in node.elts)
+    return False
+
+
+def _assigned_names(target: ast.AST) -> set[str]:
+    if isinstance(target, ast.Name):
+        return {target.id}
+    if isinstance(target, (ast.List, ast.Tuple)):
+        return set().union(*(_assigned_names(item) for item in target.elts))
+    if isinstance(target, ast.Starred):
+        return _assigned_names(target.value)
+    return set()
+
+
+class _ArtifactMutationAnalyzer(ast.NodeVisitor):
+    def __init__(self, filename: str) -> None:
+        self.filename = filename
+        self.violations: list[str] = []
+        self._alias_scopes: list[set[str]] = [set()]
+
+    @property
+    def _aliases(self) -> set[str]:
+        return self._alias_scopes[-1]
+
+    def _record(self, node: ast.AST, kind: str) -> None:
+        self.violations.append(f"{self.filename}:{node.lineno}: {kind}: {ast.unparse(node)}")
+
+    def _target_is_artifact(self, target: ast.AST, *, allow_bare_alias: bool = False) -> bool:
+        if isinstance(target, ast.Name):
+            return allow_bare_alias and target.id in self._aliases
+        if isinstance(target, ast.Starred):
+            return self._target_is_artifact(target.value, allow_bare_alias=allow_bare_alias)
+        if isinstance(target, (ast.List, ast.Tuple)):
+            return any(self._target_is_artifact(item, allow_bare_alias=allow_bare_alias) for item in target.elts)
+        return _references_static_artifact_target(target, frozenset(self._aliases))
+
+    def _refresh_aliases(self, targets: list[ast.AST], value: ast.AST) -> None:
+        # One-hop only: aliases of aliases are deliberately not propagated.
+        aliases_artifact = _references_static_artifact_target(value)
+        for target in targets:
+            for name in _assigned_names(target):
+                if aliases_artifact:
+                    self._aliases.add(name)
+                else:
+                    self._aliases.discard(name)
+
+    def _visit_definition_header(self, node: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef) -> None:
+        for field_name, value in ast.iter_fields(node):
+            if field_name == "body":
+                continue
+            if isinstance(value, ast.AST):
+                self.visit(value)
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, ast.AST):
+                        self.visit(item)
+
+    def _visit_function_body(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        self._alias_scopes.append(set())
+        for statement in node.body:
+            self.visit(statement)
+        self._alias_scopes.pop()
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self._visit_definition_header(node)
+        self._visit_function_body(node)
+        self._aliases.discard(node.name)
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        self._visit_definition_header(node)
+        self._visit_function_body(node)
+        self._aliases.discard(node.name)
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        self._visit_definition_header(node)
+        self._alias_scopes.append(set())
+        for statement in node.body:
+            self.visit(statement)
+        self._alias_scopes.pop()
+        self._aliases.discard(node.name)
+
+    def visit_Assign(self, node: ast.Assign) -> None:
+        for target in node.targets:
+            if self._target_is_artifact(target):
+                self._record(node, "Assign")
+        self.visit(node.value)
+        self._refresh_aliases(list(node.targets), node.value)
+
+    def visit_AnnAssign(self, node: ast.AnnAssign) -> None:
+        self.visit(node.annotation)
+        if self._target_is_artifact(node.target):
+            self._record(node, "AnnAssign")
+        if node.value is not None:
+            self.visit(node.value)
+            self._refresh_aliases([node.target], node.value)
+
+    def visit_AugAssign(self, node: ast.AugAssign) -> None:
+        if self._target_is_artifact(node.target, allow_bare_alias=True):
+            self._record(node, "AugAssign")
+        self.visit(node.value)
+
+    def visit_Delete(self, node: ast.Delete) -> None:
+        for target in node.targets:
+            if self._target_is_artifact(target):
+                self._record(node, "Delete")
+            self._aliases.difference_update(_assigned_names(target))
+
+    def visit_For(self, node: ast.For) -> None:
+        self.visit(node.iter)
+        self._aliases.difference_update(_assigned_names(node.target))
+        for statement in (*node.body, *node.orelse):
+            self.visit(statement)
+
+    def visit_If(self, node: ast.If) -> None:
+        self.visit(node.test)
+        aliases_before = set(self._aliases)
+        self._alias_scopes[-1] = set(aliases_before)
+        for statement in node.body:
+            self.visit(statement)
+        aliases_body = set(self._aliases)
+        self._alias_scopes[-1] = set(aliases_before)
+        for statement in node.orelse:
+            self.visit(statement)
+        aliases_else = set(self._aliases)
+        self._alias_scopes[-1] = aliases_body | aliases_else
+
+    def visit_Call(self, node: ast.Call) -> None:
+        aliases = frozenset(self._aliases)
+        func = node.func
+        if (
+            isinstance(func, ast.Attribute)
+            and func.attr in _MUTATION_METHODS
+            and _references_static_artifact_target(func.value, aliases)
+        ):
+            self._record(node, f"Call.{func.attr}")
+        elif (
+            isinstance(func, ast.Name)
+            and func.id in {"setattr", "delattr"}
+            and len(node.args) >= 2
+            and _literal_artifact_field(node.args[1]) is not None
+        ):
+            self._record(node, f"Call.{func.id}")
+        elif (
+            isinstance(func, ast.Attribute)
+            and func.attr in {"__setattr__", "__delattr__"}
+            and node.args
+            and _literal_artifact_field(node.args[0]) is not None
+        ):
+            self._record(node, f"Call.{func.attr}")
+        elif (
+            isinstance(func, ast.Attribute)
+            and isinstance(func.value, ast.Name)
+            and func.value.id == "operator"
+            and func.attr in {"setitem", "delitem"}
+            and node.args
+            and _references_static_artifact_target(node.args[0], aliases)
+        ):
+            self._record(node, f"Call.operator.{func.attr}")
+        self.generic_visit(node)
+
+
+def _artifact_mutation_violations(source: str, *, filename: str) -> list[str]:
+    analyzer = _ArtifactMutationAnalyzer(filename)
+    analyzer.visit(ast.parse(source, filename=filename))
+    return analyzer.violations
+
+
+def _production_python_files() -> list[Path]:
+    return [path for path in sorted(SRC_ROOT.rglob("*.py")) if path != TESTS_ROOT and TESTS_ROOT not in path.parents]
+
+
+def test_bstate_static_artifacts_have_no_production_writes_or_mutations() -> None:
+    """B0 immediately effective; production was clean when scanned 2026-07-11."""
+
+    # B0 立即生效，生产现状为净（2026-07-11 已扫描验证）。
+    violations: list[str] = []
+    production_files = _production_python_files()
+
+    for path in production_files:
+        relative_path = path.relative_to(REPO_ROOT).as_posix()
+        violations.extend(_artifact_mutation_violations(path.read_text(encoding="utf-8"), filename=relative_path))
+
+    assert production_files, "production AST scan unexpectedly covered no Python files"
+    assert SRC_ROOT / "cuts" / "lifecycle.py" in production_files
+    assert not violations, "BState static artifact mutation(s) found:\n" + "\n".join(violations)
+
+
+def test_static_artifact_analyzer_catches_alias_and_reflection_escapes() -> None:
+    attacks = """
+import operator
+
+def attack(state):
+    cp = state.candidate_placements
+    cp["pool"] = {}
+    cp.update({"x": 1})
+    del cp["pool"]
+    def nested(value=cp.pop("default-time")):
+        return value
+    cp = {}
+    cp.update({"local_only": 1})
+    setattr(state, "canonical_rules", {})
+    delattr(state, "facility_templates")
+    state.__setattr__("instance_to_facility_type", {})
+    state.__delattr__("canonical_rules")
+    getattr(state, "candidate_placements")["pool"] = []
+    getattr(state, "facility_templates").clear()
+    operator.setitem(state.canonical_rules, "x", 1)
+    operator.delitem(state.instance_to_facility_type, "x")
+"""
+    violations = _artifact_mutation_violations(attacks, filename="attacks.py")
+    rendered = "\n".join(violations)
+    assert len(violations) == 12, rendered
+    for escape in (
+        "cp['pool'] = {}",
+        "cp.update",
+        "del cp",
+        "default-time",
+        "setattr(state",
+        "delattr(state",
+        "state.__setattr__",
+        "state.__delattr__",
+        "getattr(state",
+        "operator.setitem",
+        "operator.delitem",
+    ):
+        assert escape in rendered
+
+    legitimate_reads = """
+def inspect_artifacts(state, container):
+    cp = state.candidate_placements
+    first = cp.get("facility_pools")
+    cp = {}
+    cp.update({"local_only": 1})
+    container[state.canonical_rules] = first
+    return state.facility_templates, first
+"""
+    assert _artifact_mutation_violations(legitimate_reads, filename="legitimate_reads.py") == []
+
+
+def _mutable_stage_b_sources(
+    bstate_type: Any,
+    group_state_type: Any,
+    *,
+    ghost_rect: tuple[int, int, int, int] = (11, 17, 2, 3),
+) -> dict[str, Any]:
+    facility_templates = {
+        "boundary_storage_port": {
+            "placement_rule": "left_or_bottom_boundary",
+            "dimensions": {"w": 1, "h": 3},
+            "needs_power": False,
+        }
+    }
+    canonical_rules = {
+        "globals": {"grid": {"width": 70, "height": 70}},
+        "facility_templates": facility_templates,
+    }
+    candidate_placements = {
+        "facility_pools": {
+            "boundary_storage_port": [
+                {
+                    "pose_id": "boundary_pose_0",
+                    "anchor": {"x": 0, "y": 1},
+                    "occupied_cells": [[0, 1], [0, 2], [0, 3]],
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                    "power_coverage_cells": None,
+                }
+            ]
+        }
+    }
+    instance_to_facility_type = {"boundary_io": "boundary_storage_port"}
+    artifact_hashes = {
+        "canonical_rules.json": "1" * 64,
+        "candidate_placements.json": "2" * 64,
+        "mandatory_exact_instances.json": "3" * 64,
+    }
+    x, y, width, height = ghost_rect
+    ghost_cells = frozenset((cell_x, cell_y) for cell_x in range(x, x + width) for cell_y in range(y, y + height))
+    state = bstate_type(
+        groups={
+            "boundary_io": group_state_type(
+                group_id="boundary_io",
+                demand=2,
+                pose_domain=frozenset({"boundary_pose_0"}),
+                selected_poses=[],
+            )
+        },
+        cell_owner={(4, 4): ("boundary_io", 0)},
+        ghost_rect=ghost_rect,
+        ghost_cells=ghost_cells,
+        exterior_blocks=frozenset({(7, 0)}),
+        artifact_hashes=artifact_hashes,
+        available_oracle_versions=frozenset({"binding_empty_domain_v1", "region_capacity_v1"}),
+        canonical_rules=canonical_rules,
+        candidate_placements=candidate_placements,
+        facility_templates=facility_templates,
+        instance_to_facility_type=instance_to_facility_type,
+        source_digest="4" * 64,
+    )
+    return {
+        "artifact_hashes": artifact_hashes,
+        "candidate_placements": candidate_placements,
+        "canonical_rules": canonical_rules,
+        "facility_templates": facility_templates,
+        "instance_to_facility_type": instance_to_facility_type,
+        "state": state,
+    }
+
+
+def _build_bundle(build_frozen_artifact_bundle: Any, sources: dict[str, Any]) -> Any:
+    return build_frozen_artifact_bundle(
+        canonical_rules=sources["canonical_rules"],
+        candidate_placements=sources["candidate_placements"],
+        facility_templates=sources["facility_templates"],
+        instance_to_facility_type=sources["instance_to_facility_type"],
+        artifact_hashes=sources["artifact_hashes"],
+    )
+
+
+def _mutate_builder_sources(sources: dict[str, Any]) -> None:
+    sources["facility_templates"]["boundary_storage_port"]["dimensions"]["w"] = 99
+    sources["facility_templates"]["boundary_storage_port"]["placement_rule"] = "free"
+    sources["candidate_placements"]["facility_pools"]["boundary_storage_port"][0]["occupied_cells"].append([69, 69])
+    sources["instance_to_facility_type"]["boundary_io"] = "attacker_type"
+    sources["artifact_hashes"]["canonical_rules.json"] = "f" * 64
+    state = sources["state"]
+    state.groups["boundary_io"].demand = 999
+    state.groups["boundary_io"].selected_poses.append("attacker_pose")
+    state.cell_owner[(69, 69)] = ("attacker_group", 0)
+
+
+def _assert_sha256_hex(digest: str) -> None:
+    assert len(digest) == 64
+    assert digest == digest.lower()
+    int(digest, 16)
+
+
+def _make_region_capacity_cut(
+    sources: dict[str, Any],
+    *,
+    cut_type: Any,
+    scope_type: Any,
+    cert_type: Any,
+    canonicalize: Any,
+    encode_region_bitset: Any,
+    compute_blocked_cells_hash: Any,
+    compute_exterior_blocks_hash: Any,
+    ghost_agnostic: str,
+) -> Any:
+    payload = canonicalize(
+        {
+            "cert_kind": "region_capacity_combinatorial",
+            "region_kind": "left_or_bottom_union",
+            "region_cells_bitset_b64": encode_region_bitset([(0, 0), (0, 1), (1, 0)], grid_size=70),
+            "cap_R": 1,
+            "demand_R": 2,
+            "gap": 1,
+            "contributing_groups": [["boundary_io", 2]],
+            "cells_per_pose": {"boundary_io": 1},
+            "lp_dual_ray_b64": None,
+            "lp_dual_objective": None,
+        }
+    )
+    cert_hash = hashlib.sha256(payload).hexdigest()
+    state = sources["state"]
+    return cut_type(
+        cut_id="b0-region-capacity",
+        family="region_capacity",
+        literals=None,
+        geometric_payload=payload,
+        scope=scope_type(
+            ghost_rect_id=ghost_agnostic,
+            blocked_cells_hash=compute_blocked_cells_hash(state),
+            exterior_blocks_hash=compute_exterior_blocks_hash(state),
+            source_digest=state.source_digest,
+            artifact_hashes=dict(state.artifact_hashes),
+            oracle_abstraction_version="region_capacity_v1",
+        ),
+        cert=cert_type(
+            cert_kind="region_capacity_combinatorial",
+            cert_payload=payload,
+            cert_hash=cert_hash,
+        ),
+        oracle_name="region_capacity_v1",
+    )
+
+
+def _make_pattern_nogood_cut(
+    sources: dict[str, Any],
+    *,
+    anonymous_slot_ref_type: Any,
+    cut_literal_type: Any,
+    cut_type: Any,
+    scope_type: Any,
+    cert_type: Any,
+    canonicalize: Any,
+    compute_blocked_cells_hash: Any,
+    compute_exterior_blocks_hash: Any,
+    compute_ghost_rect_id: Any,
+) -> Any:
+    pattern = (("boundary_io", 0, "boundary_pose_0"),)
+    payload = canonicalize(
+        {
+            "cert_kind": "bounded_deletion_core",
+            "sub_problem_oracle_name": "binding_empty_domain_v1",
+            "sub_problem_oracle_version": "v1.0",
+            "forbidden_pose_pattern": [list(item) for item in pattern],
+            "core_minimization": {
+                "size_before": 1,
+                "size_after": 1,
+                "calls": 1,
+                "stopped_reason": "INFEASIBLE_VERIFIED",
+                "is_verified_infeasible": True,
+            },
+        }
+    )
+    cert_hash = hashlib.sha256(payload).hexdigest()
+    state = sources["state"]
+    return cut_type(
+        cut_id="b0-pattern-nogood",
+        family="pattern_nogood",
+        literals=tuple(
+            cut_literal_type(
+                slot_ref=anonymous_slot_ref_type(group_id=group, slot_index=slot),
+                pose_id=pose,
+            )
+            for group, slot, pose in pattern
+        ),
+        geometric_payload=None,
+        scope=scope_type(
+            ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+            blocked_cells_hash=compute_blocked_cells_hash(state),
+            exterior_blocks_hash=compute_exterior_blocks_hash(state),
+            source_digest=state.source_digest,
+            artifact_hashes=dict(state.artifact_hashes),
+            oracle_abstraction_version="binding_empty_domain_v1",
+        ),
+        cert=cert_type(
+            cert_kind="bounded_deletion_core",
+            cert_payload=payload,
+            cert_hash=cert_hash,
+        ),
+        oracle_name="pattern_nogood_v1",
+    )
+
+
+@dataclass(frozen=True)
+class _FrozenProbeProof:
+    group_id: str = "boundary_io"
+    capacity: int = 1
+
+
+@dataclass(frozen=True)
+class _DerivedProbeBody:
+    group_id: str = "boundary_io"
+    capacity: int = 1
+
+
+class _RecordingPlugin:
+    def __init__(self, plan: Any) -> None:
+        self.plan = plan
+        self.proof = _FrozenProbeProof()
+        self.body = _DerivedProbeBody()
+        self.calls: dict[str, list[tuple[Any, ...]]] = {
+            "compile": [],
+            "derive_body": [],
+            "parse_and_validate_proof": [],
+            "validate_plan": [],
+        }
+
+    def parse_and_validate_proof(self, proof_payload: Any, snapshot: Any) -> Any:
+        assert isinstance(proof_payload, bytes)
+        self.calls["parse_and_validate_proof"].append((proof_payload, snapshot))
+        return self.proof
+
+    def derive_body(self, proof: Any) -> Any:
+        # RFC-001 §3: body 是 proof 的纯投影,不吃 snapshot(§2.9 文本为准)。
+        assert proof is self.proof
+        self.calls["derive_body"].append((proof,))
+        return self.body
+
+    def compile(self, body: Any, proof: Any, snapshot: Any) -> Any:
+        assert body is self.body
+        assert proof is self.proof
+        self.calls["compile"].append((body, proof, snapshot))
+        return self.plan
+
+    def validate_plan(self, plan: Any, proof: Any, snapshot: Any) -> None:
+        assert plan is self.plan
+        assert proof is self.proof
+        self.calls["validate_plan"].append((plan, proof, snapshot))
+
+
+def _assert_compilable_plugin_single_pass(plugin: _RecordingPlugin) -> None:
+    assert {method_name: len(calls) for method_name, calls in plugin.calls.items()} == {
+        "compile": 1,
+        "derive_body": 1,
+        "parse_and_validate_proof": 1,
+        "validate_plan": 1,
+    }
+
+
+def _make_plan(
+    typed_platform: Any,
+    *,
+    parameters: dict[str, Any] | None = None,
+) -> Any:
+    if parameters is None:
+        parameters = {
+            "group_cell_weights": {"boundary_io": 1},
+            "capacity": 1,
+        }
+    return typed_platform.ConstraintPlan(
+        family="region_capacity",
+        schema_version=1,
+        semantic_fingerprint="5" * 64,
+        model_scope=typed_platform.ModelScope(
+            ghost_policy="agnostic",
+            ghost_rect_digest=None,
+            domain_fingerprint="6" * 64,
+        ),
+        operation="region_capacity_le",
+        parameters=parameters,
+    )
+
+
+def _typed_execution_path(typed_platform: Any) -> Any:
+    execution_path_type = getattr(typed_platform, "ExecutionPath", None)
+    if execution_path_type is None:
+        return "TYPED"
+    return execution_path_type.TYPED
+
+
+def _make_registry(
+    typed_platform: Any,
+    plugin: Any,
+    *,
+    family: str,
+    mode: str,
+    stage: Any,
+    compiler_version: str | None,
+    required_dependencies: frozenset[str],
+) -> Any:
+    capability = typed_platform.FamilyCapability(
+        name=family,
+        mode=mode,
+        proof_schema_version=1,
+        validator_version="b0-spy-v1",
+        compiler_version=compiler_version,
+        stage=stage,
+        required_dependencies=required_dependencies,
+        execution_path=_typed_execution_path(typed_platform),
+    )
+    return typed_platform.FamilyCapabilityRegistry(
+        capabilities={family: capability},
+        plugins={family: plugin},
+    )
+
+
+def _f1_pipeline_inputs(
+    frozen_artifacts: Any,
+    state_snapshot: Any,
+    typed_platform: Any,
+    lifecycle: Any,
+) -> tuple[dict[str, Any], Any, Any, Any]:
+    sources = _mutable_stage_b_sources(lifecycle.BState, lifecycle.GroupState)
+    sources["state"].source_digest = lifecycle.compute_source_digest(sources["state"])
+    bundle = _build_bundle(frozen_artifacts.build_frozen_artifact_bundle, sources)
+    snapshot = state_snapshot.build_validated_state_snapshot(sources["state"], bundle)
+    raw_cut = _make_region_capacity_cut(
+        sources,
+        cut_type=lifecycle.Cut,
+        scope_type=lifecycle.CutScope,
+        cert_type=lifecycle.OracleCert,
+        canonicalize=lifecycle.step_0_canonicalize,
+        encode_region_bitset=lifecycle._encode_region_bitset,
+        compute_blocked_cells_hash=lifecycle.compute_blocked_cells_hash,
+        compute_exterior_blocks_hash=lifecycle.compute_exterior_blocks_hash,
+        ghost_agnostic=lifecycle.GHOST_AGNOSTIC,
+    )
+    envelope = typed_platform.cut_to_envelope_v1(raw_cut)
+    return sources, bundle, snapshot, envelope
+
+
+@pytest.mark.xfail(
+    condition=_stage_b_missing("src.cuts.frozen_artifacts", "build_frozen_artifact_bundle"),
+    strict=True,
+    reason="stage-B B1 待实现: §2.1 FrozenArtifactBundle 递归冻结与 digest",
+)
+def test_frozen_artifact_bundle_breaks_source_aliases() -> None:
+    from src.cuts.frozen_artifacts import (
+        FrozenArtifactBundle,
+        build_frozen_artifact_bundle,
+    )
+    from src.cuts.lifecycle import BState, GroupState
+
+    sources = _mutable_stage_b_sources(BState, GroupState)
+    bundle = _build_bundle(build_frozen_artifact_bundle, sources)
+    assert isinstance(bundle, FrozenArtifactBundle)
+    digest_before = bundle.digest
+    _assert_sha256_hex(digest_before)
+
+    _mutate_builder_sources(sources)
+
+    assert bundle.digest == digest_before
+    assert bundle.facility_templates["boundary_storage_port"]["dimensions"] == {
+        "w": 1,
+        "h": 3,
+    }
+    assert bundle.canonical_rules["facility_templates"]["boundary_storage_port"]["dimensions"] == {"w": 1, "h": 3}
+    assert bundle.candidate_placements["facility_pools"]["boundary_storage_port"][0]["occupied_cells"] == (
+        (0, 1),
+        (0, 2),
+        (0, 3),
+    )
+    assert bundle.instance_to_facility_type["boundary_io"] == "boundary_storage_port"
+    with pytest.raises(TypeError):
+        bundle.facility_templates["boundary_storage_port"]["dimensions"]["w"] = 7
+    with pytest.raises(AttributeError):
+        bundle.candidate_placements["facility_pools"]["boundary_storage_port"][0]["occupied_cells"].append((7, 7))
+    with pytest.raises(TypeError):
+        bundle.instance_to_facility_type["boundary_io"] = "attacker_type"
+    assert bundle.digest == digest_before
+    attacked_bundle = _build_bundle(build_frozen_artifact_bundle, sources)
+    assert attacked_bundle.digest != digest_before
+
+
+@pytest.mark.xfail(
+    condition=(
+        _stage_b_missing("src.cuts.frozen_artifacts", "build_frozen_artifact_bundle")
+        or _stage_b_missing("src.cuts.state_snapshot", "GhostRect")
+    ),
+    strict=True,
+    reason="stage-B B1 待实现: §2.3 非方形 GhostRect 轴序 round-trip 自检",
+)
+def test_non_square_ghost_round_trips_without_axis_swap() -> None:
+    from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
+    from src.cuts.lifecycle import BState, GroupState
+    from src.cuts.state_snapshot import GhostRect, build_validated_state_snapshot
+
+    sources = _mutable_stage_b_sources(BState, GroupState, ghost_rect=(11, 17, 2, 3))
+    bundle = _build_bundle(build_frozen_artifact_bundle, sources)
+    snapshot = build_validated_state_snapshot(sources["state"], bundle)
+
+    assert isinstance(snapshot.ghost, GhostRect)
+    assert (
+        snapshot.ghost.x,
+        snapshot.ghost.y,
+        snapshot.ghost.width,
+        snapshot.ghost.height,
+    ) == (11, 17, 2, 3)
+    assert snapshot.ghost.width != snapshot.ghost.height
+    _assert_sha256_hex(snapshot.digest)
+
+
+@pytest.mark.xfail(
+    condition=(
+        _stage_b_missing("src.cuts.frozen_artifacts", "build_frozen_artifact_bundle")
+        or _stage_b_missing("src.cuts.state_snapshot", "build_validated_state_snapshot")
+    ),
+    strict=True,
+    reason="stage-B B1 待实现: §2.2/§6 钉② snapshot builder alias 隔离与 digest",
+)
+def test_snapshot_digest_survives_builder_input_mutation() -> None:
+    from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
+    from src.cuts.lifecycle import BState, GroupState, compute_source_digest
+    from src.cuts.state_snapshot import build_validated_state_snapshot
+
+    sources = _mutable_stage_b_sources(BState, GroupState)
+    sources["state"].source_digest = compute_source_digest(sources["state"])
+    bundle = _build_bundle(build_frozen_artifact_bundle, sources)
+    snapshot = build_validated_state_snapshot(sources["state"], bundle)
+    snapshot_digest_before = snapshot.digest
+    _assert_sha256_hex(snapshot_digest_before)
+
+    _mutate_builder_sources(sources)
+
+    assert snapshot.digest == snapshot_digest_before
+    assert snapshot.groups["boundary_io"].demand == 2
+    assert snapshot.groups["boundary_io"].selected_poses == ()
+    assert snapshot.cell_owner == {(4, 4): ("boundary_io", 0)}
+    assert snapshot.artifact_hashes["canonical_rules.json"] == "1" * 64
+
+    def assert_snapshot_digest_unchanged() -> None:
+        assert snapshot.digest == snapshot_digest_before
+
+    with pytest.raises((TypeError, AttributeError)):
+        snapshot.groups["attacker"] = snapshot.groups["boundary_io"]
+    assert_snapshot_digest_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        snapshot.groups["boundary_io"].demand = 999
+    assert_snapshot_digest_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        snapshot.groups["boundary_io"].pose_domain.update({"attacker_pose"})
+    assert_snapshot_digest_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        snapshot.groups["boundary_io"].selected_poses.append("attacker_pose")
+    assert_snapshot_digest_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        snapshot.groups.update({"attacker": snapshot.groups["boundary_io"]})
+    assert_snapshot_digest_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        snapshot.cell_owner[(69, 69)] = ("attacker", 0)
+    assert_snapshot_digest_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        snapshot.cell_owner.update({(69, 69): ("attacker", 0)})
+    assert_snapshot_digest_unchanged()
+
+
+@pytest.mark.xfail(
+    condition=_stage_b_missing("src.cuts.typed_platform", "validate_and_compile_cut"),
+    strict=True,
+    reason="stage-B B1.5 待实现: §6 钉② ConstraintPlan/CompiledCut 深冻结与 digest",
+)
+def test_plan_digest_survives_builder_input_mutation() -> None:
+    from src.cuts import frozen_artifacts, state_snapshot, typed_platform
+    from src.cuts import lifecycle
+
+    sources, _bundle, snapshot, envelope = _f1_pipeline_inputs(
+        frozen_artifacts, state_snapshot, typed_platform, lifecycle
+    )
+    plan_parameters = {
+        "group_cell_weights": {"boundary_io": 1},
+        "capacity": 1,
+    }
+    plan = _make_plan(typed_platform, parameters=plan_parameters)
+    plugin = _RecordingPlugin(plan)
+    registry = _make_registry(
+        typed_platform,
+        plugin,
+        family="region_capacity",
+        mode="geometric",
+        stage=typed_platform.CapabilityStage.COMPILABLE,
+        compiler_version="b0-spy-v1",
+        required_dependencies=frozenset(sources["artifact_hashes"]),
+    )
+    result = typed_platform.validate_and_compile_cut(envelope, snapshot, registry)
+    assert isinstance(result, typed_platform.CompiledCut)
+    snapshot_digest_before = snapshot.digest
+    plan_digest_before = result.plan.digest
+    compiled_digest_before = result.digest
+    for digest in (
+        snapshot_digest_before,
+        plan_digest_before,
+        compiled_digest_before,
+    ):
+        _assert_sha256_hex(digest)
+
+    _mutate_builder_sources(sources)
+    plan_parameters["group_cell_weights"]["boundary_io"] = 999
+    plan_parameters["capacity"] = 999
+
+    assert snapshot.digest == snapshot_digest_before
+    assert result.plan.digest == plan_digest_before
+    assert result.plan.parameters == {
+        "group_cell_weights": {"boundary_io": 1},
+        "capacity": 1,
+    }
+    assert result.digest == compiled_digest_before
+    assert result.snapshot_digest == snapshot.digest
+    attacked_plan = _make_plan(typed_platform, parameters=plan_parameters)
+    assert attacked_plan.digest != plan_digest_before
+
+    def assert_plan_digests_unchanged() -> None:
+        assert result.plan.digest == plan_digest_before
+        assert result.digest == compiled_digest_before
+        assert snapshot.digest == snapshot_digest_before
+
+    with pytest.raises((TypeError, AttributeError)):
+        result.plan.parameters["capacity"] = 999
+    assert_plan_digests_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        result.plan.parameters["group_cell_weights"]["boundary_io"] = 999
+    assert_plan_digests_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        result.plan.parameters.update({"capacity": 999})
+    assert_plan_digests_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        result.plan.parameters["group_cell_weights"].update({"boundary_io": 999})
+    assert_plan_digests_unchanged()
+    with pytest.raises((TypeError, AttributeError)):
+        result.plan.parameters["group_cell_weights"].append(("attacker", 999))
+    assert_plan_digests_unchanged()
+
+
+@pytest.mark.xfail(
+    condition=_stage_b_missing("src.cuts.typed_platform", "FamilyPlugin"),
+    strict=True,
+    reason="stage-B B1.5 待实现: §6 钉① verifier/compiler 同一 snapshot 对象",
+)
+def test_verifier_and_compiler_receive_same_snapshot_object() -> None:
+    from src.cuts import frozen_artifacts, state_snapshot, typed_platform
+    from src.cuts import lifecycle
+
+    sources, _bundle, snapshot, envelope = _f1_pipeline_inputs(
+        frozen_artifacts, state_snapshot, typed_platform, lifecycle
+    )
+    plugin = _RecordingPlugin(_make_plan(typed_platform))
+    registry = _make_registry(
+        typed_platform,
+        plugin,
+        family="region_capacity",
+        mode="geometric",
+        stage=typed_platform.CapabilityStage.COMPILABLE,
+        compiler_version="b0-spy-v1",
+        required_dependencies=frozenset(sources["artifact_hashes"]),
+    )
+
+    result = typed_platform.validate_and_compile_cut(envelope, snapshot, registry)
+
+    assert isinstance(result, typed_platform.CompiledCut)
+    assert inspect.isclass(typed_platform.FamilyPlugin)
+    assert getattr(typed_platform.FamilyPlugin, "_is_protocol", False)
+    expected_parameters = {
+        "parse_and_validate_proof": ("self", "proof_payload", "snapshot"),
+        "derive_body": ("self", "proof"),
+        "compile": ("self", "body", "proof", "snapshot"),
+        "validate_plan": ("self", "plan", "proof", "snapshot"),
+    }
+    for method_name, parameter_names in expected_parameters.items():
+        method = getattr(typed_platform.FamilyPlugin, method_name)
+        assert callable(method)
+        assert tuple(inspect.signature(method).parameters) == parameter_names
+    _assert_compilable_plugin_single_pass(plugin)
+    snapshot_ids = {
+        id(plugin.calls["parse_and_validate_proof"][0][1]),
+        id(plugin.calls["compile"][0][2]),
+        id(plugin.calls["validate_plan"][0][2]),
+    }
+    assert snapshot_ids == {id(snapshot)}
+
+
+@pytest.mark.xfail(
+    condition=_stage_b_missing("src.cuts.typed_platform", "FamilyPlugin"),
+    strict=True,
+    reason="stage-B B1.5 待实现: §2.7/§6 钉⑥ frozen proof 单对象且 compiler 禁读 raw bytes",
+)
+def test_pipeline_reuses_frozen_proof_without_compiler_raw_byte_access() -> None:
+    from src.cuts import frozen_artifacts, state_snapshot, typed_platform
+    from src.cuts import lifecycle
+
+    sources, _bundle, snapshot, envelope = _f1_pipeline_inputs(
+        frozen_artifacts, state_snapshot, typed_platform, lifecycle
+    )
+    plugin = _RecordingPlugin(_make_plan(typed_platform))
+    registry = _make_registry(
+        typed_platform,
+        plugin,
+        family="region_capacity",
+        mode="geometric",
+        stage=typed_platform.CapabilityStage.COMPILABLE,
+        compiler_version="b0-spy-v1",
+        required_dependencies=frozenset(sources["artifact_hashes"]),
+    )
+
+    result = typed_platform.validate_and_compile_cut(envelope, snapshot, registry)
+
+    assert isinstance(result, typed_platform.CompiledCut)
+    _assert_compilable_plugin_single_pass(plugin)
+    proof_ids = {
+        id(plugin.calls["derive_body"][0][0]),
+        id(plugin.calls["compile"][0][1]),
+        id(plugin.calls["validate_plan"][0][1]),
+    }
+    assert proof_ids == {id(plugin.proof)}
+    raw_payload = plugin.calls["parse_and_validate_proof"][0][0]
+    compile_args = plugin.calls["compile"][0]
+    assert id(raw_payload) not in {id(argument) for argument in compile_args}
+    assert not any(isinstance(argument, bytes) for argument in compile_args)
+    assert not any(hasattr(argument, "cert_payload") or hasattr(argument, "proof_payload") for argument in compile_args)
+    with pytest.raises(AttributeError):
+        plugin.proof.capacity = 99
+
+
+class _UntouchedMaster:
+    def __init__(self) -> None:
+        self.calls: list[str] = []
+
+    def __getattr__(self, name: str) -> Any:
+        self.calls.append(name)
+        raise AssertionError(f"master was touched through {name}")
+
+
+def _build_shadow_result(
+    frozen_artifacts: Any,
+    state_snapshot: Any,
+    typed_platform: Any,
+    lifecycle: Any,
+) -> tuple[dict[str, Any], Any, Any, Any, Any, _RecordingPlugin]:
+    sources, _bundle, snapshot, _envelope = _f1_pipeline_inputs(
+        frozen_artifacts, state_snapshot, typed_platform, lifecycle
+    )
+    shadow_cut = _make_pattern_nogood_cut(
+        sources,
+        anonymous_slot_ref_type=lifecycle.AnonymousSlotRef,
+        cut_literal_type=lifecycle.CutLiteral,
+        cut_type=lifecycle.Cut,
+        scope_type=lifecycle.CutScope,
+        cert_type=lifecycle.OracleCert,
+        canonicalize=lifecycle.step_0_canonicalize,
+        compute_blocked_cells_hash=lifecycle.compute_blocked_cells_hash,
+        compute_exterior_blocks_hash=lifecycle.compute_exterior_blocks_hash,
+        compute_ghost_rect_id=lifecycle.compute_ghost_rect_id,
+    )
+    shadow_envelope = typed_platform.cut_to_envelope_v1(shadow_cut)
+    shadow_plugin = _RecordingPlugin(_make_plan(typed_platform))
+    shadow_registry = _make_registry(
+        typed_platform,
+        shadow_plugin,
+        family="pattern_nogood",
+        mode="literal",
+        stage=typed_platform.CapabilityStage.VALIDATED,
+        compiler_version=None,
+        required_dependencies=frozenset(sources["artifact_hashes"]),
+    )
+    shadow = typed_platform.validate_and_compile_cut(shadow_envelope, snapshot, shadow_registry)
+    return (
+        sources,
+        shadow_cut,
+        shadow_envelope,
+        snapshot,
+        shadow,
+        shadow_plugin,
+    )
+
+
+@pytest.mark.xfail(
+    condition=_stage_b_missing("src.cuts.typed_platform", "ShadowValidated"),
+    strict=True,
+    reason="stage-B B1.5 待实现: §2.5/§2.8 F5 VALIDATED 的 ShadowValidated 出口",
+)
+def test_validated_capability_returns_shadow_without_compiling() -> None:
+    from src.cuts import frozen_artifacts, state_snapshot, typed_platform
+    from src.cuts import lifecycle
+
+    _sources, _raw_cut, envelope, snapshot, shadow, plugin = _build_shadow_result(
+        frozen_artifacts, state_snapshot, typed_platform, lifecycle
+    )
+
+    assert isinstance(shadow, typed_platform.ShadowValidated)
+    assert shadow.cut_id == envelope.cut_id
+    assert shadow.telemetry_tag == "common-mode-untrusted"
+    _assert_sha256_hex(shadow.proof_digest)
+    _assert_sha256_hex(shadow.snapshot_digest)
+    assert len(plugin.calls["parse_and_validate_proof"]) == 1
+    proof_payload, parsed_snapshot = plugin.calls["parse_and_validate_proof"][0]
+    assert proof_payload == envelope.proof_payload
+    assert parsed_snapshot is snapshot
+    assert shadow.proof_digest == envelope.proof_hash
+    assert envelope.proof_hash == hashlib.sha256(proof_payload).hexdigest()
+    assert shadow.snapshot_digest == snapshot.digest
+    assert len(plugin.calls["derive_body"]) <= 1
+    assert plugin.calls["compile"] == []
+    assert plugin.calls["validate_plan"] == []
+
+    # B1.5解除补充义务：另用 production registry + 真实 F5 envelope 复验；
+    # 本 spy seam 只证明 VALIDATED dispatch 的结果代数与零 compile。
+
+
+@pytest.mark.xfail(
+    condition=_stage_b5_apply_missing(),
+    strict=True,
+    reason="stage-B B5 待实现: §2.9/§6 钉③④ step_8 类型拒绝 raw Cut/ShadowValidated",
+)
+def test_step_8_rejects_raw_and_shadow_results_without_touching_master() -> None:
+    from src.cuts import frozen_artifacts, state_snapshot, typed_platform
+    from src.cuts import lifecycle
+
+    sources, raw_cut, _envelope, _snapshot, shadow, shadow_plugin = _build_shadow_result(
+        frozen_artifacts, state_snapshot, typed_platform, lifecycle
+    )
+    assert isinstance(shadow, typed_platform.ShadowValidated)
+    assert len(shadow_plugin.calls["parse_and_validate_proof"]) == 1
+    assert shadow_plugin.calls["compile"] == []
+    assert shadow_plugin.calls["validate_plan"] == []
+    assert sources["state"].source_digest
+
+    signature = inspect.signature(lifecycle.step_8_apply_to_master)
+    assert "scope_binding" in signature.parameters
+    master = _UntouchedMaster()
+    for rejected in (raw_cut, shadow):
+        with pytest.raises((TypeError, ValueError)):
+            lifecycle.step_8_apply_to_master(
+                rejected,
+                master,
+                scope_binding=None,
+            )
+    assert master.calls == []
+
+    # B5 wiring supplement: _maybe_attach_framework_cuts must explicitly match
+    # CutRejection/ShadowValidated and prove the real master spy stays at zero.
+
+
+def _bound_region_sources(
+    bstate_type: Any,
+    group_state_type: Any,
+    *,
+    ghost_rect: tuple[int, int, int, int],
+    group_id: str = "boundary_io",
+) -> dict[str, Any]:
+    facility_templates = {
+        "boundary_storage_port": {
+            "placement_rule": "left_or_bottom_boundary",
+            "dimensions": {"w": 1, "h": 3},
+            "needs_power": False,
+        }
+    }
+    poses = [
+        {
+            "pose_id": f"boundary_pose_{index}",
+            "anchor": {"x": 0, "y": index},
+            "occupied_cells": [
+                [0, index % 68],
+                [0, (index + 1) % 68],
+                [0, (index + 2) % 68],
+            ],
+            "input_port_cells": [],
+            "output_port_cells": [],
+            "power_coverage_cells": None,
+        }
+        for index in range(46)
+    ]
+    canonical_rules = {
+        "globals": {"grid": {"width": 70, "height": 70}},
+        "facility_templates": facility_templates,
+    }
+    candidate_placements = {"facility_pools": {"boundary_storage_port": poses}}
+    artifact_hashes = {
+        "canonical_rules.json": "a" * 64,
+        "candidate_placements.json": "b" * 64,
+        "mandatory_exact_instances.json": "c" * 64,
+    }
+    x, y, width, height = ghost_rect
+    ghost_cells = frozenset((cell_x, cell_y) for cell_x in range(x, x + width) for cell_y in range(y, y + height))
+    state = bstate_type(
+        groups={
+            group_id: group_state_type(
+                group_id=group_id,
+                demand=46,
+                pose_domain=frozenset(pose["pose_id"] for pose in poses),
+                selected_poses=[],
+            )
+        },
+        ghost_rect=ghost_rect,
+        ghost_cells=ghost_cells,
+        exterior_blocks=frozenset(),
+        artifact_hashes=artifact_hashes,
+        available_oracle_versions=frozenset({"region_capacity_v1"}),
+        canonical_rules=canonical_rules,
+        candidate_placements=candidate_placements,
+        facility_templates=facility_templates,
+        instance_to_facility_type={group_id: "boundary_storage_port"},
+        source_digest="d" * 64,
+    )
+    return {
+        "artifact_hashes": artifact_hashes,
+        "candidate_placements": candidate_placements,
+        "canonical_rules": canonical_rules,
+        "facility_templates": facility_templates,
+        "instance_to_facility_type": {group_id: "boundary_storage_port"},
+        "state": state,
+    }
+
+
+def _build_real_tiny_master(
+    master_model_type: Any,
+    *,
+    ghost_rect: tuple[int, int] = (3, 1),
+) -> Any:
+    instances = [
+        {
+            "instance_id": "miner_001",
+            "facility_type": "miner",
+            "operation_type": "mining",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+        {
+            "instance_id": "miner_002",
+            "facility_type": "miner",
+            "operation_type": "mining",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+    ]
+    pools = {
+        "miner": [
+            {
+                "pose_id": f"pose_{tag}",
+                "anchor": {"x": x, "y": 0},
+                "occupied_cells": [[x, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+            for tag, x in (("left", 0), ("mid", 2), ("right", 4))
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 5, "height": 1}},
+        "facility_templates": {"miner": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}},
+    }
+    core = master_model_type.build_exact_core(
+        instances,
+        pools,
+        rules,
+        skip_power_coverage=True,
+    )
+    return master_model_type.from_exact_core(core, ghost_rect=ghost_rect)
+
+
+def _build_bound_region_master(master_model_type: Any, sources: dict[str, Any]) -> Any:
+    instances = [
+        {
+            "instance_id": f"boundary_{index:03d}",
+            "facility_type": "boundary_storage_port",
+            "operation_type": "boundary_io",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+        for index in range(46)
+    ]
+    core = master_model_type.build_exact_core(
+        instances,
+        sources["candidate_placements"]["facility_pools"],
+        sources["canonical_rules"],
+        skip_power_coverage=True,
+    )
+    return master_model_type.from_exact_core(core, ghost_rect=(3, 1))
+
+
+def _real_master_mutation_projection(master: Any, *, proto_path: Path) -> tuple[Any, ...]:
+    from ortools.sat import cp_model_pb2
+
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    cache_names = (
+        "_eq_literal_cache",
+        "_slot_pose_match_cache",
+        "_pose_present_cache",
+        "_pose_idx_by_pose_id_cache",
+    )
+    caches = tuple(
+        (
+            name,
+            tuple(sorted((repr(key), repr(value)) for key, value in getattr(delegate, name).items())),
+        )
+        for name in cache_names
+    )
+    native_proto = delegate.model.Proto()
+    native_serializer = getattr(native_proto, "SerializeToString", None)
+    if native_serializer is not None:
+        proto_bytes = native_serializer(deterministic=True)
+    else:
+        # OR-Tools 9.15 exposes a pybind CpModelProto without SerializeToString.
+        # Export to the generated protobuf type, then use deterministic binary
+        # serialization—the semantic equivalent required by this contract.
+        assert delegate.model.export_to_file(str(proto_path))
+        generated_proto = cp_model_pb2.CpModelProto.FromString(proto_path.read_bytes())
+        proto_bytes = generated_proto.SerializeToString(deterministic=True)
+    return proto_bytes, caches
+
+
+def _compile_bound_region_case(
+    frozen_artifacts: Any,
+    state_snapshot: Any,
+    typed_platform: Any,
+    lifecycle: Any,
+    generate_region_capacity_cuts: Any,
+    registry: Any,
+    *,
+    ghost_rect: tuple[int, int, int, int],
+    group_id: str,
+) -> tuple[dict[str, Any], Any, Any]:
+    sources = _bound_region_sources(
+        lifecycle.BState,
+        lifecycle.GroupState,
+        ghost_rect=ghost_rect,
+        group_id=group_id,
+    )
+    sources["state"].source_digest = lifecycle.compute_source_digest(sources["state"])
+    bundle = _build_bundle(frozen_artifacts.build_frozen_artifact_bundle, sources)
+    snapshot = state_snapshot.build_validated_state_snapshot(sources["state"], bundle)
+    cuts = generate_region_capacity_cuts(sources["state"], sources["canonical_rules"])
+    assert len(cuts) == 1
+    envelope = typed_platform.cut_to_envelope_v1(cuts[0])
+    compiled = typed_platform.validate_and_compile_cut(envelope, snapshot, registry)
+    assert isinstance(compiled, typed_platform.CompiledCut)
+    return sources, snapshot, compiled
+
+
+def _build_scope_binding_world(
+    frozen_artifacts: Any,
+    state_snapshot: Any,
+    typed_platform: Any,
+    lifecycle: Any,
+    generate_region_capacity_cuts: Any,
+    master_model_type: Any,
+) -> tuple[Any, str, Any, Any, Any, Any]:
+    registry = typed_platform.build_production_registry()
+    seed_sources = _bound_region_sources(
+        lifecycle.BState,
+        lifecycle.GroupState,
+        ghost_rect=(0, 0, 3, 1),
+    )
+    master = _build_bound_region_master(master_model_type, seed_sources)
+    group_id = str(master._group_id_by_instance["boundary_000"])
+    _sources_a, snapshot_a, compiled_a = _compile_bound_region_case(
+        frozen_artifacts,
+        state_snapshot,
+        typed_platform,
+        lifecycle,
+        generate_region_capacity_cuts,
+        registry,
+        ghost_rect=(0, 0, 3, 1),
+        group_id=group_id,
+    )
+    _sources_b, snapshot_b, compiled_b = _compile_bound_region_case(
+        frozen_artifacts,
+        state_snapshot,
+        typed_platform,
+        lifecycle,
+        generate_region_capacity_cuts,
+        registry,
+        ghost_rect=(2, 0, 3, 1),
+        group_id=group_id,
+    )
+    return master, group_id, snapshot_a, compiled_a, snapshot_b, compiled_b
+
+
+def _build_bound_snapshot(
+    frozen_artifacts: Any,
+    state_snapshot: Any,
+    lifecycle: Any,
+    *,
+    group_id: str,
+    selected_poses: list[str],
+) -> Any:
+    sources = _bound_region_sources(
+        lifecycle.BState,
+        lifecycle.GroupState,
+        ghost_rect=(0, 0, 3, 1),
+        group_id=group_id,
+    )
+    sources["state"].groups[group_id].selected_poses.extend(selected_poses)
+    sources["state"].source_digest = lifecycle.compute_source_digest(sources["state"])
+    bundle = _build_bundle(frozen_artifacts.build_frozen_artifact_bundle, sources)
+    return state_snapshot.build_validated_state_snapshot(sources["state"], bundle)
+
+
+def _assert_step_8_rejected_without_master_mutation(
+    lifecycle: Any,
+    compiled: Any,
+    master: Any,
+    binding: Any,
+    *,
+    tmp_path: Path,
+) -> None:
+    before = _real_master_mutation_projection(master, proto_path=tmp_path / "before.pb")
+    build_stats_before = repr(master.build_stats)
+    with pytest.raises((TypeError, ValueError)):
+        lifecycle.step_8_apply_to_master(
+            compiled,
+            master,
+            scope_binding=binding,
+        )
+    after = _real_master_mutation_projection(master, proto_path=tmp_path / "after.pb")
+    assert after == before
+    assert repr(master.build_stats) == build_stats_before
+
+
+@pytest.mark.xfail(
+    condition=_stage_b5_apply_missing(),
+    strict=True,
+    reason="stage-B B5 待实现: §2.6 三连① ghost digest 单项错绑拒绝",
+)
+def test_step_8_rejects_ghost_digest_misbinding_without_master_mutation(
+    tmp_path: Path,
+) -> None:
+    from src.cuts import frozen_artifacts, state_snapshot, typed_platform
+    from src.cuts import lifecycle
+    from src.cuts.lifecycle import _resolve_model_scope_binding
+    from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
+    from src.models.master_model import MasterPlacementModel
+
+    master, _group_id, snapshot_a, compiled_a, _snapshot_b, compiled_b = _build_scope_binding_world(
+        frozen_artifacts,
+        state_snapshot,
+        typed_platform,
+        lifecycle,
+        generate_region_capacity_cuts,
+        MasterPlacementModel,
+    )
+    scope_a = compiled_a.plan.model_scope
+    scope_b = compiled_b.plan.model_scope
+    rect_b_idx = next(
+        index for index, domain in enumerate(master._ghost_domains) if domain["anchor"] == {"x": 2, "y": 0}
+    )
+    binding = _resolve_model_scope_binding(scope_b, snapshot_a, master)
+
+    assert scope_a.ghost_rect_digest != binding.ghost_rect_digest
+    assert scope_a.domain_fingerprint == binding.master_domain_projection
+    assert compiled_a.snapshot_digest == binding.snapshot_digest
+    assert binding.condition_lits == (master.u_vars[rect_b_idx],)
+    assert binding.condition_lits[0] is master.u_vars[rect_b_idx]
+    _assert_step_8_rejected_without_master_mutation(
+        lifecycle,
+        compiled_a,
+        master,
+        binding,
+        tmp_path=tmp_path,
+    )
+
+
+@pytest.mark.xfail(
+    condition=_stage_b5_apply_missing(),
+    strict=True,
+    reason="stage-B B5 待实现: §2.6 三连② domain projection 单项错绑拒绝",
+)
+def test_step_8_rejects_domain_projection_misbinding_without_master_mutation(
+    tmp_path: Path,
+) -> None:
+    from src.cuts import frozen_artifacts, state_snapshot, typed_platform
+    from src.cuts import lifecycle
+    from src.cuts.lifecycle import _resolve_model_scope_binding
+    from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
+    from src.models.master_model import MasterPlacementModel
+
+    master, _group_id, snapshot_a, compiled_a, _snapshot_b, _compiled_b = _build_scope_binding_world(
+        frozen_artifacts,
+        state_snapshot,
+        typed_platform,
+        lifecycle,
+        generate_region_capacity_cuts,
+        MasterPlacementModel,
+    )
+    scope_a = compiled_a.plan.model_scope
+    master.facility_pools["boundary_storage_port"][0]["occupied_cells"] = [[69, 69]]
+    binding = _resolve_model_scope_binding(scope_a, snapshot_a, master)
+
+    assert scope_a.ghost_rect_digest == binding.ghost_rect_digest
+    assert scope_a.domain_fingerprint != binding.master_domain_projection
+    assert compiled_a.snapshot_digest == binding.snapshot_digest
+    _assert_step_8_rejected_without_master_mutation(
+        lifecycle,
+        compiled_a,
+        master,
+        binding,
+        tmp_path=tmp_path,
+    )
+
+
+@pytest.mark.xfail(
+    condition=_stage_b5_apply_missing(),
+    strict=True,
+    reason="stage-B B5 待实现: §2.6 三连③ snapshot digest 单项错绑拒绝",
+)
+def test_step_8_rejects_snapshot_digest_misbinding_without_master_mutation(
+    tmp_path: Path,
+) -> None:
+    from src.cuts import frozen_artifacts, state_snapshot, typed_platform
+    from src.cuts import lifecycle
+    from src.cuts.lifecycle import _resolve_model_scope_binding
+    from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
+    from src.models.master_model import MasterPlacementModel
+
+    master, group_id, snapshot_a, compiled_a, _snapshot_b, _compiled_b = _build_scope_binding_world(
+        frozen_artifacts,
+        state_snapshot,
+        typed_platform,
+        lifecycle,
+        generate_region_capacity_cuts,
+        MasterPlacementModel,
+    )
+    snapshot_alt = _build_bound_snapshot(
+        frozen_artifacts,
+        state_snapshot,
+        lifecycle,
+        group_id=group_id,
+        selected_poses=["boundary_pose_0"],
+    )
+    scope_a = compiled_a.plan.model_scope
+    binding = _resolve_model_scope_binding(scope_a, snapshot_alt, master)
+
+    assert snapshot_alt.digest != snapshot_a.digest
+    assert scope_a.ghost_rect_digest == binding.ghost_rect_digest
+    assert scope_a.domain_fingerprint == binding.master_domain_projection
+    assert compiled_a.snapshot_digest != binding.snapshot_digest
+    _assert_step_8_rejected_without_master_mutation(
+        lifecycle,
+        compiled_a,
+        master,
+        binding,
+        tmp_path=tmp_path,
+    )
+
+
+@pytest.mark.xfail(
+    condition=_stage_b5_apply_missing(),
+    strict=True,
+    reason="stage-B B5 待实现: §4.11/§6 失败 apply 的 proto+cache 原子性",
+)
+def test_failed_lowering_preserves_master_proto_and_internal_caches(
+    tmp_path: Path,
+) -> None:
+    from src.cuts import typed_platform
+    from src.models.master_model import MasterPlacementModel
+
+    assert inspect.isclass(typed_platform.CompiledCut)
+    master = _build_real_tiny_master(MasterPlacementModel, ghost_rect=(1, 1))
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    valid_group = str(master._group_id_by_instance["miner_001"])
+    group_cell_weights = {valid_group: 1, "zz_missing_group": 1}
+    lower = getattr(delegate, "_lower_region_capacity_cut", None)
+    if lower is None:
+        lower = delegate.add_region_capacity_cut
+    before = _real_master_mutation_projection(master, proto_path=tmp_path / "before.pb")
+
+    applied = lower(
+        group_cell_weights=group_cell_weights,
+        capacity=1,
+        condition_lits=(),
+    )
+
+    assert applied is False
+    assert _real_master_mutation_projection(master, proto_path=tmp_path / "after.pb") == before
