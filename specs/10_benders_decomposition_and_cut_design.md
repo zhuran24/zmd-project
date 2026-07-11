@@ -1,18 +1,19 @@
 ---
 status: CURRENT_WITH_HISTORICAL_DESIGN_SECTIONS
 source_of_truth: src/search/benders_loop.py + src/models/cut_manager.py + src/cuts/lifecycle.py
-last_verified_against: 2026-06-26 working tree
+last_verified_against: 2026-07-11 working tree
 owner: cut-manager
 ---
 
 # 10 逻辑型 Benders 循环与 cut 通信边界
 
-> **当前实现边界。** `src/search/benders_loop.py` 的 certified 路径使用现役 master、binding、routing
+> **当前实现边界（2026-07-11）。** `src/search/benders_loop.py` 的 certified 路径使用现役 master、binding、routing
 > 和登记的 exact-safe cut ladder。`src/models/flow_subproblem.py` 只生成诊断状态，不能门控
-> certified verdict，也不产生 Farkas ray 或 proof-bearing cut。`src/cuts/families/` 的 F1–F9
-> generator/validator framework 已存在，但 `src/cuts/lifecycle.py:1121-1126` 的
-> `step_8_apply_to_master()` 仍抛 `NotImplementedError`，所以它们尚未接入 production master。
-> 面向人的后续阶段名为 P1.3；旧 `p1_3b_*` 仅是机器兼容字段。
+> certified verdict，也不产生 Farkas ray 或 proof-bearing cut。当前 cut registry 为 F1-F7+F9，
+> F8 已退役；`step_8_apply_to_master()` 已翻译 F1/F5/F6/F7，`benders_loop` 的 direct bridge 由
+> `EXACT_CUT_FRAMEWORK_ATTACH` 门控。该 bridge 仍在 certified unsafe map 中且默认关闭，
+> F2/F3/F4/F9 fail closed。Stage B B0/B1/B1.5 已落地，B2-B5、PIC C/D/E 与 B6 owner promotion 尚未完成。
+> 面向人的阶段名为 P1.3；旧 `p1_3b_*` 仅是机器兼容字段。
 
 ## 10.1 当前 certified 路径
 
@@ -56,17 +57,19 @@ certified campaign authority、supervisor seal 或公共认证发布面。文档
 - 预算耗尽、solver `UNKNOWN`、unsupported proof stage 或不完整冲突集不得被包装成
   `INFEASIBLE`。
 
-## 10.4 F1–F9 cut-family framework 的真实进度
+## 10.4 Active cut-family framework 的真实进度
 
-`src/cuts/families/`、validators/oracles 和 `src/cuts/lifecycle.py` 是下一阶段 cut-family 框架及其
-proof lifecycle。其 canonicalize/generate/minimize/serialize/deserialize/validate/scope/resolve/evaluate
-等步骤已有大量实现和测试，但 production attach 尚未完成。特别是：
+`src/cuts/families/`、validators/oracles 和 `src/cuts/lifecycle.py` 承载当前八族 registry（F1-F7+F9；
+F8 retired）及其 proof lifecycle。canonicalize/generate/minimize/serialize/deserialize/validate/scope/
+resolve/evaluate 已有实现与测试；production attach 处于“部分接通、尚未 certified promotion”状态：
 
-- `step_8_apply_to_master()` 仍是明确的 future integration placeholder；
-- family validator 的通过不等于该 cut 已影响当前 production master；
-- family 单测或 lifecycle replay 通过不等于 P1.2 closed，也不能打开 P1.3；
-- 真接入前必须复核每个 family 的 theorem、constant support、scope、runtime literal resolution、
-  master encoding 与 red tests。
+- `step_8_apply_to_master()` 已翻译 F1/F5/F6/F7；F2/F3/F4/F9 对不支持路径抛 `NotImplementedError`；
+- `_maybe_attach_framework_cuts()` 可在 `EXACT_CUT_FRAMEWORK_ATTACH` 门后调用 direct bridge，但 certified
+  unsafe-map 禁止该开关，默认路径不会把这些 cut 当成认证前提；
+- Stage B B0/B1 已提供 contract shell、`FrozenArtifactBundle`、`ValidatedStateSnapshot` 与 digest v1；
+  B2-B5、PIC C/D/E、RFC-002/003 和 B6 owner promotion 仍未完成；
+- family validator 或 lifecycle replay 通过不等于 cut 已获 certified authority。promotion 前仍必须复核
+  theorem、constant support、scope、runtime literal resolution、master encoding、独立 verifier 与 red tests。
 
 ## 10.5 历史 Type-I/Type-II 设计
 

@@ -7,7 +7,7 @@
 
 - **C1 已是 certified 默认 master 表示**（批 1D，`a1ae1ed`+`fecb495`）：coordinate delegate 的 C1 pose-bool cov-channel 编码转正，S4 blocker 保证 certified 路径非 C1 即拒。批 1 全六子批（1A-1F）落地：cov 通道+witness cell（1B）、解级 power-pole dominance 剪杆进 sealed（1C，`3cc3cf4`）、第 15 条 proof obligation 入册（1E，`4d98314`）。
 - **生产内存条款**（1F+M5 修订）：wrapper `systemd-run --scope` 42G 硬帽+`CAMPAIGN_SWAP_MAX` 默认 20G（C1 出解时刻有 ~60G 级固有尖峰，禁 swap 必死——M5 归因判决 `1148067`/`b25ba1d`）;readiness gate RSS 三档分层。「产品默认 solve 参数病态」经 07-11 A/B 四刀证伪（参数仅 wall 差异,`bd96549`）。
-- **cut framework 通电前修复批**（`68b4557`）：F1 BState ghost 轴反置修复（soundness 级）+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深。**attach 通电 spike 判决 GO**（`e719e5d`：10K cut attach 16.6s+solve +4.1%,效度边界四条）;production integration checklist 立册（PIC-0~7,`4fceb9f`）,PIC-3 预算 env 化已落（`b9fcca9`,BUDGET fail-closed resolver+双注册）,PIC-7 已归因关闭。批 B（宿主形态+RFC-001 评估）待 owner。
+- **cut framework 通电前修复批**（`68b4557`）：F1 BState ghost 轴反置修复（soundness 级）+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深。**attach 通电 spike 判决 GO**（`e719e5d`：10K cut attach 16.6s+solve +4.1%,效度边界四条）;production integration checklist 立册（PIC-0~7,`4fceb9f`）,PIC-3 预算 env 化已落（`b9fcca9`,BUDGET fail-closed resolver+双注册）,PIC-7 已归因关闭。批 B（宿主形态+RFC-001 评估）已于 2026-07-11 完成；Stage B 规格定稿，B0 契约测试壳、B1 frozen artifact/snapshot/digest v1 与 B1.5 typed 平台层（三分支代数+单入口+F5 oracle 复验）已落地。当前待 B2-B5、PIC C/D/E、RFC-002/003 与 B6 owner promotion。
 - **exploratory 模式在 prod-scale 上不可用**的坑已钉死（port clearance 启发式 build 爆炸+legacy master+all_facility 实例集,py-spy 实锤,memory 卡+spike 规格书）。
 
 本页描述当前工作树，不以 Git HEAD 的提交时间替代工作树事实。未提交的 PR1 发布面 soundness 修复
@@ -23,7 +23,7 @@ material 和 proposal marker。它不再直接铸造 durable terminal `CERTIFIED
 
 ### 2. supervisor 是唯一 durable terminal mint
 
-`src/search/exact_campaign.py:3399-3593` 的 `ExactCampaign.supervisor_seal()`：
+`src/search/exact_campaign.py:3497` 的 `ExactCampaign.supervisor_seal()`：
 
 - 从磁盘读取已提交 proposal，而不是信调用者的内存对象；
 - 复核 project/source/artifact/campaign/candidate bindings；
@@ -46,27 +46,27 @@ nonce-bound response 返回裁决。`terminal_fixed_witness_verifier.py` 还独�
 facility body 占用，包括 own-body 和 other-body。自由重解出的“同尺寸另一个可行布局”不能替代发布
 witness。
 
-### 4. P1.2 OPEN-GATE 已机器化
+### 4. P1.2 publish gate 已机器化且 owner-closed
 
-`src/search/certified_surface.py:482-531` 从权威 review gate 解析 P1.2 发布状态。缺失、畸形、仍 open
+`src/search/certified_surface.py:508` 从权威 review gate 解析 P1.2 发布状态。缺失、畸形、仍 open
 或非显式 owner-closed 的 gate 一律使 public surface `publishable=false`。
 
 ### 5. public publisher 单入口
 
-`src/search/certified_surface.py:563-680` 的
+`src/search/certified_surface.py:800` 的
 `publish_verified_certified_delivery_surface()` 是公开 solution、blueprint 和 delivery manifest 的
 唯一 certified publisher。它要求 disk-current supervisor seal，三件输出同源，并在失败时清理部分写入。
 外围 serializer、viewer、report、adapter 和 compatibility exporter 已被收拢为非权威派生面。
 
 ### 6. whole-layout false-INFEASIBLE 防线
 
-`src/search/benders_loop.py:7538-7585` 在 whole-layout nogood 落 cut 前调用
+`src/search/benders_loop.py::_reverify_whole_layout_infeasibility_before_cut`（当前调用点约 `:8279`） 在 whole-layout nogood 落 cut 前调用
 `independent_infeasibility_reverifier.py`。独立 verifier 不确认、发现可行分歧、超时或异常时，路径返回
 UNKNOWN 并拒绝落 proof-bearing cut。
 
 ### 7. close-kernel 结构闸
 
-`data/proof_obligations/p1_2_proof_obligations.json` 当前含 14 个 active obligation；
+`data/proof_obligations/p1_2_proof_obligations.json` 当前含 15 个 active obligation；
 `scripts/check_p1_2_proof_obligations.py` 绑定 proof-bearing sink inventory、source hashes、guard tokens、
 allowlist 和关键 gate 文件。它是结构边界检查，不是“P1.2 已 sound/已发布”的证明。
 
@@ -85,13 +85,8 @@ allowlist 和关键 gate 文件。它是结构边界检查，不是“P1.2 已 s
 
 ## 测试状态
 
-2026-06-26 的 collect-only 结果是 **425 个测试文件、3450 个测试**。本轮已确认：
-
-- `src/tests/test_delivery_manifest.py`: 26 passed
-- `src/tests/test_delivery_manifest_compatibility_exports.py`: 3 passed
-
-更大的组合运行曾超过本轮执行窗口，没有形成完整通过结论。因此任何文档都不得写“3450 passed”或
-“full suite passed”。最终验证结果以本次修复包中的验证日志为准。
+2026-07-11 collect-only 为 **450 个 `test*.py` 文件、4182 tests**；`src/tests/cuts` 单独为 **594 tests**。
+这些都是收集数量，不是通过数量。本次文档审计没有运行并声称 full suite passed；任何 pass 数仍须附命令、工作树与退出码，最终以本次审计包的验证日志为准。
 
 ## 输入状态
 
@@ -111,8 +106,9 @@ hash-incompatible。
   cut 总量预算（2000 满即停发）。F2/F3/F9/F4 保持 fail-closed（终态理由见
   记忆卡：F2 吞吐锁+桥语义、F3 缺 active_port_witness、F9 tight-K 绞死、
   F4 缺 route registry——均非遗漏）。总开关 `EXACT_CUT_FRAMEWORK_ATTACH`
-  仍在 unsafe map（certified 下开启即 fail-closed）；升格三前置中阶梯与
-  等价回归已齐，仅剩 owner 显式决定。close-kernel 现 65 sinks。
+  仍在 unsafe map（certified 下开启即 fail-closed）。旧 M4 阶梯与等价回归虽已齐，
+  07-11 Stage B 规格又明确了 B1.5-B5、PIC C/D/E、RFC-002/003 与 B6 owner promotion（其中 B1.5 已于当日落地）；
+  因此不能再概括为“仅剩 owner”。close-kernel 现 66 sinks（B1.5 后 typed_platform 入册）。
   F8 power_grid_reach 已整族退役删除（owner 游戏规则拍板：电杆不需连网）。
   详见记忆卡 `p1-3-m4-ladder-landed`/`p1-3-m3-step8-landed`/
   `p1-3-m2-coverage-stencil-ruling`。

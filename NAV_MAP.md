@@ -17,13 +17,22 @@ main.py
                whole-layout nogood 独立复验，不确认则不落 cut
        -> src/search/certified_frontier.py
           strict full-frontier projection/evidence
+       -> src/search/candidate_proof_replay.py
+          strong-status sink replay（不替代 fixed-witness identity）
+       -> src/search/certified_artifact_contract.py
+          runtime artifact/source/hash contract
+       -> src/search/pr2_l0_micro_verifier_core.py
+          -> src/search/pr2_l0_true_verifier_child.py
+             isolated L0 verification child
        -> src/search/terminal_fixed_witness_capsule.py
        -> src/search/terminal_fixed_witness_verifier.py
           固定发布 witness 的 binding/routing 复验
+       -> src/search/exact_parallel_scheduler.py
+          parallel candidate waves；coordinator-only persistence
        -> src/search/exact_campaign.py
           checkpoint/resume + ExactCampaign.supervisor_seal() 唯一终端 CERTIFIED mint（生产 caller = scripts/run_supervisor_seal.py 独立命令；main.py 普通完成仍止于 CANDIDATE_PROPOSED）
        -> src/search/certified_surface.py
-          P1.2 open gate + sealed campaign 验证 + canonical public publisher
+          owner-closed P1.2 gate resolver + sealed campaign 验证 + canonical public publisher
 ```
 
 ## 发布链
@@ -48,7 +57,7 @@ generic serializer、blueprint exporter、manifest writer、viewer/report builde
 |---|---|
 | `src/search/` | outer producer、campaign、frontier、fixed-witness、supervisor seal、中央发布面 |
 | `src/models/` | master、binding、routing；flow 为诊断模块 |
-| `src/cuts/` | cut 生成、校验与生命周期；`step_8_apply_to_master` 是 P1.3（已于 2026-07-07 开启）阶段待完成的生产 master/cut 集成边界 |
+| `src/cuts/` | active F1-F7+F9（F8 retired）的生成、校验与生命周期；F1/F5/F6/F7 direct Step-8 bridge 已落地但 certified unsafe/default-off；Stage B B0/B1/B1.5 landed，B2-B5/PIC C-D-E/B6 pending |
 | `src/io/` | strict JSON、序列化和 delivery manifest 基础设施，不单独拥有公开认证权 |
 | `src/render/`, `src/adapters/` | postprocess/delivery surface，必须消费中央验证后的 authority |
 | `src/tests/` | 单元、回归和 soundness 红测 |
@@ -62,5 +71,7 @@ generic serializer、blueprint exporter、manifest writer、viewer/report builde
 2. `docs/certified_proof_chain_analysis.md`
 3. `src/search/outer_search.py`
 4. `src/search/exact_campaign.py::ExactCampaign.supervisor_seal`
-5. `src/search/certified_surface.py::publish_verified_certified_delivery_surface`
-6. `scripts/check_p1_2_proof_obligations.py`
+5. `src/search/certified_artifact_contract.py` + `pr2_l0_micro_verifier_core.py` + `pr2_l0_true_verifier_child.py`
+6. `src/search/certified_surface.py::publish_verified_certified_delivery_surface`
+7. `src/cuts/frozen_artifacts.py` + `src/cuts/state_snapshot.py` + `src/cuts/lifecycle.py::step_8_apply_to_master`
+8. `scripts/check_p1_2_proof_obligations.py`

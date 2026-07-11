@@ -16,15 +16,15 @@
 
 #### Q1 — 9 family 是否 cover 所有 INFEASIBLE 类? **P0**
 
-**问题**: cut framework 9 family (F1-F9) 数学上是否**充分** — 即任何 master partial assignment 若 INFEASIBLE, 必存在 F1-F9 之一可产 sound cut 排除该 assignment?
+**问题**: cut framework 当前 8 个 active family (F1-F7+F9；F8 retired) 数学上是否**充分** — 即任何 master partial assignment 若 INFEASIBLE, 必存在 active F1-F7+F9 之一可产 sound cut 排除该 assignment?
 
 **当前 understanding**:
-- F1-F9 各自针对一类 INFEASIBLE pattern, 数学根据独立 ([cite spec 01-09])
+- active F1-F7+F9 各自针对一类 INFEASIBLE pattern, 数学根据独立 ([cite spec 01-09])
 - 跨 family 覆盖度由 timeline §3 5 issue 推 (但 timeline 只列 5 issue, 没数学完整性证明)
 - Issue 3 (manufacturing cluster trap, 132 instance) 现 spec **不足** — F5 pattern_nogood literal 全 facility full assignment no-good 退化, 132! permutation 撞墙. paradigm_death_timeline §3 自承
 
 **verification trigger**:
-- Phase 1.5+ 真生产 168h trial 后, 若仍有 INFEASIBLE candidate 不被任 F1-F9 拦 → 暗示 cover 不完整
+- Phase 1.5+ 真生产 168h trial 后, 若仍有 INFEASIBLE candidate 不被任一 active family 拦 → 暗示 cover 不完整
 - 长跑 telemetry 看 cut_count_by_family 分布 (§20.2) — 若某类 INFEASIBLE 反复 trigger 但无 cut 拦, 数学上需 F10+
 
 **数学难度**: paradigm-level, 不能简单 verify. 需:
@@ -123,7 +123,7 @@
 
 **当前 understanding**:
 - 当前仓库没有 `farkas_certificate.py`，也没有可发布的 dual-ray/Farkas 证书链
-- 当前 F1 oracle 是组合枚举 region，不调用 Farkas；F1-F9 Step 8 也尚未接入 production master
+- 当前 F1 oracle 是组合枚举 region，不调用 Farkas；F1/F5/F6/F7 direct Step-8 已接入 unsafe/default-off bridge，其余 active family 仍 fail-closed，整条链尚未 certified promotion
 - Farkas 自动触发 → oracle 不需手写 region 列表, 但 LP relax solve 也要 cost
 
 **defer trigger**: 未来 cut-family 集成时，先定义证书格式、独立 verifier 和 replay 义务，再评估 dual-ray 路径是否值得实现

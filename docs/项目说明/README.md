@@ -1,6 +1,6 @@
 # `docs/项目说明/` 项目书
 
-本目录有 24 个专题文档，加本 README，共 25 个 Markdown 文件。它同时包含当前说明、数学背景、
+本目录有 25 个专题文档，加本 README，共 26 个 Markdown 文件。它同时包含当前说明、数学背景、
 历史复盘和未来计划，不能把每个文件都当成同等级的现状 authority。
 
 ## 权威顺序
@@ -11,11 +11,14 @@
 4. `docs/项目说明/soundness_gap_roadmap.md`：已实现、部分实现、未实现和 scope-exclusion 矩阵。
 5. 其余 phase plan / historical review / research 文档：设计或历史上下文，不能覆盖上述现状。
 
-截至 2026-07-07，P1.2 已由 owner 显式 `owner_manual_decision` 关闭
-（`closed_manual_owner_decision`，`p1_3b_entry_allowed=true`），P1.3 已开放。当前工作树已落
-producer/supervisor split、fixed-witness、OPEN-GATE、whole-layout independent reverify 和 central
-publisher；manual gate 已完成。#9a 为部署时点任务，防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/
-#9b/#9c/Option B）另列发布时点，非 P1.2 blocker。
+截至 2026-07-11，P1.2 已由 owner 显式 `owner_manual_decision` 关闭
+（`closed_manual_owner_decision`，`p1_3b_entry_allowed=true`），P1.3 已开放并分批实施。当前工作树已落
+producer/supervisor split、fixed-witness、OPEN-GATE、whole-layout independent reverify、central
+publisher，以及 cut direct attach 的 F1/F5/F6/F7 翻译；Stage B B0/B1（contract shell、
+`FrozenArtifactBundle`、`ValidatedStateSnapshot`、digest v1）已落地。direct attach 仍由
+`EXACT_CUT_FRAMEWORK_ATTACH` 门控并在 certified unsafe map 中禁用；B2-B5（B0/B1/B1.5 已落地）、PIC C/D/E 与 B6 owner
+promotion 尚未完成。#9a 为部署时点任务，防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/
+Option B）另列发布时点，非 P1.2 blocker。
 
 ## 推荐阅读
 

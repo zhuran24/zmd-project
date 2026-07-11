@@ -1,8 +1,8 @@
 # FILE_STATUS.md
 
 **Status:** CURRENT_INVENTORY  
-**Updated:** 2026-07-04  
-**Release state:** P1.2 OPEN / BLOCKED  
+**Updated:** 2026-07-11
+**Release state:** P1.2 OWNER-CLOSED / P1.3 IN PROGRESS (cut attach not yet promoted)
 **History**: Engineering history lives in [CHANGELOG.md](CHANGELOG.md).
 
 本文件只列当前运行角色，不是 owner gate。任何 `CURRENT_CODE_ALIGNED` 只表示本次审计已对照工作树，
@@ -27,10 +27,10 @@
 | `src/search/terminal_fixed_witness_capsule.py` | CURRENT_CODE_ALIGNED | 隔离子进程 fixed-witness authority，nonce-bound response |
 | `src/search/terminal_fixed_witness_verifier.py` | CURRENT_CODE_ALIGNED | 对提案中确切 witness 复验 geometry/binding/routing/power/connector-body |
 | `src/search/candidate_proof_replay.py` | CURRENT_CODE_ALIGNED | candidate strong-status sink replay；不替代 fixed-witness identity check |
-| `src/search/certified_surface.py` | CURRENT_CODE_ALIGNED | P1.2 OPEN-GATE、sealed-campaign evaluation、唯一 public certified publisher |
+| `src/search/certified_surface.py` | CURRENT_CODE_ALIGNED | owner-closed P1.2 gate resolver、sealed-campaign evaluation、唯一 public certified publisher |
 | `src/search/independent_infeasibility_reverifier.py` | CURRENT_CODE_ALIGNED | whole-layout nogood 落 cut 前的独立确认；不确认则 UNKNOWN/no cut |
 | `src/search/certified_frontier.py` | CURRENT_CODE_ALIGNED | replay-verified candidate frontier projection，不是 owner gate |
-| `data/review_gates/phase_1_2_spike_close.json` | OPEN | `blocked_manual_review_count`; `p1_3b_entry_allowed=false` |
+| `data/review_gates/phase_1_2_spike_close.json` | CURRENT_CODE_ALIGNED | `closed_manual_owner_decision`; `p1_3b_entry_allowed=true`; `next_phase_entry.allowed=true` |
 
 ## 求解内核
 
@@ -42,7 +42,7 @@
 | `src/models/routing_subproblem.py` | CURRENT_CODE_ALIGNED | 命题 P 的有向连通 gate，含 selected-route connectivity recheck |
 | `src/models/flow_subproblem.py` | DIAGNOSTIC_ONLY | 连续 LP 诊断；不门控 certified verdict，不产生认证吞吐证明 |
 | `src/models/pose_bool_exact_master.py` | HISTORICAL_OR_PLAN | env-gated alternative；不是当前 public certified backend |
-| `src/cuts/` | HISTORICAL_OR_PLAN | family/lifecycle 实现与 tests 存在；`step_8_apply_to_master` 未完成 production P1.3 integration |
+| `src/cuts/` | CURRENT_CODE_ALIGNED | active F1-F7+F9（F8 retired）；F1/F5/F6/F7 Step-8 + direct env-gated attach 已落地但 certified unsafe/default-off；Stage B B0/B1/B1.5 landed，B2-B5/PIC C-D-E/B6 pending |
 
 ## Frozen inputs
 
@@ -70,7 +70,7 @@
 
 | Path | Status | 说明 |
 |---|---|---|
-| `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 14 active obligations；绑定 sink/hash/guard/critical files |
+| `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 15 active obligations；绑定 sink/hash/guard/critical files |
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
 | `scripts/preflight_gate.py` | STRUCTURAL_GATE | repository preflight；不运行已退役 doc-subject sync |
@@ -81,7 +81,7 @@
 
 | Path | Status | 说明 |
 |---|---|---|
-| `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威 |
+| `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-07-11 已同步 F8 retirement / partial attach / Stage B boundary |
 | `README.md`, `NAV_MAP.md`, `docs/项目说明/06_current_status.md` | CURRENT_CODE_ALIGNED | 当前入口与状态摘要 |
 | `docs/research/**` | HISTORICAL_OR_PLAN | 时间点证据/实验档案；不得覆盖当前工作树 |
 | `cc_memory/memory.db` | CURRENT_CODE_ALIGNED | active collaboration memory；通过 CLI 更新并保持 edges/facts 一致 |
@@ -96,5 +96,4 @@
 
 ## Test inventory
 
-2026-06-26 collect-only：425 files / 3450 tests。该数字是收集数量，不是通过数量。本轮没有完整 full-suite
-通过结论，详见本次修复包验证日志。
+2026-07-11 collect-only：450 个 `test*.py` 文件 / 4182 tests；`src/tests/cuts` 单独为 594 tests。以上均是收集数量，不是通过数量。本次文档审计没有声称 full suite passed，详见验证日志。

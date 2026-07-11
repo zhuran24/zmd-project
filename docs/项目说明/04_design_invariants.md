@@ -1,12 +1,12 @@
 # 04 — 设计哲学 + 核心 invariants (含 PROJECT_LOCK §3A 边界)
 
-> **适用边界（2026-06-26）**：本文的 cut-family invariants 约束未来 P1.3 集成；当前默认 certified path 尚未把 Step 8/F1–F9 production attach 作为证明前提。发布 authority 仍由 producer → supervisor → central publisher 链控制。
+> **适用边界（2026-07-11）**：当前 active registry 为 F1-F7+F9，F8 已退役；F1/F5/F6/F7 direct Step-8 已落地但仍 unsafe/default-off，默认 certified path 尚未把 cut attach 作为证明前提。发布 authority 仍由 producer → supervisor → central publisher 链控制。
 
 
 cut framework 的数学基础 + 工程边界. 这些是 PROJECT_LOCK §3A 锁定的, 不是
 review 时谁不爽改一改就行.
 
-### 2.1 9 family 怎么定的 + 各 family 解决什么 INFEASIBLE 类
+### 2.1 九族设计史与当前八族 registry
 
 INFEASIBLE 不是单一现象. cut framework 拆成 9 类, 每类对应一个 cert schema +
 validator + evaluator + oracle:
@@ -28,8 +28,7 @@ component 等几何对象 (用 bitset 编码), validator 重算几何 check. lit
 cert 含 (group, pose) 对的 multiset, validator 验 multiset match. 两种 mode
 互斥, family ↔ mode 锁定 (PROJECT_LOCK §3A invariant 3, `lifecycle.py:_FAMILY_MODE_MAP`).
 
-9 个是 Phase 0 final 锁定的 (Gemini r26 GO). 不再加 / 不再删 / 不再改 mode.
-Phase 1.2 实施 F5-F9, 不改这 9 个 list.
+九族表是 Phase 0 的历史设计。2026-07-08 owner 确认 F8 的游戏规则前提为假后，F8 已整族退役并从源码 registry 物理删除；当前在册为 F1-F7+F9。此后增删 family 或改 mode 仍须 owner 决定并同步 PROJECT_LOCK/spec/src/test。
 
 ### 2.2 为什么 lifecycle 是 9 step
 
@@ -38,13 +37,13 @@ Phase 1.2 实施 F5-F9, 不改这 9 个 list.
 ```
 0. canonicalize     raw dict → canonical bytes (cert hash 确定性)
 1. generate         oracle 产 cert + scope
-2. minimize         literal-based deletion / QuickXplain (Step 2 defer Phase 1.2 P1.2B-F5)
+2. minimize         generic Step 2 remains fail-closed; F5 uses family-specific deletion minimization
 3. serialize        Cut → JSON bytes
 4. deserialize      JSON bytes → Cut (schema invariant 重检)
 5. validate         独立重算 cert (oracle 不可信, validator 是 trust boundary)
 6. attach-scope     6-step scope verify (source_digest / ghost / blocked / artifact / oracle / assumption)
 7. evaluate         family-dispatch 验当前 state 是否仍 violate
-8. apply-to-master  push 进 CP-SAT (后续 P1.3 实施; 原名 P1.21)
+8. apply-to-master  push 进 CP-SAT（F1/F5/F6/F7 已落；其余 active family fail-closed）
 9. regression       re-validate on new replay state (Step 5 re-entry)
 ```
 
@@ -93,16 +92,16 @@ M/N/O 5 轮 audit 反复加 validator binding 都是 adversarial soundness 拉�
 
 后续重构不能跨这些边界 (per `PROJECT_LOCK.md` §3A):
 - family ↔ mode XOR (literal vs geometric) 不可改
-- **F8 mode 锁 geometric** (cert 可引用 power pole group/pose 上下文, lifecycle body 不走 literal multiset path — 改 mode 必先改 PROJECT_LOCK)
+- **F8 retirement 锁**：F8 不得重新出现在 `CutFamily`/mode map/oracle/validator/assumption registry；重开须先由 owner 重开游戏规则前提并同步 PROJECT_LOCK/spec/src/test
 - cut.scope + cert + literals XOR geometric_payload 必填
 - GHOST_AGNOSTIC sentinel 不能跟普通 ghost_id 混用 (Step O 加 validator 验)
-- 9 family list frozen (无 symmetry_lift, 含 F1-F9)
+- active family list = F1-F7+F9（无 symmetry_lift；F8 retired）
 - ASSUMPTION_VERIFIERS dispatch 必经 verifiers module, 不准 inline
 - multiset eval slot anonymity (state_machine §5)
 - source_digest 锁 data version (✅ Phase 1.1 exit hardening 真 sha256 落地)
 - adversarial soundness — validator trust boundary, oracle 不可信
 - **F9 area-only invariant** (Gemini math review meta-audit 2026-05-23): F9 generator 只接受 `area_capacity_overflow` witness, 拒绝 `routing_overflow` / `binding_overflow` / `pcr_cut_overflow`. F9 evaluator 必 area-based `sum(|pose_cells ∩ W|)`, 不是 instance count / origin-in-window / all-in-window
-- **(2026-06-04 v28) Cut-family validator 数值/字面量 SoT gate** (PROJECT_LOCK §3A): validator 无法便宜重算的 scalar/literal 必须对 canonical_rules fail-closed 交叉核对 (F5 slot 完整性 / F6 region_demand 下界 / F7·F8 footprint+pole_radius / 共享 `src/cuts/helpers/canonical_sot.py` + meta-test)
+- **(2026-06-04 v28) Cut-family validator 数值/字面量 SoT gate** (PROJECT_LOCK §3A): validator 无法便宜重算的 scalar/literal 必须对 canonical_rules fail-closed 交叉核对 (F5 slot 完整性 / F6 region_demand 下界 / F7 footprint+pole_radius；F8 仅为退役史料 / 共享 `src/cuts/helpers/canonical_sot.py` + meta-test)
 - **(2026-06-04 v28) F9 tight-K quarantine** (PROJECT_LOCK §3A): density_envelope validator 对 `max_allowed_area = K < safe_ub` fail-closed 拒 → F9 只剩 K==safe_ub 平凡 cut, **实质停用** (reverses Gemini round-4 oracle-trust deferral; 解封须 P1.5+ 给 cert 加 area-capacity proof-carrying 字段)
 - **F6/F7 proof obligation 加严**: F6 Hall cut greedy 失败不能当不可行证明, validator 必重算 Hall violation witness; F7 hitting-set cut LP relax / greedy 只能 oracle hint, validator 必验安全下界或 dual cert
 - **F9 strict inequality**: 等号不 cut, 只有 `cert_density > max_density` 才 cut

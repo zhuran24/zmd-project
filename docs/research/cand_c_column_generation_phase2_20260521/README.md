@@ -70,7 +70,7 @@ combination** (decided 2026-05-21 by user after triage):
 
 ```bash
 # Dry-run (no measurement written, ≤ 1 min).
-cd /home/zhuran24/claude-pj/zmd
+cd <repo-root>
 .venv/bin/python -u docs/research/cand_c_column_generation_phase2_20260521/phase2_probe.py --dry-run
 
 # Full measurement (6 ramps, expect 8-10 hr wall).  A1 stays OFF unless
@@ -321,7 +321,7 @@ Total ≈ 1840 LOC + README + tests = well under 3500 LOC cap.
 # Dry-run smoke (no measurement written; just sanity checks the
 # share cache, RF pair selection, routing-aware pricing path, and
 # boundary equality RMP).
-cd /home/zhuran24/claude-pj/zmd
+cd <repo-root>
 .venv/bin/python -u docs/research/cand_c_column_generation_phase2_20260521/phase2_probe.py --dry-run
 
 # Full measurement (8 ramps).  Expect 10-15 hr wall-clock.

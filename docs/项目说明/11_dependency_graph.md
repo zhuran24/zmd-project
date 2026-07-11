@@ -1,6 +1,6 @@
 # 11 — 当前认证链依赖图
 
-> 本文描述 2026-06-26 工作树。历史 cut-family 计划的依赖关系见 `docs/research/`，不能覆盖
+> 本文描述 2026-07-11 工作树。历史 cut-family 计划的依赖关系见 `docs/research/`，不能覆盖
 > 当前 producer/supervisor/publisher 与 owner gate 边界。
 
 ## 11.1 候选求解依赖
@@ -75,8 +75,9 @@ owner manual close decision                        CLOSED (owner 2026-07-07)
 这些条件不能互相替代。机器 checker 通过不等于 owner gate 关闭；owner 决定也不能替代技术
 证据和同一工作树验证。
 
-## 11.5 Future cut-family integration
+## 11.5 Current cut-family integration boundary
 
-`src/cuts/` 的 F1–F9、lifecycle 与 Step 8 production master integration 属于后续 P1.3
-人类命名阶段。当前它们不能被写成已接入默认 certified master，也不能借用 flow diagnostic
-或历史 review pass 证明 P1.2 已闭。
+`src/cuts/` 当前在册为 F1-F7+F9（F8 retired）。F1/F5/F6/F7 direct Step-8 bridge 与 Stage B
+B0/B1/B1.5 已落地，但 `EXACT_CUT_FRAMEWORK_ATTACH` 仍在 certified unsafe map、默认关闭；B2-B5、
+PIC C/D/E、RFC-002/003 与 B6 owner promotion 未完成。它们不能被写成默认 certified master 已启用，
+也不能借用 flow diagnostic 或历史 review pass 扩张 P1.2 theorem。

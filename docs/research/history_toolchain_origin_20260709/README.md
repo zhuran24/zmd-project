@@ -1,7 +1,7 @@
 # 工具链起源考古：「自建 cut framework」决策的调研与最初设计（2026-07-09）
 
 > owner 提问「当时是打算怎样新建工具链」后，三路 codex workflow（wf_c9a034ff）对 cachy 老仓
-> （/home/zhuran24/claude-pj/zmd，2026-05 主战场）的定向考古。姊妹篇：批 0 目录的
+> （<repo-root>，2026-05 主战场）的定向考古。姊妹篇：批 0 目录的
 > `01_cachy_archaeology_b1_evidence.md`（B1 证据链考古）。
 
 - `01_literature.md` 调研层：32 paradigm 方向 + 24 死杠杆收敛史 + 四路文献调研（CG/LBBD cuts/CP-SAT internals/paradigm shift）——「现成工具全 KILL 或硬 gate」的排除法全程。

@@ -3,7 +3,7 @@
 > **未来/诊断 telemetry 设计**：telemetry 不授予 proof authority，旧 P1.3B 名称按 P1.3 读取。
 
 
-cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只有单测 (`pytest src/tests/cuts/`) 验 sound, Phase 1.3 真接进 benders_loop 后必须有 runtime metric, 不能等 168h trial 结束才看. 本节定 metric / 落盘 / trigger.
+cut framework 已有 env-gated direct bridge，但尚未 certified promotion；我们需要区分单测/direct-spike 证据与 production telemetry，不能等长跑结束才看。 本节定 metric / 落盘 / trigger.
 
 ### 20.1 现状 telemetry (已实施)
 
@@ -29,7 +29,7 @@ cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只�
 按 §22 review 实践拆 4 类 (cardinality / quality / latency / safety):
 
 **cardinality (cut 数量/分布)**
-- `cut_count_by_family`: dict[F1-F9 → int], 当前 store 中各 family 数
+- `cut_count_by_family`: dict[active F1-F7+F9 → int], 当前 store 中各 family 数
 - `cut_count_by_state`: dict[active/held/quarantined → int] (现 stats 已有)
 - `cut_generation_rate`: cut 加入速度 / outer iter (诊断 oracle 产 cut 是否健康)
 - `cut_per_candidate_dist`: 各 candidate 累积 cut 数分布 (诊断 cut share 是否跨 candidate)
@@ -43,7 +43,7 @@ cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只�
 **latency (hot path, 单位修正 per v2 plan §2.6)**
 - `step_7_evaluate_latency_p50/p95/p99`: evaluate dispatch 延迟 (hot path, **p95 ≤ 500µs, stretch goal ≤ 100µs**)
 - `replay_latency_p50/p95/p99`: on_ghost_rect_changed 内 replay 延迟 (validator / replay 是 ms 级, 跟 hot path 分开)
-- `validator_latency_by_family`: 各 F1-F9 validator 入口延迟 (ms 级, 诊断哪个 family 拖)
+- `validator_latency_by_family`: 各 active family validator 入口延迟 (ms 级, 诊断哪个 family 拖)
 - `watcher_query_latency`: 6 dim watcher lookup 延迟 (µs 级)
 - `telemetry_write_overhead`: telemetry 落盘 overhead — 必单独量, 不进 hot path, batch-flush 时 < 0.1% wall
 
@@ -56,14 +56,14 @@ cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只�
 **Phase 1.2 P0-E dark matter telemetry (Gemini math review meta-audit 2026-05-23)**
 
 每次 subproblem 返 INFEASIBLE 后:
-1. 依次尝试强 family: F2/F4/F6/F8/F9
+1. 依次尝试 active strong family: F2/F4/F6/F9（F8 retired）
 2. 再尝试 F5 fallback
 3. 全部返空 → 写 `data/cuts/telemetry/unexplained_infeasible.jsonl`:
 
 ```jsonl
 {"iter": 123, "ghost_rect": [x,y,h,w], "subproblem": "routing_v2", "status": "INFEASIBLE",
  "master_solution_hash": "...", "state_digest": "...",
- "families_tried": ["F2","F4","F6","F8","F9","F5"],
+ "families_tried": ["F2","F4","F6","F9","F5"],
  "empty_reason_by_family": {"F9": "not_area_capacity_overflow", "F5": "oracle_timeout_no_verified_core"},
  "witness_blob_path": "data/cuts/telemetry/witnesses/..."}
 ```

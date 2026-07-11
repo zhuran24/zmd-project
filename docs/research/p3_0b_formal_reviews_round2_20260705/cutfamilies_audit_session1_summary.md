@@ -7,7 +7,7 @@
 
 补丁段均标注为 **未经编译**，因为当前沙盒没有 Lean 工具链，`lean` / `lake` 均不可用。
 
-[下载 7z 审计包](sandbox:/mnt/data/cutfamilies_statement_fidelity_audit.7z)
+下载 7z 审计包（原会话沙盒附件未随仓库快照归档）
 
 ## 17 条汇总表
 

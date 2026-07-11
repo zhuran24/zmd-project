@@ -3,18 +3,19 @@
 Migrated from docs/research/p3_b_design_v2_20260521/poc/b_core_lifecycle_poc.py
 (PoC 14/14 PASS) with the following Phase 1 production adjustments:
 
-1. **9-family map** (Phase 0 final, vs PoC 8-family with symmetry_lift):
+1. **Active 8-family map** (2026-07-11; historical Phase 0 matrix had 9):
    F1 region_capacity / F2 cutset / F3 port_exposure / F4 component_reach /
    F5 pattern_nogood / F6 shape_packing_hall / F7 power_hitting_set /
-   F8 power_grid_reach / F9 density_envelope.
-   ``symmetry_lift`` removed (not in Phase 0 final 9-family matrix).
+   F9 density_envelope. F8 power_grid_reach was retired and deleted on
+   2026-07-08 after its game-rule premise was disproved.
 2. **CutScope.exterior_blocks_hash** added (cut_lifecycle_v2 v3.2.2,
    Gemini round 21 fix). Step 3 (attach-scope) dispatches by GHOST_AGNOSTIC:
    - GHOST_AGNOSTIC cut: verify ``exterior_blocks_hash`` only (cut可跨 ghost 复用)
    - ghost-bound cut: verify full ``blocked_cells_hash`` (含 ghost ∪ exterior)
-3. **Step 2 (minimize) / Step 8 (apply-to-master)** stubbed with NotImplementedError;
-   implemented in Phase 1.1 P1.11 (F5 deletion + QuickXplain) and Phase 1.3 P1.21
-   (master CP-SAT apply), respectively.
+3. **Step 2 / Step 8 boundary**: the generic ``step_2_minimize`` entry remains
+   fail-closed while F5 uses its family-specific deletion minimizer. Step 8 has
+   controlled translators for F1/F5/F6/F7; F2/F3/F4/F9 remain fail-closed and
+   the bridge is still default-off / certified-unsafe pending promotion.
 
 PROJECT_LOCK §2B Cut Object Boundary 之 source-of-truth (schema).
 
@@ -253,7 +254,7 @@ def _validate_cut_mode(cut_id: object, family: object, has_lit: bool, has_geo: b
         raise ValueError(f"Cut {cut_id}: family 必须是 str")
     mode = _FAMILY_MODE_MAP.get(family)
     if mode is None:
-        raise ValueError(f"Cut {cut_id}: family={family} 不在 9-family 表")
+        raise ValueError(f"Cut {cut_id}: family={family} 不在 active F1-F7+F9 registry")
     if mode == "literal" and not has_lit:
         raise ValueError(f"family={family} 要求 literal-based")
     if mode == "geometric" and not has_geo:
@@ -1079,9 +1080,8 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
     Step F 修复未接入 production framework 的死路 — family 函数 evaluate_geometric_*
     已真重算 sound, 但 framework 入口仍 bypass. 必须 dispatch 到 family evaluator.
 
-    Geometric: F1 region_capacity / F2 cutset / F4 component_reach 各有
-    families/<name>.evaluate_geometric_*. 其它 geometric family (F6/F8/F9
-    Phase 1.2/1.5+) 落地后注册到此 dispatch.
+    Geometric: F1 region_capacity / F2 cutset / F4 component_reach / F6
+    shape_packing_hall / F9 density_envelope 已注册；F8 已退役。
 
     Literal: F3 port_exposure / F5 pattern_nogood / F7 power_hitting_set 走
     generic evaluate_literal_multiset (state_machine_v2 §5 multiset semantics).

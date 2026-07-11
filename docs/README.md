@@ -12,7 +12,7 @@
 
 ## 现行发布链
 
-producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint 字节复验并铸造持久化终端 `CERTIFIED`；其生产入口是独立命令 `scripts/run_supervisor_seal.py`（从 proposal-ready marker 驱动，`349c56c`），普通 `main.py` 运行不会 seal。`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的 campaign authority 事务式发布 canonical solution、blueprint 和 manifest。fixed-witness verifier、P1.2 open gate 与 supervisor 调度入口均已落地；owner 已于 2026-07-07 以显式 owner_manual_decision 关闭 P1.2、开启 P1.3（三轮收口外审 0 上-TCB 洞、gate=`closed_manual_owner_decision`）。「仅防蓄意内鬼」的 PR2 L0/L1 受控 loader/read-once/TCB 深化项按 2026-07-06 令移至发布时点、非 P1.2 闭合前提。
+producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint 字节复验并铸造持久化终端 `CERTIFIED`；其生产入口是独立命令 `scripts/run_supervisor_seal.py`（从 proposal-ready marker 驱动，`349c56c`），普通 `main.py` 运行不会 seal。`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的 campaign authority 事务式发布 canonical solution、blueprint 和 manifest。fixed-witness verifier、P1.2 open gate 与 supervisor 调度入口均已落地；owner 已于 2026-07-07 以显式 owner_manual_decision 关闭 P1.2、开启 P1.3（三轮收口外审 0 上-TCB 洞、gate=`closed_manual_owner_decision`）。截至 2026-07-11，F1/F5/F6/F7 direct attach 与 Stage B B0/B1/B1.5 已落地，但 attach 仍 unsafe/default-off，B2-B5、PIC C/D/E 与 B6 owner promotion 尚未完成。「仅防蓄意内鬼」的 PR2 L0/L1 受控 loader/read-once/TCB 深化项按 2026-07-06 令移至发布时点、非 P1.2 闭合前提。
 
 ## 历史 subject/projection 文本
 
@@ -36,7 +36,8 @@ preflight 也没有执行上述工具。修改现行文本时直接编辑目标�
 ## 主要入口
 
 - `docs/项目说明/README.md`: 项目说明书导航。
-- `docs/certified_proof_chain_analysis.md`: 当前认证发布链审计。
+- `NAV_MAP.md` + `specs/11_pipeline_orchestration.md`: 当前认证发布链与 authority 调用链。
+- `docs/certified_proof_chain_analysis.md`: 2026-06-19 的历史 write-point 审计，不能覆盖当前 PR1 链。
 - `docs/exact_campaign_operations.md`: campaign 操作与恢复边界。
 - `docs/PHASE_1_2_CLOSE_GATE.md`: phase gate 的机器/人工职责。
 - `docs/specs_index.md`: `specs/` 索引。

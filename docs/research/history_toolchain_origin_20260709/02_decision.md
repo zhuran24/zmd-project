@@ -1,6 +1,6 @@
 ## GPT v13 cut language 论题的原始主张
 
-路径缩写：`M=/home/zhuran24/.claude/projects/-home-zhuran24-claude-pj-zmd/memory`；`R=/home/zhuran24/claude-pj/zmd/docs/research/paradigm_search_review_v12_with_code_20260520`；`B=/home/zhuran24/claude-pj/zmd/docs/research/p3_b_design_v2_20260521`。
+路径缩写：`M=<external-claude-memory>`；`R=docs/research/paradigm_search_review_v12_with_code_20260520`；`B=docs/research/p3_b_design_v2_20260521`。
 
 | 结论 | 出处 + 短引 |
 |---|---|

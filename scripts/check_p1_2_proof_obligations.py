@@ -12958,7 +12958,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/helpers/canonical_rules.py': 'fa54e027a442fe7b0015613b3284ad05776b0c1d3063b305de1e60a880ac90c9',
     'src/cuts/helpers/canonical_sot.py': '8cedd39192a319e6179e52c53fe7dc420dc0917f92b3ca75747f1a0868c4dc1d',
     'src/cuts/helpers/power_cover.py': '4b574d736f701d5cf0219ecb6145d11ff8e2c21751cff27c486b9c84e6f16e93',
-    'src/cuts/lifecycle.py': '7fa30a0856ec537a4985fdf0f2e00ff60a91597a68997edec791ddd6e6b150e0',
+    'src/cuts/lifecycle.py': '8167b3f88ed39c9db0b0286453c5f1a6a44ad837fa56427f4cf5e926d6c468b0',
     'src/cuts/oracles/pattern_nogood_oracle.py': '16a570d7b5df8a69f8d7dfdbb5736e47ed790227b2b1ffd5ad83f90e00578fca',
     'src/cuts/oracles/power_cover_oracle.py': '0f2d899d3a24cec8dd95397d454903a61c3ca781a995d09328d2d43bca47583d',
     'src/cuts/oracles/region_capacity_oracle.py': '52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83',

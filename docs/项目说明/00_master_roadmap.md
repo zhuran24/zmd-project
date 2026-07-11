@@ -16,7 +16,7 @@
 > 文档没有它们的位置。08/09/10/13 是"史料+现行混排"的 ledger，**保持
 > 原样加注、不重写**；总图由本文档承担。
 
-## 0. 一句话现状（2026-07-08）
+## 0. 一句话现状（2026-07-11）
 
 P1.2 认证链 **CLOSED**（owner 手动门 `closed_manual_owner_decision`，P1.3 已开放）；
 close-kernel 外审已画线收口（2026-07-03），PR2 #5 合入 / #7 通电（07-04）；
@@ -32,8 +32,7 @@ unsafe 默认关）；**M4 七批完成（owner 2026-07-08 发话后同日收口
 F5 全链——BLOCK-2 封口+canonical_relabel+query_liftable 合同+
 binding_empty_domain_v1 真 adapter+P-HOM 结构门）+cut 预算闸（2000 满即停发）；
 F2/F3/F9/F4 保持 fail-closed（终态理由见 `p1-3-m4-ladder-landed` 卡，非遗漏）；
-close-kernel 现 65 sinks；**升格三前置中阶梯与等价回归已齐，仅剩 owner 显式
-决定**；M5 第一阶段（可行性实测）2026-07-08 收口（本机+Linux 同硬件全配置无首解，
+close-kernel 现 66 sinks（B1.5 后）；**旧 M4 三前置已齐不等于可直接升格**：07-11 Stage B 规格把剩余前置细化为 B1.5-B5（B1.5 已落地）、PIC C/D/E、RFC-002/003 与最后 B6 owner promotion；M5 第一阶段（可行性实测）2026-07-08 收口（本机+Linux 同硬件全配置无首解，
 `p1-3-m5-phase1-verdict` 卡）；**M6 诊断课题（owner 2026-07-09 立项）已收口——
 首解之墙 = 供电覆盖约束及其 witness 编码（八实验隔离、单一主墙，终报
 `docs/research/p1_3_m6_diagnosis_20260709/07_final_diagnosis.md` 与
@@ -128,7 +127,7 @@ spike 只回答一个问题：CP-SAT Python 路径能否把 cut 及时变成有�
 约束（[09](09_phase_1_3_plan.md)；GO 标准 = prod-scale 跑通且 wall-clock
 退化 <50%）。**这是全项目唯一真正的研究级风险所在**（cut 体系接上后收不
 收敛没有理论保证，只能实测；退路见 §4 拍板台账 L11）。
-主体 = step_8 落地 + F1-F9 逐 family 接线 + 三份 2026-07 新增规格在此落地：
+主体 = active F1-F7+F9 的 production integration（F8 retired）；F1/F5/F6/F7 direct Step-8 已落地，当前按 Stage B B2-B5（B0/B1/B1.5 已落地）与 PIC C/D/E 完成 promotion-grade 链路；三份 2026-07 新增规格在此落地：
 - F5 orbit lift 实施规格七项（F5 稿 §4：P-HOM 结构门 / canonical_relabel /
   validator 增补 / query_liftable / master attach / telemetry / 红测⑥⑦⑧）；
 - Q1a 工程桥（Q1 分类学稿 v2：owner lemma 五段合同 + 红测 R1-R10）；
@@ -203,7 +202,7 @@ Q1p partial-assignment 完备性（缺数学对象）、S_global 收敛性定理
 ## 5. 风险对照（2026-07-02 瓶颈审计 7 条硬骨头 → 本图位置）
 
 ①算力硬墙 → 1c 见真章 + 台账 2 退路；②编码忠实性单点 → 2b（终极解）+
-批2b B2 + I1（已落）；③F1-F9 未接入 → 1c；④floor manifest 占位 → 1b
+批2b B2 + I1（已落）；③cut framework 尚未 certified promotion（F1/F5/F6/F7 direct attach 已落，Stage B/PIC 待完）→ 1c；④floor manifest 占位 → 1b
 部署时点；⑤168h 执行债 → 台账 5；⑥冻结输入只证"没变" → 台账 6；
 ⑦手动门 owner-only → 设计如此（1b 终点闸）。
 
@@ -215,7 +214,7 @@ Q1p partial-assignment 完备性（缺数学对象）、S_global 收敛性定理
 | 05 号 Q1 | 无 Q1a/Q1p 拆分信息 | 已加注（指向 Q1a 稿 v2，标注待裁定） |
 | 12 号 SUPERVISOR OPERABLE | "当前不成立"基于 06-26 基线 | 已加注（07-04 入口落地，语义以 PROJECT_LOCK 为准） |
 | 排期卡 title/summary | 仍写"先收口后深化"（正文已修正） | 已修正卡片头部 |
-| PROJECT_LOCK `Updated` 字段 | 停在 06-26，正文已含 07-04 内容 | **不动**（锁文件元数据，owner 域；此处登记） |
+| PROJECT_LOCK `Updated` 字段 | 已同步至 2026-07-11 | 已更新：P1.2 owner-close、F8 retirement、partial attach 与 Stage B 边界 |
 | README 中后段旧 hash/旧叙事 | b35e5f9 等不可解析、"未合入"旧段 | 已有后注文化兜底；增量清理随下次 README 大修 |
 | 08 号后半 | P1.2B 各 family "待实施"是史料 | 文档自带历史化标注，不动 |
 | 13 号 | 估时已史料化 | 文档自带标注，不动 |

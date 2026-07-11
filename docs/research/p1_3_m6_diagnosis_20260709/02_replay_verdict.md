@@ -27,7 +27,7 @@
 - cuts_6x6.json 无 soundness 暴露：无 source_mode/exact_safe 字段 → from_dict 默认 exploratory/False，certified 回放门槛硬拦（cut_not_exact_safe/cut_mode_pollution）；且运行时 cut 持久化路径是 checkpoints/benders_cuts.jsonl，src/ 无任何代码读 data/solutions/cuts_*.json；另外当前坐标 master 对同 (group,pose_idx) 重复的 persisted cut 直接 fail-closed 拒绝表示
   - 出处: src/search/benders_loop.py:2103-2118；src/models/cut_manager.py:410；src/models/exact_coordinate_master.py:7022-7061
 - 现成的当前编码回放对象已存在：hint_anchor{132,133,134}.json（各 266 实例），离线几何验证 3/3：0 重叠、占用恰 3544、自由格 1356、各含 688-718 个 6×6 空洞位置
-  - 出处: /home/zhuran24/m5_runs/rebuilt_hints/ + 本次离线重建实测；产出脚本 docs/research/p1_3_m5_convergence_20260708/linux_tools/extract_rebuilt_hints.py
+  - 出处: <external-m5-runs>/rebuilt_hints/ + 本次离线重建实测；产出脚本 docs/research/p1_3_m5_convergence_20260708/linux_tools/extract_rebuilt_hints.py
 - _validate_coordinate_forced_hint 支持程序化 solver_parameter_profile（cp_model_presolve 开关、probing/symmetry level、branching、workers、random_seed）与 use_assumptions=True 提取 infeasible assumption core——生产 ghost-aware 调用传空 profile + 2s 默认（这是此前 32 个假阴性 UNKNOWN 的根因），但探针直调可完全绕开该限制
   - 出处: src/models/master_model.py:1665-1718（profile 应用）、7933-7944（签名）、8477-8495（core 提取）、92-94（2.0s 默认）、10788-10792（生产调用点空 profile）
 
@@ -35,20 +35,20 @@
 
 ## 前提（已由本次只读侦察完成，无需重跑）
 - cuts_6x6.json 直接回放已判死刑：它的 pose_idx 只能按 superseded 53MB 工件（d5e3911f，在 /mnt/winc/claude pj/zmd/data/preprocessed/candidate_placements.json 找到实物并验过 hash）解码，且解码后是一个「34+21+17 台机器 + 46 港口 + 核心 + 599 电线杆」的缩减问题布局（占 3854 格、ghost 在 (64,63)/(64,64)），不是当前 266 实例问题的解——完整 266 mandatory(3544 格)+599 个不重叠 2x2 电线杆(2396 格)=5940 > 4900 格，数学上不可能同为一张图。按当前工件解码则 2278 个格重叠 = 乱码。结论：**「历史 master 出过 6×6 候选」不构成当前模型曾有首解的证据**，5/5 INFEASIBLE 的原设判读标准作废（那只会是编码不兼容的假阳性）。
-- 真正可回放的对象已在手：/home/zhuran24/m5_runs/rebuilt_hints/hint_anchor{132,133,134}.json（07-09 由 linux_tools/extract_rebuilt_hints.py 产出，当前编码、266 实例、离线几何验证 0 重叠、占用恰 3544、各含 ~700 个 6×6 空洞）。
+- 真正可回放的对象已在手：<external-m5-runs>/rebuilt_hints/hint_anchor{132,133,134}.json（07-09 由 linux_tools/extract_rebuilt_hints.py 产出，当前编码、266 实例、离线几何验证 0 重叠、占用恰 3544、各含 ~700 个 6×6 空洞）。
 
 ## Phase A：重建布局强制验证（主实验，换硅脂后跑，预计 ≤90min 上限、乐观情形分钟级）
 写入 docs/research/p1_3_m5_convergence_20260708/probes/m6_replay_forced_validation.py：
 
 ```python
 import json, os, sys, time
-sys.path.insert(0, "/home/zhuran24/zmd-pj")
+sys.path.insert(0, "<repo-root>")
 os.environ.pop("EXACT_CUT_FRAMEWORK_ATTACH", None)
 os.environ["EXACT_CP_SAT_WORKERS"] = "1"
 from src.models.master_model import MasterPlacementModel
 from src.search.benders_loop import ExactSearchSession
 
-session = ExactSearchSession.create("/home/zhuran24/zmd-pj", solve_mode="certified_exact")
+session = ExactSearchSession.create("<repo-root>", solve_mode="certified_exact")
 master = MasterPlacementModel.from_exact_core(session.core, ghost_rect=(6, 6))
 if not getattr(master, "_built", False):
     master.build()
@@ -60,7 +60,7 @@ PROFILES = [
      "search_branching": "fixed", "worker_count": 1},          # 对照 cell
 ]
 for anchor in (132, 133, 134):
-    hint = json.load(open(f"/home/zhuran24/m5_runs/rebuilt_hints/hint_anchor{anchor}.json"))
+    hint = json.load(open(f"<external-m5-runs>/rebuilt_hints/hint_anchor{anchor}.json"))
     for prof in PROFILES:
         t0 = time.perf_counter()
         res = master._validate_coordinate_forced_hint(
@@ -83,7 +83,7 @@ for anchor in (132, 133, 134):
                 "core": core.get("infeasible_assumption_core", [])[:50]}, ensure_ascii=False), flush=True)
 ```
 
-跑法：`cd /home/zhuran24/zmd-pj && nohup python3 docs/research/p1_3_m5_convergence_20260708/probes/m6_replay_forced_validation.py > docs/research/p1_3_m5_convergence_20260708/results_scan/m6_replay.log 2>&1 &`；prod-scale 一次只跑这一个（串行铁律）。耗时估算：session+build 数分钟（Windows 侧同路径 warm-start 全程 423s 含 161 次重建，纯 build 更短）；presolve-off cell 若「全钉死→传播毫秒级」成立则秒级出判决，否则 fixed search 在 900s 内跑剩余 pole/witness 空间；上限 3 anchors × 2 profiles × 900s = 90min。
+跑法：`cd <repo-root> && nohup python3 docs/research/p1_3_m5_convergence_20260708/probes/m6_replay_forced_validation.py > docs/research/p1_3_m5_convergence_20260708/results_scan/m6_replay.log 2>&1 &`；prod-scale 一次只跑这一个（串行铁律）。耗时估算：session+build 数分钟（Windows 侧同路径 warm-start 全程 423s 含 161 次重建，纯 build 更短）；presolve-off cell 若「全钉死→传播毫秒级」成立则秒级出判决，否则 fixed search 在 900s 内跑剩余 pole/witness 空间；上限 3 anchors × 2 profiles × 900s = 90min。
 
 ## 判读标准
 1. **任一 anchor FEASIBLE** ⇒ 首解直接到手、战场开：该 hint 即「已验证 master-可行」的完整布局，可作 incumbent/warm-start（EXACT_COMMUNITY_BLUEPRINT_HINT_PATH 或直接续接 benders 链），M5 A/B 立即解锁；同时否定「当前模型对 6×6 过约束到不可行」。

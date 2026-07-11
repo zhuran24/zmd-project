@@ -10,7 +10,7 @@
 - **producer**：`outer_search`。记录候选并在 strict frontier exhaustion 后提交 proposal。
 - **`CANDIDATE_PROPOSED`**：待 supervisor 审核的 terminal proposal 状态，明确不是认证终态。
 - **supervisor seal**：`ExactCampaign.supervisor_seal()` 从 canonical disk authority 重读并复验
-  proposal 后，唯一可以铸造 durable terminal `CERTIFIED` 的路径；当前无 production CLI/launcher 调用它。
+  proposal 后，唯一可以铸造 durable terminal `CERTIFIED` 的路径；独立 production CLI 为 `scripts/run_supervisor_seal.py`，普通 solver run 仍不自动调用。
 - **fixed witness**：为 terminal result 固定、序列化并可独立复验的 witness material；防止
   producer/consumer 对“同一结果”使用不同对象或解释。
 - **terminal frontier evidence**：strict candidate frontier 已穷尽且最终候选与记录绑定的证据。
@@ -59,13 +59,12 @@
 - **PR1**：当前工作树已落的 producer/supervisor split、fixed-witness、independent reverify、
   publish gate 与 central publisher hardening。
 - **PR2**：仍开放的更小 controlled-loader/read-once verifier TCB 工作。
-- **P1.3**：面向人的下一阶段名称，主要指 cut-family Step 8/master integration。机器 JSON 中
+- **P1.3**：面向人的当前实施阶段，涵盖 cut-family attach、Stage B/PIC 与最终 promotion。机器 JSON 中
   保留的 `p1_3b_*` 是兼容字段，不应继续扩散成人类状态名。
 
 ## Cut framework
 
-- **F1–F9**：`src/cuts/` 中的九类 cut family。部分 generator/validator/lifecycle 已实现，
-  但 Step 8 production master integration 尚未成为当前默认 certified path。
+- **active cut families**：当前为 F1-F7+F9；F8 因游戏规则前提为假于 2026-07-08 退役。F1/F5/F6/F7 direct Step-8 已实现，但 bridge 仍 unsafe/default-off，尚未成为默认 certified path。
 - **validator trust boundary**：对 cut certificate 做 fail-closed 重算的边界。实现存在不自动
   意味着该 family 已进入 production theorem。
 - **held / active / quarantined**：cut lifecycle 状态；应按实际 lifecycle 与 phase scope解读。

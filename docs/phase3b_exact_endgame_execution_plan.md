@@ -7,7 +7,7 @@ owner: phase3b-exact-endgame
 
 # Phase 3B 详细计划与执行书（从当前状态到项目最终结束）
 
-> ⚠️ **HISTORICAL / SUPERSEDED (2026-06-04)**：本文件描述的 **Phase 3B tuning paradigm** 路线（B2/B5/B7 等）已被 **cut-family LBBD 重设计** 取代（见 `CLAUDE.md` / `PROJECT_LOCK.md`）。当前主线 = **Phase 1.2 spike close**（F1–F9 cut family）。下方内容保留作历史路线记录，**非当前现状**；frontmatter 的 `ACCEPTED_DRAFT` / `last_updated: 2026-04-17` 按历史读。
+> ⚠️ **HISTORICAL / SUPERSEDED（状态校准至 2026-07-11）**：本文件描述的 **Phase 3B tuning paradigm** 路线（B2/B5/B7 等）已被 cut-framework 路线取代。文中 “当前” 均指 2026-04-17 快照，不是仓库现状。仓库现行主线见 `PROJECT_LOCK.md`、`CLAUDE.md` 与 `docs/项目说明/06_current_status.md`：P1.2 owner gate 已关闭；F8 已退役；P1.3 Stage B 的 B0/B1 已落地，F1/F5/F6/F7 仅有默认关闭且 certified-unsafe 的受控直连，其余 promotion 前置仍未完成。
 
 ## 0. 这份文件覆盖什么
 

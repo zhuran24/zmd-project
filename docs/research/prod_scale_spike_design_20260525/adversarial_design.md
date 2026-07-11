@@ -183,7 +183,7 @@ GPT pro Finding 5 最难的一条: spike 必须**真 solve**, 不能 INFEASIBLE 
 
 ### 怎么造一个 feasible state?
 
-**Source**: IP v2 community blueprint `/home/zhuran24/下载/BP-2026-05-13 08_35_36.blueprint(1).json`
+**Source**: IP v2 community blueprint `<external-local-input>/BP-2026-05-13 08_35_36.blueprint(1).json`
 (per CLAUDE.md D step 2 hint 注入). 这是用户手调验证 feasible 配置, 225
 instance 落 placement. 已有 converter
 `scripts/blueprint_to_master_hint.py` 把它转成 `Dict[instance_id, pose_idx]`.

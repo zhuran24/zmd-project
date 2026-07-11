@@ -1,7 +1,7 @@
 审完了。结论是：**8 条忠实，7 条 CONCERN，2 条 BLOCK**。主要问题不是证明错，而是若干定理把“工程侧必须证明的绑定/分离/作用域条件”压缩成了太光滑的抽象前提，像把一条带钩子的绳子画成了直线。
 
 我把完整审计报告和参考补丁打成了一个 7z 包：
-[下载 CutFamilies_statement_audit_bundle.7z](sandbox:/mnt/data/CutFamilies_statement_audit_bundle.7z)
+下载 CutFamilies_statement_audit_bundle.7z（原会话沙盒附件未随仓库快照归档）
 
 包内包含：
 

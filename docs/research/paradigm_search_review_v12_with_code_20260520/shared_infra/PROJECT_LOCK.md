@@ -3,7 +3,7 @@
 **Status**: CURRENT_LOCK  
 **Updated**: 2026-04-14  
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.  
-**History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins.
+**History**: The original package referenced a sibling `CHANGELOG.md`, but that file was not archived in this frozen research copy. Treat this lock as a 2026-04-14 snapshot; for current repository history and authority, use the root `CHANGELOG.md` and root `PROJECT_LOCK.md`.
 
 ## 1. Exactness Constitution
 

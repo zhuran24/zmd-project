@@ -1,6 +1,6 @@
 # Phase3B GPT-5.4 Pro Help Request
 
-> ⚠️ **HISTORICAL (2026-06-04)**：2026-04-22 Phase 3B 求助快照（coordinate-master 时代瓶颈、candidate UNKNOWN 等），主线已转 **cut-family LBBD**（当前 Phase 1.2 spike close，见 `CLAUDE.md`）。作历史读。
+> ⚠️ **HISTORICAL（状态校准至 2026-07-11）**：本文只记录 2026-04-22 的 Phase 3B 求助快照（coordinate-master 时代瓶颈、candidate UNKNOWN 等），不能描述现行阶段。现行状态见 `PROJECT_LOCK.md`、`CLAUDE.md` 与 `docs/项目说明/06_current_status.md`；下方内容按历史读。
 
 Date: 2026-04-22  
 Project: Endfield / 70x70 exact refactor Phase3B  

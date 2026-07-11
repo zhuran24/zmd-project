@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: main.py, src/search/outer_search.py, src/search/exact_campaign.py, src/search/certified_surface.py, src/search/exact_parallel_scheduler.py
-last_verified_against: 2026-06-26
+last_verified_against: 2026-07-11
 owner: search-runtime
 ---
 
@@ -10,10 +10,11 @@ owner: search-runtime
 ## 1. Scope and release state
 
 This specification describes the current `certified_exact` orchestration in the working tree.
-It does not declare P1.2 closed. The owner gate in
-`data/review_gates/phase_1_2_spike_close.json` is still fail-closed, so no public
-`CERTIFIED` delivery may be published from this tree unless that authoritative gate is explicitly
-closed by its owner.
+P1.2 was explicitly closed by the owner on 2026-07-07:
+`data/review_gates/phase_1_2_spike_close.json` records
+`status="closed_manual_owner_decision"` and `next_phase_entry.allowed=true`. That machine state does
+not itself publish a delivery: public `CERTIFIED` output still requires a disk-current supervisor seal,
+all verified-publisher preconditions, and the canonical transactional publisher.
 
 ## 2. Inputs and campaign identity
 
@@ -115,10 +116,12 @@ non-authoritative diagnostics. They do not alter the objective, frontier exhaust
 supervisor checks or publish gate. For the frontier-probe workflow and the `selection_reason`
 taxonomy, see `docs/frontier_probe_strategy.md`.
 
-## 9. Open release work
+## 9. Current post-P1.2 / release-time work
 
 The working tree contains the PR1 producer/supervisor split, fixed-witness terminal verification,
-whole-layout independent infeasibility reverify, publish-open gate and central publisher. P1.2 still
-has open work, including a supported production supervisor invocation surface, PR2 TCB reduction,
-immutable package materialization and review-policy coverage, plus the blocked owner gate. These
-open items must remain visible in release documents.
+whole-layout independent infeasibility reverify, owner-closed publish gate, central publisher, and the
+supported standalone supervisor invocation `scripts/run_supervisor_seal.py`. P1.3 cut integration is
+partially landed: F1/F5/F6/F7 direct attach exists behind an unsafe/default-off gate and Stage B B0/B1
+is complete; B2-B5, PIC C/D/E and B6 owner promotion remain (the B1.5 typed platform landed 2026-07-11). Release-time backlog also includes the
+explicitly deferred PR2 deliberate-insider TCB/loader/read-once hardening, immutable package materialization,
+review-policy coverage, and production-byte re-pinning. These are not an “owner gate still blocked” claim.

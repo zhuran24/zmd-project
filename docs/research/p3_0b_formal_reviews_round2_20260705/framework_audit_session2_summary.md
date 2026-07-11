@@ -1,6 +1,6 @@
 审完了。结论偏硬：**4 个 BLOCK，3 个 CONCERN，2 个忠实**。我把完整报告和 Lean 补丁片段打进了一个 7z 包，补丁均标注为**未经编译**，因为当前沙盒没有 `lean/lake` 环境。
 
-下载包： [frameworklemmas_fidelity_audit_bundle.7z](sandbox:/mnt/data/frameworklemmas_fidelity_audit_bundle.7z)
+下载包： frameworklemmas_fidelity_audit_bundle.7z（原会话沙盒附件未随仓库快照归档）
 
 包内有：
 

@@ -2,19 +2,22 @@
 
 **项目 `EXACT_*` / `PHASE3B_*` env 变量索引**（坐标-master / Phase 3B 时代为主）。
 
-**最后更新**: 2026-05-16（坐标-master 时代）
+**最后更新**: 2026-07-11（仍非自动生成全集；本次补齐关键生产/cut/preflight 项）
 
-> ⚠️ **(2026-06-04) 本索引不完整，勿当 "不用 grep" 的权威全集**：它早于 **cut-family LBBD / B1 pose-bool / Design A-B** 时代，**未收录**这些时代的 env。要全集请 grep 源码（`os.environ` / `getenv` 抓 `EXACT_`）+ 看 `CLAUDE.md` runbook 的 env 表（PCR-CUT / community-hint / cache-trio spike 等段）。已知**未收录**的主要 env 组（权威 Type / Reader / Default 以源码为准，此处只列名提示存在）：
+> ⚠️ **本索引仍不是源码自动生成的权威全集**：权威 Type/Reader/Default 以源码读取点为准。下列 banner 只提示主要组；新增 env 必须同步本文或进入自动生成清单。
 > - **B1 pose-bool master**：`EXACT_USE_POSE_BOOL_MASTER`（核心切换）
 > - **PCR-CUT / B1 routing**：`EXACT_B1_PATCH_ROUTING_CORE`(+`_TOP_K`/`_SECONDS`/`_PER_PATCH_SECONDS`/`_MAX_CELLS`/`_QX_CAP`)、`EXACT_B1_LAZY_DEMAND_CUT`、`EXACT_B1_PORT_CLEARANCE_HARD`、`EXACT_B1_SEPARATOR_HULL*`、`EXACT_B1_ROUTING_AWARE_BINDING`、`EXACT_B1_D2_COMMODITY_FLOW`、`EXACT_B1_BYPASS_ROUTING_PRECHECK`、`EXACT_B1_DELETION_CORE_CUT`、`EXACT_B1_ITER_ON_ROUTING_INFEASIBLE`、`EXACT_B1_BINDING_ALT_CAP`、`EXACT_B1_ABSTRACT_ROUTING_*`
-> - **cut-family**：`EXACT_FAMILY_VALIDATOR_STRICT`、`EXACT_F3_GENERATOR_ENABLED`、`EXACT_F7_GENERATOR_ENABLED`、`EXACT_F8_GENERATOR_ENABLED`、`EXACT_GHOST_CONDITIONED_FAMILY_BOUNDS_ENABLED`
-> - **其它**：`EXACT_COMMUNITY_BLUEPRINT_HINT_PATH`、`EXACT_SUBPROBLEM_REPEAT_PROBE`、`EXACT_LAZY_POWER_COMPLETION`、`EXACT_SMT_MT_OUTER_PRUNING`、`EXACT_USE_PORT_ACTIVE`、`EXACT_D2_CP_SAT_WORKERS`、`EXACT_PATCH_ROUTING_CP_SAT_WORKERS`
+> - **cut-family**：`EXACT_FAMILY_VALIDATOR_STRICT`、`EXACT_F3_GENERATOR_ENABLED`、`EXACT_F7_GENERATOR_ENABLED`、`EXACT_GHOST_CONDITIONED_FAMILY_BOUNDS_ENABLED`、`EXACT_CUT_FRAMEWORK_ATTACH`、`EXACT_CUT_FRAMEWORK_ATTACH_BUDGET`（F8 已退役，无有效 `EXACT_F8_GENERATOR_ENABLED`）
+> - **其它**：`PREFLIGHT_TIMEOUT_SCALE`、`CAMPAIGN_CPUSET`、`CAMPAIGN_MEMORY_MAX`、`CAMPAIGN_SWAP_MAX`、`CAMPAIGN_NO_CGROUP`、`EXACT_COMMUNITY_BLUEPRINT_HINT_PATH`、`EXACT_SUBPROBLEM_REPEAT_PROBE`、`EXACT_LAZY_POWER_COMPLETION`、`EXACT_SMT_MT_OUTER_PRUNING`、`EXACT_USE_PORT_ACTIVE`、`EXACT_D2_CP_SAT_WORKERS`、`EXACT_PATCH_ROUTING_CP_SAT_WORKERS`
 >
 > **另**：下方 Reader 列里的 `phase3b_*` 文件路径在 2026-05-16 cleanup（commit `e4bad28`）后已重组到 `src/search/phase3b/<cluster>/<short>.py`（前缀剥离），旧 `src/search/phase3b_*.py` 路径**已失效**。
 
 ---
 
 ## 怎么读这份文档
+
+只有源码通过 `os.environ` / `os.getenv`（或等价封装）读取的名字才算 env；形如
+`EXACT_HASH_FILES`、`EXACT_REQUIRED_ARTIFACTS`、`PHASE3B_*_SOURCE` 的 Python 常量不列入本表。
 
 每条 env 列:
 - **Name**: env 名字 (设置时用)
@@ -24,6 +27,20 @@
 - **作用**: 一句话讲清干嘛
 
 每个分组以**实际用法的影响维度**分类, 不按字母. 想找"控制 worker 数的" 一眼看到一组.
+
+---
+
+## 0. 2026-07-11 关键生产 / cut / preflight env
+
+| Name | Type | Default | Reader | 作用 |
+|---|---|---|---|---|
+| `EXACT_CUT_FRAMEWORK_ATTACH` | bool-ish | OFF/unset | `src/search/benders_loop.py` | direct cut bridge；certified unsafe，开启即 fail-closed |
+| `EXACT_CUT_FRAMEWORK_ATTACH_BUDGET` | positive int | 2000 | `src/search/benders_loop.py` | active-cut attach 上限；非法值 fail-closed |
+| `PREFLIGHT_TIMEOUT_SCALE` | positive finite float | 1 | `scripts/preflight_gate.py` | 统一放大 preflight 子检查超时；CI workflow 设为 6 |
+| `CAMPAIGN_CPUSET` | CPU list / `none` | auto-detect P-cores | `scripts/run_campaign_linux.sh` | campaign CPU 亲和性 |
+| `CAMPAIGN_MEMORY_MAX` | systemd size | 42G | `scripts/run_campaign_linux.sh` | transient scope `MemoryMax` |
+| `CAMPAIGN_SWAP_MAX` | systemd size | 20G | `scripts/run_campaign_linux.sh` | transient scope `MemorySwapMax` |
+| `CAMPAIGN_NO_CGROUP` | bool-ish | 0 | `scripts/run_campaign_linux.sh` | 唯一显式跳过 cgroup memory hard cap 的开关 |
 
 ---
 
@@ -48,7 +65,7 @@
 | `EXACT_POWER_SUBPROBLEM_SECONDS` | float | 10 | benders_loop.py | power placement subproblem 超时 |
 | `EXACT_GHOST_AWARE_COORDINATE_VALIDATION_SECONDS` | float | (内部 default) | phase3b_coordinate_validation_*.py | coordinate validation 单次预算 |
 | `EXACT_GHOST_AWARE_POSE_ORDER_VALIDATION_SECONDS` | float | (内部 default) | phase3b_pose_order_validation_probe.py | pose order validation 单次预算 |
-| `EXACT_MANDATORY_RECTANGLE_PRECHECK_TIME_BUDGET_SECONDS` | float | 2.0 | `master_model.py` | mandatory rect precheck CP-SAT 32-anchor 超时 |
+| `EXACT_MANDATORY_RECTANGLE_PRECHECK_TIME_BUDGET_SECONDS` | float | 0.0 | `master_model.py` | mandatory rect precheck 时间预算；0.0 为当前默认 |
 
 ---
 
@@ -112,12 +129,7 @@
 
 | Name | Type | Default | Reader | 作用 |
 |---|---|---|---|---|
-| `EXACT_GATE_WORKER_PEAK_RSS_GIB` | float | 30 | production_readiness_gate.py:350 | 单 worker RSS peak 上限假设, OOM headroom 公式输入. workers=1 时设 14, workers=8 时设 35 |
-| `EXACT_HASH_FILES` | str (list) | (内部) | preflight_gate.py | 冻结制品 hash 校验列表 |
-| `EXACT_INSTANCES_PATH` | path | (内部) | (preflight_gate.py?) | mandatory_exact_instances.json 路径 (test override) |
-| `EXACT_MODE_FILES` | str (list) | (内部) | preflight_gate.py | exact/exploratory 隔离扫描文件列表 |
-| `EXACT_REQUIRED_ARTIFACTS` | str (list) | (内部) | (gate?) | 必需 artifact 文件列表 |
-| `EXACT_CERTIFIED_NOTE` | str | (内部) | (campaign / blueprint?) | certified blueprint metadata note |
+| `EXACT_GATE_WORKER_PEAK_RSS_GIB` | float | dynamic: 20 GiB for explicit w≤6, otherwise 47 GiB tier | `production_readiness_gate.py:355-403` | gate-only RSS estimate override；不设时按 resolved master-worker tier 选择 |
 
 ---
 
@@ -178,13 +190,9 @@
 
 ## K. Phase 3B specific
 
-| Name | Type | Default | Reader | 作用 |
-|---|---|---|---|---|
-| `PHASE3B_ANCHOR119_ADVISORY` | bool | 0 | phase3b anchor119 *.py | anchor119 advisory 启用 |
-| `PHASE3B_DIRECT_EQUALITY_CORE_EXCHANGE_SOURCE` | path | (内部) | phase3b_coordinate_validation_direct_equality_core.py | direct equality core source |
-| `PHASE3B_DIRECT_EQUALITY_CORE_GEOMETRY_SOURCE` | path | (内部) | phase3b_coordinate_validation_direct_equality_core.py | direct equality core geometry source |
-| `PHASE3B_FULL_FORCED_HINT_FIELD_FAMILY_DELTA_SOURCE` | path | (内部) | phase3b_full_forced_hint_field_family_delta.py | full forced hint field family delta source |
-| `PHASE3B_SAME_X_CAPACITY_ANCHOR_SWEEP_SOURCE` | path | (内部) | phase3b same X capacity anchor sweep | same X capacity sweep source |
+当前没有以 `PHASE3B_` 开头、可由用户设置的环境变量登记项。历史表中的
+`PHASE3B_*_SOURCE` 与 `PHASE3B_ANCHOR119_ADVISORY` 是 Python 常量名，不是 env 名；
+anchor119 真正读取的是 `EXACT_PRE_MASTER_ANCHOR119_MIXED_LANE_GUARD_ADVISORY`（见 G 节）。
 
 ---
 

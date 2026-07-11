@@ -1,6 +1,6 @@
 # Phase 3C Master CP-SAT RAM 调研 findings (2026-05-15)
 
-> ⚠️ **HISTORICAL (2026-06-04)**：Phase 3C / 坐标-master 时代 RAM 调研，主线已转 **cut-family LBBD / B1 pose-bool**（当前 Phase 1.2 spike close，见 `CLAUDE.md`）。findings 作历史读（30GB propagation buffer 等结论仍记于 memory paradigm-death-timeline）。
+> ⚠️ **HISTORICAL（状态校准至 2026-07-11）**：本文是 Phase 3C / 坐标-master 时代的 RAM 调研，不能描述现行阶段。现行状态见 `PROJECT_LOCK.md`、`CLAUDE.md` 与 `docs/项目说明/06_current_status.md`：P1.2 已关闭，P1.3 Stage B 的 B0/B1 已落地。下方 RAM findings 只按 2026-05-15 实验快照读取。
 
 ## TL;DR
 

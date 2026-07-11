@@ -1,6 +1,6 @@
-# 02 — 核心数学原理 (9 family + sound deduction + scope/replay/multiset/adversarial)
+# 02 — 核心数学原理（active 8 family + retired F8 history + sound deduction/scope/replay）
 
-> **阅读边界（2026-06-26）**：本文保留 cut-family 的数学背景与历史设计。当前默认 certified 路径、发布 authority 和 phase 状态以 `01_overview.md`、`06_current_status.md`、`11_dependency_graph.md` 与 `PROJECT_LOCK.md` 为准；“family 已实现”不等于“已接入 production master”或“P1.2 已关闭”。
+> **阅读边界（2026-07-11）**：本文保留九族设计史；当前 registry 为 F1-F7+F9，F8 已退役。F1/F5/F6/F7 direct Step-8 已落地但仍 unsafe/default-off，默认 certified 路径、发布 authority 和 phase 状态以 `01_overview.md`、`06_current_status.md`、`11_dependency_graph.md` 与 `PROJECT_LOCK.md` 为准。
 
 
 ### 2.1 paradigm 选择 — LBBD + cut framework 累积外部知识
@@ -27,7 +27,7 @@ paradigm 选择落点: **不改 master, 在 master 外累积 sound 知识层**. 
 
 ```
 Cut = (
-    family,           # F1-F9 (cut family, 见 §3)
+    family,           # active F1-F7+F9；F8 仅保留历史（见 §3）
     scope,            # 适用范围: (ghost_rect_id, source_digest)
     cert,             # certificate: mathematical proof object
     body              # cut body: literals[] XOR geometric_payload (mode 决, §2.7)
@@ -67,7 +67,7 @@ cut framework 9 family frozen [cite lock §3A]:
 
 **Mode XOR invariant** [cite lock §3A]:
 - **literal mode** (F3/F5/F7): cut body = list of (instance_id, pose_id) tuples, 排除 conjunction `x[i₁,p₁] ∧ x[i₂,p₂] ∧ ...`
-- **geometric mode** (F1/F2/F4/F6/F8/F9): cut body = geometric_payload (bitset / region / partition / commodity), 跟 BState 几何重算
+- **geometric mode** (active F1/F2/F4/F6/F9；retired F8 历史上亦属 geometric): cut body = geometric_payload (bitset / region / partition / commodity), 跟 BState 几何重算
 - 不可混 — cert 跟 body 必 mode-consistent, validator dispatch 按 family → mode 查表
 
 **Per-family ghost dependency** (Phase 1.2 严格化):
@@ -181,21 +181,21 @@ cut 从产到 attach master 经 lifecycle [cite lifecycle §2]。**编号 0-inde
 | Step | 名 (源码 step_N) | 数学职责 | 当前实施 |
 |---|---|---|---|
 | 0 | canonicalize | 跟产 cert 物理 (normalize bitset / sort literals) → 同 cert 哈希等 | 共用基础工具 (非业务步) |
-| 1 | generate | oracle 产 cert (允许 Byzantine, 不信任) | Phase 1.1 4 family ready |
+| 1 | generate | oracle 产 cert (允许 Byzantine, 不信任) | active F1-F7+F9 模块在册；F2/F4 generator 仍为显式 stub，F8 retired |
 | 2 | minimize | 产最小 cut (deletion-based / QuickXplain, F5 用) | Phase 1.2 **P1.2B-F5**（原误名 P1.11）|
 | 3 | serialize | cert + body → JSON | Phase 1.1 闭环 |
 | 4 | deserialize | JSON → cut object (validate schema) | Phase 1.1 闭环 |
-| 5 | validate | validator 重算 cert, 决定 sound/unsound | Phase 1.1 闭环, 4 family |
+| 5 | validate | validator 重算 cert, 决定 sound/unsound | active F1-F7+F9 validator 已注册；F8 retired |
 | 6 | attach-scope check | scope.matches(state) (source_digest/ghost/blocked/artifact/oracle/assumption) | Phase 1.1 dispatch |
-| 7 | evaluate | body 重算当前 state 是否仍 violate (family dispatch) | Phase 1.1 4 family evaluator |
-| 8 | apply-to-master | cut.body → master.AddLinear（**CP-SAT 无真 lazy callback**，累积切面+重新求解）| **defer 后续 P1.3**（原名 P1.21；`step_8_apply_to_master` 仍 NotImplementedError）|
+| 7 | evaluate | body 重算当前 state 是否仍 violate (family dispatch) | active F1-F7+F9 evaluator 已接入；F8 retired |
+| 8 | apply-to-master | cut.body → master constraint（**CP-SAT 无真 lazy callback**，累积切面+重新求解）| F1/F5/F6/F7 translator 已落；F2/F3/F4/F9 fail-closed，F8 retired；certified promotion 尚未完成 |
 | 9 | replay/regression (on ghost/state change) | re-validate active/held cut, decide ATTACH/HOLD/QUARANTINE | Phase 1.1 闭环 (Step M fail-closed) |
 
-**Step 8 missing 当前是为啥 cut framework 跑 unit test 但**没真接进 master** — Phase 1.3 实施.
+**Step 8 当前边界**：F1/F5/F6/F7 已能翻译并经 direct bridge 注入 master；F2/F3/F4/F9 在未具备 production theorem 时继续抛 `NotImplementedError`，F8 已退役。该 direct bridge 仍 unsafe/default-off，不能等同于 certified promotion。
 
-> **(2026-06-26 现状提示)** 上表的 "Phase 1.1 闭环 / defer Phase 1.2" 是 Phase 1.1 时代口径。当前工作树已经实现并审计 F5–F9 的 generator/validator（含 F3 special-case；F9 后被 tight-K **quarantine** 实质停用），但这不表示 Phase 1.2 已闭合。`step_8_apply_to_master()` 仍抛出 `NotImplementedError`，真实 master 集成属于 **P1.3** 未完成项。当前状态以 `06_current_status.md`、`soundness_gap_roadmap.md`、`CLAUDE.md` 和 `PROJECT_LOCK.md` 为准。
+> **(2026-07-11 现状提示)** 上表的 “Phase 1.1 闭环 / defer Phase 1.2” 属历史口径。当前状态以 `06_current_status.md`、`soundness_gap_roadmap.md`、`CLAUDE.md` 和 `PROJECT_LOCK.md` 为准。
 
-**Step 2 (minimize) missing 影响**: F5 deletion 当前不能产 minimal unsat core, F5 实施 (Phase 1.2 **P1.2B-F5**, 原误名 P1.11) 时同步落 step 2 (minimize, 0-indexed)。
+**Step 2 当前边界**：通用 `lifecycle.step_2_minimize()` 仍 fail-closed；F5 已在 family-specific oracle 中使用 deletion minimizer。不得把 F5 的专用实现写成通用 Step 2 已完成。
 
 ---
 
@@ -222,7 +222,7 @@ demand_R = ∑_{g : P(g) ⊆ R} g.demand × cells_per_pose(g)  (region 内 manda
 
 **Ghost dependency**: cap_R 含 `|ghost ∩ R|` 项 → 跨 ghost 不 invariant. GHOST_AGNOSTIC 只在 `ghost ∩ R == ∅` 时合法 (Step O Gemini round 18 finding B1 + GPT pro v6 P0 close). 否则 generator 必绑 compute_ghost_rect_id.
 
-**LP relaxation 关系（设计层）** [cite spec 01 §1c]: F1 可被解释为 master LP relaxation 的 valid inequality；理论上可由 dual/Farkas 证据识别。当前工作树没有 `farkas_certificate.py`、dual-ray generator 或 algebraic verifier，现役 F1 oracle 仍是组合枚举，且 F1-F9 Step 8 尚未接入 production master。
+**LP relaxation 关系（设计层）** [cite spec 01 §1c]: F1 可被解释为 master LP relaxation 的 valid inequality；理论上可由 dual/Farkas 证据识别。当前工作树没有 `farkas_certificate.py`、dual-ray generator 或 algebraic verifier，现役 F1 oracle 仍是组合枚举；F1 direct Step-8 已落地，但不构成 Farkas 证书，也尚未 certified promotion。
 
 **P(g) ⊆ R 验证** (GPT pro v3 P0-1 真 bug):
 - `demand_R` 定义要求 facility group `g` 的**所有** candidate pose 必 ⊆ R
@@ -234,7 +234,7 @@ demand_R = ∑_{g : P(g) ⊆ R} g.demand × cells_per_pose(g)  (region 内 manda
 - 不适用: cap ≥ demand 但 routing/power/binding 不可行 → 走 F2/F4/F7
 - 跟 F6 关系: F6 是 F1 的 stronger refinement (Hall theorem 检 interval cover, F1 只检 count)
 
-**Phase status**: Phase 1.1 production validator + oracle + evaluator 闭环 (Step E/F/G/L/O 全 close); GHOST_AGNOSTIC 与 source_digest hard binding 已在 1.1 exit hardening 落地，可进入 Phase 1.2。
+**Current status (2026-07-11)**: F1 validator/oracle/evaluator 与 direct Step-8 translator 已落地；direct bridge 仍 certified-unsafe/default-off，promotion 未完成。
 
 **Open Q (defer §5.3)**:
 - F1 oracle 如何 enumerate 有用的 interior_rect region (NP-hard exhaustive)?
@@ -367,10 +367,10 @@ QuickXplain minimize: 找最小 `π_partial' ⊆ π_partial` 仍被 reject.
 
 **跟其他 family 边界**:
 - 适用: sub-problem reject 但无明显数学结构 (不是 capacity / cutset / port / connectivity / power)
-- 不适用: 已知数学结构 → 走 F1/F2/F3/F4/F6/F7/F8/F9 (更紧)
+- 不适用: 已知数学结构 → 走 active F1/F2/F3/F4/F6/F7/F9（F8 已退役）
 - F5 是 "兜底" family, 数学上是 LBBD nogood 的直接抽象
 
-**Phase status**: **defer Phase 1.2 P1.2B-F5** — minimize step (step 3) 实施 + QuickXplain 集成 + cert↔literal binding (复 F3 helper).
+**Current status (2026-07-11)**: F5 family-specific deletion minimizer、validator/evaluator 与 direct Step-8 translator 已落地；通用 lifecycle Step 2 仍 fail-closed，bridge 尚未 certified promotion。
 
 **Open Q (defer §5.3, critical)**:
 - QuickXplain 超时阈值 (NP-complete, 实际 instance 上多大 budget?)
@@ -396,7 +396,7 @@ QuickXplain minimize: 找最小 `π_partial' ⊆ π_partial` 仍被 reject.
 - 不适用: length = 1 (单 cell facility) → 走 F1 (F6 退化成 F1 count)
 - F6 是 F1 的 stronger refinement: F1 检 total cell count, F6 检 interval-level cover
 
-**Current status**: F6 implementation exists in `src/cuts/`, but production Step 8 integration remains future P1.3 work — Hall theorem check + interval graph cover algorithm.
+**Current status (2026-07-11)**: F6 implementation and direct Step-8 translation exist, including the canonical-SoT lower-bound override; the bridge remains unsafe/default-off until Stage B/PIC promotion work closes.
 
 **Open Q (defer §5.3)**:
 - F6 是否扩展到 2D (interior facility group 占多 row/col)?
@@ -425,10 +425,10 @@ cert:
 
 **跟其他 family 边界**:
 - 适用: facility 找不到 power_pole 覆盖
-- 不适用: power_pole 不连通 → 走 F8 (power_grid_reach)
-- F7 是 set-level cover existence, F8 是 graph-level grid connectivity
+- 不适用边界不再指向 F8：owner 已确认电杆无需组成有线连通网络，F8 的前提为假并已退役
+- F7 只处理覆盖集合存在性；不得再引入不存在的 power-grid connectivity 谓词
 
-**Phase status**: **defer Phase 1.2 P1.2B-F7** — set cover schema + cell_owner causation split + literal binding.
+**Current status (2026-07-11)**: F7 schema、validator/evaluator、oracle 与 direct Step-8 translator 已落地；bridge 尚未 certified promotion。
 
 **Open Q (defer §5.3, critical)**:
 - LP relax ln(n) approximation 实际 instance 上是否紧?
@@ -461,7 +461,7 @@ v1.1 关键 (Gemini round 14 finding): `ghost_blocks_line` 改严格 line-segmen
 - 不适用: power_pole 找不到 cover facility → 走 F7
 - F8 跟 F4 同是 connectivity, 但 F4 是 cell-level 4-conn (belts), F8 是 line-of-sight (power network)
 
-**Phase status**: **defer Phase 1.2 P1.2B-F8** — Liang-Barsky 实施 + 退化 case (零长度 / 共线 / 正交).
+**Current status (2026-07-11)**: F8 因游戏规则前提为假已整族退役并从 active registry/source path 删除；下列问题仅是历史研究题，不是实施待办。
 
 **Open Q (defer §5.3)**:
 - Liang-Barsky 退化 case (零长度 / 共线 / 正交) 数学边界?

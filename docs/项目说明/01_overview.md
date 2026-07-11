@@ -71,9 +71,10 @@ authority API 顺序，不是当前已打通的一键发布流程。
 的 gating subproblem。whole-layout nogood 在落 exact-safe cut 前还要经过
 `independent_infeasibility_reverifier.py`；独立复验不能确认时，不落 cut并返回 UNKNOWN。
 
-`src/cuts/` 中的 F1–F9 cut framework 是受生命周期约束的知识层。部分 family 已有 generator、
-validator 和 shadow tests，但 `step_8_apply_to_master` 仍不是当前 production certified integration。
-把 cut framework 真正接进主 master 属后续 P1.3，不能因 schema 或单元测试已存在而写成已上线。
+`src/cuts/` 当前在册为 F1-F7+F9（F8 已退役）。F1/F5/F6/F7 已有 reviewed Step-8 translator，
+`benders_loop._maybe_attach_framework_cuts()` 也已提供 `EXACT_CUT_FRAMEWORK_ATTACH` 门控的 direct bridge；
+该开关仍在 certified unsafe map、默认关闭，因此不能写成已进入默认 certified theorem。Stage B B0/B1
+已落地（含 B1.5 typed 平台层），B2-B5、PIC C/D/E 与 B6 owner promotion 仍待完成。
 
 ## 1.5 `certified_exact` 与 `exploratory`
 
@@ -85,7 +86,7 @@ validator 和 shadow tests，但 `step_8_apply_to_master` 仍不是当前 produc
 
 ## 1.6 当前发布状态
 
-截至 2026-07-07，工作树已有 producer/supervisor split、fixed-witness capsule、fail-closed
+截至 2026-07-11，工作树已有 producer/supervisor split、fixed-witness capsule、fail-closed
 P1.2 OPEN-GATE、独立 whole-layout reverify、中央公开发布器和生产 supervisor 入口
 （`scripts/run_supervisor_seal.py`）。P1.2 已由 owner 显式 `owner_manual_decision`
 关闭（`status=closed_manual_owner_decision`，`p1_3b_entry_allowed=true`，P1.3 已开放）。

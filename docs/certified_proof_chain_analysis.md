@@ -1,5 +1,12 @@
 # Certified Proof Chain Analysis
 
+> **HISTORICAL SNAPSHOT (2026-06-19; superseded for current behavior).** This file preserves a pre-PR1
+> write-point audit and intentionally retains the code excerpts and line numbers observed then. In the
+> 2026-07-11 working tree, `outer_search` is a producer that commits `CANDIDATE_PROPOSED` only;
+> `ExactCampaign.supervisor_seal()` is the sole durable terminal `CERTIFIED` mint, and
+> `publish_verified_certified_delivery_surface()` is the sole canonical publisher. Use `NAV_MAP.md`,
+> `specs/11_pipeline_orchestration.md`, and `docs/exact_campaign_operations.md` for current behavior.
+
 <!-- codex session 2026-06-19 -->
 
 Scope:

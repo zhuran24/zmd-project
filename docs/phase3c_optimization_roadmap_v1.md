@@ -1,7 +1,7 @@
 # Phase 3C Optimization Roadmap v1
 
 **Date**: 2026-05-08
-**Status**: HISTORICAL (2026-06-04) — 项目已转入 **cut-family LBBD / Phase 1.2 spike close**（见 `CLAUDE.md`）；本 Phase 3C 优化 roadmap 非当前主线，下方 P0/P1 条目作历史研究记录读。
+**Status**: HISTORICAL（状态校准至 2026-07-11）— 本 Phase 3C 优化 roadmap 非当前主线，下方 P0/P1 条目只作历史研究记录。现行状态见 `PROJECT_LOCK.md`、`CLAUDE.md` 与 `docs/项目说明/06_current_status.md`：P1.2 已关闭，P1.3 Stage B 的 B0/B1 已落地。
 **Source**: 10 rounds of agent research (78 transcripts archived under
 `docs/research/agent_transcripts/`, indexed at `docs/research/INDEX.md`)
 **Note**: 即便在当时 roadmap 语境下，research 也是迭代未闭合 —— 每条 "solver

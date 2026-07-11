@@ -86,5 +86,5 @@ paradigm investigation 现穷尽 — 真还要 break 必须有以下之一:
 
 ## Related
 
-- v5 plan: `/home/zhuran24/下载/B1_paradigm_breakthrough_plan_v5.md`
+- v5 plan: `<external-local-input>/B1_paradigm_breakthrough_plan_v5.md`
 - v5 review package: `~/linwin_share/b1_phase6_review_package_v5.zip`

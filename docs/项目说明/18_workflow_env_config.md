@@ -1,6 +1,6 @@
 # 18 — 环境变量 / 配置清单
 
-> **未来配置草案**：未落地的 env 名称不是当前接口。任何开关都不得绕过 supervisor、public publisher 或 owner gate。
+> **现状 + 历史草案（2026-07-11）**：当前接口以源码读取点为准；下方 `EXACT_CUT_STORE_*` 名称只是未采用的历史提案。任何开关都不得绕过 supervisor、public publisher 或 owner gate。
 
 
 cut framework 用 env 做 phase/feature toggle, 不用 config file (跟项目其他 EXACT_* env 一致, 避免新 config schema). 本节列当前 cut framework 自己 + 跟主流程 cut 相关 env 的 interaction.
@@ -11,21 +11,18 @@ cut framework 用 env 做 phase/feature toggle, 不用 config file (跟项目其
 |---|---|---|---|---|
 | `EXACT_FAMILY_VALIDATOR_STRICT` | `"1"` | `"1"` | `"1"` | strict gate: 未注册 family / dispatch 漏注册 → fail-closed。`"0"` 仅允许本地临时调试，不进生产 wrapper。 |
 | `EXACT_F3_GENERATOR_ENABLED` | `"0"` | `"0"` (gated) | — | F3 port_exposure generator 开关（commit `c768806` 落地，default-disabled）。**(2026-06-04 补：早先此现状表漏列)** |
-| `EXACT_F7_GENERATOR_ENABLED` / `EXACT_F8_GENERATOR_ENABLED` | `"0"` | `"0"` (gated) | — | F7/F8 generator 开关（cut-family 时代落地，default-disabled）。完整 `EXACT_*` 全集见 `docs/env_variable_index.md` banner + 源码 grep。 |
+| `EXACT_F7_GENERATOR_ENABLED` | `"0"` | `"0"` (gated) | — | F7 generator 开关（default-disabled）。F8 已退役，`EXACT_F8_GENERATOR_ENABLED` 不再是有效接口。 |
 
-### 19.2 Phase 1.3 propagator 集成预留 env (实施时定名)
+### 19.2 当前 direct attach env 与未采用的历史提案
 
-下面 env 在 §12 / §13 实施时加, 当前未实施. 命名前缀按项目惯例 `EXACT_CUT_STORE_*`（**⚠️ 2026-06-04: P1.3 集成总开关命名未最终统一** —— `09_phase_1_3_plan` / `12_go_criteria` 处写作 `EXACT_B_DESIGN_V2`，此处拟 `EXACT_CUT_STORE_ENABLE`，待 P1.3 实施时定名收口）:
+当前 direct bridge 使用：
 
-| Env (拟) | 默认 | 用途 |
+| Env | 默认 | 用途 |
 |---|---|---|
-| `EXACT_CUT_STORE_ENABLE` | `"0"` | 总开关. OFF 时 master.solve 不接 cut, 框架仅 unit test 跑 (Phase 1.3 first commit) |
-| `EXACT_CUT_STORE_SHADOW_ONLY` | `"0"` | shadow 模式: framework run 但 cut 不真 attach master, 仅 telemetry (24h shadow trial 用, §14.3) |
-| `EXACT_CUT_STORE_TELEMETRY_PATH` | (unset) | telemetry jsonl 落盘路径. unset 时不落盘 |
-| `EXACT_CUT_STORE_MAX_HELD_CUTS` | `"10000"` | held queue 上限. 超 → 拒新 cut 入 held (LRU evict 暂不做, 简单 cap) |
-| `EXACT_CUT_STORE_REPLAY_REJECT_KILL_PCT` | `"5.0"` | replay reject rate 超此 % → 整 candidate trial abort (§14.3 revert criterion) |
+| `EXACT_CUT_FRAMEWORK_ATTACH` | unset/OFF | direct Step-8 bridge 总开关；在 certified unsafe map 中，certified 路径设置即 fail-closed |
+| `EXACT_CUT_FRAMEWORK_ATTACH_BUDGET` | `2000` | active-cut attach 上限；仅接受正整数，非法值 fail-closed |
 
-最终名以 §13 实施时 commit 为准, 此表是 placeholder; 加 env 时同步更新本节.
+早期文档提出的 `EXACT_CUT_STORE_ENABLE`、`EXACT_CUT_STORE_SHADOW_ONLY`、`EXACT_CUT_STORE_TELEMETRY_PATH`、`EXACT_CUT_STORE_MAX_HELD_CUTS`、`EXACT_CUT_STORE_REPLAY_REJECT_KILL_PCT` **未成为当前接口**；引用时必须标为历史提案，不得当作可用 env。
 
 ### 19.3 跟主流程 cut/master 相关 env (cut framework 不直接读, 但 interaction matters)
 

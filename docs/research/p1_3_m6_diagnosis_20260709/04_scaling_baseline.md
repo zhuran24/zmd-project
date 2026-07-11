@@ -161,7 +161,7 @@ if __name__ == "__main__":
 ### 第二步：Arm S 主阶梯（ghost 6×6, 每档 600s, N≥200 用 1800s）
 
 ```bash
-cd /home/zhuran24/zmd-pj
+cd <repo-root>
 D=docs/research/p1_3_m5_convergence_20260708
 for N in 25 50 100 150; do
   python $D/m5_scale_ladder_runner.py --n-instances $N --master-seconds 600 \

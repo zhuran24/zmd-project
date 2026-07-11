@@ -1,6 +1,6 @@
 # 15 — 测试 strategy + fixture 清单
 
-> **测试方法文档**：示例计数是历史或规模估计。当前 collect-only 为 425 文件 / 3450 tests；只有带命令、工作树与退出码的结果才能写成 passed。
+> **测试方法文档**：示例计数是历史或规模估计。2026-07-11 collect-only 为 450 个 `test*.py` 文件 / 4182 tests，`src/tests/cuts` 为 594 tests；只有带命令、工作树与退出码的结果才能写成 passed。
 
 
 <!-- DOC-SUBJECT:authoritative_numbers FIELD:cuts_count_pointer START sha256:cea93a49cee8af7c4d149443925f0b834a63001939d7048e126a97cfbbb758d2 -->
@@ -14,7 +14,7 @@ The current cut-test total is not a freehand prose value. Use the `cuts_tests_to
 | 层 | 目标 | 文件 | 数量 |
 |---|---|---|---|
 | **Unit** | 单 function/class 行为 (helpers / store / lifecycle 各 step 各分支) | `test_store.py` / `test_lifecycle.py` / `test_helpers_*.py` / `test_assumptions_verifiers.py` | ~80+ test |
-| **Family** | 单 family validator + evaluator + oracle 端到端 (per family schema + 真数据反例) | `test_family_{region_capacity,cutset,port_exposure,component_reach,pattern_nogood,shape_packing_hall,power_hitting_set,power_grid_reach,density_envelope}.py`（F1–F9 全已落地）| 计数见核心节点 |
+| **Family** | 单 family validator + evaluator + oracle 端到端 (per family schema + 真数据反例) | active family tests（F1-F7+F9）+ F8 retirement/absence regressions；F8 不再是 active family| 计数见核心节点 |
 | **Integration** | replay flow / on_ghost_rect_changed / add_cut 多 family 串 (跨 family interaction) | `test_replay.py` + 部分 `test_lifecycle.py` | ~15+ test |
 | **Adversarial** | 假 cert / cert↔literal 不绑 / GHOST_AGNOSTIC 非法 / canonical_rules=None bypass / out-of-grid cell 等 | 散在各 `test_family_*.py` (e.g. test_*_p_g_outside_R / test_*_ghost_agnostic_rejected) | ~10+ test |
 
@@ -43,7 +43,7 @@ The current cut-test total is not a freehand prose value. Use the `cuts_tests_to
 | **F2** | `F2_shape_packing_hall.md` | 长度 10 boundary 被 ghost 切 [1-4]+[6-10], 9 cell ≥ demand 9 pass capacity 但 length-3 `⌊4/3⌋+⌊5/3⌋=2<3` infeasible | F1 + F6 shape_packing_hall (Phase 1.2 P1.2B-F6) | Gemini 反例 B |
 | **F3** | `F3_power_no_cover.md` | pose p 在 G1 ghost 下无 power_pole 候选覆盖 → INFEASIBLE | F1 region_capacity + F7 power_hitting_set (Phase 1.2 P1.2B-F7) | GPT 反例 power_cover + L16 lazy power |
 | **F4** | `F4_ghost_scoped_replay.md` | G1 学 cut `not(A=pA ∧ B=pB)`; G2 移挡后 A=pA∧B=pB 合法 → 旧 pose-id-only replay 误剪 | F5 pattern_nogood (Phase 1.2 P1.2B-F5) + scope-aware replay HOLD | cut_lifecycle_v2 §4 walk-through |
-| **F5** | `F5_power_grid_disconnect.md` | power network 断连, source → sink 4-conn 不连通 → INFEASIBLE | F8 power_grid_reach (Phase 1.2 P1.2B-F8) | GPT power cover ext |
+| **F5 (historical)** | `F5_power_grid_disconnect.md` | 旧设计假定 power network 需连通 | F8 已因该游戏规则前提为假而 retired；此 fixture 只作退役史料，不得进入 active cut expectations | GPT power cover ext |
 
 每 fixture .md 文件结构: 反例几何 + MasterStateV2 表达 + 期待结果 + Hardcode cut object + evaluate 期望.
 
@@ -56,12 +56,12 @@ Phase 1.2 加 F5-F9 时按 §11 各 family 步骤每加 1 family 至少 1 red fi
 - test 要求: §10.1 strict gate 加 regression (未注册 family OFF→fail-closed)
 - §10.4 ghost_rect tuple 改 object 加非方形 fixture e.g. `(10, 20, 3, 7)`
 
-**Phase 1.2 P1.2B-F5/F6/F7/F8/F9 (§11, 5 family)**
+**Phase 1.2 historical F5/F6/F7/F8/F9 batch（F8 已 retired）**
 - 每 family 至少: 1 unit (helper) + 3 family (validator schema + cert binding + evaluator 真重算) + 1 adversarial (假 cert) + 1 red fixture 拦
 - F5 deletion + QuickXplain test 单独 (复杂, 加 minimize step)
 - F6 Hall theorem 加 4-5 反例 (interval graph 各类)
 - F7 set cover 加 LP relax 边界 + ln(n) approximation 上限
-- F8 Liang-Barsky AABB 加非方形 + 正交 + 退化 (零长度) 反例
+- F8 退役回归：registry/schema/oracle/validator/assumption 路径均不得重新出现 F8
 - F9 density envelope 加 baseline `cap/area=1.0` 边界
 
 **Phase 1.3 (§12, propagator 真集成)**

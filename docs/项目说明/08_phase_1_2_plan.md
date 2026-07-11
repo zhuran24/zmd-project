@@ -5,7 +5,7 @@
 
 > **2026-05-23 v2 命名更新**: 原 plan 把 `P1.11` 同时用作 "入门 7 项" 跟 "F5 pattern_nogood", 误导. v2 拆: **P1.2A** 入门 (entry hardening, 已落地) + **P1.2B-F{5,6,7,8,9}** 各 family.
 
-> ⚠️ **(2026-06-04 现状)** 本 plan 的 P1.2B-F5..F9 **已落地**（Phase 1.2 spike close 闭关中，各 family generator+validator + 多轮 Gemini/外审；见 [06](06_current_status.md) + [07 §5.14](07_historical_review.md)）。下方 forward-looking 措辞（"待实施 / 为啥重要 / 实施顺序"）多为**历史 plan / 参考**。**且 F9 已 tight-K quarantine 实质停用**（PROJECT_LOCK §3A）—— 故下文"F9 主力几何 lift / 防 F5 ratio 超 50%"的论证**当前不成立**（F9 这条 remedy 暂不可用，相关 stop-ship 逻辑待 F9 解封）。其中 442 是当时 cuts 子集的历史 collect 节点，不是当前通过数；2026-06-26 全仓 collect-only 为 425 文件 / 3450 tests。
+> ⚠️ **历史快照（原状态日 2026-06-04；2026-07-11 校准）** 本 plan 的 P1.2B-F5..F9 **已落地**（Phase 1.2 spike close 闭关中，各 family generator+validator + 多轮 Gemini/外审；见 [06](06_current_status.md) + [07 §5.14](07_historical_review.md)）。下方 forward-looking 措辞（"待实施 / 为啥重要 / 实施顺序"）多为**历史 plan / 参考**。**且 F9 已 tight-K quarantine 实质停用**（PROJECT_LOCK §3A）—— 故下文"F9 主力几何 lift / 防 F5 ratio 超 50%"的论证**当前不成立**（F9 这条 remedy 暂不可用，相关 stop-ship 逻辑待 F9 解封）。其中 442 是当时 cuts 子集的历史 collect 节点，不是当前通过数；2026-07-11 全仓 collect-only 为 450 个 `test*.py` 文件 / 4182 tests，cuts 子集为 594 tests。
 
 ## 2026-06-17 — P1.2 职责边界（后续审查口径）
 
@@ -60,7 +60,7 @@ close-kernel contract。
 7. ✅ F3 `evaluate_literal_port_exposure` 删
 8. ✅ `on_ghost_rect_changed` test stub 收紧 (`unsafe_test_replay_fn` + double flag)
 
-测试: **189 cuts pass**（Phase 1.1/P1.2A 时口径；178/181/188 是更早中间值）。**442 是当时 cuts 子集的历史 collect 值；当前全仓 collect-only 为 3450**，189 是旧值。
+测试: **189 cuts pass**（Phase 1.1/P1.2A 时口径；178/181/188 是更早中间值）。**442 是当时 cuts 子集的历史 collect 值；当前全仓 collect-only 为 4182**，189 是旧值。
 
 ## P1.2B-F5 — pattern_nogood (优先级最高)
 

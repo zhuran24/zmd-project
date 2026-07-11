@@ -8,6 +8,6 @@ One module per family per PHASE_1_PLAN §2 src 路径表:
 - pattern_nogood_oracle (F5)  — Phase 1.2 P1.11 (L16 deletion + QuickXplain)
 - shape_hall_oracle (F6)      — Phase 1.2 P1.12
 - power_cover_oracle (F7)     — Phase 1.2 P1.13
-- power_grid_oracle (F8)      — Phase 1.2 P1.14
+- power_grid_oracle (F8)      — RETIRED/DELETED 2026-07-08 (false premise)
 - density_envelope_oracle (F9) — Phase 1.2 P1.15
 """

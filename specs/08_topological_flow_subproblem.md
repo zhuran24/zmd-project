@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/models/flow_subproblem.py and its call sites in src/search/benders_loop.py
-last_verified_against: 2026-06-26
+last_verified_against: 2026-07-11
 owner: flow-diagnostic
 ---
 
@@ -61,6 +61,7 @@ GLOP Python API 路径没有在本模块中提取对偶不可行射线。`_extra
 ## 8.5 与 routing / cut framework 的关系
 
 当前正常认证拓扑是 placement master → binding → routing；flow 仅为旁路诊断。
-`src/cuts/` 的 F1–F9 体系与本模块不是“自动 Farkas 回灌”的同一实现。未来 cut-family
-或 per-commodity flow 编码进入 production master 前，仍受 `PROJECT_LOCK.md` 的 phase
-边界与 proof obligation gate 约束。
+`src/cuts/` 的 active F1-F7+F9 体系与本模块不是“自动 Farkas 回灌”的同一实现；F8 已退役。
+F1/F5/F6/F7 虽已有 env-gated direct attach，仍在 certified unsafe map 中。任何 cut-family promotion
+或 per-commodity flow 编码进入认证前提前，仍受 `PROJECT_LOCK.md` 的 phase 边界、Stage B/PIC
+清单与 proof obligation gate 约束。

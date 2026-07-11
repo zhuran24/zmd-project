@@ -1,6 +1,6 @@
 # IndustrialPlanner 70×70 Single-Base Repo Front Door
 
-> **注 (2026-06-04)**：本文（及同组 delivery-surface 文档）描述的是 IndustrialPlanner **postprocess / adapter 交付面**（release `r20260416` 冻结），**非项目当前活动主线**——主线 = cut-family LBBD / Phase 1.2 spike close（见 `CLAUDE.md` + 根 `README.md`）。文中 "current / now" 指交付面自身的当前态，不代表项目阶段。
+> **注（状态校准至 2026-07-11）**：本文（及同组 delivery-surface 文档）描述的是 IndustrialPlanner **postprocess / adapter 交付面**（release `r20260416` 冻结），不是 exact-solver 当前活动主线。现行求解与认证状态见 `PROJECT_LOCK.md`、`CLAUDE.md`、根 `README.md` 与 `docs/项目说明/06_current_status.md`；文中 “current / now” 只指该冻结交付面自身。
 
 This guide explains the higher-level **repo-facing entry page** that now sits
 one step above the stable `current_delivery/` landing bundle.

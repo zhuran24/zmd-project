@@ -1,6 +1,6 @@
 # 12 — 当前 GO / close 标准
 
-> 基线：2026-06-26 工作树。本文不把历史测试数字、review receipt 或结构 checker 的 PASS
+> 基线：2026-07-11 工作树。本文不把历史测试数字、review receipt 或结构 checker 的 PASS
 > 升格为 release certification。机器状态以 `data/review_gates/phase_1_2_spike_close.json` 为准。
 
 ## 12.1 状态词
@@ -9,14 +9,9 @@
 - **VERIFIED IN THIS WORKTREE**：列明命令在当前 bytes 上实际完成且通过。
 - **OWNER-CLOSED**：owner gate 显式记录关闭。
 - **P1.2 CLOSED**：技术边界、要求的验证、包材边界与 owner gate 同时满足。
-- **SUPERVISOR OPERABLE**：存在受支持、可审计的生产 supervisor invocation surface；当前不成立。
-  （2026-07-05 注：本行"当前不成立"基于 2026-06-26 基线。生产入口
-  `scripts/run_supervisor_seal.py` 已于 2026-07-04 落地——"invocation surface
-  存在"这一机器条件已补；但 OPERABLE 与 P1.2 closed 的判定关系以
-  `PROJECT_LOCK.md` 口径为准：入口存在只补机器条件、不打开 owner 门、
-  不推导 P1.2 closed。）
+- **SUPERVISOR OPERABLE**：存在受支持、可审计的生产 supervisor invocation surface；当前由独立命令 `scripts/run_supervisor_seal.py` 提供。该事实不等于真实生产 campaign→seal 已实跑，也不单独推导 release。
 
-这些词不能互换。当前状态是 **P1.2 CLOSED / P1.3 open（准许开工，非完成）**。
+这些词不能互换。当前状态是 **P1.2 CLOSED / P1.3 IN PROGRESS**：partial attach 与 Stage B B0/B1 已落地，certified promotion 未完成。
 
 ## 12.2 技术 close 必要条件
 
@@ -53,7 +48,7 @@ P1.2 close 至少要求：
 
 ## 12.4 测试报告规则
 
-当前 collect-only 盘点为 **425 个测试文件、3450 个测试**。这是收集结果，不是通过结果。
+当前 collect-only 盘点为 **450 个 `test*.py` 文件、4182 tests**；`src/tests/cuts` 为 **594 tests**。这是收集结果，不是通过结果。
 任何 pass 数必须附：命令、工作树标识、退出码与日志。历史 189、442、2211、3316 等数字
 只属于各自时间点，不能描述当前全套状态。
 
@@ -88,6 +83,4 @@ p1_3b_entry_allowed = true
 
 ## 12.6 后续 P1.3 GO
 
-P1.3 的 Step 8/cut-family production master integration 只有在 P1.2 close 后才能进入。它必须
-单独证明 attach 语义、replay/currentness、性能与 rollback，不得把当前未接入的 F1–F9 写成
-默认 certified path 已使用。
+P1.3 已进入分批实施：F1/F5/F6/F7 direct Step-8 与 Stage B B0/B1 已落地。后续仍须单独证明 typed-platform/vertical-slice、replay/currentness、生产宿主演进、独立 F5 verifier、ledger/dedup/epoch、性能与 rollback；在 B6 owner promotion 前不得写成默认 certified path 已使用。

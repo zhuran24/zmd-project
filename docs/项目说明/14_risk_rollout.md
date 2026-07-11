@@ -1,6 +1,6 @@
 # 14 — 风险评估 + mitigation + rollout policy
 
-> **未来 rollout 设计**：默认 certified path 尚未启用本文所述 Step 8/cut-family production attach。
+> **rollout 设计与现状（2026-07-11）**：F1/F5/F6/F7 direct attach 已落地但默认关闭，并在 certified unsafe map 内；本文剩余 ramp 只描述 promotion 前验证，不能当成未有任何 bridge。
 
 
 defer / 已知 risk + 失败回滚策略.
@@ -35,10 +35,10 @@ defer / 已知 risk + 失败回滚策略.
 - **F5 deletion+QuickXplain perf**: NP-hard. mitigation 限 ≤ N literal
 - **F6 Hall theorem 实施复杂**: mitigation 先 greedy 后 LP
 - **F7 power hitting-set NP-hard**: mitigation LP relax 近似
-- **F8 ghost_rect tuple 反惯例 bug**: mitigation Phase 1.2 §10.4 lock 必先
+- **F8 historical risk**：该 family 已因游戏规则前提为假整族退役；风险改为防止 registry/文档意外复活
 - **F9 density sound 边界**: mitigation 加 negative test
 - **Phase 1.3 lazy → hard constraint master 性能**: mitigation 阶梯启用 (F1
-  单 family 跑通后 F2-F9)
+  已按 F1→F7→F6→F5 阶梯落地；其余 active family 继续 fail-closed)
 - **propagator hot path perf**: mitigation parsed cert cache + incremental
   BFS + watcher 三件套 (Step H TODO)
 
@@ -53,9 +53,9 @@ cut framework 从 Phase 1.1 (4 family 单测) → 1.2 (5 family 加) → 1.3 (�
 - revert 方法: 单 commit revert `EXACT_FAMILY_VALIDATOR_STRICT` default (env 一行改), 不影响其他
 
 **Phase 1.2 → 1.3 切换 (cut framework 接进 benders_loop)**
-- 切换点: §13 P1.3 step_8 apply_to_master 真集成 master.AddLinear 时, env-gated 默认 OFF
+- 已到达的切换点: F1/F5/F6/F7 Step-8 与 `EXACT_CUT_FRAMEWORK_ATTACH` bridge 已落，env-gated 默认 OFF 且 certified unsafe
 - 渐进 ramp:
-  - Phase 1.3 first commit: env-gated 默认 OFF, unit test 在 mock master 上验
+  - 已完成：env-gated 默认 OFF、translator/bridge 单测与 direct spike
   - 1 candidate trial OFF baseline + ON enable 各 1 次, 对比 outcome
   - 24h shadow trial (env ON 但 cut 不真 attach, telemetry-only) → 看 §20 metric (cut count / valid rate / replay reject rate)
   - 24h half-trial (env ON + cut 真 attach + telemetry full) → metric 健康 + outcome 不退化 → GO 168h

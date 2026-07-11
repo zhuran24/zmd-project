@@ -1,6 +1,6 @@
 # cachy 老仓考古：B1 证据链与供电编码史（codex exec，2026-07-09）
 
-> 材料源：cachy 老项目（`/home/zhuran24/claude-pj/zmd`，2026 年 5 月主战场=「原机」）的 117 张 memory 卡 + research 归档索引。
+> 材料源：cachy 老项目（`<repo-root>`，2026 年 5 月主战场=「原机」）的 117 张 memory 卡 + research 归档索引。
 > 由 codex CLI 只读考古产出。上游问题：owner 拷问 B1 34× 证据可靠性（`00_design_decision.md` 附录三）。
 > 附带勘察事实（主会话验证）：老仓其余六个 ghost 的 cuts_*.json 全空（仅 cuts_6x6 有 5 条）；campaign 检查点 final_status=UNPROVEN 零候选；老 CC 主会话转录已被 30 天清理，无备份。
 

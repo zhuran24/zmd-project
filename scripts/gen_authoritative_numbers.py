@@ -105,9 +105,22 @@ def recompute(core: Dict) -> Tuple[Dict, list]:
     nums = core["numbers"]
 
     live_cuts = count_cuts_tests()
-    if nums["cuts_tests_total"]["value"] != live_cuts:
-        changes.append(f"cuts_tests_total: {nums['cuts_tests_total']['value']} -> {live_cuts}")
-        nums["cuts_tests_total"]["value"] = live_cuts
+    cuts_meta = nums["cuts_tests_total"]
+    old_cuts = cuts_meta["value"]
+    if old_cuts != live_cuts:
+        changes.append(f"cuts_tests_total: {old_cuts} -> {live_cuts}")
+        stale = cuts_meta.setdefault("stale", [])
+        if old_cuts not in stale:
+            stale.append(old_cuts)
+            stale.sort()
+        cuts_meta["value"] = live_cuts
+    generic_provenance = (
+        "computed: `pytest --collect-only -q src/tests/cuts` 的 collection 计数（含 parametrize 展开，故 ≥ 纯 `def test_` 计数）。"
+        "stale 列保存旧 collection 值；当前值始终以同对象的 `value` 字段为准，生成器变更值时会自动把旧值并入 stale。"
+    )
+    if cuts_meta.get("provenance") != generic_provenance:
+        changes.append("cuts_tests_total.provenance: normalized to value-field authority")
+        cuts_meta["provenance"] = generic_provenance
 
     sizing = _recompute_sizing()
     if sizing is not None:

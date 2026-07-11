@@ -17,8 +17,7 @@ Preflight gate — 提交前自动门禁检查。
 
 退出码：
     0 = 通过
-    1 = 有硬阻塞问题
-    2 = 通过但有警告
+    1 = 有硬阻塞问题（警告不会产生单独的 exit 2）
 """
 from __future__ import annotations
 

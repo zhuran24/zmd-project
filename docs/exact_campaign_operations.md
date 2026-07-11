@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/search/exact_campaign.py, src/search/outer_search.py, src/search/certified_surface.py, scripts/inspect_exact_campaign_state.py
-last_verified_against: 2026-06-26
+last_verified_against: 2026-07-11
 owner: certified-exact-operations
 ---
 

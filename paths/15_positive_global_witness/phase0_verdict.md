@@ -83,6 +83,6 @@ phase 0 trial: TBD (本 commit 落 Phase 0 results)
 
 ## Related
 
-- v4 plan: `/home/zhuran24/下载/B1_paradigm_breakthrough_plan_v4.md`
+- v4 plan: `<external-local-input>/B1_paradigm_breakthrough_plan_v4.md`
 - review package: `~/linwin_share/b1_phase6_review_package_v4.zip`
 - review prompt: `~/linwin_share/b1_phase6_review_prompt_v4.md`

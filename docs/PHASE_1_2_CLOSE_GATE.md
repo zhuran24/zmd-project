@@ -98,7 +98,4 @@ entry permission for P1.3, not a release claim.
 
 ## Step 8 boundary
 
-With the gate now open, `src/cuts/lifecycle.py:step_8_apply_to_master` is the P1.3 production
-master/cut integration task still to complete. F1–F9 generator/validator/lifecycle implementation
-does not mean production master integration is finished. Step 8 belongs to P1.3 work now permitted
-by this gate.
+With the gate open, P1.3 has progressed beyond a wholly stubbed Step 8: F1/F5/F6/F7 translations and the env-gated direct bridge are present, and Stage B B0/B1/B1.5 has landed. The bridge remains unsafe/default-off for certified runs; F2/F3/F4/F9 fail closed, F8 is retired, and B2-B5/PIC C-D-E/RFC-002/003/B6 remain before certified promotion.
