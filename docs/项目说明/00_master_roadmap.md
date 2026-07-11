@@ -75,7 +75,7 @@ soundness 修复+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深+F
 轴序双修,opus+codex 双审首次零 BLOCK+Workflow 编排首战,慢 lane 31/31,`68b4557`;
 replay 诊断残留记 TRIAGE 留通电线);
 M5 A/B 战场随首解解锁,挂批 1 完成后**;
-**P1.3A attach 通电 spike 进行中(2026-07-10 晚)**:规格书 `docs/research/p1_3a_attach_power_on_spike_20260710/01_spike_spec.md`(`90be2c6`+追加);E1 端到端 exploratory 路线四连死破案(py-spy 抓栈实锤 `_add_port_clearance_constraints` exploratory-only 启发式 prod-scale 爆炸+legacy master/all_facility 双重不可比,教训入 memory 卡)→**形态修订为 certified 直建 harness+step_8 直调**(sanctioned direct 通路);E1' 基线已落(OPTIMAL@513.5s,与第五刀同分布);E2' 通电对照已完成——**判决 GO**(10K cut attach 16.6s+solve +4.1%,总 wall +6.9% 远低于 50% 线;proto 约束 ×4.15 无感;效度边界四条+agnostic-F5 语义缝 TRIAGE 见 02_spike_evidence.md);checklist 已立(03 文档,PIC-0~7+批次划分)且批 A 主体 PIC-3 已落地(`b9fcca9`:BUDGET env 化+fail-closed resolver+双注册,opus+codex 双审,reseal 一轮收敛,慢 lane 31/31);批 B ✅完成(07-11:PIC-0 owner 拍板 (a) certified promote+PIC-1.1 判定双审定稿 `66ccb39`);**阶段 B 工程规格书 ✅定稿(07-11,`cut_framework_review_gpt56pro_20260710/03_stage_b_implementation_spec.md` v3:codex 三条侦察+两轮 opus/codex 双审 53 条全采纳无一驳回,B0-B6 批次序列立,B5≈16 pinned 文件 wiring cut-over,B6=owner promotion)**;阶段 B 工程开工当夜连落两批:B0 ✅(`de2df50` 契约测试壳+AST 守卫)+B1 ✅(07-11 晨,FrozenArtifactBundle+snapshot 层+digest v1,双审 codex 攻击实证 8 修复,新 TCB 双文件 floor 注册);M5 A/B 首战(07-11 凌晨四刀)已把「默认参数病态」证伪关闭(smoke#4 实死于禁 swap 旧条款;修订条款下默认组合 OPTIMAL@649s,参数仅 wall 差异 +3.6%~+27.8%,PIC-7 关闭,证据 m5_ab_param_bisect_20260711.md);
+**P1.3A attach 通电 spike 进行中(2026-07-10 晚)**:规格书 `docs/research/p1_3a_attach_power_on_spike_20260710/01_spike_spec.md`(`90be2c6`+追加);E1 端到端 exploratory 路线四连死破案(py-spy 抓栈实锤 `_add_port_clearance_constraints` exploratory-only 启发式 prod-scale 爆炸+legacy master/all_facility 双重不可比,教训入 memory 卡)→**形态修订为 certified 直建 harness+step_8 直调**(sanctioned direct 通路);E1' 基线已落(OPTIMAL@513.5s,与第五刀同分布);E2' 通电对照已完成——**判决 GO**(10K cut attach 16.6s+solve +4.1%,总 wall +6.9% 远低于 50% 线;proto 约束 ×4.15 无感;效度边界四条+agnostic-F5 语义缝 TRIAGE 见 02_spike_evidence.md);checklist 已立(03 文档,PIC-0~7+批次划分)且批 A 主体 PIC-3 已落地(`b9fcca9`:BUDGET env 化+fail-closed resolver+双注册,opus+codex 双审,reseal 一轮收敛,慢 lane 31/31);批 B ✅完成(07-11:PIC-0 owner 拍板 (a) certified promote+PIC-1.1 判定双审定稿 `66ccb39`);**阶段 B 工程规格书 ✅定稿(07-11,`cut_framework_review_gpt56pro_20260710/03_stage_b_implementation_spec.md` v3:codex 三条侦察+两轮 opus/codex 双审 53 条全采纳无一驳回,B0-B6 批次序列立,B5≈16 pinned 文件 wiring cut-over,B6=owner promotion)**;阶段 B 工程开工当夜连落三批:B0 ✅(`de2df50` 契约测试壳+AST 守卫)+B1 ✅(07-11 晨,FrozenArtifactBundle+snapshot 层+digest v1,双审 codex 攻击实证 8 修复,新 TCB 双文件 floor 注册)+B1.5 ✅(07-11 晨,typed 平台层:三分支代数+单入口+F5 oracle 复验全通路+v1 adapter;双审 10 BLOCK 8 组修复全落,typed_platform 进 sink 台账 65→66+投影 floor 三层连锁 reseal;B2 前置:CutScope 补 raw preimage);M5 A/B 首战(07-11 凌晨四刀)已把「默认参数病态」证伪关闭(smoke#4 实死于禁 swap 旧条款;修订条款下默认组合 OPTIMAL@649s,参数仅 wall 差异 +3.6%~+27.8%,PIC-7 关闭,证据 m5_ab_param_bisect_20260711.md);
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
 形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
 设计稿 v2(含 v3 终审) 完成；证书侧（P3.0c 轴 B）路线图定型、待开工。
@@ -183,7 +183,11 @@ O-1~O-16 义务 + ghost-use inventory（TNS 稿 §6）。数学侧已在 formal/
 
 Q15 跨 base 迁移（Phase 2+）、Q16 多 base 联合优化（Phase 3+）、
 Q1p partial-assignment 完备性（缺数学对象）、S_global 收敛性定理
-（实验命题）、PBLean 自研验证器（轴 B Phase 6，远期）。
+（实验命题）、PBLean 自研验证器（轴 B Phase 6，远期）。ATS/F\* 验证语言
+已评估排除（2026-07-11 owner 问询，评估记录
+`docs/research/formal_verification_languages_assessment_20260711/`：两者均
+不解 CP-SAT 黑盒判定与 spec 忠实性两个真瓶颈；远期 verifier 形式化若做，
+以 Lean 优先、与 PBLean 线同向）。
 
 ## 4. 拍板台账（owner 未决事项，集中登记）
 

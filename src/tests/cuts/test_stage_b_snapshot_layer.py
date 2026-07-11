@@ -23,6 +23,7 @@ from src.cuts.frozen_artifacts import (
 from src.cuts.lifecycle import BState, GroupState, compute_source_digest
 from src.cuts.state_snapshot import (
     F1RegionInputs,
+    F5PatternNogoodInputs,
     F6HallInputs,
     F7PowerInputs,
     GhostRect,
@@ -820,7 +821,7 @@ def _require_mapping(value: object) -> Mapping[str, Any]:
 def _rebuild_family_inputs(
     snapshot: ValidatedStateSnapshot,
     bundle: FrozenArtifactBundle,
-) -> Mapping[str, F1RegionInputs | F6HallInputs | F7PowerInputs]:
+) -> Mapping[str, F1RegionInputs | F5PatternNogoodInputs | F6HallInputs | F7PowerInputs]:
     group_demands = MappingProxyType({group_id: group.demand for group_id, group in snapshot.groups.items()})
     group_pose_domains = MappingProxyType({group_id: group.pose_domain for group_id, group in snapshot.groups.items()})
     group_to_facility_type = MappingProxyType(
@@ -876,6 +877,15 @@ def _rebuild_family_inputs(
         template_placement_rules=frozen_rules,
         template_dimensions=frozen_dimensions,
     )
+    f5 = F5PatternNogoodInputs(
+        facility_pools=pools,
+        canonical_rules=bundle.canonical_rules,
+        instance_to_facility_type=group_to_facility_type,
+        facility_templates=bundle.facility_templates,
+        group_demands=group_demands,
+        group_pose_domains=group_pose_domains,
+        artifact_hashes=snapshot.artifact_hashes,
+    )
     f6 = F6HallInputs(
         group_demands=group_demands,
         group_to_facility_type=group_to_facility_type,
@@ -895,6 +905,7 @@ def _rebuild_family_inputs(
     )
     return MappingProxyType(
         {
+            "pattern_nogood": f5,
             "power_hitting_set": f7,
             "region_capacity": f1,
             "shape_packing_hall": f6,
@@ -916,16 +927,19 @@ def test_family_input_values_are_typed_and_deeply_frozen() -> None:
     _state, _bundle, snapshot = _build_world()
 
     assert set(snapshot.family_inputs) == {
+        "pattern_nogood",
         "power_hitting_set",
         "region_capacity",
         "shape_packing_hall",
     }
     assert isinstance(snapshot.family_inputs["region_capacity"], F1RegionInputs)
+    assert isinstance(snapshot.family_inputs["pattern_nogood"], F5PatternNogoodInputs)
     assert isinstance(snapshot.family_inputs["shape_packing_hall"], F6HallInputs)
     assert isinstance(snapshot.family_inputs["power_hitting_set"], F7PowerInputs)
     assert isinstance(snapshot.family_inputs, MappingProxyType)
 
     f1 = snapshot.family_inputs["region_capacity"]
+    f5 = snapshot.family_inputs["pattern_nogood"]
     f6 = snapshot.family_inputs["shape_packing_hall"]
     f7 = snapshot.family_inputs["power_hitting_set"]
     assert {field.name for field in fields(F1RegionInputs)} == {
@@ -935,6 +949,15 @@ def test_family_input_values_are_typed_and_deeply_frozen() -> None:
         "pose_occupied_cells",
         "template_dimensions",
         "template_placement_rules",
+    }
+    assert {field.name for field in fields(F5PatternNogoodInputs)} == {
+        "artifact_hashes",
+        "canonical_rules",
+        "facility_pools",
+        "facility_templates",
+        "group_demands",
+        "group_pose_domains",
+        "instance_to_facility_type",
     }
     assert {field.name for field in fields(F6HallInputs)} == {
         "ghost",
@@ -969,6 +992,14 @@ def test_family_input_values_are_typed_and_deeply_frozen() -> None:
     assert f1.template_placement_rules["boundary_storage_port"] == "left_or_bottom_boundary"
     assert f1.template_dimensions["boundary_storage_port"] == (1, 3)
 
+    assert f5.group_demands is f1.group_demands
+    assert f5.group_pose_domains is f1.group_pose_domains
+    assert f5.instance_to_facility_type is f1.instance_to_facility_type
+    assert f5.artifact_hashes is snapshot.artifact_hashes
+    assert f5.facility_pools == _require_mapping(_bundle.candidate_placements["facility_pools"])
+    assert f5.canonical_rules is _bundle.canonical_rules
+    assert f5.facility_templates is _bundle.facility_templates
+
     assert f6.group_demands == f1.group_demands
     assert f6.group_to_facility_type == f1.instance_to_facility_type
     assert f6.template_placement_rules == f1.template_placement_rules
@@ -993,6 +1024,10 @@ def test_family_input_values_are_typed_and_deeply_frozen() -> None:
         snapshot.family_inputs["attacker"] = snapshot.family_inputs["region_capacity"]
     with pytest.raises(TypeError):
         f1.group_demands["boundary_io"] = 999
+    with pytest.raises(TypeError):
+        f5.facility_pools["attacker"] = ()
+    with pytest.raises(TypeError):
+        f5.canonical_rules["globals"]["grid"]["width"] = 999
     with pytest.raises(AttributeError):
         f1.pose_occupied_cells[("boundary_storage_port", "shared_pose")].add((69, 69))
     with pytest.raises(TypeError):

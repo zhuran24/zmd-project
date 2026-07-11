@@ -86,6 +86,24 @@ class F1RegionInputs:
 
 
 @dataclass(frozen=True, slots=True)
+class F5PatternNogoodInputs:
+    """Liftable state projection read by the F5 oracle re-verifier.
+
+    This is the recursively immutable snapshot counterpart of the legacy
+    ``LiftableScope``.  In particular it omits every incumbent-derived input
+    (selected poses, cell ownership, ghost cells, and exterior blocks).
+    """
+
+    facility_pools: Mapping[str, FrozenValue]
+    canonical_rules: Mapping[str, FrozenValue]
+    instance_to_facility_type: Mapping[str, str]
+    facility_templates: Mapping[str, FrozenValue]
+    group_demands: Mapping[str, int]
+    group_pose_domains: Mapping[str, frozenset[str]]
+    artifact_hashes: Mapping[str, str]
+
+
+@dataclass(frozen=True, slots=True)
 class F6HallInputs:
     """Facts read by the F6 Hall-witness validator/compiler chain."""
 
@@ -110,7 +128,7 @@ class F7PowerInputs:
     pole_dimensions: tuple[int, int] | None
 
 
-FamilyInputs: TypeAlias = F1RegionInputs | F6HallInputs | F7PowerInputs
+FamilyInputs: TypeAlias = F1RegionInputs | F5PatternNogoodInputs | F6HallInputs | F7PowerInputs
 
 
 @dataclass(frozen=True, slots=True)
@@ -294,7 +312,7 @@ def _freeze_groups(value: object) -> Mapping[str, GroupSnapshot]:
             raise SnapshotValidationError(f"state.groups key {group_key!r} does not match group_id {group_id!r}")
         if not _is_strict_int(raw_demand) or raw_demand < 0:
             raise SnapshotValidationError(f"state.groups[{group_key!r}].demand must be a non-negative strict int")
-        demand = cast(int, raw_demand)
+        demand = raw_demand
         if not isinstance(raw_pose_domain, Set) or isinstance(
             raw_pose_domain,
             (str, bytes),
@@ -411,23 +429,23 @@ def _freeze_source_node(value: object, *, path: tuple[str, ...]) -> FrozenValue:
     if value is None:
         return None
     if type(value) is bool:
-        return cast(bool, value)
+        return value
     if type(value) is int:
-        return cast(int, value)
+        return value
     if type(value) is float:
-        number = cast(float, value)
+        number = value
         if not math.isfinite(number):
             raise SnapshotValidationError(f"{path_text} contains a non-finite float")
         return number
     if type(value) is str:
-        return cast(str, value)
+        return value
     if isinstance(value, Mapping):
         frozen: dict[str, FrozenValue] = {}
         runtime_cache_keys = SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH.get(path, frozenset())
         for raw_key, item in value.items():
             if type(raw_key) is not str:
                 raise SnapshotValidationError(f"{path_text} contains a key that is not an exact str")
-            key = cast(str, raw_key)
+            key = raw_key
             if key in runtime_cache_keys:
                 continue
             if key in frozen:
@@ -455,7 +473,7 @@ def _freeze_source_mapping(value: object, *, field_name: str) -> Mapping[str, Fr
     frozen = _freeze_source_node(value, path=(field_name,))
     if not isinstance(frozen, Mapping):  # pragma: no cover - guarded above
         raise AssertionError("source mapping capture did not produce a mapping")
-    return cast(Mapping[str, FrozenValue], frozen)
+    return frozen
 
 
 def _require_source_str_values(
@@ -781,7 +799,7 @@ def _validate_digest_primitive(value: object, *, path: str = "projection") -> No
     if value is None or type(value) in (bool, int, str):
         return
     if type(value) is float:
-        if not math.isfinite(cast(float, value)):
+        if not math.isfinite(value):
             raise SnapshotValidationError(f"{path} contains a non-finite float")
         return
     if type(value) is list:
@@ -907,6 +925,10 @@ def build_validated_state_snapshot(
 
         group_demands = MappingProxyType({group_id: group.demand for group_id, group in groups.items()})
         group_pose_domains = MappingProxyType({group_id: group.pose_domain for group_id, group in groups.items()})
+        facility_pools = _require_mapping(
+            bundle.candidate_placements.get("facility_pools"),
+            path="bundle.candidate_placements.facility_pools",
+        )
         f1_inputs = F1RegionInputs(
             group_demands=group_demands,
             group_pose_domains=group_pose_domains,
@@ -914,6 +936,15 @@ def build_validated_state_snapshot(
             instance_to_facility_type=group_to_facility_type,
             template_placement_rules=template_placement_rules,
             template_dimensions=template_dimensions,
+        )
+        f5_inputs = F5PatternNogoodInputs(
+            facility_pools=facility_pools,
+            canonical_rules=bundle.canonical_rules,
+            instance_to_facility_type=group_to_facility_type,
+            facility_templates=bundle.facility_templates,
+            group_demands=group_demands,
+            group_pose_domains=group_pose_domains,
+            artifact_hashes=artifact_hashes,
         )
         f6_inputs = F6HallInputs(
             group_demands=group_demands,
@@ -934,6 +965,7 @@ def build_validated_state_snapshot(
         )
         family_inputs: Mapping[str, FamilyInputs] = MappingProxyType(
             {
+                "pattern_nogood": f5_inputs,
                 "power_hitting_set": f7_inputs,
                 "region_capacity": f1_inputs,
                 "shape_packing_hall": f6_inputs,
@@ -986,6 +1018,7 @@ def build_validated_state_snapshot(
 
 __all__ = [
     "F1RegionInputs",
+    "F5PatternNogoodInputs",
     "F6HallInputs",
     "F7PowerInputs",
     "GhostRect",

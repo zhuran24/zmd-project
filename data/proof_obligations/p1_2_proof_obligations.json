@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-07-03",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "2c6888dd7cca4adc3d87e8124af4e910a4cefbc4c789f7756467947c80221919",
+  "semantic_projection_sha256": "8ff3b2c9beb64eaa77df9f11bae12d7cca690eaf2d6931d765e71046387cc513",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -1014,7 +1014,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "da8adefac2d4bcd16c090dff72dff58cdfa67224c438ec1c486d859c41a42cb4",
+        "source_sha256": "10012355e1803230cb1ad48950af46d1866cd6dff3180d29a6e889c65d51bf75",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1031,7 +1031,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "c2f2b656e0452e8bfa12901a5a7e4cf3b944738fb9a47768ee411c95146bdcb9",
+        "source_sha256": "078414bef016ca5f572734062cc86168d9ef40d84956b85f48b638dd2e07b459",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1204,6 +1204,19 @@
           "INFEASIBLE"
         ],
         "source_sha256": "2588b968c5e867f1669720acd9a46b7fc28d130a325e2fd9298ac31c1e225e0d",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/typed_platform.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "2a564b35ca0063b3dc7a45dea6cbfda94acf7f57d163bfc40ba79d341d8aafc8",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

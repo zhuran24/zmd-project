@@ -12,6 +12,7 @@ import hashlib
 import importlib
 import importlib.util
 import inspect
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -654,21 +655,15 @@ def _make_pattern_nogood_cut(
 
 
 @dataclass(frozen=True)
-class _FrozenProbeProof:
-    group_id: str = "boundary_io"
-    capacity: int = 1
-
-
-@dataclass(frozen=True)
 class _DerivedProbeBody:
     group_id: str = "boundary_io"
     capacity: int = 1
 
 
 class _RecordingPlugin:
-    def __init__(self, plan: Any) -> None:
+    def __init__(self, plan: Any, proof: Any) -> None:
         self.plan = plan
-        self.proof = _FrozenProbeProof()
+        self.proof = proof
         self.body = _DerivedProbeBody()
         self.calls: dict[str, list[tuple[Any, ...]]] = {
             "compile": [],
@@ -733,6 +728,90 @@ def _make_plan(
     )
 
 
+def _make_probe_proof(typed_platform: Any, *, family: str) -> Any:
+    return typed_platform.FrozenFamilyProof(family=family, schema_version=1)
+
+
+def _trusted_test_envelope(
+    typed_platform: Any,
+    lifecycle: Any,
+    raw_cut: Any,
+    snapshot: Any,
+) -> Any:
+    """Build a full-identity envelope for platform contract tests.
+
+    The committed v1 ``CutScope`` carries only 16-hex identities and the B1.5
+    adapter must now reject it.  These tests exercise the generic typed
+    pipeline, not that legacy limitation, so their fixture binds identities
+    directly to the already-built immutable snapshot.
+    """
+
+    assert raw_cut.cert is not None
+    assert raw_cut.scope is not None
+    proof = lifecycle.validate_cert_payload(raw_cut.family, raw_cut.cert.cert_payload)
+    proof_payload = typed_platform._proof_frame(  # noqa: SLF001 - contract fixture
+        family=raw_cut.family,
+        schema_version=1,
+        proof=proof,
+    )
+    if raw_cut.scope.ghost_rect_id == lifecycle.GHOST_AGNOSTIC:
+        ghost_policy = "agnostic"
+        ghost_rect_digest = None
+        blocked_cells_digest = None
+    else:
+        assert snapshot.ghost is not None
+        ghost_policy = "bound"
+        ghost_projection = [
+            snapshot.ghost.x,
+            snapshot.ghost.y,
+            snapshot.ghost.width,
+            snapshot.ghost.height,
+        ]
+        ghost_rect_digest = hashlib.sha256(
+            b"zmd.ghost-rect.v1:"
+            + json.dumps(
+                ghost_projection,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        blocked_cells_digest = snapshot.blocked_cells_digest
+    scope = typed_platform.ScopeManifest(
+        scope_schema_version=1,
+        family=raw_cut.family,
+        ghost_policy=ghost_policy,
+        ghost_rect_digest=ghost_rect_digest,
+        blocked_cells_digest=blocked_cells_digest,
+        exterior_blocks_digest=snapshot.exterior_blocks_digest,
+        source_digest=snapshot.source_digest,
+        dependency_hashes=tuple(
+            typed_platform.DependencyHash(name=name, digest=digest)
+            for name, digest in sorted(raw_cut.scope.artifact_hashes.items())
+        ),
+        oracle_abstraction_version=raw_cut.scope.oracle_abstraction_version,
+        assumptions=tuple(
+            typed_platform.ScopeAssumption(key=item.key, value=item.value) for item in raw_cut.scope.active_assumptions
+        ),
+    )
+    return typed_platform.CutEnvelope(
+        cut_id=raw_cut.cut_id,
+        family=raw_cut.family,
+        family_schema_version=1,
+        proof_payload=proof_payload,
+        proof_hash=hashlib.sha256(proof_payload).hexdigest(),
+        scope=scope,
+        provenance=typed_platform.CutProvenance(
+            family_version=raw_cut.family_version,
+            validator_version=raw_cut.validator_version,
+            oracle_name=raw_cut.oracle_name,
+            oracle_cert_hash=raw_cut.oracle_cert_hash,
+            created_at=raw_cut.created_at,
+            iter_index=raw_cut.iter_index,
+        ),
+    )
+
+
 def _typed_execution_path(typed_platform: Any) -> Any:
     execution_path_type = getattr(typed_platform, "ExecutionPath", None)
     if execution_path_type is None:
@@ -787,7 +866,7 @@ def _f1_pipeline_inputs(
         compute_exterior_blocks_hash=lifecycle.compute_exterior_blocks_hash,
         ghost_agnostic=lifecycle.GHOST_AGNOSTIC,
     )
-    envelope = typed_platform.cut_to_envelope_v1(raw_cut)
+    envelope = _trusted_test_envelope(typed_platform, lifecycle, raw_cut, snapshot)
     return sources, bundle, snapshot, envelope
 
 
@@ -933,7 +1012,10 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
         "capacity": 1,
     }
     plan = _make_plan(typed_platform, parameters=plan_parameters)
-    plugin = _RecordingPlugin(plan)
+    plugin = _RecordingPlugin(
+        plan,
+        _make_probe_proof(typed_platform, family="region_capacity"),
+    )
     registry = _make_registry(
         typed_platform,
         plugin,
@@ -1004,7 +1086,10 @@ def test_verifier_and_compiler_receive_same_snapshot_object() -> None:
     sources, _bundle, snapshot, envelope = _f1_pipeline_inputs(
         frozen_artifacts, state_snapshot, typed_platform, lifecycle
     )
-    plugin = _RecordingPlugin(_make_plan(typed_platform))
+    plugin = _RecordingPlugin(
+        _make_plan(typed_platform),
+        _make_probe_proof(typed_platform, family="region_capacity"),
+    )
     registry = _make_registry(
         typed_platform,
         plugin,
@@ -1051,7 +1136,10 @@ def test_pipeline_reuses_frozen_proof_without_compiler_raw_byte_access() -> None
     sources, _bundle, snapshot, envelope = _f1_pipeline_inputs(
         frozen_artifacts, state_snapshot, typed_platform, lifecycle
     )
-    plugin = _RecordingPlugin(_make_plan(typed_platform))
+    plugin = _RecordingPlugin(
+        _make_plan(typed_platform),
+        _make_probe_proof(typed_platform, family="region_capacity"),
+    )
     registry = _make_registry(
         typed_platform,
         plugin,
@@ -1078,7 +1166,7 @@ def test_pipeline_reuses_frozen_proof_without_compiler_raw_byte_access() -> None
     assert not any(isinstance(argument, bytes) for argument in compile_args)
     assert not any(hasattr(argument, "cert_payload") or hasattr(argument, "proof_payload") for argument in compile_args)
     with pytest.raises(AttributeError):
-        plugin.proof.capacity = 99
+        plugin.proof.family = "attacker"
 
 
 class _UntouchedMaster:
@@ -1111,8 +1199,16 @@ def _build_shadow_result(
         compute_exterior_blocks_hash=lifecycle.compute_exterior_blocks_hash,
         compute_ghost_rect_id=lifecycle.compute_ghost_rect_id,
     )
-    shadow_envelope = typed_platform.cut_to_envelope_v1(shadow_cut)
-    shadow_plugin = _RecordingPlugin(_make_plan(typed_platform))
+    shadow_envelope = _trusted_test_envelope(
+        typed_platform,
+        lifecycle,
+        shadow_cut,
+        snapshot,
+    )
+    shadow_plugin = _RecordingPlugin(
+        _make_plan(typed_platform),
+        _make_probe_proof(typed_platform, family="pattern_nogood"),
+    )
     shadow_registry = _make_registry(
         typed_platform,
         shadow_plugin,

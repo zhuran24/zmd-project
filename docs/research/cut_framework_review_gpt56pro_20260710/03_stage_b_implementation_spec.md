@@ -167,6 +167,13 @@ ValidateAndCompileResult = CompiledCut | ShadowValidated | CutRejection
   实现者只能伪装成 rejection 或错产 CompiledCut)。
 - 三个 typed 工件(CompiledCut/ShadowValidated/ModelScopeBinding)+snapshot 全部私有
   构造+AST meta-test 钉生产构造点恰一处(strong-status allowlist 同哲学)。
+- **CutRejection 刻意公开可构造、不在私有构造之列**(B1.5 双审 codex#10 消歧):伪造
+  rejection 只能造成保守 false-negative(自拒),无 soundness 危害;「四件私有构造」
+  正字=snapshot+CompiledCut+ShadowValidated+ModelScopeBinding。
+- **异常边界(B1.5 双审 codex#1)**:单入口只允许捕获**专用语义拒绝异常类型**转
+  CutRejection;proof frame 非法、插件签名/返回类型违约、深冻结失败、TypeError/
+  AssertionError/RuntimeError/MemoryError 等表示层与 TCB 故障**必须传播**(fail-closed),
+  禁止宽泛 `except Exception` 洗成 rejection(fail-open)。
 
 ### 2.6 ModelScopeBinding 与 resolver(双审 BLOCK #6/#7 修订)
 
@@ -219,6 +226,14 @@ class ModelScopeBinding:
   proof 对象,validator 与 compiler 读同一对象(RFC 测试义务第 1 条);compiler 禁读
   raw envelope/cert bytes(现状的双解析——validator 读 geometric body、Step 8 再解
   cert(:1217-1227)——正是要消除的)。
+- **v1 scope identity 禁 rehash 截断值(B1.5 双审 codex#4)**:lifecycle 的 16-hex 截断
+  digest(64-bit)不得经再哈希冒充完整 proof identity;adapter/currentness 必须从 raw
+  preimage(ghost tuple、完整排序 cell set)以 domain-separated SHA-256 重算,与
+  snapshot 侧完整 digest(state_snapshot 已有)比对;仅 16-hex 可用的 legacy 形态
+  fail-closed。
+- **adapter 准入(B1.5 双审 codex#5)**:`payload_schema_version == 1` 严格相等;
+  `is_quarantined=True` 或非空 `quarantine_reason` 一律 fail-closed(PROJECT_LOCK
+  :404-407 quarantine 不进 active resolve),禁静默擦除。
 
 ### 2.8 FamilyCapabilityRegistry(镜像,不夺权)
 
@@ -343,6 +358,13 @@ plan 带 `blocked_cells_digest`,binding 带本体(resolver 从 snapshot 冻结�
 - spike harness(e2_harness.py)是研究工件不在生产链;B5 后重跑需适配新 step_8 签名,
   记入 harness 文件头注释,不阻塞。
 - 与三硬门「F5 shadow」、REVIEW.md:266-270、RFC-002(批 D)自洽〔双审 #13 复核为净〕。
+- **typed F5 validator=语义等价锚(B1.5 双审 codex#0,BLOCK)**:typed 路径必须完整
+  执行 legacy F5 validator 的全部义务——oracle registry 解析+version 严格核对+
+  `query_liftable` 复验且**仅 INFEASIBLE 可产 ShadowValidated**;弱于 legacy 的
+  「结构校验即 shadow」被裁定为语义不等价(codex 双复现:registry 清空/FEASIBLE
+  oracle 下 legacy 拒、typed 过)。snapshot 增 F5 family_inputs(state_snapshot.py
+  扩展+re-pin 随批 reseal);legacy-vs-typed differential 五形态钉死(registry-missing/
+  version-drift/FEASIBLE/TIMEOUT/exception)。完整复验落地前不得产 shadow。
 
 ## 6. differential 测试族(与 M2 合并,B0-B4 逐批落)
 
@@ -460,3 +482,24 @@ reseal(PIC-3 同型放大);B6 owner。
 
   **无一驳回**。v3 的三个再拍板(BState 选项 2/MasterDomainProjectionV1/step_6 attest 化)
   均取自二轮 fix 方向,标记为 B1/B3/B5 实现批的首件验证项。
+
+- **B1.5 双审补拍板(2026-07-11)**:opus(PASS_WITH_NOTES,4 LOW)+codex(BLOCK,
+  18 条:10 BLOCK+1 HIGH+7 LOW,含主动攻击实证)。traceability:
+
+  | finding | 处置 → 落点 |
+  |---|---|
+  | codex#0 BLOCK(typed F5 缺 oracle registry/version/query_liftable 复验即产 shadow) | 采纳:语义等价锚+五形态 differential+snapshot F5 inputs(§5.4) |
+  | codex#1 BLOCK(宽泛 except Exception 把 TCB 故障洗成 rejection) | 采纳:专用语义拒绝异常,其余传播(§2.5) |
+  | codex#2 BLOCK(AST 门反射/pickle/子类假阴性可铸 exact CompiledCut) | 拆分:AST 扫描器强化(别名/反射常量/引用计数)进修复批;运行时反内鬼硬化(拼名 getattr/vars/pickle 篡改/子类覆写)按 owner 2026-07-06 拍板缓入发布硬化批,与 B1 token 残余同档 |
+  | codex#3 BLOCK+opus#1 LOW(typed_platform 未进 checker floor) | 采纳=终审 reseal 计划内动作(主会话) |
+  | codex#4 BLOCK(v1 scope identity rehash 16-hex 截断值) | 采纳:raw preimage 重算+legacy-only fail-closed(§2.7) |
+  | codex#5 BLOCK(adapter 收非 v1 schema+静默擦 quarantine) | 采纳:==1 严格+quarantine fail-closed(§2.7) |
+  | codex#6 BLOCK(FamilyPlugin 返回类型合同弱) | 采纳:精确标注+runtime 返回/arity 验证+负测 |
+  | codex#7 BLOCK(CutEnvelope 不在全仓唯一性 AST 钉内) | 采纳:CutEnvelope 构造进全仓 allowlist |
+  | codex#8 BLOCK(registry 跨表一致性 CI 钉缺失) | 采纳:meta-test(registry vs replay dispatch vs lifecycle step_8 分支) |
+  | codex#9 BLOCK(strict mypy 27 错不可复现绿;preflight mypy 不含新 TCB) | 采纳:casts 清理(修复批)+preflight mypy targets 扩面(主会话终审) |
+  | codex#10 HIGH(CutRejection 被要求私有=与规格冲突) | **驳回实现改动**:审计任务书笔误,规格为准——CutRejection 刻意公开(§2.5 消歧) |
+  | codex#11-#17 LOW(纯函数性表述/Shadow 完整性/digest 攻击失败/registry 矩阵净/测试无空心/公开面净/并发漂移隔离) | 记录性:#13 补三攻击回归防漂移(修复批);#17=主会话自己的 CI 调参,已隔离 |
+  | opus#2 LOW(CutEnvelope 调用面钉未落) | 并入 codex#7 处置 |
+  | opus#3 LOW(token 模块全局可导入) | owner-deferred 同档入档(同 B1) |
+  | opus#4 LOW(顶层类型违法 raise 而非三分支) | 符合 §2.5 异常边界(fail-closed 方向),B5 编排侧注意事项已在 §4.7 |
