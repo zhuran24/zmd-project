@@ -24,18 +24,14 @@ PACKAGE_EXCLUDED_PREFIXES = (
     "P1_2_TECHNICAL_CLOSE_PACKET/",
     "补丁包/",
 )
-PACKAGE_EXCLUDED_EXACT_NAMES = frozenset(
-    {
-        "agents.md",
-        "claude.md",
-    }
-)
-# Agent/collaboration infrastructure that is NOT part of the reviewed project artifact and must
-# never leak into an external review snapshot: agent settings/hooks (.claude/, .codex/), live
-# session scratch (_cc_live_memory/, cc_context/), and the two persistent memory subsystems
-# (cc_memory/ = pull-type SQLite history incl. owner rulings/internal reasoning; cc_memory_vnext/
-# = push-type cards incl. internal gap maps). These are the same category as the already-excluded
-# siblings; they were simply missing from this list. The reviewed surface is src/rules/data/docs.
+PACKAGE_EXCLUDED_EXACT_NAMES = frozenset[str]()
+# Owner ruling 2026-07-12: repo contents are exportable by default — genuinely sensitive
+# material is kept out of the repository at the source, so CLAUDE.md/agents.md and the two
+# persistent memory subsystems (cc_memory/, cc_memory_vnext/) are REVIEWABLE surface (memory
+# cards are a second documentation system whose drift is exactly what a docs-layer review
+# should catch). Still excluded: tool runtime config (.claude/, .codex/), live session
+# scratch (_cc_live_memory/, cc_context/), build artifacts, and prior review packets —
+# these are transient/mechanical, not reviewed documents.
 PACKAGE_EXCLUDED_PATH_PREFIXES = (
     ".artifacts/",
     ".claude/",
@@ -43,8 +39,6 @@ PACKAGE_EXCLUDED_PATH_PREFIXES = (
     "P1_2_TECHNICAL_CLOSE_PACKET/",
     "_cc_live_memory/",
     "cc_context/",
-    "cc_memory/",
-    "cc_memory_vnext/",
     "补丁包/",
 )
 PACKAGE_EXCLUDED_PATH_SEGMENTS = frozenset(

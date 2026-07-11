@@ -57,22 +57,29 @@ def test_package_review_snapshot_default_targeted_tests_exist() -> None:
 
 def test_package_review_snapshot_excludes_agent_memory_and_review_packets() -> None:
     cases = {
-        "AGENTS.md": "agent_instruction_file",
-        "docs/sub/CLAUDE.md": "agent_instruction_file",
         "docs/external_review/old_packet.md": "old_review_packet_path",
         "notes/review_request.md": "prompt_like_path",
         "archives/pr1.7z": "archive_path",
-        # Persistent collaboration-memory subsystems are agent infrastructure, not the reviewed
-        # artifact: cc_memory/ (pull-type SQLite history incl. owner rulings/internal reasoning)
-        # and cc_memory_vnext/ (push-type cards incl. internal gap maps) must be dropped by the
-        # same path-prefix mechanism as .claude/ / .codex/ / _cc_live_memory/ / cc_context/.
-        "cc_memory/memory.db": "excluded_package_prefix",
-        "cc_memory/exports/MEMORY.md": "excluded_package_prefix",
-        "cc_memory_vnext/cards/deliberate-insider-hardening-deferred-to-release.md": "excluded_package_prefix",
-        "cc_memory_vnext/.index/frame.json": "excluded_package_prefix",
+        # Tool runtime config / live scratch stay excluded (transient, not reviewed docs).
+        ".claude/settings.local.json": "excluded_package_prefix",
+        "cc_context/scratch.md": "excluded_package_prefix",
     }
     for rel_path, reason in cases.items():
         assert package_review_snapshot._package_exclusion_reason(rel_path) == reason
+
+    # Owner ruling 2026-07-12: agent instruction files and the two persistent memory
+    # subsystems are REVIEWABLE surface (repo contents exportable by default; genuinely
+    # sensitive material never enters the repo). Pin the inclusion so a future "helpful"
+    # re-exclusion is a visible decision, not a silent regression.
+    for rel_path in (
+        "AGENTS.md",
+        "docs/sub/CLAUDE.md",
+        "cc_memory/memory.db",
+        "cc_memory/exports/MEMORY.md",
+        "cc_memory_vnext/cards/deliberate-insider-hardening-deferred-to-release.md",
+        "cc_memory_vnext/.index/frame.json",
+    ):
+        assert package_review_snapshot._package_exclusion_reason(rel_path) is None
 
     assert (
         package_review_snapshot._package_exclusion_reason(
@@ -128,8 +135,9 @@ def test_package_review_snapshot_binds_commit_tree_and_dirty_state(tmp_path: Pat
     excluded_paths = {item["path"]: item["reason"] for item in excluded}
 
     assert "src/app.py" in inventory_paths
-    assert "AGENTS.md" not in inventory_paths
-    assert excluded_paths["AGENTS.md"] == "agent_instruction_file"
+    # Owner ruling 2026-07-12: agent instruction files are reviewable surface.
+    assert "AGENTS.md" in inventory_paths
+    assert "AGENTS.md" not in excluded_paths
     assert excluded_paths["docs/external_review/old.md"] == "old_review_packet_path"
     assert (destination / "src" / "app.py").read_text(encoding="utf-8") == "VALUE = 'committed'\n"
 
