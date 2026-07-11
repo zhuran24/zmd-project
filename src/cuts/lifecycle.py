@@ -1251,7 +1251,7 @@ class MasterModelLike(Protocol):
     in duck-typed by the LBBD wiring (M3-4).
     """
 
-    def add_region_capacity_cut(
+    def _lower_region_capacity_cut(
         self,
         *,
         group_cell_weights: Mapping[str, int],
@@ -1259,7 +1259,7 @@ class MasterModelLike(Protocol):
         condition_lits: Sequence[Any] = (),
     ) -> bool: ...
 
-    def add_power_pose_exclusion_cut(
+    def _lower_power_pose_exclusion_cut(
         self,
         *,
         group_id: str,
@@ -1268,19 +1268,12 @@ class MasterModelLike(Protocol):
         condition_lits: Sequence[Any],
     ) -> bool: ...
 
-    def add_baseline_packing_cut(
+    def _lower_baseline_packing_cut(
         self,
         *,
         group_id: str,
         region_kind: str,
         capacity: int,
-        condition_lits: Sequence[Any],
-    ) -> bool: ...
-
-    def add_pattern_nogood_cut(
-        self,
-        *,
-        pattern: Sequence[Tuple[str, str]],
         condition_lits: Sequence[Any],
     ) -> bool: ...
 

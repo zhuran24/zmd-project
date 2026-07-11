@@ -13,6 +13,7 @@ import importlib
 import importlib.util
 import inspect
 import json
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -458,6 +459,285 @@ class OtherSnapshot:
         filename="src/cuts/state_snapshot.py",
     )
     assert len(owner_violations) == 1, owner_violations
+
+
+# ---------------------------------------------------------------------------
+# B5b §4.10 / §7 拍板 4: _coordinate_delegate acquisition lockdown.
+#
+# After the master framework-cut API is privatised to ``_lower_*``, the sole
+# sanctioned mutation path is: typed_apply → facade ``_lower_*`` → getattr on
+# ``self._coordinate_delegate`` → backend ``_lower_*``.  Acquiring the delegate
+# handle anywhere else lets code call the private backend ``_lower_*`` directly,
+# bypassing both the facade guard and the typed chain.  This guard pins EVERY
+# current delegate acquisition (both ``x._coordinate_delegate`` attribute reads
+# and ``getattr(x, "_coordinate_delegate")`` reflection) across all production
+# files; any NEW acquisition — the only way to reach the private backend outside
+# the facade — turns this test red until it is reviewed and allowlisted.  This
+# batch grandfathers the existing surface (本批不清理既有面,只封新增); the three
+# facade ``_lower_*`` methods are the owner scope and are exempt (照
+# ``_PRIVATE_SYMBOL_OWNER_SCOPES``).  Assigning to ``self._coordinate_delegate``
+# (Store) is the delegate's birth site, not an acquisition, and is not counted.
+# ---------------------------------------------------------------------------
+
+_COORDINATE_DELEGATE_ATTR = "_coordinate_delegate"
+
+_COORDINATE_DELEGATE_OWNER_EXEMPT = frozenset(
+    {
+        ("src/models/master_model.py", "MasterPlacementModel", "_lower_region_capacity_cut"),
+        ("src/models/master_model.py", "MasterPlacementModel", "_lower_baseline_packing_cut"),
+        ("src/models/master_model.py", "MasterPlacementModel", "_lower_power_pose_exclusion_cut"),
+    }
+)
+
+_COORDINATE_DELEGATE_ACQUISITION_ALLOWLIST: "Counter[tuple[str, str | None, str | None]]" = Counter(
+    {
+        ("src/cuts/lifecycle.py", None, "_live_master_domain_projection"): 1,
+        ("src/models/master_model.py", "MasterPlacementModel", "_validate_coordinate_forced_hint"): 2,
+        ("src/models/master_model.py", "MasterPlacementModel", "add_benders_cut"): 2,
+        ("src/models/master_model.py", "MasterPlacementModel", "apply_master_hints"): 2,
+        ("src/models/master_model.py", "MasterPlacementModel", "build"): 7,
+        ("src/models/master_model.py", "MasterPlacementModel", "build_exact_candidate_warm_start"): 3,
+        ("src/models/master_model.py", "MasterPlacementModel", "build_exact_core"): 2,
+        ("src/models/master_model.py", "MasterPlacementModel", "extract_master_hints"): 2,
+        ("src/models/master_model.py", "MasterPlacementModel", "extract_solution"): 2,
+        ("src/models/master_model.py", "MasterPlacementModel", "from_exact_core"): 10,
+        ("src/models/master_model.py", "MasterPlacementModel", "solve"): 2,
+        ("src/models/master_model.py", None, "evaluate_ghost_overlap_forced_domain_conflict"): 1,
+        ("src/models/master_model.py", None, "evaluate_ghost_y_overlap_forced_label_conflict"): 1,
+        ("src/models/master_model.py", None, "evaluate_same_x_strip_fixed_ghost_capacity_conflict"): 1,
+        ("src/models/master_model.py", None, "evaluate_signature_monotonic_forced_label_conflict"): 1,
+        ("src/search/benders_loop.py", "LBBDController", "_run_certified_exact"): 2,
+        ("src/search/benders_loop.py", "LBBDController", "_run_exact_binding_and_routing"): 9,
+        ("src/search/benders_loop.py", None, "run_benders_for_ghost_rect"): 1,
+        (
+            "src/search/phase3b/active_guard/proto_shape_audit.py",
+            None,
+            "build_phase3b_active_guard_proto_shape_audit",
+        ): 1,
+        ("src/search/phase3b/anchor119/mixed_lane_tiling_verifier.py", None, "_build_model"): 1,
+        ("src/search/phase3b/anchor_inventory/domain_inventory.py", None, "_mandatory_group_domain_entry"): 3,
+        ("src/search/phase3b/anchor_inventory/domain_inventory.py", None, "_optional_domain_entries"): 1,
+        ("src/search/phase3b/anchor_inventory/dynamic_coupling_audit.py", None, "_anchor_dynamic_profile"): 1,
+        ("src/search/phase3b/anchor_inventory/dynamic_coupling_audit.py", None, "_model_profile"): 1,
+        ("src/search/phase3b/anchor_inventory/packable_pole_audit.py", None, "_anchor_packable_profile"): 1,
+        (
+            "src/search/phase3b/coordinate_validation/capacity_cut_design.py",
+            None,
+            "build_phase3b_coordinate_validation_capacity_cut_design",
+        ): 1,
+        (
+            "src/search/phase3b/coordinate_validation/global_family_delta.py",
+            None,
+            "build_phase3b_coordinate_validation_global_family_delta",
+        ): 1,
+        (
+            "src/search/phase3b/coordinate_validation/no_overlap_subset_delta.py",
+            None,
+            "build_phase3b_coordinate_validation_no_overlap_subset_delta",
+        ): 1,
+        (
+            "src/search/phase3b/coordinate_validation/target_ghost_capacity_repro.py",
+            None,
+            "build_phase3b_coordinate_validation_target_ghost_capacity_repro",
+        ): 1,
+        (
+            "src/search/phase3b/coordinate_validation/x_domain_order_audit.py",
+            None,
+            "build_phase3b_coordinate_validation_x_domain_order_audit",
+        ): 1,
+        ("src/search/phase3b/cover/literal_scale_estimate.py", None, "_anchor_scale_estimate"): 1,
+        ("src/search/phase3b/family_bound/audit.py", None, "_audit_anchor_family"): 2,
+        ("src/search/phase3b/family_bound/audit.py", None, "_blocked_family_counts"): 1,
+        ("src/search/phase3b/family_bound/audit.py", None, "_family_global_upper_bound"): 1,
+        ("src/search/phase3b/family_bound/audit.py", None, "_family_sizes"): 1,
+        ("src/search/phase3b/family_bound/audit.py", None, "_proto_constraint_payload"): 1,
+        (
+            "src/search/phase3b/family_lookup/assignment_audit.py",
+            None,
+            "build_phase3b_family_lookup_assignment_audit",
+        ): 1,
+        (
+            "src/search/phase3b/family_lookup/encoding_equivalence.py",
+            None,
+            "build_phase3b_family_lookup_encoding_equivalence",
+        ): 1,
+        ("src/search/phase3b/family_lookup/medium_repro.py", None, "_medium_repro_extraction"): 1,
+        ("src/search/phase3b/forced_anchor/model_slice.py", None, "_custom_variant_disabled_indices"): 1,
+        ("src/search/phase3b/forced_anchor/model_slice.py", None, "_power_capacity_gvi_coefficients"): 1,
+        ("src/search/phase3b/forced_anchor/model_slice.py", None, "_power_family_channeling_slots"): 1,
+        ("src/search/phase3b/forced_anchor/model_slice.py", None, "_power_family_count_var_indices"): 1,
+        ("src/search/phase3b/forced_anchor/model_slice.py", None, "_power_family_shell_pair_table_payload"): 1,
+        ("src/search/phase3b/forced_anchor/model_slice.py", None, "_target_power_family_count_var_index"): 1,
+        ("src/search/phase3b/forced_anchor/model_slice.py", None, "_variant_constraints"): 1,
+        (
+            "src/search/phase3b/forced_anchor/proto_reduction.py",
+            None,
+            "_add_power_coverage_selected_coord_literal_replacement",
+        ): 1,
+        (
+            "src/search/phase3b/forced_anchor/proto_reduction.py",
+            None,
+            "_add_power_coverage_template_index_active_prefix_guard",
+        ): 1,
+        (
+            "src/search/phase3b/forced_anchor/proto_reduction.py",
+            None,
+            "_add_power_coverage_template_index_restriction",
+        ): 1,
+        ("src/search/phase3b/mandatory_core/mandatory_core_encoding.py", None, "_encoding_payload"): 1,
+        ("src/search/phase3b/mandatory_core/mandatory_core_matrix.py", None, "_residual_active_indices"): 1,
+        ("src/search/phase3b/pose_order/greedy_pose_order_comparison.py", None, "_target_pose_xy"): 1,
+        ("src/search/phase3b/power_coverage/witness_domain.py", None, "_anchor_witness_domain"): 1,
+        ("src/search/phase3b/protocol/protocol_witness_prefix_audit.py", None, "_family_prefix_capacity_summary"): 1,
+        ("src/search/phase3b/protocol/protocol_witness_prefix_audit.py", None, "_overlay_summary"): 1,
+        ("src/search/phase3b/residual_optional/residual_optional_encoding.py", None, "_encoding_payload"): 1,
+        ("src/search/phase3b/selected_block/equivalence.py", None, "_build_case"): 1,
+        (
+            "src/search/phase3b/signature_monotonic/forced_label_audit.py",
+            None,
+            "build_phase3b_signature_monotonic_forced_label_audit",
+        ): 1,
+        (
+            "src/search/phase3b/signature_region/equivalence_audit.py",
+            None,
+            "build_phase3b_signature_region_equivalence_audit",
+        ): 1,
+    }
+)
+
+
+class _CoordinateDelegateAcquisitionCollector(ast.NodeVisitor):
+    """Records every ``_coordinate_delegate`` acquisition (attribute read or
+    ``getattr`` reflection), bucketed by (file, enclosing class, enclosing
+    function).  Owner-scope acquisitions are dropped (照 ``_record_forbidden_symbol``).
+
+    Threat-model boundary (B5b dual-review, both positions LOW): this is a
+    review TRIPWIRE against *naturally written* new call sites — it matches only
+    ``x._coordinate_delegate`` attribute loads and ``getattr(x, "<literal>")``.
+    Dynamic reflection (``operator.attrgetter``, string concatenation, variable
+    attribute names, ``vars()``/``__dict__``) escapes it by construction; a green
+    run is NOT proof of absence.  The hard stops remain the runtime layers:
+    ``EXACT_CUT_FRAMEWORK_ATTACH`` in the certified unsafe-map and the facade
+    structure itself.  Same boundary applies to the ``_lower_*``/``
+    _build_model_scope_binding`` caller pins in test_stage_b_typed_platform.py."""
+
+    def __init__(self, filename: str, owner_exempt: frozenset[tuple[str, str | None, str | None]]) -> None:
+        self.filename = filename
+        self.owner_exempt = owner_exempt
+        self.class_stack: list[str | None] = [None]
+        self.function_stack: list[str | None] = [None]
+        self.acquisitions: list[tuple[str, str | None, str | None, int]] = []
+
+    def _visit_definition_header(self, node: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef) -> None:
+        for field_name, value in ast.iter_fields(node):
+            if field_name == "body":
+                continue
+            if isinstance(value, ast.AST):
+                self.visit(value)
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, ast.AST):
+                        self.visit(item)
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        self._visit_definition_header(node)
+        self.class_stack.append(node.name)
+        for statement in node.body:
+            self.visit(statement)
+        self.class_stack.pop()
+
+    def _visit_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        self._visit_definition_header(node)
+        self.function_stack.append(node.name)
+        for statement in node.body:
+            self.visit(statement)
+        self.function_stack.pop()
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self._visit_function(node)
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        self._visit_function(node)
+
+    def _record(self, node: ast.AST) -> None:
+        key = (self.filename, self.class_stack[-1], self.function_stack[-1])
+        if key in self.owner_exempt:
+            return
+        self.acquisitions.append((key[0], key[1], key[2], node.lineno))
+
+    def visit_Attribute(self, node: ast.Attribute) -> None:
+        if isinstance(node.ctx, ast.Load) and node.attr == _COORDINATE_DELEGATE_ATTR:
+            self._record(node)
+        self.generic_visit(node)
+
+    def visit_Call(self, node: ast.Call) -> None:
+        func = node.func
+        if (
+            isinstance(func, ast.Name)
+            and func.id == "getattr"
+            and len(node.args) >= 2
+            and isinstance(node.args[1], ast.Constant)
+            and node.args[1].value == _COORDINATE_DELEGATE_ATTR
+        ):
+            self._record(node)
+        self.generic_visit(node)
+
+
+def test_coordinate_delegate_acquisition_is_allowlisted() -> None:
+    acquisitions: list[tuple[str, str | None, str | None, int]] = []
+    production_files = _production_python_files()
+    for path in production_files:
+        relative = path.relative_to(REPO_ROOT).as_posix()
+        collector = _CoordinateDelegateAcquisitionCollector(relative, _COORDINATE_DELEGATE_OWNER_EXEMPT)
+        collector.visit(ast.parse(path.read_text(encoding="utf-8"), filename=relative))
+        acquisitions.extend(collector.acquisitions)
+
+    assert production_files, "production AST scan unexpectedly covered no Python files"
+    actual: "Counter[tuple[str, str | None, str | None]]" = Counter(
+        (filename, class_name, function_name) for filename, class_name, function_name, _line in acquisitions
+    )
+    drift = sorted(set(actual) ^ set(_COORDINATE_DELEGATE_ACQUISITION_ALLOWLIST))
+    assert actual == _COORDINATE_DELEGATE_ACQUISITION_ALLOWLIST, (
+        "new/moved _coordinate_delegate acquisition (allowlist drift):\n"
+        + "\n".join(
+            f"  {key}: allow={_COORDINATE_DELEGATE_ACQUISITION_ALLOWLIST.get(key, 0)} actual={actual.get(key, 0)}"
+            for key in drift
+        )
+    )
+
+
+def test_coordinate_delegate_acquisition_analyzer_catches_attribute_and_reflection() -> None:
+    source = """
+class Owner:
+    def sanctioned(self):
+        return self._coordinate_delegate  # exempt owner scope
+
+def reach_attr(model):
+    return model._coordinate_delegate
+
+def reach_getattr(model):
+    return getattr(model, "_coordinate_delegate", None)
+
+def nested_getattr(model):
+    return getattr(getattr(model, "_coordinate_delegate", None), "mandatory_slots", {})
+
+def not_an_acquisition(obj):
+    obj._coordinate_delegate = 1  # Store — the delegate's birth site, not a read
+    return obj._other_attr  # non-target attribute
+"""
+    exempt = frozenset({("attack.py", "Owner", "sanctioned")})
+    collector = _CoordinateDelegateAcquisitionCollector("attack.py", exempt)
+    collector.visit(ast.parse(source, filename="attack.py"))
+    got = Counter(
+        (filename, class_name, function_name) for filename, class_name, function_name, _line in collector.acquisitions
+    )
+    assert got == Counter(
+        {
+            ("attack.py", None, "reach_attr"): 1,
+            ("attack.py", None, "reach_getattr"): 1,
+            ("attack.py", None, "nested_getattr"): 1,
+        }
+    ), got
 
 
 def _mutable_stage_b_sources(
@@ -1766,15 +2046,81 @@ def test_failed_lowering_preserves_master_proto_and_internal_caches(
     assert delegate is not None
     valid_group = str(master._group_id_by_instance["miner_001"])
     group_cell_weights = {valid_group: 1, "zz_missing_group": 1}
-    lower = getattr(delegate, "_lower_region_capacity_cut", None)
-    if lower is None:
-        lower = delegate.add_region_capacity_cut
+    # B5b landed the atomic _lower_region_capacity_cut (the xfail beacon gates
+    # this test on its existence), so the delegate always carries it now.
+    lower = delegate._lower_region_capacity_cut
     before = _real_master_mutation_projection(master, proto_path=tmp_path / "before.pb")
 
     applied = lower(
         group_cell_weights=group_cell_weights,
         capacity=1,
         condition_lits=(),
+    )
+
+    assert applied is False
+    assert _real_master_mutation_projection(master, proto_path=tmp_path / "after.pb") == before
+
+
+def test_f6_failed_lowering_preserves_master_proto_and_internal_caches(
+    tmp_path: Path,
+) -> None:
+    """§4.11 atomicity for F6 baseline-packing (pure-new B5b differential test).
+
+    A pose with empty ``occupied_cells`` trips the precheck's per-pose guard, but
+    only AFTER an earlier on-baseline pose would have minted its presence literal
+    under the legacy interleaving.  The precheck front-move decides the whole cut
+    before the first mutation, so the rejection leaves the model proto and every
+    literal cache byte-for-byte unchanged.
+    """
+    from src.tests.cuts.test_stage_b_shape_packing_hall import (
+        _ALL_POSES,
+        _FACILITY_TYPE,
+        _build_tiny_master,
+    )
+
+    master = _build_tiny_master(_ALL_POSES)
+    group_id = str(master._group_id_by_instance["port_001"])
+    # Corrupt a higher-indexed pose so the pose-loop guard fires downstream of an
+    # on-baseline representable pose (the legacy mutate-then-False window).
+    master.facility_pools[_FACILITY_TYPE][-1]["occupied_cells"] = []
+    before = _real_master_mutation_projection(master, proto_path=tmp_path / "before.pb")
+
+    applied = master._lower_baseline_packing_cut(
+        group_id=group_id,
+        region_kind="left_baseline",
+        capacity=1,
+        condition_lits=(master.u_vars[35],),
+    )
+
+    assert applied is False
+    assert _real_master_mutation_projection(master, proto_path=tmp_path / "after.pb") == before
+
+
+def test_f7_failed_lowering_preserves_master_proto_and_internal_caches(
+    tmp_path: Path,
+) -> None:
+    """F7 clean-rejection regression pin (NOT a discriminating §4.11 differential).
+
+    B5b dual-review (design LOW #1): F7 never had a mint-then-fail path — the
+    legacy `_pose_present_literal` None-branches all precede their mints, so the
+    §4.11 precheck front-move is a vacuous no-op for F7 (no behavioral delta;
+    the genuinely discriminating atomicity differentials are the F1/F6 tests
+    above).  This test pins the clean-rejection property itself: an
+    unknown-group rejection must leave proto and literal caches byte-identical.
+    """
+    from src.tests.cuts.test_stage_b_power_hitting_set import (
+        _TARGET_POSE_ID,
+        _build_master,
+    )
+
+    master = _build_master(skip_power_coverage=True)
+    before = _real_master_mutation_projection(master, proto_path=tmp_path / "before.pb")
+
+    applied = master._lower_power_pose_exclusion_cut(
+        group_id="zz_missing_group",
+        pose_id=_TARGET_POSE_ID,
+        blocked_cells={(2, 1)},
+        condition_lits=(master.u_vars[0],),
     )
 
     assert applied is False

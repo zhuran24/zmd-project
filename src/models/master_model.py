@@ -12144,7 +12144,7 @@ class MasterPlacementModel:
         self._status = None
         return True
 
-    def add_region_capacity_cut(
+    def _lower_region_capacity_cut(
         self,
         *,
         group_cell_weights: Mapping[str, int],
@@ -12157,10 +12157,14 @@ class MasterPlacementModel:
         other backend (pose-bool delegate, non-exact modes) fails closed
         (False → step_8 raises, no partial attach). ``condition_lits`` carries
         the selected ghost literal(s) for ghost-bound cuts (M4-A conditioning).
+
+        Private (``_lower_*``): the only sanctioned caller is the typed plan
+        interpreter via this facade — the AST lockdown (test_stage_b) pins the
+        call sites and bars reaching the backend through ``_coordinate_delegate``.
         """
         if self.exact_mode and self._coordinate_delegate is not None:
             delegate_fn = getattr(
-                self._coordinate_delegate, "add_region_capacity_cut", None
+                self._coordinate_delegate, "_lower_region_capacity_cut", None
             )
             if delegate_fn is None:
                 return False
@@ -12171,7 +12175,7 @@ class MasterPlacementModel:
             )
         return False
 
-    def add_power_pose_exclusion_cut(
+    def _lower_power_pose_exclusion_cut(
         self,
         *,
         group_id: str,
@@ -12181,12 +12185,14 @@ class MasterPlacementModel:
     ) -> bool:
         """F7 power_hitting_set ghost-conditioned presence exclusion (M4-A).
 
-        Same fail-closed shape as add_region_capacity_cut: only the exact
+        Same fail-closed shape as _lower_region_capacity_cut: only the exact
         coordinate delegate implements it, everything else returns False.
+        Private (``_lower_*``): sole sanctioned caller is the typed interpreter
+        via this facade (AST lockdown pins the call sites).
         """
         if self.exact_mode and self._coordinate_delegate is not None:
             delegate_fn = getattr(
-                self._coordinate_delegate, "add_power_pose_exclusion_cut", None
+                self._coordinate_delegate, "_lower_power_pose_exclusion_cut", None
             )
             if delegate_fn is None:
                 return False
@@ -12198,7 +12204,7 @@ class MasterPlacementModel:
             )
         return False
 
-    def add_baseline_packing_cut(
+    def _lower_baseline_packing_cut(
         self,
         *,
         group_id: str,
@@ -12210,10 +12216,12 @@ class MasterPlacementModel:
 
         Same fail-closed shape as the other framework cut APIs: only the
         exact coordinate delegate implements it, everything else returns False.
+        Private (``_lower_*``): sole sanctioned caller is the typed interpreter
+        via this facade (AST lockdown pins the call sites).
         """
         if self.exact_mode and self._coordinate_delegate is not None:
             delegate_fn = getattr(
-                self._coordinate_delegate, "add_baseline_packing_cut", None
+                self._coordinate_delegate, "_lower_baseline_packing_cut", None
             )
             if delegate_fn is None:
                 return False
@@ -12221,29 +12229,6 @@ class MasterPlacementModel:
                 group_id=group_id,
                 region_kind=region_kind,
                 capacity=capacity,
-                condition_lits=condition_lits,
-            )
-        return False
-
-    def add_pattern_nogood_cut(
-        self,
-        *,
-        pattern: Sequence[Tuple[str, str]],
-        condition_lits: Sequence[Any],
-    ) -> bool:
-        """F5 pattern_nogood ghost-conditioned presence nogood (M4-D3).
-
-        Same fail-closed shape as the other framework cut APIs: only the
-        exact coordinate delegate implements it, everything else returns False.
-        """
-        if self.exact_mode and self._coordinate_delegate is not None:
-            delegate_fn = getattr(
-                self._coordinate_delegate, "add_pattern_nogood_cut", None
-            )
-            if delegate_fn is None:
-                return False
-            return delegate_fn(
-                pattern=pattern,
                 condition_lits=condition_lits,
             )
         return False

@@ -1083,9 +1083,7 @@ def test_production_registry_replay_and_step_8_family_tables_are_consistent() ->
         and capability.execution_path is ExecutionPath.LEGACY_DIAGNOSTIC
     }
     compilable = {
-        family
-        for family, capability in registry.capabilities.items()
-        if capability.stage is CapabilityStage.COMPILABLE
+        family for family, capability in registry.capabilities.items() if capability.stage is CapabilityStage.COMPILABLE
     }
 
     assert retired == {"power_grid_reach"}
@@ -1769,6 +1767,13 @@ def test_f5_oracle_version_must_be_nonempty_exact_string() -> None:
     assert isinstance(result, CutRejection)
 
 
+# Private typed-platform construction points plus the private master-lowering
+# call sites (B5b §4.10/§7 拍板 1-2). The same call collector pins:
+#   - the typed construction factories (CompiledCut/CutEnvelope/…/ModelScopeBinding);
+#   - ``_build_model_scope_binding`` — sole legal caller is the resolver
+#     ``_resolve_model_scope_binding`` (B5a LOW×2 amendment ①);
+#   - the three private ``_lower_*_cut`` master mutation methods — only the typed
+#     plan interpreter (typed_apply) and the master facade delegate may call them.
 _PRIVATE_CONSTRUCTION_SYMBOLS = frozenset(
     {
         "CompiledCut",
@@ -1776,6 +1781,10 @@ _PRIVATE_CONSTRUCTION_SYMBOLS = frozenset(
         "FamilyCapabilityRegistry",
         "ModelScopeBinding",
         "ShadowValidated",
+        "_build_model_scope_binding",
+        "_lower_region_capacity_cut",
+        "_lower_baseline_packing_cut",
+        "_lower_power_pose_exclusion_cut",
     }
 )
 
@@ -2214,6 +2223,51 @@ def test_private_typed_construction_points_are_exactly_allowlisted() -> None:
                 "src/cuts/typed_platform.py",
                 None,
                 "validate_and_compile_cut",
+            ): 1,
+            # B5b §7 拍板 1: the ModelScopeBinding factory's sole legal caller.
+            (
+                "_build_model_scope_binding",
+                "src/cuts/lifecycle.py",
+                None,
+                "_resolve_model_scope_binding",
+            ): 1,
+            # B5b §7 拍板 2: each private master-lowering method may be called
+            # only by the typed plan interpreter and its own facade delegate.
+            (
+                "_lower_region_capacity_cut",
+                "src/cuts/typed_apply.py",
+                None,
+                "apply_compiled_cut",
+            ): 1,
+            (
+                "_lower_region_capacity_cut",
+                "src/models/master_model.py",
+                "MasterPlacementModel",
+                "_lower_region_capacity_cut",
+            ): 1,
+            (
+                "_lower_baseline_packing_cut",
+                "src/cuts/typed_apply.py",
+                None,
+                "apply_compiled_cut",
+            ): 1,
+            (
+                "_lower_baseline_packing_cut",
+                "src/models/master_model.py",
+                "MasterPlacementModel",
+                "_lower_baseline_packing_cut",
+            ): 1,
+            (
+                "_lower_power_pose_exclusion_cut",
+                "src/cuts/typed_apply.py",
+                None,
+                "apply_compiled_cut",
+            ): 1,
+            (
+                "_lower_power_pose_exclusion_cut",
+                "src/models/master_model.py",
+                "MasterPlacementModel",
+                "_lower_power_pose_exclusion_cut",
             ): 1,
         }
     )

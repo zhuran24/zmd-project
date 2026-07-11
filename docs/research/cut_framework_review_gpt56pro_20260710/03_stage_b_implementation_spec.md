@@ -744,7 +744,71 @@ step_7 violation filter 退役论证经专项复核成立。amendment 处置:
    今天成立)——**新增族落地批必须保持 projection 域分离**,违反即 family 误判
    (fail-closed 方向,登记为结构义务)。
 
-## 8. 风险登记与处置(v2 增补)
+**B5b 开工拍板(2026-07-11 夜,双读者侦察 A=AST/私有化面+B=fixture 面到齐后定,
+八项)**:
+
+1. **AST caller 钉(义务①②合并)**:`"_build_model_scope_binding"` 加进
+   `_PRIVATE_CONSTRUCTION_SYMBOLS`(test_stage_b_typed_platform.py:1772),expected
+   Counter 加恰一条 `("_build_model_scope_binding","src/cuts/lifecycle.py",None,
+   "_resolve_model_scope_binding"):1`——现有 collector 机制自动执法,锁死工厂唯一
+   caller。运行时 token 拒绝红测已在位(:2346),义务②无新增运行时内容。
+2. **add_* 双层改名(§4.10)**:facade(master_model.py:12147/12174/12201)与 backend
+   (exact_coordinate_master.py:7823/7942/8032)三方法改 `_lower_region_capacity_cut`/
+   `_lower_baseline_packing_cut`/`_lower_power_pose_exclusion_cut`(命名统一
+   `_lower_<原名去 add_>`,与哨兵 5 的 F1 锚一致);`MasterModelLike` protocol
+   (lifecycle.py:1254-1280)三声明同步;typed_apply.py 调用点(:55/:61/:75)同步。
+3. **F5 `add_pattern_nogood_cut` 物理退役**:facade(:12228)+backend(:8104)+protocol
+   声明(:1280)三处删除(生产死代码,typed_apply 无 F5 operation;e2_harness.py 研究
+   工件引用不算生产面)。
+4. **getattr 旁路 AST 拒绝(B5b 主工程量,悬念 1 拍板)**:新 AST 逻辑拒绝全仓
+   `_coordinate_delegate` 属性获取旁路,facade 三个 `_lower_*` 方法作用域走
+   **owner-scope 豁免**(照 `_PRIVATE_SYMBOL_OWNER_SCOPES` 先例,:36-39 机制)。
+   双审重点专项。
+5. **§4.11 precheck 前移**:落点=exact_coordinate_master.py backend(与改名收敛为
+   同一方法:backend `_lower_*` 即原子版)——全失败分支前移到首次 mutation
+   (`_pose_present_literal`)之前,mutation 段零失败分支;F1 残留样例=:7887
+   `if not group_terms: return False` 在前组 presence 字面量已建之后。三族同模式;
+   哨兵 5 只锚 F1,F6/F7 原子性由新增 differential 测试守(proto+内部 cache 字节
+   不变,悬念 2 处置)。
+6. **F6/F7 8 skip 迁移与改名合批**(侦察 A 建议采纳,碰同一批测试文件免二次改):
+   弃 test_step_8_shape_packing_hall.py 的 `_build_port_master` 自建世界,改从
+   stage_b 文件 import 已证同源 fixture(投影等式测试 :1191 为证),套 F1 三行骨架
+   (resolver→step_8→build_stats 断言);6 个下降类机械迁移,2 个 fail-closed 类照
+   F1 三先例(:184/:200/:213)重定位拒绝阶段、只保留 step_8 边界独有断言;9 处测试
+   `add_*` 直调点+`_SpyMaster` 假方法名同步改 `_lower_*`。侦察 B 悬念 3(负例投影
+   drift 落点)实现时逐例确认拒绝阶段并断言之。
+7. **第 9 个 skip(F5 e2e,attach_wiring:636)不进 B5b**(悬念 3 拍板):F5 需
+   real sub-problem oracle registry 接线,归批 D(RFC-002 F5 verifier 线)——B5b
+   是 AST lockdown 收尾批,F5 apply 已物理删除,e2e 价值在 F5 转正批才成立。
+8. **reseal 集预估**:exact_coordinate_master.py(sink 双重)+master_model.py(sink
+   双重)+lifecycle.py(sink 双重)+typed_apply.py(floor)±`src/cuts/__init__.py`;
+   AST allowlist 测试文件是执法点不 sha-pin;strong-status allowlist 预计零漂
+   (replay 条目与 framework add_* 无关)但收口必须实跑双 checker 复核(悬念 4=
+   纪律项)。
+
+**B5b 双审裁决(2026-07-11 深夜,双 opus:设计位 AGREE_WITH_AMENDMENTS/攻击位 PASS)**:
+设计位逐分支对照 HEAD 证实 precheck 前移 accept/reject 集合逐点相同(两新纯谓词与原
+mint 版 None 条件精确镜像,`_slot_can_take_pose` 纯读);攻击位六攻击面全跑(反射绕过/
+accept-set 撬动/Counter 时序/F5 退役残留/coverer 碰撞构造/门控),F5 存量记录经 replay
+=HELD/QUARANTINED 不崩溃,coverer 不一致但投影 byte-equal 的输入构造失败。五条 LOW
+归并处置:
+
+1. **F7 原子性测试无判别力(已修)**:F7 从无 mint-then-fail 路径(legacy None 分支
+   全在 mint 前),§4.11 前移对 F7=vacuous no-op——测试改标签为 clean-rejection
+   回归钉,docstring 明记「无行为 delta,判别性 differential 是 F1/F6 两个」。
+2. **AST 守卫威胁模型边界(已修,双位共同点名)**:collector+caller pin 只捕自然
+   形态(Attribute Load/字面 getattr);attrgetter/字符串拼接/变量名/`__dict__` 逃逸
+   ——docstring 明记 TRIPWIRE 定位(绿测≠不存在证明),硬拦截=unsafe-map+facade
+   结构。当前生产零动态反射使用(双位 grep 复核)。
+3. **F7 subsume 非严格等价(已修措辞)**:well-formed 分歧全部先在 §2.6 拦截,但
+   corrupt-table 角落(越界 coverer index)§2.6 IndexError vs gate 干净 return False
+   ——两处「subsumed/unreachable/dead code」措辞改为准确表述;**gate 保留**
+   (防御纵深+非 typed caller 唯一防线),拒绝阶段迁移不构成 accept-set 变化
+   (§2.6 拒绝集 ⊇ gate 拒绝集,先阶段更严)。
+4. **`_lower_*` 无 runtime 守卫(注记,不修)**:对比 snapshot 的 token 双层,facade
+   `_lower_*` 只有 AST 层执法——这是 §4.10 的既定范围(AST 拒绝层级);runtime
+   token 化登记为可选后续硬化,不排批(certified unsafe-map 兜底在位,发布时点
+   硬化统一暂缓拍板 2026-07-06 适用)。
 
 | # | 风险 | 处置 |
 |---|---|---|

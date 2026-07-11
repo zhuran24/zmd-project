@@ -327,7 +327,7 @@ def _lower_plan_for_test(
     condition_lits: Sequence[Any] = (),
 ) -> bool:
     weights, capacity = _plan_parameters(plan)
-    return master.add_region_capacity_cut(
+    return master._lower_region_capacity_cut(
         group_cell_weights=weights,
         capacity=capacity,
         condition_lits=condition_lits,
@@ -678,7 +678,7 @@ def test_f1_pose_cardinality_mismatch_is_typed_fail_closed_before_overcut() -> N
     )
 
     attacked_master = _build_tiny_master(template_dimensions=(2, 1))
-    assert attacked_master.add_region_capacity_cut(
+    assert attacked_master._lower_region_capacity_cut(
         group_cell_weights={_GROUP_ID: 2},
         capacity=3,
     )

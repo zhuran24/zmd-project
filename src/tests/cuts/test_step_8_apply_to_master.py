@@ -19,11 +19,16 @@ a REAL coordinate master:
   ShadowValidated, and the closed ``SUPPORTED_OPERATIONS`` set carries no
   pattern_nogood lowering.
 - port_exposure (legacy diagnostic) cannot reach the typed compile/step_8.
+- F6/F7 (B5b): the direct-call cases now run the full typed chain on a real
+  master via the domain-consistent stage_b fixtures; a master-side inconsistency
+  drifts the §2.6 live projection, so step_8 fails closed before the master's own
+  F7 re-check gate for every well-formed divergence.  The subsume is NOT strict
+  at corrupt-table corners (out-of-range coverer index: §2.6 raises IndexError
+  while the gate returns False cleanly) — the gate stays as defence-in-depth and
+  as the sole guard for any non-typed caller (B5b dual-review adjudication).
 
-F6/F7 direct-call typed-chain migration is deferred (a domain-consistent
-snapshot↔live-master fixture is a follow-up); those cases are skipped with a
-``B5a-transitional`` marker.  The resolver + §2.6 three-fold binding rejections
-are additionally covered by ``src/tests/cuts/test_stage_b_contracts.py``.
+The resolver + §2.6 three-fold binding rejections are additionally covered by
+``src/tests/cuts/test_stage_b_contracts.py``.
 """
 
 from __future__ import annotations
@@ -34,6 +39,7 @@ import json
 from typing import Any, Mapping, Sequence
 
 import pytest
+from ortools.sat.python import cp_model
 
 from src.cuts import frozen_artifacts, lifecycle, state_snapshot, typed_platform
 from src.cuts.lifecycle import (
@@ -65,20 +71,13 @@ from src.tests.cuts.test_stage_b_contracts import (
 )
 
 
-_B5A_TRANSITIONAL_F6F7 = (
-    "B5a-transitional: F6/F7 direct-call typed-chain migration deferred to the "
-    "test-migration follow-up (needs a domain-consistent snapshot↔live-master "
-    "fixture); resolver + §2.6 rejections are covered in test_stage_b_contracts.py"
-)
-
-
 class _SpyMaster:
     """Records any master-mutation call; asserts zero touch on fail-closed paths."""
 
     def __init__(self) -> None:
         self.calls: list[dict[str, Any]] = []
 
-    def add_region_capacity_cut(
+    def _lower_region_capacity_cut(
         self,
         *,
         group_cell_weights: Mapping[str, int],
@@ -349,30 +348,175 @@ def test_step_8_unwired_family_fails_closed() -> None:
 
 
 # ---------------------------------------------------------------------------
-# F6 shape_packing_hall / F7 power_hitting_set — deferred (see module docstring)
+# F6 shape_packing_hall / F7 power_hitting_set — typed-chain migration (B5b)
+#
+# B5b lands the domain-consistent snapshot↔live-master fixtures (proven
+# equivalent by the projection-equality tests in each stage_b file), so the
+# resolver locates the ghost anchor and lowers the real F6/F7 constraint.  The
+# raw-API RuntimeError/ValueError surfaces move onto the typed chain at their
+# exact stages: split-brain → adapter integrity; a master-side inconsistency
+# (coverer table / pole footprint) drifts the §2.6 live domain projection, so
+# step_8 fails closed BEFORE the master's own F7 re-check gate for every
+# well-formed divergence.  NOT a strict subsume: at corrupt-table corners
+# (out-of-range coverer index) §2.6 raises IndexError where the gate returns
+# False — the gate stays (defence-in-depth + sole guard for non-typed callers).
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.skip(reason=_B5A_TRANSITIONAL_F6F7)
-def test_step_8_f6_anchor_free_feasible_then_pinned_infeasible() -> None:  # pragma: no cover
-    ...
+def test_step_8_f6_anchor_free_feasible_then_pinned_infeasible() -> None:
+    """F6 typed chain: dormant while the anchor is free, prunes once pinned.
+
+    Both 1×3 bodies lie entirely on the left baseline (cap 1), so pinning the
+    resolved anchor forces 2 ≤ 1 → INFEASIBLE; with the anchor free the
+    ghost-conditioned cut sleeps and the master stays feasible.
+    """
+    from src.tests.cuts.test_stage_b_shape_packing_hall import (
+        _LEFT_ONLY_POSES,
+        _build_tiny_master as _f6_build_tiny_master,
+        _build_world as _f6_build_world,
+        _compile_cut as _f6_compile_cut,
+    )
+
+    state, bundle = _f6_build_world(poses=_LEFT_ONLY_POSES)
+    _raw, snapshot, compiled = _f6_compile_cut(state, bundle, region_kind="left_baseline", region_demand=2)
+    master = _f6_build_tiny_master(_LEFT_ONLY_POSES)
+    binding = _resolve_model_scope_binding(compiled.plan.model_scope, snapshot, master)
+    step_8_apply_to_master(compiled, master, scope_binding=binding)
+    stats = master.build_stats["coordinate_baseline_packing_last_cut"]
+    assert stats["capacity"] == 1
+    assert stats["presence_terms"] == 2
+
+    # Anchor free → the ghost-conditioned cut sleeps → feasible.
+    assert master.solve(time_limit_seconds=5.0) in (cp_model.OPTIMAL, cp_model.FEASIBLE)
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    delegate.model.Add(binding.condition_lits[0] == 1)
+    # Anchor pinned → cap 1 on the only baseline both bodies fit → infeasible.
+    assert master.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
 
 
-@pytest.mark.skip(reason=_B5A_TRANSITIONAL_F6F7)
-def test_step_8_f7_fail_closed_surfaces() -> None:  # pragma: no cover
-    ...
+def test_step_8_f7_excludes_pose_under_pinned_anchor() -> None:
+    """F7 typed chain lowers presence(pose)==0 under the resolved ghost anchor.
+
+    The resolver reconstructs the blocked-cell body and locates the (0,0,1,1)
+    ghost at rect_idx 0; pinning that anchor active makes the exclusion bite so
+    the two mandatory widgets can no longer both be placed → INFEASIBLE.
+    """
+    from src.tests.cuts.test_stage_b_power_hitting_set import (
+        _build_master as _f7_build_master,
+        _build_world as _f7_build_world,
+        _compile_cut as _f7_compile_cut,
+        _oracle_cut as _f7_oracle_cut,
+    )
+
+    state, bundle = _f7_build_world()
+    raw = _f7_oracle_cut(state)
+    snapshot, compiled = _f7_compile_cut(state, bundle, raw)
+    assert compiled.plan.operation == "power_pose_exclusion"
+
+    master = _f7_build_master()
+    binding = _resolve_model_scope_binding(compiled.plan.model_scope, snapshot, master)
+    assert binding.rect_idx == 0
+    assert binding.condition_lits[0] is master.u_vars[0]
+
+    step_8_apply_to_master(compiled, master, scope_binding=binding)
+    stats = master.build_stats["coordinate_power_pose_exclusion_last_cut"]
+    assert stats["pose_idx"] == 1
+    assert stats["semantics"] == "power_pose_exclusion_ghost_conditioned_v1"
+    assert master.build_stats["coordinate_framework_cut_count"] == 1
+
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    delegate.model.Add(binding.condition_lits[0] == 1)
+    assert master.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
 
 
-@pytest.mark.skip(reason=_B5A_TRANSITIONAL_F6F7)
-def test_step_8_f7_missing_coverer_table_refused() -> None:  # pragma: no cover
-    ...
+def test_step_8_f7_fail_closed_surfaces() -> None:
+    """F7 fail-closed surfaces on the typed chain (non-drift arms).
+
+    Split-brain cert is refused by the adapter before any master; a raw Cut is
+    refused by the step_8 type gate before any master attribute is read.  (The
+    proof-stage and domain-drift arms are covered by the F7 compile tests and by
+    ``test_step_8_f7_missing_coverer_table_refused`` / ``..._live_coverer_gate_refuses``.)
+    """
+    from src.tests.cuts.test_stage_b_power_hitting_set import (
+        _build_master as _f7_build_master,
+        _build_world as _f7_build_world,
+        _oracle_cut as _f7_oracle_cut,
+    )
+
+    state, _bundle = _f7_build_world()
+    tampered = dataclasses.replace(_f7_oracle_cut(state), oracle_cert_hash="0" * 64)
+    spy = _SpyMaster()
+    with pytest.raises(ValueError, match="integrity failed"):
+        cut_to_envelope_v1(tampered)
+    assert spy.calls == []
+
+    # Type gate: a raw F7 Cut handed straight to step_8 is refused before the
+    # master (the resolver/CompiledCut are the only sanctioned inputs).
+    raw_cut = _f7_oracle_cut(state)
+    master = _f7_build_master()
+    with pytest.raises(TypeError, match="exact CompiledCut"):
+        step_8_apply_to_master(raw_cut, master, scope_binding=None)
+    assert "coordinate_power_pose_exclusion_last_cut" not in master.build_stats
 
 
-@pytest.mark.skip(reason=_B5A_TRANSITIONAL_F6F7)
-def test_step_8_f7_live_coverer_gate_refuses() -> None:  # pragma: no cover
-    ...
+def test_step_8_f7_missing_coverer_table_refused() -> None:
+    """A missing coverer-table entry drifts the §2.6 projection, not the master gate.
+
+    The master's own F7 attach-time re-check would return False on a missing
+    coverer entry, but the coverer table is part of the live domain projection,
+    so deleting the target pose's entry drifts the projection and step_8 fails
+    closed at the §2.6 boundary BEFORE the master re-check runs (no mutation).
+    """
+    from src.tests.cuts.test_stage_b_power_hitting_set import (
+        _FACILITY_TYPE,
+        _build_master as _f7_build_master,
+        _build_world as _f7_build_world,
+        _compile_cut as _f7_compile_cut,
+        _oracle_cut as _f7_oracle_cut,
+    )
+
+    state, bundle = _f7_build_world()
+    raw = _f7_oracle_cut(state)
+    snapshot, compiled = _f7_compile_cut(state, bundle, raw)
+    master = _f7_build_master(skip_power_coverage=True)
+    assert master._power_coverers_by_template_pose[_FACILITY_TYPE][1] == [0]
+    del master._power_coverers_by_template_pose[_FACILITY_TYPE][1]
+
+    binding = _resolve_model_scope_binding(compiled.plan.model_scope, snapshot, master)
+    with pytest.raises(ValueError, match="domain projection drifted"):
+        step_8_apply_to_master(compiled, master, scope_binding=binding)
+    assert "coordinate_power_pose_exclusion_last_cut" not in master.build_stats
 
 
-@pytest.mark.skip(reason=_B5A_TRANSITIONAL_F6F7)
-def test_step_8_f7_excludes_pose_under_pinned_anchor() -> None:  # pragma: no cover
-    ...
+def test_step_8_f7_live_coverer_gate_refuses() -> None:
+    """An inconsistent (still-live) coverer footprint drifts the §2.6 projection.
+
+    The master gate refuses a coverer whose footprint is disjoint from the
+    blocked cells, but the pole footprints are part of the live domain
+    projection; moving a pole so its coverer stays live drifts the projection,
+    so step_8 fails closed at the §2.6 boundary before the master gate (no
+    mutation).  The resolver cannot be fed wrong blocked cells (it reconstructs
+    them from the frozen snapshot), so this is the only way the live-coverer
+    condition can arise on the typed chain.
+    """
+    from src.tests.cuts.test_stage_b_power_hitting_set import (
+        _build_master as _f7_build_master,
+        _build_world as _f7_build_world,
+        _compile_cut as _f7_compile_cut,
+        _oracle_cut as _f7_oracle_cut,
+    )
+
+    state, bundle = _f7_build_world()
+    raw = _f7_oracle_cut(state)
+    snapshot, compiled = _f7_compile_cut(state, bundle, raw)
+    master = _f7_build_master(skip_power_coverage=True)
+    pole_pool = master.facility_pools["power_pole"]
+    assert pole_pool
+    pole_pool[0]["occupied_cells"] = [[69, 69], [69, 68], [68, 69], [68, 68]]
+
+    binding = _resolve_model_scope_binding(compiled.plan.model_scope, snapshot, master)
+    with pytest.raises(ValueError, match="domain projection drifted"):
+        step_8_apply_to_master(compiled, master, scope_binding=binding)
+    assert "coordinate_power_pose_exclusion_last_cut" not in master.build_stats

@@ -52,13 +52,13 @@ def apply_compiled_cut(
         raise ValueError("apply: ghost-bound plan requires the resolved ghost literal(s) (fail-closed)")
 
     if operation == "region_capacity_le":
-        applied = master.add_region_capacity_cut(
+        applied = master._lower_region_capacity_cut(
             group_cell_weights=parameters["group_cell_weights"],
             capacity=parameters["capacity"],
             condition_lits=condition_lits,
         )
     elif operation == "shape_packing_hall_le":
-        applied = master.add_baseline_packing_cut(
+        applied = master._lower_baseline_packing_cut(
             group_id=parameters["group_id"],
             region_kind=parameters["region_kind"],
             capacity=parameters["capacity"],
@@ -72,7 +72,7 @@ def apply_compiled_cut(
         # digest the F7 plan carries, recomputed here at the apply site.
         if blocked_cells_digest_v1(blocked_cells) != parameters["blocked_cells_digest"]:
             raise ValueError("apply: blocked_cells digest mismatch between plan body and binding (fail-closed)")
-        applied = master.add_power_pose_exclusion_cut(
+        applied = master._lower_power_pose_exclusion_cut(
             group_id=parameters["group_id"],
             pose_id=parameters["pose_id"],
             blocked_cells=blocked_cells,

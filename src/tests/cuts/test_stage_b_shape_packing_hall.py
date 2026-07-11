@@ -1246,7 +1246,7 @@ def _lower_plan(
     condition_lits: Sequence[Any],
 ) -> bool:
     group_id, region_kind, capacity = _plan_parameters(plan)
-    return master.add_baseline_packing_cut(
+    return master._lower_baseline_packing_cut(
         group_id=group_id,
         region_kind=region_kind,
         capacity=capacity,

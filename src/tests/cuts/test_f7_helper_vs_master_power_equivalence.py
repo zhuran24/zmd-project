@@ -19,10 +19,11 @@ the certified unsafe map. These tests pin the two sides to each other:
   cross-check — if the helper ever says "CoverSet empty" while the master
   still sees a coverer, an attached F7 cut would over-prune a legal layout.
 
-The attach-time runtime gate inside add_power_pose_exclusion_cut re-checks
+The attach-time runtime gate inside _lower_power_pose_exclusion_cut re-checks
 the same table per cut (tested in test_step_8_apply_to_master); these
 regressions guard the semantics the gate relies on.
 """
+
 from __future__ import annotations
 
 import random
@@ -147,9 +148,7 @@ def _l2_master() -> MasterPlacementModel:
             },
         },
     }
-    core = MasterPlacementModel.build_exact_core(
-        instances, pools, rules, skip_power_coverage=False
-    )
+    core = MasterPlacementModel.build_exact_core(instances, pools, rules, skip_power_coverage=False)
     return MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
 
 
@@ -163,9 +162,7 @@ def test_layer2_master_coverer_table_equals_helper_cover_set() -> None:
     grid_cells = {(x, y) for x in range(_L2_GRID) for y in range(_L2_GRID)}
 
     for pose_idx, miner_pose in enumerate(miner_pool):
-        facility_cells = tuple(
-            (int(c[0]), int(c[1])) for c in miner_pose["occupied_cells"]
-        )
+        facility_cells = tuple((int(c[0]), int(c[1])) for c in miner_pose["occupied_cells"])
         # Helper semantics: anchors whose footprint fits in free cells (grid
         # minus the facility body — the free-mask mechanism) and whose stencil
         # intersects the facility.

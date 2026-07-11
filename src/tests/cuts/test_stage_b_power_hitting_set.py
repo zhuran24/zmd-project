@@ -443,7 +443,7 @@ def _lower_f7_plan(
     assert plan.family == "power_hitting_set"
     assert plan.operation == "power_pose_exclusion"
     assert plan_blocked_digest == blocked_cells_digest_v1(blocked_body)
-    return master.add_power_pose_exclusion_cut(
+    return master._lower_power_pose_exclusion_cut(
         group_id=group_id,
         pose_id=pose_id,
         blocked_cells=blocked_body,
@@ -1195,7 +1195,7 @@ def test_f7_runtime_gate_rejects_missing_coverer_entry() -> None:
     assert master._power_coverers_by_template_pose[_FACILITY_TYPE][target_index] == [0]
     del master._power_coverers_by_template_pose[_FACILITY_TYPE][target_index]
 
-    assert not master.add_power_pose_exclusion_cut(
+    assert not master._lower_power_pose_exclusion_cut(
         group_id=_GROUP_ID,
         pose_id=_TARGET_POSE_ID,
         blocked_cells={(2, 1)},
@@ -1207,7 +1207,7 @@ def test_f7_runtime_gate_accepts_naturally_empty_coverer_row() -> None:
     master = _build_master(pole_poses=(), skip_power_coverage=True)
     assert master._power_coverers_by_template_pose[_FACILITY_TYPE][1] == []
 
-    assert master.add_power_pose_exclusion_cut(
+    assert master._lower_power_pose_exclusion_cut(
         group_id=_GROUP_ID,
         pose_id=_TARGET_POSE_ID,
         blocked_cells=set(),
@@ -1219,7 +1219,7 @@ def test_f7_runtime_gate_rejects_a_live_real_coverer() -> None:
     master = _build_master(skip_power_coverage=True)
     assert master._power_coverers_by_template_pose[_FACILITY_TYPE][1] == [0]
 
-    assert not master.add_power_pose_exclusion_cut(
+    assert not master._lower_power_pose_exclusion_cut(
         group_id=_GROUP_ID,
         pose_id=_TARGET_POSE_ID,
         blocked_cells={(69, 69)},
@@ -1231,7 +1231,7 @@ def test_f7_runtime_gate_accepts_a_dead_real_coverer() -> None:
     master = _build_master(skip_power_coverage=True)
     assert master._power_coverers_by_template_pose[_FACILITY_TYPE][1] == [0]
 
-    assert master.add_power_pose_exclusion_cut(
+    assert master._lower_power_pose_exclusion_cut(
         group_id=_GROUP_ID,
         pose_id=_TARGET_POSE_ID,
         blocked_cells={(2, 1)},
