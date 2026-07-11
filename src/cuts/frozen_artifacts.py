@@ -14,7 +14,7 @@ import math
 from collections.abc import Mapping
 from dataclasses import dataclass
 from types import MappingProxyType
-from typing import TypeAlias
+from typing import TypeAlias, cast
 
 
 FrozenScalar: TypeAlias = None | bool | int | float | str
@@ -50,6 +50,10 @@ class FrozenArtifactBundle:
         instance_to_facility_type: Mapping[str, object],
         artifact_hashes: Mapping[str, str] | None = None,
     ) -> None:
+        # JSON-native validation happens inside the single freeze traversal so
+        # each node is visited exactly once (validate-then-freeze in two passes
+        # leaves a TOCTOU window on mutable inputs; B4 dual-review codex#0).
+        raw_artifact_hashes: object = {} if artifact_hashes is None else artifact_hashes
         frozen_canonical_rules = _freeze_top_level_mapping(canonical_rules, field_name="canonical_rules")
         frozen_candidate_placements = _freeze_top_level_mapping(
             candidate_placements,
@@ -63,7 +67,7 @@ class FrozenArtifactBundle:
             instance_to_facility_type,
             field_name="instance_to_facility_type",
         )
-        frozen_hashes = _freeze_artifact_hashes({} if artifact_hashes is None else artifact_hashes)
+        frozen_hashes = _freeze_artifact_hashes(raw_artifact_hashes)
         digest = _bundle_digest(
             canonical_rules=frozen_canonical_rules,
             candidate_placements=frozen_candidate_placements,
@@ -80,34 +84,38 @@ class FrozenArtifactBundle:
 
 
 def _freeze(value: object, *, path: str) -> FrozenValue:
-    if isinstance(value, (bool, int, float, str)) and type(value) not in (bool, int, float, str):
-        raise TypeError(f"{path} contains a behavioral scalar subclass")
-    if value is None or isinstance(value, (bool, int, str)):
-        return value
-    if isinstance(value, float):
+    """Validate one exact JSON-native node and freeze it in the same visit.
+
+    Validation and freezing are deliberately a single traversal: each node is
+    read exactly once, so a concurrent mutation between "validated" and
+    "frozen" cannot smuggle a non-JSON container into the bundle, and the
+    admitted domain is exactly JSON-native (dict/list/str/int/float/bool/None
+    — no tuple, set, or non-dict Mapping).
+    """
+
+    if value is None or type(value) in (bool, int, str):
+        return cast(FrozenScalar, value)
+    if type(value) is float:
         if not math.isfinite(value):
             raise ValueError(f"{path} contains a non-finite number")
         return value
-    if isinstance(value, Mapping):
+    if type(value) is dict:
+        mapping = cast(dict[object, object], value)
         frozen: dict[str, FrozenValue] = {}
-        for key, item in value.items():
+        for key, item in mapping.items():
             if type(key) is not str:
                 raise TypeError(f"{path} contains a mapping key that is not an exact str")
             frozen[key] = _freeze(item, path=f"{path}.{key}")
         return MappingProxyType(frozen)
-    if isinstance(value, (list, tuple)):
-        return tuple(_freeze(item, path=f"{path}[{index}]") for index, item in enumerate(value))
-    if isinstance(value, (set, frozenset)):
-        try:
-            return frozenset(_freeze(item, path=f"{path}{{item}}") for item in value)
-        except TypeError as exc:
-            raise TypeError(f"{path} contains a set item that cannot be frozen as a hashable value") from exc
-    raise TypeError(f"{path} contains unsupported value type {type(value).__name__}")
+    if type(value) is list:
+        sequence = cast(list[object], value)
+        return tuple(_freeze(item, path=f"{path}[{index}]") for index, item in enumerate(sequence))
+    raise TypeError(f"{path} contains value outside the exact JSON-native domain: {type(value).__name__}")
 
 
 def _freeze_top_level_mapping(value: object, *, field_name: str) -> Mapping[str, FrozenValue]:
-    if not isinstance(value, Mapping):
-        raise TypeError(f"{field_name} must be a mapping")
+    if type(value) is not dict:
+        raise TypeError(f"{field_name} must be an exact dict")
     frozen = _freeze(value, path=field_name)
     if not isinstance(frozen, Mapping):  # pragma: no cover - guarded above
         raise AssertionError("top-level artifact freeze did not produce a mapping")
@@ -115,8 +123,8 @@ def _freeze_top_level_mapping(value: object, *, field_name: str) -> Mapping[str,
 
 
 def _freeze_artifact_hashes(value: object) -> Mapping[str, str]:
-    if not isinstance(value, Mapping):
-        raise TypeError("artifact_hashes must be a mapping")
+    if type(value) is not dict:
+        raise TypeError("artifact_hashes must be an exact dict")
     frozen: dict[str, str] = {}
     for key, digest in value.items():
         if type(key) is not str or type(digest) is not str:

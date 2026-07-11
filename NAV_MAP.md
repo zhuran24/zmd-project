@@ -57,7 +57,7 @@ generic serializer、blueprint exporter、manifest writer、viewer/report builde
 |---|---|
 | `src/search/` | outer producer、campaign、frontier、fixed-witness、supervisor seal、中央发布面 |
 | `src/models/` | master、binding、routing；flow 为诊断模块 |
-| `src/cuts/` | active F1-F7+F9（F8 retired）的生成、校验与生命周期；F1/F5/F6/F7 direct Step-8 bridge 已落地但 certified unsafe/default-off；Stage B B0-B3 landed（F1/F6 已过 typed 边界），B4-B5/PIC C-D-E/B6 pending |
+| `src/cuts/` | active F1-F7+F9（F8 retired）的生成、校验与生命周期；F1/F5/F6/F7 direct Step-8 bridge 已落地但 certified unsafe/default-off；Stage B B0-B4 landed（F1/F6/F7 三族全过 typed 边界），B5/PIC C-D-E/B6 pending |
 | `src/io/` | strict JSON、序列化和 delivery manifest 基础设施，不单独拥有公开认证权 |
 | `src/render/`, `src/adapters/` | postprocess/delivery surface，必须消费中央验证后的 authority |
 | `src/tests/` | 单元、回归和 soundness 红测 |

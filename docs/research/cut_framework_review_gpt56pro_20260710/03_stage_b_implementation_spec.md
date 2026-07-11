@@ -496,6 +496,78 @@ fan-out 读者产出)**:
 plan 带 `blocked_cells_digest`,binding 带本体(resolver 从 snapshot 冻结值复原+digest
 校验);runtime master coverer gate(:7988-8011)保留为 master 域独立防线。M2 合并见 §6。
 
+**B4 侦察补拍板(2026-07-11,codex 八问侦察 file:line 实证后定)**:
+
+1. **零扩面确认**:`F7PowerInputs` 已覆盖 legacy 八段复验全读集,不扩字段;两套 CoverSet
+   (full/ghost-only)从公共 snapshot 几何计算,固定 70×70 平价(不读 target dimensions,
+   legacy 没读);不扩 cert 闭集、不扩 assumption dispatch。F7 恒 ghost-bound
+   (oracle :189/validator :182/旧 Step 8 :1469 三处一致)→ **`requires_ghost_bound=True`**
+   (B3 字段直接复用);无 assumptions → F6 无条件 plugin 复验路线沿用;借名残余=零
+   (B3 迁 cutset 后无漏网),B4 零搬迁。
+2. **pole_radius 数值平价**:legacy 接受 JSON `5` 与 `5.0`——typed parser 归一 float
+   接受两者(只收 exact float/int 均为非平价收窄),differential 配 int/float 双正例。
+3. **literal slot_index(条件拍板)**:legacy 只核 group/pose 忽略 slot,typed adapter
+   现强制 slot 0(:1498,通用 literal frame 机制)。实现方先核实生产 oracle 的 slot 值域:
+   **恒 0 → 保留通用强制+登记 typed-only narrowing**(不动通用机制);若存在非 0 →
+   停手回报重拍。
+4. **Frozen bundle raw 类型**:核实 bundle builder 入口现状——若冻结归一(Mapping→dict)
+   会让 typed 接受 legacy 拒绝的非 JSON 容器,则在**归一前**加 JSON-native admitted-domain
+   检查(fail-closed,bundle 入口级约束非 F7 特有);若 builder 已拒则零工作,报告确认即可。
+5. **B3 通用收窄继承**:missing/bad/stale preimage、schema v2、quarantine、外层
+   cert-kind/exterior drift 等 typed-only 拒绝,F7 差异表**逐项列出**并各配 differential
+   (B3 完备性义务规矩:每处显式拒绝分支对应差异表一行)。
+6. **B4/B5 边界与 digest 校验分层**:B4 产 plugin/plan/projection,sole resolver 与正式
+   Step 8 mutation wiring 留 B5(§7 边界不动);校验分层=resolver 核
+   `digest(binding.blocked_cells) == snapshot.blocked_cells_digest`(body↔snapshot),
+   Step 8 typed lowering 核 `plan.blocked_cells_digest == digest(binding.blocked_cells)`
+   (plan↔body)——B4 的 plan digest 必须从 snapshot 可信 `ghost_cells ∪ exterior_blocks`
+   派生(:1355),**禁**从 cert 的 exterior digest 拼装。
+7. **F7 projection 含 canonical coverer rows(风险拍板)**:侦察实锤——facility-pool
+   projection 绑原始 pools 但绑不住 live `_power_coverers_by_template_pose` 派生缓存
+   (建模后删改派生表,pool fingerprint 不变而 runtime gate 看到更少 coverer)。拍板:
+   新增独立 `family_subset="power_hitting_set"` projection(不动 F1/F6 冻结字节),
+   **显式纳入 snapshot 侧规范派生的 coverer rows**(needs_power groups+pools+pose 序+
+   occupied/power_coverage_cells+power_pole pool+双向 pose registration);动态 blocked
+   mask 不入静态 projection(归 plan digest+binding 本体);master live 表对比留 runtime
+   gate(第三防线)与 B5。fingerprint 照定格模式换族值。
+8. **blocked digest 公共原语**:snapshot 与 typed_platform 已各有私有编码、B5 resolver
+   将成第三消费者——B4 顺手抽 **versioned 公共 digest primitive**(落点实现方提案,
+   双审把关),消除三份实现漂移面。
+9. **differential 从零构造**:现有 Step 8 F7 world 六坑(facility_cells 与 pose 错位/
+   needs_power=False/无生产 power rules/假 hash 无 preimage/anchor 与 blocked body 分裂/
+   coverer table 手工注入)不能直接套 typed adapter——B4 fixture 必须 bundle-backed+
+   生产八 hash+真实 oracle-v2 capability;最低矩阵含:双 CoverSet 空/非空、missing/empty/
+   live/dead coverer、condition false/true、anchor 范式、pole_radius int/float 双正例、
+   preimage/exterior/schema/quarantine/cert-kind tamper、projection drift(powered pool/
+   pole occupied/coverage/order/coverer row)、non-powered 噪声不变性。
+
+**B4 双审补拍板(2026-07-11,opus BLOCK 1(计划内 reseal)+2 LOW / codex BLOCK 1+HIGH 1+
+MEDIUM 1 全双复现;codex 通道中断,修复由主会话执行;终审裁决)**:
+
+1. **JSON-native 原子冻结(codex#0 修复拍板,本批最重)**:B4 落的入口校验是「先校验后
+   冻结」两次遍历——①TOCTOU 窗口(校验通过后、冻结前替换容器,race 实测可触发);
+   ②深冻结本身宽容(接受 tuple/set/宽泛 Mapping),而 lifecycle 的 source digest 对
+   list/tuple 归一同值、legacy validator 却要求严格 list——「构造后把 facility_pools
+   的 list 换 tuple」即得 legacy 拒/typed 编译通过的真放宽(双复现坐实)。拍板分层修复:
+   (a) `frozen_artifacts.py` 把校验与冻结合并为**单次原子遍历**(每节点验 exact
+   JSON-native 即冻结,tuple/set/非 dict Mapping 一律拒);(b) `state_snapshot.py`
+   builder 读 state 数据的入口加同款 exact JSON-native fail-closed(挡「bundle 建成后
+   state 侧容器形态漂移」——content digest 对类型不敏感,类型校验必须在读取点自立);
+   不动 lifecycle 的 source digest 语义(改 digest 编码=全量 pin 重钉,收益不成比例,
+   两个入口 fail-closed 后非 JSON 容器进不了 typed 数据面)。
+2. **audit 表第 13 行(codex#1)**:`scope.required_dependency_set`(typed 精确匹配
+   依赖集合 vs legacy 不查)登记为 typed-only 收窄+missing/extra dependency 双
+   differential(锁 stage='scope'+reason);比对基准从 `_PRODUCTION_V1_ARTIFACT_DEPENDENCIES`
+   权威定义派生,废除「两份硬编码集合互比」的自证形态。
+3. **断言收紧(codex#2+opus#1 合并)**:八组 joint tamper 与 missing-preimage 测试
+   废除 `_typed_rejects` 布尔合并,逐用例锁 typed 精确 stage+reason(或可辨识子串)
+   与 adapter 异常类型+消息,对齐同文件 CoverSet/ghost/exterior 测试的锁定标准。
+4. **needs_power=False 联合拒绝(opus#2)**:补 legacy(unsound)+typed(proof 拒)
+   联合用例,补齐 `plugin.snapshot_group_and_template` legacy-parity 行的 differential。
+5. **计划内 reseal(opus#0)**:B4 四个 sealed sink(frozen_artifacts/power_cover_oracle/
+   state_snapshot/typed_platform)v99 floor+sink 登记重钉+新 plugin 入 floor+checker
+   自钉,归主会话终审执行。
+
 ### 5.4 F5 处置(双审三条修订)
 - 单入口对 F5 出口=`ShadowValidated`(§2.5 三分支,消解「VALIDATED 但不 compile」的
   表达矛盾);`_maybe_attach_framework_cuts` 记 telemetry 后**不调 step_8**。

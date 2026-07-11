@@ -23,11 +23,12 @@ Refs:
 - docs/项目说明/08_phase_1_2_plan.md §P1.2B-F7
 - docs/研究/p3_b_design_v2_20260521/cut_family_specs/07_power_hitting_set.md v1.1
 """
+
 from __future__ import annotations
 
 import hashlib
 import os
-from typing import Any, Dict, FrozenSet, List, Optional, Tuple, cast
+from typing import Any, Dict, FrozenSet, List, Optional, Tuple
 
 from src.cuts.helpers.power_cover import compute_cover_set
 from src.cuts.lifecycle import (
@@ -41,9 +42,8 @@ from src.cuts.lifecycle import (
     OracleCert,
     PoseId,
     canonical_bytes_for_cert,
-    compute_blocked_cells_hash,
-    compute_exterior_blocks_hash,
-    compute_ghost_rect_id,
+    capture_scope_identity_preimage_v1,
+    compute_scope_identity_legacy_hashes,
     compute_source_digest,
 )
 
@@ -79,9 +79,7 @@ def _facility_template_needs_power(state: BState, group_id: GroupId) -> Optional
     return facility_type
 
 
-def _pose_cells_from_canonical(
-    state: BState, group_id: GroupId, pose_id: PoseId
-) -> Optional[Tuple[Cell, ...]]:
+def _pose_cells_from_canonical(state: BState, group_id: GroupId, pose_id: PoseId) -> Optional[Tuple[Cell, ...]]:
     """Look up the rigid pose's occupied cells from candidate_placements.
 
     Phase 1.2 expects ``state.candidate_placements`` to be a dict mirroring
@@ -92,9 +90,7 @@ def _pose_cells_from_canonical(
     if not isinstance(placements, dict):
         return None
     facility_type_raw = (
-        state.instance_to_facility_type.get(group_id)
-        if state.instance_to_facility_type is not None
-        else None
+        state.instance_to_facility_type.get(group_id) if state.instance_to_facility_type is not None else None
     )
     if facility_type_raw is None:
         return None
@@ -126,14 +122,10 @@ def _pose_cells_from_canonical(
     return None
 
 
-_GRID_CELLS: FrozenSet[Cell] = frozenset(
-    (x, y) for x in range(_GRID_SIZE) for y in range(_GRID_SIZE)
-)
+_GRID_CELLS: FrozenSet[Cell] = frozenset((x, y) for x in range(_GRID_SIZE) for y in range(_GRID_SIZE))
 
 
-def _full_free_cells_minus_facility(
-    state: BState, facility_cells: Tuple[Cell, ...]
-) -> FrozenSet[Cell]:
+def _full_free_cells_minus_facility(state: BState, facility_cells: Tuple[Cell, ...]) -> FrozenSet[Cell]:
     """Build free-cell mask: grid - ghost - exterior - cell_owner - facility_cells.
 
     Per Gemini F7 round 1 BLOCKER #1: facility's own cells must be excluded.
@@ -150,15 +142,9 @@ def _full_free_cells_minus_facility(
     return frozenset(c for c in _GRID_CELLS if c not in blocked)
 
 
-def _ghost_only_free_cells_minus_facility(
-    state: BState, facility_cells: Tuple[Cell, ...]
-) -> FrozenSet[Cell]:
+def _ghost_only_free_cells_minus_facility(state: BState, facility_cells: Tuple[Cell, ...]) -> FrozenSet[Cell]:
     """Ghost+exterior mask + facility_cells exclude (cell_owner ignored)."""
-    blocked = (
-        frozenset(state.ghost_cells)
-        | frozenset(state.exterior_blocks)
-        | frozenset(facility_cells)
-    )
+    blocked = frozenset(state.ghost_cells) | frozenset(state.exterior_blocks) | frozenset(facility_cells)
     return frozenset(c for c in _GRID_CELLS if c not in blocked)
 
 
@@ -215,9 +201,7 @@ def generate_power_hitting_set_cuts(
         if cover_full:
             continue  # power coverage OK
         ghost_only_free = _ghost_only_free_cells_minus_facility(state, facility_cells)
-        cover_ghost_only = compute_cover_set(
-            facility_cells, ghost_only_free, pole_radius
-        )
+        cover_ghost_only = compute_cover_set(facility_cells, ghost_only_free, pole_radius)
         if cover_ghost_only:
             # cell_owner is the true cause — Phase 1.5+ multi-literal cut
             continue
@@ -229,7 +213,8 @@ def generate_power_hitting_set_cuts(
             pole_radius=pole_radius,
             iter_index=iter_index,
         )
-        cuts.append(cut)
+        if cut is not None:
+            cuts.append(cut)
     return cuts
 
 
@@ -255,9 +240,16 @@ def _build_cut(
     facility_cells: Tuple[Cell, ...],
     pole_radius: float,
     iter_index: int,
-) -> Cut:
-    ghost_rect_repr = list(cast(Tuple[int, int, int, int], state.ghost_rect))
-    exterior_digest = compute_exterior_blocks_hash(state)
+) -> Optional[Cut]:
+    # Capture all three scope identities once so the certificate, legacy
+    # 16-hex fields, and Stage-B raw preimage describe one atomic view.  F7 is
+    # permanently ghost-bound; a hostile/side-effecting state that loses its
+    # ghost between discovery and construction cannot produce a cut.
+    identity_preimage = capture_scope_identity_preimage_v1(state)
+    if identity_preimage.ghost_rect is None:
+        return None
+    ghost_rect_id, blocked_cells_hash, exterior_digest = compute_scope_identity_legacy_hashes(identity_preimage)
+    ghost_rect_repr = list(identity_preimage.ghost_rect)
 
     cert_payload_dict: Dict[str, Any] = {
         "cert_kind": CERT_KIND,
@@ -275,12 +267,13 @@ def _build_cut(
     source_digest = compute_source_digest(state)
 
     scope = CutScope(
-        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
-        blocked_cells_hash=compute_blocked_cells_hash(state),
+        ghost_rect_id=ghost_rect_id,
+        blocked_cells_hash=blocked_cells_hash,
         exterior_blocks_hash=exterior_digest,
         source_digest=source_digest,
         oracle_abstraction_version=ORACLE_NAME,
         artifact_hashes=dict(state.artifact_hashes),
+        identity_preimage=identity_preimage,
     )
 
     cut_literals = (

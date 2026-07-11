@@ -26,6 +26,7 @@ from src.cuts.state_snapshot import (
     F5PatternNogoodInputs,
     GroupSnapshot,
     ValidatedStateSnapshot,
+    blocked_cells_digest_v1,
 )
 
 
@@ -53,7 +54,6 @@ _PLAN_DIGEST_PREFIX = b"zmd.constraint-plan.v1:"
 _MODEL_SCOPE_DIGEST_PREFIX = b"zmd.model-scope.v1:"
 _COMPILED_CUT_DIGEST_PREFIX = b"zmd.compiled-cut.v1:"
 _GHOST_RECT_DIGEST_PREFIX = b"zmd.ghost-rect.v1:"
-_BLOCKED_CELLS_DIGEST_PREFIX = b"zmd.blocked-cells.v1:"
 _EXTERIOR_BLOCKS_DIGEST_PREFIX = b"zmd.exterior-blocks.v1:"
 _COMMON_MODE_UNTRUSTED = "common-mode-untrusted"
 _GHOST_AGNOSTIC = "__ghost_agnostic__"
@@ -1273,9 +1273,9 @@ _PRODUCTION_F5_PLUGIN: Final[FamilyPlugin] = _PatternNogoodPlugin()
 def build_production_registry() -> FamilyCapabilityRegistry:
     """Build the sole production Stage-B capability registry.
 
-    F1/F6 have complete B2/B3 parser/validator/compiler chains.  F7 remains
-    EXPERIMENTAL until its B4 vertical slice.  Legacy families are
-    diagnostic-only, and F8 remains an explicit retired metadata row.
+    F1/F6/F7 have complete B2/B3/B4 parser/validator/compiler chains.  Legacy
+    families are diagnostic-only, and F8 remains an explicit retired metadata
+    row.
     """
 
     # Local import avoids a module-initialization cycle: the family plugin uses
@@ -1285,6 +1285,11 @@ def build_production_registry() -> FamilyCapabilityRegistry:
         REGION_CAPACITY_VALIDATOR_VERSION,
         RegionCapacityPlugin,
     )
+    from src.cuts.families.power_hitting_set_typed import (
+        POWER_HITTING_SET_COMPILER_VERSION,
+        POWER_HITTING_SET_VALIDATOR_VERSION,
+        PowerHittingSetPlugin,
+    )
     from src.cuts.families.shape_packing_hall_typed import (
         SHAPE_PACKING_HALL_COMPILER_VERSION,
         SHAPE_PACKING_HALL_VALIDATOR_VERSION,
@@ -1292,6 +1297,7 @@ def build_production_registry() -> FamilyCapabilityRegistry:
     )
 
     region_capacity_plugin: FamilyPlugin = RegionCapacityPlugin()
+    power_hitting_set_plugin: FamilyPlugin = PowerHittingSetPlugin()
     shape_packing_hall_plugin: FamilyPlugin = ShapePackingHallPlugin()
 
     capabilities = {
@@ -1360,11 +1366,12 @@ def build_production_registry() -> FamilyCapabilityRegistry:
             name="power_hitting_set",
             mode="literal",
             proof_schema_version=1,
-            validator_version="stage-b-pending-b4",
-            compiler_version=None,
-            stage=CapabilityStage.EXPERIMENTAL,
+            validator_version=POWER_HITTING_SET_VALIDATOR_VERSION,
+            compiler_version=POWER_HITTING_SET_COMPILER_VERSION,
+            stage=CapabilityStage.COMPILABLE,
             required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
             execution_path=ExecutionPath.TYPED,
+            requires_ghost_bound=True,
         ),
         "power_grid_reach": FamilyCapability(
             name="power_grid_reach",
@@ -1391,6 +1398,7 @@ def build_production_registry() -> FamilyCapabilityRegistry:
         capabilities=capabilities,
         plugins={
             "pattern_nogood": _PRODUCTION_F5_PLUGIN,
+            "power_hitting_set": power_hitting_set_plugin,
             "region_capacity": region_capacity_plugin,
             "shape_packing_hall": shape_packing_hall_plugin,
         },
@@ -1623,10 +1631,7 @@ def cut_to_envelope_v1(cut: object) -> CutEnvelope:
         ghost_rect_digest = hashlib.sha256(
             _GHOST_RECT_DIGEST_PREFIX + _canonical_json_bytes(list(identity_preimage.ghost_rect))
         ).hexdigest()
-        blocked_cells_digest = _v1_scope_cells_digest(
-            identity_preimage.blocked_cells,
-            prefix=_BLOCKED_CELLS_DIGEST_PREFIX,
-        )
+        blocked_cells_digest = blocked_cells_digest_v1(frozenset(identity_preimage.blocked_cells))
     dependencies = tuple(
         DependencyHash(
             name=name,

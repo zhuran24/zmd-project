@@ -123,7 +123,7 @@ _EXPECTED_STAGES = {
     "pattern_nogood": CapabilityStage.VALIDATED,
     "port_exposure": CapabilityStage.VALIDATED,
     "power_grid_reach": CapabilityStage.RETIRED,
-    "power_hitting_set": CapabilityStage.EXPERIMENTAL,
+    "power_hitting_set": CapabilityStage.COMPILABLE,
     "region_capacity": CapabilityStage.COMPILABLE,
     "shape_packing_hall": CapabilityStage.COMPILABLE,
 }
@@ -1017,6 +1017,7 @@ def test_production_registry_has_exact_nine_family_mirror() -> None:
     assert set(registry.capabilities) == _EXPECTED_FAMILIES
     assert set(registry.plugins) == {
         "pattern_nogood",
+        "power_hitting_set",
         "region_capacity",
         "shape_packing_hall",
     }
@@ -1028,7 +1029,7 @@ def test_production_registry_has_exact_nine_family_mirror() -> None:
         assert capability.execution_path is _EXPECTED_PATHS[family]
         assert capability.proof_schema_version == 1
         assert capability.required_dependencies == frozenset(_PRODUCTION_ARTIFACT_HASHES)
-        assert capability.requires_ghost_bound is (family == "shape_packing_hall")
+        assert capability.requires_ghost_bound is (family in {"power_hitting_set", "shape_packing_hall"})
         if family == "pattern_nogood":
             assert capability.compiler_version is None
             assert family in registry.plugins
@@ -1038,6 +1039,10 @@ def test_production_registry_has_exact_nine_family_mirror() -> None:
         elif family == "shape_packing_hall":
             assert capability.validator_version == "stage-b-f6-validator-v1"
             assert capability.compiler_version == "stage-b-f6-compiler-v1"
+            assert family in registry.plugins
+        elif family == "power_hitting_set":
+            assert capability.validator_version == "stage-b-f7-validator-v1"
+            assert capability.compiler_version == "stage-b-f7-compiler-v1"
             assert family in registry.plugins
         else:
             assert family not in registry.plugins

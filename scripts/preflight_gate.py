@@ -599,6 +599,7 @@ MYPY_STRICT_TARGETS = [
     "src/cuts/state_snapshot.py",
     "src/cuts/typed_platform.py",
     "src/cuts/families/region_capacity_typed.py",
+    "src/cuts/families/power_hitting_set_typed.py",
     "src/cuts/families/shape_packing_hall_typed.py",
 ]
 

@@ -60,6 +60,14 @@ class _MutableStr(str):
     __hash__ = str.__hash__
 
 
+class _MutableFloat(float):
+    """Float subclass forbidden by the exact JSON-native boundary."""
+
+
+class _CustomList(list[Any]):
+    """List subclass forbidden by the exact JSON-native boundary."""
+
+
 class _RuntimeErrorMapping(dict[Any, Any]):
     def items(self) -> Any:
         raise RuntimeError("hostile mapping iteration")
@@ -127,7 +135,7 @@ def _artifact_sources(*, reverse: bool = False) -> dict[str, Any]:
         "facility_templates": deepcopy(facility_templates),
         "snapshot_test_metadata": {
             "label": "阶段-B",
-            "unordered_flags": {"beta", "alpha"},
+            "unordered_flags": ["alpha", "beta"],
         },
     }
     candidate_placements = {
@@ -278,7 +286,7 @@ def test_bundle_recursively_freezes_every_supported_container() -> None:
 
     assert isinstance(bundle.canonical_rules, MappingProxyType)
     assert isinstance(bundle.canonical_rules["globals"], MappingProxyType)
-    assert bundle.canonical_rules["snapshot_test_metadata"]["unordered_flags"] == frozenset({"alpha", "beta"})
+    assert bundle.canonical_rules["snapshot_test_metadata"]["unordered_flags"] == ("alpha", "beta")
     assert bundle.candidate_placements["facility_pools"]["boundary_storage_port"][0]["occupied_cells"] == (
         (0, 1),
         (0, 2),
@@ -289,7 +297,7 @@ def test_bundle_recursively_freezes_every_supported_container() -> None:
     with pytest.raises(AttributeError):
         bundle.candidate_placements["facility_pools"]["boundary_storage_port"].append({})
     with pytest.raises(AttributeError):
-        bundle.canonical_rules["snapshot_test_metadata"]["unordered_flags"].add("attacker")
+        bundle.canonical_rules["snapshot_test_metadata"]["unordered_flags"].append("attacker")
     assert bundle.digest == digest_before
 
 
@@ -311,7 +319,56 @@ def test_bundle_digest_rejects_non_finite_numbers(bad_value: float) -> None:
     sources = _artifact_sources()
     sources["canonical_rules"]["snapshot_test_metadata"]["non_finite"] = bad_value
 
-    with pytest.raises((TypeError, ValueError)):
+    with pytest.raises(ValueError, match="non-finite"):
+        _bundle_from_sources(sources)
+
+
+@pytest.mark.parametrize(
+    "field_name",
+    [
+        "canonical_rules",
+        "candidate_placements",
+        "facility_templates",
+        "instance_to_facility_type",
+        "artifact_hashes",
+    ],
+)
+@pytest.mark.parametrize(
+    "bad_mapping",
+    [
+        MappingProxyType({"payload": "value"}),
+        _RuntimeErrorMapping({"payload": "value"}),
+    ],
+    ids=("mapping-proxy", "custom-mapping"),
+)
+def test_bundle_rejects_non_exact_top_level_mappings_before_normalization(
+    field_name: str,
+    bad_mapping: Mapping[Any, Any],
+) -> None:
+    sources = _artifact_sources()
+    sources[field_name] = bad_mapping
+
+    with pytest.raises(TypeError, match=f"{field_name} must be an exact dict"):
+        _bundle_from_sources(sources)
+
+
+@pytest.mark.parametrize(
+    "bad_value",
+    [
+        MappingProxyType({"payload": "value"}),
+        _RuntimeErrorMapping({"payload": "value"}),
+        ("tuple",),
+        {"set"},
+        frozenset({"frozenset"}),
+        _CustomList(["list-subclass"]),
+    ],
+    ids=("mapping-proxy", "custom-mapping", "tuple", "set", "frozenset", "list-subclass"),
+)
+def test_bundle_rejects_non_json_native_nested_containers_before_normalization(bad_value: object) -> None:
+    sources = _artifact_sources()
+    sources["canonical_rules"]["snapshot_test_metadata"]["attack"] = bad_value
+
+    with pytest.raises(TypeError, match="outside the exact JSON-native domain"):
         _bundle_from_sources(sources)
 
 
@@ -335,40 +392,34 @@ def test_bundle_rejects_missing_non_mapping_and_non_string_key_artifacts() -> No
         _bundle_from_sources(sources)
 
 
-def test_bundle_never_preserves_behavioral_scalar_subclasses() -> None:
+@pytest.mark.parametrize(
+    "hostile_scalar",
+    [_MutableInt(70), _MutableStr("hostile"), _MutableFloat(1.25)],
+    ids=("int-subclass", "str-subclass", "float-subclass"),
+)
+def test_bundle_rejects_behavioral_scalar_subclasses(hostile_scalar: object) -> None:
     sources = _artifact_sources()
-    hostile_width = _MutableInt(70)
-    sources["canonical_rules"]["globals"]["grid"]["width"] = hostile_width
+    sources["canonical_rules"]["snapshot_test_metadata"]["hostile_scalar"] = hostile_scalar
 
-    try:
-        bundle = _bundle_from_sources(sources)
-    except (TypeError, ValueError):
-        return
-
-    frozen_width = bundle.canonical_rules["globals"]["grid"]["width"]
-    assert type(frozen_width) is int
-    digest_before = bundle.digest
-    hostile_width.bias = 10_000
-    assert bundle.digest == digest_before
-    assert frozen_width + 1 == 71
+    with pytest.raises(TypeError, match="outside the exact JSON-native domain"):
+        _bundle_from_sources(sources)
 
 
-def test_bundle_never_preserves_behavioral_artifact_hash_subclasses() -> None:
+def test_bundle_rejects_behavioral_string_subclass_as_mapping_key() -> None:
+    sources = _artifact_sources()
+    sources["canonical_rules"][_MutableStr("hostile_key")] = "value"
+
+    with pytest.raises(TypeError, match="mapping key that is not an exact str"):
+        _bundle_from_sources(sources)
+
+
+def test_bundle_rejects_behavioral_artifact_hash_subclasses() -> None:
     sources = _artifact_sources()
     hostile_hash = _MutableStr("1" * 64)
     sources["artifact_hashes"]["canonical_rules.json"] = hostile_hash
 
-    try:
-        bundle = _bundle_from_sources(sources)
-    except (TypeError, ValueError):
-        return
-
-    frozen_hash = bundle.artifact_hashes["canonical_rules.json"]
-    assert type(frozen_hash) is str
-    digest_before = bundle.digest
-    hostile_hash.accept_all = True
-    assert bundle.digest == digest_before
-    assert frozen_hash != "attacker"
+    with pytest.raises(TypeError, match="exact str keys to exact str values"):
+        _bundle_from_sources(sources)
 
 
 def test_snapshot_projects_all_groups_and_public_dynamic_cells_once() -> None:
@@ -435,7 +486,7 @@ def test_f6_projection_does_not_change_the_reviewed_f1_or_snapshot_identities() 
     _state, _bundle, snapshot = _build_world()
 
     assert snapshot.master_domain_projection == "80ae61bca0c96a81773250971dce150a63575698aabf33a66fc2413d847f6a38"
-    assert snapshot.digest == "f4e84ce1c08321207bc515a7c39c49a482a21588f7e49d703cccd0ad37e86520"
+    assert snapshot.digest == "1ffd473bbc0c521a57c0cb8072a014543917b83f5b50c4106011c949b8b60ebb"
 
 
 def test_f6_master_domain_projection_ignores_non_f6_facility_pool_noise() -> None:
