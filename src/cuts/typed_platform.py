@@ -56,6 +56,13 @@ _COMPILED_CUT_DIGEST_PREFIX = b"zmd.compiled-cut.v1:"
 _GHOST_RECT_DIGEST_PREFIX = b"zmd.ghost-rect.v1:"
 _EXTERIOR_BLOCKS_DIGEST_PREFIX = b"zmd.exterior-blocks.v1:"
 _COMMON_MODE_UNTRUSTED = "common-mode-untrusted"
+# RFC-002 batch D: F5 shadows whose empty-binding-domain refutation was
+# re-derived by the independent verifier (not just re-asked of the same oracle)
+# carry this tag instead of the common-mode-untrusted one.  The plugin declares
+# it (see _PatternNogoodPlugin.shadow_telemetry_tag) only because its
+# parse_and_validate_proof runs — and fail-closes on — that verifier before it
+# can return, so reaching the ShadowValidated construction means it passed.
+_INDEPENDENTLY_VERIFIED = "independently-verified"
 _GHOST_AGNOSTIC = "__ghost_agnostic__"
 _PRODUCTION_V1_ARTIFACT_DEPENDENCIES = frozenset(
     {
@@ -1256,8 +1263,45 @@ def _reverify_f5_oracle(
         )
 
 
+def _verify_f5_binding_empty_domain(
+    proof: PatternNogoodProof,
+    snapshot: ValidatedStateSnapshot,
+) -> None:
+    """Independent re-derivation of the F5 empty-binding-domain refutation.
+
+    RFC-002 §4 verifier face: layered AFTER ``_reverify_f5_oracle`` (which is
+    retained as defence-in-depth) so both the same-oracle re-query and an
+    algorithm that shares no code with the oracle/adapter must agree.  The
+    verifier reads only snapshot-resident frozen facts and REFUTES — as a
+    ``proof``-stage semantic rejection — any pattern it cannot independently
+    confirm has an empty binding domain.
+    """
+
+    from src.cuts.verifiers.binding_empty_domain_verifier import (
+        verify_binding_empty_domain,
+    )
+
+    inputs = _f5_liftable_inputs(snapshot)
+    verdict = verify_binding_empty_domain(
+        proof.forbidden_pose_pattern,
+        instance_to_facility_type=inputs.instance_to_facility_type,
+        facility_pools=inputs.facility_pools,
+    )
+    if not verdict.verified:
+        raise SemanticCutRejection(
+            "proof",
+            f"F5 independent binding-empty-domain verifier refused the pattern: {verdict.reason}",
+        )
+
+
 class _PatternNogoodPlugin:
-    """F5 typed validator with the complete legacy oracle obligation chain."""
+    """F5 typed validator with the complete legacy oracle obligation chain plus
+    the RFC-002 independent binding-empty-domain verifier."""
+
+    # Declared because parse_and_validate_proof runs (and fail-closes on) the
+    # independent verifier before it can return: any ShadowValidated the atomic
+    # entry point builds for this plugin has therefore passed that verifier.
+    shadow_telemetry_tag: str = _INDEPENDENTLY_VERIFIED
 
     def parse_and_validate_proof(
         self,
@@ -1270,6 +1314,7 @@ class _PatternNogoodPlugin:
             raise SemanticCutRejection("proof", str(exc) or type(exc).__name__) from exc
         _validate_f5_proof(proof, snapshot)
         _reverify_f5_oracle(proof, snapshot)
+        _verify_f5_binding_empty_domain(proof, snapshot)
         return proof
 
     def derive_body(self, proof: FrozenFamilyProof) -> PatternNogoodBody:
@@ -1972,11 +2017,20 @@ def validate_and_compile_cut(
     except SemanticCutRejection as rejection:
         return _semantic_rejection_result(rejection, cut_id=envelope.cut_id)
     if capability.stage is CapabilityStage.VALIDATED:
+        # A plugin whose parse_and_validate_proof ran an independent verifier
+        # before returning upgrades its shadow tag; plugins without that
+        # obligation keep the common-mode-untrusted default (RFC-002 batch D).
+        declared_tag = getattr(plugin, "shadow_telemetry_tag", _COMMON_MODE_UNTRUSTED)
+        telemetry_tag = (
+            declared_tag
+            if type(declared_tag) is str and declared_tag
+            else _COMMON_MODE_UNTRUSTED
+        )
         return ShadowValidated(
             cut_id=envelope.cut_id,
             proof_digest=envelope.proof_hash,
             snapshot_digest=snapshot.digest,
-            telemetry_tag=_COMMON_MODE_UNTRUSTED,
+            telemetry_tag=telemetry_tag,
             _construction_token=_SHADOW_VALIDATED_CONSTRUCTION_TOKEN,
         )
     try:

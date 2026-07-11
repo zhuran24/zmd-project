@@ -29,6 +29,7 @@ from src.cuts.lifecycle import (
     OracleCert,
     _encode_region_bitset,
     canonical_bytes_for_cert,
+    capture_scope_identity_preimage_v1,
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
@@ -225,6 +226,170 @@ def _build_world(
         artifact_hashes=selected_hashes,
     )
     return state, build_validated_state_snapshot(state, bundle)
+
+
+def _pick_f5_verifiable_op() -> tuple[str, str]:
+    """A real exact-binding operation (no generic hub slots) with >=1 required
+    port slot, so a zero-port pose has a genuinely empty binding domain that the
+    independent verifier can re-derive from the frozen profile."""
+    from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+
+    for op, profile in sorted(OPERATION_PORT_PROFILES.items()):
+        if profile.generic_input_slots or profile.generic_output_slots:
+            continue
+        if sum(profile.input_slots.values()) + sum(profile.output_slots.values()) > 0:
+            return op, profile.facility_type
+    raise AssertionError("no exact-binding operation with port slots in profiles")
+
+
+def _f5_dead_pose() -> dict[str, Any]:
+    return {
+        "pose_id": "p_dead",
+        "anchor": {"x": 1, "y": 1},
+        "occupied_cells": [[1, 1]],
+        "input_port_cells": [],
+        "output_port_cells": [],
+        "power_coverage_cells": None,
+    }
+
+
+def _f5_live_pose(op: str) -> dict[str, Any]:
+    from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+
+    profile = OPERATION_PORT_PROFILES[op]
+    n_in = sum(profile.input_slots.values())
+    n_out = sum(profile.output_slots.values())
+    return {
+        "pose_id": "p_live",
+        "anchor": {"x": 3, "y": 1},
+        "occupied_cells": [[3, 1]],
+        "input_port_cells": [{"x": i, "y": 0, "dir": "N"} for i in range(n_in)],
+        "output_port_cells": [{"x": i, "y": 9, "dir": "S"} for i in range(n_out)],
+        "power_coverage_cells": None,
+    }
+
+
+def _build_f5_verifiable_world(
+    *,
+    artifact_hashes: dict[str, str] | None = None,
+) -> tuple[BState, ValidatedStateSnapshot, str]:
+    """A production-shaped F5 world: a real ``group::{facility}::{op}::0`` group
+    whose ``p_dead`` pose has an empty binding domain the RFC-002 verifier can
+    independently confirm (unlike the synthetic ``g1``/``test_machine`` world)."""
+    op, facility_type = _pick_f5_verifiable_op()
+    group_id = f"group::{facility_type}::{op}::0"
+    selected_hashes = _ARTIFACT_HASHES if artifact_hashes is None else artifact_hashes
+    facility_templates = {
+        facility_type: {
+            "placement_rule": "free",
+            "dimensions": {"w": 1, "h": 1},
+            "needs_power": False,
+        }
+    }
+    canonical_rules = {
+        "globals": {"grid": {"width": 70, "height": 70}},
+        "facility_templates": facility_templates,
+    }
+    candidate_placements = {
+        "facility_pools": {facility_type: [_f5_dead_pose(), _f5_live_pose(op)]}
+    }
+    instance_to_facility_type = {group_id: facility_type}
+    ghost_rect = (11, 17, 2, 3)
+    ghost_cells = frozenset(
+        (x, y)
+        for x in range(ghost_rect[0], ghost_rect[0] + ghost_rect[2])
+        for y in range(ghost_rect[1], ghost_rect[1] + ghost_rect[3])
+    )
+    state = BState(
+        groups={
+            group_id: GroupState(
+                group_id=group_id,
+                demand=1,
+                pose_domain=frozenset({"p_dead", "p_live"}),
+                selected_poses=[],
+            )
+        },
+        ghost_rect=ghost_rect,
+        ghost_cells=ghost_cells,
+        exterior_blocks=frozenset({(7, 0)}),
+        artifact_hashes=dict(selected_hashes),
+        available_oracle_versions=frozenset({"binding_empty_domain_v1", "region_capacity_v1"}),
+        canonical_rules=canonical_rules,
+        candidate_placements=candidate_placements,
+        facility_templates=facility_templates,
+        instance_to_facility_type=instance_to_facility_type,
+    )
+    state.source_digest = compute_source_digest(state)
+    bundle = build_frozen_artifact_bundle(
+        canonical_rules=canonical_rules,
+        candidate_placements=candidate_placements,
+        facility_templates=facility_templates,
+        instance_to_facility_type=instance_to_facility_type,
+        artifact_hashes=selected_hashes,
+    )
+    return state, build_validated_state_snapshot(state, bundle), group_id
+
+
+def _make_verifiable_pattern_cut(
+    state: BState,
+    group_id: str,
+    *,
+    pose_id: str = "p_dead",
+    oracle_name: str = "binding_empty_domain_v1",
+    oracle_version: str = "v1.0",
+    with_identity_preimage: bool = False,
+) -> Cut:
+    proof = canonical_bytes_for_cert(
+        {
+            "cert_kind": "bounded_deletion_core",
+            "sub_problem_oracle_name": oracle_name,
+            "sub_problem_oracle_version": oracle_version,
+            "forbidden_pose_pattern": [[group_id, 0, pose_id]],
+            "core_minimization": {
+                "size_before": 1,
+                "size_after": 1,
+                "calls": 1,
+                "stopped_reason": "INFEASIBLE_VERIFIED",
+                "is_verified_infeasible": True,
+            },
+        }
+    )
+    proof_hash = hashlib.sha256(proof).hexdigest()
+    scope = _scope(state, ghost_bound=True)
+    if with_identity_preimage:
+        # A raw scope preimage lets the cut pass the production cut_to_envelope_v1
+        # adapter, so the full orchestration (not just _trusted_test_envelope)
+        # can carry it into the shadow bucket.
+        scope = CutScope(
+            ghost_rect_id=scope.ghost_rect_id,
+            blocked_cells_hash=scope.blocked_cells_hash,
+            exterior_blocks_hash=scope.exterior_blocks_hash,
+            source_digest=scope.source_digest,
+            artifact_hashes=dict(scope.artifact_hashes),
+            oracle_abstraction_version=scope.oracle_abstraction_version,
+            identity_preimage=capture_scope_identity_preimage_v1(state),
+        )
+    return Cut(
+        cut_id="b15-pattern-verifiable",
+        family="pattern_nogood",
+        literals=(
+            CutLiteral(
+                slot_ref=AnonymousSlotRef(group_id=group_id, slot_index=0),
+                pose_id=pose_id,
+            ),
+        ),
+        scope=scope,
+        cert=OracleCert(
+            cert_kind="bounded_deletion_core",
+            cert_payload=proof,
+            cert_hash=proof_hash,
+        ),
+        family_version="v1",
+        validator_version="pattern-nogood-v1",
+        payload_schema_version=1,
+        oracle_name="pattern_nogood_v1",
+        oracle_cert_hash=proof_hash,
+    )
 
 
 def _scope(state: BState, *, ghost_bound: bool) -> CutScope:
@@ -1606,10 +1771,17 @@ class _DifferentialF5Oracle:
 
 
 def test_production_registry_f5_envelope_runs_full_shadow_path() -> None:
-    state, snapshot = _build_world(
+    # RFC-002 batch D: the full shadow path now requires BOTH the same-oracle
+    # re-query (the fake INFEASIBLE oracle below) AND the independent verifier
+    # to agree, so this exercises a production-shaped world whose p_dead pose
+    # has a genuinely empty binding domain the verifier re-derives.  The shadow
+    # tag is upgraded to independently-verified.
+    state, snapshot, group_id = _build_f5_verifiable_world(
         artifact_hashes=_PRODUCTION_ARTIFACT_HASHES,
     )
-    envelope = _trusted_test_envelope(_make_pattern_cut(state), snapshot)
+    envelope = _trusted_test_envelope(
+        _make_verifiable_pattern_cut(state, group_id), snapshot
+    )
     oracle = _DifferentialF5Oracle()
     clear_sub_problem_oracle_registry()
     register_sub_problem_oracle(oracle)  # type: ignore[arg-type]
@@ -1624,7 +1796,7 @@ def test_production_registry_f5_envelope_runs_full_shadow_path() -> None:
 
     assert isinstance(result, ShadowValidated)
     assert result.cut_id == envelope.cut_id
-    assert result.telemetry_tag == "common-mode-untrusted"
+    assert result.telemetry_tag == "independently-verified"
     assert result.proof_digest == envelope.proof_hash
     assert result.snapshot_digest == snapshot.digest
     dependency_map = {dependency.name: dependency.digest for dependency in envelope.scope.dependency_hashes}
@@ -1637,8 +1809,10 @@ def test_production_registry_f5_envelope_runs_full_shadow_path() -> None:
             assert dependency_map[name] == raw_identity
     _assert_sha256(result.proof_digest)
     _assert_sha256(result.snapshot_digest)
+    # The retained same-oracle re-query still runs exactly once ahead of the
+    # independent verifier (defence in depth).
     assert len(oracle.calls) == 1
-    assert oracle.calls[0][0] == (("g1", 0, "pA"),)
+    assert oracle.calls[0][0] == ((group_id, 0, "p_dead"),)
     assert oracle.calls[0][2] == 15.0
 
 

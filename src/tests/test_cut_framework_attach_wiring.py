@@ -633,14 +633,81 @@ def test_r10_typed_single_entry_rejects_drifted_snapshot() -> None:
     assert result_b.stage == "scope"
 
 
-@pytest.mark.skip(
-    reason="B5a-transitional: F5 pattern_nogood → ShadowValidated under the "
-    "production registry needs the sub-problem oracle registry wired (the "
-    "_build_shadow_result shadow is spy-built). The orchestration ShadowValidated "
-    "arm is covered by test_maybe_attach_shadow_result_causes_zero_master_mutation."
-)
-def test_full_chain_f5_binding_empty_domain_end_to_end() -> None:  # pragma: no cover
-    pass
+def test_full_chain_f5_binding_empty_domain_end_to_end(tmp_path: Path) -> None:
+    """RFC-002 batch D: a real F5 empty-binding-domain cut flows through the
+    full orchestration — the wired sub-problem oracle registry, the production
+    typed registry, and the independent verifier — landing in the
+    shadow_validated bucket with the independently-verified tag and ZERO master
+    mutation (F5 never reaches step_8).
+    """
+    from src.cuts import typed_platform
+    from src.cuts.oracles.pattern_nogood_oracle import (
+        clear_sub_problem_oracle_registry,
+        register_sub_problem_oracle,
+    )
+    from src.tests.cuts.test_stage_b_contracts import _real_master_mutation_projection
+    from src.tests.cuts.test_stage_b_typed_platform import (
+        _PRODUCTION_ARTIFACT_HASHES,
+        _DifferentialF5Oracle,
+        _build_f5_verifiable_world,
+        _make_verifiable_pattern_cut,
+    )
+
+    # State drives the internally-built snapshot + cut; the master only has to
+    # stay untouched (F5 is shadow-only), so any real bound-region master serves.
+    f5_state, _snapshot, group_id = _build_f5_verifiable_world(
+        artifact_hashes=_PRODUCTION_ARTIFACT_HASHES,
+    )
+    f5_cut = _make_verifiable_pattern_cut(
+        f5_state, group_id, pose_id="p_dead", with_identity_preimage=True
+    )
+
+    master, _region_state, _gid = _bound_region_world()
+    before = _real_master_mutation_projection(master, proto_path=tmp_path / "b.pb")
+    controller = _controller(master)
+
+    # Delegate-spy on the production single entry so the shadow's telemetry tag
+    # can be asserted while the REAL validate_and_compile_cut still runs.
+    real_validate = typed_platform.validate_and_compile_cut
+    captured: list[Any] = []
+
+    def _recording_validate(*args: Any, **kwargs: Any) -> Any:
+        result = real_validate(*args, **kwargs)
+        captured.append(result)
+        return result
+
+    clear_sub_problem_oracle_registry()
+    register_sub_problem_oracle(_DifferentialF5Oracle())  # type: ignore[arg-type]
+    try:
+        with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
+            with mock.patch.object(
+                LBBDController, "_build_cut_framework_state", return_value=f5_state
+            ), mock.patch(
+                "src.cuts.oracles.region_capacity_oracle.generate_region_capacity_cuts",
+                return_value=[f5_cut],
+            ), _suppress_f6(), mock.patch(
+                "src.cuts.typed_platform.validate_and_compile_cut",
+                side_effect=_recording_validate,
+            ):
+                attached = controller._maybe_attach_framework_cuts(
+                    trigger="binding_infeasible", iteration=1
+                )
+    finally:
+        clear_sub_problem_oracle_registry()
+
+    after = _real_master_mutation_projection(master, proto_path=tmp_path / "a.pb")
+    assert attached == 0
+    assert after == before
+    stats = master.build_stats["cut_framework_attach_last"]
+    assert stats["shadow_validated"] == 1
+    assert stats["attached_by_family"] == {}
+    assert stats["rejected"] == {
+        stage: 0 for stage in stats["rejected"]
+    }, stats["rejected"]
+
+    shadows = [r for r in captured if isinstance(r, typed_platform.ShadowValidated)]
+    assert len(shadows) == 1
+    assert shadows[0].telemetry_tag == "independently-verified"
 
 
 # ---- §6 differential anchors (orchestration vs direct; zero-mutation) --------

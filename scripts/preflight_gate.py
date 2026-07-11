@@ -602,6 +602,8 @@ MYPY_STRICT_TARGETS = [
     "src/cuts/families/region_capacity_typed.py",
     "src/cuts/families/power_hitting_set_typed.py",
     "src/cuts/families/shape_packing_hall_typed.py",
+    # RFC-002 批 D: F5 独立 verifier (TCB) — strict 进 gate 同 B5a 先例.
+    "src/cuts/verifiers/binding_empty_domain_verifier.py",
 ]
 
 

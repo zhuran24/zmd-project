@@ -3132,7 +3132,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "8ff3b2c9beb64eaa77df9f11bae12d7cca690eaf2d6931d765e71046387cc513"
+    "b072979fa19cb0883b2a362734996e600f445553b02f4773b75de8d5aff22986"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -12971,7 +12971,8 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/state_snapshot.py': '3efaa1cae043c63d71a3b41ce9e78509df34e826607f6d1eee5480212bb1dc35',
     'src/cuts/store.py': '6266f86dd37f1ca9d6654cb8596ffbece47e420ff526ecb112be505b60870b37',
     'src/cuts/typed_apply.py': '5619589235b24fe04137721a4385e8f967bc51b5b638da6bc2c7471bc6eaa1f5',
-    'src/cuts/typed_platform.py': '7272a88f2b10060355972f644c5a0d49f74338cce0f856499d646567258d977e',
+    'src/cuts/typed_platform.py': '947b116075fc0bd654a54111045d6891619c3d78b8de2b65c94fc40889c3d942',
+    'src/cuts/verifiers/binding_empty_domain_verifier.py': 'cbb2adcec7c9dd9813911b3501525dc6742f05288e4ba4d896f7db8635a1e693',
     'src/interchange/compatibility_manifest.py': '2ceba41d6be16fa15b252f50538a378f054b85270d06a08ad38f9adcbb5efaea',
     'src/interchange/export_registry.py': 'f1b8a08b5a728e800c8fe8af5510115e67e08c46b084550551af91636a036f21',
     'src/interchange/normalized_catalog.py': '63ffb299752349369a572e80996086ee79cf86c810450299a3d5fff9fc82c879',
@@ -13021,7 +13022,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
-    'src/search/certified_artifact_contract.py': '078414bef016ca5f572734062cc86168d9ef40d84956b85f48b638dd2e07b459',
+    'src/search/certified_artifact_contract.py': 'bf248e9ff980d1a36df95bbe14d40384fb5384e416db0b6769a92cbeeefb630e',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': '3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
