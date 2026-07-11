@@ -388,6 +388,110 @@ domain_fingerprint 按 §2.4 v2 定义(covering facility_pools digest+slot 结�
 登记);master apply 重查 eligible baseline poses 保留,fingerprint 绑定使之成为「同一
 真相的两次读」;differential 裁定,不足则退 plan 携带 pose IDs。
 
+**B3 侦察补拍板(2026-07-11,三路并行侦察 file:line 实证后定;codex 通道中断期由主会话
+fan-out 读者产出)**:
+
+1. **preimage 捕获 = F1 减 ghost-policy 分支**:oracle(`shape_packing_hall_oracle.py:290-297`)
+   改用 `capture_scope_identity_preimage_v1(state)` 一次捕获 + `compute_scope_identity_legacy_hashes`
+   派生三 legacy 16-hex;`CutScope(..., identity_preimage=preimage)`。**不得**照抄 F1 的
+   `GHOST_AGNOSTIC iff ghost∩R==∅` 政策——F6 永远 GHOST_BOUND(validator 语义硬约束,
+   `shape_packing_hall.py:450-454`)。cert payload 的 `exterior_blocks_digest` 与 scope 的
+   `exterior_blocks_hash` 必须出自同一次捕获(值同、不改 cert 字节)。
+2. **无 scope-assumption 路线**:F6 legacy oracle 不产 assumptions(validator 对 boundary/
+   placement 无条件源真值现算),typed 同构——scope.assumptions 保持空;**不扩**平台
+   assumptions dispatch(`:1682`/`:1895` 两处 F1 硬分支不动),**不加**顶层
+   `envelope.family=="shape_packing_hall"` 硬分支;F6 全部语义义务**无条件**收进 plugin
+   `parse_and_validate_proof`(无任何 validator_version 条件化 = 无 version-seam 可绕,
+   B2 codex#1 教训的结构性消除)。双审专项攻击面:证明 plugin 义务在 COMPILABLE dispatch
+   下不可绕。
+3. **snapshot-native 语义平价**:typed validator 复验 legacy 12-phase 全部义务,数据源换
+   snapshot——partition 重算读公共 `snapshot.ghost_cells ∪ snapshot.exterior_blocks`
+   (F1 先例);静态读集走 `F6HallInputs`(B1 已铺,**不扩字段**;pose-baseline 归属由
+   projection 的 occupied_cells 派生,不需要 pose_occupied_cells 进 inputs)。cert 14 字段
+   闭集解析不变(不动 cert_schema);`exterior_blocks_digest` 照验但重算源=snapshot 数据
+   (单一来源,禁两套 digest 约定并存)。
+4. **region_kind 收窄追认**:`_validate_plan_parameters` 的 `shape_packing_hall_le` 分支从
+   「非空 str」收紧到闭集 `{left_baseline,bottom_baseline}`(legacy step_8 `:1505` 平价对齐,
+   属拍板授权的 fail-closed 对齐、非私自收窄)。
+5. **projection 另发 F6 子集**:新增 `family_subset="shape_packing_hall"` 的
+   MasterDomainProjectionV1 投影,**不改** F1 那份(防 F1 fingerprint 漂移);复用 builder
+   helper,含 pose-tuple 登记+occupied cells(baseline 归属可派生);fingerprint 编码平行
+   F1 先例,domain separator/字段序等编码细节随 B3 双审把关。
+   **semantic fingerprint 编码定格(2026-07-11 追记)**:codex 中断前的设计备注事后送达,
+   经与 B2 落地实现逐项核对一致(`region_capacity_typed.py:42,348-377`),升格为正式编码规格——
+   前缀 `zmd.semantic-fingerprint.v1:` + 完整 SHA-256;projection 覆盖 compiler_version、
+   family、operation、parameters+parameter_schema、model_scope(domain_fingerprint/
+   ghost_policy/ghost_rect_digest)、snapshot_source_digest+snapshot_artifact_identities;
+   **排除** cut ID、时间戳、oracle 名称、raw proof bytes;编码走平台共享 type-tagged
+   canonical 原语(`_canonical_node`+`_domain_digest`,拒 NaN/Infinity)。F6 的
+   `shape_packing_hall_semantic_fingerprint_v1` 照此模式,替换 family/operation/
+   parameter_schema 三处族相关值。
+6. **registry 三件同批**:F6 row(`typed_platform.py:1337-1346`)翻 COMPILABLE + 正式
+   validator/compiler version 常量 + plugins 挂 `shape_packing_hall_typed`;**不升 ENABLED**
+   (B6 owner 门)。
+7. **测试借名统一迁 cutset**:B2 中性化把机制测试借到了 F6 名下,B3 落真 plugin 必撞——
+   借名 helper(typed_platform 测试 `_make_region_cut:273`/`_plan:401`/`_capability:441`、
+   contracts `_make_region_capacity_cut:586`/probe plan `:727` 等)默认 family 统一迁
+   **cutset(F2)**:geometric、永久 LEGACY_DIAGNOSTIC、无专门分支,B4(F7)及以后不再撞;
+   三分支代数的 CutRejection 臂迁 cutset 后走「legacy diagnostic family cannot enter typed
+   dispatch」= 跨批稳定拒绝源。生产 registry 断言三处同步(`_EXPECTED_STAGES:128`/
+   nine-family mirror `:921`/replay-step8 一致性 `:974`)。snapshot_layer 的真 F6 输入测试
+   **不迁**(非借名)。
+8. **differential 拍板**:F6 恒 ghost-bound → 走 F7 的「anchor 自由=休眠 FEASIBLE→钉
+   anchor→INFEASIBLE」范式(`test_step_8:396-440`);FEASIBLE 对照侧必须 master 级构造
+   (抬 capacity 或 anchor 自由),**禁**用等号 cert(`total_packable==region_demand` 是
+   validator unsound)当正例;fixture 的 1×L pose 必须整 body 水平贴 baseline(master
+   `_on_baseline` 只计全贴 pose,`exact_coordinate_master.py:8163`),否则空 terms 被拒;
+   `test_step_8` 现无任何 F6 用例=从零建;`test_family_shape_packing_hall.py` 的 happy-path
+   cert 已逐谓词核为合法 proof,可直接作全链正例。
+9. **连锁提醒**:动 oracle = sealed proof 生产文件 → golden digest/frozen-witness 重钉
+   可能触发(B2 `fbc315a` 同类,跑全量测试暴露);新 plugin 文件进 checker floor + preflight
+   mypy targets;两个结构 checker 对表后自钉最后。
+
+**B3 双审补拍板(2026-07-11,opus BLOCK 2(均为计划内 reseal 项)/codex BLOCK 2+HIGH 2+MEDIUM 1
+全实证;终审裁决)**:
+
+1. **literals 空 tuple gate(codex#0 修复拍板)**:legacy F6 要求 `cut.literals is None`
+   (空 tuple = schema_err),但公共 Cut 层 `_has_literal_payload(()) == False` 使 adapter
+   framing 丢失 None/() 区别 → `literals=()` 的旧版非法 cut 在 typed 全链产 CompiledCut
+   (接受集合真放宽,复现坐实)。拍板:**adapter 层通用 gate**——`cut_to_envelope_v1` 的
+   geometric mode 判定严格要求 `literals is None`,`()` 一律拒(信息在 framing 丢失前拦截);
+   修复方须核对 F1 legacy 对 `literals=()` 的行为——若 F1 legacy 亦拒则是平价对齐,若 F1
+   legacy 接受则该 gate 对 F1 构成 typed-only 收窄、照差异表规程登记;F6/F1 各补
+   「legacy 拒 + typed 拒」双断言 differential 红测。
+2. **ghost-bound 义务声明式前移(codex#1 修复拍板)**:`parse_and_validate_proof(proof_payload,
+   snapshot)` 协议看不到 scope,「义务全进 parser」对 scope 形态义务不可实现;现状靠 compiler
+   产 bound plan 后的 equality 巧合补拒,合法 VALIDATED capability 配置(在 compiler 前
+   返回 ShadowValidated)可跳过。拍板:**FamilyCapability 加声明式字段**(如
+   `requires_ghost_bound: bool` 或等价 ghost-policy 约束),在 `_validate_scope_currentness`
+   通用层(一切出口的共同前置)检查——capability 数据驱动,不是 family 字符串硬分支,
+   与拍板 2「无顶层 family 分支」的精神一致(该拍板防的是分支蔓延与 version seam,不禁
+   声明式平台机制);F6 声明 True,F1/F5 保持允许 agnostic;补 VALIDATED stage 下的绕过
+   红测;现有锁在 compiler boundary 的测试改锁 scope 阶段。
+3. **accept-set 差异表扩容(codex#2)**:B3 交付登记的三项之外,至少还有 preimage 内部
+   不一致拒、外层 cert_kind 漂移拒、`payload_schema_version != 1` 拒、quarantine 拒等
+   typed-only 收窄未登记——全部方向正确(fail-closed 防伪,授权保留),问题仅在登记完备性。
+   拍板:差异表按「completeness 义务」维护——**每一处 typed adapter/plugin 的显式拒绝
+   分支都必须对应差异表一行或 legacy 平价说明**,本批补齐并逐项配 differential 用例。
+4. **测试攻击点修正(codex#3/#4)**:validator_version 绕过红测的攻击目标从
+   `Cut.validator_version`(audit-only provenance,不控制任何分发)改为
+   `registry.capabilities[family].validator_version`(真实分发控制源);cutset 三分支
+   探针 fixture 依赖键改用生产 canonical 八键,断言收紧到 `stage=="registry"` + reason
+   文案(现命中前置 scope 拒绝分支,锁错臂)。
+5. **计划内 reseal 项(opus#0/#1)**:checker v99 floor 三文件 drift + 新 plugin
+   `shape_packing_hall_typed.py` 未登记 floor——按既定分工归 team-lead 终审 reseal 连锁
+   执行(oracle/typed_platform/state_snapshot 重钉 + 新 plugin 与 F1 先例同格入 floor +
+   checker 自钉最后)。
+6. **留痕**:codex 的 F6 legacy 12-phase vs typed 逐阶段映射全表与十二攻击面逐项结论
+   存 workflow 转录(wf_8a9f65dd-b7b journal),不复制入规格。
+7. **修复批新收窄追认(scope.exterior_preimage_snapshot_currentness)**:codex 修复中新
+   发现并直接落地的 typed-only 收窄——cut 携带自洽但相对 snapshot 过时的 exterior preimage
+   (删元素+重算 hash 保持内部一致)时,legacy 全链接受(validator 只对 cert digest 与
+   state 比,不查 scope 身份新鲜度),typed 在 scope 阶段拒 "scope exterior-block identity
+   is stale"。终审**追认为正式拍板**(fail-closed 方向,拒绝对旧世界签发的 cut,回退反而
+   放宽 TCB;已按差异表新规矩登记 audit 行+专项测试)。流程注记:实现方本应「先报后动」,
+   实际动后随交付上报——与 B2 三项收窄同型处置,追认不豁免流程规矩,再次重申。
+
 ### 5.3 F7(中到大)
 plan 带 `blocked_cells_digest`,binding 带本体(resolver 从 snapshot 冻结值复原+digest
 校验);runtime master coverer gate(:7988-8011)保留为 master 域独立防线。M2 合并见 §6。

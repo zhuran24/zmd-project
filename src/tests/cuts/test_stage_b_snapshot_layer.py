@@ -412,6 +412,92 @@ def test_master_domain_projection_is_order_stable_and_tracks_pose_registration()
     assert changed.master_domain_projection != forward.master_domain_projection
 
 
+def test_f6_master_domain_projection_is_separate_order_stable_and_tracks_occupied_cells() -> None:
+    _state, _bundle, forward = _build_world()
+    _reverse_state, _reverse_bundle, reverse = _build_world(reverse=True)
+
+    assert forward.shape_packing_hall_master_domain_projection == reverse.shape_packing_hall_master_domain_projection
+    _assert_sha256_hex(forward.shape_packing_hall_master_domain_projection)
+    assert forward.shape_packing_hall_master_domain_projection != forward.master_domain_projection
+
+    changed_sources = _artifact_sources()
+    related_pose = changed_sources["candidate_placements"]["facility_pools"]["boundary_storage_port"][0]
+    related_pose["occupied_cells"] = [[0, 2], [0, 3], [0, 4]]
+    changed_state = _state_from_sources(changed_sources)
+    changed_bundle = _bundle_from_sources(changed_sources)
+    changed = build_validated_state_snapshot(changed_state, changed_bundle)
+
+    assert changed.shape_packing_hall_master_domain_projection != forward.shape_packing_hall_master_domain_projection
+    assert changed.master_domain_projection != forward.master_domain_projection
+
+
+def test_f6_projection_does_not_change_the_reviewed_f1_or_snapshot_identities() -> None:
+    _state, _bundle, snapshot = _build_world()
+
+    assert snapshot.master_domain_projection == "80ae61bca0c96a81773250971dce150a63575698aabf33a66fc2413d847f6a38"
+    assert snapshot.digest == "f4e84ce1c08321207bc515a7c39c49a482a21588f7e49d703cccd0ad37e86520"
+
+
+def test_f6_master_domain_projection_ignores_non_f6_facility_pool_noise() -> None:
+    _state, _bundle, baseline = _build_world()
+    changed_sources = _artifact_sources()
+    unrelated_pose = changed_sources["candidate_placements"]["facility_pools"]["manufacturing_3x3"][0]
+    unrelated_pose["occupied_cells"][0] = [29, 30]
+    changed_state = _state_from_sources(changed_sources)
+    changed_bundle = _bundle_from_sources(changed_sources)
+    changed = build_validated_state_snapshot(changed_state, changed_bundle)
+
+    assert changed.digest != baseline.digest
+    assert changed.shape_packing_hall_master_domain_projection == baseline.shape_packing_hall_master_domain_projection
+
+
+@pytest.mark.parametrize(
+    ("demand", "dimensions", "placement_rule"),
+    [
+        (0, (1, 3), "left_or_bottom_boundary"),
+        (1, (1, 1), "left_or_bottom_boundary"),
+        (1, (2, 2), "left_or_bottom_boundary"),
+        (1, (1, 71), "left_or_bottom_boundary"),
+        (1, (1, 3), "free"),
+    ],
+    ids=("zero-demand", "pose-length-one", "not-one-by-l", "longer-than-grid", "free-placement"),
+)
+def test_f6_projection_ignores_statically_ineligible_groups(
+    demand: int,
+    dimensions: tuple[int, int],
+    placement_rule: str,
+) -> None:
+    _state, _bundle, baseline = _build_world()
+    sources = _artifact_sources()
+    extra_template = {
+        "placement_rule": placement_rule,
+        "dimensions": {"w": dimensions[0], "h": dimensions[1]},
+        "needs_power": False,
+    }
+    sources["facility_templates"]["f6_ineligible"] = extra_template
+    sources["canonical_rules"]["facility_templates"]["f6_ineligible"] = deepcopy(extra_template)
+    sources["candidate_placements"]["facility_pools"]["f6_ineligible"] = [
+        {
+            "pose_id": "ineligible_pose",
+            "anchor": {"x": 50, "y": 50},
+            "occupied_cells": [[50, 50]],
+            "input_port_cells": [],
+            "output_port_cells": [],
+            "power_coverage_cells": None,
+        }
+    ]
+    sources["instance_to_facility_type"]["ineligible_group"] = "f6_ineligible"
+    changed_state = _state_from_sources(sources)
+    changed_state.groups["ineligible_group"] = GroupState(
+        group_id="ineligible_group",
+        demand=demand,
+        pose_domain=frozenset({"ineligible_pose"}),
+    )
+    changed = build_validated_state_snapshot(changed_state, _bundle_from_sources(sources))
+
+    assert changed.shape_packing_hall_master_domain_projection == baseline.shape_packing_hall_master_domain_projection
+
+
 def test_f1_master_domain_projection_ignores_unrelated_family_pool_noise() -> None:
     _state, _bundle, baseline = _build_world()
     changed_sources = _artifact_sources()

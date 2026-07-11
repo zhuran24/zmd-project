@@ -19,6 +19,7 @@ Preflight gate — 提交前自动门禁检查。
     0 = 通过
     1 = 有硬阻塞问题（警告不会产生单独的 exit 2）
 """
+
 from __future__ import annotations
 
 import argparse
@@ -208,10 +209,7 @@ def _git_diff_text_for_file(rel_path: str) -> tuple[str, str | None]:
 
 
 def _added_lines_from_diff(diff_text: str) -> list[str]:
-    return [
-        line[1:] for line in diff_text.splitlines()
-        if line.startswith("+") and not line.startswith("+++")
-    ]
+    return [line[1:] for line in diff_text.splitlines() if line.startswith("+") and not line.startswith("+++")]
 
 
 def _warn_or_block_tool_timeout(gate: GateResult, msg: str) -> None:
@@ -225,7 +223,9 @@ def _load_changed_files_file(path: Path) -> list[str]:
     return [line.strip().replace("\\", "/") for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
-def configure_change_scope(*, ci: bool = False, base_ref: str | None = None, changed_files_from: Path | None = None) -> None:
+def configure_change_scope(
+    *, ci: bool = False, base_ref: str | None = None, changed_files_from: Path | None = None
+) -> None:
     """Configure the file-diff scope used by staged-diff gates.
 
     Local pre-commit mode uses staged files. CI/PR mode must not rely on staged
@@ -269,11 +269,7 @@ def check_frozen_artifacts(gate: GateResult) -> None:
         if actual_hash == expected_hash:
             gate.ok(f"{rel_path}")
         else:
-            gate.block(
-                f"{rel_path} hash 不匹配!\n"
-                f"         期望: {expected_hash}\n"
-                f"         实际: {actual_hash}"
-            )
+            gate.block(f"{rel_path} hash 不匹配!\n         期望: {expected_hash}\n         实际: {actual_hash}")
 
     for rel_path, info in EXTERNAL_FROZEN_ARTIFACTS.items():
         full_path = PROJECT_ROOT / rel_path
@@ -357,10 +353,7 @@ def check_exact_exploratory_isolation(gate: GateResult) -> None:
         gate.ok(f"无 {CHANGE_SCOPE_LABEL} 文件")
         return
 
-    exact_staged = [
-        f for f in staged
-        if f.replace("\\", "/") in EXACT_MODE_FILES
-    ]
+    exact_staged = [f for f in staged if f.replace("\\", "/") in EXACT_MODE_FILES]
 
     if not exact_staged:
         gate.ok("本次提交未修改精确求解核心文件")
@@ -385,17 +378,12 @@ def check_exact_exploratory_isolation(gate: GateResult) -> None:
 
     if violations:
         for rel, pattern, line_text in violations:
-            gate.block(
-                f"探索性约束泄漏到精确模式: {rel}\n"
-                f"         模式: '{pattern}'\n"
-                f"         内容: {line_text}"
-            )
+            gate.block(f"探索性约束泄漏到精确模式: {rel}\n         模式: '{pattern}'\n         内容: {line_text}")
     else:
         gate.ok(f"已检查 {len(exact_staged)} 个核心文件的 diff，无探索性泄漏")
 
     gate.warn(
-        f"本次提交修改了精确求解核心文件: {', '.join(exact_staged)}\n"
-        f"         建议做一次 AI 语义审查确认求解语义未变"
+        f"本次提交修改了精确求解核心文件: {', '.join(exact_staged)}\n         建议做一次 AI 语义审查确认求解语义未变"
     )
 
 
@@ -454,10 +442,7 @@ def check_research_audit_coverage(gate: GateResult) -> None:
         audit_refs.update(_AUDIT_REF_PATTERN.findall(added))
 
     if not research_refs:
-        gate.ok(
-            f"路线图 / INDEX 改动 {len(touched)} 个文件，无新增 R-N 调研引用"
-            f"（可能是工时 / verdict 修订）"
-        )
+        gate.ok(f"路线图 / INDEX 改动 {len(touched)} 个文件，无新增 R-N 调研引用（可能是工时 / verdict 修订）")
         return
 
     missing = research_refs - audit_refs
@@ -480,7 +465,9 @@ def check_research_audit_coverage(gate: GateResult) -> None:
     )
 
 
-def _run_script_check(gate: GateResult, *, title: str, script_name: str, ok_prefix: str, timeout: int = 30, args: list[str] | None = None) -> None:
+def _run_script_check(
+    gate: GateResult, *, title: str, script_name: str, ok_prefix: str, timeout: int = 30, args: list[str] | None = None
+) -> None:
     timeout = max(1, int(timeout * _TIMEOUT_SCALE))
     script = PROJECT_ROOT / "scripts" / script_name
     if not script.exists():
@@ -513,22 +500,33 @@ def _run_script_check(gate: GateResult, *, title: str, script_name: str, ok_pref
 
 def check_external_artifact_manifest(gate: GateResult) -> None:
     print("\n[2/18] 外部大制品 contract 检查")
-    _run_script_check(gate, title="external artifacts", script_name="check_external_artifacts.py", ok_prefix="external artifact check")
+    _run_script_check(
+        gate, title="external artifacts", script_name="check_external_artifacts.py", ok_prefix="external artifact check"
+    )
 
 
 def check_line_ending_policy(gate: GateResult) -> None:
     print("\n[9/18] 行尾策略检查")
-    _run_script_check(gate, title="line endings", script_name="check_line_endings.py", ok_prefix="line-ending policy check")
+    _run_script_check(
+        gate, title="line endings", script_name="check_line_endings.py", ok_prefix="line-ending policy check"
+    )
 
 
 def check_artifact_boundaries(gate: GateResult) -> None:
     print("\n[12/18] 历史证据/生成制品边界检查")
-    _run_script_check(gate, title="artifact boundaries", script_name="check_artifact_boundaries.py", ok_prefix="artifact boundary check")
+    _run_script_check(
+        gate,
+        title="artifact boundaries",
+        script_name="check_artifact_boundaries.py",
+        ok_prefix="artifact boundary check",
+    )
 
 
 def check_phase_review_gate(gate: GateResult) -> None:
     print("\n[13/18] Phase review close-gate 状态一致性检查")
-    _run_script_check(gate, title="phase review gate", script_name="check_phase_review_gate.py", ok_prefix="phase review gate check")
+    _run_script_check(
+        gate, title="phase review gate", script_name="check_phase_review_gate.py", ok_prefix="phase review gate check"
+    )
 
 
 def check_p1_2_proof_obligations(gate: GateResult) -> None:
@@ -565,7 +563,10 @@ def check_publish_secret_scan(gate: GateResult) -> None:
     try:
         result = subprocess.run(
             [sys.executable, str(script)],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
+            capture_output=True,
+            text=True,
+            cwd=str(PROJECT_ROOT),
+            timeout=30,
         )
     except subprocess.TimeoutExpired:
         gate.block("secret scan 超时 (>30s)")
@@ -593,11 +594,12 @@ MYPY_STRICT_TARGETS = [
     "src/models/power_placement_subproblem.py",
     "src/models/master_model.py",
     "src/search/benders_loop.py",
-    # 阶段 B typed TCB 新文件 (B1/B1.5/B2): strict 全绿是双审验收项, 进 gate 防漂移.
+    # 阶段 B typed TCB 新文件 (B1/B1.5/B2/B3): strict 全绿是双审验收项, 进 gate 防漂移.
     "src/cuts/frozen_artifacts.py",
     "src/cuts/state_snapshot.py",
     "src/cuts/typed_platform.py",
     "src/cuts/families/region_capacity_typed.py",
+    "src/cuts/families/shape_packing_hall_typed.py",
 ]
 
 
@@ -615,13 +617,18 @@ def check_mypy(gate: GateResult) -> None:
     try:
         result = subprocess.run(
             [
-                sys.executable, "-m", "mypy",
+                sys.executable,
+                "-m",
+                "mypy",
                 "--explicit-package-bases",
                 "--ignore-missing-imports",
                 "--follow-imports=silent",
                 *existing,
             ],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=60,
+            capture_output=True,
+            text=True,
+            cwd=str(PROJECT_ROOT),
+            timeout=60,
             env={**os.environ, "MYPYPATH": str(PROJECT_ROOT)},
         )
     except subprocess.TimeoutExpired:
@@ -658,7 +665,10 @@ def check_ruff(gate: GateResult) -> None:
     try:
         result = subprocess.run(
             [sys.executable, "-m", "ruff", "check", "."],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
+            capture_output=True,
+            text=True,
+            cwd=str(PROJECT_ROOT),
+            timeout=30,
         )
     except subprocess.TimeoutExpired:
         _warn_or_block_tool_timeout(gate, "ruff 超时 (>30s) — 跳过")
@@ -736,8 +746,12 @@ def check_tests(gate: GateResult, *, full: bool = False) -> None:
 
     try:
         result = subprocess.run(
-            cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-            timeout=timeout, env=pytest_env,
+            cmd,
+            capture_output=True,
+            text=True,
+            cwd=str(PROJECT_ROOT),
+            timeout=timeout,
+            env=pytest_env,
         )
         last_lines = [line for line in result.stdout.splitlines() if line.strip()][-3:]
         summary_line = last_lines[-1] if last_lines else ""
@@ -764,8 +778,15 @@ def check_slow_tests(gate: GateResult, *, require_collection: bool = False) -> N
     print("\n[slow] 慢 soundness 测试 lane（-m slow, 长超时, 串行)")
     timeout = 2400
     cmd = [
-        sys.executable, "-m", "pytest", "-q", "--tb=short", "--no-header",
-        "-m", "slow", "src/tests",
+        sys.executable,
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "--no-header",
+        "-m",
+        "slow",
+        "src/tests",
     ]
     pytest_env = os.environ.copy()
     for runtime_env in (
@@ -777,8 +798,12 @@ def check_slow_tests(gate: GateResult, *, require_collection: bool = False) -> N
         pytest_env.pop(runtime_env, None)
     try:
         result = subprocess.run(
-            cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-            timeout=timeout, env=pytest_env,
+            cmd,
+            capture_output=True,
+            text=True,
+            cwd=str(PROJECT_ROOT),
+            timeout=timeout,
+            env=pytest_env,
         )
         last_lines = [line for line in result.stdout.splitlines() if line.strip()][-3:]
         summary_line = last_lines[-1] if last_lines else ""
@@ -805,7 +830,15 @@ def check_slow_tests(gate: GateResult, *, require_collection: bool = False) -> N
             gate.warn(msg)
 
 
-def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, slow_tests: bool = False, base_ref: str | None = None, changed_files_from: Path | None = None) -> int:
+def run_gate(
+    *,
+    full: bool = False,
+    hook: bool = False,
+    ci: bool = False,
+    slow_tests: bool = False,
+    base_ref: str | None = None,
+    changed_files_from: Path | None = None,
+) -> int:
     print("=" * 60)
     print("Preflight Gate — 提交前门禁检查")
     print("=" * 60)
@@ -860,11 +893,26 @@ def main() -> None:
     parser.add_argument("--full", action="store_true", help="全量检查（含 pytest, -m 'not slow'）")
     parser.add_argument("--hook", action="store_true", help="作为 git pre-commit hook 运行（快速模式）")
     parser.add_argument("--ci", action="store_true", help="按 base...HEAD diff 运行 PR/CI 变更范围检查")
-    parser.add_argument("--slow-tests", action="store_true", help="只跑专用慢 soundness 测试 lane（-m slow, 长超时, 串行；CI/阶段收口前必跑）")
+    parser.add_argument(
+        "--slow-tests",
+        action="store_true",
+        help="只跑专用慢 soundness 测试 lane（-m slow, 长超时, 串行；CI/阶段收口前必跑）",
+    )
     parser.add_argument("--base-ref", default=None, help="CI diff base ref/SHA，默认 origin/main")
-    parser.add_argument("--changed-files-from", type=Path, default=None, help="从文件读取变更路径列表，每行一个 repo-relative path")
+    parser.add_argument(
+        "--changed-files-from", type=Path, default=None, help="从文件读取变更路径列表，每行一个 repo-relative path"
+    )
     args = parser.parse_args()
-    sys.exit(run_gate(full=args.full, hook=args.hook, ci=args.ci, slow_tests=args.slow_tests, base_ref=args.base_ref, changed_files_from=args.changed_files_from))
+    sys.exit(
+        run_gate(
+            full=args.full,
+            hook=args.hook,
+            ci=args.ci,
+            slow_tests=args.slow_tests,
+            base_ref=args.base_ref,
+            changed_files_from=args.changed_files_from,
+        )
+    )
 
 
 if __name__ == "__main__":

@@ -125,7 +125,7 @@ _EXPECTED_STAGES = {
     "power_grid_reach": CapabilityStage.RETIRED,
     "power_hitting_set": CapabilityStage.EXPERIMENTAL,
     "region_capacity": CapabilityStage.COMPILABLE,
-    "shape_packing_hall": CapabilityStage.EXPERIMENTAL,
+    "shape_packing_hall": CapabilityStage.COMPILABLE,
 }
 _EXPECTED_PATHS = {
     "component_reach": ExecutionPath.LEGACY_DIAGNOSTIC,
@@ -238,21 +238,39 @@ def _scope(state: BState, *, ghost_bound: bool) -> CutScope:
     )
 
 
-def _region_payload() -> bytes:
-    return canonical_bytes_for_cert(
-        {
-            "cert_kind": "region_capacity_combinatorial",
-            "region_kind": "left_or_bottom_union",
-            "region_cells_bitset_b64": _encode_region_bitset([(0, 0), (0, 1), (1, 0)], grid_size=70),
-            "cap_R": 1,
-            "demand_R": 2,
-            "gap": 1,
-            "contributing_groups": [["g1", 1]],
-            "cells_per_pose": {"g1": 1},
-            "lp_dual_ray_b64": None,
-            "lp_dual_objective": None,
-        }
-    )
+def _probe_payload(*, family: str) -> bytes:
+    if family == "cutset":
+        return canonical_bytes_for_cert(
+            {
+                "cert_kind": "menger_min_cut",
+                "side_a_bitset_b64": _encode_region_bitset([(0, 0)], grid_size=70),
+                "side_b_bitset_b64": _encode_region_bitset([(0, 1)], grid_size=70),
+                "cut_edges": [[[0, 0], [0, 1]]],
+                "cut_size": 1,
+                "commodity_demand": 1,
+                "contributing_commodities": ["probe"],
+            }
+        )
+    if family == "shape_packing_hall":
+        return canonical_bytes_for_cert(
+            {
+                "cert_kind": "hall_interval_witness",
+                "region_kind": "left_baseline",
+                "region_total_length": 70,
+                "partition_lens": [70],
+                "partition_offsets": [0],
+                "pose_length": 2,
+                "pose_shape_canonical": "1x2_rigid",
+                "max_packable": [35],
+                "total_packable": 35,
+                "contributing_group": "g1",
+                "region_demand": 36,
+                "group_demand": 36,
+                "ghost_rect_repr": [11, 17, 2, 3],
+                "exterior_blocks_digest": "probe-exterior",
+            }
+        )
+    raise AssertionError(f"unsupported probe family {family!r}")
 
 
 def _make_region_cut(
@@ -261,20 +279,23 @@ def _make_region_cut(
     geometric_payload: bytes | None = None,
     cert_payload: bytes | None = None,
     ghost_bound: bool = False,
+    family: str = "cutset",
 ) -> Cut:
-    # Platform-mechanism tests use a neutral real family name (F6). Borrowing
-    # the F1 name would collide with the family-scoped unconditional assumption
-    # reverification ratified in B2 dual-review codex#1.
-    body = _region_payload() if geometric_payload is None else geometric_payload
+    # Default rejection fixtures use permanent legacy-diagnostic F2. Tests that
+    # intentionally exercise the complete typed plugin protocol must opt in to
+    # a typed family explicitly, so later family migrations cannot change the
+    # rejection arm by accident.
+    body = _probe_payload(family=family) if geometric_payload is None else geometric_payload
     proof = body if cert_payload is None else cert_payload
     proof_hash = hashlib.sha256(proof).hexdigest()
+    cert_kind = "menger_min_cut" if family == "cutset" else "hall_interval_witness"
     return Cut(
         cut_id="b15-region",
-        family="shape_packing_hall",
+        family=family,
         geometric_payload=body,
         scope=_scope(state, ghost_bound=ghost_bound),
         cert=OracleCert(
-            cert_kind="region_capacity_combinatorial",
+            cert_kind=cert_kind,
             cert_payload=proof,
             cert_hash=proof_hash,
         ),
@@ -398,10 +419,11 @@ class _OrderedPlugin:
 def _plan(
     *,
     operation: str = "shape_packing_hall_le",
-    family: str = "shape_packing_hall",
+    family: str = "cutset",
     ghost_policy: str = "agnostic",
     ghost_rect_digest: str | None = None,
     domain_fingerprint: str = "probe-domain-fingerprint",
+    hall_region_kind: object = "left_baseline",
 ) -> ConstraintPlan:
     parameters_by_operation: dict[str, dict[str, object]] = {
         "power_pose_exclusion": {
@@ -416,7 +438,7 @@ def _plan(
         "shape_packing_hall_le": {
             "capacity": 1,
             "group_id": "g1",
-            "region_kind": "left_baseline",
+            "region_kind": hall_region_kind,
         },
     }
     return ConstraintPlan(
@@ -438,11 +460,11 @@ def _plan(
 
 def _capability(
     *,
-    family: str = "shape_packing_hall",
+    family: str = "cutset",
     mode: str = "geometric",
-    stage: CapabilityStage = CapabilityStage.COMPILABLE,
-    execution_path: ExecutionPath = ExecutionPath.TYPED,
-    compiler_version: str | None = "b15-probe-v1",
+    stage: CapabilityStage = CapabilityStage.VALIDATED,
+    execution_path: ExecutionPath = ExecutionPath.LEGACY_DIAGNOSTIC,
+    compiler_version: str | None = None,
 ) -> FamilyCapability:
     return FamilyCapability(
         name=family,
@@ -466,6 +488,60 @@ def _registry(
         capabilities={selected.name: selected},
         plugins={} if plugin is None else {selected.name: plugin},
     )
+
+
+def _typed_probe_cut(
+    state: BState,
+    *,
+    geometric_payload: bytes | None = None,
+    cert_payload: bytes | None = None,
+    ghost_bound: bool = False,
+) -> Cut:
+    return _make_region_cut(
+        state,
+        geometric_payload=geometric_payload,
+        cert_payload=cert_payload,
+        ghost_bound=ghost_bound,
+        family="shape_packing_hall",
+    )
+
+
+def _typed_probe_plan(
+    *,
+    operation: str = "shape_packing_hall_le",
+    ghost_policy: str = "agnostic",
+    ghost_rect_digest: str | None = None,
+    domain_fingerprint: str = "probe-domain-fingerprint",
+    hall_region_kind: object = "left_baseline",
+) -> ConstraintPlan:
+    return _plan(
+        family="shape_packing_hall",
+        operation=operation,
+        ghost_policy=ghost_policy,
+        ghost_rect_digest=ghost_rect_digest,
+        domain_fingerprint=domain_fingerprint,
+        hall_region_kind=hall_region_kind,
+    )
+
+
+def _typed_probe_capability(
+    *,
+    mode: str = "geometric",
+    stage: CapabilityStage = CapabilityStage.COMPILABLE,
+    execution_path: ExecutionPath = ExecutionPath.TYPED,
+    compiler_version: str | None = "b15-probe-v1",
+) -> FamilyCapability:
+    return _capability(
+        family="shape_packing_hall",
+        mode=mode,
+        stage=stage,
+        execution_path=execution_path,
+        compiler_version=compiler_version,
+    )
+
+
+def _typed_probe_registry(plugin: object) -> FamilyCapabilityRegistry:
+    return _registry(plugin, capability=_typed_probe_capability())
 
 
 def _decode_proof_frame(envelope: CutEnvelope) -> dict[str, Any]:
@@ -593,9 +669,9 @@ def test_public_type_shapes_and_three_branch_result_algebra() -> None:
         assert tuple(field.name for field in fields(type_)) == field_names
 
     state, snapshot = _build_world()
-    region_envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _OrderedPlugin(_plan())
-    compiled = validate_and_compile_cut(region_envelope, snapshot, _registry(plugin))
+    region_envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _OrderedPlugin(_typed_probe_plan())
+    compiled = validate_and_compile_cut(region_envelope, snapshot, _typed_probe_registry(plugin))
 
     pattern_envelope = _trusted_test_envelope(_make_pattern_cut(state), snapshot)
     shadow_plugin = _OrderedPlugin(_plan(family="pattern_nogood"))
@@ -603,6 +679,7 @@ def test_public_type_shapes_and_three_branch_result_algebra() -> None:
         family="pattern_nogood",
         mode="literal",
         stage=CapabilityStage.VALIDATED,
+        execution_path=ExecutionPath.TYPED,
         compiler_version=None,
     )
     shadow = validate_and_compile_cut(
@@ -611,15 +688,24 @@ def test_public_type_shapes_and_three_branch_result_algebra() -> None:
         _registry(shadow_plugin, capability=shadow_capability),
     )
 
+    rejection_state, rejection_snapshot = _build_world(
+        artifact_hashes=_PRODUCTION_ARTIFACT_HASHES,
+    )
+    rejection_envelope = _trusted_test_envelope(
+        _make_region_cut(rejection_state),
+        rejection_snapshot,
+    )
     rejected = validate_and_compile_cut(
-        region_envelope,
-        snapshot,
+        rejection_envelope,
+        rejection_snapshot,
         build_production_registry(),
     )
 
     assert isinstance(compiled, CompiledCut)
     assert isinstance(shadow, ShadowValidated)
     assert isinstance(rejected, CutRejection)
+    assert rejected.stage == "registry"
+    assert rejected.reason == "legacy diagnostic family cannot enter typed dispatch"
     assert {type(compiled), type(shadow), type(rejected)} == {
         CompiledCut,
         ShadowValidated,
@@ -631,14 +717,14 @@ def test_public_type_shapes_and_three_branch_result_algebra() -> None:
 
 def test_single_entry_executes_steps_in_order_without_mutating_inputs() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plan = _plan()
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plan = _typed_probe_plan()
     plugin = _OrderedPlugin(plan)
     snapshot_digest_before = snapshot.digest
     envelope_proof_before = envelope.proof_payload
     plan_digest_before = plan.digest
 
-    result = validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+    result = validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
 
     assert isinstance(result, CompiledCut)
     assert [name for name, _args in plugin.events] == [
@@ -678,6 +764,17 @@ def test_constraint_plan_accepts_only_closed_operations(operation: str) -> None:
     assert _plan(operation=operation).operation == operation
 
 
+@pytest.mark.parametrize("region_kind", ["left_baseline", "bottom_baseline"])
+def test_shape_packing_hall_plan_accepts_closed_region_kinds(region_kind: str) -> None:
+    assert _plan(hall_region_kind=region_kind).parameters["region_kind"] == region_kind
+
+
+@pytest.mark.parametrize("region_kind", ["", "interior_rect", "left_or_bottom_union", 1, None])
+def test_shape_packing_hall_plan_rejects_region_kind_outside_closed_set(region_kind: object) -> None:
+    with pytest.raises((TypeError, ValueError)):
+        _plan(hall_region_kind=region_kind)
+
+
 def test_model_scope_domain_fingerprint_is_nonempty_opaque_until_b3() -> None:
     scope = ModelScope(
         ghost_policy="agnostic",
@@ -698,22 +795,22 @@ def test_model_scope_domain_fingerprint_is_nonempty_opaque_until_b3() -> None:
 def test_compiler_plan_scope_drift_returns_rejection(mismatch: str) -> None:
     state, snapshot = _build_world()
     if mismatch == "ghost-policy":
-        envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-        plan = _plan(
+        envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+        plan = _typed_probe_plan(
             ghost_policy="bound",
             ghost_rect_digest="8" * 64,
         )
-        capability = _capability()
+        capability = _typed_probe_capability()
     else:
         envelope = _trusted_test_envelope(
-            _make_region_cut(state, ghost_bound=True),
+            _typed_probe_cut(state, ghost_bound=True),
             snapshot,
         )
-        plan = _plan(
+        plan = _typed_probe_plan(
             ghost_policy="bound",
             ghost_rect_digest="8" * 64,
         )
-        capability = _capability()
+        capability = _typed_probe_capability()
     plugin = _OrderedPlugin(plan)
 
     result = validate_and_compile_cut(
@@ -732,10 +829,10 @@ def test_compiler_plan_scope_drift_returns_rejection(mismatch: str) -> None:
 
 def test_compiler_plan_operation_must_match_envelope_family() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _OrderedPlugin(_plan(operation="power_pose_exclusion"))
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _OrderedPlugin(_typed_probe_plan(operation="power_pose_exclusion"))
 
-    result = validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+    result = validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
 
     assert isinstance(result, CutRejection)
     assert [event for event, _args in plugin.events] == [
@@ -918,7 +1015,11 @@ def test_production_registry_has_exact_nine_family_mirror() -> None:
     registry = build_production_registry()
 
     assert set(registry.capabilities) == _EXPECTED_FAMILIES
-    assert set(registry.plugins) == {"pattern_nogood", "region_capacity"}
+    assert set(registry.plugins) == {
+        "pattern_nogood",
+        "region_capacity",
+        "shape_packing_hall",
+    }
     for family in sorted(_EXPECTED_FAMILIES):
         capability = registry.capabilities[family]
         assert capability.name == family
@@ -927,11 +1028,16 @@ def test_production_registry_has_exact_nine_family_mirror() -> None:
         assert capability.execution_path is _EXPECTED_PATHS[family]
         assert capability.proof_schema_version == 1
         assert capability.required_dependencies == frozenset(_PRODUCTION_ARTIFACT_HASHES)
+        assert capability.requires_ghost_bound is (family == "shape_packing_hall")
         if family == "pattern_nogood":
             assert capability.compiler_version is None
             assert family in registry.plugins
         elif family == "region_capacity":
             assert capability.compiler_version == "stage-b-f1-compiler-v1"
+            assert family in registry.plugins
+        elif family == "shape_packing_hall":
+            assert capability.validator_version == "stage-b-f6-validator-v1"
+            assert capability.compiler_version == "stage-b-f6-compiler-v1"
             assert family in registry.plugins
         else:
             assert family not in registry.plugins
@@ -939,6 +1045,12 @@ def test_production_registry_has_exact_nine_family_mirror() -> None:
             assert capability.execution_path is ExecutionPath.TYPED
             assert capability.compiler_version is not None
             assert family in registry.plugins
+
+
+@pytest.mark.parametrize("invalid", [0, 1, None, "true"])
+def test_family_capability_requires_ghost_bound_is_an_exact_bool(invalid: object) -> None:
+    with pytest.raises(TypeError, match="requires_ghost_bound"):
+        replace(_capability(), requires_ghost_bound=invalid)
 
 
 def _step_8_family_branches() -> list[str]:
@@ -1003,17 +1115,13 @@ def test_production_registry_replay_and_step_8_family_tables_are_consistent() ->
 @pytest.mark.parametrize(
     ("capability", "with_plugin"),
     [
-        (_capability(), False),
+        (_typed_probe_capability(), False),
         (
-            _capability(
-                stage=CapabilityStage.VALIDATED,
-                execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
-                compiler_version=None,
-            ),
+            _capability(),
             True,
         ),
         (
-            _capability(
+            _typed_probe_capability(
                 stage=CapabilityStage.VALIDATED,
                 compiler_version=None,
             ),
@@ -1039,7 +1147,8 @@ def test_registry_rejects_inconsistent_stage_path_plugin_combinations(
     capability: FamilyCapability,
     with_plugin: bool,
 ) -> None:
-    plugin = _OrderedPlugin(_plan()) if with_plugin else None
+    plan = _typed_probe_plan() if capability.name == "shape_packing_hall" else _plan()
+    plugin = _OrderedPlugin(plan) if with_plugin else None
     with pytest.raises((TypeError, ValueError)):
         _registry(plugin, capability=capability)
 
@@ -1134,23 +1243,23 @@ def test_non_semantic_plugin_failures_propagate(
     error: BaseException,
 ) -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _ParserRaisesPlugin(_plan(), error)
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _ParserRaisesPlugin(_typed_probe_plan(), error)
 
     with pytest.raises(type(error)):
-        validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+        validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
     assert [name for name, _args in plugin.events] == ["parse_and_validate_proof"]
 
 
 def test_dedicated_semantic_plugin_failure_becomes_rejection() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
     plugin = _ParserRaisesPlugin(
-        _plan(),
+        _typed_probe_plan(),
         SemanticCutRejection("proof", "well-formed proof is unsound"),
     )
 
-    result = validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+    result = validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
 
     assert isinstance(result, CutRejection)
     assert result.stage == "proof"
@@ -1169,11 +1278,11 @@ class _WrongProofReturnPlugin(_OrderedPlugin):
 
 def test_plugin_wrong_proof_return_type_propagates() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _WrongProofReturnPlugin(_plan())
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _WrongProofReturnPlugin(_typed_probe_plan())
 
     with pytest.raises(TypeError):
-        validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+        validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
 
 
 class _WrongPlanReturnPlugin(_OrderedPlugin):
@@ -1189,11 +1298,11 @@ class _WrongPlanReturnPlugin(_OrderedPlugin):
 
 def test_plugin_wrong_plan_return_type_propagates() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _WrongPlanReturnPlugin(_plan())
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _WrongPlanReturnPlugin(_typed_probe_plan())
 
     with pytest.raises(TypeError):
-        validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+        validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
 
 
 def test_v1_adapter_rejects_legacy_truncated_scope_without_raw_preimage() -> None:
@@ -1225,8 +1334,8 @@ def test_v1_adapter_rejects_non_v1_and_quarantined_cuts(
 
 def test_v1_adapter_rejects_geometric_body_proof_drift() -> None:
     state, _snapshot = _build_world()
-    body = _region_payload()
-    mismatched_proof = body.replace(b'"cap_R": 1', b'"cap_R": 2')
+    body = _probe_payload(family="cutset")
+    mismatched_proof = body.replace(b'"cut_size": 1', b'"cut_size": 2')
     assert body != mismatched_proof
     raw_cut = _make_region_cut(
         state,
@@ -1248,9 +1357,9 @@ def test_v1_adapter_rejects_literal_body_proof_drift() -> None:
 
 def test_proof_frame_tampering_is_rejected_before_plugin_dispatch() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _OrderedPlugin(_plan())
-    registry = _registry(plugin)
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _OrderedPlugin(_typed_probe_plan())
+    registry = _typed_probe_registry(plugin)
     frame = _decode_proof_frame(envelope)
     frame["family"] = "pattern_nogood"
     tampered_payload = _PROOF_FRAME_PREFIX + json.dumps(
@@ -1273,8 +1382,8 @@ def test_proof_frame_tampering_is_rejected_before_plugin_dispatch() -> None:
 
 def test_proof_hash_tampering_is_rejected_before_plugin_dispatch() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _OrderedPlugin(_plan())
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _OrderedPlugin(_typed_probe_plan())
 
     with pytest.raises(ValueError):
         replace(envelope, proof_hash="0" * 64)
@@ -1286,7 +1395,7 @@ def test_noncanonical_proof_frames_are_rejected_before_plugin_dispatch(
     payload_kind: str,
 ) -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
     frame = _decode_proof_frame(envelope)
     if payload_kind == "raw-unframed":
         payload = json.dumps(
@@ -1307,33 +1416,33 @@ def test_noncanonical_proof_frames_are_rejected_before_plugin_dispatch(
         proof_payload=payload,
         proof_hash=hashlib.sha256(payload).hexdigest(),
     )
-    plugin = _OrderedPlugin(_plan())
+    plugin = _OrderedPlugin(_typed_probe_plan())
 
     with pytest.raises(ValueError):
-        validate_and_compile_cut(tampered, snapshot, _registry(plugin))
+        validate_and_compile_cut(tampered, snapshot, _typed_probe_registry(plugin))
     assert plugin.events == []
 
 
 def test_excessively_nested_self_consistent_frame_fails_closed_before_dispatch() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
     # The platform's pre-decode structural scanner caps proof JSON nesting at
     # 128.  One level over the cap exercises fail-closed admission without
     # driving CPython's JSON decoder into its recursion guard.
     depth = 129
     nested = b"[" * depth + b"0" + b"]" * depth
     payload = (
-        _PROOF_FRAME_PREFIX + b'{"family":"region_capacity","proof":{"nested":' + nested + b'},"schema_version":1}'
+        _PROOF_FRAME_PREFIX + b'{"family":"shape_packing_hall","proof":{"nested":' + nested + b'},"schema_version":1}'
     )
     tampered = replace(
         envelope,
         proof_payload=payload,
         proof_hash=hashlib.sha256(payload).hexdigest(),
     )
-    plugin = _OrderedPlugin(_plan())
+    plugin = _OrderedPlugin(_typed_probe_plan())
 
     with pytest.raises(ValueError):
-        validate_and_compile_cut(tampered, snapshot, _registry(plugin))
+        validate_and_compile_cut(tampered, snapshot, _typed_probe_registry(plugin))
     assert plugin.events == []
 
 
@@ -1361,17 +1470,17 @@ class _FrozenProofWithMappingProxy(FrozenFamilyProof):
     "hostile_proof",
     [
         _FrozenProofWithList(
-            family="region_capacity",
+            family="shape_packing_hall",
             schema_version=1,
             values=["mutable"],
         ),
         _FrozenProofWithMapping(
-            family="region_capacity",
+            family="shape_packing_hall",
             schema_version=1,
             values={"nested": ["mutable"]},
         ),
         _FrozenProofWithRawBytes(
-            family="region_capacity",
+            family="shape_packing_hall",
             schema_version=1,
             raw=b"second-raw-proof-channel",
         ),
@@ -1382,27 +1491,27 @@ def test_plugin_parsed_proof_must_be_deeply_frozen_and_body_free(
     hostile_proof: FrozenFamilyProof,
 ) -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _OrderedPlugin(_plan(), proof=hostile_proof)
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _OrderedPlugin(_typed_probe_plan(), proof=hostile_proof)
 
     with pytest.raises(TypeError):
-        validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+        validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
     assert [name for name, _args in plugin.events] == ["parse_and_validate_proof"]
 
 
 def test_mapping_proxy_with_mutable_backing_is_not_a_frozen_proof_value() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
     backing = {"value": "before"}
     proof = _FrozenProofWithMappingProxy(
-        family="region_capacity",
+        family="shape_packing_hall",
         schema_version=1,
         values=MappingProxyType(backing),
     )
-    plugin = _OrderedPlugin(_plan(), proof=proof)
+    plugin = _OrderedPlugin(_typed_probe_plan(), proof=proof)
 
     with pytest.raises(TypeError):
-        validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+        validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
     assert [name for name, _args in plugin.events] == ["parse_and_validate_proof"]
     backing["value"] = "after"
     assert proof.values["value"] == "after"  # type: ignore[index]
@@ -1430,11 +1539,11 @@ class _RawBodyPlugin(_OrderedPlugin):
 
 def test_plugin_cannot_reintroduce_cached_raw_bytes_as_derived_body() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _RawBodyPlugin(_plan())
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _RawBodyPlugin(_typed_probe_plan())
 
     with pytest.raises(TypeError):
-        validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+        validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
     assert [name for name, _args in plugin.events] == [
         "parse_and_validate_proof",
         "derive_body",
@@ -1456,11 +1565,11 @@ class _FalsePlanValidationPlugin(_OrderedPlugin):
 
 def test_false_plan_validation_result_cannot_compile() -> None:
     state, snapshot = _build_world()
-    envelope = _trusted_test_envelope(_make_region_cut(state), snapshot)
-    plugin = _FalsePlanValidationPlugin(_plan())
+    envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
+    plugin = _FalsePlanValidationPlugin(_typed_probe_plan())
 
     with pytest.raises(TypeError):
-        validate_and_compile_cut(envelope, snapshot, _registry(plugin))
+        validate_and_compile_cut(envelope, snapshot, _typed_probe_registry(plugin))
     assert [name for name, _args in plugin.events] == [
         "parse_and_validate_proof",
         "derive_body",

@@ -556,14 +556,22 @@ def _make_region_capacity_cut(
     compute_blocked_cells_hash: Any,
     compute_exterior_blocks_hash: Any,
     ghost_agnostic: str,
+    family: str = "cutset",
 ) -> Any:
-    # Neutral F6-shaped payload (platform-mechanism fixture; borrowing the F1
-    # family name would collide with its family-scoped unconditional assumption
-    # reverification, B2 dual-review codex#1).
-    del encode_region_bitset  # F1-only helper retained in signature for API stability
     state = sources["state"]
-    payload = canonicalize(
-        {
+    if family == "cutset":
+        payload_dict = {
+            "cert_kind": "menger_min_cut",
+            "side_a_bitset_b64": encode_region_bitset([(0, 0)], grid_size=70),
+            "side_b_bitset_b64": encode_region_bitset([(0, 1)], grid_size=70),
+            "cut_edges": [[[0, 0], [0, 1]]],
+            "cut_size": 1,
+            "commodity_demand": 1,
+            "contributing_commodities": ["probe"],
+        }
+        cert_kind = "menger_min_cut"
+    elif family == "shape_packing_hall":
+        payload_dict = {
             "cert_kind": "hall_interval_witness",
             "region_kind": "left_baseline",
             "region_total_length": 70,
@@ -579,11 +587,14 @@ def _make_region_capacity_cut(
             "ghost_rect_repr": [0, 0, 1, 1],
             "exterior_blocks_digest": compute_exterior_blocks_hash(state),
         }
-    )
+        cert_kind = "hall_interval_witness"
+    else:  # pragma: no cover - test helper guard
+        raise AssertionError(f"unsupported platform probe family {family!r}")
+    payload = canonicalize(payload_dict)
     cert_hash = hashlib.sha256(payload).hexdigest()
     return cut_type(
         cut_id="b0-region-capacity",
-        family="shape_packing_hall",
+        family=family,
         literals=None,
         geometric_payload=payload,
         scope=scope_type(
@@ -595,7 +606,7 @@ def _make_region_capacity_cut(
             oracle_abstraction_version="region_capacity_v1",
         ),
         cert=cert_type(
-            cert_kind="hall_interval_witness",
+            cert_kind=cert_kind,
             cert_payload=payload,
             cert_hash=cert_hash,
         ),
@@ -716,6 +727,7 @@ def _make_plan(
     typed_platform: Any,
     *,
     parameters: dict[str, Any] | None = None,
+    family: str = "cutset",
 ) -> Any:
     if parameters is None:
         parameters = {
@@ -724,7 +736,7 @@ def _make_plan(
             "capacity": 1,
         }
     return typed_platform.ConstraintPlan(
-        family="shape_packing_hall",
+        family=family,
         schema_version=1,
         semantic_fingerprint="5" * 64,
         model_scope=typed_platform.ModelScope(
@@ -854,7 +866,7 @@ def _make_registry(
     )
 
 
-def _f1_pipeline_inputs(
+def _typed_probe_pipeline_inputs(
     frozen_artifacts: Any,
     state_snapshot: Any,
     typed_platform: Any,
@@ -874,6 +886,7 @@ def _f1_pipeline_inputs(
         compute_blocked_cells_hash=lifecycle.compute_blocked_cells_hash,
         compute_exterior_blocks_hash=lifecycle.compute_exterior_blocks_hash,
         ghost_agnostic=lifecycle.GHOST_AGNOSTIC,
+        family="shape_packing_hall",
     )
     envelope = _trusted_test_envelope(typed_platform, lifecycle, raw_cut, snapshot)
     return sources, bundle, snapshot, envelope
@@ -1013,7 +1026,7 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
     from src.cuts import frozen_artifacts, state_snapshot, typed_platform
     from src.cuts import lifecycle
 
-    sources, _bundle, snapshot, envelope = _f1_pipeline_inputs(
+    sources, _bundle, snapshot, envelope = _typed_probe_pipeline_inputs(
         frozen_artifacts, state_snapshot, typed_platform, lifecycle
     )
     plan_parameters = {
@@ -1021,7 +1034,11 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
         "region_kind": "left_baseline",
         "capacity": 1,
     }
-    plan = _make_plan(typed_platform, parameters=plan_parameters)
+    plan = _make_plan(
+        typed_platform,
+        parameters=plan_parameters,
+        family="shape_packing_hall",
+    )
     plugin = _RecordingPlugin(
         plan,
         _make_probe_proof(typed_platform, family="shape_packing_hall"),
@@ -1048,7 +1065,7 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
         _assert_sha256_hex(digest)
 
     _mutate_builder_sources(sources)
-    plan_parameters["region_kind"] = "attacker"
+    plan_parameters["region_kind"] = "bottom_baseline"
     plan_parameters["capacity"] = 999
 
     assert snapshot.digest == snapshot_digest_before
@@ -1060,7 +1077,11 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
     }
     assert result.digest == compiled_digest_before
     assert result.snapshot_digest == snapshot.digest
-    attacked_plan = _make_plan(typed_platform, parameters=plan_parameters)
+    attacked_plan = _make_plan(
+        typed_platform,
+        parameters=plan_parameters,
+        family="shape_packing_hall",
+    )
     assert attacked_plan.digest != plan_digest_before
 
     def assert_plan_digests_unchanged() -> None:
@@ -1076,7 +1097,8 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
     assert_plan_digests_unchanged()
     # Nested-mapping deep-freeze coverage moved to the real F1 chain in
     # test_stage_b_region_capacity (group_cell_weights is F1-shaped; this
-    # platform fixture now uses the neutral F6 scalar schema).
+    # platform fixture explicitly opts into the F6 scalar typed-probe schema;
+    # the default mechanism/rejection helpers remain permanent cutset/F2).
 
 
 @pytest.mark.xfail(
@@ -1088,11 +1110,11 @@ def test_verifier_and_compiler_receive_same_snapshot_object() -> None:
     from src.cuts import frozen_artifacts, state_snapshot, typed_platform
     from src.cuts import lifecycle
 
-    sources, _bundle, snapshot, envelope = _f1_pipeline_inputs(
+    sources, _bundle, snapshot, envelope = _typed_probe_pipeline_inputs(
         frozen_artifacts, state_snapshot, typed_platform, lifecycle
     )
     plugin = _RecordingPlugin(
-        _make_plan(typed_platform),
+        _make_plan(typed_platform, family="shape_packing_hall"),
         _make_probe_proof(typed_platform, family="shape_packing_hall"),
     )
     registry = _make_registry(
@@ -1138,11 +1160,11 @@ def test_pipeline_reuses_frozen_proof_without_compiler_raw_byte_access() -> None
     from src.cuts import frozen_artifacts, state_snapshot, typed_platform
     from src.cuts import lifecycle
 
-    sources, _bundle, snapshot, envelope = _f1_pipeline_inputs(
+    sources, _bundle, snapshot, envelope = _typed_probe_pipeline_inputs(
         frozen_artifacts, state_snapshot, typed_platform, lifecycle
     )
     plugin = _RecordingPlugin(
-        _make_plan(typed_platform),
+        _make_plan(typed_platform, family="shape_packing_hall"),
         _make_probe_proof(typed_platform, family="shape_packing_hall"),
     )
     registry = _make_registry(
@@ -1189,7 +1211,7 @@ def _build_shadow_result(
     typed_platform: Any,
     lifecycle: Any,
 ) -> tuple[dict[str, Any], Any, Any, Any, Any, _RecordingPlugin]:
-    sources, _bundle, snapshot, _envelope = _f1_pipeline_inputs(
+    sources, _bundle, snapshot, _envelope = _typed_probe_pipeline_inputs(
         frozen_artifacts, state_snapshot, typed_platform, lifecycle
     )
     shadow_cut = _make_pattern_nogood_cut(

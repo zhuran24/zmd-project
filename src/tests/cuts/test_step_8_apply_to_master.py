@@ -1,4 +1,4 @@
-"""Step 8 apply-to-master — F1 region_capacity + F7 power_hitting_set (M3-3/M4-A).
+"""Step 8 apply-to-master — F1/F6/F7 typed-target families (M3-3/M4-A/B).
 
 Covers the wired families end-to-end on a REAL coordinate master (the
 lightweight 2-miner/3-pose fixture from the presence-nogood regression), plus
@@ -10,6 +10,8 @@ the fail-closed dispatch surface:
   the supplied ghost literal — pinning that anchor makes the model INFEASIBLE,
   leaving the anchor free lets the solver escape to another anchor; a
   ghost-bound cut without ghost literals raises (fail-closed).
+- F6 whole-body baseline poses are counted under the selected anchor; a free
+  anchor leaves the cap dormant while pinning it makes the tiny master infeasible.
 - F7 presence exclusion under ghost literals, with the master-side coverer
   re-check gate (live coverer → refuse; missing table → refuse).
 - master rejecting the push (unknown group) → step_8 raises RuntimeError.
@@ -20,6 +22,7 @@ Scope/staleness gating deliberately NOT exercised here: that lives in
 lifecycle steps 5-7. Step 8 still seals internal cut integrity before it
 translates the cert at the irreversible master boundary.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -53,9 +56,7 @@ def _f1_cert_payload(
     cert_dict = {
         "cert_kind": "region_capacity_combinatorial",
         "region_kind": "left_or_bottom_union",
-        "region_cells_bitset_b64": _encode_region_bitset(
-            [(0, 0), (2, 0), (4, 0)], grid_size=70
-        ),
+        "region_cells_bitset_b64": _encode_region_bitset([(0, 0), (2, 0), (4, 0)], grid_size=70),
         "cap_R": cap_r,
         "demand_R": demand_r,
         "gap": demand_r - cap_r,
@@ -128,9 +129,7 @@ def _build_fixture_master() -> MasterPlacementModel:
             "miner": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
         },
     }
-    core = MasterPlacementModel.build_exact_core(
-        instances, pools, rules, skip_power_coverage=True
-    )
+    core = MasterPlacementModel.build_exact_core(instances, pools, rules, skip_power_coverage=True)
     return MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
 
 
@@ -145,9 +144,7 @@ def test_step_8_f1_capacity_prunes_end_to_end() -> None:
         cp_model.FEASIBLE,
     )
 
-    cut = _f1_cut(
-        _f1_cert_payload(group_id=group_id, cells_per_pose=1, cap_r=1, demand_r=2)
-    )
+    cut = _f1_cut(_f1_cert_payload(group_id=group_id, cells_per_pose=1, cap_r=1, demand_r=2))
     step_8_apply_to_master(cut, master)
     stats = master.build_stats["coordinate_region_capacity_last_cut"]
     assert stats["capacity"] == 1
@@ -158,9 +155,7 @@ def test_step_8_f1_capacity_prunes_end_to_end() -> None:
     # physically-true bound, not an unconditional kill switch).
     master2 = _build_fixture_master()
     group2 = str(master2._group_id_by_instance["miner_001"])
-    cut2 = _f1_cut(
-        _f1_cert_payload(group_id=group2, cells_per_pose=1, cap_r=2, demand_r=2)
-    )
+    cut2 = _f1_cut(_f1_cert_payload(group_id=group2, cells_per_pose=1, cap_r=2, demand_r=2))
     step_8_apply_to_master(cut2, master2)
     assert master2.solve(time_limit_seconds=5.0) in (
         cp_model.OPTIMAL,
@@ -191,12 +186,8 @@ def test_step_8_rejects_split_brain_cert_before_master() -> None:
             )
             return True
 
-    safe_payload = _f1_cert_payload(
-        group_id="g", cells_per_pose=1, cap_r=1, demand_r=2
-    )
-    malicious_payload = _f1_cert_payload(
-        group_id="g", cells_per_pose=1, cap_r=0, demand_r=2
-    )
+    safe_payload = _f1_cert_payload(group_id="g", cells_per_pose=1, cap_r=1, demand_r=2)
+    malicious_payload = _f1_cert_payload(group_id="g", cells_per_pose=1, cap_r=0, demand_r=2)
     cut = _f1_cut(safe_payload)
     assert cut.cert is not None
     malicious_hash = hashlib.sha256(malicious_payload).hexdigest()
@@ -267,6 +258,129 @@ def test_step_8_f1_ghost_bound_cut_is_anchor_conditioned() -> None:
 
 
 # ---------------------------------------------------------------------------
+# F6 shape_packing_hall (M4-B)
+# ---------------------------------------------------------------------------
+
+
+def _f6_cert_payload(*, group_id: str) -> bytes:
+    return step_0_canonicalize(
+        {
+            "cert_kind": "hall_interval_witness",
+            "region_kind": "left_baseline",
+            "region_total_length": 70,
+            "partition_lens": [2],
+            "partition_offsets": [0],
+            "pose_length": 2,
+            "pose_shape_canonical": "1x2_rigid",
+            "max_packable": [1],
+            "total_packable": 1,
+            "contributing_group": group_id,
+            # Strict proof-side inequality: this is deliberately not an
+            # equality certificate masquerading as a positive case.
+            "region_demand": 2,
+            "group_demand": 2,
+            "ghost_rect_repr": [3, 3, 1, 1],
+            "exterior_blocks_digest": "h_ext",
+        }
+    )
+
+
+def _f6_cut(payload: bytes) -> Cut:
+    cert_hash = hashlib.sha256(payload).hexdigest()
+    return Cut(
+        cut_id=f"f6_test_{cert_hash[:8]}",
+        family="shape_packing_hall",
+        literals=None,
+        geometric_payload=payload,
+        scope=CutScope(
+            ghost_rect_id="ghost_bound_test",
+            blocked_cells_hash="h_blocked",
+            exterior_blocks_hash="h_ext",
+            source_digest="h_source",
+            oracle_abstraction_version="shape_packing_hall_v1",
+            artifact_hashes={},
+        ),
+        cert=OracleCert(
+            cert_kind="hall_interval_witness",
+            cert_payload=payload,
+            cert_hash=cert_hash,
+        ),
+        oracle_name="shape_packing_hall_v1",
+    )
+
+
+def _build_f6_anchor_master() -> MasterPlacementModel:
+    instances = [
+        {
+            "instance_id": f"port_{index:03d}",
+            "facility_type": "port",
+            "operation_type": "storage",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+        for index in (1, 2)
+    ]
+    # Each 1x2 body lies wholly on y=0.  This guards the lowering's all-cells
+    # `_on_baseline` predicate; anchor-only fixtures would create zero terms.
+    pools = {
+        "port": [
+            {
+                "pose_id": "left_a",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0], [1, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+            {
+                "pose_id": "left_b",
+                "anchor": {"x": 2, "y": 0},
+                "occupied_cells": [[2, 0], [3, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 4, "height": 4}},
+        "facility_templates": {
+            "port": {"dimensions": {"w": 2, "h": 1}, "needs_power": False},
+        },
+    }
+    core = MasterPlacementModel.build_exact_core(
+        instances,
+        pools,
+        rules,
+        skip_power_coverage=True,
+    )
+    return MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
+
+
+def test_step_8_f6_anchor_free_feasible_then_pinned_infeasible() -> None:
+    master = _build_f6_anchor_master()
+    group_id = str(master._group_id_by_instance["port_001"])
+    u_pin = master.u_vars[15]  # 4x4, row-major far corner (3,3)
+
+    step_8_apply_to_master(
+        _f6_cut(_f6_cert_payload(group_id=group_id)),
+        master,
+        ghost_condition_lits=(u_pin,),
+    )
+    stats = master.build_stats["coordinate_baseline_packing_last_cut"]
+    assert stats["capacity"] == 1
+    assert stats["presence_terms"] == 2
+
+    # The free anchor can avoid u_pin, so the conditioned cap sleeps.
+    assert master.solve(time_limit_seconds=5.0) in (cp_model.OPTIMAL, cp_model.FEASIBLE)
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    delegate.model.Add(u_pin == 1)
+    # Both mandatory ports need the two whole-body baseline poses, violating cap 1.
+    assert master.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
+
+
+# ---------------------------------------------------------------------------
 # F7 power_hitting_set (M4-A)
 # ---------------------------------------------------------------------------
 
@@ -326,9 +440,7 @@ def test_step_8_f7_fail_closed_surfaces() -> None:
     group_id = str(master._group_id_by_instance["miner_001"])
     payload = _f7_cert_payload(group_id=group_id, pose_id="pose_left")
 
-    agnostic = _f7_cut(
-        payload, group_id=group_id, pose_id="pose_left", ghost_rect_id=GHOST_AGNOSTIC
-    )
+    agnostic = _f7_cut(payload, group_id=group_id, pose_id="pose_left", ghost_rect_id=GHOST_AGNOSTIC)
     with pytest.raises(RuntimeError, match="ghost-bound"):
         step_8_apply_to_master(
             agnostic,
@@ -341,9 +453,7 @@ def test_step_8_f7_fail_closed_surfaces() -> None:
     with pytest.raises(RuntimeError, match="ghost literal"):
         step_8_apply_to_master(bound, master, ghost_blocked_cells=frozenset())
     with pytest.raises(RuntimeError, match="ghost_blocked_cells"):
-        step_8_apply_to_master(
-            bound, master, ghost_condition_lits=(master.u_vars[0],)
-        )
+        step_8_apply_to_master(bound, master, ghost_condition_lits=(master.u_vars[0],))
 
 
 def test_step_8_f7_missing_coverer_table_refused() -> None:
@@ -376,9 +486,7 @@ def test_step_8_f7_live_coverer_gate_refuses() -> None:
     # Inject a coverer table + a pole pool entry whose footprint does NOT
     # intersect the blocked cells (live coverer).
     master._power_coverers_by_template_pose = {"miner": {0: [0]}}
-    master.facility_pools["power_pole"] = [
-        {"pose_id": "pole_p", "occupied_cells": [[4, 0], [4, 1]]}
-    ]
+    master.facility_pools["power_pole"] = [{"pose_id": "pole_p", "occupied_cells": [[4, 0], [4, 1]]}]
     cut = _f7_cut(
         _f7_cert_payload(group_id=group_id, pose_id="pose_left"),
         group_id=group_id,
@@ -407,9 +515,7 @@ def test_step_8_f7_excludes_pose_under_pinned_anchor() -> None:
     # Coverer whose footprint IS wiped by the blocked cells → gate passes.
     # pose_mid is pose_idx 1 (pool order left/mid/right).
     master._power_coverers_by_template_pose = {"miner": {1: [0]}}
-    master.facility_pools["power_pole"] = [
-        {"pose_id": "pole_p", "occupied_cells": [[4, 0], [4, 1]]}
-    ]
+    master.facility_pools["power_pole"] = [{"pose_id": "pole_p", "occupied_cells": [[4, 0], [4, 1]]}]
     cut = _f7_cut(
         _f7_cert_payload(group_id=group_id, pose_id="pose_mid"),
         group_id=group_id,
@@ -422,10 +528,7 @@ def test_step_8_f7_excludes_pose_under_pinned_anchor() -> None:
         ghost_condition_lits=(u0,),
         ghost_blocked_cells=frozenset({(4, 0), (4, 1)}),
     )
-    assert (
-        master.build_stats["coordinate_power_pose_exclusion_last_cut"]["pose_idx"]
-        == 1
-    )
+    assert master.build_stats["coordinate_power_pose_exclusion_last_cut"]["pose_idx"] == 1
     assert master.build_stats["coordinate_framework_cut_count"] == 1
     # Anchor free: solver escapes to another anchor where the cut is dormant.
     assert master.solve(time_limit_seconds=5.0) in (
@@ -442,11 +545,7 @@ def test_step_8_f7_excludes_pose_under_pinned_anchor() -> None:
 
 def test_step_8_f1_unknown_group_raises_fail_closed() -> None:
     master = _build_fixture_master()
-    cut = _f1_cut(
-        _f1_cert_payload(
-            group_id="no_such_group", cells_per_pose=1, cap_r=1, demand_r=2
-        )
-    )
+    cut = _f1_cut(_f1_cert_payload(group_id="no_such_group", cells_per_pose=1, cap_r=1, demand_r=2))
     with pytest.raises(RuntimeError, match="fail-closed"):
         step_8_apply_to_master(cut, master)
 
@@ -467,9 +566,7 @@ def test_step_8_unwired_family_fails_closed() -> None:
     cut = Cut(
         cut_id="f3_test",
         family="port_exposure",
-        literals=(
-            CutLiteral(slot_ref=AnonymousSlotRef(group_id="g", slot_index=0), pose_id="p"),
-        ),
+        literals=(CutLiteral(slot_ref=AnonymousSlotRef(group_id="g", slot_index=0), pose_id="p"),),
         geometric_payload=None,
         scope=CutScope(
             ghost_rect_id="ghost_test",
@@ -493,20 +590,14 @@ def test_step_8_unwired_family_fails_closed() -> None:
 
 def test_step_8_f1_malformed_numerics_raise_before_master() -> None:
     class _ExplodingMaster:
-        def add_region_capacity_cut(
-            self, *, group_cell_weights: Mapping[str, int], capacity: int
-        ) -> bool:
+        def add_region_capacity_cut(self, *, group_cell_weights: Mapping[str, int], capacity: int) -> bool:
             raise AssertionError("master must not be touched on malformed cert")
 
-    bad_cpp = _f1_cut(
-        _f1_cert_payload(group_id="g", cells_per_pose=0, cap_r=1, demand_r=2)
-    )
+    bad_cpp = _f1_cut(_f1_cert_payload(group_id="g", cells_per_pose=0, cap_r=1, demand_r=2))
     with pytest.raises(ValueError, match="cells_per_pose"):
         step_8_apply_to_master(bad_cpp, _ExplodingMaster())
 
-    bad_cap = _f1_cut(
-        _f1_cert_payload(group_id="g", cells_per_pose=1, cap_r=-1, demand_r=2)
-    )
+    bad_cap = _f1_cut(_f1_cert_payload(group_id="g", cells_per_pose=1, cap_r=-1, demand_r=2))
     with pytest.raises(ValueError, match="cap_R"):
         step_8_apply_to_master(bad_cap, _ExplodingMaster())
 
@@ -539,10 +630,7 @@ def _f5_cut(payload: bytes, pattern, *, ghost_rect_id: str = "ghost_bound_test")
         cut_id=f"f5_test_{cert_hash[:8]}",
         family="pattern_nogood",
         literals=tuple(
-            CutLiteral(
-                slot_ref=AnonymousSlotRef(group_id=g, slot_index=s), pose_id=p
-            )
-            for (g, s, p) in pattern
+            CutLiteral(slot_ref=AnonymousSlotRef(group_id=g, slot_index=s), pose_id=p) for (g, s, p) in pattern
         ),
         geometric_payload=None,
         scope=CutScope(
@@ -600,9 +688,7 @@ def test_step_8_f5_fail_closed_surfaces() -> None:
     dup = ((group_id, 0, "pose_left"), (group_id, 1, "pose_left"))
     cut = _f5_cut(_f5_cert_payload(dup), dup)
     with pytest.raises(ValueError, match="duplicate"):
-        step_8_apply_to_master(
-            cut, master, ghost_condition_lits=(master.u_vars[0],)
-        )
+        step_8_apply_to_master(cut, master, ghost_condition_lits=(master.u_vars[0],))
 
     # ghost-bound without ghost literals
     pattern = ((group_id, 0, "pose_left"),)
@@ -614,6 +700,4 @@ def test_step_8_f5_fail_closed_surfaces() -> None:
     ghost_pattern = ((group_id, 0, "pose_ghostly"),)
     unknown = _f5_cut(_f5_cert_payload(ghost_pattern), ghost_pattern)
     with pytest.raises(RuntimeError, match="fail-closed"):
-        step_8_apply_to_master(
-            unknown, master, ghost_condition_lits=(master.u_vars[0],)
-        )
+        step_8_apply_to_master(unknown, master, ghost_condition_lits=(master.u_vars[0],))

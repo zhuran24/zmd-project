@@ -42,7 +42,7 @@
 | `src/models/routing_subproblem.py` | CURRENT_CODE_ALIGNED | 命题 P 的有向连通 gate，含 selected-route connectivity recheck |
 | `src/models/flow_subproblem.py` | DIAGNOSTIC_ONLY | 连续 LP 诊断；不门控 certified verdict，不产生认证吞吐证明 |
 | `src/models/pose_bool_exact_master.py` | HISTORICAL_OR_PLAN | env-gated alternative；不是当前 public certified backend |
-| `src/cuts/` | CURRENT_CODE_ALIGNED | active F1-F7+F9（F8 retired）；F1/F5/F6/F7 Step-8 + direct env-gated attach 已落地但 certified unsafe/default-off；Stage B B0/B1/B1.5 landed，B2-B5/PIC C-D-E/B6 pending |
+| `src/cuts/` | CURRENT_CODE_ALIGNED | active F1-F7+F9（F8 retired）；F1/F5/F6/F7 Step-8 + direct env-gated attach 已落地但 certified unsafe/default-off；Stage B B0-B3 landed（F1/F6 已过 typed 边界），B4-B5/PIC C-D-E/B6 pending |
 
 ## Frozen inputs
 

@@ -78,7 +78,7 @@ main.py → run_solve() → outer_search.run_outer_search()
       └ independent_infeasibility_reverifier.py  whole-layout nogood 落 cut 前的独立复验（I1）
 ```
 
-CERTIFIED 证明的是 6 个谓词（ghost 内无设施 / 两两不重叠 / placement_rule / 端口精确计数 / 路由连通 / 供电覆盖）+ lex 最优性；**吞吐/带宽/离散容量流明确 OUT-OF-SCOPE**（`PROJECT_LOCK.md` §1A B 块）。`src/cuts/` 的 cut lifecycle **部分接通、certified 下禁用**（截至 2026-07-11）：`step_8_apply_to_master` 已接 F1/F5/F6/F7（F2/F3/F4/F9 fallback `NotImplementedError`）；`benders_loop` 的 direct attach（`_maybe_attach_framework_cuts`）由 `EXACT_CUT_FRAMEWORK_ATTACH` 门控且在 certified unsafe-map 里禁用；F8 已从 `CutFamily` 退役。Stage B B0/B1/B1.5 已落地（contract shell + `FrozenArtifactBundle`/`ValidatedStateSnapshot`/digest v1 + typed 平台层：三分支代数/单入口/F5 oracle 复验），B2-B5 与 PIC C/D/E 尚未完成。
+CERTIFIED 证明的是 6 个谓词（ghost 内无设施 / 两两不重叠 / placement_rule / 端口精确计数 / 路由连通 / 供电覆盖）+ lex 最优性；**吞吐/带宽/离散容量流明确 OUT-OF-SCOPE**（`PROJECT_LOCK.md` §1A B 块）。`src/cuts/` 的 cut lifecycle **部分接通、certified 下禁用**（截至 2026-07-11）：`step_8_apply_to_master` 已接 F1/F5/F6/F7（F2/F3/F4/F9 fallback `NotImplementedError`）；`benders_loop` 的 direct attach（`_maybe_attach_framework_cuts`）由 `EXACT_CUT_FRAMEWORK_ATTACH` 门控且在 certified unsafe-map 里禁用；F8 已从 `CutFamily` 退役。Stage B B0-B3 已落地（contract shell + snapshot 层 + typed 平台层 + F1/F6 纵切进 COMPILABLE），B4-B5 与 PIC C/D/E 尚未完成。
 
 ### 3. 认证三权分立（需跨 4-6 个文件才能看清）
 
@@ -96,7 +96,7 @@ producer（outer_search.py）        只能提交 CANDIDATE_PROPOSED + proposal 
 
 ### 4. P1.2 手动门（已关，2026-07-07）：任何绿灯仍不等于"owner 关门动作"
 
-release 由 owner 手动门管辖：`data/review_gates/phase_1_2_spike_close.json`。**P1.2 已于 2026-07-07 由 owner 显式 `owner_manual_decision` 关闭**（`status: "closed_manual_owner_decision"`、`next_phase_entry.allowed=true`），当前阶段为 **P1.3**（F1/F5/F6/F7 direct attach 与 Stage B B0/B1/B1.5 已做；certified promotion 仍待 B2-B5、PIC C/D/E 与 B6 owner action）。纪律不变：clean-review 计数**保存在仓库外**、仓库刻意不推导；checker PASS、preflight 绿、测试全过、seal 方法存在——都不得改写为 owner 关门动作或 release closure（`PROJECT_LOCK.md:130-137`）——本次关闭是 owner 真实手动输入，不是自动推导。同理 close-kernel 结构门只证"登记结构未漂移"，不证明求解数学正确。
+release 由 owner 手动门管辖：`data/review_gates/phase_1_2_spike_close.json`。**P1.2 已于 2026-07-07 由 owner 显式 `owner_manual_decision` 关闭**（`status: "closed_manual_owner_decision"`、`next_phase_entry.allowed=true`），当前阶段为 **P1.3**（F1/F5/F6/F7 direct attach 与 Stage B B0-B3 已做；certified promotion 仍待 B4-B5、PIC C/D/E 与 B6 owner action）。纪律不变：clean-review 计数**保存在仓库外**、仓库刻意不推导；checker PASS、preflight 绿、测试全过、seal 方法存在——都不得改写为 owner 关门动作或 release closure（`PROJECT_LOCK.md:130-137`）——本次关闭是 owner 真实手动输入，不是自动推导。同理 close-kernel 结构门只证"登记结构未漂移"，不证明求解数学正确。
 
 ### 5. Frozen artifacts 与 freeze-ritual
 

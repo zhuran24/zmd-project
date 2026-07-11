@@ -354,6 +354,23 @@ def test_production_raw_f1_cut_compiles_and_matches_legacy_validator() -> None:
     assert _plan_parameters(compiled.plan) == ({_GROUP_ID: 1}, 1)
 
 
+def test_f1_empty_literal_tuple_is_an_audited_typed_only_rejection() -> None:
+    """The v1 adapter preserves strict geometric framing that legacy F1 lacks."""
+
+    state, _bundle = _build_state_and_bundle()
+    with_empty_literals = replace(_oracle_cut(state), literals=())
+
+    legacy = validate_region_capacity(
+        with_empty_literals,
+        state,
+        state.canonical_rules or {},
+    )
+
+    assert legacy.kind == "ok", legacy.detail
+    with pytest.raises(ValueError, match="geometric cuts require literals to be None"):
+        cut_to_envelope_v1(with_empty_literals)
+
+
 def test_f1_plan_binds_full_snapshot_master_domain_and_semantic_identities() -> None:
     _state, _raw_cut, snapshot, compiled = _compile_production_cut()
 

@@ -40,6 +40,8 @@ _BLOCKED_CELLS_DIGEST_PREFIX = b"zmd.blocked-cells.v1:"
 _EXTERIOR_BLOCKS_DIGEST_PREFIX = b"zmd.exterior-blocks.v1:"
 _MASTER_DOMAIN_PROJECTION_PREFIX = b"zmd.master-domain-projection.v1:"
 _F1_MASTER_DOMAIN_PLACEMENT_RULES = frozenset({"left_or_bottom_boundary"})
+_F6_MASTER_DOMAIN_PLACEMENT_RULES = frozenset({"left_or_bottom_boundary"})
+_F6_MASTER_DOMAIN_MAX_POSE_LENGTH = 70
 _MISSING_OPTIONAL_EXACT_ARTIFACT_HASH = "__MISSING_OPTIONAL_EXACT_ARTIFACT__"
 # Residual hardening deliberately deferred by the owner on 2026-07-06: a
 # deliberate in-process attacker can import this token, and frozen dataclass
@@ -163,6 +165,7 @@ class ValidatedStateSnapshot:
     blocked_cells_digest: str
     exterior_blocks_digest: str
     master_domain_projection: str
+    shape_packing_hall_master_domain_projection: str
     oracle_capabilities: frozenset[str]
     canonical_rules_source_present: bool
     family_inputs: Mapping[str, FamilyInputs]
@@ -181,6 +184,7 @@ class ValidatedStateSnapshot:
         blocked_cells_digest: str,
         exterior_blocks_digest: str,
         master_domain_projection: str,
+        shape_packing_hall_master_domain_projection: str,
         oracle_capabilities: frozenset[str],
         canonical_rules_source_present: bool,
         family_inputs: Mapping[str, FamilyInputs],
@@ -204,6 +208,14 @@ class ValidatedStateSnapshot:
             _require_sha256(
                 master_domain_projection,
                 path="ValidatedStateSnapshot.master_domain_projection",
+            ),
+        )
+        object.__setattr__(
+            self,
+            "shape_packing_hall_master_domain_projection",
+            _require_sha256(
+                shape_packing_hall_master_domain_projection,
+                path="ValidatedStateSnapshot.shape_packing_hall_master_domain_projection",
             ),
         )
         object.__setattr__(self, "oracle_capabilities", oracle_capabilities)
@@ -1097,6 +1109,89 @@ def _build_f1_master_domain_projection(
     )
 
 
+def _build_f6_master_domain_projection(
+    *,
+    bundle: FrozenArtifactBundle,
+    groups: Mapping[str, GroupSnapshot],
+    group_to_facility_type: Mapping[str, str],
+    template_placement_rules: Mapping[str, str],
+    template_dimensions: Mapping[str, tuple[int, int]],
+    pose_occupied_cells: PoseCells,
+) -> str:
+    """Build the F6-only snapshot side of MasterDomainProjectionV1.
+
+    The row encoding deliberately mirrors the reviewed F1 projection while
+    retaining a distinct family domain separator.  Keeping a separate stored
+    digest prevents the B3 slice from changing any F1 fingerprint bytes.
+    """
+
+    raw_facility_pools = _require_mapping(
+        bundle.candidate_placements.get("facility_pools"),
+        path="bundle.candidate_placements.facility_pools",
+    )
+    relevant_group_ids_list: list[str] = []
+    for group_id in sorted(groups):
+        facility_type = group_to_facility_type.get(group_id, "")
+        dimensions = template_dimensions.get(facility_type)
+        if (
+            template_placement_rules.get(facility_type) in _F6_MASTER_DOMAIN_PLACEMENT_RULES
+            and dimensions is not None
+            and min(dimensions) == 1
+            and 2 <= max(dimensions) <= _F6_MASTER_DOMAIN_MAX_POSE_LENGTH
+            and groups[group_id].demand >= 1
+        ):
+            relevant_group_ids_list.append(group_id)
+    relevant_group_ids = tuple(relevant_group_ids_list)
+    relevant_facility_types = {group_to_facility_type[group_id] for group_id in relevant_group_ids}
+    relevant_facility_pools = {
+        facility_type: raw_facility_pools[facility_type]
+        for facility_type in sorted(relevant_facility_types)
+        if facility_type in raw_facility_pools
+    }
+    if set(relevant_facility_pools) != relevant_facility_types:
+        missing = sorted(relevant_facility_types - set(relevant_facility_pools))
+        raise SnapshotValidationError(f"F6 master-domain projection lacks facility pools for {missing!r}")
+
+    registration_rows, pose_tuple_by_key = _master_domain_pose_registrations(
+        relevant_facility_pools,
+        pose_occupied_cells,
+    )
+    mandatory_slot_rows: list[object] = []
+    for group_id in relevant_group_ids:
+        group = groups[group_id]
+        bound_facility_type = group_to_facility_type.get(group_id)
+        if bound_facility_type is None:  # pragma: no cover - static binding gate runs first
+            raise SnapshotValidationError(f"group {group_id!r} has no F6 master-domain facility binding")
+        dimensions = template_dimensions.get(bound_facility_type)
+        if dimensions is None:  # pragma: no cover - static binding gate runs first
+            raise SnapshotValidationError(f"group {group_id!r} has no F6 master-domain template dimensions")
+        try:
+            allowed_pose_tuples = sorted(
+                pose_tuple_by_key[(bound_facility_type, pose_id)] for pose_id in group.pose_domain
+            )
+        except KeyError as exc:  # pragma: no cover - static binding gate runs first
+            raise SnapshotValidationError(f"group {group_id!r} has an unregistered F6 pose") from exc
+        for slot_index in range(group.demand):
+            mandatory_slot_rows.append(
+                {
+                    "allowed_pose_tuples": [list(pose_tuple) for pose_tuple in allowed_pose_tuples],
+                    "candidate_pose_count": len(allowed_pose_tuples),
+                    "facility_type": bound_facility_type,
+                    "group_id": group_id,
+                    "slot_index": slot_index,
+                    "slot_key": f"{group_id}::slot::{slot_index}",
+                    "slot_kind": "mandatory",
+                    "template_dimensions": [dimensions[0], dimensions[1]],
+                }
+            )
+    return master_domain_projection_v1(
+        family_subset="shape_packing_hall",
+        facility_pool_projection=master_domain_facility_pool_projection_v1(relevant_facility_pools),
+        mandatory_slot_rows=mandatory_slot_rows,
+        template_pose_registration_rows=registration_rows,
+    )
+
+
 def _snapshot_digest_projection(
     *,
     source_digest: str,
@@ -1248,6 +1343,14 @@ def build_validated_state_snapshot(
             template_dimensions=template_dimensions,
             pose_occupied_cells=pose_occupied_cells,
         )
+        shape_packing_hall_master_domain_projection = _build_f6_master_domain_projection(
+            bundle=bundle,
+            groups=groups,
+            group_to_facility_type=group_to_facility_type,
+            template_placement_rules=template_placement_rules,
+            template_dimensions=template_dimensions,
+            pose_occupied_cells=pose_occupied_cells,
+        )
 
         blocked_cells_digest = _cell_set_digest(
             ghost_cells | exterior_blocks,
@@ -1280,6 +1383,7 @@ def build_validated_state_snapshot(
             blocked_cells_digest=blocked_cells_digest,
             exterior_blocks_digest=exterior_blocks_digest,
             master_domain_projection=master_domain_projection,
+            shape_packing_hall_master_domain_projection=shape_packing_hall_master_domain_projection,
             oracle_capabilities=oracle_capabilities,
             canonical_rules_source_present=captured.canonical_rules_source_present,
             family_inputs=family_inputs,

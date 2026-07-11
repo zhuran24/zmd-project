@@ -32,10 +32,11 @@ Refs:
 - docs/项目说明/12_go_criteria.md §8.1.x acceptance D
 - docs/research/p3_b_design_v2_20260521/cut_family_specs/06_shape_packing_hall.md v1.1
 """
+
 from __future__ import annotations
 
 import hashlib
-from typing import Any, Dict, List, Optional, Tuple, cast
+from typing import Any, Dict, List, Optional, Tuple
 
 from src.cuts.helpers.baseline_partition import (
     RegionKind,
@@ -48,9 +49,8 @@ from src.cuts.lifecycle import (
     GroupId,
     OracleCert,
     canonical_bytes_for_cert,
-    compute_blocked_cells_hash,
-    compute_exterior_blocks_hash,
-    compute_ghost_rect_id,
+    capture_scope_identity_preimage_v1,
+    compute_scope_identity_legacy_hashes,
     compute_source_digest,
 )
 
@@ -140,9 +140,7 @@ def compute_sot_region_demand_overrides(
         if group_demand < 1:
             continue
         for region_kind in _DEFAULT_REGION_KINDS:
-            bound = _proven_region_demand_lower_bound(
-                state, region_kind, group_demand, pose_length
-            )
+            bound = _proven_region_demand_lower_bound(state, region_kind, group_demand, pose_length)
             if bound >= 1:
                 overrides[(group_id, region_kind)] = bound
     return overrides
@@ -211,9 +209,7 @@ def generate_shape_packing_hall_cuts(
                 # Override exceeded sane bound — skip rather than emit a
                 # cert that validator phase 7 would reject as unsound.
                 continue
-            if region_demand > _proven_region_demand_lower_bound(
-                state, region_kind, group_demand, pose_length
-            ):
+            if region_demand > _proven_region_demand_lower_bound(state, region_kind, group_demand, pose_length):
                 # A larger side count may hold for a particular incumbent, but
                 # Phase 1.2 certs do not carry an incumbent-side proof; emitting
                 # it would create a reusable geometric cut stronger than the
@@ -263,8 +259,14 @@ def _try_build_cut(
     if total_packable >= region_demand:
         return None  # feasible, no cut
 
-    ghost_rect_repr = list(cast(Tuple[int, int, int, int], state.ghost_rect))
-    exterior_digest = compute_exterior_blocks_hash(state)
+    # Capture the three scope identity inputs once.  F6 is always ghost-bound:
+    # unlike F1 there is no region-intersection policy branch and an agnostic
+    # preimage can never produce a Hall cut.
+    identity_preimage = capture_scope_identity_preimage_v1(state)
+    if identity_preimage.ghost_rect is None:
+        return None
+    ghost_rect_id, blocked_cells_hash, exterior_digest = compute_scope_identity_legacy_hashes(identity_preimage)
+    ghost_rect_repr = list(identity_preimage.ghost_rect)
 
     cert_payload_dict: Dict[str, Any] = {
         "cert_kind": CERT_KIND,
@@ -288,12 +290,13 @@ def _try_build_cut(
     source_digest = compute_source_digest(state)
 
     scope = CutScope(
-        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
-        blocked_cells_hash=compute_blocked_cells_hash(state),
+        ghost_rect_id=ghost_rect_id,
+        blocked_cells_hash=blocked_cells_hash,
         exterior_blocks_hash=exterior_digest,
         source_digest=source_digest,
         oracle_abstraction_version=ORACLE_NAME,
         artifact_hashes=dict(state.artifact_hashes),
+        identity_preimage=identity_preimage,
     )
 
     cut = Cut(

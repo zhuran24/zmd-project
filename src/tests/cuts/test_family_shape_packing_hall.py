@@ -13,6 +13,7 @@ Coverage:
 - Evaluator: strict inequality + fail-safe.
 - Watcher keys.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -37,6 +38,7 @@ from src.cuts.lifecycle import (
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
+    compute_scope_identity_legacy_hashes,
 )
 from src.cuts.oracles.shape_packing_hall_oracle import (
     generate_shape_packing_hall_cuts,
@@ -231,6 +233,13 @@ def test_generator_f2_fixture_emits_cut() -> None:
     assert cert_dict["max_packable"] == [1, 1]
     assert cert_dict["total_packable"] == 2
     assert cert_dict["region_demand"] == 3
+    assert cuts[0].scope is not None
+    assert cuts[0].scope.identity_preimage is not None
+    ghost_id, blocked_hash, exterior_hash = compute_scope_identity_legacy_hashes(cuts[0].scope.identity_preimage)
+    assert cuts[0].scope.ghost_rect_id == ghost_id != GHOST_AGNOSTIC
+    assert cuts[0].scope.blocked_cells_hash == blocked_hash
+    assert cuts[0].scope.exterior_blocks_hash == exterior_hash
+    assert cert_dict["exterior_blocks_digest"] == exterior_hash
 
 
 def test_generator_feasible_returns_empty() -> None:
@@ -360,8 +369,9 @@ def test_validator_rejects_unknown_region_kind() -> None:
 
 def test_validator_rejects_pose_length_one_degenerate() -> None:
     state = _make_state()
-    cert_payload = _make_cert(state, pose_length=1, pose_shape_canonical="1x1_rigid",
-                              max_packable=[4, 5], total_packable=9, region_demand=10)
+    cert_payload = _make_cert(
+        state, pose_length=1, pose_shape_canonical="1x1_rigid", max_packable=[4, 5], total_packable=9, region_demand=10
+    )
     cut = _make_cut(cert_payload, state)
     result = validate_shape_packing_hall(cut, state, canonical_rules={})
     assert result.kind == "schema_err"
@@ -378,8 +388,7 @@ def test_validator_rejects_pose_shape_canonical_mismatch() -> None:
 
 def test_validator_rejects_partition_length_mismatch() -> None:
     state = _make_state()
-    cert_payload = _make_cert(state, partition_lens=[4, 5], partition_offsets=[0, 5, 10],
-                              max_packable=[1, 1, 1])
+    cert_payload = _make_cert(state, partition_lens=[4, 5], partition_offsets=[0, 5, 10], max_packable=[1, 1, 1])
     cut = _make_cut(cert_payload, state)
     result = validate_shape_packing_hall(cut, state, canonical_rules={})
     assert result.kind == "schema_err"
@@ -387,8 +396,9 @@ def test_validator_rejects_partition_length_mismatch() -> None:
 
 def test_validator_rejects_partition_overlap() -> None:
     state = _make_state()
-    cert_payload = _make_cert(state, partition_lens=[5, 5], partition_offsets=[0, 3],
-                              max_packable=[1, 1], total_packable=2)
+    cert_payload = _make_cert(
+        state, partition_lens=[5, 5], partition_offsets=[0, 3], max_packable=[1, 1], total_packable=2
+    )
     cut = _make_cut(cert_payload, state)
     result = validate_shape_packing_hall(cut, state, canonical_rules={})
     assert result.kind == "schema_err"
@@ -621,12 +631,16 @@ def test_evaluator_failsafe_malformed_payload() -> None:
     cut = _make_cut(cert_payload, state)
     # Replace geometric_payload with garbage
     garbled = Cut(
-        cut_id=cut.cut_id, family=cut.family, literals=None,
+        cut_id=cut.cut_id,
+        family=cut.family,
+        literals=None,
         geometric_payload=b"not json {{{",
         scope=cut.scope,
         cert=cut.cert,
-        family_version=cut.family_version, validator_version=cut.validator_version,
-        oracle_name=cut.oracle_name, oracle_cert_hash=cut.oracle_cert_hash,
+        family_version=cut.family_version,
+        validator_version=cut.validator_version,
+        oracle_name=cut.oracle_name,
+        oracle_cert_hash=cut.oracle_cert_hash,
     )
     assert evaluate_geometric_shape_packing_hall(garbled, state) is False
 
@@ -651,14 +665,20 @@ def test_watcher_keys_failsafe_on_malformed() -> None:
     cert_payload = _make_cert(state)
     cut = _make_cut(cert_payload, state)
     garbled = Cut(
-        cut_id=cut.cut_id, family=cut.family, literals=None,
+        cut_id=cut.cut_id,
+        family=cut.family,
+        literals=None,
         geometric_payload=b"not json {{{",
-        scope=cut.scope, cert=cut.cert,
-        family_version=cut.family_version, validator_version=cut.validator_version,
-        oracle_name=cut.oracle_name, oracle_cert_hash=cut.oracle_cert_hash,
+        scope=cut.scope,
+        cert=cut.cert,
+        family_version=cut.family_version,
+        validator_version=cut.validator_version,
+        oracle_name=cut.oracle_name,
+        oracle_cert_hash=cut.oracle_cert_hash,
     )
     keys = watcher_keys_shape_packing_hall(garbled)
     assert keys == {"group_keys": [], "region_keys": []}
+
 
 # ---- adversarial source-of-truth lower-bound hardening --------------------
 

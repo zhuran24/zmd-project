@@ -487,10 +487,12 @@ def _validate_plan_parameters(
         return
     if operation == "shape_packing_hall_le":
         _require_non_empty_str(parameters["group_id"], field_name="shape_packing_hall_le group_id")
-        _require_non_empty_str(
+        region_kind = _require_non_empty_str(
             parameters["region_kind"],
             field_name="shape_packing_hall_le region_kind",
         )
+        if region_kind not in {"left_baseline", "bottom_baseline"}:
+            raise ValueError("shape_packing_hall_le region_kind is outside the closed set")
         capacity = parameters["capacity"]
         if type(capacity) is not int or capacity < 0:
             raise ValueError("shape_packing_hall_le capacity must be a non-negative exact int")
@@ -830,6 +832,7 @@ class FamilyCapability:
     stage: CapabilityStage
     required_dependencies: frozenset[str]
     execution_path: ExecutionPath
+    requires_ghost_bound: bool = False
 
     def __post_init__(self) -> None:
         _require_non_empty_str(self.name, field_name="FamilyCapability.name")
@@ -850,6 +853,8 @@ class FamilyCapability:
             raise TypeError("FamilyCapability.stage must be CapabilityStage")
         if type(self.execution_path) is not ExecutionPath:
             raise TypeError("FamilyCapability.execution_path must be ExecutionPath")
+        if type(self.requires_ghost_bound) is not bool:
+            raise TypeError("FamilyCapability.requires_ghost_bound must be an exact bool")
         if type(self.required_dependencies) is not frozenset:
             raise TypeError("FamilyCapability.required_dependencies must be frozenset")
         for dependency in self.required_dependencies:
@@ -1268,8 +1273,8 @@ _PRODUCTION_F5_PLUGIN: Final[FamilyPlugin] = _PatternNogoodPlugin()
 def build_production_registry() -> FamilyCapabilityRegistry:
     """Build the sole production Stage-B capability registry.
 
-    F1 has the complete B2 parser/validator/compiler chain.  F6/F7 remain
-    EXPERIMENTAL until their B3/B4 vertical slices.  Legacy families are
+    F1/F6 have complete B2/B3 parser/validator/compiler chains.  F7 remains
+    EXPERIMENTAL until its B4 vertical slice.  Legacy families are
     diagnostic-only, and F8 remains an explicit retired metadata row.
     """
 
@@ -1280,8 +1285,14 @@ def build_production_registry() -> FamilyCapabilityRegistry:
         REGION_CAPACITY_VALIDATOR_VERSION,
         RegionCapacityPlugin,
     )
+    from src.cuts.families.shape_packing_hall_typed import (
+        SHAPE_PACKING_HALL_COMPILER_VERSION,
+        SHAPE_PACKING_HALL_VALIDATOR_VERSION,
+        ShapePackingHallPlugin,
+    )
 
     region_capacity_plugin: FamilyPlugin = RegionCapacityPlugin()
+    shape_packing_hall_plugin: FamilyPlugin = ShapePackingHallPlugin()
 
     capabilities = {
         "region_capacity": FamilyCapability(
@@ -1338,11 +1349,12 @@ def build_production_registry() -> FamilyCapabilityRegistry:
             name="shape_packing_hall",
             mode="geometric",
             proof_schema_version=1,
-            validator_version="stage-b-pending-b3",
-            compiler_version=None,
-            stage=CapabilityStage.EXPERIMENTAL,
+            validator_version=SHAPE_PACKING_HALL_VALIDATOR_VERSION,
+            compiler_version=SHAPE_PACKING_HALL_COMPILER_VERSION,
+            stage=CapabilityStage.COMPILABLE,
             required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
             execution_path=ExecutionPath.TYPED,
+            requires_ghost_bound=True,
         ),
         "power_hitting_set": FamilyCapability(
             name="power_hitting_set",
@@ -1380,6 +1392,7 @@ def build_production_registry() -> FamilyCapabilityRegistry:
         plugins={
             "pattern_nogood": _PRODUCTION_F5_PLUGIN,
             "region_capacity": region_capacity_plugin,
+            "shape_packing_hall": shape_packing_hall_plugin,
         },
     )
 
@@ -1543,6 +1556,9 @@ def cut_to_envelope_v1(cut: object) -> CutEnvelope:
         raise ValueError(f"v1 cut integrity failed: {integrity_error}")
     if checked_cut.cert is None or checked_cut.scope is None:  # pragma: no cover - Cut invariant
         raise ValueError("v1 cut lacks cert or scope")
+    mode = "geometric" if checked_cut.geometric_payload is not None else "literal"
+    if mode == "geometric" and checked_cut.literals is not None:
+        raise ValueError("v1 geometric cuts require literals to be None")
     _validate_json_nesting(
         checked_cut.cert.cert_payload,
         field_name="v1 cert payload",
@@ -1555,7 +1571,6 @@ def cut_to_envelope_v1(cut: object) -> CutEnvelope:
     proof = validate_cert_payload(checked_cut.family, checked_cut.cert.cert_payload)
     if checked_cut.cert.cert_kind != proof.get("cert_kind"):
         raise ValueError("v1 cert_kind differs from proof cert_kind")
-    mode = "geometric" if checked_cut.geometric_payload is not None else "literal"
     if mode == "geometric":
         if checked_cut.geometric_payload is None:  # pragma: no cover - branch guard
             raise AssertionError("geometric cut lost its body")
@@ -1702,6 +1717,8 @@ def _validate_scope_currentness(
         return "typed assumption verification is unavailable for this family"
     if scope.exterior_blocks_digest != snapshot.exterior_blocks_digest:
         return "scope exterior-block identity is stale"
+    if capability.requires_ghost_bound and scope.ghost_policy != "bound":
+        return "family capability requires a ghost-bound scope"
     if scope.ghost_policy == "agnostic":
         if scope.ghost_rect_digest is not None or scope.blocked_cells_digest is not None:
             return "agnostic scope carries ghost-bound identities"
