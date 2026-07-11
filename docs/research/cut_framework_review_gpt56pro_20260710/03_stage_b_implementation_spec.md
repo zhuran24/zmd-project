@@ -643,6 +643,107 @@ raw Cut → v1 adapter → snapshot → validate_and_compile_cut → ConstraintP
 预期批型(分工卡):B0-B4 codex 实现+opus/codex 双审;B5 codex 实现+双审+主会话终审
 reseal(PIC-3 同型放大);B6 owner。
 
+**B5 侦察补拍板(2026-07-11 晚,三路并行侦察 file:line 实证后定;codex 通道中断,侦察由
+主会话 fan-out 产出)**:
+
+1. **正式启用拆批**:B5a=functional rewire(resolver+plan interpreter+编排三路 match+
+   step_6/7/8 全签名迁移+replay 双表/DiagnosticResult/store 切断(PIC-6 §4.2 处置)+
+   F5 lifecycle 分支删除+全部测试语料迁移+编排层等价 differential);B5b=AST lockdown
+   (master add_* 双层私有化 §4.10+precheck 前移 §4.11+AST allowlist 钉+无调用者的
+   `add_pattern_nogood_cut` 物理退役)。各自完整 reseal。
+2. **切换点=方案 X(编排层直切,§4.7)正式确认**:生产双跑对照方案否决(违反纪律①
+   「并存期 typed 不得进生产入口」),对照价值下沉差分测试;「只改 step_8 内部」方案
+   否决(重现风险 #10 verifier-过-compiler-拒缝)。侦察实证:typed 链当前**零生产消费者**
+   (grep 全仓去测试为空),B5a 是首次通电,无隐藏迁移面。
+3. **plan interpreter 落点=新文件 `src/cuts/typed_apply.py`**:统一 operation-dispatch
+   (`region_capacity_le`/`shape_packing_hall_le`/`power_pose_exclusion` 三行表,与 master
+   方法一一对应;F5 无 operation=类型层无 apply 路径),收 `CompiledCut`+`ModelScopeBinding`;
+   runtime 材料(CP-SAT condition_lits/F7 raw blocked_cells)由 resolver 从 ghost 上下文
+   与 snapshot 冻结值供给,interpreter 在 apply 处复算 digest 与 `plan.parameters
+   ["blocked_cells_digest"]` 比对(§2.6 三连+§5.3 拍板 6 分层落点)。新文件=TCB,
+   无条件进 floor+mypy strict targets(B1 纪律)。
+4. **resolver(`lifecycle.py::_resolve_model_scope_binding`)**照侦察六步清单实现
+   (agnostic 短路/bound 按 digest 定位 rect+u_var 对象身份/blocked_cells 从
+   `snapshot.ghost_cells ∪ snapshot.exterior_blocks` 复原/live master 复算 domain
+   projection/snapshot digest 现场算/私有令牌构造);**blocked_cells 复原语义必须与
+   benders 旧 `ghost_blocked_cells` kwarg(=ghost_cells∪exterior_blocks)字节一致**,
+   differential 锚死。step_8 签名 `(compiled_cut, master, *, scope_binding)`(§4.6 的
+   `:1163-1169` 行号已 stale,现址 `:1363-1369`)。
+5. **F5 收口**:B5a 删 lifecycle F5 step_8 分支(:1533-1573),`ShadowValidated` 消费=
+   `stats["cut_framework_attach_last"]` 新增与 attached/rejected 平级的独立
+   `shadow_validated` 桶(common-mode-untrusted 标签,不进 attached、不进
+   `coordinate_framework_cut_count` 预算);F5 不 mutate master 升级为类型不变量
+   (ShadowValidated 无 plan 字段,结构上进不了 interpreter)。**PIC-2 语义缝随删除
+   一并消失**(不再存在 step_8 放行 agnostic F5/master 拒空条件的不一致);exploratory
+   剪枝变弱、soundness 不变,规格 §5.4 既定取舍。
+6. **哨兵耦合处置**:B0 五哨兵的 xfail 条件=resolver 符号缺失,B5a 落地后 1-4 应真转绿;
+   哨兵 5(§4.11 原子性)引用 `_lower_region_capacity_cut`(B5b 符号)——B5a 内核实其
+   激活行为,若红则把其 xfail 条件拆分为「_lower_ 符号缺失」(指向 B5b,非骨架作弊);
+   拒绝异常的精确类型/错误码 B5a 定稿并回写 §2.9。
+7. **文件清单修正**:port_exposure.py(F3)为疑似第 17 pinned——§7 三 legacy evaluator
+   清单漏列而 §4.2 的 legacy 四族含 F3;开工 impact 扫描显式确认。16 文件中 5 个 sink
+   (lifecycle/benders_loop/typed_platform/exact_coordinate_master/master_model)双重
+   reseal(floor+sink JSON),11 个 floor-only;新增 import 若把 typed_apply.py 拉进
+   close-kernel import-time 闭包(:13180-13185)必须同批入 floor。
+8. **门控不变量**:B5 全程不碰 unsafe-map 条目与 `check_p1_2` 的成对登记(:12638-12639),
+   翻转=B6 owner 仪式;certified 不可达主锚=`test_v62_candidate_frontier_contract.py:173-208`
+   (pre-session 阻断,与编排内部无关,B5 后仍绿);`_cut_framework_attach_enabled`
+   docstring 与 unsafe-map 注释的表述校准随 B5a 批做(校准非翻转)。
+9. **收口纪律**:B5a/B5b 各自收口实跑双 checker(含 `check_strong_status_write_allowlist`
+   核实零新增 CERTIFIED/INFEASIBLE writer,风险 #10);telemetry taxonomy 4 类→9 类
+   (+compiler/plan-validation/model-scope/master-rejection/shadow)wiring 测试同步。
+
+**B5a 实现定稿追认(2026-07-11 夜,两子块交付后终审;实现=主会话 fan-out opus,codex 通道
+中断期)**:
+
+1. **step_7 incumbent violation filter 正式退役(§3.1 回写)**:typed `step_7_evaluate_cut
+   (compiled_cut, snapshot)` = digest attestation(ATTACH 即真),不复刻 legacy 的
+   「cut 是否切掉当前 incumbent」过滤——validated-but-dormant cut 照 attach。裁决理由:
+   ①soundness 不变(完整验证过的 valid inequality,agnostic=物理真/bound=ghost 条件化,
+   多挂无害;FP=0 义务在 validator 层把关);②在编排层复刻 filter=手写三族数学第二实现,
+   新增攻击面收益为负;③纯剪枝效率/预算消耗差异——**注记:若批 C(PIC-4)prod-scale
+   实测显示 dormant cut 挤占 2000 预算严重,再立「typed relevance evaluator」小批**
+   (snapshot.selected_poses 已冻入,材料齐)。telemetry 的 `attach_timing` 桶保留。
+2. **step_6 定稿(§3.2 回写)**:`step_6_attach_scope_check(compiled_cut, snapshot)` 三查
+   attestation(exact CompiledCut/snapshot_digest 相等/scope_digest 与 plan 一致性重申),
+   ATTACH|QUARANTINE 二值,保名保 checker 委托结构。
+3. **resolver family 判定(§2.6 回写)**:3 参签名下 family 由 `model_scope.domain_fingerprint`
+   匹配 snapshot 三个缓存投影字段判定(可信侧),live master 复算该 family 投影做 drift
+   检测——「按 plan.family 选投影」的等价落地。
+4. **编排异常分层**:仅 `cut_to_envelope_v1` 的 TypeError/ValueError 入 `rejected["adapter"]`
+   桶;bundle/snapshot/registry 构建异常、resolver ValueError、step_8 全部异常**传播**
+   (TCB 故障不洗成 per-cut rejection)。replay 侧 CutRejection stage=="scope"→HOLD,
+   其余→QUARANTINE `typed_rejected_{stage}`。
+5. **合法遗留(B5a-transitional,9 skip)**:F6/F7 直调测试的完整 typed-chain 迁移
+   (需 domain-consistent snapshot↔live-master fixture)+F5 生产 oracle-registry e2e
+   一例——留给 B5b 或收尾子块;F6/F7 typed 面已由各自 stage_b 测试全绿覆盖,resolver
+   的 F6/F7 live 投影若 byte 不符只会 fail-closed 过度拒绝,无 soundness 风险。
+
+**B5a 双审裁决(2026-07-11 夜,双 opus:设计位 AGREE_WITH_AMENDMENTS/攻击位 PASS,
+codex 通道中断期)**:攻击位对七大面(resolver 错配/三连校验绕过/plan 篡改/ShadowValidated
+逃逸/replay 活化/TCB 异常吞没/门控可达性)全部构造实跑复现,零 master mutation,无放宽点;
+step_7 violation filter 退役论证经专项复核成立。amendment 处置:
+
+1. **MEDIUM(已修)**:`store.on_ghost_rect_changed` 的 `build_replay_context` 原在
+   per-cut 循环内(违反 §4.8「每 transition 一次」+ replay 自身 docstring)——已 hoist
+   到循环外(loop-invariant,guard 测试注入分支),纯效率项,correctness 不受影响。
+2. **LOW×2(双位共同点名,确认为 B5b 预期缺口,B5b 义务收紧)**:ModelScopeBinding
+   在 B5a 只有 construction token 软闸(module-level object(),in-process import 可偷;
+   step_8 三查对「字段照抄 plan 的伪造 binding」是同义反复,残余伪造载荷=condition_lits
+   错绑 u_var)。这正是拍板 1 把 AST lockdown 分给 B5b 的既定分层——**B5b 义务由此收紧
+   为三条**:①AST allowlist 必须把 `_build_model_scope_binding` 的唯一合法 caller 钉死
+   (`_resolve_model_scope_binding`);②token 不可达红测(除 resolver 外任何构造路径必红);
+   ③master add_* 双层私有化(原 §4.10)。缓解已在位:typed_apply 复检 blocked digest+
+   ghost-bound 空 condition_lits 拒绝;框架 certified-disabled。
+3. **LOW(文档)**:§7 拍板 9 的「9 类 telemetry」清单被拍板 4(异常传播不落桶)supersede
+   ——实际桶=adapter/registry/envelope/scope/proof/plan/attach_timing+shadow_validated
+   平级字段,resolver/step_8/master-rejection 异常**传播**而非计数;运行时正确,以本段
+   与「实现定稿追认」第 4 项为准,拍板 9 原措辞不再单独作数。
+4. 注记两条:reseal drift 集含 `src/cuts/__init__.py`(typed_apply 导出面),终审一并
+   处理;resolver family 判定依赖三族 projection 的 family_subset 域分离(攻击位验证
+   今天成立)——**新增族落地批必须保持 projection 域分离**,违反即 family 误判
+   (fail-closed 方向,登记为结构义务)。
+
 ## 8. 风险登记与处置(v2 增补)
 
 | # | 风险 | 处置 |

@@ -34,9 +34,26 @@ import json
 import time
 from collections import Counter  # noqa: F401  (state_machine_v2 后续用)
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, FrozenSet, Iterable, List, Literal, Mapping, Optional, Protocol, Sequence, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    FrozenSet,
+    Iterable,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Protocol,
+    Sequence,
+    Tuple,
+)
 
 from src.cuts.cert_schema import validate_cert_payload as _validate_cert_payload
+
+if TYPE_CHECKING:
+    from src.cuts.typed_platform import CompiledCut, ModelScopeBinding
 
 
 # ============================================================================
@@ -1145,176 +1162,84 @@ def assumption_holds(state: BState, assumption: Assumption) -> bool:
     return verifier(state, assumption.value)
 
 
-def step_6_attach_scope_check(cut: Cut, state: BState) -> AttachDecision:
-    """Step 6 — 6-step attach-scope replay verify (cut_lifecycle_v2 v3.2.2 §4).
+def step_6_attach_scope_check(compiled_cut: "CompiledCut", snapshot: Any) -> AttachDecision:
+    """Step 6 — typed digest attestation (RFC-001 §3.2; B5a re-framed).
 
-    Dispatch (v3.2.2 round 21 fix):
-    - GHOST_AGNOSTIC cut: verify ``exterior_blocks_hash`` only (cut可跨 ghost 复用)
-    - ghost-bound cut: verify full ``blocked_cells_hash``
+    Pre-B5a this was the raw-``Cut`` 6-step scope replay (source/ghost/blocked/
+    artifact/oracle/assumption).  Those obligations now live in the single
+    entry's ``_validate_scope_currentness`` (typed_platform), which runs BEFORE a
+    ``CompiledCut`` can exist.  The attach-time role collapses to a fail-closed
+    attestation: this compiled cut must have been produced from *this* snapshot.
+
+    ``CompiledCut.snapshot_digest`` (set to ``snapshot.digest`` at compile time)
+    and ``scope_digest`` (``_model_scope_digest(plan.model_scope)``) are the
+    attestation carriers.  A non-``CompiledCut`` argument, a digest mismatch, or
+    a scope-digest that no longer matches its plan all fail closed (QUARANTINE);
+    the delegate call-graph (decision → this function) is preserved for the
+    sealed step_7 obligation contract.
     """
-    if cut.scope is None:
+    from src.cuts.typed_platform import CompiledCut as _CompiledCut
+    from src.cuts.typed_platform import _model_scope_digest
+
+    if type(compiled_cut) is not _CompiledCut:
         return "QUARANTINE"
-    # Step 1: source_digest
-    if cut.scope.source_digest != compute_source_digest(state):
+    if compiled_cut.snapshot_digest != getattr(snapshot, "digest", None):
         return "QUARANTINE"
-
-    # Step 2: ghost match
-    current_ghost_id = compute_ghost_rect_id(state.ghost_rect)
-    is_ghost_agnostic = cut.scope.ghost_rect_id == GHOST_AGNOSTIC
-    if not is_ghost_agnostic and cut.scope.ghost_rect_id != current_ghost_id:
-        return "HOLD"
-
-    # Step 3 (v3.2.2 dispatch): blocked_cells_hash OR exterior_blocks_hash
-    if is_ghost_agnostic:
-        # cut family agnostic to ghost — verify exterior_blocks_hash only
-        if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
-            return "QUARANTINE"
-    else:
-        # ghost-bound — verify full blocked_cells_hash (ghost ∪ exterior)
-        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
-            return "QUARANTINE"
-
-    # Step 4: artifact_hashes. Schema v1 scopes snapshot the complete
-    # authoritative artifact map, so missing, extra, or changed entries are
-    # all replay failures.
-    if cut.scope.artifact_hashes != state.artifact_hashes:
+    if _model_scope_digest(compiled_cut.plan.model_scope) != compiled_cut.scope_digest:
         return "QUARANTINE"
-
-    # Step 5: oracle version
-    if cut.scope.oracle_abstraction_version not in state.available_oracle_versions:
-        return "HOLD"
-
-    # Step 6: active_assumptions
-    for assumption in cut.scope.active_assumptions:
-        if not assumption_holds(state, assumption):
-            return "HOLD"
-
     return "ATTACH"
 
 
-def step_7_evaluation_attach_decision(cut: Cut, state: BState) -> AttachDecision:
-    """Side-effect-free Step 7 precondition: evaluate only attached cuts.
+def step_7_evaluation_attach_decision(compiled_cut: "CompiledCut", snapshot: Any) -> AttachDecision:
+    """Side-effect-free Step 7 precondition: only attach an attested compiled cut.
 
-    V29--V31 repeatedly exposed the same failure pattern: Step 6 would HOLD or
-    QUARANTINE a cut, but a hot-path evaluator could be called first and return
-    ``True``.  Keep the Step 7 guard as a direct mirror of Step 6 so source,
-    artifact, ghost/exterior scope, oracle-version, and active-assumption
-    obligations cannot drift independently.
-
-    ``step_6_attach_scope_check`` mutates no store state; quarantine/hold
-    transitions are performed by ``src.cuts.replay``.  It is therefore safe to
-    reuse here as the single attachability predicate.
+    The sealed step_7 obligation contract pins the delegate call-graph
+    (``step_7_evaluation_attach_decision`` → ``step_6_attach_scope_check``);
+    the typed re-frame keeps that structure and reuses the attestation as the
+    single attachability predicate.
     """
-    return step_6_attach_scope_check(cut, state)
+    return step_6_attach_scope_check(compiled_cut, snapshot)
 
 
-def evaluator_scope_matches_current_state(cut: Cut, state: BState) -> bool:
-    """Fail-closed hot-path scope guard for Step 7 evaluation.
+def evaluator_scope_matches_current_state(compiled_cut: "CompiledCut", snapshot: Any) -> bool:
+    """Fail-closed hot-path scope guard for Step 7 evaluation (typed).
 
-    Replay/Step 6 is still the authoritative lifecycle transition because it
-    checks oracle availability and active assumptions.  Step 7 cannot safely
-    prune on a cut whose Step 6 decision is HOLD/QUARANTINE; otherwise a stale
-    or assumption-expired cut can fire before replay/store machinery handles it.
+    A compiled cut may only fire while its attestation binds it to the current
+    snapshot; anything else fails closed so a stale/mis-bound compiled cut cannot
+    prune before the orchestration/resolver machinery handles it.
     """
-    return step_7_evaluation_attach_decision(cut, state) == "ATTACH"
+    return step_7_evaluation_attach_decision(compiled_cut, snapshot) == "ATTACH"
 
 
-def evaluate_literal_multiset(cut: Cut, state: BState) -> bool:
-    """Generic literal-based cut evaluator (state_machine_v2 §5 multiset 语义).
+def evaluate_literal_multiset(compiled_cut: "CompiledCut", snapshot: Any) -> bool:
+    """Retained checker-anchored literal guard (B5a typed re-frame).
 
-    Used by all literal-based families (F3 port_exposure / F5 pattern_nogood /
-    F7 power_hitting_set). Per state_machine_v2 §5 + Gemini round 27 finding B3:
-    slot indices inside a group are **anonymous** (any permutation of named
-    instances within a group yields the same group-anonymous state). So a cut
-    that lists ``(group=crusher, slot=2, pose=p1)`` is equivalent to
-    ``(group=crusher, slot=5, pose=p1)`` after slot relabeling — must enumerate
-    **multiset subset match**, not slot-index 1-to-1.
-
-    Returns True iff for every (group_id, pose_id) demand count in
-    ``cut.literals``, ``state.groups[group_id].selected_poses`` contains at
-    least that many copies (Counter ≥ Counter).
-
-    Ghost-bound literal families (F5/F7) still depend on concrete
-    ``ghost_cells ∪ exterior_blocks`` even though their violation predicate is
-    literal-based.  Guard the hot path here so a stale scoped literal cut
-    cannot fire if a caller reaches evaluation before replay/Step 6.
-
-    Pre-check: each referenced group has enough total selected_poses
-    (avoid unnecessary Counter walk). False on missing group.
+    Pre-B5a this walked ``cut.literals`` against ``state.groups[...].
+    selected_poses`` for the raw literal families (F3/F5/F7).  In the typed
+    world literal soundness is the single entry's plugin ``validate_plan``
+    (F5 → ShadowValidated, F7 → CompiledCut), so the attach-time literal guard
+    collapses to the same attestation as every other family.  Kept as a named
+    node (sealed step_7 contract requires ``evaluate_literal_multiset`` to call
+    ``evaluator_scope_matches_current_state``).
     """
-    from collections import Counter
+    return evaluator_scope_matches_current_state(compiled_cut, snapshot)
 
-    if not evaluator_scope_matches_current_state(cut, state):
+
+def step_7_evaluate_cut(compiled_cut: "CompiledCut", snapshot: Any) -> bool:
+    """Step 7 — typed attach-timing check (RFC-001 §3.1; B5a).
+
+    Reframed from the raw-``Cut`` family-dispatched evaluator to a typed
+    attach-timing predicate over a ``CompiledCut`` + ``ValidatedStateSnapshot``.
+    Soundness of the cut is already the single entry's job (a ``CompiledCut``
+    only exists after full plugin ``parse_and_validate_proof``/``validate_plan``
+    against this snapshot); the attach-timing question that remains is whether
+    the compiled cut still attests to the current snapshot.  The legacy
+    per-incumbent violation filter (a pruning-efficiency heuristic) is not
+    reproduced — see the B5a delivery report accept-set note.
+    """
+    if not evaluator_scope_matches_current_state(compiled_cut, snapshot):
         return False
-
-    if cut.literals is None or len(cut.literals) == 0:
-        return False  # literal-based cut without literals is no-op
-
-    # Aggregate cut demand per (group_id, pose_id)
-    cut_demand: Counter[Tuple[GroupId, PoseId]] = Counter()
-    for lit in cut.literals:
-        cut_demand[(lit.slot_ref.group_id, lit.pose_id)] += 1
-
-    # Pre-check: each group has at least required_slot_count
-    referenced_groups: Dict[GroupId, int] = {}
-    for (gid, _), c in cut_demand.items():
-        referenced_groups[gid] = referenced_groups.get(gid, 0) + c
-    for gid, required in referenced_groups.items():
-        if gid not in state.groups:
-            return False
-        if len(state.groups[gid].selected_poses) < required:
-            return False
-
-    # Multiset subset match — Gap 12 修 (round 31): selected_poses is List[PoseId]
-    # per spec, **不**是 List[Tuple]. group_id comes from outer loop.
-    state_counts: Counter[Tuple[GroupId, PoseId]] = Counter()
-    for gid in referenced_groups:
-        for pose_id in state.groups[gid].selected_poses:
-            state_counts[(gid, pose_id)] += 1
-
-    for k, demand_count in cut_demand.items():
-        if state_counts[k] < demand_count:
-            return False
-    return True
-
-
-def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
-    """Step 7 — family-dispatched evaluate.
-
-    GPT pro v2 round 1+2 P0-1 fix: 原硬编码 `region_capacity → return True` 是
-    Step F 修复未接入 production framework 的死路 — family 函数 evaluate_geometric_*
-    已真重算 sound, 但 framework 入口仍 bypass. 必须 dispatch 到 family evaluator.
-
-    Geometric: F1 region_capacity / F2 cutset / F4 component_reach / F6
-    shape_packing_hall / F9 density_envelope 已注册；F8 已退役。
-
-    Literal: F3 port_exposure / F5 pattern_nogood / F7 power_hitting_set 走
-    generic evaluate_literal_multiset (state_machine_v2 §5 multiset semantics).
-    """
-    if not evaluator_scope_matches_current_state(cut, state):
-        return False
-
-    if cut.geometric_payload is not None:
-        # Lazy import 避循环 (families import lifecycle for BState/Cut types).
-        from src.cuts.families.component_reach import evaluate_geometric_component_reach
-        from src.cuts.families.cutset import evaluate_geometric_cutset
-        from src.cuts.families.density_envelope import evaluate_geometric_density_envelope
-        from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
-        from src.cuts.families.shape_packing_hall import evaluate_geometric_shape_packing_hall
-
-        if cut.family == "region_capacity":
-            return evaluate_geometric_region_capacity(cut, state)
-        if cut.family == "cutset":
-            return evaluate_geometric_cutset(cut, state)
-        if cut.family == "component_reach":
-            return evaluate_geometric_component_reach(cut, state)
-        if cut.family == "density_envelope":
-            return evaluate_geometric_density_envelope(cut, state)
-        if cut.family == "shape_packing_hall":
-            return evaluate_geometric_shape_packing_hall(cut, state)
-        raise NotImplementedError(f"family={cut.family} geometric evaluator 未注册.")
-    # literal-based — generic multiset eval (F3/F5/F7 all use this)
-    return evaluate_literal_multiset(cut, state)
+    return evaluate_literal_multiset(compiled_cut, snapshot)
 
 
 class MasterModelLike(Protocol):
@@ -1360,220 +1285,327 @@ class MasterModelLike(Protocol):
     ) -> bool: ...
 
 
-def step_8_apply_to_master(
-    cut: Cut,
-    master_model: MasterModelLike,
-    *,
-    ghost_condition_lits: Sequence[Any] = (),
-    ghost_blocked_cells: Optional[FrozenSet[Cell]] = None,
-) -> None:
-    """Step 8 — push cut as constraint to CP-SAT master (M3-3, P1.3).
+_GHOST_RECT_DIGEST_PREFIX = b"zmd.ghost-rect.v1:"
 
-    Family dispatch is fail-closed: only families with a reviewed master
-    translation are wired; every other family raises so it cannot silently
-    reach the master without its own translation (F2-F7+F9 land family by
-    family in the M4 ladder).
 
-    Ghost conditioning (M4-A): the master keeps the ghost anchor as a
-    decision variable, so any cut whose truth depends on the CURRENT ghost
-    cells (scope.ghost_rect_id != GHOST_AGNOSTIC) must be attached under the
-    selected ghost literal(s) supplied via ``ghost_condition_lits`` — an
-    unconditional attach would keep constraining the model after the solver
-    switches anchors and over-prune. Missing conditioning for a ghost-bound
-    cut raises (fail-closed) instead of silently attaching unconditionally.
-    The literals are opaque ``Any`` handles: src/cuts stays import-isolated
-    from the CP-SAT types; step_8 only forwards them.
+def _ghost_rect_digest(rect: List[int]) -> str:
+    """Recompute the snapshot-side ghost-rect identity for a live master rect.
 
-    F1 ``region_capacity``: the cert (validated in steps 5-7) witnesses
-    ``demand_R > cap_R`` for a region R with ``P(g) ⊆ R`` for every
-    contributing group. The attached constraint is the valid inequality
-
-        sum_g cells_per_pose[g] * sum_{p ∈ domain(g)} presence(g, p) <= cap_R
-
-    which — for a GHOST_AGNOSTIC cut (ghost∩R = ∅, cap carries no ghost
-    deduction) — is physically true for ANY feasible layout of this master
-    (the non-blocked cells of R cannot be over-occupied; pose bodies are
-    disjoint under the master's no-overlap), so it attaches unconditionally.
-    A ghost-bound cap is only true under its anchor and attaches under the
-    ghost literal(s). Staleness/scope gating stays in steps 5-7, and the
-    master rejecting the push (False) is treated as fail-closed.
-
-    F7 ``power_hitting_set`` (M4-A): the cert witnesses an empty CoverSet —
-    under the current ghost+exterior no valid pole anchor can power pose
-    (facility_group, facility_pose_id). Translation: presence == 0 under the
-    ghost literal(s). F7 cuts are always ghost-bound (the oracle refuses
-    GHOST_AGNOSTIC), and the master re-checks its own coverer table against
-    ``ghost_blocked_cells`` before accepting (runtime helper-vs-master gate).
+    Byte-compatible with ``typed_platform._snapshot_ghost_rect_digest``
+    (domain-separated prefix + compact ``[x, y, w, h]`` canonical JSON).
     """
-    # Step 8 is the irreversible trust boundary. Keep this final guard local
-    # so a direct or future caller cannot validate one body and compile a
-    # different cert, even if it bypasses the production wiring checks.
-    integrity_error = validate_cut_integrity(cut)
-    if integrity_error is not None:
-        raise ValueError(f"step_8: cut integrity failed (fail-closed): {integrity_error}")
 
-    if cut.family == "region_capacity":
-        if cut.cert is None:
-            raise ValueError("step_8: region_capacity cut carries no cert (fail-closed)")
-        cert = validate_cert_payload("region_capacity", cut.cert.cert_payload)
-        raw_contributing = cert["contributing_groups"]
-        raw_cpp = cert["cells_per_pose"]
-        if not isinstance(raw_contributing, list) or not raw_contributing:
-            raise ValueError("step_8: contributing_groups must be a non-empty list")
-        if not isinstance(raw_cpp, dict):
-            raise ValueError("step_8: cells_per_pose must be a dict")
-        group_cell_weights: Dict[str, int] = {}
-        for item in raw_contributing:
-            if not isinstance(item, list) or len(item) != 2:
-                raise ValueError("step_8: contributing_groups entry malformed")
-            gid = str(item[0])
-            weight = raw_cpp.get(gid)
-            if isinstance(weight, bool) or not isinstance(weight, int) or weight <= 0:
-                raise ValueError(f"step_8: cells_per_pose[{gid!r}] must be a positive int")
-            group_cell_weights[gid] = weight
-        cap = cert["cap_R"]
-        if isinstance(cap, bool) or not isinstance(cap, int) or cap < 0:
-            raise ValueError("step_8: cap_R must be a non-negative int")
-        if cut.scope is None:
-            raise ValueError("step_8: region_capacity cut carries no scope (fail-closed)")
-        ghost_bound = cut.scope.ghost_rect_id != GHOST_AGNOSTIC
-        if ghost_bound and not ghost_condition_lits:
-            raise RuntimeError(
-                "step_8: ghost-bound region_capacity cut requires the selected "
-                "ghost literal(s) (fail-closed) — its capacity carries a ghost "
-                "deduction that is only true under the triggering anchor"
-            )
-        applied = master_model.add_region_capacity_cut(
-            group_cell_weights=group_cell_weights,
-            capacity=cap,
-            condition_lits=tuple(ghost_condition_lits) if ghost_bound else (),
-        )
-        if not applied:
-            raise RuntimeError(
-                "step_8: master rejected region_capacity cut (fail-closed; no partial constraint was attached)"
-            )
-        return
-    if cut.family == "power_hitting_set":
-        if cut.cert is None:
-            raise ValueError("step_8: power_hitting_set cut carries no cert (fail-closed)")
-        cert = validate_cert_payload("power_hitting_set", cut.cert.cert_payload)
-        facility_group = cert["facility_group"]
-        facility_pose_id = cert["facility_pose_id"]
-        if (
-            not isinstance(facility_group, str)
-            or not facility_group
-            or not isinstance(facility_pose_id, str)
-            or not facility_pose_id
-        ):
-            raise ValueError("step_8: facility_group/facility_pose_id must be non-empty str")
-        if cut.scope is None:
-            raise ValueError("step_8: power_hitting_set cut carries no scope (fail-closed)")
-        if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
-            raise RuntimeError(
-                "step_8: power_hitting_set cut must be ghost-bound "
-                "(fail-closed; CoverSet emptiness is not ghost-monotone)"
-            )
-        if not ghost_condition_lits:
-            raise RuntimeError(
-                "step_8: ghost-bound power_hitting_set cut requires the selected ghost literal(s) (fail-closed)"
-            )
-        if ghost_blocked_cells is None:
-            raise RuntimeError(
-                "step_8: power_hitting_set attach requires ghost_blocked_cells "
-                "for the master-side coverer re-check (fail-closed)"
-            )
-        applied = master_model.add_power_pose_exclusion_cut(
-            group_id=facility_group,
-            pose_id=facility_pose_id,
-            blocked_cells=ghost_blocked_cells,
-            condition_lits=tuple(ghost_condition_lits),
-        )
-        if not applied:
-            raise RuntimeError(
-                "step_8: master rejected power_hitting_set cut (fail-closed; no partial constraint was attached)"
-            )
-        return
-    if cut.family == "shape_packing_hall":
-        if cut.cert is None:
-            raise ValueError("step_8: shape_packing_hall cut carries no cert (fail-closed)")
-        cert = validate_cert_payload("shape_packing_hall", cut.cert.cert_payload)
-        contributing_group = cert["contributing_group"]
-        region_kind = cert["region_kind"]
-        total_packable = cert["total_packable"]
-        if not isinstance(contributing_group, str) or not contributing_group:
-            raise ValueError("step_8: contributing_group must be a non-empty str")
-        if region_kind not in ("left_baseline", "bottom_baseline"):
-            raise ValueError(f"step_8: unknown region_kind {region_kind!r}")
-        if isinstance(total_packable, bool) or not isinstance(total_packable, int) or total_packable < 0:
-            raise ValueError("step_8: total_packable must be a non-negative int")
-        # region_demand/group_demand are pigeonhole reasoning values (validated
-        # in steps 5-7); only the re-derived combinatorial cap enters the master.
-        if cut.scope is None:
-            raise ValueError("step_8: shape_packing_hall cut carries no scope (fail-closed)")
-        if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
-            raise RuntimeError(
-                "step_8: shape_packing_hall cut must be ghost-bound "
-                "(fail-closed; the baseline segments are an anchor function)"
-            )
-        if not ghost_condition_lits:
-            raise RuntimeError(
-                "step_8: ghost-bound shape_packing_hall cut requires the selected ghost literal(s) (fail-closed)"
-            )
-        applied = master_model.add_baseline_packing_cut(
-            group_id=contributing_group,
-            region_kind=region_kind,
-            capacity=total_packable,
-            condition_lits=tuple(ghost_condition_lits),
-        )
-        if not applied:
-            raise RuntimeError(
-                "step_8: master rejected shape_packing_hall cut (fail-closed; no partial constraint was attached)"
-            )
-        return
-    if cut.family == "pattern_nogood":
-        if cut.cert is None:
-            raise ValueError("step_8: pattern_nogood cut carries no cert (fail-closed)")
-        cert = validate_cert_payload("pattern_nogood", cut.cert.cert_payload)
-        raw_pattern = cert["forbidden_pose_pattern"]
-        if not isinstance(raw_pattern, list) or not raw_pattern:
-            raise ValueError("step_8: forbidden_pose_pattern must be a non-empty list")
-        pattern: List[Tuple[str, str]] = []
-        seen_group_pose: set[Tuple[str, str]] = set()
-        for entry in raw_pattern:
-            if not isinstance(entry, list) or len(entry) != 3:
-                raise ValueError("step_8: forbidden_pose_pattern entry malformed")
-            gid, _slot, pose_id = entry
-            if not isinstance(gid, str) or not gid or not isinstance(pose_id, str) or not pose_id:
-                raise ValueError("step_8: forbidden_pose_pattern group_id/pose_id must be non-empty str")
-            key = (gid, pose_id)
-            if key in seen_group_pose:
-                # D1 validator forbids this (BLOCK-2); re-check here so a
-                # multiset pattern can never reach the boolean translation.
-                raise ValueError(
-                    f"step_8: duplicate (group_id, pose_id) {key!r} — multiset "
-                    "pattern not representable by boolean presence (fail-closed)"
+    payload = json.dumps(
+        rect,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(_GHOST_RECT_DIGEST_PREFIX + payload).hexdigest()
+
+
+def _locate_master_ghost_rect(master: Any, target_digest: str) -> Optional[int]:
+    """Return the live master ghost-domain index whose rect digest matches.
+
+    The master keeps every candidate ghost anchor as a decision variable; the
+    bound cut's ``ghost_rect_digest`` identifies exactly one of them.  The rect
+    is reconstructed from the domain cell bbox (the same ``[x, y, w, h]`` the
+    snapshot hashed) so the resolver never trusts a caller-supplied index.
+    """
+
+    for idx, domain in enumerate(master._ghost_domains):
+        cells = domain.get("cells") or ()
+        if not cells:
+            continue
+        xs = [int(cell[0]) for cell in cells]
+        ys = [int(cell[1]) for cell in cells]
+        min_x = min(xs)
+        min_y = min(ys)
+        rect = [min_x, min_y, max(xs) - min_x + 1, max(ys) - min_y + 1]
+        if _ghost_rect_digest(rect) == target_digest:
+            return idx
+    return None
+
+
+def _live_power_coverer_rows(
+    master: Any,
+    powered_facility_types: Sequence[str],
+    live_pools: Mapping[str, Any],
+) -> List[object]:
+    """Project the live master coverer cache into the F7 projection schema.
+
+    Reads ``_power_coverers_by_template_pose`` (a cache derived AFTER the pools,
+    RFC-001 §5.3 / B4 拍板 7) rather than re-deriving from pools, so a mutated
+    coverer table is caught by the resolve-time domain projection.  A missing
+    cache entry is encoded distinctly from an empty coverer list.
+    """
+
+    coverers_by_pose = master._power_coverers_by_template_pose
+    pole_pool = live_pools.get("power_pole") or ()
+    rows: List[object] = []
+    for facility_type in powered_facility_types:
+        pool = live_pools.get(facility_type) or ()
+        facility_coverers = coverers_by_pose.get(facility_type) or {}
+        for pose_index, pose in enumerate(pool):
+            pose_id = pose["pose_id"]
+            entry = facility_coverers.get(pose_index)
+            if entry is None:
+                rows.append(
+                    {
+                        "coverer_entry_state": "missing",
+                        "coverer_pole_pose_ids": [],
+                        "coverer_pole_pose_indices": [],
+                        "facility_type": facility_type,
+                        "powered_pose_id": pose_id,
+                        "powered_pose_index": pose_index,
+                    }
                 )
-            seen_group_pose.add(key)
-            pattern.append(key)
-        if cut.scope is None:
-            raise ValueError("step_8: pattern_nogood cut carries no scope (fail-closed)")
-        ghost_bound = cut.scope.ghost_rect_id != GHOST_AGNOSTIC
-        if ghost_bound and not ghost_condition_lits:
-            raise RuntimeError(
-                "step_8: ghost-bound pattern_nogood cut requires the selected ghost literal(s) (fail-closed)"
+                continue
+            indices = sorted(int(pole_index) for pole_index in entry)
+            rows.append(
+                {
+                    "coverer_entry_state": "present",
+                    "coverer_pole_pose_ids": [pole_pool[pole_index]["pose_id"] for pole_index in indices],
+                    "coverer_pole_pose_indices": indices,
+                    "facility_type": facility_type,
+                    "powered_pose_id": pose_id,
+                    "powered_pose_index": pose_index,
+                }
             )
-        applied = master_model.add_pattern_nogood_cut(
-            pattern=pattern,
-            condition_lits=tuple(ghost_condition_lits) if ghost_bound else (),
-        )
-        if not applied:
-            raise RuntimeError(
-                "step_8: master rejected pattern_nogood cut (fail-closed; no partial constraint was attached)"
-            )
-        return
-    raise NotImplementedError(
-        f"step_8: family={cut.family!r} 的 master 翻译尚未接线 — P1.3 M4 阶梯逐族实施, 未接线族 fail-closed."
+    return rows
+
+
+def _live_master_domain_projection(master: Any, family: str) -> str:
+    """Independently recompute one family's MasterDomainProjectionV1 from the
+    LIVE master (RFC-001 §2.6).
+
+    The three row families (facility pool projection / mandatory slot rows /
+    template pose registration rows) are extracted from the live master's own
+    structures and hashed through the shared snapshot primitive, so any drift
+    between the frozen snapshot and the live master surfaces as a digest
+    mismatch at resolve time (before the first master mutation).
+    """
+
+    from src.cuts.state_snapshot import (  # noqa: SLF001 - shared TCB projection primitives
+        _F1_MASTER_DOMAIN_PLACEMENT_RULES,
+        _F6_MASTER_DOMAIN_MAX_POSE_LENGTH,
+        _F6_MASTER_DOMAIN_PLACEMENT_RULES,
+        _master_domain_pose_registrations,
+        master_domain_facility_pool_projection_v1,
+        master_domain_projection_v1,
+        power_hitting_set_master_domain_projection_v1,
     )
+
+    delegate = master._coordinate_delegate
+    if delegate is None:
+        raise ValueError("resolver: master has no exact coordinate delegate (fail-closed)")
+    mandatory_slots = delegate.mandatory_slots
+    templates = master.templates
+    live_pools = master.facility_pools
+
+    relevant_group_ids: List[str] = []
+    for group_id, slots in mandatory_slots.items():
+        if not slots:
+            continue
+        facility_type = slots[0].template
+        template = templates.get(facility_type) or {}
+        placement_rule = template.get("placement_rule", "free")
+        needs_power = bool(template.get("needs_power", False))
+        dims = slots[0].dims
+        if family == "region_capacity":
+            if placement_rule in _F1_MASTER_DOMAIN_PLACEMENT_RULES:
+                relevant_group_ids.append(group_id)
+        elif family == "shape_packing_hall":
+            if (
+                placement_rule in _F6_MASTER_DOMAIN_PLACEMENT_RULES
+                and min(dims) == 1
+                and 2 <= max(dims) <= _F6_MASTER_DOMAIN_MAX_POSE_LENGTH
+                and len(slots) >= 1
+            ):
+                relevant_group_ids.append(group_id)
+        elif family == "power_hitting_set":
+            if needs_power:
+                relevant_group_ids.append(group_id)
+        else:  # pragma: no cover - closed operation set upstream
+            raise ValueError(f"resolver: unknown projection family {family!r} (fail-closed)")
+
+    relevant_group_ids = sorted(relevant_group_ids)
+    powered_facility_types = sorted({mandatory_slots[gid][0].template for gid in relevant_group_ids})
+    projection_facility_types = list(powered_facility_types)
+    if family == "power_hitting_set" and "power_pole" in live_pools:
+        projection_facility_types = sorted(set(powered_facility_types) | {"power_pole"})
+
+    relevant_pools = {
+        facility_type: tuple(live_pools[facility_type])
+        for facility_type in projection_facility_types
+        if facility_type in live_pools
+    }
+    pose_occupied_cells: Dict[Tuple[str, str], FrozenSet[Cell]] = {}
+    for facility_type in projection_facility_types:
+        for pose in live_pools.get(facility_type) or ():
+            pose_occupied_cells[(facility_type, pose["pose_id"])] = frozenset(
+                (int(cell[0]), int(cell[1])) for cell in (pose.get("occupied_cells") or ())
+            )
+
+    is_power = family == "power_hitting_set"
+    registration_rows, _pose_tuple_by_key = _master_domain_pose_registrations(
+        relevant_pools,
+        pose_occupied_cells,
+        bidirectional=is_power,
+        master_scalar_coercions=is_power,
+    )
+
+    mandatory_slot_rows: List[object] = []
+    for group_id in relevant_group_ids:
+        for slot in mandatory_slots[group_id]:
+            allowed = sorted(slot.allowed_tuples)
+            mandatory_slot_rows.append(
+                {
+                    "allowed_pose_tuples": [list(pose_tuple) for pose_tuple in allowed],
+                    "candidate_pose_count": len(allowed),
+                    "facility_type": slot.template,
+                    "group_id": group_id,
+                    "slot_index": slot.slot_index,
+                    "slot_key": slot.key,
+                    "slot_kind": slot.slot_kind,
+                    "template_dimensions": [slot.dims[0], slot.dims[1]],
+                }
+            )
+
+    facility_pool_projection = master_domain_facility_pool_projection_v1(relevant_pools)
+    if is_power:
+        coverer_rows = _live_power_coverer_rows(master, powered_facility_types, live_pools)
+        return power_hitting_set_master_domain_projection_v1(
+            facility_pool_projection=facility_pool_projection,
+            mandatory_slot_rows=mandatory_slot_rows,
+            template_pose_registration_rows=registration_rows,
+            power_coverer_rows=coverer_rows,
+        )
+    family_subset = "region_capacity" if family == "region_capacity" else "shape_packing_hall"
+    return master_domain_projection_v1(
+        family_subset=family_subset,
+        facility_pool_projection=facility_pool_projection,
+        mandatory_slot_rows=mandatory_slot_rows,
+        template_pose_registration_rows=registration_rows,
+    )
+
+
+def _resolve_model_scope_binding(model_scope: Any, snapshot: Any, master: Any) -> "ModelScopeBinding":
+    """Sole resolver / constructor path for ``ModelScopeBinding`` (RFC-001 §2.6).
+
+    Binds a compiled cut's master-independent ``ModelScope`` to the live master:
+    the ghost literal(s) and blocked-cell body are recovered by object identity
+    and frozen-snapshot values, and the master domain projection is recomputed
+    live.  Everything is fail-closed; nothing here mutates the master.
+    """
+
+    from src.cuts.state_snapshot import blocked_cells_digest_v1
+    from src.cuts.typed_platform import _build_model_scope_binding
+
+    snapshot_digest = snapshot.digest
+
+    ghost_policy = model_scope.ghost_policy
+    if ghost_policy == "agnostic":
+        rect_idx: Optional[int] = None
+        ghost_rect_digest: Optional[str] = None
+        condition_lits: Tuple[Any, ...] = ()
+        blocked_cells: Optional[FrozenSet[Cell]] = None
+    elif ghost_policy == "bound":
+        target_digest = model_scope.ghost_rect_digest
+        rect_idx = _locate_master_ghost_rect(master, target_digest)
+        if rect_idx is None:
+            raise ValueError("resolver: no live master ghost rect matches the plan ghost_rect_digest (fail-closed)")
+        try:
+            u_var = master.u_vars[rect_idx]
+        except (KeyError, IndexError) as exc:
+            raise ValueError("resolver: master lacks a ghost literal for the located rect (fail-closed)") from exc
+        condition_lits = (u_var,)
+        ghost_rect_digest = target_digest
+        blocked = frozenset(snapshot.ghost_cells) | frozenset(snapshot.exterior_blocks)
+        if blocked_cells_digest_v1(blocked) != snapshot.blocked_cells_digest:
+            raise ValueError("resolver: reconstructed blocked cells drift from the snapshot digest (fail-closed)")
+        blocked_cells = blocked
+    else:
+        raise ValueError(f"resolver: unknown ghost policy {ghost_policy!r} (fail-closed)")
+
+    master_domain_projection = _resolve_live_master_domain_projection(model_scope, snapshot, master)
+
+    return _build_model_scope_binding(
+        rect_idx=rect_idx,
+        ghost_rect_digest=ghost_rect_digest,
+        condition_lits=condition_lits,
+        blocked_cells=blocked_cells,
+        snapshot_digest=snapshot_digest,
+        master_domain_projection=master_domain_projection,
+    )
+
+
+def _resolve_live_master_domain_projection(model_scope: Any, snapshot: Any, master: Any) -> str:
+    """Pick the family from the trusted snapshot, then recompute it live.
+
+    The resolver signature carries only the ``ModelScope`` (no family tag), so
+    the family is recovered by matching the plan's ``domain_fingerprint``
+    against the snapshot's three cached per-family projections — a trusted
+    side.  The returned projection is recomputed from the LIVE master, so a
+    tampered master fails the step-8 fingerprint equality even though the
+    family classification used the intact snapshot.
+    """
+
+    fingerprint = model_scope.domain_fingerprint
+    if fingerprint == snapshot.master_domain_projection:
+        family = "region_capacity"
+    elif fingerprint == snapshot.shape_packing_hall_master_domain_projection:
+        family = "shape_packing_hall"
+    elif fingerprint == snapshot.power_hitting_set_master_domain_projection:
+        family = "power_hitting_set"
+    else:
+        raise ValueError("resolver: plan domain fingerprint matches no snapshot family projection (fail-closed)")
+    return _live_master_domain_projection(master, family)
+
+
+def step_8_apply_to_master(
+    compiled_cut: "CompiledCut",
+    master: Any,
+    *,
+    scope_binding: "ModelScopeBinding",
+) -> None:
+    """Step 8 — push a typed ``CompiledCut`` to the CP-SAT master (RFC-001 §2.6).
+
+    The master is the irreversible trust boundary.  This entry accepts ONLY an
+    exact ``CompiledCut`` plus a ``ModelScopeBinding`` produced by the sole
+    resolver (``_resolve_model_scope_binding``); a raw ``Cut``, a
+    ``ShadowValidated`` (F5), or any non-typed object is refused by the type
+    gate BEFORE the master is touched.  It then runs the §2.6 three-fold binding
+    check (ghost identity / live domain projection / snapshot digest) — each
+    fail-closed with zero master mutation — and dispatches the actual lowering
+    through the typed plan interpreter (``typed_apply.apply_compiled_cut``).
+
+    F5 ``pattern_nogood`` has no ``operation`` and never produces a
+    ``CompiledCut``, so it structurally cannot reach the master here (RFC-001
+    §5.4); its shadow result is dropped by the orchestration layer.
+    """
+
+    from src.cuts import typed_apply as _typed_apply
+    from src.cuts.typed_platform import CompiledCut as _CompiledCut, ModelScopeBinding as _ModelScopeBinding
+
+    # Type gate FIRST: refuse anything that is not an exact CompiledCut /
+    # ModelScopeBinding before reading a single master attribute (fail-closed).
+    if type(compiled_cut) is not _CompiledCut:
+        raise TypeError("step_8: first argument must be an exact CompiledCut (raw Cut / ShadowValidated refused)")
+    if type(scope_binding) is not _ModelScopeBinding:
+        raise TypeError("step_8: scope_binding must be an exact ModelScopeBinding from the resolver")
+
+    scope = compiled_cut.plan.model_scope
+    # §2.6 three-fold binding check — all fail-closed, none mutates the master.
+    if scope.ghost_rect_digest != scope_binding.ghost_rect_digest:
+        raise ValueError("step_8: ghost_rect_digest mismatch between plan scope and resolved binding (fail-closed)")
+    if scope.domain_fingerprint != scope_binding.master_domain_projection:
+        raise ValueError("step_8: live master domain projection drifted from the plan fingerprint (fail-closed)")
+    if compiled_cut.snapshot_digest != scope_binding.snapshot_digest:
+        raise ValueError("step_8: snapshot digest mismatch between compiled cut and resolved binding (fail-closed)")
+
+    _typed_apply.apply_compiled_cut(compiled_cut, master, scope_binding=scope_binding)
 
 
 # Step 9 = re-entry into Step 5 (validate) on new replay state.
@@ -1643,24 +1675,18 @@ def run_lifecycle(
         )
     )
 
-    decision = step_6_attach_scope_check(cut_d, state_at_replay)
+    # B5a: Step 6/7 attach-scope + evaluate are typed-only now (they take a
+    # CompiledCut + ValidatedStateSnapshot).  The raw-Cut attach path was
+    # removed with the legacy Step 8 shim; the reference pipeline records the
+    # delegation rather than calling the typed chain on legacy fixtures (the
+    # end-to-end typed attach lives in src/tests/cuts/test_stage_b_*).
     reports.append(
         LifecycleReport(
-            "step_6_attach_scope_at_replay",
-            decision == "ATTACH",
-            f"decision={decision}",
+            "step_6_7_attach_evaluate",
+            True,
+            "delegated to typed single entry (validate_and_compile_cut) — RFC-001 §3/§4.9",
         )
     )
-
-    if decision == "ATTACH":
-        violate = step_7_evaluate_cut(cut_d, state_at_replay)
-        reports.append(
-            LifecycleReport(
-                "step_7_evaluate",
-                True,
-                f"violate={violate} (expected True for F1 scope-bound)",
-            )
-        )
 
     vr_replay = step_5_validate_region_capacity(cut_d, state_at_replay, canonical_rules)
     reports.append(

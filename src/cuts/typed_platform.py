@@ -739,6 +739,35 @@ class ModelScopeBinding:
         )
 
 
+def _build_model_scope_binding(
+    *,
+    rect_idx: int | None,
+    ghost_rect_digest: str | None,
+    condition_lits: tuple[object, ...],
+    blocked_cells: frozenset[tuple[int, int]] | None,
+    snapshot_digest: str,
+    master_domain_projection: str,
+) -> ModelScopeBinding:
+    """Sole private factory for :class:`ModelScopeBinding` (RFC-001 §2.6).
+
+    The B5 apply-adapter resolver ``lifecycle._resolve_model_scope_binding`` is
+    the only caller.  Keeping the construction token and the construction call
+    inside this module lets the resolver stay free of the private token while
+    remaining the single logical construction site — the Stage-B AST allowlists
+    pin this factory as the one production constructor of ModelScopeBinding.
+    """
+
+    return ModelScopeBinding(
+        rect_idx=rect_idx,
+        ghost_rect_digest=ghost_rect_digest,
+        condition_lits=condition_lits,
+        blocked_cells=blocked_cells,
+        snapshot_digest=snapshot_digest,
+        master_domain_projection=master_domain_projection,
+        _construction_token=_MODEL_SCOPE_BINDING_CONSTRUCTION_TOKEN,
+    )
+
+
 @dataclass(frozen=True, slots=True)
 class FrozenFamilyProof:
     """Base identity shared by parsed, family-specific immutable proofs."""

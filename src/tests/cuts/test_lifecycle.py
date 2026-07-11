@@ -390,269 +390,134 @@ def test_validator_catches_cells_per_pose_source_rotated():
     assert "cells_per_pose mismatch" in vr.detail
 
 
-def test_attach_scope_ghost_agnostic_passes_when_exterior_unchanged():
-    """v3.2.2 dispatch: GHOST_AGNOSTIC cut + ghost 变了但 exterior 没变 → ATTACH.
+# ============================================================================
+# B5a: typed step_6/step_7 attestation + typed single-entry scope currentness
+#
+# Pre-B5a step_6/step_7 took a raw (Cut, BState) and ran the legacy 6-step scope
+# replay.  That role split: scope/artifact/source/exterior currentness is now the
+# typed single entry (validate_and_compile_cut -> CutRejection stage="scope"),
+# and step_6/step_7 collapse to a digest attestation over a CompiledCut +
+# ValidatedStateSnapshot.  Raw geometric-evaluator coverage lives (unchanged) in
+# test_family_region_capacity.py; the removed raw ghost/oracle HOLD branches are
+# now covered by the typed differential suite (test_stage_b_region_capacity.py).
+# ============================================================================
 
-    PoC test 旧期望 QUARANTINE (v3.1 仍校验 blocked_cells_hash);
-    v3.2.2 修: GHOST_AGNOSTIC 路径只校验 exterior_blocks_hash → cut 跨 ghost 复用.
-    """
-    gen_state = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        gen_state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+
+def _typed_bound_region_world(*, extra_exterior=frozenset()):
+    """(snapshot, oracle F1 cut, sources) on the proven bound-region fixture."""
+    from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
+    from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
+    from src.cuts.state_snapshot import build_validated_state_snapshot
+    from src.tests.cuts.test_stage_b_contracts import _bound_region_sources, _build_bundle
+
+    sources = _bound_region_sources(BState, GroupState, ghost_rect=(0, 0, 3, 1))
+    if extra_exterior:
+        object.__setattr__(
+            sources["state"], "exterior_blocks", frozenset(extra_exterior)
+        )
+    sources["state"].source_digest = compute_source_digest(sources["state"])
+    bundle = _build_bundle(build_frozen_artifact_bundle, sources)
+    snapshot = build_validated_state_snapshot(sources["state"], bundle)
+    cut = generate_region_capacity_cuts(sources["state"], sources["canonical_rules"])[0]
+    return snapshot, cut, sources
+
+
+def _typed_scope_result(cut, snapshot):
+    from src.cuts.typed_platform import (
+        build_production_registry,
+        cut_to_envelope_v1,
+        validate_and_compile_cut,
     )
-    assert cut is not None
-    assert cut.scope.ghost_rect_id == GHOST_AGNOSTIC
 
-    # ghost 变, exterior_blocks 不变
-    replay_state = BState(
-        groups=gen_state.groups,
-        cell_owner=gen_state.cell_owner,
-        ghost_rect=(20, 20, 5, 5),
-        ghost_cells=frozenset({(20, 20), (20, 21)}),
-        exterior_blocks=gen_state.exterior_blocks,  # 不变
-        artifact_hashes=gen_state.artifact_hashes,
-        available_oracle_versions=gen_state.available_oracle_versions,
-        canonical_rules=gen_state.canonical_rules,
-        facility_templates=gen_state.facility_templates,
-        instance_to_facility_type=gen_state.instance_to_facility_type,
+    return validate_and_compile_cut(
+        cut_to_envelope_v1(cut), snapshot, build_production_registry()
     )
-    decision = step_6_attach_scope_check(cut, replay_state)
-    assert decision == "ATTACH", \
-        f"v3.2.2 GHOST_AGNOSTIC + exterior unchanged 应 ATTACH, got {decision}"
 
 
-def test_attach_scope_ghost_agnostic_quarantine_when_exterior_changed():
-    """v3.2.2 dispatch: GHOST_AGNOSTIC cut + exterior 变 → QUARANTINE."""
-    s = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
+def _typed_attestation_pair():
+    """(compiled_a, snapshot_a, snapshot_b) where compiled_a attests snapshot_a
+    only.  snapshot_b differs by one incumbent selected pose, so its digest (which
+    covers selected_poses) diverges while the source digest is unchanged."""
+    from src.cuts.typed_platform import CompiledCut
 
-    new_exterior = s.exterior_blocks | {(17, 0)}
-    replay_state = BState(
-        groups=s.groups,
-        cell_owner=s.cell_owner,
-        ghost_rect=s.ghost_rect,
-        ghost_cells=s.ghost_cells,
-        exterior_blocks=new_exterior,
-        artifact_hashes=s.artifact_hashes,
-        available_oracle_versions=s.available_oracle_versions,
-        canonical_rules=s.canonical_rules,
-        facility_templates=s.facility_templates,
-        instance_to_facility_type=s.instance_to_facility_type,
-    )
-    decision = step_6_attach_scope_check(cut, replay_state)
-    assert decision == "QUARANTINE"
+    snapshot_a, cut, sources = _typed_bound_region_world()
+    compiled_a = _typed_scope_result(cut, snapshot_a)
+    assert isinstance(compiled_a, CompiledCut)
+
+    from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
+    from src.cuts.state_snapshot import build_validated_state_snapshot
+    from src.tests.cuts.test_stage_b_contracts import _bound_region_sources, _build_bundle
+
+    group_id = next(iter(sources["state"].groups))
+    drift = _bound_region_sources(BState, GroupState, ghost_rect=(0, 0, 3, 1))
+    drift["state"].groups[group_id].selected_poses.append("boundary_pose_0")
+    drift["state"].source_digest = compute_source_digest(drift["state"])
+    bundle_b = _build_bundle(build_frozen_artifact_bundle, drift)
+    snapshot_b = build_validated_state_snapshot(drift["state"], bundle_b)
+    assert snapshot_b.digest != snapshot_a.digest
+    return compiled_a, snapshot_a, snapshot_b
 
 
 def test_attach_scope_quarantines_cut_with_omitted_artifact_dependency():
-    """A cut cannot opt out of a dependency by deleting its artifact key."""
-    state = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-    assert cut.scope is not None
+    """Typed scope currentness rejects a cut that drops an artifact dependency."""
+    from src.cuts.typed_platform import CutRejection
 
-    incomplete_artifacts = dict(cut.scope.artifact_hashes)
-    incomplete_artifacts.pop("canonical_rules.json")
-    incomplete_cut = replace(
-        cut,
-        scope=replace(cut.scope, artifact_hashes=incomplete_artifacts),
-    )
-
-    assert step_6_attach_scope_check(incomplete_cut, state) == "QUARANTINE"
+    snapshot, cut, _sources = _typed_bound_region_world()
+    trimmed = {k: v for k, v in cut.scope.artifact_hashes.items() if k != "canonical_rules"}
+    incomplete = replace(cut, scope=replace(cut.scope, artifact_hashes=trimmed))
+    result = _typed_scope_result(incomplete, snapshot)
+    assert isinstance(result, CutRejection)
+    assert result.stage == "scope"
 
 
 def test_attach_scope_quarantines_cut_with_unknown_artifact_dependency():
-    """A cut cannot add a dependency absent from the authoritative state."""
-    state = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-    assert cut.scope is not None
+    """Typed scope currentness rejects a cut that adds an unknown dependency."""
+    from src.cuts.typed_platform import CutRejection
 
-    extra_artifacts = {
-        **cut.scope.artifact_hashes,
-        "nonexistent-artifact.json": "untrusted-hash",
-    }
-    overreported_cut = replace(
-        cut,
-        scope=replace(cut.scope, artifact_hashes=extra_artifacts),
-    )
-
-    assert step_6_attach_scope_check(overreported_cut, state) == "QUARANTINE"
+    snapshot, cut, _sources = _typed_bound_region_world()
+    extra = {**cut.scope.artifact_hashes, "nonexistent-artifact.json": "0" * 64}
+    overreported = replace(cut, scope=replace(cut.scope, artifact_hashes=extra))
+    result = _typed_scope_result(overreported, snapshot)
+    assert isinstance(result, CutRejection)
+    assert result.stage == "scope"
 
 
 def test_attach_scope_accepts_complete_matching_artifact_snapshot():
-    state = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-    assert cut.scope is not None
-    assert cut.scope.artifact_hashes == state.artifact_hashes
+    """A matching cut compiles and its compiled form attests the snapshot."""
+    from src.cuts.typed_platform import CompiledCut
 
-    assert step_6_attach_scope_check(cut, state) == "ATTACH"
-
-
-def test_attach_scope_ghost_bound_hold_when_ghost_changed():
-    """v3.2.2 dispatch: ghost-bound cut + ghost 变 → HOLD (step 2 fail)."""
-    s = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-
-    # 手工 construct ghost-bound cut (将 ghost_rect_id 改成具体值)
-    ghost_bound_scope = CutScope(
-        ghost_rect_id="ghost_specific_v1",
-        blocked_cells_hash=cut.scope.blocked_cells_hash,
-        exterior_blocks_hash=cut.scope.exterior_blocks_hash,
-        source_digest=cut.scope.source_digest,
-        artifact_hashes=cut.scope.artifact_hashes,
-        oracle_abstraction_version=cut.scope.oracle_abstraction_version,
-        active_assumptions=cut.scope.active_assumptions,
-    )
-    ghost_bound_cut = Cut(
-        cut_id=cut.cut_id, family=cut.family,
-        literals=None, geometric_payload=cut.geometric_payload,
-        scope=ghost_bound_scope, cert=cut.cert,
-        family_version=cut.family_version, validator_version=cut.validator_version,
-    )
-
-    replay_state_diff_ghost = BState(
-        groups=s.groups, cell_owner=s.cell_owner,
-        ghost_rect=(10, 10, 3, 3),
-        ghost_cells=frozenset({(10, 10)}),
-        exterior_blocks=s.exterior_blocks,
-        artifact_hashes=s.artifact_hashes,
-        available_oracle_versions=s.available_oracle_versions,
-        canonical_rules=s.canonical_rules,
-        facility_templates=s.facility_templates,
-        instance_to_facility_type=s.instance_to_facility_type,
-    )
-    decision = step_6_attach_scope_check(ghost_bound_cut, replay_state_diff_ghost)
-    assert decision == "HOLD"
-
-
-def test_attach_scope_oracle_version_unavailable():
-    s = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-
-    replay_state = BState(
-        groups=s.groups, cell_owner=s.cell_owner,
-        ghost_rect=s.ghost_rect, ghost_cells=s.ghost_cells,
-        exterior_blocks=s.exterior_blocks,
-        artifact_hashes=s.artifact_hashes,
-        available_oracle_versions=frozenset(),
-        canonical_rules=s.canonical_rules,
-        facility_templates=s.facility_templates,
-        instance_to_facility_type=s.instance_to_facility_type,
-    )
-    decision = step_6_attach_scope_check(cut, replay_state)
-    assert decision == "HOLD"
+    snapshot, cut, _sources = _typed_bound_region_world()
+    compiled = _typed_scope_result(cut, snapshot)
+    assert isinstance(compiled, CompiledCut)
+    assert step_6_attach_scope_check(compiled, snapshot) == "ATTACH"
+    assert step_7_evaluate_cut(compiled, snapshot) is True
 
 
 def test_step_7_fails_closed_when_oracle_version_unavailable_before_replay_hold():
-    """V31-family regression: Step 7 must mirror Step 6 HOLD on oracle version."""
-    s = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-
-    replay_state = BState(
-        groups=s.groups,
-        cell_owner=s.cell_owner,
-        ghost_rect=s.ghost_rect,
-        ghost_cells=s.ghost_cells,
-        exterior_blocks=s.exterior_blocks,
-        artifact_hashes=s.artifact_hashes,
-        available_oracle_versions=frozenset(),
-        canonical_rules=s.canonical_rules,
-        facility_templates=s.facility_templates,
-        instance_to_facility_type=s.instance_to_facility_type,
-        candidate_placements=s.candidate_placements,
-    )
-    assert step_6_attach_scope_check(cut, replay_state) == "HOLD"
-    assert step_7_evaluate_cut(cut, replay_state) is False
+    """V31-family regression (typed re-frame): a compiled cut that no longer
+    attests to the current snapshot must fail closed in step_6/step_7 before any
+    attach -- the typed successor to the legacy oracle-version HOLD guard."""
+    compiled_a, snapshot_a, snapshot_b = _typed_attestation_pair()
+    assert step_6_attach_scope_check(compiled_a, snapshot_a) == "ATTACH"
+    assert step_6_attach_scope_check(compiled_a, snapshot_b) == "QUARANTINE"
+    assert step_7_evaluate_cut(compiled_a, snapshot_b) is False
 
 
 def test_step_7_fails_closed_when_active_assumption_no_longer_holds_before_replay_hold():
-    """V31-family regression: assumption-expired cuts must not fire in Step 7."""
-    s = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    """V31-family regression (typed re-frame): an attestation mismatch (the
+    successor to an expired active assumption) fails closed through the whole
+    step_7 delegate chain before any attach."""
+    from src.cuts.lifecycle import (
+        evaluator_scope_matches_current_state,
+        step_7_evaluation_attach_decision,
     )
-    assert cut is not None
-    assert cut.scope is not None
 
-    assumption_bound_cut = replace(
-        cut,
-        scope=replace(
-            cut.scope,
-            active_assumptions=(Assumption(key="unknown_key", value="v"),),
-        ),
-    )
-    assert step_6_attach_scope_check(assumption_bound_cut, s) == "HOLD"
-    assert step_7_evaluate_cut(assumption_bound_cut, s) is False
+    compiled_a, snapshot_a, snapshot_b = _typed_attestation_pair()
+    assert step_7_evaluate_cut(compiled_a, snapshot_a) is True
+    assert step_7_evaluation_attach_decision(compiled_a, snapshot_b) == "QUARANTINE"
+    assert evaluator_scope_matches_current_state(compiled_a, snapshot_b) is False
+    assert step_7_evaluate_cut(compiled_a, snapshot_b) is False
 
-
-def test_evaluate_geometric_region_capacity_returns_true():
-    s = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-    assert step_7_evaluate_cut(cut, s) is True
-
-
-def test_step_7_dispatches_to_family_evaluator_for_stale_f1():
-    """GPT pro v2 P0-1 regression: step_7_evaluate_cut 必 dispatch family evaluator,
-    不准 region_capacity 硬编码 return True. 反例: F1 cut 在 oracle 时 demand > cap
-    (True), state 变化让 cap >= demand 后 step_7 必返 False (跟 family evaluator 一致).
-    """
-    from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
-    s_init = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        s_init, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-    # 初始 state: demand > cap, evaluator + step_7 都 True
-    assert evaluate_geometric_region_capacity(cut, s_init) is True
-    assert step_7_evaluate_cut(cut, s_init) is True
-
-    # 改 state 让 cap 增 (移除 exterior_blocks + ghost_cells) → demand <= cap → cut 失效
-    from src.cuts.lifecycle import BState, GroupState
-    s_recovered = BState(
-        groups={
-            gid: GroupState(
-                group_id=gid, demand=g.demand, pose_domain=g.pose_domain,
-                selected_poses=list(g.selected_poses),
-            )
-            for gid, g in s_init.groups.items()
-        },
-        cell_owner=dict(s_init.cell_owner),
-        ghost_rect=None,
-        ghost_cells=frozenset(),          # 清 ghost
-        exterior_blocks=frozenset(),       # 清 exterior
-        artifact_hashes=dict(s_init.artifact_hashes),
-        available_oracle_versions=s_init.available_oracle_versions,
-        canonical_rules=s_init.canonical_rules,
-        facility_templates=s_init.facility_templates,
-        instance_to_facility_type=s_init.instance_to_facility_type,
-        candidate_placements=s_init.candidate_placements,
-    )
-    # family evaluator 真重算 sound:
-    assert evaluate_geometric_region_capacity(cut, s_recovered) is False
-    # step_7 必跟 family 一致 (P0-1 fix: 接 dispatch)
-    assert step_7_evaluate_cut(cut, s_recovered) is False
 
 
 def test_assumption_unknown_key_fails_closed():
@@ -884,32 +749,33 @@ def test_source_digest_tracks_group_static_fields_but_not_selected_poses():
 
 
 def test_step_7_fails_closed_on_source_digest_drift_before_replay_quarantine():
-    s = make_state_with_crusher_on_left_baseline()
-    cut = step_1_generate_region_capacity_combinatorial(
-        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    """Typed re-frame: a source/exterior-drifted world both (a) rejects the cut
+    at the typed single entry (CutRejection stage='scope') and (b) leaves any
+    prior compiled cut non-attesting, so step_6/step_7 fail closed before attach.
+    """
+    from src.cuts.typed_platform import CompiledCut, CutRejection
+
+    snapshot, cut, _sources = _typed_bound_region_world()
+    compiled = _typed_scope_result(cut, snapshot)
+    assert isinstance(compiled, CompiledCut)
+
+    # A snapshot on a source-drifted state (extra exterior block changes the
+    # source digest / exterior identity).
+    drift_snapshot, _drift_cut, _drift_sources = _typed_bound_region_world(
+        extra_exterior=frozenset({(40, 0)})
     )
-    assert cut is not None
+    # Exterior blocks are outside the source-digest field set but inside the
+    # snapshot identity, so the snapshot digest diverges (attestation drift).
+    assert drift_snapshot.digest != snapshot.digest
 
-    source_drift = BState(
-        groups=s.groups,
-        cell_owner=s.cell_owner,
-        ghost_rect=s.ghost_rect,
-        ghost_cells=s.ghost_cells,
-        exterior_blocks=s.exterior_blocks,
-        artifact_hashes=s.artifact_hashes,
-        available_oracle_versions=s.available_oracle_versions,
-        canonical_rules=s.canonical_rules,
-        facility_templates=s.facility_templates,
-        instance_to_facility_type=s.instance_to_facility_type,
-        candidate_placements={"facility_pools": {"manufacturing_3x3": []}},
-    )
-    assert compute_source_digest(source_drift) != cut.scope.source_digest
-    assert step_6_attach_scope_check(cut, source_drift) == "QUARANTINE"
+    # (a) compiling the same cut against the drifted snapshot is rejected at scope.
+    result = _typed_scope_result(cut, drift_snapshot)
+    assert isinstance(result, CutRejection)
+    assert result.stage == "scope"
 
-    from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
-
-    assert evaluate_geometric_region_capacity(cut, source_drift) is True
-    assert step_7_evaluate_cut(cut, source_drift) is False
+    # (b) the already-compiled cut no longer attests the drifted snapshot.
+    assert step_6_attach_scope_check(compiled, drift_snapshot) == "QUARANTINE"
+    assert step_7_evaluate_cut(compiled, drift_snapshot) is False
 
 
 def test_deserialize_rejects_cert_hash_mismatch():

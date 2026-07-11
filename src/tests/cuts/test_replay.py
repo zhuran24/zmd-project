@@ -1,16 +1,21 @@
-"""Phase 1.0 P1.3 test — store-aware replay_cut + regression_sweep.
+"""P1.3 → B5a — store-aware replay_cut + regression_sweep (typed/legacy double-table).
 
-Coverage:
-- replay_cut ATTACH path → reactivate (held → active)
-- replay_cut HOLD path → store.hold_cut
-- replay_cut QUARANTINE path → store.quarantine_cut + audit detail
-- replay_cut on cut not in store → KeyError
-- replay_cut post-attach validation: ok / unsound / timeout / schema_err
-  branch with canonical_rules wired
-- regression_sweep counts skipped_quarantined / ATTACH / HOLD / QUARANTINE
+B5a (RFC-001 §4.2) rewired replay onto the typed single entry:
+
+- typed families (region_capacity / pattern_nogood / shape_packing_hall /
+  power_hitting_set) run ``cut_to_envelope_v1`` → ``validate_and_compile_cut``
+  over a ``ReplayContext`` (deep-frozen snapshot + production registry) and
+  **never apply to a master**.  A CompiledCut/ShadowValidated → ATTACH
+  (reactivate); a CutRejection maps stage="scope" → HOLD, else → QUARANTINE.
+- legacy families (cutset / port_exposure / component_reach / density_envelope)
+  run their diagnostic validator and **never reactivate into the active store**.
+
+The pre-B5a per-family ``FAMILY_VALIDATORS`` table + raw ``step_6_attach_scope_check
+(cut, state)`` are gone; scope currentness now lives in the typed single entry.
 """
 from __future__ import annotations
 
+import dataclasses
 import hashlib
 import json
 
@@ -21,252 +26,225 @@ from src.cuts.lifecycle import (
     Cut,
     GroupState,
     OracleCert,
-    step_6_attach_scope_check,
+    compute_source_digest,
+    validate_cut_integrity,
 )
 from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
-from src.cuts.replay import regression_sweep, replay_cut
+from src.cuts.replay import (
+    LEGACY_DIAGNOSTIC_VALIDATORS,
+    TYPED_REPLAY_FAMILIES,
+    DiagnosticResult,
+    build_replay_context,
+    regression_sweep,
+    replay_cut,
+    run_legacy_diagnostic,
+)
 from src.cuts.store import CutStore, QuarantineReason
+from src.tests.cuts.test_family_cutset import _make_cutset_cut
+from src.tests.cuts.test_stage_b_contracts import _bound_region_sources
 
 
-CANONICAL_RULES = {
-    "boundary_storage_port": {
-        "placement_rule": "left_or_bottom_boundary",
-        "cells_per_pose": 3,
-    },
-}
-_FACILITY_TEMPLATES = {
-    "boundary_storage_port": {
-        "placement_rule": "left_or_bottom_boundary",
-        "dimensions": {"w": 1, "h": 3},
-    },
-}
-_INSTANCE_TO_FT = {"boundary_storage_port": "boundary_storage_port"}
+# ---------------------------------------------------------------------------
+# Typed-consistent F1 fixtures: the single entry requires the eight production
+# artifact dependencies (candidate_placements / canonical_rules / ... ), so the
+# replay state must carry them and be geometrically consistent with the F1
+# oracle.  ``_bound_region_sources`` (from the Stage-B contract tests) supplies
+# exactly that world.
+# ---------------------------------------------------------------------------
 
 
-def _mock_poses_in_union(n: int = 46):
-    """生成 n mock pose, occupied 全在 union (left ∪ bottom). Step E P(g)⊆R 要."""
-    poses = []
-    for i in range(n):
-        poses.append({
-            "pose_id": f"mock_p_{i}",
-            "anchor": {"x": 0, "y": i},
-            "occupied_cells": [[0, i % 68], [0, (i + 1) % 68], [0, (i + 2) % 68]],
-            "input_port_cells": [],
-            "output_port_cells": [],
-        })
-    return poses
+def _f1_state(*, group_id: str = "boundary_io") -> BState:
+    sources = _bound_region_sources(BState, GroupState, ghost_rect=(0, 0, 3, 1), group_id=group_id)
+    sources["state"].source_digest = compute_source_digest(sources["state"])
+    return sources["state"]
 
 
-def _make_state(extra_block: bool = False) -> BState:
-    extra = {(17, 0)} if extra_block else set()
-    poses = _mock_poses_in_union(n=46)
-    pose_domain = frozenset(p["pose_id"] for p in poses)
-    return BState(
-        groups={
-            # 真 demand 46 (mandatory_exact_instances boundary_io count, Gap 7 fix);
-            # PoC fixture 旧 23 是 half mock 已淘汰
-            "boundary_storage_port": GroupState(
-                "boundary_storage_port", demand=46, pose_domain=pose_domain,
-            ),
-        },
-        ghost_rect=None,
-        ghost_cells=frozenset(),
-        exterior_blocks=frozenset({(15, 0), (16, 0)}) | extra,
-        artifact_hashes={"canonical_rules.json": "h1"},
-        available_oracle_versions=frozenset({"region_capacity_v1"}),
-        canonical_rules=CANONICAL_RULES,
-        facility_templates=_FACILITY_TEMPLATES,
-        instance_to_facility_type=_INSTANCE_TO_FT,
-        candidate_placements={
-            "facility_pools": {"boundary_storage_port": poses},
-        },
-    )
+def _f1_cut(state: BState) -> Cut:
+    cuts = generate_region_capacity_cuts(state, state.canonical_rules)
+    assert len(cuts) == 1, "expected exactly one F1 cut from the bound-region world"
+    cut = cuts[0]
+    assert cut.scope is not None and cut.cert is not None
+    return cut
 
 
-def test_cut_scope_artifact_hashes_snapshot_not_state_alias():
-    """Artifact scope must be generation-time evidence, not a live BState dict.
-
-    If a cut keeps an alias to ``state.artifact_hashes``, source/artifact rotation
-    mutates the stored proof scope too.  Step 6 then sees the forged "new" hash on
-    both sides and returns ATTACH instead of QUARANTINE.
-    """
-    state = _make_state()
-    cut = generate_region_capacity_cuts(state, CANONICAL_RULES)[0]
-
-    assert cut.scope.artifact_hashes == {"canonical_rules.json": "h1"}
-    assert cut.scope.artifact_hashes is not state.artifact_hashes
-
-    state.artifact_hashes["canonical_rules.json"] = "h2"
-
-    assert cut.scope.artifact_hashes == {"canonical_rules.json": "h1"}
-    assert step_6_attach_scope_check(cut, state) == "QUARANTINE"
+# ---------------------------------------------------------------------------
+# add_cut invariants (unchanged by B5a — no replay involved)
+# ---------------------------------------------------------------------------
 
 
 def test_add_cut_illegal_initial_state_no_partial_mutation():
-    """GPT pro v6 P0 反例: add_cut(initial_state='pending') 原 verify mutation 后
-    raise ValueError, cut 已写 self.cuts + watcher → is_active=True silent attach.
-    修后 verify mutation 前抛错, cut 不残留.
-    """
-    s = _make_state()
-    cuts = generate_region_capacity_cuts(s, CANONICAL_RULES)
-    assert cuts
-    cut = cuts[0]
-    from src.cuts.store import CutStore
+    """GPT pro v6 P0: add_cut verifies initial_state BEFORE mutation."""
+    cut = _f1_cut(_f1_state())
     store = CutStore()
-    try:
+    with pytest.raises(ValueError, match="initial_state"):
         store.add_cut(cut, initial_state="pending")
-        raise AssertionError("expected ValueError")
-    except ValueError as e:
-        assert "initial_state" in str(e)
     assert cut.cut_id not in store.cuts, "raise 后 cut 残留 self.cuts (silent attach)"
     assert not store.is_active(cut.cut_id)
 
 
 def test_add_cut_default_held_no_silent_attach():
-    """GPT pro v5 P0-2 反例: 原 add_cut 直接 active 注册让 unsound cut 在 replay
-    前能 is_active=True (silent attach window). Step N 修后 default held —
-    add_cut 后必经 replay/reactivate gate 才 active.
-    """
-    s = _make_state()
-    cuts = generate_region_capacity_cuts(s, CANONICAL_RULES)
-    assert cuts
-    cut = cuts[0]
-    from src.cuts.store import CutStore
+    """GPT pro v5 P0-2: add_cut default held — must go through replay gate."""
+    cut = _f1_cut(_f1_state())
     store = CutStore()
     store.add_cut(cut)
-    # 关键 assertion: add_cut 后 default held, 不 active
-    assert not store.is_active(cut.cut_id), (
-        "add_cut default 必 held — Step N P0-2 fix 防 silent attach"
-    )
+    assert not store.is_active(cut.cut_id)
     assert cut.cut_id in store.held
-    # legacy bypass: initial_state="active" 仍允 (test fixture)
+    # legacy bypass: initial_state="active" still allowed (test fixture only)
     store2 = CutStore()
     store2.add_cut(cut, initial_state="active")
     assert store2.is_active(cut.cut_id)
 
 
-def test_replay_canonical_rules_none_falls_back_to_state_then_quarantine_on_source_loss():
-    """canonical_rules=None 时先用 state.canonical_rules 跑 validator；若 state
-    自己也丢了 source，source_digest 会先失配并 QUARANTINE，避免 stale digest
-    手写值把 source 丢失伪装成可延后 HOLD。
+# ---------------------------------------------------------------------------
+# scope evidence is a snapshot, not a live alias (B5a: enforced by the typed
+# scope-currentness check rather than the legacy step-6)
+# ---------------------------------------------------------------------------
+
+
+def test_cut_scope_artifact_hashes_snapshot_not_state_alias():
+    """A cut's artifact scope is generation-time evidence, not a live BState dict.
+
+    If a cut kept an alias to ``state.artifact_hashes``, source/artifact rotation
+    would forge the "new" hash on both sides.  The typed replay must instead see
+    the persisted (stale) evidence and fail closed — never silent ATTACH.
     """
-    s = _make_state()  # 有 canonical_rules + facility_templates
-    cuts = generate_region_capacity_cuts(s, CANONICAL_RULES)
-    assert cuts
-    cut = cuts[0]
-    from src.cuts.store import CutStore
+    state = _f1_state()
+    cut = _f1_cut(state)
+    assert cut.scope.artifact_hashes is not state.artifact_hashes
+
+    drifted = _f1_state()
+    drifted_hashes = dict(drifted.artifact_hashes)
+    drifted_hashes["canonical_rules"] = "e" * 64
+    object.__setattr__(drifted, "artifact_hashes", drifted_hashes)
+    drifted.source_digest = compute_source_digest(drifted)
+
     store = CutStore()
     store.add_cut(cut)
-    store.held.add(cut.cut_id)  # 模拟 held → 进入 replay ATTACH branch
-    # Case A: caller 传 None, state.canonical_rules 非 None → fallback validator OK
-    decision = replay_cut(cut, s, store, canonical_rules=None)
-    assert decision == "ATTACH", f"state fallback 期望 ATTACH 得 {decision}"
-
-    # Case B: caller 传 None + state.canonical_rules=None → source_digest 失配，
-    # 必须 QUARANTINE；不能靠手写 source_digest 遮住 source 丢失。
-    s_no_rules = BState(
-        groups=s.groups, cell_owner=s.cell_owner, ghost_rect=s.ghost_rect,
-        ghost_cells=s.ghost_cells, exterior_blocks=s.exterior_blocks,
-        artifact_hashes=s.artifact_hashes,
-        available_oracle_versions=s.available_oracle_versions,
-        canonical_rules=None,  # 关键: 无 source
-        facility_templates=s.facility_templates,
-        instance_to_facility_type=s.instance_to_facility_type,
-        candidate_placements=s.candidate_placements,
-        source_digest=cut.scope.source_digest,
-    )
-    store2 = CutStore()
-    store2.add_cut(cut)
-    store2.held.add(cut.cut_id)
-    decision = replay_cut(cut, s_no_rules, store2, canonical_rules=None)
-    assert decision == "QUARANTINE", f"source 丢失期望 QUARANTINE 得 {decision}"
-    assert cut.cut_id not in store2.held
-    assert cut.cut_id in store2.quarantined
-    assert "source_digest mismatch" in store2.quarantined[cut.cut_id].detail
+    decision = replay_cut(cut, store, build_replay_context(drifted))
+    assert decision != "ATTACH"
+    assert not store.is_active(cut.cut_id)
 
 
-def _make_f1_cut(state: BState) -> Cut:
-    """Use production oracle (Gap 6+7+8 fixed). Returns first cut emitted."""
-    cuts = generate_region_capacity_cuts(state, CANONICAL_RULES)
-    assert cuts, "expected ≥ 1 cut from F1 oracle on this state"
-    return cuts[0]
+# ---------------------------------------------------------------------------
+# replay_cut ATTACH path (typed single entry → CompiledCut → reactivate)
+# ---------------------------------------------------------------------------
 
-
-# ============================================================================
-# replay_cut ATTACH path
-# ============================================================================
 
 def test_replay_attach_path_with_validator_ok():
-    """ATTACH + canonical_rules + validator OK → reactivate from held."""
-    state = _make_state()
-    cut = _make_f1_cut(state)
+    """ATTACH: F1 cut re-compiles against the current snapshot → reactivate."""
+    state = _f1_state()
+    cut = _f1_cut(state)
     store = CutStore()
     store.add_cut(cut)
-    store.hold_cut(cut.cut_id)  # 先入 held, replay 应 reactivate
+    store.hold_cut(cut.cut_id)
 
-    decision = replay_cut(cut, state, store, canonical_rules=CANONICAL_RULES)
+    decision = replay_cut(cut, store, build_replay_context(state))
 
     assert decision == "ATTACH"
     assert store.is_active(cut.cut_id)
 
 
 def test_replay_attach_path_without_explicit_validator_rules_uses_state_fallback():
-    """canonical_rules=None 但 state 带 rules → 用 state fallback 验证后 ATTACH。"""
-    state = _make_state()
-    cut = _make_f1_cut(state)
+    """The canonical_rules kwarg is gone; the ReplayContext carries the snapshot
+    (built once from the state).  A same-state replay still ATTACHes."""
+    state = _f1_state()
+    cut = _f1_cut(state)
     store = CutStore()
     store.add_cut(cut)
     store.hold_cut(cut.cut_id)
 
-    decision = replay_cut(cut, state, store, canonical_rules=None)
+    context = build_replay_context(state)
+    decision = replay_cut(cut, store, context)
 
     assert decision == "ATTACH"
     assert store.is_active(cut.cut_id)
 
 
-# ============================================================================
-# replay_cut QUARANTINE path
-# ============================================================================
+# ---------------------------------------------------------------------------
+# replay_cut HOLD path (typed CutRejection stage="scope" → not active, not quarantined)
+# ---------------------------------------------------------------------------
 
-def test_replay_quarantine_when_exterior_blocks_hash_changed():
-    """v3.2.2: GHOST_AGNOSTIC cut + exterior 变 → QUARANTINE."""
-    gen_state = _make_state(extra_block=False)
-    cut = _make_f1_cut(gen_state)
+
+def test_replay_hold_when_exterior_blocks_change():
+    """B5a: an exterior change moves the state source digest; the persisted cut
+    is scope-stale (CutRejection stage="scope") → HOLD, not QUARANTINE."""
+    gen_state = _f1_state()
+    cut = _f1_cut(gen_state)
     store = CutStore()
     store.add_cut(cut)
 
-    # replay state: exterior changed
-    replay_state = _make_state(extra_block=True)
-    decision = replay_cut(cut, replay_state, store, canonical_rules=CANONICAL_RULES)
+    replay_state = _f1_state()
+    object.__setattr__(replay_state, "exterior_blocks", frozenset({(17, 0)}))
+    replay_state.source_digest = compute_source_digest(replay_state)
+
+    decision = replay_cut(cut, store, build_replay_context(replay_state))
+
+    assert decision == "HOLD"
+    assert cut.cut_id in store.held
+    assert cut.cut_id not in store.quarantined
+    assert not store.is_active(cut.cut_id)
+
+
+def test_replay_hold_when_canonical_rules_lost():
+    """B5a repurpose of the old oracle-version HOLD: a replay state that lost its
+    canonical rules cannot even build a ReplayContext — the frozen-artifact
+    source guard raises fail-closed (a TCB fault, never a silent ATTACH)."""
+    gen_state = _f1_state()
+    cut = _f1_cut(gen_state)
+    store = CutStore()
+    store.add_cut(cut)
+
+    lossy = _f1_state()
+    object.__setattr__(lossy, "canonical_rules", None)
+
+    with pytest.raises(ValueError, match="lacks a frozen-artifact source"):
+        build_replay_context(lossy)
+    assert not store.is_active(cut.cut_id)
+    assert cut.cut_id not in store.quarantined
+
+
+# ---------------------------------------------------------------------------
+# replay_cut QUARANTINE path (integrity + typed proof rejection)
+# ---------------------------------------------------------------------------
+
+
+def test_replay_quarantine_on_integrity_drift():
+    """cert/oracle hash drift is caught by the integrity gate before dispatch."""
+    state = _f1_state()
+    cut = _f1_cut(state)
+    tampered = dataclasses.replace(cut, oracle_cert_hash="0" * 64)
+    store = CutStore()
+    store.add_cut(tampered)
+
+    decision = replay_cut(tampered, store, build_replay_context(state))
 
     assert decision == "QUARANTINE"
-    assert cut.cut_id in store.quarantined
-    assert "exterior_blocks_hash" in store.quarantined[cut.cut_id].detail
+    assert store.quarantined[tampered.cut_id].reason_code == "cut_integrity_failed"
+    assert not store.is_active(tampered.cut_id)
 
 
 def test_replay_quarantine_when_post_attach_validation_unsound():
-    """ATTACH 通过 6 步 但 validator 验 cert tampered → QUARANTINE."""
-    state = _make_state()
-    cut = _make_f1_cut(state)
-    # Tamper cert: cap_R=68 改 999
-    assert cut.geometric_payload is not None
+    """A cut that passes the adapter but whose cert contradicts the snapshot
+    recomputation is rejected by the typed single entry at stage="proof"
+    → QUARANTINE (reason_code typed_rejected_proof)."""
+    state = _f1_state()
+    cut = _f1_cut(state)
+    assert cut.geometric_payload is not None and cut.cert is not None
     cert_dict = json.loads(cut.geometric_payload)
     cert_dict["cap_R"] = 999
     tampered_payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
-    assert cut.scope is not None and cut.cert is not None
     tampered_hash = hashlib.sha256(tampered_payload).hexdigest()
-    tampered_cert = OracleCert(
-        cert_kind=cut.cert.cert_kind,
-        cert_payload=tampered_payload,
-        cert_hash=tampered_hash,
-    )
     tampered_cut = Cut(
         cut_id=cut.cut_id,
         family=cut.family,
         literals=None,
         geometric_payload=tampered_payload,
         scope=cut.scope,
-        cert=tampered_cert,
+        cert=OracleCert(
+            cert_kind=cut.cert.cert_kind,
+            cert_payload=tampered_payload,
+            cert_hash=tampered_hash,
+        ),
         family_version=cut.family_version,
         validator_version=cut.validator_version,
         oracle_cert_hash=tampered_hash,
@@ -274,73 +252,101 @@ def test_replay_quarantine_when_post_attach_validation_unsound():
     store = CutStore()
     store.add_cut(tampered_cut)
 
-    decision = replay_cut(tampered_cut, state, store, canonical_rules=CANONICAL_RULES)
+    decision = replay_cut(tampered_cut, store, build_replay_context(state))
 
     assert decision == "QUARANTINE"
     reason = store.quarantined[tampered_cut.cut_id]
-    assert reason.reason_code == "post_attach_validation_unsound"
-    assert "cap_R mismatch" in reason.detail
+    assert reason.reason_code == "typed_rejected_proof"
+    assert "cap_R" in reason.detail
 
 
-# ============================================================================
-# replay_cut HOLD path
-# ============================================================================
+# ---------------------------------------------------------------------------
+# Brand-new cut precondition
+# ---------------------------------------------------------------------------
 
-def test_replay_hold_when_oracle_version_unavailable():
-    state = _make_state()
-    cut = _make_f1_cut(state)
-    store = CutStore()
-    store.add_cut(cut)
-
-    # state 没 oracle version
-    state_no_oracle = BState(
-        groups=state.groups,
-        ghost_rect=state.ghost_rect,
-        ghost_cells=state.ghost_cells,
-        exterior_blocks=state.exterior_blocks,
-        artifact_hashes=state.artifact_hashes,
-        available_oracle_versions=frozenset(),
-        canonical_rules=state.canonical_rules,
-        facility_templates=state.facility_templates,
-        instance_to_facility_type=state.instance_to_facility_type,
-        candidate_placements=state.candidate_placements,
-        source_digest=cut.scope.source_digest,
-    )
-    decision = replay_cut(cut, state_no_oracle, store, canonical_rules=CANONICAL_RULES)
-
-    assert decision == "HOLD"
-    assert cut.cut_id in store.held
-    assert cut.cut_id not in store.quarantined
-
-
-# ============================================================================
-# Brand new cut precondition
-# ============================================================================
 
 def test_replay_cut_not_in_store_raises():
-    state = _make_state()
-    cut = _make_f1_cut(state)
-    store = CutStore()
-    # 没 add_cut
+    state = _f1_state()
+    cut = _f1_cut(state)
+    store = CutStore()  # not added
 
     with pytest.raises(KeyError, match="不在 store"):
-        replay_cut(cut, state, store, canonical_rules=CANONICAL_RULES)
+        replay_cut(cut, store, build_replay_context(state))
 
 
-# ============================================================================
+# ---------------------------------------------------------------------------
+# B5a double-table (RFC-001 §4.2): disjoint + exhaustive; legacy never activates
+# ---------------------------------------------------------------------------
+
+
+def test_replay_double_table_is_disjoint_and_exhaustive():
+    typed = set(TYPED_REPLAY_FAMILIES)
+    legacy = set(LEGACY_DIAGNOSTIC_VALIDATORS)
+    assert typed.isdisjoint(legacy)
+    assert typed == {"region_capacity", "pattern_nogood", "shape_packing_hall", "power_hitting_set"}
+    assert legacy == {"cutset", "port_exposure", "component_reach", "density_envelope"}
+    # Exhaustive over the eight live families (F8 power_grid_reach is retired).
+    assert typed | legacy == {
+        "cutset",
+        "component_reach",
+        "density_envelope",
+        "pattern_nogood",
+        "port_exposure",
+        "power_hitting_set",
+        "region_capacity",
+        "shape_packing_hall",
+    }
+
+
+def test_legacy_family_replay_never_reactivates_into_active_store():
+    """A legacy diagnostic family (cutset) is routed to the diagnostic validator
+    only — it can never re-enter the active store or reach the typed single
+    entry / step_8 (RFC-001 §4.2 / risk 16)."""
+    state = _f1_state()
+    cutset_cut = _make_cutset_cut({(0, 0)}, {(4, 0)}, cut_size=1, commodity_demand=2)
+    # Repair the fixture's placeholder hash so integrity passes and replay
+    # reaches the LEGACY diagnostic path (not the integrity gate).
+    correct_hash = hashlib.sha256(cutset_cut.cert.cert_payload).hexdigest()
+    cutset_cut = dataclasses.replace(
+        cutset_cut,
+        cert=dataclasses.replace(cutset_cut.cert, cert_hash=correct_hash),
+        oracle_cert_hash=correct_hash,
+    )
+    assert validate_cut_integrity(cutset_cut) is None
+    assert cutset_cut.family in LEGACY_DIAGNOSTIC_VALIDATORS
+    assert cutset_cut.family not in TYPED_REPLAY_FAMILIES
+
+    store = CutStore()
+    store.add_cut(cutset_cut)
+    decision = replay_cut(cutset_cut, store, build_replay_context(state))
+
+    assert decision in ("HOLD", "QUARANTINE")
+    assert not store.is_active(cutset_cut.cut_id)
+    if decision == "QUARANTINE":
+        # Went through the legacy diagnostic path, not the typed/integrity paths.
+        assert store.quarantined[cutset_cut.cut_id].reason_code.startswith("legacy_diagnostic_")
+
+
+def test_run_legacy_diagnostic_returns_diagnostic_result_without_store_side_effects():
+    state = _f1_state()
+    cutset_cut = _make_cutset_cut({(0, 0)}, {(4, 0)}, cut_size=1, commodity_demand=2)
+    result = run_legacy_diagnostic(cutset_cut, state)
+    assert isinstance(result, DiagnosticResult)
+    assert result.family == "cutset"
+    assert result.outcome in ("ok", "unsound", "timeout", "schema_err")
+
+
+# ---------------------------------------------------------------------------
 # regression_sweep
-# ============================================================================
+# ---------------------------------------------------------------------------
+
 
 def test_regression_sweep_skips_quarantined():
-    state = _make_state()
-    cut_a = _make_f1_cut(state)
-    cut_b = _make_f1_cut(state)
-    # cut_id 重名 (F1 generator 用 time*1000 milisec 可能撞)
-    cut_b_id = f"{cut_a.cut_id}-b"
-    # Construct cut_b copy with different id
+    state = _f1_state()
+    cut_a = _f1_cut(state)
     assert cut_a.scope is not None and cut_a.cert is not None
     cut_b = Cut(
-        cut_id=cut_b_id,
+        cut_id=f"{cut_a.cut_id}-b",
         family=cut_a.family,
         literals=None,
         geometric_payload=cut_a.geometric_payload,
@@ -348,13 +354,14 @@ def test_regression_sweep_skips_quarantined():
         cert=cut_a.cert,
         family_version=cut_a.family_version,
         validator_version=cut_a.validator_version,
+        oracle_cert_hash=cut_a.oracle_cert_hash,
     )
     store = CutStore()
     store.add_cut(cut_a)
     store.add_cut(cut_b)
     store.quarantine_cut(cut_a.cut_id, QuarantineReason(reason_code="prior"))
 
-    counts = regression_sweep(store, state, canonical_rules=CANONICAL_RULES)
+    counts = regression_sweep(store, build_replay_context(state))
 
     assert counts["skipped_quarantined"] == 1
     assert counts["ATTACH"] == 1
@@ -363,12 +370,12 @@ def test_regression_sweep_skips_quarantined():
 
 
 def test_regression_sweep_attach_all():
-    state = _make_state()
-    cut = _make_f1_cut(state)
+    state = _f1_state()
+    cut = _f1_cut(state)
     store = CutStore()
     store.add_cut(cut)
 
-    counts = regression_sweep(store, state, canonical_rules=CANONICAL_RULES)
+    counts = regression_sweep(store, build_replay_context(state))
 
     assert counts["ATTACH"] == 1
     assert counts["skipped_quarantined"] == 0

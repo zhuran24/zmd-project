@@ -594,10 +594,11 @@ MYPY_STRICT_TARGETS = [
     "src/models/power_placement_subproblem.py",
     "src/models/master_model.py",
     "src/search/benders_loop.py",
-    # 阶段 B typed TCB 新文件 (B1/B1.5/B2/B3): strict 全绿是双审验收项, 进 gate 防漂移.
+    # 阶段 B typed TCB 新文件 (B1/B1.5/B2/B3/B5a): strict 全绿是双审验收项, 进 gate 防漂移.
     "src/cuts/frozen_artifacts.py",
     "src/cuts/state_snapshot.py",
     "src/cuts/typed_platform.py",
+    "src/cuts/typed_apply.py",
     "src/cuts/families/region_capacity_typed.py",
     "src/cuts/families/power_hitting_set_typed.py",
     "src/cuts/families/shape_packing_hall_typed.py",

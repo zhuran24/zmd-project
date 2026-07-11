@@ -41,7 +41,6 @@ from src.cuts.lifecycle import (
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
     compute_source_digest,
-    evaluate_literal_multiset,
 )
 from src.cuts.oracles.power_cover_oracle import (
     generate_power_hitting_set_cuts,
@@ -548,38 +547,6 @@ def test_validator_unsound_ghost_drift() -> None:
                             ghost_cells=frozenset({(10, 10), (10, 11), (11, 10), (11, 11)}))
     result = validate_power_hitting_set(cut, new_state, canonical_rules={})
     assert result.kind == "unsound"
-
-
-# ---- evaluator (literal multiset) ------------------------------------------
-
-
-def test_evaluator_literal_multiset_when_pose_selected() -> None:
-    state = _make_state()
-    state.groups["crusher_blue_iron"].selected_poses.append("p_3x3_a")
-    cert_payload = _make_cert(state)
-    cut = _make_cut(cert_payload, state)
-    assert evaluate_literal_multiset(cut, state) is True
-
-
-def test_evaluator_literal_multiset_when_pose_not_selected() -> None:
-    state = _make_state()
-    # selected_poses empty → cut does not violate
-    cert_payload = _make_cert(state)
-    cut = _make_cut(cert_payload, state)
-    assert evaluate_literal_multiset(cut, state) is False
-
-
-def test_evaluator_literal_multiset_fails_closed_on_same_rect_ghost_cells_drift() -> None:
-    """F7 is literal-based, but its proof scope is ghost-bound."""
-    state = _make_state()
-    state.groups["crusher_blue_iron"].selected_poses.append("p_3x3_a")
-    cert_payload = _make_cert(state)
-    cut = _make_cut(cert_payload, state)
-    new_state = _make_state(ghost_cells=frozenset())
-    new_state.groups["crusher_blue_iron"].selected_poses.append("p_3x3_a")
-    assert compute_ghost_rect_id(new_state.ghost_rect) == cut.scope.ghost_rect_id
-    assert compute_blocked_cells_hash(new_state) != cut.scope.blocked_cells_hash
-    assert evaluate_literal_multiset(cut, new_state) is False
 
 
 # ---- watcher keys ----------------------------------------------------------

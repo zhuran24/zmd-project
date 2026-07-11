@@ -266,18 +266,25 @@ class CutStore:
 
         if new_ghost_id != GHOST_AGNOSTIC:
             candidates = self.by_ghost_watcher.get(new_ghost_id, set()).copy()
+            # GPT pro v6 P0 / B5a: default path runs the full typed/legacy
+            # replay double-table via a per-transition ReplayContext (deep-
+            # frozen snapshot + production registry, built ONCE per ghost
+            # transition — loop-invariant over cuts, spec §4.8); scope-only
+            # replay_fn injection stays for tests.
+            transition_context = None
+            if candidates and unsafe_test_replay_fn is None:
+                from src.cuts.replay import build_replay_context
+
+                transition_context = build_replay_context(state)
             for cut_id in candidates:
                 if cut_id in self.quarantined:
                     continue
                 cut = self.cuts[cut_id]
-                # GPT pro v6 P0: 默认走 full replay_cut (跑 family validator),
-                # 不接受 scope-only replay_fn.
                 if unsafe_test_replay_fn is None:
                     from src.cuts.replay import replay_cut
-                    decision = replay_cut(
-                        cut, state, self,
-                        canonical_rules=state.canonical_rules,
-                    )
+
+                    assert transition_context is not None
+                    decision = replay_cut(cut, self, transition_context)
                 else:
                     decision = unsafe_test_replay_fn(cut, state)
                 if decision == "ATTACH":

@@ -41,7 +41,6 @@ from src.cuts.lifecycle import (
     capture_scope_identity_preimage_v1,
     compute_scope_identity_legacy_hashes,
     compute_source_digest,
-    step_6_attach_scope_check,
 )
 from src.cuts.oracles.power_cover_oracle import generate_power_hitting_set_cuts
 from src.cuts.state_snapshot import (
@@ -496,7 +495,6 @@ def test_production_f7_oracle_cut_compiles_and_matches_legacy() -> None:
     capability = build_production_registry().capabilities["power_hitting_set"]
 
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(raw_cut, state) == "ATTACH"
     assert capability.stage is CapabilityStage.COMPILABLE
     assert capability.requires_ghost_bound is True
     assert compiled.cut_id == raw_cut.cut_id
@@ -795,7 +793,6 @@ def test_f7_ratified_adapter_tightenings_reject_legacy_accepted_cuts(
 
     assert _F7_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT[audit_key] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(attacked, state) == "ATTACH"
     with pytest.raises(ValueError, match=message):
         cut_to_envelope_v1(attacked)
 
@@ -881,7 +878,6 @@ def test_f7_preimage_inconsistencies_are_ratified_typed_only_rejections(
 
     assert _F7_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT[audit_key] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(attacked, state) == "ATTACH"
     with pytest.raises(ValueError, match=message):
         cut_to_envelope_v1(attacked)
 
@@ -899,7 +895,6 @@ def test_old_f7_cut_without_identity_preimage_is_expected_typed_only_rejection()
 
     assert _F7_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT["adapter.identity_preimage_presence"] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(attacked, state) == "ATTACH"
     with pytest.raises(ValueError, match="legacy scope identity has no raw preimage"):
         cut_to_envelope_v1(attacked)
 
@@ -930,7 +925,6 @@ def test_f7_coherent_wrong_exterior_preimage_is_rejected_by_snapshot_currentness
 
     assert _F7_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT["scope.exterior_preimage_snapshot_currentness"] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(attacked, state) == "ATTACH"
     assert isinstance(typed, CutRejection)
     assert typed.stage == "scope"
     assert typed.reason == "scope exterior-block identity is stale"
@@ -962,7 +956,6 @@ def test_nonempty_f7_scope_assumptions_are_expected_typed_only_rejection() -> No
 
     assert _F7_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT["scope.nonempty_assumptions"] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(attacked, state) == "ATTACH"
     assert isinstance(typed, CutRejection)
     assert typed.stage == "scope"
     assert typed.reason == "typed assumption verification is unavailable for this family"
@@ -1365,7 +1358,6 @@ def test_f7_required_dependency_set_mismatch_is_expected_typed_only_rejection(dr
 
     assert _F7_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT["scope.required_dependency_set"] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(cut, state) == "ATTACH"
     assert isinstance(typed, CutRejection)
     assert typed.stage == "scope"
     assert typed.reason == "scope dependency set differs from family manifest"

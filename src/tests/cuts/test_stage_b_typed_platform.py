@@ -38,7 +38,7 @@ from src.cuts.state_snapshot import (
     ValidatedStateSnapshot,
     build_validated_state_snapshot,
 )
-from src.cuts.replay import FAMILY_VALIDATORS
+from src.cuts.replay import LEGACY_DIAGNOSTIC_VALIDATORS, TYPED_REPLAY_FAMILIES
 from src.cuts.oracles.pattern_nogood_oracle import (
     clear_sub_problem_oracle_registry,
     register_sub_problem_oracle,
@@ -62,6 +62,7 @@ from src.cuts.typed_platform import (
     ScopeManifest,
     SemanticCutRejection,
     ShadowValidated,
+    SUPPORTED_OPERATIONS,
     build_production_registry,
     cut_to_envelope_v1,
     validate_and_compile_cut,
@@ -1058,37 +1059,13 @@ def test_family_capability_requires_ghost_bound_is_an_exact_bool(invalid: object
         replace(_capability(), requires_ghost_bound=invalid)
 
 
-def _step_8_family_branches() -> list[str]:
-    lifecycle_path = SRC_ROOT / "cuts" / "lifecycle.py"
-    module = ast.parse(
-        lifecycle_path.read_text(encoding="utf-8"),
-        filename=lifecycle_path.relative_to(REPO_ROOT).as_posix(),
-    )
-    definitions = [
-        node
-        for node in module.body
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == "step_8_apply_to_master"
-    ]
-    assert len(definitions) == 1
-    branches: list[str] = []
-    for node in ast.walk(definitions[0]):
-        if (
-            isinstance(node, ast.Compare)
-            and len(node.ops) == 1
-            and isinstance(node.ops[0], ast.Eq)
-            and len(node.comparators) == 1
-            and isinstance(node.left, ast.Attribute)
-            and isinstance(node.left.value, ast.Name)
-            and node.left.value.id == "cut"
-            and node.left.attr == "family"
-            and isinstance(node.comparators[0], ast.Constant)
-            and type(node.comparators[0].value) is str
-        ):
-            branches.append(node.comparators[0].value)
-    return branches
-
-
 def test_production_registry_replay_and_step_8_family_tables_are_consistent() -> None:
+    # B5a: the raw family-branch step_8 shim is gone.  The public
+    # step_8_apply_to_master is the typed entry, dispatching on plan.operation
+    # (typed_platform.SUPPORTED_OPERATIONS) via typed_apply, and replay splits
+    # its old single FAMILY_VALIDATORS table into two mutually-exclusive tables.
+    # The registry-vs-replay-vs-single-entry consistency contract (RFC-001
+    # §2.8/§2.9) now pins those three views against one another.
     registry = build_production_registry()
     retired = {
         family for family, capability in registry.capabilities.items() if capability.stage is CapabilityStage.RETIRED
@@ -1105,16 +1082,35 @@ def test_production_registry_replay_and_step_8_family_tables_are_consistent() ->
         if capability.stage is not CapabilityStage.RETIRED
         and capability.execution_path is ExecutionPath.LEGACY_DIAGNOSTIC
     }
-    step_8_branches = _step_8_family_branches()
-    replay_families = set(FAMILY_VALIDATORS)
+    compilable = {
+        family
+        for family, capability in registry.capabilities.items()
+        if capability.stage is CapabilityStage.COMPILABLE
+    }
 
     assert retired == {"power_grid_reach"}
-    assert len(step_8_branches) == len(set(step_8_branches))
-    assert replay_families == non_retired
-    assert set(step_8_branches) == typed
-    assert replay_families - set(step_8_branches) == legacy_diagnostic
+
+    # Registry execution paths vs the replay double-table: disjoint + exhaustive.
+    assert set(TYPED_REPLAY_FAMILIES) == typed
+    assert set(LEGACY_DIAGNOSTIC_VALIDATORS) == legacy_diagnostic
     assert typed.isdisjoint(legacy_diagnostic)
     assert typed | legacy_diagnostic == non_retired
+    assert set(TYPED_REPLAY_FAMILIES).isdisjoint(LEGACY_DIAGNOSTIC_VALIDATORS)
+
+    # The typed single entry has an apply path (a plan.operation) exactly for
+    # the COMPILABLE families; the VALIDATED shadow family (pattern_nogood, F5)
+    # is TYPED but carries no operation — structurally no step_8/apply path.
+    assert compilable == {"region_capacity", "shape_packing_hall", "power_hitting_set"}
+    operation_by_family = {
+        "power_hitting_set": "power_pose_exclusion",
+        "region_capacity": "region_capacity_le",
+        "shape_packing_hall": "shape_packing_hall_le",
+    }
+    assert set(operation_by_family) == compilable
+    assert set(operation_by_family.values()) == set(SUPPORTED_OPERATIONS)
+    shadow_typed = typed - compilable
+    assert shadow_typed == {"pattern_nogood"}
+    assert shadow_typed.isdisjoint(operation_by_family)
 
 
 @pytest.mark.parametrize(
@@ -2004,6 +2000,12 @@ _PRIVATE_TOKEN_REFERENCE_ALLOWLIST = Counter(
             "__init__",
         ): 1,
         (
+            "_MODEL_SCOPE_BINDING_CONSTRUCTION_TOKEN",
+            "src/cuts/typed_platform.py",
+            None,
+            "_build_model_scope_binding",
+        ): 1,
+        (
             "_SHADOW_VALIDATED_CONSTRUCTION_TOKEN",
             "src/cuts/typed_platform.py",
             "ShadowValidated",
@@ -2200,6 +2202,12 @@ def test_private_typed_construction_points_are_exactly_allowlisted() -> None:
                 "src/cuts/typed_platform.py",
                 None,
                 "build_production_registry",
+            ): 1,
+            (
+                "ModelScopeBinding",
+                "src/cuts/typed_platform.py",
+                None,
+                "_build_model_scope_binding",
             ): 1,
             (
                 "ShadowValidated",

@@ -943,7 +943,9 @@ EXACT_CUT_FRAMEWORK_ATTACH_ENV = "EXACT_CUT_FRAMEWORK_ATTACH"
 # stopping only weakens pruning, never soundness. Conservative thousand-level
 # anchor per verdict.md (§3 前置 2); raising it needs a fresh before/after
 # production re-measurement, not just the synthetic-load extrapolation.
-# Operational knob: certified attach is unsafe-map-disabled, so allowlisting it is inert.
+# B5a: the typed single entry is now wired as the sole attach path, but the
+# attach env stays unsafe-map-disabled (certified-unsafe pre-B6), so this knob
+# only matters to direct/non-certified invocations and tests.
 EXACT_CUT_FRAMEWORK_ATTACH_BUDGET = 2000
 
 
@@ -7849,12 +7851,14 @@ class LBBDController:
         return True
 
     def _cut_framework_attach_enabled(self) -> bool:
-        # M3-4 (P1.3): master attach of F1-F9 framework cuts. The same env is
+        # M3-4 (P1.3) / B5a: master attach of framework cuts, now wired through
+        # the typed single entry (validate_and_compile_cut → resolver → typed
+        # step_8).  Wiring the single entry is NOT promotion: the same env stays
         # registered in _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES, so a
         # certified/production run with it enabled fail-closes long before this
-        # method can matter — the wiring below is reachable only from direct
-        # (non-certified) invocations and unit tests until the owner promotes
-        # the framework after the M4 family ladder lands.
+        # method can matter — the typed attach below is reachable only from
+        # direct (non-certified) invocations and unit tests until the owner
+        # promotes the framework (B6, still certified-unsafe pre-B6).
         raw = os.environ.get(EXACT_CUT_FRAMEWORK_ATTACH_ENV, "")
         return raw.strip().lower() not in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES
 
@@ -8060,17 +8064,32 @@ class LBBDController:
         iteration: int,
         solution: Optional[Mapping[str, Mapping[str, Any]]] = None,
     ) -> int:
-        """Generate + fully re-validate + attach framework cuts (M3-4/M4-A).
+        """Generate + validate/compile + attach framework cuts via the typed
+        single entry (RFC-001 §4.7; B5a orchestration cut-over).
 
-        Runs the complete lifecycle gauntlet per cut — integrity, family
-        validator, step-6 attach-scope, step-7 evaluate — before step_8. A cut
-        failing any gate is skipped (framework cuts are optional strengthening;
-        skipping only reduces pruning). step_8 failures propagate: the master
-        rejecting a validated cut is a wiring defect, not a data condition.
+        Per cut the raw legacy gauntlet (integrity → family validator → step-6
+        → step-7 → raw step-8) is replaced by ONE ``validate_and_compile_cut``
+        call over a session-built ``ValidatedStateSnapshot`` and the production
+        ``FamilyCapabilityRegistry``, followed by an explicit three-way match:
+
+        - ``CompiledCut``  → step-7 attach-timing check → the sole resolver
+          (``_resolve_model_scope_binding``) → the typed ``step_8_apply_to_master``.
+        - ``ShadowValidated`` (F5) → counted in the independent common-mode-
+          untrusted ``shadow_validated`` bucket, never applied, never budgeted.
+        - ``CutRejection`` → counted under its ``stage`` in ``rejected``.
+
+        A cut failing the typed chain is skipped (framework cuts are optional
+        strengthening; skipping only reduces pruning).  The typed step_8 raises
+        on a master rejection: the master refusing a compiled cut is a wiring
+        defect, not a data condition, so it propagates.  The attach is still
+        certified-unsafe / default-off (the same env is unsafe-map-disabled); the
+        wiring below is reachable only from direct/non-certified invocations and
+        tests until the owner promotes the framework (B6).
 
         M4-A additions: F7 power_hitting_set generation targeted at the
         incumbent poses; ghost conditioning (ghost-bound cuts attach under the
-        selected ghost literal so an anchor switch retires them); and the
+        selected ghost literal so an anchor switch retires them) — now recovered
+        by the resolver from the live master + frozen snapshot; and the
         active-cut budget — at EXACT_CUT_FRAMEWORK_ATTACH_BUDGET attached
         constraints the framework stops emitting (constraints cannot be
         removed from CP-SAT, so stop-emitting is the only sound eviction
@@ -8079,11 +8098,15 @@ class LBBDController:
         if not self._cut_framework_attach_enabled():
             return 0
         attach_budget = _resolve_cut_framework_attach_budget()
+        # Function-local imports keep the certified benders module free of a
+        # module-level src/cuts typed-platform coupling; typed_platform lazily
+        # imports state_snapshot, so build_production_registry is imported here
+        # too (its own internal factory follows the same lazy precedent).
+        from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
         from src.cuts.lifecycle import (
-            step_6_attach_scope_check,
+            _resolve_model_scope_binding,
             step_7_evaluate_cut,
             step_8_apply_to_master,
-            validate_cut_integrity,
         )
         from src.cuts.oracles.power_cover_oracle import (
             generate_power_hitting_set_cuts,
@@ -8095,7 +8118,15 @@ class LBBDController:
             compute_sot_region_demand_overrides,
             generate_shape_packing_hall_cuts,
         )
-        from src.cuts.replay import FAMILY_VALIDATORS
+        from src.cuts.state_snapshot import build_validated_state_snapshot
+        from src.cuts.typed_platform import (
+            CompiledCut,
+            CutRejection,
+            ShadowValidated,
+            build_production_registry,
+            cut_to_envelope_v1,
+            validate_and_compile_cut,
+        )
 
         stats = getattr(self.master, "build_stats", None)
         budget_used = 0
@@ -8116,16 +8147,19 @@ class LBBDController:
         state = self._build_cut_framework_state(solution=solution)
         if state is None:
             return 0
-        ghost_ctx = self._selected_ghost_context()
-        if ghost_ctx is None:
-            # State building above already required a unique selected ghost;
-            # losing it between the two calls is a fail-closed no-attach.
-            return 0
-        _rect_idx, ghost_u_var, _anchor, ghost_cells = ghost_ctx
-        ghost_condition_lits = (ghost_u_var,)
-        ghost_blocked_cells = frozenset(
-            (int(x), int(y)) for x, y in ghost_cells
-        ) | frozenset(state.exterior_blocks)
+        # Build the deep-frozen bundle + snapshot ONCE per attach round and the
+        # production registry; the typed single entry consumes them per cut.
+        # A construction failure is a TCB fault and propagates (fail-closed) —
+        # it is never washed into a per-cut rejection.
+        bundle = build_frozen_artifact_bundle(
+            canonical_rules=state.canonical_rules or {},
+            candidate_placements=state.candidate_placements,
+            facility_templates=state.facility_templates,
+            instance_to_facility_type=state.instance_to_facility_type,
+            artifact_hashes=state.artifact_hashes,
+        )
+        snapshot = build_validated_state_snapshot(state, bundle)
+        registry = build_production_registry()
 
         cuts = list(
             generate_region_capacity_cuts(
@@ -8184,55 +8218,67 @@ class LBBDController:
                 )
         attached = 0
         attached_by_family: Dict[str, int] = {}
-        # 拒绝分桶：与 replay 路径同一 fail-closed 语义（integrity 非 None 一票否决），
-        # direct-attach 不得比 CutStore/replay 宽（2026-07-09 外审 P0：此前返回值被丢弃）。
+        shadow_validated = 0
+        # Rejection telemetry keyed by the typed pipeline stage (CutRejection.
+        # stage) plus the pre-single-entry ``adapter`` stage (cut_to_envelope_v1
+        # TypeError/ValueError) and the ``attach_timing`` step-7 skip.  Known
+        # stages are pre-seeded for stable telemetry; single-entry stages are
+        # registry/envelope/scope/proof/plan.
         rejected: Dict[str, int] = {
-            "integrity": 0,
-            "validator_missing": 0,
-            "validator_not_ok": 0,
+            "adapter": 0,
+            "registry": 0,
+            "envelope": 0,
             "scope": 0,
-            "evaluate": 0,
+            "proof": 0,
+            "plan": 0,
+            "attach_timing": 0,
         }
         for cut in cuts:
             if budget_used + attached >= attach_budget:
                 break
-            if validate_cut_integrity(cut) is not None:
-                rejected["integrity"] += 1
+            # Adapter admission (schema-v1 integrity/quarantine/identity) — a
+            # TypeError/ValueError is a fail-closed rejection, never an attach.
+            try:
+                envelope = cut_to_envelope_v1(cut)
+            except (TypeError, ValueError):
+                rejected["adapter"] += 1
                 continue
-            validator = FAMILY_VALIDATORS.get(cut.family)
-            if validator is None:
-                rejected["validator_missing"] += 1
-                continue
-            result = validator(cut, state, state.canonical_rules or {})
-            if getattr(result, "kind", None) != "ok":
-                rejected["validator_not_ok"] += 1
-                continue
-            if step_6_attach_scope_check(cut, state) != "ATTACH":
-                rejected["scope"] += 1
-                continue
-            if not step_7_evaluate_cut(cut, state):
-                rejected["evaluate"] += 1
-                continue
-            step_8_apply_to_master(
-                cut,
-                self.master,
-                ghost_condition_lits=ghost_condition_lits,
-                ghost_blocked_cells=ghost_blocked_cells,
-            )
-            attached += 1
-            family = str(cut.family)
-            attached_by_family[family] = attached_by_family.get(family, 0) + 1
+            result = validate_and_compile_cut(envelope, snapshot, registry)
+            if isinstance(result, CompiledCut):
+                # Step-7 attach-timing: only a compiled cut still attesting to
+                # this snapshot may be lowered (fail-closed skip otherwise).
+                if step_7_evaluate_cut(result, snapshot) is not True:
+                    rejected["attach_timing"] += 1
+                    continue
+                binding = _resolve_model_scope_binding(
+                    result.plan.model_scope, snapshot, self.master
+                )
+                step_8_apply_to_master(result, self.master, scope_binding=binding)
+                attached += 1
+                family = str(result.plan.family)
+                attached_by_family[family] = attached_by_family.get(family, 0) + 1
+            elif isinstance(result, ShadowValidated):
+                # F5 common-mode-untrusted shadow: validated but no compile
+                # authority — never lowered, never budgeted (RFC-001 §5.4).
+                shadow_validated += 1
+            elif isinstance(result, CutRejection):
+                rejected[result.stage] = rejected.get(result.stage, 0) + 1
+            else:  # pragma: no cover - the single entry returns only the 3 arms
+                raise TypeError(
+                    f"validate_and_compile_cut returned unexpected {type(result).__name__}"
+                )
         if isinstance(stats, dict):
-            # R3 (minimal form): per-family attach telemetry for the M5
-            # convergence measurements; the full C6 three-way split waits on
-            # the Q1a recognizer taxonomy (M4-E assessment item).
+            # Typed three-way telemetry (RFC-001 §4.7/§6): per-family attach,
+            # the independent common-mode-untrusted shadow bucket, and rejection
+            # counts keyed by the typed pipeline stage.
             stats["cut_framework_attach_last"] = {
                 "trigger": trigger,
                 "iteration": int(iteration),
                 "generated": len(cuts),
                 "attached": attached,
                 "attached_by_family": dict(sorted(attached_by_family.items())),
-                "rejected": {k: int(v) for k, v in rejected.items()},
+                "shadow_validated": shadow_validated,
+                "rejected": {k: int(v) for k, v in sorted(rejected.items())},
             }
         return attached
 

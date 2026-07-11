@@ -20,7 +20,8 @@ from src.cuts.lifecycle import (
     compute_exterior_blocks_hash,
     compute_source_digest,
 )
-from src.cuts.replay import replay_cut
+from src.cuts.replay import ReplayContext, replay_cut
+from src.cuts.typed_platform import build_production_registry
 from src.cuts.store import CutStore
 from src.models.cut_manager import BendersCut
 
@@ -193,12 +194,27 @@ def _replay_and_quarantine(cut: Cut) -> CutStore:
     store = CutStore()
     store.add_cut(cut)
 
-    decision = replay_cut(cut, state, store, canonical_rules={})
+    # B5a: replay now runs the typed/legacy double-table via a ReplayContext.
+    # A schema-invalid cut is rejected before the snapshot is ever consulted
+    # (typed families raise in cut_to_envelope_v1; legacy families fail in the
+    # diagnostic validator over legacy_state), so a snapshot-free context is
+    # sufficient for these fail-closed cases.
+    context = ReplayContext(
+        snapshot=None,
+        registry=build_production_registry(),
+        legacy_state=state,
+    )
+    decision = replay_cut(cut, store, context)
 
     assert decision == "QUARANTINE"
     assert not store.is_active(cut.cut_id)
     assert cut.cut_id in store.quarantined
-    assert store.quarantined[cut.cut_id].reason_code == "validate_schema_err"
+    # Schema rejection surfaces as the legacy diagnostic schema-err code for
+    # legacy families and the typed adapter-rejection code for typed families.
+    assert store.quarantined[cut.cut_id].reason_code in {
+        "legacy_diagnostic_schema_err",
+        "typed_adapter_rejected",
+    }
     return store
 
 

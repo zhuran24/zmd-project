@@ -95,6 +95,19 @@ def _stage_b5_apply_missing() -> bool:
     return _stage_b_missing("src.cuts.lifecycle", "_resolve_model_scope_binding")
 
 
+def _stage_b5b_atomic_lowering_missing() -> bool:
+    # B5b beacon (split from the coarse B5 beacon in the functional-rewire
+    # sub-batch): the failed-apply atomicity contract (§4.11 precheck 前移)
+    # cannot hold while the only delegate lowering path is the legacy,
+    # non-atomic add_region_capacity_cut — a rejected cut still mutates the
+    # master proto until B5b lands the atomic _lower_region_capacity_cut.
+    try:
+        from src.models.exact_coordinate_master import CoordinateExactMasterDelegate
+    except ModuleNotFoundError:
+        return True
+    return not hasattr(CoordinateExactMasterDelegate, "_lower_region_capacity_cut")
+
+
 def _literal_artifact_field(node: ast.AST) -> str | None:
     if isinstance(node, ast.Constant) and isinstance(node.value, str):
         if node.value in _BSTATE_STATIC_ARTIFACT_FIELDS:
@@ -1357,10 +1370,19 @@ def _bound_region_sources(
         "facility_templates": facility_templates,
     }
     candidate_placements = {"facility_pools": {"boundary_storage_port": poses}}
+    # Match the production F1 capability manifest
+    # (typed_platform._PRODUCTION_V1_ARTIFACT_DEPENDENCIES); the scope dependency
+    # set derives from these names via cut_to_envelope_v1, so an incomplete set
+    # is refused at the typed scope stage before the resolver is reached.
     artifact_hashes = {
-        "canonical_rules.json": "a" * 64,
-        "candidate_placements.json": "b" * 64,
-        "mandatory_exact_instances.json": "c" * 64,
+        "candidate_placements": "1" * 64,
+        "canonical_rules": "2" * 64,
+        "certified_exact_source_tree": "3" * 64,
+        "commodity_demands": "4" * 64,
+        "generic_io_requirements": "5" * 64,
+        "mandatory_exact_instances": "6" * 64,
+        "orbit_homogeneity_digest": "7" * 64,
+        "preprocess_plan": "8" * 64,
     }
     x, y, width, height = ghost_rect
     ghost_cells = frozenset((cell_x, cell_y) for cell_x in range(x, x + width) for cell_y in range(y, y + height))
@@ -1728,9 +1750,9 @@ def test_step_8_rejects_snapshot_digest_misbinding_without_master_mutation(
 
 
 @pytest.mark.xfail(
-    condition=_stage_b5_apply_missing(),
+    condition=_stage_b5b_atomic_lowering_missing(),
     strict=True,
-    reason="stage-B B5 待实现: §4.11/§6 失败 apply 的 proto+cache 原子性",
+    reason="stage-B B5b 待实现: §4.11 原子 _lower_region_capacity_cut(precheck 前移)缺失",
 )
 def test_failed_lowering_preserves_master_proto_and_internal_caches(
     tmp_path: Path,

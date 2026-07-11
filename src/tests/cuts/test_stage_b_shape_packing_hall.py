@@ -37,7 +37,6 @@ from src.cuts.lifecycle import (
     canonical_bytes_for_cert,
     compute_scope_identity_legacy_hashes,
     compute_source_digest,
-    step_6_attach_scope_check,
     validate_cut_integrity,
 )
 from src.cuts.oracles.shape_packing_hall_oracle import (
@@ -600,7 +599,6 @@ def test_f6_ratified_adapter_tightenings_reject_legacy_accepted_cuts(
 
     assert _F6_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT[audit_key] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(attacked, state) == "ATTACH"
     with pytest.raises(ValueError, match=message):
         cut_to_envelope_v1(attacked)
 
@@ -685,7 +683,6 @@ def test_f6_preimage_inconsistencies_are_ratified_typed_only_rejections(
 
     assert _F6_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT[audit_key] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(attacked, state) == "ATTACH"
     with pytest.raises(ValueError, match=message):
         cut_to_envelope_v1(attacked)
 
@@ -725,7 +722,6 @@ def test_f6_coherent_wrong_exterior_preimage_is_rejected_by_snapshot_currentness
 
     assert _F6_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT["scope.exterior_preimage_snapshot_currentness"] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(attacked, state) == "ATTACH"
     assert isinstance(typed, CutRejection)
     assert typed.stage == "scope"
     assert typed.reason == "scope exterior-block identity is stale"
@@ -907,7 +903,6 @@ def test_old_f6_cut_without_identity_preimage_is_expected_typed_only_rejection()
     )
     assert _F6_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT["adapter.identity_preimage_presence"] == "typed-only"
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(legacy_only, state) == "ATTACH"
     with pytest.raises((TypeError, ValueError)):
         cut_to_envelope_v1(legacy_only)
 
@@ -947,7 +942,6 @@ def test_nonempty_f6_scope_assumptions_are_expected_typed_only_rejection() -> No
     )
 
     assert legacy.kind == "ok", legacy.detail
-    assert step_6_attach_scope_check(with_assumption, state) == "ATTACH"
     assert _F6_ADAPTER_PLUGIN_ACCEPT_SET_AUDIT["scope.nonempty_assumptions"] == "typed-only"
     assert isinstance(typed, CutRejection)
     assert typed.stage == "scope"

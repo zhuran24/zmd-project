@@ -40,7 +40,7 @@ from src.cuts.lifecycle import (
     step_6_attach_scope_check,
     step_7_evaluate_cut,
 )
-from src.cuts.replay import replay_cut
+from src.cuts.replay import ReplayContext, replay_cut
 from src.cuts.store import CutStore
 
 
@@ -210,89 +210,47 @@ def _scope_for_state(state: BState) -> CutScope:
     )
 
 
-# ============================================================================
-# evaluate_literal_multiset (generic, state_machine_v2 §5)
-# ============================================================================
-
-def test_multiset_eval_single_literal_match():
-    cut = _make_port_exposure_cut(_make_port_exposure_cert())
-    # state has both poses selected
-    state = _make_state(
-        crusher_poses=["p7"],
-        refinery_poses=["p3"],
+def _typed_attestation_pair():
+    """(compiled_a, snapshot_a, snapshot_b) anchored on a region_capacity typed
+    world.  port_exposure is a legacy-diagnostic family (no typed compile), so the
+    lifecycle attestation guards — which now take a CompiledCut + snapshot — are
+    exercised via a real region_capacity CompiledCut whose attestation binds one
+    snapshot only.  snapshot_b differs by one incumbent selected pose, diverging
+    the snapshot digest while leaving the source digest unchanged."""
+    from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
+    from src.cuts.lifecycle import BState as _BState
+    from src.cuts.lifecycle import GroupState as _GroupState
+    from src.cuts.lifecycle import compute_source_digest as _source_digest
+    from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
+    from src.cuts.state_snapshot import build_validated_state_snapshot
+    from src.cuts.typed_platform import (
+        CompiledCut,
+        build_production_registry,
+        cut_to_envelope_v1,
+        validate_and_compile_cut,
     )
-    assert evaluate_literal_multiset(cut, state) is True
+    from src.tests.cuts.test_stage_b_contracts import _bound_region_sources, _build_bundle
 
-
-def test_multiset_eval_missing_one_pose():
-    """1 literal not in state.selected_poses → False (cut not violated)."""
-    cut = _make_port_exposure_cut(_make_port_exposure_cert())
-    state = _make_state(
-        crusher_poses=["p7"],  # has crusher pose 7
-        refinery_poses=["p99"],  # but refinery pose 99 not 3
+    sources = _bound_region_sources(_BState, _GroupState, ghost_rect=(0, 0, 3, 1))
+    group_id = next(iter(sources["state"].groups))
+    sources["state"].source_digest = _source_digest(sources["state"])
+    snapshot_a = build_validated_state_snapshot(
+        sources["state"], _build_bundle(build_frozen_artifact_bundle, sources)
     )
-    assert evaluate_literal_multiset(cut, state) is False
-
-
-def test_multiset_eval_slot_anonymity():
-    """slot_index 2 vs slot_index 5 等价 — multiset 不看 slot index."""
-    # Cut literal slot=0; state's pose 7 appears at "slot" 1 (different index)
-    cut = _make_port_exposure_cut(_make_port_exposure_cert())
-    state = _make_state(
-        crusher_poses=["p1", "p7"],  # pose 7 at second slot
-        refinery_poses=["p5", "p3"],  # pose 3 at second slot
+    raw = generate_region_capacity_cuts(sources["state"], sources["canonical_rules"])[0]
+    compiled_a = validate_and_compile_cut(
+        cut_to_envelope_v1(raw), snapshot_a, build_production_registry()
     )
-    assert evaluate_literal_multiset(cut, state) is True
+    assert isinstance(compiled_a, CompiledCut)
 
-
-def test_multiset_eval_2_same_pose_required():
-    """2 literals (group=crusher, pose=7) require 2 selected_poses with pose=7."""
-    cut = Cut(
-        cut_id="multi-same",
-        family="port_exposure",
-        literals=(
-            CutLiteral(AnonymousSlotRef("crusher", 0), "p7"),
-            CutLiteral(AnonymousSlotRef("crusher", 1), "p7"),  # same pose, different slot
-        ),
-        geometric_payload=None,
-        scope=_scope_for_state(_make_state()),
-        cert=OracleCert(cert_kind="x", cert_payload=b"{}", cert_hash="ch"),
-        family_version="v1.0", validator_version="v1.0",
+    drift = _bound_region_sources(_BState, _GroupState, ghost_rect=(0, 0, 3, 1))
+    drift["state"].groups[group_id].selected_poses.append("boundary_pose_0")
+    drift["state"].source_digest = _source_digest(drift["state"])
+    snapshot_b = build_validated_state_snapshot(
+        drift["state"], _build_bundle(build_frozen_artifact_bundle, drift)
     )
-    # state has only 1 pose=7
-    state_short = _make_state(crusher_poses=["p7", "p8"])
-    assert evaluate_literal_multiset(cut, state_short) is False
-    # state has 2 pose=7
-    state_ok = _make_state(crusher_poses=["p7", "p7"])
-    assert evaluate_literal_multiset(cut, state_ok) is True
-
-
-def test_multiset_eval_empty_literals_false():
-    cut = Cut(
-        cut_id="empty-lit",
-        family="port_exposure",
-        literals=(CutLiteral(AnonymousSlotRef("crusher", 0), "p1"),),  # need ≥ 1 per __post_init__
-        geometric_payload=None,
-        scope=_scope_for_state(_make_state()),
-        cert=OracleCert(cert_kind="x", cert_payload=b"{}", cert_hash="ch"),
-        family_version="v1.0", validator_version="v1.0",
-    )
-    state = _make_state()  # crusher 没 selected_poses
-    assert evaluate_literal_multiset(cut, state) is False
-
-
-def test_multiset_eval_unknown_group_false():
-    cut = Cut(
-        cut_id="unknown-grp",
-        family="port_exposure",
-        literals=(CutLiteral(AnonymousSlotRef("never_exists", 0), "p1"),),
-        geometric_payload=None,
-        scope=_scope_for_state(_make_state()),
-        cert=OracleCert(cert_kind="x", cert_payload=b"{}", cert_hash="ch"),
-        family_version="v1.0", validator_version="v1.0",
-    )
-    state = _make_state()
-    assert evaluate_literal_multiset(cut, state) is False
+    assert snapshot_b.digest != snapshot_a.digest
+    return compiled_a, snapshot_a, snapshot_b
 
 
 # ============================================================================
@@ -302,13 +260,13 @@ def test_multiset_eval_unknown_group_false():
 
 
 def test_evaluate_literal_multiset_fails_closed_on_source_digest_drift():
-    state = _make_state(crusher_poses=["p7"], refinery_poses=["p3"])
-    cut = _make_port_exposure_cut(_make_port_exposure_cert(), scope_state=state)
-    source_drift = _make_state(crusher_poses=["p7"], refinery_poses=["p3"])
-    source_drift.candidate_placements = {"facility_pools": {"manufacturing_3x3": []}}
-
-    assert compute_source_digest(source_drift) != cut.scope.source_digest
-    assert evaluate_literal_multiset(cut, source_drift) is False
+    """Typed re-frame: the literal attach-time guard (evaluate_literal_multiset)
+    fails closed when the compiled cut no longer attests to the current snapshot.
+    Pre-B5a this walked cut.literals vs state.selected_poses; that raw multiset
+    logic is gone (soundness is the single entry's validate_plan)."""
+    compiled_a, snapshot_a, snapshot_b = _typed_attestation_pair()
+    assert evaluate_literal_multiset(compiled_a, snapshot_a) is True
+    assert evaluate_literal_multiset(compiled_a, snapshot_b) is False
 
 
 def test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced():
@@ -440,9 +398,13 @@ def test_validate_port_exposure_ignores_forged_runtime_pose_cache_with_matching_
     assert vr.kind == "unsound"
     assert "not in facility" in (vr.detail or "")
 
+    # port_exposure is a legacy-diagnostic family: replay routes it through the
+    # legacy validator over context.legacy_state (snapshot/registry unused), and
+    # an unsound cut is quarantined — it never (re)enters the active store.
     store = CutStore()
     store.add_cut(cut)
-    decision = replay_cut(cut, state, store, canonical_rules=CANONICAL_RULES)
+    context = ReplayContext(snapshot=None, registry=None, legacy_state=state)
+    decision = replay_cut(cut, store, context)
     assert decision == "QUARANTINE"
     assert not store.is_active(cut.cut_id)
 
@@ -525,14 +487,19 @@ def test_find_pose_cache_tracks_schema_valid_leading_dunder_facility_pool_replac
 
 
 def test_step_7_fails_closed_on_schema_valid_leading_dunder_source_drift():
+    """Typed re-frame: the port_exposure legacy validator still accepts the
+    dunder-facility source (unchanged), and the lifecycle step_6/step_7 guards
+    fail closed on an attestation mismatch — the successor to the raw leading-
+    dunder source-drift QUARANTINE.  (Leading-dunder source-digest tracking
+    itself is covered by test_source_digest_* in test_lifecycle.py.)"""
     source_state = _make_dunder_facility_state(producer_port_cell=(10, 10))
     cut = _make_port_exposure_cut(_make_port_exposure_cert(), scope_state=source_state)
     assert validate_port_exposure(cut, source_state, CANONICAL_RULES).kind == "ok"
 
-    source_drift = _make_dunder_facility_state(producer_port_cell=(12, 10))
-    assert compute_source_digest(source_drift) != cut.scope.source_digest
-    assert step_6_attach_scope_check(cut, source_drift) == "QUARANTINE"
-    assert step_7_evaluate_cut(cut, source_drift) is False
+    compiled_a, snapshot_a, snapshot_b = _typed_attestation_pair()
+    assert step_6_attach_scope_check(compiled_a, snapshot_a) == "ATTACH"
+    assert step_6_attach_scope_check(compiled_a, snapshot_b) == "QUARANTINE"
+    assert step_7_evaluate_cut(compiled_a, snapshot_b) is False
 
 
 def test_validate_port_exposure_ok():
@@ -687,21 +654,6 @@ def test_validate_port_exposure_one_literal_schema_err_python_O_safe():
 # ============================================================================
 # F3 evaluate
 # ============================================================================
-
-def test_evaluate_literal_multiset_delegates_to_multiset():
-    cert_payload = _make_port_exposure_cert()
-    cut = _make_port_exposure_cut(cert_payload)
-    state_with = _make_state(
-        crusher_poses=["p7"],
-        refinery_poses=["p3"],
-    )
-    state_without = _make_state(
-        crusher_poses=["p7"],
-        refinery_poses=["p9"],
-    )
-    assert evaluate_literal_multiset(cut, state_with) is True
-    assert evaluate_literal_multiset(cut, state_without) is False
-
 
 def test_port_exposure_oracle_stub_is_fail_closed():
     assert generate_port_exposure_cuts(_make_state(), master_solution={"unused": True}) == []
