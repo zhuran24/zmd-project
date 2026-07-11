@@ -334,6 +334,55 @@ Step 8 现 cert→参数段(lifecycle.py:1217-1254)抽成纯 compiler;ghost scop
 lowering 保留。**4.11 的 precheck 前移属 B5**(动 sealed master 文件;B2 明确不 mutate
 master——B0 双审曾误归 B2,此处消歧)。
 
+**B2 侦察补拍板(2026-07-11,codex 三缝上报后)**:
+
+- **raw scope preimage=方案 A**:`CutScope` 增 versioned frozen carrier
+  `ScopeIdentityPreimageV1`(`ghost_rect: tuple|None` + `blocked_cells`/`exterior_blocks`
+  排序不可变 tuple),字段 `identity_preimage: ScopeIdentityPreimageV1|None`(默认 None)。
+  oracle 在构造 CutScope 的**同一次读取**里同时捕获 legacy 16-hex 与 raw carrier;typed
+  adapter 先由 raw 重算并核对 legacy 16-hex(一致性防伪),再算 Stage-B domain-separated
+  64-hex;`identity_preimage=None` 的旧 cut 反序列化合法但 typed 路径 fail-closed(仅
+  legacy 诊断可达);agnostic 同样必须携带完整 exterior preimage,禁止「当前恰为空」的
+  常量特判;不动 benders_loop、不进 F1 proof digest。方案 B(塞 cert)撕破 cert 闭集
+  schema(cert_schema.py:26/113 allowed=required),方案 C(sidecar/双参 adapter)破
+  replay 与唯一 adapter 拍板——均拒。
+- **F1 assumptions 校验前移 B2**(侦察缝 2:F1 oracle 必带 boundary-saturation 与
+  placement-rule assumptions(region_capacity_oracle.py:155),typed currentness 对非空
+  assumptions 的 fail-closed 若留 B5,真实 F1 永远到不了 plugin):snapshot-native
+  assumption 复验(对 snapshot 冻结值按 legacy 语义逐条验证)进 B2,校验通过才放行、
+  失败 fail-closed;禁止删 assumptions 或用空-assumption 测试绕过。
+- **MasterDomainProjectionV1 的 snapshot 侧投影前移 B2**(F1 plan 需 domain_fingerprint,
+  原排 B3 时序倒挂):投影函数 B2 落地(F1 所需子集,domain-separated 前缀+canonical
+  投影),master live 侧 resolve 复算仍留 B5(§2.6 不变)。
+- **冗余 bound scope=typed fail-closed 收严**:legacy 接受「标 bound 但 ghost 实际不与
+  R 相交」的非规范 Cut,typed 路径拒绝之;differential 中记为预期差异,不扩 FamilyPlugin
+  seam。
+- **semantic fingerprint 编码**:B2 给出实定义提案(domain separator+operation/参数
+  schema/compiler version 的 canonical 投影),随批双审把关。
+- **differential 语义锚**:现存 capacity=2/demand=2 用例不是合法 F1 proof(validator 要求
+  demand>capacity),只作 plan-interpreter/lowering 边界测试;全链正例用 capacity=1;
+  demand==capacity 验证 oracle 不发 cut。
+
+**B2 双审补拍板(2026-07-11)**:
+
+- **三项 typed accept-set 收窄追认为正式拍板**(codex#3 抓到实现未经拍板收窄,终审裁定
+  追认而非回退——三项均 fail-closed 方向、生产正例不受影响,typed 边界哲学即收紧表示层):
+  ①combinatorial proof 携带非空 LP 字段=拒(proof 类型纯净);②contributor pose_domain
+  必须等于完整 pool(oracle 生产形态即全 pool,子集=非规范);③occupied cardinality gate。
+  全部登记 differential 预期差异表;流程教训=实现方新增任何 accept-set 变化必须先上报拍板,
+  哪怕方向保守。
+- **assumptions/completeness 复验无条件化**(codex#1 BLOCK):复验不得受
+  validator_version 分支控制——版本不匹配=直接拒绝,不是跳过安全义务的 seam;所有
+  COMPILABLE/ENABLED 出口无条件执行。
+- **MasterDomainProjectionV1 必含 slot 身份**(codex#2 BLOCK):mandatory slot 的
+  canonical 行至少含 slot_key/slot_kind/domain-channel 字段(lowering 的 literal cache
+  以 key 为身份,漏 key=alias 盲区);配漂移红测。
+- **16-hex 全量核对先行**(codex#6):blocked/exterior/ghost 三项 legacy identity 全部
+  核对通过后才允许计算任何 Stage-B 64-hex digest;顺序红测钉住。
+- **differential 双拒矩阵**(codex#5):对 legacy 每项验证义务(capacity/demand/
+  contributor/P(g)/cells_per_pose/gap)做参数化 tamper,断言 legacy 与 typed 共同拒绝;
+  预期差异表只含正式拍板项。
+
 ### 5.2 F6(中)
 domain_fingerprint 按 §2.4 v2 定义(covering facility_pools digest+slot 结构+pose-tuple
 登记);master apply 重查 eligible baseline poses 保留,fingerprint 绑定使之成为「同一
@@ -403,7 +452,7 @@ raw Cut → v1 adapter → snapshot → validate_and_compile_cut → ConstraintP
 | B0 | 契约测试壳:alias/digest、非方形 ghost、same-object(snapshot+proof)、condition 错绑、rejection-zero-mutation、静态工件 AST 负断言(赋值+mutation 双形态)、冻结后改写红测。**全部 `xfail(strict)` 标注**,实现批逐条解除(双审 #23:裸红测会破坏主干 CI) | 否 | 无 |
 | B1 | FrozenArtifactBundle+snapshot 层(§2.1-2.3):bundle/GhostRect/GroupSnapshot/ValidatedStateSnapshot/builder/深冻结/digest v1;bundle 不经 BState(§2.1);不改 attach 链 | 新文件 | **新 TCB 文件无条件注册+hash-pin**(双审 #21:词法 token 扫描可能漏掉不含关键词的 lazy-import 模块;RFC 明文 snapshot builder 在 TCB) |
 | B1.5 | **typed 平台层**(双审 #20 补批):CutEnvelope+v1 adapter/frozen proof/ConstraintPlan/CompiledCut/ShadowValidated/CutRejection/registry(execution_path 字段)/单入口骨架+plan validation/四件私有构造 AST meta-tests;**含 F5 typed validator+shadow 分支**(验证 ShadowValidated 通路,F5 无 compiler 正合适);无 F1/F6/F7 compiler | 新文件 | 同 B1 |
-| B2 | **F1 纵切**(v3 重排,二轮 BLOCK #3:v2 把 typed validator 全推 B5 导致 B2-B4 的 differential 链断头——单入口无 validator 产不出 CompiledCut):F1 parser+typed validator+compiler+registry 升 COMPILABLE+differential 全链;**与旧 raw 路径并存,生产链不动** | 新文件 | 同上 |
+| B2 | **F1 纵切**(v3 重排,二轮 BLOCK #3:v2 把 typed validator 全推 B5 导致 B2-B4 的 differential 链断头——单入口无 validator 产不出 CompiledCut):F1 parser+typed validator+compiler+registry 升 COMPILABLE+differential 全链;**与旧 raw 路径并存,生产链不动**(benders 编排零改动);含 §5.1 B2 补拍板四件(ScopeIdentityPreimageV1/assumptions 复验前移/投影 snapshot 侧/收严) | **范围修正(B2 侦察)**:非纯新文件——触及 pinned `lifecycle.py`(CutScope carrier)+`region_capacity_oracle.py`(捕获点)+`typed_platform.py`(adapter/currentness/registry),reseal 随批(floor+sink+自钉) | 同上 |
 | B3 | **F6 纵切**(同型)+MasterDomainProjectionV1 投影函数定稿(§2.6) | 新文件 | 同上 |
 | B4 | **F7 纵切**(同型)+M2 合并 | 新文件+测试迁移 | 同上 |
 | B5 | **wiring cut-over**(职责收窄,二轮 #3/opus#3):生产链改接单入口(4.7 三路 match)、旧签名迁移与旧路径删除(§4 全表:step_6 attest 化/Step-7 全域/assumptions/replay ReplayContext/store 调用面/legacy 双表)、raw Step 8+F5 分支删除、master API 两层私有化、telemetry 扩展、step_6/step_8 独立 AST 契约、全部 pin 重钉 | **已知下界 ≈16 个 pinned 文件**(二轮 #9 实化,v2 的 ≈10 是低估):lifecycle.py+benders_loop.py+replay.py(source-hash floor,二轮 #12 修正分类:非 sink 表成员)+store.py+assumptions/verifiers.py+四族 typed 文件+三个 legacy evaluator 文件(cutset/component_reach/density_envelope)+两个 helper(canonical_rules.py/canonical_sot.py)+exact_coordinate_master.py+master_model.py;**floor 文件一改必 re-pin**(checker :13181-13191 无条件比较 floor SHA,不存在「以实跑为准」的余地);另计既有测试语料迁移面(52 处裸 BState 构造中受签名影响的 8 个文件的 (cut,state) 调用点) | 完整 reseal 连锁;**开工前先跑 impact 扫描生成最终文件清单**;若拆批,拆分线=**functional-rewire(B5a:单入口接线+全签名迁移+测试语料)/AST-lockdown(B5b:raw step_8 与 add_* 私有化+allowlist 钉)**(opus#3:verifier 签名一迁,旧调用点当场失配,单入口接线推不到后批;v2 的 verifier-vs-raw 拆分线不可行),各自 reseal |
@@ -503,3 +552,9 @@ reseal(PIC-3 同型放大);B6 owner。
   | opus#2 LOW(CutEnvelope 调用面钉未落) | 并入 codex#7 处置 |
   | opus#3 LOW(token 模块全局可导入) | owner-deferred 同档入档(同 B1) |
   | opus#4 LOW(顶层类型违法 raise 而非三分支) | 符合 §2.5 异常边界(fail-closed 方向),B5 编排侧注意事项已在 §4.7 |
+
+- **B2 侦察补拍板(2026-07-11)**:codex 纯侦察上报三个全链阻断缝(CutScope 无 raw
+  preimage/F1 assumptions 被 currentness 全拒/domain_fingerprint 时序倒挂)+三小项。
+  全部采纳,拍板落 §5.1 B2 补拍板段与 §7 B2 行范围修正;要点=方案 A carrier、
+  assumptions 复验前移、投影 snapshot 侧前移、冗余 bound scope 收严、B2 非纯新文件
+  (三 pinned 文件 reseal 随批)。

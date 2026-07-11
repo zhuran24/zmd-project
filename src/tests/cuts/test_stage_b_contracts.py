@@ -557,25 +557,33 @@ def _make_region_capacity_cut(
     compute_exterior_blocks_hash: Any,
     ghost_agnostic: str,
 ) -> Any:
+    # Neutral F6-shaped payload (platform-mechanism fixture; borrowing the F1
+    # family name would collide with its family-scoped unconditional assumption
+    # reverification, B2 dual-review codex#1).
+    del encode_region_bitset  # F1-only helper retained in signature for API stability
+    state = sources["state"]
     payload = canonicalize(
         {
-            "cert_kind": "region_capacity_combinatorial",
-            "region_kind": "left_or_bottom_union",
-            "region_cells_bitset_b64": encode_region_bitset([(0, 0), (0, 1), (1, 0)], grid_size=70),
-            "cap_R": 1,
-            "demand_R": 2,
-            "gap": 1,
-            "contributing_groups": [["boundary_io", 2]],
-            "cells_per_pose": {"boundary_io": 1},
-            "lp_dual_ray_b64": None,
-            "lp_dual_objective": None,
+            "cert_kind": "hall_interval_witness",
+            "region_kind": "left_baseline",
+            "region_total_length": 70,
+            "partition_lens": [4, 5],
+            "partition_offsets": [0, 5],
+            "pose_length": 3,
+            "pose_shape_canonical": "1x3_rigid",
+            "max_packable": [1, 1],
+            "total_packable": 2,
+            "contributing_group": "boundary_io",
+            "region_demand": 3,
+            "group_demand": 2,
+            "ghost_rect_repr": [0, 0, 1, 1],
+            "exterior_blocks_digest": compute_exterior_blocks_hash(state),
         }
     )
     cert_hash = hashlib.sha256(payload).hexdigest()
-    state = sources["state"]
     return cut_type(
         cut_id="b0-region-capacity",
-        family="region_capacity",
+        family="shape_packing_hall",
         literals=None,
         geometric_payload=payload,
         scope=scope_type(
@@ -587,7 +595,7 @@ def _make_region_capacity_cut(
             oracle_abstraction_version="region_capacity_v1",
         ),
         cert=cert_type(
-            cert_kind="region_capacity_combinatorial",
+            cert_kind="hall_interval_witness",
             cert_payload=payload,
             cert_hash=cert_hash,
         ),
@@ -711,11 +719,12 @@ def _make_plan(
 ) -> Any:
     if parameters is None:
         parameters = {
-            "group_cell_weights": {"boundary_io": 1},
+            "group_id": "boundary_io",
+            "region_kind": "left_baseline",
             "capacity": 1,
         }
     return typed_platform.ConstraintPlan(
-        family="region_capacity",
+        family="shape_packing_hall",
         schema_version=1,
         semantic_fingerprint="5" * 64,
         model_scope=typed_platform.ModelScope(
@@ -723,7 +732,7 @@ def _make_plan(
             ghost_rect_digest=None,
             domain_fingerprint="6" * 64,
         ),
-        operation="region_capacity_le",
+        operation="shape_packing_hall_le",
         parameters=parameters,
     )
 
@@ -1008,18 +1017,19 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
         frozen_artifacts, state_snapshot, typed_platform, lifecycle
     )
     plan_parameters = {
-        "group_cell_weights": {"boundary_io": 1},
+        "group_id": "boundary_io",
+        "region_kind": "left_baseline",
         "capacity": 1,
     }
     plan = _make_plan(typed_platform, parameters=plan_parameters)
     plugin = _RecordingPlugin(
         plan,
-        _make_probe_proof(typed_platform, family="region_capacity"),
+        _make_probe_proof(typed_platform, family="shape_packing_hall"),
     )
     registry = _make_registry(
         typed_platform,
         plugin,
-        family="region_capacity",
+        family="shape_packing_hall",
         mode="geometric",
         stage=typed_platform.CapabilityStage.COMPILABLE,
         compiler_version="b0-spy-v1",
@@ -1038,13 +1048,14 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
         _assert_sha256_hex(digest)
 
     _mutate_builder_sources(sources)
-    plan_parameters["group_cell_weights"]["boundary_io"] = 999
+    plan_parameters["region_kind"] = "attacker"
     plan_parameters["capacity"] = 999
 
     assert snapshot.digest == snapshot_digest_before
     assert result.plan.digest == plan_digest_before
     assert result.plan.parameters == {
-        "group_cell_weights": {"boundary_io": 1},
+        "group_id": "boundary_io",
+        "region_kind": "left_baseline",
         "capacity": 1,
     }
     assert result.digest == compiled_digest_before
@@ -1061,17 +1072,11 @@ def test_plan_digest_survives_builder_input_mutation() -> None:
         result.plan.parameters["capacity"] = 999
     assert_plan_digests_unchanged()
     with pytest.raises((TypeError, AttributeError)):
-        result.plan.parameters["group_cell_weights"]["boundary_io"] = 999
-    assert_plan_digests_unchanged()
-    with pytest.raises((TypeError, AttributeError)):
         result.plan.parameters.update({"capacity": 999})
     assert_plan_digests_unchanged()
-    with pytest.raises((TypeError, AttributeError)):
-        result.plan.parameters["group_cell_weights"].update({"boundary_io": 999})
-    assert_plan_digests_unchanged()
-    with pytest.raises((TypeError, AttributeError)):
-        result.plan.parameters["group_cell_weights"].append(("attacker", 999))
-    assert_plan_digests_unchanged()
+    # Nested-mapping deep-freeze coverage moved to the real F1 chain in
+    # test_stage_b_region_capacity (group_cell_weights is F1-shaped; this
+    # platform fixture now uses the neutral F6 scalar schema).
 
 
 @pytest.mark.xfail(
@@ -1088,12 +1093,12 @@ def test_verifier_and_compiler_receive_same_snapshot_object() -> None:
     )
     plugin = _RecordingPlugin(
         _make_plan(typed_platform),
-        _make_probe_proof(typed_platform, family="region_capacity"),
+        _make_probe_proof(typed_platform, family="shape_packing_hall"),
     )
     registry = _make_registry(
         typed_platform,
         plugin,
-        family="region_capacity",
+        family="shape_packing_hall",
         mode="geometric",
         stage=typed_platform.CapabilityStage.COMPILABLE,
         compiler_version="b0-spy-v1",
@@ -1138,12 +1143,12 @@ def test_pipeline_reuses_frozen_proof_without_compiler_raw_byte_access() -> None
     )
     plugin = _RecordingPlugin(
         _make_plan(typed_platform),
-        _make_probe_proof(typed_platform, family="region_capacity"),
+        _make_probe_proof(typed_platform, family="shape_packing_hall"),
     )
     registry = _make_registry(
         typed_platform,
         plugin,
-        family="region_capacity",
+        family="shape_packing_hall",
         mode="geometric",
         stage=typed_platform.CapabilityStage.COMPILABLE,
         compiler_version="b0-spy-v1",

@@ -25,6 +25,7 @@ Refs:
 - docs/research/p3_b_design_v2_20260521/state_machine_v2.md §2 (BState)
 - docs/research/p3_b_design_v2_20260521/poc/b_core_lifecycle_poc.py (源 PoC)
 """
+
 from __future__ import annotations
 
 import base64
@@ -63,15 +64,16 @@ def validate_cert_payload(family: str, raw_bytes: bytes) -> JsonDict:
 
     return _validate_cert_payload(family, raw_bytes)
 
+
 CutFamily = Literal[
-    "region_capacity",       # F1 (geometric)
-    "cutset",                # F2 (geometric)
-    "port_exposure",         # F3 (literal)
-    "component_reach",       # F4 (geometric)
-    "pattern_nogood",        # F5 (literal)
-    "shape_packing_hall",    # F6 (geometric)
-    "power_hitting_set",     # F7 (literal)
-    "density_envelope",      # F9 (geometric)
+    "region_capacity",  # F1 (geometric)
+    "cutset",  # F2 (geometric)
+    "port_exposure",  # F3 (literal)
+    "component_reach",  # F4 (geometric)
+    "pattern_nogood",  # F5 (literal)
+    "shape_packing_hall",  # F6 (geometric)
+    "power_hitting_set",  # F7 (literal)
+    "density_envelope",  # F9 (geometric)
 ]
 # F8 power_grid_reach was deleted 2026-07-08: retired on a false game-rule
 # premise (poles need no pole-to-pole network; the protocol core links to
@@ -80,14 +82,14 @@ CutFamily = Literal[
 # Family ↔ mode mapping enforces XOR (literal-based vs geometric-based).
 # PROJECT_LOCK §3A invariant 3 (family↔mode 不可改).
 _FAMILY_MODE_MAP: Dict[str, Literal["literal", "geometric"]] = {
-    "region_capacity":      "geometric",
-    "cutset":                "geometric",
-    "port_exposure":         "literal",
-    "component_reach":       "geometric",
-    "pattern_nogood":        "literal",
-    "shape_packing_hall":    "geometric",
-    "power_hitting_set":     "literal",
-    "density_envelope":      "geometric",
+    "region_capacity": "geometric",
+    "cutset": "geometric",
+    "port_exposure": "literal",
+    "component_reach": "geometric",
+    "pattern_nogood": "literal",
+    "shape_packing_hall": "geometric",
+    "power_hitting_set": "literal",
+    "density_envelope": "geometric",
 }
 
 
@@ -106,10 +108,12 @@ SOURCE_DIGEST_FIELD_NAMES: Tuple[str, ...] = (
 # Do not treat every ``__*`` key as non-authoritative: schema-valid facility
 # template / facility pool identifiers may legally begin with underscores.
 SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH: Dict[Tuple[str, ...], FrozenSet[str]] = {
-    ("candidate_placements",): frozenset({
-        "__pose_id_cache__",
-        "__pose_id_cache_digest__",
-    }),
+    ("candidate_placements",): frozenset(
+        {
+            "__pose_id_cache__",
+            "__pose_id_cache_digest__",
+        }
+    ),
 }
 
 STEP_7_EVALUATION_GUARD_OBLIGATIONS: Tuple[str, ...] = (
@@ -154,9 +158,11 @@ def _strict_b64decode(value: object, field_name: str) -> bytes:
 # Cut object schema (cut_lifecycle_v2 v3.2.2 §3)
 # ============================================================================
 
+
 @dataclass(frozen=True)
 class AnonymousSlotRef:
     """state_machine_v2 §2 — group/slot 引用消 10^134 label symmetry."""
+
     group_id: GroupId
     slot_index: int
 
@@ -173,6 +179,57 @@ class Assumption:
     value: str
 
 
+@dataclass(frozen=True, slots=True)
+class ScopeIdentityPreimageV1:
+    """Canonical raw preimage for legacy and Stage-B scope identities."""
+
+    ghost_rect: Optional[Tuple[int, int, int, int]]
+    blocked_cells: Tuple[Cell, ...]
+    exterior_blocks: Tuple[Cell, ...]
+
+    def __post_init__(self) -> None:
+        _validate_scope_identity_preimage_v1(self)
+
+
+def _validate_scope_identity_preimage_v1(
+    preimage: ScopeIdentityPreimageV1,
+) -> None:
+    ghost_rect = preimage.ghost_rect
+    if ghost_rect is not None:
+        if type(ghost_rect) is not tuple or len(ghost_rect) != 4:
+            raise ValueError("identity_preimage.ghost_rect must be an exact four-item tuple or None")
+        if not all(_is_strict_int(value) for value in ghost_rect):
+            raise ValueError("identity_preimage.ghost_rect values must be strict integers")
+        x, y, width, height = ghost_rect
+        if x < 0 or y < 0:
+            raise ValueError("identity_preimage.ghost_rect x/y must be non-negative")
+        if width <= 0 or height <= 0:
+            raise ValueError("identity_preimage.ghost_rect width/height must be positive")
+
+    for field_name, cells in (
+        ("blocked_cells", preimage.blocked_cells),
+        ("exterior_blocks", preimage.exterior_blocks),
+    ):
+        if type(cells) is not tuple:
+            raise ValueError(f"identity_preimage.{field_name} must be an exact tuple")
+        for cell in cells:
+            if type(cell) is not tuple or len(cell) != 2:
+                raise ValueError(f"identity_preimage.{field_name} must contain exact two-item tuples")
+            if not all(_is_strict_int(coordinate) for coordinate in cell):
+                raise ValueError(f"identity_preimage.{field_name} coordinates must be strict integers")
+        if tuple(sorted(cells)) != cells or len(set(cells)) != len(cells):
+            raise ValueError(f"identity_preimage.{field_name} must be lexicographically sorted and unique")
+
+    if not set(preimage.exterior_blocks).issubset(preimage.blocked_cells):
+        raise ValueError("identity_preimage.exterior_blocks must be a subset of blocked_cells")
+    # Defensive fail-closed (B2 dual-review opus#1): unreachable on the certified
+    # F1 generation path — there ghost_cells are exactly the cells of ghost_rect,
+    # so ghost_rect=None implies ghost_cells=∅ and blocked == exterior. The guard
+    # only fires on a degenerate caller-supplied state and errs toward rejection.
+    if ghost_rect is None and preimage.blocked_cells != preimage.exterior_blocks:
+        raise ValueError("identity_preimage cannot contain ghost cells when ghost_rect is None")
+
+
 @dataclass(frozen=True)
 class CutScope:
     """v3.2.2: ``exterior_blocks_hash`` 新加 (Gemini round 21).
@@ -181,13 +238,15 @@ class CutScope:
     - GHOST_AGNOSTIC cut: verify ``exterior_blocks_hash`` only
     - ghost-bound cut: verify full ``blocked_cells_hash``
     """
+
     ghost_rect_id: GhostRectId
     blocked_cells_hash: Hash
-    exterior_blocks_hash: Hash       # v3.2.2 新加
+    exterior_blocks_hash: Hash  # v3.2.2 新加
     source_digest: SourceDigestStr
     artifact_hashes: Dict[str, Hash] = field(default_factory=dict)
     oracle_abstraction_version: str = ""
     active_assumptions: Tuple[Assumption, ...] = ()
+    identity_preimage: Optional[ScopeIdentityPreimageV1] = None
 
     def __post_init__(self) -> None:
         # Scope data is proof-bearing evidence captured at cut generation time.
@@ -348,6 +407,8 @@ def _validate_scope_schema(cut_id: CutId, scope: CutScope) -> None:
             raise ValueError(f"Cut {cut_id}: active_assumptions 必须只含 Assumption")
         if not _is_non_empty_str(assumption.key) or not isinstance(assumption.value, str):
             raise ValueError(f"Cut {cut_id}: assumption key/value schema invalid")
+    if scope.identity_preimage is not None and type(scope.identity_preimage) is not ScopeIdentityPreimageV1:
+        raise ValueError(f"Cut {cut_id}: scope.identity_preimage 必须是 ScopeIdentityPreimageV1 或 None")
 
 
 def _validate_literal_schema(cut_id: CutId, literals: Optional[Tuple[CutLiteral, ...]]) -> None:
@@ -376,6 +437,7 @@ class ValidationResult:
 # BState mini (state_machine_v2 §2 — Phase 1.0 framework scope)
 # ============================================================================
 
+
 @dataclass
 class GroupState:
     """state_machine_v2.md §2 contract.
@@ -384,6 +446,7 @@ class GroupState:
     group_id 已在 GroupState.group_id field). 旧版 PoC 写 List[Tuple[GroupId,
     PoseId]] 跟 spec 撕裂. multiset eval 同步修.
     """
+
     group_id: GroupId
     demand: int
     pose_domain: FrozenSet[PoseId]
@@ -404,6 +467,7 @@ class BState:
     readonly 引用, 让 ASSUMPTION_VERIFIERS 能真实施 source-of-truth 比对.
     None 表示未 inject; verifier fail-closed 返 False.
     """
+
     groups: Dict[GroupId, GroupState]
     cell_owner: Dict[Cell, Tuple[GroupId, int]] = field(default_factory=dict)
     ghost_rect: Optional[Tuple[int, int, int, int]] = None  # (x, y, x_span, y_span)
@@ -442,6 +506,88 @@ class BState:
 # Helper functions (cut_lifecycle_v2 v3.2.2 §4)
 # ============================================================================
 
+
+def _capture_scope_cells(value: object, *, field_name: str) -> Tuple[Cell, ...]:
+    if not isinstance(value, (set, frozenset)):
+        raise ValueError(f"state.{field_name} must be a set of cells")
+    captured: List[Cell] = []
+    for raw_cell in value:
+        if type(raw_cell) is not tuple or len(raw_cell) != 2:
+            raise ValueError(f"state.{field_name} must contain exact two-item tuples")
+        x, y = raw_cell
+        if not _is_strict_int(x) or not _is_strict_int(y):
+            raise ValueError(f"state.{field_name} coordinates must be strict integers")
+        captured.append((x, y))
+    if len(set(captured)) != len(captured):
+        raise ValueError(f"state.{field_name} contains duplicate cells")
+    return tuple(sorted(captured))
+
+
+def capture_scope_identity_inputs_v1(
+    state: BState,
+) -> Tuple[ScopeIdentityPreimageV1, Tuple[Cell, ...]]:
+    """Capture raw scope inputs once; retain ghost cells for oracle policy."""
+
+    # Read every live reference before traversing any container.  The oracle
+    # consumes only the returned immutable values for both policy selection and
+    # identities, so a side-effecting source cannot create a hybrid CutScope.
+    raw_ghost_rect = state.ghost_rect
+    raw_ghost_cells = state.ghost_cells
+    raw_exterior_blocks = state.exterior_blocks
+
+    if raw_ghost_rect is None:
+        ghost_rect = None
+    else:
+        if type(raw_ghost_rect) is not tuple or len(raw_ghost_rect) != 4:
+            raise ValueError("state.ghost_rect must be an exact four-item tuple or None")
+        if not all(_is_strict_int(value) for value in raw_ghost_rect):
+            raise ValueError("state.ghost_rect values must be strict integers")
+        ghost_rect = raw_ghost_rect
+
+    ghost_cells = _capture_scope_cells(
+        raw_ghost_cells,
+        field_name="ghost_cells",
+    )
+    exterior_blocks = _capture_scope_cells(
+        raw_exterior_blocks,
+        field_name="exterior_blocks",
+    )
+    blocked_cells = tuple(sorted(set(ghost_cells).union(exterior_blocks)))
+    preimage = ScopeIdentityPreimageV1(
+        ghost_rect=ghost_rect,
+        blocked_cells=blocked_cells,
+        exterior_blocks=exterior_blocks,
+    )
+    return preimage, ghost_cells
+
+
+def capture_scope_identity_preimage_v1(state: BState) -> ScopeIdentityPreimageV1:
+    """Capture all raw scope identity inputs once into their canonical carrier."""
+
+    preimage, _ghost_cells = capture_scope_identity_inputs_v1(state)
+    return preimage
+
+
+def _compute_legacy_cells_hash(cells: Iterable[Cell]) -> Hash:
+    blob = ";".join(f"{x},{y}" for x, y in cells).encode("utf-8")
+    return hashlib.sha256(blob).hexdigest()[:16]
+
+
+def compute_scope_identity_legacy_hashes(
+    preimage: ScopeIdentityPreimageV1,
+) -> Tuple[GhostRectId, Hash, Hash]:
+    """Recompute the three historical scope identities from frozen raw data."""
+
+    if type(preimage) is not ScopeIdentityPreimageV1:
+        raise ValueError("preimage must be an exact ScopeIdentityPreimageV1")
+    _validate_scope_identity_preimage_v1(preimage)
+    return (
+        compute_ghost_rect_id(preimage.ghost_rect),
+        _compute_legacy_cells_hash(preimage.blocked_cells),
+        _compute_legacy_cells_hash(preimage.exterior_blocks),
+    )
+
+
 def compute_ghost_rect_id(rect: Optional[Tuple[int, int, int, int]]) -> GhostRectId:
     if rect is None:
         return GHOST_AGNOSTIC
@@ -452,15 +598,13 @@ def compute_ghost_rect_id(rect: Optional[Tuple[int, int, int, int]]) -> GhostRec
 def compute_blocked_cells_hash(state: BState) -> Hash:
     """blocked_cells = ghost ∪ exterior (跨层 sound — 不含 cell_owner)."""
     blocked = sorted(state.ghost_cells | state.exterior_blocks)
-    blob = ";".join(f"{c[0]},{c[1]}" for c in blocked).encode("utf-8")
-    return hashlib.sha256(blob).hexdigest()[:16]
+    return _compute_legacy_cells_hash(blocked)
 
 
 def compute_exterior_blocks_hash(state: BState) -> Hash:
     """v3.2.2 新: 仅 exterior_blocks (排除 ghost_cells), GHOST_AGNOSTIC 路径用."""
     blocked = sorted(state.exterior_blocks)
-    blob = ";".join(f"{c[0]},{c[1]}" for c in blocked).encode("utf-8")
-    return hashlib.sha256(blob).hexdigest()[:16]
+    return _compute_legacy_cells_hash(blocked)
 
 
 def _is_source_digest_runtime_cache_key(path: Tuple[str, ...], key: str) -> bool:
@@ -556,10 +700,7 @@ def validate_cut_integrity(cut: Cut) -> Optional[str]:
     if cut.cert.cert_hash != expected_hash:
         return f"cert_hash mismatch: cert={cut.cert.cert_hash!r}, expected={expected_hash!r}"
     if cut.oracle_cert_hash and cut.oracle_cert_hash != cut.cert.cert_hash:
-        return (
-            f"oracle_cert_hash mismatch: oracle={cut.oracle_cert_hash!r}, "
-            f"cert={cut.cert.cert_hash!r}"
-        )
+        return f"oracle_cert_hash mismatch: oracle={cut.oracle_cert_hash!r}, cert={cut.cert.cert_hash!r}"
     if cut.geometric_payload is not None and cut.geometric_payload != cut.cert.cert_payload:
         return "geometric_payload differs from cert.cert_payload"
     return None
@@ -573,6 +714,7 @@ def validate_cut_integrity(cut: Cut) -> Optional[str]:
 # the 9-step pipeline. P1.5 (Phase 1.1) re-implements full F1 generator with
 # interior_rect + ghost_complement region kinds + Farkas certificate (cand C
 # 复用), then this stub is replaced by ``src/cuts/families/region_capacity.py``.
+
 
 @dataclass(frozen=True)
 class RegionCapacityCert:
@@ -599,9 +741,7 @@ def _decode_region_bitset(b64: str, grid_size: int = 70) -> FrozenSet[Cell]:
     arr = _strict_b64decode(b64, "region_bitset_b64")
     expected_len = (grid_size * grid_size + 7) // 8
     if len(arr) != expected_len:
-        raise ValueError(
-            f"region_bitset length mismatch: got {len(arr)}, expected {expected_len}"
-        )
+        raise ValueError(f"region_bitset length mismatch: got {len(arr)}, expected {expected_len}")
     extra_bits = expected_len * 8 - grid_size * grid_size
     if extra_bits and arr[-1] >> (8 - extra_bits):
         raise ValueError("region_bitset has bits set outside the grid")
@@ -631,6 +771,7 @@ def _decode_region_bitset(b64: str, grid_size: int = 70) -> FrozenSet[Cell]:
 #   8. apply-to-master   — push cut to CP-SAT master (Phase 1.3 P1.21)
 #   9. replay regression — re-validate on new replay state (Step 5 re-entry)
 
+
 def step_0_canonicalize(raw_cert_dict: JsonDict) -> bytes:
     """Step 0 — raw oracle cert dict → canonical bytes (sort keys, fixed enc)."""
     return canonical_bytes_for_cert(raw_cert_dict)
@@ -655,8 +796,7 @@ def step_1_generate_region_capacity_combinatorial(
         region_cells = [(0, y) for y in range(70)]
     else:
         raise NotImplementedError(
-            f"P1.1 framework: only left/bottom baseline; got {region_kind}. "
-            f"P1.5 加 interior_rect + ghost_complement."
+            f"P1.1 framework: only left/bottom baseline; got {region_kind}. P1.5 加 interior_rect + ghost_complement."
         )
 
     region_set = frozenset(region_cells)
@@ -702,7 +842,7 @@ def step_1_generate_region_capacity_combinatorial(
         )
 
     return Cut(
-        cut_id=f"F1-region-{int(time.time()*1000)}",
+        cut_id=f"F1-region-{int(time.time() * 1000)}",
         family="region_capacity",
         literals=None,
         geometric_payload=cert_payload,
@@ -737,8 +877,71 @@ def step_2_minimize(cut: Cut, state: BState, oracle: Callable[..., object]) -> C
     用 L16 deletion minimizer wrap).
     """
     del oracle
-    raise NotImplementedError(
-        "Step 2 minimize 在 Phase 1.2B-F5 (F5 pattern_nogood) 实施."
+    raise NotImplementedError("Step 2 minimize 在 Phase 1.2B-F5 (F5 pattern_nogood) 实施.")
+
+
+def _scope_identity_preimage_to_jsonable(
+    preimage: Optional[ScopeIdentityPreimageV1],
+) -> Optional[JsonDict]:
+    if preimage is None:
+        return None
+    if type(preimage) is not ScopeIdentityPreimageV1:
+        raise ValueError("scope.identity_preimage must be an exact ScopeIdentityPreimageV1")
+    _validate_scope_identity_preimage_v1(preimage)
+    return {
+        "version": 1,
+        "ghost_rect": (list(preimage.ghost_rect) if preimage.ghost_rect is not None else None),
+        "blocked_cells": [list(cell) for cell in preimage.blocked_cells],
+        "exterior_blocks": [list(cell) for cell in preimage.exterior_blocks],
+    }
+
+
+def _scope_identity_preimage_from_jsonable(
+    value: object,
+) -> Optional[ScopeIdentityPreimageV1]:
+    if value is None:
+        return None
+    if type(value) is not dict:
+        raise ValueError("scope.identity_preimage must be an object or null")
+    expected_fields = {
+        "version",
+        "ghost_rect",
+        "blocked_cells",
+        "exterior_blocks",
+    }
+    if set(value) != expected_fields:
+        raise ValueError("scope.identity_preimage fields must match the v1 schema exactly")
+    if type(value["version"]) is not int or value["version"] != 1:
+        raise ValueError("scope.identity_preimage.version must be the integer 1")
+
+    raw_ghost_rect = value["ghost_rect"]
+    if raw_ghost_rect is None:
+        ghost_rect = None
+    else:
+        if type(raw_ghost_rect) is not list or len(raw_ghost_rect) != 4:
+            raise ValueError("scope.identity_preimage.ghost_rect must be a four-item array or null")
+        ghost_rect = tuple(raw_ghost_rect)
+
+    def parse_cells(raw_cells: object, *, field_name: str) -> Tuple[Cell, ...]:
+        if type(raw_cells) is not list:
+            raise ValueError(f"scope.identity_preimage.{field_name} must be an array")
+        cells: List[Cell] = []
+        for raw_cell in raw_cells:
+            if type(raw_cell) is not list or len(raw_cell) != 2:
+                raise ValueError(f"scope.identity_preimage.{field_name} must contain two-item arrays")
+            cells.append((raw_cell[0], raw_cell[1]))
+        return tuple(cells)
+
+    return ScopeIdentityPreimageV1(
+        ghost_rect=ghost_rect,
+        blocked_cells=parse_cells(
+            value["blocked_cells"],
+            field_name="blocked_cells",
+        ),
+        exterior_blocks=parse_cells(
+            value["exterior_blocks"],
+            field_name="exterior_blocks",
+        ),
     )
 
 
@@ -758,10 +961,11 @@ def step_3_serialize(cut: Cut) -> bytes:
                 "pose_id": lit.pose_id,
             }
             for lit in (cut.literals or ())
-        ] if cut.literals else None,
+        ]
+        if cut.literals
+        else None,
         "geometric_payload": (
-            base64.b64encode(cut.geometric_payload).decode("ascii")
-            if cut.geometric_payload else None
+            base64.b64encode(cut.geometric_payload).decode("ascii") if cut.geometric_payload else None
         ),
         "scope": {
             "ghost_rect_id": cut.scope.ghost_rect_id,
@@ -770,10 +974,8 @@ def step_3_serialize(cut: Cut) -> bytes:
             "source_digest": cut.scope.source_digest,
             "artifact_hashes": dict(cut.scope.artifact_hashes),
             "oracle_abstraction_version": cut.scope.oracle_abstraction_version,
-            "active_assumptions": [
-                {"key": a.key, "value": a.value}
-                for a in cut.scope.active_assumptions
-            ],
+            "active_assumptions": [{"key": a.key, "value": a.value} for a in cut.scope.active_assumptions],
+            "identity_preimage": _scope_identity_preimage_to_jsonable(cut.scope.identity_preimage),
         },
         "cert": {
             "cert_kind": cut.cert.cert_kind,
@@ -801,9 +1003,7 @@ def step_4_deserialize(blob: bytes) -> Cut:
     if d.get("literals"):
         literals = tuple(
             CutLiteral(
-                slot_ref=AnonymousSlotRef(
-                    lit["slot_ref"]["group_id"], lit["slot_ref"]["slot_index"]
-                ),
+                slot_ref=AnonymousSlotRef(lit["slot_ref"]["group_id"], lit["slot_ref"]["slot_index"]),
                 pose_id=lit["pose_id"],
             )
             for lit in d["literals"]
@@ -819,9 +1019,8 @@ def step_4_deserialize(blob: bytes) -> Cut:
         source_digest=d["scope"]["source_digest"],
         artifact_hashes=d["scope"]["artifact_hashes"],
         oracle_abstraction_version=d["scope"]["oracle_abstraction_version"],
-        active_assumptions=tuple(
-            Assumption(a["key"], a["value"]) for a in d["scope"]["active_assumptions"]
-        ),
+        active_assumptions=tuple(Assumption(a["key"], a["value"]) for a in d["scope"]["active_assumptions"]),
+        identity_preimage=_scope_identity_preimage_from_jsonable(d["scope"].get("identity_preimage")),
     )
     cert = OracleCert(
         cert_kind=d["cert"]["cert_kind"],
@@ -852,9 +1051,7 @@ def step_4_deserialize(blob: bytes) -> Cut:
     return cut
 
 
-def step_5_validate_region_capacity(
-    cut: Cut, state: BState, canonical_rules: JsonDict
-) -> ValidationResult:
+def step_5_validate_region_capacity(cut: Cut, state: BState, canonical_rules: JsonDict) -> ValidationResult:
     """Step 5 — independent recompute of F1 cert (v1.2 §7).
 
     GPT pro round 2 fix: validator 入口 schema 走 explicit if (`python -O` 防线).
@@ -862,7 +1059,8 @@ def step_5_validate_region_capacity(
     t0 = time.monotonic()
     if cut.geometric_payload is None:
         return ValidationResult(
-            "schema_err", time.monotonic() - t0,
+            "schema_err",
+            time.monotonic() - t0,
             "cut.geometric_payload is None (F1 schema invariant violated)",
         )
     try:
@@ -875,7 +1073,8 @@ def step_5_validate_region_capacity(
             region_cells = [(0, y) for y in range(70)]
         else:
             return ValidationResult(
-                "schema_err", time.monotonic() - t0,
+                "schema_err",
+                time.monotonic() - t0,
                 f"unsupported region_kind={region_kind}",
             )
 
@@ -885,7 +1084,8 @@ def step_5_validate_region_capacity(
         recomputed_cap_R = len(region_cells) - len(blocked_in_region)
         if recomputed_cap_R != cert_dict["cap_R"]:
             return ValidationResult(
-                "unsound", time.monotonic() - t0,
+                "unsound",
+                time.monotonic() - t0,
                 f"cap_R mismatch: cert={cert_dict['cap_R']}, recomputed={recomputed_cap_R}",
             )
 
@@ -894,13 +1094,15 @@ def step_5_validate_region_capacity(
         for gid, _ in cert_dict["contributing_groups"]:
             if gid not in cert_cells_per_pose:
                 return ValidationResult(
-                    "schema_err", time.monotonic() - t0,
+                    "schema_err",
+                    time.monotonic() - t0,
                     f"cert missing cells_per_pose[{gid}]",
                 )
             current_cells_per_pose = canonical_rules[gid]["cells_per_pose"]
             if cert_cells_per_pose[gid] != current_cells_per_pose:
                 return ValidationResult(
-                    "unsound", time.monotonic() - t0,
+                    "unsound",
+                    time.monotonic() - t0,
                     f"cells_per_pose mismatch for {gid}: "
                     f"cert={cert_cells_per_pose[gid]}, current={current_cells_per_pose}",
                 )
@@ -908,13 +1110,15 @@ def step_5_validate_region_capacity(
 
         if recomputed_demand_R != cert_dict["demand_R"]:
             return ValidationResult(
-                "unsound", time.monotonic() - t0,
+                "unsound",
+                time.monotonic() - t0,
                 f"demand_R mismatch: cert={cert_dict['demand_R']}, recomputed={recomputed_demand_R}",
             )
 
         if recomputed_demand_R <= recomputed_cap_R:
             return ValidationResult(
-                "unsound", time.monotonic() - t0,
+                "unsound",
+                time.monotonic() - t0,
                 f"witness fail: demand_R={recomputed_demand_R} ≤ cap_R={recomputed_cap_R}",
             )
 
@@ -934,6 +1138,7 @@ def assumption_holds(state: BState, assumption: Assumption) -> bool:
     Fail-closed: 未注册的 key → False (PROJECT_LOCK §4 silent recovery 禁).
     """
     from src.cuts.assumptions.verifiers import lookup_verifier
+
     verifier = lookup_verifier(assumption.key)
     if verifier is None:
         return False
@@ -1096,6 +1301,7 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
         from src.cuts.families.density_envelope import evaluate_geometric_density_envelope
         from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
         from src.cuts.families.shape_packing_hall import evaluate_geometric_shape_packing_hall
+
         if cut.family == "region_capacity":
             return evaluate_geometric_region_capacity(cut, state)
         if cut.family == "cutset":
@@ -1106,9 +1312,7 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
             return evaluate_geometric_density_envelope(cut, state)
         if cut.family == "shape_packing_hall":
             return evaluate_geometric_shape_packing_hall(cut, state)
-        raise NotImplementedError(
-            f"family={cut.family} geometric evaluator 未注册."
-        )
+        raise NotImplementedError(f"family={cut.family} geometric evaluator 未注册.")
     # literal-based — generic multiset eval (F3/F5/F7 all use this)
     return evaluate_literal_multiset(cut, state)
 
@@ -1128,8 +1332,7 @@ class MasterModelLike(Protocol):
         group_cell_weights: Mapping[str, int],
         capacity: int,
         condition_lits: Sequence[Any] = (),
-    ) -> bool:
-        ...
+    ) -> bool: ...
 
     def add_power_pose_exclusion_cut(
         self,
@@ -1138,8 +1341,7 @@ class MasterModelLike(Protocol):
         pose_id: str,
         blocked_cells: Iterable[Cell],
         condition_lits: Sequence[Any],
-    ) -> bool:
-        ...
+    ) -> bool: ...
 
     def add_baseline_packing_cut(
         self,
@@ -1148,16 +1350,14 @@ class MasterModelLike(Protocol):
         region_kind: str,
         capacity: int,
         condition_lits: Sequence[Any],
-    ) -> bool:
-        ...
+    ) -> bool: ...
 
     def add_pattern_nogood_cut(
         self,
         *,
         pattern: Sequence[Tuple[str, str]],
         condition_lits: Sequence[Any],
-    ) -> bool:
-        ...
+    ) -> bool: ...
 
 
 def step_8_apply_to_master(
@@ -1210,9 +1410,7 @@ def step_8_apply_to_master(
     # different cert, even if it bypasses the production wiring checks.
     integrity_error = validate_cut_integrity(cut)
     if integrity_error is not None:
-        raise ValueError(
-            f"step_8: cut integrity failed (fail-closed): {integrity_error}"
-        )
+        raise ValueError(f"step_8: cut integrity failed (fail-closed): {integrity_error}")
 
     if cut.family == "region_capacity":
         if cut.cert is None:
@@ -1231,9 +1429,7 @@ def step_8_apply_to_master(
             gid = str(item[0])
             weight = raw_cpp.get(gid)
             if isinstance(weight, bool) or not isinstance(weight, int) or weight <= 0:
-                raise ValueError(
-                    f"step_8: cells_per_pose[{gid!r}] must be a positive int"
-                )
+                raise ValueError(f"step_8: cells_per_pose[{gid!r}] must be a positive int")
             group_cell_weights[gid] = weight
         cap = cert["cap_R"]
         if isinstance(cap, bool) or not isinstance(cap, int) or cap < 0:
@@ -1254,15 +1450,12 @@ def step_8_apply_to_master(
         )
         if not applied:
             raise RuntimeError(
-                "step_8: master rejected region_capacity cut (fail-closed; "
-                "no partial constraint was attached)"
+                "step_8: master rejected region_capacity cut (fail-closed; no partial constraint was attached)"
             )
         return
     if cut.family == "power_hitting_set":
         if cut.cert is None:
-            raise ValueError(
-                "step_8: power_hitting_set cut carries no cert (fail-closed)"
-            )
+            raise ValueError("step_8: power_hitting_set cut carries no cert (fail-closed)")
         cert = validate_cert_payload("power_hitting_set", cut.cert.cert_payload)
         facility_group = cert["facility_group"]
         facility_pose_id = cert["facility_pose_id"]
@@ -1272,13 +1465,9 @@ def step_8_apply_to_master(
             or not isinstance(facility_pose_id, str)
             or not facility_pose_id
         ):
-            raise ValueError(
-                "step_8: facility_group/facility_pose_id must be non-empty str"
-            )
+            raise ValueError("step_8: facility_group/facility_pose_id must be non-empty str")
         if cut.scope is None:
-            raise ValueError(
-                "step_8: power_hitting_set cut carries no scope (fail-closed)"
-            )
+            raise ValueError("step_8: power_hitting_set cut carries no scope (fail-closed)")
         if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
             raise RuntimeError(
                 "step_8: power_hitting_set cut must be ghost-bound "
@@ -1286,8 +1475,7 @@ def step_8_apply_to_master(
             )
         if not ghost_condition_lits:
             raise RuntimeError(
-                "step_8: ghost-bound power_hitting_set cut requires the "
-                "selected ghost literal(s) (fail-closed)"
+                "step_8: ghost-bound power_hitting_set cut requires the selected ghost literal(s) (fail-closed)"
             )
         if ghost_blocked_cells is None:
             raise RuntimeError(
@@ -1302,15 +1490,12 @@ def step_8_apply_to_master(
         )
         if not applied:
             raise RuntimeError(
-                "step_8: master rejected power_hitting_set cut (fail-closed; "
-                "no partial constraint was attached)"
+                "step_8: master rejected power_hitting_set cut (fail-closed; no partial constraint was attached)"
             )
         return
     if cut.family == "shape_packing_hall":
         if cut.cert is None:
-            raise ValueError(
-                "step_8: shape_packing_hall cut carries no cert (fail-closed)"
-            )
+            raise ValueError("step_8: shape_packing_hall cut carries no cert (fail-closed)")
         cert = validate_cert_payload("shape_packing_hall", cut.cert.cert_payload)
         contributing_group = cert["contributing_group"]
         region_kind = cert["region_kind"]
@@ -1319,18 +1504,12 @@ def step_8_apply_to_master(
             raise ValueError("step_8: contributing_group must be a non-empty str")
         if region_kind not in ("left_baseline", "bottom_baseline"):
             raise ValueError(f"step_8: unknown region_kind {region_kind!r}")
-        if (
-            isinstance(total_packable, bool)
-            or not isinstance(total_packable, int)
-            or total_packable < 0
-        ):
+        if isinstance(total_packable, bool) or not isinstance(total_packable, int) or total_packable < 0:
             raise ValueError("step_8: total_packable must be a non-negative int")
         # region_demand/group_demand are pigeonhole reasoning values (validated
         # in steps 5-7); only the re-derived combinatorial cap enters the master.
         if cut.scope is None:
-            raise ValueError(
-                "step_8: shape_packing_hall cut carries no scope (fail-closed)"
-            )
+            raise ValueError("step_8: shape_packing_hall cut carries no scope (fail-closed)")
         if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
             raise RuntimeError(
                 "step_8: shape_packing_hall cut must be ghost-bound "
@@ -1338,8 +1517,7 @@ def step_8_apply_to_master(
             )
         if not ghost_condition_lits:
             raise RuntimeError(
-                "step_8: ghost-bound shape_packing_hall cut requires the "
-                "selected ghost literal(s) (fail-closed)"
+                "step_8: ghost-bound shape_packing_hall cut requires the selected ghost literal(s) (fail-closed)"
             )
         applied = master_model.add_baseline_packing_cut(
             group_id=contributing_group,
@@ -1349,33 +1527,24 @@ def step_8_apply_to_master(
         )
         if not applied:
             raise RuntimeError(
-                "step_8: master rejected shape_packing_hall cut (fail-closed; "
-                "no partial constraint was attached)"
+                "step_8: master rejected shape_packing_hall cut (fail-closed; no partial constraint was attached)"
             )
         return
     if cut.family == "pattern_nogood":
         if cut.cert is None:
-            raise ValueError(
-                "step_8: pattern_nogood cut carries no cert (fail-closed)"
-            )
+            raise ValueError("step_8: pattern_nogood cut carries no cert (fail-closed)")
         cert = validate_cert_payload("pattern_nogood", cut.cert.cert_payload)
         raw_pattern = cert["forbidden_pose_pattern"]
         if not isinstance(raw_pattern, list) or not raw_pattern:
-            raise ValueError(
-                "step_8: forbidden_pose_pattern must be a non-empty list"
-            )
+            raise ValueError("step_8: forbidden_pose_pattern must be a non-empty list")
         pattern: List[Tuple[str, str]] = []
         seen_group_pose: set[Tuple[str, str]] = set()
         for entry in raw_pattern:
             if not isinstance(entry, list) or len(entry) != 3:
-                raise ValueError(
-                    "step_8: forbidden_pose_pattern entry malformed"
-                )
+                raise ValueError("step_8: forbidden_pose_pattern entry malformed")
             gid, _slot, pose_id = entry
             if not isinstance(gid, str) or not gid or not isinstance(pose_id, str) or not pose_id:
-                raise ValueError(
-                    "step_8: forbidden_pose_pattern group_id/pose_id must be non-empty str"
-                )
+                raise ValueError("step_8: forbidden_pose_pattern group_id/pose_id must be non-empty str")
             key = (gid, pose_id)
             if key in seen_group_pose:
                 # D1 validator forbids this (BLOCK-2); re-check here so a
@@ -1387,14 +1556,11 @@ def step_8_apply_to_master(
             seen_group_pose.add(key)
             pattern.append(key)
         if cut.scope is None:
-            raise ValueError(
-                "step_8: pattern_nogood cut carries no scope (fail-closed)"
-            )
+            raise ValueError("step_8: pattern_nogood cut carries no scope (fail-closed)")
         ghost_bound = cut.scope.ghost_rect_id != GHOST_AGNOSTIC
         if ghost_bound and not ghost_condition_lits:
             raise RuntimeError(
-                "step_8: ghost-bound pattern_nogood cut requires the selected "
-                "ghost literal(s) (fail-closed)"
+                "step_8: ghost-bound pattern_nogood cut requires the selected ghost literal(s) (fail-closed)"
             )
         applied = master_model.add_pattern_nogood_cut(
             pattern=pattern,
@@ -1402,13 +1568,11 @@ def step_8_apply_to_master(
         )
         if not applied:
             raise RuntimeError(
-                "step_8: master rejected pattern_nogood cut (fail-closed; "
-                "no partial constraint was attached)"
+                "step_8: master rejected pattern_nogood cut (fail-closed; no partial constraint was attached)"
             )
         return
     raise NotImplementedError(
-        f"step_8: family={cut.family!r} 的 master 翻译尚未接线 — "
-        "P1.3 M4 阶梯逐族实施, 未接线族 fail-closed."
+        f"step_8: family={cut.family!r} 的 master 翻译尚未接线 — P1.3 M4 阶梯逐族实施, 未接线族 fail-closed."
     )
 
 
@@ -1419,6 +1583,7 @@ def step_8_apply_to_master(
 # ============================================================================
 # Full lifecycle pipeline (P1.1 framework reference)
 # ============================================================================
+
 
 @dataclass
 class LifecycleReport:
@@ -1441,9 +1606,7 @@ def run_lifecycle(
     """
     reports: List[LifecycleReport] = []
 
-    cut = step_1_generate_region_capacity_combinatorial(
-        state_at_gen, region_kind, contributing_group, canonical_rules
-    )
+    cut = step_1_generate_region_capacity_combinatorial(state_at_gen, region_kind, contributing_group, canonical_rules)
     if cut is None:
         reports.append(LifecycleReport("step_1_generate", False, "no infeasibility, no cut"))
         return reports
@@ -1451,10 +1614,13 @@ def run_lifecycle(
         reports.append(LifecycleReport("step_1_generate", False, "generated cut missing payload/cert"))
         return reports
     cert = json.loads(cut.geometric_payload)
-    reports.append(LifecycleReport(
-        "step_1_generate", True,
-        f"cut_id={cut.cut_id} cap_R={cert['cap_R']} demand_R={cert['demand_R']}",
-    ))
+    reports.append(
+        LifecycleReport(
+            "step_1_generate",
+            True,
+            f"cut_id={cut.cut_id} cap_R={cert['cap_R']} demand_R={cert['demand_R']}",
+        )
+    )
 
     blob = step_3_serialize(cut)
     reports.append(LifecycleReport("step_3_serialize", True, f"{len(blob)} bytes"))
@@ -1469,28 +1635,40 @@ def run_lifecycle(
     reports.append(LifecycleReport("step_4_deserialize", True, "round-trip OK"))
 
     vr_gen = step_5_validate_region_capacity(cut_d, state_at_gen, canonical_rules)
-    reports.append(LifecycleReport(
-        "step_5_validate_at_gen", vr_gen.kind == "ok",
-        f"{vr_gen.kind} ({vr_gen.elapsed_seconds*1000:.2f}ms) {vr_gen.detail or ''}",
-    ))
+    reports.append(
+        LifecycleReport(
+            "step_5_validate_at_gen",
+            vr_gen.kind == "ok",
+            f"{vr_gen.kind} ({vr_gen.elapsed_seconds * 1000:.2f}ms) {vr_gen.detail or ''}",
+        )
+    )
 
     decision = step_6_attach_scope_check(cut_d, state_at_replay)
-    reports.append(LifecycleReport(
-        "step_6_attach_scope_at_replay", decision == "ATTACH",
-        f"decision={decision}",
-    ))
+    reports.append(
+        LifecycleReport(
+            "step_6_attach_scope_at_replay",
+            decision == "ATTACH",
+            f"decision={decision}",
+        )
+    )
 
     if decision == "ATTACH":
         violate = step_7_evaluate_cut(cut_d, state_at_replay)
-        reports.append(LifecycleReport(
-            "step_7_evaluate", True,
-            f"violate={violate} (expected True for F1 scope-bound)",
-        ))
+        reports.append(
+            LifecycleReport(
+                "step_7_evaluate",
+                True,
+                f"violate={violate} (expected True for F1 scope-bound)",
+            )
+        )
 
     vr_replay = step_5_validate_region_capacity(cut_d, state_at_replay, canonical_rules)
-    reports.append(LifecycleReport(
-        "step_9_replay_validate", vr_replay.kind == "ok",
-        f"{vr_replay.kind} {vr_replay.detail or ''}",
-    ))
+    reports.append(
+        LifecycleReport(
+            "step_9_replay_validate",
+            vr_replay.kind == "ok",
+            f"{vr_replay.kind} {vr_replay.detail or ''}",
+        )
+    )
 
     return reports

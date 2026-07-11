@@ -29,8 +29,12 @@ from src.cuts.lifecycle import (
     BState,
     Cut,
     GroupState,
+    compute_scope_identity_legacy_hashes,
 )
-from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
+from src.cuts.oracles.region_capacity_oracle import (
+    _build_cut,
+    generate_region_capacity_cuts,
+)
 
 
 # Gap 8 修: gid 用真 operation_type, facility_templates 跟 真 canonical_rules schema 对齐
@@ -122,6 +126,56 @@ def _make_state(
 # Oracle: generate_region_capacity_cuts — Union region 数学
 # ============================================================================
 
+class _ChangingGhostCells(set):
+    """Attack fixture: a second live traversal exposes a different world."""
+
+    def __init__(self):
+        super().__init__({(0, 0)})
+        self.traversals = 0
+
+    def __iter__(self):
+        self.traversals += 1
+        cells = {(0, 0)} if self.traversals == 1 else {(30, 30)}
+        return iter(cells)
+
+    def __and__(self, other):
+        return set(iter(self)).intersection(other)
+
+    def __or__(self, other):
+        return set(iter(self)).union(other)
+
+
+def test_oracle_scope_policy_and_hashes_use_one_live_ghost_capture():
+    state = _make_state(boundary_exterior_blocks=2)
+    changing_ghost_cells = _ChangingGhostCells()
+    state.ghost_rect = (0, 0, 1, 1)
+    state.ghost_cells = changing_ghost_cells
+
+    cut = _build_cut(
+        "left_or_bottom_union",
+        frozenset({(0, 0)}),
+        cap_R=0,
+        demand_R=138,
+        gap=138,
+        contributing_groups=[("boundary_io", 138)],
+        state=state,
+        iter_index=0,
+    )
+
+    assert changing_ghost_cells.traversals == 1
+    assert cut.scope is not None
+    assert cut.scope.identity_preimage is not None
+    assert cut.scope.ghost_rect_id != GHOST_AGNOSTIC
+    assert (0, 0) in cut.scope.identity_preimage.blocked_cells
+    assert (30, 30) not in cut.scope.identity_preimage.blocked_cells
+    ghost_id, blocked_hash, exterior_hash = compute_scope_identity_legacy_hashes(
+        cut.scope.identity_preimage
+    )
+    assert cut.scope.ghost_rect_id == ghost_id
+    assert cut.scope.blocked_cells_hash == blocked_hash
+    assert cut.scope.exterior_blocks_hash == exterior_hash
+
+
 def test_oracle_emits_cut_when_union_overflow_2_cells():
     """Gap 6 union: 2 exterior on left baseline → union cap=137 < demand=138 → cut."""
     state = _make_state(boundary_exterior_blocks=2)
@@ -178,7 +232,24 @@ def test_oracle_ghost_agnostic_when_ghost_disjoint_from_union():
     )
     cuts = generate_region_capacity_cuts(state, CANONICAL_RULES)
     assert len(cuts) == 1
-    assert cuts[0].scope.ghost_rect_id == GHOST_AGNOSTIC
+    scope = cuts[0].scope
+    assert scope is not None
+    assert scope.ghost_rect_id == GHOST_AGNOSTIC
+    preimage = scope.identity_preimage
+    assert preimage is not None
+    assert preimage.ghost_rect == (20, 20, 5, 5)
+    assert preimage.exterior_blocks == ((15, 0), (16, 0))
+    assert preimage.blocked_cells == (
+        (15, 0),
+        (16, 0),
+        (20, 20),
+        (21, 20),
+    )
+    _, blocked_hash, exterior_hash = compute_scope_identity_legacy_hashes(
+        preimage
+    )
+    assert scope.blocked_cells_hash == blocked_hash
+    assert scope.exterior_blocks_hash == exterior_hash
 
 
 def test_oracle_ghost_bound_when_ghost_intersects_union():
@@ -188,7 +259,15 @@ def test_oracle_ghost_bound_when_ghost_intersects_union():
     )
     cuts = generate_region_capacity_cuts(state, CANONICAL_RULES)
     assert len(cuts) == 1
-    assert cuts[0].scope.ghost_rect_id != GHOST_AGNOSTIC
+    scope = cuts[0].scope
+    assert scope is not None
+    assert scope.identity_preimage is not None
+    ghost_rect_id, blocked_hash, exterior_hash = compute_scope_identity_legacy_hashes(
+        scope.identity_preimage
+    )
+    assert scope.ghost_rect_id == ghost_rect_id != GHOST_AGNOSTIC
+    assert scope.blocked_cells_hash == blocked_hash
+    assert scope.exterior_blocks_hash == exterior_hash
 
 
 # ============================================================================

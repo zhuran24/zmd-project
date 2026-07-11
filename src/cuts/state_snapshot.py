@@ -38,6 +38,8 @@ PoseCells: TypeAlias = Mapping[PoseKey, frozenset[Cell]]
 _SNAPSHOT_DIGEST_PREFIX = b"zmd.snapshot.v1:"
 _BLOCKED_CELLS_DIGEST_PREFIX = b"zmd.blocked-cells.v1:"
 _EXTERIOR_BLOCKS_DIGEST_PREFIX = b"zmd.exterior-blocks.v1:"
+_MASTER_DOMAIN_PROJECTION_PREFIX = b"zmd.master-domain-projection.v1:"
+_F1_MASTER_DOMAIN_PLACEMENT_RULES = frozenset({"left_or_bottom_boundary"})
 _MISSING_OPTIONAL_EXACT_ARTIFACT_HASH = "__MISSING_OPTIONAL_EXACT_ARTIFACT__"
 # Residual hardening deliberately deferred by the owner on 2026-07-06: a
 # deliberate in-process attacker can import this token, and frozen dataclass
@@ -142,6 +144,7 @@ class _CapturedState:
     groups: Mapping[str, GroupSnapshot]
     cell_owner: Mapping[Cell, tuple[str, int]]
     oracle_capabilities: frozenset[str]
+    canonical_rules_source_present: bool
     canonical_rules: Mapping[str, FrozenValue]
     candidate_placements: Mapping[str, FrozenValue]
     facility_templates: Mapping[str, FrozenValue]
@@ -159,7 +162,9 @@ class ValidatedStateSnapshot:
     ghost: GhostRect | None
     blocked_cells_digest: str
     exterior_blocks_digest: str
+    master_domain_projection: str
     oracle_capabilities: frozenset[str]
+    canonical_rules_source_present: bool
     family_inputs: Mapping[str, FamilyInputs]
     groups: Mapping[str, GroupSnapshot]
     cell_owner: Mapping[Cell, tuple[str, int]]
@@ -175,7 +180,9 @@ class ValidatedStateSnapshot:
         ghost: GhostRect | None,
         blocked_cells_digest: str,
         exterior_blocks_digest: str,
+        master_domain_projection: str,
         oracle_capabilities: frozenset[str],
+        canonical_rules_source_present: bool,
         family_inputs: Mapping[str, FamilyInputs],
         groups: Mapping[str, GroupSnapshot],
         cell_owner: Mapping[Cell, tuple[str, int]],
@@ -191,7 +198,22 @@ class ValidatedStateSnapshot:
         object.__setattr__(self, "ghost", ghost)
         object.__setattr__(self, "blocked_cells_digest", blocked_cells_digest)
         object.__setattr__(self, "exterior_blocks_digest", exterior_blocks_digest)
+        object.__setattr__(
+            self,
+            "master_domain_projection",
+            _require_sha256(
+                master_domain_projection,
+                path="ValidatedStateSnapshot.master_domain_projection",
+            ),
+        )
         object.__setattr__(self, "oracle_capabilities", oracle_capabilities)
+        if type(canonical_rules_source_present) is not bool:
+            raise TypeError("ValidatedStateSnapshot.canonical_rules_source_present must be an exact bool")
+        object.__setattr__(
+            self,
+            "canonical_rules_source_present",
+            canonical_rules_source_present,
+        )
         object.__setattr__(self, "family_inputs", family_inputs)
         object.__setattr__(self, "groups", groups)
         object.__setattr__(self, "cell_owner", cell_owner)
@@ -542,6 +564,7 @@ def _capture_state(state: BState) -> _CapturedState:
         groups=groups,
         cell_owner=_freeze_cell_owner(raw_cell_owner, groups=groups),
         oracle_capabilities=_freeze_oracle_capabilities(raw_oracle_capabilities),
+        canonical_rules_source_present=raw_canonical_rules is not None,
         canonical_rules=_freeze_source_mapping(raw_canonical_rules, field_name="canonical_rules"),
         candidate_placements=_freeze_source_mapping(
             raw_candidate_placements,
@@ -825,9 +848,253 @@ def snapshot_digest_v1(projection: object) -> str:
     return hashlib.sha256(_SNAPSHOT_DIGEST_PREFIX + _canonical_json_bytes(projection)).hexdigest()
 
 
+def master_domain_projection_v1(
+    *,
+    family_subset: str,
+    facility_pool_projection: object,
+    mandatory_slot_rows: list[object],
+    template_pose_registration_rows: list[object],
+) -> str:
+    """Hash the shared canonical schema for both snapshot and live-master rows.
+
+    B2 supplies the snapshot-side row extractor; B5 will independently extract
+    the same three row families from the live master and call this exact schema
+    primitive.  Keeping the outer projection here prevents either side from
+    inventing a second dictionary layout or domain-separation convention.
+    """
+
+    checked_family = _require_non_empty_str(
+        family_subset,
+        path="MasterDomainProjectionV1.family_subset",
+    )
+    if type(mandatory_slot_rows) is not list:
+        raise SnapshotValidationError("MasterDomainProjectionV1.mandatory_slot_rows must be an exact list")
+    if type(template_pose_registration_rows) is not list:
+        raise SnapshotValidationError("MasterDomainProjectionV1.template_pose_registration_rows must be an exact list")
+    projection = {
+        "facility_pool_projection": facility_pool_projection,
+        "family_subset": checked_family,
+        "mandatory_slot_rows": mandatory_slot_rows,
+        "schema_version": 1,
+        "template_pose_registration_rows": template_pose_registration_rows,
+    }
+    _validate_digest_primitive(projection)
+    return hashlib.sha256(_MASTER_DOMAIN_PROJECTION_PREFIX + _canonical_json_bytes(projection)).hexdigest()
+
+
 def _cell_set_digest(cells: frozenset[Cell], *, prefix: bytes) -> str:
     projection = [[x, y] for x, y in sorted(cells)]
     return hashlib.sha256(prefix + _canonical_json_bytes(projection)).hexdigest()
+
+
+def master_domain_facility_pool_projection_v1(value: object) -> object:
+    """Canonicalize frozen snapshot or mutable live-master pool containers.
+
+    Snapshot artifacts use mapping proxies/tuples while the live master retains
+    dict/list containers.  Both representations must produce identical rows for
+    the shared ``MasterDomainProjectionV1`` schema.
+    """
+
+    if value is None:
+        return ["null"]
+    if type(value) is bool:
+        return ["bool", value]
+    if type(value) is int:
+        return ["int", value]
+    if type(value) is float:
+        if not math.isfinite(value):  # pragma: no cover - bundle construction rejects this
+            raise SnapshotValidationError("master-domain projection contains a non-finite float")
+        return ["float", value]
+    if type(value) is str:
+        return ["str", value]
+    if isinstance(value, Mapping):
+        captured: dict[str, object] = {}
+        for raw_key, item in value.items():
+            if type(raw_key) is not str:
+                raise SnapshotValidationError("master-domain facility pool contains a non-string key")
+            if raw_key in captured:
+                raise SnapshotValidationError(f"master-domain facility pool contains duplicate key {raw_key!r}")
+            captured[raw_key] = master_domain_facility_pool_projection_v1(item)
+        return [
+            "mapping",
+            [[key, captured[key]] for key in sorted(captured)],
+        ]
+    if isinstance(value, (list, tuple)):
+        return [
+            "sequence",
+            [master_domain_facility_pool_projection_v1(item) for item in value],
+        ]
+    if isinstance(value, (set, frozenset)):
+        nodes = [master_domain_facility_pool_projection_v1(item) for item in value]
+        nodes.sort(key=_canonical_json_bytes)
+        return ["set", nodes]
+    raise SnapshotValidationError(f"master-domain projection contains unsupported frozen type {type(value).__name__}")
+
+
+def _master_domain_pose_registrations(
+    facility_pools: Mapping[str, FrozenValue],
+    pose_occupied_cells: PoseCells,
+) -> tuple[list[object], dict[PoseKey, tuple[int, int, int]]]:
+    """Mirror the F1-relevant template pose registration without importing a master."""
+
+    registrations: list[object] = []
+    pose_tuple_by_key: dict[PoseKey, tuple[int, int, int]] = {}
+    for raw_facility_type, raw_pool in sorted(facility_pools.items()):
+        facility_type = _require_non_empty_str(
+            raw_facility_type,
+            path="bundle.candidate_placements.facility_pools key",
+        )
+        if type(raw_pool) is not tuple:
+            raise SnapshotValidationError(
+                f"bundle.candidate_placements.facility_pools[{facility_type!r}] must be a frozen sequence"
+            )
+        prepared: list[tuple[str, int, int, tuple[str, str, str]]] = []
+        for pose_index, raw_pose in enumerate(raw_pool):
+            pose_path = f"bundle.candidate_placements.facility_pools[{facility_type!r}][{pose_index}]"
+            pose = _require_mapping(raw_pose, path=pose_path)
+            pose_id = _require_non_empty_str(
+                pose.get("pose_id"),
+                path=f"{pose_path}.pose_id",
+            )
+            raw_anchor = pose.get("anchor", MappingProxyType({}))
+            anchor = _require_mapping(raw_anchor, path=f"{pose_path}.anchor")
+            anchor_x = anchor.get("x", 0)
+            anchor_y = anchor.get("y", 0)
+            if not _is_strict_int(anchor_x) or not _is_strict_int(anchor_y):
+                raise SnapshotValidationError(f"{pose_path}.anchor x/y must be exact ints")
+            checked_anchor_x = cast(int, anchor_x)
+            checked_anchor_y = cast(int, anchor_y)
+            raw_pose_params = pose.get("pose_params", MappingProxyType({}))
+            pose_params = _require_mapping(
+                raw_pose_params,
+                path=f"{pose_path}.pose_params",
+            )
+            orientation = pose_params.get("orientation", "")
+            port_mode = pose_params.get("port_mode", "")
+            if type(orientation) is not str or type(port_mode) is not str:
+                raise SnapshotValidationError(f"{pose_path}.pose_params orientation/port_mode must be exact strings")
+            occupied_cells = pose_occupied_cells.get((facility_type, pose_id))
+            if occupied_cells is None:  # pragma: no cover - built from the same frozen pool
+                raise SnapshotValidationError(f"{pose_path} has no frozen occupied-cell registration")
+            relative_cells = tuple(sorted((x - checked_anchor_x, y - checked_anchor_y) for x, y in occupied_cells))
+            if relative_cells:
+                xs = tuple(x for x, _y in relative_cells)
+                ys = tuple(y for _x, y in relative_cells)
+                bounds_token = ":".join(
+                    str(value)
+                    for value in (
+                        min(xs),
+                        max(xs),
+                        min(ys),
+                        max(ys),
+                    )
+                )
+                cell_token = ";".join(f"{x}:{y}" for x, y in relative_cells)
+                footprint_key = f"footprint::{bounds_token}::{cell_token}"
+            else:
+                footprint_key = "footprint::missing"
+            prepared.append(
+                (
+                    pose_id,
+                    checked_anchor_x,
+                    checked_anchor_y,
+                    (orientation, port_mode, footprint_key),
+                )
+            )
+        mode_tokens = sorted({item[3] for item in prepared})
+        mode_id_by_token = {token: mode_id for mode_id, token in enumerate(mode_tokens)}
+        serialized_poses: list[object] = []
+        for pose_index, (pose_id, anchor_x, anchor_y, mode_token) in enumerate(prepared):
+            mode_id = mode_id_by_token[mode_token]
+            pose_tuple_by_key[(facility_type, pose_id)] = (
+                anchor_x,
+                anchor_y,
+                mode_id,
+            )
+            serialized_poses.append(
+                {
+                    "anchor": [anchor_x, anchor_y],
+                    "mode_id": mode_id,
+                    "pose_id": pose_id,
+                    "pose_index": pose_index,
+                }
+            )
+        registrations.append(
+            {
+                "facility_type": facility_type,
+                "poses": serialized_poses,
+            }
+        )
+    return registrations, pose_tuple_by_key
+
+
+def _build_f1_master_domain_projection(
+    *,
+    bundle: FrozenArtifactBundle,
+    groups: Mapping[str, GroupSnapshot],
+    group_to_facility_type: Mapping[str, str],
+    template_placement_rules: Mapping[str, str],
+    template_dimensions: Mapping[str, tuple[int, int]],
+    pose_occupied_cells: PoseCells,
+) -> str:
+    raw_facility_pools = _require_mapping(
+        bundle.candidate_placements.get("facility_pools"),
+        path="bundle.candidate_placements.facility_pools",
+    )
+    relevant_group_ids = tuple(
+        group_id
+        for group_id in sorted(groups)
+        if template_placement_rules.get(group_to_facility_type.get(group_id, "")) in _F1_MASTER_DOMAIN_PLACEMENT_RULES
+    )
+    relevant_facility_types = {group_to_facility_type[group_id] for group_id in relevant_group_ids}
+    relevant_facility_pools = {
+        facility_type: raw_facility_pools[facility_type]
+        for facility_type in sorted(relevant_facility_types)
+        if facility_type in raw_facility_pools
+    }
+    if set(relevant_facility_pools) != relevant_facility_types:
+        missing = sorted(relevant_facility_types - set(relevant_facility_pools))
+        raise SnapshotValidationError(f"F1 master-domain projection lacks facility pools for {missing!r}")
+
+    registration_rows, pose_tuple_by_key = _master_domain_pose_registrations(
+        relevant_facility_pools,
+        pose_occupied_cells,
+    )
+    mandatory_slot_rows: list[object] = []
+    for group_id in relevant_group_ids:
+        group = groups[group_id]
+        facility_type = group_to_facility_type.get(group_id)
+        if facility_type is None:  # pragma: no cover - static binding gate runs first
+            raise SnapshotValidationError(f"group {group_id!r} has no master-domain facility binding")
+        dimensions = template_dimensions.get(facility_type)
+        if dimensions is None:  # pragma: no cover - static binding gate runs first
+            raise SnapshotValidationError(f"group {group_id!r} has no master-domain template dimensions")
+        allowed_pose_tuples = sorted(pose_tuple_by_key[(facility_type, pose_id)] for pose_id in group.pose_domain)
+        for slot_index in range(group.demand):
+            mandatory_slot_rows.append(
+                {
+                    "allowed_pose_tuples": [list(pose_tuple) for pose_tuple in allowed_pose_tuples],
+                    "candidate_pose_count": len(allowed_pose_tuples),
+                    "facility_type": facility_type,
+                    "group_id": group_id,
+                    "slot_index": slot_index,
+                    # B2 dual-review codex#2: the live master keys its literal
+                    # cache on slot.key (exact_coordinate_master CoordinateSlotSpec,
+                    # mandatory format "{group_id}::slot::{slot_index}"). The
+                    # projection must carry the same canonical identity so a
+                    # slot-key drift/alias on the master side cannot escape the
+                    # B5 resolve-time comparison.
+                    "slot_key": f"{group_id}::slot::{slot_index}",
+                    "slot_kind": "mandatory",
+                    "template_dimensions": [dimensions[0], dimensions[1]],
+                }
+            )
+    return master_domain_projection_v1(
+        family_subset="region_capacity",
+        facility_pool_projection=master_domain_facility_pool_projection_v1(relevant_facility_pools),
+        mandatory_slot_rows=mandatory_slot_rows,
+        template_pose_registration_rows=registration_rows,
+    )
 
 
 def _snapshot_digest_projection(
@@ -838,6 +1105,7 @@ def _snapshot_digest_projection(
     blocked_cells_digest: str,
     exterior_blocks_digest: str,
     oracle_capabilities: frozenset[str],
+    canonical_rules_source_present: bool,
     groups: Mapping[str, GroupSnapshot],
     cell_owner: Mapping[Cell, tuple[str, int]],
     ghost_cells: frozenset[Cell],
@@ -849,6 +1117,7 @@ def _snapshot_digest_projection(
         "blocked_cells_digest": blocked_cells_digest,
         "bundle_digest": bundle.digest,
         "bundle_digest_set": dict(sorted(bundle.artifact_hashes.items())),
+        "canonical_rules_source_present": canonical_rules_source_present,
         "cell_owner": [[x, y, group_id, slot] for (x, y), (group_id, slot) in sorted(cell_owner.items())],
         "exterior_blocks": [[x, y] for x, y in sorted(exterior_blocks)],
         "exterior_blocks_digest": exterior_blocks_digest,
@@ -971,6 +1240,14 @@ def build_validated_state_snapshot(
                 "shape_packing_hall": f6_inputs,
             }
         )
+        master_domain_projection = _build_f1_master_domain_projection(
+            bundle=bundle,
+            groups=groups,
+            group_to_facility_type=group_to_facility_type,
+            template_placement_rules=template_placement_rules,
+            template_dimensions=template_dimensions,
+            pose_occupied_cells=pose_occupied_cells,
+        )
 
         blocked_cells_digest = _cell_set_digest(
             ghost_cells | exterior_blocks,
@@ -988,6 +1265,7 @@ def build_validated_state_snapshot(
                 blocked_cells_digest=blocked_cells_digest,
                 exterior_blocks_digest=exterior_blocks_digest,
                 oracle_capabilities=oracle_capabilities,
+                canonical_rules_source_present=captured.canonical_rules_source_present,
                 groups=groups,
                 cell_owner=cell_owner,
                 ghost_cells=ghost_cells,
@@ -1001,7 +1279,9 @@ def build_validated_state_snapshot(
             ghost=ghost,
             blocked_cells_digest=blocked_cells_digest,
             exterior_blocks_digest=exterior_blocks_digest,
+            master_domain_projection=master_domain_projection,
             oracle_capabilities=oracle_capabilities,
+            canonical_rules_source_present=captured.canonical_rules_source_present,
             family_inputs=family_inputs,
             groups=groups,
             cell_owner=cell_owner,
@@ -1026,5 +1306,7 @@ __all__ = [
     "SnapshotValidationError",
     "ValidatedStateSnapshot",
     "build_validated_state_snapshot",
+    "master_domain_facility_pool_projection_v1",
+    "master_domain_projection_v1",
     "snapshot_digest_v1",
 ]

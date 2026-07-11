@@ -30,6 +30,8 @@ from src.cuts.state_snapshot import (
     SnapshotValidationError,
     ValidatedStateSnapshot,
     build_validated_state_snapshot,
+    master_domain_facility_pool_projection_v1,
+    master_domain_projection_v1,
     snapshot_digest_v1,
 )
 
@@ -392,6 +394,56 @@ def test_snapshot_digest_is_order_independent() -> None:
     _reverse_state, _reverse_bundle, reverse = _build_world(reverse=True)
 
     assert reverse.digest == forward.digest
+
+
+def test_master_domain_projection_is_order_stable_and_tracks_pose_registration() -> None:
+    _state, _bundle, forward = _build_world()
+    _reverse_state, _reverse_bundle, reverse = _build_world(reverse=True)
+
+    assert forward.master_domain_projection == reverse.master_domain_projection
+    _assert_sha256_hex(forward.master_domain_projection)
+
+    changed_sources = _artifact_sources()
+    changed_sources["candidate_placements"]["facility_pools"]["boundary_storage_port"][0]["anchor"]["x"] = 9
+    changed_state = _state_from_sources(changed_sources)
+    changed_bundle = _bundle_from_sources(changed_sources)
+    changed = build_validated_state_snapshot(changed_state, changed_bundle)
+
+    assert changed.master_domain_projection != forward.master_domain_projection
+
+
+def test_f1_master_domain_projection_ignores_unrelated_family_pool_noise() -> None:
+    _state, _bundle, baseline = _build_world()
+    changed_sources = _artifact_sources()
+    unrelated_pose = changed_sources["candidate_placements"]["facility_pools"]["manufacturing_3x3"][0]
+    unrelated_pose["anchor"]["x"] = 31
+    changed_state = _state_from_sources(changed_sources)
+    changed_bundle = _bundle_from_sources(changed_sources)
+    changed = build_validated_state_snapshot(changed_state, changed_bundle)
+
+    assert changed.digest != baseline.digest
+    assert changed.master_domain_projection == baseline.master_domain_projection
+
+
+def test_master_domain_projection_primitive_rejects_ambiguous_keys() -> None:
+    with pytest.raises(SnapshotValidationError):
+        master_domain_projection_v1(
+            family_subset="region_capacity",
+            facility_pool_projection={1: "numeric key"},
+            mandatory_slot_rows=[],
+            template_pose_registration_rows=[],
+        )
+
+
+def test_master_domain_pool_projection_matches_frozen_and_live_container_shapes() -> None:
+    sources = _artifact_sources()
+    bundle = _bundle_from_sources(sources)
+    raw_pools = sources["candidate_placements"]["facility_pools"]
+    frozen_pools = bundle.candidate_placements["facility_pools"]
+
+    assert master_domain_facility_pool_projection_v1(raw_pools) == (
+        master_domain_facility_pool_projection_v1(frozen_pools)
+    )
 
 
 def _change_selected_poses(state: BState) -> None:

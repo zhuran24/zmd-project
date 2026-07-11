@@ -40,9 +40,8 @@ from src.cuts.lifecycle import (
     GroupId,
     OracleCert,
     canonical_bytes_for_cert,
-    compute_blocked_cells_hash,
-    compute_exterior_blocks_hash,
-    compute_ghost_rect_id,
+    capture_scope_identity_inputs_v1,
+    compute_scope_identity_legacy_hashes,
     compute_source_digest,
 )
 
@@ -169,23 +168,37 @@ def _build_cut(
             )
         )
 
+    # Capture the three live scope inputs exactly once. Ghost policy and both
+    # legacy/raw identities derive from this immutable local snapshot.
+    identity_preimage, captured_ghost_cells = capture_scope_identity_inputs_v1(
+        state
+    )
+    (
+        captured_ghost_rect_id,
+        blocked_cells_hash,
+        exterior_blocks_hash,
+    ) = compute_scope_identity_legacy_hashes(identity_preimage)
+
     # v1.2 (Gemini round 18 B1): GHOST_AGNOSTIC iff ghost ∩ R == ∅; else bind
-    # to current ghost_rect_id.
-    ghost_intersects = bool(state.ghost_cells & region_cells)
+    # to the ghost rect captured with the identity preimage.
+    ghost_intersects = bool(
+        set(captured_ghost_cells).intersection(region_cells)
+    )
     ghost_rect_id = (
-        compute_ghost_rect_id(state.ghost_rect)
+        captured_ghost_rect_id
         if ghost_intersects
         else GHOST_AGNOSTIC
     )
 
     scope = CutScope(
         ghost_rect_id=ghost_rect_id,
-        blocked_cells_hash=compute_blocked_cells_hash(state),
-        exterior_blocks_hash=compute_exterior_blocks_hash(state),
+        blocked_cells_hash=blocked_cells_hash,
+        exterior_blocks_hash=exterior_blocks_hash,
         source_digest=compute_source_digest(state),
         artifact_hashes=state.artifact_hashes,
         oracle_abstraction_version=_ORACLE_NAME,
         active_assumptions=tuple(assumptions),
+        identity_preimage=identity_preimage,
     )
 
     return Cut(

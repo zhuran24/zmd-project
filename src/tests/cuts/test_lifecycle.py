@@ -32,10 +32,13 @@ from src.cuts.lifecycle import (
     GHOST_AGNOSTIC,
     GroupState,
     OracleCert,
+    ScopeIdentityPreimageV1,
     assumption_holds,
+    capture_scope_identity_preimage_v1,
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
+    compute_scope_identity_legacy_hashes,
     compute_source_digest,
     run_lifecycle,
     step_1_generate_region_capacity_combinatorial,
@@ -207,6 +210,65 @@ def test_exterior_blocks_hash_distinct_from_blocked_cells():
     assert compute_exterior_blocks_hash(s_with_ghost) != compute_blocked_cells_hash(s_with_ghost)
 
 
+def test_scope_identity_preimage_capture_is_canonical_and_legacy_compatible():
+    state = BState(
+        groups={},
+        ghost_rect=(20, 21, 2, 3),
+        ghost_cells=frozenset({(21, 22), (20, 21)}),
+        exterior_blocks=frozenset({(7, 9), (1, 4)}),
+    )
+
+    preimage = capture_scope_identity_preimage_v1(state)
+
+    assert preimage == ScopeIdentityPreimageV1(
+        ghost_rect=(20, 21, 2, 3),
+        blocked_cells=((1, 4), (7, 9), (20, 21), (21, 22)),
+        exterior_blocks=((1, 4), (7, 9)),
+    )
+    assert compute_scope_identity_legacy_hashes(preimage) == (
+        compute_ghost_rect_id(state.ghost_rect),
+        compute_blocked_cells_hash(state),
+        compute_exterior_blocks_hash(state),
+    )
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "expected_fragment"),
+    [
+        (
+            {
+                "ghost_rect": (1, 2, 3, 4),
+                "blocked_cells": ((2, 0), (1, 0)),
+                "exterior_blocks": (),
+            },
+            "sorted and unique",
+        ),
+        (
+            {
+                "ghost_rect": (1, 2, 3, 4),
+                "blocked_cells": ((1, 0),),
+                "exterior_blocks": ((2, 0),),
+            },
+            "subset",
+        ),
+        (
+            {
+                "ghost_rect": None,
+                "blocked_cells": ((1, 0),),
+                "exterior_blocks": (),
+            },
+            "cannot contain ghost cells",
+        ),
+    ],
+)
+def test_scope_identity_preimage_rejects_noncanonical_shapes(
+    kwargs,
+    expected_fragment,
+):
+    with pytest.raises(ValueError, match=expected_fragment):
+        ScopeIdentityPreimageV1(**kwargs)
+
+
 def test_f1_generator_triggers_when_baseline_overflow():
     s = make_state_with_crusher_on_left_baseline()
     cut = step_1_generate_region_capacity_combinatorial(
@@ -254,6 +316,36 @@ def test_serialize_deserialize_roundtrip():
     assert cut2.scope.ghost_rect_id == cut.scope.ghost_rect_id
     assert cut2.scope.blocked_cells_hash == cut.scope.blocked_cells_hash
     assert cut2.scope.exterior_blocks_hash == cut.scope.exterior_blocks_hash  # v3.2.2
+
+
+def test_scope_identity_preimage_serialization_roundtrip_and_legacy_default():
+    state = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        state,
+        "left_baseline",
+        "boundary_storage_port",
+        CANONICAL_RULES,
+    )
+    assert cut is not None
+    assert cut.scope is not None
+    preimage = capture_scope_identity_preimage_v1(state)
+    cut_with_preimage = replace(
+        cut,
+        scope=replace(cut.scope, identity_preimage=preimage),
+    )
+
+    encoded = step_3_serialize(cut_with_preimage)
+    restored = step_4_deserialize(encoded)
+    assert restored.scope is not None
+    assert restored.scope.identity_preimage == preimage
+
+    legacy_document = json.loads(encoded)
+    del legacy_document["scope"]["identity_preimage"]
+    restored_legacy = step_4_deserialize(
+        json.dumps(legacy_document, sort_keys=True).encode("utf-8")
+    )
+    assert restored_legacy.scope is not None
+    assert restored_legacy.scope.identity_preimage is None
 
 
 def test_validator_catches_cap_R_tampering():

@@ -124,7 +124,7 @@ _EXPECTED_STAGES = {
     "port_exposure": CapabilityStage.VALIDATED,
     "power_grid_reach": CapabilityStage.RETIRED,
     "power_hitting_set": CapabilityStage.EXPERIMENTAL,
-    "region_capacity": CapabilityStage.EXPERIMENTAL,
+    "region_capacity": CapabilityStage.COMPILABLE,
     "shape_packing_hall": CapabilityStage.EXPERIMENTAL,
 }
 _EXPECTED_PATHS = {
@@ -262,12 +262,15 @@ def _make_region_cut(
     cert_payload: bytes | None = None,
     ghost_bound: bool = False,
 ) -> Cut:
+    # Platform-mechanism tests use a neutral real family name (F6). Borrowing
+    # the F1 name would collide with the family-scoped unconditional assumption
+    # reverification ratified in B2 dual-review codex#1.
     body = _region_payload() if geometric_payload is None else geometric_payload
     proof = body if cert_payload is None else cert_payload
     proof_hash = hashlib.sha256(proof).hexdigest()
     return Cut(
         cut_id="b15-region",
-        family="region_capacity",
+        family="shape_packing_hall",
         geometric_payload=body,
         scope=_scope(state, ghost_bound=ghost_bound),
         cert=OracleCert(
@@ -394,11 +397,11 @@ class _OrderedPlugin:
 
 def _plan(
     *,
-    operation: str = "region_capacity_le",
-    family: str = "region_capacity",
+    operation: str = "shape_packing_hall_le",
+    family: str = "shape_packing_hall",
     ghost_policy: str = "agnostic",
     ghost_rect_digest: str | None = None,
-    domain_fingerprint: str = "opaque-until-b3",
+    domain_fingerprint: str = "probe-domain-fingerprint",
 ) -> ConstraintPlan:
     parameters_by_operation: dict[str, dict[str, object]] = {
         "power_pose_exclusion": {
@@ -435,7 +438,7 @@ def _plan(
 
 def _capability(
     *,
-    family: str = "region_capacity",
+    family: str = "shape_packing_hall",
     mode: str = "geometric",
     stage: CapabilityStage = CapabilityStage.COMPILABLE,
     execution_path: ExecutionPath = ExecutionPath.TYPED,
@@ -759,7 +762,7 @@ def _region_plan_with_parameters(parameters: Mapping[object, object]) -> Constra
         model_scope=ModelScope(
             ghost_policy="agnostic",
             ghost_rect_digest=None,
-            domain_fingerprint="opaque-until-b3",
+            domain_fingerprint="probe-domain-fingerprint",
         ),
         operation="region_capacity_le",
         parameters=parameters,  # type: ignore[arg-type]
@@ -915,7 +918,7 @@ def test_production_registry_has_exact_nine_family_mirror() -> None:
     registry = build_production_registry()
 
     assert set(registry.capabilities) == _EXPECTED_FAMILIES
-    assert set(registry.plugins) == {"pattern_nogood"}
+    assert set(registry.plugins) == {"pattern_nogood", "region_capacity"}
     for family in sorted(_EXPECTED_FAMILIES):
         capability = registry.capabilities[family]
         assert capability.name == family
@@ -926,6 +929,9 @@ def test_production_registry_has_exact_nine_family_mirror() -> None:
         assert capability.required_dependencies == frozenset(_PRODUCTION_ARTIFACT_HASHES)
         if family == "pattern_nogood":
             assert capability.compiler_version is None
+            assert family in registry.plugins
+        elif family == "region_capacity":
+            assert capability.compiler_version == "stage-b-f1-compiler-v1"
             assert family in registry.plugins
         else:
             assert family not in registry.plugins

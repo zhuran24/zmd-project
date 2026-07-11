@@ -53,6 +53,8 @@ _PLAN_DIGEST_PREFIX = b"zmd.constraint-plan.v1:"
 _MODEL_SCOPE_DIGEST_PREFIX = b"zmd.model-scope.v1:"
 _COMPILED_CUT_DIGEST_PREFIX = b"zmd.compiled-cut.v1:"
 _GHOST_RECT_DIGEST_PREFIX = b"zmd.ghost-rect.v1:"
+_BLOCKED_CELLS_DIGEST_PREFIX = b"zmd.blocked-cells.v1:"
+_EXTERIOR_BLOCKS_DIGEST_PREFIX = b"zmd.exterior-blocks.v1:"
 _COMMON_MODE_UNTRUSTED = "common-mode-untrusted"
 _GHOST_AGNOSTIC = "__ghost_agnostic__"
 _PRODUCTION_V1_ARTIFACT_DEPENDENCIES = frozenset(
@@ -356,9 +358,12 @@ class ScopeManifest:
             raise ValueError("ScopeManifest.dependency_hashes must be sorted by name")
         if len(dependency_names) != len(set(dependency_names)):
             raise ValueError("ScopeManifest.dependency_hashes contains duplicate names")
-        assumption_keys = tuple(item.key for item in self.assumptions)
-        if len(assumption_keys) != len(set(assumption_keys)):
-            raise ValueError("ScopeManifest.assumptions contains duplicate keys")
+        # F1 legitimately carries one ``placement_rule`` entry per contributing
+        # group.  Preserve that legacy multimap shape while rejecting a byte-for-
+        # byte duplicate obligation, which has no additional semantic meaning.
+        assumption_items = tuple((item.key, item.value) for item in self.assumptions)
+        if len(assumption_items) != len(set(assumption_items)):
+            raise ValueError("ScopeManifest.assumptions contains duplicate key/value pairs")
         if self.ghost_policy == "agnostic":
             if self.ghost_rect_digest is not None or self.blocked_cells_digest is not None:
                 raise ValueError("agnostic scope cannot carry ghost/blocked digests")
@@ -437,7 +442,7 @@ class CutEnvelope:
 
 @dataclass(frozen=True, slots=True)
 class ModelScope:
-    """Master-independent model scope; domain fingerprint is opaque until B3."""
+    """Master-independent scope bound to a snapshot-side domain projection."""
 
     ghost_policy: Literal["agnostic", "bound"]
     ghost_rect_digest: str | None
@@ -1261,21 +1266,31 @@ _PRODUCTION_F5_PLUGIN: Final[FamilyPlugin] = _PatternNogoodPlugin()
 
 
 def build_production_registry() -> FamilyCapabilityRegistry:
-    """Build the sole production B1.5 capability registry.
+    """Build the sole production Stage-B capability registry.
 
-    F1/F6/F7 are typed but remain EXPERIMENTAL until their B2-B4 vertical
-    slices install compilers.  Legacy families are diagnostic-only, and F8 is
-    retained as an explicit retired metadata row.
+    F1 has the complete B2 parser/validator/compiler chain.  F6/F7 remain
+    EXPERIMENTAL until their B3/B4 vertical slices.  Legacy families are
+    diagnostic-only, and F8 remains an explicit retired metadata row.
     """
+
+    # Local import avoids a module-initialization cycle: the family plugin uses
+    # the platform protocol and immutable plan types defined above.
+    from src.cuts.families.region_capacity_typed import (
+        REGION_CAPACITY_COMPILER_VERSION,
+        REGION_CAPACITY_VALIDATOR_VERSION,
+        RegionCapacityPlugin,
+    )
+
+    region_capacity_plugin: FamilyPlugin = RegionCapacityPlugin()
 
     capabilities = {
         "region_capacity": FamilyCapability(
             name="region_capacity",
             mode="geometric",
             proof_schema_version=1,
-            validator_version="stage-b-pending-b2",
-            compiler_version=None,
-            stage=CapabilityStage.EXPERIMENTAL,
+            validator_version=REGION_CAPACITY_VALIDATOR_VERSION,
+            compiler_version=REGION_CAPACITY_COMPILER_VERSION,
+            stage=CapabilityStage.COMPILABLE,
             required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
             execution_path=ExecutionPath.TYPED,
         ),
@@ -1362,7 +1377,10 @@ def build_production_registry() -> FamilyCapabilityRegistry:
     }
     return FamilyCapabilityRegistry(
         capabilities=capabilities,
-        plugins={"pattern_nogood": _PRODUCTION_F5_PLUGIN},
+        plugins={
+            "pattern_nogood": _PRODUCTION_F5_PLUGIN,
+            "region_capacity": region_capacity_plugin,
+        },
     )
 
 
@@ -1370,8 +1388,9 @@ def _reject_truncated_v1_scope_identity(kind: str, legacy_value: str) -> str:
     """Reject lifecycle's 16-hex identities when no raw preimage is carried.
 
     Rehashing a 64-bit legacy digest cannot turn it into a 256-bit proof
-    identity.  ``CutScope`` currently carries no ghost tuple or complete cell
-    set, so the schema-v1 adapter has no sound upgrade path yet.
+    identity.  New F1 cuts carry ``ScopeIdentityPreimageV1``; persisted legacy
+    cuts without that carrier remain valid for diagnostic replay but have no
+    sound Stage-B upgrade path.
     """
 
     checked_kind = _require_non_empty_str(kind, field_name="v1 scope identity kind")
@@ -1402,6 +1421,11 @@ def _snapshot_ghost_rect_digest(snapshot: ValidatedStateSnapshot) -> str | None:
     return hashlib.sha256(
         _GHOST_RECT_DIGEST_PREFIX + _canonical_json_bytes(list(snapshot.ghost.as_tuple()))
     ).hexdigest()
+
+
+def _v1_scope_cells_digest(cells: tuple[tuple[int, int], ...], *, prefix: bytes) -> str:
+    projection = [[x, y] for x, y in cells]
+    return hashlib.sha256(prefix + _canonical_json_bytes(projection)).hexdigest()
 
 
 def _literal_body_projection(cut: object, proof: Mapping[str, object]) -> tuple[tuple[str, int, str], ...]:
@@ -1494,7 +1518,13 @@ def cut_to_envelope_v1(cut: object) -> CutEnvelope:
 
     # Runtime import keeps the typed platform independent of lifecycle module
     # initialization while retaining exact schema-v1 type and integrity checks.
-    from src.cuts.lifecycle import Cut, validate_cert_payload, validate_cut_integrity
+    from src.cuts.lifecycle import (
+        Cut,
+        ScopeIdentityPreimageV1,
+        compute_scope_identity_legacy_hashes,
+        validate_cert_payload,
+        validate_cut_integrity,
+    )
 
     if type(cut) is not Cut:
         raise TypeError("cut_to_envelope_v1 requires an exact lifecycle.Cut")
@@ -1542,19 +1572,45 @@ def cut_to_envelope_v1(cut: object) -> CutEnvelope:
     ghost_policy: Literal["agnostic", "bound"]
     ghost_rect_digest: str | None
     blocked_cells_digest: str | None
+    identity_preimage = checked_cut.scope.identity_preimage
+    if type(identity_preimage) is not ScopeIdentityPreimageV1:
+        _reject_truncated_v1_scope_identity(
+            "scope",
+            checked_cut.scope.ghost_rect_id,
+        )
+        raise AssertionError("truncated scope rejection unexpectedly returned")
+    legacy_ghost_rect, legacy_blocked_cells, legacy_exterior_blocks = compute_scope_identity_legacy_hashes(
+        identity_preimage
+    )
+    if checked_cut.scope.blocked_cells_hash != legacy_blocked_cells:
+        raise ValueError("v1 blocked-cells identity differs from its raw preimage")
+    if checked_cut.scope.exterior_blocks_hash != legacy_exterior_blocks:
+        raise ValueError("v1 exterior-blocks identity differs from its raw preimage")
+    # B2 dual-review codex#6: every applicable legacy 16-hex identity check must
+    # pass before any Stage-B 64-hex digest is computed — anti-forgery ordering.
     if checked_cut.scope.ghost_rect_id == _GHOST_AGNOSTIC:
         ghost_policy = "agnostic"
+    else:
+        if checked_cut.scope.ghost_rect_id != legacy_ghost_rect:
+            raise ValueError("v1 ghost-rect identity differs from its raw preimage")
+        if identity_preimage.ghost_rect is None:
+            raise ValueError("ghost-bound v1 scope has no raw ghost rectangle")
+        ghost_policy = "bound"
+    exterior_blocks_digest = _v1_scope_cells_digest(
+        identity_preimage.exterior_blocks,
+        prefix=_EXTERIOR_BLOCKS_DIGEST_PREFIX,
+    )
+    if ghost_policy == "agnostic":
         ghost_rect_digest = None
         blocked_cells_digest = None
     else:
-        ghost_policy = "bound"
-        ghost_rect_digest = _reject_truncated_v1_scope_identity(
-            "ghost-rect",
-            checked_cut.scope.ghost_rect_id,
-        )
-        blocked_cells_digest = _reject_truncated_v1_scope_identity(
-            "blocked-cells",
-            checked_cut.scope.blocked_cells_hash,
+        assert identity_preimage.ghost_rect is not None
+        ghost_rect_digest = hashlib.sha256(
+            _GHOST_RECT_DIGEST_PREFIX + _canonical_json_bytes(list(identity_preimage.ghost_rect))
+        ).hexdigest()
+        blocked_cells_digest = _v1_scope_cells_digest(
+            identity_preimage.blocked_cells,
+            prefix=_BLOCKED_CELLS_DIGEST_PREFIX,
         )
     dependencies = tuple(
         DependencyHash(
@@ -1573,10 +1629,7 @@ def cut_to_envelope_v1(cut: object) -> CutEnvelope:
         ghost_policy=ghost_policy,
         ghost_rect_digest=ghost_rect_digest,
         blocked_cells_digest=blocked_cells_digest,
-        exterior_blocks_digest=_reject_truncated_v1_scope_identity(
-            "exterior-blocks",
-            checked_cut.scope.exterior_blocks_hash,
-        ),
+        exterior_blocks_digest=exterior_blocks_digest,
         source_digest=checked_cut.scope.source_digest,
         dependency_hashes=dependencies,
         oracle_abstraction_version=checked_cut.scope.oracle_abstraction_version,
@@ -1626,8 +1679,27 @@ def _validate_scope_currentness(
         return "scope dependency digest differs from snapshot"
     if scope.oracle_abstraction_version not in snapshot.oracle_capabilities:
         return "scope oracle abstraction is unavailable"
-    if scope.assumptions:
-        return "typed assumption verification is not available before B5"
+    if envelope.family == "region_capacity":
+        from src.cuts.families.region_capacity_typed import (
+            REGION_CAPACITY_VALIDATOR_VERSION,
+            validate_region_capacity_scope_assumptions,
+        )
+
+        # Production F1 must prove the complete legacy assumption multimap.
+        # Reverification is unconditional for the family (B2 dual-review codex#1):
+        # a non-production validator_version is rejected outright — the version
+        # seam must never become a bypass that skips assumption obligations
+        # (empty-assumption envelopes included).
+        if capability.validator_version != REGION_CAPACITY_VALIDATOR_VERSION:
+            return "typed region_capacity requires the production validator version"
+        assumption_error = validate_region_capacity_scope_assumptions(
+            scope.assumptions,
+            snapshot,
+        )
+        if assumption_error is not None:
+            return assumption_error
+    elif scope.assumptions:
+        return "typed assumption verification is unavailable for this family"
     if scope.exterior_blocks_digest != snapshot.exterior_blocks_digest:
         return "scope exterior-block identity is stale"
     if scope.ghost_policy == "agnostic":
@@ -1820,6 +1892,26 @@ def validate_and_compile_cut(
         if proof.schema_version != capability.proof_schema_version:
             raise TypeError("family plugin returned a proof for a different schema version")
         _validate_deep_frozen_proof(proof)
+        if envelope.family == "region_capacity":
+            from src.cuts.families.region_capacity_typed import (
+                REGION_CAPACITY_VALIDATOR_VERSION,
+                validate_region_capacity_assumption_completeness,
+            )
+
+            # Unconditional for the family (B2 dual-review codex#1): version
+            # mismatch already rejected at scope currentness; completeness runs
+            # on every remaining path.
+            if capability.validator_version != REGION_CAPACITY_VALIDATOR_VERSION:
+                raise SemanticCutRejection(
+                    "scope",
+                    "typed region_capacity requires the production validator version",
+                )
+            completeness_error = validate_region_capacity_assumption_completeness(
+                proof,
+                envelope.scope.assumptions,
+            )
+            if completeness_error is not None:
+                raise SemanticCutRejection("scope", completeness_error)
         if type(proof) is PatternNogoodProof:
             if proof.sub_problem_oracle_name != envelope.scope.oracle_abstraction_version:
                 raise SemanticCutRejection(

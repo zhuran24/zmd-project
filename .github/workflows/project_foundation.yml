@@ -22,7 +22,7 @@ concurrency:
 jobs:
   project-foundation-gate:
     runs-on: ubuntu-latest
-    timeout-minutes: 110
+    timeout-minutes: 60
 
     steps:
       - name: Check out repository
@@ -49,10 +49,10 @@ jobs:
 
       - name: Run project foundation gate
         env:
-          # 2 核 runner 对本机(24 核)的子检查超时放大: scale 6 修好了 checker 项超时,
-          # 但快 lane pytest 实测 >1440s 仍被杀(2026-07-11 run 29130096531: 18 passed
-          # + 1 BLOCKED)。先放大到 25 让它完整跑一次拿真实时长, 再按实测回调。
-          PREFLIGHT_TIMEOUT_SCALE: "25"
+          # 2 核 runner 对本机(24 核)的子检查超时放大。实测锚(2026-07-11 run
+          # 29134822022 全绿): 主 gate 全程 34min, 其中快 lane pytest ~25-28min。
+          # scale 12 → pytest 上限 2880s(48min), 余量 ~1.7x; job 上限 60min。
+          PREFLIGHT_TIMEOUT_SCALE: "12"
         run: |
           BASE_REF="${{ github.event.pull_request.base.sha || github.event.before }}"
           if [ -z "$BASE_REF" ] || [ "$BASE_REF" = "0000000000000000000000000000000000000000" ]; then
