@@ -5,15 +5,18 @@ Fixture: the proven bound-region F1 world from the attach-wiring suite (real
 master + production-dependency-aligned BState; the typed chain compiles,
 resolves and lowers end-to-end).
 
-Gate 4 (reader tri-state) lives in src/tests/cuts/test_cut_ledger.py. Gate 5's
-two-process kill/resume arm lands with the harness extension (unit 3); the
-in-process arms here pin its core invariants (forged-ledger zero influence,
-fresh master/pool zero inheritance). Gate 6 is fixture-level ONLY — the RFC
+Gate 4 (reader tri-state) lives in src/tests/cuts/test_cut_ledger.py. Gate 5
+has three arms here: forged-ledger zero influence, fresh master/pool zero
+inheritance, and the two-process kill/resume drill (a subprocess attaches with
+a ledger then dies un-sealed; the resuming process must inherit nothing and
+must never touch the dead segment). Gate 6 is fixture-level ONLY — the RFC
 gate stays OPEN until 批C prod-scale A/B (spec §4, PIC-5 discipline).
 """
 from __future__ import annotations
 
 import os
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any, Optional, Sequence
@@ -292,6 +295,86 @@ def test_gate5_forged_ledger_has_zero_influence_and_is_never_touched(
     for event in _events(writer.path):
         if event["event"] == "APPLIED":
             assert event["receipt"]["apply_completed"] is True
+
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+_KILL_SCRIPT = r"""
+import os, sys, tempfile
+sys.path.insert(0, sys.argv[1])
+from pathlib import Path
+from unittest import mock
+from src.cuts.ledger import CutLedgerWriter
+from src.models.cut_manager import CutManager
+from src.search.benders_loop import LBBDController
+from src.tests.test_cut_framework_attach_wiring import _bound_region_world
+
+master, state, _g = _bound_region_world()
+ledger = CutLedgerWriter(Path(sys.argv[2]), scope_id="gate5proc", writer_id="victim")
+ckpt = Path(tempfile.mkdtemp(prefix="zmd_be_kill_"))
+controller = LBBDController(
+    master=master,
+    cut_manager=CutManager(checkpoint_dir=ckpt, solve_mode="certified_exact"),
+    project_root=ckpt.parent,
+    solve_mode="certified_exact",
+    cut_ledger=ledger,
+)
+with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
+    with mock.patch.object(
+        LBBDController, "_build_cut_framework_state", return_value=state
+    ):
+        n = controller._maybe_attach_framework_cuts(
+            trigger="binding_infeasible", iteration=1
+        )
+assert n >= 1, n
+os._exit(42)  # hard kill: no seal, no interpreter cleanup
+"""
+
+
+def test_gate5_two_process_kill_resume_inherits_nothing(tmp_path: Path) -> None:
+    """Gate 5 two-process arm: a writer process attaches (APPLIED on disk) and
+    dies without sealing. The resuming process must regenerate through its own
+    typed chain (zero inheritance — the dead APPLIED suppresses nothing), must
+    never append to the dead segment, and must link it via GENESIS lineage."""
+    proc = subprocess.run(
+        [sys.executable, "-c", _KILL_SCRIPT, str(_PROJECT_ROOT), str(tmp_path)],
+        cwd=_PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=600,
+    )
+    assert proc.returncode == 42, (proc.returncode, proc.stderr[-2000:])
+    scope = tmp_path / "gate5proc"
+    segments = sorted(scope.glob("segment_*.jsonl"))
+    assert len(segments) == 1
+    dead = read_segment(segments[0])
+    assert dead.status == "truncated"  # killed before seal
+    assert not dead.supports_negative_assertions
+    assert any(e["event"] == "APPLIED" for e in dead.events)
+    dead_bytes = segments[0].read_bytes()
+
+    master, state, _g = _bound_region_world()
+    successor = CutLedgerWriter(
+        tmp_path,
+        scope_id="gate5proc",
+        writer_id="resumer",
+        genesis_context={
+            "predecessor_segment": segments[0].name,
+            "predecessor_tail_hash": dead.tail_hash,
+            "recovery_reason": "restart_after_kill",
+        },
+    )
+    controller = _controller_e(master, cut_ledger=successor)
+    attached = _attach(controller, state, 1)
+    successor.seal()
+    assert attached >= 1  # regeneration, not replay: nothing inherited
+    assert segments[0].read_bytes() == dead_bytes  # dead segment untouched
+    result = read_segment(successor.path)
+    assert result.status == "complete"
+    genesis = result.events[0]
+    assert genesis["predecessor_segment"] == segments[0].name
+    assert genesis["predecessor_tail_hash"] == dead.tail_hash
+    assert genesis["recovery_reason"] == "restart_after_kill"
 
 
 # ---------------------------------------------------------------- gate 6 / 7
