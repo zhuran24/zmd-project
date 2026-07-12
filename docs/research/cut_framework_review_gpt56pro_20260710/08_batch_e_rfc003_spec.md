@@ -1,7 +1,8 @@
 # 批E(RFC-003)实施规格:semantic dedup + JSONL ledger + epoch 记账
 
-> **状态:rev2(2026-07-12 晚)——规格双审(opus 设计位 AGREE_WITH_AMENDMENTS 4M+6L /
-> codex 第二视角 BLOCK→修订条件全采纳)后的修订版**。§6 记录两审裁决与逐条处置。
+> **状态:rev4(2026-07-12 晚)——实现落地+实现轮四审(设计位 opus AWA / 攻击位 opus×2
+> PASS / codex 设计 AGREE·实现 BLOCK→修订)后的最终版**。§6 规格双审、§8 实现轮四审。
+> rev3=规格双审校准;rev4=实现轮 amendment(见 §7/§8)。
 > **D-1 是对 02 采纳判定的实质 waiver,须 owner 显式批准后方可实现**(codex BLOCK 条件之一)
 > **→ ✅ owner 已批准「(b) 重生成为主」(2026-07-12,AskUserQuestion 真实输入,非推导)**。
 > 三路侦察:scout-e-ledger ✅ / scout-e-dedup ✅ / scout-e-host ✅(宿主并入,解「批C 宿主环」)。
@@ -299,6 +300,66 @@ source/artifact digest 与指纹的 compiler_version 分量承担,不由本分�
 - **单元3 `c10d317`**:attach_host_runner.py(D-11,批C 复用)+门5 双进程 kill/resume 臂
   (子进程真 attach 后 os._exit 不 seal→死段 truncated;复活进程零继承+死段字节不动+
   GENESIS 血缘三字段);七门 12/12。
+- **实现轮四审 amendment 批(rev4,2026-07-12 晚,详见 §8)**:两 code bug + 规格符合度
+  + 测试补强,合并一次 reseal——
+  - **ledger.py(非 sealed,不 reseal)**:①`os.write` 短写补 write_all 循环(codex 实现
+    BLOCK-2:短写无异常但只落部分字节仍推进 seq 会破坏 D-6 durable-APPLIED 屏障)+零进展
+    红测;②reader 链失配 pop 时同步回退 tail_hash+offset(codex MEDIUM:pop 不回退致
+    events/tail_hash 不一致);③整性模型 docstring 明确 **tamper-evidence≠authenticity**
+    (两攻击位 CONCERN+设计位 LOW-4:hash 链防崩溃/懒篡改、不防持写权对手整段重写,
+    非消费隔离使其零 soundness 影响,authenticity/MAC 是另批且注入前必做)。
+  - **benders_loop.py(sealed,reseal `e60c2d04`→`fb17e517`+checker 自钉
+    `f3ad775e`→`60a17d1a`)**:④epoch_instance_id 加 process-instance UUID(codex:PID+
+    计数跨重启可复用);⑤epoch_semantic_digest 补 source_digest(snapshot 真值)+
+    master_schema_version(设计位 MEDIUM-1;master 无 schema 属性→类名代理,真 schema 化
+    见后续登记);⑥POISONED 记账 try 包裹,ledger 失败不掩盖原 apply 异常(攻击位 L2);
+    ⑦pool no-op 收紧——step_8 观测到 count_delta==0 的 vacuous 不 add 指纹(攻击位 LOW,
+    保 pool 语义=真加了约束);⑧generation 守卫注释订正「object replacement」(id() 抓
+    对象替换非同对象原位 rebuild;三审一致后果=under-cut FP-safe+今天不可达)。
+  - **测试(非 sealed)**:⑨LOW-2 恒真断言修实;⑩ghost rect digest 唯一性哨兵(D-2 规格
+    明写漏项);⑪门1 fresh-master 非持久断言(§4 门1③:注入失败后 fresh master 干净重
+    attach);⑫门7 compiler-rollback 真行为变体(monkeypatch REGION_CAPACITY_COMPILER_
+    VERSION→指纹变→旧 pool 不命中→重 attach,codex#5「不能用结构说明替代」)。
+  - 门测试 12→15;preflight --full 19/19 PASSED;权威数字 848→850。
+- **后续登记(rev4,非本批,FP-safe/audit-only)**:①master schema version 一等属性化
+  (现类名代理);②master 若引入同对象原位 rebuild 须加单调 build token(现 id() 只抓对象
+  替换);③EPOCH_CLOSED 事件发射 + reader 沿 GENESIS 血缘拼接 + F5 VALIDATED+SHADOW 双事件
+  (现 F5 只发 SHADOW)——audit 生命周期完整性,ledger 承担证据/注入职能前必做,连同 §8
+  codex#4 一并登记;④ledger authenticity(MAC/签名)——注入前必做。
 - RFC 门6 状态:**OPEN→批C**(fixture 双臂绿不改变此状态);门5 为 waiver 后替代门(明示)。
 - 批C 移交物:harness driver+三卡点清单(§0)+oracle 重生成开销测量义务(D-1 owner 批准
   时保留)。
+
+## §8 实现轮四审记录(2026-07-12 晚)
+
+- **设计位 opus:AGREE_WITH_AMENDMENTS**(0 BLOCK/0 HIGH/1 MEDIUM/4 LOW)。承重确认:非消费
+  隔离结构成立(`_cut_ledger` 只 append 零 read)、applied-only dedup 顺序正确、poison+abort
+  传播接通、FP=0 保住、家族串一致、reseal 自洽、26/26 实跑绿。MEDIUM-1(epoch digest 缺
+  master_schema_version)+4 LOW(generation 注释/测试恒真/门1 窄/链措辞)全采纳(§7 ⑤⑧⑨⑪③)。
+- **攻击位 opus ×2:均 PASS**(零 soundness 穿透)。八/多攻击面逐一构造穿透 FP=0 全失败——
+  两条结构不变量封死:dedup 只「抑制约束添加」单调 FP-safe(误杀=under-cut 放大可行域,
+  永不割合法解)+ledger 结构非消费(read 在 solve 路径零 caller)。唯一「构造成功」=持
+  data/cuts/ 写权对手整段重写伪造审计(面5/CONCERN)——但不碰 FP=0(非消费实测坐实)+需
+  宿主写权。采纳:整性措辞 tamper-evidence≠authenticity(§7③)+pool no-op/generation
+  两 LOW 加固(§7⑦⑧)+L2 POISONED 不掩盖原异常(§7⑥)。
+- **codex:规格设计 AGREE / 实现 BLOCK(基于 dd1a182 快照)→ rev4 修订后应降档**。BLOCK 六条
+  性质=实现完整性/规格符合度(非 soundness 穿透,与两 opus 攻击位 PASS 一致):①epoch 双
+  标识(UUID+digest 字段,§7④⑤ 采纳);②os.write 短写(§7① 采纳,真 bug);③GENESIS 血缘
+  reader 未拼接+pop 不回退 tail(§7② 采纳 pop 部分;血缘拼接登记后续);④ledger 生命周期
+  不完整(EPOCH_CLOSED/F5 VALIDATED/GENESIS 字段——GENESIS 上下文字段已在单元3 harness 传,
+  余登记后续);⑤七门未逐项兑现(门1 fresh/门7 compiler rollback §7⑪⑫ 采纳真行为测试;
+  门3 F6/F7 端到端参数化登记=dedup family-agnostic+stage_b 指纹测试+compiler rollback 已证
+  敏感性;门5 已在单元3 补;门6 OPEN 正确);⑥元数据 rev(本 rev4 订正)。主会话抽查 codex
+  ②③⑤ 承重断言(os.write 无返回值检查/pop 不回退/epoch 字段缺失)全属实。
+- 四审收敛点:非消费隔离(四审一致确认)、FP=0 只收敛到 under-cut/abort(两攻击位独立坐实)、
+  epoch digest 审计保真需补(设计位+codex 独立指出)。codex 复核请求已发(rev4+实现对齐)。
+- **codex 认证附记**:本轮规格复核 codex(e-spec-codex thread)完整出裁决——但规格复核属
+  「验证/审查」类,非「构造绕过演示」,认证前也能做,不作认证解除证据。攻击位 codex
+  (e-impl-attack-codex,含构造篡改)**第一跑无效**:被 codex 自动路由进内置重型
+  security-scan 插件,主线程派出 3 子代理后静默中断(21:21:15 后无记录),三子代理全卡在
+  「读插件文档」引导阶段、没一个碰源码或构造攻击内容;深挖 rollout jsonl 无 cyber 拒绝
+  指纹、无 OOM/崩溃/core dump,死因不明。**结论:死在插件引导阶段、没跑到会触发内容门的
+  阶段=无效样本,既不能证明认证解除也不能证明未解除**。重跑第二次(prompt 显式要求跳过
+  security-scan 插件+不派子代理+直接自由文本作答)进行中。教训沉淀记忆卡
+  [[codex-cyber-content-filter-blocks-adversarial-review]]。攻击位 soundness 结论以两个
+  opus(均 PASS)为准,codex 只作补充第三视角、不阻塞。

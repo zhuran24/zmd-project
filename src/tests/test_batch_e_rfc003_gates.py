@@ -402,6 +402,82 @@ def test_gate6_fixture_arms_on_off() -> None:
     assert int(m_off.build_stats.get("coordinate_framework_cut_count", 0)) == 0
 
 
+def test_ghost_rect_digest_uniqueness_sentinel() -> None:
+    """Spec D-2 ghost-uniqueness sentinel: the resolver's `_locate_master_
+    ghost_rect` returns the FIRST digest match, so a production master must
+    never carry two ghost domains with the same rect digest (else a bound cut
+    could resolve to the wrong u_var). Pin that the production builder keeps
+    them unique."""
+    from src.cuts.lifecycle import _ghost_rect_digest
+
+    master, _state, _g = _bound_region_world()
+    digests = []
+    for domain in master._ghost_domains:
+        cells = domain.get("cells") or ()
+        if not cells:
+            continue
+        xs = [int(c[0]) for c in cells]
+        ys = [int(c[1]) for c in cells]
+        rect = [min(xs), min(ys), max(xs) - min(xs) + 1, max(ys) - min(ys) + 1]
+        digests.append(_ghost_rect_digest(rect))
+    assert digests, "fixture master has no ghost domains"
+    assert len(digests) == len(set(digests)), "ghost rect digest collision"
+
+
+def test_gate1_apply_failure_is_not_persistent_on_fresh_master(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Spec §4 gate1 ③: an injected apply failure must not persist — a fresh
+    master (new build, new pool) re-attaches the same cut cleanly. Proves the
+    poison aborts the run without corrupting future builds."""
+    import src.cuts.lifecycle as lifecycle
+
+    m1, s1, _g1 = _bound_region_world()
+    c1 = _controller_e(m1)
+    real_step_8 = lifecycle.step_8_apply_to_master
+
+    def boom(*args: Any, **kwargs: Any) -> None:
+        raise RuntimeError("injected step_8 fault")
+
+    monkeypatch.setattr(lifecycle, "step_8_apply_to_master", boom)
+    with pytest.raises(RuntimeError, match="injected step_8 fault"):
+        _attach(c1, s1, 1)
+    assert int(m1.build_stats.get("coordinate_framework_cut_count", 0)) == 0
+
+    # Fresh master + restored step_8: the same cut attaches normally.
+    monkeypatch.setattr(lifecycle, "step_8_apply_to_master", real_step_8)
+    m2, s2, _g2 = _bound_region_world()
+    c2 = _controller_e(m2)
+    assert _attach(c2, s2, 1) >= 1
+    assert int(m2.build_stats.get("coordinate_framework_cut_count", 0)) >= 1
+
+
+def test_gate7_compiler_version_rollback_reattaches(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Spec §4 gate7 compiler-rollback variant (behavioural, not structural):
+    the semantic fingerprint embeds the family compiler version, so rolling
+    that version changes every fingerprint. A cut whose fingerprint the pool
+    already holds under the old version must therefore re-attach (miss the
+    pool) under a rolled version — the exact eviction RFC §9.7 asks for."""
+    import src.cuts.families.region_capacity_typed as rct
+
+    master, state, _g = _bound_region_world()
+    controller = _controller_e(master)
+    a1 = _attach(controller, state, 1)
+    assert a1 >= 1
+    # Same version again → dedup (pool hit), zero re-attach.
+    assert _attach(controller, state, 2) == 0
+
+    # Roll the F1 compiler version: fingerprints shift, old pool entries no
+    # longer match → the regenerated cut re-attaches instead of dedup-skip.
+    monkeypatch.setattr(
+        rct, "REGION_CAPACITY_COMPILER_VERSION", "rolled-test-version-v999"
+    )
+    a3 = _attach(controller, state, 3)
+    assert a3 >= 1, "compiler rollback must evict the stale fingerprint"
+
+
 def test_gate7_rollback_drill_family_disable(tmp_path: Path) -> None:
     """RFC §9.7 in (b) semantics: positive epoch first (family APPLIED>0 on a
     complete segment), then a fresh master with the family disabled — zero

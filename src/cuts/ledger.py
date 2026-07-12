@@ -30,6 +30,19 @@ SEGMENT_SEAL) / ``truncated`` (clean prefix, crash-shaped tail at EOF) /
 at the last clean prefix; only ``complete`` segments support negative
 ("zero APPLIED") conclusions.
 
+Integrity model (spec 08 §6, both attack reviewers + design LOW-4): the
+prev_event_hash chain is **tamper-EVIDENCE, not authenticity**. It reliably
+catches crashes, torn tails, single-point corruption and re-formatting, but it
+is keyless — an adversary with write access to ``data/cuts/`` can rewrite a
+whole segment (recomputing every downstream hash) into one the reader accepts
+as ``complete``. That is out of scope for exactness precisely because of the
+non-consumption isolation below: no certified conclusion ever reads this
+ledger, so a forged segment can only mislead a human/tool auditor, never prune
+a feasible master solution. Cross-segment completeness relies on the GENESIS
+lineage anchors, not the intra-segment chain. Authenticity (a MAC/signature)
+would be a separate batch and is required before this ledger may ever take on
+any evidence or injection role.
+
 This module is deliberately outside the close-kernel floor/sink set: it is an
 audit channel, not a proof channel (spec 08 §5). It must stay import-free of
 oracle/registry/master modules so the non-consumption isolation is visible in
@@ -212,7 +225,20 @@ class CutLedgerWriter:
         event.setdefault("wallclock_utc", time.time())
         line = _canonical_event_line(event)
         try:
-            os.write(self._fd, line + b"\n")
+            # write_all: os.write may short-write (return < len) without
+            # error; leaving a truncated line on disk while we advance seq/hash
+            # and return "success" would violate the D-6 durable-APPLIED
+            # barrier. Loop until the whole line is committed; zero progress
+            # is a hard failure (codex re-review BLOCK-2).
+            payload = line + b"\n"
+            written = 0
+            while written < len(payload):
+                n = os.write(self._fd, payload[written:])
+                if n <= 0:
+                    raise LedgerWriteError(
+                        f"ledger short write: {written}/{len(payload)} bytes"
+                    )
+                written += n
             # os.write on a raw fd is unbuffered; the "flush" tier of D-6 is
             # already satisfied. fsync below is the power-loss tier.
             if event_type in FSYNC_EVENT_TYPES:
@@ -328,9 +354,14 @@ def read_segment(path: Path) -> SegmentReadResult:
         if parsed.get("prev_event_hash") != prev_hash:
             # A chain mismatch at line k contradicts the *stored* line k-1:
             # either k-1's bytes were modified or k's prev field was forged.
-            # Trust neither — drop the last accepted event from the prefix.
+            # Trust neither — drop the last accepted event from the prefix, and
+            # roll tail_hash + offset back to that dropped event's predecessor
+            # so the returned (events, tail_hash, bad_offset) stay mutually
+            # consistent (codex re-review MEDIUM: pop must not desync tail).
             if events:
-                events.pop()
+                dropped = events.pop()
+                offset -= len(_canonical_event_line(dropped)) + 1
+                prev_hash = str(dropped.get("prev_event_hash", _GENESIS_ANCHOR))
             return _stop(
                 f"line {index}: prev_event_hash chain mismatch "
                 "(predecessor unattested, dropped from prefix)"

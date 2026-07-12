@@ -51,6 +51,7 @@ import json
 from collections import defaultdict
 from dataclasses import dataclass, field as dataclass_field
 import os
+import uuid
 from pathlib import Path
 import time
 from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple, cast
@@ -3556,10 +3557,22 @@ class LBBDController:
         # master build today (every build path precedes controller
         # construction); the captured build id turns that invariant into a
         # runtime guard instead of a silent assumption.
+        #
+        # Guard scope (review LOW): ``id(master)`` catches master OBJECT
+        # REPLACEMENT (reassignment), not a same-object in-place rebuild —
+        # id() would be unchanged there. That residual is FP-safe either way
+        # (a stale pool only over-suppresses = under-cut, never over-prune;
+        # both attack reviewers confirmed) and unreachable today (self.master
+        # is assigned exactly once). A monotonic master-side build token is
+        # the registered follow-up if in-place rebuild is ever introduced.
         self._attached_semantic_fingerprints: Set[str] = set()
         self._cut_framework_master_build_id = id(master)
+        # process-instance UUID (review): PID + in-process counter alone can
+        # recur across restarts; the uuid makes epoch_instance_id collision-
+        # free without coordination (matches the ledger writer_id form).
         self._cut_framework_epoch_instance_id = (
-            f"epoch-{os.getpid()}-{next(_CUT_FRAMEWORK_EPOCH_COUNTER):06d}"
+            f"epoch-{os.getpid()}-{uuid.uuid4().hex[:12]}-"
+            f"{next(_CUT_FRAMEWORK_EPOCH_COUNTER):06d}"
         )
         # 批E (spec 08 D-5): optional audit ledger writer (duck-typed
         # ``src.cuts.ledger.CutLedgerWriter``; None == zero ledger writes and
@@ -8296,16 +8309,26 @@ class LBBDController:
         registry = build_production_registry()
 
         # 批E (spec 08 D-3): epoch semantic digest — cross-process comparable
-        # identity of "what world this master build attaches under": frozen
-        # artifact hashes + the enabled family manifest + the ghost rect.
+        # identity of "what world this master build attaches under": source +
+        # frozen artifact hashes + master schema version + the enabled family
+        # manifest + the ghost rect. Audit-only (non-consumption): dedup/pool
+        # bind to epoch_instance_id, never to this digest. master_schema_version
+        # has no first-class master attribute today, so the master class name
+        # stands in as a stable proxy (a real schema version is a registered
+        # follow-up; spec 08 §7).
         epoch_semantic_digest = hashlib.sha256(
             json.dumps(
                 {
+                    "source_digest": str(getattr(snapshot, "source_digest", "") or ""),
                     "artifact_hashes": {
                         str(k): str(v)
                         for k, v in (state.artifact_hashes or {}).items()
                     },
-                    "enabled_families": sorted(self._enabled_cut_families),
+                    "master_schema_version": str(
+                        getattr(self.master, "master_schema_version", None)
+                        or type(self.master).__name__
+                    ),
+                    "enabled_family_set": sorted(self._enabled_cut_families),
                     "ghost_rect": list(getattr(self.master, "ghost_rect", None) or ()),
                 },
                 sort_keys=True,
@@ -8484,14 +8507,21 @@ class LBBDController:
                     # — record the poison fact for the audit trail, then let
                     # the original exception abort this solve (a master
                     # refusing a compiled cut is a wiring defect, not data).
-                    _ledger_event(
-                        "POISONED",
-                        {
-                            "cut_id": str(result.cut_id),
-                            "family": str(result.plan.family),
-                            "reason_code": "apply_chain_failure",
-                        },
-                    )
+                    try:
+                        _ledger_event(
+                            "POISONED",
+                            {
+                                "cut_id": str(result.cut_id),
+                                "family": str(result.plan.family),
+                                "reason_code": "apply_chain_failure",
+                            },
+                        )
+                    except Exception:
+                        # A ledger failure while recording the poison must not
+                        # mask the original apply-chain fault (review L2): both
+                        # fail closed, and the original exception carries the
+                        # root-cause diagnostic.
+                        pass
                     raise
                 counter_after = counter_before
                 if isinstance(stats, dict):
@@ -8499,8 +8529,16 @@ class LBBDController:
                         stats.get("coordinate_framework_cut_count", 0)
                     )
                 # Applied-only pool insert (spec 08 D-2): strictly after a
-                # successful step_8 so refusals never poison the pool.
-                self._attached_semantic_fingerprints.add(fingerprint)
+                # successful step_8 so refusals never poison the pool. When the
+                # master counter is observable and did not advance, the lowering
+                # was a vacuous no-op (added no constraint) — do not remember its
+                # fingerprint as "applied" (review LOW; FP-safe either way, this
+                # only keeps the pool's semantics = "constraints truly added").
+                is_observed_noop = (
+                    isinstance(stats, dict) and counter_after == counter_before
+                )
+                if not is_observed_noop:
+                    self._attached_semantic_fingerprints.add(fingerprint)
                 attached += 1
                 family = str(result.plan.family)
                 attached_by_family[family] = attached_by_family.get(family, 0) + 1

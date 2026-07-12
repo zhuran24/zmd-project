@@ -139,7 +139,7 @@ def test_bytes_after_seal_are_corrupt(tmp_path: Path) -> None:
     writer.path.write_bytes(b"\n".join(sealed_lines[:-1] + [forged, b""]))
     result = read_segment(writer.path)
     assert result.status == "corrupt"
-    assert "after SEGMENT_SEAL" in result.detail or result.detail
+    assert "after SEGMENT_SEAL" in result.detail
 
 
 def test_usage_errors(tmp_path: Path) -> None:
@@ -190,6 +190,44 @@ def test_fsync_failure_raises_ledger_write_error(
 
     monkeypatch.setattr(os, "fsync", failing_fsync)
     with pytest.raises(LedgerWriteError):
+        writer.append("APPLIED", {"cut_id": "c1"})
+
+
+def test_short_write_is_completed_then_verifiable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """os.write may commit fewer bytes than requested without error; the
+    writer must loop until the whole line lands (codex re-review BLOCK-2)."""
+    writer = _writer(tmp_path)
+    real_write = os.write
+    state = {"trip": True}
+
+    def chunked_write(fd: int, data: bytes) -> int:
+        # First call after arming writes a single byte, forcing the loop.
+        if state["trip"] and len(data) > 1:
+            state["trip"] = False
+            return real_write(fd, data[:1])
+        return real_write(fd, data)
+
+    monkeypatch.setattr(os, "write", chunked_write)
+    writer.append("APPLIED", {"cut_id": "c1"})
+    monkeypatch.setattr(os, "write", real_write)
+    writer.seal()
+    result = read_segment(writer.path)
+    assert result.status == "complete"
+    assert [e["event"] for e in result.events] == [
+        "GENESIS",
+        "APPLIED",
+        "SEGMENT_SEAL",
+    ]
+
+
+def test_zero_progress_write_raises(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    writer = _writer(tmp_path)
+    monkeypatch.setattr(os, "write", lambda fd, data: 0)
+    with pytest.raises(LedgerWriteError, match="short write"):
         writer.append("APPLIED", {"cut_id": "c1"})
 
 
