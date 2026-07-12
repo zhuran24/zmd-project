@@ -150,7 +150,13 @@ def do_stop(data: dict) -> int:
         problems.append(f"{my_unfinalized} memory change(s) this session not finalized")
     if pending:
         problems.append(f"{pending} relation suggestion(s) await review")
-    if last_status.startswith("check_fail") or last_status.startswith("degraded"):
+    # degraded:unavailable = embedding venv 不存在(CachyOS 侧常态:DEFAULT_EMBED_PYTHON
+    # 是 Windows 遗留路径,本侧语义层从未可用;库仅 ~12 节点,LIKE 检索足够,不值得
+    # 为它建 venv)。与 PostToolUse 侧「GPU degrade — logged only」语义对齐:不拦回合。
+    # 其他 degraded 子类(timeout/error = GPU 在但坏了)仍拦。2026-07-13 v1.1。
+    if last_status.startswith("check_fail") or (
+        last_status.startswith("degraded") and last_status != "degraded:unavailable"
+    ):
         problems.append(f"last finalize: {last_status}")
     if not problems:
         return 0
