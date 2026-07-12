@@ -110,3 +110,6 @@ cycle_2 是首次推进到 binding 的 attach-on 运行,但 binding 未在预算
 
 ### 平行的硬件归因线
 详见 auto-memory 卡 `uv-python-interpreter-intermittent-segfault`(07-13 回填):13900KS Vmin shift 机制嫌疑、microcode 0x133、满载 VID 1.33-1.39V、换 PTM7950 后 87-94°C 两轮零崩。判据树:PTM 5 轮全过→热嫌疑主导;再崩→memtest86+ → BIOS P 核 +50mV 复测。
+
+### F-5(07-13 晨,probe_3 实测):binding 并行被 FIXED_SEARCH 锁死
+`EXACT_BINDING_CP_SAT_WORKERS=6` 注入成功(进程 environ 确认)且参数链完好(`resolve_cp_sat_worker_count` 正常,binding 默认即 4 worker),但 probe_3 实测 binding 段瞬时 CPU=1.0 核——`binding_subproblem.py` 的 solve 硬编码 `search_branching=FIXED_SEARCH`,**CP-SAT 在 FIXED 搜索下 num_workers 无效、退化单 worker**(此前所有轮的 binding 单线程同因;F-1 的「开 worker 提速」选项就此证伪)。真正的提速路=改 FIXED_SEARCH(sealed 文件,reseal 批+双审,须论证 search 策略不碰 soundness——solver 参数不改验证语义,预期可行但走完整流程)或接受段级时长。`EXACT_SUBPROBLEM_PARAMS` 注入 search_branching 无效(注入点在硬编码行之前,被覆盖)。窗口估算相应固定为 1.5-2h/点,矩阵拆多窗口执行。
