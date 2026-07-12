@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 4
-- entries: 4
-- hard edges: 6
+- entries: 7
+- hard edges: 7
 - pending relation suggestions: 1
 
 ## Start Here
@@ -30,4 +30,6 @@ python cc_memory/mem.py boot
 ## Entries
 
 - `codex-needs-explicit-read-memory` — Codex 记忆 2026-06: RULE, 子代理不会自动读 CLAUDE/cc_memory, 提示词要写明。
-- `test-suite-speedup-2026-07-04` — 2026-07-04 提速线四个 commit 落地;slow 登记实测对时;三个假红坑;剩余项绑批2a/2b/#5-F spike/#1,不再独立推进(sealed 名单核实为据)
+- `cut-framework-stage-b-current-20260712` — 07-12 文档实态外审 F12 消解:F1/F6/F7=COMPILABLE typed 链唯一写 master;F5=ShadowValidated 无 lowering(真 adapter verifier 前 fail-closed);F2/F3/F4/F9=LEGACY_DIAGNOSTIC…
+- `p1-3-batch1-m5-current-20260712` — 07-12 文档实态外审 F12 消解:Batch1 完成、C1 默认、首解存在性关闭、M5 默认参数病态证伪(smoke#4 死于旧内存条款,~60G 固有尖峰);单跑铁律保留;不要再申请 owner 拍板或把性能当可行性 blocker
+- `test-lane-current-20260712` — 取代 07-04 提速条目的快照数字(5.5min/slow 19/60 sinks 已过时);批次 commit 的 cuts N 都是当时快照;慢 lane 解释器 flake SOP=pytest-forked,xdist 禁用

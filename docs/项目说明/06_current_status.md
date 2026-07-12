@@ -1,13 +1,21 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-11（凌晨增量更新；正文边界事实 2026-07-07 版继续有效）**  
+**状态日期：2026-07-12（修复批 β 文档校准；正文边界事实 2026-07-07 版继续有效）**  
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
+
+## 2026-07-11 → 07-12 实现状态增量
+
+- **Stage B 工程面全部完成（B0-B5b，07-11 当夜到深夜连落）**：typed 链首次通电进 benders 编排（B5a wiring cut-over：三路 match + `typed_apply` plan interpreter + resolver/`ModelScopeBinding` 唯一构造 + F5 apply 物理删除 + replay 双表）+ AST lockdown 收尾（B5b：`add_*`→`_lower_*` 私有化 + AST caller 钉 + getattr 旁路拒绝 + precheck 前移原子化）。当前唯一写 master 通路 = registry→resolver→step_8→typed_apply；F2/F3/F4/F9 在 registry 边界拒绝（旧 step_8 `NotImplementedError` fallback 机制已退役）。
+- **批D（07-12 凌晨）**：RFC-002 F5 独立 verifier 落地（零依赖 Kuhn 匹配 + differential 357 组合 + 六红测）。**拆两层读**：verifier 本体 sound 且测试贯通仅证明「兼容测试 oracle 可走完 typed 编排」；真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed（可达性哨兵钉死），故 F5 仍 shadow-only、转正另需 adapter 修复+真 adapter e2e。
+- **修复批 α/α2（07-12）**：pre-promotion 信任根七道 fail-closed 门（state/bundle 内容绑定、exact-type 容器门、cache 一致性、apply 边界 fresh 重算、深冻结 memo/cycle、u_var 身份、master weakref）+ master 写入面锁定收尾（F7 lazy cache 原子性、AST owner-scope lambda/comprehension 封堵、use-context digest、私有构造 reference 反搬运、assert→RuntimeError）。各双 opus 双审（设计 AGREE_WITH_AMENDMENTS + 攻击 PASS）。
+- **当前机器口径（HEAD `07d04b3`）**：sinks 67 / obligations 15；strong-status 65 AST nodes / 83 allowlist；测试 455 文件 / 4424 收集；slow 24 登记→31 实例；cuts 833。
+- **剩余到 promotion**：PIC-4/PIC-5 生产规模实测（集成 harness 层已由定向测试覆盖，生产 campaign 层未做）、RFC-003 ledger、F5 真 adapter 修复、session-bundle 所有权兑现（规格拍板 session-once vs 实现 per-attach-round 的偏差已登记为 promotion 前 BLOCK）、B6 owner 手动门（含 α2 新增两项清单）。
 
 ## 2026-07-08 → 07-11 实现状态增量（细节见 roadmap §0 与各规格书）
 
 - **C1 已是 certified 默认 master 表示**（批 1D，`a1ae1ed`+`fecb495`）：coordinate delegate 的 C1 pose-bool cov-channel 编码转正，S4 blocker 保证 certified 路径非 C1 即拒。批 1 全六子批（1A-1F）落地：cov 通道+witness cell（1B）、解级 power-pole dominance 剪杆进 sealed（1C，`3cc3cf4`）、第 15 条 proof obligation 入册（1E，`4d98314`）。
 - **生产内存条款**（1F+M5 修订）：wrapper `systemd-run --scope` 42G 硬帽+`CAMPAIGN_SWAP_MAX` 默认 20G（C1 出解时刻有 ~60G 级固有尖峰，禁 swap 必死——M5 归因判决 `1148067`/`b25ba1d`）;readiness gate RSS 三档分层。「产品默认 solve 参数病态」经 07-11 A/B 四刀证伪（参数仅 wall 差异,`bd96549`）。
-- **cut framework 通电前修复批**（`68b4557`）：F1 BState ghost 轴反置修复（soundness 级）+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深。**attach 通电 spike 判决 GO**（`e719e5d`：10K cut attach 16.6s+solve +4.1%,效度边界四条）;production integration checklist 立册（PIC-0~7,`4fceb9f`）,PIC-3 预算 env 化已落（`b9fcca9`,BUDGET fail-closed resolver+双注册）,PIC-7 已归因关闭。批 B（宿主形态+RFC-001 评估）已于 2026-07-11 完成；Stage B 规格定稿，B0 契约测试壳、B1 frozen artifact/snapshot/digest v1 与 B1.5 typed 平台层（三分支代数+单入口+F5 oracle 复验）已落地。当前待 B2-B5、PIC C/D/E、RFC-002/003 与 B6 owner promotion。
+- **cut framework 通电前修复批**（`68b4557`）：F1 BState ghost 轴反置修复（soundness 级）+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深。**attach 通电 spike 判决 GO**（`e719e5d`：10K cut attach 16.6s+solve +4.1%,效度边界四条）;production integration checklist 立册（PIC-0~7,`4fceb9f`）,PIC-3 预算 env 化已落（`b9fcca9`,BUDGET fail-closed resolver+双注册）,PIC-7 已归因关闭。批 B（宿主形态+RFC-001 评估）已于 2026-07-11 完成；Stage B 规格定稿并已全部执行完（B0-B5b，见顶部 07-12 增量段）——本行早期「待 B2-B5」的表述是 07-11 凌晨快照。
 - **exploratory 模式在 prod-scale 上不可用**的坑已钉死（port clearance 启发式 build 爆炸+legacy master+all_facility 实例集,py-spy 实锤,memory 卡+spike 规格书）。
 
 本页描述当前工作树，不以 Git HEAD 的提交时间替代工作树事实。未提交的 PR1 发布面 soundness 修复
@@ -85,8 +93,8 @@ allowlist 和关键 gate 文件。它是结构边界检查，不是“P1.2 已 s
 
 ## 测试状态
 
-2026-07-11 collect-only 为 **450 个 `test*.py` 文件、4182 tests**；`src/tests/cuts` 单独为 **594 tests**。
-这些都是收集数量，不是通过数量。本次文档审计没有运行并声称 full suite passed；任何 pass 数仍须附命令、工作树与退出码，最终以本次审计包的验证日志为准。
+2026-07-12 collect-only（HEAD `07d04b3`）为 **455 个 `test*.py` 文件、4424 tests**；`src/tests/cuts` 单独为 **833 tests**；`-m slow` 收集 **31 个实例**（`_SLOW_TEST_NODEIDS` 字面登记 24 条）。
+这些都是收集数量，不是通过数量；任何 pass 数仍须附命令、工作树与退出码。批次提交信息里的 cuts N 是各 commit 时点快照，不是当前树数字。
 
 ## 输入状态
 
@@ -107,9 +115,12 @@ hash-incompatible。
   记忆卡：F2 吞吐锁+桥语义、F3 缺 active_port_witness、F9 tight-K 绞死、
   F4 缺 route registry——均非遗漏）。总开关 `EXACT_CUT_FRAMEWORK_ATTACH`
   仍在 unsafe map（certified 下开启即 fail-closed）。旧 M4 阶梯与等价回归虽已齐，
-  07-11 Stage B 规格又明确了 B1.5-B5、PIC C/D/E、RFC-002/003 与 B6 owner promotion（其中 B1.5 已于当日落地）；
-  因此不能再概括为“仅剩 owner”。close-kernel 现 66 sinks（B1.5 后 typed_platform 入册）。
+  Stage B B0-B5b、批D 与修复批 α/α2 已于 07-11/07-12 全部落地（见顶部 07-12 增量段）；
+  剩余到 promotion 的是 PIC-4/PIC-5 生产层、RFC-003、F5 真 adapter 修复与 B6 owner 门，
+  仍不能概括为“仅剩 owner”。close-kernel 现 67 sinks（批D 后 F5 verifier 入册）。
+  注意本段开头「attach 链四族通电」是 M4 时期口径：B5a 后 F5 无 apply/lowering、
+  只产 ShadowValidated，「通电」现仅对 F1/F6/F7 的 typed lowering 成立。
   F8 power_grid_reach 已整族退役删除（owner 游戏规则拍板：电杆不需连网）。
-  详见记忆卡 `p1-3-m4-ladder-landed`/`p1-3-m3-step8-landed`/
-  `p1-3-m2-coverage-stencil-ruling`。
+  详见 current 记忆卡 `cut-framework-stage-b-current-20260712`（旧
+  `p1-3-m4-ladder-landed`/`p1-3-m3-step8-landed` 已 superseded，仅作史料）。
 - `p1_3b_*`：只作为既有 JSON/CLI 兼容字段保留，不代表人类路线图仍分 A/B。

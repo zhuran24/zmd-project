@@ -16,15 +16,15 @@ spike GO（`02_spike_evidence.md`）证明的是**工程开销可行**（10K att
 2. RFC-002 F5 独立 verifier：通电族=F1/F6/F7,F5 保持 shadow/不 mutate master；F5 转正的前置=独立 verifier 落地。
 3. RFC-003 ledger+dedup+epoch：spike 是单 epoch 单 master 豁免；生产 campaign 多 rect 多 epoch 场景必须落 ledger+dedup（跨 solve cut 池账本）。
 
-**PIC-2 agnostic-F5 语义缝二选一**（spike TRIAGE 移交）：lifecycle:1393-1402 对 GHOST_AGNOSTIC F5 走无条件 attach 但 delegate:8050 拒空条件 → fail-closed。落地 F5 时二选一：delegate 支持空条件（改 sealed 文件）或 lifecycle 禁 agnostic F5 进 step_8。与 RFC-002 同批处理。
+**PIC-2 agnostic-F5 语义缝二选一 ✅CLOSED BY ARCHITECTURE(2026-07-11 夜,B5a)**（原 spike TRIAGE 移交：lifecycle 对 GHOST_AGNOSTIC F5 走无条件 attach 但 delegate 拒空条件 → fail-closed;当时拍板「落地 F5 时二选一」）：B5a 已把 F5 的 apply/lowering 路径**物理删除**——F5 只产 `ShadowValidated`(无 `ConstraintPlan`,结构上进不了 step_8/typed_apply),原「二选一」的两个分支所依附的语义缝**不复存在**。若未来 F5 promotion,须另立 lowering 设计与证明（批D 规格 §5 转正清单③）,不得复活旧 delegate 分支。（07-12 文档外审 F05 校准：本条旧文与 §2 批次日志曾互相矛盾,以本状态为准。）
 
 **PIC-3 E3 预算 env 化 ✅已落地(2026-07-11 凌晨,`b9fcca9`)**（spike 规格原 §2 遗留）：`EXACT_CUT_FRAMEWORK_ATTACH_BUDGET=2000` 硬编码（benders_loop.py:946）→ env 可配。碰 benders_loop sealed 文件=reseal 链；新增 EXACT_* env=allowlist+lock+tests 三同步（CLAUDE.md §6 铁律）。小批次,可先行。
 
 **PIC-4 跨 solve cut 池演化实测**（spike 效度边界 #5）：campaign 多 rect 序列下 cut 生成→scope 检查→attach→anchor 切换退役（M4-A ghost conditioning）的端到端行为从未在 prod-scale 实测。依赖 PIC-0 宿主。
 
-**PIC-5 benders 循环编排路径验证**：spike 直调 step_8 绕过了 `_maybe_attach_framework_cuts` 的 step5→6→7→8 完整编排与 2000 预算路径;通电前须在宿主内验证门控编排本身（含 rejection taxonomy 计数落 telemetry）。依赖 PIC-0。
+**PIC-5 benders 循环编排路径验证（07-12 起拆两层记账,文档外审 F05 校准）**：原文=spike 直调 step_8 绕过了 `_maybe_attach_framework_cuts` 的 step5→6→7→8 完整编排与 2000 预算路径。**集成 harness 层 ✅已覆盖**（B5a 后 `test_cut_framework_attach_wiring.py` 直测 `_maybe_attach_framework_cuts` 三路编排、rejection taxonomy 分桶与零误写 master）;**生产 campaign 层 ⬜未做**（多 rect、多 epoch、真实 campaign telemetry 与成本,prod-scale）——与 PIC-4 同批实测。依赖 PIC-0。不得把 harness 层的绿当生产层已验。
 
-**PIC-6 replay 诊断 subset 残留清理**（cut 修复批 TRIAGE）：生产不可达,顺通电批一并清。
+**PIC-6 replay 诊断 subset 残留清理 ✅DONE(2026-07-11 夜,B5a 搭车)**（原 cut 修复批 TRIAGE:生产不可达,顺通电批一并清）：B5a 已把 replay 拆为 typed/legacy 双表——typed 四族走单入口不 apply,legacy 四族结果保持 HELD/diagnostic、禁 reactivate。（07-12 文档外审 F05 校准：本条旧文与 §2 批次日志曾互相矛盾,以本状态为准。）
 
 **PIC-7 M5 独立前置 ✅已归因关闭(2026-07-11 凌晨,M5 A/B 四刀)**：「默认参数病态」证伪——smoke#4 死于当时的 42G+禁 swap 条款(<60G 尖峰),双变量混杂误读;修订条款(62G)下完整默认组合 fixed+p3+s3 OPTIMAL@649s(+26.4% wall)。通电对照可直接用生产默认参数,残余仅为 +26% 性能注记(优化机会,非阻塞)。证据 `../p1_3_m5_convergence_20260708/m5_ab_param_bisect_20260711.md`。
 

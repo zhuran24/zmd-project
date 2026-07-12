@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 3. `NAV_MAP.md` 是调用链导航，现已显式列出 `certified_artifact_contract.py`、`candidate_proof_replay.py`、PR2 L0 child/core、parallel scheduler 与 Stage B cut snapshot 链；细节仍以源码符号为准。
 4. **`docs/项目说明/00_master_roadmap.md`**（2026-07-05 立）是全项目工作线的**总图 + 排期快照 + owner 拍板台账**——问"接下来做什么/某条线排在哪/哪些事等 owner 定"先看它。它不是状态权威（release 边界仍以 1 为准，当前实现状态以 `06_current_status` + `soundness_gap_roadmap` 为准）。
 
-**⚠ 本仓库是交付副本，git 历史被重建过**：README 里引用的所有 commit hash（`b35e5f9`、`9bbb3a6`、`099f5a3`…）在本仓库 `git cat-file` 均不可解析——它们是原机器的历史，只能当叙事线索，不能 `git show`。本仓库无 remote。分支：`main`、`topology-opt`（S0-S3 diagnostic 模块已进 main 历史，是 main 祖先；生产接线未做）。原 `pr2-5-domain-frontier-gate`（close-kernel 硬化线）已于 `6e06922` 合入 main（round-19/20 全吸收）、分支指针已删。核对 HEAD 以实测为准，别死认文档里记的 hash。
+**⚠ 本仓库是交付副本，git 历史被重建过**：README 里引用的所有 commit hash（`b35e5f9`、`9bbb3a6`、`099f5a3`…）在本仓库 `git cat-file` 均不可解析——它们是原机器的历史，只能当叙事线索，不能 `git show`。remote 配置因副本而异（CachyOS 活跃副本 2026-07-12 有 `origin`=GitHub + `winc`=Windows NTFS 挂载；打包分发出去的审查副本可能既无 remote 也无 `.git`）。分支：`main`、`topology-opt`（S0-S3 diagnostic 模块已进 main 历史，是 main 祖先；生产接线未做）。原 `pr2-5-domain-frontier-gate`（close-kernel 硬化线）已于 `6e06922` 合入 main（round-19/20 全吸收）、分支指针已删。核对 HEAD 以实测为准，别死认文档里记的 hash。**凡 `git ...` 命令与 `scripts/select_tests_for_paths.py` 的 affected/codegraph 选择语义都以真实 checkout 为前提**：在无 `.git` 的 stripped 审查树里它们要么不可用、要么只剩保守回退（FULL），不得把回退当精确受影响闭包。
 
 ## 常用命令
 
@@ -25,7 +25,7 @@ python scripts/preflight_gate.py --slow-tests # 独立慢 soundness lane（串�
 python scripts/preflight_gate.py --ci --base-ref origin/main   # CI diff 模式
 
 # 两个结构 checker（proof-obligation checker 无 argparse；strong-status checker 支持 argparse/--help）
-python scripts/check_p1_2_proof_obligations.py        # 通过输出: 15 obligations anchored; 65 proof-bearing sink files sealed
+python scripts/check_p1_2_proof_obligations.py        # 通过输出: 15 obligations anchored; 67 proof-bearing sink files sealed
 python scripts/check_strong_status_write_allowlist.py # 通过输出: 65 AST nodes, 83 allowlist entries
 
 # 单跑一个测试（固定顺序 + 独立 basetemp，避免并发互踩）
@@ -48,7 +48,7 @@ python scripts/restore_external_artifacts.py candidate_placements --source <file
 
 - **preflight 退出码只有 0/1**。`GateResult.exit_code`（`scripts/preflight_gate.py:123-145`）没有返回 2 的分支；源码模块 docstring 已同步为 0/1。
 - **`--full` ≠ 全部测试**：仍带 `-m "not slow"`。改认证核心（producer/seal/publish/checker）后必须单独跑 `--slow-tests`，否则慢 soundness 测试是盲区。
-- `@slow` 不是散落的装饰器，而是**集中登记**在 `src/tests/conftest.py` 的 `_SLOW_TEST_NODEIDS` 集合（2026-07-11 为 26 条，只留真慢的）。新写 ≥8s 的慢测试必须去 conftest 登记，否则会被 fast lane 意外跑到；retune 用无并发串行的 `-m slow --durations` 全量扫描，别在有并发 pytest 时测时长（会挤出假红/虚高）。
+- `@slow` 不是散落的装饰器，而是**集中登记**在 `src/tests/conftest.py` 的 `_SLOW_TEST_NODEIDS` 集合（2026-07-12 为 24 条字面 nodeid，参数化后 `-m slow` 收集 31 个实例——「登记条数」与「收集实例数」是两个口径，别混）。新写 ≥8s 的慢测试必须去 conftest 登记，否则会被 fast lane 意外跑到；retune 用无并发串行的 `-m slow --durations` 全量扫描，别在有并发 pytest 时测时长（会挤出假红/虚高）。
 - `pytest.ini` 的全局 `--basetemp=.pytest_tmp` 意味着**并发跑 pytest 会互删临时目录**——多窗口/并发时各自覆盖 `--basetemp` 为独立子目录。
 - `requirements.txt` 声明了 `pytest-randomly` 但当前环境未必装了它；想稳定复现顺序永远显式加 `-p no:randomly`。
 - `candidate_placements.json` 缺失时部分测试（`test_binding.py`、`test_routing.py` 的一些用例）会在 fixture 阶段抛 `FileNotFoundError` 硬失败而非优雅 skip——排查"一批测试莫名 error"先查这个工件在不在。
@@ -78,7 +78,7 @@ main.py → run_solve() → outer_search.run_outer_search()
       └ independent_infeasibility_reverifier.py  whole-layout nogood 落 cut 前的独立复验（I1）
 ```
 
-CERTIFIED 证明的是 6 个谓词（ghost 内无设施 / 两两不重叠 / placement_rule / 端口精确计数 / 路由连通 / 供电覆盖）+ lex 最优性；**吞吐/带宽/离散容量流明确 OUT-OF-SCOPE**（`PROJECT_LOCK.md` §1A B 块）。`src/cuts/` 的 cut lifecycle **部分接通、certified 下禁用**（截至 2026-07-11）：`step_8_apply_to_master` 已接 F1/F5/F6/F7（F2/F3/F4/F9 fallback `NotImplementedError`）；`benders_loop` 的 direct attach（`_maybe_attach_framework_cuts`）由 `EXACT_CUT_FRAMEWORK_ATTACH` 门控且在 certified unsafe-map 里禁用；F8 已从 `CutFamily` 退役。Stage B B0-B4 已落地（contract shell + snapshot 层 + typed 平台层 + F1/F6/F7 三族纵切全进 COMPILABLE），B5 wiring cut-over 与 PIC C/D/E 尚未完成。
+CERTIFIED 证明的是 6 个谓词（ghost 内无设施 / 两两不重叠 / placement_rule / 端口精确计数 / 路由连通 / 供电覆盖）+ lex 最优性；**吞吐/带宽/离散容量流明确 OUT-OF-SCOPE**（`PROJECT_LOCK.md` §1A B 块）。`src/cuts/` 的 cut lifecycle **typed 链已全线接通、certified 下仍禁用**（截至 2026-07-12，Stage B B0-B5b + 批D + 修复批 α/α2 已落地）：F1/F6/F7 = COMPILABLE/TYPED，经 typed registry → resolver（`ModelScopeBinding` 唯一构造链）→ `step_8_apply_to_master` → `typed_apply`（三行 operation 表调 master `_lower_*`）写入 master；F5 = shadow-only（`VALIDATED/TYPED`、`compiler=None`），只产 `ShadowValidated`、**无 lowering、结构上不可能改 master**（独立 verifier 已落地，但真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed，verifier 真路径暂不可达、有哨兵测试钉死）；F2/F3/F4/F9 = LEGACY_DIAGNOSTIC，在 typed 单入口的 registry 边界即拒绝（**不是** step_8 `NotImplementedError` fallback——那是 B5a 前的旧机制）；F8 retired。`benders_loop` 的 direct attach（`_maybe_attach_framework_cuts`）由 `EXACT_CUT_FRAMEWORK_ATTACH` 门控且在 certified unsafe-map 里禁用；promotion 待 PIC-4/PIC-5 生产层实测、RFC-003 与 B6 owner 手动门。
 
 ### 3. 认证三权分立（需跨 4-6 个文件才能看清）
 
@@ -96,7 +96,7 @@ producer（outer_search.py）        只能提交 CANDIDATE_PROPOSED + proposal 
 
 ### 4. P1.2 手动门（已关，2026-07-07）：任何绿灯仍不等于"owner 关门动作"
 
-release 由 owner 手动门管辖：`data/review_gates/phase_1_2_spike_close.json`。**P1.2 已于 2026-07-07 由 owner 显式 `owner_manual_decision` 关闭**（`status: "closed_manual_owner_decision"`、`next_phase_entry.allowed=true`），当前阶段为 **P1.3**（F1/F5/F6/F7 direct attach 与 Stage B B0-B4 已做；certified promotion 仍待 B5、PIC C/D/E 与 B6 owner action）。纪律不变：clean-review 计数**保存在仓库外**、仓库刻意不推导；checker PASS、preflight 绿、测试全过、seal 方法存在——都不得改写为 owner 关门动作或 release closure（`PROJECT_LOCK.md:130-137`）——本次关闭是 owner 真实手动输入，不是自动推导。同理 close-kernel 结构门只证"登记结构未漂移"，不证明求解数学正确。
+release 由 owner 手动门管辖：`data/review_gates/phase_1_2_spike_close.json`。**P1.2 已于 2026-07-07 由 owner 显式 `owner_manual_decision` 关闭**（`status: "closed_manual_owner_decision"`、`next_phase_entry.allowed=true`），当前阶段为 **P1.3**（Stage B B0-B5b、批D F5 独立 verifier、修复批 α/α2 已做；certified promotion 仍待 PIC-4/PIC-5 生产层实测、RFC-003、F5 真 adapter 修复与 B6 owner action）。纪律不变：clean-review 计数**保存在仓库外**、仓库刻意不推导；checker PASS、preflight 绿、测试全过、seal 方法存在——都不得改写为 owner 关门动作或 release closure（`PROJECT_LOCK.md:130-137`）——本次关闭是 owner 真实手动输入，不是自动推导。同理 close-kernel 结构门只证"登记结构未漂移"，不证明求解数学正确。
 
 ### 5. Frozen artifacts 与 freeze-ritual
 
@@ -122,7 +122,7 @@ proof 输入被字节级 hash 钉死（`scripts/preflight_gate.py` 的 `FROZEN_A
 ## 读代码的工具约定
 
 - **符号/调用链/影响面定位先用 CodeGraph，别默认全仓 grep**（省大量 token）：CLI `codegraph explore|callers|callees|impact|search`，或 MCP 工具（本项目已注册 `codegraph serve --mcp`）。索引是可重生 cache（`.codegraph/`，git-ignored；`codegraph status .` 查状态、`codegraph init .` 重建，全仓 ~20s）。它**不是权威**：proof 敏感的结论必须回到源码 + `PROJECT_LOCK.md` + 目标测试核实；feature 分支上可能 stale（`codegraph sync .`）。
-- 内容/文本搜索用 Grep；按文件名找文件用 `es`（Everything CLI）。
+- 内容/文本搜索用 Grep；按文件名找文件：Windows 侧用 `es`（Everything CLI），Linux 侧用 `fd` / `rg --files`。
 
 ## 记忆系统（本机协作基建，随交付副本迁入）
 

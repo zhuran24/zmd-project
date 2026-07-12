@@ -117,7 +117,9 @@ checks as certified proof"）。
   exact_safe cut——**刻意锁死的契约**、非疏漏。
 - **(B-2) capacity / 连通 (ii)(iii)（98% 密度离散流墙，研究级）** — open research problem；active F1-F7+F9 cut
   family（F8 retired）（region_capacity / density_envelope 等）是**面积/空间密度 packing cut、非吞吐 cut**（截至
-  2026-07-11：`step_8_apply_to_master` 已接 F1/F5/F6/F7、其余族 fallback `NotImplementedError`，
+  2026-07-12：F1/F6/F7 走 typed lowering（registry→resolver→`step_8_apply_to_master`→`typed_apply`）；
+  F5 shadow-only、只产 `ShadowValidated`、无 lowering 绝不改 master；F2/F3/F4/F9 为 LEGACY_DIAGNOSTIC、
+  在 typed 单入口的 registry 边界拒绝（旧「step_8 `NotImplementedError` fallback」机制已随 B5a 退役）；
   attach 在 certified 下仍被 `EXACT_CUT_FRAMEWORK_ATTACH` unsafe-map 禁用），
   无 cut family 表达「离散容量流够不够」。进 certified 需**新范式**（改 6 谓词定义 + 新增离散容量
   子问题），**非「关现有 gap」**。
@@ -215,17 +217,20 @@ owner 手动条件：
 The certified path is grounded in:
 
 - `rules/canonical_rules.json` (now also carries consolidated preprocess recipe / target / commodity truth and empty-rectangle admissibility)
-- `data/preprocessed/candidate_placements.json` (present in this worktree; distributions may externalize it, but certified runs require the pinned bytes)
+- `data/preprocessed/candidate_placements.json` (external large artifact: lightweight checkouts/distributions may omit it — verify with `scripts/check_external_artifacts.py`; certified runs require the pinned bytes)
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 - artifact-hash-compatible campaign state
 - provenance-complete exact-safe cuts
 
-The current worktree contains `data/preprocessed/candidate_placements.json`. Its required
+`data/preprocessed/candidate_placements.json` is an external large artifact whose required
 bytes are size `45,774,305` and SHA256
-`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`. A lightweight
-distribution may externalize this file, but that packaging choice does not change the certified
-contract: the pinned bytes must be restored or regenerated before a certified run. The immediately
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`. Whether a given
+checkout actually contains it is a packaging property, not a lock guarantee — a lightweight
+distribution may externalize it (the default external-artifact checker tolerates that;
+`--require candidate_placements` does not). That packaging choice does not change the certified
+contract: the pinned bytes must be restored or regenerated before a certified run, and any
+freeze/reseal or `--require-large` flow must verify size/SHA256 first. The immediately
 previous artifact (size `45,773,799`, SHA256
 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`) predates the boundary
 `(0,0)` corner-pose fix, is superseded, and is hash-incompatible. The former
@@ -484,7 +489,7 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
 - Changing campaign, artifact, or proof schemas without explicitly updating the lock/spec/test boundary together.
 - Publishing a terminal `CERTIFIED` final result whose empty-rectangle `min_side` is below the canonical project `min_side_admissibility`, even if it was found in a superdomain run.
 - Adding a new `candidate_generation` or `EXACT_*` certified-surface axis without first classifying it in the closed contract and adding fail-closed red tests.
-- Enabling `EXACT_CUT_FRAMEWORK_ATTACH=1` in any certified / production campaign path (classified 2026-07-08, P1.3 M3-4). The active eight-family framework (F1-F7+F9; F8 retired) has reviewed Step-8 translations only for F1/F5/F6/F7, and `_maybe_attach_framework_cuts` remains registered in the certified unsafe env map (`cut_framework_attach_not_certified`) with red tests on both direct-benders and outer-search entrances. Promotion out of the unsafe map requires **all** current production-integration prerequisites, not merely the M4 ladder/equivalence work: Stage B B5 (the wiring cut-over; B0-B4 including the typed platform and all three F1/F6/F7 vertical slices landed 2026-07-11), PIC-4/PIC-5 production-host evolution/orchestration validation, RFC-002 independent F5 verifier plus the agnostic-F5 decision, RFC-003 ledger+dedup+epoch, and finally B6 explicit owner promotion with this lock/checker/red-test flip. Until then F5 stays shadow-only on the promoted design and the direct attach path remains unsafe/default-off. The promoted path inherits every cut-lifecycle fail-closed obligation in this lock (F-*/PCR-*/CUT-* families).
+- Enabling `EXACT_CUT_FRAMEWORK_ATTACH=1` in any certified / production campaign path (classified 2026-07-08, P1.3 M3-4). The active eight-family framework (F1-F7+F9; F8 retired) has typed Step-8 lowerings only for F1/F6/F7 (registry→resolver→`step_8_apply_to_master`→`typed_apply`); F5 is shadow-only (`ShadowValidated`, no lowering, structurally cannot mutate the master — its former Step-8 apply path was physically deleted in B5a); F2/F3/F4/F9 are LEGACY_DIAGNOSTIC and are rejected at the typed single-entry registry boundary. `_maybe_attach_framework_cuts` remains registered in the certified unsafe env map (`cut_framework_attach_not_certified`) with red tests on both direct-benders and outer-search entrances. Promotion out of the unsafe map requires **all** current production-integration prerequisites, not merely the M4 ladder/equivalence work: PIC-4/PIC-5 production-host evolution/orchestration validation at production scale (the integration-harness layer of PIC-5 is already covered by directed tests; the production-campaign layer is not), RFC-003 ledger+dedup+epoch, the batch-α2 B6 checklist items, the session-bundle ownership decision recorded in the Stage-B spec, and finally B6 explicit owner promotion with this lock/checker/red-test flip. Status snapshot 2026-07-12: Stage B B0-B5b, the independent F5 verifier (RFC-002, batch D), and pre-promotion hardening batches α/α2 have landed; the agnostic-F5 seam was eliminated by architecture in B5a; the real F5 adapter still fails closed before the verifier (frozen tuple/list shape gap, pinned by a sentinel test), so any F5 promotion additionally requires the adapter fix plus a real-adapter e2e. Until owner promotion, F5 stays shadow-only and the direct attach path remains unsafe/default-off. The promoted path inherits every cut-lifecycle fail-closed obligation in this lock (F-*/PCR-*/CUT-* families).
 - Rebinding globally pooled resources into per-line or per-instance hard bindings without a new exact proof basis.
 - Adding any exterior-path requirement for the ghost rectangle.
 - Enabling `EXACT_POWER_PLACEMENT_SUBPROBLEM=1` in any certified / production campaign path. The power-pole subproblem feature flag is exploratory only. Status of the three known exactness gaps (originally characterized in the GPT v4 review follow-up; 三项 status 至 v28 外审未变, gate 仍强制):

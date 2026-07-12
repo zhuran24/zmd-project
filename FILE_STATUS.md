@@ -42,7 +42,7 @@
 | `src/models/routing_subproblem.py` | CURRENT_CODE_ALIGNED | 命题 P 的有向连通 gate，含 selected-route connectivity recheck |
 | `src/models/flow_subproblem.py` | DIAGNOSTIC_ONLY | 连续 LP 诊断；不门控 certified verdict，不产生认证吞吐证明 |
 | `src/models/pose_bool_exact_master.py` | HISTORICAL_OR_PLAN | env-gated alternative；不是当前 public certified backend |
-| `src/cuts/` | CURRENT_CODE_ALIGNED | active F1-F7+F9（F8 retired）；F1/F5/F6/F7 Step-8 + direct env-gated attach 已落地但 certified unsafe/default-off；Stage B B0-B4 landed（F1/F6/F7 三族全过 typed 边界），B5/PIC C-D-E/B6 pending |
+| `src/cuts/` | CURRENT_CODE_ALIGNED | active F1-F7+F9（F8 retired）；Stage B B0-B5b + 批D + α/α2 已落地（2026-07-12）：F1/F6/F7 typed lowering 全链、F5 shadow-only（无 lowering，真 adapter 在 verifier 前 fail-closed）、F2/F3/F4/F9 LEGACY_DIAGNOSTIC registry 拒绝；attach 仍 certified unsafe/default-off，PIC-4/5 生产层+RFC-003+B6 owner pending |
 
 ## Frozen inputs
 
@@ -52,9 +52,9 @@
 | `rules/preprocess_plan.json` | CURRENT_CODE_ALIGNED | additive preprocess plan，不能覆盖 recipe/target/commodity truth |
 | `data/preprocessed/mandatory_exact_instances.json` | CURRENT_CODE_ALIGNED | mandatory instances |
 | `data/preprocessed/generic_io_requirements.json` | CURRENT_CODE_ALIGNED | validated generic I/O requirements |
-| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | 当前存在；45,774,305 bytes；SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`；45,773,799 bytes / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 是拐角修复前 superseded、hash-incompatible 旧版 |
+| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | 外部大工件，在不在位因副本而异（用 `scripts/check_external_artifacts.py` 实测，别信文档）；pinned bytes = 45,774,305 / SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`；45,773,799 bytes / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 是拐角修复前 superseded、hash-incompatible 旧版 |
 
-轻量分发可以 externalize candidate placements，但当前工作树不缺它，certified contract 也始终要求 pinned bytes。
+轻量分发可以 externalize candidate placements（stripped 审查副本通常缺它，默认 checker 容忍缺失、`--require` 不容忍）；certified contract 始终要求 pinned bytes 先恢复再跑。
 
 ## Public / derived outputs
 
@@ -96,4 +96,4 @@
 
 ## Test inventory
 
-2026-07-11 collect-only：450 个 `test*.py` 文件 / 4182 tests；`src/tests/cuts` 单独为 594 tests。以上均是收集数量，不是通过数量。本次文档审计没有声称 full suite passed，详见验证日志。
+2026-07-12 collect-only（HEAD `07d04b3`，`.venv` 解释器）：455 个 `test*.py` 文件（`git ls-files 'src/tests/**/test*.py' 'src/tests/test*.py'`）/ 4424 tests；`-m slow` 收集 31 个实例（`_SLOW_TEST_NODEIDS` 字面登记 24 条）；`src/tests/cuts` 单独为 833 tests。以上均是收集数量，不是通过数量；批次提交信息里的 cuts N 是各自 commit 时点快照，不是当前树数字。结构 checker 当前口径：15 obligations / 67 proof-bearing sinks；strong-status 65 AST nodes / 83 allowlist entries。

@@ -17,7 +17,7 @@ scope:
     - _validate_coordinate_forced_hint
     - build_exact_core
     - skip_power_coverage
-status: active
+status: superseded
 priority: P0
 triggers:
   intents:
@@ -57,6 +57,8 @@ provenance:
     - "关键判决: M6b-A 钉死无供电 3/3 OPTIMAL 2.6-5.3s vs M6b-B 同布局有供电 INFEASIBLE 94.5s;M6d 自由无供电全锚 OPTIMAL 110s vs M6f 自由有供电无 ghost UNKNOWN 905s"
   updated_at: "2026-07-09"
 ---
+> **Superseded 2026-07-12(修复批 β/文档实态外审 F10/F11)**:当前态见 `p1-3-batch1-m5-current-20260712`。本卡仅作批次/历史证据保留,不再参与 active recall;正文中的「当前状态/待办/OPEN」段落均为当时快照,勿再据此行动。
+
 
 M6 诊断课题（owner 2026-07-09 立项）终报见 summary 与 `docs/research/p1_3_m6_diagnosis_20260709/07_final_diagnosis.md`。
 

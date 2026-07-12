@@ -124,6 +124,17 @@ B0 新增,见 §6。)**修订拍板**:
 - **性能实测**(codex,45MB candidate_placements):bundle 构造 ~15s、峰值 RSS ~2.3GiB、
   snapshot builder ~4.2s——「每 session 一次」可接受;B5 接线时 bundle 构造须放
   session 建立期(master build 前的内存低谷),不得进 benders 迭代路径。
+- **⚠ 2026-07-12 审计校准(文档实态外审 F02;登记 promotion 前 BLOCK)**:本节权威拍板
+  仍是「每 ExactSearchSession 构造一次并复用」,但 B5a 实际落地为**每次
+  `_maybe_attach_framework_cuts` 调用重建** bundle/snapshot/registry
+  (`benders_loop.py:8150-8161`,源码注释「ONCE per attach round」是 per-round 单次、
+  不是本节的 per-session;工厂无 session-owned 字段、无 artifact-digest 键控缓存)。
+  实现偏离没有留下显式「推翻 session-once」的裁决理由,两套说法一度并存——按上行实测
+  ~15s/~2.3GiB,per-attach-round 在 production campaign 下的重复成本与内存尖峰不可
+  接受为终态。**处置**:B6 前须把 bundle 所有权提升到 session(按 artifact digest/
+  会话身份钉复用与失效规则,并保持 α-1 内容绑定与 α-5 深冻结语义),或由 owner 显式
+  改判本节拍板;在此之前不得把「once per attach round」注释解读为已满足本节。
+  该项是**实现债**,不属于修复批 β(纯文档)的关闭范围。
 
 ### 2.3 snapshot builder(唯一)与 digest 编码
 
@@ -834,6 +845,12 @@ accept-set 撬动/Counter 时序/F5 退役残留/coverer 碰撞构造/门控),F5
 - checklist:阶段 B=通电线工程主线;PIC-1.2/PIC-2 顺位批 D 不变;PIC-6(replay subset
   残留)**搭车 B5**(replay.py 反正必改);PIC-4/PIC-5(批 C)可与 B0-B4 并行侦察。
 - PROJECT_LOCK:382 过时叙述校准=B6 随批(lock 是 owner 权威文件)。
+  **⚠ 2026-07-12 审计校准(文档实态外审 F09,取代上一行的绑定)**:B6 只保留**授权性**
+  变更——unsafe map 翻转、红测预期翻转、release boundary 改写、owner promotion 本身;
+  lock 与上层文档中**可机器核对的描述性事实**(B0-B5b 是否已落、registry/step_8 当前
+  行为、sink 数、测试现值)必须随实现批即时同步,不得延期到 B6 攒着——否则最高权威在
+  等 owner 门期间持续失实。修复批 β 已按此把 lock 的 cut-lifecycle 描述段校准到
+  07-12 实态;该校准是事实同步,不是、也不得被解读为 owner 关门/promotion 动作。
 - 本规格与 lock 冲突时以 lock 为准。
 
 ## 10. 修订记录与 traceability

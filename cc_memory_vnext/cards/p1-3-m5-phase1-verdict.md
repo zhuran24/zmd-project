@@ -18,7 +18,7 @@ scope:
     - build_exact_candidate_warm_start
     - apply_master_cp_sat_subsolver_filter
     - MASTER_IGNORE_SUBSOLVERS_FOR_MAX_LEX
-status: active
+status: superseded
 priority: P0
 triggers:
   intents:
@@ -62,6 +62,8 @@ provenance:
     - "崩溃 WER: ortools.dll 0xC0000005 两发(偏移 0x7ae290/0x80e689),ucrtbase 0xC0000409 两发(P2/P4 并发 OOM)"
   updated_at: "2026-07-08"
 ---
+> **Superseded 2026-07-12(修复批 β/文档实态外审 F10/F11)**:当前态见 `p1-3-batch1-m5-current-20260712`。本卡仅作批次/历史证据保留,不再参与 active recall;正文中的「当前状态/待办/OPEN」段落均为当时快照,勿再据此行动。
+
 
 M5 第一阶段(可行性侦察)2026-07-08 收口。核心结论与四层税见 summary;完整材料 `docs/research/p1_3_m5_convergence_20260708/`。
 

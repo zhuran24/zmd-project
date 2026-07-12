@@ -58,7 +58,11 @@ sound 重建)**整体剥出**,与 B6 合批或 B6 后单立(owner 拍板项压 B
    守卫红测——AST 层照 B5b TRIPWIRE 范式钉 verifier 文件禁 import 面)。
 5. **e2e skip 解除**(attach_wiring:635-643):测试内
    `build_binding_empty_domain_adapter`+`register_sub_problem_oracle` 真接线,
-   走完整编排到 shadow_validated 桶断言。
+   走完整编排到 shadow_validated 桶断言。**⚠ 07-12 文档外审 F03 校准——本条结论
+   必须拆两层读**:该 full-chain 测试注册的是测试类 `_DifferentialF5Oracle`、不是
+   生产 `BindingEmptyDomainAdapter`,它只证明「兼容测试 oracle 可贯通 typed
+   编排」;真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed
+   (§5 MEDIUM,可达性哨兵钉死),**不得称为 real-adapter e2e、不得当生产链背书**。
 6. **reseal**:新 verifier 文件入 v99 floor+mypy targets;typed_platform(sink
    双重)重钉;checker 自钉。
 
@@ -68,7 +72,10 @@ sound 重建)**整体剥出**,与 B6 合批或 B6 后单立(owner 拍板项压 B
   certified 阻断主锚;I1 reverifier(独立 TCB,别动);benders_loop 的
   `_add_exact_whole_layout_nogood` I1 硬门链。
 - F5 保持 shadow-only:本批做完 F5 仍不 mutate master,唯一变化=shadow 的
-  可信度从「共同失效不可信」升级为「独立验证」。
+  可信度从「共同失效不可信」升级为「独立验证」。**⚠ 07-12 文档外审 F03 校准**:
+  「独立验证」当前只在**测试 oracle 链**上成立——真实 adapter 在 verifier 前
+  fail-closed(§5 MEDIUM),`independently-verified` tag 在生产路径上暂不可达;
+  该升级对生产链的成立以转正批清单①(adapter 修复+真-adapter e2e)为前提。
 
 ## §5 双审裁决(2026-07-12 凌晨,双 opus:数学位+攻击位均 AGREE_WITH_AMENDMENTS)
 

@@ -21,7 +21,7 @@ scope:
     - add_baseline_packing_cut
     - query_liftable
     - compute_orbit_homogeneity_digest
-status: active
+status: superseded
 priority: P0
 triggers:
   intents:
@@ -65,6 +65,8 @@ provenance:
     - "M4 侦察材料(九份行号级报告,含 F2/F3/F9/F4 的 owner 拍板材料): docs/research/p1_3_m4_recon_20260708/——七路 Fable+一路 codex;D2 核心发现=binding demand 型 INFEASIBLE 反单调不可 lift。"
   updated_at: "2026-07-08"
 ---
+> **Superseded 2026-07-12(修复批 β/文档实态外审 F10/F11)**:当前态见 `cut-framework-stage-b-current-20260712`。本卡仅作批次/历史证据保留,不再参与 active recall;正文中的「当前状态/待办/OPEN」段落均为当时快照,勿再据此行动。
+
 
 P1.3 M4(F2-F7+F9 逐族阶梯)2026-07-08 收口。七 commit 与内容见 summary。
 

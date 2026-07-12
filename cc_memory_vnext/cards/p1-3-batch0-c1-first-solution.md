@@ -16,7 +16,7 @@ scope:
     - c1_power_pole_representation
     - _validate_c1_power_pole_pool
     - c1_power_pole_binding
-status: active
+status: superseded
 priority: P0
 triggers:
   intents:
@@ -53,5 +53,7 @@ provenance:
     - git log 88f65a5..b755e80
 updated_at: "2026-07-10"
 ---
+> **Superseded 2026-07-12(修复批 β/文档实态外审 F10/F11)**:当前态见 `p1-3-batch1-m5-current-20260712`。本卡仅作批次/历史证据保留,不再参与 active recall;正文中的「当前状态/待办/OPEN」段落均为当时快照,勿再据此行动。
+
 
 详见 summary。关键 commit 链：`88f65a5`（破墙+双考古）→ `ac9fc7d`（b0_5）→ `8659558`（b0_6 内存尖峰）→ `c7cd6a0`（硬化批）→ `a0f1c2c`（批 1 任务书）→ `b755e80`（1A 落地）。姊妹卡 [[p1-3-m6-power-encoding-diagnosis]]（病因）、[[p1-3-m5-phase1-verdict]]（战场史）。

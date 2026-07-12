@@ -18,7 +18,7 @@ scope:
     - add_region_capacity_cut
     - _maybe_attach_framework_cuts
     - _build_cut_framework_state
-status: active
+status: superseded
 priority: P0
 triggers:
   intents:
@@ -60,6 +60,8 @@ provenance:
     - "F1 端到端: test_step_8_apply_to_master.py(真 master 容量 1 vs 需求 2→INFEASIBLE)/test_cut_framework_attach_wiring.py(真 oracle 全链,cap 137 权重 {boundary_io:3})。"
   updated_at: "2026-07-08"
 ---
+> **Superseded 2026-07-12(修复批 β/文档实态外审 F10/F11)**:当前态见 `cut-framework-stage-b-current-20260712`。本卡仅作批次/历史证据保留,不再参与 active recall;正文中的「当前状态/待办/OPEN」段落均为当时快照,勿再据此行动。
+
 
 P1.3 M3(step_8 落地大批)2026-07-08 收口。四子批 commit 与内容见 summary。
 

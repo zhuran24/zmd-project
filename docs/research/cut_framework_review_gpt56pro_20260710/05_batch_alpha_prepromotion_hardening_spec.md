@@ -56,7 +56,7 @@
 - F-06(digest v2 纳入三族投影):无实际路径(唯一 tokenized builder 确定性派生),v2 迁移代价大(golden/envelope/replay 全动)——**推迟到批 E 后评估**。
 - P-01(三族投影两两不等断言):现 schema 结构性域分离已足,不加。
 - typed_legacy 包 3 BLOCK:FP(harness 类型错配),不动。
-- 文档/记忆债 ~14 项:修复批 β 单独走(无 reseal,轻量)。
+- 文档/记忆债 ~14 项:修复批 β 单独走(无 reseal,轻量)。**✅已落地(2026-07-12,处置记录 `06_batch_beta_doc_memory_sync.md`:zmd_doc_audit_20260712 十四项 13 做 1 裁定不做)。**
 - α-4 残余窗口(重算→lowerer 读取完成):单线程同步链下无实际面,登记不闭合;真并发化是遥远的另一批。
 
 ## §4 双审裁决与处置(2026-07-12,双 opus:设计位+攻击位)

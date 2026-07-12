@@ -19,7 +19,7 @@ scope:
     - add_benders_cut
     - build_exact_core
     - from_exact_core
-status: active
+status: superseded
 priority: P1
 triggers:
   intents:
@@ -61,6 +61,8 @@ provenance:
     - "src/cuts↔src/search 双向零 import(grep 0 命中);step_8 NotImplementedError=lifecycle.py:1121-1126;step_2 minimize 也是 NotImplementedError(非关键路径)。"
   updated_at: "2026-07-08"
 ---
+> **Superseded 2026-07-12(修复批 β/文档实态外审 F10/F11)**:当前态见 `cut-framework-stage-b-current-20260712`。本卡仅作批次/历史证据保留,不再参与 active recall;正文中的「当前状态/待办/OPEN」段落均为当时快照,勿再据此行动。
+
 
 P1.3 开工侦察(2026-07-07)的硬事实集,全部实测/源码坐实,不依赖 owner 拍板。
 
