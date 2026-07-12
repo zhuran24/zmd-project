@@ -69,7 +69,7 @@
 
 方案 A(digest 扩展):对「acquisition 绑定名字」站点(**从 acquisition 上溯到最近 Assign/AnnAssign/NamedExpr、只要 acquisition 落在其 value 子树即绑定 target 名**——一次覆盖直接右值 + 嵌套 RHS 的 IfExp/BoolOp/Call/getattr-method/comprehension 共 21 形态,双审设计位 MEDIUM-1 指出并采纳),收集 enclosing scope 内全部引用该名字的语句纳入 digest;digest 常量重钉;alias-then-write 复现负例必红。
 
-**覆盖边界(仍开放,在 F-05 tripwire 威胁模型内、非 soundness 洞)**:本 digest 封**一跳** alias(名字直接由 acquisition 绑定)。**传递多跳链**——预存的 `d = <acq>; e = d;` 再新增 `e.model.Add(c)`——不追(`e` 非 acquisition 绑定,其下游不封;但新增 `e = d` 会因加载 `d` 被封)。残留可接受:F-05 是转正前 tripwire 非 certified soundness 门,certified 下 typed attach 关停、acquisition 在 phase3b 诊断模块、注入 review 可见。**F-05 转硬门(B6)仍需完整传递 alias-dataflow 追踪**——已登记进 F-05 转正清单(批D 规格 §5)与本节。双审(攻击位 LOW + 设计位 MEDIUM-1)均指向此边界,措辞已从「完备封死」订正为准确覆盖声明。
+**覆盖边界(仍开放,在 F-05 tripwire 威胁模型内、非 soundness 洞)**:本 digest 封**一跳** alias(名字直接由 acquisition 绑定)。**传递多跳链**——预存的 `d = <acq>; e = d;` 再新增 `e.model.Add(c)`——不追(`e` 非 acquisition 绑定,其下游不封;但新增 `e = d` 会因加载 `d` 被封)。残留可接受:F-05 是转正前 tripwire 非 certified soundness 门,certified 下 typed attach 关停、acquisition 在 phase3b 诊断模块、注入 review 可见。**F-05 转硬门(B6)仍需完整传递 alias-dataflow 追踪**——已登记进 05 规格 §6(B6 转正清单)与本节(批E 开工订正:初版误引「批D 规格 §5」,批D 规格无此条目、且它是 F5 族转正清单与 F-05 发现编号无关)。双审(攻击位 LOW + 设计位 MEDIUM-1)均指向此边界,措辞已从「完备封死」订正为准确覆盖声明。
 
 ## §4 测试义务(初稿,拍板后细化)
 

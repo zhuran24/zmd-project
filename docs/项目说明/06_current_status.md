@@ -9,7 +9,7 @@
 - **批D（07-12 凌晨）**：RFC-002 F5 独立 verifier 落地（零依赖 Kuhn 匹配 + differential 357 组合 + 六红测）。**拆两层读**：verifier 本体 sound 且测试贯通仅证明「兼容测试 oracle 可走完 typed 编排」；真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed（可达性哨兵钉死），故 F5 仍 shadow-only、转正另需 adapter 修复+真 adapter e2e。
 - **修复批 α/α2（07-12）**：pre-promotion 信任根七道 fail-closed 门（state/bundle 内容绑定、exact-type 容器门、cache 一致性、apply 边界 fresh 重算、深冻结 memo/cycle、u_var 身份、master weakref）+ master 写入面锁定收尾（F7 lazy cache 原子性、AST owner-scope lambda/comprehension 封堵、use-context digest、私有构造 reference 反搬运、assert→RuntimeError）。各双 opus 双审（设计 AGREE_WITH_AMENDMENTS + 攻击 PASS）。
 - **当前机器口径（HEAD `07d04b3`）**：sinks 67 / obligations 15；strong-status 65 AST nodes / 83 allowlist；测试 455 文件 / 4424 收集；slow 24 登记→31 实例；cuts 833。
-- **剩余到 promotion**：PIC-4/PIC-5 生产规模实测（集成 harness 层已由定向测试覆盖，生产 campaign 层未做）、RFC-003 ledger、F5 真 adapter 修复、session-bundle 所有权兑现（规格拍板 session-once vs 实现 per-attach-round 的偏差已登记为 promotion 前 BLOCK）、B6 owner 手动门（含 α2 新增两项清单）。
+- **剩余到 promotion**：PIC-4/PIC-5 生产规模实测（集成 harness 层已由定向测试覆盖，生产 campaign 层未做）、RFC-003 ledger、B6 owner 手动门。α2 新增两项清单已于 07-12 B6 前置工程批双双闭合（①sink 注册 owner 改判 won't-do+理由、②F-05 alias 一跳追踪落地）；session-bundle 所有权同批兑现（`ef5e124`）。**F5 真 adapter 修复只挂 F5 转正批（lock:492 口径），不是 flip 前置**——此前本行把它混进 flip 前置属口径漂移，07-12 批E 开工订正。
 
 ## 2026-07-08 → 07-11 实现状态增量（细节见 roadmap §0 与各规格书）
 
@@ -116,8 +116,8 @@ hash-incompatible。
   F4 缺 route registry——均非遗漏）。总开关 `EXACT_CUT_FRAMEWORK_ATTACH`
   仍在 unsafe map（certified 下开启即 fail-closed）。旧 M4 阶梯与等价回归虽已齐，
   Stage B B0-B5b、批D 与修复批 α/α2 已于 07-11/07-12 全部落地（见顶部 07-12 增量段）；
-  剩余到 promotion 的是 PIC-4/PIC-5 生产层、RFC-003、F5 真 adapter 修复与 B6 owner 门，
-  仍不能概括为“仅剩 owner”。close-kernel 现 67 sinks（批D 后 F5 verifier 入册）。
+  剩余到 promotion 的是 PIC-4/PIC-5 生产层、RFC-003 与 B6 owner 门（F5 真 adapter
+  修复只挂 F5 转正批，lock:492 口径），仍不能概括为“仅剩 owner”。close-kernel 现 67 sinks（批D 后 F5 verifier 入册）。
   注意本段开头「attach 链四族通电」是 M4 时期口径：B5a 后 F5 无 apply/lowering、
   只产 ShadowValidated，「通电」现仅对 F1/F6/F7 的 typed lowering 成立。
   F8 power_grid_reach 已整族退役删除（owner 游戏规则拍板：电杆不需连网）。
