@@ -32,7 +32,7 @@ unsafe 默认关）；**M4 七批完成（owner 2026-07-08 发话后同日收口
 F5 全链——BLOCK-2 封口+canonical_relabel+query_liftable 合同+
 binding_empty_domain_v1 真 adapter+P-HOM 结构门）+cut 预算闸（2000 满即停发）；
 F2/F3/F9/F4 保持 fail-closed（终态理由见 `p1-3-m4-ladder-landed` 卡，非遗漏）；
-close-kernel 现 67 sinks（批D F5 verifier 入册后；07-12 口径）；**旧 M4 三前置已齐不等于可直接升格**：Stage B B0-B5b、批D 与修复批 α/α2/β 已全部落地（见 §0 批次线），剩余前置=PIC-4/生产层 PIC-5、RFC-003 与最后 B6 owner promotion（flip 前置口径以 lock:492 为准——F5 真 adapter 修复只挂 F5 转正批、不是 flip 前置；session-bundle 所有权与 α2 B6 两项清单已于 07-12 B6 前置工程批兑现/闭合，`ef5e124`）（**注意本段上文「M4 四族通电」是当时口径：B5a 后 F5 无 apply/lowering、只产 ShadowValidated，通电现仅对 F1/F6/F7 成立**）；M5 第一阶段（可行性实测）2026-07-08 收口（本机+Linux 同硬件全配置无首解，
+close-kernel 现 67 sinks（批D F5 verifier 入册后；07-12 口径）；**旧 M4 三前置已齐不等于可直接升格**：Stage B B0-B5b、批D 与修复批 α/α2/β 已全部落地（见 §0 批次线），剩余前置=PIC-4/生产层 PIC-5（批C，RFC-003 门 6 prod A/B 并入）与最后 B6 owner promotion（flip 前置口径以 lock:492 为准——F5 真 adapter 修复只挂 F5 转正批、不是 flip 前置；session-bundle 所有权与 α2 B6 两项清单已于 07-12 B6 前置工程批兑现/闭合，`ef5e124`；RFC-003 工程面已于 07-12 批E 落地，dedup+非消费审计 ledger+family 参数，owner 批准重生成 waiver）（**注意本段上文「M4 四族通电」是当时口径：B5a 后 F5 无 apply/lowering、只产 ShadowValidated，通电现仅对 F1/F6/F7 成立**）；M5 第一阶段（可行性实测）2026-07-08 收口（本机+Linux 同硬件全配置无首解，
 `p1-3-m5-phase1-verdict` 卡）；**M6 诊断课题（owner 2026-07-09 立项）已收口——
 首解之墙 = 供电覆盖约束及其 witness 编码（八实验隔离、单一主墙，终报
 `docs/research/p1_3_m6_diagnosis_20260709/07_final_diagnosis.md` 与

@@ -279,9 +279,26 @@ source/artifact digest 与指纹的 compiler_version 分量承担,不由本分�
   L-4 digest 分量正名 enabled_family_set_digest;L-5 门 6 双臂分开断言。codex 声明完成
   这些后档位升 AGREE;RFC 门 6 保持 OPEN→批C 不随实现绿灯宣告。
 
-## §7 实现与落地记录(待批准后填)
+## §7 实现与落地记录(2026-07-12 晚)
 
 - 前置:✅ owner 已批准 D-1 waiver(2026-07-12)。
-- 实现顺序拟:ledger 模块(纯新文件+自测)→ benders_loop 编排接线(dedup+ledger+D-13+
-  receipt,一次 reseal)→ §4 七门测试 → harness 扩展 → 慢 lane+全量 → 实现轮双审
-  (设计位 opus+攻击位 opus;codex 复核规格降档)→ reseal 收口。
+- **单元1 `7875902`**:src/cuts/ledger.py(segment 协议全实现:O_EXCL/GENESIS 血缘/seq+hash
+  链/两档 durability/reader 三态)+14 测试。首跑红点修出真规则:**链失配时断点前一行按
+  「被后继证伪」逐出前缀**(内部篡改的检测天然落在下一行,被篡改行不得留在干净前缀)。
+  close-kernel 外(§5 拍板),mypy strict+ruff 净。
+- **单元2 `dd1a182`**:benders 接线——dedup(applied-only pool+generation 守卫)/ledger
+  全事件(含 POISONED try-raise,D-4)/编排层 receipt v1/enabled_cut_families 参数(D-13)。
+  七门测试 11 个;wiring bundle 复用测试的「双轮各 attach 一次」断言改为 dedup 断言
+  (I-8 场景消灭的直接可见证据)。codex 复核 M-1/L-3 的两处代码面校准同批落
+  (SEAL-必须最后一条 reader 规则+红测、writer UUID、receipt getattr 形式)。
+  reseal 两轮(benders_loop `02bf516d`→`f2b9e922`→`e60c2d04`(mypy strict 拦下 object
+  收窄,amendment 尾巴)+`__init__` floor 重钉+preflight mypy target 补 ledger.py+checker
+  自钉终值 `f3ad775e`);权威数字再生成(cuts_tests_total 792→848);preflight --full
+  19/19 PASSED(中途一次 exit 139=已知解释器 SIGSEGV flake,复跑全清);**慢 lane 31/31
+  零 flake**。
+- **单元3 `c10d317`**:attach_host_runner.py(D-11,批C 复用)+门5 双进程 kill/resume 臂
+  (子进程真 attach 后 os._exit 不 seal→死段 truncated;复活进程零继承+死段字节不动+
+  GENESIS 血缘三字段);七门 12/12。
+- RFC 门6 状态:**OPEN→批C**(fixture 双臂绿不改变此状态);门5 为 waiver 后替代门(明示)。
+- 批C 移交物:harness driver+三卡点清单(§0)+oracle 重生成开销测量义务(D-1 owner 批准
+  时保留)。
