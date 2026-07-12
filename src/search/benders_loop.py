@@ -47,7 +47,7 @@ from __future__ import annotations
 import copy
 import json
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field as dataclass_field
 import os
 from pathlib import Path
 import time
@@ -2182,6 +2182,58 @@ class ExactSearchSession:
     master_search_profile: str
     core: ExactMasterCore
     core_build_seconds: float
+    # Session-owned cut-framework bundle cache (Stage-B spec §2.1 session
+    # ownership ruling): keyed by the artifact-hash attestation so one session
+    # serving many ghost rects freezes the static artifacts exactly once
+    # instead of once per attach round.  Staleness cannot slip through a cache
+    # bug silently: the per-round ValidatedStateSnapshot rebuild re-runs the
+    # α-1 content binding against this bundle and fails closed on any drift.
+    _cut_framework_bundle_cache: Dict[str, Any] = dataclass_field(
+        default_factory=dict, repr=False, compare=False
+    )
+
+    def cut_framework_bundle(
+        self,
+        *,
+        canonical_rules: Mapping[str, Any],
+        candidate_placements: Mapping[str, Any],
+        facility_templates: Mapping[str, Any],
+        instance_to_facility_type: Mapping[str, Any],
+        artifact_hashes: Mapping[str, str],
+    ) -> Any:
+        """Return the session-cached FrozenArtifactBundle, building it on first use.
+
+        The cache key is the full artifact-hash attestation (four frozen
+        artifacts + orbit-homogeneity digest); a key mismatch rebuilds rather
+        than reuses.  The import stays function-local to keep this certified
+        benders module free of a module-level src/cuts coupling.
+        """
+        # The key is the artifact-hash attestation, NOT a full content identity
+        # of the five inputs (facility_templates etc. are covered only as a
+        # deterministic function of the hashed artifacts).  This is safe because
+        # the key is not the soundness gate: every attach round re-runs the α-1
+        # content binding (state_snapshot._validate_static_source_binding) against
+        # the returned bundle and fails closed on any drift, so a stale/wrong
+        # bundle can never reach the master.  The key only decides reuse-vs-rebuild.
+        key = json.dumps(
+            {str(k): str(v) for k, v in artifact_hashes.items()},
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        cached = self._cut_framework_bundle_cache.get(key)
+        if cached is not None:
+            return cached
+        from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
+
+        bundle = build_frozen_artifact_bundle(
+            canonical_rules=canonical_rules,
+            candidate_placements=candidate_placements,
+            facility_templates=facility_templates,
+            instance_to_facility_type=instance_to_facility_type,
+            artifact_hashes=artifact_hashes,
+        )
+        self._cut_framework_bundle_cache[key] = bundle
+        return bundle
 
     @classmethod
     def create(
@@ -3441,6 +3493,7 @@ class LBBDController:
         loaded_exact_safe_cuts: Optional[Sequence[BendersCut]] = None,
         heartbeat_callback: Optional[_CampaignHeartbeatCallback] = None,
         disable_master_warm_start: bool = False,
+        session: Optional["ExactSearchSession"] = None,
     ):
         self.master = master
         self.cut_manager = cut_manager
@@ -3457,6 +3510,12 @@ class LBBDController:
             else {}
         )
         self._heartbeat_callback = heartbeat_callback
+        # Stage-B §2.1 session ownership: when the owning ExactSearchSession is
+        # threaded through, the cut-framework bundle is fetched from its
+        # session-level cache instead of being rebuilt every attach round.
+        # None (exploratory / legacy harness callers) falls back to the
+        # per-round build path unchanged.
+        self._session = session
         self.loaded_exact_safe_cuts: List[BendersCut] = list(loaded_exact_safe_cuts or [])
         self.generated_exact_safe_cuts: List[BendersCut] = []
         # P1 #7 main: 当前 wave 的 ε 阶段 (0.05 / 0.01 / 0.0 / None).
@@ -8147,17 +8206,30 @@ class LBBDController:
         state = self._build_cut_framework_state(solution=solution)
         if state is None:
             return 0
-        # Build the deep-frozen bundle + snapshot ONCE per attach round and the
-        # production registry; the typed single entry consumes them per cut.
+        # Bundle ownership is session-scoped (Stage-B spec §2.1): with a
+        # threaded session the deep-frozen bundle is built once per session and
+        # reused across attach rounds and ghost rects; without one (exploratory
+        # or legacy harness callers) it is built per round as before.  The
+        # snapshot stays per-round — its α-1 content binding re-validates the
+        # reused bundle against this round's state and fails closed on drift.
         # A construction failure is a TCB fault and propagates (fail-closed) —
         # it is never washed into a per-cut rejection.
-        bundle = build_frozen_artifact_bundle(
-            canonical_rules=state.canonical_rules or {},
-            candidate_placements=state.candidate_placements,
-            facility_templates=state.facility_templates,
-            instance_to_facility_type=state.instance_to_facility_type,
-            artifact_hashes=state.artifact_hashes,
-        )
+        if self._session is not None:
+            bundle = self._session.cut_framework_bundle(
+                canonical_rules=state.canonical_rules or {},
+                candidate_placements=state.candidate_placements,
+                facility_templates=state.facility_templates,
+                instance_to_facility_type=state.instance_to_facility_type,
+                artifact_hashes=state.artifact_hashes,
+            )
+        else:
+            bundle = build_frozen_artifact_bundle(
+                canonical_rules=state.canonical_rules or {},
+                candidate_placements=state.candidate_placements,
+                facility_templates=state.facility_templates,
+                instance_to_facility_type=state.instance_to_facility_type,
+                artifact_hashes=state.artifact_hashes,
+            )
         snapshot = build_validated_state_snapshot(state, bundle)
         registry = build_production_registry()
 
@@ -9074,6 +9146,7 @@ def run_benders_for_ghost_rect(
         if solve_mode == "certified_exact"
         else None,
         disable_master_warm_start=bool(disable_master_warm_start),
+        session=exact_session,
     )
     # P1 #7 main: 把 outer_search 算的 ε 阶段 (25h prep / 50h refine / 93h cert) tag 给
     # controller, 影响新生成的 BendersCut.epsilon_stage 字段; 配合 P1

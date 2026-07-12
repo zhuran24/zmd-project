@@ -36,7 +36,7 @@ from ortools.sat.python import cp_model
 
 from src.models.cut_manager import CutManager
 from src.models.master_model import MasterPlacementModel
-from src.search.benders_loop import LBBDController
+from src.search.benders_loop import ExactSearchSession, LBBDController
 
 
 # ---- synthetic fixtures (env-gate / budget / state-assembly only) -----------
@@ -109,7 +109,7 @@ def _mock_ghost_context():
     )
 
 
-def _controller(master: Any) -> LBBDController:
+def _controller(master: Any, *, session: Any = None) -> LBBDController:
     ckpt = Path(tempfile.mkdtemp(prefix="zmd_cfw_"))
     cm = CutManager(checkpoint_dir=ckpt, solve_mode="certified_exact")
     return LBBDController(
@@ -117,7 +117,28 @@ def _controller(master: Any) -> LBBDController:
         cut_manager=cm,
         project_root=ckpt.parent,
         solve_mode="certified_exact",
+        session=session,
     )
+
+
+def _bare_session(**overrides: Any) -> ExactSearchSession:
+    """A minimally-populated ExactSearchSession for exercising the bundle cache
+    directly.  Only the bundle accessor + cache slot are touched, so the heavy
+    ``create()`` path (which reads 45MB of frozen artifacts) is bypassed and the
+    unused core/data fields are left as dummies."""
+    fields: Dict[str, Any] = dict(
+        project_root=Path("/tmp/zmd_bare_session"),
+        solve_mode="certified_exact",
+        instances=[],
+        facility_pools={},
+        rules={},
+        artifact_hashes={},
+        master_search_profile="test",
+        core=None,
+        core_build_seconds=0.0,
+    )
+    fields.update(overrides)
+    return ExactSearchSession(**fields)
 
 
 def _build_miner_master() -> MasterPlacementModel:
@@ -821,3 +842,106 @@ def test_maybe_attach_rejection_causes_zero_master_mutation(tmp_path: Path) -> N
     assert stats["rejected"]["scope"] == 1
     assert stats["attached_by_family"] == {}
     assert stats["shadow_validated"] == 0
+
+
+# ---- Stage-B §2.1 session bundle ownership (B6-prep) -------------------------
+
+
+def test_session_bundle_cache_builds_once_per_artifact_digest(monkeypatch) -> None:
+    """ExactSearchSession.cut_framework_bundle freezes the static artifacts once
+    per artifact-hash digest and reuses the same object; a different digest
+    rebuilds.  This is the session-ownership contract (Stage-B spec §2.1)."""
+    import src.cuts.frozen_artifacts as fa
+
+    calls: list[Dict[str, str]] = []
+    real_build = fa.build_frozen_artifact_bundle
+
+    def _counting_build(**kwargs: Any) -> Any:
+        calls.append(dict(kwargs["artifact_hashes"]))
+        return real_build(**kwargs)
+
+    monkeypatch.setattr(fa, "build_frozen_artifact_bundle", _counting_build)
+
+    session = _bare_session()
+    common = dict(
+        canonical_rules={},
+        candidate_placements={"facility_pools": {}},
+        facility_templates={},
+        instance_to_facility_type={},
+    )
+    b1 = session.cut_framework_bundle(artifact_hashes={"a": "1", "b": "2"}, **common)
+    b2 = session.cut_framework_bundle(artifact_hashes={"b": "2", "a": "1"}, **common)
+    # Same digest (key order-insensitive) → one build, identical object reused.
+    assert b1 is b2
+    assert len(calls) == 1
+    # Different digest → a distinct build.
+    b3 = session.cut_framework_bundle(artifact_hashes={"a": "9"}, **common)
+    assert b3 is not b1
+    assert len(calls) == 2
+
+
+def test_maybe_attach_reuses_session_bundle_across_rounds(monkeypatch) -> None:
+    """With a session threaded into the controller, two successive attach rounds
+    freeze the bundle exactly once (session ownership), not once per round.  The
+    per-round path (module-level build_frozen_artifact_bundle) is not taken."""
+    import src.cuts.frozen_artifacts as fa
+
+    master, state, _group_id = _bound_region_world()
+    session = _bare_session()
+    controller = _controller(master, session=session)
+    assert controller._session is session
+
+    build_count = {"n": 0}
+    real_build = fa.build_frozen_artifact_bundle
+
+    def _counting_build(**kwargs: Any) -> Any:
+        build_count["n"] += 1
+        return real_build(**kwargs)
+
+    monkeypatch.setattr(fa, "build_frozen_artifact_bundle", _counting_build)
+
+    with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
+        with mock.patch.object(
+            LBBDController, "_build_cut_framework_state", return_value=state
+        ):
+            a1 = controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=1
+            )
+            a2 = controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=2
+            )
+    # Both rounds did real attach work but shared a single frozen bundle.
+    assert a1 >= 1 and a2 >= 1
+    assert build_count["n"] == 1
+    assert len(session._cut_framework_bundle_cache) == 1
+
+
+def test_maybe_attach_without_session_builds_per_round(monkeypatch) -> None:
+    """Without a session (exploratory / legacy harness callers) the bundle is
+    built every round — the fallback path is preserved unchanged."""
+    import src.cuts.frozen_artifacts as fa
+
+    master, state, _group_id = _bound_region_world()
+    controller = _controller(master)  # no session
+    assert controller._session is None
+
+    build_count = {"n": 0}
+    real_build = fa.build_frozen_artifact_bundle
+
+    def _counting_build(**kwargs: Any) -> Any:
+        build_count["n"] += 1
+        return real_build(**kwargs)
+
+    monkeypatch.setattr(fa, "build_frozen_artifact_bundle", _counting_build)
+
+    with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
+        with mock.patch.object(
+            LBBDController, "_build_cut_framework_state", return_value=state
+        ):
+            controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=1
+            )
+            controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=2
+            )
+    assert build_count["n"] == 2

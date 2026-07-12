@@ -3,7 +3,7 @@
 - 立项:2026-07-12(owner 批准「开始吧」;源于 7 包外审回包 triage,主会话终审)
 - 性质:**全部七项在诚实调用方下当前不可达**(生产 caller 同步紧邻 + `EXACT_CUT_FRAMEWORK_ATTACH` certified 禁用),不是当前 soundness 破洞;但它们是 typed 链晋升 certified 信任根前必须闭合的 API 硬化面,**是 B6 的天然前置**。
 - 外审出处:`zmd_deep_freeze_integrity_audit_20260711`(F-01~F-05)、`cut_framework_model_scope_audit`(MS-1)、`certified_exact_typed_cut_audit_20260711_rebuilt`(RB-2)。外来补丁 0001-0007 **只当参考,不直接 apply**(对抗语料卫生惯例,自己重写)。
-- 改动面预估:`src/cuts/state_snapshot.py`、`src/cuts/frozen_artifacts.py`、`src/cuts/lifecycle.py`、`src/cuts/typed_platform.py`(全 v99 floor/sink 双钉)→ 完整 reseal 连锁。
+- 改动面预估:`src/cuts/state_snapshot.py`、`src/cuts/frozen_artifacts.py`、`src/cuts/lifecycle.py`、`src/cuts/typed_platform.py` → 完整 reseal 连锁。(⚠07-12 订正:此处原写「全 v99 floor/sink 双钉」是作者误记——`state_snapshot`/`frozen_artifacts` 仅在 v99 源哈希 floor 字节钉、**不在** sink_files;`lifecycle`/`typed_platform` 才两处都在。且经查这是**刻意**的:前两者无 proof-bearing token,是无 token 上游基建的正确档,详见 07 规格 §3.2。)
 
 ## §1 七项拍板
 
@@ -95,12 +95,12 @@ lockaudit 包 AUDIT_REPORT 八项(F-01..F-08),逐项处置:
 
 **验证**:三 patch `git apply --check` 对 `c5fca3d` 全 clean;104(两 test 文件)+153(含 α 硬化)+832(全 cuts)测试绿;7 个新 seal/AST 测试 + FORGE 负测显式 PASSED;ruff check 全绿;mypy——`exact_coordinate_master.py` **不在** MYPY_STRICT_TARGETS(在 EXACT_MODE_FILES),其 66 错为 pre-existing(HEAD 同数)、改区 7666-8200 零新错。**reseal**:v99 floor(exact_coordinate_master `0746ff5c`→`156445fe`)+ obligations sink source_sha256 同步 + checker 自钉重算(`730d1e35`→`524fb8f3`);checker 15/67 绿、strong-status 65/83 绿。
 
-## §6 双审裁决与 amendment 处置(2026-07-12,双 opus:设计位+攻击位;codex 通道自然化后 engage 成功=第三视角)
+## §6 双审裁决与 amendment 处置(2026-07-12,双 opus:设计位+攻击位;codex 尝试第三视角中途被 cyber 门拦停未成,详见本节末条)
 
 - **设计位:AGREE_WITH_AMENDMENTS**(零 soundness BLOCK)。七项处置(F-01..F-06 做 + F-07/F-08 不做)全部如实、正确落地——独立重算 use-context digest 精确匹配、逐引用核 reference allowlist、实读 `step_8` 门顺序确认 FORGE 命中 exact-index 门(8b rect-location < 8d α-6 u_var < 9 fresh-projection)、F-07 裁决 sound(`_env_override_enabled`/`_cut_framework_attach_enabled` 共用同一 false-value 集 → 无 master-write 缝)、reseal 三处 sha 与字节一致。**唯一 amendment:sealed 文件最小 diff**——我对 `exact_coordinate_master.py` 跑了整文件 ruff format(1619 行 churn,~600 与语义无关),而 gate 只跑 `ruff check` 不跑 `ruff format --check`、该文件 HEAD 本就非 format-clean,故重排非门禁要求。**已处置(方案 A):回退整文件重排、只保留 F-01/02/03 语义 hunks → diff 从 1619 缩至 75 行(55+/20-),`ruff check` 仍全绿;按新字节重钉(`422409ab`→`156445fe` 及 checker 自钉 `9e385f8e`→`524fb8f3`),checker 复绿。**
 - **攻击位:PASS**(0 runtime BYPASSED)。~90 条对抗探针:F-01 十条拒绝分支均 zero-mutation + lazy cache 未污染、7464 RuntimeError 经镜像论证不可达;F-02 dup-key SPLIT 不可达(锁在任何 cache 读写前);F-03 生产侧 assert 计数=0、`-O` 下十条分支不变;F-04 两 collector 覆盖 Python 全部四类隐式作用域、0 leak-to-exempt;F-06 27 条静态引用形态全捕获(7 条动态反射属已声明威胁模型边界);跨锁零变异经 SerializeToString 坐实。**唯一发现(LOW-MEDIUM,非 bypass):F-05 use-context digest 的 alias-then-write 覆盖边界**——`d = self._coordinate_delegate` 后独立语句 `d.model.Add(c)`,后续写语句无 delegate token → digest 逐字节相同、三 guard 全 miss;即 F-05 封 acquisition **语句形状**、不追 delegate **alias 数据流**。判非 bypass 理由:tripwire 诚实调用方不可达(certified 下 typed attach 关停)、acquisition 站点是 phase3b diagnostic 非 certified 求解路径、注入变异语句 review 可见。**已处置(方案 a):在 `test_coordinate_delegate_acquisition_use_context_is_sealed` docstring 显式登记该覆盖边界(单语句改写会红/两语句 alias 形式不追);F-05 转硬门需加 delegate alias-dataflow 追踪 → 登记进 B6 转正清单。**
 - **codex(尝试第三视角,未成——中途被 cyber 门拦停,无有效结论)**:提示词自然化(负路径健壮性核验措辞、去攻击/绕过载荷词、不声明合法性)后 codex **通过初始门并真开工**(第 1-3 门:构造畸形输入验拒绝行为),但做到**第 4 门 F-05 alias-then-write** 时——该门本质是"构造一个演示 digest seal 能被 alias 数据流绕过的复现脚本"——codex 在**生成这段绕过演示内容的过程中**触发 cyber 过滤(连拦两次后进程退出,`tokens 93,425`,零逐门结论)。**结论修正:cyber 门既筛提示词、也筛生成内容——自然化措辞能过初始门+"验证拒绝行为"类工作,但"构造/演示绕过校验"类内容本身仍被拦。故本批权威双审 = 两个 opus;codex 非第三视角,仅 filter 行为数据点(见记忆卡 [[codex-cyber-content-filter-blocks-adversarial-review]])。**
 
-**B6 转正清单沉淀**(本批新增两项):①frozen_artifacts/state_snapshot 从「仅 v99 floor 字节钉」升到「完整 close-kernel sink 注册带 obligation」(α §4 遗留,两档待遇统一);②F-05 use-context digest 转硬门时加 delegate alias-dataflow 追踪(封 alias-then-write)。两项均 shadow 阶段不阻塞、转正时一并定。
-
-**双审裁决**:_(待填)_
+**B6 转正清单沉淀**(本批新增两项;07-12 晚 B6 前置工程批 `07_batch_b6_prep_spec.md` 已双双闭合):
+- ①~~frozen_artifacts/state_snapshot 升「完整 close-kernel sink 注册带 obligation」~~ **已改判为 won't-do + 理由(owner 2026-07-12 拍板方案 c)**:两文件是无 proof-bearing token 的**上游基建**(纯深冻结/快照校验,不 emit 认证判决),checker sink 模型强制 sink 含 token,而 v99 源哈希 floor **已提供与 sink 注册完全等效的防篡改**(字节漂移即重开 close claim)。升 sink 零安全收益、纯塞元数据;字节钉 floor 是无 token 基建的正确档,两档差异刻意非疏漏。详见 07 规格 §3.2。
+- ②F-05 use-context digest 加 delegate alias-dataflow 追踪(封 alias-then-write)**已落地**:新增独立 `_coordinate_delegate_alias_use_digest` + `test_coordinate_delegate_alias_dataflow_is_sealed`(封每处 delegate alias 名的下游引用语句;alias-then-write 注入实测触红)。

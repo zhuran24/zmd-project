@@ -835,19 +835,165 @@ def test_coordinate_delegate_acquisition_use_context_is_sealed() -> None:
     # swapping a diagnostic read for delegate.model.Add(...). Seal the nearest
     # statement AST for every acquisition so that repurposing also turns red.
     #
-    # COVERAGE BOUNDARY (α2 attack review): this digest seals the *statement
-    # shape at each acquisition site*, not the delegate's downstream alias
-    # dataflow.  A single-statement rewrite `self._coordinate_delegate.model.Add(c)`
-    # changes the acquisition statement AST and turns this red; but a two-statement
-    # alias form `d = self._coordinate_delegate` followed by a separate
-    # `d.model.Add(c)` leaves the acquisition statement byte-identical (the
-    # follow-up carries no _coordinate_delegate token) and is NOT caught here.
-    # That gap is a pre-promotion tripwire limit, not a soundness hole: the typed
-    # attach is off under certified mode, acquisitions live in phase3b diagnostic
-    # modules off the certified solve path, and injecting the mutation statement is
-    # a review-visible edit.  Promoting F-05 to a hard gate (B6) requires adding
-    # delegate alias-dataflow tracking — registered in the promotion checklist.
+    # This digest seals the *statement shape at each acquisition site*.  A
+    # single-statement rewrite `self._coordinate_delegate.model.Add(c)` changes
+    # the acquisition statement AST and turns this red.  The one-hop alias forms
+    # `d = self._coordinate_delegate; d.model.Add(c)` and the nested-RHS
+    # `d = ..._coordinate_delegate if cond else None; d.model.Add(c)` are caught by
+    # its companion ``test_coordinate_delegate_alias_dataflow_is_sealed`` (B6-prep,
+    # α2 attack-review + design-review MEDIUM-1).  Transitive multi-hop chains
+    # (`d = <acq>; e = d; e.model.Add(c)`) remain unsealed by both digests — a
+    # pre-promotion tripwire boundary, not a soundness hole; see that companion's
+    # COVERAGE BOUNDARY note and the F-05 hard-gate (B6) checklist.
     assert _coordinate_delegate_acquisition_use_digest() == _COORDINATE_DELEGATE_ACQUISITION_USE_DIGEST
+
+
+_COORDINATE_DELEGATE_ALIAS_USE_DIGEST = "158fd3f04b640bba34a78afae1b28241aaf91dd94139b6dcd82986977fcba283"
+
+
+def _coordinate_delegate_alias_use_digest() -> str:
+    """Seal the AST of every statement that *uses* a coordinate-delegate alias.
+
+    α2 attack review found a coverage boundary in the acquisition-site digest:
+    binding the delegate to a local name (`d = self._coordinate_delegate`) and
+    then mutating through the alias in a separate statement (`d.model.Add(c)`)
+    leaves the acquisition statement byte-identical, so the alias-use statement
+    slips past the acquisition seal.  This digest closes the one-hop case by
+    dataflow: for every acquisition that binds one or more names — directly or
+    nested in the binding's RHS expression (IfExp/BoolOp/Call/getattr-method/
+    comprehension, e.g. `d = self.master._coordinate_delegate if cond else None`;
+    B6-prep design review MEDIUM-1) — it folds the normalized AST of every
+    statement in the enclosing scope that loads any of those names.
+
+    Over-inclusion is safe (it only tightens the seal): a name reused for an
+    unrelated value after rebinding is still tracked; the seal is conservative
+    by design, matching the α2 disposition ("重绑定后继续追新值来源不豁免").
+
+    COVERAGE BOUNDARY (still open, within F-05's tripwire threat model, NOT a
+    soundness hole): this seals *one-hop* aliases (name bound from an acquisition).
+    A pre-existing *transitive* chain — `d = <acq>; e = d;` already in the tree —
+    followed by a newly injected `e.model.Add(c)` is not caught: `e` is a
+    second-hop alias, not bound from an acquisition, so its downstream uses are
+    unsealed.  (A newly added `e = d` *is* caught — it loads the tracked name
+    `d`.)  This residual is acceptable here because F-05 is a pre-promotion
+    tripwire, not a certified soundness gate: under certified mode the typed
+    attach is disabled (env unsafe-map), acquisitions live in phase3b diagnostic
+    modules off the certified solve path, and any injection is a review-visible
+    source edit.  **Promoting F-05 to a hard gate (B6) still requires full
+    transitive alias-dataflow tracking** — registered in the F-05 promotion
+    checklist (batch D spec §5) and the B6-prep spec §3.3.
+    """
+    records: set[tuple[str, str]] = set()
+    for path in _production_python_files():
+        relative = path.relative_to(REPO_ROOT).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=relative)
+        parents: dict[ast.AST, ast.AST] = {}
+        for parent in ast.walk(tree):
+            for child in ast.iter_child_nodes(parent):
+                parents[child] = parent
+
+        def _nearest_stmt(node: ast.AST) -> ast.AST:
+            context = node
+            while context in parents and not isinstance(context, ast.stmt):
+                context = parents[context]
+            return context
+
+        def _enclosing_scope(node: ast.AST) -> ast.AST:
+            context = node
+            while context in parents:
+                context = parents[context]
+                if isinstance(
+                    context, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Module)
+                ):
+                    return context
+            return tree
+
+        def _is_acquisition(node: ast.AST) -> bool:
+            if (
+                isinstance(node, ast.Attribute)
+                and isinstance(node.ctx, ast.Load)
+                and node.attr == _COORDINATE_DELEGATE_ATTR
+            ):
+                return True
+            return (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Name)
+                and node.func.id == "getattr"
+                and len(node.args) >= 2
+                and isinstance(node.args[1], ast.Constant)
+                and node.args[1].value == _COORDINATE_DELEGATE_ATTR
+            )
+
+        def _binding_targets(node: ast.AST) -> list[ast.AST]:
+            # Walk up from the acquisition to the nearest binding statement/expr
+            # (Assign / AnnAssign / NamedExpr) and, if the acquisition lies on its
+            # *value* side (not a target), return the bound targets.  Walking up
+            # — rather than only inspecting the direct parent — covers acquisitions
+            # nested one level inside the RHS expression (IfExp / BoolOp / Call /
+            # getattr-method / comprehension), e.g.
+            # ``d = self.master._coordinate_delegate if cond else None``, which a
+            # ``parent.value is node`` check misses.  Over-inclusion is safe.
+            child = node
+            binder = parents.get(node)
+            while binder is not None:
+                if isinstance(binder, (ast.Assign, ast.AnnAssign, ast.NamedExpr)):
+                    if getattr(binder, "value", None) is child:
+                        if isinstance(binder, ast.Assign):
+                            return list(binder.targets)
+                        return [binder.target]
+                    return []
+                if isinstance(
+                    binder, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Module, ast.ClassDef)
+                ):
+                    return []
+                child = binder
+                binder = parents.get(binder)
+            return []
+
+        # Pass 1: collect alias names bound from an acquisition (directly or
+        # nested in the binding's RHS), keyed by their enclosing scope node.
+        scope_alias_names: dict[int, set[str]] = {}
+        scope_nodes: dict[int, ast.AST] = {}
+        for node in ast.walk(tree):
+            if not _is_acquisition(node):
+                continue
+            targets = _binding_targets(node)
+            names = {t.id for t in targets if isinstance(t, ast.Name)}
+            if not names:
+                continue
+            scope = _enclosing_scope(node)
+            scope_alias_names.setdefault(id(scope), set()).update(names)
+            scope_nodes[id(scope)] = scope
+
+        # Pass 2: within each scope, seal every statement that loads an alias.
+        for scope_id, names in scope_alias_names.items():
+            scope = scope_nodes[scope_id]
+            for sub in ast.walk(scope):
+                if (
+                    isinstance(sub, ast.Name)
+                    and isinstance(sub.ctx, ast.Load)
+                    and sub.id in names
+                ):
+                    stmt = _nearest_stmt(sub)
+                    records.add(
+                        (relative, ast.dump(stmt, include_attributes=False))
+                    )
+    payload = json.dumps(sorted(records), ensure_ascii=False, separators=(",", ":")).encode(
+        "utf-8"
+    )
+    return hashlib.sha256(payload).hexdigest()
+
+
+def test_coordinate_delegate_alias_dataflow_is_sealed() -> None:
+    # B6-prep (α2 attack-review + design-review MEDIUM-1 gap closure): seal the
+    # one-hop alias dataflow of every coordinate-delegate acquisition, not just
+    # the acquisition statement shape.  Any new/changed statement that reads a
+    # delegate alias name — including the two-statement
+    # `d = self._coordinate_delegate; d.model.Add(c)` form and the nested-RHS
+    # binding `d = self.master._coordinate_delegate if cond else None` form — turns
+    # this red.  Transitive multi-hop chains remain out of scope (see the digest
+    # docstring's COVERAGE BOUNDARY; B6 hard-gate needs full transitive tracking).
+    assert _coordinate_delegate_alias_use_digest() == _COORDINATE_DELEGATE_ALIAS_USE_DIGEST
 
 
 def test_coordinate_delegate_acquisition_is_allowlisted() -> None:
