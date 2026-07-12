@@ -126,10 +126,16 @@ codex#7 主发现+opus F1 合并采纳)
 
 - 位置 `data/cuts/`(gitignored;不与 checkpoint 轮换耦合;不占用 legacy 通道 reserved 的
   data/checkpoints/benders_cuts.jsonl)。禁区不碰(data/solutions/ 等;tracked 路径违 reseal)。
-- **单写者=单 segment 文件**:`data/cuts/<campaign_instance_id 或 run_tag>/segment_<writer_id>_
-  <segment_seq>.jsonl`,O_CREAT|O_EXCL 创建;**任何进程绝不 append 已存在文件**——restart/
-  轮换一律开新 segment。多进程 worker(exact_parallel_scheduler.py:266-309,campaign=None
-  直调)天然各持 writer_id 各写各段,无共享 seq/锁问题。
+- **单写者=单 segment 文件**(rev3 措辞校准,codex 复核 M-1):segment 由唯一 writer 以
+  O_CREAT|O_EXCL 创建并**全程持有该 fd**;只允许向本次新建且仍打开的 segment 顺序追加;
+  SEGMENT_SEAL+fsync+close 后**永久禁止 reopen/append**——restart/轮换一律开新 segment。
+  **SEGMENT_SEAL 必须是最后一条事件,seal 之后出现任何字节(哪怕是链上有效的事件)一律判
+  corrupt**。`writer_id`=host+pid+**进程实例 UUID**(PID 跨重启可复用,UUID 免协调防撞)。
+  多进程 worker(exact_parallel_scheduler.py:266-309,campaign=None 直调)天然各持
+  writer_id 各写各段,无共享 seq/锁问题。**完备性边界**:门 7 的否定性断言限定在「单
+  epoch_instance 由一个已知 complete segment 完整承载」;campaign 级「无遗漏 writer」的
+  完备审计需 coordinator manifest/CAMPAIGN_SEAL 枚举全部 writer tail hash——批E 不做,
+  登记为 promotion 后若 ledger 升职时的前置。
 - **GENESIS 事件**(每 segment 首行):writer 身份(pid/host/run_tag)、campaign_instance_id、
   predecessor 血缘(前一 segment 路径+tail hash;跨 restart 时 predecessor_campaign_instance_id;
   若前段尾部损坏则记损坏偏移+forensic 保留声明)、恢复原因、solver/ortools 版本、seed/workers、
@@ -178,22 +184,24 @@ prod-scale 手动跑批壳**,rev2 明确,opus F10);换已证可解配方(fixed+p
 dedup telemetry 断言、调高 max_iterations 备 anchor 退役观测。harness 会话写的 ledger
 在 gitignored data/cuts/,**非 proof 面、不入证据链**。不新增守卫豁免、不动 lock。
 
-**D-12 APPLIED receipt=编排层 receipt v1(rev2 新增,codex#5)。** 现状:step_8 返回 None
-(lifecycle.py:1741-1746)、typed_apply 返回 bool——「master attach receipt」无既有产生点。
-本批拍板:**编排层构造 receipt**,字段=plan digest+family+operation+binding 身份(rect
-digest/u_var 标识,resolver binding 对象已持有)+apply 前后 coordinate_framework_cut_count
-差+apply 返回 True 断言。**诚实标注:它证明「编排层观察到 apply 调用成功+计数推进+绑定
-身份」,不是 master 内部约束体 attestation**(后者需改 sealed typed_apply/lifecycle 返回
-receipt 对象=另批加固项,登记不做)。(b) 下 ledger 是审计通道,编排层 receipt 与用途匹配;
-若未来 ledger 承担任何注入/证据职能,receipt 必须先升级为 master 内部 attestation。
+**D-12 APPLIED receipt=编排层 receipt v1(rev2 新增,codex#5;rev3 校准 codex 复核 L-3)。**
+现状:step_8 返回 None(lifecycle.py:1741-1746)、typed_apply 的 bool 不透出(:1815/
+typed_apply.py:84-86)——「master attach receipt」无既有产生点、本批不改 sealed API。
+拍板:**编排层构造 receipt**,证明三件可观察事实:①`step_8_apply_to_master` 无异常返回;
+②`coordinate_framework_cut_count` 前后差(测试断言精确 +1);③binding 身份一致——rect_idx/
+ghost_rect_digest/snapshot_digest/master_domain_family + **condition_lits 的 JSON 稳定标识
+(solver 变量 Index()+Name(),绝不序列化对象身份)** + plan digest。**诚实标注:编排层
+观察,不是 master 内部约束体 attestation**(升级=另批,登记不做)。(b) 下 ledger 是审计
+通道,编排层 receipt 与用途匹配;若未来 ledger 承担任何注入/证据职能,receipt 必须先升级。
 
-**D-13 family-enable 最小机制(rev2 新增,opus F3)。** 现状:generators 硬调
-(benders_loop.py:8236/8245/8254),无 family 开关→门 7「关 family」字面不可测、
-enabled_family_manifest_digest 无真来源。拍板:**参数级**(非 env,避开 EXACT_* allowlist/
-lock/tests 三同步)——controller 构造参数 `enabled_cut_families`(默认=现行四族全开,生产
-行为零变),`_maybe_attach_framework_cuts` 按它跳过对应 generator;epoch_semantic_digest 的
-manifest 分量=实际启用集的规范化 digest。harness/fixture 用它做门 7。默认全开+零 env=
-certified 行为零改变。
+**D-13 family-enable 最小机制(rev2 新增,opus F3;rev3 命名校准 codex 复核 L-4)。**
+现状:generators 硬调(benders_loop.py:8236/8245/8254),无 family 开关→门 7「关 family」
+字面不可测。拍板:**参数级**(非 env,避开 EXACT_* allowlist/lock/tests 三同步)——
+controller 构造参数 `enabled_cut_families`(默认=现行四族全开,生产行为零变),
+`_maybe_attach_framework_cuts` 按它跳过对应 generator。epoch digest 的该分量正名为
+**enabled_family_set_digest**(只哈希启用族名集合;validator/compiler 版本漂移由
+source/artifact digest 与指纹的 compiler_version 分量承担,不由本分量冒充——若未来要
+「完整 capability rows 哈希」另批升级)。harness/fixture 用它做门 7。
 
 ## §2 范围
 
@@ -221,11 +229,11 @@ certified 行为零改变。
 | RFC §9 门 | 本批形态 | 诚实标注 |
 |---|---|---|
 | 1 APPLIED→QUARANTINE 禁 publish | 注入式哨兵(批D reachability-sentinel 口径,opus F5):APPLIED 后注入完整性失败→①异常传播中止 solve;②上层即便捕获异常也无可发布结论(断言无 CERTIFIED/candidate 材料产生);③fresh master 上该约束不存在(fresh 重建断言);④ledger POISONED 事件落账 | 冻结 epoch 下自然路径不可达,测的是 fail-closed 完整性,非自然 QUARANTINE |
-| 2 ghost condition 错位 fail-closed | 从 `_maybe_attach_framework_cuts` 集成路径驱动(codex 要求,非旁挂单测):错位绑定→CutRejection 分桶+**零 APPLIED 事件**+master 零写 | 复用既有 resolver 红测面,新增 ledger 侧断言 |
+| 2 ghost condition 错位 fail-closed | 从 `_maybe_attach_framework_cuts` 集成路径驱动(codex 要求,非旁挂单测),按失败层分两臂(rev3 校准 codex 复核 M-2):**单入口层** scope 失配→CutRejection(stage=scope) 分桶+REJECTED 事件;**resolver/apply 层**错位→异常传播(不吞不续跑)+POISONED 事件+零 APPLIED+master 零写 | CutRejection 只产自 validate_and_compile;resolver 在其后、失败即异常——与 D-4 poison+abort 一致 |
 | 3 同语义只 attach 一次 | 参数化覆盖 F1/F6/F7:同 controller 两轮同语义(不同 cut_id/iteration)→第二轮 REJECTED(semantic_duplicate)+hit+++master 约束计数不变;**负例=改 capacity/weights/ghost scope**(不得用「只改 region」——proof 级差异不改 lowered 方程,指纹本就该相同,codex#4);**污染负例:首个 cut 被 attach_timing 拒→指纹不入 pool→后续同指纹仍可 attach**;**generation 负例:新 controller/master 不消费旧 pool** | 指纹=lowered-constraint 等价,非 proof 身份 |
 | 4 crash 截断不把 PREPARED 当 APPLIED | reader 三态测试:截断/链断/半行→truncated/corrupt,拒绝消费;audit view 重建正确;rollback consumer 对非 complete segment 拒绝否定性结论 | (b) 下无 PREPARED→master 消费者,parser 面为主 |
 | 5 restart 全链资格 | **替代门(非 RFC replay 门,显式声明)**:双进程 kill/resume 测试——fresh master/pool 零继承;**预置恶意/伪造 ledger 于 data/cuts/ →对新进程 cut 生成/attach/master 零影响(非消费隔离的结构断言)**;新 APPLIED 全部出自本进程 typed 链;GENESIS predecessor 血缘正确 | RFC 字面 replay 已被 D-1 waiver;此门测的是 (b) 的核心不变量 |
-| 6 batch0/C1 cut off/on A/B | 拆两层:批E=fixture 级 off/on 等价断言且**硬断言 generated>0 && applied>0**(防双零空过,codex);harness 扩展就绪。**RFC 门 6 本批不记 PASS,状态=OPEN→批C**(卡点①②) | 不得把 fixture 绿当 prod 层已验(PIC-5 同款纪律) |
+| 6 batch0/C1 cut off/on A/B | 拆两层:批E=fixture 级双臂断言(rev3 校准 codex 复核 L-5)——**attach-on 臂:generated>0 && applied>0**(防双零空过);**attach-off 臂:applied==0**;两臂等价性(目标值+独立复验)归批C prod 层。harness 扩展就绪。**RFC 门 6 本批不记 PASS,状态=OPEN→批C**(卡点①②) | 不得把 fixture 绿当 prod 层已验(PIC-5 同款纪律) |
 | 7 rollback 演练 | 用 D-13:同 state 先跑全开 epoch(阳性:该族 APPLIED>0)→新 controller 关目标族→①fresh master 无该族约束;②**complete** sealed segment 上零该族 APPLIED;③epoch_semantic_digest 的 manifest 分量变化可见;覆盖 compiler 版本回滚变体(fingerprint 的 compiler_version 分量变→旧指纹自然不命中) | 否定性断言仅接受 complete segment(D-6 三态) |
 
 全量:cuts 回归+fast lane+慢 lane(pytest-forked);新 ledger/dedup 测试进 cuts 目录。
@@ -262,6 +270,14 @@ certified 行为零改变。
   主会话抽查其四条承重断言(step_7 拒绝分支/step_8 返回 None/resolver 首匹配/worker
   campaign=None)全部属实。
 - 两审收敛点:pool INSERT 时机、from_exact_core 路径、D-1 治理框架——独立复现,置信度高。
+- **codex 复核(rev2+owner 批准后):BLOCK 解除→AGREE_WITH_AMENDMENTS**,七组原条件
+  #1-#4 CLOSED、#5-#7 CLOSED_WITH_AMENDMENTS;收尾 2 MEDIUM+3 LOW 全采纳为 rev3 校准:
+  M-1 D-5「绝不 append」按字面不可实施→改为「持 fd 顺序追加+seal 后禁 reopen+seal 必须
+  最后一条(其后字节判 corrupt)+writer UUID+完备性边界声明」;M-2 门 2 分桶与 resolver
+  异常语义对齐(CutRejection 只产自单入口,resolver 失败=异常+POISONED+传播);L-3 receipt
+  改「无异常返回+计数精确 +1+condition_lits JSON 稳定标识」,不再声称「返回 True」;
+  L-4 digest 分量正名 enabled_family_set_digest;L-5 门 6 双臂分开断言。codex 声明完成
+  这些后档位升 AGREE;RFC 门 6 保持 OPEN→批C 不随实现绿灯宣告。
 
 ## §7 实现与落地记录(待批准后填)
 

@@ -1,0 +1,368 @@
+"""批E RFC-003 §9 seven gates under the (b) fresh-model-regeneration semantics.
+
+Spec: docs/research/cut_framework_review_gpt56pro_20260710/08_batch_e_rfc003_spec.md §4.
+Fixture: the proven bound-region F1 world from the attach-wiring suite (real
+master + production-dependency-aligned BState; the typed chain compiles,
+resolves and lowers end-to-end).
+
+Gate 4 (reader tri-state) lives in src/tests/cuts/test_cut_ledger.py. Gate 5's
+two-process kill/resume arm lands with the harness extension (unit 3); the
+in-process arms here pin its core invariants (forged-ledger zero influence,
+fresh master/pool zero inheritance). Gate 6 is fixture-level ONLY — the RFC
+gate stays OPEN until 批C prod-scale A/B (spec §4, PIC-5 discipline).
+"""
+from __future__ import annotations
+
+import os
+import tempfile
+from pathlib import Path
+from typing import Any, Optional, Sequence
+from unittest import mock
+
+import pytest
+
+from src.cuts.ledger import CutLedgerWriter, read_segment
+from src.models.cut_manager import CutManager
+from src.search.benders_loop import LBBDController
+from src.tests.test_cut_framework_attach_wiring import _bound_region_world
+
+
+def _controller_e(
+    master: Any,
+    *,
+    cut_ledger: Optional[CutLedgerWriter] = None,
+    enabled_cut_families: Optional[Sequence[str]] = None,
+) -> LBBDController:
+    ckpt = Path(tempfile.mkdtemp(prefix="zmd_be_"))
+    cm = CutManager(checkpoint_dir=ckpt, solve_mode="certified_exact")
+    return LBBDController(
+        master=master,
+        cut_manager=cm,
+        project_root=ckpt.parent,
+        solve_mode="certified_exact",
+        cut_ledger=cut_ledger,
+        enabled_cut_families=enabled_cut_families,
+    )
+
+
+def _attach(controller: LBBDController, state: Any, iteration: int) -> int:
+    with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
+        with mock.patch.object(
+            LBBDController, "_build_cut_framework_state", return_value=state
+        ):
+            return controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=iteration
+            )
+
+
+def _events(path: Path) -> tuple[dict[str, Any], ...]:
+    return read_segment(path).events
+
+
+# ---------------------------------------------------------------- gate 3
+
+
+def test_gate3_same_semantics_attaches_once_and_ledgers_both_facts(
+    tmp_path: Path,
+) -> None:
+    """RFC §9.3: same semantic cut, different cut_id/iteration → one attach.
+
+    Round 2 regenerates the same F1 cut (fresh wallclock cut_id) and must be
+    rejected as semantic_duplicate with the master constraint count unchanged;
+    both facts land in a complete ledger segment with matching fingerprints.
+    """
+    master, state, _group = _bound_region_world()
+    ledger = CutLedgerWriter(tmp_path, scope_id="gate3", writer_id="w1")
+    controller = _controller_e(master, cut_ledger=ledger)
+    a1 = _attach(controller, state, 1)
+    count_after_r1 = int(master.build_stats["coordinate_framework_cut_count"])
+    a2 = _attach(controller, state, 2)
+    ledger.seal()
+    assert a1 >= 1 and a2 == 0
+    assert int(master.build_stats["coordinate_framework_cut_count"]) == count_after_r1
+    result = read_segment(ledger.path)
+    assert result.status == "complete"
+    applied = [e for e in result.events if e["event"] == "APPLIED"]
+    dup = [
+        e
+        for e in result.events
+        if e["event"] == "REJECTED"
+        and e.get("reason_code") == "semantic_duplicate"
+    ]
+    assert len(applied) == a1
+    assert len(dup) >= 1
+    assert {e["semantic_fingerprint"] for e in dup} <= {
+        e["semantic_fingerprint"] for e in applied
+    }
+    # Different event identity (wallclock/iteration cut_id), same semantics.
+    assert {e["cut_id"] for e in dup}.isdisjoint({e["cut_id"] for e in applied})
+    for event in applied:
+        receipt = event["receipt"]
+        assert receipt["count_delta"] == 1
+        assert receipt["apply_completed"] is True
+        assert receipt["ghost_rect_digest"]
+        for lit in receipt["condition_lits"]:
+            assert isinstance(lit["index"], int) and isinstance(lit["name"], str)
+
+
+def test_gate3_step7_refusal_does_not_poison_the_pool(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Applied-only pool (spec D-2): a step-7 attach-timing refusal must not
+    seed the fingerprint, so the same cut regenerated later still attaches."""
+    import src.cuts.lifecycle as lifecycle
+
+    master, state, _group = _bound_region_world()
+    controller = _controller_e(master)
+    real_step_7 = lifecycle.step_7_evaluate_cut
+    calls = {"n": 0}
+
+    def flaky_step_7(compiled: Any, snapshot: Any) -> Any:
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return False
+        return real_step_7(compiled, snapshot)
+
+    monkeypatch.setattr(lifecycle, "step_7_evaluate_cut", flaky_step_7)
+    a1 = _attach(controller, state, 1)
+    stats_r1 = dict(master.build_stats["cut_framework_attach_last"])
+    a2 = _attach(controller, state, 2)
+    assert stats_r1["rejected"]["attach_timing"] >= 1
+    # The refused fingerprint was NOT falsely remembered as applied:
+    assert a1 + a2 >= 1 and a2 >= 1
+
+
+def test_gate3_fresh_master_does_not_consume_old_pool() -> None:
+    """Generation boundary (spec D-2/D-3): a new master build gets a new pool —
+    the same semantic cut must re-attach on the new build."""
+    m1, s1, _g1 = _bound_region_world()
+    c1 = _controller_e(m1)
+    assert _attach(c1, s1, 1) >= 1
+    m2, s2, _g2 = _bound_region_world()
+    c2 = _controller_e(m2)
+    assert _attach(c2, s2, 1) >= 1
+
+
+def test_generation_guard_master_swap_fails_closed() -> None:
+    m1, s1, _g1 = _bound_region_world()
+    controller = _controller_e(m1)
+    m2, _s2, _g2 = _bound_region_world()
+    controller.master = m2
+    with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
+        with pytest.raises(RuntimeError, match="master build"):
+            controller._maybe_attach_framework_cuts(
+                trigger="binding_infeasible", iteration=1
+            )
+
+
+def test_unknown_family_rejected_at_construction() -> None:
+    m1, _s1, _g1 = _bound_region_world()
+    with pytest.raises(ValueError, match="unknown cut families"):
+        _controller_e(m1, enabled_cut_families=["region_capacity", "nope"])
+
+
+# ---------------------------------------------------------------- gate 1 / 2
+
+
+def test_gate1_apply_chain_failure_poisons_ledger_and_aborts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Injection sentinel (批D reachability-sentinel口径): a step-8 fault must
+    ① propagate (no publishable conclusion), ② leave zero APPLIED events and a
+    POISONED event, ③ leave the pool unseeded and the master counter at 0."""
+    import src.cuts.lifecycle as lifecycle
+
+    master, state, _group = _bound_region_world()
+    ledger = CutLedgerWriter(tmp_path, scope_id="gate1", writer_id="w1")
+    controller = _controller_e(master, cut_ledger=ledger)
+
+    def boom(*args: Any, **kwargs: Any) -> None:
+        raise RuntimeError("injected step_8 fault")
+
+    monkeypatch.setattr(lifecycle, "step_8_apply_to_master", boom)
+    with pytest.raises(RuntimeError, match="injected step_8 fault"):
+        _attach(controller, state, 1)
+    names = [e["event"] for e in _events(ledger.path)]
+    assert "POISONED" in names
+    assert "APPLIED" not in names
+    assert controller._attached_semantic_fingerprints == set()
+    assert int(master.build_stats.get("coordinate_framework_cut_count", 0)) == 0
+
+
+def test_gate2_resolver_fault_arm_poisons_and_propagates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Gate 2 resolver/apply arm (rev3): a resolver-level mis-binding is an
+    exception — POISONED + propagate, zero APPLIED, master zero write."""
+    import src.cuts.lifecycle as lifecycle
+
+    master, state, _group = _bound_region_world()
+    ledger = CutLedgerWriter(tmp_path, scope_id="gate2r", writer_id="w1")
+    controller = _controller_e(master, cut_ledger=ledger)
+
+    def mis_bind(*args: Any, **kwargs: Any) -> None:
+        raise ValueError("injected resolver mis-binding")
+
+    monkeypatch.setattr(lifecycle, "_resolve_model_scope_binding", mis_bind)
+    with pytest.raises(ValueError, match="injected resolver mis-binding"):
+        _attach(controller, state, 1)
+    names = [e["event"] for e in _events(ledger.path)]
+    assert "POISONED" in names and "APPLIED" not in names
+    assert int(master.build_stats.get("coordinate_framework_cut_count", 0)) == 0
+
+
+def test_gate2_single_entry_rejection_arm_ledgers_and_skips(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Gate 2 single-entry arm: a CutRejection from validate_and_compile is a
+    bucketed skip — REJECTED event with the stage as reason_code, zero APPLIED,
+    master zero write, and the loop continues (no exception)."""
+    import src.cuts.typed_platform as typed_platform
+
+    master, state, _group = _bound_region_world()
+    ledger = CutLedgerWriter(tmp_path, scope_id="gate2s", writer_id="w1")
+    controller = _controller_e(master, cut_ledger=ledger)
+    rejection = typed_platform.CutRejection(
+        stage="scope", reason="injected scope mismatch", cut_id="cut-under-test"
+    )
+    monkeypatch.setattr(
+        typed_platform,
+        "validate_and_compile_cut",
+        lambda envelope, snapshot, registry: rejection,
+    )
+    attached = _attach(controller, state, 1)
+    ledger.seal()
+    assert attached == 0
+    result = read_segment(ledger.path)
+    assert result.status == "complete"
+    rejected = [e for e in result.events if e["event"] == "REJECTED"]
+    assert any(e.get("reason_code") == "scope" for e in rejected)
+    assert not any(e["event"] == "APPLIED" for e in result.events)
+    assert int(master.build_stats.get("coordinate_framework_cut_count", 0)) == 0
+    stats = master.build_stats["cut_framework_attach_last"]
+    assert stats["rejected"]["scope"] >= 1
+
+
+# ---------------------------------------------------------------- gate 5
+
+
+def test_gate5_forged_ledger_has_zero_influence_and_is_never_touched(
+    tmp_path: Path,
+) -> None:
+    """Substitute gate (spec D-1 waiver, NOT the RFC replay gate): pre-planted
+    forged ledger content must not change attach behaviour by one bit (non-
+    consumption isolation), must never be appended to, and the new writer's
+    GENESIS must carry lineage fields."""
+    scope_dir = tmp_path / "gate5"
+    scope_dir.mkdir(parents=True)
+    forged = scope_dir / "segment_evil_00000.jsonl"
+    forged_bytes = (
+        b'{"event":"APPLIED","cut_id":"evil","semantic_fingerprint":"'
+        + b"a" * 64
+        + b'","seq":0}\n'
+    )
+    forged.write_bytes(forged_bytes)
+
+    baseline_master, baseline_state, _g = _bound_region_world()
+    baseline = _attach(_controller_e(baseline_master), baseline_state, 1)
+
+    master, state, _g2 = _bound_region_world()
+    writer = CutLedgerWriter(
+        tmp_path,
+        scope_id="gate5",
+        writer_id="w1",
+        genesis_context={
+            "predecessor_segment": None,
+            "predecessor_tail_hash": None,
+            "recovery_reason": "fresh_start",
+        },
+    )
+    controller = _controller_e(master, cut_ledger=writer)
+    attached = _attach(controller, state, 1)
+    writer.seal()
+
+    assert attached == baseline  # forged disk content changed nothing
+    assert forged.read_bytes() == forged_bytes  # never appended / rewritten
+    assert writer.path != forged
+    genesis = _events(writer.path)[0]
+    assert genesis["event"] == "GENESIS"
+    assert "predecessor_segment" in genesis and "recovery_reason" in genesis
+    # Every APPLIED in the fresh segment came from this process's typed chain
+    # (receipt present), not from any disk record.
+    for event in _events(writer.path):
+        if event["event"] == "APPLIED":
+            assert event["receipt"]["apply_completed"] is True
+
+
+# ---------------------------------------------------------------- gate 6 / 7
+
+
+def test_gate6_fixture_arms_on_off() -> None:
+    """Fixture-level arms only (RFC gate 6 stays OPEN → 批C): attach-on must
+    show real work (generated>0 && applied>0); attach-off must apply nothing."""
+    m_on, s_on, _g = _bound_region_world()
+    c_on = _controller_e(m_on)
+    attached_on = _attach(c_on, s_on, 1)
+    stats_on = m_on.build_stats["cut_framework_attach_last"]
+    assert stats_on["generated"] > 0
+    assert attached_on > 0
+
+    m_off, s_off, _g2 = _bound_region_world()
+    c_off = _controller_e(m_off)
+    env = dict(os.environ)
+    env.pop("EXACT_CUT_FRAMEWORK_ATTACH", None)
+    with mock.patch.dict(os.environ, env, clear=True):
+        attached_off = c_off._maybe_attach_framework_cuts(
+            trigger="binding_infeasible", iteration=1
+        )
+    assert attached_off == 0
+    assert int(m_off.build_stats.get("coordinate_framework_cut_count", 0)) == 0
+
+
+def test_gate7_rollback_drill_family_disable(tmp_path: Path) -> None:
+    """RFC §9.7 in (b) semantics: positive epoch first (family APPLIED>0 on a
+    complete segment), then a fresh master with the family disabled — zero
+    constraints of that family on the new build, zero APPLIED on its complete
+    segment, and the enabled_family_set component visibly changes the epoch
+    semantic digest. Compiler-rollback variant is structurally covered: pools
+    are per-master-build, so no cross-epoch suppression channel exists."""
+    m1, s1, _g1 = _bound_region_world()
+    l1 = CutLedgerWriter(tmp_path, scope_id="gate7", writer_id="w1")
+    c1 = _controller_e(m1, cut_ledger=l1)
+    assert _attach(c1, s1, 1) >= 1
+    l1.seal()
+    r1 = read_segment(l1.path)
+    assert r1.status == "complete"
+    assert any(
+        e["event"] == "APPLIED" and e["family"] == "region_capacity"
+        for e in r1.events
+    )
+    digest1 = m1.build_stats["cut_framework_attach_last"]["epoch_semantic_digest"]
+
+    m2, s2, _g2 = _bound_region_world()
+    l2 = CutLedgerWriter(tmp_path, scope_id="gate7", writer_id="w2")
+    c2 = _controller_e(
+        m2,
+        cut_ledger=l2,
+        enabled_cut_families=[
+            "shape_packing_hall",
+            "power_hitting_set",
+            "pattern_nogood",
+        ],
+    )
+    attached2 = _attach(c2, s2, 1)
+    l2.seal()
+    r2 = read_segment(l2.path)
+    assert r2.status == "complete"
+    assert r2.supports_negative_assertions  # negative claims need complete
+    assert not any(
+        e["event"] in {"APPLIED", "GENERATED"}
+        and e.get("family") == "region_capacity"
+        for e in r2.events
+    )
+    assert int(m2.build_stats.get("coordinate_framework_cut_count", 0)) == 0
+    assert attached2 == 0  # this world only yields F1 cuts
+    digest2 = m2.build_stats["cut_framework_attach_last"]["epoch_semantic_digest"]
+    assert digest1 != digest2
+    stats2 = m2.build_stats["cut_framework_attach_last"]
+    assert "region_capacity" not in stats2["enabled_families"]

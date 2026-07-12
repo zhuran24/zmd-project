@@ -129,6 +129,19 @@ def test_duplicate_key_line_is_rejected_fail_closed(tmp_path: Path) -> None:
     assert [e["event"] for e in result.events] == ["GENESIS"]
 
 
+def test_bytes_after_seal_are_corrupt(tmp_path: Path) -> None:
+    with _writer(tmp_path) as writer:
+        writer.append("GENERATED", {"cut_id": "c1"})
+    sealed_lines = writer.path.read_bytes().split(b"\n")
+    # Forge a "valid-looking" event appended after the seal: even with a
+    # correct chain continuation the reader must call the segment corrupt.
+    forged = sealed_lines[1]  # re-use an earlier canonical line verbatim
+    writer.path.write_bytes(b"\n".join(sealed_lines[:-1] + [forged, b""]))
+    result = read_segment(writer.path)
+    assert result.status == "corrupt"
+    assert "after SEGMENT_SEAL" in result.detail or result.detail
+
+
 def test_usage_errors(tmp_path: Path) -> None:
     writer = _writer(tmp_path)
     with pytest.raises(LedgerUsageError):

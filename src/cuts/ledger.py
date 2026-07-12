@@ -42,6 +42,7 @@ import json
 import os
 import socket
 import time
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Tuple
@@ -102,7 +103,10 @@ def _canonical_event_line(event: Mapping[str, Any]) -> bytes:
 
 
 def default_writer_id() -> str:
-    return f"{socket.gethostname()}-pid{os.getpid()}"
+    # Process-instance unique (codex re-review MEDIUM-1): PID/host alone can
+    # recur across restarts; the uuid suffix makes writer identity collision-
+    # free without any coordination.
+    return f"{socket.gethostname()}-pid{os.getpid()}-{uuid.uuid4().hex[:12]}"
 
 
 def _fsync_directory(directory: Path) -> None:
@@ -294,6 +298,18 @@ def read_segment(path: Path) -> SegmentReadResult:
             return _stop(f"line {index}: unknown event type")
         if index == 0 and parsed.get("event") != "GENESIS":
             return _stop("line 0: first event must be GENESIS")
+        if events and events[-1]["event"] == "SEGMENT_SEAL":
+            # codex re-review MEDIUM-1: SEGMENT_SEAL must be the last event —
+            # any bytes after a seal are unconditionally corrupt (a sealed
+            # segment is immutable; a "valid-looking" post-seal event is
+            # exactly what a forger would append).
+            return SegmentReadResult(
+                status="corrupt",
+                events=tuple(events),
+                detail=f"line {index}: data after SEGMENT_SEAL",
+                tail_hash=prev_hash,
+                bad_offset=offset,
+            )
         if parsed.get("seq") != index:
             return _stop(f"line {index}: seq {parsed.get('seq')!r} != {index}")
         if parsed.get("prev_event_hash") != prev_hash:

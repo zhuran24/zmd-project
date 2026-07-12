@@ -10,7 +10,7 @@
   },
   "numbers": {
     "cuts_tests_total": {
-      "value": 792,
+      "value": 848,
       "kind": "int",
       "recompute": "pytest_collect_only_count_src_tests_cuts",
       "stale": [
@@ -30,7 +30,8 @@
         712,
         769,
         773,
-        782
+        782,
+        792
       ],
       "provenance": "computed: `pytest --collect-only -q src/tests/cuts` 的 collection 计数（含 parametrize 展开，故 ≥ 纯 `def test_` 计数）。stale 列保存旧 collection 值；当前值始终以同对象的 `value` 字段为准，生成器变更值时会自动把旧值并入 stale。"
     },

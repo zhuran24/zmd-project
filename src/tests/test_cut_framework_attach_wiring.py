@@ -910,8 +910,14 @@ def test_maybe_attach_reuses_session_bundle_across_rounds(monkeypatch) -> None:
             a2 = controller._maybe_attach_framework_cuts(
                 trigger="binding_infeasible", iteration=2
             )
-    # Both rounds did real attach work but shared a single frozen bundle.
-    assert a1 >= 1 and a2 >= 1
+    # Round 1 did real attach work; round 2 regenerates the same semantic
+    # cut and is (since 批E, spec 08 D-2) deduplicated instead of re-lowered —
+    # which is itself proof the round ran against the shared bundle.
+    assert a1 >= 1
+    assert a2 == 0
+    stats_last = master.build_stats["cut_framework_attach_last"]
+    assert stats_last["rejected"]["semantic_duplicate"] >= 1
+    # Both rounds shared a single frozen bundle (session ownership).
     assert build_count["n"] == 1
     assert len(session._cut_framework_bundle_cache) == 1
 

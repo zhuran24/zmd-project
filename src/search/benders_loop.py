@@ -45,6 +45,8 @@ env 变量 (本文件读): 见 docs/env_variable_index.md, 主要 A/B/D/G 组.
 from __future__ import annotations
 
 import copy
+import hashlib
+import itertools
 import json
 from collections import defaultdict
 from dataclasses import dataclass, field as dataclass_field
@@ -3474,6 +3476,22 @@ def normalize_certified_power_pole_dominance(
     return normalized, summary
 
 
+# 批E (spec 08 D-13): the four typed families the attach orchestration can
+# generate. Enablement is parameter-level (no EXACT_* env knob; default
+# all-on so production behaviour is unchanged); the enabled set is a
+# component of the epoch semantic digest and drives the RFC-003 §9.7
+# rollback drill.
+_CUT_FRAMEWORK_ALL_FAMILIES: FrozenSet[str] = frozenset(
+    {
+        "region_capacity",
+        "shape_packing_hall",
+        "power_hitting_set",
+        "pattern_nogood",
+    }
+)
+_CUT_FRAMEWORK_EPOCH_COUNTER = itertools.count()
+
+
 class LBBDController:
     """Orchestrator connecting the master model to exploratory or exact subproblems."""
 
@@ -3494,6 +3512,8 @@ class LBBDController:
         heartbeat_callback: Optional[_CampaignHeartbeatCallback] = None,
         disable_master_warm_start: bool = False,
         session: Optional["ExactSearchSession"] = None,
+        enabled_cut_families: Optional[Sequence[str]] = None,
+        cut_ledger: Optional[Any] = None,
     ):
         self.master = master
         self.cut_manager = cut_manager
@@ -3516,6 +3536,37 @@ class LBBDController:
         # None (exploratory / legacy harness callers) falls back to the
         # per-round build path unchanged.
         self._session = session
+        # 批E (spec 08 D-13): parameter-level family enablement — unknown
+        # names are a caller defect and fail closed at construction.
+        if enabled_cut_families is None:
+            self._enabled_cut_families: FrozenSet[str] = _CUT_FRAMEWORK_ALL_FAMILIES
+        else:
+            requested = frozenset(str(name) for name in enabled_cut_families)
+            unknown = requested - _CUT_FRAMEWORK_ALL_FAMILIES
+            if unknown:
+                raise ValueError(
+                    f"unknown cut families {sorted(unknown)}; "
+                    f"known: {sorted(_CUT_FRAMEWORK_ALL_FAMILIES)}"
+                )
+            self._enabled_cut_families = requested
+        # 批E (spec 08 D-2/D-3): per-master-build semantic-fingerprint dedup
+        # pool. Fingerprints are inserted ONLY after a successful step_8 (an
+        # "applied set"), so a step-7/step-8 refusal can never poison the pool
+        # into suppressing a later legitimate attach. One controller == one
+        # master build today (every build path precedes controller
+        # construction); the captured build id turns that invariant into a
+        # runtime guard instead of a silent assumption.
+        self._attached_semantic_fingerprints: Set[str] = set()
+        self._cut_framework_master_build_id = id(master)
+        self._cut_framework_epoch_instance_id = (
+            f"epoch-{os.getpid()}-{next(_CUT_FRAMEWORK_EPOCH_COUNTER):06d}"
+        )
+        # 批E (spec 08 D-5): optional audit ledger writer (duck-typed
+        # ``src.cuts.ledger.CutLedgerWriter``; None == zero ledger writes and
+        # is the default on every certified/production path). NON-CONSUMPTION
+        # ISOLATION (D-1, owner-approved waiver): this handle is write-only —
+        # nothing is ever read back from the ledger into the attach path.
+        self._cut_ledger = cut_ledger
         self.loaded_exact_safe_cuts: List[BendersCut] = list(loaded_exact_safe_cuts or [])
         self.generated_exact_safe_cuts: List[BendersCut] = []
         # P1 #7 main: 当前 wave 的 ε 阶段 (0.05 / 0.01 / 0.0 / None).
@@ -8156,6 +8207,17 @@ class LBBDController:
         """
         if not self._cut_framework_attach_enabled():
             return 0
+        if id(self.master) != self._cut_framework_master_build_id:
+            # 批E (spec 08 D-2 generation guard): the dedup pool is an
+            # "applied on THIS master build" set; an in-place master swap
+            # would leave it asserting constraints the new build never
+            # received. Unreachable today (one controller == one build);
+            # fail closed if a future refactor breaks that.
+            raise RuntimeError(
+                "cut-framework dedup pool is bound to the master build this "
+                "controller was constructed with; a master rebuild requires "
+                "a new controller"
+            )
         attach_budget = _resolve_cut_framework_attach_budget()
         # Function-local imports keep the certified benders module free of a
         # module-level src/cuts typed-platform coupling; typed_platform lazily
@@ -8233,12 +8295,50 @@ class LBBDController:
         snapshot = build_validated_state_snapshot(state, bundle)
         registry = build_production_registry()
 
-        cuts = list(
-            generate_region_capacity_cuts(
-                state, state.canonical_rules or {}, iter_index=iteration
+        # 批E (spec 08 D-3): epoch semantic digest — cross-process comparable
+        # identity of "what world this master build attaches under": frozen
+        # artifact hashes + the enabled family manifest + the ghost rect.
+        epoch_semantic_digest = hashlib.sha256(
+            json.dumps(
+                {
+                    "artifact_hashes": {
+                        str(k): str(v)
+                        for k, v in (state.artifact_hashes or {}).items()
+                    },
+                    "enabled_families": sorted(self._enabled_cut_families),
+                    "ghost_rect": list(getattr(self.master, "ghost_rect", None) or ()),
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()
+        ledger = self._cut_ledger
+
+        def _ledger_event(event_type: str, fields: Dict[str, Any]) -> None:
+            # Audit-only write (spec 08 D-1 non-consumption isolation). A
+            # LedgerWriteError deliberately propagates: once the audit
+            # channel is broken this solve may not keep minting conclusions
+            # (spec 08 D-4 poison+abort).
+            if ledger is None:
+                return
+            fields.setdefault("trigger", trigger)
+            fields.setdefault("iteration", int(iteration))
+            fields.setdefault(
+                "epoch_instance_id", self._cut_framework_epoch_instance_id
             )
-        )
-        if solution is not None:
+            fields.setdefault("epoch_semantic_digest", epoch_semantic_digest)
+            ledger.append(event_type, fields)
+
+        # 批E (spec 08 D-13): family generation gated by the enabled set
+        # (default all-on == the pre-批E hard-wired behaviour).
+        cuts: List[Any] = []
+        if "region_capacity" in self._enabled_cut_families:
+            cuts.extend(
+                generate_region_capacity_cuts(
+                    state, state.canonical_rules or {}, iter_index=iteration
+                )
+            )
+        if solution is not None and "power_hitting_set" in self._enabled_cut_families:
             target_poses = self._framework_target_poses(solution)
             if target_poses:
                 cuts.extend(
@@ -8248,20 +8348,21 @@ class LBBDController:
                 )
         # F6 (M4-B): overrides are the source-of-truth pigeonhole bounds —
         # pure state geometry, no incumbent counting needed.
-        f6_overrides = compute_sot_region_demand_overrides(state)
-        if f6_overrides:
-            cuts.extend(
-                generate_shape_packing_hall_cuts(
-                    state,
-                    region_demand_overrides=f6_overrides,
-                    iter_index=iteration,
+        if "shape_packing_hall" in self._enabled_cut_families:
+            f6_overrides = compute_sot_region_demand_overrides(state)
+            if f6_overrides:
+                cuts.extend(
+                    generate_shape_packing_hall_cuts(
+                        state,
+                        region_demand_overrides=f6_overrides,
+                        iter_index=iteration,
+                    )
                 )
-            )
         # F5 (M4-D3): distil the refuted incumbent into a minimal forbidden
         # pattern via the liftable binding adapter. The adapter only ever
         # answers INFEASIBLE for verdicts derivable from frozen artifacts
         # (empty binding domain) — demand-equality failures refuse to lift.
-        if solution is not None:
+        if solution is not None and "pattern_nogood" in self._enabled_cut_families:
             from src.cuts.oracles.pattern_nogood_oracle import (
                 generate_pattern_nogood_cuts,
                 lookup_sub_problem_oracle,
@@ -8293,9 +8394,10 @@ class LBBDController:
         shadow_validated = 0
         # Rejection telemetry keyed by the typed pipeline stage (CutRejection.
         # stage) plus the pre-single-entry ``adapter`` stage (cut_to_envelope_v1
-        # TypeError/ValueError) and the ``attach_timing`` step-7 skip.  Known
-        # stages are pre-seeded for stable telemetry; single-entry stages are
-        # registry/envelope/scope/proof/plan.
+        # TypeError/ValueError), the ``attach_timing`` step-7 skip and the 批E
+        # ``semantic_duplicate`` dedup skip.  Known stages are pre-seeded for
+        # stable telemetry; single-entry stages are registry/envelope/scope/
+        # proof/plan.
         rejected: Dict[str, int] = {
             "adapter": 0,
             "registry": 0,
@@ -8304,7 +8406,16 @@ class LBBDController:
             "proof": 0,
             "plan": 0,
             "attach_timing": 0,
+            "semantic_duplicate": 0,
         }
+        for cut in cuts:
+            _ledger_event(
+                "GENERATED",
+                {
+                    "cut_id": str(getattr(cut, "cut_id", "")),
+                    "family": str(getattr(cut, "family", "")),
+                },
+            )
         for cut in cuts:
             if budget_used + attached >= attach_budget:
                 break
@@ -8314,27 +8425,139 @@ class LBBDController:
                 envelope = cut_to_envelope_v1(cut)
             except (TypeError, ValueError):
                 rejected["adapter"] += 1
+                _ledger_event(
+                    "REJECTED",
+                    {
+                        "cut_id": str(getattr(cut, "cut_id", "")),
+                        "reason_code": "adapter",
+                    },
+                )
                 continue
             result = validate_and_compile_cut(envelope, snapshot, registry)
             if isinstance(result, CompiledCut):
+                fingerprint = str(result.plan.semantic_fingerprint)
+                if fingerprint in self._attached_semantic_fingerprints:
+                    # 批E (spec 08 D-2): strict-equality semantic dedup — an
+                    # equal fingerprint is the same lowered constraint (under
+                    # SHA-256 collision resistance), already physically in
+                    # this master build; re-lowering is pure waste (I-8).
+                    # Miss direction is under-cut only: never a soundness
+                    # risk, and the pool is applied-only so a step-7/step-8
+                    # refusal can never have seeded it.
+                    rejected["semantic_duplicate"] += 1
+                    _ledger_event(
+                        "REJECTED",
+                        {
+                            "cut_id": str(result.cut_id),
+                            "family": str(result.plan.family),
+                            "semantic_fingerprint": fingerprint,
+                            "reason_code": "semantic_duplicate",
+                        },
+                    )
+                    continue
                 # Step-7 attach-timing: only a compiled cut still attesting to
                 # this snapshot may be lowered (fail-closed skip otherwise).
                 if step_7_evaluate_cut(result, snapshot) is not True:
                     rejected["attach_timing"] += 1
+                    _ledger_event(
+                        "REJECTED",
+                        {
+                            "cut_id": str(result.cut_id),
+                            "reason_code": "attach_timing",
+                        },
+                    )
                     continue
-                binding = _resolve_model_scope_binding(
-                    result.plan.model_scope, snapshot, self.master
-                )
-                step_8_apply_to_master(result, self.master, scope_binding=binding)
+                try:
+                    binding = _resolve_model_scope_binding(
+                        result.plan.model_scope, snapshot, self.master
+                    )
+                    counter_before = 0
+                    if isinstance(stats, dict):
+                        counter_before = int(
+                            stats.get("coordinate_framework_cut_count", 0)
+                        )
+                    step_8_apply_to_master(
+                        result, self.master, scope_binding=binding
+                    )
+                except Exception:
+                    # spec 08 D-4: any apply-chain gate failure is fail-closed
+                    # — record the poison fact for the audit trail, then let
+                    # the original exception abort this solve (a master
+                    # refusing a compiled cut is a wiring defect, not data).
+                    _ledger_event(
+                        "POISONED",
+                        {
+                            "cut_id": str(result.cut_id),
+                            "family": str(result.plan.family),
+                            "reason_code": "apply_chain_failure",
+                        },
+                    )
+                    raise
+                counter_after = counter_before
+                if isinstance(stats, dict):
+                    counter_after = int(
+                        stats.get("coordinate_framework_cut_count", 0)
+                    )
+                # Applied-only pool insert (spec 08 D-2): strictly after a
+                # successful step_8 so refusals never poison the pool.
+                self._attached_semantic_fingerprints.add(fingerprint)
                 attached += 1
                 family = str(result.plan.family)
                 attached_by_family[family] = attached_by_family.get(family, 0) + 1
+                _ledger_event(
+                    "APPLIED",
+                    {
+                        "cut_id": str(result.cut_id),
+                        "family": family,
+                        "semantic_fingerprint": fingerprint,
+                        "plan_digest": str(result.plan.digest),
+                        # Orchestration-layer receipt v1 (spec 08 D-12):
+                        # attests the apply call completed + the master budget
+                        # counter advanced + the resolved binding identity.
+                        # NOT a master-internal constraint attestation (that
+                        # upgrade is a registered follow-up).
+                        "receipt": {
+                            "rect_idx": binding.rect_idx,
+                            "ghost_rect_digest": binding.ghost_rect_digest,
+                            "snapshot_digest": binding.snapshot_digest,
+                            "master_domain_family": binding.master_domain_family,
+                            # JSON-stable condition-literal identity (codex
+                            # re-review LOW-3): solver var index + name, never
+                            # Python object identity.
+                            "condition_lits": [
+                                {
+                                    "index": int(getattr(lit, "Index")()),
+                                    "name": str(getattr(lit, "Name")()),
+                                }
+                                for lit in binding.condition_lits
+                                if hasattr(lit, "Index") and hasattr(lit, "Name")
+                            ],
+                            "count_delta": counter_after - counter_before,
+                            "apply_completed": True,
+                        },
+                    },
+                )
             elif isinstance(result, ShadowValidated):
                 # F5 common-mode-untrusted shadow: validated but no compile
                 # authority — never lowered, never budgeted (RFC-001 §5.4).
                 shadow_validated += 1
+                _ledger_event(
+                    "SHADOW",
+                    {
+                        "cut_id": str(result.cut_id),
+                        "telemetry_tag": str(result.telemetry_tag),
+                    },
+                )
             elif isinstance(result, CutRejection):
                 rejected[result.stage] = rejected.get(result.stage, 0) + 1
+                _ledger_event(
+                    "REJECTED",
+                    {
+                        "cut_id": str(result.cut_id),
+                        "reason_code": str(result.stage),
+                        "reason": str(result.reason),
+                    },
+                )
             else:  # pragma: no cover - the single entry returns only the 3 arms
                 raise TypeError(
                     f"validate_and_compile_cut returned unexpected {type(result).__name__}"
@@ -8342,7 +8565,8 @@ class LBBDController:
         if isinstance(stats, dict):
             # Typed three-way telemetry (RFC-001 §4.7/§6): per-family attach,
             # the independent common-mode-untrusted shadow bucket, and rejection
-            # counts keyed by the typed pipeline stage.
+            # counts keyed by the typed pipeline stage (semantic_duplicate is
+            # the 批E dedup bucket, spec 08 D-10).
             stats["cut_framework_attach_last"] = {
                 "trigger": trigger,
                 "iteration": int(iteration),
@@ -8351,6 +8575,9 @@ class LBBDController:
                 "attached_by_family": dict(sorted(attached_by_family.items())),
                 "shadow_validated": shadow_validated,
                 "rejected": {k: int(v) for k, v in sorted(rejected.items())},
+                "enabled_families": sorted(self._enabled_cut_families),
+                "epoch_instance_id": self._cut_framework_epoch_instance_id,
+                "epoch_semantic_digest": epoch_semantic_digest,
             }
         return attached
 

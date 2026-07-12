@@ -5,6 +5,7 @@ Phase 1 implementation per docs/research/p3_b_design_v2_20260521/PHASE_1_PLAN.md
 Modules:
 - lifecycle.py: Cut schema + 9-step lifecycle (Phase 1.0 P1.1)
 - store.py: CutStore + 6-dim watcher (Phase 1.0 P1.2)
+- ledger.py: append-only JSONL audit ledger, non-consumption (批E RFC-003)
 - replay.py: 6-step verify + GHOST_AGNOSTIC/blocked_cells_hash dispatch (P1.3)
 - helpers/: baseline_partition / power_cover / candidate_placements 等 (P1.4)
 - families/: F1-F7+F9 validators + evaluators (P1.5-P1.15; F8 deleted
