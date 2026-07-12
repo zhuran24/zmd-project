@@ -6,6 +6,7 @@ import ast
 import hashlib
 import inspect
 import json
+import weakref
 from collections import Counter
 from collections.abc import Iterator, Mapping
 from dataclasses import dataclass, fields, is_dataclass, replace
@@ -290,9 +291,7 @@ def _build_f5_verifiable_world(
         "globals": {"grid": {"width": 70, "height": 70}},
         "facility_templates": facility_templates,
     }
-    candidate_placements = {
-        "facility_pools": {facility_type: [_f5_dead_pose(), _f5_live_pose(op)]}
-    }
+    candidate_placements = {"facility_pools": {facility_type: [_f5_dead_pose(), _f5_live_pose(op)]}}
     instance_to_facility_type = {group_id: facility_type}
     ghost_rect = (11, 17, 2, 3)
     ghost_cells = frozenset(
@@ -826,13 +825,19 @@ def test_public_type_shapes_and_three_branch_result_algebra() -> None:
             "condition_lits",
             "blocked_cells",
             "snapshot_digest",
+            "master_domain_family",
             "master_domain_projection",
+            "master_ref",
         ),
     }
     for type_, field_names in expected_fields.items():
         assert is_dataclass(type_)
         assert type_.__dataclass_params__.frozen  # type: ignore[attr-defined]
         assert tuple(field.name for field in fields(type_)) == field_names
+
+    master_ref_field = next(field for field in fields(ModelScopeBinding) if field.name == "master_ref")
+    assert not master_ref_field.repr
+    assert not master_ref_field.compare
 
     state, snapshot = _build_world()
     region_envelope = _trusted_test_envelope(_typed_probe_cut(state), snapshot)
@@ -1779,9 +1784,7 @@ def test_production_registry_f5_envelope_runs_full_shadow_path() -> None:
     state, snapshot, group_id = _build_f5_verifiable_world(
         artifact_hashes=_PRODUCTION_ARTIFACT_HASHES,
     )
-    envelope = _trusted_test_envelope(
-        _make_verifiable_pattern_cut(state, group_id), snapshot
-    )
+    envelope = _trusted_test_envelope(_make_verifiable_pattern_cut(state, group_id), snapshot)
     oracle = _DifferentialF5Oracle()
     clear_sub_problem_oracle_registry()
     register_sub_problem_oracle(oracle)  # type: ignore[arg-type]
@@ -2572,15 +2575,21 @@ def validate_and_compile_cut(leaked=_COMPILED_CUT_CONSTRUCTION_TOKEN):
 
 
 def test_model_scope_binding_rejects_direct_construction() -> None:
-    with pytest.raises((TypeError, ValueError)):
+    class _WeakrefableMaster:
+        pass
+
+    master = _WeakrefableMaster()
+    with pytest.raises(TypeError, match="ModelScopeBinding is private"):
         ModelScopeBinding(
             rect_idx=None,
             ghost_rect_digest=None,
             condition_lits=(),
             blocked_cells=None,
             snapshot_digest="8" * 64,
+            master_domain_family="region_capacity",
             master_domain_projection="9" * 64,
-            _construction_token=object(),  # type: ignore[call-arg]
+            master_ref=weakref.ref(master),
+            _construction_token=object(),
         )
 
 

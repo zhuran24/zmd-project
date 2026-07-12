@@ -136,7 +136,7 @@ def test_step_8_f6_fail_closed_surfaces() -> None:
     #     inconsistent cut).
     _raw, drift_snapshot, compiled = _compile_cut(state, bundle, region_kind="left_baseline", region_demand=2)
     master = _build_tiny_master(_ALL_POSES)
-    master.facility_pools[_FACILITY_TYPE][0]["occupied_cells"] = [[69, 69]]
+    master.facility_pools[_FACILITY_TYPE][0]["alpha_projection_drift"] = True
     binding = _resolve_model_scope_binding(compiled.plan.model_scope, drift_snapshot, master)
     with pytest.raises(ValueError, match="domain projection drifted"):
         step_8_apply_to_master(compiled, master, scope_binding=binding)

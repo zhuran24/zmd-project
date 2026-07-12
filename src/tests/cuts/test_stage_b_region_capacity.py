@@ -44,6 +44,7 @@ from src.cuts.lifecycle import (
 )
 from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
 from src.cuts.state_snapshot import (
+    SnapshotValidationError,
     ValidatedStateSnapshot,
     build_validated_state_snapshot,
     master_domain_facility_pool_projection_v1,
@@ -466,7 +467,7 @@ def test_f1_boundary_assumption_preserves_legacy_source_exists_semantics() -> No
     assert isinstance(result, CompiledCut)
 
 
-def test_f1_boundary_assumption_rejects_missing_canonical_source_like_legacy() -> None:
+def test_f1_snapshot_rejects_missing_canonical_source_bound_to_nonempty_bundle() -> None:
     state, bundle = _build_state_and_bundle()
     state.canonical_rules = None
     state.source_digest = compute_source_digest(state)
@@ -483,18 +484,8 @@ def test_f1_boundary_assumption_rejects_missing_canonical_source_like_legacy() -
     assert not assumption_holds(state, boundary)
     assert assumption_holds(state, placement)
 
-    envelope = cut_to_envelope_v1(raw_cut)
-    snapshot = build_validated_state_snapshot(state, bundle)
-    result = validate_and_compile_cut(
-        envelope,
-        snapshot,
-        build_production_registry(),
-    )
-
-    assert envelope.scope.source_digest == snapshot.source_digest
-    assert not snapshot.canonical_rules_source_present
-    assert isinstance(result, CutRejection)
-    assert result.stage == "scope"
+    with pytest.raises(SnapshotValidationError, match="canonical_rules"):
+        build_validated_state_snapshot(state, bundle)
 
 
 def test_f1_multiple_contributors_keep_repeated_placement_assumption_keys() -> None:

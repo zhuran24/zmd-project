@@ -32,6 +32,7 @@ import base64
 import hashlib
 import json
 import time
+import weakref
 from collections import Counter  # noqa: F401  (state_machine_v2 后续用)
 from dataclasses import dataclass, field
 from typing import (
@@ -1369,6 +1370,163 @@ def _live_power_coverer_rows(
     return rows
 
 
+def _validate_live_mandatory_group_cache(
+    master: Any,
+    mandatory_slots: Any,
+) -> None:
+    """Prove the lowerer's private group lookup agrees with slot authority."""
+
+    raw_groups = master._mandatory_groups
+    if type(raw_groups) is not list or type(mandatory_slots) is not dict:
+        raise ValueError("resolver: mandatory group cache has invalid container types (fail-closed)")
+
+    cached: Dict[str, Tuple[str, int]] = {}
+    for raw_group in raw_groups:
+        if type(raw_group) is not dict:
+            raise ValueError("resolver: mandatory group cache contains a non-dict row (fail-closed)")
+        group_id = raw_group.get("group_id")
+        facility_type = raw_group.get("facility_type")
+        count = raw_group.get("count")
+        if type(group_id) is not str or not group_id:
+            raise ValueError("resolver: mandatory group cache has an invalid group_id (fail-closed)")
+        if type(facility_type) is not str or not facility_type:
+            raise ValueError("resolver: mandatory group cache has an invalid facility_type (fail-closed)")
+        if type(count) is not int or count <= 0 or group_id in cached:
+            raise ValueError("resolver: mandatory group cache has an invalid count or duplicate row (fail-closed)")
+        cached[group_id] = (facility_type, count)
+
+    authoritative: Dict[str, Tuple[str, int]] = {}
+    for group_id, raw_slots in mandatory_slots.items():
+        if type(group_id) is not str or not group_id or type(raw_slots) is not list or not raw_slots:
+            raise ValueError("resolver: mandatory slot authority has an invalid group row (fail-closed)")
+        templates = {slot.template for slot in raw_slots}
+        if len(templates) != 1:
+            raise ValueError("resolver: mandatory slots disagree on their template (fail-closed)")
+        authoritative[group_id] = (templates.pop(), len(raw_slots))
+
+    if cached != authoritative:
+        raise ValueError("resolver: mandatory group cache drifted from mandatory slots (fail-closed)")
+
+
+def _registered_pose_tuples_by_template(
+    registration_rows: List[object],
+) -> Dict[str, Dict[int, Tuple[int, int, int]]]:
+    """Recover the already-projected pool registration without changing it."""
+
+    expected: Dict[str, Dict[int, Tuple[int, int, int]]] = {}
+    for raw_row in registration_rows:
+        if type(raw_row) is not dict:
+            raise ValueError("resolver: pose registration row is not an exact dict (fail-closed)")
+        facility_type = raw_row.get("facility_type")
+        if type(facility_type) is not str or not facility_type or facility_type in expected:
+            raise ValueError("resolver: pose registration has an invalid facility type (fail-closed)")
+        raw_poses = raw_row.get("index_to_pose", raw_row.get("poses"))
+        if type(raw_poses) is not list:
+            raise ValueError("resolver: pose registration lacks exact pose rows (fail-closed)")
+        pose_tuples: Dict[int, Tuple[int, int, int]] = {}
+        for raw_pose in raw_poses:
+            if type(raw_pose) is not dict:
+                raise ValueError("resolver: pose registration contains a non-dict pose row (fail-closed)")
+            pose_index = raw_pose.get("pose_index")
+            raw_pose_tuple = raw_pose.get("pose_tuple")
+            if raw_pose_tuple is None:
+                raw_anchor = raw_pose.get("anchor")
+                mode_id = raw_pose.get("mode_id")
+                if type(raw_anchor) is not list or len(raw_anchor) != 2 or type(mode_id) is not int:
+                    raise ValueError("resolver: pose registration row is incomplete (fail-closed)")
+                raw_pose_tuple = [raw_anchor[0], raw_anchor[1], mode_id]
+            if (
+                type(pose_index) is not int
+                or type(raw_pose_tuple) is not list
+                or len(raw_pose_tuple) != 3
+                or not all(type(value) is int for value in raw_pose_tuple)
+                or pose_index in pose_tuples
+            ):
+                raise ValueError("resolver: pose registration tuple is invalid (fail-closed)")
+            pose_tuples[pose_index] = (
+                raw_pose_tuple[0],
+                raw_pose_tuple[1],
+                raw_pose_tuple[2],
+            )
+        expected[facility_type] = pose_tuples
+    return expected
+
+
+def _validate_live_template_pose_cache(
+    delegate: Any,
+    registration_rows: List[object],
+    lowered_facility_types: Sequence[str],
+) -> None:
+    """Bind lowerer pose tuples to the pool registration rows in the digest."""
+
+    raw_cache = delegate._template_pose_tuple_by_idx
+    if type(raw_cache) is not dict:
+        raise ValueError("resolver: template pose tuple cache is not an exact dict (fail-closed)")
+    if any(type(facility_type) is not str or not facility_type for facility_type in raw_cache):
+        raise ValueError("resolver: template pose tuple cache has an invalid facility key (fail-closed)")
+    expected = _registered_pose_tuples_by_template(registration_rows)
+    for facility_type in lowered_facility_types:
+        raw_pose_tuples = raw_cache.get(facility_type)
+        if type(raw_pose_tuples) is not dict:
+            raise ValueError("resolver: template pose tuple cache has a non-exact template map (fail-closed)")
+        checked_pose_tuples: Dict[int, Tuple[int, int, int]] = {}
+        for raw_pose_index, raw_pose_tuple in raw_pose_tuples.items():
+            if (
+                type(raw_pose_index) is not int
+                or type(raw_pose_tuple) is not tuple
+                or len(raw_pose_tuple) != 3
+                or not all(type(value) is int for value in raw_pose_tuple)
+            ):
+                raise ValueError("resolver: template pose tuple cache has an invalid entry (fail-closed)")
+            checked_pose_tuples[raw_pose_index] = raw_pose_tuple
+        if checked_pose_tuples != expected.get(facility_type):
+            raise ValueError("resolver: template pose tuple cache drifted from pool registration (fail-closed)")
+
+
+def _validate_materialized_pose_id_cache(
+    delegate: Any,
+    live_pools: Any,
+    lowered_facility_types: Sequence[str],
+) -> None:
+    """Validate F7's lazy pose-id cache only after the lowerer materialized it."""
+
+    raw_cache = delegate._pose_idx_by_pose_id_cache
+    if type(raw_cache) is not dict:
+        raise ValueError("resolver: pose-id cache is not an exact dict (fail-closed)")
+    if any(type(facility_type) is not str or not facility_type for facility_type in raw_cache):
+        raise ValueError("resolver: pose-id cache has an invalid facility key (fail-closed)")
+    for facility_type in lowered_facility_types:
+        if facility_type not in raw_cache:
+            continue
+        expected_mapping: Dict[str, int] = {}
+        poisoned = False
+        for pose_index, pose in enumerate(live_pools.get(facility_type, [])):
+            if not isinstance(pose, Mapping):
+                poisoned = True
+                break
+            pose_id = str(pose.get("pose_id", ""))
+            if not pose_id:
+                continue
+            if pose_id in expected_mapping:
+                poisoned = True
+                break
+            expected_mapping[pose_id] = pose_index
+        expected: Optional[Dict[str, int]] = None if poisoned else expected_mapping
+        actual = raw_cache[facility_type]
+        if actual is None:
+            checked_actual: Optional[Dict[str, int]] = None
+        else:
+            if type(actual) is not dict:
+                raise ValueError("resolver: materialized pose-id cache has an invalid value (fail-closed)")
+            checked_actual = {}
+            for raw_pose_id, raw_pose_index in actual.items():
+                if type(raw_pose_id) is not str or not raw_pose_id or type(raw_pose_index) is not int:
+                    raise ValueError("resolver: materialized pose-id cache has an invalid entry (fail-closed)")
+                checked_actual[raw_pose_id] = raw_pose_index
+        if checked_actual != expected:
+            raise ValueError("resolver: materialized pose-id cache drifted from its pool (fail-closed)")
+
+
 def _live_master_domain_projection(master: Any, family: str) -> str:
     """Independently recompute one family's MasterDomainProjectionV1 from the
     LIVE master (RFC-001 §2.6).
@@ -1396,6 +1554,7 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
     mandatory_slots = delegate.mandatory_slots
     templates = master.templates
     live_pools = master.facility_pools
+    _validate_live_mandatory_group_cache(master, mandatory_slots)
 
     relevant_group_ids: List[str] = []
     for group_id, slots in mandatory_slots.items():
@@ -1448,6 +1607,17 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
         bidirectional=is_power,
         master_scalar_coercions=is_power,
     )
+    _validate_live_template_pose_cache(
+        delegate,
+        registration_rows,
+        powered_facility_types,
+    )
+    if is_power:
+        _validate_materialized_pose_id_cache(
+            delegate,
+            live_pools,
+            powered_facility_types,
+        )
 
     mandatory_slot_rows: List[object] = []
     for group_id in relevant_group_ids:
@@ -1522,7 +1692,11 @@ def _resolve_model_scope_binding(model_scope: Any, snapshot: Any, master: Any) -
     else:
         raise ValueError(f"resolver: unknown ghost policy {ghost_policy!r} (fail-closed)")
 
-    master_domain_projection = _resolve_live_master_domain_projection(model_scope, snapshot, master)
+    master_domain_family, master_domain_projection = _resolve_live_master_domain_projection(
+        model_scope,
+        snapshot,
+        master,
+    )
 
     return _build_model_scope_binding(
         rect_idx=rect_idx,
@@ -1530,19 +1704,26 @@ def _resolve_model_scope_binding(model_scope: Any, snapshot: Any, master: Any) -
         condition_lits=condition_lits,
         blocked_cells=blocked_cells,
         snapshot_digest=snapshot_digest,
+        master_domain_family=master_domain_family,
         master_domain_projection=master_domain_projection,
+        master_ref=weakref.ref(master),
     )
 
 
-def _resolve_live_master_domain_projection(model_scope: Any, snapshot: Any, master: Any) -> str:
+def _resolve_live_master_domain_projection(
+    model_scope: Any,
+    snapshot: Any,
+    master: Any,
+) -> Tuple[str, str]:
     """Pick the family from the trusted snapshot, then recompute it live.
 
     The resolver signature carries only the ``ModelScope`` (no family tag), so
     the family is recovered by matching the plan's ``domain_fingerprint``
     against the snapshot's three cached per-family projections — a trusted
-    side.  The returned projection is recomputed from the LIVE master, so a
-    tampered master fails the step-8 fingerprint equality even though the
-    family classification used the intact snapshot.
+    side.  The recovered family and projection are returned together; the
+    projection is recomputed from the LIVE master, so a tampered master fails
+    the step-8 fingerprint equality even though classification used the intact
+    snapshot.
     """
 
     fingerprint = model_scope.domain_fingerprint
@@ -1554,7 +1735,7 @@ def _resolve_live_master_domain_projection(model_scope: Any, snapshot: Any, mast
         family = "power_hitting_set"
     else:
         raise ValueError("resolver: plan domain fingerprint matches no snapshot family projection (fail-closed)")
-    return _live_master_domain_projection(master, family)
+    return family, _live_master_domain_projection(master, family)
 
 
 def step_8_apply_to_master(
@@ -1570,9 +1751,11 @@ def step_8_apply_to_master(
     resolver (``_resolve_model_scope_binding``); a raw ``Cut``, a
     ``ShadowValidated`` (F5), or any non-typed object is refused by the type
     gate BEFORE the master is touched.  It then runs the §2.6 three-fold binding
-    check (ghost identity / live domain projection / snapshot digest) — each
-    fail-closed with zero master mutation — and dispatches the actual lowering
-    through the typed plan interpreter (``typed_apply.apply_compiled_cut``).
+    check (ghost identity / cached domain projection / snapshot digest), binds
+    the exact master and ghost-literal identities, and recomputes the live domain
+    projection immediately before dispatch.  Every rejection is fail-closed
+    with zero master mutation; actual lowering runs only through the typed plan
+    interpreter (``typed_apply.apply_compiled_cut``).
 
     F5 ``pattern_nogood`` has no ``operation`` and never produces a
     ``CompiledCut``, so it structurally cannot reach the master here (RFC-001
@@ -1597,6 +1780,37 @@ def step_8_apply_to_master(
         raise ValueError("step_8: live master domain projection drifted from the plan fingerprint (fail-closed)")
     if compiled_cut.snapshot_digest != scope_binding.snapshot_digest:
         raise ValueError("step_8: snapshot digest mismatch between compiled cut and resolved binding (fail-closed)")
+
+    if compiled_cut.plan.family != scope_binding.master_domain_family:
+        raise ValueError("step_8: compiled family differs from the resolved master-domain family (fail-closed)")
+    if master is None:
+        raise ValueError("step_8: master must not be None (fail-closed)")
+    bound_master = scope_binding.master_ref()
+    if bound_master is None:
+        raise ValueError("step_8: scope binding master reference has expired (fail-closed)")
+    if bound_master is not master:
+        raise ValueError("step_8: scope binding belongs to a different master (fail-closed)")
+    live_master: Any = master
+
+    if scope.ghost_policy == "bound":
+        bound_digest = scope.ghost_rect_digest
+        if scope_binding.rect_idx is None or len(scope_binding.condition_lits) != 1 or bound_digest is None:
+            raise ValueError("step_8: bound ghost scope lacks one resolved ghost literal (fail-closed)")
+        if scope_binding.rect_idx != _locate_master_ghost_rect(live_master, bound_digest):
+            raise ValueError("step_8: resolved rect index no longer matches the live ghost rect location (fail-closed)")
+        try:
+            live_u_var = live_master.u_vars[scope_binding.rect_idx]
+        except (AttributeError, KeyError, IndexError, TypeError) as exc:
+            raise ValueError("step_8: resolved ghost literal index is no longer live (fail-closed)") from exc
+        if live_u_var is not scope_binding.condition_lits[0]:
+            raise ValueError("step_8: resolved ghost literal identity drifted after binding (fail-closed)")
+
+    fresh_master_domain_projection = _live_master_domain_projection(
+        live_master,
+        scope_binding.master_domain_family,
+    )
+    if fresh_master_domain_projection != scope_binding.master_domain_projection:
+        raise ValueError("step_8: live master domain changed after scope binding (fail-closed)")
 
     _typed_apply.apply_compiled_cut(compiled_cut, master, scope_binding=scope_binding)
 

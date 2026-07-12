@@ -16,8 +16,9 @@ import hashlib
 import inspect
 import json
 import math
+import weakref
 from collections.abc import Mapping, Sequence, Set
-from dataclasses import dataclass, fields, is_dataclass
+from dataclasses import dataclass, field, fields, is_dataclass
 from enum import Enum
 from types import MappingProxyType
 from typing import Callable, Final, Literal, Protocol, TypeAlias, cast
@@ -704,7 +705,9 @@ class ModelScopeBinding:
     condition_lits: tuple[object, ...]
     blocked_cells: frozenset[tuple[int, int]] | None
     snapshot_digest: str
+    master_domain_family: str
     master_domain_projection: str
+    master_ref: weakref.ReferenceType[object] = field(repr=False, compare=False)
 
     def __init__(
         self,
@@ -714,7 +717,9 @@ class ModelScopeBinding:
         condition_lits: tuple[object, ...],
         blocked_cells: frozenset[tuple[int, int]] | None,
         snapshot_digest: str,
+        master_domain_family: str,
         master_domain_projection: str,
+        master_ref: weakref.ReferenceType[object],
         _construction_token: object,
     ) -> None:
         if _construction_token is not _MODEL_SCOPE_BINDING_CONSTRUCTION_TOKEN:
@@ -727,6 +732,14 @@ class ModelScopeBinding:
             raise TypeError("ModelScopeBinding.condition_lits must be tuple")
         if blocked_cells is not None and type(blocked_cells) is not frozenset:
             raise TypeError("ModelScopeBinding.blocked_cells must be frozenset or None")
+        if type(master_domain_family) is not str or master_domain_family not in {
+            "power_hitting_set",
+            "region_capacity",
+            "shape_packing_hall",
+        }:
+            raise ValueError("ModelScopeBinding.master_domain_family is outside the compiled family set")
+        if type(master_ref) is not weakref.ReferenceType:
+            raise TypeError("ModelScopeBinding.master_ref must be an exact weak reference")
         object.__setattr__(self, "rect_idx", rect_idx)
         object.__setattr__(self, "ghost_rect_digest", ghost_rect_digest)
         object.__setattr__(self, "condition_lits", condition_lits)
@@ -736,6 +749,7 @@ class ModelScopeBinding:
             "snapshot_digest",
             _require_sha256(snapshot_digest, field_name="ModelScopeBinding.snapshot_digest"),
         )
+        object.__setattr__(self, "master_domain_family", master_domain_family)
         object.__setattr__(
             self,
             "master_domain_projection",
@@ -744,6 +758,7 @@ class ModelScopeBinding:
                 field_name="ModelScopeBinding.master_domain_projection",
             ),
         )
+        object.__setattr__(self, "master_ref", master_ref)
 
 
 def _build_model_scope_binding(
@@ -753,7 +768,9 @@ def _build_model_scope_binding(
     condition_lits: tuple[object, ...],
     blocked_cells: frozenset[tuple[int, int]] | None,
     snapshot_digest: str,
+    master_domain_family: str,
     master_domain_projection: str,
+    master_ref: weakref.ReferenceType[object],
 ) -> ModelScopeBinding:
     """Sole private factory for :class:`ModelScopeBinding` (RFC-001 §2.6).
 
@@ -770,7 +787,9 @@ def _build_model_scope_binding(
         condition_lits=condition_lits,
         blocked_cells=blocked_cells,
         snapshot_digest=snapshot_digest,
+        master_domain_family=master_domain_family,
         master_domain_projection=master_domain_projection,
+        master_ref=master_ref,
         _construction_token=_MODEL_SCOPE_BINDING_CONSTRUCTION_TOKEN,
     )
 
@@ -2021,11 +2040,7 @@ def validate_and_compile_cut(
         # before returning upgrades its shadow tag; plugins without that
         # obligation keep the common-mode-untrusted default (RFC-002 batch D).
         declared_tag = getattr(plugin, "shadow_telemetry_tag", _COMMON_MODE_UNTRUSTED)
-        telemetry_tag = (
-            declared_tag
-            if type(declared_tag) is str and declared_tag
-            else _COMMON_MODE_UNTRUSTED
-        )
+        telemetry_tag = declared_tag if type(declared_tag) is str and declared_tag else _COMMON_MODE_UNTRUSTED
         return ShadowValidated(
             cut_id=envelope.cut_id,
             proof_digest=envelope.proof_hash,

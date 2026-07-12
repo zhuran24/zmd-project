@@ -1969,7 +1969,7 @@ def test_step_8_rejects_domain_projection_misbinding_without_master_mutation(
         MasterPlacementModel,
     )
     scope_a = compiled_a.plan.model_scope
-    master.facility_pools["boundary_storage_port"][0]["occupied_cells"] = [[69, 69]]
+    master.facility_pools["boundary_storage_port"][0]["alpha_projection_drift"] = True
     binding = _resolve_model_scope_binding(scope_a, snapshot_a, master)
 
     assert scope_a.ghost_rect_digest == binding.ghost_rect_digest

@@ -11,7 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from collections.abc import Mapping, Sequence, Set
+from collections.abc import Mapping
 from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Any, Final, TypeAlias, cast
@@ -278,19 +278,23 @@ def _require_artifact_identity(value: object, *, path: str) -> str:
 
 
 def _require_cell(value: object, *, path: str) -> Cell:
-    if not isinstance(value, (list, tuple)) or len(value) != 2:
+    if type(value) is not tuple:
+        raise SnapshotValidationError(f"{path} must be an exact two-coordinate tuple")
+    checked = cast(tuple[object, ...], value)
+    if len(checked) != 2:
         raise SnapshotValidationError(f"{path} must be a two-coordinate cell")
-    x_raw, y_raw = value
+    x_raw, y_raw = checked
     if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
         raise SnapshotValidationError(f"{path} coordinates must be strict integers")
     return (cast(int, x_raw), cast(int, y_raw))
 
 
 def _freeze_cell_set(value: object, *, path: str) -> frozenset[Cell]:
-    if not isinstance(value, Set) or isinstance(value, (str, bytes)):
-        raise SnapshotValidationError(f"{path} must be a set of cells")
+    if type(value) is not frozenset:
+        raise SnapshotValidationError(f"{path} must be an exact frozenset of cells")
+    checked = cast(frozenset[object], value)
     cells: set[Cell] = set()
-    for index, raw_cell in enumerate(value):
+    for index, raw_cell in enumerate(checked):
         cell = _require_cell(raw_cell, path=f"{path}[{index}]")
         if cell in cells:
             raise SnapshotValidationError(f"{path} contains duplicate cell {cell!r}")
@@ -299,12 +303,13 @@ def _freeze_cell_set(value: object, *, path: str) -> frozenset[Cell]:
 
 
 def _freeze_cell_sequence(value: object, *, path: str) -> frozenset[Cell]:
-    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
-        raise SnapshotValidationError(f"{path} must be a sequence of cells")
-    if not value:
+    if type(value) is not tuple:
+        raise SnapshotValidationError(f"{path} must be an exact frozen tuple of cells")
+    checked = cast(tuple[object, ...], value)
+    if not checked:
         raise SnapshotValidationError(f"{path} must not be empty")
     cells: set[Cell] = set()
-    for index, raw_cell in enumerate(value):
+    for index, raw_cell in enumerate(checked):
         cell = _require_cell(raw_cell, path=f"{path}[{index}]")
         if cell in cells:
             raise SnapshotValidationError(f"{path} contains duplicate cell {cell!r}")
@@ -315,9 +320,9 @@ def _freeze_cell_sequence(value: object, *, path: str) -> frozenset[Cell]:
 def _freeze_ghost(raw: object) -> GhostRect | None:
     if raw is None:
         return None
-    if not isinstance(raw, (list, tuple)):
-        raise SnapshotValidationError("state.ghost_rect must be a four-integer tuple or None")
-    raw_tuple = tuple(raw)
+    if type(raw) is not tuple:
+        raise SnapshotValidationError("state.ghost_rect must be an exact four-integer tuple or None")
+    raw_tuple = cast(tuple[object, ...], raw)
     if len(raw_tuple) != 4:
         raise SnapshotValidationError("state.ghost_rect must be a four-integer tuple or None")
     if not all(_is_strict_int(value) for value in raw_tuple):
@@ -335,10 +340,11 @@ def _freeze_ghost(raw: object) -> GhostRect | None:
 
 
 def _freeze_groups(value: object) -> Mapping[str, GroupSnapshot]:
-    if not isinstance(value, Mapping):
-        raise SnapshotValidationError("state.groups must be a mapping")
+    if type(value) is not dict:
+        raise SnapshotValidationError("state.groups must be an exact dict")
+    checked_groups = cast(dict[object, object], value)
     frozen: dict[str, GroupSnapshot] = {}
-    for raw_key, group in value.items():
+    for raw_key, group in checked_groups.items():
         group_key = _require_non_empty_str(raw_key, path="state.groups key")
         if group_key in frozen:
             raise SnapshotValidationError(f"state.groups contains duplicate key {group_key!r}")
@@ -357,11 +363,8 @@ def _freeze_groups(value: object) -> Mapping[str, GroupSnapshot]:
         if not _is_strict_int(raw_demand) or raw_demand < 0:
             raise SnapshotValidationError(f"state.groups[{group_key!r}].demand must be a non-negative strict int")
         demand = raw_demand
-        if not isinstance(raw_pose_domain, Set) or isinstance(
-            raw_pose_domain,
-            (str, bytes),
-        ):
-            raise SnapshotValidationError(f"state.groups[{group_key!r}].pose_domain must be a set")
+        if type(raw_pose_domain) is not frozenset:
+            raise SnapshotValidationError(f"state.groups[{group_key!r}].pose_domain must be an exact frozenset")
         pose_domain = frozenset(
             _require_non_empty_str(
                 pose_id,
@@ -369,11 +372,8 @@ def _freeze_groups(value: object) -> Mapping[str, GroupSnapshot]:
             )
             for pose_id in raw_pose_domain
         )
-        if not isinstance(raw_selected_poses, Sequence) or isinstance(
-            raw_selected_poses,
-            (str, bytes),
-        ):
-            raise SnapshotValidationError(f"state.groups[{group_key!r}].selected_poses must be a sequence")
+        if type(raw_selected_poses) is not list:
+            raise SnapshotValidationError(f"state.groups[{group_key!r}].selected_poses must be an exact list")
         selected_poses = tuple(
             _require_non_empty_str(
                 pose_id,
@@ -403,39 +403,59 @@ def _freeze_cell_owner(
     *,
     groups: Mapping[str, GroupSnapshot],
 ) -> Mapping[Cell, tuple[str, int]]:
-    if not isinstance(value, Mapping):
-        raise SnapshotValidationError("state.cell_owner must be a mapping")
+    if type(value) is not dict:
+        raise SnapshotValidationError("state.cell_owner must be an exact dict")
+    checked_owners = cast(dict[object, object], value)
     frozen: dict[Cell, tuple[str, int]] = {}
-    for raw_cell, raw_owner in value.items():
+    for raw_cell, raw_owner in checked_owners.items():
         cell = _require_cell(raw_cell, path="state.cell_owner key")
-        if not isinstance(raw_owner, (list, tuple)) or len(raw_owner) != 2:
+        if type(raw_owner) is not tuple:
+            raise SnapshotValidationError(f"state.cell_owner[{cell!r}] must be an exact (group_id, slot_index) tuple")
+        checked_owner = cast(tuple[object, ...], raw_owner)
+        if len(checked_owner) != 2:
             raise SnapshotValidationError(f"state.cell_owner[{cell!r}] must be (group_id, slot_index)")
         group_id = _require_non_empty_str(
-            raw_owner[0],
+            checked_owner[0],
             path=f"state.cell_owner[{cell!r}].group_id",
         )
-        slot_index = raw_owner[1]
+        slot_index = checked_owner[1]
         if group_id not in groups:
             raise SnapshotValidationError(f"state.cell_owner[{cell!r}] refers to unknown group {group_id!r}")
-        if not _is_strict_int(slot_index) or not 0 <= slot_index < groups[group_id].demand:
+        if not _is_strict_int(slot_index):
             raise SnapshotValidationError(f"state.cell_owner[{cell!r}].slot_index is outside group demand")
-        frozen[cell] = (group_id, cast(int, slot_index))
+        checked_slot_index = cast(int, slot_index)
+        if not 0 <= checked_slot_index < groups[group_id].demand:
+            raise SnapshotValidationError(f"state.cell_owner[{cell!r}].slot_index is outside group demand")
+        frozen[cell] = (group_id, checked_slot_index)
     return MappingProxyType(frozen)
 
 
 def _freeze_artifact_hashes(
     state_hashes: object,
-    bundle_hashes: Mapping[str, str],
 ) -> Mapping[str, str]:
-    if not isinstance(state_hashes, Mapping):
-        raise SnapshotValidationError("state.artifact_hashes must be a mapping")
+    """Freeze the raw BState artifact map before any behavioral method runs."""
+
+    if type(state_hashes) is not dict:
+        raise SnapshotValidationError("state.artifact_hashes must be an exact dict")
+    checked_hashes = cast(dict[object, object], state_hashes)
     frozen: dict[str, str] = {}
-    for raw_name, raw_digest in state_hashes.items():
+    for raw_name, raw_digest in checked_hashes.items():
         name = _require_non_empty_str(raw_name, path="state.artifact_hashes key")
         frozen[name] = _require_artifact_identity(
             raw_digest,
             path=f"state.artifact_hashes[{name!r}]",
         )
+    return MappingProxyType(frozen)
+
+
+def _bind_frozen_artifact_hashes(
+    state_hashes: Mapping[str, str],
+    bundle_hashes: Mapping[str, str],
+) -> Mapping[str, str]:
+    """Validate two already-frozen maps without reopening the raw boundary."""
+
+    if type(state_hashes) is not MappingProxyType or type(bundle_hashes) is not MappingProxyType:
+        raise SnapshotValidationError("artifact hash binding requires exact frozen mappings")
     checked_bundle_hashes: dict[str, str] = {}
     for raw_name, raw_digest in bundle_hashes.items():
         name = _require_non_empty_str(raw_name, path="bundle.artifact_hashes key")
@@ -444,25 +464,26 @@ def _freeze_artifact_hashes(
             path=f"bundle.artifact_hashes[{name!r}]",
         )
     mismatched_bundle_hashes = sorted(
-        name for name, digest in checked_bundle_hashes.items() if frozen.get(name) != digest
+        name for name, digest in checked_bundle_hashes.items() if state_hashes.get(name) != digest
     )
     if mismatched_bundle_hashes:
         raise SnapshotValidationError(
             "bundle.artifact_hashes must be an identical subset of "
             f"state.artifact_hashes; mismatched={mismatched_bundle_hashes!r}"
         )
-    return MappingProxyType(frozen)
+    return state_hashes
 
 
 def _freeze_oracle_capabilities(value: object) -> frozenset[str]:
-    if not isinstance(value, Set) or isinstance(value, (str, bytes)):
-        raise SnapshotValidationError("state.available_oracle_versions must be a set")
+    if type(value) is not frozenset:
+        raise SnapshotValidationError("state.available_oracle_versions must be an exact frozenset")
+    checked = cast(frozenset[object], value)
     return frozenset(
         _require_non_empty_str(
             capability,
             path="state.available_oracle_versions item",
         )
-        for capability in value
+        for capability in checked
     )
 
 
@@ -579,7 +600,7 @@ def _capture_state(state: BState) -> _CapturedState:
 
     groups = _freeze_groups(raw_groups)
     return _CapturedState(
-        artifact_hashes=_freeze_artifact_hashes(raw_artifact_hashes, MappingProxyType({})),
+        artifact_hashes=_freeze_artifact_hashes(raw_artifact_hashes),
         ghost=_freeze_ghost(raw_ghost_rect),
         ghost_cells=_freeze_cell_set(raw_ghost_cells, path="state.ghost_cells"),
         exterior_blocks=_freeze_cell_set(raw_exterior_blocks, path="state.exterior_blocks"),
@@ -646,6 +667,71 @@ def _compute_captured_source_digest(captured: _CapturedState) -> str:
         ),
     )
     return compute_source_digest(source_state)
+
+
+def _normalize_frozen_source_node(
+    value: FrozenValue,
+    *,
+    path: tuple[str, ...],
+) -> FrozenValue:
+    """Apply the state-side runtime-cache policy to a frozen bundle view."""
+
+    if isinstance(value, Mapping):
+        runtime_cache_keys = SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH.get(path, frozenset())
+        return MappingProxyType(
+            {
+                key: _normalize_frozen_source_node(item, path=(*path, key))
+                for key, item in value.items()
+                if key not in runtime_cache_keys
+            }
+        )
+    if isinstance(value, tuple):
+        return tuple(
+            _normalize_frozen_source_node(item, path=(*path, f"[{index}]")) for index, item in enumerate(value)
+        )
+    return value
+
+
+def _validate_static_source_binding(
+    captured: _CapturedState,
+    bundle: FrozenArtifactBundle,
+) -> None:
+    """Bind the state-side capture to the bundle's frozen static world."""
+
+    mismatched = [
+        field_name
+        for field_name, state_value, raw_bundle_value, source_path in (
+            (
+                "candidate_placements",
+                captured.candidate_placements,
+                bundle.candidate_placements,
+                ("candidate_placements",),
+            ),
+            (
+                "facility_templates",
+                captured.facility_templates,
+                bundle.facility_templates,
+                ("facility_templates",),
+            ),
+            (
+                "instance_to_facility_type",
+                captured.instance_to_facility_type,
+                bundle.instance_to_facility_type,
+                ("mandatory_exact_instances",),
+            ),
+            (
+                "canonical_rules",
+                captured.canonical_rules,
+                bundle.canonical_rules,
+                ("canonical_rules",),
+            ),
+        )
+        if state_value != _normalize_frozen_source_node(raw_bundle_value, path=source_path)
+    ]
+    if mismatched:
+        raise SnapshotValidationError(
+            f"state static sources must equal the frozen artifact bundle; mismatched={mismatched!r}"
+        )
 
 
 def _require_mapping(value: object, *, path: str) -> Mapping[str, FrozenValue]:
@@ -1551,6 +1637,7 @@ def build_validated_state_snapshot(
             raise SnapshotValidationError("bundle must be FrozenArtifactBundle")
 
         captured = _capture_state(state)
+        _validate_static_source_binding(captured, bundle)
 
         # ``BState.source_digest`` is only a caller-side note/cache.  Derive the
         # authoritative identity from the validated frozen capture so None, a
@@ -1564,7 +1651,7 @@ def build_validated_state_snapshot(
             path="computed state source digest",
         )
         _require_sha256(bundle.digest, path="bundle.digest")
-        artifact_hashes = _freeze_artifact_hashes(
+        artifact_hashes = _bind_frozen_artifact_hashes(
             captured.artifact_hashes,
             bundle.artifact_hashes,
         )

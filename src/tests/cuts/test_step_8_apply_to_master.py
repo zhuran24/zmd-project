@@ -183,13 +183,13 @@ def test_step_8_f1_ghost_bound_requires_condition_lits() -> None:
 def test_step_8_f1_unknown_group_raises_fail_closed() -> None:
     """A live master-domain drift fails the §2.6 three-fold check w/o mutation.
 
-    Mutating the master's occupied cells after compile makes the resolver's
-    recomputed live domain projection diverge from the plan fingerprint; step_8
-    fails closed at the master boundary before any lowering (the typed analogue
-    of the master refusing an inconsistent cut).
+    Adding a live pool metadata field after compile makes the resolver's
+    recomputed domain projection diverge from the plan fingerprint; step_8 fails
+    closed at the master boundary before any lowering (the typed analogue of the
+    master refusing an inconsistent cut).
     """
     master, snapshot, compiled = _f1_world()
-    master.facility_pools["boundary_storage_port"][0]["occupied_cells"] = [[69, 69]]
+    master.facility_pools["boundary_storage_port"][0]["alpha_projection_drift"] = True
     binding = _resolve_model_scope_binding(compiled.plan.model_scope, snapshot, master)
     with pytest.raises(ValueError, match="domain projection drifted"):
         step_8_apply_to_master(compiled, master, scope_binding=binding)

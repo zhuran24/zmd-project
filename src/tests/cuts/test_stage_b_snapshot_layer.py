@@ -69,12 +69,18 @@ class _CustomList(list[Any]):
 
 
 class _RuntimeErrorMapping(dict[Any, Any]):
+    items_calls = 0
+
     def items(self) -> Any:
+        self.items_calls += 1
         raise RuntimeError("hostile mapping iteration")
 
 
 class _RuntimeErrorSet(set[Any]):
+    iteration_calls = 0
+
     def __iter__(self) -> Any:
+        self.iteration_calls += 1
         raise RuntimeError("hostile set iteration")
 
 
@@ -801,34 +807,15 @@ def test_snapshot_recomputes_source_digest_instead_of_trusting_optional_note() -
     assert without_note.digest == with_stale_note.digest
 
 
-def test_snapshot_side_effect_iteration_either_fails_closed_or_stays_self_consistent() -> None:
+def test_snapshot_rejects_side_effecting_group_mapping_before_iteration() -> None:
     state, bundle, _snapshot = _build_world()
     hostile_groups = _FlipGroupOnSecondItems(state.groups)
     state.groups = hostile_groups
 
-    try:
-        snapshot = build_validated_state_snapshot(state, bundle)
-    except SnapshotValidationError:
-        assert hostile_groups.items_calls >= 1
-        return
+    with pytest.raises(SnapshotValidationError, match="exact dict"):
+        build_validated_state_snapshot(state, bundle)
 
-    assert hostile_groups.items_calls >= 1
-    state.groups = {
-        group_id: GroupState(
-            group_id=group.group_id,
-            demand=group.demand,
-            pose_domain=group.pose_domain,
-            selected_poses=list(group.selected_poses),
-        )
-        for group_id, group in snapshot.groups.items()
-    }
-    assert snapshot.source_digest == compute_source_digest(state)
-    f1 = snapshot.family_inputs["region_capacity"]
-    f6 = snapshot.family_inputs["shape_packing_hall"]
-    assert isinstance(f1, F1RegionInputs)
-    assert isinstance(f6, F6HallInputs)
-    assert f1.group_demands == {group_id: group.demand for group_id, group in snapshot.groups.items()}
-    assert f6.group_demands == f1.group_demands
+    assert hostile_groups.items_calls == 0
 
 
 def test_snapshot_allows_derived_artifact_hashes_but_rejects_overlap_mismatch() -> None:
@@ -861,17 +848,24 @@ def test_snapshot_preserves_missing_optional_artifact_identity() -> None:
 
 
 @pytest.mark.parametrize("attack", ["mapping", "set"])
-def test_snapshot_wraps_hostile_container_runtime_errors(attack: str) -> None:
+def test_snapshot_rejects_hostile_containers_before_behavior_runs(attack: str) -> None:
     state, bundle, _snapshot = _build_world()
+    hostile: Any
     if attack == "mapping":
-        state.cell_owner = _RuntimeErrorMapping(state.cell_owner)
+        hostile = _RuntimeErrorMapping(state.cell_owner)
+        state.cell_owner = hostile
     else:
-        state.ghost_cells = _RuntimeErrorSet(state.ghost_cells)  # type: ignore[assignment]
+        hostile = _RuntimeErrorSet(state.ghost_cells)
+        state.ghost_cells = hostile  # type: ignore[assignment]
 
     with pytest.raises(SnapshotValidationError) as exc_info:
         build_validated_state_snapshot(state, bundle)
 
-    assert isinstance(exc_info.value.__cause__, RuntimeError)
+    assert exc_info.value.__cause__ is None
+    if attack == "mapping":
+        assert hostile.items_calls == 0
+    else:
+        assert hostile.iteration_calls == 0
 
 
 def _corrupt_artifact_binding(state: BState) -> None:

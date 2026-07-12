@@ -23,6 +23,11 @@ FrozenValue: TypeAlias = (
 )
 
 _BUNDLE_DIGEST_PREFIX = b"zmd.frozen-artifacts.v1:"
+_MAX_FREEZE_NESTING = 128
+
+
+class ArtifactValidationError(ValueError):
+    """Raised when an artifact graph cannot be frozen safely."""
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -54,18 +59,31 @@ class FrozenArtifactBundle:
         # each node is visited exactly once (validate-then-freeze in two passes
         # leaves a TOCTOU window on mutable inputs; B4 dual-review codex#0).
         raw_artifact_hashes: object = {} if artifact_hashes is None else artifact_hashes
-        frozen_canonical_rules = _freeze_top_level_mapping(canonical_rules, field_name="canonical_rules")
+        memo: dict[int, FrozenValue] = {}
+        active: set[int] = set()
+        frozen_canonical_rules = _freeze_top_level_mapping(
+            canonical_rules,
+            field_name="canonical_rules",
+            memo=memo,
+            active=active,
+        )
         frozen_candidate_placements = _freeze_top_level_mapping(
             candidate_placements,
             field_name="candidate_placements",
+            memo=memo,
+            active=active,
         )
         frozen_facility_templates = _freeze_top_level_mapping(
             facility_templates,
             field_name="facility_templates",
+            memo=memo,
+            active=active,
         )
         frozen_instance_mapping = _freeze_top_level_mapping(
             instance_to_facility_type,
             field_name="instance_to_facility_type",
+            memo=memo,
+            active=active,
         )
         frozen_hashes = _freeze_artifact_hashes(raw_artifact_hashes)
         digest = _bundle_digest(
@@ -83,7 +101,14 @@ class FrozenArtifactBundle:
         object.__setattr__(self, "digest", digest)
 
 
-def _freeze(value: object, *, path: str) -> FrozenValue:
+def _freeze(
+    value: object,
+    *,
+    path: str,
+    memo: dict[int, FrozenValue],
+    active: set[int],
+    depth: int,
+) -> FrozenValue:
     """Validate one exact JSON-native node and freeze it in the same visit.
 
     Validation and freezing are deliberately a single traversal: each node is
@@ -99,24 +124,68 @@ def _freeze(value: object, *, path: str) -> FrozenValue:
         if not math.isfinite(value):
             raise ValueError(f"{path} contains a non-finite number")
         return value
-    if type(value) is dict:
-        mapping = cast(dict[object, object], value)
-        frozen: dict[str, FrozenValue] = {}
-        for key, item in mapping.items():
-            if type(key) is not str:
-                raise TypeError(f"{path} contains a mapping key that is not an exact str")
-            frozen[key] = _freeze(item, path=f"{path}.{key}")
-        return MappingProxyType(frozen)
-    if type(value) is list:
-        sequence = cast(list[object], value)
-        return tuple(_freeze(item, path=f"{path}[{index}]") for index, item in enumerate(sequence))
+    if type(value) in (dict, list):
+        if depth >= _MAX_FREEZE_NESTING:
+            raise ArtifactValidationError(
+                f"{path} exceeds the artifact nesting limit of {_MAX_FREEZE_NESTING} containers"
+            )
+        node_id = id(value)
+        if node_id in active:
+            raise ArtifactValidationError(f"{path} contains a cyclic artifact reference")
+        if node_id in memo:
+            return memo[node_id]
+
+        active.add(node_id)
+        try:
+            if type(value) is dict:
+                mapping = cast(dict[object, object], value)
+                frozen: dict[str, FrozenValue] = {}
+                for key, item in mapping.items():
+                    if type(key) is not str:
+                        raise TypeError(f"{path} contains a mapping key that is not an exact str")
+                    frozen[key] = _freeze(
+                        item,
+                        path=f"{path}.{key}",
+                        memo=memo,
+                        active=active,
+                        depth=depth + 1,
+                    )
+                result: FrozenValue = MappingProxyType(frozen)
+            else:
+                sequence = cast(list[object], value)
+                result = tuple(
+                    _freeze(
+                        item,
+                        path=f"{path}[{index}]",
+                        memo=memo,
+                        active=active,
+                        depth=depth + 1,
+                    )
+                    for index, item in enumerate(sequence)
+                )
+            memo[node_id] = result
+            return result
+        finally:
+            active.remove(node_id)
     raise TypeError(f"{path} contains value outside the exact JSON-native domain: {type(value).__name__}")
 
 
-def _freeze_top_level_mapping(value: object, *, field_name: str) -> Mapping[str, FrozenValue]:
+def _freeze_top_level_mapping(
+    value: object,
+    *,
+    field_name: str,
+    memo: dict[int, FrozenValue],
+    active: set[int],
+) -> Mapping[str, FrozenValue]:
     if type(value) is not dict:
         raise TypeError(f"{field_name} must be an exact dict")
-    frozen = _freeze(value, path=field_name)
+    frozen = _freeze(
+        value,
+        path=field_name,
+        memo=memo,
+        active=active,
+        depth=0,
+    )
     if not isinstance(frozen, Mapping):  # pragma: no cover - guarded above
         raise AssertionError("top-level artifact freeze did not produce a mapping")
     return frozen
@@ -213,6 +282,7 @@ def build_frozen_artifact_bundle(
 
 
 __all__ = [
+    "ArtifactValidationError",
     "FrozenArtifactBundle",
     "FrozenValue",
     "build_frozen_artifact_bundle",

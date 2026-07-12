@@ -1014,7 +1014,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "43c12409143c34928abad7e6a11818d5759f6abb2dbce56a74ac9941b134c7ec",
+        "source_sha256": "730d1e35e584a8ce5acc5d13582549f0791adcece1793608a18d86141f0fe948",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1136,7 +1136,7 @@
         "required_guard_tokens": [
           "proof-bearing"
         ],
-        "source_sha256": "46982adeae194e43dc46267152be5fada1335379a81e23ef4dc6d62ea46f1eb2",
+        "source_sha256": "8f6c1489fb0a6e32276418b6c1b2dddbe4d2c1c6f208857302adcd9a6125dfda",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1216,7 +1216,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "947b116075fc0bd654a54111045d6891619c3d78b8de2b65c94fc40889c3d942",
+        "source_sha256": "cce881457c63647dbba58750e1c4884351a31987057ac72b9cd0aeecaf44b45b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
