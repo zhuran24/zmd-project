@@ -2,7 +2,7 @@
 id: cut-framework-stage-b-current-20260712
 kind: status
 title: cut framework 当前态(2026-07-12):Stage B B0-B5b+批D+修复批α/α2 全落地;F1/F6/F7=typed lowering 唯一写 master 通路;F5=shadow-only 无 lowering(真 adapter 在 verifier 前 fail-closed);F2/F3/F4/F9=LEGACY_DIAGNOSTIC registry 拒绝;gate 仍 unsafe/default-off 待 B6 owner
-summary: 取代 M3/M4 时期三张旧卡的当前态。Stage B B0-B5b 已全部完成(typed 平台+三族纵切+B5a wiring cut-over+B5b AST lockdown),另加批D(RFC-002 F5 独立 verifier)与修复批 α/α2(pre-promotion 信任根硬化+master 写入面锁定)。F1/F6/F7=COMPILABLE,唯一写 master 通路=typed registry→resolver(ModelScopeBinding 唯一构造)→step_8_apply_to_master→typed_apply(调 master _lower_*);F5 只产 ShadowValidated、无 ConstraintPlan/lowering、结构上改不了 master(B5a 物理删除旧 apply 分支;独立 verifier 已落地但真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed,可达性哨兵钉死);F2/F3/F4/F9=LEGACY_DIAGNOSTIC 在 typed 单入口 registry 边界拒绝(旧「step_8 NotImplementedError fallback」机制已随 B5a 退役——别再按它规划);F8 retired。EXACT_CUT_FRAMEWORK_ATTACH 仍在 certified unsafe-map/default-off。开放项=session-bundle 所有权兑现(promotion 前 BLOCK)、PIC-4/生产层 PIC-5、RFC-003、F5 转正五项清单、B6 owner 手动门(含 α2 新增两项)。机器口径:sinks 67、cuts 833、slow 24 登记→31 实例。
+summary: 取代 M3/M4 时期三张旧卡的当前态。Stage B B0-B5b 已全部完成(typed 平台+三族纵切+B5a wiring cut-over+B5b AST lockdown),另加批D(RFC-002 F5 独立 verifier)、修复批 α/α2(pre-promotion 信任根硬化+master 写入面锁定)、B6 前置工程批(session-bundle session 级所有权+F-05 alias 一跳+sink 注册 owner won't-do)与批E RFC-003(编排层 semantic dedup+严格非消费 JSONL ledger+family 参数开关,owner 批准重生成 waiver)。F1/F6/F7=COMPILABLE,唯一写 master 通路=typed registry→resolver(ModelScopeBinding 唯一构造)→step_8_apply_to_master→typed_apply(调 master _lower_*);F5 只产 ShadowValidated、无 ConstraintPlan/lowering、结构上改不了 master(B5a 物理删除旧 apply 分支;独立 verifier 已落地但真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed,可达性哨兵钉死);F2/F3/F4/F9=LEGACY_DIAGNOSTIC 在 typed 单入口 registry 边界拒绝(旧「step_8 NotImplementedError fallback」机制已随 B5a 退役——别再按它规划);F8 retired。EXACT_CUT_FRAMEWORK_ATTACH 仍在 certified unsafe-map/default-off。开放项=批C(PIC-4+生产层 PIC-5+RFC-003 门6 prod A/B)、B6 owner 手动门、F5 转正批(非 flip 前置)。机器口径:sinks 67、cuts 833(07d04b3 快照)、slow 24 登记→31 实例。
 scope:
   domains:
     - p1-3-master-cut-integration
@@ -22,8 +22,8 @@ scope:
 status: active
 priority: P0
 validity:
-  until: "下一个改变 cut framework 架构态的批次落地(B6 owner promotion / F5 转正批 / session-bundle 所有权批 / RFC-003)之前本卡为当前态"
-  invalidated_by: "B6 owner promotion、F5 转正、session-bundle 所有权兑现或任何改动 typed 链拓扑的批次落地——届时按生命周期规程 supersede 本卡"
+  until: "下一个改变 cut framework 架构态的批次落地(批C 实测结论 / B6 owner promotion / F5 转正批)之前本卡为当前态"
+  invalidated_by: "B6 owner promotion、F5 转正或任何改动 typed 链拓扑的批次落地——届时按生命周期规程 supersede 本卡(07-12 深夜注:session-bundle/RFC-003/B6前置已落地,属开放项收窄,就地订正非 supersede)"
 triggers:
   intents:
     - wire-cut-family
@@ -73,12 +73,12 @@ provenance:
     - "docs/research/cut_framework_review_gpt56pro_20260710/05_batch_alpha_prepromotion_hardening_spec.md(α/α2 执行记录+双审裁决)"
 updated_at: "2026-07-12"
 ---
-**cut framework 当前态(2026-07-12,HEAD `07d04b3`;本卡取代 M3/M4 时期口径)**:
+**cut framework 当前态(2026-07-12,批E 后 HEAD `1c2c1ab`;本卡取代 M3/M4 时期口径)**:
 
-- **已落地**:Stage B **B0-B5b 全部完成**(契约壳→bundle/snapshot→typed 平台→F1/F6/F7 三族纵切→B5a wiring cut-over→B5b AST lockdown)+ **批D**(RFC-002 F5 独立 verifier,Kuhn 匹配,sink 66→67)+ **修复批 α/α2**(pre-promotion 信任根七道 fail-closed 门 + master 写入面锁定收尾)+ **修复批 β**(文档/记忆层同步)。
+- **已落地**:Stage B **B0-B5b 全部完成**(契约壳→bundle/snapshot→typed 平台→F1/F6/F7 三族纵切→B5a wiring cut-over→B5b AST lockdown)+ **批D**(RFC-002 F5 独立 verifier,Kuhn 匹配,sink 66→67)+ **修复批 α/α2**(pre-promotion 信任根七道 fail-closed 门 + master 写入面锁定收尾)+ **修复批 β**(文档/记忆层同步)+ **B6 前置工程批**(`ef5e124`:session-bundle session 级所有权兑现——原 promotion 前 BLOCK 已消解、F-05 alias 一跳 dataflow 追踪、sink 注册 owner 改判 won't-do)+ **批E RFC-003**(`7875902`/`dd1a182`/`c10d317`/`1c2c1ab`:编排层 semantic dedup(applied-only pool,per master build)+严格非消费 JSONL 审计 ledger(`src/cuts/ledger.py`,restart 重取资格=重生成,owner 批准 waiver)+`enabled_cut_families` 参数开关+receipt v1;RFC 门6 保持 OPEN→批C)。
 - **写 master 的唯一通路**(F1/F6/F7,COMPILABLE):typed registry → resolver(`_resolve_model_scope_binding`,`ModelScopeBinding` 唯一构造、AST 钉唯一 caller)→ `step_8_apply_to_master`(七道 α 门:内容绑定/exact-type/cache 一致性/fresh 投影重算/身份重验/master weakref)→ `typed_apply`(三行 operation 表调 master `_lower_*`——add_* 已私有化改名)。
 - **F5 = shadow-only**:只产 `ShadowValidated`,无 `ConstraintPlan`、无 lowering,**结构上改不了 master**(B5a 把旧 apply 分支物理删除,agnostic-F5 语义缝=PIC-2 就此消灭)。独立 verifier 已落地,但**真实 `BindingEmptyDomainAdapter` 因 frozen tuple/list 形态差异在 verifier 前 fail-closed**(`isinstance(pool, list)` 对冻结 tuple 恒 FEASIBLE→前置 reverify 恒拒),verifier 真路径暂不可达、有哨兵测试钉死;`independently-verified` tag 当前仅测试 oracle 链可达,**不是生产背书**。
 - **F2/F3/F4/F9 = LEGACY_DIAGNOSTIC**:在 typed 单入口的 registry execution_path 检查处 fail-closed 拒绝,只保留 replay/诊断(legacy 表 HELD、禁 reactivate)。**旧「step_8 `NotImplementedError` fallback」机制已随 B5a 退役**——别再在那一层加分支/异常处理/测试。F8 retired。
 - **门**:`EXACT_CUT_FRAMEWORK_ATTACH` 仍在 certified unsafe-map、default-off,双入口红测在位。
-- **开放项(到 promotion)**:①session-bundle 所有权兑现(规格拍板 session-once vs 实现 per-attach-round ~15s/2.3GiB,已登记 **promotion 前 BLOCK**,Stage B 规格 §2.1 校准段);②PIC-4 + PIC-5 生产 campaign 层(集成 harness 层已被定向测试覆盖);③RFC-003 ledger+dedup+epoch;④F5 转正五项清单(批D 规格 §5:adapter 修复+真 e2e/tag 动态化/lowering 设计/proof-carrying cert/witness 对接);⑤**B6 owner 手动门**(unsafe map 翻转+红测翻转+lock 授权改写;含 α2 新增两项:frozen_artifacts/state_snapshot 升完整 sink 注册、F-05 alias-dataflow 追踪)。
+- **开放项(到 promotion;07-12 深夜批E 后口径)**:①**批C** = PIC-4 + PIC-5 生产 campaign 层 + RFC-003 门6 prod A/B(集成 harness 层已被定向测试覆盖;宿主 `attach_host_runner.py` 已备;三卡点:组织性触发未验/算力窗口需 owner/生产编排层=守卫层只能 flip 后烧机);②**B6 owner 手动门**(unsafe map 翻转+红测预期翻转+checker 登记+lock 授权改写;α2 两项已闭:sink 注册 owner won't-do、F-05 alias 一跳已落——07 规格「转硬门需完整多跳 alias」字面与之存在张力,promotion 包前需 owner 确认口径);③**F5 转正批**(批D 规格 §5 五项:adapter 修复+真 e2e/tag 动态化/lowering 设计/proof-carrying cert/witness 对接;**非 flip 前置**,lock:492 口径)。
 - **机器口径(07-12)**:checker 15 obligations/67 sinks;strong-status 65/83;cuts 833;slow 24 登记→31 实例。批次提交里的 cuts N 是当时快照。
