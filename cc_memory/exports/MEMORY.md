@@ -11,9 +11,9 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 4
-- entries: 7
+- entries: 8
 - hard edges: 7
-- pending relation suggestions: 1
+- pending relation suggestions: 2
 
 ## Start Here
 
@@ -29,6 +29,7 @@ python cc_memory/mem.py boot
 
 ## Entries
 
+- `batch-c-kickoff-findings-20260713` — 批C(PIC-4/5+门6)开工实录:binding 无段级帽+FIXED_SEARCH 锁死并行等五发现;组织性触发仍未判定;换硅脂后零崩=热嫌疑坐实;owner 目标无退路口径+替代进攻路线盘点指针
 - `codex-needs-explicit-read-memory` — Codex 记忆 2026-06: RULE, 子代理不会自动读 CLAUDE/cc_memory, 提示词要写明。
 - `cut-framework-stage-b-current-20260712` — 07-12 文档实态外审 F12 消解:F1/F6/F7=COMPILABLE typed 链唯一写 master;F5=ShadowValidated 无 lowering(真 adapter verifier 前 fail-closed);F2/F3/F4/F9=LEGACY_DIAGNOSTIC…
 - `p1-3-batch1-m5-current-20260712` — 07-12 文档实态外审 F12 消解:Batch1 完成、C1 默认、首解存在性关闭、M5 默认参数病态证伪(smoke#4 死于旧内存条款,~60G 固有尖峰);单跑铁律保留;不要再申请 owner 拍板或把性能当可行性 blocker
