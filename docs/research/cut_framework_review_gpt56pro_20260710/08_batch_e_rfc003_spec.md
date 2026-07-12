@@ -2,7 +2,8 @@
 
 > **状态:rev2(2026-07-12 晚)——规格双审(opus 设计位 AGREE_WITH_AMENDMENTS 4M+6L /
 > codex 第二视角 BLOCK→修订条件全采纳)后的修订版**。§6 记录两审裁决与逐条处置。
-> **D-1 是对 02 采纳判定的实质 waiver,须 owner 显式批准后方可实现**(codex BLOCK 条件之一)。
+> **D-1 是对 02 采纳判定的实质 waiver,须 owner 显式批准后方可实现**(codex BLOCK 条件之一)
+> **→ ✅ owner 已批准「(b) 重生成为主」(2026-07-12,AskUserQuestion 真实输入,非推导)**。
 > 三路侦察:scout-e-ledger ✅ / scout-e-dedup ✅ / scout-e-host ✅(宿主并入,解「批C 宿主环」)。
 
 - 立项依据:`02_rfc_adoption_assessment.md` §RFC-003 采纳序 ①semantic fingerprint 严格相等去重
@@ -83,7 +84,9 @@ RFC-003 §1 的问题陈述假设「常驻 cut 池 + 已 APPLIED cut 跨 epoch �
     仅指事件字段可扩展,**不承诺凭现有字段可重建 (a)**;若未来实测证明 warm-start 有价值,
     须另加 content-addressed envelope 存储(仍禁注入)另批评审。
 - **owner 批准点**:02 采纳判定(双审定稿)字面为「APPLIED 记录+restart 全链 replay 照单
-  全收」;本批改裁为上述 waiver。批准前不实现。
+  全收」;本批改裁为上述 waiver。**✅ 已批准**:owner 2026-07-12 三选一显式选定「批准 (b)
+  重生成为主」(选项含忠于原判定的 (a) 与「先 (b) 后评估」,owner 拍 (b);批C 实测顺带
+  测量 oracle 重生成真实开销的义务保留)。
 
 **D-2 dedup:编排层严格相等去重;pool=「已成功 APPLIED 指纹集」,挂 controller 实例,
 绑定 build generation。**
@@ -262,7 +265,7 @@ certified 行为零改变。
 
 ## §7 实现与落地记录(待批准后填)
 
-- 前置:owner 批准 D-1 waiver。
+- 前置:✅ owner 已批准 D-1 waiver(2026-07-12)。
 - 实现顺序拟:ledger 模块(纯新文件+自测)→ benders_loop 编排接线(dedup+ledger+D-13+
   receipt,一次 reseal)→ §4 七门测试 → harness 扩展 → 慢 lane+全量 → 实现轮双审
   (设计位 opus+攻击位 opus;codex 复核规格降档)→ reseal 收口。
