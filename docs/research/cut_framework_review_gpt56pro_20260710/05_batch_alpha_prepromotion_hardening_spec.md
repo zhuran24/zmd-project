@@ -73,3 +73,34 @@
 **攻击位威胁模型边界 2(私有工厂/token 可 import)**:既有 B5b 模式(模块私有+AST allowlist 托底,非 token 本身),本批未回归,登记不动——敌意代码能 import 者本可直接调 `_lower_*`,不属敌意数据面。
 
 **第二波外审 triage 对 α 的影响(lockaudit/master_lockdown/F5 三包)**:F7 pose-id cache 拒绝路径非原子(BLOCK,B5b §4.11 漏网)、AST owner-scope lambda/comprehension 逃逸(BLOCK)、CALL 计数器引用搬运绕过(BLOCK)、assert `-O` 剥离+duplicate slot key(CONCERN)——同性质 pre-promotion 硬化但集中在 `exact_coordinate_master.py`(α 未碰)+ AST 守卫,归**修复批 α2**(α 收口后开,避免同改 test 文件打架)。F5-01(group→operation 绑定)/F5-02(profile 浅冻结)归 F5 转正批。
+
+## §5 修复批 α2 执行记录(2026-07-12,α 收口 `c5fca3d` 后开)
+
+lockaudit 包 AUDIT_REPORT 八项(F-01..F-08),逐项处置:
+
+| ID | 级别 | 处置 | 落点 |
+|---|---|---|---|
+| F-01 F7 后置拒绝污染 lazy pose-id cache | BLOCK | **做**:抽纯函数 `_build_pose_idx_by_pose_id_map`(不写 cache)+ `_pose_idx_by_pose_id_map_representable`(cache-aware 只读);F7 先用纯 map 跑完所有拒绝分支,仅成功 lowering 才提交 lazy cache | exact_coordinate_master.py |
+| F-02 duplicate slot key 谓词/mint 分裂 | CONCERN | **做**:`_pose_present_literal`/`_pose_present_representable` 在任何 cache 读写前拒绝重复 slot key | 同上 |
+| F-03 生产 `assert` 被 `-O` 剥离 | CONCERN | **做**:三处 `assert lit is not None`→`raise RuntimeError`;测试导出 `assert`→显式 `raise AssertionError`;`-O` 探针 3 测试实测过 | 同上 + test_stage_b_contracts |
+| F-04 owner-scope 豁免泄漏 lambda/comprehension | BLOCK | **做**:`_CoordinateDelegateAcquisitionCollector` + `_ArtifactMutationAnalyzer` 增 `visit_Lambda`/五类 comprehension 独立执行 scope(outermost iterable 仍 enclosing) | test_stage_b_contracts |
+| F-05 59 桶只钉数量不钉用途 | CONCERN | **做**(裁定纳入):新增 `_coordinate_delegate_acquisition_use_context` digest,钉每处 acquisition 最近 statement 的规范化 AST SHA;与 F-06 同源,不留姊妹洞 | test_stage_b_contracts |
+| F-06 CALL Counter 被引用搬运绕过 | BLOCK | **做**:新增 `_PRIVATE_CONSTRUCTION_REFERENCE_ALLOWLIST`(钉每处 reference 而非仅 CALL)+ collector 参数化 targets + lambda/comp scope;list/subscript/partial 搬运会红 | test_stage_b_typed_platform |
+| F-07 certified 门未实现"仅凭存在" | CONCERN | **不做**(裁定):`CLAUDE.md §6`「仅凭存在即 fail-closed」是给**未知** `EXACT_*` 名;`EXACT_CUT_FRAMEWORK_ATTACH` 是**已知** unsafe-map 条目,按值语义(truthy)是设计行为。审计假设的 task-contract 与项目真契约不符;报告自证六层控制流纵深(main→run_outer_search→session.create→factory→direct-benders→`_maybe_attach`)对同一 false 值全部阻断=无绕过。存档不动 | — |
+| F-08 F5 退役已清理 | NOTE | 无动作(攻击失败,历史墓碑保留) | — |
+
+**新增负测**:α §4 item 4 遗留的 α-4 FORGE-rect 负测补齐——`test_alpha_4_rejects_ghost_rect_relocated_after_binding`:利用 master 本就有 4760 个候选 ghost domain 的多-rect 事实,resolve 后对调 domain[0]/domain[1] 的 cells,使 bound digest 重定位到 index 1 而 `u_vars` 不动(α-6 身份仍过)→ 精确证明 α-4 查的是 exact index 非存在性(门顺序:rect-location 在 u_var 身份之前)。
+
+**种子无需重算**:F-06 reference allowlist / F-05 use-context digest 均对 `97e91c5` 算,但 α(`c5fca3d`)改的是 lifecycle 逻辑/typed_platform 字段、未新增对构造符号的名字引用、未碰 delegate 获取点 → 计数/digest 未漂,两个 seal 测试直接绿。
+
+**验证**:三 patch `git apply --check` 对 `c5fca3d` 全 clean;104(两 test 文件)+153(含 α 硬化)+832(全 cuts)测试绿;7 个新 seal/AST 测试 + FORGE 负测显式 PASSED;ruff check 全绿;mypy——`exact_coordinate_master.py` **不在** MYPY_STRICT_TARGETS(在 EXACT_MODE_FILES),其 66 错为 pre-existing(HEAD 同数)、改区 7666-8200 零新错。**reseal**:v99 floor(exact_coordinate_master `0746ff5c`→`156445fe`)+ obligations sink source_sha256 同步 + checker 自钉重算(`730d1e35`→`524fb8f3`);checker 15/67 绿、strong-status 65/83 绿。
+
+## §6 双审裁决与 amendment 处置(2026-07-12,双 opus:设计位+攻击位;codex 通道自然化后 engage 成功=第三视角)
+
+- **设计位:AGREE_WITH_AMENDMENTS**(零 soundness BLOCK)。七项处置(F-01..F-06 做 + F-07/F-08 不做)全部如实、正确落地——独立重算 use-context digest 精确匹配、逐引用核 reference allowlist、实读 `step_8` 门顺序确认 FORGE 命中 exact-index 门(8b rect-location < 8d α-6 u_var < 9 fresh-projection)、F-07 裁决 sound(`_env_override_enabled`/`_cut_framework_attach_enabled` 共用同一 false-value 集 → 无 master-write 缝)、reseal 三处 sha 与字节一致。**唯一 amendment:sealed 文件最小 diff**——我对 `exact_coordinate_master.py` 跑了整文件 ruff format(1619 行 churn,~600 与语义无关),而 gate 只跑 `ruff check` 不跑 `ruff format --check`、该文件 HEAD 本就非 format-clean,故重排非门禁要求。**已处置(方案 A):回退整文件重排、只保留 F-01/02/03 语义 hunks → diff 从 1619 缩至 75 行(55+/20-),`ruff check` 仍全绿;按新字节重钉(`422409ab`→`156445fe` 及 checker 自钉 `9e385f8e`→`524fb8f3`),checker 复绿。**
+- **攻击位:PASS**(0 runtime BYPASSED)。~90 条对抗探针:F-01 十条拒绝分支均 zero-mutation + lazy cache 未污染、7464 RuntimeError 经镜像论证不可达;F-02 dup-key SPLIT 不可达(锁在任何 cache 读写前);F-03 生产侧 assert 计数=0、`-O` 下十条分支不变;F-04 两 collector 覆盖 Python 全部四类隐式作用域、0 leak-to-exempt;F-06 27 条静态引用形态全捕获(7 条动态反射属已声明威胁模型边界);跨锁零变异经 SerializeToString 坐实。**唯一发现(LOW-MEDIUM,非 bypass):F-05 use-context digest 的 alias-then-write 覆盖边界**——`d = self._coordinate_delegate` 后独立语句 `d.model.Add(c)`,后续写语句无 delegate token → digest 逐字节相同、三 guard 全 miss;即 F-05 封 acquisition **语句形状**、不追 delegate **alias 数据流**。判非 bypass 理由:tripwire 诚实调用方不可达(certified 下 typed attach 关停)、acquisition 站点是 phase3b diagnostic 非 certified 求解路径、注入变异语句 review 可见。**已处置(方案 a):在 `test_coordinate_delegate_acquisition_use_context_is_sealed` docstring 显式登记该覆盖边界(单语句改写会红/两语句 alias 形式不追);F-05 转硬门需加 delegate alias-dataflow 追踪 → 登记进 B6 转正清单。**
+- **codex(尝试第三视角,未成——中途被 cyber 门拦停,无有效结论)**:提示词自然化(负路径健壮性核验措辞、去攻击/绕过载荷词、不声明合法性)后 codex **通过初始门并真开工**(第 1-3 门:构造畸形输入验拒绝行为),但做到**第 4 门 F-05 alias-then-write** 时——该门本质是"构造一个演示 digest seal 能被 alias 数据流绕过的复现脚本"——codex 在**生成这段绕过演示内容的过程中**触发 cyber 过滤(连拦两次后进程退出,`tokens 93,425`,零逐门结论)。**结论修正:cyber 门既筛提示词、也筛生成内容——自然化措辞能过初始门+"验证拒绝行为"类工作,但"构造/演示绕过校验"类内容本身仍被拦。故本批权威双审 = 两个 opus;codex 非第三视角,仅 filter 行为数据点(见记忆卡 [[codex-cyber-content-filter-blocks-adversarial-review]])。**
+
+**B6 转正清单沉淀**(本批新增两项):①frozen_artifacts/state_snapshot 从「仅 v99 floor 字节钉」升到「完整 close-kernel sink 注册带 obligation」(α §4 遗留,两档待遇统一);②F-05 use-context digest 转硬门时加 delegate alias-dataflow 追踪(封 alias-then-write)。两项均 shadow 阶段不阻塞、转正时一并定。
+
+**双审裁决**:_(待填)_

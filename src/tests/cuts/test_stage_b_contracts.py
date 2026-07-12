@@ -226,6 +226,71 @@ class _ArtifactMutationAnalyzer(ast.NodeVisitor):
         self._visit_function_body(node)
         self._aliases.discard(node.name)
 
+    def visit_Lambda(self, node: ast.Lambda) -> None:
+        # Defaults execute in the enclosing scope; the body is a deferred
+        # callable and must not inherit a private-symbol owner exemption.
+        for default in (*node.args.defaults, *node.args.kw_defaults):
+            if default is not None:
+                self.visit(default)
+        lambda_aliases = set(self._aliases)
+        parameter_names = {
+            argument.arg
+            for argument in (
+                *node.args.posonlyargs,
+                *node.args.args,
+                *node.args.kwonlyargs,
+            )
+        }
+        if node.args.vararg is not None:
+            parameter_names.add(node.args.vararg.arg)
+        if node.args.kwarg is not None:
+            parameter_names.add(node.args.kwarg.arg)
+        lambda_aliases.difference_update(parameter_names)
+        self._alias_scopes.append(lambda_aliases)
+        self._function_scopes.append("<lambda>")
+        self.visit(node.body)
+        self._function_scopes.pop()
+        self._alias_scopes.pop()
+
+    def _visit_comprehension_scope(
+        self,
+        node: ast.ListComp | ast.SetComp | ast.GeneratorExp | ast.DictComp,
+        *,
+        scope_name: str,
+        result_nodes: tuple[ast.AST, ...],
+    ) -> None:
+        generators = list(node.generators)
+        if not generators:
+            return
+        # Python evaluates the outermost iterable in the enclosing scope.
+        self.visit(generators[0].iter)
+        self._alias_scopes.append(set(self._aliases))
+        self._function_scopes.append(scope_name)
+        self._aliases.difference_update(_assigned_names(generators[0].target))
+        for condition in generators[0].ifs:
+            self.visit(condition)
+        for generator in generators[1:]:
+            self.visit(generator.iter)
+            self._aliases.difference_update(_assigned_names(generator.target))
+            for condition in generator.ifs:
+                self.visit(condition)
+        for result_node in result_nodes:
+            self.visit(result_node)
+        self._function_scopes.pop()
+        self._alias_scopes.pop()
+
+    def visit_ListComp(self, node: ast.ListComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<listcomp>", result_nodes=(node.elt,))
+
+    def visit_SetComp(self, node: ast.SetComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<setcomp>", result_nodes=(node.elt,))
+
+    def visit_GeneratorExp(self, node: ast.GeneratorExp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<genexpr>", result_nodes=(node.elt,))
+
+    def visit_DictComp(self, node: ast.DictComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<dictcomp>", result_nodes=(node.key, node.value))
+
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         self._visit_definition_header(node)
         self._alias_scopes.append(set())
@@ -659,6 +724,50 @@ class _CoordinateDelegateAcquisitionCollector(ast.NodeVisitor):
     def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
         self._visit_function(node)
 
+    def visit_Lambda(self, node: ast.Lambda) -> None:
+        for default in (*node.args.defaults, *node.args.kw_defaults):
+            if default is not None:
+                self.visit(default)
+        self.function_stack.append("<lambda>")
+        self.visit(node.body)
+        self.function_stack.pop()
+
+    def _visit_comprehension_scope(
+        self,
+        node: ast.ListComp | ast.SetComp | ast.GeneratorExp | ast.DictComp,
+        *,
+        scope_name: str,
+        result_nodes: tuple[ast.AST, ...],
+    ) -> None:
+        generators = list(node.generators)
+        if not generators:
+            return
+        # The outermost iterable is evaluated immediately by the enclosing
+        # method. The loop body and remaining clauses run in the implicit scope.
+        self.visit(generators[0].iter)
+        self.function_stack.append(scope_name)
+        for condition in generators[0].ifs:
+            self.visit(condition)
+        for generator in generators[1:]:
+            self.visit(generator.iter)
+            for condition in generator.ifs:
+                self.visit(condition)
+        for result_node in result_nodes:
+            self.visit(result_node)
+        self.function_stack.pop()
+
+    def visit_ListComp(self, node: ast.ListComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<listcomp>", result_nodes=(node.elt,))
+
+    def visit_SetComp(self, node: ast.SetComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<setcomp>", result_nodes=(node.elt,))
+
+    def visit_GeneratorExp(self, node: ast.GeneratorExp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<genexpr>", result_nodes=(node.elt,))
+
+    def visit_DictComp(self, node: ast.DictComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<dictcomp>", result_nodes=(node.key, node.value))
+
     def _record(self, node: ast.AST) -> None:
         key = (self.filename, self.class_stack[-1], self.function_stack[-1])
         if key in self.owner_exempt:
@@ -681,6 +790,64 @@ class _CoordinateDelegateAcquisitionCollector(ast.NodeVisitor):
         ):
             self._record(node)
         self.generic_visit(node)
+
+
+_COORDINATE_DELEGATE_ACQUISITION_USE_DIGEST = "b6e16c15b0c3e99b8d20814aeae467850bebf335b0e7a508272101c73ce86109"
+
+
+def _coordinate_delegate_acquisition_use_digest() -> str:
+    records: list[tuple[str, str]] = []
+    for path in _production_python_files():
+        relative = path.relative_to(REPO_ROOT).as_posix()
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=relative)
+        parents: dict[ast.AST, ast.AST] = {}
+        for parent in ast.walk(tree):
+            for child in ast.iter_child_nodes(parent):
+                parents[child] = parent
+        acquisitions: list[ast.AST] = []
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, ast.Attribute)
+                and isinstance(node.ctx, ast.Load)
+                and node.attr == _COORDINATE_DELEGATE_ATTR
+            ):
+                acquisitions.append(node)
+            elif (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Name)
+                and node.func.id == "getattr"
+                and len(node.args) >= 2
+                and isinstance(node.args[1], ast.Constant)
+                and node.args[1].value == _COORDINATE_DELEGATE_ATTR
+            ):
+                acquisitions.append(node)
+        for acquisition in acquisitions:
+            context = acquisition
+            while context in parents and not isinstance(context, ast.stmt):
+                context = parents[context]
+            records.append((relative, ast.dump(context, include_attributes=False)))
+    payload = json.dumps(sorted(records), ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def test_coordinate_delegate_acquisition_use_context_is_sealed() -> None:
+    # Bucket counts alone permit an equal-count semantic replacement, such as
+    # swapping a diagnostic read for delegate.model.Add(...). Seal the nearest
+    # statement AST for every acquisition so that repurposing also turns red.
+    #
+    # COVERAGE BOUNDARY (α2 attack review): this digest seals the *statement
+    # shape at each acquisition site*, not the delegate's downstream alias
+    # dataflow.  A single-statement rewrite `self._coordinate_delegate.model.Add(c)`
+    # changes the acquisition statement AST and turns this red; but a two-statement
+    # alias form `d = self._coordinate_delegate` followed by a separate
+    # `d.model.Add(c)` leaves the acquisition statement byte-identical (the
+    # follow-up carries no _coordinate_delegate token) and is NOT caught here.
+    # That gap is a pre-promotion tripwire limit, not a soundness hole: the typed
+    # attach is off under certified mode, acquisitions live in phase3b diagnostic
+    # modules off the certified solve path, and injecting the mutation statement is
+    # a review-visible edit.  Promoting F-05 to a hard gate (B6) requires adding
+    # delegate alias-dataflow tracking — registered in the promotion checklist.
+    assert _coordinate_delegate_acquisition_use_digest() == _COORDINATE_DELEGATE_ACQUISITION_USE_DIGEST
 
 
 def test_coordinate_delegate_acquisition_is_allowlisted() -> None:
@@ -738,6 +905,57 @@ def not_an_acquisition(obj):
             ("attack.py", None, "nested_getattr"): 1,
         }
     ), got
+
+
+def test_coordinate_delegate_owner_exemption_stops_at_deferred_scopes() -> None:
+    source = """
+class MasterPlacementModel:
+    def _lower_region_capacity_cut(self):
+        direct = self._coordinate_delegate
+        late = lambda: self._coordinate_delegate
+        generated = (self._coordinate_delegate for _ in range(1))
+        listed = [self._coordinate_delegate for _ in range(1)]
+        def nested():
+            return self._coordinate_delegate
+        class Inner:
+            leaked = self._coordinate_delegate
+        return direct, late, generated, listed, nested, Inner
+"""
+    exempt = frozenset(
+        {
+            (
+                "attack.py",
+                "MasterPlacementModel",
+                "_lower_region_capacity_cut",
+            )
+        }
+    )
+    collector = _CoordinateDelegateAcquisitionCollector("attack.py", exempt)
+    collector.visit(ast.parse(source, filename="attack.py"))
+    got = Counter((class_name, function_name) for _filename, class_name, function_name, _line in collector.acquisitions)
+    assert got == Counter(
+        {
+            ("MasterPlacementModel", "<lambda>"): 1,
+            ("MasterPlacementModel", "<genexpr>"): 1,
+            ("MasterPlacementModel", "<listcomp>"): 1,
+            ("MasterPlacementModel", "nested"): 1,
+            ("Inner", "_lower_region_capacity_cut"): 1,
+        }
+    )
+
+
+def test_artifact_owner_exemption_stops_at_lambda_scope() -> None:
+    source = """
+class ValidatedStateSnapshot:
+    def __init__(self):
+        direct = _SNAPSHOT_CONSTRUCTION_TOKEN
+        delayed = lambda: _SNAPSHOT_CONSTRUCTION_TOKEN
+        return direct, delayed
+"""
+    violations = _artifact_mutation_violations(source, filename="src/cuts/state_snapshot.py")
+    assert len(violations) == 1
+    assert "<lambda>" not in violations[0]  # message records source, not scope
+    assert "_SNAPSHOT_CONSTRUCTION_TOKEN" in violations[0]
 
 
 def _mutable_stage_b_sources(
@@ -1789,7 +2007,8 @@ def _real_master_mutation_projection(master: Any, *, proto_path: Path) -> tuple[
         # OR-Tools 9.15 exposes a pybind CpModelProto without SerializeToString.
         # Export to the generated protobuf type, then use deterministic binary
         # serialization—the semantic equivalent required by this contract.
-        assert delegate.model.export_to_file(str(proto_path))
+        if not delegate.model.export_to_file(str(proto_path)):
+            raise AssertionError(f"failed to export CP-SAT proto to {proto_path}")
         generated_proto = cp_model_pb2.CpModelProto.FromString(proto_path.read_bytes())
         proto_bytes = generated_proto.SerializeToString(deterministic=True)
     return proto_bytes, caches
@@ -2099,29 +2318,57 @@ def test_f6_failed_lowering_preserves_master_proto_and_internal_caches(
 def test_f7_failed_lowering_preserves_master_proto_and_internal_caches(
     tmp_path: Path,
 ) -> None:
-    """F7 clean-rejection regression pin (NOT a discriminating §4.11 differential).
-
-    B5b dual-review (design LOW #1): F7 never had a mint-then-fail path — the
-    legacy `_pose_present_literal` None-branches all precede their mints, so the
-    §4.11 precheck front-move is a vacuous no-op for F7 (no behavioral delta;
-    the genuinely discriminating atomicity differentials are the F1/F6 tests
-    above).  This test pins the clean-rejection property itself: an
-    unknown-group rejection must leave proto and literal caches byte-identical.
-    """
+    """F7 late rejection must not populate the lazy pose-id cache."""
     from src.tests.cuts.test_stage_b_power_hitting_set import (
+        _FACILITY_TYPE,
+        _GROUP_ID,
         _TARGET_POSE_ID,
         _build_master,
     )
 
     master = _build_master(skip_power_coverage=True)
+    # Use a valid group and pose, then fail at the later coverer-table gate.
+    # Before the pure pose-id precheck fix this returned False with an unchanged
+    # proto but populated `_pose_idx_by_pose_id_cache`.
+    del master._power_coverers_by_template_pose[_FACILITY_TYPE][1]
     before = _real_master_mutation_projection(master, proto_path=tmp_path / "before.pb")
 
     applied = master._lower_power_pose_exclusion_cut(
-        group_id="zz_missing_group",
+        group_id=_GROUP_ID,
         pose_id=_TARGET_POSE_ID,
         blocked_cells={(2, 1)},
         condition_lits=(master.u_vars[0],),
     )
 
     assert applied is False
+    assert _real_master_mutation_projection(master, proto_path=tmp_path / "after.pb") == before
+
+
+def test_pose_present_precheck_and_mint_reject_duplicate_slot_keys_atomically(
+    tmp_path: Path,
+) -> None:
+    """Malformed duplicate slot keys cannot split predicate and mint outcomes."""
+    from dataclasses import replace
+
+    from src.models.master_model import MasterPlacementModel
+
+    master = _build_real_tiny_master(MasterPlacementModel, ghost_rect=(1, 1))
+    delegate = master._coordinate_delegate
+    assert delegate is not None
+    group_id = str(master._group_id_by_instance["miner_001"])
+    template = next(
+        str(group["facility_type"]) for group in master._mandatory_groups if str(group["group_id"]) == group_id
+    )
+    pose_tuple = next(iter(delegate._template_pose_tuple_by_idx[template].values()))
+    good_slot = delegate.mandatory_slots[group_id][0]
+    bad_pose = (pose_tuple[0] + 1000, pose_tuple[1] + 1000, pose_tuple[2] + 1000)
+    bad_slot = replace(
+        good_slot,
+        allowed_tuples=(bad_pose,),
+        tuple_to_pose_idx={bad_pose: 0},
+    )
+    before = _real_master_mutation_projection(master, proto_path=tmp_path / "before.pb")
+
+    assert not delegate._pose_present_representable([bad_slot, good_slot], pose_tuple)
+    assert delegate._pose_present_literal([bad_slot, good_slot], pose_tuple) is None
     assert _real_master_mutation_projection(master, proto_path=tmp_path / "after.pb") == before

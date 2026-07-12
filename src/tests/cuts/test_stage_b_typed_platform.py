@@ -2097,6 +2097,59 @@ class _ConstructionCallCollector(ast.NodeVisitor):
         self._visit_function_body(node)
         self.aliases.pop(node.name, None)
 
+    def visit_Lambda(self, node: ast.Lambda) -> None:
+        for default in (*node.args.defaults, *node.args.kw_defaults):
+            if default is not None:
+                self.visit(default)
+        lambda_aliases = dict(self.aliases)
+        for parameter_name in _argument_names(node.args):
+            lambda_aliases.pop(parameter_name, None)
+        self.alias_scopes.append(lambda_aliases)
+        self.function_stack.append("<lambda>")
+        self.visit(node.body)
+        self.function_stack.pop()
+        self.alias_scopes.pop()
+
+    def _visit_comprehension_scope(
+        self,
+        node: ast.ListComp | ast.SetComp | ast.GeneratorExp | ast.DictComp,
+        *,
+        scope_name: str,
+        result_nodes: tuple[ast.AST, ...],
+    ) -> None:
+        generators = list(node.generators)
+        if not generators:
+            return
+        self.visit(generators[0].iter)
+        self.alias_scopes.append(dict(self.aliases))
+        self.function_stack.append(scope_name)
+        for name in _assigned_name_ids(generators[0].target):
+            self.aliases.pop(name, None)
+        for condition in generators[0].ifs:
+            self.visit(condition)
+        for generator in generators[1:]:
+            self.visit(generator.iter)
+            for name in _assigned_name_ids(generator.target):
+                self.aliases.pop(name, None)
+            for condition in generator.ifs:
+                self.visit(condition)
+        for result_node in result_nodes:
+            self.visit(result_node)
+        self.function_stack.pop()
+        self.alias_scopes.pop()
+
+    def visit_ListComp(self, node: ast.ListComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<listcomp>", result_nodes=(node.elt,))
+
+    def visit_SetComp(self, node: ast.SetComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<setcomp>", result_nodes=(node.elt,))
+
+    def visit_GeneratorExp(self, node: ast.GeneratorExp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<genexpr>", result_nodes=(node.elt,))
+
+    def visit_DictComp(self, node: ast.DictComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<dictcomp>", result_nodes=(node.key, node.value))
+
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         self._visit_definition_header(node)
         self.alias_scopes.append(dict(self.aliases))
@@ -2165,6 +2218,59 @@ _PRIVATE_TOKEN_SYMBOLS = frozenset(
         "_SHADOW_VALIDATED_CONSTRUCTION_TOKEN",
     }
 )
+_PRIVATE_CONSTRUCTION_REFERENCE_ALLOWLIST = Counter(
+    {
+        ("CompiledCut", "src/cuts/lifecycle.py", None, "step_6_attach_scope_check"): 2,
+        ("CompiledCut", "src/cuts/lifecycle.py", None, "step_8_apply_to_master"): 2,
+        ("CompiledCut", "src/cuts/lifecycle.py", None, None): 1,
+        ("CompiledCut", "src/cuts/replay.py", None, "_replay_typed"): 2,
+        ("CompiledCut", "src/cuts/typed_apply.py", None, "apply_compiled_cut"): 1,
+        ("CompiledCut", "src/cuts/typed_apply.py", None, None): 2,
+        ("CompiledCut", "src/cuts/typed_platform.py", None, "validate_and_compile_cut"): 1,
+        ("CompiledCut", "src/cuts/typed_platform.py", None, None): 1,
+        ("CompiledCut", "src/search/benders_loop.py", "LBBDController", "_maybe_attach_framework_cuts"): 2,
+        ("CutEnvelope", "src/cuts/typed_platform.py", None, "cut_to_envelope_v1"): 1,
+        ("CutEnvelope", "src/cuts/typed_platform.py", None, "validate_and_compile_cut"): 1,
+        ("CutEnvelope", "src/cuts/typed_platform.py", None, None): 5,
+        ("FamilyCapabilityRegistry", "src/cuts/typed_platform.py", None, "build_production_registry"): 1,
+        ("FamilyCapabilityRegistry", "src/cuts/typed_platform.py", None, "validate_and_compile_cut"): 1,
+        ("FamilyCapabilityRegistry", "src/cuts/typed_platform.py", None, None): 2,
+        ("ModelScopeBinding", "src/cuts/lifecycle.py", None, "step_8_apply_to_master"): 2,
+        ("ModelScopeBinding", "src/cuts/lifecycle.py", None, None): 1,
+        ("ModelScopeBinding", "src/cuts/typed_apply.py", None, "apply_compiled_cut"): 1,
+        ("ModelScopeBinding", "src/cuts/typed_apply.py", None, None): 2,
+        ("ModelScopeBinding", "src/cuts/typed_platform.py", None, "_build_model_scope_binding"): 1,
+        ("ModelScopeBinding", "src/cuts/typed_platform.py", None, None): 1,
+        ("ShadowValidated", "src/cuts/replay.py", None, "_replay_typed"): 2,
+        ("ShadowValidated", "src/cuts/typed_platform.py", None, "validate_and_compile_cut"): 1,
+        ("ShadowValidated", "src/cuts/typed_platform.py", None, None): 1,
+        ("ShadowValidated", "src/search/benders_loop.py", "LBBDController", "_maybe_attach_framework_cuts"): 2,
+        ("_build_model_scope_binding", "src/cuts/lifecycle.py", None, "_resolve_model_scope_binding"): 2,
+        ("_lower_baseline_packing_cut", "src/cuts/typed_apply.py", None, "apply_compiled_cut"): 1,
+        (
+            "_lower_baseline_packing_cut",
+            "src/models/master_model.py",
+            "MasterPlacementModel",
+            "_lower_baseline_packing_cut",
+        ): 3,
+        ("_lower_power_pose_exclusion_cut", "src/cuts/typed_apply.py", None, "apply_compiled_cut"): 1,
+        (
+            "_lower_power_pose_exclusion_cut",
+            "src/models/master_model.py",
+            "MasterPlacementModel",
+            "_lower_power_pose_exclusion_cut",
+        ): 3,
+        ("_lower_region_capacity_cut", "src/cuts/typed_apply.py", None, "apply_compiled_cut"): 1,
+        (
+            "_lower_region_capacity_cut",
+            "src/models/master_model.py",
+            "MasterPlacementModel",
+            "_lower_region_capacity_cut",
+        ): 3,
+    }
+)
+
+
 _PRIVATE_TOKEN_REFERENCE_ALLOWLIST = Counter(
     {
         (
@@ -2208,8 +2314,14 @@ _PRIVATE_TOKEN_REFERENCE_ALLOWLIST = Counter(
 
 
 class _PrivateTokenReferenceCollector(ast.NodeVisitor):
-    def __init__(self, filename: str) -> None:
+    def __init__(
+        self,
+        filename: str,
+        *,
+        targets: frozenset[str] = _PRIVATE_TOKEN_SYMBOLS,
+    ) -> None:
         self.filename = filename
+        self.targets = targets
         self.class_stack: list[str | None] = [None]
         self.function_stack: list[str | None] = [None]
         self.alias_scopes: list[dict[str, frozenset[str]]] = [{}]
@@ -2222,7 +2334,7 @@ class _PrivateTokenReferenceCollector(ast.NodeVisitor):
     def _symbols(self, node: ast.AST) -> frozenset[str]:
         return _resolved_symbols(
             node,
-            targets=_PRIVATE_TOKEN_SYMBOLS,
+            targets=self.targets,
             aliases=self.aliases,
         )
 
@@ -2299,6 +2411,59 @@ class _PrivateTokenReferenceCollector(ast.NodeVisitor):
         self.alias_scopes.pop()
         self.aliases.pop(node.name, None)
 
+    def visit_Lambda(self, node: ast.Lambda) -> None:
+        for default in (*node.args.defaults, *node.args.kw_defaults):
+            if default is not None:
+                self.visit(default)
+        lambda_aliases = dict(self.aliases)
+        for parameter_name in _argument_names(node.args):
+            lambda_aliases.pop(parameter_name, None)
+        self.alias_scopes.append(lambda_aliases)
+        self.function_stack.append("<lambda>")
+        self.visit(node.body)
+        self.function_stack.pop()
+        self.alias_scopes.pop()
+
+    def _visit_comprehension_scope(
+        self,
+        node: ast.ListComp | ast.SetComp | ast.GeneratorExp | ast.DictComp,
+        *,
+        scope_name: str,
+        result_nodes: tuple[ast.AST, ...],
+    ) -> None:
+        generators = list(node.generators)
+        if not generators:
+            return
+        self.visit(generators[0].iter)
+        self.alias_scopes.append(dict(self.aliases))
+        self.function_stack.append(scope_name)
+        for name in _assigned_name_ids(generators[0].target):
+            self.aliases.pop(name, None)
+        for condition in generators[0].ifs:
+            self.visit(condition)
+        for generator in generators[1:]:
+            self.visit(generator.iter)
+            for name in _assigned_name_ids(generator.target):
+                self.aliases.pop(name, None)
+            for condition in generator.ifs:
+                self.visit(condition)
+        for result_node in result_nodes:
+            self.visit(result_node)
+        self.function_stack.pop()
+        self.alias_scopes.pop()
+
+    def visit_ListComp(self, node: ast.ListComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<listcomp>", result_nodes=(node.elt,))
+
+    def visit_SetComp(self, node: ast.SetComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<setcomp>", result_nodes=(node.elt,))
+
+    def visit_GeneratorExp(self, node: ast.GeneratorExp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<genexpr>", result_nodes=(node.elt,))
+
+    def visit_DictComp(self, node: ast.DictComp) -> None:
+        self._visit_comprehension_scope(node, scope_name="<dictcomp>", result_nodes=(node.key, node.value))
+
     def visit_Assign(self, node: ast.Assign) -> None:
         self.visit(node.value)
         self._refresh_aliases(list(node.targets), self._symbols(node.value))
@@ -2329,7 +2494,7 @@ class _PrivateTokenReferenceCollector(ast.NodeVisitor):
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
         for imported in node.names:
             local_name = imported.asname or imported.name
-            if imported.name in _PRIVATE_TOKEN_SYMBOLS:
+            if imported.name in self.targets:
                 self._record(imported.name, node)
                 self.aliases[local_name] = frozenset({imported.name})
             else:
@@ -2451,6 +2616,21 @@ def test_private_typed_construction_points_are_exactly_allowlisted() -> None:
     assert actual == expected, calls
 
 
+def test_private_construction_references_are_exactly_allowlisted() -> None:
+    references: list[tuple[str, str, str | None, str | None, int]] = []
+    for path in _production_python_files():
+        relative = path.relative_to(REPO_ROOT).as_posix()
+        collector = _PrivateTokenReferenceCollector(relative, targets=_PRIVATE_CONSTRUCTION_SYMBOLS)
+        collector.visit(ast.parse(path.read_text(encoding="utf-8"), filename=relative))
+        references.extend(collector.references)
+
+    actual = Counter(
+        (symbol, filename, class_name, function_name)
+        for symbol, filename, class_name, function_name, _line in references
+    )
+    assert actual == _PRIVATE_CONSTRUCTION_REFERENCE_ALLOWLIST, references
+
+
 def test_private_construction_tokens_have_no_production_escape() -> None:
     references: list[tuple[str, str, str | None, str | None, int]] = []
     for path in _production_python_files():
@@ -2492,6 +2672,36 @@ assigned()
             "FamilyCapabilityRegistry": 1,
             "ModelScopeBinding": 1,
             "ShadowValidated": 1,
+        }
+    )
+
+
+def test_construction_reference_analyzer_catches_container_and_partial_smuggling() -> None:
+    source = """
+from functools import partial
+
+direct_alias = _build_model_scope_binding
+direct_alias()
+
+holder = [_build_model_scope_binding]
+holder[0]()
+
+deferred = partial(_lower_region_capacity_cut, group_cell_weights={})
+deferred()
+"""
+    calls = _ConstructionCallCollector("src/cuts/construction_smuggle.py")
+    calls.visit(ast.parse(source, filename=calls.filename))
+    assert Counter(symbol for symbol, *_rest in calls.calls) == Counter({"_build_model_scope_binding": 1})
+
+    references = _PrivateTokenReferenceCollector(
+        "src/cuts/construction_smuggle.py",
+        targets=_PRIVATE_CONSTRUCTION_SYMBOLS,
+    )
+    references.visit(ast.parse(source, filename=references.filename))
+    assert Counter(symbol for symbol, *_rest in references.references) == Counter(
+        {
+            "_build_model_scope_binding": 3,
+            "_lower_region_capacity_cut": 1,
         }
     )
 

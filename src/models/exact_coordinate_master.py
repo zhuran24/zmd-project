@@ -7666,6 +7666,12 @@ class CoordinateExactMasterDelegate:
             int(pose_tuple[0]), int(pose_tuple[1]), int(pose_tuple[2])
         )
         slot_keys = tuple(sorted(str(slot.key) for slot in slots))
+        # Cache identity is slot-key based. Duplicate keys would let the first
+        # slot's cached miss shadow a later representable slot during minting,
+        # while the pure precheck still sees the later slot. Reject malformed
+        # slot sets before reading or writing any cache.
+        if len(slot_keys) != len(set(slot_keys)):
+            return None
         cache_key = (slot_keys, normalized)
         if cache_key in self._pose_present_cache:
             return self._pose_present_cache[cache_key]
@@ -7722,6 +7728,8 @@ class CoordinateExactMasterDelegate:
             int(pose_tuple[0]), int(pose_tuple[1]), int(pose_tuple[2])
         )
         slot_keys = tuple(sorted(str(slot.key) for slot in slots))
+        if len(slot_keys) != len(set(slot_keys)):
+            return False
         cache_key = (slot_keys, normalized)
         if cache_key in self._pose_present_cache:
             return self._pose_present_cache[cache_key] is not None
@@ -7940,7 +7948,10 @@ class CoordinateExactMasterDelegate:
         for weight, group_slots, group_poses in plan:
             for pose_tuple in group_poses:
                 lit = self._pose_present_literal(group_slots, pose_tuple)
-                assert lit is not None  # precheck guaranteed representability
+                if lit is None:
+                    raise RuntimeError(
+                        "region-capacity precheck/mint representability invariant violated"
+                    )
                 terms.append((weight, lit))
 
         cut_index = int(
@@ -7966,28 +7977,39 @@ class CoordinateExactMasterDelegate:
         self.owner._status = None
         return True
 
+    def _build_pose_idx_by_pose_id_map(self, tpl: str) -> Optional[Dict[str, int]]:
+        """Build the pose-id index without minting or writing a cache."""
+        mapping: Dict[str, int] = {}
+        for idx, pose in enumerate(self.owner.facility_pools.get(tpl, [])):
+            if not isinstance(pose, Mapping):
+                return None
+            pid = str(pose.get("pose_id", ""))
+            if not pid:
+                continue
+            if pid in mapping:
+                # Duplicate pose_id: binding to either copy could hit the wrong
+                # pose (soundness fault).
+                return None
+            mapping[pid] = int(idx)
+        return mapping
+
+    def _pose_idx_by_pose_id_map_representable(
+        self, tpl: str
+    ) -> Optional[Dict[str, int]]:
+        """Pure cache-aware lookup used by all-or-nothing prechecks."""
+        if tpl in self._pose_idx_by_pose_id_cache:
+            return self._pose_idx_by_pose_id_cache[tpl]
+        return self._build_pose_idx_by_pose_id_map(tpl)
+
     def _resolve_pose_idx_by_pose_id(self, tpl: str, pose_id: str) -> Optional[int]:
         # pose_id -> pose_idx by enumerating the SAME owner.facility_pools list
         # that _prepare_template_domains indexed, so the mapping shares its
         # index domain with pose_idx by construction (never recompute
         # PoseTuple/mode_id outside the master — those are private and drift).
         if tpl not in self._pose_idx_by_pose_id_cache:
-            mapping: Optional[Dict[str, int]] = {}
-            for idx, pose in enumerate(self.owner.facility_pools.get(tpl, [])):
-                if not isinstance(pose, Mapping):
-                    mapping = None
-                    break
-                pid = str(pose.get("pose_id", ""))
-                if not pid:
-                    continue
-                assert mapping is not None
-                if pid in mapping:
-                    # Duplicate pose_id: binding to either copy could hit the
-                    # wrong pose (soundness fault) — poison the template.
-                    mapping = None
-                    break
-                mapping[pid] = int(idx)
-            self._pose_idx_by_pose_id_cache[tpl] = mapping
+            self._pose_idx_by_pose_id_cache[tpl] = (
+                self._build_pose_idx_by_pose_id_map(tpl)
+            )
         cached = self._pose_idx_by_pose_id_cache[tpl]
         if cached is None:
             return None
@@ -8033,7 +8055,10 @@ class CoordinateExactMasterDelegate:
         slots = list(self.mandatory_slots.get(gid, []))
         if not slots:
             return False
-        pose_idx = self._resolve_pose_idx_by_pose_id(tpl, str(pose_id))
+        pose_id_map = self._pose_idx_by_pose_id_map_representable(tpl)
+        if pose_id_map is None:
+            return False
+        pose_idx = pose_id_map.get(str(pose_id))
         if pose_idx is None:
             return False
         pose_tuple = self._template_pose_tuple_by_idx.get(tpl, {}).get(pose_idx)
@@ -8068,8 +8093,15 @@ class CoordinateExactMasterDelegate:
         # pure predicate first so a rejection touches neither proto nor cache.
         if not self._pose_present_representable(slots, pose_tuple):
             return False
+        # Commit the lazy pose-id cache only after every rejection branch has
+        # completed. Successful lowering retains the prior cache behavior.
+        if tpl not in self._pose_idx_by_pose_id_cache:
+            self._pose_idx_by_pose_id_cache[tpl] = pose_id_map
         lit = self._pose_present_literal(slots, pose_tuple)
-        assert lit is not None  # precheck guaranteed representability
+        if lit is None:
+            raise RuntimeError(
+                "power-pose precheck/mint representability invariant violated"
+            )
         constraint = self.model.Add(lit == 0)
         constraint.OnlyEnforceIf(list(condition_lits))
         self.owner.build_stats["coordinate_framework_cut_count"] = (
@@ -8163,7 +8195,10 @@ class CoordinateExactMasterDelegate:
         terms: List[cp_model.IntVar] = []
         for pose_tuple in selected:
             lit = self._pose_present_literal(slots, pose_tuple)
-            assert lit is not None  # precheck guaranteed representability
+            if lit is None:
+                raise RuntimeError(
+                    "baseline-packing precheck/mint representability invariant violated"
+                )
             terms.append(lit)
         constraint = self.model.Add(sum(terms) <= cap)
         constraint.OnlyEnforceIf(list(condition_lits))

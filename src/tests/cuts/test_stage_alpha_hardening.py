@@ -17,6 +17,7 @@ from src.cuts.frozen_artifacts import (
 from src.cuts.lifecycle import (
     BState,
     _live_master_domain_projection,
+    _locate_master_ghost_rect,
     _resolve_model_scope_binding,
     step_8_apply_to_master,
 )
@@ -446,6 +447,37 @@ def test_alpha_4_rejects_pool_drift_after_binding() -> None:
     master.facility_pools["boundary_storage_port"][0]["alpha_post_binding_drift"] = True
 
     with pytest.raises(ValueError, match="domain changed after scope binding"):
+        step_8_apply_to_master(compiled, master, scope_binding=binding)
+
+    assert master.build_stats.get("coordinate_framework_cut_count", 0) == 0
+
+
+def test_alpha_4_rejects_ghost_rect_relocated_after_binding() -> None:
+    """α-4 FORGE-rect gate (spec §4 item 4 deferred negative test).
+
+    The master keeps every candidate ghost anchor as its own domain/u_var, so
+    this is genuinely a multi-ghost-rect world.  After an honest resolve we swap
+    the bound domain's cells with another candidate anchor: the bound digest now
+    relocates to a *different* live index while ``u_vars`` stay put — so the
+    α-6 identity check still passes and only the fresh rect re-location (α-4)
+    can catch the drift.  This pins that the gate compares the exact index, not
+    mere presence, which the single-rect fixture cannot exercise.
+    """
+    master, snapshot, compiled = _f1_world()
+    binding = _resolve_model_scope_binding(compiled.plan.model_scope, snapshot, master)
+    assert binding.rect_idx == 0
+    assert _locate_master_ghost_rect(master, binding.ghost_rect_digest) == 0
+
+    domain_0 = master._ghost_domains[0]
+    domain_1 = master._ghost_domains[1]
+    domain_0["cells"], domain_1["cells"] = domain_1["cells"], domain_0["cells"]
+
+    # The bound digest now points at index 1, but u_vars[0] (α-6 identity) is
+    # untouched — so only the exact-index rect re-location gate can reject.
+    assert _locate_master_ghost_rect(master, binding.ghost_rect_digest) == 1
+    assert master.u_vars[0] is binding.condition_lits[0]
+
+    with pytest.raises(ValueError, match="resolved rect index no longer matches"):
         step_8_apply_to_master(compiled, master, scope_binding=binding)
 
     assert master.build_stats.get("coordinate_framework_cut_count", 0) == 0
