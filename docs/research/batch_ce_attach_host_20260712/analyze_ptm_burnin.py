@@ -86,12 +86,16 @@ def main() -> None:
         by_tag: dict[str, dict[str, list[int]]] = {}
         for row in csv.DictReader(mem.open()):
             try:
-                d = by_tag.setdefault(row["tag"], {"rss": [], "hwm": [], "swap": []})
-                d["rss"].append(int(row["rss_kb"]))
-                d["hwm"].append(int(row["hwm_kb"]))
-                d["swap"].append(int(row["swap_kb"]))
-            except (KeyError, ValueError):
-                continue
+                rss = int(row["rss_kb"])
+                hwm = int(row["hwm_kb"])
+                swap = int(row["swap_kb"])
+                tag = row["tag"] or "untagged"
+            except (KeyError, ValueError, TypeError):
+                continue  # 重复表头/残行:先解析成功再入表,防空 entry
+            d = by_tag.setdefault(tag, {"rss": [], "hwm": [], "swap": []})
+            d["rss"].append(rss)
+            d["hwm"].append(hwm)
+            d["swap"].append(swap)
         print("## 内存(1s 采样,GiB;峰值口径=HWM 终值+同刻 swap)\n")
         print("| run | RSS 峰 | RSS 均值 | RSS 中位 | HWM 终值 | swap 峰 |")
         print("|---|---|---|---|---|---|")

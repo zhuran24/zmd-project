@@ -1,0 +1,21 @@
+01:09:01 BURNIN start ambient_temp=44C
+01:09:01 CYCLE 1/5 HOT begin temp=44C
+01:12:30 COMBINED start temp=44C
+01:12:31 CYCLE 1/5 HOT begin temp=44C
+01:26:32 CYCLE 1/5 HOT end peak=87C solve=OK_rc=0 wall=841s
+01:37:47 CYCLE 1/5 COOL end temp=44C (v3 接管,43C 判据)
+01:37:47 CYCLE 2/5 HOT begin temp=44C (v3: taskset solve@0-6 stress@7-23)
+02:37:54 CYCLE 2/5 HOT end peak=94C solve=TIMEOUT@3600s wall=3607s
+03:01:26 CYCLE 2/5 COOL end temp=44C total_cool=1412s
+03:01:26 CYCLE 3/5 HOT begin temp=44C (v3: taskset solve@0-6 stress@7-23)
+03:05:40 CYCLE 3/5 adopted by v4 (solve pid=91594 spent=254s; 45C判据)
+04:01:47 CYCLE 3/5 HOT end peak=90C solve=TIMEOUT@3600s wall=3621s
+04:17:48 CYCLE 3/5 COOL end temp=67C total_cool=961s (45C判据)
+04:17:48 CYCLE 4/5 HOT begin temp=67C (v4: taskset solve@0-6 stress@7-23)
+04:29:28 CYCLE 4/5 HOT begin temp=48C (v5 新BIOS验证轮: taskset solve@0-6 stress@7-23)
+05:29:45 CYCLE 4/5 HOT end peak=81C solve=TIMEOUT@3600s wall=3617s
+05:59:47 CYCLE 4/5 COOL end temp=41C total_cool=1802s (45C判据)
+05:59:47 CYCLE 5/5 HOT begin temp=41C (v5 新BIOS验证轮: taskset solve@0-6 stress@7-23)
+07:00:04 CYCLE 5/5 HOT end peak=85C solve=TIMEOUT@3600s wall=3617s
+07:20:36 CYCLE 5/5 COOL end temp=46C total_cool=1232s (45C判据)
+07:20:36 COMBINED v5 DONE (5 cycles complete)
