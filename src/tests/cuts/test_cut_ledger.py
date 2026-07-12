@@ -151,8 +151,12 @@ def test_usage_errors(tmp_path: Path) -> None:
     writer.seal()
     with pytest.raises(LedgerUsageError):
         writer.append("GENERATED", {"cut_id": "late"})
-    with pytest.raises(LedgerUsageError):
-        CutLedgerWriter(tmp_path, scope_id="bad/scope")
+    for bad_scope in ("bad/scope", "..", ".", "a\\b", "a\x00b", ""):
+        with pytest.raises(LedgerUsageError):
+            CutLedgerWriter(tmp_path, scope_id=bad_scope)
+    for bad_writer in ("../up", "a/b", ".."):
+        with pytest.raises(LedgerUsageError):
+            CutLedgerWriter(tmp_path, scope_id="ok", writer_id=bad_writer)
 
 
 def test_fsync_tiering(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

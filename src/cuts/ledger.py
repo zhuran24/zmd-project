@@ -102,6 +102,19 @@ def _canonical_event_line(event: Mapping[str, Any]) -> bytes:
     ).encode("utf-8")
 
 
+def _require_path_safe_component(value: str, *, field_name: str) -> None:
+    """A scope/writer id must be a single, non-traversing path component —
+    ``..``, separators or null bytes would let a hostile id escape the ledger
+    root (fail-closed; the ledger writes files, so id hygiene is load-bearing).
+    """
+    if (
+        not value
+        or value in {".", ".."}
+        or any(ch in value for ch in ("/", "\\", "\x00"))
+    ):
+        raise LedgerUsageError(f"invalid {field_name}: {value!r}")
+
+
 def default_writer_id() -> str:
     # Process-instance unique (codex re-review MEDIUM-1): PID/host alone can
     # recur across restarts; the uuid suffix makes writer identity collision-
@@ -133,9 +146,9 @@ class CutLedgerWriter:
         genesis_context: Optional[Mapping[str, Any]] = None,
         writer_id: Optional[str] = None,
     ) -> None:
-        if not scope_id or "/" in scope_id:
-            raise LedgerUsageError(f"invalid scope_id: {scope_id!r}")
+        _require_path_safe_component(scope_id, field_name="scope_id")
         self._writer_id = writer_id or default_writer_id()
+        _require_path_safe_component(self._writer_id, field_name="writer_id")
         self._scope_id = scope_id
         self._dir = Path(root_dir) / scope_id
         self._dir.mkdir(parents=True, exist_ok=True)
