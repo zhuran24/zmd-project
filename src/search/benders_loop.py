@@ -1258,6 +1258,11 @@ _CERTIFIED_KNOWN_ENV_NAMES = frozenset(
 _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST = frozenset(
     {
         "EXACT_B1_ABSTRACT_ROUTING_SECONDS",
+        # 枚举轮数预算, 与本列表既有 *_SECONDS 时间预算证明语义同构: 命中只
+        # fail-closed 返回 UNKNOWN(ALT_CAP_REACHED), 永不当穷尽证明——该语义
+        # 由 PROJECT_LOCK F-BL-R3-01 直接背书并有双路径测试钉死(routing 完整
+        # 拒绝分支 + precheck safe-reject 分支)。2026-07-13 批C F-6 重分类。
+        "EXACT_B1_BINDING_ALT_CAP",
         "EXACT_B1_D2_FLOW_SECONDS",
         "EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS",
         "EXACT_B1_PATCH_ROUTING_CORE_SECONDS",
