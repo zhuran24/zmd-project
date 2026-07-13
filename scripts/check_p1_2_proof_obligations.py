@@ -13016,7 +13016,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/report_builder.py': '860ff758d6c64ac0029f2e22ad087c6b520d37d40e0264a8b464302a36c7cff6',
     'src/render/serve.py': '45a03f847c80595ef72b3e859eeccf01169ed16e87faebd7b75be4c788ff7262',
     'src/runtime/subproblem_invocation_counter.py': '6f5ac40b2674a1a2b99d9932dc262e4c57c2f622e27e4b83dc39d9bcc270c759',
-    'src/search/benders_loop.py': 'fb17e5179b6eb86ea9dbbc327dc162fade783fee8fe4a9bf5e6e03d582d76f9c',
+    'src/search/benders_loop.py': '230c7d294a3911b912ecb0bb75ee6c77477f87fa6a7b061b0ddf1f68c9e27303',
     'src/search/f5_binding_empty_domain_adapter.py': '76d072161b85f8ce5e87682769434291b5c7ccdb005623dc8a3265fb4c48b6df',
     'src/search/orbit_homogeneity.py': '633d41eae5a2b6db987a350ca6862324df9a8551dd0191f1f3ffa264b71cc4c9',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',

@@ -4084,6 +4084,158 @@ def test_binding_alt_cap_returns_unknown_without_whole_layout_cut(
     assert controller.last_proof_summary["binding_alternative_cap"] == 1
 
 
+def test_binding_alt_cap_covers_routing_precheck_reject_path(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    """Cap 必须同样挡住 precheck safe-reject 枚举路径(F-6:该路径实测可无限枚举)。"""
+
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+        def add_benders_cut(self, *args, **kwargs):
+            raise AssertionError("precheck-path alt cap must not emit a master cut")
+
+    selections = [
+        {
+            "binding_choice": {"tiny_001": 0},
+            "generic_inputs": {},
+            "generic_outputs": {},
+        },
+        {
+            "binding_choice": {"tiny_001": 1},
+            "generic_inputs": {},
+            "generic_outputs": {},
+        },
+    ]
+
+    class FakeBindingModel:
+        instances = []
+
+        def __init__(self, *args, **kwargs):
+            self.index = 0
+            self.binding_vars = {"tiny_001": {0: object(), 1: object()}}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+            self.nogoods = []
+            FakeBindingModel.instances.append(self)
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            if self.index < len(selections):
+                return "FEASIBLE"
+            return "INFEASIBLE"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return dict(selections[self.index])
+
+        def extract_port_specs(self) -> list[dict]:
+            return []
+
+        def add_nogood_cut(self, selection: dict) -> None:
+            self.nogoods.append(dict(selection))
+            self.index += 1
+
+        def extract_conflict_summary(self) -> dict:
+            return {"enumerated": self.index, "nogoods": len(self.nogoods)}
+
+    class FakeRoutingGrid:
+        def __init__(self, occupied_cells, port_specs):
+            self.occupied_cells = occupied_cells
+            self.port_specs = port_specs
+            # 有 free_cells 才会走 run_exact_routing_precheck 调用点(否则
+            # precheck 缺席、默认 feasible、直落完整 routing solve)
+            self.free_cells = []
+
+    class FakeRoutingSubproblem:
+        def __init__(self, grid, commodities):
+            self.build_stats = {"fake": "must_not_build"}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit: float = 60.0) -> str:
+            raise AssertionError(
+                "precheck safe-reject path must not run the full routing solve"
+            )
+
+    def fake_precheck(*args, **kwargs):
+        return {
+            "status": "relaxed_disconnected",
+            "binding_selection_safe_reject": True,
+            "placement_level_conflict_set": [],
+            "blocked_ports": [],
+            "disconnected_commodities": ["fake_commodity"],
+            "_analysis": {
+                "status": "relaxed_disconnected",
+                "binding_selection_safe_reject": True,
+                "blocked_ports": [],
+            },
+        }
+
+    monkeypatch.setenv("EXACT_B1_BINDING_ALT_CAP", "1")
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(benders_loop_module, "RoutingGrid", FakeRoutingGrid)
+    monkeypatch.setattr(benders_loop_module, "RoutingSubproblem", FakeRoutingSubproblem)
+    monkeypatch.setattr(
+        benders_loop_module, "run_exact_routing_precheck", fake_precheck
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_whole_layout_nogood(**kwargs):
+        raise AssertionError(
+            "precheck-path alt cap must fail closed before whole-layout nogood"
+        )
+
+    controller._add_exact_whole_layout_nogood = fail_whole_layout_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert FakeBindingModel.instances[0].nogoods == []
+    assert controller.last_proof_summary["binding_status"] == "ALT_CAP_REACHED"
+    assert (
+        controller.last_proof_summary["routing_status"]
+        == "PRECHECK_RELAXED_DISCONNECTED"
+    )
+    assert controller.last_proof_summary["binding_alternative_cap"] == 1
+    assert controller.last_proof_summary["enumerated_bindings"] == 1
+
+
 def test_unexpected_initial_binding_status_returns_unknown_without_exact_safe_cut(
     monkeypatch,
     tmp_path: Path,

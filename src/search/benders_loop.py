@@ -6786,6 +6786,40 @@ class LBBDController:
                 and precheck_status in {"front_blocked", "relaxed_disconnected"}
                 and self._binding_has_alternatives(binding_model)
             ):
+                # B1 Phase 6 第 3 条的 cap 必须同样覆盖 precheck 拒绝路径: 该闸
+                # 原本只挡 routing 完整拒绝分支, 而 precheck safe-reject 走同一个
+                # enumerated_bindings 循环(实测可 ~1 轮/秒无限枚举)。语义与
+                # 完整拒绝分支处一致: cap 只证明预算耗尽, 不证明剩余
+                # alternatives 不可行, fail-closed 返回 UNKNOWN。
+                _b1_precheck_alt_cap_str = os.environ.get(
+                    "EXACT_B1_BINDING_ALT_CAP", ""
+                ).strip()
+                _b1_precheck_alt_cap = 0
+                try:
+                    _b1_precheck_alt_cap = (
+                        int(_b1_precheck_alt_cap_str) if _b1_precheck_alt_cap_str else 0
+                    )
+                except ValueError:
+                    _b1_precheck_alt_cap = 0
+                if _b1_precheck_alt_cap > 0 and enumerated_bindings >= _b1_precheck_alt_cap:
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "ALT_CAP_REACHED",
+                        "routing_status": f"PRECHECK_{precheck_status.upper()}",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_alternative_cap": int(_b1_precheck_alt_cap),
+                        "binding_summary": binding_model.extract_conflict_summary(),
+                        "routing_precheck": dict(routing_precheck_summary),
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._routing_shrink_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
                 self._routing_precheck_rejections += 1
                 binding_rejected_selections.append(copy.deepcopy(selection))
                 binding_model.add_nogood_cut(selection)
