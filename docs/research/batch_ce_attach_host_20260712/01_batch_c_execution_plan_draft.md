@@ -111,7 +111,20 @@
 | batch_c_probe_11 | 6×7 attach-on+cap=1500(矩阵尺寸维度第 1 点) | **16:43 rc=0**:与 6×6 完全同构——ALT_CAP_REACHED@1500,routing_attempts=0,ledger complete/2ev,cut=0,wall 1605.7s(与 6×6 三 run 的 1601-1609 同带宽)。**cap 口径行为跨尺寸一致** |
 | batch_c_probe_12 | 6×7 `--attach off`+cap=1500(A/B 第二对) | **17:11 rc=0:证明面逐位等价,wall -0.05%**(比第一对 +0.48% 更紧)。**A/B 第二对成立**;通用匹配采样器(修 sed 链坑)验证 RSS 峰 43.4G 与先例一致 |
 | batch_c_probe_13 | 7×6 attach-on+cap=1500(矩阵第三尺寸) | **17:39 rc=0:三尺寸全同构**——ALT_CAP@1500/routing_attempts=0/ledger complete/cut=0,wall 1591.9s,RSS 峰 43.2G |
-| batch_c_probe_14 | 7×6 `--attach off`+cap=1500(A/B 第三对,17:40 发射) | 【跑中,~18:09 出】出齐即 3 尺寸×on/off 全对称矩阵(+1 复跑)完成 |
+| batch_c_probe_14 | 7×6 `--attach off`+cap=1500(A/B 第三对) | **18:06 rc=0:证明面逐位等价,wall -4.29%**(1591.9→1523.7s;三对中唯一超 1%,方向 off 更快,更可能为 master 段方差而非 attach 开销——on 臂三 run 波动仅 ±0.25%,7×6 off 无复跑样本,如实标注不定罪;仍远在门6 ±20% 内) |
+
+### §2 矩阵收官(2026-07-13 18:07,cap=1500 口径,7 点)
+| 点 | wall(s) | cut | binding | ledger |
+|---|---|---|---|---|
+| 6×6 on | 1601.5 | 0 | ALT_CAP@1500 | complete/2ev |
+| 6×6 off | 1609.2 | 0 | ALT_CAP@1500 | complete/2ev |
+| 6×6 on-rep | 1604.7 | 0 | ALT_CAP@1500 | complete/2ev |
+| 6×7 on | 1605.7 | 0 | ALT_CAP@1500 | complete/2ev |
+| 6×7 off | 1604.9 | 0 | ALT_CAP@1500 | complete/2ev |
+| 7×6 on | 1591.9 | 0 | ALT_CAP@1500 | complete/2ev |
+| 7×6 off | 1523.7 | 0 | ALT_CAP@1500 | complete/2ev |
+
+**门6 证据(cap 口径)三行结论**:①A/B 等价 ×3 对——证明面字段(status/cut/proof_summary/ledger)全部逐位等价,wall 差 +0.48%/-0.05%/-4.29%(全部远在 ±20% 回滚线内);②稳定性——on 臂复跑逐位复现(wall +0.20%);③跨尺寸一致——三尺寸全同构(master FEASIBLE→binding 1500 轮 precheck 全拒→cap fail-closed)。**cap 口径下 attach on 无害性成立;双臂 cut 均 0=空对照**(门6 rev3 预警的「双零空过」场景——正因如此判定口径项已列 §5 等 owner:矩阵按 cap 口径的判定力=无害性+等价性,「组织性触发>0」的判定力需要穷尽口径或注入式对照补齐)。
 
 ### F-6 后续两批(07-13 下午,`34cb0aa`+`9deec8f`):cap 机制从死代码到批C 可用
 1. **cap 补齐批(`34cb0aa`)**:`EXACT_B1_BINDING_ALT_CAP`(B1 Phase 6 第 3 条)的检查原只在 routing 完整拒绝分支,precheck safe-reject 分支(实测循环走的路)绕过——cap 写于该分支存在之前的实现缺口。补同款 fail-closed 检查(ALT_CAP_REACHED→UNKNOWN),新测试钉双路径,第二轮 reseal。
