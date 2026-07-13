@@ -95,6 +95,8 @@
 | batch_c_probe_2 | w1,独占,+faulthandler | 穿过 probe_1 死亡时点未复现崩溃(→间歇性);binding 段 67+min 未出结论,换硅脂关机中断 |
 | ptm_cycle_1 | w6+全核 stress **无隔离**,master 900s | master UNKNOWN=**无效臂**(伴跑污染);87°C 全链 14min 零崩 |
 | ptm_cycle_2 | w6+taskset 隔离(solve@0-6/stress@7-23),master 1800s | **master 出解**;binding 枚举 52min 未出结论被 3600s 兜底掐;peak 94°C 零崩;VmHWM 42.6G+swap 6.3G |
+| batch_c_probe_3 | **独占**,w6+`EXACT_BINDING_CP_SAT_WORKERS=6`,master 1800s | master ~14min 完成(HWM 44.7G);binding 枚举 ~105min 无结论,**TIMEOUT@7200s**;零崩。与 probe_2(w1)行为一致=F-5 生产层坐实(env 对 binding 无效) |
+| batch_c_probe_6 | 独占,w6+`EXACT_SUBPROBLEM_PARAMS="search_branching=0"`(F-5 修复验证臂,cf76bed 后) | 【跑中,09:43 起】判定点:binding 段 CPU 是否 ~600%+出结论时长 |
 
 ### 工程发现(F-1~F-4)
 - **F-1 binding 段无段级帽**:单次 solve 的 600s 帽接线完好(`benders_loop:6803→binding_subproblem` `max_time_in_seconds`),但编排层有枚举/重试多次 solve(5 个调用点+retry),**段级总时长无上限**(probe_2/cycle_2 双复现)。宿主必须自带段级 wall 兜底(合体脚本用外层 3600s kill 实现)。提速选项:`EXACT_BINDING_CP_SAT_WORKERS`(实测 binding 单线程 99.8% 满转,默认 w1;binding 稳态内存 18.5G,有余量开 4-6 worker,留独占重跑实验)。
@@ -113,3 +115,12 @@ cycle_2 是首次推进到 binding 的 attach-on 运行,但 binding 未在预算
 
 ### F-5(07-13 晨,probe_3 实测):binding 并行被 FIXED_SEARCH 锁死
 `EXACT_BINDING_CP_SAT_WORKERS=6` 注入成功(进程 environ 确认)且参数链完好(`resolve_cp_sat_worker_count` 正常,binding 默认即 4 worker),但 probe_3 实测 binding 段瞬时 CPU=1.0 核——`binding_subproblem.py` 的 solve 硬编码 `search_branching=FIXED_SEARCH`,**CP-SAT 在 FIXED 搜索下 num_workers 无效、退化单 worker**(此前所有轮的 binding 单线程同因;F-1 的「开 worker 提速」选项就此证伪)。真正的提速路=改 FIXED_SEARCH(sealed 文件,reseal 批+双审,须论证 search 策略不碰 soundness——solver 参数不改验证语义,预期可行但走完整流程)或接受段级时长。`EXACT_SUBPROBLEM_PARAMS` 注入 search_branching 无效(注入点在硬编码行之前,被覆盖)。窗口估算相应固定为 1.5-2h/点,矩阵拆多窗口执行。
+
+### F-5 修复批(07-13 上午,`cf76bed`):env 注入通道打通,certified 默认零变化
+probe_3 TIMEOUT@7200s 坐实「不提速矩阵不可行」后,按本节「先做 binding 提速」推荐执行。根因实为**两层**:
+1. **顺序**:`apply_subproblem_memory_cap`(`EXACT_SUBPROBLEM_PARAMS` 通用注入)在 `binding_subproblem.solve` 里调用于 FIXED_SEARCH 硬编码**之前**,注入值被覆盖;
+2. **类型**:ortools 9.15 原生绑定(`cp_model_helper.SatParameters`)的枚举字段 setter 只收枚举类型,`search_branching=0` 解析成裸 int 后 `setattr` 抛 TypeError,被注入函数的 garbage-no-op 契约静默吞掉——即使顺序对了 int 注入也永远失效。
+
+修复:①注入调用挪到内置 profile(FIXED/symmetry/probing 硬编码)之后=「显式 env 覆盖内置默认」既有优先级哲学;②注入函数对 int 值加枚举类型重试(`type(current)(parsed)`)。**无 env 时行为零变化**(FIXED_SEARCH 原样),`EXACT_SUBPROBLEM_PARAMS` 本在 certified 操作性 allowlist、无新 env 面;solve 后 telemetry `search_branching` 字段本就如实记录最终值。新增测试 `test_binding_subproblem_params_env_overrides_search_branching`;close-kernel reseal 3 pin(V99 dict binding+worker_config、JSON binding entry、checker 自钉),双 checker 计数不变(15/67/65/83),`--full` 19 绿+慢 lane 绿。
+**注意**:同款顺序 bug 存在于 routing/patch_routing/d2/power/master 各 `apply_subproblem_memory_cap` 调用点(master 有专属 `EXACT_MASTER_SEARCH_BRANCHING` 不受影响)——本批只修 binding(单变量纪律),其余留待需要时逐个处理。
+验证臂=probe_6(`search_branching=0`+w6):若 binding 提速显著(CPU ~600%、时长大降),§2 矩阵估算按新单点时长重估;若 AUTOMATIC 下 binding 仍无结论,说明瓶颈在枚举结构本身(F-1 的多次 solve 循环)而非单 solve 并行度,提速路线转向编排层。
