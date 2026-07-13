@@ -96,7 +96,8 @@
 | ptm_cycle_1 | w6+全核 stress **无隔离**,master 900s | master UNKNOWN=**无效臂**(伴跑污染);87°C 全链 14min 零崩 |
 | ptm_cycle_2 | w6+taskset 隔离(solve@0-6/stress@7-23),master 1800s | **master 出解**;binding 枚举 52min 未出结论被 3600s 兜底掐;peak 94°C 零崩;VmHWM 42.6G+swap 6.3G |
 | batch_c_probe_3 | **独占**,w6+`EXACT_BINDING_CP_SAT_WORKERS=6`,master 1800s | master ~14min 完成(HWM 44.7G);binding 枚举 ~105min 无结论,**TIMEOUT@7200s**;零崩。与 probe_2(w1)行为一致=F-5 生产层坐实(env 对 binding 无效) |
-| batch_c_probe_6 | 独占,w6+`EXACT_SUBPROBLEM_PARAMS="search_branching=0"`(F-5 修复验证臂,cf76bed 后) | 【跑中,09:43 起】判定点:binding 段 CPU 是否 ~600%+出结论时长 |
+| batch_c_probe_6 | 独占,w6+`EXACT_SUBPROBLEM_PARAMS="search_branching=0"`(F-5 修复验证臂,cf76bed 后) | master ~9min 出解(HWM 44.1G);binding 段 8-10min 处瞬时 CPU 三采样均=1 核,py-spy 栈钉死在 CP-SAT `Solve()` C++ 内(非 Python 编排)、R 线程仅主线程;env 注入 environ 确认在。**AUTOMATIC 也单核 → F-5 的「FIXED 锁并行」解释不完整,新头号嫌疑=binding 大模型的单线程 presolve**。20min 处主动杀掉换 probe_7(带日志) |
+| batch_c_probe_7 | 同 probe_6+`log_search_progress=true`(判定金标准:CP-SAT 日志的 presolve 时长与 "Starting search … N workers" 行) | 【跑中,10:03 起】**中期发现(80s 处)**:build 段即出现微 solve 洪流——1473 个 CP-SAT solve/80 秒,每个 presolve 0.00s+search ≤0.01s+OPTIMAL、"6 workers" 字样正常(修复生效,但 0.01s 的 solve 无并行价值);随后 "Starting presolve at 0.33s"=master 大 solve 开始。**待判定:binding 段的日志形态**——若同为微 solve 洪流→F-5 的真相=编排量级问题(海量微 solve×Python 每循环开销),solver 参数线(FIXED/AUTOMATIC/workers)整条无关紧要;若为单个长 search→回到并行问题。日志成本注意:18M/80s,tmpfs(/tmp=RAM);binding 段若洪流 100min≈1.4G,与稳态 19G RSS 并存可控,但后续 probe 若常态开日志要引到磁盘 |
 
 ### 工程发现(F-1~F-4)
 - **F-1 binding 段无段级帽**:单次 solve 的 600s 帽接线完好(`benders_loop:6803→binding_subproblem` `max_time_in_seconds`),但编排层有枚举/重试多次 solve(5 个调用点+retry),**段级总时长无上限**(probe_2/cycle_2 双复现)。宿主必须自带段级 wall 兜底(合体脚本用外层 3600s kill 实现)。提速选项:`EXACT_BINDING_CP_SAT_WORKERS`(实测 binding 单线程 99.8% 满转,默认 w1;binding 稳态内存 18.5G,有余量开 4-6 worker,留独占重跑实验)。
@@ -115,6 +116,14 @@ cycle_2 是首次推进到 binding 的 attach-on 运行,但 binding 未在预算
 
 ### F-5(07-13 晨,probe_3 实测):binding 并行被 FIXED_SEARCH 锁死
 `EXACT_BINDING_CP_SAT_WORKERS=6` 注入成功(进程 environ 确认)且参数链完好(`resolve_cp_sat_worker_count` 正常,binding 默认即 4 worker),但 probe_3 实测 binding 段瞬时 CPU=1.0 核——`binding_subproblem.py` 的 solve 硬编码 `search_branching=FIXED_SEARCH`,**CP-SAT 在 FIXED 搜索下 num_workers 无效、退化单 worker**(此前所有轮的 binding 单线程同因;F-1 的「开 worker 提速」选项就此证伪)。真正的提速路=改 FIXED_SEARCH(sealed 文件,reseal 批+双审,须论证 search 策略不碰 soundness——solver 参数不改验证语义,预期可行但走完整流程)或接受段级时长。`EXACT_SUBPROBLEM_PARAMS` 注入 search_branching 无效(注入点在硬编码行之前,被覆盖)。窗口估算相应固定为 1.5-2h/点,矩阵拆多窗口执行。
+
+### F-6(07-13 上午,probe_7 日志+py-spy 定位):binding 段时长的真相=binding↔routing 枚举循环,不是慢 solve
+probe_7 带 CP-SAT 日志后真相浮出:binding 段是 `benders_loop._run_exact_binding_and_routing` 内的**枚举循环**——binding 模型秒级解出一个 selection(单次 CP-SAT search 0.01-1.07s,全 OPTIMAL)→ routing precheck 拒绝(front_blocked/relaxed_disconnected 等)→ `binding_model.add_nogood_cut(selection)` 增量排除 → 重解 binding 取下一个 selection。实测速率 ~1 轮/秒(2 分钟 113 轮);probe_2/3 的 105 分钟 ≈ 数千轮**未收敛**。py-spy 栈三连采样恒在 `binding_subproblem.py:1307` 的 `Solve()` 内=每轮 solve 占 95%+ 墙钟的采样错觉,并非单个大 solve 卡住。
+
+**判读链修正**:
+- F-5 的「FIXED_SEARCH 锁并行」对单次 binding solve 成立但**与段级时长无关**——0.01-1s 的微 solve 没有并行价值(probe_7 日志 "6 workers" 确认注入修复生效,CPU 仍 ~1 核)。solver 参数线(FIXED/AUTOMATIC/workers)对批C 时长整条无关紧要。
+- **组织性触发的判定=等循环收敛**:①找到 routing 接受的 binding → FEASIBLE,cut_count=0(该 cell 无组织性触发,有效结果);②穷尽 binding 解空间 → binding-INFEASIBLE,master 级 framework cut 触发(cut_count>0,有效结果)。两种都是§1 要的判定,卡点只在收敛时长——而循环**无总预算帽**(=F-1 的真正含义),解空间量级未知(可能数万至天文数字)。
+- 提速/可判定化选项(供排期):a) 编排层加循环级预算+尽早判据(owner 侧规格问题);b) 选收敛快的 cell(更小 ghost/实例子集,§1b 方向反转:不是找触发窗、是找收敛窗);c) routing precheck 前移增强,减少无效枚举(深水区)。单纯 solver 提速已证伪。
 
 ### F-5 修复批(07-13 上午,`cf76bed`):env 注入通道打通,certified 默认零变化
 probe_3 TIMEOUT@7200s 坐实「不提速矩阵不可行」后,按本节「先做 binding 提速」推荐执行。根因实为**两层**:
