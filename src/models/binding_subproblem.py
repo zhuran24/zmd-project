@@ -1293,17 +1293,13 @@ class PortBindingModel:
             env_name="EXACT_BINDING_CP_SAT_WORKERS",
             default=DEFAULT_BINDING_CP_SAT_WORKERS,
         )
+        apply_subproblem_memory_cap(solver)
         solver.parameters.search_branching = cp_model.FIXED_SEARCH
         solver.parameters.symmetry_level = max(int(solver.parameters.symmetry_level), 3)
         solver.parameters.cp_model_probing_level = max(
             int(solver.parameters.cp_model_probing_level),
             3,
         )
-        # 显式 env 注入必须最后应用: EXACT_SUBPROBLEM_PARAMS 的契约是 sweep 时
-        # 显式指定的参数为最终值; 放在内置 profile 之前会被上面的硬编码静默覆盖
-        # (search_branching 即因此曾不可覆盖)。缺省无 env 时此调用是 no-op,
-        # 上面的 guided-branching profile 不变。
-        apply_subproblem_memory_cap(solver)
         status = solver.Solve(self.model)
         self._solver = solver
         self._status = status

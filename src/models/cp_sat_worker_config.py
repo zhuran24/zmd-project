@@ -173,16 +173,7 @@ def apply_subproblem_memory_cap(solver: Any) -> None:
         try:
             setattr(solver.parameters, key, parsed)
         except (AttributeError, TypeError, ValueError):
-            # ortools 9.15 原生绑定的枚举字段 setter 只收枚举类型, 裸 int 抛
-            # TypeError (如 search_branching): 用现值的枚举类型重包 int 再试一次;
-            # 仍失败才按本函数「garbage no-op」契约跳过。
-            if not isinstance(parsed, int) or isinstance(parsed, bool):
-                continue
-            try:
-                current = getattr(solver.parameters, key)
-                setattr(solver.parameters, key, type(current)(parsed))
-            except (AttributeError, TypeError, ValueError):
-                continue
+            continue
 
 
 # Phase 3C P0 #3 (UNSAT subsolver portfolio, R12-revised conservative variant).
