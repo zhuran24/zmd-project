@@ -110,7 +110,8 @@
 | batch_c_probe_10 | 同 probe_8 全同配置复跑(门6 稳定性行) | **16:11 rc=0:证明面+telemetry 逐位复现**(全对照字段零差异),wall +0.20%。**门6 稳定性行成立**;CP-SAT 确定性跨 run 再复现(与 M5「branches 逐位同」、内存轨迹逐秒同同族证据) |
 | batch_c_probe_11 | 6×7 attach-on+cap=1500(矩阵尺寸维度第 1 点) | **16:43 rc=0**:与 6×6 完全同构——ALT_CAP_REACHED@1500,routing_attempts=0,ledger complete/2ev,cut=0,wall 1605.7s(与 6×6 三 run 的 1601-1609 同带宽)。**cap 口径行为跨尺寸一致** |
 | batch_c_probe_12 | 6×7 `--attach off`+cap=1500(A/B 第二对) | **17:11 rc=0:证明面逐位等价,wall -0.05%**(比第一对 +0.48% 更紧)。**A/B 第二对成立**;通用匹配采样器(修 sed 链坑)验证 RSS 峰 43.4G 与先例一致 |
-| batch_c_probe_13 | 7×6 attach-on+cap=1500(矩阵第三尺寸,17:12 发射) | 【跑中,~17:41 出】 |
+| batch_c_probe_13 | 7×6 attach-on+cap=1500(矩阵第三尺寸) | **17:39 rc=0:三尺寸全同构**——ALT_CAP@1500/routing_attempts=0/ledger complete/cut=0,wall 1591.9s,RSS 峰 43.2G |
+| batch_c_probe_14 | 7×6 `--attach off`+cap=1500(A/B 第三对,17:40 发射) | 【跑中,~18:09 出】出齐即 3 尺寸×on/off 全对称矩阵(+1 复跑)完成 |
 
 ### F-6 后续两批(07-13 下午,`34cb0aa`+`9deec8f`):cap 机制从死代码到批C 可用
 1. **cap 补齐批(`34cb0aa`)**:`EXACT_B1_BINDING_ALT_CAP`(B1 Phase 6 第 3 条)的检查原只在 routing 完整拒绝分支,precheck safe-reject 分支(实测循环走的路)绕过——cap 写于该分支存在之前的实现缺口。补同款 fail-closed 检查(ALT_CAP_REACHED→UNKNOWN),新测试钉双路径,第二轮 reseal。
