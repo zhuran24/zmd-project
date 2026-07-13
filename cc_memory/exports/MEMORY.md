@@ -11,9 +11,9 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 4
-- entries: 9
+- entries: 10
 - hard edges: 7
-- pending relation suggestions: 2
+- pending relation suggestions: 3
 
 ## Start Here
 
@@ -29,6 +29,7 @@ python cc_memory/mem.py boot
 
 ## Entries
 
+- `batch-c-execution-day-20260713` — cf76bed/34cb0aa/9deec8f 三批打通判定基建;probe_8/9/10 三 cell.json:A/B 逐位等价 wall+0.48%、复跑逐位复现 wall+0.20%;§1b 扫描落空;矩阵 5h 可完;cap vs 穷尽判据=新拍板项
 - `batch-c-f6-binding-routing-enum-loop` — probe_6/7 定案:binding 秒解→routing precheck 拒→add_nogood 重解的枚举循环,~1轮/s 数千轮未收敛;FIXED_SEARCH/编排慢/presolve 三假说证伪;cf76bed 注入修复有效但对时长无救;触发正地方=frontier 难点
 - `batch-c-kickoff-findings-20260713` — 批C(PIC-4/5+门6)开工实录:binding 无段级帽+FIXED_SEARCH 锁死并行等五发现;组织性触发仍未判定;换硅脂后零崩=热嫌疑坐实;owner 目标无退路口径+替代进攻路线盘点指针
 - `codex-needs-explicit-read-memory` — Codex 记忆 2026-06: RULE, 子代理不会自动读 CLAUDE/cc_memory, 提示词要写明。
