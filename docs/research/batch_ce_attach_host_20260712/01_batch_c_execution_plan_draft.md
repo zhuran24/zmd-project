@@ -32,7 +32,10 @@
 2. 用 `--enabled-families` 与配方组合矩阵找触发窗;
 3. 仍无 → 批C 判定口径改写为「PIC-5 编排/telemetry/成本验证 + 门6 改注入式对照」,组织性触发义务上报 owner 改判(这属于规格判据变更,owner-only)。
 
-**结果**:⬜ 待填(probe_1 运行中)。
+**结果**(2026-07-13 15:15 判定,证据=probe_1~9+§1b 两臂,全史见 §7):
+- **组织性触发(自然 binding-INFEASIBLE):当日窗口内未观察到,且已定位结构原因**——binding↔routing 是 ~1 轮/秒的枚举循环(F-6),6×6/6×7/7×6 三 cell 均「master 可解+循环数千轮不收敛」;自然触发需要循环**穷尽**,在无 cap 时代不可判定(probe_2/3 双 2h 无果),cap 口径下 6×6@1500 轮 cut_count=0(cap≠穷尽,诚实标注)。
+- **判定基础设施已全部打通**(今日三批:`cf76bed`/`34cb0aa`/`9deec8f`):cap 双路径覆盖+certified 放行→**cell.json 首落地**(probe_8,28min 全链,ALT_CAP_REACHED fail-closed+ledger complete 读回)。**A/B 矩阵从「不可判定」变为「可跑」:每点 ~28min(cap=1500 口径)**。
+- §1b 备选 1(尺寸扫描)已执行:落空(见 §7);备选 2(配方矩阵)未做——cap 口径下优先级让位于 A/B 空对照矩阵;备选 3(判据变更上报)**成为现实项**:组织性触发的判定在「cap 口径」与「穷尽口径」间需要 owner 定判据(见 §5 拍板清单)。
 
 ## §2 门6 prod A/B 矩阵(卡点②:窗口需求)
 
@@ -100,7 +103,8 @@
 | batch_c_probe_7 | 同 probe_6+`log_search_progress=true`(判定金标准:CP-SAT 日志) | build 段微 solve 洪流(1473 个/80s,全 ≤0.01s OPTIMAL,"6 workers" 确认注入生效);binding 段=~1 轮/秒 solve 循环(2min 采样 113/109 轮,search 1.07→1.10s 缓增),**F-6 定案证据主体**。10:25 主动杀,日志 63M 压缩留档(run.log.gz) |
 | §1b scan 6×7 | 独占,attach on+日志,7200s 帽 | master **OPTIMAL 出解**(search 487.9s,尖峰 43.4G)→ binding 循环 ~4500 轮不收敛,TIMEOUT@7200s |
 | §1b scan 7×6 | 同上 | 与 6×7 几乎同款:master OPTIMAL(search 485.05s,尖峰 43.3G)→ binding 不收敛,TIMEOUT@7200s。**三 cell 全部「master 可解+binding 枚举不收敛」,难点快速 INFEASIBLE 假设整体落空** |
-| batch_c_probe_8 | 6×6 attach-on+`EXACT_B1_BINDING_ALT_CAP=1500`(cap 收敛臂,`9deec8f` 后) | 首发 14:31 秒死于 env 守卫(cap 原被归 proof-semantics,certified 拒)→重分类批后 14:45 重发【跑中】。预期 ~35min:ALT_CAP_REACHED→UNKNOWN→**cell.json 首落地**(telemetry 全套=PIC-5 素材) |
+| batch_c_probe_8 | 6×6 attach-on+`EXACT_B1_BINDING_ALT_CAP=1500`(cap 收敛臂,`9deec8f` 后) | 首发 14:31 秒死于 env 守卫(cap 原被归 proof-semantics,certified 拒)→重分类批后 14:45 重发,**15:13 rc=0,cell.json 批C 首落地(wall 1680s)**。判读:status=UNKNOWN,binding_status=**ALT_CAP_REACHED**@enumerated_bindings=1500(precheck 分支 cap 生产层首次真实命中),routing_status=PRECHECK_FRONT_BLOCKED,**routing_attempts=0(1500 轮全灭在 precheck,routing CP-SAT 从未上场=F-6 再实锤)**;cut_count=0(**cap 口径**,非穷尽口径);ledger_read=complete/2ev/applied 0/dup 0+tail_hash(RFC-003 三态读回 prod-scale 首验);cut_framework_attach_last=null(无触发无 attach,预期)。循环速率 ~0.73 轮/s 与 probe_7 一致 |
+| batch_c_probe_9 | 同 probe_8 唯一差异 `--attach off`(门6 A/B 第一对,15:07 发射) | 【跑中】预期 ~28min:两臂对照 wall/内存/ledger/proof_summary——无触发场景下 attach on 的零开销/零行为差=PIC-4/PIC-5 无害性证据 |
 
 ### F-6 后续两批(07-13 下午,`34cb0aa`+`9deec8f`):cap 机制从死代码到批C 可用
 1. **cap 补齐批(`34cb0aa`)**:`EXACT_B1_BINDING_ALT_CAP`(B1 Phase 6 第 3 条)的检查原只在 routing 完整拒绝分支,precheck safe-reject 分支(实测循环走的路)绕过——cap 写于该分支存在之前的实现缺口。补同款 fail-closed 检查(ALT_CAP_REACHED→UNKNOWN),新测试钉双路径,第二轮 reseal。
