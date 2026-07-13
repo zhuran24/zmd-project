@@ -97,7 +97,15 @@
 | ptm_cycle_2 | w6+taskset 隔离(solve@0-6/stress@7-23),master 1800s | **master 出解**;binding 枚举 52min 未出结论被 3600s 兜底掐;peak 94°C 零崩;VmHWM 42.6G+swap 6.3G |
 | batch_c_probe_3 | **独占**,w6+`EXACT_BINDING_CP_SAT_WORKERS=6`,master 1800s | master ~14min 完成(HWM 44.7G);binding 枚举 ~105min 无结论,**TIMEOUT@7200s**;零崩。与 probe_2(w1)行为一致=F-5 生产层坐实(env 对 binding 无效) |
 | batch_c_probe_6 | 独占,w6+`EXACT_SUBPROBLEM_PARAMS="search_branching=0"`(F-5 修复验证臂,cf76bed 后) | master ~9min 出解(HWM 44.1G);binding 段 8-10min 处瞬时 CPU 三采样均=1 核,py-spy 栈钉死在 CP-SAT `Solve()` C++ 内(非 Python 编排)、R 线程仅主线程;env 注入 environ 确认在。**AUTOMATIC 也单核 → F-5 的「FIXED 锁并行」解释不完整,新头号嫌疑=binding 大模型的单线程 presolve**。20min 处主动杀掉换 probe_7(带日志) |
-| batch_c_probe_7 | 同 probe_6+`log_search_progress=true`(判定金标准:CP-SAT 日志的 presolve 时长与 "Starting search … N workers" 行) | 【跑中,10:03 起】**中期发现(80s 处)**:build 段即出现微 solve 洪流——1473 个 CP-SAT solve/80 秒,每个 presolve 0.00s+search ≤0.01s+OPTIMAL、"6 workers" 字样正常(修复生效,但 0.01s 的 solve 无并行价值);随后 "Starting presolve at 0.33s"=master 大 solve 开始。**待判定:binding 段的日志形态**——若同为微 solve 洪流→F-5 的真相=编排量级问题(海量微 solve×Python 每循环开销),solver 参数线(FIXED/AUTOMATIC/workers)整条无关紧要;若为单个长 search→回到并行问题。日志成本注意:18M/80s,tmpfs(/tmp=RAM);binding 段若洪流 100min≈1.4G,与稳态 19G RSS 并存可控,但后续 probe 若常态开日志要引到磁盘 |
+| batch_c_probe_7 | 同 probe_6+`log_search_progress=true`(判定金标准:CP-SAT 日志) | build 段微 solve 洪流(1473 个/80s,全 ≤0.01s OPTIMAL,"6 workers" 确认注入生效);binding 段=~1 轮/秒 solve 循环(2min 采样 113/109 轮,search 1.07→1.10s 缓增),**F-6 定案证据主体**。10:25 主动杀,日志 63M 压缩留档(run.log.gz) |
+| §1b scan 6×7 | 独占,attach on+日志,7200s 帽 | master **OPTIMAL 出解**(search 487.9s,尖峰 43.4G)→ binding 循环 ~4500 轮不收敛,TIMEOUT@7200s |
+| §1b scan 7×6 | 同上 | 与 6×7 几乎同款:master OPTIMAL(search 485.05s,尖峰 43.3G)→ binding 不收敛,TIMEOUT@7200s。**三 cell 全部「master 可解+binding 枚举不收敛」,难点快速 INFEASIBLE 假设整体落空** |
+| batch_c_probe_8 | 6×6 attach-on+`EXACT_B1_BINDING_ALT_CAP=1500`(cap 收敛臂,`9deec8f` 后) | 首发 14:31 秒死于 env 守卫(cap 原被归 proof-semantics,certified 拒)→重分类批后 14:45 重发【跑中】。预期 ~35min:ALT_CAP_REACHED→UNKNOWN→**cell.json 首落地**(telemetry 全套=PIC-5 素材) |
+
+### F-6 后续两批(07-13 下午,`34cb0aa`+`9deec8f`):cap 机制从死代码到批C 可用
+1. **cap 补齐批(`34cb0aa`)**:`EXACT_B1_BINDING_ALT_CAP`(B1 Phase 6 第 3 条)的检查原只在 routing 完整拒绝分支,precheck safe-reject 分支(实测循环走的路)绕过——cap 写于该分支存在之前的实现缺口。补同款 fail-closed 检查(ALT_CAP_REACHED→UNKNOWN),新测试钉双路径,第二轮 reseal。
+2. **cap 重分类批(`9deec8f`)**:cap 在 certified env 守卫下被拒(`proof_semantics_exact_env_not_certified`,B1 行为开关全家桶保守分类)→查证 lock:**F-BL-R3-01(lock:353)直接背书 cap 的 fail-closed 语义**,lock:336 未钉其归类,operational 列表 B1 `*_SECONDS` 时间预算同构先例 → 移入 `_CERTIFIED_OPERATIONAL_ENV_ALLOWLIST`+论证注释+正例测试,第三轮 reseal。
+两批 env 不设=行为零变化;certified campaign 显式设 cap 时,命中只产 UNKNOWN(审计可见 ALT_CAP_REACHED+cap 值),无假证明面。
 
 ### 工程发现(F-1~F-4)
 - **F-1 binding 段无段级帽**:单次 solve 的 600s 帽接线完好(`benders_loop:6803→binding_subproblem` `max_time_in_seconds`),但编排层有枚举/重试多次 solve(5 个调用点+retry),**段级总时长无上限**(probe_2/cycle_2 双复现)。宿主必须自带段级 wall 兜底(合体脚本用外层 3600s kill 实现)。提速选项:`EXACT_BINDING_CP_SAT_WORKERS`(实测 binding 单线程 99.8% 满转,默认 w1;binding 稳态内存 18.5G,有余量开 4-6 worker,留独占重跑实验)。
