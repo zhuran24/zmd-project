@@ -78,11 +78,13 @@
 4. **promotion 包前口径确认点**(owner 拍板项,先行登记):
    - `07_batch_b6_prep_spec.md` 「B6 转硬门仍需完整多跳 alias-dataflow」字面 vs 06/roadmap/lock「α2 两项已闭(F-05 一跳已落+sink 注册 won't-do)」——二选一:补多跳,或 owner 明示接受一跳为非-soundness tripwire 边界并同步权威文档;
    - RFC-003 门6 状态 OPEN→本批结果改写;
-   - F5 转正批排期(与 B6 合批或紧随)。
+   - F5 转正批排期(与 B6 合批或紧随);
+   - **组织性触发的判定口径(07-13 新增,F-6 后果)**:批C 第一验的「触发>0」在「cap 口径」(N 轮内无触发,可判定、~28min/点)与「穷尽口径」(循环跑到 binding-INFEASIBLE,6×6 实测数千轮不收敛、时长无上界)之间需 owner 定判据——默认推荐:A/B 矩阵按 cap 口径跑(空对照仍验 PIC-4/5 无害性+等价性),穷尽口径的真触发另立长跑点(挑最小 binding 空间的 cell 过夜跑)或接受注入式对照(门6 rev3 已有先例设计)。
 
 ## §6 明确不做
 
 - 不碰 sealed 文件、不 reseal、不动 unsafe map(B6 owner-only);
+  > **07-13 修订注**:本条立项时预设「批C=纯实验批」。实测撞上 F-5/F-6(binding 不可判定)后,按 §7「先做 binding 提速」修订方向+owner 07-13 晨的连续推进授权,当日执行了三个 **fail-closed 方向、certified 默认行为零变化**的 reseal 批(`cf76bed` env 注入修复/`34cb0aa` cap 补齐/`9deec8f` cap 重分类,均完整走 SOP+双 checker+双 lane)。「不动 unsafe map(B6 owner-only)」不变量未破——`EXACT_CUT_FRAMEWORK_ATTACH` 仍在 unsafe-map、默认关。
 - 不做 F5 转正面任何工程(独立批);
 - 不把 harness/fixture 绿写成生产层已验;
 - 不在窗口外跑第二个 prod-scale solve。
