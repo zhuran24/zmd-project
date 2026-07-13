@@ -996,6 +996,51 @@ def test_binding_solver_worker_override_changes_only_solver_parameter(
     assert int(model._solver.parameters.num_workers) == 2
 
 
+def test_binding_subproblem_params_env_overrides_search_branching(
+    project_root,
+    facility_pools,
+    monkeypatch,
+):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    monkeypatch.setenv("EXACT_SUBPROBLEM_PARAMS", "search_branching=0")
+
+    instances = [
+        {
+            "instance_id": "protocol_box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
+    ]
+    placement_solution = {
+        "protocol_box_001": {
+            "pose_idx": 0,
+            "pose_id": facility_pools["protocol_storage_box"][0]["pose_id"],
+            "anchor": facility_pools["protocol_storage_box"][0]["anchor"],
+            "facility_type": "protocol_storage_box",
+        },
+    }
+
+    model = PortBindingModel(
+        placement_solution,
+        facility_pools,
+        instances,
+        required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
+    )
+    model.build()
+    assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
+    assert model._solver is not None
+    # env 注入的显式参数必须战胜内置 profile 的 FIXED_SEARCH 硬编码
+    assert int(model._solver.parameters.search_branching) == 0
+    solved_summary = model.extract_conflict_summary()
+    assert solved_summary["search_branching"].endswith("AUTOMATIC_SEARCH")
+
+
 def test_binding_model_allows_unused_generic_output_slots(tmp_path):
     import sys
 
