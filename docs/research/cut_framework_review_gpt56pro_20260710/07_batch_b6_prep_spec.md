@@ -71,6 +71,8 @@
 
 **覆盖边界(仍开放,在 F-05 tripwire 威胁模型内、非 soundness 洞)**:本 digest 封**一跳** alias(名字直接由 acquisition 绑定)。**传递多跳链**——预存的 `d = <acq>; e = d;` 再新增 `e.model.Add(c)`——不追(`e` 非 acquisition 绑定,其下游不封;但新增 `e = d` 会因加载 `d` 被封)。残留可接受:F-05 是转正前 tripwire 非 certified soundness 门,certified 下 typed attach 关停、acquisition 在 phase3b 诊断模块、注入 review 可见。**F-05 转硬门(B6)仍需完整传递 alias-dataflow 追踪**——已登记进 05 规格 §6(B6 转正清单)与本节(批E 开工订正:初版误引「批D 规格 §5」,批D 规格无此条目、且它是 F5 族转正清单与 F-05 发现编号无关)。双审(攻击位 LOW + 设计位 MEDIUM-1)均指向此边界,措辞已从「完备封死」订正为准确覆盖声明。
 
+> **⚠ owner 裁定订正(2026-07-13,真实 owner 输入)**:上句「B6 仍需完整多跳追踪」**不再是 B6 前置**。owner 明示接受**一跳 alias 为 F-05 tripwire 的正式边界**(本节残留分析的威胁模型口径),完整传递多跳追踪改归**发布时点防内鬼硬化桶**(与 owner 2026-07-06「防蓄意内鬼硬化统一延期到发布时点、不作为阶段闭合必要条件」拍板同轨)。06/roadmap/lock 的「α2 两项已闭」口径自此与本文件无张力;promotion 包按此口径签署。裁定记录:批C 计划 01 §5 第 4 条。
+
 ## §4 测试义务(初稿,拍板后细化)
 
 - item 1:bundle 复用正例(同 session 两 round 同一对象/零重建)+失效负例(artifact digest 变→
