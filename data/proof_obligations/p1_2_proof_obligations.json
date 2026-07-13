@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-07-03",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "b072979fa19cb0883b2a362734996e600f445553b02f4773b75de8d5aff22986",
+  "semantic_projection_sha256": "27cb3c86944495c9b2cc622f273cfef6d95f03987f3ad65f92da58bcf78e539a",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -1014,7 +1014,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "9c937960c16d14330e6b91c81ef4a7289c41346293aa11c46d91ca7ef8c8b01d",
+        "source_sha256": "1ce1f28d1648f0dbf6df46518f88126a81ba155f6e5a4513fa9e76a07572d0d8",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1031,7 +1031,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "bf248e9ff980d1a36df95bbe14d40384fb5384e416db0b6769a92cbeeefb630e",
+        "source_sha256": "291235b2d3775a5cd46bb990abedc6e38771f6dbf72cc1cdd0e5d3986d86aa0d",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1622,9 +1622,10 @@
         "required_guard_tokens": [
           "partial_due_to_time_budget",
           "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
-          "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE"
+          "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE",
+          "_CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE"
         ],
-        "source_sha256": "2980b0412e397de6a78231a5635251077f866f310682b033f950ccfeb86d9bf2",
+        "source_sha256": "0a810d012ce9386cb4068ed8a18b61577d923f815215c858bc97640d4fc7628d",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

@@ -54,7 +54,20 @@ import os
 import uuid
 from pathlib import Path
 import time
-from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple, cast
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    FrozenSet,
+    Iterator,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    cast,
+)
 
 from ortools.sat.python import cp_model
 
@@ -1320,6 +1333,114 @@ _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST = frozenset(
 _CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE = "unclassified_exact_env_not_certified"
 _CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE = "proof_semantics_exact_env_not_certified"
 
+# EXACT_SUBPROBLEM_PARAMS is a catch-all "key=val,key=val" injection hook
+# (experimental RSS-sweep tool per apply_subproblem_memory_cap's docstring): it
+# setattr's arbitrary solver.parameters.<key>.  The env NAME is operational, but
+# a proof-semantics key (gap limits, hint-fixing, search_branching, presolve /
+# restart toggles, solution / stop limits, or memory caps that abort a solve
+# early) can mint a false INFEASIBLE / UNKNOWN out of a certified sub-solve
+# (2026-07-14 adversarial review of cf76bed).  So certified validates both the
+# KEY and its VALUE, blessing ONLY keys that keep every sub-solve complete and
+# exact — they trade memory / time, never the feasibility region or termination
+# status — AND only values inside each key's CP-SAT semantic domain.  The value
+# bound is not cosmetic: e.g. a negative clause_cleanup_ratio drives the learned-
+# clause GC's kept=int(ratio*N) negative -> num_deleted=2N -> out-of-bounds clause
+# vector walk -> native SIGSEGV mid-campaign (same 2026-07-14 review).  A crash is
+# fail-closed for soundness, but this hook exists to survive operator misconfig,
+# so certified refuses at startup with a blocker instead of crashing hours in.
+# Any other key (proof-semantics or unknown) or any out-of-domain value fails
+# closed.  Fail-closed direction: over-restriction only refuses to run;
+# under-restriction admits a false proof or a mid-solve crash.
+# Bounds are the ortools 9.15.6755 accepted, completeness-preserving domains,
+# empirically verified against the pinned solver (defaults: linearization_level=1,
+# cp_model_probing_level=2, clause_cleanup_period=10000, clause_cleanup_ratio=0.5):
+#   * clause_cleanup_ratio is [0.0, 1.0] because that is the definitional ratio
+#     domain AND the crash boundary — outside it kept=int(ratio*N) leaves [0, N]
+#     and the learned-clause GC walks out of bounds (native SIGSEGV, above).
+#   * clause_cleanup_period must be >= 1 (a period); the int32 field rejects
+#     overflow downstream, so no upper bound is asserted here.
+#   * linearization_level / cp_model_probing_level are unbounded above: the solver
+#     accepts and internally clamps any non-negative level (0..5+ all return a
+#     valid OPTIMAL/exact status; only negatives are refused), and LP-linearization
+#     / presolve-probing strength changes work done, never the feasibility region
+#     or the exactness of the optimality proof.  A tighter enum cap here would
+#     wrongly reject library-accepted, soundness-neutral sweeps.
+# bool aliases (true/false) and fractional/sci-notation values for an int key are
+# refused: a numeric level/period/ratio needs a real numeric literal, and the
+# helper would no-op those against the typed protobuf field anyway.
+# Re-verify on any ortools upgrade (freeze-ritual).  "int"/"float" is the required
+# numeric kind; hi=None means unbounded above.
+_CERTIFIED_SUBPROBLEM_PARAMS_ENV = "EXACT_SUBPROBLEM_PARAMS"
+_CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEY_BOUNDS = {
+    "linearization_level": ("int", 0, None),
+    "cp_model_probing_level": ("int", 0, None),
+    "clause_cleanup_period": ("int", 1, None),
+    "clause_cleanup_ratio": ("float", 0.0, 1.0),
+}
+_CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEYS = frozenset(
+    _CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEY_BOUNDS
+)
+_CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE = "proof_semantics_subproblem_param_not_certified"
+
+
+def _iter_certified_subproblem_param_items(raw_value: object) -> Iterator[Tuple[str, str]]:
+    """Yield (key, value) pairs EXACT_SUBPROBLEM_PARAMS would apply.
+
+    Mirrors apply_subproblem_memory_cap's parsing exactly (comma-split, strip,
+    require '=' with a non-empty key AND non-empty value).  A pair yielded here
+    is one that helper would setattr onto solver.parameters, so the certified
+    guard checks exactly the entries that can actually take effect.
+    """
+
+    if raw_value is None:
+        return
+    text = str(raw_value).strip()
+    if not text:
+        return
+    for token in text.split(","):
+        token = token.strip()
+        if not token or "=" not in token:
+            continue
+        key, _, val = token.partition("=")
+        key = key.strip()
+        val = val.strip()
+        if not key or not val:
+            continue
+        yield key, val
+
+
+def _certified_subproblem_param_value_in_domain(key: str, raw_val: str) -> bool:
+    """True iff raw_val is inside key's certified CP-SAT semantic domain.
+
+    Conservative and fail-closed: a non-numeric / bool / NaN / Inf value, a
+    fractional value for an int-kind key, or a value outside [lo, hi] returns
+    False so the guard refuses it.  Only keys already known safe reach here.
+    """
+
+    bound = _CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEY_BOUNDS.get(key)
+    if bound is None:
+        return False
+    kind, lo, hi = bound
+    text = str(raw_val).strip()
+    if text.lower() in ("true", "false"):
+        return False
+    try:
+        num = float(text)
+    except ValueError:
+        return False
+    if num != num or num in (float("inf"), float("-inf")):  # NaN / Inf
+        return False
+    if kind == "int":
+        if "." in text or "e" in text.lower():
+            return False
+        if num != int(num):
+            return False
+    if lo is not None and num < lo:
+        return False
+    if hi is not None and num > hi:
+        return False
+    return True
+
 
 def _env_override_enabled_for_certified_master_domain(raw_value: object) -> bool:
     if raw_value is None:
@@ -1355,6 +1476,41 @@ def _collect_forbidden_certified_master_domain_env_overrides() -> List[Dict[str,
 
     for env_name in sorted(key for key in os.environ if str(key).startswith("EXACT_")):
         raw_value = os.environ.get(env_name)
+        if env_name == _CERTIFIED_SUBPROBLEM_PARAMS_ENV:
+            # Operational by NAME, but the value is a key=val injection list; a
+            # non-complete-solve-preserving key, or an in-domain-unsafe value for a
+            # safe key, fails closed (see the constant's comment).  This case fully
+            # handles the env, so do not fall through to the operational-allowlist
+            # continue below.
+            for param_key, param_val in _iter_certified_subproblem_param_items(raw_value):
+                if param_key not in _CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEYS:
+                    blockers.append(
+                        {
+                            "code": _CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE,
+                            "env": env_name,
+                            "value": str(raw_value),
+                            "param_key": param_key,
+                            "detail": (
+                                "EXACT_SUBPROBLEM_PARAMS key is not on the certified "
+                                "complete-solve-preserving allowlist"
+                            ),
+                        }
+                    )
+                    continue
+                if not _certified_subproblem_param_value_in_domain(param_key, param_val):
+                    blockers.append(
+                        {
+                            "code": _CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE,
+                            "env": env_name,
+                            "value": str(raw_value),
+                            "param_key": param_key,
+                            "detail": (
+                                "EXACT_SUBPROBLEM_PARAMS value is outside the "
+                                "certified CP-SAT semantic domain for this key"
+                            ),
+                        }
+                    )
+            continue
         if env_name in _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST:
             continue
         if env_name in unsafe_env_names or env_name in power_witness_env_names:

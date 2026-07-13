@@ -9359,6 +9359,193 @@ def test_v80_certified_exact_env_guard_allows_production_wrapper_operational_env
     )
 
 
+def test_v81_certified_env_guard_allows_complete_solve_preserving_subproblem_params(
+    monkeypatch,
+) -> None:
+    # The four keys the P1 #24 RSS sweep actually uses; each keeps every
+    # sub-solve complete and exact (trades memory/time, never feasibility or
+    # termination), so certified must let the documented sweep run.
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv(
+        "EXACT_SUBPROBLEM_PARAMS",
+        "linearization_level=0,cp_model_probing_level=0,"
+        "clause_cleanup_period=5000,clause_cleanup_ratio=0.8",
+    )
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert blockers == []
+    assert benders_loop_module._CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEYS == frozenset(
+        {
+            "linearization_level",
+            "cp_model_probing_level",
+            "clause_cleanup_period",
+            "clause_cleanup_ratio",
+        }
+    )
+
+
+@pytest.mark.parametrize(
+    "dangerous_token",
+    [
+        # False-INFEASIBLE / false-0-capacity vectors from the 2026-07-14 review.
+        "absolute_gap_limit=1000",
+        "relative_gap_limit=0.5",
+        "fix_variables_to_their_hinted_value=true",
+        "search_branching=2",
+        "cp_model_presolve=false",
+        "stop_after_first_solution=true",
+        "max_time_in_seconds=1",
+        # Memory cap can abort a sub-solve early -> non-OPTIMAL/UNKNOWN; excluded
+        # from the safe set even though a sibling env sets the same parameter.
+        "max_memory_in_mb=8000",
+        # Unknown / typo key also fails closed (deny by default).
+        "totally_unknown_knob=1",
+    ],
+)
+def test_v81_certified_env_guard_blocks_proof_semantics_subproblem_param(
+    monkeypatch,
+    dangerous_token: str,
+) -> None:
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_SUBPROBLEM_PARAMS", dangerous_token)
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    param_key = dangerous_token.split("=", 1)[0]
+    assert blockers == [
+        {
+            "code": "proof_semantics_subproblem_param_not_certified",
+            "env": "EXACT_SUBPROBLEM_PARAMS",
+            "value": dangerous_token,
+            "param_key": param_key,
+            "detail": (
+                "EXACT_SUBPROBLEM_PARAMS key is not on the certified "
+                "complete-solve-preserving allowlist"
+            ),
+        }
+    ]
+
+
+def test_v81_certified_env_guard_blocks_dangerous_key_mixed_with_safe_keys(
+    monkeypatch,
+) -> None:
+    # A safe key does not launder a dangerous one riding along in the same list.
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv(
+        "EXACT_SUBPROBLEM_PARAMS",
+        "linearization_level=0,absolute_gap_limit=1000,clause_cleanup_period=5000",
+    )
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert [b["param_key"] for b in blockers] == ["absolute_gap_limit"]
+    assert blockers[0]["code"] == "proof_semantics_subproblem_param_not_certified"
+
+
+def test_v81_certified_env_guard_ignores_empty_subproblem_params(monkeypatch) -> None:
+    # Empty / whitespace / valueless tokens apply nothing, so they must not block.
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_SUBPROBLEM_PARAMS", "  ")
+
+    assert benders_loop_module._collect_forbidden_certified_master_domain_env_overrides() == []
+
+    monkeypatch.setenv("EXACT_SUBPROBLEM_PARAMS", "linearization_level=,  ,foo")
+
+    # 'linearization_level=' has an empty value (no-op in the helper) and 'foo'
+    # has no '=' (no-op); neither is applied, so neither blocks.
+    assert benders_loop_module._collect_forbidden_certified_master_domain_env_overrides() == []
+
+
+@pytest.mark.parametrize(
+    "in_domain_params",
+    [
+        # Boundary and default-ish values across all four safe keys.
+        "clause_cleanup_ratio=0.0",
+        "clause_cleanup_ratio=1.0",
+        "clause_cleanup_ratio=1",  # int is a valid float value
+        "linearization_level=2",
+        # Above the *documented* max: ortools accepts and clamps any non-negative
+        # level, and higher LP-linearization / presolve-probing is soundness-neutral
+        # (verified OPTIMAL on the pinned solver), so certified must not reject them.
+        "linearization_level=5",
+        "cp_model_probing_level=3",
+        "cp_model_probing_level=4",
+        "clause_cleanup_period=1",
+        "clause_cleanup_period=100000",
+        # The exact P1 #24 RSS-sweep string must stay runnable under certified.
+        "clause_cleanup_period=3000,clause_cleanup_ratio=0.8,"
+        "cp_model_probing_level=0,linearization_level=0",
+    ],
+)
+def test_v81_certified_env_guard_allows_in_domain_safe_key_values(
+    monkeypatch,
+    in_domain_params: str,
+) -> None:
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_SUBPROBLEM_PARAMS", in_domain_params)
+
+    assert benders_loop_module._collect_forbidden_certified_master_domain_env_overrides() == []
+
+
+@pytest.mark.parametrize(
+    ("out_of_domain_token", "bad_key"),
+    [
+        # clause_cleanup_ratio=-1.0 is the demonstrated native-SIGSEGV vector
+        # (kept=int(ratio*N)<0 -> out-of-bounds clause GC); 2026-07-14 review.
+        ("clause_cleanup_ratio=-1.0", "clause_cleanup_ratio"),
+        ("clause_cleanup_ratio=1e308", "clause_cleanup_ratio"),
+        ("clause_cleanup_ratio=2.0", "clause_cleanup_ratio"),
+        ("clause_cleanup_ratio=-0.1", "clause_cleanup_ratio"),
+        ("clause_cleanup_ratio=nan", "clause_cleanup_ratio"),
+        ("clause_cleanup_ratio=inf", "clause_cleanup_ratio"),
+        ("clause_cleanup_ratio=true", "clause_cleanup_ratio"),  # bool is not a ratio
+        ("clause_cleanup_period=0", "clause_cleanup_period"),
+        ("clause_cleanup_period=-5", "clause_cleanup_period"),
+        # Negative levels: linearization is MODEL_INVALID in ortools, probing is
+        # a nonsensical config; both refused at the guard (lo=0, fail-closed).
+        ("linearization_level=-1", "linearization_level"),
+        ("linearization_level=0.5", "linearization_level"),  # fractional for an int key
+        ("cp_model_probing_level=-1", "cp_model_probing_level"),
+    ],
+)
+def test_v81_certified_env_guard_blocks_out_of_domain_safe_key_value(
+    monkeypatch,
+    out_of_domain_token: str,
+    bad_key: str,
+) -> None:
+    # A blessed key with a value outside its CP-SAT semantic domain fails closed
+    # at the guard (refuse to start) rather than crashing the solver mid-campaign.
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_SUBPROBLEM_PARAMS", out_of_domain_token)
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert blockers == [
+        {
+            "code": "proof_semantics_subproblem_param_not_certified",
+            "env": "EXACT_SUBPROBLEM_PARAMS",
+            "value": out_of_domain_token,
+            "param_key": bad_key,
+            "detail": (
+                "EXACT_SUBPROBLEM_PARAMS value is outside the "
+                "certified CP-SAT semantic domain for this key"
+            ),
+        }
+    ]
+
+
+def test_v81_certified_subproblem_param_safe_key_bounds_are_the_reviewed_floor() -> None:
+    # The value-domain table is the soundness crux surfaced for owner review;
+    # pin it so a silent widening (which could re-open the crash/UB vector) fails.
+    assert benders_loop_module._CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEY_BOUNDS == {
+        "linearization_level": ("int", 0, None),
+        "cp_model_probing_level": ("int", 0, None),
+        "clause_cleanup_period": ("int", 1, None),
+        "clause_cleanup_ratio": ("float", 0.0, 1.0),
+    }
+
+
 def test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible() -> None:
     partial_group = {
         "group_id": "g_partial",
