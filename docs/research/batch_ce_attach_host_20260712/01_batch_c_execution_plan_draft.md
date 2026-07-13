@@ -106,7 +106,8 @@
 | §1b scan 6×7 | 独占,attach on+日志,7200s 帽 | master **OPTIMAL 出解**(search 487.9s,尖峰 43.4G)→ binding 循环 ~4500 轮不收敛,TIMEOUT@7200s |
 | §1b scan 7×6 | 同上 | 与 6×7 几乎同款:master OPTIMAL(search 485.05s,尖峰 43.3G)→ binding 不收敛,TIMEOUT@7200s。**三 cell 全部「master 可解+binding 枚举不收敛」,难点快速 INFEASIBLE 假设整体落空** |
 | batch_c_probe_8 | 6×6 attach-on+`EXACT_B1_BINDING_ALT_CAP=1500`(cap 收敛臂,`9deec8f` 后) | 首发 14:31 秒死于 env 守卫(cap 原被归 proof-semantics,certified 拒)→重分类批后 14:45 重发,**15:13 rc=0,cell.json 批C 首落地(wall 1680s)**。判读:status=UNKNOWN,binding_status=**ALT_CAP_REACHED**@enumerated_bindings=1500(precheck 分支 cap 生产层首次真实命中),routing_status=PRECHECK_FRONT_BLOCKED,**routing_attempts=0(1500 轮全灭在 precheck,routing CP-SAT 从未上场=F-6 再实锤)**;cut_count=0(**cap 口径**,非穷尽口径);ledger_read=complete/2ev/applied 0/dup 0+tail_hash(RFC-003 三态读回 prod-scale 首验);cut_framework_attach_last=null(无触发无 attach,预期)。循环速率 ~0.73 轮/s 与 probe_7 一致 |
-| batch_c_probe_9 | 同 probe_8 唯一差异 `--attach off`(门6 A/B 第一对,15:07 发射) | 【跑中】预期 ~28min:两臂对照 wall/内存/ledger/proof_summary——无触发场景下 attach on 的零开销/零行为差=PIC-4/PIC-5 无害性证据 |
+| batch_c_probe_9 | 同 probe_8 唯一差异 `--attach off`(门6 A/B 第一对) | **15:42 rc=0,cell.json 落地,wall 1680s 与 on 臂逐秒同**。**A/B 等价性核对:证明面字段逐位等价**(status=UNKNOWN/cut_count=0/proof_summary 七字段/ledger_read 四字段全 ≡),唯一差异 lbbd_wall 1601.5→1609.2s(**+0.48%,远低于门6 +20% 回滚线**);内存同量级(RSS 峰 42.7 vs 43.5G)。**门6 无害性空对照第一对数据点成立:attach on 在无触发场景零行为差+亚 1% 开销** |
+| batch_c_probe_10 | 同 probe_8 全同配置复跑(门6 稳定性行,15:43 发射) | 【跑中】run-to-run 稳定性:wall/enumerated_bindings/telemetry 是否复现 |
 
 ### F-6 后续两批(07-13 下午,`34cb0aa`+`9deec8f`):cap 机制从死代码到批C 可用
 1. **cap 补齐批(`34cb0aa`)**:`EXACT_B1_BINDING_ALT_CAP`(B1 Phase 6 第 3 条)的检查原只在 routing 完整拒绝分支,precheck safe-reject 分支(实测循环走的路)绕过——cap 写于该分支存在之前的实现缺口。补同款 fail-closed 检查(ALT_CAP_REACHED→UNKNOWN),新测试钉双路径,第二轮 reseal。
