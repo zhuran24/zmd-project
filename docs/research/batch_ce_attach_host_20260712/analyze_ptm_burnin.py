@@ -11,9 +11,6 @@
 3. 输出 markdown 摘要到 stdout(贴给 owner 用)。
 
 判读口径(写死在此,防换会话后口径漂移):
-- 逐轮 peak 温度下降→PTM 铺展生效;不降≠失败(94°C 峰值本身在预期内,循环幅度 ΔT≈50°C 才是主驱动)。
-- solve 全部零崩→SIGSEGV 热嫌疑主导(见 auto-memory 卡 uv-python-interpreter-intermittent-segfault item 12 判据树);
-  再崩→memtest86+ → BIOS P 核 +50mV 复测(13900KS Vmin shift 对症)。
 - cell.json 的 cut_count 只有在 master OPTIMAL/FEASIBLE 且 binding 出过结论时才有判定力(批C 计划 §7 F-1~F-3)。
 """
 from __future__ import annotations
@@ -126,7 +123,7 @@ def main() -> None:
         )
     print()
 
-    print("## 当晚 coredump(22:00 起;空表=零崩溃→热嫌疑主导)\n```")
+    print("## 当晚 coredump(22:00 起)\n```")
     try:
         out = subprocess.run(
             ["coredumpctl", "list", "--since", "2026-07-12 22:00", "--no-pager"],
