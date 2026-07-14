@@ -1,0 +1,106 @@
+{
+  "drill": "pic5_multi_rect_sequence",
+  "rects": [
+    [
+      6,
+      6
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      7,
+      6
+    ]
+  ],
+  "recipe": {
+    "master_branching": "fixed",
+    "probing_level": 3,
+    "symmetry_level": 3,
+    "workers": 1,
+    "binding_alt_cap": 200
+  },
+  "run_tag": "pic5_seq_20260714",
+  "cells": [
+    {
+      "rect_index": 1,
+      "ghost_rect": [
+        6,
+        6
+      ],
+      "master_build_seconds": 15.827,
+      "ledger_segment": "/tmp/ce_pic5_ledger__wzuwg2j/pic5_seq_20260714_rect1_6x6/segment_cachyos-zr24-pid14641-11f0b6cc449d_00000.jsonl",
+      "lbbd_status": "UNKNOWN",
+      "lbbd_has_solution": false,
+      "lbbd_wall_seconds": 565.074,
+      "drill_exception": "SnapshotValidationError: bundle.candidate_placements.facility_pools['boundary_storage_port'][0].pose_params orientation/port_mode must be exact strings",
+      "drill_wall_seconds": 27.041,
+      "attach_telemetry": null,
+      "coordinate_framework_cut_count": 0,
+      "ledger_read": {
+        "status": "complete",
+        "events": 2,
+        "event_kinds": [
+          "GENESIS",
+          "SEGMENT_SEAL"
+        ],
+        "applied": 0,
+        "tail_hash": "77ab17123a433ea0463e83400916acd383332f0157f66a6fad97f93901b26d7d"
+      }
+    },
+    {
+      "rect_index": 2,
+      "ghost_rect": [
+        6,
+        7
+      ],
+      "master_build_seconds": 16.478,
+      "ledger_segment": "/tmp/ce_pic5_ledger__wzuwg2j/pic5_seq_20260714_rect2_6x7/segment_cachyos-zr24-pid14641-ace81742739d_00000.jsonl",
+      "lbbd_status": "UNKNOWN",
+      "lbbd_has_solution": false,
+      "lbbd_wall_seconds": 552.115,
+      "drill_exception": "SnapshotValidationError: bundle.candidate_placements.facility_pools['boundary_storage_port'][0].pose_params orientation/port_mode must be exact strings",
+      "drill_wall_seconds": 13.334,
+      "attach_telemetry": null,
+      "coordinate_framework_cut_count": 0,
+      "ledger_read": {
+        "status": "complete",
+        "events": 2,
+        "event_kinds": [
+          "GENESIS",
+          "SEGMENT_SEAL"
+        ],
+        "applied": 0,
+        "tail_hash": "692bf0667b5669ee81d464b2648873c31c256985e4fca3fd6ae107ed3750d0ad"
+      }
+    },
+    {
+      "rect_index": 3,
+      "ghost_rect": [
+        7,
+        6
+      ],
+      "master_build_seconds": 16.547,
+      "ledger_segment": "/tmp/ce_pic5_ledger__wzuwg2j/pic5_seq_20260714_rect3_7x6/segment_cachyos-zr24-pid14641-ecb6cde4fb37_00000.jsonl",
+      "lbbd_status": "UNKNOWN",
+      "lbbd_has_solution": false,
+      "lbbd_wall_seconds": 541.693,
+      "drill_exception": "SnapshotValidationError: bundle.candidate_placements.facility_pools['boundary_storage_port'][0].pose_params orientation/port_mode must be exact strings",
+      "drill_wall_seconds": 13.354,
+      "attach_telemetry": null,
+      "coordinate_framework_cut_count": 0,
+      "ledger_read": {
+        "status": "complete",
+        "events": 2,
+        "event_kinds": [
+          "GENESIS",
+          "SEGMENT_SEAL"
+        ],
+        "applied": 0,
+        "tail_hash": "7b52cc1c910d9aec1886a5b1c47b9383533004c00bbea968b57791c759118d9d"
+      }
+    }
+  ],
+  "session_build_seconds": 32.586
+}

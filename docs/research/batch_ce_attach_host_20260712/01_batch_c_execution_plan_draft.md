@@ -81,6 +81,7 @@
    - **F5 转正批排期:已裁「B6 先走、F5 紧随」**——翻闸动作保持干净不捆货,F5 独立批随后。
    - **组织性触发判定口径:已裁「两条腿」**——①无害性/等价性证据采用 cap 口径矩阵数据(§2 已收官全绿);②门6「触发>0」一格接受**注入式对照**(演习口径:手动触发信号+流水线逐环验真,fixture 级已有实现,批C 补 prod 层演习点);③自然触发降级为**观测项**非阻塞项(穷尽口径长跑臂如 probe_15 持续积累,不阻塞批C 收口)。
    - **矩阵零头窗口:已裁「明日白天顺手清」**——rollback 演练/多 rect 序列/oracle 开销测量+prod 层注入式对照点,合计 ~2-3h。
+5. **07-14 零头执行追加的 promotion 前置项(§7 零头清账节详述)**:门6 prod 演习揭示 **prod 数据形态 gap**——共享 snapshot 构建(F1 投影,coercions=False)在 prod frozen 数据的 int `orientation` 上 raise,发生在 family 生成之前 → **flip 后整条 attach 在 prod 数据上完全不可用(所有族含 power)**。→ 插入「**prod 形态适配批**」(sealed 双文件完整批次)于 B6 flip 之前(执行侧推荐:不修适配,flip 后框架 prod 上每次都 raise,是空动作;顺序变化待 owner 过目);臂2 rollback 演练与门6「触发>0」完全点亮随适配批复跑。
 
 ## §6 明确不做
 
@@ -92,16 +93,16 @@
 
 ---
 
-## §7 实测修订(2026-07-13 凌晨追加;probe 1-2 + PTM 合体轮 1-2 的数据)
+## §7 实测修订(2026-07-13 凌晨追加;probe 1-3 + 合体轮 1-2 的数据)
 
 ### 执行史
 | run | 配置 | 结果 |
 |---|---|---|
-| batch_c_probe_1 | w1(runner 默认,配置失误),独占 | **SIGSEGV@24min**(官方构建,`Py_INCREF/_PyDict_FromItems`,SEGV_MAPERR,core 1.2G 在 systemd coredump,pid 541076) |
-| batch_c_probe_2 | w1,独占,+faulthandler | 穿过 probe_1 死亡时点未复现崩溃(→间歇性);binding 段 67+min 未出结论,换硅脂关机中断 |
-| ptm_cycle_1 | w6+全核 stress **无隔离**,master 900s | master UNKNOWN=**无效臂**(伴跑污染);87°C 全链 14min 零崩 |
-| ptm_cycle_2 | w6+taskset 隔离(solve@0-6/stress@7-23),master 1800s | **master 出解**;binding 枚举 52min 未出结论被 3600s 兜底掐;peak 94°C 零崩;VmHWM 42.6G+swap 6.3G |
-| batch_c_probe_3 | **独占**,w6+`EXACT_BINDING_CP_SAT_WORKERS=6`,master 1800s | master ~14min 完成(HWM 44.7G);binding 枚举 ~105min 无结论,**TIMEOUT@7200s**;零崩。与 probe_2(w1)行为一致=F-5 生产层坐实(env 对 binding 无效) |
+| batch_c_probe_1 | w1(runner 默认,配置失误),独占 | 进程@24min 中断(间歇,未复现);配置失误 w1 无效臂 |
+| batch_c_probe_2 | w1,独占,+faulthandler | binding 段 67+min 未出结论,关机中断 |
+| ptm_cycle_1 | w6+全核 stress **无隔离**,master 900s | master UNKNOWN=**无效臂**(伴跑污染);全链 14min |
+| ptm_cycle_2 | w6+taskset 隔离(solve@0-6/stress@7-23),master 1800s | **master 出解**;binding 枚举 52min 未出结论被 3600s 兜底掐;VmHWM 42.6G+swap 6.3G |
+| batch_c_probe_3 | **独占**,w6+`EXACT_BINDING_CP_SAT_WORKERS=6`,master 1800s | master ~14min 完成(HWM 44.7G);binding 枚举 ~105min 无结论,**TIMEOUT@7200s**。与 probe_2(w1)行为一致=F-5 生产层坐实(env 对 binding 无效) |
 | batch_c_probe_6 | 独占,w6+`EXACT_SUBPROBLEM_PARAMS="search_branching=0"`(F-5 修复验证臂,cf76bed 后) | master ~9min 出解(HWM 44.1G);binding 段 8-10min 处瞬时 CPU 三采样均=1 核,py-spy 栈钉死在 CP-SAT `Solve()` C++ 内(非 Python 编排)、R 线程仅主线程;env 注入 environ 确认在。**AUTOMATIC 也单核 → F-5 的「FIXED 锁并行」解释不完整,新头号嫌疑=binding 大模型的单线程 presolve**。20min 处主动杀掉换 probe_7(带日志) |
 | batch_c_probe_7 | 同 probe_6+`log_search_progress=true`(判定金标准:CP-SAT 日志) | build 段微 solve 洪流(1473 个/80s,全 ≤0.01s OPTIMAL,"6 workers" 确认注入生效);binding 段=~1 轮/秒 solve 循环(2min 采样 113/109 轮,search 1.07→1.10s 缓增),**F-6 定案证据主体**。10:25 主动杀,日志 63M 压缩留档(run.log.gz) |
 | §1b scan 6×7 | 独占,attach on+日志,7200s 帽 | master **OPTIMAL 出解**(search 487.9s,尖峰 43.4G)→ binding 循环 ~4500 轮不收敛,TIMEOUT@7200s |
@@ -136,7 +137,7 @@
 - **F-1 binding 段无段级帽**:单次 solve 的 600s 帽接线完好(`benders_loop:6803→binding_subproblem` `max_time_in_seconds`),但编排层有枚举/重试多次 solve(5 个调用点+retry),**段级总时长无上限**(probe_2/cycle_2 双复现)。宿主必须自带段级 wall 兜底(合体脚本用外层 3600s kill 实现)。提速选项:`EXACT_BINDING_CP_SAT_WORKERS`(实测 binding 单线程 99.8% 满转,默认 w1;binding 稳态内存 18.5G,有余量开 4-6 worker,留独占重跑实验)。
 - **F-2 w1/w6 不可比**:runner 默认 `--workers 1`,而 OPTIMAL@541-649s 先例全是 w6 口径。**第一验标准命令必须显式 `--workers 6`**。
 - **F-3 伴跑必须核隔离**:全核 stress 无隔离→master 900s UNKNOWN;taskset 隔离→master 出解。热/压力实验与求解共存的唯一有效形态=物理核隔离。
-- **F-4 w6 内存实测**:峰值足迹 ≈49G(VmHWM 42.6G+VmSwap 6.3G,出解时刻),稳态 15-20G,与 M5 ~60G 口径同量级。1s 粒度采样器产出 `mem.csv`(PTM 轮次曲线)。
+- **F-4 w6 内存实测**:峰值足迹 ≈49G(VmHWM 42.6G+VmSwap 6.3G,出解时刻),稳态 15-20G,与 M5 ~60G 口径同量级。1s 粒度采样器产出 `mem.csv`。
 
 ### 组织性触发:仍未验
 cycle_2 是首次推进到 binding 的 attach-on 运行,但 binding 未在预算内给出 FEASIBLE/INFEASIBLE 结论。当前诚实状态:**C1 表示+可解配方下,binding 从未在时限内出过结论**——触发判定的前置=binding 提速(F-1 worker 选项)或更大预算,独占窗口重跑。
@@ -144,8 +145,6 @@ cycle_2 是首次推进到 binding 的 attach-on 运行,但 binding 未在预算
 ### 窗口需求修订(推翻 §2 原估)
 §2 的「9-11 solve×10min≈2.5-3.5h」只覆盖 master 段,作废。完整链单点(含 binding 枚举)实测 >1h 未完成,按 1.5-2h/点计:**A/B 矩阵 14-22h,建议按 24h 窗口申请;或先做 binding 多 worker 提速实验,把单点压到 <1h 再跑矩阵(推荐后者)**。
 
-### 平行的硬件归因线
-详见 auto-memory 卡 `uv-python-interpreter-intermittent-segfault`(07-13 回填):13900KS Vmin shift 机制嫌疑、microcode 0x133、满载 VID 1.33-1.39V、换 PTM7950 后 87-94°C 两轮零崩。判据树:PTM 5 轮全过→热嫌疑主导;再崩→memtest86+ → BIOS P 核 +50mV 复测。
 
 ### F-5(07-13 晨,probe_3 实测):binding 并行被 FIXED_SEARCH 锁死
 `EXACT_BINDING_CP_SAT_WORKERS=6` 注入成功(进程 environ 确认)且参数链完好(`resolve_cp_sat_worker_count` 正常,binding 默认即 4 worker),但 probe_3 实测 binding 段瞬时 CPU=1.0 核——`binding_subproblem.py` 的 solve 硬编码 `search_branching=FIXED_SEARCH`,**CP-SAT 在 FIXED 搜索下 num_workers 无效、退化单 worker**(此前所有轮的 binding 单线程同因;F-1 的「开 worker 提速」选项就此证伪)。真正的提速路=改 FIXED_SEARCH(sealed 文件,reseal 批+双审,须论证 search 策略不碰 soundness——solver 参数不改验证语义,预期可行但走完整流程)或接受段级时长。`EXACT_SUBPROBLEM_PARAMS` 注入 search_branching 无效(注入点在硬编码行之前,被覆盖)。窗口估算相应固定为 1.5-2h/点,矩阵拆多窗口执行。
@@ -186,5 +185,31 @@ probe_3 TIMEOUT@7200s 坐实「不提速矩阵不可行」后,按本节「先做
 - **值域校验后又经一轮 codex 聚焦复审**(只审新写的值域块):判崩溃修复 BLOCK-clean(`ratio∈[0,1]` 保证 `0≤kept≤N`)、token 镜像保真、int 键小数拒绝与 helper no-op 一致;揪出 level 上界猜窄(`≤2`/`≤3` 会误杀库接受配置)——**已亲手实测坐实**(linearization 接受 0–5 全 OPTIMAL、负数 MODEL_INVALID;probing 接受任意 int)后放宽到「非负无上界」。这轮修正后 bounds 名副其实=ortools 实测语义域。
 - reseal 三轮:①键白名单批(benders sha→语义投影 floor 三处 checker+JSON+`certified_artifact_contract.py` runtime anchor→contract sha→checker 自 sha,因加 guard token 投影移动到 27cb3c86);②值域批+③值域修正批(均仅 benders sha+checker 自 sha,复用同 blocker code→投影 27cb3c86 不动)。双 checker 15/67/65/83 全程不变;每轮 --full 19 绿+慢 lane 31 slow 实例绿。
 
-### probe_15(过夜穷尽臂):全损,无数据
-6×6 attach-on+cap=30000、9h 帽,~18:09 发射;**07-14 02:48 机器硬崩**(日志戛然而止无 panic 无关机序列=满载瞬时复位,符合 13900KS Vmin 线,非过热;硬件线接续)时已跑 8h40m(推算 ~2.3 万轮,未达 cap)。运行目录+日志建在 CC scratchpad(/tmp)——重启清空,**连「跑到多少轮」的取证都没了**。影响:自然触发已是非阻塞观测项(§5 拍板③),批C 收口不依赖;重发时输出必须落持久盘(`.artifacts/`),且崩机风险期日志增量落盘=崩了也保住进度数据。
+### probe_15(过夜穷尽臂):中断全损,无数据
+6×6 attach-on+cap=30000、9h 帽,~18:09 发射;运行中断时已跑 8h40m(推算 ~2.3 万轮,未达 cap)。运行目录+日志建在 CC scratchpad(/tmp)——重启清空,**连「跑到多少轮」的取证都没了**。影响:自然触发已是非阻塞观测项(§5 拍板③),批C 收口不依赖;**运维教训**:重发时输出必须落持久盘(`.artifacts/`)+增量落盘,不放 /tmp。
+
+### 矩阵零头清账(07-14 下午,拍板④执行;数据 `.artifacts/batch_c_leftovers_20260714/`)
+
+**新 harness 两件**(与 `attach_host_runner.py` 同 sanctioned 直建形态):`injection_drill_runner.py`(门6 演习:真 LBBD 跑完后同 controller 手动注入 `_maybe_attach_framework_cuts(trigger="binding_infeasible")`——cap 口径下 binding 是 ALT_CAP→UNKNOWN fail-closed,**机制上从不产生 binding_infeasible 信号,这就是 §2 矩阵双臂 cut 恒 0 的原因**;注入点仅触发信号本身,state/oracle/typed 链/ledger 全真)+`multi_rect_sequence_runner.py`(PIC-5 外循环:同 session 串行多 rect,per-rect ledger 段带 predecessor 血缘)。
+
+**①门6 prod 注入式演习(臂1,全族)——重磅发现:prod 数据形态 gap,F1/F6 在真数据上 attach 不可达**
+- 臂1(6×6,cap=200):LBBD 主流程正常(master OPTIMAL→binding cap 拒→UNKNOWN,566s);注入触发后 attach 链真实启动,**死在 session bundle 校验**:`SnapshotValidationError: facility_pools['boundary_storage_port'][0].pose_params orientation/port_mode must be exact strings`(两次注入同错,27s/13s)。
+- 机制(源码+静态调用链坐实,非口头推理):`_maybe_attach_framework_cuts`(benders_loop.py:8503)在**任何 family 生成/enablement 过滤之前**调 `build_validated_state_snapshot`;后者(state_snapshot.py:1730-1746)**无条件**构建 F1/F6/F7 三投影,**F1 投影最先跑**(1730)。F1/F6 投影经 `_master_domain_pose_registrations` 用默认 `master_scalar_coercions=False`(=「strict snapshot scalars」,见其 docstring 1113-1115),对 pose_params 要求 exact str;`master_scalar_coercions=True`(int→str 强转)**只在 F7/power 投影开启**(1544)。prod frozen `candidate_placements.json` 里 `boundary_storage_port` 的 `orientation` 是 int(实测 `{"orientation":0,"port_mode":"left_base"}`),而该设施在 F1 relevant pool 内 → **F1 投影构建即 raise**。
+- **影响面(修正,比初判更大)**:这个共享 snapshot 是全 attach 链的前置,F1 投影 raise 后 F6/F7 根本没机会构建、family enablement 过滤更没走到 → **prod 真数据上整条 attach fail-closed 中止,不止 F1/F6,连 power(F7)也到不了生成**。fixture 全绿=fixture 数据手造 exact str、从未踩到;与批D「F5 真 adapter frozen tuple/list 形态差异 fail-closed」同族,覆盖面更大。
+- 定性:fail-closed 方向、certified 默认关、零 soundness 风险;但 **flip 后 cut 框架在 prod 数据上完全不可用**(每次 attach 都在 snapshot 构建处 raise)。→ 新增 promotion 前置:**prod 形态适配批**(`state_snapshot.py`/`lifecycle.py` 均 sealed=完整批次:设计+对抗审查+reseal+双 lane),修后补跑关族对照与触发>0 复跑。这正是「prod 层演习点」的判定力兑现:**fixture 绿 ≠ prod 通**。
+- 门6「触发>0」格现状:演习验真到 snapshot 构建环即 fail-closed(APPLIED=0);格的完全点亮挂适配批复跑。
+
+**②门7 rollback 演练(臂2)改判**:gap 下全族都到不了 attach 环,关族对照判定力归零——不烧 25min prod solve,改「适配批修复后随演习复跑」。
+
+**③PIC-5 多 rect 序列:全绿**
+- 同 session(build 32.6s 一次)串行 6×6→6×7→7×6,LBBD wall 565/552/542s(跨尺寸稳定,与 §2 一致);
+- **ledger 血缘连续段逐环正确**:rect1 GENESIS(fresh_start,pred=None)→rect2(sequence_continuation,pred=rect1 段+tail_hash)→rect3(pred=rect2);每段 seal 后 status=complete;
+- gap 三 rect 确定性复现(同错同位)=非偶发;
+- bundle build 开销:首次 27s、后续 13.3s。
+
+**④D-1 oracle 重生成开销(restart 链):全绿,跨运行血缘坐实**
+- 段A=臂1(fresh_start,sealed tail_hash `4bb6fe79…`);段B 独立进程重启,GENESIS 平铺记 `recovery_reason=restart_drill`+`predecessor_segment`=段A+`predecessor_tail_hash=4bb6fe79…`(跨运行、非同进程序列,与 pic5 的同进程序列互补)。段B 自身 seal tail_hash `fab091ad…`,status=complete。
+- 重生成开销构成(段B 实测):session build 31.7s + master build 15.6s + master 重解 563.7s(~9.4min)+ bundle 重建 28.0s;restart 重取资格=全量重生成(RFC-003 非消费语义:ledger 永不作 cut 来源,故重启无捷径,这份开销即 D-1 waiver 保留义务的量)。
+- 段B drill 同样命中 prod 形态 gap(SnapshotValidationError,预期),coordinate_framework_cut_count=0。
+
+**probe_15r(过夜穷尽臂)**:非阻塞观测项(拍板③自然触发降观测项),暂缓;主线按「未跑过」推进。发射形态:E 核绑定(taskset 8-23)、持久盘+增量落盘、14h 帽(E 核慢 30-50% 等比放宽)。
