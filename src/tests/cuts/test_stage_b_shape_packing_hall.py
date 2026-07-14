@@ -1188,10 +1188,33 @@ def _build_tiny_master(
     return MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
 
 
-def test_f6_snapshot_and_live_master_rows_share_one_domain_projection_schema() -> None:
-    state, bundle = _build_world()
+def _prod_form_poses(orientation: object) -> tuple[Mapping[str, Any], ...]:
+    """Geometry-identical to ``_ALL_POSES`` but adding ``pose_params`` carrying
+    ``orientation`` (mirrors prod ``boundary_storage_port`` whose orientation is
+    a bare ``int``; ``_ALL_POSES`` omits ``pose_params`` → always-str path).
+    台账#8 适配批:F6 投影须忠实镜像 live master 的 ``str(orientation)`` 归一化。"""
+
+    return tuple(
+        {**dict(pose), "pose_params": {"orientation": orientation, "port_mode": "left_base"}}
+        for pose in _ALL_POSES
+    )
+
+
+@pytest.mark.parametrize(
+    "poses",
+    [_ALL_POSES, _prod_form_poses(0), _prod_form_poses("0")],
+    ids=["bare_orientation", "prod_form_int_orientation", "exact_str_orientation"],
+)
+def test_f6_snapshot_and_live_master_rows_share_one_domain_projection_schema(
+    poses: Sequence[Mapping[str, Any]],
+) -> None:
+    # 台账#8 适配批:prod_form_int_orientation 参数证 F6 frozen-bundle 投影在真
+    # 数据形态(orientation 为 int)下仍可构建且与 live-master 重建投影逐字节相等
+    # = state_snapshot F6 翻转守卫(翻转被撤则 build_validated_state_snapshot 的
+    # F6 投影对 int orientation raise、本测试红)。
+    state, bundle = _build_world(poses=poses)
     snapshot = build_validated_state_snapshot(state, bundle)
-    master = _build_tiny_master(_ALL_POSES)
+    master = _build_tiny_master(poses)
     delegate = master._coordinate_delegate
     assert delegate is not None
 

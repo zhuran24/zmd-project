@@ -1285,6 +1285,12 @@ def _build_f1_master_domain_projection(
     registration_rows, pose_tuple_by_key = _master_domain_pose_registrations(
         relevant_facility_pools,
         pose_occupied_cells,
+        # prod 形态适配批(台账#8):忠实镜像 live master 的通用 str/int 归一化
+        # (exact_coordinate_master._pose_mode_token 对所有族 str(orientation)、
+        # anchor int())。默认严格标量比 live master 更严,对 prod frozen 数据里
+        # 的 int orientation fail-closed(F1 最先跑即 raise、整条 attach 空转);
+        # fixture 恒 exact-str 故 str()/int() 幂等、投影 digest 逐字节不变。
+        master_scalar_coercions=True,
     )
     mandatory_slot_rows: list[object] = []
     for group_id in relevant_group_ids:
@@ -1369,6 +1375,12 @@ def _build_f6_master_domain_projection(
     registration_rows, pose_tuple_by_key = _master_domain_pose_registrations(
         relevant_facility_pools,
         pose_occupied_cells,
+        # prod 形态适配批(台账#8):忠实镜像 live master 的通用 str/int 归一化
+        # (exact_coordinate_master._pose_mode_token 对所有族 str(orientation)、
+        # anchor int())。默认严格标量比 live master 更严,对 prod frozen 数据里
+        # 的 int orientation fail-closed(F1 最先跑即 raise、整条 attach 空转);
+        # fixture 恒 exact-str 故 str()/int() 幂等、投影 digest 逐字节不变。
+        master_scalar_coercions=True,
     )
     mandatory_slot_rows: list[object] = []
     for group_id in relevant_group_ids:

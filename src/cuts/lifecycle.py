@@ -1605,7 +1605,11 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
         relevant_pools,
         pose_occupied_cells,
         bidirectional=is_power,
-        master_scalar_coercions=is_power,
+        # prod 形态适配批(台账#8):忠实镜像 live master 的通用 str/int 归一化,
+        # 不再仅对 power 族开启。与 state_snapshot F1/F6 投影对称翻转——否则真数据
+        # int orientation 下一侧 raise 一侧成功,破坏 frozen-bundle vs live-pools
+        # 投影相等对账(_validate_live_template_pose_cache)。fixture 上幂等无回归。
+        master_scalar_coercions=True,
     )
     _validate_live_template_pose_cache(
         delegate,

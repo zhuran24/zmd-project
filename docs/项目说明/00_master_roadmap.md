@@ -188,7 +188,7 @@ Q1p partial-assignment 完备性（缺数学对象）、S_global 收敛性定理
 | 5 | 168h 执行层债余项排期（OOM 配置雷等） | 部分溶入批2a/2b；余项未排 | 长跑稳定性 |
 | 6 | 冻结输入正确性加固（pose 枚举独立重验） | B2（批2b）覆盖一部分；抽样穷举比对未排 | 瓶颈第 6 条 |
 | 7 | 批C 四项口径 | **✅ owner 2026-07-13 晚已全拍**(真实输入):①组织性触发判定=「两条腿」(无害性/等价性用 cap 口径矩阵+门6「触发>0」格接受注入式对照演习,自然触发降级为观测项);②alias 口径=一跳为界,多跳归发布时点防内鬼桶(07 号规格已加订正注);③F5 转正批=B6 先走、F5 紧随不合批;④矩阵零头(rollback 演练/多 rect/oracle 开销/prod 层演习点)07-14 白天清 | 批C 收口判据落定;promotion 包按此口径组装;详录批C 计划 01 §5 |
-| 8 | **prod 形态适配批插入 B6 前**(07-14 零头演习发现) | 待 owner 过目(执行侧默认按推荐推进):门6 prod 注入式演习揭示共享 snapshot 构建对 frozen 真数据 fail-closed(`orientation` int vs exact-str 校验,scalar coercions 仅 power 族开启;F1 投影在 family 生成前最先跑并 raise)→ **flip 后整条 attach 在 prod 数据上完全不可用(所有族含 power)**;推荐顺序=批C 收口→适配批(sealed 双文件 `state_snapshot.py`/`lifecycle.py`,完整批次)→B6 flip→F5 转正批 | 不修适配则 flip 后框架 prod 上每次 raise、是空动作;详录批C 计划 01 §5/§7 零头清账节 |
+| 8 | **prod 形态适配批插入 B6 前**(07-14 零头演习发现) | **✅ 07-14 已落地**(执行侧按推荐自主推进):根因=F1/F6 投影 `master_scalar_coercions=False` 比 live master(`_pose_mode_token` 对所有族一律 `str()`/`int()`)更严 → 对 prod frozen 的 int orientation(`boundary_storage_port`)fail-closed、flip 后 prod 空动作。修法=3 调用点(state_snapshot F1/F6 + lifecycle live 投影)对称翻转 `=True` 忠实镜像 live master;函数默认严格模式契约不变。双对抗审查(codex soundness 攻击 + opus 镜像忠实性/完整性)均 **0 BLOCK**;三翻转 mutation-verified 守卫;reseal 双文件(V99 dict + JSON sink sha + checker 自 sha,semantic_projection 数值证实不动);全 cuts 857 绿。规格=批C 目录 `02_prod_form_adaptation_batch_spec.md`。**剩 B6 flip(owner 手动)→ F5 转正批** | codex 2 CONCERN(强转放宽输入 schema)定为已知非阻塞=忠实镜像必然、冻结件 int-only 不可发生、发生则 step-8 fail-closed;真要收紧归 artifact/freeze 层(发布时点防内鬼桶) |
 
 ## 5. 风险对照（2026-07-02 瓶颈审计 7 条硬骨头 → 本图位置）
 

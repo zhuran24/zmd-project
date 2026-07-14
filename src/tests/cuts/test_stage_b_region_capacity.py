@@ -38,6 +38,7 @@ from src.cuts.lifecycle import (
     Cut,
     GroupState,
     ScopeIdentityPreimageV1,
+    _live_master_domain_projection,
     assumption_holds,
     compute_ghost_rect_id,
     compute_source_digest,
@@ -121,8 +122,14 @@ def _build_state_and_bundle(
     second_contributor: bool = False,
     unscoped_pool_pose: bool = False,
     template_dimensions: tuple[int, int] = (1, 1),
+    poses: Sequence[Mapping[str, object]] = _POSES,
 ) -> tuple[BState, FrozenArtifactBundle]:
-    """Build an F1 world whose union demand is two one-cell poses."""
+    """Build an F1 world whose union demand is two one-cell poses.
+
+    ``poses`` defaults to ``_POSES`` (no ``pose_params`` → orientation "" str).
+    Callers may pass geometry-identical poses that add ``pose_params`` to
+    exercise the prod-form scalar-coercion path (台账#8 适配批).
+    """
 
     if ghost_mode == "none":
         ghost_rect = None
@@ -154,11 +161,11 @@ def _build_state_and_bundle(
         "globals": {"grid": {"width": 70, "height": 70}},
         "facility_templates": facility_templates,
     }
-    pool_poses = [dict(pose) for pose in _POSES]
+    pool_poses = [dict(pose) for pose in poses]
     if unscoped_pool_pose:
         pool_poses.append(dict(_OUTSIDE_POOL_POSE))
     candidate_placements = {"facility_pools": {_FACILITY_TYPE: pool_poses}}
-    pose_domain = frozenset(str(pose["pose_id"]) for pose in _POSES)
+    pose_domain = frozenset(str(pose["pose_id"]) for pose in poses)
     groups = {
         _GROUP_ID: GroupState(
             group_id=_GROUP_ID,
@@ -280,8 +287,14 @@ def _build_tiny_master(
     template_dimensions: tuple[int, int] = (1, 1),
     poses: Sequence[Mapping[str, object]] = _POSES,
     grid_width: int = 5,
+    placement_rule: str | None = None,
 ) -> MasterPlacementModel:
-    """Two mandatory miners sharing three disjoint one-cell poses."""
+    """Two mandatory miners sharing three disjoint one-cell poses.
+
+    ``placement_rule`` defaults to omitted (template rule "free"). Pass
+    ``"left_or_bottom_boundary"`` to make the miner F1/F6-eligible so
+    ``_live_master_domain_projection`` actually reaches the master-domain
+    scalar-coercion path (台账#8 适配批 lifecycle 守卫需要)."""
 
     instances = [
         {
@@ -300,16 +313,19 @@ def _build_tiny_master(
         },
     ]
     pools = {_FACILITY_TYPE: [dict(pose) for pose in poses]}
+    miner_template: dict[str, object] = {
+        "dimensions": {
+            "w": template_dimensions[0],
+            "h": template_dimensions[1],
+        },
+        "needs_power": False,
+    }
+    if placement_rule is not None:
+        miner_template["placement_rule"] = placement_rule
     rules = {
         "globals": {"grid": {"width": grid_width, "height": 1}},
         "facility_templates": {
-            _FACILITY_TYPE: {
-                "dimensions": {
-                    "w": template_dimensions[0],
-                    "h": template_dimensions[1],
-                },
-                "needs_power": False,
-            }
+            _FACILITY_TYPE: miner_template
         },
     }
     core = MasterPlacementModel.build_exact_core(
@@ -749,10 +765,126 @@ def test_snapshot_pose_mode_ids_match_real_master_decimal_token_order() -> None:
     assert projected_pose_tuples == real_pose_tuples
 
 
-def test_snapshot_and_live_master_rows_share_one_domain_projection_schema() -> None:
-    state, bundle = _build_state_and_bundle()
+# ---------------------------------------------------------------------------
+# prod 形态适配批(roadmap 台账#8):live master 对所有族一律 str(orientation)/
+# int(anchor) 归一化(exact_coordinate_master._pose_mode_token)。F1/F6 投影须
+# 忠实镜像之——prod frozen 数据(如 boundary_storage_port)的 orientation 是 int。
+# ---------------------------------------------------------------------------
+
+
+def _prod_form_poses(orientation: object) -> tuple[Mapping[str, object], ...]:
+    """Geometry-identical to ``_POSES`` but adding ``pose_params`` carrying
+    ``orientation`` (mirrors prod ``boundary_storage_port`` whose orientation is
+    a bare ``int``).  ``_POSES`` omits ``pose_params`` entirely, so the default
+    fixtures only ever exercised the already-str path."""
+
+    return tuple(
+        {**dict(pose), "pose_params": {"orientation": orientation, "port_mode": "left_base"}}
+        for pose in _POSES
+    )
+
+
+def test_f1_prod_form_int_orientation_snapshot_no_longer_fails_closed() -> None:
+    """state_snapshot 侧 F1/F6 翻转守卫:int orientation 不再 fail-closed。
+
+    修法前 ``build_validated_state_snapshot`` 无条件最先建 F1 投影,F1 用严格标量
+    (``type(orientation) is str``),对 prod 的 int orientation 直接
+    ``SnapshotValidationError`` → 整条 attach 空转。修法后忠实镜像 live master 的
+    ``str()`` 归一化;int 与 str 两形态都产出合法 sha256 投影、不再中止。
+    (frozen-bundle 与 live-master 投影在 prod 形态下逐字节相等由参数化的
+    ``test_snapshot_and_live_master_rows_share_one_domain_projection_schema`` 覆盖。)"""
+
+    for orientation in (0, "0"):
+        state, bundle = _build_state_and_bundle(poses=_prod_form_poses(orientation))
+        snapshot = build_validated_state_snapshot(state, bundle)
+        _assert_sha256(snapshot.master_domain_projection)
+
+
+def test_f1_prod_form_int_orientation_live_projection_no_longer_fails_closed() -> None:
+    """lifecycle 侧对称翻转守卫:``_live_master_domain_projection`` 在 int
+    orientation 下不再 fail-closed。
+
+    修法前该函数对非 power 族用 ``master_scalar_coercions=is_power=False`` → 严格
+    → 对 int orientation raise → resolver 的 domain-fingerprint 重算
+    (``_resolve_live_master_domain_projection``)fail-closed。
+
+    ``placement_rule="left_or_bottom_boundary"`` 让 miner F1-eligible,使
+    ``_live_master_domain_projection`` 的 ``region_capacity`` 分支真正把该组纳入
+    ``relevant_group_ids`` → 强转路径执行(否则 relevant 组为空、强转路径空跑、
+    翻转在与不在都绿——本守卫必须踩到那行 True 才有意义)。"""
+
+    for orientation in (0, "0"):
+        master = _build_tiny_master(
+            poses=_prod_form_poses(orientation),
+            placement_rule="left_or_bottom_boundary",
+        )
+        projection = _live_master_domain_projection(master, "region_capacity")
+        _assert_sha256(projection)
+
+
+def test_master_domain_pose_registrations_dual_mode_contract_intact() -> None:
+    """修法只翻转调用点,不改函数默认:``master_scalar_coercions=False`` 仍拒 int
+    orientation(严格模式契约不变),``=True`` 接受并归一到 exact-str 版本相同的行
+    (证 call-site 翻转是唯一改动、且强转 = str-form 等价)。"""
+
+    def _frozen_pools_and_cells(orientation: object) -> tuple[Any, Any]:
+        poses = _prod_form_poses(orientation)
+        candidate_placements = {"facility_pools": {_FACILITY_TYPE: [dict(p) for p in poses]}}
+        facility_templates = {
+            _FACILITY_TYPE: {
+                "placement_rule": "left_or_bottom_boundary",
+                "dimensions": {"w": 1, "h": 1},
+                "needs_power": False,
+            }
+        }
+        bundle = build_frozen_artifact_bundle(
+            canonical_rules={
+                "globals": {"grid": {"width": 5, "height": 1}},
+                "facility_templates": facility_templates,
+            },
+            candidate_placements=candidate_placements,
+            facility_templates=facility_templates,
+            instance_to_facility_type={_GROUP_ID: _FACILITY_TYPE},
+            artifact_hashes=_ARTIFACT_HASHES,
+        )
+        pose_cells = snapshot_layer._freeze_pose_occupied_cells(  # noqa: SLF001
+            bundle.candidate_placements
+        )
+        frozen_pools = cast(Mapping[str, Any], bundle.candidate_placements["facility_pools"])
+        return frozen_pools, pose_cells
+
+    int_pools, int_cells = _frozen_pools_and_cells(0)
+    # Strict mode (F1/F6 default before the batch) must still reject int orientation.
+    with pytest.raises(SnapshotValidationError, match="orientation/port_mode must be exact strings"):
+        snapshot_layer._master_domain_pose_registrations(  # noqa: SLF001
+            int_pools, int_cells, master_scalar_coercions=False
+        )
+
+    # Coercion mode (the batch flip) accepts int and matches the exact-str rows.
+    int_rows, _ = snapshot_layer._master_domain_pose_registrations(  # noqa: SLF001
+        int_pools, int_cells, master_scalar_coercions=True
+    )
+    str_pools, str_cells = _frozen_pools_and_cells("0")
+    str_rows, _ = snapshot_layer._master_domain_pose_registrations(  # noqa: SLF001
+        str_pools, str_cells, master_scalar_coercions=True
+    )
+    assert int_rows == str_rows
+
+
+@pytest.mark.parametrize(
+    "poses",
+    [_POSES, _prod_form_poses(0), _prod_form_poses("0")],
+    ids=["bare_orientation", "prod_form_int_orientation", "exact_str_orientation"],
+)
+def test_snapshot_and_live_master_rows_share_one_domain_projection_schema(
+    poses: Sequence[Mapping[str, object]],
+) -> None:
+    # prod 形态适配批(台账#8):int_orientation 参数证 frozen-bundle 投影与
+    # live-master 重算投影在真数据形态下仍逐字节相等 = resolver step-8
+    # domain-fingerprint 等式(_resolve_live_master_domain_projection)成立。
+    state, bundle = _build_state_and_bundle(poses=poses)
     snapshot = build_validated_state_snapshot(state, bundle)
-    master = _build_tiny_master()
+    master = _build_tiny_master(poses=poses)
     delegate = master._coordinate_delegate
     assert delegate is not None
 
