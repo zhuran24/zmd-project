@@ -67,6 +67,18 @@ def _is_non_facility_placement_marker(instance_id: str) -> bool:
     return str(instance_id) in NON_FACILITY_PLACEMENT_MARKER_IDS
 
 
+def _strict_literal_pose_idx(value: Any) -> int:
+    """RAB cert literal 的 pose_idx 严格解析（F-BL-R10 同款字面 int 口径）。
+
+    非 bool 的字面非负 int 才算解析成功；bool/float/str/None 等一律返回 -1，
+    由调用端按「literal 解析失败 ⟹ 整证不发」fail-closed（F-BL-R11-01——
+    int() 宽松转换会把 '0'/0.5/True 静默铸成可用 literal，超杀方向）。
+    """
+    if isinstance(value, bool) or not isinstance(value, int):
+        return -1
+    return value if value >= 0 else -1
+
+
 def _loads_strict_json(text: str) -> Any:
     return loads_strict_json(text)
 
@@ -526,6 +538,25 @@ class PortBindingModel:
             for commodity, required in self.required_generic_inputs.items()
             if int(required) > 0
         }
+        # 消费者边界 disjoint 不变量（2026-07-16 对抗审查 codex hybrid 探针）：
+        # 同一 commodity 兼任 generic output 与 routing-free generic input 时，
+        # RAB filter 会按 front 删其 generic output slot、extract_port_specs 又按
+        # routing-free 跳过——两条排除规则语义冲突（filter 删掉唯一 output slot
+        # 可把可行 binding 判成 INFEASIBLE）。canonical semantic validator 在上游
+        # 间接拒绝该形态；此处 fail-closed 使其成为本消费者自身的结构保证。
+        _generic_out_in_overlap = sorted(
+            {
+                str(commodity)
+                for commodity, required in self.required_generic_outputs.items()
+                if int(required) > 0
+            }
+            & self.routing_free_sink_commodities
+        )
+        if _generic_out_in_overlap:
+            raise ValueError(
+                "generic output/input 角色重叠 commodity 不被 PortBindingModel "
+                f"支持（fail-closed）: {_generic_out_in_overlap}"
+            )
 
         self.model = cp_model.CpModel()
         self._solver: Optional[cp_model.CpSolver] = None
@@ -568,6 +599,7 @@ class PortBindingModel:
             "filtered_patterns_total": 0,
             "front_blocked_patterns_pruned": 0,
             "empty_filtered_owners": [],
+            "unattributed_rejection_owners": [],
             "generic_output_slots_pre_filter": 0,
             "generic_output_slots_post_filter": 0,
             "generic_input_slots_pre_filter": 0,
@@ -576,6 +608,12 @@ class PortBindingModel:
         # RAB-SEP Phase 3: per-owner blocker info for cert generation
         # key: instance_id -> set of blocker instance_ids
         self.routing_aware_blockers_by_owner: Dict[str, Set[str]] = {}
+        # 归因完备性 fail-closed 追踪（2026-07-16 对抗审查）：filter 遇到
+        # 「in-grid、被占、却无 blocker 归因」的拒因时记名该 owner——这标志
+        # 归因完备不变量（occupied 与 owner_by_cell 同源填充）被破坏，该
+        # owner 的空域判定不再可证 pose 内在，cert 与 thin fallback 都必须
+        # fail-closed（CUT-R8-H1 constant-support 义务在本通道的落地）。
+        self.routing_aware_unattributed_owners: Set[str] = set()
 
         self._materialize_pose_optional_instances()
         self._validate_placement_instance_metadata()
@@ -921,13 +959,17 @@ class PortBindingModel:
         from src.models.routing_binding_context import port_front_status
         kept: List[Dict[str, List[Dict[str, Any]]]] = []
         blockers: Set[str] = set()
+        unattributed_rejection = False
         for pattern in raw_patterns:
             ok = True
             routing_visible_ports = list(pattern.get("input_ports", []))
             routing_visible_ports.extend(
                 port
                 for port in pattern.get("output_ports", [])
-                if str(port.get("commodity", "")) not in self.routing_free_sink_commodities
+                # 严格取值，忠实镜像 extract_port_specs 的 port["commodity"]
+                # （2026-07-16 对抗审查 V2：.get 默认 '' 与 model 侧不对称，
+                # 缺键时 filter 静默纳入而 model 崩溃——统一为同崩溃 fail-closed）
+                if str(port["commodity"]) not in self.routing_free_sink_commodities
             )
             for port in routing_visible_ports:
                 status = port_front_status(port, self.routing_context, owner_instance_id)
@@ -935,37 +977,67 @@ class PortBindingModel:
                     ok = False
                     if status.blocker_instance_id is not None:
                         blockers.add(status.blocker_instance_id)
+                    elif status.in_grid:
+                        # in-grid、被占、却无 blocker 归因 = 归因完备不变量
+                        # 被破坏（builder 正常产的 context 不可能出现）。该
+                        # owner 的空域判定失去「pose 内在」证明基础，记名后
+                        # cert 与 thin fallback 双双 fail-closed。
+                        unattributed_rejection = True
                     # 不 break — 继续 collect 该 pattern 中所有 blocker
             if ok:
                 kept.append(pattern)
         if blockers:
             self.routing_aware_blockers_by_owner[owner_instance_id] = blockers
+        if unattributed_rejection:
+            self.routing_aware_unattributed_owners.add(str(owner_instance_id))
+            self.routing_aware_filter_stats["unattributed_rejection_owners"].append(
+                str(owner_instance_id)
+            )
         return kept
 
     def extract_routing_aware_certificates(self) -> List[Dict[str, Any]]:
         """RAB-SEP Phase 3: generate clear-deficit certificates for empty filtered owners.
 
-        Each cert = owner_pose + minimal blocker_poses (instance_id, pose_idx) —
-        禁止该 owner_pose 跟该 blocker_poses 同时出现.
+        Each cert = owner_pose + 全部 blocker_poses (instance_id, pose_idx) —
+        禁止该 owner_pose 跟该 blocker_poses 同时出现。blockers 是该 owner 全部
+        raw pattern 拒因归因的 union（非最小 IIS）。
+
+        Soundness 不变量（CUT-R8-H1 constant-support，2026-07-16 对抗审查后
+        结构化）：cert 的 conflict_set 必须覆盖全部贡献拒因的 pose——
+        (a) owner 被记名归因不完备（存在无归因的占据拒因）时整证不发；
+        (b) 任一 blocker literal 无法从 placement_solution 解析出合法 pose 时
+        整证不发（静默丢 literal = cert 窄于其证明上下文 = 超杀方向）。
+        两种 fail-closed 都令调用端退不到 thin fallback（同为禁用条件），
+        该 owner 本轮无 cut——空跑一轮换 soundness，方向正确。
 
         Returns list of certs sorted by core size (smallest first), to feed
         master add_benders_cut().
         """
         certs: List[Dict[str, Any]] = []
         for owner_id in self.routing_aware_filter_stats.get("empty_filtered_owners", []):
-            owner_sol = self.placement_solution.get(str(owner_id), {})
-            owner_pose_idx = int(owner_sol.get("pose_idx", -1))
+            owner_key = str(owner_id)
+            if owner_key in self.routing_aware_unattributed_owners:
+                # (a) 归因不完备 —— cert 无法保证覆盖全部贡献 pose，不发
+                continue
+            owner_sol = self.placement_solution.get(owner_key, {})
+            owner_pose_idx = _strict_literal_pose_idx(owner_sol.get("pose_idx", -1))
             if owner_pose_idx < 0:
                 continue
-            blockers = self.routing_aware_blockers_by_owner.get(str(owner_id), set())
-            conflict_set: Dict[str, int] = {str(owner_id): owner_pose_idx}
-            for blocker_id in blockers:
+            blockers = self.routing_aware_blockers_by_owner.get(owner_key, set())
+            conflict_set: Dict[str, int] = {owner_key: owner_pose_idx}
+            dropped_blocker = False
+            for blocker_id in sorted(blockers):
                 b_sol = self.placement_solution.get(blocker_id, {})
-                b_pose_idx = int(b_sol.get("pose_idx", -1))
-                if b_pose_idx >= 0:
-                    conflict_set[blocker_id] = b_pose_idx
+                b_pose_idx = _strict_literal_pose_idx(b_sol.get("pose_idx", -1))
+                if b_pose_idx < 0:
+                    dropped_blocker = True
+                    break
+                conflict_set[blocker_id] = b_pose_idx
+            if dropped_blocker:
+                # (b) blocker literal 解析失败 —— 不发不完整 cert
+                continue
             certs.append({
-                "owner_instance_id": str(owner_id),
+                "owner_instance_id": owner_key,
                 "owner_pose_idx": owner_pose_idx,
                 "blocker_instance_ids": sorted(blockers),
                 "conflict_set": conflict_set,

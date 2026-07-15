@@ -6400,6 +6400,169 @@ def test_binding_domain_empty_generates_singleton_cut_and_continues_master_loop(
     assert metadata["exact_safe_cuts"][0]["proof_summary"]["binding_domain_empty_cut_count"] == 1
 
 
+@pytest.mark.parametrize(
+    "rab_arm",
+    ["blockers_no_cert", "unattributed", "pose_intrinsic"],
+)
+def test_rab_empty_domain_controller_wiring_thin_fallback_guard(
+    monkeypatch,
+    tmp_path: Path,
+    rab_arm: str,
+) -> None:
+    """RAB EMPTY_DOMAIN 通道的控制器接线级三臂回归（2026-07-16 对抗复核 block 项）。
+
+    单元层测试只打 helper 本身，抓不到 benders_loop 接线点被删/被绕：本测试
+    开启 EXACT_B1_ROUTING_AWARE_BINDING 走真实 LBBD EMPTY_DOMAIN 循环——
+    - blockers_no_cert / unattributed 两臂：layout 依赖空域且 cert 缺席 ⟹
+      thin fallback 必须被禁 ⟹ 零 cut、cut_stall ⟹ RUN_STATUS_UNKNOWN。
+      若接线点被删（fail-open 回退全局 thin cut），loop 会继续走到 pose 1
+      得 CERTIFIED + cut_count>0 ⟹ 本测试红。
+    - pose_intrinsic 臂：追踪面全空 ⟹ thin fallback 允许 ⟹ singleton cut
+      放行、loop 继续、终态 CERTIFIED（同 skeleton 语义，但 RAB env 开启，
+      顺带钉死 allowlist 收编后 certified 会话真实可跑）。
+    cert-happy 路径的 master 侧 all-or-nothing 解析由单元层 + master 既有
+    测试覆盖（本 fixture 单实例造不出 core>=2 的可解析 cert）。
+    """
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_B1_ROUTING_AWARE_BINDING", "1")
+
+    project_root = _build_multi_pose_exact_project(
+        tmp_path / f"rab_empty_domain_{rab_arm}",
+        pose_anchors=[0, 2],
+    )
+
+    def fake_master_solve(
+        self,
+        time_limit_seconds: float = 60.0,
+        solution_hint=None,
+        known_feasible_hint: bool = False,
+        ghost_anchor_hint_idx=None,
+        hint_inactive_residual_optionals: bool = True,
+        diagnostic_log_callback=None,
+    ):
+        solve_calls = int(getattr(self, "_test_solve_calls", 0)) + 1
+        self._test_solve_calls = solve_calls
+        self.build_stats["last_solve"] = {
+            "status": "FEASIBLE",
+            "wall_time": 0.0,
+            "hinted_literals": 0,
+            "known_feasible_hint": bool(known_feasible_hint),
+        }
+        return cp_model.FEASIBLE
+
+    def fake_extract_solution(self):
+        pose_idx = 0 if int(getattr(self, "_test_solve_calls", 0)) <= 1 else 1
+        pose = self.facility_pools["tiny_facility"][pose_idx]
+        return {
+            "tiny_001": {
+                "pose_idx": pose_idx,
+                "pose_id": pose["pose_id"],
+                "anchor": dict(pose["anchor"]),
+                "facility_type": "tiny_facility",
+            }
+        }
+
+    class FakeRabBindingModel:
+        def __init__(self, placement_solution, *args, **kwargs):
+            self.pose_idx = int(placement_solution["tiny_001"]["pose_idx"])
+            self.binding_vars = {}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+            if rab_arm == "blockers_no_cert":
+                self.routing_aware_blockers_by_owner = {"tiny_001": {"phantom_blocker"}}
+                self.routing_aware_unattributed_owners: set[str] = set()
+            elif rab_arm == "unattributed":
+                self.routing_aware_blockers_by_owner = {}
+                self.routing_aware_unattributed_owners = {"tiny_001"}
+            else:
+                self.routing_aware_blockers_by_owner = {}
+                self.routing_aware_unattributed_owners = set()
+
+        def build(self) -> None:
+            return None
+
+        def extract_empty_binding_domain_instances(self) -> list[dict]:
+            if self.pose_idx == 0:
+                return [
+                    {
+                        "instance_id": "tiny_001",
+                        "pose_idx": 0,
+                        "pose_id": "tiny_0",
+                        "facility_type": "tiny_facility",
+                    }
+                ]
+            return []
+
+        def extract_routing_aware_certificates(self) -> list[dict]:
+            return []
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "FEASIBLE"
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return []
+
+        def extract_conflict_summary(self) -> dict:
+            return {
+                "empty_binding_domain_instances": self.extract_empty_binding_domain_instances(),
+            }
+
+    class FakeRabRoutingSubproblem:
+        def __init__(self, grid, commodities):
+            self.build_stats = {"fake": "routing"}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit: float = 60.0) -> str:
+            return "FEASIBLE"
+
+    monkeypatch.setattr(MasterPlacementModel, "solve", fake_master_solve)
+    monkeypatch.setattr(MasterPlacementModel, "extract_solution", fake_extract_solution)
+    monkeypatch.setattr(MasterPlacementModel, "build_greedy_solution_hint", lambda self: {})
+    monkeypatch.setattr(
+        benders_loop_module.LBBDController,
+        "_run_flow_diagnostic",
+        lambda self, solution: ("FEASIBLE", set()),
+    )
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeRabBindingModel)
+    monkeypatch.setattr(benders_loop_module, "RoutingSubproblem", FakeRabRoutingSubproblem)
+
+    status, result = run_benders_for_ghost_rect(
+        ghost_w=1,
+        ghost_h=1,
+        project_root=project_root,
+        solve_mode="certified_exact",
+        master_seconds=5.0,
+        binding_seconds=5.0,
+        routing_seconds=5.0,
+        max_iterations=3,
+    )
+    metadata = getattr(run_benders_for_ghost_rect, "last_run_metadata")
+
+    if rab_arm == "pose_intrinsic":
+        assert status == RUN_STATUS_CERTIFIED
+        assert result is not None
+        assert result["tiny_001"]["pose_idx"] == 1
+        assert metadata["generated_exact_safe_cut_count"] == 1
+        assert metadata["binding_domain_empty_cut_count"] == 1
+        assert metadata["exact_safe_cuts"][0]["cut_type"] == "binding_pose_domain_empty_nogood"
+        assert metadata["exact_safe_cuts"][0]["conflict_set"] == {"tiny_001": 0}
+    else:
+        # layout 依赖空域 + cert 缺席 ⟹ 接线点必须 fail-closed：零 cut、UNKNOWN
+        assert status == RUN_STATUS_UNKNOWN
+        assert result is None
+        assert int(metadata.get("generated_exact_safe_cut_count", 0) or 0) == 0
+        assert int(metadata.get("binding_domain_empty_cut_count", 0) or 0) == 0
+
+
 def test_routing_front_blocked_c1_optional_conflict_emits_exact_safe_cut(
     monkeypatch,
     tmp_path: Path,
@@ -9356,6 +9519,28 @@ def test_v80_certified_exact_env_guard_allows_production_wrapper_operational_env
     assert (
         "EXACT_B1_BINDING_ALT_CAP"
         in benders_loop_module._CERTIFIED_KNOWN_ENV_NAMES
+    )
+
+
+def test_rab_sep_env_certified_allowlisted_after_soundness_review(
+    monkeypatch,
+) -> None:
+    # 2026-07-16 ①′ 分类提升批: EXACT_B1_ROUTING_AWARE_BINDING 收编进
+    # certified allowlist, 依据=front-free 必要性 soundness 审查(11 席对抗
+    # 验证)+F-BL-R11-01 结构守卫。allowlist=may be present, 默认仍 OFF。
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_B1_ROUTING_AWARE_BINDING", "1")
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert blockers == []
+    assert (
+        "EXACT_B1_ROUTING_AWARE_BINDING"
+        in benders_loop_module._CERTIFIED_KNOWN_ENV_NAMES
+    )
+    assert (
+        "EXACT_B1_ROUTING_AWARE_BINDING"
+        in benders_loop_module._CERTIFIED_OPERATIONAL_ENV_ALLOWLIST
     )
 
 

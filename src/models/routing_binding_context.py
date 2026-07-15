@@ -54,11 +54,21 @@ def build_routing_binding_context(
     grid_w: int,
     grid_h: int,
 ) -> RoutingBindingContext:
+    from src.models.binding_subproblem import _is_non_facility_placement_marker
     from src.models.routing_subproblem import RoutingPlacementCore
 
     occupied: Set[Tuple[int, int]] = set()
     owner_by_cell: Dict[Tuple[int, int], str] = {}
     for iid, sol in placement_solution.items():
+        # ghost_pick 等非设施 marker 显式排除（镜像 benders_loop
+        # _extract_occupied_cells 的 V88 语义）：empty-domain 判定必须
+        # ghost-agnostic——由此发出的 placement nogood 是 unconditioned
+        # 全 anchor 应用的，ghost cell 一旦混入 occupied 会把判定变成
+        # ghost-dependent 而 cut 仍全局生效 = 跨 ghost 超杀。此前无害仅因
+        # facility_pools 无 ghost_rect key（空池 continue 的巧合安全），
+        # 2026-07-16 对抗审查（V4 双席）后升级为结构保证。
+        if _is_non_facility_placement_marker(iid):
+            continue
         tpl = str(sol.get("facility_type", ""))
         pool = facility_pools.get(tpl, [])
         pose_idx = int(sol.get("pose_idx", -1))

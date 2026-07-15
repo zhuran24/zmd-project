@@ -1279,6 +1279,19 @@ _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST = frozenset(
         "EXACT_B1_D2_FLOW_SECONDS",
         "EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS",
         "EXACT_B1_PATCH_ROUTING_CORE_SECONDS",
+        # RAB-SEP(routing-aware binding domain filter + EMPTY_DOMAIN 细粒度
+        # cut)。真 proof-semantics 面、非 operational 同构——收编依据是完整
+        # soundness 审查而非重分类: front-free 必要性命题 N 经 11 席对抗验证
+        # (V1-V5 攻击/复核 + codex 全文审查, 2026-07-16, 权威文书
+        # docs/research/rab_sep_promotion_20260716/01_front_free_necessity_
+        # soundness_review.md v2); filter 是 routing 谓词的合法松弛(V2 实测:
+        # routing-visible 端口集与 extract_port_specs 恰相等, 36M patterns
+        # 全枚举 0 违规)。EMPTY_DOMAIN cut 通道带结构 fail-closed 守卫
+        # (PROJECT_LOCK F-BL-R11-01: cert 必须覆盖 owner+全部 blocker, 归因
+        # 不完备/blocker literal 解析失败即整证不发; layout 依赖空域禁 thin
+        # fallback)+哨兵回归(test_rab_sep_soundness_sentinels.py)。allowlist
+        # 语义=may be present, 默认仍 OFF; 开启走 wrapper/drill 显式 env。
+        "EXACT_B1_ROUTING_AWARE_BINDING",
         "EXACT_BINDING_CP_SAT_WORKERS",
         "EXACT_BINDING_DUMP_STATE",
         "EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS",
@@ -1567,6 +1580,28 @@ def _collect_forbidden_certified_master_domain_env_overrides() -> List[Dict[str,
             }
         )
     return blockers
+
+
+def _rab_empty_domain_thin_fallback_forbidden(binding_model: Any, owner_id: str) -> bool:
+    """RAB filter-empty 空域的 thin fallback `{owner: pose}` 结构守卫。
+
+    thin fallback 是无条件全局 pose 禁，只对 pose 内在的空域（全部拒因=出界）
+    sound。filter 因 layout 拒过 pattern 时——存在 blocker 归因，或存在
+    「in-grid 被占却无归因」的拒因（归因完备不变量破坏）——空域依赖 layout，
+    全局 pose 禁会淘汰其它 layout 下真可行的 frontier（超杀）。此时禁用
+    thin fallback；追踪属性缺失同样判禁（fail-closed 方向）。这是
+    PROJECT_LOCK CUT-R8-H1 constant-support 义务在 EMPTY_DOMAIN 通道的落地
+    （2026-07-16 对抗审查：v1 的「blockers>=1 才禁」被 codex 反例证伪为不充分，
+    归因缺失场景 blockers 恰为空、guard 不触发）。被禁 owner 本轮无 cut；
+    全部 owner 被禁时该迭代按既有 cut_stall 路径 fail-closed 返回 UNKNOWN。
+    """
+    blockers_by_owner = getattr(binding_model, "routing_aware_blockers_by_owner", None)
+    unattributed_owners = getattr(
+        binding_model, "routing_aware_unattributed_owners", None
+    )
+    if blockers_by_owner is None or unattributed_owners is None:
+        return True
+    return bool(blockers_by_owner.get(owner_id)) or owner_id in unattributed_owners
 
 
 def _resolve_ghost_anchor_filter_from_env() -> Optional[FrozenSet[Tuple[int, int]]]:
@@ -6468,6 +6503,21 @@ class LBBDController:
                         conflict_set = dict(matching["conflict_set"])
                         cut_type = "rab_sep_clear_deficit_certificate"
                 if not conflict_set:
+                    # 结构守卫：layout 依赖的空域（有 blocker 归因或归因不完备）
+                    # 不得落全局 thin fallback——cert 缺席/不完整时 fail-closed
+                    # 跳过该 owner（见 _rab_empty_domain_thin_fallback_forbidden）
+                    if _rab_sep_routing_context is not None and (
+                        _rab_empty_domain_thin_fallback_forbidden(
+                            binding_model, str(empty_domain["instance_id"])
+                        )
+                    ):
+                        print(
+                            "[rab-sep] thin fallback forbidden for "
+                            f"{empty_domain['instance_id']} (layout-dependent "
+                            "empty domain without complete cert) — fail-closed skip",
+                            flush=True,
+                        )
+                        continue
                     conflict_set = self._build_conflict_from_instance_ids(
                         solution,
                         [str(empty_domain["instance_id"])],
@@ -6847,10 +6897,15 @@ class LBBDController:
                 )
                 return RUN_STATUS_UNKNOWN, None
 
-            # B1 Phase 4: env on 时 skip front_blocked early reject — precheck 是
-            # heuristic, routing CP-SAT 实际能绕路. pose-bool master 不知 port
-            # direction, 每个 layout precheck 都 front_blocked ~500-600 ports,
-            # cut accumulation 实测 15 iter 不收敛. 让 routing CP-SAT 完整跑.
+            # B1 Phase 4 旧实验 bypass(需双 env 同开; certified 启动守卫各自
+            # 拦截: BYPASS→proof_semantics blocker, POSE_BOOL→pose_bool_master_
+            # not_certified)。史料订正(2026-07-16 soundness 审查 §3): 旧注所称
+            # "precheck 是 heuristic, routing CP-SAT 实际能绕路"是 B1 pose-bool
+            # 旧世界陈迹, 对当前模型为假——front 被占时 build() 对非 feasible
+            # 域状态直接 0==1 短路(routing_subproblem.py build), 无绕路通道。
+            # 本 bypass 只翻转局部 precheck_status, build 仍收原 front_blocked
+            # analysis, 短路后由 build-time 域守卫(F-BL-R8-03)fail-closed 返回
+            # UNKNOWN, 不进 solve。
             if precheck_status == "front_blocked" and os.environ.get(
                 "EXACT_USE_POSE_BOOL_MASTER", ""
             ).strip().lower() in {"1", "true", "yes", "on"} and os.environ.get(
