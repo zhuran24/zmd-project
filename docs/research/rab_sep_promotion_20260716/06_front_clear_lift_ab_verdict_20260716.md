@@ -169,6 +169,20 @@ booleans=25,148,832  integers=38,585          ← presolve off 的加载形态
    但 33G 峰值 × worker 侧内存放大在 47.7G 机器上余量存疑）、小时级长预算、
    warm-start hint 工程。这些属于调参演习量级，超出本批验证阶梯范围。
 
+## §4.7 同期前作对照（round-4/5 的独立同构原型）
+
+本批（doc 04-06）之前 1-2 天，研究线 round-4/5（`cut_framework_review_gpt56pro_20260710/`
+doc15/16）已**独立设计并真实构建过一个同族的 front_clear-lifted 紧凑 coordinate
+master 原型**（10.7K 变量，per-witness NoOverlap 编码，非 certified 树内实现），
+并在 7×7/6×8/8×6 三个真锚点上各测 30 分钟（fixed/automatic）——结论同为
+"sound+紧凑，但 CP-SAT 既证不出 INFEASIBLE 也找不到 FEASIBLE"。本批的贡献
+相对前作是：①编码进 certified master 本体（sealed、reseal、F-GM-FCL-01 义务）
+而非研究原型；②计数等价定理把必要条件收口到 demand-SSOT 精确口径；③三面
+语义实证 + OFF 零回归；④presolve 展开病灶的确诊与解除（前作原型未踩到该坑，
+编码形态不同）。**硬度结论两批互相印证**：两套独立编码、四个锚点、多种
+search 配置下 CP-SAT 均未在 30 分钟内出结论——这比单批证据强，但也意味着
+"调参可救"的先验进一步降低。
+
 ## §5 诚实边界
 
 - 单锚点（6×6）×单配方族；外推到其它 anchor 属推断。

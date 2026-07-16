@@ -16,68 +16,47 @@
 > 文档没有它们的位置。08/09/10/13 是"史料+现行混排"的 ledger，**保持
 > 原样加注、不重写**；总图由本文档承担。
 
-## 0. 一句话现状（2026-07-11）
+## 0. 一句话现状（2026-07-17）
 
-P1.2 认证链 **CLOSED**（owner 手动门 `closed_manual_owner_decision`，P1.3 已开放）；
-close-kernel 外审已画线收口（2026-07-03），PR2 #5 合入 / #7 通电（07-04）；
-三轮换轴收口外审（权限结构 / 数学语义 / TCB 线诚实性）共 24 簇、
-0 个真·上-TCB soundness 洞，owner 已于 2026-07-07 显式 `owner_manual_decision` 关门；
-**P1.3 已实质推进（2026-07-08 单日 M1-M4）**：attach sizing spike GO
-（verdict 见 `docs/research/p1_3a_attach_sizing_spike_20260708/`）；M2 语义
-前置三批（F7 stencil 统一 / F8 整族退役-owner 游戏规则拍板 / F3 方向表修正）；
-M3 四批（F8 物理删除 / literal 复用缓存 solve 开销 -88% /
-`step_8_apply_to_master` 通电+F1 首族翻译 / LBBD 接线+`EXACT_CUT_FRAMEWORK_ATTACH`
-unsafe 默认关）；**M4 七批完成（owner 2026-07-08 发话后同日收口）**：attach 链
-四族通电（F1 ghost 条件化修复 / F7+等价回归+运行时闸 / F6 SoT override /
-F5 全链——BLOCK-2 封口+canonical_relabel+query_liftable 合同+
-binding_empty_domain_v1 真 adapter+P-HOM 结构门）+cut 预算闸（2000 满即停发）；
-F2/F3/F9/F4 保持 fail-closed（终态理由见 `p1-3-m4-ladder-landed` 卡，非遗漏）；
-close-kernel 现 67 sinks（批D F5 verifier 入册后；07-12 口径）；**旧 M4 三前置已齐不等于可直接升格**：Stage B B0-B5b、批D 与修复批 α/α2/β 已全部落地（见 §0 批次线），剩余前置=PIC-4/生产层 PIC-5（批C，RFC-003 门 6 prod A/B 并入）与最后 B6 owner promotion（flip 前置口径以 lock:492 为准——F5 真 adapter 修复只挂 F5 转正批、不是 flip 前置；session-bundle 所有权与 α2 B6 两项清单已于 07-12 B6 前置工程批兑现/闭合，`ef5e124`；RFC-003 工程面已于 07-12 批E 落地，dedup+非消费审计 ledger+family 参数，owner 批准重生成 waiver）（**注意本段上文「M4 四族通电」是当时口径：B5a 后 F5 无 apply/lowering、只产 ShadowValidated，通电现仅对 F1/F6/F7 成立**）；M5 第一阶段（可行性实测）2026-07-08 收口（本机+Linux 同硬件全配置无首解，
-`p1-3-m5-phase1-verdict` 卡）；**M6 诊断课题（owner 2026-07-09 立项）已收口——
-首解之墙 = 供电覆盖约束及其 witness 编码（八实验隔离、单一主墙，终报
-`docs/research/p1_3_m6_diagnosis_20260709/07_final_diagnosis.md` 与
-`p1-3-m6-power-encoding-diagnosis` 卡）；修复方向 owner 已拍板 a+c（2026-07-09）：
-**C 修复当日落地（dedup+reseal，`c3d64c4`）；A 批 0 头对头当夜破墙——C1（杆侧
-pose 布尔+cov 通道）在完整 266 实例 + 6×6 ghost 上产出项目史首个 master 解
-（OPTIMAL@541s/w6，独立复验六项全过含 unforced，w12/w24 OOM 内存条款成立；
-C6 判负；`docs/research/p1_3_a_batch0_20260709/README.md`）；M6 头号悬案
-「供电可行布局存在性」关闭；同夜 GPT Pro 双轨外审（全项目 bug 审 3 份 + 工具链
-评估 3 份）——生产证明链零 BLOCK 三重背书，产出硬化批（attach integrity P0
-bypass 修复+dedup 去 proto 反射+footprint clone 绑定，`c7cd6a0`）；批 1
-（C1 certified 化）owner 拍板开工：任务书 1A-1F
-（`docs/research/p1_3_batch1_design_20260710/00_batch1_workplan.md`）,
-1A 骨架已落地（开关默认关、双审 3 BUG 拦截、慢 lane 绿，`b755e80`）,
-1B 已落地(cov 通道+witness cell 语义,三轮审查链修 7 实锤,`705ee73`;
-seal 依赖 floor 按 CachyOS 宿主重钉+redlines 首次全绿,`a02862a`;慢 lane 30/30);
-1C 解级 dominance 剪杆已落地(normalize_certified_power_pole_dominance 纯函数+routing
-FEASIBLE 唯一生产点接线,fable+codex 双审首战 6 项修复单全落,`3cc3cf4`;golden digest
-双 pin 重钉——proof_summary 新增 power_pole_dominance 审计 key 的预期漂移,`fbc315a`;
-慢 lane 30/30);1D C1 编码转正 certified 默认已落地(翻默认五处+witness 7 env
-原子移除 unknown fail-closed+S4 防御断言+pre-1A 恢复 direct rebuild,fable+codex
-双审第四次规格盲区实证,`a1ae1ed`;终审扩展面:C1 空 powered 义务提前返回+验收盲区
-16+1 失败全修——第五/六次盲区实证,含慢 lane witness 真实工件回归显式退回 `fecb495`;
-reseal 不动点长链 semantic projection+runtime anchor 首次触发;golden 双 pin 重钉;
-慢 lane 30/30);1E 义务层 reseal 已落地(第 15 条义务 PO-CERTIFIED-POWER-POLE-DOMINANCE-NORMALIZATION 入册——14 required_tests+domain faithfulness 追加 1D witness env 负例,checker 双注册,reseal 一轮收敛,字面锚对时 15/65,`4d98314`;验证=义务文件 347 测分族全覆盖+0871b10 对照洗清(解释器间歇病 7 崩三形态物理证据入 memory);慢 lane 30/30);旧 witness
-编码 owner 已拍板不留（2026-07-10：certified 层不保留 runtime env 对照/回退）;
-1F 生产 replay 与内存条款已落地(A 段=wrapper cgroup 硬帽(--scope+expand-env=no+连通性
-探测+值校验 fail-closed)+w6 注入+gate RSS 三档分层(runtime resolver 单一真相源)+C1 真
-工件回归,fable+codex 双审第三战 codex 6 BLOCK 全实锤+8 项修复,`f0a7cd4`;B 段 smoke 五连
-实验暴露 42G 帽下 6×6 直建撞帽,初判「产品化双回归」,gate w6 档按死值回填 44G,evidence=
-07_batch1f_evidence.md,`882287b`)。**批 1 六批(1A-1F)全部落地**;**M5 归因线四刀判决
-(2026-07-10 晚)推翻双回归**:第三刀 88f65a5+原型完美复现 b0_4r(OPTIMAL@525s/branches
-498 万/conflicts 逐位同=solve 确定性),第四刀产品+原型参数+无帽同样出解(506s)——真相=
-**C1 出解时刻有固有 ~60G 级大分配尖峰(RSS>42G+swap 18G),42G 帽+禁 swap 恰好斩断生路**,
-「w6 温和<20G」是 30s 空采样假象;产品与原型同分布,family×ghost 网络无害;归因文档=
-m5_c1_memory_attribution_20260710.md;**M5 A/B 战场正式解锁**(条款修订已落:wrapper CAMPAIGN_SWAP_MAX 默认 20G+gate 稳态
-模型,第五刀实测背书,`b25ba1d`);cut framework 通电前修复批已落地(F1 ghost 轴反置
-soundness 修复+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深+F4 类型卫生+docstring
-轴序双修,opus+codex 双审首次零 BLOCK+Workflow 编排首战,慢 lane 31/31,`68b4557`;
-replay 诊断残留记 TRIAGE 留通电线);
-M5 A/B 战场随首解解锁,挂批 1 完成后**;
-**P1.3A attach 通电 spike 进行中(2026-07-10 晚)**:规格书 `docs/research/p1_3a_attach_power_on_spike_20260710/01_spike_spec.md`(`90be2c6`+追加);E1 端到端 exploratory 路线四连死破案(py-spy 抓栈实锤 `_add_port_clearance_constraints` exploratory-only 启发式 prod-scale 爆炸+legacy master/all_facility 双重不可比,教训入 memory 卡)→**形态修订为 certified 直建 harness+step_8 直调**(sanctioned direct 通路);E1' 基线已落(OPTIMAL@513.5s,与第五刀同分布);E2' 通电对照已完成——**判决 GO**(10K cut attach 16.6s+solve +4.1%,总 wall +6.9% 远低于 50% 线;proto 约束 ×4.15 无感;效度边界四条+agnostic-F5 语义缝 TRIAGE 见 02_spike_evidence.md);checklist 已立(03 文档,PIC-0~7+批次划分)且批 A 主体 PIC-3 已落地(`b9fcca9`:BUDGET env 化+fail-closed resolver+双注册,opus+codex 双审,reseal 一轮收敛,慢 lane 31/31);批 B ✅完成(07-11:PIC-0 owner 拍板 (a) certified promote+PIC-1.1 判定双审定稿 `66ccb39`);**阶段 B 工程规格书 ✅定稿(07-11,`cut_framework_review_gpt56pro_20260710/03_stage_b_implementation_spec.md` v3:codex 三条侦察+两轮 opus/codex 双审 53 条全采纳无一驳回,B0-B6 批次序列立,B5≈16 pinned 文件 wiring cut-over,B6=owner promotion)**;阶段 B 工程开工当夜连落三批:B0 ✅(`de2df50` 契约测试壳+AST 守卫)+B1 ✅(07-11 晨,FrozenArtifactBundle+snapshot 层+digest v1,双审 codex 攻击实证 8 修复,新 TCB 双文件 floor 注册)+B1.5 ✅(07-11 晨,typed 平台层:三分支代数+单入口+F5 oracle 复验全通路+v1 adapter;双审 10 BLOCK 8 组修复全落,typed_platform 进 sink 台账 65→66+投影 floor 三层连锁 reseal)+B2 ✅(07-11 午,F1 纵切:CutScope raw preimage carrier(方案 A)+assumptions 复验前移无条件化+投影含 slot 身份+F1→COMPILABLE+双拒 differential;侦察三缝先拍板、双审 6 条全落、codex 中断主会话接管;五 pinned reseal+plugin 进 floor;cuts 全量 643)+B3 ✅(07-11 午后,F6 纵切:shape_packing_hall_typed plugin(12-phase snapshot-native 平价+fingerprint 照 F1 定格)+oracle preimage 捕获(恒 ghost-bound)+F6 projection+registry COMPILABLE+借名测试迁 cutset 一次搬干净;侦察=主会话三路 fan-out(codex 通道中断期)九项拍板先行;双审 codex 抓 literals=() 真放宽洞(framing 前拦截修复)+VALIDATED 出口跳检(requires_ghost_bound 声明式封死)等 7 条全落;stale-exterior 新收窄追认;cuts 全量 712;reseal 四文件+新 plugin 入 floor)+B4 ✅(07-11 傍晚,F7 纵切:power_hitting_set_typed(八段平价)+requires_ghost_bound+F7 projection 含 coverer rows+blocked digest 公共原语;双审 codex 抓 JSON-native TOCTOU/冻结宽容真放宽洞(原子冻结遍历修复);cuts 777;阶段 B 族纵切全部完成,剩 B5 wiring+B6 owner)+B5a ✅(07-11 夜,wiring cut-over:typed 链首次通电进 benders 编排三路 match+typed_apply plan interpreter(新 TCB)+resolver(ModelScopeBinding 唯一构造)+step_6/7 attestation 化(violation filter 退役追认)+F5 apply 物理删除(PIC-2 消灭)+replay 双表(PIC-6 清理);实现=主会话 fan-out opus(codex 通道死);双审双 opus:设计 AGREE_WITH_AMENDMENTS+攻击 PASS 七面零逃逸;reseal floor 5 重钉+2 新增+sink 3+自钉;cuts 769;B5b 收官)+B5b ✅(07-11 深夜,AST lockdown:add_*→_lower_* 双层改名+F5 物理退役+AST caller 钉+getattr 旁路拒绝(59 桶 TRIPWIRE)+precheck 前移原子化+F6/F7 8 skip 迁移 typed 全链+哨兵 5 转绿;双审设计 AGREE+攻击 PASS,5 LOW 三修一注记;reseal floor 4+sink 3+自钉;cuts 773;**阶段 B 工程面全部完成,仅剩 B6 owner promotion 手动门**)+批 D verifier 面 ✅(07-12 凌晨,RFC-002 F5 独立 verifier:从零 Kuhn 匹配+differential 357+六红测+e2e 解锁+真 adapter gap 可达性哨兵;双审双 opus AGREE;reseal 五层 sink 66→67;**e2e/可信度措辞拆两层读(07-12 文档外审 F03 校准):verifier 本体 sound+测试 oracle 可贯通 typed 编排,但真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed——independently-verified tag 当前仅测试链可达、不是生产背书,F5 转正另需 adapter 修复+真 adapter e2e**,转正面留 owner 排期)+修复批 α ✅(07-12 午,pre-promotion 信任根七道 fail-closed 门:state/bundle 内容绑定+exact-type 容器门+lowerer cache 一致性校验+apply 边界 fresh 重算+深冻结 identity memo/cycle+u_var 身份重验+binding 持 master weakref;源于 7 包外审回包 triage;双审双 opus:设计 AGREE_WITH_AMENDMENTS+攻击 PASS(44 探针零穿门);reseal 四 sealed 文件五层连锁;cuts 826)+修复批 α2 ✅(07-12 晚,master 写入面锁定收尾:lockaudit 包 3 BLOCK+3 CONCERN 焊死——F7 lazy pose-id cache 拒绝路径原子化+dup-slot 拒绝+assert→RuntimeError(-O 探针)+AST owner-scope lambda/comprehension 封堵+59 桶 use-context digest+私有构造 reference 反搬运+α-4 FORGE-rect 负测补齐;F-07 裁定不做(已知 unsafe-map 条目按值语义=设计);双审双 opus:设计 AGREE_WITH_AMENDMENTS(sealed 整文件重排回退为 75 行最小 diff)+攻击 PASS(~90 探针);B6 清单新增两项(frozen_artifacts/state_snapshot 升完整 sink 注册+F-05 alias-dataflow 追踪);reseal exact_coordinate_master;cuts 833)+修复批 β ✅(07-12 夜,文档/记忆层同步:07-12 文档实态外审 zmd_doc_audit_20260712 十四项发现处置——正式文档五件套(PROJECT_LOCK/CLAUDE/NAV_MAP/README/FILE_STATUS)+06_current_status 状态串全部校准到 B5b+批D+α/α2 实态,规格层 F02(session-bundle 拍板 vs per-attach 实现偏差)显式登记 promotion 前 BLOCK、F03 e2e 拆层、PIC-2/5/6 台账修正,vnext 分叉 P0 卡 supersede+两张 current 卡,SQLite 库补 current entries;F14(源码注释)默认不做留待 reseal 批搭车;无 reseal);M5 A/B 首战(07-11 凌晨四刀)已把「默认参数病态」证伪关闭(smoke#4 实死于禁 swap 旧条款;修订条款下默认组合 OPTIMAL@649s,参数仅 wall 差异 +3.6%~+27.8%,PIC-7 关闭,证据 m5_ab_param_bisect_20260711.md);
-防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点，#9a 为部署时点任务；
-形式化线（P3.0 轴 A）68 条定理两轮外审闭环；吞吐（P2.0）已改判必做、
-设计稿 v2(含 v3 终审) 完成；证书侧（P3.0c 轴 B）路线图定型、待开工。
+P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 进行中，
+三条活跃工作线的位置：
+
+| 工作线 | 现在在哪 | 下一步 | 等谁 |
+|---|---|---|---|
+| **cut 框架工程线** | Stage B 工程面全部完成（B0-B5b + 批D F5 独立 verifier + 修复批 α/α2/β + B6 前置工程批 + 批E RFC-003 + prod 形态适配批）。family 现状：F1/F6/F7 = COMPILABLE/TYPED；F5 = shadow-only（compiler=None，真 adapter 修复挂 F5 转正批）；F2/F3/F4/F9 = LEGACY_DIAGNOSTIC；F8 retired。certified 下 attach 保持双重禁用（env unsafe-map） | B6 owner flip → F5 转正批 | **owner**（B6 手动门；PIC-4/5 生产层 APPLIED>0 证据口径见台账 #9） |
+| **求解与研究线** | C1 编码 = certified 默认 master 表示（首解之墙 07-09 已破）。全局最优证明已规约为「3 负锚点 + 1 witness = 4 个固定小实例」（07-14 八人会议）。RAB-SEP 通道收编 certified（默认 OFF，`F-BL-R11-01`）；front-clear 必要条件上收 master 编码（`F-GM-FCL-01`，默认 OFF，语义三面实证正确、OFF 路径零回归；presolve off 为 lift-ON 必要操作配方）。6×6 锚点 lift-ON 下 30min 单发 fixed/automatic 均无 incumbent 无 INFEASIBLE | 过夜长预算单发（arm_on_overnight）判读 → lift 默认值与调参演习拍板 | **owner**（台账 #10/#11） |
+| **支线** | P3.0 轴 A：68 条定理落 main、两轮外审闭环；轴 B（证书侧 proof logging）待开工；P2.0 吞吐已改判必做、b 段实现规格待批准；TNS 设计稿完成未排 | 按 §2 与台账 | 台账 #4 |
+
+防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点；#9a 为部署时点任务。
+
+### 0a. 里程碑指针表（P1.3 开放以来；叙事细节归各文书与 git，此表只留坐标）
+
+| 日期 | 里程碑 | 详录 |
+|---|---|---|
+| 07-08 | M1 attach sizing spike GO；M2 语义前置（F7 stencil 统一/F8 整族退役/F3 方向表）；M3 step_8 通电+LBBD 接线；M4 attach 链通电+cut 预算闸（F5 后于 B5a 转 shadow-only，通电终态=F1/F6/F7）；M5 一阶段：prod 规模无首解 | [09号](09_phase_1_3_plan.md)；`p1_3a_attach_sizing_spike_20260708/` |
+| 07-09 | M6 八实验定位首解之墙=供电覆盖 witness 编码；C1（杆侧 pose 布尔+cov 通道）当夜破墙——项目史首个完整 master 解 OPTIMAL@541s；GPT Pro 双轨外审零 BLOCK | `p1_3_m6_diagnosis_20260709/07_final_diagnosis.md`；`p1_3_a_batch0_20260709/` |
+| 07-10 | 批1（C1 certified 化）1A-1F 全落地；M5 内存归因平反「产品化回归」冤案（真相=C1 出解时刻 ~60G 固有尖峰撞 42G 帽+禁 swap）；attach 通电 spike 判 GO（10K cut +6.9% wall） | `p1_3_batch1_design_20260710/`；`m5_c1_memory_attribution_20260710.md`；`p1_3a_attach_power_on_spike_20260710/` |
+| 07-11 | M5 A/B 证伪「默认参数病态」；Stage B 规格 v3 定稿并当夜连落 B0→B5b（typed 单一可信链通电+AST lockdown，F5 apply 物理删除） | `cut_framework_review_gpt56pro_20260710/03_stage_b_implementation_spec.md` |
+| 07-12 | 批D（RFC-002 F5 独立 verifier，differential 357）；修复批 α/α2（信任根七门+写入面锁定）；批E（RFC-003 semantic dedup+非消费 ledger+family 开关）；修复批 β（文档层校准） | [06号](06_current_status.md) 07-12 增量段 |
+| 07-13 | 批C cap 矩阵完成；owner 四项口径拍板（台账 #7）；F-6 诊断：binding↔routing 无帽枚举循环 | 台账 #7；`batch_ce_attach_host_20260712/` |
+| 07-14 | prod 形态适配批（int orientation gap，台账 #8）；八人会议规约「3 负锚点+1 witness」；研究线 round 1-3（两条便宜上界证书判死→front-clear 必要条件翻案） | `cut_framework_review_gpt56pro_20260710/` doc10-14 |
+| 07-15 | round 4-5：UBC 证书 sound+紧凑但 CP-SAT 在三真锚点全 UNKNOWN（solver 墙）；owner 立项 Fable 对照实验 | 同上 doc15-16 |
+| 07-16 | 对照实验发现树内 RAB-SEP 通道+Opus 五轮三次擦肩（doc17）；RAB-SEP 三段批收口（`815a73e`）；front-clear 上收批：设计四席对抗→实施 reseal（`7b9cbae`）→六级验证阶梯→presolve 病灶破案→探针 3/4（`0873cd1`/`7b88ab8`） | doc17；`rab_sep_promotion_20260716/` doc01-06 |
+| 07-17 | 过夜长预算单发在跑（lift ON + presolve off + automatic，无时限）；文档卫生批（本文档重构+名词表+`deliverable-docs` skill） | `rab_sep_promotion_20260716/`；[21号](21_glossary.md) |
+
+### 0b. 方法论：分层归属判据（2026-07-17 显性化；此前只以「踏车后搬家」隐性存在）
+
+每条规则（或其必要条件版本）若能在 master 当前词汇表里找到**①尺寸紧凑
+②传播力足 ③求解器机器兼容**的表达 → 归 master 编码；测不出这样的表达 →
+留子问题层，cut 通道只运输真正零散的例外。**某层反馈开始踏车 ≠ 通道坏了，
+= 例外堆里藏着一条可上收规则的警报**——响应动作是找该子问题的可表达必要
+条件，不是修 cut。三条腿可推理程度不同：健全性=纯证明、尺寸=纯算术、
+传播力≈七成经验规则可预判、机器兼容靠带遥测的便宜探针确诊；漏斗纪律=
+否决便宜（纸面终审）、通过昂贵（实测只施加于漏斗底部幸存者）。分层是
+master 表示法的函数：换表示（pose-bool→coordinate）后必须重跑归属测试。
+先例：供电覆盖（05 月踏车→07-09 C1 上收破墙）、front-clear（07-13 踏车
+确诊→07-16 上收批）。若 routing 层将来踏车，第一天照此办理（注意
+round 1-2 已证连通性的便宜代理不健全，健全性腿是那里的主战场）。
 
 ## 1. 主线（关键路径，串行）
 
@@ -125,9 +104,13 @@ gate JSON 的 `required_consecutive_clean_full_reviews=3` 与关门确认字段�
 
 spike 只回答一个问题：CP-SAT Python 路径能否把 cut 及时变成有效 master
 约束（[09](09_phase_1_3_plan.md)；GO 标准 = prod-scale 跑通且 wall-clock
-退化 <50%）。**这是全项目唯一真正的研究级风险所在**（cut 体系接上后收不
-收敛没有理论保证，只能实测；退路见 §4 拍板台账 L11）。
-主体 = active F1-F7+F9 的 production integration（F8 retired）；F1/F5/F6/F7 direct Step-8 已落地，当前按 B6 owner promotion(B0-B5b 已全落地,阶段 B 工程面完成)，未变）
+退化 <50%）——已判 GO（07-10）。**收敛性仍是全项目唯一真正的研究级风险**
+（cut 体系接上后收不收敛没有理论保证，只能实测；主线解不动时的动作=换
+进攻方法（研究线，见 §0），不降命题——L11 属另开新线候选、非退路，
+台账 #2）。
+主体 = production integration：F1/F6/F7 typed lowering 已落地（F5 为
+shadow-only、无 lowering，转正挂 F5 转正批；F2/F3/F4/F9 LEGACY_DIAGNOSTIC；
+F8 retired）；Stage B 工程面完成，当前只待 B6 owner promotion。
 
 真生产 registry 注入、route schema 拍板、F2 max-flow witness、
 **F3 active_port_witness 硬门**（生产默认开启前二选一）。
@@ -177,7 +160,7 @@ Q1p partial-assignment 完备性（缺数学对象）、S_global 收敛性定理
 不解 CP-SAT 黑盒判定与 spec 忠实性两个真瓶颈；远期 verifier 形式化若做，
 以 Lean 优先、与 PBLean 线同向）。
 
-## 4. 拍板台账（owner 未决事项，集中登记）
+## 4. 拍板台账（owner 决策集中登记；#1-#6、#9-#11 待决，#7/#8 已决存档）
 
 | # | 事项 | 现状 | 影响 |
 |---|---|---|---|
@@ -189,26 +172,31 @@ Q1p partial-assignment 完备性（缺数学对象）、S_global 收敛性定理
 | 6 | 冻结输入正确性加固（pose 枚举独立重验） | B2（批2b）覆盖一部分；抽样穷举比对未排 | 瓶颈第 6 条 |
 | 7 | 批C 四项口径 | **✅ owner 2026-07-13 晚已全拍**(真实输入):①组织性触发判定=「两条腿」(无害性/等价性用 cap 口径矩阵+门6「触发>0」格接受注入式对照演习,自然触发降级为观测项);②alias 口径=一跳为界,多跳归发布时点防内鬼桶(07 号规格已加订正注);③F5 转正批=B6 先走、F5 紧随不合批;④矩阵零头(rollback 演练/多 rect/oracle 开销/prod 层演习点)07-14 白天清 | 批C 收口判据落定;promotion 包按此口径组装;详录批C 计划 01 §5 |
 | 8 | **prod 形态适配批插入 B6 前**(07-14 零头演习发现) | **✅ 07-14 已落地**(执行侧按推荐自主推进):根因=F1/F6 投影 `master_scalar_coercions=False` 比 live master(`_pose_mode_token` 对所有族一律 `str()`/`int()`)更严 → 对 prod frozen 的 int orientation(`boundary_storage_port`)fail-closed、flip 后 prod 空动作。修法=3 调用点(state_snapshot F1/F6 + lifecycle live 投影)对称翻转 `=True` 忠实镜像 live master;函数默认严格模式契约不变。双对抗审查(codex soundness 攻击 + opus 镜像忠实性/完整性)均 **0 BLOCK**;三翻转 mutation-verified 守卫;reseal 双文件(V99 dict + JSON sink sha + checker 自 sha,semantic_projection 数值证实不动);全 cuts 857 绿。规格=批C 目录 `02_prod_form_adaptation_batch_spec.md`。**剩 B6 flip(owner 手动)→ F5 转正批** | codex 2 CONCERN(强转放宽输入 schema)定为已知非阻塞=忠实镜像必然、冻结件 int-only 不可发生、发生则 step-8 fail-closed;真要收紧归 artifact/freeze 层(发布时点防内鬼桶) |
+| 9 | **PIC-4/PIC-5 证据口径**(文档扫描 07-17 暴露) | 待表态。roadmap 管理口径认为批C 收尾后只剩 B6;但 PROJECT_LOCK 口径仍把 PIC-4/PIC-5 列为 B6 硬前置,而仓库里尚无「prod 形态修复后 APPLIED>0 且完整走完失活/回滚」的归档证据(批C 演习全部 0 cut 生成于形态 gap 修复前) | 要么正式接受现有 harness 层证据充分,要么 B6 前补做一发 prod 注入演习归档 |
+| 10 | **front-clear lift 默认值翻转** | 待过夜长跑判读(07-17 晨)。当前维持 default-OFF;lift 语义三面实证正确、OFF 零回归,但 ON 在 30min×单 worker 下 fixed/automatic 均解不动 6×6 锚点;presolve off 已确认为 lift-ON 必要操作配方 | `rab_sep_promotion_20260716/06` 终判;翻转=owner 手动门 |
+| 11 | **研究线调参演习 go/no-go** | 待拍板。未测杠杆=portfolio×多 worker(内存外推 55-100G,本机余量存疑)/小时级长预算(首发在跑)/warm-hint 工程;赌注=lift-ON master 证出 INFEASIBLE 即锚点合法上界证书 | 决定研究线下一步火力投放 |
 
 ## 5. 风险对照（2026-07-02 瓶颈审计 7 条硬骨头 → 本图位置）
 
-①算力硬墙 → 1c 见真章 + 台账 2 退路；②编码忠实性单点 → 2b（终极解）+
-批2b B2 + I1（已落）；③cut framework 尚未 certified promotion（F1/F5/F6/F7 direct attach 已落，Stage B/PIC 待完）→ 1c；④floor manifest 占位 → 1b
-部署时点；⑤168h 执行债 → 台账 5；⑥冻结输入只证"没变" → 台账 6；
-⑦手动门 owner-only → 设计如此（1b 终点闸）。
+①算力硬墙 → 1c 见真章 + 研究线（§0，规约为 4 小实例）；②编码忠实性单点
+→ 2b（终极解）+ 批2b B2 + I1（已落）；③cut framework 尚未 certified
+promotion（F1/F6/F7 typed lowering 已落、F5 shadow-only，只待 B6 owner 门）
+→ 1c；④floor manifest 占位 → 1b 部署时点；⑤168h 执行债 → 台账 5；
+⑥冻结输入只证"没变" → 台账 6；⑦手动门 owner-only → 设计如此（1b 终点闸）。
 
-## 6. 文档修订台账（本次盘点发现的过时点及处置）
+## 6. 文档修订台账（过时点及处置；07-17 文档卫生批全量扫描后更新）
 
 | 文档 | 过时点 | 处置 |
 |---|---|---|
-| 05 号 Q14 | "形式化不投资" | 已加注（2026-07-05，指向本文档 §2a/2b） |
-| 05 号 Q1 | 无 Q1a/Q1p 拆分信息 | 已加注（指向 Q1a 稿 v2，标注待裁定） |
-| 12 号 SUPERVISOR OPERABLE | "当前不成立"基于 06-26 基线 | 已加注（07-04 入口落地，语义以 PROJECT_LOCK 为准） |
-| 排期卡 title/summary | 仍写"先收口后深化"（正文已修正） | 已修正卡片头部 |
-| PROJECT_LOCK `Updated` 字段 | 已同步至 2026-07-11 | 已更新：P1.2 owner-close、F8 retirement、partial attach 与 Stage B 边界 |
-| README 中后段旧 hash/旧叙事 | b35e5f9 等不可解析、"未合入"旧段 | 已有后注文化兜底；增量清理随下次 README 大修 |
-| 08 号后半 | P1.2B 各 family "待实施"是史料 | 文档自带历史化标注，不动 |
-| 13 号 | 估时已史料化 | 文档自带标注，不动 |
+| 本文档 §0 | 07-11 起的地质层堆积（三层时间断层、F5 旧口径两处、台账标题与内容矛盾） | ✅ 07-17 重构：§0 工作线快照 + 0a 里程碑指针表 + 0b 方法论；§1c/§5 F5 口径统一 |
+| 06 号 | 止于 07-12；RFC-003 同页矛盾；阶段命名段新旧口径同段共存 | ✅ 07-17 增量段+终态化改写 |
+| 21 号名词表 | F5 旧口径；缺工作线/批次名录与命名规范 | ✅ 07-17 扩建 |
+| NAV_MAP :63 | "RFC-003 pending" 笼统 | ✅ 07-17 精确化（工程面已落，剩门6 随批C） |
+| PROJECT_LOCK :388/头部 | 07-11 addendum 含 F5 旧口径；Updated 字段落后正文 | ✅ 07-17 最小修正 |
+| README | 当前状态段落止于 07-12 前后；若干 F5 旧口径行 | ✅ 07-17 补七月篇章+定点修正 |
+| **01 号 §1.4 / 02 号多处** | F5 旧口径、CutScope 旧 schema（pre-B5a）、source digest 字段列表过时 | ⏳ 待深修批（math-heavy，含 02 号 §3 全族现状矩阵重写）——07-17 扫描清单存 `.artifacts/doc_sweep_20260717/` |
+| 研究文书（doc15 开篇 relay 注记、F-6/①′/命题N-UBC 消歧注） | 会话泄漏与命名消歧类 | ⏳ 低危，随各文书下次实质修订搭车 |
+| 05 号 Q14/Q1、12 号、08/13 号 | （07-05 处置未变） | 已加注/史料化标注，不动 |
 
 ## 7. 阅读入口（新会话/新协作者按此序）
 

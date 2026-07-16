@@ -60,7 +60,7 @@ generic serializer、blueprint exporter、manifest writer、viewer/report builde
 |---|---|
 | `src/search/` | outer producer、campaign、frontier、fixed-witness、supervisor seal、中央发布面 |
 | `src/models/` | master、binding、routing；flow 为诊断模块 |
-| `src/cuts/` | active F1-F7+F9（F8 retired）的生成、校验与生命周期；Stage B B0-B5b + 批D + 修复批 α/α2 已落地（2026-07-12）：F1/F6/F7 typed lowering 全链（registry→resolver→step_8→typed_apply）、F5 shadow-only（ShadowValidated，无 lowering；独立 verifier 已落但真 adapter 在 verifier 前 fail-closed）、F2/F3/F4/F9 LEGACY_DIAGNOSTIC registry 边界拒绝；attach 仍 certified unsafe/default-off，PIC-4/5 生产层+RFC-003+B6 owner pending |
+| `src/cuts/` | active F1-F7+F9（F8 retired）的生成、校验与生命周期；Stage B B0-B5b + 批D + 修复批 α/α2 已落地（2026-07-12）：F1/F6/F7 typed lowering 全链（registry→resolver→step_8→typed_apply）、F5 shadow-only（ShadowValidated，无 lowering；独立 verifier 已落但真 adapter 在 verifier 前 fail-closed）、F2/F3/F4/F9 LEGACY_DIAGNOSTIC registry 边界拒绝；attach 仍 certified unsafe/default-off；RFC-003 工程面已落（批E），剩其门 6 prod A/B 随批C（PIC-4/5 生产层证据口径待 owner）+B6 owner 手动门 |
 | `src/io/` | strict JSON、序列化和 delivery manifest 基础设施，不单独拥有公开认证权 |
 | `src/render/`, `src/adapters/` | postprocess/delivery surface，必须消费中央验证后的 authority |
 | `src/tests/` | 单元、回归和 soundness 红测 |
