@@ -140,7 +140,34 @@ booleans=25,148,832  integers=38,585          ← presolve off 的加载形态
    "default"=unset=仍 fixed，不是有效杠杆）——presolve off + automatic
    一发判别"fixed 是不是残余瓶颈"。结果见 §4.6。
 
-## §4.6 探针 4 结果（presolve off + automatic branching；待回填）
+## §4.6 探针 4 结果：automatic branching 也干涸——fixed 不是残余瓶颈
+
+`arm_on_probe4`（presolve off + `EXACT_MASTER_SEARCH_BRANCHING=automatic`，
+其余镜像探针 3；1800s、单 worker）：**UNKNOWN**，与探针 3 并排：
+
+| 指标 | 探针 3（fixed） | 探针 4（automatic） |
+|---|---|---|
+| branches | 66,698,954 | 66,616,642 |
+| conflicts | 181,244 | 83,262 |
+| restarts | 0 | 5 |
+| lp_iterations | 57,757 | 140,491 |
+| deterministic_time | 2303.9 | 1712.7 |
+| wall | 1805s（跑满 cap） | 1807s（跑满 cap） |
+| incumbent / INFEASIBLE | 无 / 无 | 无 / 无 |
+| 内存峰值 | 33.7G + 11.4G swap | 33.1G + 11.3G swap |
+
+判读：
+1. **fixed search 不是残余瓶颈**：两种形态迥异的搜索策略（guided fixed 无
+   restart vs automatic 带 restart + 2.4× LP 迭代）在同预算下都真搜索了
+   ~66M 分支、都一无所获。"ON 臂困境是配方绑定"假说被大幅削弱。
+2. **硬度证据升级**：从"一个配方解不动"升级为"两个主流搜索机制解不动"
+   （边界仍窄：30 分钟 × 单 worker × 单锚点）。
+3. **修复菜单 A 的终判**：presolve off 作为工程修复**有效且必要**（不开它
+   solver 根本不搜索），是未来任何 lift-ON 运行的操作配方基线；但它本身
+   不使 6×6 锚点在 30 分钟单发内可解。
+4. **未测杠杆（诚实清单）**：portfolio + 多 worker（CP-SAT 最强并行形态，
+   但 33G 峰值 × worker 侧内存放大在 47.7G 机器上余量存疑）、小时级长预算、
+   warm-start hint 工程。这些属于调参演习量级，超出本批验证阶梯范围。
 
 ## §5 诚实边界
 
@@ -149,5 +176,20 @@ booleans=25,148,832  integers=38,585          ← presolve off 的加载形态
   哨兵/全池黄金对照/**阶梯 3 corpus 检查（1,314 次双向核对零 mismatch，含
   20 个非空负控）**三面背书，但 raw=0 判据本身仍无 prod solve 级评估记录
   （需要 master 在 lift ON 下产出 incumbent 才可能评估）。
-- 硬度结论的覆盖面：探针 3/4 各 30 分钟单发；"解不动"只在测过的
-  branching×预算格子内成立，不是普适结构墙证明。
+- 硬度结论的覆盖面：探针 3/4 各 30 分钟单发、单 worker；"解不动"只在测过
+  的 branching×预算格子内成立（fixed/automatic 已测；portfolio×多 worker、
+  小时级预算、warm-hint 未测），不是普适结构墙证明。
+
+## §6 批终判（验证阶梯全走完）
+
+- **lift 语义正确性：三面实证，全绿**（哨兵 45 / 全池黄金 286,636 pose /
+  corpus 1,314 双向核对零 mismatch 含 20 负控）。
+- **lift OFF 路径：零回归**（OFF 臂逐字复刻 ③段）。
+- **lift ON 可用性：当前不可用于生产**——presolve off 是必要操作配方
+  （否则 presolve 展开爆炸、solver 不搜索），但 6×6 锚点在 30min×单
+  worker 下 fixed/automatic 双双无 incumbent 无 INFEASIBLE。
+- **处置**：`EXACT_MASTER_FRONT_CLEAR_LIFT` 维持 default-OFF；RAB 迭代
+  cut 通道继续当运行时皮带；进一步调参演习（portfolio×多 worker/长预算/
+  warm-hint）与默认值翻转均为 owner 拍板项。
+- 潜在大奖仍在桌上：lift ON 下 master 若证出 INFEASIBLE = 该锚点合法
+  上界证书（命题 N 必要条件的逆否），这是长预算演习的主要赌注。
