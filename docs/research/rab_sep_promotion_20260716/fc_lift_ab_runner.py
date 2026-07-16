@@ -46,10 +46,30 @@ def main() -> int:
     parser.add_argument("--binding-alt-cap", type=int, default=200)
     parser.add_argument("--run-tag", required=True)
     parser.add_argument("--out", type=Path, required=True)
+    # 探针杠杆（默认 = 镜像批C drill_arm1 配方；判别配方绑定 vs 结构性时用）
+    # 注意 "default" = 不设 env——exact 模式缺省仍 fixed（master_model.py:11553），
+    # 不是有效杠杆（探针2 教训）；真换搜索策略用 automatic/portfolio（env 合法值域）。
+    parser.add_argument(
+        "--branching",
+        choices=["fixed", "default", "automatic", "portfolio"],
+        default="fixed",
+    )
+    parser.add_argument("--master-workers", type=int, default=0,
+                        help=">0 时设 EXACT_MASTER_CP_SAT_WORKERS（stage 专属，全局 workers 不动）")
+    parser.add_argument("--master-presolve", choices=["unset", "off"], default="unset",
+                        help="off = 设 EXACT_MASTER_CP_MODEL_PRESOLVE=0（element 走原生传播器，"
+                             "诊断 presolve 展开病灶）")
     args = parser.parse_args()
 
     os.environ["EXACT_CP_SAT_WORKERS"] = str(args.workers)
-    os.environ["EXACT_MASTER_SEARCH_BRANCHING"] = "fixed"
+    if args.branching == "default":
+        os.environ.pop("EXACT_MASTER_SEARCH_BRANCHING", None)
+    else:
+        os.environ["EXACT_MASTER_SEARCH_BRANCHING"] = args.branching
+    if args.master_workers > 0:
+        os.environ["EXACT_MASTER_CP_SAT_WORKERS"] = str(args.master_workers)
+    if args.master_presolve == "off":
+        os.environ["EXACT_MASTER_CP_MODEL_PRESOLVE"] = "0"
     os.environ["EXACT_MASTER_CP_MODEL_PROBING_LEVEL"] = "3"
     os.environ["EXACT_MASTER_SYMMETRY_LEVEL"] = "3"
     os.environ["EXACT_B1_BINDING_ALT_CAP"] = str(args.binding_alt_cap)
@@ -68,13 +88,15 @@ def main() -> int:
         "arm": f"lift_{args.lift}",
         "ghost_rect": [args.ghost_w, args.ghost_h],
         "recipe": {
-            "master_branching": "fixed",
+            "master_branching": args.branching,
+            "master_workers": args.master_workers or args.workers,
             "probing_level": 3,
             "symmetry_level": 3,
             "workers": args.workers,
             "binding_alt_cap": args.binding_alt_cap,
             "max_iterations": args.max_iterations,
             "rab": 1,
+            "master_presolve": args.master_presolve,
         },
         "run_tag": args.run_tag,
         "layout_snapshots": [],
@@ -155,6 +177,13 @@ def main() -> int:
         result["lbbd_exception"] = f"{type(exc).__name__}: {exc}"
     result["lbbd_wall_seconds"] = round(time.perf_counter() - t2, 3)
 
+    # master 侧最后一次 solve 的遥测（wall/status/参数——定位 cap 与实耗差额）
+    last_solve = dict(master.build_stats.get("last_solve", {}) or {})
+    result["master_last_solve_scalars"] = {
+        k: v
+        for k, v in last_solve.items()
+        if isinstance(v, (str, int, float, bool)) or v is None
+    }
     for attr in (
         "_fine_grained_exact_safe_cut_count",
         "_binding_domain_empty_cut_count",
