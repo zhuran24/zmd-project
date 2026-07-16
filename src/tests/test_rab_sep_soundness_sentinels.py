@@ -335,6 +335,39 @@ def _build_owner_model(
     return model
 
 
+def test_raw_empty_lift_scope_bucketing_helper() -> None:
+    """front-clear lift 验收遥测（doc 04 v2 §4.3）：raw 空域按 liftable scope
+    分桶——raw 事件口径与 accepted-cut counter 是两回事（审查 F-05 假绿面）。
+    分桶是 benders 侧纯诊断 helper，**绝不进 conflict summary / proof 记录**
+    （golden semantic digest 钉死 proof 面，slow lane 抓过一次污染）。
+    filling_capsule 在 lift 范围内（demand 4/0）⟹ 空域进 scope 桶。"""
+    from src.search.benders_loop import _front_clear_lift_scope_raw_empty_instances
+
+    placement_solution, facility_pools = _empty_domain_fixture()
+    context = build_routing_binding_context(
+        placement_solution, facility_pools, grid_w=70, grid_h=70
+    )
+    model = _build_owner_model(placement_solution, facility_pools, context)
+
+    empties = model.extract_empty_binding_domain_instances()
+    assert len(empties) == 1
+    scoped = _front_clear_lift_scope_raw_empty_instances(
+        empties, model.routing_free_sink_commodities
+    )
+    assert scoped == [_OWNER_ID]
+    # 出范围条目（未 profile op）不入桶
+    assert (
+        _front_clear_lift_scope_raw_empty_instances(
+            [{"instance_id": "x", "operation_type": "fixture_storage"}],
+            model.routing_free_sink_commodities,
+        )
+        == []
+    )
+    # proof 面清洁哨兵：summary 不携带分桶诊断键
+    summary = model.extract_conflict_summary()
+    assert not any("lift_scope" in str(key) for key in summary)
+
+
 def test_filter_empty_with_blockers_yields_full_cert_and_forbids_thin_fallback() -> None:
     placement_solution, facility_pools = _empty_domain_fixture()
     context = build_routing_binding_context(

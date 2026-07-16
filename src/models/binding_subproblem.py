@@ -30,6 +30,7 @@ from src.models.cp_sat_worker_config import (
 from src.models._cpsat_compat import search_branching_name
 from src.models.port_binding import (
     enumerate_pose_level_port_bindings_with_cache_info,
+    is_routing_visible_output_commodity,
     supports_exact_pose_level_binding,
 )
 from src.preprocess.operation_profiles import (
@@ -966,10 +967,12 @@ class PortBindingModel:
             routing_visible_ports.extend(
                 port
                 for port in pattern.get("output_ports", [])
-                # 严格取值，忠实镜像 extract_port_specs 的 port["commodity"]
-                # （2026-07-16 对抗审查 V2：.get 默认 '' 与 model 侧不对称，
-                # 缺键时 filter 静默纳入而 model 崩溃——统一为同崩溃 fail-closed）
-                if str(port["commodity"]) not in self.routing_free_sink_commodities
+                # RFSC 排除经 SSOT 谓词（str-strict 同崩溃 fail-closed 语义
+                # 不变；与 extract_port_specs、master front-clear lift 的
+                # demand 计算共用同一实现——doc 04 v2 §3.4）
+                if is_routing_visible_output_commodity(
+                    port["commodity"], self.routing_free_sink_commodities
+                )
             )
             for port in routing_visible_ports:
                 status = port_front_status(port, self.routing_context, owner_instance_id)
@@ -1443,9 +1446,10 @@ class PortBindingModel:
             for side_key in ("input_ports", "output_ports"):
                 for port in domain[binding_idx][side_key]:
                     commodity = str(port["commodity"])
-                    if (
-                        side_key == "output_ports"
-                        and commodity in self.routing_free_sink_commodities
+                    if side_key == "output_ports" and not (
+                        is_routing_visible_output_commodity(
+                            commodity, self.routing_free_sink_commodities
+                        )
                     ):
                         continue
                     port_specs.append(
@@ -1482,7 +1486,9 @@ class PortBindingModel:
             commodity = selection["generic_outputs"].get(slot_id)
             if commodity in (None, "__unused__"):
                 continue
-            if str(commodity) in self.routing_free_sink_commodities:
+            if not is_routing_visible_output_commodity(
+                commodity, self.routing_free_sink_commodities
+            ):
                 continue
             port_specs.append(
                 {

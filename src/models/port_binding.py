@@ -11,7 +11,7 @@ fixed.
 from __future__ import annotations
 
 from itertools import combinations, product
-from typing import Any, Dict, List, Mapping, Sequence, Tuple
+from typing import AbstractSet, Any, Dict, List, Mapping, Sequence, Tuple
 
 from src.preprocess.operation_profiles import get_operation_port_profile
 
@@ -31,6 +31,71 @@ _POSE_LEVEL_BINDING_CACHE: Dict[PoseBindingCacheKey, Tuple[BindingPattern, ...]]
 def supports_exact_pose_level_binding(operation_type: str) -> bool:
     profile = get_operation_port_profile(operation_type)
     return profile.generic_input_slots == 0 and profile.generic_output_slots == 0
+
+
+def is_routing_visible_output_commodity(
+    commodity: Any,
+    routing_free_sink_commodities: AbstractSet[str],
+) -> bool:
+    """RFSC 输出侧排除规则的单一真相源（demand SSOT，front-clear 上收批）。
+
+    routing-free wireless final commodity 的 output port 只是 binding 选择、
+    不是 routing 终端——binding filter（_filter_pose_binding_domain）、
+    extract_port_specs 与 master 侧 front-clear lift 的 demand 计算三处必须
+    共用本谓词，禁止各自内联该规则（口径漂移 = lift 超杀方向）。
+    取值 str-strict：缺键/坏形态在调用点崩溃 fail-closed，不静默默认。
+    """
+    return str(commodity) not in routing_free_sink_commodities
+
+
+def routing_free_sink_commodities_from_generic_inputs(
+    required_generic_inputs: Mapping[Any, Any],
+) -> frozenset[str]:
+    """RFSC 集派生规则的单一真相源：required_generic_inputs 中 required>0 者。
+
+    binding（PortBindingModel）与 master front-clear lift 必须共用本函数派生
+    routing_free_sink_commodities（同一 certified generic_io snapshot 进、
+    同一集合出）；各自内联 = demand 口径漂移面。
+    """
+    return frozenset(
+        str(commodity)
+        for commodity, required in dict(required_generic_inputs).items()
+        if int(required) > 0
+    )
+
+
+def routing_visible_port_demands(
+    operation_type: str,
+    routing_free_sink_commodities: AbstractSet[str],
+) -> Tuple[int, int]:
+    """返回 (req_in, vis_out)：该 op 每侧 routing-visible 绑定需求（demand SSOT）。
+
+    语义 = 枚举器×filter 的联立蕴含（计数等价定理，doc 04 v2 §1.1/§3.4）：
+    - req_in  = 输入侧 slot 计数总和（filter 对 input_ports 全量检查，无排除）；
+    - vis_out = 输出侧 slot 中 commodity 过 is_routing_visible_output_commodity
+      的计数总和（RFSC slot 可落被堵/出界 front cell，不消耗自由 front）。
+
+    demand 依赖 certified generic_io snapshot（routing_free_sink_commodities
+    由 required_generic_inputs 派生）——它不是纯 op 常量，master 侧消费必须
+    传入与 binding 同源的 snapshot。generic-slot op 出范围：与枚举器同款
+    raise fail-closed，绝不返回猜测值。
+    """
+    profile = get_operation_port_profile(operation_type)
+    if profile.generic_input_slots or profile.generic_output_slots:
+        raise ValueError(
+            f"{operation_type} still has generic hub slots; routing-visible "
+            "pose-level demand is undefined for it (out of lift scope)."
+        )
+    req_in = sum(count for count in profile.input_slots.values() if count > 0)
+    vis_out = sum(
+        count
+        for commodity, count in profile.output_slots.items()
+        if count > 0
+        and is_routing_visible_output_commodity(
+            commodity, routing_free_sink_commodities
+        )
+    )
+    return req_in, vis_out
 
 
 def clear_pose_level_binding_domain_cache() -> None:

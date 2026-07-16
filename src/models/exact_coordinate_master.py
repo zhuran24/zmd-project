@@ -720,6 +720,30 @@ class SignatureRegion:
     y_max: int
 
 
+_FRONT_CLEAR_LIFT_ENV = "EXACT_MASTER_FRONT_CLEAR_LIFT"
+
+
+def _resolve_front_clear_lift_enabled_from_env() -> bool:
+    """front-clear lift 开关的严格值域解析（doc 04 v2 §7/R17）。
+
+    unset/空/0/false/off = OFF；1/true/on = ON；其它任何值 fail-closed 抛错
+    ——绝不把垃圾值静默解释为 OFF（那会制造假 A/B）。只在直接 build 路径
+    调用；clone 路径由 core binding 恢复、不重读 env（R14）。
+    """
+    raw = os.environ.get(_FRONT_CLEAR_LIFT_ENV)
+    if raw is None:
+        return False
+    token = raw.strip().lower()
+    if token in {"", "0", "false", "off"}:
+        return False
+    if token in {"1", "true", "on"}:
+        return True
+    raise RuntimeError(
+        f"{_FRONT_CLEAR_LIFT_ENV} has invalid value {raw!r}; allowed OFF "
+        "spellings: unset//0/false/off, ON spellings: 1/true/on (fail-closed)"
+    )
+
+
 @dataclass
 class CoordinateSlotSpec:
     key: str
@@ -971,6 +995,18 @@ class CoordinateExactMasterDelegate:
         self._core_y_intervals: List[Any] = []
         self._ghost_x_intervals: List[Any] = []
         self._ghost_y_intervals: List[Any] = []
+        # front-clear lift（doc 04 v2 §3）：free 证书 interval 独立集合。
+        # 生死线：绝不并入 _core_*——ghost overlay 的 combined 列表按 _core_*
+        # 展开，混入 = ghost 变 free 的 blocker = 系统性超杀（§3.1/R11）。
+        # 默认 False；直接 build 在 build() 内解析 env，clone 路径由
+        # bind_from_core 从 core binding 恢复、绝不重读 env（R14）。
+        self.front_clear_lift_enabled: bool = False
+        self._front_clear_x_intervals: List[Any] = []
+        self._front_clear_y_intervals: List[Any] = []
+        self._front_clear_free_bools: Dict[Tuple[int, int], cp_model.IntVar] = {}
+        self._front_clear_padded_free: List[Any] = []
+        self._front_clear_interval_proto_indexes: List[Tuple[int, int]] = []
+        self._front_clear_stats: Dict[str, Any] = {}
         self._ghost_anchor_power_capacity_screen_stats: Dict[str, Any] = {}
         self._coordinate_symmetry_stats: Dict[str, Any] = {
             "enabled": bool(getattr(owner, "enable_symmetry_breaking", True)),
@@ -3732,6 +3768,294 @@ class CoordinateExactMasterDelegate:
             self.model.Add(count_var == sum(members))
             self.power_pole_family_count_vars[family_name] = count_var
 
+    def _front_clear_routing_free_sink_commodities(self) -> frozenset:
+        """RFSC 集：与 binding 同一 SSOT 派生、同一 certified snapshot 来源。
+
+        snapshot = owner.generic_io_requirements（build_exact_core 单次读入、
+        ExactMasterCore 自携，master_model.py:2362/:2288/:2841）——与
+        benders_loop._binding_generic_requirements_kwargs 喂给 PortBindingModel
+        的是同一对象；派生规则经 port_binding SSOT（doc 04 v2 §3.4）。
+        """
+        from src.models.port_binding import (
+            routing_free_sink_commodities_from_generic_inputs,
+        )
+
+        requirements = dict(getattr(self.owner, "generic_io_requirements", None) or {})
+        return routing_free_sink_commodities_from_generic_inputs(
+            dict(requirements.get("required_generic_inputs", {}) or {})
+        )
+
+    def _create_front_clear_free_cells(self) -> None:
+        """free-cell 单向证书通道（doc 04 v2 §3.1）。
+
+        free[c]=1 ⟹ c 不被任何已选设施体格占据。lowering = 每格一对 1×1
+        optional interval（presence=free[c]），由 build() 放进「B∪F」那条
+        NoOverlap。生死线：interval 只进 _front_clear_*，绝不 append 进
+        _core_*（ghost combined 按 _core_* 展开；混入 = ghost 变 blocker =
+        超杀，三席审查同洞 F1/GHOST-LEAK/F-01）。padded 数组 = (W+2)×(H+2)
+        行主序，边界一圈常量 0（出界 front 读 0 = 不自由，语义正确）。
+        """
+        grid_w, grid_h = int(self.grid_w), int(self.grid_h)
+        padded_w, padded_h = grid_w + 2, grid_h + 2
+        zero = self.model.NewConstant(0)
+        padded: List[Any] = [zero] * (padded_w * padded_h)
+        for cy in range(grid_h):
+            for cx in range(grid_w):
+                free_var = self.model.NewBoolVar(f"fclear__{cx}_{cy}")
+                x_interval = self.model.NewOptionalIntervalVar(
+                    int(cx), 1, int(cx) + 1, free_var, f"fclear_x__{cx}_{cy}"
+                )
+                y_interval = self.model.NewOptionalIntervalVar(
+                    int(cy), 1, int(cy) + 1, free_var, f"fclear_y__{cx}_{cy}"
+                )
+                self._front_clear_x_intervals.append(x_interval)
+                self._front_clear_y_intervals.append(y_interval)
+                self._front_clear_interval_proto_indexes.append(
+                    (int(x_interval.Index()), int(y_interval.Index()))
+                )
+                self._front_clear_free_bools[(int(cx), int(cy))] = free_var
+                padded[(cy + 1) * padded_w + (cx + 1)] = free_var
+        self._front_clear_padded_free = padded
+
+    def _front_clear_offsets_by_mode(
+        self,
+        group: Mapping[str, Any],
+        tpl: str,
+    ) -> Dict[int, Tuple[Tuple[Tuple[int, int], ...], Tuple[Tuple[int, int], ...]]]:
+        """逐 mode 派生 (输入侧, 输出侧) 的 front 相对锚点偏移，含前提哨兵。
+
+        方向步进与 routing 侧同源（routing_binding_context._DIR_DELTA——
+        port_front_status 用的就是它，函数级 import 保证零漂移）。每个
+        fail-closed 检查对应计数等价定理的一条已验前提（doc 04 v2 §1.2）：
+        平移不变性（同 mode 偏移逐 pose 相等）、同侧 front 两两不同格、
+        front 不落自身体格、体格矩形（bbox==occupied_cells，R2）。
+        """
+        from src.models.routing_binding_context import _DIR_DELTA
+
+        pool = list(self.owner.facility_pools.get(tpl, []))
+        pose_tuple_by_idx = self._template_pose_tuple_by_idx.get(tpl, {})
+        offsets_by_mode: Dict[
+            int, Tuple[Tuple[Tuple[int, int], ...], Tuple[Tuple[int, int], ...]]
+        ] = {}
+        group_id = str(group.get("group_id", ""))
+        for pose_idx in self._coordinate_master_pose_indices_for_group(group):
+            pose_tuple = pose_tuple_by_idx.get(int(pose_idx))
+            if pose_tuple is None:
+                raise RuntimeError(
+                    f"front-clear lift: pose tuple missing for template {tpl} "
+                    f"pose_idx={pose_idx} (group {group_id})"
+                )
+            anchor_x, anchor_y, mode_id = (
+                int(pose_tuple[0]),
+                int(pose_tuple[1]),
+                int(pose_tuple[2]),
+            )
+            pose = pool[int(pose_idx)]
+            occupied = self._pose_absolute_cells(pose, "occupied_cells")
+            if not occupied:
+                raise RuntimeError(
+                    f"front-clear lift: pose has no occupied cells: {tpl}#{pose_idx}"
+                )
+            xs = [int(x_val) for x_val, _ in occupied]
+            ys = [int(y_val) for _, y_val in occupied]
+            bbox_area = (max(xs) - min(xs) + 1) * (max(ys) - min(ys) + 1)
+            if len(occupied) != bbox_area:
+                raise RuntimeError(
+                    "front-clear lift: non-rectangular footprint breaks the "
+                    f"interval-exclusion premise (R2): {tpl}#{pose_idx} "
+                    f"cells={len(occupied)} bbox={bbox_area}"
+                )
+            sides: List[Tuple[Tuple[int, int], ...]] = []
+            for field_name in ("input_port_cells", "output_port_cells"):
+                offsets: List[Tuple[int, int]] = []
+                for port in pose.get(field_name, []) or []:
+                    direction = str(port["dir"])
+                    if direction not in _DIR_DELTA:
+                        raise RuntimeError(
+                            f"front-clear lift: unknown port dir {direction!r}: "
+                            f"{tpl}#{pose_idx}"
+                        )
+                    dx, dy = _DIR_DELTA[direction]
+                    front_x = int(port["x"]) + int(dx)
+                    front_y = int(port["y"]) + int(dy)
+                    if (front_x, front_y) in occupied:
+                        raise RuntimeError(
+                            "front-clear lift: port front inside own body breaks "
+                            f"the shared-certificate premise: {tpl}#{pose_idx} "
+                            f"front=({front_x},{front_y})"
+                        )
+                    offsets.append((front_x - anchor_x, front_y - anchor_y))
+                if len(set(offsets)) != len(offsets):
+                    raise RuntimeError(
+                        "front-clear lift: duplicate same-side front cells break "
+                        f"the counting-equivalence premise: {tpl}#{pose_idx} "
+                        f"{field_name}"
+                    )
+                sides.append(tuple(sorted(offsets)))
+            entry = (sides[0], sides[1])
+            existing = offsets_by_mode.get(mode_id)
+            if existing is None:
+                offsets_by_mode[mode_id] = entry
+            elif existing != entry:
+                raise RuntimeError(
+                    "front-clear lift: translation invariance violated for "
+                    f"{tpl} mode {mode_id} (pose_idx={pose_idx}) — per-mode "
+                    "front offsets must be pose-independent"
+                )
+        return offsets_by_mode
+
+    def _add_front_clear_lift_demand_constraints(self) -> None:
+        """每侧自由 front 计数 ≥ routing-visible 需求（doc 04 v2 §3.2）。
+
+        对范围内（supports_exact_pose_level_binding 且需求>0）mandatory slot：
+        f = (y+1+dy_m)*(W+2) + (x+1+dx_m) 按 mode 文字条件化，
+        b = padded_free[f]（AddElement），每侧 Sum(b) >= demand。
+        soundness = 命题 N + 计数等价（必要条件，不排除任何可认证解）；
+        demand 经 port_binding SSOT + owner 自携 snapshot（宁低勿高方向由
+        SSOT 保证）。padding 密闭性 fail-closed：逐 (mode, offset) 用
+        mode_rect_domains 锚点界校验 padded 索引不越界（一圈 padding 的
+        安全性依赖 mode↔x/y 域耦合，不作默认假设——审查 F1-padding）。
+        """
+        from src.models.port_binding import (
+            routing_visible_port_demands,
+            supports_exact_pose_level_binding,
+        )
+        from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+
+        rfsc = self._front_clear_routing_free_sink_commodities()
+        grid_w, grid_h = int(self.grid_w), int(self.grid_h)
+        padded_w, padded_h = grid_w + 2, grid_h + 2
+        max_index = padded_w * padded_h - 1
+        stats: Dict[str, Any] = {
+            "enabled": True,
+            "free_cell_count": len(self._front_clear_free_bools),
+            "rfsc": sorted(rfsc),
+            "groups_covered": 0,
+            "groups_skipped_out_of_scope": 0,
+            "groups_skipped_zero_demand": 0,
+            "slots_constrained": 0,
+            "index_var_count": 0,
+            "element_count": 0,
+            "mode_eq_constraint_count": 0,
+            "side_count_constraints": 0,
+            "demands_by_operation": {},
+        }
+        for group in self.owner._mandatory_groups:
+            operation_type = str(group.get("operation_type", ""))
+            # 未登记 profile 的 op = 不可证明在范围内 → 出范围跳过（只弱化
+            # 条件，sound 方向；跳过量进 stats 可审计）
+            if (
+                not operation_type
+                or operation_type not in OPERATION_PORT_PROFILES
+                or not supports_exact_pose_level_binding(operation_type)
+            ):
+                stats["groups_skipped_out_of_scope"] += 1
+                continue
+            req_in, vis_out = routing_visible_port_demands(operation_type, rfsc)
+            if req_in <= 0 and vis_out <= 0:
+                stats["groups_skipped_zero_demand"] += 1
+                continue
+            tpl = str(group["facility_type"])
+            group_id = str(group["group_id"])
+            offsets_by_mode = self._front_clear_offsets_by_mode(group, tpl)
+            if not offsets_by_mode:
+                raise RuntimeError(
+                    f"front-clear lift: no pose offsets derived for group "
+                    f"{group_id} ({tpl}/{operation_type})"
+                )
+            stats["demands_by_operation"][operation_type] = [
+                int(req_in),
+                int(vis_out),
+            ]
+            stats["groups_covered"] += 1
+            for slot in self.mandatory_slots.get(group_id, []):
+                if slot.x is None or slot.y is None or slot.mode is None:
+                    raise RuntimeError(
+                        f"front-clear lift: slot missing coordinate vars: {slot.key}"
+                    )
+                domain_by_mode = dict(slot.mode_rect_domains)
+                if set(offsets_by_mode) != set(
+                    int(m) for m in domain_by_mode
+                ):
+                    raise RuntimeError(
+                        "front-clear lift: mode set mismatch between pose "
+                        f"offsets and rect domains for slot {slot.key}: "
+                        f"{sorted(offsets_by_mode)} vs {sorted(domain_by_mode)}"
+                    )
+                for side_idx, demand in ((0, int(req_in)), (1, int(vis_out))):
+                    if demand <= 0:
+                        continue
+                    side_tag = "in" if side_idx == 0 else "out"
+                    cell_counts = {
+                        len(offsets[side_idx])
+                        for offsets in offsets_by_mode.values()
+                    }
+                    if len(cell_counts) != 1:
+                        raise RuntimeError(
+                            "front-clear lift: per-mode side cell counts differ "
+                            f"for slot {slot.key} side {side_tag}: {cell_counts}"
+                        )
+                    cell_count = cell_counts.pop()
+                    if cell_count < demand:
+                        raise RuntimeError(
+                            "front-clear lift: side cell count below demand "
+                            f"(enumerator would raise) slot {slot.key} "
+                            f"{side_tag}: {cell_count} < {demand}"
+                        )
+                    # padding 密闭性：逐 (mode, offset) 锚点界校验
+                    for mode_id, offsets in sorted(offsets_by_mode.items()):
+                        domain = domain_by_mode[mode_id]
+                        for dx, dy in offsets[side_idx]:
+                            px_lo = int(domain.x_min) + 1 + int(dx)
+                            px_hi = int(domain.x_max) + 1 + int(dx)
+                            py_lo = int(domain.y_min) + 1 + int(dy)
+                            py_hi = int(domain.y_max) + 1 + int(dy)
+                            if not (
+                                0 <= px_lo
+                                and px_hi <= padded_w - 1
+                                and 0 <= py_lo
+                                and py_hi <= padded_h - 1
+                            ):
+                                raise RuntimeError(
+                                    "front-clear lift: one-ring padding "
+                                    "insufficient for offset "
+                                    f"({dx},{dy}) mode {mode_id} slot "
+                                    f"{slot.key} — fail-closed (doc 04 v2 §3.2)"
+                                )
+                    b_vars: List[cp_model.IntVar] = []
+                    for j in range(cell_count):
+                        f_var = self.model.NewIntVar(
+                            0, int(max_index), f"fclear_idx__{slot.key}__{side_tag}{j}"
+                        )
+                        stats["index_var_count"] += 1
+                        for mode_id, offsets in sorted(offsets_by_mode.items()):
+                            dx, dy = offsets[side_idx][j]
+                            mode_lit = self._eq_literal(
+                                slot.mode,
+                                int(mode_id),
+                                f"fclear_mode__{slot.key}__{mode_id}",
+                            )
+                            self.model.Add(
+                                f_var
+                                == slot.y * padded_w
+                                + slot.x
+                                + ((1 + int(dy)) * padded_w + (1 + int(dx)))
+                            ).OnlyEnforceIf(mode_lit)
+                            stats["mode_eq_constraint_count"] += 1
+                        b_var = self.model.NewBoolVar(
+                            f"fclear_b__{slot.key}__{side_tag}{j}"
+                        )
+                        self.model.AddElement(
+                            f_var, self._front_clear_padded_free, b_var
+                        )
+                        stats["element_count"] += 1
+                        b_vars.append(b_var)
+                    self.model.Add(sum(b_vars) >= int(demand))
+                    stats["side_count_constraints"] += 1
+                stats["slots_constrained"] += 1
+        self._front_clear_stats = stats
+        self.owner.build_stats["front_clear_lift"] = dict(stats)
+
     def build(self) -> None:
         # PROJECT_LOCK L4a: 旧 EXACT_POWER_PLACEMENT_SUBPROBLEM 在 certified mode
         # 必须 fail-closed. 它会从 master 拿走 power_pole slot, 让 downstream cut
@@ -3755,14 +4079,26 @@ class CoordinateExactMasterDelegate:
         self._create_residual_optional_slot_vars()
         self._create_power_pole_slot_vars()
         self._add_coordinate_symmetry_breaking()
-        if self._core_x_intervals:
+        # front-clear lift env 只在直接 build 路径解析；clone 由 bind_from_core
+        # 从 core binding 恢复、不重读 env（doc 04 v2 R14/R17）。
+        self.front_clear_lift_enabled = _resolve_front_clear_lift_enabled_from_env()
+        if self.front_clear_lift_enabled:
+            self._create_front_clear_free_cells()
+        if self._core_x_intervals or self._front_clear_x_intervals:
+            # lift ON 时这条 = NoOverlap2D(B∪F)（free 证书约束）；_core_* 列表
+            # 本身不含 free interval，因此 ghost overlay 的 combined 仍是
+            # B∪G——双活跃 NoOverlap 拓扑（doc 04 v2 §3.1），dedup 的逐
+            # interval 子集校验会因 F∉combined 而正确拒绝清空本约束。
             core_no_overlap = self.model.AddNoOverlap2D(
-                self._core_x_intervals, self._core_y_intervals
+                [*self._core_x_intervals, *self._front_clear_x_intervals],
+                [*self._core_y_intervals, *self._front_clear_y_intervals],
             )
             # 记录 proto index 供 ghost overlay 的 dedup 精确定位——绝不通过
             # proto 反射扫描（has_no_overlap_2d() 在部分 proto 形态下段错误，
             # 2026-07-09 外审复现 + 本机坐实）。
             self._core_no_overlap_constraint_index = int(core_no_overlap.Index())
+        if self.front_clear_lift_enabled:
+            self._add_front_clear_lift_demand_constraints()
         self._add_ghost_constraints()
         lazy_completion = self._lazy_power_completion_enabled()
         if (
@@ -3946,6 +4282,24 @@ class CoordinateExactMasterDelegate:
         self._bind_c1_power_pole_vars(
             dict(coordinate_binding.get("c1_power_pole_binding", {}))
         )
+        # front-clear lift：clone 从 binding 恢复 feature identity 与变量绑定，
+        # 绝不重读 env（R14）。约束本体随 proto 克隆；interval 对象列表在
+        # clone 侧无消费者（ghost combined 只展开 _core_*），不重建。
+        front_clear = dict(coordinate_binding.get("front_clear_lift", {}) or {})
+        self.front_clear_lift_enabled = bool(front_clear.get("enabled", False))
+        self._front_clear_free_bools = {}
+        for cell_key, proto_idx in dict(
+            front_clear.get("free_bool_index_by_cell", {}) or {}
+        ).items():
+            cx_text, cy_text = str(cell_key).split(",")
+            self._front_clear_free_bools[(int(cx_text), int(cy_text))] = (
+                self.model.GetIntVarFromProtoIndex(int(proto_idx))
+            )
+        self._front_clear_interval_proto_indexes = [
+            (int(pair[0]), int(pair[1]))
+            for pair in list(front_clear.get("interval_proto_indexes", []) or [])
+        ]
+        self._front_clear_stats = dict(front_clear.get("stats", {}) or {})
         raw_core_no_overlap_idx = coordinate_binding.get("core_no_overlap_constraint_index")
         self._core_no_overlap_constraint_index = (
             int(raw_core_no_overlap_idx) if raw_core_no_overlap_idx is not None else None
@@ -3991,6 +4345,18 @@ class CoordinateExactMasterDelegate:
             "c1_power_pole_binding": {
                 "enabled": bool(self.c1_power_pole_representation),
                 "entries": c1_entries if self.c1_power_pole_representation else [],
+            },
+            "front_clear_lift": {
+                "enabled": bool(self.front_clear_lift_enabled),
+                "free_bool_index_by_cell": {
+                    f"{cx},{cy}": int(var.Index())
+                    for (cx, cy), var in self._front_clear_free_bools.items()
+                },
+                "interval_proto_indexes": [
+                    [int(x_idx), int(y_idx)]
+                    for x_idx, y_idx in self._front_clear_interval_proto_indexes
+                ],
+                "stats": dict(self._front_clear_stats),
             },
             "core_no_overlap_constraint_index": (
                 int(self._core_no_overlap_constraint_index)
@@ -7296,12 +7662,22 @@ class CoordinateExactMasterDelegate:
             + int(residual_optional_slot_count)
             + len(self.owner.u_vars)
             + int(len(self._c1_pole_intervals_by_pose_idx))
+            # front-clear lift 的 free 1×1 box（doc 04 v2 §7：计数口径含 free；
+            # clone 侧由 bind_from_core 恢复的 free_bools 提供同一数值）
+            + int(len(self._front_clear_free_bools))
         )
         c1_pole_pose_bool_count = (
             int(len(self._c1_pole_bools)) if self.c1_power_pole_representation else 0
         )
         guidance = dict(self.owner.build_stats.get("search_guidance", {}))
         mode_literals = int(guidance.get("mandatory_mode_literals", 0)) + int(guidance.get("required_optional_mode_literals", 0)) + int(guidance.get("residual_optional_mode_literals", 0))
+        # clone 路径：demand 约束随 proto 克隆、不重建，stats 块从 binding
+        # 恢复的 _front_clear_stats 回填（direct build 已在 demand 阶段写入）。
+        if (
+            self.front_clear_lift_enabled
+            and "front_clear_lift" not in self.owner.build_stats
+        ):
+            self.owner.build_stats["front_clear_lift"] = dict(self._front_clear_stats)
         domain_activation = {
             "ghost_anchor_count": int(len(self.owner.u_vars)),
             "mandatory_slot_count": int(mandatory_slot_count),

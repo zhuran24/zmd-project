@@ -40,6 +40,7 @@ cut framework 用 env 做 phase/feature toggle, 不用 config file (跟项目其
 | `EXACT_B1_SEPARATOR_HULL_DYNAMIC` | OFF | SAC-Hull L2 dynamic separator. cut framework 独立 |
 | `EXACT_B1_D2_COMMODITY_FLOW` | OFF | D2 Path 17 (paradigm 死). cut framework 独立 |
 | `EXACT_B1_ROUTING_AWARE_BINDING` | OFF | routing-aware binding. **2026-07-16 起 certified-allowlisted**（①′ 分类提升批，依据=soundness 审查 v2 + F-BL-R11-01 结构守卫；默认仍 OFF，开启走 wrapper/drill 显式 env）。跟 F2/F4 commodity registry 可能交互 (Phase 1.5+ §13.1 决) |
+| `EXACT_MASTER_FRONT_CLEAR_LIFT` | OFF | front-clear 必要条件上收 master（2026-07-16 上收批，certified-allowlisted）。**严格值域**：unset//0/false/off=OFF、1/true/on=ON、其它值 build 期 fail-closed 抛错。依据=命题 N+计数等价定理+四席审查（doc 04 v2）+PROJECT_LOCK F-GM-FCL-01；默认 OFF 待验证阶梯判读 |
 | `EXACT_MASTER_GHOST_ANCHOR_FILTER` | (unset) | ghost anchor 限缩. 跟 cut.scope GHOST_AGNOSTIC 不冲突 (前者限 master, 后者限 cut applicability) |
 | `EXACT_OUTER_SKIP_UNKNOWN` | OFF | outer search skip UNKNOWN candidate. 跟 cut framework 不直接交互 |
 

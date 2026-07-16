@@ -98,6 +98,8 @@ _SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
         # that no longer collect. v98 stays: its call is sub-second but the
         # golden-surface fixture setup alone is ~23s.
         "test_regression.py::test_aspect_ratio_sliced_search_cannot_claim_terminal_certified",
+        # front-clear lift 全池黄金对照：真实 session+master 构建 ~50s
+        "test_front_clear_lift_full_pool_golden.py::test_full_pool_offsets_bidirectional_golden",
         "test_exact_contract.py::test_certified_result_writes_canonical_optimal_blueprint",
         "test_exact_contract.py::test_toy_project_can_be_truly_certified",
         "test_exact_contract.py::test_outer_search_safe_area_upper_bound_accounts_for_fixed_required_protocol_storage_box",

@@ -1171,6 +1171,7 @@ _CERTIFIED_KNOWN_ENV_NAMES = frozenset(
         "EXACT_MASTER_CP_SAT_WORKERS",
         "EXACT_MASTER_FILL_TIGHTENED_DOMAINS",
         "EXACT_MASTER_FILL_TIGHTENED_DOMAINS_ENV",
+        "EXACT_MASTER_FRONT_CLEAR_LIFT",
         "EXACT_MASTER_GHOST_ANCHOR_FILTER",
         "EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV",
         "EXACT_MASTER_HINT_CONFLICT_LIMIT",
@@ -1315,6 +1316,15 @@ _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST = frozenset(
         "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES",
         "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS",
         "EXACT_MASTER_CP_SAT_WORKERS",
+        # front-clear 必要条件上收 master（2026-07-16 front-clear 上收批）:
+        # soundness=命题 N(11 席幸存)+计数等价定理(全池 66,405 pose 前提亲验),
+        # 编码=共享单向 free-cell 证书(独立 interval 集合, 双活跃 NoOverlap
+        # B∪F/B∪G, ghost 不作 blocker)+mode 条件 front 索引+AddElement 计数,
+        # demand 经 port_binding SSOT+certified generic_io snapshot 同源;
+        # 设计+四席对抗审查=docs/research/rab_sep_promotion_20260716/04 v2
+        # (§9 处置表)。严格值域: 非法值 fail-closed 抛错(不静默当 OFF)。
+        # allowlist 语义=may be present, 默认仍 OFF; 开启走 drill/A-B 显式 env。
+        "EXACT_MASTER_FRONT_CLEAR_LIFT",
         "EXACT_MASTER_HINT_CONFLICT_LIMIT",
         "EXACT_MASTER_HINT_PERSISTENCE",
         "EXACT_MASTER_IGNORE_LP_SUBSOLVERS",
@@ -1580,6 +1590,39 @@ def _collect_forbidden_certified_master_domain_env_overrides() -> List[Dict[str,
             }
         )
     return blockers
+
+
+def _front_clear_lift_scope_raw_empty_instances(
+    empty_binding_domain_instances: Sequence[Mapping[str, Any]],
+    routing_free_sink_commodities: Any,
+) -> List[str]:
+    """front-clear lift 验收遥测（doc 04 v2 §4.3）：raw 空域按 liftable scope 分桶。
+
+    纯诊断——绝不写进 conflict summary / proof 记录（golden semantic digest
+    钉死 proof 面；本 helper 只喂 controller 的逐迭代计数与 stdout 行）。
+    scope = supports_exact_pose_level_binding 且需求>0（demand 经 port_binding
+    SSOT）。raw 事件口径 ≠ accepted-cut counter（审查 F-05 假绿面）。
+    """
+    from src.models.port_binding import (
+        routing_visible_port_demands,
+        supports_exact_pose_level_binding,
+    )
+    from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+
+    rfsc = frozenset(str(item) for item in (routing_free_sink_commodities or ()))
+    scoped: List[str] = []
+    for item in empty_binding_domain_instances:
+        operation_type = str(item.get("operation_type", ""))
+        if (
+            not operation_type
+            or operation_type not in OPERATION_PORT_PROFILES
+            or not supports_exact_pose_level_binding(operation_type)
+        ):
+            continue
+        req_in, vis_out = routing_visible_port_demands(operation_type, rfsc)
+        if req_in > 0 or vis_out > 0:
+            scoped.append(str(item.get("instance_id", "")))
+    return scoped
 
 
 def _rab_empty_domain_thin_fallback_forbidden(binding_model: Any, owner_id: str) -> bool:
@@ -3898,6 +3941,10 @@ class LBBDController:
         }
         self._fine_grained_exact_safe_cut_count = 0
         self._binding_domain_empty_cut_count = 0
+        # front-clear lift raw 验收遥测（doc 04 v2 §4.3）：binding 侧 raw 空域
+        # 事件的 lift-scope 分桶逐迭代序列。raw 口径 ≠ 上面两个 accepted-cut
+        # counter——lift ON 且到达 binding 时 scope 桶必须严格 0。
+        self._front_clear_raw_empty_by_iteration: List[Dict[str, int]] = []
         self._routing_front_blocked_cut_count = 0
         self._routing_precheck_rejections = 0
         self._routing_precheck_statuses: List[str] = []
@@ -6471,6 +6518,29 @@ class LBBDController:
         empty_binding_domain_instances = list(
             getattr(binding_model, "extract_empty_binding_domain_instances", lambda: [])()
         )
+        _lift_stats = dict(
+            (getattr(self.master, "build_stats", {}) or {}).get(
+                "front_clear_lift", {}
+            )
+            or {}
+        )
+        if bool(_lift_stats.get("enabled", False)):
+            _raw_scope_instances = _front_clear_lift_scope_raw_empty_instances(
+                empty_binding_domain_instances,
+                getattr(binding_model, "routing_free_sink_commodities", ()),
+            )
+            self._front_clear_raw_empty_by_iteration.append(
+                {
+                    "raw_total": len(empty_binding_domain_instances),
+                    "raw_lift_scope": len(_raw_scope_instances),
+                }
+            )
+            print(
+                "[front-clear] raw empty_binding_domain "
+                f"total={len(empty_binding_domain_instances)} "
+                f"lift_scope={len(_raw_scope_instances)}",
+                flush=True,
+            )
         if empty_binding_domain_instances:
             cut_added = False
             # RAB-SEP Phase 3: env on 时用 cert (owner_pose + blocker_poses)

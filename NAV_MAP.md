@@ -10,6 +10,9 @@ main.py
        producer: 枚举候选、运行 Benders/LBBD、只提交 CANDIDATE_PROPOSED
        -> src/search/benders_loop.py
             -> src/models/exact_coordinate_master.py / master_model.py
+               front-clear lift (EXACT_MASTER_FRONT_CLEAR_LIFT, 默认 OFF):
+               demand SSOT = src/models/port_binding.py::routing_visible_port_demands
+               (+ routing_free_sink_commodities_from_generic_inputs, binding 同源)
             -> src/models/binding_subproblem.py          certified gate
             -> src/models/routing_subproblem.py          certified gate
             -> src/models/flow_subproblem.py             diagnostic-only

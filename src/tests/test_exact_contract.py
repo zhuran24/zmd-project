@@ -9544,6 +9544,27 @@ def test_rab_sep_env_certified_allowlisted_after_soundness_review(
     )
 
 
+def test_front_clear_lift_env_certified_allowlisted(monkeypatch) -> None:
+    # 2026-07-16 front-clear 上收批: EXACT_MASTER_FRONT_CLEAR_LIFT 收编
+    # certified allowlist, 依据=命题 N(11 席幸存)+计数等价定理+四席设计审查
+    # (docs/research/rab_sep_promotion_20260716/04 v2)。allowlist=may be
+    # present, 默认仍 OFF; 非法值由 master build 侧严格值域 fail-closed。
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_MASTER_FRONT_CLEAR_LIFT", "1")
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert blockers == []
+    assert (
+        "EXACT_MASTER_FRONT_CLEAR_LIFT"
+        in benders_loop_module._CERTIFIED_KNOWN_ENV_NAMES
+    )
+    assert (
+        "EXACT_MASTER_FRONT_CLEAR_LIFT"
+        in benders_loop_module._CERTIFIED_OPERATIONAL_ENV_ALLOWLIST
+    )
+
+
 def test_v81_certified_env_guard_allows_complete_solve_preserving_subproblem_params(
     monkeypatch,
 ) -> None:
