@@ -114,3 +114,28 @@
    不被任何设施本体占据且在图内**。OQ3-7（同向共享/cross 贴口等）
    均为 routing 层细节，不阻塞批 1。
 6. **RAB/FCL 处置**：随批 1 同批修复（owner："按你的来"）。
+
+## §6 批 1 落地记录（2026-07-18 凌晨，提交 `060aeb6`）
+
+certified 主链 identity 语义原子 reseal 已完成并全绿验收：
+
+- **代码**：routing 五链 identity 化（单点 SSOT `_port_front_cell`）、
+  connector 扣除+owner 归因删除、RAB self-occupied 豁免删除、FCL offsets
+  去步进（哨兵保留）、patch_routing_core/patch_conflict_separator 顺手
+  同批（比留批 2 干净）、fixed_witness backstop 注记（行为不动）；
+  benders_loop/binding_subproblem 亲证零改动（透传/抽象消费）。
+- **文本**：LOCK F-RT-R2-01 再裁+F-RT-R3-01 整条反转+R4-02/R5-01/B-4/
+  BS-R2 同步+F-FRONT-INC-01 addendum；canonical machine_min_clearance
+  裁决文重写（pin `f466243a…` 双钉换）；specs/06 三处勘误。
+- **测试**：38 旧 fixture 反转（口沿 dir 前移一格→front 几何意图逐字
+  保留；connector 扣除测试重写为正向哨兵）+6 类回归矩阵
+  （`test_front_identity_semantics.py`）+FCL 全池 golden 独立重算臂
+  identity 化（599,384 端口双向一致）+specs_a vacuous 对照修复。
+- **reseal**：obligations 7 sink+V99 floor 7 条+checker 自钉。
+- **验收**：双 checker 15/67、65/83；preflight --full 19/19（4476 快测）；
+  --slow-tests 32/32（rederivation 经 capsule 链 PASS——生成器未动）；
+  旧 campaign/持久化 nogood 经 source digest（798 文件闭包，含全部
+  改动文件）自动失效，亲证机制存在。
+- **批 2/3/4 保持原计划**：批 2 不可达面收尾（pose_bool/D2 核心/
+  abstract/deletion-core/F3 族/io-render 标注——patch 族已提前进批 1）；
+  批 3 补域（owner 已拍板必做）；批 4 历史重判+实验重跑。
