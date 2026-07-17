@@ -97,11 +97,14 @@
    pose 全部为游戏合法摆位。
 3. **OQ1**：口前格被其他商品的带子占用 **≠ 堵死**——可经十字交叉
    （`routing_cross_junction`，canonical_rules.json:410-412）借道。
-   **owner 补充定谳**：弯带不兼容十字交叉——借道仅限双方在该格均为
-   直穿形态（can_turn=false / 非直行组件不得共格）。此限制在树内已
-   双份强制：canonical 文本 + `routing_subproblem.py:1105-1125`
-   `_add_bridge_constraints`（非"belt+直行+垂直轴"组合一律互斥），
-   批 1 无需新增代码。
+   **owner 补充定谳（两轮）**：①弯带不兼容十字交叉——口前格上的
+   他商品带若在该格为弯带形态，该口即被占死；②借道仅限"横穿直带"
+   ——他商品带与口出向垂直直穿时可上十字交叉解决。推论（canonical
+   文本一致）：与口出向平行同轴的他商品直带同样堵（十字只认垂直
+   交叉）。此三分在树内已双份强制：canonical 文本 +
+   `routing_subproblem.py:1105-1125` `_add_bridge_constraints`
+   （非"belt+直行+垂直轴"组合一律互斥），批 1 无需新增代码；
+   带-带细分属 routing 层裁决，不进 placement/binding 层 front 谓词。
 4. **OQ2**：电线杆算设施本体 → 压口前格 = 堵。与现有建模（pole body
    参与不重叠/占格）一致，无需改动。
 5. **FrontUsable blocker 闭集（据 1-4 定谳）**：堵 = 任何设施本体
