@@ -126,8 +126,8 @@ def test_routing_feasible_incumbent_requires_source_to_sink_connectivity() -> No
     disconnected_incumbent = _disconnected_route_states("ore")
     active_cells = {(int(state[0]), int(state[1])) for state in disconnected_incumbent}
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 5, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     domain_analysis = {
         "status": "feasible",
@@ -167,8 +167,8 @@ def test_routing_guard_timeout_does_not_expose_rejected_routes(monkeypatch: Any)
     disconnected_incumbent = _disconnected_route_states("ore")
     active_cells = {(int(state[0]), int(state[1])) for state in disconnected_incumbent}
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 5, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     domain_analysis = {
         "status": "feasible",
@@ -209,10 +209,10 @@ def test_routing_guard_checks_each_selected_commodity() -> None:
 
     base_states = _disconnected_route_states("ore")
     port_specs = [
-        {"instance_id": "ore_src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "ore_sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
-        {"instance_id": "water_src", "x": 0, "y": 3, "dir": "E", "type": "out", "commodity": "water"},
-        {"instance_id": "water_sink", "x": 6, "y": 3, "dir": "W", "type": "in", "commodity": "water"},
+        {"instance_id": "ore_src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 5, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "water_src", "x": 1, "y": 3, "dir": "E", "type": "out", "commodity": "water"},
+        {"instance_id": "water_sink", "x": 5, "y": 3, "dir": "W", "type": "in", "commodity": "water"},
     ]
     domain_analysis = {
         "status": "feasible",
@@ -263,7 +263,7 @@ def test_routing_lazy_connectivity_cuts_converge_on_three_commodity_probe() -> N
             [
                 {
                     "instance_id": f"{commodity}_src",
-                    "x": 0,
+                    "x": 1,
                     "y": dy,
                     "dir": "E",
                     "type": "out",
@@ -271,7 +271,7 @@ def test_routing_lazy_connectivity_cuts_converge_on_three_commodity_probe() -> N
                 },
                 {
                     "instance_id": f"{commodity}_sink",
-                    "x": 6,
+                    "x": 5,
                     "y": dy,
                     "dir": "W",
                     "type": "in",
@@ -312,8 +312,8 @@ def test_routing_lazy_connectivity_cut_preserves_real_feasible_path() -> None:
         for state in disconnected_incumbent | connected_path
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 5, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(set(), port_specs),
@@ -349,8 +349,8 @@ def test_routing_lazy_connectivity_cut_self_check_falls_back_to_nogood(monkeypat
         for state in disconnected_incumbent | connected_path
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 5, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(set(), port_specs),
@@ -397,9 +397,9 @@ def test_routing_guard_rejects_source_front_without_sink_reachability() -> None:
     incumbent = connected_path | dead_end_loop
     active_cells = {(int(state[0]), int(state[1])) for state in incumbent}
     port_specs = [
-        {"instance_id": "src_a", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "src_b", "x": 0, "y": 3, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src_a", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "src_b", "x": 1, "y": 3, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 5, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(set(), port_specs),

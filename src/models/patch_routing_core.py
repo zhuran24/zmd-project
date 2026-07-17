@@ -134,12 +134,13 @@ def build_local_pose_signature(
 ) -> PoseLocalSignature:
     """Compute the patch-local signature of a pose.
 
-    Only patch-overlapping geometry contributes.  A port contributes when either
-    its physical connector cell or its terminal front cell intersects the patch:
-    a connector just outside the patch can still inject/consume flow on a front
-    cell inside the patch router.  The resulting signature is the equivalence
-    class under "same patch routing requirements", which is exactly the relation
-    that justifies a single core cut covering multiple poses.
+    Only patch-overlapping geometry contributes.  Identity semantics
+    (front-offset incident fix 2026-07-18): the stored port coordinate IS
+    the terminal front/belt cell, so a port contributes exactly when that
+    cell intersects the patch (the legacy connector/front split no longer
+    exists).  The resulting signature is the equivalence class under "same
+    patch routing requirements", which is exactly the relation that
+    justifies a single core cut covering multiple poses.
     """
     occupied = pose.get("occupied_cells") or []
     footprint = frozenset(
@@ -153,9 +154,7 @@ def build_local_pose_signature(
             x = int(port["x"])
             y = int(port["y"])
             d = str(port.get("dir", ""))
-            dx, dy = DIR_DELTA.get(d, (0, 0))
-            fx, fy = x + dx, y + dy
-            if (x, y) not in patch_cells and (fx, fy) not in patch_cells:
+            if (x, y) not in patch_cells:
                 continue
             commodity = str(port.get("commodity", ""))
             port_entries.append((x, y, d, commodity, side_type))
@@ -332,11 +331,10 @@ class PatchRoutingCore:
             self._patch_active_cells_by_commodity[commodity] = full_active & self._patch_free_cells
 
     def _index_port_fronts(self) -> None:
-        """Patch-visible port fronts — same terminal semantics as routing_subproblem."""
+        """Patch-visible port fronts — same terminal semantics as
+        routing_subproblem (identity: stored coordinate IS the front cell)."""
         for ps in self.patch_port_specs:
-            px, py = ps.x, ps.y
-            dx, dy = DIR_DELTA[ps.direction]
-            fx, fy = px + dx, py + dy
+            fx, fy = ps.x, ps.y
             if (fx, fy) not in self._patch_free_cells:
                 continue
             if ps.type == "out":

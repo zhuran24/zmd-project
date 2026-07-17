@@ -84,9 +84,9 @@ def test_routing_supports_splitter_state(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "test"},
-        {"instance_id": "sink_a", "x": 8, "y": 2, "dir": "S", "type": "in", "commodity": "test"},
-        {"instance_id": "sink_b", "x": 8, "y": 2, "dir": "N", "type": "in", "commodity": "test"},
+        {"instance_id": "src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "test"},
+        {"instance_id": "sink_a", "x": 8, "y": 1, "dir": "S", "type": "in", "commodity": "test"},
+        {"instance_id": "sink_b", "x": 8, "y": 3, "dir": "N", "type": "in", "commodity": "test"},
     ]
 
     routing = RoutingSubproblem(RoutingGrid(occupied, port_specs), ["test"])
@@ -139,8 +139,8 @@ def test_sink_front_consumes_against_outward_normal_on_straight_corridor(project
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     grid = RoutingGrid(occupied, port_specs)
     precheck = analyze_exact_routing_domain(grid)
@@ -180,8 +180,8 @@ def test_bridge_overlap_rejects_same_axis_l0_l1_crossing(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(occupied, port_specs),
@@ -216,10 +216,10 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "iron_src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "iron"},
-        {"instance_id": "iron_sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "iron"},
-        {"instance_id": "copper_src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "copper"},
-        {"instance_id": "copper_sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "copper"},
+        {"instance_id": "iron_src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "iron"},
+        {"instance_id": "iron_sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "iron"},
+        {"instance_id": "copper_src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "copper"},
+        {"instance_id": "copper_sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "copper"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(occupied, port_specs),
@@ -265,10 +265,10 @@ def test_perpendicular_l0_l1_crossing_is_feasible(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "ore_src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "ore_sink", "x": 4, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
-        {"instance_id": "water_src", "x": 2, "y": 0, "dir": "N", "type": "out", "commodity": "water"},
-        {"instance_id": "water_sink", "x": 2, "y": 4, "dir": "S", "type": "in", "commodity": "water"},
+        {"instance_id": "ore_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 3, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "water_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "water"},
+        {"instance_id": "water_sink", "x": 2, "y": 3, "dir": "S", "type": "in", "commodity": "water"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(occupied, port_specs),
@@ -304,10 +304,10 @@ def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "ore_src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "ore_sink", "x": 4, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
-        {"instance_id": "coal_src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "coal"},
-        {"instance_id": "coal_sink", "x": 4, "y": 2, "dir": "W", "type": "in", "commodity": "coal"},
+        {"instance_id": "ore_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 3, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "coal_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "coal"},
+        {"instance_id": "coal_sink", "x": 3, "y": 2, "dir": "W", "type": "in", "commodity": "coal"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(occupied, port_specs),
@@ -329,14 +329,28 @@ def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
 
 
-def test_port_connector_cell_cannot_be_reused_as_routing_cell(project_root):
-    """A physical port connector cell is terminal-only, not a routable belt cell."""
+def test_port_front_cell_is_routable_terminal_cell(project_root):
+    """A port's stored coordinate IS its front/belt cell and stays routable.
+
+    Front-offset incident fix (2026-07-18, authority
+    docs/research/front_offset_incident_20260718/00_incident_survey_and_fix_plan.md):
+    identity semantics removed the old connector-cell deduction.  The cell the
+    port sits on must remain in the free routing domain — a terminal belt sits
+    on it — so it appears in ``r_vars`` and a straight corridor whose endpoints
+    are the two ports' front cells is FEASIBLE.  If the deduction were ever
+    reintroduced, those endpoints would drop out of the domain and the corridor
+    would go INFEASIBLE.
+    """
     import sys
 
     sys.path.insert(0, str(project_root))
-    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem, analyze_exact_routing_domain
+    from src.models.routing_subproblem import (
+        RoutingGrid,
+        RoutingSubproblem,
+        analyze_exact_routing_domain,
+    )
 
-    allowed = {(1, 1), (2, 1), (3, 1), (2, 2), (2, 3)}
+    allowed = {(1, 0), (2, 0), (3, 0)}
     occupied = {
         (x, y)
         for x in range(70)
@@ -344,20 +358,23 @@ def test_port_connector_cell_cannot_be_reused_as_routing_cell(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "ore_src", "x": 0, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "ore_sink", "x": 4, "y": 1, "dir": "W", "type": "in", "commodity": "ore"},
-        {"instance_id": "water_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "water"},
-        {"instance_id": "water_sink", "x": 2, "y": 4, "dir": "S", "type": "in", "commodity": "water"},
+        {"instance_id": "ore_src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     grid = RoutingGrid(occupied, port_specs)
-    precheck = analyze_exact_routing_domain(grid)
-    assert precheck["status"] == "relaxed_disconnected"
-    assert any(item["commodity"] == "ore" for item in precheck["disconnected_commodities"])
 
-    routing = RoutingSubproblem(grid, ["ore", "water"])
+    precheck = analyze_exact_routing_domain(grid)
+    assert precheck["status"] == "feasible"
+
+    routing = RoutingSubproblem(grid, ["ore"])
     routing.build()
 
-    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+    # identity semantics: the stored port coordinate is the front/belt cell and
+    # must stay a routable terminal cell (no connector-cell deduction).
+    assert any((key[0], key[1]) == (1, 0) for key in routing.r_vars)
+    assert any((key[0], key[1]) == (3, 0) for key in routing.r_vars)
+
+    assert routing.solve(time_limit=5.0) == "FEASIBLE"
 
 
 def test_external_domain_analysis_cannot_route_through_occupied_cell(project_root):
@@ -375,8 +392,8 @@ def test_external_domain_analysis_cannot_route_through_occupied_cell(project_roo
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     grid = RoutingGrid(occupied, port_specs)
 
@@ -410,10 +427,10 @@ def test_same_commodity_disconnected_source_sink_islands_are_routable(project_ro
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src_a", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink_a", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
-        {"instance_id": "src_b", "x": 0, "y": 10, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink_b", "x": 4, "y": 10, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src_a", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink_a", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src_b", "x": 1, "y": 10, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink_b", "x": 3, "y": 10, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     grid = RoutingGrid(occupied, port_specs)
 
@@ -452,8 +469,8 @@ def test_orphan_selected_route_witness_is_rejected_with_nogood_fallback(project_
     incumbent = connected_path | orphan_loop
     active_cells = {(int(state[0]), int(state[1])) for state in incumbent}
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 5, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(set(), port_specs),
@@ -492,8 +509,8 @@ def test_unverified_domain_analysis_status_fails_closed_unknown(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
     feasible_domain = _tiny_domain_analysis({"ore": allowed})
 
@@ -690,7 +707,7 @@ def test_exact_routing_precheck_flags_front_blocked(project_root):
 
     occupied = {(1, 0)}
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
     ]
 
     precheck = run_exact_routing_precheck(
@@ -718,8 +735,8 @@ def test_exact_routing_precheck_flags_relaxed_disconnected(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 6, "y": 5, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 5, "y": 5, "dir": "W", "type": "in", "commodity": "ore"},
     ]
 
     precheck = run_exact_routing_precheck(RoutingGrid(occupied, port_specs))
@@ -744,8 +761,8 @@ def test_terminal_aware_peeling_prunes_non_terminal_dead_end_branch(project_root
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 8, "y": 3, "dir": "S", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 8, "y": 2, "dir": "S", "type": "in", "commodity": "ore"},
     ]
 
     analysis = analyze_exact_routing_domain(RoutingGrid(occupied, port_specs))
@@ -773,8 +790,8 @@ def test_routing_local_pattern_filter_reduces_state_space_without_changing_feasi
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink", "x": 8, "y": 3, "dir": "S", "type": "in", "commodity": "ore"},
+        {"instance_id": "src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 8, "y": 2, "dir": "S", "type": "in", "commodity": "ore"},
     ]
 
     routing = RoutingSubproblem(RoutingGrid(occupied, port_specs), ["ore"])
@@ -832,7 +849,7 @@ def test_routing_placement_core_precheck_matches_grid_path(project_root):
         (
             "front_blocked",
             {(1, 0)},
-            [{"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"}],
+            [{"instance_id": "src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"}],
             {(1, 0): "blocker"},
         ),
         (
@@ -844,8 +861,8 @@ def test_routing_placement_core_precheck_matches_grid_path(project_root):
                 if (x, y) not in disconnected_allowed
             },
             [
-                {"instance_id": "src", "x": 0, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
-                {"instance_id": "sink", "x": 6, "y": 5, "dir": "W", "type": "in", "commodity": "ore"},
+                {"instance_id": "src", "x": 1, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
+                {"instance_id": "sink", "x": 5, "y": 5, "dir": "W", "type": "in", "commodity": "ore"},
             ],
             {},
         ),
@@ -858,8 +875,8 @@ def test_routing_placement_core_precheck_matches_grid_path(project_root):
                 if (x, y) not in feasible_allowed
             },
             [
-                {"instance_id": "src", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
-                {"instance_id": "sink", "x": 8, "y": 3, "dir": "S", "type": "in", "commodity": "ore"},
+                {"instance_id": "src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+                {"instance_id": "sink", "x": 8, "y": 2, "dir": "S", "type": "in", "commodity": "ore"},
             ],
             {},
         ),
@@ -911,9 +928,11 @@ def test_routing_subproblem_from_placement_core_matches_grid_build(project_root)
         for y in range(70)
         if (x, y) not in allowed
     }
+    # identity 语义:stored 口坐标即 front/带子格,须在走廊域内(否则本迭代
+    # 退化为 vacuous INFEASIBLE==INFEASIBLE 空对照——fixA 席 heads-up 修复)
     port_specs_a = [
-        {"instance_id": "src_a", "x": 0, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "sink_a", "x": 8, "y": 3, "dir": "S", "type": "in", "commodity": "ore"},
+        {"instance_id": "src_a", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink_a", "x": 8, "y": 2, "dir": "S", "type": "in", "commodity": "ore"},
     ]
     port_specs_b = [
         {"instance_id": "src_b", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},

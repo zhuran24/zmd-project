@@ -85,8 +85,10 @@ def _run_micro_routing(
     }
 
 
-_SRC = {"instance_id": "SRC", "x": 5, "y": 5, "dir": "E", "type": "out", "commodity": "c"}
-_SNK = {"instance_id": "SNK", "x": 10, "y": 5, "dir": "W", "type": "in", "commodity": "c"}
+# identity 语义（front 错位事故修复 2026-07-18）：port spec 的 stored 坐标
+# 即 front/带子格自身——微型 fixture 的口直接写在走廊端点格上。
+_SRC = {"instance_id": "SRC", "x": 6, "y": 5, "dir": "E", "type": "out", "commodity": "c"}
+_SNK = {"instance_id": "SNK", "x": 9, "y": 5, "dir": "W", "type": "in", "commodity": "c"}
 _CORRIDOR = {(6, 5), (7, 5), (8, 5), (9, 5)}
 
 
@@ -104,8 +106,9 @@ def test_front_blocked_short_circuits_build_before_port_adherence() -> None:
     assert blocked["port_adherence"] is None
     assert blocked["solve"] == "INFEASIBLE"
 
-    oob_snk = {"instance_id": "SNK", "x": 0, "y": 5, "dir": "W", "type": "in", "commodity": "c"}
-    oob_src = {"instance_id": "SRC", "x": 2, "y": 5, "dir": "E", "type": "out", "commodity": "c"}
+    # identity 语义下 stored=(-1,5) 即 front 出界（旧 fixture 的 (0,5,W)+delta）
+    oob_snk = {"instance_id": "SNK", "x": -1, "y": 5, "dir": "W", "type": "in", "commodity": "c"}
+    oob_src = {"instance_id": "SRC", "x": 3, "y": 5, "dir": "E", "type": "out", "commodity": "c"}
     oob = _run_micro_routing({(0, 5), (1, 5), (2, 5), (3, 5)}, [oob_src, oob_snk], {})
     assert oob["domain_status"] == "front_blocked"
     assert oob["port_adherence"] is None
@@ -119,8 +122,8 @@ def test_front_blocked_short_circuits_build_before_port_adherence() -> None:
 def test_multi_component_with_local_source_sink_pairs_is_feasible() -> None:
     corridor_a = {(6, 5), (7, 5), (8, 5), (9, 5)}
     corridor_b = {(6, 20), (7, 20), (8, 20), (9, 20)}
-    src_b = {"instance_id": "SRC2", "x": 5, "y": 20, "dir": "E", "type": "out", "commodity": "c"}
-    snk_b = {"instance_id": "SNK2", "x": 10, "y": 20, "dir": "W", "type": "in", "commodity": "c"}
+    src_b = {"instance_id": "SRC2", "x": 6, "y": 20, "dir": "E", "type": "out", "commodity": "c"}
+    snk_b = {"instance_id": "SNK2", "x": 9, "y": 20, "dir": "W", "type": "in", "commodity": "c"}
 
     both_paired = _run_micro_routing(
         corridor_a | corridor_b, [_SRC, _SNK, src_b, snk_b], {}
@@ -201,9 +204,10 @@ def test_context_attribution_completeness_and_blocker_identity() -> None:
     )
     assert dict(context.occupied_owner_by_cell) == expected_owner_by_cell
     assert set(context.occupied_cells) == set(expected_owner_by_cell)
-    # 被他人体格占据的 front 必有 blocker 归因
+    # 被他人体格占据的 front 必有 blocker 归因（identity 语义：stored 格
+    # 直接落在 A 的体格 (10,10) 上）
     status = port_front_status(
-        {"x": 10, "y": 9, "dir": "N", "commodity": "c"},
+        {"x": 10, "y": 10, "dir": "N", "commodity": "c"},
         context,
         owner_instance_id="someone_else",
     )
@@ -546,7 +550,9 @@ def test_pose_intrinsic_all_oob_empty_domain_keeps_thin_fallback_allowed() -> No
     # 真·pose 内在空域（§4 row 3）：owner 贴上边界，全部输入 front 出界，
     # 零 blocker、零 unattributed ⟹ thin fallback 对该 owner 本人被允许
     #（对抗复核指出旧版只查了个无关 id，未构造真实全出界 owner）
-    producer_pose = _filling_capsule_pose(10, 65)  # 体格 y 65-68，输入 front y=70=OOB
+    # identity 语义：input stored/front 行 = anchor_y+4；anchor 66 ⟹ 体格
+    # y 66-69、stored y=70=OOB（旧 fixture anchor 65 的 stored 行 69 在图内）
+    producer_pose = _filling_capsule_pose(10, 66)
     placement_solution = {
         _OWNER_ID: {
             "facility_type": "manufacturing_6x4",

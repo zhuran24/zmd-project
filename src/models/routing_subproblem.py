@@ -132,20 +132,21 @@ def _in_grid_cell(cell: Tuple[int, int]) -> bool:
     return 0 <= x < GRID_W and 0 <= y < GRID_H
 
 
-def _port_connector_cells(port_specs: Sequence[Mapping[str, Any]]) -> Set[Tuple[int, int]]:
-    """Return in-grid physical port connector cells.
+def _port_front_cell(spec: Mapping[str, Any]) -> Tuple[int, int]:
+    """Return the front/belt cell of a port spec — identity semantics.
 
-    Binding/candidate placements encode a port as the outside-adjacent connector
-    cell plus an outward normal; routing variables live on the front cell
-    ``port + dir``.  Connector cells are terminal nodes, not free belt cells.
+    Front-offset incident fix (2026-07-18, authority
+    docs/research/front_offset_incident_20260718/00): the stored port
+    coordinate in candidate placements IS the belt/front cell (first cell
+    outside the facility body along the outward normal); the physical port
+    sits on the adjacent body-edge cell. Terminal belts occupy this cell,
+    so it must remain part of the free routing domain. Every consumer that
+    needs a port's front cell MUST go through this helper — deriving
+    ``port + DIR_DELTA`` from a stored coordinate is the exact one-cell
+    offset bug this fix removed.
     """
 
-    cells: Set[Tuple[int, int]] = set()
-    for spec in port_specs:
-        cell = (int(spec["x"]), int(spec["y"]))
-        if _in_grid_cell(cell):
-            cells.add(cell)
-    return cells
+    return (int(spec["x"]), int(spec["y"]))
 
 
 def _duplicate_terminal_front_keys(
@@ -166,8 +167,10 @@ def _duplicate_terminal_front_keys(
         direction = str(spec["dir"])
         commodity = str(spec.get("commodity", ""))
         port_type = str(spec.get("type", ""))
-        dx, dy = DIR_DELTA[direction]
-        fx, fy = px + dx, py + dy
+        # identity semantics: stored coordinate IS the front cell; port_cell
+        # and front_cell carry the same value (schema keeps both fields for
+        # evidence-carrier compatibility).
+        fx, fy = _port_front_cell(spec)
         terminal_dir = DIR_OPP[direction]
         by_key[(fx, fy, terminal_dir, commodity, port_type)].append(
             {
@@ -211,19 +214,6 @@ def _filter_free_neighbors(
         cell: tuple(neighbor for neighbor in free_neighbors_by_cell.get(cell, ()) if neighbor in free_cells)
         for cell in free_cells
     }
-
-
-def _annotate_port_connector_owners(
-    owner_map: Dict[Tuple[int, int], str],
-    port_specs: Sequence[Mapping[str, Any]],
-) -> None:
-    for spec in port_specs:
-        cell = (int(spec["x"]), int(spec["y"]))
-        if not _in_grid_cell(cell):
-            continue
-        instance_id = str(spec.get("instance_id", ""))
-        if instance_id:
-            owner_map.setdefault(cell, instance_id)
 
 
 def _compute_free_components(
@@ -344,8 +334,10 @@ def _resolve_routing_domain_context(
     else:
         resolved_port_specs = [dict(spec) for spec in list(port_specs or [])]
 
-    port_connector_cells = _port_connector_cells(resolved_port_specs)
-
+    # Identity semantics (front-offset incident fix 2026-07-18): the stored
+    # port coordinate IS the belt/front cell, terminal belts occupy it, so it
+    # stays part of the free routing domain. The former connector-cell
+    # deduction (and its owner annotation) was the offset bug's second half.
     if resolved_core is not None:
         owner_map = dict(resolved_core.occupied_owner_by_cell)
         if occupied_owner_by_cell is not None:
@@ -355,8 +347,7 @@ def _resolve_routing_domain_context(
                     for cell, owner in dict(occupied_owner_by_cell).items()
                 }
             )
-        _annotate_port_connector_owners(owner_map, resolved_port_specs)
-        resolved_free_cells = set(resolved_core.free_cells) - port_connector_cells
+        resolved_free_cells = set(resolved_core.free_cells)
         resolved_free_neighbors = _filter_free_neighbors(
             resolved_free_cells,
             resolved_core.free_neighbors_by_cell,
@@ -375,7 +366,7 @@ def _resolve_routing_domain_context(
             resolved_free_neighbors,
         )
 
-    resolved_free_cells = set(getattr(resolved_grid, "free_cells", set())) - port_connector_cells
+    resolved_free_cells = set(getattr(resolved_grid, "free_cells", set()))
     owner_map = {
         (int(cell[0]), int(cell[1])): str(owner)
         for cell, owner in dict(
@@ -384,7 +375,6 @@ def _resolve_routing_domain_context(
             else getattr(resolved_grid, "occupied_owner_by_cell", {})
         ).items()
     }
-    _annotate_port_connector_owners(owner_map, resolved_port_specs)
     component_by_cell, cells_by_component = _compute_free_components(resolved_free_cells)
     return (
         resolved_grid,
@@ -441,8 +431,7 @@ def analyze_exact_routing_domain(
         py = int(spec["y"])
         direction = str(spec["dir"])
         commodity = str(spec.get("commodity", ""))
-        dx, dy = DIR_DELTA[direction]
-        fx, fy = px + dx, py + dy
+        fx, fy = _port_front_cell(spec)
         front_cell = (fx, fy)
 
         in_grid = 0 <= fx < GRID_W and 0 <= fy < GRID_H
@@ -808,12 +797,9 @@ class RoutingSubproblem:
 
     def _index_port_fronts(self) -> None:
         for ps in self.grid.port_specs:
-            px = int(ps["x"])
-            py = int(ps["y"])
             direction = str(ps["dir"])
             commodity = str(ps["commodity"])
-            dx, dy = DIR_DELTA[direction]
-            fx, fy = px + dx, py + dy
+            fx, fy = _port_front_cell(ps)
             if str(ps["type"]) == "out":
                 recv_dir = DIR_OPP[direction]
                 self._source_port_fronts[(fx, fy, recv_dir, commodity)] += 1
@@ -888,8 +874,9 @@ class RoutingSubproblem:
 
         raw_component_cells = dict(analysis.get("commodity_component_cells", {}))
         raw_active_cells = dict(analysis.get("commodity_active_cells", {}))
-        port_connector_cells = _port_connector_cells(self.grid.port_specs)
-        routable_domain_cells = set(self.grid.free_cells) - port_connector_cells
+        # identity semantics: front/belt cells (stored port coordinates) are
+        # ordinary routable cells — no connector deduction.
+        routable_domain_cells = set(self.grid.free_cells)
         for commodity in self.commodities:
             component_cells = {
                 (int(cell[0]), int(cell[1]))
@@ -1280,11 +1267,9 @@ class RoutingSubproblem:
         blocked_ports = 0
 
         for ps in self.grid.port_specs:
-            px, py = int(ps["x"]), int(ps["y"])
             direction = str(ps["dir"])
             commodity = str(ps["commodity"])
-            dx, dy = DIR_DELTA[direction]
-            fx, fy = px + dx, py + dy
+            fx, fy = _port_front_cell(ps)
 
             if (fx, fy) not in self._commodity_active_cells.get(commodity, set()):
                 self.model.Add(0 == 1)

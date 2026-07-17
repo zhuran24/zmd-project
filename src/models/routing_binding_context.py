@@ -4,6 +4,16 @@ Given a master layout, expose per-port front-cell status (in-grid / free /
 component id / blocker) so that PortBindingModel can filter raw binding domains
 to routing-feasible patterns.
 
+Front geometry (front-offset incident fix, 2026-07-18; authority
+docs/research/front_offset_incident_20260718/00 + owner in-game adjudication):
+the stored port coordinate in candidate_placements.json IS the belt/front
+cell — the first cell outside the facility body along the port's outward
+normal (599,384 records, zero exceptions). The physical port sits on the
+adjacent body-edge cell. A front cell is usable iff it is in-grid and not
+occupied by ANY facility body (power poles count as body; belts do NOT
+block — belt/belt co-location is adjudicated by the routing layer's
+cross-junction constraints, never here).
+
 GPT plan reference:
   - C2 必要条件 (port front-free + component-consistent) 前移到 binding domain
   - layout-local, 不污染 raw binding cache
@@ -23,6 +33,10 @@ from dataclasses import dataclass
 from typing import Any, Dict, Mapping, Optional, Set, Tuple
 
 
+# Outward normal of a port direction. MUST NOT be used to derive the front
+# cell from a stored port coordinate (the stored coordinate already IS the
+# front cell — identity semantics). Kept for direction validation and for
+# body-side reconstruction (front - delta ∈ body).
 _DIR_DELTA: Dict[str, Tuple[int, int]] = {
     "N": (0, 1), "S": (0, -1), "E": (1, 0), "W": (-1, 0),
 }
@@ -98,15 +112,19 @@ def port_front_status(
     context: RoutingBindingContext,
     owner_instance_id: Optional[str] = None,
 ) -> PortFrontStatus:
-    """Compute front-cell status of a single port. owner_instance_id allows
-    the port's own occupied cells to not be treated as blockers (a port's
-    own facility wouldn't block itself)."""
+    """Compute front-cell status of a single port.
+
+    Identity semantics (front-offset incident fix 2026-07-18): the stored
+    port coordinate IS the front/belt cell — no direction offset is applied.
+    ``owner_instance_id`` grants NO exemption: frozen-pool geometry
+    guarantees a pose never occupies its own front cell (599,384 records,
+    zero exceptions); if data ever violates that, the front is blocked —
+    fail closed, attributed to the occupying owner."""
     px, py = int(port.get("x", 0)), int(port.get("y", 0))
     direction = str(port.get("dir", ""))
-    dx, dy = _DIR_DELTA.get(direction, (0, 0))
-    fx, fy = px + dx, py + dy
-    front_cell = (fx, fy)
-    in_grid = (0 <= fx < context.grid_width) and (0 <= fy < context.grid_height)
+    del owner_instance_id  # no self-exemption under identity semantics
+    front_cell = (px, py)
+    in_grid = (0 <= px < context.grid_width) and (0 <= py < context.grid_height)
     if not in_grid:
         return PortFrontStatus(
             port_key=f"{px},{py},{direction}",
@@ -118,17 +136,6 @@ def port_front_status(
         )
     if front_cell in context.occupied_cells:
         blocker = context.occupied_owner_by_cell.get(front_cell)
-        # port 的 owner 自己占的 cell 不算 blocker (port pose 自带 occupied cells)
-        if owner_instance_id is not None and blocker == owner_instance_id:
-            # self-occupied — 实际不可能 (port front 是 outside facility), 但 defensive
-            return PortFrontStatus(
-                port_key=f"{px},{py},{direction}",
-                front_cell=front_cell,
-                in_grid=True,
-                is_free=True,
-                component_id=context.component_by_cell.get(front_cell),
-                blocker_instance_id=None,
-            )
         return PortFrontStatus(
             port_key=f"{px},{py},{direction}",
             front_cell=front_cell,

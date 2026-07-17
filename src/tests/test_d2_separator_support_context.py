@@ -51,7 +51,7 @@ def _toy_corridor_case(
     ports = [
         {
             "instance_id": "src",
-            "x": 0,
+            "x": 1,
             "y": 0,
             "dir": "E",
             "commodity": "ore",
@@ -59,7 +59,7 @@ def _toy_corridor_case(
         },
         {
             "instance_id": "sink",
-            "x": 69,
+            "x": 68,
             "y": 0,
             "dir": "W",
             "commodity": "ore",
@@ -166,7 +166,7 @@ def _bridge_crossing_case() -> tuple[
     ports = [
         {
             "instance_id": "h_src",
-            "x": 0,
+            "x": 1,
             "y": 35,
             "dir": "E",
             "commodity": "h",
@@ -174,7 +174,7 @@ def _bridge_crossing_case() -> tuple[
         },
         {
             "instance_id": "h_sink",
-            "x": 69,
+            "x": 68,
             "y": 35,
             "dir": "W",
             "commodity": "h",
@@ -183,7 +183,7 @@ def _bridge_crossing_case() -> tuple[
         {
             "instance_id": "v_src",
             "x": 35,
-            "y": 0,
+            "y": 1,
             "dir": "N",
             "commodity": "v",
             "type": "out",
@@ -191,7 +191,7 @@ def _bridge_crossing_case() -> tuple[
         {
             "instance_id": "v_sink",
             "x": 35,
-            "y": 69,
+            "y": 68,
             "dir": "S",
             "commodity": "v",
             "type": "in",
@@ -230,7 +230,7 @@ def _splitter_case() -> tuple[
     ports = [
         {
             "instance_id": "src",
-            "x": 0,
+            "x": 1,
             "y": 35,
             "dir": "E",
             "commodity": "ore",
@@ -238,7 +238,7 @@ def _splitter_case() -> tuple[
         },
         {
             "instance_id": "sink_e",
-            "x": 50,
+            "x": 49,
             "y": 35,
             "dir": "W",
             "commodity": "ore",
@@ -247,7 +247,7 @@ def _splitter_case() -> tuple[
         {
             "instance_id": "sink_n",
             "x": 49,
-            "y": 60,
+            "y": 59,
             "dir": "S",
             "commodity": "ore",
             "type": "in",

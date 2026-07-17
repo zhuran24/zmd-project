@@ -1014,7 +1014,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "b302acd5cb3445e96fc26f4be747ba173e6ce76d78e05c888a313ac4c2302665",
+        "source_sha256": "2c55c45b5a932b2a2bc19c20ca0287d255a9dfc76e7dc5880cbcbb01bd861528",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1031,7 +1031,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "291235b2d3775a5cd46bb990abedc6e38771f6dbf72cc1cdd0e5d3986d86aa0d",
+        "source_sha256": "b2fefa600fb975aa144b5f10da76ad51e4a7f05892c424a1e0e61be32e45c47f",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1360,7 +1360,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "923965cee6056aa1cb6af76802598fc7f8dc34619cda5b9c6281746bd732d2dc",
+        "source_sha256": "d92f9317a232217eb0cc9b15faf98d6f12b9cdd83af25c7236e283ec2ede03ce",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1427,7 +1427,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "117c5a326e5bd025c8ea18bff27ed5bf7525b0e5919abef6e2a5b729f99b05ff",
+        "source_sha256": "8e7f147c4779716dc721ef7add1d17b92be75efd29d8089de424389534affd2d",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1453,7 +1453,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "dbdac4b28926c6b86c60bd898fa9285aa3346e8bc6a0838b2071e31143ac4018",
+        "source_sha256": "9a7e1eb904242d4e994a7299caf898073bc522ff69b07365e35db0cf728a5bc1",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1873,7 +1873,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775",
+        "source_sha256": "42368fc82b79b6fe5f31186ba197accecd73d425dce2ae5fad3316f6388e64e5",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1899,7 +1899,7 @@
       {
         "path": "src/search/pr2_l0_fixed_witness_core.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "abce5361619402d340e2a849999cda259ac6f054f0fb100bc0dcba1806f6845f",
+        "source_sha256": "71e13c774ddbbb6a6d4cf7382c239fa6c8e216a16ec8865e6fac45fb0a258b03",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",

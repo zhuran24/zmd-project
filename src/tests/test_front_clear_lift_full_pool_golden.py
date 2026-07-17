@@ -109,13 +109,12 @@ def test_full_pool_offsets_bidirectional_golden(_lift_master: Any) -> None:
                 (0, "input_port_cells"),
                 (1, "output_port_cells"),
             ):
-                # 独立重算：raw 端口 + 方向步进 → front 绝对格
+                # 独立重算（identity 语义，front 错位事故修正 2026-07-18）：
+                # stored 端口坐标即 front 绝对格，不再方向步进
                 raw_fronts = set()
                 for port in pose.get(field_name, []) or []:
-                    dx, dy = _DIR_DELTA[str(port["dir"])]
-                    raw_fronts.add(
-                        (int(port["x"]) + dx, int(port["y"]) + dy)
-                    )
+                    assert str(port["dir"]) in _DIR_DELTA
+                    raw_fronts.add((int(port["x"]), int(port["y"])))
                 derived_fronts = {
                     (anchor_x + odx, anchor_y + ody)
                     for odx, ody in derived[side_idx]

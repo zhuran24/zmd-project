@@ -839,6 +839,23 @@ def _connector_body_exclusion_violation(
     occupied_owner_by_cell: Mapping[Tuple[int, int], str],
     grid_dimensions: Tuple[int, int],
 ) -> Optional[str]:
+    """Reject a terminal witness whose stored port cell is body-occupied.
+
+    Identity semantics (front-offset incident fix 2026-07-18): the stored
+    port coordinate IS the front/belt cell, so "cell occupied by any body"
+    is exactly the corrected front-usability predicate — this backstop was
+    behaviourally correct throughout the incident and is the reason the
+    fake-feasible direction never crossed the publication boundary. The
+    legacy reject-code string keeps the historical "connector" wording
+    (pinned by tests/history); do not read it as port+delta semantics.
+
+    Obligation note (I1 scope, incident survey): I1's independent
+    reverification rebuilds binding WITHOUT routing context (front-clean
+    by construction) and does NOT re-verify routing front_blocked nogoods
+    — an I1 green light is not an independent endorsement of front
+    semantics. This backstop and the batch-1 identity fix are the
+    front-semantics guards.
+    """
     grid_w, grid_h = int(grid_dimensions[0]), int(grid_dimensions[1])
     for port_spec in port_specs:
         connector_cell = (

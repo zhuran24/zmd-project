@@ -97,7 +97,7 @@ LOCKED_EXACT_ARTIFACT_PATHS = {
 LOCKED_EXACT_ARTIFACT_SHA256 = {
     "mandatory_exact_instances": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
     "candidate_placements": "a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b",
-    "canonical_rules": "32664aac6c075af7d57e001a0a2b11b9a8b9304d8513739414aaa7ed4501bcb3",
+    "canonical_rules": "f466243adf4e61f2edd68df873f59598e19780c3bde3f9ee060b96cef3115644",
     "generic_io_requirements": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e",
     "preprocess_plan": "1bcf0d13e1709cd7e04ddea439ee005e837584f2f66a1a921159d198019c9ed8",
 }

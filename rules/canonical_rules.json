@@ -423,8 +423,8 @@
     "machine_min_clearance": {
       "applies_to": "globals.logistics.machine_min_clearance_cells",
       "predicate_status": "non_predicate",
-      "statement": "machine_min_clearance_cells is NOT one of the 6 CERTIFIED predicates. Adjudicated meaning: a facility's port connector FRONT cell must be empty (clear) so the port can route; enforced via port-clearance / front-cell modeling, NOT as a generic N-cell moat around every machine body. Repeated external reviews misread it as body-clearance; it is not.",
-      "adjudication_ref": "PROJECT_LOCK.md:117-120"
+      "statement": "machine_min_clearance_cells is NOT one of the 6 CERTIFIED predicates. Adjudicated meaning (re-adjudicated 2026-07-18, front-offset incident, owner in-game tests: zero-gap dead / one-gap routes / a 1-cell belt is legal / two opposite ports may share the middle cell): the stored port coordinate in candidate placements IS the front/belt cell itself — the first cell outside the facility body along the outward normal; an in-use port requires THAT cell to accept a belt, i.e. it must be in-grid and not occupied by any facility body (power poles count as body and block; belts do NOT block — belt/belt co-location on the front cell is governed solely by routing_cross_junction: perpendicular straight channels may cross, a turning or parallel same-axis foreign belt blocks the port). Enforced via identity front-cell modeling — NOT as 'port + direction offset' (the pre-2026-07-18 one-cell-offset misreading that checked the second cell outside the body), and NOT as a generic N-cell moat around every machine body. Machine bodies may touch; there is no body-to-body clearance requirement. Repeated external reviews misread it as body-clearance; it is not.",
+      "adjudication_ref": "PROJECT_LOCK.md B-4 + F-RT-R2-01/R3-01 + F-FRONT-INC-01; incident file docs/research/front_offset_incident_20260718/00_incident_survey_and_fix_plan.md"
     },
     "power_coverage_stencil": {
       "applies_to": "facility_templates.power_pole",

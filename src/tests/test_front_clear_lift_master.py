@@ -43,9 +43,11 @@ def _crusher_pose(anchor_x: int, anchor_y: int, tag: str) -> Dict[str, Any]:
         "pose_id": f"crusher_{tag}",
         "anchor": {"x": anchor_x, "y": anchor_y},
         "occupied_cells": cells,
-        "input_port_cells": [{"x": anchor_x, "y": anchor_y + 1, "dir": "W"}],
+        # identity 语义（front 错位事故修复 2026-07-18）：stored 口坐标即
+        # front/带子格=体外第 1 格（镜像冻结池真形态），不再是体缘格。
+        "input_port_cells": [{"x": anchor_x - 1, "y": anchor_y + 1, "dir": "W"}],
         "output_port_cells": [
-            {"x": anchor_x + 2, "y": anchor_y + 1, "dir": "E"}
+            {"x": anchor_x + 3, "y": anchor_y + 1, "dir": "E"}
         ],
         "power_coverage_cells": None,
     }

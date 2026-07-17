@@ -6636,7 +6636,12 @@ def test_routing_front_blocked_c1_optional_conflict_emits_exact_safe_cut(
             }
 
         def extract_port_specs(self) -> list[dict]:
-            port_x = 0 if self.pose_idx == 0 else 2
+            # identity semantics (front-offset fix 2026-07-18): stored port
+            # coordinate IS the front cell. Old fixture stored the body-edge
+            # cell (0 / 2) and relied on +E offset to land the front on (1,0) /
+            # (3,0); move each port forward one cell so the identity front
+            # reproduces the same geometry (pose 0 front (1,0) hits pole_block).
+            port_x = 1 if self.pose_idx == 0 else 3
             return [
                 {
                     "instance_id": "tiny_001",
@@ -6898,10 +6903,15 @@ def test_exact_mode_reports_routing_shrink_stats(monkeypatch, tmp_path: Path) ->
             }
 
         def extract_port_specs(self) -> list[dict]:
+            # identity semantics (front-offset fix 2026-07-18): stored port
+            # coordinate IS the front cell. Move each port forward one cell
+            # along its dir so the identity front lands on the same corridor
+            # cell the old +delta offset produced (src front (1,2), sink front
+            # (8,2)); both stay inside CorridorRoutingGrid.free_cells.
             return [
                 {
                     "instance_id": "tiny_001",
-                    "x": 0,
+                    "x": 1,
                     "y": 2,
                     "dir": "E",
                     "type": "out",
@@ -6910,7 +6920,7 @@ def test_exact_mode_reports_routing_shrink_stats(monkeypatch, tmp_path: Path) ->
                 {
                     "instance_id": "tiny_001",
                     "x": 8,
-                    "y": 3,
+                    "y": 2,
                     "dir": "S",
                     "type": "in",
                     "commodity": "ore",

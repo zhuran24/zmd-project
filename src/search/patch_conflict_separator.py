@@ -83,10 +83,9 @@ def _collect_blocked_port_cells(
         pose = pool[pose_idx]
         for side in ("input_port_cells", "output_port_cells"):
             for port in pose.get(side, []) or []:
-                px = int(port["x"])
-                py = int(port["y"])
-                dx, dy = DIR_DELTA.get(str(port.get("dir", "")), (0, 0))
-                fx, fy = px + dx, py + dy
+                # identity semantics (front-offset incident fix 2026-07-18):
+                # stored port coordinate IS the front/belt cell.
+                fx, fy = int(port["x"]), int(port["y"])
                 if not (0 <= fx < grid_w and 0 <= fy < grid_h):
                     continue
                 if (fx, fy) in occupied:
@@ -313,11 +312,12 @@ def _build_patch_inputs(
 
     patch_ports: List[PatchPortSpec] = []
     for ps in port_specs:
+        # identity semantics: the stored coordinate IS the terminal front
+        # cell — the legacy connector/front double-membership test collapses
+        # to a single patch-membership check.
         cell = (int(ps["x"]), int(ps["y"]))
         direction = str(ps["dir"])
-        dx, dy = DIR_DELTA[direction]
-        front_cell = (cell[0] + dx, cell[1] + dy)
-        if cell not in patch_cells and front_cell not in patch_cells:
+        if cell not in patch_cells:
             continue
         patch_ports.append(PatchPortSpec(
             instance_id=str(ps.get("instance_id", "")),

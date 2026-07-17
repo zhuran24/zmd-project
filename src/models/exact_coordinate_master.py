@@ -3824,11 +3824,13 @@ class CoordinateExactMasterDelegate:
     ) -> Dict[int, Tuple[Tuple[Tuple[int, int], ...], Tuple[Tuple[int, int], ...]]]:
         """逐 mode 派生 (输入侧, 输出侧) 的 front 相对锚点偏移，含前提哨兵。
 
-        方向步进与 routing 侧同源（routing_binding_context._DIR_DELTA——
-        port_front_status 用的就是它，函数级 import 保证零漂移）。每个
-        fail-closed 检查对应计数等价定理的一条已验前提（doc 04 v2 §1.2）：
-        平移不变性（同 mode 偏移逐 pose 相等）、同侧 front 两两不同格、
-        front 不落自身体格、体格矩形（bbox==occupied_cells，R2）。
+        front 语义与 routing 侧同源（front 错位事故修正 2026-07-18，权威
+        docs/research/front_offset_incident_20260718/00）：stored 端口坐标
+        即 front/带子格，identity、不再方向步进；_DIR_DELTA 仅作方向
+        合法性校验。每个 fail-closed 检查对应计数等价定理的一条已验前提
+        （doc 04 v2 §1.2，前提在 identity front 上重述）：平移不变性
+        （同 mode 偏移逐 pose 相等）、同侧 front 两两不同格、front 不落
+        自身体格、体格矩形（bbox==occupied_cells，R2）。
         """
         from src.models.routing_binding_context import _DIR_DELTA
 
@@ -3875,9 +3877,11 @@ class CoordinateExactMasterDelegate:
                             f"front-clear lift: unknown port dir {direction!r}: "
                             f"{tpl}#{pose_idx}"
                         )
-                    dx, dy = _DIR_DELTA[direction]
-                    front_x = int(port["x"]) + int(dx)
-                    front_y = int(port["y"]) + int(dy)
+                    # identity semantics (front-offset incident fix
+                    # 2026-07-18): the stored port coordinate IS the
+                    # front/belt cell — no direction offset.
+                    front_x = int(port["x"])
+                    front_y = int(port["y"])
                     if (front_x, front_y) in occupied:
                         raise RuntimeError(
                             "front-clear lift: port front inside own body breaks "

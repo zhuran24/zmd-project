@@ -234,8 +234,8 @@ def test_input_port_adherence_uses_direction_toward_sink_port():
     occupied = {(0, 0), (4, 0)}
     active = {"ore": set(patch_cells) - occupied}
     ports = [
-        PatchPortSpec(instance_id="src", x=0, y=0, direction="E", commodity="ore", type="out", pose_idx=0),
-        PatchPortSpec(instance_id="sink", x=4, y=0, direction="W", commodity="ore", type="in", pose_idx=0),
+        PatchPortSpec(instance_id="src", x=1, y=0, direction="E", commodity="ore", type="out", pose_idx=0),
+        PatchPortSpec(instance_id="sink", x=3, y=0, direction="W", commodity="ore", type="in", pose_idx=0),
     ]
     assumptions = [
         PoseAssumption("src", 0, "src_p0", "assum_src"),
@@ -254,13 +254,15 @@ def test_input_port_adherence_uses_direction_toward_sink_port():
     assert status == "FEASIBLE", f"expected straight source-to-sink corridor, got {status}"
 
 
-def test_patch_routing_keeps_external_connector_when_front_cell_is_inside_patch():
-    """A port connector just outside the patch is still a patch terminal if its front is inside.
+def test_patch_routing_terminal_front_cells_are_patch_terminals():
+    """Terminal front cells inside the patch are patch terminals — full/patch parity.
 
-    Full routing injects/consumes flow on the front cell, not on the occupied
-    connector cell.  Dropping a front-in-patch external connector would make the
-    patch model stricter than full routing and could create a false infeasible
-    PCR certificate.
+    Identity semantics (front-offset incident fix 2026-07-18): the stored port
+    coordinate IS the terminal front/belt cell, so the legacy "external
+    connector with front inside patch" split no longer exists.  This sentinel
+    keeps the surviving obligation: a terminal front cell inside the patch
+    must register as a patch terminal, and the patch model must not be
+    stricter than full routing (false-infeasible PCR certificate guard).
     """
     from src.models.patch_routing_core import (
         PatchPortSpec, PatchRoutingCore, PatchSpec, PoseAssumption,
@@ -268,8 +270,8 @@ def test_patch_routing_keeps_external_connector_when_front_cell_is_inside_patch(
     from src.models.routing_subproblem import GRID_H, GRID_W, RoutingGrid, RoutingSubproblem
 
     ports = [
-        PatchPortSpec(instance_id="src", x=0, y=0, direction="E", commodity="ore", type="out", pose_idx=0),
-        PatchPortSpec(instance_id="sink", x=3, y=0, direction="W", commodity="ore", type="in", pose_idx=0),
+        PatchPortSpec(instance_id="src", x=1, y=0, direction="E", commodity="ore", type="out", pose_idx=0),
+        PatchPortSpec(instance_id="sink", x=2, y=0, direction="W", commodity="ore", type="in", pose_idx=0),
     ]
     assumptions = [
         PoseAssumption("src", 0, "src_p0", "assum_src"),
@@ -277,8 +279,8 @@ def test_patch_routing_keeps_external_connector_when_front_cell_is_inside_patch(
     ]
 
     full_ports = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "commodity": "ore", "type": "out"},
-        {"instance_id": "sink", "x": 3, "y": 0, "dir": "W", "commodity": "ore", "type": "in"},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "commodity": "ore", "type": "out"},
+        {"instance_id": "sink", "x": 2, "y": 0, "dir": "W", "commodity": "ore", "type": "in"},
     ]
     free_corridor = {(1, 0), (2, 0)}
     full_occupied = {
@@ -306,8 +308,12 @@ def test_patch_routing_keeps_external_connector_when_front_cell_is_inside_patch(
     assert core.solve(time_limit=2.0) == "FEASIBLE"
 
 
-def test_patch_separator_includes_external_connector_with_front_cell_in_patch():
-    """Separator support and patch ports must include external connectors by front cell."""
+def test_patch_separator_includes_terminal_front_cells_in_patch():
+    """Separator patch ports must include ports whose front cell is in the patch.
+
+    Identity semantics: the stored coordinate IS the front cell — membership
+    is a single check; body owners outside the patch still appear in support.
+    """
     from src.search.patch_conflict_separator import _PatchCandidateRecord, _build_patch_inputs
 
     placement_solution = {
@@ -319,20 +325,20 @@ def test_patch_separator_includes_external_connector_with_front_cell_in_patch():
             {
                 "occupied_cells": [(0, 0)],
                 "input_port_cells": [],
-                "output_port_cells": [{"x": 0, "y": 0, "dir": "E", "commodity": "ore"}],
+                "output_port_cells": [{"x": 1, "y": 0, "dir": "E", "commodity": "ore"}],
             }
         ],
         "sink": [
             {
                 "occupied_cells": [(3, 0)],
-                "input_port_cells": [{"x": 3, "y": 0, "dir": "W", "commodity": "ore"}],
+                "input_port_cells": [{"x": 2, "y": 0, "dir": "W", "commodity": "ore"}],
                 "output_port_cells": [],
             }
         ],
     }
     port_specs = [
-        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "commodity": "ore", "type": "out", "pose_idx": 0},
-        {"instance_id": "sink", "x": 3, "y": 0, "dir": "W", "commodity": "ore", "type": "in", "pose_idx": 0},
+        {"instance_id": "src", "x": 1, "y": 0, "dir": "E", "commodity": "ore", "type": "out", "pose_idx": 0},
+        {"instance_id": "sink", "x": 2, "y": 0, "dir": "W", "commodity": "ore", "type": "in", "pose_idx": 0},
     ]
     candidate = _PatchCandidateRecord(
         patch_id="front_cell_patch",
@@ -381,7 +387,7 @@ def test_patch_core_cut_support_includes_constant_occupancy_blocker():
             {
                 "occupied_cells": [(0, 0)],
                 "input_port_cells": [],
-                "output_port_cells": [{"x": 0, "y": 0, "dir": "E", "commodity": "ore"}],
+                "output_port_cells": [{"x": 1, "y": 0, "dir": "E", "commodity": "ore"}],
             }
         ],
         "blocker": [
@@ -393,7 +399,7 @@ def test_patch_core_cut_support_includes_constant_occupancy_blocker():
         ],
     }
     port_specs = [
-        {"instance_id": "victim", "x": 0, "y": 0, "dir": "E", "commodity": "ore", "type": "out", "pose_idx": 0}
+        {"instance_id": "victim", "x": 1, "y": 0, "dir": "E", "commodity": "ore", "type": "out", "pose_idx": 0}
     ]
     candidate = _PatchCandidateRecord(
         patch_id="blocked_front",
@@ -519,14 +525,18 @@ def test_build_local_pose_signature_only_intersecting_geometry():
     assert sig.ports_in_patch == ((0, 0, "N", "iron", "in"),)
 
 
-def test_build_local_pose_signature_keeps_external_port_with_front_inside_patch():
-    """Signature lifting must distinguish a connector outside patch whose terminal front is inside."""
+def test_build_local_pose_signature_keeps_terminal_front_inside_patch():
+    """A port whose terminal front cell is in the patch enters the signature.
+
+    Identity semantics (front-offset incident fix 2026-07-18): the stored
+    coordinate IS the terminal front cell; a pose whose body lies outside the
+    patch still contributes that port when the front cell is inside."""
     from src.models.patch_routing_core import build_local_pose_signature
 
     pose = {
         "occupied_cells": [(0, 0)],
         "input_port_cells": [],
-        "output_port_cells": [{"x": 0, "y": 0, "dir": "E", "commodity": "iron"}],
+        "output_port_cells": [{"x": 1, "y": 0, "dir": "E", "commodity": "iron"}],
     }
     sig = build_local_pose_signature(
         facility_type="X",
@@ -535,7 +545,7 @@ def test_build_local_pose_signature_keeps_external_port_with_front_inside_patch(
         patch_cells=frozenset({(1, 0), (2, 0)}),
     )
     assert sig.footprint_in_patch == frozenset()
-    assert sig.ports_in_patch == ((0, 0, "E", "iron", "out"),)
+    assert sig.ports_in_patch == ((1, 0, "E", "iron", "out"),)
 
 
 def test_pose_local_signature_equivalence():

@@ -59,9 +59,9 @@ owner: placement-preprocess
 
 ### 6.4.3 边界仓库存/取货口的特异性锚定 (1x3)
 该类设施具有最严苛的物理依附规则，绝不进行全图遍历，必须采用**基线强制锚定法**：
-1.  **左侧基线锚定**：固定 $x = 0$。包围盒为竖向 ($1 \times 3$)。$y$ 遍历 $[1, 66]$。端口生成在中间格向右出向 $(0, y+1, \text{E})$。
-2.  **下侧基线锚定**：固定 $y = 0$。包围盒为横向 ($3 \times 1$)。$x$ 遍历 $[1, 66]$。端口生成在中间格向上出向 $(x+1, 0, \text{N})$。
-*(注：起点强制从 $1$ 开始，完美避开左下角 $(0,0)$ 处的物理拐角重叠干涉，在生成源头扼杀死锁。)*
+1.  **左侧基线锚定**：固定 $x = 0$。包围盒为竖向 ($1 \times 3$)。$y$ 遍历 $[0, 67]$。端口记录为中间格右侧的 front/带子格 $(1, y+1, \text{E})$（identity 语义：stored 坐标即体外第 1 格）。
+2.  **下侧基线锚定**：固定 $y = 0$。包围盒为横向 ($3 \times 1$)。$x$ 遍历 $[0, 67]$。端口记录为中间格上方的 front/带子格 $(x+1, 1, \text{N})$。
+*(勘误 2026-07-18：冻结数据实际遍历 $[0, 67]$、含两个拐角 pose（canonical 明确要求保留、两拐角 pose 数据合法），每边 68 个、共 $2 \times 68 = 136$；本 spec 旧文 $[1,66]$/134 是文档错误，数据与 canonical 为准。)*
 
 ---
 
@@ -70,7 +70,7 @@ owner: placement-preprocess
 在全量生成位姿时，必须应用以下过滤层，将“注定无法连线”的废解当场抹杀，这能削减至少 30% 的无用搜索空间：
 
 ### 6.5.1 面壁死锁剔除 (Wall-Facing Port Starvation)
-**物理逻辑**：传送带必须占用端口正前方的 $1 \times 1$ routing front cell。端口本体坐标仍可位于地图边界；真正不可用的是 `(port.x, port.y) + DIR_DELTA[port.dir]` 落到 $70 \times 70$ 网格外。
+**物理逻辑**：传送带必须占用端口的 routing front cell——**即 port 记录的 stored 坐标格自身**（体外第 1 格；identity 语义，front 错位事故修正 2026-07-18，权威 `docs/research/front_offset_incident_20260718/00`）。真正不可用的是 `(port.x, port.y)` 落到 $70 \times 70$ 网格外。**历史勘误**：本节旧文把判界写成 `(port.x, port.y) + DIR_DELTA[port.dir]`（体外第 2 格）——生成器照此剪枝导致 2,064 个墙距-1 合法 pose（3×3 +544 / 5×5 +528 / 6×4 +520 / core +472）从未进池（66,405 → 应为 68,469）；域补齐随修复批 3（owner 已拍板补域 scope）。
 **剔除法则**：
 对一个候选位姿分别检查激活输入端口集合与输出端口集合。若某一集合非空，且该集合内所有端口的 routing front cell 都越界，则该位姿视为“绝对面壁废解”，**立刻从 $\mathcal{P}_t$ 中永久删除**；只要同一集合中仍存在至少一个 front cell 留在网格内，该集合不得触发剪枝。
 *(例外：边界仓库存/取货口原生豁免此法则，因其天然向内吞吐；`omni_wireless` 协议箱没有实体端口，front 规则不适用。)*
@@ -116,8 +116,8 @@ owner: placement-preprocess
 | `protocol_core` | `2 * 58 * 58` | 6,728 |
 | `protocol_storage_box` | `68 * 68` | 4,624 |
 | `power_pole` | `69 * 69` | 4,761 |
-| `boundary_storage_port` | `2 * 67` | 134 |
-| **total** |  | **66,403** |
+| `boundary_storage_port` | `2 * 68` | 136 |
+| **total** |  | **66,405** |
 
 数据结构范例：
 ```json
@@ -130,10 +130,10 @@ owner: placement-preprocess
         "pose_params": {"orientation": 0, "port_mode": "long_sides_io"},
         "occupied_cells": [[10,20], [11,20], ..., [15,23]],
         "input_port_cells": [
-          {"x": 10, "y": 20, "dir": "S"}, {"x": 11, "y": 20, "dir": "S"}
+          {"x": 10, "y": 19, "dir": "S"}, {"x": 11, "y": 19, "dir": "S"}
         ],
         "output_port_cells": [
-          {"x": 10, "y": 23, "dir": "N"}, {"x": 11, "y": 23, "dir": "N"}
+          {"x": 10, "y": 24, "dir": "N"}, {"x": 11, "y": 24, "dir": "N"}
         ],
         "power_coverage_cells": null
       }
