@@ -38,7 +38,7 @@
 | cpsat v4 | 四朝向 + maximize + 变尺寸 optional interval | — | ortools 9.15 原生 SIGSEGV（core dump 08:40，非 OOM） |
 | **cpsat v5** | TB-only + maximize + hint | **232** | 480s FEASIBLE；审计 0 违规、ghost 复核干净——maximize 全链打通 |
 | cpsat v6 | 四朝向 maximize（per-mode fixed-size interval 绕 segv）+ hint | 229 | 600s；自由度更大反而更低=LNS 没爬完更大空间，非可行域问题 |
-| cpsat v7 | v6 配方 + v5 解接力 + 1800s | 待判 | 夜班最后一发 |
+| cpsat v7 | v6 配方 + v5 解接力 + 1800s（setsid 独立进程） | 231 | FEASIBLE 1802.6s；30 分钟 LNS 仍爬不过贪心 241——CP-SAT LNS 在此问题上弱于结构化贪心，收官铁证 |
 
 反直觉实测两则：①小件先 > 大件先（3×3 先自组织共享 front 走廊网，
 大件后进整块区）；②best-fit 贴墙评分输给首可行 BL（局部焊死制造新碎片）。
@@ -46,7 +46,7 @@
 ## §2b 收官判读（07-17 晨）
 
 全工具谱（散点/梳状/skyline/精确 BL×4 变体/重启矩阵/CP-SAT 可行性×3/
-maximize×2）在十分钟级预算下一致卡在 **229-241 / 266**，缺口 ~25 件。
+maximize×3 含 30 分钟接力）一致卡在 **229-241 / 266**，缺口 ~25 件。
 front-clear 审计全程 0 违规（12 发构造无一错），ghost 复核干净——
 **构造机械是对的，装不满是问题本身硬**。这与 §1 的 3% 密铺余量账自洽：
 witness placement 本质是接近完美的拼图，贪心和十分钟级 CP-SAT 都不够。
