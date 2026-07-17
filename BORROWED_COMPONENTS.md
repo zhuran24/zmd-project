@@ -26,6 +26,15 @@ external repositories without adding runtime source dependencies.
 
 ## Notes
 
+- `third_party_snapshots/industrial_planner/` (added 2026-07-18, rules audit)
+  vendors the geometry/entity data core from `hsyhhssyy/IndustrialPlanner`
+  (commit `dd334ed5`, plus tag 1.1.2.9 historical reference): entity
+  definitions (protocol storage box / protocol core / pickup port / belt
+  family / power diffuser) and base definitions (valley4_protocol_core).
+  Build-time-only reference fixture for rule cross-checking; trust model,
+  confidence levels, and the outerRing blacklist are recorded in its
+  `SOURCE_METADATA.json`. Authority remains owner in-game adjudication
+  (docs/research/rules_audit_20260718/00).
 - `third_party_snapshots/endfield_calc/` now contains both synthetic fixtures
   and a vendored raw upstream repository fixture from `JamboChen/endfield-calc`.
   Refreshed 2026-05-08 from master commit `49be16e1` (package version `0.6.2`,
