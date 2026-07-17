@@ -4,7 +4,23 @@
 > `arm_on_overnight`（lift ON + presolve off + automatic，42G/40G 帽，无时限
 > 24h 保险丝）。§1 待长跑终态回填；§2 起为决策菜单，不依赖终态方向。
 
-## §1 过夜长跑终态（待回填）
+## §1 过夜长跑终态（07-17 22:43 owner 手动停，已回填）
+
+- **配方**：lift ON + `EXACT_MASTER_CP_MODEL_PRESOLVE=0` + automatic branching
+  + 单 worker；6×6 锚点；MemoryMax=42G / MemorySwapMax=40G；24h 保险丝。
+- **时长**：wall 23h50m44s / CPU 23h48m（CPU/wall≈99.9%——全程满速真搜索，
+  未被 swap 拖慢；热工作集 ~11.6G 稳坐 RAM、~27-31G 冷数据躺 swap 的形态
+  整日不变）。内存峰 29.1G RAM + 31G swap，帽内安全，零 OOM 事件。
+- **结局**：`UNKNOWN`——无 incumbent、无 INFEASIBLE，停止时仍在 master
+  solve。owner 手动停=硬杀，solver 内部遥测（分支数等）无终态快照；
+  build 期数据在 `cell.json`（session build 33.9s / master build 15.0s /
+  lift 17 组覆盖）。
+- **判读**：这是三种结局里最平淡的一种，但信息是实的——探针 3/4 的
+  30 分钟单发 ×47.6 倍时长（23.8 CPU 小时）仍然两头干涸，**「堆时间」
+  杠杆在单 worker 档正式测穿**。结合 §6 装箱侧战报（witness 纯装箱松弛
+  同夜塞不动），6×6 锚点在本机当前工具谱下「找解」与「证无解」两个方向
+  都够不着。lift 维持 default-OFF（台账 #10 确认项不变）；下一步进
+  §3 决策菜单（B/C/D/E 的相对价值经本夜两线实测全部上调）。
 
 ## §2 已确立的事实（不随终态变化）
 
