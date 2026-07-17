@@ -62,6 +62,13 @@ def main() -> int:
     ap.add_argument("--ghost-h", type=int, default=7)
     ap.add_argument("--time-limit", type=float, default=120.0)
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--free-orient", action="store_true",
+                    help="放开四朝向（TB/BT/RL/LR 各 1 bool，exactly_one）")
+    ap.add_argument("--hint-from", type=Path, default=None,
+                    help="用某次贪心结果 JSON 的 solution 作 warm hint")
+    ap.add_argument("--maximize", action="store_true",
+                    help="件全 optional，maximize 放置数（观察卡点用；"
+                         "非 266 全放时产物只是部分布局）")
     ap.add_argument("--skip-binding", action="store_true")
     ap.add_argument("--out", type=Path, required=True)
     args = ap.parse_args()
@@ -155,9 +162,15 @@ def main() -> int:
         no2d_x.append(m.new_fixed_size_interval_var(x, w, f"fx_{tag}"))
         no2d_y.append(m.new_fixed_size_interval_var(y, h, f"fy_{tag}"))
 
-    def var_rect(xv, yv, w, h, tag):
-        no2d_x.append(m.new_fixed_size_interval_var(xv, w, f"vx_{tag}"))
-        no2d_y.append(m.new_fixed_size_interval_var(yv, h, f"vy_{tag}"))
+    def var_rect(xv, yv, w, h, tag, pres=None):
+        if pres is None:
+            no2d_x.append(m.new_fixed_size_interval_var(xv, w, f"vx_{tag}"))
+            no2d_y.append(m.new_fixed_size_interval_var(yv, h, f"vy_{tag}"))
+        else:
+            no2d_x.append(m.new_optional_fixed_size_interval_var(
+                xv, w, pres, f"vx_{tag}"))
+            no2d_y.append(m.new_optional_fixed_size_interval_var(
+                yv, h, pres, f"vy_{tag}"))
 
     # 冻结格（boundary/core body + 其保留 front）：合并成 1×1 矩形集
     for (cx, cy) in sorted(occupied | reserved):
@@ -170,10 +183,15 @@ def main() -> int:
 
     manuf_insts = [i for i in instances if str(i["facility_type"]) in MANUF]
     mvars = {}
+    pvars: dict = {}
+    MODES = ("TB", "BT", "RL", "LR")
     for i in manuf_insts:
         iid = str(i["instance_id"])
         tpl = str(i["facility_type"])
         w, h = MANUF[tpl]
+        pres = m.new_bool_var(f"p_{iid}") if args.maximize else None
+        if pres is not None:
+            pvars[iid] = pres
         dem = demand_of(iid)
         if dem is None:
             # 全侧保留对装箱太贵；mandatory 制造件全部 profiled（实测），
@@ -181,31 +199,116 @@ def main() -> int:
             ni, no = w, w
         else:
             ni, no = dem
-        # TB：out 口小 y 侧（front y-2），in 口大 y 侧（front y+h+1）
-        xv = m.new_int_var(0, GRID - w, f"x_{iid}")
-        yv = m.new_int_var(2, GRID - h - 2, f"y_{iid}")
-        var_rect(xv, yv, w, h, f"body_{iid}")
-        ins, outs = [], []
-        for k in range(ni):
-            ox = m.new_int_var(0, GRID - 1, f"i{k}_{iid}")
-            off = m.new_int_var(0, w - 1, f"io{k}_{iid}")
-            m.add(ox == xv + off)
-            syv = m.new_int_var(0, GRID - 1, f"iy{k}_{iid}")
-            m.add(syv == yv + h + 1)
-            var_rect(ox, syv, 1, 1, f"inf{k}_{iid}")
-            ins.append((ox, syv, off))
-        for k in range(no):
-            ox = m.new_int_var(0, GRID - 1, f"o{k}_{iid}")
-            off = m.new_int_var(0, w - 1, f"oo{k}_{iid}")
-            m.add(ox == xv + off)
-            syv = m.new_int_var(0, GRID - 1, f"oy{k}_{iid}")
-            m.add(syv == yv - 2)
-            var_rect(ox, syv, 1, 1, f"outf{k}_{iid}")
-            outs.append((ox, syv, off))
+
+        if not args.free_orient:
+            # TB：out 口小 y 侧（front y-2），in 口大 y 侧（front y+h+1）
+            xv = m.new_int_var(0, GRID - w, f"x_{iid}")
+            yv = m.new_int_var(2, GRID - h - 2, f"y_{iid}")
+            var_rect(xv, yv, w, h, f"body_{iid}", pres)
+            ins, outs = [], []
+            for k in range(ni):
+                ox = m.new_int_var(0, GRID - 1, f"i{k}_{iid}")
+                off = m.new_int_var(0, w - 1, f"io{k}_{iid}")
+                m.add(ox == xv + off)
+                syv = m.new_int_var(0, GRID - 1, f"iy{k}_{iid}")
+                m.add(syv == yv + h + 1)
+                var_rect(ox, syv, 1, 1, f"inf{k}_{iid}", pres)
+                ins.append((ox, syv, off))
+            for k in range(no):
+                ox = m.new_int_var(0, GRID - 1, f"o{k}_{iid}")
+                off = m.new_int_var(0, w - 1, f"oo{k}_{iid}")
+                m.add(ox == xv + off)
+                syv = m.new_int_var(0, GRID - 1, f"oy{k}_{iid}")
+                m.add(syv == yv - 2)
+                var_rect(ox, syv, 1, 1, f"outf{k}_{iid}", pres)
+                outs.append((ox, syv, off))
+            for grp in (ins, outs):
+                for a in range(len(grp) - 1):
+                    m.add(grp[a][2] < grp[a + 1][2])
+            mvars[iid] = (tpl, xv, yv, ins, outs, None)
+            continue
+
+        # ---- 四朝向：body 尺寸随 mode 转置，须坐标 per-mode enforce ----
+        mb = {md: m.new_bool_var(f"m_{md}_{iid}") for md in MODES}
+        m.add_exactly_one(mb.values())
+        vert = m.new_bool_var(f"vert_{iid}")   # TB/BT = True
+        m.add_bool_or([mb["TB"], mb["BT"]]).only_enforce_if(vert)
+        m.add_bool_and([~mb["TB"], ~mb["BT"]]).only_enforce_if(~vert)
+        wv = m.new_int_var(min(w, h), max(w, h), f"w_{iid}")
+        hv = m.new_int_var(min(w, h), max(w, h), f"h_{iid}")
+        m.add(wv == w).only_enforce_if(vert)
+        m.add(hv == h).only_enforce_if(vert)
+        m.add(wv == h).only_enforce_if(~vert)
+        m.add(hv == w).only_enforce_if(~vert)
+        xv = m.new_int_var(0, GRID - min(w, h), f"x_{iid}")
+        yv = m.new_int_var(0, GRID - min(w, h), f"y_{iid}")
+        m.add(xv + wv <= GRID)
+        m.add(yv + hv <= GRID)
+        xe = m.new_int_var(0, GRID, f"xe_{iid}")
+        ye = m.new_int_var(0, GRID, f"ye_{iid}")
+        m.add(xe == xv + wv)
+        m.add(ye == yv + hv)
+        if pres is None:
+            no2d_x.append(m.new_interval_var(xv, wv, xe, f"bx_{iid}"))
+            no2d_y.append(m.new_interval_var(yv, hv, ye, f"by_{iid}"))
+        else:
+            # maximize + 变尺寸 optional interval 触发 ortools 9.15 原生
+            # SIGSEGV（08:40 实测 core dump）——改用 4 个 per-mode
+            # optional fixed-size interval 绕行
+            for md in MODES:
+                bw, bh = (w, h) if md in ("TB", "BT") else (h, w)
+                act = m.new_bool_var(f"act_{md}_{iid}")
+                m.add_implication(act, pres)
+                m.add_implication(act, mb[md])
+                m.add_bool_or([act, ~pres, ~mb[md]])
+                m.add(xv + bw <= GRID).only_enforce_if(act)
+                m.add(yv + bh <= GRID).only_enforce_if(act)
+                no2d_x.append(m.new_optional_fixed_size_interval_var(
+                    xv, bw, act, f"bx_{md}_{iid}"))
+                no2d_y.append(m.new_optional_fixed_size_interval_var(
+                    yv, bh, act, f"by_{md}_{iid}"))
+
+        # 须点边界（front 需在图内）：
+        m.add(yv >= 2).only_enforce_if(mb["TB"])   # out front y-2
+        m.add(ye <= GRID - 2).only_enforce_if(mb["TB"])  # in front ye+1
+        m.add(yv >= 2).only_enforce_if(mb["BT"])
+        m.add(ye <= GRID - 2).only_enforce_if(mb["BT"])
+        m.add(xv >= 2).only_enforce_if(mb["RL"])
+        m.add(xe <= GRID - 2).only_enforce_if(mb["RL"])
+        m.add(xv >= 2).only_enforce_if(mb["LR"])
+        m.add(xe <= GRID - 2).only_enforce_if(mb["LR"])
+
+        def whisker(kind, k):
+            sx = m.new_int_var(0, GRID - 1, f"{kind}x{k}_{iid}")
+            sy = m.new_int_var(0, GRID - 1, f"{kind}y{k}_{iid}")
+            off = m.new_int_var(0, max(w, h) - 1, f"{kind}o{k}_{iid}")
+            # 侧长上界 per-mode（口沿侧边分布：TB/BT 侧=wv，RL/LR 侧=hv）
+            m.add(off <= wv - 1).only_enforce_if(vert)
+            m.add(off <= hv - 1).only_enforce_if(~vert)
+            # in 须：TB 大 y 外 / BT 小 y 外 / RL 大 x 外 / LR 小 x 外
+            # out 须与 in 对侧
+            far_y = kind == "in"   # TB: in 在 ye+1
+            m.add(sx == xv + off).only_enforce_if(mb["TB"])
+            m.add(sy == (ye + 1 if far_y else yv - 2)).only_enforce_if(
+                mb["TB"])
+            m.add(sx == xv + off).only_enforce_if(mb["BT"])
+            m.add(sy == (yv - 2 if far_y else ye + 1)).only_enforce_if(
+                mb["BT"])
+            m.add(sy == yv + off).only_enforce_if(mb["RL"])
+            m.add(sx == (xe + 1 if far_y else xv - 2)).only_enforce_if(
+                mb["RL"])
+            m.add(sy == yv + off).only_enforce_if(mb["LR"])
+            m.add(sx == (xv - 2 if far_y else xe + 1)).only_enforce_if(
+                mb["LR"])
+            var_rect(sx, sy, 1, 1, f"{kind}f{k}_{iid}", pres)
+            return (sx, sy, off)
+
+        ins = [whisker("in", k) for k in range(ni)]
+        outs = [whisker("out", k) for k in range(no)]
         for grp in (ins, outs):
             for a in range(len(grp) - 1):
                 m.add(grp[a][2] < grp[a + 1][2])
-        mvars[iid] = (tpl, xv, yv, ins, outs)
+        mvars[iid] = (tpl, xv, yv, ins, outs, mb)
 
     # 对称破除：同 operation_type 的件两两可交换 → 强制 (x,y) 字典序链
     by_op: dict[str, list] = {}
@@ -215,11 +318,38 @@ def main() -> int:
     for op, ids in by_op.items():
         ids.sort()
         for a in range(len(ids) - 1):
-            _t1, xa, ya, _i1, _o1 = mvars[ids[a]]
-            _t2, xb, yb, _i2, _o2 = mvars[ids[a + 1]]
+            _t1, xa, ya, _i1, _o1, _m1 = mvars[ids[a]]
+            _t2, xb, yb, _i2, _o2, _m2 = mvars[ids[a + 1]]
             m.add(xa * GRID + ya <= xb * GRID + yb)
+            if args.maximize:
+                # 同 op presence 对称：后件放置 ⇒ 前件放置
+                m.add_implication(pvars[ids[a + 1]], pvars[ids[a]])
 
     m.add_no_overlap_2d(no2d_x, no2d_y)
+    if args.maximize:
+        m.maximize(sum(pvars.values()))
+
+    # warm hint：贪心结果 solution → (x, y, mode) 提示
+    if args.hint_from and args.hint_from.exists():
+        seed_sol = json.loads(args.hint_from.read_text(
+            encoding="utf-8")).get("solution", {})
+        hinted = 0
+        for iid, entry in seed_sol.items():
+            if iid not in mvars:
+                continue
+            tpl, xv, yv, _ins, _outs, mb = mvars[iid]
+            pose = pools[tpl][entry["pose_idx"]]
+            body = _cells(pose.get("occupied_cells"))
+            md = str((pose.get("pose_params") or {}).get("port_mode"))
+            if mb is None and md != "TB":
+                continue
+            m.add_hint(xv, min(c[0] for c in body))
+            m.add_hint(yv, min(c[1] for c in body))
+            if mb is not None and md in mb:
+                for name, b in mb.items():
+                    m.add_hint(b, 1 if name == md else 0)
+            hinted += 1
+        print(f"warm hint: {hinted} 件")
 
     solver = cp_model.CpSolver()
     solver.parameters.max_time_in_seconds = args.time_limit
@@ -248,23 +378,37 @@ def main() -> int:
         return 2
 
     # ---- 解 → pose_idx 反查 ----
-    tb_index = {}
+    mode_index = {}
     for tpl in MANUF:
         for idx, pose in enumerate(pools[tpl]):
-            if str((pose.get("pose_params") or {}).get("port_mode")) != "TB":
+            md = str((pose.get("pose_params") or {}).get("port_mode"))
+            if md not in ("TB", "BT", "RL", "LR"):
                 continue
             body = _cells(pose.get("occupied_cells"))
-            tb_index[(tpl, min(c[0] for c in body),
-                      min(c[1] for c in body))] = idx
+            mode_index[(tpl, md, min(c[0] for c in body),
+                        min(c[1] for c in body))] = idx
 
     lookup_fail = []
-    for iid, (tpl, xv, yv, ins, outs) in mvars.items():
+    dropped = []
+    for iid, (tpl, xv, yv, ins, outs, mb) in mvars.items():
+        if args.maximize and solver.value(pvars[iid]) == 0:
+            dropped.append(iid)
+            continue
         x, y = solver.value(xv), solver.value(yv)
-        idx = tb_index.get((tpl, x, y))
+        if mb is None:
+            md = "TB"
+        else:
+            md = next(name for name, b in mb.items()
+                      if solver.value(b) == 1)
+        idx = mode_index.get((tpl, md, x, y))
         if idx is None:
-            lookup_fail.append((iid, x, y))
+            lookup_fail.append((iid, md, x, y))
             continue
         solution[iid] = {"facility_type": tpl, "pose_idx": idx}
+    if args.maximize:
+        result["dropped"] = dropped
+        print(f"maximize: 放置 {len(mvars) - len(dropped)}/{len(mvars)} "
+              f"制造件，未放 {len(dropped)}")
     result["ghost"] = [solver.value(gx), solver.value(gy),
                        args.ghost_w, args.ghost_h]
     result["pose_lookup_fail"] = lookup_fail

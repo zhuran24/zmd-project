@@ -34,10 +34,24 @@
 | skyline | 单调 skyline + 点状须 | 193 | 单调性锁死孔隙回收 |
 | BL v2-v4 | 精确 bottom-left 全朝向 ± 共享 front ± best-fit | 222-226 | best-fit 反而 -4 |
 | BL v5 + 重启矩阵 | 小件先 + ghost/种子扫描 | 226-229 | 贪心天花板 ~230-240 确认 |
-| **cpsat v1/v2** | CP-SAT 装箱小模型（NoOverlap2D ~760 矩形，front-only 须点，ghost 位置自由变量，固定 TB 口向，同 op 字典序对称破除） | 进行中 | v1 120s UNKNOWN；v2 +对称破除 300s 待判 |
+| cpsat v1/v2/v3 | CP-SAT 装箱可行性（NoOverlap2D ~760 矩形，front-only 须点，ghost 位置自由变量；v2 +同 op 字典序对称破除；v3 +四朝向+241 件 warm hint） | — | 120s/300s/600s **三连 UNKNOWN** |
+| cpsat v4 | 四朝向 + maximize + 变尺寸 optional interval | — | ortools 9.15 原生 SIGSEGV（core dump 08:40，非 OOM） |
+| **cpsat v5** | TB-only + maximize + hint | **232** | 480s FEASIBLE；审计 0 违规、ghost 复核干净——maximize 全链打通 |
+| cpsat v6 | 四朝向 maximize（per-mode fixed-size interval 绕 segv）+ hint | 229 | 600s；自由度更大反而更低=LNS 没爬完更大空间，非可行域问题 |
+| cpsat v7 | v6 配方 + v5 解接力 + 1800s | 待判 | 夜班最后一发 |
 
 反直觉实测两则：①小件先 > 大件先（3×3 先自组织共享 front 走廊网，
 大件后进整块区）；②best-fit 贴墙评分输给首可行 BL（局部焊死制造新碎片）。
+
+## §2b 收官判读（07-17 晨）
+
+全工具谱（散点/梳状/skyline/精确 BL×4 变体/重启矩阵/CP-SAT 可行性×3/
+maximize×2）在十分钟级预算下一致卡在 **229-241 / 266**，缺口 ~25 件。
+front-clear 审计全程 0 违规（12 发构造无一错），ghost 复核干净——
+**构造机械是对的，装不满是问题本身硬**。这与 §1 的 3% 密铺余量账自洽：
+witness placement 本质是接近完美的拼图，贪心和十分钟级 CP-SAT 都不够。
+装箱侧的"难"反向抬升了负锚点侧（过夜跑 INFEASIBLE 证书）的相对价值——
+详见决策包 doc 07 §6 的三点判读。
 
 ## §3 审计与诚实边界
 
