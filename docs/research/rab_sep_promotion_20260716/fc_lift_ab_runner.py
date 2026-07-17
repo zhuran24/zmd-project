@@ -59,6 +59,11 @@ def main() -> int:
     parser.add_argument("--master-presolve", choices=["unset", "off"], default="unset",
                         help="off = 设 EXACT_MASTER_CP_MODEL_PRESOLVE=0（element 走原生传播器，"
                              "诊断 presolve 展开病灶）")
+    parser.add_argument("--solution-hint-file", type=Path, default=None,
+                        help="两段式 master 段2（牌B）：witness 构造器结果 JSON，"
+                             "其 solution {iid:{facility_type,pose_idx}} 经 "
+                             "apply_solution_hint 注入 master（AddHint 仅引导搜索，"
+                             "不影响可行域/正确性；pole 槽不打 0 hint）")
     args = parser.parse_args()
 
     os.environ["EXACT_CP_SAT_WORKERS"] = str(args.workers)
@@ -125,6 +130,33 @@ def main() -> int:
     }
     result["master_interval_count"] = master.build_stats.get("master_interval_count")
     _dump()
+
+    # 牌B 段2：段1 装箱解注入为 solution hint（研究级诊断包装，零 sealed 行为
+    # 改动——apply_solution_hint 是 delegate 既有公开方法，AddHint 语义只引导
+    # 搜索不改可行域）
+    if args.solution_hint_file is not None:
+        hint_payload = json.loads(
+            args.solution_hint_file.read_text(encoding="utf-8")
+        )
+        hint_map = {
+            str(iid): int(entry["pose_idx"])
+            for iid, entry in dict(hint_payload.get("solution", {})).items()
+        }
+        delegate = getattr(master, "_coordinate_delegate", None)
+        if delegate is None or not hasattr(delegate, "apply_solution_hint"):
+            result["solution_hint_stats"] = {
+                "error": "coordinate delegate 无 apply_solution_hint"
+            }
+        else:
+            hint_stats = delegate.apply_solution_hint(
+                hint_map, hint_inactive_residual_optionals=False
+            )
+            result["solution_hint_stats"] = {
+                "hint_entries": len(hint_map),
+                **{k: v for k, v in dict(hint_stats).items()
+                   if isinstance(v, (int, str, bool))},
+            }
+        _dump()
 
     # corpus：逐迭代布局快照（阶梯3 离线结构 checker 的输入；诊断包装，
     # 不改任何 sealed 行为——原方法原样调用、返回值原样透传）
