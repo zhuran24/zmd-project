@@ -138,6 +138,8 @@ def render_placement_heatmap(
         if pose_idx < 0 or pose_idx >= len(pool):
             continue
         pose = pool[pose_idx]
+        # 显示层标注 (front 错位事故批 2): port 的 x/y 是 identity 语义的
+        # 带子格(本体外第 1 格); 箭头只是方向指示, 不代表 front 在下一格。
         for port in pose.get("output_port_cells", []) or []:
             dx, dy = arrow_map.get(str(port.get("dir", "N")), (0, 0.4))
             ax.annotate(

@@ -21,9 +21,8 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple
 
 
-_DIR_DELTA: Dict[str, Tuple[int, int]] = {
-    "N": (0, 1), "S": (0, -1), "E": (1, 0), "W": (-1, 0),
-}
+# (批 2 identity 语义后本模块不再做 front 方向步进——原 _DIR_DELTA 表已删,
+#  stored 口坐标本身就是带子格。)
 
 
 @dataclass(frozen=True)
@@ -158,8 +157,8 @@ def classify_pose_commodity_side(
     )
 
     def front_side(port: Mapping[str, Any]) -> str:
-        dx, dy = _DIR_DELTA.get(str(port["dir"]), (0, 0))
-        fx, fy = int(port["x"]) + dx, int(port["y"]) + dy
+        # identity 语义: stored 口坐标即带子格(front), 不 +delta (front 错位事故批 2)
+        fx, fy = int(port["x"]), int(port["y"])
         if not (0 <= fx < grid_w and 0 <= fy < grid_h):
             return "OOG"
         if (fx, fy) in separator.wall_cells:

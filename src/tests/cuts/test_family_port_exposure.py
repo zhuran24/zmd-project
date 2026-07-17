@@ -60,9 +60,9 @@ _FACILITY_TEMPLATES = {
     "manufacturing_3x3": {"dimensions": {"w": 3, "h": 3}},
 }
 _INSTANCE_TO_FT = {"crusher": "manufacturing_3x3", "refinery": "manufacturing_3x3"}
-# Gap 9 + Gap 11 修: candidate_placements pose 层 ports + N/S/E/W = real grid
-# convention (y=row up; N=(0,-1), W=(-1,0)). crusher pose "p7" 占 x∈[10..12]
-# y∈[10..12]. port (10, 10, W): facility 左上 corner cell, W 朝外 → front=(9, 10).
+# 批 2 identity 语义 (front 错位事故 2026-07-18): candidate_placements pose 层 stored
+# 口坐标本身就是带子格 (front). N/S/E/W 仅方向标签, 不再 +delta. crusher pose "p7"
+# 占 x∈[10..12] y∈[10..12], W 口带子格 = (9, 10) (体外西侧一格) = front = port_cell.
 _CANDIDATE_PLACEMENTS = {
     "facility_pools": {
         "manufacturing_3x3": [
@@ -76,7 +76,7 @@ _CANDIDATE_PLACEMENTS = {
                 ],
                 "input_port_cells": [],
                 "output_port_cells": [
-                    {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+                    {"x": 9, "y": 10, "dir": "W", "commodity": "test"},
                 ],
             },
             {
@@ -99,8 +99,8 @@ def _make_port_exposure_cert(
     *,
     facility_group: str = "crusher",
     facility_pose_id: str = "p7",  # Gap 10: PoseId=str
-    port_cell: tuple = (10, 10),
-    port_direction: str = "W",  # Gap 11 修: W=(-1, 0), front=(9, 10) outside facility
+    port_cell: tuple = (9, 10),
+    port_direction: str = "W",  # 批 2 identity: W 口带子格 front = port_cell = (9, 10)
     front_cell: tuple = (9, 10),
     blocking_group: str = "refinery",
     blocking_slot: int = 0,
@@ -303,8 +303,10 @@ def test_find_pose_return_value_is_not_authoritative_mutation_channel():
 
     returned_pose = find_pose(state, "crusher", "p7")
     assert returned_pose is not None
+    # 批 2 identity: 攻击用带子格 (9, 10) — 泄漏进 source 就会真触发一条 cut,
+    # 故此坐标让隔离守卫成为承重条件 (而非靠 front 无主空过).
     returned_pose["output_port_cells"] = [
-        {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+        {"x": 9, "y": 10, "dir": "W", "commodity": "test"},
     ]
 
     assert source_pose["output_port_cells"] == []
@@ -328,8 +330,9 @@ def test_port_exposure_generator_ignores_orphaned_same_digest_pose_cache(monkeyp
     )
     assert compute_source_digest(state) == source_digest
 
+    # 批 2 identity: 带子格 (9, 10) — 若孤儿缓存被误信会真触发 cut.
     returned_pose["output_port_cells"] = [
-        {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+        {"x": 9, "y": 10, "dir": "W", "commodity": "test"},
     ]
     assert (
         state.candidate_placements["facility_pools"]["manufacturing_3x3"][0]["output_port_cells"]
@@ -355,8 +358,9 @@ def test_port_exposure_generator_ignores_mutated_find_pose_return(monkeypatch):
 
     returned_pose = find_pose(state, "crusher", "p7")
     assert returned_pose is not None
+    # 批 2 identity: 带子格 (9, 10) — 若 find_pose 返回被误信会真触发 cut.
     returned_pose["output_port_cells"] = [
-        {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+        {"x": 9, "y": 10, "dir": "W", "commodity": "test"},
     ]
 
     cuts = generate_port_exposure_cuts(
@@ -377,8 +381,10 @@ def test_validate_port_exposure_ignores_forged_runtime_pose_cache_with_matching_
     real_p7_no_port = pool[0]
     real_p7_no_port["output_port_cells"] = []
     forged_p7_with_port = copy.deepcopy(real_p7_no_port)
+    # 批 2 identity: 伪造项 port 用带子格 (9, 10) 才能匹配 cert.port_cell —
+    # 证明"即便伪造成能验通, 也被 content-addressed cache 忽略"这一意图.
     forged_p7_with_port["output_port_cells"] = [
-        {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+        {"x": 9, "y": 10, "dir": "W", "commodity": "test"},
     ]
     source_digest = compute_source_digest(state)
 
@@ -492,7 +498,9 @@ def test_step_7_fails_closed_on_schema_valid_leading_dunder_source_drift():
     fail closed on an attestation mismatch — the successor to the raw leading-
     dunder source-drift QUARANTINE.  (Leading-dunder source-digest tracking
     itself is covered by test_source_digest_* in test_lifecycle.py.)"""
-    source_state = _make_dunder_facility_state(producer_port_cell=(10, 10))
+    # 批 2 identity: dunder pose 的 W 口带子格 = (9, 10) = cert front = port_cell,
+    # 与体外 blocker (9, 10) 逐字对齐 → 合法 ok cert.
+    source_state = _make_dunder_facility_state(producer_port_cell=(9, 10))
     cut = _make_port_exposure_cut(_make_port_exposure_cert(), scope_state=source_state)
     assert validate_port_exposure(cut, source_state, CANONICAL_RULES).kind == "ok"
 
@@ -503,9 +511,9 @@ def test_step_7_fails_closed_on_schema_valid_leading_dunder_source_drift():
 
 
 def test_validate_port_exposure_ok():
-    """Gap 11 修后: W=(-1,0), port (10,10) W → front (9, 10) outside facility."""
+    """批 2 identity: stored 口坐标本身 = 带子格, front_cell = port_cell = (9, 10)."""
     cert_payload = _make_port_exposure_cert(
-        port_cell=(10, 10), port_direction="W", front_cell=(9, 10),
+        port_cell=(9, 10), port_direction="W", front_cell=(9, 10),
     )
     cut = _make_port_exposure_cut(cert_payload)
     state = _make_state(cell_owner={(9, 10): ("refinery", 0)}, refinery_poses=["p3"])
@@ -540,7 +548,7 @@ def test_validate_port_exposure_schema_err_out_of_grid_cell():
 def test_validate_port_exposure_unsound_blocking_facility_absent():
     """cell_owner[front_cell] 不是 cert blocking_facility."""
     cert_payload = _make_port_exposure_cert(
-        port_cell=(10, 10), port_direction="W", front_cell=(9, 10),
+        port_cell=(9, 10), port_direction="W", front_cell=(9, 10),
         blocking_group="refinery", blocking_slot=0,
     )
     cut = _make_port_exposure_cut(cert_payload)
@@ -564,7 +572,7 @@ def test_validate_port_exposure_cert_literal_multiset_mismatch():
     """
     # cert references blocker pose "p3"
     cert_payload = _make_port_exposure_cert(
-        port_cell=(10, 10), port_direction="W", front_cell=(9, 10),
+        port_cell=(9, 10), port_direction="W", front_cell=(9, 10),
         blocking_group="refinery", blocking_slot=0, blocking_pose_id="p3",
     )
     # but cut.literals 错放 "p99" (同 group 不同 pose)
@@ -598,7 +606,7 @@ def test_validate_port_exposure_slot_anonymity_in_binding():
     在 multiset 比较里等价 (state_machine_v2 §5 slot anonymity).
     """
     cert_payload = _make_port_exposure_cert(
-        port_cell=(10, 10), port_direction="W", front_cell=(9, 10),
+        port_cell=(9, 10), port_direction="W", front_cell=(9, 10),
         blocking_group="refinery", blocking_slot=0, blocking_pose_id="p3",
     )
     # cut.literal blocking slot 写 5, cert blocking slot 写 0 — 仍应 ok

@@ -1235,7 +1235,10 @@ def _build_exact_incompatible_signature_order_model() -> MasterPlacementModel:
                 "pose_params": {"orientation": "same", "port_mode": "same"},
                 "occupied_cells": [[0, 0]],
                 "input_port_cells": [],
-                "output_port_cells": [{"x": 0, "y": 0, "dir": "E"}],
+                # identity 反转(批 2): 口沿 dir 前移一格, front 几何(=(1,0))与
+                # 旧语义逐字保留 → 两 pose 局部 front 签名仍不同(测试意图=
+                # incompatible signature order 被跳过)。
+                "output_port_cells": [{"x": 1, "y": 0, "dir": "E"}],
                 "power_coverage_cells": None,
             },
             {
@@ -1244,7 +1247,7 @@ def _build_exact_incompatible_signature_order_model() -> MasterPlacementModel:
                 "pose_params": {"orientation": "same", "port_mode": "same"},
                 "occupied_cells": [[1, 0]],
                 "input_port_cells": [],
-                "output_port_cells": [{"x": 1, "y": 0, "dir": "W"}],
+                "output_port_cells": [{"x": 0, "y": 0, "dir": "W"}],
                 "power_coverage_cells": None,
             },
         ],

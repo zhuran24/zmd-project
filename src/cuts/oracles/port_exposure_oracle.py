@@ -36,7 +36,7 @@ import logging
 import os
 from typing import Any, Dict, List, Optional, Tuple
 
-from src.cuts.helpers.candidate_placements import direction_offset, pose_ports
+from src.cuts.helpers.candidate_placements import pose_ports
 from src.cuts.lifecycle import (
     AnonymousSlotRef,
     BState,
@@ -196,12 +196,12 @@ def _try_emit_one(
         _logger.debug("F3 skip port: malformed dir=%r in port_entry=%r", port_dir, port_entry)
         return None
     port_cell: Cell = (port_x, port_y)
-    try:
-        dx, dy = direction_offset(port_dir)
-    except ValueError:
+    if port_dir not in ("N", "S", "E", "W"):
         _logger.debug("F3 skip port: bad direction=%r port_cell=%r", port_dir, port_cell)
         return None
-    front_cell: Cell = (port_cell[0] + dx, port_cell[1] + dy)
+    # identity 语义 (front 错位事故批 2): stored 口坐标本身就是带子格,
+    # front_cell = port_cell、不做方向步进。
+    front_cell: Cell = port_cell
     # Spec §6 + §9 OQ#2: ghost-occluded / out-of-grid front skip (not bugs — spec explicit).
     if not _in_grid(front_cell):
         return None

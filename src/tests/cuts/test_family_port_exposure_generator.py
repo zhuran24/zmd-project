@@ -48,10 +48,12 @@ _INSTANCE_TO_FT = {
     "refinery": "manufacturing_3x3",
 }
 
-# Crusher pose "p7" occupies x∈[10..12] y∈[10..12], single output port W direction.
+# 批 2 identity 语义 (front 错位事故 2026-07-18): pose 层 stored 口坐标本身 = 带子格
+# (front), N/S/E/W 仅方向标签, 不再 +delta. 所以每个口都存在体外那一格上.
+# Crusher pose "p7" occupies x∈[10..12] y∈[10..12], W 口带子格 = (9, 10) (体外西侧).
 # Refinery pose "p3" occupies x∈[9..11] y∈[10..12] (overlap is fine — fixture).
-# Refinery pose "p_east" anchored x=13 occupies x∈[13..15] y∈[10..12] — blocks
-# crusher east-direction port (if any) but here serves as a second placeable.
+# Refinery pose "p_east" anchored x=13 occupies x∈[13..15] y∈[10..12] — 占 p7_twoports
+# E 口带子格 (13, 10), 作 east-direction 阻挡的第二个可放实体.
 _CANDIDATE_PLACEMENTS: Dict[str, Any] = {
     "facility_pools": {
         "manufacturing_3x3": [
@@ -65,7 +67,7 @@ _CANDIDATE_PLACEMENTS: Dict[str, Any] = {
                 ],
                 "input_port_cells": [],
                 "output_port_cells": [
-                    {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+                    {"x": 9, "y": 10, "dir": "W", "commodity": "test"},
                 ],
             },
             {
@@ -77,10 +79,12 @@ _CANDIDATE_PLACEMENTS: Dict[str, Any] = {
                     [10, 12], [11, 12], [12, 12],
                 ],
                 "input_port_cells": [
-                    {"x": 10, "y": 10, "dir": "W", "commodity": "input"},
+                    # 批 2 identity: W 口带子格 = (9, 10) (体外西侧)
+                    {"x": 9, "y": 10, "dir": "W", "commodity": "input"},
                 ],
                 "output_port_cells": [
-                    {"x": 12, "y": 10, "dir": "E", "commodity": "output"},
+                    # 批 2 identity: E 口带子格 = (13, 10) (体外东侧)
+                    {"x": 13, "y": 10, "dir": "E", "commodity": "output"},
                 ],
             },
             {
@@ -93,7 +97,8 @@ _CANDIDATE_PLACEMENTS: Dict[str, Any] = {
                 ],
                 "input_port_cells": [],
                 "output_port_cells": [
-                    {"x": 30, "y": 30, "dir": "W", "commodity": "test"},
+                    # 批 2 identity: W 口带子格 = (29, 30) (体外西侧) = front
+                    {"x": 29, "y": 30, "dir": "W", "commodity": "test"},
                 ],
             },
             {
@@ -106,7 +111,8 @@ _CANDIDATE_PLACEMENTS: Dict[str, Any] = {
                 ],
                 "input_port_cells": [],
                 "output_port_cells": [
-                    {"x": 0, "y": 0, "dir": "W", "commodity": "test"},  # front (-1, 0)
+                    # 批 2 identity: W 口带子格 = front = port = (-1, 0), 出 70x70 网格
+                    {"x": -1, "y": 0, "dir": "W", "commodity": "test"},
                 ],
             },
             {
@@ -202,7 +208,7 @@ def test_generator_env_off_explicit_value(monkeypatch: pytest.MonkeyPatch) -> No
 
 
 def test_generator_emits_cut_for_blocked_port(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Crusher p7 (port W @ (10,10)) front=(9,10) occupied by refinery p3."""
+    """批 2 identity: crusher p7 W 口带子格 = front = (9,10), 被 refinery p3 占据."""
     monkeypatch.setenv("EXACT_F3_GENERATOR_ENABLED", "1")
     # cell_owner contains refinery occupied cells; the front cell (9,10) is
     # one of them. We also include the crusher cells for realism.
@@ -226,7 +232,7 @@ def test_generator_emits_cut_for_blocked_port(monkeypatch: pytest.MonkeyPatch) -
     assert cert_dict["cert_kind"] == CERT_KIND
     assert cert_dict["facility_group"] == "crusher"
     assert cert_dict["facility_pose_id"] == "p7"
-    assert cert_dict["port_cell"] == [10, 10]
+    assert cert_dict["port_cell"] == [9, 10]  # 批 2 identity: port_cell == front_cell
     assert cert_dict["port_direction"] == "W"
     assert cert_dict["front_cell"] == [9, 10]
     assert cert_dict["blocking_facility"] == ["refinery", 0, "p3"]
@@ -287,7 +293,7 @@ def test_generator_skips_free_front(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_generator_skips_ghost_occluded_front(monkeypatch: pytest.MonkeyPatch) -> None:
     """Spec §6 + §9 OQ#2: ghost-occluded front skip (master constraint covers).
 
-    Use crusher p7_freeport anchored (30,30), port W (30,30), front (29, 30).
+    批 2 identity: crusher p7_freeport 的 W 口带子格 = front = (29, 30).
     Put front in ghost_cells → generator should skip (no cut emit).
     """
     monkeypatch.setenv("EXACT_F3_GENERATOR_ENABLED", "1")
@@ -328,7 +334,7 @@ def test_generator_skips_exterior_blocked_front(monkeypatch: pytest.MonkeyPatch)
 
 
 def test_generator_skips_out_of_grid_front(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Port at (0, 0) direction W → front (-1, 0) out of 70x70 grid → skip."""
+    """批 2 identity: W 口带子格 = front = port = (-1, 0), 出 70x70 网格 → skip."""
     monkeypatch.setenv("EXACT_F3_GENERATOR_ENABLED", "1")
     cell_owner: Dict[Cell, Tuple[str, int]] = {}
     for c in [(0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1),

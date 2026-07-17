@@ -158,14 +158,14 @@ class D2CommodityFlowCore:
         unconditional_balance: Dict[Tuple[str, int, int], int] = defaultdict(int)
         for ps in self.port_specs:
             px, py = int(ps["x"]), int(ps["y"])
-            direction = str(ps.get("dir", ""))
             commodity = str(ps.get("commodity", ""))
             port_type = str(ps.get("type", ""))
             owner_id = str(ps.get("instance_id", ""))
             if commodity not in self._commodities:
                 continue
-            dx, dy = DIR_DELTA.get(direction, (0, 0))
-            fx, fy = px + dx, py + dy
+            # identity 语义: stored 口坐标即带子格(front), 不 +delta
+            # (front 错位事故批 2; DIR_DELTA 仅保留 :121 的带邻格步进用途).
+            fx, fy = px, py
             if (fx, fy) not in self._free_cells:
                 self._blocked_port_count += 1
                 continue

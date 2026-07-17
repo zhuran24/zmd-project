@@ -26,7 +26,6 @@ from ortools.sat.python import cp_model
 from src.models.separator_capacity_hull import (
     Separator,
     build_static_separator_library,
-    _DIR_DELTA,
 )
 
 
@@ -39,9 +38,11 @@ class AbstractRoutingResult:
 
 
 def _front_side_class(port: Mapping[str, Any], sep: Separator, grid_w: int, grid_h: int) -> str:
-    """Return 'L', 'R', 'W' (in wall), or 'OOG' (out of grid)."""
-    dx, dy = _DIR_DELTA.get(str(port.get("dir", "")), (0, 0))
-    fx, fy = int(port.get("x", 0)) + dx, int(port.get("y", 0)) + dy
+    """Return 'L', 'R', 'W' (in wall), or 'OOG' (out of grid).
+
+    identity 语义: stored 口坐标即带子格(front), 不 +delta (front 错位事故批 2)。
+    """
+    fx, fy = int(port.get("x", 0)), int(port.get("y", 0))
     if not (0 <= fx < grid_w and 0 <= fy < grid_h):
         return "OOG"
     if (fx, fy) in sep.wall_cells:

@@ -23,7 +23,7 @@
       "qualname": "export_certified_blueprint",
       "line": 168,
       "justification": "Public blueprint exporter writes via write_blueprint_payload, whose canonical optimal_blueprint.json path guard now rejects writes unless the verified publisher is used.",
-      "source_sha256": "be00f5f05fb640afc47ed49829521d6aa6e7aaaea04e0694073c1cce257c60b5",
+      "source_sha256": "bf29c658f1479d8bd67a5149e420cd2775ee35eee59fce7afaf867c422032db0",
       "callee": "write_blueprint_payload"
     },
     {
@@ -43,7 +43,7 @@
       "qualname": "build_single_base_delivery_viewer_bundle",
       "line": 225,
       "justification": "Viewer bundle writes derived display copies under its output directory, not the canonical certified artifact path.",
-      "source_sha256": "79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9",
+      "source_sha256": "439cd60a64436c13e15e6cc16ecda2c1884e38a34e194999820a7c77437bc9be",
       "keys": [
         "optimal_blueprint.json"
       ],
@@ -56,7 +56,7 @@
       "qualname": "build_single_base_delivery_viewer_bundle",
       "line": 227,
       "justification": "Viewer bundle writes derived display copies under its output directory, not the canonical certified artifact path.",
-      "source_sha256": "79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9",
+      "source_sha256": "439cd60a64436c13e15e6cc16ecda2c1884e38a34e194999820a7c77437bc9be",
       "keys": [
         "final_solution.json"
       ],

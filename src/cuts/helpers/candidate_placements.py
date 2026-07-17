@@ -53,20 +53,11 @@ from src.cuts.helpers.canonical_rules import facility_type_for_group
 from src.cuts.lifecycle import BState, GroupId, PoseId
 
 
-# Direction encoding (N/S/E/W) → (dx, dy) cell offset.
-# M2 batch C reconcile (2026-07-08): aligned to canonical DIR_DELTA
-# (placement_generator.py DIR_DELTA / master_model.py:86) — the single
-# source-of-truth for port direction geometry. The pre-M2 table had N/S
-# inverted ("roadmap I7 latent landmine"): against the real frozen artifact
-# every N/S port's front cell landed INSIDE its own facility body (verified
-# across all 599,384 ports, 2026-07-08). Regression pins:
-# src/tests/cuts/test_helpers_direction_offsets.py.
-DIRECTION_OFFSETS = {
-    "N": (0, 1),
-    "S": (0, -1),
-    "E": (1, 0),
-    "W": (-1, 0),
-}
+# (批 2 identity 语义, front 错位事故 2026-07-18: stored 口坐标本身就是带子格,
+#  cut 层不再做任何 front 方向步进——原 DIRECTION_OFFSETS 表与 direction_offset()
+#  已整体删除。历史: 该表 M2 batch C 曾修过 N/S 反转 landmine, 但整个
+#  "port+delta=front" 公式 07-18 被判为错位语义, 连根拔除。哨兵:
+#  src/tests/cuts/test_helpers_direction_offsets.py 钉住"不复活"。)
 
 
 _POSE_CACHE_KEY = "__pose_id_cache__"
@@ -195,13 +186,6 @@ def pose_ports(
     if not isinstance(inputs, list) or not isinstance(outputs, list):
         return []
     return [cast(Dict[str, Any], p) for p in inputs + outputs if isinstance(p, dict)]
-
-
-def direction_offset(direction: str) -> Tuple[int, int]:
-    """Cardinal direction (N/S/E/W) → (dx, dy) offset. Raises ValueError on unknown."""
-    if direction not in DIRECTION_OFFSETS:
-        raise ValueError(f"unknown port direction={direction!r}, expect N/S/E/W")
-    return DIRECTION_OFFSETS[direction]
 
 
 def all_poses_in_region(

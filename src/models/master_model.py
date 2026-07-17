@@ -3681,8 +3681,9 @@ class MasterPlacementModel:
                     direction = str(port["dir"])
                     if direction not in DIR_DELTA:
                         continue
-                    dx, dy = DIR_DELTA[direction]
-                    fx, fy = px + dx, py + dy
+                    # identity 语义: stored 口坐标即带子格(front), 不 +delta
+                    # (front 错位事故批 2; DIR_DELTA 仅保留方向合法性校验).
+                    fx, fy = px, py
                     if not (0 <= fx < self.grid_w and 0 <= fy < self.grid_h):
                         invalid_front = True
                         break
@@ -9060,10 +9061,11 @@ class MasterPlacementModel:
                     # Keep the screen's hard proof premise identical to the
                     # coordinate master/terminal validator: ghost emptiness is
                     # checked against facility occupied cells.  Boundary port
-                    # connector cells are routing terminals, not master
-                    # occupancy blockers; using them here would make this
-                    # precheck stricter than the certified master and could
-                    # wrongly delete legal ghost anchors.
+                    # stored cells are the belt/front cells (identity
+                    # semantics) — routing terminals, not master occupancy
+                    # blockers; using them here would make this precheck
+                    # stricter than the certified master and could wrongly
+                    # delete legal ghost anchors.
                     "blocking_cells": frozenset(cells),
                 }
             )

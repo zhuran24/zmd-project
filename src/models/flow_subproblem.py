@@ -49,14 +49,10 @@ def cell_id(x: int, y: int) -> str:
 
 
 def _front_cell(x: int, y: int, direction: str) -> Optional[Tuple[int, int]]:
-    if direction == "N":
-        return (x, y + 1)
-    if direction == "S":
-        return (x, y - 1)
-    if direction == "E":
-        return (x + 1, y)
-    if direction == "W":
-        return (x - 1, y)
+    # identity 语义: stored 口坐标即带子格(front), 不 +delta
+    # (front 错位事故批 2, docs/research/front_offset_incident_20260718/00)。
+    if direction in ("N", "S", "E", "W"):
+        return (x, y)
     return None
 
 

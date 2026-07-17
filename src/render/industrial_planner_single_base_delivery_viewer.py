@@ -385,6 +385,8 @@ def _synthesize_pose_from_blueprint(
             for y in range(anchor_y, anchor_y + height)
             for x in range(anchor_x, anchor_x + width)
         ],
+        # 交付面标注 (front 错位事故批 2): port x/y 是 identity 语义的带子格
+        # (本体外第 1 格), 下游不得再 +delta 推 front。
         "input_port_cells": [
             {
                 "x": int(port.get("x", 0)),

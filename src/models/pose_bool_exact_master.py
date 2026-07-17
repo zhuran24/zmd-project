@@ -27,12 +27,8 @@ from src.models.solution_hint_parser import parse_strict_int_hint_value
 from src.preprocess.operation_profiles import get_operation_port_profile
 
 
-_DIR_DELTA: Dict[str, Tuple[int, int]] = {
-    "N": (0, 1),
-    "S": (0, -1),
-    "E": (1, 0),
-    "W": (-1, 0),
-}
+# (批 2 identity 语义后 pose_bool 不再做任何 front 方向步进——原 _DIR_DELTA 表已删,
+#  stored 口坐标本身就是带子格。)
 
 
 class PoseBoolExactMasterDelegate:
@@ -643,12 +639,13 @@ class PoseBoolExactMasterDelegate:
             self._build_global_pose_cache()
 
             # Step 2: build front_clear vars per (port_cell, dir).
+            # identity 语义: stored 口坐标本身就是带子格(front), 不再 +delta 步进
+            # (front 错位事故批 2, 见 docs/research/front_offset_incident_20260718/00).
             for (px, py, direction) in self._poses_by_port_cell_dir_global.keys():
-                dx, dy = _DIR_DELTA.get(str(direction), (0, 0))
                 fc_key = (int(px), int(py), str(direction))
                 if fc_key in self._front_clear:
                     continue
-                fx, fy = int(px) + dx, int(py) + dy
+                fx, fy = int(px), int(py)
                 if not (0 <= fx < self.grid_w and 0 <= fy < self.grid_h):
                     # front out of grid: 不可 clear, 直接 set var=0 (ban this port)
                     fc = self.model.NewBoolVar(f"fc__{px}_{py}_{direction}")
@@ -755,8 +752,8 @@ class PoseBoolExactMasterDelegate:
             for (px, py, direction), port_poses in self._routing_visible_poses_by_port_at_cell_dir.items():
                 if not port_poses:
                     continue
-                dx, dy = _DIR_DELTA.get(str(direction), (0, 0))
-                front = (int(px) + dx, int(py) + dy)
+                # identity 语义: front=stored 口坐标本格(不 +delta)
+                front = (int(px), int(py))
                 if not (0 <= front[0] < self.grid_w and 0 <= front[1] < self.grid_h):
                     # front 出 grid: port 永远不通, ban pose
                     for v in port_poses:
@@ -1329,9 +1326,9 @@ class PoseBoolExactMasterDelegate:
             blocker_terms: List[cp_model.IntVar] = []
             const_blocked = 0
             for port in port_cells:
-                dx, dy = _DIR_DELTA.get(str(port.get("dir", "")), (0, 0))
-                fx = int(port.get("x", 0)) + dx
-                fy = int(port.get("y", 0)) + dy
+                # identity 语义: front=stored 口坐标本格(不 +delta)
+                fx = int(port.get("x", 0))
+                fy = int(port.get("y", 0))
                 if not (0 <= fx < self.grid_w and 0 <= fy < self.grid_h):
                     const_blocked += 1
                     continue

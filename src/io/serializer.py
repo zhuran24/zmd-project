@@ -318,6 +318,9 @@ def _build_facilities(
 
 
 def _build_active_ports(pose: Mapping[str, Any]) -> list[Dict[str, Any]]:
+    # 导出语义标注 (front 错位事故批 2): 口的 x/y 是 identity 语义——stored
+    # 坐标即口前带子格(本体外第 1 格), 不是口的体上格; 下游消费者不得再
+    # +方向 delta 推 front。
     ports: list[Dict[str, Any]] = []
     for port_type, field_name in (("input", "input_port_cells"), ("output", "output_port_cells")):
         raw_ports = pose.get(field_name)

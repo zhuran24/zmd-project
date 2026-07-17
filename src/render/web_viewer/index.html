@@ -373,6 +373,8 @@ function drawActivePorts() {
     ctx.arc(x, y, 0.18, 0, Math.PI * 2);
     ctx.fill();
 
+    // identity 语义标注(front 错位事故批 2): port 的 x/y 就是口前带子格,
+    // 这里的方向向量只画同格内的朝向短箭头,不是 front 在下一格的意思。
     const [dx, dy] = directionVector(port.dir);
     ctx.strokeStyle = ctx.fillStyle;
     ctx.lineWidth = 1.5 / scale;

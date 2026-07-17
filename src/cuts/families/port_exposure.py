@@ -9,8 +9,6 @@ from collections import Counter
 from typing import Any, Dict, Literal, Tuple, cast
 
 from src.cuts.helpers.candidate_placements import (
-    DIRECTION_OFFSETS,
-    direction_offset,
     find_pose,
     pose_ports,
 )
@@ -67,12 +65,18 @@ def _validate_front_cell_math(
     front_cell: Cell,
     t0: float,
 ) -> ValidationResult | None:
-    if port_direction not in DIRECTION_OFFSETS:
+    # identity 语义 (front 错位事故批 2): stored 口坐标本身就是带子格,
+    # front_cell 必须逐字等于 port_cell、不做任何方向步进。方向合法性用
+    # 本函数自己的字面集合校验(不 import oracle 侧的方向表——异构重推,
+    # 防 oracle/validator 共模)。
+    if port_direction not in ("N", "S", "E", "W"):
         return _vr("schema_err", t0, f"unknown port_direction={port_direction!r} (expect N/S/E/W)")
-    dx, dy = direction_offset(port_direction)
-    expected_front = (port_cell[0] + dx, port_cell[1] + dy)
-    if front_cell != expected_front:
-        return _vr("unsound", t0, f"front_cell mismatch: cert={front_cell}, expected={expected_front}")
+    if front_cell != port_cell:
+        return _vr(
+            "unsound",
+            t0,
+            f"front_cell mismatch: cert={front_cell}, expected identity port_cell={port_cell}",
+        )
     return None
 
 

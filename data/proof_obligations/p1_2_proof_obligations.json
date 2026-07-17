@@ -1014,7 +1014,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "2c55c45b5a932b2a2bc19c20ca0287d255a9dfc76e7dc5880cbcbb01bd861528",
+        "source_sha256": "9d5454177c42664568fe9a865554d47894f30369cf644dcda828377bb64bfc92",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1278,7 +1278,7 @@
           "UNKNOWN",
           "optimal_blueprint.json"
         ],
-        "source_sha256": "be00f5f05fb640afc47ed49829521d6aa6e7aaaea04e0694073c1cce257c60b5",
+        "source_sha256": "bf29c658f1479d8bd67a5149e420cd2775ee35eee59fce7afaf867c422032db0",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1291,7 +1291,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16",
+        "source_sha256": "3b6d015906cdbab461e40806a3654de1b8f4e77cb86a12bfac8eff1afe89f976",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1347,7 +1347,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "eb875b3e5be2e6ec65a5e7b84a22fee075ccd64b1fe1e543053603a893aec853",
+        "source_sha256": "b77f39bd7ca067f3c422552f763aec73d7c87501947dba7e87f22f33efdf3230",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1373,7 +1373,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "1d3d0f174e23feb6df01858941cb713af6f8f676315bba7568211b9d45f9e94d",
+        "source_sha256": "948c4fee4495264c339c335b353de1925a9c7b5f9ebc12e1088ac2d0a7c3d06a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1414,7 +1414,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "977f3c8d072fcfdc0842b5700351bf9e578b17c6c48e53c67be4c427e49453b1",
+        "source_sha256": "d129c09dbdb8fbbfd66b7a407247f728fc62c809891593b0f30cb7bc20fccfcd",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1578,7 +1578,7 @@
           "final_solution.json",
           "optimal_blueprint.json"
         ],
-        "source_sha256": "79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9",
+        "source_sha256": "439cd60a64436c13e15e6cc16ecda2c1884e38a34e194999820a7c77437bc9be",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

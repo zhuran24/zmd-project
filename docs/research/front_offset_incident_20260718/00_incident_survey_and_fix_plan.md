@@ -144,3 +144,33 @@ certified 主链 identity 语义原子 reseal 已完成并全绿验收：
   实体口重生成）；新增批 5 语义批（协议箱/中枢/仓库桥/canonical
   semantics 四条裁决文）；批 4 重跑面扩大（协议箱语义变化波及历史布局
   实验）。执行序：批 2 → 批 3+5（合并换钉）→ 批 4。
+
+## §7 批 2 落地记录（2026-07-18，certified 不可达面收尾 + 第二次小 reseal）
+
+- **代码 identity 化**：pose_bool 三处 front 推导去步进（`_DIR_DELTA` 表
+  整删）；master_model legacy front 索引 identity 化（DIR_DELTA 仅留方向
+  校验）+ boundary screen 注释 connector→identity 术语勘误；
+  d2_commodity_flow_core（:121 带邻步进合法保留）；abstract_routing_layer
+  与 separator_capacity_hull 的 front_side 函数；deletion-core（同批 1
+  binding_context 一并删无意义 self-occupied 豁免）；flow_subproblem
+  `_front_cell`。d2_separator 亲证零改动（纯消费 precheck 状态串）。
+- **F3 族异构重推（共模斩断）**：oracle 与 validator 原共享
+  `direction_offset` helper（普查点名的共模面）——现各自用独立字面
+  方向集合校验、front_cell=port_cell 逐字相等；cut 层方向表
+  `DIRECTION_OFFSETS`/`direction_offset()` 连根删除；pin 测试重写为
+  "不复活"哨兵 + 旧 +delta cert 必判 unsound 的反向哨兵。
+- **交付面标注**：serializer / grid_visualizer / delivery viewer /
+  web_viewer 四处 identity 语义标注（纯注释零行为）。
+- **测试**：test_master 签名对称性 fixture 反转（identity 下局部 front
+  签名撞车→口沿 dir 前移恢复几何意图）；F3 两文件 11 个旧语义 fixture
+  标准反转（fixC 席，34 全绿，断言零硬凑；三个 mutation 隔离测试的攻击
+  payload 一并前移防哨兵空转）。
+- **Reseal**：obligations 6 sink + checker V99 floor 11 条（比预估多 4：
+  cuts 两件/separator/deletion-core 也在 floor）+ strong-status allowlist
+  2 条 + allowlist 自身 hash/size 钉 + checker 自钉最后。
+- **验收**：双 checker 15/67、65/83；preflight `--full` 19/19（4,476 快
+  测）——首跑 1 红为 xdist worker gw20 崩溃（非断言失败，孤例：单测/
+  整文件/全量三级复验全绿）；慢 lane 32/32。
+- **诚实边界**：本批全部面在 certified 下不可达（env 白名单/registry
+  边界挡住），修的是"未来接线时旧语义回流"的隐患，不改变任何当前
+  certified 数字。

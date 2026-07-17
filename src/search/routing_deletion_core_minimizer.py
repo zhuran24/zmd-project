@@ -28,12 +28,8 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 
-_DIR_DELTA: Dict[str, Tuple[int, int]] = {
-    "N": (0, 1),
-    "S": (0, -1),
-    "E": (1, 0),
-    "W": (-1, 0),
-}
+# (批 2 identity 语义后本模块不再做 front 方向步进——原 _DIR_DELTA 表已删,
+#  stored 口坐标本身就是带子格。)
 
 RoutingVisiblePortKey = Tuple[int, int, str, str]
 
@@ -97,7 +93,6 @@ def _oracle_front_blocked(
     """
     # 算 occupied_cells set
     occupied: Set[Tuple[int, int]] = set()
-    occupier_of: Dict[Tuple[int, int], str] = {}
     for iid, entry in layout_subset.items():
         tpl = str(entry.get("facility_type", ""))
         pose_idx = int(entry.get("pose_idx", -1))
@@ -110,7 +105,6 @@ def _oracle_front_blocked(
         for cell in pose.get("occupied_cells", []) or []:
             cell_xy = (int(cell[0]), int(cell[1]))
             occupied.add(cell_xy)
-            occupier_of[cell_xy] = str(iid)
 
     # 对每 instance 每 port 检 front_cell 是否被另一 instance 占
     for iid, entry in layout_subset.items():
@@ -134,12 +128,14 @@ def _oracle_front_blocked(
                 direction = str(port.get("dir", ""))
                 if visible_keys is not None and (px, py, direction, port_type) not in visible_keys:
                     continue
-                dx, dy = _DIR_DELTA.get(direction, (0, 0))
-                fx, fy = px + dx, py + dy
+                # identity 语义: stored 口坐标即带子格(front), 不 +delta
+                # (front 错位事故批 2)。stored 格永在本体外, self-occupied
+                # 豁免无意义, 同批 1 binding_context 一并删除。
+                fx, fy = px, py
                 if not (0 <= fx < grid_w and 0 <= fy < grid_h):
                     return True  # 出 grid 永远 blocked
                 front_cell = (fx, fy)
-                if front_cell in occupied and occupier_of.get(front_cell) != iid:
+                if front_cell in occupied:
                     return True
     return False
 
