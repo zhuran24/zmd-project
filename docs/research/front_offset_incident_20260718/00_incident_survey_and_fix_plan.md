@@ -81,7 +81,33 @@
 
 - 普查为只读零改动；本文档不改判任何 LOCK 条款（批 1 才动）；
 - "路径 b 站得住"的五路攻击结论来自单席对抗（多席对抗留批 1 评审）；
-- FrontUsable 的 blocker 闭集（belt/pole/组件共格矩阵）在 OQ1-7 定谳前
-  保持抽象 fail-closed，不得擅自闭合；
+- FrontUsable 的 blocker 闭集在 §5 批 0 裁决后部分闭合（body 类已定谳；
+  belt-belt 细分 OQ3-7 仍开放，由 routing 层既有约束裁决、不进 front
+  谓词）；
 - 池计数口径消歧：boundary 实为 2×68=136（含两拐角 pose，canonical
   要求保留、数据对、spec 表 134/[1,66] 是文档错——随批 1 勘误）。
+
+## §5 批 0 裁决记录（owner 2026-07-18 03:27-03:3x，真实输入）
+
+1. **theorem scope = 补域（68,469）**：owner 实测 OQ8 通过（最外圈格
+   可放传送带）+ owner 2026-07-13 既有铁律"全局 max_lex certified 目标
+   无退路"推论排定，owner 未异议。执行序=批 1 止血先行 → 批 3 补域
+   换钉跟上。窄域 scope 永久化条款不再需要。
+2. **OQ8**：地图最外圈格**可以**承载传送带 → 批 3 成立，2,064 缺角
+   pose 全部为游戏合法摆位。
+3. **OQ1**：口前格被其他商品的带子占用 **≠ 堵死**——可经十字交叉
+   （`routing_cross_junction`，canonical_rules.json:410-412）借道。
+   **owner 补充定谳**：弯带不兼容十字交叉——借道仅限双方在该格均为
+   直穿形态（can_turn=false / 非直行组件不得共格）。此限制在树内已
+   双份强制：canonical 文本 + `routing_subproblem.py:1105-1125`
+   `_add_bridge_constraints`（非"belt+直行+垂直轴"组合一律互斥），
+   批 1 无需新增代码。
+4. **OQ2**：电线杆算设施本体 → 压口前格 = 堵。与现有建模（pole body
+   参与不重叠/占格）一致，无需改动。
+5. **FrontUsable blocker 闭集（据 1-4 定谳）**：堵 = 任何设施本体
+   （含电线杆）；不堵 = 传送带类组件（belt-belt 共格关系由 routing
+   层既有 cross/合流约束在求解时裁决，不进 placement/binding 层的
+   front 谓词）。修正后 front 谓词收敛为：**口前格（=stored 坐标格）
+   不被任何设施本体占据且在图内**。OQ3-7（同向共享/cross 贴口等）
+   均为 routing 层细节，不阻塞批 1。
+6. **RAB/FCL 处置**：随批 1 同批修复（owner："按你的来"）。
