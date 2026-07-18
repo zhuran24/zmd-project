@@ -4,6 +4,13 @@
 > 的 582→138 改善、front 地板及相关路线判死已撤销（RND-04）；不得据此
 > 恢复“所有有界证明方法均不可达”的全称结论。逐项边界见
 > [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+>
+> **保值摘出（rounds 重跑清单第 2 梯队，2026-07-19）**：§1 min-cut 轨的
+> **结构性**结论单独保值——“sound 连通需求无流量下界，故唯一 sound 连通割
+> = 完全不连通（cut_size 0），min-cut/Menger 给不出非平凡不可行证书”。该论证
+> 对象是连通性作为证书来源的结构极限，与 front 坐标落在哪一格无关（front 修正
+> 只改端点集合，不改“连通无下界”这一前提；RND-09 同源）。它**不需要**在新
+> 语义下重跑实验；被撤销的只是当年据此并入的全称“不可达”判词。
 
 > 承 doc 12。工作流 `wf_27e41160-4cf`(4 Attack[min-cut claude+codex / constructor claude+codex] + 3 对抗 Verify),zero-sealed 只读,~53min。harness 在 `scratchpad/spike_round2/`;journal 在 `subagents/workflows/wf_27e41160-4cf/journal.jsonl`。
 
