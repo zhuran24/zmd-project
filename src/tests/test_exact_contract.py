@@ -75,6 +75,7 @@ from src.search.exact_campaign import (
 )
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
 from src.tests.certified_frontier_helpers import (
+    attach_empty_fixed_witness_audit_for_test,
     install_accepting_l0_supervisor_seal,
     write_closed_phase_review_gate,
 )
@@ -1041,8 +1042,14 @@ def _seal_campaign_proposal_with_accepting_replay(
     project_root: Path,
     state: dict,
 ) -> ExactCampaign:
-    _install_accepting_supervisor_seal_replay(monkeypatch, project_root=project_root)
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    proposal = campaign.state[SUPERVISOR_PROPOSAL_STATE_KEY]
+    run_id = str(proposal["run_id"])
+    campaign.proposal_ready_marker_path.unlink()
+    attach_empty_fixed_witness_audit_for_test(campaign)
+    campaign.save()
+    campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
+    _install_accepting_supervisor_seal_replay(monkeypatch, project_root=project_root)
     campaign.supervisor_seal()
     assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED
     assert campaign.state["last_stop_reason"]["status"] == RUN_STATUS_CERTIFIED

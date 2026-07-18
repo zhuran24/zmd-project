@@ -580,7 +580,10 @@ def test_fixed_witness_binding_infeasible_demotes_unproven_not_infeasible(
     assert CANDIDATE_PROOF_FIELD not in projection.candidate_records["1x1"]
 
 
-@pytest.mark.parametrize("first_rejection", ["safe_precheck", "routing_infeasible"])
+@pytest.mark.parametrize(
+    "first_rejection",
+    ["safe_precheck", "routing_infeasible", "oog_port"],
+)
 def test_fixed_witness_enumerates_binding_alternatives_until_one_routes(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -618,7 +621,27 @@ def test_fixed_witness_enumerates_binding_alternatives_until_one_routes(
             }
 
         def extract_port_specs(self) -> list[dict[str, Any]]:
-            return []
+            if first_rejection == "oog_port" and self.choice == 0:
+                return [
+                    {
+                        "instance_id": "tiny_001",
+                        "x": -1,
+                        "y": 0,
+                        "dir": "W",
+                        "type": "out",
+                        "commodity": "ore",
+                    }
+                ]
+            return [
+                {
+                    "instance_id": "tiny_001",
+                    "x": 1,
+                    "y": 0,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": "ore",
+                }
+            ]
 
         def add_nogood_cut(self, selection: Mapping[str, Any]) -> None:
             self.nogoods.append(_json_copy(selection))
@@ -660,10 +683,13 @@ def test_fixed_witness_enumerates_binding_alternatives_until_one_routes(
             return "FEASIBLE"
 
     precheck_calls = 0
+    real_precheck = fixed_witness_core_module.run_exact_routing_precheck
 
-    def fake_precheck(**_kwargs: Any) -> dict[str, Any]:
+    def fake_precheck(**kwargs: Any) -> dict[str, Any]:
         nonlocal precheck_calls
         precheck_calls += 1
+        if first_rejection == "oog_port" and precheck_calls == 1:
+            return real_precheck(**kwargs)
         if first_rejection == "safe_precheck" and precheck_calls == 1:
             blocked_ports = [{"instance_id": "choice", "front_cell": [0, 0]}]
             analysis = {
@@ -719,6 +745,20 @@ def test_fixed_witness_enumerates_binding_alternatives_until_one_routes(
     assert verdict.publishable is True
     assert verdict.binding_status == "FEASIBLE"
     assert verdict.routing_status == "FEASIBLE"
+    assert verdict.details["port_specs"] == [
+        {
+            "instance_id": "tiny_001",
+            "x": 1,
+            "y": 0,
+            "dir": "E",
+            "type": "out",
+            "commodity": "ore",
+        }
+    ]
+    assert all(
+        0 <= int(spec["x"]) < 2 and 0 <= int(spec["y"]) < 1
+        for spec in verdict.details["port_specs"]
+    )
     assert verdict.details["enumerated_bindings"] == 2
     assert binding.solve_calls == 2
     assert binding.nogoods == [
@@ -728,7 +768,7 @@ def test_fixed_witness_enumerates_binding_alternatives_until_one_routes(
             "generic_outputs": {},
         }
     ]
-    expected_routing_calls = 1 if first_rejection == "safe_precheck" else 2
+    expected_routing_calls = 2 if first_rejection == "routing_infeasible" else 1
     assert AlternativeRoutingSubproblem.solve_calls == expected_routing_calls
 
 

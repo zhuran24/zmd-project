@@ -259,7 +259,7 @@ def test_frozen_counts_align_with_new_split() -> None:
     assert len(all_instances) == 326
     assert caps["power_pole"]["cap"] == 50
     assert caps["protocol_storage_box"]["cap"] == 10
-    assert total_poses == 81797
+    assert total_poses == 82829
 
 
 
@@ -534,7 +534,10 @@ def test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts() -
         "manufacturing_5x5": 49,
         "manufacturing_6x4": 38,
     }
-    assert exact_core_profile["proto_vars"] < 64462
+    # With the same model, the former 7,200-core/17,952-box pools use 60,168
+    # vars. The corrected invalid-front buckets add exactly 4,907; permit any
+    # reduction but fail on even one further variable of unreviewed growth.
+    assert exact_core_profile["proto_vars"] < 60_168 + 4_907 + 1
     assert exact_core_profile["proto_constraints"] < 280631
 
 

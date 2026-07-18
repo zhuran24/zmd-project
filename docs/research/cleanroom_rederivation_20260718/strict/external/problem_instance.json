@@ -1,0 +1,3754 @@
+{
+  "benchmark_id": "factory_layout_optimality_benchmark_v1",
+  "commodities": [
+    "blue_iron_block",
+    "blue_iron_ore",
+    "blue_iron_powder",
+    "buckwheat",
+    "buckwheat_powder",
+    "buckwheat_seed",
+    "dense_blue_iron_powder",
+    "dense_source_powder",
+    "fine_buckwheat_powder",
+    "qiaoyu_capsule",
+    "sandleaf",
+    "sandleaf_powder",
+    "sandleaf_seed",
+    "source_ore",
+    "source_powder",
+    "steel_block",
+    "steel_bottle",
+    "steel_part",
+    "valley_battery"
+  ],
+  "coordinate_system": {
+    "directions": [
+      "N",
+      "E",
+      "S",
+      "W"
+    ],
+    "indexing": "zero_based",
+    "origin": "southwest",
+    "x_positive": "east",
+    "y_positive": "north"
+  },
+  "facility_templates": {
+    "boundary_storage_port": {
+      "modes": [
+        {
+          "body": {
+            "height": 3,
+            "width": 1
+          },
+          "id": "left_boundary",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "output_E_1",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 1,
+            "width": 3
+          },
+          "id": "bottom_boundary",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "N",
+              "id": "output_N_1",
+              "kind": "output"
+            }
+          ]
+        }
+      ],
+      "placement_rule": "matching_map_boundary",
+      "requires_power": false
+    },
+    "manufacturing_3x3": {
+      "modes": [
+        {
+          "body": {
+            "height": 3,
+            "width": 3
+          },
+          "id": "north_to_south",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "input_N_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "input_N_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "input_N_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_2",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 3,
+            "width": 3
+          },
+          "id": "south_to_north",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "output_N_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "output_N_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "output_N_2",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 3,
+            "width": 3
+          },
+          "id": "east_to_west",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "E",
+              "id": "input_E_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "input_E_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "input_E_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "W",
+              "id": "output_W_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "output_W_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "output_W_2",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 3,
+            "width": 3
+          },
+          "id": "west_to_east",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "W",
+              "id": "input_W_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "input_W_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "input_W_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "E",
+              "id": "output_E_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "output_E_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "output_E_2",
+              "kind": "output"
+            }
+          ]
+        }
+      ],
+      "placement_rule": "any_body_in_grid",
+      "requires_power": true
+    },
+    "manufacturing_5x5": {
+      "modes": [
+        {
+          "body": {
+            "height": 5,
+            "width": 5
+          },
+          "id": "north_to_south",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "input_N_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "input_N_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "input_N_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "input_N_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "input_N_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_2",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_3",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_4",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 5,
+            "width": 5
+          },
+          "id": "south_to_north",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "output_N_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "output_N_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "output_N_2",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "output_N_3",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 4
+              },
+              "direction": "N",
+              "id": "output_N_4",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 5,
+            "width": 5
+          },
+          "id": "east_to_west",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 0
+              },
+              "direction": "E",
+              "id": "input_E_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "input_E_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "input_E_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 3
+              },
+              "direction": "E",
+              "id": "input_E_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 4
+              },
+              "direction": "E",
+              "id": "input_E_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "W",
+              "id": "output_W_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "output_W_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "output_W_2",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 3
+              },
+              "direction": "W",
+              "id": "output_W_3",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 4
+              },
+              "direction": "W",
+              "id": "output_W_4",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 5,
+            "width": 5
+          },
+          "id": "west_to_east",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "W",
+              "id": "input_W_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "input_W_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "input_W_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 3
+              },
+              "direction": "W",
+              "id": "input_W_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 4
+              },
+              "direction": "W",
+              "id": "input_W_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 0
+              },
+              "direction": "E",
+              "id": "output_E_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "output_E_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "output_E_2",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 3
+              },
+              "direction": "E",
+              "id": "output_E_3",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 4
+              },
+              "direction": "E",
+              "id": "output_E_4",
+              "kind": "output"
+            }
+          ]
+        }
+      ],
+      "placement_rule": "any_body_in_grid",
+      "requires_power": true
+    },
+    "manufacturing_6x4": {
+      "modes": [
+        {
+          "body": {
+            "height": 4,
+            "width": 6
+          },
+          "id": "north_to_south",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "input_N_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "input_N_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "input_N_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "input_N_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "input_N_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 5,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "input_N_5",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_2",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_3",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_4",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 5,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_5",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 4,
+            "width": 6
+          },
+          "id": "south_to_north",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 5,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_5",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "output_N_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "output_N_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "output_N_2",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "output_N_3",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "output_N_4",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 5,
+                "y": 3
+              },
+              "direction": "N",
+              "id": "output_N_5",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 6,
+            "width": 4
+          },
+          "id": "east_to_west",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 0
+              },
+              "direction": "E",
+              "id": "input_E_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "input_E_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "input_E_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 3
+              },
+              "direction": "E",
+              "id": "input_E_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 4
+              },
+              "direction": "E",
+              "id": "input_E_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 5
+              },
+              "direction": "E",
+              "id": "input_E_5",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "W",
+              "id": "output_W_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "output_W_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "output_W_2",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 3
+              },
+              "direction": "W",
+              "id": "output_W_3",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 4
+              },
+              "direction": "W",
+              "id": "output_W_4",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 5
+              },
+              "direction": "W",
+              "id": "output_W_5",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 6,
+            "width": 4
+          },
+          "id": "west_to_east",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "W",
+              "id": "input_W_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "input_W_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "input_W_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 3
+              },
+              "direction": "W",
+              "id": "input_W_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 4
+              },
+              "direction": "W",
+              "id": "input_W_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 5
+              },
+              "direction": "W",
+              "id": "input_W_5",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 0
+              },
+              "direction": "E",
+              "id": "output_E_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "output_E_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "output_E_2",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 3
+              },
+              "direction": "E",
+              "id": "output_E_3",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 4
+              },
+              "direction": "E",
+              "id": "output_E_4",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 5
+              },
+              "direction": "E",
+              "id": "output_E_5",
+              "kind": "output"
+            }
+          ]
+        }
+      ],
+      "placement_rule": "any_body_in_grid",
+      "requires_power": true
+    },
+    "power_pole": {
+      "modes": [
+        {
+          "body": {
+            "height": 2,
+            "width": 2
+          },
+          "id": "fixed",
+          "ports": []
+        }
+      ],
+      "placement_rule": "any_body_in_grid",
+      "requires_power": false
+    },
+    "protocol_core": {
+      "modes": [
+        {
+          "body": {
+            "height": 9,
+            "width": 9
+          },
+          "id": "inputs_north_south",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "input_N_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "input_N_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "input_N_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "input_N_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 5,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "input_N_5",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 6,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "input_N_6",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 7,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "input_N_7",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 3,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 5,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_5",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 6,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_6",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 7,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_7",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "output_E_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 4
+              },
+              "direction": "E",
+              "id": "output_E_4",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 7
+              },
+              "direction": "E",
+              "id": "output_E_7",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "output_W_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 4
+              },
+              "direction": "W",
+              "id": "output_W_4",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 7
+              },
+              "direction": "W",
+              "id": "output_W_7",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 9,
+            "width": 9
+          },
+          "id": "inputs_east_west",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "input_E_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "input_E_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 3
+              },
+              "direction": "E",
+              "id": "input_E_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 4
+              },
+              "direction": "E",
+              "id": "input_E_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 5
+              },
+              "direction": "E",
+              "id": "input_E_5",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 6
+              },
+              "direction": "E",
+              "id": "input_E_6",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 8,
+                "y": 7
+              },
+              "direction": "E",
+              "id": "input_E_7",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "input_W_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "input_W_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 3
+              },
+              "direction": "W",
+              "id": "input_W_3",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 4
+              },
+              "direction": "W",
+              "id": "input_W_4",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 5
+              },
+              "direction": "W",
+              "id": "input_W_5",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 6
+              },
+              "direction": "W",
+              "id": "input_W_6",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 7
+              },
+              "direction": "W",
+              "id": "input_W_7",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "output_N_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "output_N_4",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 7,
+                "y": 8
+              },
+              "direction": "N",
+              "id": "output_N_7",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 4,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_4",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 7,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_7",
+              "kind": "output"
+            }
+          ]
+        }
+      ],
+      "placement_rule": "any_body_in_grid",
+      "requires_power": false
+    },
+    "storage_box": {
+      "modes": [
+        {
+          "body": {
+            "height": 3,
+            "width": 3
+          },
+          "id": "north_to_south",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "input_N_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "input_N_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "input_N_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "output_S_2",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 3,
+            "width": 3
+          },
+          "id": "south_to_north",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "S",
+              "id": "input_S_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "output_N_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 1,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "output_N_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 2
+              },
+              "direction": "N",
+              "id": "output_N_2",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 3,
+            "width": 3
+          },
+          "id": "east_to_west",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "E",
+              "id": "input_E_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "input_E_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "input_E_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "W",
+              "id": "output_W_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "output_W_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "output_W_2",
+              "kind": "output"
+            }
+          ]
+        },
+        {
+          "body": {
+            "height": 3,
+            "width": 3
+          },
+          "id": "west_to_east",
+          "ports": [
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 0
+              },
+              "direction": "W",
+              "id": "input_W_0",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 1
+              },
+              "direction": "W",
+              "id": "input_W_1",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 0,
+                "y": 2
+              },
+              "direction": "W",
+              "id": "input_W_2",
+              "kind": "input"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 0
+              },
+              "direction": "E",
+              "id": "output_E_0",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 1
+              },
+              "direction": "E",
+              "id": "output_E_1",
+              "kind": "output"
+            },
+            {
+              "body_cell": {
+                "x": 2,
+                "y": 2
+              },
+              "direction": "E",
+              "id": "output_E_2",
+              "kind": "output"
+            }
+          ]
+        }
+      ],
+      "placement_rule": "any_body_in_grid",
+      "requires_power": true
+    }
+  },
+  "generic_requirements": {
+    "final_input_providers": [
+      "protocol_core",
+      "storage_box"
+    ],
+    "final_inputs": {
+      "qiaoyu_capsule": 1,
+      "valley_battery": 1
+    },
+    "raw_output_providers": [
+      "boundary_storage_port",
+      "protocol_core"
+    ],
+    "raw_outputs": {
+      "blue_iron_ore": 34,
+      "source_ore": 18
+    }
+  },
+  "grid": {
+    "height": 70,
+    "width": 70
+  },
+  "objective": {
+    "body_cells_only": true,
+    "kind": "max_lex_area_min_side",
+    "minimum_side": 6
+  },
+  "operation_groups": [
+    {
+      "count": 34,
+      "id": "crusher_blue_iron",
+      "instance_ids": [
+        "crusher_blue_iron_001",
+        "crusher_blue_iron_002",
+        "crusher_blue_iron_003",
+        "crusher_blue_iron_004",
+        "crusher_blue_iron_005",
+        "crusher_blue_iron_006",
+        "crusher_blue_iron_007",
+        "crusher_blue_iron_008",
+        "crusher_blue_iron_009",
+        "crusher_blue_iron_010",
+        "crusher_blue_iron_011",
+        "crusher_blue_iron_012",
+        "crusher_blue_iron_013",
+        "crusher_blue_iron_014",
+        "crusher_blue_iron_015",
+        "crusher_blue_iron_016",
+        "crusher_blue_iron_017",
+        "crusher_blue_iron_018",
+        "crusher_blue_iron_019",
+        "crusher_blue_iron_020",
+        "crusher_blue_iron_021",
+        "crusher_blue_iron_022",
+        "crusher_blue_iron_023",
+        "crusher_blue_iron_024",
+        "crusher_blue_iron_025",
+        "crusher_blue_iron_026",
+        "crusher_blue_iron_027",
+        "crusher_blue_iron_028",
+        "crusher_blue_iron_029",
+        "crusher_blue_iron_030",
+        "crusher_blue_iron_031",
+        "crusher_blue_iron_032",
+        "crusher_blue_iron_033",
+        "crusher_blue_iron_034"
+      ],
+      "port_needs": {
+        "inputs": {
+          "blue_iron_block": 1
+        },
+        "outputs": {
+          "blue_iron_powder": 1
+        }
+      },
+      "template": "manufacturing_3x3"
+    },
+    {
+      "count": 6,
+      "id": "crusher_buckwheat",
+      "instance_ids": [
+        "crusher_buckwheat_001",
+        "crusher_buckwheat_002",
+        "crusher_buckwheat_003",
+        "crusher_buckwheat_004",
+        "crusher_buckwheat_005",
+        "crusher_buckwheat_006"
+      ],
+      "port_needs": {
+        "inputs": {
+          "buckwheat": 1
+        },
+        "outputs": {
+          "buckwheat_powder": 2
+        }
+      },
+      "template": "manufacturing_3x3"
+    },
+    {
+      "count": 11,
+      "id": "crusher_sandleaf",
+      "instance_ids": [
+        "crusher_sandleaf_001",
+        "crusher_sandleaf_002",
+        "crusher_sandleaf_003",
+        "crusher_sandleaf_004",
+        "crusher_sandleaf_005",
+        "crusher_sandleaf_006",
+        "crusher_sandleaf_007",
+        "crusher_sandleaf_008",
+        "crusher_sandleaf_009",
+        "crusher_sandleaf_010",
+        "crusher_sandleaf_011"
+      ],
+      "port_needs": {
+        "inputs": {
+          "sandleaf": 1
+        },
+        "outputs": {
+          "sandleaf_powder": 3
+        }
+      },
+      "template": "manufacturing_3x3"
+    },
+    {
+      "count": 18,
+      "id": "crusher_source",
+      "instance_ids": [
+        "crusher_source_001",
+        "crusher_source_002",
+        "crusher_source_003",
+        "crusher_source_004",
+        "crusher_source_005",
+        "crusher_source_006",
+        "crusher_source_007",
+        "crusher_source_008",
+        "crusher_source_009",
+        "crusher_source_010",
+        "crusher_source_011",
+        "crusher_source_012",
+        "crusher_source_013",
+        "crusher_source_014",
+        "crusher_source_015",
+        "crusher_source_016",
+        "crusher_source_017",
+        "crusher_source_018"
+      ],
+      "port_needs": {
+        "inputs": {
+          "source_ore": 1
+        },
+        "outputs": {
+          "source_powder": 1
+        }
+      },
+      "template": "manufacturing_3x3"
+    },
+    {
+      "count": 3,
+      "id": "filling_capsule",
+      "instance_ids": [
+        "filling_capsule_001",
+        "filling_capsule_002",
+        "filling_capsule_003"
+      ],
+      "port_needs": {
+        "inputs": {
+          "fine_buckwheat_powder": 2,
+          "steel_bottle": 2
+        },
+        "outputs": {
+          "qiaoyu_capsule": 1
+        }
+      },
+      "template": "manufacturing_6x4"
+    },
+    {
+      "count": 17,
+      "id": "grinder_dense_blue_iron",
+      "instance_ids": [
+        "grinder_dense_blue_iron_001",
+        "grinder_dense_blue_iron_002",
+        "grinder_dense_blue_iron_003",
+        "grinder_dense_blue_iron_004",
+        "grinder_dense_blue_iron_005",
+        "grinder_dense_blue_iron_006",
+        "grinder_dense_blue_iron_007",
+        "grinder_dense_blue_iron_008",
+        "grinder_dense_blue_iron_009",
+        "grinder_dense_blue_iron_010",
+        "grinder_dense_blue_iron_011",
+        "grinder_dense_blue_iron_012",
+        "grinder_dense_blue_iron_013",
+        "grinder_dense_blue_iron_014",
+        "grinder_dense_blue_iron_015",
+        "grinder_dense_blue_iron_016",
+        "grinder_dense_blue_iron_017"
+      ],
+      "port_needs": {
+        "inputs": {
+          "blue_iron_powder": 2,
+          "sandleaf_powder": 1
+        },
+        "outputs": {
+          "dense_blue_iron_powder": 1
+        }
+      },
+      "template": "manufacturing_6x4"
+    },
+    {
+      "count": 9,
+      "id": "grinder_dense_source",
+      "instance_ids": [
+        "grinder_dense_source_001",
+        "grinder_dense_source_002",
+        "grinder_dense_source_003",
+        "grinder_dense_source_004",
+        "grinder_dense_source_005",
+        "grinder_dense_source_006",
+        "grinder_dense_source_007",
+        "grinder_dense_source_008",
+        "grinder_dense_source_009"
+      ],
+      "port_needs": {
+        "inputs": {
+          "sandleaf_powder": 1,
+          "source_powder": 2
+        },
+        "outputs": {
+          "dense_source_powder": 1
+        }
+      },
+      "template": "manufacturing_6x4"
+    },
+    {
+      "count": 6,
+      "id": "grinder_fine_buckwheat",
+      "instance_ids": [
+        "grinder_fine_buckwheat_001",
+        "grinder_fine_buckwheat_002",
+        "grinder_fine_buckwheat_003",
+        "grinder_fine_buckwheat_004",
+        "grinder_fine_buckwheat_005",
+        "grinder_fine_buckwheat_006"
+      ],
+      "port_needs": {
+        "inputs": {
+          "buckwheat_powder": 2,
+          "sandleaf_powder": 1
+        },
+        "outputs": {
+          "fine_buckwheat_powder": 1
+        }
+      },
+      "template": "manufacturing_6x4"
+    },
+    {
+      "count": 6,
+      "id": "molding_bottle",
+      "instance_ids": [
+        "molding_bottle_001",
+        "molding_bottle_002",
+        "molding_bottle_003",
+        "molding_bottle_004",
+        "molding_bottle_005",
+        "molding_bottle_006"
+      ],
+      "port_needs": {
+        "inputs": {
+          "steel_block": 2
+        },
+        "outputs": {
+          "steel_bottle": 1
+        }
+      },
+      "template": "manufacturing_3x3"
+    },
+    {
+      "count": 3,
+      "id": "packaging_battery",
+      "instance_ids": [
+        "packaging_battery_001",
+        "packaging_battery_002",
+        "packaging_battery_003"
+      ],
+      "port_needs": {
+        "inputs": {
+          "dense_source_powder": 3,
+          "steel_part": 2
+        },
+        "outputs": {
+          "valley_battery": 1
+        }
+      },
+      "template": "manufacturing_6x4"
+    },
+    {
+      "count": 6,
+      "id": "parts_maker",
+      "instance_ids": [
+        "parts_maker_001",
+        "parts_maker_002",
+        "parts_maker_003",
+        "parts_maker_004",
+        "parts_maker_005",
+        "parts_maker_006"
+      ],
+      "port_needs": {
+        "inputs": {
+          "steel_block": 1
+        },
+        "outputs": {
+          "steel_part": 1
+        }
+      },
+      "template": "manufacturing_3x3"
+    },
+    {
+      "count": 11,
+      "id": "planter_buckwheat",
+      "instance_ids": [
+        "planter_buckwheat_001",
+        "planter_buckwheat_002",
+        "planter_buckwheat_003",
+        "planter_buckwheat_004",
+        "planter_buckwheat_005",
+        "planter_buckwheat_006",
+        "planter_buckwheat_007",
+        "planter_buckwheat_008",
+        "planter_buckwheat_009",
+        "planter_buckwheat_010",
+        "planter_buckwheat_011"
+      ],
+      "port_needs": {
+        "inputs": {
+          "buckwheat_seed": 1
+        },
+        "outputs": {
+          "buckwheat": 1
+        }
+      },
+      "template": "manufacturing_5x5"
+    },
+    {
+      "count": 21,
+      "id": "planter_sandleaf",
+      "instance_ids": [
+        "planter_sandleaf_001",
+        "planter_sandleaf_002",
+        "planter_sandleaf_003",
+        "planter_sandleaf_004",
+        "planter_sandleaf_005",
+        "planter_sandleaf_006",
+        "planter_sandleaf_007",
+        "planter_sandleaf_008",
+        "planter_sandleaf_009",
+        "planter_sandleaf_010",
+        "planter_sandleaf_011",
+        "planter_sandleaf_012",
+        "planter_sandleaf_013",
+        "planter_sandleaf_014",
+        "planter_sandleaf_015",
+        "planter_sandleaf_016",
+        "planter_sandleaf_017",
+        "planter_sandleaf_018",
+        "planter_sandleaf_019",
+        "planter_sandleaf_020",
+        "planter_sandleaf_021"
+      ],
+      "port_needs": {
+        "inputs": {
+          "sandleaf_seed": 1
+        },
+        "outputs": {
+          "sandleaf": 1
+        }
+      },
+      "template": "manufacturing_5x5"
+    },
+    {
+      "count": 34,
+      "id": "refinery_blue_iron",
+      "instance_ids": [
+        "refinery_blue_iron_001",
+        "refinery_blue_iron_002",
+        "refinery_blue_iron_003",
+        "refinery_blue_iron_004",
+        "refinery_blue_iron_005",
+        "refinery_blue_iron_006",
+        "refinery_blue_iron_007",
+        "refinery_blue_iron_008",
+        "refinery_blue_iron_009",
+        "refinery_blue_iron_010",
+        "refinery_blue_iron_011",
+        "refinery_blue_iron_012",
+        "refinery_blue_iron_013",
+        "refinery_blue_iron_014",
+        "refinery_blue_iron_015",
+        "refinery_blue_iron_016",
+        "refinery_blue_iron_017",
+        "refinery_blue_iron_018",
+        "refinery_blue_iron_019",
+        "refinery_blue_iron_020",
+        "refinery_blue_iron_021",
+        "refinery_blue_iron_022",
+        "refinery_blue_iron_023",
+        "refinery_blue_iron_024",
+        "refinery_blue_iron_025",
+        "refinery_blue_iron_026",
+        "refinery_blue_iron_027",
+        "refinery_blue_iron_028",
+        "refinery_blue_iron_029",
+        "refinery_blue_iron_030",
+        "refinery_blue_iron_031",
+        "refinery_blue_iron_032",
+        "refinery_blue_iron_033",
+        "refinery_blue_iron_034"
+      ],
+      "port_needs": {
+        "inputs": {
+          "blue_iron_ore": 1
+        },
+        "outputs": {
+          "blue_iron_block": 1
+        }
+      },
+      "template": "manufacturing_3x3"
+    },
+    {
+      "count": 17,
+      "id": "refinery_steel",
+      "instance_ids": [
+        "refinery_steel_001",
+        "refinery_steel_002",
+        "refinery_steel_003",
+        "refinery_steel_004",
+        "refinery_steel_005",
+        "refinery_steel_006",
+        "refinery_steel_007",
+        "refinery_steel_008",
+        "refinery_steel_009",
+        "refinery_steel_010",
+        "refinery_steel_011",
+        "refinery_steel_012",
+        "refinery_steel_013",
+        "refinery_steel_014",
+        "refinery_steel_015",
+        "refinery_steel_016",
+        "refinery_steel_017"
+      ],
+      "port_needs": {
+        "inputs": {
+          "dense_blue_iron_powder": 1
+        },
+        "outputs": {
+          "steel_block": 1
+        }
+      },
+      "template": "manufacturing_3x3"
+    },
+    {
+      "count": 6,
+      "id": "seed_collector_buckwheat",
+      "instance_ids": [
+        "seed_collector_buckwheat_001",
+        "seed_collector_buckwheat_002",
+        "seed_collector_buckwheat_003",
+        "seed_collector_buckwheat_004",
+        "seed_collector_buckwheat_005",
+        "seed_collector_buckwheat_006"
+      ],
+      "port_needs": {
+        "inputs": {
+          "buckwheat": 1
+        },
+        "outputs": {
+          "buckwheat_seed": 2
+        }
+      },
+      "template": "manufacturing_5x5"
+    },
+    {
+      "count": 11,
+      "id": "seed_collector_sandleaf",
+      "instance_ids": [
+        "seed_collector_sandleaf_001",
+        "seed_collector_sandleaf_002",
+        "seed_collector_sandleaf_003",
+        "seed_collector_sandleaf_004",
+        "seed_collector_sandleaf_005",
+        "seed_collector_sandleaf_006",
+        "seed_collector_sandleaf_007",
+        "seed_collector_sandleaf_008",
+        "seed_collector_sandleaf_009",
+        "seed_collector_sandleaf_010",
+        "seed_collector_sandleaf_011"
+      ],
+      "port_needs": {
+        "inputs": {
+          "sandleaf": 1
+        },
+        "outputs": {
+          "sandleaf_seed": 2
+        }
+      },
+      "template": "manufacturing_5x5"
+    }
+  ],
+  "power": {
+    "coverage_from_pole_anchor": {
+      "x_max_offset": 6,
+      "x_min_offset": -5,
+      "y_max_offset": 6,
+      "y_min_offset": -5
+    },
+    "pole_template": "power_pole",
+    "required_rule": "at_least_one_body_cell_covered"
+  },
+  "repeatable_auxiliaries": [
+    "power_pole",
+    "storage_box"
+  ],
+  "required_instances": [
+    {
+      "id": "crusher_blue_iron_001",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_002",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_003",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_004",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_005",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_006",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_007",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_008",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_009",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_010",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_011",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_012",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_013",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_014",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_015",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_016",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_017",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_018",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_019",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_020",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_021",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_022",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_023",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_024",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_025",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_026",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_027",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_028",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_029",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_030",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_031",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_032",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_033",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_blue_iron_034",
+      "operation": "crusher_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_buckwheat_001",
+      "operation": "crusher_buckwheat",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_buckwheat_002",
+      "operation": "crusher_buckwheat",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_buckwheat_003",
+      "operation": "crusher_buckwheat",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_buckwheat_004",
+      "operation": "crusher_buckwheat",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_buckwheat_005",
+      "operation": "crusher_buckwheat",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_buckwheat_006",
+      "operation": "crusher_buckwheat",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_001",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_002",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_003",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_004",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_005",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_006",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_007",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_008",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_009",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_010",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_sandleaf_011",
+      "operation": "crusher_sandleaf",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_001",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_002",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_003",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_004",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_005",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_006",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_007",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_008",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_009",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_010",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_011",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_012",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_013",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_014",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_015",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_016",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_017",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "crusher_source_018",
+      "operation": "crusher_source",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "filling_capsule_001",
+      "operation": "filling_capsule",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "filling_capsule_002",
+      "operation": "filling_capsule",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "filling_capsule_003",
+      "operation": "filling_capsule",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_001",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_002",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_003",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_004",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_005",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_006",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_007",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_008",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_009",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_010",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_011",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_012",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_013",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_014",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_015",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_016",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_blue_iron_017",
+      "operation": "grinder_dense_blue_iron",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_001",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_002",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_003",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_004",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_005",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_006",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_007",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_008",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_dense_source_009",
+      "operation": "grinder_dense_source",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_fine_buckwheat_001",
+      "operation": "grinder_fine_buckwheat",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_fine_buckwheat_002",
+      "operation": "grinder_fine_buckwheat",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_fine_buckwheat_003",
+      "operation": "grinder_fine_buckwheat",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_fine_buckwheat_004",
+      "operation": "grinder_fine_buckwheat",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_fine_buckwheat_005",
+      "operation": "grinder_fine_buckwheat",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "grinder_fine_buckwheat_006",
+      "operation": "grinder_fine_buckwheat",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "molding_bottle_001",
+      "operation": "molding_bottle",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "molding_bottle_002",
+      "operation": "molding_bottle",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "molding_bottle_003",
+      "operation": "molding_bottle",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "molding_bottle_004",
+      "operation": "molding_bottle",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "molding_bottle_005",
+      "operation": "molding_bottle",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "molding_bottle_006",
+      "operation": "molding_bottle",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "packaging_battery_001",
+      "operation": "packaging_battery",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "packaging_battery_002",
+      "operation": "packaging_battery",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "packaging_battery_003",
+      "operation": "packaging_battery",
+      "template": "manufacturing_6x4"
+    },
+    {
+      "id": "parts_maker_001",
+      "operation": "parts_maker",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "parts_maker_002",
+      "operation": "parts_maker",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "parts_maker_003",
+      "operation": "parts_maker",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "parts_maker_004",
+      "operation": "parts_maker",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "parts_maker_005",
+      "operation": "parts_maker",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "parts_maker_006",
+      "operation": "parts_maker",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "planter_buckwheat_001",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_002",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_003",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_004",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_005",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_006",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_007",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_008",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_009",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_010",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_buckwheat_011",
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_001",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_002",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_003",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_004",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_005",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_006",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_007",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_008",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_009",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_010",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_011",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_012",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_013",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_014",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_015",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_016",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_017",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_018",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_019",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_020",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "planter_sandleaf_021",
+      "operation": "planter_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "refinery_blue_iron_001",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_002",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_003",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_004",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_005",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_006",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_007",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_008",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_009",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_010",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_011",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_012",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_013",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_014",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_015",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_016",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_017",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_018",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_019",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_020",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_021",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_022",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_023",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_024",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_025",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_026",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_027",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_028",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_029",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_030",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_031",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_032",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_033",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_blue_iron_034",
+      "operation": "refinery_blue_iron",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_001",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_002",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_003",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_004",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_005",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_006",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_007",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_008",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_009",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_010",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_011",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_012",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_013",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_014",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_015",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_016",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "refinery_steel_017",
+      "operation": "refinery_steel",
+      "template": "manufacturing_3x3"
+    },
+    {
+      "id": "seed_collector_buckwheat_001",
+      "operation": "seed_collector_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_buckwheat_002",
+      "operation": "seed_collector_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_buckwheat_003",
+      "operation": "seed_collector_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_buckwheat_004",
+      "operation": "seed_collector_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_buckwheat_005",
+      "operation": "seed_collector_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_buckwheat_006",
+      "operation": "seed_collector_buckwheat",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_001",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_002",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_003",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_004",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_005",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_006",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_007",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_008",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_009",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_010",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "seed_collector_sandleaf_011",
+      "operation": "seed_collector_sandleaf",
+      "template": "manufacturing_5x5"
+    },
+    {
+      "id": "protocol_core_001",
+      "operation": "generic_io",
+      "template": "protocol_core"
+    },
+    {
+      "id": "boundary_port_001",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_002",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_003",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_004",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_005",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_006",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_007",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_008",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_009",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_010",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_011",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_012",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_013",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_014",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_015",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_016",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_017",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_018",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_019",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_020",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_021",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_022",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_023",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_024",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_025",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_026",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_027",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_028",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_029",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_030",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_031",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_032",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_033",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_034",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_035",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_036",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_037",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_038",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_039",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_040",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_041",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_042",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_043",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_044",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_045",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    },
+    {
+      "id": "boundary_port_046",
+      "operation": "generic_io",
+      "template": "boundary_storage_port"
+    }
+  ],
+  "routing": {
+    "compatible_terminals_share_component": true,
+    "component_cells_must_avoid_bodies": true,
+    "component_kinds": [
+      "straight",
+      "turn",
+      "cross",
+      "splitter",
+      "merger"
+    ],
+    "connectivity": "each_active_output_reaches_an_active_input_and_each_active_input_is_reached_per_commodity",
+    "crossing": "two_perpendicular_straight_channels_without_transfer",
+    "multi_commodity_sharing": true,
+    "terminal_input_requires_component_output": "opposite_terminal_direction",
+    "terminal_output_requires_component_input": "opposite_terminal_direction",
+    "throughput_in_scope": false
+  },
+  "schema_version": 1,
+  "sentinels": {
+    "commodity_count": 19,
+    "generic_final_input_terminals": 2,
+    "generic_raw_output_terminals": 52,
+    "manufacturing_input_terminals": 310,
+    "manufacturing_instance_count": 219,
+    "manufacturing_output_terminals": 264,
+    "operation_group_count": 17,
+    "required_body_area": 3544,
+    "required_instance_count": 266,
+    "total_active_terminals": 628
+  }
+}

@@ -169,6 +169,8 @@ def test_certified_blueprint_builder_rejects_missing_ghost_anchor(tmp_path: Path
         build_blueprint_payload_from_certified_result(
             result=state["final_result"],
             facility_pools=facility_pools,
+            active_port_specs=[],
+            grid_dimensions=(3, 3),
         )
 
 

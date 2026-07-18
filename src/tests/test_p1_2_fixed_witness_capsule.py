@@ -103,12 +103,12 @@ def _forged_publishable_verdict(state: Mapping[str, Any]) -> TerminalFixedWitnes
         ghost_cells_digest=identity.ghost_cells_digest,
         witness_input_digest=identity.witness_input_digest,
         binding_assignment_digest="0" * 64,
-        port_specs_digest="0" * 64,
+        port_specs_digest=fixed_witness_module.canonical_digest([]),
         routing_occupancy_digest="0" * 64,
         binding_status="FEASIBLE",
         routing_status="FEASIBLE",
         reason=None,
-        details={"forged": True},
+        details={"port_specs": [], "port_count": 0},
     )
 
 
@@ -380,6 +380,82 @@ def test_child_publishable_capsule_verdict_requires_feasible_statuses(
         (
             replace(base_verdict, routing_status="TIMEOUT"),
             "terminal_fixed_witness_capsule_routing_status_invalid",
+        ),
+    ]
+
+    for verdict, expected_reason in cases:
+        _install_capsule_response(
+            monkeypatch,
+            root=root,
+            state=state,
+            verdict=verdict,
+        )
+
+        projection = build_terminal_fixed_witness_projection_at_sink(
+            state=state,
+            project_root=root,
+            candidate_records=_json_copy(state["candidates"]),
+            final_result=state["final_result"],
+        )
+
+        assert projection.publishable is False
+        assert projection.rejected_reason == expected_reason
+        assert projection.candidate_records["1x1"]["status"] == "UNPROVEN"
+        assert "solution" not in projection.candidate_records["1x1"]
+
+
+def test_child_publishable_capsule_verdict_requires_digest_bound_port_specs(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = _build_tiny_project(tmp_path / "project")
+    state = _prepare_state(root)
+    base_verdict = _forged_publishable_verdict(state)
+    spec = {
+        "instance_id": "tiny_001",
+        "x": 0,
+        "y": 0,
+        "dir": "N",
+        "type": "in",
+        "commodity": "ore",
+    }
+    unknown_spec = {**spec, "instance_id": "unknown_001"}
+    cases = [
+        (
+            replace(base_verdict, details={"port_count": 0}),
+            "terminal_fixed_witness_capsule_port_carrier_invalid",
+        ),
+        (
+            replace(base_verdict, details={"port_specs": [], "port_count": True}),
+            "terminal_fixed_witness_capsule_port_carrier_invalid",
+        ),
+        (
+            replace(base_verdict, details={"port_specs": [], "port_count": 1}),
+            "terminal_fixed_witness_capsule_port_carrier_invalid",
+        ),
+        (
+            replace(base_verdict, port_specs_digest=None),
+            "terminal_fixed_witness_capsule_port_carrier_invalid",
+        ),
+        (
+            replace(base_verdict, port_specs_digest="0" * 64),
+            "terminal_fixed_witness_capsule_port_carrier_invalid",
+        ),
+        (
+            replace(
+                base_verdict,
+                port_specs_digest=fixed_witness_module.canonical_digest([spec, spec]),
+                details={"port_specs": [spec, spec], "port_count": 2},
+            ),
+            "terminal_fixed_witness_capsule_port_carrier_invalid",
+        ),
+        (
+            replace(
+                base_verdict,
+                port_specs_digest=fixed_witness_module.canonical_digest([unknown_spec]),
+                details={"port_specs": [unknown_spec], "port_count": 1},
+            ),
+            "terminal_fixed_witness_capsule_port_carrier_invalid",
         ),
     ]
 

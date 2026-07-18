@@ -96,14 +96,14 @@ LOCKED_EXACT_ARTIFACT_PATHS = {
 
 LOCKED_EXACT_ARTIFACT_SHA256 = {
     "mandatory_exact_instances": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
-    "candidate_placements": "78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef",
+    "candidate_placements": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
     "canonical_rules": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
     "generic_io_requirements": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e",
     "preprocess_plan": "5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee",
 }
 
 LOCKED_EXACT_ARTIFACT_SIZE_BYTES = {
-    "candidate_placements": 53_595_501,
+    "candidate_placements": 54_467_709,
 }
 
 

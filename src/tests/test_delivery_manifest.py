@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import shutil
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -21,7 +22,7 @@ from src.io.delivery_manifest import (
 )
 from src.io.output_schema import blueprint_output_path
 from src.io.serializer import (
-    build_blueprint_payload_from_certified_result,
+    build_blueprint_payload_from_certified_result as _build_blueprint_payload_from_certified_result,
 )
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE, RUN_STATUS_UNKNOWN
 from src.search.exact_campaign import (
@@ -49,6 +50,16 @@ _V89_GHOST_PICK = {
 def _write_json(path: Path, payload: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def build_blueprint_payload_from_certified_result(**kwargs: Any) -> dict[str, Any]:
+    """Build the no-port 2x1 blueprint used by this manifest fixture."""
+
+    return _build_blueprint_payload_from_certified_result(
+        active_port_specs=[],
+        grid_dimensions=(2, 1),
+        **kwargs,
+    )
 
 
 def _forge_legacy_terminal_certified_stop(campaign: ExactCampaign) -> None:
@@ -204,7 +215,10 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -335,7 +349,10 @@ def test_delivery_manifest_rejects_chameleon_mapping_that_skips_disk_authority(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
@@ -416,7 +433,10 @@ def test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -461,7 +481,10 @@ def test_delivery_manifest_rejects_terminal_infeasible_without_replayable_eviden
     project_root, _facility_pools = _build_manifest_project(tmp_path / "delivery_manifest_no_best")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_INFEASIBLE)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     with pytest.raises(ValueError, match="exhausted strict candidate frontier"):
         export_certified_delivery_manifest(
@@ -510,7 +533,10 @@ def test_delivery_manifest_rejects_certified_status_without_terminal_frontier_ev
     )
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
     _forge_legacy_terminal_certified_stop(campaign)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     with pytest.raises(ValueError, match="terminal final_result evidence"):
         export_certified_delivery_manifest(
@@ -545,7 +571,10 @@ def test_delivery_manifest_rejects_stale_certified_final_result_without_terminal
     }
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
     campaign.state["final_status"] = RUN_STATUS_CERTIFIED
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     with pytest.raises(ValueError, match="exhausted strict candidate frontier"):
         export_certified_delivery_manifest(
@@ -583,7 +612,10 @@ def test_v79_delivery_manifest_rejects_non_instance_placement_solution(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     # V83: 非 project-bound 的 terminal final_result 在 best_result/export
     # 入口更早 fail-closed；delivery manifest 不应再把它推进到 artifact 比对层。
@@ -635,7 +667,10 @@ def test_v68_delivery_manifest_rejects_best_result_before_delivery_artifacts(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     with pytest.raises(ValueError, match="exported delivery artifacts"):
         export_certified_delivery_manifest(
@@ -680,7 +715,10 @@ def test_v69_delivery_manifest_rejects_stale_final_solution_artifact(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -742,7 +780,10 @@ def test_v69_delivery_manifest_rejects_stale_optimal_blueprint_artifact(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -803,7 +844,10 @@ def test_v70_delivery_manifest_accepts_master_solution_metadata_not_in_blueprint
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -858,7 +902,10 @@ def test_v70_delivery_manifest_rejects_non_integer_blueprint_score(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -911,7 +958,10 @@ def test_v71_delivery_manifest_rejects_stale_exact_artifact_hash_before_best_res
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -971,7 +1021,10 @@ def test_v71_delivery_manifest_rejects_tampered_blueprint_active_ports(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -1029,7 +1082,10 @@ def test_v72_delivery_manifest_rejects_blueprint_with_extra_raw_fields(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -1088,7 +1144,10 @@ def test_v72_manifest_currentness_rejects_extra_metadata_fields(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -1157,7 +1216,10 @@ def test_v72_delivery_manifest_rejects_blueprint_missing_terminal_routing_soluti
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     assert (
         terminal_certified_final_result_project_precheck_violation(
@@ -1214,7 +1276,10 @@ def test_v74_delivery_manifest_rejects_duplicate_key_final_solution_artifact(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     best_result = campaign.state["final_result"]
     assert best_result is not None
     final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
@@ -1249,7 +1314,10 @@ def test_v77_delivery_manifest_export_rejects_memory_campaign_when_disk_checkpoi
     )
     disk_campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
     disk_campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_INFEASIBLE)
-    persist_forged_terminal_certified_state(disk_campaign)
+    persist_forged_terminal_certified_state(
+        disk_campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     memory_campaign = ExactCampaign.load_or_create(
         project_root,
@@ -1335,7 +1403,10 @@ def test_v77_delivery_manifest_export_rejects_symlink_campaign_checkpoint_for_be
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -1392,7 +1463,10 @@ def test_v78_delivery_manifest_export_rejects_certified_best_result_to_noncanoni
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None
@@ -1476,7 +1550,10 @@ def test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     best_result = campaign.state["final_result"]
     assert best_result is not None

@@ -72,6 +72,8 @@ def build_canonical_blueprint_payload(
     solve_time_seconds: float = 0.0,
     benders_iterations: int = 0,
     export_timestamp: Optional[str] = None,
+    active_port_specs: Optional[Sequence[Mapping[str, Any]]] = None,
+    grid_dimensions: Tuple[int, int] = (70, 70),
 ) -> Dict[str, Any]:
     facility_pools = coerce_facility_pools_payload(facility_pools)
     payload = {
@@ -90,7 +92,12 @@ def build_canonical_blueprint_payload(
                 "score": float(ghost_rect.get("area", int(ghost_rect.get("w", 0)) * int(ghost_rect.get("h", 0)))),
             }
         },
-        "facilities": _build_facilities(placement_solution, facility_pools),
+        "facilities": _build_facilities(
+            placement_solution,
+            facility_pools,
+            active_port_specs=active_port_specs,
+            grid_dimensions=grid_dimensions,
+        ),
         "routing_network": _build_routing_network(routing_solution or []),
     }
     return normalize_blueprint_payload(payload)
@@ -100,9 +107,13 @@ def build_blueprint_payload_from_certified_result(
     *,
     result: Mapping[str, Any],
     facility_pools: Mapping[str, Any],
+    active_port_specs: Sequence[Mapping[str, Any]],
     routing_solution: Optional[Sequence[Mapping[str, Any]]] = None,
     export_timestamp: Optional[str] = None,
+    grid_dimensions: Tuple[int, int] = (70, 70),
 ) -> Dict[str, Any]:
+    if active_port_specs is None:
+        raise ValueError("certified blueprint requires explicit active_port_specs")
     search_stats = result.get("search_stats", {})
     if not isinstance(search_stats, Mapping):
         search_stats = {}
@@ -121,6 +132,8 @@ def build_blueprint_payload_from_certified_result(
         solve_time_seconds=float(search_stats.get("solve_time_seconds", 0.0)),
         benders_iterations=int(search_stats.get("benders_iterations", 0)),
         export_timestamp=export_timestamp,
+        active_port_specs=active_port_specs,
+        grid_dimensions=grid_dimensions,
     )
 
 
@@ -152,7 +165,9 @@ def export_certified_blueprint(
     project_root: Path,
     result: Mapping[str, Any],
     facility_pools: Mapping[str, Any],
+    active_port_specs: Sequence[Mapping[str, Any]],
     routing_solution: Optional[Sequence[Mapping[str, Any]]] = None,
+    grid_dimensions: Tuple[int, int] = (70, 70),
     output_path: Optional[Path] = None,
 ) -> Tuple[Path, Dict[str, Any]]:
     target_path = output_path or blueprint_output_path(project_root)
@@ -164,6 +179,8 @@ def export_certified_blueprint(
         result=result,
         facility_pools=facility_pools,
         routing_solution=routing_solution,
+        active_port_specs=active_port_specs,
+        grid_dimensions=grid_dimensions,
     )
     normalized = write_blueprint_payload(target_path, payload)
     return target_path, normalized
@@ -289,7 +306,19 @@ def pose_lookup_key(
 def _build_facilities(
     placement_solution: Mapping[str, Any],
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    *,
+    active_port_specs: Optional[Sequence[Mapping[str, Any]]],
+    grid_dimensions: Tuple[int, int],
 ) -> list[Dict[str, Any]]:
+    explicit_ports = (
+        None
+        if active_port_specs is None
+        else _active_ports_by_instance(
+            active_port_specs,
+            placement_solution=placement_solution,
+            grid_dimensions=grid_dimensions,
+        )
+    )
     facilities: list[Dict[str, Any]] = []
     for instance_id in sorted(str(key) for key in placement_solution.keys()):
         if instance_id == "ghost_pick":
@@ -304,6 +333,17 @@ def _build_facilities(
             solution_entry=solution_entry,
         )
         pose_params = _mapping_or_empty(pose.get("pose_params"))
+        instance_active_ports = (
+            None
+            if explicit_ports is None
+            else list(explicit_ports.get(instance_id, ()))
+        )
+        if instance_active_ports is not None:
+            _validate_active_ports_match_pose(
+                instance_id=instance_id,
+                active_ports=instance_active_ports,
+                pose=pose,
+            )
         facilities.append(
             {
                 "instance_id": instance_id,
@@ -311,10 +351,143 @@ def _build_facilities(
                 "anchor": _resolve_anchor(solution_entry, pose),
                 "orientation": int(pose_params.get("orientation", 0)),
                 "port_mode": str(pose_params.get("port_mode", "default")),
-                "active_ports": _build_active_ports(pose),
+                "active_ports": (
+                    _build_active_ports(pose)
+                    if instance_active_ports is None
+                    else instance_active_ports
+                ),
             }
         )
     return facilities
+
+
+def _active_ports_by_instance(
+    active_port_specs: Sequence[Mapping[str, Any]],
+    *,
+    placement_solution: Mapping[str, Any],
+    grid_dimensions: Tuple[int, int],
+) -> Dict[str, list[Dict[str, Any]]]:
+    if isinstance(active_port_specs, (str, bytes)) or not isinstance(active_port_specs, Sequence):
+        raise ValueError("active_port_specs must be a sequence")
+    if (
+        not isinstance(grid_dimensions, tuple)
+        or len(grid_dimensions) != 2
+        or not all(
+            isinstance(value, int) and not isinstance(value, bool)
+            for value in grid_dimensions
+        )
+    ):
+        raise ValueError("grid_dimensions must contain two positive integers")
+    grid_w, grid_h = int(grid_dimensions[0]), int(grid_dimensions[1])
+    if grid_w <= 0 or grid_h <= 0:
+        raise ValueError("grid_dimensions must contain two positive integers")
+
+    known_instances = {
+        str(instance_id)
+        for instance_id in placement_solution
+        if str(instance_id) != "ghost_pick"
+    }
+    grouped: Dict[str, list[Dict[str, Any]]] = {}
+    seen_endpoints: set[Tuple[str, int, int, str]] = set()
+    required_fields = {"instance_id", "x", "y", "dir", "type", "commodity"}
+    for index, raw_spec in enumerate(active_port_specs):
+        if not isinstance(raw_spec, Mapping):
+            raise ValueError(f"active_port_specs[{index}] must be a mapping")
+        if set(raw_spec) != required_fields:
+            raise ValueError(f"active_port_specs[{index}] fields are invalid")
+        instance_id = raw_spec.get("instance_id")
+        commodity = raw_spec.get("commodity")
+        direction = raw_spec.get("dir")
+        raw_type = raw_spec.get("type")
+        if not isinstance(instance_id, str) or not instance_id.strip():
+            raise ValueError(f"active_port_specs[{index}].instance_id is invalid")
+        if instance_id not in known_instances:
+            raise ValueError(f"active_port_specs[{index}] references unknown instance {instance_id}")
+        if not isinstance(commodity, str) or not commodity.strip():
+            raise ValueError(f"active_port_specs[{index}].commodity is invalid")
+        if direction not in {"N", "S", "E", "W"}:
+            raise ValueError(f"active_port_specs[{index}].dir is invalid")
+        type_map = {"in": "input", "out": "output"}
+        if raw_type not in type_map:
+            raise ValueError(f"active_port_specs[{index}].type is invalid")
+        x = _strict_port_coordinate(raw_spec.get("x"), f"active_port_specs[{index}].x")
+        y = _strict_port_coordinate(raw_spec.get("y"), f"active_port_specs[{index}].y")
+        if x < 0 or y < 0 or x >= grid_w or y >= grid_h:
+            raise ValueError(f"active_port_specs[{index}] is out of grid bounds")
+        port_type = type_map[str(raw_type)]
+        endpoint = (instance_id, x, y, str(direction))
+        if endpoint in seen_endpoints:
+            raise ValueError(f"active_port_specs[{index}] duplicates an active port")
+        seen_endpoints.add(endpoint)
+        grouped.setdefault(instance_id, []).append(
+            {
+                "type": port_type,
+                "x": x,
+                "y": y,
+                "dir": str(direction),
+                "commodity": commodity,
+            }
+        )
+    return grouped
+
+
+def _validate_active_ports_match_pose(
+    *,
+    instance_id: str,
+    active_ports: Sequence[Mapping[str, Any]],
+    pose: Mapping[str, Any],
+) -> None:
+    available: Dict[Tuple[int, int, str, str], str] = {}
+    for port_type, field_name in (
+        ("input", "input_port_cells"),
+        ("output", "output_port_cells"),
+    ):
+        raw_ports = pose.get(field_name)
+        if not isinstance(raw_ports, list):
+            continue
+        for raw_port in raw_ports:
+            port = _normalize_port(raw_port)
+            if port is None:
+                continue
+            endpoint = (
+                int(port["x"]),
+                int(port["y"]),
+                str(port["dir"]),
+                port_type,
+            )
+            commodity = str(port["commodity"])
+            existing = available.get(endpoint)
+            if existing is not None and existing != commodity:
+                raise ValueError(
+                    "selected pose defines conflicting commodities for one port slot: "
+                    f"instance={instance_id}"
+                )
+            available[endpoint] = commodity
+
+    for index, port in enumerate(active_ports):
+        endpoint = (
+            int(port["x"]),
+            int(port["y"]),
+            str(port["dir"]),
+            str(port["type"]),
+        )
+        if endpoint not in available:
+            raise ValueError(
+                "active_port_specs entry does not match a selected pose slot: "
+                f"instance={instance_id} index={index}"
+            )
+        pose_commodity = available[endpoint]
+        if pose_commodity != "[TBD]" and str(port["commodity"]) != pose_commodity:
+            raise ValueError(
+                "active_port_specs commodity does not match the selected pose slot: "
+                f"instance={instance_id} index={index}"
+            )
+
+
+def _strict_port_coordinate(value: Any, field_name: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError(f"{field_name} must be an integer")
+    return int(value)
 
 
 def _build_active_ports(pose: Mapping[str, Any]) -> list[Dict[str, Any]]:

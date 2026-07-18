@@ -473,7 +473,10 @@ def test_b5a_summary_reports_certified_anchor_and_telemetry(tmp_path: Path, monk
         project_root,
         fill_unresolved_better_candidates_as_infeasible=True,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     # best_certified_result() now requires supervisor_seal + publish (PR1 API change #2);
     # this test only needs the fixture data to flow through — read directly from state.
     best_result = campaign.state["final_result"]
@@ -489,6 +492,8 @@ def test_b5a_summary_reports_certified_anchor_and_telemetry(tmp_path: Path, monk
         build_blueprint_payload_from_certified_result(
             result=best_result,
             facility_pools=facility_pools,
+            active_port_specs=[],
+            grid_dimensions=(5, 1),
         ),
     )
     # PR1 change: supervisor_seal is now required to pass the resume-state and
@@ -549,7 +554,10 @@ def test_b5a_summary_routes_unknown_to_triage(tmp_path: Path) -> None:
         },
     )
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     summary = build_phase3b_b5_anchor_sprint_summary(project_root)
 
@@ -583,7 +591,10 @@ def test_b5a_summary_includes_runtime_group_packing_diagnostic(tmp_path: Path) -
         },
     )
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     _write_json(
         project_root
         / ".artifacts"
@@ -651,7 +662,10 @@ def test_b5a_summary_distinguishes_stale_runtime_group_packing_diagnostics(
         },
     )
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     _write_json(
         project_root
         / ".artifacts"
@@ -725,7 +739,10 @@ def test_b5a_summary_includes_pose_order_validation_rejections(tmp_path: Path) -
     }
     campaign.mark_candidate_result(69, 19, RUN_STATUS_UNKNOWN, proof_summary=proof_summary)
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     append_campaign_wave_summary(
         project_root=project_root,
         campaign_path=campaign.path,
@@ -778,7 +795,10 @@ def test_b5a_summary_reports_worker_failure(tmp_path: Path) -> None:
     project_root = _build_exact_project(tmp_path / "worker_failure")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_campaign_stopped("worker_process_failed", status=RUN_STATUS_UNKNOWN)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     append_campaign_wave_summary(
         project_root=project_root,
         campaign_path=campaign.path,
@@ -804,7 +824,10 @@ def test_b5a_summary_reports_interrupted_running_candidate(tmp_path: Path) -> No
     project_root = _build_exact_project(tmp_path / "running_candidate")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(3, 1)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     summary = build_phase3b_b5_anchor_sprint_summary(project_root)
 
@@ -820,7 +843,10 @@ def test_campaign_repair_marks_running_candidate_as_operator_interrupted_unknown
     project_root = _build_exact_project(tmp_path / "repair_running")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(3, 1)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     result = mark_running_exact_campaign_candidates_interrupted(
         project_root,
@@ -856,7 +882,10 @@ def test_campaign_repair_marks_campaign_stopped_without_running_candidate(
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     result = mark_running_exact_campaign_candidates_interrupted(
         project_root,
@@ -941,7 +970,10 @@ def test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result(
     }
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
     campaign.state["final_status"] = RUN_STATUS_CERTIFIED
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     summary = build_phase3b_b5_anchor_sprint_summary(project_root)
 

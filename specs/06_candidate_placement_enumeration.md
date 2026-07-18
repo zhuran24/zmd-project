@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/placement/placement_generator.py, src/placement/occupancy_masks.py, and data/preprocessed/candidate_placements.json
-last_verified_against: 2026-07-18 (Batch 3 identity-domain regeneration and Batch 5 physical box geometry)
+last_verified_against: 2026-07-18 (active-port boundary-domain correction and artifact reseal)
 owner: placement-preprocess
 ---
 # 06 候选摆位枚举与几何降维引擎 (Candidate Placement Enumeration)
@@ -11,7 +11,7 @@ owner: placement-preprocess
 本文档规定了如何将连续的二维网格排布空间，彻底离散化为一个有限的、预计算的**“合法候选摆位集合 (Candidate Placements Set $\mathcal{P}$)”**。
 
 在传统运筹学中，若直接令求解器在连续坐标系内寻找 326 个刚体的 $(x, y)$ 坐标并规避重叠，将引发 $\mathcal{O}(4900^{326})$ 的维数灾难。（此处 326 = 266 必选 + exploratory 参考的 60 可选；**certified_exact 实际可选数为变量 / demand 驱动、无硬 50/10/60 cap**，见 02 章脚注 † 与 07 章 §7.4.1 后 [PROJECT_LOCK 对齐] 注。）
-本章的战略是**“几何预计算降维”**：在进入运筹主模型前，利用一段高效的 Python 几何引擎穷举所有合法的平移、旋转与端口模式，将一切越界、死角的废解当场抹杀。最终，底层求解器拿到的不再是空间坐标，而是一道极其纯粹的**“0-1 集合打包单选题 (0-1 Set Packing Problem)”**。
+本章的战略是**“几何预计算降维”**：在进入运筹主模型前，利用 Python 几何引擎穷举平移、旋转与端口模式，并预计算占格和全部实体口。生成期只应用不依赖端口身份的必要条件：制造模板已知每个 operation 至少激活一进一出，允许剪掉必需整侧越界的 pose；generic 核心/箱的端口可闲置，不能套用该剪枝。下游再由 master、binding 与 routing 完成精确判定。
 
 ---
 
@@ -28,15 +28,15 @@ owner: placement-preprocess
 
 ## 6.3 候选摆位 (Placement Candidate) 的数据结构
 
-为了让底层运筹求解器做到“零几何计算 (Zero Geometry Math)”，Python 生成器必须在穷举阶段为每一个合法的位姿 $p$ 提前算好所有的投影点集，并序列化为静态结构。
+Python 生成器必须在穷举阶段为每一个位姿 $p$ 提前算好本体投影和全部实体口，并序列化为静态结构。下游仍须根据实际激活口复核 access-cell 合法性。
 
 一个合法的候选摆位对象 `Placement` 必须包含以下结果：
-*   **`pose_id`** (String): 唯一标识符，格式严控为 `p_x{x}_y{y}_o{o}_m{m}`（例：`p_x12_y34_o1_mNS`）。
+*   **`pose_id`** (String): 唯一标识符，格式为 `p_x{xx}_y{yy}_o{o}_m_{mode}`（例：`p_x12_y34_o1_m_RL`）。
 *   **`anchor`** (Dict): 绝对锚点坐标 `{"x": 12, "y": 34}`（依据 02 章左下角锚定法）。
 *   **`pose_params`** (Dict): 包含旋转状态 `orientation` ($o \in \{0, 1, 2, 3\}$) 与端口边模式 `port_mode` ($m$)。
 *   **`occupied_cells`** (List[Tuple]): 该姿态下本体占据的地面层网格绝对坐标集合 $[(x_1, y_1), \dots]$。用于后续极其关键的 $\sum z_{i,p} \le 1$ 不重叠约束。
-*   **`input_port_cells`** (List[Dict]): 提前解算的可用输入端口物理坐标及其接管向外向量。例：`[{"x": 12, "y": 35, "dir": "W"}, ...]`。
-*   **`output_port_cells`** (List[Dict]): 提前解算的可用输出端口物理坐标及其接管向外向量。
+*   **`input_port_cells`** (List[Dict]): 全部实体输入口对应的 routing access-cell 坐标及向外法向量。核心/箱的未激活口可以越界；记录存在不等于口已启用。
+*   **`output_port_cells`** (List[Dict]): 全部实体输出口对应的 routing access-cell 坐标及向外法向量；核心/箱同样允许未激活记录越界。
 *   **`power_coverage_cells`** (List[Tuple] | Null): 仅对供电桩有效，提前算好的 $12 \times 12$ 供电覆盖绝对坐标集合（自动裁剪掉溢出地图边界的部分）。
 
 ---
@@ -65,15 +65,14 @@ owner: placement-preprocess
 
 ---
 
-## 6.5 绝对死区剔除法则 (Aggressive Pruning Filters)
+## 6.5 健全的候选域约简 (Sound Domain Reduction)
 
-在全量生成位姿时，必须应用以下过滤层，将“注定无法连线”的废解当场抹杀，这能削减至少 30% 的无用搜索空间：
+生成期只允许使用可证明的、身份无关的必要条件。精确端口身份仍留给拥有 binding 信息的下游层。
 
-### 6.5.1 面壁死锁剔除 (Wall-Facing Port Starvation)
-**物理逻辑**：传送带必须占用端口的 routing front cell——**即 port 记录的 stored 坐标格自身**（体外第 1 格；identity 语义，front 错位事故修正 2026-07-18，权威 `docs/research/front_offset_incident_20260718/00`）。真正不可用的是 `(port.x, port.y)` 落到 $70 \times 70$ 网格外。**历史勘误**：本节旧文把判界写成 `(port.x, port.y) + DIR_DELTA[port.dir]`（体外第 2 格）——生成器照此剪枝导致 2,064 个墙距-1 合法 pose（3×3 +544 / 5×5 +528 / 6×4 +520 / core +472）从未进池（66,405 → 应为 68,469）；域补齐随修复批 3（owner 已拍板补域 scope）。
-**剔除法则**：
-对一个候选位姿分别检查激活输入端口集合与输出端口集合。若某一集合非空，且该集合内所有端口的 routing front cell 都越界，则该位姿视为“绝对面壁废解”，**立刻从 $\mathcal{P}_t$ 中永久删除**；只要同一集合中仍存在至少一个 front cell 留在网格内，该集合不得触发剪枝。
-*(例外：边界仓库存/取货口原生豁免此法则，因其天然向内吞吐。协议箱自批 5 起有实体端口、与制造机 3×3 同受此法则约束——旧文"`omni_wireless` 无实体端口豁免"已废。)*
+### 6.5.1 激活口 access-cell 合法性下放 (Deferred Active-Port Legality)
+传送带占用端口记录的 stored 坐标格自身，即设施体外第 1 个 access cell。制造模板的 canonical operation 全部至少需要 1 个输入槽和 1 个输出槽，且某个 port mode 的输入/输出分别集中在相对两侧。因此制造 pose 的任一必需整侧 access cell 全部越界时，可以在生成期健全删除。
+
+协议核心与协议箱的 generic 槽允许 `__unused__`，端口身份和激活数直到 binding 才确定；候选生成器对这两类模板只要求本体在图内。靠边 pose 的未激活口可以落在 `x=-1`、`x=70`、`y=-1` 或 `y=70`。旧实现要求核心四边全部可用、并把箱的闲置侧当作必需侧，均会误删合法布局。binding/routing 与终验保留精确孪生检查；真正激活的越界口必须 fail closed。
 
 ### 6.5.2 旋转对等性去重 (Rotational Symmetry Pruning)
 **物理逻辑**：正方形机器在内部配方无方向性时，正放与倒放在占格和端口拓扑上可能完全等价。
@@ -99,9 +98,11 @@ owner: placement-preprocess
 
 > 当前 GitHub `main` 是 lightweight checkout：production
 > `data/preprocessed/candidate_placements.json` 当前存在于工作树中，且仍是 certified
-> exact 必需输入。2026-07-18 Batch 3+5 identity 域与协议箱实体口重生成结果必须匹配
-> size `53,595,501` bytes, SHA256
-> `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。此前 F-01/F-02
+> exact 必需输入。2026-07-18 active-port boundary-domain 重生成结果必须匹配
+> size `54,467,709` bytes, SHA256
+> `f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`。此前 Batch 3+5
+> size `53,595,501` bytes / SHA256
+> `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`、F-01/F-02
 > 恢复结果 size `45,774,305` bytes / SHA256
 > `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`、拐角修复前的 size
 > `45,773,799` bytes / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`
@@ -109,35 +110,36 @@ owner: placement-preprocess
 > `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 均已 superseded，且
 > hash-incompatible。
 
-当前闭式池计数（identity 判界 + 协议箱实体口，批 3+5，2026-07-18；
-每模式合法域 = 进/出两侧 stored 口格均在 $70\times70$ 内）：
+当前闭式池计数（制造模板保留一进一出必要条件；核心/箱为完整 body-in-grid 域）：
 
 | facility_type | closed form | count |
 | --- | ---: | ---: |
 | `manufacturing_3x3` | `4 * 68 * 66` | 17,952 |
 | `manufacturing_5x5` | `4 * 66 * 64` | 16,896 |
 | `manufacturing_6x4` | `4 * 65 * 65` | 16,900 |
-| `protocol_core` | `2 * 60 * 60` | 7,200 |
-| `protocol_storage_box` | `4 * 68 * 66` | 17,952 |
+| `protocol_core` | `2 * 62 * 62` | 7,688 |
+| `protocol_storage_box` | `4 * 68 * 68` | 18,496 |
 | `power_pole` | `69 * 69` | 4,761 |
 | `boundary_storage_port` | `2 * 68` | 136 |
-| **total** |  | **81,797** |
+| **total** |  | **82,829** |
 
 历史口径（勘误留档）：错位判界（front=+delta 查体外第 2 格）+ 协议箱零口
 时代的总数为 66,405（3×3 `4*68*64`=17,408 / 5×5 `4*66*62`=16,368 /
 6×4 `4*65*63`=16,380 / core `2*58*58`=6,728 / 箱 `68*68`=4,624）；
 mandatory 补域 +2,064 = 68,469，箱按实体口重枚举 4,624 → 17,952，
-合计 81,797。
+合计 81,797。该池仍把核心/箱未激活口错误当成必须可用；active-port
+boundary-domain 修复为核心补 488、协议箱补 544 个 body-in-grid pose，制造模板
+维持健全的一进一出必要条件，得到当前 82,829。
 
 数据结构范例：
 ```json
 {
   "facility_pools": {
-    "manufacturing_rect_6x4": [
+    "manufacturing_6x4": [
       {
-        "pose_id": "p_x10_y20_o0_m_long_sides",
+        "pose_id": "p_x10_y20_o0_m_TB",
         "anchor": {"x": 10, "y": 20},
-        "pose_params": {"orientation": 0, "port_mode": "long_sides_io"},
+        "pose_params": {"orientation": 0, "port_mode": "TB"},
         "occupied_cells": [[10,20], [11,20], ..., [15,23]],
         "input_port_cells": [
           {"x": 10, "y": 19, "dir": "S"}, {"x": 11, "y": 19, "dir": "S"}

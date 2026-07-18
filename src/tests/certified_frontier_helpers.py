@@ -23,6 +23,14 @@ from src.search.exact_campaign import (
     atomic_write_json,
     now_iso,
 )
+from src.search.terminal_fixed_witness_verifier import (
+    TERMINAL_FIXED_WITNESS_VERIFIER_AUTHORITY,
+    TERMINAL_FIXED_WITNESS_VERIFIER_SCHEMA_VERSION,
+    TerminalFixedWitnessVerdict,
+    _identity_from_current_records,
+    attach_terminal_fixed_witness_audit_fields,
+    canonical_digest,
+)
 from src.io.output_schema import blueprint_output_path, normalize_blueprint_payload
 from src.tests.verified_producer_test_support import seal_test_candidate_status
 
@@ -318,7 +326,11 @@ def forge_legacy_terminal_certified_stop(campaign: ExactCampaign) -> None:
     campaign.state["final_status"] = RUN_STATUS_CERTIFIED
 
 
-def persist_forged_terminal_certified_state(campaign: ExactCampaign) -> None:
+def persist_forged_terminal_certified_state(
+    campaign: ExactCampaign,
+    *,
+    include_empty_fixed_witness_audit: bool = False,
+) -> None:
     """Test-only: persist ``campaign.state`` to its checkpoint, bypassing
     ``ExactCampaign.save()``'s terminal-CERTIFIED guard.
 
@@ -331,8 +343,63 @@ def persist_forged_terminal_certified_state(campaign: ExactCampaign) -> None:
     isolated sink replay before accepting the status.
     """
 
+    if include_empty_fixed_witness_audit:
+        attach_empty_fixed_witness_audit_for_test(campaign)
     campaign.state["updated_at"] = now_iso()
     atomic_write_json(campaign.path, campaign.state)
+
+
+def attach_empty_fixed_witness_audit_for_test(campaign: ExactCampaign) -> None:
+    """Attach a structurally valid, test-only empty binding witness.
+
+    Publication fixtures with no physical ports use this carrier to exercise the
+    real digest-bound ``active_ports`` projection.  It is not a solver proof and
+    must never be used outside tests.
+    """
+
+    candidate_records = campaign.state.get("candidates")
+    final_result = campaign.state.get("final_result")
+    if not isinstance(candidate_records, dict) or not isinstance(final_result, dict):
+        return
+    _attach_empty_fixed_witness_audit_to_records_for_test(
+        candidate_records=candidate_records,
+        final_result=final_result,
+    )
+
+
+def _attach_empty_fixed_witness_audit_to_records_for_test(
+    *,
+    candidate_records: dict[str, Any],
+    final_result: dict[str, Any],
+) -> None:
+    """Attach the empty-port carrier before a test-only supervisor seal."""
+
+    identity = _identity_from_current_records(candidate_records, final_result)
+    port_specs: list[dict[str, Any]] = []
+    verdict = TerminalFixedWitnessVerdict(
+        schema_version=TERMINAL_FIXED_WITNESS_VERIFIER_SCHEMA_VERSION,
+        authority=TERMINAL_FIXED_WITNESS_VERIFIER_AUTHORITY,
+        fresh_run_token="test-only-empty-fixed-witness",
+        publishable=True,
+        projected_status=RUN_STATUS_CERTIFIED,
+        candidate_key=identity.candidate_key,
+        solution_digest=identity.solution_digest,
+        ghost_rect_digest=identity.ghost_rect_digest,
+        ghost_cells_digest=identity.ghost_cells_digest,
+        witness_input_digest=identity.witness_input_digest,
+        binding_assignment_digest=canonical_digest({"test_fixture": "empty_binding"}),
+        port_specs_digest=canonical_digest(port_specs),
+        routing_occupancy_digest=canonical_digest({"occupied_owner_by_cell": []}),
+        binding_status="FEASIBLE",
+        routing_status="FEASIBLE",
+        reason=None,
+        details={"port_specs": port_specs, "port_count": 0},
+    )
+    attach_terminal_fixed_witness_audit_fields(
+        candidate_records=candidate_records,
+        final_result=final_result,
+        verdict=verdict,
+    )
 
 
 def persist_canonical_blueprint_for_test(project_root: Path, payload: dict) -> None:

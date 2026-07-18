@@ -21,9 +21,9 @@
       "pattern": "artifact_write",
       "module": "src/io/serializer.py",
       "qualname": "export_certified_blueprint",
-      "line": 168,
+      "line": 185,
       "justification": "Public blueprint exporter writes via write_blueprint_payload, whose canonical optimal_blueprint.json path guard now rejects writes unless the verified publisher is used.",
-      "source_sha256": "bf29c658f1479d8bd67a5149e420cd2775ee35eee59fce7afaf867c422032db0",
+      "source_sha256": "ae41d33bbd9fa7f43f0e6eaec003752f4c7b928afffb924691ad6dce6a9ef52a",
       "callee": "write_blueprint_payload"
     },
     {
@@ -105,12 +105,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_stage_verified_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 670,
+      "line": 678,
       "keys": [
         "final_solution.json"
       ],
       "callee": "atomic_write_json",
-      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
+      "source_sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354",
       "justification": "Verified publisher writes final_solution.json only to a same-parent staging path after disk checkpoint authority, terminal evidence replay, and publish-open gate checks pass; the staged bytes are later atomically committed as a three-file transaction."
     },
     {
@@ -118,12 +118,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_stage_verified_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 675,
+      "line": 685,
       "keys": [
         "optimal_blueprint.json"
       ],
       "callee": "atomic_write_json",
-      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
+      "source_sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354",
       "justification": "Verified publisher writes optimal_blueprint.json only to a staging path derived from the verified terminal result; generic blueprint writers still reject the canonical certified path."
     },
     {
@@ -131,12 +131,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_stage_verified_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 691,
+      "line": 701,
       "keys": [
         "certified_delivery_manifest.json"
       ],
       "callee": "atomic_write_json",
-      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
+      "source_sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354",
       "justification": "Verified publisher writes the manifest only to a staging path after rebuilding it from disk authority and binding hashes to the staged final/blueprint bytes with canonical logical paths."
     },
     {
@@ -144,12 +144,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_commit_staged_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 784,
+      "line": 794,
       "keys": [
         "final_solution.json"
       ],
       "callee": "replace",
-      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
+      "source_sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354",
       "justification": "Verified publisher atomically replaces canonical final_solution.json from prevalidated staged bytes after rollback backups have been prepared."
     },
     {
@@ -157,12 +157,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_commit_staged_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 787,
+      "line": 797,
       "keys": [
         "optimal_blueprint.json"
       ],
       "callee": "replace",
-      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
+      "source_sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354",
       "justification": "Verified publisher atomically replaces canonical optimal_blueprint.json from prevalidated staged bytes after rollback backups have been prepared."
     },
     {
@@ -170,12 +170,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "_commit_staged_certified_delivery_surface_artifacts",
       "pattern": "artifact_write",
-      "line": 790,
+      "line": 800,
       "keys": [
         "certified_delivery_manifest.json"
       ],
       "callee": "replace",
-      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
+      "source_sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354",
       "justification": "Verified publisher commits certified_delivery_manifest.json last from prevalidated staged bytes, so partial commits cannot advertise a forged complete surface."
     },
     {
@@ -183,12 +183,12 @@
       "module": "src/search/certified_surface.py",
       "qualname": "export_and_verify_certified_delivery_manifest",
       "pattern": "artifact_write",
-      "line": 970,
+      "line": 980,
       "keys": [
         "certified_delivery_manifest.json"
       ],
       "callee": "atomic_write_json",
-      "source_sha256": "3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc",
+      "source_sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354",
       "justification": "Non-publisher manifest export writes only non-publishable manifests; payloads containing best_certified_result fail closed and must use publish_verified_certified_delivery_surface."
     },
     {

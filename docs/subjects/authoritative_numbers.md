@@ -12,7 +12,7 @@
 
 - `canonical_rules.json`：17,510 bytes，SHA256 `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`。
 - `preprocess_plan.json`：1,383 bytes，SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`。
-- `candidate_placements.json`：53,595,501 bytes，SHA256 `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。`a914…` 45,774,305 bytes、`adcc…` 45,773,799 bytes 与 `d5e3…` 53,594,995 bytes 仅属 superseded、hash-incompatible 历史链。
+- `candidate_placements.json`：54,467,709 bytes，SHA256 `f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`。`a914…` 45,774,305 bytes、`adcc…` 45,773,799 bytes、`d5e3…` 53,594,995 bytes 与 `78e2…` 53,595,501 bytes 仅属 superseded、hash-incompatible 历史链。
 - `box_sink` 为 3 个物理输入/3 个物理输出，mandatory core 为 14 个物理输入/6 个物理输出；generic-input 成品必须路由到 provider physical input。当前需求 2 已被真实 mandatory core 覆盖，所以 provider-aware、instance-aware box lower bound 为 0。
 - exact session 原子绑定同一 plan snapshot 的完整 `generic_input_slots_by_operation` map；不能退回 box-only scalar 或中途重读。
 

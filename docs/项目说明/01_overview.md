@@ -111,12 +111,13 @@ P1.2 OPEN-GATE、独立 whole-layout reverify、中央公开发布器和生产 s
 `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`、
 `rules/preprocess_plan.json` 1,383 字节 / SHA256
 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`，以及
-`data/preprocessed/candidate_placements.json` 53,595,501 字节 / SHA256
-`78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。某些轻量分发包可能将
+`data/preprocessed/candidate_placements.json` 54,467,709 字节 / SHA256
+`f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`。某些轻量分发包可能将
 candidate externalize，但 certified contract 始终要求同一 pinned bytes。superseded 历史链为 45,774,305-byte
 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`、45,773,799-byte
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 与 53,594,995-byte
-`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 仅属 superseded、
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`、53,594,995-byte
+`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 与 53,595,501-byte
+`78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef` 仅属 superseded、
 hash-incompatible 历史链。
 
 generic-input 成品按普通 commodity 从 producer output 路由到 provider physical input。

@@ -61,7 +61,7 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "9efbc3f2f32a56e6b9746604346efd7b6e1ef394fdd3ac9fa6fa7ece3ad33d8c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "3484e56b3d5f98b93189fd5a81a1c6e05ca098212d8bbf8458501ee7b1f1ec77"
+    "7472bba0be7f4de3dc4881ffe5c300ea81b163d9865c0d296b238f91169947c8"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
@@ -12976,9 +12976,9 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/interchange/normalized_catalog.py': '63ffb299752349369a572e80996086ee79cf86c810450299a3d5fff9fc82c879',
     'src/interchange/preprocess_context.py': '5fa213035b9ac3e3ae78f0f12f8293e16c08d3cd913824f45bb34197fcb9f5d0',
     'src/interchange/target_capabilities.py': '9572b1a6b4fa53ba8f2a18407884815a51268bc9ba0eb76307131d6508c521f5',
-    'src/io/delivery_manifest.py': '19d2bb353f4bfbc1a4473ec6a4aa2e214dd47083b94d516d4f70962e05e79a09',
+    'src/io/delivery_manifest.py': '2585ec5d8008a4f74dcca2a7c98bea08fd261e59a943100ae411f7b267ef13de',
     'src/io/output_schema.py': '110e41cfd9315f00a26918d085b84c67d76f7890c7db3a05901f7c6d9e597d16',
-    'src/io/serializer.py': 'bf29c658f1479d8bd67a5149e420cd2775ee35eee59fce7afaf867c422032db0',
+    'src/io/serializer.py': 'ae41d33bbd9fa7f43f0e6eaec003752f4c7b928afffb924691ad6dce6a9ef52a',
     'src/io/strict_json.py': '65293ed7c0a108e906b16bee206acb1ca7f598040aa85b372023dc954574c45a',
     'src/models/_cpsat_compat.py': 'c8e4ae4b9df87bb7b3bb3f823974b940a6c10e4d651ab811be13ca1d10810d89',
     'src/models/abstract_routing_layer.py': '2e58b99dc54ca9a6dc917fe9c0515516eda8e54cfb9d7bdbf572291c0b21f520',
@@ -13020,9 +13020,9 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
-    'src/search/certified_artifact_contract.py': 'c78b4dfac6da0a93914afb630d5096aee16533a44b4d948aa25671b02fc1a06a',
+    'src/search/certified_artifact_contract.py': '6e4596d0405254013884313d842b12dd43621ef5e773bd8e5d80f15108b0514d',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
-    'src/search/certified_surface.py': '3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc',
+    'src/search/certified_surface.py': '9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
     'src/search/exact_campaign.py': 'd893e59a9f1bd573208a39905bdb7d677046f97367543958cc201a90b21d1a04',
@@ -13036,9 +13036,9 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/phase3b/anchor119/guard_controls.py': '505490c75a1ee029cc378b8ff784b213d01b3f8c0da425fea21d504e3f434c9a',
     'src/search/phase3b/anchor119/guarded_precheck_runtime.py': '4c8ebb13c4c9e0fd9e3c6e614a185183e975fd365421ef95cbf2eb5ae5098aa2',
     'src/search/phase3b/anchor119/guarded_precheck_spec.py': '2a8c414eedaf42e6685a58922a9812e8a531821cadbe5fdfce860948fea3f86c',
-    'src/placement/placement_generator.py': '1476ba68932a925f53b6763a35361b2bb49d74904aba3b6840a69b0cb98d99ea',
+    'src/placement/placement_generator.py': '01f48f8025f2261a685c9c6813d25e28b08a6370ea0653a003d4d57aeb51c44d',
     'src/search/pr2_l0_artifact_core.py': '4db9e77b03e8176fbec399c3bafc78239597d960a252174afab8d0af649a33c7',
-    'src/search/pr2_l0_fixed_witness_core.py': 'ebdfc437b5eb4f64490c255c1d1bce50a3eb11a58b92f7cb57814721349e5371',
+    'src/search/pr2_l0_fixed_witness_core.py': '8bbb07e039794b66e2ddbf48ef59e0e894fe08f0c5c5ff0fe3c13caa0c289ce5',
     'src/search/pr2_l0_frontier_core.py': 'b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b',
     'src/search/pr2_l0_micro_verifier_core.py': 'df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb',
     'src/search/pr2_l0_replay_core.py': 'f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2',
@@ -13046,8 +13046,8 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/routing_deletion_core_minimizer.py': 'eca5da516e4b32a501d4c76ee455c69394518f9213d531c8f39b98abbd1618db',
     'src/search/separator_capacity_separator.py': 'bfe7498cd31abd22999333e00d9886de862def4997d9e67246896416f0ada0e9',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
-    'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
-    'src/search/terminal_fixed_witness_verifier.py': '30c5dc8acf009ef14440d544e62bcdb69430d159fe557c24cdb42171040fecb2'
+    'src/search/terminal_fixed_witness_capsule.py': '017b22c4f2001f31491501c2758df845cfdcde28d3ede3ac68ed6fc033ddff84',
+    'src/search/terminal_fixed_witness_verifier.py': '6822795d3d2480750d91d3558b3749ce7d84db5f9a843a1d5463e306ed285d3d'
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
 
@@ -14174,6 +14174,9 @@ def _fixed_witness_capsule_wiring_errors(
         "verdict.publishable",
         "verdict.binding_status",
         "verdict.routing_status",
+        "verdict.details",
+        "verdict.port_specs_digest",
+        "_validated_terminal_fixed_witness_port_carrier",
         '"FEASIBLE"',
     ):
         if token not in response_source:

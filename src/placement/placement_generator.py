@@ -82,7 +82,8 @@ def get_port_front_cell(port: Dict[str, Any]) -> Tuple[int, int]:
     front 错位事故批 3（owner 游戏实测定谳 2026-07-18，
     docs/research/front_offset_incident_20260718/00）：候选口的 stored 坐标
     **本身就是**口前带子格（本体外第 1 格）——routing/binding 全链已于批 1
-    identity 化，生成器判界与之同源：stored 格出 70×70 网格才算面壁。
+    identity 化。候选期是否保留体外 stored 格取决于模板的端口启用语义；
+    任何实际启用口都由 routing/binding 要求位于 70×70 网格内且未被占用。
     旧公式 `front = port + delta`（体外第 2 格）是错位语义，已连根拔除；
     "口在体外第 1 格" 的定位由 get_edge_ports 的边法向算术直接承担
     （N=+y/S=-y/E=+x/W=-x 的方向约定以 canonical/master_model.DIR_DELTA 为准）。
@@ -92,21 +93,19 @@ def get_port_front_cell(port: Dict[str, Any]) -> Tuple[int, int]:
 
 
 def is_edge_starved(ports: List[Dict[str, Any]]) -> bool:
-    """面壁死锁法则 (06章 §6.5.1，批 3 identity 判界)。
+    """Return whether a physical side has no in-grid access cell.
 
-    A side is starved when every active port on that side has no in-grid belt
-    cell.  identity 语义下口的 stored 坐标就是带子格——stored 格出 70×70 才算
-    死（owner 五图定谳：体贴边朝外口全死=剪；口前格恰在最外圈=合法保留，
-    批 3 补域 +2,064 正是旧 "+delta 判第 2 格" 多剪掉的墙距 1 摆位）。
+    This is a sound candidate-domain filter only when the selected template and
+    mode require at least one active port on the supplied side. Generic hub/box
+    sides may be entirely inactive and therefore must not call this filter.
     """
     if not ports:
         return False
 
-    def is_blocked(p: Dict[str, Any]) -> bool:
-        fx, fy = get_port_front_cell(p)
-        return fx < 0 or fx >= GRID_W or fy < 0 or fy >= GRID_H
-
-    return all(is_blocked(p) for p in ports)
+    return all(
+        fx < 0 or fx >= GRID_W or fy < 0 or fy >= GRID_H
+        for fx, fy in (get_port_front_cell(port) for port in ports)
+    )
 
 
 def build_placement_obj(x: int, y: int, o: int, mode: str, w: int, h: int,
@@ -277,6 +276,9 @@ def gen_rect_manufacturing(w_base: int, h_base: int) -> List[Dict]:
     """生成长方形设施 (如 6x4)。
     port_rule=long_sides: 端口强制分布在两条长边上。
     对于 6x4，长边=6 格，两种旋转 (o=0 横向, o=1 竖向) × 两种通流方向。
+
+    每个 canonical 制造 operation 都要求至少一个输入和一个输出，且该
+    mode 的全部输入/输出各自集中在一侧；因此必需侧整侧朝外时可安全裁剪。
     """
     placements = []
 
@@ -303,11 +305,19 @@ def gen_rect_manufacturing(w_base: int, h_base: int) -> List[Dict]:
     return placements
 
 
-def gen_square_manufacturing(s: int) -> List[Dict]:
+def gen_square_manufacturing(
+    s: int,
+    *,
+    allow_inactive_oog_port_sides: bool,
+) -> List[Dict]:
     """生成正方形设施 (制造机 3x3/5x5 与协议箱 3x3——批 5 起同款口形态)。
     port_rule=opposite_parallel_sides: 在每个 (x,y) 下生成四种正交端口模式。
     旋转对等性去重 (§6.5.2): 正方形 o=0 与 o=2 等价, o=1 与 o=3 等价。
     因此固定 o=0，通过 port_mode 覆盖所有物理可行域。
+
+    ``allow_inactive_oog_port_sides=False`` 用于 manufacturing 模板：其输入
+    与输出侧各至少有一个 active 口，故整侧朝外可安全裁剪。协议箱传 True：
+    箱的输入和输出槽都允许 ``__unused__``，候选期不能假定任一侧已启用。
     """
     placements = []
     w, h = s, s
@@ -322,7 +332,9 @@ def gen_square_manufacturing(s: int) -> List[Dict]:
             for in_e, out_e, mode in modes:
                 in_p = get_edge_ports(x, y, w, h, in_e)
                 out_p = get_edge_ports(x, y, w, h, out_e)
-                if not is_edge_starved(in_p) and not is_edge_starved(out_p):
+                if allow_inactive_oog_port_sides or (
+                    not is_edge_starved(in_p) and not is_edge_starved(out_p)
+                ):
                     placements.append(build_placement_obj(x, y, 0, mode, w, h, in_p, out_p))
     return placements
 
@@ -332,6 +344,9 @@ def gen_protocol_core() -> List[Dict]:
     port_rule=core_specific:
       o=0: 左右出 (局部索引 1,4,7 → 3×2=6 出口)，上下进 (局部索引 1-7 → 7×2=14 入口)
       o=1: 上下出 (局部索引 1,4,7)，左右进 (局部索引 1-7)
+
+    核心也保留所有本体在图内的 pose。某一物理边整侧朝外不代表该边上
+    有 active 口；实际启用口的可用性由 binding/routing 精确判定。
     """
     placements = []
     w, h = 9, 9
@@ -350,11 +365,8 @@ def gen_protocol_core() -> List[Dict]:
             all_out_0 = out_left + out_right
             all_in_0 = in_bottom + in_top
 
-            # 只要出口或入口中有任何一侧被完全封死，就剔除
-            if not is_edge_starved(out_left) and not is_edge_starved(out_right) \
-               and not is_edge_starved(in_bottom) and not is_edge_starved(in_top):
-                placements.append(build_placement_obj(
-                    x, y, 0, 'core_LR_out', w, h, all_in_0, all_out_0))
+            placements.append(build_placement_obj(
+                x, y, 0, 'core_LR_out', w, h, all_in_0, all_out_0))
 
             # o=1: 上下出，左右进
             out_top = get_edge_ports(x, y, w, h, 'top', output_indices)
@@ -365,10 +377,8 @@ def gen_protocol_core() -> List[Dict]:
             all_out_1 = out_top + out_bottom
             all_in_1 = in_left + in_right
 
-            if not is_edge_starved(out_top) and not is_edge_starved(out_bottom) \
-               and not is_edge_starved(in_left) and not is_edge_starved(in_right):
-                placements.append(build_placement_obj(
-                    x, y, 1, 'core_TB_out', w, h, all_in_1, all_out_1))
+            placements.append(build_placement_obj(
+                x, y, 1, 'core_TB_out', w, h, all_in_1, all_out_1))
 
     return placements
 
@@ -377,7 +387,7 @@ def gen_protocol_core() -> List[Dict]:
 #  owner 游戏实测定谳 2026-07-18(rules_audit_20260718/00 §3.1): 协议箱口形态
 #  与制造机 3×3 完全同款(一边 3 进/对边 3 出/四朝向模式), "无线"仅存在于
 #  箱→仓库段。canonical port_rule 已改 opposite_parallel_sides, 池经
-#  gen_square_manufacturing(3) 标准路径生成。)
+#  gen_square_manufacturing(3, allow_inactive_oog_port_sides=True) 标准路径生成。)
 
 
 def gen_power_pole() -> List[Dict]:
@@ -481,9 +491,21 @@ def generate_all_pools(templates: Dict[str, Any]) -> Dict[str, List[Dict]]:
             pools[tpl_key] = gen_rect_manufacturing(w, h)
 
         elif port_rule == "opposite_parallel_sides":
-            # 正方形制造设施 (如 manufacturing_3x3, manufacturing_5x5)
             assert w == h, f"opposite_parallel_sides 只适用于正方形，但 {tpl_key} 尺寸为 {w}x{h}"
-            pools[tpl_key] = gen_square_manufacturing(w)
+            if tpl_key == "protocol_storage_box":
+                pools[tpl_key] = gen_square_manufacturing(
+                    w,
+                    allow_inactive_oog_port_sides=True,
+                )
+            elif tpl_key in {"manufacturing_3x3", "manufacturing_5x5"}:
+                pools[tpl_key] = gen_square_manufacturing(
+                    w,
+                    allow_inactive_oog_port_sides=False,
+                )
+            else:
+                raise ValueError(
+                    f"opposite_parallel_sides 模板 {tpl_key!r} 缺少明确的端口启用语义分派"
+                )
 
         elif port_rule == "core_specific":
             # 协议核心
@@ -502,7 +524,7 @@ def generate_all_pools(templates: Dict[str, Any]) -> Dict[str, List[Dict]]:
 
 
 def main():
-    print("🚀 [开始] 启动几何降维引擎，执行全图扫荡与死区剔除...")
+    print("🚀 [开始] 启动几何降维引擎，执行全图模板合法域枚举...")
     start_time = time.time()
 
     templates = load_templates()

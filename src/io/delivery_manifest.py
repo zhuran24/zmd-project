@@ -31,6 +31,10 @@ from src.search.exact_campaign import (
     now_iso,
     validate_exact_campaign_resume_state,
 )
+from src.search.terminal_fixed_witness_verifier import (
+    _load_grid_dimensions,
+    extract_verified_terminal_active_port_specs,
+)
 
 DELIVERY_MANIFEST_VERSION = "1.0.0"
 DELIVERY_MANIFEST_SOURCE = "certified_exact_delivery_manifest_v1"
@@ -582,6 +586,7 @@ def validate_delivery_artifacts_match_campaign(
     _validate_optimal_blueprint_matches_final_result(
         project_root=project_root,
         optimal_blueprint_path=optimal_blueprint_path,
+        campaign_state=campaign_state,
         final_result=final_result,
     )
 
@@ -630,6 +635,7 @@ def _validate_optimal_blueprint_matches_final_result(
     *,
     project_root: Path,
     optimal_blueprint_path: Path,
+    campaign_state: Mapping[str, Any],
     final_result: Mapping[str, Any],
 ) -> None:
     raw_blueprint_payload = _load_json_mapping(optimal_blueprint_path, "optimal_blueprint")
@@ -663,10 +669,16 @@ def _validate_optimal_blueprint_matches_final_result(
         facility_pools = load_candidate_placements(
             project_root / "data" / "preprocessed" / "candidate_placements.json"
         )
+        active_port_specs = extract_verified_terminal_active_port_specs(
+            campaign_state=campaign_state,
+            final_result=final_result,
+        )
         expected_blueprint = build_blueprint_payload_from_certified_result(
             result=final_result,
             facility_pools=facility_pools,
             export_timestamp=_blueprint_export_timestamp(blueprint_payload),
+            active_port_specs=active_port_specs,
+            grid_dimensions=_load_grid_dimensions(project_root),
         )
         recovered_result = recover_legacy_render_payload_from_blueprint(
             blueprint_payload=blueprint_payload,

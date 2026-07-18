@@ -86,13 +86,14 @@ The current frozen campaign inputs include:
   `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`;
 - `rules/preprocess_plan.json`: `1,383` bytes, SHA256
   `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`;
-- `data/preprocessed/candidate_placements.json`: `53,595,501` bytes, SHA256
-  `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`.
+- `data/preprocessed/candidate_placements.json`: `54,467,709` bytes, SHA256
+  `f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`.
 
 The candidate superseded chain is `45,774,305` bytes /
 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`, then the pre-corner-fix
 `45,773,799` bytes / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`,
-then `53,594,995` bytes / `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`.
+then `53,594,995` bytes / `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`,
+then `53,595,501` bytes / `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`.
 Every member is historical and hash-incompatible.
 
 Changes to canonical rules, preprocess plan, candidate placements, mandatory instances, generic I/O,
