@@ -43,7 +43,7 @@ P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 �
 | 07-15 | round 4-5：UBC 证书 sound+紧凑但 CP-SAT 在三真锚点全 UNKNOWN（solver 墙）；owner 立项 Fable 对照实验 | 同上 doc15-16 |
 | 07-16 | 对照实验发现树内 RAB-SEP 通道+Opus 五轮三次擦肩（doc17）；RAB-SEP 三段批收口（`815a73e`）；front-clear 上收批：设计四席对抗→实施 reseal（`7b9cbae`）→六级验证阶梯→presolve 病灶破案→探针 3/4（`0873cd1`/`7b88ab8`） | doc17；`rab_sep_promotion_20260716/` doc01-06 |
 | 07-17 | 过夜长预算单发在跑（lift ON + presolve off + automatic，无时限）；文档卫生批（本文档重构+名词表+`deliverable-docs` skill） | `rab_sep_promotion_20260716/`；[21号](21_glossary.md) |
-| 07-18 | front 错位 P0 事故（口坐标=带子格、机械查体外第 2 格）：普查+批 0 owner 定谳（补域 68,469）+批 1 identity 原子 reseal 落地（`060aeb6`，四门全绿）；owner 全量规则校对：3 笔新实锤（协议箱实体口/中枢 14 进/canonical 语义缺口）+IP/EC 上游对账快照入库；批计划改为 批2→批3+5（合并换钉，含协议箱池重生成）→批4；批2 落地（`bb415f1`）；owner 点火批3+5 并原则性纠正措辞（最优解从未变，旧数字=模型误差品）；**封号窗口（午-晚）codex 于 `~/zmd-pj-codex` 代刀完成批3+5（`9c0f724`，新池 81,797 与主会话独立闭式逐池全中）+批4 部分（`a0f7525`）**；晚间合并快进回主树+池工件 restore+终态门补跑（首两轮被内存超频崩溃假阻塞，owner 松内存后两连绿 4,561×2+慢 lane 31/31，环境层定谳另见仓库外记忆卡） | `front_offset_incident_20260718/00`-`02`；`rules_audit_20260718/00`-`01` |
+| 07-18 | front 错位 P0 事故（口坐标=带子格、机械查体外第 2 格）：普查+批 0 owner 定谳（补域 68,469）+批 1 identity 原子 reseal 落地（`060aeb6`，四门全绿）；owner 全量规则校对：3 笔新实锤（协议箱实体口/中枢 14 进/canonical 语义缺口）+IP/EC 上游对账快照入库；批计划改为 批2→批3+5（合并换钉，含协议箱池重生成）→批4；批2 落地（`bb415f1`）；owner 点火批3+5 并原则性纠正措辞（最优解从未变，旧数字=模型误差品）；**封号窗口（午-晚）codex 于 `~/zmd-pj-codex` 代刀完成批3+5（`9c0f724`，新池 81,797 与主会话独立闭式逐池全中）+批4 部分（`a0f7525`）**；晚间合并快进回主树+池工件 restore+终态门补跑（两连绿 4,561×2+慢 lane 31/31） | `front_offset_incident_20260718/00`-`02`；`rules_audit_20260718/00`-`01` |
 
 ### 0b. 方法论：规则归属判据 v2 → v2.2（2026-07-17 三轮推出 v1/v2/v2.1；07-18 两轮补 cut 方法论与四问统一）
 
