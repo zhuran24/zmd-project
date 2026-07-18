@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import secrets
 import time
-from typing import Any, Dict, Mapping, MutableMapping, Optional, Sequence, Tuple
+from typing import AbstractSet, Any, Dict, Mapping, MutableMapping, Optional, Sequence, Tuple
 
 from src.io.strict_json import loads_strict_json
 from src.models.binding_subproblem import (
@@ -1143,6 +1143,11 @@ def _verify_binding_routing_alternatives(
                 binding_status="FEASIBLE",
                 routing_status=routing_status,
                 details={
+                    # This is the durable, digest-bound source for certified
+                    # blueprint active_ports.  A pose describes every
+                    # available slot; only the binding witness identifies the
+                    # slots that are actually active.
+                    "port_specs": normalized_port_specs,
                     "port_count": int(len(port_specs)),
                     "commodity_count": int(len(commodities)),
                     "required_generic_input_endpoint_counts": endpoint_counts,
@@ -1862,6 +1867,163 @@ def _normalize_port_specs(port_specs: Sequence[Mapping[str, Any]]) -> list[Dict[
             item["dir"],
         )
     )
+    return normalized
+
+
+def extract_verified_terminal_active_port_specs(
+    *,
+    campaign_state: Mapping[str, Any],
+    final_result: Mapping[str, Any],
+) -> list[Dict[str, Any]]:
+    """Return the digest-bound terminal binding ports or fail closed.
+
+    Callers must first establish the project-bound terminal seal/replay contract.
+    Within that validated campaign state, this re-establishes terminal identity
+    against ``final_result`` and validates every relevant audit/status, schema,
+    and digest field before exposing the binding witness to an output projection.
+    """
+
+    state = _require_mapping(campaign_state, "campaign_state")
+    result = _require_mapping(final_result, "final_result")
+    stored_result = _require_mapping(state.get("final_result"), "campaign_state.final_result")
+    if canonical_digest(stored_result) != canonical_digest(result):
+        raise ValueError("terminal active port final_result mismatch")
+
+    candidate_records = _require_mapping(state.get("candidates"), "campaign_state.candidates")
+    identity = _identity_from_current_records(candidate_records, result)
+    record = _require_mapping(
+        candidate_records.get(identity.candidate_key),
+        f"campaign_state.candidates.{identity.candidate_key}",
+    )
+    if str(record.get("status", "")) != _PROJECTED_CERTIFIED:
+        raise ValueError("terminal active port candidate is not CERTIFIED")
+    record_solution = _require_mapping(record.get("solution"), "terminal candidate solution")
+    result_solution = _require_mapping(
+        result.get("placement_solution"),
+        "final_result.placement_solution",
+    )
+    if canonical_digest(_solution_without_ghost(record_solution)) != canonical_digest(result_solution):
+        raise ValueError("terminal active port solution does not match final_result")
+
+    proof_summary = _require_mapping(record.get("proof_summary"), "terminal candidate proof_summary")
+    if proof_summary.get(TERMINAL_FIXED_WITNESS_PUBLISHABLE_FIELD) is not True:
+        raise ValueError("terminal fixed-witness audit is not publishable")
+    if str(proof_summary.get(TERMINAL_FIXED_WITNESS_PROJECTED_STATUS_FIELD, "")) != _PROJECTED_CERTIFIED:
+        raise ValueError("terminal fixed-witness audit projected status is invalid")
+    if TERMINAL_FIXED_WITNESS_REJECTED_REASON_FIELD in proof_summary:
+        raise ValueError("terminal fixed-witness audit contains a rejection reason")
+
+    raw_verdict = _require_mapping(
+        proof_summary.get(TERMINAL_FIXED_WITNESS_AUDIT_FIELD),
+        TERMINAL_FIXED_WITNESS_AUDIT_FIELD,
+    )
+    verdict = stable_terminal_fixed_witness_verdict_payload(raw_verdict)
+    if int(verdict.get("schema_version", -1)) != TERMINAL_FIXED_WITNESS_VERIFIER_SCHEMA_VERSION:
+        raise ValueError("terminal fixed-witness audit schema is invalid")
+    if str(verdict.get("authority", "")) != TERMINAL_FIXED_WITNESS_VERIFIER_AUTHORITY:
+        raise ValueError("terminal fixed-witness audit authority is invalid")
+    if verdict.get("publishable") is not True:
+        raise ValueError("terminal fixed-witness verdict is not publishable")
+    if str(verdict.get("projected_status", "")) != _PROJECTED_CERTIFIED:
+        raise ValueError("terminal fixed-witness verdict projected status is invalid")
+    if str(verdict.get("binding_status", "")) != "FEASIBLE":
+        raise ValueError("terminal fixed-witness binding status is invalid")
+    if str(verdict.get("routing_status", "")) != "FEASIBLE":
+        raise ValueError("terminal fixed-witness routing status is invalid")
+    if verdict.get("reason") is not None:
+        raise ValueError("terminal fixed-witness publishable verdict has a reason")
+
+    expected_identity = {
+        "candidate_key": identity.candidate_key,
+        "solution_digest": identity.solution_digest,
+        "ghost_rect_digest": identity.ghost_rect_digest,
+        "ghost_cells_digest": identity.ghost_cells_digest,
+        "witness_input_digest": identity.witness_input_digest,
+    }
+    for field_name, expected_value in expected_identity.items():
+        if verdict.get(field_name) != expected_value:
+            raise ValueError(f"terminal fixed-witness {field_name} mismatch")
+
+    known_instances = {
+        str(instance_id)
+        for instance_id in result_solution
+        if str(instance_id) != "ghost_pick"
+    }
+    normalized_specs = _validated_terminal_fixed_witness_port_carrier(
+        details=verdict.get("details"),
+        port_specs_digest=verdict.get("port_specs_digest"),
+        known_instance_ids=known_instances,
+    )
+    return _strict_json_copy(normalized_specs)
+
+
+def _validated_terminal_fixed_witness_port_carrier(
+    *,
+    details: Any,
+    port_specs_digest: Any,
+    known_instance_ids: AbstractSet[str],
+) -> list[Dict[str, Any]]:
+    """Validate the durable active-port carrier shared by mint and export."""
+
+    carrier_details = _require_mapping(details, "terminal fixed-witness details")
+    raw_specs = carrier_details.get("port_specs")
+    if isinstance(raw_specs, (str, bytes)) or not isinstance(raw_specs, Sequence):
+        raise ValueError("terminal fixed-witness port_specs must be a sequence")
+    normalized_specs = _strict_normalized_port_specs(raw_specs)
+    for index, spec in enumerate(normalized_specs):
+        if str(spec["instance_id"]) not in known_instance_ids:
+            raise ValueError(
+                f"terminal fixed-witness port_specs[{index}] references an unknown instance"
+            )
+    if _strict_int(
+        carrier_details.get("port_count"),
+        "terminal fixed-witness port_count",
+    ) != len(normalized_specs):
+        raise ValueError("terminal fixed-witness port_count mismatch")
+    if not isinstance(port_specs_digest, str) or len(port_specs_digest) != 64:
+        raise ValueError("terminal fixed-witness port_specs_digest is invalid")
+    if canonical_digest(normalized_specs) != port_specs_digest:
+        raise ValueError("terminal fixed-witness port_specs_digest mismatch")
+    return _strict_json_copy(normalized_specs)
+
+
+def _strict_normalized_port_specs(raw_specs: Sequence[Any]) -> list[Dict[str, Any]]:
+    required_fields = {"instance_id", "x", "y", "dir", "type", "commodity"}
+    normalized: list[Dict[str, Any]] = []
+    for index, raw_spec in enumerate(raw_specs):
+        spec = _require_mapping(raw_spec, f"port_specs[{index}]")
+        if set(spec) != required_fields:
+            raise ValueError(f"port_specs[{index}] fields are invalid")
+        instance_id = _strict_nonempty_string(spec.get("instance_id"), f"port_specs[{index}].instance_id")
+        direction = _strict_nonempty_string(spec.get("dir"), f"port_specs[{index}].dir")
+        port_type = _strict_nonempty_string(spec.get("type"), f"port_specs[{index}].type")
+        commodity = _strict_nonempty_string(spec.get("commodity"), f"port_specs[{index}].commodity")
+        if direction not in {"N", "S", "E", "W"}:
+            raise ValueError(f"port_specs[{index}].dir is invalid")
+        if port_type not in {"in", "out"}:
+            raise ValueError(f"port_specs[{index}].type is invalid")
+        normalized.append(
+            {
+                "instance_id": instance_id,
+                "x": _strict_int(spec.get("x"), f"port_specs[{index}].x"),
+                "y": _strict_int(spec.get("y"), f"port_specs[{index}].y"),
+                "dir": direction,
+                "type": port_type,
+                "commodity": commodity,
+            }
+        )
+    normalized.sort(
+        key=lambda item: (
+            item["instance_id"],
+            item["commodity"],
+            item["type"],
+            item["x"],
+            item["y"],
+            item["dir"],
+        )
+    )
+    if len({canonical_digest(spec) for spec in normalized}) != len(normalized):
+        raise ValueError("terminal fixed-witness port_specs contain duplicates")
     return normalized
 
 

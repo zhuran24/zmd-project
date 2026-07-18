@@ -39,6 +39,10 @@ from src.search.exact_campaign import (
     has_valid_terminal_full_frontier_certified_evidence_for_project,
     validate_exact_campaign_resume_state,
 )
+from src.search.terminal_fixed_witness_verifier import (
+    _load_grid_dimensions,
+    extract_verified_terminal_active_port_specs,
+)
 
 CERTIFIED_SURFACE_VERIFIER_SOURCE = "certified_surface_verifier_v1"
 CERTIFIED_SURFACE_BLOCKED_REASON = "certified_delivery_surface_not_current"
@@ -667,10 +671,16 @@ def _stage_verified_certified_delivery_surface_artifacts(
         stage_dirs=(final_stage_dir, blueprint_stage_dir, manifest_stage_dir),
     )
     try:
+        active_port_specs = extract_verified_terminal_active_port_specs(
+            campaign_state=state,
+            final_result=result,
+        )
         atomic_write_json(staged.final_solution_path, result)
         blueprint_payload = build_blueprint_payload_from_certified_result(
             result=result,
             facility_pools=facility_pools,
+            active_port_specs=active_port_specs,
+            grid_dimensions=_load_grid_dimensions(project_root),
         )
         atomic_write_json(staged.blueprint_path, blueprint_payload)
         manifest_payload = build_certified_delivery_manifest(

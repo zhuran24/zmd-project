@@ -26,6 +26,7 @@ from src.search.exact_campaign import (
 )
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
 from src.tests.certified_frontier_helpers import (
+    attach_empty_fixed_witness_audit_for_test,
     attach_terminal_frontier_evidence,
     install_accepting_l0_supervisor_seal,
     write_closed_phase_review_gate,
@@ -136,6 +137,7 @@ def _build_publishable_surface(
         status=CANDIDATE_PROPOSED_STATUS,
     )
     attach_terminal_frontier_evidence(campaign, project_root)
+    attach_empty_fixed_witness_audit_for_test(campaign)
     campaign.save()
     campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
 

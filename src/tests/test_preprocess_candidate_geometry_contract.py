@@ -81,11 +81,11 @@ def test_generate_all_pools_rejects_schema_valid_template_geometry_drift():
             generate_all_pools(_single_mutated_template(template_id, mutator))
 
 
-def test_protocol_storage_box_has_front_safe_physical_ports():
+def test_protocol_storage_box_has_complete_physical_port_geometry():
     pools = generate_all_pools(load_templates())
     poses = pools["protocol_storage_box"]
 
-    assert len(poses) == 17_952
+    assert len(poses) == 18_496
     assert {pose["pose_params"]["port_mode"] for pose in poses} == {
         "TB",
         "BT",
@@ -101,19 +101,29 @@ def test_protocol_storage_box_has_front_safe_physical_ports():
         assert len({tuple(cell) for cell in pose["occupied_cells"]}) == 9
 
 
-def test_all_generated_physical_port_fronts_are_routable_grid_cells():
+def test_generated_bodies_stay_in_grid_and_physical_access_cells_are_at_most_one_step_oog():
     pools = generate_all_pools(load_templates())
 
     failures = []
+    templates_with_oog_access_cells = set()
     for template_id, poses in pools.items():
         for pose in poses:
+            for x, y in pose["occupied_cells"]:
+                if not _in_grid(int(x), int(y)):
+                    failures.append((template_id, pose["pose_id"], "occupied_cells", (x, y)))
             for side_key in ("input_port_cells", "output_port_cells"):
                 for port in pose.get(side_key, []) or []:
                     fx, fy = get_port_front_cell(port)
-                    if not _in_grid(fx, fy):
+                    if not (-1 <= fx <= GRID_W and -1 <= fy <= GRID_H):
                         failures.append((template_id, pose["pose_id"], side_key, port, (fx, fy)))
+                    elif not _in_grid(fx, fy):
+                        templates_with_oog_access_cells.add(template_id)
 
     assert failures == []
+    assert templates_with_oog_access_cells == {
+        "protocol_core",
+        "protocol_storage_box",
+    }
 
 
 def test_physical_ports_are_outward_adjacent_to_their_body_bbox():
@@ -145,18 +155,53 @@ def test_physical_ports_are_outward_adjacent_to_their_body_bbox():
     assert failures == []
 
 
-def test_template_pool_counts_match_front_safe_closed_forms():
+def test_edge_poses_retain_physical_ports_that_may_be_inactive():
+    pools = generate_all_pools(load_templates())
+
+    core_pose = next(
+        pose
+        for pose in pools["protocol_core"]
+        if pose["anchor"] == {"x": 1, "y": 0}
+        and pose["pose_params"]["orientation"] == 0
+    )
+    assert [port for port in core_pose["input_port_cells"] if port["dir"] == "S"] == [
+        {"x": x, "y": -1, "dir": "S"}
+        for x in range(2, 9)
+    ]
+    assert all(
+        _in_grid(*get_port_front_cell(port))
+        for port in core_pose["input_port_cells"]
+        if port["dir"] == "N"
+    )
+
+    box_pose = next(
+        pose
+        for pose in pools["protocol_storage_box"]
+        if pose["anchor"] == {"x": 10, "y": 0}
+        and pose["pose_params"]["port_mode"] == "TB"
+    )
+    assert box_pose["input_port_cells"] == [
+        {"x": x, "y": 3, "dir": "N"}
+        for x in range(10, 13)
+    ]
+    assert box_pose["output_port_cells"] == [
+        {"x": x, "y": -1, "dir": "S"}
+        for x in range(10, 13)
+    ]
+
+
+def test_template_pool_counts_match_activation_aware_closed_forms():
     pools = generate_all_pools(load_templates())
     counts = {template_id: len(poses) for template_id, poses in pools.items()}
 
-    # For physical-port templates, active edge fronts need a one-cell in-grid
-    # routing moat beyond the outside-adjacent port coordinate.
+    # Manufacturing modes require both physical sides; generic core/box ports
+    # may be unused, so only those templates retain body-in-grid edge poses.
     assert counts == {
         "manufacturing_3x3": 17_952,
         "manufacturing_5x5": 16_896,
         "manufacturing_6x4": 16_900,
-        "protocol_core": 7_200,
-        "protocol_storage_box": 17_952,
+        "protocol_core": 7_688,
+        "protocol_storage_box": 18_496,
         "power_pole": 4_761,
         "boundary_storage_port": 136,
     }

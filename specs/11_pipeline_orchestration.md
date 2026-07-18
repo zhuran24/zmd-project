@@ -31,11 +31,12 @@ The current frozen pins are `canonical_rules.json` at 17,510 bytes / SHA256
 `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`,
 `preprocess_plan.json` at 1,383 bytes / SHA256
 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`, and
-`candidate_placements.json` at 53,595,501 bytes / SHA256
-`78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`.
+`candidate_placements.json` at 54,467,709 bytes / SHA256
+`f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`.
 The 45,774,305-byte / `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`,
 45,773,799-byte / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`,
-and 53,594,995-byte / `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`
+53,594,995-byte / `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`,
+and 53,595,501-byte / `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`
 candidate artifacts form a superseded, hash-incompatible historical chain.
 A different byte set reopens resume compatibility; old campaign evidence must not be reused across
 an artifact-hash mismatch.
@@ -85,6 +86,11 @@ closed P1.2 publish gate. It then transactionally writes and revalidates:
 Publication failure clears the canonical set rather than leaving a partial or stale public surface.
 Generic serializers, report/viewer builders, adapters and compatibility exporters may write
 non-authoritative copies only; they cannot mint or preserve public `CERTIFIED` authority.
+
+The publisher derives blueprint `active_ports` only from the terminal fixed-witness audit's
+digest-bound normalized `port_specs`. It never promotes every physical pose slot to active. The
+delivery-manifest currentness check rebuilds the expected blueprint from the same carrier, so an
+unknown, duplicate, out-of-grid, wrong-pose or commodity-inconsistent active port blocks publication.
 
 ## 5. Candidate solve topology
 

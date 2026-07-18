@@ -14,6 +14,10 @@ from src.models.routing_subproblem import (
     RoutingPlacementCore,
     run_exact_routing_precheck,
 )
+from src.placement.placement_generator import (
+    gen_protocol_core,
+    gen_square_manufacturing,
+)
 from src.search.exact_campaign import ExactCampaign
 
 
@@ -71,26 +75,40 @@ def _box_sink_binding_model(
     *,
     required_inputs: dict[str, int],
     instance_id: str = "pose_optional::protocol_storage_box::box_x10_y10_sink",
+    pose: dict[str, Any] | None = None,
+    routing_aware: bool = False,
 ) -> PortBindingModel:
-    pose = _box_sink_pose()
+    if pose is None:
+        pose = _box_sink_pose()
+    placement_solution = {
+        instance_id: {
+            "facility_type": "protocol_storage_box",
+            "pose_idx": 0,
+            "pose_id": pose["pose_id"],
+            "anchor": dict(pose["anchor"]),
+            "orientation": int(pose["pose_params"]["orientation"]),
+            "port_mode": str(pose["pose_params"]["port_mode"]),
+            "bound_type": "exact_pose_optional",
+            "solve_mode": "certified_exact",
+        }
+    }
+    facility_pools = {"protocol_storage_box": [pose]}
+    routing_context = None
+    if routing_aware:
+        routing_context = build_routing_binding_context(
+            placement_solution,
+            facility_pools,
+            grid_w=70,
+            grid_h=70,
+        )
     return PortBindingModel(
-        placement_solution={
-            instance_id: {
-                "facility_type": "protocol_storage_box",
-                "pose_idx": 0,
-                "pose_id": pose["pose_id"],
-                "anchor": dict(pose["anchor"]),
-                "orientation": 0,
-                "port_mode": "box_sink",
-                "bound_type": "exact_pose_optional",
-                "solve_mode": "certified_exact",
-            }
-        },
-        facility_pools={"protocol_storage_box": [pose]},
+        placement_solution=placement_solution,
+        facility_pools=facility_pools,
         instances=[],
         required_generic_outputs={},
         required_generic_inputs=required_inputs,
         project_root=PROJECT_ROOT,
+        routing_context=routing_context,
     )
 
 
@@ -217,6 +235,114 @@ def test_box_sink_routing_filter_removes_blocked_physical_sink_front() -> None:
     }
     assert {(spec["x"], spec["y"]) for spec in port_specs} == {(11, 9), (12, 9)}
     assert {spec["commodity"] for spec in port_specs} == set(CANONICAL_GENERIC_INPUTS)
+
+
+def test_edge_box_allows_inactive_oog_outputs_but_rejects_oog_active_inputs() -> None:
+    edge_poses = [
+        pose
+        for pose in gen_square_manufacturing(
+            3,
+            allow_inactive_oog_port_sides=True,
+        )
+        if pose["anchor"] == {"x": 10, "y": 0}
+    ]
+    inactive_output_pose = next(
+        pose for pose in edge_poses if pose["pose_params"]["port_mode"] == "TB"
+    )
+    assert all(port["y"] == -1 for port in inactive_output_pose["output_port_cells"])
+
+    feasible_model = _box_sink_binding_model(
+        required_inputs=CANONICAL_GENERIC_INPUTS,
+        instance_id="pose_optional::protocol_storage_box::edge_inactive_outputs",
+        pose=inactive_output_pose,
+        routing_aware=True,
+    )
+    feasible_model.build()
+    assert feasible_model.routing_aware_filter_stats["generic_input_slots_pre_filter"] == 3
+    assert feasible_model.routing_aware_filter_stats["generic_input_slots_post_filter"] == 3
+    assert feasible_model.solve(time_limit_seconds=5.0) == "FEASIBLE"
+    assert all(spec["type"] == "in" for spec in feasible_model.extract_port_specs())
+
+    active_input_pose = next(
+        pose for pose in edge_poses if pose["pose_params"]["port_mode"] == "BT"
+    )
+    assert all(port["y"] == -1 for port in active_input_pose["input_port_cells"])
+
+    infeasible_model = _box_sink_binding_model(
+        required_inputs=CANONICAL_GENERIC_INPUTS,
+        instance_id="pose_optional::protocol_storage_box::edge_active_inputs",
+        pose=active_input_pose,
+        routing_aware=True,
+    )
+    infeasible_model.build()
+    assert infeasible_model.routing_aware_filter_stats["generic_input_slots_pre_filter"] == 3
+    assert infeasible_model.routing_aware_filter_stats["generic_input_slots_post_filter"] == 0
+    assert infeasible_model.solve(time_limit_seconds=5.0) == "INFEASIBLE"
+
+
+def test_edge_core_uses_in_grid_generic_inputs_and_leaves_oog_slots_unused() -> None:
+    pose = next(
+        pose
+        for pose in gen_protocol_core()
+        if pose["anchor"] == {"x": 1, "y": 0}
+        and pose["pose_params"]["orientation"] == 0
+    )
+    south_inputs = [port for port in pose["input_port_cells"] if port["dir"] == "S"]
+    north_inputs = [port for port in pose["input_port_cells"] if port["dir"] == "N"]
+    assert len(south_inputs) == len(north_inputs) == 7
+    assert all(port["y"] == -1 for port in south_inputs)
+    assert all(port["y"] == 9 for port in north_inputs)
+
+    instance_id = "protocol_core_001"
+    placement_solution = {
+        instance_id: {
+            "facility_type": "protocol_core",
+            "pose_idx": 0,
+            "pose_id": pose["pose_id"],
+            "anchor": dict(pose["anchor"]),
+            "orientation": int(pose["pose_params"]["orientation"]),
+            "port_mode": str(pose["pose_params"]["port_mode"]),
+        }
+    }
+    facility_pools = {"protocol_core": [pose]}
+    routing_context = build_routing_binding_context(
+        placement_solution,
+        facility_pools,
+        grid_w=70,
+        grid_h=70,
+    )
+    model = PortBindingModel(
+        placement_solution=placement_solution,
+        facility_pools=facility_pools,
+        instances=[
+            {
+                "instance_id": instance_id,
+                "facility_type": "protocol_core",
+                "operation_type": "protocol_core",
+                "is_mandatory": True,
+            }
+        ],
+        required_generic_outputs={},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
+        project_root=PROJECT_ROOT,
+        routing_context=routing_context,
+    )
+    model.build()
+
+    assert model.routing_aware_filter_stats["generic_input_slots_pre_filter"] == 14
+    assert model.routing_aware_filter_stats["generic_input_slots_post_filter"] == 7
+    assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
+    selected = model.extract_selection()["generic_inputs"]
+    assert sorted(selected.values()) == [
+        "__unused__",
+        "__unused__",
+        "__unused__",
+        "__unused__",
+        "__unused__",
+        "qiaoyu_capsule",
+        "valley_battery",
+    ]
+    assert all(spec["y"] == 9 for spec in model.extract_port_specs())
 
 
 def test_final_commodities_keep_producer_sources_and_box_sink_terminals() -> None:

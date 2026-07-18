@@ -38,6 +38,7 @@ from src.search.terminal_fixed_witness_verifier import (
     _copy_candidate_records,
     _identity_from_current_records,
     _project_terminal_fixed_witness_records_from_capsule,
+    _validated_terminal_fixed_witness_port_carrier,
     canonical_state_bytes_for_fixed_witness,
 )
 
@@ -224,6 +225,7 @@ def build_terminal_fixed_witness_projection_at_sink(
             "ghost_cells_digest": identity.ghost_cells_digest,
             "witness_input_digest": identity.witness_input_digest,
         },
+        final_result=final_result,
         verdict=verdict,
     )
     if response_violation is not None:
@@ -489,6 +491,7 @@ def _capsule_response_violation(
     expected_artifact_hashes: Mapping[str, str],
     expected_source_digest: str,
     identity_fields: Mapping[str, str],
+    final_result: Mapping[str, Any],
     verdict: TerminalFixedWitnessVerdict,
 ) -> Optional[str]:
     if set(response.keys()) != _RESPONSE_KEYS:
@@ -533,6 +536,21 @@ def _capsule_response_violation(
             return "terminal_fixed_witness_capsule_binding_status_invalid"
         if str(verdict.routing_status) != "FEASIBLE":
             return "terminal_fixed_witness_capsule_routing_status_invalid"
+        placement_solution = final_result.get("placement_solution")
+        if not isinstance(placement_solution, Mapping):
+            return "terminal_fixed_witness_capsule_port_carrier_invalid"
+        try:
+            _validated_terminal_fixed_witness_port_carrier(
+                details=verdict.details,
+                port_specs_digest=verdict.port_specs_digest,
+                known_instance_ids={
+                    str(instance_id)
+                    for instance_id in placement_solution
+                    if str(instance_id) != "ghost_pick"
+                },
+            )
+        except Exception:
+            return "terminal_fixed_witness_capsule_port_carrier_invalid"
     return None
 
 

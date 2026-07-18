@@ -68,12 +68,12 @@ FROZEN_ARTIFACTS = {
 }
 
 EXTERNAL_FROZEN_ARTIFACTS = {
-    # Distribution policy permits a lightweight checkout to omit this 51.1 MiB payload.
+    # Distribution policy permits a lightweight checkout to omit this 51.9 MiB payload.
     # The current audited working tree includes it. Whenever present, preflight verifies
     # exact bytes; when absent, a certified run must restore/verify it before solve time.
     "data/preprocessed/candidate_placements.json": {
-        "sha256": "78E2BCF0777DB8523AA767EE689BA7C3E65ECF7ECC20642627876D8D42FA3FEF",
-        "size_bytes": 53_595_501,
+        "sha256": "F05B1291A51D64A1BC40507146E95F3257EFFAAF2B795A0FA83F85F5D8D280D3",
+        "size_bytes": 54_467_709,
         "policy_doc": "PROJECT_LOCK.md",
     },
 }

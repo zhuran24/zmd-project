@@ -382,7 +382,10 @@ def test_inspector_summarizes_valid_resume_state(tmp_path: Path) -> None:
         "INFEASIBLE",
         proof_summary={"master_status": "INFEASIBLE"},
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     inspection = build_exact_campaign_inspection(project_root)
 
@@ -430,7 +433,10 @@ def test_inspector_summarizes_terminal_full_frontier_certified_result(
         project_root,
         fill_unresolved_better_candidates_as_infeasible=True,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     facility_pools = load_candidate_placements(
         project_root / "data" / "preprocessed" / "candidate_placements.json"
     )
@@ -489,7 +495,10 @@ def test_inspector_accepts_resume_state_with_resolver_supported_condition_cut(
         proof_summary={"master_status": "INFEASIBLE"},
         generated_exact_safe_cut_count=1,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     inspection = build_exact_campaign_inspection(project_root)
 
@@ -508,7 +517,10 @@ def test_inspector_reports_artifact_mismatch_without_mutating_state(tmp_path: Pa
         solution=_certified_solution(),
         proof_summary={"master_status": "CERTIFIED"},
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     before = campaign.path.read_text(encoding="utf-8")
 
     rules_path = project_root / "rules" / "canonical_rules.json"
@@ -547,7 +559,10 @@ def test_inspector_keeps_stop_reason_visible_without_nonterminal_best_certified_
         proof_summary={"master_status": "CERTIFIED"},
     )
     campaign.mark_campaign_stopped(stop_reason, status=status)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     inspection = build_exact_campaign_inspection(project_root)
 
@@ -560,7 +575,10 @@ def test_inspector_keeps_stop_reason_visible_without_nonterminal_best_certified_
 def test_inspector_summarizes_telemetry(tmp_path: Path) -> None:
     project_root = _build_exact_project(tmp_path / "project")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     append_campaign_wave_summary(
         project_root=project_root,
         campaign_path=campaign.path,
@@ -650,7 +668,10 @@ def test_inspector_hides_stale_final_result_without_terminal_frontier_evidence(
     }
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
     campaign.state["final_status"] = RUN_STATUS_CERTIFIED
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     inspection = build_exact_campaign_inspection(project_root)
 
@@ -700,7 +721,10 @@ def test_v68_inspector_requires_current_campaign_evidence_for_terminal_manifest(
     project_root = _build_exact_project(tmp_path / "project")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_campaign_stopped("max_attempts_exhausted", status=RUN_STATUS_UNKNOWN)
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     manifest_path = project_root / "data" / "solutions" / "certified_delivery_manifest.json"
     _write_json(
         manifest_path,
@@ -761,7 +785,10 @@ def test_v69_inspector_rejects_manifest_best_result_that_only_partially_matches_
         project_root,
         fill_unresolved_better_candidates_as_infeasible=True,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     manifest_path = project_root / "data" / "solutions" / "certified_delivery_manifest.json"
     _write_json(
@@ -820,7 +847,10 @@ def test_v70_inspector_and_b5a_reject_stale_terminal_after_artifact_hash_mismatc
         project_root,
         fill_unresolved_better_candidates_as_infeasible=True,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
 
     rules_path = project_root / "rules" / "canonical_rules.json"
     rules_payload = json.loads(rules_path.read_text(encoding="utf-8"))
@@ -871,7 +901,10 @@ def test_v70_inspector_and_b5a_reject_terminal_manifest_without_current_delivery
         project_root,
         fill_unresolved_better_candidates_as_infeasible=True,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     facility_pools = load_candidate_placements(
         project_root / "data" / "preprocessed" / "candidate_placements.json"
     )
@@ -927,7 +960,10 @@ def test_v71_inspector_and_b5a_reject_manifest_with_stale_artifact_table(
         project_root,
         fill_unresolved_better_candidates_as_infeasible=True,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     facility_pools = load_candidate_placements(
         project_root / "data" / "preprocessed" / "candidate_placements.json"
     )
@@ -991,7 +1027,10 @@ def _export_current_certified_surface(
         project_root,
         fill_unresolved_better_candidates_as_infeasible=True,
     )
-    persist_forged_terminal_certified_state(campaign)
+    persist_forged_terminal_certified_state(
+        campaign,
+        include_empty_fixed_witness_audit=True,
+    )
     facility_pools = load_candidate_placements(
         project_root / "data" / "preprocessed" / "candidate_placements.json"
     )

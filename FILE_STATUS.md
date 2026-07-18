@@ -52,7 +52,7 @@
 | `rules/preprocess_plan.json` | CURRENT_CODE_ALIGNED | additive preprocess plan，不能覆盖 recipe/target/commodity truth；1,383 bytes / SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee` |
 | `data/preprocessed/mandatory_exact_instances.json` | CURRENT_CODE_ALIGNED | mandatory instances |
 | `data/preprocessed/generic_io_requirements.json` | CURRENT_CODE_ALIGNED | validated generic I/O requirements |
-| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | 外部大工件，在不在位因副本而异（用 `scripts/check_external_artifacts.py` 实测，别信文档）；pinned bytes = 53,595,501 / SHA256 `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`；`a914…` 45,774,305、`adcc…` 45,773,799 和 `d5e3…` 53,594,995 仅属 superseded、hash-incompatible 历史链 |
+| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | 外部大工件，在不在位因副本而异（用 `scripts/check_external_artifacts.py` 实测，别信文档）；pinned bytes = 54,467,709 / SHA256 `f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`；`a914…` 45,774,305、`adcc…` 45,773,799、`d5e3…` 53,594,995 和 `78e2…` 53,595,501 仅属 superseded、hash-incompatible 历史链 |
 
 轻量分发可以 externalize candidate placements（stripped 审查副本通常缺它，默认 checker 容忍缺失、`--require` 不容忍）；certified contract 始终要求 pinned bytes 先恢复再跑。
 

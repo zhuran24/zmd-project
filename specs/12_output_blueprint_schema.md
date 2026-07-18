@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
-source_of_truth: src/io/output_schema.py, src/io/serializer.py, src/io/delivery_manifest.py, src/search/certified_surface.py
-last_verified_against: 2026-06-26
+source_of_truth: src/io/output_schema.py, src/io/serializer.py, src/io/delivery_manifest.py, src/search/certified_surface.py, src/search/terminal_fixed_witness_verifier.py
+last_verified_against: 2026-07-18
 owner: output-layer
 ---
 
@@ -66,6 +66,13 @@ active port 的 `type` 只能为 `input` / `output`，方向只能为 `N` / `S` 
 坐标与 commodity。serializer 从 terminal `placement_solution` 和当前 candidate pools 恢复
 facility 几何；找不到唯一可解释的 pose 时应失败，而不是猜测。
 
+certified `active_ports` 不得从 pose 的全部物理口推断。terminal fixed-witness verifier 将实际
+绑定选中的规范化 `port_specs` 连同 `port_specs_digest` 写入 durable audit；capsule 在封存
+`CERTIFIED` 前校验其结构、数量、摘要、去重和实例归属，失败即降级为 `UNPROVEN`；verified publisher
+只能在 project-bound seal/replay 验证后读取该 carrier，并显式传给 certified serializer。
+未绑定的 pose 槽（包括贴边 pose 的出界槽）不导出。任何 active port 出界、引用未知实例、
+不属于所选 pose 的对应方向/类型槽，或擅自改写 concrete commodity，均须 fail closed。
+
 ## 12.5 Routing network
 
 routing payload 被规范化为 ground/elevated 层的坐标映射。组件类型受
@@ -78,7 +85,8 @@ routing payload 被规范化为 ground/elevated 层的坐标映射。组件类�
 
 1. 从 canonical campaign path 重读 supervisor-sealed state；
 2. 验证 resume/current-hash、terminal frontier、sink replay、fixed witness 与 publish-open gate；
-3. 从 verified terminal result 构造 `final_solution` 与 blueprint；
+3. 从 verified terminal result 与 digest-bound fixed-witness `port_specs` 构造
+   `final_solution` 与 blueprint；
 4. 原子写入两份 payload；
 5. 构造并校验 delivery manifest，使其绑定同一 campaign 与文件哈希；
 6. 再运行 public-surface verifier；

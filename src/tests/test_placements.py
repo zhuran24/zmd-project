@@ -6,7 +6,7 @@ Status: ACCEPTED_DRAFT
   - Pool key 与 canonical_rules.json 对齐
   - 占格数量与模板尺寸一致
   - 无越界坐标
-  - 面壁死锁已剔除
+  - 本体贴边 pose 与体外未启用实体口保留
   - 边界口锚定规则
   - 供电桩覆盖域截断
   - 协议箱实体端口
@@ -175,39 +175,38 @@ def test_no_out_of_bounds_cells(facility_pools):
                 )
 
 
-def test_no_out_of_bounds_ports(facility_pools):
-    """所有端口的接管格坐标必须在 [0, 69] 范围内（已经是相邻格）。"""
+def test_physical_access_cells_are_in_grid_or_one_step_outside(facility_pools):
+    """实体口记录是本体外相邻格，因此贴边本体可产生 -1/70 坐标。"""
+    saw_oog = False
     for tpl_key, placements in facility_pools.items():
         for pose in placements:
             for port in pose["input_port_cells"] + pose["output_port_cells"]:
                 x, y = port["x"], port["y"]
-                assert 0 <= x <= 69 and 0 <= y <= 69, (
-                    f"{tpl_key}/{pose['pose_id']}: 端口越界 ({x}, {y}, dir={port['dir']})"
+                assert -1 <= x <= 70 and -1 <= y <= 70, (
+                    f"{tpl_key}/{pose['pose_id']}: 端口不与图内本体相邻 "
+                    f"({x}, {y}, dir={port['dir']})"
                 )
+                saw_oog = saw_oog or not (0 <= x < 70 and 0 <= y < 70)
+
+    assert saw_oog
 
 
 # ============================================================================
-# 核心测试：面壁死锁剔除
+# 核心测试：贴边本体保留
 # ============================================================================
 
-def test_wall_facing_pruned(facility_pools):
-    """不应存在输入或输出端口全部朝墙外的 pose（面壁死锁 §6.5.1）。
-    检测方法：如果一个 pose 有端口，则至少有一个端口的接管格在地图内。
-    """
-    for tpl_key, placements in facility_pools.items():
-        for pose in placements:
-            for port_type in ["input_port_cells", "output_port_cells"]:
-                ports = pose[port_type]
-                if not ports:
-                    continue  # 无端口的模板（如供电桩、协议箱）跳过
+def test_wall_facing_physical_side_is_retained_for_inactive_ports(facility_pools):
+    """候选域不得因尚未启用的整侧实体口朝地图外而删除合法本体 pose。"""
+    pose = next(
+        pose
+        for pose in facility_pools["protocol_storage_box"]
+        if pose["anchor"] == {"x": 10, "y": 0}
+        and pose["pose_params"]["port_mode"] == "TB"
+    )
 
-                all_blocked = all(
-                    p["x"] < 0 or p["x"] >= 70 or p["y"] < 0 or p["y"] >= 70
-                    for p in ports
-                )
-                assert not all_blocked, (
-                    f"{tpl_key}/{pose['pose_id']}: {port_type} 全部朝墙外（面壁死锁未剔除）"
-                )
+    assert all(port["y"] == -1 for port in pose["output_port_cells"])
+    assert all(0 <= port["x"] < 70 for port in pose["output_port_cells"])
+    assert all(0 <= cell[0] < 70 and 0 <= cell[1] < 70 for cell in pose["occupied_cells"])
 
 
 # ============================================================================
@@ -294,7 +293,7 @@ def test_protocol_box_has_three_physical_inputs_and_outputs(facility_pools):
         pytest.skip("无 protocol_storage_box 池")
 
     poses = facility_pools["protocol_storage_box"]
-    assert len(poses) == 17_952
+    assert len(poses) == 18_496
     assert {pose["pose_params"]["port_mode"] for pose in poses} == {
         "TB",
         "BT",
@@ -306,9 +305,14 @@ def test_protocol_box_has_three_physical_inputs_and_outputs(facility_pools):
         assert len(pose["input_port_cells"]) == 3
         assert len(pose["output_port_cells"]) == 3
         for port in pose["input_port_cells"] + pose["output_port_cells"]:
-            assert 0 <= int(port["x"]) < 70
-            assert 0 <= int(port["y"]) < 70
+            assert -1 <= int(port["x"]) <= 70
+            assert -1 <= int(port["y"]) <= 70
             assert str(port["dir"]) in {"N", "E", "S", "W"}
+    assert any(
+        not (0 <= int(port["x"]) < 70 and 0 <= int(port["y"]) < 70)
+        for pose in poses
+        for port in pose["input_port_cells"] + pose["output_port_cells"]
+    )
 
 
 # ============================================================================
