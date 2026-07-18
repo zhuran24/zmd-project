@@ -53,6 +53,17 @@ harness 扩 `cpsat_max` 臂（v5 配方 `--maximize` 受控重跑，`--time-limi
 
 判读：WIT-04 收官。witness 线的真瓶颈确认转移为 **routing-aware 布线**（摆满已廉价、绑定 FEASIBLE 已验证，缺的是 front 暴露+17 商品连通的构造器），与 doc 12 §3 的缺口判断在新语义下一致。
 
+## 5b. witness 链独立零违规审计（收官件）
+
+`batch4_harness/independent_zero_violation_audit.py`（纯 stdlib、运行时零 `src/` import、池 SHA fail-closed、需求表字面量+628 账自检）对两臂复核：
+
+| 臂 | placed | front 复核台数 | occupied_cells | 违规 | 判定 |
+| --- | --- | --- | --- | --- | --- |
+| greedy_s0（266/266） | 266 | 219 | **3,544**（=规格钉值） | 0 | PASS |
+| cpsat_max_1800（部分布局） | 235 | 188 | 3,045 | 0 | PASS |
+
+独立性边界：几何谓词（in-grid/两两不重叠/ghost 净空/identity front 计数）全部本文件第三方重实现，不共享生产 helper 代码路径（历史 front 错位正藏在那里）；需求表 `[req_in, vis_out]` 为一次性抄录字面量，启动自检强制复算出 628 独立账（310+2=312 in / 264+46+6=316 out），表漂移即 fail-closed。灵敏度用五路突变金丝雀验证（同 pose 重叠 / ghost 压本体 / 缺台 / 类型计数 / 全口遮挡双向 front 违规），全部正确检出、退出码 1。
+
 ## 6. 批 4 剩余项（更新后）
 
-生产 FCL A/B ✅；RAB-on SIGSEGV 调查 ✅（销项）；witness maximize 臂 + 新池基线 ✅（本文 §5）；Rounds 梯队 1-2 ✅（梯队 2 见 `05` 号）；剩：独立零违规审计（witness 链）、Rounds 梯队 3（Round 3 必要条件实体口重证 + Round 4/5 bespoke 紧凑 master 重建——已按 owner 端到端流程派 codex plan 模式进行中）、PB 当前 provenance 工件的完整 solver+verifier 闭环。"24 杠杆穷尽/结构墙"等全称判词维持撤回。
+生产 FCL A/B ✅；RAB-on SIGSEGV 调查 ✅（销项）；witness maximize 臂 + 新池基线 ✅（本文 §5）；witness 链独立零违规审计 ✅（本文 §5b）；Rounds 梯队 1-2 ✅（梯队 2 见 `05` 号）；剩：Rounds 梯队 3（Round 3 必要条件实体口重证 + Round 4/5 bespoke 紧凑 master 重建——已按 owner 端到端流程派 codex plan 模式进行中）、PB 当前 provenance 工件的完整 solver+verifier 闭环。"24 杠杆穷尽/结构墙"等全称判词维持撤回。
