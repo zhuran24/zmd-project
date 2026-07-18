@@ -48,6 +48,10 @@ class ArmSpec:
     ghost_w: int = 6
     ghost_h: int = 7
     supports_seed: bool = False
+    # cpsat 臂：ghost 位置是模型自由变量，脚本不接受 --ghost-x/-y；
+    # extra_argv 携带该臂的固定历史配方（如 --maximize）。
+    takes_ghost_anchor: bool = True
+    extra_argv: tuple[str, ...] = ()
 
 
 ARM_SPECS: Mapping[str, ArmSpec] = {
@@ -67,6 +71,15 @@ ARM_SPECS: Mapping[str, ArmSpec] = {
         ghost_x=62,
         ghost_y=2,
         supports_seed=True,
+    ),
+    # WIT-04 maximize 臂（历史 cpsat v5 配方=TB-only+maximize；构造日志
+    # 01_construction_log §2 收官行）。ghost_x/y 仅占位（不入 argv）。
+    "cpsat_max": ArmSpec(
+        script_name="witness_cpsat_v1.py",
+        ghost_x=-1,
+        ghost_y=-1,
+        takes_ghost_anchor=False,
+        extra_argv=("--maximize",),
     ),
 }
 
@@ -174,17 +187,17 @@ def _build_historical_argv(
         ghost_h=ghost_h,
         seed=seed,
     )
-    historical_argv = [
-        "--ghost-x",
-        str(values["ghost_x"]),
-        "--ghost-y",
-        str(values["ghost_y"]),
-        "--ghost-w",
-        str(values["ghost_w"]),
-        "--ghost-h",
-        str(values["ghost_h"]),
-    ]
-    if ARM_SPECS[arm].supports_seed:
+    spec = ARM_SPECS[arm]
+    historical_argv = []
+    if spec.takes_ghost_anchor:
+        historical_argv.extend(
+            ("--ghost-x", str(values["ghost_x"]), "--ghost-y", str(values["ghost_y"]))
+        )
+    historical_argv.extend(
+        ("--ghost-w", str(values["ghost_w"]), "--ghost-h", str(values["ghost_h"]))
+    )
+    historical_argv.extend(spec.extra_argv)
+    if spec.supports_seed:
         historical_argv.extend(("--seed", str(values["seed"])))
     if not with_binding:
         historical_argv.append("--skip-binding")
@@ -318,6 +331,16 @@ def _parser() -> argparse.ArgumentParser:
         action="store_true",
         help="explicitly opt in to the historical arm's binding build",
     )
+    parser.add_argument(
+        "--time-limit",
+        type=float,
+        help="cpsat_max only: solver wall budget seconds (arm script default 120)",
+    )
+    parser.add_argument(
+        "--hint-from",
+        type=Path,
+        help="cpsat_max only: warm-hint result.json from another arm run",
+    )
     return parser
 
 
@@ -330,6 +353,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     output_dir = args.output_dir.expanduser().resolve()
     try:
         _validate_new_output_dir(output_dir)
+        if (args.time_limit is not None or args.hint_from is not None) and (
+            args.arm != "cpsat_max"
+        ):
+            raise ValueError("--time-limit/--hint-from are cpsat_max-only options")
         historical_argv, effective_seed = _build_historical_argv(
             arm=args.arm,
             result_path=output_dir / "result.json",
@@ -340,6 +367,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             seed=args.seed,
             with_binding=args.with_binding,
         )
+        if args.time_limit is not None:
+            historical_argv[-2:-2] = ["--time-limit", str(args.time_limit)]
+        if args.hint_from is not None:
+            hint_path = args.hint_from.expanduser().resolve()
+            if not hint_path.is_file():
+                raise ValueError(f"--hint-from not found: {hint_path}")
+            historical_argv[-2:-2] = ["--hint-from", str(hint_path)]
     except (FileExistsError, KeyError, ValueError) as exc:
         parser.error(str(exc))
 

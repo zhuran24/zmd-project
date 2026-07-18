@@ -89,6 +89,32 @@ def test_skyline_defaults_pin_historical_seed_zero(tmp_path: Path) -> None:
     assert seed == 0
 
 
+def test_cpsat_max_argv_has_no_ghost_anchor_and_carries_maximize(tmp_path: Path) -> None:
+    result_path = tmp_path / "result.json"
+    argv, seed = _RUNNER._build_historical_argv(
+        arm="cpsat_max",
+        result_path=result_path,
+        ghost_w=6,
+        ghost_h=7,
+    )
+
+    assert seed is None
+    assert "--ghost-x" not in argv and "--ghost-y" not in argv
+    assert "--maximize" in argv
+    assert "--seed" not in argv
+    assert argv[-2:] == ["--out", str(result_path)]
+    assert "--skip-binding" in argv
+
+
+def test_cpsat_max_rejects_seed_like_other_seedless_arms(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="does not accept --seed"):
+        _RUNNER._build_historical_argv(
+            arm="cpsat_max",
+            result_path=tmp_path / "result.json",
+            seed=3,
+        )
+
+
 def test_existing_output_directory_is_always_rejected(tmp_path: Path) -> None:
     with pytest.raises(FileExistsError, match="refusing to reuse"):
         _RUNNER._validate_new_output_dir(tmp_path)
