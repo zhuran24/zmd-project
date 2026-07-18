@@ -1,5 +1,11 @@
 # 02 — 24 Lever 累积 verdict (全 dead)
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文中依赖旧 front 的
+> Phase 4–6、RAB/FCL 与相关常数 benchmark 已撤销或待重验；“24 lever
+> 全 dead/范式已穷尽”继续保持撤回（MAY-01/MAY-04/MAY-06）。纯 master、
+> power、area 与渐近复杂度结论不受此标记整体否定；逐项边界见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 每个 lever 一段, 含 paradigm 描述 + verdict + 死因. 时间序排列.
 
 ## L1-L16: pose-bool framework 前 + 内 cut form (2025-12 ~ 2026-05-17)

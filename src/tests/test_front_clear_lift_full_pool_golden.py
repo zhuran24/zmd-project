@@ -2,9 +2,10 @@
 
 真实冻结 candidate 池按 eligible mandatory operation group 全量逐 pose 双向核对：
 
-1. master 派生的 offsets_by_mode 应用到 pose 原始锚点 == 测试侧直接从 pose
-   原始端口数据 + routing 同源 _DIR_DELTA 独立重算的 front 集——**双向
-   equality**（审查 F4b：只验"被占不能为1"抓不到超杀方向）；
+1. master 派生的 offsets_by_mode 应用到 pose 原始锚点 == 测试侧直接把
+   pose 原始端口绝对坐标解释为 front 集——**双向 equality**（审查 F4b：
+   只验"被占不能为1"抓不到超杀方向）。测试侧仅接受字面 N/S/E/W，
+   不调用任何生产 front helper 或方向偏移表；
 2. padded 索引三断言：row、column 各自在界 + 标量 f 与独立重算相等
    （审查 F1-padding：不许只断言标量 f）；
 3. demand 与 build_stats.demands_by_operation 一致。
@@ -17,8 +18,6 @@ import os
 from typing import Any, Dict, Iterator
 
 import pytest
-
-from src.models.routing_binding_context import _DIR_DELTA
 
 PROJECT_ROOT = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -119,7 +118,7 @@ def test_full_pool_offsets_bidirectional_golden(_lift_master: Any) -> None:
                 # stored 端口坐标即 front 绝对格，不再方向步进
                 raw_fronts = set()
                 for port in pose.get(field_name, []) or []:
-                    assert str(port["dir"]) in _DIR_DELTA
+                    assert str(port["dir"]) in {"N", "S", "E", "W"}
                     raw_fronts.add((int(port["x"]), int(port["y"])))
                 derived_fronts = {
                     (anchor_x + odx, anchor_y + ody)

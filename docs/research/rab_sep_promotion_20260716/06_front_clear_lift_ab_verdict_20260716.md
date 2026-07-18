@@ -1,5 +1,10 @@
 # 06 — front-clear lift 阶梯4/5：OFF/ON A/B 判读（2026-07-16）
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文的 A/B 数字、probe 2–4
+> 性能归因与长跑外推来自错位 front 模型，不得作为当前性能结论
+> （FCL-03/FCL-05/FCL-06）。文件仅作历史记录；重跑要求见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > 数据 = `.artifacts/fc_lift_ab_20260716/{arm_on,arm_off,arm_on_probe2,arm_on_probe3,arm_on_probe4}/`；
 > harness = `fc_lift_ab_runner.py`（本目录）。两臂同 revision `7b9cbae`、独立
 > 进程、systemd-run MemoryMax=36G/SwapMax=16G（审查 F-06/R16 纪律）；单锚点

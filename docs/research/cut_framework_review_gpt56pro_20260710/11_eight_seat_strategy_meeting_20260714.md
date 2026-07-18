@@ -1,5 +1,10 @@
 # 11 — 八人战略会议纪要(2026-07-14):「慢=死」约束下如何拿到有界证明
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文对 routing FRONT
+> precheck 的“真墙”定位及约 1,499 次拒绝/零 routing attempt 等数字已撤销
+> （RND-01）。四实例条件式规约仍可保留；逐项边界见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > owner 召集的八人会(4 claude + 4 codex,真·点对点第二轮)。命题:在本项目「任何只保证最终收敛的方法=死」的约束下,什么策略能产出**有界大小的全局最优证明**而非赌收敛?
 > Chair(team-lead)在会中用批C 执行计划 §7 实测 + codegraph 把两个 load-bearing 事实定案后注入,八席在**正确的问题**上收口。
 > 席位:claude-s1(§4夹逼)/s2(混合剪枝)/s3(怀疑者)/s4(认证优先);codex-s1(Farkas)/s2(OR理论)/s3(§2完备性)/s4(对抗现实)。

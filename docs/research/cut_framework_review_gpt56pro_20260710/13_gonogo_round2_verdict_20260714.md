@@ -1,5 +1,10 @@
 # 13 — go/no-go round-2 + 合并定论(2026-07-14):两条负轨全死,witness 有进展未达
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文依赖旧 front predicate
+> 的 582→138 改善、front 地板及相关路线判死已撤销（RND-04）；不得据此
+> 恢复“所有有界证明方法均不可达”的全称结论。逐项边界见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > 承 doc 12。工作流 `wf_27e41160-4cf`(4 Attack[min-cut claude+codex / constructor claude+codex] + 3 对抗 Verify),zero-sealed 只读,~53min。harness 在 `scratchpad/spike_round2/`;journal 在 `subagents/workflows/wf_27e41160-4cf/journal.jsonl`。
 
 ## 0. 合并定论(rounds 1+2)

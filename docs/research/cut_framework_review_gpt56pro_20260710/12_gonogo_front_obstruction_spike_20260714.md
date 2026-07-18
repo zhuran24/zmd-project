@@ -1,5 +1,10 @@
 # 12 — go/no-go 前障碍 spike 结果(2026-07-14):双模型独立算 + 四席对抗验证
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文的 1,240 格预算、-38
+> 缺口、46/45 打包、`front_blocked=582/620`、pattern/domain 空域及 fatal
+> 判词均已撤销（RND-02/RND-03）。保留部分与重跑要求见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > 承 doc 11 八人会议的 §6 决定性实验。工作流 `wf_6d213858-32f`(12 席:4 Map + 4 Compute[claude/codex 各半 T-负/T-正] + 4 对抗 Verify[claude/codex 混]),zero-sealed 只读,~46min。
 > harness 在 `scratchpad/spike_gonogo/`;journal 在 `subagents/workflows/wf_6d213858-32f/journal.jsonl`。
 

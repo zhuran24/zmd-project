@@ -1,5 +1,10 @@
 # 17 — Fable 对照实验三方对照判读（2026-07-16 凌晨）
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文引用的旧 RAB 固定占据、
+> pattern 剪除与 EMPTY_DOMAIN 统计使用错位 front，已撤销（RAB-03）。
+> 其他对照方法论不得被该标记一并外推；逐项边界见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > owner 07-15 提议："把 Fable 段的内容干净地喂给一个 Fable 模型，开一个匹配的工作树让它做一段，
 > 跟 Opus 段比一下，或许就能对比出问题所在。"本文是该实验的设计、结果与三方对照
 > （Opus 实际轨迹 doc10-16 × Fable 对照组 × 31-agent 审计判词），含 codex 交叉裁判结论。

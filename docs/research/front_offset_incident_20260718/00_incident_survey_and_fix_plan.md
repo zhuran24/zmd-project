@@ -174,3 +174,34 @@ certified 主链 identity 语义原子 reseal 已完成并全绿验收：
 - **诚实边界**：本批全部面在 certified 下不可达（env 白名单/registry
   边界挡住），修的是"未来接线时旧语义回流"的隐患，不改变任何当前
   certified 数字。
+
+## §8 批 3+5 落地记录（2026-07-18，提交 `9c0f724`）
+
+- **候选域补齐**：按 owner OQ8 裁决重生成当前候选池，现为 7 个 facility pool、
+  共 81,797 poses；
+  `candidate_placements.json` SHA-256 为 `78e2bcf0…3fef`。mandatory、generic
+  I/O 与 canonical rules 同步重钉，未沿用事故前 66,405-pose 池的证明效力。
+- **实体提供者语义**：final product 的 binding 现在路由到 physical provider；
+  协议箱实体口、直连硬规则、仓储/中枢桥与对应 certified sidecar/终验路径同批
+  收口，避免仅改预处理而留下消费侧旧解释。
+- **freeze/reseal**：PROJECT_LOCK、proof obligations、strong-status allowlist、
+  preprocess context 和交付文档按 ritual 一致更新；不是为消门禁而单独换 hash。
+- **验收**：preflight `--full` 19/19（4,503 passed / 74 skipped），慢 lane
+  31/31；提交为 `fix(binding): route final products to physical providers`。
+- **后续**：以该 revision 和 81,797-pose 输入作为批 4 新实验基线；历史输入只准
+  用于明确标注的重判对照。
+
+## §9 批 4 阶段性复验记录（2026-07-18，部分执行）
+
+- 40 条历史结论的三态账见
+  [`01_historical_rejudgment_addendum.md`](01_historical_rejudgment_addendum.md)；
+  13 份受污染材料已在文件头撤回强结论并回链事故账。
+- 独立 front oracle、六布局 RAB front-only 对照、当前池 witness+binding、PB v2
+  翻译审计和一组有界生产 RAB A/B 已完成；逐项 hash、资源数据与诚实边界见
+  [`02_batch4_revalidation_results.md`](02_batch4_revalidation_results.md)。
+- RAB-on 在写出终态诊断 JSON 后，于 Python 退出清理 OR-Tools protobuf 时
+  `SIGSEGV`（worker `-11`），因此记录为失败而非 clean run；两臂均无 solution，
+  也未进入 routing solve（RAB-off 仅执行到 precheck）。
+- FCL 生产 off/on、Round 1–5 和 PB solver+verifier 闭环未完成。当前只可称
+  **阶段性复验**；不得恢复旧 certificate、“24 杠杆穷尽”“结构墙”或 business
+  UNSAT 等全称结论。

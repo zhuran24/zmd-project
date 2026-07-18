@@ -1,5 +1,10 @@
 # 01 — ①′ 第一段：front-free 必要性 soundness 审查（v2 修订版，2026-07-16，对抗验证完成）
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文依赖旧
+> `front = stored_port + direction_delta` 的命题实例、EMPTY_DOMAIN 证书与
+> allowlist 背书已撤销（RAB-01/RAB-02）。文件仅作历史记录；未受影响的
+> 结构守卫及恢复条件见[历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > owner 07-16 批准 ①′ 三段批（soundness 审查 → env 分类提升 → prod 注入演习）后的第一段交付。
 > **v2 = 对抗验证完成后的修订版**：11 席对抗（V1-V5 攻击/复核共 10 席 opus + 1 席 codex 全文
 > 对抗审查，全部只读 HEAD `bf9649a`，零 master solve、零 certified 启动、零仓库写入）。

@@ -1,5 +1,10 @@
 # 14 — go/no-go round-3 + 上界墙裂缝(2026-07-14→15):必要条件 sound,且对抗席挖出它被自我低估的上界价值
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文的 138→104、83–85
+> front 地板、PASS/FAIL 统计及旧必要条件实例均已撤销或待重验（RND-04/
+> RND-05）。逻辑模板与实测数字必须分开；详见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > 承 doc 13。工作流 `wf_d7453509-15d`(4 Work[路①lift-scout claude+codex / 路②witness构造器 claude+codex] + 3 对抗 Verify),zero-sealed 只读,~80min,7 席 0 error。harness 在 `scratchpad/spike_round3/`;journal 在 `subagents/workflows/wf_d7453509-15d/journal.jsonl`。
 
 ## 0. 一句话结论(改写 round-2 的"上界是硬墙")

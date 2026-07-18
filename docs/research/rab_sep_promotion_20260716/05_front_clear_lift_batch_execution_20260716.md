@@ -1,5 +1,10 @@
 # 05 — front-clear 上收批：实施批执行记录（2026-07-16）
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文依赖错位 front 的全池
+> golden、corpus 与“零 mismatch”证明力已撤销（FCL-03）；工程结构资产
+> 是否保留及 corrected-front 恢复条件见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > 设计与审查收口 = doc 04 v2（四席对抗验证 wf_d123bca7：soundness×2
 > codex/opus + encoding codex + cost/scope codex；判决与逐条处置见其 §9）。
 > 本文书 = 实施批（任务 4-8）执行账目。基线 HEAD `815a73e`。

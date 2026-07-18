@@ -1,5 +1,11 @@
 # B1 Phase 5 — Cell-Level Cut + A Priori Port Clearance (3 form 全 over-restrictive)
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文的 47,666 个约束、十个
+> `INFEASIBLE@47–56s`、相关旧 front 数字及据此得出的判词检查了错位 front，
+> 已撤销（MAY-02）。关于“master 不知道最终 active port、假定全部 port active
+> 会超杀”的量词结论不依赖该坐标错误，仍然保留（MAY-03）。详见
+> [历史重判附录](../../../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 ## 当时项目情况
 
 B1 Phase 4 routing convergence 发现 port-clearance 是 cut 方向. 实验 3 种 cut form.

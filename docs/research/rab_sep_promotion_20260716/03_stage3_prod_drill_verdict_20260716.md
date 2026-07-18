@@ -1,5 +1,10 @@
 # 03 — ①′ 第三段判读：prod 注入演习（单发 6×6 锚点，2026-07-16）
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文的 EMPTY_DOMAIN、cut、
+> blocker/core 分布及“绕开 F-6 踏车”数字均基于错位 front，已全部撤销
+> （RAB-03/RAB-04）。文件仅作历史性能记录；重跑要求见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > 数据 = `.artifacts/rab_drill_20260716/arm_rab/`（cell.json / run.log / mem.log）；
 > harness = `rab_drill_runner.py`（本目录）。A/B 基线 = 批C 门6 `drill_arm1`
 > （同配方 fixed/probing3/symmetry3/单worker/alt_cap200、同 6×6 锚点、RAB off）。

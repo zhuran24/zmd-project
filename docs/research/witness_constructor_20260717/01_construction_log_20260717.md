@@ -1,5 +1,10 @@
 # witness 构造战役日志（2026-07-17 凌晨离线时段）
 
+> **历史失效标记（Batch 4，2026-07-18）**：本文的“两格须”、面积余量、
+> 193–241 战绩/排名及“12 发零违规”均依赖错位 front 或共模审计，已撤销
+> （WIT-01/WIT-02/WIT-03）。原文仅作事故史料；重跑要求见
+> [历史重判附录](../front_offset_incident_20260718/01_historical_rejudgment_addendum.md)。
+
 > 决策包（`rab_sep_promotion_20260716/07_owner_decision_package_20260717.md`）
 > 牌 A 的执行记录。目标：构造放下全部 266 mandatory + 留 6×7 空矩形、
 > front-clear 审计零违规的布局（witness placement），随后真 binding 复核。
