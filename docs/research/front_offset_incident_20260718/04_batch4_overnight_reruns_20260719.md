@@ -44,6 +44,15 @@ codex `0c8603d`（82,829 域）+ `5a697c8`（strict cleanroom 包）经对角验
 - systemd-run 会把命令串里的 `${VAR}` 在 unit 层展开为空（`$VAR` 存活）：FCL 链式脚本因此第一臂输出目录名残缺为 `fcl_lift__postmem`（内容完好，`run_record.configuration.lift=off`/`arm=fcl_lift_off` 为权威标注）、第二臂因目录撞名被 runner fail-closed 拒绝后单独补跑。给 systemd-run 传含变量的 bash 脚本一律写死参数或转义 `$$`。
 - 本轮三臂输入池均为 81,797（`78e2bcf0…`，跑动期间为当时钉值）；82,829 域修正合并在臂完成之后。**若未来判读对贴边 pose 敏感（RAB/FCL 的 empty-domain 计数理论上受 core/box 新增 1,032 pose 影响），需在新池重跑对应臂**——本记录不预判该差异方向。
 
-## 5. 批 4 剩余项（更新后）
+## 5. witness maximize 臂（WIT-04，凌晨补跑）
 
-生产 FCL A/B ✅（本轮）；RAB-on SIGSEGV 调查 ✅（销项）；witness maximize 臂（`witness_cpsat_v1.py` 未入 batch4 harness ARM_SPECS，待扩臂受控重跑）+ 独立零违规审计；Round 1–5 重跑（清单及梯队见 rounds 重跑规划，第 1 梯队已由本轮完成）；PB 当前 provenance 工件的完整 solver+verifier 闭环。"24 杠杆穷尽/结构墙"等全称判词维持撤回。
+harness 扩 `cpsat_max` 臂（v5 配方 `--maximize` 受控重跑，`--time-limit/--hint-from` 透传；测试 7 passed）后在**新池 82,829**（`f05b1291…`，域修正合并后）跑：
+
+- **新池 greedy 基线**：266/266 全放置，0.48s（`witness_newpool/greedy_s0/`）——对照当年贪心天花板 241/266：**"摆不满"这个 witness 构造瓶颈在修正语义+补域后已消失**（批 4 §2 的 greedy/comb 266/266 同向，本轮加上新池贴边域再证）；
+- **cpsat_max（1800s + greedy hint）**：FEASIBLE / 235 placed / ghost 净空 / frozen 47（`witness_newpool/cpsat_max_1800/`）——从 hint 出发 LNS 30 分钟只回到 235 < 266，**"CP-SAT maximize 弱于结构化贪心"的历史收官结论（构造日志 cpsat v7）在新池复现**。
+
+判读：WIT-04 收官。witness 线的真瓶颈确认转移为 **routing-aware 布线**（摆满已廉价、绑定 FEASIBLE 已验证，缺的是 front 暴露+17 商品连通的构造器），与 doc 12 §3 的缺口判断在新语义下一致。
+
+## 6. 批 4 剩余项（更新后）
+
+生产 FCL A/B ✅；RAB-on SIGSEGV 调查 ✅（销项）；witness maximize 臂 + 新池基线 ✅（本文 §5）；Rounds 梯队 1-2 ✅（梯队 2 见 `05` 号）；剩：独立零违规审计（witness 链）、Rounds 梯队 3（Round 3 必要条件实体口重证 + Round 4/5 bespoke 紧凑 master 重建——已按 owner 端到端流程派 codex plan 模式进行中）、PB 当前 provenance 工件的完整 solver+verifier 闭环。"24 杠杆穷尽/结构墙"等全称判词维持撤回。
