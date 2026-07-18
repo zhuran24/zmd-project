@@ -39,10 +39,10 @@ def is_routing_visible_output_commodity(
 ) -> bool:
     """RFSC 输出侧排除规则的单一真相源（demand SSOT，front-clear 上收批）。
 
-    routing-free wireless final commodity 的 output port 只是 binding 选择、
-    不是 routing 终端——binding filter（_filter_pose_binding_domain）、
-    extract_port_specs 与 master 侧 front-clear lift 的 demand 计算三处必须
-    共用本谓词，禁止各自内联该规则（口径漂移 = lift 超杀方向）。
+    现行 canonical generic-input 成品均是真 routed 商品，producer output
+    port 必须作为 routing source。binding filter（_filter_pose_binding_domain）、
+    extract_port_specs 与 master 侧 front-clear lift 的 demand 计算仍共用本
+    谓词，以便未来若经 owner 裁决引入真实路由豁免时只有一个收窄点。
     取值 str-strict：缺键/坏形态在调用点崩溃 fail-closed，不静默默认。
     """
     return str(commodity) not in routing_free_sink_commodities
@@ -51,17 +51,21 @@ def is_routing_visible_output_commodity(
 def routing_free_sink_commodities_from_generic_inputs(
     required_generic_inputs: Mapping[Any, Any],
 ) -> frozenset[str]:
-    """RFSC 集派生规则的单一真相源：required_generic_inputs 中 required>0 者。
+    """RFSC 集派生规则的单一真相源——批 5 (2026-07-18) 改判后恒为空集。
 
-    binding（PortBindingModel）与 master front-clear lift 必须共用本函数派生
-    routing_free_sink_commodities（同一 certified generic_io snapshot 进、
-    同一集合出）；各自内联 = demand 口径漂移面。
+    owner 游戏实测定谳（rules_audit_20260718/00 §3.1/§3.2）：generic_input
+    终品（成品）是**真 routed 商品**——producer 输出口=routing source、绑定的
+    箱/中枢实体收货槽=routing sink，"无线"仅存在于箱→仓库段、不豁免任何
+    路由几何。旧派生（required>0 ⇒ routing-free）是 F03-R3-01 错位语义的
+    核心开关。本函数保留为 SSOT 锚点（binding filter、extract_port_specs、
+    master front-clear lift 三处仍须经由本函数拿排除集，禁止内联），但恒返
+    回空集；输入仍被消费以保留坏形态崩溃的 fail-closed 行为。若未来出现
+    真正 routing-free 的商品类别，必须经 owner 裁决在此重新收窄。
     """
-    return frozenset(
+    for commodity, required in dict(required_generic_inputs).items():
         str(commodity)
-        for commodity, required in dict(required_generic_inputs).items()
-        if int(required) > 0
-    )
+        int(required)
+    return frozenset()
 
 
 def routing_visible_port_demands(
@@ -73,11 +77,11 @@ def routing_visible_port_demands(
     语义 = 枚举器×filter 的联立蕴含（计数等价定理，doc 04 v2 §1.1/§3.4）：
     - req_in  = 输入侧 slot 计数总和（filter 对 input_ports 全量检查，无排除）；
     - vis_out = 输出侧 slot 中 commodity 过 is_routing_visible_output_commodity
-      的计数总和（RFSC slot 可落被堵/出界 front cell，不消耗自由 front）。
+      的计数总和（现行 canonical RFSC 恒为空，因此所有输出均可见）。
 
     demand 依赖 certified generic_io snapshot（routing_free_sink_commodities
-    由 required_generic_inputs 派生）——它不是纯 op 常量，master 侧消费必须
-    传入与 binding 同源的 snapshot。generic-slot op 出范围：与枚举器同款
+    仍由 required_generic_inputs 的同源快照派生，但当前结果恒为空）。master
+    侧仍必须传入与 binding 同源的 snapshot。generic-slot op 出范围：与枚举器同款
     raise fail-closed，绝不返回猜测值。
     """
     profile = get_operation_port_profile(operation_type)

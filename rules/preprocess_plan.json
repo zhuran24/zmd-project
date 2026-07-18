@@ -35,7 +35,7 @@
   "utility_operations": {
     "protocol_core": {
       "facility_type": "protocol_core",
-      "generic_input_slots": 0,
+      "generic_input_slots": 14,
       "generic_output_slots": 6
     },
     "boundary_io": {
@@ -48,7 +48,7 @@
       "generic_input_slots": 0,
       "generic_output_slots": 0
     },
-    "wireless_sink": {
+    "box_sink": {
       "facility_type": "protocol_storage_box",
       "generic_input_slots": 3,
       "generic_output_slots": 0

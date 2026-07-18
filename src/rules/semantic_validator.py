@@ -148,8 +148,9 @@ class CanonicalSemanticValidator:
                 )
             if meta.sink_kind == "generic_input" and commodity_id in consumers:
                 self.errors.append(
-                    f"商品元数据冲突：generic_input 商品 '{commodity_id}' 是 routing-free 无线终品，不能同时作为配方输入；"
-                    f"否则生产端输出口会被 routing 排除但下游仍需要实体供料。消费者 recipes: {', '.join(sorted(consumers[commodity_id]))}。"
+                    f"商品元数据冲突：generic_input 商品 '{commodity_id}' 是终端成品，不能同时作为配方输入；"
+                    "否则同一商品会同时承担终端 sink 与中间供料角色，污染 demand/binding 的源汇账。"
+                    f"消费者 recipes: {', '.join(sorted(consumers[commodity_id]))}。"
                 )
             if meta.source_kind == "external_boundary" and commodity_id in producers:
                 self.errors.append(

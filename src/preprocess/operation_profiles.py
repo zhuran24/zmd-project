@@ -164,14 +164,27 @@ def aggregate_commodity_rates(
 
 
 
-def aggregate_port_slots(operation_counts: Mapping[str, int]) -> Dict[str, object]:
+def aggregate_port_slots(
+    operation_counts: Mapping[str, int],
+    *,
+    profiles: Mapping[str, OperationPortProfile] | None = None,
+) -> Dict[str, object]:
+    """Aggregate slots against an explicit profile snapshot when provided.
+
+    The default remains the import-time canonical profile map for production
+    consumers.  Regeneration/parity tooling passes profiles derived from the
+    context it is currently auditing, so writing a new context and summarizing
+    it cannot accidentally reuse the previous process-global snapshot.
+    """
+
+    active_profiles = OPERATION_PORT_PROFILES if profiles is None else profiles
     input_slots: DefaultDict[str, int] = defaultdict(int)
     output_slots: DefaultDict[str, int] = defaultdict(int)
     generic_input_slots = 0
     generic_output_slots = 0
 
     for operation_type, count in operation_counts.items():
-        profile = OPERATION_PORT_PROFILES.get(operation_type)
+        profile = active_profiles.get(operation_type)
         if not profile:
             continue
         for commodity, slots in profile.input_slots.items():

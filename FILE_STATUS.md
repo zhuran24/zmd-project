@@ -1,7 +1,7 @@
 # FILE_STATUS.md
 
 **Status:** CURRENT_INVENTORY  
-**Updated:** 2026-07-11
+**Updated:** 2026-07-18
 **Release state:** P1.2 OWNER-CLOSED / P1.3 IN PROGRESS (cut attach not yet promoted)
 **History**: Engineering history lives in [CHANGELOG.md](CHANGELOG.md).
 
@@ -48,13 +48,15 @@
 
 | Path | Status | 说明 |
 |---|---|---|
-| `rules/canonical_rules.json` | CURRENT_CODE_ALIGNED | canonical rule truth |
-| `rules/preprocess_plan.json` | CURRENT_CODE_ALIGNED | additive preprocess plan，不能覆盖 recipe/target/commodity truth |
+| `rules/canonical_rules.json` | CURRENT_CODE_ALIGNED | canonical rule truth；17,510 bytes / SHA256 `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05` |
+| `rules/preprocess_plan.json` | CURRENT_CODE_ALIGNED | additive preprocess plan，不能覆盖 recipe/target/commodity truth；1,383 bytes / SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee` |
 | `data/preprocessed/mandatory_exact_instances.json` | CURRENT_CODE_ALIGNED | mandatory instances |
 | `data/preprocessed/generic_io_requirements.json` | CURRENT_CODE_ALIGNED | validated generic I/O requirements |
-| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | 外部大工件，在不在位因副本而异（用 `scripts/check_external_artifacts.py` 实测，别信文档）；pinned bytes = 45,774,305 / SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`；45,773,799 bytes / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 是拐角修复前 superseded、hash-incompatible 旧版 |
+| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | 外部大工件，在不在位因副本而异（用 `scripts/check_external_artifacts.py` 实测，别信文档）；pinned bytes = 53,595,501 / SHA256 `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`；`a914…` 45,774,305、`adcc…` 45,773,799 和 `d5e3…` 53,594,995 仅属 superseded、hash-incompatible 历史链 |
 
 轻量分发可以 externalize candidate placements（stripped 审查副本通常缺它，默认 checker 容忍缺失、`--require` 不容忍）；certified contract 始终要求 pinned bytes 先恢复再跑。
+
+当前 exact generic-input 语义是实体路由合同：`box_sink` 3 个物理输入/3 个物理输出，mandatory core 14 个物理输入/6 个物理输出，成品从 producer output 路由到 provider physical input。provider-aware、instance-aware 下界不得给未实例化模板记容量；需求 2 已由 mandatory core 覆盖，所以 box lower bound 为 0。campaign 必须绑定并比较完整 `generic_input_slots_by_operation` map。
 
 ## Public / derived outputs
 

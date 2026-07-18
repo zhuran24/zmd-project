@@ -67,6 +67,8 @@ def test_default_preprocess_context_loads_expected_counts() -> None:
     assert len(context.targets) == 2
     assert len(context.cycle_groups) == 2
     assert len(context.utility_operations) == 4
+    assert context.utility_operations["box_sink"].generic_input_slots == 3
+    assert context.utility_operations["protocol_core"].generic_input_slots == 14
     assert context.recipes["packaging_battery"].template == "manufacturing_6x4"
     assert context.targets["valley_battery"].final_recipe_id == "packaging_battery"
 
@@ -132,7 +134,7 @@ def test_preprocess_context_path_loader_rejects_schema_missing_required_rule_fie
 
 def test_preprocess_context_path_loader_rejects_schema_missing_required_plan_field(tmp_path: Path) -> None:
     plan_payload = json.loads(PLAN_JSON_PATH.read_text(encoding="utf-8"))
-    del plan_payload["utility_operations"]["wireless_sink"]["generic_input_slots"]
+    del plan_payload["utility_operations"]["box_sink"]["generic_input_slots"]
 
     rules_path = tmp_path / "canonical_rules.json"
     plan_path = tmp_path / "preprocess_plan.json"
@@ -158,7 +160,7 @@ def test_preprocess_context_plan_rejects_duplicate_slot_keys(tmp_path: Path) -> 
     plan_path = tmp_path / "preprocess_plan.json"
     rules_path.write_text(RULES_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
     plan_path.write_text(
-        '{"utility_operations":{"wireless_sink":{'
+        '{"utility_operations":{"box_sink":{'
         '"facility_type":"protocol_storage_box",'
         '"generic_input_slots":3,'
         '"generic_input_slots":0}}}',
@@ -174,7 +176,7 @@ def test_preprocess_context_rejects_loose_utility_slot_counts(
     raw_plan_dict,
 ) -> None:
     mutated_plan = copy.deepcopy(raw_plan_dict)
-    mutated_plan["utility_operations"]["wireless_sink"]["generic_input_slots"] = "3"
+    mutated_plan["utility_operations"]["box_sink"]["generic_input_slots"] = "3"
 
     with pytest.raises(TypeError, match="generic_input_slots"):
         build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)

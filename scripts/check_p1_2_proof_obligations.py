@@ -61,7 +61,7 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "9efbc3f2f32a56e6b9746604346efd7b6e1ef394fdd3ac9fa6fa7ece3ad33d8c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "45e36984310ecd1e15965ae069c92b7a7f366966ea6dc3763773accc0ce82f9d"
+    "3484e56b3d5f98b93189fd5a81a1c6e05ca098212d8bbf8458501ee7b1f1ec77"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
@@ -294,7 +294,6 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v93_release_rejects_forged_exact_note_with_open_status",
             "test_v93_rejects_solution_entry_fake_certified_claim",
             "test_v93_rejects_public_final_result_ghost_pick_marker",
-            "test_terminal_project_validator_rejects_surplus_protocol_storage_box_blockers",
             "test_v95_rejects_contradictory_pose_optional_public_metadata",
             "test_v95_rejects_terminal_public_last_stop_reason_extra_claim_field",
             "test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent",
@@ -3132,7 +3131,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "27cb3c86944495c9b2cc622f273cfef6d95f03987f3ad65f92da58bcf78e539a"
+    "01417c60a776c460ad2123af6f5f558e86cb33259a6a38e704048c6059fec262"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -7058,8 +7057,8 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "_load_exact_facility_templates": "f29a5f71fa0d356a3cb7c23225f95b4a1758ebb4b32271d99664cb7c134fa324",
     "_load_exact_grid_dimensions": "f77537e75b23073d519685c4c9b99dd1c97ef132fb53ad369e74ac93b7091040",
     "_load_exact_min_side_admissibility": "38dee46b35c6df48b719e2dec75b80a22045e4be569027c498eb292a86cf691a",
-    "_load_exact_required_optional_lower_bounds": "2a8c944e4ef787f4ab8c0891f8647b594021473ce6545106b3f33a0f7c86259e",
-    "_load_exact_safe_area_upper_bound": "e76c35a55ec2fdc2b780363d41334d0c68ae1c6910f1e29674612681b2596e17",
+    "_load_exact_required_optional_lower_bounds": "e7c83418c0239701a95cec5c6383b53a5c3bb2c7aeb533ce3c824611dc011a0d",
+    "_load_exact_safe_area_upper_bound": "623b44e02e3a6677252c2f6dda02ddc8d79591c5db1b865d7019814e75da6e18",
     "_load_sealed_proposal_authority": "08a3e24dd6bcec9550a9399bed7514bb1056352cdf8b424d6bce23485aaefa3e",
     "_load_validated_mandatory_exact_instances": "0f58fdfde46f04ee235f3c42ece7658cb891339828bd86db3f4c7271932d994f",
     "_loads_strict_json_object": "c986086daa844b67ccac811515930976a5b52848bde6252b37adb7ff8304f621",
@@ -7104,7 +7103,7 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "_validate_cut_condition_domain": "f466a64322426b03193d7a7570e3dbaa87be0d6610578990628b2b7c1c31bce0",
     "_validate_master_domain_contract": "468d176a99e86bb85e418c3efc9db7313e406cb77e424be45ac52ed8f0e7baff",
     "_validate_resume_state": "28f61c420fe62c38f5f3a78f2f25eb6ab32117b2eb40f337c161261f66ace8b9",
-    "_validate_terminal_solution_against_project": "c1a38e6f454c2176d545aaaa970a1453953ffa7cfddc9fa55be7c2ac2833d4f4",
+    "_validate_terminal_solution_against_project": "4f3a169921674bded70e1c2d6fd405de1b4dc0088bad2be2aa692eb17df03f85",
     "_validated_mandatory_exact_instances_payload": "b307dd5161420576911d556b064c97d7957e36f0d5c7f760d4d8fbe71c3fe276",
     "atomic_write_json": "557fc8ea38e175d35898f7028cc97849e8deafe8e27287486580c59126582bd0",
     "candidate_key": "0a3b51c9d97a58f62dc099850c417c5927b3cf397458836997abd0ebfbd4b1be",
@@ -12573,7 +12572,6 @@ def _check_certified_cut_replay_contract(
         "infer_certified_optional_lower_bounds",
         "terminal_certified_final_result_solution_power_coverage_missing",
         "terminal_certified_final_result_solution_unforced_power_pole_instance",
-        "terminal_certified_final_result_solution_excess_protocol_storage_box_instance",
         "terminal_certified_final_result_solution_metadata_mismatch",
         "terminal_certified_last_stop_reason_unknown_field",
         "terminal_certified_final_result_ghost_rect_anchor_occupied",
@@ -12983,28 +12981,28 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/io/serializer.py': 'bf29c658f1479d8bd67a5149e420cd2775ee35eee59fce7afaf867c422032db0',
     'src/io/strict_json.py': '65293ed7c0a108e906b16bee206acb1ca7f598040aa85b372023dc954574c45a',
     'src/models/_cpsat_compat.py': 'c8e4ae4b9df87bb7b3bb3f823974b940a6c10e4d651ab811be13ca1d10810d89',
-    'src/models/abstract_routing_layer.py': '3b6d015906cdbab461e40806a3654de1b8f4e77cb86a12bfac8eff1afe89f976',
-    'src/models/binding_subproblem.py': '97e0f63c078dfa4936434713539348e7b4b978ad3b94fb9b77e631233c5a2ce5',
+    'src/models/abstract_routing_layer.py': '2e58b99dc54ca9a6dc917fe9c0515516eda8e54cfb9d7bdbf572291c0b21f520',
+    'src/models/binding_subproblem.py': '1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9',
     'src/models/cp_sat_worker_config.py': '4f9a4847f179f1ed15d61b17bcdc2340c82c1ec2494abd1eb7402f919c84ba50',
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
     'src/models/cut_manager.py': '50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01',
     'src/models/d2_commodity_flow_core.py': 'b77f39bd7ca067f3c422552f763aec73d7c87501947dba7e87f22f33efdf3230',
-    'src/models/exact_coordinate_master.py': 'd92f9317a232217eb0cc9b15faf98d6f12b9cdd83af25c7236e283ec2ede03ce',
+    'src/models/exact_coordinate_master.py': '565062a0b438fc613634d53a5ae256addceb4b05010f42a7a3eea2c6bbbed45c',
     'src/models/flow_subproblem.py': '948c4fee4495264c339c335b353de1925a9c7b5f9ebc12e1088ac2d0a7c3d06a',
     'src/models/highs_candidate_evaluator.py': '1709e1536a49f11ed057ab6dc1e904d9acac8d25c910c4299789b5309986f419',
     'src/models/highs_master_model.py': 'ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a',
-    'src/models/master_model.py': 'd129c09dbdb8fbbfd66b7a407247f728fc62c809891593b0f30cb7bc20fccfcd',
+    'src/models/master_model.py': '761890e0c799c3c0f6f19832d7b7031e93c9898d7a6a10188afc8ed59cb5daf7',
     'src/models/patch_routing_core.py': '8e7f147c4779716dc721ef7add1d17b92be75efd29d8089de424389534affd2d',
-    'src/models/port_binding.py': 'f90ab633a88f8ddd4fd9325a2376c0ae7f34504bedf390906d8092c777d17fac',
-    'src/models/pose_bool_exact_master.py': 'c100fb25297db4abea25314d2bef76e281463e4ccea9ecd6dab89c7d568c23a1',
+    'src/models/port_binding.py': '9ed6c34873c5d8e3f7640a8507021e48ca2d850de2edc429482f3699700adc53',
+    'src/models/pose_bool_exact_master.py': '8991b7f98b95ee255c4967b13fc2d22bf6eed5ec54ad1f0e48377a44db0dbd90',
     'src/models/power_placement_subproblem.py': '88573b3ebdf26a334d740d718d4f90a5216745936291ef6b87b877f99594a597',
     'src/models/routing_binding_context.py': '9f9e4d058a561ca570f3c4fd7f5d5095a1bcff558e0608408b0760fc7609f7c2',
     'src/models/routing_subproblem.py': '9a7e1eb904242d4e994a7299caf898073bc522ff69b07365e35db0cf728a5bc1',
     'src/models/scip_master_model.py': 'd3590b07088e4e67c5b714aca78e39acddd0da8b59a7b96a68ae7b4b270f2bea',
-    'src/models/separator_capacity_hull.py': '0259753aee372b413eeb3d80e484c0039003b2f2e9a25f678686692225fe45e8',
+    'src/models/separator_capacity_hull.py': '3c34725e06d5227e9c3512d6ef0cfc318d3144607c5136d4ec1ced6ee9957dfe',
     'src/models/solution_hint_parser.py': '3767cbdae4ae7f560f4bb3ddfc3197f8958484e42b575fa357ec16d4efa34a32',
     'src/preprocess/demand_solver.py': 'e737df49effd148962768816e66c86f415f9026acd7ff562fbebcf528ba2ee92',
-    'src/preprocess/operation_profiles.py': 'e9a89a4a6483bebeeb42096867390eb31f80bc5819c206b35a9d87387a925c6c',
+    'src/preprocess/operation_profiles.py': '0dd774150011ec6adb2ccaff554e08aeeeb0a111d7b25de28de713d728d36a79',
     'src/render/blueprint_exporter.py': '8ee3b21bc137493fc930b08bd5ea368e23bcd1090ddf51a56bb7264d4d31a61f',
     'src/render/industrial_planner_exact_status.py': '22875159909302a5d5dde77bd832539be1b01a10e40606d8d459996714c56183',
     'src/render/industrial_planner_single_base_delivery_entrypoints.py': 'e80cc8d6c4badadad9c23a2c6c8c645e653425b2b0002879baadb29c3dd6759c',
@@ -13016,40 +13014,40 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/report_builder.py': '860ff758d6c64ac0029f2e22ad087c6b520d37d40e0264a8b464302a36c7cff6',
     'src/render/serve.py': '45a03f847c80595ef72b3e859eeccf01169ed16e87faebd7b75be4c788ff7262',
     'src/runtime/subproblem_invocation_counter.py': '6f5ac40b2674a1a2b99d9932dc262e4c57c2f622e27e4b83dc39d9bcc270c759',
-    'src/search/benders_loop.py': '0fe3df8f64434fe765abed1175b53f08280fc0889f61a97df272333ba9bf71ff',
+    'src/search/benders_loop.py': 'edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852',
     'src/search/f5_binding_empty_domain_adapter.py': '76d072161b85f8ce5e87682769434291b5c7ccdb005623dc8a3265fb4c48b6df',
     'src/search/orbit_homogeneity.py': '633d41eae5a2b6db987a350ca6862324df9a8551dd0191f1f3ffa264b71cc4c9',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
-    'src/search/certified_artifact_contract.py': 'b2fefa600fb975aa144b5f10da76ad51e4a7f05892c424a1e0e61be32e45c47f',
+    'src/search/certified_artifact_contract.py': 'c78b4dfac6da0a93914afb630d5096aee16533a44b4d948aa25671b02fc1a06a',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': '3fe6b95e2ac04a3d4f3ea1fff88e56d56075599a0ff9dd8bd0f6e7948ada26fc',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': 'a478e61f023e47557faf7eda16fbbc4b3cc95e0fc607471e0b0a35fe3157b9f4',
+    'src/search/exact_campaign.py': 'd893e59a9f1bd573208a39905bdb7d677046f97367543958cc201a90b21d1a04',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/independent_infeasibility_reverifier.py': 'a71cc162bad123a5d68070dfa7eb4c127d2cd47ddc7781640b8e368d2bab63f9',
     'src/search/master_hint_persistence.py': '2c1c51977a6eff577e08ac62ef97eee7605e05fdbd51ea9328f13e99c405ff4e',
-    'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
+    'src/search/outer_search.py': 'f7082617304e8c733ac669f9e8ba5b5fe98e980db4ea4966bb3390a04af681e1',
     'src/search/patch_conflict_separator.py': '42368fc82b79b6fe5f31186ba197accecd73d425dce2ae5fad3316f6388e64e5',
     'src/search/phase3b/anchor119/guard_controls.py': '505490c75a1ee029cc378b8ff784b213d01b3f8c0da425fea21d504e3f434c9a',
     'src/search/phase3b/anchor119/guarded_precheck_runtime.py': '4c8ebb13c4c9e0fd9e3c6e614a185183e975fd365421ef95cbf2eb5ae5098aa2',
     'src/search/phase3b/anchor119/guarded_precheck_spec.py': '2a8c414eedaf42e6685a58922a9812e8a531821cadbe5fdfce860948fea3f86c',
-    'src/placement/placement_generator.py': '2bab6ebfd15244c3c221674b9feb6dc320804dd4e408ed8c9408015d6962e6e8',
-    'src/search/pr2_l0_artifact_core.py': '9f66ea0af358d24413a49b0cbc0c9db750109537444453eba577002b72bca81f',
-    'src/search/pr2_l0_fixed_witness_core.py': '71e13c774ddbbb6a6d4cf7382c239fa6c8e216a16ec8865e6fac45fb0a258b03',
+    'src/placement/placement_generator.py': '1476ba68932a925f53b6763a35361b2bb49d74904aba3b6840a69b0cb98d99ea',
+    'src/search/pr2_l0_artifact_core.py': '4db9e77b03e8176fbec399c3bafc78239597d960a252174afab8d0af649a33c7',
+    'src/search/pr2_l0_fixed_witness_core.py': 'ebdfc437b5eb4f64490c255c1d1bce50a3eb11a58b92f7cb57814721349e5371',
     'src/search/pr2_l0_frontier_core.py': 'b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b',
     'src/search/pr2_l0_micro_verifier_core.py': 'df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb',
     'src/search/pr2_l0_replay_core.py': 'f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2',
     'src/search/pr2_l0_true_verifier_child.py': 'a62927ea934d135af820c4880f96c729caaf0c1c9f3e7cd97502f2e8708362cf',
-    'src/search/routing_deletion_core_minimizer.py': '0636d5e05d065c5a9afc38c19d69f6b03c6e13877fff591e02f564a39de7af6e',
-    'src/search/separator_capacity_separator.py': '1fd8a3c694f0c4a406c7eb7a46f7ddc290dcc8fc41e2f518977975fa98f58229',
+    'src/search/routing_deletion_core_minimizer.py': 'eca5da516e4b32a501d4c76ee455c69394518f9213d531c8f39b98abbd1618db',
+    'src/search/separator_capacity_separator.py': 'bfe7498cd31abd22999333e00d9886de862def4997d9e67246896416f0ada0e9',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
-    'src/search/terminal_fixed_witness_verifier.py': 'f27828f6b5ee001e9a6c98a6e39b9bf0a24cf5a55e85b89ace8bacb3dc0a3386'
+    'src/search/terminal_fixed_witness_verifier.py': '30c5dc8acf009ef14440d544e62bcdb69430d159fe557c24cdb42171040fecb2'
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
 

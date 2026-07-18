@@ -18,7 +18,7 @@ pose forces c 的 output ports 全在 L (没在 R 也没在 W ambig). ambiguous 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import AbstractSet, Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple
 
 
 # (批 2 identity 语义后本模块不再做 front 方向步进——原 _DIR_DELTA 表已删,
@@ -41,7 +41,11 @@ class PoseCommoditySide:
 
 @dataclass
 class PoseVarMetadata:
-    """Per pose-bool var: which pose, what operation type, ports."""
+    """Per pose-bool var: pose-level operation and raw port geometry.
+
+    No generic-input slot/commodity binding literal is available here.  Generic
+    sink classification must therefore remain absent until that context exists.
+    """
     var: Any  # cp_model.IntVar
     operation_type: str
     pose: Mapping[str, Any]
@@ -132,7 +136,7 @@ def classify_pose_commodity_side(
     grid_w: int,
     grid_h: int,
     *,
-    routing_free_sink_commodities: Optional[Set[str]] = None,
+    routing_free_sink_commodities: Optional[AbstractSet[str]] = None,
 ) -> Dict[str, PoseCommoditySide]:
     """For each commodity that this pose has (input or output), classify
     whether forced source/sink onto L, R, or AMBIG.
@@ -144,14 +148,18 @@ def classify_pose_commodity_side(
         profile = get_operation_port_profile(operation_type)
     except Exception:
         return {}
-    routing_free_outputs = {str(c) for c in (routing_free_sink_commodities or set())}
+    # Compatibility-only keyword: RFSC was removed semantically in Batch 5, so a
+    # stale caller-provided set must not suppress ordinary producer outputs.
+    # Keep the argument shape until out-of-scope callers migrate.
+    _ = routing_free_sink_commodities
+
+    # Do not expand required generic-input commodities across every provider.
+    # A generic slot is a physical sink only after commodity-to-slot binding;
+    # without that literal, such a Cartesian product would create false sinks
+    # and unsound separator cuts.  逐槽分配待 L2 真正实现，此处保守跳过。
     input_commodities = set(profile.input_slots.keys()) if hasattr(profile, "input_slots") else set()
     output_commodities = (
-        {
-            str(c)
-            for c in profile.output_slots.keys()
-            if str(c) not in routing_free_outputs
-        }
+        {str(c) for c in profile.output_slots.keys()}
         if hasattr(profile, "output_slots")
         else set()
     )
@@ -272,6 +280,14 @@ def add_separator_capacity_hull_constraints(
         cross_vars: List[Any] = []
         for commodity, sides in forced[sep.sep_id].items():
             if not any(sides.values()):
+                continue
+            # Source-only finals have no sound generic sink classification before
+            # per-slot assignment.  Skip one-sided commodities before creating
+            # aux variables or constraints; omission is a sound relaxation and
+            # cannot manufacture a new separator violation.
+            has_source = bool(sides["source_L"] or sides["source_R"])
+            has_sink = bool(sides["sink_L"] or sides["sink_R"])
+            if not (has_source and has_sink):
                 continue
             stats["commodity_pressure_pairs"] += 1
             source_L = or_aux(sides["source_L"], f"sL_{sep.sep_id}_{commodity}")

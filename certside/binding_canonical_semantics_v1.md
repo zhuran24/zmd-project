@@ -1,7 +1,7 @@
 # binding_canonical_semantics_v1 —— sidecar 语义规范（源码逐行核对版）
 
 > 设计稿 v2 §3.3 要求的语义来源三层声明。每条标注：来源层（F=冻结数据可复算 /
-> H=生产源码硬编码 TCB / P=pending 前端）+ 源码锚点（2026-07-05 main HEAD）。
+> H=生产源码硬编码 TCB / P=独立前端重推）+ 源码锚点（2026-07-18 Batch 3+5 工作树）。
 > emitter/witness checker 实现必须逐条对照本文件；本文件修订 = 语义变更，须重审。
 
 ## 1. strict JSON（F；`src/io/strict_json.py:17-67` 逐行核对）
@@ -28,10 +28,11 @@
   str → Fraction(str)；其他 TypeError。
 - `supports_exact_pose_level_binding(op)` = profile 的两个 generic slot 字段全零
   （`port_binding.py:31-33`）；非零时枚举函数 raise ValueError。
-- **P（pending 前端）**：recipes/belt_capacity_per_tick/utility_operations 从
+- **P（独立前端）**：recipes/belt_capacity_per_tick/utility_operations 从
   canonical_rules.json + preprocess_plan.json 的完整解析
-  （`build_preprocess_context_from_rules_and_plan`，831 行模块）——真实样本前端
-  实现时逐字段规格化补进本文件；合成样本直接提供已推导的 slot counts，不经此层。
+  （`build_preprocess_context_from_rules_and_plan`）独立重推；正的 utility
+  `generic_input_slots` 同时形成 `generic_input_slots_by_operation`，并与 profiles
+  逐项一致后才允许 emitter 建模。
 
 ## 3. 域枚举（F；`port_binding.py:40-205` 逐行核对）
 
@@ -51,8 +52,11 @@
 
 ### 4.1 输入校验序（§2.2 全文有效，此处只记锚点）
 - generic I/O 规范化+角色校验+完备性：`:305-435`；
-- wireless K strict 非负 int：`:78-94`；
-- pose_optional 合成（含 `::` 反推）：`:583-613`；ghost_pick marker：`:60,66-67`；
+- `generic_input_slots_by_operation` 的值 strict 正整数，零容量 operation 必须省略；
+  map 必须与同一冻结 plan 重推的 operation profiles 完全一致；旧单值
+  `wireless_sink_generic_input_slots` 一律 fail-closed 拒绝；
+- pose_optional 合成（含 `::` 反推）：`protocol_storage_box → box_sink`；
+  ghost_pick marker 保持不变；
 - metadata 一致性五类：`:650-759`；INVALID_INPUT 短路：`:1273-1288`；
 - build 期 raise：`_resolve_pose` 越界 `:977-983`、`sol["facility_type"]`/
   `int(sol["pose_idx"])` KeyError/TypeError `:995-996`。
@@ -63,18 +67,22 @@
 - generic output 槽：`:1047-1086`（**H：provider 集合 = {boundary_io,
   protocol_core}**）；每 output_port_cell 一槽；commodity 集 = sorted(required
   outputs) + `__unused__`；ExactlyOne；
-- generic input 槽：`:1095-1132`（**H：receiver 集合 = {wireless_sink}**）；
-  K 个虚拟槽；同上 ExactlyOne；
+- generic input 槽：对 placement 中 operation 查
+  `generic_input_slots_by_operation`；当前 provider 为 **box_sink=3** 与
+  **protocol_core=14**。从所选 pose 的 `input_port_cells` 前 K 项逐口建立实体槽，
+  slot metadata 必须携带 `x/y/dir` 与 operation_type；pose 实体进口少于 K 时
+  fail-closed。commodity 集 = sorted(required inputs) + `__unused__`；ExactlyOne；
 - 计数：required>0 → `sum == required`；required==0 → 逐变量 `var == 0`
   （**不发 sum 行**）：`:1134-1158`；
 - nogood（Phase 1 外）：materialized literals only，空集不加：`:1447-1463`。
 
 ### 4.3 硬编码 TCB 清单（H——sidecar 手抄，Phase 1 防不了，报告须声明）
-- `POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {protocol_storage_box: wireless_sink,
+- `POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {protocol_storage_box: box_sink,
   power_pole: power_supply}`（`:56-59`）；
 - `NON_FACILITY_PLACEMENT_MARKER_IDS = {ghost_pick}`（`:60`）；
 - generic provider 集合 {boundary_io, protocol_core}（`:1058`）；
-- generic receiver 集合 {wireless_sink}（`:1106`）；
+- generic input provider 不再是硬编码单例集合；其容量账来自冻结
+  `generic_input_slots_by_operation`（当前 {protocol_core:14, box_sink:3}）；
 - `supports_exact_pose_level_binding` 的 gate 定义（`port_binding.py:31-33`）。
 
 ## 5. OPB/工具链硬规格（F；实验+源码坐实，`toolchain_notes.md`）

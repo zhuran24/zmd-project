@@ -39,14 +39,21 @@ A conservative 48GB profile is `parallel_processes=4`, `master=4`, `local_capaci
 
 ## Current artifact prerequisite
 
-`data/preprocessed/candidate_placements.json` is present in the audited working tree. Before a
-certified run, verify size 45,774,305 bytes and SHA256
-`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`.
-The superseded 45,773,799-byte / SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact predates
-the boundary `(0,0)` corner-pose fix and is hash-incompatible.
+Before a certified run, verify `rules/canonical_rules.json` at 17,510 bytes / SHA256
+`5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`,
+`rules/preprocess_plan.json` at 1,383 bytes / SHA256
+`5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`, and
+`data/preprocessed/candidate_placements.json` at 53,595,501 bytes / SHA256
+`78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`.
+The 45,774,305-byte `a914…`, 45,773,799-byte `adcc…`, and 53,594,995-byte `d5e3…` candidate
+artifacts are a superseded, hash-incompatible historical chain.
 A lightweight distribution is permitted to omit it, but that distribution policy is not a runtime
 waiver.
+
+All workers must inherit the complete `generic_input_slots_by_operation` map from the same
+hash-bound plan snapshot and compare it atomically on resume. The current provider-aware,
+instance-aware contract routes finished goods to physical provider inputs and derives a box lower
+bound of 0: demand 2 is already covered by the mandatory core's 14 real input ports.
 
 ## Operational guidance
 

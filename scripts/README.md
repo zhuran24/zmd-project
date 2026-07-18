@@ -39,12 +39,13 @@ Important focused checks include:
 - `check_cc_memory_consistency.py`: runs only when cc_memory is in the selected change scope;
 - `check_external_artifacts.py`: validates the artifact manifest and current presence/bytes.
 
-The current `candidate_placements.json` is present at the expected 45,774,305 bytes, SHA256
-`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`. The superseded
-45,773,799-byte / SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact predates the
-boundary `(0,0)` corner-pose fix and is hash-incompatible. Scripts must still fail closed on byte
-drift.
+Current frozen inputs include `canonical_rules.json` at 17,510 bytes / SHA256
+`5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`, `preprocess_plan.json`
+at 1,383 bytes / SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`,
+and `candidate_placements.json` at 53,595,501 bytes / SHA256
+`78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`. The 45,774,305-byte
+`a914…`, 45,773,799-byte `adcc…`, and 53,594,995-byte `d5e3…` candidate artifacts are a
+superseded, hash-incompatible historical chain. Scripts must fail closed on any byte drift.
 
 ## Review snapshot packaging
 
@@ -68,6 +69,11 @@ verdict.
 
 Vendor refresh is mechanical ingestion. It does not automatically authorize canonical-rule or
 frozen-artifact changes. Such changes require the normal owner, hash and campaign reset discipline.
+Current preprocess/generation semantics give `box_sink` 3 physical inputs and 3 physical outputs,
+and the mandatory core 14 inputs and 6 outputs. Generic-input finished goods are routed to provider
+physical inputs. The provider-aware, instance-aware box lower bound is 0 for current demand 2, and
+campaign tooling must carry and compare the full `generic_input_slots_by_operation` map from one
+hash-bound plan snapshot.
 
 ## Spike, profile and phase3b generators
 

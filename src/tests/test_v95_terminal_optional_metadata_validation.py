@@ -42,8 +42,14 @@ def _write_optional_project(root: Path) -> dict[str, list[dict[str, object]]]:
                 "anchor": {"x": 0, "y": 1},
                 "pose_params": {"orientation": 0, "port_mode": "default"},
                 "occupied_cells": [[0, 1]],
-                "input_port_cells": [],
-                "output_port_cells": [],
+                "input_port_cells": [
+                    {"x": 0, "y": 1, "dir": direction}
+                    for direction in ("N", "W", "S")
+                ],
+                "output_port_cells": [
+                    {"x": 0, "y": 1, "dir": direction}
+                    for direction in ("N", "E", "S")
+                ],
             }
         ],
     }
@@ -73,7 +79,7 @@ def _write_optional_project(root: Path) -> dict[str, list[dict[str, object]]]:
         root / "rules" / "preprocess_plan.json",
         {
             "utility_operations": {
-                "wireless_sink": {
+                "box_sink": {
                     "facility_type": "protocol_storage_box",
                     "generic_input_slots": 3,
                 }
@@ -94,7 +100,8 @@ def _write_optional_project(root: Path) -> dict[str, list[dict[str, object]]]:
             }
         ],
     )
-    # wireless_sink exposes generic-input capacity, so one protocol storage box is required.
+    # With no mandatory provider, box_sink exposes the physical generic-input
+    # capacity, so one protocol storage box is required.
     _write_json(
         root / "data" / "preprocessed" / "generic_io_requirements.json",
         {"required_generic_inputs": {"demo_input": 1}, "required_generic_outputs": {}},
@@ -127,7 +134,7 @@ def _terminal_campaign_with_optional_extra(
             "pose_id": "box_at_0_1",
             "anchor": {"x": 0, "y": 1},
             "instance_id": optional_key,
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
             "bound_type": "exact_pose_optional",
             "solve_mode": "certified_exact",

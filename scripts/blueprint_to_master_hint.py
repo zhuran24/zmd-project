@@ -17,7 +17,7 @@ Mapping rules (verified 2026-05-16 from candidate_placements + IP v2 source):
     item_port_filling_pd_mc_1   (6x4) -> manufacturing_6x4
     item_port_tools_asm_mc_1    (6x4) -> manufacturing_6x4
     item_port_sp_hub_1     (9x9) -> protocol_core
-    item_port_storager_1   (3x3) -> protocol_storage_box   (optional, omni hint)
+    item_port_storager_1   (3x3) -> protocol_storage_box   (four port modes, same as manufacturing_3x3 — 批 5)
     item_port_power_sta_1  (2x2) -> power_pole             (optional, skipped)
     item_port_power_diffuser_1 (2x2) -> power_pole         (optional, skipped)
 
@@ -37,8 +37,8 @@ Mapping rules (verified 2026-05-16 from candidate_placements + IP v2 source):
       180 -> (1, 'bottom_base')
     Protocol core (9x9):
       0   -> (0, 'core_LR_out')   # only rotation 0 observed in blueprint
-    Protocol storage box (3x3, omni_wireless):
-      any -> (0, 'omni')          # rotation-independent, no physical ports
+    Protocol storage box (3x3, opposite_parallel_sides since 批 5 2026-07-18):
+      same rotation map as square manufacturing (TB/LR/BT/RL)
 """
 
 from __future__ import annotations
@@ -67,7 +67,9 @@ TYPE_ID_TO_FACILITY: Dict[str, str] = {
     "item_port_storager_1": "protocol_storage_box",
 }
 
-SQUARE_MANUF_TYPES = {"manufacturing_3x3", "manufacturing_5x5"}
+# 批 5 (2026-07-18): 协议箱与制造机 3×3 完全同款实体口(四模式), 走同一旋转映射;
+# 原 (0,'omni') 零口占位映射已废。
+SQUARE_MANUF_TYPES = {"manufacturing_3x3", "manufacturing_5x5", "protocol_storage_box"}
 RECT_MANUF_TYPES = {"manufacturing_6x4"}
 
 SQUARE_MANUF_ROT: Dict[int, Tuple[int, str]] = {
@@ -97,8 +99,6 @@ def rotation_to_orient_mode(facility_type: str, rotation: int) -> Optional[Tuple
         return BOUNDARY_ROT.get(rotation)
     if facility_type == "protocol_core":
         return (0, "core_LR_out") if rotation == 0 else None
-    if facility_type == "protocol_storage_box":
-        return (0, "omni")
     return None
 
 

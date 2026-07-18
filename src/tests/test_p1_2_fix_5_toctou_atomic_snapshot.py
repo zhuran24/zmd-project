@@ -20,8 +20,8 @@ import pytest
 from src.models.binding_subproblem import (
     PortBindingModel,
     load_generic_io_requirements_from_text,
-    load_wireless_sink_generic_input_slots,
-    load_wireless_sink_generic_input_slots_from_text,
+    load_generic_input_slots_by_operation,
+    load_generic_input_slots_by_operation_from_text,
 )
 from src.models.master_model import load_project_data, load_project_data_from_texts
 from src.search.exact_campaign import (
@@ -104,7 +104,12 @@ def _build_tiny_project(root: Path) -> Path:
     )
     _write_json(
         root / "rules" / "preprocess_plan.json",
-        {"utility_operations": {"wireless_sink": {"generic_input_slots": 3}}},
+        {
+            "utility_operations": {
+                "box_sink": {"generic_input_slots": 3},
+                "protocol_core": {"generic_input_slots": 14},
+            }
+        },
     )
     return root
 
@@ -164,9 +169,11 @@ def test_fix5_text_loaders_are_faithful_to_path_loaders(tmp_path: Path) -> None:
     assert instances_t == instances_p
     assert pools_t == pools_p
     assert rules_t == rules_p
-    assert load_wireless_sink_generic_input_slots_from_text(
+    text_slot_map = load_generic_input_slots_by_operation_from_text(
         text=texts["preprocess_plan"]
-    ) == load_wireless_sink_generic_input_slots(project_root=root)
+    )
+    assert text_slot_map == {"box_sink": 3, "protocol_core": 14}
+    assert text_slot_map == load_generic_input_slots_by_operation(project_root=root)
 
 
 def test_fix5_canonical_role_validation_uses_snapshot_after_disk_swap(
@@ -206,10 +213,10 @@ def test_fix5_canonical_role_validation_uses_snapshot_after_disk_swap(
         project_root=root,
         required_generic_outputs=requirements["required_generic_outputs"],
         required_generic_inputs=requirements["required_generic_inputs"],
-        wireless_sink_generic_input_slots=3,
+        generic_input_slots_by_operation={"box_sink": 3, "protocol_core": 14},
         canonical_rules_payload=snapshot_rules,
     )
-    assert binding_model.routing_free_sink_commodities == {"snapshot_input"}
+    assert binding_model.generic_input_commodities == {"snapshot_input"}
 
 
 def test_fix5_read_once_regular_file_bytes_rejects_non_regular(tmp_path: Path) -> None:

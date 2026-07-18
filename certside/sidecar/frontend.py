@@ -170,12 +170,11 @@ def build_model_input(
 
     profiles = derive_operation_profiles(rules, plan)
 
-    wireless = dict(dict(plan.get("utility_operations") or {}).get("wireless_sink") or {})
-    if "generic_input_slots" not in wireless:
-        raise EmitterReject("INPUT_INVALID", "MISSING_WIRELESS_SINK_SLOTS", "preprocess_plan")
-    wireless_k = _strict_nonneg_int(
-        wireless["generic_input_slots"], "wireless_sink.generic_input_slots"
-    )
+    generic_input_slots_by_operation = {
+        operation_type: int(profile["generic_input_slots"])
+        for operation_type, profile in sorted(profiles.items())
+        if int(profile["generic_input_slots"]) > 0
+    }
 
     facility_pools = dict(cand.get("facility_pools") or {})
     if not facility_pools:
@@ -200,7 +199,7 @@ def build_model_input(
         "required_generic_inputs": _int_requirements(
             gio.get("required_generic_inputs"), "required_generic_inputs"
         ),
-        "wireless_sink_generic_input_slots": wireless_k,
+        "generic_input_slots_by_operation": generic_input_slots_by_operation,
         "commodity_metadata": dict(rules.get("commodity_metadata") or {}),
         "operation_profiles": profiles,
         "artifact_hashes": {

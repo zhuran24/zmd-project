@@ -31,6 +31,9 @@ def _write_minimal_exact_campaign_artifacts(project_root: Path) -> None:
         json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
         encoding="utf-8",
     )
+    (project_root / "rules" / "preprocess_plan.json").write_text(
+        '{"utility_operations": {}}', encoding="utf-8"
+    )
 
 
 def _condition_required_power_cut_payload(
@@ -463,15 +466,7 @@ def test_exact_campaign_resume_rejects_bool_generated_cut_count(
 
 def test_exact_campaign_resume_rejects_malformed_exact_safe_cut(tmp_path: Path) -> None:
     project_root = tmp_path / "campaign_malformed_exact_safe"
-    (project_root / "data" / "preprocessed").mkdir(parents=True)
-    (project_root / "rules").mkdir(parents=True)
-    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
-    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text('{"facility_pools": {}}', encoding="utf-8")
-    (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text('{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8")
-    (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
-        encoding="utf-8",
-    )
+    _write_minimal_exact_campaign_artifacts(project_root)
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)
@@ -509,15 +504,7 @@ def test_exact_campaign_resume_rejects_malformed_exact_safe_cut(tmp_path: Path) 
 
 def test_exact_campaign_resume_rejects_bool_conflict_pose_index(tmp_path: Path) -> None:
     project_root = tmp_path / "campaign_bool_conflict_pose"
-    (project_root / "data" / "preprocessed").mkdir(parents=True)
-    (project_root / "rules").mkdir(parents=True)
-    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
-    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text('{"facility_pools": {}}', encoding="utf-8")
-    (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text('{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8")
-    (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
-        encoding="utf-8",
-    )
+    _write_minimal_exact_campaign_artifacts(project_root)
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)
@@ -557,21 +544,7 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_without_cond
     tmp_path: Path,
 ) -> None:
     project_root = tmp_path / "campaign_missing_condition_power_cut"
-    (project_root / "data" / "preprocessed").mkdir(parents=True)
-    (project_root / "rules").mkdir(parents=True)
-    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text(
-        "[]", encoding="utf-8"
-    )
-    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text(
-        '{"facility_pools": {}}', encoding="utf-8"
-    )
-    (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
-        '{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8"
-    )
-    (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
-        encoding="utf-8",
-    )
+    _write_minimal_exact_campaign_artifacts(project_root)
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)

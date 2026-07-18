@@ -211,14 +211,26 @@ class PoseBoolExactMasterDelegate:
         return True
 
     def _routing_free_sink_commodities(self) -> Set[str]:
+        """Return the RFSC exclusion set through the binding SSOT.
+
+        Batch 5 reclassified generic-input commodities as ordinary routed
+        commodities, so the SSOT currently returns an empty set.  Keep this
+        call instead of inlining that fact: malformed requirement snapshots
+        must retain the SSOT's fail-closed validation behavior.
+        """
+        from src.models.port_binding import (
+            routing_free_sink_commodities_from_generic_inputs,
+        )
+
         gen_io = getattr(self.owner, "generic_io_requirements", None) or {}
-        return {
-            str(commodity)
-            for commodity, required in dict(
-                gen_io.get("required_generic_inputs", {}) or {}
-            ).items()
-            if int(required) > 0
-        }
+        required_generic_inputs = dict(
+            gen_io.get("required_generic_inputs", {}) or {}
+        )
+        return set(
+            routing_free_sink_commodities_from_generic_inputs(
+                required_generic_inputs
+            )
+        )
 
     def _required_generic_output_slot_total(self) -> int:
         gen_io = getattr(self.owner, "generic_io_requirements", None) or {}
@@ -313,7 +325,7 @@ class PoseBoolExactMasterDelegate:
             profile = get_operation_port_profile(operation_type)
         except KeyError:
             return 0, 0, 0, 0
-        routing_free_outputs = self._routing_free_sink_commodities()
+        routing_free_outputs_from_ssot = self._routing_free_sink_commodities()
         concrete_input_demand = sum(int(v) for v in profile.input_slots.values())
         total_input = concrete_input_demand + int(profile.generic_input_slots)
         total_output = sum(int(v) for v in profile.output_slots.values()) + int(
@@ -330,11 +342,13 @@ class PoseBoolExactMasterDelegate:
         visible_output = sum(
             int(count)
             for commodity, count in profile.output_slots.items()
-            if str(commodity) not in routing_free_outputs
+            if str(commodity) not in routing_free_outputs_from_ssot
         ) + generic_output_visible
-        # Generic-input slots are virtual wireless capacity (no physical front);
-        # all concrete input requirements remain route-visible.  The validator
-        # fails closed if a future generic-input target is also a recipe input.
+        # Generic-input slots now have physical fronts, but an unbound slot is not
+        # a necessarily active routing terminal.  Without a per-slot binding (or
+        # a global saturation proof), pose-level visible demand conservatively
+        # counts only concrete inputs; mechanically adding all generic slots here
+        # would over-constrain boxes (0..3 active) and the core (0..14 active).
         visible_input = concrete_input_demand
         return int(visible_input), int(visible_output), int(total_input), int(total_output)
 
@@ -348,16 +362,20 @@ class PoseBoolExactMasterDelegate:
         self, group_id: str, side_key: str
     ) -> bool:
         operation_type = self._mandatory_operation_by_group.get(str(group_id), "")
-        input_demand, output_demand, _total_input, total_output = self._profile_port_demands(
+        input_demand, output_demand, total_input, total_output = self._profile_port_demands(
             operation_type
         )
         if side_key == "input_port_cells":
-            return input_demand > 0
+            # A raw input side that mixes concrete and unbound generic-input
+            # slots has no pose-level slot identity.  Skip the whole side here;
+            # losing a hard/cache constraint is sound, while activating an
+            # unbound generic port would be an unsound over-cut.
+            return input_demand > 0 and input_demand == total_input
         if side_key == "output_port_cells":
             # The hard/cache path indexes raw pose ports without binding-slot
             # identity.  It is only sound when every output-side slot is
-            # routing-visible.  Mixed visible/routing-free output operations are
-            # handled by the weaker demand-count cuts instead.
+            # routing-visible.  Concrete outputs mixed with optional generic-
+            # output capacity are handled by weaker demand-count cuts instead.
             return output_demand > 0 and output_demand == total_output
         return False
 
@@ -380,7 +398,7 @@ class PoseBoolExactMasterDelegate:
             (
                 input_demand,
                 output_demand,
-                _total_input,
+                total_input,
                 total_output,
             ) = self._profile_port_demands(
                 self._mandatory_operation_by_group.get(str(group_id), "")
@@ -388,15 +406,19 @@ class PoseBoolExactMasterDelegate:
         except Exception:
             return False
         if side_key == "input_port_cells":
-            # Concrete input slots are routing-visible.  Generic-input capacity is
-            # virtual, so the per-cell pattern is exact only when concrete demand
-            # covers every physical input port.
-            return int(input_demand) >= int(port_count)
+            # Generic-input ports are physical but optional until a binding or
+            # saturation proof identifies active slots.  A mixed raw side is
+            # therefore never exact at pose level; only an all-concrete side may
+            # participate in a per-cell hard cut.
+            return (
+                int(input_demand) > 0
+                and int(input_demand) == int(total_input)
+                and int(input_demand) >= int(port_count)
+            )
         if side_key == "output_port_cells":
-            # Output sides that mix visible and routing-free sinks are handled by
-            # demand-count cuts; raw per-cell output cuts are exact only when all
-            # output demand is routing-visible and every physical output port must
-            # be active.
+            # Output sides that mix concrete active outputs with optional generic-
+            # output capacity are handled by demand-count cuts; raw per-cell cuts
+            # are exact only when every physical output port must be active.
             return (
                 int(output_demand) > 0
                 and int(output_demand) == int(total_output)
@@ -698,40 +720,13 @@ class PoseBoolExactMasterDelegate:
                         self.model.Add(sum(fc_terms_out) >= out_demand * x_var)
                         pose_clearance_count += 1
 
-            # Step 4: ro storage box (wireless_sink) cross-pose total cleared >= demand.
-            gen_io = getattr(self.owner, "generic_io_requirements", None) or {}
-            req_in = dict(gen_io.get("required_generic_inputs", {}) or {})
-            storage_total_in = sum(int(v) for v in req_in.values())
-            if storage_total_in > 0:
-                effective_box_terms: List[cp_model.IntVar] = []
-                for (tpl_key, pose_idx), ro_var in self.ro_vars.items():
-                    if str(tpl_key) != "protocol_storage_box":
-                        continue
-                    pose = self.owner.facility_pools[str(tpl_key)][int(pose_idx)]
-                    input_cells = pose.get("input_port_cells", []) or []
-                    fc_terms_box: List[cp_model.IntVar] = []
-                    for port in input_cells:
-                        key_tup = (int(port.get("x", 0)),
-                                   int(port.get("y", 0)),
-                                   str(port.get("dir", "")))
-                        fc = self._front_clear.get(key_tup)
-                        if fc is not None:
-                            fc_terms_box.append(fc)
-                    if not fc_terms_box:
-                        continue
-                    max_count = len(fc_terms_box)
-                    cleared_box = self.model.NewIntVar(
-                        0, max_count, f"cb__{tpl_key}__{int(pose_idx)}"
-                    )
-                    self.model.Add(cleared_box == sum(fc_terms_box))
-                    effective = self.model.NewIntVar(
-                        0, max_count, f"eb__{tpl_key}__{int(pose_idx)}"
-                    )
-                    self.model.Add(effective <= cleared_box)
-                    self.model.Add(effective <= ro_var * max_count)
-                    effective_box_terms.append(effective)
-                if effective_box_terms:
-                    self.model.Add(sum(effective_box_terms) >= storage_total_in)
+            # Step 4 intentionally adds no generic-input clearance constraint.
+            # Unbound generic-input slots are physical but are not necessarily
+            # active terminals, and demand may be assigned across protocol_core
+            # and selected box_sink providers.  Pose level has neither the slot
+            # binding literal nor a global saturation proof, so enforcing raw
+            # per-box fronts here would over-cut.  Per-slot allocation is deferred
+            # to the L2/binding layer; omission here is the sound relaxation.
 
         # B1 Phase 5b: add cell-level port_clearance hard constraint.
         # 跟 routing precheck 等价 (sound, 不是 over-approximation): port 是
@@ -778,7 +773,10 @@ class PoseBoolExactMasterDelegate:
                 port_clearance_added += 1
 
         # SAC-Hull: cache pose metadata + cell_poses for both static (Phase 1)
-        # and dynamic (Phase 2) separator hull constraint generation.
+        # and dynamic (Phase 2) separator hull constraint generation.  This
+        # metadata deliberately carries no synthetic generic-input commodity:
+        # without a per-slot binding, assigning every final to every provider
+        # would manufacture false sinks and unsound separator pressure.
         # Always built (cheap), only used when env on.
         from src.models.separator_capacity_hull import PoseVarMetadata
         self._sac_pose_metadata: List[Any] = []
@@ -891,7 +889,7 @@ class PoseBoolExactMasterDelegate:
             return ("pole", "power_pole", "", self.owner.facility_pools.get("power_pole", []))
         if key.startswith("pose_optional::"):
             _, tpl, *_rest = key.split("::")
-            op = "wireless_sink" if tpl == "protocol_storage_box" else ""
+            op = "box_sink" if tpl == "protocol_storage_box" else ""
             return ("ro", tpl, op, self.owner.facility_pools.get(tpl, []))
         return None
 
@@ -1070,7 +1068,7 @@ class PoseBoolExactMasterDelegate:
                 solution[synthetic_id] = {
                     "instance_id": synthetic_id,
                     "facility_type": tpl,
-                    "operation_type": "wireless_sink" if tpl == "protocol_storage_box" else "",
+                    "operation_type": "box_sink" if tpl == "protocol_storage_box" else "",
                     "pose_idx": int(pose_idx),
                     "pose_id": pose["pose_id"],
                     "anchor": dict(pose["anchor"]),
@@ -1215,6 +1213,9 @@ class PoseBoolExactMasterDelegate:
                 self._poses_by_cell.setdefault(cell_xy, []).append(var)
             for port_list_key in ("input_port_cells", "output_port_cells"):
                 ports = list(pose.get(port_list_key, []) or [])
+                # Optional providers have no pose-level per-slot binding literal.
+                # Keep their raw ports out of the per-cell hard-cut cache: an
+                # unbound box_sink input is not a necessarily active terminal.
                 side_is_visible = (
                     self._mandatory_port_side_is_cell_pattern_exact(
                         str(key), port_list_key, len(ports)

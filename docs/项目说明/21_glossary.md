@@ -43,7 +43,8 @@
 - **canonical rules**：`rules/canonical_rules.json` 的 owner-reviewed 语义真源。
 - **preprocess plan**：`rules/preprocess_plan.json`，既参与 regeneration，也被当前 runtime/hash
   closure 消费。
-- **candidate placements**：当前工作树中存在的 45,774,305-byte hash-bound pose artifact；拐角修复前的 45,773,799-byte / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本已 superseded，且 hash-incompatible。
+- **candidate placements**：当前 53,595,501-byte / SHA256 `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef` hash-bound pose artifact；45,774,305-byte / `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`、45,773,799-byte / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 与 53,594,995-byte / `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 是 superseded、hash-incompatible 历史链。
+- **generic-input provider contract**：成品必须从 producer output 路由到实际 provider instance 的 physical input；`box_sink` 为 3 进/3 出，mandatory core 为 14 进/6 出。当前需求 2 已由 mandatory core 覆盖，所以 provider-aware、instance-aware box lower bound 为 0；campaign 绑定完整 `generic_input_slots_by_operation` map。
 - **campaign resume compatibility**：checkpoint 与当前规则、artifact 和 proof-bearing source
   closure 一致；不一致必须 reset/新建证据链。
 - **compatibility export / viewer / adapter output**：派生消费面。即使文件名或字段看起来像

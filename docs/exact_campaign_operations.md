@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/search/exact_campaign.py, src/search/outer_search.py, src/search/certified_surface.py, scripts/inspect_exact_campaign_state.py
-last_verified_against: 2026-07-11
+last_verified_against: 2026-07-18
 owner: certified-exact-operations
 ---
 
@@ -80,17 +80,30 @@ markers. A supervisor seal always rereads canonical disk state rather than trust
 
 ## 5. Artifact-hash mismatch
 
-The current `data/preprocessed/candidate_placements.json` is present and is expected to be exactly:
+The current frozen campaign inputs include:
 
-- size: `45,774,305` bytes;
-- SHA256: `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`.
+- `rules/canonical_rules.json`: `17,510` bytes, SHA256
+  `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`;
+- `rules/preprocess_plan.json`: `1,383` bytes, SHA256
+  `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`;
+- `data/preprocessed/candidate_placements.json`: `53,595,501` bytes, SHA256
+  `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`.
 
-The superseded pre-corner-fix artifact (size `45,773,799`, SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`) is hash-incompatible.
+The candidate superseded chain is `45,774,305` bytes /
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`, then the pre-corner-fix
+`45,773,799` bytes / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`,
+then `53,594,995` bytes / `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`.
+Every member is historical and hash-incompatible.
 
 Changes to canonical rules, preprocess plan, candidate placements, mandatory instances, generic I/O,
-or other campaign-bound sources require reset or a newly established proof chain. The superseded
-53,594,995-byte artifact must not be accepted as current.
+or other campaign-bound sources require reset or a newly established proof chain. Campaign identity
+must carry and atomically compare the complete `generic_input_slots_by_operation` map parsed from the
+same hash-bound plan snapshot; a box-only scalar or a second plan read is not compatible.
+
+The current generic-input model routes finished goods from producer outputs to physical provider
+inputs. `box_sink` exposes 3 inputs and 3 outputs; the mandatory core exposes 14 inputs and 6 outputs.
+The provider-aware, instance-aware box lower bound is 0 because current demand 2 is covered by that
+real core capacity; an uninstantiated template earns no credit.
 
 Record resets explicitly:
 

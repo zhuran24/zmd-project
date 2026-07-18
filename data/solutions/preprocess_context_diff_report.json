@@ -5,12 +5,12 @@
   },
   "summary": {
     "all_match": true,
-    "matched_count": 6,
-    "total_count": 6,
+    "matched_count": 7,
+    "total_count": 7,
     "mandatory_exact_instance_count": 266,
     "all_instance_count": 326,
     "generic_output_slots": 52,
-    "generic_input_slots": 0
+    "generic_input_slots": 14
   },
   "comparisons": [
     {
@@ -35,6 +35,10 @@
     },
     {
       "name": "all_facility_instances.json",
+      "matches_frozen": true
+    },
+    {
+      "name": "exploratory_optional_caps.json",
       "matches_frozen": true
     }
   ]

@@ -6,6 +6,7 @@ import pytest
 from ortools.sat.python import cp_model
 
 from src.interchange.preprocess_context import build_preprocess_context_from_rules_and_plan
+from src.models.port_binding import routing_free_sink_commodities_from_generic_inputs
 from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
 from src.models.separator_capacity_hull import Separator, classify_pose_commodity_side
 from src.search.routing_deletion_core_minimizer import (
@@ -43,7 +44,7 @@ def test_deletion_core_oracle_consumes_filtered_routing_visible_ports() -> None:
             {
                 "occupied_cells": [(0, 0)],
                 "input_port_cells": [],
-                "output_port_cells": [{"x": 0, "y": 0, "dir": "E"}],
+                "output_port_cells": [{"x": 1, "y": 0, "dir": "E"}],
             }
         ],
         "blocker": [
@@ -55,19 +56,37 @@ def test_deletion_core_oracle_consumes_filtered_routing_visible_ports() -> None:
         "blocker": {"facility_type": "blocker", "pose_idx": 0},
     }
 
-    assert _oracle_front_blocked(layout, facility_pools, 70, 70)
-
-    visible_ports = build_routing_visible_port_keys_by_instance([])
-    assert not _oracle_front_blocked(
+    rfsc = routing_free_sink_commodities_from_generic_inputs(CANONICAL_GENERIC_INPUTS)
+    assert rfsc == frozenset()
+    visible_ports = build_routing_visible_port_keys_by_instance(
+        [
+            {
+                "instance_id": "producer",
+                "x": 1,
+                "y": 0,
+                "dir": "E",
+                "type": "out",
+                "commodity": "qiaoyu_capsule",
+            }
+        ]
+    )
+    assert _oracle_front_blocked(
         layout,
         facility_pools,
         70,
         70,
         routing_visible_port_keys_by_instance=visible_ports,
     )
+    assert not _oracle_front_blocked(
+        layout,
+        facility_pools,
+        70,
+        70,
+        routing_visible_port_keys_by_instance={},
+    )
 
 
-def test_pose_bool_front_caches_exclude_routing_free_output_side() -> None:
+def test_pose_bool_front_caches_include_routed_final_output_side() -> None:
     class Owner:
         def __init__(self) -> None:
             self.model = cp_model.CpModel()
@@ -94,15 +113,15 @@ def test_pose_bool_front_caches_exclude_routing_free_output_side() -> None:
     delegate._mandatory_template_by_group["g"] = "maker"
     delegate._mandatory_operation_by_group["g"] = "filling_capsule"
 
-    assert delegate._routing_visible_profile_demands("filling_capsule") == (4, 0)
+    assert delegate._routing_visible_profile_demands("filling_capsule") == (4, 1)
 
     delegate._build_port_lookup_cache()
     assert (5, 5, "E") in delegate._poses_by_port_at_cell_dir
     assert (5, 5, "W") in delegate._routing_visible_poses_by_port_at_cell_dir
-    assert (5, 5, "E") not in delegate._routing_visible_poses_by_port_at_cell_dir
+    assert (5, 5, "E") in delegate._routing_visible_poses_by_port_at_cell_dir
 
 
-def test_pose_bool_visible_cache_is_conservative_for_mixed_output_side(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_pose_bool_visible_cache_keeps_mixed_final_output_side(monkeypatch: pytest.MonkeyPatch) -> None:
     import src.models.pose_bool_exact_master as pose_master
 
     class MixedProfile:
@@ -146,15 +165,16 @@ def test_pose_bool_visible_cache_is_conservative_for_mixed_output_side(monkeypat
     delegate._mandatory_template_by_group["g"] = "mixed_maker"
     delegate._mandatory_operation_by_group["g"] = "mixed_output"
 
-    assert delegate._routing_visible_profile_demands("mixed_output") == (0, 1)
+    assert delegate._routing_visible_profile_demands("mixed_output") == (0, 2)
 
     delegate._build_port_lookup_cache()
     assert (5, 5, "E") in delegate._poses_by_port_at_cell_dir
     assert (6, 5, "E") in delegate._poses_by_port_at_cell_dir
-    assert not delegate._routing_visible_poses_by_port_at_cell_dir
+    assert (5, 5, "E") in delegate._routing_visible_poses_by_port_at_cell_dir
+    assert (6, 5, "E") in delegate._routing_visible_poses_by_port_at_cell_dir
 
 
-def test_pose_bool_cell_pattern_cut_refuses_virtual_generic_input_overcount(
+def test_pose_bool_cell_pattern_cut_refuses_unbound_generic_input_overcount(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     import src.models.pose_bool_exact_master as pose_master
@@ -359,7 +379,25 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
                         "pose_id": "core_two_outputs",
                         "anchor": {"x": 0, "y": 0},
                         "occupied_cells": [(0, 0)],
-                        "input_port_cells": [],
+                        "input_port_cells": [
+                            {"x": x, "y": y, "dir": "S"}
+                            for x, y in (
+                                (1, 0),
+                                (2, 0),
+                                (3, 0),
+                                (4, 0),
+                                (2, 1),
+                                (3, 1),
+                                (4, 1),
+                                (1, 2),
+                                (2, 2),
+                                (3, 2),
+                                (4, 2),
+                                (0, 3),
+                                (1, 3),
+                                (2, 3),
+                            )
+                        ],
                         "output_port_cells": [
                             {"x": 0, "y": 1, "dir": "N"},
                             {"x": 1, "y": 1, "dir": "N"},
@@ -371,15 +409,6 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
                         "pose_id": "block_first_output_front",
                         "anchor": {"x": 0, "y": 0},
                         "occupied_cells": [(0, 2)],
-                        "input_port_cells": [],
-                        "output_port_cells": [],
-                    }
-                ],
-                "protocol_storage_box": [
-                    {
-                        "pose_id": "sink_capacity",
-                        "anchor": {"x": 0, "y": 0},
-                        "occupied_cells": [(4, 4)],
                         "input_port_cells": [],
                         "output_port_cells": [],
                     }
@@ -410,11 +439,6 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
             "operation_type": "power_supply",
             "pose_idx": 0,
         },
-        "sink_001": {
-            "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
-            "pose_idx": 0,
-        },
     }
     instances = [
         {
@@ -428,12 +452,6 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
             "facility_type": "blocker",
             "operation_type": "power_supply",
             "is_mandatory": True,
-        },
-        {
-            "instance_id": "sink_001",
-            "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
-            "is_mandatory": False,
         },
     ]
     routing_context = build_routing_binding_context(
@@ -453,7 +471,8 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
     binding_model.build()
 
     assert binding_model.solve(time_limit_seconds=5.0) == "FEASIBLE"
-    assert binding_model.extract_port_specs() == [
+    port_specs = binding_model.extract_port_specs()
+    assert [spec for spec in port_specs if spec["type"] == "out"] == [
         {
             "instance_id": "core_001",
             "x": 1,
@@ -463,6 +482,9 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
             "commodity": "source_ore",
         }
     ]
+    assert {
+        spec["commodity"] for spec in port_specs if spec["type"] == "in"
+    } == set(CANONICAL_GENERIC_INPUTS)
 
     added = delegate.add_routing_port_blocking_cell_cut(
         port_cell=(0, 1),
@@ -587,8 +609,8 @@ def test_pose_bool_cell_pattern_cut_refuses_unknowable_generic_output_capacity()
     ) is False
 
 
-def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut() -> None:
-    """Saturation removes ``__unused__`` without routing wireless final outputs."""
+def test_pose_bool_saturated_generic_output_keeps_final_output_front_visible() -> None:
+    """Generic-output saturation does not suppress an ordinary final-product source."""
 
     from src.models.binding_subproblem import PortBindingModel
 
@@ -622,10 +644,17 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
         ],
         "protocol_storage_box": [
             {
-                "pose_id": "sink",
-                "anchor": {"x": 0, "y": 0},
-                "occupied_cells": [(4, 0)],
-                "input_port_cells": [],
+                "pose_id": "box_sink",
+                "anchor": {"x": 4, "y": 4},
+                "occupied_cells": [
+                    (4 + dx, 4 + dy)
+                    for dx in range(3)
+                    for dy in range(3)
+                ],
+                "input_port_cells": [
+                    {"x": 4 + dx, "y": 3, "dir": "S"}
+                    for dx in range(3)
+                ],
                 "output_port_cells": [],
             }
         ],
@@ -652,7 +681,7 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
         },
         "sink1": {
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "pose_idx": 0,
         },
         "blk": {"facility_type": "blocker", "operation_type": "power_supply", "pose_idx": 0},
@@ -673,7 +702,7 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
         {
             "instance_id": "sink1",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
         {
@@ -689,12 +718,12 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
         instances,
         required_generic_outputs=required_outputs,
         required_generic_inputs=required_inputs,
-        wireless_sink_generic_input_slots=3,
     )
     binding_model.build()
 
     assert binding_model.solve(time_limit_seconds=5.0) == "FEASIBLE"
-    assert binding_model.extract_port_specs() == [
+    port_specs = binding_model.extract_port_specs()
+    assert [spec for spec in port_specs if spec["type"] == "out"] == [
         {
             "instance_id": "b1",
             "x": 5,
@@ -712,6 +741,9 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
             "commodity": "source_ore",
         },
     ]
+    assert {
+        spec["commodity"] for spec in port_specs if spec["type"] == "in"
+    } == set(CANONICAL_GENERIC_INPUTS)
 
     class Owner:
         def __init__(self) -> None:
@@ -775,16 +807,16 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
 
     assert delegate._generic_output_slots_are_globally_saturated() is True
     assert delegate._routing_visible_profile_demands("boundary_io") == (0, 1)
-    assert delegate._routing_visible_profile_demands("filling_capsule") == (4, 0)
+    assert delegate._routing_visible_profile_demands("filling_capsule") == (4, 1)
     assert delegate.add_routing_port_blocking_cell_cut(
         port_cell=(0, 1),
         direction="N",
         front_cell=(0, 2),
-    ) is False
-    assert cp_model.CpSolver().Solve(owner.model) in {cp_model.FEASIBLE, cp_model.OPTIMAL}
+    ) is True
+    assert cp_model.CpSolver().Solve(owner.model) == cp_model.INFEASIBLE
 
 
-def test_separator_capacity_classification_excludes_routing_free_sources() -> None:
+def test_separator_capacity_classification_keeps_final_sources_with_empty_rfsc_ssot() -> None:
     sep = Separator(
         sep_id="V_5",
         kind="axis_V",
@@ -796,18 +828,16 @@ def test_separator_capacity_classification_excludes_routing_free_sources() -> No
         "output_port_cells": [{"x": 3, "y": 0, "dir": "E"}],
     }
 
-    unfiltered = classify_pose_commodity_side(
-        "filling_capsule", pose, sep, 70, 70
-    )
-    filtered = classify_pose_commodity_side(
+    rfsc = routing_free_sink_commodities_from_generic_inputs(CANONICAL_GENERIC_INPUTS)
+    assert rfsc == frozenset()
+    classified = classify_pose_commodity_side(
         "filling_capsule",
         pose,
         sep,
         70,
         70,
-        routing_free_sink_commodities={"qiaoyu_capsule"},
+        routing_free_sink_commodities=set(rfsc),
     )
 
-    assert "qiaoyu_capsule" in unfiltered
-    assert "qiaoyu_capsule" not in filtered
-    assert {"fine_buckwheat_powder", "steel_bottle"}.issubset(filtered)
+    assert classified["qiaoyu_capsule"].source_side == "L"
+    assert {"fine_buckwheat_powder", "steel_bottle"}.issubset(classified)

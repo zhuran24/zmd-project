@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/placement/placement_generator.py, src/placement/occupancy_masks.py, and data/preprocessed/candidate_placements.json
-last_verified_against: 2026-06-12 (preprocess F-01/F-02 geometry repair)
+last_verified_against: 2026-07-18 (Batch 3 identity-domain regeneration and Batch 5 physical box geometry)
 owner: placement-preprocess
 ---
 # 06 候选摆位枚举与几何降维引擎 (Candidate Placement Enumeration)
@@ -50,7 +50,7 @@ owner: placement-preprocess
 *   **模式扩展 ($m$)**：
     *   长方形机器 (6x4)：端口强制分布在两条长边上，无需额外模式枚举。
     *   方形机器 (3x3, 5x5)：在每个合法 $(x,y,o)$ 下，必须生成两组正交的端口模式：模式 `NS` (上下边作为出入口) 与模式 `EW` (左右边作为出入口)。
-    *   协议箱 (3x3)：服从 canonical `omni_wireless`，无实体输入/输出端口；仅枚举 `orientation = 0`, `port_mode = "omni"` 的全 anchor 空间，$x,y \in [0,67]$，闭式计数 $68 \times 68 = 4624$。
+    *   协议箱 (3x3)：与制造机 3×3 **完全同款**实体口形态（一边 3 进/对边 3 出、四种正交端口模式；owner 游戏实测定谳 2026-07-18，权威 `docs/research/rules_audit_20260718/00` §3.1），经标准方形枚举路径生成；"无线"仅存在于箱→仓库段，不影响端口几何。**历史勘误**：旧文的 `omni_wireless` 零口形态（`port_mode="omni"`、闭式 $68 \times 68 = 4624$）是错误认知，已随批 5 废除。
 
 ### 6.4.2 供电桩的极简扫描 (2x2)
 *   **旋转对称性剪枝**：供电桩为绝对正方形且无实体端口，旋转 $o$ 无物理意义，强制锁定 $o=0$。
@@ -73,7 +73,7 @@ owner: placement-preprocess
 **物理逻辑**：传送带必须占用端口的 routing front cell——**即 port 记录的 stored 坐标格自身**（体外第 1 格；identity 语义，front 错位事故修正 2026-07-18，权威 `docs/research/front_offset_incident_20260718/00`）。真正不可用的是 `(port.x, port.y)` 落到 $70 \times 70$ 网格外。**历史勘误**：本节旧文把判界写成 `(port.x, port.y) + DIR_DELTA[port.dir]`（体外第 2 格）——生成器照此剪枝导致 2,064 个墙距-1 合法 pose（3×3 +544 / 5×5 +528 / 6×4 +520 / core +472）从未进池（66,405 → 应为 68,469）；域补齐随修复批 3（owner 已拍板补域 scope）。
 **剔除法则**：
 对一个候选位姿分别检查激活输入端口集合与输出端口集合。若某一集合非空，且该集合内所有端口的 routing front cell 都越界，则该位姿视为“绝对面壁废解”，**立刻从 $\mathcal{P}_t$ 中永久删除**；只要同一集合中仍存在至少一个 front cell 留在网格内，该集合不得触发剪枝。
-*(例外：边界仓库存/取货口原生豁免此法则，因其天然向内吞吐；`omni_wireless` 协议箱没有实体端口，front 规则不适用。)*
+*(例外：边界仓库存/取货口原生豁免此法则，因其天然向内吞吐。协议箱自批 5 起有实体端口、与制造机 3×3 同受此法则约束——旧文"`omni_wireless` 无实体端口豁免"已废。)*
 
 ### 6.5.2 旋转对等性去重 (Rotational Symmetry Pruning)
 **物理逻辑**：正方形机器在内部配方无方向性时，正放与倒放在占格和端口拓扑上可能完全等价。
@@ -99,25 +99,35 @@ owner: placement-preprocess
 
 > 当前 GitHub `main` 是 lightweight checkout：production
 > `data/preprocessed/candidate_placements.json` 当前存在于工作树中，且仍是 certified
-> exact 必需输入。2026-06-12 F-01/F-02 修复后的恢复/再生成结果应匹配
-> size `45,774,305` bytes, SHA256
-> `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。拐角修复前的 size
+> exact 必需输入。2026-07-18 Batch 3+5 identity 域与协议箱实体口重生成结果必须匹配
+> size `53,595,501` bytes, SHA256
+> `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。此前 F-01/F-02
+> 恢复结果 size `45,774,305` bytes / SHA256
+> `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`、拐角修复前的 size
 > `45,773,799` bytes / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`
-> 已 superseded，且 hash-incompatible。旧 size `53,594,995` bytes / SHA256
-> `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 已 superseded。
+> 以及旧 size `53,594,995` bytes / SHA256
+> `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 均已 superseded，且
+> hash-incompatible。
 
-当前闭式池计数：
+当前闭式池计数（identity 判界 + 协议箱实体口，批 3+5，2026-07-18；
+每模式合法域 = 进/出两侧 stored 口格均在 $70\times70$ 内）：
 
 | facility_type | closed form | count |
 | --- | ---: | ---: |
-| `manufacturing_3x3` | `4 * 68 * 64` | 17,408 |
-| `manufacturing_5x5` | `4 * 66 * 62` | 16,368 |
-| `manufacturing_6x4` | `4 * 65 * 63` | 16,380 |
-| `protocol_core` | `2 * 58 * 58` | 6,728 |
-| `protocol_storage_box` | `68 * 68` | 4,624 |
+| `manufacturing_3x3` | `4 * 68 * 66` | 17,952 |
+| `manufacturing_5x5` | `4 * 66 * 64` | 16,896 |
+| `manufacturing_6x4` | `4 * 65 * 65` | 16,900 |
+| `protocol_core` | `2 * 60 * 60` | 7,200 |
+| `protocol_storage_box` | `4 * 68 * 66` | 17,952 |
 | `power_pole` | `69 * 69` | 4,761 |
 | `boundary_storage_port` | `2 * 68` | 136 |
-| **total** |  | **66,405** |
+| **total** |  | **81,797** |
+
+历史口径（勘误留档）：错位判界（front=+delta 查体外第 2 格）+ 协议箱零口
+时代的总数为 66,405（3×3 `4*68*64`=17,408 / 5×5 `4*66*62`=16,368 /
+6×4 `4*65*63`=16,380 / core `2*58*58`=6,728 / 箱 `68*68`=4,624）；
+mandatory 补域 +2,064 = 68,469，箱按实体口重枚举 4,624 → 17,952，
+合计 81,797。
 
 数据结构范例：
 ```json

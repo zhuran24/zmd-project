@@ -1491,18 +1491,22 @@ def _validate_certified_outer_domain_snapshot_matches_session(
             "domain snapshot and ExactSearchSession construction"
         )
 
-    expected_slots = snapshot.get("wireless_sink_generic_input_slots")
-    if expected_slots is not None:
-        session_slots = getattr(exact_session.core, "wireless_sink_generic_input_slots", None)
-        if isinstance(session_slots, bool) or not isinstance(session_slots, int):
-            raise RuntimeError(
-                "certified_exact ExactSearchSession missing wireless sink slot snapshot"
-            )
-        if int(session_slots) != int(expected_slots):
-            raise RuntimeError(
-                "certified_exact wireless sink slot snapshot changed between outer "
-                "frontier domain snapshot and ExactSearchSession construction"
-            )
+    expected_slots = snapshot.get("generic_input_slots_by_operation")
+    session_slots = getattr(
+        exact_session.core, "generic_input_slots_by_operation", None
+    )
+    if not isinstance(expected_slots, Mapping) or not isinstance(
+        session_slots, Mapping
+    ):
+        raise RuntimeError(
+            "certified_exact outer/session snapshots require "
+            "generic_input_slots_by_operation mappings"
+        )
+    if dict(session_slots) != dict(expected_slots):
+        raise RuntimeError(
+            "certified_exact generic-input slot map changed between outer "
+            "frontier domain snapshot and ExactSearchSession construction"
+        )
 
 
 def _parallel_expected_artifact_hashes(
@@ -1812,13 +1816,11 @@ def run_outer_search(
 
     exact_instances, facility_pools, rules = load_project_data(project_root, solve_mode="certified_exact")
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
-    wireless_sink_generic_input_slots = None
-    if generic_io_requirements.get("required_generic_inputs", {}):
-        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+    from src.models.binding_subproblem import load_generic_input_slots_by_operation
 
-        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
-            project_root=project_root
-        )
+    generic_input_slots_by_operation = load_generic_input_slots_by_operation(
+        project_root=project_root
+    )
     certified_outer_domain_snapshot: Optional[Dict[str, Any]] = None
     if solve_mode == "certified_exact":
         certified_outer_domain_snapshot = {
@@ -1826,7 +1828,9 @@ def run_outer_search(
             if exact_campaign is None
             else dict(exact_campaign.artifact_hashes),
             "generic_io_requirements": dict(generic_io_requirements),
-            "wireless_sink_generic_input_slots": wireless_sink_generic_input_slots,
+            "generic_input_slots_by_operation": dict(
+                generic_input_slots_by_operation
+            ),
         }
     grid = dict(rules["globals"]["grid"])
     grid_w = int(grid["width"])
@@ -1835,7 +1839,7 @@ def run_outer_search(
         exact_instances,
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
         facility_pools=facility_pools,
     )
     if area_upper_bound is None:

@@ -2,11 +2,18 @@
 
 测试数、文件数、工件大小、hash、review anchor 和 gate 状态都必须带来源和日期，不能把历史数字写成无时间边界的“当前值”。
 
-截至 2026-07-11：
+测试 inventory（2026-07-11）：
 
 - `pytest --collect-only -q src/tests` 收集 4182 tests；工作树含 450 个 `test*.py` 文件。`pytest --collect-only -q src/tests/cuts` 收集 594 tests。
 - 这只是 inventory，不表示完整测试套件在本次审计中通过。
-- `candidate_placements.json` 为 `45,774,305` bytes，SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`；拐角修复前的 `45,773,799` bytes / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本已 superseded，且 hash-incompatible。
 - phase gate anchor 为 `v99_p1_2_close_kernel_sealing`，机器状态为 `closed_manual_owner_decision`；`next_phase_entry.allowed=true`。
+
+冻结工件与当前语义（2026-07-18 实测）：
+
+- `canonical_rules.json`：17,510 bytes，SHA256 `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`。
+- `preprocess_plan.json`：1,383 bytes，SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`。
+- `candidate_placements.json`：53,595,501 bytes，SHA256 `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。`a914…` 45,774,305 bytes、`adcc…` 45,773,799 bytes 与 `d5e3…` 53,594,995 bytes 仅属 superseded、hash-incompatible 历史链。
+- `box_sink` 为 3 个物理输入/3 个物理输出，mandatory core 为 14 个物理输入/6 个物理输出；generic-input 成品必须路由到 provider physical input。当前需求 2 已被真实 mandatory core 覆盖，所以 provider-aware、instance-aware box lower bound 为 0。
+- exact session 原子绑定同一 plan snapshot 的完整 `generic_input_slots_by_operation` map；不能退回 box-only scalar 或中途重读。
 
 旧研究包中的测试计数和性能数字继续作为历史证据保留，引用时必须注明包名或日期。

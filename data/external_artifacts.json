@@ -5,8 +5,8 @@
     {
       "id": "candidate_placements",
       "path": "data/preprocessed/candidate_placements.json",
-      "sha256": "a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b",
-      "size_bytes": 45774305,
+      "sha256": "78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef",
+      "size_bytes": 53595501,
       "optional_in_lightweight_checkout": true,
       "required_for": [
         "certified_exact_production_run",

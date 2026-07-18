@@ -1,11 +1,11 @@
 ---
 status: ACCEPTED_DRAFT
 source_of_truth: terminology and units must stay aligned with downstream code consumers; geometry semantics are referenced by placement/routing/master specs
-last_verified_against: 2026-06-04 (§2.6.1/§6.1/§7.x PROJECT_LOCK 对齐修订)
+last_verified_against: 2026-07-18（实体 generic-input provider 与 owner 语义裁决）
 owner: docs-modeling
 ---
 > [!WARNING]
-> **DRAFT — 几何/符号体系源自 Gemini deep think Turn 14。§2.6.1 实例口径 (I_man=266 / I_opt 脚注 †) 已于 2026-06-04 经 PROJECT_LOCK §1 对齐审查；其余符号定义待终审冻结。**
+> **DRAFT — 几何/符号体系源自 Gemini deep think Turn 14。§2.4.1、§2.5.3 与 §2.6.1 已按当前 owner 裁决和 PROJECT_LOCK 边界对齐；其余符号定义待终审冻结。**
 
 # 02 全局数学符号、坐标系与度量衡规范 (Global Notation, Coordinates and Units)
 
@@ -50,7 +50,7 @@ $$ \mathcal{C} = \{ (x, y) \in \mathbb{Z}^2 \mid 0 \le x \le 69, \ 0 \le y \le 6
 定义一个实体刚体在网格中的绝对物理状态（位姿, Pose/Placement）为一个四元组 $p = (x, y, o, m)$：
 * **$(x,y)$**: 绝对锚点坐标。
 * **$o$**: 旋转姿态，$o \in \{0, 1, 2, 3\}$ 分别对应未旋转、顺时针 $90^\circ$、$180^\circ$、$270^\circ$。
-* **$m$**: 端口/工作模式枚举值（例如方形机器指定哪两对平行边作为出入口、协议箱是否开启无线黑洞模式等）。
+* **$m$**: 实体端口/工作模式枚举值（例如方形机器或协议箱指定哪组对边为输入侧与输出侧，协议核心指定左右输出或上下输出姿态）。
 
 ### 2.4.2 绝对锚点定义 (Anchor Point $x, y$)
 对于原始尺寸为 $W \times H$ 的设施：
@@ -90,6 +90,22 @@ $$ \text{Cov}(p) = \{ (x', y') \in \mathcal{C} \mid x - 5 \le x' \le x + 6, \ y 
 * **左边 (Left Edge)**：$X = x$，纵坐标为 $y + k \ (k \in [0, h-1])$，遍历方向**从下至上**。出向向量为 $W$。
 * **右边 (Right Edge)**：$X = x + w - 1$，纵坐标为 $y + k \ (k \in [0, h-1])$，遍历方向**从下至上**。出向向量为 $E$。
 
+### 2.5.3 Generic-input provider 与实体端口
+
+定义 operation 到通用输入容量的完整映射为 $G_{in}(o)$。当前非零 provider 为：
+
+- `box_sink`：$G_{in}=3$；协议箱是 `3×3` 实体，具有一侧 3 个输入口、对侧 3 个输出口和四种正交端口模式。
+- `protocol_core`：$G_{in}=14$；mandatory 核心的选定 pose 具有 14 个实体输入口与 6 个实体输出口。
+
+对被选中的 provider 实例 $i$ 及 pose $p$，$G_{in}(o_i)$ 必须严格等于该 pose 的实体 `input_port_cells` 数量；任何容量/几何漂移都 fail-closed。Binding 把每个正数 `required_generic_inputs` 商品分配到一个具体实体输入口。被分配的口携带坐标与方向，是 routing 的真实 sink terminal；生产该商品的输出口仍是 routing source，因此成品必须端到端可路由。
+
+设总需求槽数 $D=\sum_k d_k$，真实 mandatory exact provider 容量为
+$C_{man}=\sum_{i\in\mathcal{I}_{man}}G_{in}(o_i)$，则协议箱的 certified 下界为：
+
+$$ B_{box}=\left\lceil\frac{\max(0,D-C_{man})}{3}\right\rceil $$
+
+该抵扣是 **instance-aware**：仅定义 `protocol_core` 模板不能获得 14 槽抵扣；必须存在真实 mandatory exact core 实例。Mandatory 协议箱及未来声明的 provider 按同一 operation-capacity 规则计入。Certified session 从已哈希的 `preprocess_plan.json` 同一字节快照解析整张 provider map，并将整张 map 原子传递和比较；不得退化为单 operation 标量或二次磁盘读取。
+
 ---
 
 ## 2.6 核心代数符号字典 (Algebraic Notation Dictionary)
@@ -101,12 +117,12 @@ $$ \text{Cov}(p) = \{ (x', y') \in \mathcal{C} \mid x - 5 \le x' \le x + 6, \ y 
 | :--- | :--- | :--- |
 | $\mathcal{C}$ | 主基地所有可用二维网格坐标集合 | 4900 |
 | $\mathcal{I}_{\text{man}}$ | 强制必选刚体实例集合 (机器219+核心1+边界口46) | 266 |
-| $\mathcal{I}_{\text{opt}}$ | 可选刚体实例集合：协议箱 (required-optional，数量按 demand) + 供电桩 (residual-optional，激活数为决策变量) | 非固定 † |
+| $\mathcal{I}_{\text{opt}}$ | 可选刚体实例集合：协议箱 (provider-aware residual-optional) + 供电桩 (residual-optional)，激活数均为决策变量 | 非固定 † |
 | $\mathcal{I}$ | 全局实体总集 ($\mathcal{I} = \mathcal{I}_{\text{man}} \cup \mathcal{I}_{\text{opt}}$) | 266 + 可变 † |
 | $\mathcal{K}$ | 商品(物料)类型集合，如矿石、中间品等 | 见 04 章 |
 | $\mathcal{P}_i$ | 实例 $i$ 所有合法的(不越界、无自相矛盾的) 离散候选摆位集合 | 将由 06 章生成 |
 
-> †  **[PROJECT_LOCK 对齐]** certified_exact **无**硬 `50 供电桩 + 10 协议箱`(合计 60)/ 总集 326 cap —— 该数字按 PROJECT_LOCK §1 仅为 exploratory-only guidance，禁止作为 exact-mode 上界重新引入 (Forbidden Change)。真实 master 对供电桩用 residual-optional(激活数为决策变量，下界由 07 章 §7.6 供电覆盖给出、上界为候选位姿池规模)、对协议箱用 required-optional(预处理下达 demand)。旧 “60 / 326” 是 exploratory 坐标模型遗留，仅作 illustrative 参考。
+> †  **[PROJECT_LOCK 对齐]** certified_exact **无**硬 `50 供电桩 + 10 协议箱`(合计 60)/ 总集 326 cap —— 该数字按 PROJECT_LOCK §1 仅为 exploratory-only guidance，禁止作为 exact-mode 上界重新引入 (Forbidden Change)。真实 master 对供电桩用 residual-optional(下界由 07 章 §7.6 供电覆盖给出、上界为候选位姿池规模)；对协议箱按真实 provider 实例的实体 generic-input 容量计算 residual 下界（当前 mandatory core 的 14 槽已覆盖 demand 2，故下界为 0），额外选箱受 fresh V94 dominance 约束。旧 “60 / 326” 是 exploratory 坐标模型遗留，仅作 illustrative 参考。
 
 ### 2.6.2 系统决策变量 (Decision Variables)
 | 符号 | 变量域 | 定义说明 |

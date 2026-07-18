@@ -71,6 +71,7 @@ def _build_empty_frontier_project(project_root: Path) -> Path:
         project_root / "data" / "preprocessed" / "generic_io_requirements.json",
         {"required_generic_outputs": {}, "required_generic_inputs": {}},
     )
+    _write_json(project_root / "rules" / "preprocess_plan.json", {"utility_operations": {}})
     return project_root
 
 
@@ -145,6 +146,7 @@ def _build_truly_solvable_single_pose_project(
         project_root / "data" / "preprocessed" / "generic_io_requirements.json",
         {"required_generic_outputs": {}, "required_generic_inputs": {}},
     )
+    _write_json(project_root / "rules" / "preprocess_plan.json", {"utility_operations": {}})
     return project_root
 
 
@@ -257,7 +259,7 @@ def test_frozen_counts_align_with_new_split() -> None:
     assert len(all_instances) == 326
     assert caps["power_pole"]["cap"] == 50
     assert caps["protocol_storage_box"]["cap"] == 10
-    assert total_poses == 66405
+    assert total_poses == 81797
 
 
 
@@ -296,7 +298,7 @@ def test_exact_static_area_lower_bound_excludes_power_pole_area_heuristic() -> N
     assert compute_mandatory_area_lower_bound(exploratory_instances, rules) == manual
 
 
-def test_exact_static_area_lower_bound_includes_protocol_storage_box_minimum_area_lower_bound() -> None:
+def test_exact_static_area_lower_bound_credits_mandatory_core_generic_input_capacity() -> None:
     project_root = Path(__file__).resolve().parent.parent.parent
     exact_instances, rules = load_project_instances_and_rules(
         project_root,
@@ -312,7 +314,7 @@ def test_exact_static_area_lower_bound_includes_protocol_storage_box_minimum_are
     )
 
     assert mandatory_lower_bound == 3544
-    assert exact_static_lower_bound == 3553
+    assert exact_static_lower_bound == 3544
 
 
 def test_exact_master_notes_keep_power_pole_area_lower_bound_disabled() -> None:
@@ -412,13 +414,13 @@ def test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts() -
     precompute = model.build_stats["exact_precompute_profile"]
     assert bounds["protocol_storage_box"]["required_generic_input_slots"] == 2
     assert bounds["protocol_storage_box"]["mode"] == "required_lower_bound"
-    assert bounds["protocol_storage_box"]["lower"] == 1
+    assert bounds["protocol_storage_box"]["lower"] == 0
     assert bounds["protocol_storage_box"]["upper"] is None
     assert bounds["protocol_storage_box"]["slot_pool_upper_bound"] > 0
     assert bounds["power_pole"]["mandatory_powered_nonpole"] == 219
     assert bounds["power_pole"]["optional_powered_templates"] == ["protocol_storage_box"]
     assert model.build_stats["exact_required_optionals"] == {}
-    assert model.build_stats["exact_optional_lower_bounds"] == {"protocol_storage_box": 1}
+    assert model.build_stats["exact_optional_lower_bounds"] == {}
     assert guidance["profile"] == "exact_coordinate_guided_branching_v4"
     assert guidance["required_optional_templates"] == []
     assert guidance["required_optional_signature_counts"] == {}
@@ -526,8 +528,11 @@ def test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts() -
     assert rectangle_variants["manufacturing_6x4"] == {(6, 4), (4, 6)}
     assert rectangle_variants["protocol_storage_box"] == {(3, 3)}
     assert model.build_stats["global_valid_inequalities"]["fixed_required_optional_demands"] == {}
-    assert model.build_stats["global_valid_inequalities"]["lower_bound_optional_powered_demands"] == {
-        "protocol_storage_box": 1
+    assert model.build_stats["global_valid_inequalities"]["lower_bound_optional_powered_demands"] == {}
+    assert model.build_stats["global_valid_inequalities"]["powered_template_demands"] == {
+        "manufacturing_3x3": 132,
+        "manufacturing_5x5": 49,
+        "manufacturing_6x4": 38,
     }
     assert exact_core_profile["proto_vars"] < 64462
     assert exact_core_profile["proto_constraints"] < 280631

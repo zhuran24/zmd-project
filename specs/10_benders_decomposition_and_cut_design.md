@@ -1,13 +1,13 @@
 ---
 status: CURRENT_WITH_HISTORICAL_DESIGN_SECTIONS
 source_of_truth: src/search/benders_loop.py + src/models/cut_manager.py + src/cuts/lifecycle.py
-last_verified_against: 2026-07-11 working tree
+last_verified_against: 2026-07-18 working tree（实体 generic-input routing 与 provider map）
 owner: cut-manager
 ---
 
 # 10 逻辑型 Benders 循环与 cut 通信边界
 
-> **当前实现边界（2026-07-11）。** `src/search/benders_loop.py` 的 certified 路径使用现役 master、binding、routing
+> **当前实现边界（2026-07-18）。** `src/search/benders_loop.py` 的 certified 路径使用现役 master、binding、routing
 > 和登记的 exact-safe cut ladder。`src/models/flow_subproblem.py` 只生成诊断状态，不能门控
 > certified verdict，也不产生 Farkas ray 或 proof-bearing cut。当前 cut registry 为 F1-F7+F9，
 > F8 已退役；`step_8_apply_to_master()` 已翻译 F1/F5/F6/F7，`benders_loop` 的 direct bridge 由
@@ -22,7 +22,7 @@ owner: cut-manager
 1. master 求一个 placement；master `UNKNOWN`/timeout 必须 fail-closed；
 2. 连续 flow LP 可以运行并写入 `diagnostic_flow_status`，但其 `FEASIBLE`、`INFEASIBLE` 或
    `TIMEOUT` 都不决定 certified acceptance；
-3. binding 子问题枚举并校验端口绑定；
+3. binding 子问题枚举并校验端口绑定；generic-input 成品被绑定到 `box_sink` 或 `protocol_core` 的具体实体输入口，生产端输出与该 sink 都进入 routing terminal 集；
 4. routing 子问题在已选 binding 上建立离散路由，`FEASIBLE` 才可返回内部
    `RUN_STATUS_CERTIFIED` candidate verdict；
 5. routing/binding 的不可行结论只有经过对应 exact-safe proof ladder 才能形成 cut。whole-layout
@@ -89,9 +89,14 @@ Routing precheck 的 `binding_selection_safe_reject=True` 只说明当前 bindin
 
 env 门控的 pose-bool cell cut（`add_routing_port_blocking_cell_cut`，形状 `sum(在 (cell,dir) 有端口的 pose) + sum(占 front cell 的 pose) <= 1`）是 master 级 cut，对 pose 变量量化，构造时不知道未来 binding 子问题会选哪个 alternative。其隐含定理"port pose + blocker pose 同选必然 front_blocked"需要一个关键前提：**该物理端口在 pose 被选中时必然 active 且 routing-visible**。
 
-因此 raw per-cell 端口只在该 side 的 visible demand 覆盖该 side 全部物理端口时才允许登记进 routing-visible 索引（`_mandatory_port_side_is_cell_pattern_exact()`——input 侧：concrete routing-visible `input_demand >= 物理端口数`；output 侧：visible output 非零、等于 total output、且 `>= 物理端口数`）。Generic 槽还要额外按物理可见性收窄：generic-input 槽是虚拟无线容量，不计入物理 front demand；generic-output 槽在 binding 里是容量，不是逐端口必选需求，只有 required generic-output 数量等于已知 mandatory generic-output 总容量时，`__unused__` 才被精确计数约束压成 0，物理输出槽才能当作 necessarily-active。否则被挡的端口可能只是一个 binding 可不选的 slot：binding 换另一个槽后 placement 仍可行，cut 会误剪（最小反例：双输入口、demand=1 的机器 + 占第一口 front cell 的 blocker——binding 选第二口即合法；对偶反例是双 generic output 物理口、demand=1、第一口 front 被挡而第二口可用）。混合 visible + routing-free 的输出侧继续交给更弱但 exact 的 lazy-demand/count cut；residual-optional pose 没有 operation binding identity，不登记 raw per-cell 索引。
+因此 raw per-cell 端口只在该 side 的 visible demand 覆盖该 side 全部物理端口时才允许登记进 routing-visible 索引（`_mandatory_port_side_is_cell_pattern_exact()`——input 侧：concrete routing-visible `input_demand >= 物理端口数`；output 侧：visible output 非零、等于 total output、且 `>= 物理端口数`）。Generic-input provider 也有真实物理端口：`box_sink` 的选中 pose 为 3 个输入口/3 个输出口，`protocol_core` 为 14 个输入口/6 个输出口；plan capacity 必须与 pose 输入口数严格相等。Binding 选中的 generic-input 口必然 routing-visible，并由 `extract_port_specs()` 导出为 sink，但 master 仅看 pose 时不知道需求会分配到哪个 provider/slot，所以**未绑定的 raw provider 口仍不能当作 necessarily-active**。只有 binding-aware assignment、全局饱和或同等 exact proof 才能把具体 provider 口登记进 cell-pattern cut。
 
-CUT-R4-H1 补充：上述饱和只推出“非 `__unused__`”，不自动推出“routing-visible”。若某个正数 required generic-output commodity 同时属于 routing-free generic-input sink 集，binding 可把被挡的物理输出槽赋给该无线终品；`extract_port_specs()` 会丢弃它，routing 不要求该 front 可达。因此 pose-bool 的 per-pose visible demand 只有在所有正数 required generic-output commodity 都不在 routing-free sink 集时，才允许把 saturated generic-output 槽计为 visible。混合 routed + routing-free generic-output 需求目前 fail-closed 为不登记，等待 binding-aware/global count proof。
+Generic-output 槽同样是容量而非逐端口必选需求：只有 required generic-output 数量等于已知 mandatory generic-output 总容量时，`__unused__` 才被精确计数压成 0，相关物理输出槽才能视为 necessarily-active。否则被挡的口可能只是 binding 可不选的 slot；换另一个槽后 placement 仍可行，raw cell-pattern cut 会误剪（最小反例：双输入口、demand=1 的机器 + 占第一口 front cell 的 blocker；对偶反例是双 generic-output 物理口、demand=1）。Residual-optional pose 若缺少 operation/binding identity，也不得登记 raw per-cell 索引。
+
+CUT-R4-H1 当前口径：正数 `required_generic_inputs` 商品是普通 routed commodity。生产设施输出口是 source，已绑定的 provider 输入口是 sink；generic-input 角色不再授予任何 routing 豁免。因此饱和 generic-output 的 visible 判定不再排除 generic-input 商品，但仍必须满足 commodity-role disjoint、slot assignment 与上述 necessarily-active 前提。
+
+> [!NOTE]
+> **Superseded historical premise（2026-07-18 前）**：旧 CUT-R4-H1 曾从 positive generic-input demand 推导 routing-free sink，并跳过对应输出与 provider front。该前提随 `omni_wireless`/虚拟槽解释一起废止；兼容命名若仍存在也必须返回空集合，不能重新激活旧 cut 量词。
 
 另一同源前提：candidate pose data 是 global 坐标（同 `_build_global_pose_cache` 的注释），端口/格子 lookup cache 不得再叠加 anchor 偏移——double-anchor 会把 candidate alias 到幻影格，轻则漏 cut、重则把无关 pose 带进 cut。该 hook 在公开 certified 路径被 `pose_bool_master_not_certified` env guard 阻断；本前提约束任何未来把 pose-bool/cell cut 提升为 certified 的决定。
 

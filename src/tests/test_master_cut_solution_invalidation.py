@@ -259,7 +259,7 @@ def test_pose_bool_protocol_storage_lower_bound_requires_candidate(monkeypatch) 
         ghost_rect=(1, 1),
         skip_power_coverage=True,
         generic_io_requirements={"required_generic_inputs": {"item": 1}},
-        wireless_sink_generic_input_slots=1,
+        generic_input_slots_by_operation={"box_sink": 1},
     )
 
     assert model.solve(time_limit_seconds=2.0) == cp_model.INFEASIBLE
@@ -273,7 +273,7 @@ def test_pose_bool_protocol_storage_lower_bound_selects_pose(monkeypatch) -> Non
                 "pose_id": "box_0",
                 "anchor": {"x": 0, "y": 0},
                 "occupied_cells": [[0, 0]],
-                "input_port_cells": [],
+                "input_port_cells": [{"x": 0, "y": 0, "dir": "N"}],
                 "output_port_cells": [],
                 "power_coverage_cells": None,
             }
@@ -294,7 +294,7 @@ def test_pose_bool_protocol_storage_lower_bound_selects_pose(monkeypatch) -> Non
         ghost_anchor_filter={(1, 0)},
         skip_power_coverage=True,
         generic_io_requirements={"required_generic_inputs": {"item": 1}},
-        wireless_sink_generic_input_slots=1,
+        generic_input_slots_by_operation={"box_sink": 1},
     )
 
     assert model.solve(time_limit_seconds=2.0) in {cp_model.OPTIMAL, cp_model.FEASIBLE}
@@ -310,7 +310,7 @@ def test_pose_bool_protocol_storage_lower_bound_counts_beyond_fixed_required(mon
                 "pose_id": "box_0",
                 "anchor": {"x": 0, "y": 0},
                 "occupied_cells": [[0, 0]],
-                "input_port_cells": [],
+                "input_port_cells": [{"x": 0, "y": 0, "dir": "N"}],
                 "output_port_cells": [],
                 "power_coverage_cells": None,
             },
@@ -318,7 +318,7 @@ def test_pose_bool_protocol_storage_lower_bound_counts_beyond_fixed_required(mon
                 "pose_id": "box_1",
                 "anchor": {"x": 1, "y": 0},
                 "occupied_cells": [[1, 0]],
-                "input_port_cells": [],
+                "input_port_cells": [{"x": 1, "y": 0, "dir": "N"}],
                 "output_port_cells": [],
                 "power_coverage_cells": None,
             },
@@ -339,7 +339,7 @@ def test_pose_bool_protocol_storage_lower_bound_counts_beyond_fixed_required(mon
         ghost_anchor_filter={(2, 0)},
         skip_power_coverage=True,
         generic_io_requirements={"required_generic_inputs": {"item": 2}},
-        wireless_sink_generic_input_slots=1,
+        generic_input_slots_by_operation={"box_sink": 1},
         exact_required_pose_optional_counts={"protocol_storage_box": 1},
     )
 

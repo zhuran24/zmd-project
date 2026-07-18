@@ -64,6 +64,7 @@ def _build_oriented_gap_project(project_root: Path) -> Path:
             "facility_templates": templates,
         },
     )
+    _write_json(rules_dir / "preprocess_plan.json", {"utility_operations": {}})
     _write_json(data_dir / "candidate_placements.json", {"facility_pools": pools})
     _write_json(data_dir / "mandatory_exact_instances.json", instances)
     _write_json(data_dir / "all_facility_instances.json", instances)

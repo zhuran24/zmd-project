@@ -17,22 +17,25 @@
 | `sidecar/runner.py` | WSL 求解检查链（判定协议：结论行 anchored 唯一匹配，禁退出码判定） |
 | `sidecar/witness_checker.py` | OPB-level witness 独立复验（不调用 emitter 约束生成） |
 | `sidecar/canonical_witness_checker.py` | canonical-level witness 复验（从原始输入语义独立验证；应有对象集合第二实现；SAT 二段升级 → DIVERGED_CANDIDATE） |
-| `sidecar/run_acceptance.py` | 合成样本验收 harness（21 样本五件套：UNSAT/canaries/INPUT_INVALID/双向突变/工具链红测） |
+| `sidecar/run_acceptance.py` | 合成验收 harness（30 checks：UNSAT/canaries/INPUT_INVALID/双向突变/工具链与 canonical-checker 红测） |
 | `sidecar/frontend.py` | 冻结工件解析前端（**零 import src/**；strict-JSON exact-decimal + operation profile 独立重推 + 五工件全长 sha256） |
 | `sidecar/parity_check.py` | profiles 对拍脚本（⚠ 刻意 import 生产当 oracle，是验证 harness 非 sidecar 组件；PARITY OK: 21/21 profiles 精确一致） |
-| `sidecar/real_sample.py` | 真实工件端到端样本（266 mandatory 实例全放；R1 无储存箱→CONFIRMED、R2 补箱→SAT+witness） |
+| `sidecar/real_sample.py` | 真实工件端到端样本（mandatory 实例全放；R1 core-only、R2 core+box，均应 SAT+witness） |
 | `sidecar/patch_rs_logger.py` | RoundingSat 上游缺陷本地补丁（见下） |
 
-## 状态（2026-07-05）
+## 状态（2026-07-18，Batch 3+5 语义迁移）
 
-- **验收 25/25 全绿**（合成样本；`run_acceptance.py` 输出 `work/acceptance_report.json`，
-  work/ 为生成产物不入库）。
+- **迁移后结构验收 30/30 全绿**（本机 OR-Tools solver shim，覆盖 emitter、OPB、
+  双层 witness checker 与全部红测；输出仅在 `/tmp`）。Windows→WSL 专用的
+  RoundingSat→VeriPB→CakePB 完整 proof 链仍须在对应工具链环境复跑；
+  `run_acceptance.py` 的正式输出目录 `work/` 为生成产物、不入库。
 - 覆盖：UNSAT 4 类（计数鸽笼/多商品溢出/正需求零槽哨兵编码）全 CONFIRMED
-  （真 proof + veripb `s VERIFIED UNSATISFIABLE`）；FEASIBLE canaries 5 全
+  （正式 proof 链复跑后才可重新声明 proof-backed）；FEASIBLE canaries 6 全
   SAT + 双层 witness 复验（OPB-level + canonical-level）升 `DIVERGED_CANDIDATE`；
-  非法输入 8 类全 fail-closed 拒绝；双向突变红测 4/4 被抓（含 over-constraint
+  另含 protocol_core 14 实体进口 canary；非法输入 11 类全 fail-closed 拒绝；
+  双向突变红测 4/4 被抓（含 over-constraint
   使 canary 翻 UNSAT——sidecar 最危险 bug 类的哨兵）；canonical checker 自身
-  红测 4/4（篡改计数/双选/cell 出 pose/漏变量全被精准拒）。
+  红测 5/5（篡改计数/双选/binding cell 或 generic slot 出 pose/漏变量全被精准拒）。
 - **CakePB（第四层纵深）已接入且默认开**：每个 CONFIRMED 都经过
   RoundingSat → veripb → elaborate(kernel) → **cake_pb（形式化验证 checker）**
   四层，任一环节非唯一 `s VERIFIED UNSATISFIABLE` 结论行即降级 UNKNOWN
@@ -42,9 +45,11 @@
 - **P1.2 已于 2026-07-07 收口；Phase 0 采集侧待单独排期**（owner 2026-07-05 拍板，选项 b）。
 - **冻结工件解析前端已落地**（frontend.py）：五工件 strict-JSON exact-decimal
   独立解析、operation profile 独立重推（Fraction 精确 ceil），与生产
-  OPERATION_PORT_PROFILES 对拍 **21/21 精确一致**（parity_check.py）；
-  真实规模端到端已验（real_sample.py：17k 变量模型，emit+solve+check < 10s，
-  R1 无储存箱 CONFIRMED / R2 补箱 SAT+witness 通过）。
+  OPERATION_PORT_PROFILES 对拍，并额外核对
+  `generic_input_slots_by_operation={protocol_core:14, box_sink:3}`；generic input
+  已从单一 wireless 虚拟槽迁移为所选 pose 上带 `x/y/dir` 的实体进口。
+  `real_sample.py` 的新判据为 R1 mandatory core-only SAT、R2 core+box SAT；
+  真实工件应在候选池完成 Batch 3+5 重生成后运行。
 - **真实生产判决对账仍不可做**（by design）：需要 canonical sample record
   （verdict/scope/ordinal 字段）——采集侧改造动生产文件，属 P3.0c 轴 B 的
   Phase 0 自身排期、待 owner 批；与已关闭的 P1.2 无关。

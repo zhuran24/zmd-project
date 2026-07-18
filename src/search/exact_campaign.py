@@ -1210,19 +1210,11 @@ def _validate_terminal_solution_against_project(
         if optional_solution_counts.get(str(facility_type), 0) < int(required_count):
             return "terminal_certified_final_result_solution_missing_required_optional_instance"
 
-    # Protocol storage boxes are only justified on the public certified surface by
-    # the replayable generic-input lower-bound contract.  Extra pose-optional boxes
-    # are cheap blockers for the terminal empty-rectangle replay; routing/provenance
-    # evidence for such surplus selections belongs in a future proof-carrying
-    # certificate, so the current public validator fails closed.
-    required_protocol_storage_boxes = int(
-        required_optional_lower_bounds.get("protocol_storage_box", 0)
-    )
-    selected_protocol_storage_boxes = int(
-        optional_solution_counts.get("protocol_storage_box", 0)
-    )
-    if selected_protocol_storage_boxes > required_protocol_storage_boxes:
-        return "terminal_certified_final_result_solution_excess_protocol_storage_box_instance"
+    # The provider-aware arithmetic above is a lower bound, never a selected-box
+    # upper bound.  Extra optional boxes can have routing-space value.  Their
+    # admissibility is therefore decided by the fresh fixed-witness verifier,
+    # which requires every selected optional box to bind a physical generic-input
+    # slot and then proves the routed connection.
 
     power_coverers_by_instance: Dict[str, list[str]] = {}
     power_targets_by_pole: Dict[str, set[str]] = {
@@ -1426,19 +1418,17 @@ def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, 
         raise ValueError("canonical_rules must be a JSON object")
     if not isinstance(generic_io_requirements, Mapping):
         raise ValueError("generic_io_requirements must be a JSON object")
-    wireless_sink_generic_input_slots = None
-    if generic_io_requirements.get("required_generic_inputs", {}):
-        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+    from src.models.binding_subproblem import load_generic_input_slots_by_operation
 
-        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
-            project_root=project_root
-        )
+    generic_input_slots_by_operation = load_generic_input_slots_by_operation(
+        project_root=project_root
+    )
     lower_bounds: Dict[str, int] = {}
     for facility_type, count in infer_certified_optional_lower_bounds_for_instances(
         instances,
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
     ).items():
         required_count = int(count)
         if required_count > 0:
@@ -1467,18 +1457,16 @@ def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[
             facility_type,
             grid_dimensions=(int(grid_w), int(grid_h)),
         )
-    wireless_sink_generic_input_slots = None
-    if generic_io_requirements.get("required_generic_inputs", {}):
-        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+    from src.models.binding_subproblem import load_generic_input_slots_by_operation
 
-        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
-            project_root=project_root
-        )
+    generic_input_slots_by_operation = load_generic_input_slots_by_operation(
+        project_root=project_root
+    )
     for facility_type, count in infer_certified_optional_lower_bounds_for_instances(
         instances,
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
     ).items():
         lower_bound += int(count) * _pose_pool_min_occupied_cell_count(
             facility_pools,

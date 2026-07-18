@@ -32,7 +32,7 @@ def test_generate_all_pools_rejects_schema_valid_template_geometry_drift():
         (
             "protocol_storage_box",
             lambda tpl: tpl["dimensions"].__setitem__("w", 4),
-            r"protocol_storage_box.*3x3",
+            r"protocol_storage_box.*w == h",
         ),
         (
             "power_pole",
@@ -81,22 +81,22 @@ def test_generate_all_pools_rejects_schema_valid_template_geometry_drift():
             generate_all_pools(_single_mutated_template(template_id, mutator))
 
 
-def test_protocol_storage_box_omni_wireless_has_no_physical_ports_and_full_anchor_domain():
+def test_protocol_storage_box_has_front_safe_physical_ports():
     pools = generate_all_pools(load_templates())
     poses = pools["protocol_storage_box"]
 
-    assert len(poses) == (GRID_W - 3 + 1) * (GRID_H - 3 + 1)
-    assert {pose["pose_params"]["port_mode"] for pose in poses} == {"omni"}
-    assert {pose["pose_params"]["orientation"] for pose in poses} == {0}
-    assert {(pose["anchor"]["x"], pose["anchor"]["y"]) for pose in poses} == {
-        (x, y)
-        for x in range(GRID_W - 3 + 1)
-        for y in range(GRID_H - 3 + 1)
+    assert len(poses) == 17_952
+    assert {pose["pose_params"]["port_mode"] for pose in poses} == {
+        "TB",
+        "BT",
+        "RL",
+        "LR",
     }
+    assert {pose["pose_params"]["orientation"] for pose in poses} == {0}
 
     for pose in poses:
-        assert pose["input_port_cells"] == []
-        assert pose["output_port_cells"] == []
+        assert len(pose["input_port_cells"]) == 3
+        assert len(pose["output_port_cells"]) == 3
         assert len(pose["occupied_cells"]) == 9
         assert len({tuple(cell) for cell in pose["occupied_cells"]}) == 9
 
@@ -152,11 +152,11 @@ def test_template_pool_counts_match_front_safe_closed_forms():
     # For physical-port templates, active edge fronts need a one-cell in-grid
     # routing moat beyond the outside-adjacent port coordinate.
     assert counts == {
-        "manufacturing_3x3": 4 * 68 * 64,
-        "manufacturing_5x5": 4 * 66 * 62,
-        "manufacturing_6x4": 4 * 65 * 63,
-        "protocol_core": 2 * 58 * 58,
-        "protocol_storage_box": 68 * 68,
-        "power_pole": 69 * 69,
-        "boundary_storage_port": 2 * 68,
+        "manufacturing_3x3": 17_952,
+        "manufacturing_5x5": 16_896,
+        "manufacturing_6x4": 16_900,
+        "protocol_core": 7_200,
+        "protocol_storage_box": 17_952,
+        "power_pole": 4_761,
+        "boundary_storage_port": 136,
     }

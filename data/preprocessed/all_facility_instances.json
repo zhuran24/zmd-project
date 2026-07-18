@@ -3744,7 +3744,7 @@
   {
     "instance_id": "protocol_box_001",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3755,7 +3755,7 @@
   {
     "instance_id": "protocol_box_002",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3766,7 +3766,7 @@
   {
     "instance_id": "protocol_box_003",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3777,7 +3777,7 @@
   {
     "instance_id": "protocol_box_004",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3788,7 +3788,7 @@
   {
     "instance_id": "protocol_box_005",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3799,7 +3799,7 @@
   {
     "instance_id": "protocol_box_006",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3810,7 +3810,7 @@
   {
     "instance_id": "protocol_box_007",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3821,7 +3821,7 @@
   {
     "instance_id": "protocol_box_008",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3832,7 +3832,7 @@
   {
     "instance_id": "protocol_box_009",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [
@@ -3843,7 +3843,7 @@
   {
     "instance_id": "protocol_box_010",
     "facility_type": "protocol_storage_box",
-    "operation_type": "wireless_sink",
+    "operation_type": "box_sink",
     "is_mandatory": false,
     "bound_type": "provisional",
     "solve_modes": [

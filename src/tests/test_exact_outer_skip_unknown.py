@@ -29,6 +29,9 @@ def _write_minimal_exact_campaign_artifacts(project_root: Path) -> None:
         json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
         encoding="utf-8",
     )
+    (project_root / "rules" / "preprocess_plan.json").write_text(
+        '{"utility_operations": {}}', encoding="utf-8"
+    )
 
 def test_terminal_stop_reason_default_unknown_returns_candidate_returned_unknown(monkeypatch):
     """default (env unset): UNKNOWN candidate 触发 campaign terminal stop."""

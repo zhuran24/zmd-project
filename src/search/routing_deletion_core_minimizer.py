@@ -23,6 +23,7 @@ nogood (Phase 3/4 baseline) 切得 minimal (core 是 minimal, 不是 full layout
 
 from __future__ import annotations
 
+import logging
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
@@ -33,6 +34,12 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 RoutingVisiblePortKey = Tuple[int, int, str, str]
 
+_logger = logging.getLogger(__name__)
+_GENERIC_INPUT_PROVIDER_OPERATIONS = frozenset({"box_sink", "protocol_core"})
+_GENERIC_INPUT_PROVIDER_TEMPLATES = frozenset(
+    {"protocol_storage_box", "protocol_core"}
+)
+
 
 def build_routing_visible_port_keys_by_instance(
     port_specs: Sequence[Mapping[str, Any]],
@@ -40,9 +47,10 @@ def build_routing_visible_port_keys_by_instance(
     """Normalize selected routing-visible binding port specs for the oracle.
 
     The deletion-core oracle is deliberately cheaper than routing precheck, but
-    it must consume the same *visible terminal* set.  In particular, wireless
-    final producer outputs are absent from ``extract_port_specs()`` and must not
-    be resurrected from raw pose geometry here.
+    it must consume the same *visible terminal* set.  Final producer outputs and
+    bound generic-input ports arrive through ``extract_port_specs()`` as ordinary
+    ``out`` and ``in`` terminals; unbound raw ports must not be resurrected from
+    pose geometry here.
     """
 
     result: Dict[str, Set[RoutingVisiblePortKey]] = {}
@@ -116,12 +124,32 @@ def _oracle_front_blocked(
         if pose_idx >= len(pool):
             continue
         pose = pool[pose_idx]
-        for port_list_key, port_type in (("input_port_cells", "in"), ("output_port_cells", "out")):
-            visible_keys = (
-                None
-                if routing_visible_port_keys_by_instance is None
-                else set(routing_visible_port_keys_by_instance.get(str(iid), set()))
+        visible_keys = (
+            None
+            if routing_visible_port_keys_by_instance is None
+            else set(routing_visible_port_keys_by_instance.get(str(iid), set()))
+        )
+        operation_type = str(entry.get("operation_type", ""))
+        if visible_keys is None and (
+            operation_type in _GENERIC_INPUT_PROVIDER_OPERATIONS
+            or tpl in _GENERIC_INPUT_PROVIDER_TEMPLATES
+        ):
+            # The legacy all-raw fallback cannot distinguish bound generic-input
+            # slots from unused physical inputs (or semantically irrelevant raw
+            # outputs).  Keep the provider body in ``occupied`` so it can still
+            # block another authoritative terminal, but conservatively omit this
+            # instance's own terminals and record the diagnostic instead of
+            # fabricating a front_blocked proof or crashing the research path.
+            _logger.warning(
+                "routing deletion oracle skipped unfiltered generic-input "
+                "provider terminals: instance_id=%s operation_type=%s "
+                "facility_type=%s",
+                iid,
+                operation_type,
+                tpl,
             )
+            continue
+        for port_list_key, port_type in (("input_port_cells", "in"), ("output_port_cells", "out")):
             for port in pose.get(port_list_key, []) or []:
                 px = int(port.get("x", 0))
                 py = int(port.get("y", 0))

@@ -2,7 +2,8 @@
 
 If anyone changes blueprint_to_master_hint.py rotation rules, this fails — and
 that's intentional: the mapping is non-obvious and was hand-derived from IP v2
-source + project pose data on 2026-05-16.
+source + project pose data on 2026-05-16, with protocol-storage-box physical
+ports updated for Batch 5 on 2026-07-18.
 """
 
 from __future__ import annotations
@@ -27,7 +28,8 @@ from blueprint_to_master_hint import (  # noqa: E402
 )
 
 # Each row: (typeId, rotation, origin, expected_orientation, expected_port_mode, expected_pose_id)
-# Hand-derived 2026-05-16 from IP v2 registry.ts ports0 + project pose data.
+# Hand-derived from IP v2 registry.ts ports0 + project pose data. The protocol
+# storage box row reflects Batch 5's physical opposite-side port modes.
 HAND_VERIFIED_SAMPLES = [
     (
         "item_port_unloader_1",
@@ -114,8 +116,8 @@ HAND_VERIFIED_SAMPLES = [
         270,
         (10, 10),
         0,
-        "omni",
-        "p_x10_y10_o0_m_omni",
+        "RL",
+        "p_x10_y10_o0_m_RL",
     ),
 ]
 
@@ -172,9 +174,18 @@ def test_rotation_mapping_matches_hand_derivation(
     )
 
 
-def test_protocol_storage_box_rotation_is_omni_for_all_blueprint_rotations() -> None:
+def test_protocol_storage_box_uses_physical_opposite_side_modes() -> None:
     assert TYPE_ID_TO_FACILITY["item_port_storager_1"] == "protocol_storage_box"
     assert {
-        rotation_to_orient_mode("protocol_storage_box", rotation)
-        for rotation in (0, 90, 180, 270, 13)
-    } == {(0, "omni")}
+        rotation: rotation_to_orient_mode("protocol_storage_box", rotation)
+        for rotation in (0, 90, 180, 270)
+    } == {
+        0: (0, "TB"),
+        90: (0, "LR"),
+        180: (0, "BT"),
+        270: (0, "RL"),
+    }
+
+
+def test_protocol_storage_box_rejects_unknown_rotation() -> None:
+    assert rotation_to_orient_mode("protocol_storage_box", 13) is None

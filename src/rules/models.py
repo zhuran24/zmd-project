@@ -100,7 +100,6 @@ PortRuleType = Literal[
     "opposite_parallel_sides",
     "long_sides",
     "core_specific",
-    "omni_wireless",
     "none",
     "inward_facing",
 ]

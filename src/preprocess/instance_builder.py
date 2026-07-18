@@ -39,7 +39,7 @@ EXPLORATORY_OPTIONAL_CAPS = {
     "protocol_storage_box": {
         "cap": 10,
         "bound_type": "provisional",
-        "operation_type": "wireless_sink",
+        "operation_type": "box_sink",
         "notes": "经验上限，仅探索模式可用。",
     },
 }

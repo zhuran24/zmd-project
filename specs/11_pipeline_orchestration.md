@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: main.py, src/search/outer_search.py, src/search/exact_campaign.py, src/search/certified_surface.py, src/search/exact_parallel_scheduler.py
-last_verified_against: 2026-07-11
+last_verified_against: 2026-07-18
 owner: search-runtime
 ---
 
@@ -27,14 +27,22 @@ The exact path consumes and hash-binds, among other project inputs:
 - `data/preprocessed/generic_io_requirements.json`;
 - proof-bearing source and obligation material named by the campaign contract.
 
-`candidate_placements.json` is present in this working tree. Its expected current artifact is
-45,774,305 bytes with SHA256
-`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`.
-The superseded 45,773,799-byte / SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` artifact predates
-the boundary `(0,0)` corner-pose fix and is hash-incompatible.
+The current frozen pins are `canonical_rules.json` at 17,510 bytes / SHA256
+`5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`,
+`preprocess_plan.json` at 1,383 bytes / SHA256
+`5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`, and
+`candidate_placements.json` at 53,595,501 bytes / SHA256
+`78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`.
+The 45,774,305-byte / `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`,
+45,773,799-byte / `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`,
+and 53,594,995-byte / `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`
+candidate artifacts form a superseded, hash-incompatible historical chain.
 A different byte set reopens resume compatibility; old campaign evidence must not be reused across
 an artifact-hash mismatch.
+
+Campaign identity includes the complete `generic_input_slots_by_operation` map parsed from that
+same hash-bound plan snapshot. The map is threaded and compared atomically; a box-only scalar or a
+second plan read cannot define resume compatibility.
 
 ## 3. Objective and candidate domain
 
@@ -80,8 +88,12 @@ non-authoritative copies only; they cannot mint or preserve public `CERTIFIED` a
 
 ## 5. Candidate solve topology
 
-For the current theorem, placement is followed by binding and exact routing checks. Power and
-terminal whole-layout checks are part of the accepted evidence path. The continuous
+For the current theorem, placement is followed by binding and exact routing checks. Generic-input
+finished goods are routed from producer outputs to provider physical inputs. `box_sink` exposes
+3 physical inputs and 3 physical outputs, while the mandatory core exposes 14 inputs and 6 outputs.
+The provider-aware, instance-aware box lower bound is currently 0 because demand 2 is covered by the
+real mandatory core's 14 input ports; uninstantiated templates earn no credit. Power and terminal
+whole-layout checks are part of the accepted evidence path. The continuous
 `src/models/flow_subproblem.py` model is diagnostic-only: its verdict neither gates certified
 acceptance nor creates a proof-bearing cut.
 

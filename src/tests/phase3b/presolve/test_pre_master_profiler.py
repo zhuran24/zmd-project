@@ -32,6 +32,10 @@ def _build_toy_exact_project(project_root: Path) -> Path:
         },
     )
     _write_json(
+        project_root / "rules" / "preprocess_plan.json",
+        {"utility_operations": {}},
+    )
+    _write_json(
         project_root / "data" / "preprocessed" / "candidate_placements.json",
         {
             "facility_pools": {

@@ -107,11 +107,23 @@ P1.2 OPEN-GATE、独立 whole-layout reverify、中央公开发布器和生产 s
 
 ## 1.7 输入与规模
 
-`data/preprocessed/candidate_placements.json` 当前存在于工作树，大小 45,774,305 字节，SHA256 为
-`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。某些轻量分发包可能将其
-externalize，但 certified contract 始终要求同一 pinned bytes。拐角修复前的 45,773,799 字节 /
-SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本已 superseded，且
-hash-incompatible。
+当前冻结输入是 `rules/canonical_rules.json` 17,510 字节 / SHA256
+`5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`、
+`rules/preprocess_plan.json` 1,383 字节 / SHA256
+`5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`，以及
+`data/preprocessed/candidate_placements.json` 53,595,501 字节 / SHA256
+`78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。某些轻量分发包可能将
+candidate externalize，但 certified contract 始终要求同一 pinned bytes。superseded 历史链为 45,774,305-byte
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`、45,773,799-byte
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 与 53,594,995-byte
+`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 仅属 superseded、
+hash-incompatible 历史链。
+
+generic-input 成品按普通 commodity 从 producer output 路由到 provider physical input。
+`box_sink` 有 3 个物理输入/3 个物理输出，mandatory core 有 14 个物理输入/6 个物理输出；
+provider-aware、instance-aware 下界不为未实例化模板记容量。当前需求 2 已被真实 core 覆盖，
+所以 box lower bound 为 0。exact session 绑定同一 plan snapshot 的完整
+`generic_input_slots_by_operation` map。
 
 组合空间很大，exact campaign 依赖 candidate-frontier 枚举、CP-SAT、LBBD 和受验证 cut 来缩小搜索。
 性能瓶颈或 168h 预算不是证明捷径，跑得久也不会自动把 open/unknown 变成 certified。

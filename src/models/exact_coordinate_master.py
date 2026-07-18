@@ -3772,9 +3772,11 @@ class CoordinateExactMasterDelegate:
         """RFSC 集：与 binding 同一 SSOT 派生、同一 certified snapshot 来源。
 
         snapshot = owner.generic_io_requirements（build_exact_core 单次读入、
-        ExactMasterCore 自携，master_model.py:2362/:2288/:2841）——与
-        benders_loop._binding_generic_requirements_kwargs 喂给 PortBindingModel
-        的是同一对象；派生规则经 port_binding SSOT（doc 04 v2 §3.4）。
+        ExactMasterCore 自携）——与 benders_loop 喂给 PortBindingModel 的是
+        同一对象；派生规则经 port_binding SSOT（doc 04 v2 §3.4）。
+        批 5 (2026-07-18)：SSOT 派生恒返回空集（成品=真 routed 商品），FCL
+        demand 自动把成品输出计入 routing-visible（预期账 568→574，以重生成
+        实测为准）；本函数保留 SSOT 调用链不内联。
         """
         from src.models.port_binding import (
             routing_free_sink_commodities_from_generic_inputs,
@@ -7180,7 +7182,9 @@ class CoordinateExactMasterDelegate:
         stats["optional_cardinality_bounds"]["protocol_storage_box"] = {
             "mode": "required_lower_bound",
             "required_generic_input_slots": int(self.owner._required_generic_input_slot_total()),
-            "slots_per_pose": int(self.owner.wireless_sink_generic_input_slots),
+            "slots_per_pose": int(
+                self.owner.generic_input_slots_by_operation.get("box_sink", 0)
+            ),
             "lower": int(protocol_count),
             "upper": None,
             "candidate_pose_count": int(len(self.owner.facility_pools.get("protocol_storage_box", []))),
@@ -7792,7 +7796,8 @@ class CoordinateExactMasterDelegate:
 
     def extract_solution(self) -> Dict[str, Any]:
         solution: Dict[str, Any] = {}
-        optional_operations = {"power_pole": "power_supply", "protocol_storage_box": "wireless_sink"}
+        # 批 5: box_sink 改名（与 master_model.POSE_LEVEL_OPTIONAL_OPERATIONS 同步）
+        optional_operations = {"power_pole": "power_supply", "protocol_storage_box": "box_sink"}
         for group in self.owner._mandatory_groups:
             group_id = str(group["group_id"])
             tpl = str(group["facility_type"])

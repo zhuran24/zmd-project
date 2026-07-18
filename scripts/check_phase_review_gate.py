@@ -480,7 +480,7 @@ def _constant_guard_value(
     return _constant_bool_value(test, false_names, true_names)
 
 
-def _reachable_direct_call(node: ast.AST, predicate: Callable[[ast.Call], bool]) -> bool:
+def _reachable_node(node: ast.AST, predicate: Callable[[ast.AST], bool]) -> bool:
     found = False
     module_false_names, module_true_names = _module_constant_bool_names(node)
     function_bindings = _function_scope_binding_names(node)
@@ -491,6 +491,12 @@ def _reachable_direct_call(node: ast.AST, predicate: Callable[[ast.Call], bool])
         def __init__(self) -> None:
             self.false_names = set(false_names)
             self.true_names = set(true_names)
+
+        def visit(self, child: ast.AST) -> None:
+            nonlocal found
+            if predicate(child):
+                found = True
+            super().visit(child)
 
         def visit_statements(self, statements: Sequence[ast.stmt]) -> None:
             for statement in statements:
@@ -669,14 +675,15 @@ def _reachable_direct_call(node: ast.AST, predicate: Callable[[ast.Call], bool])
                 self.visit(child.type)
             self.visit_statements(child.body)
 
-        def visit_Call(self, child: ast.Call) -> None:
-            nonlocal found
-            if predicate(child):
-                found = True
-            self.generic_visit(child)
-
     Visitor().visit(node)
     return found
+
+
+def _reachable_direct_call(node: ast.AST, predicate: Callable[[ast.Call], bool]) -> bool:
+    return _reachable_node(
+        node,
+        lambda child: isinstance(child, ast.Call) and predicate(child),
+    )
 
 
 def _direct_calls_name(node: ast.AST, name: str) -> bool:
@@ -690,6 +697,92 @@ def _direct_calls_attr(node: ast.AST, attr: str) -> bool:
     return _reachable_direct_call(
         node,
         lambda child: isinstance(child.func, ast.Attribute) and child.func.attr == attr,
+    )
+
+
+def _direct_calls_unshadowed_name(node: ast.AST, name: str) -> bool:
+    return name not in _function_scope_binding_names(node) and _direct_calls_name(node, name)
+
+
+def _direct_calls_qualified_attr(node: ast.AST, *, owner: str, attr: str) -> bool:
+    if owner in _function_scope_binding_names(node):
+        return False
+    return _reachable_direct_call(
+        node,
+        lambda child: (
+            isinstance(child.func, ast.Attribute)
+            and child.func.attr == attr
+            and isinstance(child.func.value, ast.Name)
+            and child.func.value.id == owner
+        ),
+    )
+
+
+def _direct_calls_bound_method(node: ast.AST, *, receiver: str, method: str) -> bool:
+    return _reachable_direct_call(
+        node,
+        lambda child: (
+            isinstance(child.func, ast.Attribute)
+            and child.func.attr == method
+            and isinstance(child.func.value, ast.Name)
+            and child.func.value.id == receiver
+        ),
+    )
+
+
+def _is_control_guard(node: ast.AST) -> bool:
+    current = node
+    parent = getattr(current, "_p1_2_parent", None)
+    while isinstance(parent, (ast.BoolOp, ast.UnaryOp)):
+        current = parent
+        parent = getattr(current, "_p1_2_parent", None)
+    return isinstance(parent, (ast.If, ast.IfExp, ast.While)) and parent.test is current
+
+
+def _reachable_name_constant_comparison(
+    node: ast.AST,
+    *,
+    name: str,
+    value: object,
+    operators: tuple[type[ast.cmpop], ...],
+) -> bool:
+    def matches(child: ast.AST) -> bool:
+        if not isinstance(child, ast.Compare) or not _is_control_guard(child):
+            return False
+        operands = [child.left, *child.comparators]
+        for left, operator, right in zip(operands, child.ops, operands[1:]):
+            if not isinstance(operator, operators):
+                continue
+            if (
+                isinstance(left, ast.Name)
+                and left.id == name
+                and isinstance(right, ast.Constant)
+                and right.value == value
+            ):
+                return True
+            if (
+                isinstance(right, ast.Name)
+                and right.id == name
+                and isinstance(left, ast.Constant)
+                and left.value == value
+            ):
+                return True
+        return False
+
+    return _reachable_node(node, matches)
+
+
+def _reachable_returns_unshadowed_call(node: ast.AST, name: str) -> bool:
+    if name in _function_scope_binding_names(node):
+        return False
+    return _reachable_node(
+        node,
+        lambda child: (
+            isinstance(child, ast.Return)
+            and isinstance(child.value, ast.Call)
+            and isinstance(child.value.func, ast.Name)
+            and child.value.func.id == name
+        ),
     )
 
 
@@ -728,20 +821,130 @@ def _fixed_witness_verifier_semantics_errors(
 ) -> list[str]:
     errors: list[str] = []
     verify_fn = _function_def(core_tree, "verify_terminal_fixed_witness", path=core_path)
-    verify_source = _source_text(core_path, verify_fn)
-    if not (
-        _direct_calls_name(verify_fn, "PortBindingModel")
-        and _direct_calls_attr(verify_fn, "from_placement_core")
-        and 'binding_status != "FEASIBLE"' in verify_source
-        and 'routing_status != "FEASIBLE"' in verify_source
-        and "_connector_body_exclusion_violation" in verify_source
-    ):
-        errors.append(
-            "verify_terminal_fixed_witness must rerun binding and routing through "
-            "PortBindingModel and RoutingSubproblem"
+    binding_path_valid = (
+        _direct_calls_unshadowed_name(verify_fn, "PortBindingModel")
+        and _direct_calls_bound_method(
+            verify_fn,
+            receiver="binding_model",
+            method="build",
         )
-    if "_accept(" not in verify_source or "_reject(" not in verify_source:
-        errors.append("verify_terminal_fixed_witness must return explicit accept/reject verdicts")
+        and _direct_calls_unshadowed_name(verify_fn, "_solve_binding_with_budget")
+        and _reachable_name_constant_comparison(
+            verify_fn,
+            name="binding_status",
+            value=None,
+            operators=(ast.Is,),
+        )
+        and _reachable_name_constant_comparison(
+            verify_fn,
+            name="binding_status",
+            value="FEASIBLE",
+            operators=(ast.NotEq,),
+        )
+    )
+    if not binding_path_valid:
+        errors.append(
+            "verify_terminal_fixed_witness must rerun binding through PortBindingModel "
+            "with build and fail-closed solve-status checks"
+        )
+
+    alternatives_name = "_verify_binding_routing_alternatives"
+    alternatives_fn: ast.FunctionDef | None = None
+    try:
+        alternatives_fn = _function_def(core_tree, alternatives_name, path=core_path)
+    except GateError:
+        errors.append(
+            "verify_terminal_fixed_witness must call the concrete "
+            "_verify_binding_routing_alternatives helper"
+        )
+    else:
+        if not _direct_calls_unshadowed_name(verify_fn, alternatives_name):
+            errors.append(
+                "verify_terminal_fixed_witness must call the concrete "
+                "_verify_binding_routing_alternatives helper"
+            )
+
+    if alternatives_fn is not None:
+        routing_path_valid = (
+            _direct_calls_qualified_attr(
+                alternatives_fn,
+                owner="RoutingSubproblem",
+                attr="from_placement_core",
+            )
+            and _direct_calls_bound_method(
+                alternatives_fn,
+                receiver="routing_model",
+                method="build",
+            )
+            and _direct_calls_unshadowed_name(
+                alternatives_fn,
+                "_routing_build_rejection",
+            )
+            and _reachable_name_constant_comparison(
+                alternatives_fn,
+                name="build_rejection",
+                value=None,
+                operators=(ast.IsNot,),
+            )
+            and _direct_calls_unshadowed_name(
+                alternatives_fn,
+                "_solve_routing_with_budget",
+            )
+            and _reachable_name_constant_comparison(
+                alternatives_fn,
+                name="routing_status",
+                value=None,
+                operators=(ast.Is,),
+            )
+            and _reachable_name_constant_comparison(
+                alternatives_fn,
+                name="routing_status",
+                value="FEASIBLE",
+                operators=(ast.Eq,),
+            )
+            and _reachable_name_constant_comparison(
+                alternatives_fn,
+                name="routing_status",
+                value="TIMEOUT",
+                operators=(ast.Eq,),
+            )
+            and _reachable_name_constant_comparison(
+                alternatives_fn,
+                name="routing_status",
+                value="INFEASIBLE",
+                operators=(ast.NotEq,),
+            )
+        )
+        if not routing_path_valid:
+            errors.append(
+                "_verify_binding_routing_alternatives must rerun routing through "
+                "RoutingSubproblem with build and fail-closed solve-status checks"
+            )
+
+        connector_exclusion_valid = (
+            _direct_calls_unshadowed_name(
+                alternatives_fn,
+                "_connector_body_exclusion_violation",
+            )
+            and _reachable_name_constant_comparison(
+                alternatives_fn,
+                name="f3_reason",
+                value=None,
+                operators=(ast.IsNot,),
+            )
+        )
+        if not connector_exclusion_valid:
+            errors.append(
+                "_verify_binding_routing_alternatives must enforce connector-body exclusion"
+            )
+
+        if not (
+            _reachable_returns_unshadowed_call(alternatives_fn, "_accept")
+            and _reachable_returns_unshadowed_call(alternatives_fn, "_reject")
+        ):
+            errors.append(
+                "_verify_binding_routing_alternatives must return explicit accept/reject verdicts"
+            )
 
     project_fn = _function_def(
         verifier_tree,

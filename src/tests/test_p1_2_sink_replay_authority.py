@@ -68,6 +68,10 @@ def _build_single_pose_project(root: Path, *, width: int = 2, height: int = 1) -
             },
         },
     )
+    _write_json(
+        root / "rules" / "preprocess_plan.json",
+        {"utility_operations": {}},
+    )
     poses = [
         {
             "pose_id": "tiny_corner",

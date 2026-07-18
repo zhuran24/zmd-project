@@ -14,9 +14,12 @@ def test_protocol_lower_bound_counts_fixed_required_storage_boxes() -> None:
             {
                 "pose_id": "box_0",
                 "anchor": {"x": 0, "y": 0},
-                "pose_params": {"orientation": 0, "port_mode": "omni"},
                 "occupied_cells": [[0, 0]],
-                "input_port_cells": [],
+                "input_port_cells": [
+                    {"x": 0, "y": 0, "dir": "N"},
+                    {"x": 0, "y": 0, "dir": "E"},
+                    {"x": 0, "y": 0, "dir": "S"},
+                ],
                 "output_port_cells": [],
                 "power_coverage_cells": None,
             }
@@ -39,7 +42,7 @@ def test_protocol_lower_bound_counts_fixed_required_storage_boxes() -> None:
             "required_generic_outputs": {},
             "required_generic_inputs": {"final_a": 1, "final_b": 1},
         },
-        wireless_sink_generic_input_slots=3,
+        generic_input_slots_by_operation={"box_sink": 3},
         exact_required_pose_optional_counts={"protocol_storage_box": 1},
     )
 
@@ -60,18 +63,24 @@ def test_protocol_lower_bound_shortfall_keeps_residual_storage_pool() -> None:
             {
                 "pose_id": "box_0",
                 "anchor": {"x": 0, "y": 0},
-                "pose_params": {"orientation": 0, "port_mode": "omni"},
                 "occupied_cells": [[0, 0]],
-                "input_port_cells": [],
+                "input_port_cells": [
+                    {"x": 0, "y": 0, "dir": "N"},
+                    {"x": 0, "y": 0, "dir": "E"},
+                    {"x": 0, "y": 0, "dir": "S"},
+                ],
                 "output_port_cells": [],
                 "power_coverage_cells": None,
             },
             {
                 "pose_id": "box_1",
                 "anchor": {"x": 1, "y": 0},
-                "pose_params": {"orientation": 0, "port_mode": "omni"},
                 "occupied_cells": [[1, 0]],
-                "input_port_cells": [],
+                "input_port_cells": [
+                    {"x": 1, "y": 0, "dir": "N"},
+                    {"x": 1, "y": 0, "dir": "E"},
+                    {"x": 1, "y": 0, "dir": "S"},
+                ],
                 "output_port_cells": [],
                 "power_coverage_cells": None,
             },
@@ -99,7 +108,7 @@ def test_protocol_lower_bound_shortfall_keeps_residual_storage_pool() -> None:
                 "final_d": 1,
             },
         },
-        wireless_sink_generic_input_slots=3,
+        generic_input_slots_by_operation={"box_sink": 3},
         exact_required_pose_optional_counts={"protocol_storage_box": 1},
     )
 

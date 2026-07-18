@@ -89,6 +89,7 @@ def _write_power_project(root: Path, *, include_selected_covering_pole: bool) ->
         }
     ]
     _write_json(rules_dir / "canonical_rules.json", rules)
+    _write_json(rules_dir / "preprocess_plan.json", {"utility_operations": {}})
     _write_json(data_dir / "candidate_placements.json", {"facility_pools": facility_pools})
     _write_json(data_dir / "mandatory_exact_instances.json", mandatory_instances)
     _write_json(

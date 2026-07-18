@@ -18,6 +18,7 @@ def main() -> int:
     sys.path.insert(0, str(project_root))
 
     from frontend import derive_operation_profiles, load_artifact  # noqa: E402
+    from src.models.binding_subproblem import load_generic_input_slots_by_operation  # noqa: E402
     from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES  # noqa: E402
 
     rules, _ = load_artifact(project_root / "rules" / "canonical_rules.json")
@@ -44,13 +45,27 @@ def main() -> int:
         elif ours[op] != prod[op]:
             mismatches.append(f"DIFF {op}:\n  frontend={ours[op]}\n  prod    ={prod[op]}")
 
+    ours_generic_input_map = {
+        op: int(profile["generic_input_slots"])
+        for op, profile in sorted(ours.items())
+        if int(profile["generic_input_slots"]) > 0
+    }
+    prod_generic_input_map = load_generic_input_slots_by_operation(project_root=project_root)
+    if ours_generic_input_map != prod_generic_input_map:
+        mismatches.append(
+            "DIFF generic_input_slots_by_operation:\n"
+            f"  frontend={ours_generic_input_map}\n"
+            f"  prod    ={prod_generic_input_map}"
+        )
+
     if mismatches:
         print(f"PARITY FAIL ({len(mismatches)}):")
         for m in mismatches:
             print(" ", m)
         return 1
     print(f"PARITY OK: {len(ours)} operation profiles identical "
-          f"(recipes + utilities, slot counts exact)")
+          f"(recipes + utilities, slot counts exact); "
+          f"generic_input_slots_by_operation={ours_generic_input_map}")
     return 0
 
 

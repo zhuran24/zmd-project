@@ -848,7 +848,7 @@ def test_coordinate_delegate_acquisition_use_context_is_sealed() -> None:
     assert _coordinate_delegate_acquisition_use_digest() == _COORDINATE_DELEGATE_ACQUISITION_USE_DIGEST
 
 
-_COORDINATE_DELEGATE_ALIAS_USE_DIGEST = "158fd3f04b640bba34a78afae1b28241aaf91dd94139b6dcd82986977fcba283"
+_COORDINATE_DELEGATE_ALIAS_USE_DIGEST = "74297d2e9c7679ffcfb7b8f1ee56d74f19dd5c92ae2bbdca9571056283ad6bbc"
 
 
 def _coordinate_delegate_alias_use_digest() -> str:

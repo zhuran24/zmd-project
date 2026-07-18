@@ -8,13 +8,14 @@ import json
 import os
 from pathlib import Path
 import secrets
+import time
 from typing import Any, Dict, Mapping, MutableMapping, Optional, Sequence, Tuple
 
 from src.io.strict_json import loads_strict_json
 from src.models.binding_subproblem import (
     PortBindingModel,
     load_generic_io_requirements,
-    load_wireless_sink_generic_input_slots,
+    load_generic_input_slots_by_operation,
 )
 from src.models.routing_subproblem import (
     RoutingPlacementCore,
@@ -65,6 +66,8 @@ _PROJECTED_CERTIFIED = "CERTIFIED"
 _PROJECTED_UNPROVEN = "UNPROVEN"
 _BINDING_SECONDS = 600.0
 _ROUTING_SECONDS = 600.0
+_TOTAL_SOLVE_SECONDS = _BINDING_SECONDS + _ROUTING_SECONDS
+_solver_budget_clock = time.monotonic
 
 _FIXED_SOLVER_ENV = {
     "PYTHONHASHSEED": "0",
@@ -180,6 +183,1021 @@ class _WitnessIdentity:
     ghost_rect: Dict[str, int]
 
 
+@dataclass
+class _FixedWitnessSolveBudget:
+    """Share the fixed 600s + 600s envelope across all alternative solves."""
+
+    started_at: float = field(default_factory=lambda: _solver_budget_clock())
+    binding_seconds_used: float = 0.0
+    routing_seconds_used: float = 0.0
+
+    def remaining(self, stage: str) -> float:
+        now = _solver_budget_clock()
+        total_remaining = _TOTAL_SOLVE_SECONDS - max(0.0, now - self.started_at)
+        if stage == "binding":
+            stage_remaining = _BINDING_SECONDS - self.binding_seconds_used
+        elif stage == "routing":
+            stage_remaining = _ROUTING_SECONDS - self.routing_seconds_used
+        else:
+            raise ValueError(f"unknown fixed-witness solve stage: {stage}")
+        return max(0.0, min(stage_remaining, total_remaining))
+
+    def record(self, stage: str, started_at: float) -> None:
+        elapsed = max(0.0, _solver_budget_clock() - started_at)
+        if stage == "binding":
+            self.binding_seconds_used += elapsed
+        elif stage == "routing":
+            self.routing_seconds_used += elapsed
+        else:
+            raise ValueError(f"unknown fixed-witness solve stage: {stage}")
+
+    def audit_details(self, *, exhausted_stage: str) -> Dict[str, Any]:
+        return {
+            "exhausted_stage": str(exhausted_stage),
+            "binding_seconds_budget": float(_BINDING_SECONDS),
+            "binding_seconds_used": float(self.binding_seconds_used),
+            "routing_seconds_budget": float(_ROUTING_SECONDS),
+            "routing_seconds_used": float(self.routing_seconds_used),
+            "total_solve_seconds_budget": float(_TOTAL_SOLVE_SECONDS),
+            "total_wall_seconds_used": float(
+                max(0.0, _solver_budget_clock() - self.started_at)
+            ),
+        }
+
+
+_STORAGE_BOX_DOMINANCE_REJECT_REASON = (
+    "terminal_fixed_witness_unbound_storage_box_violates_dominance_rule"
+)
+
+
+def _positive_generic_input_requirements(
+    io_requirements: Mapping[str, Any],
+) -> Dict[str, int]:
+    raw_requirements = io_requirements.get("required_generic_inputs", {})
+    if not isinstance(raw_requirements, Mapping):
+        raise ValueError("required_generic_inputs must be a mapping")
+    positive: Dict[str, int] = {}
+    for raw_commodity, raw_required in raw_requirements.items():
+        commodity = str(raw_commodity)
+        required = _strict_int(
+            raw_required,
+            f"required_generic_inputs.{commodity}",
+        )
+        if required < 0:
+            raise ValueError(
+                f"required_generic_inputs.{commodity} must be non-negative"
+            )
+        if required > 0:
+            positive[commodity] = int(required)
+    return positive
+
+
+def _selected_optional_storage_box_instance_ids(
+    *,
+    solution: Mapping[str, Any],
+    mandatory_instances: Sequence[Mapping[str, Any]],
+) -> list[str]:
+    """Return the deletable pose-optional boxes governed by the dominance rule."""
+
+    mandatory_ids = {
+        str(instance.get("instance_id", ""))
+        for instance in mandatory_instances
+        if str(instance.get("instance_id", ""))
+    }
+    selected: list[str] = []
+    for raw_instance_id, raw_entry in solution.items():
+        instance_id = str(raw_instance_id)
+        if instance_id == "ghost_pick" or instance_id in mandatory_ids:
+            continue
+        entry = _require_mapping(raw_entry, f"solution.{instance_id}")
+        if str(entry.get("facility_type", "")) == "protocol_storage_box":
+            selected.append(instance_id)
+    return sorted(set(selected))
+
+
+def _apply_storage_box_dominance_constraints(
+    *,
+    binding_model: PortBindingModel,
+    selected_storage_box_instance_ids: Sequence[str],
+    positive_generic_input_requirements: Mapping[str, int],
+) -> Tuple[Optional[str], Dict[str, Any]]:
+    """Make the fresh binding solve search only dominance-compliant box use."""
+
+    selected_box_ids = sorted(set(str(item) for item in selected_storage_box_instance_ids))
+    required_total = sum(int(value) for value in positive_generic_input_requirements.values())
+    details: Dict[str, Any] = {
+        "selected_storage_box_instance_ids": selected_box_ids,
+        "required_generic_input_slot_total": int(required_total),
+    }
+    if not selected_box_ids:
+        details["dominance_literal_counts"] = {}
+        return None, details
+
+    # Each active generic-input assignment occupies one physical slot.  More
+    # deletable boxes than positive assignments makes at least one unbound box
+    # inevitable, independent of the CP-SAT search order.
+    if len(selected_box_ids) > int(required_total):
+        details["minimum_inevitable_unbound_storage_box_count"] = (
+            len(selected_box_ids) - int(required_total)
+        )
+        details["dominance_failure"] = "selected_box_count_exceeds_bindable_sink_count"
+        return _STORAGE_BOX_DOMINANCE_REJECT_REASON, details
+
+    selected_box_set = set(selected_box_ids)
+    literals_by_box: Dict[str, list[Any]] = {
+        instance_id: [] for instance_id in selected_box_ids
+    }
+    for raw_slot in binding_model.generic_input_slots:
+        if not isinstance(raw_slot, Mapping):
+            raise ValueError("generic input slot metadata must be a mapping")
+        instance_id = str(raw_slot.get("instance_id", ""))
+        if instance_id not in selected_box_set:
+            continue
+        if str(raw_slot.get("operation_type", "")) != "box_sink":
+            continue
+        slot_id = _strict_nonempty_string(
+            raw_slot.get("slot_id"),
+            f"generic_input_slots.{instance_id}.slot_id",
+        )
+        commodity_vars = binding_model.generic_input_vars.get(slot_id)
+        if not isinstance(commodity_vars, Mapping):
+            raise ValueError(f"generic input vars missing for slot {slot_id}")
+        for commodity in sorted(positive_generic_input_requirements):
+            literal = commodity_vars.get(commodity)
+            if literal is not None:
+                literals_by_box[instance_id].append(literal)
+
+    literal_counts = {
+        instance_id: len(literals_by_box[instance_id])
+        for instance_id in selected_box_ids
+    }
+    details["dominance_literal_counts"] = literal_counts
+    missing_literal_boxes = sorted(
+        instance_id
+        for instance_id, literals in literals_by_box.items()
+        if not literals
+    )
+    if missing_literal_boxes:
+        details["unbound_storage_box_instance_ids"] = missing_literal_boxes
+        details["dominance_failure"] = "physical_generic_input_literal_missing"
+        return _STORAGE_BOX_DOMINANCE_REJECT_REASON, details
+
+    for instance_id in selected_box_ids:
+        binding_model.model.AddBoolOr(literals_by_box[instance_id])
+    return None, details
+
+
+def _collect_active_generic_input_slots(
+    *,
+    binding_model: PortBindingModel,
+    selection: Mapping[str, Any],
+    positive_generic_input_requirements: Mapping[str, int],
+) -> Tuple[Optional[str], Dict[str, Any], list[Dict[str, Any]]]:
+    """Normalize the live slot selection without parsing composite slot IDs."""
+
+    raw_assignments = selection.get("generic_inputs")
+    if not isinstance(raw_assignments, Mapping):
+        return (
+            "terminal_fixed_witness_generic_input_selection_invalid",
+            {"selection_error": "generic_inputs_not_mapping"},
+            [],
+        )
+
+    slot_by_id: Dict[str, Mapping[str, Any]] = {}
+    for raw_slot in binding_model.generic_input_slots:
+        if not isinstance(raw_slot, Mapping):
+            return (
+                "terminal_fixed_witness_generic_input_selection_invalid",
+                {"selection_error": "slot_metadata_not_mapping"},
+                [],
+            )
+        raw_slot_id = raw_slot.get("slot_id")
+        if not isinstance(raw_slot_id, str) or not raw_slot_id:
+            return (
+                "terminal_fixed_witness_generic_input_selection_invalid",
+                {"selection_error": "slot_id_invalid"},
+                [],
+            )
+        if raw_slot_id in slot_by_id:
+            return (
+                "terminal_fixed_witness_generic_input_selection_invalid",
+                {"selection_error": "duplicate_slot_id", "slot_id": raw_slot_id},
+                [],
+            )
+        slot_by_id[raw_slot_id] = raw_slot
+
+    assignment_keys: set[str] = set()
+    for raw_slot_id in raw_assignments:
+        if not isinstance(raw_slot_id, str) or not raw_slot_id:
+            return (
+                "terminal_fixed_witness_generic_input_selection_invalid",
+                {"selection_error": "assignment_slot_id_invalid"},
+                [],
+            )
+        assignment_keys.add(raw_slot_id)
+    expected_keys = set(slot_by_id)
+    if assignment_keys != expected_keys:
+        return (
+            "terminal_fixed_witness_generic_input_selection_invalid",
+            {
+                "selection_error": "assignment_slot_set_mismatch",
+                "missing_slot_ids": sorted(expected_keys - assignment_keys),
+                "unknown_slot_ids": sorted(assignment_keys - expected_keys),
+            },
+            [],
+        )
+
+    active_slots: list[Dict[str, Any]] = []
+    for slot_id in sorted(slot_by_id):
+        raw_commodity = raw_assignments[slot_id]
+        if not isinstance(raw_commodity, str) or not raw_commodity:
+            return (
+                "terminal_fixed_witness_generic_input_selection_invalid",
+                {"selection_error": "assignment_commodity_invalid", "slot_id": slot_id},
+                [],
+            )
+        if raw_commodity == "__unused__":
+            continue
+        if raw_commodity not in positive_generic_input_requirements:
+            return (
+                "terminal_fixed_witness_generic_input_selection_invalid",
+                {
+                    "selection_error": "assignment_commodity_not_required",
+                    "slot_id": slot_id,
+                    "commodity": raw_commodity,
+                },
+                [],
+            )
+        slot = slot_by_id[slot_id]
+        if str(slot.get("type", "")) != "in":
+            return (
+                "terminal_fixed_witness_generic_input_selection_invalid",
+                {"selection_error": "slot_type_invalid", "slot_id": slot_id},
+                [],
+            )
+        active_slots.append(
+            {
+                "slot_id": slot_id,
+                "instance_id": str(slot.get("instance_id", "")),
+                "operation_type": str(slot.get("operation_type", "")),
+                "x": _strict_int(slot.get("x"), f"generic_input_slots.{slot_id}.x"),
+                "y": _strict_int(slot.get("y"), f"generic_input_slots.{slot_id}.y"),
+                "dir": str(slot.get("dir", "")),
+                "type": "in",
+                "commodity": raw_commodity,
+            }
+        )
+    return None, {}, active_slots
+
+
+def _storage_box_dominance_violation(
+    *,
+    selected_storage_box_instance_ids: Sequence[str],
+    active_generic_input_slots: Sequence[Mapping[str, Any]],
+) -> Tuple[Optional[str], Dict[str, Any]]:
+    selected_box_ids = sorted(set(str(item) for item in selected_storage_box_instance_ids))
+    bound_counts = {instance_id: 0 for instance_id in selected_box_ids}
+    for slot in active_generic_input_slots:
+        instance_id = str(slot.get("instance_id", ""))
+        if (
+            instance_id in bound_counts
+            and str(slot.get("operation_type", "")) == "box_sink"
+        ):
+            bound_counts[instance_id] += 1
+    unbound = sorted(
+        instance_id for instance_id, count in bound_counts.items() if int(count) <= 0
+    )
+    details: Dict[str, Any] = {
+        "selected_storage_box_bound_sink_counts": bound_counts,
+    }
+    if unbound:
+        details["unbound_storage_box_instance_ids"] = unbound
+        details["dominance_rule"] = (
+            "every selected optional protocol storage box must bind at least one "
+            "physical generic-input sink slot"
+        )
+        return _STORAGE_BOX_DOMINANCE_REJECT_REASON, details
+    return None, details
+
+
+def _required_generic_input_endpoint_violation(
+    *,
+    active_generic_input_slots: Sequence[Mapping[str, Any]],
+    normalized_port_specs: Sequence[Mapping[str, Any]],
+    positive_generic_input_requirements: Mapping[str, int],
+) -> Tuple[Optional[str], Dict[str, Any]]:
+    port_spec_key_counts: Dict[Tuple[str, int, int, str, str, str], int] = {}
+    source_spec_counts: Dict[str, int] = {}
+    for spec in normalized_port_specs:
+        commodity = str(spec.get("commodity", ""))
+        key = (
+            str(spec.get("instance_id", "")),
+            _strict_int(spec.get("x"), "port_spec.x"),
+            _strict_int(spec.get("y"), "port_spec.y"),
+            str(spec.get("dir", "")),
+            str(spec.get("type", "")),
+            commodity,
+        )
+        port_spec_key_counts[key] = port_spec_key_counts.get(key, 0) + 1
+        if key[4] == "out":
+            source_spec_counts[commodity] = source_spec_counts.get(commodity, 0) + 1
+
+    bound_counts = {commodity: 0 for commodity in positive_generic_input_requirements}
+    routed_sink_counts = {
+        commodity: 0 for commodity in positive_generic_input_requirements
+    }
+    slot_route_mismatches: list[Dict[str, Any]] = []
+    for slot in active_generic_input_slots:
+        commodity = str(slot.get("commodity", ""))
+        if commodity in bound_counts:
+            bound_counts[commodity] += 1
+        expected_key = (
+            str(slot.get("instance_id", "")),
+            _strict_int(slot.get("x"), "generic_input_slot.x"),
+            _strict_int(slot.get("y"), "generic_input_slot.y"),
+            str(slot.get("dir", "")),
+            "in",
+            commodity,
+        )
+        matched_count = int(port_spec_key_counts.get(expected_key, 0))
+        if matched_count == 1 and commodity in routed_sink_counts:
+            routed_sink_counts[commodity] += 1
+        else:
+            slot_route_mismatches.append(
+                {
+                    "slot_id": str(slot.get("slot_id", "")),
+                    "instance_id": expected_key[0],
+                    "commodity": commodity,
+                    "matching_routed_sink_spec_count": matched_count,
+                }
+            )
+
+    endpoint_counts: Dict[str, Dict[str, int]] = {}
+    incomplete_commodities: list[str] = []
+    for commodity, required in sorted(positive_generic_input_requirements.items()):
+        bound_count = int(bound_counts.get(commodity, 0))
+        routed_sink_count = int(routed_sink_counts.get(commodity, 0))
+        source_spec_count = int(source_spec_counts.get(commodity, 0))
+        endpoint_counts[commodity] = {
+            "required_sink_count": int(required),
+            "bound_sink_count": bound_count,
+            "routed_sink_spec_count": routed_sink_count,
+            "source_spec_count": source_spec_count,
+        }
+        if (
+            bound_count != int(required)
+            or routed_sink_count != int(required)
+            or source_spec_count <= 0
+        ):
+            incomplete_commodities.append(commodity)
+
+    if incomplete_commodities or slot_route_mismatches:
+        return (
+            "terminal_fixed_witness_required_generic_input_endpoint_incomplete",
+            {
+                **endpoint_counts,
+                "_audit": {
+                    "incomplete_commodities": incomplete_commodities,
+                    "slot_route_mismatches": slot_route_mismatches,
+                },
+            },
+        )
+    return None, endpoint_counts
+
+
+def _required_generic_input_front_violation(
+    *,
+    precheck: Mapping[str, Any],
+    positive_generic_input_requirements: Mapping[str, int],
+    endpoint_counts: Mapping[str, Mapping[str, int]],
+) -> Tuple[Optional[str], Dict[str, Any]]:
+    analysis = precheck.get("_analysis")
+    metadata = analysis.get("commodity_front_metadata") if isinstance(analysis, Mapping) else None
+    updated_counts: Dict[str, Any] = {
+        str(commodity): {str(key): int(value) for key, value in counts.items()}
+        for commodity, counts in endpoint_counts.items()
+    }
+    incomplete: list[str] = []
+    for commodity in sorted(positive_generic_input_requirements):
+        commodity_metadata = metadata.get(commodity) if isinstance(metadata, Mapping) else None
+        source_fronts = (
+            commodity_metadata.get("source_front_cells")
+            if isinstance(commodity_metadata, Mapping)
+            else None
+        )
+        sink_fronts = (
+            commodity_metadata.get("sink_front_cells")
+            if isinstance(commodity_metadata, Mapping)
+            else None
+        )
+        source_front_count = len(source_fronts) if isinstance(source_fronts, list) else 0
+        sink_front_count = len(sink_fronts) if isinstance(sink_fronts, list) else 0
+        counts = updated_counts.setdefault(commodity, {})
+        counts["precheck_source_front_count"] = int(source_front_count)
+        counts["precheck_sink_front_count"] = int(sink_front_count)
+        if source_front_count <= 0 or sink_front_count <= 0:
+            incomplete.append(commodity)
+    if incomplete:
+        updated_counts["_audit"] = {"incomplete_commodities": incomplete}
+        return (
+            "terminal_fixed_witness_required_generic_input_routing_fronts_incomplete",
+            updated_counts,
+        )
+    return None, updated_counts
+
+
+def _binding_has_alternatives(binding_model: PortBindingModel) -> bool:
+    """Match the main LBBD controller's structural alternative test."""
+
+    return bool(
+        getattr(binding_model, "binding_vars", {})
+        or getattr(binding_model, "generic_input_vars", {})
+        or getattr(binding_model, "generic_output_vars", {})
+    )
+
+
+def _routing_precheck_blocked_ports_well_formed(value: Any) -> bool:
+    """Mirror the main LBBD evidence shape check without importing its controller."""
+
+    if not isinstance(value, list) or not value:
+        return False
+    for blocked_port in value:
+        if not isinstance(blocked_port, Mapping):
+            return False
+        conflict_set = blocked_port.get("placement_level_conflict_set", [])
+        blocking_ids = blocked_port.get("blocking_instance_ids", [])
+        if not isinstance(conflict_set, list) or any(
+            not isinstance(instance_id, str) for instance_id in conflict_set
+        ):
+            return False
+        if not isinstance(blocking_ids, list) or any(
+            not isinstance(instance_id, str) for instance_id in blocking_ids
+        ):
+            return False
+        instance_id = blocked_port.get("instance_id")
+        if instance_id is not None and not isinstance(instance_id, str):
+            return False
+        for cell_key in ("port_cell", "front_cell"):
+            if cell_key not in blocked_port:
+                continue
+            cell = blocked_port.get(cell_key)
+            if (
+                not isinstance(cell, list)
+                or len(cell) != 2
+                or any(
+                    isinstance(coordinate, bool) or not isinstance(coordinate, int)
+                    for coordinate in cell
+                )
+            ):
+                return False
+        if (
+            "dir" in blocked_port
+            and str(blocked_port.get("dir")) not in {"N", "S", "E", "W"}
+        ):
+            return False
+    return True
+
+
+def _routing_precheck_contract_violation(
+    precheck: Mapping[str, Any],
+) -> Tuple[Optional[str], str, bool]:
+    """Validate the proof-bearing safe-reject fields used by the main LBBD loop."""
+
+    if "status" not in precheck:
+        return "routing_precheck_missing_status", "MISSING_STATUS", False
+    status = str(precheck["status"])
+    if status not in {"feasible", "front_blocked", "relaxed_disconnected"}:
+        return "routing_precheck_unexpected_status", status, False
+
+    safe_reject = precheck.get("binding_selection_safe_reject")
+    if not isinstance(safe_reject, bool):
+        return "routing_precheck_safe_reject_not_bool", status, False
+    analysis = precheck.get("_analysis")
+    if not isinstance(analysis, Mapping):
+        return "routing_precheck_missing_domain_analysis", status, False
+    if str(analysis.get("status", "MISSING_STATUS")) != status:
+        return "routing_precheck_analysis_status_mismatch", status, False
+    analysis_safe_reject = analysis.get("binding_selection_safe_reject")
+    if analysis_safe_reject is not safe_reject:
+        return "routing_precheck_analysis_safe_reject_mismatch", status, False
+
+    if status == "feasible":
+        if safe_reject:
+            return "routing_precheck_feasible_marked_safe_reject", status, False
+        return None, status, False
+    if not safe_reject:
+        return "routing_precheck_reject_not_binding_selection_safe", status, False
+
+    evidence_field = (
+        "blocked_ports" if status == "front_blocked" else "disconnected_commodities"
+    )
+    summary_evidence = precheck.get(evidence_field)
+    analysis_evidence = analysis.get(evidence_field)
+    if (
+        not isinstance(summary_evidence, list)
+        or not summary_evidence
+        or not isinstance(analysis_evidence, list)
+        or summary_evidence != analysis_evidence
+        or any(not isinstance(item, Mapping) for item in summary_evidence)
+    ):
+        return f"routing_precheck_{evidence_field}_mismatch", status, False
+    if status == "front_blocked" and not _routing_precheck_blocked_ports_well_formed(
+        summary_evidence
+    ):
+        return "routing_precheck_blocked_ports_malformed", status, False
+    return None, status, True
+
+
+def _budget_exhausted_verdict(
+    base: Mapping[str, Any],
+    *,
+    budget: _FixedWitnessSolveBudget,
+    stage: str,
+    binding_status: Optional[str],
+    routing_status: Optional[str],
+    enumerated_bindings: int,
+    routing_attempts: int,
+) -> TerminalFixedWitnessVerdict:
+    return _reject(
+        base,
+        "terminal_fixed_witness_solve_budget_exhausted",
+        binding_status=binding_status,
+        routing_status=routing_status,
+        details={
+            **budget.audit_details(exhausted_stage=stage),
+            "enumerated_bindings": int(enumerated_bindings),
+            "routing_attempts": int(routing_attempts),
+        },
+    )
+
+
+def _solve_binding_with_budget(
+    *,
+    binding_model: PortBindingModel,
+    budget: _FixedWitnessSolveBudget,
+) -> Optional[str]:
+    time_limit = budget.remaining("binding")
+    if time_limit <= 0.0:
+        return None
+    started_at = _solver_budget_clock()
+    try:
+        with _fixed_solver_environment():
+            return str(binding_model.solve(time_limit_seconds=time_limit))
+    finally:
+        budget.record("binding", started_at)
+
+
+def _solve_routing_with_budget(
+    *,
+    routing_model: RoutingSubproblem,
+    budget: _FixedWitnessSolveBudget,
+) -> Optional[str]:
+    time_limit = budget.remaining("routing")
+    if time_limit <= 0.0:
+        return None
+    started_at = _solver_budget_clock()
+    try:
+        with _fixed_solver_environment():
+            return str(routing_model.solve(time_limit=time_limit))
+    finally:
+        budget.record("routing", started_at)
+
+
+def _resolve_after_binding_rejection(
+    *,
+    base: Mapping[str, Any],
+    binding_model: PortBindingModel,
+    selection: Mapping[str, Any],
+    budget: _FixedWitnessSolveBudget,
+    rejection_reason: str,
+    rejection_routing_status: str,
+    rejection_details: Mapping[str, Any],
+    enumerated_bindings: int,
+    routing_attempts: int,
+) -> Tuple[Optional[str], Optional[TerminalFixedWitnessVerdict]]:
+    if not _binding_has_alternatives(binding_model):
+        return None, _reject(
+            base,
+            rejection_reason,
+            binding_status="FEASIBLE",
+            routing_status=rejection_routing_status,
+            details={
+                **dict(rejection_details),
+                "enumerated_bindings": int(enumerated_bindings),
+                "routing_attempts": int(routing_attempts),
+            },
+        )
+
+    try:
+        binding_model.add_nogood_cut(selection)
+    except Exception as exc:  # noqa: BLE001
+        return None, _reject(
+            base,
+            "terminal_fixed_witness_binding_nogood_exception",
+            binding_status="FEASIBLE",
+            routing_status=rejection_routing_status,
+            details={
+                "exception_type": type(exc).__name__,
+                "rejected_binding_reason": rejection_reason,
+                "enumerated_bindings": int(enumerated_bindings),
+                "routing_attempts": int(routing_attempts),
+            },
+        )
+
+    next_status = _solve_binding_with_budget(
+        binding_model=binding_model,
+        budget=budget,
+    )
+    if next_status is None:
+        return None, _budget_exhausted_verdict(
+            base,
+            budget=budget,
+            stage="binding",
+            binding_status="FEASIBLE",
+            routing_status=rejection_routing_status,
+            enumerated_bindings=enumerated_bindings,
+            routing_attempts=routing_attempts,
+        )
+    if next_status == "FEASIBLE":
+        return next_status, None
+    if next_status == "TIMEOUT":
+        return None, _reject(
+            base,
+            "terminal_fixed_witness_binding_not_feasible",
+            binding_status=next_status,
+            routing_status=rejection_routing_status,
+            details={
+                "binding_status": next_status,
+                "rejected_binding_reason": rejection_reason,
+                "enumerated_bindings": int(enumerated_bindings),
+                "routing_attempts": int(routing_attempts),
+            },
+        )
+    if next_status == "INFEASIBLE":
+        return None, _reject(
+            base,
+            "terminal_fixed_witness_binding_alternatives_exhausted",
+            binding_status=next_status,
+            routing_status=rejection_routing_status,
+            details={
+                "rejected_binding_reason": rejection_reason,
+                "enumerated_bindings": int(enumerated_bindings),
+                "routing_attempts": int(routing_attempts),
+                "exhaustion_interpretation": "UNPROVEN_NOT_INFEASIBLE",
+            },
+        )
+    return None, _reject(
+        base,
+        "terminal_fixed_witness_binding_status_unexpected",
+        binding_status=next_status,
+        routing_status=rejection_routing_status,
+        details={
+            "binding_status": next_status,
+            "rejected_binding_reason": rejection_reason,
+            "enumerated_bindings": int(enumerated_bindings),
+            "routing_attempts": int(routing_attempts),
+        },
+    )
+
+
+def _verify_binding_routing_alternatives(
+    *,
+    base: MutableMapping[str, Any],
+    binding_model: PortBindingModel,
+    budget: _FixedWitnessSolveBudget,
+    occupied_owner_by_cell: Dict[Tuple[int, int], str],
+    occupied_cells: set[Tuple[int, int]],
+    grid_dimensions: Tuple[int, int],
+    positive_generic_input_requirements: Mapping[str, int],
+    selected_storage_box_instance_ids: Sequence[str],
+    dominance_setup_details: Mapping[str, Any],
+) -> TerminalFixedWitnessVerdict:
+    placement_core = RoutingPlacementCore.from_occupied_cells(
+        occupied_cells,
+        occupied_owner_by_cell=occupied_owner_by_cell,
+    )
+    routing_occupancy_digest = _routing_occupancy_digest(occupied_owner_by_cell)
+    base["routing_occupancy_digest"] = routing_occupancy_digest
+
+    enumerated_bindings = 0
+    routing_attempts = 0
+    rejected_binding_reasons: list[str] = []
+    seen_selection_digests: set[str] = set()
+
+    while True:
+        selection = binding_model.extract_selection()
+        port_specs = binding_model.extract_port_specs()
+        normalized_port_specs = _normalize_port_specs(port_specs)
+        binding_assignment_digest = canonical_digest(selection)
+        if binding_assignment_digest in seen_selection_digests:
+            return _reject(
+                base,
+                "terminal_fixed_witness_binding_nogood_no_progress",
+                binding_status="FEASIBLE",
+                details={
+                    "repeated_binding_assignment_digest": binding_assignment_digest,
+                    "enumerated_bindings": int(enumerated_bindings),
+                    "routing_attempts": int(routing_attempts),
+                },
+            )
+        seen_selection_digests.add(binding_assignment_digest)
+        enumerated_bindings += 1
+
+        port_specs_digest = canonical_digest(normalized_port_specs)
+        base.update(
+            {
+                "binding_status": "FEASIBLE",
+                "binding_assignment_digest": binding_assignment_digest,
+                "port_specs_digest": port_specs_digest,
+            }
+        )
+
+        if positive_generic_input_requirements or selected_storage_box_instance_ids:
+            selection_reason, selection_details, active_generic_input_slots = (
+                _collect_active_generic_input_slots(
+                    binding_model=binding_model,
+                    selection=selection,
+                    positive_generic_input_requirements=(
+                        positive_generic_input_requirements
+                    ),
+                )
+            )
+        else:
+            selection_reason, selection_details, active_generic_input_slots = (
+                None,
+                {},
+                [],
+            )
+        if selection_reason is not None:
+            return _reject(
+                base,
+                selection_reason,
+                binding_status="FEASIBLE",
+                details=selection_details,
+            )
+
+        dominance_reason, dominance_evidence_details = (
+            _storage_box_dominance_violation(
+                selected_storage_box_instance_ids=(
+                    selected_storage_box_instance_ids
+                ),
+                active_generic_input_slots=active_generic_input_slots,
+            )
+        )
+        if dominance_reason is not None:
+            return _reject(
+                base,
+                dominance_reason,
+                binding_status="FEASIBLE",
+                details=dominance_evidence_details,
+            )
+
+        endpoint_reason, endpoint_counts = (
+            _required_generic_input_endpoint_violation(
+                active_generic_input_slots=active_generic_input_slots,
+                normalized_port_specs=normalized_port_specs,
+                positive_generic_input_requirements=(
+                    positive_generic_input_requirements
+                ),
+            )
+        )
+        if endpoint_reason is not None:
+            return _reject(
+                base,
+                endpoint_reason,
+                binding_status="FEASIBLE",
+                details={
+                    "required_generic_input_endpoint_counts": endpoint_counts,
+                },
+            )
+
+        f3_reason = _connector_body_exclusion_violation(
+            port_specs=port_specs,
+            occupied_owner_by_cell=occupied_owner_by_cell,
+            grid_dimensions=grid_dimensions,
+        )
+        if f3_reason is not None:
+            return _reject(
+                base,
+                f3_reason,
+                binding_status="FEASIBLE",
+                details={"port_specs_digest": port_specs_digest},
+            )
+
+        try:
+            precheck = run_exact_routing_precheck(
+                placement_core=placement_core,
+                port_specs=port_specs,
+                occupied_owner_by_cell=occupied_owner_by_cell,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_precheck_exception",
+                binding_status="FEASIBLE",
+                details={"exception_type": type(exc).__name__},
+            )
+        if not isinstance(precheck, Mapping):
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_precheck_unsafe",
+                binding_status="FEASIBLE",
+                details={"precheck_contract_violation": "precheck_not_mapping"},
+            )
+        precheck_violation, precheck_status, safe_reject = (
+            _routing_precheck_contract_violation(precheck)
+        )
+        if precheck_violation is not None:
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_precheck_unsafe",
+                binding_status="FEASIBLE",
+                routing_status=precheck_status,
+                details={
+                    "precheck_contract_violation": precheck_violation,
+                    "routing_precheck_status": precheck_status,
+                    "enumerated_bindings": int(enumerated_bindings),
+                    "routing_attempts": int(routing_attempts),
+                },
+            )
+        if safe_reject:
+            rejection_reason = (
+                "terminal_fixed_witness_routing_precheck_not_feasible"
+            )
+            rejection_routing_status = precheck_status
+            rejected_binding_reasons.append(f"PRECHECK_{precheck_status.upper()}")
+            next_status, rejection = _resolve_after_binding_rejection(
+                base=base,
+                binding_model=binding_model,
+                selection=selection,
+                budget=budget,
+                rejection_reason=rejection_reason,
+                rejection_routing_status=rejection_routing_status,
+                rejection_details={
+                    "routing_precheck_status": precheck_status,
+                    "binding_selection_safe_reject": True,
+                },
+                enumerated_bindings=enumerated_bindings,
+                routing_attempts=routing_attempts,
+            )
+            if rejection is not None:
+                return rejection
+            if next_status != "FEASIBLE":
+                raise AssertionError("binding alternative resolver returned no verdict")
+            continue
+
+        front_reason, endpoint_counts = _required_generic_input_front_violation(
+            precheck=precheck,
+            positive_generic_input_requirements=(
+                positive_generic_input_requirements
+            ),
+            endpoint_counts=endpoint_counts,
+        )
+        if front_reason is not None:
+            return _reject(
+                base,
+                front_reason,
+                binding_status="FEASIBLE",
+                routing_status=precheck_status,
+                details={
+                    "required_generic_input_endpoint_counts": endpoint_counts,
+                },
+            )
+
+        commodities = sorted({str(port["commodity"]) for port in port_specs})
+        try:
+            routing_model = RoutingSubproblem.from_placement_core(
+                placement_core,
+                port_specs,
+                commodities,
+                domain_analysis=precheck.get("_analysis"),
+            )
+            routing_model.build()
+        except Exception as exc:  # noqa: BLE001
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_build_exception",
+                binding_status="FEASIBLE",
+                details={"exception_type": type(exc).__name__},
+            )
+
+        routing_grid = getattr(routing_model, "grid", None)
+        if routing_grid is None:
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_grid_missing",
+                binding_status="FEASIBLE",
+            )
+        if (
+            canonical_digest(
+                _normalize_port_specs(getattr(routing_grid, "port_specs", []))
+            )
+            != port_specs_digest
+        ):
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_port_specs_mismatch",
+                binding_status="FEASIBLE",
+                details={"expected_port_specs_digest": port_specs_digest},
+            )
+        routing_owner_digest = _routing_occupancy_digest(
+            getattr(routing_grid, "occupied_owner_by_cell", {})
+        )
+        if routing_owner_digest != routing_occupancy_digest:
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_occupancy_mismatch",
+                binding_status="FEASIBLE",
+                details={
+                    "expected_routing_occupancy_digest": routing_occupancy_digest
+                },
+            )
+
+        build_rejection = _routing_build_rejection(routing_model.build_stats)
+        if build_rejection is not None:
+            return _reject(
+                base,
+                build_rejection,
+                binding_status="FEASIBLE",
+                details={"routing_build_stats": dict(routing_model.build_stats)},
+            )
+
+        routing_status = _solve_routing_with_budget(
+            routing_model=routing_model,
+            budget=budget,
+        )
+        if routing_status is None:
+            return _budget_exhausted_verdict(
+                base,
+                budget=budget,
+                stage="routing",
+                binding_status="FEASIBLE",
+                routing_status=precheck_status,
+                enumerated_bindings=enumerated_bindings,
+                routing_attempts=routing_attempts,
+            )
+        routing_attempts += 1
+        if routing_status == "FEASIBLE":
+            return _accept(
+                base,
+                binding_status="FEASIBLE",
+                routing_status=routing_status,
+                details={
+                    "port_count": int(len(port_specs)),
+                    "commodity_count": int(len(commodities)),
+                    "required_generic_input_endpoint_counts": endpoint_counts,
+                    "storage_box_dominance": {
+                        **dict(dominance_setup_details),
+                        **dominance_evidence_details,
+                    },
+                    "enumerated_bindings": int(enumerated_bindings),
+                    "routing_attempts": int(routing_attempts),
+                    "rejected_binding_reasons": list(rejected_binding_reasons),
+                },
+            )
+        if routing_status == "TIMEOUT":
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_not_feasible",
+                binding_status="FEASIBLE",
+                routing_status=routing_status,
+                details={
+                    "routing_status": routing_status,
+                    "enumerated_bindings": int(enumerated_bindings),
+                    "routing_attempts": int(routing_attempts),
+                },
+            )
+        if routing_status != "INFEASIBLE":
+            return _reject(
+                base,
+                "terminal_fixed_witness_routing_status_unexpected",
+                binding_status="FEASIBLE",
+                routing_status=routing_status,
+                details={
+                    "routing_status": routing_status,
+                    "enumerated_bindings": int(enumerated_bindings),
+                    "routing_attempts": int(routing_attempts),
+                },
+            )
+
+        rejected_binding_reasons.append("ROUTING_INFEASIBLE")
+        next_status, rejection = _resolve_after_binding_rejection(
+            base=base,
+            binding_model=binding_model,
+            selection=selection,
+            budget=budget,
+            rejection_reason="terminal_fixed_witness_routing_not_feasible",
+            rejection_routing_status=routing_status,
+            rejection_details={"routing_status": routing_status},
+            enumerated_bindings=enumerated_bindings,
+            routing_attempts=routing_attempts,
+        )
+        if rejection is not None:
+            return rejection
+        if next_status != "FEASIBLE":
+            raise AssertionError("binding alternative resolver returned no verdict")
+
+
 def verify_terminal_fixed_witness(
     *,
     state: Mapping[str, Any],
@@ -188,7 +1206,7 @@ def verify_terminal_fixed_witness(
     serialized_state_bytes: bytes | None = None,
     candidate_records_override: Mapping[str, dict[str, Any]] | None = None,
 ) -> TerminalFixedWitnessVerdict:
-    """Re-solve binding and routing for the serialized terminal witness."""
+    """Re-solve routed binding and routing for the serialized terminal witness."""
 
     base = _base_verdict()
     try:
@@ -219,9 +1237,18 @@ def verify_terminal_fixed_witness(
         facility_pools = _load_facility_pools(project_root)
         instances = _load_mandatory_instances(project_root)
         io_requirements = load_generic_io_requirements(project_root=project_root)
-        wireless_sink_slots = None
+        positive_generic_input_requirements = _positive_generic_input_requirements(
+            io_requirements
+        )
+        selected_storage_box_instance_ids = (
+            _selected_optional_storage_box_instance_ids(
+                solution=solution,
+                mandatory_instances=instances,
+            )
+        )
+        generic_input_slots_by_operation = None
         if io_requirements.get("required_generic_inputs", {}):
-            wireless_sink_slots = load_wireless_sink_generic_input_slots(
+            generic_input_slots_by_operation = load_generic_input_slots_by_operation(
                 project_root=project_root,
             )
 
@@ -230,6 +1257,7 @@ def verify_terminal_fixed_witness(
             facility_pools=facility_pools,
         )
 
+        budget = _FixedWitnessSolveBudget()
         with _fixed_solver_environment():
             binding_model = PortBindingModel(
                 placement_solution=solution,
@@ -244,13 +1272,41 @@ def verify_terminal_fixed_witness(
                     "required_generic_inputs",
                     {},
                 ),
-                wireless_sink_generic_input_slots=wireless_sink_slots,
+                generic_input_slots_by_operation=generic_input_slots_by_operation,
             )
             binding_model.build()
-            binding_status = str(
-                binding_model.solve(time_limit_seconds=_BINDING_SECONDS)
+            dominance_setup_reason, dominance_setup_details = (
+                _apply_storage_box_dominance_constraints(
+                    binding_model=binding_model,
+                    selected_storage_box_instance_ids=(
+                        selected_storage_box_instance_ids
+                    ),
+                    positive_generic_input_requirements=(
+                        positive_generic_input_requirements
+                    ),
+                )
             )
+            if dominance_setup_reason is not None:
+                return _reject(
+                    base,
+                    dominance_setup_reason,
+                    details=dominance_setup_details,
+                )
+        binding_status = _solve_binding_with_budget(
+            binding_model=binding_model,
+            budget=budget,
+        )
 
+        if binding_status is None:
+            return _budget_exhausted_verdict(
+                base,
+                budget=budget,
+                stage="binding",
+                binding_status=None,
+                routing_status=None,
+                enumerated_bindings=0,
+                routing_attempts=0,
+            )
         if binding_status != "FEASIBLE":
             return _reject(
                 base,
@@ -258,132 +1314,20 @@ def verify_terminal_fixed_witness(
                 binding_status=binding_status,
                 details={"binding_status": binding_status},
             )
-
-        selection = binding_model.extract_selection()
-        port_specs = binding_model.extract_port_specs()
-        binding_assignment_digest = canonical_digest(selection)
-        port_specs_digest = canonical_digest(_normalize_port_specs(port_specs))
-        base.update(
-            {
-                "binding_status": binding_status,
-                "binding_assignment_digest": binding_assignment_digest,
-                "port_specs_digest": port_specs_digest,
-            }
-        )
-
-        f3_reason = _connector_body_exclusion_violation(
-            port_specs=port_specs,
+        return _verify_binding_routing_alternatives(
+            base=base,
+            binding_model=binding_model,
+            budget=budget,
             occupied_owner_by_cell=occupied_owner_by_cell,
+            occupied_cells=occupied_cells,
             grid_dimensions=(grid_w, grid_h),
-        )
-        if f3_reason is not None:
-            return _reject(
-                base,
-                f3_reason,
-                binding_status=binding_status,
-                details={"port_specs_digest": port_specs_digest},
-            )
-
-        placement_core = RoutingPlacementCore.from_occupied_cells(
-            occupied_cells,
-            occupied_owner_by_cell=occupied_owner_by_cell,
-        )
-        routing_occupancy_digest = _routing_occupancy_digest(occupied_owner_by_cell)
-        base["routing_occupancy_digest"] = routing_occupancy_digest
-        commodities = sorted({str(port["commodity"]) for port in port_specs})
-
-        try:
-            precheck = run_exact_routing_precheck(
-                placement_core=placement_core,
-                port_specs=port_specs,
-                occupied_owner_by_cell=occupied_owner_by_cell,
-            )
-        except Exception as exc:  # noqa: BLE001
-            return _reject(
-                base,
-                "terminal_fixed_witness_routing_precheck_exception",
-                binding_status=binding_status,
-                details={"exception_type": type(exc).__name__},
-            )
-        precheck_status = str(precheck.get("status", "MISSING_STATUS"))
-        if precheck_status != "feasible":
-            return _reject(
-                base,
-                "terminal_fixed_witness_routing_precheck_not_feasible",
-                binding_status=binding_status,
-                routing_status=precheck_status,
-                details={"routing_precheck_status": precheck_status},
-            )
-
-        try:
-            routing_model = RoutingSubproblem.from_placement_core(
-                placement_core,
-                port_specs,
-                commodities,
-                domain_analysis=precheck.get("_analysis"),
-            )
-            routing_model.build()
-        except Exception as exc:  # noqa: BLE001
-            return _reject(
-                base,
-                "terminal_fixed_witness_routing_build_exception",
-                binding_status=binding_status,
-                details={"exception_type": type(exc).__name__},
-            )
-
-        routing_grid = getattr(routing_model, "grid", None)
-        if routing_grid is None:
-            return _reject(
-                base,
-                "terminal_fixed_witness_routing_grid_missing",
-                binding_status=binding_status,
-            )
-        if canonical_digest(_normalize_port_specs(getattr(routing_grid, "port_specs", []))) != port_specs_digest:
-            return _reject(
-                base,
-                "terminal_fixed_witness_routing_port_specs_mismatch",
-                binding_status=binding_status,
-                details={"expected_port_specs_digest": port_specs_digest},
-            )
-        routing_owner_digest = _routing_occupancy_digest(
-            getattr(routing_grid, "occupied_owner_by_cell", {})
-        )
-        if routing_owner_digest != routing_occupancy_digest:
-            return _reject(
-                base,
-                "terminal_fixed_witness_routing_occupancy_mismatch",
-                binding_status=binding_status,
-                details={"expected_routing_occupancy_digest": routing_occupancy_digest},
-            )
-
-        build_rejection = _routing_build_rejection(routing_model.build_stats)
-        if build_rejection is not None:
-            return _reject(
-                base,
-                build_rejection,
-                binding_status=binding_status,
-                details={"routing_build_stats": dict(routing_model.build_stats)},
-            )
-
-        with _fixed_solver_environment():
-            routing_status = str(routing_model.solve(time_limit=_ROUTING_SECONDS))
-        if routing_status != "FEASIBLE":
-            return _reject(
-                base,
-                "terminal_fixed_witness_routing_not_feasible",
-                binding_status=binding_status,
-                routing_status=routing_status,
-                details={"routing_status": routing_status},
-            )
-
-        return _accept(
-            base,
-            binding_status=binding_status,
-            routing_status=routing_status,
-            details={
-                "port_count": int(len(port_specs)),
-                "commodity_count": int(len(commodities)),
-            },
+            positive_generic_input_requirements=(
+                positive_generic_input_requirements
+            ),
+            selected_storage_box_instance_ids=(
+                selected_storage_box_instance_ids
+            ),
+            dominance_setup_details=dominance_setup_details,
         )
     except Exception as exc:  # noqa: BLE001
         return _reject(

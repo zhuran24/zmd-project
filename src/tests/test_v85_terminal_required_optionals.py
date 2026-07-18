@@ -70,8 +70,14 @@ def test_v85_terminal_project_validation_rejects_missing_required_pose_optional(
                 "anchor": {"x": 0, "y": 0},
                 "pose_params": {"orientation": 0, "port_mode": "default"},
                 "occupied_cells": [[0, 0]],
-                "input_port_cells": [],
-                "output_port_cells": [],
+                "input_port_cells": [
+                    {"x": 0, "y": 0, "dir": direction}
+                    for direction in ("N", "W", "S")
+                ],
+                "output_port_cells": [
+                    {"x": 0, "y": 0, "dir": direction}
+                    for direction in ("N", "E", "S")
+                ],
             }
         ],
     }
@@ -91,7 +97,7 @@ def test_v85_terminal_project_validation_rejects_missing_required_pose_optional(
         rules_dir / "preprocess_plan.json",
         {
             "utility_operations": {
-                "wireless_sink": {
+                "box_sink": {
                     "facility_type": "protocol_storage_box",
                     "generic_input_slots": 3,
                 }

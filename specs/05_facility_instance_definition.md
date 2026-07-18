@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
-source_of_truth: src/preprocess/instance_builder.py and frozen preprocessed instance artifacts
-last_verified_against: 2026-03-25
+source_of_truth: instance roster = src/preprocess/instance_builder.py + frozen artifacts; port/provider semantics = rules/canonical_rules.json + rules/preprocess_plan.json
+last_verified_against: 2026-07-18 owner 端口语义裁决与 Batch 3+5 provider-map 实现
 owner: preprocess-instances
 ---
 # 05 设施实例化与全局刚体花名册 (Facility Instance Definition)
@@ -27,7 +27,8 @@ owner: preprocess-instances
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 
-而不是 `all_facility_instances.json`。
+而不是 `all_facility_instances.json`。Generic-input provider 容量另由同一 certified artifact 快照中的
+`rules/preprocess_plan.json` 整张 operation map 给出。
 
 ---
 
@@ -52,7 +53,7 @@ owner: preprocess-instances
 - **实例化数量**：严格为 **1 座**
 - **实例 ID**：`protocol_core_001`
 - **求解约束**：**强制必选（Mandatory / exact）**
-- **角色**：协议核心自带 6 个通用输出槽，并入全局资源来源池
+- **角色**：协议核心自带 14 个实体通用输入口与 6 个实体通用输出口；前者是 mandatory provider 容量，后者并入全局资源来源池
 
 ### 5.3.2 边界原生仓库口 (Boundary Storage Ports)
 
@@ -84,7 +85,7 @@ owner: preprocess-instances
 ### 5.4.2 协议储存箱 (Protocol Storage Boxes)
 
 - `facility_type = protocol_storage_box`
-- `operation_type = wireless_sink`
+- `operation_type = box_sink`
 - exploratory cap = **10**
 
 这些上限只记录在：
@@ -98,15 +99,20 @@ owner: preprocess-instances
 
 如果文档里出现 `50 / 10`，应默认把它理解为 exploratory guidance，而不是 exact 主线事实。
 
-### 5.4.3 Certified exact 中的协议箱无线消费语义
+### 5.4.3 Certified exact 中的实体 provider 与端到端路由语义
 
-`rules/canonical_rules.json` 声明 `protocol_storage_box.port_rule = "omni_wireless"`，`rules/preprocess_plan.json` 声明 `wireless_sink.generic_input_slots = 3`。因此 certified exact 中的协议箱不是带实体端口的 3×3 机器，而是由需求驱动激活的 required-optional wireless sink。
+`rules/canonical_rules.json` 声明 `protocol_storage_box.port_rule = "opposite_parallel_sides"`；协议箱与 `manufacturing_3x3` 使用同一实体口几何：一侧 3 个输入口、对侧 3 个输出口、四种正交端口模式，并且需要供电。`rules/preprocess_plan.json` 的 `box_sink.generic_input_slots = 3` 必须与选中 pose 的 3 个 `input_port_cells` 严格相等。协议箱输出口真实存在，但在当前生产线中允许不连接；未激活的口不占用 front cell。“无线”只描述协议箱把缓存送入仓库的箱后段，不提供生产设施到协议箱的无线拾取。
 
-被选中的协议箱 pose 必须只暴露 3 个虚拟 generic input 槽：槽参与 binding 的 commodity 分配与 `__unused__` 互斥数学，但不携带坐标、方向或 port cell，也不经过 routing front 可用性过滤。`extract_port_specs()` 不得为这些虚拟槽输出 port spec，因此 routing 与 flow 子问题不会收到通向协议箱的 sink front；无线消费只消耗 binding 容量，不要求皮带可达。
+协议核心同样是 generic-input provider：`protocol_core.generic_input_slots = 14`，每个选中 pose 同时具有 14 个实体输入口与 6 个实体输出口。Binding 将每个正数 `required_generic_inputs` 商品精确分配到某个 provider 的具体实体输入口；未用容量可取 `__unused__`。已分配输入口由 `extract_port_specs()` 导出为 routing sink，商品生产设施的输出口仍导出为 routing source。因此这些成品必须从生产端到协议箱或核心输入口**端到端 routed**，front 可用性与 routing 连通性都属于 certified gate。
 
-Generic **output** 槽与上述 input 槽对称（F-BIND-R1-01）：每个可见输出槽的 domain = 真实外部源商品集 ∪ `__unused__` 哨兵，槽内 ExactlyOne；真实商品的全局出现次数由精确计数约束（sum == 需求量）决定。当前基地 52 需求 = 52 槽时计数自动逼满、哨兵恒 0（specs/04 §4.5 的满额结论不变）；需求小于槽数时多余槽合法空置（specs/03 端口空置规则）。哨兵是 binding 内部对象，`extract_port_specs()` 必须跳过它；`__unused__` 是保留名，不得作为商品出现在任何需求工件中，且 generic I/O 需求与无线槽数的装载是 fail-closed schema（双 section 必须在场、严格非负整数、默认装载路径按 canonical 商品角色校验，F-BIND-R1-02）。该 fail-closed 入口是全 proof-surface 唯一入口：master core 在 binding 之前就消费 generic I/O 需求（硬约束与 certified optional 下界），故 master 侧 artifact 装载必须委托同一 loader，不得保留第二个更宽松的解析分叉（F-BIND-R2-01）；且所有喂 proof 输入的 JSON 装载为 strict 解析——重复 key 与 `NaN`/`Infinity` 常量一律拒绝（F-BIND-R2-02）。进一步，proof 输入在单次 certified session 内是**单解析、单快照**（F-BIND-R3/F-BIND-R4）：certified binding 接收 master 的 normalized 需求快照而非自行重读磁盘（消除同一工件两个时间点的分叉）；无线槽数从 project-root plan 流入 master optional 下界/外层安全面积/campaign proof helper/coordinate stats/绑定模型构造（绝不取 import-time 默认 profile，也不在 binding 时二次重读磁盘）；campaign proof helper 走共享 validated loader。
+Generic **output** 槽继续采用精确计数语义（F-BIND-R1-01）：每个可见输出槽的 domain = 真实外部源商品集 ∪ `__unused__`，槽内 ExactlyOne；真实商品全局出现次数 `sum == demand`。当前基地 52 需求 = 52 槽时哨兵被逼为 0；需求较小时多余槽可空置。`__unused__` 是 binding 保留名，不能出现在需求工件中，也不会生成 port spec。
 
-**生产端对偶 (preprocess F-03)**：上面讲的是无线消费端（虚拟槽不进 routing），生产端同样要对偶处理。无线终品（canonical `commodity_metadata` 中 `sink_kind = "generic_input"`，即 positive `required_generic_inputs`，如 `qiaoyu_capsule`、`valley_battery`；它们只作 recipe output、从不作任何 recipe input，是纯终品）被无线消费、在 routing 网络里没有 sink，因此其**生产设施的实体输出口**（以及该 commodity 的任何 generic-output 口）也必须从 `extract_port_specs()` 排除——生产设施的原料**输入口**仍保留 routing。若把这些输出口导出成 routing terminal，会在 routing 里制造一个无 sink 的孤立 source，触发虚假 `front_blocked` / false-INFEASIBLE，错误拒绝合法布局。排除必须覆盖**所有**消费端口 front 可达性的位置：`extract_port_specs()`（routing/precheck 的入口）、RAB build-time 域过滤 `_filter_pose_binding_domain()` 与 RAB blocker 证书（F03-R3-01 教训：build-time 过滤是不经 port specs 的独立侧门）、routing deletion-core minimizer 的 oracle（必须消费由当轮 binding port specs 构造的 routing-visible port key 集，F04-R4-02）、pose-bool exact master 的 env 门控 port-active 输出需求 / hard-clearance 与 blocking-cell port cache / lazy-demand cut（输出侧需求与 cache 必须排除 routing-free 终品输出；visible 与 routing-free 混合输出侧不得按 raw 输出口泛化，F04-R4-03）、以及 separator-capacity / L2 抽象 routing / dynamic separator 的 commodity-side 分类（routing-free 终品绝不能被分类成 routed source，F04-R4-04）。另有语义 fail-closed 守卫：`sink_kind = "generic_input"` 商品一旦同时出现在任何 recipe input 中即拒绝（dual-role 会让本排除静默断真实消费者的料）——且该守卫必须覆盖**所有装载路径**：`validate_canonical_document()` 与直接 rules+plan 构建的 `validate_preprocess_context()` 双层（F04-R4-01 教训：overlay/直构路径曾绕过仅 canonical 一层的守卫）。
+Generic I/O 与 provider map 都使用 fail-closed strict JSON：双需求 section 必须存在，计数必须是严格非负整数，重复 key 与 `NaN`/`Infinity` 一律拒绝。Certified session 对 `canonical_rules`、`generic_io_requirements` 与 `preprocess_plan` 执行**单读取、单解析、单快照**；从已哈希的 plan 字节解析完整 `generic_input_slots_by_operation`，并把整张 map 原子传给 master、outer safe-area、campaign proof helper、coordinate/pose 统计与 binding。Outer/session 比较整张 map，禁止退化为 `box_sink` 单值或在 binding 阶段二次读盘。
+
+协议箱 required-optional 下界是 provider-aware 且 instance-aware：先按 `box_sink` 每箱 3 槽计算 gross demand，再扣除真实 mandatory exact provider 实例的 operation 容量。当前 mandatory `protocol_core_001` 可提供 14 槽；仅在 rules 中存在核心模板不能获得抵扣。Mandatory 协议箱及未来 provider 也按同一规则计入，剩余需求再向上取整为协议箱数。
+
+> [!NOTE]
+> **Superseded historical reading（2026-07-18 前）**：旧文档曾把协议箱描述成 `omni_wireless`、`wireless_sink` 和无坐标的虚拟槽，并据此把 generic-input 成品视为 routing-free。Owner 实测与当前 canonical semantics 已明确废止该解释；这些术语只可出现在带有 historical/superseded 标记的证据中，不能进入现役求解契约。
 
 ---
 
@@ -118,6 +124,7 @@ Generic **output** 槽与上述 input 槽对称（F-BIND-R1-01）：每个可见
 
 - `mandatory_exact_instances.json`
 - `generic_io_requirements.json`
+- 同一 frozen snapshot 中的 `rules/preprocess_plan.json`（完整 provider capacity map）
 
 ### Exploratory / compatibility / viewer 支持层
 
@@ -158,8 +165,8 @@ Generic **output** 槽与上述 input 槽对称（F-BIND-R1-01）：每个可见
 - 制造实例如何从数据上下文再生
 - `TEMPLATE_MAPPING` 如何生成
 
-它**没有**改变 certified exact runtime 的读取边界：
+它**没有**把 `PreprocessContext` 本身提升为 certified runtime authority：
 
-- certified runtime 仍读取冻结的 `mandatory_exact_instances.json`
-- `PreprocessContext` 只是 preprocess 再生层的 build-time contract
-
+- certified runtime 仍读取冻结的 `mandatory_exact_instances.json` 与 `generic_io_requirements.json`
+- provider capacity 从同一已哈希快照的 `rules/preprocess_plan.json` 解析
+- `PreprocessContext` 仍只是 preprocess 再生层的 build-time contract

@@ -43,7 +43,7 @@ def base_input() -> Dict[str, Any]:
         "instances": [],
         "required_generic_outputs": {},
         "required_generic_inputs": {},
-        "wireless_sink_generic_input_slots": 0,
+        "generic_input_slots_by_operation": {},
         "commodity_metadata": {},
         "operation_profiles": {},
     }
@@ -82,12 +82,12 @@ def with_dock(payload, instance_id="dock_1", out_cells=2):
 
 
 def with_sink(payload, instance_id="box_1", k=3, synthesize=False):
-    """generic input receiver（wireless_sink）。synthesize=True 时不进 instances（走 pose_optional 合成）."""
+    """实体 generic input receiver（box_sink）；可走 pose_optional 合成。"""
     payload["operation_profiles"].setdefault(
-        "wireless_sink", profile("protocol_storage_box", gi=k)
+        "box_sink", profile("protocol_storage_box", gi=k)
     )
     payload["facility_pools"].setdefault("protocol_storage_box", []).append(
-        {"pose_id": "bp0", "input_port_cells": [], "output_port_cells": []}
+        {"pose_id": "bp0", "input_port_cells": cells(k, y=7), "output_port_cells": []}
     )
     pose_idx = len(payload["facility_pools"]["protocol_storage_box"]) - 1
     payload["placement_solution"][instance_id] = {
@@ -96,9 +96,29 @@ def with_sink(payload, instance_id="box_1", k=3, synthesize=False):
     if not synthesize:
         payload["instances"].append(
             {"instance_id": instance_id, "facility_type": "protocol_storage_box",
-             "operation_type": "wireless_sink"}
+             "operation_type": "box_sink"}
         )
-    payload["wireless_sink_generic_input_slots"] = k
+    payload["generic_input_slots_by_operation"]["box_sink"] = k
+    return payload
+
+
+def with_core(payload, instance_id="core_1", k=14):
+    """mandatory protocol_core：14 个实体万能收货口。"""
+    payload["operation_profiles"].setdefault(
+        "protocol_core", profile("protocol_core", gi=k)
+    )
+    payload["facility_pools"].setdefault("protocol_core", []).append(
+        {"pose_id": "cp0", "input_port_cells": cells(k, y=11), "output_port_cells": []}
+    )
+    pose_idx = len(payload["facility_pools"]["protocol_core"]) - 1
+    payload["placement_solution"][instance_id] = {
+        "facility_type": "protocol_core", "pose_idx": pose_idx
+    }
+    payload["instances"].append(
+        {"instance_id": instance_id, "facility_type": "protocol_core",
+         "operation_type": "protocol_core", "is_mandatory": True}
+    )
+    payload["generic_input_slots_by_operation"]["protocol_core"] = k
     return payload
 
 
@@ -168,6 +188,10 @@ def build_samples() -> List[Dict[str, Any]]:
     in_commodity(p, "food", 2)
     samples.append({"id": "C5_mixed_full_model", "input": p, "expect": "SAT"})
 
+    p = with_core(base_input(), k=14)
+    in_commodity(p, "food", 2)
+    samples.append({"id": "C6_protocol_core_14_physical_inputs", "input": p, "expect": "SAT"})
+
     # --- INPUT_INVALID 组（emitter 必须拒绝，不得发 OPB）
     p = with_dock(base_input(), out_cells=1)
     p["required_generic_outputs"]["__unused__"] = 1
@@ -208,6 +232,22 @@ def build_samples() -> List[Dict[str, Any]]:
     p = with_furnace(base_input(), in_cells=1, need_ore=2)  # 槽需 2 > cells 1 → 生产 raise
     samples.append({"id": "I8_port_insufficient_raise", "input": p,
                     "expect": "REJECT", "subcode": "PRODUCTION_EXCEPTION_CLASS"})
+
+    p = with_sink(base_input(), k=3)
+    in_commodity(p, "food", 1)
+    p["facility_pools"]["protocol_storage_box"][0]["input_port_cells"].pop()
+    samples.append({"id": "I9_generic_input_physical_port_shortfall", "input": p,
+                    "expect": "REJECT", "subcode": "GENERIC_INPUT_PORT_CAPACITY_DRIFT"})
+
+    p = with_sink(base_input(), k=3)
+    p["generic_input_slots_by_operation"]["box_sink"] = 2
+    samples.append({"id": "I10_generic_input_map_profile_mismatch", "input": p,
+                    "expect": "REJECT", "subcode": "GENERIC_INPUT_SLOT_MAP_MISMATCH"})
+
+    p = base_input()
+    p["wireless_sink_generic_input_slots"] = 3
+    samples.append({"id": "I11_legacy_wireless_slot_field", "input": p,
+                    "expect": "REJECT", "subcode": "LEGACY_WIRELESS_SLOT_FIELD"})
 
     return samples
 
@@ -363,8 +403,8 @@ def main() -> int:
         emitted, model_input, wit0 = sat_cache["C5_mixed_full_model"]
         variables = emitted["varmap"]["variables"]
 
-        def _cchk(patterns, wit):
-            return check_canonical_witness(model_input, emitted["varmap"], patterns, wit)
+        def _cchk(varmap, patterns, wit):
+            return check_canonical_witness(model_input, varmap, patterns, wit)
 
         w_cases: List[tuple] = []
         # W1: 槽 commodity 换成 unused（保持槽内恰一，破坏计数）
@@ -410,12 +450,27 @@ def main() -> int:
                 results.append({"id": wid, "expect": "rejected", "got": "SETUP_FAILED", "ok": False})
                 fails += 1
                 continue
-            chk = _cchk(pats, wit)
+            chk = _cchk(emitted["varmap"], pats, wit)
             ok = not chk["ok"]
             results.append({"id": wid, "expect": "rejected",
                             "got": "rejected" if not chk["ok"] else "ACCEPTED(!)",
                             "subcode": (chk["failures"][:1] or [""])[0][:60], "ok": ok})
             fails += 0 if ok else 1
+
+        # W5: generic-input slot 的物理坐标不能脱离所选 pose。
+        varmap = _copy.deepcopy(emitted["varmap"])
+        moved = False
+        for sem in varmap["variables"]:
+            if sem["kind"] == "generic_input":
+                sem["slot"]["x"] += 999
+                moved = True
+                break
+        chk = _cchk(varmap, emitted["patterns"], dict(wit0)) if moved else {"ok": True}
+        ok = moved and not chk["ok"]
+        results.append({"id": "W5_generic_input_slot_off_pose", "expect": "rejected",
+                        "got": "rejected" if ok else "ACCEPTED(!)",
+                        "subcode": (chk.get("failures", [])[:1] or [""])[0][:60], "ok": ok})
+        fails += 0 if ok else 1
 
     report = {"schema": "binding_sidecar_acceptance_v1", "results": results,
               "total": len(results), "failed": fails}

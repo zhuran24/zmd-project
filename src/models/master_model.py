@@ -75,13 +75,15 @@ from src.models.exact_coordinate_master import (
 )
 from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
 from src.models.solution_hint_parser import parse_strict_int_hint_value
-from src.preprocess.operation_profiles import get_operation_port_profile
+from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
 
 ModeToken = Tuple[str, str]
 POSE_LEVEL_OPTIONAL_TEMPLATES = {"power_pole", "protocol_storage_box"}
+# 批 5 (2026-07-18): 协议箱 operation 改名 box_sink（成品=真 routed 商品，
+# "无线"仅箱→仓库段；与 binding_subproblem.POSE_OPTIONAL_OPERATION_BY_TEMPLATE 同步）。
 POSE_LEVEL_OPTIONAL_OPERATIONS = {
     "power_pole": "power_supply",
-    "protocol_storage_box": "wireless_sink",
+    "protocol_storage_box": "box_sink",
 }
 DIR_DELTA = {"N": (0, 1), "S": (0, -1), "E": (1, 0), "W": (-1, 0)}
 BOUNDARY_STORAGE_PORT_SCREEN_GROUP_ID = "group::boundary_storage_port::boundary_io::0"
@@ -1997,26 +1999,50 @@ def load_generic_io_requirements_artifact(project_root: Path) -> Dict[str, Dict[
     return load_generic_io_requirements(project_root=project_root)
 
 
-def _normalize_wireless_sink_generic_input_slots(value: Optional[Any]) -> int:
-    if value is None:
-        return int(
-            get_operation_port_profile(
-                POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"]
-            ).generic_input_slots
-        )
+def _normalize_generic_input_slot_capacity(value: Any, *, field: str) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
-        raise TypeError("wireless_sink_generic_input_slots must be a strict integer")
+        raise TypeError(f"{field} must be a strict integer")
     if value < 0:
-        raise ValueError("wireless_sink_generic_input_slots must be non-negative")
+        raise ValueError(f"{field} must be non-negative")
     return int(value)
+
+
+def _resolve_generic_input_slots_by_operation(
+    generic_input_slots_by_operation: Optional[Mapping[str, Any]],
+) -> Dict[str, int]:
+    """解析 op→generic-input 槽容量映射（默认从 operation profiles 取）。
+
+    批 5 (2026-07-18)：sink 槽供给来自两类实体口——box_sink（协议箱 3 进）
+    与 protocol_core（中枢 14 进）。旧的单值 wireless_sink 标量已废。
+    """
+    if generic_input_slots_by_operation is None:
+        return {
+            str(op): int(profile.generic_input_slots)
+            for op, profile in OPERATION_PORT_PROFILES.items()
+            if int(profile.generic_input_slots) > 0
+        }
+    return {
+        str(op): _normalize_generic_input_slot_capacity(
+            slots, field=f"generic_input_slots_by_operation[{op}]"
+        )
+        for op, slots in generic_input_slots_by_operation.items()
+    }
 
 
 def infer_certified_optional_lower_bounds(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
-    wireless_sink_generic_input_slots: Optional[int] = None,
+    generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, int]:
+    """Infer the gross box lower bound before mandatory-provider credits.
+
+    This helper has no instance list, so it must not assume that a protocol core
+    (or any other generic-input provider) is actually mandatory in the project.
+    The instance-aware wrapper below subtracts capacity from real mandatory exact
+    providers.  Keeping that boundary explicit avoids under-counting boxes in toy
+    or future projects that carry the template but no mandatory core instance.
+    """
     normalized_requirements = _normalize_generic_io_requirements_payload(
         generic_io_requirements
     )
@@ -2024,14 +2050,17 @@ def infer_certified_optional_lower_bounds(
     required_counts: Dict[str, int] = {}
 
     if "protocol_storage_box" in templates:
-        slots_per_box = _normalize_wireless_sink_generic_input_slots(
-            wireless_sink_generic_input_slots
+        slot_map = _resolve_generic_input_slots_by_operation(
+            generic_input_slots_by_operation
+        )
+        slots_per_box = int(
+            slot_map.get(POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"], 0)
         )
         required_slots = sum(
             int(v)
             for v in normalized_requirements.get("required_generic_inputs", {}).values()
         )
-        if slots_per_box > 0:
+        if slots_per_box > 0 and required_slots > 0:
             required_box_count = (required_slots + slots_per_box - 1) // slots_per_box
             if required_box_count > 0:
                 required_counts["protocol_storage_box"] = int(required_box_count)
@@ -2039,25 +2068,22 @@ def infer_certified_optional_lower_bounds(
     return required_counts
 
 
-def _mandatory_wireless_sink_count_for_optional_lower_bounds(
+def _mandatory_generic_input_capacity_for_optional_lower_bounds(
     instances: Sequence[Mapping[str, Any]],
+    *,
+    generic_input_slots_by_operation: Mapping[str, int],
 ) -> int:
-    """Count mandatory protocol storage boxes that already provide sink slots."""
+    """Return capacity supplied by real mandatory exact provider instances."""
 
-    count = 0
+    capacity = 0
     for instance in instances:
         if not bool(instance.get("is_mandatory")):
             continue
         if str(instance.get("bound_type", "exact")) != "exact":
             continue
-        if str(instance.get("facility_type", "")) != "protocol_storage_box":
-            continue
-        if str(instance.get("operation_type", "")) != POSE_LEVEL_OPTIONAL_OPERATIONS[
-            "protocol_storage_box"
-        ]:
-            continue
-        count += 1
-    return int(count)
+        operation_type = str(instance.get("operation_type", ""))
+        capacity += int(generic_input_slots_by_operation.get(operation_type, 0))
+    return int(capacity)
 
 
 def infer_certified_optional_lower_bounds_for_instances(
@@ -2065,51 +2091,63 @@ def infer_certified_optional_lower_bounds_for_instances(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
-    wireless_sink_generic_input_slots: Optional[int] = None,
+    generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, int]:
-    """Infer residual pose-optionals after crediting mandatory exact utilities.
+    """Infer residual box optionals after crediting actual mandatory providers.
 
-    ``infer_certified_optional_lower_bounds`` computes the gross number of
-    protocol storage boxes required by the generic-input slot demand. Certified
-    exact projects may also pin protocol storage boxes as mandatory facilities;
-    those boxes are part of the public placement witness and provide the same
-    ``wireless_sink`` capacity as pose-optionals. The residual optional lower
-    bound therefore charges only boxes not already forced by the mandatory
-    artifact.
+    Current production has one mandatory ``protocol_core`` with 14 physical
+    generic-input slots, so its demand of two needs no optional box.  A project
+    that merely defines the core template but does not contain such an instance
+    receives no credit.  Mandatory boxes and any future declared provider are
+    credited by their operation-specific capacity in exactly the same way.
     """
 
-    required_counts = infer_certified_optional_lower_bounds(
-        rules,
-        generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+    normalized_requirements = _normalize_generic_io_requirements_payload(
+        generic_io_requirements
     )
-    required_protocol_boxes = int(required_counts.get("protocol_storage_box", 0))
-    if required_protocol_boxes <= 0:
-        return required_counts
+    templates = dict(rules.get("facility_templates", {}))
+    if "protocol_storage_box" not in templates:
+        return {}
 
-    mandatory_wireless_sinks = _mandatory_wireless_sink_count_for_optional_lower_bounds(
-        instances
+    slot_map = _resolve_generic_input_slots_by_operation(
+        generic_input_slots_by_operation
     )
-    residual_protocol_boxes = max(0, required_protocol_boxes - mandatory_wireless_sinks)
-    if residual_protocol_boxes > 0:
-        required_counts["protocol_storage_box"] = int(residual_protocol_boxes)
-    else:
-        required_counts.pop("protocol_storage_box", None)
-    return required_counts
+    slots_per_box = int(
+        slot_map.get(POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"], 0)
+    )
+    if slots_per_box <= 0:
+        return {}
+
+    required_slots = sum(
+        int(value)
+        for value in normalized_requirements.get("required_generic_inputs", {}).values()
+    )
+    mandatory_capacity = _mandatory_generic_input_capacity_for_optional_lower_bounds(
+        instances,
+        generic_input_slots_by_operation=slot_map,
+    )
+    residual_slots = max(0, int(required_slots) - int(mandatory_capacity))
+    if residual_slots <= 0:
+        return {}
+    return {
+        "protocol_storage_box": int(
+            (residual_slots + slots_per_box - 1) // slots_per_box
+        )
+    }
 
 
 def infer_exact_required_pose_optional_counts(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
-    wireless_sink_generic_input_slots: Optional[int] = None,
+    generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, int]:
     """Backward-compatible gross lower-bound alias for legacy callers."""
 
     return infer_certified_optional_lower_bounds(
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
     )
 
 
@@ -2118,7 +2156,7 @@ def infer_exact_required_pose_optional_counts_for_instances(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
-    wireless_sink_generic_input_slots: Optional[int] = None,
+    generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, int]:
     """Instance-aware lower-bound alias for exact pose-optional overlays."""
 
@@ -2126,7 +2164,7 @@ def infer_exact_required_pose_optional_counts_for_instances(
         instances,
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
     )
 
 
@@ -2286,7 +2324,7 @@ class ExactMasterCore:
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]]
     rules: Mapping[str, Any]
     generic_io_requirements: Mapping[str, Mapping[str, int]]
-    wireless_sink_generic_input_slots: int
+    generic_input_slots_by_operation: Mapping[str, int]
     exact_required_pose_optional_counts: Mapping[str, int]
     build_stats: Mapping[str, Any]
     z_var_indices: Dict[str, Dict[int, int]]
@@ -2315,7 +2353,7 @@ class MasterPlacementModel:
         c1_power_pole_representation: bool = True,
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
-        wireless_sink_generic_input_slots: Optional[int] = None,
+        generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
         exact_required_pose_optional_counts: Optional[Mapping[str, Any]] = None,
         exact_mode: Optional[bool] = None,
         solve_mode: Optional[str] = None,
@@ -2362,8 +2400,8 @@ class MasterPlacementModel:
         self.generic_io_requirements = _normalize_generic_io_requirements_payload(
             generic_io_requirements
         )
-        self.wireless_sink_generic_input_slots = _normalize_wireless_sink_generic_input_slots(
-            wireless_sink_generic_input_slots
+        self.generic_input_slots_by_operation = _resolve_generic_input_slots_by_operation(
+            generic_input_slots_by_operation
         )
         self._exact_required_pose_optional_counts = {
             str(k): int(v)
@@ -2375,7 +2413,7 @@ class MasterPlacementModel:
                 self.instances,
                 self.rules,
                 self.generic_io_requirements,
-                wireless_sink_generic_input_slots=self.wireless_sink_generic_input_slots,
+                generic_input_slots_by_operation=self.generic_input_slots_by_operation,
             )
             if self.exact_mode
             else {}
@@ -2630,7 +2668,7 @@ class MasterPlacementModel:
         c1_power_pole_representation: bool = True,
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
-        wireless_sink_generic_input_slots: Optional[int] = None,
+        generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
         exact_required_pose_optional_counts: Optional[Mapping[str, Any]] = None,
         master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
     ) -> ExactMasterCore:
@@ -2644,7 +2682,7 @@ class MasterPlacementModel:
             c1_power_pole_representation=c1_power_pole_representation,
             enable_symmetry_breaking=enable_symmetry_breaking,
             generic_io_requirements=generic_io_requirements,
-            wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+            generic_input_slots_by_operation=generic_input_slots_by_operation,
             exact_required_pose_optional_counts=exact_required_pose_optional_counts,
             solve_mode="certified_exact",
             master_search_profile=master_search_profile,
@@ -2701,7 +2739,7 @@ class MasterPlacementModel:
             facility_pools=model.facility_pools,
             rules=model.rules,
             generic_io_requirements=model.generic_io_requirements,
-            wireless_sink_generic_input_slots=int(model.wireless_sink_generic_input_slots),
+            generic_input_slots_by_operation=dict(model.generic_input_slots_by_operation),
             exact_required_pose_optional_counts=dict(model._exact_required_pose_optional_counts),
             build_stats=build_stats,
             z_var_indices=model._current_z_var_indices(),
@@ -2826,7 +2864,7 @@ class MasterPlacementModel:
                     core.source_instances,
                     core.rules,
                     core.generic_io_requirements,
-                    wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
+                    generic_input_slots_by_operation=core.generic_input_slots_by_operation,
                 )
             )
 
@@ -2839,7 +2877,7 @@ class MasterPlacementModel:
             c1_power_pole_representation=core_c1_power_pole_representation,
             enable_symmetry_breaking=core.enable_symmetry_breaking,
             generic_io_requirements=core.generic_io_requirements,
-            wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
+            generic_input_slots_by_operation=core.generic_input_slots_by_operation,
             exact_required_pose_optional_counts=exact_required_pose_optional_counts_for_overlay,
             solve_mode="certified_exact",
             master_search_profile=normalized_master_search_profile,
@@ -5455,7 +5493,11 @@ class MasterPlacementModel:
         optional_bounds["protocol_storage_box"] = {
             "mode": "required_lower_bound",
             "required_generic_input_slots": int(required_generic_input_slots),
-            "slots_per_pose": int(self.wireless_sink_generic_input_slots),
+            "slots_per_pose": int(
+                self.generic_input_slots_by_operation.get(
+                    POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"], 0
+                )
+            ),
             "lower": int(protocol_storage_box_count),
             "upper": None,
             "candidate_pose_count": len(protocol_box_terms),

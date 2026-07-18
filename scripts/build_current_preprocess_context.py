@@ -14,7 +14,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.interchange.preprocess_context import build_template_mapping, load_preprocess_context_from_paths
+from src.interchange.preprocess_context import (
+    PreprocessContext,
+    build_template_mapping,
+    load_preprocess_context_from_paths,
+)
 from src.io.strict_json import load_strict_json
 from src.preprocess.demand_solver import (
     generate_ceil_machine_counts,
@@ -24,12 +28,17 @@ from src.preprocess.demand_solver import (
     solve_demands_exact,
 )
 from src.preprocess.instance_builder import (
+    EXPLORATORY_OPTIONAL_CAPS,
     build_boundary_ports,
     build_core_instance,
     build_exploratory_optional_instances,
     build_manufacturing_instances,
 )
-from src.preprocess.operation_profiles import aggregate_port_slots, count_operations
+from src.preprocess.operation_profiles import (
+    aggregate_port_slots,
+    build_operation_port_profiles,
+    count_operations,
+)
 
 
 def _canonicalize(value: Any) -> Any:
@@ -97,12 +106,7 @@ def _diff_entry(*, name: str, regenerated: Any, frozen: Any) -> dict[str, Any]:
     return entry
 
 
-def build_diff_report(project_root: Path, *, context_payload: Mapping[str, Any]) -> dict[str, Any]:
-    del context_payload
-    context = load_preprocess_context_from_paths(
-        rules_path=project_root / "rules" / "canonical_rules.json",
-        plan_path=project_root / "rules" / "preprocess_plan.json",
-    )
+def build_diff_report(project_root: Path, *, context: PreprocessContext) -> dict[str, Any]:
     flows, fractional = solve_demands_exact(context=context)
     machine_counts = generate_ceil_machine_counts(fractional)
     port_budget = generate_port_budget(flows, context=context)
@@ -114,7 +118,10 @@ def build_diff_report(project_root: Path, *, context_payload: Mapping[str, Any])
         + build_boundary_ports(46)
     )
     all_facility_instances = mandatory_exact_instances + build_exploratory_optional_instances()
-    slot_summary = aggregate_port_slots(count_operations(all_facility_instances, mandatory_only=True))
+    slot_summary = aggregate_port_slots(
+        count_operations(all_facility_instances, mandatory_only=True),
+        profiles=build_operation_port_profiles(context),
+    )
 
     preprocessed_dir = project_root / "data" / "preprocessed"
     comparisons = [
@@ -147,6 +154,11 @@ def build_diff_report(project_root: Path, *, context_payload: Mapping[str, Any])
             name="all_facility_instances.json",
             regenerated=all_facility_instances,
             frozen=_load_json(preprocessed_dir / "all_facility_instances.json"),
+        ),
+        _diff_entry(
+            name="exploratory_optional_caps.json",
+            regenerated=EXPLORATORY_OPTIONAL_CAPS,
+            frozen=_load_json(preprocessed_dir / "exploratory_optional_caps.json"),
         ),
     ]
     return {
@@ -216,7 +228,7 @@ def main() -> None:
     context_payload = context.to_dict()
     _atomic_write_json_strict(Path(args.output), context_payload)
 
-    diff_report = build_diff_report(PROJECT_ROOT, context_payload=context_payload)
+    diff_report = build_diff_report(PROJECT_ROOT, context=context)
     _atomic_write_json_strict(Path(args.diff_json), diff_report)
     diff_md_path = Path(args.diff_md)
     diff_md_path.parent.mkdir(parents=True, exist_ok=True)

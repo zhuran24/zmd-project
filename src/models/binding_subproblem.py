@@ -54,8 +54,10 @@ GENERIC_IO_REQUIREMENTS_PATH = (
 )
 PREPROCESS_PLAN_PATH = PROJECT_ROOT / "rules" / "preprocess_plan.json"
 
+# 批 5 (2026-07-18): 协议箱 operation 由 wireless_sink 改名 box_sink（owner 拍板）。
+# 语义同批翻转：箱有实体口、成品为真 routed 商品、"无线"仅箱→仓库段。
 POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
-    "protocol_storage_box": "wireless_sink",
+    "protocol_storage_box": "box_sink",
     "power_pole": "power_supply",
 }
 NON_FACILITY_PLACEMENT_MARKER_IDS = {"ghost_pick"}
@@ -88,35 +90,65 @@ def _load_strict_json(path: Path) -> Any:
     return load_strict_json(path)
 
 
-def _normalize_wireless_sink_generic_input_slots(
+def _normalize_generic_input_slot_count(
     raw_slot_count: Any,
     *,
-    field: str = "wireless_sink.generic_input_slots",
+    field: str,
 ) -> int:
     if isinstance(raw_slot_count, bool) or not isinstance(raw_slot_count, int):
         raise TypeError(
             f"{field} must be an integer "
-            "（无线消费槽位数必须是整数）"
+            "（通用收货槽位数必须是整数）"
         )
     slot_count = int(raw_slot_count)
     if slot_count < 0:
         raise ValueError(
             f"{field} must be non-negative "
-            f"（无线消费槽位数不能为负）: {slot_count}"
+            f"（通用收货槽位数不能为负）: {slot_count}"
         )
     return slot_count
 
 
-def load_wireless_sink_generic_input_slots(
+def _generic_input_slot_map_from_payload(payload: Any) -> Dict[str, int]:
+    if not isinstance(payload, Mapping):
+        raise TypeError(
+            "preprocess_plan must be a JSON object "
+            "（预处理计划工件顶层必须是对象）"
+        )
+    utility_operations = payload.get("utility_operations")
+    if not isinstance(utility_operations, Mapping):
+        raise KeyError(
+            "preprocess_plan.utility_operations is required for generic input binding "
+            "（预处理计划缺少 utility_operations）"
+        )
+    slot_map: Dict[str, int] = {}
+    for operation_type, entry in utility_operations.items():
+        if not isinstance(entry, Mapping):
+            raise TypeError(
+                f"preprocess_plan.utility_operations.{operation_type} must be an object"
+            )
+        raw = entry.get("generic_input_slots", 0)
+        slots = _normalize_generic_input_slot_count(
+            raw,
+            field=f"{operation_type}.generic_input_slots",
+        )
+        if slots > 0:
+            slot_map[str(operation_type)] = slots
+    return slot_map
+
+
+def load_generic_input_slots_by_operation(
     *,
     project_root: Optional[Path] = None,
     path: Optional[Path] = None,
-) -> int:
-    """Load the canonical wireless-sink generic input slot count.
+) -> Dict[str, int]:
+    """Load per-operation generic-input slot capacities from preprocess_plan.
 
-    protocol_storage_box is declared as ``omni_wireless`` in canonical rules and as
-    ``wireless_sink`` in preprocess_plan.json. The binding model therefore
-    accounts for generic input capacity without requiring a physical port cell.
+    批 5 (2026-07-18) 语义：generic input 槽是**实体口**上的收货容量——
+    ``box_sink``（协议箱，3 槽=3 实体进口）与 ``protocol_core``（中枢，
+    14 槽=14 实体进口）。旧的单值 wireless_sink loader（虚拟无口槽）已废；
+    槽必须由所选 pose 的 input_port_cells 落到具体坐标（见
+    _build_generic_input_domains），本 loader 只提供容量账。
     """
 
     if path is None:
@@ -131,70 +163,18 @@ def load_wireless_sink_generic_input_slots(
             f"Missing preprocess_plan artifact（缺少预处理计划工件）: {path}"
         )
 
-    payload = _load_strict_json(path)
-    if not isinstance(payload, Mapping):
-        raise TypeError(
-            "preprocess_plan must be a JSON object "
-            "（预处理计划工件顶层必须是对象）"
-        )
-    utility_operations = payload.get("utility_operations")
-    if not isinstance(utility_operations, Mapping):
-        raise KeyError(
-            "preprocess_plan.utility_operations is required for wireless sink binding "
-            "（预处理计划缺少 utility_operations）"
-        )
-    wireless_sink = utility_operations.get("wireless_sink")
-    if not isinstance(wireless_sink, Mapping):
-        raise KeyError(
-            "preprocess_plan.utility_operations.wireless_sink is required for "
-            "wireless sink binding（预处理计划缺少 wireless_sink）"
-        )
-    if "generic_input_slots" not in wireless_sink:
-        raise KeyError(
-            "preprocess_plan utility_operations.wireless_sink.generic_input_slots "
-            "is required for wireless sink binding（无线消费槽位数缺失）"
-        )
-
-    return _normalize_wireless_sink_generic_input_slots(
-        wireless_sink["generic_input_slots"],
-        field="wireless_sink.generic_input_slots",
-    )
+    return _generic_input_slot_map_from_payload(_load_strict_json(path))
 
 
-def load_wireless_sink_generic_input_slots_from_text(*, text: str) -> int:
-    """Atomic-snapshot variant of load_wireless_sink_generic_input_slots (P1.2-FIX-5).
+def load_generic_input_slots_by_operation_from_text(*, text: str) -> Dict[str, int]:
+    """Atomic-snapshot variant of load_generic_input_slots_by_operation (P1.2-FIX-5).
 
-    Parses the preprocess_plan slot count from a pre-snapshotted artifact text so the
-    bytes build consumes are the bytes the session hashed (no second disk read).
+    Parses the preprocess_plan slot capacities from a pre-snapshotted artifact text
+    so the bytes build consumes are the bytes the session hashed (no second disk
+    read). 两条加载路径（磁盘/快照文本）必须严格同构。
     """
 
-    payload = _loads_strict_json(text)
-    if not isinstance(payload, Mapping):
-        raise TypeError(
-            "preprocess_plan must be a JSON object "
-            "（预处理计划工件顶层必须是对象）"
-        )
-    utility_operations = payload.get("utility_operations")
-    if not isinstance(utility_operations, Mapping):
-        raise KeyError(
-            "preprocess_plan.utility_operations is required for wireless sink binding "
-            "（预处理计划缺少 utility_operations）"
-        )
-    wireless_sink = utility_operations.get("wireless_sink")
-    if not isinstance(wireless_sink, Mapping):
-        raise KeyError(
-            "preprocess_plan.utility_operations.wireless_sink is required for "
-            "wireless sink binding（预处理计划缺少 wireless_sink）"
-        )
-    if "generic_input_slots" not in wireless_sink:
-        raise KeyError(
-            "preprocess_plan utility_operations.wireless_sink.generic_input_slots "
-            "is required for wireless sink binding（无线消费槽位数缺失）"
-        )
-    return _normalize_wireless_sink_generic_input_slots(
-        wireless_sink["generic_input_slots"],
-        field="wireless_sink.generic_input_slots",
-    )
+    return _generic_input_slot_map_from_payload(_loads_strict_json(text))
 
 
 def load_generic_io_requirements(
@@ -410,12 +390,13 @@ def _validate_generic_io_requirement_roles(
                 f"（通用输入商品 {commodity!r} 必须是通用输入终端商品）"
             )
 
-    # F-BIND-R8-02（owner-channel, LOW availability hardening）: 一旦声明了非空
-    # generic I/O 需求工件, 它必须以正槽数覆盖所有 canonical sink_kind=generic_input
-    # 终品. 漏声明或零槽数会悄悄缩小 binding capacity, 并把该终品移出 routing-free
-    # sink 集合, 使其 producer 的无线终品输出变成孤儿 routing terminal（spurious
-    # front_blocked / false-INFEASIBLE）. 只有 output+input 双空才是合法退化态
-    #（上方 early return 已处理）; output-only 工件不是空需求, 也必须接受完备性校验.
+    # F-BIND-R8-02（owner-channel, LOW availability hardening；批 5 改判后保留
+    # 完备性本体、重写理由）: 一旦声明了非空 generic I/O 需求工件, 它必须以正
+    # 槽数覆盖所有 canonical sink_kind=generic_input 终品. 漏声明或零槽数会悄悄
+    # 缩小 binding sink capacity——批 5 语义下 generic_input 终品是真 routed 商品,
+    # 其 sink 端需求账丢失=终品无处收货的假 INFEASIBLE. 只有 output+input 双空
+    # 才是合法退化态（上方 early return 已处理）; output-only 工件不是空需求,
+    # 也必须接受完备性校验.
     canonical_generic_inputs = sorted(
         str(commodity)
         for commodity, metadata in commodity_metadata.items()
@@ -460,7 +441,7 @@ class PortBindingModel:
         required_generic_inputs: Optional[Mapping[str, int]] = None,
         project_root: Optional[Path] = None,
         io_requirements_path: Optional[Path] = None,
-        wireless_sink_generic_input_slots: Optional[int] = None,
+        generic_input_slots_by_operation: Optional[Mapping[str, int]] = None,
         routing_context: Optional[Any] = None,  # RAB-SEP Phase 1: routing-aware filter
         canonical_rules_payload: Optional[Mapping[str, Any]] = None,
         canonical_commodity_metadata: Optional[Mapping[str, Any]] = None,
@@ -479,14 +460,15 @@ class PortBindingModel:
             raise TypeError("canonical_commodity_metadata must be a mapping")
         self._canonical_rules_payload = canonical_rules_payload
         self._canonical_commodity_metadata = canonical_commodity_metadata
-        self._wireless_sink_generic_input_slots: Optional[int] = (
-            None
-            if wireless_sink_generic_input_slots is None
-            else _normalize_wireless_sink_generic_input_slots(
-                wireless_sink_generic_input_slots,
-                field="wireless_sink_generic_input_slots",
-            )
-        )
+        if generic_input_slots_by_operation is None:
+            self._generic_input_slots_by_operation: Optional[Dict[str, int]] = None
+        else:
+            self._generic_input_slots_by_operation = {
+                str(op): _normalize_generic_input_slot_count(
+                    slots, field=f"generic_input_slots_by_operation[{op}]"
+                )
+                for op, slots in generic_input_slots_by_operation.items()
+            }
         self.placement_solution = {
             str(instance_id): dict(sol)
             for instance_id, sol in placement_solution.items()
@@ -534,24 +516,29 @@ class PortBindingModel:
             canonical_rules_payload=self._canonical_rules_payload,
             canonical_commodity_metadata=self._canonical_commodity_metadata,
         )
-        self.routing_free_sink_commodities = {
+        # 批 5 (2026-07-18) 语义翻转：成品（generic_input 终品）是**真 routed
+        # 商品**——producer 输出口=routing source、绑定的 generic-input 实体槽
+        # =routing sink。旧的 routing_free_sink_commodities 推导（"positive
+        # required_generic_inputs ⇒ 免路由"）是 F03/F04 排除链的核心开关，
+        # 已连根删除；generic_input 角色只决定 sink 端类型，不授予路由豁免。
+        self.generic_input_commodities = {
             str(commodity)
             for commodity, required in self.required_generic_inputs.items()
             if int(required) > 0
         }
-        # 消费者边界 disjoint 不变量（2026-07-16 对抗审查 codex hybrid 探针）：
-        # 同一 commodity 兼任 generic output 与 routing-free generic input 时，
-        # RAB filter 会按 front 删其 generic output slot、extract_port_specs 又按
-        # routing-free 跳过——两条排除规则语义冲突（filter 删掉唯一 output slot
-        # 可把可行 binding 判成 INFEASIBLE）。canonical semantic validator 在上游
-        # 间接拒绝该形态；此处 fail-closed 使其成为本消费者自身的结构保证。
+        # 消费者边界 disjoint 不变量（2026-07-16 对抗审查 codex hybrid 探针，
+        # 批 5 改判后保留为 commodity 级守卫）：同一 commodity 兼任 generic
+        # output 源与 generic input 终品时，源/汇角色账互相污染（canonical
+        # semantic validator 在上游间接拒绝该形态）。此处 fail-closed 使其
+        # 成为本消费者自身的结构保证。注意这是 commodity 级、非 facility 级
+        # ——protocol_core 同时提供 generic 输出槽与输入槽是合法新语义。
         _generic_out_in_overlap = sorted(
             {
                 str(commodity)
                 for commodity, required in self.required_generic_outputs.items()
                 if int(required) > 0
             }
-            & self.routing_free_sink_commodities
+            & self.generic_input_commodities
         )
         if _generic_out_in_overlap:
             raise ValueError(
@@ -576,7 +563,8 @@ class PortBindingModel:
             "binding_domain_reused_instances": [],
             "required_generic_outputs": dict(self.required_generic_outputs),
             "required_generic_inputs": dict(self.required_generic_inputs),
-            "routing_free_sink_commodities": sorted(self.routing_free_sink_commodities),
+            # 批 5: 审计字段改名——generic input 终品不再携带路由豁免语义。
+            "generic_input_commodities": sorted(self.generic_input_commodities),
         }
 
         self.binding_domains: Dict[str, List[Dict[str, List[Dict[str, Any]]]]] = {}
@@ -870,7 +858,7 @@ class PortBindingModel:
     def _add_storage_box_overload_nogoods(self) -> int:
         """P1 #9 hint 2 stage 2: forbid high+low commodity pair in same storage box.
 
-        For every protocol_storage_box instance (operation_type=wireless_sink),
+        For every protocol_storage_box instance (operation_type=box_sink),
         for every (c_high, c_low) pair where c_high is high_prod_low_demand and
         c_low is low_prod_high_demand, add CP-SAT clause:
             NOT (h_lit AND l_lit) ≡ AddBoolOr([h_lit.Not(), l_lit.Not()])
@@ -900,7 +888,9 @@ class PortBindingModel:
         nogood_count = 0
         for instance_id, slot_ids in slots_by_instance.items():
             inst = self.instances_by_id.get(instance_id)
-            if not inst or str(inst.get("operation_type", "")) != "wireless_sink":
+            # 批 5: 本 nogood 只约束协议箱（box_sink）的同箱高低配对；中枢
+            # （protocol_core）的 14 槽不是"同一个箱体"，不受此启发式约束。
+            if not inst or str(inst.get("operation_type", "")) != "box_sink":
                 continue
             for c_high in high_set:
                 high_lits = [
@@ -945,10 +935,12 @@ class PortBindingModel:
         """RAB-SEP Phase 1: layout-local front-free filter on raw binding patterns.
 
         Returns NEW list (raw cache not polluted). Pattern is kept iff every
-        routing-visible active port has front cell in-grid and free. Routing-free
-        wireless final commodities are excluded on the producer-output side here,
-        matching extract_port_specs(): their output ports are binding choices only,
-        not routing terminals.
+        active port has front cell in-grid and free. 批 5 (2026-07-18)：成品
+        （generic_input 终品）是真 routed 商品——producer 输出口与普通输出口
+        一样参与 front-free 过滤与 blocker 归因。排除集仍经 SSOT 派生函数
+        routing_free_sink_commodities_from_generic_inputs 取得（批 5 改判后
+        恒为空集），保留三处消费者同源纪律与 str-strict fail-closed 行为
+        ——doc 04 v2 §3.4。
 
         Phase 3 side effect: collect blocker instance_ids for cert generation
         — every blocker that occupies a routing-visible active port front cell
@@ -957,7 +949,13 @@ class PortBindingModel:
         """
         if self.routing_context is None:
             return list(raw_patterns)
+        from src.models.port_binding import (
+            routing_free_sink_commodities_from_generic_inputs,
+        )
         from src.models.routing_binding_context import port_front_status
+        rfsc = routing_free_sink_commodities_from_generic_inputs(
+            self.required_generic_inputs
+        )
         kept: List[Dict[str, List[Dict[str, Any]]]] = []
         blockers: Set[str] = set()
         unattributed_rejection = False
@@ -967,12 +965,7 @@ class PortBindingModel:
             routing_visible_ports.extend(
                 port
                 for port in pattern.get("output_ports", [])
-                # RFSC 排除经 SSOT 谓词（str-strict 同崩溃 fail-closed 语义
-                # 不变；与 extract_port_specs、master front-clear lift 的
-                # demand 计算共用同一实现——doc 04 v2 §3.4）
-                if is_routing_visible_output_commodity(
-                    port["commodity"], self.routing_free_sink_commodities
-                )
+                if is_routing_visible_output_commodity(port["commodity"], rfsc)
             )
             for port in routing_visible_ports:
                 status = port_front_status(port, self.routing_context, owner_instance_id)
@@ -1160,43 +1153,68 @@ class PortBindingModel:
                     )
                 self.model.AddExactlyOne(list(self.generic_output_vars[slot_id].values()))
 
-    def _wireless_sink_input_slot_count(self) -> int:
-        if self._wireless_sink_generic_input_slots is None:
-            self._wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
+    def _generic_input_slot_capacity_map(self) -> Dict[str, int]:
+        if self._generic_input_slots_by_operation is None:
+            self._generic_input_slots_by_operation = load_generic_input_slots_by_operation(
                 project_root=self.project_root
             )
-        return self._wireless_sink_generic_input_slots
+        return self._generic_input_slots_by_operation
 
     def _build_generic_input_domains(self) -> None:
+        """批 5 (2026-07-18): generic-input 槽是**实体口**（真 routed sink 端）。
+
+        owner 定谳：协议箱 = 制造机 3×3 同款实体口（box_sink，3 进），中枢
+        14 进 = 万能收货（protocol_core，generic_input_slots 0→14）。槽由
+        所选 pose 的 input_port_cells 逐口落到具体坐标（x/y/dir），与
+        generic output 槽对称：①经 routing-front 过滤（被堵/出界的口不作
+        候选槽）②保留 ``__unused__`` 哨兵——mandatory 中枢的多余槽与箱的
+        未用槽合法空置（否则 14 core 槽被逼重复绑定仅有的终品需求 =
+        强制放箱或假 INFEASIBLE）。plan 容量与 pose 实体进口数漂移时
+        fail-closed（旧虚拟槽机制按 range(count) 造无坐标槽，已废）。
+        """
         generic_commodities = sorted(self.required_generic_inputs.keys())
         if not generic_commodities:
             return
         slot_commodities = generic_commodities + ["__unused__"]
+        capacity_map = self._generic_input_slot_capacity_map()
 
-        for instance_id, _sol in self.placement_solution.items():
+        for instance_id, sol in self.placement_solution.items():
             inst = self._resolve_instance(instance_id)
             if not inst:
                 continue
             operation_type = str(inst.get("operation_type", ""))
-            if operation_type != "wireless_sink":
+            declared_slots = capacity_map.get(operation_type)
+            if declared_slots is None or declared_slots <= 0:
                 continue
 
-            # ``wireless_sink`` is intentionally routing-free: protocol storage
-            # boxes have no physical input port cells under the canonical
-            # ``omni_wireless`` rule. Binding still needs the capacity rows, so
-            # materialize virtual generic-input slots from preprocess_plan.json
-            # and do not pass them through routing-front filtering.
-            for local_idx in range(self._wireless_sink_input_slot_count()):
+            tpl = str(sol["facility_type"])
+            pose = self._resolve_pose(tpl, int(sol["pose_idx"]))
+            input_ports = list(pose.get("input_port_cells", []) or [])
+            if len(input_ports) != declared_slots:
+                raise ValueError(
+                    f"generic input capacity drift（容量漂移 fail-closed）: "
+                    f"operation {operation_type!r} instance {instance_id!r} declares "
+                    f"{declared_slots} generic input slots but selected pose "
+                    f"{tpl}[{int(sol['pose_idx'])}] has {len(input_ports)} "
+                    "physical input ports"
+                )
+            for local_idx, port in enumerate(input_ports):
                 self.routing_aware_filter_stats["generic_input_slots_pre_filter"] += 1
+                # 与 generic output 槽对称：front 被堵/出界的实体口不作候选槽。
+                if self.routing_context is not None:
+                    from src.models.routing_binding_context import is_port_front_usable
+                    if not is_port_front_usable(port, self.routing_context, instance_id):
+                        continue
                 self.routing_aware_filter_stats["generic_input_slots_post_filter"] += 1
                 slot_id = f"{instance_id}:in:{local_idx}"
                 slot = {
                     "slot_id": slot_id,
                     "instance_id": instance_id,
+                    "x": int(port["x"]),
+                    "y": int(port["y"]),
+                    "dir": str(port["dir"]),
                     "type": "in",
-                    "operation_type": "wireless_sink",
-                    "routing_free": True,
-                    "virtual": True,
+                    "operation_type": operation_type,
                 }
                 self.generic_input_slots.append(slot)
                 self.generic_input_vars[slot_id] = {}
@@ -1433,8 +1451,22 @@ class PortBindingModel:
         return selection
 
     def extract_port_specs(self) -> List[Dict[str, Any]]:
+        """批 5 (2026-07-18): 成品是真 routed 商品——F03-R3-01 排除链已翻转。
+
+        ①producer 输出口不再按 RFSC 跳过（排除集经 SSOT 派生、批 5 后恒空，
+        保留同源调用防口径漂移）；②实际绑定的 generic-input 实体槽导出为
+        routed sink port spec（旧 routing_free/virtual 跳过已删——槽自带
+        坐标；``__unused__`` 槽仍不导出）；③generic 输出槽照常导出。
+        """
         if self._status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             return []
+
+        from src.models.port_binding import (
+            routing_free_sink_commodities_from_generic_inputs,
+        )
+        rfsc = routing_free_sink_commodities_from_generic_inputs(
+            self.required_generic_inputs
+        )
 
         selection = self.extract_selection()
         port_specs: List[Dict[str, Any]] = []
@@ -1447,9 +1479,7 @@ class PortBindingModel:
                 for port in domain[binding_idx][side_key]:
                     commodity = str(port["commodity"])
                     if side_key == "output_ports" and not (
-                        is_routing_visible_output_commodity(
-                            commodity, self.routing_free_sink_commodities
-                        )
+                        is_routing_visible_output_commodity(commodity, rfsc)
                     ):
                         continue
                     port_specs.append(
@@ -1468,8 +1498,6 @@ class PortBindingModel:
             commodity = selection["generic_inputs"].get(slot_id)
             if commodity in (None, "__unused__"):
                 continue
-            if slot.get("routing_free") or slot.get("virtual"):
-                continue
             port_specs.append(
                 {
                     "instance_id": slot["instance_id"],
@@ -1486,9 +1514,7 @@ class PortBindingModel:
             commodity = selection["generic_outputs"].get(slot_id)
             if commodity in (None, "__unused__"):
                 continue
-            if not is_routing_visible_output_commodity(
-                commodity, self.routing_free_sink_commodities
-            ):
+            if not is_routing_visible_output_commodity(commodity, rfsc):
                 continue
             port_specs.append(
                 {

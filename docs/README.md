@@ -31,7 +31,9 @@ preflight 也没有执行上述工具。修改现行文本时直接编辑目标�
 
 ## 冻结输入提示
 
-当前工作树包含 `data/preprocessed/candidate_placements.json`，大小 `45,774,305` bytes，SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。其它轻量发行包可以省略它，但 certified exact 运行前必须恢复同一字节。拐角修复前的 `45,773,799` bytes / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 旧 hash 工件已 superseded、hash-incompatible，不能作为当前 campaign authority。
+当前冻结 pin 为：`rules/canonical_rules.json` 17,510 bytes / SHA256 `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`；`rules/preprocess_plan.json` 1,383 bytes / SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`；`data/preprocessed/candidate_placements.json` 53,595,501 bytes / SHA256 `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。其它轻量发行包可以省略 candidate 文件，但 certified exact 运行前必须恢复同一字节。45,774,305-byte `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`、45,773,799-byte `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 和 53,594,995-byte `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 只属 superseded、hash-incompatible 历史链。
+
+当前 generic-input 合同使用物理端口与普通路由：`box_sink` 3 进/3 出，mandatory core 14 进/6 出，成品从 producer output 路由到 provider physical input。provider-aware、instance-aware box lower bound 因需求 2 已被真实 core 容量覆盖而为 0；exact session 原子绑定完整 `generic_input_slots_by_operation` map。
 
 ## 主要入口
 

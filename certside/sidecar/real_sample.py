@@ -1,7 +1,7 @@
-"""真实冻结工件端到端样本：266 mandatory 实例 + 可选 pose_optional 储存箱.
+"""真实冻结工件端到端样本：mandatory 实例 + 可选 pose_optional 储存箱.
 
-R1（no_sinks）：不放 protocol_storage_box → required_generic_inputs 无槽 → 预期 UNSAT。
-R2（with_sinks）：补 ceil(total_in/K) 个 box → 预期 SAT + witness。
+R1（core_only）：mandatory protocol_core 的 14 个实体进口承接终品 → SAT + witness。
+R2（core_plus_box）：再放一个具备 3 个实体进口的箱 → SAT + witness。
 placement 全用 pose_idx=0（binding 子问题不涉几何重叠谓词）。
 """
 
@@ -30,25 +30,29 @@ def main() -> int:
     gio, _ = load_artifact(
         project_root / "data" / "preprocessed" / "generic_io_requirements.json"
     )
+    plan, _ = load_artifact(project_root / "rules" / "preprocess_plan.json")
     placement = {
         str(i["instance_id"]): {"facility_type": str(i["facility_type"]), "pose_idx": 0}
         for i in mand
     }
     total_in = sum(int(v) for v in dict(gio["required_generic_inputs"]).values())
-    k = 3  # preprocess_plan wireless_sink.generic_input_slots（frontend 会复核）
-    n_boxes = -(-total_in // k)
-    print(f"required_generic_inputs total={total_in}, boxes needed={n_boxes} (K={k})")
+    utility_operations = dict(plan.get("utility_operations") or {})
+    core_k = int(dict(utility_operations.get("protocol_core") or {})["generic_input_slots"])
+    box_k = int(dict(utility_operations.get("box_sink") or {})["generic_input_slots"])
+    print(
+        f"required_generic_inputs total={total_in}, protocol_core K={core_k}, "
+        f"box_sink K={box_k}"
+    )
 
     fails = 0
     for sample_id, extra in (
-        ("R1_real_no_sinks", {}),
-        ("R2_real_with_sinks", {
-            f"pose_optional::protocol_storage_box::{n}": {
+        ("R1_real_core_only", {}),
+        ("R2_real_core_plus_box", {
+            "pose_optional::protocol_storage_box::0": {
                 "facility_type": "protocol_storage_box", "pose_idx": 0}
-            for n in range(n_boxes)
         }),
     ):
-        expect = "CONFIRMED" if sample_id.startswith("R1") else "SAT"
+        expect = "SAT"
         pl = dict(placement)
         pl.update(extra)
         t0 = time.time()
@@ -86,8 +90,7 @@ def main() -> int:
                 record["canonical_witness_check"] = cchk
                 got = "DIVERGED_CANDIDATE" if cchk["ok"] else "SIDE_SAT_UNTRUSTED"
         (d / "verdict.json").write_text(json.dumps(record, indent=1, default=str), encoding="utf-8")
-        ok = (expect == "CONFIRMED" and got == "CONFIRMED") or (
-            expect == "SAT" and got == "DIVERGED_CANDIDATE")
+        ok = expect == "SAT" and got == "DIVERGED_CANDIDATE"
         print(f"[{'PASS' if ok else 'FAIL'}] {sample_id}: expect={expect} got={got}"
               f"{'/' + str(record.get('subcode')) if record.get('subcode') else ''} "
               f"solver={record['solver']['wall_seconds']:.1f}s"

@@ -136,7 +136,6 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v93_release_rejects_forged_exact_note_with_open_status" in export_tests
     assert "test_v93_rejects_solution_entry_fake_certified_claim" in export_tests
     assert "test_v93_rejects_public_final_result_ghost_pick_marker" in export_tests
-    assert "test_terminal_project_validator_rejects_surplus_protocol_storage_box_blockers" in export_tests
     assert "test_v95_rejects_contradictory_pose_optional_public_metadata" in export_tests
     assert "test_v95_rejects_terminal_public_last_stop_reason_extra_claim_field" in export_tests
     assert "test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent" in export_tests

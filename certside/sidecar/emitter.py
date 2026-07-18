@@ -20,12 +20,11 @@ SCHEMA_INPUT = "binding_sidecar_model_input_v1"
 
 # ---- 硬编码 TCB 层（binding_canonical_semantics_v1 §4.3：与生产共享，Phase 1 防不了）
 POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
-    "protocol_storage_box": "wireless_sink",
+    "protocol_storage_box": "box_sink",
     "power_pole": "power_supply",
 }
 NON_FACILITY_PLACEMENT_MARKER_IDS = {"ghost_pick"}
 GENERIC_OUTPUT_PROVIDER_OPERATIONS = {"boundary_io", "protocol_core"}
-GENERIC_INPUT_RECEIVER_OPERATION = "wireless_sink"
 UNUSED = "__unused__"
 
 # ---- 组合护栏默认上限（v2 §5.0-3）
@@ -84,6 +83,56 @@ def _validate_requirements(section: Mapping[str, Any], name: str) -> Dict[str, i
             raise EmitterReject("INPUT_INVALID", "UNUSED_SENTINEL_IN_REQUIREMENTS", name)
         out[c] = _require_int(count, f"{name}.{c}")
     return out
+
+
+def _validate_generic_input_slot_map(
+    raw: Any,
+    profiles: Mapping[str, Mapping[str, Any]],
+) -> Dict[str, int]:
+    """Validate the frozen per-operation generic-input capacity account.
+
+    The frontend derives this map from the same preprocess-plan snapshot as the
+    operation profiles.  Requiring exact agreement here prevents a caller from
+    silently restoring the removed single-receiver/virtual-slot semantics.
+    """
+    if not isinstance(raw, Mapping):
+        raise EmitterReject(
+            "INPUT_INVALID", "BAD_GENERIC_INPUT_SLOT_MAP", "expected object"
+        )
+    normalized: Dict[str, int] = {}
+    for raw_operation_type, raw_count in raw.items():
+        operation_type = str(raw_operation_type)
+        if not operation_type:
+            raise EmitterReject(
+                "INPUT_INVALID", "BAD_GENERIC_INPUT_SLOT_MAP", "empty operation type"
+            )
+        count = _require_int(
+            raw_count,
+            f"generic_input_slots_by_operation.{operation_type}",
+        )
+        if count <= 0:
+            raise EmitterReject(
+                "INPUT_INVALID",
+                "BAD_GENERIC_INPUT_SLOT_MAP",
+                f"{operation_type}={count}; zero-capacity entries must be omitted",
+            )
+        normalized[operation_type] = count
+
+    expected: Dict[str, int] = {}
+    for operation_type, profile in profiles.items():
+        count = _require_int(
+            profile.get("generic_input_slots", 0),
+            f"profile.{operation_type}.generic_input_slots",
+        )
+        if count > 0:
+            expected[str(operation_type)] = count
+    if normalized != expected:
+        raise EmitterReject(
+            "INPUT_INVALID",
+            "GENERIC_INPUT_SLOT_MAP_MISMATCH",
+            f"map={normalized} profiles={expected}",
+        )
+    return normalized
 
 
 def _validate_generic_roles(
@@ -205,8 +254,25 @@ def _validate_metadata(
 
 
 # ---------------------------------------------------------------- 域枚举（semantics_v1 §3）
+def _physical_port_cell(port: Any, field: str) -> Tuple[int, int, str]:
+    if not isinstance(port, Mapping):
+        raise EmitterReject(
+            "INPUT_INVALID", "BAD_PHYSICAL_PORT_CELL", f"{field}: expected object"
+        )
+    if not {"x", "y", "dir"}.issubset(port):
+        raise EmitterReject(
+            "INPUT_INVALID", "BAD_PHYSICAL_PORT_CELL", f"{field}: missing x/y/dir"
+        )
+    try:
+        return int(port["x"]), int(port["y"]), str(port["dir"])
+    except (TypeError, ValueError) as exc:
+        raise EmitterReject(
+            "INPUT_INVALID", "BAD_PHYSICAL_PORT_CELL", f"{field}: {exc}"
+        ) from exc
+
+
 def _normalize_cells(cells: Sequence[Mapping[str, Any]]) -> List[Tuple[int, int, str]]:
-    out = [(int(c["x"]), int(c["y"]), str(c["dir"])) for c in cells]
+    out = [_physical_port_cell(c, f"port_cells[{idx}]") for idx, c in enumerate(cells)]
     out.sort()
     return out
 
@@ -270,8 +336,15 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
     req_out = _validate_requirements(payload["required_generic_outputs"], "required_generic_outputs")
     req_in = _validate_requirements(payload["required_generic_inputs"], "required_generic_inputs")
     _validate_generic_roles(req_out, req_in, commodity_metadata)
-    wireless_k = _require_int(
-        payload["wireless_sink_generic_input_slots"], "wireless_sink_generic_input_slots"
+    if "wireless_sink_generic_input_slots" in payload:
+        raise EmitterReject(
+            "INPUT_INVALID",
+            "LEGACY_WIRELESS_SLOT_FIELD",
+            "use generic_input_slots_by_operation with physical pose input ports",
+        )
+    generic_input_slots_by_operation = _validate_generic_input_slot_map(
+        payload.get("generic_input_slots_by_operation"),
+        profiles,
     )
 
     synthesized = _synthesize_instances(placement, instances_by_id)
@@ -374,14 +447,19 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
                 continue
             sol = placement[instance_id]
             pose = facility_pools[str(sol["facility_type"])][int(sol["pose_idx"])]
-            for local_idx in range(len(pose.get("output_port_cells", []))):
+            output_ports = list(pose.get("output_port_cells", []) or [])
+            for local_idx, port in enumerate(output_ports):
+                x, y, direction = _physical_port_cell(
+                    port, f"{instance_id}.output_port_cells[{local_idx}]"
+                )
                 slot_id = f"{instance_id}:out:{local_idx}"
                 out_slots.append(slot_id)
                 for c in out_commodities:
                     new_var(
                         {"kind": "generic_output",
                          "slot": {"slot_id": slot_id, "instance_id": instance_id,
-                                  "direction": "out", "local_idx": local_idx},
+                                  "direction": "out", "local_idx": local_idx,
+                                  "x": x, "y": y, "dir": direction},
                          "commodity": c},
                         ("s", slot_id, c),
                     )
@@ -390,16 +468,33 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
             if instance_id in NON_FACILITY_PLACEMENT_MARKER_IDS:
                 continue
             inst = instances_by_id[instance_id]
-            if str(inst.get("operation_type") or "") != GENERIC_INPUT_RECEIVER_OPERATION:
+            operation_type = str(inst.get("operation_type") or "")
+            declared_slots = generic_input_slots_by_operation.get(operation_type)
+            if declared_slots is None:
                 continue
-            for local_idx in range(wireless_k):
+            sol = placement[instance_id]
+            pose = facility_pools[str(sol["facility_type"])][int(sol["pose_idx"])]
+            input_ports = list(pose.get("input_port_cells", []) or [])
+            if len(input_ports) < declared_slots:
+                raise EmitterReject(
+                    "INPUT_INVALID",
+                    "GENERIC_INPUT_PORT_CAPACITY_DRIFT",
+                    f"{operation_type}/{instance_id}: declares {declared_slots}, "
+                    f"pose has {len(input_ports)} physical input ports",
+                )
+            for local_idx, port in enumerate(input_ports[:declared_slots]):
+                x, y, direction = _physical_port_cell(
+                    port, f"{instance_id}.input_port_cells[{local_idx}]"
+                )
                 slot_id = f"{instance_id}:in:{local_idx}"
                 in_slots.append(slot_id)
                 for c in in_commodities:
                     new_var(
                         {"kind": "generic_input",
                          "slot": {"slot_id": slot_id, "instance_id": instance_id,
-                                  "direction": "in", "local_idx": local_idx},
+                                  "direction": "in", "local_idx": local_idx,
+                                  "x": x, "y": y, "dir": direction,
+                                  "operation_type": operation_type},
                          "commodity": c},
                         ("s", slot_id, c),
                     )
@@ -483,7 +578,7 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
         "synthesized_instances": synthesized,
         "tcb_shared_semantics": [
             "POSE_OPTIONAL_OPERATION_BY_TEMPLATE", "NON_FACILITY_PLACEMENT_MARKER_IDS",
-            "GENERIC_OUTPUT_PROVIDER_OPERATIONS", "GENERIC_INPUT_RECEIVER_OPERATION",
+            "GENERIC_OUTPUT_PROVIDER_OPERATIONS", "generic_input_slots_by_operation",
             "supports_exact_pose_level_binding_gate",
         ],
     }

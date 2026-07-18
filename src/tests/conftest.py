@@ -102,7 +102,6 @@ _SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
         "test_front_clear_lift_full_pool_golden.py::test_full_pool_offsets_bidirectional_golden",
         "test_exact_contract.py::test_certified_result_writes_canonical_optimal_blueprint",
         "test_exact_contract.py::test_toy_project_can_be_truly_certified",
-        "test_exact_contract.py::test_outer_search_safe_area_upper_bound_accounts_for_fixed_required_protocol_storage_box",
         "test_regression.py::test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts",
         "test_regression.py::test_c1_default_build_shape_with_preprocessed_artifacts",
         "test_v82_oriented_candidate_domain.py::test_full_frontier_candidate_domain_keeps_oriented_dimensions",

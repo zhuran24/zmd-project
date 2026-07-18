@@ -59,21 +59,21 @@ _TIMEOUT_SCALE = _resolve_timeout_scale()
 BASELINE_PATH = PROJECT_ROOT / "scripts" / "preflight_baseline.json"
 
 FROZEN_ARTIFACTS = {
-    "rules/canonical_rules.json": "F466243ADF4E61F2EDD68DF873F59598E19780C3BDE3F9EE060B96CEF3115644",
+    "rules/canonical_rules.json": "5012845367E2A0E0B51938CC36A18F46FCDC8DACCFA34639F96A05A67DC12A05",
     # R6-F-01: the plan feeds runtime operation profiles / binding utility slots,
     # so it is hash-bound like the canonical rules (also in campaign hash closure).
-    "rules/preprocess_plan.json": "1BCF0D13E1709CD7E04DDEA439EE005E837584F2F66A1A921159D198019C9ED8",
+    "rules/preprocess_plan.json": "5C669C4FA48D2ED77A3283F06C1D5F97F7542C92253C41BA31FBABA0B313C4EE",
     "data/preprocessed/mandatory_exact_instances.json": "545B98C2B4F96643F1346B423EDF2DC8E300A0C815B6CF821776CEED03CD4CD6",
     "data/preprocessed/generic_io_requirements.json": "AD5125B50E607A7F3F3BF0B54FEA64F93EDF87CEDB62E8D24F5590E1C895C44E",
 }
 
 EXTERNAL_FROZEN_ARTIFACTS = {
-    # Distribution policy permits a lightweight checkout to omit this 45.8 MiB payload.
+    # Distribution policy permits a lightweight checkout to omit this 51.1 MiB payload.
     # The current audited working tree includes it. Whenever present, preflight verifies
     # exact bytes; when absent, a certified run must restore/verify it before solve time.
     "data/preprocessed/candidate_placements.json": {
-        "sha256": "A914BA6348544B7EF44D0834629C6DCF90F39FA5564E0CD4C50AF6AF550C444B",
-        "size_bytes": 45_774_305,
+        "sha256": "78E2BCF0777DB8523AA767EE689BA7C3E65ECF7ECC20642627876D8D42FA3FEF",
+        "size_bytes": 53_595_501,
         "policy_doc": "PROJECT_LOCK.md",
     },
 }

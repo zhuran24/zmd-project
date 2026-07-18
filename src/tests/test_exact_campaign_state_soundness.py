@@ -332,6 +332,7 @@ def _write_three_cell_project(root: Path) -> None:
             },
         },
     )
+    write_json(root / "rules" / "preprocess_plan.json", {"utility_operations": {}})
     write_json(
         root / "data" / "preprocessed" / "candidate_placements.json",
         {

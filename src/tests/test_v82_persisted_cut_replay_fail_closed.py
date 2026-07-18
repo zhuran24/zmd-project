@@ -36,6 +36,7 @@ def _build_single_pose_toy_project(project_root: Path) -> Path:
             },
         },
     )
+    _write_json(rules_dir / "preprocess_plan.json", {"utility_operations": {}})
     _write_json(
         data_dir / "candidate_placements.json",
         {

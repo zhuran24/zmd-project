@@ -1317,7 +1317,8 @@ _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST = frozenset(
         "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS",
         "EXACT_MASTER_CP_SAT_WORKERS",
         # front-clear 必要条件上收 master（2026-07-16 front-clear 上收批）:
-        # soundness=命题 N(11 席幸存)+计数等价定理(全池 66,405 pose 前提亲验),
+        # soundness=命题 N(11 席幸存)+计数等价定理(冻结 candidate 域按 eligible
+        # mandatory operation group 全池亲验),
         # 编码=共享单向 free-cell 证书(独立 interval 集合, 双活跃 NoOverlap
         # B∪F/B∪G, ghost 不作 blocker)+mode 条件 front 索引+AddElement 计数,
         # demand 经 port_binding SSOT+certified generic_io snapshot 同源;
@@ -2210,7 +2211,7 @@ def compute_exact_static_area_lower_bound(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
-    wireless_sink_generic_input_slots: Optional[int] = None,
+    generic_input_slots_by_operation: Optional[Mapping[str, int]] = None,
     facility_pools: Optional[Mapping[str, Sequence[Mapping[str, Any]]]] = None,
 ) -> int:
     """Return a safe lower bound on cells occupied by forced exact facilities.
@@ -2240,7 +2241,7 @@ def compute_exact_static_area_lower_bound(
         instances,
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
     )
     for facility_type, count in optional_lower_bounds.items():
         total += int(count) * _facility_type_static_area_lower_bound(
@@ -2510,35 +2511,34 @@ class ExactSearchSession:
             rules_text=artifact_texts["canonical_rules"],
             solve_mode=solve_mode,
         )
-        from src.models.binding_subproblem import load_generic_io_requirements_from_text
+        from src.models.binding_subproblem import (
+            load_generic_input_slots_by_operation_from_text,
+            load_generic_io_requirements_from_text,
+        )
 
         generic_io_requirements = load_generic_io_requirements_from_text(
             text=artifact_texts["generic_io_requirements"],
             project_root=project_root,
             canonical_rules_payload=rules,
         )
-        wireless_sink_generic_input_slots = None
-        if generic_io_requirements.get("required_generic_inputs", {}):
-            from src.models.binding_subproblem import (
-                load_wireless_sink_generic_input_slots_from_text,
+        preprocess_plan_text = artifact_texts.get("preprocess_plan")
+        if preprocess_plan_text is None:
+            raise FileNotFoundError(
+                "Missing preprocess_plan artifact for generic-input binding "
+                "（缺少 preprocess_plan，无法绑定通用实体输入槽）"
             )
-
-            preprocess_plan_text = artifact_texts.get("preprocess_plan")
-            if preprocess_plan_text is None:
-                raise FileNotFoundError(
-                    "Missing preprocess_plan artifact for wireless sink binding "
-                    "（缺少 preprocess_plan，无法绑定无线消费槽位）"
-                )
-            wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots_from_text(
+        generic_input_slots_by_operation = (
+            load_generic_input_slots_by_operation_from_text(
                 text=preprocess_plan_text
             )
+        )
         core_started = time.perf_counter()
         core = MasterPlacementModel.build_exact_core(
             instances,
             facility_pools,
             rules,
             generic_io_requirements=generic_io_requirements,
-            wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+            generic_input_slots_by_operation=generic_input_slots_by_operation,
             master_search_profile=master_search_profile,
         )
         return cls(
@@ -5894,14 +5894,23 @@ class LBBDController:
             flow_status, _bottlenecks = self._run_flow_diagnostic(solution)
             diagnostic_flow_status = flow_status
 
-            _generic_io_requirements = getattr(self.master, "generic_io_requirements", None) or {}
-            _routing_free_sink_commodities = {
-                str(commodity)
-                for commodity, required in dict(
-                    _generic_io_requirements.get("required_generic_inputs", {}) or {}
-                ).items()
-                if int(required) > 0
-            }
+            _generic_io_requirements = getattr(
+                self.master, "generic_io_requirements", None
+            ) or {}
+            from src.models.port_binding import (
+                routing_free_sink_commodities_from_generic_inputs,
+            )
+
+            _routing_output_exclusions = (
+                routing_free_sink_commodities_from_generic_inputs(
+                    dict(
+                        _generic_io_requirements.get(
+                            "required_generic_inputs", {}
+                        )
+                        or {}
+                    )
+                )
+            )
 
             # SAC-Hull Phase 3: L2 abstract routing layer. master OPTIMAL 后,
             # 跑 L2 (lightweight CP-SAT, decides ambiguous side under SAC capacity hull).
@@ -5932,7 +5941,7 @@ class LBBDController:
                     separator_limit=l2_sep_limit,
                     include_axis=True,
                     include_ghost_moat=True,
-                    routing_free_sink_commodities=_routing_free_sink_commodities,
+                    routing_free_sink_commodities=_routing_output_exclusions,
                 )
                 print(
                     f"[l2-sac] iter {iteration}: status={l2_result.status} wall={l2_result.wall_seconds:.2f}s "
@@ -5994,7 +6003,7 @@ class LBBDController:
                     ghost_size=ghost_size,
                     include_axis=True,
                     include_ghost_moat=False,
-                    routing_free_sink_commodities=_routing_free_sink_commodities,
+                    routing_free_sink_commodities=_routing_output_exclusions,
                 )
                 delegate = getattr(self.master, "_coordinate_delegate", None)
                 if violations and delegate is not None and hasattr(delegate, "add_separator_capacity_cut"):
@@ -6428,25 +6437,30 @@ class LBBDController:
             "required_generic_inputs": dict(required_generic_inputs),
         }
         if required_generic_inputs:
-            wireless_sink_generic_input_slots = getattr(
+            slot_map = getattr(
                 self.master,
-                "wireless_sink_generic_input_slots",
+                "generic_input_slots_by_operation",
                 None,
             )
-            if isinstance(wireless_sink_generic_input_slots, bool) or not isinstance(
-                wireless_sink_generic_input_slots,
-                int,
-            ):
+            if not isinstance(slot_map, Mapping):
                 raise RuntimeError(
-                    "certified binding requires the master wireless_sink_generic_input_slots snapshot"
+                    "certified binding requires the master "
+                    "generic_input_slots_by_operation snapshot"
                 )
-            if wireless_sink_generic_input_slots < 0:
-                raise RuntimeError(
-                    "certified binding requires a non-negative master wireless_sink_generic_input_slots snapshot"
-                )
-            kwargs["wireless_sink_generic_input_slots"] = int(
-                wireless_sink_generic_input_slots
-            )
+            normalized_slot_map: Dict[str, int] = {}
+            for operation_type, raw_slots in slot_map.items():
+                if isinstance(raw_slots, bool) or not isinstance(raw_slots, int):
+                    raise RuntimeError(
+                        "certified binding requires strict integer generic-input "
+                        f"capacity for operation {operation_type!r}"
+                    )
+                if raw_slots < 0:
+                    raise RuntimeError(
+                        "certified binding requires non-negative generic-input "
+                        f"capacity for operation {operation_type!r}"
+                    )
+                normalized_slot_map[str(operation_type)] = int(raw_slots)
+            kwargs["generic_input_slots_by_operation"] = normalized_slot_map
         return kwargs
 
     def _binding_canonical_rules_kwargs(self) -> Dict[str, Any]:
@@ -6525,9 +6539,15 @@ class LBBDController:
             or {}
         )
         if bool(_lift_stats.get("enabled", False)):
+            from src.models.port_binding import (
+                routing_free_sink_commodities_from_generic_inputs,
+            )
+
             _raw_scope_instances = _front_clear_lift_scope_raw_empty_instances(
                 empty_binding_domain_instances,
-                getattr(binding_model, "routing_free_sink_commodities", ()),
+                routing_free_sink_commodities_from_generic_inputs(
+                    binding_model.required_generic_inputs
+                ),
             )
             self._front_clear_raw_empty_by_iteration.append(
                 {
@@ -9218,7 +9238,9 @@ def run_benders_for_ghost_rect(
             instances,
             rules,
             exact_session.core.generic_io_requirements,
-            wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
+            generic_input_slots_by_operation=(
+                exact_session.core.generic_input_slots_by_operation
+            ),
             facility_pools=facility_pools,
         )
     if static_area_lower_bound + int(ghost_w) * int(ghost_h) > grid_area:
@@ -9317,7 +9339,9 @@ def run_benders_for_ghost_rect(
                 exact_session.core.source_instances,
                 exact_session.core.rules,
                 exact_session.core.generic_io_requirements,
-                wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
+                generic_input_slots_by_operation=(
+                    exact_session.core.generic_input_slots_by_operation
+                ),
             )
             master = MasterPlacementModel(
                 list(exact_session.core.source_instances),
@@ -9327,7 +9351,9 @@ def run_benders_for_ghost_rect(
                 skip_power_coverage=bool(exact_session.core.skip_power_coverage),
                 enable_symmetry_breaking=bool(exact_session.core.enable_symmetry_breaking),
                 generic_io_requirements=exact_session.core.generic_io_requirements,
-                wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
+                generic_input_slots_by_operation=(
+                    exact_session.core.generic_input_slots_by_operation
+                ),
                 exact_required_pose_optional_counts=_inferred_counts,
                 solve_mode="certified_exact",
                 master_search_profile=master_search_profile,

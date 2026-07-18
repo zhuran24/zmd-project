@@ -137,6 +137,10 @@ def _build_tiny_project(root: Path) -> Path:
         },
     )
     _write_json(
+        root / "rules" / "preprocess_plan.json",
+        {"utility_operations": {}},
+    )
+    _write_json(
         root / "data" / "preprocessed" / "candidate_placements.json",
         {
             "facility_pools": {
@@ -574,6 +578,376 @@ def test_fixed_witness_binding_infeasible_demotes_unproven_not_infeasible(
     assert projection.candidate_records["1x1"]["status"] != "INFEASIBLE"
     assert "solution" not in projection.candidate_records["1x1"]
     assert CANDIDATE_PROOF_FIELD not in projection.candidate_records["1x1"]
+
+
+@pytest.mark.parametrize("first_rejection", ["safe_precheck", "routing_infeasible"])
+def test_fixed_witness_enumerates_binding_alternatives_until_one_routes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    first_rejection: str,
+) -> None:
+    root = _build_tiny_project(tmp_path / "project")
+    state = _state()
+
+    class AlternativeBindingModel:
+        instance: Any = None
+
+        def __init__(self, *_args: Any, **_kwargs: Any) -> None:
+            type(self).instance = self
+            self.binding_vars = {"choice": {0: object(), 1: object()}}
+            self.generic_input_vars: dict[str, Any] = {}
+            self.generic_output_vars: dict[str, Any] = {}
+            self.solve_calls = 0
+            self.choice = -1
+            self.nogoods: list[dict[str, Any]] = []
+
+        def build(self) -> None:
+            pass
+
+        def solve(self, *, time_limit_seconds: float) -> str:
+            assert 0.0 < time_limit_seconds <= 600.0
+            self.solve_calls += 1
+            self.choice += 1
+            return "FEASIBLE"
+
+        def extract_selection(self) -> dict[str, Any]:
+            return {
+                "binding_choice": {"choice": self.choice},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict[str, Any]]:
+            return []
+
+        def add_nogood_cut(self, selection: Mapping[str, Any]) -> None:
+            self.nogoods.append(_json_copy(selection))
+
+    class AlternativeRoutingSubproblem:
+        solve_calls = 0
+
+        def __init__(self, placement_core: Any, port_specs: Any) -> None:
+            self.grid = type(
+                "Grid",
+                (),
+                {
+                    "port_specs": list(port_specs),
+                    "occupied_owner_by_cell": dict(
+                        placement_core.occupied_owner_by_cell
+                    ),
+                },
+            )()
+            self.build_stats: dict[str, Any] = {}
+
+        @classmethod
+        def from_placement_core(
+            cls,
+            placement_core: Any,
+            port_specs: Any,
+            *_args: Any,
+            **_kwargs: Any,
+        ):
+            return cls(placement_core, port_specs)
+
+        def build(self) -> None:
+            self.build_stats = {}
+
+        def solve(self, *, time_limit: float) -> str:
+            assert 0.0 < time_limit <= 600.0
+            type(self).solve_calls += 1
+            if first_rejection == "routing_infeasible" and self.solve_calls == 1:
+                return "INFEASIBLE"
+            return "FEASIBLE"
+
+    precheck_calls = 0
+
+    def fake_precheck(**_kwargs: Any) -> dict[str, Any]:
+        nonlocal precheck_calls
+        precheck_calls += 1
+        if first_rejection == "safe_precheck" and precheck_calls == 1:
+            blocked_ports = [{"instance_id": "choice", "front_cell": [0, 0]}]
+            analysis = {
+                "status": "front_blocked",
+                "binding_selection_safe_reject": True,
+                "blocked_ports": blocked_ports,
+                "disconnected_commodities": [],
+            }
+            return {
+                "status": "front_blocked",
+                "binding_selection_safe_reject": True,
+                "blocked_ports": blocked_ports,
+                "disconnected_commodities": [],
+                "_analysis": analysis,
+            }
+        analysis = {
+            "status": "feasible",
+            "binding_selection_safe_reject": False,
+            "blocked_ports": [],
+            "disconnected_commodities": [],
+        }
+        return {
+            "status": "feasible",
+            "binding_selection_safe_reject": False,
+            "blocked_ports": [],
+            "disconnected_commodities": [],
+            "_analysis": analysis,
+        }
+
+    monkeypatch.setattr(
+        fixed_witness_core_module,
+        "PortBindingModel",
+        AlternativeBindingModel,
+    )
+    monkeypatch.setattr(
+        fixed_witness_core_module,
+        "RoutingSubproblem",
+        AlternativeRoutingSubproblem,
+    )
+    monkeypatch.setattr(
+        fixed_witness_core_module,
+        "run_exact_routing_precheck",
+        fake_precheck,
+    )
+
+    verdict = verify_terminal_fixed_witness(
+        state=state,
+        project_root=root,
+        serialized_state_bytes=canonical_state_bytes_for_fixed_witness(state),
+    )
+
+    binding = AlternativeBindingModel.instance
+    assert verdict.publishable is True
+    assert verdict.binding_status == "FEASIBLE"
+    assert verdict.routing_status == "FEASIBLE"
+    assert verdict.details["enumerated_bindings"] == 2
+    assert binding.solve_calls == 2
+    assert binding.nogoods == [
+        {
+            "binding_choice": {"choice": 0},
+            "generic_inputs": {},
+            "generic_outputs": {},
+        }
+    ]
+    expected_routing_calls = 1 if first_rejection == "safe_precheck" else 2
+    assert AlternativeRoutingSubproblem.solve_calls == expected_routing_calls
+
+
+def test_fixed_witness_alternative_binding_timeout_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = _build_tiny_project(tmp_path / "project")
+    state = _state()
+
+    class TimeoutAlternativeBindingModel:
+        instance: Any = None
+
+        def __init__(self, *_args: Any, **_kwargs: Any) -> None:
+            type(self).instance = self
+            self.binding_vars = {"choice": {0: object(), 1: object()}}
+            self.generic_input_vars: dict[str, Any] = {}
+            self.generic_output_vars: dict[str, Any] = {}
+            self.solve_calls = 0
+            self.nogoods: list[dict[str, Any]] = []
+
+        def build(self) -> None:
+            pass
+
+        def solve(self, *, time_limit_seconds: float) -> str:
+            self.solve_calls += 1
+            return "FEASIBLE" if self.solve_calls == 1 else "TIMEOUT"
+
+        def extract_selection(self) -> dict[str, Any]:
+            return {
+                "binding_choice": {"choice": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict[str, Any]]:
+            return []
+
+        def add_nogood_cut(self, selection: Mapping[str, Any]) -> None:
+            self.nogoods.append(_json_copy(selection))
+
+    blocked_ports = [{"instance_id": "choice", "front_cell": [0, 0]}]
+
+    def safe_reject_precheck(**_kwargs: Any) -> dict[str, Any]:
+        analysis = {
+            "status": "front_blocked",
+            "binding_selection_safe_reject": True,
+            "blocked_ports": blocked_ports,
+            "disconnected_commodities": [],
+        }
+        return {
+            **analysis,
+            "_analysis": analysis,
+        }
+
+    monkeypatch.setattr(
+        fixed_witness_core_module,
+        "PortBindingModel",
+        TimeoutAlternativeBindingModel,
+    )
+    monkeypatch.setattr(
+        fixed_witness_core_module,
+        "run_exact_routing_precheck",
+        safe_reject_precheck,
+    )
+
+    verdict = verify_terminal_fixed_witness(
+        state=state,
+        project_root=root,
+        serialized_state_bytes=canonical_state_bytes_for_fixed_witness(state),
+    )
+
+    binding = TimeoutAlternativeBindingModel.instance
+    assert verdict.publishable is False
+    assert verdict.projected_status == "UNPROVEN"
+    assert verdict.reason == "terminal_fixed_witness_binding_not_feasible"
+    assert verdict.binding_status == "TIMEOUT"
+    assert binding.solve_calls == 2
+    assert len(binding.nogoods) == 1
+
+
+def test_fixed_witness_routing_timeout_fails_closed_without_enumeration(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = _build_tiny_project(tmp_path / "project")
+    state = _state()
+
+    class TimeoutRoutingSubproblem:
+        def __init__(self, placement_core: Any, port_specs: Any) -> None:
+            self.grid = type(
+                "Grid",
+                (),
+                {
+                    "port_specs": list(port_specs),
+                    "occupied_owner_by_cell": dict(
+                        placement_core.occupied_owner_by_cell
+                    ),
+                },
+            )()
+            self.build_stats: dict[str, Any] = {}
+
+        @classmethod
+        def from_placement_core(
+            cls,
+            placement_core: Any,
+            port_specs: Any,
+            *_args: Any,
+            **_kwargs: Any,
+        ):
+            return cls(placement_core, port_specs)
+
+        def build(self) -> None:
+            pass
+
+        def solve(self, *, time_limit: float) -> str:
+            return "TIMEOUT"
+
+    monkeypatch.setattr(
+        fixed_witness_core_module,
+        "RoutingSubproblem",
+        TimeoutRoutingSubproblem,
+    )
+
+    verdict = verify_terminal_fixed_witness(
+        state=state,
+        project_root=root,
+        serialized_state_bytes=canonical_state_bytes_for_fixed_witness(state),
+    )
+
+    assert verdict.publishable is False
+    assert verdict.projected_status == "UNPROVEN"
+    assert verdict.reason == "terminal_fixed_witness_routing_not_feasible"
+    assert verdict.binding_status == "FEASIBLE"
+    assert verdict.routing_status == "TIMEOUT"
+
+
+def test_fixed_witness_total_alternative_budget_exhaustion_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = _build_tiny_project(tmp_path / "project")
+    state = _state()
+    now = [0.0]
+
+    class BudgetBindingModel:
+        instance: Any = None
+
+        def __init__(self, *_args: Any, **_kwargs: Any) -> None:
+            type(self).instance = self
+            self.binding_vars = {"choice": {0: object(), 1: object()}}
+            self.generic_input_vars: dict[str, Any] = {}
+            self.generic_output_vars: dict[str, Any] = {}
+            self.solve_calls = 0
+            self.nogoods: list[dict[str, Any]] = []
+
+        def build(self) -> None:
+            pass
+
+        def solve(self, *, time_limit_seconds: float) -> str:
+            self.solve_calls += 1
+            return "FEASIBLE"
+
+        def extract_selection(self) -> dict[str, Any]:
+            return {
+                "binding_choice": {"choice": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict[str, Any]]:
+            return []
+
+        def add_nogood_cut(self, selection: Mapping[str, Any]) -> None:
+            self.nogoods.append(_json_copy(selection))
+
+    blocked_ports = [{"instance_id": "choice", "front_cell": [0, 0]}]
+
+    def expiring_safe_reject_precheck(**_kwargs: Any) -> dict[str, Any]:
+        now[0] = 2.1
+        analysis = {
+            "status": "front_blocked",
+            "binding_selection_safe_reject": True,
+            "blocked_ports": blocked_ports,
+            "disconnected_commodities": [],
+        }
+        return {
+            **analysis,
+            "_analysis": analysis,
+        }
+
+    monkeypatch.setattr(fixed_witness_core_module, "_solver_budget_clock", lambda: now[0])
+    monkeypatch.setattr(fixed_witness_core_module, "_BINDING_SECONDS", 1.0)
+    monkeypatch.setattr(fixed_witness_core_module, "_ROUTING_SECONDS", 1.0)
+    monkeypatch.setattr(fixed_witness_core_module, "_TOTAL_SOLVE_SECONDS", 2.0)
+    monkeypatch.setattr(
+        fixed_witness_core_module,
+        "PortBindingModel",
+        BudgetBindingModel,
+    )
+    monkeypatch.setattr(
+        fixed_witness_core_module,
+        "run_exact_routing_precheck",
+        expiring_safe_reject_precheck,
+    )
+
+    verdict = verify_terminal_fixed_witness(
+        state=state,
+        project_root=root,
+        serialized_state_bytes=canonical_state_bytes_for_fixed_witness(state),
+    )
+
+    binding = BudgetBindingModel.instance
+    assert verdict.publishable is False
+    assert verdict.projected_status == "UNPROVEN"
+    assert verdict.reason == "terminal_fixed_witness_solve_budget_exhausted"
+    assert verdict.details["exhausted_stage"] == "binding"
+    assert binding.solve_calls == 1
+    assert len(binding.nogoods) == 1
 
 
 def test_fixed_witness_rejects_consistent_tamper_after_precheck_accepts(

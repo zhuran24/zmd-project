@@ -55,6 +55,10 @@ def _build_empty_frontier_project(
             },
         },
     )
+    _write_json(
+        project_root / "rules" / "preprocess_plan.json",
+        {"utility_operations": {}},
+    )
     # 单个真实 pose 让 terminal CERTIFIED 场景能走通 blueprint 导出/反查校验链
     # (V73+ 的 manifest 校验会把 blueprint facility 反查回 facility_pools)。
     _write_json(
@@ -110,6 +114,10 @@ def _build_origin_blocked_frontier_project(
                 "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
             },
         },
+    )
+    _write_json(
+        project_root / "rules" / "preprocess_plan.json",
+        {"utility_operations": {}},
     )
     _write_json(
         project_root / "data" / "preprocessed" / "candidate_placements.json",

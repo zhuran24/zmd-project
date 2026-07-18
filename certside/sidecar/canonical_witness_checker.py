@@ -16,12 +16,11 @@ from typing import Any, Dict, List, Mapping
 # 与 emitter 共享的硬编码 TCB 常量（semantics_v1 §4.3）——刻意重复声明而非 import，
 # 常量漂移会被 acceptance 的对照样本抓住。
 POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
-    "protocol_storage_box": "wireless_sink",
+    "protocol_storage_box": "box_sink",
     "power_pole": "power_supply",
 }
 NON_FACILITY_PLACEMENT_MARKER_IDS = {"ghost_pick"}
 GENERIC_OUTPUT_PROVIDER_OPERATIONS = {"boundary_io", "protocol_core"}
-GENERIC_INPUT_RECEIVER_OPERATION = "wireless_sink"
 UNUSED = "__unused__"
 
 
@@ -64,7 +63,32 @@ def check_canonical_witness(
     placement = dict(model_input["placement_solution"])
     req_out = {str(c): int(v) for c, v in dict(model_input["required_generic_outputs"]).items()}
     req_in = {str(c): int(v) for c, v in dict(model_input["required_generic_inputs"]).items()}
-    wireless_k = int(model_input["wireless_sink_generic_input_slots"])
+    raw_input_slot_map = model_input.get("generic_input_slots_by_operation")
+    if not isinstance(raw_input_slot_map, Mapping):
+        return {"ok": False, "failures": ["generic_input_slots_by_operation is not an object"]}
+    generic_input_slots_by_operation: Dict[str, int] = {}
+    for operation_type, raw_count in raw_input_slot_map.items():
+        if isinstance(raw_count, bool) or not isinstance(raw_count, int) or raw_count <= 0:
+            failures.append(
+                f"generic input slot capacity for {operation_type!r} is not a positive integer"
+            )
+            continue
+        generic_input_slots_by_operation[str(operation_type)] = int(raw_count)
+    expected_input_slot_map: Dict[str, int] = {}
+    for operation_type, profile in profiles.items():
+        raw_count = profile.get("generic_input_slots", 0)
+        if isinstance(raw_count, bool) or not isinstance(raw_count, int) or raw_count < 0:
+            failures.append(
+                f"profile generic input slot capacity for {operation_type!r} is not a non-negative integer"
+            )
+            continue
+        if raw_count > 0:
+            expected_input_slot_map[str(operation_type)] = int(raw_count)
+    if generic_input_slots_by_operation != expected_input_slot_map:
+        failures.append(
+            "generic input slot map/profile mismatch: "
+            f"map={generic_input_slots_by_operation} profiles={expected_input_slot_map}"
+        )
 
     # ---- 0. witness 完整性
     missing = [i + 1 for i in range(len(variables)) if witness.get(i + 1) not in (0, 1)]
@@ -75,6 +99,7 @@ def check_canonical_witness(
     binding_true: Dict[str, List[int]] = {}
     slot_true: Dict[str, List[str]] = {}
     slot_seen_in_varmap: Dict[str, set] = {}
+    slot_metadata_in_varmap: Dict[str, Dict[str, Any]] = {}
     for num, sem in enumerate(variables, start=1):
         val = witness.get(num, 0)
         kind = sem["kind"]
@@ -82,7 +107,18 @@ def check_canonical_witness(
             if val == 1:
                 binding_true.setdefault(str(sem["instance_id"]), []).append(int(sem["binding_idx"]))
         elif kind in ("generic_input", "generic_output"):
-            slot_id = str(sem["slot"]["slot_id"])
+            raw_slot = sem.get("slot")
+            if not isinstance(raw_slot, Mapping):
+                failures.append(f"variable x{num}: slot metadata is not an object")
+                continue
+            slot = dict(raw_slot)
+            slot_id = str(slot.get("slot_id", ""))
+            if not slot_id:
+                failures.append(f"variable x{num}: slot_id is empty")
+                continue
+            prior_slot = slot_metadata_in_varmap.setdefault(slot_id, slot)
+            if prior_slot != slot:
+                failures.append(f"slot {slot_id}: inconsistent metadata across commodity variables")
             slot_seen_in_varmap.setdefault(slot_id, set()).add(str(sem["commodity"]))
             if val == 1:
                 slot_true.setdefault(slot_id, []).append(str(sem["commodity"]))
@@ -96,8 +132,8 @@ def check_canonical_witness(
         return {"ok": False, "failures": [str(exc)]}
 
     expected_binding: Dict[str, Dict[str, Any]] = {}
-    expected_out_slots: Dict[str, str] = {}   # slot_id -> instance_id
-    expected_in_slots: Dict[str, str] = {}
+    expected_out_slots: Dict[str, Dict[str, Any]] = {}
+    expected_in_slots: Dict[str, Dict[str, Any]] = {}
     for instance_id, inst in instances.items():
         op = str(inst.get("operation_type") or "")
         profile = profiles.get(op)
@@ -110,11 +146,39 @@ def check_canonical_witness(
         if req_out and op in GENERIC_OUTPUT_PROVIDER_OPERATIONS:
             sol = dict(placement[instance_id])
             pose = pools[str(sol["facility_type"])][int(sol["pose_idx"])]
-            for idx in range(len(pose.get("output_port_cells", []))):
-                expected_out_slots[f"{instance_id}:out:{idx}"] = instance_id
-        if req_in and op == GENERIC_INPUT_RECEIVER_OPERATION:
-            for idx in range(wireless_k):
-                expected_in_slots[f"{instance_id}:in:{idx}"] = instance_id
+            for idx, port in enumerate(list(pose.get("output_port_cells", []) or [])):
+                slot_id = f"{instance_id}:out:{idx}"
+                expected_out_slots[slot_id] = {
+                    "slot_id": slot_id,
+                    "instance_id": instance_id,
+                    "direction": "out",
+                    "local_idx": idx,
+                    "x": int(port["x"]),
+                    "y": int(port["y"]),
+                    "dir": str(port["dir"]),
+                }
+        declared_slots = generic_input_slots_by_operation.get(op)
+        if req_in and declared_slots is not None:
+            sol = dict(placement[instance_id])
+            pose = pools[str(sol["facility_type"])][int(sol["pose_idx"])]
+            input_ports = list(pose.get("input_port_cells", []) or [])
+            if len(input_ports) < declared_slots:
+                failures.append(
+                    f"{instance_id}: declares {declared_slots} generic input slots but pose "
+                    f"has {len(input_ports)} physical input ports"
+                )
+            for idx, port in enumerate(input_ports[:declared_slots]):
+                slot_id = f"{instance_id}:in:{idx}"
+                expected_in_slots[slot_id] = {
+                    "slot_id": slot_id,
+                    "instance_id": instance_id,
+                    "direction": "in",
+                    "local_idx": idx,
+                    "x": int(port["x"]),
+                    "y": int(port["y"]),
+                    "dir": str(port["dir"]),
+                    "operation_type": op,
+                }
 
     actual_slots = set(slot_seen_in_varmap)
     expected_slots = set(expected_out_slots) | set(expected_in_slots)
@@ -123,6 +187,23 @@ def check_canonical_witness(
             f"slot set mismatch: missing={sorted(expected_slots - actual_slots)[:5]} "
             f"extra={sorted(actual_slots - expected_slots)[:5]}"
         )
+    for slot_id in sorted(expected_slots & actual_slots):
+        expected_metadata = (expected_out_slots | expected_in_slots)[slot_id]
+        if slot_metadata_in_varmap.get(slot_id) != expected_metadata:
+            failures.append(
+                f"slot {slot_id}: metadata {slot_metadata_in_varmap.get(slot_id)} "
+                f"!= pose-derived {expected_metadata}"
+            )
+        expected_domain = (
+            set(req_out) | {UNUSED}
+            if slot_id in expected_out_slots
+            else set(req_in) | {UNUSED}
+        )
+        if slot_seen_in_varmap.get(slot_id, set()) != expected_domain:
+            failures.append(
+                f"slot {slot_id}: commodity domain {sorted(slot_seen_in_varmap.get(slot_id, set()))} "
+                f"!= expected {sorted(expected_domain)}"
+            )
 
     # ---- 3. binding：每实例恰一 pattern + 选中 pattern 语义验证
     fixed = {str(k): int(v) for k, v in dict(patterns.get("fixed_choices", {})).items()}

@@ -86,6 +86,7 @@ def _build_manifest_project(project_root: Path) -> tuple[Path, dict[str, list[di
             },
         },
     )
+    _write_json(rules_dir / "preprocess_plan.json", {"utility_operations": {}})
     _write_json(data_dir / "candidate_placements.json", {"facility_pools": facility_pools})
     _write_json(
         data_dir / "mandatory_exact_instances.json",

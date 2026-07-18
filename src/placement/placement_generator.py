@@ -6,8 +6,10 @@ Status: ACCEPTED_DRAFT
 目标：穷举全场所有设施模板在 70x70 棋盘上的绝对合法物理坐标，并生成离散坑位字典。
 重写自旧版草案，修正以下已知缺陷：
   - pool key 与 canonical_rules.json 的 template key 对齐
-  - 协议箱(protocol_storage_box) 按 omni_wireless 规则不生成端口
+  - 协议箱(protocol_storage_box) 与制造机 3×3 同款实体口(批 5 语义批,
+    owner 游戏实测定谳 2026-07-18; 原 omni_wireless 零口形态已废)
   - 动态从 canonical_rules.json 读取模板定义
+  - 口坐标 identity 语义: stored 坐标即口前带子格(front 错位事故批 3)
 """
 
 import json
@@ -29,12 +31,9 @@ from src.io.strict_json import load_strict_json
 # ==========================================
 GRID_W = 70
 GRID_H = 70
-DIR_DELTA: Dict[str, Tuple[int, int]] = {
-    "N": (0, 1),
-    "S": (0, -1),
-    "E": (1, 0),
-    "W": (-1, 0),
-}
+# (批 3 identity 语义后生成器不再做 front 方向步进——原 DIR_DELTA 表已删。
+#  方向约定 N=+y/S=-y/E=+x/W=-x 由 get_edge_ports 的边法向算术直接承担,
+#  运行时权威表在 master_model.DIR_DELTA。)
 
 # ==========================================
 # 1. 基础几何辅助函数
@@ -78,25 +77,27 @@ def get_edge_ports(x: int, y: int, w: int, h: int, edge: str,
 
 
 def get_port_front_cell(port: Dict[str, Any]) -> Tuple[int, int]:
-    """Return the first routable grid cell in front of a physical port.
+    """Return the routable belt cell of a physical port (identity semantics).
 
-    Candidate ports are encoded as the outside-adjacent connector cell plus an
-    outward normal.  Routing consumes `front = port + DIR_DELTA[dir]`; the
-    generator must therefore fail closed when that front cell is outside the
-    70x70 routable grid.
+    front 错位事故批 3（owner 游戏实测定谳 2026-07-18，
+    docs/research/front_offset_incident_20260718/00）：候选口的 stored 坐标
+    **本身就是**口前带子格（本体外第 1 格）——routing/binding 全链已于批 1
+    identity 化，生成器判界与之同源：stored 格出 70×70 网格才算面壁。
+    旧公式 `front = port + delta`（体外第 2 格）是错位语义，已连根拔除；
+    "口在体外第 1 格" 的定位由 get_edge_ports 的边法向算术直接承担
+    （N=+y/S=-y/E=+x/W=-x 的方向约定以 canonical/master_model.DIR_DELTA 为准）。
     """
 
-    dx, dy = DIR_DELTA[str(port["dir"])]
-    return int(port["x"]) + dx, int(port["y"]) + dy
+    return int(port["x"]), int(port["y"])
 
 
 def is_edge_starved(ports: List[Dict[str, Any]]) -> bool:
-    """面壁死锁法则 (06章 §6.5.1)。
+    """面壁死锁法则 (06章 §6.5.1，批 3 identity 判界)。
 
-    A side is starved when every active port on that side has no in-grid routing
-    front cell.  Checking the port coordinate itself is insufficient because the
-    port coordinate is the outside-adjacent connector; routing starts one cell
-    further along the outward normal.
+    A side is starved when every active port on that side has no in-grid belt
+    cell.  identity 语义下口的 stored 坐标就是带子格——stored 格出 70×70 才算
+    死（owner 五图定谳：体贴边朝外口全死=剪；口前格恰在最外圈=合法保留，
+    批 3 补域 +2,064 正是旧 "+delta 判第 2 格" 多剪掉的墙距 1 摆位）。
     """
     if not ports:
         return False
@@ -230,15 +231,8 @@ def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) 
                 "the core_specific generator emits exactly 6 outputs and 14 inputs"
             )
 
-    elif port_rule == "omni_wireless":
-        _require_exact_rotatable(
-            tpl_key,
-            rotatable,
-            True,
-            "omni_wireless templates are canonical rotatable square bodies even though the pool is orientation-deduplicated",
-        )
-        _require_exact_dimensions(tpl_key, port_rule, w, h, 3, 3)
-
+    # (批 5: omni_wireless 分支已退役——协议箱改走 opposite_parallel_sides
+    #  标准路径; 该值同步从 canonical schema enum 删除, 复活即 schema 拒绝。)
     elif port_rule == "none":
         _require_exact_rotatable(
             tpl_key,
@@ -310,7 +304,7 @@ def gen_rect_manufacturing(w_base: int, h_base: int) -> List[Dict]:
 
 
 def gen_square_manufacturing(s: int) -> List[Dict]:
-    """生成正方形设施 (3x3, 5x5)。
+    """生成正方形设施 (制造机 3x3/5x5 与协议箱 3x3——批 5 起同款口形态)。
     port_rule=opposite_parallel_sides: 在每个 (x,y) 下生成四种正交端口模式。
     旋转对等性去重 (§6.5.2): 正方形 o=0 与 o=2 等价, o=1 与 o=3 等价。
     因此固定 o=0，通过 port_mode 覆盖所有物理可行域。
@@ -379,20 +373,11 @@ def gen_protocol_core() -> List[Dict]:
     return placements
 
 
-def gen_protocol_storage_box() -> List[Dict]:
-    """生成 3x3 协议储存箱。
-
-    canonical_rules.json declares port_rule=omni_wireless for this template.  It
-    still occupies a 3x3 powered body, but it does not expose physical input or
-    output ports and must not inherit manufacturing port modes or edge filters.
-    """
-
-    placements = []
-    w = h = 3
-    for x in range(GRID_W - w + 1):
-        for y in range(GRID_H - h + 1):
-            placements.append(build_placement_obj(x, y, 0, 'omni', w, h, [], []))
-    return placements
+# (批 5 语义批: 原 gen_protocol_storage_box——零口 omni_wireless 形态——已删。
+#  owner 游戏实测定谳 2026-07-18(rules_audit_20260718/00 §3.1): 协议箱口形态
+#  与制造机 3×3 完全同款(一边 3 进/对边 3 出/四朝向模式), "无线"仅存在于
+#  箱→仓库段。canonical port_rule 已改 opposite_parallel_sides, 池经
+#  gen_square_manufacturing(3) 标准路径生成。)
 
 
 def gen_power_pole() -> List[Dict]:
@@ -503,10 +488,6 @@ def generate_all_pools(templates: Dict[str, Any]) -> Dict[str, List[Dict]]:
         elif port_rule == "core_specific":
             # 协议核心
             pools[tpl_key] = gen_protocol_core()
-
-        elif port_rule == "omni_wireless":
-            # 协议储存箱 (无线终端，不生成端口)
-            pools[tpl_key] = gen_protocol_storage_box()
 
         elif port_rule == "none":
             # 供电桩

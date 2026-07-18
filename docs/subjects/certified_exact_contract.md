@@ -5,10 +5,13 @@
 冻结 source-of-truth 输入包括：
 
 - `rules/canonical_rules.json`
+- `rules/preprocess_plan.json`
 - `data/preprocessed/candidate_placements.json`
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 
-当前工作树包含 `candidate_placements.json`，大小 `45,774,305` bytes，SHA256 `a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。其它发行包省略该文件时，必须在运行前恢复相同字节。拐角修复前的 `45,773,799` bytes / SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本已被取代且 hash-incompatible。旧 SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 已被取代。
+当前 pin：`canonical_rules.json` 为 17,510 bytes / SHA256 `5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`；`preprocess_plan.json` 为 1,383 bytes / SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`；`candidate_placements.json` 为 53,595,501 bytes / SHA256 `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。其它发行包省略 candidate 文件时，必须在运行前恢复相同字节。45,774,305-byte `a914…`、45,773,799-byte `adcc…` 和 53,594,995-byte `d5e3…` candidate 仅构成 superseded、hash-incompatible 历史链。
+
+当前 generic-input 合同要求成品从 producer output 路由到 provider physical input。`box_sink` 有 3 个物理输入/3 个物理输出，mandatory core 有 14 个物理输入/6 个物理输出。下界同时识别 provider operation 与实际 instance；当前需求 2 已由 mandatory core 的 14 个真实输入覆盖，因此 box lower bound 为 0，未实例化模板不得记容量。exact session 只使用同一 hash-bound plan snapshot 中完整的 `generic_input_slots_by_operation` map。
 
 候选级 strong status、terminal result 和公开 artifacts 的完整 authority 规则见 `PROJECT_LOCK.md`。特别是 producer 的 in-memory 返回值、generic writer、viewer 或 adapter 都不能单独授予 proof-bearing `CERTIFIED`。

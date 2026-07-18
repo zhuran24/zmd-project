@@ -12,7 +12,7 @@ This catches layout-specific corridor bottlenecks that ghost moat hull misses.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
+from typing import AbstractSet, Any, Dict, List, Mapping, Optional, Set, Tuple
 
 from src.models.separator_capacity_hull import (
     Separator, build_static_separator_library, classify_pose_commodity_side,
@@ -41,7 +41,7 @@ def analyze_layout_for_separator_violations(
     include_axis: bool = True,
     include_ghost_moat: bool = False,  # Phase 1 已加 ghost moat static, Phase 2 不重复
     separator_limit: int = 140,
-    routing_free_sink_commodities: Optional[Set[str]] = None,
+    routing_free_sink_commodities: Optional[AbstractSet[str]] = None,
 ) -> List[SeparatorViolation]:
     """Scan separator library, return violations sorted by slack ascending (most negative first)."""
     seps = build_static_separator_library(

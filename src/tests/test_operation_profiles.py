@@ -111,7 +111,7 @@ def test_operation_port_slots_respect_template_capacities(project_root):
         assert profile.generic_output_slots <= cap["generic_output"]
 
 
-def test_generic_source_slots_match_the_52_port_budget(project_root):
+def test_generic_provider_slots_match_the_frozen_port_budget(project_root):
     import sys
 
     sys.path.insert(0, str(project_root))
@@ -126,4 +126,4 @@ def test_generic_source_slots_match_the_52_port_budget(project_root):
     slot_summary = aggregate_port_slots(operation_counts)
 
     assert slot_summary["generic_output_slots"] == 52
-    assert slot_summary["generic_input_slots"] == 0
+    assert slot_summary["generic_input_slots"] == 14

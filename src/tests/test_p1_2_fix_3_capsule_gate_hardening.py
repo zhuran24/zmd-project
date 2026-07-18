@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import copy
 import json
 from pathlib import Path
@@ -36,6 +37,39 @@ def _write(path: Path, text: str) -> Path:
 def _write_json(path: Path, payload: object) -> Path:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
     return path
+
+
+def _top_level_function(source: str, name: str) -> ast.FunctionDef:
+    tree = ast.parse(source)
+    return next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == name
+    )
+
+
+def _top_level_function_source(source: str, name: str) -> str:
+    segment = ast.get_source_segment(source, _top_level_function(source, name))
+    assert segment is not None
+    return segment
+
+
+def _replace_top_level_function(source: str, name: str, replacement: str) -> str:
+    node = _top_level_function(source, name)
+    lines = source.splitlines(keepends=True)
+    start = sum(len(line) for line in lines[: node.lineno - 1])
+    end = sum(len(line) for line in lines[: node.end_lineno])
+    return f"{source[:start]}{replacement.rstrip()}\n{source[end:]}"
+
+
+def _fixed_witness_semantics_errors(core_path: Path) -> list[str]:
+    verifier_path = check_phase_review_gate.FIXED_WITNESS_VERIFIER_PATH
+    return check_phase_review_gate._fixed_witness_verifier_semantics_errors(
+        verifier_tree=check_phase_review_gate._parse_python(verifier_path),
+        verifier_path=verifier_path,
+        core_tree=check_phase_review_gate._parse_python(core_path),
+        core_path=core_path,
+    )
 
 
 def test_fix_3_unknown_review_anchor_fails_closed(tmp_path: Path, monkeypatch) -> None:
@@ -125,8 +159,136 @@ def test_fix_3_phase_checker_rejects_two_empty_function_verifier_stub(
 
     _summary, errors = check_phase_review_gate.check_gate(GATE_PATH)
 
-    assert any("verify_terminal_fixed_witness must rerun binding and routing" in error for error in errors)
+    assert any("verify_terminal_fixed_witness must rerun binding" in error for error in errors)
+    assert any("must call the concrete _verify_binding_routing_alternatives helper" in error for error in errors)
     assert any("fixed-witness projection must demote rejected terminal records" in error for error in errors)
+
+
+def test_fix_3_phase_checker_rejects_empty_routing_helper(tmp_path: Path) -> None:
+    source = check_phase_review_gate.FIXED_WITNESS_CORE_PATH.read_text(encoding="utf-8")
+    mutated = _replace_top_level_function(
+        source,
+        "_verify_binding_routing_alternatives",
+        "def _verify_binding_routing_alternatives(*args, **kwargs):\n"
+        "    return None",
+    )
+    core_path = _write(tmp_path / "empty_helper_core.py", mutated)
+
+    errors = _fixed_witness_semantics_errors(core_path)
+
+    assert not any("must call the concrete _verify_binding_routing_alternatives helper" in error for error in errors)
+    assert any("must rerun routing through RoutingSubproblem" in error for error in errors)
+    assert any("must enforce connector-body exclusion" in error for error in errors)
+    assert any("must return explicit accept/reject verdicts" in error for error in errors)
+
+
+def test_fix_3_phase_checker_rejects_token_only_dead_routing_helper(tmp_path: Path) -> None:
+    source = check_phase_review_gate.FIXED_WITNESS_CORE_PATH.read_text(encoding="utf-8")
+    fake_helper = '''def _verify_binding_routing_alternatives(*args, **kwargs):
+    """Decoy tokens: RoutingSubproblem build solve connector _accept _reject."""
+    if False:
+        routing_model = RoutingSubproblem.from_placement_core(None, [], [])
+        routing_model.build()
+        build_rejection = _routing_build_rejection(None)
+        if build_rejection is not None:
+            return _reject({})
+        routing_status = _solve_routing_with_budget(routing_model=None, budget=None)
+        if routing_status is None:
+            return _reject({})
+        if routing_status == "FEASIBLE":
+            return _accept({})
+        if routing_status == "TIMEOUT":
+            return _reject({})
+        if routing_status != "INFEASIBLE":
+            return _reject({})
+        f3_reason = _connector_body_exclusion_violation()
+        if f3_reason is not None:
+            return _reject({})
+    return None'''
+    mutated = _replace_top_level_function(
+        source,
+        "_verify_binding_routing_alternatives",
+        fake_helper,
+    )
+    core_path = _write(tmp_path / "token_only_helper_core.py", mutated)
+
+    errors = _fixed_witness_semantics_errors(core_path)
+
+    assert any("must rerun routing through RoutingSubproblem" in error for error in errors)
+    assert any("must enforce connector-body exclusion" in error for error in errors)
+    assert any("must return explicit accept/reject verdicts" in error for error in errors)
+
+
+@pytest.mark.parametrize(
+    ("function_name", "old", "new", "expected"),
+    [
+        (
+            "verify_terminal_fixed_witness",
+            "PortBindingModel(",
+            "FakePortBindingModel(",
+            "must rerun binding through PortBindingModel",
+        ),
+        (
+            "verify_terminal_fixed_witness",
+            "return _verify_binding_routing_alternatives(",
+            "return _fake_binding_routing_alternatives(",
+            "must call the concrete _verify_binding_routing_alternatives helper",
+        ),
+        (
+            "_verify_binding_routing_alternatives",
+            "routing_model.build()",
+            "routing_model.prepare()",
+            "must rerun routing through RoutingSubproblem",
+        ),
+        (
+            "_verify_binding_routing_alternatives",
+            "_solve_routing_with_budget(",
+            "_fake_solve_routing_with_budget(",
+            "must rerun routing through RoutingSubproblem",
+        ),
+        (
+            "_verify_binding_routing_alternatives",
+            'if build_rejection is not None:',
+            'if build_rejection is None:',
+            "must rerun routing through RoutingSubproblem",
+        ),
+        (
+            "_verify_binding_routing_alternatives",
+            'if routing_status == "FEASIBLE":',
+            'if routing_status == "OPTIMAL":',
+            "must rerun routing through RoutingSubproblem",
+        ),
+        (
+            "_verify_binding_routing_alternatives",
+            "_connector_body_exclusion_violation(",
+            "_fake_connector_body_exclusion_violation(",
+            "must enforce connector-body exclusion",
+        ),
+        (
+            "_verify_binding_routing_alternatives",
+            "return _accept(",
+            "return _fake_accept(",
+            "must return explicit accept/reject verdicts",
+        ),
+    ],
+)
+def test_fix_3_phase_checker_requires_each_fixed_witness_closure_step(
+    tmp_path: Path,
+    function_name: str,
+    old: str,
+    new: str,
+    expected: str,
+) -> None:
+    source = check_phase_review_gate.FIXED_WITNESS_CORE_PATH.read_text(encoding="utf-8")
+    function_source = _top_level_function_source(source, function_name)
+    mutated_function = function_source.replace(old, new)
+    assert mutated_function != function_source
+    mutated = _replace_top_level_function(source, function_name, mutated_function)
+    core_path = _write(tmp_path / f"{function_name}_{old[:8]}.py", mutated)
+
+    errors = _fixed_witness_semantics_errors(core_path)
+
+    assert any(expected in error for error in errors)
 
 
 def test_fix_3_phase_checker_rejects_fake_capsule_projection(

@@ -23,6 +23,14 @@ def facility_pools():
 CANONICAL_GENERIC_INPUTS = {"valley_battery": 1, "qiaoyu_capsule": 1}
 
 
+def _physical_input_ports(count: int) -> list[dict[str, object]]:
+    directions = ("N", "E", "S", "W")
+    return [
+        {"x": 10 + index, "y": 10, "dir": directions[index % len(directions)]}
+        for index in range(count)
+    ]
+
+
 def test_binding_model_extracts_concrete_port_specs(project_root, facility_pools):
     import sys
 
@@ -45,7 +53,7 @@ def test_binding_model_extracts_concrete_port_specs(project_root, facility_pools
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -81,12 +89,13 @@ def test_binding_model_extracts_concrete_port_specs(project_root, facility_pools
     assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
 
     port_specs = model.extract_port_specs()
-    assert len(port_specs) == 6
-    assert sum(1 for p in port_specs if p["type"] == "in") == 5
-    assert sum(1 for p in port_specs if p["type"] == "out") == 1
+    assert len(port_specs) == 9
+    assert sum(1 for p in port_specs if p["type"] == "in") == 7
+    assert sum(1 for p in port_specs if p["type"] == "out") == 2
     assert sum(1 for p in port_specs if p["commodity"] == "dense_source_powder") == 3
     assert sum(1 for p in port_specs if p["commodity"] == "steel_part") == 2
-    assert sum(1 for p in port_specs if p["commodity"] == "valley_battery") == 0
+    assert sum(1 for p in port_specs if p["commodity"] == "valley_battery") == 2
+    assert sum(1 for p in port_specs if p["commodity"] == "qiaoyu_capsule") == 1
     assert sum(1 for p in port_specs if p["commodity"] == "source_ore") == 1
 
 
@@ -112,7 +121,7 @@ def test_binding_model_nogood_cut_forces_new_selection(project_root, facility_po
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -155,7 +164,7 @@ def test_binding_model_nogood_cut_forces_new_selection(project_root, facility_po
     assert first != second
 
 
-def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facility_pools):
+def test_binding_model_assigns_generic_box_sink_inputs(project_root, facility_pools):
     import sys
 
     sys.path.insert(0, str(project_root))
@@ -165,7 +174,7 @@ def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facili
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -189,12 +198,12 @@ def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facili
     assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
 
     assert len(model.generic_input_slots) == 3
-    assert all(slot.get("virtual") is True for slot in model.generic_input_slots)
-    assert all(slot.get("routing_free") is True for slot in model.generic_input_slots)
     assert all(
-        "x" not in slot and "y" not in slot and "dir" not in slot
+        "x" in slot and "y" in slot and "dir" in slot
         for slot in model.generic_input_slots
     )
+    assert all("virtual" not in slot for slot in model.generic_input_slots)
+    assert all("routing_free" not in slot for slot in model.generic_input_slots)
 
     selection = model.extract_selection()
     assert len(selection["generic_inputs"]) == 3
@@ -208,7 +217,66 @@ def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facili
         for p in port_specs
         if p["instance_id"] == "protocol_box_001" and p["type"] == "in"
     ]
-    assert sink_specs == []
+    assert len(sink_specs) == 2
+    assert {spec["commodity"] for spec in sink_specs} == {
+        "qiaoyu_capsule",
+        "valley_battery",
+    }
+
+
+def _build_synthetic_box_binding_model(project_root: Path, physical_port_count: int):
+    from src.models.binding_subproblem import PortBindingModel
+
+    pose = {
+        "pose_id": f"box_with_{physical_port_count}_inputs",
+        "anchor": {"x": 10, "y": 10},
+        "occupied_cells": [],
+        "input_port_cells": _physical_input_ports(physical_port_count),
+        "output_port_cells": [],
+    }
+    return PortBindingModel(
+        {
+            "box_001": {
+                "pose_idx": 0,
+                "pose_id": pose["pose_id"],
+                "anchor": pose["anchor"],
+                "facility_type": "protocol_storage_box",
+            }
+        },
+        {"protocol_storage_box": [pose]},
+        [
+            {
+                "instance_id": "box_001",
+                "facility_type": "protocol_storage_box",
+                "operation_type": "box_sink",
+                "is_mandatory": True,
+            }
+        ],
+        required_generic_outputs={},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
+        project_root=project_root,
+        generic_input_slots_by_operation={"box_sink": 3, "protocol_core": 14},
+    )
+
+
+@pytest.mark.parametrize("physical_port_count", [2, 4])
+def test_binding_model_rejects_box_provider_physical_capacity_drift(
+    project_root,
+    physical_port_count,
+):
+    model = _build_synthetic_box_binding_model(project_root, physical_port_count)
+
+    with pytest.raises(ValueError, match="generic input capacity drift"):
+        model.build()
+
+
+def test_binding_model_accepts_exactly_three_box_provider_physical_inputs(project_root):
+    model = _build_synthetic_box_binding_model(project_root, 3)
+
+    model.build()
+    assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
+    assert len(model.generic_input_slots) == 3
+    assert all({"x", "y", "dir"} <= slot.keys() for slot in model.generic_input_slots)
 
 
 def test_binding_model_missing_instance_metadata_returns_invalid_input(
@@ -276,7 +344,7 @@ def test_binding_model_mismatched_operation_metadata_returns_invalid_input(
         {
             "instance_id": "packaging_battery_001",
             "facility_type": "manufacturing_6x4",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": True,
         },
     ]
@@ -296,7 +364,7 @@ def test_binding_model_mismatched_operation_metadata_returns_invalid_input(
         {
             "instance_id": "packaging_battery_001",
             "reason": "operation_facility_type_mismatch",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "expected_facility_type": "protocol_storage_box",
             "solution_facility_type": "manufacturing_6x4",
         },
@@ -358,7 +426,7 @@ def test_binding_model_overload_separation_default_off(project_root, facility_po
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -402,7 +470,7 @@ def test_binding_model_overload_separation_when_enabled_records_summary(
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -633,7 +701,7 @@ def test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion
             {
                 "instance_id": instance_id,
                 "facility_type": "protocol_storage_box",
-                "operation_type": "wireless_sink",
+                "operation_type": "box_sink",
                 "is_mandatory": False,
             }
         )
@@ -653,7 +721,7 @@ def test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion
         facility_pools,
         instances,
         project_root=project_root,
-        wireless_sink_generic_input_slots=3,
+        generic_input_slots_by_operation={"box_sink": 3, "protocol_core": 14},
         **generic_io_requirements,
     )
     env_on_model.build()
@@ -675,7 +743,10 @@ def test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion
     stub.master.facility_pools = facility_pools
     stub.master.source_instances = instances
     stub.master.generic_io_requirements = generic_io_requirements
-    stub.master.wireless_sink_generic_input_slots = 3
+    stub.master.generic_input_slots_by_operation = {
+        "box_sink": 3,
+        "protocol_core": 14,
+    }
     # P1.2-FIX-5 canonical: certified binding role-validates generic IO commodities
     # against the master canonical_rules snapshot; use the real project rules so every
     # commodity in generic_io_requirements is registered (matches production).
@@ -776,7 +847,7 @@ def test_binding_model_keeps_generic_slot_instances_out_of_pose_level_cache(proj
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -832,7 +903,7 @@ def test_binding_model_keeps_generic_outputs_globally_pooled(project_root, facil
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -908,7 +979,7 @@ def test_binding_model_reports_exact_search_guidance(project_root, facility_pool
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -970,7 +1041,7 @@ def test_binding_solver_worker_override_changes_only_solver_parameter(
         {
             "instance_id": "protocol_box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": False,
         },
     ]
@@ -1138,6 +1209,9 @@ def test_binding_explicit_kwargs_accept_canonical_roles(project_root):
 
     sys.path.insert(0, str(project_root))
     from src.models.binding_subproblem import PortBindingModel
+    from src.models.port_binding import (
+        routing_free_sink_commodities_from_generic_inputs,
+    )
 
     model = PortBindingModel(
         {},
@@ -1150,7 +1224,11 @@ def test_binding_explicit_kwargs_accept_canonical_roles(project_root):
 
     assert model.required_generic_outputs == {"source_ore": 0, "blue_iron_ore": 0}
     assert model.required_generic_inputs == CANONICAL_GENERIC_INPUTS
-    assert model.routing_free_sink_commodities == {"valley_battery", "qiaoyu_capsule"}
+    assert model.generic_input_commodities == {"valley_battery", "qiaoyu_capsule"}
+    assert not hasattr(model, "routing_free_sink_commodities")
+    assert routing_free_sink_commodities_from_generic_inputs(
+        CANONICAL_GENERIC_INPUTS
+    ) == frozenset()
 
 
 def test_load_generic_io_requirements_rejects_missing_sections(tmp_path):
@@ -1283,19 +1361,19 @@ def test_load_generic_io_requirements_rejects_missing_or_zero_canonical_generic_
         load_generic_io_requirements(project_root=project_root, path=path)
 
 
-def test_load_wireless_sink_generic_input_slots_rejects_non_integer(tmp_path):
+def test_load_generic_input_slots_by_operation_rejects_non_integer(tmp_path):
     import sys
 
     project_root = Path(__file__).resolve().parent.parent.parent
     sys.path.insert(0, str(project_root))
-    from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+    from src.models.binding_subproblem import load_generic_input_slots_by_operation
 
     path = tmp_path / "preprocess_plan.json"
     path.write_text(
         json.dumps(
             {
                 "utility_operations": {
-                    "wireless_sink": {
+                    "box_sink": {
                         "generic_input_slots": 3.5,
                     },
                 },
@@ -1305,7 +1383,18 @@ def test_load_wireless_sink_generic_input_slots_rejects_non_integer(tmp_path):
     )
 
     with pytest.raises(TypeError, match="generic_input_slots"):
-        load_wireless_sink_generic_input_slots(path=path)
+        load_generic_input_slots_by_operation(path=path)
+
+
+def test_load_generic_input_slots_by_operation_reads_all_canonical_providers(
+    project_root,
+):
+    from src.models.binding_subproblem import load_generic_input_slots_by_operation
+
+    assert load_generic_input_slots_by_operation(project_root=project_root) == {
+        "box_sink": 3,
+        "protocol_core": 14,
+    }
 
 
 def test_load_generic_io_requirements_rejects_reserved_unused_commodity(tmp_path):
@@ -1401,25 +1490,26 @@ def test_load_generic_io_requirements_rejects_duplicate_json_keys(tmp_path):
         load_generic_io_requirements(path=path, validate_against_canonical=False)
 
 
-def test_load_wireless_sink_generic_input_slots_rejects_duplicate_json_keys(tmp_path):
+def test_load_generic_input_slots_by_operation_rejects_duplicate_json_keys(tmp_path):
     import sys
 
     project_root = Path(__file__).resolve().parent.parent.parent
     sys.path.insert(0, str(project_root))
-    from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+    from src.models.binding_subproblem import load_generic_input_slots_by_operation
 
     path = tmp_path / "preprocess_plan.json"
     path.write_text(
-        '{"utility_operations":{"wireless_sink":{'
+        '{"utility_operations":{"box_sink":{'
         '"generic_input_slots":3,'
         '"generic_input_slots":0}}}',
         encoding="utf-8",
     )
 
     with pytest.raises(ValueError, match="duplicate JSON key"):
-        load_wireless_sink_generic_input_slots(path=path)
+        load_generic_input_slots_by_operation(path=path)
 
-def test_binding_uses_injected_wireless_slot_snapshot_over_project_root_plan(tmp_path):
+
+def test_binding_uses_injected_provider_map_over_project_root_plan(tmp_path):
     import sys
 
     project_root = Path(__file__).resolve().parent.parent.parent
@@ -1445,7 +1535,7 @@ def test_binding_uses_injected_wireless_slot_snapshot_over_project_root_plan(tmp
         json.dumps(
             {
                 "utility_operations": {
-                    "wireless_sink": {
+                    "box_sink": {
                         "facility_type": "protocol_storage_box",
                         "generic_input_slots": 1,
                     }
@@ -1458,14 +1548,14 @@ def test_binding_uses_injected_wireless_slot_snapshot_over_project_root_plan(tmp
         "pose_id": "box_pose",
         "anchor": {"x": 1, "y": 1},
         "occupied_cells": [],
-        "input_port_cells": [],
+        "input_port_cells": _physical_input_ports(3),
         "output_port_cells": [],
     }
     instances = [
         {
             "instance_id": "box_001",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": True,
         }
     ]
@@ -1485,9 +1575,10 @@ def test_binding_uses_injected_wireless_slot_snapshot_over_project_root_plan(tmp
         required_generic_outputs={},
         required_generic_inputs={"valley_battery": 3},
         project_root=tmp_path,
-        wireless_sink_generic_input_slots=3,
+        generic_input_slots_by_operation={"box_sink": 3, "protocol_core": 14},
     )
     model.build()
 
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
     assert len(model.generic_input_slots) == 3
+    assert all({"x", "y", "dir"} <= slot.keys() for slot in model.generic_input_slots)

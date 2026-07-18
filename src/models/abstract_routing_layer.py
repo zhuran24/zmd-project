@@ -1,8 +1,9 @@
 """SAC-Hull Phase 3: L2 abstract routing layer.
 
 Given master OPTIMAL layout, run a lightweight CP-SAT subproblem (L2) that:
-- 决策: per ambiguous port choose side (L/R) per separator; per generic IO slot
-  choose (commodity, side)
+- 决策: per ambiguous concrete port choose side (L/R) per separator
+- generic-input 逐槽 commodity/side 分配尚未实现；无绑定上下文时保守跳过，
+  不把成品无条件标到每个 box/core provider
 - 约束: SAC capacity hull per separator (sum of commodity crossings <= 2 * free
   wall cells)
 
@@ -19,7 +20,7 @@ vars ≤ 5K, constraints ≤ 5K. L2 solve ≤ 5s.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
+from typing import AbstractSet, Any, Dict, List, Mapping, Optional, Set, Tuple
 
 from ortools.sat.python import cp_model
 
@@ -63,7 +64,7 @@ def solve_abstract_routing(
     separator_limit: int = 64,
     include_axis: bool = True,
     include_ghost_moat: bool = True,
-    routing_free_sink_commodities: Optional[Set[str]] = None,
+    routing_free_sink_commodities: Optional[AbstractSet[str]] = None,
 ) -> AbstractRoutingResult:
     """L2 abstract routing subproblem.
 
@@ -119,25 +120,55 @@ def solve_abstract_routing(
         "ambiguous_vars": 0,
         "forced_classifications": 0,
         "capacity_constraints": 0,
+        "skipped_missing_instance_metadata": [],
+        "deferred_generic_input_providers": [],
+        "skipped_one_sided_commodities": 0,
     }
 
     for iid, sol in placement_solution.items():
         inst = instances_by_id.get(str(iid))
         if not inst:
+            # Synthetic pose-optionals (notably protocol_storage_box/box_sink)
+            # are normally absent from instances_by_id.  Record the omission in
+            # returned diagnostics, then keep the old non-crashing conservative
+            # skip: using solution metadata alone still cannot invent a sound
+            # commodity-to-generic-slot assignment.
+            stats["skipped_missing_instance_metadata"].append(
+                {
+                    "instance_id": str(iid),
+                    "facility_type": str(sol.get("facility_type", "")),
+                    "operation_type": str(sol.get("operation_type", "")),
+                    "is_mandatory": bool(sol.get("is_mandatory", False)),
+                }
+            )
             continue
         operation_type = str(inst.get("operation_type", ""))
         try:
             profile = get_operation_port_profile(operation_type)
         except Exception:
             continue
-        routing_free_outputs = {str(c) for c in (routing_free_sink_commodities or set())}
+        # ``routing_free_sink_commodities`` is retained only for compatibility
+        # with out-of-scope callers.  Batch 5 made producer outputs ordinary
+        # routed sources, so this layer must not filter them even if a stale
+        # caller still passes the former derived set.
+        _ = routing_free_sink_commodities
+
+        # Generic-input slots have physical sides, but no commodity-to-slot
+        # assignment literal exists in this L2 model yet.  逐槽分配待 L2 真正实现；
+        # until then, conservatively omit generic sinks rather than attach every
+        # final commodity to every provider and create false crossings.
         input_commodities = set(profile.input_slots.keys()) if hasattr(profile, "input_slots") else set()
+        generic_input_slots = int(getattr(profile, "generic_input_slots", 0) or 0)
+        if generic_input_slots > 0:
+            stats["deferred_generic_input_providers"].append(
+                {
+                    "instance_id": str(iid),
+                    "operation_type": operation_type,
+                    "generic_input_slots": generic_input_slots,
+                }
+            )
         output_commodities = (
-            {
-                str(c)
-                for c in profile.output_slots.keys()
-                if str(c) not in routing_free_outputs
-            }
+            {str(c) for c in profile.output_slots.keys()}
             if hasattr(profile, "output_slots")
             else set()
         )
@@ -200,6 +231,29 @@ def solve_abstract_routing(
         }
         for c in all_commodities:
             roles = sep_forced.get(c, {})
+            source_fc_preview = roles.get("source", {"L": 0, "R": 0})
+            sink_fc_preview = roles.get("sink", {"L": 0, "R": 0})
+            has_source = bool(
+                source_fc_preview["L"]
+                or source_fc_preview["R"]
+                or any(
+                    sep_id == sep.sep_id and comm == c and role == "source"
+                    for sep_id, _iid, comm, role in ambig_vars
+                )
+            )
+            has_sink = bool(
+                sink_fc_preview["L"]
+                or sink_fc_preview["R"]
+                or any(
+                    sep_id == sep.sep_id and comm == c and role == "sink"
+                    for sep_id, _iid, comm, role in ambig_vars
+                )
+            )
+            if not (has_source and has_sink):
+                # In particular, a routed final source with no bound generic
+                # sink must not create even a tautological L2 pressure row.
+                stats["skipped_one_sided_commodities"] += 1
+                continue
             # source_L: forced count L > 0 OR any ambig source var = 0 (L)
             source_L_var = model.NewBoolVar(f"sL_{sep.sep_id}_{c}_L2")
             source_R_var = model.NewBoolVar(f"sR_{sep.sep_id}_{c}_L2")

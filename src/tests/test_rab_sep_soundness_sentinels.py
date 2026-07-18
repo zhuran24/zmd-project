@@ -30,6 +30,7 @@ import pytest
 
 import src.models.binding_subproblem as binding_subproblem_module
 from src.models.binding_subproblem import PortBindingModel, _strict_literal_pose_idx
+from src.models.port_binding import routing_free_sink_commodities_from_generic_inputs
 from src.models.routing_binding_context import (
     RoutingBindingContext,
     build_routing_binding_context,
@@ -154,12 +155,18 @@ def _box_pose(anchor_x: int, anchor_y: int) -> dict[str, Any]:
     return {
         "pose_id": f"box_x{anchor_x:02d}_y{anchor_y:02d}",
         "anchor": {"x": anchor_x, "y": anchor_y},
-        "pose_params": {"orientation": 0, "port_mode": "omni"},
+        "pose_params": {"orientation": 0, "port_mode": "TB"},
         "occupied_cells": [
             [anchor_x + dx, anchor_y + dy] for dx in range(3) for dy in range(3)
         ],
-        "input_port_cells": [],
-        "output_port_cells": [],
+        "input_port_cells": [
+            {"x": anchor_x + dx, "y": anchor_y + 3, "dir": "N"}
+            for dx in range(3)
+        ],
+        "output_port_cells": [
+            {"x": anchor_x + dx, "y": anchor_y - 1, "dir": "S"}
+            for dx in range(3)
+        ],
         "power_coverage_cells": None,
     }
 
@@ -171,7 +178,7 @@ def _box_solution_entry(pose: dict[str, Any], pose_idx: int) -> dict[str, Any]:
         "pose_id": pose["pose_id"],
         "anchor": dict(pose["anchor"]),
         "orientation": 0,
-        "port_mode": "omni",
+        "port_mode": "TB",
         "bound_type": "exact_pose_optional",
         "solve_mode": "certified_exact",
     }
@@ -286,9 +293,9 @@ _BLOCKER_RIGHT = "pose_optional::protocol_storage_box::blocks_input_fronts_right
 def _empty_domain_fixture() -> tuple[dict[str, Any], dict[str, Any]]:
     """owner=filling_capsule@(10,10)，输入 front 行 y=14 被两只 3x3 箱完全占据。
 
-    filling_capsule 的输出 commodity（qiaoyu_capsule）是 routing-free sink，
-    输出侧不进 routing-visible 集 ⟹ 堵死全部输入 front 即令每个 pattern 至少
-    一个 routing-visible 端口被占 ⟹ filter 后域空、blockers={左箱,右箱}。
+    filling_capsule 的输出 commodity（qiaoyu_capsule）也是 routed 商品；但堵死
+    全部六个输入 front 已足以令每个 pattern 至少一个 routing-visible 端口被占，
+    因而 filter 后域空、blockers={左箱,右箱}。
     """
     producer_pose = _filling_capsule_pose(10, 10)
     left_pose = _box_pose(10, 14)
@@ -318,6 +325,8 @@ def _build_owner_model(
     placement_solution: dict[str, Any],
     facility_pools: dict[str, Any],
     routing_context: Any,
+    *,
+    required_generic_inputs: dict[str, int] | None = None,
 ) -> PortBindingModel:
     model = PortBindingModel(
         placement_solution=placement_solution,
@@ -331,7 +340,11 @@ def _build_owner_model(
             }
         ],
         required_generic_outputs={},
-        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
+        required_generic_inputs=(
+            CANONICAL_GENERIC_INPUTS
+            if required_generic_inputs is None
+            else required_generic_inputs
+        ),
         project_root=PROJECT_ROOT,
         routing_context=routing_context,
     )
@@ -344,7 +357,7 @@ def test_raw_empty_lift_scope_bucketing_helper() -> None:
     分桶——raw 事件口径与 accepted-cut counter 是两回事（审查 F-05 假绿面）。
     分桶是 benders 侧纯诊断 helper，**绝不进 conflict summary / proof 记录**
     （golden semantic digest 钉死 proof 面，slow lane 抓过一次污染）。
-    filling_capsule 在 lift 范围内（demand 4/0）⟹ 空域进 scope 桶。"""
+    filling_capsule 在 lift 范围内（demand 4/1）⟹ 空域进 scope 桶。"""
     from src.search.benders_loop import _front_clear_lift_scope_raw_empty_instances
 
     placement_solution, facility_pools = _empty_domain_fixture()
@@ -355,15 +368,19 @@ def test_raw_empty_lift_scope_bucketing_helper() -> None:
 
     empties = model.extract_empty_binding_domain_instances()
     assert len(empties) == 1
+    rfsc = routing_free_sink_commodities_from_generic_inputs(
+        model.required_generic_inputs
+    )
+    assert rfsc == frozenset()
     scoped = _front_clear_lift_scope_raw_empty_instances(
-        empties, model.routing_free_sink_commodities
+        empties, rfsc
     )
     assert scoped == [_OWNER_ID]
     # 出范围条目（未 profile op）不入桶
     assert (
         _front_clear_lift_scope_raw_empty_instances(
             [{"instance_id": "x", "operation_type": "fixture_storage"}],
-            model.routing_free_sink_commodities,
+            rfsc,
         )
         == []
     )
@@ -507,7 +524,14 @@ def test_non_literal_pose_idx_fail_closes_whole_cert(raw_pose_idx: Any) -> None:
         key: (dict(value, pose_idx=raw_pose_idx) if key == _BLOCKER_RIGHT else value)
         for key, value in placement_solution.items()
     }
-    model = _build_owner_model(corrupted_solution, facility_pools, context)
+    # 本反例只钉 cert literal 解析；清空 generic-input 需求，避免故意损坏的
+    # box pose_idx 先在实体 sink 槽构造阶段被更早的严格位姿校验拒绝。
+    model = _build_owner_model(
+        corrupted_solution,
+        facility_pools,
+        context,
+        required_generic_inputs={},
+    )
     assert model.extract_routing_aware_certificates() == []
     assert _rab_empty_domain_thin_fallback_forbidden(model, _OWNER_ID) is True
 

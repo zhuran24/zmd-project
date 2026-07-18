@@ -81,6 +81,7 @@ def _terminal_state_without_ghost_anchor(project_root: Path) -> tuple[dict, dict
         }
     ]
     _write_json(project_root / "rules" / "canonical_rules.json", rules)
+    _write_json(project_root / "rules" / "preprocess_plan.json", {"utility_operations": {}})
     _write_json(project_root / "data" / "preprocessed" / "candidate_placements.json", {"facility_pools": facility_pools})
     _write_json(project_root / "data" / "preprocessed" / "mandatory_exact_instances.json", mandatory_instances)
     _write_json(project_root / "data" / "preprocessed" / "generic_io_requirements.json", {"required_generic_inputs": {}, "required_generic_outputs": {}})

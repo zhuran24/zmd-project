@@ -9,7 +9,7 @@ Status: ACCEPTED_DRAFT
   - 面壁死锁已剔除
   - 边界口锚定规则
   - 供电桩覆盖域截断
-  - 协议箱无端口
+  - 协议箱实体端口
   - 正方形无旋转重复
   - 占格掩码索引一致性
   - 对称性破除约束生成
@@ -288,26 +288,27 @@ def test_power_pole_coverage_size(facility_pools):
 # 核心测试：协议箱端口几何
 # ============================================================================
 
-def test_protocol_box_is_omni_wireless_with_no_physical_ports(facility_pools):
-    """canonical `omni_wireless`: 协议箱无任何实体端口, 单 orientation 全 anchor 枚举。
-
-    (2026-06-12 preprocess F-01 修复前, 本测试曾断言错误的「3 入 3 出方形边端口」
-    旧行为 —— 那正是被审查推翻的错编码; binding 侧的无线消费语义见
-    test_wireless_sink_binding_semantics.py。)
-    """
+def test_protocol_box_has_three_physical_inputs_and_outputs(facility_pools):
+    """协议箱按四个直通 mode 枚举 3 入 3 出实体端口。"""
     if "protocol_storage_box" not in facility_pools:
         pytest.skip("无 protocol_storage_box 池")
 
     poses = facility_pools["protocol_storage_box"]
-    assert len(poses) == 68 * 68
+    assert len(poses) == 17_952
+    assert {pose["pose_params"]["port_mode"] for pose in poses} == {
+        "TB",
+        "BT",
+        "RL",
+        "LR",
+    }
+    assert {pose["pose_params"]["orientation"] for pose in poses} == {0}
     for pose in poses:
-        assert pose["input_port_cells"] == [], (
-            f"协议箱 {pose['pose_id']} 不应有实体输入端口 (omni_wireless)"
-        )
-        assert pose["output_port_cells"] == [], (
-            f"协议箱 {pose['pose_id']} 不应有实体输出端口 (omni_wireless)"
-        )
-        assert pose["pose_params"]["port_mode"] == "omni"
+        assert len(pose["input_port_cells"]) == 3
+        assert len(pose["output_port_cells"]) == 3
+        for port in pose["input_port_cells"] + pose["output_port_cells"]:
+            assert 0 <= int(port["x"]) < 70
+            assert 0 <= int(port["y"]) < 70
+            assert str(port["dir"]) in {"N", "E", "S", "W"}
 
 
 # ============================================================================

@@ -45,6 +45,10 @@ def _write_project(root: Path) -> None:
         },
     )
     _write_json(
+        root / "rules" / "preprocess_plan.json",
+        {"utility_operations": {}},
+    )
+    _write_json(
         root / "data" / "preprocessed" / "candidate_placements.json",
         {
             "facility_pools": {

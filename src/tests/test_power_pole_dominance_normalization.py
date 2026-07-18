@@ -36,6 +36,7 @@ def _pose(
     *,
     occupied: Sequence[Sequence[int]],
     coverage: Sequence[Sequence[int]] | None = None,
+    input_ports: Sequence[Mapping[str, Any]] | None = None,
 ) -> Dict[str, Any]:
     return {
         "pose_id": pose_id,
@@ -44,7 +45,9 @@ def _pose(
         else {"x": 0, "y": 0},
         "pose_params": {"orientation": "north", "port_mode": "none"},
         "occupied_cells": [list(cell) for cell in occupied],
-        "input_port_cells": [],
+        "input_port_cells": (
+            [] if input_ports is None else [dict(port) for port in input_ports]
+        ),
         "output_port_cells": [],
         "power_coverage_cells": (
             None if coverage is None else [list(cell) for cell in coverage]
@@ -517,7 +520,15 @@ def _endpoint_fixture(
     width, height = 4, 2
     pools = {
         "protocol_storage_box": [
-            _pose(f"box_{x}_{y}", occupied=[[x, y]])
+            _pose(
+                f"box_{x}_{y}",
+                occupied=[[x, y]],
+                input_ports=[
+                    {"x": x, "y": y, "dir": "N"},
+                    {"x": x, "y": y, "dir": "E"},
+                    {"x": x, "y": y, "dir": "S"},
+                ],
+            )
             for y in range(height)
             for x in range(width)
         ],
@@ -569,10 +580,10 @@ def _endpoint_fixture(
         rules,
         c1_power_pole_representation=c1,
         generic_io_requirements={
-            "required_generic_inputs": {"valley_battery": 1},
+            "required_generic_inputs": {},
             "required_generic_outputs": {},
         },
-        wireless_sink_generic_input_slots=3,
+        generic_input_slots_by_operation={"box_sink": 3},
         exact_required_pose_optional_counts={"protocol_storage_box": 1},
     )
     session = ExactSearchSession(

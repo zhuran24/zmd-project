@@ -29,7 +29,7 @@ LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS = (
     "scripts/check_p1_2_proof_obligations.py",
 )
 LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256 = (
-    "27cb3c86944495c9b2cc622f273cfef6d95f03987f3ad65f92da58bcf78e539a"
+    "01417c60a776c460ad2123af6f5f558e86cb33259a6a38e704048c6059fec262"
 )
 LOCKED_P1_2_CHECKER_PROTECTED_CALLEES = (
     "_check_step7_contract",
@@ -96,14 +96,14 @@ LOCKED_EXACT_ARTIFACT_PATHS = {
 
 LOCKED_EXACT_ARTIFACT_SHA256 = {
     "mandatory_exact_instances": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
-    "candidate_placements": "a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b",
-    "canonical_rules": "f466243adf4e61f2edd68df873f59598e19780c3bde3f9ee060b96cef3115644",
+    "candidate_placements": "78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef",
+    "canonical_rules": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
     "generic_io_requirements": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e",
-    "preprocess_plan": "1bcf0d13e1709cd7e04ddea439ee005e837584f2f66a1a921159d198019c9ed8",
+    "preprocess_plan": "5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee",
 }
 
 LOCKED_EXACT_ARTIFACT_SIZE_BYTES = {
-    "candidate_placements": 45_774_305,
+    "candidate_placements": 53_595_501,
 }
 
 

@@ -7,6 +7,7 @@ import uuid
 from pathlib import Path
 
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
+from src.search.candidate_proof_replay import canonical_digest
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
     build_terminal_frontier_evidence,
@@ -25,9 +26,9 @@ from src.search.exact_campaign import (
     SUPERVISOR_SEAL_STATE_KEY,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     atomic_write_json,
-    terminal_certified_final_result_violation_for_project,
 )
 from src.search.terminal_fixed_witness_verifier import canonical_state_bytes_for_fixed_witness
+from src.search.pr2_l0_fixed_witness_core import verify_terminal_fixed_witness
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -60,8 +61,14 @@ def _write_project(root: Path) -> dict[str, list[dict[str, object]]]:
                 "anchor": {"x": x, "y": y},
                 "pose_params": {"orientation": 0, "port_mode": "default"},
                 "occupied_cells": [[x, y]],
-                "input_port_cells": [],
-                "output_port_cells": [],
+                "input_port_cells": [
+                    {"x": x, "y": y, "dir": direction}
+                    for direction in ("N", "W", "S")
+                ],
+                "output_port_cells": [
+                    {"x": x, "y": y, "dir": direction}
+                    for direction in ("N", "E", "S")
+                ],
             }
             for x, y in box_cells
         ],
@@ -92,7 +99,7 @@ def _write_project(root: Path) -> dict[str, list[dict[str, object]]]:
         root / "rules" / "preprocess_plan.json",
         {
             "utility_operations": {
-                "wireless_sink": {
+                "box_sink": {
                     "facility_type": "protocol_storage_box",
                     "generic_input_slots": 3,
                 }
@@ -106,14 +113,15 @@ def _write_project(root: Path) -> dict[str, list[dict[str, object]]]:
             {
                 "instance_id": "solid_001",
                 "facility_type": "solid",
-                "operation_type": "solid_op",
+                "operation_type": "",
                 "is_mandatory": True,
                 "bound_type": "exact",
                 "solve_modes": ["certified_exact"],
             }
         ],
     )
-    # wireless_sink has 3 generic input slots, so this requires one protocol box.
+    # With no mandatory provider, box_sink has 3 physical generic-input slots,
+    # so this toy project requires one protocol box.
     _write_json(
         root / "data" / "preprocessed" / "generic_io_requirements.json",
         {"required_generic_inputs": {"demo_input": 1}, "required_generic_outputs": {}},
@@ -129,7 +137,7 @@ def _placement_solution(facility_pools: dict[str, list[dict[str, object]]]) -> d
             "pose_id": "solid_at_0_0",
             "anchor": {"x": 0, "y": 0},
             "instance_id": "solid_001",
-            "operation_type": "solid_op",
+            "operation_type": "",
             "is_mandatory": True,
             "bound_type": "exact",
             "solve_mode": "certified_exact",
@@ -196,7 +204,7 @@ def _terminal_state(root: Path) -> dict[str, object]:
     candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))
     certified_solution = dict(placement_solution)
     certified_solution["ghost_pick"] = {
-        "pose_idx": 0,
+        "pose_idx": 8,
         "pose_id": "ghost_anchor::2,2",
         "anchor": {"x": 2, "y": 2},
         "facility_type": "ghost_rect",
@@ -205,12 +213,16 @@ def _terminal_state(root: Path) -> dict[str, object]:
     for _area, ghost_w, ghost_h in candidates:
         key = f"{ghost_w}x{ghost_h}"
         if (ghost_w, ghost_h) == (2, 2):
-            candidate_records[key] = _candidate_record(
+            certified_record = _candidate_record(
                 ghost_w,
                 ghost_h,
                 RUN_STATUS_CERTIFIED,
                 solution=certified_solution,
             )
+            certified_record["candidate_proof"] = {
+                "solution_digest": canonical_digest(certified_solution),
+            }
+            candidate_records[key] = certified_record
         else:
             candidate_records[key] = _candidate_record(ghost_w, ghost_h, RUN_STATUS_INFEASIBLE)
     return {
@@ -339,18 +351,16 @@ def _build_certified_state_with_forged_seal(
     return certified_state, checkpoint_path
 
 
-def test_terminal_project_validator_rejects_surplus_protocol_storage_box_blockers(tmp_path: Path) -> None:
+def test_terminal_fixed_witness_rejects_unbound_surplus_protocol_storage_boxes(
+    tmp_path: Path,
+) -> None:
     state = _terminal_state(tmp_path)
 
-    # PR1 added a supervisor_seal gate to terminal_certified_final_result_violation_for_project;
-    # the validator now requires a canonical checkpoint with a valid seal before it proceeds to
-    # content checks.  We build a structurally valid (but proof-free) seal so the gate is passed
-    # and the content-level surplus-box check is reached.
-    certified_state, checkpoint_path = _build_certified_state_with_forged_seal(state, tmp_path)
+    verdict = verify_terminal_fixed_witness(state=state, project_root=tmp_path)
 
+    assert verdict.publishable is False
     assert (
-        terminal_certified_final_result_violation_for_project(
-            certified_state, project_root=tmp_path, campaign_path=checkpoint_path
-        )
-        == "terminal_certified_final_result_solution_excess_protocol_storage_box_instance"
+        verdict.reason
+        == "terminal_fixed_witness_unbound_storage_box_violates_dominance_rule"
     )
+    assert verdict.details["minimum_inevitable_unbound_storage_box_count"] == 10

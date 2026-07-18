@@ -12,8 +12,12 @@ main.py
             -> src/models/exact_coordinate_master.py / master_model.py
                front-clear lift (EXACT_MASTER_FRONT_CLEAR_LIFT, 默认 OFF):
                demand SSOT = src/models/port_binding.py::routing_visible_port_demands
-               (+ routing_free_sink_commodities_from_generic_inputs, binding 同源)
+               generic-input 商品 = 普通 routed commodity（producer output → provider physical input）
             -> src/models/binding_subproblem.py          certified gate
+               provider capacity SSOT = 已哈希 preprocess_plan 同字节快照的完整
+               generic_input_slots_by_operation map（跨 outer/session 整图比较）
+               box_sink: 3 个实体输入口 / 3 个实体输出口
+               protocol_core: 14 个实体输入口 / 6 个实体输出口
             -> src/models/routing_subproblem.py          certified gate
             -> src/models/flow_subproblem.py             diagnostic-only
             -> src/search/independent_infeasibility_reverifier.py
@@ -64,7 +68,7 @@ generic serializer、blueprint exporter、manifest writer、viewer/report builde
 | `src/io/` | strict JSON、序列化和 delivery manifest 基础设施，不单独拥有公开认证权 |
 | `src/render/`, `src/adapters/` | postprocess/delivery surface，必须消费中央验证后的 authority |
 | `src/tests/` | 单元、回归和 soundness 红测 |
-| `rules/`, `data/preprocessed/` | canonical rules 与冻结输入 |
+| `rules/`, `data/preprocessed/` | canonical rules 与冻结输入；`preprocess_plan.json` 的完整 provider map 和 candidate 实体端口几何同属 certified snapshot |
 | `data/proof_obligations/` | P1.2 机器义务、sink inventory、allowlist |
 | `data/review_gates/` | owner 手动 phase gate；P1.2 已由 `owner_manual_decision` 关闭，P1.3 entry allowed |
 

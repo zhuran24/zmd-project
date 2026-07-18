@@ -67,6 +67,49 @@ def test_schema_rejects_multi_output_recipe(raw_rules_dict, raw_schema_dict):
     assert "has too many properties" in exc_info.value.message
 
 
+@pytest.mark.parametrize(
+    "port_rule",
+    [
+        "opposite_parallel_sides",
+        "long_sides",
+        "core_specific",
+        "none",
+        "inward_facing",
+    ],
+)
+def test_schema_and_pydantic_accept_current_physical_port_rules(
+    raw_rules_dict,
+    raw_schema_dict,
+    port_rule,
+):
+    mutated = copy.deepcopy(raw_rules_dict)
+    template = mutated["facility_templates"]["manufacturing_3x3"]
+    template["port_rule"] = port_rule
+    if port_rule == "core_specific":
+        template["core_limits"] = {"max_outputs": 1, "max_inputs": 1}
+
+    validate(instance=mutated, schema=raw_schema_dict)
+    CanonicalRulesDocument.model_validate(mutated)
+
+
+def test_schema_and_pydantic_reject_retired_omni_wireless_port_rule(
+    raw_rules_dict,
+    raw_schema_dict,
+):
+    mutated = copy.deepcopy(raw_rules_dict)
+    mutated["facility_templates"]["manufacturing_3x3"]["port_rule"] = "omni_wireless"
+
+    with pytest.raises(JsonSchemaValidationError, match="omni_wireless"):
+        validate(instance=mutated, schema=raw_schema_dict)
+    with pytest.raises(PydanticValidationError) as exc_info:
+        CanonicalRulesDocument.model_validate(mutated)
+    assert exc_info.value.errors()[0]["loc"] == (
+        "facility_templates",
+        "manufacturing_3x3",
+        "port_rule",
+    )
+
+
 def test_pydantic_parsing(raw_rules_dict):
     doc = CanonicalRulesDocument.model_validate(raw_rules_dict)
     assert doc.globals.grid.width == 70
@@ -211,7 +254,7 @@ def test_semantic_generic_input_sink_must_not_be_recipe_input(raw_rules_dict):
     }
     doc = CanonicalRulesDocument.model_validate(mutated)
 
-    with pytest.raises(SemanticValidationError, match="不能同时作为配方输入"):
+    with pytest.raises(SemanticValidationError, match="终端成品.*不能同时作为配方输入"):
         validate_canonical_document(doc)
 
 

@@ -1,6 +1,6 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-17（文档卫生批校准；正文边界事实 2026-07-07 版继续有效）**  
+**状态日期：2026-07-18（冻结工件与 generic-input 合同刷新；其余事实按各段日期）**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
 
 ## 2026-07-13 → 07-17 实现状态增量
@@ -107,11 +107,22 @@ allowlist 和关键 gate 文件。它是结构边界检查，不是“P1.2 已 s
 
 ## 输入状态
 
-`data/preprocessed/candidate_placements.json` 当前存在，45,774,305 字节，SHA256
-`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`。轻量分发可外置，但当前
-工作树并不缺该文件。拐角修复前的 45,773,799 字节 / SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 版本已 superseded，且
-hash-incompatible。
+当前冻结 pin：`rules/canonical_rules.json` 17,510 字节 / SHA256
+`5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`；
+`rules/preprocess_plan.json` 1,383 字节 / SHA256
+`5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`；
+`data/preprocessed/candidate_placements.json` 53,595,501 字节 / SHA256
+`78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`。轻量分发可外置 candidate，
+但当前工作树并不缺该文件。superseded 历史链为 45,774,305-byte
+`a914ba6348544b7ef44d0834629c6dcf90f39fa5564e0cd4c50af6af550c444b`、45,773,799-byte
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` 与 53,594,995-byte
+`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 只属 superseded、
+hash-incompatible 历史链。
+
+当前 generic-input 合同：`box_sink` 3 个物理输入/3 个物理输出，mandatory core 14 个物理输入/
+6 个物理输出，成品从 producer output 路由到 provider physical input。provider-aware、
+instance-aware box lower bound 为 0，因为当前需求 2 已由真实 mandatory core 容量覆盖；campaign
+绑定并原子比较完整 `generic_input_slots_by_operation` map。
 
 ## 阶段命名
 

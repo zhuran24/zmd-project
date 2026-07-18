@@ -886,7 +886,9 @@ def _validate_terminal_solution_against_project(
         mandatory_instances = _load_validated_mandatory_exact_instances(project_root)
         facility_pools = _load_exact_facility_pools(project_root)
         facility_templates = _load_exact_facility_templates(project_root)
-        required_optional_lower_bounds = _load_exact_required_optional_lower_bounds(project_root)
+        required_optional_lower_bounds = _load_exact_required_optional_lower_bounds(
+            project_root
+        )
     except Exception:
         return "terminal_certified_project_solution_authority_invalid"
 
@@ -1002,19 +1004,12 @@ def _validate_terminal_solution_against_project(
         if optional_solution_counts.get(str(facility_type), 0) < int(required_count):
             return "terminal_certified_final_result_solution_missing_required_optional_instance"
 
-    # Protocol storage boxes are only justified on the public certified surface by
-    # the replayable generic-input lower-bound contract.  Extra pose-optional boxes
-    # are cheap blockers for the terminal empty-rectangle replay; routing/provenance
-    # evidence for such surplus selections belongs in a future proof-carrying
-    # certificate, so the current public validator fails closed.
-    required_protocol_storage_boxes = int(
-        required_optional_lower_bounds.get("protocol_storage_box", 0)
-    )
-    selected_protocol_storage_boxes = int(
-        optional_solution_counts.get("protocol_storage_box", 0)
-    )
-    if selected_protocol_storage_boxes > required_protocol_storage_boxes:
-        return "terminal_certified_final_result_solution_excess_protocol_storage_box_instance"
+    # Batch 5 dominance rule: the provider-aware arithmetic above is a lower bound,
+    # never a selected-box upper bound.  Extra pose-optional protocol boxes can have
+    # routing-space value, so rejecting selected > required would shrink the proof
+    # domain.  This placement-only validator has no binding witness; the fresh fixed
+    # witness verifier therefore enforces that every selected optional box binds at
+    # least one physical generic-input sink and then proves the routed connection.
 
     power_coverers_by_instance: Dict[str, list[str]] = {}
     power_targets_by_pole: Dict[str, set[str]] = {
@@ -1209,7 +1204,23 @@ def _best_empty_rect_objective(
     return best
 
 
-def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, int]:
+def _load_exact_generic_input_slots_by_operation(
+    *,
+    project_root: Path,
+    generic_io_requirements: Mapping[str, Any],
+) -> Optional[Dict[str, int]]:
+    """Load the shared Batch-5 box/core physical sink-capacity profile."""
+
+    if not generic_io_requirements.get("required_generic_inputs", {}):
+        return None
+    from src.models.binding_subproblem import load_generic_input_slots_by_operation
+
+    return load_generic_input_slots_by_operation(project_root=project_root)
+
+
+def _load_exact_required_optional_lower_bounds(
+    project_root: Path,
+) -> Dict[str, int]:
     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
     rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
@@ -1218,19 +1229,18 @@ def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, 
         raise ValueError("canonical_rules must be a JSON object")
     if not isinstance(generic_io_requirements, Mapping):
         raise ValueError("generic_io_requirements must be a JSON object")
-    wireless_sink_generic_input_slots = None
-    if generic_io_requirements.get("required_generic_inputs", {}):
-        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
-
-        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
-            project_root=project_root
+    generic_input_slots_by_operation = (
+        _load_exact_generic_input_slots_by_operation(
+            project_root=project_root,
+            generic_io_requirements=generic_io_requirements,
         )
+    )
     lower_bounds: Dict[str, int] = {}
     for facility_type, count in infer_certified_optional_lower_bounds_for_instances(
         instances,
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
     ).items():
         required_count = int(count)
         if required_count > 0:
@@ -1238,7 +1248,9 @@ def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, 
     return lower_bounds
 
 
-def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[int]:
+def _load_exact_safe_area_upper_bound(
+    project_root: Optional[Path],
+) -> Optional[int]:
     if project_root is None:
         return None
     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
@@ -1259,18 +1271,17 @@ def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[
             facility_type,
             grid_dimensions=(int(grid_w), int(grid_h)),
         )
-    wireless_sink_generic_input_slots = None
-    if generic_io_requirements.get("required_generic_inputs", {}):
-        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
-
-        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
-            project_root=project_root
+    generic_input_slots_by_operation = (
+        _load_exact_generic_input_slots_by_operation(
+            project_root=project_root,
+            generic_io_requirements=generic_io_requirements,
         )
+    )
     for facility_type, count in infer_certified_optional_lower_bounds_for_instances(
         instances,
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
     ).items():
         lower_bound += int(count) * _pose_pool_min_occupied_cell_count(
             facility_pools,

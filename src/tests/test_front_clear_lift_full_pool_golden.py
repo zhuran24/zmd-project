@@ -1,6 +1,6 @@
 """front-clear lift 全池黄金对照（doc 04 v2 §5 阶梯2，任务 7；slow）。
 
-真实 candidate 池全量逐 pose 双向核对（~66,405 mandatory pose）：
+真实冻结 candidate 池按 eligible mandatory operation group 全量逐 pose 双向核对：
 
 1. master 派生的 offsets_by_mode 应用到 pose 原始锚点 == 测试侧直接从 pose
    原始端口数据 + routing 同源 _DIR_DELTA 独立重算的 front 集——**双向
@@ -67,8 +67,10 @@ def test_full_pool_offsets_bidirectional_golden(_lift_master: Any) -> None:
     grid_w, grid_h = int(delegate.grid_w), int(delegate.grid_h)
     padded_w, padded_h = grid_w + 2, grid_h + 2
     rfsc = delegate._front_clear_routing_free_sink_commodities()
+    assert rfsc == frozenset()
 
     poses_checked = 0
+    expected_poses_checked = 0
     groups_checked = 0
     for group in delegate.owner._mandatory_groups:
         operation_type = str(group.get("operation_type", ""))
@@ -90,10 +92,14 @@ def test_full_pool_offsets_bidirectional_golden(_lift_master: Any) -> None:
         offsets_by_mode = delegate._front_clear_offsets_by_mode(group, tpl)
         pool = list(delegate.owner.facility_pools.get(tpl, []))
         tuple_by_idx = delegate._template_pose_tuple_by_idx[tpl]
+        pose_indices = delegate._coordinate_master_pose_indices_for_group(group)
+        assert set(pose_indices) == set(range(len(pool))), (
+            f"{tpl} candidate domain was truncated: "
+            f"actual={len(pose_indices)} expected={len(pool)}"
+        )
+        expected_poses_checked += len(pool)
         groups_checked += 1
-        for pose_idx in delegate._coordinate_master_pose_indices_for_group(
-            group
-        ):
+        for pose_idx in pose_indices:
             pose = pool[int(pose_idx)]
             anchor = pose["anchor"]
             anchor_x, anchor_y = int(anchor["x"]), int(anchor["y"])
@@ -142,6 +148,7 @@ def test_full_pool_offsets_bidirectional_golden(_lift_master: Any) -> None:
             poses_checked += 1
 
     assert groups_checked == stats["groups_covered"] == 17
-    # 全池覆盖（任务1口径：66,405 mandatory pose；防 silent truncation）
-    assert poses_checked >= 60_000, poses_checked
+    # 每个 eligible group 必须精确覆盖其完整模板池，防 silent truncation。
+    assert poses_checked == expected_poses_checked
+    assert poses_checked > 0
     print(f"[golden] groups={groups_checked} poses={poses_checked}")

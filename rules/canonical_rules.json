@@ -88,7 +88,7 @@
       "rotatable": true,
       "needs_power": true,
       "is_solid_z": true,
-      "port_rule": "omni_wireless"
+      "port_rule": "opposite_parallel_sides"
     },
     "power_pole": {
       "dimensions": {
@@ -425,6 +425,30 @@
       "predicate_status": "non_predicate",
       "statement": "machine_min_clearance_cells is NOT one of the 6 CERTIFIED predicates. Adjudicated meaning (re-adjudicated 2026-07-18, front-offset incident, owner in-game tests: zero-gap dead / one-gap routes / a 1-cell belt is legal / two opposite ports may share the middle cell): the stored port coordinate in candidate placements IS the front/belt cell itself — the first cell outside the facility body along the outward normal; an in-use port requires THAT cell to accept a belt, i.e. it must be in-grid and not occupied by any facility body (power poles count as body and block; belts do NOT block — belt/belt co-location on the front cell is governed solely by routing_cross_junction: perpendicular straight channels may cross, a turning or parallel same-axis foreign belt blocks the port). Enforced via identity front-cell modeling — NOT as 'port + direction offset' (the pre-2026-07-18 one-cell-offset misreading that checked the second cell outside the body), and NOT as a generic N-cell moat around every machine body. Machine bodies may touch; there is no body-to-body clearance requirement. Repeated external reviews misread it as body-clearance; it is not.",
       "adjudication_ref": "PROJECT_LOCK.md B-4 + F-RT-R2-01/R3-01 + F-FRONT-INC-01; incident file docs/research/front_offset_incident_20260718/00_incident_survey_and_fix_plan.md"
+    },
+    "warehouse_bridge_exclusion": {
+      "applies_to": "certified_predicate_5_routing_connectivity",
+      "adjudicated": "2026-07-18 owner production-line argument (rules_audit_20260718/00 §3.3)",
+      "statement": "The in-game 'warehouse bridge' (any commodity submitted to the warehouse via protocol storage box or hub inputs can physically re-emerge from hub outputs AND boundary pickup ports) is REAL game mechanics but is EXCLUDED as a legal wiring structure in this model: re-emitting intermediates crowds the output capacity of blue-iron/source ore, whose output rates directly bound final-product throughput, making the bridge non-viable under the 3.0/2.75-line production targets. Therefore the direct-connection connectivity model (every intermediate commodity must be belt-routed from a producer port to a consumer port; the warehouse is not a routing shortcut) is the adjudicated modeling choice. If the production targets ever change, this exclusion must be re-adjudicated.",
+      "authority": "owner production-line argument; upstream simulators model the bridge and cannot adjudicate viability"
+    },
+    "protocol_storage_box_wireless": {
+      "applies_to": "facility_templates.protocol_storage_box, preprocess_plan.utility_operations.box_sink",
+      "adjudicated": "2026-07-18 owner in-game tests, five answers (rules_audit_20260718/00 §3.1)",
+      "statement": "The protocol storage box has REAL physical ports identical in shape to manufacturing_3x3 (3 inputs on one side, 3 outputs on the opposite side, four orientation modes) and requires power. The 'wireless' segment exists ONLY from box to warehouse: with power and its default-on switch, the box flushes its 6 cache slots into the warehouse every 10s. Products must be belt-routed into the box's physical input ports (or directly into hub inputs); there is no produce-side wireless pickup. The box's output ports exist and are legally idle in this production line (an unconnected output port does not claim its front cell). Cache-slot dual-role timing behavior is throughput-scope and OUT-OF-SCOPE.",
+      "supersedes": "the pre-2026-07-18 'omni_wireless black hole' reading (zero physical ports, wireless product consumption)"
+    },
+    "power_source_note": {
+      "applies_to": "facility_templates.protocol_core, facility_templates.power_pole, certified_predicate_6_power_coverage",
+      "adjudicated": "2026-07-18 owner in-game tests (rules_audit_20260718/00 §3.4)",
+      "statement": "The hub (protocol core) IS the base's power source; power poles draw from the hub unconditionally at any distance and re-broadcast coverage; the hub itself has no coverage range and needs no power; generators live in another base (power budget externalized). The modeled predicate 'a powered facility must be covered by some pole stencil' is therefore effect-equivalent to game mechanics (the mandatory hub makes every pole powered), and no wiring/link constraint is modeled for poles.",
+      "clarifies": "predicate 6 semantics unchanged; this note records WHY pole-only coverage is faithful"
+    },
+    "item_admission_port_exclusion": {
+      "applies_to": "routing_rules",
+      "adjudicated": "2026-07-18 owner + upstream cross-check (rules_audit_20260718/00 §3.7)",
+      "statement": "The 1x1 item admission port (straight pass-through with item filtering) exists in game v1.1 but is deliberately NOT modeled: geometrically and for connectivity it is equivalent to a straight belt (any cell that admits it admits a straight belt), and its filtering function is throughput-scope (OUT-OF-SCOPE). Omitting it cannot exclude any feasible layout and cannot admit any infeasible one.",
+      "authority": "safe-exclusion argument; no candidate pool or predicate consumes it"
     },
     "power_coverage_stencil": {
       "applies_to": "facility_templates.power_pole",

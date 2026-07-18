@@ -174,6 +174,7 @@ def _build_toy_exact_project(project_root: Path) -> Path:
             "required_generic_inputs": {},
         },
     )
+    _write_json(rules_dir / "preprocess_plan.json", {"utility_operations": {}})
     return project_root
 
 
@@ -223,7 +224,10 @@ def test_certified_binding_kwargs_use_master_generic_io_snapshot() -> None:
             "required_generic_outputs": {"source_ore": 1},
             "required_generic_inputs": {"valley_battery": 2},
         },
-        wireless_sink_generic_input_slots=3,
+        generic_input_slots_by_operation={
+            "protocol_core": 14,
+            "box_sink": 3,
+        },
         rules={
             "commodity_metadata": {
                 "source_ore": {
@@ -241,7 +245,10 @@ def test_certified_binding_kwargs_use_master_generic_io_snapshot() -> None:
     assert controller._binding_generic_requirements_kwargs() == {
         "required_generic_outputs": {"source_ore": 1},
         "required_generic_inputs": {"valley_battery": 2},
-        "wireless_sink_generic_input_slots": 3,
+        "generic_input_slots_by_operation": {
+            "protocol_core": 14,
+            "box_sink": 3,
+        },
     }
 
     controller.solve_mode = "exploratory"
@@ -285,7 +292,10 @@ def test_certified_retry_binding_receives_master_generic_io_snapshot(
             "required_generic_outputs": {"source_ore": 1},
             "required_generic_inputs": {"valley_battery": 2},
         },
-        wireless_sink_generic_input_slots=3,
+        generic_input_slots_by_operation={
+            "protocol_core": 14,
+            "box_sink": 3,
+        },
         rules={
             "commodity_metadata": {
                 "source_ore": {
@@ -309,10 +319,13 @@ def test_certified_retry_binding_receives_master_generic_io_snapshot(
     assert status == "FEASIBLE"
     assert captured_kwargs["required_generic_outputs"] == {"source_ore": 1}
     assert captured_kwargs["required_generic_inputs"] == {"valley_battery": 2}
-    assert captured_kwargs["wireless_sink_generic_input_slots"] == 3
+    assert captured_kwargs["generic_input_slots_by_operation"] == {
+        "protocol_core": 14,
+        "box_sink": 3,
+    }
 
 
-def test_certified_binding_kwargs_require_wireless_slot_snapshot_for_generic_inputs() -> None:
+def test_certified_binding_kwargs_require_provider_slot_map_for_generic_inputs() -> None:
     controller = benders_loop_module.LBBDController.__new__(
         benders_loop_module.LBBDController
     )
@@ -324,7 +337,7 @@ def test_certified_binding_kwargs_require_wireless_slot_snapshot_for_generic_inp
         }
     )
 
-    with pytest.raises(RuntimeError, match="wireless_sink_generic_input_slots snapshot"):
+    with pytest.raises(RuntimeError, match="generic_input_slots_by_operation snapshot"):
         controller._binding_generic_requirements_kwargs()
 
 
@@ -361,14 +374,14 @@ def test_certified_static_area_bound_uses_candidate_pose_cells_when_available() 
             instances,
             rules,
             generic_io_requirements,
-            wireless_sink_generic_input_slots=4,
+            generic_input_slots_by_operation={"box_sink": 4},
             facility_pools=facility_pools,
         )
         == 3
     )
 
 
-def test_certified_static_lower_bound_uses_project_wireless_slot_snapshot() -> None:
+def test_certified_static_lower_bound_uses_project_provider_slot_map() -> None:
     rules = {
         "facility_templates": {
             "protocol_storage_box": {"dimensions": {"w": 3, "h": 3}}
@@ -384,7 +397,7 @@ def test_certified_static_lower_bound_uses_project_wireless_slot_snapshot() -> N
             [],
             rules,
             generic_io_requirements,
-            wireless_sink_generic_input_slots=4,
+            generic_input_slots_by_operation={"box_sink": 4},
         )
         == 9
     )
@@ -393,23 +406,23 @@ def test_certified_static_lower_bound_uses_project_wireless_slot_snapshot() -> N
             [],
             rules,
             generic_io_requirements,
-            wireless_sink_generic_input_slots=2,
+            generic_input_slots_by_operation={"box_sink": 2},
         )
         == 18
     )
 
 
-def test_certified_static_lower_bound_credits_mandatory_wireless_sink_capacity() -> None:
+def test_certified_static_lower_bound_credits_mandatory_box_sink_capacity() -> None:
     rules = {
         "facility_templates": {
             "protocol_storage_box": {"dimensions": {"w": 3, "h": 3}}
         }
     }
-    mandatory_wireless_sink = [
+    mandatory_box_sink = [
         {
             "instance_id": "mandatory_sink",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": True,
             "bound_type": "exact",
         }
@@ -421,19 +434,19 @@ def test_certified_static_lower_bound_credits_mandatory_wireless_sink_capacity()
 
     assert (
         compute_exact_static_area_lower_bound(
-            mandatory_wireless_sink,
+            mandatory_box_sink,
             rules,
             generic_io_requirements,
-            wireless_sink_generic_input_slots=4,
+            generic_input_slots_by_operation={"box_sink": 4},
         )
         == 9
     )
     assert (
         compute_exact_static_area_lower_bound(
-            mandatory_wireless_sink,
+            mandatory_box_sink,
             rules,
             generic_io_requirements,
-            wireless_sink_generic_input_slots=2,
+            generic_input_slots_by_operation={"box_sink": 2},
         )
         == 18
     )
@@ -444,7 +457,7 @@ def test_certified_static_lower_bound_credits_mandatory_wireless_sink_capacity()
     [
         (
             {
-                "instance_id": "not_wireless_sink",
+                "instance_id": "not_generic_input_provider",
                 "facility_type": "protocol_storage_box",
                 "operation_type": "wireless_source",
                 "is_mandatory": True,
@@ -456,7 +469,7 @@ def test_certified_static_lower_bound_credits_mandatory_wireless_sink_capacity()
             {
                 "instance_id": "not_mandatory",
                 "facility_type": "protocol_storage_box",
-                "operation_type": "wireless_sink",
+                "operation_type": "box_sink",
                 "is_mandatory": False,
                 "bound_type": "exact",
             },
@@ -466,31 +479,20 @@ def test_certified_static_lower_bound_credits_mandatory_wireless_sink_capacity()
             {
                 "instance_id": "not_exact_bound",
                 "facility_type": "protocol_storage_box",
-                "operation_type": "wireless_sink",
+                "operation_type": "box_sink",
                 "is_mandatory": True,
                 "bound_type": "lower",
             },
             9,
         ),
-        (
-            {
-                "instance_id": "not_protocol_storage_box",
-                "facility_type": "power_pole",
-                "operation_type": "wireless_sink",
-                "is_mandatory": True,
-                "bound_type": "exact",
-            },
-            10,
-        ),
     ],
     ids=[
-        "operation_type_not_wireless_sink",
+        "operation_type_not_provider",
         "is_mandatory_false",
         "bound_type_not_exact",
-        "facility_type_not_protocol_storage_box",
     ],
 )
-def test_certified_static_lower_bound_does_not_credit_non_matching_wireless_sink(
+def test_certified_static_lower_bound_does_not_credit_inactive_or_unknown_provider(
     instance: dict[str, object],
     expected_static_area_lower_bound: int,
 ) -> None:
@@ -509,17 +511,52 @@ def test_certified_static_lower_bound_does_not_credit_non_matching_wireless_sink
         [instance],
         rules,
         generic_io_requirements,
-        wireless_sink_generic_input_slots=4,
+        generic_input_slots_by_operation={"box_sink": 4},
     ) == {"protocol_storage_box": 1}
     assert (
         compute_exact_static_area_lower_bound(
             [instance],
             rules,
             generic_io_requirements,
-            wireless_sink_generic_input_slots=4,
+            generic_input_slots_by_operation={"box_sink": 4},
         )
         == expected_static_area_lower_bound
     )
+
+
+def test_certified_static_lower_bound_credits_only_a_real_mandatory_core_instance() -> None:
+    rules = {
+        "facility_templates": {
+            "protocol_core": {"dimensions": {"w": 9, "h": 9}},
+            "protocol_storage_box": {"dimensions": {"w": 3, "h": 3}},
+        }
+    }
+    generic_io_requirements = {
+        "required_generic_outputs": {},
+        "required_generic_inputs": {f"finished_{idx}": 1 for idx in range(14)},
+    }
+    provider_slots = {"protocol_core": 14, "box_sink": 3}
+    mandatory_core = {
+        "instance_id": "protocol_core_001",
+        "facility_type": "protocol_core",
+        "operation_type": "protocol_core",
+        "is_mandatory": True,
+        "bound_type": "exact",
+    }
+
+    # Merely carrying the core template must not grant its 14-slot capacity.
+    assert infer_certified_optional_lower_bounds_for_instances(
+        [],
+        rules,
+        generic_io_requirements,
+        generic_input_slots_by_operation=provider_slots,
+    ) == {"protocol_storage_box": 5}
+    assert infer_certified_optional_lower_bounds_for_instances(
+        [mandatory_core],
+        rules,
+        generic_io_requirements,
+        generic_input_slots_by_operation=provider_slots,
+    ) == {}
 
 
 def _build_required_protocol_box_project(project_root: Path) -> Path:
@@ -568,7 +605,11 @@ def _build_required_protocol_box_project(project_root: Path) -> Path:
                         "pose_id": "box_0",
                         "anchor": {"x": 0, "y": 0},
                         "occupied_cells": [[0, 0]],
-                        "input_port_cells": [{"x": 0, "y": 1, "dir": "N"}],
+                        "input_port_cells": [
+                            {"x": 0, "y": 1, "dir": "N"},
+                            {"x": 1, "y": 0, "dir": "E"},
+                            {"x": 0, "y": 0, "dir": "S"},
+                        ],
                         "output_port_cells": [],
                         "power_coverage_cells": None,
                     }
@@ -589,7 +630,12 @@ def _build_required_protocol_box_project(project_root: Path) -> Path:
         rules_dir / "preprocess_plan.json",
         {
             "utility_operations": {
-                "wireless_sink": {
+                "protocol_core": {
+                    "facility_type": "protocol_core",
+                    "generic_input_slots": 14,
+                    "generic_output_slots": 6,
+                },
+                "box_sink": {
                     "facility_type": "protocol_storage_box",
                     "generic_input_slots": 3,
                     "generic_output_slots": 0,
@@ -616,17 +662,17 @@ def test_certified_campaign_optional_bounds_delegate_generic_io_loader(tmp_path:
         exact_campaign_module._load_exact_required_optional_lower_bounds(project_root)
 
 
-def test_certified_campaign_optional_bounds_credit_mandatory_wireless_sink(
+def test_certified_campaign_optional_bounds_credit_mandatory_box_sink(
     tmp_path: Path,
 ) -> None:
     project_root = _build_required_protocol_box_project(
-        tmp_path / "campaign_mandatory_wireless_sink_credit"
+        tmp_path / "campaign_mandatory_box_sink_credit"
     )
-    mandatory_wireless_sink = [
+    mandatory_box_sink = [
         {
             "instance_id": "mandatory_sink",
             "facility_type": "protocol_storage_box",
-            "operation_type": "wireless_sink",
+            "operation_type": "box_sink",
             "is_mandatory": True,
             "bound_type": "exact",
             "solve_modes": ["certified_exact"],
@@ -634,44 +680,31 @@ def test_certified_campaign_optional_bounds_credit_mandatory_wireless_sink(
     ]
     _write_json(
         project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
-        mandatory_wireless_sink,
+        mandatory_box_sink,
     )
     _write_json(
         project_root / "data" / "preprocessed" / "all_facility_instances.json",
-        mandatory_wireless_sink,
+        mandatory_box_sink,
     )
 
     assert exact_campaign_module._load_exact_required_optional_lower_bounds(project_root) == {}
     assert exact_campaign_module._load_exact_safe_area_upper_bound(project_root) == 3
 
 
-@pytest.mark.parametrize(
-    "instance_patch",
-    [
-        {"operation_type": "wireless_source"},
-        {"facility_type": "power_pole"},
-    ],
-    ids=[
-        "operation_type_not_wireless_sink",
-        "facility_type_not_protocol_storage_box",
-    ],
-)
-def test_certified_campaign_optional_bounds_do_not_credit_non_matching_wireless_sink(
+def test_certified_campaign_optional_bounds_do_not_credit_unknown_provider(
     tmp_path: Path,
-    instance_patch: dict[str, object],
 ) -> None:
     project_root = _build_required_protocol_box_project(
-        tmp_path / "campaign_mandatory_wireless_sink_no_credit"
+        tmp_path / "campaign_mandatory_unknown_provider_no_credit"
     )
     instance = {
         "instance_id": "mandatory_sink",
         "facility_type": "protocol_storage_box",
-        "operation_type": "wireless_sink",
+        "operation_type": "wireless_source",
         "is_mandatory": True,
         "bound_type": "exact",
         "solve_modes": ["certified_exact"],
     }
-    instance.update(instance_patch)
     instances = [instance]
     _write_json(
         project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
@@ -775,6 +808,7 @@ def _build_multi_pose_exact_project(
             "required_generic_inputs": {},
         },
     )
+    _write_json(rules_dir / "preprocess_plan.json", {"utility_operations": {}})
     return project_root
 
 
@@ -874,6 +908,7 @@ def _build_frontier_project(
             "required_generic_inputs": {},
         },
     )
+    _write_json(rules_dir / "preprocess_plan.json", {"utility_operations": {}})
     return project_root
 
 
@@ -1377,7 +1412,7 @@ def test_collect_certification_blockers_rejects_matching_exploratory_dual_mode_m
 
 
 
-def test_binding_recognizes_pose_optional_protocol_storage_box() -> None:
+def test_binding_routes_pose_optional_box_sink_through_physical_ports() -> None:
     placement_solution = {
         "boundary_port_001": {
             "pose_idx": 0,
@@ -1408,7 +1443,10 @@ def test_binding_recognizes_pose_optional_protocol_storage_box() -> None:
                 "pose_id": "box_pose_0",
                 "anchor": {"x": 2, "y": 0},
                 "occupied_cells": [[2, 0]],
-                "input_port_cells": [],
+                "input_port_cells": [
+                    {"x": 2, "y": 0, "dir": "N"},
+                    {"x": 2, "y": 1, "dir": "E"},
+                ],
                 "output_port_cells": [],
                 "power_coverage_cells": None,
             }
@@ -1430,6 +1468,7 @@ def test_binding_recognizes_pose_optional_protocol_storage_box() -> None:
         instances,
         required_generic_outputs={"source_ore": 1},
         required_generic_inputs={"valley_battery": 1, "qiaoyu_capsule": 1},
+        generic_input_slots_by_operation={"box_sink": 2},
     )
     model.build()
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
@@ -1444,13 +1483,17 @@ def test_binding_recognizes_pose_optional_protocol_storage_box() -> None:
     assert box_inputs == {"valley_battery", "qiaoyu_capsule"}
 
     specs = model.extract_port_specs()
-    assert not any(
-        spec["instance_id"] == "pose_optional::protocol_storage_box::box_pose_0"
+    box_specs = [
+        spec
         for spec in specs
-    )
-    assert not any(
-        spec["commodity"] in {"valley_battery", "qiaoyu_capsule"} for spec in specs
-    )
+        if spec["instance_id"] == "pose_optional::protocol_storage_box::box_pose_0"
+    ]
+    assert {spec["commodity"] for spec in box_specs} == {
+        "valley_battery",
+        "qiaoyu_capsule",
+    }
+    assert all(spec["type"] == "in" for spec in box_specs)
+    assert all({"x", "y", "dir"} <= set(spec) for spec in box_specs)
 
 
 
@@ -3266,6 +3309,7 @@ def test_outer_search_safe_area_upper_bound_accounts_for_fixed_required_protocol
         "create",
         staticmethod(lambda project_root, solve_mode="certified_exact": object()),
     )
+    _patch_frontier_sink_replay_rejects_mock_records(monkeypatch)
 
     status, result = run_outer_search(
         project_root=project_root,
@@ -4530,7 +4574,7 @@ def test_power_placement_abort_returns_unknown_with_matching_proof_summary(
             "required_generic_outputs": {},
             "required_generic_inputs": {},
         }
-        wireless_sink_generic_input_slots = 0
+        generic_input_slots_by_operation: dict[str, int] = {}
         master_search_profile = "default_automatic"
         build_stats = {
             "last_solve": {},
@@ -9053,6 +9097,32 @@ def _patch_frontier_sink_replay_accepts_mock_records(monkeypatch: pytest.MonkeyP
         "build_terminal_fixed_witness_projection_at_sink",
         fake_build_terminal_fixed_witness_projection_at_sink,
     )
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "build_terminal_fixed_witness_projection_at_sink",
+        fake_build_terminal_fixed_witness_projection_at_sink,
+    )
+
+
+def _patch_frontier_sink_replay_rejects_mock_records(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Fail closed immediately for traversal tests that deliberately forge strong records."""
+
+    def fake_project_candidate_records_for_sink(**kwargs):
+        candidate_records = kwargs["state"].get("candidates", {})
+        violations = {
+            str(key): "test_mock_strong_record_rejected"
+            for key, record in candidate_records.items()
+            if isinstance(record, dict)
+            and str(record.get("status", ""))
+            in {RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE}
+        }
+        return {}, violations
+
+    monkeypatch.setattr(
+        certified_frontier_module,
+        "project_candidate_records_for_sink",
+        fake_project_candidate_records_for_sink,
+    )
 
 
 def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
@@ -9794,7 +9864,7 @@ def test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible() -> N
     assert triggered["group_id"] == "g_complete"
 
 
-def test_outer_search_rejects_wireless_slot_drift_between_frontier_and_session(
+def test_outer_search_rejects_provider_slot_map_drift_between_frontier_and_session(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -9809,7 +9879,12 @@ def test_outer_search_rejects_wireless_slot_drift_between_frontier_and_session(
     )
     _write_json(
         project_root / "rules" / "preprocess_plan.json",
-        {"utility_operations": {"wireless_sink": {"generic_input_slots": 3}}},
+        {
+            "utility_operations": {
+                "protocol_core": {"generic_input_slots": 14},
+                "box_sink": {"generic_input_slots": 3},
+            }
+        },
     )
 
     monkeypatch.setattr(
@@ -9869,7 +9944,10 @@ def test_outer_search_rejects_wireless_slot_drift_between_frontier_and_session(
             master_search_profile="test",
             core=SimpleNamespace(
                 generic_io_requirements=generic_io_requirements,
-                wireless_sink_generic_input_slots=1,
+                generic_input_slots_by_operation={
+                    "protocol_core": 14,
+                    "box_sink": 1,
+                },
             ),
             core_build_seconds=0.0,
         )
@@ -9880,7 +9958,7 @@ def test_outer_search_rejects_wireless_slot_drift_between_frontier_and_session(
         create_drifted_session,
     )
 
-    with pytest.raises(RuntimeError, match="wireless sink slot snapshot changed"):
+    with pytest.raises(RuntimeError, match="generic-input slot map changed"):
         run_outer_search(
             project_root=project_root,
             solve_mode="certified_exact",
@@ -9954,7 +10032,7 @@ def _assert_run_benders_drifted_precheck_reaches_controller(
                 "required_generic_outputs": {},
                 "required_generic_inputs": {},
             },
-            wireless_sink_generic_input_slots=0,
+            generic_input_slots_by_operation={},
         ),
         core_build_seconds=0.0,
     )
