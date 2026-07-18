@@ -24,7 +24,7 @@ P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 �
 | 工作线 | 现在在哪 | 下一步 | 等谁 |
 |---|---|---|---|
 | **cut 框架工程线** | Stage B 工程面全部完成（B0-B5b + 批D F5 独立 verifier + 修复批 α/α2/β + B6 前置工程批 + 批E RFC-003 + prod 形态适配批）。family 现状：F1/F6/F7 = COMPILABLE/TYPED；F5 = shadow-only（compiler=None，真 adapter 修复挂 F5 转正批）；F2/F3/F4/F9 = LEGACY_DIAGNOSTIC；F8 retired。certified 下 attach 保持双重禁用（env unsafe-map） | B6 owner flip → F5 转正批 | **owner**（B6 手动门；PIC-4/5 生产层 APPLIED>0 证据口径见台账 #9） |
-| **求解与研究线** | C1 编码 = certified 默认 master 表示（首解之墙 07-09 已破）。全局最优证明已规约为「3 负锚点 + 1 witness = 4 个固定小实例」（07-14 八人会议）。RAB-SEP 通道收编 certified（默认 OFF，`F-BL-R11-01`）；front-clear 必要条件上收 master 编码（`F-GM-FCL-01`，默认 OFF，语义三面实证正确、OFF 路径零回归；presolve off 为 lift-ON 必要操作配方）。6×6 锚点 lift-ON 下 30min 单发 fixed/automatic 均无 incumbent 无 INFEASIBLE。**⚠ 07-18 front 错位 P0 事故：以上实验数字全部在错位语义下跑出，批 4 重跑前处于撤回状态**；当前主线=修复批序列 批2→批3+5（补域+协议箱池换钉，owner 过目后点火）→批4（历史重判+重跑） | 批 2 收尾 → 批 3+5 准备好交 owner 过目 | 批 3+5 点火等 **owner**；批 2/4 自主推进 |
+| **求解与研究线** | C1 编码 = certified 默认 master 表示（首解之墙 07-09 已破）。全局最优证明已规约为「3 负锚点 + 1 witness = 4 个固定小实例」（07-14 八人会议）。RAB-SEP 通道收编 certified（默认 OFF，`F-BL-R11-01`）；front-clear 必要条件上收 master 编码（`F-GM-FCL-01`，默认 OFF，语义三面实证正确、OFF 路径零回归；presolve off 为 lift-ON 必要操作配方）。6×6 锚点 lift-ON 下 30min 单发 fixed/automatic 均无 incumbent 无 INFEASIBLE。**⚠ 07-18 front 错位 P0 事故：旧实验数字全部在错位语义下跑出，批 4 全量重跑前处于撤回状态**；修复批序列 批1（`060aeb6`）/批2（`bb415f1`）/批3+5（`9c0f724`，封号窗口 codex 代刀，新池 81,797 异构对账全中、五钉一致，合并终态门 07-18 晚两连绿）已落地；批4 部分（`a0f7525`：重建 witness FEASIBLE、"24 杠杆穷尽/结构墙"维持撤回）| 批 4 余量：FCL 生产臂 + rounds 1-5 重跑 | 批 4 自主推进 |
 | **支线** | P3.0 轴 A：68 条定理落 main、两轮外审闭环；轴 B（证书侧 proof logging）待开工；P2.0 吞吐已改判必做、b 段实现规格待批准；TNS 设计稿完成未排 | 按 §2 与台账 | 台账 #4 |
 
 防蓄意内鬼硬化桶（#8 深化/#2/#3/#5-F/#9b/#9c/Option B）延期到发布时点；#9a 为部署时点任务。
@@ -43,7 +43,7 @@ P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 �
 | 07-15 | round 4-5：UBC 证书 sound+紧凑但 CP-SAT 在三真锚点全 UNKNOWN（solver 墙）；owner 立项 Fable 对照实验 | 同上 doc15-16 |
 | 07-16 | 对照实验发现树内 RAB-SEP 通道+Opus 五轮三次擦肩（doc17）；RAB-SEP 三段批收口（`815a73e`）；front-clear 上收批：设计四席对抗→实施 reseal（`7b9cbae`）→六级验证阶梯→presolve 病灶破案→探针 3/4（`0873cd1`/`7b88ab8`） | doc17；`rab_sep_promotion_20260716/` doc01-06 |
 | 07-17 | 过夜长预算单发在跑（lift ON + presolve off + automatic，无时限）；文档卫生批（本文档重构+名词表+`deliverable-docs` skill） | `rab_sep_promotion_20260716/`；[21号](21_glossary.md) |
-| 07-18 | front 错位 P0 事故（口坐标=带子格、机械查体外第 2 格）：普查+批 0 owner 定谳（补域 68,469）+批 1 identity 原子 reseal 落地（`060aeb6`，四门全绿）；owner 全量规则校对：3 笔新实锤（协议箱实体口/中枢 14 进/canonical 语义缺口）+IP/EC 上游对账快照入库；批计划改为 批2→批3+5（合并换钉，含协议箱池重生成）→批4 | `front_offset_incident_20260718/00`；`rules_audit_20260718/00` |
+| 07-18 | front 错位 P0 事故（口坐标=带子格、机械查体外第 2 格）：普查+批 0 owner 定谳（补域 68,469）+批 1 identity 原子 reseal 落地（`060aeb6`，四门全绿）；owner 全量规则校对：3 笔新实锤（协议箱实体口/中枢 14 进/canonical 语义缺口）+IP/EC 上游对账快照入库；批计划改为 批2→批3+5（合并换钉，含协议箱池重生成）→批4；批2 落地（`bb415f1`）；owner 点火批3+5 并原则性纠正措辞（最优解从未变，旧数字=模型误差品）；**封号窗口（午-晚）codex 于 `~/zmd-pj-codex` 代刀完成批3+5（`9c0f724`，新池 81,797 与主会话独立闭式逐池全中）+批4 部分（`a0f7525`）**；晚间合并快进回主树+池工件 restore+终态门补跑（首两轮被内存超频崩溃假阻塞，owner 松内存后两连绿 4,561×2+慢 lane 31/31，环境层定谳另见仓库外记忆卡） | `front_offset_incident_20260718/00`-`02`；`rules_audit_20260718/00`-`01` |
 
 ### 0b. 方法论：规则归属判据 v2 → v2.2（2026-07-17 三轮推出 v1/v2/v2.1；07-18 两轮补 cut 方法论与四问统一）
 
