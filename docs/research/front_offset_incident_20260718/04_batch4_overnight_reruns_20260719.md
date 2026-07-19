@@ -66,4 +66,4 @@ harness 扩 `cpsat_max` 臂（v5 配方 `--maximize` 受控重跑，`--time-limi
 
 ## 6. 批 4 剩余项（更新后）
 
-生产 FCL A/B ✅；RAB-on SIGSEGV 调查 ✅（销项）；witness maximize 臂 + 新池基线 ✅（本文 §5）；witness 链独立零违规审计 ✅（本文 §5b）；Rounds 梯队 1-2 ✅（梯队 2 见 `05` 号）；剩：Rounds 梯队 3（Round 3 必要条件实体口重证 + Round 4/5 bespoke 紧凑 master 重建——已按 owner 端到端流程派 codex plan 模式进行中）、PB 当前 provenance 工件的完整 solver+verifier 闭环。"24 杠杆穷尽/结构墙"等全称判词维持撤回。
+生产 FCL A/B ✅；RAB-on SIGSEGV 调查 ✅（销项）；witness maximize 臂 + 新池基线 ✅（本文 §5）；witness 链独立零违规审计 ✅（本文 §5b）；Rounds 梯队 1-2 ✅（梯队 2 见 `05` 号）；Rounds 梯队 3 主件 round45 bespoke master 重验 ✅（RND-06 完成，`06` 号，合并 `74ff084`）；PB solver+verifier 闭环 ✅（PB-03 收官，`07` 号：(1326,34) residual-band VeriPB 证书，合并 `18a6270`）。**批 4 清单至此全清（2026-07-20）**。"24 杠杆穷尽/结构墙"等全称判词维持撤回（重跑后的新账见各号文档，不恢复历史判决）。悬项移交：Round 3 必要条件实体口重证（RND-05）是否已被 round45 正规形+松弛论证实质覆盖——判读归 rounds 后续批。
