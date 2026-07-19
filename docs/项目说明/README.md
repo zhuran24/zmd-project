@@ -30,6 +30,7 @@ Option B）另列发布时点，非 P1.2 blocker。
 | supervisor 实现 | [p1_2_supervisor_detailed_design.md](p1_2_supervisor_detailed_design.md) |
 | 数学/cut 背景 | [02_mathematical_foundations.md](02_mathematical_foundations.md) |
 | 历史死路 | [03_paradigm_death_baseline.md](03_paradigm_death_baseline.md) + [07_historical_review.md](07_historical_review.md) |
+| 项目怎么走到今天（人话编年史） | [22_project_journey_plain_language.md](22_project_journey_plain_language.md) |
 | 后续 P1.3 | [09_phase_1_3_plan.md](09_phase_1_3_plan.md) |
 | 测试与审查 | [12_go_criteria.md](12_go_criteria.md), [15_workflow_testing.md](15_workflow_testing.md), [16_workflow_review.md](16_workflow_review.md) |
 
