@@ -18,10 +18,10 @@ import json
 import math
 import weakref
 from collections.abc import Mapping, Sequence, Set
-from dataclasses import dataclass, field, fields, is_dataclass
+from dataclasses import dataclass, field, fields, is_dataclass, replace
 from enum import Enum
 from types import MappingProxyType
-from typing import Callable, Final, Literal, Protocol, TypeAlias, cast
+from typing import TYPE_CHECKING, Callable, Final, Literal, Protocol, TypeAlias, cast
 
 from src.cuts.state_snapshot import (
     F5PatternNogoodInputs,
@@ -29,6 +29,9 @@ from src.cuts.state_snapshot import (
     ValidatedStateSnapshot,
     blocked_cells_digest_v1,
 )
+
+if TYPE_CHECKING:
+    from src.cuts.family_specs import FamilySpecRegistry
 
 
 FrozenScalar: TypeAlias = None | bool | int | float | str
@@ -732,11 +735,11 @@ class ModelScopeBinding:
             raise TypeError("ModelScopeBinding.condition_lits must be tuple")
         if blocked_cells is not None and type(blocked_cells) is not frozenset:
             raise TypeError("ModelScopeBinding.blocked_cells must be frozenset or None")
-        if type(master_domain_family) is not str or master_domain_family not in {
-            "power_hitting_set",
-            "region_capacity",
-            "shape_packing_hall",
-        }:
+        if (
+            type(master_domain_family) is not str
+            or not master_domain_family
+            or master_domain_family.strip() != master_domain_family
+        ):
             raise ValueError("ModelScopeBinding.master_domain_family is outside the compiled family set")
         if type(master_ref) is not weakref.ReferenceType:
             raise TypeError("ModelScopeBinding.master_ref must be an exact weak reference")
@@ -958,12 +961,14 @@ class FamilyCapabilityRegistry:
 
     capabilities: Mapping[str, FamilyCapability]
     plugins: Mapping[str, FamilyPlugin]
+    family_specs: FamilySpecRegistry | None
 
     def __init__(
         self,
         *,
         capabilities: Mapping[str, FamilyCapability],
         plugins: Mapping[str, FamilyPlugin],
+        family_specs: FamilySpecRegistry | None = None,
     ) -> None:
         if not isinstance(capabilities, Mapping) or not isinstance(plugins, Mapping):
             raise TypeError("registry capabilities/plugins must be mappings")
@@ -997,8 +1002,62 @@ class FamilyCapabilityRegistry:
                 raise ValueError(f"non-compilable family {name!r} cannot advertise compiler_version")
             if capability.stage is CapabilityStage.RETIRED and has_plugin:
                 raise ValueError(f"retired family {name!r} cannot register a plugin")
+        checked_family_specs: FamilySpecRegistry | None = None
+        if family_specs is not None:
+            # Local import preserves the initialization boundary: family_specs
+            # imports the platform types above while constructing its immutable
+            # manifest, whereas only an already-built registry consumes it.
+            from src.cuts.family_specs import (
+                FamilySpecRegistry,
+                PluginProviderKind,
+                PluginProviderSpec,
+            )
+
+            if type(family_specs) is not FamilySpecRegistry:
+                raise TypeError(
+                    "registry family_specs must be an exact FamilySpecRegistry or None"
+                )
+            checked_family_specs = family_specs
+            expected_families = frozenset(checked_family_specs.trust_specs)
+            if frozenset(checked_capabilities) != expected_families:
+                raise ValueError(
+                    "registry capabilities must exactly cover family_specs trust rows"
+                )
+            for name, capability in checked_capabilities.items():
+                if capability != checked_family_specs.trust_specs[name].capability:
+                    raise ValueError(
+                        f"registry capability {name!r} differs from family_specs capability"
+                    )
+            expected_plugin_families = frozenset(
+                name
+                for name, spec in checked_family_specs.trust_specs.items()
+                if spec.typed_plugin.is_available
+            )
+            if frozenset(checked_plugins) != expected_plugin_families:
+                raise ValueError(
+                    "registry plugins must exactly cover available family_specs typed plugins"
+                )
+            for name, plugin in checked_plugins.items():
+                provider = cast(
+                    PluginProviderSpec,
+                    checked_family_specs.trust_specs[name].typed_plugin.require(
+                        family=name,
+                        capability="typed plugin",
+                    ),
+                )
+                provider_target = provider.provider.target
+                if provider.kind is PluginProviderKind.FACTORY:
+                    if type(plugin) is not provider_target:
+                        raise ValueError(
+                            f"registry plugin {name!r} type differs from family_specs provider"
+                        )
+                elif plugin is not provider_target:
+                    raise ValueError(
+                        f"registry plugin {name!r} instance differs from family_specs provider"
+                    )
         object.__setattr__(self, "capabilities", MappingProxyType(checked_capabilities))
         object.__setattr__(self, "plugins", MappingProxyType(checked_plugins))
+        object.__setattr__(self, "family_specs", checked_family_specs)
 
 
 _F5_STOPPED_REASONS = frozenset(
@@ -1371,130 +1430,47 @@ def build_production_registry() -> FamilyCapabilityRegistry:
     row.
     """
 
-    # Local import avoids a module-initialization cycle: the family plugin uses
-    # the platform protocol and immutable plan types defined above.
-    from src.cuts.families.region_capacity_typed import (
-        REGION_CAPACITY_COMPILER_VERSION,
-        REGION_CAPACITY_VALIDATOR_VERSION,
-        RegionCapacityPlugin,
-    )
-    from src.cuts.families.power_hitting_set_typed import (
-        POWER_HITTING_SET_COMPILER_VERSION,
-        POWER_HITTING_SET_VALIDATOR_VERSION,
-        PowerHittingSetPlugin,
-    )
-    from src.cuts.families.shape_packing_hall_typed import (
-        SHAPE_PACKING_HALL_COMPILER_VERSION,
-        SHAPE_PACKING_HALL_VALIDATOR_VERSION,
-        ShapePackingHallPlugin,
+    # Local import avoids the module-initialization cycle: the manifest imports
+    # the platform types above while it constructs its checked static rows.
+    from src.cuts.family_specs import (
+        PRODUCTION_FAMILY_MANIFEST_V1,
+        PluginProviderKind,
+        PluginProviderSpec,
     )
 
-    region_capacity_plugin: FamilyPlugin = RegionCapacityPlugin()
-    power_hitting_set_plugin: FamilyPlugin = PowerHittingSetPlugin()
-    shape_packing_hall_plugin: FamilyPlugin = ShapePackingHallPlugin()
-
+    family_specs = PRODUCTION_FAMILY_MANIFEST_V1
     capabilities = {
-        "region_capacity": FamilyCapability(
-            name="region_capacity",
-            mode="geometric",
-            proof_schema_version=1,
-            validator_version=REGION_CAPACITY_VALIDATOR_VERSION,
-            compiler_version=REGION_CAPACITY_COMPILER_VERSION,
-            stage=CapabilityStage.COMPILABLE,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.TYPED,
-        ),
-        "cutset": FamilyCapability(
-            name="cutset",
-            mode="geometric",
-            proof_schema_version=1,
-            validator_version="legacy-diagnostic-v1",
-            compiler_version=None,
-            stage=CapabilityStage.VALIDATED,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
-        ),
-        "port_exposure": FamilyCapability(
-            name="port_exposure",
-            mode="literal",
-            proof_schema_version=1,
-            validator_version="legacy-diagnostic-v1",
-            compiler_version=None,
-            stage=CapabilityStage.VALIDATED,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
-        ),
-        "component_reach": FamilyCapability(
-            name="component_reach",
-            mode="geometric",
-            proof_schema_version=1,
-            validator_version="legacy-diagnostic-v1",
-            compiler_version=None,
-            stage=CapabilityStage.VALIDATED,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
-        ),
-        "pattern_nogood": FamilyCapability(
-            name="pattern_nogood",
-            mode="literal",
-            proof_schema_version=1,
-            validator_version="stage-b-f5-shadow-v1",
-            compiler_version=None,
-            stage=CapabilityStage.VALIDATED,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.TYPED,
-        ),
-        "shape_packing_hall": FamilyCapability(
-            name="shape_packing_hall",
-            mode="geometric",
-            proof_schema_version=1,
-            validator_version=SHAPE_PACKING_HALL_VALIDATOR_VERSION,
-            compiler_version=SHAPE_PACKING_HALL_COMPILER_VERSION,
-            stage=CapabilityStage.COMPILABLE,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.TYPED,
-            requires_ghost_bound=True,
-        ),
-        "power_hitting_set": FamilyCapability(
-            name="power_hitting_set",
-            mode="literal",
-            proof_schema_version=1,
-            validator_version=POWER_HITTING_SET_VALIDATOR_VERSION,
-            compiler_version=POWER_HITTING_SET_COMPILER_VERSION,
-            stage=CapabilityStage.COMPILABLE,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.TYPED,
-            requires_ghost_bound=True,
-        ),
-        "power_grid_reach": FamilyCapability(
-            name="power_grid_reach",
-            mode="geometric",
-            proof_schema_version=1,
-            validator_version="retired-false-premise",
-            compiler_version=None,
-            stage=CapabilityStage.RETIRED,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
-        ),
-        "density_envelope": FamilyCapability(
-            name="density_envelope",
-            mode="geometric",
-            proof_schema_version=1,
-            validator_version="legacy-diagnostic-v1",
-            compiler_version=None,
-            stage=CapabilityStage.VALIDATED,
-            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
-            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
-        ),
+        family: replace(trust.capability)
+        for family, trust in family_specs.trust_specs.items()
     }
+    factory_plugins: dict[str, FamilyPlugin] = {}
+    for family in family_specs.typed_plugin_factory_order:
+        provider = cast(
+            PluginProviderSpec,
+            family_specs.trust(family).typed_plugin.require(
+                family=family,
+                capability="typed plugin",
+            ),
+        )
+        factory_plugins[family] = provider.build()
+    plugins: dict[str, FamilyPlugin] = {}
+    for family in family_specs.typed_plugin_order:
+        trust = family_specs.trust(family)
+        provider = cast(
+            PluginProviderSpec,
+            trust.typed_plugin.require(
+                family=family,
+                capability="typed plugin",
+            ),
+        )
+        if provider.kind is PluginProviderKind.FACTORY:
+            plugins[family] = factory_plugins[family]
+        else:
+            plugins[family] = provider.build()
     return FamilyCapabilityRegistry(
         capabilities=capabilities,
-        plugins={
-            "pattern_nogood": _PRODUCTION_F5_PLUGIN,
-            "power_hitting_set": power_hitting_set_plugin,
-            "region_capacity": region_capacity_plugin,
-            "shape_packing_hall": shape_packing_hall_plugin,
-        },
+        plugins=plugins,
+        family_specs=family_specs,
     )
 
 
@@ -1895,6 +1871,7 @@ def _validate_compiled_plan(
     *,
     envelope: CutEnvelope,
     capability: FamilyCapability,
+    family_specs: FamilySpecRegistry | None,
 ) -> ConstraintPlan:
     if type(plan) is not ConstraintPlan:
         raise TypeError("family compiler must return an exact ConstraintPlan")
@@ -1919,12 +1896,26 @@ def _validate_compiled_plan(
             "plan",
             "ConstraintPlan model scope ghost identity differs from envelope scope",
         )
-    operation_by_family = {
-        "power_hitting_set": "power_pose_exclusion",
-        "region_capacity": "region_capacity_le",
-        "shape_packing_hall": "shape_packing_hall_le",
-    }
-    if operation_by_family.get(envelope.family) != checked.operation:
+    if family_specs is None:
+        # Compatibility seam for existing isolated registry/plugin tests.  All
+        # production registries carry the exact checked family manifest.
+        operation_by_family = {
+            "power_hitting_set": "power_pose_exclusion",
+            "region_capacity": "region_capacity_le",
+            "shape_packing_hall": "shape_packing_hall_le",
+        }
+        expected_operation = operation_by_family.get(envelope.family)
+    else:
+        from src.cuts.family_specs import LoweringSpec
+
+        lowering = family_specs.trust(envelope.family).lowering.require(
+            family=envelope.family,
+            capability="trusted lowering",
+        )
+        if type(lowering) is not LoweringSpec:  # pragma: no cover - manifest gate
+            raise TypeError("family manifest lowering must be an exact LoweringSpec")
+        expected_operation = lowering.operation
+    if expected_operation != checked.operation:
         raise SemanticCutRejection(
             "plan",
             "ConstraintPlan.operation is invalid for envelope family",
@@ -2059,6 +2050,7 @@ def validate_and_compile_cut(
             candidate_plan,
             envelope=envelope,
             capability=capability,
+            family_specs=registry.family_specs,
         )
     except SemanticCutRejection as rejection:
         return _semantic_rejection_result(rejection, cut_id=envelope.cut_id)

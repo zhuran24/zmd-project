@@ -1,16 +1,18 @@
-"""Shadow-only family evolution manifest for the cut platform.
+"""Versioned family evolution manifest for the cut platform.
 
-This module describes the *current* F1--F9 wiring without participating in
-that wiring.  Milestone A deliberately leaves every production caller on its
-existing tables and branches; consistency tests may import this module, but no
-runtime module imports it.
+This module describes the current F1--F9 wiring.  Milestone A introduced it as
+a shadow manifest; Milestone B makes the production registry, replay metadata,
+lifecycle projection selection, and Benders generation dispatch consume its
+checked static rows.  Trusted lowering remains the closed operation switch in
+``typed_apply``—the manifest can select an existing primitive but cannot add
+runtime Python or a new operation.
 
 Two dependency views are kept separate on purpose:
 
 ``authority_dependency_closure``
     The established schema-v1 eight-artifact closure carried by every current
-    ``FamilyCapability``.  It is repeated here so a shadow gate can prove exact
-    parity before any consumer is migrated.
+    ``FamilyCapability``.  The registry constructor checks exact parity before
+    accepting a manifest-backed production registry.
 
 ``consumed_snapshot_field_ids``
     The exact snapshot fields read by the typed single-entry chain for one
@@ -18,18 +20,18 @@ Two dependency views are kept separate on purpose:
     dependency set and never enter a cut, proof, snapshot, plan, digest, or
     semantic fingerprint.
 
-Generation, replay, apply, and plugin references are direct Python objects
-captured at import time.  The cross-layer F5 adapter and independent checker
-use immutable source identities so importing this shadow module does not pull
-``src.search``/``src.models`` into the cut layer.  Identity records have no
-resolver.  There is no entry-point discovery, runtime registration API, or
-general constraint DSL in this module.
+Generation, typed replay/apply, cross-layer adapters, and independent checkers
+are immutable source identities with no resolver.  Only the already-live
+legacy replay validators and typed plugin providers retain direct objects,
+because those two consumers execute them from this manifest.  Importing this
+module does not pull ``src.search``/``src.models`` into the cut layer.  There is
+no entry-point discovery, runtime registration API, or general constraint DSL
+in this module.
 """
 
 from __future__ import annotations
 
 import hashlib
-import inspect
 import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field, fields as dataclass_fields, is_dataclass
@@ -56,17 +58,6 @@ from src.cuts.families.shape_packing_hall_typed import (
     SHAPE_PACKING_HALL_VALIDATOR_VERSION,
     ShapePackingHallPlugin,
 )
-from src.cuts.oracles.component_reach_oracle import generate_component_reach_cuts
-from src.cuts.oracles.cutset_oracle import generate_cutset_cuts
-from src.cuts.oracles.density_envelope_oracle import generate_density_envelope_cuts
-from src.cuts.oracles.pattern_nogood_oracle import generate_pattern_nogood_cuts
-from src.cuts.oracles.port_exposure_oracle import generate_port_exposure_cuts
-from src.cuts.oracles.power_cover_oracle import generate_power_hitting_set_cuts
-from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
-from src.cuts.oracles.shape_packing_hall_oracle import (
-    compute_sot_region_demand_overrides,
-    generate_shape_packing_hall_cuts,
-)
 from src.cuts.rule_semantics import (
     PRODUCTION_RULE_SEMANTICS_V1,
     AvailableExactChecker,
@@ -74,7 +65,6 @@ from src.cuts.rule_semantics import (
     RuleSemanticRegistry,
     VersionedRuleRef,
 )
-from src.cuts.typed_apply import apply_compiled_cut
 from src.cuts.typed_platform import (
     SUPPORTED_OPERATIONS,
     CapabilityStage,
@@ -84,7 +74,6 @@ from src.cuts.typed_platform import (
     FamilyMode,
     FamilyPlugin,
     _PRODUCTION_F5_PLUGIN,
-    validate_and_compile_cut,
 )
 _T = TypeVar("_T")
 _FAMILY_MANIFEST_AUDIT_PREFIX: Final = b"zmd.family-manifest.audit.v1:"
@@ -227,16 +216,35 @@ class PluginProviderKind(Enum):
 class PluginProviderSpec:
     kind: PluginProviderKind
     provider: StaticObjectRef[object]
+    production_order: int
+    factory_construction_order: int | None
 
     def __post_init__(self) -> None:
         if type(self.kind) is not PluginProviderKind:
             raise TypeError("PluginProviderSpec.kind must be PluginProviderKind")
         if type(self.provider) is not StaticObjectRef:
             raise TypeError("PluginProviderSpec.provider must be StaticObjectRef")
-        if self.kind is PluginProviderKind.FACTORY and not isinstance(self.provider.target, type):
-            raise TypeError("factory plugin provider must reference a class")
-        if self.kind is PluginProviderKind.INSTANCE and isinstance(self.provider.target, type):
-            raise TypeError("instance plugin provider cannot reference a class")
+        if type(self.production_order) is not int or self.production_order < 0:
+            raise ValueError(
+                "PluginProviderSpec.production_order must be a non-negative exact int"
+            )
+        if self.kind is PluginProviderKind.FACTORY:
+            if not isinstance(self.provider.target, type):
+                raise TypeError("factory plugin provider must reference a class")
+            if (
+                type(self.factory_construction_order) is not int
+                or self.factory_construction_order < 0
+            ):
+                raise ValueError(
+                    "factory plugin provider requires a non-negative construction order"
+                )
+        else:
+            if isinstance(self.provider.target, type):
+                raise TypeError("instance plugin provider cannot reference a class")
+            if self.factory_construction_order is not None:
+                raise ValueError(
+                    "instance plugin provider cannot have a factory construction order"
+                )
 
     def build(self) -> FamilyPlugin:
         """Build/return the statically referenced plugin; no discovery occurs."""
@@ -282,14 +290,16 @@ class SnapshotProjectionSpec:
 @dataclass(frozen=True, slots=True)
 class LoweringSpec:
     operation: ConstraintOperation
-    typed_apply_entrypoint: StaticCallableRef
+    typed_apply_entrypoint: StaticSymbolIdentity
     master_primitive: str
 
     def __post_init__(self) -> None:
         if self.operation not in SUPPORTED_OPERATIONS:
             raise ValueError(f"unknown closed lowering operation {self.operation!r}")
-        if type(self.typed_apply_entrypoint) is not StaticCallableRef:
-            raise TypeError("LoweringSpec.typed_apply_entrypoint must be StaticCallableRef")
+        if type(self.typed_apply_entrypoint) is not StaticSymbolIdentity:
+            raise TypeError(
+                "LoweringSpec.typed_apply_entrypoint must be StaticSymbolIdentity"
+            )
         primitive = _require_token(
             self.master_primitive,
             field_name="LoweringSpec.master_primitive",
@@ -306,13 +316,20 @@ class ReplayKind(Enum):
 @dataclass(frozen=True, slots=True)
 class ReplaySpec:
     kind: ReplayKind
-    entrypoint: StaticCallableRef
+    entrypoint: StaticCallableRef | StaticSymbolIdentity
 
     def __post_init__(self) -> None:
         if type(self.kind) is not ReplayKind:
             raise TypeError("ReplaySpec.kind must be ReplayKind")
-        if type(self.entrypoint) is not StaticCallableRef:
-            raise TypeError("ReplaySpec.entrypoint must be StaticCallableRef")
+        if self.kind is ReplayKind.TYPED_SINGLE_ENTRY:
+            if type(self.entrypoint) is not StaticSymbolIdentity:
+                raise TypeError(
+                    "typed replay entrypoint must be StaticSymbolIdentity"
+                )
+        elif type(self.entrypoint) is not StaticCallableRef:
+            raise TypeError(
+                "legacy diagnostic replay entrypoint must be StaticCallableRef"
+            )
 
 
 class TelemetryProfile(Enum):
@@ -382,7 +399,7 @@ class ProofSchemaSpec:
 
 @dataclass(frozen=True, slots=True)
 class FamilyTrustSpec:
-    """The shadow trust row for one current family."""
+    """The versioned trust row for one current family."""
 
     capability: FamilyCapability
     proof_schema: CapabilityAvailability[ProofSchemaSpec]
@@ -463,7 +480,7 @@ class FamilyTrustSpec:
         if type(self.authority_dependency_closure) is not frozenset:
             raise TypeError("authority_dependency_closure must be frozenset")
         if self.authority_dependency_closure != self.capability.required_dependencies:
-            raise ValueError("shadow authority dependency closure differs from FamilyCapability")
+            raise ValueError("authority dependency closure differs from FamilyCapability")
         _validate_token_set(
             self.authority_dependency_closure,
             field_name=f"{self.capability.name}.authority_dependency_closure",
@@ -492,7 +509,7 @@ class FamilyTrustSpec:
 
     @property
     def family(self) -> str:
-        return cast(str, self.capability.name)
+        return self.capability.name
 
     @property
     def rule_semantic_ids(self) -> tuple[str, ...]:
@@ -630,7 +647,7 @@ class FamilyGenerationSpec:
     oracle_name: CapabilityAvailability[str]
     family_version: CapabilityAvailability[str]
     validator_version: CapabilityAvailability[str]
-    generator: CapabilityAvailability[StaticCallableRef]
+    generator: CapabilityAvailability[StaticSymbolIdentity]
     generation_invoker: CapabilityAvailability[StaticSymbolIdentity]
     adapter_factory: CapabilityAvailability[
         StaticCallableRef | StaticSymbolIdentity
@@ -661,7 +678,7 @@ class FamilyGenerationSpec:
                 )
         _validate_availability(
             self.generator,
-            available_types=(StaticCallableRef,),
+            available_types=(StaticSymbolIdentity,),
             field_name=f"{self.family}.generator",
         )
         _validate_availability(
@@ -719,18 +736,6 @@ class FamilyGenerationSpec:
             )
         ):
             raise ValueError("live generation row requires oracle and wire versions")
-        generator = cast(
-            StaticCallableRef,
-            self.generator.require(
-                family=self.family,
-                capability="generator",
-            ),
-        )
-        actual_parameters = tuple(inspect.signature(generator.target).parameters)
-        if actual_parameters != self.generator_parameter_ids:
-            raise ValueError(
-                f"{self.family}.generator_parameter_ids differs from generator signature"
-            )
         if self.surface is GenerationSurface.TYPED_ATTACH:
             if not self.generation_invoker.is_available:
                 raise ValueError(
@@ -884,13 +889,15 @@ def _audit_value(value: object) -> object:
 
 @dataclass(frozen=True, slots=True, init=False)
 class FamilySpecRegistry:
-    """Immutable, exhaustively checked F1--F9 shadow manifest."""
+    """Immutable, exhaustively checked F1--F9 production manifest."""
 
     schema_version: int
     rule_semantics: RuleSemanticRegistry
     trust_specs: Mapping[str, FamilyTrustSpec]
     generation_specs: Mapping[str, FamilyGenerationSpec]
     typed_generation_order: tuple[str, ...]
+    typed_plugin_order: tuple[str, ...]
+    typed_plugin_factory_order: tuple[str, ...]
     audit_digest: str
 
     def __init__(
@@ -941,6 +948,42 @@ class FamilySpecRegistry:
             raise ValueError("typed generation order indices must be contiguous from zero")
         if derived_order != typed_generation_order:
             raise ValueError("typed generation order differs from generation rows")
+        plugin_rows: list[tuple[int, str]] = []
+        for family, trust in checked_trust.items():
+            if not trust.typed_plugin.is_available:
+                continue
+            provider = trust.typed_plugin.require(
+                family=family,
+                capability="typed plugin",
+            )
+            if type(provider) is not PluginProviderSpec:  # pragma: no cover - row gate
+                raise TypeError("typed plugin row must be PluginProviderSpec")
+            plugin_rows.append((provider.production_order, family))
+        plugin_rows.sort()
+        plugin_indices = tuple(index for index, _family in plugin_rows)
+        if len(plugin_indices) != len(set(plugin_indices)):
+            raise ValueError("typed plugin order indices must be unique")
+        typed_plugin_order = tuple(family for _index, family in plugin_rows)
+        factory_rows: list[tuple[int, str]] = []
+        for family in typed_plugin_order:
+            provider = checked_trust[family].typed_plugin.require(
+                family=family,
+                capability="typed plugin",
+            )
+            if type(provider) is not PluginProviderSpec:  # pragma: no cover - row gate
+                raise TypeError("typed plugin row must be PluginProviderSpec")
+            if provider.kind is PluginProviderKind.FACTORY:
+                construction_order = provider.factory_construction_order
+                if type(construction_order) is not int:  # pragma: no cover - provider gate
+                    raise TypeError("factory plugin construction order must be exact int")
+                factory_rows.append((construction_order, family))
+        factory_rows.sort()
+        factory_indices = tuple(index for index, _family in factory_rows)
+        if len(factory_indices) != len(set(factory_indices)):
+            raise ValueError("factory plugin construction order indices must be unique")
+        typed_plugin_factory_order = tuple(
+            family for _index, family in factory_rows
+        )
         for family, generation in checked_generation.items():
             trust = checked_trust[family]
             missing_rule_ids = (
@@ -1091,6 +1134,12 @@ class FamilySpecRegistry:
             MappingProxyType(checked_generation),
         )
         object.__setattr__(self, "typed_generation_order", typed_generation_order)
+        object.__setattr__(self, "typed_plugin_order", typed_plugin_order)
+        object.__setattr__(
+            self,
+            "typed_plugin_factory_order",
+            typed_plugin_factory_order,
+        )
         object.__setattr__(self, "audit_digest", audit_digest)
 
     def trust(self, family: str) -> FamilyTrustSpec:
@@ -1166,25 +1215,39 @@ _GHOST_BOUND_SNAPSHOT_FIELDS: Final = frozenset(
 
 _TYPED_REPLAY = ReplaySpec(
     kind=ReplayKind.TYPED_SINGLE_ENTRY,
-    entrypoint=StaticCallableRef.capture(validate_and_compile_cut),
+    entrypoint=StaticSymbolIdentity(
+        module="src.cuts.typed_platform",
+        qualname="validate_and_compile_cut",
+    ),
 )
-_TYPED_APPLY = StaticCallableRef.capture(apply_compiled_cut)
+_TYPED_APPLY = StaticSymbolIdentity(
+    module="src.cuts.typed_apply",
+    qualname="apply_compiled_cut",
+)
 
 _REGION_PLUGIN = PluginProviderSpec(
     kind=PluginProviderKind.FACTORY,
     provider=StaticObjectRef.capture(RegionCapacityPlugin),
+    production_order=2,
+    factory_construction_order=0,
 )
 _F5_PLUGIN = PluginProviderSpec(
     kind=PluginProviderKind.INSTANCE,
     provider=StaticObjectRef.capture(_PRODUCTION_F5_PLUGIN),
+    production_order=0,
+    factory_construction_order=None,
 )
 _HALL_PLUGIN = PluginProviderSpec(
     kind=PluginProviderKind.FACTORY,
     provider=StaticObjectRef.capture(ShapePackingHallPlugin),
+    production_order=3,
+    factory_construction_order=2,
 )
 _POWER_PLUGIN = PluginProviderSpec(
     kind=PluginProviderKind.FACTORY,
     provider=StaticObjectRef.capture(PowerHittingSetPlugin),
+    production_order=1,
+    factory_construction_order=1,
 )
 
 
@@ -1798,8 +1861,11 @@ PRODUCTION_FAMILY_TRUST_SPECS_V1: Final[Mapping[str, FamilyTrustSpec]] = Mapping
 )
 
 
-def _generator(target: Callable[..., object]) -> AvailableCapability[StaticCallableRef]:
-    return _available(StaticCallableRef.capture(target))
+def _generator(
+    module: str,
+    qualname: str,
+) -> AvailableCapability[StaticSymbolIdentity]:
+    return _available(StaticSymbolIdentity(module=module, qualname=qualname))
 
 
 _NO_ADAPTER = _unavailable("generator-has-no-separate-adapter")
@@ -1837,7 +1903,10 @@ PRODUCTION_FAMILY_GENERATION_SPECS_V1: Final[Mapping[str, FamilyGenerationSpec]]
             oracle_name=_available("region_capacity_v1"),
             family_version=_available("v1.2"),
             validator_version=_available("v1.2"),
-            generator=_generator(generate_region_capacity_cuts),
+            generator=_generator(
+                "src.cuts.oracles.region_capacity_oracle",
+                "generate_region_capacity_cuts",
+            ),
             generation_invoker=_available(_REGION_CAPACITY_INVOKER),
             adapter_factory=_NO_ADAPTER,
             preparation_steps=(),
@@ -1856,7 +1925,10 @@ PRODUCTION_FAMILY_GENERATION_SPECS_V1: Final[Mapping[str, FamilyGenerationSpec]]
             oracle_name=_available("cutset_v1"),
             family_version=_available("v1.0"),
             validator_version=_available("v1.0"),
-            generator=_generator(generate_cutset_cuts),
+            generator=_generator(
+                "src.cuts.oracles.cutset_oracle",
+                "generate_cutset_cuts",
+            ),
             generation_invoker=_NO_TYPED_INVOKER,
             adapter_factory=_NO_ADAPTER,
             preparation_steps=(),
@@ -1870,7 +1942,10 @@ PRODUCTION_FAMILY_GENERATION_SPECS_V1: Final[Mapping[str, FamilyGenerationSpec]]
             oracle_name=_available("port_exposure_v2_canonical_dirs"),
             family_version=_available("v1.0"),
             validator_version=_available("v1.0"),
-            generator=_generator(generate_port_exposure_cuts),
+            generator=_generator(
+                "src.cuts.oracles.port_exposure_oracle",
+                "generate_port_exposure_cuts",
+            ),
             generation_invoker=_NO_TYPED_INVOKER,
             adapter_factory=_NO_ADAPTER,
             preparation_steps=(),
@@ -1889,7 +1964,10 @@ PRODUCTION_FAMILY_GENERATION_SPECS_V1: Final[Mapping[str, FamilyGenerationSpec]]
             oracle_name=_available("component_reach_v1"),
             family_version=_available("v1.1"),
             validator_version=_available("v1.1"),
-            generator=_generator(generate_component_reach_cuts),
+            generator=_generator(
+                "src.cuts.oracles.component_reach_oracle",
+                "generate_component_reach_cuts",
+            ),
             generation_invoker=_NO_TYPED_INVOKER,
             adapter_factory=_NO_ADAPTER,
             preparation_steps=(),
@@ -1903,7 +1981,10 @@ PRODUCTION_FAMILY_GENERATION_SPECS_V1: Final[Mapping[str, FamilyGenerationSpec]]
             oracle_name=_available("pattern_nogood_v1"),
             family_version=_available("v1.0"),
             validator_version=_available("v1.0"),
-            generator=_generator(generate_pattern_nogood_cuts),
+            generator=_generator(
+                "src.cuts.oracles.pattern_nogood_oracle",
+                "generate_pattern_nogood_cuts",
+            ),
             generation_invoker=_available(_PATTERN_NOGOOD_INVOKER),
             adapter_factory=_available(
                 StaticSymbolIdentity(
@@ -1933,13 +2014,17 @@ PRODUCTION_FAMILY_GENERATION_SPECS_V1: Final[Mapping[str, FamilyGenerationSpec]]
             oracle_name=_available("shape_packing_hall_v1"),
             family_version=_available("v1.0"),
             validator_version=_available("v1.0"),
-            generator=_generator(generate_shape_packing_hall_cuts),
+            generator=_generator(
+                "src.cuts.oracles.shape_packing_hall_oracle",
+                "generate_shape_packing_hall_cuts",
+            ),
             generation_invoker=_available(_SHAPE_PACKING_HALL_INVOKER),
             adapter_factory=_NO_ADAPTER,
             preparation_steps=(
-                StaticCallableRef.capture(
-                    compute_sot_region_demand_overrides
-                ).identity,
+                StaticSymbolIdentity(
+                    module="src.cuts.oracles.shape_packing_hall_oracle",
+                    qualname="compute_sot_region_demand_overrides",
+                ),
             ),
             generator_parameter_ids=(
                 "state",
@@ -1961,7 +2046,10 @@ PRODUCTION_FAMILY_GENERATION_SPECS_V1: Final[Mapping[str, FamilyGenerationSpec]]
             oracle_name=_available("power_cover_v2_stencil"),
             family_version=_available("v1.0"),
             validator_version=_available("v1.0"),
-            generator=_generator(generate_power_hitting_set_cuts),
+            generator=_generator(
+                "src.cuts.oracles.power_cover_oracle",
+                "generate_power_hitting_set_cuts",
+            ),
             generation_invoker=_available(_POWER_HITTING_SET_INVOKER),
             adapter_factory=_NO_ADAPTER,
             preparation_steps=(_BENDERS_TARGET_POSES,),
@@ -1994,7 +2082,10 @@ PRODUCTION_FAMILY_GENERATION_SPECS_V1: Final[Mapping[str, FamilyGenerationSpec]]
             oracle_name=_available("density_envelope_v1"),
             family_version=_available("v1.0"),
             validator_version=_available("v1.0"),
-            generator=_generator(generate_density_envelope_cuts),
+            generator=_generator(
+                "src.cuts.oracles.density_envelope_oracle",
+                "generate_density_envelope_cuts",
+            ),
             generation_invoker=_NO_TYPED_INVOKER,
             adapter_factory=_NO_ADAPTER,
             preparation_steps=(),
@@ -2029,7 +2120,7 @@ PRODUCTION_FAMILY_MANIFEST_V1: Final = FamilySpecRegistry(
 )
 
 PINNED_PRODUCTION_FAMILY_MANIFEST_AUDIT_DIGEST_V1: Final = (
-    "88a0fafea4a30c83c19803fe7614bb6dd01e32b561c6c2f0e65a1700a97e08f2"
+    "4cf7b197cabbc5f5e634d10071d42c8f560de58f810bafba95e4755be762abb2"
 )
 if (
     PRODUCTION_FAMILY_MANIFEST_V1.audit_digest

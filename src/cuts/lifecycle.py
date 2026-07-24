@@ -54,6 +54,7 @@ from typing import (
 from src.cuts.cert_schema import validate_cert_payload as _validate_cert_payload
 
 if TYPE_CHECKING:
+    from src.cuts.family_specs import FamilySpecRegistry, SnapshotProjectionKind
     from src.cuts.typed_platform import CompiledCut, ModelScopeBinding
 
 
@@ -1527,7 +1528,73 @@ def _validate_materialized_pose_id_cache(
             raise ValueError("resolver: materialized pose-id cache drifted from its pool (fail-closed)")
 
 
-def _live_master_domain_projection(master: Any, family: str) -> str:
+def _checked_family_spec_registry(
+    family_specs: "FamilySpecRegistry | None",
+) -> "FamilySpecRegistry":
+    """Resolve the production manifest or validate an explicit test manifest."""
+
+    from src.cuts.family_specs import (
+        PRODUCTION_FAMILY_MANIFEST_V1,
+        FamilySpecRegistry,
+    )
+
+    selected = PRODUCTION_FAMILY_MANIFEST_V1 if family_specs is None else family_specs
+    if type(selected) is not FamilySpecRegistry:
+        raise TypeError("resolver: family_specs must be an exact FamilySpecRegistry")
+    return selected
+
+
+def _family_projection_kind(
+    family: str,
+    family_specs: "FamilySpecRegistry",
+) -> "SnapshotProjectionKind":
+    """Return one checked, closed projection kind for a compilable family."""
+
+    from src.cuts.family_specs import SnapshotProjectionSpec
+
+    if type(family) is not str or not family or family.strip() != family:
+        raise ValueError(f"resolver: unknown projection family {family!r} (fail-closed)")
+    try:
+        trust_spec = family_specs.trust(family)
+    except KeyError as exc:
+        raise ValueError(f"resolver: unknown projection family {family!r} (fail-closed)") from exc
+    if not trust_spec.master_domain_projection.is_available:
+        raise ValueError(f"resolver: unknown projection family {family!r} (fail-closed)")
+    projection = trust_spec.master_domain_projection.require(
+        family=family,
+        capability="master-domain projection",
+    )
+    if type(projection) is not SnapshotProjectionSpec:
+        raise TypeError("resolver: family manifest returned an invalid projection spec")
+    return projection.kind
+
+
+def _identify_snapshot_projection(
+    model_scope: Any,
+    snapshot: Any,
+) -> Tuple[str, "SnapshotProjectionKind"]:
+    """Preserve the v1 F1 -> F6 -> F7 fingerprint recognition order."""
+
+    from src.cuts.family_specs import SnapshotProjectionKind
+
+    fingerprint = model_scope.domain_fingerprint
+    if fingerprint == snapshot.master_domain_projection:
+        return "region_capacity", SnapshotProjectionKind.REGION_CAPACITY
+    if fingerprint == snapshot.shape_packing_hall_master_domain_projection:
+        return "shape_packing_hall", SnapshotProjectionKind.SHAPE_PACKING_HALL
+    if fingerprint == snapshot.power_hitting_set_master_domain_projection:
+        return "power_hitting_set", SnapshotProjectionKind.POWER_HITTING_SET
+    raise ValueError(
+        "resolver: plan domain fingerprint matches no snapshot family projection (fail-closed)"
+    )
+
+
+def _live_master_domain_projection(
+    master: Any,
+    family: str,
+    *,
+    family_specs: "FamilySpecRegistry | None" = None,
+) -> str:
     """Independently recompute one family's MasterDomainProjectionV1 from the
     LIVE master (RFC-001 §2.6).
 
@@ -1548,6 +1615,11 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
         power_hitting_set_master_domain_projection_v1,
     )
 
+    checked_family_specs = _checked_family_spec_registry(family_specs)
+    projection_kind = _family_projection_kind(family, checked_family_specs)
+
+    from src.cuts.family_specs import SnapshotProjectionKind
+
     delegate = master._coordinate_delegate
     if delegate is None:
         raise ValueError("resolver: master has no exact coordinate delegate (fail-closed)")
@@ -1565,10 +1637,10 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
         placement_rule = template.get("placement_rule", "free")
         needs_power = bool(template.get("needs_power", False))
         dims = slots[0].dims
-        if family == "region_capacity":
+        if projection_kind is SnapshotProjectionKind.REGION_CAPACITY:
             if placement_rule in _F1_MASTER_DOMAIN_PLACEMENT_RULES:
                 relevant_group_ids.append(group_id)
-        elif family == "shape_packing_hall":
+        elif projection_kind is SnapshotProjectionKind.SHAPE_PACKING_HALL:
             if (
                 placement_rule in _F6_MASTER_DOMAIN_PLACEMENT_RULES
                 and min(dims) == 1
@@ -1576,16 +1648,14 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
                 and len(slots) >= 1
             ):
                 relevant_group_ids.append(group_id)
-        elif family == "power_hitting_set":
+        elif projection_kind is SnapshotProjectionKind.POWER_HITTING_SET:
             if needs_power:
                 relevant_group_ids.append(group_id)
-        else:  # pragma: no cover - closed operation set upstream
-            raise ValueError(f"resolver: unknown projection family {family!r} (fail-closed)")
 
     relevant_group_ids = sorted(relevant_group_ids)
     powered_facility_types = sorted({mandatory_slots[gid][0].template for gid in relevant_group_ids})
     projection_facility_types = list(powered_facility_types)
-    if family == "power_hitting_set" and "power_pole" in live_pools:
+    if projection_kind is SnapshotProjectionKind.POWER_HITTING_SET and "power_pole" in live_pools:
         projection_facility_types = sorted(set(powered_facility_types) | {"power_pole"})
 
     relevant_pools = {
@@ -1600,7 +1670,7 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
                 (int(cell[0]), int(cell[1])) for cell in (pose.get("occupied_cells") or ())
             )
 
-    is_power = family == "power_hitting_set"
+    is_power = projection_kind is SnapshotProjectionKind.POWER_HITTING_SET
     registration_rows, _pose_tuple_by_key = _master_domain_pose_registrations(
         relevant_pools,
         pose_occupied_cells,
@@ -1649,7 +1719,11 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
             template_pose_registration_rows=registration_rows,
             power_coverer_rows=coverer_rows,
         )
-    family_subset = "region_capacity" if family == "region_capacity" else "shape_packing_hall"
+    family_subset = (
+        "region_capacity"
+        if projection_kind is SnapshotProjectionKind.REGION_CAPACITY
+        else "shape_packing_hall"
+    )
     return master_domain_projection_v1(
         family_subset=family_subset,
         facility_pool_projection=facility_pool_projection,
@@ -1658,7 +1732,14 @@ def _live_master_domain_projection(master: Any, family: str) -> str:
     )
 
 
-def _resolve_model_scope_binding(model_scope: Any, snapshot: Any, master: Any) -> "ModelScopeBinding":
+def _resolve_model_scope_binding(
+    model_scope: Any,
+    snapshot: Any,
+    master: Any,
+    *,
+    family: str | None = None,
+    family_specs: "FamilySpecRegistry | None" = None,
+) -> "ModelScopeBinding":
     """Sole resolver / constructor path for ``ModelScopeBinding`` (RFC-001 §2.6).
 
     Binds a compiled cut's master-independent ``ModelScope`` to the live master:
@@ -1700,6 +1781,8 @@ def _resolve_model_scope_binding(model_scope: Any, snapshot: Any, master: Any) -
         model_scope,
         snapshot,
         master,
+        family=family,
+        family_specs=family_specs,
     )
 
     return _build_model_scope_binding(
@@ -1718,28 +1801,52 @@ def _resolve_live_master_domain_projection(
     model_scope: Any,
     snapshot: Any,
     master: Any,
+    *,
+    family: str | None = None,
+    family_specs: "FamilySpecRegistry | None" = None,
 ) -> Tuple[str, str]:
     """Pick the family from the trusted snapshot, then recompute it live.
 
-    The resolver signature carries only the ``ModelScope`` (no family tag), so
-    the family is recovered by matching the plan's ``domain_fingerprint``
-    against the snapshot's three cached per-family projections — a trusted
-    side.  The recovered family and projection are returned together; the
-    projection is recomputed from the LIVE master, so a tampered master fails
-    the step-8 fingerprint equality even though classification used the intact
-    snapshot.
+    Legacy callers carry only ``ModelScope``, so the family is recovered by
+    matching the plan's ``domain_fingerprint`` against the snapshot's three
+    cached per-family projections.  A caller with a checked manifest may also
+    supply the plan family explicitly; families sharing one closed
+    ``SnapshotProjectionKind`` then retain distinct identities without adding
+    a family field to ``ModelScope``.  The projection is always recomputed from
+    the LIVE master, so tampering still fails the step-8 fingerprint equality.
     """
 
-    fingerprint = model_scope.domain_fingerprint
-    if fingerprint == snapshot.master_domain_projection:
-        family = "region_capacity"
-    elif fingerprint == snapshot.shape_packing_hall_master_domain_projection:
-        family = "shape_packing_hall"
-    elif fingerprint == snapshot.power_hitting_set_master_domain_projection:
-        family = "power_hitting_set"
+    identified_family, identified_kind = _identify_snapshot_projection(
+        model_scope,
+        snapshot,
+    )
+    if family is None:
+        resolved_family = identified_family
+        live_family_specs = family_specs
     else:
-        raise ValueError("resolver: plan domain fingerprint matches no snapshot family projection (fail-closed)")
-    return family, _live_master_domain_projection(master, family)
+        checked_family_specs = _checked_family_spec_registry(family_specs)
+        requested_kind = _family_projection_kind(family, checked_family_specs)
+        if requested_kind is identified_kind:
+            # A new family may deliberately share one existing projection
+            # primitive.  Keep its family identity while selecting the static
+            # primitive by SnapshotProjectionKind.
+            resolved_family = family
+            live_family_specs = checked_family_specs
+        else:
+            # Preserve the old cross-family failure path: bind the family that
+            # the v1 fingerprint identifies, then let step 8 emit its existing
+            # family-mismatch error after the preceding scope checks.
+            resolved_family = identified_family
+            live_family_specs = None
+    if live_family_specs is None:
+        live_projection = _live_master_domain_projection(master, resolved_family)
+    else:
+        live_projection = _live_master_domain_projection(
+            master,
+            resolved_family,
+            family_specs=live_family_specs,
+        )
+    return resolved_family, live_projection
 
 
 def step_8_apply_to_master(
@@ -1747,6 +1854,7 @@ def step_8_apply_to_master(
     master: Any,
     *,
     scope_binding: "ModelScopeBinding",
+    family_specs: "FamilySpecRegistry | None" = None,
 ) -> None:
     """Step 8 — push a typed ``CompiledCut`` to the CP-SAT master (RFC-001 §2.6).
 
@@ -1809,10 +1917,17 @@ def step_8_apply_to_master(
         if live_u_var is not scope_binding.condition_lits[0]:
             raise ValueError("step_8: resolved ghost literal identity drifted after binding (fail-closed)")
 
-    fresh_master_domain_projection = _live_master_domain_projection(
-        live_master,
-        scope_binding.master_domain_family,
-    )
+    if family_specs is None:
+        fresh_master_domain_projection = _live_master_domain_projection(
+            live_master,
+            scope_binding.master_domain_family,
+        )
+    else:
+        fresh_master_domain_projection = _live_master_domain_projection(
+            live_master,
+            scope_binding.master_domain_family,
+            family_specs=family_specs,
+        )
     if fresh_master_domain_projection != scope_binding.master_domain_projection:
         raise ValueError("step_8: live master domain changed after scope binding (fail-closed)")
 

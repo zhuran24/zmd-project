@@ -27,12 +27,14 @@ Refs:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, cast
 
-from src.cuts.families.component_reach import validate_component_reach
-from src.cuts.families.cutset import validate_cutset
-from src.cuts.families.density_envelope import validate_density_envelope
-from src.cuts.families.port_exposure import validate_port_exposure
+from src.cuts.family_specs import (
+    PRODUCTION_FAMILY_MANIFEST_V1,
+    ReplayKind,
+    ReplaySpec,
+    StaticCallableRef,
+)
 from src.cuts.lifecycle import (
     AttachDecision,
     BState,
@@ -48,38 +50,61 @@ from src.cuts.store import CutStore, QuarantineReason
 LegacyDiagnosticValidator = Callable[[Cut, BState, JsonDict], ValidationResult]
 
 
+def _production_replay_specs() -> Dict[str, ReplaySpec]:
+    """Project the checked manifest into the established replay table shape."""
+
+    replay_specs: Dict[str, ReplaySpec] = {}
+    for family, trust in PRODUCTION_FAMILY_MANIFEST_V1.trust_specs.items():
+        if not trust.replay.is_available:
+            continue
+        replay_specs[family] = cast(
+            ReplaySpec,
+            trust.replay.require(
+                family=family,
+                capability="replay",
+            ),
+        )
+    return replay_specs
+
+
+_PRODUCTION_REPLAY_SPECS = _production_replay_specs()
+
 # Typed single-entry families (RFC-001 §4.2): every one of these is routed
 # through cut_to_envelope_v1 → validate_and_compile_cut and NEVER through a
 # legacy validator or step_8.  pattern_nogood (F5) is here even though it only
 # ever yields ShadowValidated — the single entry is still its sole gate.
 TYPED_REPLAY_FAMILIES: frozenset[str] = frozenset(
-    {"region_capacity", "pattern_nogood", "shape_packing_hall", "power_hitting_set"}
+    family
+    for family, replay in _PRODUCTION_REPLAY_SPECS.items()
+    if replay.kind is ReplayKind.TYPED_SINGLE_ENTRY
 )
 
 # Legacy diagnostic-only families: validator returns a ValidationResult that is
 # projected into a DiagnosticResult; these NEVER reactivate a cut into the
 # active store (store.py reactivate_cut call-surface is cut off for them).
-LEGACY_DIAGNOSTIC_VALIDATORS: Dict[str, LegacyDiagnosticValidator] = {
-    "cutset": validate_cutset,
-    "port_exposure": validate_port_exposure,
-    "component_reach": validate_component_reach,
-    "density_envelope": validate_density_envelope,
-}
+def _legacy_diagnostic_validators() -> Dict[str, LegacyDiagnosticValidator]:
+    validators: Dict[str, LegacyDiagnosticValidator] = {}
+    for family, replay in _PRODUCTION_REPLAY_SPECS.items():
+        if replay.kind is not ReplayKind.LEGACY_DIAGNOSTIC:
+            continue
+        if type(replay.entrypoint) is not StaticCallableRef:  # pragma: no cover - manifest gate
+            raise TypeError(
+                f"legacy replay family {family!r} lacks a static callable entrypoint"
+            )
+        validators[family] = cast(
+            LegacyDiagnosticValidator,
+            replay.entrypoint.target,
+        )
+    return validators
+
+
+LEGACY_DIAGNOSTIC_VALIDATORS: Dict[str, LegacyDiagnosticValidator] = (
+    _legacy_diagnostic_validators()
+)
 
 # Machine pin: the two dispatch tables are disjoint and together cover exactly
 # the eight live families (F8 power_grid_reach is retired, not a replay family).
-_ALL_LIVE_REPLAY_FAMILIES: frozenset[str] = frozenset(
-    {
-        "cutset",
-        "component_reach",
-        "density_envelope",
-        "pattern_nogood",
-        "port_exposure",
-        "power_hitting_set",
-        "region_capacity",
-        "shape_packing_hall",
-    }
-)
+_ALL_LIVE_REPLAY_FAMILIES: frozenset[str] = frozenset(_PRODUCTION_REPLAY_SPECS)
 assert TYPED_REPLAY_FAMILIES.isdisjoint(
     LEGACY_DIAGNOSTIC_VALIDATORS
 ), "typed and legacy replay tables must be disjoint"

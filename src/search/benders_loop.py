@@ -3716,19 +3716,14 @@ def normalize_certified_power_pole_dominance(
     return normalized, summary
 
 
-# 批E (spec 08 D-13): the four typed families the attach orchestration can
-# generate. Enablement is parameter-level (no EXACT_* env knob; default
-# all-on so production behaviour is unchanged); the enabled set is a
-# component of the epoch semantic digest and drives the RFC-003 §9.7
-# rollback drill.
-_CUT_FRAMEWORK_ALL_FAMILIES: FrozenSet[str] = frozenset(
-    {
-        "region_capacity",
-        "shape_packing_hall",
-        "power_hitting_set",
-        "pattern_nogood",
-    }
-)
+def _cut_framework_all_families_v1() -> FrozenSet[str]:
+    """Project the single static manifest into the existing enablement set."""
+
+    from src.cuts.family_specs import PRODUCTION_FAMILY_MANIFEST_V1
+
+    return frozenset(PRODUCTION_FAMILY_MANIFEST_V1.typed_generation_order)
+
+
 _CUT_FRAMEWORK_EPOCH_COUNTER = itertools.count()
 
 
@@ -3778,15 +3773,16 @@ class LBBDController:
         self._session = session
         # 批E (spec 08 D-13): parameter-level family enablement — unknown
         # names are a caller defect and fail closed at construction.
+        all_cut_families = _cut_framework_all_families_v1()
         if enabled_cut_families is None:
-            self._enabled_cut_families: FrozenSet[str] = _CUT_FRAMEWORK_ALL_FAMILIES
+            self._enabled_cut_families: FrozenSet[str] = all_cut_families
         else:
             requested = frozenset(str(name) for name in enabled_cut_families)
-            unknown = requested - _CUT_FRAMEWORK_ALL_FAMILIES
+            unknown = requested - all_cut_families
             if unknown:
                 raise ValueError(
                     f"unknown cut families {sorted(unknown)}; "
-                    f"known: {sorted(_CUT_FRAMEWORK_ALL_FAMILIES)}"
+                    f"known: {sorted(all_cut_families)}"
                 )
             self._enabled_cut_families = requested
         # 批E (spec 08 D-2/D-3): per-master-build semantic-fingerprint dedup
@@ -8582,16 +8578,7 @@ class LBBDController:
             step_7_evaluate_cut,
             step_8_apply_to_master,
         )
-        from src.cuts.oracles.power_cover_oracle import (
-            generate_power_hitting_set_cuts,
-        )
-        from src.cuts.oracles.region_capacity_oracle import (
-            generate_region_capacity_cuts,
-        )
-        from src.cuts.oracles.shape_packing_hall_oracle import (
-            compute_sot_region_demand_overrides,
-            generate_shape_packing_hall_cuts,
-        )
+        from src.cuts.family_specs import PRODUCTION_FAMILY_MANIFEST_V1
         from src.cuts.state_snapshot import build_validated_state_snapshot
         from src.cuts.typed_platform import (
             CompiledCut,
@@ -8600,6 +8587,10 @@ class LBBDController:
             build_production_registry,
             cut_to_envelope_v1,
             validate_and_compile_cut,
+        )
+        from src.search.family_generation import (
+            FamilyGenerationRequest,
+            TYPED_FAMILY_GENERATION_INVOKERS_V1,
         )
 
         stats = getattr(self.master, "build_stats", None)
@@ -8692,66 +8683,26 @@ class LBBDController:
             fields.setdefault("epoch_semantic_digest", epoch_semantic_digest)
             ledger.append(event_type, fields)
 
-        # 批E (spec 08 D-13): family generation gated by the enabled set
-        # (default all-on == the pre-批E hard-wired behaviour).
+        # 批E (spec 08 D-13) + evolution protocol milestone B: retain the
+        # enabled-family outer gate and the established F1 → F7 → F6 → F5
+        # order, but source both order and dispatch from the checked static
+        # manifest.  Each invoker owns the former branch's internal gates and
+        # local imports; exceptions still propagate as TCB faults.
+        generation_request = FamilyGenerationRequest(
+            controller=self,
+            state=state,
+            solution=solution,
+            iteration=iteration,
+        )
         cuts: List[Any] = []
-        if "region_capacity" in self._enabled_cut_families:
+        for family in PRODUCTION_FAMILY_MANIFEST_V1.typed_generation_order:
+            if family not in self._enabled_cut_families:
+                continue
             cuts.extend(
-                generate_region_capacity_cuts(
-                    state, state.canonical_rules or {}, iter_index=iteration
+                TYPED_FAMILY_GENERATION_INVOKERS_V1[family](
+                    generation_request
                 )
             )
-        if solution is not None and "power_hitting_set" in self._enabled_cut_families:
-            target_poses = self._framework_target_poses(solution)
-            if target_poses:
-                cuts.extend(
-                    generate_power_hitting_set_cuts(
-                        state, target_poses=target_poses, iter_index=iteration
-                    )
-                )
-        # F6 (M4-B): overrides are the source-of-truth pigeonhole bounds —
-        # pure state geometry, no incumbent counting needed.
-        if "shape_packing_hall" in self._enabled_cut_families:
-            f6_overrides = compute_sot_region_demand_overrides(state)
-            if f6_overrides:
-                cuts.extend(
-                    generate_shape_packing_hall_cuts(
-                        state,
-                        region_demand_overrides=f6_overrides,
-                        iter_index=iteration,
-                    )
-                )
-        # F5 (M4-D3): distil the refuted incumbent into a minimal forbidden
-        # pattern via the liftable binding adapter. The adapter only ever
-        # answers INFEASIBLE for verdicts derivable from frozen artifacts
-        # (empty binding domain) — demand-equality failures refuse to lift.
-        if solution is not None and "pattern_nogood" in self._enabled_cut_families:
-            from src.cuts.oracles.pattern_nogood_oracle import (
-                generate_pattern_nogood_cuts,
-                lookup_sub_problem_oracle,
-                register_sub_problem_oracle,
-            )
-            from src.search.f5_binding_empty_domain_adapter import (
-                ADAPTER_NAME,
-                build_binding_empty_domain_adapter,
-            )
-
-            adapter = lookup_sub_problem_oracle(ADAPTER_NAME)
-            if adapter is None:
-                adapter = build_binding_empty_domain_adapter(
-                    getattr(self.master, "_mandatory_groups", None) or []
-                )
-                register_sub_problem_oracle(adapter)
-            full_literals = self._framework_full_assignment_literals(solution)
-            if full_literals:
-                cuts.extend(
-                    generate_pattern_nogood_cuts(
-                        state,
-                        sub_problem_oracle=adapter,
-                        full_assignment_literals=full_literals,
-                        iter_index=iteration,
-                    )
-                )
         attached = 0
         attached_by_family: Dict[str, int] = {}
         shadow_validated = 0
@@ -8832,7 +8783,11 @@ class LBBDController:
                     continue
                 try:
                     binding = _resolve_model_scope_binding(
-                        result.plan.model_scope, snapshot, self.master
+                        result.plan.model_scope,
+                        snapshot,
+                        self.master,
+                        family=result.plan.family,
+                        family_specs=registry.family_specs,
                     )
                     counter_before = 0
                     if isinstance(stats, dict):
@@ -8840,7 +8795,10 @@ class LBBDController:
                             stats.get("coordinate_framework_cut_count", 0)
                         )
                     step_8_apply_to_master(
-                        result, self.master, scope_binding=binding
+                        result,
+                        self.master,
+                        scope_binding=binding,
+                        family_specs=registry.family_specs,
                     )
                 except Exception:
                     # spec 08 D-4: any apply-chain gate failure is fail-closed

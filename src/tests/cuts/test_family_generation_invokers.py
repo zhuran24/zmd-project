@@ -1,4 +1,4 @@
-"""Pure-Python parity tests for the shadow typed generation invokers."""
+"""Pure-Python parity tests for the manifest-backed typed generation invokers."""
 
 from __future__ import annotations
 
@@ -129,8 +129,7 @@ def test_region_capacity_invoker_preserves_current_arguments(
         return expected
 
     monkeypatch.setattr(
-        generation_module,
-        "generate_region_capacity_cuts",
+        "src.cuts.oracles.region_capacity_oracle.generate_region_capacity_cuts",
         fake_generator,
     )
     assert generation_module.invoke_region_capacity_generation(request) is expected
@@ -158,8 +157,7 @@ def test_power_hitting_set_invoker_preserves_solution_gate_and_arguments(
         return expected
 
     monkeypatch.setattr(
-        generation_module,
-        "generate_power_hitting_set_cuts",
+        "src.cuts.oracles.power_cover_oracle.generate_power_hitting_set_cuts",
         fake_generator,
     )
     assert generation_module.invoke_power_hitting_set_generation(no_solution) == []
@@ -188,8 +186,7 @@ def test_shape_packing_invoker_preserves_preparation_gate_and_arguments(
     generator_calls: list[tuple[object, object, int]] = []
 
     monkeypatch.setattr(
-        generation_module,
-        "compute_sot_region_demand_overrides",
+        "src.cuts.oracles.shape_packing_hall_oracle.compute_sot_region_demand_overrides",
         lambda state: overrides,
     )
 
@@ -203,16 +200,14 @@ def test_shape_packing_invoker_preserves_preparation_gate_and_arguments(
         return expected
 
     monkeypatch.setattr(
-        generation_module,
-        "generate_shape_packing_hall_cuts",
+        "src.cuts.oracles.shape_packing_hall_oracle.generate_shape_packing_hall_cuts",
         fake_generator,
     )
     assert generation_module.invoke_shape_packing_hall_generation(request) is expected
     assert generator_calls == [(request.state, overrides, request.iteration)]
 
     monkeypatch.setattr(
-        generation_module,
-        "compute_sot_region_demand_overrides",
+        "src.cuts.oracles.shape_packing_hall_oracle.compute_sot_region_demand_overrides",
         lambda state: {},
     )
     assert generation_module.invoke_shape_packing_hall_generation(request) == []
@@ -232,8 +227,7 @@ def test_pattern_nogood_invoker_preserves_adapter_and_literal_gates(
     generator_calls: list[tuple[object, object, object, int]] = []
 
     monkeypatch.setattr(
-        generation_module,
-        "lookup_sub_problem_oracle",
+        "src.cuts.oracles.pattern_nogood_oracle.lookup_sub_problem_oracle",
         lambda name: None,
     )
 
@@ -242,13 +236,11 @@ def test_pattern_nogood_invoker_preserves_adapter_and_literal_gates(
         return adapter
 
     monkeypatch.setattr(
-        generation_module,
-        "build_binding_empty_domain_adapter",
+        "src.search.f5_binding_empty_domain_adapter.build_binding_empty_domain_adapter",
         fake_build,
     )
     monkeypatch.setattr(
-        generation_module,
-        "register_sub_problem_oracle",
+        "src.cuts.oracles.pattern_nogood_oracle.register_sub_problem_oracle",
         registered.append,
     )
 
@@ -270,8 +262,7 @@ def test_pattern_nogood_invoker_preserves_adapter_and_literal_gates(
         return expected
 
     monkeypatch.setattr(
-        generation_module,
-        "generate_pattern_nogood_cuts",
+        "src.cuts.oracles.pattern_nogood_oracle.generate_pattern_nogood_cuts",
         fake_generator,
     )
     assert generation_module.invoke_pattern_nogood_generation(request) is expected
@@ -300,8 +291,7 @@ def test_invoker_does_not_translate_tcb_exceptions(
         raise RuntimeError("tcb-probe")
 
     monkeypatch.setattr(
-        generation_module,
-        "generate_region_capacity_cuts",
+        "src.cuts.oracles.region_capacity_oracle.generate_region_capacity_cuts",
         fail,
     )
     with pytest.raises(RuntimeError, match="tcb-probe"):

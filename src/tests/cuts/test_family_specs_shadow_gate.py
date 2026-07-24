@@ -1,8 +1,8 @@
-"""Milestone-A shadow gates for the static family manifest.
+"""Consistency gates for the static family manifest.
 
-The production tables remain authoritative in this milestone.  These tests
-fail closed when the shadow manifest disagrees with any current registration
-surface, while proving that no runtime module consumes the new manifest yet.
+These tests fail closed when the manifest disagrees with a current production
+surface.  They also pin the deliberately narrow Milestone-B runtime import
+seams so metadata migration cannot turn into dynamic discovery.
 """
 
 from __future__ import annotations
@@ -61,7 +61,6 @@ from src.cuts.typed_platform import (
     ExecutionPath,
     FamilyCapability,
     build_production_registry,
-    validate_and_compile_cut,
 )
 from src.search.family_generation import (
     TYPED_FAMILY_GENERATION_INVOKERS_V1,
@@ -221,7 +220,10 @@ def _runtime_imports(path: Path) -> frozenset[str]:
     return frozenset(imported)
 
 
-def _oracle_wire_metadata(module_name: str) -> tuple[str, str, str]:
+def _oracle_wire_metadata(
+    module_name: str,
+    generator_name: str,
+) -> tuple[str, str, str, tuple[str, ...]]:
     path = _REPO_ROOT / f"{module_name.replace('.', '/')}.py"
     tree = ast.parse(path.read_text(encoding="utf-8"))
     constants: dict[str, str] = {}
@@ -244,57 +246,67 @@ def _oracle_wire_metadata(module_name: str) -> tuple[str, str, str]:
         "VALIDATOR_VERSION",
         constants.get("_VALIDATOR_VERSION"),
     )
+    generator_parameters: tuple[str, ...] | None = None
+    for node in tree.body:
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        if node.name != generator_name:
+            continue
+        positional = (*node.args.posonlyargs, *node.args.args)
+        parameter_names = [argument.arg for argument in positional]
+        if node.args.vararg is not None:
+            parameter_names.append(node.args.vararg.arg)
+        parameter_names.extend(argument.arg for argument in node.args.kwonlyargs)
+        if node.args.kwarg is not None:
+            parameter_names.append(node.args.kwarg.arg)
+        generator_parameters = tuple(parameter_names)
+        break
     assert oracle_name is not None
     assert family_version is not None
     assert validator_version is not None
-    return oracle_name, family_version, validator_version
+    assert generator_parameters is not None
+    return (
+        oracle_name,
+        family_version,
+        validator_version,
+        generator_parameters,
+    )
 
 
-def _benders_manifest() -> tuple[frozenset[str], tuple[str, ...]]:
+def _benders_manifest() -> tuple[bool, bool]:
     tree = ast.parse(
         (_REPO_ROOT / "src/search/benders_loop.py").read_text(encoding="utf-8")
     )
-    framework_families: frozenset[str] | None = None
+    family_set_function: ast.FunctionDef | None = None
     attach_method: ast.FunctionDef | None = None
     for node in ast.walk(tree):
-        if isinstance(node, (ast.Assign, ast.AnnAssign)):
-            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
-            if not any(
-                isinstance(target, ast.Name)
-                and target.id == "_CUT_FRAMEWORK_ALL_FAMILIES"
-                for target in targets
-            ):
-                continue
-            value = node.value
-            assert isinstance(value, ast.Call)
-            assert isinstance(value.func, ast.Name) and value.func.id == "frozenset"
-            assert len(value.args) == 1 and isinstance(value.args[0], ast.Set)
-            framework_families = frozenset(
-                cast(str, ast.literal_eval(element))
-                for element in value.args[0].elts
-            )
-        elif isinstance(node, ast.FunctionDef) and node.name == "_maybe_attach_framework_cuts":
-            attach_method = node
-    assert framework_families is not None
+        if isinstance(node, ast.FunctionDef):
+            if node.name == "_cut_framework_all_families_v1":
+                family_set_function = node
+            elif node.name == "_maybe_attach_framework_cuts":
+                attach_method = node
+    assert family_set_function is not None
     assert attach_method is not None
 
-    generator_calls = {
-        "generate_pattern_nogood_cuts": "pattern_nogood",
-        "generate_power_hitting_set_cuts": "power_hitting_set",
-        "generate_region_capacity_cuts": "region_capacity",
-        "generate_shape_packing_hall_cuts": "shape_packing_hall",
-    }
-    ordered_calls = sorted(
-        (
-            (node.lineno, generator_calls[node.func.id])
-            for node in ast.walk(attach_method)
-            if isinstance(node, ast.Call)
-            and isinstance(node.func, ast.Name)
-            and node.func.id in generator_calls
-        ),
-        key=lambda item: item[0],
+    family_set_uses_manifest = any(
+        isinstance(node, ast.Attribute)
+        and node.attr == "typed_generation_order"
+        and isinstance(node.value, ast.Name)
+        and node.value.id == "PRODUCTION_FAMILY_MANIFEST_V1"
+        for node in ast.walk(family_set_function)
     )
-    return framework_families, tuple(family for _, family in ordered_calls)
+    manifest_loops = [
+        node
+        for node in ast.walk(attach_method)
+        if isinstance(node, ast.For)
+        and isinstance(node.target, ast.Name)
+        and node.target.id == "family"
+        and isinstance(node.iter, ast.Attribute)
+        and node.iter.attr == "typed_generation_order"
+        and isinstance(node.iter.value, ast.Name)
+        and node.iter.value.id == "PRODUCTION_FAMILY_MANIFEST_V1"
+    ]
+    return family_set_uses_manifest, len(manifest_loops) == 1
 
 
 def _typed_apply_surface() -> tuple[frozenset[str], frozenset[str]]:
@@ -449,9 +461,14 @@ def test_shadow_replay_rule_semantics_and_checker_availability_are_coherent() ->
             )
             if replay.kind is ReplayKind.TYPED_SINGLE_ENTRY:
                 typed_replay.add(family)
-                assert replay.entrypoint.target is validate_and_compile_cut
+                assert type(replay.entrypoint) is StaticSymbolIdentity
+                assert replay.entrypoint == StaticSymbolIdentity(
+                    module="src.cuts.typed_platform",
+                    qualname="validate_and_compile_cut",
+                )
             else:
                 legacy_replay.add(family)
+                assert type(replay.entrypoint) is StaticCallableRef
                 assert replay.entrypoint.target is LEGACY_DIAGNOSTIC_VALIDATORS[family]
 
     assert typed_replay == set(TYPED_REPLAY_FAMILIES)
@@ -544,11 +561,13 @@ def test_lowering_and_benders_shadow_rows_match_closed_runtime_surfaces() -> Non
         row.master_primitive for row in lowering_rows.values()
     ) == primitives
 
-    benders_families, benders_order = _benders_manifest()
-    assert benders_families == frozenset(manifest.typed_generation_order)
-    assert benders_order == manifest.typed_generation_order
+    has_manifest_family_set, has_manifest_dispatch = _benders_manifest()
+    assert has_manifest_family_set
+    assert has_manifest_dispatch
     assert TYPED_FAMILY_GENERATION_ORDER_V1 == manifest.typed_generation_order
-    assert frozenset(TYPED_FAMILY_GENERATION_INVOKERS_V1) == benders_families
+    assert frozenset(TYPED_FAMILY_GENERATION_INVOKERS_V1) == frozenset(
+        manifest.typed_generation_order
+    )
     for family, generation in manifest.generation_specs.items():
         if generation.surface is GenerationSurface.RETIRED:
             assert not generation.oracle_name.is_available
@@ -557,7 +576,7 @@ def test_lowering_and_benders_shadow_rows_match_closed_runtime_surfaces() -> Non
             assert not generation.generation_invoker.is_available
             continue
         generator_ref = cast(
-            StaticCallableRef,
+            StaticSymbolIdentity,
             generation.generator.require(
                 family=family,
                 capability="generator",
@@ -585,7 +604,11 @@ def test_lowering_and_benders_shadow_rows_match_closed_runtime_surfaces() -> Non
                     capability="validator version",
                 ),
             ),
-        ) == _oracle_wire_metadata(generator_ref.identity.module)
+            generation.generator_parameter_ids,
+        ) == _oracle_wire_metadata(
+            generator_ref.module,
+            generator_ref.qualname,
+        )
         if generation.surface is GenerationSurface.LEGACY_DIAGNOSTIC:
             assert generation.orchestration_context_ids == ()
             assert not generation.generation_invoker.is_available
@@ -598,13 +621,13 @@ def test_lowering_and_benders_shadow_rows_match_closed_runtime_surfaces() -> Non
             == _EXPECTED_TYPED_ORCHESTRATION_CONTEXTS[family]
         )
         generator_ref = cast(
-            StaticCallableRef,
+            StaticSymbolIdentity,
             generation.generator.require(
                 family=family,
                 capability="generator",
             ),
         )
-        assert generator_ref.target.__name__ == f"generate_{family}_cuts"
+        assert generator_ref.qualname == f"generate_{family}_cuts"
         invoker_identity = cast(
             StaticSymbolIdentity,
             generation.generation_invoker.require(
@@ -823,6 +846,13 @@ def test_manifest_schema_allows_registered_family_to_share_operation_metadata() 
             capability="proof schema",
         ),
     )
+    base_plugin = cast(
+        PluginProviderSpec,
+        base_trust.typed_plugin.require(
+            family=base_trust.family,
+            capability="typed plugin",
+        ),
+    )
     fixture_trust = replace(
         base_trust,
         capability=fixture_capability,
@@ -835,6 +865,13 @@ def test_manifest_schema_allows_registered_family_to_share_operation_metadata() 
                 semantic_version=base_trust.rule_semantics[0].semantic_version,
             ),
             *base_trust.rule_semantics[1:],
+        ),
+        typed_plugin=AvailableCapability(
+            replace(
+                base_plugin,
+                production_order=4,
+                factory_construction_order=3,
+            )
         ),
     )
     fixture_generation = replace(
@@ -912,18 +949,37 @@ def test_manifest_schema_allows_registered_family_to_share_operation_metadata() 
     )
     assert fixture_lowering.operation == base_lowering.operation
     assert (
-        fixture_lowering.typed_apply_entrypoint.target
-        is base_lowering.typed_apply_entrypoint.target
+        fixture_lowering.typed_apply_entrypoint
+        == base_lowering.typed_apply_entrypoint
     )
 
 
-def test_milestone_a_runtime_modules_do_not_import_shadow_specs() -> None:
-    forbidden = frozenset(
+def test_runtime_manifest_consumers_are_an_exact_static_allowlist() -> None:
+    governed_imports = frozenset(
         {
             "src.cuts.family_specs",
             "src.cuts.rule_semantics",
             "src.search.family_generation",
         }
     )
+    expected = {
+        "src/cuts/typed_platform.py": frozenset({"src.cuts.family_specs"}),
+        "src/cuts/state_snapshot.py": frozenset(),
+        "src/cuts/lifecycle.py": frozenset({"src.cuts.family_specs"}),
+        "src/cuts/typed_apply.py": frozenset(),
+        "src/cuts/replay.py": frozenset({"src.cuts.family_specs"}),
+        "src/cuts/store.py": frozenset(),
+        "src/cuts/cert_schema.py": frozenset(),
+        "src/search/benders_loop.py": frozenset(
+            {
+                "src.cuts.family_specs",
+                "src.search.family_generation",
+            }
+        ),
+    }
+    assert frozenset(expected) == frozenset(_RUNTIME_FILES)
     for relative_path in _RUNTIME_FILES:
-        assert _runtime_imports(_REPO_ROOT / relative_path).isdisjoint(forbidden)
+        assert (
+            _runtime_imports(_REPO_ROOT / relative_path) & governed_imports
+            == expected[relative_path]
+        )
