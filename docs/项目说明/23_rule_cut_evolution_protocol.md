@@ -1,6 +1,6 @@
 # 23 — 规则与 cut 演化 shadow 协议
 
-rule_cut_evolution_status: candidate_pending_full_preflight
+rule_cut_evolution_status: full_preflight_passed
 authority_effect: non_authorizing
 authority_digest_change: none
 p1_2_reseal: not_performed
@@ -12,7 +12,7 @@ p1_2_reseal: not_performed
 规格；静态门从外部核验既有硬编码，不改变 owner、stage、capability、控制流、
 generation 顺序、trusted apply 闭集或 family 晋级状态。
 
-当前状态是候选，full preflight 尚未执行。当前实现状态见
+当前状态为 `full_preflight_passed`。当前实现状态见
 [06_current_status.md](06_current_status.md)，目录入口见 [README.md](README.md)，
 术语边界见 [21_glossary.md](21_glossary.md)。
 
@@ -91,13 +91,20 @@ signature、`ConstraintPlan`、semantic fingerprint、generation order、apply�
 这些变更必须进入独立的 owner-authorized 批次并重新满足各 family 的独立证明门槛，
 不能由本 shadow 协议或测试绿灯推出。
 
-## 候选验收状态
+## 终态验收状态
 
-当前候选已通过 production byte/hash parity、P1.2 checker、known vectors、聚焦合同、
+本批维护面已通过 production byte/hash parity、P1.2 checker、known vectors、聚焦合同、
 targeted Ruff/mypy 与 authoritative-numbers currency 白名单。`src/tests/cuts` 的
 collection currency 由生成器更新为 958；这只是 collected 数，不是 full pass 数。
 
-`candidate_pending_full_preflight` 表示尚无本批 full preflight 终态记录。只有经资源
-互斥门单独放行的 full preflight 通过，且其后未改变 production source、test、schema、
-authority/hash 或验证语义，状态才可改为 `full_preflight_passed`。即使状态更新为通过，
-本协议仍不构成 production 晋级、P1.2 reseal 或 owner 授权。
+验收基线为 commit `fd015a9ac49a182b242895433a2ff2d2e5ee57de` 的干净工作树。使用 coherent
+backup venv、显式清除 `PYTHONPATH` 与 `PYTHONHOME`，并持有独占资源互斥锁时，
+`scripts/preflight_gate.py --full` 返回 `0`；总体结果为 `PASSED`（19 passed），其中
+pytest 为 `4701 passed, 74 skipped in 98.52s`。完整 stdout/stderr 日志的 SHA-256 为
+`fedf7de80905b47c626b874213f0471a2e499a7fdd56bbc862bab47027138bc1`；该日志是外部
+验收记录，不进入 authority digest。验收后 `PROJECT_LOCK.md` 的 SHA-256 仍为
+`33632dfdb2297425e42066b2cf0749ca6b9ab1f8653e810b6f2e53ded1025410`。
+
+`full_preflight_passed` 只验收本文所述 test/offline shadow 维护面。它不授权 production
+接线、family 晋级、P1.2 reseal、owner flip、持久化 schema 变更或新的数学结论，也不降低
+任何 family 的独立证明门槛。
