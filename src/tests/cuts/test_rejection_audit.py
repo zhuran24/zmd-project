@@ -10,12 +10,12 @@ from typing import cast
 
 import pytest
 
-import src.cuts.rejection_audit as rejection_audit_module
 from src.cuts.lifecycle import Cut
 from src.cuts.state_snapshot import ValidatedStateSnapshot
 from src.cuts.store import QuarantineReason
 from src.cuts.typed_platform import ConstraintPlan, CutEnvelope
-from src.cuts.rejection_audit import (
+import src.tests.cuts.rule_cut_evolution.rejection_audit as rejection_audit_module
+from src.tests.cuts.rule_cut_evolution.rejection_audit import (
     AuditDigestEvidenceV1,
     AuditEmitOutcomeV1,
     AuditEmitStatus,
@@ -26,6 +26,7 @@ from src.cuts.rejection_audit import (
     EvidenceReferenceV1,
     PremiseVerdict,
     REJECTION_ADAPTER_SPECS_V1,
+    RejectionAdapterStage,
     RejectionAdapterSpecV1,
     RejectionAuditIndexV1,
     RejectionCostMeasureV1,
@@ -330,20 +331,20 @@ def test_static_adapter_registry_and_deferred_migration_boundary_are_closed() ->
         for adapter_id, adapter in REJECTION_ADAPTER_SPECS_V1.items()
     } == {
         "typed_platform.cut_rejection.v1": (
-            "src.cuts.typed_platform",
-            "validate_and_compile_cut_audited",
+            "src.tests.cuts.rule_cut_evolution.rejection_adapters",
+            "observe_typed_validation",
         ),
         "benders.framework_rejection_audit.v1": (
             "src.search.benders_loop",
             "LBBDController._maybe_attach_framework_cuts",
         ),
         "replay.rejection_outcome.v1": (
-            "src.cuts.replay",
-            "replay_cut_audited",
+            "src.tests.cuts.rule_cut_evolution.rejection_adapters",
+            "observe_replay",
         ),
         "cut_store.quarantine_transition.v1": (
-            "src.cuts.store",
-            "CutStore.quarantine_cut_audited",
+            "src.tests.cuts.rule_cut_evolution.rejection_adapters",
+            "observe_quarantine_transition",
         ),
     }
     with pytest.raises(TypeError):
@@ -365,6 +366,15 @@ def test_static_adapter_registry_and_deferred_migration_boundary_are_closed() ->
             == len(adapter.required_premise_ids)
             for binding in adapter.reason_bindings
         )
+    assert (
+        REJECTION_ADAPTER_SPECS_V1["benders.framework_rejection_audit.v1"].integration_stage
+        is RejectionAdapterStage.DECLARED_DEFERRED
+    )
+    assert all(
+        adapter.integration_stage is RejectionAdapterStage.OFFLINE_OBSERVER
+        for adapter_id, adapter in REJECTION_ADAPTER_SPECS_V1.items()
+        if adapter_id != "benders.framework_rejection_audit.v1"
+    )
     assert REJECTION_ADAPTER_SPECS_V1[
         "typed_platform.cut_rejection.v1"
     ].reason_binding("scope").premise_verdicts == (

@@ -16,13 +16,12 @@ import hashlib
 import inspect
 import json
 import math
-import time
 import weakref
 from collections.abc import Mapping, Sequence, Set
-from dataclasses import dataclass, field, fields, is_dataclass, replace
+from dataclasses import dataclass, field, fields, is_dataclass
 from enum import Enum
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Callable, Final, Literal, Protocol, TypeAlias, cast
+from typing import Callable, Final, Literal, Protocol, TypeAlias, cast
 
 from src.cuts.state_snapshot import (
     F5PatternNogoodInputs,
@@ -30,10 +29,6 @@ from src.cuts.state_snapshot import (
     ValidatedStateSnapshot,
     blocked_cells_digest_v1,
 )
-
-if TYPE_CHECKING:
-    from src.cuts.family_specs import FamilySpecRegistry
-    from src.cuts.rejection_audit import RejectionAuditSinkV1
 
 
 FrozenScalar: TypeAlias = None | bool | int | float | str
@@ -737,11 +732,11 @@ class ModelScopeBinding:
             raise TypeError("ModelScopeBinding.condition_lits must be tuple")
         if blocked_cells is not None and type(blocked_cells) is not frozenset:
             raise TypeError("ModelScopeBinding.blocked_cells must be frozenset or None")
-        if (
-            type(master_domain_family) is not str
-            or not master_domain_family
-            or master_domain_family.strip() != master_domain_family
-        ):
+        if type(master_domain_family) is not str or master_domain_family not in {
+            "power_hitting_set",
+            "region_capacity",
+            "shape_packing_hall",
+        }:
             raise ValueError("ModelScopeBinding.master_domain_family is outside the compiled family set")
         if type(master_ref) is not weakref.ReferenceType:
             raise TypeError("ModelScopeBinding.master_ref must be an exact weak reference")
@@ -963,14 +958,12 @@ class FamilyCapabilityRegistry:
 
     capabilities: Mapping[str, FamilyCapability]
     plugins: Mapping[str, FamilyPlugin]
-    family_specs: FamilySpecRegistry | None
 
     def __init__(
         self,
         *,
         capabilities: Mapping[str, FamilyCapability],
         plugins: Mapping[str, FamilyPlugin],
-        family_specs: FamilySpecRegistry | None = None,
     ) -> None:
         if not isinstance(capabilities, Mapping) or not isinstance(plugins, Mapping):
             raise TypeError("registry capabilities/plugins must be mappings")
@@ -1004,62 +997,8 @@ class FamilyCapabilityRegistry:
                 raise ValueError(f"non-compilable family {name!r} cannot advertise compiler_version")
             if capability.stage is CapabilityStage.RETIRED and has_plugin:
                 raise ValueError(f"retired family {name!r} cannot register a plugin")
-        checked_family_specs: FamilySpecRegistry | None = None
-        if family_specs is not None:
-            # Local import preserves the initialization boundary: family_specs
-            # imports the platform types above while constructing its immutable
-            # manifest, whereas only an already-built registry consumes it.
-            from src.cuts.family_specs import (
-                FamilySpecRegistry,
-                PluginProviderKind,
-                PluginProviderSpec,
-            )
-
-            if type(family_specs) is not FamilySpecRegistry:
-                raise TypeError(
-                    "registry family_specs must be an exact FamilySpecRegistry or None"
-                )
-            checked_family_specs = family_specs
-            expected_families = frozenset(checked_family_specs.trust_specs)
-            if frozenset(checked_capabilities) != expected_families:
-                raise ValueError(
-                    "registry capabilities must exactly cover family_specs trust rows"
-                )
-            for name, capability in checked_capabilities.items():
-                if capability != checked_family_specs.trust_specs[name].capability:
-                    raise ValueError(
-                        f"registry capability {name!r} differs from family_specs capability"
-                    )
-            expected_plugin_families = frozenset(
-                name
-                for name, spec in checked_family_specs.trust_specs.items()
-                if spec.typed_plugin.is_available
-            )
-            if frozenset(checked_plugins) != expected_plugin_families:
-                raise ValueError(
-                    "registry plugins must exactly cover available family_specs typed plugins"
-                )
-            for name, plugin in checked_plugins.items():
-                provider = cast(
-                    PluginProviderSpec,
-                    checked_family_specs.trust_specs[name].typed_plugin.require(
-                        family=name,
-                        capability="typed plugin",
-                    ),
-                )
-                provider_target = provider.provider.target
-                if provider.kind is PluginProviderKind.FACTORY:
-                    if type(plugin) is not provider_target:
-                        raise ValueError(
-                            f"registry plugin {name!r} type differs from family_specs provider"
-                        )
-                elif plugin is not provider_target:
-                    raise ValueError(
-                        f"registry plugin {name!r} instance differs from family_specs provider"
-                    )
         object.__setattr__(self, "capabilities", MappingProxyType(checked_capabilities))
         object.__setattr__(self, "plugins", MappingProxyType(checked_plugins))
-        object.__setattr__(self, "family_specs", checked_family_specs)
 
 
 _F5_STOPPED_REASONS = frozenset(
@@ -1432,47 +1371,130 @@ def build_production_registry() -> FamilyCapabilityRegistry:
     row.
     """
 
-    # Local import avoids the module-initialization cycle: the manifest imports
-    # the platform types above while it constructs its checked static rows.
-    from src.cuts.family_specs import (
-        PRODUCTION_FAMILY_MANIFEST_V1,
-        PluginProviderKind,
-        PluginProviderSpec,
+    # Local import avoids a module-initialization cycle: the family plugin uses
+    # the platform protocol and immutable plan types defined above.
+    from src.cuts.families.region_capacity_typed import (
+        REGION_CAPACITY_COMPILER_VERSION,
+        REGION_CAPACITY_VALIDATOR_VERSION,
+        RegionCapacityPlugin,
+    )
+    from src.cuts.families.power_hitting_set_typed import (
+        POWER_HITTING_SET_COMPILER_VERSION,
+        POWER_HITTING_SET_VALIDATOR_VERSION,
+        PowerHittingSetPlugin,
+    )
+    from src.cuts.families.shape_packing_hall_typed import (
+        SHAPE_PACKING_HALL_COMPILER_VERSION,
+        SHAPE_PACKING_HALL_VALIDATOR_VERSION,
+        ShapePackingHallPlugin,
     )
 
-    family_specs = PRODUCTION_FAMILY_MANIFEST_V1
+    region_capacity_plugin: FamilyPlugin = RegionCapacityPlugin()
+    power_hitting_set_plugin: FamilyPlugin = PowerHittingSetPlugin()
+    shape_packing_hall_plugin: FamilyPlugin = ShapePackingHallPlugin()
+
     capabilities = {
-        family: replace(trust.capability)
-        for family, trust in family_specs.trust_specs.items()
+        "region_capacity": FamilyCapability(
+            name="region_capacity",
+            mode="geometric",
+            proof_schema_version=1,
+            validator_version=REGION_CAPACITY_VALIDATOR_VERSION,
+            compiler_version=REGION_CAPACITY_COMPILER_VERSION,
+            stage=CapabilityStage.COMPILABLE,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.TYPED,
+        ),
+        "cutset": FamilyCapability(
+            name="cutset",
+            mode="geometric",
+            proof_schema_version=1,
+            validator_version="legacy-diagnostic-v1",
+            compiler_version=None,
+            stage=CapabilityStage.VALIDATED,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
+        ),
+        "port_exposure": FamilyCapability(
+            name="port_exposure",
+            mode="literal",
+            proof_schema_version=1,
+            validator_version="legacy-diagnostic-v1",
+            compiler_version=None,
+            stage=CapabilityStage.VALIDATED,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
+        ),
+        "component_reach": FamilyCapability(
+            name="component_reach",
+            mode="geometric",
+            proof_schema_version=1,
+            validator_version="legacy-diagnostic-v1",
+            compiler_version=None,
+            stage=CapabilityStage.VALIDATED,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
+        ),
+        "pattern_nogood": FamilyCapability(
+            name="pattern_nogood",
+            mode="literal",
+            proof_schema_version=1,
+            validator_version="stage-b-f5-shadow-v1",
+            compiler_version=None,
+            stage=CapabilityStage.VALIDATED,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.TYPED,
+        ),
+        "shape_packing_hall": FamilyCapability(
+            name="shape_packing_hall",
+            mode="geometric",
+            proof_schema_version=1,
+            validator_version=SHAPE_PACKING_HALL_VALIDATOR_VERSION,
+            compiler_version=SHAPE_PACKING_HALL_COMPILER_VERSION,
+            stage=CapabilityStage.COMPILABLE,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.TYPED,
+            requires_ghost_bound=True,
+        ),
+        "power_hitting_set": FamilyCapability(
+            name="power_hitting_set",
+            mode="literal",
+            proof_schema_version=1,
+            validator_version=POWER_HITTING_SET_VALIDATOR_VERSION,
+            compiler_version=POWER_HITTING_SET_COMPILER_VERSION,
+            stage=CapabilityStage.COMPILABLE,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.TYPED,
+            requires_ghost_bound=True,
+        ),
+        "power_grid_reach": FamilyCapability(
+            name="power_grid_reach",
+            mode="geometric",
+            proof_schema_version=1,
+            validator_version="retired-false-premise",
+            compiler_version=None,
+            stage=CapabilityStage.RETIRED,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
+        ),
+        "density_envelope": FamilyCapability(
+            name="density_envelope",
+            mode="geometric",
+            proof_schema_version=1,
+            validator_version="legacy-diagnostic-v1",
+            compiler_version=None,
+            stage=CapabilityStage.VALIDATED,
+            required_dependencies=_PRODUCTION_V1_ARTIFACT_DEPENDENCIES,
+            execution_path=ExecutionPath.LEGACY_DIAGNOSTIC,
+        ),
     }
-    factory_plugins: dict[str, FamilyPlugin] = {}
-    for family in family_specs.typed_plugin_factory_order:
-        provider = cast(
-            PluginProviderSpec,
-            family_specs.trust(family).typed_plugin.require(
-                family=family,
-                capability="typed plugin",
-            ),
-        )
-        factory_plugins[family] = provider.build()
-    plugins: dict[str, FamilyPlugin] = {}
-    for family in family_specs.typed_plugin_order:
-        trust = family_specs.trust(family)
-        provider = cast(
-            PluginProviderSpec,
-            trust.typed_plugin.require(
-                family=family,
-                capability="typed plugin",
-            ),
-        )
-        if provider.kind is PluginProviderKind.FACTORY:
-            plugins[family] = factory_plugins[family]
-        else:
-            plugins[family] = provider.build()
     return FamilyCapabilityRegistry(
         capabilities=capabilities,
-        plugins=plugins,
-        family_specs=family_specs,
+        plugins={
+            "pattern_nogood": _PRODUCTION_F5_PLUGIN,
+            "power_hitting_set": power_hitting_set_plugin,
+            "region_capacity": region_capacity_plugin,
+            "shape_packing_hall": shape_packing_hall_plugin,
+        },
     )
 
 
@@ -1873,7 +1895,6 @@ def _validate_compiled_plan(
     *,
     envelope: CutEnvelope,
     capability: FamilyCapability,
-    family_specs: FamilySpecRegistry | None,
 ) -> ConstraintPlan:
     if type(plan) is not ConstraintPlan:
         raise TypeError("family compiler must return an exact ConstraintPlan")
@@ -1898,26 +1919,12 @@ def _validate_compiled_plan(
             "plan",
             "ConstraintPlan model scope ghost identity differs from envelope scope",
         )
-    if family_specs is None:
-        # Compatibility seam for existing isolated registry/plugin tests.  All
-        # production registries carry the exact checked family manifest.
-        operation_by_family = {
-            "power_hitting_set": "power_pose_exclusion",
-            "region_capacity": "region_capacity_le",
-            "shape_packing_hall": "shape_packing_hall_le",
-        }
-        expected_operation = operation_by_family.get(envelope.family)
-    else:
-        from src.cuts.family_specs import LoweringSpec
-
-        lowering = family_specs.trust(envelope.family).lowering.require(
-            family=envelope.family,
-            capability="trusted lowering",
-        )
-        if type(lowering) is not LoweringSpec:  # pragma: no cover - manifest gate
-            raise TypeError("family manifest lowering must be an exact LoweringSpec")
-        expected_operation = lowering.operation
-    if expected_operation != checked.operation:
+    operation_by_family = {
+        "power_hitting_set": "power_pose_exclusion",
+        "region_capacity": "region_capacity_le",
+        "shape_packing_hall": "shape_packing_hall_le",
+    }
+    if operation_by_family.get(envelope.family) != checked.operation:
         raise SemanticCutRejection(
             "plan",
             "ConstraintPlan.operation is invalid for envelope family",
@@ -2052,7 +2059,6 @@ def validate_and_compile_cut(
             candidate_plan,
             envelope=envelope,
             capability=capability,
-            family_specs=registry.family_specs,
         )
     except SemanticCutRejection as rejection:
         return _semantic_rejection_result(rejection, cut_id=envelope.cut_id)
@@ -2074,259 +2080,6 @@ def validate_and_compile_cut(
         plan=plan,
         _construction_token=_COMPILED_CUT_CONSTRUCTION_TOKEN,
     )
-
-
-def _typed_audit_monotonic_ns() -> int | None:
-    """Read audit-only timing without giving the clock control-flow authority."""
-
-    try:
-        value = time.monotonic_ns()
-    except Exception:
-        return None
-    return value if type(value) is int and value >= 0 else None
-
-
-def _typed_audit_text(value: object, *, fallback: str) -> str:
-    """Normalize sidecar text without modifying the returned rejection."""
-
-    text = str(value).replace("\x00", "\\x00").strip()
-    return text or fallback
-
-
-def _emit_typed_rejection_best_effort(
-    *,
-    envelope: "CutEnvelope",
-    snapshot: ValidatedStateSnapshot,
-    rejection: CutRejection,
-    audit_sink: RejectionAuditSinkV1,
-    audit_started_ns: int | None,
-) -> None:
-    """Emit one non-authoritative typed rejection record, never raising."""
-
-    try:
-        from src.cuts.rejection_audit import (
-            REJECTION_ADAPTER_SPECS_V1,
-            AuditDigestEvidenceV1,
-            CostUnit,
-            EvidenceKind,
-            EvidenceReferenceV1,
-            PremiseVerdict,
-            RejectionCostMeasureV1,
-            RejectionCostV1,
-            RejectionPremiseV1,
-            RejectionRecordV1,
-            RejectionSubjectKind,
-            RejectionSubjectV1,
-            assumption_audit_digest_v1,
-            emit_rejection_audit,
-        )
-
-        adapter = REJECTION_ADAPTER_SPECS_V1[
-            "typed_platform.cut_rejection.v1"
-        ]
-        binding = adapter.reason_binding(rejection.stage)
-        failed_premise_by_stage = {
-            "registry": "family_registered",
-            "envelope": "schema_version_current",
-            "scope": "scope_current",
-            "proof": "proof_sound",
-            "plan": "plan_sound",
-        }
-        failed_premise_id = failed_premise_by_stage[rejection.stage]
-        # The binding owns the conservative stage-to-premise policy.  It does
-        # not infer a linear trace from CutRejection.stage: registry
-        # eligibility occurs after schema/scope (and one F5 proof identity
-        # gate), so ambiguous history is statically UNAVAILABLE.
-        premise_verdicts = binding.premise_verdicts
-        premise_expectations = {
-            "family_registered": (
-                "the family is registered and eligible for typed dispatch"
-            ),
-            "schema_version_current": (
-                "the proof schema version matches the family capability"
-            ),
-            "scope_current": (
-                "the complete scope manifest matches the validated snapshot"
-            ),
-            "proof_sound": "the independent family verifier accepts the proof",
-            "plan_sound": (
-                "the compiler and plan verifier accept the strengthening"
-            ),
-        }
-        reason_detail = _typed_audit_text(
-            rejection.reason,
-            fallback=f"{rejection.stage} rejection",
-        )
-        premises: list[RejectionPremiseV1] = []
-        for premise_id, verdict in zip(
-            adapter.required_premise_ids,
-            premise_verdicts,
-            strict=True,
-        ):
-            if verdict is PremiseVerdict.SATISFIED:
-                premises.append(
-                    RejectionPremiseV1(
-                        premise_id=premise_id,
-                        expected=premise_expectations[premise_id],
-                        verdict=PremiseVerdict.SATISFIED,
-                        observed=(
-                            "the terminal stage necessarily establishes this "
-                            "prerequisite"
-                        ),
-                        unavailable_reason=None,
-                    )
-                )
-            elif verdict is PremiseVerdict.VIOLATED:
-                if premise_id != failed_premise_id:
-                    raise RuntimeError(
-                        "typed rejection audit verdict matrix contradicts "
-                        "the failed premise mapping"
-                    )
-                premises.append(
-                    RejectionPremiseV1(
-                        premise_id=premise_id,
-                        expected=premise_expectations[premise_id],
-                        verdict=PremiseVerdict.VIOLATED,
-                        observed=reason_detail,
-                        unavailable_reason=None,
-                    )
-                )
-            else:
-                premises.append(
-                    RejectionPremiseV1(
-                        premise_id=premise_id,
-                        expected=premise_expectations[premise_id],
-                        verdict=PremiseVerdict.UNAVAILABLE,
-                        observed=None,
-                        unavailable_reason=(
-                            "CutRejection exposes only a terminal stage; the "
-                            f"exact verdict for {premise_id} is not available "
-                            "at this audit seam"
-                        ),
-                    )
-                )
-
-        def _digest_evidence(
-            value: object,
-            *,
-            unavailable_reason: str,
-        ) -> AuditDigestEvidenceV1:
-            try:
-                return AuditDigestEvidenceV1.available(cast(str, value))
-            except Exception:
-                return AuditDigestEvidenceV1.unavailable(unavailable_reason)
-
-        instance_digest = _digest_evidence(
-            snapshot.source_digest,
-            unavailable_reason="validated snapshot source digest is unavailable",
-        )
-        state_digest = _digest_evidence(
-            snapshot.digest,
-            unavailable_reason="validated snapshot state digest is unavailable",
-        )
-        try:
-            assumption_pairs = tuple(
-                (assumption.key, assumption.value)
-                for assumption in envelope.scope.assumptions
-            )
-            assumption_digest = AuditDigestEvidenceV1.available(
-                assumption_audit_digest_v1(assumption_pairs)
-            )
-        except Exception:
-            assumption_digest = AuditDigestEvidenceV1.unavailable(
-                "complete scope assumption vector is unavailable"
-            )
-
-        proof_digest = _digest_evidence(
-            envelope.proof_hash,
-            unavailable_reason="envelope proof digest is unavailable",
-        )
-        snapshot_evidence_digest = _digest_evidence(
-            snapshot.digest,
-            unavailable_reason="validated snapshot digest is unavailable",
-        )
-
-        try:
-            audit_finished_ns = _typed_audit_monotonic_ns()
-        except Exception:
-            audit_finished_ns = None
-        if (
-            audit_started_ns is not None
-            and audit_finished_ns is not None
-            and audit_finished_ns >= audit_started_ns
-        ):
-            cost = RejectionCostV1(
-                measures=(
-                    RejectionCostMeasureV1(
-                        unit=CostUnit.WALL_TIME_NS,
-                        value=audit_finished_ns - audit_started_ns,
-                    ),
-                ),
-            )
-        else:
-            cost = RejectionCostV1(
-                measures=(),
-                unavailable_reason="monotonic audited-path timing is unavailable",
-            )
-
-        record = RejectionRecordV1(
-            subject=RejectionSubjectV1(
-                kind=RejectionSubjectKind.CUT_ID,
-                value=rejection.cut_id,
-            ),
-            adapter_id=adapter.adapter_id,
-            family=envelope.family,
-            reason_code=rejection.stage,
-            reason_detail=reason_detail,
-            responsibility_scope=binding.responsibility_scope,
-            disposition=binding.disposition,
-            premises=tuple(premises),
-            instance_digest=instance_digest,
-            state_digest=state_digest,
-            assumption_digest=assumption_digest,
-            evidence_references=(
-                EvidenceReferenceV1(
-                    kind=EvidenceKind.PROOF,
-                    reference=f"cut-proof:{rejection.cut_id}",
-                    content_digest=proof_digest,
-                ),
-                EvidenceReferenceV1(
-                    kind=EvidenceKind.SNAPSHOT,
-                    reference=f"validated-state-snapshot:{rejection.cut_id}",
-                    content_digest=snapshot_evidence_digest,
-                ),
-            ),
-            cost=cost,
-        )
-        emit_rejection_audit(record, audit_sink)
-    except Exception:
-        # Audit construction and transport cannot modify cut admission.
-        return
-
-
-def validate_and_compile_cut_audited(
-    envelope: "CutEnvelope",
-    snapshot: ValidatedStateSnapshot,
-    registry: "FamilyCapabilityRegistry",
-    *,
-    audit_sink: RejectionAuditSinkV1,
-) -> ValidateAndCompileResult:
-    """Run the unchanged single entry and audit only returned rejections."""
-
-    try:
-        audit_started_ns = _typed_audit_monotonic_ns()
-    except Exception:
-        audit_started_ns = None
-    result = validate_and_compile_cut(envelope, snapshot, registry)
-    if type(result) is CutRejection:
-        _emit_typed_rejection_best_effort(
-            envelope=envelope,
-            snapshot=snapshot,
-            rejection=result,
-            audit_sink=audit_sink,
-            audit_started_ns=audit_started_ns,
-        )
-    return result
 
 
 __all__ = [
@@ -2356,5 +2109,4 @@ __all__ = [
     "build_production_registry",
     "cut_to_envelope_v1",
     "validate_and_compile_cut",
-    "validate_and_compile_cut_audited",
 ]

@@ -6,27 +6,33 @@ import dataclasses
 import hashlib
 import inspect
 from dataclasses import fields
+from typing import cast
 
 import pytest
 
 import src.cuts.replay as replay_module
 from src.cuts.lifecycle import AttachDecision, Cut, OracleCert, compute_source_digest
-from src.cuts.rejection_audit import (
+from src.tests.cuts.rule_cut_evolution import rejection_adapters as adapters_module
+from src.tests.cuts.rule_cut_evolution.rejection_adapters import (
+    observe_quarantine_transition,
+    observe_regression_sweep,
+    observe_replay,
+)
+from src.tests.cuts.rule_cut_evolution.rejection_audit import (
     CostUnit,
     DigestAvailability,
     PremiseVerdict,
     RejectionAuditIndexV1,
     RejectionDisposition,
     RejectionPremiseV1,
+    RejectionRecordV1,
 )
 from src.cuts.replay import (
     DiagnosticResult,
     ReplayContext,
     build_replay_context,
     regression_sweep,
-    regression_sweep_audited,
     replay_cut,
-    replay_cut_audited,
 )
 from src.cuts.store import CutStore, QuarantineReason
 from src.tests.cuts.test_family_cutset import _make_cutset_cut
@@ -77,6 +83,8 @@ def test_frozen_public_signatures_and_dataclass_fields_are_unchanged() -> None:
     )
     assert replay_signature.parameters["iter_index"].kind is inspect.Parameter.KEYWORD_ONLY
     assert replay_signature.parameters["iter_index"].default == -1
+    assert not hasattr(replay_module, "replay_cut_audited")
+    assert not hasattr(replay_module, "regression_sweep_audited")
 
     sweep_signature = inspect.signature(regression_sweep)
     assert tuple(sweep_signature.parameters) == (
@@ -105,15 +113,16 @@ def test_frozen_public_signatures_and_dataclass_fields_are_unchanged() -> None:
         "quarantined",
         "held",
     )
+    assert not hasattr(CutStore, "quarantine_cut_audited")
 
 
-def test_audited_scope_hold_emits_complete_replay_record_after_transition() -> None:
+def test_offline_observer_scope_hold_emits_complete_record_after_transition() -> None:
     cut, context = _scope_stale_world()
     store = CutStore()
     store.add_cut(cut, cell_keys=((0, 0),))
     index = RejectionAuditIndexV1()
 
-    decision = replay_cut_audited(cut, store, context, audit_sink=index)
+    decision = observe_replay(cut, store, context, audit_sink=index)
 
     assert decision == "HOLD"
     assert cut.cut_id in store.held
@@ -154,7 +163,7 @@ def test_scope_result_for_already_quarantined_cut_emits_no_false_hold_record() -
     store.quarantine_cut(cut.cut_id, original_reason)
     index = RejectionAuditIndexV1()
 
-    decision = replay_cut_audited(cut, store, context, audit_sink=index)
+    decision = observe_replay(cut, store, context, audit_sink=index)
 
     assert decision == "HOLD"
     assert cut.cut_id not in store.held
@@ -162,7 +171,7 @@ def test_scope_result_for_already_quarantined_cut_emits_no_false_hold_record() -
     assert index.records == ()
 
 
-def test_audited_quarantine_preserves_reason_and_watcher_mutation_parity() -> None:
+def test_offline_observer_preserves_quarantine_and_watcher_mutation_parity() -> None:
     cut, context = _integrity_drift_cut()
     normal_store = CutStore()
     audited_store = CutStore()
@@ -181,7 +190,7 @@ def test_audited_quarantine_preserves_reason_and_watcher_mutation_parity() -> No
 
     normal_decision = replay_cut(cut, normal_store, context, iter_index=7)
     index = RejectionAuditIndexV1()
-    audited_decision = replay_cut_audited(
+    audited_decision = observe_replay(
         cut,
         audited_store,
         context,
@@ -214,7 +223,7 @@ def test_adapter_rejection_uses_existing_reason_code() -> None:
     store.add_cut(cut)
     index = RejectionAuditIndexV1()
 
-    decision = replay_cut_audited(
+    decision = observe_replay(
         cut,
         store,
         build_replay_context(state),
@@ -236,7 +245,7 @@ def test_sink_and_record_build_failures_cannot_change_transition(
     sink_failure_store.add_cut(cut, cell_keys=((0, 0),))
 
     assert (
-        replay_cut_audited(
+        observe_replay(
             cut,
             sink_failure_store,
             context,
@@ -252,17 +261,17 @@ def test_sink_and_record_build_failures_cannot_change_transition(
     build_failure_store.add_cut(build_failure_cut)
     index = RejectionAuditIndexV1()
 
-    def _raise_during_record_build(candidate: Cut) -> str:
-        del candidate
+    def _raise_during_record_build(*args: object, **kwargs: object) -> object:
+        del args, kwargs
         raise RuntimeError("record build failed")
 
     monkeypatch.setattr(
-        replay_module,
-        "_assumption_audit_digest",
+        adapters_module,
+        "_assumption_digest",
         _raise_during_record_build,
     )
     assert (
-        replay_cut_audited(
+        observe_replay(
             build_failure_cut,
             build_failure_store,
             context,
@@ -284,7 +293,7 @@ def test_attach_legacy_ok_and_unknown_family_emit_no_rejection(
     attach_store.add_cut(attach_cut)
     attach_index = RejectionAuditIndexV1()
     assert (
-        replay_cut_audited(
+        observe_replay(
             attach_cut,
             attach_store,
             context,
@@ -320,7 +329,7 @@ def test_attach_legacy_ok_and_unknown_family_emit_no_rejection(
         ),
     )
     assert (
-        replay_cut_audited(
+        observe_replay(
             legacy_cut,
             legacy_store,
             context,
@@ -339,7 +348,7 @@ def test_attach_legacy_ok_and_unknown_family_emit_no_rejection(
         NotImplementedError,
         match="is in neither the typed nor the legacy diagnostic replay table",
     ):
-        replay_cut_audited(
+        observe_replay(
             attach_cut,
             unknown_store,
             context,
@@ -368,7 +377,7 @@ def test_typed_tcb_fault_propagates_without_record_or_store_transition(
 
     monkeypatch.setattr(typed_platform, "validate_and_compile_cut", raise_tcb)
     with pytest.raises(RuntimeError, match="injected replay TCB fault") as caught:
-        replay_cut_audited(
+        observe_replay(
             cut,
             store,
             build_replay_context(state),
@@ -381,7 +390,7 @@ def test_typed_tcb_fault_propagates_without_record_or_store_transition(
     assert index.records == ()
 
 
-def test_audited_regression_sweep_uses_same_counts_and_records_rejections() -> None:
+def test_offline_regression_observer_uses_same_counts_and_records_rejections() -> None:
     state = _f1_state()
     context = build_replay_context(state)
     attached_cut = _f1_cut(state)
@@ -395,7 +404,7 @@ def test_audited_regression_sweep_uses_same_counts_and_records_rejections() -> N
     store.add_cut(rejected_cut)
     index = RejectionAuditIndexV1()
 
-    counts = regression_sweep_audited(store, context, audit_sink=index)
+    counts = observe_regression_sweep(store, context, audit_sink=index)
 
     assert counts == {
         "ATTACH": 1,
@@ -445,13 +454,13 @@ def test_default_regression_sweep_preserves_public_replay_cut_dispatch(
     assert calls == [(cut.cut_id, 19)]
 
 
-def test_cut_store_audited_wrapper_emits_only_matching_prebuilt_subject() -> None:
+def test_cut_store_observer_emits_only_matching_prebuilt_subject() -> None:
     cut, context = _integrity_drift_cut()
     source_store = CutStore()
     source_store.add_cut(cut)
     source_index = RejectionAuditIndexV1()
     assert (
-        replay_cut_audited(
+        observe_replay(
             cut,
             source_store,
             context,
@@ -494,7 +503,8 @@ def test_cut_store_audited_wrapper_emits_only_matching_prebuilt_subject() -> Non
     matching_store = CutStore()
     matching_store.add_cut(cut, cell_keys=((0, 0),))
     matching_index = RejectionAuditIndexV1()
-    matching_store.quarantine_cut_audited(
+    observe_quarantine_transition(
+        matching_store,
         cut.cut_id,
         reason,
         rejection_record=record,
@@ -507,7 +517,8 @@ def test_cut_store_audited_wrapper_emits_only_matching_prebuilt_subject() -> Non
     adapter_mismatch_store = CutStore()
     adapter_mismatch_store.add_cut(cut)
     adapter_mismatch_index = RejectionAuditIndexV1()
-    adapter_mismatch_store.quarantine_cut_audited(
+    observe_quarantine_transition(
+        adapter_mismatch_store,
         cut.cut_id,
         reason,
         rejection_record=replay_record,
@@ -519,7 +530,8 @@ def test_cut_store_audited_wrapper_emits_only_matching_prebuilt_subject() -> Non
     reason_mismatch_store = CutStore()
     reason_mismatch_store.add_cut(cut)
     reason_mismatch_index = RejectionAuditIndexV1()
-    reason_mismatch_store.quarantine_cut_audited(
+    observe_quarantine_transition(
+        reason_mismatch_store,
         cut.cut_id,
         QuarantineReason(reason_code="typed_adapter_rejected"),
         rejection_record=record,
@@ -531,7 +543,8 @@ def test_cut_store_audited_wrapper_emits_only_matching_prebuilt_subject() -> Non
     family_mismatch_store = CutStore()
     family_mismatch_store.add_cut(cut)
     family_mismatch_index = RejectionAuditIndexV1()
-    family_mismatch_store.quarantine_cut_audited(
+    observe_quarantine_transition(
+        family_mismatch_store,
         cut.cut_id,
         reason,
         rejection_record=dataclasses.replace(
@@ -546,7 +559,8 @@ def test_cut_store_audited_wrapper_emits_only_matching_prebuilt_subject() -> Non
     detail_mismatch_store = CutStore()
     detail_mismatch_store.add_cut(cut)
     detail_mismatch_index = RejectionAuditIndexV1()
-    detail_mismatch_store.quarantine_cut_audited(
+    observe_quarantine_transition(
+        detail_mismatch_store,
         cut.cut_id,
         reason,
         rejection_record=dataclasses.replace(
@@ -562,7 +576,8 @@ def test_cut_store_audited_wrapper_emits_only_matching_prebuilt_subject() -> Non
     mismatch_store = CutStore()
     mismatch_store.add_cut(other_cut)
     mismatch_index = RejectionAuditIndexV1()
-    mismatch_store.quarantine_cut_audited(
+    observe_quarantine_transition(
+        mismatch_store,
         other_cut.cut_id,
         reason,
         rejection_record=record,
@@ -570,3 +585,20 @@ def test_cut_store_audited_wrapper_emits_only_matching_prebuilt_subject() -> Non
     )
     assert other_cut.cut_id in mismatch_store.quarantined
     assert mismatch_index.records == ()
+
+
+def test_cut_store_observer_propagates_transition_fault_before_audit() -> None:
+    store = CutStore()
+    index = RejectionAuditIndexV1()
+
+    with pytest.raises(KeyError, match="missing-cut"):
+        observe_quarantine_transition(
+            store,
+            "missing-cut",
+            QuarantineReason(reason_code="cut_integrity_failed"),
+            rejection_record=cast(RejectionRecordV1, object()),
+            audit_sink=index,
+        )
+
+    assert store.quarantined == {}
+    assert index.records == ()

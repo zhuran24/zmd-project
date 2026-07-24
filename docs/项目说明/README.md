@@ -1,6 +1,6 @@
 # `docs/项目说明/` 项目书
 
-本目录有 25 个专题文档，加本 README，共 26 个 Markdown 文件。它同时包含当前说明、数学背景、
+本目录有 27 个专题文档，加本 README，共 28 个 Markdown 文件。它同时包含当前说明、数学背景、
 历史复盘和未来计划，不能把每个文件都当成同等级的现状 authority。
 
 ## 权威顺序
@@ -31,12 +31,15 @@ Option B）另列发布时点，非 P1.2 blocker。
 | 数学/cut 背景 | [02_mathematical_foundations.md](02_mathematical_foundations.md) |
 | 历史死路 | [03_paradigm_death_baseline.md](03_paradigm_death_baseline.md) + [07_historical_review.md](07_historical_review.md) |
 | 项目怎么走到今天（人话编年史） | [22_project_journey_plain_language.md](22_project_journey_plain_language.md) |
+| 规则与 cut 演化 shadow 协议（test-only；production deferred） | [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md) |
 | 后续 P1.3 | [09_phase_1_3_plan.md](09_phase_1_3_plan.md) |
 | 测试与审查 | [12_go_criteria.md](12_go_criteria.md), [15_workflow_testing.md](15_workflow_testing.md), [16_workflow_review.md](16_workflow_review.md) |
 
 ## 文件分类
 
 当前说明：01、04、05、06、11、12、14、15、16、17、18、21、soundness roadmap、supervisor detailed design。
+
+测试/离线 shadow 协议：23（non-authorizing；production 接线延期）。
 
 历史/计划：02 的部分 cut-framework 状态段、03、07、08、09、10、13、19、20，以及
 `p1_2_supervisor_redesign_draft.md`。这些文件保留当时决策和后续方向；其中旧的 `P1.3B` 人类命名应读为

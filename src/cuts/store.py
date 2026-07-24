@@ -36,7 +36,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple
 
 from src.cuts.lifecycle import (
     GHOST_AGNOSTIC,
@@ -49,9 +49,6 @@ from src.cuts.lifecycle import (
     GroupId,
     PoseId,
 )
-
-if TYPE_CHECKING:
-    from src.cuts.rejection_audit import RejectionAuditSinkV1, RejectionRecordV1
 
 # Watcher key types (cut_lifecycle_v2 §7).
 CommodityId = str
@@ -185,52 +182,6 @@ class CutStore:
         self.quarantined[cut_id] = reason
         self.held.discard(cut_id)
         self._unregister_from_watchers(cut_id)
-
-    def quarantine_cut_audited(
-        self,
-        cut_id: CutId,
-        reason: QuarantineReason,
-        *,
-        rejection_record: RejectionRecordV1,
-        audit_sink: RejectionAuditSinkV1,
-    ) -> None:
-        """Quarantine first, then best-effort emit a prebuilt audit sidecar.
-
-        ``quarantine_cut`` remains the frozen authority surface.  This opt-in
-        wrapper deliberately performs the complete established transition
-        before touching the audit module.  A malformed record, a subject
-        mismatch, or a failing sink therefore cannot prevent or reorder the
-        quarantine mutation.
-        """
-
-        self.quarantine_cut(cut_id, reason)
-        try:
-            from src.cuts.rejection_audit import (
-                RejectionRecordV1,
-                RejectionSubjectKind,
-                emit_rejection_audit,
-            )
-
-            if type(rejection_record) is not RejectionRecordV1:
-                return
-            if (
-                rejection_record.adapter_id
-                != "cut_store.quarantine_transition.v1"
-                or rejection_record.reason_code != reason.reason_code
-                or (
-                    rejection_record.subject.kind
-                    is not RejectionSubjectKind.CUT_ID
-                )
-                or rejection_record.subject.value != cut_id
-                or rejection_record.family != self.cuts[cut_id].family
-                or rejection_record.reason_detail != reason.detail
-            ):
-                return
-            emit_rejection_audit(rejection_record, audit_sink)
-        except Exception:
-            # Audit construction/transport is non-authoritative.  The terminal
-            # store transition above must retain its established outcome.
-            return
 
     def hold_cut(self, cut_id: CutId) -> None:
         """Move cut to HOLD (scope mismatch or oracle unavailable). 不从 watcher

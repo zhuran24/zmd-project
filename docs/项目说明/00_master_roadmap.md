@@ -151,6 +151,13 @@ solve 解不动时先问"这格是否合并过头"——候选=两段式 master�
    证书只压此账）分开记，同 instance hash+同假设下两账相遇才准报
    optimal；资源中止不改任何账。
 
+> **Shadow-only 实现注（2026-07-24；non-authorizing）：**
+> [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md) 记录由本节
+> 判据导出的 test/offline-only 静态台账、一致性门、合同矩阵与 onboarding fixture。
+> 当前状态为 `candidate_pending_full_preflight`；它不修订 §0b 方法论，不改变
+> production runtime、owner、phase gate、authority digest 或 P1.2 封存，也不授权
+> family 晋级。production 接线与持久化 schema 变更延期到独立 owner-authorized 批次。
+
 ## 1. 主线（关键路径，串行）
 
 ```

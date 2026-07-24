@@ -1,13 +1,15 @@
-"""Versioned, audit-only rejection facts for cut research.
+"""Versioned, test/offline-only rejection facts for cut research.
 
-This module is intentionally outside the cut authority graph.  A
+This module lives below ``src/tests`` and is outside the production source and
+cut authority graphs.  A
 ``RejectionRecordV1`` reuses an existing ``cut_id`` or semantic fingerprint as
 its subject; it has no record ID and no field or API that can be attached to,
 promote, compile, replay, or apply a cut.  Its hashes are domain-separated
 audit-sidecar hashes only.
 
-The active adapter registry names the current stable terminal seams without
-resolving or invoking them.  Binding, routing, and power migrations remain
+The adapter registry names offline observers over unchanged typed, replay, and
+CutStore APIs.  Benders remains declared/deferred: this batch adds no production
+sink or emission path.  Binding, routing, and power migrations likewise remain
 explicitly deferred until each has a parity vector proving zero control-flow
 change.
 """
@@ -310,6 +312,13 @@ class ResponsibilityScope(Enum):
     ORCHESTRATION = "orchestration"
 
 
+class RejectionAdapterStage(Enum):
+    """Honest availability of a rejection adapter in this test/offline batch."""
+
+    OFFLINE_OBSERVER = "offline_observer"
+    DECLARED_DEFERRED = "declared_deferred"
+
+
 @dataclass(frozen=True, slots=True)
 class StaticAuditSymbolV1:
     """Static source identity only; intentionally no import or resolver API."""
@@ -371,12 +380,17 @@ class RejectionAdapterSpecV1:
     source: StaticAuditSymbolV1
     reason_bindings: tuple[RejectionReasonBindingV1, ...]
     required_premise_ids: tuple[str, ...]
+    integration_stage: RejectionAdapterStage
     audit_only: bool = True
 
     def __post_init__(self) -> None:
         _require_token(self.adapter_id, field_name="RejectionAdapterSpecV1.adapter_id")
         if type(self.source) is not StaticAuditSymbolV1:
             raise TypeError("RejectionAdapterSpecV1.source must be StaticAuditSymbolV1")
+        if type(self.integration_stage) is not RejectionAdapterStage:
+            raise TypeError(
+                "RejectionAdapterSpecV1.integration_stage must be RejectionAdapterStage"
+            )
         if type(self.reason_bindings) is not tuple or not self.reason_bindings or not all(
             type(item) is RejectionReasonBindingV1 for item in self.reason_bindings
         ):
@@ -444,8 +458,8 @@ _U = PremiseVerdict.UNAVAILABLE
 _TYPED_PLATFORM_ADAPTER = RejectionAdapterSpecV1(
     adapter_id="typed_platform.cut_rejection.v1",
     source=StaticAuditSymbolV1(
-        module="src.cuts.typed_platform",
-        qualname="validate_and_compile_cut_audited",
+        module="src.tests.cuts.rule_cut_evolution.rejection_adapters",
+        qualname="observe_typed_validation",
     ),
     reason_bindings=(
         _binding(
@@ -486,6 +500,7 @@ _TYPED_PLATFORM_ADAPTER = RejectionAdapterSpecV1(
         "proof_sound",
         "plan_sound",
     ),
+    integration_stage=RejectionAdapterStage.OFFLINE_OBSERVER,
 )
 
 _BENDERS_AUDIT_ADAPTER = RejectionAdapterSpecV1(
@@ -555,13 +570,14 @@ _BENDERS_AUDIT_ADAPTER = RejectionAdapterSpecV1(
         "semantic_unique",
         "attach_timing_current",
     ),
+    integration_stage=RejectionAdapterStage.DECLARED_DEFERRED,
 )
 
 _REPLAY_ADAPTER = RejectionAdapterSpecV1(
     adapter_id="replay.rejection_outcome.v1",
     source=StaticAuditSymbolV1(
-        module="src.cuts.replay",
-        qualname="replay_cut_audited",
+        module="src.tests.cuts.rule_cut_evolution.rejection_adapters",
+        qualname="observe_replay",
     ),
     reason_bindings=(
         _binding(
@@ -637,6 +653,7 @@ _REPLAY_ADAPTER = RejectionAdapterSpecV1(
         "adapter_representation_valid",
         "replay_validation",
     ),
+    integration_stage=RejectionAdapterStage.OFFLINE_OBSERVER,
 )
 
 # CutStore has a terminal QuarantineReason seam but no structured HOLD reason
@@ -646,8 +663,8 @@ _REPLAY_ADAPTER = RejectionAdapterSpecV1(
 _CUT_STORE_ADAPTER = RejectionAdapterSpecV1(
     adapter_id="cut_store.quarantine_transition.v1",
     source=StaticAuditSymbolV1(
-        module="src.cuts.store",
-        qualname="CutStore.quarantine_cut_audited",
+        module="src.tests.cuts.rule_cut_evolution.rejection_adapters",
+        qualname="observe_quarantine_transition",
     ),
     reason_bindings=tuple(
         _binding(
@@ -672,6 +689,7 @@ _CUT_STORE_ADAPTER = RejectionAdapterSpecV1(
         "terminal_reason_stable",
         "transition_authorized",
     ),
+    integration_stage=RejectionAdapterStage.OFFLINE_OBSERVER,
 )
 
 
@@ -1039,6 +1057,7 @@ __all__ = [
     "PremiseVerdict",
     "REJECTION_ADAPTER_SPECS_V1",
     "RejectionAdapterSpecV1",
+    "RejectionAdapterStage",
     "RejectionAuditIndexV1",
     "RejectionAuditSinkV1",
     "RejectionCostMeasureV1",

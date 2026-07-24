@@ -6,9 +6,13 @@ import inspect
 
 import pytest
 
-from src.cuts import rejection_audit as rejection_audit_module
 from src.cuts import typed_platform
-from src.cuts.rejection_audit import (
+from src.tests.cuts.rule_cut_evolution import rejection_adapters as adapters_module
+from src.tests.cuts.rule_cut_evolution import rejection_audit as rejection_audit_module
+from src.tests.cuts.rule_cut_evolution.rejection_adapters import (
+    observe_typed_validation,
+)
+from src.tests.cuts.rule_cut_evolution.rejection_audit import (
     AuditEmitOutcomeV1,
     CostUnit,
     DigestAvailability,
@@ -32,7 +36,6 @@ from src.cuts.typed_platform import (
     build_production_registry,
     cut_to_envelope_v1,
     validate_and_compile_cut,
-    validate_and_compile_cut_audited,
 )
 from src.tests.cuts import test_stage_b_region_capacity as region_cases
 from src.tests.cuts import test_stage_b_typed_platform as platform_cases
@@ -71,7 +74,7 @@ class _ExplodingSink:
         raise RuntimeError("audit transport unavailable")
 
 
-def test_original_entry_signature_is_unchanged_and_audited_seam_is_opt_in() -> None:
+def test_original_entry_signature_is_unchanged_and_observer_is_test_only() -> None:
     original = inspect.signature(validate_and_compile_cut)
     assert str(original) == (
         "(envelope: 'CutEnvelope', snapshot: 'ValidatedStateSnapshot', "
@@ -83,23 +86,24 @@ def test_original_entry_signature_is_unchanged_and_audited_seam_is_opt_in() -> N
         and parameter.default is inspect.Parameter.empty
         for parameter in original.parameters.values()
     )
+    assert not hasattr(typed_platform, "validate_and_compile_cut_audited")
 
-    audited = inspect.signature(validate_and_compile_cut_audited)
-    assert tuple(audited.parameters) == (
+    observer = inspect.signature(observe_typed_validation)
+    assert tuple(observer.parameters) == (
         "envelope",
         "snapshot",
         "registry",
         "audit_sink",
     )
-    assert audited.parameters["audit_sink"].kind is inspect.Parameter.KEYWORD_ONLY
-    assert audited.parameters["audit_sink"].default is inspect.Parameter.empty
+    assert observer.parameters["audit_sink"].kind is inspect.Parameter.KEYWORD_ONLY
+    assert observer.parameters["audit_sink"].default is inspect.Parameter.empty
 
 
 def test_compiled_and_shadow_results_emit_no_rejection_record() -> None:
     envelope, snapshot, registry = _typed_fixture()
     index = RejectionAuditIndexV1()
 
-    compiled = validate_and_compile_cut_audited(
+    compiled = observe_typed_validation(
         envelope,
         snapshot,
         registry,
@@ -125,7 +129,7 @@ def test_compiled_and_shadow_results_emit_no_rejection_record() -> None:
         shadow_plugin,
         capability=shadow_capability,
     )
-    shadow = validate_and_compile_cut_audited(
+    shadow = observe_typed_validation(
         shadow_envelope,
         shadow_snapshot,
         shadow_registry,
@@ -141,7 +145,7 @@ def test_real_rejection_emits_complete_evidence_bound_record() -> None:
     envelope, snapshot, registry = _registry_rejection_fixture()
     index = RejectionAuditIndexV1()
 
-    result = validate_and_compile_cut_audited(
+    result = observe_typed_validation(
         envelope,
         snapshot,
         registry,
@@ -274,7 +278,7 @@ def test_every_typed_rejection_stage_maps_to_one_complete_ordered_premise_vector
     monkeypatch.setattr(typed_platform, "validate_and_compile_cut", _reject)
     index = RejectionAuditIndexV1()
 
-    result = validate_and_compile_cut_audited(
+    result = observe_typed_validation(
         envelope,
         snapshot,
         registry,
@@ -305,7 +309,7 @@ def test_real_late_registry_rejection_does_not_invent_linear_trace() -> None:
     )
     index = RejectionAuditIndexV1()
 
-    result = validate_and_compile_cut_audited(
+    result = observe_typed_validation(
         envelope,
         snapshot,
         late_registry,
@@ -354,7 +358,7 @@ def test_real_late_scope_rejection_marks_unexposed_proof_trace_unavailable(
     )
     index = RejectionAuditIndexV1()
 
-    result = validate_and_compile_cut_audited(
+    result = observe_typed_validation(
         envelope,
         snapshot,
         build_production_registry(),
@@ -382,7 +386,7 @@ def test_sink_failure_cannot_change_the_original_rejection() -> None:
     envelope, snapshot, registry = _registry_rejection_fixture()
     baseline = validate_and_compile_cut(envelope, snapshot, registry)
 
-    result = validate_and_compile_cut_audited(
+    result = observe_typed_validation(
         envelope,
         snapshot,
         registry,
@@ -409,7 +413,7 @@ def test_audit_construction_failure_cannot_change_the_original_rejection(
         _explode_record,
     )
 
-    result = validate_and_compile_cut_audited(
+    result = observe_typed_validation(
         envelope,
         snapshot,
         registry,
@@ -425,9 +429,9 @@ def test_unavailable_clock_is_explicit_and_cannot_suppress_the_record(
 ) -> None:
     envelope, snapshot, registry = _registry_rejection_fixture()
     index = RejectionAuditIndexV1()
-    monkeypatch.setattr(typed_platform, "_typed_audit_monotonic_ns", lambda: None)
+    monkeypatch.setattr(adapters_module, "_safe_monotonic_ns", lambda: None)
 
-    result = validate_and_compile_cut_audited(
+    result = observe_typed_validation(
         envelope,
         snapshot,
         registry,
@@ -452,12 +456,12 @@ def test_broken_audit_timer_cannot_preempt_the_original_entry(
         raise RuntimeError("audit clock unavailable")
 
     monkeypatch.setattr(
-        typed_platform,
-        "_typed_audit_monotonic_ns",
+        adapters_module,
+        "_safe_monotonic_ns",
         _broken_clock,
     )
 
-    result = validate_and_compile_cut_audited(
+    result = observe_typed_validation(
         envelope,
         snapshot,
         registry,
@@ -494,7 +498,7 @@ def test_tcb_exception_propagates_by_identity_without_audit_attempt(
     )
 
     with pytest.raises(RuntimeError) as raised:
-        validate_and_compile_cut_audited(
+        observe_typed_validation(
             envelope,
             snapshot,
             registry,

@@ -65,6 +65,19 @@
 
 ## Cut framework
 
+- **rule semantic shadow ledger / `RuleSemanticSpec`**：test-only 静态语义台账，
+  登记版本、显式信息层序、owner、极性、前件、checker 可用性与失效条件；详见
+  [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md)。它不被
+  production runtime 消费，也不授予规则新的 authority。
+- **family shadow specs / `FamilyTrustSpec` / `FamilyGenerationSpec`**：对既有
+  family 硬编码的 test-only 镜像和一致性合同。unavailable 能力必须如实保留；
+  规格通过不等于 family promotion 或 production admission。
+- **`RejectionRecordV1`**：test/offline-only audit sidecar record，以既有 `cut_id`
+  或 semantic fingerprint 为 subject；不含 `record_id`，不进入 authority digest，
+  不改变控制流，也不能自动晋级为可信 cut。
+- **shadow onboarding fixture**：复用既有 lowering operation 的未接入测试 family，
+  用于执行通用负路径和差分语义链；不是 production plugin、manifest row 或 exact
+  theorem。
 - **active cut families**：当前为 F1-F7+F9；F8 因游戏规则前提为假于 2026-07-08 退役。typed lowering（可写 master）仅 F1/F6/F7；F5 为 shadow-only（compiler=None，无 lowering）；F2/F3/F4/F9 为 LEGACY_DIAGNOSTIC（registry 边界拒绝）。总开关仍 unsafe/default-off，尚未成为默认 certified path。
 - **validator trust boundary**：对 cut certificate 做 fail-closed 重算的边界。实现存在不自动
   意味着该 family 已进入 production theorem。
