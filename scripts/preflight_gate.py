@@ -599,6 +599,14 @@ MYPY_STRICT_TARGETS = [
     "src/cuts/state_snapshot.py",
     "src/cuts/typed_platform.py",
     "src/cuts/typed_apply.py",
+    # Rule/cut evolution protocol: versioned semantics + static family wiring
+    # + replay/audit sidecars are checked with the same fail-closed type gate.
+    "src/cuts/rule_semantics.py",
+    "src/cuts/family_specs.py",
+    "src/search/family_generation.py",
+    "src/cuts/replay.py",
+    "src/cuts/store.py",
+    "src/cuts/rejection_audit.py",
     "src/cuts/families/region_capacity_typed.py",
     "src/cuts/families/power_hitting_set_typed.py",
     "src/cuts/families/shape_packing_hall_typed.py",

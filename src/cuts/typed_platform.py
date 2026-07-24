@@ -16,6 +16,7 @@ import hashlib
 import inspect
 import json
 import math
+import time
 import weakref
 from collections.abc import Mapping, Sequence, Set
 from dataclasses import dataclass, field, fields, is_dataclass, replace
@@ -32,6 +33,7 @@ from src.cuts.state_snapshot import (
 
 if TYPE_CHECKING:
     from src.cuts.family_specs import FamilySpecRegistry
+    from src.cuts.rejection_audit import RejectionAuditSinkV1
 
 
 FrozenScalar: TypeAlias = None | bool | int | float | str
@@ -2074,6 +2076,259 @@ def validate_and_compile_cut(
     )
 
 
+def _typed_audit_monotonic_ns() -> int | None:
+    """Read audit-only timing without giving the clock control-flow authority."""
+
+    try:
+        value = time.monotonic_ns()
+    except Exception:
+        return None
+    return value if type(value) is int and value >= 0 else None
+
+
+def _typed_audit_text(value: object, *, fallback: str) -> str:
+    """Normalize sidecar text without modifying the returned rejection."""
+
+    text = str(value).replace("\x00", "\\x00").strip()
+    return text or fallback
+
+
+def _emit_typed_rejection_best_effort(
+    *,
+    envelope: "CutEnvelope",
+    snapshot: ValidatedStateSnapshot,
+    rejection: CutRejection,
+    audit_sink: RejectionAuditSinkV1,
+    audit_started_ns: int | None,
+) -> None:
+    """Emit one non-authoritative typed rejection record, never raising."""
+
+    try:
+        from src.cuts.rejection_audit import (
+            REJECTION_ADAPTER_SPECS_V1,
+            AuditDigestEvidenceV1,
+            CostUnit,
+            EvidenceKind,
+            EvidenceReferenceV1,
+            PremiseVerdict,
+            RejectionCostMeasureV1,
+            RejectionCostV1,
+            RejectionPremiseV1,
+            RejectionRecordV1,
+            RejectionSubjectKind,
+            RejectionSubjectV1,
+            assumption_audit_digest_v1,
+            emit_rejection_audit,
+        )
+
+        adapter = REJECTION_ADAPTER_SPECS_V1[
+            "typed_platform.cut_rejection.v1"
+        ]
+        binding = adapter.reason_binding(rejection.stage)
+        failed_premise_by_stage = {
+            "registry": "family_registered",
+            "envelope": "schema_version_current",
+            "scope": "scope_current",
+            "proof": "proof_sound",
+            "plan": "plan_sound",
+        }
+        failed_premise_id = failed_premise_by_stage[rejection.stage]
+        # The binding owns the conservative stage-to-premise policy.  It does
+        # not infer a linear trace from CutRejection.stage: registry
+        # eligibility occurs after schema/scope (and one F5 proof identity
+        # gate), so ambiguous history is statically UNAVAILABLE.
+        premise_verdicts = binding.premise_verdicts
+        premise_expectations = {
+            "family_registered": (
+                "the family is registered and eligible for typed dispatch"
+            ),
+            "schema_version_current": (
+                "the proof schema version matches the family capability"
+            ),
+            "scope_current": (
+                "the complete scope manifest matches the validated snapshot"
+            ),
+            "proof_sound": "the independent family verifier accepts the proof",
+            "plan_sound": (
+                "the compiler and plan verifier accept the strengthening"
+            ),
+        }
+        reason_detail = _typed_audit_text(
+            rejection.reason,
+            fallback=f"{rejection.stage} rejection",
+        )
+        premises: list[RejectionPremiseV1] = []
+        for premise_id, verdict in zip(
+            adapter.required_premise_ids,
+            premise_verdicts,
+            strict=True,
+        ):
+            if verdict is PremiseVerdict.SATISFIED:
+                premises.append(
+                    RejectionPremiseV1(
+                        premise_id=premise_id,
+                        expected=premise_expectations[premise_id],
+                        verdict=PremiseVerdict.SATISFIED,
+                        observed=(
+                            "the terminal stage necessarily establishes this "
+                            "prerequisite"
+                        ),
+                        unavailable_reason=None,
+                    )
+                )
+            elif verdict is PremiseVerdict.VIOLATED:
+                if premise_id != failed_premise_id:
+                    raise RuntimeError(
+                        "typed rejection audit verdict matrix contradicts "
+                        "the failed premise mapping"
+                    )
+                premises.append(
+                    RejectionPremiseV1(
+                        premise_id=premise_id,
+                        expected=premise_expectations[premise_id],
+                        verdict=PremiseVerdict.VIOLATED,
+                        observed=reason_detail,
+                        unavailable_reason=None,
+                    )
+                )
+            else:
+                premises.append(
+                    RejectionPremiseV1(
+                        premise_id=premise_id,
+                        expected=premise_expectations[premise_id],
+                        verdict=PremiseVerdict.UNAVAILABLE,
+                        observed=None,
+                        unavailable_reason=(
+                            "CutRejection exposes only a terminal stage; the "
+                            f"exact verdict for {premise_id} is not available "
+                            "at this audit seam"
+                        ),
+                    )
+                )
+
+        def _digest_evidence(
+            value: object,
+            *,
+            unavailable_reason: str,
+        ) -> AuditDigestEvidenceV1:
+            try:
+                return AuditDigestEvidenceV1.available(cast(str, value))
+            except Exception:
+                return AuditDigestEvidenceV1.unavailable(unavailable_reason)
+
+        instance_digest = _digest_evidence(
+            snapshot.source_digest,
+            unavailable_reason="validated snapshot source digest is unavailable",
+        )
+        state_digest = _digest_evidence(
+            snapshot.digest,
+            unavailable_reason="validated snapshot state digest is unavailable",
+        )
+        try:
+            assumption_pairs = tuple(
+                (assumption.key, assumption.value)
+                for assumption in envelope.scope.assumptions
+            )
+            assumption_digest = AuditDigestEvidenceV1.available(
+                assumption_audit_digest_v1(assumption_pairs)
+            )
+        except Exception:
+            assumption_digest = AuditDigestEvidenceV1.unavailable(
+                "complete scope assumption vector is unavailable"
+            )
+
+        proof_digest = _digest_evidence(
+            envelope.proof_hash,
+            unavailable_reason="envelope proof digest is unavailable",
+        )
+        snapshot_evidence_digest = _digest_evidence(
+            snapshot.digest,
+            unavailable_reason="validated snapshot digest is unavailable",
+        )
+
+        try:
+            audit_finished_ns = _typed_audit_monotonic_ns()
+        except Exception:
+            audit_finished_ns = None
+        if (
+            audit_started_ns is not None
+            and audit_finished_ns is not None
+            and audit_finished_ns >= audit_started_ns
+        ):
+            cost = RejectionCostV1(
+                measures=(
+                    RejectionCostMeasureV1(
+                        unit=CostUnit.WALL_TIME_NS,
+                        value=audit_finished_ns - audit_started_ns,
+                    ),
+                ),
+            )
+        else:
+            cost = RejectionCostV1(
+                measures=(),
+                unavailable_reason="monotonic audited-path timing is unavailable",
+            )
+
+        record = RejectionRecordV1(
+            subject=RejectionSubjectV1(
+                kind=RejectionSubjectKind.CUT_ID,
+                value=rejection.cut_id,
+            ),
+            adapter_id=adapter.adapter_id,
+            family=envelope.family,
+            reason_code=rejection.stage,
+            reason_detail=reason_detail,
+            responsibility_scope=binding.responsibility_scope,
+            disposition=binding.disposition,
+            premises=tuple(premises),
+            instance_digest=instance_digest,
+            state_digest=state_digest,
+            assumption_digest=assumption_digest,
+            evidence_references=(
+                EvidenceReferenceV1(
+                    kind=EvidenceKind.PROOF,
+                    reference=f"cut-proof:{rejection.cut_id}",
+                    content_digest=proof_digest,
+                ),
+                EvidenceReferenceV1(
+                    kind=EvidenceKind.SNAPSHOT,
+                    reference=f"validated-state-snapshot:{rejection.cut_id}",
+                    content_digest=snapshot_evidence_digest,
+                ),
+            ),
+            cost=cost,
+        )
+        emit_rejection_audit(record, audit_sink)
+    except Exception:
+        # Audit construction and transport cannot modify cut admission.
+        return
+
+
+def validate_and_compile_cut_audited(
+    envelope: "CutEnvelope",
+    snapshot: ValidatedStateSnapshot,
+    registry: "FamilyCapabilityRegistry",
+    *,
+    audit_sink: RejectionAuditSinkV1,
+) -> ValidateAndCompileResult:
+    """Run the unchanged single entry and audit only returned rejections."""
+
+    try:
+        audit_started_ns = _typed_audit_monotonic_ns()
+    except Exception:
+        audit_started_ns = None
+    result = validate_and_compile_cut(envelope, snapshot, registry)
+    if type(result) is CutRejection:
+        _emit_typed_rejection_best_effort(
+            envelope=envelope,
+            snapshot=snapshot,
+            rejection=result,
+            audit_sink=audit_sink,
+            audit_started_ns=audit_started_ns,
+        )
+    return result
+
+
 __all__ = [
     "CapabilityStage",
     "CompiledCut",
@@ -2101,4 +2356,5 @@ __all__ = [
     "build_production_registry",
     "cut_to_envelope_v1",
     "validate_and_compile_cut",
+    "validate_and_compile_cut_audited",
 ]

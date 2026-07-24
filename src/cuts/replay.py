@@ -26,8 +26,10 @@ Refs:
 """
 from __future__ import annotations
 
+import hashlib
+import time
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, cast
+from typing import TYPE_CHECKING, Any, Callable, Dict, cast
 
 from src.cuts.family_specs import (
     PRODUCTION_FAMILY_MANIFEST_V1,
@@ -45,6 +47,9 @@ from src.cuts.lifecycle import (
     validate_cut_integrity,
 )
 from src.cuts.store import CutStore, QuarantineReason
+
+if TYPE_CHECKING:
+    from src.cuts.rejection_audit import RejectionAuditSinkV1
 
 
 LegacyDiagnosticValidator = Callable[[Cut, BState, JsonDict], ValidationResult]
@@ -139,6 +144,287 @@ class DiagnosticResult:
     detail: str = ""
 
 
+def _safe_monotonic_ns() -> int | None:
+    """Read the audited-path timer without giving it control-flow authority."""
+
+    try:
+        value = time.monotonic_ns()
+    except Exception:
+        return None
+    return value if type(value) is int and value >= 0 else None
+
+
+def _audit_text(value: object, *, fallback: str) -> str:
+    """Normalize audit-only detail without rewriting established error text."""
+
+    text = str(value).replace("\x00", "\\x00").strip()
+    return text or fallback
+
+
+def _assumption_audit_digest(cut: Cut) -> str | None:
+    """Hash the legacy scope assumptions in an audit-only digest domain."""
+
+    try:
+        from src.cuts.rejection_audit import assumption_audit_digest_v1
+
+        scope = cut.scope
+        assumptions = None if scope is None else scope.active_assumptions
+        if type(assumptions) is not tuple:
+            return None
+        projection: list[tuple[str, str]] = []
+        for assumption in assumptions:
+            key = getattr(assumption, "key", None)
+            value = getattr(assumption, "value", None)
+            if type(key) is not str or type(value) is not str:
+                return None
+            projection.append((key, value))
+        return assumption_audit_digest_v1(tuple(projection))
+    except Exception:
+        return None
+
+
+def _emit_replay_rejection_best_effort(
+    *,
+    cut: Cut,
+    context: ReplayContext,
+    audit_sink: object | None,
+    audit_started_ns: int | None,
+    reason_code: str,
+    reason_detail: str,
+    failure_point: str,
+) -> None:
+    """Build and emit one replay fact after an established terminal transition.
+
+    Every operation in this helper is audit-only and exception-contained.  It
+    is intentionally called only after ``hold_cut``/``quarantine_cut`` has
+    completed, so neither record construction nor transport can change the cut
+    decision or store mutation order.
+    """
+
+    if audit_sink is None:
+        return
+    try:
+        from src.cuts.rejection_audit import (
+            REJECTION_ADAPTER_SPECS_V1,
+            AuditDigestEvidenceV1,
+            CostUnit,
+            EvidenceKind,
+            EvidenceReferenceV1,
+            PremiseVerdict,
+            RejectionCostMeasureV1,
+            RejectionCostV1,
+            RejectionPremiseV1,
+            RejectionRecordV1,
+            RejectionSubjectKind,
+            RejectionSubjectV1,
+            emit_rejection_audit,
+        )
+
+        adapter = REJECTION_ADAPTER_SPECS_V1["replay.rejection_outcome.v1"]
+        binding = adapter.reason_binding(reason_code)
+
+        registered_observed = "cut_id found in store.cuts before replay dispatch"
+        integrity_ok = "validate_cut_integrity returned None"
+        adapter_ok = "cut_to_envelope_v1 returned a CutEnvelope"
+        replay_failed = _audit_text(
+            reason_detail,
+            fallback=f"{reason_code} rejected replay validation",
+        )
+
+        if failure_point == "integrity":
+            integrity_premise = RejectionPremiseV1(
+                premise_id="cut_integrity",
+                expected="validate_cut_integrity returns None",
+                verdict=PremiseVerdict.VIOLATED,
+                observed=replay_failed,
+                unavailable_reason=None,
+            )
+            adapter_premise = RejectionPremiseV1(
+                premise_id="adapter_representation_valid",
+                expected="the typed adapter returns a valid CutEnvelope when used",
+                verdict=PremiseVerdict.UNAVAILABLE,
+                observed=None,
+                unavailable_reason="integrity rejection occurred before adapter dispatch",
+            )
+            validation_premise = RejectionPremiseV1(
+                premise_id="replay_validation",
+                expected="replay validation permits attachment",
+                verdict=PremiseVerdict.UNAVAILABLE,
+                observed=None,
+                unavailable_reason="replay validation did not run after integrity rejection",
+            )
+        elif failure_point == "adapter":
+            integrity_premise = RejectionPremiseV1(
+                premise_id="cut_integrity",
+                expected="validate_cut_integrity returns None",
+                verdict=PremiseVerdict.SATISFIED,
+                observed=integrity_ok,
+                unavailable_reason=None,
+            )
+            adapter_premise = RejectionPremiseV1(
+                premise_id="adapter_representation_valid",
+                expected="the typed adapter returns a valid CutEnvelope when used",
+                verdict=PremiseVerdict.VIOLATED,
+                observed=replay_failed,
+                unavailable_reason=None,
+            )
+            validation_premise = RejectionPremiseV1(
+                premise_id="replay_validation",
+                expected="replay validation permits attachment",
+                verdict=PremiseVerdict.UNAVAILABLE,
+                observed=None,
+                unavailable_reason="replay validation did not run after adapter rejection",
+            )
+        elif failure_point == "typed_validation":
+            integrity_premise = RejectionPremiseV1(
+                premise_id="cut_integrity",
+                expected="validate_cut_integrity returns None",
+                verdict=PremiseVerdict.SATISFIED,
+                observed=integrity_ok,
+                unavailable_reason=None,
+            )
+            adapter_premise = RejectionPremiseV1(
+                premise_id="adapter_representation_valid",
+                expected="the typed adapter returns a valid CutEnvelope when used",
+                verdict=PremiseVerdict.SATISFIED,
+                observed=adapter_ok,
+                unavailable_reason=None,
+            )
+            validation_premise = RejectionPremiseV1(
+                premise_id="replay_validation",
+                expected="replay validation permits attachment",
+                verdict=PremiseVerdict.VIOLATED,
+                observed=replay_failed,
+                unavailable_reason=None,
+            )
+        elif failure_point == "legacy_validation":
+            integrity_premise = RejectionPremiseV1(
+                premise_id="cut_integrity",
+                expected="validate_cut_integrity returns None",
+                verdict=PremiseVerdict.SATISFIED,
+                observed=integrity_ok,
+                unavailable_reason=None,
+            )
+            adapter_premise = RejectionPremiseV1(
+                premise_id="adapter_representation_valid",
+                expected="the typed adapter returns a valid CutEnvelope when used",
+                verdict=PremiseVerdict.UNAVAILABLE,
+                observed=None,
+                unavailable_reason="legacy diagnostic replay has no typed adapter step",
+            )
+            validation_premise = RejectionPremiseV1(
+                premise_id="replay_validation",
+                expected="replay validation permits attachment",
+                verdict=PremiseVerdict.VIOLATED,
+                observed=replay_failed,
+                unavailable_reason=None,
+            )
+        else:
+            return
+
+        premises = (
+            RejectionPremiseV1(
+                premise_id="cut_registered",
+                expected="cut_id is registered in CutStore",
+                verdict=PremiseVerdict.SATISFIED,
+                observed=registered_observed,
+                unavailable_reason=None,
+            ),
+            integrity_premise,
+            adapter_premise,
+            validation_premise,
+        )
+
+        snapshot = context.snapshot
+
+        def _digest_evidence(value: object, *, unavailable_reason: str) -> AuditDigestEvidenceV1:
+            try:
+                return AuditDigestEvidenceV1.available(cast(str, value))
+            except Exception:
+                return AuditDigestEvidenceV1.unavailable(unavailable_reason)
+
+        instance_digest = _digest_evidence(
+            getattr(snapshot, "source_digest", None),
+            unavailable_reason="current replay instance digest is unavailable",
+        )
+        state_digest = _digest_evidence(
+            getattr(snapshot, "digest", None),
+            unavailable_reason="current replay state digest is unavailable",
+        )
+        raw_assumption_digest = _assumption_audit_digest(cut)
+        assumption_digest = (
+            AuditDigestEvidenceV1.available(raw_assumption_digest)
+            if raw_assumption_digest is not None
+            else AuditDigestEvidenceV1.unavailable(
+                "cut scope assumptions are unavailable at the replay seam"
+            )
+        )
+
+        cert = cut.cert
+        cert_payload = None if cert is None else cert.cert_payload
+        if type(cert_payload) is bytes:
+            evidence_digest = AuditDigestEvidenceV1.available(
+                hashlib.sha256(cert_payload).hexdigest()
+            )
+        else:
+            evidence_digest = AuditDigestEvidenceV1.unavailable(
+                "cut certificate payload is unavailable at the replay seam"
+            )
+        evidence_references = (
+            EvidenceReferenceV1(
+                kind=EvidenceKind.CUT_STORE,
+                reference=f"cut_store:{_audit_text(cut.cut_id, fallback='unknown-cut')}",
+                content_digest=evidence_digest,
+            ),
+        )
+
+        try:
+            audit_finished_ns = _safe_monotonic_ns()
+        except Exception:
+            audit_finished_ns = None
+        if (
+            audit_started_ns is not None
+            and audit_finished_ns is not None
+            and audit_finished_ns >= audit_started_ns
+        ):
+            cost = RejectionCostV1(
+                measures=(
+                    RejectionCostMeasureV1(
+                        unit=CostUnit.WALL_TIME_NS,
+                        value=audit_finished_ns - audit_started_ns,
+                    ),
+                ),
+            )
+        else:
+            cost = RejectionCostV1(
+                measures=(),
+                unavailable_reason="monotonic audited-path timing is unavailable",
+            )
+
+        record = RejectionRecordV1(
+            subject=RejectionSubjectV1(
+                kind=RejectionSubjectKind.CUT_ID,
+                value=cut.cut_id,
+            ),
+            adapter_id=adapter.adapter_id,
+            family=cut.family,
+            reason_code=reason_code,
+            reason_detail=_audit_text(reason_detail, fallback=reason_code),
+            responsibility_scope=binding.responsibility_scope,
+            disposition=binding.disposition,
+            premises=premises,
+            instance_digest=instance_digest,
+            state_digest=state_digest,
+            assumption_digest=assumption_digest,
+            evidence_references=evidence_references,
+            cost=cost,
+        )
+        emit_rejection_audit(record, cast(Any, audit_sink))
+    except Exception:
+        # Audit record construction and transport are non-authoritative.
+        return
+
+
 def build_replay_context(state: BState) -> ReplayContext:
     """Construct a ReplayContext from a raw BState (RFC-001 §4.8).
 
@@ -218,6 +504,67 @@ def replay_cut(
         f"replay_cut: family={cut.family!r} is in neither the typed nor the "
         f"legacy diagnostic replay table (fail-closed)."
     )
+
+
+def replay_cut_audited(
+    cut: Cut,
+    store: CutStore,
+    context: ReplayContext,
+    *,
+    iter_index: int = -1,
+    audit_sink: RejectionAuditSinkV1,
+) -> AttachDecision:
+    """Opt-in replay with a best-effort post-transition rejection sidecar."""
+
+    try:
+        audit_started_ns = _safe_monotonic_ns()
+    except Exception:
+        audit_started_ns = None
+    decision = replay_cut(cut, store, context, iter_index=iter_index)
+    if decision == "ATTACH":
+        return decision
+
+    if decision == "HOLD":
+        # Legacy diagnostic "ok" is deliberately held and is not a rejection.
+        if cut.family not in TYPED_REPLAY_FAMILIES:
+            return decision
+        # The frozen replay surface can return HOLD for a scope-stale cut that
+        # was already quarantined, without performing a HOLD transition.  Do
+        # not emit a sidecar disposition that contradicts the actual store.
+        if cut.cut_id not in store.held or cut.cut_id in store.quarantined:
+            return decision
+        reason_code = "typed_rejected_scope"
+        reason_detail = "typed replay rejected the current snapshot at scope stage"
+        failure_point = "typed_validation"
+    else:
+        reason = store.quarantined.get(cut.cut_id)
+        if reason is None:
+            # An audited wrapper never invents a terminal fact not reflected by
+            # the established CutStore transition.
+            return decision
+        reason_code = reason.reason_code
+        reason_detail = reason.detail
+        if reason_code == "cut_integrity_failed":
+            failure_point = "integrity"
+        elif reason_code == "typed_adapter_rejected":
+            failure_point = "adapter"
+        elif reason_code.startswith("typed_rejected_"):
+            failure_point = "typed_validation"
+        elif reason_code.startswith("legacy_diagnostic_"):
+            failure_point = "legacy_validation"
+        else:
+            return decision
+
+    _emit_replay_rejection_best_effort(
+        cut=cut,
+        context=context,
+        audit_sink=audit_sink,
+        audit_started_ns=audit_started_ns,
+        reason_code=reason_code,
+        reason_detail=reason_detail,
+        failure_point=failure_point,
+    )
+    return decision
 
 
 def _replay_typed(
@@ -358,6 +705,37 @@ def regression_sweep(
             continue
         cut = store.cuts[cut_id]
         decision = replay_cut(cut, store, context, iter_index=iter_index)
+        counts[decision] += 1
+    return counts
+
+
+def regression_sweep_audited(
+    store: CutStore,
+    context: ReplayContext,
+    *,
+    iter_index: int = -1,
+    audit_sink: RejectionAuditSinkV1,
+) -> Dict[str, int]:
+    """Opt-in regression sweep emitting audited rejection records only."""
+
+    counts: Dict[str, int] = {
+        "ATTACH": 0,
+        "HOLD": 0,
+        "QUARANTINE": 0,
+        "skipped_quarantined": 0,
+    }
+    for cut_id in list(store.cuts.keys()):
+        if cut_id in store.quarantined:
+            counts["skipped_quarantined"] += 1
+            continue
+        cut = store.cuts[cut_id]
+        decision = replay_cut_audited(
+            cut,
+            store,
+            context,
+            iter_index=iter_index,
+            audit_sink=audit_sink,
+        )
         counts[decision] += 1
     return counts
 

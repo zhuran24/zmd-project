@@ -65,6 +65,7 @@ from typing import (
     Optional,
     Sequence,
     Set,
+    TYPE_CHECKING,
     Tuple,
     cast,
 )
@@ -122,6 +123,7 @@ from src.search.phase3b.anchor119.guard_controls import (
     build_phase3b_anchor119_guard_runtime_state,
     build_phase3b_anchor119_guard_runtime_decision,
 )
+
 from src.search.phase3b.anchor119.guarded_precheck_runtime import (
     evaluate_phase3b_anchor119_guarded_precheck_advisory,
 )
@@ -134,6 +136,9 @@ from src.search.independent_infeasibility_reverifier import (
     REVERIFY_STATUS_DIVERGED_FEASIBLE,
     reverify_whole_layout_infeasibility,
 )
+
+if TYPE_CHECKING:
+    from src.cuts.rejection_audit import RejectionAuditSinkV1, RejectionRecordV1
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 EXACT_REQUIRED_ARTIFACTS = {
@@ -3749,6 +3754,7 @@ class LBBDController:
         session: Optional["ExactSearchSession"] = None,
         enabled_cut_families: Optional[Sequence[str]] = None,
         cut_ledger: Optional[Any] = None,
+        rejection_audit_sink: Optional["RejectionAuditSinkV1"] = None,
     ):
         self.master = master
         self.cut_manager = cut_manager
@@ -3815,6 +3821,11 @@ class LBBDController:
         # ISOLATION (D-1, owner-approved waiver): this handle is write-only —
         # nothing is ever read back from the ledger into the attach path.
         self._cut_ledger = cut_ledger
+        # Milestone C audit sidecar: independent from the authority-sensitive
+        # CutLedger.  This sink is write-only, best-effort, and absent by
+        # default; neither its contents nor failures can affect cut admission,
+        # ledger payloads, master mutation, or any authority digest.
+        self._rejection_audit_sink = rejection_audit_sink
         self.loaded_exact_safe_cuts: List[BendersCut] = list(loaded_exact_safe_cuts or [])
         self.generated_exact_safe_cuts: List[BendersCut] = []
         # P1 #7 main: 当前 wave 的 ε 阶段 (0.05 / 0.01 / 0.0 / None).
@@ -8667,6 +8678,7 @@ class LBBDController:
             ).encode("utf-8")
         ).hexdigest()
         ledger = self._cut_ledger
+        rejection_audit_sink = self._rejection_audit_sink
 
         def _ledger_event(event_type: str, fields: Dict[str, Any]) -> None:
             # Audit-only write (spec 08 D-1 non-consumption isolation). A
@@ -8682,6 +8694,264 @@ class LBBDController:
             )
             fields.setdefault("epoch_semantic_digest", epoch_semantic_digest)
             ledger.append(event_type, fields)
+
+        def _benders_rejection_record_v1(
+            *,
+            cut: Any,
+            reason_code: str,
+            reason_detail: str,
+            started_ns: int | None,
+            envelope: Any = None,
+            compiled: Any = None,
+            subject_cut_id: str | None = None,
+        ) -> "RejectionRecordV1 | None":
+            """Build one non-authoritative record for the independent sidecar."""
+
+            if rejection_audit_sink is None:
+                return None
+            try:
+                from src.cuts.rejection_audit import (
+                    AuditDigestEvidenceV1,
+                    CostUnit,
+                    EvidenceKind,
+                    EvidenceReferenceV1,
+                    PremiseVerdict,
+                    REJECTION_ADAPTER_SPECS_V1,
+                    RejectionCostMeasureV1,
+                    RejectionCostV1,
+                    RejectionPremiseV1,
+                    RejectionRecordV1,
+                    RejectionSubjectKind,
+                    RejectionSubjectV1,
+                    assumption_audit_digest_v1,
+                )
+
+                adapter = REJECTION_ADAPTER_SPECS_V1[
+                    "benders.framework_rejection_audit.v1"
+                ]
+                binding = adapter.reason_binding(reason_code)
+                premise_expectations = {
+                    "cut_generated": "the generator emitted a cut candidate",
+                    "adapter_admitted": "the cut admits an exact schema-v1 envelope",
+                    "family_registered": "the family has a typed-admissible registry row",
+                    "schema_version_current": "the proof schema version matches the capability",
+                    "scope_current": "the complete scope manifest matches this snapshot",
+                    "proof_sound": "the independent family verifier accepts the proof",
+                    "plan_sound": "the compiler and plan verifier accept the strengthening",
+                    "semantic_unique": "the semantic fingerprint is new to this master build",
+                    "attach_timing_current": "step 7 accepts the compiled cut for this snapshot",
+                }
+                failed_premise_by_reason = {
+                    "adapter": "adapter_admitted",
+                    "registry": "family_registered",
+                    "envelope": "schema_version_current",
+                    "scope": "scope_current",
+                    "proof": "proof_sound",
+                    "plan": "plan_sound",
+                    "semantic_duplicate": "semantic_unique",
+                    "attach_timing": "attach_timing_current",
+                }
+                premise_verdicts = binding.premise_verdicts
+                failed_premise_id = failed_premise_by_reason[reason_code]
+                premises = []
+                for premise_id, verdict in zip(
+                    adapter.required_premise_ids,
+                    premise_verdicts,
+                    strict=True,
+                ):
+                    if verdict is PremiseVerdict.SATISFIED:
+                        premises.append(
+                            RejectionPremiseV1(
+                                premise_id=premise_id,
+                                expected=premise_expectations[premise_id],
+                                verdict=PremiseVerdict.SATISFIED,
+                                observed=(
+                                    "the terminal seam necessarily establishes "
+                                    "this prerequisite"
+                                ),
+                                unavailable_reason=None,
+                            )
+                        )
+                    elif verdict is PremiseVerdict.VIOLATED:
+                        if premise_id != failed_premise_id:
+                            raise RuntimeError(
+                                "Benders rejection audit verdict matrix "
+                                "contradicts the failed premise mapping"
+                            )
+                        premises.append(
+                            RejectionPremiseV1(
+                                premise_id=premise_id,
+                                expected=premise_expectations[premise_id],
+                                verdict=PremiseVerdict.VIOLATED,
+                                observed=reason_detail,
+                                unavailable_reason=None,
+                            )
+                        )
+                    else:
+                        premises.append(
+                            RejectionPremiseV1(
+                                premise_id=premise_id,
+                                expected=premise_expectations[premise_id],
+                                verdict=PremiseVerdict.UNAVAILABLE,
+                                observed=None,
+                                unavailable_reason=(
+                                    "the terminal Benders seam does not expose "
+                                    f"a trustworthy verdict for {premise_id}"
+                                ),
+                            )
+                        )
+
+                fingerprint = (
+                    str(compiled.plan.semantic_fingerprint)
+                    if compiled is not None
+                    else None
+                )
+                if (
+                    fingerprint is not None
+                    and reason_code in {"semantic_duplicate", "attach_timing"}
+                ):
+                    subject = RejectionSubjectV1(
+                        kind=RejectionSubjectKind.SEMANTIC_FINGERPRINT,
+                        value=fingerprint,
+                    )
+                else:
+                    subject = RejectionSubjectV1(
+                        kind=RejectionSubjectKind.CUT_ID,
+                        value=subject_cut_id
+                        or str(getattr(cut, "cut_id", "")),
+                    )
+
+                raw_assumptions: Any
+                assumptions_exposed = True
+                if envelope is not None:
+                    raw_assumptions = getattr(envelope.scope, "assumptions", ())
+                else:
+                    cut_scope = getattr(cut, "scope", None)
+                    if cut_scope is None or not hasattr(
+                        cut_scope,
+                        "active_assumptions",
+                    ):
+                        raw_assumptions = ()
+                        assumptions_exposed = False
+                    else:
+                        raw_assumptions = cut_scope.active_assumptions
+                if assumptions_exposed:
+                    assumption_pairs = tuple(
+                        (
+                            str(getattr(assumption, "key")),
+                            str(getattr(assumption, "value")),
+                        )
+                        for assumption in raw_assumptions
+                    )
+                    assumption_digest_evidence = AuditDigestEvidenceV1.available(
+                        assumption_audit_digest_v1(assumption_pairs)
+                    )
+                else:
+                    assumption_digest_evidence = (
+                        AuditDigestEvidenceV1.unavailable(
+                            "the rejected cut exposed no scope assumption vector"
+                        )
+                    )
+
+                proof_digest = (
+                    str(getattr(envelope, "proof_hash", ""))
+                    if envelope is not None
+                    else str(getattr(cut, "oracle_cert_hash", ""))
+                )
+                try:
+                    proof_evidence = AuditDigestEvidenceV1.available(proof_digest)
+                except (TypeError, ValueError):
+                    proof_evidence = AuditDigestEvidenceV1.unavailable(
+                        "the terminal seam did not expose a valid proof digest"
+                    )
+
+                finished_ns = _audit_monotonic_ns()
+                if (
+                    started_ns is not None
+                    and finished_ns is not None
+                    and finished_ns >= started_ns
+                ):
+                    rejection_cost = RejectionCostV1(
+                        measures=(
+                            RejectionCostMeasureV1(
+                                unit=CostUnit.WALL_TIME_NS,
+                                value=finished_ns - started_ns,
+                            ),
+                        ),
+                    )
+                else:
+                    rejection_cost = RejectionCostV1(
+                        measures=(),
+                        unavailable_reason=(
+                            "monotonic audited-path timing is unavailable"
+                        ),
+                    )
+                record = RejectionRecordV1(
+                    subject=subject,
+                    adapter_id=adapter.adapter_id,
+                    family=str(getattr(cut, "family", "")),
+                    reason_code=reason_code,
+                    reason_detail=reason_detail,
+                    responsibility_scope=binding.responsibility_scope,
+                    disposition=binding.disposition,
+                    premises=tuple(premises),
+                    instance_digest=AuditDigestEvidenceV1.available(
+                        str(snapshot.source_digest)
+                    ),
+                    state_digest=AuditDigestEvidenceV1.available(
+                        str(snapshot.digest)
+                    ),
+                    assumption_digest=assumption_digest_evidence,
+                    evidence_references=(
+                        EvidenceReferenceV1(
+                            kind=EvidenceKind.PROOF,
+                            reference=(
+                                "cut-proof:"
+                                + (
+                                    subject_cut_id
+                                    or str(getattr(cut, "cut_id", ""))
+                                )
+                            ),
+                            content_digest=proof_evidence,
+                        ),
+                        EvidenceReferenceV1(
+                            kind=EvidenceKind.ARTIFACT,
+                            reference="family-manifest:production-v1",
+                            content_digest=AuditDigestEvidenceV1.available(
+                                PRODUCTION_FAMILY_MANIFEST_V1.audit_digest
+                            ),
+                        ),
+                    ),
+                    cost=rejection_cost,
+                )
+                return record
+            except Exception:
+                # The record is non-authoritative research telemetry.  Its
+                # construction must not add a new failure mode to cut admission.
+                return None
+
+        def _emit_benders_rejection_best_effort(
+            record: "RejectionRecordV1 | None",
+        ) -> None:
+            """Emit after the established terminal action; never affect it."""
+
+            if record is None or rejection_audit_sink is None:
+                return
+            try:
+                from src.cuts.rejection_audit import emit_rejection_audit
+
+                emit_rejection_audit(record, rejection_audit_sink)
+            except Exception:
+                # Import, validation, transport, and sink defects are all
+                # outside the cut authority/control-flow graph.
+                return
+
+        def _audit_monotonic_ns() -> int | None:
+            try:
+                value = time.monotonic_ns()
+            except Exception:
+                return None
+            return value if type(value) is int and value >= 0 else None
 
         # 批E (spec 08 D-13) + evolution protocol milestone B: retain the
         # enabled-family outer gate and the established F1 → F7 → F6 → F5
@@ -8733,11 +9003,16 @@ class LBBDController:
         for cut in cuts:
             if budget_used + attached >= attach_budget:
                 break
+            rejection_started_ns = (
+                _audit_monotonic_ns()
+                if rejection_audit_sink is not None
+                else None
+            )
             # Adapter admission (schema-v1 integrity/quarantine/identity) — a
             # TypeError/ValueError is a fail-closed rejection, never an attach.
             try:
                 envelope = cut_to_envelope_v1(cut)
-            except (TypeError, ValueError):
+            except (TypeError, ValueError) as exc:
                 rejected["adapter"] += 1
                 _ledger_event(
                     "REJECTED",
@@ -8746,6 +9021,19 @@ class LBBDController:
                         "reason_code": "adapter",
                     },
                 )
+                if rejection_audit_sink is not None:
+                    try:
+                        adapter_detail = str(exc) or type(exc).__name__
+                    except Exception:
+                        adapter_detail = type(exc).__name__
+                    _emit_benders_rejection_best_effort(
+                        _benders_rejection_record_v1(
+                            cut=cut,
+                            reason_code="adapter",
+                            reason_detail=adapter_detail,
+                            started_ns=rejection_started_ns,
+                        )
+                    )
                 continue
             result = validate_and_compile_cut(envelope, snapshot, registry)
             if isinstance(result, CompiledCut):
@@ -8768,6 +9056,21 @@ class LBBDController:
                             "reason_code": "semantic_duplicate",
                         },
                     )
+                    if rejection_audit_sink is not None:
+                        _emit_benders_rejection_best_effort(
+                            _benders_rejection_record_v1(
+                                cut=cut,
+                                reason_code="semantic_duplicate",
+                                reason_detail=(
+                                    "semantic fingerprint is already applied "
+                                    "to this master build"
+                                ),
+                                started_ns=rejection_started_ns,
+                                envelope=envelope,
+                                compiled=result,
+                                subject_cut_id=str(result.cut_id),
+                            )
+                        )
                     continue
                 # Step-7 attach-timing: only a compiled cut still attesting to
                 # this snapshot may be lowered (fail-closed skip otherwise).
@@ -8780,6 +9083,21 @@ class LBBDController:
                             "reason_code": "attach_timing",
                         },
                     )
+                    if rejection_audit_sink is not None:
+                        _emit_benders_rejection_best_effort(
+                            _benders_rejection_record_v1(
+                                cut=cut,
+                                reason_code="attach_timing",
+                                reason_detail=(
+                                    "step_7_evaluate_cut returned a value "
+                                    "other than exact True"
+                                ),
+                                started_ns=rejection_started_ns,
+                                envelope=envelope,
+                                compiled=result,
+                                subject_cut_id=str(result.cut_id),
+                            )
+                        )
                     continue
                 try:
                     binding = _resolve_model_scope_binding(
@@ -8894,6 +9212,17 @@ class LBBDController:
                         "reason": str(result.reason),
                     },
                 )
+                if rejection_audit_sink is not None:
+                    _emit_benders_rejection_best_effort(
+                        _benders_rejection_record_v1(
+                            cut=cut,
+                            reason_code=str(result.stage),
+                            reason_detail=str(result.reason),
+                            started_ns=rejection_started_ns,
+                            envelope=envelope,
+                            subject_cut_id=str(result.cut_id),
+                        )
+                    )
             else:  # pragma: no cover - the single entry returns only the 3 arms
                 raise TypeError(
                     f"validate_and_compile_cut returned unexpected {type(result).__name__}"
