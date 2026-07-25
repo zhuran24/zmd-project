@@ -1,0 +1,38 @@
+{
+  "schema_version": "b1_sidewise_marked_membrane_fixture_v1",
+  "side_capacities": [9, 9, 9, 9],
+  "free_score": 0,
+  "target_score": 7,
+  "groups": [
+    {
+      "name": "single_protocol_core",
+      "multiplicity": 1,
+      "faces": [
+        {
+          "name": "output_face_a",
+          "contacts": [
+            {
+              "name": "full",
+              "length": 9,
+              "active": 3,
+              "marks": 3,
+              "endpoint": "none"
+            }
+          ]
+        },
+        {
+          "name": "output_face_b",
+          "contacts": [
+            {
+              "name": "full",
+              "length": 9,
+              "active": 3,
+              "marks": 3,
+              "endpoint": "none"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
