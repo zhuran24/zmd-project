@@ -1,0 +1,33 @@
+{
+  "schema_version": "b1_sidewise_marked_membrane_fixture_v1",
+  "side_capacities": [3, 3, 3, 3],
+  "free_score": 1,
+  "target_score": 7,
+  "groups": [
+    {
+      "name": "partial_contact",
+      "multiplicity": 2,
+      "faces": [
+        {
+          "name": "marked_face",
+          "contacts": [
+            {
+              "name": "left_partial",
+              "length": 2,
+              "active": 2,
+              "marks": 1,
+              "endpoint": "left"
+            },
+            {
+              "name": "right_partial",
+              "length": 2,
+              "active": 2,
+              "marks": 1,
+              "endpoint": "right"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
