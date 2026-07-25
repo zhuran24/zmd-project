@@ -93,6 +93,33 @@ def _head_drifted_from_track_b_pin() -> str | None:
     return None
 
 
+# witness W2b run-supervisor launcher tests were born on baseline HEAD ea407fa;
+# the supervisor derives the run_dir name from and identity-checks the live HEAD,
+# so on any other HEAD they hit GIT_HEAD_DRIFT / run_dir-name mismatch by design.
+_WITNESS_PINNED_HEAD_SHORT = "ea407fa"
+
+
+def _head_drifted_from_witness_pin() -> str | None:
+    import subprocess
+
+    try:
+        head = subprocess.run(
+            ["git", "-C", str(PROJECT_ROOT), "rev-parse", "--short", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None  # no git / not a checkout: let the test surface its own error
+    if not head.startswith(_WITNESS_PINNED_HEAD_SHORT):
+        return (
+            f"witness W2b launcher supervisor pins run identity to HEAD "
+            f"{_WITNESS_PINNED_HEAD_SHORT}; current HEAD {head} "
+            f"(runnable from the originating worktree)"
+        )
+    return None
+
+
 def _missing_r4_external_brain_handoff_artifacts() -> str | None:
     target = PROJECT_ROOT / ".artifacts" / "track_b_r4_external_brain_handoff_20260722"
     if not target.exists():
@@ -165,6 +192,17 @@ _TRACK_B_NODEID_GUARDS: dict[str, "callable[[], str | None]"] = {
     "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_pass_is_common_to_both_complete_classifications": _missing_noncert_cuts_ab_trust_artifacts,
     "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_verifier_rejects_incomplete_terminal_fields": _missing_noncert_cuts_ab_trust_artifacts,
     "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_verifier_rejects_oom_kill_and_limit_drift": _missing_noncert_cuts_ab_trust_artifacts,
+    # witness W2b run-supervisor launchers: run_dir name + start/stop identity
+    # are derived from the live HEAD; any HEAD but baseline ea407fa => GIT_HEAD_DRIFT.
+    "test_witness_shelf_power_launcher.py::test_dry_run_records_one_fresh_a001_without_starting_service": _head_drifted_from_witness_pin,
+    "test_witness_shelf_power_launcher.py::test_busy_preflight_never_starts_or_creates_run": _head_drifted_from_witness_pin,
+    "test_witness_shelf_power_launcher.py::test_missing_result_is_classified_fail_closed_while_lock_is_held": _head_drifted_from_witness_pin,
+    "test_witness_shelf_power_launcher.py::test_result_json_and_cgroup_telemetry_are_strict_and_independently_checked": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_dry_run_creates_one_content_bound_snapshot_and_never_starts_service": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_busy_preflight_does_not_create_a_run": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_structured_rejection_is_classified_while_outer_lock_is_held": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_feasible_result_requires_exact_cgroup_contract_and_geometry_binding": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_geometry_snapshot_mutation_discards_otherwise_clean_rejection": _head_drifted_from_witness_pin,
 }
 
 
