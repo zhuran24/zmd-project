@@ -1,0 +1,162 @@
+{
+  "schema": "b1_conditional_halo_stencil_v1",
+  "evidence_cutoff": "2026-07-22",
+  "coordinate_system": {
+    "grid_cells": {
+      "x": [
+        0,
+        69
+      ],
+      "y": [
+        0,
+        69
+      ]
+    },
+    "indexing": "zero_based",
+    "origin": "southwest",
+    "x_positive": "east",
+    "y_positive": "north"
+  },
+  "pole_anchor": {
+    "body_offsets": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "x_domain": [
+      0,
+      68
+    ],
+    "y_domain": [
+      0,
+      68
+    ]
+  },
+  "power_coverage": {
+    "relative_x": [
+      -5,
+      6
+    ],
+    "relative_y": [
+      -5,
+      6
+    ],
+    "semantics": "powered_body_intersects_clipped_coverage_square"
+  },
+  "weight_units": "doubled_integer",
+  "orbit_key": "(max(abs(2*dx-1),abs(2*dy-1)),min(abs(2*dx-1),abs(2*dy-1)))",
+  "orbits": [
+    {
+      "major_odd": 3,
+      "minor_odd": 3,
+      "weight2": 2
+    },
+    {
+      "major_odd": 5,
+      "minor_odd": 1,
+      "weight2": 8
+    },
+    {
+      "major_odd": 5,
+      "minor_odd": 5,
+      "weight2": 16
+    },
+    {
+      "major_odd": 7,
+      "minor_odd": 7,
+      "weight2": 8
+    },
+    {
+      "major_odd": 9,
+      "minor_odd": 3,
+      "weight2": 2
+    },
+    {
+      "major_odd": 9,
+      "minor_odd": 9,
+      "weight2": 2
+    },
+    {
+      "major_odd": 11,
+      "minor_odd": 1,
+      "weight2": 2
+    },
+    {
+      "major_odd": 11,
+      "minor_odd": 3,
+      "weight2": 12
+    },
+    {
+      "major_odd": 11,
+      "minor_odd": 5,
+      "weight2": 22
+    },
+    {
+      "major_odd": 11,
+      "minor_odd": 7,
+      "weight2": 2
+    },
+    {
+      "major_odd": 11,
+      "minor_odd": 9,
+      "weight2": 2
+    },
+    {
+      "major_odd": 13,
+      "minor_odd": 11,
+      "weight2": 25
+    },
+    {
+      "major_odd": 15,
+      "minor_odd": 3,
+      "weight2": 2
+    },
+    {
+      "major_odd": 17,
+      "minor_odd": 3,
+      "weight2": 8
+    }
+  ],
+  "expected": {
+    "orbit_count": 14,
+    "support_cell_count": 96,
+    "support_dx": [
+      -8,
+      9
+    ],
+    "support_dy": [
+      -8,
+      9
+    ],
+    "total_weight2": 792,
+    "total_weight": 396,
+    "local_placement_counts": {
+      "3x3": 180,
+      "4x6": 220,
+      "5x5": 220,
+      "6x4": 220
+    },
+    "local_placement_total": 840,
+    "powered_mandatory_area": 3325,
+    "minimum_selected_poles": 9
+  },
+  "conditional_halo": {
+    "capacity_definition": "C2_q(R)=sum(lambda2(c-q) for c in G\\R)",
+    "pole_quantifier": "all_selected_poles",
+    "rhs_original": 3325,
+    "rhs_doubled": 6650
+  }
+}

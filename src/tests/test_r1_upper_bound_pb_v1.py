@@ -345,7 +345,9 @@ def test_runner_accepts_only_a_complete_fake_verified_chain_and_refuses_overwrit
     runner: ModuleType,
     complete_translation: dict[str, Path],
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(runner, "_free_bytes", lambda _path: MIN_FREE_BYTES)
     roundingsat, veripb = _write_fake_tools(tmp_path, solver_exit=0, complete_proof=True)
     output_dir = tmp_path / "success"
     args = _runner_args(complete_translation, roundingsat, veripb, output_dir)
@@ -376,7 +378,9 @@ def test_runner_rejects_nonzero_child_and_truncated_proof(
     runner: ModuleType,
     complete_translation: dict[str, Path],
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(runner, "_free_bytes", lambda _path: MIN_FREE_BYTES)
     roundingsat, veripb = _write_fake_tools(tmp_path, solver_exit=4, complete_proof=False)
     output_dir = tmp_path / "failure"
 
@@ -387,6 +391,21 @@ def test_runner_rejects_nonzero_child_and_truncated_proof(
     assert record["verifier"]["exit_code"] is None
     assert record["veripb_verified"] is False
     assert record["claim"] == "none"
+
+
+def test_runner_rejects_preflight_below_formal_disk_minimum(
+    runner: ModuleType,
+    complete_translation: dict[str, Path],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(runner, "_free_bytes", lambda _path: MIN_FREE_BYTES - 1)
+    roundingsat, veripb = _write_fake_tools(tmp_path, solver_exit=0, complete_proof=True)
+    output_dir = tmp_path / "disk-no-go"
+
+    assert runner.main(_runner_args(complete_translation, roundingsat, veripb, output_dir)) == 2
+    assert output_dir.is_dir()
+    assert list(output_dir.iterdir()) == []
 
 
 def test_child_completion_sample_enforces_the_proof_cap(runner: ModuleType, tmp_path: Path) -> None:
