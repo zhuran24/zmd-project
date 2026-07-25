@@ -1,0 +1,59 @@
+{
+  "schema_version": "connected_bay_count_closure_plan.v3",
+  "status": "SEARCH_PLAN_ONLY",
+  "supersedes": "count_closure_plan_20260720_v2.json",
+  "reason": "Every new row required by v2 was exactly infeasible under the active-terminal parent model. This plan instead changes two periodic big-bay count vectors and uses only already feasible non-big rows.",
+  "claim_boundary": "Integer count closure only. The G and H big-bay rows are not usable until their local solve, strict replay, combined-pole replay, assembler replay, and routing dry precheck accept them.",
+  "global_target": [132, 49, 38],
+  "big_bay_target": {
+    "components": [0, 1, 2],
+    "rows": {
+      "F": [10, 5, 4],
+      "G": [10, 5, 5],
+      "H": [11, 6, 4]
+    },
+    "subtotal": [31, 16, 13],
+    "body_cells_by_row": {
+      "F": 311,
+      "G": 335,
+      "H": 345
+    },
+    "component_cells": 362
+  },
+  "non_big_target_subtotal": [101, 33, 25],
+  "non_big_component_targets": {
+    "3": [12, 4, 3],
+    "4": [10, 4, 4],
+    "5": [12, 3, 3],
+    "6": [9, 3, 2],
+    "7": [9, 3, 2],
+    "8": [9, 3, 2],
+    "9": [7, 3, 2],
+    "10": [7, 2, 2],
+    "11": [8, 1, 2],
+    "12": [4, 1, 1],
+    "13": [4, 1, 1],
+    "14": [4, 1, 1],
+    "15": [3, 2, 0],
+    "16": [3, 2, 0]
+  },
+  "required_new_local_results": {
+    "G": [10, 5, 5],
+    "H": [11, 6, 4]
+  },
+  "required_final_pole_moves": {
+    "remove": [
+      [17, 5], [17, 17], [17, 29],
+      [29, 5], [29, 17], [29, 29],
+      [41, 5], [41, 17], [41, 29],
+      [65, 5], [65, 17], [65, 29]
+    ],
+    "add": [
+      [18, 5], [18, 17], [18, 29],
+      [30, 5], [30, 17], [30, 29],
+      [42, 5], [42, 17], [42, 29],
+      [66, 5], [66, 17], [66, 29]
+    ],
+    "expected_unique_poles": 35
+  }
+}

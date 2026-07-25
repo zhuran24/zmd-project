@@ -1,0 +1,63 @@
+{
+  "schema_version": "connected_bay_count_closure_plan.v2",
+  "status": "SEARCH_PLAN_ONLY",
+  "supersedes": "count_closure_plan_20260720.json",
+  "reason": "The final-35 c10 baseline target [9,2,2] was exactly infeasible. The known feasible c10 row [7,2,2] requires one c4 plus-one row and all five small-bay plus-one rows.",
+  "claim_boundary": "Integer count closure only. Every planned row remains unusable until its local solve, strict replay, combined-pole replay, assembler replay, and routing dry precheck accept it.",
+  "global_target": [132, 49, 38],
+  "big_bay_target": {
+    "components": [0, 1, 2],
+    "per_component": [10, 5, 4],
+    "subtotal": [30, 15, 12]
+  },
+  "non_big_target_subtotal": [102, 34, 26],
+  "component_targets": {
+    "3": [12, 4, 3],
+    "4": [11, 4, 4],
+    "5": [12, 3, 3],
+    "6": [6, 3, 3],
+    "7": [9, 3, 2],
+    "8": [6, 4, 2],
+    "9": [7, 3, 2],
+    "10": [7, 2, 2],
+    "11": [9, 1, 2],
+    "12": [5, 1, 1],
+    "13": [5, 1, 1],
+    "14": [5, 1, 1],
+    "15": [4, 2, 0],
+    "16": [4, 2, 0]
+  },
+  "required_new_local_results": {
+    "4": [11, 4, 4],
+    "11": [9, 1, 2],
+    "12": [5, 1, 1],
+    "13": [5, 1, 1],
+    "14": [5, 1, 1],
+    "15": [4, 2, 0],
+    "16": [4, 2, 0]
+  },
+  "known_local_results": {
+    "3": [12, 4, 3],
+    "5": [12, 3, 3],
+    "6": [6, 3, 3],
+    "7": [9, 3, 2],
+    "8": [6, 4, 2],
+    "9": [7, 3, 2],
+    "10": [7, 2, 2]
+  },
+  "required_final_pole_moves": {
+    "remove": [
+      [17, 5], [17, 17], [17, 29],
+      [29, 5], [29, 17], [29, 29],
+      [41, 5], [41, 17], [41, 29],
+      [65, 5], [65, 17], [65, 29]
+    ],
+    "add": [
+      [18, 5], [18, 17], [18, 29],
+      [30, 5], [30, 17], [30, 29],
+      [42, 5], [42, 17], [42, 29],
+      [66, 5], [66, 17], [66, 29]
+    ],
+    "expected_unique_poles": 35
+  }
+}
