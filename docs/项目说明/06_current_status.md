@@ -1,7 +1,29 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-18（冻结工件与 generic-input 合同刷新；其余事实按各段日期）**
+**状态日期：2026-07-24（规则/cut 演化 shadow 终态验收；其余事实按各段日期）**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
+
+## 2026-07-24 规则与 cut 演化 shadow 协议终态
+
+rule_cut_evolution_status: full_preflight_passed
+
+- **范围：test/offline-only。** 本批增加规则与 family 静态规格、一致性门、
+  合同矩阵、onboarding fixture 和 rejection audit sidecar；详见
+  [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md)。
+- **验收：full preflight 通过。** 验收基线为干净的
+  `fd015a9ac49a182b242895433a2ff2d2e5ee57de`；使用 coherent backup venv、清除
+  `PYTHONPATH`/`PYTHONHOME` 并持有独占资源互斥锁时，
+  `scripts/preflight_gate.py --full` 返回 `0`，总体 `PASSED`（19 passed），pytest 为
+  `4701 passed, 74 skipped in 98.52s`。完整 stdout/stderr 日志 SHA-256 为
+  `fedf7de80905b47c626b874213f0471a2e499a7fdd56bbc862bab47027138bc1`。
+- **Authority：non-authorizing。** `PROJECT_LOCK.md`、P1.2 seal/hash、public wire
+  与 digest、production 控制流及 trusted apply 闭集不变；`PROJECT_LOCK.md` SHA-256
+  仍为 `33632dfdb2297425e42066b2cf0749ca6b9ab1f8653e810b6f2e53ded1025410`。
+  full 通过只验收 test/offline shadow 维护面，不授权 production 接线、family 晋级、
+  P1.2 reseal、owner flip、持久化 schema 变更或新的数学结论。
+- **延期：** production manifest 接线、registry/resolver/Benders/replay/lifecycle
+  迁移、持久化 rejection schema，以及 binding/routing/power seam 接入均留待独立
+  owner-authorized 批次。
 
 ## 2026-07-13 → 07-17 实现状态增量
 
