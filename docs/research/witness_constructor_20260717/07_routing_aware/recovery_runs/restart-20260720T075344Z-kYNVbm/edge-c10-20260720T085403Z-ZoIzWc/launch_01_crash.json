@@ -1,0 +1,10 @@
+{
+  "schema_version": "research_launch_failure.v1",
+  "status": "LAUNCH_PROCESS_DISAPPEARED_BEFORE_STAGE_CHECKPOINT",
+  "classification": "launcher_shell_or_process_lifecycle_failure",
+  "reported_pid": 51329,
+  "exit_code": null,
+  "stderr_bytes": 0,
+  "stdout_bytes": 0,
+  "claim_boundary": "No CP status and no feasibility conclusion."
+}

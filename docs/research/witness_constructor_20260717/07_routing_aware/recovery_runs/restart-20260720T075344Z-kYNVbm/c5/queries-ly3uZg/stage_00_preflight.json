@@ -1,0 +1,24 @@
+{
+  "schema_version": "c5_priority_query_stage.v1",
+  "status": "WAITING_FOR_GLOBAL_LOCAL_CP_SLOT",
+  "recorded_at_utc": "2026-07-20T08:04:46Z",
+  "classification": "research_recovery_stage_status_no_router",
+  "query_directory": "docs/research/witness_constructor_20260717/07_routing_aware/recovery_runs/restart-20260720T075344Z-kYNVbm/c5/queries-ly3uZg",
+  "ordered_targets": [
+    [9, 5, 4],
+    [11, 4, 4],
+    [11, 5, 3],
+    [10, 5, 4]
+  ],
+  "seconds_per_query": 180.0,
+  "workers": 8,
+  "blocking_process_observed": {
+    "pid": 26335,
+    "task": "big_bay_pole_phase_search.py primary"
+  },
+  "preflight": {
+    "driver_compile": "PASS",
+    "replay_compile": "PASS",
+    "no_query_started": true
+  }
+}

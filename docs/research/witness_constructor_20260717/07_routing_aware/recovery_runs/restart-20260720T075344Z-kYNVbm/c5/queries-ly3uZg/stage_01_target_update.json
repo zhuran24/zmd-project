@@ -1,0 +1,19 @@
+{
+  "schema_version": "c5_priority_query_stage.v1",
+  "status": "TARGET_ORDER_UPDATED_BEFORE_SOLVE",
+  "classification": "research_recovery_stage_status_no_router",
+  "ordered_targets": [
+    [9, 5, 4],
+    [12, 5, 3],
+    [11, 4, 4],
+    [11, 5, 3],
+    [10, 5, 4]
+  ],
+  "added_target": {
+    "target": [12, 5, 3],
+    "body_cells": 305,
+    "expected_residual_cells": 23,
+    "priority_after": [9, 5, 4]
+  },
+  "query_started_before_update": false
+}

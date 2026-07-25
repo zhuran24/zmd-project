@@ -1,0 +1,115 @@
+{
+  "schema_version": "final_fixed_bay_selection_manifest.v1",
+  "classification": "research_restart_recovery_fixed_bay_selection",
+  "claim_boundary": "Each referenced row establishes local body, front, and selected-terminal parent-forest feasibility only. Global assembly and routing remain separate checks.",
+  "custom_components_excluded": [
+    0,
+    1,
+    2,
+    3,
+    5
+  ],
+  "manufacturing_count_delta": {
+    "manufacturing_3x3": 0,
+    "manufacturing_5x5": 0,
+    "manufacturing_6x4": 0
+  },
+  "selections": [
+    {
+      "component": 4,
+      "target": [10, 4, 4],
+      "source": "recovered_heavy_bays_20260720.json",
+      "source_sha256": "89772be8144f051b7e8d7b7b6cad518d82d75f9ce99d7f7f57f95b0660bba48a",
+      "query_index": 0,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 6,
+      "target": [9, 3, 2],
+      "source": "pure_m3_add1_medium_20260720.json",
+      "source_sha256": "0556c9815cc474d528b18400882f0efefdf927b88d56a32084c1d4fff5cf4f59",
+      "query_index": 0,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 7,
+      "target": [9, 3, 2],
+      "source": "pure_m3_add1_medium_20260720.json",
+      "source_sha256": "0556c9815cc474d528b18400882f0efefdf927b88d56a32084c1d4fff5cf4f59",
+      "query_index": 1,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 8,
+      "target": [9, 3, 2],
+      "source": "pure_m3_add1_medium_20260720.json",
+      "source_sha256": "0556c9815cc474d528b18400882f0efefdf927b88d56a32084c1d4fff5cf4f59",
+      "query_index": 2,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 9,
+      "target": [9, 2, 2],
+      "source": "final_unchanged_bays_20260720.json",
+      "source_sha256": "cd6c99ddb64b1c505a1d1865817d935b0436ddaf0d7df2e3f7001b97723cd64a",
+      "query_index": 0,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 10,
+      "target": [7, 2, 2],
+      "source": "recovered_fast_bays_20260720.json",
+      "source_sha256": "2f82e1bcec5012b892da1f9362245a3bfd5aa6af4a996fdfb01f367ec76b2a16",
+      "query_index": 6,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 11,
+      "target": [8, 1, 2],
+      "source": "recovered_fast_bays_20260720.json",
+      "source_sha256": "2f82e1bcec5012b892da1f9362245a3bfd5aa6af4a996fdfb01f367ec76b2a16",
+      "query_index": 7,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 12,
+      "target": [4, 1, 1],
+      "source": "final_unchanged_bays_20260720.json",
+      "source_sha256": "cd6c99ddb64b1c505a1d1865817d935b0436ddaf0d7df2e3f7001b97723cd64a",
+      "query_index": 1,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 13,
+      "target": [4, 1, 1],
+      "source": "final_unchanged_bays_20260720.json",
+      "source_sha256": "cd6c99ddb64b1c505a1d1865817d935b0436ddaf0d7df2e3f7001b97723cd64a",
+      "query_index": 2,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 14,
+      "target": [4, 1, 1],
+      "source": "final_unchanged_bays_20260720.json",
+      "source_sha256": "cd6c99ddb64b1c505a1d1865817d935b0436ddaf0d7df2e3f7001b97723cd64a",
+      "query_index": 3,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 15,
+      "target": [3, 2, 0],
+      "source": "final_unchanged_bays_20260720.json",
+      "source_sha256": "cd6c99ddb64b1c505a1d1865817d935b0436ddaf0d7df2e3f7001b97723cd64a",
+      "query_index": 4,
+      "expected_status": "OPTIMAL"
+    },
+    {
+      "component": 16,
+      "target": [3, 2, 0],
+      "source": "final_unchanged_bays_20260720.json",
+      "source_sha256": "cd6c99ddb64b1c505a1d1865817d935b0436ddaf0d7df2e3f7001b97723cd64a",
+      "query_index": 5,
+      "expected_status": "OPTIMAL"
+    }
+  ]
+}
