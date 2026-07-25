@@ -100,6 +100,20 @@ def _missing_r4_external_brain_handoff_artifacts() -> str | None:
     return None
 
 
+def _missing_noncert_cuts_ab_trust_artifacts() -> str | None:
+    target = PROJECT_ROOT / ".artifacts" / "noncert_cuts_ab_trust_20260723"
+    if not target.exists():
+        return f"fixture missing: {target.relative_to(PROJECT_ROOT)} (noncert-cuts A/B trust artifact, not in git)"
+    return None
+
+
+def _missing_noncert_cuts_ab16_artifacts() -> str | None:
+    target = PROJECT_ROOT / ".artifacts" / "noncert_cuts_ab16_20260724"
+    if not target.exists():
+        return f"fixture missing: {target.relative_to(PROJECT_ROOT)} (noncert-cuts ab16 artifact, not in git)"
+    return None
+
+
 # Track B provenance gates: exact `module.py::test_name` suffixes (parametrized
 # variants share the base name, so the [param] suffix is stripped before match).
 # Each maps to the guard that explains why it cannot run on the merged tree.
@@ -134,6 +148,23 @@ _TRACK_B_NODEID_GUARDS: dict[str, "callable[[], str | None]"] = {
     "test_r4_external_brain_handoff_v1.py::test_selected_receipt_path_and_readme_require_exact_identity": _missing_r4_external_brain_handoff_artifacts,
     "test_r4_external_brain_handoff_v1.py::test_semantically_equivalent_receipt_replacement_closes_detached_identity_gate": _missing_r4_external_brain_handoff_artifacts,
     "test_r4_external_brain_handoff_v1.py::test_sha_self_cycle_canary_fails_closed": _missing_r4_external_brain_handoff_artifacts,
+    # noncert-cuts A/B trust (merged 2026-07-25): same two failure modes.
+    # HEAD-pin: repository-head replay asserts the codex worktree HEAD.
+    "test_noncert_cuts_ab16_campaign_bootstrap_v1.py::test_repository_head_executes_the_same_pinned_git_fd": _head_drifted_from_track_b_pin,
+    "test_noncert_cuts_ab16_disposable_drill_authority_v1.py::test_serialized_planned_git_path_replays_real_repository_head": _head_drifted_from_track_b_pin,
+    # artifact-absent: ab16 authority/gate-A replay reads .artifacts/noncert_cuts_ab16_20260724 bytes.
+    "test_noncert_cuts_ab16_disposable_drill_authority_v2.py::test_v2_authority_rejects_source_and_receipt_mutation": _missing_noncert_cuts_ab16_artifacts,
+    "test_noncert_cuts_ab16_disposable_drill_authority_v2.py::test_v2_authority_seals_exact_surface_and_never_authorizes_formal_use": _missing_noncert_cuts_ab16_artifacts,
+    "test_noncert_cuts_ab16_gate_a_validation_v2.py::test_successful_full_preflight_finalizes_only_nonauthorizing_gate_a": _missing_noncert_cuts_ab16_artifacts,
+    # artifact-absent: positive-control closeout replays .artifacts/noncert_cuts_ab_trust_20260723 bytes.
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_complete_history_manifest_replays_all_v1_bytes": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_current_gate_a002_remains_fail_closed_on_missing_resource_authority": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_current_gate_input_arms_replay_no_applied_cut": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_gate_v2_environment_resource_and_tool_mutations_fail_closed": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_missing_resource_authority_blocks_both_complete_classifications": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_pass_is_common_to_both_complete_classifications": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_verifier_rejects_incomplete_terminal_fields": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_verifier_rejects_oom_kill_and_limit_drift": _missing_noncert_cuts_ab_trust_artifacts,
 }
 
 
