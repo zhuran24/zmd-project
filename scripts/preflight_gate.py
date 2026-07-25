@@ -560,16 +560,17 @@ def check_publish_secret_scan(gate: GateResult) -> None:
     if not script.exists():
         gate.block("secret scan 脚本不存在: scripts/check_repo_secrets.py")
         return
+    timeout = max(1, int(30 * _TIMEOUT_SCALE))
     try:
         result = subprocess.run(
             [sys.executable, str(script)],
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
-            timeout=30,
+            timeout=timeout,
         )
     except subprocess.TimeoutExpired:
-        gate.block("secret scan 超时 (>30s)")
+        gate.block(f"secret scan 超时 (>{timeout}s)")
         return
     except FileNotFoundError:
         gate.warn("python 不可用 — 跳过 secret scan")
