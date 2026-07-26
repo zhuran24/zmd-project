@@ -33,12 +33,20 @@ ALL_EDGE_TYPES = HARD_EDGE_TYPES | {"MENTIONS", "RELATED_TO", "SUPPORTS", "PROJE
 MAX_EXPORT_BYTES = 24_576
 SUGGESTION_REVIEW_SCORE = 12.0
 SUGGESTION_STORE_SCORE = 8.0
-DEFAULT_EMBED_PYTHON = Path(os.environ.get("CC_MEMORY_EMBED_PYTHON", r"C:\Users\22957\zmd_embed_ab\venv\Scripts\python.exe"))
+# Dual-boot machine: the same repo is worked from Windows and CachyOS, so the helper venv and
+# the shared HF cache live at different per-OS paths. Env vars always override these defaults.
+if os.name == "nt":
+    _DEFAULT_HELPER_VENV_PYTHON = r"C:\Users\22957\zmd_embed_ab\venv\Scripts\python.exe"
+    DEFAULT_HF_HOME = r"E:\caches\huggingface"
+else:
+    _DEFAULT_HELPER_VENV_PYTHON = str(Path.home() / "zmd_embed_linux" / "venv" / "bin" / "python")
+    DEFAULT_HF_HOME = "/mnt/wd_external/caches/huggingface"
+DEFAULT_EMBED_PYTHON = Path(os.environ.get("CC_MEMORY_EMBED_PYTHON", _DEFAULT_HELPER_VENV_PYTHON))
 DEFAULT_EMBED_MODEL = os.environ.get("CC_MEMORY_EMBED_MODEL", "microsoft/harrier-oss-v1-0.6b")
-EMBED_HELPER = MEM_DIR / "embed_helper.py"
+EMBED_HELPER = Path(os.environ.get("CC_MEMORY_EMBED_HELPER", str(MEM_DIR / "embed_helper.py")))
 EMBED_PROVIDER = "sentence-transformers"
 EMBED_NORMALIZE = 1
-DEFAULT_RERANK_PYTHON = Path(os.environ.get("CC_MEMORY_RERANK_PYTHON", r"C:\Users\22957\zmd_embed_ab\venv\Scripts\python.exe"))
+DEFAULT_RERANK_PYTHON = Path(os.environ.get("CC_MEMORY_RERANK_PYTHON", _DEFAULT_HELPER_VENV_PYTHON))
 DEFAULT_RERANK_MODEL = os.environ.get("CC_MEMORY_RERANK_MODEL", "Qwen/Qwen3-Reranker-0.6B")
 RERANK_HELPER = MEM_DIR / "rerank_helper.py"
 RERANK_CANDIDATE_LIMIT = 20
@@ -70,10 +78,15 @@ PRUNE_DETERMINISTIC_FLAGS = [
 PRUNE_ADVISORY_FLAGS = [
     "duplicate",                    # cosine proves similar, not redundant
     "oversized",                    # large != mixed/disposable
-    "cross_layer_overlap_concern",  # was archive_candidate: same-name vnext card (half-migration drift)
+    "cross_layer_overlap_concern",  # was archive_candidate: same-name vnext card + body-cosine gate (half-migration drift)
     "dead_ref_uncertain",           # missing path but inside a history-record / externalized artifact / prose example
 ]
 PRUNE_DUPLICATE_COSINE = 0.92
+# Third-meeting final spec: a bare name match may be a collision (same name, different meaning), so
+# the overlap concern only surfaces when source body <-> card body cosine also clears this gate.
+# Matches that cannot be verified (no fresh embedding / helper unavailable) or fall below the gate
+# are suppressed into report notes — an advisory miss is the safe failure direction here.
+PRUNE_OVERLAP_COSINE = 0.80
 PRUNE_OVERSIZED_BYTES = 4096
 PRUNE_RELINK_MIN_AGE_DAYS = 7  # a just-created orphan may simply not have been linked yet
 PRUNE_MAIN_BRANCH = "main"
@@ -627,7 +640,7 @@ def embedding_model_id(model: str) -> str:
 
 def embedding_env() -> dict[str, str]:
     env = os.environ.copy()
-    hf_home = env.get("HF_HOME") or r"E:\caches\huggingface"
+    hf_home = env.get("HF_HOME") or DEFAULT_HF_HOME
     env["HF_HOME"] = hf_home
     env.setdefault("HF_HUB_OFFLINE", "1")
     env.setdefault("TRANSFORMERS_OFFLINE", "1")
@@ -646,7 +659,7 @@ def rerank_model_name(model: str | None = None) -> str:
 
 def rerank_env() -> dict[str, str]:
     env = os.environ.copy()
-    hf_home = env.get("HF_HOME") or r"E:\caches\huggingface"
+    hf_home = env.get("HF_HOME") or DEFAULT_HF_HOME
     env["HF_HOME"] = hf_home
     env.setdefault("HF_HUB_OFFLINE", "1")
     env.setdefault("TRANSFORMERS_OFFLINE", "1")
@@ -1111,6 +1124,16 @@ def prune_name_key(value: str) -> str:
     return re.sub(r"-+", "-", value).strip("-")
 
 
+def prune_cosine_threshold(value: str) -> float:
+    try:
+        threshold = float(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"invalid cosine threshold: {value!r}") from exc
+    if not math.isfinite(threshold) or not -1.0 <= threshold <= 1.0:
+        raise argparse.ArgumentTypeError("cosine threshold must be finite and between -1 and 1")
+    return threshold
+
+
 def prune_node_ref(typ: str, node_id: str) -> str:
     return f"{typ}:{node_id}"
 
@@ -1338,10 +1361,10 @@ def prune_embedding_rows_by_model(con: sqlite3.Connection, nodes: list[dict[str,
         if row["content_hash"] != expected_hash:
             continue
         vector = prune_vector_from_blob(row["vector_blob"], int(row["dim"]))
-        if vector is None:
+        if vector is None or not vector or not all(math.isfinite(value) for value in vector):
             continue
         norm_v = prune_vector_norm(vector)
-        if norm_v == 0.0:
+        if not math.isfinite(norm_v) or norm_v == 0.0:
             continue
         by_model[row["model_id"]].append((node, vector, norm_v))
     return by_model
@@ -1756,11 +1779,22 @@ def prune_branch_preflight(*, require_branch: str, allow_dirty: bool) -> dict[st
     )
 
 
-def prune_vnext_card_names(cards_dir: Path) -> tuple[dict[str, str], list[str]]:
+def prune_card_semantic_text(text: str) -> str:
+    """Card content without the YAML frontmatter block — the semantic body to embed."""
+    if text.startswith("---"):
+        lines = text.splitlines()
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "---":
+                return "\n".join(lines[i + 1 :]).strip()
+    return text.strip()
+
+
+def prune_vnext_card_names(cards_dir: Path) -> tuple[dict[str, str], dict[str, str], list[str]]:
     notes: list[str] = []
     names: dict[str, str] = {}
+    texts: dict[str, str] = {}
     if not cards_dir.exists():
-        return names, [f"cross_layer_overlap skipped: cards dir not found: {cards_dir}"]
+        return names, texts, [f"cross_layer_overlap skipped: cards dir not found: {cards_dir}"]
     for path in sorted(cards_dir.glob("*.md")):
         candidates = [path.stem]
         try:
@@ -1768,6 +1802,7 @@ def prune_vnext_card_names(cards_dir: Path) -> tuple[dict[str, str], list[str]]:
         except OSError as exc:
             notes.append(f"cross_layer_overlap skipped unreadable card {path.name}: {exc}")
             continue
+        texts[path.name] = prune_card_semantic_text(text)
         for line in text.splitlines()[:120]:
             stripped = line.strip()
             lower = stripped.lower()
@@ -1779,34 +1814,138 @@ def prune_vnext_card_names(cards_dir: Path) -> tuple[dict[str, str], list[str]]:
             key = prune_name_key(candidate)
             if key:
                 names.setdefault(key, path.name)
-    return names, notes
+    return names, texts, notes
 
 
-def prune_cross_layer_overlap_records(con: sqlite3.Connection, nodes: list[dict[str, Any]], *, cards_dir: Path) -> tuple[list[dict[str, Any]], list[str]]:
+def prune_embed_card_texts(texts: list[str]) -> list[list[float]]:
+    """Embed card bodies live with the current default model (same doc mode as rebuild-embeddings).
+
+    Raises EmbeddingUnavailable on any helper failure so the caller can suppress the affected
+    name-matches into notes — an advisory miss is the safe failure direction for this flag.
+    """
+    payload = call_embed_helper(texts, mode="doc")
+    vectors = payload.get("vectors") or []
+    if len(vectors) != len(texts):
+        raise EmbeddingUnavailable(f"embedding helper returned {len(vectors)} vectors for {len(texts)} card texts")
+    try:
+        converted = [[float(x) for x in vector] for vector in vectors]
+    except (TypeError, ValueError) as exc:
+        raise EmbeddingUnavailable(f"embedding helper returned a non-numeric card vector: {exc}") from exc
+    if any(not vector or not all(math.isfinite(value) for value in vector) for vector in converted):
+        raise EmbeddingUnavailable("embedding helper returned an empty or non-finite card vector")
+    return converted
+
+
+def prune_cross_layer_overlap_records(
+    con: sqlite3.Connection,
+    nodes: list[dict[str, Any]],
+    *,
+    cards_dir: Path,
+    cosine_threshold: float,
+) -> tuple[list[dict[str, Any]], list[str]]:
     # Renamed from archive_candidate: a same-name vnext card does not authorize archiving — it only
     # flags a possible half-finished migration. Neutral name + advisory tier = no implied disposition.
-    card_names, notes = prune_vnext_card_names(cards_dir)
+    # Third-meeting final spec: a bare name match may be a collision, so the concern only surfaces
+    # when source body <-> card body cosine also clears the gate; unverifiable or below-gate matches
+    # are suppressed into notes instead of records.
+    card_names, card_texts, notes = prune_vnext_card_names(cards_dir)
     if not card_names:
         return [], notes
-    records: list[dict[str, Any]] = []
+    if not math.isfinite(cosine_threshold) or not -1.0 <= cosine_threshold <= 1.0:
+        notes.append(f"cross_layer_overlap suppressed: invalid cosine threshold {cosine_threshold!r}")
+        return [], notes
+    matches: list[tuple[dict[str, Any], str, str, str]] = []
     for node in nodes:
         keys = [(prune_name_key(node["id"]), "id")]
         if node["title"]:
             keys.append((prune_name_key(node["title"]), "title"))
-        matched: tuple[str, str, str] | None = None
         for key, source in keys:
             if key and key in card_names:
-                matched = (key, source, card_names[key])
+                matches.append((node, key, source, card_names[key]))
                 break
-        if matched is None:
+    if not matches:
+        return [], notes
+    model_id = embedding_model_id(embedding_model_name())
+    fresh_vectors = {
+        (n["type"], n["id"]): (vector, norm)
+        for n, vector, norm in prune_embedding_rows_by_model(con, [m[0] for m in matches]).get(model_id, [])
+    }
+    verifiable: list[tuple[dict[str, Any], str, str, str]] = []
+    for node, key, source, card_name in matches:
+        if (node["type"], node["id"]) in fresh_vectors:
+            verifiable.append((node, key, source, card_name))
+        else:
+            notes.append(
+                f"cross_layer_overlap suppressed (cosine gate unverifiable): {node['ref']} <-> {card_name}: "
+                f"no fresh {model_id} embedding — run rebuild-embeddings"
+            )
+    if not verifiable:
+        return [], notes
+    card_order = sorted({card_name for _node, _key, _source, card_name in verifiable})
+    try:
+        card_vectors = prune_embed_card_texts([card_texts.get(name, "") for name in card_order])
+    except EmbeddingUnavailable as exc:
+        refs = ", ".join(f"{node['ref']}<->{card_name}" for node, _key, _source, card_name in verifiable)
+        notes.append(
+            f"cross_layer_overlap suppressed (cosine gate unverifiable): embed helper unavailable "
+            f"({short(str(exc), 200)}); {len(verifiable)} name-match(es) not surfaced: {refs}"
+        )
+        return [], notes
+    card_vector_by_name = dict(zip(card_order, card_vectors, strict=True))
+    records: list[dict[str, Any]] = []
+    for node, key, source, card_name in verifiable:
+        node_vector, node_norm = fresh_vectors[(node["type"], node["id"])]
+        card_vector = card_vector_by_name[card_name]
+        card_norm = prune_vector_norm(card_vector)
+        if (
+            len(card_vector) != len(node_vector)
+            or not math.isfinite(node_norm)
+            or not math.isfinite(card_norm)
+            or node_norm == 0.0
+            or card_norm == 0.0
+        ):
+            notes.append(
+                f"cross_layer_overlap suppressed (cosine gate unverifiable): {node['ref']} <-> {card_name}: "
+                f"incomparable vectors (node dim {len(node_vector)}, card dim {len(card_vector)})"
+            )
             continue
-        key, source, card_name = matched
+        numerator = sum(a * b for a, b in zip(node_vector, card_vector, strict=True))
+        denominator = node_norm * card_norm
+        if not math.isfinite(numerator) or not math.isfinite(denominator) or denominator <= 0.0:
+            notes.append(
+                f"cross_layer_overlap suppressed (cosine gate unverifiable): {node['ref']} <-> {card_name}: "
+                "non-finite or non-positive cosine components"
+            )
+            continue
+        cosine = numerator / denominator
+        if not math.isfinite(cosine):
+            notes.append(
+                f"cross_layer_overlap suppressed (cosine gate unverifiable): {node['ref']} <-> {card_name}: "
+                "non-finite cosine"
+            )
+            continue
+        if cosine < cosine_threshold:
+            notes.append(
+                f"cross_layer_overlap suppressed (below cosine gate): {node['ref']} <-> {card_name}: "
+                f"body cosine {cosine:.4f} < {cosine_threshold:.2f} — likely same-name collision, not overlap"
+            )
+            continue
         records.append(
             prune_record(
                 item_id=node["ref"],
                 flag="cross_layer_overlap_concern",
-                signals=[f"active cc_memory node shares a name with vnext card: {card_name}"],
-                raw_metrics={"matched_key": key, "matched_by": source, "matched_card": card_name},
+                signals=[
+                    f"active cc_memory node shares a name with vnext card: {card_name}",
+                    f"source body <-> card body cosine {cosine:.4f} >= {cosine_threshold:.2f}",
+                ],
+                raw_metrics={
+                    "matched_key": key,
+                    "matched_by": source,
+                    "matched_card": card_name,
+                    "body_cosine": round(cosine, 6),
+                    "cosine_threshold": cosine_threshold,
+                    "embedding_model": model_id,
+                },
                 safety_lock=prune_safety_lock(con, node),
                 confidence="high" if source == "id" else "med",
                 evidence_snippet=short(node["body"], 240),
@@ -1823,6 +1962,7 @@ def build_prune_scan_report(
     duplicate_threshold: float,
     oversized_bytes: int,
     relink_min_age_days: int,
+    overlap_cosine_threshold: float,
     preflight: dict[str, Any],
 ) -> dict[str, Any]:
     nodes = prune_active_nodes(con)
@@ -1848,7 +1988,9 @@ def build_prune_scan_report(
         prune_add_advisory(sections, record)
     for record in prune_oversized_records(con, nodes, threshold=oversized_bytes):
         prune_add_advisory(sections, record)
-    overlap_records, overlap_notes = prune_cross_layer_overlap_records(con, nodes, cards_dir=cards_dir)
+    overlap_records, overlap_notes = prune_cross_layer_overlap_records(
+        con, nodes, cards_dir=cards_dir, cosine_threshold=overlap_cosine_threshold
+    )
     notes.extend(overlap_notes)
     for record in overlap_records:
         prune_add_advisory(sections, record)
@@ -1879,6 +2021,7 @@ def build_prune_scan_report(
             "duplicate_cosine_threshold": duplicate_threshold,
             "oversized_bytes_threshold": oversized_bytes,
             "relink_min_age_days": relink_min_age_days,
+            "overlap_cosine_threshold": overlap_cosine_threshold,
             "cards_dir": str(cards_dir),
             "embedding_staleness": embedding_staleness,
         },
@@ -2515,12 +2658,16 @@ def cmd_prune_scan(args: argparse.Namespace) -> int:
             duplicate_threshold=args.duplicate_cosine_threshold,
             oversized_bytes=args.oversized_bytes,
             relink_min_age_days=args.relink_min_age_days,
+            overlap_cosine_threshold=args.overlap_cosine_threshold,
             preflight=preflight,
         )
     finally:
         con.close()
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    args.out.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
     print(f"prune scan report: {args.out}")
     if real_db:
         print(f"preflight: branch={preflight['branch']} clean={preflight['clean']} allow_dirty={preflight['allow_dirty']}")
@@ -3051,9 +3198,10 @@ def make_parser() -> argparse.ArgumentParser:
     scan = prune_sub.add_parser("scan", help="scan cc_memory and write a grouped read-only pruning report")
     scan.add_argument("--out", type=Path, default=PRUNE_DEFAULT_REPORT)
     scan.add_argument("--cards-dir", type=Path, default=ROOT / "cc_memory_vnext" / "cards")
-    scan.add_argument("--duplicate-cosine-threshold", type=float, default=PRUNE_DUPLICATE_COSINE)
+    scan.add_argument("--duplicate-cosine-threshold", type=prune_cosine_threshold, default=PRUNE_DUPLICATE_COSINE)
     scan.add_argument("--oversized-bytes", type=int, default=PRUNE_OVERSIZED_BYTES)
     scan.add_argument("--relink-min-age-days", type=int, default=PRUNE_RELINK_MIN_AGE_DAYS)
+    scan.add_argument("--overlap-cosine-threshold", type=prune_cosine_threshold, default=PRUNE_OVERLAP_COSINE)
     scan.add_argument("--require-branch", default=PRUNE_MAIN_BRANCH)
     scan.add_argument("--allow-dirty", action="store_true", help="override the dirty-branch fail-closed gate (report may be polluted)")
     scan.set_defaults(func=cmd_prune_scan)

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import argparse
 import importlib.util
 import json
+import os
 import shutil
 import sqlite3
 import subprocess
@@ -9,6 +11,11 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+
+def _reject_non_finite_json(token: str) -> None:
+    raise ValueError(f"non-finite JSON token: {token}")
+
 
 ROOT = Path(__file__).resolve().parents[2]
 MEM = ROOT / "cc_memory" / "mem.py"
@@ -28,12 +35,28 @@ mem = _load("_ccmem_prune_under_test", MEM)
 
 
 class PruneScanTwoTierTests(unittest.TestCase):
+    # Deterministic stand-in for embed_helper.py so the overlap cosine gate is testable without
+    # torch: "diverged" texts embed orthogonally to everything else the fixtures seed.
+    FAKE_EMBED_HELPER = (
+        "import json, os, sys\n"
+        "payload = json.loads(sys.stdin.read())\n"
+        "kind = os.environ.get('CC_MEMORY_TEST_VECTOR_KIND', '')\n"
+        "forced = ([0.0, float('nan'), 0.8] if kind == 'nan' else"
+        " [0.0, float('inf'), 0.8] if kind == 'inf' else None)\n"
+        "vectors = [(forced if forced is not None else"
+        " ([0.0, 1.0, 0.0] if 'diverged' in text else [0.0, 0.6, 0.8])) for text in payload['texts']]\n"
+        "print(json.dumps({'status': 'ok', 'model': payload['model'], 'vectors': vectors, 'dim': 3,"
+        " 'dtype': 'float32', 'normalize': 1, 'device': 'cpu'}))\n"
+    )
+
     def setUp(self) -> None:
         self.tmp = Path(tempfile.mkdtemp(prefix="prune_scan_test_"))
         self.db = self.tmp / "memory.db"
         self.out = self.tmp / "report.json"
         self.cards = self.tmp / "cards"
         self.cards.mkdir()
+        self.fake_helper = self.tmp / "fake_embed_helper.py"
+        self.fake_helper.write_text(self.FAKE_EMBED_HELPER, encoding="utf-8")
         con = sqlite3.connect(self.db)
         con.row_factory = sqlite3.Row
         mem.init_schema(con)
@@ -44,7 +67,13 @@ class PruneScanTwoTierTests(unittest.TestCase):
     def tearDown(self) -> None:
         shutil.rmtree(self.tmp, ignore_errors=True)
 
-    def run_scan(self) -> dict:
+    def run_scan(self, extra_env: dict[str, str] | None = None) -> dict:
+        env = os.environ.copy()
+        env["CC_MEMORY_EMBED_MODEL"] = "fake/prune-scan"
+        env["CC_MEMORY_EMBED_PYTHON"] = sys.executable
+        env["CC_MEMORY_EMBED_HELPER"] = str(self.fake_helper)
+        if extra_env:
+            env.update(extra_env)
         proc = subprocess.run(
             [
                 sys.executable,
@@ -65,6 +94,7 @@ class PruneScanTwoTierTests(unittest.TestCase):
                 "7",
             ],
             cwd=ROOT,
+            env=env,
             text=True,
             capture_output=True,
             timeout=60,
@@ -179,10 +209,25 @@ class PruneScanTwoTierTests(unittest.TestCase):
         )
         self._add_entry(con, "oversized-entry", "Mixed oversized", oversized)
 
-        # advisory: cross_layer_overlap_concern (same-name vnext card)
+        # advisory: cross_layer_overlap_concern (same-name vnext card AND body cosine clears the gate)
         self._add_entry(con, "vnext-existing-card", "Vnext Existing Card", "active source already has a same-name vnext card")
+        self._add_embedding(con, model_id, "entry", "vnext-existing-card", [0.0, 0.6, 0.8])
         self.cards.joinpath("vnext-existing-card.md").write_text(
             "---\ntitle: Vnext Existing Card\n---\n# Vnext Existing Card\n", encoding="utf-8"
+        )
+
+        # overlap suppressed: same name but body cosine below the gate (same-name collision)
+        self._add_entry(con, "vnext-collision-card", "Vnext Collision Card", "same name but an entirely different meaning")
+        self._add_embedding(con, model_id, "entry", "vnext-collision-card", [0.0, -0.6, 0.8])
+        self.cards.joinpath("vnext-collision-card.md").write_text(
+            "---\ntitle: Vnext Collision Card\n---\n# Vnext Collision Card\ndiverged content about something else\n",
+            encoding="utf-8",
+        )
+
+        # overlap suppressed: same name but the source has no fresh embedding (gate unverifiable)
+        self._add_entry(con, "vnext-noembed-card", "Vnext Noembed Card", "same-name card but the source was never embedded")
+        self.cards.joinpath("vnext-noembed-card.md").write_text(
+            "---\ntitle: Vnext Noembed Card\n---\n# Vnext Noembed Card\n", encoding="utf-8"
         )
 
         # prune-self governance item must never be scanned
@@ -235,6 +280,60 @@ class PruneScanTwoTierTests(unittest.TestCase):
         self.assertIn("entry:oversized-entry", self.adv_ids(report, "oversized"))
         self.assertIn("entry:vnext-existing-card", self.adv_ids(report, "cross_layer_overlap_concern"))
 
+    def test_overlap_cosine_gate(self) -> None:
+        report = self.run_scan()
+        overlap = self.adv_ids(report, "cross_layer_overlap_concern")
+        self.assertIn("entry:vnext-existing-card", overlap)
+        record = next(
+            r for r in report["advisory"]["cross_layer_overlap_concern"] if r["item_id"] == "entry:vnext-existing-card"
+        )
+        self.assertGreaterEqual(record["raw_metrics"]["body_cosine"], 0.80)
+        # a below-gate name collision is suppressed into a note, never a record
+        self.assertNotIn("entry:vnext-collision-card", overlap)
+        self.assertTrue(any("below cosine gate" in n and "vnext-collision-card" in n for n in report["notes"]))
+
+    def test_overlap_unverifiable_without_fresh_embedding(self) -> None:
+        report = self.run_scan()
+        self.assertNotIn("entry:vnext-noembed-card", self.adv_ids(report, "cross_layer_overlap_concern"))
+        self.assertTrue(any("cosine gate unverifiable" in n and "vnext-noembed-card" in n for n in report["notes"]))
+
+    def test_overlap_suppressed_when_embed_helper_unavailable(self) -> None:
+        # fail direction: no records (advisory miss is safe), scan still exits 0, notes say why
+        report = self.run_scan(extra_env={"CC_MEMORY_EMBED_PYTHON": str(self.tmp / "missing-python")})
+        self.assertEqual(self.adv_ids(report, "cross_layer_overlap_concern"), set())
+        self.assertTrue(any("embed helper unavailable" in n for n in report["notes"]))
+
+    def test_overlap_non_finite_stored_embeddings_fail_safe(self) -> None:
+        con = sqlite3.connect(self.db)
+        con.row_factory = sqlite3.Row
+        model_id = con.execute("SELECT id FROM embedding_models LIMIT 1").fetchone()[0]
+        for suffix, value in (("nan", float("nan")), ("inf", float("inf"))):
+            entry_id = f"vnext-{suffix}-card"
+            self._add_entry(con, entry_id, f"Vnext {suffix.title()} Card", "source with a non-finite embedding")
+            self._add_embedding(con, model_id, "entry", entry_id, [0.0, value, 0.8])
+            self.cards.joinpath(f"{entry_id}.md").write_text(
+                f"---\ntitle: Vnext {suffix.title()} Card\n---\n# Vnext {suffix.title()} Card\n",
+                encoding="utf-8",
+            )
+        con.commit()
+        con.close()
+
+        report = self.run_scan()
+        overlap = self.adv_ids(report, "cross_layer_overlap_concern")
+        self.assertNotIn("entry:vnext-nan-card", overlap)
+        self.assertNotIn("entry:vnext-inf-card", overlap)
+        self.assertTrue(any("vnext-nan-card" in note and "unverifiable" in note for note in report["notes"]))
+        self.assertTrue(any("vnext-inf-card" in note and "unverifiable" in note for note in report["notes"]))
+        json.loads(self.out.read_text(encoding="utf-8"), parse_constant=_reject_non_finite_json)
+
+    def test_overlap_non_finite_helper_vectors_fail_safe(self) -> None:
+        for kind in ("nan", "inf"):
+            with self.subTest(kind=kind):
+                report = self.run_scan(extra_env={"CC_MEMORY_TEST_VECTOR_KIND": kind})
+                self.assertEqual(self.adv_ids(report, "cross_layer_overlap_concern"), set())
+                self.assertTrue(any("empty or non-finite card vector" in note for note in report["notes"]))
+                json.loads(self.out.read_text(encoding="utf-8"), parse_constant=_reject_non_finite_json)
+
     def test_duplicate_denial_and_prune_self_exclusion(self) -> None:
         report = self.run_scan()
         dup = self.adv_ids(report, "duplicate")
@@ -265,6 +364,11 @@ class PruneScanTwoTierTests(unittest.TestCase):
 
 class PrunePureHelperTests(unittest.TestCase):
     """In-process tests for branchy logic the subprocess e2e cannot reach hermetically."""
+
+    def test_cosine_threshold_rejects_non_finite_and_out_of_range_values(self) -> None:
+        for value in ("nan", "inf", "-inf", "1.01", "-1.01"):
+            with self.subTest(value=value), self.assertRaises(argparse.ArgumentTypeError):
+                mem.prune_cosine_threshold(value)
 
     @staticmethod
     def _decide(**kw):
