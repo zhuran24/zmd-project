@@ -133,6 +133,13 @@ def _fail(code: str, message: str, *, phase: str) -> None:
     raise FixedGeometryRouterError(code, message, phase=phase)
 
 
+def _propagate_external_wall_timeout(exc: Exception) -> None:
+    """Let the process-boundary watchdog publish its dedicated rejection."""
+
+    if getattr(exc, "code", None) == "WORKER_WALL_TIMEOUT":
+        raise exc
+
+
 def _strict_int(value: object, *, name: str, phase: str) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
         _fail("MALFORMED_INTEGER", f"{name} must be a literal integer", phase=phase)
@@ -361,6 +368,7 @@ def load_production_input_snapshot(project_root: Path) -> ProductionInputSnapsho
         )
         bundle, _reconciliation = strict_contract.load_and_reconcile(Path(project_root))
     except Exception as exc:  # noqa: BLE001 - dependency authority boundary
+        _propagate_external_wall_timeout(exc)
         _fail("DEPENDENCY_RECONCILIATION_FAILED", type(exc).__name__, phase="dependency_load")
     observed = dict(bundle.hashes)
     expected = dict(strict_contract.EXPECTED_SHA256)
@@ -839,37 +847,6 @@ def run_fixed_geometry_router(
         finish_stage(phase)
 
         phase = "routing_build"
-        routing_grid = dependencies.make_routing_grid(placement_core, port_specs)
-        router = dependencies.make_routing_subproblem(
-            routing_grid, commodities, domain_analysis=analysis
-        )
-        router.build()
-        build_stats = getattr(router, "build_stats", None)
-        if not isinstance(build_stats, Mapping):
-            _fail("ROUTING_BUILD_STATS", "router build_stats is missing", phase=phase)
-        if build_stats.get("domain_status_contract_violation") is not None:
-            _fail("ROUTING_BUILD_DOMAIN_CONTRACT", "router rejected the precheck status contract", phase=phase)
-        physical_vars = getattr(router, "phys_vars", None)
-        model = getattr(router, "model", None)
-        if not isinstance(physical_vars, Mapping) or model is None:
-            _fail("ROUTING_BUILD_SURFACE", "router model/phys_vars is missing", phase=phase)
-        l1_requirements = tuple(
-            dependencies.add_l1_support_constraints(
-                model, physical_vars, terminal_cells=terminal_cells
-            )
-        )
-        telemetry["routing_build"] = {
-            "stats": _json_copy(dict(build_stats), name="routing build stats", phase=phase),
-            "physical_state_count": len(physical_vars),
-            "l1_state_count": len(l1_requirements),
-            "l1_forbidden_terminal_count": sum(
-                bool(getattr(requirement, "forbidden_at_terminal", False))
-                for requirement in l1_requirements
-            ),
-        }
-        finish_stage(phase)
-
-        phase = "routing_solve"
         cgroup_start: Any = None
         cgroup_record: dict[str, Any]
         if config.require_cgroup:
@@ -877,6 +854,7 @@ def run_fixed_geometry_router(
             try:
                 cgroup_start = dependencies.begin_cgroup_telemetry(config.expected_unit_name)
             except Exception as exc:  # noqa: BLE001 - cgroup contract is an acceptance gate
+                _propagate_external_wall_timeout(exc)
                 telemetry["total_seconds"] = max(0.0, time.perf_counter() - started)
                 return _reject(
                     classification="CGROUP_TELEMETRY_FAILED",
@@ -885,18 +863,50 @@ def run_fixed_geometry_router(
                     telemetry=telemetry,
                     error_code=getattr(exc, "code", None),
                 )
-        solve_exception: Exception | None = None
+        attempt_exception: Exception | None = None
         routing_status: object = None
         try:
+            routing_grid = dependencies.make_routing_grid(placement_core, port_specs)
+            router = dependencies.make_routing_subproblem(
+                routing_grid, commodities, domain_analysis=analysis
+            )
+            router.build()
+            build_stats = getattr(router, "build_stats", None)
+            if not isinstance(build_stats, Mapping):
+                _fail("ROUTING_BUILD_STATS", "router build_stats is missing", phase=phase)
+            if build_stats.get("domain_status_contract_violation") is not None:
+                _fail("ROUTING_BUILD_DOMAIN_CONTRACT", "router rejected the precheck status contract", phase=phase)
+            physical_vars = getattr(router, "phys_vars", None)
+            model = getattr(router, "model", None)
+            if not isinstance(physical_vars, Mapping) or model is None:
+                _fail("ROUTING_BUILD_SURFACE", "router model/phys_vars is missing", phase=phase)
+            l1_requirements = tuple(
+                dependencies.add_l1_support_constraints(
+                    model, physical_vars, terminal_cells=terminal_cells
+                )
+            )
+            telemetry["routing_build"] = {
+                "stats": _json_copy(dict(build_stats), name="routing build stats", phase=phase),
+                "physical_state_count": len(physical_vars),
+                "l1_state_count": len(l1_requirements),
+                "l1_forbidden_terminal_count": sum(
+                    bool(getattr(requirement, "forbidden_at_terminal", False))
+                    for requirement in l1_requirements
+                ),
+            }
+            finish_stage(phase)
+
+            phase = "routing_solve"
             routing_status = router.solve(time_limit=float(config.time_limit_seconds))
         except Exception as exc:  # noqa: BLE001 - classification boundary
-            solve_exception = exc
+            attempt_exception = exc
         try:
             if config.require_cgroup:
                 cgroup_record = _as_cgroup_dict(dependencies.finish_cgroup_telemetry(cgroup_start))
             else:
                 cgroup_record = {"required": False, "oom_attribution": "NO_CGROUP_OOM"}
         except Exception as exc:  # noqa: BLE001 - telemetry is an acceptance gate
+            _propagate_external_wall_timeout(exc)
             telemetry["total_seconds"] = max(0.0, time.perf_counter() - started)
             return _reject(
                 classification="CGROUP_TELEMETRY_FAILED",
@@ -917,8 +927,8 @@ def run_fixed_geometry_router(
                 message=str(cgroup_record.get("oom_attribution")),
                 telemetry=telemetry,
             )
-        if solve_exception is not None:
-            raise solve_exception
+        if attempt_exception is not None:
+            raise attempt_exception
         telemetry["routing_status"] = routing_status
         finish_stage(phase)
         if routing_status == "INFEASIBLE":
@@ -940,76 +950,131 @@ def run_fixed_geometry_router(
         if routing_status != "FEASIBLE":
             _fail("ROUTING_STATUS_UNKNOWN", repr(routing_status), phase=phase)
 
-        phase = "route_extract"
-        production_routes = router.extract_routes()
-        if not isinstance(production_routes, Sequence):
-            _fail("ROUTE_EXTRACTION_SHAPE", "extract_routes did not return an array", phase=phase)
-        strict_components = [
-            dict(component)
-            for component in dependencies.adapt_extracted_routes(
-                production_routes, terminal_cells=terminal_cells
+        post_route_exception: Exception | None = None
+        post_route_exception_phase: str | None = None
+        strict_components: list[dict[str, Any]] = []
+        try:
+            phase = "route_extract"
+            production_routes = router.extract_routes()
+            if not isinstance(production_routes, Sequence):
+                _fail("ROUTE_EXTRACTION_SHAPE", "extract_routes did not return an array", phase=phase)
+            strict_components = [
+                dict(component)
+                for component in dependencies.adapt_extracted_routes(
+                    production_routes, terminal_cells=terminal_cells
+                )
+            ]
+            telemetry.update(
+                {
+                    "production_route_state_count": len(production_routes),
+                    "strict_route_component_count": len(strict_components),
+                }
             )
-        ]
-        telemetry.update(
-            {
-                "production_route_state_count": len(production_routes),
-                "strict_route_component_count": len(strict_components),
-            }
-        )
-        finish_stage(phase)
+            finish_stage(phase)
 
-        phase = "independent_reachability"
-        terminals = list(dependencies.terminals_from_witness(instance, all_bound))
-        if len(terminals) != len(port_specs):
-            _fail(
-                "TERMINAL_PORT_SPEC_COUNT_MISMATCH",
-                "strict terminals and production port specs have different cardinality",
-                phase=phase,
-            )
-        terminal_role_counts = {
-            commodity: {
-                "source": sum(
-                    getattr(terminal, "kind", None) == "output"
-                    and getattr(terminal, "commodity", None) == commodity
-                    for terminal in terminals
-                ),
-                "sink": sum(
-                    getattr(terminal, "kind", None) == "input"
-                    and getattr(terminal, "commodity", None) == commodity
-                    for terminal in terminals
-                ),
+            phase = "independent_reachability"
+            terminals = list(dependencies.terminals_from_witness(instance, all_bound))
+            if len(terminals) != len(port_specs):
+                _fail(
+                    "TERMINAL_PORT_SPEC_COUNT_MISMATCH",
+                    "strict terminals and production port specs have different cardinality",
+                    phase=phase,
+                )
+            terminal_role_counts = {
+                commodity: {
+                    "source": sum(
+                        getattr(terminal, "kind", None) == "output"
+                        and getattr(terminal, "commodity", None) == commodity
+                        for terminal in terminals
+                    ),
+                    "sink": sum(
+                        getattr(terminal, "kind", None) == "input"
+                        and getattr(terminal, "commodity", None) == commodity
+                        for terminal in terminals
+                    ),
+                }
+                for commodity in commodities
             }
-            for commodity in commodities
-        }
-        incomplete_roles = {
-            commodity: counts
-            for commodity, counts in terminal_role_counts.items()
-            if counts["source"] <= 0 or counts["sink"] <= 0
-        }
-        if incomplete_roles:
+            incomplete_roles = {
+                commodity: counts
+                for commodity, counts in terminal_role_counts.items()
+                if counts["source"] <= 0 or counts["sink"] <= 0
+            }
+            if incomplete_roles:
+                _fail(
+                    "INCOMPLETE_COMMODITY_TERMINALS",
+                    repr(incomplete_roles),
+                    phase=phase,
+                )
+            dependencies.assert_terminal_route_reachability(
+                strict_components, terminals, commodities
+            )
+            component_cells = {
+                (int(component["cell"]["x"]), int(component["cell"]["y"]))
+                for component in strict_components
+            }
+            if component_cells & occupied_cells:
+                _fail("ROUTE_BODY_COLLISION", "adapted routes cross a strict facility body", phase=phase)
+            telemetry["independent_reachability"] = {
+                "status": "PASS",
+                "terminal_count": len(terminals),
+                "source_count": sum(counts["source"] for counts in terminal_role_counts.values()),
+                "sink_count": sum(counts["sink"] for counts in terminal_role_counts.values()),
+                "terminal_role_counts": terminal_role_counts,
+                "component_cell_count": len(component_cells),
+            }
+            finish_stage(phase)
+        except Exception as exc:  # noqa: BLE001 - final cgroup attribution must still run
+            post_route_exception = exc
+            post_route_exception_phase = phase
+            finish_stage(phase)
+
+        phase = "post_route_telemetry"
+        try:
+            if config.require_cgroup:
+                final_cgroup_record = _as_cgroup_dict(
+                    dependencies.finish_cgroup_telemetry(cgroup_start)
+                )
+            else:
+                final_cgroup_record = {
+                    "required": False,
+                    "oom_attribution": "NO_CGROUP_OOM",
+                }
+        except Exception as exc:  # noqa: BLE001 - final telemetry is an acceptance gate
+            _propagate_external_wall_timeout(exc)
+            telemetry["total_seconds"] = max(0.0, time.perf_counter() - started)
+            return _reject(
+                classification="CGROUP_TELEMETRY_FAILED",
+                phase=phase,
+                message=type(exc).__name__,
+                telemetry=telemetry,
+                error_code=getattr(exc, "code", None),
+            )
+        telemetry["cgroup"] = final_cgroup_record
+        final_oom_attribution = final_cgroup_record.get("oom_attribution")
+        if final_oom_attribution not in {
+            "NO_CGROUP_OOM",
+            "CGROUP_OOM_EVENT",
+            "CGROUP_OOM_KILL",
+        }:
             _fail(
-                "INCOMPLETE_COMMODITY_TERMINALS",
-                repr(incomplete_roles),
+                "CGROUP_OOM_ATTRIBUTION",
+                repr(final_oom_attribution),
                 phase=phase,
             )
-        dependencies.assert_terminal_route_reachability(
-            strict_components, terminals, commodities
-        )
-        component_cells = {
-            (int(component["cell"]["x"]), int(component["cell"]["y"]))
-            for component in strict_components
-        }
-        if component_cells & occupied_cells:
-            _fail("ROUTE_BODY_COLLISION", "adapted routes cross a strict facility body", phase=phase)
-        telemetry["independent_reachability"] = {
-            "status": "PASS",
-            "terminal_count": len(terminals),
-            "source_count": sum(counts["source"] for counts in terminal_role_counts.values()),
-            "sink_count": sum(counts["sink"] for counts in terminal_role_counts.values()),
-            "terminal_role_counts": terminal_role_counts,
-            "component_cell_count": len(component_cells),
-        }
+        if final_oom_attribution != "NO_CGROUP_OOM":
+            telemetry["total_seconds"] = max(0.0, time.perf_counter() - started)
+            return _reject(
+                classification="CGROUP_OOM",
+                phase=phase,
+                message=str(final_oom_attribution),
+                telemetry=telemetry,
+            )
         finish_stage(phase)
+        if post_route_exception is not None:
+            assert post_route_exception_phase is not None
+            phase = post_route_exception_phase
+            raise post_route_exception
 
         phase = "output"
         strict_components = _json_copy(strict_components, name="strict route components", phase=phase)
@@ -1037,6 +1102,7 @@ def run_fixed_geometry_router(
             error_code=exc.code,
         )
     except Exception as exc:  # noqa: BLE001 - worker crash classification boundary
+        _propagate_external_wall_timeout(exc)
         telemetry["total_seconds"] = max(0.0, time.perf_counter() - started)
         return _reject(
             classification="FAIL_CLOSED_EXCEPTION",
@@ -1229,6 +1295,7 @@ def run_supervised_fixed_geometry_router(
             error_code=exc.code,
         )
     except Exception as exc:  # noqa: BLE001 - production dependency boundary
+        _propagate_external_wall_timeout(exc)
         return _reject(
             classification="INPUT_SNAPSHOT_REJECTED",
             phase="dependency_load",
@@ -1265,6 +1332,7 @@ def run_supervised_fixed_geometry_router(
             error_code=exc.code,
         )
     except Exception as exc:  # noqa: BLE001 - post-solve acceptance boundary
+        _propagate_external_wall_timeout(exc)
         return _reject(
             classification="POST_SOLVE_SNAPSHOT_REJECTED",
             phase="post_solve_snapshot",

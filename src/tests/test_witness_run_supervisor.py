@@ -248,23 +248,23 @@ def test_systemd_command_builder_has_exact_cgroup_contract(tmp_path: Path) -> No
         "--collect",
         "--expand-environment=no",
         f"--working-directory={tmp_path.resolve()}",
-        "--property=MemoryHigh=34G",
-        "--property=MemoryMax=38G",
+        "--property=MemoryHigh=35G",
+        "--property=MemoryMax=39G",
         "--property=MemorySwapMax=16G",
         "--property=OOMPolicy=continue",
         "/usr/bin/python3",
         "worker.py",
     )
     SUPERVISOR.validate_cgroup_property_values(
-        memory_high=34 * 1024**3,
-        memory_max=38 * 1024**3,
+        memory_high=35 * 1024**3,
+        memory_max=39 * 1024**3,
         memory_swap_max=16 * 1024**3,
         oom_policy="continue",
     )
     with pytest.raises(SUPERVISOR.SupervisorError, match="cgroup property mismatch"):
         SUPERVISOR.validate_cgroup_property_values(
             memory_high=34 * 1000**3,
-            memory_max=38 * 1024**3,
+            memory_max=39 * 1024**3,
             memory_swap_max=16 * 1024**3,
             oom_policy="continue",
         )
@@ -290,13 +290,25 @@ zmd-witness-abc-a001.service loaded active running duplicate
 
     def fake_runner(*args, **kwargs):
         assert args[0][0:3] == ["systemctl", "--user", "list-units"]
-        assert kwargs == {"check": False, "capture_output": True, "text": True}
+        assert "--state=active,activating,reloading,deactivating" in args[0]
+        assert kwargs == {
+            "check": False,
+            "capture_output": True,
+            "text": True,
+            "timeout": SUPERVISOR.CONTROL_PLANE_QUERY_TIMEOUT_SECONDS,
+        }
         return subprocess.CompletedProcess(args[0], 0, stdout=stdout, stderr="")
 
     assert SUPERVISOR.query_active_related_units(runner=fake_runner) == (
         "zmd-r45-old.service",
         "zmd-witness-abc-a001.service",
     )
+
+    def timeout_runner(*args, **kwargs):
+        raise subprocess.TimeoutExpired(args[0], kwargs["timeout"])
+
+    with pytest.raises(SUPERVISOR.SupervisorError, match="cannot query active user units"):
+        SUPERVISOR.query_active_related_units(runner=timeout_runner)
 
     proc_root = tmp_path / "proc"
     (proc_root / "101").mkdir(parents=True)

@@ -15,7 +15,7 @@
 3. `network_router.py` 使用 component-typed 传输组件；crossing 只保留两条相互隔离的直 channel，弯带不与 crossing 混用。
 4. `witness_io.py` 从生产端口描述导出 strict binding，分别生成 active 物理绑定与 null 映射，并以隔离解释器运行 pinned checker。
 5. `objective_audit.py` 用独立的 prefix-sum 穷举核算 body-only 最大空矩形，campaign 要求其结果与 checker 的重算逐字段一致。
-6. `run_supervisor.py` 与 `cgroup_telemetry.py` 实现 exclusive run、content-addressed publication、全局 prod-scale 锁、34G/38G/16G cgroup v2 限额、OOM 归因与 fail-closed 分类。
+6. `run_supervisor.py` 与 `cgroup_telemetry.py` 实现 exclusive run、content-addressed publication、全局 prod-scale 锁、35G/39G/16G cgroup v2 限额、OOM 归因与 fail-closed 分类。
 7. `construct_witness.py` 是操作员唯一的 witness 构造/复验 CLI。0-box 若接受即停；1-box/2-box 当前仅记录 `UNSUPPORTED_BOX_GEOMETRY`，不据此判断对应分支。
 
 ## Prod-scale 运行账

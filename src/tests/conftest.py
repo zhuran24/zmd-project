@@ -203,6 +203,8 @@ _TRACK_B_NODEID_GUARDS: dict[str, "callable[[], str | None]"] = {
     "test_witness_fixed_geometry_router_launcher.py::test_structured_rejection_is_classified_while_outer_lock_is_held": _head_drifted_from_witness_pin,
     "test_witness_fixed_geometry_router_launcher.py::test_feasible_result_requires_exact_cgroup_contract_and_geometry_binding": _head_drifted_from_witness_pin,
     "test_witness_fixed_geometry_router_launcher.py::test_geometry_snapshot_mutation_discards_otherwise_clean_rejection": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_client_wait_timeout_is_bounded_and_records_nonterminal_unit_state": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_semantic_source_drift_discards_otherwise_clean_rejection": _head_drifted_from_witness_pin,
 }
 
 

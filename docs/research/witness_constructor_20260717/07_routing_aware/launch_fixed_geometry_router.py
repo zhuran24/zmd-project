@@ -48,9 +48,16 @@ CLASSIFICATION_SCHEMA_VERSION = "fixed_geometry_router_classification.v1"
 UNIT_PREFIX = "zmd-witness-fixed-router-"
 EXPECTED_REQUIRED_PLACEMENTS = 266
 EXPECTED_PORT_SPECS = 628
+DEFAULT_BUILD_AND_FINALIZE_GRACE_SECONDS = 900.0
+SERVICE_WATCHDOG_GRACE_SECONDS = 30
+SERVICE_STOP_TIMEOUT_SECONDS = 15
+CLIENT_WAIT_GRACE_SECONDS = 30
+UNIT_STATE_QUERY_TIMEOUT_SECONDS = 15.0
+REPOSITORY_QUERY_TIMEOUT_SECONDS = 15.0
 
 CLEAN_REJECTED_RESULT = "CLEAN_REJECTED_RESULT"
 LAUNCH_TIMEOUT = "LAUNCH_TIMEOUT"
+WORKER_WALL_TIMEOUT = "WORKER_WALL_TIMEOUT"
 
 _FULL_SHA_RE = re.compile(r"[0-9a-f]{40}")
 _SHA256_RE = re.compile(r"[0-9a-f]{64}")
@@ -58,17 +65,54 @@ _SAFE_UNIT_RE = re.compile(r"zmd-witness-fixed-router-[0-9]{8}T[0-9]{6}Z\.servic
 _EVENT_KEY_RE = re.compile(r"[a-z][a-z0-9_]*")
 
 _SOURCE_RELATIVE_PATHS = {
+    "binding_subproblem": Path("src/models/binding_subproblem.py"),
+    "canonical_rules": Path("rules/canonical_rules.json"),
+    "canonical_rules_schema": Path("rules/canonical_rules.schema.json"),
     "cgroup_telemetry": Path(
         "docs/research/witness_constructor_20260717/07_routing_aware/cgroup_telemetry.py"
     ),
+    "cp_sat_worker_config": Path("src/models/cp_sat_worker_config.py"),
+    "cpsat_compat": Path("src/models/_cpsat_compat.py"),
     "fixed_geometry_router": Path(
         "docs/research/witness_constructor_20260717/07_routing_aware/fixed_geometry_router.py"
     ),
+    "geometry": Path(
+        "docs/research/witness_constructor_20260717/07_routing_aware/geometry.py"
+    ),
+    "interchange_init": Path("src/interchange/__init__.py"),
+    "interchange_compatibility_manifest": Path(
+        "src/interchange/compatibility_manifest.py"
+    ),
+    "interchange_export_registry": Path("src/interchange/export_registry.py"),
+    "interchange_normalized_catalog": Path("src/interchange/normalized_catalog.py"),
+    "interchange_preprocess_context": Path("src/interchange/preprocess_context.py"),
+    "interchange_target_capabilities": Path("src/interchange/target_capabilities.py"),
+    "io_strict_json": Path("src/io/strict_json.py"),
     "launcher": Path(
         "docs/research/witness_constructor_20260717/07_routing_aware/launch_fixed_geometry_router.py"
     ),
+    "network_router": Path(
+        "docs/research/witness_constructor_20260717/07_routing_aware/network_router.py"
+    ),
+    "operation_profiles": Path("src/preprocess/operation_profiles.py"),
+    "port_binding": Path("src/models/port_binding.py"),
+    "preprocess_plan": Path("rules/preprocess_plan.json"),
+    "preprocess_plan_schema": Path("rules/preprocess_plan.schema.json"),
+    "requirements_lock": Path("requirements.lock.txt"),
+    "route_adapter": Path(
+        "docs/research/witness_constructor_20260717/07_routing_aware/route_adapter.py"
+    ),
+    "routing_binding_context": Path("src/models/routing_binding_context.py"),
+    "routing_subproblem": Path("src/models/routing_subproblem.py"),
     "run_supervisor": Path(
         "docs/research/witness_constructor_20260717/07_routing_aware/run_supervisor.py"
+    ),
+    "strict_contract": Path(
+        "docs/research/witness_constructor_20260717/07_routing_aware/strict_contract.py"
+    ),
+    "commodity_throughput": Path("src/search/commodity_throughput.py"),
+    "witness_io": Path(
+        "docs/research/witness_constructor_20260717/07_routing_aware/witness_io.py"
     ),
     "worker": WORKER_RELATIVE_PATH,
 }
@@ -218,6 +262,50 @@ def _normalize_now(now: datetime | None) -> datetime:
     return value.astimezone(timezone.utc)
 
 
+def _resolve_wall_time_limit(
+    *,
+    time_limit_seconds: float,
+    wall_time_limit_seconds: float | None,
+) -> float:
+    values = (time_limit_seconds, wall_time_limit_seconds)
+    if isinstance(time_limit_seconds, bool) or not isinstance(time_limit_seconds, (int, float)):
+        raise FixedRouterLaunchError("TIME_LIMIT_INVALID", repr(values))
+    solve_limit = float(time_limit_seconds)
+    if not math.isfinite(solve_limit) or solve_limit <= 0.0:
+        raise FixedRouterLaunchError("TIME_LIMIT_INVALID", repr(values))
+    wall_limit = (
+        solve_limit + DEFAULT_BUILD_AND_FINALIZE_GRACE_SECONDS
+        if wall_time_limit_seconds is None
+        else wall_time_limit_seconds
+    )
+    if (
+        isinstance(wall_limit, bool)
+        or not isinstance(wall_limit, (int, float))
+        or not math.isfinite(float(wall_limit))
+        or float(wall_limit) <= solve_limit
+    ):
+        raise FixedRouterLaunchError(
+            "WALL_TIME_LIMIT_INVALID",
+            "worker wall limit must be finite and strictly exceed the CP-SAT solve limit",
+        )
+    return float(wall_limit)
+
+
+def _service_runtime_max_seconds(worker_wall_time_limit_seconds: float) -> int:
+    return int(math.ceil(worker_wall_time_limit_seconds + SERVICE_WATCHDOG_GRACE_SECONDS))
+
+
+def _client_wait_timeout_seconds(service_runtime_max_seconds: int) -> float:
+    if type(service_runtime_max_seconds) is not int or service_runtime_max_seconds <= 0:
+        raise FixedRouterLaunchError("SERVICE_WATCHDOG_INVALID", repr(service_runtime_max_seconds))
+    if not 0 < SERVICE_STOP_TIMEOUT_SECONDS < CLIENT_WAIT_GRACE_SECONDS:
+        raise FixedRouterLaunchError(
+            "SERVICE_WATCHDOG_INVALID",
+            "TimeoutStopSec must fit strictly inside the client wait grace",
+        )
+    return float(service_runtime_max_seconds + CLIENT_WAIT_GRACE_SECONDS)
+
+
 def _utc_stamp(now: datetime) -> str:
     return now.strftime("%Y%m%dT%H%M%SZ")
 
@@ -229,13 +317,65 @@ def _repository_head(project_root: Path) -> str:
             check=True,
             capture_output=True,
             text=True,
+            timeout=REPOSITORY_QUERY_TIMEOUT_SECONDS,
         )
-    except (OSError, subprocess.CalledProcessError) as exc:
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
         raise FixedRouterLaunchError("GIT_HEAD_UNAVAILABLE", str(exc)) from exc
     head = completed.stdout.strip()
     if _FULL_SHA_RE.fullmatch(head) is None:
         raise FixedRouterLaunchError("GIT_HEAD_INVALID", repr(head))
     return head
+
+
+def _query_unit_state(
+    unit_name: str,
+    *,
+    runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+) -> dict[str, str]:
+    """Boundedly read the exact transient unit state after a client wait timeout."""
+
+    if _SAFE_UNIT_RE.fullmatch(unit_name) is None:
+        raise FixedRouterLaunchError("UNIT_NAME_INVALID", unit_name)
+    command = [
+        "systemctl",
+        "--user",
+        "show",
+        unit_name,
+        "--no-pager",
+        "--property=LoadState",
+        "--property=ActiveState",
+        "--property=SubState",
+    ]
+    try:
+        completed = runner(
+            command,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=UNIT_STATE_QUERY_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise FixedRouterLaunchError("UNIT_STATE_QUERY_TIMEOUT", unit_name) from exc
+    except OSError as exc:
+        raise FixedRouterLaunchError("UNIT_STATE_QUERY_FAILED", str(exc)) from exc
+    if completed.returncode != 0:
+        raise FixedRouterLaunchError(
+            "UNIT_STATE_QUERY_FAILED",
+            completed.stderr.strip() or f"exit {completed.returncode}",
+        )
+    record: dict[str, str] = {}
+    for line in completed.stdout.splitlines():
+        if not line:
+            continue
+        key, separator, value = line.partition("=")
+        if separator != "=" or key in record:
+            raise FixedRouterLaunchError("UNIT_STATE_QUERY_INVALID", repr(line))
+        record[key] = value
+    if set(record) != {"LoadState", "ActiveState", "SubState"} or any(
+        not value for value in record.values()
+    ):
+        raise FixedRouterLaunchError("UNIT_STATE_QUERY_INVALID", repr(record))
+    return record
 
 
 def _resolve_project_root(project_root: Path) -> Path:
@@ -275,7 +415,10 @@ def _resolve_project_root(project_root: Path) -> Path:
             env=git_env,
         )
     except (OSError, subprocess.SubprocessError) as exc:
-        raise FixedRouterLaunchError("PROJECT_ROOT_INVALID", f"Git probe failed for {root}: {exc}") from exc
+        raise FixedRouterLaunchError(
+            "PROJECT_ROOT_INVALID",
+            f"Git probe failed for {root}: {exc}",
+        ) from exc
 
     fields = completed.stdout.splitlines()
     if len(fields) != 3 or fields[0] != "true":
@@ -332,7 +475,10 @@ def _resolve_project_root(project_root: Path) -> Path:
             ):
                 raise ValueError("linked-worktree admin directory mismatch")
     except (OSError, UnicodeError, ValueError) as exc:
-        raise FixedRouterLaunchError("PROJECT_ROOT_INVALID", f"invalid .git marker for {root}: {exc}") from exc
+        raise FixedRouterLaunchError(
+            "PROJECT_ROOT_INVALID",
+            f"invalid .git marker for {root}: {exc}",
+        ) from exc
     if marker_git_dir != reported_git_dir:
         raise FixedRouterLaunchError("PROJECT_ROOT_INVALID", f"Git directory mismatch for {root}")
     return root
@@ -845,9 +991,19 @@ def _classify_attempt(
     timed_out: bool,
     returncode: int | None,
     inspection: ResultInspection,
+    timeout_unit_state: Mapping[str, Any] | None = None,
 ) -> AttemptClassification:
     if timed_out:
-        return AttemptClassification(LAUNCH_TIMEOUT, False, "systemd-run wait timed out")
+        detail = "systemd-run client wait timed out"
+        state = dict(timeout_unit_state or {})
+        if state.get("query_status") == "OK":
+            detail += (
+                f"; unit={state.get('ActiveState')}/{state.get('SubState')}"
+                + ("" if state.get("terminal") is True else "; manual resolution required")
+            )
+        else:
+            detail += "; unit state unresolved; manual resolution required"
+        return AttemptClassification(LAUNCH_TIMEOUT, False, detail)
     if returncode is None or isinstance(returncode, bool) or not isinstance(returncode, int):
         return AttemptClassification(run_supervisor.PROCESS_NONZERO_EXIT, False, "missing return code")
     if returncode < 0:
@@ -878,6 +1034,8 @@ def _classify_attempt(
             return AttemptClassification(run_supervisor.CGROUP_OOM_KILL, False, inspection.worker_classification)
         if inspection.oom_attribution == run_supervisor.CGROUP_OOM_EVENT:
             return AttemptClassification(run_supervisor.CGROUP_OOM_EVENT, False, inspection.worker_classification)
+        if inspection.worker_classification == "WORKER_WALL_TIMEOUT_UNPROVEN":
+            return AttemptClassification(WORKER_WALL_TIMEOUT, False, inspection.worker_classification)
         return AttemptClassification(CLEAN_REJECTED_RESULT, False, inspection.worker_classification)
     return AttemptClassification(run_supervisor.RESULT_SCHEMA_INVALID, False, "unexpected worker status")
 
@@ -889,6 +1047,7 @@ def _worker_command(
     result_path: Path,
     unit_name: str,
     time_limit_seconds: float,
+    wall_time_limit_seconds: float,
     workers: int,
 ) -> tuple[str, ...]:
     if (
@@ -898,6 +1057,13 @@ def _worker_command(
         or float(time_limit_seconds) <= 0.0
     ):
         raise FixedRouterLaunchError("TIME_LIMIT_INVALID", repr(time_limit_seconds))
+    if (
+        isinstance(wall_time_limit_seconds, bool)
+        or not isinstance(wall_time_limit_seconds, (int, float))
+        or not math.isfinite(float(wall_time_limit_seconds))
+        or float(wall_time_limit_seconds) <= float(time_limit_seconds)
+    ):
+        raise FixedRouterLaunchError("WALL_TIME_LIMIT_INVALID", repr(wall_time_limit_seconds))
     if type(workers) is not int or not 1 <= workers <= 64:
         raise FixedRouterLaunchError("WORKER_COUNT_INVALID", repr(workers))
     interpreter = Path(sys.executable).resolve(strict=True)
@@ -917,6 +1083,8 @@ def _worker_command(
         unit_name,
         "--time-limit-seconds",
         str(float(time_limit_seconds)),
+        "--wall-time-limit-seconds",
+        str(float(wall_time_limit_seconds)),
         "--workers",
         str(workers),
     )
@@ -927,11 +1095,25 @@ def _launch_command(
     project_root: Path,
     unit_name: str,
     worker_command: Sequence[str],
+    service_runtime_max_seconds: int,
 ) -> tuple[str, ...]:
-    command = run_supervisor.build_systemd_run_command(
+    if type(service_runtime_max_seconds) is not int or service_runtime_max_seconds <= 0:
+        raise FixedRouterLaunchError("SERVICE_WATCHDOG_INVALID", repr(service_runtime_max_seconds))
+    base_command = run_supervisor.build_systemd_run_command(
         unit_name=unit_name,
         working_directory=project_root,
         command=worker_command,
+    )
+    worker_offset = len(base_command) - len(worker_command)
+    runtime_property = f"--property=RuntimeMaxSec={service_runtime_max_seconds}s"
+    stop_timeout_property = f"--property=TimeoutStopSec={SERVICE_STOP_TIMEOUT_SECONDS}s"
+    send_sigkill_property = "--property=SendSIGKILL=yes"
+    command = (
+        *base_command[:worker_offset],
+        runtime_property,
+        stop_timeout_property,
+        send_sigkill_property,
+        *base_command[worker_offset:],
     )
     required_flags = {
         "--user",
@@ -942,6 +1124,9 @@ def _launch_command(
         "--expand-environment=no",
         f"--unit={unit_name}",
         f"--working-directory={project_root}",
+        runtime_property,
+        stop_timeout_property,
+        send_sigkill_property,
         *(f"--property={item}" for item in run_supervisor.CGROUP_PROPERTIES),
     }
     if not command or command[0] != "systemd-run":
@@ -974,6 +1159,7 @@ def launch_fixed_geometry_router(
     project_root: Path = PROJECT_ROOT,
     run_root: Path = DEFAULT_RUN_ROOT,
     time_limit_seconds: float = 3600.0,
+    wall_time_limit_seconds: float | None = None,
     workers: int = 8,
     dry_run: bool = False,
     now: datetime | None = None,
@@ -981,9 +1167,16 @@ def launch_fixed_geometry_router(
     unit_query: Callable[[], tuple[str, ...]] = run_supervisor.query_active_related_units,
     process_query: Callable[..., tuple[dict[str, Any], ...]] = run_supervisor.detect_active_related_processes,
     systemd_runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
+    unit_state_query: Callable[[str], Mapping[str, str]] = _query_unit_state,
 ) -> LaunchOutcome:
     """Create, launch, inspect, and classify exactly one immutable attempt."""
 
+    worker_wall_limit = _resolve_wall_time_limit(
+        time_limit_seconds=time_limit_seconds,
+        wall_time_limit_seconds=wall_time_limit_seconds,
+    )
+    service_runtime_limit = _service_runtime_max_seconds(worker_wall_limit)
+    client_wait_limit = _client_wait_timeout_seconds(service_runtime_limit)
     root = _resolve_project_root(project_root)
     output_root = _require_output_scope(run_root)
     timestamp = _normalize_now(now)
@@ -1020,12 +1213,14 @@ def launch_fixed_geometry_router(
             result_path=result_path,
             unit_name=unit_name,
             time_limit_seconds=time_limit_seconds,
+            wall_time_limit_seconds=worker_wall_limit,
             workers=workers,
         )
         command = _launch_command(
             project_root=root,
             unit_name=unit_name,
             worker_command=worker_argv,
+            service_runtime_max_seconds=service_runtime_limit,
         )
         header = {
             "schema_version": LAUNCH_SCHEMA_VERSION,
@@ -1041,8 +1236,15 @@ def launch_fixed_geometry_router(
             "geometry": geometry.as_dict(),
             "result_path": str(result_path),
             "time_limit_seconds": float(time_limit_seconds),
+            "worker_wall_time_limit_seconds": worker_wall_limit,
+            "service_runtime_max_seconds": service_runtime_limit,
+            "service_stop_timeout_seconds": SERVICE_STOP_TIMEOUT_SECONDS,
+            "client_wait_timeout_seconds": client_wait_limit,
             "workers": workers,
-            "wait_contract": "worker_internal_time_limit_then_systemd_wait",
+            "wait_contract": (
+                "worker_wall_timer_then_systemd_RuntimeMaxSec_then_"
+                "bounded_systemd_wait_and_unit_state_query"
+            ),
             "lock_path": str(
                 run_supervisor.prod_scale_lock_path() if lock_path is None else Path(lock_path)
             ),
@@ -1085,6 +1287,7 @@ def launch_fixed_geometry_router(
             )
 
         timed_out = False
+        timeout_unit_state: dict[str, Any] | None = None
         launch_error: str | None = None
         returncode: int | None = None
         stdout = b""
@@ -1096,6 +1299,7 @@ def launch_fixed_geometry_router(
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 cwd=root,
+                timeout=client_wait_limit,
             )
             returncode = completed.returncode
             stdout = _as_bytes(completed.stdout)
@@ -1105,6 +1309,23 @@ def launch_fixed_geometry_router(
             launch_error = str(exc)
             stdout = _as_bytes(exc.stdout)
             stderr = _as_bytes(exc.stderr)
+            try:
+                observed_state = dict(unit_state_query(unit_name))
+                if set(observed_state) != {"LoadState", "ActiveState", "SubState"} or any(
+                    type(value) is not str or not value for value in observed_state.values()
+                ):
+                    raise FixedRouterLaunchError("UNIT_STATE_QUERY_INVALID", repr(observed_state))
+                timeout_unit_state = {
+                    "query_status": "OK",
+                    **observed_state,
+                    "terminal": observed_state["ActiveState"] in {"inactive", "failed"},
+                }
+            except Exception as state_exc:  # noqa: BLE001 - timeout must retain a fail-closed record
+                timeout_unit_state = {
+                    "query_status": "ERROR",
+                    "error_type": type(state_exc).__name__,
+                    "error_code": getattr(state_exc, "code", None),
+                }
         except OSError as exc:
             launch_error = str(exc)
             stderr = _as_bytes(f"{exc}\n")
@@ -1122,6 +1343,7 @@ def launch_fixed_geometry_router(
             timed_out=timed_out,
             returncode=returncode,
             inspection=inspection,
+            timeout_unit_state=timeout_unit_state,
         )
         route_ready = classification.successful and inspection.worker_status == "FEASIBLE"
         run_supervisor.write_json_exclusive(
@@ -1133,6 +1355,7 @@ def launch_fixed_geometry_router(
                 "route_ready": route_ready,
                 "launch_error": launch_error,
                 "process": {"timed_out": timed_out, "returncode": returncode},
+                "timeout_unit_state": timeout_unit_state,
                 "geometry": geometry.as_dict(),
                 "result": inspection.as_dict(),
             },
@@ -1157,6 +1380,14 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--project-root", type=Path, default=PROJECT_ROOT)
     parser.add_argument("--run-root", type=Path, default=DEFAULT_RUN_ROOT)
     parser.add_argument("--time-limit-seconds", type=float, default=3600.0)
+    parser.add_argument(
+        "--wall-time-limit-seconds",
+        type=float,
+        help=(
+            "whole-worker wall limit including model build and validation; "
+            f"default is solve limit + {DEFAULT_BUILD_AND_FINALIZE_GRACE_SECONDS:g}s"
+        ),
+    )
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--dry-run", action="store_true")
     return parser
@@ -1170,6 +1401,7 @@ def run_cli(argv: Sequence[str] | None = None) -> int:
             project_root=args.project_root,
             run_root=args.run_root,
             time_limit_seconds=args.time_limit_seconds,
+            wall_time_limit_seconds=args.wall_time_limit_seconds,
             workers=args.workers,
             dry_run=args.dry_run,
         )

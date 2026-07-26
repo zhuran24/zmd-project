@@ -10,12 +10,14 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Mapping, Sequence
+from contextlib import contextmanager
 import importlib
 import json
 import math
 import os
 from pathlib import Path
 import re
+import signal
 import subprocess
 import sys
 from typing import Any
@@ -41,6 +43,10 @@ class FixedRouterCliError(RuntimeError):
     def __init__(self, code: str, message: str) -> None:
         self.code = code
         super().__init__(f"{code}: {message}")
+
+
+class WorkerWallTimeoutError(FixedRouterCliError):
+    """The whole-worker timer expired before a trustworthy result existed."""
 
 
 def _resolve_project_root(project_root: Path) -> Path:
@@ -146,6 +152,51 @@ def _resolve_project_root(project_root: Path) -> Path:
     return root
 
 
+@contextmanager
+def _worker_wall_watchdog(seconds: float):
+    """Bound dependency load, model build, solve, and post-solve validation."""
+
+    if not hasattr(signal, "SIGALRM") or not hasattr(signal, "setitimer"):
+        raise FixedRouterCliError("WALL_WATCHDOG_UNAVAILABLE", sys.platform)
+    previous_handler = signal.getsignal(signal.SIGALRM)
+    previous_delay, previous_interval = signal.getitimer(signal.ITIMER_REAL)
+    if previous_delay > 0.0 or previous_interval > 0.0:
+        raise FixedRouterCliError("WALL_WATCHDOG_ALREADY_ACTIVE", repr((previous_delay, previous_interval)))
+
+    expired = False
+
+    def expire(_signum: int, _frame: object) -> None:
+        nonlocal expired
+        expired = True
+        raise WorkerWallTimeoutError(
+            "WORKER_WALL_TIMEOUT",
+            f"whole-worker wall limit expired after {seconds:g} seconds",
+        )
+
+    signal.signal(signal.SIGALRM, expire)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        try:
+            yield
+        except BaseException:
+            if expired:
+                raise WorkerWallTimeoutError(
+                    "WORKER_WALL_TIMEOUT",
+                    f"whole-worker wall limit expired after {seconds:g} seconds",
+                ) from None
+            raise
+    finally:
+        try:
+            signal.setitimer(signal.ITIMER_REAL, 0.0)
+        finally:
+            signal.signal(signal.SIGALRM, previous_handler)
+    if expired:
+        raise WorkerWallTimeoutError(
+            "WORKER_WALL_TIMEOUT",
+            f"whole-worker wall limit expired after {seconds:g} seconds",
+        )
+
+
 def _strict_json_copy(value: object) -> Any:
     try:
         return json.loads(json.dumps(value, ensure_ascii=True, allow_nan=False))
@@ -187,12 +238,15 @@ def _rejected_result(exc: Exception, *, geometry_sha256: str) -> dict[str, Any]:
             "geometry_sha256": geometry_sha256,
             "worker_cli_fail_closed": True,
         }
+    timeout = isinstance(exc, WorkerWallTimeoutError)
     result: dict[str, Any] = {
         "schema_version": fixed_geometry_router.OUTPUT_SCHEMA_VERSION,
         "status": "REJECTED",
-        "classification": "FAIL_CLOSED_WORKER_CLI_EXCEPTION",
-        "phase": "worker_cli",
-        "message": type(exc).__name__,
+        "classification": (
+            "WORKER_WALL_TIMEOUT_UNPROVEN" if timeout else "FAIL_CLOSED_WORKER_CLI_EXCEPTION"
+        ),
+        "phase": "worker_wall_watchdog" if timeout else "worker_cli",
+        "message": "whole-worker wall limit expired" if timeout else type(exc).__name__,
         "route_components": [],
         "telemetry": telemetry,
     }
@@ -210,9 +264,9 @@ def _validate_controls(
     expected_geometry_sha256: str,
     expected_unit_name: str,
     time_limit_seconds: float,
+    wall_time_limit_seconds: float,
     workers: int,
-) -> Path:
-    root = _resolve_project_root(project_root)
+) -> None:
     if not geometry_path.is_absolute():
         raise FixedRouterCliError("GEOMETRY_PATH_INVALID", "geometry path must be absolute")
     if _SHA256_RE.fullmatch(expected_geometry_sha256) is None:
@@ -226,6 +280,13 @@ def _validate_controls(
         or float(time_limit_seconds) <= 0.0
     ):
         raise FixedRouterCliError("TIME_LIMIT_INVALID", repr(time_limit_seconds))
+    if (
+        isinstance(wall_time_limit_seconds, bool)
+        or not isinstance(wall_time_limit_seconds, (int, float))
+        or not math.isfinite(float(wall_time_limit_seconds))
+        or float(wall_time_limit_seconds) <= float(time_limit_seconds)
+    ):
+        raise FixedRouterCliError("WALL_TIME_LIMIT_INVALID", repr(wall_time_limit_seconds))
     if type(workers) is not int or not 1 <= workers <= 64:
         raise FixedRouterCliError("WORKER_COUNT_INVALID", repr(workers))
     if not out_path.is_absolute() or not out_path.parent.is_dir() or out_path.exists():
@@ -233,7 +294,6 @@ def _validate_controls(
             "RESULT_PATH_INVALID",
             "result path must be a new absolute file in an existing attempt directory",
         )
-    return root
 
 
 def run_worker(
@@ -244,19 +304,22 @@ def run_worker(
     expected_geometry_sha256: str,
     expected_unit_name: str,
     time_limit_seconds: float,
+    wall_time_limit_seconds: float,
     workers: int,
 ) -> dict[str, Any]:
     """Run once and exclusively persist either the result or a fail-closed rejection."""
 
+    root = _resolve_project_root(project_root)
     geometry = Path(geometry_path)
     target = Path(out_path)
-    root = _validate_controls(
-        project_root=Path(project_root),
+    _validate_controls(
+        project_root=root,
         geometry_path=geometry,
         out_path=target,
         expected_geometry_sha256=expected_geometry_sha256,
         expected_unit_name=expected_unit_name,
         time_limit_seconds=time_limit_seconds,
+        wall_time_limit_seconds=wall_time_limit_seconds,
         workers=workers,
     )
 
@@ -264,19 +327,20 @@ def run_worker(
     try:
         os.environ[WORKER_COUNT_ENV] = str(workers)
         try:
-            raw_result = fixed_geometry_router.run_supervised_fixed_geometry_router(
-                geometry,
-                expected_geometry_sha256=expected_geometry_sha256,
-                project_root=root,
-                config=fixed_geometry_router.WorkerConfig(
-                    time_limit_seconds=float(time_limit_seconds),
-                    minimum_poles=9,
-                    required_grid=(70, 70),
-                    require_cgroup=True,
-                    expected_unit_name=expected_unit_name,
-                ),
-            )
-            result = _normalize_worker_result(raw_result)
+            with _worker_wall_watchdog(float(wall_time_limit_seconds)):
+                raw_result = fixed_geometry_router.run_supervised_fixed_geometry_router(
+                    geometry,
+                    expected_geometry_sha256=expected_geometry_sha256,
+                    project_root=root,
+                    config=fixed_geometry_router.WorkerConfig(
+                        time_limit_seconds=float(time_limit_seconds),
+                        minimum_poles=9,
+                        required_grid=(70, 70),
+                        require_cgroup=True,
+                        expected_unit_name=expected_unit_name,
+                    ),
+                )
+                result = _normalize_worker_result(raw_result)
         except Exception as exc:  # noqa: BLE001 - process boundary must emit a rejection
             result = _rejected_result(exc, geometry_sha256=expected_geometry_sha256)
     finally:
@@ -297,6 +361,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--expected-unit", required=True)
     parser.add_argument("--time-limit-seconds", type=float, required=True)
+    parser.add_argument("--wall-time-limit-seconds", type=float, required=True)
     parser.add_argument("--workers", type=int, default=8)
     return parser
 
@@ -311,6 +376,7 @@ def run_cli(argv: Sequence[str] | None = None) -> int:
             expected_geometry_sha256=args.geometry_sha256,
             expected_unit_name=args.expected_unit,
             time_limit_seconds=args.time_limit_seconds,
+            wall_time_limit_seconds=args.wall_time_limit_seconds,
             workers=args.workers,
         )
     except (FixedRouterCliError, fixed_geometry_router.FixedGeometryRouterError) as exc:
