@@ -16,6 +16,7 @@ import math
 import os
 from pathlib import Path
 import re
+import subprocess
 import sys
 from typing import Any
 
@@ -40,6 +41,109 @@ class FixedRouterCliError(RuntimeError):
     def __init__(self, code: str, message: str) -> None:
         self.code = code
         super().__init__(f"{code}: {message}")
+
+
+def _resolve_project_root(project_root: Path) -> Path:
+    candidate = Path(project_root)
+    if not candidate.is_absolute():
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", str(candidate))
+    try:
+        root = candidate.resolve(strict=True)
+    except OSError as exc:
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", str(exc)) from exc
+    marker = root / ".git"
+    if (
+        not root.is_dir()
+        or marker.is_symlink()
+        or not (marker.is_dir() or marker.is_file())
+    ):
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", f"not a Git working tree: {root}")
+
+    git_env = {
+        key: value
+        for key, value in os.environ.items()
+        if not key.startswith("GIT_")
+    }
+    try:
+        completed = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "rev-parse",
+                "--is-inside-work-tree",
+                "--show-toplevel",
+                "--absolute-git-dir",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+            stdin=subprocess.DEVNULL,
+            timeout=5.0,
+            env=git_env,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", f"Git probe failed for {root}: {exc}") from exc
+
+    fields = completed.stdout.splitlines()
+    if len(fields) != 3 or fields[0] != "true":
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", f"invalid Git probe for {root}")
+    try:
+        reported_root = Path(fields[1]).resolve(strict=True)
+        reported_git_dir = Path(fields[2]).resolve(strict=True)
+    except OSError as exc:
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", f"invalid Git paths for {root}: {exc}") from exc
+    if reported_root != root or not reported_git_dir.is_dir():
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", f"Git top-level mismatch for {root}")
+
+    try:
+        if marker.is_dir():
+            marker_git_dir = marker.resolve(strict=True)
+        else:
+            raw_marker = marker.read_bytes()
+            if not raw_marker.endswith(b"\n") or raw_marker.count(b"\n") != 1 or len(raw_marker) > 4096:
+                raise ValueError("malformed linked-worktree marker")
+            marker_line = raw_marker[:-1].decode("utf-8", errors="strict")
+            if not marker_line.startswith("gitdir: ") or not marker_line[8:]:
+                raise ValueError("malformed linked-worktree marker")
+            marker_target = Path(marker_line[8:])
+            if not marker_target.is_absolute():
+                marker_target = marker.parent / marker_target
+            marker_git_dir = marker_target.resolve(strict=True)
+
+            backlink = marker_git_dir / "gitdir"
+            if backlink.is_symlink() or not backlink.is_file():
+                raise ValueError("linked-worktree backlink is missing")
+            raw_backlink = backlink.read_bytes()
+            if not raw_backlink.endswith(b"\n") or raw_backlink.count(b"\n") != 1 or len(raw_backlink) > 4096:
+                raise ValueError("malformed linked-worktree backlink")
+            backlink_target = Path(raw_backlink[:-1].decode("utf-8", errors="strict"))
+            if not backlink_target.is_absolute():
+                backlink_target = backlink.parent / backlink_target
+            if backlink_target.resolve(strict=True) != marker.resolve(strict=True):
+                raise ValueError("linked-worktree backlink mismatch")
+
+            commondir = marker_git_dir / "commondir"
+            if commondir.is_symlink() or not commondir.is_file():
+                raise ValueError("linked-worktree commondir is missing")
+            raw_commondir = commondir.read_bytes()
+            if not raw_commondir.endswith(b"\n") or raw_commondir.count(b"\n") != 1 or len(raw_commondir) > 4096:
+                raise ValueError("malformed linked-worktree commondir")
+            common_target = Path(raw_commondir[:-1].decode("utf-8", errors="strict"))
+            if not common_target.is_absolute():
+                common_target = commondir.parent / common_target
+            common_git_dir = common_target.resolve(strict=True)
+            if (
+                not common_git_dir.is_dir()
+                or marker_git_dir.parent.resolve(strict=True)
+                != (common_git_dir / "worktrees").resolve(strict=True)
+            ):
+                raise ValueError("linked-worktree admin directory mismatch")
+    except (OSError, UnicodeError, ValueError) as exc:
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", f"invalid .git marker for {root}: {exc}") from exc
+    if marker_git_dir != reported_git_dir:
+        raise FixedRouterCliError("PROJECT_ROOT_INVALID", f"Git directory mismatch for {root}")
+    return root
 
 
 def _strict_json_copy(value: object) -> Any:
@@ -107,9 +211,8 @@ def _validate_controls(
     expected_unit_name: str,
     time_limit_seconds: float,
     workers: int,
-) -> None:
-    if not project_root.is_absolute() or not project_root.is_dir() or not (project_root / ".git").is_dir():
-        raise FixedRouterCliError("PROJECT_ROOT_INVALID", str(project_root))
+) -> Path:
+    root = _resolve_project_root(project_root)
     if not geometry_path.is_absolute():
         raise FixedRouterCliError("GEOMETRY_PATH_INVALID", "geometry path must be absolute")
     if _SHA256_RE.fullmatch(expected_geometry_sha256) is None:
@@ -130,6 +233,7 @@ def _validate_controls(
             "RESULT_PATH_INVALID",
             "result path must be a new absolute file in an existing attempt directory",
         )
+    return root
 
 
 def run_worker(
@@ -144,11 +248,10 @@ def run_worker(
 ) -> dict[str, Any]:
     """Run once and exclusively persist either the result or a fail-closed rejection."""
 
-    root = Path(project_root)
     geometry = Path(geometry_path)
     target = Path(out_path)
-    _validate_controls(
-        project_root=root,
+    root = _validate_controls(
+        project_root=Path(project_root),
         geometry_path=geometry,
         out_path=target,
         expected_geometry_sha256=expected_geometry_sha256,
