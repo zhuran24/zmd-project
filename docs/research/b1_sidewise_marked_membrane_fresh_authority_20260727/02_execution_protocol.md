@@ -24,6 +24,11 @@
    建立成员集合仅为 `authority.json` 与 `SHA256SUMS` 的 `authority-a001/`。
    将 SHA-256(`SHA256SUMS`) 作为 package 外保存的
    `authority_package_id`，并在每个后续阶段校验 sealed package。
+   对 manager helper 的 attestor/sudo/Python/busctl legacy 8-field identity
+   先做 exact-key 验证，再稳定解析 requested path，以 same-FD live full7
+   连接 authority full7；把 join 封入 authority。authority load、selection
+   写入前、runner 的每次 epoch gate 与 detached verifier 都必须独立重算并与
+   sealed join 完全相等。
 3. 从 snapshot-only adapter 重放旧 R4 完整 band，独立重建旧 OPB/map，并通过
    retained-FD VeriPB；该阶段保持 `upper_bound_update_authorized=false`。
 4. 在 fresh run 的 `preselection-a001/` 写入每个 attempt 的 immutable payload

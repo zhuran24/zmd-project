@@ -350,24 +350,6 @@ def load_json(path: Path, label: str) -> tuple[dict[str, Any], dict[str, Any]]:
     return value, record
 
 
-def identity_matches(
-    actual: Mapping[str, Any],
-    expected: Mapping[str, Any],
-) -> bool:
-    return all(
-        actual.get(field) == expected.get(field)
-        for field in (
-            "path",
-            "size_bytes",
-            "sha256",
-            "mode_octal",
-            "device",
-            "inode",
-            "link_count",
-        )
-    )
-
-
 def write_once(path: Path, raw: bytes, mode: int = 0o644) -> dict[str, Any]:
     if path.parent.is_symlink() or not path.parent.is_dir():
         raise RecoveryError(f"output parent is not a real directory: {path.parent}")
@@ -590,12 +572,147 @@ def identity_contract() -> ModuleType:
     required = (
         "IdentityContractError",
         "validate_full_identity",
+        "validate_legacy_manager_identity",
         "canonical_content_projection",
         "assert_identity_join",
+        "assert_legacy_manager_identity_join",
     )
     if any(not hasattr(module, name) for name in required):
         raise RecoveryError("canonical content identity contract API missing")
     return module
+
+
+def validate_manager_epoch_toolchain_shape(
+    epoch: Mapping[str, Any],
+) -> dict[str, dict[str, Any]]:
+    """Validate the exact legacy identity envelope emitted by the pinned helper."""
+
+    contract = identity_contract()
+    attestation = epoch.get("attestation_toolchain")
+    observation = epoch.get("observation_toolchain")
+    if not isinstance(attestation, dict) or set(attestation) != {
+        "attestor",
+        "sudo",
+        "python",
+    }:
+        raise RecoveryError("manager epoch attestation toolchain key set drifted")
+    if not isinstance(observation, dict) or set(observation) != {"busctl"}:
+        raise RecoveryError("manager epoch observation toolchain key set drifted")
+    try:
+        validated = {
+            name: contract.validate_legacy_manager_identity(
+                attestation[name],
+                f"manager epoch privileged {name}",
+            )
+            for name in ("attestor", "sudo", "python")
+        }
+        validated["busctl"] = contract.validate_legacy_manager_identity(
+            observation["busctl"],
+            "manager epoch observation busctl",
+        )
+    except Exception as exc:
+        raise RecoveryError(f"manager epoch exact legacy identity contract failed: {exc}") from exc
+    return validated
+
+
+def _manager_epoch_expected_identities(
+    toolchain: Mapping[str, Any],
+) -> dict[str, tuple[str, Mapping[str, Any]]]:
+    def required_path(value: Any, label: str) -> str:
+        if not isinstance(value, str):
+            raise RecoveryError(f"manager epoch join has malformed {label} requested path")
+        return value
+
+    tools = toolchain.get("tools")
+    binaries = toolchain.get("binaries")
+    if not isinstance(tools, Mapping) or not isinstance(binaries, Mapping):
+        raise RecoveryError("manager epoch join lacks authority toolchain mappings")
+    privileged_attestor = tools.get("privileged_attestor")
+    busctl = binaries.get("busctl")
+    sudo = binaries.get("sudo")
+    privileged_python = binaries.get("privileged_python")
+    if (
+        not isinstance(privileged_attestor, Mapping)
+        or not isinstance(busctl, Mapping)
+        or not isinstance(sudo, Mapping)
+        or not isinstance(privileged_python, Mapping)
+    ):
+        raise RecoveryError("manager epoch join lacks a required authority identity")
+    sudo_target = sudo.get("target")
+    python_target = privileged_python.get("target")
+    if not isinstance(sudo_target, Mapping) or not isinstance(python_target, Mapping):
+        raise RecoveryError("manager epoch join lacks a resolved executable target")
+    attestor_path = required_path(privileged_attestor.get("path"), "attestor")
+    busctl_path = required_path(busctl.get("path"), "busctl")
+    sudo_path = required_path(sudo.get("path"), "sudo")
+    python_path = required_path(privileged_python.get("path"), "Python")
+    return {
+        "attestor": (attestor_path, privileged_attestor),
+        "sudo": (sudo_path, sudo_target),
+        "python": (python_path, python_target),
+        "busctl": (busctl_path, busctl),
+    }
+
+
+def validate_manager_epoch_toolchain(
+    epoch: Mapping[str, Any],
+    toolchain: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Join exact legacy manager identities to stable live authority full7 records."""
+
+    contract = identity_contract()
+    legacy_identities = validate_manager_epoch_toolchain_shape(epoch)
+    expected = _manager_epoch_expected_identities(toolchain)
+    joins: dict[str, Any] = {}
+    for name in ("attestor", "sudo", "python", "busctl"):
+        legacy = legacy_identities[name]
+        expected_requested_path, expected_full = expected[name]
+        requested = Path(legacy["requested_path"])
+        try:
+            resolved_before = requested.resolve(strict=True)
+            observed_full = identity(
+                resolved_before,
+                f"manager epoch {name} live resolved target",
+            )
+            resolved_after = requested.resolve(strict=True)
+        except OSError as exc:
+            raise RecoveryError(
+                f"manager epoch {name} requested path cannot be stably resolved: {exc}"
+            ) from exc
+        if resolved_before != resolved_after:
+            raise RecoveryError(
+                f"manager epoch {name} requested path changed during full7 replay"
+            )
+        try:
+            joins[name] = contract.assert_legacy_manager_identity_join(
+                legacy,
+                expected_requested_path,
+                str(resolved_before),
+                expected_full,
+                observed_full,
+                f"manager epoch {name}",
+            )
+        except Exception as exc:
+            raise RecoveryError(
+                f"manager epoch {name} legacy-to-full7 join failed: {exc}"
+            ) from exc
+    return {
+        "schema_version": "b1_sidewise_smm4_manager_epoch_toolchain_join_v1",
+        "status": "PASS",
+        "tools": joins,
+    }
+
+
+def replay_manager_epoch_toolchain(
+    authority: Mapping[str, Any],
+    epoch: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Recompute the legacy-to-full7 bridge and compare it to sealed authority."""
+
+    replay = validate_manager_epoch_toolchain(epoch, authority)
+    if replay != authority.get("manager_epoch_toolchain_join"):
+        raise RecoveryError("manager epoch legacy-to-full7 authority replay drifted")
+    return replay
 
 
 def _load_authority_package_verifier(
@@ -810,12 +927,18 @@ def capture_epoch() -> tuple[dict[str, Any], dict[str, Any]]:
         raise RecoveryError(f"manager/boot epoch capture failed; no cmdline fallback is permitted: {exc}") from exc
     if not isinstance(epoch, dict):
         raise RecoveryError("manager epoch helper returned a non-object")
+    validate_manager_epoch_toolchain_shape(epoch)
     return epoch, tool
 
 
 def same_epoch(left: Mapping[str, Any], right: Mapping[str, Any]) -> bool:
-    module, _ = load_module_from_bytes(MANAGER_TOOL, "manager epoch tool")
-    return bool(module.same_epoch(left, right))
+    try:
+        validate_manager_epoch_toolchain_shape(left)
+        validate_manager_epoch_toolchain_shape(right)
+        module, _ = load_module_from_bytes(MANAGER_TOOL, "manager epoch tool")
+        return bool(module.same_epoch(left, right))
+    except Exception:
+        return False
 
 
 def git_snapshot(expected_head: str) -> dict[str, Any]:
@@ -1301,27 +1424,10 @@ def bootstrap_payload(
     manager_epoch, manager_tool = capture_epoch()
     if manager_tool != tools["manager_epoch"]:
         raise RecoveryError("manager epoch tool changed across bootstrap")
-    attestation_toolchain = manager_epoch.get("attestation_toolchain")
-    if not isinstance(attestation_toolchain, dict):
-        raise RecoveryError("manager epoch lacks privileged toolchain identity")
-    expected_attestation = {
-        "attestor": tools["privileged_attestor"],
-        "sudo": binaries["sudo"]["target"],
-        "python": binaries["privileged_python"]["target"],
-    }
-    for name, expected in expected_attestation.items():
-        actual = attestation_toolchain.get(name)
-        if not isinstance(actual, dict) or not identity_matches(actual, expected):
-            raise RecoveryError(f"manager epoch privileged {name} identity drifted")
-    observation_toolchain = manager_epoch.get("observation_toolchain")
-    if not isinstance(observation_toolchain, dict):
-        raise RecoveryError("manager epoch lacks observation toolchain identity")
-    observation_busctl = observation_toolchain.get("busctl")
-    if not isinstance(observation_busctl, dict) or not identity_matches(
-        observation_busctl,
-        binaries["busctl"],
-    ):
-        raise RecoveryError("manager epoch observation busctl identity drifted")
+    manager_epoch_toolchain_join = validate_manager_epoch_toolchain(
+        manager_epoch,
+        current_toolchain,
+    )
     systemd_version = run_record([str(SYSTEMD_RUN), "--version"])
     if systemd_version["exit_code"] != 0:
         raise RecoveryError("systemd-run --version failed")
@@ -1335,6 +1441,7 @@ def bootstrap_payload(
         "implementation_head": implementation_head,
         "git": git_snapshot(implementation_head),
         "manager_epoch": manager_epoch,
+        "manager_epoch_toolchain_join": manager_epoch_toolchain_join,
         "inputs": inputs,
         "historical_sources": historical_sources,
         "composition_pins": composition_pins,
@@ -1484,6 +1591,7 @@ def load_authority(
     current, _ = capture_epoch()
     if not same_epoch(authority.get("manager_epoch", {}), current):
         raise RecoveryError("manager/boot epoch drifted")
+    replay_manager_epoch_toolchain(authority, current)
     return authority, record
 
 
@@ -1752,6 +1860,7 @@ def publish_selection(
     current_epoch, _ = capture_epoch()
     if not same_epoch(authority["manager_epoch"], current_epoch):
         raise RecoveryError("manager epoch drifted before selection")
+    replay_manager_epoch_toolchain(authority, current_epoch)
     payload = {
         "schema_version": SELECTION_SCHEMA,
         "status": "SELECTED_CONSUMED",

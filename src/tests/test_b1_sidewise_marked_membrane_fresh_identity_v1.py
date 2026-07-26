@@ -55,6 +55,20 @@ def _projection() -> dict[str, Any]:
     }
 
 
+def _legacy_manager_identity() -> dict[str, Any]:
+    full = _full_identity()
+    return {
+        "requested_path": full["path"],
+        "path": full["path"],
+        "size_bytes": full["size_bytes"],
+        "mode": 0o644,
+        "mode_octal": full["mode_octal"],
+        "sha256": full["sha256"],
+        "device": full["device"],
+        "inode": full["inode"],
+    }
+
+
 def test_happy_path_validates_projects_and_joins(contract: ModuleType) -> None:
     full = _full_identity()
     projection = _projection()
@@ -65,6 +79,124 @@ def test_happy_path_validates_projects_and_joins(contract: ModuleType) -> None:
     assert contract.validate_projection(projection, "projection") is not projection
     assert contract.canonical_content_projection(full, "full") == projection
     assert contract.assert_identity_join(full, projection, copy.deepcopy(full), "authority") == projection
+
+
+def test_exact_legacy_manager_identity_joins_to_full7(contract: ModuleType) -> None:
+    legacy = _legacy_manager_identity()
+    full = _full_identity()
+
+    assert contract.validate_legacy_manager_identity(legacy, "legacy") == legacy
+    assert contract.assert_legacy_manager_identity_join(
+        legacy,
+        full["path"],
+        full["path"],
+        full,
+        copy.deepcopy(full),
+        "manager",
+    ) == {
+        "legacy_identity": legacy,
+        "expected_requested_path": full["path"],
+        "resolved_requested_path": full["path"],
+        "expected_full_identity": full,
+        "observed_full_identity": full,
+    }
+
+
+@pytest.mark.parametrize("field", tuple(_legacy_manager_identity()))
+def test_legacy_manager_identity_rejects_each_missing_field(
+    contract: ModuleType,
+    field: str,
+) -> None:
+    value = _legacy_manager_identity()
+    del value[field]
+
+    with pytest.raises(contract.IdentityContractError, match="missing fields"):
+        contract.validate_legacy_manager_identity(value, "legacy")
+
+
+def test_legacy_manager_identity_rejects_extra_field(contract: ModuleType) -> None:
+    value = _legacy_manager_identity()
+    value["link_count"] = 1
+
+    with pytest.raises(contract.IdentityContractError, match="unexpected fields"):
+        contract.validate_legacy_manager_identity(value, "legacy")
+
+
+@pytest.mark.parametrize(
+    ("field", "bad_value"),
+    (
+        ("requested_path", "/authority/smm4/../authority.json"),
+        ("path", "relative/authority.json"),
+        ("size_bytes", 0),
+        ("size_bytes", True),
+        ("mode", True),
+        ("mode", 0o10000),
+        ("mode_octal", "0600"),
+        ("sha256", "A" * 64),
+        ("device", False),
+        ("inode", 0),
+    ),
+)
+def test_legacy_manager_identity_rejects_field_drift(
+    contract: ModuleType,
+    field: str,
+    bad_value: Any,
+) -> None:
+    value = _legacy_manager_identity()
+    value[field] = bad_value
+
+    with pytest.raises(contract.IdentityContractError):
+        contract.validate_legacy_manager_identity(value, "legacy")
+
+
+@pytest.mark.parametrize(
+    ("surface", "field", "bad_value", "message"),
+    (
+        ("legacy", "requested_path", "/authority/smm4/other.json", "requested_path drifted"),
+        ("resolved", "path", "/authority/smm4/other.json", "path resolution drifted"),
+        ("legacy_and_resolved", "path", "/authority/smm4/other.json", "resolved path drifted"),
+        ("legacy", "size_bytes", 4097, "legacy size_bytes drifted"),
+        ("legacy", "sha256", "b" * 64, "legacy sha256 drifted"),
+        ("legacy", "mode_octal", "0600", "legacy mode_octal drifted"),
+        ("legacy", "device", 260, "legacy device drifted"),
+        ("legacy", "inode", 9002, "legacy inode drifted"),
+        ("actual", "path", "/authority/smm4/other.json", "path drifted"),
+        ("actual", "mode_octal", "0600", "mode_octal drifted"),
+        ("actual", "link_count", 2, "link_count must equal 1"),
+    ),
+)
+def test_legacy_manager_join_rejects_path_content_and_physical_drift(
+    contract: ModuleType,
+    surface: str,
+    field: str,
+    bad_value: Any,
+    message: str,
+) -> None:
+    legacy = _legacy_manager_identity()
+    full = _full_identity()
+    actual = copy.deepcopy(full)
+    resolved_path = full["path"]
+    if surface == "legacy":
+        legacy[field] = bad_value
+        if field == "mode_octal":
+            legacy["mode"] = int(str(bad_value), 8)
+    elif surface == "legacy_and_resolved":
+        legacy[field] = bad_value
+        resolved_path = str(bad_value)
+    elif surface == "actual":
+        actual[field] = bad_value
+    else:
+        resolved_path = str(bad_value)
+
+    with pytest.raises(contract.IdentityContractError, match=message):
+        contract.assert_legacy_manager_identity_join(
+            legacy,
+            full["path"],
+            resolved_path,
+            full,
+            actual,
+            "manager",
+        )
 
 
 @pytest.mark.parametrize("field", tuple(_full_identity()))

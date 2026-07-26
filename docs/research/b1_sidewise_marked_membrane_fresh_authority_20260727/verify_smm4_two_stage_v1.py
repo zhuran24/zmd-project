@@ -720,8 +720,10 @@ def _activate_identity_contract(module: ModuleType) -> ModuleType:
         "IdentityContractError",
         "validate_full_identity",
         "validate_projection",
+        "validate_legacy_manager_identity",
         "canonical_content_projection",
         "assert_identity_join",
+        "assert_legacy_manager_identity_join",
     )
     _require(
         all(hasattr(module, name) for name in required),
@@ -787,14 +789,39 @@ def _epoch_tuple(value: Any, label: str) -> tuple[Any, ...]:
         epoch.get("attestation_toolchain"),
         f"{label} attestation toolchain",
     )
+    _require(
+        set(toolchain) == {"attestor", "sudo", "python"},
+        f"{label}: attestation toolchain key set mismatch",
+    )
     observation_toolchain = _mapping(
         epoch.get("observation_toolchain"),
         f"{label} observation toolchain",
+    )
+    _require(
+        set(observation_toolchain) == {"busctl"},
+        f"{label}: observation toolchain key set mismatch",
     )
     observation_busctl = _mapping(
         observation_toolchain.get("busctl"),
         f"{label} observation busctl identity",
     )
+    contract = _ACTIVE_IDENTITY_CONTRACT
+    if contract is None:
+        raise VerificationError(f"{label}: shared identity contract is not active")
+    try:
+        contract.validate_legacy_manager_identity(
+            observation_busctl,
+            f"{label} observation busctl identity",
+        )
+        for tool_name in ("attestor", "sudo", "python"):
+            contract.validate_legacy_manager_identity(
+                toolchain.get(tool_name),
+                f"{label} {tool_name} identity",
+            )
+    except Exception as exc:
+        raise VerificationError(
+            f"{label}: exact legacy manager identity contract failed: {exc}"
+        ) from exc
     busctl_path = observation_busctl.get("path")
     busctl_size = observation_busctl.get("size_bytes")
     busctl_mode = observation_busctl.get("mode_octal")
@@ -943,6 +970,140 @@ def _same_epoch(left: Any, right: Any) -> bool:
         return False
 
 
+def _manager_epoch_toolchain_join(
+    authority: Mapping[str, Any],
+    epoch: Mapping[str, Any],
+) -> dict[str, Any]:
+    def requested_path(value: Any, label: str) -> str:
+        _require(
+            type(value) is str
+            and os.path.isabs(value)
+            and not value.startswith("//")
+            and os.path.normpath(value) == value,
+            f"{label}: requested path is not canonical absolute",
+        )
+        return value
+
+    contract = _ACTIVE_IDENTITY_CONTRACT
+    if contract is None:
+        raise VerificationError(
+            "manager epoch join: shared identity contract is not active"
+        )
+    _epoch_tuple(epoch, "manager epoch join")
+    tools = _mapping(authority.get("tools"), "manager epoch join authority tools")
+    binaries = _mapping(
+        authority.get("binaries"),
+        "manager epoch join authority binaries",
+    )
+    privileged_attestor = _identity_record(
+        tools.get("privileged_attestor"),
+        "manager epoch join privileged attestor",
+    )
+    busctl = _identity_record(
+        binaries.get("busctl"),
+        "manager epoch join busctl",
+    )
+    sudo = _mapping(binaries.get("sudo"), "manager epoch join sudo")
+    privileged_python = _mapping(
+        binaries.get("privileged_python"),
+        "manager epoch join privileged Python",
+    )
+    sudo_target = _identity_record(
+        sudo.get("target"),
+        "manager epoch join sudo target",
+    )
+    python_target = _identity_record(
+        privileged_python.get("target"),
+        "manager epoch join privileged Python target",
+    )
+    expected: dict[str, tuple[str, Mapping[str, Any]]] = {
+        "attestor": (
+            requested_path(
+                privileged_attestor.get("path"),
+                "manager epoch join privileged attestor",
+            ),
+            privileged_attestor,
+        ),
+        "sudo": (
+            requested_path(sudo.get("path"), "manager epoch join sudo"),
+            sudo_target,
+        ),
+        "python": (
+            requested_path(
+                privileged_python.get("path"),
+                "manager epoch join privileged Python",
+            ),
+            python_target,
+        ),
+        "busctl": (
+            requested_path(busctl.get("path"), "manager epoch join busctl"),
+            busctl,
+        ),
+    }
+    attestation = _mapping(
+        epoch.get("attestation_toolchain"),
+        "manager epoch join attestation toolchain",
+    )
+    observation = _mapping(
+        epoch.get("observation_toolchain"),
+        "manager epoch join observation toolchain",
+    )
+    legacy = {
+        "attestor": attestation.get("attestor"),
+        "sudo": attestation.get("sudo"),
+        "python": attestation.get("python"),
+        "busctl": observation.get("busctl"),
+    }
+    joins: dict[str, Any] = {}
+    for name in ("attestor", "sudo", "python", "busctl"):
+        try:
+            exact_legacy = contract.validate_legacy_manager_identity(
+                legacy[name],
+                f"manager epoch {name}",
+            )
+        except Exception as exc:
+            raise VerificationError(
+                f"manager epoch {name}: exact legacy identity failed: {exc}"
+            ) from exc
+        requested = Path(exact_legacy["requested_path"])
+        try:
+            resolved_before = requested.resolve(strict=True)
+            _, observed_full = _snapshot_regular(
+                resolved_before,
+                f"manager epoch {name} live resolved target",
+                collect=False,
+                max_bytes=MANAGER_TOOL_LIMIT,
+            )
+            resolved_after = requested.resolve(strict=True)
+        except OSError as exc:
+            raise VerificationError(
+                f"manager epoch {name}: requested path cannot be stably resolved: {exc}"
+            ) from exc
+        _require(
+            resolved_before == resolved_after,
+            f"manager epoch {name}: requested path changed during full7 replay",
+        )
+        expected_requested, expected_full = expected[name]
+        try:
+            joins[name] = contract.assert_legacy_manager_identity_join(
+                exact_legacy,
+                expected_requested,
+                str(resolved_before),
+                expected_full,
+                observed_full,
+                f"manager epoch {name}",
+            )
+        except Exception as exc:
+            raise VerificationError(
+                f"manager epoch {name}: legacy-to-full7 join failed: {exc}"
+            ) from exc
+    return {
+        "schema_version": "b1_sidewise_smm4_manager_epoch_toolchain_join_v1",
+        "status": "PASS",
+        "tools": joins,
+    }
+
+
 def _capture_current_epoch(
     authority: Mapping[str, Any],
     tool_path: Path,
@@ -988,6 +1149,11 @@ def _capture_current_epoch(
     finally:
         sys.modules.pop(module_name, None)
     _epoch_tuple(current, "captured current manager epoch")
+    join = _manager_epoch_toolchain_join(authority, current)
+    _require(
+        join == authority.get("manager_epoch_toolchain_join"),
+        "captured manager epoch legacy-to-full7 authority replay drifted",
+    )
     _, replay_identity = _snapshot_regular(
         tool_path,
         "manager epoch authority tool replay",

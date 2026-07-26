@@ -44,6 +44,19 @@ fresh authority root 必须从已提交且 tracked-clean 的 `SMM4_IMPL_HEAD` �
   个成员、A004 admission、strict instance，以及 SMM-209 admission、SMM2
   formula 和 variable map 的 fresh `O_EXCL` 快照。
 
+旧 manager helper 的 attestor、sudo、privileged Python 与 observation busctl
+身份是精确 legacy 8 字段：
+`requested_path/path/size_bytes/mode/mode_octal/sha256/device/inode`。SMM4 不得
+把它直接当作 full7，也不得忽略 legacy 独有字段。bootstrap 必须先 exact-key
+验证 legacy 记录，再稳定解析 `requested_path`，从 resolved target 的 same-FD
+读取生成 full7，并与 authority 固定的 canonical4 + physical3 精确连接。
+sudo/Python 的 requested wrapper path 与 resolved target 必须分别固定；
+attestor/busctl 则直接连接其 full7。该
+`manager_epoch_toolchain_join` 必须写入 sealed authority，并在 authority load、
+selection 的 `O_EXCL` 写入前、runner 的每次 epoch gate 和 detached verifier
+中重算后做 exact equality；任一缺失、额外字段、mode 双表示、解析目标或
+full7 漂移都 fail-closed。
+
 `authority-a001/` 是 sealed package，成员集合必须精确为 `authority.json` 与
 `SHA256SUMS`。`SHA256SUMS` 必须逐字节封住 `authority.json`，其 SHA-256 作为
 `authority_package_id` 从 package 外部传入。该外部 ID 必须在 selection、

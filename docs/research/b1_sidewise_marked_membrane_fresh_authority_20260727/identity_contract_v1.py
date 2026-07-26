@@ -28,6 +28,16 @@ PHYSICAL_IDENTITY_FIELDS = (
     "inode",
     "link_count",
 )
+LEGACY_MANAGER_IDENTITY_FIELDS = (
+    "requested_path",
+    "path",
+    "size_bytes",
+    "mode",
+    "mode_octal",
+    "sha256",
+    "device",
+    "inode",
+)
 
 _LOWER_SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 _MODE_OCTAL = re.compile(r"[0-7]{4}\Z")
@@ -105,11 +115,105 @@ def validate_projection(value: Any, label: str) -> dict[str, Any]:
     return projection
 
 
+def validate_legacy_manager_identity(value: Any, label: str) -> dict[str, Any]:
+    """Validate the manager helper's exact pre-SMM4 eight-field identity."""
+
+    identity = _require_exact_object(value, LEGACY_MANAGER_IDENTITY_FIELDS, label)
+    _require_canonical_path(identity["requested_path"], f"{label} requested")
+    _require_canonical_path(identity["path"], f"{label} resolved")
+    _require_exact_int(identity["size_bytes"], "size_bytes", label, minimum=1)
+    mode = _require_exact_int(identity["mode"], "mode", label, minimum=0)
+    if mode > 0o7777:
+        raise IdentityContractError(f"{label}: mode must be less than or equal to 07777")
+
+    digest = identity["sha256"]
+    if not isinstance(digest, str) or _LOWER_SHA256.fullmatch(digest) is None:
+        raise IdentityContractError(f"{label}: sha256 is not lowercase 64-hex")
+
+    mode_octal = identity["mode_octal"]
+    if (
+        not isinstance(mode_octal, str)
+        or _MODE_OCTAL.fullmatch(mode_octal) is None
+        or mode_octal != f"{mode:04o}"
+    ):
+        raise IdentityContractError(f"{label}: mode and mode_octal disagree")
+
+    _require_exact_int(identity["device"], "device", label, minimum=0)
+    _require_exact_int(identity["inode"], "inode", label, minimum=1)
+    return identity
+
+
 def canonical_content_projection(value: Any, label: str) -> dict[str, Any]:
     """Project one validated full identity onto the exact content fields."""
 
     identity = validate_full_identity(value, label)
     return {field: identity[field] for field in PROJECTION_FIELDS}
+
+
+def assert_legacy_manager_identity_join(
+    legacy_identity: Any,
+    expected_requested_path: Any,
+    resolved_requested_path: Any,
+    expected_full: Any,
+    actual_full: Any,
+    label: str,
+) -> dict[str, Any]:
+    """Join one exact legacy manager identity to a live, authority-pinned full7."""
+
+    legacy = validate_legacy_manager_identity(
+        legacy_identity,
+        f"{label} legacy identity",
+    )
+    expected_requested = _require_canonical_path(
+        expected_requested_path,
+        f"{label} expected requested",
+    )
+    resolved_requested = _require_canonical_path(
+        resolved_requested_path,
+        f"{label} live resolved requested",
+    )
+    pinned_full = validate_full_identity(
+        expected_full,
+        f"{label} expected full identity",
+    )
+    observed_full = validate_full_identity(
+        actual_full,
+        f"{label} actual full identity",
+    )
+
+    if legacy["requested_path"] != expected_requested:
+        raise IdentityContractError(f"{label}: requested_path drifted")
+    if legacy["path"] != resolved_requested:
+        raise IdentityContractError(f"{label}: requested path resolution drifted")
+    if legacy["path"] != pinned_full["path"]:
+        raise IdentityContractError(f"{label}: resolved path drifted")
+    for field in (
+        "size_bytes",
+        "sha256",
+        "mode_octal",
+        "device",
+        "inode",
+    ):
+        if legacy[field] != pinned_full[field]:
+            raise IdentityContractError(f"{label}: legacy {field} drifted")
+
+    projection = canonical_content_projection(
+        pinned_full,
+        f"{label} expected full identity",
+    )
+    assert_identity_join(
+        pinned_full,
+        projection,
+        observed_full,
+        f"{label} live full identity",
+    )
+    return {
+        "legacy_identity": legacy,
+        "expected_requested_path": expected_requested,
+        "resolved_requested_path": resolved_requested,
+        "expected_full_identity": pinned_full,
+        "observed_full_identity": observed_full,
+    }
 
 
 def assert_identity_join(
@@ -144,8 +248,10 @@ def assert_identity_join(
 
 __all__ = [
     "IdentityContractError",
+    "assert_legacy_manager_identity_join",
     "assert_identity_join",
     "canonical_content_projection",
     "validate_full_identity",
+    "validate_legacy_manager_identity",
     "validate_projection",
 ]

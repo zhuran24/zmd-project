@@ -459,6 +459,134 @@ def test_detached_verifier_uses_exact_shared_join(verifier: ModuleType) -> None:
     assert "selection authority identity join failed" in source
 
 
+def test_manager_epoch_legacy_identity_bridge_is_exact_and_detached_replayable(
+    orchestrator: ModuleType,
+    verifier: ModuleType,
+    contract: ModuleType,
+) -> None:
+    verifier._activate_identity_contract(contract)
+    current = orchestrator.current_toolchain_snapshot()
+    epoch, _ = orchestrator.capture_epoch()
+    join = orchestrator.validate_manager_epoch_toolchain(epoch, current)
+    authority = {
+        **current,
+        "manager_epoch_toolchain_join": join,
+    }
+
+    assert join["status"] == "PASS"
+    assert set(join["tools"]) == {"attestor", "sudo", "python", "busctl"}
+    assert verifier._manager_epoch_toolchain_join(authority, epoch) == join
+    assert orchestrator.replay_manager_epoch_toolchain(authority, epoch) == join
+
+    missing = copy.deepcopy(epoch)
+    del missing["attestation_toolchain"]["attestor"]["requested_path"]
+    with pytest.raises(orchestrator.RecoveryError, match="missing fields"):
+        orchestrator.validate_manager_epoch_toolchain_shape(missing)
+
+    extra = copy.deepcopy(epoch)
+    extra["observation_toolchain"]["busctl"]["link_count"] = 1
+    with pytest.raises(orchestrator.RecoveryError, match="unexpected fields"):
+        orchestrator.validate_manager_epoch_toolchain_shape(extra)
+
+    mode_drift = copy.deepcopy(epoch)
+    mode_drift["attestation_toolchain"]["sudo"]["mode_octal"] = "0600"
+    with pytest.raises(orchestrator.RecoveryError, match="mode and mode_octal disagree"):
+        orchestrator.validate_manager_epoch_toolchain_shape(mode_drift)
+
+
+def test_orchestrator_authority_load_rejects_manager_bridge_drift(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    orchestrator: ModuleType,
+) -> None:
+    authority_path = (tmp_path / "authority.json").resolve()
+    authority_path.write_text("{}\n", encoding="utf-8")
+    authority_identity = orchestrator.identity(authority_path, "fixture authority")
+    authority = {
+        "schema_version": orchestrator.SCHEMA,
+        "status": "PRE_RUN_AUTHORITY_PASS",
+        "base_head": orchestrator.BASE_HEAD,
+        "implementation_head": "f" * 40,
+        "git": {"head": "f" * 40},
+        "manager_epoch": {"epoch": "fixed"},
+    }
+    monkeypatch.setattr(
+        orchestrator,
+        "verify_authority_package",
+        lambda *_args: (authority, authority_identity, {}),
+    )
+    monkeypatch.setattr(orchestrator, "git_snapshot", lambda _head: authority["git"])
+    monkeypatch.setattr(orchestrator, "replay_current_toolchain", lambda _authority: {})
+    monkeypatch.setattr(orchestrator, "replay_old_upper", lambda _authority: {})
+    monkeypatch.setattr(orchestrator, "replay_composition", lambda _authority: {})
+    monkeypatch.setattr(
+        orchestrator,
+        "capture_epoch",
+        lambda: ({"epoch": "fixed"}, {}),
+    )
+    monkeypatch.setattr(orchestrator, "same_epoch", lambda *_args: True)
+
+    def reject_bridge(*_args: object) -> None:
+        raise orchestrator.RecoveryError("fixture manager bridge drift")
+
+    monkeypatch.setattr(
+        orchestrator,
+        "replay_manager_epoch_toolchain",
+        reject_bridge,
+    )
+    with pytest.raises(orchestrator.RecoveryError, match="manager bridge drift"):
+        orchestrator.load_authority(authority_path, "a" * 64)
+
+
+def test_selection_rechecks_manager_bridge_immediately_before_write(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    orchestrator: ModuleType,
+    contract: ModuleType,
+) -> None:
+    authority_path = (tmp_path / "authority.json").resolve()
+    authority_path.write_text("{}\n", encoding="utf-8")
+    authority_identity = orchestrator.identity(authority_path, "fixture authority")
+    authority = {
+        "run_nonce": "fixture",
+        "manager_epoch": {"epoch": "fixed"},
+        "resource_contract": {},
+    }
+    monkeypatch.setattr(
+        orchestrator,
+        "load_authority",
+        lambda *_args: (authority, authority_identity),
+    )
+    monkeypatch.setattr(orchestrator, "identity_contract", lambda: contract)
+    monkeypatch.setattr(
+        orchestrator,
+        "capture_epoch",
+        lambda: ({"epoch": "fixed"}, {}),
+    )
+    monkeypatch.setattr(orchestrator, "same_epoch", lambda *_args: True)
+
+    def reject_bridge(*_args: object) -> None:
+        raise orchestrator.RecoveryError("fixture manager bridge drift")
+
+    monkeypatch.setattr(
+        orchestrator,
+        "replay_manager_epoch_toolchain",
+        reject_bridge,
+    )
+    with pytest.raises(orchestrator.RecoveryError, match="manager bridge drift"):
+        orchestrator.publish_selection(
+            (tmp_path / "selection.json").resolve(),
+            authority_path=authority_path,
+            authority_package_id="a" * 64,
+            attempt="synthetic-success-a001",
+            purpose="synthetic_success",
+            unit="b1-smm4-fixture.service",
+            worker_argv=["worker"],
+            payload_spec={},
+        )
+    assert not (tmp_path / "selection.json").exists()
+
+
 def test_formal_namespace_and_closeout_paths_are_fixed(runner: ModuleType) -> None:
     runner._validate_attempt_name("smm4-formal-a004", "formal")
     with pytest.raises(runner.AttemptError):

@@ -594,6 +594,10 @@ def _load_authority(
     current_epoch, _ = orchestrator.capture_epoch()
     if not orchestrator.same_epoch(authority.get("manager_epoch", {}), current_epoch):
         raise AttemptError("manager/boot epoch drifted from pre-run authority")
+    try:
+        orchestrator.replay_manager_epoch_toolchain(authority, current_epoch)
+    except Exception as exc:
+        raise AttemptError(f"manager epoch toolchain replay failed: {exc}") from exc
     return authority, authority_identity, orchestrator
 
 
@@ -638,6 +642,12 @@ def _epoch(
     current, _ = orchestrator.capture_epoch()
     if not orchestrator.same_epoch(authority.get("manager_epoch", {}), current):
         raise AttemptError(f"manager/boot epoch drifted at {stage}")
+    try:
+        orchestrator.replay_manager_epoch_toolchain(authority, current)
+    except Exception as exc:
+        raise AttemptError(
+            f"manager epoch toolchain replay drifted at {stage}: {exc}"
+        ) from exc
     return current
 
 

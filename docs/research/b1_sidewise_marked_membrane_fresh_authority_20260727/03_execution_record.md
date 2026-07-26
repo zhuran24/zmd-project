@@ -3,9 +3,9 @@
 | 字段 | 截止 `2026-07-27` 的记录 |
 |---|---|
 | 文档性质 | 追加式执行史料 |
-| 状态 | `PRE_RUN_IMPLEMENTATION` |
+| 状态 | `BOOTSTRAP_FAIL_CLOSED / ROOT_CAUSE_FIX_LIGHT_VALIDATED` |
 | 当前账本 | `U=(1188,22)`、`L=absent` |
-| fresh authority root | 尚未建立 |
+| fresh authority root | 有效 sealed root 尚未建立；首个失败 root 已冻结 |
 | external authority package ID | 不存在 |
 | synthetic gates | 尚未运行 |
 | full preflight | 尚未报备或运行 |
@@ -43,6 +43,37 @@
   最新 [AB16 状态](../noncert_cuts_ab16_20260724/README.md)为 Gate A 已
   finalized、Gate B 未建且 organic arms 为 `0/16`；结合 owner 当前口径，
   Gate1 v4 已过。
+
+## 2026-07-27 第一次 bootstrap：selection 前 fail-closed
+
+第一次 bootstrap 固定在实现提交
+`6c7e7a1d261466a36a9bd7244100d3a2cc6cdf5f`，使用全新 root
+`.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T191750Z-SMM4-6c7e7a1d/`。
+它在 `PRE_RUN_MANAGER_BOOT_AUTHORITY` 阶段写出唯一
+`bootstrap-failure-a001.json` 后以 exit 2 停止，错误文本为
+`manager epoch privileged attestor identity drifted`。该 root 保持原样冻结，
+禁止复用、清理、覆盖或补写。
+
+失败时 `authority-a001/` 为空，没有 sealed authority、external package ID、
+synthetic unit、formal selection 或 solver 启动；receipt 明确记录
+`formal_smm4_a004_consumed=false`、`upper_bound_update_authorized=false`，
+账本仍为 `U=(1188,22)`、`L=absent`。
+
+后续静态审计确认，attestor 的 path、size、SHA-256、mode、device 与 inode
+并未漂移。根因是旧 manager helper 固定输出精确 legacy 8 字段
+`requested_path/path/size_bytes/mode/mode_octal/sha256/device/inode`，首版 SMM4
+却用 full7 字段集合直接比较，因 legacy 记录没有 `link_count` 而误判；同类
+schema mismatch 也会阻断 observation busctl。
+
+本实现修订增加共享的 exact legacy identity validator 与
+legacy-to-full7 join：先拒绝 legacy 记录的缺字段、额外字段、非 canonical
+path、mode 双表示不一致和内容/物理身份漂移，再对 `requested_path` 做前后
+两次稳定解析，用 same-FD 读取产生 live full7，并连接 sealed authority
+固定的 full7。bootstrap、attempt runner 与 detached verifier 均重算此桥，
+而不是绕过或信任 writer 自报。修订后的七个 SMM4 聚焦测试文件共
+`226 passed`；Ruff 与 `py_compile` 通过，三份改动核心模块的 mypy 通过。
+`verify_smm4_two_stage_v1.py` 仍保留修订前已存在的 33 个动态 narrowing
+mypy 报告，本修订没有新增该文件的 mypy 报告。
 
 ## 尚未发生
 
