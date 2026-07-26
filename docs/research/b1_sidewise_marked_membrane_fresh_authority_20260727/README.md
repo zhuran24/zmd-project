@@ -3,7 +3,7 @@
 | 字段 | 当前值 |
 |---|---|
 | 日期 | `2026-07-27` |
-| 状态 | `PRE_RUN_IMPLEMENTATION` |
+| 状态 | `AUTHORITY_HARDENING_LIGHT_VALIDATED / THIRD_ROOT_PENDING` |
 | 研究账本 | `U=(1188,22)`、`L=absent` |
 | 候选 | `(1188,18)`，尚未获得 detached authority |
 | cut backlog | Gate1 v4 已过；AB16 Gate B 未建；organic arms `0/16` |
@@ -29,6 +29,13 @@ authority、全新 no-overwrite root 和唯一一次 `smm4-formal-a004` 尝试�
   lifecycle。
 
 ## 当前判读
+
+前两个 fresh root 已分别在 selection 前 manager identity bridge 和
+post-selection synthetic loader join 处 fail-closed，并完整冻结；formal
+`smm4-formal-a004` 仍未消费。当前 tracked implementation 已修复这两项根因及
+后续对抗审计发现的 resource receipt、synthetic argv、systemctl raw join 与
+canonical attempt topology 缺口；第三个 no-overwrite root 尚未建立。完整追加式
+史料见 [03_execution_record.md](03_execution_record.md)。
 
 旧 R4 receipt 的历史字节与 proof graph 仍是 SMM4 的只读输入，但旧 R4 的
 full replay 绑定原 checkout HEAD；当前该 checkout 已发生 repository identity

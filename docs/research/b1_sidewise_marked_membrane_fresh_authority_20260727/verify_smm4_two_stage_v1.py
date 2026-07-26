@@ -33,7 +33,6 @@ from typing import Any
 
 AUTHORITY_SCHEMA = "b1_sidewise_smm4_pre_run_authority_v1"
 SELECTION_SCHEMA = "b1_sidewise_smm4_attempt_selection_v1"
-SYNTHETIC_SELECTION_SCHEMA = "b1_sidewise_smm4_synthetic_selection_v1"
 LAUNCH_SCHEMA = "b1_sidewise_smm4_launch_receipt_v1"
 PAYLOAD_SPEC_SCHEMA = "b1_sidewise_smm4_payload_spec_v1"
 START_TOKEN_SCHEMA = "b1_sidewise_smm4_payload_start_token_v1"
@@ -55,6 +54,16 @@ RETAINED_FD_PROVENANCE_SCHEMA = "b1_sidewise_smm4_retained_fd_provenance_v1"
 MANAGER_EPOCH_SCHEMA = "systemd-user-manager-boot-epoch-v1"
 
 ATTEMPT = "smm4-formal-a004"
+ROOT = Path(__file__).resolve().parents[3]
+AUTHORITY_DIR = "authority-a001"
+PRESELECTION_DIR = "preselection-a001"
+FORMAL_ATTEMPT_DIR = "formal-attempt-a004"
+FORMAL_OUTPUT_DIR = "formal-a004"
+DETACHED_OUTPUT_CONTEXT_ATTEMPT = "attempt-closeout"
+DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS = "formal-admission-replay-success"
+DETACHED_OUTPUT_CONTEXT_REPLAY_POSTSEAL = (
+    "formal-admission-replay-postseal-failure"
+)
 MEMORY_HIGH = 35 * 1024**3
 MEMORY_MAX = 39 * 1024**3
 MEMORY_SWAP_MAX = 16 * 1024**3
@@ -205,30 +214,35 @@ BOOT_ID_RE = re.compile(
 OWNER_RE = re.compile(r":[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*\Z")
 INVOCATION_ID_RE = re.compile(r"[0-9a-f]{32}\Z")
 RUN_NONCE_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{7,127}\Z")
-UNIT_RE = re.compile(r"[A-Za-z0-9_.@:-]+\.service\Z")
+UNIT_RE = re.compile(r"b1-smm4-[a-z0-9-]{8,80}\.service\Z")
 
 # Independently duplicated from the authority runner.  The immutable payload
 # specification carries this exact program in argv; accepting an arbitrary
 # ``python -c`` loader would make a worker digest merely decorative.
 PINNED_SOURCE_LOADER = (
-    "import hashlib,os,sys,stat;"
-    "p=sys.argv[1];e=sys.argv[2];a=sys.argv[3:];"
-    "f=os.open(p,os.O_RDONLY|getattr(os,'O_CLOEXEC',0)|"
-    "getattr(os,'O_NOFOLLOW',0));"
-    "s=os.fstat(f);"
-    "r=b'';"
-    "\nwhile True:\n"
-    " b=os.read(f,1048576)\n"
-    " if not b: break\n"
-    " r+=b\n"
-    "t=os.fstat(f);os.close(f);"
-    "\nif (not stat.S_ISREG(s.st_mode) or "
-    "(s.st_dev,s.st_ino,s.st_mode,s.st_size,s.st_mtime_ns,s.st_ctime_ns)!="
-    "(t.st_dev,t.st_ino,t.st_mode,t.st_size,t.st_mtime_ns,t.st_ctime_ns) or "
-    "len(r)!=s.st_size or hashlib.sha256(r).hexdigest()!=e): raise SystemExit(125)\n"
-    "sys.argv=[p]+a;"
-    "g={'__name__':'__main__','__file__':p,'__package__':None,"
-    "'__cached__':None};"
+    "import hashlib,json,os,stat,sys\n"
+    "p=sys.argv[1];e=json.loads(sys.argv[2]);a=sys.argv[3:]\n"
+    "k={'path','size_bytes','sha256','mode_octal','device','inode','link_count'}\n"
+    "if type(e) is not dict or set(e)!=k or e.get('path')!=p: raise SystemExit(125)\n"
+    "if not os.path.isabs(p) or os.path.realpath(p)!=p: raise SystemExit(125)\n"
+    "f=os.open(p,os.O_RDONLY|getattr(os,'O_CLOEXEC',0)|getattr(os,'O_NOFOLLOW',0))\n"
+    "try:\n"
+    " s=os.fstat(f);r=b''\n"
+    " while True:\n"
+    "  b=os.read(f,1048576)\n"
+    "  if not b: break\n"
+    "  r+=b\n"
+    " t=os.fstat(f)\n"
+    "finally:\n"
+    " os.close(f)\n"
+    "q=('st_dev','st_ino','st_mode','st_nlink','st_uid','st_gid','st_size','st_mtime_ns','st_ctime_ns')\n"
+    "v={'path':p,'size_bytes':len(r),'sha256':hashlib.sha256(r).hexdigest(),"
+    "'mode_octal':format(stat.S_IMODE(s.st_mode),'04o'),'device':s.st_dev,"
+    "'inode':s.st_ino,'link_count':s.st_nlink}\n"
+    "if (not stat.S_ISREG(s.st_mode) or tuple(getattr(s,x) for x in q)!="
+    "tuple(getattr(t,x) for x in q) or v!=e or s.st_nlink!=1): raise SystemExit(125)\n"
+    "sys.argv=[p]+a\n"
+    "g={'__name__':'__main__','__file__':p,'__package__':None,'__cached__':None}\n"
     "exec(compile(r,p,'exec',dont_inherit=True),g)"
 )
 
@@ -1236,6 +1250,214 @@ def _purpose(record: Mapping[str, Any], label: str) -> str:
     return value
 
 
+def _expected_synthetic_worker_argv(
+    *,
+    worker_path: str,
+    run_nonce: str,
+    attempt: str,
+    seal_path: str,
+    purpose: str,
+    unit: str,
+) -> list[str]:
+    expected_attempts = {
+        "synthetic_success": "synthetic-success-a001",
+        "synthetic_postseal_failure": "synthetic-postseal-fail-a001",
+    }
+    _require(
+        expected_attempts.get(purpose) == attempt,
+        "synthetic worker attempt/purpose pair is not pre-registered",
+    )
+    for value, label in (
+        (worker_path, "worker"),
+        (seal_path, "seal"),
+    ):
+        _require(
+            os.path.isabs(value)
+            and not value.startswith("//")
+            and os.path.normpath(value) == value,
+            f"synthetic worker {label} path is not canonical absolute",
+        )
+    expected_exit = "0" if purpose == "synthetic_success" else "7"
+    return [
+        worker_path,
+        "--synthetic-payload",
+        "--run-nonce",
+        run_nonce,
+        "--attempt",
+        attempt,
+        "--synthetic-seal",
+        seal_path,
+        "--synthetic-exit-code",
+        expected_exit,
+        "--synthetic-purpose",
+        purpose,
+        "--synthetic-unit",
+        unit,
+    ]
+
+
+def _validate_synthetic_worker_argv(
+    value: Any,
+    *,
+    worker_path: str,
+    run_nonce: str,
+    attempt: str,
+    seal_path: str,
+    purpose: str,
+    unit: str,
+) -> list[str]:
+    expected = _expected_synthetic_worker_argv(
+        worker_path=worker_path,
+        run_nonce=run_nonce,
+        attempt=attempt,
+        seal_path=seal_path,
+        purpose=purpose,
+        unit=unit,
+    )
+    _require(
+        value == expected,
+        "synthetic payload logical argv differs from the independently reconstructed CLI contract",
+    )
+    return expected
+
+
+def _validate_common_attempt_topology(
+    arguments: argparse.Namespace,
+    authority: Mapping[str, Any],
+    selection: Mapping[str, Any],
+    purpose: str,
+) -> dict[str, Path]:
+    expected_attempts = {
+        "synthetic_success": "synthetic-success-a001",
+        "synthetic_postseal_failure": "synthetic-postseal-fail-a001",
+        "formal": ATTEMPT,
+    }
+    expected_directories = {
+        "synthetic_success": "synthetic-success-a001",
+        "synthetic_postseal_failure": "synthetic-postseal-fail-a001",
+        "formal": FORMAL_ATTEMPT_DIR,
+    }
+    expected_attempt = expected_attempts[purpose]
+    expected_directory = expected_directories[purpose]
+    run_dir = arguments.authority.parent.parent
+    try:
+        relative_run = run_dir.relative_to(ROOT)
+    except ValueError as exc:
+        raise VerificationError(
+            "success attempt authority root is outside the fixed checkout"
+        ) from exc
+    attempt_root = run_dir / expected_directory
+    completion_seal = (
+        attempt_root / FORMAL_OUTPUT_DIR / "internal_formal_receipt.json"
+        if purpose == "formal"
+        else attempt_root / "state/payload-seal.json"
+    )
+    if arguments.mode == "resource":
+        expected_output = attempt_root / "resource-verification.json"
+    elif arguments.mode == "detached":
+        context = arguments.detached_output_context
+        if context == DETACHED_OUTPUT_CONTEXT_ATTEMPT:
+            expected_output = attempt_root / "detached-verification.json"
+        elif (
+            context == DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS
+            and purpose == "synthetic_success"
+        ):
+            expected_output = (
+                run_dir / "formal-admission-replays-a001/success.json"
+            )
+        elif (
+            context == DETACHED_OUTPUT_CONTEXT_REPLAY_POSTSEAL
+            and purpose == "synthetic_postseal_failure"
+        ):
+            expected_output = (
+                run_dir
+                / "formal-admission-replays-a001/postseal_failure.json"
+            )
+        else:
+            raise VerificationError(
+                "detached output context is not registered for this attempt"
+            )
+    else:
+        raise VerificationError(
+            "success attempt topology received an unsupported verifier mode"
+        )
+    expected_paths = {
+        "authority": run_dir / AUTHORITY_DIR / "authority.json",
+        "selection": attempt_root / "selection.json",
+        "payload_spec": (
+            run_dir
+            / PRESELECTION_DIR
+            / f"{expected_directory}-payload-spec.json"
+        ),
+        "supervisor_start": attempt_root / "state/supervisor-start.json",
+        "launch": attempt_root / "launch.json",
+        "start_token": attempt_root / "start-token.json",
+        "payload_terminal": attempt_root / "state/payload-terminal.json",
+        "preterminal": attempt_root / "preterminal.json",
+        "completion_seal": completion_seal,
+        "output": expected_output,
+    }
+    observed_paths = {
+        name: getattr(arguments, name)
+        for name in expected_paths
+    }
+    _require(
+        observed_paths == expected_paths
+        and authority.get("run") == str(relative_run)
+        and selection.get("attempt") == expected_attempt,
+        "success attempt canonical topology or registered attempt drifted",
+    )
+    expected_admission = (
+        run_dir / "formal-admission-a001.json"
+        if purpose == "formal"
+        else None
+    )
+    _require(
+        arguments.formal_admission == expected_admission,
+        "success attempt formal admission topology drifted",
+    )
+    return {
+        "run_dir": run_dir,
+        "attempt_root": attempt_root,
+        "completion_seal": completion_seal,
+    }
+
+
+def _validate_detached_attempt_topology(
+    arguments: argparse.Namespace,
+    purpose: str,
+) -> None:
+    attempt_root = arguments.selection.parent
+    _require(
+        arguments.resource_receipt
+        == attempt_root / "resource-verification.json"
+        and arguments.release_token == attempt_root / "release-token.json"
+        and arguments.terminal == attempt_root / "terminal.json"
+        and arguments.cleanup == attempt_root / "cleanup.json",
+        "detached lifecycle artifact topology drifted",
+    )
+    if purpose == "formal":
+        formal_root = attempt_root / FORMAL_OUTPUT_DIR
+        _require(
+            arguments.formal is True
+            and arguments.internal_receipt
+            == formal_root / "internal_formal_receipt.json"
+            and arguments.formula == formal_root / "formula.opb"
+            and arguments.proof == formal_root / "roundingsat.proof.pbp"
+            and arguments.veripb is not None,
+            "detached formal artifact topology is incomplete or drifted",
+        )
+    else:
+        _require(
+            arguments.formal is False
+            and arguments.internal_receipt is None
+            and arguments.formula is None
+            and arguments.proof is None
+            and arguments.veripb is None,
+            "detached synthetic attempt carries formal-only artifacts",
+        )
+
+
 def _identity_content_matches(
     expected: Any,
     actual: Mapping[str, Any],
@@ -1385,6 +1607,58 @@ def _raw_mapping(
     return raw
 
 
+def _assert_systemctl_show_raw_join(
+    command: Mapping[str, Any],
+    recorded_raw: Any,
+    fields: tuple[str, ...],
+    label: str,
+) -> dict[str, str]:
+    _require(
+        command.get("exit_code") == 0 and command.get("stderr") == "",
+        f"{label}: systemctl show did not exit cleanly",
+    )
+    stdout_value = command.get("stdout")
+    if (
+        not isinstance(stdout_value, str)
+        or not stdout_value.endswith("\n")
+        or "\x00" in stdout_value
+    ):
+        raise VerificationError(
+            f"{label}: systemctl show stdout is not canonical text"
+        )
+    stdout = stdout_value
+    parsed: dict[str, str] = {}
+    for line in stdout.splitlines():
+        _require("=" in line, f"{label}: systemctl show returned a malformed line")
+        name, value = line.split("=", 1)
+        _require(
+            name not in parsed,
+            f"{label}: systemctl show duplicated property {name}",
+        )
+        parsed[name] = value + "\n"
+    _require(
+        set(parsed) == set(fields) and len(parsed) == len(fields),
+        f"{label}: systemctl show property set mismatch",
+    )
+    recorded = _mapping(recorded_raw, f"{label} recorded raw")
+    _require(
+        set(recorded) == set(fields) and dict(recorded) == parsed,
+        f"{label}: recorded raw mapping differs from retained command stdout",
+    )
+    return parsed
+
+
+def _assert_successful_systemd_run(
+    command: Mapping[str, Any],
+    expected_argv: Any,
+) -> None:
+    _require(
+        command.get("logical_argv") == expected_argv
+        and command.get("exit_code") == 0,
+        "launch: systemd-run logical argv or exit status drifted",
+    )
+
+
 def _raw_scalar(raw: Mapping[str, Any], name: str, label: str) -> str:
     value = raw[name]
     _require(
@@ -1502,11 +1776,10 @@ def _validate_common_artifacts(
     )
 
     nonce = _run_nonce(authority, "authority")
-    attempt = selection.get("attempt")
-    _require(
-        isinstance(attempt, str) and bool(attempt),
-        "selection: invalid attempt",
-    )
+    attempt_value = selection.get("attempt")
+    if not isinstance(attempt_value, str) or not attempt_value:
+        raise VerificationError("selection: invalid attempt")
+    attempt = attempt_value
     unit = _unit(selection, "selection")
     purpose = _purpose(selection, "selection")
     for label, record in (
@@ -1638,6 +1911,16 @@ def _validate_common_artifacts(
         worker_identity,
         "payload worker source authority",
     )
+    if purpose != "formal":
+        _validate_synthetic_worker_argv(
+            logical_argv,
+            worker_path=str(worker_identity["path"]),
+            run_nonce=nonce,
+            attempt=attempt,
+            seal_path=str(completion_path),
+            purpose=purpose,
+            unit=unit,
+        )
 
     authority_contract = _normalize_contract(
         authority.get("resource_contract"),
@@ -1704,10 +1987,7 @@ def _validate_common_artifacts(
         systemd_run,
         "launch systemd-run",
     )
-    _require(
-        systemd_run_command.get("logical_argv") == systemd_argv,
-        "launch: systemd-run logical argv drifted",
-    )
+    _assert_successful_systemd_run(systemd_run_command, systemd_argv)
     systemctl_identity = _mapping(
         _mapping(authority.get("binaries"), "authority binaries").get("systemctl"),
         "authority systemctl",
@@ -1728,6 +2008,12 @@ def _validate_common_artifacts(
             *[f"--property={field}" for field in SYSTEMD_PRETERMINAL_FIELDS],
         ],
         "launch: initial systemctl logical argv drifted",
+    )
+    _assert_systemctl_show_raw_join(
+        initial_systemctl,
+        launch.get("initial_systemd_raw"),
+        SYSTEMD_PRETERMINAL_FIELDS,
+        "launch initial systemctl",
     )
     python_index = systemd_argv.index(fixed_python_path)
     expected_properties = {
@@ -1992,11 +2278,7 @@ def validate_launch_and_preterminal(
     """Pure validation of the launch-to-keeper resource envelope."""
 
     _schema(authority, AUTHORITY_SCHEMA, "authority")
-    _schema(
-        selection,
-        (SELECTION_SCHEMA, SYNTHETIC_SELECTION_SCHEMA),
-        "selection",
-    )
+    _schema(selection, SELECTION_SCHEMA, "selection")
     _schema(launch, LAUNCH_SCHEMA, "launch")
     _schema(payload_terminal, PAYLOAD_TERMINAL_SCHEMA, "payload terminal")
     _schema(preterminal, PRETERMINAL_SCHEMA, "pre-terminal")
@@ -2317,6 +2599,12 @@ def validate_launch_and_preterminal(
             *[f"--property={field}" for field in SYSTEMD_PRETERMINAL_FIELDS],
         ],
         "pre-terminal systemctl argv mismatch",
+    )
+    _assert_systemctl_show_raw_join(
+        preterminal_command,
+        preterminal.get("systemd_raw"),
+        SYSTEMD_PRETERMINAL_FIELDS,
+        "pre-terminal systemctl",
     )
 
     systemd_raw = _raw_mapping(
@@ -2715,6 +3003,12 @@ def validate_terminal_cleanup(
         ],
         "terminal systemctl argv mismatch",
     )
+    _assert_systemctl_show_raw_join(
+        terminal_systemctl_command,
+        terminal.get("systemd_raw"),
+        SYSTEMD_TERMINAL_FIELDS,
+        "terminal systemctl",
+    )
     for field, expected_action in (("stop", "stop"),):
         command = _mapping(cleanup.get(field), f"cleanup {field}")
         _validate_retained_command(
@@ -2985,6 +3279,12 @@ def _load_common(
             arguments.formal_admission is None,
             "synthetic common replay received --formal-admission",
         )
+    _validate_common_attempt_topology(
+        arguments,
+        payloads["authority"],
+        payloads["selection"],
+        purpose,
+    )
 
     authority_tools = _mapping(
         payloads["authority"].get("tools"),
@@ -3098,13 +3398,40 @@ def _validate_resource_receipt(
     receipt_identities: Mapping[str, Mapping[str, Any]],
     current_epoch: Mapping[str, Any],
     authority_package_id: str,
+    manager_tool_identity: Mapping[str, Any],
+    fresh_validation: Mapping[str, Any],
 ) -> None:
     _schema(receipt, RESOURCE_RECEIPT_SCHEMA, "resource receipt")
     _require(
-        receipt.get("status") == "PASS",
-        "resource receipt is not PASS",
+        set(receipt)
+        == {
+            "schema_version",
+            "status",
+            "mode",
+            "authority_package_id",
+            "inputs",
+            "manager_epoch",
+            "manager_epoch_authority_tool",
+            "validation",
+            "release_authorized",
+            "upper_bound_update_authorized",
+            "production_certified",
+        },
+        "resource receipt key set mismatch",
+    )
+    _require(
+        receipt.get("status") == "PASS"
+        and receipt.get("mode") == "resource"
+        and receipt.get("release_authorized") is True
+        and receipt.get("upper_bound_update_authorized") is False
+        and receipt.get("production_certified") is False,
+        "resource receipt status or authority flags mismatch",
     )
     recorded = _mapping(receipt.get("inputs"), "resource receipt inputs")
+    _require(
+        set(recorded) == set(receipt_identities),
+        "resource receipt input key set mismatch",
+    )
     for name, identity in receipt_identities.items():
         _identity_matches(
             recorded.get(name),
@@ -3118,6 +3445,20 @@ def _validate_resource_receipt(
     _require(
         receipt.get("authority_package_id") == authority_package_id,
         "resource receipt authority package id mismatch",
+    )
+    _identity_matches(
+        receipt.get("manager_epoch_authority_tool"),
+        manager_tool_identity,
+        "resource receipt manager epoch authority tool",
+    )
+    recorded_validation = _mapping(
+        receipt.get("validation"),
+        "resource receipt validation",
+    )
+    _require(
+        _json_bytes(dict(recorded_validation))
+        == _json_bytes(dict(fresh_validation)),
+        "resource receipt validation differs from fresh detached recomputation",
     )
 
 
@@ -4047,6 +4388,19 @@ def _resource_command(arguments: argparse.Namespace) -> dict[str, Any]:
 
 def _detached_command(arguments: argparse.Namespace) -> dict[str, Any]:
     payloads, identities, current_epoch, manager_tool_identity = _load_common(arguments)
+    _validate_detached_attempt_topology(
+        arguments,
+        _purpose(payloads["selection"], "selection"),
+    )
+    validation_seed = validate_launch_and_preterminal(
+        payloads["authority"],
+        payloads["selection"],
+        payloads["launch"],
+        payloads["payload_terminal"],
+        payloads["preterminal"],
+        current_epoch,
+    )
+    validation_seed["common_artifacts"] = payloads["_common_validation"]
     resource_receipt, resource_receipt_identity = _load_json(
         arguments.resource_receipt,
         "SMM4 resource verification receipt",
@@ -4056,6 +4410,8 @@ def _detached_command(arguments: argparse.Namespace) -> dict[str, Any]:
         identities,
         current_epoch,
         arguments.authority_package_id,
+        manager_tool_identity,
+        validation_seed,
     )
     release_token, release_token_identity = _load_json(
         arguments.release_token,
@@ -4065,10 +4421,6 @@ def _detached_command(arguments: argparse.Namespace) -> dict[str, Any]:
     _require(
         release_token.get("status") == "RESOURCE_VERIFIED_RELEASE",
         "release token status mismatch",
-    )
-    validation_seed = _mapping(
-        resource_receipt.get("validation"),
-        "resource receipt validation",
     )
     _require(
         _run_nonce(release_token, "release token") == validation_seed.get("run_nonce")
@@ -4841,6 +5193,15 @@ def _parser() -> argparse.ArgumentParser:
         "--expected-terminal",
         required=True,
         choices=("success", "postseal-failure"),
+    )
+    detached.add_argument(
+        "--detached-output-context",
+        required=True,
+        choices=(
+            DETACHED_OUTPUT_CONTEXT_ATTEMPT,
+            DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS,
+            DETACHED_OUTPUT_CONTEXT_REPLAY_POSTSEAL,
+        ),
     )
     detached.add_argument("--formal", action="store_true")
     detached.add_argument("--internal-receipt", type=Path)

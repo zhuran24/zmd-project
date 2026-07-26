@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import fcntl
 import importlib.util
+import inspect
 import json
 import os
 from pathlib import Path
@@ -457,6 +458,615 @@ def test_detached_verifier_uses_exact_shared_join(verifier: ModuleType) -> None:
     assert "assert_identity_join(" in source
     assert 'payloads["selection"].get("authority_content_identity")' in source
     assert "selection authority identity join failed" in source
+
+
+def test_runner_and_detached_verifier_pin_the_same_full7_source_loader(
+    tmp_path: Path,
+    runner: ModuleType,
+    verifier: ModuleType,
+) -> None:
+    worker = (tmp_path / "worker.py").resolve()
+    worker.write_text("raise SystemExit(0)\n", encoding="utf-8")
+    worker_identity = runner._identity(worker, "fixture worker")
+    argv = runner._make_loader_argv(
+        "/fixed/python",
+        worker,
+        worker_identity,
+        ["--fixture"],
+    )
+
+    assert runner.PINNED_SOURCE_LOADER == verifier.PINNED_SOURCE_LOADER
+    assert argv[:4] == [
+        "/fixed/python",
+        "-I",
+        "-c",
+        verifier.PINNED_SOURCE_LOADER,
+    ]
+    assert json.loads(argv[5]) == worker_identity
+    assert set(json.loads(argv[5])) == {
+        "path",
+        "size_bytes",
+        "sha256",
+        "mode_octal",
+        "device",
+        "inode",
+        "link_count",
+    }
+    assert "json.loads(sys.argv[2])" in verifier.PINNED_SOURCE_LOADER
+    assert "s.st_nlink!=1" in verifier.PINNED_SOURCE_LOADER
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "top_extra",
+        "status",
+        "mode",
+        "package_id",
+        "input_extra",
+        "input_missing",
+        "input_identity",
+        "epoch",
+        "manager_tool",
+        "validation",
+        "validation_bool_to_int",
+        "validation_int_to_bool",
+        "release",
+        "upper_update",
+        "production",
+    ),
+)
+def test_detached_resource_receipt_is_exact_and_joins_fresh_recomputation(
+    mutation: str,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    runner: ModuleType,
+    verifier: ModuleType,
+    contract: ModuleType,
+) -> None:
+    verifier._activate_identity_contract(contract)
+    input_path = (tmp_path / "input.json").resolve()
+    input_path.write_text("{}\n", encoding="utf-8")
+    input_identity = runner._identity(input_path, "input")
+    manager_path = (tmp_path / "manager-tool.py").resolve()
+    manager_path.write_text("raise SystemExit(0)\n", encoding="utf-8")
+    manager_identity = runner._identity(manager_path, "manager tool")
+    current_epoch = {"fixture": "current-epoch"}
+    package_id = "a" * 64
+    fresh_validation = {
+        "run_nonce": "fixture-nonce",
+        "unit": "b1-smm4-fixture-12345678.service",
+        "nested": {"joined": True},
+        "counter": 1,
+    }
+    receipt = {
+        "schema_version": verifier.RESOURCE_RECEIPT_SCHEMA,
+        "status": "PASS",
+        "mode": "resource",
+        "authority_package_id": package_id,
+        "inputs": {"input": input_identity},
+        "manager_epoch": current_epoch,
+        "manager_epoch_authority_tool": manager_identity,
+        "validation": fresh_validation,
+        "release_authorized": True,
+        "upper_bound_update_authorized": False,
+        "production_certified": False,
+    }
+    monkeypatch.setattr(verifier, "_same_epoch", lambda left, right: left == right)
+    verifier._validate_resource_receipt(
+        receipt,
+        {"input": input_identity},
+        current_epoch,
+        package_id,
+        manager_identity,
+        fresh_validation,
+    )
+
+    changed = copy.deepcopy(receipt)
+    if mutation == "top_extra":
+        changed["unexpected"] = True
+    elif mutation == "status":
+        changed["status"] = "VERIFIED"
+    elif mutation == "mode":
+        changed["mode"] = "detached"
+    elif mutation == "package_id":
+        changed["authority_package_id"] = "b" * 64
+    elif mutation == "input_extra":
+        changed["inputs"]["unexpected"] = input_identity
+    elif mutation == "input_missing":
+        changed["inputs"].pop("input")
+    elif mutation == "input_identity":
+        changed["inputs"]["input"]["inode"] += 1
+    elif mutation == "epoch":
+        changed["manager_epoch"] = {"fixture": "other-epoch"}
+    elif mutation == "manager_tool":
+        changed["manager_epoch_authority_tool"]["sha256"] = "0" * 64
+    elif mutation == "validation":
+        changed["validation"]["nested"]["joined"] = False
+    elif mutation == "validation_bool_to_int":
+        changed["validation"]["nested"]["joined"] = 1
+    elif mutation == "validation_int_to_bool":
+        changed["validation"]["counter"] = True
+    elif mutation == "release":
+        changed["release_authorized"] = False
+    elif mutation == "upper_update":
+        changed["upper_bound_update_authorized"] = True
+    else:
+        changed["production_certified"] = True
+    with pytest.raises(verifier.VerificationError):
+        verifier._validate_resource_receipt(
+            changed,
+            {"input": input_identity},
+            current_epoch,
+            package_id,
+            manager_identity,
+            fresh_validation,
+        )
+
+
+@pytest.mark.parametrize("index", range(14))
+def test_detached_synthetic_worker_argv_is_independently_reconstructed(
+    index: int,
+    tmp_path: Path,
+    verifier: ModuleType,
+) -> None:
+    worker = str((tmp_path / "worker.py").resolve())
+    seal = str((tmp_path / "completion-seal.json").resolve())
+    nonce = "fixture-nonce-12345678"
+    attempt = "synthetic-success-a001"
+    purpose = "synthetic_success"
+    unit = "b1-smm4-synthetic-fixture.service"
+    expected = verifier._expected_synthetic_worker_argv(
+        worker_path=worker,
+        run_nonce=nonce,
+        attempt=attempt,
+        seal_path=seal,
+        purpose=purpose,
+        unit=unit,
+    )
+    assert verifier._validate_synthetic_worker_argv(
+        expected,
+        worker_path=worker,
+        run_nonce=nonce,
+        attempt=attempt,
+        seal_path=seal,
+        purpose=purpose,
+        unit=unit,
+    ) == expected
+
+    changed = copy.deepcopy(expected)
+    changed[index] += "-drift"
+    with pytest.raises(verifier.VerificationError, match="logical argv"):
+        verifier._validate_synthetic_worker_argv(
+            changed,
+            worker_path=worker,
+            run_nonce=nonce,
+            attempt=attempt,
+            seal_path=seal,
+            purpose=purpose,
+            unit=unit,
+        )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "exit",
+        "stderr",
+        "no_final_newline",
+        "duplicate",
+        "missing",
+        "extra",
+        "malformed",
+        "recorded_mismatch",
+        "recorded_extra",
+        "recorded_missing",
+    ),
+)
+def test_detached_systemctl_stdout_exactly_joins_recorded_raw(
+    mutation: str,
+    verifier: ModuleType,
+) -> None:
+    fields = ("Alpha", "Beta")
+    command = {
+        "exit_code": 0,
+        "stdout": "Alpha=one\nBeta=two=three\n",
+        "stderr": "",
+    }
+    recorded = {
+        "Alpha": "one\n",
+        "Beta": "two=three\n",
+    }
+    assert verifier._assert_systemctl_show_raw_join(
+        command,
+        recorded,
+        fields,
+        "fixture",
+    ) == recorded
+
+    changed_command = copy.deepcopy(command)
+    changed_recorded = copy.deepcopy(recorded)
+    if mutation == "exit":
+        changed_command["exit_code"] = 1
+    elif mutation == "stderr":
+        changed_command["stderr"] = "warning\n"
+    elif mutation == "no_final_newline":
+        changed_command["stdout"] = changed_command["stdout"].rstrip("\n")
+    elif mutation == "duplicate":
+        changed_command["stdout"] += "Alpha=other\n"
+    elif mutation == "missing":
+        changed_command["stdout"] = "Alpha=one\n"
+    elif mutation == "extra":
+        changed_command["stdout"] += "Gamma=other\n"
+    elif mutation == "malformed":
+        changed_command["stdout"] += "malformed\n"
+    elif mutation == "recorded_mismatch":
+        changed_recorded["Beta"] = "other\n"
+    elif mutation == "recorded_extra":
+        changed_recorded["Gamma"] = "other\n"
+    else:
+        changed_recorded.pop("Beta")
+    with pytest.raises(verifier.VerificationError):
+        verifier._assert_systemctl_show_raw_join(
+            changed_command,
+            changed_recorded,
+            fields,
+            "fixture",
+        )
+
+
+def test_detached_selection_schema_and_unit_namespace_are_smm4_only(
+    verifier: ModuleType,
+) -> None:
+    verifier._schema(
+        {"schema_version": verifier.SELECTION_SCHEMA},
+        verifier.SELECTION_SCHEMA,
+        "selection",
+    )
+    verifier._unit(
+        {"unit": "b1-smm4-fixture-12345678.service"},
+        "selection",
+    )
+    with pytest.raises(verifier.VerificationError, match="schema"):
+        verifier._schema(
+            {"schema_version": "b1_sidewise_smm4_synthetic_selection_v1"},
+            verifier.SELECTION_SCHEMA,
+            "selection",
+        )
+    for unit in (
+        "fixture.service",
+        "b1-smm4-UPPERCASE-12345678.service",
+        "b1-smm4-short.service",
+    ):
+        with pytest.raises(verifier.VerificationError, match="unit"):
+            verifier._unit({"unit": unit}, "selection")
+
+
+def _success_topology_fixture(
+    verifier: ModuleType,
+    tmp_path: Path,
+    purpose: str,
+    mode: str,
+) -> tuple[SimpleNamespace, dict[str, object], dict[str, object]]:
+    attempt = {
+        "synthetic_success": "synthetic-success-a001",
+        "synthetic_postseal_failure": "synthetic-postseal-fail-a001",
+        "formal": verifier.ATTEMPT,
+    }[purpose]
+    attempt_directory = {
+        "synthetic_success": "synthetic-success-a001",
+        "synthetic_postseal_failure": "synthetic-postseal-fail-a001",
+        "formal": verifier.FORMAL_ATTEMPT_DIR,
+    }[purpose]
+    run_dir = (
+        verifier.ROOT
+        / ".pytest_tmp"
+        / f"topology-{tmp_path.name}-{purpose}-{mode}"
+    )
+    attempt_root = run_dir / attempt_directory
+    completion_seal = (
+        attempt_root
+        / verifier.FORMAL_OUTPUT_DIR
+        / "internal_formal_receipt.json"
+        if purpose == "formal"
+        else attempt_root / "state/payload-seal.json"
+    )
+    arguments = SimpleNamespace(
+        mode=mode,
+        authority=run_dir / verifier.AUTHORITY_DIR / "authority.json",
+        selection=attempt_root / "selection.json",
+        payload_spec=(
+            run_dir
+            / verifier.PRESELECTION_DIR
+            / f"{attempt_directory}-payload-spec.json"
+        ),
+        supervisor_start=attempt_root / "state/supervisor-start.json",
+        launch=attempt_root / "launch.json",
+        start_token=attempt_root / "start-token.json",
+        payload_terminal=attempt_root / "state/payload-terminal.json",
+        preterminal=attempt_root / "preterminal.json",
+        completion_seal=completion_seal,
+        formal_admission=(
+            run_dir / "formal-admission-a001.json"
+            if purpose == "formal"
+            else None
+        ),
+        output=(
+            attempt_root / "resource-verification.json"
+            if mode == "resource"
+            else attempt_root / "detached-verification.json"
+        ),
+        detached_output_context=verifier.DETACHED_OUTPUT_CONTEXT_ATTEMPT,
+    )
+    authority = {"run": str(run_dir.relative_to(verifier.ROOT))}
+    selection = {"attempt": attempt}
+    return arguments, authority, selection
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "authority_run",
+        "attempt",
+        "authority",
+        "selection",
+        "payload_spec",
+        "supervisor_start",
+        "launch",
+        "start_token",
+        "payload_terminal",
+        "preterminal",
+        "completion_seal",
+        "formal_admission",
+        "output",
+    ),
+)
+@pytest.mark.parametrize(
+    "purpose",
+    ("synthetic_success", "synthetic_postseal_failure", "formal"),
+)
+def test_resource_and_detached_common_topology_is_canonical_and_exact(
+    mutation: str,
+    purpose: str,
+    tmp_path: Path,
+    verifier: ModuleType,
+) -> None:
+    for mode in ("resource", "detached"):
+        arguments, authority, selection = _success_topology_fixture(
+            verifier,
+            tmp_path,
+            purpose,
+            mode,
+        )
+        verifier._validate_common_attempt_topology(
+            arguments,
+            authority,
+            selection,
+            purpose,
+        )
+
+        changed_arguments = copy.deepcopy(arguments)
+        changed_authority = copy.deepcopy(authority)
+        changed_selection = copy.deepcopy(selection)
+        if mutation == "authority_run":
+            changed_authority["run"] = ".artifacts/other-run"
+        elif mutation == "attempt":
+            changed_selection["attempt"] = "unregistered-attempt"
+        else:
+            current = getattr(changed_arguments, mutation)
+            setattr(
+                changed_arguments,
+                mutation,
+                (
+                    arguments.authority.parent.parent
+                    / "unexpected-formal-admission.json"
+                    if current is None
+                    else current.with_name(f"{current.name}.drift")
+                ),
+            )
+        with pytest.raises(verifier.VerificationError, match="topology|attempt"):
+            verifier._validate_common_attempt_topology(
+                changed_arguments,
+                changed_authority,
+                changed_selection,
+                purpose,
+            )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "resource_receipt",
+        "release_token",
+        "terminal",
+        "cleanup",
+        "formal",
+        "internal_receipt",
+        "formula",
+        "proof",
+        "veripb",
+    ),
+)
+@pytest.mark.parametrize(
+    "purpose",
+    ("synthetic_success", "synthetic_postseal_failure", "formal"),
+)
+def test_detached_lifecycle_topology_rejects_cross_attempt_artifacts(
+    mutation: str,
+    purpose: str,
+    tmp_path: Path,
+    verifier: ModuleType,
+) -> None:
+    arguments, authority, selection = _success_topology_fixture(
+        verifier,
+        tmp_path,
+        purpose,
+        "detached",
+    )
+    del authority, selection
+    attempt_root = arguments.selection.parent
+    formal_root = attempt_root / verifier.FORMAL_OUTPUT_DIR
+    arguments.resource_receipt = attempt_root / "resource-verification.json"
+    arguments.release_token = attempt_root / "release-token.json"
+    arguments.terminal = attempt_root / "terminal.json"
+    arguments.cleanup = attempt_root / "cleanup.json"
+    arguments.formal = purpose == "formal"
+    arguments.internal_receipt = (
+        formal_root / "internal_formal_receipt.json"
+        if purpose == "formal"
+        else None
+    )
+    arguments.formula = (
+        formal_root / "formula.opb" if purpose == "formal" else None
+    )
+    arguments.proof = (
+        formal_root / "roundingsat.proof.pbp"
+        if purpose == "formal"
+        else None
+    )
+    arguments.veripb = Path("/fixture/veripb") if purpose == "formal" else None
+    verifier._validate_detached_attempt_topology(arguments, purpose)
+
+    changed = copy.deepcopy(arguments)
+    if mutation == "formal":
+        changed.formal = not changed.formal
+    else:
+        current = getattr(changed, mutation)
+        setattr(
+            changed,
+            mutation,
+            (
+                attempt_root / f"unexpected-{mutation}"
+                if current is None
+                else None
+                if mutation == "veripb" and purpose == "formal"
+                else current.with_name(f"{current.name}.drift")
+            ),
+        )
+    with pytest.raises(verifier.VerificationError, match="topology|formal"):
+        verifier._validate_detached_attempt_topology(changed, purpose)
+
+
+@pytest.mark.parametrize(
+    ("purpose", "context", "filename"),
+    (
+        (
+            "synthetic_success",
+            "formal-admission-replay-success",
+            "success.json",
+        ),
+        (
+            "synthetic_postseal_failure",
+            "formal-admission-replay-postseal-failure",
+            "postseal_failure.json",
+        ),
+    ),
+)
+@pytest.mark.parametrize("mutation", ("context", "output"))
+def test_formal_admission_detached_replay_has_exact_bounded_output_context(
+    purpose: str,
+    context: str,
+    filename: str,
+    mutation: str,
+    tmp_path: Path,
+    verifier: ModuleType,
+) -> None:
+    arguments, authority, selection = _success_topology_fixture(
+        verifier,
+        tmp_path,
+        purpose,
+        "detached",
+    )
+    run_dir = arguments.authority.parent.parent
+    arguments.detached_output_context = context
+    arguments.output = (
+        run_dir / "formal-admission-replays-a001" / filename
+    )
+    verifier._validate_common_attempt_topology(
+        arguments,
+        authority,
+        selection,
+        purpose,
+    )
+
+    changed = copy.deepcopy(arguments)
+    if mutation == "context":
+        changed.detached_output_context = (
+            verifier.DETACHED_OUTPUT_CONTEXT_REPLAY_POSTSEAL
+            if purpose == "synthetic_success"
+            else verifier.DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS
+        )
+    else:
+        changed.output = changed.output.with_name(f"{filename}.drift")
+    with pytest.raises(verifier.VerificationError, match="context|topology"):
+        verifier._validate_common_attempt_topology(
+            changed,
+            authority,
+            selection,
+            purpose,
+        )
+
+
+def test_formal_attempt_cannot_use_synthetic_admission_replay_context(
+    tmp_path: Path,
+    verifier: ModuleType,
+) -> None:
+    arguments, authority, selection = _success_topology_fixture(
+        verifier,
+        tmp_path,
+        "formal",
+        "detached",
+    )
+    run_dir = arguments.authority.parent.parent
+    arguments.detached_output_context = (
+        verifier.DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS
+    )
+    arguments.output = (
+        run_dir / "formal-admission-replays-a001/success.json"
+    )
+    with pytest.raises(verifier.VerificationError, match="context"):
+        verifier._validate_common_attempt_topology(
+            arguments,
+            authority,
+            selection,
+            "formal",
+        )
+
+
+def test_runner_and_verifier_share_explicit_detached_output_contexts(
+    runner: ModuleType,
+    verifier: ModuleType,
+) -> None:
+    for name in (
+        "DETACHED_OUTPUT_CONTEXT_ATTEMPT",
+        "DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS",
+        "DETACHED_OUTPUT_CONTEXT_REPLAY_POSTSEAL",
+    ):
+        assert getattr(runner, name) == getattr(verifier, name)
+    admission_source = inspect.getsource(runner._publish_formal_admission)
+    launch_source = inspect.getsource(runner._launch_attempt)
+    assert '"--detached-output-context"' in admission_source
+    assert "DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS" in admission_source
+    assert "DETACHED_OUTPUT_CONTEXT_REPLAY_POSTSEAL" in admission_source
+    assert '"--detached-output-context"' in launch_source
+    assert "DETACHED_OUTPUT_CONTEXT_ATTEMPT" in launch_source
+
+
+@pytest.mark.parametrize("mutation", ("argv", "exit"))
+def test_detached_systemd_run_requires_exact_argv_and_success(
+    mutation: str,
+    verifier: ModuleType,
+) -> None:
+    expected = ["/usr/bin/systemd-run", "--user", "--no-block"]
+    command = {"logical_argv": expected, "exit_code": 0}
+    verifier._assert_successful_systemd_run(command, expected)
+    changed = copy.deepcopy(command)
+    if mutation == "argv":
+        changed["logical_argv"].append("--drift")
+    else:
+        changed["exit_code"] = 1
+    with pytest.raises(verifier.VerificationError, match="exit status"):
+        verifier._assert_successful_systemd_run(changed, expected)
 
 
 def test_manager_epoch_legacy_identity_bridge_is_exact_and_detached_replayable(

@@ -62,6 +62,11 @@ FORMAL_ATTEMPT_DIR = "formal-attempt-a004"
 FORMAL_OUTPUT_DIR = "formal-a004"
 ATTEMPT_FAILURE_NAME = "attempt-failure.json"
 PRESELECTION_DIR = "preselection-a001"
+DETACHED_OUTPUT_CONTEXT_ATTEMPT = "attempt-closeout"
+DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS = "formal-admission-replay-success"
+DETACHED_OUTPUT_CONTEXT_REPLAY_POSTSEAL = (
+    "formal-admission-replay-postseal-failure"
+)
 HEAVY_LOCK = Path("/tmp/zmd-pj-codex-heavy-validation.lock")
 PROD_SCALE_LOCKS = (
     Path(f"/run/user/{os.getuid()}/zmd_pj_prod_scale_solver.lock"),
@@ -151,8 +156,8 @@ CGROUP_FIELDS = (
 )
 
 # This loader executes exactly the bytes read from one O_NOFOLLOW descriptor.
-# The expected digest and the complete logical argv are part of the immutable
-# payload specification and selection.
+# The exact expected full7 identity and complete logical argv are part of the
+# immutable payload specification and selection.
 PINNED_SOURCE_LOADER = (
     "import hashlib,json,os,stat,sys\n"
     "p=sys.argv[1];e=json.loads(sys.argv[2]);a=sys.argv[3:]\n"
@@ -1181,6 +1186,11 @@ def _publish_formal_admission(
     ):
         attempt_root = run_dir / attempt_name
         replay_output = replay_dir / f"{label}.json"
+        replay_context = (
+            DETACHED_OUTPUT_CONTEXT_REPLAY_SUCCESS
+            if label == "success"
+            else DETACHED_OUTPUT_CONTEXT_REPLAY_POSTSEAL
+        )
         detached_arguments = [
             "detached",
             "--authority",
@@ -1215,6 +1225,8 @@ def _publish_formal_admission(
             str(attempt_root / "cleanup.json"),
             "--expected-terminal",
             expected_terminal,
+            "--detached-output-context",
+            replay_context,
             "--output",
             str(replay_output),
         ]
@@ -2334,6 +2346,8 @@ def _launch_attempt(
         str(paths["cleanup"].absolute()),
         "--expected-terminal",
         expected_terminal,
+        "--detached-output-context",
+        DETACHED_OUTPUT_CONTEXT_ATTEMPT,
     ]
     if purpose == "formal":
         if formal_admission_path is None:

@@ -105,7 +105,30 @@ def _fresh_lifecycle(
     systemctl = _write_executable(tmp_path / "systemctl", "SYSTEMCTL")
     identity = runner._identity(systemctl, "lifecycle systemctl")
     fixture["authority"]["binaries"]["systemctl"] = identity
-    unit = fixture["selection"]["unit"]
+    unit = "b1-smm4-fixture-00000001.service"
+    for name in (
+        "selection",
+        "launch",
+        "payload_terminal",
+        "preterminal",
+        "terminal",
+        "cleanup",
+    ):
+        fixture[name]["unit"] = unit
+    preterminal_process_raw = {
+        "Result": "success\n",
+        "ExecMainCode": "0\n",
+        "ExecMainStatus": "0\n",
+        "ExecMainStartTimestampMonotonic": "100\n",
+    }
+    fixture["launch"]["initial_systemd_raw"].update(preterminal_process_raw)
+    fixture["preterminal"]["systemd_raw"].update(preterminal_process_raw)
+    fixture["terminal"]["systemd_raw"].update(
+        {
+            "ExecMainStartTimestampMonotonic": "100\n",
+            "ExecMainExitTimestampMonotonic": "500\n",
+        }
+    )
     preterminal_argv = [
         str(systemctl),
         "--user",
@@ -125,8 +148,19 @@ def _fresh_lifecycle(
     fixture["preterminal"]["systemctl"] = _retained_command(
         identity,
         preterminal_argv,
+        stdout="".join(
+            f"{field}={fixture['preterminal']['systemd_raw'][field][:-1]}\n"
+            for field in runner.SYSTEMD_PRETERMINAL_FIELDS
+        ),
     )
-    fixture["terminal"]["systemctl"] = _retained_command(identity, terminal_argv)
+    fixture["terminal"]["systemctl"] = _retained_command(
+        identity,
+        terminal_argv,
+        stdout="".join(
+            f"{field}={fixture['terminal']['systemd_raw'][field][:-1]}\n"
+            for field in runner.SYSTEMD_TERMINAL_FIELDS
+        ),
+    )
     fixture["cleanup"]["stop"] = _retained_command(
         identity,
         [str(systemctl), "--user", "stop", unit],

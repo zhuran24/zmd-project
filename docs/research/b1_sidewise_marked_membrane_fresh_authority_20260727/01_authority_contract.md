@@ -3,7 +3,7 @@
 | 字段 | 当前值 |
 |---|---|
 | 日期 | `2026-07-27` |
-| 状态 | `PRE_RUN_IMPLEMENTATION` |
+| 状态 | `AUTHORITY_HARDENING_LIGHT_VALIDATED / THIRD_ROOT_PENDING` |
 | 固定基线 | `e03bc98dbb00fb38d941e471c61879c499b33213` |
 | 研究账本 | `U=(1188,22)`、`L=absent` |
 | 候选输入 | `(1188,18)` |
@@ -93,6 +93,25 @@ device/inode/link-count 不一致都必须 fail-closed。读取与执行使用 `
 retained FD；selection writer、payload verifier 与 detached verifier 都调用同一
 canonical content projection，不得再分别用 7-field 与 4-field 整对象比较。
 校验后不得按路径重开，执行的字节必须来自完成 identity join 的同一个 FD。
+payload spec 中固定的 source-loader argv 必须携带 exact full7 JSON，而不是仅携带
+digest；loader 自身必须复核 canonical path、完整内容/物理身份、stable stat 与
+`link_count=1`。runner 与 detached verifier 各自保留的 loader program 必须
+逐字节相同；任一 argv 或 loader 字节漂移都 fail-closed。
+
+detached verifier 还必须从 selection 的 nonce、attempt、purpose、unit 与固定
+completion path 独立重建 synthetic worker 的完整 CLI，不能只验证 loader prefix
+或 logical/executed argv 自洽。resource 和 detached success 路径必须从 sealed
+authority 的 canonical run 派生并精确绑定 authority、preselection、attempt、
+state、resource/release/terminal/cleanup、formal output 与最终输出路径。formal
+admission 的两次 synthetic detached replay 只能使用显式 output context，分别写
+入固定的 `formal-admission-replays-a001/success.json` 与
+`postseal_failure.json`；不得把该有限例外扩展为任意输出路径。
+
+detached 不信任 resource receipt 自带的 `validation` 作为生命周期真值。它先从
+原始 launch/preterminal 工件和当前 manager epoch 重新计算 resource validation，
+再要求 receipt 顶层键、inputs 键、manager tool full7、mode、授权布尔值和
+validation 与新鲜结果逐项一致。validation 使用 canonical JSON 字节比较以区分
+`true`/`1` 与 `false`/`0`，不能使用 Python 的宽松对象相等。
 
 ## Attempt 消费与失败闭包
 
@@ -151,6 +170,11 @@ binary。runner 对每次调用只打开一次 executable，校验 retained FD �
 resource、terminal、cleanup 与 `detached-failure` verifier 必须验证这两套 argv
 之间只有首项 transport 转换，其余参数逐项相同。路径只用于逻辑身份和审计展示，
 不能在校验后重新打开并替代 retained FD。
+
+独立 verifier 还必须要求 `systemd-run` retained command 成功退出，并把 launch、
+preterminal、terminal 三次 `systemctl show` 的 retained stdout 独立解析为唯一且
+精确的字段集合，再与 receipt 保存的 raw mapping 做逐字段完全联结。runner 自报
+raw mapping、重复/缺失/额外字段或未成功的 command 都不能单独构成资源证据。
 
 ## 旧 `(1188,22)` authority 的 snapshot-only recovery
 

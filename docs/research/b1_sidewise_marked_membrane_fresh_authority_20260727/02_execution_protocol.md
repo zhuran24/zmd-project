@@ -3,7 +3,7 @@
 | 字段 | 当前值 |
 |---|---|
 | 日期 | `2026-07-27` |
-| 状态 | `PRE_RUN_IMPLEMENTATION` |
+| 状态 | `AUTHORITY_HARDENING_LIGHT_VALIDATED / THIRD_ROOT_PENDING` |
 | 当前账本 | `U=(1188,22)`、`L=absent` |
 | 正式选择 | 尚未创建 |
 
@@ -58,6 +58,21 @@ detached replay 准确分类失败。
 `/proc/self/fd/<n>` 执行。记录必须同时保留规范路径开头的 `logical_argv` 和
 实际 proc-FD 开头的 `executed_argv`，并固定 executable identity、transport 与
 同 FD 执行前后稳定性；独立 verifier 对这些 provenance 字段逐项复核。
+Python source loader 同样是 exact argv 合同：参数携带完整 full7 JSON，loader
+从 `O_NOFOLLOW` FD 重算 full7 和 stable stat 后才执行该 FD 的字节；runner 与
+detached verifier 的独立 loader 常量必须逐字节相同，digest-only 旧格式不被接受。
+verifier 从注册的 synthetic purpose 独立重建 worker 完整 CLI；`systemd-run`
+必须成功退出，三次 `systemctl show` 的 retained stdout 必须解析后与保存的 raw
+字段集合完全相等。
+
+resource/detached verifier 从 sealed authority 的 run path 派生 canonical
+preselection、attempt、state、resource/release/terminal/cleanup 与 formal 路径，
+不接受调用者提供的跨 attempt 自洽工件。普通 detached 输出只允许
+`<attempt>/detached-verification.json`；formal admission replay 通过 required
+output context 仅允许两个 purpose 对应的固定 replay 文件。detached 阶段先重新
+计算 resource validation，再以 canonical JSON 字节与 resource receipt 精确联结；
+receipt 的 mode、inputs、manager tool 和所有授权布尔值也必须 exact，不能依赖
+`bool == int` 的宽松比较或 receipt 自报 validation 作为 lifecycle seed。
 
 ## 3. 资源报备与正式 one-shot
 
