@@ -1,9 +1,15 @@
-# Certified soundness 状态矩阵
+# Certified soundness 状态矩阵（历史快照）
 
-**基线：当前工作树，2026-07-11。**
-状态词只描述实现与证据，不替代 owner release gate。`IMPLEMENTED` 不等于 P1.2 CLOSED。
+> **文档地位：截至 2026-07-11 的历史快照；不是当前状态或 authority。**
+> 本页只记录该时点的 P1.2 certified soundness 实现、证据和命题范围。当前 release
+> 边界以根目录 `PROJECT_LOCK.md` 和 gate JSON 为准；当前人类可读状态以
+> [06_current_status.md](06_current_status.md) 为准；后续阶段与 P2.0 执行序以
+> [00_master_roadmap.md](00_master_roadmap.md) 为准。
+>
+> 状态词只描述该快照中的实现与证据，不替代 owner release gate。`IMPLEMENTED`
+> 不等于 P1.2 CLOSED。
 
-| ID | 当前状态 | 代码证据 | 仍需注意 |
+| ID | 截至 2026-07-11 的状态 | 当时的代码证据 | 历史边界 / 后续说明 |
 |---|---|---|---|
 | WS / fixed-witness identity | **IMPLEMENTED** | `terminal_fixed_witness_capsule.py`; `terminal_fixed_witness_verifier.py`; `exact_campaign.py:3497` | verifier/解释器/OS 仍是命名 TCB；PR2 仍要收缩 loader/snapshot TCB |
 | OPEN-GATE | **IMPLEMENTED, gate OWNER-CLOSED** | `certified_surface.py:508`; `phase_1_2_spike_close.json` | 2026-07-07 owner 显式 `owner_manual_decision` 已关闭 P1.2（`status=closed_manual_owner_decision`，`p1_3b_entry_allowed=true`）；public publish 不再因 owner gate 本身拒绝，但仍只能走 central publisher / supervisor seal，且不得从测试、receipt、seal 或 checker 绿灯自动推导 closed/released |
@@ -18,8 +24,8 @@
 | immutable review snapshot | **IMPLEMENTED** | `package_review_snapshot.py` 的 `build_package()` 将 treeish 一次 resolve 为 immutable commit，provenance/manifest/`_materialize_tree` 三处统一用该 resolved commit；回归测试 `test_package_review_snapshot_ref_move_after_resolve_keeps_packaged_commit` 钉住 ref-move TOCTOU 场景 | archive policy 覆盖完整性另见下一行（仍 PARTIAL）；IMPLEMENTED ≠ P1.2 CLOSED |
 | archive policy completeness | **PARTIAL（主缺口已收窄）** | 已过滤 prompt、旧包、嵌套 archive、`.artifacts`/packet 等；**协作记忆子系统 `cc_memory/` + `cc_memory_vnext/` 已补入排除表并加回归（`28d9d2c`：与已排除的 `.claude/`/`.codex/`/`_cc_live_memory/`/`cc_context/` 同类补全；真树 77 路径全 excluded）** | 主泄漏面（owner 私下裁定 / 内部 gap 地图经 memory 子系统外泄）已堵；残余留冻结那轮 owner 拍板：`paths/` 探索 probe 与 `.githooks` 去留、secret-scan 类内容面（`28d9d2c` 后已只读扫描 tracked 树、无私钥/AWS/token/赋值型密钥暴露→加扫描器属纵深防御非现洞）、把这次新覆盖再 obligation-anchor（现走已锚定测试断言体、未新增 obligation 名） |
 | boundary-placement independent rederive | **OPEN/PARTIAL** | generation-time guard + pinned artifact + 封印期字节重推 gate（`16495f4`，child 无条件、同生成器重推全 pools 断言 sha==被钉字节） | 统一 terminal 字节重推已补；独立重实现 / 移出证明权威（Option B）属发布时点延期桶，非 P1.2 close 前提 |
-| canonical→geometry shared primitives | **字节半 P1.2 已落 / 语义半已履行（M2，2026-07-08）** | **字节半**：字节级 canonical→geometry 已由重推 gate 交叉验证（`16495f4`）。**语义半（M2 三批全落）**：批 A `03c7f4e` F7/F8 CoverSet 换 canonical 12×12 stencil（owner 裁定，等价回归含方圆差异带钉子）；批 B `6d3e287` F8 整族退役（owner 游戏规则确认前提为假：电杆不需连网）；批 C-1 `c4326f1` F3 方向表 N/S 对齐 canonical DIR_DELTA（旧表对真实工件全错，599,384 port 实测）。F2/F4 核实为无标签 4-邻接（无方向/覆盖标签语义，非缺口）；F1/F6/F9 核实消费主链 SoT（occupied_cells/canonical dims），region/baseline/window 为 family 私有数学对象、无主链等价物 | 后续边界：F8 已完成物理删除；F7 helper-vs-master attach 等价回归已落。剩余工作（07-12 更新：Stage B B0-B5b/批D/α/α2 已全部落地）转为 PIC-4/生产层 PIC-5、RFC-003、F5 真 adapter 修复与 B6 owner promotion 证明链。裁定与实测记录：卡 `p1-3-m2-coverage-stencil-ruling` |
-| discrete throughput / belt bandwidth | **OUT OF SCOPE BY DESIGN** | `flow_subproblem.py` diagnostic-only；benders 不以 flow verdict gate | 不是“待补一条测试”的 gap；若要纳入需改变 theorem scope 和新 proof paradigm |
+| canonical→geometry shared primitives | **字节半 P1.2 已落 / 语义半已履行（M2，2026-07-08）** | **字节半**：字节级 canonical→geometry 已由重推 gate 交叉验证（`16495f4`）。**语义半（M2 三批全落）**：批 A `03c7f4e` F7/F8 CoverSet 换 canonical 12×12 stencil（owner 裁定，等价回归含方圆差异带钉子）；批 B `6d3e287` F8 整族退役（owner 游戏规则确认前提为假：电杆不需连网）；批 C-1 `c4326f1` F3 方向表 N/S 对齐 canonical DIR_DELTA（旧表对真实工件全错，599,384 port 实测）。F2/F4 核实为无标签 4-邻接（无方向/覆盖标签语义，非缺口）；F1/F6/F9 核实消费主链 SoT（occupied_cells/canonical dims），region/baseline/window 为 family 私有数学对象、无主链等价物 | 截至 2026-07-11 的后续边界：F8 已完成物理删除；F7 helper-vs-master attach 等价回归已落。**快照后注（2026-07-12，不属于本页状态基线）**：Stage B B0-B5b/批D/α/α2 已全部落地；其后剩余工作转为 PIC-4/生产层 PIC-5、RFC-003、F5 真 adapter 修复与 B6 owner promotion 证明链。裁定与实测记录：卡 `p1-3-m2-coverage-stencil-ruling` |
+| discrete throughput / belt bandwidth | **P1.2 THEOREM SCOPE EXCLUSION（历史）** | `flow_subproblem.py` diagnostic-only；当时的 benders 不以 flow verdict gate | 该行只登记 P1.2 certified theorem scope：吞吐未纳入 P1.2 已关闭命题；若回溯修改该命题，仍需改变 theorem scope 和 proof paradigm。它不表示吞吐工作当前圈外；owner 2026-07-04 已将 P2.0 吞吐认证改判为必做，现行分期见 [00_master_roadmap.md](00_master_roadmap.md) §1e。 |
 | P1.2 owner gate | **CLOSED（owner 2026-07-07）** | `status=closed_manual_owner_decision`, `p1_3b_entry_allowed=true`（P1.3 已开放） | owner 显式 owner_manual_decision 已关闭 P1.2、开启 P1.3;三轮收口外审(权限/语义/TCB线)0 上-TCB 洞;stay-blocked sentinel 按设计撤除(fixed-witness binding 保留)、已 reseal;此关闭是 owner 手动决定非自动推导 |
 
 ## 发布闭合条件

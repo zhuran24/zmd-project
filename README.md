@@ -1881,7 +1881,7 @@ round-18 后 close-kernel 第二道门把残余明确归为三类，**边界从�
 
 ## 八、PR2 剩余项清单 + 推荐序 + 各自状态
 
-**权威主源**：cc_memory `pr2b-landed-pr2-remaining-status-20260628`（含 file:line）；`docs/项目说明/soundness_gap_roadmap.md`（状态矩阵，注意 IMPLEMENTED ≠ P1.2 CLOSED）；F 线 harness `pr2-5-F-line-import-time-integrity-schedule.md`。
+**截至 2026-07-11 的历史主源**：cc_memory `pr2b-landed-pr2-remaining-status-20260628`（含 file:line）；`docs/项目说明/soundness_gap_roadmap.md`（P1.2 历史状态矩阵，注意 IMPLEMENTED ≠ P1.2 CLOSED）；F 线 harness `pr2-5-F-line-import-time-integrity-schedule.md`。
 
 **关键教训**：一个 Explore 子代理曾把 #1/#2/#3 浅核判 DONE（理由：L0 核零 import、有 `-I -S -B`、fd 原子写）；codex 对设计标准严审打回 **partial**——快照仍扫全 `src/`+`scripts/`、child 仍 `from src.search...` import 项目域模块 = 不是"最小 TCB 闭包"。**别信"定位到表面证据就算 done"的浅核。**
 
@@ -2001,7 +2001,10 @@ round-18 后 close-kernel 第二道门把残余明确归为三类，**边界从�
 2. **certified vs exploratory 铁律**：`certified_exact` 是唯一能产证明材料的路径；exploratory 输出（caps/hints/probe/sidecar）永远不能升 certified。`min_side>=6` 是候选 admissibility、不是目标 tie-break；exact 模式**没有**硬"50 电线杆+10 协议箱"上限（那是 exploratory-only 指导）。
 3. **`main.py` 正常链止于 `CANDIDATE_PROPOSED`**；`supervisor_seal()` 的生产调用方是独立的 `scripts/run_supervisor_seal.py`；**别把"方法存在 / 测试调过 / 入口存在"当"已发布 CERTIFIED"**。
 4. **改 frozen 工件 / v99 sealed sink = freeze-ritual**：更新 `scripts/preflight_gate.py` 的 hash + 重封 allowlist/obligations/checker 自钉，**LF only**（CRLF 会导致本地过 / CI 挂，cc_memory `p1-2-fix-1-close-kernel-crlf` 有血教训）。
-5. **status 矩阵**：`docs/项目说明/soundness_gap_roadmap.md` 是所有 soundness gap 的 IMPLEMENTED/OPEN/PARTIAL/OUT-OF-SCOPE 权威表（**IMPLEMENTED ≠ P1.2 CLOSED**）。
+5. **P1.2 soundness 历史矩阵**：`docs/项目说明/soundness_gap_roadmap.md` 保存截至
+   2026-07-11 的 IMPLEMENTED/OPEN/PARTIAL 与 P1.2 scope exclusion；它不是当前 authority。
+   当前状态看 `06_current_status.md`，release 边界看 `PROJECT_LOCK.md` 与 gate JSON，
+   P2.0 执行序看 `00_master_roadmap.md` §1e。
 6. **接手障碍提醒**：PR2 #5 全部 26 个 commit 在本地分支 `pr2-5-domain-frontier-gate`（HEAD `9bbb3a6`，worktree `.claude/worktrees/pr2-5-round10`）、**未 push**——新机器拿不到，需 owner 把这条分支带过去；且最新 round-15→18 完整故事只在 harness RESUME + git、尚未进 cc_memory。（2026-07-04 注:此条已失效——`6e06922` 合入后 main 自带全部 close-kernel 工作。）
 
 

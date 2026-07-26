@@ -1,7 +1,28 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-24（规则/cut 演化 shadow 终态验收；其余事实按各段日期）**
+**状态日期：2026-07-27。**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
+
+## 当前结论摘要
+
+- **研究上下界账本：** `U=(1188,22)`，`L=absent`。该上界属于 research upper ledger；
+  不建立 `(1188,22)` 的 attainability、global optimality、whole-instance infeasibility
+  或 production `CERTIFIED`。证据与边界见
+  [Track B/B1 R4 报告](../research/b1_r4_1188_22_pb_20260723/README.md)。
+- **`(1188,18)` 候选：** 当前终态为 `FORMAL_AUTHORITY_INCOMPLETE`，
+  `upper_bound_update_authorized=false`；研究账本仍为 `U=(1188,22)`、`L=absent`。
+  内部 solver/verifier 成功不构成绕过外层 authority gate 的依据。详见
+  [sidewise marked-membrane 严格轮](../research/b1_sidewise_marked_membrane_strict_20260724/README.md)。
+- **Routing-aware witness / W2b：** 已有研究构造、运行监督与独立复验基础设施；
+  当前没有通过其 HEAD/input-pinned 验收链的 content-addressed layout，故
+  `L=absent` 不变。该基础设施不属于发布面，也不产生 production authority。
+- **规则与 cut 演化：** 静态规格、一致性门、onboarding fixture 与 rejection audit
+  sidecar 均为 test/offline-only shadow，`authority_effect=non_authorizing`；不改变
+  production runtime、trusted apply 闭集、authority digest、P1.2 seal 或 family promotion 状态。
+- **Noncert cuts A/B：** Gate 1 v4 只建立一条具体 inequality 对一个固定 incumbent 的
+  局部 mechanism reachability 与 exclusion power；AB16 仅完成 non-authorizing Gate A，
+  Gate B、formal campaign 与 16 个 organic arms 均未创建或运行。这些结果不建立
+  family-global soundness、production `CERTIFIED`、上下界、witness、attainability 或 optimality。
 
 ## 2026-07-24 规则与 cut 演化 shadow 协议终态
 
@@ -10,12 +31,10 @@ rule_cut_evolution_status: full_preflight_passed
 - **范围：test/offline-only。** 本批增加规则与 family 静态规格、一致性门、
   合同矩阵、onboarding fixture 和 rejection audit sidecar；详见
   [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md)。
-- **验收：full preflight 通过。** 验收基线为干净的
-  `fd015a9ac49a182b242895433a2ff2d2e5ee57de`；使用 coherent backup venv、清除
-  `PYTHONPATH`/`PYTHONHOME` 并持有独占资源互斥锁时，
-  `scripts/preflight_gate.py --full` 返回 `0`，总体 `PASSED`（19 passed），pytest 为
-  `4701 passed, 74 skipped in 98.52s`。完整 stdout/stderr 日志 SHA-256 为
-  `fedf7de80905b47c626b874213f0471a2e499a7fdd56bbc862bab47027138bc1`。
+- **验收：** `full_preflight_passed` 是绑定
+  `fd015a9ac49a182b242895433a2ff2d2e5ee57de` 的批次级 receipt；详细记录见
+  [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md)。该 receipt
+  不外推为其他 HEAD 的 full-suite 结果或任何 production authority。
 - **Authority：non-authorizing。** `PROJECT_LOCK.md`、P1.2 seal/hash、public wire
   与 digest、production 控制流及 trusted apply 闭集不变；`PROJECT_LOCK.md` SHA-256
   仍为 `33632dfdb2297425e42066b2cf0749ca6b9ab1f8653e810b6f2e53ded1025410`。
@@ -49,8 +68,8 @@ rule_cut_evolution_status: full_preflight_passed
 - **cut framework 通电前修复批**（`68b4557`）：F1 BState ghost 轴反置修复（soundness 级）+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深。**attach 通电 spike 判决 GO**（`e719e5d`：10K cut attach 16.6s+solve +4.1%,效度边界四条）;production integration checklist 立册（PIC-0~7,`4fceb9f`）,PIC-3 预算 env 化已落（`b9fcca9`,BUDGET fail-closed resolver+双注册）,PIC-7 已归因关闭。批 B（宿主形态+RFC-001 评估）已于 2026-07-11 完成；Stage B 规格定稿并已全部执行完（B0-B5b，见顶部 07-12 增量段）——本行早期「待 B2-B5」的表述是 07-11 凌晨快照。
 - **exploratory 模式在 prod-scale 上不可用**的坑已钉死（port clearance 启发式 build 爆炸+legacy master+all_facility 实例集,py-spy 实锤,memory 卡+spike 规格书）。
 
-本页描述当前工作树，不以 Git HEAD 的提交时间替代工作树事实。未提交的 PR1 发布面 soundness 修复
-属于当前实现状态。
+本页顶部摘要描述当前已提交状态与 authority 边界；各带日期的增量段保留当时事实，
+其中 receipt 只绑定其明确标注的 HEAD，不外推为其他 HEAD 的 authority。
 
 ## 已落地的边界
 

@@ -1,6 +1,8 @@
 # 05 — 待定 mathematical questions (open problems)
 
-> **问题清单边界**：本文件混合历史问题与未来 P1.3 设计项。已落地/未落地状态必须回查 `06_current_status.md` 和 `soundness_gap_roadmap.md`；旧 `P1.3B` 人类名称统一解释为 P1.3。
+> **问题清单边界**：本文件混合历史问题与未来 P1.3 设计项。当前状态必须回查
+> `06_current_status.md`；`soundness_gap_roadmap.md` 只保存截至 2026-07-11 的
+> P1.2 历史快照。旧 `P1.3B` 人类名称统一解释为 P1.3。
 
 
 本节列**当前没答案**的数学问题. 按级别标:
