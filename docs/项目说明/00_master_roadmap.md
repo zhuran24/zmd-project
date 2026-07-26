@@ -18,18 +18,19 @@
 > 文档没有它们的位置。08/09/10/13 是"史料+现行混排"的 ledger，**保持
 > 原样加注、不重写**；总图由本文档承担。
 
-## 0. 一句话现状（2026-07-27；研究证据截止 2026-07-25）
+## 0. 一句话现状（2026-07-27；研究证据截止 2026-07-27）
 
 P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 进行中，
-研究双账当前为 `U=(1188,22)`、`L=absent`。`U` 是给定 R4 `a004`
-已准入几何必要引理后的 research upper ledger；它不建立 `(1188,22)` 的
-attainability、global optimality 或 production `CERTIFIED`。面向 `(1188,18)`
-的 strict/SMM3 两轮均以 `FORMAL_AUTHORITY_INCOMPLETE` 失败关闭，未更新账本。
+研究双账当前为 `U=(1188,18)`、`L=absent`。strict/SMM3 与前两个 SMM4 root
+的失败事实继续保留；第三个 fresh-authority root 的唯一 formal one-shot 已由
+最终 detached receipt 与 immutable closeout 授权 research upper recovery。
+该结果不建立 `(1188,18)` attainability、global optimality、whole-instance
+infeasibility、lower bound 或 production `CERTIFIED`。
 
 | 工作线 | 当前终态坐标 | Authority 边界 |
 |---|---|---|
 | **cut 框架工程线** | Production family 状态不变：F1/F6/F7 为 typed，F5 为 shadow-only，F2/F3/F4/F9 为 `LEGACY_DIAGNOSTIC`，F8 retired；attach 仍 unsafe/default-off，B6 未授权。07-24 rule/cut evolution 只增加 test/offline shadow 维护面。Noncert cuts Gate 1 v4 只建立 `MECHANISM_CREDIBLE`；prospective AB16 为 `GATE_A_FINALIZED / GATE_B_NOT_CREATED`，formal campaign 未创建、organic arms `0/16`。 | Shadow 与 noncert 结果都不授权 production attach、family-global soundness、上下界、witness 或 optimality。 |
-| **求解与研究线** | Track B/B1 proof-bearing PB 已把 research upper ledger 更新为 `U=(1188,22)`；下界仍为 `L=absent`。后续 `(1188,18)` strict/SMM3 authority recovery 均为 `FORMAL_AUTHORITY_INCOMPLETE`，未入账；routing-aware witness/W2b 只有 HEAD/input-pinned 研究基础设施，尚无被账本接受的 layout。 | 没有新的 attainability、optimality 或 production `CERTIFIED` 结论；旧 receipt 只证明其 originating HEAD、inputs、tools 与工件字节。 |
+| **求解与研究线** | SMM4 fresh-authority 的 `smm4-formal-a004` 已消费且不得重试；最终 detached receipt 与 immutable closeout 均为 `VERIFIED` 并授权 research upper ledger 更新为 `U=(1188,18)`，`L=absent`。内部 formal receipt 即使 `VERIFIED`/UNSAT 仍为 `upper_bound_update_authorized=false`；routing-aware witness/W2b 仍没有被账本接受的 layout。下一项强制任务为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`，尚未执行。 | 只建立 research upper recovery；不建立 `(1188,18)` attainability、global optimality、whole-instance infeasibility、lower bound 或 production `CERTIFIED`。旧 receipt 只证明其 originating HEAD、inputs、tools 与工件字节。 |
 | **支线** | P3.0 轴 A 已有 68 条定理；轴 B 待开工。P2.0 吞吐认证仍是 owner 判定的必做线；TNS 设计稿完成未排。 | P2.0 不受 P1.2 历史 theorem scope exclusion 覆盖。 |
 
 下表保存 **2026-07-20 的执行快照**，仅用于追溯当时的排期，不覆盖上表终态：
@@ -63,6 +64,7 @@ attainability、global optimality 或 production `CERTIFIED`。面向 `(1188,18)
 | 07-23 | R4 `a004` 只把 `(1188,22)` 准入为 B1 encoder-design 输入；随后 B1 proof-bearing PB/RoundingSat/VeriPB 链完整关闭 lex-better band，research upper ledger 更新为 `U=(1188,22)`，`L=absent` | `r4_response_review_20260723/`；`b1_r4_1188_22_pb_20260723/` |
 | 07-24 | `(1188,18)` sidewise strict 与 SMM3 recovery 均以 `FORMAL_AUTHORITY_INCOMPLETE` 失败关闭，账本不变。Rule/cut evolution 保持 test/offline shadow。Noncert Gate 1 v4 仅建立单个注入 inequality 的 `MECHANISM_CREDIBLE`；AB16 停在 Gate A，未创建 formal campaign 或 organic arm | `b1_sidewise_marked_membrane_strict_20260724/`；`b1_sidewise_marked_membrane_authority_recovery_20260724/`；`23_rule_cut_evolution_protocol.md`；`noncert_cuts_ab_trust_gate1_v4_20260724/`；`noncert_cuts_ab16_20260724/` |
 | 07-25 | 合并态 provenance gate 保留 Track B、R4 与 noncert 研究 authority 的原始 HEAD/input/tool 身份；旧 receipt 不因进入后续 HEAD 而成为新生成 authority，研究双账仍为 `U=(1188,22)`、`L=absent` | `src/tests/conftest.py` |
+| 07-27 | SMM4 第三个 fresh-authority root 完成唯一 formal one-shot；`smm4-formal-a004` 已消费且不得重试。最终 detached receipt 与 immutable closeout 均为 `VERIFIED`，且只有二者授权 research upper ledger 更新为 `U=(1188,18)`、`L=absent`；`production_certified=false`。下一项强制任务登记为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`，未执行 | [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md) |
 
 ### 0b. 方法论：规则归属判据 v2 → v2.3（2026-07-17 三轮推出 v1/v2/v2.1；07-18 两轮补 cut 方法论与四问统一；07-20 干净房间 R2/R3 外部收编）
 

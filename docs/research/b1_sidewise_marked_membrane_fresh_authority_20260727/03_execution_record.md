@@ -3,19 +3,22 @@
 | 字段 | 截止 `2026-07-27` 的记录 |
 |---|---|
 | 文档性质 | 追加式执行史料 |
-| 状态 | `SECOND_ROOT_FROZEN / AUTHORITY_HARDENING_LIGHT_VALIDATED / THIRD_ROOT_NOT_CREATED` |
-| 当前账本 | `U=(1188,22)`、`L=absent` |
-| fresh authority root | 当前无可续 root；前两个 root 均已冻结 |
-| external authority package ID | 仅冻结第二 root 曾建立，当前无可续 ID |
-| synthetic gates | success A001 已消费并 fail-closed；post-SEAL gate 未运行 |
-| full preflight | 尚未报备或运行 |
-| formal selection | 尚未创建 |
-| `smm4-formal-a004` | 未消费 |
-| detached receipt | 仅有 synthetic failure detached closeout；无成功 receipt |
+| 状态 | `VERIFIED / FORMAL_A004_CONSUMED_NO_RETRY / RESEARCH_UPPER_RECOVERED` |
+| 当前账本 | `U=(1188,18)`、`L=absent` |
+| fresh authority root | `.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b/` |
+| external authority package ID | `bed3a65a788655b95b445c944292b28fdf6a9f6fce74b27c4f0f8a2617a0622b` |
+| synthetic gates | success 与 post-SEAL failure 均完成 detached `PASS`；均不授权账本更新 |
+| full preflight | 固定 HEAD `14a491bdbfb9fa05d30b17731ed6e29abc1d2201` 上 exact `PASS` |
+| formal selection | `formal-attempt-a004/selection.json` 已唯一创建 |
+| `smm4-formal-a004` | 已消费，永久不得重试 |
+| detached receipt | `VERIFIED`，SHA-256 `9a590d3e0ba6805dc2c1d6abebe60274e4cc5ced868126ab962b0b1a627ddafe` |
+| immutable closeout | `VERIFIED`，SHA-256 `e839073a0f20942141147045db541050cc7aad58be91a1459d58835e081d863f` |
+| authority 边界 | 仅 detached receipt 与 closeout 为 `upper_bound_update_authorized=true`；`production_certified=false` |
 
-## 截止日期前已固定的事实
+## 第三个 root 前已固定的设计与历史事实
 
-- 固定隔离 worktree 与基线 `e03bc98dbb00fb38d941e471c61879c499b33213`；
+- SMM4 初始侦察固定隔离 worktree 与基线
+  `e03bc98dbb00fb38d941e471c61879c499b33213`；
 - 确认 SMM3 失败发生在 solver 启动前的 7-field/4-field identity 整对象比较；
 - 确认旧 R4 receipt 与 proof graph 的历史字节仍是只读输入，但旧 full replay
   绑定的 checkout 已发生 current-HEAD `repository_identity_drift`；SMM4 必须使用
@@ -128,21 +131,61 @@ argv、stdout/raw、跨 attempt 路径、output context 与授权位漂移的 fa
 动态 narrowing 报告，没有新增。这些修复与本记录由同一个 tracked-clean
 implementation commit 固定；第三个 fresh root 尚未建立。
 
-## 尚未发生
+## 第三个 root 建立前的挂起状态（历史快照）
 
-本记录没有可续的 fresh sealed authority/external package ID，也没有
-synthetic success、synthetic post-SEAL failure、formal admission、formal
-proof、resource/terminal/cleanup 或 detached 成功证据；监督线程也尚未对
-重负载放行。因此 `(1188,18)` 仍是待采证候选；不得从当前记录更新账本或宣称
-attainability、optimality、whole-instance infeasibility、production
-`CERTIFIED`。第二 root 中已存在的 synthetic selection 只证明该 synthetic
-attempt 已消费并完成失败闭包，不是 formal selection 或候选上界证据。
+以下两段保存第三个 root 建立前的决策边界，不是当前状态。当时没有可续的 fresh
+sealed authority/external package ID，也没有 synthetic success、synthetic
+post-SEAL failure、formal admission、formal proof、resource/terminal/cleanup
+或 detached 成功证据；`(1188,18)` 仍是待采证候选，账本为
+`U=(1188,22)`、`L=absent`。第二 root 中已存在的 synthetic selection 只证明
+该 synthetic attempt 已消费并完成失败闭包，不是 formal selection 或候选上界证据。
 
-后续运行结果只在真实阶段完成后追加。只有 formal detached receipt 明确写出
-`upper_bound_update_authorized=true` 才能追加成功收口并更新
-`U=(1188,18)`；否则保持 `U=(1188,22)`。selection 已创建后的失败必须把
-`smm4-formal-a004` 追加记录为 consumed/incomplete，禁止同编号重试；若
-`detached-failure-verification.json` 缺失，执行记录还必须保留其预期路径与
-未验证状态。selection 前的精确空 canonical attempt directory 不构成消费，也
-不应产生失败记录。所有分支始终保持 `L=absent`，且旧 SMM2/SMM3 失败记录不得
-在此处改写。
+当时固定的终态规则是：只有 formal detached receipt 明确写出
+`upper_bound_update_authorized=true` 才能更新 `U=(1188,18)`；否则保持
+`U=(1188,22)`。selection 已创建后的失败必须把 `smm4-formal-a004` 记录为
+consumed/incomplete，禁止同编号重试；selection 前的精确空 canonical attempt
+directory 不构成消费，也不产生 failure receipt。所有分支始终保持
+`L=absent`，旧 SMM2/SMM3 失败记录不得改写。
+
+## 2026-07-27 第三个 root：formal one-shot VERIFIED 与 immutable closeout
+
+linked-worktree Git-root guard 修复由 tracked-clean HEAD
+`14a491bdbfb9fa05d30b17731ed6e29abc1d2201` 固定。第三个 no-overwrite root 为
+`.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b/`，
+external authority package ID 为
+`bed3a65a788655b95b445c944292b28fdf6a9f6fce74b27c4f0f8a2617a0622b`。
+sealed package、自含 pin、synthetic success、synthetic post-SEAL failure、
+两次 admission-time independent detached replay 与 fixed-HEAD full preflight
+均通过。两项 synthetic detached receipt 与两份 admission replay 都保持
+`upper_bound_update_authorized=false`、`U=(1188,22)`、`L=absent`。
+
+canonical formal admission 以 `formal_attempt_selected=false` 发布。随后唯一一次
+formal selection 创建 `formal-attempt-a004/selection.json`，并恰好启动一次
+`b1-smm4-formal-a004.service`。`smm4-formal-a004` 自 selection 起永久消费，
+不得重试、改号续跑或迁移到新 root。
+
+内层 `formal-a004/internal_formal_receipt.json` 为 `VERIFIED`：RoundingSat
+报告 UNSAT，第一轮 VeriPB 报告 `s VERIFIED UNSATISFIABLE`，同一 retained FD
+链、old-upper replay 与 composition replay 均通过。该内部 receipt 明确保持
+`upper_bound_update_authorized=false`，不是研究账本的授权源。
+
+unit 清理后，独立 verifier 从 pinned formula/proof FD 执行第二轮 VeriPB，
+并复核 terminal class `success`、payload exit `0`、unit/cgroup absence 与
+`remaining_pids=[]`。最终
+`formal-attempt-a004/detached-verification.json` 为 `VERIFIED`，SHA-256 为
+`9a590d3e0ba6805dc2c1d6abebe60274e4cc5ced868126ab962b0b1a627ddafe`；
+`closeout-a001.json` 同为 `VERIFIED`，SHA-256 为
+`e839073a0f20942141147045db541050cc7aad58be91a1459d58835e081d863f`。
+只有这两项明确给出 `upper_bound_update_authorized=true`，并把 research upper
+ledger 更新为 `U=(1188,18)`；`L=absent`、`production_certified=false`。
+
+该授权连接的范围恰为：旧 `U=(1188,22)` 的完整 `2084`-orientation band、
+SMM-209 geometry admission、candidate-old delta 公式与变量映射、方向
+`(22,54)`/`(54,22)` 的 2-selector UNSAT，共同覆盖候选
+`U=(1188,18)` 的完整 `2086`-orientation band。它只完成 research upper
+recovery，不证明 `(1188,18)` attainability、global optimality、
+whole-instance infeasibility、任何 lower bound 或 production `CERTIFIED`。
+
+前两个 SMM4 root 及 SMM2/SMM3 的失败记录继续按原字节和原判词保留。closeout
+登记的下一项强制任务为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`；本次 SMM4
+收口没有执行该任务，也不构成 cut 已完成的证据。

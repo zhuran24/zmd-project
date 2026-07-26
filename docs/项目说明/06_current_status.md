@@ -5,14 +5,16 @@
 
 ## 当前结论摘要
 
-- **研究上下界账本：** `U=(1188,22)`，`L=absent`。该上界属于 research upper ledger；
-  不建立 `(1188,22)` 的 attainability、global optimality、whole-instance infeasibility
-  或 production `CERTIFIED`。证据与边界见
-  [Track B/B1 R4 报告](../research/b1_r4_1188_22_pb_20260723/README.md)。
-- **`(1188,18)` 候选：** 当前终态为 `FORMAL_AUTHORITY_INCOMPLETE`，
-  `upper_bound_update_authorized=false`；研究账本仍为 `U=(1188,22)`、`L=absent`。
-  内部 solver/verifier 成功不构成绕过外层 authority gate 的依据。详见
-  [sidewise marked-membrane 严格轮](../research/b1_sidewise_marked_membrane_strict_20260724/README.md)。
+- **研究上下界账本：** `U=(1188,18)`，`L=absent`。SMM4 最终 detached receipt
+  与 immutable closeout 均为 `VERIFIED`，且只有这两项明确给出
+  `upper_bound_update_authorized=true`。该结果只更新 research upper ledger；
+  不建立 `(1188,18)` attainability、global optimality、whole-instance
+  infeasibility、任何 lower bound 或 production `CERTIFIED`。证据与边界见
+  [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md)。
+- **SMM4 formal 终态：** `smm4-formal-a004` 已消费且永久不得重试。内部
+  `VERIFIED`/UNSAT receipt 仍为 `upper_bound_update_authorized=false`，不是账本
+  授权源；`production_certified=false`。下一项强制任务登记为
+  `AB16_GATE_B_AND_16_ORGANIC_ARMS`，尚未执行。
 - **Routing-aware witness / W2b：** 已有研究构造、运行监督与独立复验基础设施；
   当前没有通过其 HEAD/input-pinned 验收链的 content-addressed layout，故
   `L=absent` 不变。该基础设施不属于发布面，也不产生 production authority。
@@ -23,6 +25,30 @@
   局部 mechanism reachability 与 exclusion power；AB16 仅完成 non-authorizing Gate A，
   Gate B、formal campaign 与 16 个 organic arms 均未创建或运行。这些结果不建立
   family-global soundness、production `CERTIFIED`、上下界、witness、attainability 或 optimality。
+
+## 2026-07-27 SMM4 research upper recovery 终态
+
+成功 fresh root 为
+`.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b/`，
+external authority package ID 为
+`bed3a65a788655b95b445c944292b28fdf6a9f6fce74b27c4f0f8a2617a0622b`。
+formal `smm4-formal-a004` 已唯一选择、唯一启动并消费，后续不得重试或改号续跑。
+
+内部 formal receipt 为 `VERIFIED`/UNSAT，但明确保持
+`upper_bound_update_authorized=false`。unit 清理后的独立 verifier 执行第二轮
+VeriPB，并关闭 resource、terminal/cleanup、unit/cgroup 与 PID absence 证据。
+最终 detached receipt SHA-256 为
+`9a590d3e0ba6805dc2c1d6abebe60274e4cc5ced868126ab962b0b1a627ddafe`，
+immutable closeout SHA-256 为
+`e839073a0f20942141147045db541050cc7aad58be91a1459d58835e081d863f`；
+两者均为 `VERIFIED` 且明确 `upper_bound_update_authorized=true`。
+
+该 closeout 把 research upper ledger 更新为 `U=(1188,18)`，同时保持
+`L=absent`、`production_certified=false`。其证明范围只连接旧
+`U=(1188,22)` 的完整 band、SMM-209 geometry admission、2-selector delta
+公式/变量映射与 `(22,54)`、`(54,22)` 两个方向；不外推为 attainability、
+global optimality、whole-instance infeasibility、lower bound 或 production
+`CERTIFIED`。旧 SMM2/SMM3 与前两个 SMM4 root 的失败事实继续保留。
 
 ## 2026-07-24 规则与 cut 演化 shadow 协议终态
 

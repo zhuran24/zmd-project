@@ -3,16 +3,17 @@
 | 字段 | 当前值 |
 |---|---|
 | 日期 | `2026-07-27` |
-| 状态 | `AUTHORITY_HARDENING_LIGHT_VALIDATED / THIRD_ROOT_PENDING` |
-| 研究账本 | `U=(1188,22)`、`L=absent` |
-| 候选 | `(1188,18)`，尚未获得 detached authority |
-| cut backlog | Gate1 v4 已过；AB16 Gate B 未建；organic arms `0/16` |
+| 状态 | `VERIFIED / FORMAL_A004_CONSUMED_NO_RETRY` |
+| 研究账本 | `U=(1188,18)`、`L=absent` |
+| authority | detached receipt 与 immutable closeout 已授权 research upper recovery |
+| production | `production_certified=false` |
+| 下一项强制任务 | `AB16_GATE_B_AND_16_ORGANIC_ARMS`（未执行） |
 
 SMM4 是对同一候选 `(1188,18)` 的有限 authority recovery，不是新 B1/B2
-武器。它修复 SMM3 的 identity join 根因，并用固定实现 HEAD、fresh sealed
-authority、全新 no-overwrite root 和唯一一次 `smm4-formal-a004` 尝试重新建立
-外层证据闭包。旧 SMM2/SMM3 工件、工具和 receipt 只读且按字节哈希钉死；SMM4
-不修改 v1 历史面，也不续跑或重写旧 attempt。
+武器。固定实现 HEAD、fresh sealed authority、全新 no-overwrite root 和唯一一次
+`smm4-formal-a004` 已建立外层证据闭包。该 formal attempt 已消费且永久不得重试。
+旧 SMM2/SMM3 与前两个 SMM4 root 的失败工件继续只读保留；SMM4 没有修改 v1
+历史面，也没有续跑或重写旧 attempt。
 
 ## 文件
 
@@ -31,11 +32,22 @@ authority、全新 no-overwrite root 和唯一一次 `smm4-formal-a004` 尝试�
 ## 当前判读
 
 前两个 fresh root 已分别在 selection 前 manager identity bridge 和
-post-selection synthetic loader join 处 fail-closed，并完整冻结；formal
-`smm4-formal-a004` 仍未消费。当前 tracked implementation 已修复这两项根因及
-后续对抗审计发现的 resource receipt、synthetic argv、systemctl raw join 与
-canonical attempt topology 缺口；第三个 no-overwrite root 尚未建立。完整追加式
-史料见 [03_execution_record.md](03_execution_record.md)。
+post-selection synthetic loader join 处 fail-closed，并完整冻结。当前成功 root
+为
+`.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b/`，
+external authority package ID 为
+`bed3a65a788655b95b445c944292b28fdf6a9f6fce74b27c4f0f8a2617a0622b`。
+完整追加式史料见 [03_execution_record.md](03_execution_record.md)。
+
+`formal-attempt-a004/formal-a004/internal_formal_receipt.json` 虽为
+`VERIFIED`/UNSAT，仍明确保持 `upper_bound_update_authorized=false`。最终
+`formal-attempt-a004/detached-verification.json` 为 `VERIFIED`，SHA-256
+`9a590d3e0ba6805dc2c1d6abebe60274e4cc5ced868126ab962b0b1a627ddafe`；
+`closeout-a001.json` 同为 `VERIFIED`，SHA-256
+`e839073a0f20942141147045db541050cc7aad58be91a1459d58835e081d863f`。
+只有 detached receipt 与 closeout 明确给出
+`upper_bound_update_authorized=true`，授权把 research upper ledger 更新为
+`U=(1188,18)`；`L=absent`、`production_certified=false`。
 
 旧 R4 receipt 的历史字节与 proof graph 仍是 SMM4 的只读输入，但旧 R4 的
 full replay 绑定原 checkout HEAD；当前该 checkout 已发生 repository identity
@@ -53,14 +65,13 @@ old U=(1188,22) 的完整 2084-orientation lex-better band 为 UNSAT
 = 候选 U=(1188,18) 的完整 2086-orientation lex-better band 被覆盖
 ```
 
-这不是 attainability、optimality、whole-instance infeasibility 或 production
-`CERTIFIED`。composition、old-upper adapter、formal admission、selection、内层
-proof receipt、resource 与 terminal/cleanup 记录都必须保持
-`upper_bound_update_authorized=false`。只有正式 proof、资源、terminal/cleanup
-闭包和 detached VeriPB 全部完成后生成的 detached receipt 才可能明确给出
-`upper_bound_update_authorized=true`，并授权把研究账本更新为 `U=(1188,18)`。
-否则账本保持 `U=(1188,22)`；selection 已创建时，`smm4-formal-a004` 冻结为
-incomplete 且不得同编号重试。两个终态都保持 `L=absent`。
+这不是 attainability、global optimality、whole-instance infeasibility、lower
+bound 或 production `CERTIFIED`。composition、old-upper adapter、formal
+admission、selection、内层 proof receipt、resource 与 terminal/cleanup 记录均为
+`upper_bound_update_authorized=false`。unit 清理后的独立 detached verifier
+完成第二轮 VeriPB 及 absence replay，最终 detached receipt 与 immutable closeout
+才给出 `upper_bound_update_authorized=true`。`smm4-formal-a004` 已消费且不得
+同编号重试。
 
 ## Attempt lifecycle
 
@@ -80,12 +91,10 @@ immutable closeout 明确保留预期路径和缺失状态；该缺失不能产�
 `logical_argv`、实际 proc-FD 形式的 `executed_argv`、full7 executable identity
 和同 FD 稳定性，并由 resource/terminal/cleanup/detached verifier 复核。
 
-本轮不修改实存的
+SMM4 没有修改实存的
 [SMM3 后续 cut 强制排期](../b1_sidewise_marked_membrane_authority_recovery_20260724/04_cuts_mandatory_schedule.md)。
-owner 本轮指定的归档路径
+既有归档路径
 `../noncert_cuts_ab16_20260724/04_cuts_mandatory_schedule.md` 在固定 HEAD 中缺失；
-这只是 provenance/path gap，不改变 SMM4 方向，也不是 cut 已完成的证据。最新
-[AB16 状态](../noncert_cuts_ab16_20260724/README.md)为 Gate A 已 finalized、
-Gate B 未建立、organic arms `0/16`；结合 owner 当前口径，Gate1 v4 已过，
-2026-07-27 “上界恢复先行”只允许这次已有候选的有限 authority recovery，cut
-工作仍是后续强制 backlog。
+这只是 provenance/path gap，也不是 cut 已完成的证据。SMM4 closeout 登记的
+下一项强制任务仅为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`；其当前背景见
+[AB16 状态](../noncert_cuts_ab16_20260724/README.md)。SMM4 收口没有执行该任务。
