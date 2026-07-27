@@ -31,6 +31,7 @@ import stat
 import subprocess
 import sys
 import time
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from types import ModuleType
@@ -46,9 +47,14 @@ ARM_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
 PRE_RUN_AUTHORITY_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v2"
 ARM_CONSUMPTION_SCHEMA = "noncert-cuts-ab16-organic-arm-consumption-v2"
 CAMPAIGN_STOP_SCHEMA = "noncert-cuts-ab16-immediate-stop-v1"
-PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v2"
+PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v3"
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
 GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v2"
+GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v1"
+FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v3"
+REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
+SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
+EXTERNAL_PLATFORM_SCHEMA = "noncert-cuts-ab16-external-platform-assumptions-v1"
 CONTINUATION_SCHEMA = "noncert-cuts-gate1-v4-continuation-authorization-v1"
 BASELINE_ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v1"
 COMMON_PRESTATE_SCHEMA = "noncert-cuts-ab16-common-prestate-v1"
@@ -76,8 +82,13 @@ REQUIRED_PACKAGE_ROLES = frozenset(
         "campaign_authority_v4.py",
         "input.ab16_gate_a_receipt.json",
         "input.ab16_gate_b_approval.json",
+        "input.ab16_gate_b_epoch_observation.json",
+        "input.ab16_gate_b_final_full_preflight.json",
+        "input.ab16_external_platform_assumptions.json",
         "input.ab16_offline_candidate.json",
         "input.ab16_path_preregistration.json",
+        "input.ab16_repository_snapshot.json",
+        "input.ab16_repository_snapshot.zip",
         "input.ab16_bootstrap_manager_epoch_capture.json",
         "input.candidate_placements.json",
         "input.canonical_rules.json",
@@ -636,10 +647,263 @@ def _detached_from_source(value: Mapping[str, Any]) -> dict[str, object]:
     }
 
 
+def _mode_identity(snapshot: Snapshot) -> dict[str, object]:
+    return {"mode": snapshot.mode, **detached_identity(snapshot)}
+
+
+def validate_repository_snapshot_manifest(value: object) -> Mapping[str, Any]:
+    """Validate the finite fixed-HEAD source set without trusting its builder."""
+
+    record = _exact_keys(
+        value,
+        set(
+            "archive_identity authority_scope import_mode member_count members ordered_member_digest repository_head "
+            "repository_tree schema_version total_bytes".split()
+        ),
+        "AB16 repository snapshot manifest",
+    )
+    members = record["members"]
+    if type(members) is not list or not members:
+        raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", "empty or malformed member list")
+    paths: set[str] = set()
+    collision_keys: set[str] = set()
+    git_paths: list[str] = []
+    overlay_count = 0
+    total_bytes = 0
+    for ordinal, item in enumerate(members):
+        if type(item) is not dict:
+            raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", f"member {ordinal}")
+        kind = item.get("source_kind")
+        keys = (
+            {"blob_oid", "git_mode", "materialized_mode", "path", "raw_sha256", "size_bytes", "source_kind"}
+            if kind == "git_blob"
+            else set("materialized_mode package_role path raw_sha256 size_bytes source_identity source_kind".split())
+        )
+        member = _exact_keys(item, keys, f"AB16 repository snapshot member {ordinal}")
+        path = member["path"]
+        if type(path) is not str:
+            raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", f"member path {ordinal}")
+        try:
+            path = _safe_rel(path)
+        except AuthorityError as exc:
+            raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", f"member path {ordinal}") from exc
+        collision = unicodedata.normalize("NFC", path).casefold()
+        if (
+            path != member["path"]
+            or path in paths
+            or collision in collision_keys
+            or unicodedata.normalize("NFC", path) != path
+            or type(member["raw_sha256"]) is not str
+            or SHA256_RE.fullmatch(member["raw_sha256"]) is None
+            or type(member["size_bytes"]) is not int
+            or member["size_bytes"] < 0
+        ):
+            raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", f"member identity {path}")
+        paths.add(path)
+        collision_keys.add(collision)
+        total_bytes += member["size_bytes"]
+        if kind == "git_blob":
+            if (
+                type(member["blob_oid"]) is not str
+                or HEAD_RE.fullmatch(member["blob_oid"]) is None
+                or member["git_mode"] not in {"100644", "100755"}
+                or member["materialized_mode"] != (0o555 if member["git_mode"] == "100755" else 0o444)
+            ):
+                raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", f"tracked member {path}")
+            git_paths.append(path)
+        elif kind == "package_overlay":
+            overlay_count += 1
+            source = _exact_keys(
+                member["source_identity"],
+                {"mode", "path", "sha256", "size_bytes"},
+                "AB16 repository snapshot overlay source",
+            )
+            if (
+                path != "data/preprocessed/candidate_placements.json"
+                or ordinal != len(members) - 1
+                or member["package_role"] != "input.candidate_placements.json"
+                or member["materialized_mode"] != 0o444
+                or source["sha256"] != member["raw_sha256"]
+                or source["size_bytes"] != member["size_bytes"]
+                or type(source["mode"]) is not int
+                or type(source["path"]) is not str
+                or not Path(source["path"]).is_absolute()
+            ):
+                raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", "candidate overlay")
+        else:
+            raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", f"source kind {kind!r}")
+    archive = _exact_keys(
+        record["archive_identity"],
+        {"path", "sha256", "size_bytes"},
+        "AB16 repository snapshot archive",
+    )
+    if (
+        overlay_count != 1
+        or git_paths != sorted(git_paths, key=lambda path: path.encode("utf-8"))
+        or record["schema_version"] != REPOSITORY_SNAPSHOT_SCHEMA
+        or record["authority_scope"] != "AB16_RESEARCH_ONLY"
+        or record["import_mode"] != "ordinary_pathfinder"
+        or type(record["repository_head"]) is not str
+        or HEAD_RE.fullmatch(record["repository_head"]) is None
+        or type(record["repository_tree"]) is not str
+        or HEAD_RE.fullmatch(record["repository_tree"]) is None
+        or type(record["member_count"]) is not int
+        or record["member_count"] != len(members)
+        or type(record["total_bytes"]) is not int
+        or record["total_bytes"] != total_bytes
+        or type(record["ordered_member_digest"]) is not str
+        or record["ordered_member_digest"] != hashlib.sha256(canonical_json(members)).hexdigest()
+        or type(archive["path"]) is not str
+        or not Path(archive["path"]).is_absolute()
+        or type(archive["sha256"]) is not str
+        or SHA256_RE.fullmatch(archive["sha256"]) is None
+        or type(archive["size_bytes"]) is not int
+        or archive["size_bytes"] <= 0
+    ):
+        raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", "manifest aggregate")
+    return record
+
+
+def _replay_repository_snapshot(
+    *,
+    directory: Path,
+    root: Mapping[str, Any],
+    files: Mapping[str, Snapshot],
+    sources: Mapping[str, Mapping[str, Any]],
+) -> dict[str, object]:
+    manifest_snapshot = files[sources["input.ab16_repository_snapshot.json"]["package_path"]]
+    archive_snapshot = files[sources["input.ab16_repository_snapshot.zip"]["package_path"]]
+    platform_snapshot = files[sources["input.ab16_external_platform_assumptions.json"]["package_path"]]
+    manifest = validate_repository_snapshot_manifest(
+        _record(manifest_snapshot, "AB16 repository snapshot manifest")
+    )
+    expected_authority = directory / "campaign-authority" / "source-snapshot-a001"
+    snapshot_root = expected_authority / "repository"
+    receipt_snapshot = _replay_detached(
+        root["strict_inputs"].get("ab16_repository_snapshot_materialization"),
+        "AB16 repository snapshot materialization",
+    )
+    receipt = _exact_keys(
+        _record(receipt_snapshot, "AB16 repository snapshot materialization"),
+        set(
+            "authority_scope candidate_identity created_at_utc import_mode member_count ordered_member_digest "
+            "package_id repository_head repository_tree schema_version snapshot_archive_identity "
+            "snapshot_manifest_identity snapshot_root status total_bytes".split()
+        ),
+        "AB16 repository snapshot materialization",
+    )
+    manifest_identity = detached_identity(manifest_snapshot)
+    archive_identity = detached_identity(archive_snapshot)
+    candidate_snapshot = files[sources["input.candidate_placements.json"]["package_path"]]
+    overlay = manifest["members"][-1]
+    if (
+        receipt_snapshot.path != expected_authority / "materialization-receipt.json"
+        or manifest["archive_identity"] != archive_identity
+        or Path(str(manifest["archive_identity"]["path"])) != archive_snapshot.path
+        or root["strict_inputs"].get("ab16_repository_snapshot") != manifest_identity
+        or root["strict_inputs"].get("ab16_repository_snapshot_archive") != archive_identity
+        or root["strict_inputs"].get("ab16_external_platform_assumptions") != detached_identity(platform_snapshot)
+        or receipt["schema_version"] != SNAPSHOT_MATERIALIZATION_SCHEMA
+        or receipt["status"] != "PASS"
+        or receipt["authority_scope"] != "AB16_RESEARCH_ONLY"
+        or receipt["import_mode"] != "ordinary_pathfinder"
+        or receipt["package_id"] != root["package"]["package_id"]
+        or receipt["repository_head"] != root["repository_head"]
+        or receipt["repository_head"] != manifest["repository_head"]
+        or receipt["repository_tree"] != manifest["repository_tree"]
+        or receipt["snapshot_archive_identity"] != archive_identity
+        or receipt["snapshot_manifest_identity"] != manifest_identity
+        or receipt["snapshot_root"] != str(snapshot_root)
+        or receipt["member_count"] != manifest["member_count"]
+        or receipt["total_bytes"] != manifest["total_bytes"]
+        or receipt["ordered_member_digest"] != manifest["ordered_member_digest"]
+        or receipt["candidate_identity"] != detached_identity(candidate_snapshot)
+        or overlay["source_identity"] != _mode_identity(candidate_snapshot)
+        or type(receipt["created_at_utc"]) is not str
+    ):
+        raise AuthorityError("REPOSITORY_SNAPSHOT_BINDING_DRIFT", "package/root/materialization join")
+    platform = _exact_keys(
+        _record(platform_snapshot, "AB16 external platform assumptions"),
+        set(
+            "authority_scope cpython_version external_platform_trust ortools_version protobuf_version "
+            "python_identity repository_head schema_version".split()
+        ),
+        "AB16 external platform assumptions",
+    )
+    python_snapshot = _replay_detached(root["authority_tools"].get("python3_13"), "AB16 CPython")
+    if (
+        platform["schema_version"] != EXTERNAL_PLATFORM_SCHEMA
+        or platform["authority_scope"] != "AB16_RESEARCH_ONLY"
+        or platform["cpython_version"] != "3.13.13"
+        or platform["repository_head"] != root["repository_head"]
+        or platform["python_identity"] != detached_identity(python_snapshot)
+        or platform["external_platform_trust"]
+        != [
+            "CPython runtime and standard library semantics",
+            "OR-Tools/protobuf installation and native dependencies",
+            "kernel, systemd, D-Bus, cgroup-v2 and filesystem durability",
+            "non-hostile operating-system account",
+        ]
+        or type(platform["ortools_version"]) is not str
+        or not platform["ortools_version"]
+        or type(platform["protobuf_version"]) is not str
+        or not platform["protobuf_version"]
+    ):
+        raise AuthorityError("REPOSITORY_SNAPSHOT_BINDING_DRIFT", "external platform assumptions")
+    members = {member["path"]: member for member in manifest["members"]}
+    expected_dirs = {
+        parent.as_posix()
+        for path in members
+        for parent in PurePosixPath(path).parents
+        if parent.as_posix() != "."
+    }
+    _assert_no_symlink_chain(snapshot_root)
+    try:
+        root_mode = os.lstat(snapshot_root).st_mode
+    except OSError as exc:
+        raise AuthorityError("REPOSITORY_SNAPSHOT_REPLAY_FAILED", str(snapshot_root)) from exc
+    if not stat.S_ISDIR(root_mode) or stat.S_IMODE(root_mode) != 0o555:
+        raise AuthorityError("REPOSITORY_SNAPSHOT_REPLAY_FAILED", "snapshot root mode")
+    actual_dirs: set[str] = set()
+    actual_files: dict[str, Snapshot] = {}
+    for current, dirnames, filenames in os.walk(snapshot_root, topdown=True, followlinks=False):
+        current_path = Path(current)
+        for name in dirnames:
+            child = current_path / name
+            relative = child.relative_to(snapshot_root).as_posix()
+            mode = os.lstat(child).st_mode
+            if not stat.S_ISDIR(mode) or stat.S_ISLNK(mode) or stat.S_IMODE(mode) != 0o555:
+                raise AuthorityError("REPOSITORY_SNAPSHOT_REPLAY_FAILED", f"directory {relative}")
+            actual_dirs.add(relative)
+        for name in filenames:
+            child = current_path / name
+            relative = child.relative_to(snapshot_root).as_posix()
+            mode = os.lstat(child).st_mode
+            if not stat.S_ISREG(mode) or stat.S_ISLNK(mode) or os.lstat(child).st_nlink != 1:
+                raise AuthorityError("REPOSITORY_SNAPSHOT_REPLAY_FAILED", f"member {relative}")
+            actual_files[relative] = snapshot_regular(child)
+    if set(actual_files) != set(members) or actual_dirs != expected_dirs:
+        raise AuthorityError("REPOSITORY_SNAPSHOT_REPLAY_FAILED", "missing or extra path")
+    identities: dict[str, dict[str, object]] = {}
+    for path, member in members.items():
+        snapshot = actual_files[path]
+        if (
+            snapshot.mode != member["materialized_mode"]
+            or snapshot.sha256 != member["raw_sha256"]
+            or snapshot.size_bytes != member["size_bytes"]
+        ):
+            raise AuthorityError("REPOSITORY_SNAPSHOT_REPLAY_FAILED", f"identity {path}")
+        identities[path] = detached_identity(snapshot)
+    return {"archive_identity": archive_identity, "manifest_identity": manifest_identity,
+            "materialization_identity": detached_identity(receipt_snapshot), "member_identities": identities,
+            "repository_root": str(snapshot_root), "repository_tree": manifest["repository_tree"]}
+
+
 def _validate_root_source_joins(
     root: Mapping[str, Any],
     files: Mapping[str, Snapshot],
     sources: Mapping[str, Mapping[str, Any]],
+    repository_snapshot: Mapping[str, Any],
 ) -> None:
     tools = root.get("authority_tools")
     inputs = root.get("strict_inputs")
@@ -694,10 +958,15 @@ def _validate_root_source_joins(
     }
     input_roles = {
         "ab16_bootstrap_manager_epoch_capture": "input.ab16_bootstrap_manager_epoch_capture.json",
+        "ab16_external_platform_assumptions": "input.ab16_external_platform_assumptions.json",
         "ab16_gate_a_receipt": "input.ab16_gate_a_receipt.json",
         "ab16_gate_b_approval": "input.ab16_gate_b_approval.json",
+        "ab16_gate_b_epoch_observation": "input.ab16_gate_b_epoch_observation.json",
+        "ab16_gate_b_final_full_preflight": "input.ab16_gate_b_final_full_preflight.json",
         "ab16_offline_candidate": "input.ab16_offline_candidate.json",
         "ab16_path_preregistration": "input.ab16_path_preregistration.json",
+        "ab16_repository_snapshot": "input.ab16_repository_snapshot.json",
+        "ab16_repository_snapshot_archive": "input.ab16_repository_snapshot.zip",
         "candidate_placements": "input.candidate_placements.json",
         "canonical_rules": "input.canonical_rules.json",
         "cuts_mandatory_schedule": "input.cuts_mandatory_schedule.txt",
@@ -707,19 +976,46 @@ def _validate_root_source_joins(
         "preflight_gate": "input.preflight_gate.txt",
         "project_lock": "input.project_lock.txt",
     }
-    if not set(script_roles) <= set(tools) or not set(input_roles) <= set(inputs):
+    if (
+        not set(script_roles) <= set(tools)
+        or not set(input_roles) <= set(inputs)
+        or "ab16_repository_snapshot_materialization" not in inputs
+    ):
         raise AuthorityError("CAMPAIGN_ROOT_INVALID", "required AB16 root roles absent")
+    snapshot_paths = {
+        "candidate_placements": "data/preprocessed/candidate_placements.json",
+        "canonical_rules": "rules/canonical_rules.json",
+        "cuts_mandatory_schedule": (
+            "docs/research/b1_sidewise_marked_membrane_authority_recovery_20260724/"
+            "04_cuts_mandatory_schedule.md"
+        ),
+        "mandatory_instances": "data/preprocessed/mandatory_exact_instances.json",
+        "preflight_gate": "scripts/preflight_gate.py",
+        "project_lock": "PROJECT_LOCK.md",
+    }
+    materialized = repository_snapshot["member_identities"]
     for root_role, package_role in {**script_roles, **input_roles}.items():
         group = tools if root_role in script_roles else inputs
         selected = group[root_role]
         source_identity = _detached_from_source(sources[package_role]["source_identity"])
         packaged_identity = detached_identity(files[sources[package_role]["package_path"]])
+        allowed = [source_identity, packaged_identity]
+        if root_role in snapshot_paths:
+            expected_snapshot = materialized.get(snapshot_paths[root_role])
+            if expected_snapshot is None:
+                raise AuthorityError("CAMPAIGN_ROOT_INVALID", f"snapshot role {root_role}")
+            allowed.append(expected_snapshot)
         if (
-            (selected != source_identity and selected != packaged_identity)
+            selected not in allowed
             or selected["sha256"] != source_identity["sha256"]
             or selected["size_bytes"] != source_identity["size_bytes"]
         ):
             raise AuthorityError("CAMPAIGN_ROOT_INVALID", f"source join {root_role}")
+    if (
+        inputs["ab16_repository_snapshot_materialization"]
+        != repository_snapshot["materialization_identity"]
+    ):
+        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "source join repository snapshot materialization")
 
 
 def _campaign_context(campaign_dir: Path | str) -> dict[str, object]:
@@ -757,7 +1053,13 @@ def _campaign_context(campaign_dir: Path | str) -> dict[str, object]:
         or package_manifest.get("run_nonce") != root.get("run_nonce")
     ):
         raise AuthorityError("CAMPAIGN_PACKAGE_BINDING_DRIFT", "manifest/root")
-    _validate_root_source_joins(root, files, sources)
+    repository_snapshot = _replay_repository_snapshot(
+        directory=directory,
+        root=root,
+        files=files,
+        sources=sources,
+    )
+    _validate_root_source_joins(root, files, sources, repository_snapshot)
     gate = root["stage_topology"]["gate1_v4"]
     positive = gate["positive_control"]
     required_positive = {
@@ -775,8 +1077,23 @@ def _campaign_context(campaign_dir: Path | str) -> dict[str, object]:
         "package_manifest": package_manifest,
         "root": root,
         "root_identity": detached_identity(root_snapshot),
+        "repository_snapshot": repository_snapshot,
         "sources": sources,
     }
+
+
+def _repository_snapshot_barrier(context: Mapping[str, Any]) -> None:
+    refreshed = _campaign_context(context["directory"])
+    if refreshed["root_identity"] != context["root_identity"] or (
+        refreshed["repository_snapshot"] != context["repository_snapshot"]
+    ):
+        raise AuthorityError("REPOSITORY_SNAPSHOT_BINDING_DRIFT", "barrier replay")
+
+
+def replay_repository_snapshot(campaign_dir: Path | str) -> Mapping[str, Any]:
+    """Replay the sealed repository source tree and return its exact identities."""
+
+    return _campaign_context(campaign_dir)["repository_snapshot"]
 
 
 def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
@@ -784,37 +1101,71 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
     sources = context["sources"]
     gate_a_snapshot = _source_snapshot(files, sources, "input.ab16_gate_a_receipt.json")
     gate_b_snapshot = _source_snapshot(files, sources, "input.ab16_gate_b_approval.json")
+    candidate_snapshot = _source_snapshot(files, sources, "input.ab16_offline_candidate.json")
+    final_snapshot = _source_snapshot(files, sources, "input.ab16_gate_b_final_full_preflight.json")
+    epoch_snapshot = _source_snapshot(files, sources, "input.ab16_gate_b_epoch_observation.json")
     gate_a = _record(gate_a_snapshot, "AB16 Gate-A")
-    gate_b = _record(gate_b_snapshot, "AB16 Gate-B")
+    candidate = _exact_keys(
+        _record(candidate_snapshot, "AB16 offline candidate"),
+        set(
+            "arm_launch_authorized candidate_id candidate_only created_at_utc formal_campaign_creation_authorized "
+            "gate_a_receipt_identity path_preregistration_identity planned_source_identities "
+            "planned_source_set_digest purpose repository_head repository_root run_nonce schema_version "
+            "target_campaign_dir".split()
+        ),
+        "AB16 offline candidate",
+    )
+    gate_b = _exact_keys(
+        _record(gate_b_snapshot, "AB16 Gate-B"),
+        set(
+            "approval_id arm_launch_authorized candidate_identity created_at_utc decision "
+            "final_full_preflight_receipt_identity formal_campaign_creation_authorized gate "
+            "gate_a_receipt_identity gate_b_epoch_observation_identity planned_source_set_digest purpose "
+            "repository_head repository_root run_nonce schema_version target_campaign_dir".split()
+        ),
+        "AB16 Gate-B",
+    )
     gate_a_identity = _detached_from_source(sources["input.ab16_gate_a_receipt.json"]["source_identity"])
-    gate_a_expected_keys = {
-        "approval_id",
-        "arm_launch_authorized",
-        "created_at_utc",
-        "decision",
-        "disposable_authority_ready_identity",
-        "disposable_detached_replay_identity",
-        "formal_campaign_creation_authorized",
-        "full_preflight_receipt_identity",
-        "gate",
-        "history_freeze_replay_identity",
-        "manager_epoch",
-        "offline_candidate_only",
-        "planned_source_set_digest",
-        "purpose",
-        "reference_capability_identity",
-        "reference_capability_transcript_identity",
-        "repository_head",
-        "repository_root",
-        "run_nonce",
-        "schema_version",
-        "target_campaign_dir",
-    }
+    candidate_identity = _detached_from_source(sources["input.ab16_offline_candidate.json"]["source_identity"])
+    final_source = sources["input.ab16_gate_b_final_full_preflight.json"]["source_identity"]
+    epoch_source = sources["input.ab16_gate_b_epoch_observation.json"]["source_identity"]
+    final_identity = {field: final_source[field] for field in ("mode", "path", "sha256", "size_bytes")}
+    epoch_identity = {field: epoch_source[field] for field in ("mode", "path", "sha256", "size_bytes")}
+    gate_a_expected_keys = set(
+        "approval_id arm_launch_authorized created_at_utc decision disposable_authority_ready_identity "
+        "disposable_detached_replay_identity formal_campaign_creation_authorized full_preflight_receipt_identity "
+        "gate history_freeze_replay_identity manager_epoch offline_candidate_only planned_source_set_digest "
+        "purpose reference_capability_identity reference_capability_transcript_identity repository_head "
+        "repository_root run_nonce schema_version target_campaign_dir".split()
+    )
     if set(gate_a) != gate_a_expected_keys:
         raise AuthorityError(
             "GATE_APPROVALS_INVALID",
             "Gate-A exact evidence schema drifted",
         )
+    planned = candidate["planned_source_identities"]
+    if type(planned) is not dict:
+        raise AuthorityError("GATE_APPROVALS_INVALID", "candidate planned source identities")
+    planned_projections: dict[str, dict[str, object]] = {}
+    for role in ("input.preflight_gate", "script.gate_a_validation_v2", "system.python3_13"):
+        identity = planned.get(role)
+        if type(identity) is not dict:
+            raise AuthorityError("GATE_APPROVALS_INVALID", f"candidate planned source {role}")
+        try:
+            projection = {field: identity[field] for field in ("mode", "path", "sha256", "size_bytes")}
+        except KeyError as exc:
+            raise AuthorityError("GATE_APPROVALS_INVALID", f"candidate planned source {role}") from exc
+        if (
+            type(projection["mode"]) is not int
+            or type(projection["path"]) is not str
+            or not Path(projection["path"]).is_absolute()
+            or type(projection["sha256"]) is not str
+            or SHA256_RE.fullmatch(projection["sha256"]) is None
+            or type(projection["size_bytes"]) is not int
+            or projection["size_bytes"] < 0
+        ):
+            raise AuthorityError("GATE_APPROVALS_INVALID", f"candidate planned source {role}")
+        planned_projections[role] = projection
     for field in (
         "disposable_authority_ready_identity",
         "disposable_detached_replay_identity",
@@ -834,8 +1185,113 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
             "GATE_APPROVALS_INVALID",
             f"Gate-A manager epoch is invalid: {exc}",
         ) from exc
+    final = _exact_keys(
+        _record(final_snapshot, "AB16 Gate-B final full preflight"),
+        set(
+            "authorizations authority_ready_identity command detached_replay_identity duration_monotonic_ns "
+            "exit_code finished_at_utc planned_source_set_digest pre_run_authority_identity "
+            "preflight_script_identity preflight_timeout_scale purpose python_identity repository_head "
+            "repository_root runner_tool_identity schema_version started_at_utc status stderr_identity "
+            "stdout_identity timed_out".split()
+        ),
+        "AB16 Gate-B final full preflight",
+    )
+    for field in (
+        "authority_ready_identity",
+        "detached_replay_identity",
+        "pre_run_authority_identity",
+        "python_identity",
+        "stderr_identity",
+        "stdout_identity",
+    ):
+        _replay_identity_with_optional_mode(final[field], f"AB16 Gate-B final full preflight {field}")
+    command = _exact_keys(
+        final["command"],
+        {"argv", "execution_strategy", "loader_identity"},
+        "AB16 Gate-B final full preflight command",
+    )
+    loader = _exact_keys(
+        command["loader_identity"],
+        {"sha256", "size_bytes"},
+        "AB16 Gate-B final full preflight loader",
+    )
+    gate_a_full_snapshot = _replay_identity_with_optional_mode(
+        gate_a["full_preflight_receipt_identity"],
+        "AB16 Gate-A full preflight",
+    )
+    gate_a_full = _exact_keys(
+        _record(gate_a_full_snapshot, "AB16 Gate-A full preflight"),
+        set(final),
+        "AB16 Gate-A full preflight",
+    )
+    gate_a_command = _exact_keys(
+        gate_a_full["command"],
+        {"argv", "execution_strategy", "loader_identity"},
+        "AB16 Gate-A full preflight command",
+    )
+    gate_a_loader = _exact_keys(
+        gate_a_command["loader_identity"],
+        {"sha256", "size_bytes"},
+        "AB16 Gate-A full preflight loader",
+    )
+    snapshot_members = context["repository_snapshot"]["member_identities"]
+    preflight_member = _replay_detached(
+        snapshot_members["scripts/preflight_gate.py"],
+        "AB16 snapshot preflight script",
+    )
+    preflight = planned_projections["input.preflight_gate"]
+    python = planned_projections["system.python3_13"]
+    runner_relative = "docs/research/noncert_cuts_ab16_20260724/gate_a_validation_v2.py"
+    runner_member = _replay_detached(snapshot_members[runner_relative], "AB16 snapshot preflight runner")
+    runner = planned_projections["script.gate_a_validation_v2"]
+    python_snapshot = _replay_detached(
+        context["root"]["authority_tools"].get("python3_13"),
+        "AB16 preflight Python",
+    )
+    epoch = _exact_keys(
+        _record(epoch_snapshot, "AB16 Gate-B epoch observation"),
+        set(
+            "authorizations candidate_identity capture_transcript created_at_utc "
+            "final_full_preflight_receipt_identity gate_a_receipt_identity manager_epoch "
+            "planned_source_set_digest purpose repository_head repository_root run_nonce schema_version status "
+            "target_campaign_dir".split()
+        ),
+        "AB16 Gate-B epoch observation",
+    )
+    try:
+        context["campaign_module"].validate_manager_epoch(epoch["manager_epoch"])
+        context["campaign_module"].validate_manager_epoch_capture_transcript(
+            epoch["capture_transcript"],
+            expected_epoch=epoch["manager_epoch"],
+        )
+    except Exception as exc:
+        raise AuthorityError("GATE_APPROVALS_INVALID", f"Gate-B epoch is invalid: {exc}") from exc
     if (
-        gate_a.get("schema_version") != GATE_A_SCHEMA
+        candidate["schema_version"] != "noncert-cuts-ab16-bootstrap-offline-candidate-v2"
+        or candidate["purpose"] != "AB16_OFFLINE_NONAUTHORIZING_CANDIDATE"
+        or candidate["candidate_only"] is not True
+        or candidate["formal_campaign_creation_authorized"] is not False
+        or candidate["arm_launch_authorized"] is not False
+        or candidate["gate_a_receipt_identity"] != gate_a_identity
+        or candidate["path_preregistration_identity"]
+        != _detached_from_source(sources["input.ab16_path_preregistration.json"]["source_identity"])
+        or candidate["planned_source_set_digest"] != hashlib.sha256(canonical_json(planned)).hexdigest()
+        or candidate["candidate_id"]
+        != hashlib.sha256(canonical_json({key: value for key, value in candidate.items() if key != "candidate_id"})).hexdigest()
+        or any(candidate.get(field) != gate_a.get(field) for field in (
+            "planned_source_set_digest",
+            "repository_head",
+            "repository_root",
+            "run_nonce",
+            "target_campaign_dir",
+        ))
+        or preflight_member.sha256 != preflight["sha256"]
+        or preflight_member.size_bytes != preflight["size_bytes"]
+        or runner_member.sha256 != runner["sha256"]
+        or runner_member.size_bytes != runner["size_bytes"]
+        or python_snapshot.sha256 != python["sha256"]
+        or python_snapshot.size_bytes != python["size_bytes"]
+        or gate_a.get("schema_version") != GATE_A_SCHEMA
         or gate_a.get("gate") != "A"
         or gate_a.get("decision") != "PASS"
         or gate_a.get("purpose") != "AB16_OFFLINE_SOURCE_SET_PREFLIGHT"
@@ -849,7 +1305,21 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         or gate_b.get("formal_campaign_creation_authorized") is not True
         or gate_b.get("arm_launch_authorized") is not False
         or gate_b.get("gate_a_receipt_identity") != gate_a_identity
+        or gate_b.get("candidate_identity") != candidate_identity
+        or gate_b.get("final_full_preflight_receipt_identity") != final_identity
+        or gate_b.get("gate_b_epoch_observation_identity") != epoch_identity
+        or final_snapshot.sha256 != final_identity["sha256"]
+        or final_snapshot.size_bytes != final_identity["size_bytes"]
+        or epoch_snapshot.sha256 != epoch_identity["sha256"]
+        or epoch_snapshot.size_bytes != epoch_identity["size_bytes"]
         or gate_a.get("repository_root") != gate_b.get("repository_root")
+        or any(gate_b.get(field) != gate_a.get(field) for field in (
+            "planned_source_set_digest",
+            "repository_head",
+            "repository_root",
+            "run_nonce",
+            "target_campaign_dir",
+        ))
         or gate_a.get("manager_epoch") != context["root"].get("manager_epoch")
         or gate_a.get("repository_head") != context["root"].get("repository_head")
         or gate_a.get("run_nonce") != context["root"].get("run_nonce")
@@ -858,11 +1328,73 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         or not Path(gate_a["repository_root"]).is_absolute()
         or gate_a.get("approval_id") == gate_b.get("approval_id")
         or gate_a_snapshot.sha256 == gate_b_snapshot.sha256
+        or final_identity["mode"] != 0o444
+        or epoch_identity["mode"] != 0o444
+        or final["schema_version"] != FINAL_FULL_PREFLIGHT_SCHEMA
+        or final["purpose"] != "AB16_GATE_A_FULL_PREFLIGHT"
+        or final["status"] != "PASS"
+        or final["exit_code"] != 0
+        or final["timed_out"] is not False
+        or final["preflight_timeout_scale"] != "12"
+        or final["authorizations"]
+        != {
+            "formal_campaign_creation_authorized": False,
+            "organic_arm_launch_authorized": False,
+            "solver_run_authorized": False,
+        }
+        or type(final["duration_monotonic_ns"]) is not int
+        or final["duration_monotonic_ns"] <= 0
+        or final["authority_ready_identity"] != gate_a["disposable_authority_ready_identity"]
+        or final["detached_replay_identity"] != gate_a["disposable_detached_replay_identity"]
+        or final["pre_run_authority_identity"] != gate_a_full["pre_run_authority_identity"]
+        or final["planned_source_set_digest"] != gate_a["planned_source_set_digest"]
+        or final["repository_head"] != context["root"]["repository_head"]
+        or final["repository_root"] != gate_a["repository_root"]
+        or final["preflight_script_identity"] != preflight
+        or final["python_identity"] != python
+        or final["runner_tool_identity"] != runner
+        or command["execution_strategy"] != "same-fd-python-prefix-and-nested-executable-v2"
+        or command["argv"] != [python["path"], "-I", preflight["path"], "--full"]
+        or loader != gate_a_loader
+        or gate_a_full["schema_version"] != FINAL_FULL_PREFLIGHT_SCHEMA
+        or gate_a_full["purpose"] != "AB16_GATE_A_FULL_PREFLIGHT"
+        or gate_a_full["status"] != "PASS"
+        or gate_a_full["exit_code"] != 0
+        or gate_a_full["timed_out"] is not False
+        or gate_a_full["authorizations"] != final["authorizations"]
+        or gate_a_full["authority_ready_identity"] != gate_a["disposable_authority_ready_identity"]
+        or gate_a_full["detached_replay_identity"] != gate_a["disposable_detached_replay_identity"]
+        or gate_a_full["repository_head"] != gate_a["repository_head"]
+        or gate_a_full["repository_root"] != gate_a["repository_root"]
+        or gate_a_full["planned_source_set_digest"] != gate_a["planned_source_set_digest"]
+        or final_identity["path"] == gate_a["full_preflight_receipt_identity"]["path"]
+        or final_identity["sha256"] == gate_a["full_preflight_receipt_identity"]["sha256"]
+        or type(loader["sha256"]) is not str
+        or SHA256_RE.fullmatch(loader["sha256"]) is None
+        or type(loader["size_bytes"]) is not int
+        or loader["size_bytes"] <= 0
+        or epoch["schema_version"] != GATE_B_EPOCH_SCHEMA
+        or epoch["purpose"] != "AB16_GATE_B_MANAGER_EPOCH_OBSERVATION"
+        or epoch["status"] != "PASS"
+        or epoch["authorizations"] != final["authorizations"]
+        or epoch["candidate_identity"] != candidate_identity
+        or epoch["gate_a_receipt_identity"] != gate_a_identity
+        or epoch["final_full_preflight_receipt_identity"] != final_identity
+        or epoch["manager_epoch"] != context["root"]["manager_epoch"]
+        or any(epoch[field] != gate_a[field] for field in (
+            "planned_source_set_digest",
+            "repository_head",
+            "repository_root",
+            "run_nonce",
+            "target_campaign_dir",
+        ))
     ):
         raise AuthorityError("GATE_APPROVALS_INVALID", "Gate-A/Gate-B are not distinct and bound")
     return {
         "gate_a_identity": gate_a_identity,
         "gate_b_identity": _detached_from_source(sources["input.ab16_gate_b_approval.json"]["source_identity"]),
+        "gate_b_epoch_identity": epoch_identity,
+        "gate_b_final_full_preflight_identity": final_identity,
         "history_freeze_replay_identity": dict(gate_a["history_freeze_replay_identity"]),
         "reference_capability_identity": dict(gate_a["reference_capability_identity"]),
         "reference_capability_transcript_identity": dict(gate_a["reference_capability_transcript_identity"]),
@@ -1157,6 +1689,7 @@ def _path_preregistration(
             "baseline_admission_path",
             "baseline_fixed_replay_path",
             "baseline_incumbent_path",
+            "baseline_campaign_provenance_path",
             "baseline_rebuilt_metadata_path",
             "baseline_rebuilt_model_path",
             "binding_paths",
@@ -1171,6 +1704,10 @@ def _path_preregistration(
             "preselection_transcript_paths",
             "pre_run_candidate_paths",
             "pre_run_authority_paths",
+            "repository_snapshot_archive_path",
+            "repository_snapshot_manifest_path",
+            "repository_snapshot_materialization_receipt_path",
+            "repository_snapshot_root",
             "resource_replay_paths",
             "purpose",
             "run_nonce",
@@ -1200,23 +1737,38 @@ def _path_preregistration(
         "baseline_admission_path",
         "baseline_fixed_replay_path",
         "baseline_incumbent_path",
+        "baseline_campaign_provenance_path",
         "baseline_rebuilt_metadata_path",
         "baseline_rebuilt_model_path",
         "classification_contract_path",
         "common_prestate_path",
         "immediate_stop_path",
         "manifest_path",
+        "repository_snapshot_archive_path",
+        "repository_snapshot_manifest_path",
+        "repository_snapshot_materialization_receipt_path",
+        "repository_snapshot_root",
         "suite_selection_path",
         "terminal_classification_path",
     )
     prospective_dir = Path(prospective["manifest_path"]).parent
+    authority_path_fields = {
+        "classification_contract_path",
+        "repository_snapshot_archive_path",
+        "repository_snapshot_manifest_path",
+        "repository_snapshot_materialization_receipt_path",
+        "repository_snapshot_root",
+    }
     for field in path_fields:
         value = record[field]
         if (
             type(value) is not str
             or not Path(value).is_absolute()
             or Path(value) == context["directory"]
-            or (field != "classification_contract_path" and prospective_dir not in (Path(value), *Path(value).parents))
+            or (
+                field not in authority_path_fields
+                and prospective_dir not in (Path(value), *Path(value).parents)
+            )
         ):
             raise AuthorityError(
                 "PATH_PREREGISTRATION_INVALID",
@@ -1302,6 +1854,7 @@ def _path_preregistration(
         "baseline_admission_path": prospective_dir / "baseline-admission-a001.json",
         "baseline_fixed_replay_path": prospective_dir / "baseline/fixed-replay-a001.json",
         "baseline_incumbent_path": prospective_dir / "baseline/incumbent.json",
+        "baseline_campaign_provenance_path": prospective_dir / "baseline/campaign-provenance.json",
         "baseline_rebuilt_metadata_path": (prospective_dir / "baseline/rebuilt-model-metadata.json"),
         "baseline_rebuilt_model_path": (prospective_dir / "baseline/cut-free-model.bin"),
         "classification_contract_path": (
@@ -1309,6 +1862,21 @@ def _path_preregistration(
         ),
         "common_prestate_path": prospective_dir / "common-prestate-a001.json",
         "immediate_stop_path": prospective_dir / "immediate-stop-a001.json",
+        "repository_snapshot_archive_path": (
+            context["directory"]
+            / "campaign-authority/package/payload/input.ab16_repository_snapshot.zip"
+        ),
+        "repository_snapshot_manifest_path": (
+            context["directory"]
+            / "campaign-authority/package/payload/input.ab16_repository_snapshot.json"
+        ),
+        "repository_snapshot_materialization_receipt_path": (
+            context["directory"]
+            / "campaign-authority/source-snapshot-a001/materialization-receipt.json"
+        ),
+        "repository_snapshot_root": (
+            context["directory"] / "campaign-authority/source-snapshot-a001/repository"
+        ),
     }
     for field, expected in expected_fixed_paths.items():
         if Path(str(record[field])) != expected:
@@ -1725,6 +2293,7 @@ def validate_manifest(
     context: Mapping[str, Any],
     continuation: Mapping[str, Any],
 ) -> Mapping[str, Any]:
+    _repository_snapshot_barrier(context)
     runner = _runner_module(context)
     try:
         record = runner.validate_manifest(value)
@@ -1786,6 +2355,19 @@ def validate_manifest(
     return record
 
 
+def _campaign_provenance_expected(context: Mapping[str, Any]) -> dict[str, object]:
+    snapshot = context["repository_snapshot"]
+    return {
+        "import_mode": "ordinary_pathfinder",
+        "materialization_receipt_identity": snapshot["materialization_identity"],
+        "package_id": context["root"]["package"]["package_id"],
+        "repository_head": context["root"]["repository_head"],
+        "schema_version": "noncert-cuts-ab16-campaign-snapshot-provenance-v1",
+        "snapshot_manifest_identity": snapshot["manifest_identity"],
+        "snapshot_root": snapshot["repository_root"],
+    }
+
+
 def _replay_baseline_admission(
     context: Mapping[str, Any],
     receipt_snapshot: Snapshot,
@@ -1814,9 +2396,15 @@ def _replay_baseline_admission(
         ),
         f"_ab16_baseline_admission_{receipt_snapshot.sha256[:16]}",
     )
+    preregistration, _ = _path_preregistration(context)
+    provenance_snapshot = snapshot_regular(preregistration["baseline_campaign_provenance_path"])
+    if _record(provenance_snapshot, "AB16 campaign provenance") != _campaign_provenance_expected(context):
+        raise AuthorityError("BASELINE_ADMISSION_ROOT_JOIN_FAILED", "campaign provenance")
+    legacy_identity = context["root"]["strict_inputs"]["legacy_control_a002"]
     try:
         replayed = admission_tool.admit_paths(
-            legacy_control=receipt["legacy_control"]["identity"]["path"],
+            campaign_provenance_path=provenance_snapshot.path,
+            legacy_control=legacy_identity["path"],
             rebuilt_model=receipt["rebuilt_model"]["identity"]["path"],
             rebuilt_metadata=receipt["rebuilt_model"]["metadata"]["metadata_identity"]["path"],
             fixed_assignment_replay=receipt["fixed_assignment_replay"]["receipt_identity"]["path"],
@@ -1826,7 +2414,6 @@ def _replay_baseline_admission(
         raise AuthorityError("BASELINE_ADMISSION_REPLAY_FAILED", str(exc)) from exc
     if replayed != receipt:
         raise AuthorityError("BASELINE_ADMISSION_REPLAY_FAILED", "semantic replay differs")
-    preregistration, _ = _path_preregistration(context)
     expected_tools = {
         "admission": _root_tool_identity(
             context,
@@ -1861,6 +2448,7 @@ def _replay_baseline_admission(
     }
     if (
         receipt["admission_tool_identity"] != expected_tools["admission"]
+        or receipt["campaign_provenance"] != _campaign_provenance_expected(context)
         or metadata["builder_identity"] != expected_tools["builder"]
         or metadata["input_identities"] != expected_inputs
         or receipt["fixed_assignment_replay"]["replay_tool_identity"] != expected_tools["fixed_replay"]
@@ -1967,6 +2555,7 @@ def validate_suite_selection(
     manifest_identity: Mapping[str, Any],
     baseline_identity: Mapping[str, Any],
 ) -> Mapping[str, Any]:
+    _repository_snapshot_barrier(context)
     record = _exact_keys(
         value,
         {
@@ -2869,6 +3458,7 @@ def create_arm_selection(
         suite_selection_identity=detached_identity(suite_snapshot),
         continuation_identity=continuation_identity,
     )
+    _repository_snapshot_barrier(context)
     preregistration, _ = _path_preregistration(context)
     attempt = _absolute(preregistration["attempt_dirs"][slot])
     _mkdir_exclusive(attempt)

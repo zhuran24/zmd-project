@@ -43,6 +43,9 @@ PACKAGE_PURPOSE = "AB16_GATE_A_DISPOSABLE_DRILL_SOURCE_PACKAGE"
 RESULT_PURPOSE = "AB16_GATE_A_DISPOSABLE_DRILL_AUTHORITY_READY"
 DRILL_SLOT = "region-capacity-ab-control"
 RUN_NONCE_RE = re.compile(r"drill-[A-Za-z0-9][A-Za-z0-9_.-]{4,95}\Z")
+HISTORY_FREEZE_SCHEMA = "noncert-cuts-ab16-terminal-reference-history-freeze-v1"
+HISTORY_FREEZE_PURPOSE = "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE"
+HISTORY_FREEZE_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
 
 TOOL_SOURCE_ROLES = {
     "busctl": "system.busctl",
@@ -257,9 +260,11 @@ def _observe_repository_head(
 def _replay_history_freeze(
     *,
     manifest_path: Path | str,
-    repository_root: Path,
 ) -> dict[str, object]:
-    snapshot = lifecycle.snapshot_regular(_absolute(manifest_path))
+    try:
+        snapshot = lifecycle.snapshot_regular(_absolute(manifest_path))
+    except Exception as exc:
+        raise DrillAuthorityError("history-freeze manifest is missing, non-regular, or symlinked") from exc
     try:
         value = bootstrap.authority.strict_loads(
             snapshot.raw,
@@ -282,15 +287,60 @@ def _replay_history_freeze(
     }:
         raise DrillAuthorityError("history-freeze manifest schema drifted")
     if (
-        value["schema_version"] != "noncert-cuts-ab16-terminal-reference-history-freeze-v1"
-        or value["purpose"] != "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE"
-        or value["repository_root"] != str(repository_root)
-        or value["repository_head"] != "398f8725c770f3c36408adebe9448a890ed886fe"
+        value["schema_version"] != HISTORY_FREEZE_SCHEMA
+        or value["purpose"] != HISTORY_FREEZE_PURPOSE
+        or value["repository_head"] != HISTORY_FREEZE_HEAD
+        or type(value["created_at_utc"]) is not str
+        or type(value["repository_root"]) is not str
+        or type(value["frozen_roots"]) is not list
+        or type(value["v1_source_glob"]) is not str
         or type(value["file_count"]) is not int
         or type(value["files"]) is not list
         or value["file_count"] != len(value["files"])
     ):
         raise DrillAuthorityError("history-freeze manifest scalar semantics drifted")
+    try:
+        bootstrap._utc(value["created_at_utc"], "history-freeze created_at_utc")  # noqa: SLF001
+    except Exception as exc:
+        raise DrillAuthorityError("history-freeze manifest timestamp drifted") from exc
+    serialized_history_root = value["repository_root"]
+    history_root = Path(serialized_history_root)
+    if (
+        not history_root.is_absolute()
+        or _absolute(history_root) != history_root
+        or str(history_root) != serialized_history_root
+    ):
+        raise DrillAuthorityError("history-freeze repository root is not one canonical absolute path")
+    try:
+        bootstrap.authority._reject_symlink_chain(history_root)  # noqa: SLF001
+        metadata = os.lstat(history_root)
+    except Exception as exc:
+        raise DrillAuthorityError("history-freeze repository root is missing or symlinked") from exc
+    if not stat.S_ISDIR(metadata.st_mode):
+        raise DrillAuthorityError("history-freeze repository root is not a directory")
+
+    frozen_roots: set[str] = set()
+    for raw_root in value["frozen_roots"]:
+        relative_root = Path(raw_root) if type(raw_root) is str else Path()
+        if (
+            type(raw_root) is not str
+            or not raw_root
+            or raw_root in frozen_roots
+            or relative_root.is_absolute()
+            or relative_root.as_posix() != raw_root
+            or any(part in {"", ".", ".."} for part in relative_root.parts)
+        ):
+            raise DrillAuthorityError("history-freeze frozen root path is invalid")
+        frozen_roots.add(raw_root)
+    source_glob = Path(value["v1_source_glob"])
+    if (
+        not value["v1_source_glob"]
+        or source_glob.is_absolute()
+        or source_glob.as_posix() != value["v1_source_glob"]
+        or any(part in {"", ".", ".."} for part in source_glob.parts)
+    ):
+        raise DrillAuthorityError("history-freeze v1 source glob is invalid")
+
     seen: set[str] = set()
     for raw in value["files"]:
         if type(raw) is not dict or set(raw) != {
@@ -301,19 +351,32 @@ def _replay_history_freeze(
         }:
             raise DrillAuthorityError("history-freeze member schema drifted")
         relative = raw["path"]
+        relative_path = Path(relative) if type(relative) is str else Path()
         if (
             type(relative) is not str
             or not relative
             or relative in seen
-            or Path(relative).is_absolute()
-            or ".." in Path(relative).parts
+            or relative_path.is_absolute()
+            or relative_path.as_posix() != relative
+            or any(part in {"", ".", ".."} for part in relative_path.parts)
+            or type(raw["mode"]) is not int
+            or raw["mode"] < 0
+            or raw["mode"] > 0o7777
+            or type(raw["sha256"]) is not str
+            or re.fullmatch(r"[0-9a-f]{64}", raw["sha256"]) is None
+            or type(raw["size_bytes"]) is not int
+            or raw["size_bytes"] < 0
         ):
             raise DrillAuthorityError("history-freeze member path is invalid")
         seen.add(relative)
-        observed = lifecycle.snapshot_regular(repository_root / relative).identity
+        member_path = history_root / relative_path
+        try:
+            observed = lifecycle.snapshot_regular(member_path).identity
+        except Exception as exc:
+            raise DrillAuthorityError("history-freeze member is missing, non-regular, or symlinked") from exc
         if observed != {
             "mode": raw["mode"],
-            "path": str(repository_root / relative),
+            "path": str(member_path),
             "sha256": raw["sha256"],
             "size_bytes": raw["size_bytes"],
         }:
@@ -489,7 +552,6 @@ def build_disposable_drill_authority(
         raise DrillAuthorityError("repository HEAD differs from drill preregistration")
     history_replay = _replay_history_freeze(
         manifest_path=strict_input_paths["history_freeze_manifest"],
-        repository_root=repository,
     )
     capture = _capture_live_manager_epoch(planned)
     manager_epoch = capture["manager_epoch"]

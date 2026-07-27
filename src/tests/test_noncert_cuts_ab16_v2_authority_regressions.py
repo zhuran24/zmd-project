@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import ast
 import copy
+import hashlib
 import importlib.util
+import io
 import json
+import os
 from pathlib import Path
 import stat
 import sys
 from types import ModuleType
+import zipfile
 
 import pytest
 
@@ -29,6 +33,10 @@ def _load(name: str, path: Path) -> ModuleType:
 BOOTSTRAP = _load(
     "noncert_cuts_ab16_campaign_bootstrap_v2_regression",
     TOOLS / "ab16_campaign_bootstrap_v2.py",
+)
+AUTHORITY = _load(
+    "noncert_cuts_ab16_authority_v2_regression",
+    TOOLS / "ab16_authority_v2.py",
 )
 RESOURCE = _load(
     "noncert_cuts_ab16_resource_verifier_v2_regression",
@@ -267,15 +275,25 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         strict_input_paths={},
         system_tool_paths={},
     )
+    final_identity = _regular(
+        tmp_path / "gate-b-final.json",
+        BOOTSTRAP.authority.canonical_json({}),
+    )
+    epoch_identity = _regular(
+        tmp_path / "gate-b-epoch.json",
+        BOOTSTRAP.authority.canonical_json({"manager_epoch": epoch}),
+    )
     gate_b = {
         "approval_id": "gate-b-fixture-v2",
         "arm_launch_authorized": False,
         "candidate_identity": candidate_result["candidate_identity"],
         "created_at_utc": "2026-07-24T00:01:00Z",
         "decision": "APPROVED",
+        "final_full_preflight_receipt_identity": final_identity,
         "formal_campaign_creation_authorized": True,
         "gate": "B",
         "gate_a_receipt_identity": gate_a_identity,
+        "gate_b_epoch_observation_identity": epoch_identity,
         "planned_source_set_digest": digest,
         "purpose": BOOTSTRAP.GATE_B_PURPOSE,
         "repository_head": HEAD,
@@ -301,6 +319,16 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         "_check_epoch_toolchain",
         lambda *_args, **_kwargs: {},
     )
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_validate_final_full_preflight",
+        lambda value, **_kwargs: value,
+    )
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_validate_gate_b_epoch_observation",
+        lambda value, **_kwargs: value,
+    )
 
     with pytest.raises(
         BOOTSTRAP.BootstrapError,
@@ -316,6 +344,309 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
             system_tool_paths={},
         )
     assert not campaign.exists()
+
+
+def _gate_b_record(tmp_path: Path) -> dict[str, object]:
+    campaign = tmp_path / "campaigns/run-gate-b-evidence-v2"
+    candidate = _regular(tmp_path / "gate-b/candidate.json", b"{}\n")
+    gate_a = _regular(tmp_path / "gate-b/gate-a.json", b"{}\n")
+    return {
+        "approval_id": "gate-b-evidence-v2", "arm_launch_authorized": False,
+        "candidate_identity": {key: candidate[key] for key in ("path", "sha256", "size_bytes")},
+        "created_at_utc": "2026-07-24T00:01:00Z", "decision": "APPROVED",
+        "final_full_preflight_receipt_identity": _regular(tmp_path / "gate-b/final.json", b"{}\n"),
+        "formal_campaign_creation_authorized": True, "gate": "B",
+        "gate_a_receipt_identity": {key: gate_a[key] for key in ("path", "sha256", "size_bytes")},
+        "gate_b_epoch_observation_identity": _regular(tmp_path / "gate-b/epoch.json", b"{}\n"),
+        "planned_source_set_digest": "a" * 64, "purpose": BOOTSTRAP.GATE_B_PURPOSE,
+        "repository_head": HEAD, "repository_root": str(tmp_path / "repository"),
+        "run_nonce": campaign.name, "schema_version": BOOTSTRAP.GATE_B_SCHEMA,
+        "target_campaign_dir": str(campaign),
+    }
+
+
+@pytest.mark.parametrize(
+    ("field", "mutation"),
+    [
+        ("final_full_preflight_receipt_identity", "missing"),
+        ("gate_b_epoch_observation_identity", "missing"),
+        ("final_full_preflight_receipt_identity", "drift"),
+        ("gate_b_epoch_observation_identity", "drift"),
+    ],
+)
+def test_gate_b_independent_evidence_identity_is_fail_closed(
+    tmp_path: Path,
+    field: str,
+    mutation: str,
+) -> None:
+    record = _gate_b_record(tmp_path)
+    if mutation == "missing":
+        record.pop(field)
+    else:
+        identity = dict(record[field])
+        identity["sha256"] = "f" * 64
+        record[field] = identity
+    with pytest.raises(BOOTSTRAP.BootstrapError):
+        BOOTSTRAP._validate_gate_b(record)  # noqa: SLF001
+
+
+def _repository_manifest(tmp_path: Path) -> dict[str, object]:
+    tracked = b"from __future__ import annotations\n"
+    candidate = b'{"placements":[]}\n'
+    members: list[dict[str, object]] = [
+        {
+            "blob_oid": "1" * 40, "git_mode": "100644", "materialized_mode": 0o444,
+            "path": "pkg/module.py", "raw_sha256": hashlib.sha256(tracked).hexdigest(),
+            "size_bytes": len(tracked), "source_kind": "git_blob",
+        },
+        {
+            "materialized_mode": 0o444, "package_role": "input.candidate_placements.json",
+            "path": "data/preprocessed/candidate_placements.json",
+            "raw_sha256": hashlib.sha256(candidate).hexdigest(), "size_bytes": len(candidate),
+            "source_identity": {
+                "mode": 0o444, "path": str(tmp_path / "candidate-source.json"),
+                "sha256": hashlib.sha256(candidate).hexdigest(),
+                "size_bytes": len(candidate)},
+            "source_kind": "package_overlay",
+        },
+    ]
+    archive_path = tmp_path / "package/payload/input.ab16_repository_snapshot.zip"
+    return {
+        "archive_identity": {"path": str(archive_path), "sha256": "2" * 64, "size_bytes": 10},
+        "authority_scope": "AB16_RESEARCH_ONLY", "import_mode": "ordinary_pathfinder",
+        "member_count": len(members), "members": members,
+        "ordered_member_digest": hashlib.sha256(AUTHORITY.canonical_json(members)).hexdigest(),
+        "repository_head": HEAD, "repository_tree": "3" * 40,
+        "schema_version": AUTHORITY.REPOSITORY_SNAPSHOT_SCHEMA,
+        "total_bytes": sum(member["size_bytes"] for member in members),
+    }
+
+
+def _zip_bytes(path: str, raw: bytes) -> bytes:
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w") as archive:
+        archive.writestr(path, raw)
+    return output.getvalue()
+
+
+def test_repository_snapshot_manifest_exact_member_and_overlay_contract(
+    tmp_path: Path,
+) -> None:
+    record = _repository_manifest(tmp_path)
+    assert AUTHORITY.validate_repository_snapshot_manifest(record) == record
+
+    missing = copy.deepcopy(record)
+    missing.pop("member_count")
+    extra = copy.deepcopy(record)
+    extra["unexpected"] = True
+    no_overlay = copy.deepcopy(record)
+    no_overlay["members"].pop()
+    no_overlay.update(member_count=1, total_bytes=no_overlay["members"][0]["size_bytes"])
+    no_overlay["ordered_member_digest"] = hashlib.sha256(AUTHORITY.canonical_json(no_overlay["members"])).hexdigest()
+    mutations = [missing, extra, no_overlay]
+    for field, replacement in (
+        ("path", "data/preprocessed/other.json"),
+        ("materialized_mode", 0o400),
+        ("raw_sha256", "f" * 64),
+    ):
+        changed = copy.deepcopy(record)
+        changed["members"][-1][field] = replacement
+        changed["ordered_member_digest"] = hashlib.sha256(AUTHORITY.canonical_json(changed["members"])).hexdigest()
+        mutations.append(changed)
+    source_drift = copy.deepcopy(record)
+    source_drift["members"][-1]["source_identity"]["sha256"] = "e" * 64
+    source_drift["ordered_member_digest"] = hashlib.sha256(AUTHORITY.canonical_json(source_drift["members"])).hexdigest()
+    mutations.append(source_drift)
+    for changed in mutations:
+        with pytest.raises(AUTHORITY.AuthorityError):
+            AUTHORITY.validate_repository_snapshot_manifest(changed)
+
+
+def test_bootstrap_materializer_rejects_manifest_without_candidate_overlay(
+    tmp_path: Path,
+) -> None:
+    campaign = tmp_path / "run-bootstrap-materializer-v1"
+    payload = campaign / "campaign-authority/package/payload"
+    payload.mkdir(parents=True)
+    raw = b"tracked\n"
+    archive_path = payload / BOOTSTRAP.SNAPSHOT_ARCHIVE_PACKAGE_ROLE
+    archive_path.write_bytes(_zip_bytes("tracked.txt", raw))
+    archive_path.chmod(0o444)
+    candidate_path = payload / "input.candidate_placements.json"
+    candidate_path.write_bytes(b"{}\n")
+    candidate_path.chmod(0o444)
+    members = [
+        {
+            "blob_oid": "1" * 40, "git_mode": "100644", "materialized_mode": 0o444,
+            "path": "tracked.txt",
+            "raw_sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw), "source_kind": "git_blob",
+        }
+    ]
+    manifest = {
+        **_repository_manifest(tmp_path),
+        "archive_identity": BOOTSTRAP.authority.detached_identity(BOOTSTRAP.authority.snapshot_regular(archive_path)),
+        "member_count": 1, "members": members,
+        "ordered_member_digest": hashlib.sha256(BOOTSTRAP.authority.canonical_json(members)).hexdigest(),
+        "total_bytes": len(raw),
+    }
+    manifest_path = payload / BOOTSTRAP.SNAPSHOT_MANIFEST_PACKAGE_ROLE
+    manifest_path.write_bytes(BOOTSTRAP.authority.canonical_json(manifest))
+    manifest_path.chmod(0o444)
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="candidate overlay"):
+        BOOTSTRAP._materialize_repository_snapshot(  # noqa: SLF001
+            campaign_dir=campaign,
+            package_dir=payload.parent,
+            package_id="4" * 64,
+            created_at_utc="2026-07-27T00:00:00Z",
+        )
+
+
+def _materialized_snapshot_fixture(
+    tmp_path: Path,
+) -> tuple[dict[str, object], dict[str, object], Path]:
+    campaign = tmp_path / "run-snapshot-replay-v1"
+    payload = campaign / "campaign-authority/package/payload"
+    repository = campaign / "campaign-authority/source-snapshot-a001/repository"
+    payload.mkdir(parents=True)
+    (repository / "pkg").mkdir(parents=True)
+    (repository / "data/preprocessed").mkdir(parents=True)
+    tracked = b"from __future__ import annotations\n"
+    candidate = b'{"placements":[]}\n'
+    archive_buffer = io.BytesIO()
+    with zipfile.ZipFile(archive_buffer, "w") as archive:
+        archive.writestr("pkg/module.py", tracked)
+    archive_path = payload / "input.ab16_repository_snapshot.zip"
+    candidate_path = payload / "input.candidate_placements.json"
+    python_path = tmp_path / "tools/python3.13"
+    for path, raw, mode in (
+        (archive_path, archive_buffer.getvalue(), 0o444),
+        (candidate_path, candidate, 0o444),
+        (python_path, b"python fixture\n", 0o755),
+        (repository / "pkg/module.py", tracked, 0o444),
+        (repository / "data/preprocessed/candidate_placements.json", candidate, 0o444),
+    ):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+        path.chmod(mode)
+    manifest = _repository_manifest(tmp_path)
+    manifest["archive_identity"] = AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(archive_path))
+    manifest["members"][1]["source_identity"] = {
+        "mode": 0o444,
+        **AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(candidate_path)),
+    }
+    manifest["ordered_member_digest"] = hashlib.sha256(AUTHORITY.canonical_json(manifest["members"])).hexdigest()
+    manifest_path = payload / "input.ab16_repository_snapshot.json"
+    manifest_path.write_bytes(AUTHORITY.canonical_json(manifest))
+    manifest_path.chmod(0o444)
+    platform = {
+        "authority_scope": "AB16_RESEARCH_ONLY",
+        "cpython_version": "3.13.13",
+        "external_platform_trust": [
+            "CPython runtime and standard library semantics",
+            "OR-Tools/protobuf installation and native dependencies",
+            "kernel, systemd, D-Bus, cgroup-v2 and filesystem durability",
+            "non-hostile operating-system account",
+        ],
+        "ortools_version": "fixture",
+        "protobuf_version": "fixture",
+        "python_identity": AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(python_path)),
+        "repository_head": HEAD,
+        "schema_version": AUTHORITY.EXTERNAL_PLATFORM_SCHEMA,
+    }
+    platform_path = payload / "input.ab16_external_platform_assumptions.json"
+    platform_path.write_bytes(AUTHORITY.canonical_json(platform))
+    platform_path.chmod(0o444)
+    package_id = "4" * 64
+    receipt = {
+        "authority_scope": "AB16_RESEARCH_ONLY",
+        "candidate_identity": AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(candidate_path)),
+        "created_at_utc": "2026-07-27T00:00:00Z",
+        "import_mode": "ordinary_pathfinder",
+        "member_count": manifest["member_count"],
+        "ordered_member_digest": manifest["ordered_member_digest"],
+        "package_id": package_id,
+        "repository_head": HEAD,
+        "repository_tree": manifest["repository_tree"],
+        "schema_version": AUTHORITY.SNAPSHOT_MATERIALIZATION_SCHEMA,
+        "snapshot_archive_identity": manifest["archive_identity"],
+        "snapshot_manifest_identity": AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(manifest_path)),
+        "snapshot_root": str(repository),
+        "status": "PASS",
+        "total_bytes": manifest["total_bytes"],
+    }
+    receipt_path = repository.parent / "materialization-receipt.json"
+    receipt_path.write_bytes(AUTHORITY.canonical_json(receipt))
+    receipt_path.chmod(0o444)
+    for directory in sorted((path for path in repository.rglob("*") if path.is_dir()), reverse=True):
+        directory.chmod(0o555)
+    repository.chmod(0o555)
+    files = {
+        path.name: AUTHORITY.snapshot_regular(path)
+        for path in (archive_path, candidate_path, manifest_path, platform_path)
+    }
+    sources = {
+        "input.ab16_repository_snapshot.zip": {"package_path": archive_path.name},
+        "input.ab16_repository_snapshot.json": {"package_path": manifest_path.name},
+        "input.ab16_external_platform_assumptions.json": {"package_path": platform_path.name},
+        "input.candidate_placements.json": {"package_path": candidate_path.name},
+    }
+    root = {
+        "authority_tools": {"python3_13": AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(python_path))},
+        "package": {"package_id": package_id},
+        "repository_head": HEAD,
+        "strict_inputs": {
+            "ab16_external_platform_assumptions": AUTHORITY.detached_identity(files[platform_path.name]),
+            "ab16_repository_snapshot": AUTHORITY.detached_identity(files[manifest_path.name]),
+            "ab16_repository_snapshot_archive": AUTHORITY.detached_identity(files[archive_path.name]),
+            "ab16_repository_snapshot_materialization": AUTHORITY.detached_identity(
+                AUTHORITY.snapshot_regular(receipt_path)
+            ),
+        },
+    }
+    return {"directory": campaign, "root": root, "files": files, "sources": sources}, manifest, repository
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["extra", "missing", "path", "mode", "hash", "symlink", "hardlink", "identity"],
+)
+def test_materialized_repository_snapshot_replay_is_fail_closed(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    kwargs, _manifest, repository = _materialized_snapshot_fixture(tmp_path)
+    target = repository / "pkg/module.py"
+    if mutation in {"extra", "symlink", "hardlink"}:
+        repository.chmod(0o755)
+        path = repository / ("extra.py" if mutation == "extra" else f"{mutation}.py")
+        if mutation == "extra":
+            path.write_bytes(b"extra\n")
+        elif mutation == "symlink":
+            path.symlink_to(target)
+        else:
+            path.hardlink_to(target)
+        repository.chmod(0o555)
+    elif mutation in {"missing", "path"}:
+        target.parent.chmod(0o755)
+        target.unlink() if mutation == "missing" else target.rename(target.with_name("renamed.py"))
+        target.parent.chmod(0o555)
+    elif mutation == "mode":
+        target.chmod(0o400)
+    elif mutation == "hash":
+        target.chmod(0o644)
+        target.write_bytes(b"drift\n")
+        target.chmod(0o444)
+    else:
+        kwargs["root"]["strict_inputs"]["ab16_repository_snapshot"]["sha256"] = "f" * 64
+    try:
+        with pytest.raises(AUTHORITY.AuthorityError):
+            AUTHORITY._replay_repository_snapshot(**kwargs)  # noqa: SLF001
+    finally:
+        for current, dirnames, _filenames in os.walk(repository):
+            Path(current).chmod(0o755)
+            for dirname in dirnames:
+                (Path(current) / dirname).chmod(0o755)
 
 
 def _history_authority(

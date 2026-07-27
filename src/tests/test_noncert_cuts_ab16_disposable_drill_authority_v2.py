@@ -14,8 +14,6 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 TOOLS = ROOT / "docs/research/noncert_cuts_ab16_20260724"
-HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
-HISTORY = ROOT / ".artifacts/noncert_cuts_ab16_20260724" / "gate-a-terminal-reference-history-freeze-a001/manifest.json"
 
 
 def _load(name: str, path: Path) -> ModuleType:
@@ -33,12 +31,50 @@ BUILDER = _load(
 )
 
 
+FIXTURE_REPOSITORY_HEAD = BUILDER.HISTORY_FREEZE_HEAD
+
+
+def _history_manifest(tmp_path: Path) -> tuple[Path, Path]:
+    history_root = tmp_path / "immutable-history-repository"
+    frozen_root = ".artifacts/noncert_cuts_ab16_20260724/failed-gate-a-a001"
+    members: list[dict[str, object]] = []
+    for relative, raw, mode in (
+        (f"{frozen_root}/terminal.json", b'{"status":"FAILED"}\n', 0o400),
+        (
+            "docs/research/noncert_cuts_ab16_20260724/fixture_v1.py",
+            b"# immutable v1 fixture\n",
+            0o444,
+        ),
+    ):
+        path = history_root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+        path.chmod(mode)
+        identity = BUILDER.lifecycle.snapshot_regular(path).identity
+        members.append({**identity, "path": relative})
+    manifest = {
+        "created_at_utc": "2026-07-24T05:27:12Z",
+        "file_count": len(members),
+        "files": members,
+        "frozen_roots": [frozen_root],
+        "purpose": BUILDER.HISTORY_FREEZE_PURPOSE,
+        "repository_head": BUILDER.HISTORY_FREEZE_HEAD,
+        "repository_root": str(history_root),
+        "schema_version": BUILDER.HISTORY_FREEZE_SCHEMA,
+        "v1_source_glob": "docs/research/noncert_cuts_ab16_20260724/*_v1.py",
+    }
+    manifest_path = history_root / ".artifacts/noncert_cuts_ab16_20260724/history-freeze-a001/manifest.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_bytes(BUILDER.bootstrap.authority.canonical_json(manifest))
+    manifest_path.chmod(0o444)
+    return manifest_path, history_root
+
+
 def _inputs(tmp_path: Path) -> tuple[dict[str, Path], dict[str, Path]]:
     strict: dict[str, Path] = {}
     for role in sorted(BUILDER.bootstrap.STRICT_INPUT_ROLES):
         if role == "history_freeze_manifest":
-            assert HISTORY.is_file()
-            strict[role] = HISTORY
+            strict[role], _ = _history_manifest(tmp_path)
             continue
         path = tmp_path / "inputs" / role
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -219,7 +255,7 @@ def _build(
     monkeypatch.setattr(
         BUILDER,
         "_observe_repository_head",
-        lambda _repository, _planned: HEAD,
+        lambda _repository, _planned: FIXTURE_REPOSITORY_HEAD,
     )
     monkeypatch.setenv(
         "DBUS_SESSION_BUS_ADDRESS",
@@ -232,7 +268,7 @@ def _build(
     result = BUILDER.build_disposable_drill_authority(
         output_dir=destination,
         repository_root=ROOT,
-        repository_head=HEAD,
+        repository_head=FIXTURE_REPOSITORY_HEAD,
         run_nonce=destination.name,
         expected_planned_source_set_digest=observed["planned_source_set_digest"],
         strict_input_paths=strict,
@@ -330,7 +366,7 @@ def test_v2_authority_seals_exact_surface_and_never_authorizes_formal_use(
     }
     assert capability["transcript_identity"] == pre_run["reference_capability_transcript_identity"]
     assert history["status"] == "PASS"
-    assert history["file_count"] == 67
+    assert history["file_count"] == 2
     assert history["authorizations"] == {
         "formal_campaign_creation_authorized": False,
         "organic_arm_launch_authorized": False,
@@ -347,7 +383,7 @@ def test_v2_authority_seals_exact_surface_and_never_authorizes_formal_use(
         BUILDER.build_disposable_drill_authority(
             output_dir=destination,
             repository_root=ROOT,
-            repository_head=HEAD,
+            repository_head=FIXTURE_REPOSITORY_HEAD,
             run_nonce=destination.name,
             expected_planned_source_set_digest=authority_ready["planned_source_set_digest"],
             strict_input_paths=strict,
@@ -370,7 +406,7 @@ def test_v2_authority_rejects_source_and_receipt_mutation(
         BUILDER.build_disposable_drill_authority(
             output_dir=destination,
             repository_root=ROOT,
-            repository_head=HEAD,
+            repository_head=FIXTURE_REPOSITORY_HEAD,
             run_nonce=destination.name,
             expected_planned_source_set_digest=observed["planned_source_set_digest"],
             strict_input_paths=strict,
@@ -419,3 +455,87 @@ def test_v2_authority_rejects_source_and_receipt_mutation(
         match="history_freeze_replay_identity",
     ):
         BUILDER.verifier.validate_pre_run_authority(pre_run)
+
+
+def test_history_replay_uses_manifest_repository_not_active_repository(
+    tmp_path: Path,
+) -> None:
+    manifest_path, history_root = _history_manifest(tmp_path)
+
+    replay = BUILDER._replay_history_freeze(  # noqa: SLF001
+        manifest_path=manifest_path,
+    )
+
+    manifest = json.loads(manifest_path.read_text())
+    assert manifest["repository_root"] == str(history_root)
+    assert manifest["repository_root"] != str(ROOT)
+    assert replay["status"] == "PASS"
+    assert replay["file_count"] == 2
+
+
+@pytest.mark.parametrize(
+    ("mutation", "match"),
+    (
+        ("extra_manifest_field", "schema drifted"),
+        ("active_repository_root", "member is missing"),
+        ("symlink_repository_root", "root is missing or symlinked"),
+        ("member_extra_field", "member schema drifted"),
+        ("member_absolute_path", "member path is invalid"),
+        ("member_hash", "member byte identity drifted"),
+        ("member_mode", "member byte identity drifted"),
+        ("member_symlink", "member is missing, non-regular, or symlinked"),
+    ),
+)
+def test_history_replay_fails_closed_on_manifest_root_and_member_drift(
+    tmp_path: Path,
+    mutation: str,
+    match: str,
+) -> None:
+    manifest_path, history_root = _history_manifest(tmp_path)
+    manifest = json.loads(manifest_path.read_text())
+    if mutation == "extra_manifest_field":
+        manifest["unexpected"] = False
+    elif mutation == "active_repository_root":
+        manifest["repository_root"] = str(ROOT)
+    elif mutation == "symlink_repository_root":
+        link = tmp_path / "history-root-link"
+        link.symlink_to(history_root, target_is_directory=True)
+        manifest["repository_root"] = str(link)
+    elif mutation == "member_extra_field":
+        manifest["files"][0]["unexpected"] = False
+    elif mutation == "member_absolute_path":
+        manifest["files"][0]["path"] = str(history_root / manifest["files"][0]["path"])
+    elif mutation == "member_hash":
+        manifest["files"][0]["sha256"] = "0" * 64
+    elif mutation == "member_mode":
+        manifest["files"][0]["mode"] = 0o444
+    elif mutation == "member_symlink":
+        member = history_root / manifest["files"][0]["path"]
+        target = tmp_path / "history-member-target"
+        target.write_bytes(member.read_bytes())
+        member.unlink()
+        member.symlink_to(target)
+    else:
+        raise AssertionError(f"unknown mutation: {mutation}")
+    if mutation != "member_symlink":
+        manifest_path.chmod(0o644)
+        manifest_path.write_bytes(BUILDER.bootstrap.authority.canonical_json(manifest))
+        manifest_path.chmod(0o444)
+
+    with pytest.raises(BUILDER.DrillAuthorityError, match=match):
+        BUILDER._replay_history_freeze(  # noqa: SLF001
+            manifest_path=manifest_path,
+        )
+
+
+def test_history_replay_rejects_symlink_manifest(
+    tmp_path: Path,
+) -> None:
+    manifest_path, _ = _history_manifest(tmp_path)
+    manifest_link = tmp_path / "manifest-link.json"
+    manifest_link.symlink_to(manifest_path)
+
+    with pytest.raises(BUILDER.DrillAuthorityError, match="symlink"):
+        BUILDER._replay_history_freeze(  # noqa: SLF001
+            manifest_path=manifest_link,
+        )
