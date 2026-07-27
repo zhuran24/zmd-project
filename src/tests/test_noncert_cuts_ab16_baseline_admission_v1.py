@@ -114,8 +114,55 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
         role: _write(tmp_path / f"{role}.json", _canonical({"role": role}))
         for role in sorted(ADMISSION.REQUIRED_REBUILD_INPUT_ROLES)
     }
+    snapshot_manifest_identity = _write(
+        tmp_path / "repository-snapshot.json",
+        _canonical({"schema_version": "fixture-repository-snapshot-v1"}),
+    )
+    snapshot_archive_identity = _write(
+        tmp_path / "repository-snapshot.zip",
+        b"fixture snapshot archive\n",
+    )
+    candidate_identity = _write(
+        tmp_path / "candidate-overlay.json",
+        _canonical({"fixture": True}),
+    )
+    materialization = {
+        "authority_scope": ADMISSION.MATERIALIZATION_AUTHORITY_SCOPE,
+        "candidate_identity": candidate_identity,
+        "created_at_utc": "2026-07-24T00:59:59Z",
+        "import_mode": ADMISSION.SNAPSHOT_IMPORT_MODE,
+        "member_count": 4,
+        "ordered_member_digest": "3" * 64,
+        "package_id": "b" * 64,
+        "repository_head": "a" * 40,
+        "repository_tree": "2" * 40,
+        "schema_version": ADMISSION.MATERIALIZATION_SCHEMA,
+        "snapshot_archive_identity": snapshot_archive_identity,
+        "snapshot_manifest_identity": snapshot_manifest_identity,
+        "snapshot_root": str(tmp_path.resolve()),
+        "status": "PASS",
+        "total_bytes": 1234,
+    }
+    materialization_identity = _write(
+        tmp_path / "repository-snapshot-materialization.json",
+        _canonical(materialization),
+    )
+    campaign_provenance = {
+        "import_mode": ADMISSION.SNAPSHOT_IMPORT_MODE,
+        "materialization_receipt_identity": materialization_identity,
+        "package_id": "b" * 64,
+        "repository_head": "a" * 40,
+        "schema_version": ADMISSION.CAMPAIGN_PROVENANCE_SCHEMA,
+        "snapshot_manifest_identity": snapshot_manifest_identity,
+        "snapshot_root": str(tmp_path.resolve()),
+    }
+    campaign_provenance_identity = _write(
+        tmp_path / "campaign-provenance.json",
+        _canonical(campaign_provenance),
+    )
     metadata = {
         "builder_identity": builder_identity,
+        "campaign_provenance": campaign_provenance,
         "canonical_binary": True,
         "created_at_utc": "2026-07-24T01:00:00Z",
         "errors": [],
@@ -129,7 +176,6 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
         "historical_model_text_sha256": historical_model_text_sha256,
         "model_variable_count": len(model.variables),
         "purpose": ADMISSION.REBUILD_PURPOSE,
-        "repository_head": "a" * 40,
         "schema_version": ADMISSION.METADATA_SCHEMA,
         "status": "PASS",
     }
@@ -137,6 +183,7 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
     replay = {
         "all_fixed_equalities_added": True,
         "assignment_count": len(incumbent),
+        "campaign_provenance": campaign_provenance,
         "conflicting_assignment_count": 0,
         "created_at_utc": "2026-07-24T01:00:01Z",
         "fixed_assignment_count": len(incumbent),
@@ -171,8 +218,6 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
     legacy_identity = _write(tmp_path / "control-a002-result.json", legacy_raw)
     expectation = ADMISSION.BaselineExpectation(
         profile="small-fixture-v1",
-        repository_head="a" * 40,
-        legacy_path=legacy_identity["path"],
         legacy_size_bytes=legacy_identity["size_bytes"],
         legacy_sha256=legacy_identity["sha256"],
         historical_model_text_sha256=historical_model_text_sha256,
@@ -182,10 +227,13 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
         incumbent_assignment_count=len(incumbent),
     )
     return {
+        "campaign_provenance": campaign_provenance,
+        "campaign_provenance_path": Path(campaign_provenance_identity["path"]),
         "expectation": expectation,
         "incumbent": incumbent,
         "incumbent_path": Path(incumbent_identity["path"]),
         "legacy_path": Path(legacy_identity["path"]),
+        "materialization_path": Path(materialization_identity["path"]),
         "metadata": metadata,
         "metadata_path": Path(metadata_identity["path"]),
         "model_identity": model_identity,
@@ -197,6 +245,7 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
 
 def _admit(fixture: dict[str, Any]) -> dict[str, object]:
     return ADMISSION._admit_paths(
+        campaign_provenance_path=fixture["campaign_provenance_path"],
         legacy_control=fixture["legacy_path"],
         rebuilt_model=fixture["model_path"],
         rebuilt_metadata=fixture["metadata_path"],
@@ -295,6 +344,49 @@ def test_metadata_duplicate_key_is_rejected(tmp_path: Path) -> None:
     fixture["replay"]["metadata_identity"] = metadata_identity
     _rewrite_replay(fixture)
     with pytest.raises(ADMISSION.AdmissionError, match="duplicate JSON key"):
+        _admit(fixture)
+
+
+@pytest.mark.parametrize("mutation", ["missing", "extra"])
+def test_metadata_key_set_drift_is_rejected(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    fixture = _fixture(tmp_path)
+    if mutation == "missing":
+        fixture["metadata"].pop("campaign_provenance")
+    else:
+        fixture["metadata"]["repository_root"] = str(tmp_path)
+    _rewrite_metadata(fixture)
+    with pytest.raises(ADMISSION.AdmissionError, match="key set drifted"):
+        _admit(fixture)
+
+
+def test_replay_campaign_snapshot_provenance_drift_is_rejected(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    changed = dict(fixture["campaign_provenance"])
+    changed["repository_head"] = "c" * 40
+    fixture["replay"]["campaign_provenance"] = changed
+    _rewrite_replay(fixture)
+    with pytest.raises(ADMISSION.AdmissionError, match="replay semantics"):
+        _admit(fixture)
+
+
+def test_campaign_provenance_extra_field_is_rejected(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    changed = dict(fixture["campaign_provenance"])
+    changed["repository_root"] = str(tmp_path)
+    _write(fixture["campaign_provenance_path"], _canonical(changed))
+    with pytest.raises(ADMISSION.AdmissionError, match="key set drifted"):
+        _admit(fixture)
+
+
+def test_materialization_receipt_drift_is_rejected(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    fixture["materialization_path"].write_bytes(
+        fixture["materialization_path"].read_bytes() + b" "
+    )
+    with pytest.raises(ADMISSION.AdmissionError, match="detached identity drifted|detached identity mismatch"):
         _admit(fixture)
 
 

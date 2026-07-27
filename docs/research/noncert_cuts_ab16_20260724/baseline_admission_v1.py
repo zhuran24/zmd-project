@@ -9,6 +9,8 @@ mathematical claim.  Baseline admission instead requires:
 * strict rebuild metadata binding the builder and all rebuild inputs; and
 * an independently produced fixed-assignment replay receipt binding the same
   model, metadata, incumbent, and replay tool.
+* one package-bound repository-snapshot provenance record replayed before and
+  after admission, shared exactly by rebuild metadata and replay receipt.
 
 Every file is read once through an ``O_NOFOLLOW`` file descriptor and checked
 with before/after ``fstat``.  The only write is an ``O_EXCL`` result after all
@@ -36,8 +38,12 @@ from ortools.sat import cp_model_pb2
 
 
 ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v1"
-METADATA_SCHEMA = "noncert-cuts-ab16-rebuilt-model-metadata-v1"
-REPLAY_SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v1"
+METADATA_SCHEMA = "noncert-cuts-ab16-rebuilt-model-metadata-v2"
+REPLAY_SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v2"
+CAMPAIGN_PROVENANCE_SCHEMA = "noncert-cuts-ab16-campaign-snapshot-provenance-v1"
+MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
+MATERIALIZATION_AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
+SNAPSHOT_IMPORT_MODE = "ordinary_pathfinder"
 MODEL_BACKEND = "ortools.sat.cp_model_pb2.CpModelProto"
 MODEL_BINARY_FORMAT = "deterministic-protobuf-v1"
 REBUILD_PURPOSE = "strict_ab16_baseline_model_rebuild"
@@ -56,6 +62,32 @@ GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 ROLE_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\Z")
 MAX_JSON_BYTES = 64 * 1024 * 1024
 MAX_MODEL_BYTES = 1024 * 1024 * 1024
+CAMPAIGN_PROVENANCE_KEYS = {
+    "import_mode",
+    "materialization_receipt_identity",
+    "package_id",
+    "repository_head",
+    "schema_version",
+    "snapshot_manifest_identity",
+    "snapshot_root",
+}
+MATERIALIZATION_KEYS = {
+    "authority_scope",
+    "candidate_identity",
+    "created_at_utc",
+    "import_mode",
+    "member_count",
+    "ordered_member_digest",
+    "package_id",
+    "repository_head",
+    "repository_tree",
+    "schema_version",
+    "snapshot_archive_identity",
+    "snapshot_manifest_identity",
+    "snapshot_root",
+    "status",
+    "total_bytes",
+}
 
 
 class AdmissionError(RuntimeError):
@@ -75,8 +107,6 @@ class BaselineExpectation:
     """Constants that cannot be overridden by the production CLI."""
 
     profile: str
-    repository_head: str
-    legacy_path: str
     legacy_size_bytes: int
     legacy_sha256: str
     historical_model_text_sha256: str
@@ -88,12 +118,6 @@ class BaselineExpectation:
 
 PRODUCTION_EXPECTATION = BaselineExpectation(
     profile="production-control-a002-v1",
-    repository_head="398f8725c770f3c36408adebe9448a890ed886fe",
-    legacy_path=(
-        "/home/zhuran24/zmd-pj-codex-baselines/noncert-cuts-ab-trust-20260723/"
-        ".artifacts/noncert_cuts_ab_trust_20260723/"
-        "run-20260723T113911Z-SrJBE0/positive-control/control-a002/result.json"
-    ),
     legacy_size_bytes=507_095,
     legacy_sha256="9e747c214c2108b7fc73fede1d31873b24bf765d74857cf4a846cf5178ebcff6",
     historical_model_text_sha256=("3a9be08dcca722fc4bf7dfc9bcf7be4a1213af14ded9ec7b769909a029904d32"),
@@ -296,16 +320,109 @@ def _replay_identity(value: object, label: str, *, max_bytes: int = MAX_JSON_BYT
     return snapshot
 
 
+def _snapshot_root(value: object) -> Path:
+    if type(value) is not str or not Path(value).is_absolute():
+        raise AdmissionError("campaign provenance snapshot_root is not absolute")
+    root = Path(value)
+    if Path(os.path.abspath(root)) != root:
+        raise AdmissionError("campaign provenance snapshot_root is not normalized")
+    current = Path(root.anchor)
+    for component in root.parts[1:]:
+        current /= component
+        try:
+            metadata = os.lstat(current)
+        except OSError as exc:
+            raise AdmissionError("campaign provenance snapshot_root is unavailable") from exc
+        if stat.S_ISLNK(metadata.st_mode):
+            raise AdmissionError("campaign provenance snapshot_root contains a symlink")
+    if not root.is_dir():
+        raise AdmissionError("campaign provenance snapshot_root is not a directory")
+    return root
+
+
+def campaign_provenance(path: Path | str) -> dict[str, object]:
+    provenance_snapshot = snapshot_regular(
+        path,
+        max_bytes=MAX_JSON_BYTES,
+        label="campaign provenance",
+    )
+    record = _exact_keys(
+        _strict_loads(
+            provenance_snapshot.data,
+            "campaign provenance",
+            canonical=True,
+        ),
+        CAMPAIGN_PROVENANCE_KEYS,
+        "campaign provenance",
+    )
+    if (
+        record["schema_version"] != CAMPAIGN_PROVENANCE_SCHEMA
+        or type(record["repository_head"]) is not str
+        or GIT_SHA_RE.fullmatch(record["repository_head"]) is None
+        or type(record["package_id"]) is not str
+        or SHA256_RE.fullmatch(record["package_id"]) is None
+        or record["import_mode"] != SNAPSHOT_IMPORT_MODE
+    ):
+        raise AdmissionError("campaign provenance semantics drifted")
+    root = _snapshot_root(record["snapshot_root"])
+    manifest = _replay_identity(
+        record["snapshot_manifest_identity"],
+        "campaign snapshot manifest",
+    )
+    _mapping(
+        _strict_loads(
+            manifest.data,
+            "campaign snapshot manifest",
+            canonical=True,
+        ),
+        "campaign snapshot manifest",
+    )
+    materialization = _replay_identity(
+        record["materialization_receipt_identity"],
+        "campaign snapshot materialization receipt",
+    )
+    receipt = _exact_keys(
+        _strict_loads(
+            materialization.data,
+            "campaign snapshot materialization receipt",
+            canonical=True,
+        ),
+        MATERIALIZATION_KEYS,
+        "campaign snapshot materialization receipt",
+    )
+    _utc(receipt["created_at_utc"], "campaign snapshot materialization created_at_utc")
+    _integer(receipt["member_count"], "campaign snapshot materialization member_count", 1)
+    _integer(receipt["total_bytes"], "campaign snapshot materialization total_bytes", 1)
+    _identity(receipt["snapshot_manifest_identity"], "materialization snapshot manifest")
+    _identity(receipt["snapshot_archive_identity"], "materialization snapshot archive")
+    _identity(receipt["candidate_identity"], "materialization candidate")
+    if (
+        receipt["schema_version"] != MATERIALIZATION_SCHEMA
+        or receipt["status"] != "PASS"
+        or receipt["authority_scope"] != MATERIALIZATION_AUTHORITY_SCOPE
+        or receipt["repository_head"] != record["repository_head"]
+        or type(receipt["repository_tree"]) is not str
+        or GIT_SHA_RE.fullmatch(receipt["repository_tree"]) is None
+        or receipt["package_id"] != record["package_id"]
+        or receipt["snapshot_manifest_identity"] != dict(manifest.identity)
+        or receipt["snapshot_manifest_identity"] != record["snapshot_manifest_identity"]
+        or receipt["snapshot_root"] != str(root)
+        or receipt["import_mode"] != SNAPSHOT_IMPORT_MODE
+        or type(receipt["ordered_member_digest"]) is not str
+        or SHA256_RE.fullmatch(receipt["ordered_member_digest"]) is None
+    ):
+        raise AdmissionError("campaign snapshot materialization semantics drifted")
+    return dict(record)
+
+
 def _validate_legacy(
     snapshot: Snapshot,
     expectation: BaselineExpectation,
 ) -> dict[str, object]:
-    expected_identity = {
-        "path": expectation.legacy_path,
-        "sha256": expectation.legacy_sha256,
-        "size_bytes": expectation.legacy_size_bytes,
-    }
-    if snapshot.identity != expected_identity:
+    if (
+        snapshot.identity["sha256"] != expectation.legacy_sha256
+        or snapshot.identity["size_bytes"] != expectation.legacy_size_bytes
+    ):
         raise AdmissionError("legacy control-a002 bytes do not match pinned provenance")
     value = _mapping(
         _strict_loads(
@@ -396,6 +513,7 @@ def _parse_model(
 def _validate_metadata(
     snapshot: Snapshot,
     *,
+    campaign_provenance: Mapping[str, object],
     model_identity: Mapping[str, object],
     expectation: BaselineExpectation,
 ) -> dict[str, object]:
@@ -403,6 +521,7 @@ def _validate_metadata(
         _strict_loads(snapshot.data, "rebuild metadata", canonical=True),
         {
             "builder_identity",
+            "campaign_provenance",
             "canonical_binary",
             "created_at_utc",
             "errors",
@@ -416,7 +535,6 @@ def _validate_metadata(
             "historical_model_text_sha256",
             "model_variable_count",
             "purpose",
-            "repository_head",
             "schema_version",
             "status",
         },
@@ -429,7 +547,7 @@ def _validate_metadata(
         record["schema_version"] != METADATA_SCHEMA
         or record["status"] != "PASS"
         or record["purpose"] != REBUILD_PURPOSE
-        or record["repository_head"] != expectation.repository_head
+        or record["campaign_provenance"] != dict(campaign_provenance)
         or record["model_backend"] != MODEL_BACKEND
         or record["model_binary_format"] != MODEL_BINARY_FORMAT
         or record["canonical_binary"] is not True
@@ -454,6 +572,7 @@ def _validate_metadata(
         replayed_inputs[role] = dict(replayed.identity)
     return {
         "builder_identity": dict(builder.identity),
+        "campaign_provenance": dict(campaign_provenance),
         "input_identities": replayed_inputs,
         "metadata_identity": dict(snapshot.identity),
     }
@@ -478,6 +597,7 @@ def _validate_incumbent(snapshot: Snapshot, expectation: BaselineExpectation) ->
 def _validate_replay(
     snapshot: Snapshot,
     *,
+    campaign_provenance: Mapping[str, object],
     model_identity: Mapping[str, object],
     metadata_identity: Mapping[str, object],
     expectation: BaselineExpectation,
@@ -487,6 +607,7 @@ def _validate_replay(
         {
             "all_fixed_equalities_added",
             "assignment_count",
+            "campaign_provenance",
             "conflicting_assignment_count",
             "created_at_utc",
             "fixed_assignment_count",
@@ -526,6 +647,7 @@ def _validate_replay(
         or record["status"] != "PASS"
         or record["verdict"] != REPLAY_VERDICT
         or record["purpose"] != REPLAY_PURPOSE
+        or record["campaign_provenance"] != dict(campaign_provenance)
         or record["solver_status"] != "OPTIMAL"
         or record["solution_matches_fixed_assignments"] is not True
         or record["all_fixed_equalities_added"] is not True
@@ -569,6 +691,7 @@ def _validate_replay(
 
 def _admit_paths(
     *,
+    campaign_provenance_path: Path | str,
     legacy_control: Path | str,
     rebuilt_model: Path | str,
     rebuilt_metadata: Path | str,
@@ -579,6 +702,7 @@ def _admit_paths(
     """Internal implementation; tests may supply a small fixture expectation."""
 
     _utc(created_at_utc, "admission created_at_utc")
+    provenance_before = campaign_provenance(campaign_provenance_path)
     legacy_snapshot = snapshot_regular(
         legacy_control,
         max_bytes=MAX_JSON_BYTES,
@@ -609,15 +733,19 @@ def _admit_paths(
     _parse_model(model_snapshot.data, expectation)
     metadata = _validate_metadata(
         metadata_snapshot,
+        campaign_provenance=provenance_before,
         model_identity=model_snapshot.identity,
         expectation=expectation,
     )
     replay = _validate_replay(
         replay_snapshot,
+        campaign_provenance=provenance_before,
         model_identity=model_snapshot.identity,
         metadata_identity=metadata_snapshot.identity,
         expectation=expectation,
     )
+    if campaign_provenance(campaign_provenance_path) != provenance_before:
+        raise AdmissionError("campaign provenance drifted during baseline admission")
     return {
         "admission_tool_identity": dict(tool_snapshot.identity),
         "authorizations": {
@@ -627,6 +755,7 @@ def _admit_paths(
             "organic_arm_launch_authorized": False,
             "solver_run_authorized": False,
         },
+        "campaign_provenance": provenance_before,
         "created_at_utc": created_at_utc,
         "expected_baseline": {
             "incumbent_assignment_count": expectation.incumbent_assignment_count,
@@ -653,6 +782,7 @@ def _admit_paths(
 
 def admit_paths(
     *,
+    campaign_provenance_path: Path | str,
     legacy_control: Path | str,
     rebuilt_model: Path | str,
     rebuilt_metadata: Path | str,
@@ -662,6 +792,7 @@ def admit_paths(
     """Apply the immutable production expectation."""
 
     return _admit_paths(
+        campaign_provenance_path=campaign_provenance_path,
         legacy_control=legacy_control,
         rebuilt_model=rebuilt_model,
         rebuilt_metadata=rebuilt_metadata,
@@ -714,6 +845,7 @@ def write_exclusive(path: Path | str, value: object) -> dict[str, object]:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign-provenance", required=True, type=Path)
     parser.add_argument("--legacy-control", required=True, type=Path)
     parser.add_argument("--rebuilt-model", required=True, type=Path)
     parser.add_argument("--rebuilt-metadata", required=True, type=Path)
@@ -727,6 +859,7 @@ def main(argv: list[str] | None = None) -> int:
     arguments = _parser().parse_args(argv)
     try:
         result = admit_paths(
+            campaign_provenance_path=arguments.campaign_provenance,
             legacy_control=arguments.legacy_control,
             rebuilt_model=arguments.rebuilt_model,
             rebuilt_metadata=arguments.rebuilt_metadata,

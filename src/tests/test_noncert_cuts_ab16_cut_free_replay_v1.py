@@ -4,6 +4,7 @@ import argparse
 import importlib.util
 import json
 from pathlib import Path
+import sys
 
 from ortools.sat.python import cp_model
 import pytest
@@ -13,15 +14,17 @@ ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724"
 
 
-def _load(name: str):
+def _load(name: str, module_name: str | None = None):
     path = RESEARCH / f"{name}.py"
-    spec = importlib.util.spec_from_file_location(name, path)
+    spec = importlib.util.spec_from_file_location(module_name or name, path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
 
+BASELINE_CONTRACT = _load("baseline_admission_v1")
 REPLAY = _load("cut_free_incumbent_replay_v1")
 REBUILD = _load("baseline_rebuild_v1")
 
@@ -159,10 +162,10 @@ def _fixed_args(**changes: object) -> argparse.Namespace:
         "ghost_w": 6,
         "ghost_h": 6,
         "run_nonce": "fixture-run",
-        "repository_root": REBUILD.EXPECTED_REPOSITORY_ROOT,
-        "candidate_placements": (REBUILD.EXPECTED_REPOSITORY_ROOT / "data/preprocessed/candidate_placements.json"),
-        "canonical_rules": (REBUILD.EXPECTED_REPOSITORY_ROOT / "rules/canonical_rules.json"),
-        "mandatory_instances": (REBUILD.EXPECTED_REPOSITORY_ROOT / "data/preprocessed/mandatory_exact_instances.json"),
+        "campaign_provenance": ROOT / ".artifacts/fixture-campaign/campaign-provenance.json",
+        "candidate_placements": (ROOT / "data/preprocessed/candidate_placements.json"),
+        "canonical_rules": (ROOT / "rules/canonical_rules.json"),
+        "mandatory_instances": (ROOT / "data/preprocessed/mandatory_exact_instances.json"),
     }
     value.update(changes)
     return argparse.Namespace(**value)
@@ -174,8 +177,8 @@ def test_baseline_rebuild_rejects_parameter_drift() -> None:
         REBUILD._validate_fixed_parameters(_fixed_args(seed=7))
     with pytest.raises(REBUILD.BaselineRebuildError, match="nonce"):
         REBUILD._validate_fixed_parameters(_fixed_args(run_nonce=""))
-    with pytest.raises(REBUILD.BaselineRebuildError, match="repository root"):
-        REBUILD._validate_fixed_parameters(_fixed_args(repository_root=Path("/wrong-repository")))
+    with pytest.raises(REBUILD.BaselineRebuildError, match="campaign provenance"):
+        REBUILD._validate_fixed_parameters(_fixed_args(campaign_provenance=Path("relative-provenance.json")))
     with pytest.raises(REBUILD.BaselineRebuildError, match="not absolute"):
         REBUILD._validate_fixed_parameters(_fixed_args(candidate_placements=Path("relative.json")))
 
@@ -185,3 +188,9 @@ def test_baseline_builder_declares_non_authorizing_output() -> None:
     assert '"authorizing": False' in source
     assert "EXACT_CUT_FRAMEWORK_ATTACH" in source
     assert "enabled_cut_families=()" in source
+    assert "EXPECTED_REPOSITORY_ROOT" not in source
+    assert "EXPECTED_HEAD" not in source
+    assert "sys.meta_path" not in source
+    assert "importlib" not in source
+    assert "baseline_contract.campaign_provenance" in source
+    assert BASELINE_CONTRACT.SNAPSHOT_IMPORT_MODE == "ordinary_pathfinder"

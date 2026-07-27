@@ -4,9 +4,10 @@
 This is a formal-stage payload.  Importing it is side-effect free; the CLI is
 only run after the separately authorized Gate B selection.  Its output is
 evidence for the independent baseline admission tool, never an admission by
-itself.  The repository root and every data input are explicit arguments:
-later authority replay must join their full byte identities to the selected
-campaign package rather than trusting this payload's source-file location.
+itself.  Repository code is imported with ordinary Python semantics only from
+the package-bound, no-overwrite campaign snapshot named by the canonical
+campaign-provenance record.  Every data input is an exact member of that same
+snapshot; the live checkout is not an execution source.
 """
 
 from __future__ import annotations
@@ -23,17 +24,16 @@ import sys
 import time
 from typing import Any
 
+import baseline_admission_v1 as baseline_contract
 from ortools.sat import cp_model_pb2
 
 
-EXPECTED_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
-EXPECTED_REPOSITORY_ROOT = Path("/home/zhuran24/zmd-pj-codex-baselines/noncert-cuts-ab-trust-20260723")
 EXPECTED_MODEL_PROTO_SHA256 = "3a9be08dcca722fc4bf7dfc9bcf7be4a1213af14ded9ec7b769909a029904d32"
 EXPECTED_INCUMBENT_SHA256 = "13f88404d7f5e4fde86929f82997a2b9850fa1cc4791d710c0363ed3e072f223"
 EXPECTED_VARIABLE_COUNT = 37_760
 EXPECTED_CONSTRAINT_COUNT = 95_136
 SCHEMA = "noncert-cuts-ab16-baseline-rebuild-v1"
-METADATA_SCHEMA = "noncert-cuts-ab16-rebuilt-model-metadata-v1"
+METADATA_SCHEMA = baseline_contract.METADATA_SCHEMA
 MODEL_BACKEND = "ortools.sat.cp_model_pb2.CpModelProto"
 MODEL_BINARY_FORMAT = "deterministic-protobuf-v1"
 REBUILD_PURPOSE = "strict_ab16_baseline_model_rebuild"
@@ -145,6 +145,30 @@ def _snapshot_regular(path: Path, *, limit: int) -> tuple[bytes, dict[str, objec
     }
 
 
+def _campaign_provenance(path: Path) -> dict[str, object]:
+    try:
+        return baseline_contract.campaign_provenance(path)
+    except baseline_contract.AdmissionError as exc:
+        raise BaselineRebuildError(f"campaign provenance failed closed: {exc}") from exc
+
+
+def _require_snapshot_imports(snapshot_root: Path) -> None:
+    for name, module in tuple(sys.modules.items()):
+        if name != "src" and not name.startswith("src."):
+            continue
+        source = getattr(module, "__file__", None)
+        if type(source) is str:
+            if not Path(os.path.abspath(source)).is_relative_to(snapshot_root):
+                raise BaselineRebuildError(f"repository module imported outside snapshot: {name}")
+            continue
+        search_path = getattr(module, "__path__", None)
+        if search_path is None or any(
+            not Path(os.path.abspath(item)).is_relative_to(snapshot_root)
+            for item in search_path
+        ):
+            raise BaselineRebuildError(f"repository package imported outside snapshot: {name}")
+
+
 def _write_exclusive(path: Path, raw: bytes) -> dict[str, object]:
     if path.is_symlink():
         raise BaselineRebuildError(f"symlink output rejected: {path}")
@@ -190,7 +214,7 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--run-nonce", required=True)
-    parser.add_argument("--repository-root", required=True, type=Path)
+    parser.add_argument("--campaign-provenance", required=True, type=Path)
     parser.add_argument("--master-seconds", type=float, default=900.0)
     parser.add_argument("--binding-seconds", type=float, default=600.0)
     parser.add_argument("--routing-seconds", type=float, default=600.0)
@@ -235,11 +259,8 @@ def _validate_fixed_parameters(args: argparse.Namespace) -> None:
         raise BaselineRebuildError(f"baseline parameters drifted: expected {expected!r}, got {actual!r}")
     if not args.run_nonce or len(args.run_nonce) > 128:
         raise BaselineRebuildError("run nonce is invalid")
-    repository_root = Path(os.path.abspath(args.repository_root))
-    if repository_root != EXPECTED_REPOSITORY_ROOT:
-        raise BaselineRebuildError("repository root differs from the campaign's fixed worktree")
-    if not repository_root.is_dir() or repository_root.is_symlink():
-        raise BaselineRebuildError("repository root must be an existing non-symlink directory")
+    if not Path(args.campaign_provenance).is_absolute():
+        raise BaselineRebuildError("campaign provenance path is not absolute")
     for role in STRICT_INPUT_ROLES:
         path = Path(getattr(args, role))
         if not path.is_absolute():
@@ -249,6 +270,20 @@ def _validate_fixed_parameters(args: argparse.Namespace) -> None:
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     _validate_fixed_parameters(args)
+    provenance_before = _campaign_provenance(args.campaign_provenance)
+    repository_root = Path(str(provenance_before["snapshot_root"]))
+    if Path.cwd() != repository_root:
+        raise BaselineRebuildError("working directory is not the campaign snapshot root")
+    if any(name == "src" or name.startswith("src.") for name in sys.modules):
+        raise BaselineRebuildError("repository modules were imported before snapshot activation")
+    for entry in sys.path:
+        candidate = Path(os.path.abspath(entry or Path.cwd()))
+        if (
+            candidate != repository_root
+            and (candidate / "PROJECT_LOCK.md").is_file()
+            and (candidate / "src").is_dir()
+        ):
+            raise BaselineRebuildError("ambient repository import path is forbidden")
     output = _prepare_output(args.output_dir)
     tmp_dir = output / "tmp"
     os.mkdir(tmp_dir, 0o700)
@@ -264,8 +299,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     os.environ["EXACT_MASTER_SYMMETRY_LEVEL"] = "3"
     os.environ["EXACT_B1_BINDING_ALT_CAP"] = str(args.binding_alt_cap)
 
-    repository_root = Path(os.path.abspath(args.repository_root))
     strict_inputs = {role: Path(os.path.abspath(getattr(args, role))) for role in STRICT_INPUT_ROLES}
+    expected_inputs = {
+        "candidate_placements": repository_root / "data" / "preprocessed" / "candidate_placements.json",
+        "canonical_rules": repository_root / "rules" / "canonical_rules.json",
+        "mandatory_instances": repository_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+    }
+    if strict_inputs != expected_inputs:
+        raise BaselineRebuildError("strict input paths are not the campaign snapshot members")
     input_identities: dict[str, dict[str, object]] = {}
     for role, path in strict_inputs.items():
         _, identity = _snapshot_regular(path, limit=1 << 30)
@@ -276,6 +317,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     from src.models.master_model import MasterPlacementModel
     from src.search.benders_loop import ExactSearchSession, LBBDController
 
+    _require_snapshot_imports(repository_root)
     started = time.perf_counter()
     session = ExactSearchSession.create(
         repository_root,
@@ -333,6 +375,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     }
     if observed != expected:
         raise BaselineRebuildError(f"historical baseline did not reproduce: {observed!r}")
+    if _campaign_provenance(args.campaign_provenance) != provenance_before:
+        raise BaselineRebuildError("campaign provenance drifted during baseline rebuild")
 
     model_path = output / "cut-free-model.bin"
     if os.path.lexists(model_path) or not master.model.export_to_file(str(model_path)):
@@ -357,7 +401,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "status": "PASS",
         "purpose": REBUILD_PURPOSE,
         "created_at_utc": _utc_now(),
-        "repository_head": EXPECTED_HEAD,
+        "campaign_provenance": provenance_before,
         "model_backend": MODEL_BACKEND,
         "model_binary_format": MODEL_BINARY_FORMAT,
         "canonical_binary": True,
@@ -378,7 +422,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     record = {
         "schema_version": SCHEMA,
         "created_at_utc": _utc_now(),
-        "repository_head": EXPECTED_HEAD,
+        "campaign_provenance": provenance_before,
         "run_nonce": args.run_nonce,
         "parameters": {
             "ghost_rect": [args.ghost_w, args.ghost_h],

@@ -4,8 +4,13 @@
 The checker reads the model, metadata and incumbent on stable O_NOFOLLOW
 descriptors, parses the official binary protobuf, independently maps every
 incumbent record to a real placement selector, and solves a fresh model with
-those placements fixed.  It does not import the baseline builder, admission
-tool, or an organic arm runner.
+those placements fixed.  It does not import the baseline builder or an
+organic arm runner.  It reuses only the package-pinned admission module's
+campaign-snapshot provenance validator.
+
+The model metadata and this receipt share one exact package-bound repository
+snapshot provenance record.  Its manifest and materialization receipt are
+replayed before and after the solve; the live checkout is not consulted.
 """
 
 from __future__ import annotations
@@ -21,19 +26,38 @@ import re
 import stat
 from typing import Any
 
+import baseline_admission_v1 as baseline_contract
 from google.protobuf import text_format
 from ortools.sat import cp_model_pb2
 from ortools.sat.python import cp_model
 
 
-SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v1"
-METADATA_SCHEMA = "noncert-cuts-ab16-rebuilt-model-metadata-v1"
+SCHEMA = baseline_contract.REPLAY_SCHEMA
+METADATA_SCHEMA = baseline_contract.METADATA_SCHEMA
 PURPOSE = "strict_ab16_incumbent_fixed_assignment_replay"
 VERDICT = "INCUMBENT_FIXED_ASSIGNMENT_REPLAY_PASS"
-EXPECTED_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
 EXPECTED_INCUMBENT_SHA256 = "13f88404d7f5e4fde86929f82997a2b9850fa1cc4791d710c0363ed3e072f223"
 EXPECTED_ASSIGNMENT_COUNT = 293
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+METADATA_KEYS = {
+    "builder_identity",
+    "campaign_provenance",
+    "canonical_binary",
+    "created_at_utc",
+    "errors",
+    "global_claim_authorized",
+    "historical_model_text_sha256",
+    "input_identities",
+    "legacy_control_used_as_build_input",
+    "model_backend",
+    "model_binary_format",
+    "model_constraint_count",
+    "model_identity",
+    "model_variable_count",
+    "purpose",
+    "schema_version",
+    "status",
+}
 
 
 class ReplayError(RuntimeError):
@@ -140,6 +164,19 @@ def _identity(value: object, label: str) -> dict[str, object]:
     ):
         raise ReplayError(f"{label} identity is invalid")
     return dict(value)
+
+
+def _exact_mapping(value: object, keys: set[str], label: str) -> dict[str, Any]:
+    if type(value) is not dict or set(value) != keys:
+        raise ReplayError(f"{label} exact key set drifted")
+    return value
+
+
+def _campaign_provenance(path: Path) -> dict[str, object]:
+    try:
+        return baseline_contract.campaign_provenance(path)
+    except baseline_contract.AdmissionError as exc:
+        raise ReplayError(f"campaign provenance failed closed: {exc}") from exc
 
 
 def _semantic_digest(value: object) -> str:
@@ -318,6 +355,7 @@ def _write_exclusive(path: Path, raw: bytes) -> dict[str, object]:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--campaign-provenance", required=True, type=Path)
     parser.add_argument("--model", required=True, type=Path)
     parser.add_argument("--metadata", required=True, type=Path)
     parser.add_argument("--incumbent", required=True, type=Path)
@@ -328,15 +366,30 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if not args.campaign_provenance.is_absolute():
+        raise ReplayError("campaign provenance path is not absolute")
+    provenance_before = _campaign_provenance(args.campaign_provenance)
+    snapshot_root = Path(str(provenance_before["snapshot_root"]))
+    if Path.cwd() != snapshot_root:
+        raise ReplayError("working directory is not the campaign snapshot root")
     model_raw, model_identity = _snapshot(args.model, limit=1 << 30)
     metadata_raw, metadata_identity = _snapshot(args.metadata, limit=64 << 20)
     incumbent_raw, incumbent_identity = _snapshot(args.incumbent, limit=64 << 20)
-    metadata = _strict_json(metadata_raw, "metadata")
+    metadata = _exact_mapping(
+        _strict_json(metadata_raw, "metadata"),
+        METADATA_KEYS,
+        "metadata",
+    )
     incumbent = _strict_json(incumbent_raw, "incumbent")
-    if type(metadata) is not dict or metadata.get("schema_version") != METADATA_SCHEMA:
-        raise ReplayError("metadata schema is invalid")
-    if metadata.get("repository_head") != EXPECTED_HEAD:
-        raise ReplayError("metadata repository HEAD drifted")
+    if (
+        metadata["schema_version"] != METADATA_SCHEMA
+        or metadata["status"] != "PASS"
+        or metadata["campaign_provenance"] != provenance_before
+        or metadata["global_claim_authorized"] is not False
+        or metadata["legacy_control_used_as_build_input"] is not False
+        or metadata["errors"] != []
+    ):
+        raise ReplayError("metadata semantics drifted")
     if _identity(metadata.get("model_identity"), "metadata model") != model_identity:
         raise ReplayError("metadata does not bind the supplied model")
     if type(incumbent) is not dict:
@@ -351,16 +404,36 @@ def main(argv: Sequence[str] | None = None) -> int:
     }:
         raise ReplayError("metadata strict input identities drifted")
     candidate_identity = _identity(input_identities["candidate_placements"], "candidate")
+    canonical_rules_identity = _identity(input_identities["canonical_rules"], "canonical rules")
     mandatory_identity = _identity(input_identities["mandatory_instances"], "mandatory")
+    expected_paths = {
+        "candidate": snapshot_root / "data" / "preprocessed" / "candidate_placements.json",
+        "canonical_rules": snapshot_root / "rules" / "canonical_rules.json",
+        "mandatory": snapshot_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+    }
+    if (
+        Path(str(candidate_identity["path"])) != expected_paths["candidate"]
+        or Path(str(canonical_rules_identity["path"])) != expected_paths["canonical_rules"]
+        or Path(str(mandatory_identity["path"])) != expected_paths["mandatory"]
+    ):
+        raise ReplayError("metadata strict inputs are not campaign snapshot members")
     candidate_raw, candidate_actual = _snapshot(
-        Path(candidate_identity["path"]),
+        Path(str(candidate_identity["path"])),
         limit=1 << 30,
     )
     mandatory_raw, mandatory_actual = _snapshot(
-        Path(mandatory_identity["path"]),
+        Path(str(mandatory_identity["path"])),
         limit=64 << 20,
     )
-    if candidate_actual != candidate_identity or mandatory_actual != mandatory_identity:
+    _, canonical_rules_actual = _snapshot(
+        Path(str(canonical_rules_identity["path"])),
+        limit=64 << 20,
+    )
+    if (
+        candidate_actual != candidate_identity
+        or canonical_rules_actual != canonical_rules_identity
+        or mandatory_actual != mandatory_identity
+    ):
         raise ReplayError("strict input detached identity drifted")
     candidate = _strict_json(candidate_raw, "candidate placements", canonical=False)
     mandatory = _strict_json(mandatory_raw, "mandatory instances", canonical=False)
@@ -371,6 +444,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         candidate_placements=candidate,
         max_time_seconds=args.max_time_seconds,
     )
+    if _campaign_provenance(args.campaign_provenance) != provenance_before:
+        raise ReplayError("campaign provenance drifted during fixed-assignment replay")
     _, tool_identity = _snapshot(Path(__file__), limit=64 << 20)
     receipt = {
         "schema_version": SCHEMA,
@@ -378,6 +453,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "verdict": VERDICT,
         "purpose": PURPOSE,
         "created_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "campaign_provenance": provenance_before,
         "model_identity": model_identity,
         "metadata_identity": metadata_identity,
         "incumbent_identity": incumbent_identity,
