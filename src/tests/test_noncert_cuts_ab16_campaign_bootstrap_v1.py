@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import ast
 import base64
 import copy
+import hashlib
 import importlib.util
+import json
 import os
 from pathlib import Path
 import shutil
@@ -35,6 +38,14 @@ BOOTSTRAP = _load(
     AB16_RESEARCH / "ab16_campaign_bootstrap_v1.py",
 )
 AUTH = BOOTSTRAP.authority
+BOOTSTRAP_V2 = _load(
+    "noncert_cuts_ab16_campaign_bootstrap_v2_strict_tested",
+    AB16_RESEARCH / "ab16_campaign_bootstrap_v2.py",
+)
+AUTH_V2 = _load(
+    "noncert_cuts_ab16_authority_v2_strict_tested",
+    AB16_RESEARCH / "ab16_authority_v2.py",
+)
 
 
 def _write(path: Path, raw: bytes) -> Path:
@@ -841,3 +852,492 @@ def test_candidate_source_digest_mutation_is_rejected(
     ):
         _bootstrap(fixture)
     assert not fixture["campaign"].exists()
+
+
+def test_v2_path_preregistration_closes_formal_outer_and_arm_paths(
+    tmp_path: Path,
+) -> None:
+    campaign = tmp_path / "campaigns" / "run-path-prereg-v3"
+    campaign.parent.mkdir()
+    record = BOOTSTRAP_V2._path_preregistration(campaign)  # noqa: SLF001
+    assert BOOTSTRAP_V2.validate_path_preregistration(
+        record,
+        campaign_dir=campaign,
+    ) == record
+    assert record["schema"] == "noncert-cuts-ab16-path-preregistration-v3"
+    assert record["formal_admission_path"] == str(
+        campaign / "formal-ab16/formal-launch-admission-a001.json"
+    )
+    assert record["formal_attempt_dir"] == str(
+        campaign / "formal-ab16/formal-attempt-a001"
+    )
+    assert record["formal_selection_path"] == str(
+        campaign / "formal-ab16/formal-attempt-a001/selection.json"
+    )
+    assert record["gate1_prelaunch_ownership_path"] == str(
+        campaign / "formal-ab16/formal-attempt-a001/gate1-prelaunch-ownership.json"
+    )
+    assert record["guardian_ready_path"] == str(
+        campaign / "formal-ab16/outer-guardian-ready-a001.json"
+    )
+    assert record["outer_barrier_path"] == str(
+        campaign / "formal-ab16/formal-attempt-a001/outer-barrier-release.json"
+    )
+    assert set(record["outer_receipt_paths"]) == {
+        "detached_closeout",
+        "detached_incomplete_closeout",
+        "dual_lock_release",
+        "guardian_absence",
+        "guardian_lock_close",
+        "observer",
+        "outer_prelaunch",
+        "outer_resource",
+        "outer_start",
+        "outer_terminal",
+        "post_unref_absence",
+        "pre_unref_cleanup",
+        "reference_acquisition",
+        "reference_release",
+    }
+    assert len(record["arm_prelaunch_paths"]) == 16
+    assert all(
+        set(value) == {"receipt", "request"}
+        for value in record["arm_prelaunch_paths"].values()
+    )
+
+    missing = copy.deepcopy(record)
+    missing.pop("formal_selection_path")
+    extra = copy.deepcopy(record)
+    extra["future_authority_path"] = str(campaign / "forbidden.json")
+    drifted = copy.deepcopy(record)
+    drifted["outer_barrier_path"] = str(campaign / "wrong.json")
+    for changed in (missing, extra, drifted):
+        with pytest.raises(BOOTSTRAP_V2.BootstrapError):
+            BOOTSTRAP_V2.validate_path_preregistration(
+                changed,
+                campaign_dir=campaign,
+            )
+
+
+def test_v2_package_role_set_is_exact_and_has_one_owner(
+    tmp_path: Path,
+) -> None:
+    scripts = {
+        role: tmp_path / "scripts" / filename
+        for role, filename in BOOTSTRAP_V2.SCRIPT_TOOL_FILES.items()
+    }
+    systems = {
+        role: tmp_path / "system" / role
+        for role in BOOTSTRAP_V2.SYSTEM_TOOL_ROLES
+    }
+    strict = {
+        role: tmp_path / "inputs" / role
+        for role in BOOTSTRAP_V2.STRICT_INPUT_ROLES
+    }
+    specs, script_roles, input_roles = BOOTSTRAP_V2._package_roles(  # noqa: SLF001
+        scripts=scripts,
+        system_paths=systems,
+        strict_paths=strict,
+        gate_a_path=tmp_path / "gate-a.json",
+        candidate_path=tmp_path / "candidate.json",
+        gate_b_path=tmp_path / "gate-b.json",
+        gate_b_epoch_path=tmp_path / "gate-b-epoch.json",
+        final_full_preflight_path=tmp_path / "final-full.json",
+        capture_path=tmp_path / "manager-capture.json",
+        path_preregistration_path=tmp_path / "path-preregistration.json",
+        snapshot_archive_path=tmp_path / "repository-snapshot.zip",
+        snapshot_manifest_path=tmp_path / "repository-snapshot.json",
+        external_platform_path=tmp_path / "external-platform.json",
+    )
+    roles = [spec.role for spec in specs]
+    assert len(roles) == len(set(roles))
+    assert set(roles) == set(AUTH_V2.REQUIRED_PACKAGE_ROLES)
+    assert set(script_roles) == set(BOOTSTRAP_V2.SCRIPT_TOOL_FILES)
+    assert set(input_roles) == {
+        *BOOTSTRAP_V2.STRICT_INPUT_ROLES,
+        *BOOTSTRAP_V2.GATE_INPUT_ROLES,
+        BOOTSTRAP_V2.CAPTURE_INPUT_ROLE,
+        BOOTSTRAP_V2.PATH_PREREGISTRATION_INPUT_ROLE,
+        BOOTSTRAP_V2.SNAPSHOT_ARCHIVE_INPUT_ROLE,
+        BOOTSTRAP_V2.SNAPSHOT_MANIFEST_INPUT_ROLE,
+        BOOTSTRAP_V2.EXTERNAL_PLATFORM_INPUT_ROLE,
+    }
+
+
+def test_v2_bootstrap_seals_before_materializing_without_future_identity() -> None:
+    source = (AB16_RESEARCH / "ab16_campaign_bootstrap_v2.py").read_text(
+        encoding="utf-8"
+    )
+    tree = ast.parse(source)
+    function = next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "bootstrap_campaign"
+    )
+    calls: dict[str, ast.Call] = {}
+    for node in ast.walk(function):
+        if not isinstance(node, ast.Call):
+            continue
+        if isinstance(node.func, ast.Name):
+            name = node.func.id
+        elif isinstance(node.func, ast.Attribute):
+            name = node.func.attr
+        else:
+            continue
+        if name in {
+            "_build_repository_snapshot_sources",
+            "build_package",
+            "_materialize_repository_snapshot",
+            "build_campaign_root",
+        }:
+            assert name not in calls
+            calls[name] = node
+    assert set(calls) == {
+        "_build_repository_snapshot_sources",
+        "build_package",
+        "_materialize_repository_snapshot",
+        "build_campaign_root",
+    }
+    assert (
+        calls["_build_repository_snapshot_sources"].lineno
+        < calls["build_package"].lineno
+        < calls["_materialize_repository_snapshot"].lineno
+        < calls["build_campaign_root"].lineno
+    )
+    materialize_keywords = {
+        keyword.arg: keyword.value
+        for keyword in calls["_materialize_repository_snapshot"].keywords
+    }
+    package_id = materialize_keywords["package_id"]
+    assert (
+        isinstance(package_id, ast.Subscript)
+        and isinstance(package_id.value, ast.Name)
+        and package_id.value.id == "package"
+        and isinstance(package_id.slice, ast.Constant)
+        and package_id.slice.value == "package_id"
+    )
+    assert "package_id" not in {
+        keyword.arg
+        for keyword in calls["_build_repository_snapshot_sources"].keywords
+    }
+    assert "package_id" not in BOOTSTRAP_V2._build_repository_snapshot_sources.__annotations__  # noqa: SLF001
+
+
+def test_v2_external_platform_freezes_three_fds_and_dual_holder_literals() -> None:
+    python_path = Path(os.path.realpath(sys.executable))
+    record = BOOTSTRAP_V2._external_platform_record(  # noqa: SLF001
+        repository_head=HEAD,
+        python_identity=AUTH_V2.full_identity(
+            AUTH_V2.snapshot_regular(python_path)
+        ),
+    )
+    assert record["schema_version"] == (
+        "noncert-cuts-ab16-external-platform-assumptions-v2"
+    )
+    assert record["dual_holder_survival"] == {
+        "assumption_id": "AB16_DUAL_HOLDER_SURVIVAL_V1",
+        "reboot_or_power_loss_during_heavy_runtime_excluded": True,
+        "simultaneous_guardian_supervisor_death_excluded": True,
+        "single_holder_death_must_be_contained": True,
+    }
+    assert record["selected_byte_launch"] == {
+        "direct_fd_map": {"authority": 5, "loader": 4, "python": 3},
+        "execution_strategy": "selected-byte-python-loader-fd-v1",
+        "literal_identity": BOOTSTRAP_V2._literal_identity(  # noqa: SLF001
+            BOOTSTRAP_V2.SELECTED_BYTE_LAUNCH_V1
+        ),
+        "systemd_fd_map": {"authority": 5, "loader": 4, "python": 3},
+        "systemd_fd_names": [
+            "ab16-python",
+            "ab16-loader",
+            "ab16-authority",
+        ],
+    }
+    assert record["formal_launch_owner_driver"] == (
+        BOOTSTRAP_V2._literal_identity(  # noqa: SLF001
+            BOOTSTRAP_V2.FORMAL_LAUNCH_OWNER_DRIVER_V1
+        )
+    )
+    assert record["gate_b_owner_driver"] == (
+        BOOTSTRAP_V2._literal_identity(  # noqa: SLF001
+            BOOTSTRAP_V2.GATE_B_OWNER_DRIVER_V1
+        )
+    )
+    assert record["mechanical_oexcl_publisher"] == (
+        BOOTSTRAP_V2._literal_identity(  # noqa: SLF001
+            BOOTSTRAP_V2.OWNER_OEXCL_PUBLISH_V1
+        )
+    )
+
+
+def _gate_b_owner_driver_probe(
+    tmp_path: Path,
+    *,
+    python_identity: dict[str, object],
+    renderer_identity: dict[str, object],
+    python_fd_path: Path | None = None,
+    expected_argument: str | None = None,
+) -> subprocess.CompletedProcess[str]:
+    tmp_path.mkdir(parents=True)
+    request = tmp_path / "gate-b-render-request.json"
+    output = tmp_path / "gate-b-render-output.bin"
+    request.write_text("{}\n", encoding="utf-8")
+    output.write_bytes(b"")
+    wrapper = """
+import os
+import sys
+
+paths = sys.argv[2:6]
+flags = (os.O_RDONLY, os.O_RDONLY, os.O_RDONLY, os.O_WRONLY)
+opened = [os.open(path, flag) for path, flag in zip(paths, flags, strict=True)]
+if opened != [3, 4, 5, 6]:
+    raise SystemExit(124)
+for descriptor in opened:
+    os.set_inheritable(descriptor, True)
+clean = {
+    "LANG": "C",
+    "LC_ALL": "C",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONHASHSEED": "0",
+    "PYTHONNOUSERSITE": "1",
+    "TZ": "UTC",
+}
+os.execve(
+    sys.argv[1],
+    [
+        sys.argv[1],
+        "-B",
+        "-c",
+        sys.argv[6],
+        "render_gate_b_epoch_observation",
+        sys.argv[7],
+    ],
+    clean,
+)
+"""
+    canonical_expected = json.dumps(
+        {
+            "python": python_identity,
+            "renderer_source": renderer_identity,
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    return subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-B",
+            "-c",
+            wrapper,
+            str(Path(os.path.realpath(sys.executable))),
+            str(
+                python_fd_path
+                if python_fd_path is not None
+                else Path(os.path.realpath(sys.executable))
+            ),
+            str(AB16_RESEARCH / "ab16_campaign_bootstrap_v2.py"),
+            str(request),
+            str(output),
+            BOOTSTRAP_V2.GATE_B_OWNER_DRIVER_V1,
+            expected_argument if expected_argument is not None else canonical_expected,
+        ],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+
+def test_gate_b_owner_driver_checks_python_and_renderer_before_exec(
+    tmp_path: Path,
+) -> None:
+    python_path = Path(os.path.realpath(sys.executable))
+    renderer_path = AB16_RESEARCH / "ab16_campaign_bootstrap_v2.py"
+    python_identity = BOOTSTRAP_V2._snapshot_mode_identity(python_path)  # noqa: SLF001
+    renderer_identity = BOOTSTRAP_V2._snapshot_mode_identity(renderer_path)  # noqa: SLF001
+
+    reached_renderer = _gate_b_owner_driver_probe(
+        tmp_path / "valid",
+        python_identity=python_identity,
+        renderer_identity=renderer_identity,
+    )
+    assert reached_renderer.returncode != 125
+    assert "BootstrapError" in reached_renderer.stderr
+
+    python_drift = dict(python_identity)
+    python_drift["sha256"] = "f" * 64
+    rejected_python = _gate_b_owner_driver_probe(
+        tmp_path / "python-drift",
+        python_identity=python_drift,
+        renderer_identity=renderer_identity,
+    )
+    assert rejected_python.returncode == 125
+
+    renderer_drift = dict(renderer_identity)
+    renderer_drift["size_bytes"] = int(renderer_drift["size_bytes"]) + 1
+    rejected_renderer = _gate_b_owner_driver_probe(
+        tmp_path / "renderer-drift",
+        python_identity=python_identity,
+        renderer_identity=renderer_drift,
+    )
+    assert rejected_renderer.returncode == 125
+
+    copied_renderer = tmp_path / "renderer-path-mismatch/ab16_campaign_bootstrap_v2.py"
+    copied_renderer.parent.mkdir(parents=True)
+    shutil.copyfile(renderer_path, copied_renderer)
+    copied_renderer.chmod(renderer_path.stat().st_mode & 0o7777)
+    copied_renderer_identity = BOOTSTRAP_V2._snapshot_mode_identity(  # noqa: SLF001
+        copied_renderer
+    )
+    rejected_renderer_path = _gate_b_owner_driver_probe(
+        tmp_path / "renderer-path-mismatch-probe",
+        python_identity=python_identity,
+        renderer_identity=copied_renderer_identity,
+    )
+    assert rejected_renderer_path.returncode == 125
+
+    copied_python = tmp_path / "runtime-mismatch/python3.13"
+    copied_python.parent.mkdir(parents=True)
+    shutil.copyfile(python_path, copied_python)
+    copied_python.chmod(python_path.stat().st_mode & 0o7777)
+    copied_identity = BOOTSTRAP_V2._snapshot_mode_identity(copied_python)  # noqa: SLF001
+    rejected_runtime_mismatch = _gate_b_owner_driver_probe(
+        tmp_path / "runtime-mismatch-probe",
+        python_identity=copied_identity,
+        renderer_identity=renderer_identity,
+        python_fd_path=copied_python,
+    )
+    assert rejected_runtime_mismatch.returncode == 125
+
+
+def test_gate_b_owner_driver_identity_argument_and_environment_are_closed(
+    tmp_path: Path,
+) -> None:
+    python_path = Path(os.path.realpath(sys.executable))
+    renderer_path = AB16_RESEARCH / "ab16_campaign_bootstrap_v2.py"
+    python_identity = BOOTSTRAP_V2._snapshot_mode_identity(python_path)  # noqa: SLF001
+    renderer_identity = BOOTSTRAP_V2._snapshot_mode_identity(renderer_path)  # noqa: SLF001
+    noncanonical = json.dumps(
+        {"python": python_identity, "renderer_source": renderer_identity},
+        sort_keys=False,
+    )
+    assert noncanonical != json.dumps(
+        {"python": python_identity, "renderer_source": renderer_identity},
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    rejected_noncanonical = _gate_b_owner_driver_probe(
+        tmp_path / "noncanonical-identity",
+        python_identity=python_identity,
+        renderer_identity=renderer_identity,
+        expected_argument=noncanonical,
+    )
+    assert rejected_noncanonical.returncode == 125
+    source = BOOTSTRAP_V2.GATE_B_OWNER_DRIVER_V1
+    assert 'python_fd, source_fd, request_fd, output_fd = 3, 4, 5, 6' in source
+    assert "dict(os.environ) != clean" in source
+    assert 'set(expected) != {"python", "renderer_source"}' in source
+
+
+def _owner_publisher_probe(
+    tmp_path: Path,
+    *,
+    source_kind: str,
+) -> subprocess.CompletedProcess[str]:
+    output_dir = tmp_path / "output"
+    output_dir.mkdir(parents=True)
+    named_source = tmp_path / "named-source.json"
+    named_source.write_bytes(b'{"status":"PASS"}')
+    wrapper = r"""
+import ctypes
+import fcntl
+import os
+import sys
+
+literal, output_dir, named_source, source_kind = sys.argv[1:]
+if source_kind == "named":
+    source_fd = os.open(named_source, os.O_RDONLY | os.O_CLOEXEC)
+else:
+    libc = ctypes.CDLL(None, use_errno=True)
+    create = libc.memfd_create
+    create.argtypes = (ctypes.c_char_p, ctypes.c_uint)
+    create.restype = ctypes.c_int
+    source_fd = int(create(b"ab16-owner-publisher-focused", 0x0001 | 0x0002))
+    if source_fd < 0:
+        raise OSError(ctypes.get_errno(), "memfd_create")
+    os.write(source_fd, b'{"status":"PASS"}')
+    os.lseek(source_fd, 0, os.SEEK_SET)
+    if source_kind == "sealed":
+        fcntl.fcntl(source_fd, 1033, 0x0001 | 0x0002 | 0x0004 | 0x0008)
+directory_fd = os.open(
+    output_dir,
+    os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
+)
+source_copy = fcntl.fcntl(source_fd, fcntl.F_DUPFD_CLOEXEC, 32)
+directory_copy = fcntl.fcntl(directory_fd, fcntl.F_DUPFD_CLOEXEC, 32)
+os.dup2(source_copy, 4, inheritable=True)
+os.dup2(directory_copy, 5, inheritable=True)
+os.dup2(1, 6, inheritable=True)
+os.execve(
+    sys.executable,
+    [sys.executable, "-I", "-B", "-c", literal, "published.json"],
+    {
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONHASHSEED": "0",
+        "PYTHONNOUSERSITE": "1",
+        "TZ": "UTC",
+    },
+)
+"""
+    return subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-B",
+            "-c",
+            wrapper,
+            BOOTSTRAP_V2.OWNER_OEXCL_PUBLISH_V1,
+            str(output_dir),
+            str(named_source),
+            source_kind,
+        ],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+
+def test_owner_publisher_accepts_only_fully_sealed_memfd_and_publishes_0444(
+    tmp_path: Path,
+) -> None:
+    accepted = _owner_publisher_probe(tmp_path / "sealed", source_kind="sealed")
+    assert accepted.returncode == 0, accepted.stderr
+    published = tmp_path / "sealed/output/published.json"
+    observed = published.stat()
+    assert published.read_bytes() == b'{"status":"PASS"}'
+    assert observed.st_nlink == 1
+    assert observed.st_mode & 0o7777 == 0o444
+    assert accepted.stdout == (
+        "OK "
+        + hashlib.sha256(published.read_bytes()).hexdigest()
+        + f" {published.stat().st_size}\n"
+    )
+
+    unsealed = _owner_publisher_probe(
+        tmp_path / "unsealed",
+        source_kind="unsealed",
+    )
+    assert unsealed.returncode == 125
+    assert not (tmp_path / "unsealed/output/published.json").exists()
+
+    named = _owner_publisher_probe(tmp_path / "named", source_kind="named")
+    assert named.returncode == 125
+    assert not (tmp_path / "named/output/published.json").exists()

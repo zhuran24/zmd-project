@@ -9,7 +9,7 @@ sealed Gate1 or AB16 selection evidence; no name pattern is used for discovery.
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 import fcntl
 import hashlib
@@ -586,6 +586,7 @@ def validate_arm_prelaunch_receipt(
 def service_arm_prelaunch(
     boundary: Any, store: ReceiptStore, host: PinnedHost,
     formal_selection: Mapping[str, Any], reference: Any, *, slot: str, ordinal: int,
+    before_receipt_publish: Callable[[str, str], None] | None = None,
 ) -> dict[str, object]:
     paths = formal_selection["arm_prelaunch_paths"][slot]
     request, request_identity = store.document(paths["request"], f"{slot} prelaunch request")
@@ -615,6 +616,8 @@ def service_arm_prelaunch(
         "status": "PASS" if shown == ABSENT else "REFUSED_IDENTITY_COLLISION",
         "systemctl": shown, "unit_name": checked["unit_name"],
     }
+    if shown == ABSENT and before_receipt_publish is not None:
+        before_receipt_publish(slot, checked["unit_name"])
     identity = store.publish(paths["receipt"], record, f"{slot} prelaunch receipt")
     if shown != ABSENT:
         raise OuterCloseoutError(f"{slot} exact unit name was already present")
@@ -623,7 +626,8 @@ def service_arm_prelaunch(
 
 
 def _gate1_owned(
-    boundary: Any, store: ReceiptStore, host: PinnedHost, reference: Any,
+    boundary: Any, store: ReceiptStore, host: PinnedHost,
+    reference_verification: Mapping[str, str],
     ownership: Mapping[str, Any] | None, gate1: Mapping[str, Any],
     gate1_identity: Mapping[str, Any], ownership_identity: Mapping[str, Any] | None,
     slot: str,
@@ -642,8 +646,6 @@ def _gate1_owned(
          "slot": name, "systemctl": ABSENT, "unit_name": gate1["units"][name]["unit_name"]}
         for name in GATE1_SLOTS
     ]
-    current_reference = reference.verify(
-        expected_manager_owner=boundary.root["manager_epoch"]["dbus_unique_owner"])
     owned = (
         set(ownership) == GATE1_OWNERSHIP_FIELDS
         and ownership.get("schema_version") == GATE1_OWNERSHIP_SCHEMA
@@ -658,7 +660,7 @@ def _gate1_owned(
             == store.identity(boundary.formal_dir / "reference-acquisition.json")
         and ownership.get("outer_resource_identity") == store.identity(boundary.formal_dir / "resource-live.json")
         and ownership.get("locks") == host.lock_evidence()
-        and ownership.get("outer_reference_verification") == current_reference
+        and ownership.get("outer_reference_verification") == reference_verification
         and _same_epoch(boundary, ownership.get("manager_epoch_capture", {}).get("manager_epoch"))
         and ownership.get("units") == expected_units
     )
@@ -692,10 +694,34 @@ def _gate1_owned(
 
 def build_child_ledger(
     boundary: Any, store: ReceiptStore, host: PinnedHost,
-    reference: Any, formal_selection: Mapping[str, Any],
+    reference: Any | None, formal_selection: Mapping[str, Any],
+    *,
+    recorded_reference_verification: Mapping[str, str] | None = None,
 ) -> list[ChildTarget]:
     """Build the finite ledger only from sealed selections and fixed order."""
 
+    if recorded_reference_verification is None:
+        if reference is None:
+            raise OuterCloseoutError("finite child ledger lacks a live or recorded RefUnit verification")
+        reference_verification = reference.verify(
+            expected_manager_owner=boundary.root["manager_epoch"]["dbus_unique_owner"]
+        )
+    else:
+        if reference is not None:
+            raise OuterCloseoutError("finite child ledger cannot mix live and recorded RefUnit proof")
+        reference_verification = dict(recorded_reference_verification)
+        if (
+            set(reference_verification) != {"client_unique_name", "manager_owner", "unit_name"}
+            or any(type(value) is not str or not value for value in reference_verification.values())
+            or reference_verification["manager_owner"]
+            != boundary.root["manager_epoch"]["dbus_unique_owner"]
+            or reference_verification["unit_name"] != formal_selection["outer_spec"]["unit_name"]
+        ):
+            raise OuterCloseoutError("recorded RefUnit verification is malformed or identity-drifted")
+        capture = authority._capture_current_manager_epoch(boundary.context)  # noqa: SLF001
+        if not _same_epoch(boundary, capture["manager_epoch"]):
+            raise OuterCloseoutError("manager/boot epoch drifted before guardian takeover")
+        host.lock_evidence()
     for field in ("attempt_dirs", "pre_run_authority_paths", "arm_selection_paths"):
         value = boundary.preregistration.get(field)
         if type(value) is not dict or set(value) != set(ARM_SEQUENCE):
@@ -739,7 +765,7 @@ def build_child_ledger(
                     boundary,
                     store,
                     host,
-                    reference,
+                    reference_verification,
                     ownership,
                     gate1,
                     gate1_identity,
@@ -854,8 +880,7 @@ def build_child_ledger(
                     owned = (
                         receipt["unit_name"] == unit
                         and receipt["locks"] == host.lock_evidence()
-                        and receipt["outer_reference_verification"] == reference.verify(
-                            expected_manager_owner=boundary.root["manager_epoch"]["dbus_unique_owner"])
+                        and receipt["outer_reference_verification"] == reference_verification
                     )
                     if owned:
                         prelaunch_evidence = {
@@ -895,6 +920,164 @@ def build_child_ledger(
             provenance_error,
         ))
     return targets
+
+
+def derive_child_containment_owned_unit_names(
+    boundary: Any,
+    store: ReceiptStore,
+    host: PinnedHost,
+    formal_selection: Mapping[str, Any],
+    ledger: Mapping[str, object],
+    *,
+    recorded_reference_verification: Mapping[str, str],
+) -> list[str]:
+    """Replay child ownership for guardian takeover without a second RefUnit.
+
+    The recorded verification must come from the canonical acquisition
+    receipt.  It is never treated as a live reference: this path only
+    replays already-published Gate1/organic prelaunch evidence while the
+    guardian proves the manager epoch and its three-lock lease.
+    """
+
+    checked = closeout_state.validate_frozen_ledger(ledger)
+    targets = build_child_ledger(
+        boundary,
+        store,
+        host,
+        None,
+        formal_selection,
+        recorded_reference_verification=recorded_reference_verification,
+    )
+    if len(targets) != len(checked["children"]):
+        raise OuterCloseoutError("guardian child ownership cardinality drifted")
+    owned: list[str] = []
+    for target, frozen in zip(targets, checked["children"], strict=True):
+        if (
+            target.source != frozen["source"]
+            or target.slot != frozen["slot"]
+            or target.unit_name != frozen["unit_name"]
+        ):
+            raise OuterCloseoutError(
+                f"guardian frozen child identity drifted: {target.source}/{target.slot}"
+            )
+        active = bool(
+            frozen["invocation_id"]
+            or frozen["control_group"]
+            or frozen["processes"]
+        )
+        if active and _prelaunch_evidence_matches(target):
+            owned.append(target.unit_name)
+    return owned
+
+
+def freeze_takeover_child_ledger(
+    host: PinnedHost,
+    ledger: Mapping[str, object],
+    targets: Sequence[ChildTarget],
+) -> dict[str, object]:
+    """Freeze every finite selected child before guardian-side containment.
+
+    A supervisor message may contain an inactive prelaunch identity while the
+    selected child has already become live.  The guardian may observe and
+    freeze that exact selected name, cgroup, InvocationID, and PID/starttime,
+    but it may stop/reset it only when the existing canonical prelaunch
+    evidence still replays.  An ownership gap therefore remains observable in
+    the finite ledger and can never be upgraded into a cleanup side effect.
+    """
+
+    checked = closeout_state.validate_frozen_ledger(ledger)
+    if (
+        type(targets) not in {list, tuple}
+        or len(targets) != len(closeout_state.EXPECTED_CHILD_ORDER)
+    ):
+        raise OuterCloseoutError("guardian takeover target cardinality drifted")
+    frozen_children: list[dict[str, object]] = []
+    owned: list[str] = []
+    errors: list[dict[str, str]] = []
+    for target, prior, expected in zip(
+        targets,
+        checked["children"],
+        closeout_state.EXPECTED_CHILD_ORDER,
+        strict=True,
+    ):
+        source, slot = expected
+        if (
+            target.source != source
+            or target.slot != slot
+            or prior["source"] != source
+            or prior["slot"] != slot
+        ):
+            raise OuterCloseoutError(
+                f"guardian takeover order drifted: {source}/{slot}"
+            )
+        prior_name = str(prior["unit_name"])
+        target_name = str(target.unit_name)
+        if prior_name and target_name and prior_name != target_name:
+            raise OuterCloseoutError(
+                f"guardian takeover selected unit name drifted: {source}/{slot}"
+            )
+        unit_name = prior_name or target_name
+        prior_active = bool(
+            prior["invocation_id"]
+            or prior["control_group"]
+            or prior["processes"]
+        )
+        evidence_ok = bool(unit_name) and _prelaunch_evidence_matches(target)
+        current = dict(prior)
+        if prior_active:
+            if not unit_name:
+                raise OuterCloseoutError(
+                    f"guardian takeover active identity lacks a unit: {source}/{slot}"
+                )
+        elif unit_name:
+            shown = host.show(unit_name)
+            classification = (
+                "PRELAUNCH_OWNED_ACTIVE"
+                if shown != ABSENT and evidence_ok
+                else "PRELAUNCH_OWNED_ABSENT"
+                if shown == ABSENT and evidence_ok
+                else "IDENTITY_GAP"
+            )
+            current = host.freeze_identity(
+                source=source,
+                slot=slot,
+                unit_name=unit_name,
+                shown=shown,
+                ownership_classification=classification,
+            )
+        current = closeout_state.validate_frozen_identity(
+            current,
+            expected_source=source,
+            expected_slot=slot,
+        )
+        current_active = bool(
+            current["invocation_id"]
+            or current["control_group"]
+            or current["processes"]
+        )
+        if current_active and current["identity_complete"] is not True:
+            errors.append(
+                _failure(
+                    "GUARDIAN_CHILD_IDENTITY_GAP",
+                    f"{source}/{slot} live identity could not be frozen completely",
+                )
+            )
+        elif current_active and not evidence_ok:
+            errors.append(
+                _failure(
+                    "GUARDIAN_CHILD_OWNERSHIP_IDENTITY_GAP",
+                    f"{source}/{slot} lacks canonical prelaunch ownership",
+                )
+            )
+        elif current_active:
+            owned.append(unit_name)
+        frozen_children.append(current)
+    checked["children"] = frozen_children
+    return {
+        "errors": errors,
+        "ledger": closeout_state.validate_frozen_ledger(checked),
+        "owned_unit_names": owned,
+    }
 
 
 def _prelaunch_evidence_matches(target: ChildTarget) -> bool:
@@ -947,9 +1130,160 @@ def _prelaunch_evidence_matches(target: ChildTarget) -> bool:
     return target.source in {"gate1", "arm"}
 
 
-def _contain(
-    store: ReceiptStore, host: PinnedHost, target: ChildTarget, *, abnormal: bool
+def freeze_selected_child_identity(
+    boundary: Any,
+    store: ReceiptStore,
+    host: PinnedHost,
+    reference: Any | None,
+    formal_selection: Mapping[str, Any],
+    *,
+    source: str,
+    slot: str,
+    recorded_reference_verification: Mapping[str, str] | None = None,
 ) -> dict[str, object]:
+    """Freeze one selected child without launching, stopping, or resetting it.
+
+    Ownership comes only from the sealed selection and the existing
+    package-replayed prelaunch evidence assembled by ``build_child_ledger``.
+    The live identity is accepted only after stable systemd, cgroup, and
+    PID/starttime reads.  A selected unit already proved absent is a valid
+    identity with no runtime side effect.
+    """
+
+    expected_slots = GATE1_SLOTS if source == "gate1" else ARM_SEQUENCE if source == "arm" else ()
+    if slot not in expected_slots:
+        raise OuterCloseoutError("selected child source/slot is outside the fixed campaign order")
+    targets = build_child_ledger(
+        boundary,
+        store,
+        host,
+        reference,
+        formal_selection,
+        recorded_reference_verification=recorded_reference_verification,
+    )
+    matches = [target for target in targets if target.source == source and target.slot == slot]
+    if len(matches) != 1:
+        raise OuterCloseoutError("selected child does not resolve to one finite-ledger target")
+    target = matches[0]
+    evidence = target.prelaunch_evidence
+    if (
+        not target.unit_name
+        or type(evidence) is not dict
+        or not _prelaunch_evidence_matches(target)
+    ):
+        raise OuterCloseoutError("selected child lacks exact prelaunch ownership")
+    before = host.show(target.unit_name)
+    if before == ABSENT:
+        if host.show(target.unit_name) != before:
+            raise OuterCloseoutError("selected absent child changed during identity freeze")
+        frozen = host.freeze_identity(
+            source=source,
+            slot=slot,
+            unit_name=target.unit_name,
+            shown=before,
+            ownership_classification="PRELAUNCH_OWNED_ABSENT",
+        )
+        return {
+            "classification": "PRELAUNCH_OWNED_ABSENT",
+            "frozen_identity": closeout_state.validate_frozen_identity(
+                frozen,
+                expected_source=source,
+                expected_slot=slot,
+            ),
+            "prelaunch_evidence": dict(evidence),
+            "selection_identity": dict(target.selection_identity),
+            "slot": slot,
+            "source": source,
+            "unit_name": target.unit_name,
+        }
+    if (
+        set(before) != set(CHILD_FIELDS)
+        or before["LoadState"] != "loaded"
+        or before["ActiveState"] not in {"active", "activating", "deactivating", "failed"}
+        or INVOCATION_RE.fullmatch(before["InvocationID"]) is None
+        or not before["MainPID"].isdigit()
+        or int(before["MainPID"]) <= 0
+    ):
+        raise OuterCloseoutError("selected child live systemd identity is incomplete")
+    frozen = host.freeze_identity(
+        source=source,
+        slot=slot,
+        unit_name=target.unit_name,
+        shown=before,
+        ownership_classification="PRELAUNCH_OWNED_ACTIVE",
+    )
+    checked = closeout_state.validate_frozen_identity(
+        frozen,
+        expected_source=source,
+        expected_slot=slot,
+    )
+    if (
+        checked["identity_complete"] is not True
+        or host.show(target.unit_name) != before
+        or host.cgroup_processes(before["ControlGroup"]) != checked["processes"]
+        or not any(
+            process["pid"] == int(before["MainPID"])
+            for process in checked["processes"]
+        )
+    ):
+        raise OuterCloseoutError("selected child changed across stable identity freeze")
+    return {
+        "classification": "PRELAUNCH_OWNED_ACTIVE",
+        "frozen_identity": checked,
+        "prelaunch_evidence": dict(evidence),
+        "selection_identity": dict(target.selection_identity),
+        "slot": slot,
+        "source": source,
+        "unit_name": target.unit_name,
+    }
+
+
+def _same_frozen_runtime_identity(
+    left: Mapping[str, object],
+    right: Mapping[str, object],
+) -> bool:
+    fields = (
+        "control_group",
+        "identity_complete",
+        "invocation_id",
+        "processes",
+        "slot",
+        "source",
+        "unit_name",
+    )
+    return all(left[field] == right[field] for field in fields)
+
+
+def _contain(
+    store: ReceiptStore,
+    host: PinnedHost,
+    target: ChildTarget,
+    *,
+    abnormal: bool,
+    expected_frozen_identity: Mapping[str, object] | None = None,
+) -> dict[str, object]:
+    expected_frozen: dict[str, object] | None = None
+    if expected_frozen_identity is not None:
+        if not abnormal:
+            raise OuterCloseoutError(
+                "a prior frozen identity may constrain only abnormal containment"
+            )
+        expected_frozen = closeout_state.validate_frozen_identity(
+            expected_frozen_identity,
+            expected_source=target.source,
+            expected_slot=target.slot,
+        )
+        if (
+            expected_frozen["unit_name"] != target.unit_name
+            or not (
+                expected_frozen["invocation_id"]
+                or expected_frozen["control_group"]
+                or expected_frozen["processes"]
+            )
+        ):
+            raise OuterCloseoutError(
+                "abnormal containment expected identity is not one active selected child"
+            )
     prelaunch_owned = _prelaunch_evidence_matches(target)
     base = {
         "inner_path": str(target.inner_path),
@@ -1069,6 +1403,40 @@ def _contain(
                 ownership_classification="IDENTITY_GAP"),
             "systemctl": shown,
         }
+    current_frozen = {
+        "control_group": shown["ControlGroup"],
+        "identity_complete": True,
+        "invocation_id": shown["InvocationID"],
+        "ownership_classification": "PRIOR_FROZEN_JOIN_CANDIDATE",
+        "processes": processes,
+        "slot": target.slot,
+        "source": target.source,
+        "unit_name": target.unit_name,
+    }
+    if expected_frozen is not None and not _same_frozen_runtime_identity(
+        current_frozen,
+        expected_frozen,
+    ):
+        drift = _failure(
+            "PRIOR_FROZEN_IDENTITY_DRIFT",
+            f"{target.source}/{target.slot} live identity differs from its prior frozen launch",
+        )
+        return {
+            **base,
+            "classification": "IDENTITY_GAP",
+            "errors": [drift],
+            "frozen_identity": {
+                **current_frozen,
+                "ownership_classification": "IDENTITY_GAP",
+            },
+            "prestate": {
+                "control_group": shown["ControlGroup"],
+                "inner_identity": inner_identity,
+                "processes": processes,
+                "systemctl": shown,
+            },
+            "systemctl": shown,
+        }
     frozen = {"control_group": shown["ControlGroup"], "inner_identity": inner_identity,
               "processes": processes, "systemctl": shown}
     try:
@@ -1100,9 +1468,75 @@ def _contain(
     }
 
 
+def _prior_launch_children(
+    prior_launch_ledger: Mapping[str, object],
+    targets: Sequence[ChildTarget],
+) -> list[dict[str, object]]:
+    checked = closeout_state.validate_frozen_ledger(prior_launch_ledger)
+    if checked["child_audit_identity"] not in ({}, None):
+        raise OuterCloseoutError(
+            "prior launch ledger cannot pre-bind the future child-audit identity"
+        )
+    raw_children = checked["children"]
+    if type(raw_children) is not list:
+        raise OuterCloseoutError("prior launch ledger children are malformed")
+    children: list[dict[str, object]] = []
+    for target, raw_frozen in zip(targets, raw_children, strict=True):
+        if type(raw_frozen) is not dict:
+            raise OuterCloseoutError("prior launch child identity is malformed")
+        frozen = dict(raw_frozen)
+        active = bool(
+            frozen["invocation_id"]
+            or frozen["control_group"]
+            or frozen["processes"]
+        )
+        if (
+            frozen["source"] != target.source
+            or frozen["slot"] != target.slot
+            or (
+                active
+                and frozen["unit_name"] != target.unit_name
+            )
+            or (
+                not active
+                and frozen["unit_name"] not in {"", target.unit_name}
+            )
+        ):
+            raise OuterCloseoutError(
+                f"prior launch identity drifted for {target.source}/{target.slot}"
+            )
+        children.append(frozen)
+    return children
+
+
+def _prior_identity_gap(
+    item: Mapping[str, object],
+    target: ChildTarget,
+    *,
+    detail: str,
+) -> dict[str, object]:
+    frozen = closeout_state.validate_frozen_identity(
+        item["frozen_identity"],
+        expected_source=target.source,
+        expected_slot=target.slot,
+    )
+    gap = _failure("PRIOR_FROZEN_IDENTITY_GAP", detail)
+    return {
+        **dict(item),
+        "classification": "IDENTITY_GAP",
+        "errors": [gap],
+        "frozen_identity": {
+            **frozen,
+            "ownership_classification": "IDENTITY_GAP",
+        },
+        "prelaunch_owned": _prelaunch_evidence_matches(target),
+    }
+
+
 def audit_children(
     boundary: Any, store: ReceiptStore, host: PinnedHost, reference: Any,
     formal_selection: Mapping[str, Any], *, abnormal: bool,
+    prior_launch_ledger: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     targets = build_child_ledger(boundary, store, host, reference, formal_selection)
     if [(target.source, target.slot) for target in targets] != list(EXPECTED_CHILD_ORDER):
@@ -1110,6 +1544,11 @@ def audit_children(
     nonempty_units = [target.unit_name for target in targets if target.unit_name]
     if len(nonempty_units) != len(set(nonempty_units)):
         raise OuterCloseoutError("finite child targets contain duplicate unit names")
+    prior_children = (
+        _prior_launch_children(prior_launch_ledger, targets)
+        if prior_launch_ledger is not None
+        else None
+    )
     records: list[dict[str, object]] = []
     failed_classifications = {
         "AUDIT_FAILED",
@@ -1118,12 +1557,74 @@ def audit_children(
         "IDENTITY_GAP",
     }
     abnormal_mode = abnormal
-    for target in targets:
+    for index, target in enumerate(targets):
+        prior = prior_children[index] if prior_children is not None else None
+        prior_active = bool(
+            prior
+            and (
+                prior["invocation_id"]
+                or prior["control_group"]
+                or prior["processes"]
+            )
+        )
         try:
-            item = _contain(store, host, target, abnormal=abnormal_mode)
+            item = _contain(
+                store,
+                host,
+                target,
+                abnormal=False if prior is not None else abnormal_mode,
+            )
+            if prior_active and not _prelaunch_evidence_matches(target):
+                item = _prior_identity_gap(
+                    item,
+                    target,
+                    detail=(
+                        f"{target.source}/{target.slot} prior active identity "
+                        "lacks its existing prelaunch ownership"
+                    ),
+                )
             if item["classification"] == "CONTAINMENT_REQUIRED":
-                abnormal_mode = True
-                item = _contain(store, host, target, abnormal=True)
+                current_frozen = closeout_state.validate_frozen_identity(
+                    item["frozen_identity"],
+                    expected_source=target.source,
+                    expected_slot=target.slot,
+                )
+                if (
+                    prior_active
+                    and prior is not None
+                    and not _same_frozen_runtime_identity(
+                        current_frozen,
+                        prior,
+                    )
+                ):
+                    item = _prior_identity_gap(
+                        item,
+                        target,
+                        detail=(
+                            f"{target.source}/{target.slot} live identity "
+                            "drifted from its prior frozen launch"
+                        ),
+                    )
+                elif prior is not None and not _prelaunch_evidence_matches(target):
+                    item = _prior_identity_gap(
+                        item,
+                        target,
+                        detail=(
+                            f"{target.source}/{target.slot} NOT_STARTED identity "
+                            "lacks existing prelaunch ownership"
+                        ),
+                    )
+                else:
+                    abnormal_mode = True
+                    item = _contain(
+                        store,
+                        host,
+                        target,
+                        abnormal=True,
+                        expected_frozen_identity=(
+                            prior if prior_active and prior is not None else None
+                        ),
+                    )
         except Exception as exc:
             abnormal_mode = True
             effect_attempted = target.unit_name in getattr(host, "cleaned_units", set())
@@ -1147,6 +1648,12 @@ def audit_children(
             }
             if target.provenance_error is not None:
                 item["provenance_error"] = dict(target.provenance_error)
+        if (
+            prior_active
+            and prior is not None
+            and item["classification"] == "ABSENT"
+        ):
+            item["frozen_identity"] = prior
         records.append(item)
         if item["classification"] in failed_classifications:
             abnormal_mode = True
@@ -1253,6 +1760,159 @@ def audit_children(
         "ledger": {"child_audit_identity": identity, "children": frozen_children},
         "publication_effect": publication.record(),
         "record": record,
+    }
+
+
+def contain_frozen_ledger_once(
+    host: PinnedHost,
+    ledger: Mapping[str, object],
+    *,
+    owned_unit_names: Sequence[str],
+) -> dict[str, object]:
+    """Contain only package-proven active identities from one frozen ledger.
+
+    The caller must derive ``owned_unit_names`` from the sealed formal
+    selection and the existing Gate1/organic/outer prelaunch evidence.  This
+    function deliberately owns only the already-established runtime effect:
+    it neither discovers units nor upgrades an identity gap into ownership.
+    ``PinnedHost.stop_reset_once`` makes every exact unit side effect
+    process-local exact-once, including uncertain failures.
+    """
+
+    checked = closeout_state.validate_frozen_ledger(ledger)
+    if (
+        type(owned_unit_names) not in {list, tuple}
+        or any(type(name) is not str or UNIT_RE.fullmatch(name) is None for name in owned_unit_names)
+        or len(set(owned_unit_names)) != len(owned_unit_names)
+    ):
+        raise OuterCloseoutError("frozen containment ownership set is malformed")
+    all_identities = [*checked["children"], checked["outer"]]
+    known_names = {str(item["unit_name"]) for item in all_identities if item["unit_name"]}
+    owned = set(owned_unit_names)
+    if not owned <= known_names:
+        raise OuterCloseoutError("frozen containment ownership escaped the finite ledger")
+    records: list[dict[str, object]] = []
+    errors: list[dict[str, str]] = []
+    for item in all_identities:
+        unit_name = str(item["unit_name"])
+        invocation_id = str(item["invocation_id"])
+        control_group = str(item["control_group"])
+        processes = [dict(process) for process in item["processes"]]
+        active_identity = bool(invocation_id or control_group or processes)
+        base = {
+            "control_group": control_group,
+            "invocation_id": invocation_id,
+            "processes": processes,
+            "slot": item["slot"],
+            "source": item["source"],
+            "unit_name": unit_name,
+        }
+        if not unit_name:
+            records.append({**base, "classification": "NOT_CREATED", "stop_reset_attempted": False})
+            continue
+        try:
+            shown = host.show(unit_name)
+        except Exception as exc:
+            failure = _failure("FROZEN_CONTAINMENT_OBSERVATION_FAILED", exc)
+            errors.append(failure)
+            records.append(
+                {
+                    **base,
+                    "classification": "IDENTITY_GAP",
+                    "errors": [failure],
+                    "stop_reset_attempted": False,
+                }
+            )
+            continue
+        if shown == ABSENT:
+            records.append(
+                {
+                    **base,
+                    "absence": {
+                        "cgroup_absent": not control_group
+                        or not os.path.lexists(host.cgroup_path(control_group)),
+                        "processes_absent": host.processes_absent(processes),
+                        "systemctl": shown,
+                        "unit_kept_loaded_by_reference": False,
+                    },
+                    "classification": "ABSENT",
+                    "stop_reset_attempted": False,
+                }
+            )
+            continue
+        if not active_identity or item["identity_complete"] is not True or unit_name not in owned:
+            failure = _failure(
+                "FROZEN_CONTAINMENT_IDENTITY_GAP",
+                f"{item['source']}/{item['slot']} lacks package-proven active ownership",
+            )
+            errors.append(failure)
+            records.append(
+                {
+                    **base,
+                    "classification": "IDENTITY_GAP",
+                    "errors": [failure],
+                    "stop_reset_attempted": False,
+                    "systemctl": shown,
+                }
+            )
+            continue
+        try:
+            current_processes = host.cgroup_processes(control_group)
+            main_pid = int(shown["MainPID"]) if shown["MainPID"].isdigit() else 0
+            if (
+                shown["LoadState"] != "loaded"
+                or shown["ActiveState"] not in {"active", "activating", "deactivating", "failed"}
+                or shown["InvocationID"] != invocation_id
+                or shown["ControlGroup"] != control_group
+                or current_processes != processes
+                or not any(process["pid"] == main_pid for process in processes)
+                or host.show(unit_name) != shown
+                or host.cgroup_processes(control_group) != processes
+            ):
+                raise OuterCloseoutError("frozen identity changed before containment")
+            effect_errors = host.stop_reset_once(unit_name)
+            absence = host.wait_state(
+                unit_name,
+                control_group,
+                processes,
+                referenced=False,
+            )
+        except Exception as exc:
+            effect_errors = [_failure("FROZEN_STOP_RESET_FAILED_OR_UNCERTAIN", exc)]
+            absence = {
+                "cgroup_absent": False,
+                "processes_absent": False,
+                "systemctl": shown,
+                "unit_kept_loaded_by_reference": False,
+            }
+        errors.extend(effect_errors)
+        records.append(
+            {
+                **base,
+                "absence": absence,
+                "classification": (
+                    "STARTED_CONTAINED_PASS" if not effect_errors else "CONTAINMENT_FAILED"
+                ),
+                "errors": effect_errors,
+                "stop_reset_attempted": True,
+                "systemctl": shown,
+            }
+        )
+    observation = host.observe_frozen_absence(checked)
+    if observation["all_absent"] is not True:
+        errors.append(
+            _failure(
+                "FROZEN_CONTAINMENT_ABSENCE_UNPROVEN",
+                "one or more exact unit/cgroup/PID identities remain",
+            )
+        )
+    return {
+        "all_absent": observation["all_absent"] is True,
+        "authorizations": dict(FALSE_AUTHORIZATIONS),
+        "errors": errors,
+        "final_observation": observation,
+        "records": records,
+        "status": "PASS" if observation["all_absent"] is True and not errors else "CONSUMED_INCOMPLETE",
     }
 
 

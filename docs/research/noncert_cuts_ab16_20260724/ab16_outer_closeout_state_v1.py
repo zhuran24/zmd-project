@@ -52,6 +52,17 @@ EXPECTED_CHILD_ORDER = (
     *(("gate1", slot) for slot in GATE1_SLOTS),
     *(("arm", slot) for slot in ARM_SEQUENCE),
 )
+GUARDIAN_LEDGER_PHASES = (
+    "outer:prelaunch",
+    "outer:formal",
+    "gate1:prelaunch",
+    *(f"gate1:{slot}:live" for slot in GATE1_SLOTS),
+    *(
+        phase
+        for slot in ARM_SEQUENCE
+        for phase in (f"arm:{slot}:prelaunch", f"arm:{slot}:live")
+    ),
+)
 LOCK_PATHS = (
     "/tmp/zmd-pj-codex-heavy-validation.lock",
     "/run/user/1000/zmd_pj_prod_scale_solver.lock",
@@ -113,7 +124,7 @@ BASE_FIELDS = frozenset(
         "upper_bound",
     }
 )
-PROOF_FIELDS = (
+REFERENCE_PROOF_FIELDS = (
     "selection_identity",
     "outer_prelaunch_identity",
     "outer_start_identity",
@@ -123,6 +134,15 @@ PROOF_FIELDS = (
     "unref_call_identity",
     "reference_release_identity",
 )
+LATE_PROOF_FIELDS = (
+    "observer_identity",
+    "pre_unref_cleanup_identity",
+    "post_unref_absence_identity",
+    "guardian_close_identity",
+    "guardian_absence_identity",
+    "dual_lock_release_identity",
+)
+PROOF_FIELDS = (*REFERENCE_PROOF_FIELDS, *LATE_PROOF_FIELDS)
 
 
 class CloseoutStateError(RuntimeError):
@@ -405,11 +425,23 @@ class AttemptState:
     close_returned: bool = False
     connection_action: str = ""
     reference_release_identity: dict[str, object] | None = None
+    observer_identity: dict[str, object] | None = None
+    pre_unref_cleanup_identity: dict[str, object] | None = None
+    post_unref_absence_identity: dict[str, object] | None = None
+    guardian_close_attempted: bool = False
+    guardian_close_return: dict[str, object] | None = None
+    guardian_close_identity: dict[str, object] | None = None
+    guardian_absence_identity: dict[str, object] | None = None
+    detached_success_verifier_attempted: bool = False
+    detached_success_verifier_return: dict[str, object] | None = None
+    dual_lock_release_identity: dict[str, object] | None = None
     irreversible_incomplete: bool = False
     incomplete_identity: dict[str, object] | None = None
     hold_identity: dict[str, object] | None = None
     hold_clearance_identity: dict[str, object] | None = None
     hold_poll_count: int = 0
+    containment_guardian_absence_attempted: bool = False
+    containment_guardian_absence_identity: dict[str, object] | None = None
     lock_release_attempted: bool = False
     lock_release_return: dict[str, object] | None = None
     lock_release_identity: dict[str, object] | None = None
@@ -430,8 +462,17 @@ class IncompletePhaseRule:
     required_true_effects: tuple[str, ...] = ()
     required_nonnull_effects: tuple[str, ...] = ()
     effect_equals: tuple[tuple[str, object], ...] = ()
+    required_publications: tuple[str, ...] = ()
 
 
+NO_LATE_EFFECTS = (
+    ("guardian_close_attempted", False),
+    ("guardian_close_return", None),
+    ("lock_release_attempted", False),
+    ("lock_release_return", None),
+    ("detached_success_verifier_attempted", False),
+    ("detached_success_verifier_return", None),
+)
 NO_TERMINAL_EFFECTS = (
     ("release_attempted", False),
     ("release_returned", False),
@@ -441,6 +482,7 @@ NO_TERMINAL_EFFECTS = (
     ("close_attempted", False),
     ("close_returned", False),
     ("connection_action", ""),
+    *NO_LATE_EFFECTS,
 )
 NO_REFERENCE_EFFECTS = (
     ("acquire_attempted", False),
@@ -475,6 +517,13 @@ INCOMPLETE_PHASES = {
     "OUTER_STARTED_REF_UNACQUIRED": IncompletePhaseRule(
         ("selection_identity", "outer_prelaunch_identity", "outer_start_identity", "resource_identity"),
         ("selection_identity", "outer_prelaunch_identity", "outer_start_identity", "resource_identity"),
+        required_true_effects=("outer_launch_attempted",),
+        required_nonnull_effects=("outer_launch_return",),
+        effect_equals=NO_REFERENCE_EFFECTS,
+    ),
+    "OUTER_STARTED_RESOURCE_UNRECORDED": IncompletePhaseRule(
+        ("selection_identity", "outer_prelaunch_identity", "outer_start_identity"),
+        ("selection_identity", "outer_prelaunch_identity", "outer_start_identity"),
         required_true_effects=("outer_launch_attempted",),
         required_nonnull_effects=("outer_launch_return",),
         effect_equals=NO_REFERENCE_EFFECTS,
@@ -523,6 +572,9 @@ INCOMPLETE_PHASES = {
             "outer_start_identity",
             "resource_identity",
             "acquire_identity",
+            "barrier_identity",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
         ),
         (
             "selection_identity",
@@ -530,6 +582,9 @@ INCOMPLETE_PHASES = {
             "outer_start_identity",
             "resource_identity",
             "acquire_identity",
+            "barrier_identity",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
         ),
         external_joins=("frozen_outer_identity",),
         required_true_effects=(
@@ -546,6 +601,7 @@ INCOMPLETE_PHASES = {
             ("close_attempted", False),
             ("close_returned", False),
             ("connection_action", ""),
+            *NO_LATE_EFFECTS,
         ),
     ),
     "UNREF_RETURNED_BUT_UNRECORDED": IncompletePhaseRule(
@@ -555,6 +611,9 @@ INCOMPLETE_PHASES = {
             "outer_start_identity",
             "resource_identity",
             "acquire_identity",
+            "barrier_identity",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
         ),
         (
             "selection_identity",
@@ -562,6 +621,9 @@ INCOMPLETE_PHASES = {
             "outer_start_identity",
             "resource_identity",
             "acquire_identity",
+            "barrier_identity",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
         ),
         external_joins=("frozen_outer_identity",),
         required_true_effects=(
@@ -581,6 +643,7 @@ INCOMPLETE_PHASES = {
             ("close_attempted", False),
             ("close_returned", False),
             ("connection_action", ""),
+            *NO_LATE_EFFECTS,
         ),
     ),
     "ACQUIRE_UNPROVEN_CONNECTION_DROPPED": IncompletePhaseRule(
@@ -607,12 +670,9 @@ INCOMPLETE_PHASES = {
             "acquire_identity",
         ),
         (
-            "selection_identity",
-            "outer_prelaunch_identity",
-            "outer_start_identity",
-            "resource_identity",
-            "acquire_identity",
-            "unref_call_identity",
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
         ),
         external_joins=("frozen_outer_identity",),
         required_true_effects=(
@@ -625,9 +685,10 @@ INCOMPLETE_PHASES = {
             ("close_attempted", False),
             ("close_returned", False),
             ("connection_action", "abort_close"),
+            *NO_LATE_EFFECTS,
         ),
     ),
-    "POST_UNREF_ABSENCE_UNPROVED": IncompletePhaseRule(
+    "CONNECTION_CLOSE_FAILED_OR_UNCERTAIN": IncompletePhaseRule(
         (
             "selection_identity",
             "outer_prelaunch_identity",
@@ -635,9 +696,51 @@ INCOMPLETE_PHASES = {
             "resource_identity",
             "acquire_identity",
             "unref_call_identity",
-            "reference_release_identity",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
         ),
-        PROOF_FIELDS,
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+        ),
+        external_joins=("frozen_outer_identity",),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("close_returned", False),
+            ("connection_action", "close"),
+            *NO_LATE_EFFECTS,
+        ),
+    ),
+    "CONNECTION_CLOSED_RELEASE_UNRECORDED": IncompletePhaseRule(
+        (
+            "selection_identity",
+            "outer_prelaunch_identity",
+            "outer_start_identity",
+            "resource_identity",
+            "acquire_identity",
+            "unref_call_identity",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+        ),
         external_joins=("frozen_outer_identity",),
         required_true_effects=(
             "acquire_attempted",
@@ -656,6 +759,46 @@ INCOMPLETE_PHASES = {
             ("abort_close_attempted", False),
             ("abort_close_return", None),
             ("connection_action", "close"),
+            *NO_LATE_EFFECTS,
+        ),
+        required_publications=("reference-release",),
+    ),
+    "POST_UNREF_ABSENCE_UNPROVED": IncompletePhaseRule(
+        (
+            "selection_identity",
+            "outer_prelaunch_identity",
+            "outer_start_identity",
+            "resource_identity",
+            "acquire_identity",
+            "unref_call_identity",
+            "reference_release_identity",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+        ),
+        external_joins=("frozen_outer_identity",),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            *NO_LATE_EFFECTS,
         ),
     ),
     "CONTAINMENT_HOLD": IncompletePhaseRule(
@@ -667,10 +810,383 @@ INCOMPLETE_PHASES = {
             "acquire_identity",
             "barrier_identity",
         ),
-        PROOF_FIELDS,
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+        ),
         external_joins=("child_audit_identity", "frozen_outer_identity"),
         required_true_effects=("acquire_attempted", "acquire_returned"),
         required_nonnull_effects=("outer_launch_return", "acquire_return"),
+        effect_equals=NO_LATE_EFFECTS,
+    ),
+    "BARRIER_FAILED_OR_UNCERTAIN_CONTAINMENT_HOLD": IncompletePhaseRule(
+        (
+            "selection_identity",
+            "outer_prelaunch_identity",
+            "outer_start_identity",
+            "resource_identity",
+            "acquire_identity",
+        ),
+        (
+            "selection_identity",
+            "outer_prelaunch_identity",
+            "outer_start_identity",
+            "resource_identity",
+            "acquire_identity",
+            "unref_call_identity",
+            "reference_release_identity",
+        ),
+        external_joins=("child_audit_identity", "frozen_outer_identity"),
+        required_true_effects=("acquire_attempted", "acquire_returned"),
+        required_nonnull_effects=("outer_launch_return", "acquire_return"),
+        effect_equals=NO_LATE_EFFECTS,
+        required_publications=("outer-barrier",),
+    ),
+    "GUARDIAN_CLOSE_NOT_ATTEMPTED": IncompletePhaseRule(
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+        ),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            *NO_LATE_EFFECTS,
+        ),
+    ),
+    "GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN": IncompletePhaseRule(
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+        ),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+            "guardian_close_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            ("lock_release_attempted", False),
+            ("lock_release_return", None),
+            ("detached_success_verifier_attempted", False),
+            ("detached_success_verifier_return", None),
+        ),
+    ),
+    "GUARDIAN_ABSENCE_UNPROVED": IncompletePhaseRule(
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+        ),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+            "guardian_close_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+            "guardian_close_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            ("lock_release_attempted", False),
+            ("lock_release_return", None),
+            ("detached_success_verifier_attempted", False),
+            ("detached_success_verifier_return", None),
+        ),
+    ),
+    "SUPERVISOR_LOCK_RELEASE_NOT_ATTEMPTED": IncompletePhaseRule(
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+            "guardian_absence_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+            "guardian_absence_identity",
+        ),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+            "guardian_close_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+            "guardian_close_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            ("lock_release_attempted", False),
+            ("lock_release_return", None),
+            ("detached_success_verifier_attempted", False),
+            ("detached_success_verifier_return", None),
+        ),
+    ),
+    "SUPERVISOR_LOCK_RELEASE_FAILED_OR_UNCERTAIN": IncompletePhaseRule(
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+            "guardian_absence_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+            "guardian_absence_identity",
+        ),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+            "guardian_close_attempted",
+            "lock_release_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+            "guardian_close_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            ("detached_success_verifier_attempted", False),
+            ("detached_success_verifier_return", None),
+        ),
+    ),
+    "DUAL_LOCK_RELEASE_RECEIPT_NOT_ATTEMPTED": IncompletePhaseRule(
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+            "guardian_absence_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+            "guardian_absence_identity",
+        ),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+            "guardian_close_attempted",
+            "lock_release_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+            "guardian_close_return",
+            "lock_release_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            ("detached_success_verifier_attempted", False),
+            ("detached_success_verifier_return", None),
+        ),
+    ),
+    "DUAL_LOCK_RELEASE_RECEIPT_FAILED_OR_UNCERTAIN": IncompletePhaseRule(
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+            "guardian_absence_identity",
+        ),
+        (
+            *REFERENCE_PROOF_FIELDS,
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "post_unref_absence_identity",
+            "guardian_close_identity",
+            "guardian_absence_identity",
+        ),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+            "guardian_close_attempted",
+            "lock_release_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+            "guardian_close_return",
+            "lock_release_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            ("detached_success_verifier_attempted", False),
+            ("detached_success_verifier_return", None),
+        ),
+        required_publications=("dual-lock-release",),
+    ),
+    "DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED": IncompletePhaseRule(
+        (*PROOF_FIELDS,),
+        (*PROOF_FIELDS,),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+            "guardian_close_attempted",
+            "lock_release_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+            "guardian_close_return",
+            "lock_release_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+            ("detached_success_verifier_attempted", False),
+            ("detached_success_verifier_return", None),
+        ),
+        required_publications=("dual-lock-release",),
+    ),
+    "DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN": IncompletePhaseRule(
+        (*PROOF_FIELDS,),
+        (*PROOF_FIELDS,),
+        external_joins=("child_audit_identity", "outer_terminal_identity"),
+        required_true_effects=(
+            "acquire_attempted",
+            "acquire_returned",
+            "release_attempted",
+            "release_returned",
+            "close_attempted",
+            "close_returned",
+            "guardian_close_attempted",
+            "lock_release_attempted",
+            "detached_success_verifier_attempted",
+        ),
+        required_nonnull_effects=(
+            "outer_launch_return",
+            "acquire_return",
+            "release_return",
+            "guardian_close_return",
+            "lock_release_return",
+        ),
+        effect_equals=(
+            ("abort_close_attempted", False),
+            ("abort_close_return", None),
+            ("connection_action", "close"),
+        ),
+        required_publications=("dual-lock-release",),
     ),
 }
 
@@ -761,6 +1277,24 @@ def _effect_snapshot(state: AttemptState) -> dict[str, object]:
         "close_attempted": state.close_attempted,
         "close_returned": state.close_returned,
         "connection_action": state.connection_action,
+        "detached_success_verifier_attempted": state.detached_success_verifier_attempted,
+        "detached_success_verifier_return": (
+            dict(state.detached_success_verifier_return)
+            if state.detached_success_verifier_return is not None
+            else None
+        ),
+        "guardian_close_attempted": state.guardian_close_attempted,
+        "guardian_close_return": (
+            dict(state.guardian_close_return)
+            if state.guardian_close_return is not None
+            else None
+        ),
+        "lock_release_attempted": state.lock_release_attempted,
+        "lock_release_return": (
+            dict(state.lock_release_return)
+            if state.lock_release_return is not None
+            else None
+        ),
         "outer_launch_attempted": state.outer_launch_attempted,
         "outer_launch_return": (
             dict(state.outer_launch_return) if state.outer_launch_return is not None else None
@@ -819,6 +1353,123 @@ def record_outer_launch_return(state: AttemptState, effect: Mapping[str, object]
     if not effect:
         raise CloseoutStateError("outer launch returned an empty effect")
     state.outer_launch_return = dict(effect)
+
+
+def record_late_proof_once(
+    state: AttemptState,
+    name: str,
+    identity: Mapping[str, object],
+) -> dict[str, object]:
+    """Record one late proof identity without fabricating a future join."""
+
+    predecessors = {
+        "observer_identity": ("acquire_identity", "barrier_identity"),
+        "pre_unref_cleanup_identity": ("observer_identity",),
+        "post_unref_absence_identity": (
+            "pre_unref_cleanup_identity",
+            "reference_release_identity",
+        ),
+        "guardian_close_identity": ("post_unref_absence_identity",),
+        "guardian_absence_identity": ("guardian_close_identity",),
+        "dual_lock_release_identity": ("guardian_absence_identity",),
+    }
+    if name not in predecessors:
+        raise CloseoutStateError("late proof name is outside the fixed closeout order")
+    if getattr(state, name) is not None:
+        raise CloseoutStateError(f"{name} proof cannot be recorded twice")
+    for predecessor in predecessors[name]:
+        validate_identity_join(
+            getattr(state, predecessor),
+            f"{name} predecessor {predecessor}",
+        )
+    checked = validate_identity_join(identity, name)
+    if name == "guardian_close_identity" and (
+        not state.guardian_close_attempted
+        or state.guardian_close_return is None
+    ):
+        raise CloseoutStateError("guardian close proof precedes its returned effect")
+    if name == "dual_lock_release_identity":
+        publication = state.publications.get("dual-lock-release")
+        if (
+            not state.lock_release_attempted
+            or state.lock_release_return is None
+            or publication is None
+            or publication.recorded_identity != checked
+        ):
+            raise CloseoutStateError(
+                "dual-lock release proof precedes its effect or canonical readback"
+            )
+    setattr(state, name, checked)
+    return checked
+
+
+def begin_guardian_close(state: AttemptState) -> None:
+    if state.guardian_close_attempted:
+        raise CloseoutStateError("guardian close cannot be attempted twice")
+    validate_identity_join(
+        state.post_unref_absence_identity,
+        "guardian close post-Unref absence",
+    )
+    state.guardian_close_attempted = True
+
+
+def record_guardian_close_return(
+    state: AttemptState,
+    effect: Mapping[str, object],
+) -> None:
+    if not state.guardian_close_attempted or state.guardian_close_return is not None:
+        raise CloseoutStateError("guardian close return is not monotone")
+    reject_none(dict(effect), "guardian close return")
+    if not effect:
+        raise CloseoutStateError("guardian close returned an empty effect")
+    state.guardian_close_return = dict(effect)
+
+
+def begin_supervisor_lock_release(state: AttemptState) -> None:
+    if state.lock_release_attempted:
+        raise CloseoutStateError("supervisor lock release cannot be attempted twice")
+    validate_identity_join(
+        state.guardian_absence_identity,
+        "supervisor lock release guardian absence",
+    )
+    state.lock_release_attempted = True
+
+
+def record_supervisor_lock_release_return(
+    state: AttemptState,
+    effect: Mapping[str, object],
+) -> None:
+    if not state.lock_release_attempted or state.lock_release_return is not None:
+        raise CloseoutStateError("supervisor lock release return is not monotone")
+    reject_none(dict(effect), "supervisor lock release return")
+    if not effect:
+        raise CloseoutStateError("supervisor lock release returned an empty effect")
+    state.lock_release_return = dict(effect)
+
+
+def begin_detached_success_verifier(state: AttemptState) -> None:
+    if state.detached_success_verifier_attempted:
+        raise CloseoutStateError("detached success verifier cannot be attempted twice")
+    validate_identity_join(
+        state.dual_lock_release_identity,
+        "detached verifier dual-lock release",
+    )
+    state.detached_success_verifier_attempted = True
+
+
+def record_detached_success_verifier_return(
+    state: AttemptState,
+    effect: Mapping[str, object],
+) -> None:
+    if (
+        not state.detached_success_verifier_attempted
+        or state.detached_success_verifier_return is not None
+    ):
+        raise CloseoutStateError("detached success verifier return is not monotone")
+    reject_none(dict(effect), "detached success verifier return")
+    if not effect:
+        raise CloseoutStateError("detached success verifier returned an empty effect")
+    state.detached_success_verifier_return = dict(effect)
 
 
 def publish_attempt_consumption(
@@ -904,14 +1555,14 @@ def _phase_joins(
                 raise CloseoutStateError(f"{phase} includes future proof {name}")
             joins[name] = validate_identity_join(value, f"{phase}.{name}")
     for name, value in external_joins.items():
-        if name == "child_audit_identity":
-            joins[name] = validate_identity_join(value, f"{phase}.{name}")
-        elif name == "frozen_outer_identity":
+        if name == "frozen_outer_identity":
             joins[name] = validate_frozen_identity(
                 value,
                 expected_source="outer",
                 expected_slot="formal",
             )
+        elif name.endswith("_identity"):
+            joins[name] = validate_identity_join(value, f"{phase}.{name}")
         else:
             reject_none(value, f"{phase}.{name}")
             joins[name] = dict(value) if type(value) is dict else value
@@ -926,6 +1577,11 @@ def _phase_joins(
         actual = effect.get(name)
         if type(actual) is not type(expected) or actual != expected:
             raise CloseoutStateError(f"{phase} effect {name} crossed its acquisition boundary")
+    publications = effect["publications"]
+    for name in rule.required_publications:
+        publication = publications.get(name) if type(publications) is dict else None
+        if type(publication) is not dict or publication.get("attempted") is not True:
+            raise CloseoutStateError(f"{phase} lacks attempted publication {name}")
     return joins, effect
 
 
@@ -1065,7 +1721,17 @@ REFERENCE_FIELDS = {
             "selection_identity",
         }
     ),
-    "UNREF_RETURNED": frozenset({"acquisition_identity", "call"}),
+    "UNREF_RETURNED": frozenset(
+        {
+            "acquisition_identity",
+            "call",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+        }
+    ),
+    "UNREF_RETURNED_INCOMPLETE": frozenset(
+        {"acquisition_identity", "call", "reason"}
+    ),
     "CONSUMED_INCOMPLETE": frozenset(
         {
             "abort_close_returned_released",
@@ -1276,9 +1942,23 @@ def finalize_reference_once(
     unit_name: str,
     prove_unref: bool,
     reason: str,
+    observer_identity: Mapping[str, object] | None = None,
+    pre_unref_cleanup_identity: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     """Perform exactly one legal Unref/close or one uncertainty abort/drop."""
 
+    normal_prerequisites = (
+        observer_identity is not None,
+        pre_unref_cleanup_identity is not None,
+    )
+    if normal_prerequisites[0] is not normal_prerequisites[1]:
+        raise CloseoutStateError(
+            "normal Unref requires observer and pre-Unref cleanup identities together"
+        )
+    if not prove_unref and any(normal_prerequisites):
+        raise CloseoutStateError(
+            "uncertain reference drop forbids normal Unref prerequisite identities"
+        )
     if state.reference is None:
         if (
             state.acquire_attempted
@@ -1302,6 +1982,22 @@ def finalize_reference_once(
         )
     if state.acquire_identity is None or state.release_attempted:
         raise CloseoutStateError("canonical Unref lacks one recorded acquisition")
+    checked_observer: dict[str, object] | None = None
+    checked_cleanup: dict[str, object] | None = None
+    if all(normal_prerequisites):
+        checked_observer = validate_identity_join(
+            observer_identity,
+            "normal Unref observer",
+        )
+        checked_cleanup = validate_identity_join(
+            pre_unref_cleanup_identity,
+            "normal Unref pre-cleanup",
+        )
+        if (
+            state.observer_identity not in (None, checked_observer)
+            or state.pre_unref_cleanup_identity not in (None, checked_cleanup)
+        ):
+            raise CloseoutStateError("normal Unref prerequisite identity drifted")
     state.release_attempted = True
     try:
         released = state.reference.release(unit_name=unit_name, expected_manager_owner=owner)
@@ -1313,13 +2009,31 @@ def finalize_reference_once(
             unit_name=unit_name,
             expected_owner=owner,
         )
-        call = _reference_record(
-            boundary,
-            "UNREF_RETURNED",
-            unit_name,
-            acquisition_identity=validate_identity_join(state.acquire_identity, "reference acquisition"),
-            call=state.release_return,
-        )
+        if checked_observer is None or checked_cleanup is None:
+            call = _reference_record(
+                boundary,
+                "UNREF_RETURNED_INCOMPLETE",
+                unit_name,
+                acquisition_identity=validate_identity_join(
+                    state.acquire_identity,
+                    "reference acquisition",
+                ),
+                call=state.release_return,
+                reason=reason,
+            )
+        else:
+            call = _reference_record(
+                boundary,
+                "UNREF_RETURNED",
+                unit_name,
+                acquisition_identity=validate_identity_join(
+                    state.acquire_identity,
+                    "reference acquisition",
+                ),
+                call=state.release_return,
+                observer_identity=checked_observer,
+                pre_unref_cleanup_identity=checked_cleanup,
+            )
         state.unref_call_identity = _publish_once(
             state,
             store,
@@ -1328,6 +2042,9 @@ def finalize_reference_once(
             call,
             "Unref call",
         )
+        if checked_observer is not None and checked_cleanup is not None:
+            state.observer_identity = dict(checked_observer)
+            state.pre_unref_cleanup_identity = dict(checked_cleanup)
     except Exception as exc:
         reason = (
             "UNREF_RETURNED_BUT_UNRECORDED"
@@ -1443,6 +2160,12 @@ def _validate_effect_snapshot(value: object) -> dict[str, object]:
         "close_attempted",
         "close_returned",
         "connection_action",
+        "detached_success_verifier_attempted",
+        "detached_success_verifier_return",
+        "guardian_close_attempted",
+        "guardian_close_return",
+        "lock_release_attempted",
+        "lock_release_return",
         "outer_launch_attempted",
         "outer_launch_return",
         "publications",
@@ -1458,6 +2181,9 @@ def _validate_effect_snapshot(value: object) -> dict[str, object]:
         "acquire_returned",
         "close_attempted",
         "close_returned",
+        "detached_success_verifier_attempted",
+        "guardian_close_attempted",
+        "lock_release_attempted",
         "outer_launch_attempted",
         "release_attempted",
         "release_returned",
@@ -1482,6 +2208,18 @@ def _validate_effect_snapshot(value: object) -> dict[str, object]:
         or (value["release_returned"] and not value["release_attempted"])
         or (value["close_returned"] and not value["close_attempted"])
         or (
+            value["guardian_close_return"] is not None
+            and value["guardian_close_attempted"] is not True
+        )
+        or (
+            value["lock_release_return"] is not None
+            and value["lock_release_attempted"] is not True
+        )
+        or (
+            value["detached_success_verifier_return"] is not None
+            and value["detached_success_verifier_attempted"] is not True
+        )
+        or (
             value["abort_close_attempted"]
             is not (value["connection_action"] == "abort_close")
         )
@@ -1495,6 +2233,16 @@ def _validate_effect_snapshot(value: object) -> dict[str, object]:
         if type(value["outer_launch_return"]) is not dict or not value["outer_launch_return"]:
             raise CloseoutStateError("outer launch return effect is malformed")
         reject_none(value["outer_launch_return"], "outer launch return effect")
+    for name in (
+        "guardian_close_return",
+        "lock_release_return",
+        "detached_success_verifier_return",
+    ):
+        returned = value[name]
+        if returned is not None:
+            if type(returned) is not dict or not returned:
+                raise CloseoutStateError(f"{name} is malformed")
+            reject_none(returned, name)
     for returned_name, return_name in (
         ("acquire_returned", "acquire_return"),
         ("release_returned", "release_return"),
@@ -1549,6 +2297,12 @@ def _validate_reference_terminal(value: object) -> dict[str, object]:
     if type(value) is not dict or type(value.get("kind")) is not str:
         raise CloseoutStateError("containment reference terminal is malformed")
     kind = value["kind"]
+    if kind == "NO_REFERENCE_OPENED":
+        if set(value) != {"kind"}:
+            raise CloseoutStateError(
+                "no-reference containment terminal field set drifted"
+            )
+        return {"kind": kind}
     identity_kinds = {"RECORDED", "UNREF_UNPROVEN_CONNECTION_DROPPED"}
     failure_kinds = {
         "CONNECTION_CLOSE_FAILED_OR_UNCERTAIN",
@@ -1781,6 +2535,7 @@ def verify_detached_incomplete_chain(
     release_fields = BASE_FIELDS | {
         "containment_clearance_identity",
         "effect",
+        "guardian_absence_identity",
         "schema_version",
         "status",
     }
@@ -1811,9 +2566,9 @@ def verify_detached_incomplete_chain(
         effects,
     )
     joins = incomplete_record["joins"]
+    containment_phase = incomplete_record.get("phase")
     required_joins = {
         "acquire_identity",
-        "barrier_identity",
         "child_audit_identity",
         "frozen_outer_identity",
         "outer_prelaunch_identity",
@@ -1821,6 +2576,8 @@ def verify_detached_incomplete_chain(
         "resource_identity",
         "selection_identity",
     }
+    if containment_phase == "CONTAINMENT_HOLD":
+        required_joins.add("barrier_identity")
     permitted_joins = required_joins | {"reference_release_identity", "unref_call_identity"}
     if (
         type(joins) is not dict
@@ -1886,10 +2643,18 @@ def verify_detached_incomplete_chain(
         lock_release_record["effect"],
         expected_locks=checked_clearance_locks,
     )
+    guardian_absence_identity = validate_identity_join(
+        lock_release_record["guardian_absence_identity"],
+        "containment guardian absence",
+    )
     if (
         incomplete_record.get("schema_version") != INCOMPLETE_SCHEMA
         or incomplete_record.get("status") != "CONSUMED_INCOMPLETE"
-        or incomplete_record.get("phase") != "CONTAINMENT_HOLD"
+        or incomplete_record.get("phase")
+        not in {
+            "CONTAINMENT_HOLD",
+            "BARRIER_FAILED_OR_UNCERTAIN_CONTAINMENT_HOLD",
+        }
         or incomplete_record.get("consumed") is not True
         or incomplete_record.get("retry_eligible") is not False
         or incomplete_record.get("failure") != checked_failure
@@ -1919,6 +2684,8 @@ def verify_detached_incomplete_chain(
         or lock_release_record.get("status") != "RELEASED"
         or lock_release_record.get("containment_clearance_identity") != identities["clearance_identity"]
         or lock_release_record.get("effect") != lock_effect
+        or lock_release_record.get("guardian_absence_identity")
+        != guardian_absence_identity
     ):
         raise CloseoutStateError("detached incomplete chain join drifted")
     return {
@@ -2100,6 +2867,7 @@ class ContainmentHoldCoordinator:
         failure_record: Mapping[str, str],
         ledger: Mapping[str, object],
         reference_reason: str,
+        incomplete_phase: str = "CONTAINMENT_HOLD",
     ) -> dict[str, object]:
         """Block through residual runtime, then release once and stay incomplete.
 
@@ -2108,6 +2876,13 @@ class ContainmentHoldCoordinator:
         """
 
         self.state.irreversible_incomplete = True
+        if incomplete_phase not in {
+            "CONTAINMENT_HOLD",
+            "BARRIER_FAILED_OR_UNCERTAIN_CONTAINMENT_HOLD",
+        }:
+            raise CloseoutStateError(
+                "containment coordinator received a non-containment phase"
+            )
         checked_ledger: dict[str, object] | None = None
         try:
             checked_ledger = validate_frozen_ledger(ledger)
@@ -2169,7 +2944,7 @@ class ContainmentHoldCoordinator:
                     self.boundary,
                     self.state,
                     self.store,
-                    phase="CONTAINMENT_HOLD",
+                    phase=incomplete_phase,
                     failure_record=failure_record,
                     external_joins={
                         "child_audit_identity": checked_ledger[
@@ -2324,6 +3099,31 @@ class ContainmentHoldCoordinator:
         expected_release_locks = _validate_lock_evidence(
             clearance["record"]["lock_identities"]
         )
+        if not self.state.containment_guardian_absence_attempted:
+            self.state.containment_guardian_absence_attempted = True
+            try:
+                self.state.containment_guardian_absence_identity = (
+                    validate_identity_join(
+                        self.port.prepare_guardian_release(checked_ledger),
+                        "containment guardian absence",
+                    )
+                )
+            except BaseException as exc:
+                self._announce_gap(
+                    "CONTAINMENT_GUARDIAN_ABSENCE_FAILED_OR_UNCERTAIN",
+                    exc,
+                )
+        if self.state.containment_guardian_absence_identity is None:
+            self._safe_wait()
+            while True:
+                self._safe_announce(
+                    {
+                        "isolation_active": True,
+                        "reason": "GUARDIAN_ABSENCE_EVIDENCE_UNCERTAIN",
+                        "status": "CONTAINMENT_HOLD",
+                    }
+                )
+                self._safe_wait()
         self.state.lock_release_attempted = True
         try:
             raw_release = self.port.release_locks_once()
@@ -2345,6 +3145,10 @@ class ContainmentHoldCoordinator:
                 "containment clearance",
             ),
             "effect": self.state.lock_release_return,
+            "guardian_absence_identity": validate_identity_join(
+                self.state.containment_guardian_absence_identity,
+                "containment guardian absence",
+            ),
             "schema_version": LOCK_RELEASE_SCHEMA,
             "status": "RELEASED",
         }
@@ -2363,6 +3167,24 @@ class ContainmentHoldCoordinator:
                 exc,
             )
             return {
+                "detached_replay_input": {
+                    "clearance_identity": self.state.hold_clearance_identity,
+                    "clearance_record": clearance["record"],
+                    "guardian_absence_identity": (
+                        self.state.containment_guardian_absence_identity
+                    ),
+                    "hold_identity": self.state.hold_identity,
+                    "hold_record": hold["record"],
+                    "incomplete_identity": self.state.incomplete_identity,
+                    "incomplete_record": incomplete["record"],
+                    "lock_release_effect": self.state.lock_release_return,
+                    "lock_release_identity": "unrecorded",
+                    "lock_release_publication": self.state.publication(
+                        "lock-release"
+                    ).record(),
+                    "lock_release_record": release,
+                },
+                "detached_replay_required": True,
                 "errors": list(self.state.errors),
                 "outcome": "INCOMPLETE",
                 "status": "CONSUMED_INCOMPLETE",

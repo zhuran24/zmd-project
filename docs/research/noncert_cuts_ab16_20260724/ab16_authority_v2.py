@@ -23,6 +23,7 @@ manager/boot epoch authority.  A historical Gate-1 package with
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 import os
@@ -49,12 +50,12 @@ ARM_CONSUMPTION_SCHEMA = "noncert-cuts-ab16-organic-arm-consumption-v2"
 CAMPAIGN_STOP_SCHEMA = "noncert-cuts-ab16-immediate-stop-v1"
 PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v3"
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
-GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v2"
-GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v1"
+GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v3"
+GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v2"
 FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v3"
 REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
-EXTERNAL_PLATFORM_SCHEMA = "noncert-cuts-ab16-external-platform-assumptions-v1"
+EXTERNAL_PLATFORM_SCHEMA = "noncert-cuts-ab16-external-platform-assumptions-v2"
 CONTINUATION_SCHEMA = "noncert-cuts-gate1-v4-continuation-authorization-v1"
 BASELINE_ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v1"
 COMMON_PRESTATE_SCHEMA = "noncert-cuts-ab16-common-prestate-v1"
@@ -111,6 +112,15 @@ REQUIRED_PACKAGE_ROLES = frozenset(
         "tool.ab16_campaign_bootstrap_v1.py",
         "tool.ab16_campaign_bootstrap_v2.py",
         "tool.ab16_contract_v1.py",
+        "tool.ab16_formal_campaign_v1.py",
+        "tool.ab16_formal_controller_v1.py",
+        "tool.ab16_formal_launch_authority_v1.py",
+        "tool.ab16_formal_launch_validator_v1.py",
+        "tool.ab16_formal_loader_v1.py",
+        "tool.ab16_formal_success_verifier_v1.py",
+        "tool.ab16_outer_closeout_state_v1.py",
+        "tool.ab16_outer_guardian_v1.py",
+        "tool.ab16_outer_refunit_closeout_v1.py",
         "tool.ab16_terminal_gate_v1.py",
         "tool.ab16_terminal_gate_v2.py",
         "tool.baseline_admission_v1.py",
@@ -121,6 +131,7 @@ REQUIRED_PACKAGE_ROLES = frozenset(
         "tool.disposable_drill_payload_v1.py",
         "tool.gate_a_validation_v2.py",
         "tool.gate_a_pinned_entrypoint_v2.py",
+        "tool.gate_a_recovery_inputs_v1.py",
         "tool.organic_arm_runner_v1.py",
         "tool.organic_arm_replay_v1.py",
         "tool.organic_resource_lifecycle_v1.py",
@@ -300,6 +311,17 @@ class AuthorityError(RuntimeError):
 
 
 @dataclass(frozen=True)
+class FormalRuntimeBoundary:
+    """Public package-replayed view consumed by the existing closeout owner."""
+
+    campaign: Path
+    context: Mapping[str, Any]
+    formal_dir: Path
+    preregistration: Mapping[str, Any]
+    root: Mapping[str, Any]
+
+
+@dataclass(frozen=True)
 class Snapshot:
     path: Path
     data: bytes
@@ -435,8 +457,10 @@ def _exact_keys(value: object, keys: set[str], label: str) -> Mapping[str, Any]:
     return value
 
 
-def _write_exclusive(path: Path | str, data: bytes) -> dict[str, object]:
+def _write_exclusive(path: Path | str, data: bytes, *, mode: int = 0o600) -> dict[str, object]:
     absolute = _absolute(path)
+    if type(mode) is not int or mode not in {0o444, 0o600}:
+        raise AuthorityError("OUTPUT_MODE_INVALID", str(absolute))
     parent = absolute.parent
     _assert_no_symlink_chain(parent)
     if not parent.is_dir():
@@ -447,7 +471,7 @@ def _write_exclusive(path: Path | str, data: bytes) -> dict[str, object]:
             descriptor = os.open(
                 absolute.name,
                 os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-                0o600,
+                mode,
                 dir_fd=parent_fd,
             )
         except FileExistsError as exc:
@@ -459,6 +483,7 @@ def _write_exclusive(path: Path | str, data: bytes) -> dict[str, object]:
                 if written <= 0:
                     raise AuthorityError("OUTPUT_WRITE_FAILED", str(absolute))
                 view = view[written:]
+            os.fchmod(descriptor, mode)
             os.fsync(descriptor)
         finally:
             os.close(descriptor)
@@ -657,7 +682,7 @@ def validate_repository_snapshot_manifest(value: object) -> Mapping[str, Any]:
     record = _exact_keys(
         value,
         set(
-            "archive_identity authority_scope import_mode member_count members ordered_member_digest repository_head "
+            "archive_descriptor authority_scope import_mode member_count members ordered_member_digest repository_head "
             "repository_tree schema_version total_bytes".split()
         ),
         "AB16 repository snapshot manifest",
@@ -675,9 +700,9 @@ def validate_repository_snapshot_manifest(value: object) -> Mapping[str, Any]:
             raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", f"member {ordinal}")
         kind = item.get("source_kind")
         keys = (
-            {"blob_oid", "git_mode", "materialized_mode", "path", "raw_sha256", "size_bytes", "source_kind"}
+            {"git_blob_oid", "git_mode", "materialized_mode", "path", "raw_sha256", "size_bytes", "source_kind"}
             if kind == "git_blob"
-            else set("materialized_mode package_role path raw_sha256 size_bytes source_identity source_kind".split())
+            else set("materialized_mode package_role path raw_sha256 size_bytes source_kind".split())
         )
         member = _exact_keys(item, keys, f"AB16 repository snapshot member {ordinal}")
         path = member["path"]
@@ -704,8 +729,8 @@ def validate_repository_snapshot_manifest(value: object) -> Mapping[str, Any]:
         total_bytes += member["size_bytes"]
         if kind == "git_blob":
             if (
-                type(member["blob_oid"]) is not str
-                or HEAD_RE.fullmatch(member["blob_oid"]) is None
+                type(member["git_blob_oid"]) is not str
+                or HEAD_RE.fullmatch(member["git_blob_oid"]) is None
                 or member["git_mode"] not in {"100644", "100755"}
                 or member["materialized_mode"] != (0o555 if member["git_mode"] == "100755" else 0o444)
             ):
@@ -713,28 +738,18 @@ def validate_repository_snapshot_manifest(value: object) -> Mapping[str, Any]:
             git_paths.append(path)
         elif kind == "package_overlay":
             overlay_count += 1
-            source = _exact_keys(
-                member["source_identity"],
-                {"mode", "path", "sha256", "size_bytes"},
-                "AB16 repository snapshot overlay source",
-            )
             if (
                 path != "data/preprocessed/candidate_placements.json"
                 or ordinal != len(members) - 1
                 or member["package_role"] != "input.candidate_placements.json"
                 or member["materialized_mode"] != 0o444
-                or source["sha256"] != member["raw_sha256"]
-                or source["size_bytes"] != member["size_bytes"]
-                or type(source["mode"]) is not int
-                or type(source["path"]) is not str
-                or not Path(source["path"]).is_absolute()
             ):
                 raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", "candidate overlay")
         else:
             raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", f"source kind {kind!r}")
     archive = _exact_keys(
-        record["archive_identity"],
-        {"path", "sha256", "size_bytes"},
+        record["archive_descriptor"],
+        {"package_role", "sha256", "size_bytes"},
         "AB16 repository snapshot archive",
     )
     if (
@@ -753,8 +768,7 @@ def validate_repository_snapshot_manifest(value: object) -> Mapping[str, Any]:
         or record["total_bytes"] != total_bytes
         or type(record["ordered_member_digest"]) is not str
         or record["ordered_member_digest"] != hashlib.sha256(canonical_json(members)).hexdigest()
-        or type(archive["path"]) is not str
-        or not Path(archive["path"]).is_absolute()
+        or archive["package_role"] != "input.ab16_repository_snapshot.zip"
         or type(archive["sha256"]) is not str
         or SHA256_RE.fullmatch(archive["sha256"]) is None
         or type(archive["size_bytes"]) is not int
@@ -762,6 +776,85 @@ def validate_repository_snapshot_manifest(value: object) -> Mapping[str, Any]:
     ):
         raise AuthorityError("REPOSITORY_SNAPSHOT_INVALID", "manifest aggregate")
     return record
+
+
+def _bootstrap_literal_values(
+    files: Mapping[str, Snapshot],
+    sources: Mapping[str, Mapping[str, Any]],
+) -> dict[str, str]:
+    """Read the selected literal bytes from the sealed bootstrap source without executing it."""
+
+    snapshot = _source_snapshot(files, sources, "tool.ab16_campaign_bootstrap_v2.py")
+    try:
+        tree = ast.parse(snapshot.data, filename=str(snapshot.path), mode="exec")
+    except (SyntaxError, ValueError) as exc:
+        raise AuthorityError("REPOSITORY_SNAPSHOT_BINDING_DRIFT", "bootstrap source parse") from exc
+    names = {
+        "FORMAL_LAUNCH_OWNER_DRIVER_V1",
+        "GATE_B_OWNER_DRIVER_V1",
+        "OWNER_OEXCL_PUBLISH_V1",
+        "SELECTED_BYTE_LAUNCH_V1",
+    }
+
+    def static_string(node: ast.AST) -> str:
+        if isinstance(node, ast.Constant) and type(node.value) is str:
+            return node.value
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+            return static_string(node.left) + static_string(node.right)
+        if (
+            isinstance(node, ast.Call)
+            and not node.args
+            and not node.keywords
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "strip"
+        ):
+            return static_string(node.func.value).strip()
+        raise ValueError("not one supported static string expression")
+
+    values: dict[str, str] = {}
+    for statement in tree.body:
+        if not isinstance(statement, (ast.Assign, ast.AnnAssign)):
+            continue
+        targets = statement.targets if isinstance(statement, ast.Assign) else [statement.target]
+        selected = [target.id for target in targets if isinstance(target, ast.Name) and target.id in names]
+        if not selected:
+            continue
+        try:
+            value = static_string(statement.value)
+        except ValueError as exc:
+            raise AuthorityError(
+                "REPOSITORY_SNAPSHOT_BINDING_DRIFT",
+                f"bootstrap literal {selected[0]} is not static",
+            ) from exc
+        if type(value) is not str:
+            raise AuthorityError(
+                "REPOSITORY_SNAPSHOT_BINDING_DRIFT",
+                f"bootstrap literal {selected[0]} type",
+            )
+        for name in selected:
+            if name in values:
+                raise AuthorityError(
+                    "REPOSITORY_SNAPSHOT_BINDING_DRIFT",
+                    f"bootstrap literal {name} duplicated",
+                )
+            values[name] = value
+    if set(values) != names:
+        raise AuthorityError("REPOSITORY_SNAPSHOT_BINDING_DRIFT", "bootstrap literal set")
+    return values
+
+
+def _bootstrap_literal_identities(
+    files: Mapping[str, Snapshot],
+    sources: Mapping[str, Mapping[str, Any]],
+) -> dict[str, dict[str, object]]:
+    values = _bootstrap_literal_values(files, sources)
+    return {
+        name: {
+            "sha256": hashlib.sha256(value.encode("utf-8")).hexdigest(),
+            "size_bytes": len(value.encode("utf-8")),
+        }
+        for name, value in values.items()
+    }
 
 
 def _replay_repository_snapshot(
@@ -798,8 +891,12 @@ def _replay_repository_snapshot(
     overlay = manifest["members"][-1]
     if (
         receipt_snapshot.path != expected_authority / "materialization-receipt.json"
-        or manifest["archive_identity"] != archive_identity
-        or Path(str(manifest["archive_identity"]["path"])) != archive_snapshot.path
+        or manifest["archive_descriptor"]
+        != {
+            "package_role": "input.ab16_repository_snapshot.zip",
+            "sha256": archive_identity["sha256"],
+            "size_bytes": archive_identity["size_bytes"],
+        }
         or root["strict_inputs"].get("ab16_repository_snapshot") != manifest_identity
         or root["strict_inputs"].get("ab16_repository_snapshot_archive") != archive_identity
         or root["strict_inputs"].get("ab16_external_platform_assumptions") != detached_identity(platform_snapshot)
@@ -818,17 +915,42 @@ def _replay_repository_snapshot(
         or receipt["total_bytes"] != manifest["total_bytes"]
         or receipt["ordered_member_digest"] != manifest["ordered_member_digest"]
         or receipt["candidate_identity"] != detached_identity(candidate_snapshot)
-        or overlay["source_identity"] != _mode_identity(candidate_snapshot)
+        or overlay["raw_sha256"] != candidate_snapshot.sha256
+        or overlay["size_bytes"] != candidate_snapshot.size_bytes
         or type(receipt["created_at_utc"]) is not str
     ):
         raise AuthorityError("REPOSITORY_SNAPSHOT_BINDING_DRIFT", "package/root/materialization join")
     platform = _exact_keys(
         _record(platform_snapshot, "AB16 external platform assumptions"),
         set(
-            "authority_scope cpython_version external_platform_trust ortools_version protobuf_version "
-            "python_identity repository_head schema_version".split()
+            "authority_scope cpython_version dual_holder_survival external_platform_trust "
+            "formal_launch_owner_driver gate_b_owner_driver mechanical_oexcl_publisher "
+            "ortools_version protobuf_version python_identity repository_head schema_version "
+            "selected_byte_launch".split()
         ),
         "AB16 external platform assumptions",
+    )
+    literal_identities = _bootstrap_literal_identities(files, sources)
+    dual_holder = _exact_keys(
+        platform["dual_holder_survival"],
+        {
+            "assumption_id",
+            "reboot_or_power_loss_during_heavy_runtime_excluded",
+            "simultaneous_guardian_supervisor_death_excluded",
+            "single_holder_death_must_be_contained",
+        },
+        "AB16 dual-holder platform assumption",
+    )
+    selected_launch = _exact_keys(
+        platform["selected_byte_launch"],
+        {
+            "direct_fd_map",
+            "execution_strategy",
+            "literal_identity",
+            "systemd_fd_map",
+            "systemd_fd_names",
+        },
+        "AB16 selected-byte launch",
     )
     python_snapshot = _replay_detached(root["authority_tools"].get("python3_13"), "AB16 CPython")
     if (
@@ -836,7 +958,24 @@ def _replay_repository_snapshot(
         or platform["authority_scope"] != "AB16_RESEARCH_ONLY"
         or platform["cpython_version"] != "3.13.13"
         or platform["repository_head"] != root["repository_head"]
-        or platform["python_identity"] != detached_identity(python_snapshot)
+        or platform["python_identity"] != _mode_identity(python_snapshot)
+        or platform["formal_launch_owner_driver"]
+        != literal_identities["FORMAL_LAUNCH_OWNER_DRIVER_V1"]
+        or platform["gate_b_owner_driver"] != literal_identities["GATE_B_OWNER_DRIVER_V1"]
+        or platform["mechanical_oexcl_publisher"] != literal_identities["OWNER_OEXCL_PUBLISH_V1"]
+        or selected_launch["literal_identity"] != literal_identities["SELECTED_BYTE_LAUNCH_V1"]
+        or selected_launch["execution_strategy"] != "selected-byte-python-loader-fd-v1"
+        or selected_launch["direct_fd_map"] != {"authority": 5, "loader": 4, "python": 3}
+        or selected_launch["systemd_fd_map"] != {"authority": 5, "loader": 4, "python": 3}
+        or selected_launch["systemd_fd_names"]
+        != ["ab16-python", "ab16-loader", "ab16-authority"]
+        or dual_holder
+        != {
+            "assumption_id": "AB16_DUAL_HOLDER_SURVIVAL_V1",
+            "reboot_or_power_loss_during_heavy_runtime_excluded": True,
+            "simultaneous_guardian_supervisor_death_excluded": True,
+            "single_holder_death_must_be_contained": True,
+        }
         or platform["external_platform_trust"]
         != [
             "CPython runtime and standard library semantics",
@@ -894,9 +1033,16 @@ def _replay_repository_snapshot(
         ):
             raise AuthorityError("REPOSITORY_SNAPSHOT_REPLAY_FAILED", f"identity {path}")
         identities[path] = detached_identity(snapshot)
-    return {"archive_identity": archive_identity, "manifest_identity": manifest_identity,
-            "materialization_identity": detached_identity(receipt_snapshot), "member_identities": identities,
-            "repository_root": str(snapshot_root), "repository_tree": manifest["repository_tree"]}
+    return {
+        "archive_identity": archive_identity,
+        "external_platform": platform,
+        "external_platform_identity": detached_identity(platform_snapshot),
+        "manifest_identity": manifest_identity,
+        "materialization_identity": detached_identity(receipt_snapshot),
+        "member_identities": identities,
+        "repository_root": str(snapshot_root),
+        "repository_tree": manifest["repository_tree"],
+    }
 
 
 def _validate_root_source_joins(
@@ -916,6 +1062,15 @@ def _validate_root_source_joins(
         "ab16_campaign_bootstrap_v1": "tool.ab16_campaign_bootstrap_v1.py",
         "ab16_campaign_bootstrap_v2": "tool.ab16_campaign_bootstrap_v2.py",
         "ab16_contract_v1": "tool.ab16_contract_v1.py",
+        "ab16_formal_campaign_v1": "tool.ab16_formal_campaign_v1.py",
+        "ab16_formal_controller_v1": "tool.ab16_formal_controller_v1.py",
+        "ab16_formal_launch_authority_v1": "tool.ab16_formal_launch_authority_v1.py",
+        "ab16_formal_launch_validator_v1": "tool.ab16_formal_launch_validator_v1.py",
+        "ab16_formal_loader_v1": "tool.ab16_formal_loader_v1.py",
+        "ab16_formal_success_verifier_v1": "tool.ab16_formal_success_verifier_v1.py",
+        "ab16_outer_closeout_state_v1": "tool.ab16_outer_closeout_state_v1.py",
+        "ab16_outer_guardian_v1": "tool.ab16_outer_guardian_v1.py",
+        "ab16_outer_refunit_closeout_v1": "tool.ab16_outer_refunit_closeout_v1.py",
         "ab16_terminal_gate_v1": "tool.ab16_terminal_gate_v1.py",
         "ab16_terminal_gate_v2": "tool.ab16_terminal_gate_v2.py",
         "baseline_admission_v1": "tool.baseline_admission_v1.py",
@@ -926,6 +1081,7 @@ def _validate_root_source_joins(
         "disposable_drill_payload_v1": "tool.disposable_drill_payload_v1.py",
         "gate_a_validation_v2": "tool.gate_a_validation_v2.py",
         "gate_a_pinned_entrypoint_v2": "tool.gate_a_pinned_entrypoint_v2.py",
+        "gate_a_recovery_inputs_v1": "tool.gate_a_recovery_inputs_v1.py",
         "organic_arm_runner_v1": "tool.organic_arm_runner_v1.py",
         "organic_arm_replay_v1": "tool.organic_arm_replay_v1.py",
         "organic_resource_lifecycle_v1": "tool.organic_resource_lifecycle_v1.py",
@@ -1096,6 +1252,89 @@ def replay_repository_snapshot(campaign_dir: Path | str) -> Mapping[str, Any]:
     return _campaign_context(campaign_dir)["repository_snapshot"]
 
 
+def _validate_gate_b_publisher_record(
+    value: object,
+    *,
+    driver_identity: Mapping[str, Any],
+    mechanical_publisher_identity: Mapping[str, Any],
+    output_identity: Mapping[str, Any],
+    python_identity: Mapping[str, Any],
+    renderer_identity: Mapping[str, Any],
+) -> Mapping[str, Any]:
+    record = _exact_keys(
+        value,
+        {
+            "actor",
+            "driver_program",
+            "execution_strategy",
+            "mechanical_publisher",
+            "output_mode",
+            "output_path",
+            "python",
+            "renderer_source",
+        },
+        "AB16 Gate-B publisher",
+    )
+    actor = _exact_keys(
+        record["actor"],
+        {"pid", "pid_starttime", "role"},
+        "AB16 Gate-B publisher actor",
+    )
+    projected_output = {
+        field: output_identity[field] for field in ("mode", "path", "sha256", "size_bytes")
+    }
+    if (
+        actor["role"] != "AB16_GATE_B_OWNER"
+        or type(actor["pid"]) is not int
+        or actor["pid"] <= 1
+        or type(actor["pid_starttime"]) is not str
+        or not actor["pid_starttime"].isdigit()
+        or record["driver_program"] != driver_identity
+        or record["mechanical_publisher"] != mechanical_publisher_identity
+        or record["execution_strategy"] != "same-owner-render-sealed-memfd-dirfd-oexcl-v1"
+        or record["output_mode"] != 0o444
+        or record["output_path"] != projected_output["path"]
+        or projected_output["mode"] != 0o444
+        or record["python"] != python_identity
+        or record["renderer_source"] != renderer_identity
+    ):
+        raise AuthorityError("GATE_APPROVALS_INVALID", "Gate-B publisher identity drifted")
+    return record
+
+
+def _join_gate_b_renderer_identity(
+    planned_identity: Mapping[str, Any],
+    staged_source_identity: Mapping[str, Any],
+) -> dict[str, object]:
+    """Bind the live Gate-B renderer to the byte-identical staged package source."""
+
+    planned = _exact_keys(
+        planned_identity,
+        {"mode", "path", "sha256", "size_bytes"},
+        "AB16 planned Gate-B renderer",
+    )
+    staged = _validate_source_identity(
+        staged_source_identity,
+        "AB16 staged Gate-B renderer",
+    )
+    if (
+        type(planned["mode"]) is not int
+        or type(planned["path"]) is not str
+        or not Path(planned["path"]).is_absolute()
+        or type(planned["sha256"]) is not str
+        or SHA256_RE.fullmatch(planned["sha256"]) is None
+        or type(planned["size_bytes"]) is not int
+        or planned["size_bytes"] < 0
+        or staged["sha256"] != planned["sha256"]
+        or staged["size_bytes"] != planned["size_bytes"]
+    ):
+        raise AuthorityError(
+            "GATE_APPROVALS_INVALID",
+            "Gate-B live/staged renderer identity drifted",
+        )
+    return dict(planned)
+
+
 def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
     files = context["files"]
     sources = context["sources"]
@@ -1121,7 +1360,7 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
             "approval_id arm_launch_authorized candidate_identity created_at_utc decision "
             "final_full_preflight_receipt_identity formal_campaign_creation_authorized gate "
             "gate_a_receipt_identity gate_b_epoch_observation_identity planned_source_set_digest purpose "
-            "repository_head repository_root run_nonce schema_version target_campaign_dir".split()
+            "publisher repository_head repository_root run_nonce schema_version target_campaign_dir".split()
         ),
         "AB16 Gate-B",
     )
@@ -1147,7 +1386,12 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
     if type(planned) is not dict:
         raise AuthorityError("GATE_APPROVALS_INVALID", "candidate planned source identities")
     planned_projections: dict[str, dict[str, object]] = {}
-    for role in ("input.preflight_gate", "script.gate_a_validation_v2", "system.python3_13"):
+    for role in (
+        "input.preflight_gate",
+        "script.ab16_campaign_bootstrap_v2",
+        "script.gate_a_validation_v2",
+        "system.python3_13",
+    ):
         identity = planned.get(role)
         if type(identity) is not dict:
             raise AuthorityError("GATE_APPROVALS_INVALID", f"candidate planned source {role}")
@@ -1253,10 +1497,32 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         set(
             "authorizations candidate_identity capture_transcript created_at_utc "
             "final_full_preflight_receipt_identity gate_a_receipt_identity manager_epoch "
-            "planned_source_set_digest purpose repository_head repository_root run_nonce schema_version status "
+            "planned_source_set_digest publisher purpose repository_head repository_root run_nonce schema_version status "
             "target_campaign_dir".split()
         ),
         "AB16 Gate-B epoch observation",
+    )
+    external_platform = context["repository_snapshot"]["external_platform"]
+    renderer_source = sources["tool.ab16_campaign_bootstrap_v2.py"]["source_identity"]
+    renderer_identity = _join_gate_b_renderer_identity(
+        planned_projections["script.ab16_campaign_bootstrap_v2"],
+        renderer_source,
+    )
+    gate_b_publisher = _validate_gate_b_publisher_record(
+        gate_b["publisher"],
+        driver_identity=external_platform["gate_b_owner_driver"],
+        mechanical_publisher_identity=external_platform["mechanical_oexcl_publisher"],
+        output_identity=sources["input.ab16_gate_b_approval.json"]["source_identity"],
+        python_identity=planned_projections["system.python3_13"],
+        renderer_identity=renderer_identity,
+    )
+    epoch_publisher = _validate_gate_b_publisher_record(
+        epoch["publisher"],
+        driver_identity=external_platform["gate_b_owner_driver"],
+        mechanical_publisher_identity=external_platform["mechanical_oexcl_publisher"],
+        output_identity=sources["input.ab16_gate_b_epoch_observation.json"]["source_identity"],
+        python_identity=planned_projections["system.python3_13"],
+        renderer_identity=renderer_identity,
     )
     try:
         context["campaign_module"].validate_manager_epoch(epoch["manager_epoch"])
@@ -1381,6 +1647,7 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         or epoch["gate_a_receipt_identity"] != gate_a_identity
         or epoch["final_full_preflight_receipt_identity"] != final_identity
         or epoch["manager_epoch"] != context["root"]["manager_epoch"]
+        or epoch_publisher["actor"] != gate_b_publisher["actor"]
         or any(epoch[field] != gate_a[field] for field in (
             "planned_source_set_digest",
             "repository_head",
@@ -1399,6 +1666,308 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         "reference_capability_identity": dict(gate_a["reference_capability_identity"]),
         "reference_capability_transcript_identity": dict(gate_a["reference_capability_transcript_identity"]),
         "repository_root": gate_a["repository_root"],
+    }
+
+
+def replay_gate_approvals(campaign_dir: Path | str) -> dict[str, Mapping[str, Any]]:
+    """Replay the independently published Gate-A/Gate-B chain for launch validators."""
+
+    return _validate_gate_approvals(_campaign_context(campaign_dir))
+
+
+def replay_formal_runtime_boundary(campaign_dir: Path | str) -> FormalRuntimeBoundary:
+    """Return the sole replayed boundary for supervisor/guardian closeout."""
+
+    context = _campaign_context(campaign_dir)
+    _validate_gate_approvals(context)
+    preregistration, _identity = _path_preregistration(context)
+    campaign = Path(context["directory"])
+    return FormalRuntimeBoundary(
+        campaign=campaign,
+        context=context,
+        formal_dir=Path(preregistration["formal_attempt_dir"]),
+        preregistration=preregistration,
+        root=context["root"],
+    )
+
+
+FORMAL_ROLE_SOURCES = {
+    "baseline-admission": (
+        "docs.research.noncert_cuts_ab16_20260724.baseline_admission_v1",
+        "docs/research/noncert_cuts_ab16_20260724/baseline_admission_v1.py",
+    ),
+    "baseline-rebuild": (
+        "docs.research.noncert_cuts_ab16_20260724.baseline_rebuild_v1",
+        "docs/research/noncert_cuts_ab16_20260724/baseline_rebuild_v1.py",
+    ),
+    "cut-free-incumbent-replay": (
+        "docs.research.noncert_cuts_ab16_20260724.cut_free_incumbent_replay_v1",
+        "docs/research/noncert_cuts_ab16_20260724/cut_free_incumbent_replay_v1.py",
+    ),
+    "formal-controller": (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_controller_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_controller_v1.py",
+    ),
+    "formal-launch-authority": (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_launch_authority_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_launch_authority_v1.py",
+    ),
+    "formal-launch-validator": (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_launch_validator_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_launch_validator_v1.py",
+    ),
+    "formal-success-verifier": (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_success_verifier_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_success_verifier_v1.py",
+    ),
+    "formal-supervisor": (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_campaign_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_campaign_v1.py",
+    ),
+    "organic-arm": (
+        "docs.research.noncert_cuts_ab16_20260724.organic_arm_runner_v1",
+        "docs/research/noncert_cuts_ab16_20260724/organic_arm_runner_v1.py",
+    ),
+    "organic-supervisor": (
+        "docs.research.noncert_cuts_ab16_20260724.organic_resource_lifecycle_v2",
+        "docs/research/noncert_cuts_ab16_20260724/organic_resource_lifecycle_v2.py",
+    ),
+    "outer-guardian": (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_outer_guardian_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_outer_guardian_v1.py",
+    ),
+}
+
+
+def replay_loader_context(
+    *,
+    campaign_dir: Path | str,
+    role: str,
+    role_module: str,
+    role_path: str,
+) -> dict[str, object]:
+    """Bind one isolated-loader role to the sealed source snapshot."""
+
+    context = _campaign_context(campaign_dir)
+    expected = FORMAL_ROLE_SOURCES.get(role)
+    if expected != (role_module, role_path):
+        raise AuthorityError("FORMAL_LOADER_ROLE_INVALID", role)
+    snapshot = context["repository_snapshot"]
+    identity = snapshot["member_identities"].get(role_path)
+    if identity is None:
+        raise AuthorityError("FORMAL_LOADER_ROLE_INVALID", f"{role} is absent from the sealed snapshot")
+    root = context["root"]
+    return {
+        "authority_scope": "AB16_RESEARCH_ONLY",
+        "campaign_dir": str(context["directory"]),
+        "campaign_root_identity": context["root_identity"],
+        "package_id": root["package"]["package_id"],
+        "package_manifest_identity": root["package"]["manifest_identity"],
+        "package_seal_identity": root["package"]["seal_identity"],
+        "repository_head": root["repository_head"],
+        "repository_tree": snapshot["repository_tree"],
+        "role": role,
+        "role_module": role_module,
+        "role_source_identity": identity,
+        "schema_version": "noncert-cuts-ab16-formal-loader-context-v1",
+        "snapshot_materialization_identity": snapshot["materialization_identity"],
+        "snapshot_root": snapshot["repository_root"],
+        "status": "PASS",
+    }
+
+
+def replay_formal_launch_context(*, campaign_dir: Path | str) -> dict[str, object]:
+    """Replay every upstream identity needed by the independent formal launch owner."""
+
+    context = _campaign_context(campaign_dir)
+    root = context["root"]
+    approvals = _validate_gate_approvals(context)
+    paths, _ = _path_preregistration(context)
+    snapshot = context["repository_snapshot"]
+    gate1_path = Path(root["stage_topology"]["gate1_v4"]["selection_path"])
+    gate1_snapshot = snapshot_regular(gate1_path)
+    gate1_identity = detached_identity(gate1_snapshot)
+    try:
+        context["campaign_module"].replay_gate1_selection(
+            context["directory"] / "campaign-root.json",
+            context["root_identity"],
+            gate1_identity,
+            current_manager_epoch=root["manager_epoch"],
+        )
+    except Exception as exc:
+        raise AuthorityError("FORMAL_LAUNCH_CONTEXT_INVALID", f"Gate-1 selection: {exc}") from exc
+    tools = {
+        "baseline_identity": ("baseline_rebuild_v1", "tool.baseline_rebuild_v1.py"),
+        "controller_identity": ("ab16_formal_controller_v1", "tool.ab16_formal_controller_v1.py"),
+        "formal_loader_identity": ("ab16_formal_loader_v1", "tool.ab16_formal_loader_v1.py"),
+        "guardian_runtime_identity": ("ab16_outer_guardian_v1", "tool.ab16_outer_guardian_v1.py"),
+        "launch_renderer_identity": (
+            "ab16_formal_launch_authority_v1",
+            "tool.ab16_formal_launch_authority_v1.py",
+        ),
+        "launch_validator_identity": (
+            "ab16_formal_launch_validator_v1",
+            "tool.ab16_formal_launch_validator_v1.py",
+        ),
+        "success_verifier_identity": (
+            "ab16_formal_success_verifier_v1",
+            "tool.ab16_formal_success_verifier_v1.py",
+        ),
+    }
+    tool_identities = {
+        name: _root_tool_identity(context, role, package_role)
+        for name, (role, package_role) in tools.items()
+    }
+    python_with_mode = _root_tool_identity_with_mode(
+        context,
+        "python3_13",
+        "system.python3_13.bin",
+    )
+    loader_with_mode = _root_tool_identity_with_mode(
+        context,
+        "ab16_formal_loader_v1",
+        "tool.ab16_formal_loader_v1.py",
+    )
+    authority_with_mode = _root_tool_identity_with_mode(
+        context,
+        "ab16_authority_v2",
+        "tool.ab16_authority_v2.py",
+    )
+    literal = _bootstrap_literal_values(context["files"], context["sources"])[
+        "SELECTED_BYTE_LAUNCH_V1"
+    ]
+    literal_identity = {
+        "sha256": hashlib.sha256(literal.encode("utf-8")).hexdigest(),
+        "size_bytes": len(literal.encode("utf-8")),
+    }
+    selected_identities = {
+        "authority": authority_with_mode,
+        "loader": loader_with_mode,
+        "python": python_with_mode,
+    }
+    selected_identity_argument = json.dumps(
+        selected_identities,
+        allow_nan=False,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    outer_spec = {
+        "arm_prelaunch_paths": paths["arm_prelaunch_paths"],
+        "barrier_path": paths["outer_barrier_path"],
+        "child_audit_path": paths["child_audit_path"],
+        "controller_identity": tool_identities["controller_identity"],
+        "gate1_prelaunch_ownership_path": paths["gate1_prelaunch_ownership_path"],
+        "loader_identity": tool_identities["formal_loader_identity"],
+        "python_identity": {
+            field: python_with_mode[field] for field in ("path", "sha256", "size_bytes")
+        },
+        "receipt_paths": paths["outer_receipt_paths"],
+        "resource_contract": {
+            "collect_mode": "inactive-or-failed",
+            "kill_mode": "control-group",
+            "memory_high_bytes": 35 * 1024**3,
+            "memory_max_bytes": 39 * 1024**3,
+            "memory_swap_max_bytes": 16 * 1024**3,
+            "oom_policy": "continue",
+            "runtime_max_sec": 57_600,
+            "send_sigkill": True,
+        },
+        "selected_byte_argv": [
+            "/proc/self/fd/3",
+            "-I",
+            "-B",
+            "-c",
+            literal,
+            "systemd-openfile",
+            selected_identity_argument,
+            "--campaign-dir",
+            str(context["directory"]),
+            "--role",
+            "formal-controller",
+            "--",
+            "--campaign-dir",
+            str(context["directory"]),
+            "--formal-selection",
+            paths["formal_selection_path"],
+        ],
+        "unit_name": f"{root['unit_namespace']}-ab16-outer.service",
+        "working_directory": snapshot["repository_root"],
+    }
+    guardian_spec = {
+        "resource_contract": dict(outer_spec["resource_contract"]),
+        "selected_byte_argv": [
+            "/proc/self/fd/3",
+            "-I",
+            "-B",
+            "-c",
+            literal,
+            "systemd-openfile",
+            selected_identity_argument,
+            "--campaign-dir",
+            str(context["directory"]),
+            "--role",
+            "outer-guardian",
+            "--",
+            "--campaign-dir",
+            str(context["directory"]),
+            "--formal-admission",
+            paths["formal_admission_path"],
+            "--control-socket",
+            paths["guardian_control_socket_path"],
+            "--ready-output",
+            paths["guardian_ready_path"],
+        ],
+        "unit_name": f"{root['unit_namespace']}-ab16-guardian.service",
+        "working_directory": snapshot["repository_root"],
+    }
+    external_platform = snapshot["external_platform"]
+    return {
+        "authority_scope": "AB16_RESEARCH_ONLY",
+        **tool_identities,
+        "campaign_dir": str(context["directory"]),
+        "campaign_root_identity": context["root_identity"],
+        "dual_holder_platform_assumption": (
+            "kernel/systemd/filesystem semantics and a non-hostile OS account preserve "
+            "at least one of the separately-cgrouped supervisor or guardian lock "
+            "holders until the finite residual-runtime ledger is absent; simultaneous "
+            "loss of both holders or reboot is an external platform failure and can "
+            "never produce a successful closeout"
+        ),
+        "formal_admission_path": paths["formal_admission_path"],
+        "formal_attempt_dir": paths["formal_attempt_dir"],
+        "formal_selection_path": paths["formal_selection_path"],
+        "gate1_selection_identity": gate1_identity,
+        "gate_b_approval_identity": approvals["gate_b_identity"],
+        "gate_b_epoch_observation_identity": approvals["gate_b_epoch_identity"],
+        "guardian_ready_path": paths["guardian_ready_path"],
+        "guardian_control_socket_path": paths["guardian_control_socket_path"],
+        "guardian_spec": guardian_spec,
+        "manager_epoch": root["manager_epoch"],
+        "manager_epoch_observation_identity": _root_input_identity(
+            context,
+            "ab16_bootstrap_manager_epoch_capture",
+            "input.ab16_bootstrap_manager_epoch_capture.json",
+        ),
+        "package_id": root["package"]["package_id"],
+        "package_manifest_identity": root["package"]["manifest_identity"],
+        "package_seal_identity": root["package"]["seal_identity"],
+        "outer_spec": outer_spec,
+        "formal_launch_owner_driver_identity": external_platform[
+            "formal_launch_owner_driver"
+        ],
+        "mechanical_oexcl_publisher_identity": external_platform[
+            "mechanical_oexcl_publisher"
+        ],
+        "python_identity": {
+            field: python_with_mode[field] for field in ("path", "sha256", "size_bytes")
+        },
+        "repository_head": root["repository_head"],
+        "schema_version": "noncert-cuts-ab16-formal-launch-context-v1",
+        "snapshot_materialization_identity": snapshot["materialization_identity"],
+        "snapshot_root": snapshot["repository_root"],
+        "selected_byte_launch_identity": literal_identity,
+        "status": "PASS",
     }
 
 
@@ -1658,7 +2227,7 @@ def _runner_module(context: Mapping[str, Any]) -> ModuleType:
         f"_ab16_organic_runner_{snapshot.sha256[:16]}",
     )
     if (
-        getattr(runner, "MANIFEST_SCHEMA", None) != MANIFEST_SCHEMA
+        getattr(runner, "FORMAL_MANIFEST_SCHEMA", None) != MANIFEST_SCHEMA
         or getattr(runner, "SELECTION_SCHEMA", None) != ARM_SELECTION_SCHEMA
         or type(getattr(runner, "FORMAL_ARITHMETIC_PURPOSE", None)) is not str
     ):
@@ -1684,6 +2253,7 @@ def _path_preregistration(
         {
             "arithmetic_replay_paths",
             "arm_gate_paths",
+            "arm_prelaunch_paths",
             "arm_selection_paths",
             "attempt_dirs",
             "baseline_admission_path",
@@ -1695,11 +2265,20 @@ def _path_preregistration(
             "binding_paths",
             "campaign_dir",
             "classification_contract_path",
+            "child_audit_path",
             "common_prestate_path",
             "cut_free_replay_paths",
+            "formal_admission_path",
+            "formal_attempt_dir",
+            "formal_selection_path",
+            "gate1_prelaunch_ownership_path",
+            "guardian_control_socket_path",
+            "guardian_ready_path",
             "immediate_stop_path",
             "launch_environment_paths",
             "manifest_path",
+            "outer_barrier_path",
+            "outer_receipt_paths",
             "preselection_epoch_paths",
             "preselection_transcript_paths",
             "pre_run_candidate_paths",
@@ -1741,9 +2320,17 @@ def _path_preregistration(
         "baseline_rebuilt_metadata_path",
         "baseline_rebuilt_model_path",
         "classification_contract_path",
+        "child_audit_path",
         "common_prestate_path",
+        "formal_admission_path",
+        "formal_attempt_dir",
+        "formal_selection_path",
+        "gate1_prelaunch_ownership_path",
+        "guardian_control_socket_path",
+        "guardian_ready_path",
         "immediate_stop_path",
         "manifest_path",
+        "outer_barrier_path",
         "repository_snapshot_archive_path",
         "repository_snapshot_manifest_path",
         "repository_snapshot_materialization_receipt_path",
@@ -1759,6 +2346,17 @@ def _path_preregistration(
         "repository_snapshot_materialization_receipt_path",
         "repository_snapshot_root",
     }
+    formal_path_fields = {
+        "child_audit_path",
+        "formal_admission_path",
+        "formal_attempt_dir",
+        "formal_selection_path",
+        "gate1_prelaunch_ownership_path",
+        "guardian_control_socket_path",
+        "guardian_ready_path",
+        "outer_barrier_path",
+    }
+    formal_dir = context["directory"] / "formal-ab16"
     for field in path_fields:
         value = record[field]
         if (
@@ -1766,14 +2364,34 @@ def _path_preregistration(
             or not Path(value).is_absolute()
             or Path(value) == context["directory"]
             or (
-                field not in authority_path_fields
+                field not in authority_path_fields | formal_path_fields
                 and prospective_dir not in (Path(value), *Path(value).parents)
+            )
+            or (
+                field in formal_path_fields
+                and formal_dir not in (Path(value), *Path(value).parents)
             )
         ):
             raise AuthorityError(
                 "PATH_PREREGISTRATION_INVALID",
                 f"{field} is not an absolute prospective child path",
             )
+    formal_attempt = formal_dir / "formal-attempt-a001"
+    if (
+        Path(record["formal_admission_path"]) != formal_dir / "formal-launch-admission-a001.json"
+        or Path(record["formal_attempt_dir"]) != formal_attempt
+        or Path(record["formal_selection_path"]) != formal_attempt / "selection.json"
+        or Path(record["gate1_prelaunch_ownership_path"])
+        != formal_attempt / "gate1-prelaunch-ownership.json"
+        or Path(record["child_audit_path"]) != formal_attempt / "child-audit.json"
+        or Path(record["guardian_control_socket_path"]) != formal_dir / "guardian-control.sock"
+        or Path(record["guardian_ready_path"]) != formal_dir / "outer-guardian-ready-a001.json"
+        or Path(record["outer_barrier_path"]) != formal_attempt / "outer-barrier-release.json"
+    ):
+        raise AuthorityError(
+            "PATH_PREREGISTRATION_INVALID",
+            "formal launch paths differ from the one-shot topology",
+        )
     maps: dict[str, Mapping[str, Any]] = {}
     for field in (
         "arithmetic_replay_paths",
@@ -1796,6 +2414,68 @@ def _path_preregistration(
                 f"{field} paths are not unique",
             )
         maps[field] = value
+    arm_prelaunch = _exact_keys(
+        record["arm_prelaunch_paths"],
+        set(slots),
+        "path preregistration arm_prelaunch_paths",
+    )
+    for slot, item in arm_prelaunch.items():
+        pair = _exact_keys(
+            item,
+            {"receipt", "request"},
+            f"path preregistration arm_prelaunch_paths.{slot}",
+        )
+        expected_parent = formal_attempt / "arm-prelaunch"
+        if (
+            Path(pair["receipt"]) != expected_parent / f"{slot}-receipt.json"
+            or Path(pair["request"]) != expected_parent / f"{slot}-request.json"
+        ):
+            raise AuthorityError(
+                "PATH_PREREGISTRATION_INVALID",
+                f"arm_prelaunch_paths.{slot} drifted",
+            )
+    outer_receipts = _exact_keys(
+        record["outer_receipt_paths"],
+        {
+            "detached_closeout",
+            "detached_incomplete_closeout",
+            "dual_lock_release",
+            "guardian_absence",
+            "guardian_lock_close",
+            "observer",
+            "outer_prelaunch",
+            "outer_resource",
+            "outer_start",
+            "outer_terminal",
+            "post_unref_absence",
+            "pre_unref_cleanup",
+            "reference_acquisition",
+            "reference_release",
+        },
+        "path preregistration outer_receipt_paths",
+    )
+    for name, raw in outer_receipts.items():
+        expected_names = {
+            "detached_closeout": "detached-closeout.json",
+            "detached_incomplete_closeout": "detached-incomplete-closeout.json",
+            "dual_lock_release": "dual-lock-release.json",
+            "guardian_absence": "guardian-absence.json",
+            "guardian_lock_close": "guardian-lock-close.json",
+            "observer": "observer.json",
+            "outer_prelaunch": "outer-prelaunch.json",
+            "outer_resource": "resource-live.json",
+            "outer_start": "outer-start.json",
+            "outer_terminal": "outer-terminal.json",
+            "post_unref_absence": "post-unref-absence.json",
+            "pre_unref_cleanup": "pre-unref-cleanup.json",
+            "reference_acquisition": "reference-acquisition.json",
+            "reference_release": "reference-release.json",
+        }
+        if Path(raw) != formal_attempt / expected_names[name]:
+            raise AuthorityError(
+                "PATH_PREREGISTRATION_INVALID",
+                f"outer_receipt_paths.{name} drifted",
+            )
     root_attempts = {item["slot"]: item["attempt_dir"] for item in prospective["arms"]}
     if dict(maps["attempt_dirs"]) != root_attempts:
         raise AuthorityError(
@@ -2255,6 +2935,7 @@ def build_manifest(campaign_dir: Path | str) -> dict[str, object]:
         },
         "experiment_contract": runner.EXPERIMENT_CONTRACT,
         "forbidden_families": list(runner.FORBIDDEN_FAMILIES),
+        "live_source_provenance_root": approvals["repository_root"],
         "per_arm_tool_identities": _per_arm_tool_identities(context),
         "purpose": runner.MANIFEST_PURPOSE,
         "repository_git_tool_identity": _root_tool_identity_with_mode(
@@ -2271,8 +2952,13 @@ def build_manifest(campaign_dir: Path | str) -> dict[str, object]:
             "tool.organic_arm_runner_v1.py",
         ),
         "runtime_parameters": _expected_runtime_parameters(runner),
-        "schema_version": runner.MANIFEST_SCHEMA,
+        "schema_version": runner.FORMAL_MANIFEST_SCHEMA,
+        "sealed_snapshot_execution_root": context["repository_snapshot"]["repository_root"],
         "seed": runner.EXPERIMENT_CONTRACT["solver_parameters"]["random_seed"],
+        "snapshot_manifest_identity": context["repository_snapshot"]["manifest_identity"],
+        "snapshot_materialization_receipt_identity": context["repository_snapshot"][
+            "materialization_identity"
+        ],
         "unit_names": unit_names,
         "workers": 1,
     }
@@ -2340,6 +3026,14 @@ def validate_manifest(
             "system.git.bin",
         )
         or record["repository_root"] != _validate_gate_approvals(context)["repository_root"]
+        or record["live_source_provenance_root"]
+        != _validate_gate_approvals(context)["repository_root"]
+        or record["sealed_snapshot_execution_root"]
+        != context["repository_snapshot"]["repository_root"]
+        or record["snapshot_manifest_identity"]
+        != context["repository_snapshot"]["manifest_identity"]
+        or record["snapshot_materialization_receipt_identity"]
+        != context["repository_snapshot"]["materialization_identity"]
         or record["arithmetic_verifier"]
         != {
             "purpose": runner.FORMAL_ARITHMETIC_PURPOSE,
@@ -2365,6 +3059,53 @@ def _campaign_provenance_expected(context: Mapping[str, Any]) -> dict[str, objec
         "schema_version": "noncert-cuts-ab16-campaign-snapshot-provenance-v1",
         "snapshot_manifest_identity": snapshot["manifest_identity"],
         "snapshot_root": snapshot["repository_root"],
+    }
+
+
+def prepare_baseline_output(campaign_dir: Path | str) -> dict[str, object]:
+    """Create the sole ABSENT -> PROVENANCE_ONLY baseline prestate."""
+
+    context = _campaign_context(campaign_dir)
+    _validate_gate_approvals(context)
+    _continuation(context)
+    _repository_snapshot_barrier(context)
+    preregistration, _ = _path_preregistration(context)
+    provenance_path = Path(preregistration["baseline_campaign_provenance_path"])
+    baseline_dir = provenance_path.parent
+    prospective_dir = baseline_dir.parent
+    expected_dirs = (
+        prospective_dir,
+        baseline_dir,
+        prospective_dir / "arms",
+        prospective_dir / "bindings",
+        prospective_dir / "pre-run-candidates",
+    )
+    if any(path.exists() or path.is_symlink() for path in expected_dirs):
+        raise AuthorityError(
+            "BASELINE_PRESTATE_ALREADY_CONSUMED",
+            "prospective AB16 layout already exists",
+        )
+    _mkdir_exclusive(prospective_dir)
+    _mkdir_exclusive(baseline_dir)
+    _mkdir_exclusive(prospective_dir / "arms")
+    _mkdir_exclusive(prospective_dir / "bindings")
+    _mkdir_exclusive(prospective_dir / "pre-run-candidates")
+    provenance = _campaign_provenance_expected(context)
+    identity = _write_exclusive(
+        provenance_path,
+        canonical_json(provenance),
+        mode=0o444,
+    )
+    if (
+        set(os.listdir(baseline_dir)) != {"campaign-provenance.json"}
+        or _record(snapshot_regular(provenance_path), "AB16 campaign provenance") != provenance
+    ):
+        raise AuthorityError("BASELINE_PRESTATE_INVALID", "PROVENANCE_ONLY readback")
+    return {
+        "baseline_dir": str(baseline_dir),
+        "campaign_provenance": provenance,
+        "campaign_provenance_identity": identity,
+        "status": "PROVENANCE_ONLY",
     }
 
 
@@ -2524,6 +3265,7 @@ def create_suite_selection(
         "experiment_contract": manifest["experiment_contract"],
         "immediate_stop_policy": IMMEDIATE_STOP_POLICY,
         "launch_plan": _launch_plan(context["root"]),
+        "live_source_provenance_root": manifest["live_source_provenance_root"],
         "manifest_identity": detached_identity(manifest_snapshot),
         "next_required_gate": "PER_ARM_MANAGER_EPOCH_RESOURCE_AND_TERMINAL_PREFLIGHT",
         "organic_manifest_validated": True,
@@ -2532,7 +3274,12 @@ def create_suite_selection(
         "purpose": "AB16_SUITE_SELECTION_NO_ARM_LAUNCH",
         "run_nonce": context["root"]["run_nonce"],
         "schema_version": SUITE_SELECTION_SCHEMA,
+        "sealed_snapshot_execution_root": manifest["sealed_snapshot_execution_root"],
         "selection_id": "",
+        "snapshot_manifest_identity": manifest["snapshot_manifest_identity"],
+        "snapshot_materialization_receipt_identity": manifest[
+            "snapshot_materialization_receipt_identity"
+        ],
         "solver_run_authorized": False,
     }
     record["selection_id"] = _digest_without(record, "selection_id")
@@ -2567,6 +3314,7 @@ def validate_suite_selection(
             "experiment_contract",
             "immediate_stop_policy",
             "launch_plan",
+            "live_source_provenance_root",
             "manifest_identity",
             "next_required_gate",
             "organic_manifest_validated",
@@ -2575,7 +3323,10 @@ def validate_suite_selection(
             "purpose",
             "run_nonce",
             "schema_version",
+            "sealed_snapshot_execution_root",
             "selection_id",
+            "snapshot_manifest_identity",
+            "snapshot_materialization_receipt_identity",
             "solver_run_authorized",
         },
         "AB16 suite selection",
@@ -2604,6 +3355,11 @@ def validate_suite_selection(
         or record["experiment_contract"] != manifest["experiment_contract"]
         or record["immediate_stop_policy"] != IMMEDIATE_STOP_POLICY
         or record["launch_plan"] != _launch_plan(root)
+        or record["live_source_provenance_root"] != manifest["live_source_provenance_root"]
+        or record["sealed_snapshot_execution_root"] != manifest["sealed_snapshot_execution_root"]
+        or record["snapshot_manifest_identity"] != manifest["snapshot_manifest_identity"]
+        or record["snapshot_materialization_receipt_identity"]
+        != manifest["snapshot_materialization_receipt_identity"]
         or record["next_required_gate"] != "PER_ARM_MANAGER_EPOCH_RESOURCE_AND_TERMINAL_PREFLIGHT"
         or record["package_id"] != root["package"]["package_id"]
         or record["run_nonce"] != root["run_nonce"]
@@ -2761,6 +3517,8 @@ def _expected_pre_run_tools(
     context: Mapping[str, Any],
 ) -> dict[str, dict[str, object]]:
     tool_roles = {
+        "ab16_authority": "ab16_authority_v2",
+        "ab16_formal_loader": "ab16_formal_loader_v1",
         "busctl": "busctl",
         "manager_attestor": "manager_attestor_v4",
         "organic_arm_runner": "organic_arm_runner_v1",
@@ -3023,6 +3781,67 @@ def _build_pre_run_candidate_unprotected(
         "expectation": "SUCCESS",
         "signal": 0,
     }
+    repository_snapshot = context["repository_snapshot"]
+    runner_relative = "docs/research/noncert_cuts_ab16_20260724/organic_arm_runner_v1.py"
+    runner_member = repository_snapshot["member_identities"].get(runner_relative)
+    if runner_member is None:
+        raise AuthorityError(
+            "PRE_RUN_AUTHORITY_INVALID",
+            "organic runner is absent from the sealed source snapshot",
+        )
+    runner_member_snapshot = snapshot_regular(runner_member["path"])
+    runner_member_with_mode = {
+        "mode": runner_member_snapshot.mode,
+        **dict(runner_member),
+    }
+    selected_literal_identity = repository_snapshot["external_platform"][
+        "selected_byte_launch"
+    ]["literal_identity"]
+    module_origin_path = attempt / "module-origin-receipt.json"
+    supervisor_origin_path = attempt / "supervisor-module-origin-receipt.json"
+    execution_source = lifecycle.build_sealed_execution_source(
+        live_source_provenance_root=manifest["live_source_provenance_root"],
+        sealed_snapshot_execution_root=manifest["sealed_snapshot_execution_root"],
+        snapshot_manifest_identity=manifest["snapshot_manifest_identity"],
+        snapshot_materialization_receipt_identity=manifest[
+            "snapshot_materialization_receipt_identity"
+        ],
+        package_id=context["root"]["package"]["package_id"],
+        literal_identity=selected_literal_identity,
+        python_identity=tools["python3_13"],
+        loader_identity=tools["ab16_formal_loader"],
+        authority_identity=tools["ab16_authority"],
+        runner_snapshot_relative_path=runner_relative,
+        runner_snapshot_member_identity=runner_member_with_mode,
+        runner_package_tool_identity=tools["organic_arm_runner"],
+        initial_working_directory=str(context["directory"]),
+        pre_run_authority_path=preregistration["pre_run_authority_paths"][slot],
+        runner_selection_path=preregistration["arm_selection_paths"][slot],
+        module_origin_receipt_path=str(module_origin_path),
+        tmpdir=str(attempt / "tmp"),
+    )
+    payload_argv = lifecycle.build_formal_direct_argv(
+        execution_source,
+        literal=_bootstrap_literal_values(context["files"], context["sources"])[
+            "SELECTED_BYTE_LAUNCH_V1"
+        ],
+        role="organic-arm",
+        campaign_dir=str(context["directory"]),
+        pre_run_path=preregistration["pre_run_authority_paths"][slot],
+        selection_path=preregistration["arm_selection_paths"][slot],
+        module_origin_receipt_path=str(module_origin_path),
+    )
+    supervisor_argv = lifecycle.build_formal_direct_argv(
+        execution_source,
+        literal=_bootstrap_literal_values(context["files"], context["sources"])[
+            "SELECTED_BYTE_LAUNCH_V1"
+        ],
+        role="organic-supervisor",
+        campaign_dir=str(context["directory"]),
+        pre_run_path=preregistration["pre_run_authority_paths"][slot],
+        selection_path=preregistration["arm_selection_paths"][slot],
+        module_origin_receipt_path=str(supervisor_origin_path),
+    )
     record: dict[str, object] = {
         "arm": arm,
         "arm_binding_identity": manifest["arm_binding_identities"][slot],
@@ -3042,30 +3861,17 @@ def _build_pre_run_candidate_unprotected(
         "execution_class": "FORMAL_AB16",
         "expected_payload_status": expected_payload_status,
         "launch": {
-            "cwd": manifest["repository_root"],
+            "cwd": str(context["directory"]),
             "environment_identity": environment_identity_with_mode,
-            "payload_argv": [
-                tools["python3_13"]["path"],
-                "-I",
-                tools["organic_arm_runner"]["path"],
-                "--selection",
-                preregistration["arm_selection_paths"][slot],
-            ],
+            "execution_source": execution_source,
+            "payload_argv": payload_argv,
             "libsystemd_path": tools["libsystemd"]["path"],
             "python3_13_path": tools["python3_13"]["path"],
-            "supervisor_argv": [
-                tools["python3_13"]["path"],
-                "-I",
-                tools["organic_resource_lifecycle"]["path"],
-                "supervise",
-                "--pre-run",
-                preregistration["pre_run_authority_paths"][slot],
-                "--selection",
-                preregistration["arm_selection_paths"][slot],
-            ],
+            "supervisor_argv": supervisor_argv,
             "systemctl_path": tools["systemctl"]["path"],
             "systemd_run_path": tools["systemd_run"]["path"],
         },
+        "live_source_provenance_root": manifest["live_source_provenance_root"],
         "manager_epoch": context["root"]["manager_epoch"],
         "order": plan["order"],
         "output_paths": {role: str(attempt / name) for role, name in output_names.items()},
@@ -3104,7 +3910,12 @@ def _build_pre_run_candidate_unprotected(
         "run_nonce": manifest["run_nonce"],
         "runner_selection_path": preregistration["arm_selection_paths"][slot],
         "schema_version": lifecycle.PRE_RUN_AUTHORITY_SCHEMA,
+        "sealed_snapshot_execution_root": manifest["sealed_snapshot_execution_root"],
         "seed": manifest["seed"],
+        "snapshot_manifest_identity": manifest["snapshot_manifest_identity"],
+        "snapshot_materialization_receipt_identity": manifest[
+            "snapshot_materialization_receipt_identity"
+        ],
         "slot": slot,
         "solver_run_authorized": False,
         "status": "PASS",
@@ -3493,6 +4304,7 @@ def create_arm_selection(
             "execution_class": pre_run["execution_class"],
             "expected_payload_status": pre_run["expected_payload_status"],
             "fresh_process_required": True,
+            "live_source_provenance_root": manifest["live_source_provenance_root"],
             "manifest_identity": detached_identity(manifest_snapshot),
             "order": pre_run["order"],
             "pre_run_authority_identity": pre_run_identity,
@@ -3502,8 +4314,13 @@ def create_arm_selection(
             "repository_root": manifest["repository_root"],
             "run_nonce": manifest["run_nonce"],
             "schema_version": runner.SELECTION_SCHEMA,
+            "sealed_snapshot_execution_root": manifest["sealed_snapshot_execution_root"],
             "seed": manifest["seed"],
             "selection_nonce": selection_nonce,
+            "snapshot_manifest_identity": manifest["snapshot_manifest_identity"],
+            "snapshot_materialization_receipt_identity": manifest[
+                "snapshot_materialization_receipt_identity"
+            ],
             "slot": slot,
             "unit_name": manifest["unit_names"][slot],
             "workers": manifest["workers"],
@@ -4058,6 +4875,8 @@ def replay(campaign_dir: Path | str, *, selection_required: bool) -> dict[str, o
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
+    baseline = sub.add_parser("prepare-baseline-output")
+    baseline.add_argument("--campaign-dir", required=True, type=Path)
     manifest = sub.add_parser("publish-manifest")
     manifest.add_argument("--campaign-dir", required=True, type=Path)
     selection = sub.add_parser("create-suite-selection")
@@ -4081,7 +4900,9 @@ def _parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = _parser().parse_args(argv)
     try:
-        if arguments.command == "publish-manifest":
+        if arguments.command == "prepare-baseline-output":
+            result = prepare_baseline_output(arguments.campaign_dir)
+        elif arguments.command == "publish-manifest":
             result = build_manifest(arguments.campaign_dir)
         elif arguments.command == "create-suite-selection":
             result = create_suite_selection(arguments.campaign_dir)

@@ -40,15 +40,15 @@ V4_AUTHORITY_PATH = V4_RESEARCH_DIR / "campaign_authority_v4.py"
 
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
 CANDIDATE_SCHEMA = "noncert-cuts-ab16-bootstrap-offline-candidate-v2"
-GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v2"
-GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v1"
+GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v3"
+GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v2"
 CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v2"
 RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v2"
 PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v3"
 FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v3"
 REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
-EXTERNAL_PLATFORM_SCHEMA = "noncert-cuts-ab16-external-platform-assumptions-v1"
+EXTERNAL_PLATFORM_SCHEMA = "noncert-cuts-ab16-external-platform-assumptions-v2"
 
 GATE_A_PURPOSE = "AB16_OFFLINE_SOURCE_SET_PREFLIGHT"
 CANDIDATE_PURPOSE = "AB16_OFFLINE_NONAUTHORIZING_CANDIDATE"
@@ -88,6 +88,961 @@ GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 RUN_NONCE_RE = re.compile(r"run-[A-Za-z0-9][A-Za-z0-9._-]{4,123}\Z")
 APPROVAL_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{5,127}\Z")
 
+GATE_B_OWNER_EXECUTION_STRATEGY = "same-owner-render-sealed-memfd-dirfd-oexcl-v1"
+SELECTED_BYTE_EXECUTION_STRATEGY = "selected-byte-python-loader-fd-v1"
+OWNER_PUBLISH_EXECUTION_STRATEGY = "sealed-memfd-dirfd-oexcl-v1"
+
+# These literals are part of the explicitly declared AB16 external-platform
+# boundary.  Their canonical UTF-8 bytes are recorded in the sealed package.
+# They do not parse campaign authority and do not replace the package verifier.
+SELECTED_BYTE_LAUNCH_V1 = r"""
+import hashlib
+import json
+import os
+import stat
+import sys
+
+def fail(code):
+    os.write(2, (code + "\n").encode("ascii"))
+    raise SystemExit(125)
+
+def read_selected(fd, expected, label):
+    before = os.fstat(fd)
+    if (
+        not stat.S_ISREG(before.st_mode)
+        or before.st_nlink != 1
+        or stat.S_IMODE(before.st_mode) != expected["mode"]
+        or before.st_size != expected["size_bytes"]
+    ):
+        fail(label + "_METADATA")
+    os.lseek(fd, 0, os.SEEK_SET)
+    digest = hashlib.sha256()
+    size = 0
+    while True:
+        chunk = os.read(fd, 1024 * 1024)
+        if not chunk:
+            break
+        digest.update(chunk)
+        size += len(chunk)
+    after = os.fstat(fd)
+    signature = ("st_dev", "st_ino", "st_mode", "st_nlink", "st_size", "st_mtime_ns", "st_ctime_ns")
+    if (
+        any(getattr(before, field) != getattr(after, field) for field in signature)
+        or size != expected["size_bytes"]
+        or digest.hexdigest() != expected["sha256"]
+    ):
+        fail(label + "_IDENTITY")
+
+if len(sys.argv) < 4:
+    fail("ARGV")
+transport = sys.argv[1]
+try:
+    expected = json.loads(sys.argv[2])
+except Exception:
+    fail("IDENTITY_JSON")
+if set(expected) != {"authority", "loader", "python"}:
+    fail("IDENTITY_KEYS")
+if transport == "systemd-openfile":
+    if (
+        os.environ.get("LISTEN_PID") != str(os.getpid())
+        or os.environ.get("LISTEN_FDS") != "3"
+        or os.environ.get("LISTEN_FDNAMES") != "ab16-python:ab16-loader:ab16-authority"
+    ):
+        fail("OPENFILE_ENV")
+elif transport != "direct":
+    fail("TRANSPORT")
+read_selected(3, expected["python"], "PYTHON")
+read_selected(4, expected["loader"], "LOADER")
+read_selected(5, expected["authority"], "AUTHORITY")
+clean = {
+    "LANG": "C",
+    "LC_ALL": "C",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONHASHSEED": "0",
+    "PYTHONNOUSERSITE": "1",
+    "TZ": "UTC",
+}
+try:
+    os.execve(
+        "/proc/self/fd/3",
+        [
+            expected["python"]["path"],
+            "-I",
+            "-B",
+            "/proc/self/fd/4",
+            "--authority-fd",
+            "5",
+            "--authority-identity",
+            json.dumps(expected["authority"], sort_keys=True, separators=(",", ":")),
+            *sys.argv[3:],
+        ],
+        clean,
+    )
+except Exception as exc:
+    os.write(2, ("EXEC_FAILED:" + type(exc).__name__ + "\n").encode("ascii"))
+    raise SystemExit(126)
+""".strip()
+
+OWNER_OEXCL_PUBLISH_V1 = r"""
+import fcntl
+import hashlib
+import os
+import stat
+import sys
+
+source_fd, directory_fd, result_fd = 4, 5, 6
+required_seals = 0x0001 | 0x0002 | 0x0004 | 0x0008
+basename = sys.argv[1]
+if not basename or "/" in basename or basename in {".", ".."}:
+    raise SystemExit(125)
+before = os.fstat(source_fd)
+if (
+    not stat.S_ISREG(before.st_mode)
+    or before.st_nlink != 0
+    or fcntl.fcntl(source_fd, 1034) & required_seals != required_seals
+):
+    raise SystemExit(125)
+os.lseek(source_fd, 0, os.SEEK_SET)
+raw = bytearray()
+while True:
+    chunk = os.read(source_fd, 1024 * 1024)
+    if not chunk:
+        break
+    raw.extend(chunk)
+after = os.fstat(source_fd)
+signature = ("st_dev", "st_ino", "st_mode", "st_nlink", "st_uid", "st_gid", "st_size", "st_mtime_ns", "st_ctime_ns")
+if (
+    any(getattr(before, field) != getattr(after, field) for field in signature)
+    or len(raw) != before.st_size
+    or fcntl.fcntl(source_fd, 1034) & required_seals != required_seals
+):
+    raise SystemExit(125)
+fd = os.open(
+    basename,
+    os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
+    0o444,
+    dir_fd=directory_fd,
+)
+try:
+    view = memoryview(raw)
+    while view:
+        written = os.write(fd, view)
+        if written <= 0:
+            raise OSError("short write")
+        view = view[written:]
+    os.fchmod(fd, 0o444)
+    os.fsync(fd)
+finally:
+    os.close(fd)
+os.fsync(directory_fd)
+check_fd = os.open(basename, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW, dir_fd=directory_fd)
+try:
+    check_before = os.fstat(check_fd)
+    observed = bytearray()
+    while True:
+        chunk = os.read(check_fd, 1024 * 1024)
+        if not chunk:
+            break
+        observed.extend(chunk)
+    check_after = os.fstat(check_fd)
+finally:
+    os.close(check_fd)
+if (
+    any(getattr(check_before, field) != getattr(check_after, field) for field in signature)
+    or bytes(observed) != bytes(raw)
+    or len(observed) != check_before.st_size
+    or not stat.S_ISREG(check_after.st_mode)
+    or stat.S_IMODE(check_after.st_mode) != 0o444
+    or check_after.st_nlink != 1
+):
+    raise SystemExit(125)
+frame = "OK " + hashlib.sha256(raw).hexdigest() + " " + str(len(raw)) + "\n"
+os.write(result_fd, frame.encode("ascii"))
+""".strip()
+
+GATE_B_OWNER_DRIVER_V1 = r"""
+import hashlib
+import json
+import os
+import stat
+import sys
+
+python_fd, source_fd, request_fd, output_fd = 3, 4, 5, 6
+function_name = sys.argv[1]
+clean = {
+    "LANG": "C",
+    "LC_ALL": "C",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONHASHSEED": "0",
+    "PYTHONNOUSERSITE": "1",
+    "TZ": "UTC",
+}
+if dict(os.environ) != clean or len(sys.argv) != 3:
+    raise SystemExit(125)
+try:
+    expected = json.loads(sys.argv[2])
+except Exception:
+    raise SystemExit(125)
+if (
+    set(expected) != {"python", "renderer_source"}
+    or json.dumps(expected, ensure_ascii=False, separators=(",", ":"), sort_keys=True) != sys.argv[2]
+):
+    raise SystemExit(125)
+
+def signature(value):
+    return (
+        value.st_dev,
+        value.st_ino,
+        value.st_mode,
+        value.st_nlink,
+        value.st_uid,
+        value.st_gid,
+        value.st_size,
+        value.st_mtime_ns,
+        value.st_ctime_ns,
+    )
+
+def selected(fd, identity, label):
+    if (
+        not isinstance(identity, dict)
+        or set(identity) != {"mode", "path", "sha256", "size_bytes"}
+        or not isinstance(identity["mode"], int)
+        or not isinstance(identity["path"], str)
+        or os.path.abspath(identity["path"]) != identity["path"]
+        or not isinstance(identity["sha256"], str)
+        or len(identity["sha256"]) != 64
+        or any(ch not in "0123456789abcdef" for ch in identity["sha256"])
+        or not isinstance(identity["size_bytes"], int)
+        or identity["size_bytes"] < 0
+    ):
+        raise SystemExit(125)
+    try:
+        named = os.stat(identity["path"], follow_symlinks=False)
+        before = os.fstat(fd)
+    except OSError:
+        raise SystemExit(125)
+    if (
+        not stat.S_ISREG(named.st_mode)
+        or not stat.S_ISREG(before.st_mode)
+        or stat.S_IMODE(before.st_mode) != identity["mode"]
+        or before.st_size != identity["size_bytes"]
+        or signature(named) != signature(before)
+    ):
+        raise SystemExit(125)
+    os.lseek(fd, 0, os.SEEK_SET)
+    raw = bytearray()
+    remaining = before.st_size
+    while remaining:
+        chunk = os.read(fd, min(1024 * 1024, remaining))
+        if not chunk:
+            raise SystemExit(125)
+        raw.extend(chunk)
+        remaining -= len(chunk)
+    if os.read(fd, 1):
+        raise SystemExit(125)
+    after = os.fstat(fd)
+    final_named = os.stat(identity["path"], follow_symlinks=False)
+    if (
+        signature(before) != signature(after)
+        or signature(after) != signature(final_named)
+        or len(raw) != identity["size_bytes"]
+        or hashlib.sha256(raw).hexdigest() != identity["sha256"]
+    ):
+        raise SystemExit(125)
+    return bytes(raw), signature(after)
+
+_python, python_signature = selected(python_fd, expected["python"], "python")
+if signature(os.stat("/proc/self/exe")) != python_signature:
+    raise SystemExit(125)
+source, _source_signature = selected(
+    source_fd,
+    expected["renderer_source"],
+    "renderer_source",
+)
+os.lseek(request_fd, 0, os.SEEK_SET)
+request = bytearray()
+while True:
+    chunk = os.read(request_fd, 1024 * 1024)
+    if not chunk:
+        break
+    request.extend(chunk)
+namespace = {
+    "__file__": expected["renderer_source"]["path"],
+    "__name__": "_ab16_gate_b_owner_selected",
+}
+exec(
+    compile(
+        source,
+        expected["renderer_source"]["path"],
+        "exec",
+        dont_inherit=True,
+    ),
+    namespace,
+)
+renderer = namespace.get(function_name)
+if function_name not in {"render_gate_b_epoch_observation", "render_gate_b_approval"} or not callable(renderer):
+    raise SystemExit(125)
+rendered = renderer(json.loads(request))
+if not isinstance(rendered, bytes):
+    raise SystemExit(125)
+view = memoryview(rendered)
+while view:
+    count = os.write(output_fd, view)
+    if count <= 0:
+        raise SystemExit(125)
+    view = view[count:]
+""".strip()
+
+# This external owner is entered by exec, so the actor PID/starttime observed
+# before admission remains the actor through selection.  It owns only the
+# canonical render/validate/mechanical-publication protocol.  It has no
+# supervisor, lock, unit, baseline, arm, or experiment capability.
+FORMAL_LAUNCH_OWNER_DRIVER_V1 = r"""
+import ctypes
+import fcntl
+import hashlib
+import json
+import os
+import re
+import socket
+import stat
+import sys
+
+python_fd, publisher_fd, context_fd, control_fd = 3, 4, 5, 6
+required_seals = 0x0001 | 0x0002 | 0x0004 | 0x0008
+clean = {
+    "LANG": "C",
+    "LC_ALL": "C",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONHASHSEED": "0",
+    "PYTHONNOUSERSITE": "1",
+    "TZ": "UTC",
+}
+max_frame = 16 * 1024 * 1024
+request_schema = "noncert-cuts-ab16-formal-launch-owner-request-v1"
+response_schema = "noncert-cuts-ab16-formal-launch-owner-response-v1"
+owner_role = "AB16_OWNER_FORMAL_LAUNCH_PUBLISHER_V1"
+session_pattern = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,255}\Z")
+
+def canonical_text(value):
+    return json.dumps(
+        value,
+        allow_nan=False,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+
+def canonical(value):
+    return canonical_text(value).encode("utf-8") + b"\n"
+
+def pairs_without_duplicates(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON key")
+        result[key] = value
+    return result
+
+def parse_canonical(raw, label):
+    try:
+        value = json.loads(
+            raw,
+            object_pairs_hook=pairs_without_duplicates,
+            parse_constant=lambda token: (_ for _ in ()).throw(
+                ValueError("invalid constant " + token)
+            ),
+        )
+    except Exception:
+        raise RuntimeError(label + "_JSON")
+    if not isinstance(value, dict) or canonical(value) != raw:
+        raise RuntimeError(label + "_CANONICAL")
+    return value
+
+def parse_argument(raw, label):
+    try:
+        value = json.loads(
+            raw,
+            object_pairs_hook=pairs_without_duplicates,
+            parse_constant=lambda token: (_ for _ in ()).throw(
+                ValueError("invalid constant " + token)
+            ),
+        )
+    except Exception:
+        raise RuntimeError(label + "_JSON")
+    if not isinstance(value, dict) or canonical_text(value).encode("utf-8") != raw:
+        raise RuntimeError(label + "_CANONICAL")
+    return value
+
+def message_identity(raw):
+    return {"sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)}
+
+def signature(value):
+    return (
+        value.st_dev,
+        value.st_ino,
+        value.st_mode,
+        value.st_nlink,
+        value.st_uid,
+        value.st_gid,
+        value.st_size,
+        value.st_mtime_ns,
+        value.st_ctime_ns,
+    )
+
+def validate_message_identity(value, label):
+    if (
+        not isinstance(value, dict)
+        or set(value) != {"sha256", "size_bytes"}
+        or not isinstance(value["sha256"], str)
+        or len(value["sha256"]) != 64
+        or any(ch not in "0123456789abcdef" for ch in value["sha256"])
+        or not isinstance(value["size_bytes"], int)
+        or value["size_bytes"] <= 0
+    ):
+        raise RuntimeError(label + "_IDENTITY")
+    return value
+
+def validate_mode_identity(value, label):
+    if (
+        not isinstance(value, dict)
+        or set(value) != {"mode", "path", "sha256", "size_bytes"}
+        or not isinstance(value["mode"], int)
+        or value["mode"] < 0
+        or value["mode"] & ~0o7777
+        or not isinstance(value["path"], str)
+        or os.path.abspath(value["path"]) != value["path"]
+        or not isinstance(value["sha256"], str)
+        or len(value["sha256"]) != 64
+        or any(ch not in "0123456789abcdef" for ch in value["sha256"])
+        or not isinstance(value["size_bytes"], int)
+        or value["size_bytes"] <= 0
+    ):
+        raise RuntimeError(label + "_IDENTITY")
+    return value
+
+def read_sealed(fd, expected, label):
+    expected = validate_message_identity(expected, label)
+    before = os.fstat(fd)
+    if (
+        not stat.S_ISREG(before.st_mode)
+        or before.st_nlink != 0
+        or fcntl.fcntl(fd, 1034) & required_seals != required_seals
+        or before.st_size != expected["size_bytes"]
+    ):
+        raise RuntimeError(label + "_METADATA")
+    os.lseek(fd, 0, os.SEEK_SET)
+    raw = bytearray()
+    while True:
+        chunk = os.read(fd, 1024 * 1024)
+        if not chunk:
+            break
+        raw.extend(chunk)
+    after = os.fstat(fd)
+    if (
+        signature(before) != signature(after)
+        or fcntl.fcntl(fd, 1034) & required_seals != required_seals
+        or message_identity(raw) != expected
+    ):
+        raise RuntimeError(label + "_DRIFT")
+    return bytes(raw)
+
+def read_named_selected(fd, expected, label):
+    expected = validate_mode_identity(expected, label)
+    try:
+        named_before = os.stat(expected["path"], follow_symlinks=False)
+        before = os.fstat(fd)
+    except OSError:
+        raise RuntimeError(label + "_STAT")
+    if (
+        not stat.S_ISREG(named_before.st_mode)
+        or not stat.S_ISREG(before.st_mode)
+        or signature(named_before) != signature(before)
+        or stat.S_IMODE(before.st_mode) != expected["mode"]
+        or before.st_size != expected["size_bytes"]
+    ):
+        raise RuntimeError(label + "_METADATA")
+    os.lseek(fd, 0, os.SEEK_SET)
+    digest = hashlib.sha256()
+    size = 0
+    while True:
+        chunk = os.read(fd, 1024 * 1024)
+        if not chunk:
+            break
+        digest.update(chunk)
+        size += len(chunk)
+    after = os.fstat(fd)
+    named_after = os.stat(expected["path"], follow_symlinks=False)
+    if (
+        signature(before) != signature(after)
+        or signature(after) != signature(named_after)
+        or size != expected["size_bytes"]
+        or digest.hexdigest() != expected["sha256"]
+    ):
+        raise RuntimeError(label + "_DRIFT")
+
+def open_selected(expected, label):
+    expected = validate_mode_identity(expected, label)
+    fd = os.open(expected["path"], os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+    try:
+        read_named_selected(fd, expected, label)
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+def sealed_memfd(name, raw):
+    libc = ctypes.CDLL(None, use_errno=True)
+    create = libc.memfd_create
+    create.argtypes = (ctypes.c_char_p, ctypes.c_uint)
+    create.restype = ctypes.c_int
+    fd = int(create(name.encode("ascii"), 0x0001 | 0x0002))
+    if fd < 0:
+        error = ctypes.get_errno()
+        raise OSError(error, os.strerror(error))
+    try:
+        view = memoryview(raw)
+        while view:
+            written = os.write(fd, view)
+            if written <= 0:
+                raise OSError("short memfd write")
+            view = view[written:]
+        os.lseek(fd, 0, os.SEEK_SET)
+        fcntl.fcntl(fd, 1033, required_seals)
+        if fcntl.fcntl(fd, 1034) & required_seals != required_seals:
+            raise OSError("memfd sealing failed")
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+def wait_child(pid):
+    waited, status = os.waitpid(pid, 0)
+    if waited != pid:
+        raise RuntimeError("CHILD_IDENTITY")
+    return os.waitstatus_to_exitcode(status)
+
+def read_bounded(fd, limit):
+    raw = bytearray()
+    while True:
+        chunk = os.read(fd, min(1024 * 1024, limit + 1 - len(raw)))
+        if not chunk:
+            break
+        raw.extend(chunk)
+        if len(raw) > limit:
+            raise RuntimeError("CHILD_OUTPUT_LIMIT")
+    return bytes(raw)
+
+def selected_child(role, role_argv, payload_fd):
+    loader_fd = open_selected(selected["loader"], "LOADER")
+    authority_fd = open_selected(selected["authority"], "AUTHORITY")
+    read_fd, write_fd = os.pipe2(os.O_CLOEXEC)
+    try:
+        pid = os.fork()
+        if pid == 0:
+            try:
+                os.close(read_fd)
+                os.dup2(python_fd, 3, inheritable=True)
+                os.dup2(loader_fd, 4, inheritable=True)
+                os.dup2(authority_fd, 5, inheritable=True)
+                os.dup2(payload_fd, 6, inheritable=True)
+                os.dup2(write_fd, 1, inheritable=True)
+                os.execve(
+                    "/proc/self/fd/3",
+                    [
+                        selected["python"]["path"],
+                        "-I",
+                        "-B",
+                        "-c",
+                        selected_literal,
+                        "direct",
+                        selected_argument,
+                        "--campaign-dir",
+                        context["campaign_dir"],
+                        "--role",
+                        role,
+                        "--",
+                        *role_argv,
+                    ],
+                    clean,
+                )
+            except BaseException:
+                os._exit(126)
+        os.close(write_fd)
+        write_fd = -1
+        output = read_bounded(read_fd, max_frame)
+        result = wait_child(pid)
+        if result != 0:
+            raise RuntimeError("SELECTED_" + role.upper().replace("-", "_") + "_FAILED")
+        return output
+    finally:
+        for fd in (loader_fd, authority_fd, read_fd, write_fd):
+            if fd >= 0:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
+
+def publisher_child(rendered_fd, directory_fd, basename):
+    read_fd, write_fd = os.pipe2(os.O_CLOEXEC)
+    try:
+        pid = os.fork()
+        if pid == 0:
+            try:
+                os.close(read_fd)
+                os.dup2(python_fd, 3, inheritable=True)
+                os.dup2(rendered_fd, 4, inheritable=True)
+                os.dup2(directory_fd, 5, inheritable=True)
+                os.dup2(write_fd, 6, inheritable=True)
+                os.execve(
+                    "/proc/self/fd/3",
+                    [
+                        selected["python"]["path"],
+                        "-I",
+                        "-B",
+                        "-c",
+                        publisher_source,
+                        basename,
+                    ],
+                    clean,
+                )
+            except BaseException:
+                os._exit(126)
+        os.close(write_fd)
+        write_fd = -1
+        result_frame = read_bounded(read_fd, 512)
+        result = wait_child(pid)
+        if result != 0:
+            raise RuntimeError("PUBLISH_FAILED_OR_UNCERTAIN")
+        return result_frame
+    finally:
+        for fd in (read_fd, write_fd):
+            if fd >= 0:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
+
+def readback(directory_fd, basename, output_path, rendered):
+    fd = os.open(
+        basename,
+        os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
+        dir_fd=directory_fd,
+    )
+    try:
+        before = os.fstat(fd)
+        raw = read_bounded(fd, max_frame)
+        after = os.fstat(fd)
+    finally:
+        os.close(fd)
+    if (
+        signature(before) != signature(after)
+        or not stat.S_ISREG(after.st_mode)
+        or stat.S_IMODE(after.st_mode) != 0o444
+        or after.st_nlink != 1
+        or raw != rendered
+    ):
+        raise RuntimeError("PUBLISH_READBACK")
+    return {
+        "path": output_path,
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+
+def process_starttime(pid):
+    raw = open("/proc/" + str(pid) + "/stat", "rb", buffering=0).read()
+    marker = raw.rfind(b") ")
+    if marker < 0:
+        raise RuntimeError("PROCESS_STAT")
+    fields = raw[marker + 2:].split()
+    if len(fields) <= 19:
+        raise RuntimeError("PROCESS_STAT")
+    return int(fields[19])
+
+def send(value):
+    control.send(canonical(value))
+
+def stop(code):
+    try:
+        send(
+            {
+                "code": code,
+                "schema_version": response_schema,
+                "status": "FAIL_CLOSED",
+            }
+        )
+    except BaseException:
+        pass
+    os.write(2, (code + "\n").encode("ascii", "replace"))
+    raise SystemExit(125)
+
+if dict(os.environ) != clean or len(sys.argv) != 4:
+    raise SystemExit(125)
+session_id = sys.argv[1]
+if session_pattern.fullmatch(session_id) is None:
+    raise SystemExit(125)
+try:
+    expected_context_identity = parse_argument(
+        sys.argv[2].encode("utf-8"),
+        "CONTEXT_IDENTITY",
+    )
+    expected_driver_identity = parse_argument(
+        sys.argv[3].encode("utf-8"),
+        "DRIVER_IDENTITY",
+    )
+    validate_message_identity(expected_context_identity, "CONTEXT")
+    validate_message_identity(expected_driver_identity, "DRIVER")
+    context_raw = read_sealed(
+        context_fd,
+        expected_context_identity,
+        "CONTEXT",
+    )
+    context = parse_canonical(context_raw, "CONTEXT")
+    if context.get("formal_launch_owner_driver_identity") != expected_driver_identity:
+        raise RuntimeError("DRIVER_CONTEXT_JOIN")
+    publisher_expected = validate_message_identity(
+        context.get("mechanical_oexcl_publisher_identity"),
+        "PUBLISHER",
+    )
+    publisher_raw = read_sealed(publisher_fd, publisher_expected, "PUBLISHER")
+    publisher_source = publisher_raw.decode("utf-8")
+    outer_spec = context.get("outer_spec")
+    if not isinstance(outer_spec, dict):
+        raise RuntimeError("OUTER_SPEC")
+    selected_argv = outer_spec.get("selected_byte_argv")
+    if (
+        not isinstance(selected_argv, list)
+        or len(selected_argv) < 7
+        or selected_argv[:4] != ["/proc/self/fd/3", "-I", "-B", "-c"]
+        or selected_argv[5] != "systemd-openfile"
+        or not isinstance(selected_argv[4], str)
+        or not isinstance(selected_argv[6], str)
+    ):
+        raise RuntimeError("SELECTED_ARGV")
+    selected_literal = selected_argv[4]
+    if message_identity(selected_literal.encode("utf-8")) != validate_message_identity(
+        context.get("selected_byte_launch_identity"),
+        "SELECTED_LITERAL",
+    ):
+        raise RuntimeError("SELECTED_LITERAL_JOIN")
+    selected_argument = selected_argv[6]
+    selected = parse_argument(
+        selected_argument.encode("utf-8"),
+        "SELECTED_IDENTITIES",
+    )
+    if set(selected) != {"authority", "loader", "python"}:
+        raise RuntimeError("SELECTED_IDENTITY_KEYS")
+    for name in ("authority", "loader", "python"):
+        selected[name] = validate_mode_identity(selected[name], name.upper())
+    if {
+        key: selected["python"][key]
+        for key in ("path", "sha256", "size_bytes")
+    } != context.get("python_identity"):
+        raise RuntimeError("PYTHON_CONTEXT_JOIN")
+    read_named_selected(python_fd, selected["python"], "PYTHON")
+    if signature(os.stat("/proc/self/exe")) != signature(os.fstat(python_fd)):
+        raise RuntimeError("PYTHON_RUNTIME")
+    for field in (
+        "campaign_dir",
+        "formal_admission_path",
+        "formal_selection_path",
+        "formal_attempt_dir",
+        "guardian_ready_path",
+    ):
+        value = context.get(field)
+        if not isinstance(value, str) or os.path.abspath(value) != value:
+            raise RuntimeError("CONTEXT_PATH_" + field.upper())
+    control = socket.socket(fileno=control_fd)
+    if control.getsockopt(socket.SOL_SOCKET, socket.SO_TYPE) != socket.SOCK_SEQPACKET:
+        raise RuntimeError("CONTROL_SOCKET")
+except BaseException as exc:
+    os.write(2, ("STARTUP_" + type(exc).__name__ + ":" + str(exc) + "\n").encode("ascii", "replace"))
+    raise SystemExit(125)
+
+actor = {
+    "pid": os.getpid(),
+    "role": owner_role,
+    "session_id": session_id,
+    "starttime": process_starttime(os.getpid()),
+}
+send(
+    {
+        "actor": actor,
+        "schema_version": response_schema,
+        "status": "READY",
+    }
+)
+
+for expected_sequence, expected_kind in ((1, "admission"), (2, "selection")):
+    try:
+        request_raw = control.recv(max_frame + 1)
+        if not request_raw or len(request_raw) > max_frame:
+            stop("REQUEST_SIZE")
+        request = parse_canonical(request_raw, "REQUEST")
+        if (
+            set(request) != {"draft", "kind", "schema_version", "sequence"}
+            or request["schema_version"] != request_schema
+            or request["sequence"] != expected_sequence
+            or request["kind"] != expected_kind
+            or not isinstance(request["draft"], dict)
+        ):
+            stop("REQUEST_SEQUENCE")
+        draft = request["draft"]
+        publisher = draft.get("publisher")
+        if (
+            not isinstance(publisher, dict)
+            or publisher.get("actor") != actor
+        ):
+            stop("ACTOR_IDENTITY")
+        prerequisites = (
+            []
+            if expected_kind == "admission"
+            else [
+                "--admission",
+                context["formal_admission_path"],
+                "--guardian-ready",
+                context["guardian_ready_path"],
+                "--attempt-consumption",
+                os.path.join(
+                    context["formal_attempt_dir"],
+                    "attempt-consumption.json",
+                ),
+            ]
+        )
+        draft_fd = sealed_memfd(
+            "ab16-formal-" + expected_kind + "-draft",
+            canonical(draft),
+        )
+        try:
+            rendered = selected_child(
+                "formal-launch-authority",
+                [
+                    "--campaign-dir",
+                    context["campaign_dir"],
+                    "--draft",
+                    "/proc/self/fd/6",
+                    "--kind",
+                    expected_kind,
+                    *prerequisites,
+                ],
+                draft_fd,
+            )
+        finally:
+            os.close(draft_fd)
+        rendered_record = parse_canonical(rendered, "RENDERED")
+        if rendered_record.get("publisher", {}).get("actor") != actor:
+            stop("RENDERED_ACTOR_IDENTITY")
+        rendered_fd = sealed_memfd(
+            "ab16-formal-" + expected_kind + "-rendered",
+            rendered,
+        )
+        try:
+            validation_raw = selected_child(
+                "formal-launch-validator",
+                [
+                    "--campaign-dir",
+                    context["campaign_dir"],
+                    "--candidate",
+                    "/proc/self/fd/6",
+                    "--kind",
+                    expected_kind,
+                    *prerequisites,
+                ],
+                rendered_fd,
+            )
+            validation = parse_canonical(validation_raw, "VALIDATION")
+            expected_candidate = {
+                "path": "/proc/self/fd/6",
+                "sha256": hashlib.sha256(rendered).hexdigest(),
+                "size_bytes": len(rendered),
+            }
+            if validation != {
+                "candidate_identity": expected_candidate,
+                "kind": expected_kind,
+                "status": "PASS",
+            }:
+                stop("VALIDATION_RESULT")
+            output_path = (
+                context["formal_admission_path"]
+                if expected_kind == "admission"
+                else context["formal_selection_path"]
+            )
+            parent = os.path.dirname(output_path)
+            basename = os.path.basename(output_path)
+            if not basename or basename in {".", ".."}:
+                stop("OUTPUT_BASENAME")
+            directory_fd = os.open(
+                parent,
+                os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
+            )
+            try:
+                expected_frame = (
+                    "OK "
+                    + hashlib.sha256(rendered).hexdigest()
+                    + " "
+                    + str(len(rendered))
+                    + "\n"
+                ).encode("ascii")
+                actual_frame = publisher_child(
+                    rendered_fd,
+                    directory_fd,
+                    basename,
+                )
+                if actual_frame != expected_frame:
+                    stop("PUBLISH_RESULT_UNCERTAIN")
+                published_identity = readback(
+                    directory_fd,
+                    basename,
+                    output_path,
+                    rendered,
+                )
+            finally:
+                os.close(directory_fd)
+        finally:
+            os.close(rendered_fd)
+        send(
+            {
+                "actor": actor,
+                "artifact_identity": published_identity,
+                "kind": expected_kind,
+                "schema_version": response_schema,
+                "sequence": expected_sequence,
+                "status": "PUBLISHED",
+            }
+        )
+    except SystemExit:
+        raise
+    except BaseException as exc:
+        stop(type(exc).__name__ + "_" + str(exc))
+
+try:
+    handoff_raw = control.recv(max_frame + 1)
+    if not handoff_raw or len(handoff_raw) > max_frame:
+        stop("HANDOFF_SIZE")
+    handoff = parse_canonical(handoff_raw, "HANDOFF")
+    if handoff != {
+        "kind": "handoff-complete",
+        "schema_version": request_schema,
+        "sequence": 3,
+    }:
+        stop("HANDOFF_SEQUENCE")
+    send(
+        {
+            "actor": actor,
+            "schema_version": response_schema,
+            "sequence": 3,
+            "status": "HANDOFF_COMPLETE",
+        }
+    )
+except SystemExit:
+    raise
+except BaseException as exc:
+    stop(type(exc).__name__ + "_" + str(exc))
+
+control.close()
+raise SystemExit(0)
+""".strip()
+
 V4_SCRIPT_TOOL_FILES: dict[str, str] = {
     "campaign_authority_v4": "campaign_authority_v4.py",
     "gate1_campaign_bootstrap_v4": "gate1_campaign_bootstrap_v4.py",
@@ -109,6 +1064,15 @@ AB16_SCRIPT_TOOL_FILES: dict[str, str] = {
     "ab16_campaign_bootstrap_v1": "ab16_campaign_bootstrap_v1.py",
     "ab16_campaign_bootstrap_v2": "ab16_campaign_bootstrap_v2.py",
     "ab16_contract_v1": "ab16_contract_v1.py",
+    "ab16_formal_campaign_v1": "ab16_formal_campaign_v1.py",
+    "ab16_formal_controller_v1": "ab16_formal_controller_v1.py",
+    "ab16_formal_launch_authority_v1": "ab16_formal_launch_authority_v1.py",
+    "ab16_formal_launch_validator_v1": "ab16_formal_launch_validator_v1.py",
+    "ab16_formal_loader_v1": "ab16_formal_loader_v1.py",
+    "ab16_formal_success_verifier_v1": "ab16_formal_success_verifier_v1.py",
+    "ab16_outer_closeout_state_v1": "ab16_outer_closeout_state_v1.py",
+    "ab16_outer_guardian_v1": "ab16_outer_guardian_v1.py",
+    "ab16_outer_refunit_closeout_v1": "ab16_outer_refunit_closeout_v1.py",
     "ab16_terminal_gate_v1": "ab16_terminal_gate_v1.py",
     "ab16_terminal_gate_v2": "ab16_terminal_gate_v2.py",
     "baseline_admission_v1": "baseline_admission_v1.py",
@@ -768,6 +1732,186 @@ def validate_candidate(value: object) -> Mapping[str, Any]:
     return record
 
 
+def _literal_identity(value: str) -> dict[str, object]:
+    raw = value.encode("utf-8")
+    return {
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+
+
+def _validate_literal_identity(value: object, expected: str, label: str) -> dict[str, object]:
+    record = _exact_keys(value, {"sha256", "size_bytes"}, label)
+    projected = dict(record)
+    if projected != _literal_identity(expected):
+        raise BootstrapError(f"{label} identity drifted")
+    return projected
+
+
+def _proc_starttime(pid: int) -> str:
+    if type(pid) is not int or pid <= 1:
+        raise BootstrapError("owner PID is invalid")
+    try:
+        raw = Path(f"/proc/{pid}/stat").read_text(encoding="ascii")
+    except (OSError, UnicodeError) as exc:
+        raise BootstrapError("owner process identity cannot be observed") from exc
+    closing = raw.rfind(")")
+    fields = raw[closing + 2 :].split()
+    if closing <= 1 or len(fields) <= 19:
+        raise BootstrapError("owner process stat is malformed")
+    try:
+        starttime = int(fields[19])
+    except ValueError as exc:
+        raise BootstrapError("owner process starttime is malformed") from exc
+    if starttime <= 0:
+        raise BootstrapError("owner process starttime is invalid")
+    return str(starttime)
+
+
+def _validate_gate_b_publisher(
+    value: object,
+    *,
+    expected_output_path: Path | str | None = None,
+) -> Mapping[str, Any]:
+    record = _exact_keys(
+        value,
+        {
+            "actor",
+            "driver_program",
+            "execution_strategy",
+            "mechanical_publisher",
+            "output_mode",
+            "output_path",
+            "python",
+            "renderer_source",
+        },
+        "Gate-B publisher",
+    )
+    actor = _exact_keys(
+        record["actor"],
+        {"pid", "pid_starttime", "role"},
+        "Gate-B publisher actor",
+    )
+    if (
+        actor["role"] != "AB16_GATE_B_OWNER"
+        or type(actor["pid"]) is not int
+        or actor["pid"] <= 1
+        or type(actor["pid_starttime"]) is not str
+        or not actor["pid_starttime"].isdigit()
+        or _proc_starttime(actor["pid"]) != actor["pid_starttime"]
+    ):
+        raise BootstrapError("Gate-B publisher actor identity drifted")
+    _validate_literal_identity(
+        record["driver_program"],
+        GATE_B_OWNER_DRIVER_V1,
+        "Gate-B owner driver",
+    )
+    _validate_literal_identity(
+        record["mechanical_publisher"],
+        OWNER_OEXCL_PUBLISH_V1,
+        "Gate-B mechanical publisher",
+    )
+    renderer = _mode_identity(record["renderer_source"], "Gate-B renderer source")
+    python = _mode_identity(record["python"], "Gate-B publisher Python")
+    output = _absolute(str(record["output_path"]))
+    current_renderer = _snapshot_mode_identity(Path(__file__))
+    current_python = _snapshot_mode_identity(Path(os.path.realpath(sys.executable)))
+    if (
+        record["execution_strategy"] != GATE_B_OWNER_EXECUTION_STRATEGY
+        or record["output_mode"] != 0o444
+        or not output.is_absolute()
+        or (expected_output_path is not None and output != _absolute(expected_output_path))
+        or renderer != current_renderer
+        or python != current_python
+    ):
+        raise BootstrapError("Gate-B publisher selected-byte identity drifted")
+    return record
+
+
+def _gate_b_publisher_for_parent(output_path: Path | str) -> dict[str, object]:
+    owner_pid = os.getppid()
+    return {
+        "actor": {
+            "pid": owner_pid,
+            "pid_starttime": _proc_starttime(owner_pid),
+            "role": "AB16_GATE_B_OWNER",
+        },
+        "driver_program": _literal_identity(GATE_B_OWNER_DRIVER_V1),
+        "execution_strategy": GATE_B_OWNER_EXECUTION_STRATEGY,
+        "mechanical_publisher": _literal_identity(OWNER_OEXCL_PUBLISH_V1),
+        "output_mode": 0o444,
+        "output_path": str(_absolute(output_path)),
+        "python": _snapshot_mode_identity(Path(os.path.realpath(sys.executable))),
+        "renderer_source": _snapshot_mode_identity(Path(__file__)),
+    }
+
+
+def _render_gate_b_record(
+    request: object,
+    *,
+    validator: Any,
+    label: str,
+) -> bytes:
+    envelope = _exact_keys(request, {"output_path", "record"}, f"{label} render request")
+    if not isinstance(envelope["record"], Mapping):
+        raise BootstrapError(f"{label} render record is malformed")
+    record = dict(envelope["record"])
+    if "publisher" in record:
+        raise BootstrapError(f"{label} renderer does not accept caller publisher bytes")
+    record["publisher"] = _gate_b_publisher_for_parent(str(envelope["output_path"]))
+    validator(record)
+    return authority.canonical_json(record)
+
+
+def render_gate_b_epoch_observation(request: object) -> bytes:
+    """Render owner-bound epoch bytes without publishing them."""
+
+    def validate(record: object) -> None:
+        # The full join is replayed by bootstrap once the record is published;
+        # rendering still enforces the exact schema and publisher identity.
+        checked = _exact_keys(
+            record,
+            {
+                "authorizations",
+                "candidate_identity",
+                "capture_transcript",
+                "created_at_utc",
+                "final_full_preflight_receipt_identity",
+                "gate_a_receipt_identity",
+                "manager_epoch",
+                "planned_source_set_digest",
+                "publisher",
+                "purpose",
+                "repository_head",
+                "repository_root",
+                "run_nonce",
+                "schema_version",
+                "status",
+                "target_campaign_dir",
+            },
+            "Gate-B epoch observation",
+        )
+        _validate_gate_b_publisher(checked["publisher"], expected_output_path=str(request["output_path"]))
+        if checked["schema_version"] != GATE_B_EPOCH_SCHEMA:
+            raise BootstrapError("Gate-B epoch renderer schema drifted")
+
+    return _render_gate_b_record(
+        request,
+        validator=validate,
+        label="Gate-B epoch observation",
+    )
+
+
+def render_gate_b_approval(request: object) -> bytes:
+    """Render owner-bound approval bytes without publishing them."""
+
+    return _render_gate_b_record(
+        request,
+        validator=_validate_gate_b,
+        label="Gate-B approval",
+    )
+
+
 def _validate_gate_b(value: object) -> Mapping[str, Any]:
     record = _exact_keys(
         value,
@@ -783,6 +1927,7 @@ def _validate_gate_b(value: object) -> Mapping[str, Any]:
             "gate_a_receipt_identity",
             "gate_b_epoch_observation_identity",
             "planned_source_set_digest",
+            "publisher",
             "purpose",
             "repository_head",
             "repository_root",
@@ -808,6 +1953,10 @@ def _validate_gate_b(value: object) -> Mapping[str, Any]:
     epoch_identity = _mode_identity(
         record["gate_b_epoch_observation_identity"],
         "Gate-B epoch observation",
+    )
+    _validate_gate_b_publisher(
+        record["publisher"],
+        expected_output_path=record["publisher"]["output_path"],
     )
     if (
         final_identity["mode"] != 0o444
@@ -975,6 +2124,7 @@ def _validate_gate_b_epoch_observation(
             "gate_a_receipt_identity",
             "manager_epoch",
             "planned_source_set_digest",
+            "publisher",
             "purpose",
             "repository_head",
             "repository_root",
@@ -990,6 +2140,10 @@ def _validate_gate_b_epoch_observation(
     authority.validate_manager_epoch_capture_transcript(
         record["capture_transcript"],
         expected_epoch=record["manager_epoch"],
+    )
+    _validate_gate_b_publisher(
+        record["publisher"],
+        expected_output_path=record["publisher"]["output_path"],
     )
     if (
         record["schema_version"] != GATE_B_EPOCH_SCHEMA
@@ -1327,7 +2481,7 @@ def _head_repository_blobs(
         blobs[path] = data
         members.append(
             {
-                "blob_oid": oid,
+                "git_blob_oid": oid,
                 "git_mode": mode,
                 "materialized_mode": 0o555 if mode == "100755" else 0o444,
                 "path": path,
@@ -1352,19 +2506,35 @@ def _external_platform_record(
     return {
         "authority_scope": "AB16_RESEARCH_ONLY",
         "cpython_version": "3.13.13",
+        "dual_holder_survival": {
+            "assumption_id": "AB16_DUAL_HOLDER_SURVIVAL_V1",
+            "simultaneous_guardian_supervisor_death_excluded": True,
+            "reboot_or_power_loss_during_heavy_runtime_excluded": True,
+            "single_holder_death_must_be_contained": True,
+        },
         "external_platform_trust": [
             "CPython runtime and standard library semantics",
             "OR-Tools/protobuf installation and native dependencies",
             "kernel, systemd, D-Bus, cgroup-v2 and filesystem durability",
             "non-hostile operating-system account",
         ],
+        "formal_launch_owner_driver": _literal_identity(FORMAL_LAUNCH_OWNER_DRIVER_V1),
+        "gate_b_owner_driver": _literal_identity(GATE_B_OWNER_DRIVER_V1),
+        "mechanical_oexcl_publisher": _literal_identity(OWNER_OEXCL_PUBLISH_V1),
         "ortools_version": importlib.metadata.version("ortools"),
         "protobuf_version": importlib.metadata.version("protobuf"),
         "python_identity": {
-            key: python_identity[key] for key in ("path", "sha256", "size_bytes")
+            key: python_identity[key] for key in ("mode", "path", "sha256", "size_bytes")
         },
         "repository_head": repository_head,
         "schema_version": EXTERNAL_PLATFORM_SCHEMA,
+        "selected_byte_launch": {
+            "direct_fd_map": {"authority": 5, "loader": 4, "python": 3},
+            "execution_strategy": SELECTED_BYTE_EXECUTION_STRATEGY,
+            "literal_identity": _literal_identity(SELECTED_BYTE_LAUNCH_V1),
+            "systemd_fd_map": {"authority": 5, "loader": 4, "python": 3},
+            "systemd_fd_names": ["ab16-python", "ab16-loader", "ab16-authority"],
+        },
     }
 
 
@@ -1393,12 +2563,6 @@ def _build_repository_snapshot_sources(
         "path": candidate_path,
         "raw_sha256": candidate_snapshot.sha256,
         "size_bytes": candidate_snapshot.size,
-        "source_identity": {
-            "mode": 0o444,
-            "path": str(package_dir / "payload" / "input.candidate_placements.json"),
-            "sha256": candidate_snapshot.sha256,
-            "size_bytes": candidate_snapshot.size,
-        },
         "source_kind": "package_overlay",
     }
     members = [*tracked_members, candidate_member]
@@ -1413,8 +2577,8 @@ def _build_repository_snapshot_sources(
             archive.writestr(info, blobs[str(member["path"])])
     archive_raw = archive_buffer.getvalue()
     manifest = {
-        "archive_identity": {
-            "path": str(package_dir / "payload" / SNAPSHOT_ARCHIVE_PACKAGE_ROLE),
+        "archive_descriptor": {
+            "package_role": SNAPSHOT_ARCHIVE_PACKAGE_ROLE,
             "sha256": hashlib.sha256(archive_raw).hexdigest(),
             "size_bytes": len(archive_raw),
         },
@@ -1453,7 +2617,12 @@ def _build_repository_snapshot_sources(
         except ValueError as exc:
             raise BootstrapError(f"repository script escaped the fixed tree: {role}") from exc
         raw = blobs.get(relative)
-        if raw is None or hashlib.sha256(raw).hexdigest() != planned[f"script.{role}"]["sha256"]:
+        planned_identity = planned[f"script.{role}"]
+        if (
+            raw is None
+            or hashlib.sha256(raw).hexdigest() != planned_identity["sha256"]
+            or len(raw) != planned_identity["size_bytes"]
+        ):
             raise BootstrapError(f"repository script differs from fixed HEAD: {role}")
         staged_scripts[role] = staged_dir / f"script.{role}.py"
         authority.write_exclusive(staged_scripts[role], raw, mode=0o444)
@@ -1497,18 +2666,77 @@ def _materialize_repository_snapshot(
 ) -> tuple[dict[str, object], dict[str, dict[str, object]]]:
     manifest_snapshot = authority.snapshot_regular(package_dir / "payload" / SNAPSHOT_MANIFEST_PACKAGE_ROLE)
     manifest = authority.strict_loads(manifest_snapshot.data, "AB16 repository snapshot manifest")
-    if not isinstance(manifest, Mapping):
-        raise BootstrapError("AB16 repository snapshot manifest is not an object")
+    manifest = _exact_keys(
+        manifest,
+        {
+            "archive_descriptor",
+            "authority_scope",
+            "import_mode",
+            "member_count",
+            "members",
+            "ordered_member_digest",
+            "repository_head",
+            "repository_tree",
+            "schema_version",
+            "total_bytes",
+        },
+        "AB16 repository snapshot manifest",
+    )
     archive_snapshot = authority.snapshot_regular(package_dir / "payload" / SNAPSHOT_ARCHIVE_PACKAGE_ROLE)
     candidate_snapshot = authority.snapshot_regular(package_dir / "payload" / "input.candidate_placements.json")
-    if manifest.get("archive_identity") != authority.detached_identity(archive_snapshot):
+    if manifest.get("archive_descriptor") != {
+        "package_role": SNAPSHOT_ARCHIVE_PACKAGE_ROLE,
+        "sha256": archive_snapshot.sha256,
+        "size_bytes": archive_snapshot.size,
+    }:
         raise BootstrapError("sealed repository snapshot archive identity drifted")
     members = manifest.get("members")
     if type(members) is not list:
         raise BootstrapError("sealed repository snapshot members are malformed")
+    checked_members: list[Mapping[str, Any]] = []
+    for index, value in enumerate(members):
+        if not isinstance(value, Mapping):
+            raise BootstrapError(f"sealed repository snapshot member {index} is malformed")
+        source_kind = value.get("source_kind")
+        if source_kind == "git_blob":
+            expected_keys = {
+                "git_blob_oid",
+                "git_mode",
+                "materialized_mode",
+                "path",
+                "raw_sha256",
+                "size_bytes",
+                "source_kind",
+            }
+        elif source_kind == "package_overlay":
+            expected_keys = {
+                "materialized_mode",
+                "package_role",
+                "path",
+                "raw_sha256",
+                "size_bytes",
+                "source_kind",
+            }
+        else:
+            raise BootstrapError(f"sealed repository snapshot member {index} source kind drifted")
+        checked_members.append(
+            _exact_keys(value, expected_keys, f"sealed repository snapshot member {index}")
+        )
+    if (
+        manifest["schema_version"] != REPOSITORY_SNAPSHOT_SCHEMA
+        or manifest["authority_scope"] != "AB16_RESEARCH_ONLY"
+        or manifest["import_mode"] != "ordinary_pathfinder"
+        or manifest["member_count"] != len(checked_members)
+        or manifest["ordered_member_digest"]
+        != hashlib.sha256(authority.canonical_json(checked_members)).hexdigest()
+        or manifest["total_bytes"] != sum(int(member["size_bytes"]) for member in checked_members)
+    ):
+        raise BootstrapError("sealed repository snapshot manifest semantics drifted")
     root = authority.mkdir_exclusive(campaign_dir / "campaign-authority" / "source-snapshot-a001")
     repository = authority.mkdir_exclusive(root / "repository")
-    expected = {str(member["path"]): member for member in members}
+    expected = {str(member["path"]): member for member in checked_members}
+    if len(expected) != len(checked_members):
+        raise BootstrapError("sealed repository snapshot contains duplicate member paths")
     tracked = {path: member for path, member in expected.items() if member.get("source_kind") == "git_blob"}
     directories = {
         parent.as_posix()
@@ -1587,6 +2815,8 @@ def _path_preregistration(
     campaign = _absolute(campaign_dir)
     prospective = campaign / "prospective-ab16"
     baseline = prospective / "baseline"
+    formal = campaign / "formal-ab16"
+    formal_attempt = formal / "formal-attempt-a001"
     package_payload = campaign / "campaign-authority" / "package" / "payload"
     snapshot_authority = campaign / "campaign-authority" / "source-snapshot-a001"
     slots = tuple(
@@ -1601,6 +2831,13 @@ def _path_preregistration(
             slot: str(Path(attempt_dirs[slot]) / "replays/independent-arithmetic.json") for slot in slots
         },
         "arm_gate_paths": {slot: str(Path(attempt_dirs[slot]) / "replays/arm-credibility.json") for slot in slots},
+        "arm_prelaunch_paths": {
+            slot: {
+                "receipt": str(formal_attempt / "arm-prelaunch" / f"{slot}-receipt.json"),
+                "request": str(formal_attempt / "arm-prelaunch" / f"{slot}-request.json"),
+            }
+            for slot in slots
+        },
         "arm_selection_paths": {slot: str(Path(attempt_dirs[slot]) / "selection.json") for slot in slots},
         "attempt_dirs": attempt_dirs,
         "baseline_admission_path": str(prospective / "baseline-admission-a001.json"),
@@ -1613,13 +2850,39 @@ def _path_preregistration(
         "campaign_dir": str(campaign),
         "classification_contract_path": str(package_payload / "tool.ab16_contract_v1.py"),
         "common_prestate_path": str(prospective / "common-prestate-a001.json"),
+        "child_audit_path": str(formal_attempt / "child-audit.json"),
         "cut_free_replay_paths": {
             slot: str(Path(attempt_dirs[slot]) / "replays/cut-free-incumbent.json") for slot in slots
         },
+        "formal_admission_path": str(formal / "formal-launch-admission-a001.json"),
+        "formal_attempt_dir": str(formal_attempt),
+        "formal_selection_path": str(formal_attempt / "selection.json"),
+        "gate1_prelaunch_ownership_path": str(formal_attempt / "gate1-prelaunch-ownership.json"),
+        "guardian_control_socket_path": str(formal / "guardian-control.sock"),
+        "guardian_ready_path": str(formal / "outer-guardian-ready-a001.json"),
         "immediate_stop_path": str(prospective / "immediate-stop-a001.json"),
         "manifest_path": str(prospective / "manifest-a001.json"),
         "launch_environment_paths": {
             slot: str(prospective / "pre-run-candidates" / f"{slot}-launch-environment.json") for slot in slots
+        },
+        "outer_barrier_path": str(formal_attempt / "outer-barrier-release.json"),
+        "outer_receipt_paths": {
+            "detached_closeout": str(formal_attempt / "detached-closeout.json"),
+            "detached_incomplete_closeout": str(
+                formal_attempt / "detached-incomplete-closeout.json"
+            ),
+            "dual_lock_release": str(formal_attempt / "dual-lock-release.json"),
+            "guardian_absence": str(formal_attempt / "guardian-absence.json"),
+            "guardian_lock_close": str(formal_attempt / "guardian-lock-close.json"),
+            "observer": str(formal_attempt / "observer.json"),
+            "outer_prelaunch": str(formal_attempt / "outer-prelaunch.json"),
+            "outer_resource": str(formal_attempt / "resource-live.json"),
+            "outer_start": str(formal_attempt / "outer-start.json"),
+            "outer_terminal": str(formal_attempt / "outer-terminal.json"),
+            "post_unref_absence": str(formal_attempt / "post-unref-absence.json"),
+            "pre_unref_cleanup": str(formal_attempt / "pre-unref-cleanup.json"),
+            "reference_acquisition": str(formal_attempt / "reference-acquisition.json"),
+            "reference_release": str(formal_attempt / "reference-release.json"),
         },
         "preselection_epoch_paths": {
             slot: str(prospective / "pre-run-candidates" / f"{slot}-preselection-epoch.json") for slot in slots
@@ -1670,9 +2933,17 @@ def validate_path_preregistration(
         "baseline_rebuilt_metadata_path",
         "baseline_rebuilt_model_path",
         "classification_contract_path",
+        "child_audit_path",
         "common_prestate_path",
+        "formal_admission_path",
+        "formal_attempt_dir",
+        "formal_selection_path",
+        "gate1_prelaunch_ownership_path",
+        "guardian_control_socket_path",
+        "guardian_ready_path",
         "immediate_stop_path",
         "manifest_path",
+        "outer_barrier_path",
         "repository_snapshot_archive_path",
         "repository_snapshot_manifest_path",
         "repository_snapshot_materialization_receipt_path",
@@ -1681,6 +2952,12 @@ def validate_path_preregistration(
         "terminal_classification_path",
     }
     paths = [Path(record[field]) for field in path_fields]
+    outer_receipts = _exact_keys(
+        record["outer_receipt_paths"],
+        set(expected["outer_receipt_paths"]),
+        "AB16 path preregistration outer_receipt_paths",
+    )
+    paths.extend(Path(path) for path in outer_receipts.values())
     for mapping_field in (
         "arithmetic_replay_paths",
         "arm_gate_paths",
@@ -1701,6 +2978,18 @@ def validate_path_preregistration(
             f"AB16 path preregistration {mapping_field}",
         )
         paths.extend(Path(path) for path in mapping.values())
+    arm_prelaunch = _exact_keys(
+        record["arm_prelaunch_paths"],
+        set(expected["arm_prelaunch_paths"]),
+        "AB16 path preregistration arm_prelaunch_paths",
+    )
+    for slot, item in arm_prelaunch.items():
+        pair = _exact_keys(
+            item,
+            {"receipt", "request"},
+            f"AB16 path preregistration arm_prelaunch_paths.{slot}",
+        )
+        paths.extend(Path(pair[field]) for field in ("receipt", "request"))
     if any(not path.is_absolute() or not path.is_relative_to(campaign) for path in paths):
         raise BootstrapError("AB16 path preregistration escaped the campaign")
     return record
@@ -2096,6 +3385,8 @@ def bootstrap_campaign(
         candidate_identity=candidate_identity,
         final_full_preflight_identity=final_full_preflight_identity,
     )
+    if gate_b_epoch["publisher"]["actor"] != gate_b["publisher"]["actor"]:
+        raise BootstrapError("Gate-B epoch and approval were not rendered by one persistent owner")
     system_full = {role: planned[f"system.{role}"] for role in SYSTEM_TOOL_ROLES}
     repository_head = _observe_repository_head(
         repository,
@@ -2271,12 +3562,16 @@ def bootstrap_campaign(
         path.exists() or path.is_symlink() for path in authority.reserved_child_paths(root) if path != selection_path
     ):
         raise BootstrapError("a reserved post-selection child was created")
+    formal_parent = authority.mkdir_exclusive(output / "formal-ab16")
+    if any(formal_parent.iterdir()):
+        raise BootstrapError("formal launch parent is not one fresh empty directory")
     return {
         "bootstrap_capture_source_identity": capture_source_identity,
         "campaign_dir": str(output),
         "campaign_root_identity": root_identity,
         "candidate_identity": candidate_identity,
         "formal_arm_launch_authorized": False,
+        "formal_launch_parent": str(formal_parent),
         "gate1_selection_identity": selection_identity,
         "gate_a_receipt_identity": gate_a_identity,
         "gate_b_approval_identity": gate_b_identity,

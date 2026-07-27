@@ -33,6 +33,10 @@ from typing import Any
 PRE_RUN_AUTHORITY_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v2"
 RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
 DRILL_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-drill-selection-v1"
+SEALED_EXECUTION_SOURCE_SCHEMA = "noncert-cuts-ab16-sealed-execution-source-v1"
+SELECTED_BYTE_LAUNCH_SCHEMA = "noncert-cuts-ab16-selected-byte-launch-v1"
+SNAPSHOT_MANIFEST_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
+SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
 EPOCH_OBSERVATION_SCHEMA = "noncert-cuts-ab16-manager-epoch-observation-v2"
 INNER_SCHEMA = "noncert-cuts-ab16-inner-lifecycle-v2"
 PRETERMINAL_SCHEMA = "noncert-cuts-ab16-preterminal-resource-v2"
@@ -62,6 +66,25 @@ LAUNCH_ENVIRONMENT_KEYS = frozenset(
 )
 RESOURCE_SUCCESS_VERDICT = "RESOURCE_PRETERMINAL_PASS"
 RESOURCE_EXPECTED_FAILURE_VERDICT = "RESOURCE_PRETERMINAL_PASS_EXPECTED_PAYLOAD_FAILURE"
+FORMAL_LOADER_ROLE = "ab16_formal_loader_v1"
+FORMAL_RUNNER_MODULE = "docs.research.noncert_cuts_ab16_20260724.organic_arm_runner_v1"
+SELECTED_BYTE_EXECUTION_STRATEGY = "selected-byte-python-loader-fd-v1"
+SELECTED_BYTE_TRANSPORT = "systemd-openfile-v1"
+SELECTED_BYTE_OPEN_FILE_NAMES = ["ab16-python", "ab16-loader", "ab16-authority"]
+SELECTED_BYTE_FD_MAP = {"authority": 5, "loader": 4, "python": 3}
+FORMAL_IMPORT_MODE = "ordinary_pathfinder"
+FORMAL_MODULE_ORIGIN_POLICY = "sealed-snapshot-only-v1"
+FORMAL_EXECUTION_ENVIRONMENT_KEYS = frozenset(
+    {
+        "LANG",
+        "LC_ALL",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONHASHSEED",
+        "PYTHONNOUSERSITE",
+        "TMPDIR",
+        "TZ",
+    }
+)
 
 CONFIGURATIONS = (
     "region-capacity",
@@ -348,6 +371,569 @@ def _identity(
     return record
 
 
+def _literal_identity(value: str) -> dict[str, object]:
+    raw = value.encode("utf-8")
+    return {
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+
+
+def _replay_identity(
+    value: object,
+    label: str,
+    *,
+    mode_required: bool = False,
+) -> DetachedDocument:
+    expected = _identity(value, label, mode_required=mode_required)
+    snapshot = snapshot_regular(Path(expected["path"]))
+    if any(snapshot.identity.get(field) != expected[field] for field in expected):
+        raise LifecycleError(f"{label} byte identity drifted")
+    return snapshot
+
+
+def _campaign_json(raw: bytes, label: str) -> Mapping[str, Any]:
+    try:
+        value = json.loads(
+            raw.decode("utf-8"),
+            object_pairs_hook=_pairs_without_duplicates,
+            parse_constant=_reject_constant,
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise LifecycleError(f"{label} is malformed campaign JSON") from exc
+    if type(value) is not dict or canonical_json_bytes(value) + b"\n" != raw:
+        raise LifecycleError(f"{label} is not canonical campaign JSON")
+    return value
+
+
+def _selected_identity_argument(selected: Mapping[str, Any]) -> str:
+    return canonical_json_bytes(
+        {
+            "authority": selected["authority_identity"],
+            "loader": selected["loader_identity"],
+            "python": selected["python_identity"],
+        }
+    ).decode("utf-8")
+
+
+def _formal_loader_arguments(
+    *,
+    role: str,
+    campaign_dir: str,
+    pre_run_path: str,
+    selection_path: str,
+    module_origin_receipt_path: str,
+) -> list[str]:
+    return [
+        "--role",
+        role,
+        "--campaign-dir",
+        campaign_dir,
+        "--pre-run",
+        pre_run_path,
+        "--selection",
+        selection_path,
+        "--module-origin-receipt",
+        module_origin_receipt_path,
+    ]
+
+
+def build_sealed_execution_source(
+    *,
+    live_source_provenance_root: str,
+    sealed_snapshot_execution_root: str,
+    snapshot_manifest_identity: Mapping[str, Any],
+    snapshot_materialization_receipt_identity: Mapping[str, Any],
+    package_id: str,
+    literal_identity: Mapping[str, Any],
+    python_identity: Mapping[str, Any],
+    loader_identity: Mapping[str, Any],
+    authority_identity: Mapping[str, Any],
+    runner_snapshot_relative_path: str,
+    runner_snapshot_member_identity: Mapping[str, Any],
+    runner_package_tool_identity: Mapping[str, Any],
+    initial_working_directory: str,
+    pre_run_authority_path: str,
+    runner_selection_path: str,
+    module_origin_receipt_path: str,
+    tmpdir: str,
+) -> dict[str, object]:
+    """Construct the sole formal execution-source projection without I/O."""
+
+    selected_byte_launch = {
+        "execution_strategy": SELECTED_BYTE_EXECUTION_STRATEGY,
+        "fd_map": dict(SELECTED_BYTE_FD_MAP),
+        "authority_identity": dict(authority_identity),
+        "literal_identity": dict(literal_identity),
+        "loader_identity": dict(loader_identity),
+        "open_file_names": list(SELECTED_BYTE_OPEN_FILE_NAMES),
+        "python_identity": dict(python_identity),
+        "schema_version": SELECTED_BYTE_LAUNCH_SCHEMA,
+        "transport": SELECTED_BYTE_TRANSPORT,
+    }
+    environment = {
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONHASHSEED": "0",
+        "PYTHONNOUSERSITE": "1",
+        "TMPDIR": tmpdir,
+        "TZ": "UTC",
+    }
+    return {
+        "environment": environment,
+        "execution_working_directory": sealed_snapshot_execution_root,
+        "import_mode": FORMAL_IMPORT_MODE,
+        "initial_working_directory": initial_working_directory,
+        "live_source_provenance_root": live_source_provenance_root,
+        "loader_argv": _formal_loader_arguments(
+            role="organic-arm",
+            campaign_dir=initial_working_directory,
+            pre_run_path=pre_run_authority_path,
+            selection_path=runner_selection_path,
+            module_origin_receipt_path=module_origin_receipt_path,
+        ),
+        "loader_role": FORMAL_LOADER_ROLE,
+        "module_origin_policy": FORMAL_MODULE_ORIGIN_POLICY,
+        "module_origin_receipt_path": module_origin_receipt_path,
+        "package_id": package_id,
+        "runner_module": FORMAL_RUNNER_MODULE,
+        "runner_package_tool_identity": dict(runner_package_tool_identity),
+        "runner_snapshot_member_identity": dict(runner_snapshot_member_identity),
+        "runner_snapshot_relative_path": runner_snapshot_relative_path,
+        "schema_version": SEALED_EXECUTION_SOURCE_SCHEMA,
+        "sealed_snapshot_execution_root": sealed_snapshot_execution_root,
+        "selected_byte_launch": selected_byte_launch,
+        "snapshot_manifest_identity": dict(snapshot_manifest_identity),
+        "snapshot_materialization_receipt_identity": dict(
+            snapshot_materialization_receipt_identity
+        ),
+    }
+
+
+def build_formal_direct_argv(
+    execution_source: Mapping[str, Any],
+    *,
+    literal: str,
+    role: str,
+    campaign_dir: str,
+    pre_run_path: str,
+    selection_path: str,
+    module_origin_receipt_path: str,
+) -> list[str]:
+    """Build one raw direct selected-byte argv for authority publication."""
+
+    selected = _mapping(
+        execution_source.get("selected_byte_launch"),
+        "formal selected-byte launch",
+    )
+    if _literal_identity(literal) != selected.get("literal_identity"):
+        raise LifecycleError("formal selected-byte literal differs from execution source")
+    loader_argv = _formal_loader_arguments(
+        role=role,
+        campaign_dir=campaign_dir,
+        pre_run_path=pre_run_path,
+        selection_path=selection_path,
+        module_origin_receipt_path=module_origin_receipt_path,
+    )
+    return [
+        str(selected["python_identity"]["path"]),
+        "-I",
+        "-B",
+        "-c",
+        literal,
+        "direct",
+        _selected_identity_argument(selected),
+        *loader_argv,
+    ]
+
+
+def _validate_formal_direct_argv(
+    value: object,
+    *,
+    selected: Mapping[str, Any],
+    loader_argv: Sequence[str],
+    label: str,
+) -> list[str]:
+    if type(value) is not list or any(type(item) is not str or not item for item in value):
+        raise LifecycleError(f"{label} must be an exact non-empty string list")
+    command = list(value)
+    expected_prefix = [
+        selected["python_identity"]["path"],
+        "-I",
+        "-B",
+        "-c",
+    ]
+    if (
+        len(command) != 7 + len(loader_argv)
+        or command[:4] != expected_prefix
+        or command[5] != "direct"
+        or command[6] != _selected_identity_argument(selected)
+        or command[7:] != list(loader_argv)
+        or _literal_identity(command[4]) != selected["literal_identity"]
+    ):
+        raise LifecycleError(f"{label} selected-byte command drifted")
+    return command
+
+
+def validate_formal_execution_source(
+    value: object,
+    *,
+    pre_run: Mapping[str, Any],
+    launch: Mapping[str, Any],
+    tools: Mapping[str, Any],
+) -> Mapping[str, Any]:
+    """Validate and replay the finite formal source/import closure."""
+
+    record = _keys(
+        value,
+        {
+            "environment",
+            "execution_working_directory",
+            "import_mode",
+            "initial_working_directory",
+            "live_source_provenance_root",
+            "loader_argv",
+            "loader_role",
+            "module_origin_policy",
+            "module_origin_receipt_path",
+            "package_id",
+            "runner_module",
+            "runner_package_tool_identity",
+            "runner_snapshot_member_identity",
+            "runner_snapshot_relative_path",
+            "schema_version",
+            "sealed_snapshot_execution_root",
+            "selected_byte_launch",
+            "snapshot_manifest_identity",
+            "snapshot_materialization_receipt_identity",
+        },
+        "formal execution source",
+    )
+    if (
+        record["schema_version"] != SEALED_EXECUTION_SOURCE_SCHEMA
+        or record["loader_role"] != FORMAL_LOADER_ROLE
+        or record["runner_module"] != FORMAL_RUNNER_MODULE
+        or record["import_mode"] != FORMAL_IMPORT_MODE
+        or record["module_origin_policy"] != FORMAL_MODULE_ORIGIN_POLICY
+        or record["package_id"] != pre_run["package"]["package_id"]
+    ):
+        raise LifecycleError("formal execution source semantics drifted")
+
+    live_root = Path(_string(record["live_source_provenance_root"], "formal live source root"))
+    snapshot_root = Path(_string(record["sealed_snapshot_execution_root"], "formal snapshot root"))
+    initial_cwd = Path(_string(record["initial_working_directory"], "formal initial cwd"))
+    execution_cwd = Path(_string(record["execution_working_directory"], "formal execution cwd"))
+    if (
+        not all(path.is_absolute() for path in (live_root, snapshot_root, initial_cwd, execution_cwd))
+        or live_root != Path(pre_run["repository_root"])
+        or record["live_source_provenance_root"] != pre_run["live_source_provenance_root"]
+        or record["sealed_snapshot_execution_root"] != pre_run["sealed_snapshot_execution_root"]
+        or live_root == snapshot_root
+        or execution_cwd != snapshot_root
+        or initial_cwd != Path(launch["cwd"])
+    ):
+        raise LifecycleError("formal execution source root/cwd join failed")
+    descriptor = _open_directory_no_symlink(snapshot_root)
+    os.close(descriptor)
+
+    manifest_identity = _keys(
+        record["snapshot_manifest_identity"],
+        {"path", "sha256", "size_bytes"},
+        "formal snapshot manifest identity",
+    )
+    receipt_identity = _keys(
+        record["snapshot_materialization_receipt_identity"],
+        {"path", "sha256", "size_bytes"},
+        "formal snapshot receipt identity",
+    )
+    if (
+        dict(manifest_identity) != pre_run["snapshot_manifest_identity"]
+        or dict(receipt_identity) != pre_run["snapshot_materialization_receipt_identity"]
+    ):
+        raise LifecycleError("formal snapshot top-level identity join failed")
+    manifest_snapshot = _replay_identity(manifest_identity, "formal snapshot manifest")
+    receipt_snapshot = _replay_identity(receipt_identity, "formal snapshot materialization receipt")
+    manifest = _keys(
+        _campaign_json(manifest_snapshot.raw, "formal snapshot manifest"),
+        {
+            "archive_descriptor",
+            "authority_scope",
+            "import_mode",
+            "member_count",
+            "members",
+            "ordered_member_digest",
+            "repository_head",
+            "repository_tree",
+            "schema_version",
+            "total_bytes",
+        },
+        "formal snapshot manifest",
+    )
+    receipt = _keys(
+        _campaign_json(receipt_snapshot.raw, "formal snapshot materialization receipt"),
+        {
+            "authority_scope",
+            "candidate_identity",
+            "created_at_utc",
+            "import_mode",
+            "member_count",
+            "ordered_member_digest",
+            "package_id",
+            "repository_head",
+            "repository_tree",
+            "schema_version",
+            "snapshot_archive_identity",
+            "snapshot_manifest_identity",
+            "snapshot_root",
+            "status",
+            "total_bytes",
+        },
+        "formal snapshot materialization receipt",
+    )
+    members = manifest["members"]
+    if type(members) is not list or any(type(item) is not dict for item in members):
+        raise LifecycleError("formal snapshot member list is malformed")
+    member_paths = [item.get("path") for item in members]
+    if (
+        manifest["schema_version"] != SNAPSHOT_MANIFEST_SCHEMA
+        or manifest["authority_scope"] != "AB16_RESEARCH_ONLY"
+        or manifest["import_mode"] != FORMAL_IMPORT_MODE
+        or manifest["repository_head"] != pre_run["repository_head"]
+        or manifest["member_count"] != len(members)
+        or manifest["total_bytes"] != sum(
+            _integer(item.get("size_bytes"), "formal snapshot member size") for item in members
+        )
+        or type(manifest["ordered_member_digest"]) is not str
+        or manifest["ordered_member_digest"]
+        != hashlib.sha256(canonical_json_bytes(members) + b"\n").hexdigest()
+        or any(type(path) is not str or not path for path in member_paths)
+        or len(set(member_paths)) != len(member_paths)
+    ):
+        raise LifecycleError("formal snapshot manifest semantic replay failed")
+    if (
+        receipt["schema_version"] != SNAPSHOT_MATERIALIZATION_SCHEMA
+        or receipt["authority_scope"] != "AB16_RESEARCH_ONLY"
+        or receipt["status"] != "PASS"
+        or receipt["import_mode"] != FORMAL_IMPORT_MODE
+        or receipt["package_id"] != record["package_id"]
+        or receipt["repository_head"] != manifest["repository_head"]
+        or receipt["repository_tree"] != manifest["repository_tree"]
+        or receipt["member_count"] != manifest["member_count"]
+        or receipt["ordered_member_digest"] != manifest["ordered_member_digest"]
+        or receipt["total_bytes"] != manifest["total_bytes"]
+        or receipt["snapshot_manifest_identity"] != dict(manifest_identity)
+        or Path(receipt["snapshot_root"]) != snapshot_root
+    ):
+        raise LifecycleError("formal snapshot materialization join failed")
+
+    relative_text = _string(record["runner_snapshot_relative_path"], "formal runner snapshot relative path")
+    relative = Path(relative_text)
+    if (
+        relative.is_absolute()
+        or relative_text != relative.as_posix()
+        or ".." in relative.parts
+        or relative_text not in member_paths
+    ):
+        raise LifecycleError("formal runner snapshot relative path escaped")
+    runner_member = next(item for item in members if item["path"] == relative_text)
+    runner_identity = _identity(
+        record["runner_snapshot_member_identity"],
+        "formal runner snapshot member identity",
+        mode_required=True,
+    )
+    runner_snapshot = _replay_identity(
+        runner_identity,
+        "formal runner snapshot member",
+        mode_required=True,
+    )
+    if (
+        Path(runner_identity["path"]) != snapshot_root / relative
+        or runner_identity["sha256"] != runner_member.get("raw_sha256")
+        or runner_identity["size_bytes"] != runner_member.get("size_bytes")
+        or runner_identity["mode"] != runner_member.get("materialized_mode")
+        or runner_snapshot.identity != dict(runner_identity)
+    ):
+        raise LifecycleError("formal runner snapshot member join failed")
+    package_runner = _identity(
+        record["runner_package_tool_identity"],
+        "formal package runner tool",
+        mode_required=True,
+    )
+    if (
+        dict(package_runner) != dict(tools["organic_arm_runner"])
+        or package_runner["sha256"] != runner_identity["sha256"]
+        or package_runner["size_bytes"] != runner_identity["size_bytes"]
+    ):
+        raise LifecycleError("formal snapshot/package runner join failed")
+
+    selected = _keys(
+        record["selected_byte_launch"],
+        {
+            "execution_strategy",
+            "fd_map",
+            "authority_identity",
+            "literal_identity",
+            "loader_identity",
+            "open_file_names",
+            "python_identity",
+            "schema_version",
+            "transport",
+        },
+        "formal selected-byte launch",
+    )
+    literal_identity = _keys(
+        selected["literal_identity"],
+        {"sha256", "size_bytes"},
+        "formal selected-byte literal identity",
+    )
+    if (
+        selected["schema_version"] != SELECTED_BYTE_LAUNCH_SCHEMA
+        or selected["execution_strategy"] != SELECTED_BYTE_EXECUTION_STRATEGY
+        or selected["transport"] != SELECTED_BYTE_TRANSPORT
+        or selected["open_file_names"] != SELECTED_BYTE_OPEN_FILE_NAMES
+        or selected["fd_map"] != SELECTED_BYTE_FD_MAP
+        or type(literal_identity["sha256"]) is not str
+        or SHA256_RE.fullmatch(literal_identity["sha256"]) is None
+        or type(literal_identity["size_bytes"]) is not int
+        or literal_identity["size_bytes"] <= 0
+    ):
+        raise LifecycleError("formal selected-byte launch semantics drifted")
+    python_identity = _identity(
+        selected["python_identity"],
+        "formal selected Python",
+        mode_required=True,
+    )
+    loader_identity = _identity(
+        selected["loader_identity"],
+        "formal selected loader",
+        mode_required=True,
+    )
+    authority_identity = _identity(
+        selected["authority_identity"],
+        "formal selected authority",
+        mode_required=True,
+    )
+    if dict(python_identity) != dict(tools["python3_13"]):
+        raise LifecycleError("formal selected Python differs from package tool")
+    _replay_identity(python_identity, "formal selected Python", mode_required=True)
+    _replay_identity(loader_identity, "formal selected loader", mode_required=True)
+    _replay_identity(authority_identity, "formal selected authority", mode_required=True)
+    package_manifest_snapshot = _replay_identity(
+        pre_run["package"]["manifest_identity"],
+        "formal package manifest",
+    )
+    package_manifest = _campaign_json(
+        package_manifest_snapshot.raw,
+        "formal package manifest",
+    )
+    sources = package_manifest.get("external_sources")
+    if type(sources) is not list:
+        raise LifecycleError("formal package manifest lacks external sources")
+    authority_roles = [
+        source
+        for source in sources
+        if type(source) is dict and source.get("role") == "tool.ab16_authority_v2.py"
+    ]
+    if len(authority_roles) != 1:
+        raise LifecycleError("formal package authority role is absent or duplicated")
+    authority_role = _keys(
+        authority_roles[0],
+        {"package_path", "parse_json", "role", "source_identity"},
+        "formal package authority role",
+    )
+    source_identity = _identity(
+        authority_role["source_identity"],
+        "formal package authority source",
+    )
+    package_path = _string(authority_role["package_path"], "formal package authority path")
+    if (
+        package_path.startswith("/")
+        or ".." in Path(package_path).parts
+        or Path(authority_identity["path"]) != Path(package_manifest_snapshot.identity["path"]).parent / package_path
+        or authority_identity["sha256"] != source_identity["sha256"]
+        or authority_identity["size_bytes"] != source_identity["size_bytes"]
+    ):
+        raise LifecycleError("formal selected authority differs from sealed package role")
+
+    environment = _keys(
+        record["environment"],
+        set(FORMAL_EXECUTION_ENVIRONMENT_KEYS),
+        "formal execution environment",
+    )
+    expected_environment = {
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONHASHSEED": "0",
+        "PYTHONNOUSERSITE": "1",
+        "TZ": "UTC",
+    }
+    if any(environment.get(key) != expected for key, expected in expected_environment.items()):
+        raise LifecycleError("formal execution environment drifted")
+    tmpdir = Path(_string(environment["TMPDIR"], "formal execution TMPDIR"))
+    attempt_dir = Path(pre_run["attempt_dir"])
+    if not tmpdir.is_absolute() or tmpdir.parent != attempt_dir:
+        raise LifecycleError("formal execution TMPDIR escaped attempt_dir")
+
+    origin_receipt = Path(
+        _string(record["module_origin_receipt_path"], "formal module-origin receipt path")
+    )
+    if not origin_receipt.is_absolute() or origin_receipt != attempt_dir / "module-origin-receipt.json":
+        raise LifecycleError("formal module-origin receipt path drifted")
+    expected_loader_argv = _formal_loader_arguments(
+        role="organic-arm",
+        campaign_dir=str(initial_cwd),
+        pre_run_path=str(pre_run["pre_run_authority_path"]),
+        selection_path=str(pre_run["runner_selection_path"]),
+        module_origin_receipt_path=str(origin_receipt),
+    )
+    loader_argv = record["loader_argv"]
+    if loader_argv != expected_loader_argv:
+        raise LifecycleError("formal organic-arm loader argv drifted")
+    _validate_formal_direct_argv(
+        launch["payload_argv"],
+        selected=selected,
+        loader_argv=expected_loader_argv,
+        label="formal payload argv",
+    )
+
+    supervisor_argv = launch["supervisor_argv"]
+    if type(supervisor_argv) is not list or len(supervisor_argv) < 17:
+        raise LifecycleError("formal supervisor argv is malformed")
+    supervisor_loader_argv = supervisor_argv[7:]
+    if (
+        supervisor_loader_argv[:8]
+        != [
+            "--role",
+            "organic-supervisor",
+            "--campaign-dir",
+            str(initial_cwd),
+            "--pre-run",
+            str(pre_run["pre_run_authority_path"]),
+            "--selection",
+            str(pre_run["runner_selection_path"]),
+        ]
+        or len(supervisor_loader_argv) != 10
+        or supervisor_loader_argv[8] != "--module-origin-receipt"
+    ):
+        raise LifecycleError("formal supervisor loader argv drifted")
+    supervisor_origin = Path(supervisor_loader_argv[9])
+    if (
+        not supervisor_origin.is_absolute()
+        or supervisor_origin.parent != attempt_dir
+        or supervisor_origin == origin_receipt
+    ):
+        raise LifecycleError("formal supervisor module-origin receipt path drifted")
+    _validate_formal_direct_argv(
+        supervisor_argv,
+        selected=selected,
+        loader_argv=supervisor_loader_argv,
+        label="formal supervisor argv",
+    )
+    return record
+
+
 def _epoch(value: object, label: str) -> Mapping[str, Any]:
     record = _mapping(value, label)
     required = {
@@ -420,6 +1006,18 @@ def _open_parent_dirfd(path: Path) -> tuple[Path, int, str]:
     except OSError as exc:
         os.close(descriptor)
         raise LifecycleError("symlink or invalid path component") from exc
+
+
+def _open_directory_no_symlink(path: Path) -> int:
+    absolute, parent_descriptor, leaf = _open_parent_dirfd(path)
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(leaf, flags, dir_fd=parent_descriptor)
+    except OSError as exc:
+        raise LifecycleError(f"symlink or invalid directory: {absolute}") from exc
+    finally:
+        os.close(parent_descriptor)
+    return descriptor
 
 
 def snapshot_regular(path: Path) -> DetachedDocument:
@@ -651,6 +1249,10 @@ def validate_pre_run_authority(
         "run_nonce",
         "repository_head",
         "repository_root",
+        "live_source_provenance_root",
+        "sealed_snapshot_execution_root",
+        "snapshot_manifest_identity",
+        "snapshot_materialization_receipt_identity",
         "repository_git_tool_identity",
         "execution_class",
         "expected_payload_status",
@@ -724,8 +1326,22 @@ def validate_pre_run_authority(
     if re.fullmatch(r"[0-9a-f]{40}", repository_head) is None:
         raise LifecycleError("repository_head is invalid")
     repository_root = Path(_string(record["repository_root"], "repository_root"))
-    if not repository_root.is_absolute():
+    live_root = Path(_string(record["live_source_provenance_root"], "live_source_provenance_root"))
+    sealed_root = Path(
+        _string(record["sealed_snapshot_execution_root"], "sealed_snapshot_execution_root")
+    )
+    if (
+        not repository_root.is_absolute()
+        or live_root != repository_root
+        or not sealed_root.is_absolute()
+        or sealed_root == live_root
+    ):
         raise LifecycleError("repository_root must be absolute")
+    _identity(record["snapshot_manifest_identity"], "snapshot_manifest_identity")
+    _identity(
+        record["snapshot_materialization_receipt_identity"],
+        "snapshot_materialization_receipt_identity",
+    )
     _identity(
         record["repository_git_tool_identity"],
         "repository_git_tool_identity",
@@ -845,20 +1461,19 @@ def validate_pre_run_authority(
         if output in resolved_outputs or output in {selection_path, pre_run_path}:
             raise LifecycleError("epoch transcript/output paths must be distinct")
         resolved_outputs.add(output)
-    launch = _keys(
-        record["launch"],
-        {
-            "cwd",
-            "environment_identity",
-            "libsystemd_path",
-            "payload_argv",
-            "supervisor_argv",
-            "python3_13_path",
-            "systemctl_path",
-            "systemd_run_path",
-        },
-        "launch",
-    )
+    launch_keys = {
+        "cwd",
+        "environment_identity",
+        "libsystemd_path",
+        "payload_argv",
+        "supervisor_argv",
+        "python3_13_path",
+        "systemctl_path",
+        "systemd_run_path",
+    }
+    if record["execution_class"] == "FORMAL_AB16":
+        launch_keys.add("execution_source")
+    launch = _keys(record["launch"], launch_keys, "launch")
     cwd = Path(_string(launch["cwd"], "launch.cwd"))
     if not cwd.is_absolute():
         raise LifecycleError("launch.cwd must be absolute")
@@ -877,26 +1492,31 @@ def validate_pre_run_authority(
     libsystemd_path = Path(_string(launch["libsystemd_path"], "launch.libsystemd_path"))
     if not libsystemd_path.is_absolute() or libsystemd_path != Path(tools["libsystemd"]["path"]):
         raise LifecycleError("launch.libsystemd_path differs from pinned tool")
-    for name in ("payload_argv", "supervisor_argv"):
-        argv = launch[name]
-        if type(argv) is not list or len(argv) < 3:
-            raise LifecycleError(f"launch.{name} must contain executable and script")
-        for index, argument in enumerate(argv):
-            _string(argument, f"launch.{name}[{index}]")
-        if argv[0] != str(python_path):
-            raise LifecycleError(f"launch.{name}[0] differs from pinned Python")
-        if argv[1] != "-I":
-            raise LifecycleError(f"launch.{name} does not isolate Python")
-    if (
-        len(launch["supervisor_argv"]) < 4
-        or launch["supervisor_argv"][2] != tools["organic_resource_lifecycle"]["path"]
-    ):
-        raise LifecycleError("supervisor argv does not invoke pinned lifecycle tool")
     if record["execution_class"] == "FORMAL_AB16":
-        if len(launch["payload_argv"]) < 3 or launch["payload_argv"][2] != tools["organic_arm_runner"]["path"]:
-            raise LifecycleError("formal payload argv does not invoke pinned arm runner")
-    elif launch["payload_argv"][2] not in {identity["path"] for identity in strict_inputs.values()}:
-        raise LifecycleError("drill payload is not a package/test-pinned strict input")
+        validate_formal_execution_source(
+            launch["execution_source"],
+            pre_run=record,
+            launch=launch,
+            tools=tools,
+        )
+    else:
+        for name in ("payload_argv", "supervisor_argv"):
+            argv = launch[name]
+            if type(argv) is not list or len(argv) < 3:
+                raise LifecycleError(f"launch.{name} must contain executable and script")
+            for index, argument in enumerate(argv):
+                _string(argument, f"launch.{name}[{index}]")
+            if argv[0] != str(python_path):
+                raise LifecycleError(f"launch.{name}[0] differs from pinned Python")
+            if argv[1] != "-I":
+                raise LifecycleError(f"launch.{name} does not isolate Python")
+        if (
+            len(launch["supervisor_argv"]) < 4
+            or launch["supervisor_argv"][2] != tools["organic_resource_lifecycle"]["path"]
+        ):
+            raise LifecycleError("supervisor argv does not invoke pinned lifecycle tool")
+        if launch["payload_argv"][2] not in {identity["path"] for identity in strict_inputs.values()}:
+            raise LifecycleError("drill payload is not a package/test-pinned strict input")
     if record["prelaunch_allowlist"] != [
         "pre-run-authority.json",
         "selection.json",
@@ -954,6 +1574,13 @@ def validate_pre_run_authority(
             or manifest.get("run_nonce") != record["run_nonce"]
             or manifest.get("repository_head") != record["repository_head"]
             or manifest.get("repository_root") != record["repository_root"]
+            or manifest.get("live_source_provenance_root")
+            != record["live_source_provenance_root"]
+            or manifest.get("sealed_snapshot_execution_root")
+            != record["sealed_snapshot_execution_root"]
+            or manifest.get("snapshot_manifest_identity") != record["snapshot_manifest_identity"]
+            or manifest.get("snapshot_materialization_receipt_identity")
+            != record["snapshot_materialization_receipt_identity"]
             or manifest.get("repository_git_tool_identity") != record["repository_git_tool_identity"]
             or manifest.get("authority_chain") != record["authority_chain"]
         ):
@@ -965,6 +1592,13 @@ def validate_pre_run_authority(
         suite_selection.get("arm_launch_authorized") is not False
         or suite_selection.get("run_nonce") != record["run_nonce"]
         or suite_selection.get("package_id") != record["package"]["package_id"]
+        or suite_selection.get("live_source_provenance_root")
+        != record["live_source_provenance_root"]
+        or suite_selection.get("sealed_snapshot_execution_root")
+        != record["sealed_snapshot_execution_root"]
+        or suite_selection.get("snapshot_manifest_identity") != record["snapshot_manifest_identity"]
+        or suite_selection.get("snapshot_materialization_receipt_identity")
+        != record["snapshot_materialization_receipt_identity"]
     ):
         raise LifecycleError("pre-run suite selection join failed")
     return record
@@ -992,6 +1626,7 @@ def validate_runner_selection(
         "configuration",
         "enabled_families",
         "fresh_process_required",
+        "live_source_provenance_root",
         "manifest_identity",
         "order",
         "pre_run_authority_identity",
@@ -1003,8 +1638,11 @@ def validate_runner_selection(
         "expected_payload_status",
         "run_nonce",
         "schema_version",
+        "sealed_snapshot_execution_root",
         "seed",
         "selection_nonce",
+        "snapshot_manifest_identity",
+        "snapshot_materialization_receipt_identity",
         "slot",
         "unit_name",
         "workers",
@@ -1035,6 +1673,10 @@ def validate_runner_selection(
         "order",
         "repository_head",
         "repository_root",
+        "live_source_provenance_root",
+        "sealed_snapshot_execution_root",
+        "snapshot_manifest_identity",
+        "snapshot_materialization_receipt_identity",
         "repository_git_tool_identity",
         "execution_class",
         "expected_payload_status",
@@ -1666,7 +2308,7 @@ def build_systemd_run_argv(
         resource_contract,
         execution_class=execution_class,
     )
-    return [
+    prefix = [
         executable,
         "--user",
         "--quiet",
@@ -1679,8 +2321,60 @@ def build_systemd_run_argv(
         f"--property=KillMode={contract['kill_mode']}",
         "--property=SendSIGKILL=yes",
         f"--property=RuntimeMaxSec={contract['runtime_max_seconds']}",
+    ]
+    if execution_class == "DISPOSABLE_LIVE_DRILL":
+        return [*prefix, "--", *command]
+    if execution_class != "FORMAL_AB16":
+        raise LifecycleError("execution_class has no systemd launch contract")
+    if (
+        len(command) < 8
+        or command[1:4] != ["-I", "-B", "-c"]
+        or command[5] != "direct"
+    ):
+        raise LifecycleError("formal supervisor argv is not a raw selected-byte command")
+    try:
+        identities = strict_loads(command[6].encode("utf-8"), "formal selected-byte identities")
+    except LifecycleError as exc:
+        raise LifecycleError("formal selected-byte identity argument is invalid") from exc
+    identities = _keys(
+        identities,
+        {"authority", "loader", "python"},
+        "formal selected-byte identities",
+    )
+    python_identity = _identity(
+        identities["python"],
+        "formal selected-byte Python",
+        mode_required=True,
+    )
+    loader_identity = _identity(
+        identities["loader"],
+        "formal selected-byte loader",
+        mode_required=True,
+    )
+    authority_identity = _identity(
+        identities["authority"],
+        "formal selected-byte authority",
+        mode_required=True,
+    )
+    if command[0] != python_identity["path"]:
+        raise LifecycleError("formal raw supervisor Python path drifted")
+    selected_tail = [
+        "/proc/self/fd/3",
+        "-I",
+        "-B",
+        "-c",
+        command[4],
+        "systemd-openfile",
+        command[6],
+        *command[7:],
+    ]
+    return [
+        *prefix,
+        f"--property=OpenFile={python_identity['path']}:ab16-python:read-only",
+        f"--property=OpenFile={loader_identity['path']}:ab16-loader:read-only",
+        f"--property=OpenFile={authority_identity['path']}:ab16-authority:read-only",
         "--",
-        *command,
+        *selected_tail,
     ]
 
 
@@ -1735,6 +2429,36 @@ def _returncode_from_waitid(status: os.waitid_result) -> int:
     if status.si_code in {os.CLD_KILLED, os.CLD_DUMPED}:
         return -int(status.si_status)
     raise LifecycleError(f"unsupported waitid si_code: {status.si_code}")
+
+
+def _verify_selected_fd(fd: int, identity: Mapping[str, Any], label: str) -> None:
+    expected = _identity(identity, label, mode_required=True)
+    try:
+        before = os.fstat(fd)
+        if (
+            not stat.S_ISREG(before.st_mode)
+            or before.st_nlink != 1
+            or stat.S_IMODE(before.st_mode) != expected["mode"]
+            or before.st_size != expected["size_bytes"]
+        ):
+            raise LifecycleError(f"{label} metadata drifted")
+        digest = hashlib.sha256()
+        offset = 0
+        while offset < before.st_size:
+            chunk = os.pread(fd, min(1024 * 1024, before.st_size - offset), offset)
+            if not chunk:
+                raise LifecycleError(f"{label} same-FD read was short")
+            digest.update(chunk)
+            offset += len(chunk)
+        after = os.fstat(fd)
+    except OSError as exc:
+        raise LifecycleError(f"{label} descriptor is unavailable") from exc
+    signature = ("st_dev", "st_ino", "st_mode", "st_nlink", "st_size", "st_mtime_ns", "st_ctime_ns")
+    if (
+        any(getattr(before, field) != getattr(after, field) for field in signature)
+        or digest.hexdigest() != expected["sha256"]
+    ):
+        raise LifecycleError(f"{label} descriptor identity drifted")
 
 
 def _load_json_snapshot(path: Path, label: str) -> tuple[Mapping[str, Any], DetachedDocument]:
@@ -1836,14 +2560,24 @@ def supervise_payload(
     if supervisor_starttime is None:
         raise LifecycleError("cannot establish supervisor starttime")
     started = monotonic()
+    popen_kwargs: dict[str, object] = {
+        "close_fds": True,
+        "cwd": pre_run["launch"]["cwd"],
+        "env": pinned_environment,
+        "start_new_session": False,
+        "stdout": None,
+        "stderr": None,
+    }
+    if pre_run["execution_class"] == "FORMAL_AB16":
+        selected = pre_run["launch"]["execution_source"]["selected_byte_launch"]
+        _verify_selected_fd(3, selected["python_identity"], "formal inherited Python")
+        _verify_selected_fd(4, selected["loader_identity"], "formal inherited loader")
+        _verify_selected_fd(5, selected["authority_identity"], "formal inherited authority")
+        popen_kwargs["executable"] = "/proc/self/fd/3"
+        popen_kwargs["pass_fds"] = (3, 4, 5)
     process = popen(
         list(pre_run["launch"]["payload_argv"]),
-        close_fds=True,
-        cwd=pre_run["launch"]["cwd"],
-        env=pinned_environment,
-        start_new_session=False,
-        stdout=None,
-        stderr=None,
+        **popen_kwargs,
     )
     payload_starttime = proc_starttime(process.pid)
     if payload_starttime is None:

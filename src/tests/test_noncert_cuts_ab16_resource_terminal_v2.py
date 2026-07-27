@@ -160,6 +160,31 @@ def _tool_identity(path: Path) -> dict[str, object]:
     return dict(LIFECYCLE.snapshot_regular(path).identity)
 
 
+def _detached(identity: Mapping[str, object]) -> dict[str, object]:
+    return {key: identity[key] for key in ("path", "sha256", "size_bytes")}
+
+
+def _write_campaign_json(path: Path, value: object) -> dict[str, object]:
+    raw = (
+        json.dumps(
+            value,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        )
+        + "\n"
+    ).encode("utf-8")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return LIFECYCLE.write_exclusive(path, raw)
+
+
+def _campaign_json(path: Path) -> Mapping[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    assert isinstance(value, dict)
+    return value
+
+
 class FakeAdapter:
     def __init__(
         self,
@@ -586,6 +611,16 @@ def _fixture(
             "verdict": "REFUNIT_UNREFUNIT_EXACT_SURFACE_PASS",
         },
     )
+    history_snapshot_root = authority_dir / "history-source-snapshot-a001/repository"
+    history_snapshot_root.mkdir(parents=True)
+    history_snapshot_manifest_identity = _write(
+        authority_dir / "history-snapshot-manifest-identity.json",
+        {"schema_version": "fixture-history-snapshot-manifest-v1"},
+    )
+    history_snapshot_receipt_identity = _write(
+        authority_dir / "history-snapshot-materialization-identity.json",
+        {"schema_version": "fixture-history-snapshot-materialization-v1"},
+    )
     frozen_source = ROOT / "docs/research/noncert_cuts_ab16_20260724/organic_resource_lifecycle_v1.py"
     frozen_source_identity = _tool_identity(frozen_source)
     history_manifest = {
@@ -603,6 +638,12 @@ def _fixture(
         "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE",
         "repository_head": "d" * 40,
         "repository_root": str(ROOT),
+        "live_source_provenance_root": str(ROOT),
+        "sealed_snapshot_execution_root": str(history_snapshot_root),
+        "snapshot_manifest_identity": _detached(history_snapshot_manifest_identity),
+        "snapshot_materialization_receipt_identity": _detached(
+            history_snapshot_receipt_identity
+        ),
         "schema_version": ("noncert-cuts-ab16-terminal-reference-history-freeze-v1"),
         "v1_source_glob": ("docs/research/noncert_cuts_ab16_20260724/*_v1.py"),
     }
@@ -648,6 +689,68 @@ def _fixture(
         package_dir / "payload/libsystemd.so",
         b"fixture pinned libsystemd bytes\n",
     )
+    formal_literal = "fixture-selected-byte-launch-v1"
+    formal_authority_identity: dict[str, object] | None = None
+    formal_loader_identity: dict[str, object] | None = None
+    snapshot_manifest_identity: dict[str, object] | None = None
+    snapshot_receipt_identity: dict[str, object] | None = None
+    snapshot_member_identity: dict[str, object] | None = None
+    snapshot_root: Path | None = None
+    runner_relative = "docs/research/noncert_cuts_ab16_20260724/organic_arm_runner_v1.py"
+    if formal:
+        formal_authority_identity = LIFECYCLE.write_exclusive(
+            package_dir / "payload/tool.ab16_authority_v2.py",
+            b"# fixture package-pinned authority\n",
+        )
+        formal_loader_identity = LIFECYCLE.write_exclusive(
+            package_dir / "payload/tool.ab16_formal_loader_v1.py",
+            b"# fixture selected-byte loader\n",
+        )
+        snapshot_root = authority_dir / "source-snapshot-a001/repository"
+        snapshot_member_path = snapshot_root / runner_relative
+        snapshot_member_path.parent.mkdir(parents=True)
+        snapshot_member_identity = LIFECYCLE.write_exclusive(
+            snapshot_member_path,
+            (TOOLS / "organic_arm_runner_v1.py").read_bytes(),
+        )
+        member = {
+            "git_blob_oid": "1" * 40,
+            "git_mode": "100644",
+            "materialized_mode": snapshot_member_identity["mode"],
+            "path": runner_relative,
+            "raw_sha256": snapshot_member_identity["sha256"],
+            "size_bytes": snapshot_member_identity["size_bytes"],
+            "source_kind": "git_blob",
+        }
+        snapshot_manifest_identity = _write_campaign_json(
+            package_dir / "payload/input.ab16_repository_snapshot.json",
+            {
+                "archive_descriptor": {
+                    "package_role": "input.ab16_repository_snapshot.zip",
+                    "sha256": "2" * 64,
+                    "size_bytes": 1,
+                },
+                "authority_scope": "AB16_RESEARCH_ONLY",
+                "import_mode": "ordinary_pathfinder",
+                "member_count": 1,
+                "members": [member],
+                "ordered_member_digest": hashlib.sha256(
+                    (
+                        json.dumps(
+                            [member],
+                            ensure_ascii=False,
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        )
+                        + "\n"
+                    ).encode("utf-8")
+                ).hexdigest(),
+                "repository_head": "d" * 40,
+                "repository_tree": "3" * 40,
+                "schema_version": "noncert-cuts-ab16-repository-snapshot-v1",
+                "total_bytes": snapshot_member_identity["size_bytes"],
+            },
+        )
     projected_external = {role: dict(identity) for role, identity in strict_input_identities.items()}
     planned_source_set_digest = hashlib.sha256(
         (
@@ -661,29 +764,69 @@ def _fixture(
             + "\n"
         ).encode("utf-8")
     ).hexdigest()
-    package_manifest_identity = _write(
-        package_dir / "package-manifest.json",
-        {
-            "authorizations": {
-                "arm_launch_authorized": False,
-                "formal_campaign_creation_authorized": False,
-                "solver_run_authorized": False,
+    if formal:
+        assert formal_authority_identity is not None
+        package_manifest_identity = _write_campaign_json(
+            package_dir / "package-manifest.json",
+            {
+                "external_sources": [
+                    {
+                        "package_path": "payload/tool.ab16_authority_v2.py",
+                        "parse_json": False,
+                        "role": "tool.ab16_authority_v2.py",
+                        "source_identity": _detached(formal_authority_identity),
+                    }
+                ],
+                "schema_version": "fixture-formal-package-manifest-v1",
             },
-            "external_source_identities": projected_external,
-            "sealed_payload_identities": {
-                "libsystemd": libsystemd_identity,
+        )
+    else:
+        package_manifest_identity = _write(
+            package_dir / "package-manifest.json",
+            {
+                "authorizations": {
+                    "arm_launch_authorized": False,
+                    "formal_campaign_creation_authorized": False,
+                    "solver_run_authorized": False,
+                },
+                "external_source_identities": projected_external,
+                "sealed_payload_identities": {
+                    "libsystemd": libsystemd_identity,
+                },
+                "planned_source_set_digest": planned_source_set_digest,
+                "purpose": "AB16_GATE_A_DISPOSABLE_DRILL_SOURCE_PACKAGE",
+                "schema_version": ("noncert-cuts-ab16-disposable-drill-package-manifest-v2"),
             },
-            "planned_source_set_digest": planned_source_set_digest,
-            "purpose": "AB16_GATE_A_DISPOSABLE_DRILL_SOURCE_PACKAGE",
-            "schema_version": ("noncert-cuts-ab16-disposable-drill-package-manifest-v2"),
-        },
-    )
+        )
+    seal_lines = [
+        f"{package_manifest_identity['sha256']}  package-manifest.json\n",
+        f"{libsystemd_identity['sha256']}  payload/libsystemd.so\n",
+    ]
+    if formal:
+        assert (
+            formal_authority_identity is not None
+            and formal_loader_identity is not None
+            and snapshot_manifest_identity is not None
+        )
+        seal_lines.extend(
+            [
+                (
+                    f"{formal_authority_identity['sha256']}  "
+                    "payload/tool.ab16_authority_v2.py\n"
+                ),
+                (
+                    f"{snapshot_manifest_identity['sha256']}  "
+                    "payload/input.ab16_repository_snapshot.json\n"
+                ),
+                (
+                    f"{formal_loader_identity['sha256']}  "
+                    "payload/tool.ab16_formal_loader_v1.py\n"
+                ),
+            ]
+        )
     package_seal_identity = LIFECYCLE.write_exclusive(
         package_dir / "SHA256SUMS",
-        (
-            f"{package_manifest_identity['sha256']}  package-manifest.json\n"
-            f"{libsystemd_identity['sha256']}  payload/libsystemd.so\n"
-        ).encode("ascii"),
+        "".join(seal_lines).encode("ascii"),
     )
     output_names = {
         "attempt_result": "result.json",
@@ -733,6 +876,21 @@ def _fixture(
         "package_id": package_seal_identity["sha256"],
         "seal_identity": package_seal_identity,
     }
+    tool_identities = {
+        "busctl": _tool_identity(Path(manager_epoch["observation_toolchain"]["busctl"]["path"])),
+        "manager_attestor": _tool_identity(MANAGER_ATTESTOR_PATH),
+        "manager_epoch_authority": _tool_identity(MANAGER_AUTHORITY_PATH),
+        "organic_arm_runner": _tool_identity(TOOLS / "organic_arm_runner_v1.py"),
+        "organic_resource_lifecycle": _tool_identity(LIFECYCLE_PATH),
+        "organic_resource_verifier": _tool_identity(VERIFIER_PATH),
+        "organic_unit_orchestrator": _tool_identity(ORCHESTRATOR_PATH),
+        "python3_13": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
+        "systemd_unit_reference": _tool_identity(TOOLS / "systemd_unit_reference_v1.py"),
+        "libsystemd": libsystemd_identity,
+        "sudo": _tool_identity(Path(manager_epoch["attestation_toolchain"]["sudo"]["path"])),
+        "systemctl": identities["systemctl"],
+        "systemd_run": identities["systemd-run"],
+    }
     authority_chain = {
         "campaign_root_identity": identities["root"],
         "continuation_identity": identities["continuation"],
@@ -744,7 +902,116 @@ def _fixture(
         "expectation": ("SUCCESS" if postseal_failure_exit_code == 0 else "POST_SEAL_FAILURE"),
         "signal": 0,
     }
-    payload_script = str(TOOLS / "organic_arm_runner_v1.py") if formal else identities["strict"]["path"]
+    execution_source: dict[str, object] | None = None
+    if formal:
+        assert (
+            formal_loader_identity is not None
+            and snapshot_manifest_identity is not None
+            and snapshot_member_identity is not None
+            and snapshot_root is not None
+        )
+        snapshot_receipt_identity = _write_campaign_json(
+            authority_dir / "source-snapshot-a001/materialization-receipt.json",
+            {
+                "authority_scope": "AB16_RESEARCH_ONLY",
+                "candidate_identity": identities["strict"],
+                "created_at_utc": "2026-07-27T00:00:00Z",
+                "import_mode": "ordinary_pathfinder",
+                "member_count": 1,
+                "ordered_member_digest": _campaign_json(
+                    Path(snapshot_manifest_identity["path"])
+                )["ordered_member_digest"],
+                "package_id": package["package_id"],
+                "repository_head": "d" * 40,
+                "repository_tree": "3" * 40,
+                "schema_version": "noncert-cuts-ab16-repository-snapshot-materialization-v1",
+                "snapshot_archive_identity": {
+                    "path": str(package_dir / "payload/input.ab16_repository_snapshot.zip"),
+                    "sha256": "2" * 64,
+                    "size_bytes": 1,
+                },
+                "snapshot_manifest_identity": _detached(snapshot_manifest_identity),
+                "snapshot_root": str(snapshot_root),
+                "status": "PASS",
+                "total_bytes": snapshot_member_identity["size_bytes"],
+            },
+        )
+        execution_source = LIFECYCLE.build_sealed_execution_source(
+            live_source_provenance_root=str(ROOT),
+            sealed_snapshot_execution_root=str(snapshot_root),
+            snapshot_manifest_identity=_detached(snapshot_manifest_identity),
+            snapshot_materialization_receipt_identity=_detached(snapshot_receipt_identity),
+            package_id=str(package["package_id"]),
+            literal_identity={
+                "sha256": hashlib.sha256(formal_literal.encode()).hexdigest(),
+                "size_bytes": len(formal_literal.encode()),
+            },
+            python_identity=tool_identities["python3_13"],
+            loader_identity=formal_loader_identity,
+            authority_identity=formal_authority_identity,
+            runner_snapshot_relative_path=runner_relative,
+            runner_snapshot_member_identity=snapshot_member_identity,
+            runner_package_tool_identity=tool_identities["organic_arm_runner"],
+            initial_working_directory=str(authority_dir),
+            pre_run_authority_path=str(pre_run_path),
+            runner_selection_path=str(selection_path),
+            module_origin_receipt_path=str(attempt / "module-origin-receipt.json"),
+            tmpdir=str(attempt / "tmp"),
+        )
+        payload_argv = LIFECYCLE.build_formal_direct_argv(
+            execution_source,
+            literal=formal_literal,
+            role="organic-arm",
+            campaign_dir=str(authority_dir),
+            pre_run_path=str(pre_run_path),
+            selection_path=str(selection_path),
+            module_origin_receipt_path=str(attempt / "module-origin-receipt.json"),
+        )
+        supervisor_argv = LIFECYCLE.build_formal_direct_argv(
+            execution_source,
+            literal=formal_literal,
+            role="organic-supervisor",
+            campaign_dir=str(authority_dir),
+            pre_run_path=str(pre_run_path),
+            selection_path=str(selection_path),
+            module_origin_receipt_path=str(attempt / "supervisor-module-origin-receipt.json"),
+        )
+    else:
+        snapshot_root = history_snapshot_root
+        snapshot_manifest_identity = history_snapshot_manifest_identity
+        snapshot_receipt_identity = history_snapshot_receipt_identity
+        payload_argv = [
+            manager_epoch["attestation_toolchain"]["python"]["path"],
+            "-I",
+            identities["strict"]["path"],
+        ]
+        supervisor_argv = [
+            manager_epoch["attestation_toolchain"]["python"]["path"],
+            "-I",
+            str(LIFECYCLE_PATH),
+            "supervise",
+            "--pre-run",
+            str(pre_run_path),
+            "--selection",
+            str(selection_path),
+        ]
+    assert (
+        snapshot_root is not None
+        and snapshot_manifest_identity is not None
+        and snapshot_receipt_identity is not None
+    )
+    launch = {
+        "cwd": str(authority_dir) if formal else str(ROOT),
+        "environment_identity": identities["environment"],
+        "libsystemd_path": libsystemd_identity["path"],
+        "payload_argv": payload_argv,
+        "python3_13_path": manager_epoch["attestation_toolchain"]["python"]["path"],
+        "supervisor_argv": supervisor_argv,
+        "systemctl_path": identities["systemctl"]["path"],
+        "systemd_run_path": identities["systemd-run"]["path"],
+    }
+    if formal:
+        launch["execution_source"] = execution_source
     pre_run = {
         "arm": "control",
         "arm_binding_identity": identities["binding"],
@@ -763,29 +1030,8 @@ def _fixture(
         "epoch_transcript_paths": {phase: str(attempt / name) for phase, name in transcript_names.items()},
         "execution_class": execution_class,
         "expected_payload_status": expected_payload_status,
-        "launch": {
-            "cwd": str(ROOT),
-            "environment_identity": identities["environment"],
-            "libsystemd_path": libsystemd_identity["path"],
-            "payload_argv": [
-                manager_epoch["attestation_toolchain"]["python"]["path"],
-                "-I",
-                payload_script,
-            ],
-            "python3_13_path": manager_epoch["attestation_toolchain"]["python"]["path"],
-            "supervisor_argv": [
-                manager_epoch["attestation_toolchain"]["python"]["path"],
-                "-I",
-                str(LIFECYCLE_PATH),
-                "supervise",
-                "--pre-run",
-                str(pre_run_path),
-                "--selection",
-                str(selection_path),
-            ],
-            "systemctl_path": identities["systemctl"]["path"],
-            "systemd_run_path": identities["systemd-run"]["path"],
-        },
+        "live_source_provenance_root": str(ROOT),
+        "launch": launch,
         "manager_epoch": manager_epoch,
         "order": "ab",
         "output_paths": {role: str(attempt / name) for role, name in output_names.items()},
@@ -820,28 +1066,19 @@ def _fixture(
         "run_nonce": "run-a",
         "runner_selection_path": str(selection_path),
         "schema_version": "noncert-cuts-ab16-organic-pre-run-authority-v2",
+        "sealed_snapshot_execution_root": str(snapshot_root),
         "seed": 2026072301,
+        "snapshot_manifest_identity": _detached(snapshot_manifest_identity),
+        "snapshot_materialization_receipt_identity": _detached(
+            snapshot_receipt_identity
+        ),
         "slot": "region-capacity-ab-control",
         "solver_run_authorized": False,
         "status": "PASS",
         "strict_input_identities": strict_input_identities,
         "suite_selection_identity": identities["suite-selection"],
         "history_freeze_replay_identity": history_freeze_replay_identity,
-        "tool_identities": {
-            "busctl": _tool_identity(Path(manager_epoch["observation_toolchain"]["busctl"]["path"])),
-            "manager_attestor": _tool_identity(MANAGER_ATTESTOR_PATH),
-            "manager_epoch_authority": _tool_identity(MANAGER_AUTHORITY_PATH),
-            "organic_arm_runner": _tool_identity(TOOLS / "organic_arm_runner_v1.py"),
-            "organic_resource_lifecycle": _tool_identity(LIFECYCLE_PATH),
-            "organic_resource_verifier": _tool_identity(VERIFIER_PATH),
-            "organic_unit_orchestrator": _tool_identity(ORCHESTRATOR_PATH),
-            "python3_13": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
-            "systemd_unit_reference": _tool_identity(TOOLS / "systemd_unit_reference_v1.py"),
-            "libsystemd": libsystemd_identity,
-            "sudo": _tool_identity(Path(manager_epoch["attestation_toolchain"]["sudo"]["path"])),
-            "systemctl": identities["systemctl"],
-            "systemd_run": identities["systemd-run"],
-        },
+        "tool_identities": tool_identities,
         "unit_name": "cuts-ab16-region-capacity-ab-control.service",
         "verdict": "AB16_ORGANIC_PRE_RUN_AUTHORITY_PASS",
         "workers": 1,
@@ -869,6 +1106,7 @@ def _fixture(
         "execution_class": execution_class,
         "expected_payload_status": expected_payload_status,
         "fresh_process_required": True,
+        "live_source_provenance_root": pre_run["live_source_provenance_root"],
         "manifest_identity": identities["manifest"],
         "order": "ab",
         "pre_run_authority_identity": pre_run_identity,
@@ -882,8 +1120,15 @@ def _fixture(
         "schema_version": (
             "noncert-cuts-ab16-organic-arm-selection-v1" if formal else "noncert-cuts-ab16-organic-drill-selection-v1"
         ),
+        "sealed_snapshot_execution_root": pre_run[
+            "sealed_snapshot_execution_root"
+        ],
         "seed": 2026072301,
         "selection_nonce": "selection-a",
+        "snapshot_manifest_identity": pre_run["snapshot_manifest_identity"],
+        "snapshot_materialization_receipt_identity": pre_run[
+            "snapshot_materialization_receipt_identity"
+        ],
         "slot": "region-capacity-ab-control",
         "unit_name": "cuts-ab16-region-capacity-ab-control.service",
         "workers": 1,
@@ -1267,3 +1512,120 @@ def test_abort_without_cleanup_proof_is_incomplete(tmp_path: Path) -> None:
         )
     assert not (attempt / "cleanup.json").exists()
     assert not (attempt / "detached-replay.json").exists()
+
+
+def test_formal_selected_byte_systemd_tail_and_three_open_files_are_exact(
+    tmp_path: Path,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = LIFECYCLE.strict_loads(
+        LIFECYCLE.snapshot_regular(pre_run_path).raw,
+        "formal fixture pre-run",
+    )
+    launch = pre_run["launch"]
+    raw = launch["supervisor_argv"]
+    argv = LIFECYCLE.build_systemd_run_argv(
+        systemd_run_path=launch["systemd_run_path"],
+        unit_name=pre_run["unit_name"],
+        supervisor_argv=raw,
+        resource_contract=pre_run["resource_contract"],
+        execution_class=pre_run["execution_class"],
+    )
+    assert argv.count("--") == 1
+    separator = argv.index("--")
+    selected = launch["execution_source"]["selected_byte_launch"]
+    assert argv[separator - 3 : separator] == [
+        f"--property=OpenFile={selected['python_identity']['path']}:ab16-python:read-only",
+        f"--property=OpenFile={selected['loader_identity']['path']}:ab16-loader:read-only",
+        f"--property=OpenFile={selected['authority_identity']['path']}:ab16-authority:read-only",
+    ]
+    assert argv[separator + 1 :] == [
+        "/proc/self/fd/3",
+        "-I",
+        "-B",
+        "-c",
+        raw[4],
+        "systemd-openfile",
+        raw[6],
+        *raw[7:],
+    ]
+    assert launch["payload_argv"][5] == "direct"
+    assert launch["payload_argv"][6] == raw[6]
+
+
+def test_disposable_drill_systemd_argv_remains_legacy_byte_shape(
+    tmp_path: Path,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(
+        tmp_path,
+        postseal_failure_exit_code=23,
+        execution_class="DISPOSABLE_LIVE_DRILL",
+    )
+    pre_run = LIFECYCLE.strict_loads(
+        LIFECYCLE.snapshot_regular(pre_run_path).raw,
+        "drill fixture pre-run",
+    )
+    launch = pre_run["launch"]
+    actual = LIFECYCLE.build_systemd_run_argv(
+        systemd_run_path=launch["systemd_run_path"],
+        unit_name=pre_run["unit_name"],
+        supervisor_argv=launch["supervisor_argv"],
+        resource_contract=pre_run["resource_contract"],
+        execution_class=pre_run["execution_class"],
+    )
+    contract = pre_run["resource_contract"]
+    assert actual == [
+        launch["systemd_run_path"],
+        "--user",
+        "--quiet",
+        f"--unit={pre_run['unit_name'].removesuffix('.service')}",
+        f"--property=MemoryHigh={contract['memory_high_bytes']}",
+        f"--property=MemoryMax={contract['memory_max_bytes']}",
+        f"--property=MemorySwapMax={contract['memory_swap_max_bytes']}",
+        f"--property=CollectMode={contract['collect_mode']}",
+        f"--property=OOMPolicy={contract['oom_policy']}",
+        f"--property=KillMode={contract['kill_mode']}",
+        "--property=SendSIGKILL=yes",
+        f"--property=RuntimeMaxSec={contract['runtime_max_seconds']}",
+        "--",
+        *launch["supervisor_argv"],
+    ]
+    assert all("OpenFile=" not in argument for argument in actual)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        lambda source: source.__setitem__("unexpected", False),
+        lambda source: source.__setitem__("loader_role", "parallel-loader"),
+        lambda source: source.__setitem__("runner_module", "ambient.runner"),
+        lambda source: source["environment"].__setitem__("PYTHONPATH", "/ambient"),
+        lambda source: source["selected_byte_launch"].__setitem__(
+            "open_file_names",
+            ["ab16-loader", "ab16-python", "ab16-authority"],
+        ),
+        lambda source: source["selected_byte_launch"].__setitem__(
+            "fd_map",
+            {"authority": 4, "loader": 5, "python": 3},
+        ),
+        lambda source: source["selected_byte_launch"].__setitem__(
+            "authority_identity",
+            source["selected_byte_launch"]["loader_identity"],
+        ),
+    ],
+)
+def test_formal_execution_source_mutations_fail_closed(
+    tmp_path: Path,
+    mutation: Any,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = LIFECYCLE.strict_loads(
+        LIFECYCLE.snapshot_regular(pre_run_path).raw,
+        "formal fixture pre-run",
+    )
+    changed = copy.deepcopy(pre_run)
+    mutation(changed["launch"]["execution_source"])
+    with pytest.raises(LIFECYCLE.LifecycleError):
+        LIFECYCLE.validate_pre_run_authority(changed)
+    with pytest.raises(VERIFIER.VerificationError):
+        VERIFIER.validate_pre_run_authority(changed)

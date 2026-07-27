@@ -205,6 +205,40 @@ def _write_authority_json(path: Path, value: object) -> dict[str, object]:
     )
 
 
+def _gate_b_publisher(output_path: Path) -> dict[str, object]:
+    return BOOTSTRAP._gate_b_publisher_for_parent(output_path)  # noqa: SLF001
+
+
+def test_gate_b_renderer_uses_live_planned_identity_and_joins_staged_bytes(
+    tmp_path: Path,
+) -> None:
+    raw = b"print('selected Gate-B renderer')\n"
+    planned = {
+        "mode": 0o644,
+        "path": str(tmp_path / "live/ab16_campaign_bootstrap_v2.py"),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+    staged = {
+        "device": 1,
+        "inode": 2,
+        "mode": 0o444,
+        "path": str(tmp_path / "package-source-staging/script.ab16_campaign_bootstrap_v2.py"),
+        "sha256": planned["sha256"],
+        "size_bytes": planned["size_bytes"],
+    }
+    assert AUTHORITY._join_gate_b_renderer_identity(planned, staged) == planned  # noqa: SLF001
+
+    for field, replacement in (("sha256", "f" * 64), ("size_bytes", len(raw) + 1)):
+        drifted = copy.deepcopy(staged)
+        drifted[field] = replacement
+        with pytest.raises(
+            AUTHORITY.AuthorityError,
+            match="live/staged renderer identity drifted",
+        ):
+            AUTHORITY._join_gate_b_renderer_identity(planned, drifted)  # noqa: SLF001
+
+
 def test_gate_a_evidence_mutation_fails_before_campaign_creation(
     tmp_path: Path,
 ) -> None:
@@ -279,10 +313,17 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         tmp_path / "gate-b-final.json",
         BOOTSTRAP.authority.canonical_json({}),
     )
+    epoch_path = tmp_path / "gate-b-epoch.json"
     epoch_identity = _regular(
-        tmp_path / "gate-b-epoch.json",
-        BOOTSTRAP.authority.canonical_json({"manager_epoch": epoch}),
+        epoch_path,
+        BOOTSTRAP.authority.canonical_json(
+            {
+                "manager_epoch": epoch,
+                "publisher": _gate_b_publisher(epoch_path),
+            }
+        ),
     )
+    gate_b_path = tmp_path / "gate-b.json"
     gate_b = {
         "approval_id": "gate-b-fixture-v2",
         "arm_launch_authorized": False,
@@ -295,6 +336,7 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         "gate_a_receipt_identity": gate_a_identity,
         "gate_b_epoch_observation_identity": epoch_identity,
         "planned_source_set_digest": digest,
+        "publisher": _gate_b_publisher(gate_b_path),
         "purpose": BOOTSTRAP.GATE_B_PURPOSE,
         "repository_head": HEAD,
         "repository_root": str(tmp_path / "repository"),
@@ -302,7 +344,6 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         "schema_version": BOOTSTRAP.GATE_B_SCHEMA,
         "target_campaign_dir": str(campaign),
     }
-    gate_b_path = tmp_path / "gate-b.json"
     _write_authority_json(gate_b_path, gate_b)
     drifted_epoch = copy.deepcopy(epoch)
     drifted_epoch["boot_id"] = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
@@ -348,6 +389,7 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
 
 def _gate_b_record(tmp_path: Path) -> dict[str, object]:
     campaign = tmp_path / "campaigns/run-gate-b-evidence-v2"
+    approval_path = tmp_path / "gate-b/approval.json"
     candidate = _regular(tmp_path / "gate-b/candidate.json", b"{}\n")
     gate_a = _regular(tmp_path / "gate-b/gate-a.json", b"{}\n")
     return {
@@ -358,7 +400,9 @@ def _gate_b_record(tmp_path: Path) -> dict[str, object]:
         "formal_campaign_creation_authorized": True, "gate": "B",
         "gate_a_receipt_identity": {key: gate_a[key] for key in ("path", "sha256", "size_bytes")},
         "gate_b_epoch_observation_identity": _regular(tmp_path / "gate-b/epoch.json", b"{}\n"),
-        "planned_source_set_digest": "a" * 64, "purpose": BOOTSTRAP.GATE_B_PURPOSE,
+        "planned_source_set_digest": "a" * 64,
+        "publisher": _gate_b_publisher(approval_path),
+        "purpose": BOOTSTRAP.GATE_B_PURPOSE,
         "repository_head": HEAD, "repository_root": str(tmp_path / "repository"),
         "run_nonce": campaign.name, "schema_version": BOOTSTRAP.GATE_B_SCHEMA,
         "target_campaign_dir": str(campaign),
@@ -390,12 +434,135 @@ def test_gate_b_independent_evidence_identity_is_fail_closed(
         BOOTSTRAP._validate_gate_b(record)  # noqa: SLF001
 
 
+def test_gate_b_v3_publisher_identity_and_schema_are_strict(
+    tmp_path: Path,
+) -> None:
+    record = _gate_b_record(tmp_path)
+    assert BOOTSTRAP._validate_gate_b(record) == record  # noqa: SLF001
+
+    mutations: list[dict[str, object]] = []
+    old_schema = copy.deepcopy(record)
+    old_schema["schema_version"] = "noncert-cuts-ab16-bootstrap-gate-b-approval-v2"
+    mutations.append(old_schema)
+    missing = copy.deepcopy(record)
+    missing.pop("publisher")
+    mutations.append(missing)
+    extra = copy.deepcopy(record)
+    extra["unexpected"] = False
+    mutations.append(extra)
+    actor_drift = copy.deepcopy(record)
+    actor_drift["publisher"]["actor"]["role"] = "AB16_FORMAL_SUPERVISOR"
+    mutations.append(actor_drift)
+    renderer_drift = copy.deepcopy(record)
+    renderer_drift["publisher"]["renderer_source"]["sha256"] = "f" * 64
+    mutations.append(renderer_drift)
+    for changed in mutations:
+        with pytest.raises(BOOTSTRAP.BootstrapError):
+            BOOTSTRAP._validate_gate_b(changed)  # noqa: SLF001
+
+
+def test_gate_b_epoch_v2_joins_one_live_owner_and_rejects_legacy(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    epoch = _manager_epoch(tmp_path)
+    campaign = tmp_path / "campaigns/run-gate-b-epoch-v2"
+    gate_a_identity = {
+        key: value
+        for key, value in _regular(tmp_path / "gate-b-epoch/gate-a.json", b"{}\n").items()
+        if key in {"path", "sha256", "size_bytes"}
+    }
+    candidate_identity = {
+        key: value
+        for key, value in _regular(tmp_path / "gate-b-epoch/candidate.json", b"{}\n").items()
+        if key in {"path", "sha256", "size_bytes"}
+    }
+    final_identity = _regular(tmp_path / "gate-b-epoch/final-full.json", b"{}\n")
+    gate_a = {
+        "manager_epoch": epoch,
+        "planned_source_set_digest": "a" * 64,
+        "repository_head": HEAD,
+        "repository_root": str(tmp_path / "repository"),
+        "run_nonce": campaign.name,
+        "target_campaign_dir": str(campaign),
+    }
+    epoch_path = tmp_path / "gate-b-epoch/observation.json"
+    record: dict[str, object] = {
+        "authorizations": {
+            "formal_campaign_creation_authorized": False,
+            "organic_arm_launch_authorized": False,
+            "solver_run_authorized": False,
+        },
+        "candidate_identity": candidate_identity,
+        "capture_transcript": {"fixture": "validated-by-focused-stub"},
+        "created_at_utc": "2026-07-27T00:00:00Z",
+        "final_full_preflight_receipt_identity": final_identity,
+        "gate_a_receipt_identity": gate_a_identity,
+        "manager_epoch": epoch,
+        "planned_source_set_digest": gate_a["planned_source_set_digest"],
+        "publisher": _gate_b_publisher(epoch_path),
+        "purpose": BOOTSTRAP.GATE_B_EPOCH_PURPOSE,
+        "repository_head": gate_a["repository_head"],
+        "repository_root": gate_a["repository_root"],
+        "run_nonce": gate_a["run_nonce"],
+        "schema_version": BOOTSTRAP.GATE_B_EPOCH_SCHEMA,
+        "status": "PASS",
+        "target_campaign_dir": gate_a["target_campaign_dir"],
+    }
+    monkeypatch.setattr(
+        BOOTSTRAP.authority,
+        "validate_manager_epoch_capture_transcript",
+        lambda value, *, expected_epoch: (
+            value,
+            expected_epoch,
+        ),
+    )
+    assert (
+        BOOTSTRAP._validate_gate_b_epoch_observation(  # noqa: SLF001
+            record,
+            gate_a=gate_a,
+            gate_a_identity=gate_a_identity,
+            candidate_identity=candidate_identity,
+            final_full_preflight_identity=final_identity,
+        )
+        == record
+    )
+    approval = _gate_b_record(tmp_path / "same-owner")
+    assert approval["publisher"]["actor"] == record["publisher"]["actor"]
+
+    mutations: list[dict[str, object]] = []
+    old_schema = copy.deepcopy(record)
+    old_schema["schema_version"] = "noncert-cuts-ab16-gate-b-epoch-observation-v1"
+    mutations.append(old_schema)
+    missing = copy.deepcopy(record)
+    missing.pop("publisher")
+    mutations.append(missing)
+    extra = copy.deepcopy(record)
+    extra["unexpected"] = False
+    mutations.append(extra)
+    actor_drift = copy.deepcopy(record)
+    actor_drift["publisher"]["actor"]["pid_starttime"] = "1"
+    mutations.append(actor_drift)
+    upstream_drift = copy.deepcopy(record)
+    upstream_drift["candidate_identity"]["sha256"] = "f" * 64
+    mutations.append(upstream_drift)
+    for changed in mutations:
+        with pytest.raises(BOOTSTRAP.BootstrapError):
+            BOOTSTRAP._validate_gate_b_epoch_observation(  # noqa: SLF001
+                changed,
+                gate_a=gate_a,
+                gate_a_identity=gate_a_identity,
+                candidate_identity=candidate_identity,
+                final_full_preflight_identity=final_identity,
+            )
+
+
 def _repository_manifest(tmp_path: Path) -> dict[str, object]:
     tracked = b"from __future__ import annotations\n"
     candidate = b'{"placements":[]}\n'
     members: list[dict[str, object]] = [
         {
-            "blob_oid": "1" * 40, "git_mode": "100644", "materialized_mode": 0o444,
+            "git_blob_oid": "1" * 40, "git_mode": "100644", "materialized_mode": 0o444,
             "path": "pkg/module.py", "raw_sha256": hashlib.sha256(tracked).hexdigest(),
             "size_bytes": len(tracked), "source_kind": "git_blob",
         },
@@ -403,16 +570,15 @@ def _repository_manifest(tmp_path: Path) -> dict[str, object]:
             "materialized_mode": 0o444, "package_role": "input.candidate_placements.json",
             "path": "data/preprocessed/candidate_placements.json",
             "raw_sha256": hashlib.sha256(candidate).hexdigest(), "size_bytes": len(candidate),
-            "source_identity": {
-                "mode": 0o444, "path": str(tmp_path / "candidate-source.json"),
-                "sha256": hashlib.sha256(candidate).hexdigest(),
-                "size_bytes": len(candidate)},
             "source_kind": "package_overlay",
         },
     ]
-    archive_path = tmp_path / "package/payload/input.ab16_repository_snapshot.zip"
     return {
-        "archive_identity": {"path": str(archive_path), "sha256": "2" * 64, "size_bytes": 10},
+        "archive_descriptor": {
+            "package_role": "input.ab16_repository_snapshot.zip",
+            "sha256": "2" * 64,
+            "size_bytes": 10,
+        },
         "authority_scope": "AB16_RESEARCH_ONLY", "import_mode": "ordinary_pathfinder",
         "member_count": len(members), "members": members,
         "ordered_member_digest": hashlib.sha256(AUTHORITY.canonical_json(members)).hexdigest(),
@@ -447,16 +613,22 @@ def test_repository_snapshot_manifest_exact_member_and_overlay_contract(
     for field, replacement in (
         ("path", "data/preprocessed/other.json"),
         ("materialized_mode", 0o400),
-        ("raw_sha256", "f" * 64),
     ):
         changed = copy.deepcopy(record)
         changed["members"][-1][field] = replacement
         changed["ordered_member_digest"] = hashlib.sha256(AUTHORITY.canonical_json(changed["members"])).hexdigest()
         mutations.append(changed)
-    source_drift = copy.deepcopy(record)
-    source_drift["members"][-1]["source_identity"]["sha256"] = "e" * 64
-    source_drift["ordered_member_digest"] = hashlib.sha256(AUTHORITY.canonical_json(source_drift["members"])).hexdigest()
-    mutations.append(source_drift)
+    forbidden_overlay_source = copy.deepcopy(record)
+    forbidden_overlay_source["members"][-1]["source_identity"] = {
+        "mode": 0o444,
+        "path": str(tmp_path / "candidate-source.json"),
+        "sha256": "e" * 64,
+        "size_bytes": 1,
+    }
+    forbidden_overlay_source["ordered_member_digest"] = hashlib.sha256(
+        AUTHORITY.canonical_json(forbidden_overlay_source["members"])
+    ).hexdigest()
+    mutations.append(forbidden_overlay_source)
     for changed in mutations:
         with pytest.raises(AUTHORITY.AuthorityError):
             AUTHORITY.validate_repository_snapshot_manifest(changed)
@@ -477,7 +649,7 @@ def test_bootstrap_materializer_rejects_manifest_without_candidate_overlay(
     candidate_path.chmod(0o444)
     members = [
         {
-            "blob_oid": "1" * 40, "git_mode": "100644", "materialized_mode": 0o444,
+            "git_blob_oid": "1" * 40, "git_mode": "100644", "materialized_mode": 0o444,
             "path": "tracked.txt",
             "raw_sha256": hashlib.sha256(raw).hexdigest(),
             "size_bytes": len(raw), "source_kind": "git_blob",
@@ -485,7 +657,11 @@ def test_bootstrap_materializer_rejects_manifest_without_candidate_overlay(
     ]
     manifest = {
         **_repository_manifest(tmp_path),
-        "archive_identity": BOOTSTRAP.authority.detached_identity(BOOTSTRAP.authority.snapshot_regular(archive_path)),
+        "archive_descriptor": {
+            "package_role": BOOTSTRAP.SNAPSHOT_ARCHIVE_PACKAGE_ROLE,
+            "sha256": BOOTSTRAP.authority.snapshot_regular(archive_path).sha256,
+            "size_bytes": BOOTSTRAP.authority.snapshot_regular(archive_path).size,
+        },
         "member_count": 1, "members": members,
         "ordered_member_digest": hashlib.sha256(BOOTSTRAP.authority.canonical_json(members)).hexdigest(),
         "total_bytes": len(raw),
@@ -518,11 +694,10 @@ def _materialized_snapshot_fixture(
         archive.writestr("pkg/module.py", tracked)
     archive_path = payload / "input.ab16_repository_snapshot.zip"
     candidate_path = payload / "input.candidate_placements.json"
-    python_path = tmp_path / "tools/python3.13"
+    python_path = Path(os.path.realpath(sys.executable))
     for path, raw, mode in (
         (archive_path, archive_buffer.getvalue(), 0o444),
         (candidate_path, candidate, 0o444),
-        (python_path, b"python fixture\n", 0o755),
         (repository / "pkg/module.py", tracked, 0o444),
         (repository / "data/preprocessed/candidate_placements.json", candidate, 0o444),
     ):
@@ -530,30 +705,20 @@ def _materialized_snapshot_fixture(
         path.write_bytes(raw)
         path.chmod(mode)
     manifest = _repository_manifest(tmp_path)
-    manifest["archive_identity"] = AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(archive_path))
-    manifest["members"][1]["source_identity"] = {
-        "mode": 0o444,
-        **AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(candidate_path)),
+    archive_snapshot = AUTHORITY.snapshot_regular(archive_path)
+    manifest["archive_descriptor"] = {
+        "package_role": "input.ab16_repository_snapshot.zip",
+        "sha256": archive_snapshot.sha256,
+        "size_bytes": archive_snapshot.size_bytes,
     }
     manifest["ordered_member_digest"] = hashlib.sha256(AUTHORITY.canonical_json(manifest["members"])).hexdigest()
     manifest_path = payload / "input.ab16_repository_snapshot.json"
     manifest_path.write_bytes(AUTHORITY.canonical_json(manifest))
     manifest_path.chmod(0o444)
-    platform = {
-        "authority_scope": "AB16_RESEARCH_ONLY",
-        "cpython_version": "3.13.13",
-        "external_platform_trust": [
-            "CPython runtime and standard library semantics",
-            "OR-Tools/protobuf installation and native dependencies",
-            "kernel, systemd, D-Bus, cgroup-v2 and filesystem durability",
-            "non-hostile operating-system account",
-        ],
-        "ortools_version": "fixture",
-        "protobuf_version": "fixture",
-        "python_identity": AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(python_path)),
-        "repository_head": HEAD,
-        "schema_version": AUTHORITY.EXTERNAL_PLATFORM_SCHEMA,
-    }
+    platform = BOOTSTRAP._external_platform_record(  # noqa: SLF001
+        repository_head=HEAD,
+        python_identity=_full(python_path),
+    )
     platform_path = payload / "input.ab16_external_platform_assumptions.json"
     platform_path.write_bytes(AUTHORITY.canonical_json(platform))
     platform_path.chmod(0o444)
@@ -569,7 +734,9 @@ def _materialized_snapshot_fixture(
         "repository_head": HEAD,
         "repository_tree": manifest["repository_tree"],
         "schema_version": AUTHORITY.SNAPSHOT_MATERIALIZATION_SCHEMA,
-        "snapshot_archive_identity": manifest["archive_identity"],
+        "snapshot_archive_identity": AUTHORITY.detached_identity(
+            AUTHORITY.snapshot_regular(archive_path)
+        ),
         "snapshot_manifest_identity": AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(manifest_path)),
         "snapshot_root": str(repository),
         "status": "PASS",
@@ -581,15 +748,29 @@ def _materialized_snapshot_fixture(
     for directory in sorted((path for path in repository.rglob("*") if path.is_dir()), reverse=True):
         directory.chmod(0o555)
     repository.chmod(0o555)
+    bootstrap_source = TOOLS / "ab16_campaign_bootstrap_v2.py"
+    bootstrap_payload = payload / "tool.ab16_campaign_bootstrap_v2.py"
+    bootstrap_payload.write_bytes(bootstrap_source.read_bytes())
+    bootstrap_payload.chmod(0o444)
     files = {
         path.name: AUTHORITY.snapshot_regular(path)
-        for path in (archive_path, candidate_path, manifest_path, platform_path)
+        for path in (
+            archive_path,
+            bootstrap_payload,
+            candidate_path,
+            manifest_path,
+            platform_path,
+        )
     }
     sources = {
         "input.ab16_repository_snapshot.zip": {"package_path": archive_path.name},
         "input.ab16_repository_snapshot.json": {"package_path": manifest_path.name},
         "input.ab16_external_platform_assumptions.json": {"package_path": platform_path.name},
         "input.candidate_placements.json": {"package_path": candidate_path.name},
+        "tool.ab16_campaign_bootstrap_v2.py": {
+            "package_path": bootstrap_payload.name,
+            "source_identity": _full(bootstrap_source),
+        },
     }
     root = {
         "authority_tools": {"python3_13": AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(python_path))},
@@ -605,6 +786,67 @@ def _materialized_snapshot_fixture(
         },
     }
     return {"directory": campaign, "root": root, "files": files, "sources": sources}, manifest, repository
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "legacy-schema",
+        "legacy-two-fd",
+        "selected-literal",
+        "owner-driver",
+        "dual-holder",
+        "extra",
+    ],
+)
+def test_external_platform_v2_rejects_legacy_and_identity_drift(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    kwargs, _manifest, repository = _materialized_snapshot_fixture(tmp_path)
+    platform_role = "ab16_external_platform_assumptions"
+    platform_path = Path(kwargs["root"]["strict_inputs"][platform_role]["path"])
+    try:
+        replay = AUTHORITY._replay_repository_snapshot(**kwargs)  # noqa: SLF001
+        platform = copy.deepcopy(replay["external_platform"])
+        if mutation == "legacy-schema":
+            platform["schema_version"] = "noncert-cuts-ab16-external-platform-assumptions-v1"
+        elif mutation == "legacy-two-fd":
+            platform["selected_byte_launch"]["direct_fd_map"] = {
+                "loader": 4,
+                "python": 3,
+            }
+            platform["selected_byte_launch"]["systemd_fd_map"] = {
+                "loader": 4,
+                "python": 3,
+            }
+            platform["selected_byte_launch"]["systemd_fd_names"] = [
+                "ab16-python",
+                "ab16-loader",
+            ]
+        elif mutation == "selected-literal":
+            platform["selected_byte_launch"]["literal_identity"]["sha256"] = "f" * 64
+        elif mutation == "owner-driver":
+            platform["formal_launch_owner_driver"]["sha256"] = "f" * 64
+        elif mutation == "dual-holder":
+            platform["dual_holder_survival"]["single_holder_death_must_be_contained"] = False
+        else:
+            platform["unexpected"] = False
+        platform_path.chmod(0o644)
+        platform_path.write_bytes(AUTHORITY.canonical_json(platform))
+        platform_path.chmod(0o444)
+        snapshot = AUTHORITY.snapshot_regular(platform_path)
+        kwargs["files"][platform_path.name] = snapshot
+        kwargs["root"]["strict_inputs"][platform_role] = AUTHORITY.detached_identity(
+            snapshot
+        )
+        with pytest.raises(AUTHORITY.AuthorityError):
+            AUTHORITY._replay_repository_snapshot(**kwargs)  # noqa: SLF001
+    finally:
+        for current, dirnames, _filenames in os.walk(repository):
+            Path(current).chmod(0o755)
+            for dirname in dirnames:
+                (Path(current) / dirname).chmod(0o755)
 
 
 @pytest.mark.parametrize(
@@ -655,6 +897,28 @@ def _history_authority(
     repository = tmp_path / "history-repository"
     member_path = repository / "frozen/member.txt"
     member_identity = _regular(member_path, b"immutable history\n")
+    sealed_snapshot_root = tmp_path / "sealed-history-snapshot"
+    sealed_snapshot_root.mkdir()
+    snapshot_manifest_full = _regular(
+        tmp_path / "history-snapshot-manifest-identity.json",
+        RESOURCE.canonical_json_bytes(
+            {"schema_version": "fixture-history-snapshot-manifest-v1"}
+        ),
+    )
+    snapshot_receipt_full = _regular(
+        tmp_path / "history-snapshot-materialization-identity.json",
+        RESOURCE.canonical_json_bytes(
+            {"schema_version": "fixture-history-snapshot-materialization-v1"}
+        ),
+    )
+    snapshot_manifest_identity = {
+        key: snapshot_manifest_full[key]
+        for key in ("path", "sha256", "size_bytes")
+    }
+    snapshot_receipt_identity = {
+        key: snapshot_receipt_full[key]
+        for key in ("path", "sha256", "size_bytes")
+    }
     manifest = {
         "created_at_utc": "2026-07-24T00:00:00Z",
         "file_count": 1,
@@ -668,6 +932,10 @@ def _history_authority(
         "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE",
         "repository_head": HEAD,
         "repository_root": str(repository),
+        "live_source_provenance_root": str(repository),
+        "sealed_snapshot_execution_root": str(sealed_snapshot_root),
+        "snapshot_manifest_identity": snapshot_manifest_identity,
+        "snapshot_materialization_receipt_identity": snapshot_receipt_identity,
         "schema_version": ("noncert-cuts-ab16-terminal-reference-history-freeze-v1"),
         "v1_source_glob": ["frozen/*"],
     }
@@ -703,6 +971,10 @@ def _history_authority(
         "history_freeze_replay_identity": receipt_identity,
         "repository_head": HEAD,
         "repository_root": str(repository),
+        "live_source_provenance_root": str(repository),
+        "sealed_snapshot_execution_root": str(sealed_snapshot_root),
+        "snapshot_manifest_identity": snapshot_manifest_identity,
+        "snapshot_materialization_receipt_identity": snapshot_receipt_identity,
     }
     return pre_run, manifest_identity
 
