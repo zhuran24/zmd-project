@@ -1025,19 +1025,39 @@
           ],
           "authority_source": "G3 developer research run contract",
           "lifecycle": "current"
+        },
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "build_artifact_root_manifest",
+          "role": "context_bound",
+          "consumers": [
+            "pre-receipt isolated research artifact-root enumeration"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
         }
       ]
     },
     {
       "capability": "independent_replay",
-      "shared_authority": "devtools/research_run_contract.py::replay_identity_graph",
+      "shared_authority": "devtools/research_run_contract.py::verify_artifact_root_closure",
       "implementations": [
         {
           "path": "devtools/research_run_contract.py",
-          "symbol": "replay_identity_graph",
+          "symbol": "verify_artifact_root_closure",
           "role": "preferred_active",
           "consumers": [
-            "isolated developer and research experiment byte-identity replay"
+            "isolated developer and research experiment artifact-root closure replay"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "replay_identity_graph",
+          "role": "context_bound",
+          "consumers": [
+            "isolated developer and research experiment named byte-identity replay"
           ],
           "authority_source": "G3 developer research run contract",
           "lifecycle": "current"
@@ -1048,6 +1068,16 @@
           "role": "context_bound",
           "consumers": [
             "isolated developer and research experiment subprocess replay"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "require_isolated_python_process",
+          "role": "context_bound",
+          "consumers": [
+            "isolated developer and research experiment Python process validation"
           ],
           "authority_source": "G3 developer research run contract",
           "lifecycle": "current"
@@ -1123,8 +1153,8 @@
       "argv_source": "scripts/preflight_gate.py --full",
       "baseline_count": 6486,
       "baseline_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c",
-      "expected_count": 6517,
-      "expected_sha256": "250b06cb2b8cc0d187a770e212c44df4a8c7792519ffdcd6ff5b8cae93d47725"
+      "expected_count": 6545,
+      "expected_sha256": "e51b810d38267c4eac31fed41ff615843be03e6cbe606ec0c809a33b65d9b8a2"
     },
     {
       "id": "preflight_slow",
@@ -1141,8 +1171,8 @@
       "argv_source": "python -m pytest -m '' src/tests",
       "baseline_count": 6517,
       "baseline_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1",
-      "expected_count": 6548,
-      "expected_sha256": "28bb9e586ed8b062208d48d548e0632d7b1f41f5ad06acd0e5212eea5b96b82d"
+      "expected_count": 6576,
+      "expected_sha256": "ff29879ed0394655f48c670dabc7254b95c01d034c8b8658003e2b1fb2373326"
     },
     {
       "id": "auxiliary_memory_tests",
@@ -1159,8 +1189,8 @@
       "argv_source": "python -m pytest",
       "baseline_count": 6624,
       "baseline_sha256": "6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96",
-      "expected_count": 3505,
-      "expected_sha256": "fcd32f4bca74b255556a16dbea47988187ee68291343e5e8f1e08627e13dc816"
+      "expected_count": 3520,
+      "expected_sha256": "10957319675efe5c4f7248b9b5366bd76fe1163758eb88bd063bfd801e663d4b"
     },
     {
       "id": "industrial_planner_checked",

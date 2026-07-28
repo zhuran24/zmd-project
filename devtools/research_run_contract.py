@@ -28,6 +28,11 @@ _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 _CONFIG_SCHEMA = "research_run_config_v1"
 _RECEIPT_SCHEMA = "research_run_receipt_v1"
 _IDENTITY_GRAPH_SCHEMA = "artifact_identity_graph_v1"
+ARTIFACT_ROOT_MANIFEST_SCHEMA = "research_artifact_root_manifest_v1"
+ISOLATED_PYTHON_PROCESS_SCHEMA = "isolated_python_process_contract_v1"
+TERMINAL_RECEIPT_PATH = "receipt.json"
+
+_ARTIFACT_ROOT_ENTRY_TYPES = frozenset({"directory", "regular_file"})
 
 
 class ResearchRunContractError(ValueError):
@@ -102,6 +107,17 @@ class IsolatedReplayObservation:
     timed_out: bool
     stdout: bytes
     stderr: bytes
+
+
+@dataclass(frozen=True, slots=True)
+class ArtifactRootEntry:
+    """One normalized descendant in a research artifact root."""
+
+    path: str
+    node_type: str
+
+    def as_dict(self) -> dict[str, str]:
+        return {"path": self.path, "type": self.node_type}
 
 
 def _fail(code: str, detail: str) -> NoReturn:
@@ -446,6 +462,276 @@ class ExclusiveRunRoot:
         return self.write_bytes(relative, canonical_json_bytes(value), mode=mode)
 
 
+def _manifest_relative_path(
+    value: object,
+    label: str,
+    *,
+    allow_terminal_receipt: bool = False,
+) -> str:
+    if type(value) is not str or not value:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"{label}: path must be non-empty text")
+    path = cast(str, value)
+    try:
+        path.encode("utf-8", errors="strict")
+    except UnicodeEncodeError:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"{label}: path is not UTF-8 encodable")
+    parts = path.split("/")
+    if (
+        path.startswith("/")
+        or path.endswith("/")
+        or "\\" in path
+        or "\x00" in path
+        or any(part in {"", ".", ".."} for part in parts)
+    ):
+        _fail("ARTIFACT_ROOT_PATH_ESCAPE", f"{label}: {path!r}")
+    if parts[0] == TERMINAL_RECEIPT_PATH and (
+        not allow_terminal_receipt or path != TERMINAL_RECEIPT_PATH
+    ):
+        _fail(
+            "ARTIFACT_ROOT_RECEIPT_RESERVED",
+            f"{label}: {TERMINAL_RECEIPT_PATH} is not a manifest member",
+        )
+    return path
+
+
+def validate_artifact_root_manifest(value: object) -> dict[str, object]:
+    """Validate the canonical path/type manifest excluding the terminal receipt."""
+
+    if type(value) is not dict or set(value) != {"schema", "entries"}:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", "manifest keys differ")
+    record = cast(dict[str, object], value)
+    if record["schema"] != ARTIFACT_ROOT_MANIFEST_SCHEMA:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", "manifest schema differs")
+    raw_entries = record["entries"]
+    if type(raw_entries) is not list:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", "entries must be an array")
+
+    entries: list[dict[str, str]] = []
+    entry_types: dict[str, str] = {}
+    for index, raw_entry in enumerate(cast(list[object], raw_entries)):
+        label = f"entries[{index}]"
+        if type(raw_entry) is not dict or set(raw_entry) != {"path", "type"}:
+            _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"{label}: keys differ")
+        entry = cast(dict[str, object], raw_entry)
+        path = _manifest_relative_path(entry["path"], f"{label}.path")
+        node_type = entry["type"]
+        if type(node_type) is not str or node_type not in _ARTIFACT_ROOT_ENTRY_TYPES:
+            _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"{label}.type")
+        if path in entry_types:
+            _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"duplicate path: {path}")
+        entry_types[path] = cast(str, node_type)
+        entries.append({"path": path, "type": cast(str, node_type)})
+
+    sorted_entries = sorted(entries, key=lambda item: item["path"])
+    if entries != sorted_entries:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", "entries are not path-sorted")
+    for path in entry_types:
+        parts = path.split("/")
+        for depth in range(1, len(parts)):
+            parent = "/".join(parts[:depth])
+            if entry_types.get(parent) != "directory":
+                _fail(
+                    "ARTIFACT_ROOT_MANIFEST_INVALID",
+                    f"{path}: parent {parent!r} is absent or not a directory",
+                )
+    return {
+        "schema": ARTIFACT_ROOT_MANIFEST_SCHEMA,
+        "entries": entries,
+    }
+
+
+def _open_artifact_root(
+    root: ExclusiveRunRoot | Path | str,
+) -> tuple[int, Path, tuple[int, ...]]:
+    if isinstance(root, ExclusiveRunRoot):
+        descriptor = root._open_root()
+        root_path = root.path
+    else:
+        root_path = _absolute(root)
+        _reject_symlink_chain(root_path, include_leaf=True)
+        flags = (
+            os.O_RDONLY
+            | getattr(os, "O_CLOEXEC", 0)
+            | getattr(os, "O_DIRECTORY", 0)
+            | getattr(os, "O_NOFOLLOW", 0)
+        )
+        try:
+            descriptor = os.open(root_path, flags)
+        except OSError as exc:
+            _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{root_path}: {exc}")
+    item = os.fstat(descriptor)
+    if not stat.S_ISDIR(item.st_mode):
+        os.close(descriptor)
+        _fail("ARTIFACT_ROOT_INVALID", str(root_path))
+    return descriptor, root_path, _stat_signature(item)
+
+
+def _artifact_root_entries(
+    root: ExclusiveRunRoot | Path | str,
+) -> tuple[ArtifactRootEntry, ...]:
+    root_fd, root_path, root_signature = _open_artifact_root(root)
+    entries: list[ArtifactRootEntry] = []
+    directory_flags = (
+        os.O_RDONLY
+        | getattr(os, "O_CLOEXEC", 0)
+        | getattr(os, "O_DIRECTORY", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
+    )
+
+    def walk(descriptor: int, prefix: tuple[str, ...]) -> None:
+        before = os.fstat(descriptor)
+        try:
+            with os.scandir(descriptor) as iterator:
+                names = sorted(entry.name for entry in iterator)
+        except OSError as exc:
+            _fail(
+                "ARTIFACT_ROOT_ENUMERATION_FAILED",
+                f"{root_path.joinpath(*prefix)}: {exc}",
+            )
+        for name in names:
+            relative = "/".join((*prefix, name))
+            _manifest_relative_path(
+                relative,
+                "observed path",
+                allow_terminal_receipt=True,
+            )
+            try:
+                item = os.stat(name, dir_fd=descriptor, follow_symlinks=False)
+            except OSError as exc:
+                _fail(
+                    "ARTIFACT_ROOT_ENUMERATION_FAILED",
+                    f"{root_path.joinpath(*prefix, name)}: {exc}",
+                )
+            if stat.S_ISLNK(item.st_mode):
+                _fail(
+                    "ARTIFACT_ROOT_SYMLINK_REJECTED",
+                    str(root_path.joinpath(*prefix, name)),
+                )
+            if stat.S_ISREG(item.st_mode):
+                entries.append(ArtifactRootEntry(relative, "regular_file"))
+                continue
+            if not stat.S_ISDIR(item.st_mode):
+                _fail(
+                    "ARTIFACT_ROOT_SPECIAL_NODE_REJECTED",
+                    str(root_path.joinpath(*prefix, name)),
+                )
+            entries.append(ArtifactRootEntry(relative, "directory"))
+            try:
+                child_fd = os.open(name, directory_flags, dir_fd=descriptor)
+            except OSError as exc:
+                _fail(
+                    "ARTIFACT_ROOT_ENUMERATION_FAILED",
+                    f"{root_path.joinpath(*prefix, name)}: {exc}",
+                )
+            try:
+                opened = os.fstat(child_fd)
+                if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
+                    _fail(
+                        "ARTIFACT_ROOT_CHANGED",
+                        str(root_path.joinpath(*prefix, name)),
+                    )
+                walk(child_fd, (*prefix, name))
+            finally:
+                os.close(child_fd)
+        after = os.fstat(descriptor)
+        if _stat_signature(before) != _stat_signature(after):
+            _fail(
+                "ARTIFACT_ROOT_CHANGED",
+                str(root_path.joinpath(*prefix)),
+            )
+
+    try:
+        walk(root_fd, ())
+        if _stat_signature(os.fstat(root_fd)) != root_signature:
+            _fail("ARTIFACT_ROOT_CHANGED", str(root_path))
+    finally:
+        os.close(root_fd)
+    return tuple(sorted(entries, key=lambda item: item.path))
+
+
+def build_artifact_root_manifest(
+    root: ExclusiveRunRoot | Path | str,
+) -> dict[str, object]:
+    """Enumerate a pre-receipt root and build its exact descendant manifest."""
+
+    entries = _artifact_root_entries(root)
+    if any(entry.path == TERMINAL_RECEIPT_PATH for entry in entries):
+        _fail(
+            "ARTIFACT_ROOT_RECEIPT_STATE_INVALID",
+            f"{TERMINAL_RECEIPT_PATH} exists before manifest construction",
+        )
+    return {
+        "schema": ARTIFACT_ROOT_MANIFEST_SCHEMA,
+        "entries": [entry.as_dict() for entry in entries],
+    }
+
+
+def verify_artifact_root_closure(
+    root: ExclusiveRunRoot | Path | str,
+    manifest: object,
+    *,
+    receipt_present: bool,
+) -> None:
+    """Verify that the manifest plus the reserved receipt is the whole root."""
+
+    if type(receipt_present) is not bool:
+        _fail("ARTIFACT_ROOT_STATE_INVALID", "receipt_present must be bool")
+    normalized = validate_artifact_root_manifest(manifest)
+    expected = {
+        cast(str, entry["path"]): cast(str, entry["type"])
+        for entry in cast(list[dict[str, object]], normalized["entries"])
+    }
+    if receipt_present:
+        expected[TERMINAL_RECEIPT_PATH] = "regular_file"
+    observed = {
+        entry.path: entry.node_type
+        for entry in _artifact_root_entries(root)
+    }
+    if observed != expected:
+        missing = sorted(set(expected) - set(observed))
+        extra = sorted(set(observed) - set(expected))
+        type_mismatch = sorted(
+            path
+            for path in set(expected) & set(observed)
+            if expected[path] != observed[path]
+        )
+        _fail(
+            "ARTIFACT_ROOT_CLOSURE_MISMATCH",
+            f"missing={missing!r}; extra={extra!r}; type_mismatch={type_mismatch!r}",
+        )
+
+
+def require_isolated_python_process() -> dict[str, object]:
+    """Require interpreter-enforced isolation and bytecode suppression."""
+
+    observed = {
+        "isolated": sys.flags.isolated,
+        "ignore_environment": sys.flags.ignore_environment,
+        "no_user_site": sys.flags.no_user_site,
+        "safe_path": bool(getattr(sys.flags, "safe_path", False)),
+        "dont_write_bytecode_flag": sys.flags.dont_write_bytecode,
+        "dont_write_bytecode_runtime": sys.dont_write_bytecode,
+    }
+    expected = {
+        "isolated": 1,
+        "ignore_environment": 1,
+        "no_user_site": 1,
+        "safe_path": True,
+        "dont_write_bytecode_flag": 1,
+        "dont_write_bytecode_runtime": True,
+    }
+    if observed != expected:
+        _fail(
+            "PYTHON_PROCESS_CONTRACT_INVALID",
+            f"expected={expected!r}; observed={observed!r}",
+        )
+    return {
+        "schema": ISOLATED_PYTHON_PROCESS_SCHEMA,
+        "required_argv_flags": ["-I", "-B"],
+        "observed": observed,
+    }
+
+
 def make_research_run_config(*, experiment_id: str, payload: object) -> dict[str, object]:
     """Construct a canonicalizable config envelope without interpreting payload."""
 
@@ -586,7 +872,7 @@ def run_isolated_replay(
     stdin: bytes | None = None,
     timeout_seconds: int | float | None = None,
 ) -> IsolatedReplayObservation:
-    """Run a Python replay with ``-I`` and an exact, caller-controlled environment."""
+    """Run a Python replay with ``-I -B`` and an exact caller-controlled environment."""
 
     script_path = _absolute(script)
     if isinstance(arguments, (str, bytes)) or any(type(argument) is not str for argument in arguments):
@@ -616,13 +902,13 @@ def run_isolated_replay(
                 _fail("REPLAY_ENVIRONMENT_INVALID", f"{key} is forbidden")
             child_environment[key] = value
 
-    argv = (sys.executable, "-I", str(script_path), *tuple(arguments))
+    argv = (str(_absolute(sys.executable)), "-I", "-B", str(script_path), *tuple(arguments))
     try:
         completed = subprocess.run(
             argv,
             cwd=None if cwd is None else _absolute(cwd),
             env=child_environment,
-            input=stdin,
+            input=b"" if stdin is None else stdin,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=timeout_seconds,
@@ -630,6 +916,8 @@ def run_isolated_replay(
             shell=False,
             close_fds=True,
         )
+    except OSError as exc:
+        _fail("REPLAY_LAUNCH_FAILED", f"{argv[0]}: {exc}")
     except subprocess.TimeoutExpired as exc:
         return IsolatedReplayObservation(
             argv=argv,

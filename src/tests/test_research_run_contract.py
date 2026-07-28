@@ -6,21 +6,27 @@ import json
 import math
 import os
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
 from devtools.research_run_contract import (
+    ARTIFACT_ROOT_MANIFEST_SCHEMA,
     ArtifactIdentity,
     ExclusiveRunRoot,
     ResearchRunContractError,
+    build_artifact_root_manifest,
     canonical_json_bytes,
     make_research_run_config,
     make_research_run_receipt,
     read_stable_snapshot,
     replay_identity_graph,
     run_isolated_replay,
+    validate_artifact_root_manifest,
     validate_research_run_config,
     validate_research_run_receipt,
+    verify_artifact_root_closure,
 )
 
 
@@ -193,6 +199,141 @@ def test_exclusive_run_root_detects_replaced_root(tmp_path: Path) -> None:
     assert _error_code(exc_info) == "RUN_ROOT_IDENTITY_DRIFT"
 
 
+def test_artifact_root_manifest_has_unambiguous_pre_and_completed_states(
+    tmp_path: Path,
+) -> None:
+    root = ExclusiveRunRoot.create(tmp_path / "run")
+    root.mkdir("inputs")
+    root.write_bytes("inputs/source.bin", b"source")
+    root.mkdir("empty")
+    root.write_json("config.json", {"schema": "fixture"})
+
+    manifest = build_artifact_root_manifest(root)
+
+    assert manifest == {
+        "schema": ARTIFACT_ROOT_MANIFEST_SCHEMA,
+        "entries": [
+            {"path": "config.json", "type": "regular_file"},
+            {"path": "empty", "type": "directory"},
+            {"path": "inputs", "type": "directory"},
+            {"path": "inputs/source.bin", "type": "regular_file"},
+        ],
+    }
+    verify_artifact_root_closure(root, manifest, receipt_present=False)
+    root.write_json("receipt.json", {"schema": "fixture_receipt"})
+    verify_artifact_root_closure(root, manifest, receipt_present=True)
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "receipt.json",
+        "receipt.json/descendant",
+        "../escape",
+        "/absolute",
+        "nested/../escape",
+        "windows\\separator",
+    ],
+)
+def test_artifact_root_manifest_rejects_reserved_or_escaping_paths(path: str) -> None:
+    manifest = {
+        "schema": ARTIFACT_ROOT_MANIFEST_SCHEMA,
+        "entries": [{"path": path, "type": "regular_file"}],
+    }
+    with pytest.raises(ResearchRunContractError) as exc_info:
+        validate_artifact_root_manifest(manifest)
+    assert _error_code(exc_info) in {
+        "ARTIFACT_ROOT_MANIFEST_INVALID",
+        "ARTIFACT_ROOT_PATH_ESCAPE",
+        "ARTIFACT_ROOT_RECEIPT_RESERVED",
+    }
+
+
+def test_artifact_root_manifest_rejects_unsorted_duplicate_and_missing_parent() -> None:
+    invalid_entries = (
+        [
+            {"path": "z", "type": "regular_file"},
+            {"path": "a", "type": "regular_file"},
+        ],
+        [
+            {"path": "same", "type": "regular_file"},
+            {"path": "same", "type": "regular_file"},
+        ],
+        [{"path": "missing/child", "type": "regular_file"}],
+    )
+    for entries in invalid_entries:
+        with pytest.raises(ResearchRunContractError) as exc_info:
+            validate_artifact_root_manifest(
+                {
+                    "schema": ARTIFACT_ROOT_MANIFEST_SCHEMA,
+                    "entries": entries,
+                }
+            )
+        assert _error_code(exc_info) == "ARTIFACT_ROOT_MANIFEST_INVALID"
+
+
+@pytest.mark.parametrize("pollution_kind", ["file", "directory", "symlink", "fifo"])
+def test_artifact_root_closure_rejects_every_unregistered_node_type(
+    tmp_path: Path,
+    pollution_kind: str,
+) -> None:
+    root = ExclusiveRunRoot.create(tmp_path / "run")
+    root.write_bytes("registered", b"bound")
+    manifest = build_artifact_root_manifest(root)
+    pollution = root.path / "unregistered"
+    if pollution_kind == "file":
+        pollution.write_bytes(b"extra")
+    elif pollution_kind == "directory":
+        pollution.mkdir()
+    elif pollution_kind == "symlink":
+        pollution.symlink_to(root.path / "registered")
+    else:
+        os.mkfifo(pollution)
+
+    with pytest.raises(ResearchRunContractError) as exc_info:
+        verify_artifact_root_closure(root, manifest, receipt_present=False)
+
+    expected = {
+        "file": "ARTIFACT_ROOT_CLOSURE_MISMATCH",
+        "directory": "ARTIFACT_ROOT_CLOSURE_MISMATCH",
+        "symlink": "ARTIFACT_ROOT_SYMLINK_REJECTED",
+        "fifo": "ARTIFACT_ROOT_SPECIAL_NODE_REJECTED",
+    }
+    assert _error_code(exc_info) == expected[pollution_kind]
+
+
+def test_artifact_root_completed_state_requires_one_regular_terminal_receipt(
+    tmp_path: Path,
+) -> None:
+    missing_root = ExclusiveRunRoot.create(tmp_path / "missing")
+    manifest = build_artifact_root_manifest(missing_root)
+    with pytest.raises(ResearchRunContractError) as missing_exc:
+        verify_artifact_root_closure(missing_root, manifest, receipt_present=True)
+    assert _error_code(missing_exc) == "ARTIFACT_ROOT_CLOSURE_MISMATCH"
+
+    directory_root = ExclusiveRunRoot.create(tmp_path / "directory")
+    directory_manifest = build_artifact_root_manifest(directory_root)
+    directory_root.mkdir("receipt.json")
+    with pytest.raises(ResearchRunContractError) as directory_exc:
+        verify_artifact_root_closure(
+            directory_root,
+            directory_manifest,
+            receipt_present=True,
+        )
+    assert _error_code(directory_exc) == "ARTIFACT_ROOT_CLOSURE_MISMATCH"
+
+    symlink_root = ExclusiveRunRoot.create(tmp_path / "symlink")
+    symlink_manifest = build_artifact_root_manifest(symlink_root)
+    (symlink_root.path / "receipt.json").symlink_to(tmp_path / "missing-target")
+    with pytest.raises(ResearchRunContractError) as symlink_exc:
+        verify_artifact_root_closure(
+            symlink_root,
+            symlink_manifest,
+            receipt_present=True,
+        )
+    assert _error_code(symlink_exc) == "ARTIFACT_ROOT_SYMLINK_REJECTED"
+
+
 def test_config_and_receipt_envelopes_leave_payload_opaque(tmp_path: Path) -> None:
     config = make_research_run_config(
         experiment_id="example",
@@ -268,33 +409,114 @@ def test_replay_identity_graph_verifies_bytes_and_hashes_canonical_graph(tmp_pat
 
 
 def test_run_isolated_replay_uses_dash_i_and_exact_environment(tmp_path: Path) -> None:
+    imported = tmp_path / "copied_gate.py"
+    imported.write_text("VALUE = 7\n", encoding="utf-8")
     script = tmp_path / "replay.py"
     script.write_text(
-        "import json, os, sys\n"
+        "import importlib.util, json, os, sys\n"
+        "spec = importlib.util.spec_from_file_location('_copied_gate', sys.argv[1])\n"
+        "module = importlib.util.module_from_spec(spec)\n"
+        "spec.loader.exec_module(module)\n"
         "print(json.dumps({'isolated': sys.flags.isolated, "
+        "'ignore_environment': sys.flags.ignore_environment, "
+        "'dont_write_bytecode': sys.flags.dont_write_bytecode, "
+        "'runtime_dont_write_bytecode': sys.dont_write_bytecode, "
         "'pythonpath': os.environ.get('PYTHONPATH'), "
         "'pythonhome': os.environ.get('PYTHONHOME'), "
-        "'token': os.environ.get('REPLAY_TOKEN')}))\n",
+        "'token': os.environ.get('REPLAY_TOKEN'), "
+        "'imported_value': module.VALUE, "
+        "'stdin': sys.stdin.buffer.read().decode()}))\n",
         encoding="utf-8",
     )
 
     observation = run_isolated_replay(
         script,
+        arguments=(str(imported),),
         environment={"REPLAY_TOKEN": "bound"},
         timeout_seconds=10,
     )
 
     assert observation.returncode == 0
     assert observation.timed_out is False
-    assert observation.argv[1] == "-I"
+    assert observation.argv[1:3] == ("-I", "-B")
     assert observation.stderr == b""
     output = json.loads(observation.stdout)
     assert output == {
+        "dont_write_bytecode": 1,
+        "ignore_environment": 1,
+        "imported_value": 7,
         "isolated": 1,
         "pythonpath": None,
         "pythonhome": None,
+        "runtime_dont_write_bytecode": True,
+        "stdin": "",
         "token": "bound",
     }
+    assert list(tmp_path.rglob("__pycache__")) == []
+    assert list(tmp_path.rglob("*.pyc")) == []
+
+
+def test_isolated_process_contract_rejects_environment_only_bytecode_suppression(
+    tmp_path: Path,
+) -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    script = tmp_path / "contract_probe.py"
+    script.write_text(
+        "import json, sys\n"
+        f"sys.path.insert(0, {str(project_root)!r})\n"
+        "from devtools.research_run_contract import "
+        "ResearchRunContractError, require_isolated_python_process\n"
+        "try:\n"
+        "    require_isolated_python_process()\n"
+        "except ResearchRunContractError as exc:\n"
+        "    print(json.dumps({'code': exc.code}))\n"
+        "    raise SystemExit(0)\n"
+        "raise SystemExit(9)\n",
+        encoding="utf-8",
+    )
+    completed = subprocess.run(
+        [sys.executable, str(script)],
+        env={"PYTHONDONTWRITEBYTECODE": "1"},
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert json.loads(completed.stdout) == {
+        "code": "PYTHON_PROCESS_CONTRACT_INVALID"
+    }
+    assert list(tmp_path.rglob("__pycache__")) == []
+
+
+def test_isolated_process_contract_accepts_dash_i_dash_b(tmp_path: Path) -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    script = tmp_path / "contract_probe.py"
+    script.write_text(
+        "import json, sys\n"
+        f"sys.path.insert(0, {str(project_root)!r})\n"
+        "from devtools.research_run_contract import require_isolated_python_process\n"
+        "print(json.dumps(require_isolated_python_process(), sort_keys=True))\n",
+        encoding="utf-8",
+    )
+    completed = subprocess.run(
+        [sys.executable, "-I", "-B", str(script)],
+        env={},
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
+    contract = json.loads(completed.stdout)
+    assert contract["required_argv_flags"] == ["-I", "-B"]
+    assert contract["observed"] == {
+        "isolated": 1,
+        "ignore_environment": 1,
+        "no_user_site": 1,
+        "safe_path": True,
+        "dont_write_bytecode_flag": 1,
+        "dont_write_bytecode_runtime": True,
+    }
+    assert list(tmp_path.rglob("__pycache__")) == []
 
 
 @pytest.mark.parametrize("forbidden", ["PYTHONPATH", "PYTHONHOME"])
