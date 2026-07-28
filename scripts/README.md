@@ -1,9 +1,11 @@
 # `scripts/` operator map
 
-As of 2026-06-26 the tracked directory contains 434 Python files, 13 PowerShell files, 12 shell
-files, 2 Markdown files, 1 FZN file and 1 MJS file. Counts are inventory only, not a gate or proof
-claim. Most `build_*`, phase3b and PoC scripts are artifact generators or historical diagnostics,
-not daily authority entrypoints.
+The repository-wide code-asset inventory and the current classification of `scripts/` live in
+`data/repository_governance/code_assets.json`; recompute them with
+`python devtools/check_repository_code_assets.py check`. Most `build_*`, phase3b and PoC scripts
+are artifact generators, retirement candidates, or historical diagnostics rather than daily
+authority entrypoints. A script remaining tracked is not evidence that it belongs to the
+developer default surface.
 
 ## Certified campaign operations
 
@@ -30,6 +32,9 @@ pytest lanes. It does not run the retired `sync_doc_subjects.py`, `check_doc_tre
 
 Important focused checks include:
 
+- `devtools/check_repository_code_assets.py`: validates the Git-visible code-asset classification
+  and developer/full projections. It is a repository-governance gate, not a proof or soundness
+  conclusion;
 - `check_phase_review_gate.py`: validates the fail-closed P1.2 owner gate. Passing it does not close
   the gate;
 - `check_p1_2_proof_obligations.py`: validates the registered close-kernel structure and hashes. A
@@ -85,9 +90,18 @@ future-scope tools. A green artifact test establishes only its declared contract
 ## Finding a script
 
 ```bash
-ls scripts/ | grep <keyword>
-rg -n "from scripts\.<name>|import scripts\.<name>" src scripts
+rg -n '<keyword>'
+git grep -n -I -e '<keyword>' --
 ```
 
-Before using an old command from research logs, verify that the script still exists and check its
-current `--help` plus the root `CLAUDE.md`/`PROJECT_LOCK.md` authority statements.
+The first command is the developer view and honors `.rgignore`; the second searches every tracked
+path and ignores `.rgignore`. The projection hides historical source/executable payloads and 19
+explicit retirement candidates from routine search, but it does not hide current specs,
+`PROJECT_LOCK.md`, canonical inputs, security controls, or governance controls. Secret scans,
+artifact-boundary checks, frozen hashes and full preflight enumerate Git-visible or explicit paths
+instead.
+
+Before using an old command from research logs, verify that the script still exists, locate its
+classification in the governance manifest, and check its current `--help` plus the root
+`CLAUDE.md`/`PROJECT_LOCK.md` authority statements. Use the explicit evidence/replay workflow for
+historical executables; do not import them into active code.

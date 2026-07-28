@@ -464,6 +464,28 @@
         "rationale": "Historical Phase3B executable tooling remains reproducible through explicit lanes."
       },
       {
+        "id": "phase3b_replay_wrappers",
+        "match": {
+          "paths": [
+            "scripts/run_phase3b_checkpoint_free_evaluator.py",
+            "scripts/run_phase3b_checkpoint_free_overlay_timing_probe.py",
+            "scripts/run_phase3b_local_tuning_profile.py"
+          ]
+        },
+        "primary_class": "common_infrastructure",
+        "lifecycle": "historical_executable_replay",
+        "authority_role": "non_authoritative_replay_entrypoint",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "evidence",
+          "replay",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retained_no_bulk_rewrite",
+        "rationale": "These root wrappers execute the Phase3B snapshot tree and remain available only through explicit replay/full paths."
+      },
+      {
         "id": "active_campaign_and_gate_scripts",
         "match": {
           "paths": [
@@ -684,12 +706,15 @@
   },
   "logical_isolation": {
     "search": {
-      "enabled": false,
+      "enabled": true,
       "excluded_rules": [
         ".artifacts/**",
         "paths/**",
         "third_party_snapshots/**",
         "scripts/phase3b/**",
+        "scripts/run_phase3b_checkpoint_free_evaluator.py",
+        "scripts/run_phase3b_checkpoint_free_overlay_timing_probe.py",
+        "scripts/run_phase3b_local_tuning_profile.py",
         "src/tests/phase3b/**",
         "docs/research/**/*.py",
         "docs/research/**/*.pyi",
@@ -707,11 +732,26 @@
         "docs/research/**/*.lean",
         "docs/research/**/*.fzn",
         "docs/research/**/*.html",
-        "docs/research/cleanroom_rederivation_20260718/*next_certificate_python_gpt_pro_verbatim.md",
-        "scripts/build_phase1_1_gpt_pro_review_v?.py",
-        "scripts/build_phase1_2_entry_review_v?.py",
-        "scripts/build_phase1_2_entry_review_v??.py",
-        "scripts/build_phase1_2_spike_review_v??.py"
+        "docs/research/cleanroom_rederivation_20260718/14_r4_next_certificate_python_gpt_pro_verbatim.md",
+        "scripts/build_phase1_1_gpt_pro_review_v2.py",
+        "scripts/build_phase1_1_gpt_pro_review_v3.py",
+        "scripts/build_phase1_1_gpt_pro_review_v4.py",
+        "scripts/build_phase1_1_gpt_pro_review_v5.py",
+        "scripts/build_phase1_1_gpt_pro_review_v6.py",
+        "scripts/build_phase1_1_gpt_pro_review_v7.py",
+        "scripts/build_phase1_1_gpt_pro_review_v8.py",
+        "scripts/build_phase1_2_entry_review_v9.py",
+        "scripts/build_phase1_2_entry_review_v10.py",
+        "scripts/build_phase1_2_entry_review_v11.py",
+        "scripts/build_phase1_2_spike_review_v14.py",
+        "scripts/build_phase1_2_spike_review_v15.py",
+        "scripts/build_phase1_2_spike_review_v16.py",
+        "scripts/build_phase1_2_spike_review_v17.py",
+        "scripts/build_phase1_2_spike_review_v18.py",
+        "scripts/build_phase1_2_spike_review_v19.py",
+        "scripts/build_phase1_2_spike_review_v20.py",
+        "scripts/build_phase1_2_spike_review_v21.py",
+        "scripts/build_phase1_2_spike_review_v22.py"
       ]
     },
     "lint": {
@@ -721,7 +761,30 @@
         "paths/**",
         "third_party_snapshots/**",
         "scripts/phase3b/**",
-        "docs/research/**"
+        "scripts/run_phase3b_checkpoint_free_evaluator.py",
+        "scripts/run_phase3b_checkpoint_free_overlay_timing_probe.py",
+        "scripts/run_phase3b_local_tuning_profile.py",
+        "src/tests/phase3b/**",
+        "docs/research/**",
+        "scripts/build_phase1_1_gpt_pro_review_v2.py",
+        "scripts/build_phase1_1_gpt_pro_review_v3.py",
+        "scripts/build_phase1_1_gpt_pro_review_v4.py",
+        "scripts/build_phase1_1_gpt_pro_review_v5.py",
+        "scripts/build_phase1_1_gpt_pro_review_v6.py",
+        "scripts/build_phase1_1_gpt_pro_review_v7.py",
+        "scripts/build_phase1_1_gpt_pro_review_v8.py",
+        "scripts/build_phase1_2_entry_review_v9.py",
+        "scripts/build_phase1_2_entry_review_v10.py",
+        "scripts/build_phase1_2_entry_review_v11.py",
+        "scripts/build_phase1_2_spike_review_v14.py",
+        "scripts/build_phase1_2_spike_review_v15.py",
+        "scripts/build_phase1_2_spike_review_v16.py",
+        "scripts/build_phase1_2_spike_review_v17.py",
+        "scripts/build_phase1_2_spike_review_v18.py",
+        "scripts/build_phase1_2_spike_review_v19.py",
+        "scripts/build_phase1_2_spike_review_v20.py",
+        "scripts/build_phase1_2_spike_review_v21.py",
+        "scripts/build_phase1_2_spike_review_v22.py"
       ]
     },
     "pytest": {
@@ -801,7 +864,7 @@
         },
         {
           "path": "docs/research/noncert_cuts_ab16_20260724/ab16_authority_v2.py",
-          "symbol": "strict_json",
+          "symbol": "strict_loads",
           "role": "sealed_replay",
           "consumers": [
             "AB16 immutable replay"
@@ -895,7 +958,7 @@
       "implementations": [
         {
           "path": "docs/research/noncert_cuts_ab16_20260724/ab16_authority_v2.py",
-          "symbol": "resource receipt validation and replay family",
+          "symbol": "_replay_selected_arm_evidence",
           "role": "sealed_replay",
           "consumers": [
             "AB16 immutable closeout"
@@ -904,11 +967,11 @@
           "lifecycle": "frozen"
         },
         {
-          "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/verify_smm4_old_upper_v1.py",
+          "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/verify_smm4_two_stage_v1.py",
           "symbol": "_validate_resource_receipt",
           "role": "required_independent",
           "consumers": [
-            "SMM4 independent old-upper replay"
+            "SMM4 independent two-stage replay"
           ],
           "authority_source": "SMM4 frozen evidence graph",
           "lifecycle": "frozen"
@@ -931,7 +994,7 @@
         },
         {
           "path": "docs/research/noncert_cuts_ab16_20260724/ab16_authority_v2.py",
-          "symbol": "terminal receipt validation and replay family",
+          "symbol": "_replay_selected_arm_evidence",
           "role": "sealed_replay",
           "consumers": [
             "AB16 immutable closeout"
@@ -946,7 +1009,7 @@
     {
       "id": "preflight_core",
       "workflow": "full",
-      "argv_source": "scripts/preflight_gate.py core/staged/CI targets",
+      "argv_source": "scripts/preflight_gate.py core/staged; project_foundation.yml --ci; production_readiness_gate.py delegation",
       "baseline_count": 1544,
       "baseline_sha256": "3504a8a52e6eadd98f322d1973603e788ff51b79847b2cfb5c85fbf077cbf0ec",
       "expected_count": 1544,
@@ -980,6 +1043,15 @@
       "expected_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1"
     },
     {
+      "id": "auxiliary_memory_tests",
+      "workflow": "full",
+      "argv_source": "python -m pytest cc_memory/tests cc_memory_vnext/tests",
+      "baseline_count": 107,
+      "baseline_sha256": "32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1",
+      "expected_count": 107,
+      "expected_sha256": "32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1"
+    },
+    {
       "id": "bare_pytest",
       "workflow": "developer",
       "argv_source": "python -m pytest",
@@ -996,6 +1068,15 @@
       "baseline_sha256": "54a44dda12944ca1bf6b43a7840ef1f18c23b5e84bebc8923e814c8441a09a78",
       "expected_count": 30,
       "expected_sha256": "54a44dda12944ca1bf6b43a7840ef1f18c23b5e84bebc8923e814c8441a09a78"
+    },
+    {
+      "id": "repository_governance_tests",
+      "workflow": "focused_full",
+      "argv_source": ".github/workflows/project_foundation.yml repository-governance step",
+      "baseline_count": 0,
+      "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_count": 23,
+      "expected_sha256": "d15fbb52c717beae5c86e70a260109faafc3e032e724061beab19840ebe74e6e"
     },
     {
       "id": "industrial_planner_single_base",

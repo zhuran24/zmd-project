@@ -1,6 +1,6 @@
 # `docs/项目说明/` 项目书
 
-本目录有 27 个专题文档，加本 README，共 28 个 Markdown 文件。它同时包含当前说明、数学背景、
+本目录有 28 个专题文档，加本 README，共 29 个 Markdown 文件。它同时包含当前说明、数学背景、
 历史复盘和未来计划，不能把每个文件都当成同等级的现状 authority。
 
 ## 当前权威与历史入口
@@ -8,10 +8,12 @@
 1. `PROJECT_LOCK.md`：认证命题、Accepted Invariants、禁止变更与发布边界。
 2. `data/review_gates/phase_1_2_spike_close.json`：owner phase gate 的机器状态。
 3. `docs/项目说明/06_current_status.md`：当前工作树的人类可读状态。
-4. `docs/项目说明/soundness_gap_roadmap.md`：截至 2026-07-11 的 P1.2 soundness
+4. `docs/项目说明/24_repository_asset_governance.md`：代码资产分类、维护者实现索引和
+   developer/evidence/replay/full 工作流的治理 authority；不授予认证或 production authority。
+5. `docs/项目说明/soundness_gap_roadmap.md`：截至 2026-07-11 的 P1.2 soundness
    历史快照；仅用于追溯当时的 IMPLEMENTED/OPEN/PARTIAL 与 P1.2 scope exclusion，
    不是当前 authority。
-5. 其余 phase plan / historical review / research 文档：设计或历史上下文，不能覆盖上述现状。
+6. 其余 phase plan / historical review / research 文档：设计或历史上下文，不能覆盖上述现状。
 
 截至 2026-07-27，P1.2 已由 owner 显式 `owner_manual_decision` 关闭
 （`closed_manual_owner_decision`，`p1_3b_entry_allowed=true`），P1.3 已开放。当前研究账本为
@@ -38,6 +40,7 @@ promotion 仍未关闭。规则与 cut 演化规格仍是 test/offline-only shad
 | 历史死路 | [03_paradigm_death_baseline.md](03_paradigm_death_baseline.md) + [07_historical_review.md](07_historical_review.md) |
 | 项目怎么走到今天（人话编年史） | [22_project_journey_plain_language.md](22_project_journey_plain_language.md) |
 | 规则与 cut 演化 shadow 协议（test-only；production deferred） | [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md) |
+| 代码资产分类、搜索、lint 与测试工作流 | [24_repository_asset_governance.md](24_repository_asset_governance.md) |
 | 当前研究账本与 `(1188,18)` authority 终态 | [R4 `(1188,22)`](../research/b1_r4_1188_22_pb_20260723/README.md) + [`(1188,18)` strict closeout](../research/b1_sidewise_marked_membrane_strict_20260724/README.md) |
 | noncert cuts A/B 证据边界 | [Gate 1 v4](../research/noncert_cuts_ab_trust_gate1_v4_20260724/README.md) + [AB16](../research/noncert_cuts_ab16_20260724/README.md) |
 | 后续 P1.3 | [09_phase_1_3_plan.md](09_phase_1_3_plan.md) |
@@ -45,7 +48,7 @@ promotion 仍未关闭。规则与 cut 演化规格仍是 test/offline-only shad
 
 ## 文件分类
 
-当前说明：01、04、05、06、11、12、14、15、16、17、18、21、supervisor detailed design。
+当前说明：01、04、05、06、11、12、14、15、16、17、18、21、24、supervisor detailed design。
 
 测试/离线 shadow 协议：23（non-authorizing；production 接线延期）。
 
@@ -62,3 +65,8 @@ promotion 仍未关闭。规则与 cut 演化规格仍是 test/offline-only shad
 
 更新当前行为时，至少同步：`PROJECT_LOCK.md`、06、`00_master_roadmap.md`、相关 spec、代码 docstring/comment、proof
 obligation/allowlist 理由和 cc_memory active 节点/边。历史日志保留当时事实，但入口必须标明其时间边界。
+
+新增或重分类代码资产时，还必须同步
+`data/repository_governance/code_assets.json` 并运行
+`python devtools/check_repository_code_assets.py check`；`.rgignore` 只允许作为 manifest 的
+developer 搜索投影，不能单独承担分类或全仓安全边界。

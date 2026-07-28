@@ -1,7 +1,7 @@
 # FILE_STATUS.md
 
 **Status:** CURRENT_INVENTORY  
-**Updated:** 2026-07-18
+**Updated:** 2026-07-28
 **Release state:** P1.2 OWNER-CLOSED / P1.3 IN PROGRESS (cut attach not yet promoted)
 **History**: Engineering history lives in [CHANGELOG.md](CHANGELOG.md).
 
@@ -41,7 +41,7 @@
 | `src/models/binding_subproblem.py` | CURRENT_CODE_ALIGNED | 命题 P 的 binding gate |
 | `src/models/routing_subproblem.py` | CURRENT_CODE_ALIGNED | 命题 P 的有向连通 gate，含 selected-route connectivity recheck |
 | `src/models/flow_subproblem.py` | DIAGNOSTIC_ONLY | 连续 LP 诊断；不门控 certified verdict，不产生认证吞吐证明 |
-| `src/models/pose_bool_exact_master.py` | HISTORICAL_OR_PLAN | env-gated alternative；不是当前 public certified backend |
+| `src/models/pose_bool_exact_master.py` | CURRENT_CODE_ALIGNED | active env-gated alternative master；certified mode 显式禁用并 fail closed；不是 public certified backend |
 | `src/cuts/` | CURRENT_CODE_ALIGNED | active F1-F7+F9（F8 retired）；Stage B B0-B5b + 批D + α/α2 已落地（2026-07-12）：F1/F6/F7 typed lowering 全链、F5 shadow-only（无 lowering，真 adapter 在 verifier 前 fail-closed）、F2/F3/F4/F9 LEGACY_DIAGNOSTIC registry 拒绝；attach 仍 certified unsafe/default-off，PIC-4/5 生产层+RFC-003+B6 owner pending |
 
 ## Frozen inputs
@@ -85,7 +85,10 @@
 |---|---|---|
 | `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-07-11 已同步 F8 retirement / partial attach / Stage B boundary |
 | `README.md`, `NAV_MAP.md`, `docs/项目说明/06_current_status.md` | CURRENT_CODE_ALIGNED | 当前入口与状态摘要 |
-| `docs/research/**` | HISTORICAL_OR_PLAN | 时间点证据/实验档案；不得覆盖当前工作树 |
+| `docs/项目说明/24_repository_asset_governance.md` | CURRENT_CODE_ALIGNED | G1/G2 代码资产分类、维护者实现索引及 developer/evidence/replay/full 工作流；不授予认证 authority |
+| `data/repository_governance/code_assets.json` | STRUCTURAL_GATE | 可复算目录规则、显式例外与基线收据；由 schema/checker fail closed 校验 |
+| `docs/research/**`（下列 §2B current-spec 除外） | HISTORICAL_OR_PLAN | 时间点证据/实验档案；不得覆盖当前工作树 |
+| `docs/research/p3_b_design_v2_20260521/{cut_lifecycle_v2.md,state_machine_v2.md,cut_family_specs/**}` | CURRENT_CODE_ALIGNED | `PROJECT_LOCK.md` §2B 指定的 cut object current specs；不受历史源码默认搜索投影影响 |
 | `cc_memory/memory.db` | CURRENT_CODE_ALIGNED | active collaboration memory；通过 CLI 更新并保持 edges/facts 一致 |
 
 ## Specs
@@ -96,6 +99,30 @@
 | `specs/11_pipeline_orchestration.md` | CURRENT_CODE_ALIGNED | producer/supervisor/publisher pipeline; non-authoritative frontier probe |
 | `specs/21_frontier_probe_and_campaign_telemetry.md` | CURRENT_CODE_ALIGNED | frontier probe + campaign telemetry spec (diagnostic-only) |
 
+## Repository code-asset inventory
+
+2026-07-28 基线收据（tracked-clean `main`，HEAD
+`201c1988243951e16473af15f5d670ab11edf964`）：Git-visible 资产 3,249 个；其中代码资产
+2,001 个、36,483,677 bytes、912,444 LF 行。分类为 active implementation 386、test 646、
+common infrastructure 475、authoritative input 4、enforcement control 7、historical evidence 464、
+retirement candidate 19。该数字只描述这个带日期的基线；当前工作树由
+`python devtools/check_repository_code_assets.py check` 重新枚举并校验，不能把本段抄作后续现值。
+
 ## Test inventory
 
-2026-07-12 collect-only（HEAD `07d04b3`，`.venv` 解释器）：455 个 `test*.py` 文件（`git ls-files 'src/tests/**/test*.py' 'src/tests/test*.py'`）/ 4424 tests；`-m slow` 收集 31 个实例（`_SLOW_TEST_NODEIDS` 字面登记 24 条）；`src/tests/cuts` 单独为 833 tests。以上均是收集数量，不是通过数量；批次提交信息里的 cuts N 是各自 commit 时点快照，不是当前树数字。结构 checker 当前口径：15 obligations / 67 proof-bearing sinks；strong-status 65 AST nodes / 83 allowlist entries。
+2026-07-28、G2 隔离前的 tracked-clean `201c198` bare-pytest 基线为 6,624 个 nodeid，
+规范化 SHA256 为
+`6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96`。G2 终态的互斥快速面为：
+developer 3,474（`d2cbd92cfd9b06d3a77892169d027e85de8ffbd058a3c1eb3ea5f78369d5bb6c`）、
+evidence/non-replay 1,504（`3d2953ce5e71a3731dd5e08a57d4b12be90c152978cf4988956c112d029af6bb`）、
+replay 1,508（`47a3861c3f1834ccf4bd8cf81e84f468bf6c3ae138859e6a03df550e796d799f`）。
+三者并集逐 nodeid 等于未改变的 full/non-slow 6,486
+（`2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c`）。
+
+以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 仍为 6,517
+（`bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1`），slow 仍为 31
+（`9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd`）；既有 focused
+入口的 count/hash 不变。另有 107 个 auxiliary memory tests 通过显式 full 路径保留，
+nodeid SHA256 为 `32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1`。
+入口命令和边界见 `docs/项目说明/24_repository_asset_governance.md`；
+完整 preflight 仍由非 slow 与 slow 两条显式门禁共同组成。

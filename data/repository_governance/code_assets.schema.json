@@ -613,7 +613,7 @@
         "excluded_rules": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/repositoryGlob"
+            "$ref": "#/$defs/repositoryPath"
           },
           "uniqueItems": true
         }

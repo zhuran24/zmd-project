@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+from pathlib import Path
 import subprocess
 import sys
 from types import SimpleNamespace
@@ -145,6 +146,16 @@ def test_authority_inputs_controls_and_current_specs_are_not_historical_evidence
     assert f8["lifecycle"] == "retired_retained"
 
 
+def test_capability_index_paths_and_symbols_are_live_without_crossing_frozen_boundaries() -> None:
+    manifest = assets.load_manifest()
+    assets._validate_capability_index(manifest)
+
+    stale = copy.deepcopy(manifest)
+    stale["capability_index"][0]["implementations"][0]["symbol"] = "__missing_symbol__"
+    with pytest.raises(assets.GovernanceError, match="symbol is stale"):
+        assets._validate_capability_index(stale)
+
+
 def test_g1_disabled_projection_mode_has_no_g2_file_dependency() -> None:
     manifest = copy.deepcopy(assets.load_manifest())
     for name in ("search", "lint", "pytest"):
@@ -152,19 +163,82 @@ def test_g1_disabled_projection_mode_has_no_g2_file_dependency() -> None:
     assets._validate_enabled_projections(manifest)
 
 
-def test_g2_pytest_and_lint_are_enabled_without_enabling_search_early() -> None:
+def test_g2_search_pytest_and_lint_projections_are_enabled() -> None:
     manifest = assets.load_manifest()
     assert {
         name: manifest["logical_isolation"][name]["enabled"]
         for name in ("search", "lint", "pytest")
-    } == {"search": False, "lint": True, "pytest": True}
+    } == {"search": True, "lint": True, "pytest": True}
 
     developer = assets._projected_lint_paths("developer")
     full = assets._projected_lint_paths("full")
     assert developer["projection_enabled"] is True
     assert "src/models/pose_bool_exact_master.py" in developer["paths"]
     assert "scripts/phase3b/checkpoint_free/signature_bucket/build_s53_fail_closed_hardening.py" not in developer["paths"]
+    assert "scripts/build_phase1_2_spike_review_v22.py" not in developer["paths"]
     assert "scripts/phase3b/checkpoint_free/signature_bucket/build_s53_fail_closed_hardening.py" in full["paths"]
+    assert "scripts/build_phase1_2_spike_review_v22.py" in full["paths"]
+
+
+def test_search_projection_is_exact_and_does_not_hide_future_retirement_names() -> None:
+    manifest = assets.load_manifest()
+    expected = manifest["logical_isolation"]["search"]["excluded_rules"]
+    actual = [
+        line
+        for raw_line in (assets.ROOT / ".rgignore").read_text(encoding="utf-8").splitlines()
+        if (line := raw_line.strip()) and not line.startswith("#")
+    ]
+    assert actual == expected
+    assert "scripts/build_phase1_2_spike_review_v22.py" in actual
+    assert "scripts/build_phase1_2_spike_review_v23.py" not in actual
+    assert not any(
+        assets._matches_glob("src/models/pose_bool_exact_master.py", pattern)
+        for pattern in actual
+    )
+    assert not any(
+        assets._matches_glob("rules/canonical_rules.json", pattern)
+        for pattern in actual
+    )
+
+
+def test_phase3b_replay_wrappers_are_outside_the_developer_import_surface() -> None:
+    manifest = assets.load_manifest()
+    wrappers = (
+        "scripts/run_phase3b_checkpoint_free_evaluator.py",
+        "scripts/run_phase3b_checkpoint_free_overlay_timing_probe.py",
+        "scripts/run_phase3b_local_tuning_profile.py",
+    )
+    for path in wrappers:
+        classification = assets._classification_for(path, manifest)
+        assert classification["lifecycle"] == "historical_executable_replay"
+        assert "developer" not in classification["workflow_membership"]
+    assets._validate_developer_import_boundary(manifest)
+
+
+def test_lint_projection_has_a_nul_safe_python_path_channel() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(assets.ROOT / "devtools" / "check_repository_code_assets.py"),
+            "lint",
+            "--profile",
+            "developer",
+            "--format",
+            "nul",
+        ],
+        cwd=assets.ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+    )
+    paths = tuple(
+        part.decode("utf-8")
+        for part in completed.stdout.split(b"\0")
+        if part
+    )
+    assert paths
+    assert all(Path(path).suffix in {".py", ".pyi"} for path in paths)
+    assert "src/models/pose_bool_exact_master.py" in paths
+    assert "scripts/phase3b/checkpoint_free/signature_bucket/build_s53_fail_closed_hardening.py" not in paths
 
 
 def test_pytest_lane_rules_are_ordered_replay_evidence_then_developer() -> None:

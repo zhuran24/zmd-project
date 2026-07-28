@@ -635,6 +635,41 @@ def _validate_pytest_lanes(manifest: Mapping[str, Any]) -> None:
             raise GovernanceError(f"pytest lane rule for {path} is invalid")
 
 
+def _validate_capability_index(manifest: Mapping[str, Any]) -> None:
+    visible = set(git_visible_paths())
+    for capability in manifest["capability_index"]:
+        implementations = capability["implementations"]
+        identities: set[str] = set()
+        for implementation in implementations:
+            path = implementation["path"]
+            symbol = implementation["symbol"]
+            if path not in visible:
+                raise GovernanceError(
+                    f"capability index path is not Git-visible: {path}"
+                )
+            try:
+                tree = ast.parse((ROOT / path).read_bytes(), filename=path)
+            except (OSError, SyntaxError) as exc:
+                raise GovernanceError(
+                    f"cannot AST-parse capability implementation {path}: {exc}"
+                ) from exc
+            top_level_symbols = {
+                node.name
+                for node in tree.body
+                if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+            }
+            if symbol not in top_level_symbols:
+                raise GovernanceError(
+                    f"capability index symbol is stale: {path}::{symbol}"
+                )
+            identities.add(f"{path}::{symbol}")
+        shared_authority = capability["shared_authority"]
+        if shared_authority is not None and shared_authority not in identities:
+            raise GovernanceError(
+                f"capability shared authority is not an indexed implementation: {shared_authority}"
+            )
+
+
 def _validate_enabled_projections(manifest: Mapping[str, Any]) -> None:
     isolation = manifest["logical_isolation"]
     if isolation["search"]["enabled"]:
@@ -737,9 +772,49 @@ def _validate_no_production_devtools_import() -> None:
         raise GovernanceError(f"production source references developer governance tooling: {violations!r}")
 
 
+def _validate_developer_import_boundary(manifest: Mapping[str, Any]) -> None:
+    measured = inventory(include_assets=True)
+    forbidden_prefixes = {
+        "docs.research",
+        "paths",
+        "scripts.phase3b",
+        "src.tests.phase3b",
+        "third_party_snapshots",
+    }
+    for record in measured["assets"]:
+        if (
+            record["primary_class"] not in {"active_implementation", "common_infrastructure"}
+            or "developer" not in record["workflow_membership"]
+            or PurePosixPath(record["path"]).suffix not in {".py", ".pyi"}
+        ):
+            continue
+        path = ROOT / record["path"]
+        try:
+            tree = ast.parse(path.read_bytes(), filename=record["path"])
+        except (OSError, SyntaxError) as exc:
+            raise GovernanceError(
+                f"cannot AST-parse developer import surface {record['path']}: {exc}"
+            ) from exc
+        for node in ast.walk(tree):
+            modules: list[str] = []
+            if isinstance(node, ast.Import):
+                modules.extend(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom) and isinstance(node.module, str):
+                modules.append(node.module)
+            for module in modules:
+                if any(
+                    module == prefix or module.startswith(prefix + ".")
+                    for prefix in forbidden_prefixes
+                ):
+                    raise GovernanceError(
+                        "developer import surface reaches an isolated historical module: "
+                        f"{record['path']}:{node.lineno}:{module}"
+                    )
+
+
 def check() -> dict[str, Any]:
-    # Parsing the schema itself is mandatory even though validation below stays
-    # stdlib-only so the checker does not create a second dependency authority.
+    # The adjacent schema is the structural contract; semantic checks below add
+    # repository-specific invariants that JSON Schema cannot express.
     schema = _load_json_object(SCHEMA_PATH)
     if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
         raise GovernanceError("code asset schema must use JSON Schema 2020-12")
@@ -749,9 +824,11 @@ def check() -> dict[str, Any]:
     baseline = _validate_baseline(manifest)
     current = _validate_current(manifest)
     _validate_pytest_lanes(manifest)
+    _validate_capability_index(manifest)
     _validate_enabled_projections(manifest)
     source_receipt = _source_discovery_receipt(manifest)
     _validate_no_production_devtools_import()
+    _validate_developer_import_boundary(manifest)
     return {
         "status": "PASS",
         "manifest": MANIFEST_PATH.relative_to(ROOT).as_posix(),
@@ -789,7 +866,11 @@ def _projected_lint_paths(profile: str) -> dict[str, Any]:
     manifest = load_manifest()
     projection = manifest["logical_isolation"]["lint"]
     measured = inventory(include_assets=True)
-    assets = measured["assets"]
+    assets = [
+        asset
+        for asset in measured["assets"]
+        if PurePosixPath(asset["path"]).suffix in {".py", ".pyi"}
+    ]
     if profile == "full" or not projection["enabled"]:
         selected = [asset["path"] for asset in assets]
     else:
@@ -810,6 +891,13 @@ def _projected_lint_paths(profile: str) -> dict[str, Any]:
 
 
 def _emit(value: Any, output_format: str) -> None:
+    if output_format == "nul":
+        if not isinstance(value, dict) or not isinstance(value.get("paths"), list):
+            raise GovernanceError("NUL output is available only for path projections")
+        sys.stdout.buffer.write(
+            b"".join(os.fsencode(path) + b"\0" for path in value["paths"])
+        )
+        return
     if output_format == "json":
         print(json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False))
         return
@@ -848,7 +936,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     lint_parser = subparsers.add_parser("lint", help="emit the requested lint path projection")
     lint_parser.add_argument("--profile", choices=("developer", "full"), required=True)
-    lint_parser.add_argument("--format", choices=("text", "json"), default="text")
+    lint_parser.add_argument("--format", choices=("text", "json", "nul"), default="text")
 
     pytest_parser = subparsers.add_parser(
         "pytest-entrypoints",
