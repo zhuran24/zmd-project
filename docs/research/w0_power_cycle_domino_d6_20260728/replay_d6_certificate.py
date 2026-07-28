@@ -32,11 +32,84 @@ ARTIFACT_ROOT_MANIFEST_SCHEMA = "research_artifact_root_manifest_v1"
 ISOLATED_PYTHON_PROCESS_SCHEMA = "isolated_python_process_contract_v1"
 TERMINAL_RECEIPT_PATH = "receipt.json"
 ANTECEDENT_SCHEMA = "w0_d6_antecedent_v1"
+V3_ANTECEDENT_SCHEMA = "w0_d6_antecedent_v2"
 GATE_RESULT_SCHEMA = "w0_d6_gate_result_v1"
 RESULT_SCHEMA = "w0_d6_result_v1"
 CONFIGURATION_SCHEMA = "w0_d6_configuration_v1"
 CERTIFICATE_SCHEMA = "w0_d6_local_certificate_v1"
-REPLAY_SCHEMA = "w0_d6_replay_receipt_v2"
+CLOSED_V2_CONFIG_PAYLOAD_SCHEMA = "w0_d6_run_config_v2"
+CLOSED_V2_RECEIPT_PAYLOAD_SCHEMA = "w0_d6_receipt_payload_v2"
+CLOSED_V2_REPLAY_RECEIPT_SCHEMA = "w0_d6_replay_receipt_v2"
+PROTOCOL_COHORT = "w0_d6_swap_v3"
+CLASS_ALLOCATION_PROFILE = "d6_6b_d9_6g_swap_v1"
+V3_CONFIG_PAYLOAD_SCHEMA = "w0_d6_run_config_v3"
+V3_RECEIPT_PAYLOAD_SCHEMA = "w0_d6_receipt_payload_v3"
+V3_REPLAY_RECEIPT_SCHEMA = "w0_d6_replay_receipt_v3"
+EXPECTED_PROJECT_LOCK_SHA256 = (
+    "e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7"
+)
+CLOSED_V2_PROFILE = "closed_v2"
+SWAP_V3_PROFILE = "swap_v3"
+CLASS_ORDER = ("3I2", "3L", "3O2", "3O3", "5L", "5O2", "6B", "6F", "6G")
+D6_BEFORE_CLASS_COUNTS = {
+    "3I2": 0,
+    "3L": 7,
+    "3O2": 0,
+    "3O3": 3,
+    "5L": 2,
+    "5O2": 2,
+    "6B": 1,
+    "6F": 0,
+    "6G": 2,
+}
+D6_AFTER_CLASS_COUNTS = {
+    "3I2": 0,
+    "3L": 7,
+    "3O2": 0,
+    "3O3": 3,
+    "5L": 2,
+    "5O2": 2,
+    "6B": 0,
+    "6F": 0,
+    "6G": 3,
+}
+D9_BEFORE_CLASS_COUNTS = {
+    "3I2": 0,
+    "3L": 18,
+    "3O2": 0,
+    "3O3": 0,
+    "5L": 3,
+    "5O2": 0,
+    "6B": 0,
+    "6F": 0,
+    "6G": 3,
+}
+D9_AFTER_CLASS_COUNTS = {
+    "3I2": 0,
+    "3L": 18,
+    "3O2": 0,
+    "3O3": 0,
+    "5L": 3,
+    "5O2": 0,
+    "6B": 1,
+    "6F": 0,
+    "6G": 2,
+}
+GLOBAL_CLASS_COUNTS = {
+    "3I2": 6,
+    "3L": 109,
+    "3O2": 6,
+    "3O3": 11,
+    "5L": 32,
+    "5O2": 17,
+    "6B": 3,
+    "6F": 3,
+    "6G": 32,
+}
+D6_BEFORE_TOTALS = {"bodies": 17, "active_inputs": 25, "active_outputs": 25}
+D6_AFTER_TOTALS = {"bodies": 17, "active_inputs": 23, "active_outputs": 25}
+D9_BEFORE_TOTALS = {"bodies": 24, "active_inputs": 30, "active_outputs": 24}
+D9_AFTER_TOTALS = {"bodies": 24, "active_inputs": 32, "active_outputs": 24}
 OPEN_SUPPORTS_DIR_FD = os.open in os.supports_dir_fd
 SCANDIR_SUPPORTS_FD = os.scandir in os.supports_fd
 
@@ -844,6 +917,312 @@ def _exact_keys(value: object, expected: set[str], label: str) -> dict[str, Any]
     return record
 
 
+def _protocol_identity() -> dict[str, str]:
+    return {
+        "cohort": PROTOCOL_COHORT,
+        "class_allocation_profile": CLASS_ALLOCATION_PROFILE,
+        "antecedent_schema": V3_ANTECEDENT_SCHEMA,
+        "config_payload_schema": V3_CONFIG_PAYLOAD_SCHEMA,
+        "receipt_payload_schema": V3_RECEIPT_PAYLOAD_SCHEMA,
+        "replay_receipt_schema": V3_REPLAY_RECEIPT_SCHEMA,
+        "project_lock_sha256": EXPECTED_PROJECT_LOCK_SHA256,
+    }
+
+
+def _authority_boundary() -> dict[str, object]:
+    return {
+        "artifact_status": "research_only_local_d6",
+        "proves_whole_witness": False,
+        "changes_lower_bound": False,
+        "changes_upper_bound": False,
+        "may_emit_cut_or_rejection": False,
+        "production_authority": False,
+        "certified_exact_source_authority": False,
+        "frozen_or_sealed_input_mutation": False,
+    }
+
+
+def _verify_authority_boundary(value: object, label: str) -> dict[str, Any]:
+    expected = _authority_boundary()
+    boundary = _exact_keys(value, set(expected), label)
+    if boundary != expected or any(
+        boundary[field] is not False
+        for field in set(expected) - {"artifact_status"}
+    ):
+        _fail("AUTHORITY_BOUNDARY_INVALID", label)
+    return boundary
+
+
+def _verify_v3_protocol(value: object, label: str) -> dict[str, Any]:
+    expected = _protocol_identity()
+    if type(value) is not dict or set(value) != set(expected) or value != expected:
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            f"{label}: expected the complete {PROTOCOL_COHORT} identity",
+        )
+    return value
+
+
+def _ordered_class_counts(values: dict[str, int]) -> dict[str, int]:
+    if set(values) != set(CLASS_ORDER):
+        _fail("REPLAYER_INTERNAL_ERROR", "class ledger key set")
+    return {class_name: values[class_name] for class_name in CLASS_ORDER}
+
+
+def _class_transfer() -> dict[str, object]:
+    return {
+        "profile": CLASS_ALLOCATION_PROFILE,
+        "moves": [
+            {"from": "D6", "to": "D9", "class": "6B", "count": 1},
+            {"from": "D9", "to": "D6", "class": "6G", "count": 1},
+        ],
+    }
+
+
+def _class_ledger_profile_identity() -> dict[str, object]:
+    global_counts = _ordered_class_counts(GLOBAL_CLASS_COUNTS)
+    return {
+        "class_order": list(CLASS_ORDER),
+        "d6": {
+            "before": {
+                "class_counts": _ordered_class_counts(D6_BEFORE_CLASS_COUNTS),
+                "totals": dict(D6_BEFORE_TOTALS),
+            },
+            "after": {
+                "class_counts": _ordered_class_counts(D6_AFTER_CLASS_COUNTS),
+                "totals": dict(D6_AFTER_TOTALS),
+            },
+            "modeled_state": "after",
+        },
+        "d9": {
+            "before": {
+                "class_counts": _ordered_class_counts(D9_BEFORE_CLASS_COUNTS),
+                "totals": dict(D9_BEFORE_TOTALS),
+            },
+            "after": {
+                "class_counts": _ordered_class_counts(D9_AFTER_CLASS_COUNTS),
+                "totals": dict(D9_AFTER_TOTALS),
+            },
+            "role": "arithmetic_compensation_only_not_geometrically_modeled",
+        },
+        "global": {
+            "before": global_counts,
+            "after": dict(global_counts),
+            "conserved": True,
+        },
+    }
+
+
+def _allocation_totals(
+    class_counts: dict[str, int],
+    class_catalog: dict[str, dict[str, object]],
+    *,
+    label: str,
+) -> dict[str, int]:
+    totals = {"bodies": 0, "active_inputs": 0, "active_outputs": 0}
+    for class_name, count in class_counts.items():
+        if type(count) is not int or count < 0:
+            _fail("REPLAYER_INTERNAL_ERROR", f"{label}.{class_name}")
+        totals["bodies"] += count
+        if count == 0:
+            continue
+        record = class_catalog.get(class_name)
+        if record is None:
+            _fail("ANTECEDENT_INPUT_INVALID", f"{label}.{class_name}")
+        totals["active_inputs"] += count * _integer(
+            record["input_count"],
+            f"{label}.{class_name}.input_count",
+            minimum=0,
+        )
+        totals["active_outputs"] += count * _integer(
+            record["output_count"],
+            f"{label}.{class_name}.output_count",
+            minimum=0,
+        )
+    return totals
+
+
+def _class_ledger(
+    class_catalog: dict[str, dict[str, object]],
+) -> dict[str, object]:
+    state_specs = (
+        ("d6.before", D6_BEFORE_CLASS_COUNTS, D6_BEFORE_TOTALS),
+        ("d6.after", D6_AFTER_CLASS_COUNTS, D6_AFTER_TOTALS),
+        ("d9.before", D9_BEFORE_CLASS_COUNTS, D9_BEFORE_TOTALS),
+        ("d9.after", D9_AFTER_CLASS_COUNTS, D9_AFTER_TOTALS),
+    )
+    observed_totals: dict[str, dict[str, int]] = {}
+    for label, counts, expected in state_specs:
+        observed = _allocation_totals(counts, class_catalog, label=label)
+        if observed != expected:
+            _fail("ANTECEDENT_INPUT_INVALID", f"{label} totals drifted")
+        observed_totals[label] = observed
+    for class_name in CLASS_ORDER:
+        before = (
+            D6_BEFORE_CLASS_COUNTS[class_name]
+            + D9_BEFORE_CLASS_COUNTS[class_name]
+        )
+        after = (
+            D6_AFTER_CLASS_COUNTS[class_name]
+            + D9_AFTER_CLASS_COUNTS[class_name]
+        )
+        if before != after:
+            _fail("REPLAYER_INTERNAL_ERROR", f"class transfer {class_name}")
+    return _class_ledger_profile_identity()
+
+
+def _antecedent_cohort_keys(protocol_profile: str) -> set[str]:
+    keys = {
+        "schema",
+        "claim_boundary",
+        "benchmark_id",
+        "attachment_scope",
+        "local_bounds",
+        "tiles",
+        "poles",
+        "protected_body_only_rect",
+        "cycle",
+        "class_counts",
+        "class_catalog",
+        "mode_catalog",
+        "power_rule",
+        "routing_patterns",
+        "seed_hints",
+        "seed_hint_policy",
+        "expected_totals",
+    }
+    if protocol_profile == SWAP_V3_PROFILE:
+        keys.update({"protocol", "class_transfer", "class_ledger"})
+    elif protocol_profile != CLOSED_V2_PROFILE:
+        _fail("ARTIFACT_PROTOCOL_COHORT_MISMATCH", protocol_profile)
+    return keys
+
+
+def _verify_antecedent_cohort_shape(
+    value: object,
+    *,
+    protocol_profile: str,
+    expected_protocol: object | None = None,
+) -> dict[str, Any]:
+    antecedent = _object(value, "antecedent")
+    expected_keys = _antecedent_cohort_keys(protocol_profile)
+    if set(antecedent) != expected_keys:
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            (
+                "antecedent key set does not match the selected cohort: "
+                f"missing={sorted(expected_keys - set(antecedent))!r}; "
+                f"extra={sorted(set(antecedent) - expected_keys)!r}"
+            ),
+        )
+    expected_schema = (
+        ANTECEDENT_SCHEMA
+        if protocol_profile == CLOSED_V2_PROFILE
+        else V3_ANTECEDENT_SCHEMA
+    )
+    if antecedent.get("schema") != expected_schema:
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            "antecedent schema does not match receipt/config cohort",
+        )
+    if protocol_profile == SWAP_V3_PROFILE:
+        protocol = _verify_v3_protocol(
+            antecedent.get("protocol"),
+            "antecedent.protocol",
+        )
+        if expected_protocol is not None and protocol != expected_protocol:
+            _fail(
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+                "antecedent/config/receipt protocol identities differ",
+            )
+        if antecedent.get("class_transfer") != _class_transfer():
+            _fail(
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+                "antecedent class-transfer profile identity differs",
+            )
+        if antecedent.get("class_ledger") != _class_ledger_profile_identity():
+            _fail(
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+                "antecedent class-ledger profile identity differs",
+            )
+    return antecedent
+
+
+def _profile_from_receipt_payload(payload: dict[str, Any]) -> str:
+    schema = payload.get("schema")
+    if schema == "w0_d6_receipt_payload_v1":
+        _fail(
+            "ROOT_CLOSURE_CONTRACT_MISSING",
+            "historical v1 receipt has no exact artifact-root manifest",
+        )
+    if schema == CLOSED_V2_RECEIPT_PAYLOAD_SCHEMA:
+        if "protocol" in payload:
+            _fail(
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+                "closed-root v2 receipt must not carry a v3 protocol identity",
+            )
+        return CLOSED_V2_PROFILE
+    if schema == V3_RECEIPT_PAYLOAD_SCHEMA:
+        _verify_v3_protocol(payload.get("protocol"), "receipt.payload.protocol")
+        return SWAP_V3_PROFILE
+    _fail(
+        "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+        f"unsupported receipt payload schema: {schema!r}",
+    )
+
+
+def _receipt_payload_cohort_keys(protocol_profile: str) -> set[str]:
+    keys = {
+        "schema",
+        "status",
+        "attachment_scope",
+        "antecedent_sha256",
+        "result_sha256",
+        "configuration_sha256",
+        "certificate_sha256",
+        "identity_graph_sha256",
+        "artifact_root_manifest",
+        "claim_boundary",
+        "replay",
+    }
+    if protocol_profile == SWAP_V3_PROFILE:
+        keys.update({"protocol", "authority_boundary"})
+    elif protocol_profile != CLOSED_V2_PROFILE:
+        _fail("ARTIFACT_PROTOCOL_COHORT_MISMATCH", protocol_profile)
+    return keys
+
+
+def _verify_receipt_payload_cohort_shape(
+    value: object,
+    *,
+    protocol_profile: str,
+) -> dict[str, Any]:
+    payload = _object(value, "receipt.payload")
+    expected_keys = _receipt_payload_cohort_keys(protocol_profile)
+    if set(payload) != expected_keys:
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            (
+                f"{protocol_profile} receipt payload does not select one complete cohort: "
+                f"missing={sorted(expected_keys - set(payload))!r}; "
+                f"extra={sorted(set(payload) - expected_keys)!r}"
+            ),
+        )
+    expected_schema = (
+        CLOSED_V2_RECEIPT_PAYLOAD_SCHEMA
+        if protocol_profile == CLOSED_V2_PROFILE
+        else V3_RECEIPT_PAYLOAD_SCHEMA
+    )
+    if payload.get("schema") != expected_schema:
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            f"receipt payload schema {payload.get('schema')!r} does not match {protocol_profile}",
+        )
+    if protocol_profile == SWAP_V3_PROFILE:
+        _verify_v3_protocol(payload.get("protocol"), "receipt.payload.protocol")
+    return payload
+
+
 def _sha256(value: object, label: str) -> str:
     if type(value) is not str or SHA256_RE.fullmatch(value) is None:
         _fail("SHA256_INVALID", label)
@@ -996,6 +1375,7 @@ def _verify_process_contract(value: object, label: str) -> dict[str, object]:
 def _verify_config(
     config: object,
     *,
+    protocol_profile: str,
     run_root: Path,
     config_identity: dict[str, object],
     artifacts: dict[str, dict[str, object]],
@@ -1004,27 +1384,59 @@ def _verify_config(
     envelope = _exact_keys(config, {"schema", "experiment_id", "payload"}, "config")
     if envelope["schema"] != CONFIG_SCHEMA or envelope["experiment_id"] != "w0_power_cycle_domino_d6":
         _fail("CONFIG_ENVELOPE_INVALID", "schema or experiment_id")
-    payload = _exact_keys(
-        envelope["payload"],
-        {
-            "schema",
-            "attachment_scope",
-            "solver",
-            "runtime",
-            "process_contract",
-            "git",
-            "inputs",
-            "sources",
-            "antecedent",
-            "rejected_producer_claims",
-            "authority_boundary",
-            "replay",
-        },
-        "config.payload",
+    expected_payload_keys = {
+        "schema",
+        "attachment_scope",
+        "solver",
+        "runtime",
+        "process_contract",
+        "git",
+        "inputs",
+        "sources",
+        "antecedent",
+        "rejected_producer_claims",
+        "authority_boundary",
+        "replay",
+    }
+    if protocol_profile == SWAP_V3_PROFILE:
+        expected_payload_keys.add("protocol")
+    elif protocol_profile != CLOSED_V2_PROFILE:
+        _fail("ARTIFACT_PROTOCOL_COHORT_MISMATCH", protocol_profile)
+    raw_payload = _object(envelope["payload"], "config.payload")
+    expected_schema = (
+        CLOSED_V2_CONFIG_PAYLOAD_SCHEMA
+        if protocol_profile == CLOSED_V2_PROFILE
+        else V3_CONFIG_PAYLOAD_SCHEMA
     )
-    if payload["schema"] != "w0_d6_run_config_v2":
-        _fail("CONFIG_PAYLOAD_INVALID", "schema")
-    _text(payload["attachment_scope"], "config.payload.attachment_scope")
+    if raw_payload.get("schema") != expected_schema:
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            f"config payload schema {raw_payload.get('schema')!r} does not match {protocol_profile}",
+        )
+    if set(raw_payload) != expected_payload_keys:
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            (
+                f"{protocol_profile} config payload does not select one complete cohort: "
+                f"missing={sorted(expected_payload_keys - set(raw_payload))!r}; "
+                f"extra={sorted(set(raw_payload) - expected_payload_keys)!r}"
+            ),
+        )
+    payload = _exact_keys(raw_payload, expected_payload_keys, "config.payload")
+    if protocol_profile == SWAP_V3_PROFILE:
+        _verify_v3_protocol(payload["protocol"], "config.payload.protocol")
+    attachment_scope = _text(
+        payload["attachment_scope"],
+        "config.payload.attachment_scope",
+    )
+    if (
+        protocol_profile == SWAP_V3_PROFILE
+        and attachment_scope != "all_legal_d6_slots"
+    ):
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            "v3 requires attachment_scope=all_legal_d6_slots",
+        )
     solver = _exact_keys(
         payload["solver"],
         {"workers", "random_seed", "max_time_seconds"},
@@ -1145,35 +1557,10 @@ def _verify_config(
         or rejection["matches_known_unbound_claim"] is not True
     ):
         _fail("LEGACY_PRODUCER_CLAIM_NOT_REJECTED", legacy_digest)
-    authority = _exact_keys(
+    _verify_authority_boundary(
         payload["authority_boundary"],
-        {
-            "artifact_status",
-            "proves_whole_witness",
-            "changes_lower_bound",
-            "changes_upper_bound",
-            "may_emit_cut_or_rejection",
-            "production_authority",
-            "certified_exact_source_authority",
-            "frozen_or_sealed_input_mutation",
-        },
         "config.payload.authority_boundary",
     )
-    expected_authority = {
-        "artifact_status": "research_only_local_d6",
-        "proves_whole_witness": False,
-        "changes_lower_bound": False,
-        "changes_upper_bound": False,
-        "may_emit_cut_or_rejection": False,
-        "production_authority": False,
-        "certified_exact_source_authority": False,
-        "frozen_or_sealed_input_mutation": False,
-    }
-    authority_boolean_fields = set(expected_authority) - {"artifact_status"}
-    if authority != expected_authority or any(
-        authority[field] is not False for field in authority_boolean_fields
-    ):
-        _fail("AUTHORITY_BOUNDARY_INVALID", "config")
     replay = _exact_keys(payload["replay"], {"argv_template"}, "config.payload.replay")
     argv_template = _array(replay["argv_template"], "config.payload.replay.argv_template")
     expected_argv = [
@@ -1194,38 +1581,38 @@ def _verify_config(
 def _verify_receipt_payload(
     payload_value: object,
     *,
+    protocol_profile: str,
     graph_sha256: str,
     artifacts: dict[str, dict[str, object]],
+    feasible_artifact_topology: bool,
 ) -> dict[str, Any]:
-    payload = _exact_keys(
+    payload = _verify_receipt_payload_cohort_shape(
         payload_value,
-        {
-            "schema",
-            "status",
-            "attachment_scope",
-            "antecedent_sha256",
-            "result_sha256",
-            "configuration_sha256",
-            "certificate_sha256",
-            "identity_graph_sha256",
-            "artifact_root_manifest",
-            "claim_boundary",
-            "replay",
-        },
-        "receipt.payload",
+        protocol_profile=protocol_profile,
     )
-    if payload["schema"] != "w0_d6_receipt_payload_v2":
-        _fail("RECEIPT_PAYLOAD_INVALID", "schema")
+    if protocol_profile == SWAP_V3_PROFILE:
+        _verify_authority_boundary(
+            payload["authority_boundary"],
+            "receipt.payload.authority_boundary",
+        )
     status_value = payload["status"]
     if status_value not in {"FEASIBLE", "INFEASIBLE", "UNKNOWN"}:
         _fail("STATUS_INVALID", "receipt.payload.status")
+    feasible = status_value == "FEASIBLE"
+    if feasible != feasible_artifact_topology:
+        _fail(
+            "ARTIFACT_STATUS_TOPOLOGY_MISMATCH",
+            (
+                f"status={status_value!r}; "
+                f"feasible_artifact_topology={feasible_artifact_topology!r}"
+            ),
+        )
     if payload["identity_graph_sha256"] != graph_sha256:
         _fail("IDENTITY_GRAPH_HASH_MISMATCH", "receipt payload")
     if payload["antecedent_sha256"] != artifacts["antecedent"]["sha256"]:
         _fail("CROSS_HASH_MISMATCH", "antecedent")
     if payload["result_sha256"] != artifacts["result"]["sha256"]:
         _fail("CROSS_HASH_MISMATCH", "result")
-    feasible = status_value == "FEASIBLE"
     for label, field in (
         ("configuration", "configuration_sha256"),
         ("certificate", "certificate_sha256"),
@@ -1289,16 +1676,13 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
         _fail("ARTIFACT_PATH_INVALID", "config_identity")
 
     payload_preview = _object(receipt["payload"], "receipt.payload")
-    payload_schema = payload_preview.get("schema")
-    if payload_schema == "w0_d6_receipt_payload_v1":
-        _fail(
-            "ROOT_CLOSURE_CONTRACT_MISSING",
-            "historical v1 receipt has no exact artifact-root manifest",
-        )
-    if payload_schema != "w0_d6_receipt_payload_v2":
-        _fail("RECEIPT_PAYLOAD_INVALID", "schema")
+    protocol_profile = _profile_from_receipt_payload(payload_preview)
+    payload_preview = _verify_receipt_payload_cohort_shape(
+        payload_preview,
+        protocol_profile=protocol_profile,
+    )
     artifact_root_manifest = _validate_artifact_root_manifest(
-        payload_preview.get("artifact_root_manifest")
+        payload_preview["artifact_root_manifest"]
     )
     manifest_regular_paths = _validate_d6_manifest_layout(
         artifact_root_manifest
@@ -1309,14 +1693,27 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
         expected_root_signature=root_signature,
     )
 
-    preview_status = payload_preview.get("status")
-    if preview_status not in {"FEASIBLE", "INFEASIBLE", "UNKNOWN"}:
-        _fail("STATUS_INVALID", "receipt payload preview")
-    expected_relative_paths = dict(BASE_ARTIFACT_RELATIVE_PATHS)
-    if preview_status == "FEASIBLE":
-        expected_relative_paths.update(FEASIBLE_ARTIFACT_RELATIVE_PATHS)
-    expected_labels = set(expected_relative_paths)
-    raw_artifacts = _exact_keys(receipt["artifacts"], expected_labels, "receipt.artifacts")
+    raw_artifacts = _object(receipt["artifacts"], "receipt.artifacts")
+    observed_labels = set(raw_artifacts)
+    base_labels = set(BASE_ARTIFACT_RELATIVE_PATHS)
+    feasible_labels = base_labels | set(FEASIBLE_ARTIFACT_RELATIVE_PATHS)
+    if observed_labels == base_labels:
+        feasible_artifact_topology = False
+        expected_relative_paths = dict(BASE_ARTIFACT_RELATIVE_PATHS)
+    elif observed_labels == feasible_labels:
+        feasible_artifact_topology = True
+        expected_relative_paths = {
+            **BASE_ARTIFACT_RELATIVE_PATHS,
+            **FEASIBLE_ARTIFACT_RELATIVE_PATHS,
+        }
+    else:
+        _fail(
+            "ARTIFACT_LABEL_SET_INVALID",
+            (
+                "receipt artifacts must select one status-free topology: "
+                f"observed={sorted(observed_labels)!r}"
+            ),
+        )
     artifacts = {
         label: _identity(raw_artifacts[label], f"receipt.artifacts.{label}")
         for label in sorted(raw_artifacts)
@@ -1365,26 +1762,23 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
             _fail("IDENTITY_MISMATCH", label)
         snapshots[label] = {"raw": raw, "identity": observed}
     graph_sha = _graph_sha256({label: artifacts[label] for label in sorted(artifacts)})
-    receipt_payload = _verify_receipt_payload(
-        receipt["payload"],
-        graph_sha256=graph_sha,
-        artifacts=artifacts,
-    )
-
     self_raw, self_identity = stable_read(Path(__file__), "executing replayer")
     del self_raw
     config = strict_json_loads(snapshots["config"]["raw"], "config", require_canonical=True)
     config_payload = _verify_config(
         config,
+        protocol_profile=protocol_profile,
         run_root=run_root,
         config_identity=config_identity,
         artifacts=artifacts,
         self_identity=self_identity,
     )
-    if config_payload["attachment_scope"] != receipt_payload["attachment_scope"]:
-        _fail("CROSS_FIELD_MISMATCH", "attachment_scope")
-    if config_payload["replay"] != receipt_payload["replay"]:
-        _fail("CROSS_FIELD_MISMATCH", "replay argv template")
+    if protocol_profile == SWAP_V3_PROFILE:
+        if config_payload["protocol"] != payload_preview.get("protocol"):
+            _fail(
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+                "config and receipt protocol identities differ",
+            )
     for label in ("antecedent", "result", "configuration", "certificate"):
         if label in snapshots:
             snapshots[label]["value"] = strict_json_loads(
@@ -1398,6 +1792,31 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
             label,
             require_canonical=False,
         )
+    _verify_antecedent_cohort_shape(
+        snapshots["antecedent"]["value"],
+        protocol_profile=protocol_profile,
+        expected_protocol=config_payload.get("protocol"),
+    )
+    receipt_payload = _verify_receipt_payload(
+        receipt["payload"],
+        protocol_profile=protocol_profile,
+        graph_sha256=graph_sha,
+        artifacts=artifacts,
+        feasible_artifact_topology=feasible_artifact_topology,
+    )
+    if config_payload["attachment_scope"] != receipt_payload["attachment_scope"]:
+        _fail("CROSS_FIELD_MISMATCH", "attachment_scope")
+    if config_payload["replay"] != receipt_payload["replay"]:
+        _fail("CROSS_FIELD_MISMATCH", "replay argv template")
+    if protocol_profile == SWAP_V3_PROFILE:
+        if (
+            config_payload["authority_boundary"]
+            != receipt_payload["authority_boundary"]
+        ):
+            _fail(
+                "AUTHORITY_BOUNDARY_INVALID",
+                "config and receipt authority boundaries differ",
+            )
     _verify_artifact_root_closure(
         run_root,
         artifact_root_manifest,
@@ -1408,6 +1827,7 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
         "receipt_identity": receipt_identity,
         "receipt": receipt,
         "receipt_payload": receipt_payload,
+        "protocol_profile": protocol_profile,
         "config": config,
         "config_payload": config_payload,
         "artifacts": artifacts,
@@ -1599,7 +2019,11 @@ def _positive_sum(value: object, label: str) -> int:
     )
 
 
-def _rebuild_class_catalog(strict_instance: dict[str, Any]) -> dict[str, dict[str, object]]:
+def _rebuild_class_catalog(
+    strict_instance: dict[str, Any],
+    *,
+    protocol_profile: str,
+) -> dict[str, dict[str, object]]:
     selectors = {
         "3L": ("manufacturing_3x3", 1, 1),
         "3O3": ("manufacturing_3x3", 1, 3),
@@ -1608,7 +2032,16 @@ def _rebuild_class_catalog(strict_instance: dict[str, Any]) -> dict[str, dict[st
         "6G": ("manufacturing_6x4", 3, 1),
         "6B": ("manufacturing_6x4", 5, 1),
     }
-    required_counts = {"3L": 7, "3O3": 3, "5L": 2, "5O2": 2, "6G": 2, "6B": 1}
+    required_counts = {
+        "3L": 7,
+        "3O3": 3,
+        "5L": 2,
+        "5O2": 2,
+        "6G": 3 if protocol_profile == SWAP_V3_PROFILE else 2,
+        "6B": 1,
+    }
+    if protocol_profile not in {CLOSED_V2_PROFILE, SWAP_V3_PROFILE}:
+        _fail("ARTIFACT_PROTOCOL_COHORT_MISMATCH", protocol_profile)
     groups: list[dict[str, object]] = []
     for index, raw_group in enumerate(_array(strict_instance.get("operation_groups"), "strict.operation_groups")):
         group = _object(raw_group, f"strict.operation_groups[{index}]")
@@ -1762,6 +2195,8 @@ def _validate_rebuild_authorities(
     strict_instance: dict[str, Any],
     framework: dict[str, Any],
     class_catalog: dict[str, dict[str, object]],
+    *,
+    protocol_profile: str,
 ) -> None:
     grid = _object(strict_instance.get("grid"), "strict.grid")
     if (grid.get("width"), grid.get("height")) != (70, 70):
@@ -1803,6 +2238,61 @@ def _validate_rebuild_authorities(
     if allocations.get("D6") != required_counts:
         _fail("ANTECEDENT_INPUT_INVALID", "framework class allocation")
     classes = _object(framework.get("operation_classes"), "framework.operation_classes")
+    if protocol_profile == SWAP_V3_PROFILE:
+        if allocations.get("D9") != {
+            "3L": 18,
+            "5L": 3,
+            "6G": 3,
+        }:
+            _fail("ANTECEDENT_INPUT_INVALID", "framework D9 class allocation")
+        expected_macrocell_names = {f"D{index}" for index in range(1, 13)}
+        if set(allocations) != expected_macrocell_names:
+            _fail(
+                "ANTECEDENT_INPUT_INVALID",
+                "framework macrocell allocation row set",
+            )
+        allocation_sum = {class_name: 0 for class_name in CLASS_ORDER}
+        for macrocell_name in sorted(allocations):
+            row = _object(
+                allocations[macrocell_name],
+                f"framework.macrocell_class_allocation_seed.{macrocell_name}",
+            )
+            if not row:
+                _fail(
+                    "ANTECEDENT_INPUT_INVALID",
+                    f"empty framework allocation row {macrocell_name}",
+                )
+            for class_name, raw_count in row.items():
+                if class_name not in allocation_sum:
+                    _fail(
+                        "ANTECEDENT_INPUT_INVALID",
+                        f"unknown framework class {class_name}",
+                    )
+                allocation_sum[class_name] += _integer(
+                    raw_count,
+                    f"framework.macrocell_class_allocation_seed.{macrocell_name}.{class_name}",
+                    minimum=1,
+                )
+        if allocation_sum != GLOBAL_CLASS_COUNTS:
+            _fail(
+                "ANTECEDENT_INPUT_INVALID",
+                "framework macrocell allocation global sum",
+            )
+        observed_global_counts = {
+            class_name: _integer(
+                _object(
+                    classes.get(class_name),
+                    f"framework.operation_classes.{class_name}",
+                ).get("count"),
+                f"framework.operation_classes.{class_name}.count",
+                minimum=0,
+            )
+            for class_name in CLASS_ORDER
+        }
+        if observed_global_counts != GLOBAL_CLASS_COUNTS:
+            _fail("ANTECEDENT_INPUT_INVALID", "framework global class ledger")
+    elif protocol_profile != CLOSED_V2_PROFILE:
+        _fail("ARTIFACT_PROTOCOL_COHORT_MISMATCH", protocol_profile)
     size_by_template = {
         "manufacturing_3x3": "3x3",
         "manufacturing_5x5": "5x5",
@@ -1999,14 +2489,47 @@ def rebuild_d6_antecedent(
     framework: dict[str, Any],
     seed: dict[str, Any],
     *,
+    protocol_profile: str,
     attachment_scope: str,
 ) -> dict[str, object]:
     """Independently derive the complete canonical D6 antecedent."""
 
-    class_counts = {"3L": 7, "3O3": 3, "5L": 2, "5O2": 2, "6G": 2, "6B": 1}
-    class_catalog = _rebuild_class_catalog(strict_instance)
+    if protocol_profile == CLOSED_V2_PROFILE:
+        antecedent_schema = ANTECEDENT_SCHEMA
+        class_counts = {
+            "3L": 7,
+            "3O3": 3,
+            "5L": 2,
+            "5O2": 2,
+            "6G": 2,
+            "6B": 1,
+        }
+        expected_totals = D6_BEFORE_TOTALS
+    elif protocol_profile == SWAP_V3_PROFILE:
+        if attachment_scope != "all_legal_d6_slots":
+            _fail(
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+                "v3 antecedent rebuild requires all_legal_d6_slots",
+            )
+        antecedent_schema = V3_ANTECEDENT_SCHEMA
+        class_counts = {
+            class_name: D6_AFTER_CLASS_COUNTS[class_name]
+            for class_name in ("3L", "3O3", "5L", "5O2", "6B", "6G")
+        }
+        expected_totals = D6_AFTER_TOTALS
+    else:
+        _fail("ARTIFACT_PROTOCOL_COHORT_MISMATCH", protocol_profile)
+    class_catalog = _rebuild_class_catalog(
+        strict_instance,
+        protocol_profile=protocol_profile,
+    )
     mode_catalog = _rebuild_mode_catalog(strict_instance)
-    _validate_rebuild_authorities(strict_instance, framework, class_catalog)
+    _validate_rebuild_authorities(
+        strict_instance,
+        framework,
+        class_catalog,
+        protocol_profile=protocol_profile,
+    )
     poles, power_rule = _rebuild_fixed(strict_instance, framework)
     seed_hints, slots = _rebuild_seed(seed, power_rule, attachment_scope)
     for class_name, item in class_catalog.items():
@@ -2018,7 +2541,7 @@ def rebuild_d6_antecedent(
             ):
                 _fail("ANTECEDENT_INPUT_INVALID", f"mode capacity for {class_name}")
     antecedent: dict[str, object] = {
-        "schema": ANTECEDENT_SCHEMA,
+        "schema": antecedent_schema,
         "claim_boundary": "exact_local_d6_antecedent_only",
         "benchmark_id": _text(strict_instance.get("benchmark_id"), "strict.benchmark_id"),
         "attachment_scope": attachment_scope,
@@ -2056,8 +2579,16 @@ def rebuild_d6_antecedent(
         "routing_patterns": _rebuild_routing_patterns(),
         "seed_hints": seed_hints,
         "seed_hint_policy": "add_hint_only_never_constraint",
-        "expected_totals": {"bodies": 17, "active_inputs": 25, "active_outputs": 25},
+        "expected_totals": dict(expected_totals),
     }
+    if protocol_profile == SWAP_V3_PROFILE:
+        antecedent.update(
+            {
+                "protocol": _protocol_identity(),
+                "class_transfer": _class_transfer(),
+                "class_ledger": _class_ledger(class_catalog),
+            }
+        )
     canonical_json_bytes(antecedent)
     return antecedent
 
@@ -2073,32 +2604,15 @@ def _slot_cycle(value: object, label: str) -> tuple[int, int]:
     return _xy(value, label)
 
 
-def _parse_antecedent(antecedent_value: object) -> dict[str, Any]:
-    antecedent = _exact_keys(
+def _parse_antecedent(
+    antecedent_value: object,
+    *,
+    protocol_profile: str,
+) -> dict[str, Any]:
+    antecedent = _verify_antecedent_cohort_shape(
         antecedent_value,
-        {
-            "schema",
-            "claim_boundary",
-            "benchmark_id",
-            "attachment_scope",
-            "local_bounds",
-            "tiles",
-            "poles",
-            "protected_body_only_rect",
-            "cycle",
-            "class_counts",
-            "class_catalog",
-            "mode_catalog",
-            "power_rule",
-            "routing_patterns",
-            "seed_hints",
-            "seed_hint_policy",
-            "expected_totals",
-        },
-        "antecedent",
+        protocol_profile=protocol_profile,
     )
-    if antecedent["schema"] != ANTECEDENT_SCHEMA:
-        _fail("ANTECEDENT_INVALID", "schema")
     if (
         antecedent["claim_boundary"] != "exact_local_d6_antecedent_only"
         or antecedent["benchmark_id"] != "factory_layout_optimality_benchmark_v1"
@@ -2107,6 +2621,14 @@ def _parse_antecedent(antecedent_value: object) -> dict[str, Any]:
         _fail("ANTECEDENT_D6_DRIFT", "identity or claim boundary")
     if antecedent["attachment_scope"] not in {"seed_narrow", "all_legal_d6_slots"}:
         _fail("ANTECEDENT_INVALID", "attachment_scope")
+    if (
+        protocol_profile == SWAP_V3_PROFILE
+        and antecedent["attachment_scope"] != "all_legal_d6_slots"
+    ):
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            "v3 antecedent requires all_legal_d6_slots",
+        )
     local_bounds = _bounds(antecedent["local_bounds"], "antecedent.local_bounds")
     if local_bounds != (14, 28, 41, 41):
         _fail("ANTECEDENT_D6_DRIFT", "local bounds")
@@ -2186,7 +2708,14 @@ def _parse_antecedent(antecedent_value: object) -> dict[str, Any]:
         _fail("ANTECEDENT_D6_DRIFT", "cycle roles")
     cycle_cells = {(x, cycle_y) for x in range(cycle_x_min, cycle_x_max + 1)}
 
-    expected_class_counts = {"3L": 7, "3O3": 3, "5L": 2, "5O2": 2, "6G": 2, "6B": 1}
+    expected_class_counts = (
+        {"3L": 7, "3O3": 3, "5L": 2, "5O2": 2, "6G": 2, "6B": 1}
+        if protocol_profile == CLOSED_V2_PROFILE
+        else {
+            class_name: D6_AFTER_CLASS_COUNTS[class_name]
+            for class_name in ("3L", "3O3", "5L", "5O2", "6B", "6G")
+        }
+    )
     class_counts_raw = _exact_keys(
         antecedent["class_counts"],
         set(expected_class_counts),
@@ -2326,11 +2855,21 @@ def _parse_antecedent(antecedent_value: object) -> dict[str, Any]:
         {"bodies", "active_inputs", "active_outputs"},
         "antecedent.expected_totals",
     )
-    if totals != {"bodies": 17, "active_inputs": 25, "active_outputs": 25}:
+    expected_totals = (
+        D6_BEFORE_TOTALS
+        if protocol_profile == CLOSED_V2_PROFILE
+        else D6_AFTER_TOTALS
+    )
+    if totals != expected_totals:
         _fail("ANTECEDENT_D6_DRIFT", "expected totals")
     seed_hints = _array(antecedent["seed_hints"], "antecedent.seed_hints")
     if len(seed_hints) != 17:
         _fail("ANTECEDENT_D6_DRIFT", "seed hint count")
+    if (
+        protocol_profile == SWAP_V3_PROFILE
+        and antecedent["class_ledger"] != _class_ledger(class_catalog)
+    ):
+        _fail("ANTECEDENT_D6_DRIFT", "class ledger")
 
     return {
         "value": antecedent,
@@ -2345,6 +2884,8 @@ def _parse_antecedent(antecedent_value: object) -> dict[str, Any]:
         "attachment_slots": attachment_slots,
         "class_counts": class_counts,
         "class_catalog": class_catalog,
+        "expected_totals": dict(expected_totals),
+        "protocol_profile": protocol_profile,
         "mode_catalog": mode_catalog,
         "power_offsets": power_offsets,
         "routing_patterns_raw": antecedent["routing_patterns"],
@@ -2573,7 +3114,11 @@ def _parse_bodies(
         if observed_ids != set(selected):
             _fail("ACTIVE_PORT_RECORD_MISMATCH", body_id)
 
-    if dict(class_counter) != antecedent["class_counts"]:
+    observed_class_counts = {
+        class_name: class_counter.get(class_name, 0)
+        for class_name in antecedent["class_counts"]
+    }
+    if observed_class_counts != antecedent["class_counts"]:
         _fail("BODY_CLASS_COUNT_MISMATCH", repr(dict(class_counter)))
     for tile_id, tile in antecedent["tiles"].items():
         if dict(tile_type_counter[tile_id]) != tile["type_counts"]:
@@ -2598,9 +3143,22 @@ def _parse_bodies(
     if (
         sum(item["kind"] == "input" for item in terminals.values()) != expected_inputs
         or sum(item["kind"] == "output" for item in terminals.values()) != expected_outputs
-        or (expected_inputs, expected_outputs) != (25, 25)
+        or (
+            expected_inputs,
+            expected_outputs,
+        )
+        != (
+            antecedent["expected_totals"]["active_inputs"],
+            antecedent["expected_totals"]["active_outputs"],
+        )
     ):
-        _fail("ACTIVE_PORT_TOTAL_MISMATCH", "D6 requires 25 inputs and 25 outputs")
+        _fail(
+            "ACTIVE_PORT_TOTAL_MISMATCH",
+            (
+                "D6 active port totals differ from the exact protocol profile: "
+                f"inputs={expected_inputs}, outputs={expected_outputs}"
+            ),
+        )
     return {
         "occupied": occupied,
         "pole_cells": pole_cells,
@@ -3029,7 +3587,14 @@ def _verify_one_flow(
         role=role,
         roles=transport["roles"],
     )
-    if sum(terminal_amounts.values()) != 25 or sum(cycle_amounts.values()) != 25:
+    expected_total = sum(
+        terminal["kind"] == terminal_kind
+        for terminal in transport["terminals"].values()
+    )
+    if (
+        sum(terminal_amounts.values()) != expected_total
+        or sum(cycle_amounts.values()) != expected_total
+    ):
         _fail("FLOW_TOTAL_MISMATCH", polarity)
 
     balance: defaultdict[tuple[tuple[int, int], str], int] = defaultdict(int)
@@ -3104,8 +3669,8 @@ def verify_feasible_configuration(
     _verify_one_flow(flows["IN"], polarity="IN", transport=transport)
     return {
         "body_count": len(_array(configuration["bodies"], "configuration.bodies")),
-        "active_input_count": 25,
-        "active_output_count": 25,
+        "active_input_count": antecedent["expected_totals"]["active_inputs"],
+        "active_output_count": antecedent["expected_totals"]["active_outputs"],
         "transport_cell_count": len(
             _array(configuration["transport"], "configuration.transport")
         ),
@@ -3126,14 +3691,27 @@ def replay_run(run_root: Path | str) -> dict[str, object]:
         _object(snapshots["inputs.strict_instance"]["value"], "strict instance"),
         _object(snapshots["inputs.framework"]["value"], "framework"),
         _object(snapshots["inputs.seed"]["value"], "seed"),
+        protocol_profile=context["protocol_profile"],
         attachment_scope=context["config_payload"]["attachment_scope"],
     )
     rebuilt_bytes = canonical_json_bytes(rebuilt_antecedent)
     if actual_antecedent != rebuilt_antecedent or snapshots["antecedent"]["raw"] != rebuilt_bytes:
         _fail("ANTECEDENT_RECOMPUTATION_MISMATCH", "copied strict/framework/seed derivation")
-    antecedent = _parse_antecedent(actual_antecedent)
+    antecedent = _parse_antecedent(
+        actual_antecedent,
+        protocol_profile=context["protocol_profile"],
+    )
     if antecedent["attachment_scope"] != context["config_payload"]["attachment_scope"]:
         _fail("CROSS_FIELD_MISMATCH", "antecedent attachment_scope")
+    if context["protocol_profile"] == SWAP_V3_PROFILE:
+        if (
+            actual_antecedent["protocol"] != context["config_payload"]["protocol"]
+            or actual_antecedent["protocol"] != context["receipt_payload"]["protocol"]
+        ):
+            _fail(
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+                "antecedent/config/receipt protocol identities differ",
+            )
 
     semantic_summary: dict[str, object] | None = None
     if status == "FEASIBLE":
@@ -3162,8 +3740,23 @@ def replay_run(run_root: Path | str) -> dict[str, object]:
             if name.startswith("sources.")
         },
     }
+    if context["protocol_profile"] == CLOSED_V2_PROFILE:
+        replay_schema = CLOSED_V2_REPLAY_RECEIPT_SCHEMA
+        replay_authority_boundary = {
+            "research_only": True,
+            "local_d6_only": True,
+            "whole_witness": False,
+            "lower_bound_change": False,
+            "upper_bound_change": False,
+            "cut_or_rejection": False,
+            "production_authority": False,
+            "certified_exact_source_authority": False,
+        }
+    else:
+        replay_schema = V3_REPLAY_RECEIPT_SCHEMA
+        replay_authority_boundary = _authority_boundary()
     replay = {
-        "schema": REPLAY_SCHEMA,
+        "schema": replay_schema,
         "status": "PASS",
         "producer_status": status,
         "claim_boundary": context["receipt_payload"]["claim_boundary"],
@@ -3194,17 +3787,10 @@ def replay_run(run_root: Path | str) -> dict[str, object]:
         "conclusion": conclusion,
         "source_identities": source_identities,
         "replayer_process_contract": context["replayer_process_contract"],
-        "authority_boundary": {
-            "research_only": True,
-            "local_d6_only": True,
-            "whole_witness": False,
-            "lower_bound_change": False,
-            "upper_bound_change": False,
-            "cut_or_rejection": False,
-            "production_authority": False,
-            "certified_exact_source_authority": False,
-        },
+        "authority_boundary": replay_authority_boundary,
     }
+    if context["protocol_profile"] == SWAP_V3_PROFILE:
+        replay["protocol"] = _protocol_identity()
     _revalidate_verified_byte_graph(context)
     _verify_artifact_root_closure(
         context["run_root"],

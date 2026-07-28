@@ -1,7 +1,7 @@
 # 24 — 仓库代码资产治理
 
 **Status:** CURRENT
-**Updated:** 2026-07-28
+**Updated:** 2026-07-29
 **Scope:** G1 代码资产清点、G2 逻辑隔离与 G3 最小公共研究基础层
 
 本文定义代码资产的可复算分类、维护者实现索引，以及 developer、evidence、replay、full
@@ -66,17 +66,19 @@ evidence/replay tests 落地后的当前收据：
 
 | collect 面 | nodeids | 规范化 SHA256 |
 |---|---:|---|
-| developer | 3,541 | `ad151b2509d023bcc66fe102233241d028b35311eb3669f379d789097805f8a2` |
-| evidence、非 replay、非 slow | 1,512 | `c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b` |
-| replay、非 slow | 1,544 | `99ae9c68e0b2bfe2c1dcb119ac9b325158ece08e25f3bbc16e6b06d047f0863c` |
-| 三面并集 / full non-slow | 6,597 | `9ba5911ee114c47bd7093e78b89af97de0510e354dc9b93b5e4796eaed898959` |
-| full/all | 6,628 | `c2a80033dab5b1a67bc78dc37fa7ffd3b071a62ee4e95dc93620645116258d09` |
+| developer | 3,541 | `a430d75867516b5b0b05516a4db191287e34d5c10bf4c1a3b188f723c7abc9d7` |
+| evidence、非 replay、非 slow | 1,512 | `362e0187f943eabb9e36b13a7d283b8ffc3d55e6a22c6e6e37bd0c263474c0d2` |
+| replay、非 slow | 1,563 | `bac7d8817a81e5637db4c69ad9cbfe1ea4f0c3db5cadd21e6134c1387a55f75f` |
+| 三面并集 / full non-slow | 6,616 | `a635e8d531b849bdebe2c7b005299dcdfdcfd8a9abc25d7ec9946ad3e2de4855` |
+| full/all | 6,647 | `eeb6f3e1b45d491be286ece460c4da7758b677971ebf59bc766572462589ca16` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
 full/all。G3 的 67 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
-W0 D6 的 8 个 gate nodeid 进入 evidence，36 个独立 replay nodeid 进入 replay；
-slow 和既有 focused 入口不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。
+W0 D6 的 8 个 gate nodeid 进入 evidence，55 个独立 replay nodeid 进入 replay；
+slow 收据不变；`cuts_collection_counter` count 保持 958，SHA 因 lock-parity nodeid
+重命名更新为 `1431c01e8a0aa94f04bb9071e6cb5d6fdd5415d917133f3758ab9ffdf904bb0d`；
+其他既有 focused 入口收据不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。
 
 ## 分类合同
 

@@ -1,11 +1,12 @@
 """Authority-preservation contracts for the rule/cut evolution shadow batch.
 
 These tests bind the authority-sensitive runtime surfaces to exact authorized
-bytes.  Five surfaces remain at the 398f872 baseline; preflight_gate.py is
-pinned to the timeout-scale-only successor from 8292983.  The new
-semantic/family specifications may be imported by tests and by one another,
-but the existing runtime must not import them during this non-authorizing
-batch.
+bytes.  Five production surfaces remain at the 398f872 baseline;
+preflight_gate.py is pinned to the timeout-scale-only successor from 8292983,
+and PROJECT_LOCK.md is pinned to the W0 D6 research-only protocol successor.
+The new semantic/family specifications may be imported by tests and by one
+another, but the existing runtime must not import them during this
+non-authorizing batch.
 """
 
 from __future__ import annotations
@@ -37,7 +38,7 @@ from src.cuts.typed_platform import (
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _BASELINE_COMMIT = "398f8725c770f3c36408adebe9448a890ed886fe"
-_PROJECT_LOCK_SHA256 = "33632dfdb2297425e42066b2cf0749ca6b9ab1f8653e810b6f2e53ded1025410"
+_PROJECT_LOCK_SHA256 = "e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7"
 
 # Historical hashes for the six pre-existing Python surfaces touched during
 # the abandoned runtime-wiring attempt.  Five remain byte-identical to
@@ -284,7 +285,7 @@ def _is_forbidden_runtime_import(module_name: str) -> bool:
     )
 
 
-def test_project_lock_remains_bound_to_398f872_baseline() -> None:
+def test_project_lock_matches_authorized_w0_d6_research_successor() -> None:
     assert _BASELINE_COMMIT == "398f8725c770f3c36408adebe9448a890ed886fe"
     assert _sha256(_PROJECT_ROOT / "PROJECT_LOCK.md") == _PROJECT_LOCK_SHA256
 

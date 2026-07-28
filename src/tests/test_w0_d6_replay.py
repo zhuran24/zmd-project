@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 import hashlib
 import importlib.util
 import json
@@ -49,6 +50,38 @@ STRICT_SHA256 = "e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849
 FRAMEWORK_SHA256 = "db6046cf598f9b5738b7f8950c91ea31834e8214e7e07995175b71eb04bdbb89"
 SEED_SHA256 = "18c72669105f486bf54a2665bd74d1ff952ce2eeb39b28a7b30d5ce8d5d2f5f1"
 LEGACY_UNBOUND_SHA256 = "295bfef9b2681193e3a9cc085c479a960f87de0131abfbdfacb676479bdb2aa5"
+EXPECTED_PROJECT_LOCK_SHA256 = (
+    "e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7"
+)
+CLOSED_V2_PROFILE = "closed_v2"
+SWAP_V3_PROFILE = "swap_v3"
+PROTOCOL_COHORT = "w0_d6_swap_v3"
+CLASS_ALLOCATION_PROFILE = "d6_6b_d9_6g_swap_v1"
+
+
+def _protocol_identity() -> dict[str, str]:
+    return {
+        "cohort": PROTOCOL_COHORT,
+        "class_allocation_profile": CLASS_ALLOCATION_PROFILE,
+        "antecedent_schema": "w0_d6_antecedent_v2",
+        "config_payload_schema": "w0_d6_run_config_v3",
+        "receipt_payload_schema": "w0_d6_receipt_payload_v3",
+        "replay_receipt_schema": "w0_d6_replay_receipt_v3",
+        "project_lock_sha256": EXPECTED_PROJECT_LOCK_SHA256,
+    }
+
+
+def _authority_boundary() -> dict[str, object]:
+    return {
+        "artifact_status": "research_only_local_d6",
+        "proves_whole_witness": False,
+        "changes_lower_bound": False,
+        "changes_upper_bound": False,
+        "may_emit_cut_or_rejection": False,
+        "production_authority": False,
+        "certified_exact_source_authority": False,
+        "frozen_or_sealed_input_mutation": False,
+    }
 
 
 def _load_module(name: str, path: Path) -> ModuleType:
@@ -68,6 +101,11 @@ def gate() -> ModuleType:
 @pytest.fixture(scope="module")
 def runner() -> ModuleType:
     return _load_module("_test_w0_d6_replay_runner", RUNNER_PATH)
+
+
+@pytest.fixture(scope="module")
+def replayer() -> ModuleType:
+    return _load_module("_test_w0_d6_replayer_contract", REPLAYER_PATH)
 
 
 @pytest.fixture(scope="module")
@@ -102,9 +140,10 @@ def _replay_command(
     run_root: Path,
     *,
     output: Path | None = None,
+    python_executable: str | Path = "/usr/bin/python3",
 ) -> subprocess.CompletedProcess[bytes]:
     argv = [
-        "/usr/bin/python3",
+        str(python_executable),
         "-I",
         "-B",
         str(run_root / "sources" / "replay_d6_certificate.py"),
@@ -184,8 +223,18 @@ def _make_run(
     *,
     status: str,
     invalid_feasible: bool = False,
+    profile: str = SWAP_V3_PROFILE,
 ) -> Path:
-    run_root = ExclusiveRunRoot.create(tmp_path / f"producer-{status.lower()}")
+    if profile not in {CLOSED_V2_PROFILE, SWAP_V3_PROFILE}:
+        raise AssertionError(f"unsupported synthetic protocol profile: {profile}")
+    attachment_scope = (
+        "seed_narrow"
+        if profile == CLOSED_V2_PROFILE
+        else "all_legal_d6_slots"
+    )
+    run_root = ExclusiveRunRoot.create(
+        tmp_path / f"producer-{profile}-{status.lower()}"
+    )
     run_root.mkdir("inputs")
     run_root.mkdir("sources")
     input_snapshots, input_copies = _copy_snapshots(
@@ -221,8 +270,34 @@ def _make_run(
         decoded["strict_instance"],
         decoded["framework"],
         decoded["seed"],
-        attachment_scope="seed_narrow",
+        attachment_scope="all_legal_d6_slots",
     )
+    if profile == CLOSED_V2_PROFILE:
+        antecedent = dict(antecedent)
+        antecedent["schema"] = "w0_d6_antecedent_v1"
+        antecedent.pop("protocol")
+        antecedent.pop("class_transfer")
+        antecedent.pop("class_ledger")
+        antecedent["class_counts"] = {
+            "3L": 7,
+            "3O3": 3,
+            "5L": 2,
+            "5O2": 2,
+            "6B": 1,
+            "6G": 2,
+        }
+        antecedent["expected_totals"] = {
+            "bodies": 17,
+            "active_inputs": 25,
+            "active_outputs": 25,
+        }
+        antecedent["attachment_scope"] = "seed_narrow"
+        cycle = dict(antecedent["cycle"])
+        cycle["attachment_slots"] = [
+            {"cycle": [x, 29], "branch": [x, 30]}
+            for x in (23, 24, 25, 30, 31, 32, 33, 34, 35, 36, 37)
+        ]
+        antecedent["cycle"] = cycle
     antecedent_identity = run_root.write_json("antecedent.json", antecedent)
     replay_template = [
         "<python3>",
@@ -239,11 +314,13 @@ def _make_run(
         capture_output=True,
         text=True,
     ).stdout.strip()
-    config = make_research_run_config(
-        experiment_id="w0_power_cycle_domino_d6",
-        payload={
-            "schema": "w0_d6_run_config_v2",
-            "attachment_scope": "seed_narrow",
+    config_payload: dict[str, object] = {
+            "schema": (
+                "w0_d6_run_config_v2"
+                if profile == CLOSED_V2_PROFILE
+                else "w0_d6_run_config_v3"
+            ),
+            "attachment_scope": attachment_scope,
             "solver": {"workers": 2, "random_seed": 0, "max_time_seconds": 3600},
             "runtime": {
                 "python_version": "fixture",
@@ -297,18 +374,14 @@ def _make_run(
                     "matches_known_unbound_claim": True,
                 }
             ],
-            "authority_boundary": {
-                "artifact_status": "research_only_local_d6",
-                "proves_whole_witness": False,
-                "changes_lower_bound": False,
-                "changes_upper_bound": False,
-                "may_emit_cut_or_rejection": False,
-                "production_authority": False,
-                "certified_exact_source_authority": False,
-                "frozen_or_sealed_input_mutation": False,
-            },
+            "authority_boundary": _authority_boundary(),
             "replay": {"argv_template": replay_template},
-        },
+    }
+    if profile == SWAP_V3_PROFILE:
+        config_payload["protocol"] = _protocol_identity()
+    config = make_research_run_config(
+        experiment_id="w0_power_cycle_domino_d6",
+        payload=config_payload,
     )
     config_identity = run_root.write_json("config.json", config)
 
@@ -405,14 +478,14 @@ def _make_run(
         artifact_root_manifest,
         receipt_present=False,
     )
-    receipt = make_research_run_receipt(
-        experiment_id="w0_power_cycle_domino_d6",
-        config_identity=config_identity,
-        artifacts=artifacts,
-        payload={
-            "schema": "w0_d6_receipt_payload_v2",
+    receipt_payload: dict[str, object] = {
+            "schema": (
+                "w0_d6_receipt_payload_v2"
+                if profile == CLOSED_V2_PROFILE
+                else "w0_d6_receipt_payload_v3"
+            ),
             "status": status,
-            "attachment_scope": "seed_narrow",
+            "attachment_scope": attachment_scope,
             "antecedent_sha256": antecedent_identity.sha256,
             "result_sha256": result_identity.sha256,
             "configuration_sha256": (
@@ -425,7 +498,15 @@ def _make_run(
             "artifact_root_manifest": artifact_root_manifest,
             "claim_boundary": _claim_boundary(status),
             "replay": {"argv_template": replay_template},
-        },
+    }
+    if profile == SWAP_V3_PROFILE:
+        receipt_payload["protocol"] = _protocol_identity()
+        receipt_payload["authority_boundary"] = _authority_boundary()
+    receipt = make_research_run_receipt(
+        experiment_id="w0_power_cycle_domino_d6",
+        config_identity=config_identity,
+        artifacts=artifacts,
+        payload=receipt_payload,
     )
     run_root.write_json("receipt.json", receipt)
     verify_artifact_root_closure(
@@ -436,14 +517,86 @@ def _make_run(
     return run_root.path
 
 
+def _rewrite_config_binding(
+    run_root: Path,
+    mutate_payload: Callable[[dict[str, object]], None],
+) -> None:
+    config_path = run_root / "config.json"
+    receipt_path = run_root / "receipt.json"
+    config = _decode_cli_json(config_path.read_bytes())
+    payload = config["payload"]
+    assert type(payload) is dict
+    mutate_payload(payload)
+    config_path.write_bytes(canonical_json_bytes(config))
+    config_identity = read_stable_snapshot(config_path).identity
+
+    receipt = _decode_cli_json(receipt_path.read_bytes())
+    artifacts = receipt["artifacts"]
+    receipt_payload = receipt["payload"]
+    assert type(artifacts) is dict
+    assert type(receipt_payload) is dict
+    receipt["config_identity"] = config_identity.as_dict()
+    artifacts["config"] = config_identity.as_dict()
+    receipt_payload["identity_graph_sha256"] = replay_identity_graph(
+        artifacts
+    ).graph_sha256
+    receipt_path.write_bytes(canonical_json_bytes(receipt))
+
+
+def _rewrite_antecedent_binding(
+    run_root: Path,
+    mutate_antecedent: Callable[[dict[str, object]], None],
+    *,
+    receipt_status: object,
+) -> None:
+    antecedent_path = run_root / "antecedent.json"
+    config_path = run_root / "config.json"
+    receipt_path = run_root / "receipt.json"
+
+    antecedent = _decode_cli_json(antecedent_path.read_bytes())
+    mutate_antecedent(antecedent)
+    antecedent_path.write_bytes(canonical_json_bytes(antecedent))
+    antecedent_identity = read_stable_snapshot(antecedent_path).identity
+
+    config = _decode_cli_json(config_path.read_bytes())
+    config_payload = config["payload"]
+    assert type(config_payload) is dict
+    config_payload["antecedent"] = antecedent_identity.as_dict()
+    config_path.write_bytes(canonical_json_bytes(config))
+    config_identity = read_stable_snapshot(config_path).identity
+
+    receipt = _decode_cli_json(receipt_path.read_bytes())
+    artifacts = receipt["artifacts"]
+    receipt_payload = receipt["payload"]
+    assert type(artifacts) is dict
+    assert type(receipt_payload) is dict
+    receipt["config_identity"] = config_identity.as_dict()
+    artifacts["config"] = config_identity.as_dict()
+    artifacts["antecedent"] = antecedent_identity.as_dict()
+    receipt_payload["antecedent_sha256"] = antecedent_identity.sha256
+    receipt_payload["identity_graph_sha256"] = replay_identity_graph(
+        artifacts
+    ).graph_sha256
+    receipt_payload["status"] = receipt_status
+    receipt_path.write_bytes(canonical_json_bytes(receipt))
+
+
 @pytest.mark.parametrize("status", ["UNKNOWN", "INFEASIBLE"])
+@pytest.mark.parametrize("profile", [CLOSED_V2_PROFILE, SWAP_V3_PROFILE])
 def test_independent_replay_accepts_only_the_exact_nonfeasible_receipt_scope(
     tmp_path: Path,
     gate: ModuleType,
     input_paths: dict[str, Path],
     status: str,
+    profile: str,
 ) -> None:
-    run_root = _make_run(tmp_path, gate, input_paths, status=status)
+    run_root = _make_run(
+        tmp_path,
+        gate,
+        input_paths,
+        status=status,
+        profile=profile,
+    )
 
     completed = _replay_command(run_root)
     assert completed.returncode == 0, completed.stderr.decode()
@@ -454,10 +607,400 @@ def test_independent_replay_accepts_only_the_exact_nonfeasible_receipt_scope(
     assert replay["artifact_root"]["verified"] is True
     assert replay["antecedent_recomputation"]["verified"] is True
     assert replay["semantic_verification"] == {"performed": False, "summary": None}
+    if profile == CLOSED_V2_PROFILE:
+        assert replay["schema"] == "w0_d6_replay_receipt_v2"
+        assert "protocol" not in replay
+    else:
+        assert replay["schema"] == "w0_d6_replay_receipt_v3"
+        assert replay["protocol"] == _protocol_identity()
+        assert replay["authority_boundary"] == _authority_boundary()
     if status == "UNKNOWN":
         assert replay["conclusion"] is None
     else:
         assert replay["conclusion"]["kind"] == "exact_d6_antecedent_infeasible_only"
+
+
+def test_synthetic_fixture_accepts_only_two_atomic_profiles(
+    tmp_path: Path,
+    gate: ModuleType,
+    input_paths: dict[str, Path],
+) -> None:
+    with pytest.raises(AssertionError, match="unsupported synthetic protocol profile"):
+        _make_run(
+            tmp_path,
+            gate,
+            input_paths,
+            status="UNKNOWN",
+            profile="mixed_or_future",
+        )
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_replayer_rebuild_dispatches_profile_specific_active_totals(
+    replayer: ModuleType,
+    input_paths: dict[str, Path],
+) -> None:
+    strict_instance = json.loads(input_paths["strict_instance"].read_bytes())
+    framework = json.loads(input_paths["framework"].read_bytes())
+    seed = json.loads(input_paths["seed"].read_bytes())
+    closed_v2 = replayer.rebuild_d6_antecedent(
+        strict_instance,
+        framework,
+        seed,
+        protocol_profile=CLOSED_V2_PROFILE,
+        attachment_scope="seed_narrow",
+    )
+    swap_v3 = replayer.rebuild_d6_antecedent(
+        strict_instance,
+        framework,
+        seed,
+        protocol_profile=SWAP_V3_PROFILE,
+        attachment_scope="all_legal_d6_slots",
+    )
+
+    assert closed_v2["schema"] == "w0_d6_antecedent_v1"
+    assert closed_v2["expected_totals"] == {
+        "bodies": 17,
+        "active_inputs": 25,
+        "active_outputs": 25,
+    }
+    assert swap_v3["schema"] == "w0_d6_antecedent_v2"
+    assert swap_v3["protocol"] == _protocol_identity()
+    assert swap_v3["expected_totals"] == {
+        "bodies": 17,
+        "active_inputs": 23,
+        "active_outputs": 25,
+    }
+
+    forged = json.loads(json.dumps(swap_v3))
+    forged["expected_totals"]["active_inputs"] = 25
+    with pytest.raises(replayer.ReplayError) as exc_info:
+        replayer._parse_antecedent(
+            forged,
+            protocol_profile=SWAP_V3_PROFILE,
+        )
+    assert exc_info.value.code == "ANTECEDENT_D6_DRIFT"
+
+
+def test_v3_rebuild_rejects_insufficient_strict_6g_supply(
+    replayer: ModuleType,
+    input_paths: dict[str, Path],
+) -> None:
+    strict_instance = json.loads(input_paths["strict_instance"].read_bytes())
+    framework = json.loads(input_paths["framework"].read_bytes())
+    seed = json.loads(input_paths["seed"].read_bytes())
+    matching = []
+    for group in strict_instance["operation_groups"]:
+        inputs = sum(group["port_needs"]["inputs"].values())
+        outputs = sum(group["port_needs"]["outputs"].values())
+        if (
+            group["template"] == "manufacturing_6x4"
+            and inputs == 3
+            and outputs == 1
+        ):
+            matching.append(group)
+    assert len(matching) == 3
+    strict_instance["operation_groups"].remove(matching[0])
+    for group in matching[1:]:
+        group["count"] = 1
+
+    with pytest.raises(replayer.ReplayError) as exc_info:
+        replayer.rebuild_d6_antecedent(
+            strict_instance,
+            framework,
+            seed,
+            protocol_profile=SWAP_V3_PROFILE,
+            attachment_scope="all_legal_d6_slots",
+        )
+    assert exc_info.value.code == "ANTECEDENT_INPUT_INVALID"
+
+
+def test_v3_rebuild_rejects_non_d6_d9_allocation_drift(
+    replayer: ModuleType,
+    input_paths: dict[str, Path],
+) -> None:
+    strict_instance = json.loads(input_paths["strict_instance"].read_bytes())
+    framework = json.loads(input_paths["framework"].read_bytes())
+    seed = json.loads(input_paths["seed"].read_bytes())
+    framework["macrocell_class_allocation_seed"]["D1"]["3L"] += 1
+
+    with pytest.raises(replayer.ReplayError) as exc_info:
+        replayer.rebuild_d6_antecedent(
+            strict_instance,
+            framework,
+            seed,
+            protocol_profile=SWAP_V3_PROFILE,
+            attachment_scope="all_legal_d6_slots",
+        )
+    assert exc_info.value.code == "ANTECEDENT_INPUT_INVALID"
+
+
+@pytest.mark.parametrize("receipt_profile", [CLOSED_V2_PROFILE, SWAP_V3_PROFILE])
+def test_config_and_receipt_protocol_rows_cannot_be_mixed(
+    tmp_path: Path,
+    gate: ModuleType,
+    input_paths: dict[str, Path],
+    receipt_profile: str,
+) -> None:
+    run_root = _make_run(
+        tmp_path,
+        gate,
+        input_paths,
+        status="UNKNOWN",
+        profile=receipt_profile,
+    )
+
+    def cross_row(payload: dict[str, object]) -> None:
+        if receipt_profile == SWAP_V3_PROFILE:
+            payload["schema"] = "w0_d6_run_config_v2"
+            payload.pop("protocol")
+        else:
+            payload["schema"] = "w0_d6_run_config_v3"
+            payload["protocol"] = _protocol_identity()
+
+    _rewrite_config_binding(run_root, cross_row)
+    completed = _replay_command(run_root)
+
+    assert completed.returncode == 2
+    error = _decode_cli_json(completed.stderr)
+    assert error["error_code"] == "ARTIFACT_PROTOCOL_COHORT_MISMATCH"
+    assert error["conclusion"] is None
+
+    missing_manifest_root = tmp_path / "receipt-missing-manifest"
+    missing_manifest_root.mkdir()
+    missing_manifest_run_root = _make_run(
+        missing_manifest_root,
+        gate,
+        input_paths,
+        status="UNKNOWN",
+        profile=receipt_profile,
+    )
+    missing_manifest_receipt_path = missing_manifest_run_root / "receipt.json"
+    missing_manifest_receipt = _decode_cli_json(
+        missing_manifest_receipt_path.read_bytes()
+    )
+    missing_manifest_payload = missing_manifest_receipt["payload"]
+    assert type(missing_manifest_payload) is dict
+    missing_manifest_payload.pop("artifact_root_manifest")
+    missing_manifest_payload["status"] = "STATUS_MUST_NOT_BE_INTERPRETED"
+    missing_manifest_receipt_path.write_bytes(
+        canonical_json_bytes(missing_manifest_receipt)
+    )
+
+    missing_manifest_completed = _replay_command(missing_manifest_run_root)
+
+    assert missing_manifest_completed.returncode == 2
+    missing_manifest_error = _decode_cli_json(missing_manifest_completed.stderr)
+    assert missing_manifest_error["error_code"] == (
+        "ARTIFACT_PROTOCOL_COHORT_MISMATCH"
+    )
+    assert missing_manifest_error["conclusion"] is None
+
+    if receipt_profile == CLOSED_V2_PROFILE:
+        for case_name, mutation in (
+            (
+                "config-unknown-extra-field",
+                lambda payload: payload.__setitem__(
+                    "unexpected_cohort_field",
+                    "must fail as a cohort mismatch",
+                ),
+            ),
+            (
+                "config-missing-required-field",
+                lambda payload: payload.__delitem__("replay"),
+            ),
+        ):
+            case_root = tmp_path / case_name
+            case_root.mkdir()
+            contaminated_run_root = _make_run(
+                case_root,
+                gate,
+                input_paths,
+                status="UNKNOWN",
+                profile=CLOSED_V2_PROFILE,
+            )
+            _rewrite_config_binding(contaminated_run_root, mutation)
+            receipt_path = contaminated_run_root / "receipt.json"
+            receipt = _decode_cli_json(receipt_path.read_bytes())
+            receipt_payload = receipt["payload"]
+            assert type(receipt_payload) is dict
+            receipt_payload["status"] = "STATUS_MUST_NOT_BE_INTERPRETED"
+            receipt_path.write_bytes(canonical_json_bytes(receipt))
+
+            contaminated_completed = _replay_command(contaminated_run_root)
+
+            assert contaminated_completed.returncode == 2
+            contaminated_error = _decode_cli_json(contaminated_completed.stderr)
+            assert contaminated_error["error_code"] == (
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH"
+            )
+            assert contaminated_error["conclusion"] is None
+
+        def add_v3_authority_boundary(payload: dict[str, object]) -> None:
+            payload["authority_boundary"] = _authority_boundary()
+
+        def add_unknown_field(payload: dict[str, object]) -> None:
+            payload["unexpected_cohort_field"] = "must fail as a cohort mismatch"
+
+        def remove_required_field(payload: dict[str, object]) -> None:
+            payload.pop("replay")
+
+        for case_name, mutation in (
+            ("v3-authority-boundary", add_v3_authority_boundary),
+            ("unknown-extra-field", add_unknown_field),
+            ("missing-required-field", remove_required_field),
+        ):
+            case_root = tmp_path / case_name
+            case_root.mkdir()
+            contaminated_run_root = _make_run(
+                case_root,
+                gate,
+                input_paths,
+                status="UNKNOWN",
+                profile=CLOSED_V2_PROFILE,
+            )
+            receipt_path = contaminated_run_root / "receipt.json"
+            receipt = _decode_cli_json(receipt_path.read_bytes())
+            receipt_payload = receipt["payload"]
+            assert type(receipt_payload) is dict
+            mutation(receipt_payload)
+            receipt_payload["status"] = "STATUS_MUST_NOT_BE_INTERPRETED"
+            receipt_path.write_bytes(canonical_json_bytes(receipt))
+
+            contaminated_completed = _replay_command(contaminated_run_root)
+
+            assert contaminated_completed.returncode == 2
+            contaminated_error = _decode_cli_json(contaminated_completed.stderr)
+            assert contaminated_error["error_code"] == (
+                "ARTIFACT_PROTOCOL_COHORT_MISMATCH"
+            )
+            assert contaminated_error["conclusion"] is None
+        return
+
+    def remove_transfer(antecedent: dict[str, object]) -> None:
+        antecedent.pop("class_transfer")
+
+    def remove_ledger(antecedent: dict[str, object]) -> None:
+        antecedent.pop("class_ledger")
+
+    def select_closed_v2_antecedent_row(antecedent: dict[str, object]) -> None:
+        antecedent["schema"] = "w0_d6_antecedent_v1"
+        antecedent.pop("protocol")
+        antecedent.pop("class_transfer")
+        antecedent.pop("class_ledger")
+
+    for case_name, mutation in (
+        ("missing-transfer", remove_transfer),
+        ("missing-ledger", remove_ledger),
+        ("cross-row", select_closed_v2_antecedent_row),
+    ):
+        case_root = tmp_path / case_name
+        case_root.mkdir()
+        partial_run_root = _make_run(
+            case_root,
+            gate,
+            input_paths,
+            status="UNKNOWN",
+            profile=SWAP_V3_PROFILE,
+        )
+        _rewrite_antecedent_binding(
+            partial_run_root,
+            mutation,
+            receipt_status="STATUS_MUST_NOT_BE_INTERPRETED",
+        )
+
+        partial_completed = _replay_command(partial_run_root)
+
+        assert partial_completed.returncode == 2
+        partial_error = _decode_cli_json(partial_completed.stderr)
+        assert partial_error["error_code"] == "ARTIFACT_PROTOCOL_COHORT_MISMATCH"
+        assert partial_error["conclusion"] is None
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "proves_whole_witness",
+        "changes_lower_bound",
+        "changes_upper_bound",
+        "may_emit_cut_or_rejection",
+        "production_authority",
+        "certified_exact_source_authority",
+        "frozen_or_sealed_input_mutation",
+    ],
+)
+def test_v3_receipt_rejects_any_authority_boolean_flip(
+    tmp_path: Path,
+    gate: ModuleType,
+    input_paths: dict[str, Path],
+    field: str,
+) -> None:
+    run_root = _make_run(tmp_path, gate, input_paths, status="UNKNOWN")
+    receipt_path = run_root / "receipt.json"
+    receipt = _decode_cli_json(receipt_path.read_bytes())
+    payload = receipt["payload"]
+    assert type(payload) is dict
+    authority = payload["authority_boundary"]
+    assert type(authority) is dict
+    authority[field] = True
+    receipt_path.write_bytes(canonical_json_bytes(receipt))
+
+    completed = _replay_command(run_root)
+
+    assert completed.returncode == 2
+    error = _decode_cli_json(completed.stderr)
+    assert error["error_code"] == "AUTHORITY_BOUNDARY_INVALID"
+    assert error["conclusion"] is None
+
+
+@pytest.mark.parametrize("location", ["config", "receipt"])
+def test_v3_authority_boundary_is_mandatory(
+    tmp_path: Path,
+    gate: ModuleType,
+    input_paths: dict[str, Path],
+    location: str,
+) -> None:
+    run_root = _make_run(tmp_path, gate, input_paths, status="UNKNOWN")
+    if location == "config":
+        _rewrite_config_binding(
+            run_root,
+            lambda payload: payload.__delitem__("authority_boundary"),
+        )
+    else:
+        receipt_path = run_root / "receipt.json"
+        receipt = _decode_cli_json(receipt_path.read_bytes())
+        payload = receipt["payload"]
+        assert type(payload) is dict
+        payload.pop("authority_boundary")
+        receipt_path.write_bytes(canonical_json_bytes(receipt))
+
+    completed = _replay_command(run_root)
+
+    assert completed.returncode == 2
+    error = _decode_cli_json(completed.stderr)
+    assert error["error_code"] == "ARTIFACT_PROTOCOL_COHORT_MISMATCH"
+    assert error["conclusion"] is None
+
+
+def test_real_closed_v2_evidence_must_use_its_root_pinned_replayer(
+    tmp_path: Path,
+    gate: ModuleType,
+    input_paths: dict[str, Path],
+) -> None:
+    run_root = _make_run(
+        tmp_path,
+        gate,
+        input_paths,
+        status="UNKNOWN",
+        profile=CLOSED_V2_PROFILE,
+    )
+
+    completed = _replay_command_from_source(run_root, REPLAYER_PATH)
+
+    assert completed.returncode == 2
+    error = _decode_cli_json(completed.stderr)
+    assert error["error_code"] == "REPLAYER_SOURCE_MISMATCH"
+    assert error["conclusion"] is None
 
 
 def test_byte_tamper_fails_before_any_local_conclusion(
@@ -465,7 +1008,13 @@ def test_byte_tamper_fails_before_any_local_conclusion(
     gate: ModuleType,
     input_paths: dict[str, Path],
 ) -> None:
-    run_root = _make_run(tmp_path, gate, input_paths, status="UNKNOWN")
+    run_root = _make_run(
+        tmp_path,
+        gate,
+        input_paths,
+        status="UNKNOWN",
+        profile=CLOSED_V2_PROFILE,
+    )
     with (run_root / "result.json").open("ab") as handle:
         handle.write(b" ")
 
@@ -695,7 +1244,13 @@ def test_historical_v1_receipt_is_rejected_before_artifact_or_status_replay(
     gate: ModuleType,
     input_paths: dict[str, Path],
 ) -> None:
-    run_root = _make_run(tmp_path, gate, input_paths, status="UNKNOWN")
+    run_root = _make_run(
+        tmp_path,
+        gate,
+        input_paths,
+        status="UNKNOWN",
+        profile=CLOSED_V2_PROFILE,
+    )
     receipt_path = run_root / "receipt.json"
     receipt = _decode_cli_json(receipt_path.read_bytes())
     payload = receipt["payload"]
@@ -729,6 +1284,12 @@ def test_runner_rejects_missing_interpreter_flags_before_creating_run_root(
             str(input_paths["seed"]),
             "--run-root",
             str(run_root),
+            "--protocol-cohort",
+            PROTOCOL_COHORT,
+            "--class-allocation-profile",
+            CLASS_ALLOCATION_PROFILE,
+            "--attachment-scope",
+            "all_legal_d6_slots",
         ],
         env={"PYTHONDONTWRITEBYTECODE": "1"},
         check=False,
@@ -801,6 +1362,9 @@ def test_actual_runner_writes_a_cache_free_closed_root_without_calling_solver(
         "    '--framework', sys.argv[3],\n"
         "    '--seed', sys.argv[4],\n"
         "    '--run-root', sys.argv[5],\n"
+        "    '--protocol-cohort', 'w0_d6_swap_v3',\n"
+        "    '--class-allocation-profile', 'd6_6b_d9_6g_swap_v1',\n"
+        "    '--attachment-scope', 'all_legal_d6_slots',\n"
         "]))\n",
         encoding="utf-8",
     )
@@ -866,7 +1430,8 @@ def test_gate_import_under_required_flags_leaves_no_run_root_cache(
         "runner = importlib.util.module_from_spec(spec)\n"
         "sys.modules[spec.name] = runner\n"
         "spec.loader.exec_module(runner)\n"
-        "runner._load_gate_module(pathlib.Path(sys.argv[2]))\n",
+        "snapshot = runner.read_stable_snapshot(pathlib.Path(sys.argv[2]))\n"
+        "runner._load_gate_module(snapshot)\n",
         encoding="utf-8",
     )
 
@@ -887,6 +1452,24 @@ def test_gate_import_under_required_flags_leaves_no_run_root_cache(
     assert completed.returncode == 0, completed.stderr.decode()
     assert list(run_root.rglob("__pycache__")) == []
     assert list(run_root.rglob("*.pyc")) == []
+
+
+def test_gate_loader_executes_stable_snapshot_bytes_after_path_swap(
+    tmp_path: Path,
+    runner: ModuleType,
+) -> None:
+    copied_gate = tmp_path / "d6_joint_completion_gate.py"
+    copied_gate.write_bytes(GATE_PATH.read_bytes())
+    snapshot = read_stable_snapshot(copied_gate)
+    copied_gate.write_text(
+        "raise RuntimeError('swapped gate path was executed')\n",
+        encoding="utf-8",
+    )
+
+    module = runner._load_gate_module(snapshot)
+
+    assert callable(module.build_d6_antecedent)
+    assert module.ANTECEDENT_SCHEMA == "w0_d6_antecedent_v2"
 
 
 def test_real_import_generated_pyc_is_rejected_as_post_receipt_pollution(
@@ -928,15 +1511,29 @@ def test_cli_replay_is_stdlib_only_and_output_is_no_overwrite(
     input_paths: dict[str, Path],
 ) -> None:
     run_root = _make_run(tmp_path, gate, input_paths, status="UNKNOWN")
-    output = tmp_path / "replay" / "replay_receipt.json"
-    output.parent.mkdir()
+    coherent_output = tmp_path / "replay-coherent" / "replay_receipt.json"
+    heterogeneous_output = tmp_path / "replay-stdlib" / "replay_receipt.json"
+    coherent_output.parent.mkdir()
+    heterogeneous_output.parent.mkdir()
     root_tree_before = _artifact_tree_snapshot(run_root)
-    first = _replay_command(run_root, output=output)
-    second = _replay_command(run_root, output=output)
+    coherent = _replay_command(
+        run_root,
+        output=coherent_output,
+        python_executable=sys.executable,
+    )
+    heterogeneous = _replay_command(run_root, output=heterogeneous_output)
+    second = _replay_command(run_root, output=coherent_output)
 
-    assert first.returncode == 0, first.stderr.decode()
-    receipt = json.loads(output.read_bytes())
-    assert receipt["schema"] == "w0_d6_replay_receipt_v2"
+    assert coherent.returncode == 0, coherent.stderr.decode()
+    assert heterogeneous.returncode == 0, heterogeneous.stderr.decode()
+    assert coherent_output.read_bytes() == heterogeneous_output.read_bytes()
+    assert hashlib.sha256(coherent_output.read_bytes()).digest() == hashlib.sha256(
+        heterogeneous_output.read_bytes()
+    ).digest()
+    receipt = json.loads(coherent_output.read_bytes())
+    assert receipt["schema"] == "w0_d6_replay_receipt_v3"
+    assert receipt["protocol"] == _protocol_identity()
+    assert receipt["authority_boundary"] == _authority_boundary()
     assert receipt["producer_status"] == "UNKNOWN"
     assert receipt["conclusion"] is None
     assert receipt["artifact_root"]["verified"] is True
@@ -955,7 +1552,7 @@ def test_cli_replay_is_stdlib_only_and_output_is_no_overwrite(
         "import run_d6_research",
     ):
         assert forbidden not in source
-    assert canonical_json_bytes(receipt) == output.read_bytes()
+    assert canonical_json_bytes(receipt) == coherent_output.read_bytes()
     root_tree_after = _artifact_tree_snapshot(run_root)
     assert root_tree_after == root_tree_before
     assert list(run_root.rglob("__pycache__")) == []

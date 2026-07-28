@@ -1,6 +1,6 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-28。**
+**状态日期：2026-07-29。**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
 
 ## 当前结论摘要
@@ -18,9 +18,11 @@
   witness 构造实验。
 - **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
   hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
-  research/developer infrastructure 落地。artifact-root closure v2 修复已就绪；强制
-  seed-narrow 重跑等待 Endfield 退出、`preflight_gate.py --full` 及资源、竞争 solver、
-  项目锁和 clean-HEAD 检查。
+  research/developer infrastructure 落地。closed-root v2 的 `seed_narrow` 与
+  `all_legal_d6_slots` 已分别得到 replay-accepted `INFEASIBLE`，只关闭各自 exact local
+  antecedent。下一项唯一实验是保持 28 slots、geometry、pairing、tile split 与全局 class
+  ledger 不变的 `d6_6b_d9_6g_swap_v1` 单轴 class transfer；v3 实现先通过 solver-free
+  验收，再由 full preflight 与同一组资源门禁启动。
   它只处理 framework 的完整局部 D6 antecedent；实际 verdict 只写 clean 提交之后
   新建的 `.artifacts/research_runs/` no-overwrite root，不写入 tracked 状态，不产生
   cut、拒绝、下界或全局结论。
@@ -35,7 +37,7 @@
   Gate B、formal campaign 与 16 个 organic arms 均未创建或运行。这些结果不建立
   family-global soundness、production `CERTIFIED`、上下界、witness、attainability 或 optimality。
 
-## 2026-07-28 W0 D6 research intake 与局部 gate
+## 2026-07-29 W0 D6 closed-root negatives 与单轴 class transfer
 
 当前候选只以 research input 收编：strict instance SHA-256 为
 `e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849c`，
@@ -61,22 +63,35 @@ root-relative path；该实验语义不进入 G3 公共层。
 
 `FEASIBLE` 只证明 receipt 绑定的局部 D6 实例；`INFEASIBLE` 只关闭完全一致的
 antecedent、源码与 solver config；`UNKNOWN`、中断、intake 失败或异常均没有拒绝语义。
-历史 seed-narrow v1 root 的命名字节图绑定 antecedent
+历史 seed-narrow receipt-payload-v1 root 的命名字节图绑定 antecedent
 `7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f`
 并重放为局部 `INFEASIBLE`，但 root 内两个未登记 `.pyc` 使完整目录闭包不成立；历史 root
 保持原样且不得充当 v2 root-closure 证据。
 
-修复提交静态验收后继续等待 Endfield 退出。退出后先通过资源/竞争 solver/项目锁/
-clean committed HEAD 检查，再强制运行 `python scripts/preflight_gate.py --full`，通过后
-复核同一组运行门禁，方可自动以原三份 pinned 输入和原 `2 workers / seed 0 / 3600s`
-config 重跑 seed-narrow，不需额外 owner 批准。full preflight 因 Endfield 在场而延后，
-并未取消。`FEASIBLE` 停止并交付局部 certificate；
-`UNKNOWN` 或任一运行/closure/replay 失败停止并修复同一 scope；只有异构 replay 接受的
-`INFEASIBLE` 才把唯一变量放宽为 `all_legal_d6_slots`。H20 row-power oracle 不实现，
-G4 与全图 solve 继续后置。该工作不改
-`PROJECT_LOCK.md`、solver/cut production 控制流、checkpoint identity、冻结或密封 bytes、
-certified exact-source TCB、`U=(1188,18)`、`L=absent` 或
-`production_certified=false`。
+两个已接受 v2 roots 使用完整
+`antecedent_v1 + config_v2 + receipt_payload_v2 + replay_v2` cohort：
+seed-narrow antecedent `7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f`
+与 28-slot antecedent
+`a5fc8a3a3814970f2401d4c27800e422f8cb46cd358b6d07451f9935f76ddef3`
+均为 replay-accepted `INFEASIBLE`。前者没有排除其他 attachment slots；后者排除了仅移动
+attachment slot 的修复，但两者都没有排除 class transfer、safe pole anchors、tile 内 size
+分配或 domino pairing。
+
+下一实验固定为 `antecedent_v2 + config_v3 + receipt_payload_v3 + replay_v3` 的
+`d6_6b_d9_6g_swap_v1`：D6 用 `1×6G` 替换 `1×6B`，D9 做反向算术补偿，故 D6 active inputs
+由 25 降为 23、D9 由 30 升为 32，全局九类 ledger 不变。D9 不建模、不求解；任何
+`INFEASIBLE` 仍只关闭 exact local D6 swap antecedent。`PROJECT_LOCK.md` 仅新增 W0
+research-only v2/v3 合法矩阵、兼容与 authority 边界，并未把这些源码或 receipt 加入
+certified exact-source TCB。
+
+实施提交 clean 后，执行链持有三把既有 heavy/production-solver locks，先检查 RAM、swap、
+disk、PSI、竞争进程、项目锁、clean HEAD 与三份 pinned inputs，再运行
+`python scripts/preflight_gate.py --full`，通过后复核同一门禁，方可创建新的 no-overwrite
+producer root 与两份外部 replay roots。`FEASIBLE` 停止并交付局部 certificate；
+`UNKNOWN` 或任一运行/closure/replay 失败停止并只修同一 swap scope；replay-accepted
+`INFEASIBLE` 也在该单轴结论处停止。H20 row-power oracle、G4、D7、全图 solve 与多轴联合
+放宽继续后置。solver/cut production 控制流、checkpoint identity、冻结或密封 bytes、
+`U=(1188,18)`、`L=absent` 与 `production_certified=false` 均不变。
 
 ## 2026-07-27 SMM4 research upper recovery 终态
 

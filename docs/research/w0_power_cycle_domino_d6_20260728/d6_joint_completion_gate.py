@@ -24,10 +24,23 @@ from typing import Any
 from ortools.sat.python import cp_model
 
 
-ANTECEDENT_SCHEMA = "w0_d6_antecedent_v1"
+ANTECEDENT_SCHEMA = "w0_d6_antecedent_v2"
 GATE_RESULT_SCHEMA = "w0_d6_gate_result_v1"
 CONFIGURATION_SCHEMA = "w0_d6_configuration_v1"
 CERTIFICATE_SCHEMA = "w0_d6_local_certificate_v1"
+
+COHORT = "w0_d6_swap_v3"
+CLASS_ALLOCATION_PROFILE = "d6_6b_d9_6g_swap_v1"
+PROJECT_LOCK_SHA256 = "e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7"
+PROTOCOL = {
+    "cohort": COHORT,
+    "class_allocation_profile": CLASS_ALLOCATION_PROFILE,
+    "antecedent_schema": ANTECEDENT_SCHEMA,
+    "config_payload_schema": "w0_d6_run_config_v3",
+    "receipt_payload_schema": "w0_d6_receipt_payload_v3",
+    "replay_receipt_schema": "w0_d6_replay_receipt_v3",
+    "project_lock_sha256": PROJECT_LOCK_SHA256,
+}
 
 FEASIBLE_BOUNDARY = "feasible_only_for_the_exact_local_d6_antecedent"
 INFEASIBLE_BOUNDARY = "infeasible_only_for_the_exact_local_d6_antecedent"
@@ -43,7 +56,68 @@ TILE_TYPE_COUNTS = {
     (1, 2): {3: 5, 5: 3, 6: 1},
     (2, 2): {3: 5, 5: 1, 6: 2},
 }
-CLASS_COUNTS = {"3L": 7, "3O3": 3, "5L": 2, "5O2": 2, "6G": 2, "6B": 1}
+CLASS_ORDER = ("3I2", "3L", "3O2", "3O3", "5L", "5O2", "6B", "6F", "6G")
+D6_BEFORE_CLASS_COUNTS = {
+    "3I2": 0,
+    "3L": 7,
+    "3O2": 0,
+    "3O3": 3,
+    "5L": 2,
+    "5O2": 2,
+    "6B": 1,
+    "6F": 0,
+    "6G": 2,
+}
+D6_AFTER_CLASS_COUNTS = {
+    "3I2": 0,
+    "3L": 7,
+    "3O2": 0,
+    "3O3": 3,
+    "5L": 2,
+    "5O2": 2,
+    "6B": 0,
+    "6F": 0,
+    "6G": 3,
+}
+D9_BEFORE_CLASS_COUNTS = {
+    "3I2": 0,
+    "3L": 18,
+    "3O2": 0,
+    "3O3": 0,
+    "5L": 3,
+    "5O2": 0,
+    "6B": 0,
+    "6F": 0,
+    "6G": 3,
+}
+D9_AFTER_CLASS_COUNTS = {
+    "3I2": 0,
+    "3L": 18,
+    "3O2": 0,
+    "3O3": 0,
+    "5L": 3,
+    "5O2": 0,
+    "6B": 1,
+    "6F": 0,
+    "6G": 2,
+}
+GLOBAL_CLASS_COUNTS = {
+    "3I2": 6,
+    "3L": 109,
+    "3O2": 6,
+    "3O3": 11,
+    "5L": 32,
+    "5O2": 17,
+    "6B": 3,
+    "6F": 3,
+    "6G": 32,
+}
+# Only these six classes occur in D6.  Zero-count 6B remains in the modeled
+# catalog so the before/after swap has one stable candidate universe.
+CLASS_COUNTS = {
+    class_name: D6_AFTER_CLASS_COUNTS[class_name]
+    for class_name in ("3L", "3O3", "5L", "5O2", "6B", "6G")
+}
 # The selection rule is the only W0 mathematical vocabulary used to select
 # anonymous classes.  Template and I/O counts are then checked and populated
 # from strict operation_groups, never from a producer validation summary.
@@ -66,10 +140,10 @@ CYCLE_Y = 29
 CYCLE_X_MIN = 14
 CYCLE_X_MAX = 41
 SEED_NARROW_X = (23, 24, 25, 30, 31, 32, 33, 34, 35, 36, 37)
-TOTAL_BODIES = 17
-TOTAL_INPUTS = 25
-TOTAL_OUTPUTS = 25
-FLOW_BOUND = 25
+D6_BEFORE_TOTALS = {"bodies": 17, "active_inputs": 25, "active_outputs": 25}
+D6_AFTER_TOTALS = {"bodies": 17, "active_inputs": 23, "active_outputs": 25}
+D9_BEFORE_TOTALS = {"bodies": 24, "active_inputs": 30, "active_outputs": 24}
+D9_AFTER_TOTALS = {"bodies": 24, "active_inputs": 32, "active_outputs": 24}
 
 
 class D6AntecedentError(ValueError):
@@ -360,7 +434,11 @@ def _derive_class_catalog(strict_instance: Mapping[str, Any]) -> dict[str, dict[
             ),
             key=lambda item: item["id"],
         )
-        if sum(group["count"] for group in matching) < CLASS_COUNTS[class_name]:
+        required_supply = max(
+            D6_BEFORE_CLASS_COUNTS[class_name],
+            D6_AFTER_CLASS_COUNTS[class_name],
+        )
+        if sum(group["count"] for group in matching) < required_supply:
             raise D6AntecedentError(f"strict operation_groups cannot supply class {class_name}")
         result[class_name] = {
             "template": template,
@@ -368,6 +446,135 @@ def _derive_class_catalog(strict_instance: Mapping[str, Any]) -> dict[str, dict[
             "output_count": output_count,
             "operation_group_ids": [group["id"] for group in matching],
         }
+    return result
+
+
+def _ordered_class_counts(values: Mapping[str, int]) -> dict[str, int]:
+    if set(values) != set(CLASS_ORDER):
+        raise D6AntecedentError("class ledger does not cover the exact class order")
+    return {class_name: values[class_name] for class_name in CLASS_ORDER}
+
+
+def _allocation_totals(
+    class_counts: Mapping[str, Any],
+    class_catalog: Mapping[str, Any],
+    *,
+    label: str,
+) -> dict[str, int]:
+    bodies = 0
+    active_inputs = 0
+    active_outputs = 0
+    for class_name, count_raw in class_counts.items():
+        count = _integer(count_raw, f"{label}.{class_name}")
+        if count < 0:
+            raise D6AntecedentError(f"{label}.{class_name} must be nonnegative")
+        bodies += count
+        if count == 0:
+            continue
+        class_data = _mapping(class_catalog.get(class_name), f"class_catalog.{class_name}")
+        active_inputs += count * _integer(
+            class_data.get("input_count"), f"class_catalog.{class_name}.input_count"
+        )
+        active_outputs += count * _integer(
+            class_data.get("output_count"), f"class_catalog.{class_name}.output_count"
+        )
+    return {
+        "bodies": bodies,
+        "active_inputs": active_inputs,
+        "active_outputs": active_outputs,
+    }
+
+
+def _build_class_ledger(class_catalog: Mapping[str, Any]) -> dict[str, Any]:
+    d6_before = _allocation_totals(
+        D6_BEFORE_CLASS_COUNTS,
+        class_catalog,
+        label="class_ledger.d6.before.class_counts",
+    )
+    d6_after = _allocation_totals(
+        D6_AFTER_CLASS_COUNTS,
+        class_catalog,
+        label="class_ledger.d6.after.class_counts",
+    )
+    d9_before = _allocation_totals(
+        D9_BEFORE_CLASS_COUNTS,
+        class_catalog,
+        label="class_ledger.d9.before.class_counts",
+    )
+    d9_after = _allocation_totals(
+        D9_AFTER_CLASS_COUNTS,
+        class_catalog,
+        label="class_ledger.d9.after.class_counts",
+    )
+    expected_states = (
+        ("D6 before", d6_before, D6_BEFORE_TOTALS),
+        ("D6 after", d6_after, D6_AFTER_TOTALS),
+        ("D9 before", d9_before, D9_BEFORE_TOTALS),
+        ("D9 after", d9_after, D9_AFTER_TOTALS),
+    )
+    for label, actual, expected in expected_states:
+        if actual != expected:
+            raise D6AntecedentError(f"{label} allocation totals drifted: {actual}")
+
+    if (
+        _mapping(class_catalog.get("6B"), "class_catalog.6B").get("template")
+        != _mapping(class_catalog.get("6G"), "class_catalog.6G").get("template")
+    ):
+        raise D6AntecedentError("D6/D9 transfer classes no longer share one template")
+    for class_name in CLASS_ORDER:
+        before = D6_BEFORE_CLASS_COUNTS[class_name] + D9_BEFORE_CLASS_COUNTS[class_name]
+        after = D6_AFTER_CLASS_COUNTS[class_name] + D9_AFTER_CLASS_COUNTS[class_name]
+        if before != after:
+            raise D6AntecedentError(f"D6/D9 transfer does not conserve class {class_name}")
+
+    global_counts = _ordered_class_counts(GLOBAL_CLASS_COUNTS)
+    return {
+        "class_order": list(CLASS_ORDER),
+        "d6": {
+            "before": {
+                "class_counts": _ordered_class_counts(D6_BEFORE_CLASS_COUNTS),
+                "totals": d6_before,
+            },
+            "after": {
+                "class_counts": _ordered_class_counts(D6_AFTER_CLASS_COUNTS),
+                "totals": d6_after,
+            },
+            "modeled_state": "after",
+        },
+        "d9": {
+            "before": {
+                "class_counts": _ordered_class_counts(D9_BEFORE_CLASS_COUNTS),
+                "totals": d9_before,
+            },
+            "after": {
+                "class_counts": _ordered_class_counts(D9_AFTER_CLASS_COUNTS),
+                "totals": d9_after,
+            },
+            "role": "arithmetic_compensation_only_not_geometrically_modeled",
+        },
+        "global": {
+            "before": global_counts,
+            "after": dict(global_counts),
+            "conserved": True,
+        },
+    }
+
+
+def _expected_d6_totals(antecedent: Mapping[str, Any]) -> dict[str, int]:
+    expected = _mapping(antecedent.get("expected_totals"), "antecedent.expected_totals")
+    result = {
+        key: _positive_integer(expected.get(key), f"antecedent.expected_totals.{key}")
+        for key in ("bodies", "active_inputs", "active_outputs")
+    }
+    derived = _allocation_totals(
+        _mapping(antecedent.get("class_counts"), "antecedent.class_counts"),
+        _mapping(antecedent.get("class_catalog"), "antecedent.class_catalog"),
+        label="antecedent.class_counts",
+    )
+    if result != derived:
+        raise D6AntecedentError(
+            f"antecedent expected_totals do not match modeled D6 class counts: {derived}"
+        )
     return result
 
 
@@ -467,9 +674,56 @@ def _validate_framework(
         framework.get("macrocell_class_allocation_seed"),
         "framework.macrocell_class_allocation_seed",
     )
-    if allocations.get("D6") != CLASS_COUNTS:
+    expected_rows = {f"D{index}" for index in range(1, 13)}
+    if set(macrocells) != expected_rows or set(allocations) != expected_rows:
+        raise D6AntecedentError("framework macrocell allocation row set drifted")
+    global_counts = {class_name: 0 for class_name in CLASS_ORDER}
+    for row_name in sorted(expected_rows, key=lambda value: int(value[1:])):
+        row = _mapping(
+            allocations.get(row_name),
+            f"framework.macrocell_class_allocation_seed.{row_name}",
+        )
+        for class_name, count_raw in row.items():
+            if class_name not in global_counts:
+                raise D6AntecedentError(
+                    f"framework {row_name} has unknown operation class {class_name}"
+                )
+            global_counts[class_name] += _positive_integer(
+                count_raw,
+                f"framework.macrocell_class_allocation_seed.{row_name}.{class_name}",
+            )
+    if global_counts != _ordered_class_counts(GLOBAL_CLASS_COUNTS):
+        raise D6AntecedentError("framework global class allocation drifted")
+    expected_d6 = {
+        class_name: count
+        for class_name, count in D6_BEFORE_CLASS_COUNTS.items()
+        if count
+    }
+    expected_d9 = {
+        class_name: count
+        for class_name, count in D9_BEFORE_CLASS_COUNTS.items()
+        if count
+    }
+    if allocations.get("D6") != expected_d6:
         raise D6AntecedentError("framework D6 class allocation drifted")
+    if allocations.get("D9") != expected_d9:
+        raise D6AntecedentError("framework D9 class allocation drifted")
     framework_classes = _mapping(framework.get("operation_classes"), "framework.operation_classes")
+    if set(framework_classes) != set(CLASS_ORDER):
+        raise D6AntecedentError("framework operation class set drifted")
+    for class_name in CLASS_ORDER:
+        framework_class = _mapping(
+            framework_classes.get(class_name),
+            f"framework.operation_classes.{class_name}",
+        )
+        if (
+            _positive_integer(
+                framework_class.get("count"),
+                f"framework.operation_classes.{class_name}.count",
+            )
+            != GLOBAL_CLASS_COUNTS[class_name]
+        ):
+            raise D6AntecedentError(f"framework {class_name} global count drifted")
     size_by_template = {
         "manufacturing_3x3": "3x3",
         "manufacturing_5x5": "5x5",
@@ -573,7 +827,7 @@ def _seed_hints_and_slots(
             }
         )
     selected.sort(key=lambda item: (item["tile"], item["type"], item["anchor"], item["size"]))
-    if len(selected) != TOTAL_BODIES:
+    if len(selected) != D6_AFTER_TOTALS["bodies"]:
         raise D6AntecedentError("seed does not contain exactly 17 D6 placements")
     for tile, counts in TILE_TYPE_COUNTS.items():
         for type_code, expected_count in counts.items():
@@ -619,7 +873,7 @@ def build_d6_antecedent(
     framework: Mapping[str, Any],
     seed: Mapping[str, Any],
     *,
-    attachment_scope: str = "seed_narrow",
+    attachment_scope: str = "all_legal_d6_slots",
 ) -> dict[str, Any]:
     """Rebuild the exact self-contained local D6 antecedent.
 
@@ -630,6 +884,10 @@ def build_d6_antecedent(
     strict_instance = _mapping(strict_instance, "strict")
     framework = _mapping(framework, "framework")
     seed = _mapping(seed, "seed")
+    if attachment_scope != "all_legal_d6_slots":
+        raise D6AntecedentError(
+            "w0_d6_antecedent_v2 requires attachment_scope=all_legal_d6_slots"
+        )
     class_catalog = _derive_class_catalog(strict_instance)
     mode_catalog = _derive_mode_catalog(strict_instance)
     _validate_framework(strict_instance, framework, class_catalog)
@@ -640,6 +898,7 @@ def build_d6_antecedent(
         power_rule,
         attachment_scope=attachment_scope,
     )
+    class_ledger = _build_class_ledger(class_catalog)
     for class_name, class_data in class_catalog.items():
         template = class_data["template"]
         for mode in mode_catalog[template]:
@@ -653,8 +912,17 @@ def build_d6_antecedent(
 
     antecedent = {
         "schema": ANTECEDENT_SCHEMA,
+        "protocol": dict(PROTOCOL),
         "claim_boundary": "exact_local_d6_antecedent_only",
         "benchmark_id": _string(strict_instance.get("benchmark_id"), "strict.benchmark_id"),
+        "class_transfer": {
+            "profile": CLASS_ALLOCATION_PROFILE,
+            "moves": [
+                {"from": "D6", "to": "D9", "class": "6B", "count": 1},
+                {"from": "D9", "to": "D6", "class": "6G", "count": 1},
+            ],
+        },
+        "class_ledger": class_ledger,
         "attachment_scope": attachment_scope,
         "local_bounds": {
             "x_min": LOCAL_BOUNDS[0],
@@ -701,12 +969,13 @@ def build_d6_antecedent(
         "routing_patterns": build_legal_routing_patterns(),
         "seed_hints": seed_hints,
         "seed_hint_policy": "add_hint_only_never_constraint",
-        "expected_totals": {
-            "bodies": TOTAL_BODIES,
-            "active_inputs": TOTAL_INPUTS,
-            "active_outputs": TOTAL_OUTPUTS,
-        },
+        "expected_totals": dict(class_ledger["d6"]["after"]["totals"]),
     }
+    if antecedent["class_counts"] != {
+        name: class_ledger["d6"]["after"]["class_counts"][name]
+        for name in sorted(CLASS_COUNTS)
+    }:
+        raise D6AntecedentError("modeled D6 class counts do not match class ledger after state")
     _canonical_json_bytes(antecedent)
     return antecedent
 
@@ -854,6 +1123,11 @@ def _candidate_geometry_domains(
 
 def _build_exact_model(antecedent: Mapping[str, Any]) -> _ModelState:
     model = cp_model.CpModel()
+    expected_totals = _expected_d6_totals(antecedent)
+    flow_bound = max(
+        expected_totals["active_inputs"],
+        expected_totals["active_outputs"],
+    )
     local_cells = _all_local_cells(antecedent)
     local_cell_set = set(local_cells)
     tile_bounds, _pole_by_tile, fixed_body_cells, body_forbidden, coverage_by_tile = (
@@ -1218,18 +1492,18 @@ def _build_exact_model(antecedent: Mapping[str, Any]) -> _ModelState:
                     for to_layer in ("ground", "elevated"):
                         flow = model.NewIntVar(
                             0,
-                            FLOW_BOUND,
+                            flow_bound,
                             f"flow_{polarity}_{from_layer}_{to_layer}_"
                             f"{cell[0]}_{cell[1]}_{neighbor[0]}_{neighbor[1]}",
                         )
                         model.Add(
                             flow
-                            <= FLOW_BOUND
+                            <= flow_bound
                             * edge_out_by_layer[(from_layer, cell, direction)]
                         )
                         model.Add(
                             flow
-                            <= FLOW_BOUND
+                            <= flow_bound
                             * edge_in_by_layer[(to_layer, neighbor, opposite)]
                         )
                         flow_vars[
@@ -1245,16 +1519,16 @@ def _build_exact_model(antecedent: Mapping[str, Any]) -> _ModelState:
     cycle_absorptions: dict[tuple[int, int], Any] = {}
     cycle_emissions: dict[tuple[int, int], Any] = {}
     for cell, roles in role_vars.items():
-        absorption = model.NewIntVar(0, FLOW_BOUND, f"cycle_out_absorb_{cell[0]}_{cell[1]}")
-        emission = model.NewIntVar(0, FLOW_BOUND, f"cycle_in_emit_{cell[0]}_{cell[1]}")
-        model.Add(absorption <= FLOW_BOUND * roles["output_injection"])
+        absorption = model.NewIntVar(0, flow_bound, f"cycle_out_absorb_{cell[0]}_{cell[1]}")
+        emission = model.NewIntVar(0, flow_bound, f"cycle_in_emit_{cell[0]}_{cell[1]}")
+        model.Add(absorption <= flow_bound * roles["output_injection"])
         model.Add(absorption >= roles["output_injection"])
-        model.Add(emission <= FLOW_BOUND * roles["input_tap"])
+        model.Add(emission <= flow_bound * roles["input_tap"])
         model.Add(emission >= roles["input_tap"])
         cycle_absorptions[cell] = absorption
         cycle_emissions[cell] = emission
-    model.Add(sum(cycle_absorptions.values()) == TOTAL_OUTPUTS)
-    model.Add(sum(cycle_emissions.values()) == TOTAL_INPUTS)
+    model.Add(sum(cycle_absorptions.values()) == expected_totals["active_outputs"])
+    model.Add(sum(cycle_emissions.values()) == expected_totals["active_inputs"])
 
     for polarity in ("OUT", "IN"):
         for layer in ("ground", "elevated"):
@@ -1380,6 +1654,7 @@ def _extract_configuration(
     state: _ModelState,
     solver: Any,
 ) -> dict[str, Any]:
+    expected_totals = _expected_d6_totals(antecedent)
     selected_candidates = [
         candidate for candidate in state.candidates if solver.Value(candidate.select) == 1
     ]
@@ -1391,7 +1666,7 @@ def _extract_configuration(
             candidate.mode["id"],
         )
     )
-    if len(selected_candidates) != TOTAL_BODIES:
+    if len(selected_candidates) != expected_totals["bodies"]:
         raise _ReachabilityGuardError("solver selected an unexpected number of D6 bodies")
 
     bodies: list[dict[str, Any]] = []
@@ -1449,10 +1724,14 @@ def _extract_configuration(
     active_terminals["output"].sort(
         key=lambda item: (item["body_id"], item["port_id"], item["cell"])
     )
-    if len(active_terminals["input"]) != TOTAL_INPUTS:
-        raise _ReachabilityGuardError("selected body inputs do not total 25")
-    if len(active_terminals["output"]) != TOTAL_OUTPUTS:
-        raise _ReachabilityGuardError("selected body outputs do not total 25")
+    if len(active_terminals["input"]) != expected_totals["active_inputs"]:
+        raise _ReachabilityGuardError(
+            f"selected body inputs do not total {expected_totals['active_inputs']}"
+        )
+    if len(active_terminals["output"]) != expected_totals["active_outputs"]:
+        raise _ReachabilityGuardError(
+            f"selected body outputs do not total {expected_totals['active_outputs']}"
+        )
 
     local_cells = _all_local_cells(antecedent)
     transport: list[dict[str, Any]] = []
@@ -1526,9 +1805,15 @@ def _extract_configuration(
         for cell, variable in sorted(state.cycle_emissions.items())
         if solver.Value(variable) > 0
     ]
-    if sum(record["amount"] for record in cycle_absorptions) != TOTAL_OUTPUTS:
+    if (
+        sum(record["amount"] for record in cycle_absorptions)
+        != expected_totals["active_outputs"]
+    ):
         raise _ReachabilityGuardError("OUT cycle absorption total drifted")
-    if sum(record["amount"] for record in cycle_emissions) != TOTAL_INPUTS:
+    if (
+        sum(record["amount"] for record in cycle_emissions)
+        != expected_totals["active_inputs"]
+    ):
         raise _ReachabilityGuardError("IN cycle emission total drifted")
 
     out_targets = {
@@ -1665,7 +1950,7 @@ def solve_d6_joint_completion(
     seed: Mapping[str, Any],
     *,
     antecedent: Mapping[str, Any] | None = None,
-    attachment_scope: str = "seed_narrow",
+    attachment_scope: str = "all_legal_d6_slots",
     workers: int = 1,
     random_seed: int = 0,
     max_time_seconds: float = 60.0,
@@ -1786,11 +2071,15 @@ def solve_d6_joint_completion(
 __all__ = [
     "ANTECEDENT_SCHEMA",
     "CERTIFICATE_SCHEMA",
+    "CLASS_ALLOCATION_PROFILE",
+    "COHORT",
     "CONFIGURATION_SCHEMA",
     "D6AntecedentError",
     "FEASIBLE_BOUNDARY",
     "GATE_RESULT_SCHEMA",
     "INFEASIBLE_BOUNDARY",
+    "PROJECT_LOCK_SHA256",
+    "PROTOCOL",
     "UNKNOWN_BOUNDARY",
     "build_d6_antecedent",
     "build_legal_routing_patterns",

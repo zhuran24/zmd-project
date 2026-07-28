@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-07-18 (active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; prior: batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
+**Updated**: 2026-07-29 (W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -528,6 +528,51 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
 - **代数 vs 几何分工**: 全局代数约束 (e.g. power supply cap, total worker
   count) 必走 Master CP-SAT 线性约束, 不进 cut framework (Gemini round 22
   F16 verdict — "代数归 Master, 几何归 Cut").
+
+### 3B. W0 D6 research-only artifact protocol boundary
+
+- This boundary applies only to the isolated W0 D6 research package under
+  `docs/research/w0_power_cycle_domino_d6_20260728/`. It does not add that package,
+  any D6 receipt, or any replay output to §2 Certified Source of Truth, the
+  `certified_exact` source TCB, a production publisher, a frozen/sealed input, or
+  checkpoint authority.
+- The accepted complete protocol cohorts are closed:
+
+  | cohort | antecedent | run-config payload | receipt payload | replay receipt |
+  |---|---|---|---|---|
+  | closed-root v2 | `w0_d6_antecedent_v1` | `w0_d6_run_config_v2` | `w0_d6_receipt_payload_v2` | `w0_d6_replay_receipt_v2` |
+  | D6/D9 class-transfer v3 | `w0_d6_antecedent_v2` | `w0_d6_run_config_v3` | `w0_d6_receipt_payload_v3` | `w0_d6_replay_receipt_v3` |
+
+  The common developer/research envelopes (`research_run_config_v1`,
+  `research_run_receipt_v1`, `artifact_identity_graph_v1`,
+  `research_artifact_root_manifest_v1`, and
+  `isolated_python_process_contract_v1`) remain unchanged and opaque to W0
+  mathematics. The W0 gate result, result wrapper, local configuration, and
+  minimal certificate remain at their existing v1 schemas unless their own
+  field set or meaning changes.
+- A producer or replayer must select exactly one complete row. Any cross-row,
+  partially upgraded, unknown, or future combination fails before artifact
+  status or a D6 conclusion is interpreted with
+  `ARTIFACT_PROTOCOL_COHORT_MISMATCH`. There is no coercion, relabeling,
+  auto-migration, or in-place repair of a historical run root. A real
+  `w0_d6_receipt_payload_v1` remains the narrower historical case and fails
+  before artifact/status replay with `ROOT_CLOSURE_CONTRACT_MISSING`.
+- The v3 protocol pins the exact SHA-256 of this authorized lock successor as a
+  W0 protocol-identity scalar across its antecedent, run-config payload,
+  receipt payload, and replay receipt. The runner must verify the actual stable
+  `PROJECT_LOCK.md` bytes before creating an exclusive run root and revalidate
+  them before writing a terminal receipt. The independent replayer verifies the
+  bound scalar and its own pinned expected value; because the lock is not a
+  run-root artifact, replay must not claim to have rehashed the live repository
+  lock. A mismatch is a run/replay contract failure with no D6 verdict, not
+  `INFEASIBLE`.
+- `FEASIBLE` remains evidence only for the byte-bound local D6 antecedent;
+  `INFEASIBLE` closes only the identical local antecedent and complete protocol
+  cohort; `UNKNOWN`, interruption, intake failure, cohort failure, or replay
+  failure has no rejecting force. No row can mint a whole-layout witness, lower
+  ledger entry, cut, rejection, upper- or lower-bound change, production
+  authority, or certified authority. In particular, `U` and `L` remain
+  unchanged by this research protocol.
 
 ## 4. Forbidden Changes
 

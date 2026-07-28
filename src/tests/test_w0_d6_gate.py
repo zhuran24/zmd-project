@@ -8,6 +8,8 @@ from pathlib import Path
 import sys
 from types import ModuleType
 
+from google.protobuf import text_format
+from ortools.sat import cp_model_pb2
 import pytest
 
 from devtools.research_run_contract import canonical_json_bytes
@@ -35,7 +37,9 @@ STRICT_SHA256 = "e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849
 FRAMEWORK_SHA256 = "db6046cf598f9b5738b7f8950c91ea31834e8214e7e07995175b71eb04bdbb89"
 SEED_SHA256 = "18c72669105f486bf54a2665bd74d1ff952ce2eeb39b28a7b30d5ce8d5d2f5f1"
 LEGACY_UNBOUND_SHA256 = "295bfef9b2681193e3a9cc085c479a960f87de0131abfbdfacb676479bdb2aa5"
-ANTECEDENT_SHA256 = "7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f"
+PROJECT_LOCK_SHA256 = "e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7"
+ANTECEDENT_SHA256 = "dab2a3282b4d4c632d4e0260cc364f397b567f108dbf6480db5d1553a41a9221"
+SEED_HINTS_SHA256 = "4de8e250dbafcb80b65de3b6443a0800fa7366b0ace826c72087c28452db8ef3"
 
 
 def _load_module(name: str, path: Path) -> ModuleType:
@@ -45,6 +49,18 @@ def _load_module(name: str, path: Path) -> ModuleType:
     sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def _cp_model_proto_bytes(value: object) -> bytes:
+    message = cp_model_pb2.CpModelProto()
+    text_format.Parse(str(value), message)
+    return message.SerializeToString(deterministic=True)
+
+
+def _solution_hint_proto_bytes(value: object) -> bytes:
+    message = cp_model_pb2.PartialVariableAssignment()
+    text_format.Parse(str(value), message)
+    return message.SerializeToString(deterministic=True)
 
 
 @pytest.fixture(scope="module")
@@ -81,39 +97,131 @@ def test_exact_inputs_rebuild_one_self_contained_d6_antecedent(
     gate: ModuleType,
     pinned_inputs: tuple[dict[str, object], dict[str, object], dict[str, object]],
 ) -> None:
-    antecedent = gate.build_d6_antecedent(*pinned_inputs, attachment_scope="seed_narrow")
+    antecedent = gate.build_d6_antecedent(*pinned_inputs)
 
-    assert antecedent["schema"] == "w0_d6_antecedent_v1"
-    assert antecedent["attachment_scope"] == "seed_narrow"
+    assert hashlib.sha256(SEED_PATH.read_bytes()).hexdigest() == SEED_SHA256
+    assert antecedent["schema"] == "w0_d6_antecedent_v2"
+    assert antecedent["protocol"] == {
+        "cohort": "w0_d6_swap_v3",
+        "class_allocation_profile": "d6_6b_d9_6g_swap_v1",
+        "antecedent_schema": "w0_d6_antecedent_v2",
+        "config_payload_schema": "w0_d6_run_config_v3",
+        "receipt_payload_schema": "w0_d6_receipt_payload_v3",
+        "replay_receipt_schema": "w0_d6_replay_receipt_v3",
+        "project_lock_sha256": PROJECT_LOCK_SHA256,
+    }
+    assert antecedent["class_transfer"] == {
+        "profile": "d6_6b_d9_6g_swap_v1",
+        "moves": [
+            {"from": "D6", "to": "D9", "class": "6B", "count": 1},
+            {"from": "D9", "to": "D6", "class": "6G", "count": 1},
+        ],
+    }
+    assert antecedent["attachment_scope"] == "all_legal_d6_slots"
     assert antecedent["local_bounds"] == {"x_min": 14, "x_max": 41, "y_min": 28, "y_max": 41}
     assert antecedent["class_counts"] == {
         "3L": 7,
         "3O3": 3,
         "5L": 2,
         "5O2": 2,
-        "6B": 1,
-        "6G": 2,
+        "6B": 0,
+        "6G": 3,
     }
     assert antecedent["expected_totals"] == {
+        "bodies": 17,
+        "active_inputs": 23,
+        "active_outputs": 25,
+    }
+    assert {
+        tuple(tile["tile"]): tile["type_counts"]
+        for tile in antecedent["tiles"]
+    } == {
+        (1, 2): {"3": 5, "5": 3, "6": 1},
+        (2, 2): {"3": 5, "5": 1, "6": 2},
+    }
+    class_ledger = antecedent["class_ledger"]
+    assert class_ledger["class_order"] == [
+        "3I2",
+        "3L",
+        "3O2",
+        "3O3",
+        "5L",
+        "5O2",
+        "6B",
+        "6F",
+        "6G",
+    ]
+    assert class_ledger["d6"]["before"]["totals"] == {
         "bodies": 17,
         "active_inputs": 25,
         "active_outputs": 25,
     }
+    assert class_ledger["d6"]["after"]["totals"] == antecedent["expected_totals"]
+    assert class_ledger["d6"]["modeled_state"] == "after"
+    assert class_ledger["d9"]["before"]["totals"] == {
+        "bodies": 24,
+        "active_inputs": 30,
+        "active_outputs": 24,
+    }
+    assert class_ledger["d9"]["after"]["totals"] == {
+        "bodies": 24,
+        "active_inputs": 32,
+        "active_outputs": 24,
+    }
+    assert (
+        class_ledger["d9"]["role"]
+        == "arithmetic_compensation_only_not_geometrically_modeled"
+    )
+    expected_global = {
+        "3I2": 6,
+        "3L": 109,
+        "3O2": 6,
+        "3O3": 11,
+        "5L": 32,
+        "5O2": 17,
+        "6B": 3,
+        "6F": 3,
+        "6G": 32,
+    }
+    assert class_ledger["global"] == {
+        "before": expected_global,
+        "after": expected_global,
+        "conserved": True,
+    }
+    for class_name in class_ledger["class_order"]:
+        assert (
+            class_ledger["d6"]["before"]["class_counts"][class_name]
+            + class_ledger["d9"]["before"]["class_counts"][class_name]
+            == class_ledger["d6"]["after"]["class_counts"][class_name]
+            + class_ledger["d9"]["after"]["class_counts"][class_name]
+        )
+    for macrocell in ("d6", "d9"):
+        for state in ("before", "after"):
+            class_counts = class_ledger[macrocell][state]["class_counts"]
+            assert class_ledger[macrocell][state]["totals"] == {
+                "bodies": sum(class_counts.values()),
+                "active_inputs": sum(
+                    count * antecedent["class_catalog"][class_name]["input_count"]
+                    for class_name, count in class_counts.items()
+                    if count
+                ),
+                "active_outputs": sum(
+                    count * antecedent["class_catalog"][class_name]["output_count"]
+                    for class_name, count in class_counts.items()
+                    if count
+                ),
+            }
     assert len(antecedent["seed_hints"]) == 17
     assert antecedent["seed_hint_policy"] == "add_hint_only_never_constraint"
-    assert [slot["cycle"][0] for slot in antecedent["cycle"]["attachment_slots"]] == [
-        23,
-        24,
-        25,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
+    assert antecedent["cycle"]["attachment_slots"] == [
+        {"cycle": [x, 29], "branch": [x, 30]}
+        for x in range(14, 42)
     ]
+    assert (
+        hashlib.sha256(canonical_json_bytes(antecedent["seed_hints"])).hexdigest()
+        == SEED_HINTS_SHA256
+    )
+    assert "tile_class_counts" not in antecedent
     assert LEGACY_UNBOUND_SHA256 not in canonical_json_bytes(antecedent).decode("utf-8")
     assert hashlib.sha256(canonical_json_bytes(antecedent)).hexdigest() == ANTECEDENT_SHA256
 
@@ -152,8 +260,9 @@ def test_front_geometry_is_recomputed_from_body_cell_and_direction(gate: ModuleT
 def test_exact_model_keeps_seed_as_hints_and_allows_cross_layer_edges(
     gate: ModuleType,
     pinned_inputs: tuple[dict[str, object], dict[str, object], dict[str, object]],
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    antecedent = gate.build_d6_antecedent(*pinned_inputs, attachment_scope="seed_narrow")
+    antecedent = gate.build_d6_antecedent(*pinned_inputs)
     state = gate._build_exact_model(antecedent)
     proto = state.model.Proto()
 
@@ -163,12 +272,78 @@ def test_exact_model_keeps_seed_as_hints_and_allows_cross_layer_edges(
     assert list(proto.solution_hint.values) == [1] * 17
     hint_indices = set(proto.solution_hint.vars)
     assert all(proto.variables[index].name.startswith("seed_anchor_hint_") for index in hint_indices)
-    for constraint in proto.constraints:
-        if not constraint.has_linear():
-            continue
-        involved_hints = hint_indices.intersection(constraint.linear.vars)
-        if involved_hints:
-            assert len(constraint.linear.vars) > 1
+    candidate_by_index = {
+        candidate.select.Index(): candidate
+        for candidate in state.candidates
+    }
+    expected_classes_by_type = {
+        3: {"3L", "3O3"},
+        5: {"5L", "5O2"},
+        6: {"6B", "6G"},
+    }
+    for hint_index, hint_variable_index in enumerate(proto.solution_hint.vars):
+        defining_constraints = [
+            constraint
+            for constraint in proto.constraints
+            if constraint.has_linear() and hint_variable_index in constraint.linear.vars
+        ]
+        assert len(defining_constraints) == 1
+        definition = defining_constraints[0].linear
+        assert list(definition.domain) == [0, 0]
+        coefficients = dict(zip(definition.vars, definition.coeffs, strict=True))
+        hint_coefficient = coefficients[hint_variable_index]
+        assert abs(hint_coefficient) == 1
+        candidate_indices = set(coefficients) - {hint_variable_index}
+        assert candidate_indices
+        assert {
+            coefficients[index]
+            for index in candidate_indices
+        } == {-hint_coefficient}
+        matching_candidates = [candidate_by_index[index] for index in candidate_indices]
+        raw_hint = antecedent["seed_hints"][hint_index]
+        assert {candidate.class_name for candidate in matching_candidates} == (
+            expected_classes_by_type[raw_hint["type"]]
+        )
+        assert all(candidate.tile == tuple(raw_hint["tile"]) for candidate in matching_candidates)
+        assert all(
+            candidate.anchor == tuple(raw_hint["anchor"])
+            for candidate in matching_candidates
+        )
+        assert all(
+            tuple(raw_hint["anchor"]) in candidate.body_cells
+            for candidate in matching_candidates
+        )
+
+    normal_without_hints = type(proto)()
+    normal_without_hints.copy_from(proto)
+    normal_without_hints.clear_solution_hint()
+    with monkeypatch.context() as patch:
+        patch.setattr(gate.cp_model.CpModel, "add_hint", lambda _model, _variable, _value: None)
+        no_hint_state = gate._build_exact_model(antecedent)
+    assert no_hint_state.model.Validate() == ""
+    assert (
+        _cp_model_proto_bytes(normal_without_hints)
+        == _cp_model_proto_bytes(no_hint_state.model.Proto())
+    )
+
+    before_swap = copy.deepcopy(antecedent)
+    before_swap["class_counts"] = {
+        class_name: antecedent["class_ledger"]["d6"]["before"]["class_counts"][class_name]
+        for class_name in antecedent["class_counts"]
+    }
+    before_swap["expected_totals"] = antecedent["class_ledger"]["d6"]["before"]["totals"]
+    before_state = gate._build_exact_model(before_swap)
+    swap_bytes = canonical_json_bytes(antecedent)
+    before_swap_bytes = canonical_json_bytes(before_swap)
+    seed_hint_bytes = canonical_json_bytes(antecedent["seed_hints"])
+    assert before_swap_bytes != swap_bytes
+    assert hashlib.sha256(before_swap_bytes).digest() != hashlib.sha256(swap_bytes).digest()
+    assert canonical_json_bytes(before_swap["seed_hints"]) == seed_hint_bytes
+    assert hashlib.sha256(seed_hint_bytes).hexdigest() == SEED_HINTS_SHA256
+    assert (
+        _solution_hint_proto_bytes(before_state.model.Proto().solution_hint)
+        == _solution_hint_proto_bytes(proto.solution_hint)
+    )
 
     one_edge = next(
         (source, target)
@@ -191,33 +366,59 @@ def test_framework_or_seed_semantic_drift_fails_before_model_build(
     pinned_inputs: tuple[dict[str, object], dict[str, object], dict[str, object]],
 ) -> None:
     strict, framework, seed = pinned_inputs
-    changed_framework = copy.deepcopy(framework)
-    changed_framework["macrocell_class_allocation_seed"]["D6"]["3L"] = 6
-    with pytest.raises(gate.D6AntecedentError, match="class allocation drifted"):
-        gate.build_d6_antecedent(strict, changed_framework, seed)
+    changed_d6 = copy.deepcopy(framework)
+    changed_d6["macrocell_class_allocation_seed"]["D6"]["3L"] = 6
+    changed_d6["macrocell_class_allocation_seed"]["D9"]["3L"] = 19
+    with pytest.raises(gate.D6AntecedentError, match="D6 class allocation drifted"):
+        gate.build_d6_antecedent(strict, changed_d6, seed)
+
+    changed_d9 = copy.deepcopy(framework)
+    changed_d9["macrocell_class_allocation_seed"]["D9"]["6G"] = 2
+    changed_d9["macrocell_class_allocation_seed"]["D8"]["6G"] = 3
+    with pytest.raises(gate.D6AntecedentError, match="D9 class allocation drifted"):
+        gate.build_d6_antecedent(strict, changed_d9, seed)
+
+    changed_elsewhere = copy.deepcopy(framework)
+    changed_elsewhere["macrocell_class_allocation_seed"]["D1"]["3L"] += 1
+    with pytest.raises(gate.D6AntecedentError, match="global class allocation drifted"):
+        gate.build_d6_antecedent(strict, changed_elsewhere, seed)
+
+    unknown_class = copy.deepcopy(framework)
+    unknown_class["macrocell_class_allocation_seed"]["D1"]["unknown"] = 1
+    with pytest.raises(gate.D6AntecedentError, match="unknown operation class"):
+        gate.build_d6_antecedent(strict, unknown_class, seed)
+
+    changed_global_count = copy.deepcopy(framework)
+    changed_global_count["operation_classes"]["3I2"]["count"] = 5
+    with pytest.raises(gate.D6AntecedentError, match="3I2 global count drifted"):
+        gate.build_d6_antecedent(strict, changed_global_count, seed)
 
     changed_seed = copy.deepcopy(seed)
-    changed_seed["eligible_attachment_slots_by_tile"]["1,2"][0]["cycle"][0] += 1
-    with pytest.raises(gate.D6AntecedentError, match="attachment slots drifted"):
+    d6_index = next(
+        index
+        for index, placement in enumerate(changed_seed["manufacturing_placements"])
+        if placement["tile"] in ([1, 2], [2, 2])
+    )
+    changed_seed["manufacturing_placements"][d6_index]["size"] = [1, 1]
+    with pytest.raises(gate.D6AntecedentError, match="invalid type/size"):
         gate.build_d6_antecedent(strict, framework, changed_seed)
 
 
-def test_all_legal_variant_changes_only_attachment_scope(
+def test_v2_antecedent_fail_closes_to_all_legal_attachment_scope(
     gate: ModuleType,
     pinned_inputs: tuple[dict[str, object], dict[str, object], dict[str, object]],
 ) -> None:
-    narrow = gate.build_d6_antecedent(*pinned_inputs, attachment_scope="seed_narrow")
-    widened = gate.build_d6_antecedent(*pinned_inputs, attachment_scope="all_legal_d6_slots")
+    antecedent = gate.build_d6_antecedent(*pinned_inputs)
 
-    assert len(widened["cycle"]["attachment_slots"]) == 28
-    assert [slot["cycle"][0] for slot in widened["cycle"]["attachment_slots"]] == list(range(14, 42))
-    narrow_without_scope = copy.deepcopy(narrow)
-    widened_without_scope = copy.deepcopy(widened)
-    narrow_without_scope["attachment_scope"] = None
-    widened_without_scope["attachment_scope"] = None
-    narrow_without_scope["cycle"]["attachment_slots"] = None
-    widened_without_scope["cycle"]["attachment_slots"] = None
-    assert narrow_without_scope == widened_without_scope
+    assert len(antecedent["cycle"]["attachment_slots"]) == 28
+    assert [slot["cycle"][0] for slot in antecedent["cycle"]["attachment_slots"]] == list(
+        range(14, 42)
+    )
+    with pytest.raises(
+        gate.D6AntecedentError,
+        match="requires attachment_scope=all_legal_d6_slots",
+    ):
+        gate.build_d6_antecedent(*pinned_inputs, attachment_scope="seed_narrow")
 
 
 def test_producer_source_claim_is_recorded_as_rejected_not_binding(

@@ -1,7 +1,7 @@
 # FILE_STATUS.md
 
 **Status:** CURRENT_INVENTORY  
-**Updated:** 2026-07-28
+**Updated:** 2026-07-29
 **Release state:** P1.2 OWNER-CLOSED / P1.3 IN PROGRESS (cut attach not yet promoted)
 **History**: Engineering history lives in [CHANGELOG.md](CHANGELOG.md).
 
@@ -73,7 +73,7 @@
 | Path | Status | 说明 |
 |---|---|---|
 | `devtools/research_run_contract.py` | CURRENT_CODE_ALIGNED | G3 developer/research-only 的稳定字节快照、独占 no-overwrite run root、逐组件 no-follow artifact-root 打开、全树目录 FD/signature 保留至终检、manifest 排除 `receipt.json` 自身而完成态 closure 要求 manifest 加唯一普通文件 `receipt.json`、`-I -B` 进程合同、canonical envelope 与字节 identity replay；不进入 certified exact-source TCB 或 production authority |
-| `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion、固定 artifact label/path 合同与 stdlib-only v2 replay；历史 v1 seed-narrow root 因未登记 `.pyc` 只保留命名字节图结论，新强制重跑等待 Endfield 退出、full preflight 与资源/竞争 solver/项目锁/clean-HEAD 门禁；不产生全图 witness、cut、上下界或 production authority |
+| `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion、固定 artifact label/path 合同与 stdlib-only replay；closed-root v2 的 seed-narrow 与 28-slot antecedent 均为 replay-accepted local `INFEASIBLE`，下一实验只执行 `d6_6b_d9_6g_swap_v1` 单轴 class transfer，并由 v3 协议、full preflight 与资源/竞争 solver/项目锁/clean-HEAD 门禁约束；不产生全图 witness、cut、上下界或 production authority |
 | `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 15 active obligations；绑定 sink/hash/guard/critical files |
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
@@ -85,7 +85,7 @@
 
 | Path | Status | 说明 |
 |---|---|---|
-| `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-07-11 已同步 F8 retirement / partial attach / Stage B boundary |
+| `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-07-29 窄增 W0 D6 research-only v2/v3 artifact protocol 矩阵，未把 W0 扩入 certified/production authority；F8 retirement / partial attach / Stage B boundary 保持 |
 | `README.md`, `NAV_MAP.md`, `docs/项目说明/06_current_status.md` | CURRENT_CODE_ALIGNED | 当前入口与状态摘要 |
 | `docs/项目说明/24_repository_asset_governance.md` | CURRENT_CODE_ALIGNED | G1/G2 代码资产治理与 G3 最小公共研究基础层索引；不授予认证 authority |
 | `data/repository_governance/code_assets.json` | STRUCTURAL_GATE | 可复算目录规则、显式例外与基线收据；由 schema/checker fail closed 校验 |
@@ -115,16 +115,18 @@ retirement candidate 19。该数字只描述这个带日期的基线；当前工
 2026-07-28、G2 隔离前的 tracked-clean `201c198` bare-pytest 基线为 6,624 个 nodeid，
 规范化 SHA256 为
 `6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96`。当前互斥快速面为：
-developer 3,541（`ad151b2509d023bcc66fe102233241d028b35311eb3669f379d789097805f8a2`）、
-evidence/non-replay 1,512（`c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b`）、
-replay 1,544（`99ae9c68e0b2bfe2c1dcb119ac9b325158ece08e25f3bbc16e6b06d047f0863c`）。
-三者并集逐 nodeid 等于 full/non-slow 6,597
-（`9ba5911ee114c47bd7093e78b89af97de0510e354dc9b93b5e4796eaed898959`）。
+developer 3,541（`a430d75867516b5b0b05516a4db191287e34d5c10bf4c1a3b188f723c7abc9d7`）、
+evidence/non-replay 1,512（`362e0187f943eabb9e36b13a7d283b8ffc3d55e6a22c6e6e37bd0c263474c0d2`）、
+replay 1,563（`bac7d8817a81e5637db4c69ad9cbfe1ea4f0c3db5cadd21e6134c1387a55f75f`）。
+三者并集逐 nodeid 等于 full/non-slow 6,616
+（`a635e8d531b849bdebe2c7b005299dcdfdcfd8a9abc25d7ec9946ad3e2de4855`）。
 
-以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 为 6,628
-（`c2a80033dab5b1a67bc78dc37fa7ffd3b071a62ee4e95dc93620645116258d09`），slow 仍为 31
-（`9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd`）；既有 focused
-入口的 count/hash 不变。另有 107 个 auxiliary memory tests 通过显式 full 路径保留，
-nodeid SHA256 为 `32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1`。
+以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 为 6,647
+（`eeb6f3e1b45d491be286ece460c4da7758b677971ebf59bc766572462589ca16`），slow 仍为 31
+（`9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd`）；
+`cuts_collection_counter` 仍为 958，因 lock-parity test 重命名而更新规范化 SHA256 为
+`1431c01e8a0aa94f04bb9071e6cb5d6fdd5415d917133f3758ab9ffdf904bb0d`，其他既有 focused
+入口收据不变。另有 107 个 auxiliary memory tests 通过显式 full 路径保留，nodeid SHA256
+为 `32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1`。
 入口命令和边界见 `docs/项目说明/24_repository_asset_governance.md`；
 完整 preflight 仍由非 slow 与 slow 两条显式门禁共同组成。

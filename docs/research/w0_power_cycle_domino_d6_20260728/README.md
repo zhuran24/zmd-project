@@ -1,15 +1,142 @@
 # W0 power-cycle domino：D6 局部联合 completion gate
 
-**状态：** RESEARCH_ONLY / LOCAL_D6_ONLY / ROOT_CLOSURE_V2_READY / SEED_NARROW_RERUN_PENDING_ENDFIELD
-**日期：** 2026-07-28
-**账本影响：** 无；`U=(1188,18)`、`L=absent`、`production_certified=false` 保持不变。
+**状态：** RESEARCH_ONLY / LOCAL_D6_ONLY / TWO_V2_NEGATIVE_ROOTS_ACCEPTED /
+SWAP_V3_PRE_RUN_READY
 
-本目录实现 power-cycle domino framework 的首个 exact、front-aware 局部联合 gate。它只回答
-完整 D6 antecedent 在给定运行配置下的局部 completion 问题，不产生 whole-layout witness、
-全图 cut、下界、全局 infeasibility 或 production authority。实际运行结果只存在于
-`.artifacts/research_runs/` 下的 no-overwrite run root；tracked 源码不预写某个 verdict。
+**更新日期：** 2026-07-29
 
-## 输入与信任边界
+**全局账本：** tracked 状态仍为 `U=(1188,18)`、`L=absent`；本目录的 local
+config/receipt/replay 不复制或声称携带 U/L。
+
+本目录实现 power-cycle domino framework 的 exact、front-aware D6 局部联合 gate。当前两个
+closed-root v2 antecedent 已分别得到 replay-accepted `INFEASIBLE`；下一项且唯一获准的实验是
+单轴 class transfer `d6_6b_d9_6g_swap_v1`。该实验尚未启动。它保持 power-cycle、D6 的
+6×7 protected rectangle、28 个合法 attachment slots、全局 class ledger 和其他 W0 全局
+不变量不变，只交换 D6 与 D9 的一个 class。
+
+任何本目录结果都不产生 whole-layout witness、全图 cut、lower-ledger、全局 infeasibility、
+production authority 或 certified exact-source authority。实际运行材料只写入
+`.artifacts/research_runs/` 下的新 no-overwrite roots；历史 roots 不删除、不改写、不补写。
+
+## 已接受的 v2 negative roots
+
+以下两组结果均已用 root 内 SHA-pinned v2 replayer 独立逐字重放，两份异构 replay receipt
+逐字节一致：
+
+| profile / producer root | exact antecedent SHA-256 | producer `receipt.json` SHA-256 | replay receipt SHA-256 | 精确结论 |
+|---|---|---|---|---|
+| `seed_narrow` / `w0-d6-seed-narrow-v2-20260728T162612Z-3bc004459ef3` | `7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f` | `275cb3cf306a7fcecb02d9b243330c8dd0d648cf1f43d75390d97fc7d16ca8dd` | `6a8c662b0592c378c607e53411559c2efcf2e8a28e320e7aae6d626b54b7cd0e` | 该 seed-narrow D6 antecedent `INFEASIBLE` |
+| `all_legal_d6_slots` / `w0-d6-all-legal-slots-v2-20260728T162612Z-3bc004459ef3` | `a5fc8a3a3814970f2401d4c27800e422f8cb46cd358b6d07451f9935f76ddef3` | `abff1d867c1b93395b16eafb886e5b454fccb091f57eeade685a68e1b90e40eb` | `9d0581e0429dab5c76a7f132c175e9aa3a42043d113b2719b96269caa1683284` | 该 28-slot D6 antecedent `INFEASIBLE` |
+
+`seed_narrow` 只排除了原 class allocation 下的 11 个 seed-derived slots；它没有排除同一局部
+几何上的其他合法 attachment slots。`all_legal_d6_slots` 随后把 attachment scope 扩至固定的
+全部 28 slots，因此排除了“只移动 D6 attachment slot”这一修复轴。两者都没有改变或排除：
+
+- D6 与 D9 之间的最小 class transfer；
+- 安全 pole anchors；
+- tile 内 size 分配；
+- domino pairing；
+- 其他 D 区、whole witness 或全图可行性。
+
+因此这两个 `INFEASIBLE` 只关闭各自精确 local D6 antecedent，不是 cut、全局拒绝或
+lower-ledger 证据。
+
+在仍未改变的四个轴中，class transfer 是唯一既不移动 body/pole、也不改变 tile split 或
+pairing，且能以同 template 的 `6B↔6G` 保持全局 ledger 精确不变的单轴 delta。现有 receipts
+没有把 anchor、tile split 或 pairing 单独识别为冲突来源；一次改动它们会引入新的 geometry
+或组合轴，证据上不比这个单计数交换更小。因此下一实验固定选择 class transfer，其他三轴不动。
+
+另有更早的 historical producer root
+`w0-d6-seed-narrow-20260728T132308Z-27b4ae9`。它使用缺少完整 root-closure 合同的
+`w0_d6_receipt_payload_v1`，且 root 内存在未登记的 `sources/__pycache__/*.pyc`。它只能说明
+receipt 登记的命名字节图曾通过，不能声明完整 root 已闭包。新版只能稳定返回
+`ROOT_CLOSURE_CONTRACT_MISSING`；禁止为兼容而放宽。这里的 historical
+`receipt_payload_v1` 不等于下表中当前已接受 v2 roots 使用的 `antecedent_v1`。
+
+## 版本矩阵与协议绑定
+
+W0 D6 只接受两个原子 cohort；schema 不能独立挑选或跨行混搭：
+
+| cohort | antecedent | config payload | receipt payload | replay receipt | 使用范围 |
+|---|---|---|---|---|---|
+| accepted closed-root v2 | `w0_d6_antecedent_v1` | `w0_d6_run_config_v2` | `w0_d6_receipt_payload_v2` | `w0_d6_replay_receipt_v2` | 上述两个已接受 roots |
+| swap v3 | `w0_d6_antecedent_v2` | `w0_d6_run_config_v3` | `w0_d6_receipt_payload_v3` | `w0_d6_replay_receipt_v3` | `d6_6b_d9_6g_swap_v1` |
+
+任意跨版本混搭都必须在解释 solver status 前 fail closed，稳定返回
+`ARTIFACT_PROTOCOL_COHORT_MISMATCH`，且 `conclusion=null`。工作树中的新版 v3 replayer 受自身
+source pin 约束，不能声称直接重放历史 v2 roots；历史 v2 roots 只能继续用各 root 内的
+SHA-pinned v2 replayer。新版的 v2/v3 兼容解析与分派只用固定的合成 fixture 验证。
+
+swap v3 的 CLI、config、receipt、antecedent 和 replay 必须逐字段交叉绑定以下七字段
+protocol object：
+
+```json
+{
+  "cohort": "w0_d6_swap_v3",
+  "class_allocation_profile": "d6_6b_d9_6g_swap_v1",
+  "antecedent_schema": "w0_d6_antecedent_v2",
+  "config_payload_schema": "w0_d6_run_config_v3",
+  "receipt_payload_schema": "w0_d6_receipt_payload_v3",
+  "replay_receipt_schema": "w0_d6_replay_receipt_v3",
+  "project_lock_sha256": "e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7"
+}
+```
+
+`PROJECT_LOCK.md` 的该 SHA 是已提交运行门禁，不是 certified source pin；它只定义 W0
+research-only 合法版本矩阵与 authority/兼容边界。公共 G3 schema 保持
+`research_run_config_v1`、`research_run_receipt_v1`、`artifact_identity_graph_v1`、
+`research_artifact_root_manifest_v1` 与 `isolated_python_process_contract_v1`。
+
+## swap v3 的唯一变化轴
+
+profile `d6_6b_d9_6g_swap_v1` 只执行：
+
+- D6 向 D9 转出 `1×6B`；
+- D9 向 D6 转出 `1×6G`。
+
+class universe 的固定顺序为
+`3I2, 3L, 3O2, 3O3, 5L, 5O2, 6B, 6F, 6G`：
+
+| allocation | 3I2 | 3L | 3O2 | 3O3 | 5L | 5O2 | 6B | 6F | 6G |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| D6 before | 0 | 7 | 0 | 3 | 2 | 2 | 1 | 0 | 2 |
+| D6 after | 0 | 7 | 0 | 3 | 2 | 2 | 0 | 0 | 3 |
+| D9 before | 0 | 18 | 0 | 0 | 3 | 0 | 0 | 0 | 3 |
+| D9 after | 0 | 18 | 0 | 0 | 3 | 0 | 1 | 0 | 2 |
+| global before | 6 | 109 | 6 | 11 | 32 | 17 | 3 | 3 | 32 |
+| global after | 6 | 109 | 6 | 11 | 32 | 17 | 3 | 3 | 32 |
+
+`6B` 与 `6G` 都使用 `manufacturing_6x4` template，均有 1 个 active output，active inputs
+分别为 5 与 3。因此派生 totals 同时改变 D6 与 D9：
+
+| allocation | bodies | active inputs before → after | active outputs |
+|---|---:|---:|---:|
+| D6 | 17 | 25 → 23 | 25 |
+| D9 | 24 | 30 → 32 | 24 |
+
+D9 只承担全局 class ledger 的算术补偿，本实验不构建或求解 D9 模型；即使 D6 返回
+`INFEASIBLE`，也只能关闭 local D6 swap antecedent，不能把未求解的 D9 升级成全局结论。
+
+除该 class transfer 外，以下全部保持不变：
+
+- domino power cells 仍为 `(1,2)` 与 `(2,2)`，局部范围仍为
+  `x=14..41, y=28..41`；
+- 两个 2×2 safe pole body anchors 仍为 `(20,34)` 与 `(35,35)`；
+- body-only protected rectangle 仍为 anchor `(29,28)`、size `6×7`；
+- directed power cycle 仍为 `y=29, x=14..41`、方向 east；
+- attachment scope 固定为 `all_legal_d6_slots`，即 cycle 上 `x=14..41` 的 28 个 slots；
+- 两个 tile 的 type/size split 仍分别为
+  `(5×3x3, 3×5x5, 1×6)` 与 `(5×3x3, 1×5x5, 2×6)`；
+- body geometry、domino pairing、tile assignment、mode/front/transport 语义和三份 pinned
+  inputs 均不变；
+- 原 seed hints bytes 保持不变，只进入 `CpModel.AddHint`，不成为 hard constraints；同模板
+  `6B↔6G` 换类不要求改写 hint bytes。
+
+v3 antecedent 必须内含固定 transfer object、D6/D9 before/after 的零补齐 class vectors 以及
+global before/after totals。有效 D6 `class_counts` 是 after vector，`expected_totals` 必须独立
+复算为 `17 bodies / 23 inputs / 25 outputs`；不得继续硬编码旧的 25-input total。
+
+## 输入与局部联合语义
 
 | 输入 | SHA-256 | 角色 |
 |---|---|---|
@@ -17,105 +144,81 @@
 | `W0_power_cycle_domino_framework_v1.json` | `db6046cf598f9b5738b7f8950c91ea31834e8214e7e07995175b71eb04bdbb89` | 外部 research framework |
 | `W0_geometry_only_seed_v1.json` | `18c72669105f486bf54a2665bd74d1ff952ce2eeb39b28a7b30d5ce8d5d2f5f1` | 外部 geometry warm-start seed |
 
-runner 通过 G3 公共研究合同读取一次实际 bytes、复核期望哈希、复制到独占 run root，再只消费
-这次快照的内存 bytes。seed 内部 `validation_summary.source_sha256=295bfef9…` 与实际 seed
-bytes 没有可验证的绑定关系，只登记为被拒绝的 producer claim；外部 validation 与
-frozen-geometry front probe 也不参与 gate 验收。构造器自报不能替代独立 replay。
+runner 通过 G3 公共研究合同读取一次实际 bytes、复核期望 SHA-256、复制到独占 run root，再只
+消费该快照的内存 bytes。seed 内部
+`validation_summary.source_sha256=295bfef9b2681193e3a9cc085c479a960f87de0131abfbdfacb676479bdb2aa5`
+未绑定实际 seed bytes，只登记为被拒绝的 producer claim。外部 validation 与 frozen-geometry
+front probe 都不是验收 authority；构造器自报不能替代独立 replay。
 
-## 完整 D6 antecedent
+gate 联合决定 operation class、body anchor、mode、exact active physical ports/fronts、
+transport incidence、cycle attachment roles 与两个方向的可达性流。class template 和 I/O
+数量从 strict `operation_groups` 推导，mode 与 physical port catalog 从 strict
+`facility_templates` 推导。每个 body 必须留在所属 14×14 power cell，彼此不重叠，避开
+cycle、pole bodies 与 protected rectangle，并至少有一个 body cell 被固定 pole 覆盖。
+active front 按 `anchor + port.body_cell + direction_delta` 独立复算，必须在 domino 内且不被
+body 占用。
 
-- domino 为 power cells `(1,2)` 与 `(2,2)`，局部范围 `x=14..41, y=28..41`；
-- 两个固定 2×2 pole body 的 anchors 为 `(20,34)` 与 `(35,35)`；
-- body-only protected rectangle 为 anchor `(29,28)`、size `6×7`；
-- directed cycle 为 `y=29, x=14..41`、方向 east；
-- seed-narrow attachment slots 为 `x=23..25` 与 `x=30..37`，cycle cell `(x,29)`、
-  branch cell `(x,30)`；
-- tile type counts 分别为 `(5×3x3, 3×5x5, 1×6)` 与
-  `(5×3x3, 1×5x5, 2×6)`；
-- anonymous class vector 为
-  `{3L:7, 3O3:3, 5L:2, 5O2:2, 6G:2, 6B:1}`，共 17 bodies、
-  25 active inputs、25 active outputs。
+ground transport 使用 strict routing 的 44 个 directed patterns：12 个 straight/turn、
+16 个 splitter、16 个 merger；elevated channel 只有 4 个 directed straight patterns。同一
+cell 的双层使用只允许互相垂直的 straight channels，cross 不在同一 cell 内换线；相邻 cell
+则按权威 routing incidence 聚合前驱/后继。普通 cycle cell 固定为 `W→E`；output injection
+为 `{W,N}→E`；input tap 为 `W→{E,N}`，两类 role 不共用 cell。
 
-class 的 template 与 I/O 数量从 strict `operation_groups` 推导，mode 与 physical port catalog
-从 strict `facility_templates` 推导。seed body anchors 只按 tile/type 稳定匹配后进入 `AddHint`，
-不成为等式或冻结 geometry。
-
-## 联合语义
-
-gate 同时决定 operation class、body anchor、mode、exact active physical ports/fronts、
-transport incidence、cycle attachment roles 与两个方向的可达性流。每个 body 必须留在所属
-14×14 power cell，彼此不重叠，避开 cycle、pole bodies 与 protected body rectangle，并至少有
-一个 body cell 被固定 pole 覆盖。active front 严格按
-`anchor + port.body_cell + direction_delta` 复算，必须在 domino 内且不被任何 body 占用。
-
-ground transport 使用 strict routing 语义的 44 个 directed patterns：12 个 straight/turn、
-16 个 splitter、16 个 merger；elevated channel 只有 4 个 directed straight patterns。
-同一 cell 的双层同时使用只允许两个互相垂直的 straight channel，且 cross 不切换通道。
-相邻 cell 之间按权威 routing incidence 聚合前驱/后继，因此可在该邻接边上 ground↔elevated
-换层；这不等于允许在同一 crossing cell 内换线。
-普通 cycle cell 固定为 `W→E`；output injection 为 `{W,N}→E`；input tap 为
-`W→{E,N}`，两类 role 不共用 cell。
-
-`OUT` 极性要求每个 active output 注入 1 单位，最终由 output-injection slots 吸收总计 25；
-`IN` 极性由 input-tap slots 发出总计 25，每个 active input 消耗 1。整数流必须落在所选
+`OUT` 极性要求每个 active output 注入 1 单位，由 output-injection slots 吸收总计 25；
+`IN` 极性由 input-tap slots 发出总计 23，每个 active input 消耗 1。整数流必须落在所选
 directed channel arcs 上。`configuration.json` 携带离散配置和可独立复算的流/可达性证据；
-最小 `certificate.json` 只绑定 antecedent/config 哈希、status 与 claim boundary。
+最小 `certificate.json` 只绑定 antecedent/config SHA、status 与 claim boundary。
 
-## 结果语义
+## Authority 与三态语义
 
-- `FEASIBLE`：只证明该 run receipt 精确绑定的 D6 局部 antecedent；交付
-  `configuration.json` 与最小 `certificate.json`。
-- `INFEASIBLE`：只关闭完全一致的 antecedent、源码与 solver config。
-- `UNKNOWN`、超时、中断或异常：不产生拒绝、cut、下界或全局结论。
-- intake、哈希、工作树 clean 或 antecedent 构造失败：不是 D6 verdict。
+swap v3 的 config、receipt 与 replay 只保留并逐项核对：
 
-历史已执行的 v1 research producer root
-`.artifacts/research_runs/w0-d6-seed-narrow-20260728T132308Z-27b4ae9/`
-的 v1 receipt 命名字节图可独立重放，绑定 antecedent
-`7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f`
-并得到局部 `INFEASIBLE`。该 root 同时含两个未登记的 `sources/__pycache__/*.pyc`，
-所以只能声明“receipt 登记的 byte graph 通过”，不能声明完整 root 已闭包或封存。
-该历史 producer/replay root 保持原样，禁止删除、补写或就地修复；v2 replayer 对它稳定返回
-`ROOT_CLOSURE_CONTRACT_MISSING`。
-
-## 隔离运行与 replay
-
-从已提交且 clean 的源码 HEAD 运行：
-
-```bash
-D6_PYTHON=.venv-uvbolt-backup/bin/python3.13
-"$D6_PYTHON" -I -B docs/research/w0_power_cycle_domino_d6_20260728/run_d6_research.py \
-  --strict docs/research/cleanroom_rederivation_20260718/strict/external/problem_instance.json \
-  --framework /home/zhuran24/下载/w0回复/1/W0_power_cycle_domino_framework_v1.json \
-  --seed /home/zhuran24/下载/w0回复/1/W0_geometry_only_seed_v1.json \
-  --run-root .artifacts/research_runs/w0-d6-<run-id> \
-  --workers 2 \
-  --random-seed 0 \
-  --max-time-seconds 3600
+```json
+{
+  "artifact_status": "research_only_local_d6",
+  "proves_whole_witness": false,
+  "changes_lower_bound": false,
+  "changes_upper_bound": false,
+  "may_emit_cut_or_rejection": false,
+  "production_authority": false,
+  "certified_exact_source_authority": false,
+  "frozen_or_sealed_input_mutation": false
+}
 ```
 
-producer run root 内含快照 inputs、源码副本、canonical `config.json`、完整
-`antecedent.json`、`result.json` 和最终 `receipt.json`；只有 `FEASIBLE` 才有
-`configuration.json` 与 `certificate.json`。producer 在创建 run root 前验证当前解释器确由
-`-I -B` 约束，gate import 与后续 replay 均不得在 producer root 写入 bytecode/cache。
+已接受的 v2 roots 使用较早但等价的 boundary 字段名；它们不因 v3 命名更新而被改写。
 
-v2 `receipt.json` 内嵌 `research_artifact_root_manifest_v1`。manifest 按 path 排序，精确登记
-除固定终端 `receipt.json` 外的全部后代 path/type；`receipt.json` 是协议唯一允许的额外普通文件。
-W0 D6 还要求 manifest 的目录集合恰好等于全部命名 artifact 路径的祖先目录闭包；即使空目录
-已被 manifest 登记，只要不承载任何命名 artifact 也必须拒绝。
-producer 在写回执前验证 manifest 等于完整 root，写回执后再验证
-`manifest + receipt.json` 等于完整 root，并重新读取命名 byte graph 与 receipt identity。回执不登记也不保存自身内容哈希；producer 只在
-stdout summary 中报告写后观察到的 receipt identity。该合同是验证时的精确集合观察，不是
-文件系统级不可变封存。
+- `FEASIBLE`：只证明 receipt 精确绑定的 local D6 swap antecedent；交付
+  `configuration.json` 与最小 `certificate.json` 后停止。
+- replay-accepted `INFEASIBLE`：只关闭完全一致的 local D6 swap antecedent；停止，不自动
+  进入下一轴或 D7。
+- `UNKNOWN`、超时、中断、producer/replay status 分歧、root closure 失败、replay 失败或任一
+  运行异常：不产生拒绝、cut、下界或全局结论；停止并只修同一 swap 链。
+- intake、hash、项目锁、clean-HEAD 或 antecedent 构造失败发生在 verdict 之前，不是 D6
+  verdict。
+
+## No-overwrite root、closure 与 receipt 无自指
+
+producer root 包含快照 inputs、源码副本、canonical `config.json`、完整
+`antecedent.json`、`result.json` 与最终 `receipt.json`；仅 `FEASIBLE` 含
+`configuration.json` 和 `certificate.json`。run-root 名称由显式 UTC 与 committed HEAD
+组成，不由 config/receipt SHA 派生。
+
+manifest 按 path 排序，精确登记除固定终端路径 `receipt.json` 外的全部后代及其类型。
+`receipt.json` 是协议保留的唯一额外终端成员，不是 artifact label，不进入 manifest，也不
+包含自身 SHA 或 size。写入 receipt 后，producer 与 replayer 都验证
+`manifest entries + receipt.json` 恰好等于完整 root；写后 receipt identity 只能出现在
+producer stdout summary 或外部 replay receipt。
 
 artifact-root 枚举从可信绝对路径锚点开始，逐组件用 parent descriptor 与
-`O_DIRECTORY|O_NOFOLLOW` 打开；不以可竞态的路径预检查替代打开时约束。root 与每个后代目录的
-descriptor 和初始 signature 都保留到全树枚举完成，再逐一 `fstat` 比对后关闭。因此在扫描后续
-sibling 时，对已完成子树留下的普通文件、目录、symlink、FIFO 或 bytecode/cache 污染都必须
-fail closed。producer、公共 closure verifier 与 pinned stdlib replayer 统一遵守该合同。
+`O_DIRECTORY|O_NOFOLLOW` 打开。root 与每个后代目录的 descriptor 和初始 signature 保留至
+完整枚举结束，再逐一 `fstat` 比对后关闭。任何未登记普通文件、目录、symlink、FIFO、
+special node、`.pyc`/cache、目录逃逸或枚举漂移都 fail closed。producer、pinned gate 和
+pinned replayer 都必须在可验证的 `-I -B` 进程合同下运行，不得在正式 root 内生成
+bytecode/cache。
 
-W0 D6 的 artifact label 与 root-relative path 是固定一一映射，不允许通过同步改写 identities
-和 manifest 来整体搬迁：
+W0 D6 artifact labels 到 root-relative paths 的映射固定如下，不能同步重写 identities 和
+manifest 后整体改名：
 
 | artifact label | 固定 root-relative path | 存在条件 |
 |---|---|---|
@@ -132,25 +235,44 @@ W0 D6 的 artifact label 与 root-relative path 是固定一一映射，不允�
 | `configuration` | `configuration.json` | 仅 `FEASIBLE` |
 | `certificate` | `certificate.json` | 仅 `FEASIBLE` |
 
-`receipt.json` 不是 artifact label，也不进入 manifest；它仍是协议保留的唯一额外终端成员。
-独立 replayer 内置自己的固定映射副本，并在读取 artifact payload 前同时核对 label 集合、固定
-path 与 manifest bijection。`INFEASIBLE`/`UNKNOWN` 不得携带 `configuration` 或
-`certificate`。
+replayer 是 stdlib-only、solver-free 的自包含实现，不导入 gate、runner、G3、`src/` 或
+OR-Tools。它在解释 status 前和返回前都验证完整 root、固定 path map、命名字节图与 semantic
+cross-bindings。`INFEASIBLE`/`UNKNOWN` 不得携带 configuration/certificate；只有
+`FEASIBLE` 执行 body/front/incidence/crossing、cycle role、flow 与 graph reachability 的
+完整语义复算。
 
-独立 replayer 是 stdlib-only、solver-free 的自包含实现，不导入 gate、runner、G3、`src/`
-或 OR-Tools。第一次 replay 使用 producer 的 coherent CPython 3.13 环境；第二次使用
-`/usr/bin/python3`、fresh `/tmp` cwd 与独立输出位置，构成异构 replay。两份 replay receipt
-必须逐字节相同，且都写在 producer root 外：
+## 正式运行命令
+
+必须从首个实施提交后的 clean committed HEAD 执行，固定 cohort/profile/scope。命令中的
+`{UTC}` 与 `{HEAD12}` 必须先替换为实际 UTC run timestamp 和该 committed HEAD 的前 12 位：
 
 ```bash
-D6_RUN_ROOT="$(realpath .artifacts/research_runs/w0-d6-<run-id>)"
-D6_REPLAY_SIBLING="$(realpath -m .artifacts/research_runs/w0-d6-<run-id>-replay)"
+D6_PYTHON=.venv-uvbolt-backup/bin/python3.13
+"$D6_PYTHON" -I -B docs/research/w0_power_cycle_domino_d6_20260728/run_d6_research.py \
+  --strict docs/research/cleanroom_rederivation_20260718/strict/external/problem_instance.json \
+  --framework /home/zhuran24/下载/w0回复/1/W0_power_cycle_domino_framework_v1.json \
+  --seed /home/zhuran24/下载/w0回复/1/W0_geometry_only_seed_v1.json \
+  --protocol-cohort w0_d6_swap_v3 \
+  --class-allocation-profile d6_6b_d9_6g_swap_v1 \
+  --attachment-scope all_legal_d6_slots \
+  --run-root ".artifacts/research_runs/w0-d6-6b-d9-6g-swap-v3-{UTC}-{HEAD12}" \
+  --workers 2 \
+  --random-seed 0 \
+  --max-time-seconds 3600
+```
+
+两份 replay 都必须使用 producer root 内 pinned v3 replayer，并写到 producer root 外的两个
+新 no-overwrite locations：
+
+```bash
+D6_RUN_ROOT="$(realpath '.artifacts/research_runs/w0-d6-6b-d9-6g-swap-v3-{UTC}-{HEAD12}')"
+D6_REPLAY_SIBLING="${D6_RUN_ROOT}-replay"
 mkdir "$D6_REPLAY_SIBLING"
 "$D6_PYTHON" -I -B "$D6_RUN_ROOT/sources/replay_d6_certificate.py" \
   --run-root "$D6_RUN_ROOT" \
   --output "$D6_REPLAY_SIBLING/replay_receipt.json"
 
-D6_TMP_REPLAY="$(mktemp -d /tmp/w0-d6-replay.XXXXXX)"
+D6_TMP_REPLAY="$(mktemp -d /tmp/w0-d6-swap-replay.XXXXXX)"
 (
   cd "$D6_TMP_REPLAY"
   /usr/bin/python3 -I -B "$D6_RUN_ROOT/sources/replay_d6_certificate.py" \
@@ -160,33 +282,41 @@ D6_TMP_REPLAY="$(mktemp -d /tmp/w0-d6-replay.XXXXXX)"
 cmp "$D6_REPLAY_SIBLING/replay_receipt.json" "$D6_TMP_REPLAY/replay_receipt.json"
 ```
 
-replayer 只接受 run-copy source，并在解释 status 前、命名字节/语义复算后再次验证完整 root。
-未登记普通文件、目录、symlink、特殊节点、缺失/非普通 `receipt.json`、manifest 路径逃逸或
-历史 v1 合同都 fail closed。所有 status 都复核完整 byte graph；只有 `FEASIBLE` 进入
-body/front/incidence/crossing、cycle role、flow 与 graph reachability 的语义复算。replay
-结束前还会按最初绑定的 root identity 重读所有命名 bytes 与 receipt。replay receipt v2
-可保存其从外部观察到的 producer receipt identity；这不是 producer receipt 自哈希。
-replay 成功仍只确认 receipt 声明的局部范围，不提升其 authority。
+## 资源门禁与强制执行顺序
 
-## 可信执行顺序
+正式 run 前与 full preflight 后使用同一组可判定门禁。三把锁必须以 descriptor-relative、
+no-follow、nonblocking 方式获取并持有到 producer 和两份 replay 全部结束：
 
-root-closure 修复提交及 solver-free 静态验收完成后，solver 执行继续等待 Endfield 完全退出；
-等待期间不得运行 full preflight、slow tests 或任何 solver。Endfield 不在场后，按常驻路线授权
-自动执行以下强制门禁与实验序列，无需再次等待 owner 批准：
+- `/tmp/zmd-pj-codex-heavy-validation.lock`
+- `/run/user/<uid>/zmd_pj_prod_scale_solver.lock`
+- `/run/user/<uid>/zmd-pj-prod-scale-solve.lock`
 
-1. 先检查资源、竞争 solver、项目锁与 clean committed HEAD；任一失败即停止；
-2. 在该 clean committed HEAD 上运行 `python scripts/preflight_gate.py --full`；这是
-   seed-narrow 的强制前置门槛，本轮因 Endfield 在场而延后，并未取消；
-3. full preflight 通过后再次检查资源、竞争 solver、项目锁与 clean HEAD；任一漂移即停止；
-4. 用新 no-overwrite producer/replay roots、原三份 pinned 输入和原 solver config
-   `workers=2, random_seed=0, max_time_seconds=3600` 强制重跑 `seed_narrow`；
-5. 用 producer 的 coherent CPython 3.13 环境执行 root 内 pinned replayer，再从 fresh `/tmp`
-   cwd 用 `/usr/bin/python3 -I -B` 做第二次异构 replay；两份 canonical replay bytes 必须一致；
-6. `FEASIBLE`：交付局部 certificate 与异构 replay，停止，不运行 28-slot；
-7. `UNKNOWN`、中断、运行失败、root closure/replay 失败或 status 分歧：停止并修复同一
-   seed-narrow 链，不放宽 attachment scope；
-8. 只有 replay-accepted `INFEASIBLE` 才自动运行 `all_legal_d6_slots`；保持同一 clean HEAD、
-   输入和 solver config，唯一放宽项是 attachment scope。该变体的预期 antecedent SHA-256 为
-   `a5fc8a3a3814970f2401d4c27800e422f8cb46cd358b6d07451f9935f76ddef3`。
+每次门禁都必须同时满足：
 
-H20 row-power oracle、G4 巨型核心拆分和全图 solve 均不在该序列内，继续后置。
+- `/proc/meminfo` 的 `MemAvailable >= 24 * 2^30` bytes；
+- `SwapFree >= 16 * 2^30` bytes；
+- repo/artifact filesystem 与 `/tmp` 各自可用空间 `>= 16 * 2^30` bytes；
+- `/proc/pressure/memory` 与 `/proc/pressure/io` 可严格解析；间隔 10 秒的两次读数中，
+  两者的 `full avg10` 均为 `0.00`，并记录 `some` 指标；
+- 没有同 UID、非当前祖先进程的 `Endfield.exe`、`PlatformProcess.exe` 或相关游戏 workload，
+  也没有竞争 D6/CP-SAT/AB16/organic solver、preflight 或 pytest；
+- 三把锁均由当前执行链持有，且没有相关 active systemd unit；
+- `git status` clean、HEAD 已提交且与运行身份一致；
+- `PROJECT_LOCK.md` SHA-256 为
+  `e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7`；
+- strict/framework/seed 三份实际 bytes 分别匹配本页固定 SHA。
+
+强制顺序为：
+
+1. 首个实施提交完成全部 solver-free focused、Ruff、定向 mypy、asset/boundary/governance
+   检查，确认 clean committed HEAD；
+2. 获取并持有三把锁，执行第一次完整资源/竞争进程/项目锁/HEAD/pinned-input 门禁；
+3. 运行 `python scripts/preflight_gate.py --full`；任何失败都只修同一链，不启动实验；
+4. full preflight 通过后执行完全相同的第二次门禁；
+5. 在新的 no-overwrite producer root 上只运行一次上述 swap v3；
+6. 先用 coherent CPython 3.13，再从 fresh `/tmp` 用 `/usr/bin/python3 -I -B` 执行两份
+   root-pinned replay；两份 canonical replay bytes 和 SHA-256 必须一致；
+7. 按上一节三态规则停止，不自动放宽到另一轴或 D7。
+
+H20 row-power oracle、G4 巨型核心拆分、D7、full-graph solve、production 控制流、多轴联合放宽
+和 lower-ledger 更新都不在本任务范围。

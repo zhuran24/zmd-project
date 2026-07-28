@@ -50,13 +50,23 @@ EXPERIMENT_ID = "w0_power_cycle_domino_d6"
 STRICT_SHA256 = "e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849c"
 FRAMEWORK_SHA256 = "db6046cf598f9b5738b7f8950c91ea31834e8214e7e07995175b71eb04bdbb89"
 SEED_SHA256 = "18c72669105f486bf54a2665bd74d1ff952ce2eeb39b28a7b30d5ce8d5d2f5f1"
+EXPECTED_PROJECT_LOCK_SHA256 = (
+    "e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7"
+)
 REJECTED_PRODUCER_SOURCE_SHA256 = (
     "295bfef9b2681193e3a9cc085c479a960f87de0131abfbdfacb676479bdb2aa5"
 )
+PROTOCOL_COHORT = "w0_d6_swap_v3"
+CLASS_ALLOCATION_PROFILE = "d6_6b_d9_6g_swap_v1"
+ANTECEDENT_SCHEMA = "w0_d6_antecedent_v2"
+CONFIG_PAYLOAD_SCHEMA = "w0_d6_run_config_v3"
+RECEIPT_PAYLOAD_SCHEMA = "w0_d6_receipt_payload_v3"
+REPLAY_RECEIPT_SCHEMA = "w0_d6_replay_receipt_v3"
 
 GATE_PATH = RESEARCH_DIR / "d6_joint_completion_gate.py"
 REPLAYER_PATH = RESEARCH_DIR / "replay_d6_certificate.py"
 COMMON_CONTRACT_PATH = PROJECT_ROOT / "devtools" / "research_run_contract.py"
+PROJECT_LOCK_PATH = PROJECT_ROOT / "PROJECT_LOCK.md"
 IGNORED_RUN_PARENT = PROJECT_ROOT / ".artifacts" / "research_runs"
 
 MAX_INPUT_BYTES = 64 * 1024 * 1024
@@ -95,6 +105,18 @@ def _fail(code: str, detail: str) -> NoReturn:
 
 def _absolute(path: Path | str) -> Path:
     return Path(os.path.abspath(os.fspath(path)))
+
+
+def _protocol_identity() -> dict[str, str]:
+    return {
+        "cohort": PROTOCOL_COHORT,
+        "class_allocation_profile": CLASS_ALLOCATION_PROFILE,
+        "antecedent_schema": ANTECEDENT_SCHEMA,
+        "config_payload_schema": CONFIG_PAYLOAD_SCHEMA,
+        "receipt_payload_schema": RECEIPT_PAYLOAD_SCHEMA,
+        "replay_receipt_schema": REPLAY_RECEIPT_SCHEMA,
+        "project_lock_sha256": EXPECTED_PROJECT_LOCK_SHA256,
+    }
 
 
 def _run_git(arguments: Sequence[str]) -> str:
@@ -228,15 +250,22 @@ def _copy_snapshots(
     }
 
 
-def _load_gate_module(copied_gate_path: Path) -> ModuleType:
+def _load_gate_module(copied_gate_snapshot: StableSnapshot) -> ModuleType:
     module_name = "_w0_d6_joint_completion_gate_run"
+    copied_gate_path = copied_gate_snapshot.path
     spec = importlib.util.spec_from_file_location(module_name, copied_gate_path)
     if spec is None or spec.loader is None:
-        _fail("GATE_IMPORT_FAILED", str(copied_gate_path))
+        _fail("GATE_IMPORT_FAILED", copied_gate_path)
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
     try:
-        spec.loader.exec_module(module)
+        code = compile(
+            copied_gate_snapshot.data,
+            copied_gate_path,
+            "exec",
+            dont_inherit=True,
+        )
+        exec(code, module.__dict__)
     except Exception as exc:
         sys.modules.pop(module_name, None)
         _fail("GATE_IMPORT_FAILED", f"{copied_gate_path}: {type(exc).__name__}: {exc}")
@@ -521,6 +550,11 @@ def _validate_manifest_artifact_bijection(
 def run(args: argparse.Namespace) -> tuple[str, bool, ArtifactIdentity]:
     process_contract = require_isolated_python_process()
     run_path = _absolute(args.run_root)
+    project_lock_snapshot = read_stable_snapshot(
+        PROJECT_LOCK_PATH,
+        expected_sha256=EXPECTED_PROJECT_LOCK_SHA256,
+        max_bytes=MAX_SOURCE_BYTES,
+    )
     input_snapshots = _snapshot_inputs(
         _absolute(args.strict),
         _absolute(args.framework),
@@ -548,9 +582,13 @@ def run(args: argparse.Namespace) -> tuple[str, bool, ArtifactIdentity]:
         _SOURCE_COPY_PATHS,
     )
 
-    gate_module = _load_gate_module(
-        Path(source_copies["gate"].path)
+    copied_gate_snapshot = read_stable_snapshot(
+        source_copies["gate"].path,
+        expected_sha256=source_copies["gate"].sha256,
+        expected_size_bytes=source_copies["gate"].size_bytes,
+        max_bytes=MAX_SOURCE_BYTES,
     )
+    gate_module = _load_gate_module(copied_gate_snapshot)
     build_antecedent = _gate_callable(gate_module, "build_d6_antecedent")
     solve_gate = _gate_callable(gate_module, "solve_d6_joint_completion")
     antecedent = build_antecedent(
@@ -559,8 +597,15 @@ def run(args: argparse.Namespace) -> tuple[str, bool, ArtifactIdentity]:
         parsed_inputs["seed"],
         attachment_scope=args.attachment_scope,
     )
-    if type(antecedent) is not dict or antecedent.get("schema") != "w0_d6_antecedent_v1":
-        _fail("ANTECEDENT_INVALID", "gate did not return w0_d6_antecedent_v1")
+    if (
+        type(antecedent) is not dict
+        or antecedent.get("schema") != ANTECEDENT_SCHEMA
+        or antecedent.get("protocol") != _protocol_identity()
+    ):
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            "gate antecedent does not match the complete v3 protocol",
+        )
     antecedent_identity = run_root.write_json("antecedent.json", antecedent)
 
     replayer_copy_path = source_copies["replayer"].path
@@ -575,7 +620,8 @@ def run(args: argparse.Namespace) -> tuple[str, bool, ArtifactIdentity]:
     config = make_research_run_config(
         experiment_id=EXPERIMENT_ID,
         payload={
-            "schema": "w0_d6_run_config_v2",
+            "schema": CONFIG_PAYLOAD_SCHEMA,
+            "protocol": _protocol_identity(),
             "attachment_scope": args.attachment_scope,
             "solver": {
                 "workers": args.workers,
@@ -702,12 +748,14 @@ def run(args: argparse.Namespace) -> tuple[str, bool, ArtifactIdentity]:
         artifact_root_manifest,
         receipt_present=False,
     )
+    _revalidate_snapshots({"project_lock": project_lock_snapshot})
     receipt = make_research_run_receipt(
         experiment_id=EXPERIMENT_ID,
         config_identity=config_identity,
         artifacts=artifacts,
         payload={
-            "schema": "w0_d6_receipt_payload_v2",
+            "schema": RECEIPT_PAYLOAD_SCHEMA,
+            "protocol": _protocol_identity(),
             "status": status,
             "attachment_scope": args.attachment_scope,
             "antecedent_sha256": antecedent_identity.sha256,
@@ -717,6 +765,7 @@ def run(args: argparse.Namespace) -> tuple[str, bool, ArtifactIdentity]:
             "identity_graph_sha256": identity_graph.graph_sha256,
             "artifact_root_manifest": artifact_root_manifest,
             "claim_boundary": claim_boundary,
+            "authority_boundary": _authority_boundary(),
             "replay": {"argv_template": replay_argv_template},
         },
     )
@@ -756,18 +805,37 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--framework", type=Path, required=True)
     parser.add_argument("--seed", type=Path, required=True)
     parser.add_argument("--run-root", type=Path, required=True)
+    parser.add_argument(
+        "--protocol-cohort",
+        choices=(PROTOCOL_COHORT,),
+        required=True,
+    )
+    parser.add_argument(
+        "--class-allocation-profile",
+        choices=(CLASS_ALLOCATION_PROFILE,),
+        required=True,
+    )
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--random-seed", type=int, default=0)
     parser.add_argument("--max-time-seconds", type=int, default=3600)
     parser.add_argument(
         "--attachment-scope",
-        choices=("seed_narrow", "all_legal_d6_slots"),
-        default="seed_narrow",
+        choices=("all_legal_d6_slots",),
+        required=True,
     )
     return parser
 
 
 def _validate_arguments(args: argparse.Namespace) -> None:
+    if (
+        args.protocol_cohort != PROTOCOL_COHORT
+        or args.class_allocation_profile != CLASS_ALLOCATION_PROFILE
+        or args.attachment_scope != "all_legal_d6_slots"
+    ):
+        _fail(
+            "ARTIFACT_PROTOCOL_COHORT_MISMATCH",
+            "runner arguments do not select the complete v3 protocol",
+        )
     if args.workers <= 0:
         _fail("ARGUMENT_INVALID", "--workers must be positive")
     if args.random_seed < 0:
