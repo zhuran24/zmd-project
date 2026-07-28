@@ -19,7 +19,8 @@
 - **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
   hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
   research/developer infrastructure 落地。artifact-root closure v2 修复已就绪；强制
-  seed-narrow 重跑等待 Endfield 退出及资源、竞争 solver、项目锁和 clean-HEAD 检查。
+  seed-narrow 重跑等待 Endfield 退出、`preflight_gate.py --full` 及资源、竞争 solver、
+  项目锁和 clean-HEAD 检查。
   它只处理 framework 的完整局部 D6 antecedent；实际 verdict 只写 clean 提交之后
   新建的 `.artifacts/research_runs/` no-overwrite root，不写入 tracked 状态，不产生
   cut、拒绝、下界或全局结论。
@@ -49,12 +50,14 @@ front probe 也只保留为背景材料。
 
 实现分成两个可独立验收的层次。`devtools/research_run_contract.py` 只提供严格稳定
 bytes snapshot、实际 SHA-256、exclusive/no-overwrite run root、canonical
-config/receipt、排除固定 `receipt.json` 自身的完整 path/type manifest、`-I -B`
+config/receipt、逐组件 descriptor-relative no-follow root 打开、保留全树目录
+FD/signature 至终检、排除固定 `receipt.json` 自身的完整 path/type manifest、`-I -B`
 进程合同与 byte-identity replay，不解释 W0 数学。D6 专用目录
 [`w0_power_cycle_domino_d6_20260728`](../research/w0_power_cycle_domino_d6_20260728/README.md)
 联合决定 body、operation class、mode、active physical ports/fronts、合法 transport
 incidence，以及 cycle output-injection/input-tap 的双极可达性；seed anchors 只作 hint，
-不能恢复“先冻结 body、再补 fronts”。
+不能恢复“先冻结 body、再补 fronts”。W0 replayer 另行钉死每个 D6 artifact label 的唯一
+root-relative path；该实验语义不进入 G3 公共层。
 
 `FEASIBLE` 只证明 receipt 绑定的局部 D6 实例；`INFEASIBLE` 只关闭完全一致的
 antecedent、源码与 solver config；`UNKNOWN`、中断、intake 失败或异常均没有拒绝语义。
@@ -63,9 +66,11 @@ antecedent、源码与 solver config；`UNKNOWN`、中断、intake 失败或异�
 并重放为局部 `INFEASIBLE`，但 root 内两个未登记 `.pyc` 使完整目录闭包不成立；历史 root
 保持原样且不得充当 v2 root-closure 证据。
 
-修复提交静态验收后，Endfield 退出且资源/竞争 solver/项目锁/clean committed HEAD
-检查通过即自动以原三份 pinned 输入和原 `2 workers / seed 0 / 3600s` config 重跑
-seed-narrow，不需额外 owner 批准。`FEASIBLE` 停止并交付局部 certificate；
+修复提交静态验收后继续等待 Endfield 退出。退出后先通过资源/竞争 solver/项目锁/
+clean committed HEAD 检查，再强制运行 `python scripts/preflight_gate.py --full`，通过后
+复核同一组运行门禁，方可自动以原三份 pinned 输入和原 `2 workers / seed 0 / 3600s`
+config 重跑 seed-narrow，不需额外 owner 批准。full preflight 因 Endfield 在场而延后，
+并未取消。`FEASIBLE` 停止并交付局部 certificate；
 `UNKNOWN` 或任一运行/closure/replay 失败停止并修复同一 scope；只有异构 replay 接受的
 `INFEASIBLE` 才把唯一变量放宽为 `all_legal_d6_slots`。H20 row-power oracle 不实现，
 G4 与全图 solve 继续后置。该工作不改

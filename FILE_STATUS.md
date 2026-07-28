@@ -72,8 +72,8 @@
 
 | Path | Status | 说明 |
 |---|---|---|
-| `devtools/research_run_contract.py` | CURRENT_CODE_ALIGNED | G3 developer/research-only 的稳定字节快照、独占 no-overwrite run root、排除固定 `receipt.json` 自身的 artifact-root manifest/闭包、`-I -B` 进程合同、canonical envelope 与字节 identity replay；不进入 certified exact-source TCB 或 production authority |
-| `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion 与 stdlib-only v2 replay；历史 v1 seed-narrow root 因未登记 `.pyc` 只保留命名字节图结论，新强制重跑等待 Endfield 退出；不产生全图 witness、cut、上下界或 production authority |
+| `devtools/research_run_contract.py` | CURRENT_CODE_ALIGNED | G3 developer/research-only 的稳定字节快照、独占 no-overwrite run root、逐组件 no-follow artifact-root 打开、全树目录 FD/signature 保留至终检、manifest 排除 `receipt.json` 自身而完成态 closure 要求 manifest 加唯一普通文件 `receipt.json`、`-I -B` 进程合同、canonical envelope 与字节 identity replay；不进入 certified exact-source TCB 或 production authority |
+| `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion、固定 artifact label/path 合同与 stdlib-only v2 replay；历史 v1 seed-narrow root 因未登记 `.pyc` 只保留命名字节图结论，新强制重跑等待 Endfield 退出、full preflight 与资源/竞争 solver/项目锁/clean-HEAD 门禁；不产生全图 witness、cut、上下界或 production authority |
 | `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 15 active obligations；绑定 sink/hash/guard/critical files |
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
@@ -115,14 +115,14 @@ retirement candidate 19。该数字只描述这个带日期的基线；当前工
 2026-07-28、G2 隔离前的 tracked-clean `201c198` bare-pytest 基线为 6,624 个 nodeid，
 规范化 SHA256 为
 `6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96`。当前互斥快速面为：
-developer 3,520（`10957319675efe5c4f7248b9b5366bd76fe1163758eb88bd063bfd801e663d4b`）、
+developer 3,531（`b14c64ce8170d1fbd8c740d435282f6fcf749838651da0aa197ac421f86e0d0c`）、
 evidence/non-replay 1,512（`c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b`）、
-replay 1,532（`2cf3b885ad46dbac6f689baef813abc0cf268a0e4dcccc7051b649d5846df42b`）。
-三者并集逐 nodeid 等于 full/non-slow 6,564
-（`88e7a3c45039607b29aa98072af21d3c15573189377fec939f933def5b34ffd9`）。
+replay 1,539（`4cf4225561be085e751da622b1fea80ac6b07437f3efaa1a808a6cdd3a51a88c`）。
+三者并集逐 nodeid 等于 full/non-slow 6,582
+（`b9988f8214f2dc3053aa22f994bfff3fd689f02840988387685a002f1e963b7a`）。
 
-以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 为 6,595
-（`b939a7deaae69717f595a283398d2457c4d3176e477dd1f42ad710a1112b665c`），slow 仍为 31
+以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 为 6,613
+（`f7d7c816a67ffaec70ce2859093785185ce0abd6442ffd80d95e6207f5b2ea6d`），slow 仍为 31
 （`9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd`）；既有 focused
 入口的 count/hash 不变。另有 107 个 auxiliary memory tests 通过显式 full 路径保留，
 nodeid SHA256 为 `32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1`。

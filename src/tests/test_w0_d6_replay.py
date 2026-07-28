@@ -116,6 +116,24 @@ def _replay_command(
     return subprocess.run(argv, check=False, capture_output=True)
 
 
+def _replay_command_from_source(
+    run_root: Path,
+    replayer_path: Path,
+) -> subprocess.CompletedProcess[bytes]:
+    return subprocess.run(
+        [
+            "/usr/bin/python3",
+            "-I",
+            "-B",
+            str(replayer_path),
+            "--run-root",
+            str(run_root),
+        ],
+        check=False,
+        capture_output=True,
+    )
+
+
 def _decode_cli_json(raw: bytes) -> dict[str, object]:
     value = json.loads(raw)
     assert type(value) is dict
@@ -640,6 +658,7 @@ def test_fixed_terminal_receipt_must_exist_as_one_regular_file(
     assert completed.returncode == 2
     assert _decode_cli_json(completed.stderr)["error_code"] in {
         "ARTIFACT_NOT_REGULAR",
+        "ARTIFACT_OPEN_FAILED",
         "PATH_COMPONENT_MISSING",
         "SYMLINK_REJECTED",
     }
@@ -960,3 +979,381 @@ def test_replay_output_cannot_pollute_the_closed_producer_root(
     assert not output.exists()
     clean = _replay_command(run_root)
     assert clean.returncode == 0, clean.stderr.decode()
+
+
+@pytest.mark.parametrize(
+    ("pollution_kind", "relative_marker"),
+    [
+        ("regular_file", "late-regular-file"),
+        ("directory", "late-directory"),
+        ("symlink", "late-symlink"),
+        ("fifo", "late-fifo"),
+        ("pyc", "__pycache__/late.cpython-999.pyc"),
+    ],
+)
+def test_stdlib_walker_rejects_persistent_injection_into_completed_sibling(
+    tmp_path: Path,
+    pollution_kind: str,
+    relative_marker: str,
+) -> None:
+    artifact_root = tmp_path / f"walker-race-{pollution_kind}"
+    early = artifact_root / "aaa-completed-early"
+    trigger = artifact_root / "zzz-scanned-later"
+    early.mkdir(parents=True)
+    trigger.mkdir()
+    (early / "original.txt").write_bytes(b"early")
+    (trigger / "original.txt").write_bytes(b"later")
+    probe = tmp_path / f"walker_race_probe_{pollution_kind}.py"
+    probe.write_text(
+        """\
+import importlib.util
+import os
+from pathlib import Path
+import sys
+
+spec = importlib.util.spec_from_file_location("_walker_race_replayer", sys.argv[1])
+assert spec is not None and spec.loader is not None
+replayer = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = replayer
+spec.loader.exec_module(replayer)
+
+artifact_root = Path(sys.argv[2])
+early = artifact_root / "aaa-completed-early"
+trigger = artifact_root / "zzz-scanned-later"
+pollution_kind = sys.argv[3]
+real_scandir = os.scandir
+injected = False
+
+def attacked_scandir(path):
+    global injected
+    if isinstance(path, int):
+        scanned_path = Path(os.readlink(f"/proc/self/fd/{path}"))
+    else:
+        scanned_path = Path(path)
+    if not injected and scanned_path == trigger:
+        if pollution_kind == "regular_file":
+            (early / "late-regular-file").write_bytes(b"persistent")
+        elif pollution_kind == "directory":
+            (early / "late-directory").mkdir()
+        elif pollution_kind == "symlink":
+            (early / "late-symlink").symlink_to(early / "original.txt")
+        elif pollution_kind == "fifo":
+            os.mkfifo(early / "late-fifo")
+        elif pollution_kind == "pyc":
+            cache = early / "__pycache__"
+            cache.mkdir()
+            (cache / "late.cpython-999.pyc").write_bytes(b"persistent bytecode")
+        else:
+            raise AssertionError(pollution_kind)
+        injected = True
+    return real_scandir(path)
+
+replayer.os.scandir = attacked_scandir
+try:
+    replayer._artifact_root_entries(artifact_root)
+except replayer.ReplayError as exc:
+    if not injected:
+        raise AssertionError("walker rejected before deterministic injection")
+    sys.stderr.buffer.write(
+        replayer.canonical_json_bytes(
+            {
+                "status": "ERROR",
+                "error_code": exc.code,
+                "conclusion": None,
+            }
+        )
+    )
+    raise SystemExit(2)
+if not injected:
+    raise AssertionError("deterministic injection hook was not reached")
+sys.stdout.buffer.write(
+    replayer.canonical_json_bytes(
+        {
+            "status": "ACCEPTED",
+            "conclusion": None,
+        }
+    )
+)
+""",
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [
+            "/usr/bin/python3",
+            "-I",
+            "-B",
+            str(probe),
+            str(REPLAYER_PATH),
+            str(artifact_root),
+            pollution_kind,
+        ],
+        env={},
+        check=False,
+        capture_output=True,
+    )
+
+    assert os.path.lexists(early / relative_marker), "the injected node must persist"
+    assert completed.returncode == 2, completed.stdout.decode()
+    error = _decode_cli_json(completed.stderr)
+    assert error["error_code"] in {
+        "ARTIFACT_ROOT_CHANGED",
+        "ARTIFACT_ROOT_CLOSURE_MISMATCH",
+        "ARTIFACT_ROOT_SYMLINK_REJECTED",
+        "ARTIFACT_ROOT_SPECIAL_NODE_REJECTED",
+    }
+    assert error["conclusion"] is None
+
+
+def test_artifact_root_ancestor_swap_between_precheck_and_open_is_rejected(
+    tmp_path: Path,
+) -> None:
+    switch_parent = tmp_path / "ancestor-swap"
+    live_ancestor = switch_parent / "live"
+    external_ancestor = switch_parent / "external"
+    artifact_root = live_ancestor / "run"
+    artifact_root.mkdir(parents=True)
+    (artifact_root / "artifact.txt").write_bytes(b"same inode after relocation")
+    probe = tmp_path / "ancestor_swap_probe.py"
+    probe.write_text(
+        """\
+import importlib.util
+import os
+from pathlib import Path
+import sys
+
+spec = importlib.util.spec_from_file_location("_ancestor_swap_replayer", sys.argv[1])
+assert spec is not None and spec.loader is not None
+replayer = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = replayer
+spec.loader.exec_module(replayer)
+
+artifact_root = Path(sys.argv[2])
+live_ancestor = Path(sys.argv[3])
+external_ancestor = Path(sys.argv[4])
+expected_root_signature = replayer._stat_signature(os.lstat(artifact_root))
+real_open = os.open
+swapped = False
+
+def attacked_open(path, flags, mode=0o777, *, dir_fd=None):
+    global swapped
+    old_full_path_open = (
+        dir_fd is None
+        and Path(os.path.abspath(os.fspath(path))) == artifact_root
+    )
+    component_open = (
+        dir_fd is not None
+        and os.fspath(path) == live_ancestor.name
+    )
+    if not swapped and (old_full_path_open or component_open):
+        os.rename(live_ancestor, external_ancestor)
+        os.symlink(
+            str(external_ancestor),
+            str(live_ancestor),
+            target_is_directory=True,
+        )
+        swapped = True
+    return real_open(path, flags, mode, dir_fd=dir_fd)
+
+replayer.os.open = attacked_open
+try:
+    replayer._artifact_root_entries(
+        artifact_root,
+        expected_root_signature=expected_root_signature,
+    )
+except replayer.ReplayError as exc:
+    if not swapped:
+        raise AssertionError("root walker rejected before deterministic ancestor swap")
+    sys.stderr.buffer.write(
+        replayer.canonical_json_bytes(
+            {
+                "status": "ERROR",
+                "error_code": exc.code,
+                "conclusion": None,
+            }
+        )
+    )
+    raise SystemExit(2)
+if not swapped:
+    raise AssertionError("deterministic ancestor-swap hook was not reached")
+sys.stdout.buffer.write(
+    replayer.canonical_json_bytes(
+        {
+            "status": "ACCEPTED",
+            "conclusion": None,
+        }
+    )
+)
+""",
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [
+            "/usr/bin/python3",
+            "-I",
+            "-B",
+            str(probe),
+            str(REPLAYER_PATH),
+            str(artifact_root),
+            str(live_ancestor),
+            str(external_ancestor),
+        ],
+        env={},
+        check=False,
+        capture_output=True,
+    )
+
+    assert live_ancestor.is_symlink(), "the swapped ancestor must remain a symlink"
+    assert (external_ancestor / "run" / "artifact.txt").read_bytes() == (
+        b"same inode after relocation"
+    )
+    assert completed.returncode == 2, completed.stdout.decode()
+    error = _decode_cli_json(completed.stderr)
+    assert error["error_code"] in {
+        "ARTIFACT_ROOT_OPEN_FAILED",
+        "ARTIFACT_ROOT_CHANGED",
+        "SYMLINK_REJECTED",
+    }
+    assert error["conclusion"] is None
+
+
+def test_fixed_artifact_labels_reject_a_coherently_relocated_byte_graph(
+    tmp_path: Path,
+    gate: ModuleType,
+    input_paths: dict[str, Path],
+) -> None:
+    run_root = _make_run(tmp_path, gate, input_paths, status="UNKNOWN")
+    receipt_path = run_root / "receipt.json"
+    config_path = run_root / "config.json"
+    receipt = _decode_cli_json(receipt_path.read_bytes())
+    config = _decode_cli_json(config_path.read_bytes())
+    raw_artifacts = receipt["artifacts"]
+    assert type(raw_artifacts) is dict
+    relocated_relative_paths = {
+        "antecedent": "relocated-antecedent.json",
+        "result": "relocated-result.json",
+        "inputs.strict_instance": "inputs/relocated-strict-instance.json",
+        "inputs.framework": "inputs/relocated-framework.json",
+        "inputs.seed": "inputs/relocated-seed.json",
+        "sources.runner": "sources/relocated-runner.py",
+        "sources.gate": "sources/relocated-gate.py",
+        "sources.replayer": "sources/relocated-replayer.py",
+        "sources.common_contract": "sources/relocated-common-contract.py",
+    }
+    original_content_identities = {
+        label: (
+            raw_artifacts[label]["sha256"],
+            raw_artifacts[label]["size_bytes"],
+        )
+        for label in relocated_relative_paths
+    }
+    old_to_new_relative: dict[str, str] = {}
+    relocated_paths: dict[str, Path] = {}
+    for label, new_relative in relocated_relative_paths.items():
+        identity = raw_artifacts[label]
+        assert type(identity) is dict
+        old_path = Path(identity["path"])
+        old_relative = old_path.relative_to(run_root).as_posix()
+        new_path = run_root / new_relative
+        old_path.rename(new_path)
+        old_to_new_relative[old_relative] = new_relative
+        relocated_paths[label] = new_path
+
+    config_payload = config["payload"]
+    assert type(config_payload) is dict
+    config_inputs = config_payload["inputs"]
+    config_sources = config_payload["sources"]
+    assert type(config_inputs) is dict
+    assert type(config_sources) is dict
+    for name in ("strict_instance", "framework", "seed"):
+        label = f"inputs.{name}"
+        pair = config_inputs[name]
+        assert type(pair) is dict
+        pair["run_copy"] = read_stable_snapshot(
+            relocated_paths[label]
+        ).identity.as_dict()
+    for name in ("runner", "gate", "replayer", "common_contract"):
+        label = f"sources.{name}"
+        pair = config_sources[name]
+        assert type(pair) is dict
+        pair["run_copy"] = read_stable_snapshot(
+            relocated_paths[label]
+        ).identity.as_dict()
+    config_payload["antecedent"] = read_stable_snapshot(
+        relocated_paths["antecedent"]
+    ).identity.as_dict()
+    replay_template = [
+        "<python3>",
+        "-I",
+        "-B",
+        str(relocated_paths["sources.replayer"]),
+        "--run-root",
+        str(run_root),
+    ]
+    config_replay = config_payload["replay"]
+    assert type(config_replay) is dict
+    config_replay["argv_template"] = replay_template
+    config_path.write_bytes(canonical_json_bytes(config))
+
+    actual_paths = {
+        "config": config_path,
+        **relocated_paths,
+    }
+    actual_identities = {
+        label: read_stable_snapshot(path).identity
+        for label, path in actual_paths.items()
+    }
+    receipt["config_identity"] = actual_identities["config"].as_dict()
+    receipt["artifacts"] = {
+        label: actual_identities[label].as_dict()
+        for label in sorted(actual_identities)
+    }
+    receipt_payload = receipt["payload"]
+    assert type(receipt_payload) is dict
+    receipt_replay = receipt_payload["replay"]
+    assert type(receipt_replay) is dict
+    receipt_replay["argv_template"] = replay_template
+    manifest = receipt_payload["artifact_root_manifest"]
+    assert type(manifest) is dict
+    entries = manifest["entries"]
+    assert type(entries) is list
+    for entry in entries:
+        assert type(entry) is dict
+        path = entry["path"]
+        if path in old_to_new_relative:
+            entry["path"] = old_to_new_relative[path]
+    entries.sort(key=lambda entry: entry["path"])
+    receipt_payload["identity_graph_sha256"] = replay_identity_graph(
+        actual_identities
+    ).graph_sha256
+    receipt_path.write_bytes(canonical_json_bytes(receipt))
+
+    for label, expected_content_identity in original_content_identities.items():
+        observed = read_stable_snapshot(relocated_paths[label]).identity
+        assert (observed.sha256, observed.size_bytes) == expected_content_identity
+    manifest_regular_paths = {
+        entry["path"]
+        for entry in entries
+        if entry["type"] == "regular_file"
+    }
+    artifact_relative_paths = {
+        Path(identity.path).relative_to(run_root).as_posix()
+        for identity in actual_identities.values()
+    }
+    assert artifact_relative_paths == manifest_regular_paths
+    verify_artifact_root_closure(
+        run_root,
+        manifest,
+        receipt_present=True,
+    )
+
+    completed = _replay_command_from_source(
+        run_root,
+        relocated_paths["sources.replayer"],
+    )
+
+    assert completed.returncode == 2, completed.stdout.decode()
+    error = _decode_cli_json(completed.stderr)
+    assert error["error_code"] == "ARTIFACT_FIXED_PATH_MISMATCH"
+    assert error["conclusion"] is None

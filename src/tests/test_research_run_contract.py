@@ -334,6 +334,127 @@ def test_artifact_root_completed_state_requires_one_regular_terminal_receipt(
     assert _error_code(symlink_exc) == "ARTIFACT_ROOT_SYMLINK_REJECTED"
 
 
+@pytest.mark.parametrize("operation", ["build", "verify"])
+@pytest.mark.parametrize(
+    "pollution_kind",
+    ["regular_file", "directory", "symlink", "fifo", "pyc"],
+)
+def test_artifact_root_walker_rejects_persistent_late_mutation_in_completed_subtree(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    operation: str,
+    pollution_kind: str,
+) -> None:
+    root = ExclusiveRunRoot.create(tmp_path / f"{operation}-{pollution_kind}")
+    root.mkdir("a_early")
+    root.write_bytes("a_early/registered", b"bound")
+    root.mkdir("z_trigger")
+    manifest = (
+        build_artifact_root_manifest(root)
+        if operation == "verify"
+        else None
+    )
+    early = root.path / "a_early"
+    pollution = early / (
+        "late.cpython-999.pyc" if pollution_kind == "pyc" else "late"
+    )
+    original_open = os.open
+    injected = False
+
+    def injecting_open(
+        path: str | bytes | os.PathLike[str] | os.PathLike[bytes],
+        flags: int,
+        mode: int = 0o777,
+        *,
+        dir_fd: int | None = None,
+    ) -> int:
+        nonlocal injected
+        if not injected and path == "z_trigger" and dir_fd is not None:
+            injected = True
+            if pollution_kind in {"regular_file", "pyc"}:
+                pollution.write_bytes(b"persistent late pollution")
+            elif pollution_kind == "directory":
+                pollution.mkdir()
+            elif pollution_kind == "symlink":
+                pollution.symlink_to(early / "registered")
+            else:
+                os.mkfifo(pollution)
+        return original_open(path, flags, mode, dir_fd=dir_fd)
+
+    monkeypatch.setattr(os, "open", injecting_open)
+
+    with pytest.raises(ResearchRunContractError):
+        if operation == "build":
+            build_artifact_root_manifest(root)
+        else:
+            assert manifest is not None
+            verify_artifact_root_closure(
+                root,
+                manifest,
+                receipt_present=False,
+            )
+
+    assert injected
+    assert os.path.lexists(pollution)
+
+
+def test_artifact_root_builder_rejects_ancestor_symlink_swap_between_check_and_open(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    checked_parent = tmp_path / "checked-parent"
+    checked_parent.mkdir()
+    requested_root = checked_parent / "run"
+    requested_root.mkdir()
+    (requested_root / "inside").write_bytes(b"checked tree")
+
+    outside_parent = tmp_path / "outside-parent"
+    outside_parent.mkdir()
+    outside_root = outside_parent / "run"
+    outside_root.mkdir()
+    (outside_root / "outside").write_bytes(b"must not be enumerated")
+
+    displaced_parent = tmp_path / "checked-parent-before-swap"
+    original_open = os.open
+    swapped = False
+
+    def swapping_open(
+        path: str | bytes | os.PathLike[str] | os.PathLike[bytes],
+        flags: int,
+        mode: int = 0o777,
+        *,
+        dir_fd: int | None = None,
+    ) -> int:
+        nonlocal swapped
+        if (
+            not swapped
+            and (
+                (
+                    dir_fd is None
+                    and os.path.abspath(os.fspath(path)) == str(requested_root)
+                )
+                or (
+                    dir_fd is not None
+                    and os.fspath(path) == checked_parent.name
+                )
+            )
+        ):
+            checked_parent.rename(displaced_parent)
+            checked_parent.symlink_to(outside_parent, target_is_directory=True)
+            swapped = True
+        return original_open(path, flags, mode, dir_fd=dir_fd)
+
+    monkeypatch.setattr(os, "open", swapping_open)
+
+    with pytest.raises(ResearchRunContractError):
+        build_artifact_root_manifest(requested_root)
+
+    assert swapped
+    assert checked_parent.is_symlink()
+    assert (displaced_parent / "run" / "inside").read_bytes() == b"checked tree"
+    assert (outside_root / "outside").read_bytes() == b"must not be enumerated"
+
+
 def test_config_and_receipt_envelopes_leave_payload_opaque(tmp_path: Path) -> None:
     config = make_research_run_config(
         experiment_id="example",

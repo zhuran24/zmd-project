@@ -27,13 +27,14 @@ P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 �
 该结果不建立 `(1188,18)` attainability、global optimality、whole-instance
 infeasibility、lower bound 或 production `CERTIFIED`。当前最小研究实现切换到
 W0 power-cycle domino 的局部 D6 joint completion；artifact-root closure v2 已就绪，
-强制 seed-narrow 重跑等待 Endfield 退出及资源、竞争 solver、项目锁与 clean-HEAD 检查。
+强制 seed-narrow 重跑等待 Endfield 退出、full preflight 及资源、竞争 solver、项目锁与
+clean-HEAD 检查。
 AB16 formal 后续任务未执行、未取消，继续后置。
 
 | 工作线 | 当前终态坐标 | Authority 边界 |
 |---|---|---|
 | **cut 框架工程线** | Production family 状态不变：F1/F6/F7 为 typed，F5 为 shadow-only，F2/F3/F4/F9 为 `LEGACY_DIAGNOSTIC`，F8 retired；attach 仍 unsafe/default-off，B6 未授权。07-24 rule/cut evolution 只增加 test/offline shadow 维护面。Noncert cuts Gate 1 v4 只建立 `MECHANISM_CREDIBLE`；prospective AB16 为 `GATE_A_FINALIZED / GATE_B_NOT_CREATED`，formal campaign 未创建、organic arms `0/16`。 | Shadow 与 noncert 结果都不授权 production attach、family-global soundness、上下界、witness 或 optimality。 |
-| **求解与研究线** | SMM4 fresh-authority 的 `smm4-formal-a004` 已消费且不得重试；最终 detached receipt 与 immutable closeout 均为 `VERIFIED` 并授权 research upper ledger 更新为 `U=(1188,18)`，`L=absent`。内部 formal receipt 即使 `VERIFIED`/UNSAT 仍为 `upper_bound_update_authorized=false`；routing-aware witness/W2b 仍没有被账本接受的 layout。W0 D6 已具备 hash-pinned、no-overwrite、cache-free、完整 artifact-root closure v2 与独立 replay；历史 v1 seed-narrow root 因两个未登记 `.pyc` 只保留命名字节图的局部 `INFEASIBLE`，强制 v2 重跑等待 Endfield 退出。`AB16_GATE_B_AND_16_ORGANIC_ARMS` 未执行、未取消并继续后置。 | D6 的 `FEASIBLE` 只证明完整一致的局部 antecedent，`INFEASIBLE` 只关闭同一局部 antecedent，`UNKNOWN` 无拒绝语义；只有 v2 closure 加异构 replay 可进入下一分支，不启动全图 solve，不改变上下界或 production authority。旧 v1 receipt 不证明完整 run root 已封存。 |
+| **求解与研究线** | SMM4 fresh-authority 的 `smm4-formal-a004` 已消费且不得重试；最终 detached receipt 与 immutable closeout 均为 `VERIFIED` 并授权 research upper ledger 更新为 `U=(1188,18)`，`L=absent`。内部 formal receipt 即使 `VERIFIED`/UNSAT 仍为 `upper_bound_update_authorized=false`；routing-aware witness/W2b 仍没有被账本接受的 layout。W0 D6 已具备 hash-pinned、no-overwrite、cache-free、逐组件 no-follow 打开、全树目录 FD/signature 终检、固定 artifact label/path 与独立 replay；历史 v1 seed-narrow root 因两个未登记 `.pyc` 只保留命名字节图的局部 `INFEASIBLE`，强制 v2 重跑等待 Endfield 退出及 full preflight。`AB16_GATE_B_AND_16_ORGANIC_ARMS` 未执行、未取消并继续后置。 | D6 的 `FEASIBLE` 只证明完整一致的局部 antecedent，`INFEASIBLE` 只关闭同一局部 antecedent，`UNKNOWN` 无拒绝语义；只有 v2 closure 加异构 replay 可进入下一分支，不启动全图 solve，不改变上下界或 production authority。旧 v1 receipt 不证明完整 run root 已封存。 |
 | **支线** | P3.0 轴 A 已有 68 条定理；轴 B 待开工。P2.0 吞吐认证仍是 owner 判定的必做线；TNS 设计稿完成未排。 | P2.0 不受 P1.2 历史 theorem scope exclusion 覆盖。 |
 
 下表保存 **2026-07-20 的执行快照**，仅用于追溯当时的排期，不覆盖上表终态：
@@ -68,7 +69,7 @@ AB16 formal 后续任务未执行、未取消，继续后置。
 | 07-24 | `(1188,18)` sidewise strict 与 SMM3 recovery 均以 `FORMAL_AUTHORITY_INCOMPLETE` 失败关闭，账本不变。Rule/cut evolution 保持 test/offline shadow。Noncert Gate 1 v4 仅建立单个注入 inequality 的 `MECHANISM_CREDIBLE`；AB16 停在 Gate A，未创建 formal campaign 或 organic arm | `b1_sidewise_marked_membrane_strict_20260724/`；`b1_sidewise_marked_membrane_authority_recovery_20260724/`；`23_rule_cut_evolution_protocol.md`；`noncert_cuts_ab_trust_gate1_v4_20260724/`；`noncert_cuts_ab16_20260724/` |
 | 07-25 | 合并态 provenance gate 保留 Track B、R4 与 noncert 研究 authority 的原始 HEAD/input/tool 身份；旧 receipt 不因进入后续 HEAD 而成为新生成 authority，研究双账仍为 `U=(1188,22)`、`L=absent` | `src/tests/conftest.py` |
 | 07-27 | SMM4 第三个 fresh-authority root 完成唯一 formal one-shot；`smm4-formal-a004` 已消费且不得重试。最终 detached receipt 与 immutable closeout 均为 `VERIFIED`，且只有二者授权 research upper ledger 更新为 `U=(1188,18)`、`L=absent`；`production_certified=false`。下一项强制任务登记为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`，未执行 | [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md) |
-| 07-28 | G3 最小公共研究基础层与 W0 D6 层落地后，发现历史 seed-narrow v1 root 有两个未登记 `.pyc`；其命名字节图局部 `INFEASIBLE` 保留，但完整 root closure 不成立。G3 现提供排除固定 `receipt.json` 自指的 exact path/type manifest 与 `-I -B` 进程合同；W0 producer/replayer 升为 v2、拒绝 v1 和任何额外节点。强制 seed-narrow v2 重跑等待 Endfield 退出，随后按 FEASIBLE / failure-or-UNKNOWN / replay-accepted INFEASIBLE 自动分支；tracked 状态与 `U=(1188,18)`、`L=absent`、production authority 不变。AB16 未取消，继续后置 | [W0 D6 research gate](../research/w0_power_cycle_domino_d6_20260728/README.md)；[24号治理](24_repository_asset_governance.md) |
+| 07-28 | G3 最小公共研究基础层与 W0 D6 层落地后，发现历史 seed-narrow v1 root 有两个未登记 `.pyc`；其命名字节图局部 `INFEASIBLE` 保留，但完整 root closure 不成立。G3 v2 现以逐组件 no-follow 打开并保留全部目录 FD/signature 至终检，仍采用排除固定 `receipt.json` 自指的 exact path/type manifest 与 `-I -B` 进程合同；W0 replayer 同步该遍历合同并钉死 artifact label/path，拒绝 v1、整体改名和任何额外节点。强制 seed-narrow v2 重跑等待 Endfield 退出；随后必须通过 full preflight 及资源/竞争 solver/项目锁/clean-HEAD 门禁，才按 FEASIBLE / failure-or-UNKNOWN / replay-accepted INFEASIBLE 自动分支。tracked 状态与 `U=(1188,18)`、`L=absent`、production authority 不变。AB16 未取消，继续后置 | [W0 D6 research gate](../research/w0_power_cycle_domino_d6_20260728/README.md)；[24号治理](24_repository_asset_governance.md) |
 
 ### 0b. 方法论：规则归属判据 v2 → v2.3（2026-07-17 三轮推出 v1/v2/v2.1；07-18 两轮补 cut 方法论与四问统一；07-20 干净房间 R2/R3 外部收编）
 

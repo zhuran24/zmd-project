@@ -66,16 +66,16 @@ evidence/replay tests 落地后的当前收据：
 
 | collect 面 | nodeids | 规范化 SHA256 |
 |---|---:|---|
-| developer | 3,520 | `10957319675efe5c4f7248b9b5366bd76fe1163758eb88bd063bfd801e663d4b` |
+| developer | 3,531 | `b14c64ce8170d1fbd8c740d435282f6fcf749838651da0aa197ac421f86e0d0c` |
 | evidence、非 replay、非 slow | 1,512 | `c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b` |
-| replay、非 slow | 1,532 | `2cf3b885ad46dbac6f689baef813abc0cf268a0e4dcccc7051b649d5846df42b` |
-| 三面并集 / full non-slow | 6,564 | `88e7a3c45039607b29aa98072af21d3c15573189377fec939f933def5b34ffd9` |
-| full/all | 6,595 | `b939a7deaae69717f595a283398d2457c4d3176e477dd1f42ad710a1112b665c` |
+| replay、非 slow | 1,539 | `4cf4225561be085e751da622b1fea80ac6b07437f3efaa1a808a6cdd3a51a88c` |
+| 三面并集 / full non-slow | 6,582 | `b9988f8214f2dc3053aa22f994bfff3fd689f02840988387685a002f1e963b7a` |
+| full/all | 6,613 | `f7d7c816a67ffaec70ce2859093785185ce0abd6442ffd80d95e6207f5b2ea6d` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
-full/all。G3 的 46 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
-W0 D6 的 8 个 gate nodeid 进入 evidence，24 个独立 replay nodeid 进入 replay；
+full/all。G3 的 57 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
+W0 D6 的 8 个 gate nodeid 进入 evidence，31 个独立 replay nodeid 进入 replay；
 slow 和既有 focused 入口不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。
 
 ## 分类合同
@@ -113,8 +113,8 @@ helper 仍由各自封存字节约束，不作为公共实现来源。
 | stable snapshot read | `devtools/research_run_contract.py::read_stable_snapshot` 是 developer/research shared authority；exact campaign 保留 context-bound reader | 公共合同绑定一次打开所得实际 bytes、前后 `fstat` 与 SHA-256；SMM4 的 `snapshot_regular` 只属于冻结 replay |
 | retained same-FD | 无活动 shared authority | SMM4 与 AB16 各自 `snapshot_regular` 由封存 bytes 约束，不能跨包导入 |
 | exclusive no-overwrite | `devtools/research_run_contract.py::ExclusiveRunRoot` 是 developer/research shared authority；exact campaign 保留 checkpoint-context lock | 公共实现只管理新建的隔离 run root；不替代 campaign lock 或 sealed replay writer |
-| canonical config/receipt | `devtools/research_run_contract.py::canonical_json_bytes` 是 developer/research shared authority；`build_artifact_root_manifest` 枚举写回执前的完整 root | manifest 只登记除固定 `receipt.json` 外的全部后代 path/type；不保存也不声称 receipt 自身哈希。experiment payload 保持不透明，不能携带实验数学的公共 authority |
-| independent replay | `devtools/research_run_contract.py::verify_artifact_root_closure` 是 artifact-root closure shared authority；`replay_identity_graph` 复核命名字节图，`run_isolated_replay` 与 `require_isolated_python_process` 约束 `-I -B` 子进程 | 完成态 root 必须恰为 manifest 条目加唯一普通文件 `receipt.json`；额外文件、目录、symlink 或特殊节点 fail closed。公共层不解释 FEASIBLE、INFEASIBLE、front、cycle 或任何实验语义 |
+| canonical config/receipt | `devtools/research_run_contract.py::canonical_json_bytes` 是 developer/research shared authority；`build_artifact_root_manifest` 从可信锚点逐组件 no-follow 打开 root，枚举写回执前的完整 root | manifest 只登记除固定 `receipt.json` 外的全部后代 path/type；不保存也不声称 receipt 自身哈希。experiment payload 保持不透明，不能携带实验数学的公共 authority |
+| independent replay | `devtools/research_run_contract.py::verify_artifact_root_closure` 是 artifact-root closure shared authority；`replay_identity_graph` 复核命名字节图，`run_isolated_replay` 与 `require_isolated_python_process` 约束 `-I -B` 子进程 | root 与全部后代目录的 FD/signature 保留到完整枚举结束再逐一复核；完成态 root 必须恰为 manifest 条目加唯一普通文件 `receipt.json`，额外文件、目录、symlink 或特殊节点 fail closed。公共层不解释 FEASIBLE、INFEASIBLE、front、cycle 或任何实验语义 |
 | resource receipt | 无活动 shared authority | AB16 resource-receipt family 与 SMM4 `_validate_resource_receipt` 均为冻结证据图的一部分 |
 | terminal receipt | `src/search/exact_campaign.py::terminal_certified_final_result_violation_for_project` | AB16 terminal-receipt family 只属于 immutable closeout |
 

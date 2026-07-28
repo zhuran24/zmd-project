@@ -108,6 +108,35 @@ producer 在写回执前验证 manifest 等于完整 root，写回执后再验�
 stdout summary 中报告写后观察到的 receipt identity。该合同是验证时的精确集合观察，不是
 文件系统级不可变封存。
 
+artifact-root 枚举从可信绝对路径锚点开始，逐组件用 parent descriptor 与
+`O_DIRECTORY|O_NOFOLLOW` 打开；不以可竞态的路径预检查替代打开时约束。root 与每个后代目录的
+descriptor 和初始 signature 都保留到全树枚举完成，再逐一 `fstat` 比对后关闭。因此在扫描后续
+sibling 时，对已完成子树留下的普通文件、目录、symlink、FIFO 或 bytecode/cache 污染都必须
+fail closed。producer、公共 closure verifier 与 pinned stdlib replayer 统一遵守该合同。
+
+W0 D6 的 artifact label 与 root-relative path 是固定一一映射，不允许通过同步改写 identities
+和 manifest 来整体搬迁：
+
+| artifact label | 固定 root-relative path | 存在条件 |
+|---|---|---|
+| `config` | `config.json` | 全部 status |
+| `antecedent` | `antecedent.json` | 全部 status |
+| `result` | `result.json` | 全部 status |
+| `inputs.strict_instance` | `inputs/strict_instance.json` | 全部 status |
+| `inputs.framework` | `inputs/framework.json` | 全部 status |
+| `inputs.seed` | `inputs/seed.json` | 全部 status |
+| `sources.runner` | `sources/run_d6_research.py` | 全部 status |
+| `sources.gate` | `sources/d6_joint_completion_gate.py` | 全部 status |
+| `sources.replayer` | `sources/replay_d6_certificate.py` | 全部 status |
+| `sources.common_contract` | `sources/research_run_contract.py` | 全部 status |
+| `configuration` | `configuration.json` | 仅 `FEASIBLE` |
+| `certificate` | `certificate.json` | 仅 `FEASIBLE` |
+
+`receipt.json` 不是 artifact label，也不进入 manifest；它仍是协议保留的唯一额外终端成员。
+独立 replayer 内置自己的固定映射副本，并在读取 artifact payload 前同时核对 label 集合、固定
+path 与 manifest bijection。`INFEASIBLE`/`UNKNOWN` 不得携带 `configuration` 或
+`certificate`。
+
 独立 replayer 是 stdlib-only、solver-free 的自包含实现，不导入 gate、runner、G3、`src/`
 或 OR-Tools。第一次 replay 使用 producer 的 coherent CPython 3.13 环境；第二次使用
 `/usr/bin/python3`、fresh `/tmp` cwd 与独立输出位置，构成异构 replay。两份 replay receipt
@@ -141,18 +170,22 @@ replay 成功仍只确认 receipt 声明的局部范围，不提升其 authority
 
 ## 可信执行顺序
 
-root-closure 修复提交及静态验收完成后，solver 执行继续等待 Endfield 完全退出。Endfield 不在场，
-且资源、竞争 solver、项目锁与 clean committed HEAD 检查全部通过时，按常驻路线授权自动执行，
-无需再次等待 owner 批准：
+root-closure 修复提交及 solver-free 静态验收完成后，solver 执行继续等待 Endfield 完全退出；
+等待期间不得运行 full preflight、slow tests 或任何 solver。Endfield 不在场后，按常驻路线授权
+自动执行以下强制门禁与实验序列，无需再次等待 owner 批准：
 
-1. 用新 no-overwrite producer/replay roots、原三份 pinned 输入和原 solver config
+1. 先检查资源、竞争 solver、项目锁与 clean committed HEAD；任一失败即停止；
+2. 在该 clean committed HEAD 上运行 `python scripts/preflight_gate.py --full`；这是
+   seed-narrow 的强制前置门槛，本轮因 Endfield 在场而延后，并未取消；
+3. full preflight 通过后再次检查资源、竞争 solver、项目锁与 clean HEAD；任一漂移即停止；
+4. 用新 no-overwrite producer/replay roots、原三份 pinned 输入和原 solver config
    `workers=2, random_seed=0, max_time_seconds=3600` 强制重跑 `seed_narrow`；
-2. 用 producer 的 coherent CPython 3.13 环境执行 root 内 pinned replayer，再从 fresh `/tmp`
+5. 用 producer 的 coherent CPython 3.13 环境执行 root 内 pinned replayer，再从 fresh `/tmp`
    cwd 用 `/usr/bin/python3 -I -B` 做第二次异构 replay；两份 canonical replay bytes 必须一致；
-3. `FEASIBLE`：交付局部 certificate 与异构 replay，停止，不运行 28-slot；
-4. `UNKNOWN`、中断、运行失败、root closure/replay 失败或 status 分歧：停止并修复同一
+6. `FEASIBLE`：交付局部 certificate 与异构 replay，停止，不运行 28-slot；
+7. `UNKNOWN`、中断、运行失败、root closure/replay 失败或 status 分歧：停止并修复同一
    seed-narrow 链，不放宽 attachment scope；
-5. 只有 replay-accepted `INFEASIBLE` 才自动运行 `all_legal_d6_slots`；保持同一 clean HEAD、
+8. 只有 replay-accepted `INFEASIBLE` 才自动运行 `all_legal_d6_slots`；保持同一 clean HEAD、
    输入和 solver config，唯一放宽项是 attachment scope。该变体的预期 antecedent SHA-256 为
    `a5fc8a3a3814970f2401d4c27800e422f8cb46cd358b6d07451f9935f76ddef3`。
 

@@ -1153,8 +1153,8 @@
       "argv_source": "scripts/preflight_gate.py --full",
       "baseline_count": 6486,
       "baseline_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c",
-      "expected_count": 6564,
-      "expected_sha256": "88e7a3c45039607b29aa98072af21d3c15573189377fec939f933def5b34ffd9"
+      "expected_count": 6582,
+      "expected_sha256": "b9988f8214f2dc3053aa22f994bfff3fd689f02840988387685a002f1e963b7a"
     },
     {
       "id": "preflight_slow",
@@ -1171,8 +1171,8 @@
       "argv_source": "python -m pytest -m '' src/tests",
       "baseline_count": 6517,
       "baseline_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1",
-      "expected_count": 6595,
-      "expected_sha256": "b939a7deaae69717f595a283398d2457c4d3176e477dd1f42ad710a1112b665c"
+      "expected_count": 6613,
+      "expected_sha256": "f7d7c816a67ffaec70ce2859093785185ce0abd6442ffd80d95e6207f5b2ea6d"
     },
     {
       "id": "auxiliary_memory_tests",
@@ -1189,8 +1189,8 @@
       "argv_source": "python -m pytest",
       "baseline_count": 6624,
       "baseline_sha256": "6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96",
-      "expected_count": 3520,
-      "expected_sha256": "10957319675efe5c4f7248b9b5366bd76fe1163758eb88bd063bfd801e663d4b"
+      "expected_count": 3531,
+      "expected_sha256": "b14c64ce8170d1fbd8c740d435282f6fcf749838651da0aa197ac421f86e0d0c"
     },
     {
       "id": "industrial_planner_checked",
@@ -1288,8 +1288,8 @@
       "argv_source": "python -m pytest --repository-workflow=evidence -m 'not slow'",
       "baseline_count": 0,
       "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "expected_count": 1504,
-      "expected_sha256": "3d2953ce5e71a3731dd5e08a57d4b12be90c152978cf4988956c112d029af6bb"
+      "expected_count": 1512,
+      "expected_sha256": "c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b"
     },
     {
       "id": "replay_non_slow",
@@ -1297,8 +1297,8 @@
       "argv_source": "python -m pytest --repository-workflow=replay -m 'not slow'",
       "baseline_count": 0,
       "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "expected_count": 1508,
-      "expected_sha256": "47a3861c3f1834ccf4bd8cf81e84f468bf6c3ae138859e6a03df550e796d799f"
+      "expected_count": 1539,
+      "expected_sha256": "4cf4225561be085e751da622b1fea80ac6b07437f3efaa1a808a6cdd3a51a88c"
     }
   ],
   "pytest_pending_recipes": [

@@ -37,6 +37,25 @@ RESULT_SCHEMA = "w0_d6_result_v1"
 CONFIGURATION_SCHEMA = "w0_d6_configuration_v1"
 CERTIFICATE_SCHEMA = "w0_d6_local_certificate_v1"
 REPLAY_SCHEMA = "w0_d6_replay_receipt_v2"
+OPEN_SUPPORTS_DIR_FD = os.open in os.supports_dir_fd
+SCANDIR_SUPPORTS_FD = os.scandir in os.supports_fd
+
+BASE_ARTIFACT_RELATIVE_PATHS = {
+    "config": "config.json",
+    "antecedent": "antecedent.json",
+    "result": "result.json",
+    "inputs.strict_instance": "inputs/strict_instance.json",
+    "inputs.framework": "inputs/framework.json",
+    "inputs.seed": "inputs/seed.json",
+    "sources.runner": "sources/run_d6_research.py",
+    "sources.gate": "sources/d6_joint_completion_gate.py",
+    "sources.replayer": "sources/replay_d6_certificate.py",
+    "sources.common_contract": "sources/research_run_contract.py",
+}
+FEASIBLE_ARTIFACT_RELATIVE_PATHS = {
+    "configuration": "configuration.json",
+    "certificate": "certificate.json",
+}
 
 DIRECTIONS = ("N", "E", "S", "W")
 DELTA = {"E": (1, 0), "N": (0, 1), "S": (0, -1), "W": (-1, 0)}
@@ -139,6 +158,133 @@ def _reject_symlink_chain(path: Path, *, leaf_may_be_missing: bool = False) -> N
             _fail("SYMLINK_REJECTED", str(current))
         if not is_leaf and not stat.S_ISDIR(item.st_mode):
             _fail("PATH_COMPONENT_NOT_DIRECTORY", str(current))
+
+
+def _directory_open_flags() -> int:
+    if (
+        not hasattr(os, "O_DIRECTORY")
+        or not hasattr(os, "O_NOFOLLOW")
+        or not OPEN_SUPPORTS_DIR_FD
+        or not SCANDIR_SUPPORTS_FD
+    ):
+        _fail(
+            "PLATFORM_CAPABILITY_UNAVAILABLE",
+            "descriptor-relative O_DIRECTORY|O_NOFOLLOW directory opens are required",
+        )
+    return (
+        os.O_RDONLY
+        | getattr(os, "O_CLOEXEC", 0)
+        | os.O_DIRECTORY
+        | os.O_NOFOLLOW
+    )
+
+
+def _open_absolute_directory_no_symlinks(
+    path: Path | str,
+    *,
+    error_code: str,
+) -> int:
+    absolute = _absolute(path)
+    parts = absolute.parts
+    if not absolute.is_absolute() or not parts or not absolute.anchor:
+        _fail(error_code, f"absolute directory path required: {absolute}")
+    flags = _directory_open_flags()
+    opened: list[int] = []
+    try:
+        opened.append(os.open(absolute.anchor, flags))
+        for part in parts[1:]:
+            opened.append(os.open(part, flags, dir_fd=opened[-1]))
+    except BaseException as exc:
+        for descriptor in reversed(opened):
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+        if isinstance(exc, OSError):
+            _fail(error_code, f"{absolute}: {exc}")
+        raise
+    if not opened:
+        _fail(error_code, f"{absolute}: directory open produced no descriptor")
+    descriptor = opened.pop()
+    close_error: OSError | None = None
+    for ancestor_fd in reversed(opened):
+        try:
+            os.close(ancestor_fd)
+        except OSError as exc:
+            if close_error is None:
+                close_error = exc
+    if close_error is not None:
+        try:
+            os.close(descriptor)
+        except OSError:
+            pass
+        _fail(error_code, f"{absolute}: ancestor descriptor close failed: {close_error}")
+    return descriptor
+
+
+def _open_absolute_regular_no_symlinks(
+    path: Path | str,
+    *,
+    error_code: str,
+) -> int:
+    absolute = _absolute(path)
+    parts = absolute.parts
+    if (
+        not absolute.is_absolute()
+        or len(parts) < 2
+        or not absolute.anchor
+    ):
+        _fail(error_code, f"absolute regular-file path required: {absolute}")
+    directory_flags = _directory_open_flags()
+    file_flags = (
+        os.O_RDONLY
+        | getattr(os, "O_CLOEXEC", 0)
+        | os.O_NOFOLLOW
+        | getattr(os, "O_NONBLOCK", 0)
+    )
+    opened_directories: list[int] = []
+    descriptor: int | None = None
+    try:
+        opened_directories.append(os.open(absolute.anchor, directory_flags))
+        for part in parts[1:-1]:
+            opened_directories.append(
+                os.open(part, directory_flags, dir_fd=opened_directories[-1])
+            )
+        descriptor = os.open(
+            parts[-1],
+            file_flags,
+            dir_fd=opened_directories[-1],
+        )
+    except BaseException as exc:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+        for directory_fd in reversed(opened_directories):
+            try:
+                os.close(directory_fd)
+            except OSError:
+                pass
+        if isinstance(exc, OSError):
+            _fail(error_code, f"{absolute}: {exc}")
+        raise
+    close_error: OSError | None = None
+    for directory_fd in reversed(opened_directories):
+        try:
+            os.close(directory_fd)
+        except OSError as exc:
+            if close_error is None:
+                close_error = exc
+    if descriptor is None:
+        _fail(error_code, f"{absolute}: regular-file open produced no descriptor")
+    if close_error is not None:
+        try:
+            os.close(descriptor)
+        except OSError:
+            pass
+        _fail(error_code, f"{absolute}: ancestor descriptor close failed: {close_error}")
+    return descriptor
 
 
 def _stat_signature(item: os.stat_result) -> tuple[int, ...]:
@@ -298,18 +444,16 @@ def _artifact_root_entries(
     *,
     expected_root_signature: tuple[int, ...] | None = None,
 ) -> dict[str, str]:
-    _reject_symlink_chain(run_root)
-    flags = (
-        os.O_RDONLY
-        | getattr(os, "O_CLOEXEC", 0)
-        | getattr(os, "O_DIRECTORY", 0)
-        | getattr(os, "O_NOFOLLOW", 0)
+    flags = _directory_open_flags()
+    root_fd = _open_absolute_directory_no_symlinks(
+        run_root,
+        error_code="ARTIFACT_ROOT_OPEN_FAILED",
     )
     try:
-        root_fd = os.open(run_root, flags)
+        root_before = os.fstat(root_fd)
     except OSError as exc:
+        os.close(root_fd)
         _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: {exc}")
-    root_before = os.fstat(root_fd)
     if not stat.S_ISDIR(root_before.st_mode):
         os.close(root_fd)
         _fail("RUN_ROOT_INVALID", str(run_root))
@@ -320,9 +464,11 @@ def _artifact_root_entries(
         os.close(root_fd)
         _fail("ARTIFACT_ROOT_CHANGED", str(run_root))
     observed: dict[str, str] = {}
+    opened_directories: list[tuple[int, tuple[str, ...], tuple[int, ...]]] = [
+        (root_fd, (), _stat_signature(root_before))
+    ]
 
     def walk(descriptor: int, prefix: tuple[str, ...]) -> None:
-        before = os.fstat(descriptor)
         try:
             with os.scandir(descriptor) as iterator:
                 names = sorted(entry.name for entry in iterator)
@@ -368,24 +514,55 @@ def _artifact_root_entries(
                 )
             try:
                 opened = os.fstat(child_fd)
-                if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
-                    _fail(
-                        "ARTIFACT_ROOT_CHANGED",
-                        str(run_root.joinpath(*prefix, name)),
-                    )
-                walk(child_fd, (*prefix, name))
-            finally:
+            except OSError as exc:
                 os.close(child_fd)
-        after = os.fstat(descriptor)
-        if _stat_signature(before) != _stat_signature(after):
-            _fail("ARTIFACT_ROOT_CHANGED", str(run_root.joinpath(*prefix)))
+                _fail(
+                    "ARTIFACT_ROOT_CHANGED",
+                    f"{run_root.joinpath(*prefix, name)}: {exc}",
+                )
+            child_prefix = (*prefix, name)
+            opened_directories.append(
+                (child_fd, child_prefix, _stat_signature(opened))
+            )
+            if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
+                _fail(
+                    "ARTIFACT_ROOT_CHANGED",
+                    str(run_root.joinpath(*prefix, name)),
+                )
+            walk(child_fd, child_prefix)
 
+    primary_error: BaseException | None = None
     try:
         walk(root_fd, ())
-        if _stat_signature(root_before) != _stat_signature(os.fstat(root_fd)):
-            _fail("ARTIFACT_ROOT_CHANGED", str(run_root))
-    finally:
-        os.close(root_fd)
+    except BaseException as exc:
+        primary_error = exc
+
+    finalize_issues: list[str] = []
+    for descriptor, prefix, initial_signature in reversed(opened_directories):
+        display_path = str(run_root.joinpath(*prefix))
+        try:
+            final_signature = _stat_signature(os.fstat(descriptor))
+        except OSError as exc:
+            finalize_issues.append(f"{display_path}: fstat failed: {exc}")
+        else:
+            if final_signature != initial_signature:
+                finalize_issues.append(f"{display_path}: signature changed")
+        try:
+            os.close(descriptor)
+        except OSError as exc:
+            finalize_issues.append(f"{display_path}: close failed: {exc}")
+
+    if primary_error is not None:
+        if finalize_issues:
+            primary_error.add_note(
+                f"artifact-root finalization issues: {finalize_issues!r}"
+            )
+        raise primary_error
+    if finalize_issues:
+        _fail(
+            "ARTIFACT_ROOT_CHANGED",
+            f"artifact-root finalization issues: {finalize_issues!r}",
+        )
     return observed
 
 
@@ -431,17 +608,10 @@ def stable_read(path: Path | str, label: str) -> tuple[bytes, dict[str, object]]
     """Read and hash one regular file through one unchanged descriptor."""
 
     absolute = _absolute(path)
-    _reject_symlink_chain(absolute)
-    flags = (
-        os.O_RDONLY
-        | getattr(os, "O_CLOEXEC", 0)
-        | getattr(os, "O_NOFOLLOW", 0)
-        | getattr(os, "O_NONBLOCK", 0)
+    descriptor = _open_absolute_regular_no_symlinks(
+        absolute,
+        error_code="ARTIFACT_OPEN_FAILED",
     )
-    try:
-        descriptor = os.open(absolute, flags)
-    except OSError as exc:
-        _fail("ARTIFACT_OPEN_FAILED", f"{label}: {exc}")
     try:
         before = os.fstat(descriptor)
         if not stat.S_ISREG(before.st_mode):
@@ -952,8 +1122,14 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
 
     replayer_process_contract = _require_isolated_python_process()
     run_root = _absolute(run_root_value)
-    _reject_symlink_chain(run_root)
-    root_item = os.lstat(run_root)
+    root_fd = _open_absolute_directory_no_symlinks(
+        run_root,
+        error_code="ARTIFACT_ROOT_OPEN_FAILED",
+    )
+    try:
+        root_item = os.fstat(root_fd)
+    finally:
+        os.close(root_fd)
     if not stat.S_ISDIR(root_item.st_mode):
         _fail("RUN_ROOT_INVALID", str(run_root))
     root_signature = _stat_signature(root_item)
@@ -996,19 +1172,10 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
     preview_status = payload_preview.get("status")
     if preview_status not in {"FEASIBLE", "INFEASIBLE", "UNKNOWN"}:
         _fail("STATUS_INVALID", "receipt payload preview")
-    base_labels = {
-        "config",
-        "antecedent",
-        "result",
-        "inputs.strict_instance",
-        "inputs.framework",
-        "inputs.seed",
-        "sources.runner",
-        "sources.gate",
-        "sources.replayer",
-        "sources.common_contract",
-    }
-    expected_labels = base_labels | ({"configuration", "certificate"} if preview_status == "FEASIBLE" else set())
+    expected_relative_paths = dict(BASE_ARTIFACT_RELATIVE_PATHS)
+    if preview_status == "FEASIBLE":
+        expected_relative_paths.update(FEASIBLE_ARTIFACT_RELATIVE_PATHS)
+    expected_labels = set(expected_relative_paths)
     raw_artifacts = _exact_keys(receipt["artifacts"], expected_labels, "receipt.artifacts")
     artifacts = {
         label: _identity(raw_artifacts[label], f"receipt.artifacts.{label}")
@@ -1032,6 +1199,15 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
             relative_path = absolute_path.relative_to(run_root).as_posix()
         except ValueError:
             _fail("ARTIFACT_PATH_INVALID", f"{label}: outside run root")
+        expected_relative_path = expected_relative_paths[label]
+        if relative_path != expected_relative_path:
+            _fail(
+                "ARTIFACT_FIXED_PATH_MISMATCH",
+                (
+                    f"{label}: expected {expected_relative_path!r}; "
+                    f"observed {relative_path!r}"
+                ),
+            )
         artifact_relative_paths.add(relative_path)
     if artifact_relative_paths != manifest_regular_paths:
         _fail(

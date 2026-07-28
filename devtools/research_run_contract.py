@@ -31,6 +31,8 @@ _IDENTITY_GRAPH_SCHEMA = "artifact_identity_graph_v1"
 ARTIFACT_ROOT_MANIFEST_SCHEMA = "research_artifact_root_manifest_v1"
 ISOLATED_PYTHON_PROCESS_SCHEMA = "isolated_python_process_contract_v1"
 TERMINAL_RECEIPT_PATH = "receipt.json"
+_OPEN_SUPPORTS_DIR_FD = os.open in os.supports_dir_fd
+_SCANDIR_SUPPORTS_FD = os.scandir in os.supports_fd
 
 _ARTIFACT_ROOT_ENTRY_TYPES = frozenset({"directory", "regular_file"})
 
@@ -243,6 +245,70 @@ def _reject_symlink_chain(path: Path, *, include_leaf: bool) -> None:
             _fail("SYMLINK_REJECTED", str(path))
 
 
+def _directory_open_flags() -> int:
+    if (
+        not hasattr(os, "O_DIRECTORY")
+        or not hasattr(os, "O_NOFOLLOW")
+        or not _OPEN_SUPPORTS_DIR_FD
+        or not _SCANDIR_SUPPORTS_FD
+    ):
+        _fail(
+            "PLATFORM_CAPABILITY_UNAVAILABLE",
+            "descriptor-relative O_DIRECTORY|O_NOFOLLOW directory opens are required",
+        )
+    return (
+        os.O_RDONLY
+        | getattr(os, "O_CLOEXEC", 0)
+        | os.O_DIRECTORY
+        | os.O_NOFOLLOW
+    )
+
+
+def _open_absolute_directory_no_symlinks(
+    path: Path | str,
+    *,
+    error_code: str,
+) -> int:
+    """Open one absolute directory through descriptor-relative no-follow steps."""
+
+    absolute = _absolute(path)
+    parts = absolute.parts
+    if not absolute.is_absolute() or not parts or not absolute.anchor:
+        _fail(error_code, f"absolute directory path required: {absolute}")
+    flags = _directory_open_flags()
+    opened: list[int] = []
+    try:
+        opened.append(os.open(absolute.anchor, flags))
+        for part in parts[1:]:
+            opened.append(os.open(part, flags, dir_fd=opened[-1]))
+    except BaseException as exc:
+        for descriptor in reversed(opened):
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+        if isinstance(exc, OSError):
+            _fail(error_code, f"{absolute}: {exc}")
+        raise
+    if not opened:
+        _fail(error_code, f"{absolute}: directory open produced no descriptor")
+    descriptor = opened.pop()
+    close_error: OSError | None = None
+    for ancestor_fd in reversed(opened):
+        try:
+            os.close(ancestor_fd)
+        except OSError as exc:
+            if close_error is None:
+                close_error = exc
+    if close_error is not None:
+        try:
+            os.close(descriptor)
+        except OSError:
+            pass
+        _fail(error_code, f"{absolute}: ancestor descriptor close failed: {close_error}")
+    return descriptor
+
+
 def read_stable_snapshot(
     path: Path | str,
     *,
@@ -346,16 +412,10 @@ class ExclusiveRunRoot:
         return cls(path=absolute, _device=item.st_dev, _inode=item.st_ino)
 
     def _open_root(self) -> int:
-        flags = (
-            os.O_RDONLY
-            | getattr(os, "O_CLOEXEC", 0)
-            | getattr(os, "O_DIRECTORY", 0)
-            | getattr(os, "O_NOFOLLOW", 0)
+        descriptor = _open_absolute_directory_no_symlinks(
+            self.path,
+            error_code="RUN_ROOT_OPEN_FAILED",
         )
-        try:
-            descriptor = os.open(self.path, flags)
-        except OSError as exc:
-            _fail("RUN_ROOT_OPEN_FAILED", f"{self.path}: {exc}")
         item = os.fstat(descriptor)
         if (
             not stat.S_ISDIR(item.st_mode)
@@ -368,12 +428,7 @@ class ExclusiveRunRoot:
 
     def _open_parent(self, parts: tuple[str, ...]) -> tuple[int, str]:
         descriptor = self._open_root()
-        directory_flags = (
-            os.O_RDONLY
-            | getattr(os, "O_CLOEXEC", 0)
-            | getattr(os, "O_DIRECTORY", 0)
-            | getattr(os, "O_NOFOLLOW", 0)
-        )
+        directory_flags = _directory_open_flags()
         try:
             for part in parts[:-1]:
                 next_descriptor = os.open(part, directory_flags, dir_fd=descriptor)
@@ -548,17 +603,10 @@ def _open_artifact_root(
         root_path = root.path
     else:
         root_path = _absolute(root)
-        _reject_symlink_chain(root_path, include_leaf=True)
-        flags = (
-            os.O_RDONLY
-            | getattr(os, "O_CLOEXEC", 0)
-            | getattr(os, "O_DIRECTORY", 0)
-            | getattr(os, "O_NOFOLLOW", 0)
+        descriptor = _open_absolute_directory_no_symlinks(
+            root_path,
+            error_code="ARTIFACT_ROOT_OPEN_FAILED",
         )
-        try:
-            descriptor = os.open(root_path, flags)
-        except OSError as exc:
-            _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{root_path}: {exc}")
     item = os.fstat(descriptor)
     if not stat.S_ISDIR(item.st_mode):
         os.close(descriptor)
@@ -571,15 +619,12 @@ def _artifact_root_entries(
 ) -> tuple[ArtifactRootEntry, ...]:
     root_fd, root_path, root_signature = _open_artifact_root(root)
     entries: list[ArtifactRootEntry] = []
-    directory_flags = (
-        os.O_RDONLY
-        | getattr(os, "O_CLOEXEC", 0)
-        | getattr(os, "O_DIRECTORY", 0)
-        | getattr(os, "O_NOFOLLOW", 0)
-    )
+    opened_directories: list[tuple[int, tuple[str, ...], tuple[int, ...]]] = [
+        (root_fd, (), root_signature)
+    ]
+    directory_flags = _directory_open_flags()
 
     def walk(descriptor: int, prefix: tuple[str, ...]) -> None:
-        before = os.fstat(descriptor)
         try:
             with os.scandir(descriptor) as iterator:
                 names = sorted(entry.name for entry in iterator)
@@ -625,27 +670,55 @@ def _artifact_root_entries(
                 )
             try:
                 opened = os.fstat(child_fd)
-                if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
-                    _fail(
-                        "ARTIFACT_ROOT_CHANGED",
-                        str(root_path.joinpath(*prefix, name)),
-                    )
-                walk(child_fd, (*prefix, name))
-            finally:
+            except OSError as exc:
                 os.close(child_fd)
-        after = os.fstat(descriptor)
-        if _stat_signature(before) != _stat_signature(after):
-            _fail(
-                "ARTIFACT_ROOT_CHANGED",
-                str(root_path.joinpath(*prefix)),
+                _fail(
+                    "ARTIFACT_ROOT_CHANGED",
+                    f"{root_path.joinpath(*prefix, name)}: {exc}",
+                )
+            child_prefix = (*prefix, name)
+            opened_directories.append(
+                (child_fd, child_prefix, _stat_signature(opened))
             )
+            if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
+                _fail(
+                    "ARTIFACT_ROOT_CHANGED",
+                    str(root_path.joinpath(*prefix, name)),
+                )
+            walk(child_fd, child_prefix)
 
+    primary_error: BaseException | None = None
     try:
         walk(root_fd, ())
-        if _stat_signature(os.fstat(root_fd)) != root_signature:
-            _fail("ARTIFACT_ROOT_CHANGED", str(root_path))
-    finally:
-        os.close(root_fd)
+    except BaseException as exc:
+        primary_error = exc
+
+    finalize_issues: list[str] = []
+    for descriptor, prefix, initial_signature in reversed(opened_directories):
+        display_path = str(root_path.joinpath(*prefix))
+        try:
+            final_signature = _stat_signature(os.fstat(descriptor))
+        except OSError as exc:
+            finalize_issues.append(f"{display_path}: fstat failed: {exc}")
+        else:
+            if final_signature != initial_signature:
+                finalize_issues.append(f"{display_path}: signature changed")
+        try:
+            os.close(descriptor)
+        except OSError as exc:
+            finalize_issues.append(f"{display_path}: close failed: {exc}")
+
+    if primary_error is not None:
+        if finalize_issues:
+            primary_error.add_note(
+                f"artifact-root finalization issues: {finalize_issues!r}"
+            )
+        raise primary_error
+    if finalize_issues:
+        _fail(
+            "ARTIFACT_ROOT_CHANGED",
+            f"artifact-root finalization issues: {finalize_issues!r}",
+        )
     return tuple(sorted(entries, key=lambda item: item.path))
 
 
