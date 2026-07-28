@@ -14,18 +14,15 @@
 - **SMM4 formal 终态：** `smm4-formal-a004` 已消费且永久不得重试。内部
   `VERIFIED`/UNSAT receipt 仍为 `upper_bound_update_authorized=false`，不是账本
   授权源；`production_certified=false`。`AB16_GATE_B_AND_16_ORGANIC_ARMS`
-  仍登记为后续 formal 任务，未执行且未取消；当前先推进下述 W0 D6 最小局部
-  witness 构造实验。
+  仍登记为后续 formal 任务，未执行且未取消；下述 W0 D6 单轴局部阶段已经完成。
 - **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
   hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
   research/developer infrastructure 落地。closed-root v2 的 `seed_narrow` 与
   `all_legal_d6_slots` 已分别得到 replay-accepted `INFEASIBLE`，只关闭各自 exact local
-  antecedent。下一项唯一实验是保持 28 slots、geometry、pairing、tile split 与全局 class
-  ledger 不变的 `d6_6b_d9_6g_swap_v1` 单轴 class transfer；v3 实现先通过 solver-free
-  验收，再由 full preflight 与同一组资源门禁启动。
-  它只处理 framework 的完整局部 D6 antecedent；实际 verdict 只写 clean 提交之后
-  新建的 `.artifacts/research_runs/` no-overwrite root，不写入 tracked 状态，不产生
-  cut、拒绝、下界或全局结论。
+  antecedent。保持 28 slots、geometry、pairing、tile split 与全局 class ledger 不变的
+  `d6_6b_d9_6g_swap_v1` 单轴 class transfer 也已通过 full preflight、前后两次相同资源
+  门禁与两份异构 replay，得到 replay-accepted `INFEASIBLE`。它只关闭 exact local D6 swap
+  antecedent，不写入 tracked 状态，不产生 cut、拒绝、下界或全局结论。
 - **Routing-aware witness / W2b：** 已有研究构造、运行监督与独立复验基础设施；
   当前没有通过其 HEAD/input-pinned 验收链的 content-addressed layout，故
   `L=absent` 不变。该基础设施不属于发布面，也不产生 production authority。
@@ -77,20 +74,31 @@ seed-narrow antecedent `7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7
 attachment slot 的修复，但两者都没有排除 class transfer、safe pole anchors、tile 内 size
 分配或 domino pairing。
 
-下一实验固定为 `antecedent_v2 + config_v3 + receipt_payload_v3 + replay_v3` 的
+第三个已接受的局部 negative 使用
+`antecedent_v2 + config_v3 + receipt_payload_v3 + replay_v3` 的
 `d6_6b_d9_6g_swap_v1`：D6 用 `1×6G` 替换 `1×6B`，D9 做反向算术补偿，故 D6 active inputs
 由 25 降为 23、D9 由 30 升为 32，全局九类 ledger 不变。D9 不建模、不求解；任何
 `INFEASIBLE` 仍只关闭 exact local D6 swap antecedent。`PROJECT_LOCK.md` 仅新增 W0
 research-only v2/v3 合法矩阵、兼容与 authority 边界，并未把这些源码或 receipt 加入
 certified exact-source TCB。
 
-实施提交 clean 后，执行链持有三把既有 heavy/production-solver locks，先检查 RAM、swap、
-disk、PSI、竞争进程、项目锁、clean HEAD 与三份 pinned inputs，再运行
-`python scripts/preflight_gate.py --full`，通过后复核同一门禁，方可创建新的 no-overwrite
-producer root 与两份外部 replay roots。`FEASIBLE` 停止并交付局部 certificate；
-`UNKNOWN` 或任一运行/closure/replay 失败停止并只修同一 swap scope；replay-accepted
-`INFEASIBLE` 也在该单轴结论处停止。H20 row-power oracle、G4、D7、全图 solve 与多轴联合
-放宽继续后置。solver/cut production 控制流、checkpoint identity、冻结或密封 bytes、
+实现提交 `db00416d3c687dfca28695fa972b768a3f31ee4e` 后，执行链持有三把既有
+heavy/production-solver locks，在 full preflight 前后分别检查 RAM、swap、disk、PSI、
+竞争进程、项目锁、clean HEAD 与三份 pinned inputs。full preflight 为 `19 passed`，其中
+non-slow pytest 为 `6463 passed, 153 skipped`。正式 producer root
+`w0-d6-6b-d9-6g-swap-v3-20260728T202427Z-db00416d3c68` 返回
+`INFEASIBLE`；exact antecedent SHA-256 为
+`dab2a3282b4d4c632d4e0260cc364f397b567f108dbf6480db5d1553a41a9221`，
+producer receipt SHA-256 为
+`1f5236c39d6f9b827c6244da49fb16f81d97faf0822062042de5dff1e57e620c`。
+coherent CPython 3.13.13 与 `/usr/bin/python3` 3.14.6 的两份 root-pinned replay 均为
+`PASS` 且逐字节一致，replay receipt SHA-256 为
+`568b58bb5e72580dead23936242faa69a7ccbda9e2ec4e3b7476a9bc66cc6f24`。
+
+该 receipt 只关闭上述 exact local D6 swap antecedent；D9 仍只作未求解的 ledger 算术
+补偿。按三态合同，本轮在 replay-accepted `INFEASIBLE` 处停止，不自动进入另一轴、D7 或
+多轴放宽。H20 row-power oracle、G4、D7、全图 solve 与多轴联合放宽继续后置。
+solver/cut production 控制流、checkpoint identity、冻结或密封 bytes、
 `U=(1188,18)`、`L=absent` 与 `production_certified=false` 均不变。
 
 ## 2026-07-27 SMM4 research upper recovery 终态

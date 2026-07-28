@@ -73,7 +73,7 @@
 | Path | Status | 说明 |
 |---|---|---|
 | `devtools/research_run_contract.py` | CURRENT_CODE_ALIGNED | G3 developer/research-only 的稳定字节快照、独占 no-overwrite run root、逐组件 no-follow artifact-root 打开、全树目录 FD/signature 保留至终检、manifest 排除 `receipt.json` 自身而完成态 closure 要求 manifest 加唯一普通文件 `receipt.json`、`-I -B` 进程合同、canonical envelope 与字节 identity replay；不进入 certified exact-source TCB 或 production authority |
-| `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion、固定 artifact label/path 合同与 stdlib-only replay；closed-root v2 的 seed-narrow 与 28-slot antecedent 均为 replay-accepted local `INFEASIBLE`，下一实验只执行 `d6_6b_d9_6g_swap_v1` 单轴 class transfer，并由 v3 协议、full preflight 与资源/竞争 solver/项目锁/clean-HEAD 门禁约束；不产生全图 witness、cut、上下界或 production authority |
+| `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion、固定 artifact label/path 合同与 stdlib-only replay；closed-root v2 的 seed-narrow、28-slot antecedent 与 v3 `d6_6b_d9_6g_swap_v1` antecedent 均为 replay-accepted local `INFEASIBLE`；v3 已通过 full preflight、前后两次相同资源门禁和两份逐字节一致的异构 replay，只关闭其 exact local antecedent，不产生全图 witness、cut、上下界或 production authority |
 | `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 15 active obligations；绑定 sink/hash/guard/critical files |
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |

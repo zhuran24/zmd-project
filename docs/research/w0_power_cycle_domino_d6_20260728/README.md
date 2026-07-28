@@ -1,22 +1,23 @@
 # W0 power-cycle domino：D6 局部联合 completion gate
 
 **状态：** RESEARCH_ONLY / LOCAL_D6_ONLY / TWO_V2_NEGATIVE_ROOTS_ACCEPTED /
-SWAP_V3_PRE_RUN_READY
+SWAP_V3_REPLAY_ACCEPTED_INFEASIBLE
 
 **更新日期：** 2026-07-29
 
 **全局账本：** tracked 状态仍为 `U=(1188,18)`、`L=absent`；本目录的 local
 config/receipt/replay 不复制或声称携带 U/L。
 
-本目录实现 power-cycle domino framework 的 exact、front-aware D6 局部联合 gate。当前两个
-closed-root v2 antecedent 已分别得到 replay-accepted `INFEASIBLE`；下一项且唯一获准的实验是
-单轴 class transfer `d6_6b_d9_6g_swap_v1`。该实验尚未启动。它保持 power-cycle、D6 的
-6×7 protected rectangle、28 个合法 attachment slots、全局 class ledger 和其他 W0 全局
-不变量不变，只交换 D6 与 D9 的一个 class。
+本目录实现 power-cycle domino framework 的 exact、front-aware D6 局部联合 gate。两个
+closed-root v2 antecedent 与随后唯一放宽 class transfer 的 swap v3 antecedent 均已得到
+replay-accepted `INFEASIBLE`。swap v3 保持 power-cycle、D6 的 6×7 protected rectangle、
+28 个合法 attachment slots、全局 class ledger 和其他 W0 全局不变量不变，只交换 D6 与 D9
+的一个 class。
 
 任何本目录结果都不产生 whole-layout witness、全图 cut、lower-ledger、全局 infeasibility、
-production authority 或 certified exact-source authority。实际运行材料只写入
-`.artifacts/research_runs/` 下的新 no-overwrite roots；历史 roots 不删除、不改写、不补写。
+production authority 或 certified exact-source authority。持久 producer 与 durable replay
+材料只写入 `.artifacts/research_runs/` 下的新 no-overwrite roots；第二份异构 replay
+receipt 写入 fresh `/tmp` no-overwrite root。历史 roots 不删除、不改写、不补写。
 
 ## 已接受的 v2 negative roots
 
@@ -41,10 +42,11 @@ production authority 或 certified exact-source authority。实际运行材料�
 因此这两个 `INFEASIBLE` 只关闭各自精确 local D6 antecedent，不是 cut、全局拒绝或
 lower-ledger 证据。
 
-在仍未改变的四个轴中，class transfer 是唯一既不移动 body/pole、也不改变 tile split 或
-pairing，且能以同 template 的 `6B↔6G` 保持全局 ledger 精确不变的单轴 delta。现有 receipts
-没有把 anchor、tile split 或 pairing 单独识别为冲突来源；一次改动它们会引入新的 geometry
-或组合轴，证据上不比这个单计数交换更小。因此下一实验固定选择 class transfer，其他三轴不动。
+两个 v2 negatives 后仍未改变的四个轴中，class transfer 是唯一既不移动 body/pole、也不改变
+tile split 或 pairing，且能以同 template 的 `6B↔6G` 保持全局 ledger 精确不变的单轴
+delta。当时的 receipts 没有把 anchor、tile split 或 pairing 单独识别为冲突来源；一次改动
+它们会引入新的 geometry 或组合轴，证据上不比这个单计数交换更小。因此 swap v3 选择了
+class transfer，其他三轴保持不动。
 
 另有更早的 historical producer root
 `w0-d6-seed-narrow-20260728T132308Z-27b4ae9`。它使用缺少完整 root-closure 合同的
@@ -52,6 +54,41 @@ pairing，且能以同 template 的 `6B↔6G` 保持全局 ledger 精确不变�
 receipt 登记的命名字节图曾通过，不能声明完整 root 已闭包。新版只能稳定返回
 `ROOT_CLOSURE_CONTRACT_MISSING`；禁止为兼容而放宽。这里的 historical
 `receipt_payload_v1` 不等于下表中当前已接受 v2 roots 使用的 `antecedent_v1`。
+
+## swap v3 终态结果
+
+首个实现提交为 `db00416d3c687dfca28695fa972b768a3f31ee4e`。solver-free focused、
+Ruff、定向 mypy、asset/boundary/governance 验收通过后，执行链在两次相同资源门禁之间完成
+`scripts/preflight_gate.py --full`：preflight `19 passed`，其中 full non-slow pytest 为
+`6463 passed, 153 skipped`。随后只启动一次固定的 swap v3 producer：
+
+| 项 | 终态 identity |
+|---|---|
+| producer root | `w0-d6-6b-d9-6g-swap-v3-20260728T202427Z-db00416d3c68` |
+| protocol / profile / attachment scope | `w0_d6_swap_v3` / `d6_6b_d9_6g_swap_v1` / `all_legal_d6_slots` |
+| exact antecedent SHA-256 | `dab2a3282b4d4c632d4e0260cc364f397b567f108dbf6480db5d1553a41a9221` |
+| config SHA-256 | `512af594f6730dcc58be3d3064e9ecc4629f2d42a45151a68fb97e465abce14d` |
+| result SHA-256 | `55498c85684aa6b48d8e16ae3e10140276caec4e0b63726901d870ae79824963` |
+| identity graph SHA-256 | `81711a4396904fb217fce4cc66c9d3e9577564be7d7cb7c5bf244f0c4ea93c75` |
+| producer `receipt.json` | `1f5236c39d6f9b827c6244da49fb16f81d97faf0822062042de5dff1e57e620c` / 5,049 bytes |
+| producer terminal | `INFEASIBLE`; `artifact_root_closed=true`; `interrupted=false` |
+
+root 内 pinned v3 replayer 分别由 coherent CPython 3.13.13 和 fresh `/tmp` 下的
+`/usr/bin/python3` 3.14.6 以 `-I -B` 执行。两份 replay 都返回 `PASS`，输出逐字节一致：
+
+| 项 | 终态 identity |
+|---|---|
+| durable replay root | `w0-d6-6b-d9-6g-swap-v3-20260728T202427Z-db00416d3c68-replay` |
+| replay receipt SHA-256 / size | `568b58bb5e72580dead23936242faa69a7ccbda9e2ec4e3b7476a9bc66cc6f24` / 6,709 bytes |
+| closure / byte graph / antecedent recomputation | `verified=true` / `verified=true` / `verified=true` |
+| exact conclusion | `exact_d6_antecedent_infeasible_only` |
+
+这个结果只关闭 SHA-256 为
+`dab2a3282b4d4c632d4e0260cc364f397b567f108dbf6480db5d1553a41a9221`
+的 exact local D6 swap antecedent。D9 仍只是未求解的 ledger 算术补偿；结果不排除改变
+safe pole anchors、tile 内 size allocation 或 domino pairing 后的其他 antecedent，也不产生
+whole witness、cut、全局 infeasibility 或 lower-ledger 结论。按三态合同，本轮在该
+replay-accepted `INFEASIBLE` 处停止；不自动进入另一轴、D7 或多轴放宽。
 
 ## 版本矩阵与协议绑定
 
@@ -241,7 +278,7 @@ cross-bindings。`INFEASIBLE`/`UNKNOWN` 不得携带 configuration/certificate�
 `FEASIBLE` 执行 body/front/incidence/crossing、cycle role、flow 与 graph reachability 的
 完整语义复算。
 
-## 正式运行命令
+## 正式运行命令（本轮已执行配方）
 
 必须从首个实施提交后的 clean committed HEAD 执行，固定 cohort/profile/scope。命令中的
 `{UTC}` 与 `{HEAD12}` 必须先替换为实际 UTC run timestamp 和该 committed HEAD 的前 12 位：
@@ -282,7 +319,7 @@ D6_TMP_REPLAY="$(mktemp -d /tmp/w0-d6-swap-replay.XXXXXX)"
 cmp "$D6_REPLAY_SIBLING/replay_receipt.json" "$D6_TMP_REPLAY/replay_receipt.json"
 ```
 
-## 资源门禁与强制执行顺序
+## 资源门禁与强制执行顺序（本轮已完成）
 
 正式 run 前与 full preflight 后使用同一组可判定门禁。三把锁必须以 descriptor-relative、
 no-follow、nonblocking 方式获取并持有到 producer 和两份 replay 全部结束：
