@@ -2,7 +2,7 @@
 
 **Status:** CURRENT
 **Updated:** 2026-07-28
-**Scope:** G1 代码资产清点与 G2 逻辑隔离
+**Scope:** G1 代码资产清点、G2 逻辑隔离与 G3 最小公共研究基础层
 
 本文定义代码资产的可复算分类、维护者实现索引，以及 developer、evidence、replay、full
 工作流之间的边界。它是仓库维护治理，不是 solver、cut、模型数学、候选、AB16/B6、
@@ -61,20 +61,21 @@ python devtools/check_repository_code_assets.py inventory --format json
 不是终态 developer 面；其中包含 6,517 个 `src/tests` nodeid 和 107 个当时被 bare discovery
 顺带收集的 auxiliary memory nodeid。
 
-G2 终态把未改变的 non-slow 全集拆成三个互斥面：
+G2 把 non-slow 全集拆成三个互斥面；下表是 G3 公共合同落地后的当前收据：
 
 | collect 面 | nodeids | 规范化 SHA256 |
 |---|---:|---|
-| developer | 3,474 | `d2cbd92cfd9b06d3a77892169d027e85de8ffbd058a3c1eb3ea5f78369d5bb6c` |
+| developer | 3,505 | `fcd32f4bca74b255556a16dbea47988187ee68291343e5e8f1e08627e13dc816` |
 | evidence、非 replay、非 slow | 1,504 | `3d2953ce5e71a3731dd5e08a57d4b12be90c152978cf4988956c112d029af6bb` |
 | replay、非 slow | 1,508 | `47a3861c3f1834ccf4bd8cf81e84f468bf6c3ae138859e6a03df550e796d799f` |
-| 三面并集 / full non-slow | 6,486 | `2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c` |
-| full/all | 6,517 | `bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1` |
+| 三面并集 / full non-slow | 6,517 | `250b06cb2b8cc0d187a770e212c44df4a8c7792519ffdcd6ff5b8cae93d47725` |
+| full/all | 6,548 | `28bb9e586ed8b062208d48d548e0632d7b1f41f5ad06acd0e5212eea5b96b82d` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
-full/all。full/non-slow、slow、full/all 和既有 focused 入口的 count/hash 均与隔离前相同。
-所有数字都是收集面身份，不是通过数量或 soundness 证明。
+full/all。G3 的 31 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
+evidence、replay、slow 和既有 focused 入口不变。所有数字都是收集面身份，不是通过数量或
+soundness 证明。
 
 ## 分类合同
 
@@ -100,15 +101,19 @@ full/all。full/non-slow、slow、full/all 和既有 focused 入口的 count/has
 
 ## 维护者实现索引
 
-下表给出活动代码的首选入口，并明确哪些重复能力仍是 snapshot-local。G1/G2 不做公共能力抽取；
-需要共享实现的变更属于后续 G3，不能从历史证据直接导入。
+下表给出活动代码的首选入口，并明确哪些重复能力仍是 snapshot-local。G3 只为隔离实验提供
+字节级输入、运行目录和 replay 合同；它位于 `devtools/`，不进入 production import 图、
+certified exact-source TCB、solver、cut、上下界或 checkpoint authority。历史证据中的同名
+helper 仍由各自封存字节约束，不作为公共实现来源。
 
 | 能力 | 首选或 context-bound 入口 | 重复实现边界 |
 |---|---|---|
 | strict JSON | `src/io/strict_json.py::loads_strict_json` 是 shared authority；exact campaign 保留 `_loads_strict_json_object` | 新活动调用优先复用 shared contract；checkpoint compatibility、隔离 TCB 与 sealed replay 可保留自包含 decoder |
-| stable snapshot read | `src/search/exact_campaign.py::read_once_exact_artifact_snapshot` | 没有全仓 shared authority；SMM4 的 `snapshot_regular` 只属于冻结 replay |
+| stable snapshot read | `devtools/research_run_contract.py::read_stable_snapshot` 是 developer/research shared authority；exact campaign 保留 context-bound reader | 公共合同绑定一次打开所得实际 bytes、前后 `fstat` 与 SHA-256；SMM4 的 `snapshot_regular` 只属于冻结 replay |
 | retained same-FD | 无活动 shared authority | SMM4 与 AB16 各自 `snapshot_regular` 由封存 bytes 约束，不能跨包导入 |
-| exclusive no-overwrite | `src/search/exact_campaign.py::_checkpoint_write_lock` 是 campaign-context 实现 | 没有全仓 shared authority；SMM4 `write_once` 只属于冻结 replay |
+| exclusive no-overwrite | `devtools/research_run_contract.py::ExclusiveRunRoot` 是 developer/research shared authority；exact campaign 保留 checkpoint-context lock | 公共实现只管理新建的隔离 run root；不替代 campaign lock 或 sealed replay writer |
+| canonical config/receipt | `devtools/research_run_contract.py::canonical_json_bytes` 是 developer/research shared authority | 只固定通用 envelope 与 JSON bytes；experiment payload 保持不透明，不能携带实验数学的公共 authority |
+| independent replay | `devtools/research_run_contract.py::replay_identity_graph` 是字节 identity shared authority；`run_isolated_replay` 只负责隔离进程观察 | 公共层不解释 FEASIBLE、INFEASIBLE、front、cycle 或任何实验语义 |
 | resource receipt | 无活动 shared authority | AB16 resource-receipt family 与 SMM4 `_validate_resource_receipt` 均为冻结证据图的一部分 |
 | terminal receipt | `src/search/exact_campaign.py::terminal_certified_final_result_violation_for_project` | AB16 terminal-receipt family 只属于 immutable closeout |
 
@@ -122,6 +127,10 @@ terminal witness 与中央发布事务，不能因为名称相近而当作通用
 AB16、SMM4 及其他历史研究包中的 same-FD、retained-FD、exclusive/no-overwrite、
 resource receipt 和 terminal receipt helper 仍由各自封存源码与哈希约束。它们没有被宣布为活动
 通用基础设施，也不得被生产代码跨边界导入；evidence/replay 通道按原路径执行。
+
+G3 运行工件只写入 `data/artifact_boundaries.json` 登记并由 `.gitignore` 精确忽略的
+`.artifacts/research_runs/`。该前缀是 regenerable research runtime，不是 tracked historical
+evidence；运行目录必须独占创建，既有路径或文件不得覆盖。
 
 ## 默认面与显式完整通道
 

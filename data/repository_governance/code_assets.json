@@ -38,8 +38,8 @@
     },
     "expected_current_class_counts": {
       "active_implementation": 386,
-      "test": 647,
-      "common_infrastructure": 476,
+      "test": 648,
+      "common_infrastructure": 477,
       "authoritative_input": 4,
       "enforcement_control": 9,
       "historical_evidence": 464,
@@ -876,8 +876,18 @@
     },
     {
       "capability": "stable_snapshot_read",
-      "shared_authority": null,
+      "shared_authority": "devtools/research_run_contract.py::read_stable_snapshot",
       "implementations": [
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "read_stable_snapshot",
+          "role": "preferred_active",
+          "consumers": [
+            "isolated developer and research experiment intake"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
         {
           "path": "src/search/exact_campaign.py",
           "symbol": "read_once_exact_artifact_snapshot",
@@ -928,8 +938,18 @@
     },
     {
       "capability": "exclusive_no_overwrite",
-      "shared_authority": null,
+      "shared_authority": "devtools/research_run_contract.py::ExclusiveRunRoot",
       "implementations": [
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "ExclusiveRunRoot",
+          "role": "preferred_active",
+          "consumers": [
+            "isolated developer and research experiment outputs"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
         {
           "path": "src/search/exact_campaign.py",
           "symbol": "_checkpoint_write_lock",
@@ -949,6 +969,48 @@
           ],
           "authority_source": "SMM4 frozen evidence bytes",
           "lifecycle": "frozen"
+        }
+      ]
+    },
+    {
+      "capability": "canonical_config_receipt",
+      "shared_authority": "devtools/research_run_contract.py::canonical_json_bytes",
+      "implementations": [
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "canonical_json_bytes",
+          "role": "preferred_active",
+          "consumers": [
+            "isolated developer and research experiment envelopes"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        }
+      ]
+    },
+    {
+      "capability": "independent_replay",
+      "shared_authority": "devtools/research_run_contract.py::replay_identity_graph",
+      "implementations": [
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "replay_identity_graph",
+          "role": "preferred_active",
+          "consumers": [
+            "isolated developer and research experiment byte-identity replay"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "run_isolated_replay",
+          "role": "context_bound",
+          "consumers": [
+            "isolated developer and research experiment subprocess replay"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
         }
       ]
     },
@@ -1021,8 +1083,8 @@
       "argv_source": "scripts/preflight_gate.py --full",
       "baseline_count": 6486,
       "baseline_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c",
-      "expected_count": 6486,
-      "expected_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c"
+      "expected_count": 6517,
+      "expected_sha256": "250b06cb2b8cc0d187a770e212c44df4a8c7792519ffdcd6ff5b8cae93d47725"
     },
     {
       "id": "preflight_slow",
@@ -1039,8 +1101,8 @@
       "argv_source": "python -m pytest -m '' src/tests",
       "baseline_count": 6517,
       "baseline_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1",
-      "expected_count": 6517,
-      "expected_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1"
+      "expected_count": 6548,
+      "expected_sha256": "28bb9e586ed8b062208d48d548e0632d7b1f41f5ad06acd0e5212eea5b96b82d"
     },
     {
       "id": "auxiliary_memory_tests",
@@ -1057,8 +1119,8 @@
       "argv_source": "python -m pytest",
       "baseline_count": 6624,
       "baseline_sha256": "6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96",
-      "expected_count": 3474,
-      "expected_sha256": "d2cbd92cfd9b06d3a77892169d027e85de8ffbd058a3c1eb3ea5f78369d5bb6c"
+      "expected_count": 3505,
+      "expected_sha256": "fcd32f4bca74b255556a16dbea47988187ee68291343e5e8f1e08627e13dc816"
     },
     {
       "id": "industrial_planner_checked",
@@ -1075,8 +1137,8 @@
       "argv_source": ".github/workflows/project_foundation.yml repository-governance step",
       "baseline_count": 0,
       "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "expected_count": 23,
-      "expected_sha256": "d15fbb52c717beae5c86e70a260109faafc3e032e724061beab19840ebe74e6e"
+      "expected_count": 25,
+      "expected_sha256": "53673c3baed9831cbb7b2ad2326d9ab79ff4f3d77ab1796d45417f06a8f66f1e"
     },
     {
       "id": "industrial_planner_single_base",

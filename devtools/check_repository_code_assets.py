@@ -479,6 +479,8 @@ def _validate_manifest_shape(manifest: Mapping[str, Any]) -> None:
         raise GovernanceError("capability_index must be a list")
     capability_names = [entry.get("capability") for entry in capabilities if isinstance(entry, dict)]
     expected_capabilities = {
+        "canonical_config_receipt",
+        "independent_replay",
         "strict_json",
         "stable_snapshot_read",
         "retained_same_fd",
@@ -486,7 +488,7 @@ def _validate_manifest_shape(manifest: Mapping[str, Any]) -> None:
         "resource_receipt",
         "terminal_receipt",
     }
-    if set(capability_names) != expected_capabilities or len(capability_names) != 6:
+    if set(capability_names) != expected_capabilities or len(capability_names) != len(expected_capabilities):
         raise GovernanceError("capability_index must cover each required capability exactly once")
 
     entrypoints = manifest.get("pytest_entrypoints")
@@ -667,6 +669,21 @@ def _validate_capability_index(manifest: Mapping[str, Any]) -> None:
         if shared_authority is not None and shared_authority not in identities:
             raise GovernanceError(
                 f"capability shared authority is not an indexed implementation: {shared_authority}"
+            )
+        preferred_active = [
+            f"{implementation['path']}::{implementation['symbol']}"
+            for implementation in implementations
+            if implementation["role"] == "preferred_active"
+        ]
+        if shared_authority is None and preferred_active:
+            raise GovernanceError(
+                "capability without shared authority cannot declare preferred_active: "
+                f"{capability['capability']}"
+            )
+        if shared_authority is not None and preferred_active != [shared_authority]:
+            raise GovernanceError(
+                "capability shared authority must be its unique preferred_active implementation: "
+                f"{capability['capability']}"
             )
 
 

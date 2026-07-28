@@ -72,6 +72,7 @@
 
 | Path | Status | 说明 |
 |---|---|---|
+| `devtools/research_run_contract.py` | CURRENT_CODE_ALIGNED | G3 developer/research-only 的稳定字节快照、独占 no-overwrite run root、canonical envelope 与字节 identity replay；不进入 certified exact-source TCB 或 production authority |
 | `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 15 active obligations；绑定 sink/hash/guard/critical files |
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
@@ -85,7 +86,7 @@
 |---|---|---|
 | `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-07-11 已同步 F8 retirement / partial attach / Stage B boundary |
 | `README.md`, `NAV_MAP.md`, `docs/项目说明/06_current_status.md` | CURRENT_CODE_ALIGNED | 当前入口与状态摘要 |
-| `docs/项目说明/24_repository_asset_governance.md` | CURRENT_CODE_ALIGNED | G1/G2 代码资产分类、维护者实现索引及 developer/evidence/replay/full 工作流；不授予认证 authority |
+| `docs/项目说明/24_repository_asset_governance.md` | CURRENT_CODE_ALIGNED | G1/G2 代码资产治理与 G3 最小公共研究基础层索引；不授予认证 authority |
 | `data/repository_governance/code_assets.json` | STRUCTURAL_GATE | 可复算目录规则、显式例外与基线收据；由 schema/checker fail closed 校验 |
 | `docs/research/**`（下列 §2B current-spec 除外） | HISTORICAL_OR_PLAN | 时间点证据/实验档案；不得覆盖当前工作树 |
 | `docs/research/p3_b_design_v2_20260521/{cut_lifecycle_v2.md,state_machine_v2.md,cut_family_specs/**}` | CURRENT_CODE_ALIGNED | `PROJECT_LOCK.md` §2B 指定的 cut object current specs；不受历史源码默认搜索投影影响 |
@@ -112,15 +113,15 @@ retirement candidate 19。该数字只描述这个带日期的基线；当前工
 
 2026-07-28、G2 隔离前的 tracked-clean `201c198` bare-pytest 基线为 6,624 个 nodeid，
 规范化 SHA256 为
-`6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96`。G2 终态的互斥快速面为：
-developer 3,474（`d2cbd92cfd9b06d3a77892169d027e85de8ffbd058a3c1eb3ea5f78369d5bb6c`）、
+`6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96`。当前互斥快速面为：
+developer 3,505（`fcd32f4bca74b255556a16dbea47988187ee68291343e5e8f1e08627e13dc816`）、
 evidence/non-replay 1,504（`3d2953ce5e71a3731dd5e08a57d4b12be90c152978cf4988956c112d029af6bb`）、
 replay 1,508（`47a3861c3f1834ccf4bd8cf81e84f468bf6c3ae138859e6a03df550e796d799f`）。
-三者并集逐 nodeid 等于未改变的 full/non-slow 6,486
-（`2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c`）。
+三者并集逐 nodeid 等于 full/non-slow 6,517
+（`250b06cb2b8cc0d187a770e212c44df4a8c7792519ffdcd6ff5b8cae93d47725`）。
 
-以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 仍为 6,517
-（`bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1`），slow 仍为 31
+以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 为 6,548
+（`28bb9e586ed8b062208d48d548e0632d7b1f41f5ad06acd0e5212eea5b96b82d`），slow 仍为 31
 （`9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd`）；既有 focused
 入口的 count/hash 不变。另有 107 个 auxiliary memory tests 通过显式 full 路径保留，
 nodeid SHA256 为 `32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1`。

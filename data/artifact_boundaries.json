@@ -24,6 +24,7 @@
     }
   ],
   "ignored_runtime_artifact_prefixes": [
+    ".artifacts/research_runs/",
     ".artifacts/takeover_read_20260607/",
     ".artifacts/industrial_planner_checked_artifacts/",
     ".artifacts/industrial_planner_single_base_delivery_surface_alignment/",

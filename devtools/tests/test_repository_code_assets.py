@@ -25,8 +25,8 @@ BASELINE_COUNTS = {
 }
 CURRENT_BASE_COUNTS = {
     "active_implementation": 386,
-    "test": 647,
-    "common_infrastructure": 476,
+    "test": 648,
+    "common_infrastructure": 477,
     "authoritative_input": 4,
     "enforcement_control": 9,
     "historical_evidence": 464,
@@ -154,6 +154,43 @@ def test_capability_index_paths_and_symbols_are_live_without_crossing_frozen_bou
     stale["capability_index"][0]["implementations"][0]["symbol"] = "__missing_symbol__"
     with pytest.raises(assets.GovernanceError, match="symbol is stale"):
         assets._validate_capability_index(stale)
+
+
+def test_capability_index_has_exactly_one_preferred_active_for_each_shared_authority() -> None:
+    manifest = assets.load_manifest()
+    assets._validate_capability_index(manifest)
+
+    shared = copy.deepcopy(manifest)
+    shared["capability_index"][0]["implementations"][1]["role"] = "preferred_active"
+    with pytest.raises(assets.GovernanceError, match="unique preferred_active"):
+        assets._validate_capability_index(shared)
+
+    unshared = copy.deepcopy(manifest)
+    retained = next(
+        capability
+        for capability in unshared["capability_index"]
+        if capability["capability"] == "retained_same_fd"
+    )
+    retained["implementations"][0]["role"] = "preferred_active"
+    with pytest.raises(assets.GovernanceError, match="without shared authority"):
+        assets._validate_capability_index(unshared)
+
+
+def test_research_run_root_is_declared_and_ignored_without_hiding_historical_evidence() -> None:
+    boundary = json.loads(
+        (assets.ROOT / "data" / "artifact_boundaries.json").read_text(encoding="utf-8")
+    )
+    assert ".artifacts/research_runs/" in boundary["ignored_runtime_artifact_prefixes"]
+    completed = subprocess.run(
+        ["git", "check-ignore", "-q", ".artifacts/research_runs/probe/result.json"],
+        cwd=assets.ROOT,
+        check=False,
+    )
+    assert completed.returncode == 0
+    tracked_prefixes = {
+        record["path_prefix"] for record in boundary["tracked_historical_evidence"]
+    }
+    assert ".artifacts/research_runs/" not in tracked_prefixes
 
 
 def test_g1_disabled_projection_mode_has_no_g2_file_dependency() -> None:
