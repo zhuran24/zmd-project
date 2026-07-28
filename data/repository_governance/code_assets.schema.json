@@ -1,0 +1,777 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zmd-pj.invalid/schemas/repository-code-assets-v1.json",
+  "title": "Repository code asset governance manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "authority",
+    "measurement",
+    "code_selector",
+    "classification",
+    "asset_role_rules",
+    "logical_isolation",
+    "capability_index",
+    "pytest_entrypoints",
+    "pytest_pending_recipes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "repository_code_assets_v1"
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "higher_authorities",
+        "cannot_grant"
+      ],
+      "properties": {
+        "role": {
+          "const": "descriptive_governance_projection"
+        },
+        "higher_authorities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "cannot_grant": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseline",
+        "expected_current_class_counts",
+        "conditional_current_assets",
+        "certified_exact_source_baseline"
+      ],
+      "properties": {
+        "baseline": {
+          "$ref": "#/$defs/measurement"
+        },
+        "expected_current_class_counts": {
+          "$ref": "#/$defs/classCounts"
+        },
+        "conditional_current_assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "primary_class"
+            ],
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/repositoryPath"
+              },
+              "primary_class": {
+                "enum": [
+                  "active_implementation",
+                  "test",
+                  "common_infrastructure",
+                  "authoritative_input",
+                  "enforcement_control",
+                  "historical_evidence",
+                  "retirement_candidate"
+                ]
+              }
+            }
+          }
+        },
+        "certified_exact_source_baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "measured_on",
+            "commit",
+            "path_count",
+            "path_tuple_sha256",
+            "source_digest"
+          ],
+          "properties": {
+            "measured_on": {
+              "type": "string",
+              "format": "date"
+            },
+            "commit": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "path_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "path_tuple_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "source_digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      }
+    },
+    "code_selector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "extensions",
+        "include_shebang",
+        "explicit_paths",
+        "explicit_globs"
+      ],
+      "properties": {
+        "extensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^\\.[a-z0-9]+$"
+          },
+          "uniqueItems": true
+        },
+        "include_shebang": {
+          "const": true
+        },
+        "explicit_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repositoryPath"
+          },
+          "uniqueItems": true
+        },
+        "explicit_globs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repositoryGlob"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary_classes",
+        "rules",
+        "fallback"
+      ],
+      "properties": {
+        "primary_classes": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "active_implementation"
+            },
+            {
+              "const": "test"
+            },
+            {
+              "const": "common_infrastructure"
+            },
+            {
+              "const": "authoritative_input"
+            },
+            {
+              "const": "enforcement_control"
+            },
+            {
+              "const": "historical_evidence"
+            },
+            {
+              "const": "retirement_candidate"
+            }
+          ],
+          "items": false
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/classificationRule"
+          }
+        },
+        "fallback": {
+          "$ref": "#/$defs/classificationMetadata"
+        }
+      }
+    },
+    "asset_role_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rules",
+        "fallback"
+      ],
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/assetRoleRule"
+          }
+        },
+        "fallback": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "asset_role",
+            "lifecycle",
+            "authority_role",
+            "mutation_policy"
+          ],
+          "properties": {
+            "asset_role": {
+              "type": "string",
+              "minLength": 1
+            },
+            "lifecycle": {
+              "type": "string",
+              "minLength": 1
+            },
+            "authority_role": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mutation_policy": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "logical_isolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "search",
+        "lint",
+        "pytest"
+      ],
+      "properties": {
+        "search": {
+          "$ref": "#/$defs/isolationProjection"
+        },
+        "lint": {
+          "$ref": "#/$defs/isolationProjection"
+        },
+        "pytest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "enabled",
+            "lane_rules"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "lane_rules": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "glob",
+                  "lane"
+                ],
+                "properties": {
+                  "glob": {
+                    "$ref": "#/$defs/repositoryPath"
+                  },
+                  "lane": {
+                    "enum": [
+                      "developer",
+                      "evidence",
+                      "replay"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "capability_index": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "$ref": "#/$defs/capability"
+      }
+    },
+    "pytest_entrypoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pytestEntrypoint"
+      }
+    },
+    "pytest_pending_recipes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pytestPendingRecipe"
+      }
+    }
+  },
+  "$defs": {
+    "repositoryPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "repositoryGlob": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        {
+          "pattern": "[*?\\[]"
+        }
+      ]
+    },
+    "classCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active_implementation",
+        "test",
+        "common_infrastructure",
+        "authoritative_input",
+        "enforcement_control",
+        "historical_evidence",
+        "retirement_candidate"
+      ],
+      "properties": {
+        "active_implementation": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "test": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "common_infrastructure": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "authoritative_input": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "enforcement_control": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "historical_evidence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retirement_candidate": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "measured_on",
+        "commit",
+        "git_visible_count",
+        "code_asset_count",
+        "raw_bytes",
+        "lf_count",
+        "class_counts"
+      ],
+      "properties": {
+        "measured_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "git_visible_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "code_asset_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "raw_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lf_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "class_counts": {
+          "$ref": "#/$defs/classCounts"
+        }
+      }
+    },
+    "classificationMetadata": {
+      "type": "object",
+      "required": [
+        "primary_class",
+        "lifecycle",
+        "authority_role",
+        "certified_admission",
+        "workflow_membership",
+        "mutation_policy",
+        "rationale"
+      ],
+      "properties": {
+        "primary_class": {
+          "enum": [
+            "active_implementation",
+            "test",
+            "common_infrastructure",
+            "authoritative_input",
+            "enforcement_control",
+            "historical_evidence",
+            "retirement_candidate"
+          ]
+        },
+        "lifecycle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "certified_admission": {
+          "type": "string",
+          "minLength": 1
+        },
+        "workflow_membership": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "developer",
+              "evidence",
+              "replay",
+              "full",
+              "security"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "mutation_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "classificationRule": {
+      "unevaluatedProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/$defs/classificationMetadata"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "match"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$"
+            },
+            "match": {
+              "type": "object",
+              "additionalProperties": false,
+              "minProperties": 1,
+              "maxProperties": 1,
+              "properties": {
+                "path": {
+                  "$ref": "#/$defs/repositoryPath"
+                },
+                "prefix": {
+                  "$ref": "#/$defs/repositoryPath"
+                },
+                "glob": {
+                  "$ref": "#/$defs/repositoryGlob"
+                },
+                "paths": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/repositoryPath"
+                  },
+                  "uniqueItems": true
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "assetRoleRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "match",
+        "asset_role",
+        "lifecycle",
+        "authority_role",
+        "mutation_policy"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "match": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "maxProperties": 1,
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/repositoryPath"
+            },
+            "prefix": {
+              "$ref": "#/$defs/repositoryPath"
+            },
+            "glob": {
+              "$ref": "#/$defs/repositoryGlob"
+            },
+            "paths": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/repositoryPath"
+              },
+              "uniqueItems": true
+            }
+          }
+        },
+        "asset_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lifecycle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mutation_policy": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "isolationProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "excluded_rules"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "excluded_rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repositoryGlob"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capability",
+        "shared_authority",
+        "implementations"
+      ],
+      "properties": {
+        "capability": {
+          "enum": [
+            "strict_json",
+            "stable_snapshot_read",
+            "retained_same_fd",
+            "exclusive_no_overwrite",
+            "resource_receipt",
+            "terminal_receipt"
+          ]
+        },
+        "shared_authority": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "implementations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "symbol",
+              "role",
+              "consumers",
+              "authority_source",
+              "lifecycle"
+            ],
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/repositoryPath"
+              },
+              "symbol": {
+                "type": "string",
+                "minLength": 1
+              },
+              "role": {
+                "enum": [
+                  "preferred_active",
+                  "required_independent",
+                  "context_bound",
+                  "sealed_replay"
+                ]
+              },
+              "consumers": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "authority_source": {
+                "type": "string",
+                "minLength": 1
+              },
+              "lifecycle": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "pytestEntrypoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "workflow",
+        "argv_source",
+        "baseline_count",
+        "baseline_sha256",
+        "expected_count",
+        "expected_sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "workflow": {
+          "enum": [
+            "developer",
+            "evidence",
+            "replay",
+            "focused_full",
+            "full"
+          ]
+        },
+        "argv_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "baseline_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "baseline_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "expected_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "pytestPendingRecipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "argv_source",
+        "target",
+        "status",
+        "behavior"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "argv_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target": {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        "status": {
+          "const": "pending_missing_target"
+        },
+        "behavior": {
+          "const": "do_not_start_pytest"
+        }
+      }
+    }
+  }
+}
