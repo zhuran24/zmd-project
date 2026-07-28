@@ -18,9 +18,11 @@
   witness 构造实验。
 - **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
   hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
-  research/developer infrastructure 落地。它只处理 framework 的完整局部 D6
-  antecedent；实际 verdict 只写 clean 提交之后新建的 `.artifacts/research_runs/`
-  no-overwrite root，不写入 tracked 状态，不产生 cut、拒绝、下界或全局结论。
+  research/developer infrastructure 落地。artifact-root closure v2 修复已就绪；强制
+  seed-narrow 重跑等待 Endfield 退出及资源、竞争 solver、项目锁和 clean-HEAD 检查。
+  它只处理 framework 的完整局部 D6 antecedent；实际 verdict 只写 clean 提交之后
+  新建的 `.artifacts/research_runs/` no-overwrite root，不写入 tracked 状态，不产生
+  cut、拒绝、下界或全局结论。
 - **Routing-aware witness / W2b：** 已有研究构造、运行监督与独立复验基础设施；
   当前没有通过其 HEAD/input-pinned 验收链的 content-addressed layout，故
   `L=absent` 不变。该基础设施不属于发布面，也不产生 production authority。
@@ -47,7 +49,8 @@ front probe 也只保留为背景材料。
 
 实现分成两个可独立验收的层次。`devtools/research_run_contract.py` 只提供严格稳定
 bytes snapshot、实际 SHA-256、exclusive/no-overwrite run root、canonical
-config/receipt 与 byte-identity replay，不解释 W0 数学。D6 专用目录
+config/receipt、排除固定 `receipt.json` 自身的完整 path/type manifest、`-I -B`
+进程合同与 byte-identity replay，不解释 W0 数学。D6 专用目录
 [`w0_power_cycle_domino_d6_20260728`](../research/w0_power_cycle_domino_d6_20260728/README.md)
 联合决定 body、operation class、mode、active physical ports/fronts、合法 transport
 incidence，以及 cycle output-injection/input-tap 的双极可达性；seed anchors 只作 hint，
@@ -55,7 +58,17 @@ incidence，以及 cycle output-injection/input-tap 的双极可达性；seed an
 
 `FEASIBLE` 只证明 receipt 绑定的局部 D6 实例；`INFEASIBLE` 只关闭完全一致的
 antecedent、源码与 solver config；`UNKNOWN`、中断、intake 失败或异常均没有拒绝语义。
-H20 row-power oracle 不实现，全图 solve 不启动。该工作不改
+历史 seed-narrow v1 root 的命名字节图绑定 antecedent
+`7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f`
+并重放为局部 `INFEASIBLE`，但 root 内两个未登记 `.pyc` 使完整目录闭包不成立；历史 root
+保持原样且不得充当 v2 root-closure 证据。
+
+修复提交静态验收后，Endfield 退出且资源/竞争 solver/项目锁/clean committed HEAD
+检查通过即自动以原三份 pinned 输入和原 `2 workers / seed 0 / 3600s` config 重跑
+seed-narrow，不需额外 owner 批准。`FEASIBLE` 停止并交付局部 certificate；
+`UNKNOWN` 或任一运行/closure/replay 失败停止并修复同一 scope；只有异构 replay 接受的
+`INFEASIBLE` 才把唯一变量放宽为 `all_legal_d6_slots`。H20 row-power oracle 不实现，
+G4 与全图 solve 继续后置。该工作不改
 `PROJECT_LOCK.md`、solver/cut production 控制流、checkpoint identity、冻结或密封 bytes、
 certified exact-source TCB、`U=(1188,18)`、`L=absent` 或
 `production_certified=false`。

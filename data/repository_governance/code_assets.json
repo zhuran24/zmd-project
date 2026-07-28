@@ -1153,8 +1153,8 @@
       "argv_source": "scripts/preflight_gate.py --full",
       "baseline_count": 6486,
       "baseline_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c",
-      "expected_count": 6545,
-      "expected_sha256": "e51b810d38267c4eac31fed41ff615843be03e6cbe606ec0c809a33b65d9b8a2"
+      "expected_count": 6564,
+      "expected_sha256": "88e7a3c45039607b29aa98072af21d3c15573189377fec939f933def5b34ffd9"
     },
     {
       "id": "preflight_slow",
@@ -1171,8 +1171,8 @@
       "argv_source": "python -m pytest -m '' src/tests",
       "baseline_count": 6517,
       "baseline_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1",
-      "expected_count": 6576,
-      "expected_sha256": "ff29879ed0394655f48c670dabc7254b95c01d034c8b8658003e2b1fb2373326"
+      "expected_count": 6595,
+      "expected_sha256": "b939a7deaae69717f595a283398d2457c4d3176e477dd1f42ad710a1112b665c"
     },
     {
       "id": "auxiliary_memory_tests",

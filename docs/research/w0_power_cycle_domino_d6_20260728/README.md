@@ -1,6 +1,6 @@
 # W0 power-cycle domino：D6 局部联合 completion gate
 
-**状态：** RESEARCH_ONLY / LOCAL_D6_ONLY
+**状态：** RESEARCH_ONLY / LOCAL_D6_ONLY / ROOT_CLOSURE_V2_READY / SEED_NARROW_RERUN_PENDING_ENDFIELD
 **日期：** 2026-07-28
 **账本影响：** 无；`U=(1188,18)`、`L=absent`、`production_certified=false` 保持不变。
 
@@ -58,7 +58,8 @@ ground transport 使用 strict routing 语义的 44 个 directed patterns：12 �
 
 `OUT` 极性要求每个 active output 注入 1 单位，最终由 output-injection slots 吸收总计 25；
 `IN` 极性由 input-tap slots 发出总计 25，每个 active input 消耗 1。整数流必须落在所选
-directed channel arcs 上；certificate 同时携带离散配置和可独立复算的流/可达性证据。
+directed channel arcs 上。`configuration.json` 携带离散配置和可独立复算的流/可达性证据；
+最小 `certificate.json` 只绑定 antecedent/config 哈希、status 与 claim boundary。
 
 ## 结果语义
 
@@ -68,16 +69,22 @@ directed channel arcs 上；certificate 同时携带离散配置和可独立复�
 - `UNKNOWN`、超时、中断或异常：不产生拒绝、cut、下界或全局结论。
 - intake、哈希、工作树 clean 或 antecedent 构造失败：不是 D6 verdict。
 
-seed-narrow 的 `INFEASIBLE` 下一项最小变体只把 attachment slots 放宽到全部合法 D6 slots；
-`UNKNOWN` 的下一项最小变体只把时间预算从 3600 秒提高到 7200 秒。两种情况都不启动全图
-solve。H20 row-power oracle 不在本目录实现。
+历史已执行的 v1 research producer root
+`.artifacts/research_runs/w0-d6-seed-narrow-20260728T132308Z-27b4ae9/`
+的 v1 receipt 命名字节图可独立重放，绑定 antecedent
+`7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f`
+并得到局部 `INFEASIBLE`。该 root 同时含两个未登记的 `sources/__pycache__/*.pyc`，
+所以只能声明“receipt 登记的 byte graph 通过”，不能声明完整 root 已闭包或封存。
+该历史 producer/replay root 保持原样，禁止删除、补写或就地修复；v2 replayer 对它稳定返回
+`ROOT_CLOSURE_CONTRACT_MISSING`。
 
 ## 隔离运行与 replay
 
 从已提交且 clean 的源码 HEAD 运行：
 
 ```bash
-python docs/research/w0_power_cycle_domino_d6_20260728/run_d6_research.py \
+D6_PYTHON=.venv-uvbolt-backup/bin/python3.13
+"$D6_PYTHON" -I -B docs/research/w0_power_cycle_domino_d6_20260728/run_d6_research.py \
   --strict docs/research/cleanroom_rederivation_20260718/strict/external/problem_instance.json \
   --framework /home/zhuran24/下载/w0回复/1/W0_power_cycle_domino_framework_v1.json \
   --seed /home/zhuran24/下载/w0回复/1/W0_geometry_only_seed_v1.json \
@@ -89,18 +96,64 @@ python docs/research/w0_power_cycle_domino_d6_20260728/run_d6_research.py \
 
 producer run root 内含快照 inputs、源码副本、canonical `config.json`、完整
 `antecedent.json`、`result.json` 和最终 `receipt.json`；只有 `FEASIBLE` 才有
-`configuration.json` 与 `certificate.json`。
+`configuration.json` 与 `certificate.json`。producer 在创建 run root 前验证当前解释器确由
+`-I -B` 约束，gate import 与后续 replay 均不得在 producer root 写入 bytecode/cache。
+
+v2 `receipt.json` 内嵌 `research_artifact_root_manifest_v1`。manifest 按 path 排序，精确登记
+除固定终端 `receipt.json` 外的全部后代 path/type；`receipt.json` 是协议唯一允许的额外普通文件。
+W0 D6 还要求 manifest 的目录集合恰好等于全部命名 artifact 路径的祖先目录闭包；即使空目录
+已被 manifest 登记，只要不承载任何命名 artifact 也必须拒绝。
+producer 在写回执前验证 manifest 等于完整 root，写回执后再验证
+`manifest + receipt.json` 等于完整 root，并重新读取命名 byte graph 与 receipt identity。回执不登记也不保存自身内容哈希；producer 只在
+stdout summary 中报告写后观察到的 receipt identity。该合同是验证时的精确集合观察，不是
+文件系统级不可变封存。
 
 独立 replayer 是 stdlib-only、solver-free 的自包含实现，不导入 gate、runner、G3、`src/`
-或 OR-Tools。replay receipt 应写入新的 sibling root，不能改写 producer root：
+或 OR-Tools。第一次 replay 使用 producer 的 coherent CPython 3.13 环境；第二次使用
+`/usr/bin/python3`、fresh `/tmp` cwd 与独立输出位置，构成异构 replay。两份 replay receipt
+必须逐字节相同，且都写在 producer root 外：
 
 ```bash
-mkdir .artifacts/research_runs/w0-d6-<run-id>-replay
-python -I .artifacts/research_runs/w0-d6-<run-id>/sources/replay_d6_certificate.py \
-  --run-root .artifacts/research_runs/w0-d6-<run-id> \
-  --output .artifacts/research_runs/w0-d6-<run-id>-replay/replay_receipt.json
+D6_RUN_ROOT="$(realpath .artifacts/research_runs/w0-d6-<run-id>)"
+D6_REPLAY_SIBLING="$(realpath -m .artifacts/research_runs/w0-d6-<run-id>-replay)"
+mkdir "$D6_REPLAY_SIBLING"
+"$D6_PYTHON" -I -B "$D6_RUN_ROOT/sources/replay_d6_certificate.py" \
+  --run-root "$D6_RUN_ROOT" \
+  --output "$D6_REPLAY_SIBLING/replay_receipt.json"
+
+D6_TMP_REPLAY="$(mktemp -d /tmp/w0-d6-replay.XXXXXX)"
+(
+  cd "$D6_TMP_REPLAY"
+  /usr/bin/python3 -I -B "$D6_RUN_ROOT/sources/replay_d6_certificate.py" \
+    --run-root "$D6_RUN_ROOT" \
+    --output "$D6_TMP_REPLAY/replay_receipt.json"
+)
+cmp "$D6_REPLAY_SIBLING/replay_receipt.json" "$D6_TMP_REPLAY/replay_receipt.json"
 ```
 
-所有 status 都复核完整 byte graph；只有 `FEASIBLE` 进入 body/front/incidence/crossing、
-cycle role、flow 与 graph reachability 的语义复算。replay 成功仍只确认 receipt 声明的局部
-范围，不提升其 authority。
+replayer 只接受 run-copy source，并在解释 status 前、命名字节/语义复算后再次验证完整 root。
+未登记普通文件、目录、symlink、特殊节点、缺失/非普通 `receipt.json`、manifest 路径逃逸或
+历史 v1 合同都 fail closed。所有 status 都复核完整 byte graph；只有 `FEASIBLE` 进入
+body/front/incidence/crossing、cycle role、flow 与 graph reachability 的语义复算。replay
+结束前还会按最初绑定的 root identity 重读所有命名 bytes 与 receipt。replay receipt v2
+可保存其从外部观察到的 producer receipt identity；这不是 producer receipt 自哈希。
+replay 成功仍只确认 receipt 声明的局部范围，不提升其 authority。
+
+## 可信执行顺序
+
+root-closure 修复提交及静态验收完成后，solver 执行继续等待 Endfield 完全退出。Endfield 不在场，
+且资源、竞争 solver、项目锁与 clean committed HEAD 检查全部通过时，按常驻路线授权自动执行，
+无需再次等待 owner 批准：
+
+1. 用新 no-overwrite producer/replay roots、原三份 pinned 输入和原 solver config
+   `workers=2, random_seed=0, max_time_seconds=3600` 强制重跑 `seed_narrow`；
+2. 用 producer 的 coherent CPython 3.13 环境执行 root 内 pinned replayer，再从 fresh `/tmp`
+   cwd 用 `/usr/bin/python3 -I -B` 做第二次异构 replay；两份 canonical replay bytes 必须一致；
+3. `FEASIBLE`：交付局部 certificate 与异构 replay，停止，不运行 28-slot；
+4. `UNKNOWN`、中断、运行失败、root closure/replay 失败或 status 分歧：停止并修复同一
+   seed-narrow 链，不放宽 attachment scope；
+5. 只有 replay-accepted `INFEASIBLE` 才自动运行 `all_legal_d6_slots`；保持同一 clean HEAD、
+   输入和 solver config，唯一放宽项是 attachment scope。该变体的预期 antecedent SHA-256 为
+   `a5fc8a3a3814970f2401d4c27800e422f8cb46cd358b6d07451f9935f76ddef3`。
+
+H20 row-power oracle、G4 巨型核心拆分和全图 solve 均不在该序列内，继续后置。

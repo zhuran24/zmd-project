@@ -21,19 +21,22 @@ from pathlib import Path
 import re
 import stat
 import sys
-from typing import Any
+from typing import Any, cast
 
 
 MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 CONFIG_SCHEMA = "research_run_config_v1"
 RECEIPT_SCHEMA = "research_run_receipt_v1"
+ARTIFACT_ROOT_MANIFEST_SCHEMA = "research_artifact_root_manifest_v1"
+ISOLATED_PYTHON_PROCESS_SCHEMA = "isolated_python_process_contract_v1"
+TERMINAL_RECEIPT_PATH = "receipt.json"
 ANTECEDENT_SCHEMA = "w0_d6_antecedent_v1"
 GATE_RESULT_SCHEMA = "w0_d6_gate_result_v1"
 RESULT_SCHEMA = "w0_d6_result_v1"
 CONFIGURATION_SCHEMA = "w0_d6_configuration_v1"
 CERTIFICATE_SCHEMA = "w0_d6_local_certificate_v1"
-REPLAY_SCHEMA = "w0_d6_replay_receipt_v1"
+REPLAY_SCHEMA = "w0_d6_replay_receipt_v2"
 
 DIRECTIONS = ("N", "E", "S", "W")
 DELTA = {"E": (1, 0), "N": (0, 1), "S": (0, -1), "W": (-1, 0)}
@@ -150,12 +153,291 @@ def _stat_signature(item: os.stat_result) -> tuple[int, ...]:
     )
 
 
+def _require_isolated_python_process() -> dict[str, object]:
+    observed = {
+        "isolated": sys.flags.isolated,
+        "ignore_environment": sys.flags.ignore_environment,
+        "no_user_site": sys.flags.no_user_site,
+        "safe_path": bool(getattr(sys.flags, "safe_path", False)),
+        "dont_write_bytecode_flag": sys.flags.dont_write_bytecode,
+        "dont_write_bytecode_runtime": sys.dont_write_bytecode,
+    }
+    expected = {
+        "isolated": 1,
+        "ignore_environment": 1,
+        "no_user_site": 1,
+        "safe_path": True,
+        "dont_write_bytecode_flag": 1,
+        "dont_write_bytecode_runtime": True,
+    }
+    if observed != expected:
+        _fail(
+            "PYTHON_PROCESS_CONTRACT_INVALID",
+            f"expected={expected!r}; observed={observed!r}",
+        )
+    return {
+        "schema": ISOLATED_PYTHON_PROCESS_SCHEMA,
+        "required_argv_flags": ["-I", "-B"],
+        "observed": observed,
+    }
+
+
+def _manifest_relative_path(
+    value: object,
+    label: str,
+    *,
+    allow_terminal_receipt: bool = False,
+) -> str:
+    if type(value) is not str or not value:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"{label}: path must be non-empty text")
+    path = cast(str, value)
+    try:
+        path.encode("utf-8", errors="strict")
+    except UnicodeEncodeError:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"{label}: path is not UTF-8 encodable")
+    parts = path.split("/")
+    if (
+        path.startswith("/")
+        or path.endswith("/")
+        or "\\" in path
+        or "\x00" in path
+        or any(part in {"", ".", ".."} for part in parts)
+    ):
+        _fail("ARTIFACT_ROOT_PATH_ESCAPE", f"{label}: {path!r}")
+    if parts[0] == TERMINAL_RECEIPT_PATH and (
+        not allow_terminal_receipt or path != TERMINAL_RECEIPT_PATH
+    ):
+        _fail(
+            "ARTIFACT_ROOT_RECEIPT_RESERVED",
+            f"{label}: {TERMINAL_RECEIPT_PATH} is not a manifest member",
+        )
+    return path
+
+
+def _validate_artifact_root_manifest(value: object) -> dict[str, object]:
+    manifest = _exact_keys(value, {"schema", "entries"}, "artifact_root_manifest")
+    if manifest["schema"] != ARTIFACT_ROOT_MANIFEST_SCHEMA:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", "schema differs")
+    raw_entries = _array(manifest["entries"], "artifact_root_manifest.entries")
+    entries: list[dict[str, str]] = []
+    entry_types: dict[str, str] = {}
+    for index, raw_entry in enumerate(raw_entries):
+        entry = _exact_keys(
+            raw_entry,
+            {"path", "type"},
+            f"artifact_root_manifest.entries[{index}]",
+        )
+        path = _manifest_relative_path(
+            entry["path"],
+            f"artifact_root_manifest.entries[{index}].path",
+        )
+        node_type = entry["type"]
+        if node_type not in {"directory", "regular_file"}:
+            _fail(
+                "ARTIFACT_ROOT_MANIFEST_INVALID",
+                f"artifact_root_manifest.entries[{index}].type",
+            )
+        if path in entry_types:
+            _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"duplicate path: {path}")
+        entry_types[path] = node_type
+        entries.append({"path": path, "type": node_type})
+    if entries != sorted(entries, key=lambda item: item["path"]):
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", "entries are not path-sorted")
+    for path in entry_types:
+        parts = path.split("/")
+        for depth in range(1, len(parts)):
+            parent = "/".join(parts[:depth])
+            if entry_types.get(parent) != "directory":
+                _fail(
+                    "ARTIFACT_ROOT_MANIFEST_INVALID",
+                    f"{path}: parent {parent!r} is absent or not a directory",
+                )
+    return {
+        "schema": ARTIFACT_ROOT_MANIFEST_SCHEMA,
+        "entries": entries,
+    }
+
+
+def _validate_d6_manifest_layout(manifest: dict[str, object]) -> set[str]:
+    regular_paths: set[str] = set()
+    directory_paths: set[str] = set()
+    for index, raw_entry in enumerate(
+        _array(manifest["entries"], "artifact_root_manifest.entries")
+    ):
+        entry = _object(raw_entry, f"artifact_root_manifest.entries[{index}]")
+        path = _text(
+            entry["path"],
+            f"artifact_root_manifest.entries[{index}].path",
+        )
+        node_type = _text(
+            entry["type"],
+            f"artifact_root_manifest.entries[{index}].type",
+        )
+        if node_type == "regular_file":
+            regular_paths.add(path)
+        else:
+            directory_paths.add(path)
+    required_directories = {
+        "/".join(path.split("/")[:depth])
+        for path in regular_paths
+        for depth in range(1, len(path.split("/")))
+    }
+    if directory_paths != required_directories:
+        _fail(
+            "ARTIFACT_ROOT_DIRECTORY_SET_MISMATCH",
+            (
+                f"manifest_only={sorted(directory_paths - required_directories)!r}; "
+                f"required_only={sorted(required_directories - directory_paths)!r}"
+            ),
+        )
+    return regular_paths
+
+
+def _artifact_root_entries(
+    run_root: Path,
+    *,
+    expected_root_signature: tuple[int, ...] | None = None,
+) -> dict[str, str]:
+    _reject_symlink_chain(run_root)
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_CLOEXEC", 0)
+        | getattr(os, "O_DIRECTORY", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
+    )
+    try:
+        root_fd = os.open(run_root, flags)
+    except OSError as exc:
+        _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: {exc}")
+    root_before = os.fstat(root_fd)
+    if not stat.S_ISDIR(root_before.st_mode):
+        os.close(root_fd)
+        _fail("RUN_ROOT_INVALID", str(run_root))
+    if (
+        expected_root_signature is not None
+        and _stat_signature(root_before) != expected_root_signature
+    ):
+        os.close(root_fd)
+        _fail("ARTIFACT_ROOT_CHANGED", str(run_root))
+    observed: dict[str, str] = {}
+
+    def walk(descriptor: int, prefix: tuple[str, ...]) -> None:
+        before = os.fstat(descriptor)
+        try:
+            with os.scandir(descriptor) as iterator:
+                names = sorted(entry.name for entry in iterator)
+        except OSError as exc:
+            _fail(
+                "ARTIFACT_ROOT_ENUMERATION_FAILED",
+                f"{run_root.joinpath(*prefix)}: {exc}",
+            )
+        for name in names:
+            relative = "/".join((*prefix, name))
+            _manifest_relative_path(
+                relative,
+                "observed path",
+                allow_terminal_receipt=True,
+            )
+            try:
+                item = os.stat(name, dir_fd=descriptor, follow_symlinks=False)
+            except OSError as exc:
+                _fail(
+                    "ARTIFACT_ROOT_ENUMERATION_FAILED",
+                    f"{run_root.joinpath(*prefix, name)}: {exc}",
+                )
+            if stat.S_ISLNK(item.st_mode):
+                _fail(
+                    "ARTIFACT_ROOT_SYMLINK_REJECTED",
+                    str(run_root.joinpath(*prefix, name)),
+                )
+            if stat.S_ISREG(item.st_mode):
+                observed[relative] = "regular_file"
+                continue
+            if not stat.S_ISDIR(item.st_mode):
+                _fail(
+                    "ARTIFACT_ROOT_SPECIAL_NODE_REJECTED",
+                    str(run_root.joinpath(*prefix, name)),
+                )
+            observed[relative] = "directory"
+            try:
+                child_fd = os.open(name, flags, dir_fd=descriptor)
+            except OSError as exc:
+                _fail(
+                    "ARTIFACT_ROOT_ENUMERATION_FAILED",
+                    f"{run_root.joinpath(*prefix, name)}: {exc}",
+                )
+            try:
+                opened = os.fstat(child_fd)
+                if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
+                    _fail(
+                        "ARTIFACT_ROOT_CHANGED",
+                        str(run_root.joinpath(*prefix, name)),
+                    )
+                walk(child_fd, (*prefix, name))
+            finally:
+                os.close(child_fd)
+        after = os.fstat(descriptor)
+        if _stat_signature(before) != _stat_signature(after):
+            _fail("ARTIFACT_ROOT_CHANGED", str(run_root.joinpath(*prefix)))
+
+    try:
+        walk(root_fd, ())
+        if _stat_signature(root_before) != _stat_signature(os.fstat(root_fd)):
+            _fail("ARTIFACT_ROOT_CHANGED", str(run_root))
+    finally:
+        os.close(root_fd)
+    return observed
+
+
+def _verify_artifact_root_closure(
+    run_root: Path,
+    manifest: dict[str, object],
+    *,
+    expected_root_signature: tuple[int, ...] | None = None,
+) -> None:
+    expected: dict[str, str] = {}
+    for index, raw_entry in enumerate(
+        _array(manifest["entries"], "artifact_root_manifest.entries")
+    ):
+        entry = _object(raw_entry, f"artifact_root_manifest.entries[{index}]")
+        path = _text(
+            entry["path"],
+            f"artifact_root_manifest.entries[{index}].path",
+        )
+        expected[path] = _text(
+            entry["type"],
+            f"artifact_root_manifest.entries[{index}].type",
+        )
+    expected[TERMINAL_RECEIPT_PATH] = "regular_file"
+    observed = _artifact_root_entries(
+        run_root,
+        expected_root_signature=expected_root_signature,
+    )
+    if observed != expected:
+        missing = sorted(set(expected) - set(observed))
+        extra = sorted(set(observed) - set(expected))
+        type_mismatch = sorted(
+            path
+            for path in set(expected) & set(observed)
+            if expected[path] != observed[path]
+        )
+        _fail(
+            "ARTIFACT_ROOT_CLOSURE_MISMATCH",
+            f"missing={missing!r}; extra={extra!r}; type_mismatch={type_mismatch!r}",
+        )
+
+
 def stable_read(path: Path | str, label: str) -> tuple[bytes, dict[str, object]]:
     """Read and hash one regular file through one unchanged descriptor."""
 
     absolute = _absolute(path)
     _reject_symlink_chain(absolute)
-    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_CLOEXEC", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+    )
     try:
         descriptor = os.open(absolute, flags)
     except OSError as exc:
@@ -373,6 +655,49 @@ def _contains_scalar(value: object, target: object) -> bool:
     return False
 
 
+def _verify_process_contract(value: object, label: str) -> dict[str, object]:
+    contract = _exact_keys(
+        value,
+        {"schema", "required_argv_flags", "observed"},
+        label,
+    )
+    if contract["schema"] != ISOLATED_PYTHON_PROCESS_SCHEMA:
+        _fail("PYTHON_PROCESS_CONTRACT_INVALID", f"{label}.schema")
+    required_flags = _array(
+        contract["required_argv_flags"],
+        f"{label}.required_argv_flags",
+    )
+    if required_flags != ["-I", "-B"]:
+        _fail("PYTHON_PROCESS_CONTRACT_INVALID", f"{label}.required_argv_flags")
+    observed = _exact_keys(
+        contract["observed"],
+        {
+            "isolated",
+            "ignore_environment",
+            "no_user_site",
+            "safe_path",
+            "dont_write_bytecode_flag",
+            "dont_write_bytecode_runtime",
+        },
+        f"{label}.observed",
+    )
+    expected = {
+        "isolated": 1,
+        "ignore_environment": 1,
+        "no_user_site": 1,
+        "safe_path": True,
+        "dont_write_bytecode_flag": 1,
+        "dont_write_bytecode_runtime": True,
+    }
+    if observed != expected:
+        _fail("PYTHON_PROCESS_CONTRACT_INVALID", f"{label}.observed")
+    return {
+        "schema": ISOLATED_PYTHON_PROCESS_SCHEMA,
+        "required_argv_flags": ["-I", "-B"],
+        "observed": observed,
+    }
+
+
 def _verify_config(
     config: object,
     *,
@@ -391,6 +716,7 @@ def _verify_config(
             "attachment_scope",
             "solver",
             "runtime",
+            "process_contract",
             "git",
             "inputs",
             "sources",
@@ -401,7 +727,7 @@ def _verify_config(
         },
         "config.payload",
     )
-    if payload["schema"] != "w0_d6_run_config_v1":
+    if payload["schema"] != "w0_d6_run_config_v2":
         _fail("CONFIG_PAYLOAD_INVALID", "schema")
     _text(payload["attachment_scope"], "config.payload.attachment_scope")
     solver = _exact_keys(
@@ -426,6 +752,10 @@ def _verify_config(
         _text(value, f"config.payload.runtime.{key}")
     if not Path(str(runtime["python_executable"])).is_absolute():
         _fail("CONFIG_RUNTIME_INVALID", "python_executable must be absolute")
+    _verify_process_contract(
+        payload["process_contract"],
+        "config.payload.process_contract",
+    )
     git = _exact_keys(
         payload["git"],
         {"project_root", "head", "status_porcelain_v1", "clean"},
@@ -478,7 +808,8 @@ def _verify_config(
         "sources.replayer.run_copy",
     )
     if (
-        self_identity["sha256"] != pinned_replayer["sha256"]
+        _absolute(Path(__file__)) != _absolute(str(pinned_replayer["path"]))
+        or self_identity["sha256"] != pinned_replayer["sha256"]
         or self_identity["size_bytes"] != pinned_replayer["size_bytes"]
     ):
         _fail("REPLAYER_SOURCE_MISMATCH", "executing source differs from pinned run copy")
@@ -553,6 +884,7 @@ def _verify_config(
     expected_argv = [
         "<python3>",
         "-I",
+        "-B",
         str(pinned_replayer["path"]),
         "--run-root",
         str(run_root),
@@ -581,12 +913,13 @@ def _verify_receipt_payload(
             "configuration_sha256",
             "certificate_sha256",
             "identity_graph_sha256",
+            "artifact_root_manifest",
             "claim_boundary",
             "replay",
         },
         "receipt.payload",
     )
-    if payload["schema"] != "w0_d6_receipt_payload_v1":
+    if payload["schema"] != "w0_d6_receipt_payload_v2":
         _fail("RECEIPT_PAYLOAD_INVALID", "schema")
     status_value = payload["status"]
     if status_value not in {"FEASIBLE", "INFEASIBLE", "UNKNOWN"}:
@@ -617,12 +950,17 @@ def _verify_receipt_payload(
 def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
     """Verify every producer byte before interpreting a D6 verdict."""
 
+    replayer_process_contract = _require_isolated_python_process()
     run_root = _absolute(run_root_value)
     _reject_symlink_chain(run_root)
     root_item = os.lstat(run_root)
     if not stat.S_ISDIR(root_item.st_mode):
         _fail("RUN_ROOT_INVALID", str(run_root))
-    receipt_raw, receipt_identity = stable_read(run_root / "receipt.json", "receipt")
+    root_signature = _stat_signature(root_item)
+    receipt_raw, receipt_identity = stable_read(
+        run_root / TERMINAL_RECEIPT_PATH,
+        "receipt",
+    )
     receipt = _exact_keys(
         strict_json_loads(receipt_raw, "receipt", require_canonical=True),
         {"schema", "experiment_id", "config_identity", "artifacts", "payload"},
@@ -635,6 +973,26 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
         _fail("ARTIFACT_PATH_INVALID", "config_identity")
 
     payload_preview = _object(receipt["payload"], "receipt.payload")
+    payload_schema = payload_preview.get("schema")
+    if payload_schema == "w0_d6_receipt_payload_v1":
+        _fail(
+            "ROOT_CLOSURE_CONTRACT_MISSING",
+            "historical v1 receipt has no exact artifact-root manifest",
+        )
+    if payload_schema != "w0_d6_receipt_payload_v2":
+        _fail("RECEIPT_PAYLOAD_INVALID", "schema")
+    artifact_root_manifest = _validate_artifact_root_manifest(
+        payload_preview.get("artifact_root_manifest")
+    )
+    manifest_regular_paths = _validate_d6_manifest_layout(
+        artifact_root_manifest
+    )
+    _verify_artifact_root_closure(
+        run_root,
+        artifact_root_manifest,
+        expected_root_signature=root_signature,
+    )
+
     preview_status = payload_preview.get("status")
     if preview_status not in {"FEASIBLE", "INFEASIBLE", "UNKNOWN"}:
         _fail("STATUS_INVALID", "receipt payload preview")
@@ -661,9 +1019,28 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
     paths = [item["path"] for item in artifacts.values()]
     if len(paths) != len(set(paths)):
         _fail("ARTIFACT_PATH_ALIAS", "duplicate receipt artifact path")
+    artifact_relative_paths: set[str] = set()
     for label, identity in artifacts.items():
-        if not _is_below(run_root, str(identity["path"])):
+        identity_path = str(identity["path"])
+        absolute_path = _absolute(identity_path)
+        if identity_path != str(absolute_path) or not _is_below(
+            run_root,
+            identity_path,
+        ):
             _fail("ARTIFACT_PATH_INVALID", f"{label}: outside run root")
+        try:
+            relative_path = absolute_path.relative_to(run_root).as_posix()
+        except ValueError:
+            _fail("ARTIFACT_PATH_INVALID", f"{label}: outside run root")
+        artifact_relative_paths.add(relative_path)
+    if artifact_relative_paths != manifest_regular_paths:
+        _fail(
+            "ARTIFACT_ROOT_ARTIFACT_SET_MISMATCH",
+            (
+                f"manifest_only={sorted(manifest_regular_paths - artifact_relative_paths)!r}; "
+                f"artifacts_only={sorted(artifact_relative_paths - manifest_regular_paths)!r}"
+            ),
+        )
 
     snapshots: dict[str, dict[str, Any]] = {}
     for label, identity in artifacts.items():
@@ -705,6 +1082,11 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
             label,
             require_canonical=False,
         )
+    _verify_artifact_root_closure(
+        run_root,
+        artifact_root_manifest,
+        expected_root_signature=root_signature,
+    )
     return {
         "run_root": run_root,
         "receipt_identity": receipt_identity,
@@ -716,7 +1098,28 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
         "snapshots": snapshots,
         "identity_graph_sha256": graph_sha,
         "self_identity": self_identity,
+        "artifact_root_manifest": artifact_root_manifest,
+        "artifact_root_signature": root_signature,
+        "replayer_process_contract": replayer_process_contract,
     }
+
+
+def _revalidate_verified_byte_graph(context: dict[str, Any]) -> None:
+    receipt_raw, receipt_identity = stable_read(
+        context["run_root"] / TERMINAL_RECEIPT_PATH,
+        "receipt final revalidation",
+    )
+    del receipt_raw
+    if receipt_identity != context["receipt_identity"]:
+        _fail("ARTIFACT_CHANGED", "receipt changed during replay")
+    for label, expected in context["artifacts"].items():
+        raw, observed = stable_read(
+            _text(expected["path"], f"artifacts.{label}.path"),
+            f"{label} final revalidation",
+        )
+        del raw
+        if observed != expected:
+            _fail("ARTIFACT_CHANGED", f"{label} changed during replay")
 
 
 def verify_result_bindings(context: dict[str, Any]) -> str:
@@ -2443,11 +2846,17 @@ def replay_run(run_root: Path | str) -> dict[str, object]:
             if name.startswith("sources.")
         },
     }
-    return {
+    replay = {
         "schema": REPLAY_SCHEMA,
         "status": "PASS",
         "producer_status": status,
         "claim_boundary": context["receipt_payload"]["claim_boundary"],
+        "artifact_root": {
+            "verified": True,
+            "manifest": context["artifact_root_manifest"],
+            "terminal_receipt_path": TERMINAL_RECEIPT_PATH,
+            "producer_receipt_observed_identity": context["receipt_identity"],
+        },
         "byte_graph": {
             "verified": True,
             "identity_graph_sha256": context["identity_graph_sha256"],
@@ -2468,6 +2877,7 @@ def replay_run(run_root: Path | str) -> dict[str, object]:
         },
         "conclusion": conclusion,
         "source_identities": source_identities,
+        "replayer_process_contract": context["replayer_process_contract"],
         "authority_boundary": {
             "research_only": True,
             "local_d6_only": True,
@@ -2479,6 +2889,13 @@ def replay_run(run_root: Path | str) -> dict[str, object]:
             "certified_exact_source_authority": False,
         },
     }
+    _revalidate_verified_byte_graph(context)
+    _verify_artifact_root_closure(
+        context["run_root"],
+        context["artifact_root_manifest"],
+        expected_root_signature=context["artifact_root_signature"],
+    )
+    return replay
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -2493,6 +2910,14 @@ def _parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
+        if args.output is not None and _is_below(
+            _absolute(args.run_root),
+            str(_absolute(args.output)),
+        ):
+            _fail(
+                "OUTPUT_INSIDE_ARTIFACT_ROOT",
+                "replay output must not mutate the producer artifact root",
+            )
         replay = replay_run(args.run_root)
         raw = canonical_json_bytes(replay)
         if args.output is None:

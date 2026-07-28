@@ -68,14 +68,14 @@ evidence/replay tests 落地后的当前收据：
 |---|---:|---|
 | developer | 3,520 | `10957319675efe5c4f7248b9b5366bd76fe1163758eb88bd063bfd801e663d4b` |
 | evidence、非 replay、非 slow | 1,512 | `c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b` |
-| replay、非 slow | 1,513 | `1520ee8067e97057072eaaa6412f0af3efc2671db923941d5bd381f330168fb8` |
-| 三面并集 / full non-slow | 6,545 | `e51b810d38267c4eac31fed41ff615843be03e6cbe606ec0c809a33b65d9b8a2` |
-| full/all | 6,576 | `ff29879ed0394655f48c670dabc7254b95c01d034c8b8658003e2b1fb2373326` |
+| replay、非 slow | 1,532 | `2cf3b885ad46dbac6f689baef813abc0cf268a0e4dcccc7051b649d5846df42b` |
+| 三面并集 / full non-slow | 6,564 | `88e7a3c45039607b29aa98072af21d3c15573189377fec939f933def5b34ffd9` |
+| full/all | 6,595 | `b939a7deaae69717f595a283398d2457c4d3176e477dd1f42ad710a1112b665c` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
 full/all。G3 的 46 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
-W0 D6 的 8 个 gate nodeid 进入 evidence，5 个独立 replay nodeid 进入 replay；
+W0 D6 的 8 个 gate nodeid 进入 evidence，24 个独立 replay nodeid 进入 replay；
 slow 和既有 focused 入口不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。
 
 ## 分类合同

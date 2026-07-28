@@ -34,11 +34,14 @@ from devtools.research_run_contract import (  # noqa: E402
     ExclusiveRunRoot,
     ResearchRunContractError,
     StableSnapshot,
+    build_artifact_root_manifest,
     canonical_json_bytes,
     make_research_run_config,
     make_research_run_receipt,
     read_stable_snapshot,
     replay_identity_graph,
+    require_isolated_python_process,
+    verify_artifact_root_closure,
 )
 from src.io.strict_json import loads_strict_json  # noqa: E402
 
@@ -455,7 +458,68 @@ def _receipt_artifacts(
     return artifacts
 
 
-def run(args: argparse.Namespace) -> tuple[str, bool]:
+def _validate_manifest_artifact_bijection(
+    run_root: ExclusiveRunRoot,
+    manifest: Mapping[str, object],
+    artifacts: Mapping[str, ArtifactIdentity],
+) -> None:
+    raw_entries = manifest.get("entries")
+    if type(raw_entries) is not list:
+        _fail("ARTIFACT_ROOT_MANIFEST_INVALID", "entries must be an array")
+    manifest_files: set[str] = set()
+    manifest_directories: set[str] = set()
+    for index, raw_entry in enumerate(raw_entries):
+        if type(raw_entry) is not dict:
+            _fail(
+                "ARTIFACT_ROOT_MANIFEST_INVALID",
+                f"entries[{index}] must be an object",
+            )
+        entry = cast(dict[str, object], raw_entry)
+        path = entry.get("path")
+        node_type = entry.get("type")
+        if type(path) is not str or node_type not in {"regular_file", "directory"}:
+            _fail("ARTIFACT_ROOT_MANIFEST_INVALID", f"entries[{index}]")
+        if node_type == "regular_file":
+            manifest_files.add(path)
+        else:
+            manifest_directories.add(path)
+    artifact_files: set[str] = set()
+    for label, identity in artifacts.items():
+        path = _absolute(identity.path)
+        if str(path) != identity.path:
+            _fail("ARTIFACT_PATH_INVALID", f"{label}: path is not canonical")
+        try:
+            relative = path.relative_to(run_root.path).as_posix()
+        except ValueError:
+            _fail("ARTIFACT_PATH_INVALID", f"{label}: outside run root")
+        if relative in artifact_files:
+            _fail("ARTIFACT_PATH_ALIAS", relative)
+        artifact_files.add(relative)
+    if manifest_files != artifact_files:
+        _fail(
+            "ARTIFACT_ROOT_ARTIFACT_SET_MISMATCH",
+            (
+                f"manifest_only={sorted(manifest_files - artifact_files)!r}; "
+                f"artifacts_only={sorted(artifact_files - manifest_files)!r}"
+            ),
+        )
+    expected_directories = {
+        "/".join(relative.split("/")[:depth])
+        for relative in artifact_files
+        for depth in range(1, len(relative.split("/")))
+    }
+    if manifest_directories != expected_directories:
+        _fail(
+            "ARTIFACT_ROOT_DIRECTORY_SET_MISMATCH",
+            (
+                f"manifest_only={sorted(manifest_directories - expected_directories)!r}; "
+                f"required_only={sorted(expected_directories - manifest_directories)!r}"
+            ),
+        )
+
+
+def run(args: argparse.Namespace) -> tuple[str, bool, ArtifactIdentity]:
+    process_contract = require_isolated_python_process()
     run_path = _absolute(args.run_root)
     input_snapshots = _snapshot_inputs(
         _absolute(args.strict),
@@ -503,6 +567,7 @@ def run(args: argparse.Namespace) -> tuple[str, bool]:
     replay_argv_template = [
         "<python3>",
         "-I",
+        "-B",
         replayer_copy_path,
         "--run-root",
         str(run_root.path),
@@ -510,7 +575,7 @@ def run(args: argparse.Namespace) -> tuple[str, bool]:
     config = make_research_run_config(
         experiment_id=EXPERIMENT_ID,
         payload={
-            "schema": "w0_d6_run_config_v1",
+            "schema": "w0_d6_run_config_v2",
             "attachment_scope": args.attachment_scope,
             "solver": {
                 "workers": args.workers,
@@ -518,6 +583,7 @@ def run(args: argparse.Namespace) -> tuple[str, bool]:
                 "max_time_seconds": args.max_time_seconds,
             },
             "runtime": _runtime_identity(),
+            "process_contract": process_contract,
             "git": git_identity,
             "inputs": _identity_records(input_snapshots, input_copies),
             "sources": _identity_records(source_snapshots, source_copies),
@@ -625,12 +691,23 @@ def run(args: argparse.Namespace) -> tuple[str, bool]:
         artifacts,
         max_bytes_per_artifact=MAX_INPUT_BYTES,
     )
+    artifact_root_manifest = build_artifact_root_manifest(run_root)
+    _validate_manifest_artifact_bijection(
+        run_root,
+        artifact_root_manifest,
+        artifacts,
+    )
+    verify_artifact_root_closure(
+        run_root,
+        artifact_root_manifest,
+        receipt_present=False,
+    )
     receipt = make_research_run_receipt(
         experiment_id=EXPERIMENT_ID,
         config_identity=config_identity,
         artifacts=artifacts,
         payload={
-            "schema": "w0_d6_receipt_payload_v1",
+            "schema": "w0_d6_receipt_payload_v2",
             "status": status,
             "attachment_scope": args.attachment_scope,
             "antecedent_sha256": antecedent_identity.sha256,
@@ -638,12 +715,35 @@ def run(args: argparse.Namespace) -> tuple[str, bool]:
             "configuration_sha256": result["configuration_sha256"],
             "certificate_sha256": result["certificate_sha256"],
             "identity_graph_sha256": identity_graph.graph_sha256,
+            "artifact_root_manifest": artifact_root_manifest,
             "claim_boundary": claim_boundary,
             "replay": {"argv_template": replay_argv_template},
         },
     )
-    run_root.write_json("receipt.json", receipt)
-    return status, interrupted
+    receipt_identity = run_root.write_json("receipt.json", receipt)
+    verify_artifact_root_closure(
+        run_root,
+        artifact_root_manifest,
+        receipt_present=True,
+    )
+    final_identity_graph = replay_identity_graph(
+        artifacts,
+        max_bytes_per_artifact=MAX_INPUT_BYTES,
+    )
+    if final_identity_graph.graph_sha256 != identity_graph.graph_sha256:
+        _fail("ARTIFACT_GRAPH_CHANGED", "artifact graph changed after receipt write")
+    receipt_snapshot = read_stable_snapshot(
+        receipt_identity.path,
+        expected_sha256=receipt_identity.sha256,
+        expected_size_bytes=receipt_identity.size_bytes,
+        max_bytes=MAX_INPUT_BYTES,
+    )
+    verify_artifact_root_closure(
+        run_root,
+        artifact_root_manifest,
+        receipt_present=True,
+    )
+    return status, interrupted, receipt_snapshot.identity
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -681,7 +781,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         _validate_arguments(args)
-        status, interrupted = run(args)
+        status, interrupted, receipt_identity = run(args)
     except (D6RunnerError, ResearchRunContractError) as exc:
         code = getattr(exc, "code", type(exc).__name__)
         error = {
@@ -710,6 +810,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "claim_boundary": _claim_boundary(status),
         "run_root": str(_absolute(args.run_root)),
         "receipt": str(_absolute(args.run_root) / "receipt.json"),
+        "receipt_identity": receipt_identity.as_dict(),
+        "artifact_root_closed": True,
     }
     sys.stdout.buffer.write(canonical_json_bytes(canonical_summary))
     return 130 if interrupted else 0
