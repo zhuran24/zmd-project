@@ -309,6 +309,31 @@ def _open_absolute_directory_no_symlinks(
     return descriptor
 
 
+def _close_descriptor_after_validation_failure(
+    descriptor: int,
+    detail: str,
+) -> str:
+    """Close an owned descriptor without replacing the stable contract error."""
+
+    try:
+        os.close(descriptor)
+    except OSError as close_error:
+        return f"{detail}; descriptor close failed: {close_error}"
+    return detail
+
+
+def _close_descriptor_preserving_error(
+    descriptor: int,
+    error: BaseException,
+) -> None:
+    """Release an owned descriptor while preserving a non-contract exception."""
+
+    try:
+        os.close(descriptor)
+    except OSError as close_error:
+        error.add_note(f"descriptor close failed: {close_error}")
+
+
 def read_stable_snapshot(
     path: Path | str,
     *,
@@ -416,14 +441,24 @@ class ExclusiveRunRoot:
             self.path,
             error_code="RUN_ROOT_OPEN_FAILED",
         )
-        item = os.fstat(descriptor)
+        try:
+            item = os.fstat(descriptor)
+        except OSError as exc:
+            detail = _close_descriptor_after_validation_failure(
+                descriptor,
+                f"{self.path}: {exc}",
+            )
+            _fail("RUN_ROOT_OPEN_FAILED", detail)
         if (
             not stat.S_ISDIR(item.st_mode)
             or item.st_dev != self._device
             or item.st_ino != self._inode
         ):
-            os.close(descriptor)
-            _fail("RUN_ROOT_IDENTITY_DRIFT", str(self.path))
+            detail = _close_descriptor_after_validation_failure(
+                descriptor,
+                str(self.path),
+            )
+            _fail("RUN_ROOT_IDENTITY_DRIFT", detail)
         return descriptor
 
     def _open_parent(self, parts: tuple[str, ...]) -> tuple[int, str]:
@@ -607,22 +642,36 @@ def _open_artifact_root(
             root_path,
             error_code="ARTIFACT_ROOT_OPEN_FAILED",
         )
-    item = os.fstat(descriptor)
+    try:
+        item = os.fstat(descriptor)
+        root_signature = _stat_signature(item)
+    except OSError as exc:
+        detail = _close_descriptor_after_validation_failure(
+            descriptor,
+            f"{root_path}: {exc}",
+        )
+        _fail("ARTIFACT_ROOT_OPEN_FAILED", detail)
+    except BaseException as exc:
+        _close_descriptor_preserving_error(descriptor, exc)
+        raise
     if not stat.S_ISDIR(item.st_mode):
-        os.close(descriptor)
-        _fail("ARTIFACT_ROOT_INVALID", str(root_path))
-    return descriptor, root_path, _stat_signature(item)
+        detail = _close_descriptor_after_validation_failure(
+            descriptor,
+            str(root_path),
+        )
+        _fail("ARTIFACT_ROOT_INVALID", detail)
+    return descriptor, root_path, root_signature
 
 
 def _artifact_root_entries(
     root: ExclusiveRunRoot | Path | str,
 ) -> tuple[ArtifactRootEntry, ...]:
+    directory_flags = _directory_open_flags()
     root_fd, root_path, root_signature = _open_artifact_root(root)
     entries: list[ArtifactRootEntry] = []
     opened_directories: list[tuple[int, tuple[str, ...], tuple[int, ...]]] = [
         (root_fd, (), root_signature)
     ]
-    directory_flags = _directory_open_flags()
 
     def walk(descriptor: int, prefix: tuple[str, ...]) -> None:
         try:
@@ -668,23 +717,30 @@ def _artifact_root_entries(
                     "ARTIFACT_ROOT_ENUMERATION_FAILED",
                     f"{root_path.joinpath(*prefix, name)}: {exc}",
                 )
+            child_prefix = (*prefix, name)
             try:
                 opened = os.fstat(child_fd)
+                child_signature = _stat_signature(opened)
+                if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
+                    _fail(
+                        "ARTIFACT_ROOT_CHANGED",
+                        str(root_path.joinpath(*prefix, name)),
+                    )
+                opened_directories.append(
+                    (child_fd, child_prefix, child_signature)
+                )
             except OSError as exc:
-                os.close(child_fd)
-                _fail(
-                    "ARTIFACT_ROOT_CHANGED",
+                detail = _close_descriptor_after_validation_failure(
+                    child_fd,
                     f"{root_path.joinpath(*prefix, name)}: {exc}",
                 )
-            child_prefix = (*prefix, name)
-            opened_directories.append(
-                (child_fd, child_prefix, _stat_signature(opened))
-            )
-            if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
                 _fail(
                     "ARTIFACT_ROOT_CHANGED",
-                    str(root_path.joinpath(*prefix, name)),
+                    detail,
                 )
+            except BaseException as exc:
+                _close_descriptor_preserving_error(child_fd, exc)
+                raise
             walk(child_fd, child_prefix)
 
     primary_error: BaseException | None = None

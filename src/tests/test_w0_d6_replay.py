@@ -1218,6 +1218,92 @@ sys.stdout.buffer.write(
     assert error["conclusion"] is None
 
 
+def test_stdlib_replayer_root_fstat_failure_is_stable_and_fd_neutral(
+    tmp_path: Path,
+) -> None:
+    artifact_root = tmp_path / "root-fstat-failure"
+    artifact_root.mkdir()
+    probe = tmp_path / "root_fstat_failure_probe.py"
+    probe.write_text(
+        """\
+import errno
+import importlib.util
+import json
+import os
+from pathlib import Path
+import sys
+
+spec = importlib.util.spec_from_file_location("_root_fstat_failure_replayer", sys.argv[1])
+assert spec is not None and spec.loader is not None
+replayer = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = replayer
+spec.loader.exec_module(replayer)
+
+artifact_root = Path(sys.argv[2])
+real_fstat = os.fstat
+fault_count = 0
+
+def failing_fstat(descriptor):
+    global fault_count
+    try:
+        descriptor_target = Path(os.readlink(f"/proc/self/fd/{descriptor}"))
+    except OSError:
+        descriptor_target = None
+    if fault_count == 0 and descriptor_target == artifact_root:
+        fault_count += 1
+        raise OSError(errno.EIO, "injected artifact-root fstat failure")
+    return real_fstat(descriptor)
+
+before = len(os.listdir("/proc/self/fd"))
+replayer.os.fstat = failing_fstat
+try:
+    return_code = replayer.main(["--run-root", str(artifact_root)])
+finally:
+    replayer.os.fstat = real_fstat
+after = len(os.listdir("/proc/self/fd"))
+
+sys.stdout.write(
+    json.dumps(
+        {
+            "fault_count": fault_count,
+            "fd_delta": after - before,
+            "return_code": return_code,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+)
+raise SystemExit(return_code)
+""",
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [
+            "/usr/bin/python3",
+            "-I",
+            "-B",
+            str(probe),
+            str(REPLAYER_PATH),
+            str(artifact_root),
+        ],
+        env={},
+        check=False,
+        capture_output=True,
+    )
+
+    assert completed.returncode == 2, completed.stdout.decode()
+    error = _decode_cli_json(completed.stderr)
+    assert error["error_code"] == "ARTIFACT_ROOT_OPEN_FAILED"
+    assert error["conclusion"] is None
+    result = _decode_cli_json(completed.stdout)
+    assert result == {
+        "fault_count": 1,
+        "fd_delta": 0,
+        "return_code": 2,
+    }
+
+
 def test_fixed_artifact_labels_reject_a_coherently_relocated_byte_graph(
     tmp_path: Path,
     gate: ModuleType,

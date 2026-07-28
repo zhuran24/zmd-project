@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+import errno
 import hashlib
 import json
 import math
@@ -11,6 +12,7 @@ import sys
 
 import pytest
 
+from devtools import research_run_contract as research_contract
 from devtools.research_run_contract import (
     ARTIFACT_ROOT_MANIFEST_SCHEMA,
     ArtifactIdentity,
@@ -32,6 +34,13 @@ from devtools.research_run_contract import (
 
 def _error_code(exc_info: pytest.ExceptionInfo[ResearchRunContractError]) -> str:
     return exc_info.value.code
+
+
+def _open_fd_count() -> int:
+    proc_fd = Path("/proc/self/fd")
+    if not proc_fd.is_dir():
+        pytest.skip("/proc/self/fd is required for descriptor-leak assertions")
+    return len(os.listdir(proc_fd))
 
 
 def test_canonical_json_bytes_is_utf8_sorted_compact_and_lf_terminated() -> None:
@@ -197,6 +206,172 @@ def test_exclusive_run_root_detects_replaced_root(tmp_path: Path) -> None:
     with pytest.raises(ResearchRunContractError) as exc_info:
         root.write_bytes("artifact", b"x")
     assert _error_code(exc_info) == "RUN_ROOT_IDENTITY_DRIFT"
+
+
+def test_exclusive_run_root_fstat_failure_is_stable_and_fd_neutral(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = ExclusiveRunRoot.create(tmp_path / "run")
+    original_fstat = os.fstat
+    calls = 0
+
+    def failing_fstat(descriptor: int) -> os.stat_result:
+        nonlocal calls
+        calls += 1
+        raise OSError(errno.EIO, "injected run-root fstat failure")
+
+    before = _open_fd_count()
+    with monkeypatch.context() as patch:
+        patch.setattr(os, "fstat", failing_fstat)
+        with pytest.raises(ResearchRunContractError) as exc_info:
+            root._open_root()
+    after = _open_fd_count()
+
+    assert calls == 1
+    assert _error_code(exc_info) == "RUN_ROOT_OPEN_FAILED"
+    assert after - before == 0
+    assert original_fstat is os.fstat
+
+
+@pytest.mark.parametrize(
+    ("root_form", "failing_call"),
+    [("path", 1), ("exclusive_run_root", 2)],
+)
+def test_artifact_root_fstat_failure_is_stable_and_fd_neutral(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    root_form: str,
+    failing_call: int,
+) -> None:
+    root = ExclusiveRunRoot.create(tmp_path / root_form)
+    root.write_json("config.json", {"schema": "fixture"})
+    root_argument: ExclusiveRunRoot | Path = (
+        root if root_form == "exclusive_run_root" else root.path
+    )
+    original_fstat = os.fstat
+    calls = 0
+
+    def failing_fstat(descriptor: int) -> os.stat_result:
+        nonlocal calls
+        calls += 1
+        if calls == failing_call:
+            raise OSError(errno.EIO, "injected artifact-root fstat failure")
+        return original_fstat(descriptor)
+
+    before = _open_fd_count()
+    with monkeypatch.context() as patch:
+        patch.setattr(os, "fstat", failing_fstat)
+        with pytest.raises(ResearchRunContractError) as exc_info:
+            build_artifact_root_manifest(root_argument)
+    after = _open_fd_count()
+
+    assert calls == failing_call
+    assert _error_code(exc_info) == "ARTIFACT_ROOT_OPEN_FAILED"
+    assert after - before == 0
+
+
+def test_common_root_open_paths_are_fd_neutral_under_repetition(
+    tmp_path: Path,
+) -> None:
+    root = ExclusiveRunRoot.create(tmp_path / "run")
+    root.write_json("config.json", {"schema": "fixture"})
+    manifest = build_artifact_root_manifest(root)
+
+    before = _open_fd_count()
+    for _iteration in range(32):
+        descriptor = root._open_root()
+        os.close(descriptor)
+        assert build_artifact_root_manifest(root.path) == manifest
+        assert build_artifact_root_manifest(root) == manifest
+        verify_artifact_root_closure(root.path, manifest, receipt_present=False)
+        verify_artifact_root_closure(root, manifest, receipt_present=False)
+    after = _open_fd_count()
+
+    assert after - before == 0
+
+
+def test_common_post_open_validation_failures_are_fd_neutral(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observations: list[tuple[str, int]] = []
+
+    signature_root = ExclusiveRunRoot.create(tmp_path / "root-signature")
+    original_signature = research_contract._stat_signature
+
+    def failing_root_signature(_item: os.stat_result) -> tuple[int, ...]:
+        raise RuntimeError("injected root signature failure")
+
+    before = _open_fd_count()
+    with monkeypatch.context() as patch:
+        patch.setattr(
+            research_contract,
+            "_stat_signature",
+            failing_root_signature,
+        )
+        with pytest.raises(RuntimeError, match="injected root signature failure"):
+            build_artifact_root_manifest(signature_root.path)
+    observations.append(("root_signature", _open_fd_count() - before))
+
+    capability_root = ExclusiveRunRoot.create(tmp_path / "capability")
+    original_directory_flags = research_contract._directory_open_flags
+    capability_calls = 0
+
+    def failing_second_capability_check() -> int:
+        nonlocal capability_calls
+        capability_calls += 1
+        if capability_calls == 2:
+            raise ResearchRunContractError(
+                "INJECTED_CAPABILITY_FAILURE",
+                "injected post-open capability failure",
+            )
+        return original_directory_flags()
+
+    before = _open_fd_count()
+    with monkeypatch.context() as patch:
+        patch.setattr(
+            research_contract,
+            "_directory_open_flags",
+            failing_second_capability_check,
+        )
+        with pytest.raises(ResearchRunContractError) as capability_exc:
+            build_artifact_root_manifest(capability_root.path)
+    assert _error_code(capability_exc) == "INJECTED_CAPABILITY_FAILURE"
+    assert capability_calls == 2
+    observations.append(("second_capability_check", _open_fd_count() - before))
+
+    child_root = ExclusiveRunRoot.create(tmp_path / "child-signature")
+    child_root.mkdir("child")
+    signature_calls = 0
+    child_faults = 0
+
+    def failing_child_signature(item: os.stat_result) -> tuple[int, ...]:
+        nonlocal child_faults, signature_calls
+        signature_calls += 1
+        if child_faults == 0 and signature_calls == 2:
+            child_faults += 1
+            raise RuntimeError("injected child signature failure")
+        return original_signature(item)
+
+    before = _open_fd_count()
+    with monkeypatch.context() as patch:
+        patch.setattr(
+            research_contract,
+            "_stat_signature",
+            failing_child_signature,
+        )
+        with pytest.raises(RuntimeError, match="injected child signature failure"):
+            build_artifact_root_manifest(child_root.path)
+    assert child_faults == 1
+    assert signature_calls >= 2
+    observations.append(("child_signature", _open_fd_count() - before))
+
+    assert observations == [
+        ("root_signature", 0),
+        ("second_capability_check", 0),
+        ("child_signature", 0),
+    ]
 
 
 def test_artifact_root_manifest_has_unambiguous_pre_and_completed_states(

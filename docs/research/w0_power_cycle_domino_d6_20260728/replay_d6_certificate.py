@@ -1128,8 +1128,19 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
     )
     try:
         root_item = os.fstat(root_fd)
-    finally:
+    except OSError as exc:
+        try:
+            os.close(root_fd)
+        except OSError as close_error:
+            _fail(
+                "ARTIFACT_ROOT_OPEN_FAILED",
+                f"{run_root}: {exc}; descriptor close failed: {close_error}",
+            )
+        _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: {exc}")
+    try:
         os.close(root_fd)
+    except OSError as exc:
+        _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: descriptor close failed: {exc}")
     if not stat.S_ISDIR(root_item.st_mode):
         _fail("RUN_ROOT_INVALID", str(run_root))
     root_signature = _stat_signature(root_item)
