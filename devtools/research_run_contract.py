@@ -45,6 +45,52 @@ class ResearchRunContractError(ValueError):
         super().__init__(f"{code}: {detail}")
 
 
+class _OwnedDescriptor:
+    """Track one descriptor until ownership is explicitly released or closed."""
+
+    __slots__ = ("_descriptor",)
+
+    def __init__(self, descriptor: int | None = None) -> None:
+        self._descriptor = descriptor
+
+    @property
+    def owned(self) -> bool:
+        return self._descriptor is not None
+
+    def acquire(self, descriptor: int) -> int:
+        if self._descriptor is not None:
+            raise RuntimeError("descriptor ownership is already held")
+        self._descriptor = descriptor
+        return descriptor
+
+    @property
+    def descriptor(self) -> int:
+        descriptor = self._descriptor
+        if descriptor is None:
+            raise RuntimeError("descriptor ownership has already been released")
+        return descriptor
+
+    def release(self) -> int:
+        descriptor = self.descriptor
+        self._descriptor = None
+        return descriptor
+
+    def close(self) -> BaseException | None:
+        descriptor = self.release()
+        try:
+            os.close(descriptor)
+        except BaseException as exc:
+            return exc
+        return None
+
+    def close_preserving(self, error: BaseException) -> None:
+        close_error = self.close()
+        if close_error is not None:
+            error.add_note(
+                f"descriptor close failed: {type(close_error).__name__}: {close_error}"
+            )
+
+
 @dataclass(frozen=True, slots=True)
 class ArtifactIdentity:
     """Detached identity of one regular file."""
@@ -276,62 +322,57 @@ def _open_absolute_directory_no_symlinks(
     if not absolute.is_absolute() or not parts or not absolute.anchor:
         _fail(error_code, f"absolute directory path required: {absolute}")
     flags = _directory_open_flags()
-    opened: list[int] = []
+    opened: list[_OwnedDescriptor] = []
     try:
-        opened.append(os.open(absolute.anchor, flags))
+        root_owner = _OwnedDescriptor()
+        opened.append(root_owner)
+        root_owner.acquire(os.open(absolute.anchor, flags))
         for part in parts[1:]:
-            opened.append(os.open(part, flags, dir_fd=opened[-1]))
+            owner = _OwnedDescriptor()
+            opened.append(owner)
+            owner.acquire(os.open(part, flags, dir_fd=opened[-2].descriptor))
     except BaseException as exc:
-        for descriptor in reversed(opened):
-            try:
-                os.close(descriptor)
-            except OSError:
-                pass
         if isinstance(exc, OSError):
-            _fail(error_code, f"{absolute}: {exc}")
-        raise
+            primary: BaseException = ResearchRunContractError(
+                error_code,
+                f"{absolute}: {exc}",
+            )
+        else:
+            primary = exc
+        for owner in reversed(opened):
+            if owner.owned:
+                owner.close_preserving(primary)
+        if primary is exc:
+            raise
+        raise primary from exc
     if not opened:
         _fail(error_code, f"{absolute}: directory open produced no descriptor")
-    descriptor = opened.pop()
-    close_error: OSError | None = None
-    for ancestor_fd in reversed(opened):
-        try:
-            os.close(ancestor_fd)
-        except OSError as exc:
-            if close_error is None:
-                close_error = exc
-    if close_error is not None:
-        try:
-            os.close(descriptor)
-        except OSError:
-            pass
-        _fail(error_code, f"{absolute}: ancestor descriptor close failed: {close_error}")
-    return descriptor
-
-
-def _close_descriptor_after_validation_failure(
-    descriptor: int,
-    detail: str,
-) -> str:
-    """Close an owned descriptor without replacing the stable contract error."""
-
-    try:
-        os.close(descriptor)
-    except OSError as close_error:
-        return f"{detail}; descriptor close failed: {close_error}"
-    return detail
-
-
-def _close_descriptor_preserving_error(
-    descriptor: int,
-    error: BaseException,
-) -> None:
-    """Release an owned descriptor while preserving a non-contract exception."""
-
-    try:
-        os.close(descriptor)
-    except OSError as close_error:
-        error.add_note(f"descriptor close failed: {close_error}")
+    leaf_owner = opened.pop()
+    primary_close_error: BaseException | None = None
+    for owner in reversed(opened):
+        close_error = owner.close()
+        if close_error is None:
+            continue
+        if primary_close_error is None:
+            if isinstance(close_error, OSError):
+                primary_close_error = ResearchRunContractError(
+                    error_code,
+                    (
+                        f"{absolute}: ancestor descriptor close failed: "
+                        f"{close_error}"
+                    ),
+                )
+            else:
+                primary_close_error = close_error
+        else:
+            primary_close_error.add_note(
+                "additional ancestor descriptor close failure: "
+                f"{type(close_error).__name__}: {close_error}"
+            )
+    if primary_close_error is not None:
+        leaf_owner.close_preserving(primary_close_error)
+        raise primary_close_error
+    return leaf_owner.release()
 
 
 def read_stable_snapshot(
@@ -437,29 +478,31 @@ class ExclusiveRunRoot:
         return cls(path=absolute, _device=item.st_dev, _inode=item.st_ino)
 
     def _open_root(self) -> int:
-        descriptor = _open_absolute_directory_no_symlinks(
-            self.path,
-            error_code="RUN_ROOT_OPEN_FAILED",
+        owner = _OwnedDescriptor(
+            _open_absolute_directory_no_symlinks(
+                self.path,
+                error_code="RUN_ROOT_OPEN_FAILED",
+            )
         )
         try:
-            item = os.fstat(descriptor)
+            item = os.fstat(owner.descriptor)
+            if (
+                not stat.S_ISDIR(item.st_mode)
+                or item.st_dev != self._device
+                or item.st_ino != self._inode
+            ):
+                _fail("RUN_ROOT_IDENTITY_DRIFT", str(self.path))
         except OSError as exc:
-            detail = _close_descriptor_after_validation_failure(
-                descriptor,
+            error = ResearchRunContractError(
+                "RUN_ROOT_OPEN_FAILED",
                 f"{self.path}: {exc}",
             )
-            _fail("RUN_ROOT_OPEN_FAILED", detail)
-        if (
-            not stat.S_ISDIR(item.st_mode)
-            or item.st_dev != self._device
-            or item.st_ino != self._inode
-        ):
-            detail = _close_descriptor_after_validation_failure(
-                descriptor,
-                str(self.path),
-            )
-            _fail("RUN_ROOT_IDENTITY_DRIFT", detail)
-        return descriptor
+            owner.close_preserving(error)
+            raise error from exc
+        except BaseException as exc:
+            owner.close_preserving(exc)
+            raise
+        return owner.release()
 
     def _open_parent(self, parts: tuple[str, ...]) -> tuple[int, str]:
         descriptor = self._open_root()
@@ -634,44 +677,49 @@ def _open_artifact_root(
     root: ExclusiveRunRoot | Path | str,
 ) -> tuple[int, Path, tuple[int, ...]]:
     if isinstance(root, ExclusiveRunRoot):
-        descriptor = root._open_root()
+        owner = _OwnedDescriptor(root._open_root())
         root_path = root.path
     else:
         root_path = _absolute(root)
-        descriptor = _open_absolute_directory_no_symlinks(
-            root_path,
-            error_code="ARTIFACT_ROOT_OPEN_FAILED",
+        owner = _OwnedDescriptor(
+            _open_absolute_directory_no_symlinks(
+                root_path,
+                error_code="ARTIFACT_ROOT_OPEN_FAILED",
+            )
         )
     try:
-        item = os.fstat(descriptor)
+        item = os.fstat(owner.descriptor)
         root_signature = _stat_signature(item)
+        if not stat.S_ISDIR(item.st_mode):
+            _fail("ARTIFACT_ROOT_INVALID", str(root_path))
     except OSError as exc:
-        detail = _close_descriptor_after_validation_failure(
-            descriptor,
+        error = ResearchRunContractError(
+            "ARTIFACT_ROOT_OPEN_FAILED",
             f"{root_path}: {exc}",
         )
-        _fail("ARTIFACT_ROOT_OPEN_FAILED", detail)
+        owner.close_preserving(error)
+        raise error from exc
     except BaseException as exc:
-        _close_descriptor_preserving_error(descriptor, exc)
+        owner.close_preserving(exc)
         raise
-    if not stat.S_ISDIR(item.st_mode):
-        detail = _close_descriptor_after_validation_failure(
-            descriptor,
-            str(root_path),
-        )
-        _fail("ARTIFACT_ROOT_INVALID", detail)
-    return descriptor, root_path, root_signature
+    return owner.release(), root_path, root_signature
 
 
 def _artifact_root_entries(
     root: ExclusiveRunRoot | Path | str,
 ) -> tuple[ArtifactRootEntry, ...]:
     directory_flags = _directory_open_flags()
-    root_fd, root_path, root_signature = _open_artifact_root(root)
     entries: list[ArtifactRootEntry] = []
-    opened_directories: list[tuple[int, tuple[str, ...], tuple[int, ...]]] = [
-        (root_fd, (), root_signature)
-    ]
+    opened_directories: list[tuple[int, tuple[str, ...], tuple[int, ...]]] = []
+    root_owner = _OwnedDescriptor()
+    root_fd, root_path, root_signature = _open_artifact_root(root)
+    root_owner.acquire(root_fd)
+    try:
+        opened_directories.append((root_owner.descriptor, (), root_signature))
+    except BaseException as exc:
+        root_owner.close_preserving(exc)
+        raise
+    root_fd = root_owner.release()
 
     def walk(descriptor: int, prefix: tuple[str, ...]) -> None:
         try:
@@ -710,16 +758,19 @@ def _artifact_root_entries(
                     str(root_path.joinpath(*prefix, name)),
                 )
             entries.append(ArtifactRootEntry(relative, "directory"))
+            child_prefix = (*prefix, name)
+            child_owner = _OwnedDescriptor()
             try:
-                child_fd = os.open(name, directory_flags, dir_fd=descriptor)
+                child_owner.acquire(
+                    os.open(name, directory_flags, dir_fd=descriptor)
+                )
             except OSError as exc:
                 _fail(
                     "ARTIFACT_ROOT_ENUMERATION_FAILED",
                     f"{root_path.joinpath(*prefix, name)}: {exc}",
                 )
-            child_prefix = (*prefix, name)
             try:
-                opened = os.fstat(child_fd)
+                opened = os.fstat(child_owner.descriptor)
                 child_signature = _stat_signature(opened)
                 if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
                     _fail(
@@ -727,20 +778,19 @@ def _artifact_root_entries(
                         str(root_path.joinpath(*prefix, name)),
                     )
                 opened_directories.append(
-                    (child_fd, child_prefix, child_signature)
+                    (child_owner.descriptor, child_prefix, child_signature)
                 )
             except OSError as exc:
-                detail = _close_descriptor_after_validation_failure(
-                    child_fd,
+                error = ResearchRunContractError(
+                    "ARTIFACT_ROOT_CHANGED",
                     f"{root_path.joinpath(*prefix, name)}: {exc}",
                 )
-                _fail(
-                    "ARTIFACT_ROOT_CHANGED",
-                    detail,
-                )
+                child_owner.close_preserving(error)
+                raise error from exc
             except BaseException as exc:
-                _close_descriptor_preserving_error(child_fd, exc)
+                child_owner.close_preserving(exc)
                 raise
+            child_fd = child_owner.release()
             walk(child_fd, child_prefix)
 
     primary_error: BaseException | None = None
@@ -749,32 +799,63 @@ def _artifact_root_entries(
     except BaseException as exc:
         primary_error = exc
 
-    finalize_issues: list[str] = []
+    finalize_error: BaseException | None = None
+
+    def record_finalize_error(error: BaseException, detail: str) -> None:
+        nonlocal finalize_error
+        if primary_error is not None:
+            primary_error.add_note(detail)
+        elif finalize_error is None:
+            error.add_note(detail)
+            finalize_error = error
+        else:
+            finalize_error.add_note(detail)
+
     for descriptor, prefix, initial_signature in reversed(opened_directories):
         display_path = str(root_path.joinpath(*prefix))
         try:
             final_signature = _stat_signature(os.fstat(descriptor))
         except OSError as exc:
-            finalize_issues.append(f"{display_path}: fstat failed: {exc}")
+            error = ResearchRunContractError(
+                "ARTIFACT_ROOT_CHANGED",
+                f"{display_path}: final fstat failed: {exc}",
+            )
+            record_finalize_error(error, str(error))
+        except BaseException as exc:
+            record_finalize_error(
+                exc,
+                (
+                    f"artifact-root finalization validation failed for "
+                    f"{display_path}: {type(exc).__name__}: {exc}"
+                ),
+            )
         else:
             if final_signature != initial_signature:
-                finalize_issues.append(f"{display_path}: signature changed")
-        try:
-            os.close(descriptor)
-        except OSError as exc:
-            finalize_issues.append(f"{display_path}: close failed: {exc}")
+                error = ResearchRunContractError(
+                    "ARTIFACT_ROOT_CHANGED",
+                    f"{display_path}: final signature changed",
+                )
+                record_finalize_error(error, str(error))
+        close_error = _OwnedDescriptor(descriptor).close()
+        if isinstance(close_error, OSError):
+            error = ResearchRunContractError(
+                "ARTIFACT_ROOT_CHANGED",
+                f"{display_path}: descriptor close failed: {close_error}",
+            )
+            record_finalize_error(error, str(error))
+        elif close_error is not None:
+            record_finalize_error(
+                close_error,
+                (
+                    f"artifact-root descriptor close failed for "
+                    f"{display_path}: {type(close_error).__name__}: {close_error}"
+                ),
+            )
 
     if primary_error is not None:
-        if finalize_issues:
-            primary_error.add_note(
-                f"artifact-root finalization issues: {finalize_issues!r}"
-            )
         raise primary_error
-    if finalize_issues:
-        _fail(
-            "ARTIFACT_ROOT_CHANGED",
-            f"artifact-root finalization issues: {finalize_issues!r}",
-        )
+    if finalize_error is not None:
+        raise finalize_error
     return tuple(sorted(entries, key=lambda item: item.path))
 
 

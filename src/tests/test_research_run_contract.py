@@ -43,6 +43,13 @@ def _open_fd_count() -> int:
     return len(os.listdir(proc_fd))
 
 
+def _descriptor_points_to(descriptor: int, path: Path) -> bool:
+    try:
+        return Path(os.readlink(f"/proc/self/fd/{descriptor}")) == path
+    except OSError:
+        return False
+
+
 def test_canonical_json_bytes_is_utf8_sorted_compact_and_lf_terminated() -> None:
     value = {"z": [None, True, 3], "a": "雪"}
     assert canonical_json_bytes(value) == '{"a":"雪","z":[null,true,3]}\n'.encode()
@@ -198,51 +205,106 @@ def test_exclusive_run_root_rejects_symlink_parent(tmp_path: Path) -> None:
     assert not (outside / "escape").exists()
 
 
-def test_exclusive_run_root_detects_replaced_root(tmp_path: Path) -> None:
-    root = ExclusiveRunRoot.create(tmp_path / "run")
-    root.path.rename(tmp_path / "old-run")
-    root.path.mkdir()
-
-    with pytest.raises(ResearchRunContractError) as exc_info:
-        root.write_bytes("artifact", b"x")
-    assert _error_code(exc_info) == "RUN_ROOT_IDENTITY_DRIFT"
-
-
-def test_exclusive_run_root_fstat_failure_is_stable_and_fd_neutral(
+def test_exclusive_run_root_detects_replaced_root(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     root = ExclusiveRunRoot.create(tmp_path / "run")
+    root.path.rename(tmp_path / "old-run")
+    root.path.mkdir()
+    original_close = os.close
+    target_descriptor: int | None = None
+    close_count = 0
+
+    def tracking_fstat(descriptor: int) -> os.stat_result:
+        nonlocal target_descriptor
+        target_descriptor = descriptor
+        return os.stat(f"/proc/self/fd/{descriptor}")
+
+    def tracking_close(descriptor: int) -> None:
+        nonlocal close_count
+        if descriptor == target_descriptor:
+            close_count += 1
+        original_close(descriptor)
+
+    before = _open_fd_count()
+    with monkeypatch.context() as patch:
+        patch.setattr(os, "fstat", tracking_fstat)
+        patch.setattr(os, "close", tracking_close)
+        with pytest.raises(ResearchRunContractError) as exc_info:
+            root.write_bytes("artifact", b"x")
+    assert _error_code(exc_info) == "RUN_ROOT_IDENTITY_DRIFT"
+    assert close_count == 1
+    assert _open_fd_count() - before == 0
+
+
+@pytest.mark.parametrize("fault_kind", ["oserror", "runtimeerror"])
+def test_exclusive_run_root_fstat_failure_is_stable_and_fd_neutral(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    fault_kind: str,
+) -> None:
+    root = ExclusiveRunRoot.create(tmp_path / "run")
     original_fstat = os.fstat
-    calls = 0
+    original_close = os.close
+    injected: BaseException
+    if fault_kind == "oserror":
+        injected = OSError(errno.EIO, "injected run-root fstat failure")
+    else:
+        injected = RuntimeError("injected run-root fstat failure")
+    target_descriptor: int | None = None
+    fstat_calls = 0
+    close_count = 0
 
     def failing_fstat(descriptor: int) -> os.stat_result:
-        nonlocal calls
-        calls += 1
-        raise OSError(errno.EIO, "injected run-root fstat failure")
+        nonlocal fstat_calls, target_descriptor
+        if _descriptor_points_to(descriptor, root.path):
+            fstat_calls += 1
+            target_descriptor = descriptor
+            raise injected
+        return original_fstat(descriptor)
+
+    def tracking_close(descriptor: int) -> None:
+        nonlocal close_count
+        if descriptor == target_descriptor:
+            close_count += 1
+        original_close(descriptor)
 
     before = _open_fd_count()
     with monkeypatch.context() as patch:
         patch.setattr(os, "fstat", failing_fstat)
-        with pytest.raises(ResearchRunContractError) as exc_info:
-            root._open_root()
+        patch.setattr(os, "close", tracking_close)
+        if fault_kind == "oserror":
+            with pytest.raises(ResearchRunContractError) as exc_info:
+                root._open_root()
+            assert _error_code(exc_info) == "RUN_ROOT_OPEN_FAILED"
+        else:
+            with pytest.raises(RuntimeError) as exc_info:
+                root._open_root()
+            assert exc_info.value is injected
     after = _open_fd_count()
 
-    assert calls == 1
-    assert _error_code(exc_info) == "RUN_ROOT_OPEN_FAILED"
+    assert fstat_calls == 1
+    assert close_count == 1
     assert after - before == 0
     assert original_fstat is os.fstat
 
 
 @pytest.mark.parametrize(
-    ("root_form", "failing_call"),
-    [("path", 1), ("exclusive_run_root", 2)],
+    ("root_form", "failing_call", "fault_kind"),
+    [
+        ("path", 1, "oserror"),
+        ("path", 1, "runtimeerror"),
+        ("exclusive_run_root", 2, "oserror"),
+        ("exclusive_run_root", 2, "runtimeerror"),
+    ],
 )
 def test_artifact_root_fstat_failure_is_stable_and_fd_neutral(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     root_form: str,
     failing_call: int,
+    fault_kind: str,
 ) -> None:
     root = ExclusiveRunRoot.create(tmp_path / root_form)
     root.write_json("config.json", {"schema": "fixture"})
@@ -250,25 +312,111 @@ def test_artifact_root_fstat_failure_is_stable_and_fd_neutral(
         root if root_form == "exclusive_run_root" else root.path
     )
     original_fstat = os.fstat
-    calls = 0
+    original_close = os.close
+    injected: BaseException
+    if fault_kind == "oserror":
+        injected = OSError(errno.EIO, "injected artifact-root fstat failure")
+    else:
+        injected = RuntimeError("injected artifact-root fstat failure")
+    target_descriptor: int | None = None
+    fstat_calls = 0
+    close_count = 0
 
     def failing_fstat(descriptor: int) -> os.stat_result:
-        nonlocal calls
-        calls += 1
-        if calls == failing_call:
-            raise OSError(errno.EIO, "injected artifact-root fstat failure")
+        nonlocal fstat_calls, target_descriptor
+        if _descriptor_points_to(descriptor, root.path):
+            fstat_calls += 1
+            if fstat_calls == failing_call:
+                target_descriptor = descriptor
+                raise injected
         return original_fstat(descriptor)
+
+    def tracking_close(descriptor: int) -> None:
+        nonlocal close_count
+        if descriptor == target_descriptor:
+            close_count += 1
+        original_close(descriptor)
 
     before = _open_fd_count()
     with monkeypatch.context() as patch:
         patch.setattr(os, "fstat", failing_fstat)
-        with pytest.raises(ResearchRunContractError) as exc_info:
-            build_artifact_root_manifest(root_argument)
+        patch.setattr(os, "close", tracking_close)
+        if fault_kind == "oserror":
+            with pytest.raises(ResearchRunContractError) as exc_info:
+                build_artifact_root_manifest(root_argument)
+            assert _error_code(exc_info) == "ARTIFACT_ROOT_OPEN_FAILED"
+        else:
+            with pytest.raises(RuntimeError) as exc_info:
+                build_artifact_root_manifest(root_argument)
+            assert exc_info.value is injected
     after = _open_fd_count()
 
-    assert calls == failing_call
-    assert _error_code(exc_info) == "ARTIFACT_ROOT_OPEN_FAILED"
+    assert fstat_calls == failing_call
+    assert close_count == 1
     assert after - before == 0
+
+
+@pytest.mark.parametrize(
+    ("surface", "failing_call"),
+    [("exclusive_run_root", 1), ("artifact_root_exclusive", 2)],
+)
+def test_common_descriptor_cleanup_failure_preserves_primary_error_without_retry(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    surface: str,
+    failing_call: int,
+) -> None:
+    root = ExclusiveRunRoot.create(tmp_path / surface)
+    root.write_json("config.json", {"schema": "fixture"})
+    original_fstat = os.fstat
+    original_close = os.close
+    injected = RuntimeError("injected post-open validation failure")
+    target_descriptor: int | None = None
+    fstat_calls = 0
+    close_count = 0
+    delta_before_manual_cleanup: int | None = None
+
+    def failing_fstat(descriptor: int) -> os.stat_result:
+        nonlocal fstat_calls, target_descriptor
+        if _descriptor_points_to(descriptor, root.path):
+            fstat_calls += 1
+            if fstat_calls == failing_call:
+                target_descriptor = descriptor
+                raise injected
+        return original_fstat(descriptor)
+
+    def failing_close(descriptor: int) -> None:
+        nonlocal close_count
+        if descriptor == target_descriptor:
+            close_count += 1
+            raise OSError(errno.EIO, "injected descriptor close failure")
+        original_close(descriptor)
+
+    before = _open_fd_count()
+    try:
+        with monkeypatch.context() as patch:
+            patch.setattr(os, "fstat", failing_fstat)
+            patch.setattr(os, "close", failing_close)
+            with pytest.raises(RuntimeError) as exc_info:
+                if surface == "exclusive_run_root":
+                    root._open_root()
+                else:
+                    build_artifact_root_manifest(root)
+            assert exc_info.value is injected
+            delta_before_manual_cleanup = _open_fd_count() - before
+    finally:
+        if target_descriptor is not None:
+            original_close(target_descriptor)
+    after_cleanup = _open_fd_count()
+
+    assert fstat_calls == failing_call
+    assert close_count == 1
+    assert delta_before_manual_cleanup == 1
+    assert after_cleanup - before == 0
+    assert any(
+        "descriptor close failed" in note
+        for note in getattr(injected, "__notes__", ())
+    )
 
 
 def test_common_root_open_paths_are_fd_neutral_under_repetition(
@@ -367,10 +515,62 @@ def test_common_post_open_validation_failures_are_fd_neutral(
     assert signature_calls >= 2
     observations.append(("child_signature", _open_fd_count() - before))
 
+    finalization_root = ExclusiveRunRoot.create(tmp_path / "root-finalization")
+    original_fstat = os.fstat
+    original_close = os.close
+    finalization_error = RuntimeError("injected root finalization signature failure")
+    finalization_signature_calls = 0
+    finalization_target: int | None = None
+    finalization_close_count = 0
+    finalization_delta: int | None = None
+
+    def tracking_finalization_fstat(descriptor: int) -> os.stat_result:
+        nonlocal finalization_target
+        if _descriptor_points_to(descriptor, finalization_root.path):
+            finalization_target = descriptor
+        return original_fstat(descriptor)
+
+    def failing_finalization_signature(item: os.stat_result) -> tuple[int, ...]:
+        nonlocal finalization_signature_calls
+        finalization_signature_calls += 1
+        if finalization_signature_calls == 2:
+            raise finalization_error
+        return original_signature(item)
+
+    def tracking_finalization_close(descriptor: int) -> None:
+        nonlocal finalization_close_count
+        if descriptor == finalization_target:
+            finalization_close_count += 1
+        original_close(descriptor)
+
+    before = _open_fd_count()
+    try:
+        with monkeypatch.context() as patch:
+            patch.setattr(os, "fstat", tracking_finalization_fstat)
+            patch.setattr(
+                research_contract,
+                "_stat_signature",
+                failing_finalization_signature,
+            )
+            patch.setattr(os, "close", tracking_finalization_close)
+            with pytest.raises(RuntimeError) as finalization_exc:
+                build_artifact_root_manifest(finalization_root.path)
+            assert finalization_exc.value is finalization_error
+            finalization_delta = _open_fd_count() - before
+    finally:
+        if finalization_target is not None and finalization_delta:
+            original_close(finalization_target)
+    assert _open_fd_count() - before == 0
+    assert finalization_signature_calls == 2
+    assert finalization_close_count == 1
+    assert finalization_delta is not None
+    observations.append(("root_finalization_signature", finalization_delta))
+
     assert observations == [
         ("root_signature", 0),
         ("second_capability_check", 0),
         ("child_signature", 0),
+        ("root_finalization_signature", 0),
     ]
 
 

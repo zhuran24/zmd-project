@@ -70,6 +70,52 @@ class ReplayError(RuntimeError):
         super().__init__(f"{code}: {detail}")
 
 
+class _OwnedDescriptor:
+    """Track one descriptor until ownership is explicitly released or closed."""
+
+    __slots__ = ("_descriptor",)
+
+    def __init__(self, descriptor: int | None = None) -> None:
+        self._descriptor = descriptor
+
+    @property
+    def owned(self) -> bool:
+        return self._descriptor is not None
+
+    def acquire(self, descriptor: int) -> int:
+        if self._descriptor is not None:
+            raise RuntimeError("descriptor ownership is already held")
+        self._descriptor = descriptor
+        return descriptor
+
+    @property
+    def descriptor(self) -> int:
+        descriptor = self._descriptor
+        if descriptor is None:
+            raise RuntimeError("descriptor ownership has already been released")
+        return descriptor
+
+    def release(self) -> int:
+        descriptor = self.descriptor
+        self._descriptor = None
+        return descriptor
+
+    def close(self) -> BaseException | None:
+        descriptor = self.release()
+        try:
+            os.close(descriptor)
+        except BaseException as exc:
+            return exc
+        return None
+
+    def close_preserving(self, error: BaseException) -> None:
+        close_error = self.close()
+        if close_error is not None:
+            error.add_note(
+                f"descriptor close failed: {type(close_error).__name__}: {close_error}"
+            )
+
+
 def _fail(code: str, detail: str) -> None:
     raise ReplayError(code, detail)
 
@@ -189,37 +235,54 @@ def _open_absolute_directory_no_symlinks(
     if not absolute.is_absolute() or not parts or not absolute.anchor:
         _fail(error_code, f"absolute directory path required: {absolute}")
     flags = _directory_open_flags()
-    opened: list[int] = []
+    opened: list[_OwnedDescriptor] = []
     try:
-        opened.append(os.open(absolute.anchor, flags))
+        root_owner = _OwnedDescriptor()
+        opened.append(root_owner)
+        root_owner.acquire(os.open(absolute.anchor, flags))
         for part in parts[1:]:
-            opened.append(os.open(part, flags, dir_fd=opened[-1]))
+            owner = _OwnedDescriptor()
+            opened.append(owner)
+            owner.acquire(os.open(part, flags, dir_fd=opened[-2].descriptor))
     except BaseException as exc:
-        for descriptor in reversed(opened):
-            try:
-                os.close(descriptor)
-            except OSError:
-                pass
         if isinstance(exc, OSError):
-            _fail(error_code, f"{absolute}: {exc}")
-        raise
+            primary: BaseException = ReplayError(error_code, f"{absolute}: {exc}")
+        else:
+            primary = exc
+        for owner in reversed(opened):
+            if owner.owned:
+                owner.close_preserving(primary)
+        if primary is exc:
+            raise
+        raise primary from exc
     if not opened:
         _fail(error_code, f"{absolute}: directory open produced no descriptor")
-    descriptor = opened.pop()
-    close_error: OSError | None = None
-    for ancestor_fd in reversed(opened):
-        try:
-            os.close(ancestor_fd)
-        except OSError as exc:
-            if close_error is None:
-                close_error = exc
-    if close_error is not None:
-        try:
-            os.close(descriptor)
-        except OSError:
-            pass
-        _fail(error_code, f"{absolute}: ancestor descriptor close failed: {close_error}")
-    return descriptor
+    leaf_owner = opened.pop()
+    primary_close_error: BaseException | None = None
+    for owner in reversed(opened):
+        close_error = owner.close()
+        if close_error is None:
+            continue
+        if primary_close_error is None:
+            if isinstance(close_error, OSError):
+                primary_close_error = ReplayError(
+                    error_code,
+                    (
+                        f"{absolute}: ancestor descriptor close failed: "
+                        f"{close_error}"
+                    ),
+                )
+            else:
+                primary_close_error = close_error
+        else:
+            primary_close_error.add_note(
+                "additional ancestor descriptor close failure: "
+                f"{type(close_error).__name__}: {close_error}"
+            )
+    if primary_close_error is not None:
+        leaf_owner.close_preserving(primary_close_error)
+        raise primary_close_error
+    return leaf_owner.release()
 
 
 def _open_absolute_regular_no_symlinks(
@@ -242,49 +305,69 @@ def _open_absolute_regular_no_symlinks(
         | os.O_NOFOLLOW
         | getattr(os, "O_NONBLOCK", 0)
     )
-    opened_directories: list[int] = []
-    descriptor: int | None = None
+    opened_directories: list[_OwnedDescriptor] = []
+    file_owner = _OwnedDescriptor()
     try:
-        opened_directories.append(os.open(absolute.anchor, directory_flags))
+        root_owner = _OwnedDescriptor()
+        opened_directories.append(root_owner)
+        root_owner.acquire(os.open(absolute.anchor, directory_flags))
         for part in parts[1:-1]:
-            opened_directories.append(
-                os.open(part, directory_flags, dir_fd=opened_directories[-1])
+            owner = _OwnedDescriptor()
+            opened_directories.append(owner)
+            owner.acquire(
+                os.open(
+                    part,
+                    directory_flags,
+                    dir_fd=opened_directories[-2].descriptor,
+                )
             )
-        descriptor = os.open(
-            parts[-1],
-            file_flags,
-            dir_fd=opened_directories[-1],
+        file_owner.acquire(
+            os.open(
+                parts[-1],
+                file_flags,
+                dir_fd=opened_directories[-1].descriptor,
+            )
         )
     except BaseException as exc:
-        if descriptor is not None:
-            try:
-                os.close(descriptor)
-            except OSError:
-                pass
-        for directory_fd in reversed(opened_directories):
-            try:
-                os.close(directory_fd)
-            except OSError:
-                pass
         if isinstance(exc, OSError):
-            _fail(error_code, f"{absolute}: {exc}")
-        raise
-    close_error: OSError | None = None
-    for directory_fd in reversed(opened_directories):
-        try:
-            os.close(directory_fd)
-        except OSError as exc:
-            if close_error is None:
-                close_error = exc
-    if descriptor is None:
+            primary: BaseException = ReplayError(error_code, f"{absolute}: {exc}")
+        else:
+            primary = exc
+        if file_owner.owned:
+            file_owner.close_preserving(primary)
+        for owner in reversed(opened_directories):
+            if owner.owned:
+                owner.close_preserving(primary)
+        if primary is exc:
+            raise
+        raise primary from exc
+    if not file_owner.owned:
         _fail(error_code, f"{absolute}: regular-file open produced no descriptor")
-    if close_error is not None:
-        try:
-            os.close(descriptor)
-        except OSError:
-            pass
-        _fail(error_code, f"{absolute}: ancestor descriptor close failed: {close_error}")
-    return descriptor
+    primary_close_error: BaseException | None = None
+    for owner in reversed(opened_directories):
+        close_error = owner.close()
+        if close_error is None:
+            continue
+        if primary_close_error is None:
+            if isinstance(close_error, OSError):
+                primary_close_error = ReplayError(
+                    error_code,
+                    (
+                        f"{absolute}: ancestor descriptor close failed: "
+                        f"{close_error}"
+                    ),
+                )
+            else:
+                primary_close_error = close_error
+        else:
+            primary_close_error.add_note(
+                "additional ancestor descriptor close failure: "
+                f"{type(close_error).__name__}: {close_error}"
+            )
+    if primary_close_error is not None:
+        file_owner.close_preserving(primary_close_error)
+        raise primary_close_error
+    return file_owner.release()
 
 
 def _stat_signature(item: os.stat_result) -> tuple[int, ...]:
@@ -445,28 +528,33 @@ def _artifact_root_entries(
     expected_root_signature: tuple[int, ...] | None = None,
 ) -> dict[str, str]:
     flags = _directory_open_flags()
-    root_fd = _open_absolute_directory_no_symlinks(
-        run_root,
-        error_code="ARTIFACT_ROOT_OPEN_FAILED",
+    root_owner = _OwnedDescriptor(
+        _open_absolute_directory_no_symlinks(
+            run_root,
+            error_code="ARTIFACT_ROOT_OPEN_FAILED",
+        )
     )
     try:
-        root_before = os.fstat(root_fd)
+        root_before = os.fstat(root_owner.descriptor)
+        if not stat.S_ISDIR(root_before.st_mode):
+            _fail("RUN_ROOT_INVALID", str(run_root))
+        root_signature = _stat_signature(root_before)
+        if (
+            expected_root_signature is not None
+            and root_signature != expected_root_signature
+        ):
+            _fail("ARTIFACT_ROOT_CHANGED", str(run_root))
+        observed: dict[str, str] = {}
+        opened_directories: list[
+            tuple[_OwnedDescriptor, tuple[str, ...], tuple[int, ...]]
+        ] = [(root_owner, (), root_signature)]
     except OSError as exc:
-        os.close(root_fd)
-        _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: {exc}")
-    if not stat.S_ISDIR(root_before.st_mode):
-        os.close(root_fd)
-        _fail("RUN_ROOT_INVALID", str(run_root))
-    if (
-        expected_root_signature is not None
-        and _stat_signature(root_before) != expected_root_signature
-    ):
-        os.close(root_fd)
-        _fail("ARTIFACT_ROOT_CHANGED", str(run_root))
-    observed: dict[str, str] = {}
-    opened_directories: list[tuple[int, tuple[str, ...], tuple[int, ...]]] = [
-        (root_fd, (), _stat_signature(root_before))
-    ]
+        error = ReplayError("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: {exc}")
+        root_owner.close_preserving(error)
+        raise error from exc
+    except BaseException as exc:
+        root_owner.close_preserving(exc)
+        raise
 
     def walk(descriptor: int, prefix: tuple[str, ...]) -> None:
         try:
@@ -505,64 +593,101 @@ def _artifact_root_entries(
                     str(run_root.joinpath(*prefix, name)),
                 )
             observed[relative] = "directory"
+            child_prefix = (*prefix, name)
+            child_owner = _OwnedDescriptor()
             try:
-                child_fd = os.open(name, flags, dir_fd=descriptor)
+                child_owner.acquire(os.open(name, flags, dir_fd=descriptor))
             except OSError as exc:
                 _fail(
                     "ARTIFACT_ROOT_ENUMERATION_FAILED",
                     f"{run_root.joinpath(*prefix, name)}: {exc}",
                 )
             try:
-                opened = os.fstat(child_fd)
+                opened = os.fstat(child_owner.descriptor)
+                child_signature = _stat_signature(opened)
+                if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
+                    _fail(
+                        "ARTIFACT_ROOT_CHANGED",
+                        str(run_root.joinpath(*prefix, name)),
+                    )
+                opened_directories.append(
+                    (child_owner, child_prefix, child_signature)
+                )
             except OSError as exc:
-                os.close(child_fd)
-                _fail(
+                error = ReplayError(
                     "ARTIFACT_ROOT_CHANGED",
                     f"{run_root.joinpath(*prefix, name)}: {exc}",
                 )
-            child_prefix = (*prefix, name)
-            opened_directories.append(
-                (child_fd, child_prefix, _stat_signature(opened))
-            )
-            if opened.st_dev != item.st_dev or opened.st_ino != item.st_ino:
-                _fail(
-                    "ARTIFACT_ROOT_CHANGED",
-                    str(run_root.joinpath(*prefix, name)),
-                )
-            walk(child_fd, child_prefix)
+                child_owner.close_preserving(error)
+                raise error from exc
+            except BaseException as exc:
+                child_owner.close_preserving(exc)
+                raise
+            walk(child_owner.descriptor, child_prefix)
 
     primary_error: BaseException | None = None
     try:
-        walk(root_fd, ())
+        walk(root_owner.descriptor, ())
     except BaseException as exc:
         primary_error = exc
 
-    finalize_issues: list[str] = []
-    for descriptor, prefix, initial_signature in reversed(opened_directories):
+    finalize_error: BaseException | None = None
+
+    def record_finalize_error(error: BaseException, detail: str) -> None:
+        nonlocal finalize_error
+        if primary_error is not None:
+            primary_error.add_note(detail)
+        elif finalize_error is None:
+            error.add_note(detail)
+            finalize_error = error
+        else:
+            finalize_error.add_note(detail)
+
+    for owner, prefix, initial_signature in reversed(opened_directories):
         display_path = str(run_root.joinpath(*prefix))
         try:
-            final_signature = _stat_signature(os.fstat(descriptor))
+            final_signature = _stat_signature(os.fstat(owner.descriptor))
         except OSError as exc:
-            finalize_issues.append(f"{display_path}: fstat failed: {exc}")
+            error = ReplayError(
+                "ARTIFACT_ROOT_CHANGED",
+                f"{display_path}: final fstat failed: {exc}",
+            )
+            record_finalize_error(error, str(error))
+        except BaseException as exc:
+            record_finalize_error(
+                exc,
+                (
+                    f"artifact-root finalization validation failed for "
+                    f"{display_path}: {type(exc).__name__}: {exc}"
+                ),
+            )
         else:
             if final_signature != initial_signature:
-                finalize_issues.append(f"{display_path}: signature changed")
-        try:
-            os.close(descriptor)
-        except OSError as exc:
-            finalize_issues.append(f"{display_path}: close failed: {exc}")
+                error = ReplayError(
+                    "ARTIFACT_ROOT_CHANGED",
+                    f"{display_path}: final signature changed",
+                )
+                record_finalize_error(error, str(error))
+        close_error = owner.close()
+        if isinstance(close_error, OSError):
+            error = ReplayError(
+                "ARTIFACT_ROOT_CHANGED",
+                f"{display_path}: descriptor close failed: {close_error}",
+            )
+            record_finalize_error(error, str(error))
+        elif close_error is not None:
+            record_finalize_error(
+                close_error,
+                (
+                    f"artifact-root descriptor close failed for "
+                    f"{display_path}: {type(close_error).__name__}: {close_error}"
+                ),
+            )
 
     if primary_error is not None:
-        if finalize_issues:
-            primary_error.add_note(
-                f"artifact-root finalization issues: {finalize_issues!r}"
-            )
         raise primary_error
-    if finalize_issues:
-        _fail(
-            "ARTIFACT_ROOT_CHANGED",
-            f"artifact-root finalization issues: {finalize_issues!r}",
-        )
+    if finalize_error is not None:
+        raise finalize_error
     return observed
 
 
@@ -1122,28 +1247,32 @@ def verify_byte_graph(run_root_value: Path | str) -> dict[str, Any]:
 
     replayer_process_contract = _require_isolated_python_process()
     run_root = _absolute(run_root_value)
-    root_fd = _open_absolute_directory_no_symlinks(
-        run_root,
-        error_code="ARTIFACT_ROOT_OPEN_FAILED",
+    root_owner = _OwnedDescriptor(
+        _open_absolute_directory_no_symlinks(
+            run_root,
+            error_code="ARTIFACT_ROOT_OPEN_FAILED",
+        )
     )
     try:
-        root_item = os.fstat(root_fd)
+        root_item = os.fstat(root_owner.descriptor)
+        if not stat.S_ISDIR(root_item.st_mode):
+            _fail("RUN_ROOT_INVALID", str(run_root))
+        root_signature = _stat_signature(root_item)
     except OSError as exc:
-        try:
-            os.close(root_fd)
-        except OSError as close_error:
-            _fail(
-                "ARTIFACT_ROOT_OPEN_FAILED",
-                f"{run_root}: {exc}; descriptor close failed: {close_error}",
-            )
-        _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: {exc}")
-    try:
-        os.close(root_fd)
-    except OSError as exc:
-        _fail("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: descriptor close failed: {exc}")
-    if not stat.S_ISDIR(root_item.st_mode):
-        _fail("RUN_ROOT_INVALID", str(run_root))
-    root_signature = _stat_signature(root_item)
+        error = ReplayError("ARTIFACT_ROOT_OPEN_FAILED", f"{run_root}: {exc}")
+        root_owner.close_preserving(error)
+        raise error from exc
+    except BaseException as exc:
+        root_owner.close_preserving(exc)
+        raise
+    close_error = root_owner.close()
+    if isinstance(close_error, OSError):
+        _fail(
+            "ARTIFACT_ROOT_OPEN_FAILED",
+            f"{run_root}: descriptor close failed: {close_error}",
+        )
+    if close_error is not None:
+        raise close_error
     receipt_raw, receipt_identity = stable_read(
         run_root / TERMINAL_RECEIPT_PATH,
         "receipt",

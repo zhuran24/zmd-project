@@ -1218,12 +1218,17 @@ sys.stdout.buffer.write(
     assert error["conclusion"] is None
 
 
+@pytest.mark.parametrize(
+    "fault_mode",
+    ["oserror", "runtimeerror", "runtimeerror_close_failure"],
+)
 def test_stdlib_replayer_root_fstat_failure_is_stable_and_fd_neutral(
     tmp_path: Path,
+    fault_mode: str,
 ) -> None:
-    artifact_root = tmp_path / "root-fstat-failure"
+    artifact_root = tmp_path / f"root-fstat-failure-{fault_mode}"
     artifact_root.mkdir()
-    probe = tmp_path / "root_fstat_failure_probe.py"
+    probe = tmp_path / f"root_fstat_failure_probe_{fault_mode}.py"
     probe.write_text(
         """\
 import errno
@@ -1240,33 +1245,61 @@ sys.modules[spec.name] = replayer
 spec.loader.exec_module(replayer)
 
 artifact_root = Path(sys.argv[2])
+fault_mode = sys.argv[3]
 real_fstat = os.fstat
+real_close = os.close
 fault_count = 0
+close_count = 0
+target_descriptor = None
+injected_runtime_error = RuntimeError("injected artifact-root fstat failure")
 
 def failing_fstat(descriptor):
-    global fault_count
+    global fault_count, target_descriptor
     try:
         descriptor_target = Path(os.readlink(f"/proc/self/fd/{descriptor}"))
     except OSError:
         descriptor_target = None
     if fault_count == 0 and descriptor_target == artifact_root:
         fault_count += 1
-        raise OSError(errno.EIO, "injected artifact-root fstat failure")
+        target_descriptor = descriptor
+        if fault_mode == "oserror":
+            raise OSError(errno.EIO, "injected artifact-root fstat failure")
+        raise injected_runtime_error
     return real_fstat(descriptor)
+
+def tracking_close(descriptor):
+    global close_count
+    if descriptor == target_descriptor:
+        close_count += 1
+        if fault_mode == "runtimeerror_close_failure":
+            raise OSError(errno.EIO, "injected descriptor close failure")
+    real_close(descriptor)
 
 before = len(os.listdir("/proc/self/fd"))
 replayer.os.fstat = failing_fstat
+replayer.os.close = tracking_close
 try:
     return_code = replayer.main(["--run-root", str(artifact_root)])
 finally:
     replayer.os.fstat = real_fstat
-after = len(os.listdir("/proc/self/fd"))
+    replayer.os.close = real_close
+delta_before_manual_cleanup = len(os.listdir("/proc/self/fd")) - before
+if fault_mode == "runtimeerror_close_failure" and target_descriptor is not None:
+    real_close(target_descriptor)
+fd_delta = len(os.listdir("/proc/self/fd")) - before
 
 sys.stdout.write(
     json.dumps(
         {
+            "close_count": close_count,
+            "delta_before_manual_cleanup": delta_before_manual_cleanup,
             "fault_count": fault_count,
-            "fd_delta": after - before,
+            "fd_delta": fd_delta,
+            "runtime_error_notes": getattr(
+                injected_runtime_error,
+                "__notes__",
+                [],
+            ),
             "return_code": return_code,
         },
         sort_keys=True,
@@ -1286,6 +1319,7 @@ raise SystemExit(return_code)
             str(probe),
             str(REPLAYER_PATH),
             str(artifact_root),
+            fault_mode,
         ],
         env={},
         check=False,
@@ -1294,14 +1328,168 @@ raise SystemExit(return_code)
 
     assert completed.returncode == 2, completed.stdout.decode()
     error = _decode_cli_json(completed.stderr)
-    assert error["error_code"] == "ARTIFACT_ROOT_OPEN_FAILED"
+    if fault_mode == "oserror":
+        assert error["error_code"] == "ARTIFACT_ROOT_OPEN_FAILED"
+    else:
+        assert error["error_code"] == "INTERNAL_REPLAY_ERROR"
+        assert error["detail"] == (
+            "RuntimeError: injected artifact-root fstat failure"
+        )
     assert error["conclusion"] is None
     result = _decode_cli_json(completed.stdout)
+    expected_delta_before_cleanup = (
+        1 if fault_mode == "runtimeerror_close_failure" else 0
+    )
     assert result == {
+        "close_count": 1,
+        "delta_before_manual_cleanup": expected_delta_before_cleanup,
         "fault_count": 1,
         "fd_delta": 0,
+        "runtime_error_notes": (
+            [
+                (
+                    "descriptor close failed: OSError: "
+                    "[Errno 5] injected descriptor close failure"
+                )
+            ]
+            if fault_mode == "runtimeerror_close_failure"
+            else []
+        ),
         "return_code": 2,
     }
+
+
+@pytest.mark.parametrize(
+    "fault_site",
+    ["child_fstat", "root_finalization_signature"],
+)
+def test_stdlib_replayer_closure_runtime_errors_are_fd_neutral(
+    tmp_path: Path,
+    fault_site: str,
+) -> None:
+    artifact_root = tmp_path / f"closure-runtime-{fault_site}"
+    artifact_root.mkdir()
+    if fault_site == "child_fstat":
+        (artifact_root / "child").mkdir()
+    probe = tmp_path / f"closure_runtime_probe_{fault_site}.py"
+    probe.write_text(
+        """\
+import importlib.util
+import json
+import os
+from pathlib import Path
+import sys
+
+spec = importlib.util.spec_from_file_location("_closure_runtime_replayer", sys.argv[1])
+assert spec is not None and spec.loader is not None
+replayer = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = replayer
+spec.loader.exec_module(replayer)
+
+artifact_root = Path(sys.argv[2])
+fault_site = sys.argv[3]
+target_path = artifact_root / "child" if fault_site == "child_fstat" else artifact_root
+real_fstat = os.fstat
+real_close = os.close
+real_signature = replayer._stat_signature
+target_descriptor = None
+target_fstat_calls = 0
+signature_calls = 0
+fault_count = 0
+close_count = 0
+injected = RuntimeError(f"injected closure {fault_site} failure")
+
+def descriptor_path(descriptor):
+    try:
+        return Path(os.readlink(f"/proc/self/fd/{descriptor}"))
+    except OSError:
+        return None
+
+def failing_fstat(descriptor):
+    global fault_count, target_descriptor, target_fstat_calls
+    if descriptor_path(descriptor) == target_path:
+        target_descriptor = descriptor
+        target_fstat_calls += 1
+        if fault_site == "child_fstat" and fault_count == 0:
+            fault_count += 1
+            raise injected
+    return real_fstat(descriptor)
+
+def failing_signature(item):
+    global fault_count, signature_calls
+    signature_calls += 1
+    if (
+        fault_site == "root_finalization_signature"
+        and signature_calls == 2
+        and fault_count == 0
+    ):
+        fault_count += 1
+        raise injected
+    return real_signature(item)
+
+def tracking_close(descriptor):
+    global close_count
+    if descriptor == target_descriptor:
+        close_count += 1
+    real_close(descriptor)
+
+before = len(os.listdir("/proc/self/fd"))
+replayer.os.fstat = failing_fstat
+replayer.os.close = tracking_close
+replayer._stat_signature = failing_signature
+try:
+    try:
+        replayer._artifact_root_entries(artifact_root)
+    except RuntimeError as exc:
+        if exc is not injected:
+            raise
+    else:
+        raise AssertionError("deterministic closure fault was not raised")
+finally:
+    replayer.os.fstat = real_fstat
+    replayer.os.close = real_close
+    replayer._stat_signature = real_signature
+after = len(os.listdir("/proc/self/fd"))
+
+sys.stdout.write(
+    json.dumps(
+        {
+            "close_count": close_count,
+            "fault_count": fault_count,
+            "fd_delta": after - before,
+            "target_fstat_calls": target_fstat_calls,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+)
+""",
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [
+            "/usr/bin/python3",
+            "-I",
+            "-B",
+            str(probe),
+            str(REPLAYER_PATH),
+            str(artifact_root),
+            fault_site,
+        ],
+        env={},
+        check=False,
+        capture_output=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr.decode()
+    result = _decode_cli_json(completed.stdout)
+    assert result["close_count"] == 1
+    assert result["fault_count"] == 1
+    assert result["fd_delta"] == 0
+    assert result["target_fstat_calls"] == (
+        1 if fault_site == "child_fstat" else 2
+    )
 
 
 def test_fixed_artifact_labels_reject_a_coherently_relocated_byte_graph(

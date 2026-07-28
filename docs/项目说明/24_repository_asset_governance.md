@@ -66,16 +66,16 @@ evidence/replay tests 落地后的当前收据：
 
 | collect 面 | nodeids | 规范化 SHA256 |
 |---|---:|---|
-| developer | 3,536 | `041cf8cb6e7b4b8b17d4c4bea994e53d057ddd6e0967e955d0f2cd2d1d4ed038` |
+| developer | 3,541 | `ad151b2509d023bcc66fe102233241d028b35311eb3669f379d789097805f8a2` |
 | evidence、非 replay、非 slow | 1,512 | `c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b` |
-| replay、非 slow | 1,540 | `12260750f0455ffc9353580029797b23b63223b06a52070f36be9cf718561035` |
-| 三面并集 / full non-slow | 6,588 | `d65545718b06cc080605a1c27fdec3a4ea51c31002e8c66e207431a6eb0abc10` |
-| full/all | 6,619 | `ac23a765cc641371ee46f3398b5bc1e2d9ede7efc7b5f2759e7f374aa0fdeccd` |
+| replay、非 slow | 1,544 | `99ae9c68e0b2bfe2c1dcb119ac9b325158ece08e25f3bbc16e6b06d047f0863c` |
+| 三面并集 / full non-slow | 6,597 | `9ba5911ee114c47bd7093e78b89af97de0510e354dc9b93b5e4796eaed898959` |
+| full/all | 6,628 | `c2a80033dab5b1a67bc78dc37fa7ffd3b071a62ee4e95dc93620645116258d09` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
-full/all。G3 的 62 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
-W0 D6 的 8 个 gate nodeid 进入 evidence，32 个独立 replay nodeid 进入 replay；
+full/all。G3 的 67 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
+W0 D6 的 8 个 gate nodeid 进入 evidence，36 个独立 replay nodeid 进入 replay；
 slow 和既有 focused 入口不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。
 
 ## 分类合同
