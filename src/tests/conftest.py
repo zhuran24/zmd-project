@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import json
 import sys
+from dataclasses import dataclass
+from fnmatch import fnmatchcase
 from importlib.util import find_spec
 from pathlib import Path
 
@@ -9,6 +12,234 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+
+_REPOSITORY_WORKFLOWS = ("auto", "developer", "evidence", "replay", "focused-full", "full")
+_REPOSITORY_TEST_LANES = frozenset({"developer", "evidence", "replay"})
+_REPOSITORY_ASSET_MANIFEST = PROJECT_ROOT / "data" / "repository_governance" / "code_assets.json"
+
+
+@dataclass(frozen=True)
+class _RepositoryPytestState:
+    enabled: bool
+    lane_rules: tuple[tuple[str, str], ...]
+    workflow: str
+    selector_compat: bool
+
+
+def pytest_addoption(parser: pytest.Parser) -> None:
+    group = parser.getgroup("repository governance")
+    group.addoption(
+        "--repository-workflow",
+        action="store",
+        choices=_REPOSITORY_WORKFLOWS,
+        default="auto",
+        help=(
+            "Select the repository test surface. auto preserves explicit focused/full commands, "
+            "uses developer isolation for a bare whole-tree run, and recognizes the affected-test selector."
+        ),
+    )
+
+
+def _load_repository_pytest_isolation() -> tuple[bool, tuple[tuple[str, str], ...]]:
+    if not _REPOSITORY_ASSET_MANIFEST.exists():
+        raise pytest.UsageError(
+            f"repository pytest isolation manifest is missing: {_REPOSITORY_ASSET_MANIFEST}"
+        )
+
+    try:
+        payload = json.loads(_REPOSITORY_ASSET_MANIFEST.read_text(encoding="utf-8"))
+        pytest_policy = payload["logical_isolation"]["pytest"]
+        enabled = pytest_policy["enabled"]
+        raw_rules = pytest_policy["lane_rules"]
+    except (OSError, UnicodeError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise pytest.UsageError(
+            f"invalid repository pytest isolation manifest {_REPOSITORY_ASSET_MANIFEST}: {exc}"
+        ) from exc
+
+    if not isinstance(enabled, bool):
+        raise pytest.UsageError("repository pytest isolation 'enabled' must be a boolean")
+    if not isinstance(raw_rules, list) or not raw_rules:
+        raise pytest.UsageError("repository pytest isolation 'lane_rules' must be a non-empty array")
+
+    rules: list[tuple[str, str]] = []
+    seen_globs: set[str] = set()
+    for index, raw_rule in enumerate(raw_rules):
+        if not isinstance(raw_rule, dict):
+            raise pytest.UsageError(f"repository pytest lane rule {index} must be an object")
+        glob = raw_rule.get("glob")
+        lane = raw_rule.get("lane")
+        if not isinstance(glob, str) or not glob.startswith("src/tests/") or not glob:
+            raise pytest.UsageError(
+                f"repository pytest lane rule {index} has an invalid repo-relative glob"
+            )
+        if lane not in _REPOSITORY_TEST_LANES:
+            raise pytest.UsageError(f"repository pytest lane rule {index} has invalid lane {lane!r}")
+        if glob in seen_globs:
+            raise pytest.UsageError(f"repository pytest lane glob is duplicated: {glob}")
+        seen_globs.add(glob)
+        rules.append((glob, lane))
+
+    if rules[-1] != ("src/tests/**", "developer"):
+        raise pytest.UsageError(
+            "repository pytest lane rules must end with a src/tests/** developer catch-all"
+        )
+    return enabled, tuple(rules)
+
+
+def _repo_relative_path(path: Path | str) -> str | None:
+    candidate = Path(str(path))
+    if not candidate.is_absolute():
+        candidate = PROJECT_ROOT / candidate
+    try:
+        return candidate.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return None
+
+
+def _lane_for_repo_path(repo_path: str, lane_rules: tuple[tuple[str, str], ...]) -> str:
+    # First match wins. Specific evidence/replay rules therefore precede the
+    # terminal developer catch-all in the manifest.
+    for glob, lane in lane_rules:
+        if fnmatchcase(repo_path, glob):
+            return lane
+    raise pytest.UsageError(f"repository pytest path has no lane classification: {repo_path}")
+
+
+def _subtree_lane(repo_path: str, lane_rules: tuple[tuple[str, str], ...]) -> str | None:
+    """Return a lane only when a rule owns this complete directory subtree."""
+
+    for glob, lane in lane_rules:
+        if not glob.endswith("/**"):
+            continue
+        prefix = glob[:-3]
+        if repo_path == prefix:
+            return lane
+    return None
+
+
+def _has_explicit_markexpr(config: pytest.Config) -> bool:
+    args = config.invocation_params.args
+    return any(arg == "-m" or (arg.startswith("-m") and len(arg) > 2) for arg in args)
+
+
+def _is_selector_basetemp(config: pytest.Config) -> bool:
+    basetemp = config.getoption("basetemp")
+    if basetemp is None:
+        return False
+    relative = _repo_relative_path(Path(str(basetemp)))
+    return relative == ".pytest_tmp/selected"
+
+
+def _is_whole_src_tests_target(config: pytest.Config) -> bool:
+    if not config.args:
+        return True
+    if len(config.args) != 1:
+        return False
+    target = config.args[0]
+    if "::" in target:
+        return False
+    relative = _repo_relative_path(target)
+    return relative is not None and relative.rstrip("/") == "src/tests"
+
+
+def _resolve_repository_workflow(config: pytest.Config, enabled: bool) -> tuple[str, bool]:
+    requested = config.getoption("repository_workflow")
+    selector_compat = _is_selector_basetemp(config)
+    if not enabled:
+        return "full", False
+    if requested != "auto":
+        return requested, selector_compat
+    if selector_compat:
+        return "developer", True
+    if _is_whole_src_tests_target(config):
+        if _has_explicit_markexpr(config):
+            return "full", False
+        return "developer", False
+    return "focused-full", False
+
+
+def _validate_explicit_lane_targets(
+    config: pytest.Config,
+    state: _RepositoryPytestState,
+) -> None:
+    if state.workflow not in _REPOSITORY_TEST_LANES or _is_whole_src_tests_target(config):
+        return
+
+    wrong_lane: list[str] = []
+    for target in config.args:
+        path_part = target.partition("::")[0]
+        repo_path = _repo_relative_path(path_part)
+        if repo_path is None or not repo_path.startswith("src/tests/"):
+            continue
+        candidate = PROJECT_ROOT / repo_path
+        if candidate.is_dir():
+            lane = _subtree_lane(repo_path.rstrip("/"), state.lane_rules)
+            if lane is None:
+                continue
+        else:
+            lane = _lane_for_repo_path(repo_path, state.lane_rules)
+        if lane != state.workflow:
+            wrong_lane.append(f"{target} ({lane})")
+    if wrong_lane:
+        rendered = ", ".join(wrong_lane)
+        raise pytest.UsageError(
+            f"repository {state.workflow} workflow refuses explicit targets from another lane: {rendered}"
+        )
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    enabled, lane_rules = _load_repository_pytest_isolation()
+    workflow, selector_compat = _resolve_repository_workflow(config, enabled)
+    state = _RepositoryPytestState(
+        enabled=enabled,
+        lane_rules=lane_rules,
+        workflow=workflow,
+        selector_compat=selector_compat,
+    )
+    setattr(config, "_repository_pytest_state", state)
+    _validate_explicit_lane_targets(config, state)
+    if (
+        enabled
+        and config.getoption("repository_workflow") == "focused-full"
+        and (config.option.markexpr or config.option.keyword)
+    ):
+        raise pytest.UsageError(
+            "focused-full forbids -m/-k selection because every targeted nodeid must execute"
+        )
+
+    # The developer default remains fast without putting a global -m expression
+    # in pytest.ini. An explicit -m supplied by a maintainer remains authoritative.
+    if enabled and workflow == "developer" and not _has_explicit_markexpr(config):
+        config.option.markexpr = "not slow"
+
+
+def _repository_pytest_state(config: pytest.Config) -> _RepositoryPytestState:
+    state = getattr(config, "_repository_pytest_state", None)
+    if not isinstance(state, _RepositoryPytestState):
+        raise pytest.UsageError("repository pytest workflow was not configured")
+    return state
+
+
+def pytest_ignore_collect(collection_path: Path, config: pytest.Config) -> bool | None:
+    state = _repository_pytest_state(config)
+    if not state.enabled or state.workflow in {"focused-full", "full"}:
+        return None
+
+    repo_path = _repo_relative_path(collection_path)
+    if repo_path is None or not repo_path.startswith("src/tests/"):
+        return None
+
+    if collection_path.is_dir():
+        # Only skip a directory when a specific rule owns the whole subtree.
+        # Shared ancestors stay traversable so evidence/replay leaf rules can
+        # still be discovered without importing unrelated test modules.
+        subtree_lane = _subtree_lane(repo_path, state.lane_rules)
+        if subtree_lane is None or subtree_lane == "developer":
+            return None
+        return subtree_lane != state.workflow
+
+    lane = _lane_for_repo_path(repo_path, state.lane_rules)
+    return lane != state.workflow
 
 
 # ---------------------------------------------------------------------------
@@ -315,9 +546,16 @@ def _track_b_guard_for(nodeid: str) -> "callable[[], str | None] | None":
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    repository_state = _repository_pytest_state(config)
     for item in items:
         nodeid = item.nodeid
         path_str = str(item.fspath)
+        if repository_state.enabled:
+            repo_path = _repo_relative_path(item.path)
+            if repo_path is not None and repo_path.startswith("src/tests/"):
+                lane = _lane_for_repo_path(repo_path, repository_state.lane_rules)
+                if lane in {"evidence", "replay"}:
+                    item.add_marker(getattr(pytest.mark, lane))
         for substring, missing_check in _FIXTURE_GUARDS:
             if substring in path_str or substring in nodeid:
                 reason = missing_check()
@@ -331,6 +569,46 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
                 item.add_marker(pytest.mark.skip(reason=reason))
         if _nodeid_matches_slow(nodeid):
             item.add_marker(pytest.mark.slow)
+
+
+def _target_has_selected_item(target: str, items: list[pytest.Item]) -> bool:
+    path_part, separator, node_suffix = target.partition("::")
+    repo_path = _repo_relative_path(path_part)
+    if repo_path is None or not repo_path.startswith("src/tests/"):
+        return True
+
+    candidate_path = PROJECT_ROOT / repo_path
+    is_directory = candidate_path.is_dir()
+    expected_nodeid = f"{repo_path}::{node_suffix}" if separator else ""
+    for item in items:
+        item_path = _repo_relative_path(item.path)
+        if item_path is None:
+            continue
+        if is_directory:
+            path_matches = item_path.startswith(repo_path.rstrip("/") + "/")
+        else:
+            path_matches = item_path == repo_path
+        if not path_matches:
+            continue
+        if not separator or item.nodeid == expected_nodeid or item.nodeid.startswith(expected_nodeid + "["):
+            return True
+    return False
+
+
+def pytest_collection_finish(session: pytest.Session) -> None:
+    state = _repository_pytest_state(session.config)
+    if not state.enabled:
+        return
+    if state.workflow != "focused-full" and not state.selector_compat:
+        return
+
+    missing = [target for target in session.config.args if not _target_has_selected_item(target, session.items)]
+    if missing:
+        rendered = ", ".join(missing)
+        raise pytest.UsageError(
+            "repository focused pytest target collected zero selected nodeids "
+            f"(missing, lane-isolated, or marker-deselected): {rendered}"
+        )
 
 
 # ---------------------------------------------------------------------------

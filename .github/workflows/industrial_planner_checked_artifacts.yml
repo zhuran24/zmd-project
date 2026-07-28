@@ -115,6 +115,7 @@ jobs:
       - name: Run focused IndustrialPlanner regressions
         run: |
           python -m pytest \
+            --repository-workflow=focused-full \
             src/tests/test_industrial_planner_export.py \
             src/tests/test_industrial_planner_full_demand_base_matrix.py \
             src/tests/test_industrial_planner_full_demand_deployment_matrix.py \

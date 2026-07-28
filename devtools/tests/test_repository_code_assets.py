@@ -145,13 +145,26 @@ def test_authority_inputs_controls_and_current_specs_are_not_historical_evidence
     assert f8["lifecycle"] == "retired_retained"
 
 
-def test_g1_disabled_projections_do_not_require_g2_files() -> None:
+def test_g1_disabled_projection_mode_has_no_g2_file_dependency() -> None:
     manifest = copy.deepcopy(assets.load_manifest())
+    for name in ("search", "lint", "pytest"):
+        manifest["logical_isolation"][name]["enabled"] = False
+    assets._validate_enabled_projections(manifest)
+
+
+def test_g2_pytest_and_lint_are_enabled_without_enabling_search_early() -> None:
+    manifest = assets.load_manifest()
     assert {
         name: manifest["logical_isolation"][name]["enabled"]
         for name in ("search", "lint", "pytest")
-    } == {"search": False, "lint": False, "pytest": False}
-    assets._validate_enabled_projections(manifest)
+    } == {"search": False, "lint": True, "pytest": True}
+
+    developer = assets._projected_lint_paths("developer")
+    full = assets._projected_lint_paths("full")
+    assert developer["projection_enabled"] is True
+    assert "src/models/pose_bool_exact_master.py" in developer["paths"]
+    assert "scripts/phase3b/checkpoint_free/signature_bucket/build_s53_fail_closed_hardening.py" not in developer["paths"]
+    assert "scripts/phase3b/checkpoint_free/signature_bucket/build_s53_fail_closed_hardening.py" in full["paths"]
 
 
 def test_pytest_lane_rules_are_ordered_replay_evidence_then_developer() -> None:
@@ -166,6 +179,58 @@ def test_pytest_lane_rules_are_ordered_replay_evidence_then_developer() -> None:
     assert lane("src/tests/test_r1_upper_bound_pb_v1.py") == "evidence"
     assert lane("src/tests/test_routing.py") == "developer"
     assets._validate_pytest_lanes(assets.load_manifest())
+
+
+def test_focused_workflow_refuses_marker_deselection() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "-p",
+            "no:randomly",
+            "--repository-workflow=focused-full",
+            "--basetemp=.pytest_tmp/governance-focused",
+            "-k",
+            "__repository_governance_selects_nothing__",
+            "src/tests/test_routing.py",
+            "--collect-only",
+            "-q",
+        ],
+        cwd=assets.ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    assert completed.returncode == pytest.ExitCode.USAGE_ERROR
+    assert "focused-full forbids -m/-k selection" in completed.stdout
+
+
+def test_affected_selector_cannot_reintroduce_an_evidence_target() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "-p",
+            "no:randomly",
+            "--basetemp=.pytest_tmp/selected",
+            "-m",
+            "not slow",
+            "src/tests/test_routing.py",
+            "src/tests/test_noncert_cuts_ab16_contract_v1.py",
+            "--collect-only",
+            "-q",
+        ],
+        cwd=assets.ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    assert completed.returncode == pytest.ExitCode.USAGE_ERROR
+    assert "developer workflow refuses explicit targets from another lane" in completed.stdout
 
 
 def test_source_discovery_implementations_agree_and_exclude_devtools() -> None:

@@ -63,6 +63,7 @@ jobs:
       - name: Run focused single-base delivery regressions
         run: |
           python -m pytest \
+            --repository-workflow=focused-full \
             src/tests/test_industrial_planner_single_base_delivery_viewer.py \
             src/tests/test_industrial_planner_single_base_delivery_landing.py \
             src/tests/test_industrial_planner_single_base_delivery_frontdoor.py \

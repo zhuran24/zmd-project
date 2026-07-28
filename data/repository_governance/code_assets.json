@@ -715,7 +715,7 @@
       ]
     },
     "lint": {
-      "enabled": false,
+      "enabled": true,
       "excluded_rules": [
         ".artifacts/**",
         "paths/**",
@@ -725,7 +725,7 @@
       ]
     },
     "pytest": {
-      "enabled": false,
+      "enabled": true,
       "lane_rules": [
         {
           "glob": "src/tests/cuts/test_replay.py",
@@ -985,8 +985,8 @@
       "argv_source": "python -m pytest",
       "baseline_count": 6624,
       "baseline_sha256": "6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96",
-      "expected_count": 6624,
-      "expected_sha256": "6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96"
+      "expected_count": 3474,
+      "expected_sha256": "d2cbd92cfd9b06d3a77892169d027e85de8ffbd058a3c1eb3ea5f78369d5bb6c"
     },
     {
       "id": "industrial_planner_checked",
