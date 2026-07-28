@@ -1,6 +1,6 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-27。**
+**状态日期：2026-07-28。**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
 
 ## 当前结论摘要
@@ -13,8 +13,14 @@
   [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md)。
 - **SMM4 formal 终态：** `smm4-formal-a004` 已消费且永久不得重试。内部
   `VERIFIED`/UNSAT receipt 仍为 `upper_bound_update_authorized=false`，不是账本
-  授权源；`production_certified=false`。下一项强制任务登记为
-  `AB16_GATE_B_AND_16_ORGANIC_ARMS`，尚未执行。
+  授权源；`production_certified=false`。`AB16_GATE_B_AND_16_ORGANIC_ARMS`
+  仍登记为后续 formal 任务，未执行且未取消；当前先推进下述 W0 D6 最小局部
+  witness 构造实验。
+- **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
+  hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
+  research/developer infrastructure 落地。它只处理 framework 的完整局部 D6
+  antecedent；实际 verdict 只写 clean 提交之后新建的 `.artifacts/research_runs/`
+  no-overwrite root，不写入 tracked 状态，不产生 cut、拒绝、下界或全局结论。
 - **Routing-aware witness / W2b：** 已有研究构造、运行监督与独立复验基础设施；
   当前没有通过其 HEAD/input-pinned 验收链的 content-addressed layout，故
   `L=absent` 不变。该基础设施不属于发布面，也不产生 production authority。
@@ -25,6 +31,34 @@
   局部 mechanism reachability 与 exclusion power；AB16 仅完成 non-authorizing Gate A，
   Gate B、formal campaign 与 16 个 organic arms 均未创建或运行。这些结果不建立
   family-global soundness、production `CERTIFIED`、上下界、witness、attainability 或 optimality。
+
+## 2026-07-28 W0 D6 research intake 与局部 gate
+
+当前候选只以 research input 收编：strict instance SHA-256 为
+`e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849c`，
+framework SHA-256 为
+`db6046cf598f9b5738b7f8950c91ea31834e8214e7e07995175b71eb04bdbb89`，
+实际 geometry seed SHA-256 为
+`18c72669105f486bf54a2665bd74d1ff952ce2eeb39b28a7b30d5ce8d5d2f5f1`。
+seed 内 producer 自报的
+`295bfef9b2681193e3a9cc085c479a960f87de0131abfbdfacb676479bdb2aa5`
+没有绑定实际 seed bytes，明确拒绝作为验收 identity；外部 validation 与冻结 geometry
+front probe 也只保留为背景材料。
+
+实现分成两个可独立验收的层次。`devtools/research_run_contract.py` 只提供严格稳定
+bytes snapshot、实际 SHA-256、exclusive/no-overwrite run root、canonical
+config/receipt 与 byte-identity replay，不解释 W0 数学。D6 专用目录
+[`w0_power_cycle_domino_d6_20260728`](../research/w0_power_cycle_domino_d6_20260728/README.md)
+联合决定 body、operation class、mode、active physical ports/fronts、合法 transport
+incidence，以及 cycle output-injection/input-tap 的双极可达性；seed anchors 只作 hint，
+不能恢复“先冻结 body、再补 fronts”。
+
+`FEASIBLE` 只证明 receipt 绑定的局部 D6 实例；`INFEASIBLE` 只关闭完全一致的
+antecedent、源码与 solver config；`UNKNOWN`、中断、intake 失败或异常均没有拒绝语义。
+H20 row-power oracle 不实现，全图 solve 不启动。该工作不改
+`PROJECT_LOCK.md`、solver/cut production 控制流、checkpoint identity、冻结或密封 bytes、
+certified exact-source TCB、`U=(1188,18)`、`L=absent` 或
+`production_certified=false`。
 
 ## 2026-07-27 SMM4 research upper recovery 终态
 

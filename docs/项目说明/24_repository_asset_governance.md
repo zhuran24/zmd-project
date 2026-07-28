@@ -61,21 +61,22 @@ python devtools/check_repository_code_assets.py inventory --format json
 不是终态 developer 面；其中包含 6,517 个 `src/tests` nodeid 和 107 个当时被 bare discovery
 顺带收集的 auxiliary memory nodeid。
 
-G2 把 non-slow 全集拆成三个互斥面；下表是 G3 公共合同落地后的当前收据：
+G2 把 non-slow 全集拆成三个互斥面；下表是 G3 公共合同与 W0 D6
+evidence/replay tests 落地后的当前收据：
 
 | collect 面 | nodeids | 规范化 SHA256 |
 |---|---:|---|
 | developer | 3,505 | `fcd32f4bca74b255556a16dbea47988187ee68291343e5e8f1e08627e13dc816` |
-| evidence、非 replay、非 slow | 1,504 | `3d2953ce5e71a3731dd5e08a57d4b12be90c152978cf4988956c112d029af6bb` |
-| replay、非 slow | 1,508 | `47a3861c3f1834ccf4bd8cf81e84f468bf6c3ae138859e6a03df550e796d799f` |
-| 三面并集 / full non-slow | 6,517 | `250b06cb2b8cc0d187a770e212c44df4a8c7792519ffdcd6ff5b8cae93d47725` |
-| full/all | 6,548 | `28bb9e586ed8b062208d48d548e0632d7b1f41f5ad06acd0e5212eea5b96b82d` |
+| evidence、非 replay、非 slow | 1,512 | `c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b` |
+| replay、非 slow | 1,513 | `1520ee8067e97057072eaaa6412f0af3efc2671db923941d5bd381f330168fb8` |
+| 三面并集 / full non-slow | 6,530 | `dc005ea8a7f0e837e04dc6d75990fb565d6b5f1729af68cdb687ec7bbe41e038` |
+| full/all | 6,561 | `33e93fb0e5282fa2fa8d9946a19540171f4c8244973da17520ff527e36147ad1` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
 full/all。G3 的 31 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
-evidence、replay、slow 和既有 focused 入口不变。所有数字都是收集面身份，不是通过数量或
-soundness 证明。
+W0 D6 的 8 个 gate nodeid 进入 evidence，5 个独立 replay nodeid 进入 replay；
+slow 和既有 focused 入口不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。
 
 ## 分类合同
 

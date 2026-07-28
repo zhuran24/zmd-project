@@ -73,6 +73,7 @@
 | Path | Status | 说明 |
 |---|---|---|
 | `devtools/research_run_contract.py` | CURRENT_CODE_ALIGNED | G3 developer/research-only 的稳定字节快照、独占 no-overwrite run root、canonical envelope 与字节 identity replay；不进入 certified exact-source TCB 或 production authority |
+| `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion 与 stdlib-only replay；只在 ignored no-overwrite run root 输出局部 receipt，不产生全图 witness、cut、上下界或 production authority |
 | `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 15 active obligations；绑定 sink/hash/guard/critical files |
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
@@ -115,13 +116,13 @@ retirement candidate 19。该数字只描述这个带日期的基线；当前工
 规范化 SHA256 为
 `6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96`。当前互斥快速面为：
 developer 3,505（`fcd32f4bca74b255556a16dbea47988187ee68291343e5e8f1e08627e13dc816`）、
-evidence/non-replay 1,504（`3d2953ce5e71a3731dd5e08a57d4b12be90c152978cf4988956c112d029af6bb`）、
-replay 1,508（`47a3861c3f1834ccf4bd8cf81e84f468bf6c3ae138859e6a03df550e796d799f`）。
-三者并集逐 nodeid 等于 full/non-slow 6,517
-（`250b06cb2b8cc0d187a770e212c44df4a8c7792519ffdcd6ff5b8cae93d47725`）。
+evidence/non-replay 1,512（`c9ded925f2b73b747980bc85586752cc45594e1898cb080fc7059b0cf7f0db7b`）、
+replay 1,513（`1520ee8067e97057072eaaa6412f0af3efc2671db923941d5bd381f330168fb8`）。
+三者并集逐 nodeid 等于 full/non-slow 6,530
+（`dc005ea8a7f0e837e04dc6d75990fb565d6b5f1729af68cdb687ec7bbe41e038`）。
 
-以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 为 6,548
-（`28bb9e586ed8b062208d48d548e0632d7b1f41f5ad06acd0e5212eea5b96b82d`），slow 仍为 31
+以上都是 collect-only 身份，不是通过数量或 soundness 结论。full/all 为 6,561
+（`33e93fb0e5282fa2fa8d9946a19540171f4c8244973da17520ff527e36147ad1`），slow 仍为 31
 （`9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd`）；既有 focused
 入口的 count/hash 不变。另有 107 个 auxiliary memory tests 通过显式 full 路径保留，
 nodeid SHA256 为 `32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1`。

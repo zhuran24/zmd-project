@@ -18,19 +18,21 @@
 > 文档没有它们的位置。08/09/10/13 是"史料+现行混排"的 ledger，**保持
 > 原样加注、不重写**；总图由本文档承担。
 
-## 0. 一句话现状（2026-07-27；研究证据截止 2026-07-27）
+## 0. 一句话现状（2026-07-28；研究证据截止 2026-07-28）
 
 P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 进行中，
 研究双账当前为 `U=(1188,18)`、`L=absent`。strict/SMM3 与前两个 SMM4 root
 的失败事实继续保留；第三个 fresh-authority root 的唯一 formal one-shot 已由
 最终 detached receipt 与 immutable closeout 授权 research upper recovery。
 该结果不建立 `(1188,18)` attainability、global optimality、whole-instance
-infeasibility、lower bound 或 production `CERTIFIED`。
+infeasibility、lower bound 或 production `CERTIFIED`。当前最小研究实现切换到
+W0 power-cycle domino 的局部 D6 joint completion；AB16 formal 后续任务未执行、
+未取消，继续后置。
 
 | 工作线 | 当前终态坐标 | Authority 边界 |
 |---|---|---|
 | **cut 框架工程线** | Production family 状态不变：F1/F6/F7 为 typed，F5 为 shadow-only，F2/F3/F4/F9 为 `LEGACY_DIAGNOSTIC`，F8 retired；attach 仍 unsafe/default-off，B6 未授权。07-24 rule/cut evolution 只增加 test/offline shadow 维护面。Noncert cuts Gate 1 v4 只建立 `MECHANISM_CREDIBLE`；prospective AB16 为 `GATE_A_FINALIZED / GATE_B_NOT_CREATED`，formal campaign 未创建、organic arms `0/16`。 | Shadow 与 noncert 结果都不授权 production attach、family-global soundness、上下界、witness 或 optimality。 |
-| **求解与研究线** | SMM4 fresh-authority 的 `smm4-formal-a004` 已消费且不得重试；最终 detached receipt 与 immutable closeout 均为 `VERIFIED` 并授权 research upper ledger 更新为 `U=(1188,18)`，`L=absent`。内部 formal receipt 即使 `VERIFIED`/UNSAT 仍为 `upper_bound_update_authorized=false`；routing-aware witness/W2b 仍没有被账本接受的 layout。下一项强制任务为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`，尚未执行。 | 只建立 research upper recovery；不建立 `(1188,18)` attainability、global optimality、whole-instance infeasibility、lower bound 或 production `CERTIFIED`。旧 receipt 只证明其 originating HEAD、inputs、tools 与工件字节。 |
+| **求解与研究线** | SMM4 fresh-authority 的 `smm4-formal-a004` 已消费且不得重试；最终 detached receipt 与 immutable closeout 均为 `VERIFIED` 并授权 research upper ledger 更新为 `U=(1188,18)`，`L=absent`。内部 formal receipt 即使 `VERIFIED`/UNSAT 仍为 `upper_bound_update_authorized=false`；routing-aware witness/W2b 仍没有被账本接受的 layout。当前实现 W0 power-cycle domino 的 hash-pinned、no-overwrite 局部 D6 joint completion 与独立 replay；`AB16_GATE_B_AND_16_ORGANIC_ARMS` 未执行、未取消并继续后置。 | D6 的 `FEASIBLE` 只证明完整一致的局部 antecedent，`INFEASIBLE` 只关闭同一局部 antecedent，`UNKNOWN` 无拒绝语义；不启动全图 solve，不改变上下界或 production authority。旧 receipt 只证明其 originating HEAD、inputs、tools 与工件字节。 |
 | **支线** | P3.0 轴 A 已有 68 条定理；轴 B 待开工。P2.0 吞吐认证仍是 owner 判定的必做线；TNS 设计稿完成未排。 | P2.0 不受 P1.2 历史 theorem scope exclusion 覆盖。 |
 
 下表保存 **2026-07-20 的执行快照**，仅用于追溯当时的排期，不覆盖上表终态：
@@ -65,6 +67,7 @@ infeasibility、lower bound 或 production `CERTIFIED`。
 | 07-24 | `(1188,18)` sidewise strict 与 SMM3 recovery 均以 `FORMAL_AUTHORITY_INCOMPLETE` 失败关闭，账本不变。Rule/cut evolution 保持 test/offline shadow。Noncert Gate 1 v4 仅建立单个注入 inequality 的 `MECHANISM_CREDIBLE`；AB16 停在 Gate A，未创建 formal campaign 或 organic arm | `b1_sidewise_marked_membrane_strict_20260724/`；`b1_sidewise_marked_membrane_authority_recovery_20260724/`；`23_rule_cut_evolution_protocol.md`；`noncert_cuts_ab_trust_gate1_v4_20260724/`；`noncert_cuts_ab16_20260724/` |
 | 07-25 | 合并态 provenance gate 保留 Track B、R4 与 noncert 研究 authority 的原始 HEAD/input/tool 身份；旧 receipt 不因进入后续 HEAD 而成为新生成 authority，研究双账仍为 `U=(1188,22)`、`L=absent` | `src/tests/conftest.py` |
 | 07-27 | SMM4 第三个 fresh-authority root 完成唯一 formal one-shot；`smm4-formal-a004` 已消费且不得重试。最终 detached receipt 与 immutable closeout 均为 `VERIFIED`，且只有二者授权 research upper ledger 更新为 `U=(1188,18)`、`L=absent`；`production_certified=false`。下一项强制任务登记为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`，未执行 | [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md) |
+| 07-28 | G3 最小公共研究基础层先行落地；其上新增 W0 power-cycle domino 的 strict/framework/actual-seed byte binding、exact front-aware D6 joint completion gate、canonical receipt 与 stdlib-only 独立 replay。tracked 源码不预写 verdict；实际运行只能在 clean 提交后的 no-overwrite research root 中产生，且始终保持 `U=(1188,18)`、`L=absent` 与 production authority 不变。AB16 未取消，继续后置 | [W0 D6 research gate](../research/w0_power_cycle_domino_d6_20260728/README.md)；[24号治理](24_repository_asset_governance.md) |
 
 ### 0b. 方法论：规则归属判据 v2 → v2.3（2026-07-17 三轮推出 v1/v2/v2.1；07-18 两轮补 cut 方法论与四问统一；07-20 干净房间 R2/R3 外部收编）
 

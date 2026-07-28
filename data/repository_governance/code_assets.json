@@ -38,11 +38,11 @@
     },
     "expected_current_class_counts": {
       "active_implementation": 386,
-      "test": 648,
+      "test": 650,
       "common_infrastructure": 477,
       "authoritative_input": 4,
       "enforcement_control": 9,
-      "historical_evidence": 464,
+      "historical_evidence": 467,
       "retirement_candidate": 19
     },
     "conditional_current_assets": [
@@ -336,6 +336,38 @@
         ],
         "mutation_policy": "project_lock_or_owner_process_required",
         "rationale": "Artifact manifests, proof obligations, allowlists and review gates are active controls, never historical evidence."
+      },
+      {
+        "id": "w0_d6_evidence_test",
+        "match": {
+          "path": "src/tests/test_w0_d6_gate.py"
+        },
+        "primary_class": "test",
+        "lifecycle": "current_research_evidence",
+        "authority_role": "non_authorizing_local_d6_evidence_test",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "evidence",
+          "full"
+        ],
+        "mutation_policy": "normal_review",
+        "rationale": "The W0 D6 gate evidence test exercises local research semantics without entering the developer default or granting a witness, cut, bound, or production authority."
+      },
+      {
+        "id": "w0_d6_replay_test",
+        "match": {
+          "path": "src/tests/test_w0_d6_replay.py"
+        },
+        "primary_class": "test",
+        "lifecycle": "current_research_replay",
+        "authority_role": "non_authorizing_local_d6_replay_test",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "replay",
+          "full"
+        ],
+        "mutation_policy": "normal_review",
+        "rationale": "The W0 D6 independent replay test remains outside the developer default and can only confirm the exact local receipt it replays."
       },
       {
         "id": "phase3b_replay_tests",
@@ -790,6 +822,14 @@
     "pytest": {
       "enabled": true,
       "lane_rules": [
+        {
+          "glob": "src/tests/test_w0_d6_replay.py",
+          "lane": "replay"
+        },
+        {
+          "glob": "src/tests/test_w0_d6_gate.py",
+          "lane": "evidence"
+        },
         {
           "glob": "src/tests/cuts/test_replay.py",
           "lane": "replay"
