@@ -43,6 +43,10 @@ RESOURCE = _load(
     "noncert_cuts_ab16_resource_verifier_v2_regression",
     TOOLS / "organic_resource_verifier_v2.py",
 )
+RESOURCE_LIFECYCLE = _load(
+    "noncert_cuts_ab16_resource_lifecycle_v2_regression",
+    TOOLS / "organic_resource_lifecycle_v2.py",
+)
 TERMINAL = _load(
     "noncert_cuts_ab16_terminal_gate_v2_regression",
     TOOLS / "ab16_terminal_gate_v2.py",
@@ -2115,6 +2119,12 @@ def test_formal_pre_run_v2_shape_preregisters_and_replays_references() -> None:
     assert tool_roles["attestor_python"] == "attestor_python"
     assert tool_roles["python3_13"] == "python3_13"
     assert tool_roles["attestor_python"] != tool_roles["python3_13"]
+    assert set(tool_roles) | {"manager_epoch_authority"} == set(
+        RESOURCE_LIFECYCLE.FORMAL_TOOL_ROLES
+    )
+    assert set(tool_roles) | {"manager_epoch_authority"} == (
+        RESOURCE.FORMAL_TOOL_ROLES
+    )
 
     builder = _function(tree, "_build_pre_run_candidate_unprotected")
     output_names = _assigned_literal(builder, "output_names")

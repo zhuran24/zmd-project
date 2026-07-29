@@ -99,6 +99,28 @@ SELECTED_BYTE_OPEN_FILE_NAMES = ["ab16-python", "ab16-loader", "ab16-authority"]
 SELECTED_BYTE_FD_MAP = {"authority": 5, "loader": 4, "python": 3}
 FORMAL_IMPORT_MODE = "ordinary_pathfinder"
 FORMAL_MODULE_ORIGIN_POLICY = "sealed-snapshot-only-v1"
+DRILL_TOOL_ROLES = frozenset(
+    {
+        "attestor_python",
+        "busctl",
+        "manager_attestor",
+        "manager_epoch_authority",
+        "organic_arm_runner",
+        "organic_resource_lifecycle",
+        "organic_resource_verifier",
+        "organic_unit_orchestrator",
+        "python3_13",
+        "systemd_unit_reference",
+        "libsystemd",
+        "sudo",
+        "systemctl",
+        "systemd_run",
+    }
+)
+FORMAL_TOOL_ROLES = DRILL_TOOL_ROLES | {
+    "ab16_authority",
+    "ab16_formal_loader",
+}
 
 GIB = 1024**3
 FORMAL_RESOURCE_CONTRACT: dict[str, object] = {
@@ -1707,6 +1729,10 @@ def validate_formal_execution_source(
     )
     if dict(python_identity) != dict(tools["python3_13"]):
         raise VerificationError("formal selected Python differs from package tool")
+    if dict(loader_identity) != dict(tools["ab16_formal_loader"]):
+        raise VerificationError("formal selected loader differs from named package tool")
+    if dict(authority_identity) != dict(tools["ab16_authority"]):
+        raise VerificationError("formal selected authority differs from named package tool")
     _replay_identity(python_identity, "formal selected Python", mode_required=True)
     _replay_identity(loader_identity, "formal selected loader", mode_required=True)
     _replay_identity(authority_identity, "formal selected authority", mode_required=True)
@@ -2090,22 +2116,12 @@ def validate_pre_run_authority(
     ):
         raise VerificationError("pre-run package identity is invalid")
     tools = _mapping(record.get("tool_identities"), "pre-run tool identities")
-    if set(tools) != {
-        "attestor_python",
-        "busctl",
-        "manager_attestor",
-        "manager_epoch_authority",
-        "organic_arm_runner",
-        "organic_resource_lifecycle",
-        "organic_resource_verifier",
-        "organic_unit_orchestrator",
-        "python3_13",
-        "systemd_unit_reference",
-        "libsystemd",
-        "sudo",
-        "systemctl",
-        "systemd_run",
-    }:
+    expected_tool_roles = (
+        FORMAL_TOOL_ROLES
+        if record["execution_class"] == "FORMAL_AB16"
+        else DRILL_TOOL_ROLES
+    )
+    if set(tools) != expected_tool_roles:
         raise VerificationError("pre-run tool role set drifted")
     for role, identity in tools.items():
         _replay_identity(identity, f"pre-run tool {role}", mode_required=True)

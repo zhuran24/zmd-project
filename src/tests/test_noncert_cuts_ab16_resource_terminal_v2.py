@@ -1143,6 +1143,17 @@ def _fixture(
         "systemctl": identities["systemctl"],
         "systemd_run": identities["systemd-run"],
     }
+    if formal:
+        assert (
+            formal_authority_identity is not None
+            and formal_loader_identity is not None
+        )
+        tool_identities.update(
+            {
+                "ab16_authority": formal_authority_identity,
+                "ab16_formal_loader": formal_loader_identity,
+            }
+        )
     authority_chain = {
         "campaign_root_identity": identities["root"],
         "continuation_identity": identities["continuation"],
@@ -1584,6 +1595,112 @@ def test_pinned_epoch_observer_rejects_python3_13_as_attestor(
         observer("launch")
 
 
+def test_pre_run_tool_roles_are_exact_for_formal_execution(
+    tmp_path: Path,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    assert pre_run["execution_class"] == "FORMAL_AB16"
+    assert set(pre_run["tool_identities"]) == set(
+        LIFECYCLE.FORMAL_TOOL_ROLES
+    )
+    assert set(pre_run["tool_identities"]) == VERIFIER.FORMAL_TOOL_ROLES
+
+    for role in ("ab16_authority", "ab16_formal_loader"):
+        missing = copy.deepcopy(pre_run)
+        del missing["tool_identities"][role]
+        with pytest.raises(
+            LIFECYCLE.LifecycleError,
+            match="tool identities must have the exact key set",
+        ):
+            LIFECYCLE.validate_pre_run_authority(missing)
+        with pytest.raises(
+            VERIFIER.VerificationError,
+            match="pre-run tool role set drifted",
+        ):
+            VERIFIER.validate_pre_run_authority(missing)
+
+
+def test_pre_run_tool_roles_reject_formal_roles_for_drill(
+    tmp_path: Path,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(
+        tmp_path,
+        execution_class="DISPOSABLE_LIVE_DRILL",
+    )
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    assert set(pre_run["tool_identities"]) == set(LIFECYCLE.TOOL_ROLES)
+    assert set(pre_run["tool_identities"]) == VERIFIER.DRILL_TOOL_ROLES
+
+    mixed = copy.deepcopy(pre_run)
+    mixed["tool_identities"]["ab16_authority"] = copy.deepcopy(
+        mixed["tool_identities"]["organic_arm_runner"]
+    )
+    with pytest.raises(
+        LIFECYCLE.LifecycleError,
+        match="tool identities must have the exact key set",
+    ):
+        LIFECYCLE.validate_pre_run_authority(mixed)
+    with pytest.raises(
+        VERIFIER.VerificationError,
+        match="pre-run tool role set drifted",
+    ):
+        VERIFIER.validate_pre_run_authority(mixed)
+
+
+@pytest.mark.parametrize(
+    ("named_role", "replacement_role", "message"),
+    [
+        (
+            "ab16_formal_loader",
+            "ab16_authority",
+            "formal selected loader differs from named package tool",
+        ),
+        (
+            "ab16_authority",
+            "ab16_formal_loader",
+            "formal selected authority differs from named package tool",
+        ),
+    ],
+)
+def test_formal_named_tool_identity_swaps_fail_closed(
+    tmp_path: Path,
+    named_role: str,
+    replacement_role: str,
+    message: str,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    swapped = copy.deepcopy(pre_run)
+    swapped["tool_identities"][named_role] = copy.deepcopy(
+        swapped["tool_identities"][replacement_role]
+    )
+
+    with pytest.raises(LIFECYCLE.LifecycleError, match=message):
+        LIFECYCLE.validate_pre_run_authority(swapped)
+    with pytest.raises(VERIFIER.VerificationError, match=message):
+        VERIFIER.validate_pre_run_authority(swapped)
+
+
+def test_formal_selected_loader_and_argv_rewrite_fails_named_join(
+    tmp_path: Path,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    changed = copy.deepcopy(pre_run)
+    selected = changed["launch"]["execution_source"]["selected_byte_launch"]
+    selected["loader_identity"] = copy.deepcopy(selected["authority_identity"])
+    selected_argument = LIFECYCLE._selected_identity_argument(selected)  # noqa: SLF001
+    changed["launch"]["payload_argv"][6] = selected_argument
+    changed["launch"]["supervisor_argv"][6] = selected_argument
+    message = "formal selected loader differs from named package tool"
+
+    with pytest.raises(LIFECYCLE.LifecycleError, match=message):
+        LIFECYCLE.validate_pre_run_authority(changed)
+    with pytest.raises(VERIFIER.VerificationError, match=message):
+        VERIFIER.validate_pre_run_authority(changed)
+
+
 @pytest.mark.parametrize("phase", ["terminal", "unknown-phase"])
 def test_pinned_epoch_observer_rejects_old_or_unknown_phase(
     tmp_path: Path,
@@ -1941,6 +2058,10 @@ def test_disposable_drill_systemd_argv_remains_legacy_byte_shape(
         lambda source: source["selected_byte_launch"].__setitem__(
             "authority_identity",
             source["selected_byte_launch"]["loader_identity"],
+        ),
+        lambda source: source["selected_byte_launch"].__setitem__(
+            "loader_identity",
+            source["selected_byte_launch"]["authority_identity"],
         ),
     ],
 )

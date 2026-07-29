@@ -182,6 +182,11 @@ TOOL_ROLES = (
     "systemctl",
     "systemd_run",
 )
+FORMAL_ONLY_TOOL_ROLES = (
+    "ab16_authority",
+    "ab16_formal_loader",
+)
+FORMAL_TOOL_ROLES = (*TOOL_ROLES, *FORMAL_ONLY_TOOL_ROLES)
 
 SYSTEMD_PRETERMINAL_FIELDS = (
     "ActiveState",
@@ -817,6 +822,10 @@ def validate_formal_execution_source(
     )
     if dict(python_identity) != dict(tools["python3_13"]):
         raise LifecycleError("formal selected Python differs from package tool")
+    if dict(loader_identity) != dict(tools["ab16_formal_loader"]):
+        raise LifecycleError("formal selected loader differs from named package tool")
+    if dict(authority_identity) != dict(tools["ab16_authority"]):
+        raise LifecycleError("formal selected authority differs from named package tool")
     _replay_identity(python_identity, "formal selected Python", mode_required=True)
     _replay_identity(loader_identity, "formal selected loader", mode_required=True)
     _replay_identity(authority_identity, "formal selected authority", mode_required=True)
@@ -1420,8 +1429,17 @@ def validate_pre_run_authority(
     _integer(record["seed"], "seed")
     if _integer(record["workers"], "workers", minimum=1) != 1:
         raise LifecycleError("workers must be exactly one")
-    tools = _keys(record["tool_identities"], set(TOOL_ROLES), "tool identities")
-    for role in TOOL_ROLES:
+    expected_tool_roles = (
+        FORMAL_TOOL_ROLES
+        if record["execution_class"] == "FORMAL_AB16"
+        else TOOL_ROLES
+    )
+    tools = _keys(
+        record["tool_identities"],
+        set(expected_tool_roles),
+        "tool identities",
+    )
+    for role in expected_tool_roles:
         _identity(tools[role], f"tool identity {role}", mode_required=True)
     strict_inputs = _mapping(record["strict_input_identities"], "strict inputs")
     if not strict_inputs:
