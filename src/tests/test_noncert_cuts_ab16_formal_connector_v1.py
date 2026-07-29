@@ -2070,6 +2070,47 @@ def test_loader_runtime_prefix_under_git_ancestor_is_platform_only(
     with pytest.raises(loader.FormalLoaderError, match="checkout-shaped import path"):
         loader._platform_paths(tmp_path / "snapshot")  # noqa: SLF001
 
+    loader_path = Path(loader.__file__).resolve()
+    command = """
+import importlib.util
+from pathlib import Path
+import sys
+from types import ModuleType
+
+loader_path = Path(sys.argv[1])
+home = Path(sys.argv[2])
+runtime_prefix = home / "runtime-prefix"
+runtime_prefix.mkdir()
+module_name = "_ab16_loader_runtime_prefix_fixture"
+spec = importlib.util.spec_from_file_location(module_name, loader_path)
+assert spec is not None and spec.loader is not None
+module = importlib.util.module_from_spec(spec)
+sys.modules[module_name] = module
+spec.loader.exec_module(module)
+sys.modules.pop(module_name)
+runtime_prefixes = module._runtime_prefixes()
+module._runtime_prefixes = lambda: (*runtime_prefixes, runtime_prefix)
+fixture = ModuleType("_frozen_importlib_fixture")
+fixture.__file__ = str(runtime_prefix / "lib/python3.13/importlib/_bootstrap.py")
+sys.modules[fixture.__name__] = fixture
+module._reject_ambient_modules(
+    module.ROLE_MAP["formal-controller"],
+    ModuleType("_selected_authority"),
+)
+print("PASS")
+"""
+    completed = subprocess.run(
+        [sys.executable, "-I", "-B", "-c", command, str(loader_path), str(home)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == "PASS\n"
+
+    (base_prefix / ".git").mkdir()
+    assert loader._live_checkout_origin(frozen_origin) is True  # noqa: SLF001
+
 
 def test_loader_rejects_duplicate_identity_and_same_fd_digest_drift(
     tmp_path: Path,

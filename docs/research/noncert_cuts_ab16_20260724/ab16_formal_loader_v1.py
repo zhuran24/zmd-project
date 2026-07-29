@@ -297,7 +297,7 @@ def _live_checkout_origin(path: Path) -> bool:
     if checkout is None:
         return False
     for prefix in _runtime_prefixes():
-        if _inside(path, prefix) and _inside(prefix, checkout):
+        if checkout != prefix and _inside(path, prefix) and _inside(prefix, checkout):
             # A pinned interpreter or venv can itself live below a broader
             # Git work tree (for example a home-directory dotfiles repo).
             # Keep that explicit platform TCB, but do not excuse a checkout
