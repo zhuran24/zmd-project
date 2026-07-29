@@ -307,38 +307,6 @@ def _mode_identity(path: Path | str) -> dict[str, object]:
     }
 
 
-def _unterminated_mode_record(
-    path: Path | str,
-    label: str,
-) -> tuple[dict[str, Any], dict[str, object]]:
-    absolute = Path(os.path.abspath(os.fspath(path)))
-    descriptor = _OwnedDescriptor()
-    try:
-        descriptor.acquire(_open_regular(absolute))
-        raw = _read_stable_fd(
-            descriptor.descriptor,
-            label=label,
-            expected_nlink=1,
-            limit=4 * 1024 * 1024,
-        )
-        metadata = os.fstat(descriptor.descriptor)
-        value = _strict_unterminated_json(raw, label)
-        if type(value) is not dict:
-            raise QualificationError(f"{label} is not a JSON object")
-    except BaseException as exc:
-        descriptor.close_preserving(exc)
-        raise
-    close_error = descriptor.close()
-    if close_error is not None:
-        _raise_cleanup_error(f"{label} descriptor", close_error)
-    return value, {
-        "mode": stat.S_IMODE(metadata.st_mode),
-        "path": str(absolute),
-        "sha256": hashlib.sha256(raw).hexdigest(),
-        "size_bytes": len(raw),
-    }
-
-
 def _detached_identity(path: Path | str) -> dict[str, object]:
     identity = _mode_identity(path)
     return {
@@ -2048,7 +2016,7 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
         final_dir = output / "final-full-preflight"
         _run_pinned_gate_a_preflight(context, args, final_dir)
         final_receipt_path = final_dir / "receipt.json"
-        final_receipt, final_identity = _unterminated_mode_record(
+        final_receipt, final_identity = bootstrap._unterminated_canonical_mode_record(  # noqa: SLF001
             final_receipt_path,
             "Gate-B final full-preflight receipt",
         )

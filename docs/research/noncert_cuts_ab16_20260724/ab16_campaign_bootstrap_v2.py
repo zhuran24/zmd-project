@@ -1445,6 +1445,22 @@ def _canonical_mode_record(
     return value, _snapshot_mode_identity(path)
 
 
+def _unterminated_canonical_mode_record(
+    path: Path | str,
+    label: str,
+) -> tuple[Mapping[str, Any], dict[str, object]]:
+    snapshot = authority.snapshot_regular(path)
+    value = authority.strict_loads(snapshot.data, label)
+    if authority.canonical_json(value)[:-1] != snapshot.data:
+        raise BootstrapError(f"{label} is not canonical unterminated strict JSON")
+    if not isinstance(value, Mapping):
+        raise BootstrapError(f"{label} is not a JSON object")
+    return value, {
+        "mode": stat.S_IMODE(snapshot.stat_result.st_mode),
+        **authority.detached_identity(snapshot),
+    }
+
+
 def _project_mode_identity(value: Mapping[str, object], label: str) -> dict[str, object]:
     try:
         projection = {field: value[field] for field in ("mode", "path", "sha256", "size_bytes")}
@@ -2128,7 +2144,7 @@ def _validate_final_full_preflight(
     expected_preflight = _project_mode_identity(planned["input.preflight_gate"], "preflight script")
     expected_python = _project_mode_identity(planned["system.python3_13"], "preflight Python")
     expected_runner = _project_mode_identity(planned["script.gate_a_validation_v2"], "preflight runner")
-    gate_a_preflight, gate_a_identity = _canonical_mode_record(
+    gate_a_preflight, gate_a_identity = _unterminated_canonical_mode_record(
         gate_a["full_preflight_receipt_identity"]["path"],
         "Gate-A full-preflight receipt",
     )

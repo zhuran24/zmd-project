@@ -239,7 +239,7 @@ def test_gate_b_final_preflight_receipt_uses_unterminated_canonical_contract(
     receipt.write_bytes(raw)
     receipt.chmod(0o444)
     before = _fd_count()
-    observed, identity = QUALIFICATION._unterminated_mode_record(  # noqa: SLF001
+    observed, identity = BOOTSTRAP._unterminated_canonical_mode_record(  # noqa: SLF001
         receipt,
         "Gate-B final full-preflight receipt",
     )
@@ -255,14 +255,62 @@ def test_gate_b_final_preflight_receipt_uses_unterminated_canonical_contract(
     terminated = tmp_path / "terminated.json"
     terminated.write_bytes(QUALIFICATION._canonical_json(value))  # noqa: SLF001
     with pytest.raises(
-        QUALIFICATION.QualificationError,
-        match="canonical JSON",
+        BOOTSTRAP.BootstrapError,
+        match="canonical unterminated strict JSON",
     ):
-        QUALIFICATION._unterminated_mode_record(  # noqa: SLF001
+        BOOTSTRAP._unterminated_canonical_mode_record(  # noqa: SLF001
             terminated,
             "Gate-B final full-preflight receipt",
         )
     assert _fd_count() == before
+
+
+def test_bootstrap_final_preflight_replays_gate_a_with_unterminated_parser(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class ParserReached(RuntimeError):
+        pass
+
+    record = {key: None for key in BOOTSTRAP.FINAL_FULL_PREFLIGHT_KEYS}
+    record["command"] = {
+        "argv": [],
+        "execution_strategy": "fixture",
+        "loader_identity": {"sha256": "a" * 64, "size_bytes": 1},
+    }
+    gate_a = {
+        "full_preflight_receipt_identity": {
+            "mode": 0o444,
+            "path": "/fixture/gate-a-preflight.json",
+            "sha256": "b" * 64,
+            "size_bytes": 1,
+        }
+    }
+    planned = {
+        "input.preflight_gate": {},
+        "script.gate_a_validation_v2": {},
+        "system.python3_13": {},
+    }
+    monkeypatch.setattr(BOOTSTRAP, "_exact_keys", lambda value, *_args: value)
+    monkeypatch.setattr(BOOTSTRAP, "_utc", lambda *_args: None)
+    monkeypatch.setattr(BOOTSTRAP, "_mode_identity", lambda *_args: {})
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_project_mode_identity",
+        lambda *_args: {"mode": 0o555, "path": "/fixture/tool", "sha256": "c" * 64, "size_bytes": 1},
+    )
+
+    def parser(path: Path | str, label: str) -> tuple[object, dict[str, object]]:
+        assert path == "/fixture/gate-a-preflight.json"
+        assert label == "Gate-A full-preflight receipt"
+        raise ParserReached
+
+    monkeypatch.setattr(BOOTSTRAP, "_unterminated_canonical_mode_record", parser)
+    with pytest.raises(ParserReached):
+        BOOTSTRAP._validate_final_full_preflight(  # noqa: SLF001
+            record,
+            gate_a=gate_a,
+            planned=planned,
+        )
 
 
 def test_preflight_environment_rejects_non_socket_bus_without_fd_leak(
@@ -1035,6 +1083,13 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
         GATE_B_PURPOSE = "approval"
         GATE_B_SCHEMA = "approval-v4"
         RESULT_SCHEMA = "bootstrap-v3"
+
+        @staticmethod
+        def _unterminated_canonical_mode_record(
+            path: Path | str,
+            label: str,
+        ) -> tuple[object, dict[str, object]]:
+            return BOOTSTRAP._unterminated_canonical_mode_record(path, label)  # noqa: SLF001
 
         @staticmethod
         def _validate_final_full_preflight(
