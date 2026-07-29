@@ -133,7 +133,15 @@ def _install_fake_session_bus(
     runtime.mkdir(mode=0o700)
     runtime.chmod(0o700)
     bus = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    bus.bind(str(runtime / "bus"))
+    try:
+        runtime_descriptor = os.open(runtime, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
+        try:
+            bus.bind(f"/proc/self/fd/{runtime_descriptor}/bus")
+        finally:
+            os.close(runtime_descriptor)
+    except BaseException:
+        bus.close()
+        raise
     uid = os.getuid()
     expected_runtime = f"/run/user/{uid}"
     expected = {
@@ -199,6 +207,21 @@ def test_preflight_environment_ignores_inherited_session_bus_drift(
     bus, expected = _install_fake_session_bus(tmp_path, monkeypatch)
     monkeypatch.setenv("XDG_RUNTIME_DIR", "/tmp/untrusted-runtime")
     monkeypatch.setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/tmp/untrusted-bus")
+    try:
+        environment = QUALIFICATION._preflight_environment()  # noqa: SLF001
+    finally:
+        bus.close()
+    assert {key: environment[key] for key in expected} == expected
+
+
+def test_fake_session_bus_fixture_accepts_long_pytest_root(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    long_root = tmp_path / ("long-" + ("x" * 100))
+    long_root.mkdir()
+    assert len(os.fsencode(long_root / "runtime" / "bus")) > 107
+    bus, expected = _install_fake_session_bus(long_root, monkeypatch)
     try:
         environment = QUALIFICATION._preflight_environment()  # noqa: SLF001
     finally:
