@@ -314,6 +314,112 @@ def test_bootstrap_final_preflight_replays_gate_a_with_unterminated_parser(
         )
 
 
+def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class ParserReached(RuntimeError):
+        pass
+
+    campaign = tmp_path / "campaign"
+    repository = tmp_path / "repository"
+    gate_a_path = tmp_path / "gate-a.json"
+    candidate_path = tmp_path / "candidate.json"
+    preregistration_path = tmp_path / "preregistration.json"
+    gate_b_path = tmp_path / "gate-b.json"
+    final_preflight_path = tmp_path / "final-preflight.json"
+    source_digest = "a" * 64
+    scalar_binding = {
+        "planned_source_set_digest": source_digest,
+        "repository_head": "b" * 40,
+        "repository_root": str(repository),
+        "run_nonce": campaign.name,
+        "target_campaign_dir": str(campaign),
+    }
+    gate_a_identity = {
+        "path": str(gate_a_path),
+        "sha256": "c" * 64,
+        "size_bytes": 1,
+    }
+    candidate_identity = {
+        "path": str(candidate_path),
+        "sha256": "d" * 64,
+        "size_bytes": 1,
+    }
+    preregistration_identity = {
+        "path": str(preregistration_path),
+        "sha256": "e" * 64,
+        "size_bytes": 1,
+    }
+    final_preflight_identity = {
+        "mode": 0o444,
+        "path": str(final_preflight_path),
+        "sha256": "f" * 64,
+        "size_bytes": 1,
+    }
+    planned = {"fixture": {"path": "/fixture", "sha256": "1" * 64, "size_bytes": 1}}
+    gate_a = {**scalar_binding, "approval_id": "gate-a"}
+    candidate = {
+        **scalar_binding,
+        "gate_a_receipt_identity": gate_a_identity,
+        "path_preregistration_identity": preregistration_identity,
+        "planned_source_identities": planned,
+    }
+    gate_b = {
+        **scalar_binding,
+        "approval_id": "gate-b",
+        "candidate_identity": candidate_identity,
+        "final_full_preflight_receipt_identity": final_preflight_identity,
+        "gate_a_receipt_identity": gate_a_identity,
+    }
+    records = {
+        "Gate-A receipt": (gate_a, gate_a_identity),
+        "offline candidate": (candidate, candidate_identity),
+        "AB16 path preregistration": ({}, preregistration_identity),
+        "Gate-B approval": (
+            gate_b,
+            {"path": str(gate_b_path), "sha256": "2" * 64, "size_bytes": 1},
+        ),
+    }
+    monkeypatch.setattr(BOOTSTRAP, "_assert_campaign_absent", lambda *_args: None)
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_canonical_record",
+        lambda _path, label: records[label],
+    )
+    monkeypatch.setattr(BOOTSTRAP, "_validate_gate_a", lambda value: value)
+    monkeypatch.setattr(BOOTSTRAP, "validate_candidate", lambda value: value)
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "validate_path_preregistration",
+        lambda value, **_kwargs: value,
+    )
+    monkeypatch.setattr(BOOTSTRAP, "_validate_gate_b", lambda value: value)
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_planned_source_identities",
+        lambda **_kwargs: (planned, {}, {}, {}),
+    )
+    monkeypatch.setattr(BOOTSTRAP, "_source_set_digest", lambda _planned: source_digest)
+
+    def parser(path: Path | str, label: str) -> tuple[object, dict[str, object]]:
+        assert path == final_preflight_path
+        assert label == "Gate-B final full-preflight receipt"
+        raise ParserReached
+
+    monkeypatch.setattr(BOOTSTRAP, "_unterminated_canonical_mode_record", parser)
+    with pytest.raises(ParserReached):
+        BOOTSTRAP.bootstrap_campaign(
+            campaign_dir=campaign,
+            repository_root=repository,
+            gate_a_receipt=gate_a_path,
+            offline_candidate=candidate_path,
+            gate_b_approval=gate_b_path,
+            strict_input_paths={},
+            system_tool_paths={},
+        )
+
+
 def test_bootstrap_fd_execution_resolves_renderer_identity(
     tmp_path: Path,
 ) -> None:

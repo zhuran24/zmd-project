@@ -53,6 +53,158 @@ TERMINAL_V1_FIXTURE = _load(
 )
 
 
+def test_authority_unterminated_record_requires_exact_unterminated_canonical_json(
+    tmp_path: Path,
+) -> None:
+    value = {"schema_version": "fixture-v1", "status": "PASS"}
+    path = tmp_path / "receipt.json"
+    path.write_bytes(AUTHORITY.canonical_json(value)[:-1])
+    assert AUTHORITY._unterminated_record(  # noqa: SLF001
+        AUTHORITY.snapshot_regular(path),
+        "fixture receipt",
+    ) == value
+
+    for name, raw in (
+        ("terminated.json", AUTHORITY.canonical_json(value)),
+        ("spaced.json", json.dumps(value, sort_keys=True).encode("utf-8")),
+    ):
+        drifted = tmp_path / name
+        drifted.write_bytes(raw)
+        with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
+            AUTHORITY._unterminated_record(  # noqa: SLF001
+                AUTHORITY.snapshot_regular(drifted),
+                "fixture receipt",
+            )
+        assert exc_info.value.code == "JSON_NOT_CANONICAL"
+
+
+def test_gate_approval_replay_uses_unterminated_parser_for_both_full_preflights(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class ParserReached(RuntimeError):
+        pass
+
+    gate_a_keys = set(
+        "approval_id arm_launch_authorized created_at_utc decision disposable_authority_ready_identity "
+        "disposable_detached_replay_identity formal_campaign_creation_authorized full_preflight_receipt_identity "
+        "gate history_freeze_replay_identity manager_epoch offline_candidate_only planned_source_set_digest "
+        "purpose reference_capability_identity reference_capability_transcript_identity repository_head "
+        "repository_root run_nonce schema_version target_campaign_dir".split()
+    )
+    gate_a = {key: None for key in gate_a_keys}
+    planned = {
+        role: {
+            "mode": 0o555,
+            "path": f"/fixture/{role}",
+            "sha256": "a" * 64,
+            "size_bytes": 1,
+        }
+        for role in (
+            "input.preflight_gate",
+            "script.ab16_campaign_bootstrap_v2",
+            "script.ab16_gate_b_qualification_v1",
+            "script.gate_a_validation_v2",
+            "system.python3_13",
+        )
+    }
+    candidate = {"planned_source_identities": planned}
+    gate_b: dict[str, object] = {}
+    final = {
+        field: {}
+        for field in (
+            "authority_ready_identity",
+            "detached_replay_identity",
+            "pre_run_authority_identity",
+            "python_identity",
+            "stderr_identity",
+            "stdout_identity",
+        )
+    }
+    final["command"] = {"argv": [], "execution_strategy": "fixture", "loader_identity": {}}
+    source_roles = (
+        "input.ab16_gate_a_receipt.json",
+        "input.ab16_offline_candidate.json",
+        "input.ab16_gate_b_approval.json",
+        "input.ab16_gate_b_final_full_preflight.json",
+        "input.ab16_gate_b_epoch_observation.json",
+    )
+    sources = {
+        role: {
+            "source_identity": {
+                "mode": 0o444,
+                "path": f"/fixture/{role}",
+                "sha256": hashlib.sha256(role.encode()).hexdigest(),
+                "size_bytes": 1,
+            }
+        }
+        for role in source_roles
+    }
+    records = {
+        "AB16 Gate-A": gate_a,
+        "AB16 offline candidate": candidate,
+        "AB16 Gate-B": gate_b,
+        "AB16 Gate-B final full preflight": final,
+        "AB16 Gate-A full preflight": final,
+    }
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_source_snapshot",
+        lambda _files, _sources, role: role,
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_record",
+        lambda _snapshot, label, **_kwargs: records[label],
+    )
+    monkeypatch.setattr(AUTHORITY, "_exact_keys", lambda value, *_args: value)
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_detached_from_source",
+        lambda identity: {
+            key: identity[key]
+            for key in ("path", "sha256", "size_bytes")
+        },
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_replay_identity_with_optional_mode",
+        lambda _value, label: (
+            "gate-a-full-snapshot"
+            if label == "AB16 Gate-A full preflight"
+            else "fixture-snapshot"
+        ),
+    )
+    seen: list[str] = []
+
+    def parser(snapshot: object, label: str) -> object:
+        seen.append(label)
+        if label == "AB16 Gate-B final full preflight":
+            return final
+        assert snapshot == "gate-a-full-snapshot"
+        assert label == "AB16 Gate-A full preflight"
+        raise ParserReached
+
+    monkeypatch.setattr(AUTHORITY, "_unterminated_record", parser, raising=False)
+
+    class CampaignModule:
+        @staticmethod
+        def validate_manager_epoch(_epoch: object) -> None:
+            return None
+
+    with pytest.raises(ParserReached):
+        AUTHORITY._validate_gate_approvals(  # noqa: SLF001
+            {
+                "campaign_module": CampaignModule,
+                "files": {},
+                "sources": sources,
+            }
+        )
+    assert seen == [
+        "AB16 Gate-B final full preflight",
+        "AB16 Gate-A full preflight",
+    ]
+
+
 def _top_level_literal(path: Path, name: str) -> object:
     tree = ast.parse(path.read_text(encoding="utf-8"))
     for node in tree.body:
@@ -479,7 +631,7 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
     )
     final_identity = _regular(
         tmp_path / "gate-b-final.json",
-        BOOTSTRAP.authority.canonical_json({}),
+        BOOTSTRAP.authority.canonical_json({})[:-1],
     )
     epoch_path = tmp_path / "gate-b-epoch.json"
     epoch_identity = _regular(

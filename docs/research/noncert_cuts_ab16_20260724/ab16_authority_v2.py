@@ -453,6 +453,13 @@ def _record(snapshot: Snapshot, label: str, *, canonical: bool = True) -> Mappin
     return value
 
 
+def _unterminated_record(snapshot: Snapshot, label: str) -> Mapping[str, Any]:
+    value = _record(snapshot, label, canonical=False)
+    if canonical_json(value)[:-1] != snapshot.data:
+        raise AuthorityError("JSON_NOT_CANONICAL", label)
+    return value
+
+
 def _exact_keys(value: object, keys: set[str], label: str) -> Mapping[str, Any]:
     if type(value) is not dict or set(value) != keys:
         raise AuthorityError("SCHEMA_KEYS_INVALID", label)
@@ -1500,7 +1507,7 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
             f"Gate-A manager epoch is invalid: {exc}",
         ) from exc
     final = _exact_keys(
-        _record(final_snapshot, "AB16 Gate-B final full preflight"),
+        _unterminated_record(final_snapshot, "AB16 Gate-B final full preflight"),
         set(
             "authorizations authority_ready_identity command detached_replay_identity duration_monotonic_ns "
             "exit_code finished_at_utc planned_source_set_digest pre_run_authority_identity "
@@ -1534,7 +1541,7 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         "AB16 Gate-A full preflight",
     )
     gate_a_full = _exact_keys(
-        _record(gate_a_full_snapshot, "AB16 Gate-A full preflight"),
+        _unterminated_record(gate_a_full_snapshot, "AB16 Gate-A full preflight"),
         set(final),
         "AB16 Gate-A full preflight",
     )

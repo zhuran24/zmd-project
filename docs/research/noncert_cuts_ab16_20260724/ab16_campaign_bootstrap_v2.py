@@ -3674,7 +3674,7 @@ def bootstrap_campaign(
     ] != _source_set_digest(planned):
         raise BootstrapError("planned package source bytes drifted after Gate A")
     final_full_preflight_path = _absolute(gate_b["final_full_preflight_receipt_identity"]["path"])
-    final_full_preflight, final_full_preflight_identity = _canonical_mode_record(
+    final_full_preflight, final_full_preflight_identity = _unterminated_canonical_mode_record(
         final_full_preflight_path,
         "Gate-B final full-preflight receipt",
     )
