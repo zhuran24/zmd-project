@@ -1096,15 +1096,42 @@ def test_persistent_owner_holds_actor_locks_and_fds_until_bootstrap_handoff(
         assert any("ab16-gate-b-publisher" in target for target in fd_links.values())
 
         channel = owner.attach_bootstrap_channel()
-        QUALIFICATION._send_frame(  # noqa: SLF001
-            channel,
-            _handoff_request(
-                owner,
-                epoch_identity=_identity(epoch_path),
-                approval_identity=_identity(approval_path),
-            ),
+        duplicated = owner.duplicate_lock_fds()
+        lock_fds = {
+            str(path): descriptor
+            for path, descriptor in zip(lock_paths, duplicated, strict=True)
+        }
+        _, epoch_identity = BOOTSTRAP._canonical_mode_record(  # noqa: SLF001
+            epoch_path,
+            "Gate-B epoch observation fixture",
         )
-        handoff = QUALIFICATION._recv_frame(channel)  # noqa: SLF001
+        _, approval_identity = BOOTSTRAP._canonical_record(  # noqa: SLF001
+            approval_path,
+            "Gate-B approval fixture",
+        )
+        try:
+            handoff = BOOTSTRAP._complete_gate_b_qualification_handoff(  # noqa: SLF001
+                qualification_fd=channel.fileno(),
+                qualification_lock_fds=lock_fds,
+                epoch_publisher=epoch["publisher"],
+                approval_publisher=approval["publisher"],
+                gate_b_epoch_identity=epoch_identity,
+                gate_b_approval_identity=approval_identity,
+                campaign_root_identity={
+                    "path": "/fixture/campaign-root.json",
+                    "sha256": "c" * 64,
+                    "size_bytes": 1,
+                },
+                gate1_selection_identity={
+                    "path": "/fixture/gate1-selection.json",
+                    "sha256": "d" * 64,
+                    "size_bytes": 1,
+                },
+                expected_lock_paths=tuple(str(path) for path in lock_paths),
+            )
+        finally:
+            for descriptor in duplicated:
+                os.close(descriptor)
         assert handoff["status"] == "PASS"
         assert handoff["actor"] == owner.actor
         assert handoff["session_id"] == owner.session_id
@@ -1122,6 +1149,68 @@ def test_persistent_owner_holds_actor_locks_and_fds_until_bootstrap_handoff(
 
         owner.release(bootstrap_result=b'{"status":"PASS"}\n')
         assert not owner.is_alive()
+
+    competing = _open_competing_locks(lock_paths)
+    for descriptor in reversed(competing):
+        os.close(descriptor)
+
+
+def test_detached_approval_handoff_still_rejects_mode_drift(
+    tmp_path: Path,
+) -> None:
+    renderer = _renderer(tmp_path / "renderer.py")
+    lock_paths = tuple(tmp_path / f"qualification-{index}.lock" for index in range(3))
+    epoch_path = tmp_path / "published/gate-b-epoch.json"
+    approval_path = tmp_path / "published/gate-b-approval.json"
+    epoch_path.parent.mkdir()
+    owner = QUALIFICATION.PersistentGateBOwner(
+        python_path=Path(os.path.realpath(sys.executable)),
+        owner_source_path=RESEARCH / "ab16_gate_b_qualification_v1.py",
+        renderer_source_path=renderer,
+        renderer_identity=_identity(renderer),
+        mechanical_publisher=BOOTSTRAP.OWNER_OEXCL_PUBLISH_V1,
+        owner_driver=BOOTSTRAP.GATE_B_OWNER_DRIVER_V1,
+        lock_paths=lock_paths,
+    )
+    primary: BaseException | None = None
+    owner.start()
+    try:
+        owner.publish(kind="epoch", output_path=epoch_path, record={"kind": "epoch"})
+        owner.publish(
+            kind="approval",
+            output_path=approval_path,
+            record={"kind": "approval"},
+        )
+        channel = owner.attach_bootstrap_channel()
+        _, approval_identity = BOOTSTRAP._canonical_record(  # noqa: SLF001
+            approval_path,
+            "Gate-B approval fixture",
+        )
+        approval_path.chmod(0o600)
+        QUALIFICATION._send_frame(  # noqa: SLF001
+            channel,
+            _handoff_request(
+                owner,
+                epoch_identity=_identity(epoch_path),
+                approval_identity=approval_identity,
+            ),
+        )
+        with pytest.raises(
+            QUALIFICATION.QualificationError,
+            match="control frame is absent or truncated",
+        ) as caught:
+            QUALIFICATION._recv_frame(channel)  # noqa: SLF001
+        primary = caught.value
+        assert owner._process is not None  # noqa: SLF001
+        assert owner._process.wait(timeout=5) == 2  # noqa: SLF001
+        assert owner._process.stderr is not None  # noqa: SLF001
+        assert b"published output identity drifted" in owner._process.stderr.read()  # noqa: SLF001
+    finally:
+        owner.__exit__(
+            type(primary) if primary is not None else None,
+            primary,
+            primary.__traceback__ if primary is not None else None,
+        )
 
     competing = _open_competing_locks(lock_paths)
     for descriptor in reversed(competing):

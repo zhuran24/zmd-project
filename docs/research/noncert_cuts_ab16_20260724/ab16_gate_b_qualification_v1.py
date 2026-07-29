@@ -765,7 +765,11 @@ def _owner_main(args: argparse.Namespace) -> int:
                 or request["lock_identities"] != lock_identities
                 or len(retained) != 2
                 or request["gate_b_epoch_identity"] != retained[0]["output_identity"]
-                or request["gate_b_approval_identity"] != retained[1]["output_identity"]
+                or request["gate_b_approval_identity"]
+                != {
+                    field: retained[1]["output_identity"][field]
+                    for field in ("path", "sha256", "size_bytes")
+                }
             ):
                 raise QualificationError("bootstrap handoff identity drifted")
             retention_projection: list[dict[str, object]] = []
