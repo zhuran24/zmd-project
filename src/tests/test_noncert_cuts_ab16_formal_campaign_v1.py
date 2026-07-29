@@ -75,6 +75,293 @@ def _boundary(tmp_path: Path) -> Any:
     )
 
 
+def test_selected_direct_post_spawn_failure_reaps_once_without_masking(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class BrokenSelector:
+        def register(self, *_args: object) -> None:
+            raise RuntimeError("selector-register-fault")
+
+        def close(self) -> None:
+            raise RuntimeError("selector-close-fault")
+
+    killed: list[tuple[int, int]] = []
+    waited: list[tuple[int, int]] = []
+    monkeypatch.setattr(
+        FORMAL,
+        "_selected_identities",
+        lambda _spec: {
+            "authority": {},
+            "loader": {},
+            "python": {},
+        },
+    )
+    monkeypatch.setattr(
+        FORMAL,
+        "_open_selected",
+        lambda *_args: os.open("/dev/null", os.O_RDONLY),
+    )
+    monkeypatch.setattr(FORMAL.selectors, "DefaultSelector", BrokenSelector)
+    monkeypatch.setattr(FORMAL.os, "posix_spawn", lambda *_args, **_kwargs: 4242)
+    monkeypatch.setattr(
+        FORMAL.os,
+        "kill",
+        lambda pid, sig: killed.append((pid, sig)),
+    )
+
+    def waitpid(pid: int, options: int) -> tuple[int, int]:
+        waited.append((pid, options))
+        return pid, 0
+
+    monkeypatch.setattr(FORMAL.os, "waitpid", waitpid)
+    before = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    with pytest.raises(RuntimeError, match="selector-register-fault"):
+        FORMAL.run_selected_direct_result(
+            context={
+                "campaign_dir": "/fixture/campaign",
+                "outer_spec": {
+                    "selected_byte_argv": [
+                        "/proc/self/fd/3",
+                        "-I",
+                        "-B",
+                        "-c",
+                        "selected-loader",
+                        "direct",
+                        "selected-identities",
+                    ],
+                },
+            },
+            role="formal-supervisor",
+            role_argv=("--campaign-dir", "/fixture/campaign"),
+            timeout_seconds=1.0,
+        )
+    after = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    assert killed == [(4242, FORMAL.signal.SIGKILL)]
+    assert waited == [(4242, 0)]
+    assert after == before
+
+
+@pytest.mark.parametrize(
+    "fault",
+    (
+        "open-2",
+        "open-3",
+        "pipe-2",
+        "dup-2",
+        "dup-3",
+        "spawn",
+        "high-close",
+    ),
+)
+def test_selected_direct_staged_fd_ownership_is_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+    fault: str,
+) -> None:
+    real_close = os.close
+    real_pipe2 = os.pipe2
+    real_fcntl = FORMAL.fcntl.fcntl
+    tracked: set[int] = set()
+    close_count: dict[int, int] = {}
+    open_calls = 0
+    pipe_calls = 0
+    dup_calls = 0
+    high_descriptors: list[int] = []
+    killed: list[int] = []
+    waited: list[int] = []
+
+    def tracked_close(descriptor: int) -> None:
+        if descriptor in tracked:
+            close_count[descriptor] = close_count.get(descriptor, 0) + 1
+        real_close(descriptor)
+        if fault == "high-close" and descriptor == high_descriptors[0]:
+            raise RuntimeError("fault-high-close")
+
+    def open_selected(*_args: object) -> int:
+        nonlocal open_calls
+        open_calls += 1
+        if fault == f"open-{open_calls}":
+            raise RuntimeError(f"fault-{fault}")
+        descriptor = os.open("/dev/null", os.O_RDONLY)
+        tracked.add(descriptor)
+        return descriptor
+
+    def pipe2(flags: int) -> tuple[int, int]:
+        nonlocal pipe_calls
+        pipe_calls += 1
+        if fault == f"pipe-{pipe_calls}":
+            raise RuntimeError(f"fault-{fault}")
+        descriptors = real_pipe2(flags)
+        tracked.update(descriptors)
+        return descriptors
+
+    def duplicate(
+        descriptor: int,
+        command: int,
+        argument: int = 0,
+    ) -> int:
+        nonlocal dup_calls
+        if command != FORMAL.fcntl.F_DUPFD_CLOEXEC:
+            return real_fcntl(descriptor, command, argument)
+        dup_calls += 1
+        if fault == f"dup-{dup_calls}":
+            raise RuntimeError(f"fault-{fault}")
+        duplicate_descriptor = real_fcntl(descriptor, command, argument)
+        tracked.add(duplicate_descriptor)
+        high_descriptors.append(duplicate_descriptor)
+        return duplicate_descriptor
+
+    def spawn(*_args: object, **_kwargs: object) -> int:
+        if fault == "spawn":
+            raise RuntimeError("fault-spawn")
+        return 4242
+
+    monkeypatch.setattr(
+        FORMAL,
+        "_selected_identities",
+        lambda _spec: {"authority": {}, "loader": {}, "python": {}},
+    )
+    monkeypatch.setattr(FORMAL, "_open_selected", open_selected)
+    monkeypatch.setattr(FORMAL.os, "pipe2", pipe2)
+    monkeypatch.setattr(FORMAL.fcntl, "fcntl", duplicate)
+    monkeypatch.setattr(FORMAL.os, "posix_spawn", spawn)
+    monkeypatch.setattr(FORMAL.os, "close", tracked_close)
+    monkeypatch.setattr(
+        FORMAL.os,
+        "kill",
+        lambda pid, _signal: killed.append(pid),
+    )
+    monkeypatch.setattr(
+        FORMAL.os,
+        "waitpid",
+        lambda pid, _flags: waited.append(pid) or (pid, 0),
+    )
+
+    before = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    with pytest.raises(RuntimeError, match=f"fault-{fault}"):
+        FORMAL.run_selected_direct_result(
+            context={
+                "campaign_dir": "/fixture/campaign",
+                "outer_spec": {
+                    "selected_byte_argv": [
+                        "/proc/self/fd/3",
+                        "-I",
+                        "-B",
+                        "-c",
+                        "selected-loader",
+                        "direct",
+                        "selected-identities",
+                    ],
+                },
+            },
+            role="formal-supervisor",
+            role_argv=("--campaign-dir", "/fixture/campaign"),
+            timeout_seconds=1.0,
+        )
+    after = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    assert after == before
+    assert close_count == {descriptor: 1 for descriptor in tracked}
+    if fault == "high-close":
+        assert killed == [4242]
+        assert waited == [4242]
+    else:
+        assert killed == []
+        assert waited == []
+
+
+def test_selected_direct_cleanup_faults_do_not_mask_original(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class BrokenSelector:
+        def register(self, *_args: object) -> None:
+            raise RuntimeError("original-selector-fault")
+
+        def close(self) -> None:
+            raise RuntimeError("cleanup-selector-fault")
+
+    kill_calls: list[int] = []
+    wait_calls: list[int] = []
+    monkeypatch.setattr(
+        FORMAL,
+        "_selected_identities",
+        lambda _spec: {"authority": {}, "loader": {}, "python": {}},
+    )
+    monkeypatch.setattr(
+        FORMAL,
+        "_open_selected",
+        lambda *_args: os.open("/dev/null", os.O_RDONLY),
+    )
+    monkeypatch.setattr(FORMAL.selectors, "DefaultSelector", BrokenSelector)
+    monkeypatch.setattr(FORMAL.os, "posix_spawn", lambda *_args, **_kwargs: 4242)
+
+    def fail_kill(pid: int, _signal: int) -> None:
+        kill_calls.append(pid)
+        raise RuntimeError("cleanup-kill-fault")
+
+    def fail_wait(pid: int, _flags: int) -> tuple[int, int]:
+        wait_calls.append(pid)
+        if len(wait_calls) == 1:
+            raise InterruptedError("cleanup-wait-interrupted")
+        return pid, 0
+
+    monkeypatch.setattr(FORMAL.os, "kill", fail_kill)
+    monkeypatch.setattr(FORMAL.os, "waitpid", fail_wait)
+    before = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    with pytest.raises(RuntimeError, match="original-selector-fault"):
+        FORMAL.run_selected_direct_result(
+            context={
+                "campaign_dir": "/fixture/campaign",
+                "outer_spec": {
+                    "selected_byte_argv": [
+                        "/proc/self/fd/3",
+                        "-I",
+                        "-B",
+                        "-c",
+                        "selected-loader",
+                        "direct",
+                        "selected-identities",
+                    ],
+                },
+            },
+            role="formal-supervisor",
+            role_argv=("--campaign-dir", "/fixture/campaign"),
+            timeout_seconds=1.0,
+        )
+    after = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    assert after == before
+    assert kill_calls == [4242]
+    assert wait_calls == [4242, 4242]
+
+
+def test_open_selected_close_fault_preserves_validation_error(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    selected = tmp_path / "selected.py"
+    selected.write_text("pass\n", encoding="utf-8")
+    real_close = os.close
+    monkeypatch.setattr(
+        FORMAL.os,
+        "fstat",
+        lambda _descriptor: (_ for _ in ()).throw(
+            RuntimeError("selected-validation-fault")
+        ),
+    )
+
+    def close_then_fail(descriptor: int) -> None:
+        real_close(descriptor)
+        raise RuntimeError("selected-close-fault")
+
+    monkeypatch.setattr(FORMAL.os, "close", close_then_fail)
+    before = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    with pytest.raises(RuntimeError, match="selected-validation-fault"):
+        FORMAL._open_selected(  # noqa: SLF001
+            {"path": str(selected)},
+            "fixture",
+        )
+    after = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    assert after == before
+
+
 class Store:
     def __init__(self, fail: str = "", *, return_before_fail: bool = False) -> None:
         self.fail = fail
@@ -1533,6 +1820,20 @@ def _late_closeout_state(phase: str) -> Any:
         "post_unref_absence_identity",
         _identity("post-unref-absence"),
     )
+    if phase == "DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED":
+        return state
+    STATE.begin_detached_success_verifier(state)
+    if phase == "DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN":
+        return state
+    STATE.record_detached_success_verifier_return(
+        state,
+        {"stdout_sha256": "1" * 64},
+    )
+    STATE.record_late_proof_once(
+        state,
+        "detached_success_identity",
+        _identity("detached-success"),
+    )
     if phase == "GUARDIAN_CLOSE_NOT_ATTEMPTED":
         return state
     STATE.begin_guardian_close(state)
@@ -1572,24 +1873,22 @@ def _late_closeout_state(phase: str) -> Any:
         "dual_lock_release_identity",
         dual_identity,
     )
-    if phase == "DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED":
-        return state
-    STATE.begin_detached_success_verifier(state)
     return state
 
 
 @pytest.mark.parametrize(
     ("phase", "last_join"),
     [
-        ("GUARDIAN_CLOSE_NOT_ATTEMPTED", "post_unref_absence_identity"),
-        ("GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN", "post_unref_absence_identity"),
+        ("DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED", "post_unref_absence_identity"),
+        ("DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN", "post_unref_absence_identity"),
+        ("GUARDIAN_CLOSE_NOT_ATTEMPTED", "detached_success_identity"),
+        ("GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN", "detached_success_identity"),
         ("GUARDIAN_ABSENCE_UNPROVED", "guardian_close_identity"),
         ("SUPERVISOR_LOCK_RELEASE_NOT_ATTEMPTED", "guardian_absence_identity"),
         ("SUPERVISOR_LOCK_RELEASE_FAILED_OR_UNCERTAIN", "guardian_absence_identity"),
         ("DUAL_LOCK_RELEASE_RECEIPT_NOT_ATTEMPTED", "guardian_absence_identity"),
         ("DUAL_LOCK_RELEASE_RECEIPT_FAILED_OR_UNCERTAIN", "guardian_absence_identity"),
-        ("DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED", "dual_lock_release_identity"),
-        ("DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN", "dual_lock_release_identity"),
+        ("FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN", "dual_lock_release_identity"),
     ],
 )
 def test_late_incomplete_phases_bind_only_established_proofs(
@@ -1620,6 +1919,7 @@ def test_late_incomplete_phases_bind_only_established_proofs(
     assert last_join in record["joins"]
     phase_order = [
         "post_unref_absence_identity",
+        "detached_success_identity",
         "guardian_close_identity",
         "guardian_absence_identity",
         "dual_lock_release_identity",
@@ -1852,19 +2152,20 @@ def test_containment_hold_keeps_locks_and_side_effects_until_absence(tmp_path: P
         returned = True
 
         assert wait_observations == 2
-        assert port.release_count == 1
-        assert result["status"] == "CONSUMED_INCOMPLETE"
+        assert port.release_count == 0
+        assert result["status"] == "PRE_RELEASE_CONSUMED_INCOMPLETE"
         assert result["detached_replay_required"] is True
         assert "detached-incomplete.json" not in store.records
         names = list(store.records)
-        assert names.index("containment-cleared-after-hold.json") < names.index("lock-release.json")
+        assert "lock-release.json" not in names
+        assert all(os.fstat(descriptor) for descriptor in port.descriptors)
 
         detached = STATE.verify_detached_incomplete_chain(
             expected_campaign_root_identity=coordinator.boundary.context["root_identity"],
             expected_package_id=coordinator.boundary.root["package"]["package_id"],
             **result["detached_replay_input"],
         )
-        assert detached["status"] == "VERIFIED_INCOMPLETE"
+        assert detached["status"] == "PRE_RELEASE_VERIFIED_INCOMPLETE"
         assert detached["success_eligible"] is False
         assert not any(detached["authorizations"].values())
 
@@ -1894,8 +2195,8 @@ def test_reference_terminal_exception_enters_hold_before_lock_release(tmp_path: 
         result = _enter(coordinator)
         returned = True
 
-        assert port.release_count == 1
-        assert result["status"] == "CONSUMED_INCOMPLETE"
+        assert port.release_count == 0
+        assert result["status"] == "PRE_RELEASE_CONSUMED_INCOMPLETE"
         assert any(
             item["code"] == "REFERENCE_TERMINAL_FAILED_OR_UNCERTAIN"
             for item in result["errors"]
@@ -1939,8 +2240,8 @@ def test_waiter_failures_do_not_unwind_hold_or_repeat_effects(
 
         assert waiter.announce_attempts == 2
         assert waiter.wait_attempts == 2
-        assert result["status"] == "CONSUMED_INCOMPLETE"
-        assert port.release_count == 1
+        assert result["status"] == "PRE_RELEASE_CONSUMED_INCOMPLETE"
+        assert port.release_count == 0
         assert reference.events.count("release") == 1
         assert reference.events.count("close") == 1
         error_codes = {item["code"] for item in result["errors"]}
@@ -1981,7 +2282,7 @@ def test_clearance_publication_returned_unrecorded_forbids_retry(tmp_path: Path)
     assert store.attempts["containment-cleared-after-hold.json"] == 1
 
 
-def test_lock_receipt_failure_does_not_repeat_real_release(tmp_path: Path) -> None:
+def test_containment_pre_release_never_attempts_lock_release(tmp_path: Path) -> None:
     with _coordinator_scope(
         tmp_path,
         absent=True,
@@ -1989,16 +2290,14 @@ def test_lock_receipt_failure_does_not_repeat_real_release(tmp_path: Path) -> No
         return_before_fail=True,
     ) as (coordinator, _state, port, _waiter, store, _reference):
         result = _enter(coordinator)
-        assert result["status"] == "CONSUMED_INCOMPLETE"
+        assert result["status"] == "PRE_RELEASE_CONSUMED_INCOMPLETE"
         assert result["detached_replay_required"] is True
-        assert port.release_count == 1
-        assert store.attempts["lock-release.json"] == 1
+        assert port.release_count == 0
+        assert store.attempts.get("lock-release.json", 0) == 0
         replay = result["detached_replay_input"]
-        assert replay["lock_release_identity"] == "unrecorded"
-        assert replay["lock_release_effect"] == replay["lock_release_record"]["effect"]
-        assert replay["guardian_absence_identity"] == replay["lock_release_record"][
-            "guardian_absence_identity"
-        ]
+        assert replay["guardian_absence_identity"] == _identity(
+            "containment-guardian-absence"
+        )
         assert replay["hold_identity"] == Store._identity(
             coordinator.boundary.formal_dir / "containment-hold.json"
         )
@@ -2010,9 +2309,8 @@ def test_lock_receipt_failure_does_not_repeat_real_release(tmp_path: Path) -> No
             coordinator.boundary.formal_dir
             / "incomplete-containment-hold.json"
         )
-        assert replay["lock_release_publication"]["attempted"] is True
-        assert replay["lock_release_publication"]["returned"] is True
-        assert replay["lock_release_publication"]["recorded"] is False
+        assert replay["lock_identities"] == port.lock_evidence()
+        assert all(os.fstat(descriptor) for descriptor in port.descriptors)
 
 
 def test_no_reference_opened_terminal_is_exact_and_has_no_synthetic_join() -> None:
@@ -2030,7 +2328,7 @@ def test_no_reference_opened_terminal_is_exact_and_has_no_synthetic_join() -> No
 
 @pytest.mark.parametrize(
     "mutation",
-    ["hold_schema", "lock_schema", "authorization", "absence", "release"],
+    ["hold_schema", "authorization", "absence", "lock_identity"],
 )
 def test_pure_detached_incomplete_verifier_rejects_mutated_chain(
     tmp_path: Path,
@@ -2048,14 +2346,12 @@ def test_pure_detached_incomplete_verifier_rejects_mutated_chain(
         replay = copy.deepcopy(result["detached_replay_input"])
     if mutation == "hold_schema":
         replay["hold_record"]["schema_version"] = "wrong"
-    elif mutation == "lock_schema":
-        replay["lock_release_record"]["schema_version"] = "wrong"
     elif mutation == "authorization":
         replay["clearance_record"]["authorizations"]["upper_bound_update_authorized"] = True
     elif mutation == "absence":
         replay["clearance_record"]["final_observation"]["records"][0]["unit_absent"] = False
     else:
-        replay["lock_release_record"]["effect"]["released"] = False
+        replay["lock_identities"][0]["inode"] += 1
     with pytest.raises(STATE.CloseoutStateError):
         STATE.verify_detached_incomplete_chain(
             expected_campaign_root_identity=coordinator.boundary.context["root_identity"],
@@ -2361,7 +2657,11 @@ def test_normal_closeout_has_latch_checks_at_every_late_effect_boundary() -> Non
         "dual-lock-release receipt publication",
     ):
         assert f'phase="{phase}"' in release
-    assert 'phase="detached success verifier launch"' in driver
+    assert 'phase="detached substantive success verifier launch"' in driver
+    assert (
+        driver.index("_run_detached_success(")
+        < driver.index("_release_guardian_and_locks(")
+    )
     assert 'phase="VERIFIED supervisor return"' in driver
 
 
@@ -2531,6 +2831,12 @@ def test_latched_termination_stops_each_late_success_side_effect(
         state.ledger = _frozen_ledger()
         state.post_unref_identity = _identity("post-unref")
         state.attempt.post_unref_absence_identity = state.post_unref_identity
+        state.detached_success_identity = _identity("detached-success")
+        state.attempt.detached_success_verifier_attempted = True
+        state.attempt.detached_success_verifier_return = {
+            "stdout_sha256": "1" * 64
+        }
+        state.attempt.detached_success_identity = state.detached_success_identity
         state.guardian = SimpleNamespace(
             close_received=False,
             connection=object(),
@@ -2578,11 +2884,14 @@ def test_latched_termination_stops_each_late_success_side_effect(
         )
 
         class Host:
+            locks_released = False
+
             def lock_evidence(self) -> list[dict[str, object]]:
                 return _lock_evidence()
 
             def release_locks_once(self) -> dict[str, object]:
                 events.append("supervisor-lock-release")
+                self.locks_released = True
                 return {"released": True}
 
         monkeypatch.setattr(FORMAL, "_normal_closeout_checkpoint", normal_checkpoint)
@@ -2659,7 +2968,7 @@ def test_latched_termination_stops_each_late_success_side_effect(
         latch.records.append({"signal": 15})
         FORMAL._post_release_signal_checkpoint(
             latch,  # type: ignore[arg-type]
-            phase="detached success verifier launch",
+            phase="detached substantive success verifier launch",
         )
         events.append("detached-success")
     assert events == []
@@ -2826,6 +3135,130 @@ class _DriverHost:
         }
 
 
+def test_failure_terminal_order_is_detached_then_release_then_join(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    events: list[str] = []
+    state = FORMAL.SupervisorState()
+    state.selection_identity = _identity("selection")
+    state.attempt.selection_identity = state.selection_identity
+
+    class Host(_DriverHost):
+        def release_locks_once(self) -> dict[str, object]:
+            events.append("release")
+            return super().release_locks_once()
+
+    host = Host(None, None)
+    detached_identity = _identity("detached-incomplete")
+    failure_identity = _identity("failure-pre-release")
+    guardian_absence_identity = _identity("guardian-absence")
+    terminal_identity = _identity("failure-terminal-release")
+
+    def detached(**kwargs: object) -> dict[str, object]:
+        assert kwargs["host"] is host
+        assert host.locks_released is False
+        assert kwargs["expected_lock_identities"] == host.lock_identities
+        events.append("detached")
+        return {
+            "detached_incomplete_identity": detached_identity,
+            "stderr_sha256": "0" * 64,
+            "stdout_sha256": "1" * 64,
+        }
+
+    def terminal(**kwargs: object) -> dict[str, object]:
+        assert host.locks_released is True
+        assert kwargs["detached_substantive_identity"] == detached_identity
+        assert kwargs["failure_pre_release_identity"] == failure_identity
+        events.append("terminal")
+        return terminal_identity
+
+    monkeypatch.setattr(FORMAL, "_run_detached_incomplete", detached)
+    monkeypatch.setattr(FORMAL, "_publish_failure_terminal_release", terminal)
+    result = FORMAL._complete_pre_release_failure(  # noqa: SLF001
+        boundary=SimpleNamespace(formal_dir=tmp_path),
+        context={},
+        state=state,
+        store=SimpleNamespace(),
+        host=host,  # type: ignore[arg-type]
+        phase="SELECTION_RECORDED_OUTER_NOT_LAUNCHED",
+        lock_identities=host.lock_identities,
+        guardian_absence_identity=guardian_absence_identity,
+        failure_pre_release_identity=failure_identity,
+    )
+
+    assert events == ["detached", "release", "terminal"]
+    assert host.release_count == 1
+    assert state.attempt.lock_release_attempted is True
+    assert state.attempt.lock_release_return == result["lock_release"]
+    assert (
+        result["failure_terminal_release_identity"]
+        == terminal_identity
+    )
+
+
+def test_post_release_failure_uses_existing_detached_and_never_replays(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    state = FORMAL.SupervisorState()
+    state.selection_identity = _identity("selection")
+    state.selection = {"lock_identities": _lock_evidence()}
+    state.detached_success_identity = _identity("detached-success")
+    state.dual_release_identity = _identity("dual-release")
+    state.child_audit_identity = _identity("child-audit")
+    state.outer_terminal_identity = _identity("outer-terminal")
+    state.attempt.lock_release_attempted = True
+    state.attempt.lock_release_return = {
+        "lock_identities": _lock_evidence(),
+        "released": True,
+    }
+    host = _DriverHost(None, None)
+    host.locks_released = True
+    events: list[str] = []
+
+    monkeypatch.setattr(
+        FORMAL,
+        "_failure_phase",
+        lambda _state: "FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN",
+    )
+    monkeypatch.setattr(
+        STATE,
+        "publish_consumed_incomplete",
+        lambda *_args, **_kwargs: pytest.fail(
+            "post-release failure fabricated a new incomplete receipt"
+        ),
+    )
+
+    def terminal(**kwargs: object) -> dict[str, object]:
+        events.append("terminal")
+        assert kwargs["detached_substantive_identity"] == (
+            state.detached_success_identity
+        )
+        assert kwargs["detached_substantive_kind"] == "pre_release_success_v2"
+        assert kwargs["failure_pre_release_identity"] == "absent"
+        assert kwargs["terminal_predecessor_identity"] == (
+            state.dual_release_identity
+        )
+        return _identity("failure-terminal")
+
+    monkeypatch.setattr(FORMAL, "_publish_failure_terminal_release", terminal)
+    result = FORMAL._late_failure_closeout(  # noqa: SLF001
+        boundary=SimpleNamespace(),
+        context={},
+        state=state,
+        store=SimpleNamespace(),
+        host=host,  # type: ignore[arg-type]
+        latch=SimpleNamespace(),
+        error=RuntimeError("post-release fault"),
+    )
+
+    assert events == ["terminal"]
+    assert result["post_release_terminal_only"] is True
+    assert result["failure_terminal_release_identity"] == _identity(
+        "failure-terminal"
+    )
+
+
 class _DriverLatch:
     instances: list["_DriverLatch"] = []
 
@@ -2853,7 +3286,9 @@ def _patch_driver_shell(
     )
     context = {
         "campaign_dir": str(tmp_path),
+        "campaign_root_identity": _identity("root"),
         "formal_attempt_dir": str(boundary.formal_dir),
+        "manager_epoch": {},
         "package_id": "c" * 64,
     }
     admission = {"schema_version": "admission"}
@@ -2898,6 +3333,11 @@ def _patch_driver_shell(
         FORMAL,
         "_supervisor_checkpoint",
         lambda *_args: None,
+    )
+    monkeypatch.setattr(
+        FORMAL,
+        "_normal_closeout_checkpoint",
+        lambda *_args, **_kwargs: None,
     )
     return events, {
         "admission": admission,
@@ -2964,16 +3404,31 @@ def test_top_level_driver_preserves_the_fixed_success_order_and_release(
         events.append("normal-closeout")
         host = kwargs["host"]
         assert isinstance(host, _DriverHost)
-        host.release_locks_once()
+        assert host.locks_released is False
         return {"status": "PASS"}
 
     monkeypatch.setattr(FORMAL, "_publish_normal_closeout", normal_closeout)
-    monkeypatch.setattr(
-        FORMAL,
-        "_run_detached_success",
-        lambda **_: events.append("detached-success")
-        or {"detached_success_identity": _identity("detached")},
-    )
+    def detached_success(**kwargs: object) -> dict[str, object]:
+        events.append("detached-success")
+        host = kwargs["host"]
+        state = kwargs["state"]
+        assert isinstance(host, _DriverHost)
+        assert isinstance(state, FORMAL.SupervisorState)
+        assert host.locks_released is False
+        identity = _identity("detached")
+        state.detached_success_identity = identity
+        return {"detached_success_identity": identity}
+
+    def release(**kwargs: object) -> dict[str, object]:
+        events.append("guardian-lock-release")
+        host = kwargs["host"]
+        assert isinstance(host, _DriverHost)
+        assert host.locks_released is False
+        host.release_locks_once()
+        return {"dual_lock_release_identity": _identity("dual")}
+
+    monkeypatch.setattr(FORMAL, "_run_detached_success", detached_success)
+    monkeypatch.setattr(FORMAL, "_release_guardian_and_locks", release)
 
     result = FORMAL.run_formal_campaign(tmp_path)
 
@@ -2991,6 +3446,7 @@ def test_top_level_driver_preserves_the_fixed_success_order_and_release(
         "campaign",
         "normal-closeout",
         "detached-success",
+        "guardian-lock-release",
     ]
     assert len(_DriverLatch.instances) == 1
     assert _DriverLatch.instances[0].installed is True

@@ -46,7 +46,7 @@ V3_CONFIG_PAYLOAD_SCHEMA = "w0_d6_run_config_v3"
 V3_RECEIPT_PAYLOAD_SCHEMA = "w0_d6_receipt_payload_v3"
 V3_REPLAY_RECEIPT_SCHEMA = "w0_d6_replay_receipt_v3"
 EXPECTED_PROJECT_LOCK_SHA256 = (
-    "e7a43fe0509fe853b18e487d36d230b14a0ba856f0f6c745ac33fd7346ac71b7"
+    "5cfce966e69f9db2217cf83e982eaa03b8ce97cd67f4ec57c56ca4da086e763f"
 )
 CLOSED_V2_PROFILE = "closed_v2"
 SWAP_V3_PROFILE = "swap_v3"

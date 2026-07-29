@@ -38,7 +38,7 @@ from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as author
 from docs.research.noncert_cuts_ab16_20260724 import ab16_outer_closeout_state_v1 as closeout_state
 
 
-FORMAL_CONTEXT_SCHEMA = "noncert-cuts-ab16-formal-launch-context-v1"
+FORMAL_CONTEXT_SCHEMA = "noncert-cuts-ab16-formal-launch-context-v2"
 FORMAL_ADMISSION_SCHEMA = "noncert-cuts-ab16-formal-launch-admission-v1"
 FORMAL_SELECTION_SCHEMA = "noncert-cuts-ab16-formal-launch-selection-v1"
 GUARDIAN_READY_SCHEMA = "noncert-cuts-ab16-outer-guardian-ready-v1"
@@ -96,6 +96,7 @@ FORMAL_CONTEXT_FIELDS = frozenset(
         "formal_attempt_dir",
         "formal_loader_identity",
         "formal_launch_owner_driver_identity",
+        "formal_orchestrator_identity",
         "formal_selection_path",
         "gate1_selection_identity",
         "gate_b_approval_identity",
@@ -962,6 +963,7 @@ def validate_formal_context(value: object) -> dict[str, object]:
         "gate_b_approval_identity",
         "gate_b_epoch_observation_identity",
         "formal_loader_identity",
+        "formal_orchestrator_identity",
         "guardian_runtime_identity",
         "launch_renderer_identity",
         "launch_validator_identity",
@@ -1001,6 +1003,7 @@ def validate_formal_context(value: object) -> dict[str, object]:
             "baseline_identity",
             "controller_identity",
             "formal_loader_identity",
+            "formal_orchestrator_identity",
             "guardian_runtime_identity",
             "success_verifier_identity",
         )

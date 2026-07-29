@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-07-29 (W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
+**Updated**: 2026-07-29 (AB16 Gate-B/formal research-only cohort and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -573,6 +573,94 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   ledger entry, cut, rejection, upper- or lower-bound change, production
   authority, or certified authority. In particular, `U` and `L` remain
   unchanged by this research protocol.
+
+### 3C. AB16 Gate-B and formal-campaign research-only authority boundary
+
+- This boundary applies only to the prospective non-certified AB16 campaign
+  under `docs/research/noncert_cuts_ab16_20260724/`. It does not promote any
+  AB16 source, package, Gate-1/Gate-A/Gate-B record, campaign receipt, arm
+  result, replay, or closeout into §2 Certified Source of Truth, the
+  `certified_exact` TCB, production attach authority, family-global cut
+  soundness, a proof sidecar, B6/Stage-B promotion, a witness, or a bound.
+- Formal execution is valid only from the registered independent worktree
+  `/home/zhuran24/zmd-pj-codex-baselines/noncert-cuts-ab-trust-20260723`,
+  after its tracked tree is safely advanced with `git merge --ff-only main`
+  to the final clean committed HEAD. Historical untracked `.artifacts` roots
+  are immutable. Any fast-forward failure, tracked dirt, target-path
+  collision, or source/input/tool-byte mismatch fails closed; reset, force
+  checkout, overwrite, reuse, repair, or splicing of historical roots is
+  forbidden. The main checkout is a control plane and cannot run this
+  authority chain.
+- The table below is the version-sensitive discriminator matrix for the one
+  legal AB16 campaign cohort. Every listed discriminator is mandatory and the
+  rows form one ordered cohort. Schema names cannot be independently selected, relabeled, or mixed.
+  Package-internal transport, observer, child-audit, and
+  terminal helper records that carry no independent version choice remain
+  governed by the SHA-pinned package/source set and their closed validators;
+  this table does not purport to enumerate those auxiliary schemas:
+
+  | boundary | exact accepted schemas |
+  |---|---|
+  | Gate-A/Gate-B qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v2`; `noncert-cuts-ab16-bootstrap-offline-candidate-v2`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v3`; `noncert-cuts-ab16-gate-b-qualification-v1`; `noncert-cuts-ab16-gate-b-resource-gate-v1`; `noncert-cuts-ab16-gate-b-owner-request-v1`; `noncert-cuts-ab16-gate-b-owner-response-v1`; `noncert-cuts-ab16-gate-b-owner-release-v1`; `noncert-cuts-ab16-gate-b-epoch-observation-v3`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v4`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1` |
+  | bootstrap/package | `noncert-cuts-ab16-bootstrap-manager-capture-v2`; `noncert-cuts-ab16-campaign-bootstrap-result-v3`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v2`; `noncert-cuts-ab16-path-preregistration-v3` |
+  | formal launch | `noncert-cuts-ab16-formal-launch-context-v2`; `noncert-cuts-ab16-formal-launch-owner-request-v1`; `noncert-cuts-ab16-formal-launch-owner-response-v1`; `noncert-cuts-ab16-formal-launch-admission-v1`; `noncert-cuts-ab16-outer-guardian-ready-v1`; `noncert-cuts-ab16-formal-attempt-consumption-v1`; `noncert-cuts-ab16-formal-launch-selection-v1` |
+  | AB16 campaign/arms | `noncert-cuts-gate1-v4-continuation-authorization-v1`; `noncert-cuts-ab16-baseline-admission-v1`; `noncert-cuts-ab16-common-prestate-v1`; `noncert-cuts-ab16-organic-manifest-v2`; `noncert-cuts-ab16-suite-selection-v2`; `noncert-cuts-ab16-arm-binding-v2`; `noncert-cuts-ab16-organic-pre-run-authority-v2`; `noncert-cuts-ab16-organic-arm-selection-v1`; `noncert-cuts-ab16-organic-arm-consumption-v2`; `noncert-cuts-ab16-immediate-stop-v1` |
+  | successful formal closeout | `noncert-cuts-ab16-formal-pre-release-success-v2`; `noncert-cuts-ab16-outer-guardian-lock-close-v1`; `noncert-cuts-ab16-formal-guardian-absence-v1`; `noncert-cuts-ab16-formal-dual-lock-release-v2` |
+  | incomplete formal closeout | `noncert-cuts-ab16-formal-consumed-incomplete-v2`; `noncert-cuts-ab16-formal-pre-release-failure-v3`; `noncert-cuts-ab16-formal-detached-incomplete-v3`; `noncert-cuts-ab16-formal-failure-terminal-release-v3` |
+  | containment support | `noncert-cuts-ab16-formal-markerless-incomplete-v1`; `noncert-cuts-ab16-formal-reference-lifecycle-v1`; `noncert-cuts-ab16-formal-containment-hold-v1`; `noncert-cuts-ab16-containment-guardian-absence-v1`; `noncert-cuts-ab16-formal-containment-cleared-after-hold-v1`; `noncert-cuts-ab16-formal-lock-release-v1` |
+
+  Any omission of a listed discriminator, unknown discriminator version,
+  legacy substitution, or cross-row mismatch fails before launch or result
+  interpretation. In particular, Gate-B
+  approval v3, Gate-B epoch v2, formal context v1, detached-success v1,
+  dual-lock-release v1, consumed-incomplete v1, detached-incomplete v1/v2,
+  failure-release v1/v2, and incomplete closeouts lacking a distinct
+  pre-release/terminal-release join cannot be coerced into this cohort.
+  Historical roots remain replayable only by their own pinned bytes and never
+  become ancestors of the fresh campaign merely because a schema label
+  matches.
+- Gate-B qualification has one persistent owner actor. The same
+  PID/starttime and qualification session acquire and retain the exact three
+  heavy-work locks before the first resource gate, cover the final full
+  preflight, publish the epoch observation as sequence 1, cover the second
+  identical resource gate, and publish Gate-B approval as sequence 2. That
+  actor retains the sealed request, rendered-record, renderer-source,
+  mechanical-publisher, output-directory, and lock descriptors through the
+  live bootstrap handoff. It may release only after bootstrap has
+  independently joined the actor, session, lock identities, source bytes,
+  epoch and approval, created the package/campaign with no overwrite, and
+  returned a canonical result that the qualifier has read back. Actor death,
+  sequence drift, FD loss, lock drift, or premature release invalidates
+  Gate-B authority.
+- The formal-launch owner is a different persistent actor. One PID/starttime
+  publishes admission as sequence 1 and remains alive while the
+  package-selected formal supervisor passes its resource gate, acquires the
+  same exact three formal locks, starts the guardian, and creates both
+  guardian-ready and the consumed-attempt marker. The same owner alone may
+  then publish selection as sequence 2. Selection must bind the admission,
+  guardian-ready, attempt-consumption, current three lock identities,
+  package, manager epoch, HEAD, snapshot, and selected tool bytes. No Gate-1
+  or organic formal unit may launch before that selection is validated. In
+  this cohort the owner handoff closes only after the selected supervisor
+  returns its selection-bound `VERIFIED` or `INCOMPLETE` result.
+- The formal supervisor retains all three locks through the fixed Gate-1
+  units, baseline admission, manifest/suite selection, all serial organic
+  arms that remain eligible, observers, terminal evidence, cleanup,
+  exact-once `RefUnit`/`UnrefUnit`, post-Unref absence, and detached
+  substantive replay. Only after those items close may it release the
+  guardian and supervisor locks and publish the terminal release join.
+  Missing actor liveness, out-of-order publication, an unjoined lock identity,
+  or any terminal/replay gap fails closed. A post-selection failure is
+  consumed, retry-ineligible, and cannot be replaced by another arm or
+  attempt.
+- Gate A remains non-authorizing for Gate B. Gate B authorizes only creation
+  of the exact research campaign; admission and selection authorize only
+  their fixed local launches. `MECHANISM_CREDIBLE` and the preregistered arm
+  outcome classes remain local non-certified research conclusions. Every
+  artifact keeps all whole-instance, witness, upper/lower-bound,
+  cut/promotion, production/certified, attainability, optimality, and
+  SAT/UNSAT authority false. Tracked state remains `U=(1188,18)` and
+  `L=absent`.
 
 ## 4. Forbidden Changes
 

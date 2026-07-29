@@ -119,6 +119,15 @@ protocol object：
 }
 ```
 
+上框记录的是已经执行并由 root 内 SHA-pinned v3 replayer 验收的历史
+swap-v3 root；不得把其中的 lock identity 就地改写。当前 checked-in
+successor 因 `PROJECT_LOCK.md` 新增 AB16 research-only cohort，改钉
+`5cfce966e69f9db2217cf83e982eaa03b8ce97cd67f4ec57c56ca4da086e763f`。
+这只影响未来 W0 run 的 source/lock 闭包；不迁移、不补写也不重新解释上述
+历史 root。同一数学 profile 在该 successor 下重建的 antecedent SHA-256 为
+`6b61fe4b103a8b123c9845b9e2396304fd1855f2d64fd771f7b24e2b32188871`；
+该 identity 变化只来自 lock scalar，不是新的 solver 结果。
+
 `PROJECT_LOCK.md` 的该 SHA 是已提交运行门禁，不是 certified source pin；它只定义 W0
 research-only 合法版本矩阵与 authority/兼容边界。公共 G3 schema 保持
 `research_run_config_v1`、`research_run_receipt_v1`、`artifact_identity_graph_v1`、

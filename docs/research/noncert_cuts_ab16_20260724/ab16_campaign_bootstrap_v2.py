@@ -25,6 +25,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import socket
 import stat
 import subprocess
 import sys
@@ -40,10 +41,10 @@ V4_AUTHORITY_PATH = V4_RESEARCH_DIR / "campaign_authority_v4.py"
 
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
 CANDIDATE_SCHEMA = "noncert-cuts-ab16-bootstrap-offline-candidate-v2"
-GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v3"
-GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v2"
+GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v4"
+GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v3"
 CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v2"
-RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v2"
+RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v3"
 PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v3"
 FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v3"
 REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
@@ -88,7 +89,22 @@ GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 RUN_NONCE_RE = re.compile(r"run-[A-Za-z0-9][A-Za-z0-9._-]{4,123}\Z")
 APPROVAL_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{5,127}\Z")
 
-GATE_B_OWNER_EXECUTION_STRATEGY = "same-owner-render-sealed-memfd-dirfd-oexcl-v1"
+GATE_B_OWNER_EXECUTION_STRATEGY = "persistent-owner-sealed-fd-oexcl-bootstrap-handoff-v1"
+GATE_B_HANDOFF_REQUEST_SCHEMA = "noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1"
+GATE_B_HANDOFF_RESPONSE_SCHEMA = "noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1"
+GATE_B_QUALIFICATION_LOCK_PATHS = (
+    "/tmp/zmd-pj-codex-heavy-validation.lock",
+    "/run/user/1000/zmd_pj_prod_scale_solver.lock",
+    "/run/user/1000/zmd-pj-prod-scale-solve.lock",
+)
+GATE_B_RETAINED_FD_ROLES = (
+    "lock",
+    "mechanical_publisher",
+    "output_directory",
+    "rendered_record",
+    "renderer_source",
+    "request",
+)
 SELECTED_BYTE_EXECUTION_STRATEGY = "selected-byte-python-loader-fd-v1"
 OWNER_PUBLISH_EXECUTION_STRATEGY = "sealed-memfd-dirfd-oexcl-v1"
 
@@ -190,9 +206,17 @@ import os
 import stat
 import sys
 
-source_fd, directory_fd, result_fd = 4, 5, 6
-required_seals = 0x0001 | 0x0002 | 0x0004 | 0x0008
 basename = sys.argv[1]
+if len(sys.argv) == 2:
+    source_fd, directory_fd, result_fd = 4, 5, 6
+elif len(sys.argv) == 5:
+    try:
+        source_fd, directory_fd, result_fd = map(int, sys.argv[2:5])
+    except ValueError:
+        raise SystemExit(125)
+else:
+    raise SystemExit(125)
+required_seals = 0x0001 | 0x0002 | 0x0004 | 0x0008
 if not basename or "/" in basename or basename in {".", ".."}:
     raise SystemExit(125)
 before = os.fstat(source_fd)
@@ -267,8 +291,6 @@ import os
 import stat
 import sys
 
-python_fd, source_fd, request_fd, output_fd = 3, 4, 5, 6
-function_name = sys.argv[1]
 clean = {
     "LANG": "C",
     "LC_ALL": "C",
@@ -277,15 +299,17 @@ clean = {
     "PYTHONNOUSERSITE": "1",
     "TZ": "UTC",
 }
-if dict(os.environ) != clean or len(sys.argv) != 3:
+if dict(os.environ) != clean or len(sys.argv) < 4:
     raise SystemExit(125)
 try:
-    expected = json.loads(sys.argv[2])
+    expected = json.loads(sys.argv[1])
+    python_fd = int(sys.argv[2])
+    owner_source_fd = int(sys.argv[3])
 except Exception:
     raise SystemExit(125)
 if (
-    set(expected) != {"python", "renderer_source"}
-    or json.dumps(expected, ensure_ascii=False, separators=(",", ":"), sort_keys=True) != sys.argv[2]
+    set(expected) != {"owner_source", "python"}
+    or json.dumps(expected, ensure_ascii=False, separators=(",", ":"), sort_keys=True) != sys.argv[1]
 ):
     raise SystemExit(125)
 
@@ -354,43 +378,26 @@ def selected(fd, identity, label):
 _python, python_signature = selected(python_fd, expected["python"], "python")
 if signature(os.stat("/proc/self/exe")) != python_signature:
     raise SystemExit(125)
-source, _source_signature = selected(
-    source_fd,
-    expected["renderer_source"],
-    "renderer_source",
+_owner_source, _owner_source_signature = selected(
+    owner_source_fd,
+    expected["owner_source"],
+    "owner_source",
 )
-os.lseek(request_fd, 0, os.SEEK_SET)
-request = bytearray()
-while True:
-    chunk = os.read(request_fd, 1024 * 1024)
-    if not chunk:
-        break
-    request.extend(chunk)
-namespace = {
-    "__file__": expected["renderer_source"]["path"],
-    "__name__": "_ab16_gate_b_owner_selected",
-}
-exec(
-    compile(
-        source,
-        expected["renderer_source"]["path"],
-        "exec",
-        dont_inherit=True,
-    ),
-    namespace,
-)
-renderer = namespace.get(function_name)
-if function_name not in {"render_gate_b_epoch_observation", "render_gate_b_approval"} or not callable(renderer):
-    raise SystemExit(125)
-rendered = renderer(json.loads(request))
-if not isinstance(rendered, bytes):
-    raise SystemExit(125)
-view = memoryview(rendered)
-while view:
-    count = os.write(output_fd, view)
-    if count <= 0:
-        raise SystemExit(125)
-    view = view[count:]
+try:
+    os.execve(
+        "/proc/self/fd/" + str(python_fd),
+        [
+            expected["python"]["path"],
+            "-I",
+            "-B",
+            "/proc/self/fd/" + str(owner_source_fd),
+            "owner",
+            *sys.argv[4:],
+        ],
+        clean,
+    )
+except Exception:
+    raise SystemExit(126)
 """.strip()
 
 # This external owner is entered by exec, so the actor PID/starttime observed
@@ -1069,7 +1076,9 @@ AB16_SCRIPT_TOOL_FILES: dict[str, str] = {
     "ab16_formal_launch_authority_v1": "ab16_formal_launch_authority_v1.py",
     "ab16_formal_launch_validator_v1": "ab16_formal_launch_validator_v1.py",
     "ab16_formal_loader_v1": "ab16_formal_loader_v1.py",
+    "ab16_formal_orchestrator_v1": "ab16_formal_orchestrator_v1.py",
     "ab16_formal_success_verifier_v1": "ab16_formal_success_verifier_v1.py",
+    "ab16_gate_b_qualification_v1": "ab16_gate_b_qualification_v1.py",
     "ab16_outer_closeout_state_v1": "ab16_outer_closeout_state_v1.py",
     "ab16_outer_guardian_v1": "ab16_outer_guardian_v1.py",
     "ab16_outer_refunit_closeout_v1": "ab16_outer_refunit_closeout_v1.py",
@@ -1780,9 +1789,11 @@ def _validate_gate_b_publisher(
             "driver_program",
             "execution_strategy",
             "mechanical_publisher",
+            "owner_source",
             "output_mode",
             "output_path",
             "python",
+            "qualification_session",
             "renderer_source",
         },
         "Gate-B publisher",
@@ -1812,9 +1823,47 @@ def _validate_gate_b_publisher(
         "Gate-B mechanical publisher",
     )
     renderer = _mode_identity(record["renderer_source"], "Gate-B renderer source")
+    owner_source = _mode_identity(record["owner_source"], "Gate-B qualification owner source")
     python = _mode_identity(record["python"], "Gate-B publisher Python")
+    qualification = _exact_keys(
+        record["qualification_session"],
+        {
+            "lock_identities",
+            "retained_fd_roles",
+            "sequence",
+            "session_id",
+            "state",
+        },
+        "Gate-B qualification session",
+    )
+    if type(qualification["lock_identities"]) is not list or len(qualification["lock_identities"]) != 3:
+        raise BootstrapError("Gate-B qualification lock identity set drifted")
+    lock_paths: list[str] = []
+    for value in qualification["lock_identities"]:
+        lock = _exact_keys(
+            value,
+            {"device", "inode", "mode", "nlink", "path", "uid"},
+            "Gate-B qualification lock",
+        )
+        if (
+            type(lock["device"]) is not int
+            or lock["device"] < 0
+            or type(lock["inode"]) is not int
+            or lock["inode"] < 0
+            or type(lock["mode"]) is not int
+            or lock["mode"] != 0o600
+            or lock["nlink"] != 1
+            or type(lock["path"]) is not str
+            or type(lock["uid"]) is not int
+            or lock["uid"] < 0
+        ):
+            raise BootstrapError("Gate-B qualification lock identity is malformed")
+        lock_paths.append(lock["path"])
     output = _absolute(str(record["output_path"]))
     current_renderer = _snapshot_mode_identity(Path(__file__))
+    current_owner_source = _snapshot_mode_identity(
+        Path(__file__).resolve().with_name("ab16_gate_b_qualification_v1.py")
+    )
     current_python = _snapshot_mode_identity(Path(os.path.realpath(sys.executable)))
     if (
         record["execution_strategy"] != GATE_B_OWNER_EXECUTION_STRATEGY
@@ -1822,15 +1871,41 @@ def _validate_gate_b_publisher(
         or not output.is_absolute()
         or (expected_output_path is not None and output != _absolute(expected_output_path))
         or renderer != current_renderer
+        or owner_source != current_owner_source
         or python != current_python
+        or lock_paths != list(GATE_B_QUALIFICATION_LOCK_PATHS)
+        or qualification["retained_fd_roles"] != list(GATE_B_RETAINED_FD_ROLES)
+        or qualification["sequence"] not in (1, 2)
+        or type(qualification["session_id"]) is not str
+        or SHA256_RE.fullmatch(qualification["session_id"]) is None
+        or qualification["state"]
+        != "PUBLISHED_FDS_RETAINED_PENDING_BOOTSTRAP_HANDOFF"
     ):
         raise BootstrapError("Gate-B publisher selected-byte identity drifted")
     return record
 
 
-def _gate_b_publisher_for_parent(output_path: Path | str) -> dict[str, object]:
-    owner_pid = os.getppid()
-    return {
+def _gate_b_publisher_from_owner_context(output_path: Path | str) -> dict[str, object]:
+    context = globals().get("__ab16_gate_b_owner_context__")
+    if type(context) is not dict:
+        raise BootstrapError("Gate-B renderer lacks its persistent owner context")
+    record = dict(context)
+    if record.get("output_path") != str(_absolute(output_path)):
+        raise BootstrapError("Gate-B owner context output path drifted")
+    _validate_gate_b_publisher(record, expected_output_path=output_path)
+    return record
+
+
+def _gate_b_publisher_for_parent(
+    output_path: Path | str,
+    *,
+    sequence: int = 2,
+    session_id: str = "0" * 64,
+) -> dict[str, object]:
+    """Build a live-process fixture publisher; production rendering uses owner context."""
+
+    owner_pid = os.getpid()
+    record = {
         "actor": {
             "pid": owner_pid,
             "pid_starttime": _proc_starttime(owner_pid),
@@ -1839,11 +1914,33 @@ def _gate_b_publisher_for_parent(output_path: Path | str) -> dict[str, object]:
         "driver_program": _literal_identity(GATE_B_OWNER_DRIVER_V1),
         "execution_strategy": GATE_B_OWNER_EXECUTION_STRATEGY,
         "mechanical_publisher": _literal_identity(OWNER_OEXCL_PUBLISH_V1),
+        "owner_source": _snapshot_mode_identity(
+            Path(__file__).resolve().with_name("ab16_gate_b_qualification_v1.py")
+        ),
         "output_mode": 0o444,
         "output_path": str(_absolute(output_path)),
         "python": _snapshot_mode_identity(Path(os.path.realpath(sys.executable))),
+        "qualification_session": {
+            "lock_identities": [
+                {
+                    "device": index + 1,
+                    "inode": index + 11,
+                    "mode": 0o600,
+                    "nlink": 1,
+                    "path": path,
+                    "uid": os.getuid(),
+                }
+                for index, path in enumerate(GATE_B_QUALIFICATION_LOCK_PATHS)
+            ],
+            "retained_fd_roles": list(GATE_B_RETAINED_FD_ROLES),
+            "sequence": sequence,
+            "session_id": session_id,
+            "state": "PUBLISHED_FDS_RETAINED_PENDING_BOOTSTRAP_HANDOFF",
+        },
         "renderer_source": _snapshot_mode_identity(Path(__file__)),
     }
+    _validate_gate_b_publisher(record, expected_output_path=output_path)
+    return record
 
 
 def _render_gate_b_record(
@@ -1858,7 +1955,7 @@ def _render_gate_b_record(
     record = dict(envelope["record"])
     if "publisher" in record:
         raise BootstrapError(f"{label} renderer does not accept caller publisher bytes")
-    record["publisher"] = _gate_b_publisher_for_parent(str(envelope["output_path"]))
+    record["publisher"] = _gate_b_publisher_from_owner_context(str(envelope["output_path"]))
     validator(record)
     return authority.canonical_json(record)
 
@@ -1969,6 +2066,7 @@ def _validate_gate_b(value: object) -> Mapping[str, Any]:
         or record["decision"] != "APPROVED"
         or record["formal_campaign_creation_authorized"] is not True
         or record["arm_launch_authorized"] is not False
+        or record["publisher"]["qualification_session"]["sequence"] != 2
         or type(record["approval_id"]) is not str
         or APPROVAL_ID_RE.fullmatch(record["approval_id"]) is None
         or type(record["repository_head"]) is not str
@@ -2158,6 +2256,7 @@ def _validate_gate_b_epoch_observation(
         or record["candidate_identity"] != candidate_identity
         or record["gate_a_receipt_identity"] != gate_a_identity
         or record["final_full_preflight_receipt_identity"] != final_full_preflight_identity
+        or record["publisher"]["qualification_session"]["sequence"] != 1
         or record["manager_epoch"] != gate_a["manager_epoch"]
         or any(
             record[field] != gate_a[field]
@@ -3288,6 +3387,146 @@ def _check_epoch_toolchain(
     return attestor
 
 
+def _qualification_lock_identity(
+    descriptor: int,
+    path: str,
+) -> dict[str, object]:
+    absolute = _absolute(path)
+    parent, parent_descriptor = _open_directory_fd(absolute.parent)
+    try:
+        named = os.stat(
+            absolute.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+    finally:
+        os.close(parent_descriptor)
+    opened = os.fstat(descriptor)
+    if (
+        parent != absolute.parent
+        or _stat_signature(opened) != _stat_signature(named)
+        or not stat.S_ISREG(opened.st_mode)
+        or opened.st_nlink != 1
+        or opened.st_uid != os.getuid()
+        or stat.S_IMODE(opened.st_mode) != 0o600
+    ):
+        raise BootstrapError(f"Gate-B qualification lock identity drifted: {absolute}")
+    return {
+        "device": opened.st_dev,
+        "inode": opened.st_ino,
+        "mode": stat.S_IMODE(opened.st_mode),
+        "nlink": opened.st_nlink,
+        "path": str(absolute),
+        "uid": opened.st_uid,
+    }
+
+
+def _complete_gate_b_qualification_handoff(
+    *,
+    qualification_fd: int,
+    qualification_lock_fds: Mapping[str, int],
+    epoch_publisher: Mapping[str, Any],
+    approval_publisher: Mapping[str, Any],
+    gate_b_epoch_identity: Mapping[str, object],
+    gate_b_approval_identity: Mapping[str, object],
+    campaign_root_identity: Mapping[str, object],
+    gate1_selection_identity: Mapping[str, object],
+    expected_lock_paths: Sequence[str] = GATE_B_QUALIFICATION_LOCK_PATHS,
+) -> dict[str, object]:
+    epoch_session = _exact_keys(
+        epoch_publisher["qualification_session"],
+        {
+            "lock_identities",
+            "retained_fd_roles",
+            "sequence",
+            "session_id",
+            "state",
+        },
+        "Gate-B epoch qualification session",
+    )
+    approval_session = _exact_keys(
+        approval_publisher["qualification_session"],
+        set(epoch_session),
+        "Gate-B approval qualification session",
+    )
+    paths = tuple(expected_lock_paths)
+    if (
+        epoch_publisher["actor"] != approval_publisher["actor"]
+        or epoch_session["session_id"] != approval_session["session_id"]
+        or epoch_session["sequence"] != 1
+        or approval_session["sequence"] != 2
+        or epoch_session["lock_identities"] != approval_session["lock_identities"]
+        or epoch_session["retained_fd_roles"] != list(GATE_B_RETAINED_FD_ROLES)
+        or approval_session["retained_fd_roles"] != list(GATE_B_RETAINED_FD_ROLES)
+        or set(qualification_lock_fds) != set(paths)
+    ):
+        raise BootstrapError("Gate-B qualification session join drifted")
+    observed_locks = [
+        _qualification_lock_identity(qualification_lock_fds[path], path)
+        for path in paths
+    ]
+    if observed_locks != epoch_session["lock_identities"]:
+        raise BootstrapError("Gate-B qualification lock FD join drifted")
+    request = {
+        "action": "BOOTSTRAP_HANDOFF",
+        "actor": dict(epoch_publisher["actor"]),
+        "campaign_root_identity": dict(campaign_root_identity),
+        "gate1_selection_identity": dict(gate1_selection_identity),
+        "gate_b_approval_identity": dict(gate_b_approval_identity),
+        "gate_b_epoch_identity": dict(gate_b_epoch_identity),
+        "lock_identities": observed_locks,
+        "publisher_sequences": [1, 2],
+        "schema": GATE_B_HANDOFF_REQUEST_SCHEMA,
+        "session_id": epoch_session["session_id"],
+    }
+    try:
+        channel = socket.socket(fileno=os.dup(qualification_fd))
+        channel.settimeout(60)
+        try:
+            raw = authority.canonical_json(request)
+            if channel.send(raw) != len(raw):
+                raise BootstrapError("Gate-B qualification handoff write was short")
+            response_raw = channel.recv(16 * 1024 * 1024)
+        finally:
+            channel.close()
+    except (OSError, TimeoutError) as exc:
+        raise BootstrapError("Gate-B qualification handoff transport failed") from exc
+    response = authority.strict_loads(
+        response_raw,
+        "Gate-B qualification handoff response",
+    )
+    response = _exact_keys(
+        response,
+        {
+            "actor",
+            "lock_identities",
+            "publisher_sequences",
+            "retained_fd_digest",
+            "retained_fd_roles",
+            "schema",
+            "session_id",
+            "state",
+            "status",
+        },
+        "Gate-B qualification handoff response",
+    )
+    if (
+        authority.canonical_json(response) != response_raw
+        or response["schema"] != GATE_B_HANDOFF_RESPONSE_SCHEMA
+        or response["status"] != "PASS"
+        or response["state"] != "BOOTSTRAP_HANDOFF_COMPLETE_FDS_RETAINED"
+        or response["actor"] != epoch_publisher["actor"]
+        or response["session_id"] != epoch_session["session_id"]
+        or response["publisher_sequences"] != [1, 2]
+        or response["lock_identities"] != observed_locks
+        or response["retained_fd_roles"] != list(GATE_B_RETAINED_FD_ROLES)
+        or type(response["retained_fd_digest"]) is not str
+        or SHA256_RE.fullmatch(response["retained_fd_digest"]) is None
+    ):
+        raise BootstrapError("Gate-B qualification handoff response drifted")
+    return dict(response)
+
+
 def bootstrap_campaign(
     *,
     campaign_dir: Path | str,
@@ -3297,6 +3536,8 @@ def bootstrap_campaign(
     gate_b_approval: Path | str,
     strict_input_paths: Mapping[str, Path | str],
     system_tool_paths: Mapping[str, Path | str],
+    qualification_fd: int | None = None,
+    qualification_lock_fds: Mapping[str, int] | None = None,
     created_at_utc: str | None = None,
 ) -> dict[str, object]:
     """Create a complete v4 campaign authority only after both gates bind."""
@@ -3385,7 +3626,13 @@ def bootstrap_campaign(
         candidate_identity=candidate_identity,
         final_full_preflight_identity=final_full_preflight_identity,
     )
-    if gate_b_epoch["publisher"]["actor"] != gate_b["publisher"]["actor"]:
+    if (
+        gate_b_epoch["publisher"]["actor"] != gate_b["publisher"]["actor"]
+        or gate_b_epoch["publisher"]["qualification_session"]["session_id"]
+        != gate_b["publisher"]["qualification_session"]["session_id"]
+        or gate_b_epoch["publisher"]["qualification_session"]["lock_identities"]
+        != gate_b["publisher"]["qualification_session"]["lock_identities"]
+    ):
         raise BootstrapError("Gate-B epoch and approval were not rendered by one persistent owner")
     system_full = {role: planned[f"system.{role}"] for role in SYSTEM_TOOL_ROLES}
     repository_head = _observe_repository_head(
@@ -3565,6 +3812,18 @@ def bootstrap_campaign(
     formal_parent = authority.mkdir_exclusive(output / "formal-ab16")
     if any(formal_parent.iterdir()):
         raise BootstrapError("formal launch parent is not one fresh empty directory")
+    if qualification_fd is None or qualification_lock_fds is None:
+        raise BootstrapError("Gate-B qualification handoff capability is absent")
+    qualification_handoff = _complete_gate_b_qualification_handoff(
+        qualification_fd=qualification_fd,
+        qualification_lock_fds=qualification_lock_fds,
+        epoch_publisher=gate_b_epoch["publisher"],
+        approval_publisher=gate_b["publisher"],
+        gate_b_epoch_identity=gate_b_epoch_identity,
+        gate_b_approval_identity=gate_b_identity,
+        campaign_root_identity=root_identity,
+        gate1_selection_identity=selection_identity,
+    )
     return {
         "bootstrap_capture_source_identity": capture_source_identity,
         "campaign_dir": str(output),
@@ -3577,6 +3836,7 @@ def bootstrap_campaign(
         "gate_b_approval_identity": gate_b_identity,
         "gate_b_epoch_observation_identity": gate_b_epoch_identity,
         "gate_b_final_full_preflight_identity": final_full_preflight_identity,
+        "gate_b_qualification_handoff": qualification_handoff,
         "organic_ab16_authorized": False,
         "package_id": package["package_id"],
         "path_preregistration_identity": inputs[PATH_PREREGISTRATION_INPUT_ROLE],
@@ -3648,6 +3908,12 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     _add_common_cli_arguments(bootstrap)
     bootstrap.add_argument("--offline-candidate", type=Path, required=True)
     bootstrap.add_argument("--gate-b-approval", type=Path, required=True)
+    bootstrap.add_argument("--gate-b-qualification-fd", type=int, required=True)
+    bootstrap.add_argument(
+        "--gate-b-qualification-lock-fd",
+        action="append",
+        required=True,
+    )
     return parser.parse_args(argv)
 
 
@@ -3680,6 +3946,23 @@ def _cli_system_tools(args: argparse.Namespace) -> dict[str, Path]:
     }
 
 
+def _cli_qualification_lock_fds(values: Sequence[str]) -> dict[str, int]:
+    parsed: dict[str, int] = {}
+    for value in values:
+        path, separator, descriptor = value.rpartition("=")
+        if (
+            not separator
+            or path not in GATE_B_QUALIFICATION_LOCK_PATHS
+            or path in parsed
+            or not descriptor.isdigit()
+        ):
+            raise BootstrapError("Gate-B qualification lock FD argument drifted")
+        parsed[path] = int(descriptor)
+    if set(parsed) != set(GATE_B_QUALIFICATION_LOCK_PATHS):
+        raise BootstrapError("Gate-B qualification lock FD set drifted")
+    return parsed
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     repository = _absolute(args.repository_root)
@@ -3706,6 +3989,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 gate_b_approval=args.gate_b_approval,
                 strict_input_paths=_production_strict_inputs(repository, args),
                 system_tool_paths=_cli_system_tools(args),
+                qualification_fd=args.gate_b_qualification_fd,
+                qualification_lock_fds=_cli_qualification_lock_fds(
+                    args.gate_b_qualification_lock_fd
+                ),
                 created_at_utc=args.created_at_utc,
             )
         else:

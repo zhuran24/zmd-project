@@ -2,10 +2,11 @@
 """Independent detached verifier for one terminal formal AB16 campaign.
 
 This role consumes, but never constructs, the controller, outer lifecycle,
-RefUnit, child cleanup, guardian, and lock-release receipts.  It independently
-replays either the complete success chain or one permanent consumed-incomplete
-chain.  Only after those joins succeed does it publish one final O_EXCL 0444
-receipt.
+RefUnit, child cleanup, and guardian receipts while the exact supervisor locks
+remain held.  It independently replays either the complete substantive success
+chain or one permanent consumed-incomplete chain.  Only after those joins
+succeed does it publish one O_EXCL 0444 pre-release receipt; a separate
+terminal join must bind the later exact lock-release effect.
 
 The verifier intentionally does not import the formal supervisor, controller,
 outer receipt producer, or guardian runtime.  It reuses only the closeout
@@ -26,7 +27,7 @@ from pathlib import Path
 import re
 import stat
 import sys
-from typing import Any
+from typing import Any, cast
 
 from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as authority
 from docs.research.noncert_cuts_ab16_20260724 import (
@@ -38,9 +39,12 @@ from docs.research.noncert_cuts_ab16_20260724 import (
 
 
 AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
-SUCCESS_RECEIPT_SCHEMA = "noncert-cuts-ab16-formal-detached-success-v1"
-INCOMPLETE_RECEIPT_SCHEMA = "noncert-cuts-ab16-formal-detached-incomplete-v2"
-FAILURE_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-failure-release-v1"
+SUCCESS_RECEIPT_SCHEMA = "noncert-cuts-ab16-formal-pre-release-success-v2"
+INCOMPLETE_RECEIPT_SCHEMA = "noncert-cuts-ab16-formal-detached-incomplete-v3"
+FAILURE_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-pre-release-failure-v3"
+FAILURE_TERMINAL_RELEASE_SCHEMA = (
+    "noncert-cuts-ab16-formal-failure-terminal-release-v3"
+)
 CONTAINMENT_GUARDIAN_ABSENCE_SCHEMA = (
     "noncert-cuts-ab16-containment-guardian-absence-v1"
 )
@@ -65,6 +69,18 @@ GATE1_SLOTS = (
 EXPECTED_CHILD_ORDER = (
     *(("gate1", slot) for slot in GATE1_SLOTS),
     *(("arm", slot) for slot in ARM_SEQUENCE),
+)
+PRE_RELEASE_PHASES = (
+    "outer_prelaunch",
+    "outer_start",
+    "outer_resource",
+    "reference_acquisition",
+    "outer_terminal",
+    "observer",
+    "pre_unref_cleanup",
+    "unref_call",
+    "reference_release",
+    "post_unref_absence",
 )
 FALSE_AUTHORIZATIONS = dict(launch_validator.FALSE_CLAIMS)
 REFERENCE_FALSE_AUTHORIZATIONS = dict(closeout_state.FALSE_AUTHORIZATIONS)
@@ -135,10 +151,12 @@ PHASE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
     ),
     "dual_lock_release": frozenset(
         {
+            "detached_success_identity",
             "guardian_absence_identity",
             "guardian_close_identity",
             "lock_identities",
             "supervisor_release",
+            "terminal_join",
         }
     ),
 }
@@ -146,6 +164,9 @@ PHASE_SCHEMAS = {
     phase: f"noncert-cuts-ab16-formal-{phase.replace('_', '-')}-v1"
     for phase in PHASE_PAYLOAD_FIELDS
 }
+PHASE_SCHEMAS["dual_lock_release"] = (
+    "noncert-cuts-ab16-formal-dual-lock-release-v2"
+)
 
 CONTROLLER_RESULT_FIELDS = frozenset(
     {
@@ -206,6 +227,34 @@ FAILURE_RELEASE_FIELDS = frozenset(
         "heavy_identities_absent",
         "incomplete_identity",
         "lock_identities",
+        "lock_lifecycle",
+        "lower_bound",
+        "outcome",
+        "package_id",
+        "phase",
+        "production_authority_changed",
+        "production_certified",
+        "retry_eligible",
+        "schema_version",
+        "stage_b_changed",
+        "status",
+        "success_eligible",
+        "upper_bound",
+    }
+)
+FAILURE_TERMINAL_RELEASE_FIELDS = frozenset(
+    {
+        "authority_scope",
+        "authorizations",
+        "b6_changed",
+        "bounds_changed",
+        "campaign_root_identity",
+        "created_at_utc",
+        "detached_substantive_identity",
+        "detached_substantive_kind",
+        "failure_pre_release_identity",
+        "formal_selection_identity",
+        "lock_identities",
         "lock_release_effect",
         "lower_bound",
         "outcome",
@@ -218,6 +267,8 @@ FAILURE_RELEASE_FIELDS = frozenset(
         "stage_b_changed",
         "status",
         "success_eligible",
+        "terminal_join",
+        "terminal_predecessor_identity",
         "upper_bound",
     }
 )
@@ -244,6 +295,8 @@ DETACHED_SUCCESS_FIELDS = frozenset(
         "controller_result_identity",
         "created_at_utc",
         "formal_selection_identity",
+        "lock_identities",
+        "lock_lifecycle",
         "lower_bound",
         "package_id",
         "phase_receipt_identities",
@@ -1151,10 +1204,15 @@ def validate_dual_lock_release(
     *,
     expected: Mapping[str, object],
     expected_lock_identities: object,
+    expected_detached_success_identity: Mapping[str, object],
     expected_guardian_absence_identity: Mapping[str, object],
     expected_guardian_close_identity: Mapping[str, object],
 ) -> dict[str, object]:
     record = _common(value, phase="dual_lock_release", expected=expected)
+    record["detached_success_identity"] = _identity(
+        record["detached_success_identity"],
+        "detached substantive verification",
+    )
     record["guardian_close_identity"] = _identity(
         record["guardian_close_identity"],
         "guardian lock close",
@@ -1169,8 +1227,21 @@ def validate_dual_lock_release(
         frozenset({"after_guardian_absence", "attempted", "recorded", "returned"}),
         "supervisor lock release",
     )
+    terminal = _closed(
+        record["terminal_join"],
+        frozenset(
+            {
+                "detached_success_before_guardian_close",
+                "guardian_absence_before_supervisor_release",
+                "locks_released_after_substantive_verification",
+            }
+        ),
+        "formal terminal join",
+    )
     if (
         record["lock_identities"] != _lock_identities(expected_lock_identities)
+        or record["detached_success_identity"]
+        != dict(expected_detached_success_identity)
         or record["guardian_absence_identity"]
         != dict(expected_guardian_absence_identity)
         or record["guardian_close_identity"]
@@ -1179,9 +1250,11 @@ def validate_dual_lock_release(
             supervisor[field] is not True
             for field in ("after_guardian_absence", "attempted", "returned", "recorded")
         )
+        or any(value is not True for value in terminal.values())
     ):
         raise FormalSuccessVerificationError("guardian/supervisor lock release ordering drifted")
     record["supervisor_release"] = supervisor
+    record["terminal_join"] = terminal
     return record
 
 
@@ -1682,34 +1755,11 @@ def _validate_cleanup_evidence(
         if (
             not hold_recorded
             or not clearance_recorded
-            or lock_state == "absent"
-            or type(publication) is not dict
+            or lock_state != "absent"
+            or publication != "absent"
         ):
             raise FormalSuccessVerificationError(
-                "containment cleanup lacks its exact publication topology"
-            )
-        if lock_state == "unrecorded":
-            if (
-                publication["attempted"] is not True
-                or publication["returned"] is not True
-                or publication["recorded"] is not False
-                or "returned_identity" not in publication
-                or "recorded_identity" in publication
-                or "error" not in publication
-            ):
-                raise FormalSuccessVerificationError(
-                    "unrecorded containment lock release effect drifted"
-                )
-        elif (
-            type(lock_state) is not dict
-            or publication["attempted"] is not True
-            or publication["returned"] is not True
-            or publication["recorded"] is not True
-            or publication.get("recorded_identity") != lock_state
-            or publication.get("returned_identity") != lock_state
-        ):
-            raise FormalSuccessVerificationError(
-                "recorded containment lock release effect drifted"
+                "containment pre-release cleanup topology drifted"
             )
     elif (
         any(item != "absent" for item in optional.values())
@@ -1771,12 +1821,92 @@ def _validate_cleanup_evidence(
     }
 
 
+def validate_pre_release_success(
+    value: object,
+    *,
+    context: Mapping[str, object],
+    selection_identity: Mapping[str, object],
+    expected_lock_identities: object,
+) -> dict[str, object]:
+    """Validate the detached substantive replay without claiming lock release."""
+
+    record = _closed(value, DETACHED_SUCCESS_FIELDS, "pre-release success")
+    record["child_audit_identity"] = _identity(
+        record["child_audit_identity"],
+        "pre-release child audit",
+    )
+    record["controller_result_identity"] = _identity(
+        record["controller_result_identity"],
+        "pre-release controller result",
+    )
+    record["formal_selection_identity"] = _identity(
+        record["formal_selection_identity"],
+        "pre-release formal selection",
+    )
+    record["terminal_classification_identity"] = _identity(
+        record["terminal_classification_identity"],
+        "pre-release terminal classification",
+    )
+    phase_identities = _closed(
+        record["phase_receipt_identities"],
+        frozenset(PRE_RELEASE_PHASES),
+        "pre-release phase identities",
+    )
+    record["phase_receipt_identities"] = {
+        phase: _identity(phase_identities[phase], f"pre-release {phase}")
+        for phase in PRE_RELEASE_PHASES
+    }
+    record["lock_identities"] = _lock_identities(record["lock_identities"])
+    lifecycle = _closed(
+        record["lock_lifecycle"],
+        frozenset(
+            {
+                "guardian_close_is_next_required_step",
+                "supervisor_lock_release_permitted",
+                "supervisor_locks_must_remain_held",
+            }
+        ),
+        "pre-release lock lifecycle",
+    )
+    _utc(record["created_at_utc"], "pre-release created_at_utc")
+    if (
+        record["schema_version"] != SUCCESS_RECEIPT_SCHEMA
+        or record["status"] != "PRE_RELEASE_VERIFIED"
+        or record["authority_scope"] != AUTHORITY_SCOPE
+        or record["authorizations"] != FALSE_AUTHORIZATIONS
+        or record["campaign_root_identity"] != context["campaign_root_identity"]
+        or record["formal_selection_identity"] != dict(selection_identity)
+        or record["package_id"] != context["package_id"]
+        or record["repository_head"] != context["repository_head"]
+        or record["lock_identities"]
+        != _lock_identities(expected_lock_identities)
+        or lifecycle["guardian_close_is_next_required_step"] is not True
+        or lifecycle["supervisor_lock_release_permitted"] is not False
+        or lifecycle["supervisor_locks_must_remain_held"] is not True
+        or record["upper_bound"] != [1188, 18]
+        or record["lower_bound"] != "absent"
+        or record["production_certified"] is not False
+        or record["b6_changed"] is not False
+        or record["bounds_changed"] is not False
+        or record["stage_b_changed"] is not False
+        or record["production_authority_changed"] is not False
+        or record["verdict"]
+        != "AB16_FORMAL_SUBSTANTIVE_REPLAY_VERIFIED_LOCKS_STILL_REQUIRED"
+    ):
+        raise FormalSuccessVerificationError(
+            "pre-release success crossed its claim or lock-lifecycle boundary"
+        )
+    record["lock_lifecycle"] = lifecycle
+    return record
+
+
 def _validate_prior_success_output(
     value: object,
     *,
     context: Mapping[str, object],
     phase: str,
     selection_identity: Mapping[str, object] | None,
+    expected_lock_identities: object,
 ) -> dict[str, object] | str:
     """Bind, but never authorize from, a success output preceding failure."""
 
@@ -1797,27 +1927,27 @@ def _validate_prior_success_output(
         expected_identity=identity,
         label="prior detached success output",
     )
-    record = _closed(raw, DETACHED_SUCCESS_FIELDS, "prior detached success output")
-    _utc(record["created_at_utc"], "prior detached success created_at_utc")
+    validate_pre_release_success(
+        raw,
+        context=context,
+        selection_identity=selection_identity,
+        expected_lock_identities=expected_lock_identities,
+    )
+    permitted_phases = {
+        "DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN",
+        "GUARDIAN_CLOSE_NOT_ATTEMPTED",
+        "GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN",
+        "GUARDIAN_ABSENCE_UNPROVED",
+        "SUPERVISOR_LOCK_RELEASE_NOT_ATTEMPTED",
+        "SUPERVISOR_LOCK_RELEASE_FAILED_OR_UNCERTAIN",
+        "DUAL_LOCK_RELEASE_RECEIPT_NOT_ATTEMPTED",
+        "DUAL_LOCK_RELEASE_RECEIPT_FAILED_OR_UNCERTAIN",
+        "FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN",
+    }
     if (
-        phase != "DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN"
+        phase not in permitted_phases
         or identity["path"] != str(path)
         or read_identity != identity
-        or record["schema_version"] != SUCCESS_RECEIPT_SCHEMA
-        or record["status"] != "VERIFIED"
-        or record["authority_scope"] != AUTHORITY_SCOPE
-        or record["authorizations"] != FALSE_AUTHORIZATIONS
-        or record["campaign_root_identity"] != context["campaign_root_identity"]
-        or record["formal_selection_identity"] != dict(selection_identity)
-        or record["package_id"] != context["package_id"]
-        or record["repository_head"] != context["repository_head"]
-        or record["upper_bound"] != [1188, 18]
-        or record["lower_bound"] != "absent"
-        or record["production_certified"] is not False
-        or record["b6_changed"] is not False
-        or record["bounds_changed"] is not False
-        or record["stage_b_changed"] is not False
-        or record["production_authority_changed"] is not False
     ):
         raise FormalSuccessVerificationError(
             "prior detached success output crossed the consumed-failure boundary"
@@ -1849,12 +1979,17 @@ def validate_failure_release(
     )
     locks = _lock_identities(record["lock_identities"])
     expected_locks = _lock_identities(expected_lock_identities)
-    effect = _closed(
-        record["lock_release_effect"],
-        frozenset({"lock_identities", "released"}),
-        "failure lock release effect",
+    lifecycle = _closed(
+        record["lock_lifecycle"],
+        frozenset(
+            {
+                "detached_incomplete_is_next_required_step",
+                "supervisor_lock_release_permitted",
+                "supervisor_locks_must_remain_held",
+            }
+        ),
+        "pre-release failure lock lifecycle",
     )
-    effect["lock_identities"] = _lock_identities(effect["lock_identities"])
     marker: dict[str, object] | str = (
         "absent"
         if expected_marker_identity is None
@@ -1880,11 +2015,12 @@ def validate_failure_release(
         context=context,
         phase=phase,
         selection_identity=expected_selection_identity,
+        expected_lock_identities=expected_lock_identities,
     )
     _utc(record["created_at_utc"], "formal failure release created_at_utc")
     if (
         record["schema_version"] != FAILURE_RELEASE_SCHEMA
-        or record["status"] != "INCOMPLETE_RELEASED"
+        or record["status"] != "INCOMPLETE_PRE_RELEASE"
         or record["outcome"] != "INCOMPLETE"
         or record["authority_scope"] != AUTHORITY_SCOPE
         or record["authorizations"] != FALSE_AUTHORIZATIONS
@@ -1906,18 +2042,167 @@ def validate_failure_release(
         or record["lower_bound"] != "absent"
         or record["production_certified"] is not False
         or locks != expected_locks
-        or effect["released"] is not True
-        or effect["lock_identities"] != expected_locks
+        or lifecycle["detached_incomplete_is_next_required_step"] is not True
+        or lifecycle["supervisor_lock_release_permitted"] is not False
+        or lifecycle["supervisor_locks_must_remain_held"] is not True
         or identity["path"]
         != str(Path(str(context["formal_attempt_dir"])) / "failure-release.json")
     ):
         raise FormalSuccessVerificationError(
-            "formal failure release authority/topology/lock join drifted"
+            "pre-release failure authority/topology/lock join drifted"
         )
     record["cleanup_evidence"] = cleanup
     record["detached_success_output_identity"] = prior_success
     record["lock_identities"] = locks
+    record["lock_lifecycle"] = lifecycle
+    return record
+
+
+def validate_failure_terminal_release(
+    value: object,
+    *,
+    context: Mapping[str, object],
+    expected_identity: Mapping[str, object],
+    expected_lock_identities: object,
+    expected_detached_substantive_identity: Mapping[str, object],
+    expected_detached_substantive_kind: str,
+    expected_failure_pre_release_identity: Mapping[str, object] | str,
+    expected_selection_identity: Mapping[str, object] | None,
+    expected_terminal_predecessor_identity: Mapping[str, object] | str,
+) -> dict[str, object]:
+    """Validate the sole post-release INCOMPLETE terminal join."""
+
+    record = _closed(
+        value,
+        FAILURE_TERMINAL_RELEASE_FIELDS,
+        "formal failure terminal release",
+    )
+    identity = _identity(expected_identity, "formal failure terminal release")
+    locks = _lock_identities(record["lock_identities"])
+    expected_locks = _lock_identities(expected_lock_identities)
+    effect = _closed(
+        record["lock_release_effect"],
+        frozenset({"lock_identities", "released"}),
+        "failure terminal lock release effect",
+    )
+    effect["lock_identities"] = _lock_identities(effect["lock_identities"])
+    detached = _identity(
+        record["detached_substantive_identity"],
+        "failure terminal detached substantive replay",
+    )
+    expected_detached = _identity(
+        expected_detached_substantive_identity,
+        "expected failure terminal detached substantive replay",
+    )
+    if expected_failure_pre_release_identity == "absent":
+        failure_pre_release: dict[str, object] | str = "absent"
+    else:
+        failure_pre_release = _identity(
+            expected_failure_pre_release_identity,
+            "expected pre-release failure",
+        )
+    if (
+        type(expected_terminal_predecessor_identity) is str
+        and expected_terminal_predecessor_identity in {"absent", "unrecorded"}
+    ):
+        terminal_predecessor: dict[str, object] | str = str(
+            expected_terminal_predecessor_identity
+        )
+    else:
+        terminal_predecessor = _identity(
+            expected_terminal_predecessor_identity,
+            "expected terminal predecessor",
+        )
+    selection: dict[str, object] | str = (
+        "absent"
+        if expected_selection_identity is None
+        else dict(expected_selection_identity)
+    )
+    terminal_join = _closed(
+        record["terminal_join"],
+        frozenset(
+            {
+                "detached_substantive_before_supervisor_release",
+                "locks_released_after_substantive_verification",
+                "terminal_predecessor_is_unique",
+            }
+        ),
+        "failure terminal join",
+    )
+    attempt = Path(str(context["formal_attempt_dir"]))
+    if expected_detached_substantive_kind == "detached_incomplete_v3":
+        topology_valid = (
+            type(failure_pre_release) is dict
+            and failure_pre_release["path"] == str(attempt / "failure-release.json")
+            and detached["path"]
+            == str(attempt / "detached-incomplete-closeout.json")
+            and terminal_predecessor == "absent"
+        )
+    elif expected_detached_substantive_kind == "pre_release_success_v2":
+        dual_path = str(
+            context["outer_spec"]["receipt_paths"]["dual_lock_release"]
+        )
+        topology_valid = (
+            failure_pre_release == "absent"
+            and detached["path"]
+            == str(context["outer_spec"]["receipt_paths"]["detached_closeout"])
+            and (
+                terminal_predecessor == "unrecorded"
+                or (
+                    type(terminal_predecessor) is dict
+                    and terminal_predecessor["path"] == dual_path
+                )
+            )
+        )
+    else:
+        topology_valid = False
+    _utc(record["created_at_utc"], "formal failure terminal created_at_utc")
+    if (
+        record["schema_version"] != FAILURE_TERMINAL_RELEASE_SCHEMA
+        or record["status"] != "INCOMPLETE_RELEASED"
+        or record["outcome"] != "INCOMPLETE"
+        or record["authority_scope"] != AUTHORITY_SCOPE
+        or record["authorizations"] != FALSE_AUTHORIZATIONS
+        or record["campaign_root_identity"] != context["campaign_root_identity"]
+        or record["package_id"] != context["package_id"]
+        or record["formal_selection_identity"] != selection
+        or record["detached_substantive_identity"] != expected_detached
+        or detached != expected_detached
+        or record["detached_substantive_kind"]
+        != expected_detached_substantive_kind
+        or record["failure_pre_release_identity"] != failure_pre_release
+        or record["terminal_predecessor_identity"] != terminal_predecessor
+        or topology_valid is not True
+        or locks != expected_locks
+        or effect["lock_identities"] != expected_locks
+        or effect["released"] is not True
+        or terminal_join["detached_substantive_before_supervisor_release"]
+        is not True
+        or terminal_join["locks_released_after_substantive_verification"]
+        is not True
+        or terminal_join["terminal_predecessor_is_unique"] is not True
+        or record["retry_eligible"] is not False
+        or record["success_eligible"] is not False
+        or record["b6_changed"] is not False
+        or record["bounds_changed"] is not False
+        or record["production_authority_changed"] is not False
+        or record["stage_b_changed"] is not False
+        or record["upper_bound"] != [1188, 18]
+        or record["lower_bound"] != "absent"
+        or record["production_certified"] is not False
+        or identity["path"]
+        != str(
+            Path(str(context["formal_attempt_dir"]))
+            / "failure-terminal-release.json"
+        )
+    ):
+        raise FormalSuccessVerificationError(
+            "failure terminal authority/topology/lock join drifted"
+        )
+    record["detached_substantive_identity"] = detached
+    record["lock_identities"] = locks
     record["lock_release_effect"] = effect
+    record["terminal_join"] = terminal_join
     return record
 
 
@@ -1929,9 +2214,8 @@ def _validate_containment_failure_chain(
     guardian_absence: Mapping[str, object],
     guardian_absence_identity: Mapping[str, object],
     cleanup_evidence: Mapping[str, object],
-    lock_release_effect: Mapping[str, object],
 ) -> dict[str, dict[str, object]]:
-    """Replay the fixed hold/clearance/release records without using the state verifier."""
+    """Replay the fixed hold/clearance records before any supervisor lock release."""
 
     attempt = Path(str(context["formal_attempt_dir"]))
     hold_expected = _identity(
@@ -1942,29 +2226,13 @@ def _validate_containment_failure_chain(
         cleanup_evidence["containment_clearance_identity"],
         "failure cleanup containment clearance",
     )
-    publication = cleanup_evidence["containment_lock_release_publication"]
-    if type(publication) is not dict:
-        raise FormalSuccessVerificationError(
-            "containment lock-release publication is absent"
-        )
-    raw_release_expected = cleanup_evidence["containment_lock_release_identity"]
-    release_expected = (
-        _identity(
-            publication["returned_identity"],
-            "returned containment lock release",
-        )
-        if raw_release_expected == "unrecorded"
-        else _identity(raw_release_expected, "failure cleanup containment lock release")
-    )
     fixed_paths = {
         "hold": attempt / "containment-hold.json",
         "clearance": attempt / "containment-cleared-after-hold.json",
-        "release": attempt / "lock-release.json",
     }
     if (
         hold_expected["path"] != str(fixed_paths["hold"])
         or clearance_expected["path"] != str(fixed_paths["clearance"])
-        or release_expected["path"] != str(fixed_paths["release"])
     ):
         raise FormalSuccessVerificationError(
             "containment cleanup identity escaped fixed paths"
@@ -1978,11 +2246,6 @@ def _validate_containment_failure_chain(
         fixed_paths["clearance"],
         expected_identity=clearance_expected,
         label="containment clearance",
-    )
-    release_raw, release_identity = _read_record(
-        fixed_paths["release"],
-        expected_identity=release_expected,
-        label="containment lock release",
     )
     hold_fields = closeout_state.BASE_FIELDS | frozenset(
         {
@@ -2013,24 +2276,15 @@ def _validate_containment_failure_chain(
             "success_eligible",
         }
     )
-    release_fields = closeout_state.BASE_FIELDS | frozenset(
-        {
-            "containment_clearance_identity",
-            "effect",
-            "guardian_absence_identity",
-            "schema_version",
-            "status",
-        }
-    )
     hold = _closed(hold_raw, hold_fields, "containment hold")
     clearance = _closed(clearance_raw, clearance_fields, "containment clearance")
-    release = _closed(release_raw, release_fields, "containment lock release")
     for label, record in (
         ("containment hold", hold),
         ("containment clearance", clearance),
-        ("containment lock release", release),
     ):
         _state_base(record, context=context, label=label)
+    effects = cast(Mapping[str, object], incomplete["effects"])
+    joins = cast(Mapping[str, object], incomplete["joins"])
     try:
         ledger = closeout_state.validate_frozen_ledger(hold["frozen_ledger"])
         ledger["child_audit_identity"] = _identity(
@@ -2054,8 +2308,8 @@ def _validate_containment_failure_chain(
         )
         closeout_state._validate_reference_terminal_joins(  # noqa: SLF001
             reference_terminal,
-            effects=incomplete["effects"],
-            joins=incomplete["joins"],
+            effects=effects,
+            joins=joins,
             errors=hold_errors,
         )
         supervisor = closeout_state._validate_supervisor(  # noqa: SLF001
@@ -2065,17 +2319,8 @@ def _validate_containment_failure_chain(
         raise FormalSuccessVerificationError(
             f"containment structural replay failed: {exc}"
         ) from exc
-    joins = incomplete["joins"]
     hold_locks = _lock_identities(hold["lock_identities"])
     clearance_locks = _lock_identities(clearance["lock_identities"])
-    release_effect = _closed(
-        release["effect"],
-        frozenset({"lock_identities", "released"}),
-        "containment lock effect",
-    )
-    release_effect["lock_identities"] = _lock_identities(
-        release_effect["lock_identities"]
-    )
     ledger_sha = hashlib.sha256(authority.canonical_json(ledger)).hexdigest()
     if (
         hold["schema_version"] != closeout_state.HOLD_SCHEMA
@@ -2105,24 +2350,17 @@ def _validate_containment_failure_chain(
         or clearance["outcome"] != "INCOMPLETE"
         or clearance["success_eligible"] is not False
         or hold_locks != clearance_locks
-        or release["schema_version"] != closeout_state.LOCK_RELEASE_SCHEMA
-        or release["status"] != "RELEASED"
-        or release["containment_clearance_identity"] != clearance_identity
-        or release["guardian_absence_identity"] != dict(guardian_absence_identity)
-        or release_effect != dict(lock_release_effect)
-        or release_effect["lock_identities"] != clearance_locks
-        or release_effect["released"] is not True
+        or cleanup_evidence["containment_lock_release_identity"] != "absent"
+        or cleanup_evidence["containment_lock_release_publication"] != "absent"
         or hold_identity != hold_expected
         or clearance_identity != clearance_expected
-        or release_identity != release_expected
     ):
         raise FormalSuccessVerificationError(
-            "containment hold/clearance/guardian/lock-release join drifted"
+            "containment hold/clearance/guardian pre-release join drifted"
         )
     return {
         "containment_clearance": clearance_identity,
         "containment_hold": hold_identity,
-        "containment_lock_release": release_identity,
     }
 
 
@@ -2497,7 +2735,7 @@ def verify_incomplete(
     campaign_dir: Path | str,
     incomplete_release: Path | str,
 ) -> dict[str, object]:
-    """Replay one permanent failure topology and publish VERIFIED_INCOMPLETE."""
+    """Replay one permanent failure topology before supervisor lock release."""
 
     campaign = Path(campaign_dir).absolute()
     release_path = Path(incomplete_release).absolute()
@@ -2671,7 +2909,6 @@ def verify_incomplete(
             guardian_absence=guardian_absence,
             guardian_absence_identity=guardian_absence_identity,
             cleanup_evidence=release["cleanup_evidence"],
-            lock_release_effect=release["lock_release_effect"],
         )
 
     final = {
@@ -2704,10 +2941,13 @@ def verify_incomplete(
         "repository_head": context["repository_head"],
         "schema_version": INCOMPLETE_RECEIPT_SCHEMA,
         "stage_b_changed": False,
-        "status": "VERIFIED_INCOMPLETE",
+        "status": "PRE_RELEASE_VERIFIED_INCOMPLETE",
         "success_eligible": False,
         "upper_bound": [1188, 18],
-        "verdict": "AB16_FORMAL_CAMPAIGN_PERMANENT_INCOMPLETE_VERIFIED",
+        "verdict": (
+            "AB16_FORMAL_INCOMPLETE_SUBSTANTIVE_REPLAY_VERIFIED_"
+            "LOCKS_STILL_REQUIRED"
+        ),
     }
     output = Path(
         str(context["outer_spec"]["receipt_paths"]["detached_incomplete_closeout"])
@@ -2724,7 +2964,7 @@ def verify_incomplete(
     return {
         "detached_incomplete": final,
         "detached_incomplete_identity": identity,
-        "status": "VERIFIED_INCOMPLETE",
+        "status": "PRE_RELEASE_VERIFIED_INCOMPLETE",
     }
 
 
@@ -2733,7 +2973,7 @@ def verify_success(
     campaign_dir: Path | str,
     formal_selection: Path | str,
 ) -> dict[str, object]:
-    """Replay all success evidence and publish the sole final receipt."""
+    """Replay substantive evidence before guardian close and lock release."""
 
     campaign = Path(campaign_dir).absolute()
     selection_path = Path(formal_selection).absolute()
@@ -2823,7 +3063,7 @@ def verify_success(
         expected_identity=terminal_payload["child_audit_identity"],
         label="finite child audit",
     )
-    child_audit = _validate_child_audit(child_audit_raw, controller=controller)
+    _validate_child_audit(child_audit_raw, controller=controller)
     receipts["outer_terminal"] = terminal
     observer = validate_observer(
         read_phase("observer"),
@@ -2881,37 +3121,15 @@ def verify_success(
     if post_unref["load_state"]["reference_release_identity"] != identities["reference_release"]:
         raise FormalSuccessVerificationError("post-Unref/reference-release identity join drifted")
     receipts["post_unref_absence"] = post_unref
-    guardian_raw, guardian_close_identity = _read_record(
-        paths["guardian_lock_close"],
-        expected_identity=None,
-        label="guardian lock close",
-    )
-    identities["guardian_lock_close"] = guardian_close_identity
-    _validate_guardian_close(
-        guardian_raw,
-        context=context,
-        selection_identity=selection_identity,
-        lock_identities=selection["lock_identities"],
-        expected_frozen_children=child_audit["frozen_children"],
-        expected_outer_identity=outer_identity,
-        expected_child_audit_identity=child_audit_identity,
-    )
-    guardian_absence = validate_guardian_absence(
-        read_phase("guardian_absence"),
-        expected=expected_common,
-        expected_guardian_identity=selection["guardian_unit_identity"],
-        expected_guardian_close_identity=guardian_close_identity,
-        expected_post_unref_absence_identity=identities["post_unref_absence"],
-    )
-    receipts["guardian_absence"] = guardian_absence
-    dual = validate_dual_lock_release(
-        read_phase("dual_lock_release"),
-        expected=expected_common,
-        expected_lock_identities=selection["lock_identities"],
-        expected_guardian_absence_identity=identities["guardian_absence"],
-        expected_guardian_close_identity=guardian_close_identity,
-    )
-    receipts["dual_lock_release"] = dual
+    for forbidden in (
+        "guardian_lock_close",
+        "guardian_absence",
+        "dual_lock_release",
+    ):
+        if os.path.lexists(paths[forbidden]):
+            raise FormalSuccessVerificationError(
+                f"pre-release verifier observed future receipt: {forbidden}"
+            )
 
     final = {
         "authority_scope": AUTHORITY_SCOPE,
@@ -2923,36 +3141,34 @@ def verify_success(
         "controller_result_identity": controller_identity,
         "created_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "formal_selection_identity": selection_identity,
+        "lock_identities": _lock_identities(selection["lock_identities"]),
+        "lock_lifecycle": {
+            "guardian_close_is_next_required_step": True,
+            "supervisor_lock_release_permitted": False,
+            "supervisor_locks_must_remain_held": True,
+        },
         "lower_bound": "absent",
         "package_id": context["package_id"],
         "phase_receipt_identities": {
             phase: identities[phase]
-            for phase in (
-                "outer_prelaunch",
-                "outer_start",
-                "outer_resource",
-                "reference_acquisition",
-                "outer_terminal",
-                "observer",
-                "pre_unref_cleanup",
-                "unref_call",
-                "reference_release",
-                "post_unref_absence",
-                "guardian_lock_close",
-                "guardian_absence",
-                "dual_lock_release",
-            )
+            for phase in PRE_RELEASE_PHASES
         },
         "production_authority_changed": False,
         "production_certified": False,
         "repository_head": context["repository_head"],
         "schema_version": SUCCESS_RECEIPT_SCHEMA,
         "stage_b_changed": False,
-        "status": "VERIFIED",
+        "status": "PRE_RELEASE_VERIFIED",
         "terminal_classification_identity": controller["terminal_classification_identity"],
         "upper_bound": [1188, 18],
-        "verdict": "AB16_FORMAL_CAMPAIGN_RESEARCH_EVIDENCE_VERIFIED",
+        "verdict": "AB16_FORMAL_SUBSTANTIVE_REPLAY_VERIFIED_LOCKS_STILL_REQUIRED",
     }
+    final = validate_pre_release_success(
+        final,
+        context=context,
+        selection_identity=selection_identity,
+        expected_lock_identities=selection["lock_identities"],
+    )
     output = Path(paths["detached_closeout"])
     identity = _publish_final_receipt(
         output,
@@ -2962,7 +3178,7 @@ def verify_success(
     return {
         "detached_success": final,
         "detached_success_identity": identity,
-        "status": "VERIFIED",
+        "status": "PRE_RELEASE_VERIFIED",
     }
 
 

@@ -13,7 +13,8 @@ from pathlib import Path
 import socket
 import subprocess
 import sys
-from types import ModuleType
+import time
+from types import ModuleType, SimpleNamespace
 from typing import Any
 
 import pytest
@@ -21,6 +22,9 @@ import pytest
 from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as authority
 from docs.research.noncert_cuts_ab16_20260724 import ab16_campaign_bootstrap_v2 as bootstrap
 from docs.research.noncert_cuts_ab16_20260724 import ab16_formal_controller_v1 as controller
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_formal_orchestrator_v1 as formal_orchestrator,
+)
 from docs.research.noncert_cuts_ab16_20260724 import (
     ab16_formal_launch_authority_v1 as launch_authority,
 )
@@ -179,6 +183,11 @@ def _formal_fixture(tmp_path: Path) -> FormalFixture:
         "docs/research/noncert_cuts_ab16_20260724/baseline_rebuild_v1.py",
         "d",
     )
+    formal_orchestrator_identity = _identity(
+        snapshot,
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py",
+        "4",
+    )
     guardian_runtime_identity = _identity(
         snapshot,
         "docs/research/noncert_cuts_ab16_20260724/ab16_outer_guardian_v1.py",
@@ -316,6 +325,7 @@ def _formal_fixture(tmp_path: Path) -> FormalFixture:
         "formal_attempt_dir": str(attempt),
         "formal_loader_identity": loader_identity,
         "formal_launch_owner_driver_identity": owner_driver_identity,
+        "formal_orchestrator_identity": formal_orchestrator_identity,
         "formal_selection_path": str(selection_path),
         "gate1_selection_identity": gate1_selection,
         "gate_b_approval_identity": gate_b_approval,
@@ -545,6 +555,33 @@ def _validate_selection(fixture: FormalFixture) -> dict[str, object]:
         attempt_consumption_identity=fixture.attempt_consumption_identity,
         expected_context=fixture.context,
     )
+
+
+def test_formal_context_v2_rejects_legacy_and_mixed_orchestrator_identity(
+    tmp_path: Path,
+) -> None:
+    fixture = _formal_fixture(tmp_path)
+    checked = launch_validator.validate_formal_context(fixture.context)
+    assert checked["formal_orchestrator_identity"] == (
+        fixture.context["formal_orchestrator_identity"]
+    )
+
+    legacy = dict(fixture.context)
+    legacy.pop("formal_orchestrator_identity")
+    legacy["schema_version"] = "noncert-cuts-ab16-formal-launch-context-v1"
+    with pytest.raises(
+        launch_validator.FormalLaunchValidationError,
+        match="field set drifted",
+    ):
+        launch_validator.validate_formal_context(legacy)
+
+    mixed = dict(fixture.context)
+    mixed["schema_version"] = "noncert-cuts-ab16-formal-launch-context-v1"
+    with pytest.raises(
+        launch_validator.FormalLaunchValidationError,
+        match="scalar drifted",
+    ):
+        launch_validator.validate_formal_context(mixed)
 
 
 def _call_name(node: ast.Call) -> str:
@@ -1187,6 +1224,423 @@ def test_formal_owner_driver_uses_one_actor_and_fixed_selected_byte_protocol(
     assert "for expected_sequence, expected_kind in ((1, \"admission\"), (2, \"selection\"))" in source
     assert "dict(os.environ) != clean" in source
     assert source.count("publisher_child(") == 2
+
+
+def test_formal_orchestrator_builds_one_actor_admission_and_selection(
+    tmp_path: Path,
+) -> None:
+    fixture = _formal_fixture(tmp_path)
+    actor = fixture.admission["publisher"]["actor"]
+    admission = formal_orchestrator.build_admission_draft(
+        fixture.context,
+        actor,
+    )
+    assert admission["publisher"]["actor"] == actor
+    assert admission["guardian_launch_authorized"] is True
+    assert admission["outer_launch_authorized"] is False
+
+    selection = formal_orchestrator.build_selection_draft(
+        fixture.context,
+        actor,
+        admission=admission,
+        admission_identity=fixture.admission_identity,
+        guardian_ready=fixture.guardian_ready,
+        guardian_ready_identity=fixture.guardian_ready_identity,
+        attempt_consumption=fixture.attempt_consumption,
+        attempt_consumption_identity=fixture.attempt_consumption_identity,
+    )
+    assert selection["publisher"]["actor"] == actor
+    assert selection["formal_admission_identity"] == fixture.admission_identity
+    assert selection["guardian_ready_identity"] == fixture.guardian_ready_identity
+    assert (
+        selection["attempt_consumption_identity"]
+        == fixture.attempt_consumption_identity
+    )
+    assert selection["lock_identities"] == fixture.lock_identities
+
+
+def test_formal_orchestrator_fixed_order_keeps_owner_through_handoff() -> None:
+    source = inspect.getsource(formal_orchestrator.orchestrate)
+    assert source.index('kind="admission"') < source.index(
+        "supervisor_thread.start()"
+    )
+    assert source.index('"outer guardian ready"') < source.index(
+        'kind="selection"'
+    )
+    assert source.index('"formal attempt consumption"') < source.index(
+        'kind="selection"'
+    )
+    assert source.index("supervisor_thread.join(") < source.index(
+        "owner.complete_handoff()"
+    )
+    assert "role=\"formal-supervisor\"" in source
+
+
+def test_formal_owner_cleanup_closes_stderr_even_when_kill_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    parent, child = socket.socketpair()
+    stderr_read, stderr_write = os.pipe()
+    os.close(stderr_write)
+    session = formal_orchestrator.OwnerSession(
+        pid=4242,
+        control=parent,
+        stderr_descriptor=stderr_read,
+        actor={"pid": 4242, "starttime": 1},
+    )
+    monkeypatch.setattr(
+        formal_orchestrator.os,
+        "kill",
+        lambda *_args: (_ for _ in ()).throw(RuntimeError("kill-fault")),
+    )
+    monkeypatch.setattr(
+        formal_orchestrator.os,
+        "waitpid",
+        lambda *_args: (_ for _ in ()).throw(ChildProcessError()),
+    )
+    try:
+        with pytest.raises(
+            formal_orchestrator.FormalOrchestrationError,
+            match="kill-fault",
+        ):
+            session.close()
+        assert parent.fileno() == -1
+        with pytest.raises(OSError):
+            os.fstat(stderr_read)
+        assert session.reaped is True
+    finally:
+        child.close()
+
+
+def test_formal_owner_spawn_failure_retries_wait_and_closes_all_resources(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    driver_raw = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1.encode("utf-8")
+    publisher_raw = bootstrap.OWNER_OEXCL_PUBLISH_V1.encode("utf-8")
+    context = {
+        "formal_launch_owner_driver_identity": {
+            "sha256": hashlib.sha256(driver_raw).hexdigest(),
+            "size_bytes": len(driver_raw),
+        },
+        "mechanical_oexcl_publisher_identity": {
+            "sha256": hashlib.sha256(publisher_raw).hexdigest(),
+            "size_bytes": len(publisher_raw),
+        },
+        "outer_spec": {},
+    }
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_formal_campaign_module",
+        lambda: SimpleNamespace(
+            _selected_identities=lambda _spec: {  # noqa: SLF001
+                "python": {"path": "/fixture/python"},
+            },
+            _open_selected=lambda *_args: os.open(  # noqa: SLF001
+                "/dev/null",
+                os.O_RDONLY,
+            ),
+        ),
+    )
+    monkeypatch.setattr(
+        formal_orchestrator.os,
+        "posix_spawn",
+        lambda *_args, **_kwargs: 4242,
+    )
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_read_frame",
+        lambda *_args: (_ for _ in ()).throw(
+            RuntimeError("owner-ready-validation-fault")
+        ),
+    )
+    kill_calls: list[int] = []
+    wait_calls: list[int] = []
+
+    def fail_kill(pid: int, _signal: int) -> None:
+        kill_calls.append(pid)
+        raise RuntimeError("owner-cleanup-kill-fault")
+
+    def interrupted_wait(pid: int, _flags: int) -> tuple[int, int]:
+        wait_calls.append(pid)
+        if len(wait_calls) == 1:
+            raise InterruptedError("owner-cleanup-wait-interrupted")
+        return pid, 0
+
+    monkeypatch.setattr(formal_orchestrator.os, "kill", fail_kill)
+    monkeypatch.setattr(formal_orchestrator.os, "waitpid", interrupted_wait)
+    before = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    with pytest.raises(RuntimeError, match="owner-ready-validation-fault"):
+        formal_orchestrator._spawn_owner(context)  # noqa: SLF001
+    after = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    assert after == before
+    assert kill_calls == [4242]
+    assert wait_calls == [4242, 4242]
+
+
+def test_formal_owner_sealed_memfd_close_fault_preserves_original(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real_close = os.close
+    real_fcntl = formal_orchestrator.fcntl.fcntl
+
+    def fail_seal(
+        descriptor: int,
+        command: int,
+        argument: int = 0,
+    ) -> int:
+        if command == formal_orchestrator.F_ADD_SEALS:
+            raise RuntimeError("memfd-seal-fault")
+        return real_fcntl(descriptor, command, argument)
+
+    def close_then_fail(descriptor: int) -> None:
+        real_close(descriptor)
+        raise RuntimeError("memfd-close-fault")
+
+    monkeypatch.setattr(formal_orchestrator.fcntl, "fcntl", fail_seal)
+    monkeypatch.setattr(formal_orchestrator.os, "close", close_then_fail)
+    before = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    with pytest.raises(RuntimeError, match="memfd-seal-fault"):
+        formal_orchestrator._sealed_memfd(  # noqa: SLF001
+            "fault-fixture",
+            b"payload",
+        )
+    after = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    assert after == before
+
+
+@pytest.mark.parametrize(
+    "fault",
+    ("control-close", "wait", "stderr-read-close"),
+)
+def test_formal_owner_handoff_cleanup_preserves_original_and_closes_once(
+    monkeypatch: pytest.MonkeyPatch,
+    fault: str,
+) -> None:
+    class Control:
+        close_count = 0
+
+        def close(self) -> None:
+            self.close_count += 1
+            if fault == "control-close":
+                raise RuntimeError("handoff-control-close-fault")
+
+    control = Control()
+    before = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    stderr_read, stderr_write = os.pipe()
+    os.close(stderr_write)
+    actor = {"pid": 4242, "starttime": 777}
+    session = formal_orchestrator.OwnerSession(
+        pid=4242,
+        control=control,  # type: ignore[arg-type]
+        stderr_descriptor=stderr_read,
+        actor=actor,
+    )
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_process_starttime",
+        lambda _pid: 777,
+    )
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_send_frame",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_read_frame",
+        lambda *_args: {
+            "actor": actor,
+            "schema_version": formal_orchestrator.RESPONSE_SCHEMA,
+            "sequence": 3,
+            "status": "HANDOFF_COMPLETE",
+        },
+    )
+    wait_calls: list[int] = []
+    kill_calls: list[int] = []
+
+    def waitpid(pid: int, _flags: int) -> tuple[int, int]:
+        wait_calls.append(pid)
+        if fault == "wait" and len(wait_calls) == 1:
+            raise RuntimeError("handoff-wait-fault")
+        return pid, 0
+
+    monkeypatch.setattr(formal_orchestrator.os, "waitpid", waitpid)
+    monkeypatch.setattr(
+        formal_orchestrator.os,
+        "kill",
+        lambda pid, _signal: kill_calls.append(pid),
+    )
+    real_read = os.read
+    real_close = os.close
+    stderr_close_count = 0
+
+    def read(descriptor: int, size: int) -> bytes:
+        if fault == "stderr-read-close":
+            raise RuntimeError("handoff-stderr-read-fault")
+        return real_read(descriptor, size)
+
+    def close(descriptor: int) -> None:
+        nonlocal stderr_close_count
+        if descriptor == stderr_read:
+            stderr_close_count += 1
+            real_close(descriptor)
+            if fault == "stderr-read-close":
+                raise RuntimeError("handoff-stderr-close-fault")
+            return
+        real_close(descriptor)
+
+    monkeypatch.setattr(formal_orchestrator.os, "read", read)
+    monkeypatch.setattr(formal_orchestrator.os, "close", close)
+    expected = {
+        "control-close": "handoff-control-close-fault",
+        "wait": "handoff-wait-fault",
+        "stderr-read-close": "handoff-stderr-read-fault",
+    }[fault]
+    with pytest.raises(RuntimeError, match=expected):
+        session.complete_handoff()
+    after = {entry.name for entry in Path("/proc/self/fd").iterdir()}
+    assert after == before
+    assert control.close_count == 1
+    assert stderr_close_count == 1
+    assert session.reaped is True
+    if fault in {"control-close", "wait"}:
+        assert kill_calls == [4242]
+    else:
+        assert kill_calls == []
+
+
+@pytest.mark.parametrize(
+    ("outcome", "returncode"),
+    (("VERIFIED", 0), ("INCOMPLETE", 2)),
+)
+def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    outcome: str,
+    returncode: int,
+) -> None:
+    fixture = _formal_fixture(tmp_path)
+    context = fixture.context
+    admission_path = Path(str(context["formal_admission_path"]))
+    selection_path = Path(str(context["formal_selection_path"]))
+    guardian_path = Path(str(context["guardian_ready_path"]))
+    attempt_path = (
+        Path(str(context["formal_attempt_dir"])) / "attempt-consumption.json"
+    )
+    admission_path.parent.mkdir(parents=True)
+    attempt_path.parent.mkdir()
+    events: list[str] = []
+    published: dict[str, dict[str, object]] = {}
+    actor = {
+        "pid": os.getpid(),
+        "role": launch_validator.OWNER_PUBLISHER_ROLE,
+        "session_id": formal_orchestrator.SESSION_ID,
+        "starttime": _process_starttime(os.getpid()),
+    }
+
+    def publish(
+        path: Path,
+        record: dict[str, object],
+    ) -> dict[str, object]:
+        return authority._write_exclusive(  # noqa: SLF001
+            path,
+            authority.canonical_json(record),
+            mode=0o444,
+        )
+
+    class FakeOwner:
+        pid = os.getpid()
+        reaped = False
+
+        def __init__(self) -> None:
+            self.actor = actor
+
+        def request(
+            self,
+            *,
+            sequence: int,
+            kind: str,
+            draft: dict[str, object],
+        ) -> dict[str, object]:
+            events.append(f"owner:{sequence}:{kind}")
+            assert draft["publisher"]["actor"] == actor
+            path = admission_path if kind == "admission" else selection_path
+            identity = publish(path, draft)
+            published[kind] = identity
+            return {
+                "actor": actor,
+                "artifact_identity": identity,
+                "kind": kind,
+                "schema_version": formal_orchestrator.RESPONSE_SCHEMA,
+                "sequence": sequence,
+                "status": "PUBLISHED",
+            }
+
+        def complete_handoff(self) -> None:
+            events.append("owner:3:handoff")
+            self.reaped = True
+
+        def close(self) -> None:
+            events.append("owner:close")
+            self.reaped = True
+
+    owner = FakeOwner()
+    monkeypatch.setattr(
+        formal_orchestrator.launch_validator,
+        "replay_formal_launch_context",
+        lambda _authority, _campaign: context,
+    )
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_verify_selected_self",
+        lambda _context: None,
+    )
+    monkeypatch.setattr(formal_orchestrator, "_spawn_owner", lambda _context: owner)
+
+    def selected_supervisor(**kwargs: object) -> object:
+        events.append("supervisor:start")
+        assert kwargs["role"] == "formal-supervisor"
+        guardian = deepcopy(fixture.guardian_ready)
+        guardian["formal_admission_identity"] = published["admission"]
+        publish(guardian_path, guardian)
+        publish(attempt_path, fixture.attempt_consumption)
+        deadline = time.monotonic() + 5.0
+        while not selection_path.exists() and time.monotonic() < deadline:
+            time.sleep(0.01)
+        assert selection_path.exists()
+        selection_identity = authority.detached_identity(
+            authority.snapshot_regular(selection_path)
+        )
+        events.append("supervisor:return")
+        return SimpleNamespace(
+            returncode=returncode,
+            stdout=authority.canonical_json(
+                {
+                    "formal_selection_identity": selection_identity,
+                    "outcome": outcome,
+                    "status": outcome,
+                }
+            ),
+            stderr=b"",
+        )
+
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_formal_campaign_module",
+        lambda: SimpleNamespace(run_selected_direct_result=selected_supervisor),
+    )
+
+    result = formal_orchestrator.orchestrate(context["campaign_dir"])
+
+    assert result["status"] == outcome
+    assert result["owner_handoff_complete"] is True
+    assert events == [
+        "owner:1:admission",
+        "supervisor:start",
+        "owner:2:selection",
+        "supervisor:return",
+        "owner:3:handoff",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -1935,6 +2389,7 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
     post_unref_identity = _identity(tmp_path, "post-unref.json", "c")
     guardian_absence_identity = _identity(tmp_path, "guardian-absence.json", "d")
     guardian_close_identity = _identity(tmp_path, "guardian-close.json", "e")
+    detached_success_identity = _identity(tmp_path, "detached-closeout.json", "f")
     expected = {
         "campaign_root_identity": fixture.context["campaign_root_identity"],
         "formal_selection_identity": selection_identity,
@@ -2061,6 +2516,7 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
         "campaign_root_identity": fixture.context["campaign_root_identity"],
         "created_at_utc": "2026-07-28T00:06:00Z",
         "formal_selection_identity": selection_identity,
+        "detached_success_identity": detached_success_identity,
         "guardian_absence_identity": guardian_absence_identity,
         "guardian_close_identity": guardian_close_identity,
         "lock_identities": fixture.lock_identities,
@@ -2074,14 +2530,36 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
             "recorded": True,
             "returned": True,
         },
+        "terminal_join": {
+            "detached_success_before_guardian_close": True,
+            "guardian_absence_before_supervisor_release": True,
+            "locks_released_after_substantive_verification": True,
+        },
     }
     success_verifier.validate_dual_lock_release(
         dual,
         expected=expected,
         expected_lock_identities=fixture.lock_identities,
+        expected_detached_success_identity=detached_success_identity,
         expected_guardian_absence_identity=guardian_absence_identity,
         expected_guardian_close_identity=guardian_close_identity,
     )
+    legacy_dual = deepcopy(dual)
+    legacy_dual["schema_version"] = (
+        "noncert-cuts-ab16-formal-dual-lock-release-v1"
+    )
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="dual_lock_release common authority join drifted",
+    ):
+        success_verifier.validate_dual_lock_release(
+            legacy_dual,
+            expected=expected,
+            expected_lock_identities=fixture.lock_identities,
+            expected_detached_success_identity=detached_success_identity,
+            expected_guardian_absence_identity=guardian_absence_identity,
+            expected_guardian_close_identity=guardian_close_identity,
+        )
 
 
 def test_child_audit_requires_state_owner_authorization_projection() -> None:
@@ -2166,6 +2644,112 @@ def _write_record(path: Path, record: dict[str, object]) -> dict[str, object]:
     )
 
 
+def _pre_release_success_record(
+    fixture: FormalFixture,
+    *,
+    selection_identity: dict[str, object],
+) -> dict[str, object]:
+    root = Path(str(fixture.context["campaign_dir"]))
+    return {
+        "authority_scope": success_verifier.AUTHORITY_SCOPE,
+        "authorizations": dict(success_verifier.FALSE_AUTHORIZATIONS),
+        "b6_changed": False,
+        "bounds_changed": False,
+        "campaign_root_identity": fixture.context["campaign_root_identity"],
+        "child_audit_identity": _identity(root, "child-audit.json", "1"),
+        "controller_result_identity": _identity(
+            root,
+            "controller-result.json",
+            "2",
+        ),
+        "created_at_utc": "2026-07-29T00:00:00Z",
+        "formal_selection_identity": selection_identity,
+        "lock_identities": fixture.lock_identities,
+        "lock_lifecycle": {
+            "guardian_close_is_next_required_step": True,
+            "supervisor_lock_release_permitted": False,
+            "supervisor_locks_must_remain_held": True,
+        },
+        "lower_bound": "absent",
+        "package_id": fixture.context["package_id"],
+        "phase_receipt_identities": {
+            phase: _identity(root, f"{phase}.json", f"{index:x}")
+            for index, phase in enumerate(
+                success_verifier.PRE_RELEASE_PHASES,
+                start=3,
+            )
+        },
+        "production_authority_changed": False,
+        "production_certified": False,
+        "repository_head": fixture.context["repository_head"],
+        "schema_version": success_verifier.SUCCESS_RECEIPT_SCHEMA,
+        "stage_b_changed": False,
+        "status": "PRE_RELEASE_VERIFIED",
+        "terminal_classification_identity": _identity(
+            root,
+            "terminal-classification.json",
+            "d",
+        ),
+        "upper_bound": [1188, 18],
+        "verdict": (
+            "AB16_FORMAL_SUBSTANTIVE_REPLAY_VERIFIED_LOCKS_STILL_REQUIRED"
+        ),
+    }
+
+
+def test_pre_release_success_v2_rejects_v1_and_mixed_failure_join(
+    tmp_path: Path,
+) -> None:
+    fixture = _formal_fixture(tmp_path)
+    selection_identity = _identity(tmp_path, "selection.json", "e")
+    record = _pre_release_success_record(
+        fixture,
+        selection_identity=selection_identity,
+    )
+    success_verifier.validate_pre_release_success(
+        record,
+        context=fixture.context,
+        selection_identity=selection_identity,
+        expected_lock_identities=fixture.lock_identities,
+    )
+
+    legacy = deepcopy(record)
+    legacy["schema_version"] = (
+        "noncert-cuts-ab16-formal-detached-success-v1"
+    )
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="crossed its claim or lock-lifecycle boundary",
+    ):
+        success_verifier.validate_pre_release_success(
+            legacy,
+            context=fixture.context,
+            selection_identity=selection_identity,
+            expected_lock_identities=fixture.lock_identities,
+        )
+
+    output = Path(
+        str(
+            fixture.context["outer_spec"]["receipt_paths"][
+                "detached_closeout"
+            ]
+        )
+    )
+    output.parent.mkdir(parents=True)
+    identity = _write_record(output, legacy)
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="crossed its claim or lock-lifecycle boundary",
+    ):
+        success_verifier._validate_prior_success_output(  # noqa: SLF001
+            identity,
+            context=fixture.context,
+            phase="GUARDIAN_CLOSE_NOT_ATTEMPTED",
+            selection_identity=selection_identity,
+            expected_lock_identities=fixture.lock_identities,
+        )
+
+
 def _failure_guardian_record(
     fixture: FormalFixture,
     *,
@@ -2224,9 +2808,10 @@ def _failure_release_record(
         "heavy_identities_absent": True,
         "incomplete_identity": incomplete_identity,
         "lock_identities": fixture.lock_identities,
-        "lock_release_effect": {
-            "lock_identities": fixture.lock_identities,
-            "released": True,
+        "lock_lifecycle": {
+            "detached_incomplete_is_next_required_step": True,
+            "supervisor_lock_release_permitted": False,
+            "supervisor_locks_must_remain_held": True,
         },
         "lower_bound": "absent",
         "outcome": "INCOMPLETE",
@@ -2237,7 +2822,7 @@ def _failure_release_record(
         "retry_eligible": False,
         "schema_version": success_verifier.FAILURE_RELEASE_SCHEMA,
         "stage_b_changed": False,
-        "status": "INCOMPLETE_RELEASED",
+        "status": "INCOMPLETE_PRE_RELEASE",
         "success_eligible": False,
         "upper_bound": [1188, 18],
     }
@@ -2331,7 +2916,10 @@ def test_detached_incomplete_markerless_replay_is_oexcl_and_non_authorizing(
             ]
         )
     )
-    assert result["status"] == "VERIFIED_INCOMPLETE"
+    assert result["status"] == "PRE_RELEASE_VERIFIED_INCOMPLETE"
+    assert result["detached_incomplete"]["schema_version"] == (
+        "noncert-cuts-ab16-formal-detached-incomplete-v3"
+    )
     assert result["detached_incomplete"]["authorizations"] == dict(
         success_verifier.FALSE_AUTHORIZATIONS
     )
@@ -2425,6 +3013,22 @@ def test_detached_incomplete_selected_release_binds_selection_and_cleanup(
         expected_phase=phase,
         expected_selection_identity=selection_identity,
     )
+    legacy_incomplete = deepcopy(incomplete_raw)
+    legacy_incomplete["schema_version"] = (
+        "noncert-cuts-ab16-formal-consumed-incomplete-v1"
+    )
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="marker/path/state join drifted",
+    ):
+        success_verifier.validate_consumed_incomplete(
+            legacy_incomplete,
+            context=fixture.context,
+            expected_identity=incomplete_identity,
+            expected_marker_identity=marker_identity,
+            expected_phase=phase,
+            expected_selection_identity=selection_identity,
+        )
     ledger = _failure_ledger(fixture)
     guardian = _failure_guardian_record(
         fixture,
@@ -2468,6 +3072,26 @@ def test_detached_incomplete_selected_release_binds_selection_and_cleanup(
         expected_lock_identities=fixture.lock_identities,
     )
     assert checked["formal_selection_identity"] == selection_identity
+    legacy_release = deepcopy(release)
+    legacy_release["schema_version"] = (
+        "noncert-cuts-ab16-formal-failure-release-v2"
+    )
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="pre-release failure authority/topology/lock join drifted",
+    ):
+        success_verifier.validate_failure_release(
+            legacy_release,
+            context=fixture.context,
+            expected_identity=_identity(attempt, "failure-release.json", "c"),
+            expected_incomplete=incomplete,
+            expected_incomplete_identity=incomplete_identity,
+            expected_guardian_absence=guardian,
+            expected_guardian_absence_identity=guardian_identity,
+            expected_marker_identity=marker_identity,
+            expected_selection_identity=selection_identity,
+            expected_lock_identities=fixture.lock_identities,
+        )
     drifted = deepcopy(release)
     drifted["cleanup_evidence"]["final_observation"]["records"][0][
         "unit_absent"
@@ -2490,7 +3114,172 @@ def test_detached_incomplete_selected_release_binds_selection_and_cleanup(
         )
 
 
-def test_containment_cleanup_publication_distinguishes_unrecorded_return(
+def test_failure_terminal_release_v3_binds_locks_held_detached_replay(
+    tmp_path: Path,
+) -> None:
+    fixture = _formal_fixture(tmp_path)
+    attempt = Path(str(fixture.context["formal_attempt_dir"]))
+    selection_identity = _identity(tmp_path, "selection.json", "1")
+    pre_release_identity = _identity(attempt, "failure-release.json", "2")
+    detached_identity = _identity(
+        attempt,
+        "detached-incomplete-closeout.json",
+        "3",
+    )
+    terminal_identity = _identity(
+        attempt,
+        "failure-terminal-release.json",
+        "4",
+    )
+    record = {
+        "authority_scope": success_verifier.AUTHORITY_SCOPE,
+        "authorizations": dict(success_verifier.FALSE_AUTHORIZATIONS),
+        "b6_changed": False,
+        "bounds_changed": False,
+        "campaign_root_identity": fixture.context["campaign_root_identity"],
+        "created_at_utc": "2026-07-29T04:00:00Z",
+        "detached_substantive_identity": detached_identity,
+        "detached_substantive_kind": "detached_incomplete_v3",
+        "failure_pre_release_identity": pre_release_identity,
+        "formal_selection_identity": selection_identity,
+        "lock_identities": fixture.lock_identities,
+        "lock_release_effect": {
+            "lock_identities": fixture.lock_identities,
+            "released": True,
+        },
+        "lower_bound": "absent",
+        "outcome": "INCOMPLETE",
+        "package_id": fixture.context["package_id"],
+        "phase": "SELECTION_RECORDED_OUTER_NOT_LAUNCHED",
+        "production_authority_changed": False,
+        "production_certified": False,
+        "retry_eligible": False,
+        "schema_version": success_verifier.FAILURE_TERMINAL_RELEASE_SCHEMA,
+        "stage_b_changed": False,
+        "status": "INCOMPLETE_RELEASED",
+        "success_eligible": False,
+        "terminal_join": {
+            "detached_substantive_before_supervisor_release": True,
+            "locks_released_after_substantive_verification": True,
+            "terminal_predecessor_is_unique": True,
+        },
+        "terminal_predecessor_identity": "absent",
+        "upper_bound": [1188, 18],
+    }
+    checked = success_verifier.validate_failure_terminal_release(
+        record,
+        context=fixture.context,
+        expected_identity=terminal_identity,
+        expected_lock_identities=fixture.lock_identities,
+        expected_detached_substantive_identity=detached_identity,
+        expected_detached_substantive_kind="detached_incomplete_v3",
+        expected_failure_pre_release_identity=pre_release_identity,
+        expected_selection_identity=selection_identity,
+        expected_terminal_predecessor_identity="absent",
+    )
+    assert checked["detached_substantive_identity"] == detached_identity
+
+    legacy = deepcopy(record)
+    legacy["schema_version"] = (
+        "noncert-cuts-ab16-formal-failure-release-v2"
+    )
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="failure terminal authority/topology/lock join drifted",
+    ):
+        success_verifier.validate_failure_terminal_release(
+            legacy,
+            context=fixture.context,
+            expected_identity=terminal_identity,
+            expected_lock_identities=fixture.lock_identities,
+            expected_detached_substantive_identity=detached_identity,
+            expected_detached_substantive_kind="detached_incomplete_v3",
+            expected_failure_pre_release_identity=pre_release_identity,
+            expected_selection_identity=selection_identity,
+            expected_terminal_predecessor_identity="absent",
+        )
+
+    success_detached = _identity(
+        Path(
+            str(
+                fixture.context["outer_spec"]["receipt_paths"][
+                    "detached_closeout"
+                ]
+            )
+        ).parent,
+        Path(
+            str(
+                fixture.context["outer_spec"]["receipt_paths"][
+                    "detached_closeout"
+                ]
+            )
+        ).name,
+        "5",
+    )
+    dual_identity = _identity(
+        Path(
+            str(
+                fixture.context["outer_spec"]["receipt_paths"][
+                    "dual_lock_release"
+                ]
+            )
+        ).parent,
+        Path(
+            str(
+                fixture.context["outer_spec"]["receipt_paths"][
+                    "dual_lock_release"
+                ]
+            )
+        ).name,
+        "6",
+    )
+    post_release = deepcopy(record)
+    post_release.update(
+        {
+            "detached_substantive_identity": success_detached,
+            "detached_substantive_kind": "pre_release_success_v2",
+            "failure_pre_release_identity": "absent",
+            "phase": "FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN",
+            "terminal_predecessor_identity": dual_identity,
+        }
+    )
+    checked_post_release = (
+        success_verifier.validate_failure_terminal_release(
+            post_release,
+            context=fixture.context,
+            expected_identity=terminal_identity,
+            expected_lock_identities=fixture.lock_identities,
+            expected_detached_substantive_identity=success_detached,
+            expected_detached_substantive_kind="pre_release_success_v2",
+            expected_failure_pre_release_identity="absent",
+            expected_selection_identity=selection_identity,
+            expected_terminal_predecessor_identity=dual_identity,
+        )
+    )
+    assert checked_post_release["terminal_predecessor_identity"] == dual_identity
+
+    early_release = deepcopy(record)
+    early_release["terminal_join"][
+        "detached_substantive_before_supervisor_release"
+    ] = False
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="failure terminal authority/topology/lock join drifted",
+    ):
+        success_verifier.validate_failure_terminal_release(
+            early_release,
+            context=fixture.context,
+            expected_identity=terminal_identity,
+            expected_lock_identities=fixture.lock_identities,
+            expected_detached_substantive_identity=detached_identity,
+            expected_detached_substantive_kind="detached_incomplete_v3",
+            expected_failure_pre_release_identity=pre_release_identity,
+            expected_selection_identity=selection_identity,
+            expected_terminal_predecessor_identity="absent",
+        )
+
+
+def test_containment_pre_release_cleanup_rejects_any_lock_release_effect(
     tmp_path: Path,
 ) -> None:
     fixture = _formal_fixture(tmp_path)
@@ -2538,31 +3327,29 @@ def test_containment_cleanup_publication_distinguishes_unrecorded_return(
             "frozen_outer_identity": ledger["outer"],
         }
     }
-    checked = success_verifier._validate_cleanup_evidence(  # noqa: SLF001
-        cleanup,
-        context=fixture.context,
-        incomplete=incomplete,
-        guardian_absence=guardian,
-        phase="CONTAINMENT_HOLD",
-    )
-    assert checked["containment_lock_release_identity"] == "unrecorded"
-    assert (
-        checked["containment_lock_release_publication"]["returned_identity"]
-        == returned
-    )
-    missing_error = deepcopy(cleanup)
-    del missing_error["containment_lock_release_publication"]["error"]
     with pytest.raises(
         success_verifier.FormalSuccessVerificationError,
-        match="unrecorded containment lock release effect drifted",
+        match="containment pre-release cleanup topology drifted",
     ):
         success_verifier._validate_cleanup_evidence(  # noqa: SLF001
-            missing_error,
+            cleanup,
             context=fixture.context,
             incomplete=incomplete,
             guardian_absence=guardian,
             phase="CONTAINMENT_HOLD",
         )
+    clean = deepcopy(cleanup)
+    clean["containment_lock_release_identity"] = "absent"
+    clean["containment_lock_release_publication"] = "absent"
+    checked = success_verifier._validate_cleanup_evidence(  # noqa: SLF001
+        clean,
+        context=fixture.context,
+        incomplete=incomplete,
+        guardian_absence=guardian,
+        phase="CONTAINMENT_HOLD",
+    )
+    assert checked["containment_lock_release_identity"] == "absent"
+    assert checked["containment_lock_release_publication"] == "absent"
     direct = deepcopy(cleanup)
     direct.update(
         {

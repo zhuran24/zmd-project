@@ -39,7 +39,7 @@ import signal
 import stat
 import sys
 import time
-from typing import Any, Protocol
+from typing import Any, cast, Protocol
 
 from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as authority
 from docs.research.noncert_cuts_ab16_20260724 import (
@@ -78,7 +78,10 @@ SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 CONTAINMENT_GUARDIAN_ABSENCE_SCHEMA = (
     "noncert-cuts-ab16-containment-guardian-absence-v1"
 )
-FAILURE_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-failure-release-v1"
+FAILURE_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-pre-release-failure-v3"
+FAILURE_TERMINAL_RELEASE_SCHEMA = (
+    "noncert-cuts-ab16-formal-failure-terminal-release-v3"
+)
 
 FULL_SHOW_FIELDS = (
     "ActiveState",
@@ -131,6 +134,15 @@ class FormalCampaignError(RuntimeError):
 
 class IrreversibleFormalFailure(FormalCampaignError):
     """A side effect may have happened and must never be retried."""
+
+
+@dataclass(frozen=True)
+class SelectedDirectResult:
+    """Captured exit status and bounded output from one selected-byte role."""
+
+    returncode: int
+    stderr: bytes
+    stdout: bytes
 
 
 class GuardianLaunchFailure(IrreversibleFormalFailure):
@@ -192,6 +204,7 @@ class SupervisorState:
     observer_identity: dict[str, object] | None = None
     pre_unref_identity: dict[str, object] | None = None
     post_unref_identity: dict[str, object] | None = None
+    detached_success_identity: dict[str, object] | None = None
     reference_terminal: dict[str, object] | None = None
     guardian_close_identity: dict[str, object] | None = None
     dual_release_identity: dict[str, object] | None = None
@@ -888,18 +901,25 @@ def _open_selected(identity: Mapping[str, object], label: str) -> int:
         ):
             raise FormalCampaignError(f"selected {label} FD/path identity drifted")
         return descriptor
-    except BaseException:
-        os.close(descriptor)
+    except BaseException as exc:
+        try:
+            os.close(descriptor)
+        except BaseException as cleanup_exc:
+            exc.add_note(
+                f"selected {label} cleanup close failed: "
+                f"{type(cleanup_exc).__name__}: {cleanup_exc}"
+            )
         raise
 
 
-def run_selected_direct(
+def run_selected_direct_result(
     *,
     context: Mapping[str, object],
     role: str,
     role_argv: Sequence[str],
     timeout_seconds: float,
-) -> tuple[bytes, bytes]:
+    cancel_requested: Callable[[], bool] | None = None,
+) -> SelectedDirectResult:
     """Run one fresh selected role through fixed FDs 3/4/5.
 
     The embedded selected-byte literal remains the first executing trust
@@ -926,57 +946,92 @@ def run_selected_direct(
         *role_argv,
     ]
     opened: dict[int, int] = {}
-    pipes: list[int] = []
+    pipes: set[int] = set()
+    high: dict[int, int] = {}
+    owned_descriptors: set[int] = set()
     selector = selectors.DefaultSelector()
     pid: int | None = None
-    try:
-        opened = {
-            3: _open_selected(identities["python"], "Python"),
-            4: _open_selected(identities["loader"], "loader"),
-            5: _open_selected(identities["authority"], "authority"),
-        }
-        stdout_read, stdout_write = os.pipe2(os.O_CLOEXEC | os.O_NONBLOCK)
-        stderr_read, stderr_write = os.pipe2(os.O_CLOEXEC | os.O_NONBLOCK)
-        pipes.extend((stdout_read, stdout_write, stderr_read, stderr_write))
-        high = {
-            target: fcntl.fcntl(source, fcntl.F_DUPFD_CLOEXEC, 20)
-            for target, source in opened.items()
-        }
+    child_reaped = False
+    failure: BaseException | None = None
+
+    def own_descriptor(descriptor: int) -> int:
+        owned_descriptors.add(descriptor)
+        return descriptor
+
+    def close_owned(descriptor: int) -> BaseException | None:
+        if descriptor not in owned_descriptors:
+            return None
+        # Relinquish ownership before close: a failing close may already have
+        # released the numeric descriptor, so retrying could close a reused FD.
+        owned_descriptors.remove(descriptor)
+        pipes.discard(descriptor)
         try:
-            actions: list[tuple[Any, ...]] = [
-                *((
-                    os.POSIX_SPAWN_DUP2,
-                    high[target],
-                    target,
-                ) for target in (3, 4, 5)),
-                (os.POSIX_SPAWN_DUP2, stdout_write, 1),
-                (os.POSIX_SPAWN_DUP2, stderr_write, 2),
-                (os.POSIX_SPAWN_CLOSE, stdout_read),
-                (os.POSIX_SPAWN_CLOSE, stderr_read),
-            ]
-            pid = os.posix_spawn(
-                "/proc/self/fd/3",
-                command,
-                {},
-                file_actions=actions,
+            os.close(descriptor)
+        except BaseException as exc:
+            return exc
+        return None
+
+    def close_many(descriptors: Sequence[int]) -> BaseException | None:
+        first_error: BaseException | None = None
+        for descriptor in descriptors:
+            error = close_owned(descriptor)
+            if first_error is None and error is not None:
+                first_error = error
+        return first_error
+
+    try:
+        for target, identity, label in (
+            (3, identities["python"], "Python"),
+            (4, identities["loader"], "loader"),
+            (5, identities["authority"], "authority"),
+        ):
+            opened[target] = own_descriptor(_open_selected(identity, label))
+        stdout_read, stdout_write = os.pipe2(os.O_CLOEXEC | os.O_NONBLOCK)
+        pipes.update((own_descriptor(stdout_read), own_descriptor(stdout_write)))
+        stderr_read, stderr_write = os.pipe2(os.O_CLOEXEC | os.O_NONBLOCK)
+        pipes.update((own_descriptor(stderr_read), own_descriptor(stderr_write)))
+        for target, source in opened.items():
+            high[target] = own_descriptor(
+                fcntl.fcntl(source, fcntl.F_DUPFD_CLOEXEC, 20)
             )
-        finally:
-            for descriptor in high.values():
-                os.close(descriptor)
-        os.close(stdout_write)
-        pipes.remove(stdout_write)
-        os.close(stderr_write)
-        pipes.remove(stderr_write)
+        actions: list[tuple[Any, ...]] = [
+            *((
+                os.POSIX_SPAWN_DUP2,
+                high[target],
+                target,
+            ) for target in (3, 4, 5)),
+            (os.POSIX_SPAWN_DUP2, stdout_write, 1),
+            (os.POSIX_SPAWN_DUP2, stderr_write, 2),
+            (os.POSIX_SPAWN_CLOSE, stdout_read),
+            (os.POSIX_SPAWN_CLOSE, stderr_read),
+        ]
+        pid = os.posix_spawn(
+            "/proc/self/fd/3",
+            command,
+            {},
+            file_actions=actions,
+        )
+        high_close_error = close_many(tuple(high.values()))
+        if high_close_error is not None:
+            raise high_close_error
+        stdout_close_error = close_owned(stdout_write)
+        stderr_close_error = close_owned(stderr_write)
+        if stdout_close_error is not None:
+            raise stdout_close_error
+        if stderr_close_error is not None:
+            raise stderr_close_error
         selector.register(stdout_read, selectors.EVENT_READ, "stdout")
         selector.register(stderr_read, selectors.EVENT_READ, "stderr")
         output = {"stdout": bytearray(), "stderr": bytearray()}
         deadline = time.monotonic() + timeout_seconds
         status: int | None = None
         while selector.get_map() or status is None:
+            if cancel_requested is not None and cancel_requested():
+                raise IrreversibleFormalFailure(
+                    f"selected {role} was cancelled by its owning coordinator"
+                )
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                os.kill(pid, signal.SIGKILL)
-                os.waitpid(pid, 0)
                 raise IrreversibleFormalFailure(
                     f"selected {role} timed out after launch"
                 )
@@ -985,39 +1040,91 @@ def run_selected_direct(
                 if block:
                     output[str(key.data)].extend(block)
                     if len(output[str(key.data)]) > MAX_SELECTED_OUTPUT:
-                        os.kill(pid, signal.SIGKILL)
-                        os.waitpid(pid, 0)
                         raise IrreversibleFormalFailure(
                             f"selected {role} output exceeded its limit"
                         )
                 else:
                     selector.unregister(key.fd)
-                    os.close(key.fd)
-                    pipes.remove(key.fd)
+                    close_error = close_owned(key.fd)
+                    if close_error is not None:
+                        raise close_error
             if status is None:
                 observed, raw_status = os.waitpid(pid, os.WNOHANG)
                 if observed == pid:
                     status = raw_status
+                    child_reaped = True
         returncode = os.waitstatus_to_exitcode(status)
         stdout = bytes(output["stdout"])
         stderr = bytes(output["stderr"])
-        if returncode != 0 or stderr:
-            raise IrreversibleFormalFailure(
-                f"selected {role} failed: exit={returncode}, stderr={stderr!r}"
-            )
-        return stdout, stderr
+        return SelectedDirectResult(
+            returncode=returncode,
+            stderr=stderr,
+            stdout=stdout,
+        )
+    except BaseException as exc:
+        failure = exc
+        if pid is not None and not child_reaped:
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            except BaseException:
+                pass
+            while not child_reaped:
+                try:
+                    observed, _status = os.waitpid(pid, 0)
+                    child_reaped = observed == pid
+                    if not child_reaped:
+                        exc.add_note(
+                            f"selected {role} cleanup wait returned pid "
+                            f"{observed}, expected {pid}"
+                        )
+                        break
+                except InterruptedError:
+                    continue
+                except ChildProcessError:
+                    child_reaped = True
+                except BaseException as cleanup_exc:
+                    exc.add_note(
+                        f"selected {role} cleanup wait failed: "
+                        f"{type(cleanup_exc).__name__}: {cleanup_exc}"
+                    )
+                    break
+        raise
     finally:
-        selector.close()
-        for descriptor in pipes:
-            try:
-                os.close(descriptor)
-            except OSError:
-                pass
-        for descriptor in opened.values():
-            try:
-                os.close(descriptor)
-            except OSError:
-                pass
+        cleanup_error: BaseException | None = None
+        try:
+            selector.close()
+        except BaseException as exc:
+            cleanup_error = exc
+        descriptor_cleanup_error = close_many(tuple(owned_descriptors))
+        if cleanup_error is None and descriptor_cleanup_error is not None:
+            cleanup_error = descriptor_cleanup_error
+        if failure is None and cleanup_error is not None:
+            raise cleanup_error
+
+
+def run_selected_direct(
+    *,
+    context: Mapping[str, object],
+    role: str,
+    role_argv: Sequence[str],
+    timeout_seconds: float,
+) -> tuple[bytes, bytes]:
+    """Run one selected role and require the historical strict rc=0 contract."""
+
+    result = run_selected_direct_result(
+        context=context,
+        role=role,
+        role_argv=role_argv,
+        timeout_seconds=timeout_seconds,
+    )
+    if result.returncode != 0 or result.stderr:
+        raise IrreversibleFormalFailure(
+            f"selected {role} failed: exit={result.returncode}, "
+            f"stderr={result.stderr!r}"
+        )
+    return result.stdout, result.stderr
 
 
 def _guardian_unit_identity(
@@ -2624,14 +2731,10 @@ def _publish_normal_closeout(
         "post_unref_absence_identity",
         post_identity,
     )
-    return _release_guardian_and_locks(
-        context=context,
-        state=state,
-        store=store,
-        host=host,
-        latch=latch,
-        expected=expected,
-    )
+    return {
+        "post_unref_absence_identity": post_identity,
+        "status": "SUBSTANTIVE_RECEIPTS_READY_FOR_DETACHED_REPLAY",
+    }
 
 
 def _release_guardian_and_locks(
@@ -2649,8 +2752,15 @@ def _release_guardian_and_locks(
         or state.guardian is None
         or state.ledger is None
         or state.post_unref_identity is None
+        or state.detached_success_identity is None
     ):
-        raise FormalCampaignError("guardian release lacks normal closeout proof")
+        raise FormalCampaignError(
+            "guardian release lacks detached substantive closeout proof"
+        )
+    if host.locks_released:
+        raise IrreversibleFormalFailure(
+            "guardian release began after supervisor locks were released"
+        )
     paths = state.selection["outer_spec"]["receipt_paths"]
     _normal_closeout_checkpoint(
         state,
@@ -2755,7 +2865,9 @@ def _release_guardian_and_locks(
         validator=success_verifier.validate_guardian_absence,
         validator_kwargs={
             "expected": expected,
+            "expected_guardian_close_identity": guardian_close_identity,
             "expected_guardian_identity": state.guardian.unit_identity,
+            "expected_post_unref_absence_identity": state.post_unref_identity,
         },
     )
     closeout_state.record_late_proof_once(
@@ -2783,6 +2895,7 @@ def _release_guardian_and_locks(
         context,
         state.selection_identity,
         phase="dual_lock_release",
+        detached_success_identity=state.detached_success_identity,
         guardian_absence_identity=guardian_absence_identity,
         guardian_close_identity=guardian_close_identity,
         lock_identities=lock_identities,
@@ -2791,6 +2904,11 @@ def _release_guardian_and_locks(
             "attempted": True,
             "recorded": True,
             "returned": True,
+        },
+        terminal_join={
+            "detached_success_before_guardian_close": True,
+            "guardian_absence_before_supervisor_release": True,
+            "locks_released_after_substantive_verification": True,
         },
     )
     dual_identity = _publish_tracked_phase(
@@ -2803,6 +2921,13 @@ def _release_guardian_and_locks(
         validator_kwargs={
             "expected": expected,
             "expected_lock_identities": lock_identities,
+            "expected_detached_success_identity": (
+                state.detached_success_identity
+            ),
+            "expected_guardian_absence_identity": (
+                guardian_absence_identity
+            ),
+            "expected_guardian_close_identity": guardian_close_identity,
         },
     )
     state.dual_release_identity = dual_identity
@@ -2823,14 +2948,24 @@ def _run_detached_success(
     context: Mapping[str, object],
     state: SupervisorState,
     store: closeout_helper.ReceiptStore,
+    host: closeout_helper.PinnedHost,
 ) -> dict[str, object]:
     if (
         state.selection is None
         or state.selection_identity is None
-        or state.attempt.dual_lock_release_identity is None
+        or state.post_unref_identity is None
     ):
         raise FormalCampaignError(
-            "detached success verifier lacks dual-lock release proof"
+            "detached success verifier lacks post-Unref substantive proof"
+        )
+    if host.locks_released:
+        raise IrreversibleFormalFailure(
+            "detached success verifier started after supervisor lock release"
+        )
+    lock_identities = host.lock_evidence()
+    if state.selection["lock_identities"] != lock_identities:
+        raise IrreversibleFormalFailure(
+            "detached success verifier lock identities drifted"
         )
     closeout_state.begin_detached_success_verifier(state.attempt)
     stdout, stderr = run_selected_direct(
@@ -2847,10 +2982,15 @@ def _run_detached_success(
     closeout_state.record_detached_success_verifier_return(
         state.attempt,
         {
+            "lock_identities": lock_identities,
             "stderr_sha256": hashlib.sha256(stderr).hexdigest(),
             "stdout_sha256": hashlib.sha256(stdout).hexdigest(),
         },
     )
+    if host.locks_released or host.lock_evidence() != lock_identities:
+        raise IrreversibleFormalFailure(
+            "supervisor locks changed during detached substantive replay"
+        )
     path = state.selection["outer_spec"]["receipt_paths"][
         "detached_closeout"
     ]
@@ -2858,27 +2998,21 @@ def _run_detached_success(
         path,
         "formal detached success",
     )
-    if (
-        record.get("schema_version")
-        != success_verifier.SUCCESS_RECEIPT_SCHEMA
-        or record.get("status") != "VERIFIED"
-        or record.get("authority_scope") != AUTHORITY_SCOPE
-        or record.get("formal_selection_identity")
-        != state.selection_identity
-        or record.get("upper_bound") != [1188, 18]
-        or record.get("lower_bound") != "absent"
-        or record.get("bounds_changed") is not False
-        or record.get("production_certified") is not False
-        or record.get("production_authority_changed") is not False
-        or record.get("b6_changed") is not False
-        or record.get("stage_b_changed") is not False
-    ):
-        raise IrreversibleFormalFailure(
-            "detached success verifier output crossed its claim boundary"
-        )
+    success_verifier.validate_pre_release_success(
+        record,
+        context=context,
+        selection_identity=state.selection_identity,
+        expected_lock_identities=lock_identities,
+    )
+    state.detached_success_identity = identity
+    closeout_state.record_late_proof_once(
+        state.attempt,
+        "detached_success_identity",
+        identity,
+    )
     return {
         "detached_success_identity": identity,
-        "status": "VERIFIED",
+        "status": "PRE_RELEASE_VERIFIED",
     }
 
 
@@ -2958,6 +3092,12 @@ def _failure_phase(state: SupervisorState) -> str:
         return "REFERENCE_HELD_PRE_UNREF_FAILURE"
     if attempt.post_unref_absence_identity is None:
         return "POST_UNREF_ABSENCE_UNPROVED"
+    if attempt.detached_success_identity is None:
+        return (
+            "DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN"
+            if attempt.detached_success_verifier_attempted
+            else "DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED"
+        )
     if attempt.guardian_close_identity is None:
         return (
             "GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN"
@@ -2979,9 +3119,7 @@ def _failure_phase(state: SupervisorState) -> str:
             if publication is not None and publication.attempted
             else "DUAL_LOCK_RELEASE_RECEIPT_NOT_ATTEMPTED"
         )
-    if not attempt.detached_success_verifier_attempted:
-        return "DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED"
-    return "DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN"
+    return "FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN"
 
 
 def _freeze_failure_outer(
@@ -3120,7 +3258,6 @@ def _publish_failure_release(
     final_observation: Mapping[str, object],
     reference_terminal: Mapping[str, object],
     lock_identities: Sequence[Mapping[str, object]],
-    lock_release_effect: Mapping[str, object],
     containment_hold_identity: Mapping[str, object] | str = "absent",
     containment_clearance_identity: Mapping[str, object] | str = "absent",
     containment_lock_release_identity: Mapping[str, object] | str = "absent",
@@ -3140,10 +3277,6 @@ def _publish_failure_release(
     )
     checked_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
         lock_identities
-    )
-    checked_release = closeout_state._validate_lock_release_effect(  # noqa: SLF001
-        lock_release_effect,
-        expected_locks=checked_locks,
     )
 
     def optional_identity(
@@ -3218,7 +3351,11 @@ def _publish_failure_release(
         "heavy_identities_absent": True,
         "incomplete_identity": _recorded_incomplete_identity(state.attempt),
         "lock_identities": checked_locks,
-        "lock_release_effect": checked_release,
+        "lock_lifecycle": {
+            "detached_incomplete_is_next_required_step": True,
+            "supervisor_lock_release_permitted": False,
+            "supervisor_locks_must_remain_held": True,
+        },
         "lower_bound": "absent",
         "outcome": "INCOMPLETE",
         "package_id": context["package_id"],
@@ -3227,7 +3364,7 @@ def _publish_failure_release(
         "production_certified": False,
         "retry_eligible": False,
         "schema_version": FAILURE_RELEASE_SCHEMA,
-        "status": "INCOMPLETE_RELEASED",
+        "status": "INCOMPLETE_PRE_RELEASE",
         "stage_b_changed": False,
         "success_eligible": False,
         "upper_bound": [1188, 18],
@@ -3244,7 +3381,16 @@ def _run_detached_incomplete(
     context: Mapping[str, object],
     state: SupervisorState,
     store: closeout_helper.ReceiptStore,
+    host: closeout_helper.PinnedHost,
+    expected_lock_identities: Sequence[Mapping[str, object]],
 ) -> dict[str, object]:
+    checked_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
+        expected_lock_identities
+    )
+    if host.locks_released or host.lock_evidence() != checked_locks:
+        raise IrreversibleFormalFailure(
+            "detached incomplete verifier started without its exact three locks"
+        )
     path = Path(str(context["formal_attempt_dir"])) / "failure-release.json"
     failure_release_identity = _identity(path)
     stdout, stderr = run_selected_direct(
@@ -3271,7 +3417,7 @@ def _run_detached_incomplete(
     if (
         record.get("schema_version")
         != success_verifier.INCOMPLETE_RECEIPT_SCHEMA
-        or record.get("status") != "VERIFIED_INCOMPLETE"
+        or record.get("status") != "PRE_RELEASE_VERIFIED_INCOMPLETE"
         or record.get("authority_scope") != AUTHORITY_SCOPE
         or record.get("authorizations") != FALSE_CLAIMS
         or record.get("success_eligible") is not False
@@ -3289,10 +3435,189 @@ def _run_detached_incomplete(
         raise IrreversibleFormalFailure(
             "detached incomplete verifier crossed its claim boundary"
         )
+    if host.locks_released or host.lock_evidence() != checked_locks:
+        raise IrreversibleFormalFailure(
+            "supervisor locks changed during detached incomplete replay"
+        )
     return {
         "detached_incomplete_identity": identity,
         "stderr_sha256": hashlib.sha256(stderr).hexdigest(),
         "stdout_sha256": hashlib.sha256(stdout).hexdigest(),
+    }
+
+
+def _publish_failure_terminal_release(
+    *,
+    boundary: authority.FormalRuntimeBoundary,
+    context: Mapping[str, object],
+    state: SupervisorState,
+    store: closeout_helper.ReceiptStore,
+    phase: str,
+    lock_identities: Sequence[Mapping[str, object]],
+    lock_release_effect: Mapping[str, object],
+    detached_substantive_identity: Mapping[str, object],
+    detached_substantive_kind: str,
+    failure_pre_release_identity: Mapping[str, object] | str,
+    terminal_predecessor_identity: Mapping[str, object] | str = "absent",
+) -> dict[str, object]:
+    checked_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
+        lock_identities
+    )
+    checked_release = closeout_state._validate_lock_release_effect(  # noqa: SLF001
+        lock_release_effect,
+        expected_locks=checked_locks,
+    )
+    detached_identity = closeout_state.validate_identity_join(
+        detached_substantive_identity,
+        "failure terminal detached substantive replay",
+    )
+    if failure_pre_release_identity == "absent":
+        checked_failure: dict[str, object] | str = "absent"
+    else:
+        checked_failure = closeout_state.validate_identity_join(
+            failure_pre_release_identity,
+            "failure pre-release",
+        )
+    if (
+        type(terminal_predecessor_identity) is str
+        and terminal_predecessor_identity in {"absent", "unrecorded"}
+    ):
+        checked_predecessor: dict[str, object] | str = str(
+            terminal_predecessor_identity
+        )
+    else:
+        checked_predecessor = closeout_state.validate_identity_join(
+            terminal_predecessor_identity,
+            "failure terminal predecessor",
+        )
+    record = {
+        "authority_scope": AUTHORITY_SCOPE,
+        "authorizations": dict(FALSE_CLAIMS),
+        "b6_changed": False,
+        "bounds_changed": False,
+        "campaign_root_identity": context["campaign_root_identity"],
+        "created_at_utc": _utc_now(),
+        "detached_substantive_identity": detached_identity,
+        "detached_substantive_kind": detached_substantive_kind,
+        "failure_pre_release_identity": checked_failure,
+        "formal_selection_identity": (
+            state.selection_identity
+            if state.selection_identity is not None
+            else "absent"
+        ),
+        "lock_identities": checked_locks,
+        "lock_release_effect": checked_release,
+        "lower_bound": "absent",
+        "outcome": "INCOMPLETE",
+        "package_id": context["package_id"],
+        "phase": phase,
+        "production_authority_changed": False,
+        "production_certified": False,
+        "retry_eligible": False,
+        "schema_version": FAILURE_TERMINAL_RELEASE_SCHEMA,
+        "stage_b_changed": False,
+        "status": "INCOMPLETE_RELEASED",
+        "success_eligible": False,
+        "terminal_join": {
+            "detached_substantive_before_supervisor_release": True,
+            "locks_released_after_substantive_verification": True,
+            "terminal_predecessor_is_unique": True,
+        },
+        "terminal_predecessor_identity": checked_predecessor,
+        "upper_bound": [1188, 18],
+    }
+    identity = store.publish(
+        boundary.formal_dir / "failure-terminal-release.json",
+        record,
+        "formal failure terminal release",
+    )
+    replay, replay_identity = store.document(
+        boundary.formal_dir / "failure-terminal-release.json",
+        "formal failure terminal release",
+    )
+    if replay_identity != identity:
+        raise IrreversibleFormalFailure(
+            "failure terminal release readback identity drifted"
+        )
+    success_verifier.validate_failure_terminal_release(
+        replay,
+        context=context,
+        expected_identity=identity,
+        expected_lock_identities=checked_locks,
+        expected_detached_substantive_identity=detached_identity,
+        expected_detached_substantive_kind=detached_substantive_kind,
+        expected_failure_pre_release_identity=checked_failure,
+        expected_selection_identity=state.selection_identity,
+        expected_terminal_predecessor_identity=checked_predecessor,
+    )
+    return identity
+
+
+def _complete_pre_release_failure(
+    *,
+    boundary: authority.FormalRuntimeBoundary,
+    context: Mapping[str, object],
+    state: SupervisorState,
+    store: closeout_helper.ReceiptStore,
+    host: closeout_helper.PinnedHost,
+    phase: str,
+    lock_identities: Sequence[Mapping[str, object]],
+    guardian_absence_identity: Mapping[str, object],
+    failure_pre_release_identity: Mapping[str, object],
+) -> dict[str, object]:
+    checked_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
+        lock_identities
+    )
+    detached = _run_detached_incomplete(
+        context=context,
+        state=state,
+        store=store,
+        host=host,
+        expected_lock_identities=checked_locks,
+    )
+    checked_guardian_absence = closeout_state.validate_identity_join(
+        guardian_absence_identity,
+        "failure guardian absence",
+    )
+    if state.attempt.guardian_absence_identity is None:
+        state.attempt.guardian_absence_identity = checked_guardian_absence
+    elif state.attempt.guardian_absence_identity != checked_guardian_absence:
+        raise IrreversibleFormalFailure(
+            "failure guardian absence identity changed before lock release"
+        )
+    if state.attempt.lock_release_attempted or host.locks_released:
+        raise IrreversibleFormalFailure(
+            "pre-release failure reached lock release more than once"
+        )
+    closeout_state.begin_supervisor_lock_release(state.attempt)
+    release = host.release_locks_once()
+    closeout_state.record_supervisor_lock_release_return(
+        state.attempt,
+        release,
+    )
+    detached_identity = closeout_state.validate_identity_join(
+        cast(
+            Mapping[str, object],
+            detached["detached_incomplete_identity"],
+        ),
+        "detached incomplete before failure terminal release",
+    )
+    terminal_identity = _publish_failure_terminal_release(
+        boundary=boundary,
+        context=context,
+        state=state,
+        store=store,
+        phase=phase,
+        lock_identities=checked_locks,
+        lock_release_effect=release,
+        detached_substantive_identity=detached_identity,
+        detached_substantive_kind="detached_incomplete_v3",
+        failure_pre_release_identity=failure_pre_release_identity,
+    )
+    return {
+        **detached,
+        "failure_terminal_release_identity": terminal_identity,
+        "lock_release": release,
     }
 
 
@@ -3307,11 +3632,9 @@ def _close_preselection(
     session = state.guardian
     if session is None:
         identities = host.lock_evidence()
-        release = host.release_locks_once()
         return {
             "guardian_absence_identity": "absent",
             "lock_identities": identities,
-            "lock_release": release,
         }
     selection_absent = not os.path.lexists(context["formal_selection_path"])
     cleanup_errors: list[dict[str, str]] = []
@@ -3378,11 +3701,9 @@ def _close_preselection(
             time.sleep(closeout_state.HOLD_POLL_SECONDS)
     if not state.attempt.directory_created:
         identities = host.lock_evidence()
-        release = host.release_locks_once()
         return {
             "guardian_absence_identity": "absent",
             "lock_identities": identities,
-            "lock_release": release,
         }
     preselection_ledger = initial_ledger(
         _outer_inactive_identity(
@@ -3427,13 +3748,11 @@ def _close_preselection(
         ),
     )
     identities = host.lock_evidence()
-    release = host.release_locks_once()
     return {
         "final_observation": final_observation,
         "guardian_absence_identity": guardian_absence_identity,
         "ledger": preselection_ledger,
         "lock_identities": identities,
-        "lock_release": release,
         "reference_terminal": {"kind": "NO_REFERENCE_OPENED"},
     }
 
@@ -3533,7 +3852,6 @@ def _early_selected_closeout(
         )
     except BaseException as exc:
         _hold_locks_forever(host=host, reason=exc)
-    lock_release = host.release_locks_once()
     failure_release_identity = _publish_failure_release(
         boundary=boundary,
         context=context,
@@ -3545,7 +3863,6 @@ def _early_selected_closeout(
         final_observation=observation,
         reference_terminal=terminal,
         lock_identities=lock_identities,
-        lock_release_effect=lock_release,
     )
     return {
         "containment": containment,
@@ -3553,7 +3870,7 @@ def _early_selected_closeout(
         "guardian_absence_identity": guardian_absence_identity,
         "failure_release_identity": failure_release_identity,
         "incomplete_identity": incomplete["identity"],
-        "lock_release": lock_release,
+        "lock_identities": lock_identities,
         "outcome": "INCOMPLETE",
         "phase": phase,
         "reference_terminal": terminal,
@@ -3654,37 +3971,27 @@ def _post_barrier_closeout(
     state.reference_terminal = dict(
         replay["hold_record"]["reference_terminal"]
     )
-    release_record = replay["lock_release_record"]
     failure_release_identity = _publish_failure_release(
         boundary=boundary,
         context=context,
         state=state,
         store=store,
         phase=phase,
-        guardian_absence_identity=release_record[
-            "guardian_absence_identity"
-        ],
+        guardian_absence_identity=replay["guardian_absence_identity"],
         ledger=state.ledger,
         final_observation=replay["clearance_record"][
             "final_observation"
         ],
         reference_terminal=state.reference_terminal,
-        lock_identities=release_record["effect"]["lock_identities"],
-        lock_release_effect=release_record["effect"],
+        lock_identities=replay["lock_identities"],
         containment_hold_identity=replay["hold_identity"],
         containment_clearance_identity=replay["clearance_identity"],
-        containment_lock_release_identity=replay.get(
-            "lock_release_identity",
-            "unrecorded",
-        ),
-        containment_lock_release_publication=replay.get(
-            "lock_release_publication",
-            state.attempt.publication("lock-release").record(),
-        ),
     )
     return {
         **result,
         "failure_release_identity": failure_release_identity,
+        "guardian_absence_identity": replay["guardian_absence_identity"],
+        "lock_identities": replay["lock_identities"],
         "phase": phase,
     }
 
@@ -3769,6 +4076,7 @@ def _late_failure_closeout(
         "DUAL_LOCK_RELEASE_RECEIPT_FAILED_OR_UNCERTAIN",
         "DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED",
         "DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN",
+        "FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN",
     }:
         if (
             state.child_audit_identity is None
@@ -3788,6 +4096,45 @@ def _late_failure_closeout(
                 host=host,
             )
         }
+    if host.locks_released:
+        lock_identities = closeout_state._validate_lock_evidence(  # noqa: SLF001
+            cast(
+                Sequence[Mapping[str, object]],
+                state.selection["lock_identities"],
+            )
+        )
+        lock_release_effect = state.attempt.lock_release_return
+        if (
+            type(lock_release_effect) is not dict
+            or state.detached_success_identity is None
+        ):
+            raise IrreversibleFormalFailure(
+                "released late failure lacks its locks-held substantive replay"
+            )
+        terminal_predecessor: Mapping[str, object] | str = (
+            state.dual_release_identity
+            if state.dual_release_identity is not None
+            else "unrecorded"
+        )
+        terminal_identity = _publish_failure_terminal_release(
+            boundary=boundary,
+            context=context,
+            state=state,
+            store=store,
+            phase=phase,
+            lock_identities=lock_identities,
+            lock_release_effect=lock_release_effect,
+            detached_substantive_identity=state.detached_success_identity,
+            detached_substantive_kind="pre_release_success_v2",
+            failure_pre_release_identity="absent",
+            terminal_predecessor_identity=terminal_predecessor,
+        )
+        return {
+            "failure_terminal_release_identity": terminal_identity,
+            "outcome": "INCOMPLETE",
+            "phase": phase,
+            "post_release_terminal_only": True,
+        }
     incomplete = closeout_state.publish_consumed_incomplete(
         boundary,
         state.attempt,
@@ -3806,36 +4153,6 @@ def _late_failure_closeout(
         attempt=state.attempt,
     )
     terminal = _failure_reference_terminal(state)
-    if host.locks_released:
-        lock_identities = state.selection["lock_identities"]
-        lock_release_effect = state.attempt.lock_release_return
-        guardian_absence = state.attempt.guardian_absence_identity
-        if (
-            type(lock_release_effect) is not dict
-            or guardian_absence is None
-        ):
-            raise IrreversibleFormalFailure(
-                "released late failure lacks lock/guardian evidence"
-            )
-        failure_release_identity = _publish_failure_release(
-            boundary=boundary,
-            context=context,
-            state=state,
-            store=store,
-            phase=phase,
-            guardian_absence_identity=guardian_absence,
-            ledger=state.ledger,
-            final_observation=observation,
-            reference_terminal=terminal,
-            lock_identities=lock_identities,
-            lock_release_effect=lock_release_effect,
-        )
-        return {
-            "failure_release_identity": failure_release_identity,
-            "incomplete_identity": incomplete["identity"],
-            "outcome": "INCOMPLETE",
-            "phase": phase,
-        }
     lock_identities = host.lock_evidence()
     if state.attempt.guardian_absence_identity is None:
         port = FailureContainmentPort(
@@ -3857,7 +4174,6 @@ def _late_failure_closeout(
             host=host,
             reason="supervisor lock release was already attempted without a returned effect",
         )
-    lock_release = host.release_locks_once()
     failure_release_identity = _publish_failure_release(
         boundary=boundary,
         context=context,
@@ -3869,13 +4185,12 @@ def _late_failure_closeout(
         final_observation=observation,
         reference_terminal=terminal,
         lock_identities=lock_identities,
-        lock_release_effect=lock_release,
     )
     return {
         "failure_release_identity": failure_release_identity,
         "guardian_absence_identity": guardian_absence,
         "incomplete_identity": incomplete["identity"],
-        "lock_release": lock_release,
+        "lock_identities": lock_identities,
         "outcome": "INCOMPLETE",
         "phase": phase,
     }
@@ -3907,6 +4222,36 @@ def _close_failed_campaign(
         or state.attempt.lock_release_attempted
         or state.attempt.detached_success_verifier_attempted
     )
+    result: dict[str, object]
+
+    def checked_preselection(
+        value: Mapping[str, object],
+    ) -> tuple[
+        dict[str, object],
+        dict[str, object],
+        dict[str, object],
+        dict[str, object],
+        list[dict[str, object]],
+    ]:
+        guardian_absence = closeout_state.validate_identity_join(
+            cast(Mapping[str, object], value["guardian_absence_identity"]),
+            "preselection guardian absence",
+        )
+        ledger = closeout_state.validate_frozen_ledger(
+            cast(Mapping[str, object], value["ledger"])
+        )
+        observation = closeout_state.validate_absence_observation(
+            cast(Mapping[str, object], value["final_observation"]),
+            ledger=ledger,
+        )
+        terminal = closeout_state._validate_reference_terminal(  # noqa: SLF001
+            cast(Mapping[str, object], value["reference_terminal"])
+        )
+        locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
+            cast(Sequence[Mapping[str, object]], value["lock_identities"])
+        )
+        return guardian_absence, ledger, observation, terminal, locks
+
     if state.attempt.marker_identity is None:
         closed = _close_preselection(
             context=context,
@@ -3922,32 +4267,41 @@ def _close_failed_campaign(
             else "ATTEMPT_DIRECTORY_NOT_CREATED",
         }
         if (
-            state.attempt.directory_created
-            and closed["guardian_absence_identity"] != "absent"
+            not state.attempt.directory_created
+            or closed["guardian_absence_identity"] == "absent"
         ):
-            release_identity = _publish_failure_release(
+            raise IrreversibleFormalFailure(
+                "preselection failure lacks a durable root for locks-held replay"
+            )
+        guardian_absence, ledger, observation, terminal, locks = (
+            checked_preselection(closed)
+        )
+        release_identity = _publish_failure_release(
+            boundary=boundary,
+            context=context,
+            state=state,
+            store=store,
+            phase=str(result["phase"]),
+            guardian_absence_identity=guardian_absence,
+            ledger=ledger,
+            final_observation=observation,
+            reference_terminal=terminal,
+            lock_identities=locks,
+        )
+        result["failure_release_identity"] = release_identity
+        result.update(
+            _complete_pre_release_failure(
                 boundary=boundary,
                 context=context,
                 state=state,
                 store=store,
+                host=host,
                 phase=str(result["phase"]),
-                guardian_absence_identity=closed[
-                    "guardian_absence_identity"
-                ],
-                ledger=closed["ledger"],
-                final_observation=closed["final_observation"],
-                reference_terminal=closed["reference_terminal"],
-                lock_identities=closed["lock_identities"],
-                lock_release_effect=closed["lock_release"],
+                lock_identities=locks,
+                guardian_absence_identity=guardian_absence,
+                failure_pre_release_identity=release_identity,
             )
-            result["failure_release_identity"] = release_identity
-            result.update(
-                _run_detached_incomplete(
-                    context=context,
-                    state=state,
-                    store=store,
-                )
-            )
+        )
         return result
     if state.selection_identity is None:
         if state.attempt.incomplete_identity is None:
@@ -3965,20 +4319,20 @@ def _close_failed_campaign(
             store=store,
             host=host,
         )
+        guardian_absence, ledger, observation, terminal, locks = (
+            checked_preselection(closed)
+        )
         release_identity = _publish_failure_release(
             boundary=boundary,
             context=context,
             state=state,
             store=store,
             phase="ATTEMPT_RECORDED_SELECTION_UNRECORDED",
-            guardian_absence_identity=closed[
-                "guardian_absence_identity"
-            ],
-            ledger=closed["ledger"],
-            final_observation=closed["final_observation"],
-            reference_terminal=closed["reference_terminal"],
-            lock_identities=closed["lock_identities"],
-            lock_release_effect=closed["lock_release"],
+            guardian_absence_identity=guardian_absence,
+            ledger=ledger,
+            final_observation=observation,
+            reference_terminal=terminal,
+            lock_identities=locks,
         )
         result = {
             "failure_release_identity": release_identity,
@@ -3986,10 +4340,16 @@ def _close_failed_campaign(
             "phase": "ATTEMPT_RECORDED_SELECTION_UNRECORDED",
         }
         result.update(
-            _run_detached_incomplete(
+            _complete_pre_release_failure(
+                boundary=boundary,
                 context=context,
                 state=state,
                 store=store,
+                host=host,
+                phase=str(result["phase"]),
+                lock_identities=locks,
+                guardian_absence_identity=guardian_absence,
+                failure_pre_release_identity=release_identity,
             )
         )
         return result
@@ -4023,19 +4383,47 @@ def _close_failed_campaign(
             latch=latch,
             error=error,
         )
+    if result.get("post_release_terminal_only") is True:
+        return {
+            **result,
+            "formal_selection_identity": state.selection_identity,
+            "outcome": "INCOMPLETE",
+            "phase": str(result["phase"]),
+        }
     if "failure_release_identity" not in result:
         raise IrreversibleFormalFailure(
             "consumed failure returned without a failure-release receipt"
         )
+    selected_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
+        cast(Sequence[Mapping[str, object]], result["lock_identities"])
+    )
+    selected_guardian_absence = closeout_state.validate_identity_join(
+        cast(
+            Mapping[str, object],
+            result["guardian_absence_identity"],
+        ),
+        "selected failure guardian absence",
+    )
+    selected_failure_release = closeout_state.validate_identity_join(
+        cast(Mapping[str, object], result["failure_release_identity"]),
+        "selected pre-release failure",
+    )
     result.update(
-        _run_detached_incomplete(
+        _complete_pre_release_failure(
+            boundary=boundary,
             context=context,
             state=state,
             store=store,
+            host=host,
+            phase=str(result["phase"]),
+            lock_identities=selected_locks,
+            guardian_absence_identity=selected_guardian_absence,
+            failure_pre_release_identity=selected_failure_release,
         )
     )
     return {
         **result,
+        "formal_selection_identity": state.selection_identity,
         "outcome": "INCOMPLETE",
         "phase": str(result["phase"]),
     }
@@ -4144,29 +4532,44 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
                 latch=latch,
                 controller_identity=controller_identity,
             )
-            _post_release_signal_checkpoint(
+            _normal_closeout_checkpoint(
+                state,
                 latch,
-                phase="detached success verifier launch",
+                phase="detached substantive success verifier launch",
             )
             detached = _run_detached_success(
                 context=context,
                 state=state,
                 store=store,
+                host=host,
+            )
+            _normal_closeout_checkpoint(
+                state,
+                latch,
+                phase="guardian and supervisor lock release after detached replay",
+            )
+            terminal = _release_guardian_and_locks(
+                context=context,
+                state=state,
+                store=store,
+                host=host,
+                latch=latch,
+                expected=_normal_expected(
+                    context,
+                    selection_identity,
+                ),
             )
         except BaseException as exc:
             if isinstance(exc, GuardianLaunchFailure):
                 if not exc.containment_cleared:
                     _hold_locks_forever(host=host, reason=exc)
-                try:
-                    host.release_locks_once()
-                except BaseException as release_error:
-                    _hold_locks_forever(host=host, reason=release_error)
-                return {
-                    "failure": _failure("GUARDIAN_LAUNCH_FAILED_OR_UNCERTAIN", exc),
-                    "outcome": "INCOMPLETE",
-                    "phase": "ATTEMPT_DIRECTORY_NOT_CREATED",
-                    "resource_gate": resource_gate,
-                }
+                _hold_locks_forever(
+                    host=host,
+                    reason=(
+                        "guardian launch failed before a durable attempt root; "
+                        "lock release has no locks-held detached replay"
+                    ),
+                )
             try:
                 closeout = _close_failed_campaign(
                     boundary=boundary,
@@ -4203,10 +4606,12 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
         )
         return {
             **detached,
+            **terminal,
             "controller_result_identity": controller_identity,
             "formal_selection_identity": selection_identity,
             "outcome": "VERIFIED",
             "resource_gate": resource_gate,
+            "status": "VERIFIED",
         }
     finally:
         if host.locks_released:

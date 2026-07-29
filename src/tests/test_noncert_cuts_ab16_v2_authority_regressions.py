@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import stat
+import subprocess
 import sys
 from types import ModuleType
 import zipfile
@@ -50,6 +51,126 @@ TERMINAL_V1_FIXTURE = _load(
     "noncert_cuts_ab16_terminal_gate_v1_fixture_regression",
     ROOT / "src/tests/test_noncert_cuts_ab16_terminal_gate_v1.py",
 )
+
+
+def _top_level_literal(path: Path, name: str) -> object:
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    for node in tree.body:
+        if not isinstance(node, (ast.Assign, ast.AnnAssign)):
+            continue
+        targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+        if any(
+            isinstance(target, ast.Name) and target.id == name
+            for target in targets
+        ):
+            return ast.literal_eval(node.value)
+    raise AssertionError(f"{path.name} does not define literal {name}")
+
+
+def test_project_lock_registers_one_exact_ab16_formal_cohort() -> None:
+    lock = (ROOT / "PROJECT_LOCK.md").read_text(encoding="utf-8")
+    section = lock.split(
+        "### 3C. AB16 Gate-B and formal-campaign research-only authority boundary",
+        1,
+    )[1].split("## 4. Forbidden Changes", 1)[0]
+    qualification = TOOLS / "ab16_gate_b_qualification_v1.py"
+    launch = TOOLS / "ab16_formal_launch_validator_v1.py"
+    success = TOOLS / "ab16_formal_success_verifier_v1.py"
+    closeout = TOOLS / "ab16_outer_closeout_state_v1.py"
+    accepted = {
+        BOOTSTRAP.GATE_A_SCHEMA,
+        BOOTSTRAP.CANDIDATE_SCHEMA,
+        BOOTSTRAP.FINAL_FULL_PREFLIGHT_SCHEMA,
+        BOOTSTRAP.GATE_B_SCHEMA,
+        BOOTSTRAP.GATE_B_EPOCH_SCHEMA,
+        BOOTSTRAP.CAPTURE_SCHEMA,
+        BOOTSTRAP.RESULT_SCHEMA,
+        BOOTSTRAP.PATH_PREREGISTRATION_SCHEMA,
+        BOOTSTRAP.REPOSITORY_SNAPSHOT_SCHEMA,
+        BOOTSTRAP.SNAPSHOT_MATERIALIZATION_SCHEMA,
+        BOOTSTRAP.EXTERNAL_PLATFORM_SCHEMA,
+        _top_level_literal(qualification, "QUALIFICATION_SCHEMA"),
+        _top_level_literal(qualification, "RESOURCE_GATE_SCHEMA"),
+        _top_level_literal(qualification, "OWNER_REQUEST_SCHEMA"),
+        _top_level_literal(qualification, "OWNER_RESPONSE_SCHEMA"),
+        _top_level_literal(qualification, "OWNER_RELEASE_SCHEMA"),
+        _top_level_literal(qualification, "HANDOFF_REQUEST_SCHEMA"),
+        _top_level_literal(qualification, "HANDOFF_RESPONSE_SCHEMA"),
+        _top_level_literal(launch, "FORMAL_CONTEXT_SCHEMA"),
+        _top_level_literal(launch, "FORMAL_ADMISSION_SCHEMA"),
+        _top_level_literal(launch, "FORMAL_SELECTION_SCHEMA"),
+        _top_level_literal(launch, "GUARDIAN_READY_SCHEMA"),
+        _top_level_literal(launch, "ATTEMPT_CONSUMPTION_SCHEMA"),
+        AUTHORITY.CONTINUATION_SCHEMA,
+        AUTHORITY.BASELINE_ADMISSION_SCHEMA,
+        AUTHORITY.COMMON_PRESTATE_SCHEMA,
+        AUTHORITY.MANIFEST_SCHEMA,
+        AUTHORITY.SUITE_SELECTION_SCHEMA,
+        AUTHORITY.ARM_BINDING_SCHEMA,
+        AUTHORITY.PRE_RUN_AUTHORITY_SCHEMA,
+        AUTHORITY.ARM_SELECTION_SCHEMA,
+        AUTHORITY.ARM_CONSUMPTION_SCHEMA,
+        AUTHORITY.CAMPAIGN_STOP_SCHEMA,
+        _top_level_literal(success, "SUCCESS_RECEIPT_SCHEMA"),
+        _top_level_literal(success, "INCOMPLETE_RECEIPT_SCHEMA"),
+        _top_level_literal(success, "FAILURE_RELEASE_SCHEMA"),
+        _top_level_literal(success, "FAILURE_TERMINAL_RELEASE_SCHEMA"),
+        _top_level_literal(success, "GUARDIAN_LOCK_CLOSE_SCHEMA"),
+        _top_level_literal(success, "CONTAINMENT_GUARDIAN_ABSENCE_SCHEMA"),
+        _top_level_literal(closeout, "MARKERLESS_SCHEMA"),
+        _top_level_literal(closeout, "INCOMPLETE_SCHEMA"),
+        _top_level_literal(closeout, "REFERENCE_SCHEMA"),
+        _top_level_literal(closeout, "HOLD_SCHEMA"),
+        _top_level_literal(closeout, "HOLD_CLEAR_SCHEMA"),
+        _top_level_literal(closeout, "LOCK_RELEASE_SCHEMA"),
+    }
+    missing = sorted(schema for schema in accepted if f"`{schema}`" not in section)
+    assert missing == []
+    assert "Schema names cannot be independently selected, relabeled, or mixed" in section
+    assert "cannot be coerced into this cohort" in section
+    assert "The main checkout is a control plane" in section
+    assert "Tracked state remains `U=(1188,18)` and" in section
+    assert "`L=absent`" in section
+
+
+def test_formal_orchestrator_outer_module_entry_is_cache_free() -> None:
+    environment = os.environ.copy()
+    environment.pop("PYTHONHOME", None)
+    environment.pop("PYTHONPATH", None)
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-B",
+            "-m",
+            (
+                "docs.research.noncert_cuts_ab16_20260724."
+                "ab16_formal_orchestrator_v1"
+            ),
+            "--help",
+        ],
+        check=False,
+        cwd=ROOT,
+        env=environment,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    assert completed.returncode == 0
+    assert b"--campaign-dir" in completed.stdout
+    assert completed.stderr == b""
+
+
+def test_formal_orchestrator_is_one_package_and_loader_authority_source() -> None:
+    assert (
+        BOOTSTRAP.AB16_SCRIPT_TOOL_FILES["ab16_formal_orchestrator_v1"]
+        == "ab16_formal_orchestrator_v1.py"
+    )
+    assert "tool.ab16_formal_orchestrator_v1.py" in AUTHORITY.REQUIRED_PACKAGE_ROLES
+    assert AUTHORITY.FORMAL_ROLE_SOURCES["formal-orchestrator"] == (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py",
+    )
 
 
 def _regular(path: Path, raw: bytes, *, mode: int = 0o444) -> dict[str, object]:
@@ -205,8 +326,17 @@ def _write_authority_json(path: Path, value: object) -> dict[str, object]:
     )
 
 
-def _gate_b_publisher(output_path: Path) -> dict[str, object]:
-    return BOOTSTRAP._gate_b_publisher_for_parent(output_path)  # noqa: SLF001
+def _gate_b_publisher(
+    output_path: Path,
+    *,
+    sequence: int = 2,
+    session_id: str = "a" * 64,
+) -> dict[str, object]:
+    return BOOTSTRAP._gate_b_publisher_for_parent(  # noqa: SLF001
+        output_path,
+        sequence=sequence,
+        session_id=session_id,
+    )
 
 
 def test_gate_b_renderer_uses_live_planned_identity_and_joins_staged_bytes(
@@ -319,7 +449,7 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         BOOTSTRAP.authority.canonical_json(
             {
                 "manager_epoch": epoch,
-                "publisher": _gate_b_publisher(epoch_path),
+                "publisher": _gate_b_publisher(epoch_path, sequence=1),
             }
         ),
     )
@@ -434,7 +564,7 @@ def test_gate_b_independent_evidence_identity_is_fail_closed(
         BOOTSTRAP._validate_gate_b(record)  # noqa: SLF001
 
 
-def test_gate_b_v3_publisher_identity_and_schema_are_strict(
+def test_gate_b_v4_publisher_identity_and_schema_are_strict(
     tmp_path: Path,
 ) -> None:
     record = _gate_b_record(tmp_path)
@@ -442,7 +572,7 @@ def test_gate_b_v3_publisher_identity_and_schema_are_strict(
 
     mutations: list[dict[str, object]] = []
     old_schema = copy.deepcopy(record)
-    old_schema["schema_version"] = "noncert-cuts-ab16-bootstrap-gate-b-approval-v2"
+    old_schema["schema_version"] = "noncert-cuts-ab16-bootstrap-gate-b-approval-v3"
     mutations.append(old_schema)
     missing = copy.deepcopy(record)
     missing.pop("publisher")
@@ -461,7 +591,7 @@ def test_gate_b_v3_publisher_identity_and_schema_are_strict(
             BOOTSTRAP._validate_gate_b(changed)  # noqa: SLF001
 
 
-def test_gate_b_epoch_v2_joins_one_live_owner_and_rejects_legacy(
+def test_gate_b_epoch_v3_joins_one_live_owner_and_rejects_legacy(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -500,7 +630,7 @@ def test_gate_b_epoch_v2_joins_one_live_owner_and_rejects_legacy(
         "gate_a_receipt_identity": gate_a_identity,
         "manager_epoch": epoch,
         "planned_source_set_digest": gate_a["planned_source_set_digest"],
-        "publisher": _gate_b_publisher(epoch_path),
+        "publisher": _gate_b_publisher(epoch_path, sequence=1),
         "purpose": BOOTSTRAP.GATE_B_EPOCH_PURPOSE,
         "repository_head": gate_a["repository_head"],
         "repository_root": gate_a["repository_root"],
@@ -529,10 +659,14 @@ def test_gate_b_epoch_v2_joins_one_live_owner_and_rejects_legacy(
     )
     approval = _gate_b_record(tmp_path / "same-owner")
     assert approval["publisher"]["actor"] == record["publisher"]["actor"]
+    assert (
+        approval["publisher"]["qualification_session"]["session_id"]
+        == record["publisher"]["qualification_session"]["session_id"]
+    )
 
     mutations: list[dict[str, object]] = []
     old_schema = copy.deepcopy(record)
-    old_schema["schema_version"] = "noncert-cuts-ab16-gate-b-epoch-observation-v1"
+    old_schema["schema_version"] = "noncert-cuts-ab16-gate-b-epoch-observation-v2"
     mutations.append(old_schema)
     missing = copy.deepcopy(record)
     missing.pop("publisher")

@@ -50,8 +50,8 @@ ARM_CONSUMPTION_SCHEMA = "noncert-cuts-ab16-organic-arm-consumption-v2"
 CAMPAIGN_STOP_SCHEMA = "noncert-cuts-ab16-immediate-stop-v1"
 PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v3"
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
-GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v3"
-GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v2"
+GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v4"
+GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v3"
 FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v3"
 REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
@@ -117,7 +117,9 @@ REQUIRED_PACKAGE_ROLES = frozenset(
         "tool.ab16_formal_launch_authority_v1.py",
         "tool.ab16_formal_launch_validator_v1.py",
         "tool.ab16_formal_loader_v1.py",
+        "tool.ab16_formal_orchestrator_v1.py",
         "tool.ab16_formal_success_verifier_v1.py",
+        "tool.ab16_gate_b_qualification_v1.py",
         "tool.ab16_outer_closeout_state_v1.py",
         "tool.ab16_outer_guardian_v1.py",
         "tool.ab16_outer_refunit_closeout_v1.py",
@@ -1067,6 +1069,7 @@ def _validate_root_source_joins(
         "ab16_formal_launch_authority_v1": "tool.ab16_formal_launch_authority_v1.py",
         "ab16_formal_launch_validator_v1": "tool.ab16_formal_launch_validator_v1.py",
         "ab16_formal_loader_v1": "tool.ab16_formal_loader_v1.py",
+        "ab16_formal_orchestrator_v1": "tool.ab16_formal_orchestrator_v1.py",
         "ab16_formal_success_verifier_v1": "tool.ab16_formal_success_verifier_v1.py",
         "ab16_outer_closeout_state_v1": "tool.ab16_outer_closeout_state_v1.py",
         "ab16_outer_guardian_v1": "tool.ab16_outer_guardian_v1.py",
@@ -1257,6 +1260,7 @@ def _validate_gate_b_publisher_record(
     *,
     driver_identity: Mapping[str, Any],
     mechanical_publisher_identity: Mapping[str, Any],
+    owner_source_identity: Mapping[str, Any],
     output_identity: Mapping[str, Any],
     python_identity: Mapping[str, Any],
     renderer_identity: Mapping[str, Any],
@@ -1268,9 +1272,11 @@ def _validate_gate_b_publisher_record(
             "driver_program",
             "execution_strategy",
             "mechanical_publisher",
+            "owner_source",
             "output_mode",
             "output_path",
             "python",
+            "qualification_session",
             "renderer_source",
         },
         "AB16 Gate-B publisher",
@@ -1283,6 +1289,44 @@ def _validate_gate_b_publisher_record(
     projected_output = {
         field: output_identity[field] for field in ("mode", "path", "sha256", "size_bytes")
     }
+    qualification = _exact_keys(
+        record["qualification_session"],
+        {
+            "lock_identities",
+            "retained_fd_roles",
+            "sequence",
+            "session_id",
+            "state",
+        },
+        "AB16 Gate-B qualification session",
+    )
+    lock_identities = qualification["lock_identities"]
+    if type(lock_identities) is not list or len(lock_identities) != 3:
+        raise AuthorityError("GATE_APPROVALS_INVALID", "Gate-B qualification lock set")
+    lock_paths: list[str] = []
+    for value in lock_identities:
+        lock = _exact_keys(
+            value,
+            {"device", "inode", "mode", "nlink", "path", "uid"},
+            "AB16 Gate-B qualification lock",
+        )
+        if (
+            type(lock["device"]) is not int
+            or lock["device"] < 0
+            or type(lock["inode"]) is not int
+            or lock["inode"] < 0
+            or type(lock["mode"]) is not int
+            or lock["mode"] != 0o600
+            or lock["nlink"] != 1
+            or type(lock["path"]) is not str
+            or type(lock["uid"]) is not int
+            or lock["uid"] < 0
+        ):
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                "Gate-B qualification lock identity",
+            )
+        lock_paths.append(lock["path"])
     if (
         actor["role"] != "AB16_GATE_B_OWNER"
         or type(actor["pid"]) is not int
@@ -1291,12 +1335,34 @@ def _validate_gate_b_publisher_record(
         or not actor["pid_starttime"].isdigit()
         or record["driver_program"] != driver_identity
         or record["mechanical_publisher"] != mechanical_publisher_identity
-        or record["execution_strategy"] != "same-owner-render-sealed-memfd-dirfd-oexcl-v1"
+        or record["execution_strategy"]
+        != "persistent-owner-sealed-fd-oexcl-bootstrap-handoff-v1"
+        or record["owner_source"] != owner_source_identity
         or record["output_mode"] != 0o444
         or record["output_path"] != projected_output["path"]
         or projected_output["mode"] != 0o444
         or record["python"] != python_identity
         or record["renderer_source"] != renderer_identity
+        or lock_paths
+        != [
+            "/tmp/zmd-pj-codex-heavy-validation.lock",
+            "/run/user/1000/zmd_pj_prod_scale_solver.lock",
+            "/run/user/1000/zmd-pj-prod-scale-solve.lock",
+        ]
+        or qualification["retained_fd_roles"]
+        != [
+            "lock",
+            "mechanical_publisher",
+            "output_directory",
+            "rendered_record",
+            "renderer_source",
+            "request",
+        ]
+        or qualification["sequence"] not in (1, 2)
+        or type(qualification["session_id"]) is not str
+        or SHA256_RE.fullmatch(qualification["session_id"]) is None
+        or qualification["state"]
+        != "PUBLISHED_FDS_RETAINED_PENDING_BOOTSTRAP_HANDOFF"
     ):
         raise AuthorityError("GATE_APPROVALS_INVALID", "Gate-B publisher identity drifted")
     return record
@@ -1389,6 +1455,7 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
     for role in (
         "input.preflight_gate",
         "script.ab16_campaign_bootstrap_v2",
+        "script.ab16_gate_b_qualification_v1",
         "script.gate_a_validation_v2",
         "system.python3_13",
     ):
@@ -1508,10 +1575,16 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         planned_projections["script.ab16_campaign_bootstrap_v2"],
         renderer_source,
     )
+    owner_source = sources["tool.ab16_gate_b_qualification_v1.py"]["source_identity"]
+    owner_source_identity = _join_gate_b_renderer_identity(
+        planned_projections["script.ab16_gate_b_qualification_v1"],
+        owner_source,
+    )
     gate_b_publisher = _validate_gate_b_publisher_record(
         gate_b["publisher"],
         driver_identity=external_platform["gate_b_owner_driver"],
         mechanical_publisher_identity=external_platform["mechanical_oexcl_publisher"],
+        owner_source_identity=owner_source_identity,
         output_identity=sources["input.ab16_gate_b_approval.json"]["source_identity"],
         python_identity=planned_projections["system.python3_13"],
         renderer_identity=renderer_identity,
@@ -1520,6 +1593,7 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         epoch["publisher"],
         driver_identity=external_platform["gate_b_owner_driver"],
         mechanical_publisher_identity=external_platform["mechanical_oexcl_publisher"],
+        owner_source_identity=owner_source_identity,
         output_identity=sources["input.ab16_gate_b_epoch_observation.json"]["source_identity"],
         python_identity=planned_projections["system.python3_13"],
         renderer_identity=renderer_identity,
@@ -1648,6 +1722,12 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         or epoch["final_full_preflight_receipt_identity"] != final_identity
         or epoch["manager_epoch"] != context["root"]["manager_epoch"]
         or epoch_publisher["actor"] != gate_b_publisher["actor"]
+        or epoch_publisher["qualification_session"]["session_id"]
+        != gate_b_publisher["qualification_session"]["session_id"]
+        or epoch_publisher["qualification_session"]["sequence"] != 1
+        or gate_b_publisher["qualification_session"]["sequence"] != 2
+        or epoch_publisher["qualification_session"]["lock_identities"]
+        != gate_b_publisher["qualification_session"]["lock_identities"]
         or any(epoch[field] != gate_a[field] for field in (
             "planned_source_set_digest",
             "repository_head",
@@ -1715,6 +1795,10 @@ FORMAL_ROLE_SOURCES = {
     "formal-launch-validator": (
         "docs.research.noncert_cuts_ab16_20260724.ab16_formal_launch_validator_v1",
         "docs/research/noncert_cuts_ab16_20260724/ab16_formal_launch_validator_v1.py",
+    ),
+    "formal-orchestrator": (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py",
     ),
     "formal-success-verifier": (
         "docs.research.noncert_cuts_ab16_20260724.ab16_formal_success_verifier_v1",
@@ -1800,6 +1884,10 @@ def replay_formal_launch_context(*, campaign_dir: Path | str) -> dict[str, objec
         "baseline_identity": ("baseline_rebuild_v1", "tool.baseline_rebuild_v1.py"),
         "controller_identity": ("ab16_formal_controller_v1", "tool.ab16_formal_controller_v1.py"),
         "formal_loader_identity": ("ab16_formal_loader_v1", "tool.ab16_formal_loader_v1.py"),
+        "formal_orchestrator_identity": (
+            "ab16_formal_orchestrator_v1",
+            "tool.ab16_formal_orchestrator_v1.py",
+        ),
         "guardian_runtime_identity": ("ab16_outer_guardian_v1", "tool.ab16_outer_guardian_v1.py"),
         "launch_renderer_identity": (
             "ab16_formal_launch_authority_v1",
@@ -1963,7 +2051,7 @@ def replay_formal_launch_context(*, campaign_dir: Path | str) -> dict[str, objec
             field: python_with_mode[field] for field in ("path", "sha256", "size_bytes")
         },
         "repository_head": root["repository_head"],
-        "schema_version": "noncert-cuts-ab16-formal-launch-context-v1",
+        "schema_version": "noncert-cuts-ab16-formal-launch-context-v2",
         "snapshot_materialization_identity": snapshot["materialization_identity"],
         "snapshot_root": snapshot["repository_root"],
         "selected_byte_launch_identity": literal_identity,

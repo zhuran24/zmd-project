@@ -1074,23 +1074,19 @@ def _gate_b_owner_driver_probe(
     tmp_path: Path,
     *,
     python_identity: dict[str, object],
-    renderer_identity: dict[str, object],
+    owner_source_identity: dict[str, object],
     python_fd_path: Path | None = None,
+    owner_source_fd_path: Path | None = None,
     expected_argument: str | None = None,
 ) -> subprocess.CompletedProcess[str]:
     tmp_path.mkdir(parents=True)
-    request = tmp_path / "gate-b-render-request.json"
-    output = tmp_path / "gate-b-render-output.bin"
-    request.write_text("{}\n", encoding="utf-8")
-    output.write_bytes(b"")
     wrapper = """
 import os
 import sys
 
-paths = sys.argv[2:6]
-flags = (os.O_RDONLY, os.O_RDONLY, os.O_RDONLY, os.O_WRONLY)
-opened = [os.open(path, flag) for path, flag in zip(paths, flags, strict=True)]
-if opened != [3, 4, 5, 6]:
+paths = sys.argv[2:4]
+opened = [os.open(path, os.O_RDONLY) for path in paths]
+if opened != [3, 4]:
     raise SystemExit(124)
 for descriptor in opened:
     os.set_inheritable(descriptor, True)
@@ -1108,17 +1104,18 @@ os.execve(
         sys.argv[1],
         "-B",
         "-c",
-        sys.argv[6],
-        "render_gate_b_epoch_observation",
-        sys.argv[7],
+        sys.argv[5],
+        sys.argv[4],
+        "3",
+        "4",
     ],
     clean,
 )
 """
     canonical_expected = json.dumps(
         {
+            "owner_source": owner_source_identity,
             "python": python_identity,
-            "renderer_source": renderer_identity,
         },
         ensure_ascii=False,
         separators=(",", ":"),
@@ -1137,11 +1134,13 @@ os.execve(
                 if python_fd_path is not None
                 else Path(os.path.realpath(sys.executable))
             ),
-            str(AB16_RESEARCH / "ab16_campaign_bootstrap_v2.py"),
-            str(request),
-            str(output),
-            BOOTSTRAP_V2.GATE_B_OWNER_DRIVER_V1,
+            str(
+                owner_source_fd_path
+                if owner_source_fd_path is not None
+                else AB16_RESEARCH / "ab16_gate_b_qualification_v1.py"
+            ),
             expected_argument if expected_argument is not None else canonical_expected,
+            BOOTSTRAP_V2.GATE_B_OWNER_DRIVER_V1,
         ],
         cwd=ROOT,
         text=True,
@@ -1151,53 +1150,54 @@ os.execve(
     )
 
 
-def test_gate_b_owner_driver_checks_python_and_renderer_before_exec(
+def test_gate_b_owner_driver_checks_python_and_owner_source_before_exec(
     tmp_path: Path,
 ) -> None:
     python_path = Path(os.path.realpath(sys.executable))
-    renderer_path = AB16_RESEARCH / "ab16_campaign_bootstrap_v2.py"
+    owner_source_path = AB16_RESEARCH / "ab16_gate_b_qualification_v1.py"
     python_identity = BOOTSTRAP_V2._snapshot_mode_identity(python_path)  # noqa: SLF001
-    renderer_identity = BOOTSTRAP_V2._snapshot_mode_identity(renderer_path)  # noqa: SLF001
+    owner_source_identity = BOOTSTRAP_V2._snapshot_mode_identity(owner_source_path)  # noqa: SLF001
 
     reached_renderer = _gate_b_owner_driver_probe(
         tmp_path / "valid",
         python_identity=python_identity,
-        renderer_identity=renderer_identity,
+        owner_source_identity=owner_source_identity,
     )
     assert reached_renderer.returncode != 125
-    assert "BootstrapError" in reached_renderer.stderr
+    assert "usage:" in reached_renderer.stderr
 
     python_drift = dict(python_identity)
     python_drift["sha256"] = "f" * 64
     rejected_python = _gate_b_owner_driver_probe(
         tmp_path / "python-drift",
         python_identity=python_drift,
-        renderer_identity=renderer_identity,
+        owner_source_identity=owner_source_identity,
     )
     assert rejected_python.returncode == 125
 
-    renderer_drift = dict(renderer_identity)
-    renderer_drift["size_bytes"] = int(renderer_drift["size_bytes"]) + 1
-    rejected_renderer = _gate_b_owner_driver_probe(
-        tmp_path / "renderer-drift",
+    owner_source_drift = dict(owner_source_identity)
+    owner_source_drift["size_bytes"] = int(owner_source_drift["size_bytes"]) + 1
+    rejected_owner_source = _gate_b_owner_driver_probe(
+        tmp_path / "owner-source-drift",
         python_identity=python_identity,
-        renderer_identity=renderer_drift,
+        owner_source_identity=owner_source_drift,
     )
-    assert rejected_renderer.returncode == 125
+    assert rejected_owner_source.returncode == 125
 
-    copied_renderer = tmp_path / "renderer-path-mismatch/ab16_campaign_bootstrap_v2.py"
-    copied_renderer.parent.mkdir(parents=True)
-    shutil.copyfile(renderer_path, copied_renderer)
-    copied_renderer.chmod(renderer_path.stat().st_mode & 0o7777)
-    copied_renderer_identity = BOOTSTRAP_V2._snapshot_mode_identity(  # noqa: SLF001
-        copied_renderer
+    copied_owner_source = tmp_path / "owner-source-path-mismatch/ab16_gate_b_qualification_v1.py"
+    copied_owner_source.parent.mkdir(parents=True)
+    shutil.copyfile(owner_source_path, copied_owner_source)
+    copied_owner_source.chmod(owner_source_path.stat().st_mode & 0o7777)
+    copied_owner_source_identity = BOOTSTRAP_V2._snapshot_mode_identity(  # noqa: SLF001
+        copied_owner_source
     )
-    rejected_renderer_path = _gate_b_owner_driver_probe(
-        tmp_path / "renderer-path-mismatch-probe",
+    rejected_owner_source_path = _gate_b_owner_driver_probe(
+        tmp_path / "owner-source-path-mismatch-probe",
         python_identity=python_identity,
-        renderer_identity=copied_renderer_identity,
+        owner_source_identity=copied_owner_source_identity,
+        owner_source_fd_path=owner_source_path,
     )
-    assert rejected_renderer_path.returncode == 125
+    assert rejected_owner_source_path.returncode == 125
 
     copied_python = tmp_path / "runtime-mismatch/python3.13"
     copied_python.parent.mkdir(parents=True)
@@ -1207,7 +1207,7 @@ def test_gate_b_owner_driver_checks_python_and_renderer_before_exec(
     rejected_runtime_mismatch = _gate_b_owner_driver_probe(
         tmp_path / "runtime-mismatch-probe",
         python_identity=copied_identity,
-        renderer_identity=renderer_identity,
+        owner_source_identity=owner_source_identity,
         python_fd_path=copied_python,
     )
     assert rejected_runtime_mismatch.returncode == 125
@@ -1217,15 +1217,15 @@ def test_gate_b_owner_driver_identity_argument_and_environment_are_closed(
     tmp_path: Path,
 ) -> None:
     python_path = Path(os.path.realpath(sys.executable))
-    renderer_path = AB16_RESEARCH / "ab16_campaign_bootstrap_v2.py"
+    owner_source_path = AB16_RESEARCH / "ab16_gate_b_qualification_v1.py"
     python_identity = BOOTSTRAP_V2._snapshot_mode_identity(python_path)  # noqa: SLF001
-    renderer_identity = BOOTSTRAP_V2._snapshot_mode_identity(renderer_path)  # noqa: SLF001
+    owner_source_identity = BOOTSTRAP_V2._snapshot_mode_identity(owner_source_path)  # noqa: SLF001
     noncanonical = json.dumps(
-        {"python": python_identity, "renderer_source": renderer_identity},
+        {"owner_source": owner_source_identity, "python": python_identity},
         sort_keys=False,
     )
     assert noncanonical != json.dumps(
-        {"python": python_identity, "renderer_source": renderer_identity},
+        {"owner_source": owner_source_identity, "python": python_identity},
         ensure_ascii=False,
         separators=(",", ":"),
         sort_keys=True,
@@ -1233,14 +1233,14 @@ def test_gate_b_owner_driver_identity_argument_and_environment_are_closed(
     rejected_noncanonical = _gate_b_owner_driver_probe(
         tmp_path / "noncanonical-identity",
         python_identity=python_identity,
-        renderer_identity=renderer_identity,
+        owner_source_identity=owner_source_identity,
         expected_argument=noncanonical,
     )
     assert rejected_noncanonical.returncode == 125
     source = BOOTSTRAP_V2.GATE_B_OWNER_DRIVER_V1
-    assert 'python_fd, source_fd, request_fd, output_fd = 3, 4, 5, 6' in source
     assert "dict(os.environ) != clean" in source
-    assert 'set(expected) != {"python", "renderer_source"}' in source
+    assert 'set(expected) != {"owner_source", "python"}' in source
+    assert '"/proc/self/fd/" + str(owner_source_fd)' in source
 
 
 def _owner_publisher_probe(

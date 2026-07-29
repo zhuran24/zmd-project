@@ -74,6 +74,10 @@ ROLE_MAP: dict[str, RoleSpec] = {
         f"{RESEARCH_PREFIX}.ab16_formal_launch_validator_v1",
         "docs/research/noncert_cuts_ab16_20260724/ab16_formal_launch_validator_v1.py",
     ),
+    "formal-orchestrator": RoleSpec(
+        f"{RESEARCH_PREFIX}.ab16_formal_orchestrator_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py",
+    ),
     "formal-controller": RoleSpec(
         f"{RESEARCH_PREFIX}.ab16_formal_controller_v1",
         "docs/research/noncert_cuts_ab16_20260724/ab16_formal_controller_v1.py",
