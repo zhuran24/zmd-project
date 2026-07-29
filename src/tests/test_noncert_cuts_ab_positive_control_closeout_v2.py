@@ -4,6 +4,7 @@ import copy
 import hashlib
 import importlib.util
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -378,13 +379,39 @@ def _verify_case(case: dict[str, Any]) -> dict[str, object]:
 
 def test_complete_history_manifest_replays_all_v1_bytes() -> None:
     manifest = json.loads(HISTORY.read_bytes())
-    _root, members, checks = GATE._replay_manifest(
+    root, members, checks = GATE._replay_manifest(
         manifest,
         _identity(HISTORY),
         expected_sha256=GATE.EXPECTED_HISTORY_MANIFEST_SHA256,
     )
     assert len(members) == 26
-    assert all(row["passed"] for row in checks)
+    failed = [row for row in checks if not row["passed"]]
+    live_head = GATE._live_head(root)
+    if live_head == GATE.EXPECTED_HEAD:
+        assert failed == []
+    else:
+        assert [row["name"] for row in failed] == ["history.live_head"]
+        assert failed[0]["detail"] == live_head
+        lineage = subprocess.run(
+            [
+                "git",
+                "--no-replace-objects",
+                "-C",
+                str(root),
+                "merge-base",
+                "--is-ancestor",
+                GATE.EXPECTED_HEAD,
+                live_head,
+            ],
+            check=False,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=10,
+        )
+        assert lineage.returncode == 0
+        assert lineage.stdout == b""
+        assert lineage.stderr == b""
     assert members[GATE.V1_TOOL_PATHS["runner"]]["sha256"] == (
         "8f25cbaff596b5fad3208d2b286ebfae602e2a2a97efb24cae2f6a16eea404fb"
     )
@@ -825,9 +852,14 @@ def _evaluate_gate(
 )
 def test_resource_pass_is_common_to_both_complete_classifications(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
     positive: bool,
     expected: str,
 ) -> None:
+    # This test isolates the post-replay resource/classification branch.  The
+    # immutable v1 gate itself intentionally rejects a successor live HEAD;
+    # successor-worktree lineage is covered separately above.
+    monkeypatch.setattr(GATE, "_live_head", lambda _root: GATE.EXPECTED_HEAD)
     fixture = _gate_fixture(tmp_path, positive=positive)
     result = _evaluate_gate(fixture)
     assert result["status"] == expected
