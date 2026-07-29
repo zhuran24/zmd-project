@@ -39,6 +39,10 @@ AUTHORITY = _load(
     "noncert_cuts_ab16_authority_v2_regression",
     TOOLS / "ab16_authority_v2.py",
 )
+FORMAL_LAUNCH_VALIDATOR = _load(
+    "noncert_cuts_ab16_formal_launch_validator_v1_epoch_regression",
+    TOOLS / "ab16_formal_launch_validator_v1.py",
+)
 RESOURCE = _load(
     "noncert_cuts_ab16_resource_verifier_v2_regression",
     TOOLS / "organic_resource_verifier_v2.py",
@@ -365,6 +369,123 @@ def test_formal_orchestrator_is_one_package_and_loader_authority_source() -> Non
         "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1",
         "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py",
     )
+
+
+def test_formal_launch_context_projects_gate_b_epoch_to_detached_identity(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    campaign = tmp_path / "campaign"
+    campaign.mkdir()
+    snapshot_root = tmp_path / "snapshot"
+    snapshot_root.mkdir()
+    gate1_identity = _regular(tmp_path / "gate1-selection.json", b"{}\n")
+    tool_identity = _regular(tmp_path / "tool.py", b"pass\n")
+    detached_tool = {
+        field: tool_identity[field]
+        for field in ("path", "sha256", "size_bytes")
+    }
+    epoch_with_mode = _regular(tmp_path / "gate-b-epoch.json", b"{}\n")
+    expected_epoch = {
+        field: epoch_with_mode[field]
+        for field in ("path", "sha256", "size_bytes")
+    }
+    message_identity = {"sha256": "a" * 64, "size_bytes": 1}
+    paths = {
+        "arm_prelaunch_paths": {},
+        "child_audit_path": str(campaign / "child-audit.json"),
+        "formal_admission_path": str(campaign / "formal-admission.json"),
+        "formal_attempt_dir": str(campaign / "formal-attempt-a001"),
+        "formal_selection_path": str(campaign / "formal-selection.json"),
+        "gate1_prelaunch_ownership_path": str(campaign / "gate1-prelaunch.json"),
+        "guardian_control_socket_path": str(campaign / "guardian.sock"),
+        "guardian_ready_path": str(campaign / "guardian-ready.json"),
+        "outer_barrier_path": str(campaign / "outer-barrier"),
+        "outer_receipt_paths": {},
+    }
+
+    class CampaignModule:
+        @staticmethod
+        def replay_gate1_selection(*_args: object, **_kwargs: object) -> None:
+            return None
+
+    context = {
+        "campaign_module": CampaignModule,
+        "directory": campaign,
+        "files": {},
+        "repository_snapshot": {
+            "external_platform": {
+                "formal_launch_owner_driver": message_identity,
+                "mechanical_oexcl_publisher": message_identity,
+            },
+            "materialization_identity": detached_tool,
+            "repository_root": str(snapshot_root),
+        },
+        "root_identity": detached_tool,
+        "root": {
+            "manager_epoch": {"schema": "fixture-manager-epoch"},
+            "package": {
+                "manifest_identity": detached_tool,
+                "package_id": "b" * 64,
+                "seal_identity": detached_tool,
+            },
+            "repository_head": HEAD,
+            "stage_topology": {
+                "gate1_v4": {
+                    "selection_path": gate1_identity["path"],
+                },
+            },
+            "unit_namespace": "ab16-fixture",
+        },
+        "sources": {},
+    }
+    monkeypatch.setattr(AUTHORITY, "_campaign_context", lambda _campaign: context)
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_validate_gate_approvals",
+        lambda _context: {
+            "gate_b_epoch_identity": epoch_with_mode,
+            "gate_b_identity": detached_tool,
+        },
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_path_preregistration",
+        lambda _context: (paths, detached_tool),
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_root_tool_identity",
+        lambda *_args: detached_tool,
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_root_tool_identity_with_mode",
+        lambda *_args: tool_identity,
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_root_input_identity",
+        lambda *_args: detached_tool,
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_bootstrap_literal_values",
+        lambda *_args: {"SELECTED_BYTE_LAUNCH_V1": "pass"},
+    )
+
+    replay = AUTHORITY.replay_formal_launch_context(campaign_dir=campaign)
+
+    assert replay["gate_b_epoch_observation_identity"] == expected_epoch
+    assert set(replay["gate_b_epoch_observation_identity"]) == {
+        "path",
+        "sha256",
+        "size_bytes",
+    }
+    assert FORMAL_LAUNCH_VALIDATOR._identity(
+        replay["gate_b_epoch_observation_identity"],
+        "formal context gate_b_epoch_observation_identity",
+    ) == expected_epoch
 
 
 def _regular(path: Path, raw: bytes, *, mode: int = 0o444) -> dict[str, object]:

@@ -2305,7 +2305,9 @@ def replay_formal_launch_context(*, campaign_dir: Path | str) -> dict[str, objec
         "formal_selection_path": paths["formal_selection_path"],
         "gate1_selection_identity": gate1_identity,
         "gate_b_approval_identity": approvals["gate_b_identity"],
-        "gate_b_epoch_observation_identity": approvals["gate_b_epoch_identity"],
+        "gate_b_epoch_observation_identity": _detached_from_source(
+            approvals["gate_b_epoch_identity"]
+        ),
         "guardian_ready_path": paths["guardian_ready_path"],
         "guardian_control_socket_path": paths["guardian_control_socket_path"],
         "guardian_spec": guardian_spec,
