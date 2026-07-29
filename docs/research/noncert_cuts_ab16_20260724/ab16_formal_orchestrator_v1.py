@@ -22,6 +22,7 @@ import json
 import os
 from pathlib import Path
 import socket
+import stat
 import sys
 import threading
 import time
@@ -774,15 +775,22 @@ def _wait_record(
             raise FormalOrchestrationError(
                 f"formal supervisor exited before {label}"
             )
-        if path.is_file() and not path.is_symlink():
+        try:
+            observed = os.lstat(path)
+        except FileNotFoundError:
+            time.sleep(POLL_SECONDS)
+            continue
+        except OSError as exc:
+            raise FormalOrchestrationError(
+                f"{label} surface could not be inspected"
+            ) from exc
+        if stat.S_ISREG(observed.st_mode):
             return launch_validator.read_canonical_record(
                 path,
                 expected_identity=None,
                 label=label,
             )
-        if os.path.lexists(path):
-            raise FormalOrchestrationError(f"{label} is not a regular file")
-        time.sleep(POLL_SECONDS)
+        raise FormalOrchestrationError(f"{label} is not a regular file")
     raise FormalOrchestrationError(f"{label} did not appear before deadline")
 
 

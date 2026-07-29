@@ -427,15 +427,22 @@ def _wait_record(
     while monotonic() <= deadline:
         if checkpoint is not None:
             checkpoint()
-        if target.is_file() and not target.is_symlink():
+        try:
+            observed = os.lstat(target)
+        except FileNotFoundError:
+            sleeper(POLL_SECONDS)
+            continue
+        except OSError as exc:
+            raise FormalCampaignError(
+                f"{label} surface could not be inspected"
+            ) from exc
+        if stat.S_ISREG(observed.st_mode):
             return _read_record(
                 target,
                 expected_identity=expected_identity,
                 label=label,
             )
-        if os.path.lexists(target):
-            raise FormalCampaignError(f"{label} surface is not one regular non-symlink file")
-        sleeper(POLL_SECONDS)
+        raise FormalCampaignError(f"{label} surface is not one regular non-symlink file")
     raise FormalCampaignError(f"{label} did not appear before its fixed deadline")
 
 
@@ -2010,13 +2017,20 @@ def _wait_arm_request(
     target = Path(path)
     while time.monotonic() <= deadline:
         _guard_running(state, host, latch)
-        if target.is_file() and not target.is_symlink():
-            return
-        if os.path.lexists(target):
+        try:
+            observed = os.lstat(target)
+        except FileNotFoundError:
+            time.sleep(POLL_SECONDS)
+            continue
+        except OSError as exc:
             raise IrreversibleFormalFailure(
-                f"{slot} prelaunch request surface is unsafe"
-            )
-        time.sleep(POLL_SECONDS)
+                f"{slot} prelaunch request surface could not be inspected"
+            ) from exc
+        if stat.S_ISREG(observed.st_mode):
+            return
+        raise IrreversibleFormalFailure(
+            f"{slot} prelaunch request surface is unsafe"
+        )
     raise IrreversibleFormalFailure(
         f"{slot} prelaunch request did not appear"
     )

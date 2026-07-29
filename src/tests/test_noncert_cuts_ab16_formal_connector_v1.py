@@ -1647,6 +1647,44 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
     ]
 
 
+def test_formal_orchestrator_wait_uses_one_node_snapshot(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    candidate = tmp_path / "attempt-consumption.json"
+    authority._write_exclusive(  # noqa: SLF001
+        candidate,
+        authority.canonical_json({"status": "CONSUMED"}),
+        mode=0o444,
+    )
+    real_is_file = Path.is_file
+    stale_observations = 0
+
+    def stale_once(path: Path) -> bool:
+        nonlocal stale_observations
+        if path == candidate and stale_observations == 0:
+            stale_observations += 1
+            return False
+        return real_is_file(path)
+
+    monkeypatch.setattr(Path, "is_file", stale_once)
+    owner = SimpleNamespace(
+        pid=os.getpid(),
+        actor={"starttime": _process_starttime(os.getpid())},
+    )
+
+    record, identity = formal_orchestrator._wait_record(  # noqa: SLF001
+        candidate,
+        "formal attempt consumption",
+        owner=owner,
+        supervisor_alive=lambda: True,
+    )
+
+    assert record == {"status": "CONSUMED"}
+    assert identity["path"] == str(candidate)
+    assert stale_observations == 0
+
+
 @pytest.mark.parametrize(
     "boundary",
     ("sequence", "admission-actor", "selection-actor", "handoff-sequence"),

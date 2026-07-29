@@ -3001,6 +3001,70 @@ def test_selection_wait_checkpoint_precedes_candidate_consumption(
     assert calls == ["checkpoint"]
 
 
+def test_selection_wait_uses_one_node_snapshot(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    candidate = tmp_path / "selection.json"
+    candidate.write_bytes(FORMAL.authority.canonical_json({"status": "SELECTED"}))
+    candidate.chmod(0o444)
+    real_is_file = Path.is_file
+    stale_observations = 0
+
+    def stale_once(path: Path) -> bool:
+        nonlocal stale_observations
+        if path == candidate and stale_observations == 0:
+            stale_observations += 1
+            return False
+        return real_is_file(path)
+
+    monkeypatch.setattr(Path, "is_file", stale_once)
+
+    record, identity = FORMAL._wait_record(
+        candidate,
+        expected_identity=None,
+        label="selection",
+        timeout_seconds=1.0,
+        monotonic=lambda: 0.0,
+        sleeper=lambda _seconds: None,
+    )
+
+    assert record == {"status": "SELECTED"}
+    assert identity["path"] == str(candidate)
+    assert stale_observations == 0
+
+
+def test_arm_request_wait_uses_one_node_snapshot(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    candidate = tmp_path / "arm-request.json"
+    candidate.write_bytes(b"request")
+    real_is_file = Path.is_file
+    stale_observations = 0
+
+    def stale_once(path: Path) -> bool:
+        nonlocal stale_observations
+        if path == candidate and stale_observations == 0:
+            stale_observations += 1
+            return False
+        return real_is_file(path)
+
+    monkeypatch.setattr(Path, "is_file", stale_once)
+    monkeypatch.setattr(FORMAL, "_guard_running", lambda *_args: None)
+
+    FORMAL._wait_arm_request(
+        state=SimpleNamespace(),
+        host=SimpleNamespace(),
+        latch=SimpleNamespace(),
+        path=candidate,
+        slot="organic-arm-a001",
+        deadline=FORMAL.time.monotonic() + 1.0,
+    )
+
+    assert stale_observations == 0
+
+
 def test_guardian_connection_close_uncertainty_is_never_retried() -> None:
     class Connection:
         calls = 0
