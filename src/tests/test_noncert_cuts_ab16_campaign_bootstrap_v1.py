@@ -74,14 +74,16 @@ def _git_fixture(tmp_path: Path) -> tuple[Path, dict[str, object]]:
     return target, AUTH.snapshot_tool(target)[1]
 
 
-def test_v2_campaign_root_retains_external_history_manifest_identity(
+def test_v2_campaign_root_retains_repository_local_external_input_identities(
     tmp_path: Path,
 ) -> None:
     repository = tmp_path / "repository"
     internal = _write(repository / "rules/strict.json", b"strict\n")
-    history = _write(tmp_path / "history/manifest.json", b"history\n")
+    history = _write(repository / ".artifacts/history/manifest.json", b"history\n")
+    legacy = _write(repository / ".artifacts/legacy/result.json", b"legacy\n")
     packaged_internal = _write(tmp_path / "package/internal.json", internal.read_bytes())
     packaged_history = _write(tmp_path / "package/history.json", history.read_bytes())
+    packaged_legacy = _write(tmp_path / "package/legacy.json", legacy.read_bytes())
     materialized_internal = _write(
         tmp_path / "snapshot/rules/strict.json",
         internal.read_bytes(),
@@ -93,6 +95,9 @@ def test_v2_campaign_root_retains_external_history_manifest_identity(
         "input.history_freeze_manifest": AUTH_V2.full_identity(
             AUTH_V2.snapshot_regular(history)
         ),
+        "input.legacy_control_a002": AUTH_V2.full_identity(
+            AUTH_V2.snapshot_regular(legacy)
+        ),
     }
     packaged = {
         "canonical_rules": AUTH_V2.detached_identity(
@@ -100,6 +105,9 @@ def test_v2_campaign_root_retains_external_history_manifest_identity(
         ),
         "history_freeze_manifest": AUTH_V2.detached_identity(
             AUTH_V2.snapshot_regular(packaged_history)
+        ),
+        "legacy_control_a002": AUTH_V2.detached_identity(
+            AUTH_V2.snapshot_regular(packaged_legacy)
         ),
     }
     snapshot = {
@@ -113,6 +121,7 @@ def test_v2_campaign_root_retains_external_history_manifest_identity(
         strict_paths={
             "canonical_rules": internal,
             "history_freeze_manifest": history,
+            "legacy_control_a002": legacy,
         },
         planned=planned,
         packaged_inputs=packaged,
@@ -129,6 +138,7 @@ def test_v2_campaign_root_retains_external_history_manifest_identity(
         selected["history_freeze_manifest"]["path"] == str(history)
         != packaged["history_freeze_manifest"]["path"]
     )
+    assert selected["legacy_control_a002"] == packaged["legacy_control_a002"]
 
     bad_packaged = copy.deepcopy(packaged)
     bad_packaged["history_freeze_manifest"]["sha256"] = "0" * 64
@@ -142,6 +152,86 @@ def test_v2_campaign_root_retains_external_history_manifest_identity(
             planned=planned,
             packaged_inputs=bad_packaged,
             snapshot_identities=snapshot,
+        )
+
+
+def test_v2_repository_snapshot_stages_repository_local_external_inputs_by_role(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    assert BOOTSTRAP_V2.EXTERNAL_STRICT_INPUT_ROLES == {
+        "history_freeze_manifest",
+        "legacy_control_a002",
+    }
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    candidate = _write(repository / "candidate.json", b"candidate\n")
+    history = _write(repository / ".artifacts/history/manifest.json", b"history\n")
+    legacy = _write(repository / ".artifacts/legacy/result.json", b"legacy\n")
+    strict_paths = {
+        "candidate_placements": candidate,
+        "history_freeze_manifest": history,
+        "legacy_control_a002": legacy,
+    }
+    planned = {
+        f"input.{role}": BOOTSTRAP_V2.authority.full_identity(
+            BOOTSTRAP_V2.authority.snapshot_regular(path)
+        )
+        for role, path in strict_paths.items()
+    }
+    monkeypatch.setattr(
+        BOOTSTRAP_V2,
+        "_head_repository_blobs",
+        lambda _repository, _head: ("0" * 40, [], {}),
+    )
+    monkeypatch.setattr(
+        BOOTSTRAP_V2,
+        "_external_platform_record",
+        lambda **_kwargs: {},
+    )
+    bootstrap_dir = tmp_path / "bootstrap"
+    bootstrap_dir.mkdir()
+
+    result = BOOTSTRAP_V2._build_repository_snapshot_sources(  # noqa: SLF001
+        bootstrap_dir=bootstrap_dir,
+        package_dir=tmp_path / "package",
+        repository=repository,
+        repository_head="1" * 40,
+        planned=planned,
+        scripts={},
+        strict_paths=strict_paths,
+        system_full={"python3_13": {}},
+    )
+
+    assert result["staged_inputs"]["history_freeze_manifest"].read_bytes() == b"history\n"
+    assert result["staged_inputs"]["legacy_control_a002"].read_bytes() == b"legacy\n"
+
+    escaped = _write(tmp_path / "outside/canonical-rules.json", b"rules\n")
+    escaped_strict_paths = {
+        "candidate_placements": candidate,
+        "canonical_rules": escaped,
+    }
+    escaped_planned = {
+        f"input.{role}": BOOTSTRAP_V2.authority.full_identity(
+            BOOTSTRAP_V2.authority.snapshot_regular(path)
+        )
+        for role, path in escaped_strict_paths.items()
+    }
+    escaped_bootstrap_dir = tmp_path / "escaped-bootstrap"
+    escaped_bootstrap_dir.mkdir()
+    with pytest.raises(
+        BOOTSTRAP_V2.BootstrapError,
+        match="repository strict input escaped the fixed tree: canonical_rules",
+    ):
+        BOOTSTRAP_V2._build_repository_snapshot_sources(  # noqa: SLF001
+            bootstrap_dir=escaped_bootstrap_dir,
+            package_dir=tmp_path / "escaped-package",
+            repository=repository,
+            repository_head="1" * 40,
+            planned=escaped_planned,
+            scripts={},
+            strict_paths=escaped_strict_paths,
+            system_full={"python3_13": {}},
         )
 
 

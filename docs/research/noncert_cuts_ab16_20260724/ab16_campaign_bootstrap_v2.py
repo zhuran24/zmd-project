@@ -1120,6 +1120,12 @@ STRICT_INPUT_ROLES = frozenset(
         "project_lock",
     }
 )
+EXTERNAL_STRICT_INPUT_ROLES = frozenset(
+    {
+        "history_freeze_manifest",
+        "legacy_control_a002",
+    }
+)
 SYSTEM_TOOL_ROLES = frozenset(
     {
         "attestor_python",
@@ -2748,18 +2754,20 @@ def _build_repository_snapshot_sources(
     for role, live_path in strict_paths.items():
         if role == "candidate_placements":
             raw = candidate_snapshot.data
+        elif role in EXTERNAL_STRICT_INPUT_ROLES:
+            external_snapshot = authority.snapshot_regular(live_path)
+            if authority.full_identity(external_snapshot) != planned[f"input.{role}"]:
+                raise BootstrapError(f"external strict input changed after Gate A: {role}")
+            raw = external_snapshot.data
         else:
             try:
                 relative = live_path.relative_to(repository).as_posix()
-            except ValueError:
-                external_snapshot = authority.snapshot_regular(live_path)
-                if authority.full_identity(external_snapshot) != planned[f"input.{role}"]:
-                    raise BootstrapError(f"external strict input changed after Gate A: {role}")
-                raw = external_snapshot.data
-            else:
-                if relative not in blobs:
-                    raise BootstrapError(f"tracked strict input missing from fixed HEAD: {role}")
-                raw = blobs[relative]
+            except ValueError as exc:
+                raise BootstrapError(f"repository strict input escaped the fixed tree: {role}") from exc
+            if relative not in blobs:
+                raise BootstrapError(f"tracked strict input missing from fixed HEAD: {role}")
+            raw = blobs[relative]
+        if role != "candidate_placements":
             if hashlib.sha256(raw).hexdigest() != planned[f"input.{role}"]["sha256"]:
                 raise BootstrapError(f"strict input differs from Gate-A plan: {role}")
         staged_inputs[role] = staged_dir / f"input.{role}"
@@ -3563,27 +3571,31 @@ def _select_root_strict_input_identities(
     for role, source_path in strict_paths.items():
         if role == "candidate_placements":
             relative = "data/preprocessed/candidate_placements.json"
+        elif role in EXTERNAL_STRICT_INPUT_ROLES:
+            if role == "history_freeze_manifest":
+                # Its replay receipt binds the immutable external manifest's
+                # complete path/mode/content identity.  The package copy remains
+                # a sealed payload member, but it cannot replace that source
+                # identity at the formal join.
+                original = _detached_from_full(planned[f"input.{role}"])
+                packaged = inputs.get(role)
+                if (
+                    packaged is None
+                    or packaged["sha256"] != original["sha256"]
+                    or packaged["size_bytes"] != original["size_bytes"]
+                ):
+                    raise BootstrapError(
+                        "packaged history-freeze manifest differs from its source"
+                    )
+                inputs[role] = original
+            continue
         else:
             try:
                 relative = source_path.relative_to(repository).as_posix()
-            except ValueError:
-                if role == "history_freeze_manifest":
-                    # Its replay receipt binds the immutable external
-                    # manifest's complete path/mode/content identity.  The
-                    # package copy remains a sealed payload member, but it
-                    # cannot replace that source identity at the formal join.
-                    original = _detached_from_full(planned[f"input.{role}"])
-                    packaged = inputs.get(role)
-                    if (
-                        packaged is None
-                        or packaged["sha256"] != original["sha256"]
-                        or packaged["size_bytes"] != original["size_bytes"]
-                    ):
-                        raise BootstrapError(
-                            "packaged history-freeze manifest differs from its source"
-                        )
-                    inputs[role] = original
-                continue
+            except ValueError as exc:
+                raise BootstrapError(
+                    f"repository strict input escaped the materialized snapshot: {role}"
+                ) from exc
         materialized = snapshot_identities.get(relative)
         if materialized is None:
             raise BootstrapError(
