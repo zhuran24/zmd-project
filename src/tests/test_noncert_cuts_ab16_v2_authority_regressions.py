@@ -559,6 +559,596 @@ def test_gate_b_renderer_uses_live_planned_identity_and_joins_staged_bytes(
             AUTHORITY._join_gate_b_renderer_identity(planned, drifted)  # noqa: SLF001
 
 
+def _manager_candidate_fixture(
+    tmp_path: Path,
+) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    planned, _, _, _ = _planned_sources(tmp_path)
+    manager_path = (
+        repository
+        / "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724/manager_attestor_v4.py"
+    )
+    _regular(manager_path, b"# selected live manager attestor\n", mode=0o644)
+    planned["script.manager_attestor_v4"] = _full(manager_path)
+    history_path = (
+        repository
+        / ".artifacts/noncert_cuts_ab16_20260724/"
+        "gate-a-terminal-reference-history-freeze-a001/manifest.json"
+    )
+    _regular(history_path, b'{"fixture":"history-freeze"}\n', mode=0o400)
+    planned["input.history_freeze_manifest"] = _full(history_path)
+    root = {
+        "repository_head": HEAD,
+        "run_nonce": "run-manager-source-join-fixture",
+    }
+    candidate: dict[str, object] = {
+        "arm_launch_authorized": False,
+        "candidate_id": "",
+        "candidate_only": True,
+        "created_at_utc": "2026-07-24T00:00:00Z",
+        "formal_campaign_creation_authorized": False,
+        "gate_a_receipt_identity": {
+            "path": str(tmp_path / "gate-a.json"),
+            "sha256": "a" * 64,
+            "size_bytes": 1,
+        },
+        "path_preregistration_identity": {
+            "path": str(tmp_path / "preregistration.json"),
+            "sha256": "b" * 64,
+            "size_bytes": 1,
+        },
+        "planned_source_identities": planned,
+        "planned_source_set_digest": hashlib.sha256(
+            AUTHORITY.canonical_json(planned)
+        ).hexdigest(),
+        "purpose": "AB16_OFFLINE_NONAUTHORIZING_CANDIDATE",
+        "repository_head": HEAD,
+        "repository_root": str(repository),
+        "run_nonce": root["run_nonce"],
+        "schema_version": "noncert-cuts-ab16-bootstrap-offline-candidate-v2",
+        "target_campaign_dir": str(tmp_path / "campaigns" / str(root["run_nonce"])),
+    }
+    without_id = dict(candidate)
+    without_id.pop("candidate_id")
+    candidate["candidate_id"] = hashlib.sha256(
+        AUTHORITY.canonical_json(without_id)
+    ).hexdigest()
+    return candidate, root, planned["script.manager_attestor_v4"]
+
+
+def _manager_source_join_fixture(
+    tmp_path: Path,
+) -> tuple[
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+]:
+    candidate, root_base, planned = _manager_candidate_fixture(tmp_path)
+    planned_sources = AUTHORITY._candidate_planned_source_identities(  # noqa: SLF001
+        candidate,
+        directory=Path(str(candidate["target_campaign_dir"])),
+        root=root_base,
+    )
+    planned = planned_sources["script.manager_attestor_v4"]
+    epoch_attestor = {
+        **planned,
+        "requested_path": planned["path"],
+    }
+    root = {
+        **root_base,
+        "manager_epoch": {
+            "attestation_toolchain": {
+                "attestor": epoch_attestor,
+            },
+        },
+    }
+    selected = {
+        field: planned[field]
+        for field in ("path", "sha256", "size_bytes")
+    }
+    staged = {
+        "path": str(tmp_path / "staging/script.manager_attestor_v4.py"),
+        "sha256": planned["sha256"],
+        "size_bytes": planned["size_bytes"],
+    }
+    packaged = {
+        "path": str(tmp_path / "package/payload/tool.manager_attestor_v4.py"),
+        "sha256": planned["sha256"],
+        "size_bytes": planned["size_bytes"],
+    }
+    return root, selected, staged, packaged, dict(planned)
+
+
+def _root_source_join_fixture(
+    tmp_path: Path,
+) -> tuple[
+    Path,
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+]:
+    candidate, root_base, _ = _manager_candidate_fixture(tmp_path)
+    directory = Path(str(candidate["target_campaign_dir"]))
+    planned = candidate["planned_source_identities"]
+    script_package_roles = {
+        "campaign_authority_v4": "campaign_authority_v4.py",
+        **{
+            role.removeprefix("tool.").removesuffix(".py"): role
+            for role in AUTHORITY.REQUIRED_PACKAGE_ROLES
+            if role.startswith("tool.")
+            and role.endswith(".py")
+            and role != "tool.ab16_gate_b_qualification_v1.py"
+        },
+    }
+    system_package_roles = {
+        role.removeprefix("system.").removesuffix(".bin"): role
+        for role in AUTHORITY.REQUIRED_PACKAGE_ROLES
+        if role.startswith("system.") and role.endswith(".bin")
+    }
+    input_package_roles: dict[str, str] = {}
+    for package_role in AUTHORITY.REQUIRED_PACKAGE_ROLES:
+        if not package_role.startswith("input."):
+            continue
+        root_role = package_role.removeprefix("input.")
+        if root_role == "ab16_repository_snapshot.zip":
+            root_role = "ab16_repository_snapshot_archive"
+        else:
+            root_role = root_role.removesuffix(".json").removesuffix(".txt")
+        input_package_roles[root_role] = package_role
+    source_roles = {
+        **script_package_roles,
+        **system_package_roles,
+        **input_package_roles,
+    }
+    files: dict[str, object] = {}
+    sources: dict[str, object] = {}
+    tools: dict[str, object] = {}
+    inputs: dict[str, object] = {}
+    snapshot_paths = {
+        "candidate_placements": "data/preprocessed/candidate_placements.json",
+        "canonical_rules": "rules/canonical_rules.json",
+        "cuts_mandatory_schedule": (
+            "docs/research/b1_sidewise_marked_membrane_authority_recovery_20260724/"
+            "04_cuts_mandatory_schedule.md"
+        ),
+        "mandatory_instances": "data/preprocessed/mandatory_exact_instances.json",
+        "preflight_gate": "scripts/preflight_gate.py",
+        "project_lock": "PROJECT_LOCK.md",
+    }
+    materialized: dict[str, object] = {}
+    for root_role, package_role in source_roles.items():
+        if package_role == "input.ab16_offline_candidate.json":
+            raw = AUTHORITY.canonical_json(candidate)
+        else:
+            if package_role == "campaign_authority_v4.py":
+                planned_role = "script.campaign_authority_v4"
+            elif package_role.startswith("tool."):
+                planned_role = f"script.{root_role}"
+            elif package_role.startswith("system."):
+                planned_role = f"system.{root_role}"
+            else:
+                planned_role = f"input.{root_role}"
+            planned_identity = planned.get(planned_role)
+            raw = (
+                Path(str(planned_identity["path"])).read_bytes()
+                if planned_identity is not None
+                else f"{package_role}\n".encode()
+            )
+        source_path = tmp_path / "staging" / package_role
+        package_path = f"payload/{package_role}"
+        packaged_path = tmp_path / "package" / package_path
+        _regular(source_path, raw)
+        _regular(packaged_path, raw)
+        source_snapshot = AUTHORITY.snapshot_regular(source_path)
+        packaged_snapshot = AUTHORITY.snapshot_regular(packaged_path)
+        files[package_path] = packaged_snapshot
+        sources[package_role] = {
+            "package_path": package_path,
+            "source_identity": AUTHORITY.full_identity(source_snapshot),
+        }
+        selected = AUTHORITY.detached_identity(packaged_snapshot)
+        if root_role == "manager_attestor_v4":
+            manager = planned["script.manager_attestor_v4"]
+            selected = {
+                field: manager[field]
+                for field in ("path", "sha256", "size_bytes")
+            }
+        elif root_role == "history_freeze_manifest":
+            history = planned["input.history_freeze_manifest"]
+            selected = {
+                field: history[field]
+                for field in ("path", "sha256", "size_bytes")
+            }
+        elif root_role in snapshot_paths:
+            materialized_path = tmp_path / "materialized" / snapshot_paths[root_role]
+            _regular(materialized_path, raw)
+            selected = AUTHORITY.detached_identity(
+                AUTHORITY.snapshot_regular(materialized_path)
+            )
+            materialized[snapshot_paths[root_role]] = selected
+        if root_role in script_package_roles or root_role in system_package_roles:
+            tools[root_role] = selected
+        else:
+            inputs[root_role] = selected
+    materialization_path = tmp_path / "materialization.json"
+    _regular(materialization_path, b'{"status":"PASS"}\n')
+    materialization_identity = AUTHORITY.detached_identity(
+        AUTHORITY.snapshot_regular(materialization_path)
+    )
+    inputs["ab16_repository_snapshot_materialization"] = materialization_identity
+    manager = planned["script.manager_attestor_v4"]
+    root = {
+        **root_base,
+        "authority_tools": tools,
+        "manager_epoch": {
+            "attestation_toolchain": {
+                "attestor": {
+                    **manager,
+                    "requested_path": manager["path"],
+                },
+            },
+        },
+        "strict_inputs": inputs,
+    }
+    repository_snapshot = {
+        "materialization_identity": materialization_identity,
+        "member_identities": materialized,
+    }
+    return directory, root, files, sources, repository_snapshot, planned
+
+
+def test_root_source_join_wiring_accepts_only_two_exact_live_roles(
+    tmp_path: Path,
+) -> None:
+    directory, root, files, sources, repository_snapshot, planned = _root_source_join_fixture(
+        tmp_path
+    )
+    AUTHORITY._validate_root_source_joins(  # noqa: SLF001
+        directory,
+        root,
+        files,
+        sources,
+        repository_snapshot,
+    )
+
+    ordinary = planned["script.ab16_authority_v1"]
+    root["authority_tools"]["ab16_authority_v1"] = {
+        field: ordinary[field]
+        for field in ("path", "sha256", "size_bytes")
+    }
+    with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
+        AUTHORITY._validate_root_source_joins(  # noqa: SLF001
+            directory,
+            root,
+            files,
+            sources,
+            repository_snapshot,
+        )
+    assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
+    assert exc_info.value.detail == "source join ab16_authority_v1"
+
+
+def test_campaign_context_closes_gate_approvals_before_live_source_joins(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    campaign = tmp_path / "run-context-gate-order"
+    campaign.mkdir()
+    root = {
+        "manager_epoch": {"schema": "fixture"},
+        "package": {
+            "manifest_identity": {"fixture": "manifest"},
+            "package_dir": str(tmp_path / "package"),
+            "package_id": "a" * 64,
+            "seal_identity": {"fixture": "seal"},
+        },
+        "repository_head": HEAD,
+        "run_nonce": campaign.name,
+        "stage_topology": {
+            "gate1_v4": {
+                "positive_control": {
+                    "binding_paths": {},
+                    "binding_seal_path": "/fixture/seal",
+                    "common_artifact_paths": {},
+                    "common_manifest_path": "/fixture/manifest",
+                },
+            },
+        },
+    }
+    root_path = campaign / "campaign-root.json"
+    root_path.write_bytes(AUTHORITY.canonical_json(root))
+    root_snapshot = AUTHORITY.snapshot_regular(root_path)
+    package_manifest = {
+        "manager_epoch": root["manager_epoch"],
+        "repository_head": HEAD,
+        "run_nonce": campaign.name,
+    }
+
+    class CampaignTool:
+        @staticmethod
+        def validate_campaign_root(value: object, *, campaign_dir: Path) -> None:
+            assert value == root
+            assert campaign_dir == campaign
+
+        @staticmethod
+        def verify_package(
+            package_dir: str,
+            *,
+            expected_manager_epoch: object,
+            replay_external: bool,
+        ) -> dict[str, object]:
+            assert package_dir == root["package"]["package_dir"]
+            assert expected_manager_epoch == root["manager_epoch"]
+            assert replay_external is True
+            return {
+                field: root["package"][field]
+                for field in ("manifest_identity", "package_id", "seal_identity")
+            }
+
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_package_sources",
+        lambda _path: ({}, package_manifest, {}),
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_source_snapshot",
+        lambda _files, _sources, _role: root_snapshot,
+    )
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_load_module",
+        lambda _snapshot, _name: CampaignTool,
+    )
+    repository_snapshot = {
+        "materialization_identity": {"fixture": "materialization"},
+        "member_identities": {},
+    }
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_replay_repository_snapshot",
+        lambda **_kwargs: repository_snapshot,
+    )
+    order: list[str] = []
+    monkeypatch.setattr(
+        AUTHORITY,
+        "_validate_gate_approvals",
+        lambda _context: order.append("gate-approvals"),
+    )
+
+    def source_joins(*_args: object) -> None:
+        assert order == ["gate-approvals"]
+        order.append("source-joins")
+
+    monkeypatch.setattr(AUTHORITY, "_validate_root_source_joins", source_joins)
+
+    context = AUTHORITY._campaign_context(campaign)  # noqa: SLF001
+    assert order == ["gate-approvals", "source-joins"]
+    assert context["directory"] == campaign
+
+
+def test_manager_attestor_source_join_accepts_only_candidate_and_epoch_bound_live_path(
+    tmp_path: Path,
+) -> None:
+    root, selected, staged, packaged, planned = _manager_source_join_fixture(tmp_path)
+    assert len({selected["path"], staged["path"], packaged["path"]}) == 3
+    assert {
+        (selected["sha256"], selected["size_bytes"]),
+        (staged["sha256"], staged["size_bytes"]),
+        (packaged["sha256"], packaged["size_bytes"]),
+    } == {(planned["sha256"], planned["size_bytes"])}
+
+    AUTHORITY._validate_manager_attestor_source_join(  # noqa: SLF001
+        root=root,
+        selected=selected,
+        source_identity=staged,
+        packaged_identity=packaged,
+        planned_identity=planned,
+    )
+
+
+@pytest.mark.parametrize(
+    ("target", "field", "replacement"),
+    (
+        ("selected", "path", "/different/live/manager_attestor_v4.py"),
+        ("selected", "sha256", "f" * 64),
+        ("selected", "size_bytes", 999),
+        ("epoch", "path", "/different/epoch/manager_attestor_v4.py"),
+        ("epoch", "requested_path", "/different/requested/manager_attestor_v4.py"),
+        ("staged", "sha256", "e" * 64),
+        ("packaged", "size_bytes", 998),
+        ("planned", "device", 0),
+        ("planned", "inode", 0),
+        ("planned", "mode", 0o600),
+    ),
+)
+def test_manager_attestor_source_join_rejects_identity_drift(
+    tmp_path: Path,
+    target: str,
+    field: str,
+    replacement: object,
+) -> None:
+    root, selected, staged, packaged, planned = _manager_source_join_fixture(tmp_path)
+    records = {
+        "selected": selected,
+        "epoch": root["manager_epoch"]["attestation_toolchain"]["attestor"],
+        "staged": staged,
+        "packaged": packaged,
+        "planned": planned,
+    }
+    records[target][field] = replacement
+
+    with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
+        AUTHORITY._validate_manager_attestor_source_join(  # noqa: SLF001
+            root=root,
+            selected=selected,
+            source_identity=staged,
+            packaged_identity=packaged,
+            planned_identity=planned,
+        )
+    assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
+    assert exc_info.value.detail == "source join manager_attestor_v4"
+
+
+def test_manager_attestor_candidate_rejects_resealed_alternate_live_path(
+    tmp_path: Path,
+) -> None:
+    candidate, root, original = _manager_candidate_fixture(tmp_path)
+    alternate_path = tmp_path / "alternate/manager_attestor_v4.py"
+    _regular(
+        alternate_path,
+        Path(str(original["path"])).read_bytes(),
+        mode=int(original["mode"]),
+    )
+    planned = candidate["planned_source_identities"]
+    planned["script.manager_attestor_v4"] = _full(alternate_path)
+    candidate["planned_source_set_digest"] = hashlib.sha256(
+        AUTHORITY.canonical_json(planned)
+    ).hexdigest()
+    without_id = dict(candidate)
+    without_id.pop("candidate_id")
+    candidate["candidate_id"] = hashlib.sha256(
+        AUTHORITY.canonical_json(without_id)
+    ).hexdigest()
+
+    with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
+        AUTHORITY._candidate_planned_source_identities(  # noqa: SLF001
+            candidate,
+            directory=Path(str(candidate["target_campaign_dir"])),
+            root=root,
+        )
+    assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
+    assert exc_info.value.detail == "candidate planned source binding script.manager_attestor_v4"
+
+
+@pytest.mark.parametrize(
+    ("field", "replacement"),
+    (
+        ("schema_version", "noncert-cuts-ab16-bootstrap-offline-candidate-v1"),
+        ("candidate_only", False),
+        ("formal_campaign_creation_authorized", True),
+        ("candidate_id", "f" * 64),
+        ("planned_source_set_digest", "e" * 64),
+    ),
+)
+def test_manager_attestor_candidate_rejects_semantic_or_self_digest_drift(
+    tmp_path: Path,
+    field: str,
+    replacement: object,
+) -> None:
+    candidate, root, _ = _manager_candidate_fixture(tmp_path)
+    candidate[field] = replacement
+    with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
+        AUTHORITY._candidate_planned_source_identities(  # noqa: SLF001
+            candidate,
+            directory=Path(str(candidate["target_campaign_dir"])),
+            root=root,
+        )
+    assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
+    assert exc_info.value.detail == "candidate planned source binding"
+
+
+def test_history_freeze_candidate_rejects_resealed_alternate_live_path(
+    tmp_path: Path,
+) -> None:
+    candidate, root, _ = _manager_candidate_fixture(tmp_path)
+    planned = candidate["planned_source_identities"]
+    original = planned["input.history_freeze_manifest"]
+    alternate_path = tmp_path / "alternate/history-freeze-manifest.json"
+    _regular(
+        alternate_path,
+        Path(str(original["path"])).read_bytes(),
+        mode=int(original["mode"]),
+    )
+    planned["input.history_freeze_manifest"] = _full(alternate_path)
+    candidate["planned_source_set_digest"] = hashlib.sha256(
+        AUTHORITY.canonical_json(planned)
+    ).hexdigest()
+    without_id = dict(candidate)
+    without_id.pop("candidate_id")
+    candidate["candidate_id"] = hashlib.sha256(
+        AUTHORITY.canonical_json(without_id)
+    ).hexdigest()
+
+    with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
+        AUTHORITY._candidate_planned_source_identities(  # noqa: SLF001
+            candidate,
+            directory=Path(str(candidate["target_campaign_dir"])),
+            root=root,
+        )
+    assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
+    assert exc_info.value.detail == "candidate planned source binding input.history_freeze_manifest"
+
+
+def test_manager_attestor_source_join_rejects_live_replacement(
+    tmp_path: Path,
+) -> None:
+    root, selected, staged, packaged, planned = _manager_source_join_fixture(tmp_path)
+    live = Path(str(planned["path"]))
+    live.chmod(0o644)
+    live.write_bytes(b"# replaced live manager attestor\n")
+
+    with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
+        AUTHORITY._validate_manager_attestor_source_join(  # noqa: SLF001
+            root=root,
+            selected=selected,
+            source_identity=staged,
+            packaged_identity=packaged,
+            planned_identity=planned,
+        )
+    assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
+    assert exc_info.value.detail == "source join manager_attestor_v4"
+
+
+def test_history_freeze_source_join_accepts_only_candidate_bound_live_path(
+    tmp_path: Path,
+) -> None:
+    candidate, root, _ = _manager_candidate_fixture(tmp_path)
+    planned = AUTHORITY._candidate_planned_source_identities(  # noqa: SLF001
+        candidate,
+        directory=Path(str(candidate["target_campaign_dir"])),
+        root=root,
+    )["input.history_freeze_manifest"]
+    selected = {
+        field: planned[field]
+        for field in ("path", "sha256", "size_bytes")
+    }
+    staged = {
+        "path": str(tmp_path / "staging/input.history_freeze_manifest"),
+        "sha256": planned["sha256"],
+        "size_bytes": planned["size_bytes"],
+    }
+    packaged = {
+        "path": str(tmp_path / "package/payload/input.history_freeze_manifest.json"),
+        "sha256": planned["sha256"],
+        "size_bytes": planned["size_bytes"],
+    }
+
+    AUTHORITY._validate_live_planned_source_join(  # noqa: SLF001
+        root_role="history_freeze_manifest",
+        selected=selected,
+        source_identity=staged,
+        packaged_identity=packaged,
+        planned_identity=planned,
+    )
+    selected["path"] = str(tmp_path / "alternate/history-freeze.json")
+    with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
+        AUTHORITY._validate_live_planned_source_join(  # noqa: SLF001
+            root_role="history_freeze_manifest",
+            selected=selected,
+            source_identity=staged,
+            packaged_identity=packaged,
+            planned_identity=planned,
+        )
+    assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
+    assert exc_info.value.detail == "source join history_freeze_manifest"
+
+
 def test_gate_a_evidence_mutation_fails_before_campaign_creation(
     tmp_path: Path,
 ) -> None:

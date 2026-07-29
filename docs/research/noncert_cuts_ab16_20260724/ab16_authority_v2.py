@@ -1057,7 +1057,237 @@ def _replay_repository_snapshot(
     }
 
 
+def _candidate_planned_source_roles() -> set[str]:
+    roles = {
+        "script.campaign_authority_v4",
+        *(
+            f"script.{role.removeprefix('tool.').removesuffix('.py')}"
+            for role in REQUIRED_PACKAGE_ROLES
+            if role.startswith("tool.") and role.endswith(".py")
+        ),
+        *(
+            f"system.{role.removeprefix('system.').removesuffix('.bin')}"
+            for role in REQUIRED_PACKAGE_ROLES
+            if role.startswith("system.") and role.endswith(".bin")
+        ),
+        *(
+            f"input.{role}"
+            for role in (
+                "candidate_placements",
+                "canonical_rules",
+                "cuts_mandatory_schedule",
+                "history_freeze_manifest",
+                "legacy_control_a002",
+                "mandatory_instances",
+                "preflight_gate",
+                "project_lock",
+            )
+        ),
+    }
+    return roles
+
+
+def _validate_candidate_planned_identity(
+    value: object,
+    *,
+    role: str,
+) -> Mapping[str, Any]:
+    expected_keys = {
+        "device",
+        "inode",
+        "mode",
+        "mode_octal",
+        "path",
+        "sha256",
+        "size_bytes",
+    }
+    if role.startswith("system."):
+        expected_keys.add("requested_path")
+    identity = _exact_keys(value, expected_keys, f"candidate planned source {role}")
+    if (
+        type(identity["device"]) is not int
+        or identity["device"] < 0
+        or type(identity["inode"]) is not int
+        or identity["inode"] < 0
+        or type(identity["mode"]) is not int
+        or not 0 <= identity["mode"] <= 0o7777
+        or type(identity["mode_octal"]) is not str
+        or identity["mode_octal"] != f"{identity['mode']:04o}"
+        or type(identity["path"]) is not str
+        or not Path(identity["path"]).is_absolute()
+        or _absolute(identity["path"]) != Path(identity["path"])
+        or type(identity["sha256"]) is not str
+        or SHA256_RE.fullmatch(identity["sha256"]) is None
+        or type(identity["size_bytes"]) is not int
+        or identity["size_bytes"] < 0
+        or (
+            role.startswith("system.")
+            and (
+                type(identity["requested_path"]) is not str
+                or not Path(identity["requested_path"]).is_absolute()
+                or _absolute(identity["requested_path"]) != Path(identity["requested_path"])
+            )
+        )
+    ):
+        raise AuthorityError("CAMPAIGN_ROOT_INVALID", f"candidate planned source {role}")
+    return identity
+
+
+def _candidate_planned_source_identities(
+    candidate: object,
+    *,
+    directory: Path,
+    root: Mapping[str, Any],
+) -> Mapping[str, Mapping[str, Any]]:
+    expected_keys = set(
+        "arm_launch_authorized candidate_id candidate_only created_at_utc formal_campaign_creation_authorized "
+        "gate_a_receipt_identity path_preregistration_identity planned_source_identities "
+        "planned_source_set_digest purpose repository_head repository_root run_nonce schema_version "
+        "target_campaign_dir".split()
+    )
+    record = _exact_keys(candidate, expected_keys, "AB16 offline candidate")
+    planned = _exact_keys(
+        record["planned_source_identities"],
+        _candidate_planned_source_roles(),
+        "candidate planned source identities",
+    )
+    for role, identity in planned.items():
+        _validate_candidate_planned_identity(identity, role=role)
+    candidate_without_id = dict(record)
+    candidate_without_id.pop("candidate_id")
+    repository_root = record["repository_root"]
+    target_campaign_dir = record["target_campaign_dir"]
+    if (
+        record["schema_version"] != "noncert-cuts-ab16-bootstrap-offline-candidate-v2"
+        or record["purpose"] != "AB16_OFFLINE_NONAUTHORIZING_CANDIDATE"
+        or record["candidate_only"] is not True
+        or record["formal_campaign_creation_authorized"] is not False
+        or record["arm_launch_authorized"] is not False
+        or type(record["candidate_id"]) is not str
+        or record["candidate_id"] != hashlib.sha256(canonical_json(candidate_without_id)).hexdigest()
+        or record["planned_source_set_digest"] != hashlib.sha256(canonical_json(planned)).hexdigest()
+        or type(repository_root) is not str
+        or not Path(repository_root).is_absolute()
+        or _absolute(repository_root) != Path(repository_root)
+        or type(target_campaign_dir) is not str
+        or not Path(target_campaign_dir).is_absolute()
+        or _absolute(target_campaign_dir) != Path(target_campaign_dir)
+        or _absolute(target_campaign_dir) != directory
+        or record["repository_head"] != root.get("repository_head")
+        or record["run_nonce"] != root.get("run_nonce")
+        or Path(target_campaign_dir).name != root.get("run_nonce")
+    ):
+        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "candidate planned source binding")
+    expected_live_bindings = {
+        "script.manager_attestor_v4": (
+            Path(repository_root)
+            / "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724/manager_attestor_v4.py",
+            0o644,
+        ),
+        "input.history_freeze_manifest": (
+            Path(repository_root)
+            / ".artifacts/noncert_cuts_ab16_20260724/"
+            "gate-a-terminal-reference-history-freeze-a001/manifest.json",
+            0o400,
+        ),
+    }
+    for role, (expected_path, expected_mode) in expected_live_bindings.items():
+        if (
+            planned[role]["path"] != str(expected_path)
+            or planned[role]["mode"] != expected_mode
+        ):
+            raise AuthorityError("CAMPAIGN_ROOT_INVALID", f"candidate planned source binding {role}")
+    return planned
+
+
+def _validate_live_planned_source_join(
+    *,
+    root_role: str,
+    selected: object,
+    source_identity: Mapping[str, Any],
+    packaged_identity: Mapping[str, Any],
+    planned_identity: Mapping[str, Any],
+) -> None:
+    try:
+        selected_identity = _exact_keys(
+            selected,
+            {"path", "sha256", "size_bytes"},
+            f"root {root_role}",
+        )
+        current = snapshot_regular(planned_identity["path"])
+    except (KeyError, TypeError, AuthorityError) as exc:
+        raise AuthorityError("CAMPAIGN_ROOT_INVALID", f"source join {root_role}") from exc
+    detached_planned = {
+        field: planned_identity[field]
+        for field in ("path", "sha256", "size_bytes")
+    }
+    current_full = full_identity(current)
+    planned_full = {
+        field: planned_identity[field]
+        for field in ("device", "inode", "mode", "path", "sha256", "size_bytes")
+    }
+    if (
+        selected_identity != detached_planned
+        or current_full != planned_full
+        or planned_identity["mode_octal"] != f"{current.mode:04o}"
+        or source_identity["sha256"] != selected_identity["sha256"]
+        or source_identity["size_bytes"] != selected_identity["size_bytes"]
+        or packaged_identity["sha256"] != selected_identity["sha256"]
+        or packaged_identity["size_bytes"] != selected_identity["size_bytes"]
+    ):
+        raise AuthorityError("CAMPAIGN_ROOT_INVALID", f"source join {root_role}")
+
+
+def _validate_manager_attestor_source_join(
+    *,
+    root: Mapping[str, Any],
+    selected: object,
+    source_identity: Mapping[str, Any],
+    packaged_identity: Mapping[str, Any],
+    planned_identity: Mapping[str, Any],
+) -> None:
+    _validate_live_planned_source_join(
+        root_role="manager_attestor_v4",
+        selected=selected,
+        source_identity=source_identity,
+        packaged_identity=packaged_identity,
+        planned_identity=planned_identity,
+    )
+    try:
+        epoch_attestor = _exact_keys(
+            root["manager_epoch"]["attestation_toolchain"]["attestor"],
+            {
+                "device",
+                "inode",
+                "mode",
+                "mode_octal",
+                "path",
+                "requested_path",
+                "sha256",
+                "size_bytes",
+            },
+            "manager epoch attestor",
+        )
+    except (KeyError, TypeError, AuthorityError) as exc:
+        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "source join manager_attestor_v4") from exc
+    planned_full = {
+        field: planned_identity[field]
+        for field in ("device", "inode", "mode", "path", "sha256", "size_bytes")
+    }
+    epoch_full = {
+        field: epoch_attestor[field]
+        for field in ("device", "inode", "mode", "path", "sha256", "size_bytes")
+    }
+    if (
+        epoch_full != planned_full
+        or epoch_attestor["mode_octal"] != planned_identity["mode_octal"]
+        or epoch_attestor["requested_path"] != planned_identity["path"]
+    ):
+        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "source join manager_attestor_v4")
+
+
 def _validate_root_source_joins(
+    directory: Path,
     root: Mapping[str, Any],
     files: Mapping[str, Snapshot],
     sources: Mapping[str, Mapping[str, Any]],
@@ -1163,11 +1393,41 @@ def _validate_root_source_joins(
         "project_lock": "PROJECT_LOCK.md",
     }
     materialized = repository_snapshot["member_identities"]
+    try:
+        candidate = _record(
+            _source_snapshot(files, sources, "input.ab16_offline_candidate.json"),
+            "AB16 offline candidate",
+        )
+        planned_sources = _candidate_planned_source_identities(
+            candidate,
+            directory=directory,
+            root=root,
+        )
+    except (KeyError, TypeError, AuthorityError) as exc:
+        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "candidate planned source joins") from exc
     for root_role, package_role in {**script_roles, **input_roles}.items():
         group = tools if root_role in script_roles else inputs
         selected = group[root_role]
         source_identity = _detached_from_source(sources[package_role]["source_identity"])
         packaged_identity = detached_identity(files[sources[package_role]["package_path"]])
+        if root_role == "manager_attestor_v4":
+            _validate_manager_attestor_source_join(
+                root=root,
+                selected=selected,
+                source_identity=source_identity,
+                packaged_identity=packaged_identity,
+                planned_identity=planned_sources["script.manager_attestor_v4"],
+            )
+            continue
+        if root_role == "history_freeze_manifest":
+            _validate_live_planned_source_join(
+                root_role=root_role,
+                selected=selected,
+                source_identity=source_identity,
+                packaged_identity=packaged_identity,
+                planned_identity=planned_sources["input.history_freeze_manifest"],
+            )
+            continue
         allowed = [source_identity, packaged_identity]
         if root_role in snapshot_paths:
             expected_snapshot = materialized.get(snapshot_paths[root_role])
@@ -1228,7 +1488,24 @@ def _campaign_context(campaign_dir: Path | str) -> dict[str, object]:
         files=files,
         sources=sources,
     )
-    _validate_root_source_joins(root, files, sources, repository_snapshot)
+    context: dict[str, object] = {
+        "campaign_module": campaign_tool,
+        "directory": directory,
+        "files": files,
+        "package_manifest": package_manifest,
+        "root": root,
+        "root_identity": detached_identity(root_snapshot),
+        "repository_snapshot": repository_snapshot,
+        "sources": sources,
+    }
+    _validate_gate_approvals(context)
+    _validate_root_source_joins(
+        directory,
+        root,
+        files,
+        sources,
+        repository_snapshot,
+    )
     gate = root["stage_topology"]["gate1_v4"]
     positive = gate["positive_control"]
     required_positive = {
@@ -1239,16 +1516,7 @@ def _campaign_context(campaign_dir: Path | str) -> dict[str, object]:
     }
     if not required_positive <= set(positive):
         raise AuthorityError("CAMPAIGN_ROOT_INVALID", "common-prestate/bindings not preregistered")
-    return {
-        "campaign_module": campaign_tool,
-        "directory": directory,
-        "files": files,
-        "package_manifest": package_manifest,
-        "root": root,
-        "root_identity": detached_identity(root_snapshot),
-        "repository_snapshot": repository_snapshot,
-        "sources": sources,
-    }
+    return context
 
 
 def _repository_snapshot_barrier(context: Mapping[str, Any]) -> None:
