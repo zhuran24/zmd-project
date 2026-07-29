@@ -411,8 +411,6 @@ _TRACK_B_NODEID_GUARDS: dict[str, "callable[[], str | None]"] = {
     "test_noncert_cuts_ab16_campaign_bootstrap_v1.py::test_repository_head_executes_the_same_pinned_git_fd": _head_drifted_from_track_b_pin,
     "test_noncert_cuts_ab16_disposable_drill_authority_v1.py::test_serialized_planned_git_path_replays_real_repository_head": _head_drifted_from_track_b_pin,
     # artifact-absent: ab16 authority/gate-A replay reads .artifacts/noncert_cuts_ab16_20260724 bytes.
-    "test_noncert_cuts_ab16_disposable_drill_authority_v2.py::test_v2_authority_rejects_source_and_receipt_mutation": _missing_noncert_cuts_ab16_artifacts,
-    "test_noncert_cuts_ab16_disposable_drill_authority_v2.py::test_v2_authority_seals_exact_surface_and_never_authorizes_formal_use": _missing_noncert_cuts_ab16_artifacts,
     "test_noncert_cuts_ab16_gate_a_validation_v2.py::test_successful_full_preflight_finalizes_only_nonauthorizing_gate_a": _missing_noncert_cuts_ab16_artifacts,
     # artifact-absent: positive-control closeout replays .artifacts/noncert_cuts_ab_trust_20260723 bytes.
     "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_complete_history_manifest_replays_all_v1_bytes": _missing_noncert_cuts_ab_trust_artifacts,

@@ -74,6 +74,77 @@ def _git_fixture(tmp_path: Path) -> tuple[Path, dict[str, object]]:
     return target, AUTH.snapshot_tool(target)[1]
 
 
+def test_v2_campaign_root_retains_external_history_manifest_identity(
+    tmp_path: Path,
+) -> None:
+    repository = tmp_path / "repository"
+    internal = _write(repository / "rules/strict.json", b"strict\n")
+    history = _write(tmp_path / "history/manifest.json", b"history\n")
+    packaged_internal = _write(tmp_path / "package/internal.json", internal.read_bytes())
+    packaged_history = _write(tmp_path / "package/history.json", history.read_bytes())
+    materialized_internal = _write(
+        tmp_path / "snapshot/rules/strict.json",
+        internal.read_bytes(),
+    )
+    planned = {
+        "input.canonical_rules": AUTH_V2.full_identity(
+            AUTH_V2.snapshot_regular(internal)
+        ),
+        "input.history_freeze_manifest": AUTH_V2.full_identity(
+            AUTH_V2.snapshot_regular(history)
+        ),
+    }
+    packaged = {
+        "canonical_rules": AUTH_V2.detached_identity(
+            AUTH_V2.snapshot_regular(packaged_internal)
+        ),
+        "history_freeze_manifest": AUTH_V2.detached_identity(
+            AUTH_V2.snapshot_regular(packaged_history)
+        ),
+    }
+    snapshot = {
+        "rules/strict.json": AUTH_V2.detached_identity(
+            AUTH_V2.snapshot_regular(materialized_internal)
+        ),
+    }
+
+    selected = BOOTSTRAP_V2._select_root_strict_input_identities(  # noqa: SLF001
+        repository=repository,
+        strict_paths={
+            "canonical_rules": internal,
+            "history_freeze_manifest": history,
+        },
+        planned=planned,
+        packaged_inputs=packaged,
+        snapshot_identities=snapshot,
+    )
+
+    assert selected["canonical_rules"] == snapshot["rules/strict.json"]
+    assert selected["history_freeze_manifest"] == (
+        BOOTSTRAP_V2._detached_from_full(  # noqa: SLF001
+            planned["input.history_freeze_manifest"]
+        )
+    )
+    assert (
+        selected["history_freeze_manifest"]["path"] == str(history)
+        != packaged["history_freeze_manifest"]["path"]
+    )
+
+    bad_packaged = copy.deepcopy(packaged)
+    bad_packaged["history_freeze_manifest"]["sha256"] = "0" * 64
+    with pytest.raises(
+        BOOTSTRAP_V2.BootstrapError,
+        match="packaged history-freeze manifest differs",
+    ):
+        BOOTSTRAP_V2._select_root_strict_input_identities(  # noqa: SLF001
+            repository=repository,
+            strict_paths={"history_freeze_manifest": history},
+            planned=planned,
+            packaged_inputs=bad_packaged,
+            snapshot_identities=snapshot,
+        )
+
+
 def test_repository_head_executes_the_same_pinned_git_fd(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

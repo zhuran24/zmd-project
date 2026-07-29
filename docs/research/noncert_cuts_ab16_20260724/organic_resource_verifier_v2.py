@@ -11,16 +11,17 @@ Importing this module never starts a subprocess, unit, or solver.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 import hashlib
 import json
 import math
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import stat
+import subprocess
 import sys
 from types import ModuleType
 from typing import Any
@@ -43,6 +44,33 @@ CLEANUP_SCHEMA = "noncert-cuts-ab16-cleanup-v2"
 DETACHED_SCHEMA = "noncert-cuts-ab16-detached-resource-terminal-v2"
 REFERENCE_ACQUISITION_SCHEMA = "noncert-cuts-ab16-unit-reference-acquisition-v1"
 REFERENCE_RELEASE_SCHEMA = "noncert-cuts-ab16-unit-reference-release-v1"
+HISTORY_FREEZE_SCHEMA = "noncert-cuts-ab16-terminal-reference-history-freeze-v1"
+HISTORY_REPLAY_SCHEMA = "noncert-cuts-ab16-terminal-reference-history-replay-v2"
+HISTORY_FREEZE_PURPOSE = "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE"
+HISTORY_REPLAY_PURPOSE = "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_REPLAY"
+HISTORY_FREEZE_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
+HISTORY_FREEZE_MANIFEST_SHA256 = (
+    "f1a2edd604f06cb958258ea5bfcb3cc8a7ad154cbce184cd73e6a9b15302f619"
+)
+HISTORY_FREEZE_MANIFEST_SIZE = 15_584
+HISTORY_FREEZE_MANIFEST_MODE = 0o400
+HISTORY_REPOSITORY_ROOT = Path(
+    "/home/zhuran24/zmd-pj-codex-baselines/noncert-cuts-ab-trust-20260723"
+)
+HISTORY_FREEZE_MANIFEST_PATH = (
+    HISTORY_REPOSITORY_ROOT
+    / ".artifacts/noncert_cuts_ab16_20260724/"
+    "gate-a-terminal-reference-history-freeze-a001/manifest.json"
+)
+HISTORY_SOURCE_COMMIT = "c0a4aa717ccb3f1dbc7cd26a581934c47b7a14eb"
+HISTORY_SOURCE_TREE = "1bae4f350bfdb1d7b51058cad0849c27af71b4c9"
+HISTORY_SOURCE_GLOB = "docs/research/noncert_cuts_ab16_20260724/*_v1.py"
+HISTORY_ARTIFACT_COUNT = 53
+HISTORY_SOURCE_COUNT = 14
+HISTORY_FROZEN_ROOTS = (
+    ".artifacts/noncert_cuts_ab16_20260724/gate-a-20260724T043946Z-XBW4l8",
+    ".artifacts/noncert_cuts_ab16_20260724/gate-a-recovery-20260724T045351Z-mgZ1wQ",
+)
 
 PURPOSE = "PROSPECTIVE_AB16_ORGANIC_ARM_RESOURCE_AUTHORITY"
 PRE_RUN_PURPOSE = "PROSPECTIVE_AB16_ORGANIC_ARM_PRE_RUN_AUTHORITY"
@@ -556,6 +584,459 @@ def _replay_identity(
     return projected
 
 
+def _history_stat_signature(value: os.stat_result) -> tuple[int, ...]:
+    return (
+        value.st_dev,
+        value.st_ino,
+        value.st_mode,
+        value.st_nlink,
+        value.st_size,
+        value.st_mtime_ns,
+        value.st_ctime_ns,
+    )
+
+
+def _close_history_descriptors(
+    descriptors: Sequence[int | None],
+    *,
+    suppress_errors: bool,
+) -> None:
+    first_error: BaseException | None = None
+    for descriptor in descriptors:
+        if descriptor is None:
+            continue
+        try:
+            os.close(descriptor)
+        except BaseException as exc:
+            if first_error is None:
+                first_error = exc
+    if first_error is not None and not suppress_errors:
+        if isinstance(first_error, OSError):
+            raise VerificationError("history replay descriptor close failed") from first_error
+        raise first_error
+
+
+def _read_history_git_descriptor(
+    descriptor: int,
+    *,
+    label: str,
+) -> tuple[bytes, os.stat_result]:
+    try:
+        os.lseek(descriptor, 0, os.SEEK_SET)
+        before = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(before.st_mode)
+            or before.st_nlink != 1
+            or before.st_size <= 0
+            or before.st_size > MAX_TOOL_BYTES
+        ):
+            raise VerificationError(f"{label} is not one bounded singly linked executable")
+        chunks: list[bytes] = []
+        remaining = before.st_size
+        while remaining:
+            chunk = os.read(descriptor, min(1024 * 1024, remaining))
+            if not chunk:
+                raise VerificationError(f"{label} was truncated during same-FD read")
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        if os.read(descriptor, 1):
+            raise VerificationError(f"{label} grew during same-FD read")
+        after = os.fstat(descriptor)
+    except OSError as exc:
+        raise VerificationError(f"{label} same-FD read failed") from exc
+    if _history_stat_signature(before) != _history_stat_signature(after):
+        raise VerificationError(f"{label} changed during same-FD read")
+    raw = b"".join(chunks)
+    if len(raw) != after.st_size:
+        raise VerificationError(f"{label} byte count drifted")
+    return raw, after
+
+
+def _run_history_git(
+    *,
+    repository_root: Path,
+    git_identity: Mapping[str, Any],
+    arguments: Sequence[str],
+    input_bytes: bytes | None = None,
+    output_limit: int = 64 << 20,
+) -> bytes:
+    """Run one bounded query through the exact pre-run Git executable FD."""
+
+    expected = dict(
+        _identity(
+            git_identity,
+            "history replay Git identity",
+            mode_required=True,
+        )
+    )
+    git_path = Path(str(expected["path"]))
+    if (
+        not git_path.is_absolute()
+        or Path(os.path.abspath(git_path)) != git_path
+        or not arguments
+        or any(type(argument) is not str or not argument or "\0" in argument for argument in arguments)
+        or type(output_limit) is not int
+        or output_limit < 0
+        or (input_bytes is not None and (type(input_bytes) is not bytes or len(input_bytes) > 1 << 20))
+    ):
+        raise VerificationError("history replay Git request is malformed")
+    absolute, parent_descriptor, leaf = _open_parent_dirfd(git_path)
+    descriptor: int | None = None
+    completed: subprocess.CompletedProcess[bytes]
+    try:
+        descriptor = os.open(
+            leaf,
+            os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0),
+            dir_fd=parent_descriptor,
+        )
+        before_raw, before = _read_history_git_descriptor(
+            descriptor,
+            label="history replay Git",
+        )
+        observed = {
+            "mode": stat.S_IMODE(before.st_mode),
+            "path": str(absolute),
+            "sha256": hashlib.sha256(before_raw).hexdigest(),
+            "size_bytes": len(before_raw),
+        }
+        if observed != expected:
+            raise VerificationError("history replay Git identity drifted")
+        environment = {
+            "GIT_CONFIG_COUNT": "0",
+            "GIT_CONFIG_NOSYSTEM": "1",
+            "GIT_NO_REPLACE_OBJECTS": "1",
+            "GIT_OPTIONAL_LOCKS": "0",
+            "HOME": "/nonexistent",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "PATH": "/usr/bin",
+        }
+        completed = subprocess.run(
+            [
+                "git",
+                "--no-replace-objects",
+                "-C",
+                str(repository_root),
+                *arguments,
+            ],
+            check=False,
+            close_fds=True,
+            env=environment,
+            executable=f"/proc/self/fd/{descriptor}",
+            input=input_bytes,
+            pass_fds=(descriptor,),
+            stdin=None if input_bytes is not None else subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+        )
+        try:
+            current_path = os.stat(
+                leaf,
+                dir_fd=parent_descriptor,
+                follow_symlinks=False,
+            )
+        except OSError as exc:
+            raise VerificationError("history replay Git path disappeared") from exc
+        after_raw, after = _read_history_git_descriptor(
+            descriptor,
+            label="history replay Git",
+        )
+        if (
+            _history_stat_signature(current_path) != _history_stat_signature(before)
+            or _history_stat_signature(after) != _history_stat_signature(before)
+            or after_raw != before_raw
+        ):
+            raise VerificationError("history replay Git path or bytes changed during execution")
+    except BaseException as exc:
+        _close_history_descriptors(
+            (descriptor, parent_descriptor),
+            suppress_errors=True,
+        )
+        if isinstance(exc, (OSError, subprocess.TimeoutExpired)):
+            raise VerificationError("history replay Git execution failed closed") from exc
+        raise
+    else:
+        _close_history_descriptors(
+            (descriptor, parent_descriptor),
+            suppress_errors=False,
+        )
+    if completed.returncode != 0 or completed.stderr or len(completed.stdout) > output_limit:
+        raise VerificationError(
+            "history replay Git query failed closed: "
+            f"{tuple(arguments)!r}; exit={completed.returncode}"
+        )
+    return completed.stdout
+
+
+def _open_history_alternates_guard(
+    *,
+    repository_root: Path,
+    git_identity: Mapping[str, Any],
+) -> tuple[int, str, tuple[int, ...]]:
+    raw_path = _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=(
+            "rev-parse",
+            "--path-format=absolute",
+            "--git-path",
+            "objects/info/alternates",
+        ),
+        output_limit=4096,
+    )
+    if not raw_path.endswith(b"\n") or raw_path.count(b"\n") != 1:
+        raise VerificationError("history replay Git alternates path is malformed")
+    try:
+        serialized = raw_path[:-1].decode("utf-8", "strict")
+    except UnicodeDecodeError as exc:
+        raise VerificationError("history replay Git alternates path is not UTF-8") from exc
+    path = Path(serialized)
+    if (
+        not path.is_absolute()
+        or Path(os.path.abspath(path)) != path
+        or path.parts[-3:] != ("objects", "info", "alternates")
+    ):
+        raise VerificationError("history replay Git alternates path escaped")
+    _absolute, parent_descriptor, leaf = _open_parent_dirfd(path)
+    try:
+        signature = _history_stat_signature(os.fstat(parent_descriptor))
+    except BaseException as exc:
+        _close_history_descriptors(
+            (parent_descriptor,),
+            suppress_errors=True,
+        )
+        if isinstance(exc, OSError):
+            raise VerificationError("history replay Git alternates guard open failed") from exc
+        raise
+    return parent_descriptor, leaf, signature
+
+
+def _assert_history_alternates_absent(
+    parent_descriptor: int,
+    leaf: str,
+) -> None:
+    try:
+        os.stat(
+            leaf,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+    except FileNotFoundError:
+        return
+    except OSError as exc:
+        raise VerificationError("history replay Git alternates path check failed") from exc
+    raise VerificationError("history replay Git objects/info/alternates is forbidden")
+
+
+def _history_source_records(
+    *,
+    repository_root: Path,
+    git_identity: Mapping[str, Any],
+    manifest_head: str,
+    current_head: str,
+    source_members: Mapping[str, Mapping[str, Any]],
+) -> tuple[str, list[dict[str, object]]]:
+    if (
+        repository_root != HISTORY_REPOSITORY_ROOT
+        or manifest_head != HISTORY_FREEZE_HEAD
+        or type(current_head) is not str
+        or GIT_SHA_RE.fullmatch(current_head) is None
+        or len(source_members) != HISTORY_SOURCE_COUNT
+    ):
+        raise VerificationError("history source replay context drifted")
+    alternates_descriptor, alternates_leaf, alternates_signature = _open_history_alternates_guard(
+        repository_root=repository_root,
+        git_identity=git_identity,
+    )
+    try:
+        _assert_history_alternates_absent(
+            alternates_descriptor,
+            alternates_leaf,
+        )
+        observed_head = _run_history_git(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            arguments=("rev-parse", "--verify", "HEAD^{commit}"),
+            output_limit=128,
+        )
+        observed_source = _run_history_git(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            arguments=(
+                "rev-parse",
+                "--verify",
+                f"{HISTORY_SOURCE_COMMIT}^{{commit}}",
+            ),
+            output_limit=128,
+        )
+        parents = _run_history_git(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            arguments=(
+                "rev-list",
+                "--parents",
+                "--max-count=1",
+                HISTORY_SOURCE_COMMIT,
+            ),
+            output_limit=256,
+        )
+        tree = _run_history_git(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            arguments=(
+                "rev-parse",
+                "--verify",
+                f"{HISTORY_SOURCE_COMMIT}^{{tree}}",
+            ),
+            output_limit=128,
+        )
+        if observed_head != f"{current_head}\n".encode("ascii"):
+            raise VerificationError("history replay current HEAD identity drifted")
+        if observed_source != f"{HISTORY_SOURCE_COMMIT}\n".encode("ascii"):
+            raise VerificationError("history source archival commit identity drifted")
+        if parents != f"{HISTORY_SOURCE_COMMIT} {manifest_head}\n".encode("ascii"):
+            raise VerificationError("history source archival parent identity drifted")
+        if tree != f"{HISTORY_SOURCE_TREE}\n".encode("ascii"):
+            raise VerificationError("history source archival tree identity drifted")
+        _run_history_git(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            arguments=(
+                "merge-base",
+                "--is-ancestor",
+                HISTORY_SOURCE_COMMIT,
+                current_head,
+            ),
+            output_limit=0,
+        )
+
+        ordered_paths = sorted(source_members, key=lambda value: value.encode("utf-8"))
+        tree_raw = _run_history_git(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            arguments=(
+                "ls-tree",
+                "-rz",
+                "-r",
+                "--full-tree",
+                HISTORY_SOURCE_COMMIT,
+                *ordered_paths,
+            ),
+        )
+        tree_records: dict[str, tuple[str, str]] = {}
+        for raw_record in tree_raw.split(b"\0"):
+            if not raw_record:
+                continue
+            try:
+                metadata, raw_path = raw_record.split(b"\t", 1)
+                mode_raw, object_type, oid_raw = metadata.split(b" ")
+                path = raw_path.decode("utf-8", "strict")
+                mode = mode_raw.decode("ascii", "strict")
+                oid = oid_raw.decode("ascii", "strict")
+            except (UnicodeDecodeError, ValueError) as exc:
+                raise VerificationError("history source Git tree record is malformed") from exc
+            if (
+                path in tree_records
+                or path not in source_members
+                or object_type != b"blob"
+                or mode not in {"100644", "100755"}
+                or GIT_SHA_RE.fullmatch(oid) is None
+            ):
+                raise VerificationError("history source Git tree membership drifted")
+            tree_records[path] = (mode, oid)
+        if set(tree_records) != set(source_members):
+            raise VerificationError("history source Git tree path set drifted")
+
+        batch_input = b"".join(
+            f"{tree_records[path][1]}\n".encode("ascii")
+            for path in ordered_paths
+        )
+        batch = _run_history_git(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            arguments=("cat-file", "--batch"),
+            input_bytes=batch_input,
+        )
+        offset = 0
+        records: list[dict[str, object]] = []
+        for path in ordered_paths:
+            mode, expected_oid = tree_records[path]
+            newline = batch.find(b"\n", offset)
+            if newline < 0:
+                raise VerificationError("history source Git blob header is truncated")
+            header = batch[offset:newline].split(b" ")
+            if len(header) != 3 or header[1] != b"blob":
+                raise VerificationError("history source Git blob header drifted")
+            try:
+                oid = header[0].decode("ascii", "strict")
+                size = int(header[2])
+            except (UnicodeDecodeError, ValueError) as exc:
+                raise VerificationError("history source Git blob header is malformed") from exc
+            start = newline + 1
+            end = start + size
+            if (
+                oid != expected_oid
+                or GIT_SHA_RE.fullmatch(oid) is None
+                or size < 0
+                or end >= len(batch)
+                or batch[end : end + 1] != b"\n"
+            ):
+                raise VerificationError("history source Git blob framing drifted")
+            raw = batch[start:end]
+            offset = end + 1
+            member = source_members[path]
+            expected_mode = 0o755 if mode == "100755" else 0o644
+            digest = hashlib.sha256(raw).hexdigest()
+            if (
+                member["mode"] != expected_mode
+                or member["sha256"] != digest
+                or member["size_bytes"] != len(raw)
+            ):
+                raise VerificationError("history source Git blob identity drifted")
+            records.append(
+                {
+                    "git_blob_oid": oid,
+                    "git_mode": mode,
+                    "mode": expected_mode,
+                    "path": path,
+                    "sha256": digest,
+                    "size_bytes": len(raw),
+                }
+            )
+        if offset != len(batch):
+            raise VerificationError("history source Git blob batch has trailing bytes")
+        final_head = _run_history_git(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            arguments=("rev-parse", "--verify", "HEAD^{commit}"),
+            output_limit=128,
+        )
+        if final_head != observed_head:
+            raise VerificationError("history replay repository HEAD changed during replay")
+        _assert_history_alternates_absent(
+            alternates_descriptor,
+            alternates_leaf,
+        )
+        if _history_stat_signature(os.fstat(alternates_descriptor)) != alternates_signature:
+            raise VerificationError("history replay Git objects/info directory changed")
+    except BaseException:
+        _close_history_descriptors(
+            (alternates_descriptor,),
+            suppress_errors=True,
+        )
+        raise
+    else:
+        _close_history_descriptors(
+            (alternates_descriptor,),
+            suppress_errors=False,
+        )
+    member_digest = hashlib.sha256(
+        canonical_json_bytes(records) + b"\n"
+    ).hexdigest()
+    return member_digest, records
+
+
 def _replay_history_freeze(
     *,
     pre_run: Mapping[str, Any],
@@ -574,11 +1055,14 @@ def _replay_history_freeze(
     receipt_record = _keys(
         receipt.value,
         {
+            "artifact_file_count",
             "authorizations",
             "file_count",
             "manifest_identity",
             "purpose",
             "schema_version",
+            "source_file_count",
+            "source_materialization",
             "status",
             "verdict",
         },
@@ -597,25 +1081,60 @@ def _replay_history_freeze(
         "history freeze manifest identity",
         mode_required=True,
     )
+    source_materialization = _keys(
+        receipt_record["source_materialization"],
+        {
+            "commit",
+            "file_count",
+            "manifest_head_parent",
+            "member_digest",
+            "tree",
+        },
+        "history freeze source materialization",
+    )
     expected_manifest_role = (
         "input.history_freeze_manifest"
         if pre_run["execution_class"] == "DISPOSABLE_LIVE_DRILL"
         else "history_freeze_manifest"
     )
-    expected_manifest = strict_inputs.get(expected_manifest_role)
+    expected_manifest = _identity(
+        strict_inputs.get(expected_manifest_role),
+        "history freeze strict input identity",
+        mode_required=True,
+    )
     if (
-        receipt_record["schema_version"] != "noncert-cuts-ab16-terminal-reference-history-replay-v1"
-        or receipt_record["purpose"] != "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_REPLAY"
+        receipt_record["schema_version"] != HISTORY_REPLAY_SCHEMA
+        or receipt_record["purpose"] != HISTORY_REPLAY_PURPOSE
         or receipt_record["status"] != "PASS"
         or receipt_record["verdict"] != "IMMUTABLE_FAILED_GATE_A_HISTORY_REPLAY_PASS"
+        or type(receipt_record["file_count"]) is not int
+        or receipt_record["file_count"] != HISTORY_ARTIFACT_COUNT + HISTORY_SOURCE_COUNT
+        or type(receipt_record["artifact_file_count"]) is not int
+        or receipt_record["artifact_file_count"] != HISTORY_ARTIFACT_COUNT
+        or type(receipt_record["source_file_count"]) is not int
+        or receipt_record["source_file_count"] != HISTORY_SOURCE_COUNT
         or authorizations
         != {
             "formal_campaign_creation_authorized": False,
             "organic_arm_launch_authorized": False,
         }
         or manifest_identity != expected_manifest
+        or source_materialization["commit"] != HISTORY_SOURCE_COMMIT
+        or type(source_materialization["file_count"]) is not int
+        or source_materialization["file_count"] != HISTORY_SOURCE_COUNT
+        or source_materialization["manifest_head_parent"] != HISTORY_FREEZE_HEAD
+        or type(source_materialization["member_digest"]) is not str
+        or SHA256_RE.fullmatch(source_materialization["member_digest"]) is None
+        or source_materialization["tree"] != HISTORY_SOURCE_TREE
     ):
         raise VerificationError("history freeze replay receipt semantics drifted")
+    if (
+        manifest_identity["mode"] != HISTORY_FREEZE_MANIFEST_MODE
+        or manifest_identity["path"] != str(HISTORY_FREEZE_MANIFEST_PATH)
+        or manifest_identity["sha256"] != HISTORY_FREEZE_MANIFEST_SHA256
+        or manifest_identity["size_bytes"] != HISTORY_FREEZE_MANIFEST_SIZE
+    ):
+        raise VerificationError("history freeze manifest fixed byte identity drifted")
     manifest_raw, observed_manifest = snapshot_bytes(manifest_identity["path"])
     if observed_manifest != manifest_identity:
         raise VerificationError("history freeze manifest identity drifted")
@@ -633,10 +1152,6 @@ def _replay_history_freeze(
             "purpose",
             "repository_head",
             "repository_root",
-            "live_source_provenance_root",
-            "sealed_snapshot_execution_root",
-            "snapshot_manifest_identity",
-            "snapshot_materialization_receipt_identity",
             "schema_version",
             "v1_source_glob",
         },
@@ -645,19 +1160,25 @@ def _replay_history_freeze(
     files = manifest_record["files"]
     file_count = receipt_record["file_count"]
     if (
-        manifest_record["schema_version"] != "noncert-cuts-ab16-terminal-reference-history-freeze-v1"
-        or manifest_record["purpose"] != "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE"
-        or manifest_record["repository_head"] != pre_run["repository_head"]
-        or manifest_record["repository_root"] != pre_run["repository_root"]
+        manifest_record["schema_version"] != HISTORY_FREEZE_SCHEMA
+        or manifest_record["purpose"] != HISTORY_FREEZE_PURPOSE
+        or manifest_record["repository_head"] != HISTORY_FREEZE_HEAD
+        or manifest_record["repository_root"] != str(HISTORY_REPOSITORY_ROOT)
+        or pre_run["repository_root"] != str(HISTORY_REPOSITORY_ROOT)
+        or type(pre_run["repository_head"]) is not str
+        or GIT_SHA_RE.fullmatch(pre_run["repository_head"]) is None
+        or manifest_record["frozen_roots"] != list(HISTORY_FROZEN_ROOTS)
+        or manifest_record["v1_source_glob"] != HISTORY_SOURCE_GLOB
         or type(files) is not list
         or type(file_count) is not int
-        or file_count <= 0
         or manifest_record["file_count"] != file_count
         or len(files) != file_count
     ):
         raise VerificationError("history freeze manifest semantics drifted")
-    repository_root = Path(pre_run["repository_root"])
+    repository_root = HISTORY_REPOSITORY_ROOT
     seen: set[str] = set()
+    artifact_members: dict[str, Mapping[str, Any]] = {}
+    source_members: dict[str, Mapping[str, Any]] = {}
     for raw_member in files:
         member = _keys(
             raw_member,
@@ -669,25 +1190,61 @@ def _replay_history_freeze(
             type(relative) is not str
             or not relative
             or relative in seen
-            or Path(relative).is_absolute()
-            or ".." in Path(relative).parts
+            or PurePosixPath(relative).is_absolute()
+            or PurePosixPath(relative).as_posix() != relative
+            or any(part in {"", ".", ".."} for part in PurePosixPath(relative).parts)
+            or type(member["mode"]) is not int
+            or member["mode"] < 0
+            or member["mode"] > 0o7777
+            or type(member["sha256"]) is not str
+            or SHA256_RE.fullmatch(member["sha256"]) is None
+            or type(member["size_bytes"]) is not int
+            or member["size_bytes"] < 0
         ):
             raise VerificationError("history freeze member path is invalid")
         seen.add(relative)
+        under_frozen = any(
+            relative == frozen_root or relative.startswith(f"{frozen_root}/")
+            for frozen_root in HISTORY_FROZEN_ROOTS
+        )
+        matches_source = PurePosixPath(relative).match(HISTORY_SOURCE_GLOB)
+        if under_frozen == matches_source:
+            raise VerificationError("history freeze member class is ambiguous")
+        if matches_source:
+            source_members[relative] = member
+            continue
+        artifact_members[relative] = member
         expected_member = {
             "mode": member["mode"],
             "path": str(repository_root / relative),
             "sha256": member["sha256"],
             "size_bytes": member["size_bytes"],
         }
-        _identity(
-            expected_member,
-            f"history freeze member {relative}",
-            mode_required=True,
-        )
-        _raw, observed = snapshot_bytes(expected_member["path"])
+        _raw, observed = snapshot_bytes(str(expected_member["path"]))
         if observed != expected_member:
-            raise VerificationError("history freeze member identity drifted")
+            raise VerificationError("history freeze artifact identity drifted")
+    if (
+        len(seen) != HISTORY_ARTIFACT_COUNT + HISTORY_SOURCE_COUNT
+        or len(artifact_members) != HISTORY_ARTIFACT_COUNT
+        or len(source_members) != HISTORY_SOURCE_COUNT
+    ):
+        raise VerificationError("history freeze member class counts drifted")
+    member_digest, source_records = _history_source_records(
+        repository_root=repository_root,
+        git_identity=_identity(
+            pre_run["repository_git_tool_identity"],
+            "history replay repository Git",
+            mode_required=True,
+        ),
+        manifest_head=manifest_record["repository_head"],
+        current_head=pre_run["repository_head"],
+        source_members=source_members,
+    )
+    if (
+        len(source_records) != HISTORY_SOURCE_COUNT
+        or source_materialization["member_digest"] != member_digest
+    ):
+        raise VerificationError("history freeze source materialization drifted")
 
 
 def _replay_drill_package(

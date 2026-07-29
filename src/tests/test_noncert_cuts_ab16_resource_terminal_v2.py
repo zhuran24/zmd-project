@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import base64
+from collections.abc import Iterator
 import copy
 import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 from types import ModuleType, SimpleNamespace
 from typing import Any, Mapping, Sequence
@@ -183,6 +186,295 @@ def _campaign_json(path: Path) -> Mapping[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     assert isinstance(value, dict)
     return value
+
+
+_VERIFIER_HISTORY_CONTRACT_NAMES = (
+    "HISTORY_FREEZE_HEAD",
+    "HISTORY_FREEZE_MANIFEST_MODE",
+    "HISTORY_FREEZE_MANIFEST_PATH",
+    "HISTORY_FREEZE_MANIFEST_SHA256",
+    "HISTORY_FREEZE_MANIFEST_SIZE",
+    "HISTORY_SOURCE_COMMIT",
+    "HISTORY_SOURCE_TREE",
+    "HISTORY_SOURCE_GLOB",
+    "HISTORY_ARTIFACT_COUNT",
+    "HISTORY_SOURCE_COUNT",
+    "HISTORY_REPOSITORY_ROOT",
+    "HISTORY_FROZEN_ROOTS",
+)
+
+
+@pytest.fixture(autouse=True)
+def _restore_verifier_history_contract() -> Iterator[None]:
+    original = {
+        name: getattr(VERIFIER, name)
+        for name in _VERIFIER_HISTORY_CONTRACT_NAMES
+    }
+    original_loader = getattr(ORCHESTRATOR, "_load_pinned_module")
+    try:
+        yield
+    finally:
+        for name, value in original.items():
+            setattr(VERIFIER, name, value)
+        setattr(ORCHESTRATOR, "_load_pinned_module", original_loader)
+
+
+def _run_fixture_git(
+    git_path: Path,
+    repository_root: Path,
+    *arguments: str,
+) -> bytes:
+    completed = subprocess.run(
+        [str(git_path), "-C", str(repository_root), *arguments],
+        check=False,
+        close_fds=True,
+        env={
+            "GIT_AUTHOR_DATE": "2000-01-01T00:00:00+0000",
+            "GIT_AUTHOR_EMAIL": "ab16-fixture@example.invalid",
+            "GIT_AUTHOR_NAME": "AB16 Fixture",
+            "GIT_COMMITTER_DATE": "2000-01-01T00:00:00+0000",
+            "GIT_COMMITTER_EMAIL": "ab16-fixture@example.invalid",
+            "GIT_COMMITTER_NAME": "AB16 Fixture",
+            "GIT_CONFIG_GLOBAL": "/dev/null",
+            "GIT_CONFIG_NOSYSTEM": "1",
+            "HOME": str(repository_root.parent / "git-home"),
+            "LANG": "C",
+            "LC_ALL": "C",
+            "PATH": "/usr/bin:/bin",
+            "TZ": "UTC",
+        },
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    assert completed.returncode == 0, (
+        arguments,
+        completed.stderr.decode("utf-8", "replace"),
+    )
+    return completed.stdout
+
+
+def _build_history_archive_fixture(tmp_path: Path) -> dict[str, Any]:
+    raw_git_path = shutil.which("git")
+    assert raw_git_path is not None
+    git_path = Path(raw_git_path).resolve(strict=True)
+    repository_root = tmp_path / "history-repository"
+    repository_root.mkdir()
+    (tmp_path / "git-home").mkdir()
+    _run_fixture_git(git_path, repository_root, "init", "--quiet")
+
+    readme_path = repository_root / "README.fixture"
+    readme_path.write_bytes(b"history base\n")
+    readme_path.chmod(0o644)
+    _run_fixture_git(git_path, repository_root, "add", "--", "README.fixture")
+    _run_fixture_git(
+        git_path,
+        repository_root,
+        "-c",
+        "commit.gpgSign=false",
+        "commit",
+        "--quiet",
+        "--no-gpg-sign",
+        "-m",
+        "history base",
+    )
+    history_head = (
+        _run_fixture_git(git_path, repository_root, "rev-parse", "--verify", "HEAD^{commit}")
+        .decode("ascii")
+        .strip()
+    )
+
+    source_relative = "docs/research/noncert_cuts_ab16_20260724/fixture_history_v1.py"
+    source_path = repository_root / source_relative
+    source_path.parent.mkdir(parents=True)
+    archived_source = b"ARCHIVED_FIXTURE = True\n"
+    source_path.write_bytes(archived_source)
+    source_path.chmod(0o644)
+    _run_fixture_git(git_path, repository_root, "add", "--", source_relative)
+    _run_fixture_git(
+        git_path,
+        repository_root,
+        "-c",
+        "commit.gpgSign=false",
+        "commit",
+        "--quiet",
+        "--no-gpg-sign",
+        "-m",
+        "archive history source",
+    )
+    source_commit = (
+        _run_fixture_git(git_path, repository_root, "rev-parse", "--verify", "HEAD^{commit}")
+        .decode("ascii")
+        .strip()
+    )
+    source_tree = (
+        _run_fixture_git(
+            git_path,
+            repository_root,
+            "rev-parse",
+            "--verify",
+            f"{source_commit}^{{tree}}",
+        )
+        .decode("ascii")
+        .strip()
+    )
+    source_blob = (
+        _run_fixture_git(
+            git_path,
+            repository_root,
+            "rev-parse",
+            "--verify",
+            f"{source_commit}:{source_relative}",
+        )
+        .decode("ascii")
+        .strip()
+    )
+
+    source_path.write_bytes(b"LIVE_FIXTURE = True\n")
+    source_path.chmod(0o644)
+    _run_fixture_git(git_path, repository_root, "add", "--", source_relative)
+    _run_fixture_git(
+        git_path,
+        repository_root,
+        "-c",
+        "commit.gpgSign=false",
+        "commit",
+        "--quiet",
+        "--no-gpg-sign",
+        "-m",
+        "advance live source",
+    )
+    current_head = (
+        _run_fixture_git(git_path, repository_root, "rev-parse", "--verify", "HEAD^{commit}")
+        .decode("ascii")
+        .strip()
+    )
+
+    frozen_root = ".artifacts/noncert_cuts_ab16_fixture/history-frozen"
+    artifact_relative = f"{frozen_root}/terminal.json"
+    artifact_path = repository_root / artifact_relative
+    artifact_path.parent.mkdir(parents=True)
+    artifact_identity = LIFECYCLE.write_exclusive(
+        artifact_path,
+        b'{"fixture":"immutable failed Gate A artifact"}\n',
+    )
+    source_member = {
+        "mode": 0o644,
+        "path": source_relative,
+        "sha256": hashlib.sha256(archived_source).hexdigest(),
+        "size_bytes": len(archived_source),
+    }
+    artifact_member = {
+        "mode": artifact_identity["mode"],
+        "path": artifact_relative,
+        "sha256": artifact_identity["sha256"],
+        "size_bytes": artifact_identity["size_bytes"],
+    }
+    history_manifest = {
+        "created_at_utc": "2026-07-24T00:00:00Z",
+        "file_count": 2,
+        "files": sorted(
+            [artifact_member, source_member],
+            key=lambda member: str(member["path"]).encode("utf-8"),
+        ),
+        "frozen_roots": [frozen_root],
+        "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE",
+        "repository_head": history_head,
+        "repository_root": str(repository_root),
+        "schema_version": "noncert-cuts-ab16-terminal-reference-history-freeze-v1",
+        "v1_source_glob": "docs/research/noncert_cuts_ab16_20260724/*_v1.py",
+    }
+    manifest_path = (
+        repository_root
+        / ".artifacts/noncert_cuts_ab16_fixture/history-freeze/manifest.json"
+    )
+    manifest_path.parent.mkdir(parents=True)
+    manifest_identity = LIFECYCLE.write_exclusive(
+        manifest_path,
+        (
+            json.dumps(
+                history_manifest,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+                allow_nan=False,
+            )
+            + "\n"
+        ).encode("utf-8"),
+    )
+    manifest_path.chmod(0o400)
+    manifest_identity = _identity(manifest_path)
+
+    source_records = [
+        {
+            "git_blob_oid": source_blob,
+            "git_mode": "100644",
+            "mode": 0o644,
+            "path": source_relative,
+            "sha256": source_member["sha256"],
+            "size_bytes": source_member["size_bytes"],
+        }
+    ]
+    source_member_digest = hashlib.sha256(
+        VERIFIER.canonical_json_bytes(source_records) + b"\n"
+    ).hexdigest()
+    contract = {
+        "HISTORY_FREEZE_HEAD": history_head,
+        "HISTORY_FREEZE_MANIFEST_MODE": manifest_identity["mode"],
+        "HISTORY_FREEZE_MANIFEST_PATH": manifest_identity["path"],
+        "HISTORY_FREEZE_MANIFEST_SHA256": manifest_identity["sha256"],
+        "HISTORY_FREEZE_MANIFEST_SIZE": manifest_identity["size_bytes"],
+        "HISTORY_SOURCE_COMMIT": source_commit,
+        "HISTORY_SOURCE_TREE": source_tree,
+        "HISTORY_SOURCE_GLOB": history_manifest["v1_source_glob"],
+        "HISTORY_ARTIFACT_COUNT": 1,
+        "HISTORY_SOURCE_COUNT": 1,
+        "HISTORY_REPOSITORY_ROOT": repository_root,
+        "HISTORY_FROZEN_ROOTS": (frozen_root,),
+    }
+    for name, value in contract.items():
+        setattr(VERIFIER, name, value)
+    pinned_loader = getattr(ORCHESTRATOR, "_load_pinned_module")
+
+    def load_fixture_pinned_module(
+        identity: Mapping[str, Any],
+        *,
+        module_name: str,
+    ) -> ModuleType:
+        module = pinned_loader(identity, module_name=module_name)
+        if Path(str(identity["path"])) == VERIFIER_PATH:
+            for name, value in contract.items():
+                setattr(module, name, value)
+        return module
+
+    setattr(ORCHESTRATOR, "_load_pinned_module", load_fixture_pinned_module)
+    return {
+        "current_head": current_head,
+        "git_identity": _tool_identity(git_path),
+        "manifest_identity": manifest_identity,
+        "replay": {
+            "artifact_file_count": 1,
+            "authorizations": {
+                "formal_campaign_creation_authorized": False,
+                "organic_arm_launch_authorized": False,
+            },
+            "file_count": 2,
+            "manifest_identity": manifest_identity,
+            "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_REPLAY",
+            "schema_version": "noncert-cuts-ab16-terminal-reference-history-replay-v2",
+            "source_file_count": 1,
+            "source_materialization": {
+                "commit": source_commit,
+                "file_count": 1,
+                "manifest_head_parent": history_head,
+                "member_digest": source_member_digest,
+                "tree": source_tree,
+            },
+            "status": "PASS",
+            "verdict": "IMMUTABLE_FAILED_GATE_A_HISTORY_REPLAY_PASS",
+        },
+        "repository_root": repository_root,
+    }
 
 
 class FakeAdapter:
@@ -535,12 +827,15 @@ def _fixture(
         "prestate",
         "binding",
         "strict",
-        "git",
         "systemctl",
         "systemd-run",
     ):
         path = authority_dir / f"{name}.json"
         identities[name] = _write(path, {"name": name})
+    history_archive = _build_history_archive_fixture(tmp_path)
+    identities["git"] = dict(history_archive["git_identity"])
+    history_repository_head = str(history_archive["current_head"])
+    history_repository_root = Path(str(history_archive["repository_root"]))
     identities["environment"] = _write(
         authority_dir / "environment.json",
         {
@@ -621,59 +916,10 @@ def _fixture(
         authority_dir / "history-snapshot-materialization-identity.json",
         {"schema_version": "fixture-history-snapshot-materialization-v1"},
     )
-    frozen_source = ROOT / "docs/research/noncert_cuts_ab16_20260724/organic_resource_lifecycle_v1.py"
-    frozen_source_identity = _tool_identity(frozen_source)
-    history_manifest = {
-        "created_at_utc": "2026-07-24T00:00:00Z",
-        "file_count": 1,
-        "files": [
-            {
-                "mode": frozen_source_identity["mode"],
-                "path": str(frozen_source.relative_to(ROOT)),
-                "sha256": frozen_source_identity["sha256"],
-                "size_bytes": frozen_source_identity["size_bytes"],
-            }
-        ],
-        "frozen_roots": ["docs/research/noncert_cuts_ab16_20260724"],
-        "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE",
-        "repository_head": "d" * 40,
-        "repository_root": str(ROOT),
-        "live_source_provenance_root": str(ROOT),
-        "sealed_snapshot_execution_root": str(history_snapshot_root),
-        "snapshot_manifest_identity": _detached(history_snapshot_manifest_identity),
-        "snapshot_materialization_receipt_identity": _detached(
-            history_snapshot_receipt_identity
-        ),
-        "schema_version": ("noncert-cuts-ab16-terminal-reference-history-freeze-v1"),
-        "v1_source_glob": ("docs/research/noncert_cuts_ab16_20260724/*_v1.py"),
-    }
-    history_manifest_identity = LIFECYCLE.write_exclusive(
-        authority_dir / "history-freeze-manifest.json",
-        (
-            json.dumps(
-                history_manifest,
-                ensure_ascii=False,
-                sort_keys=True,
-                separators=(",", ":"),
-                allow_nan=False,
-            )
-            + "\n"
-        ).encode("utf-8"),
-    )
+    history_manifest_identity = dict(history_archive["manifest_identity"])
     history_freeze_replay_identity = _write(
         authority_dir / "history-freeze-replay.json",
-        {
-            "authorizations": {
-                "formal_campaign_creation_authorized": False,
-                "organic_arm_launch_authorized": False,
-            },
-            "file_count": 1,
-            "manifest_identity": history_manifest_identity,
-            "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_REPLAY",
-            "schema_version": ("noncert-cuts-ab16-terminal-reference-history-replay-v1"),
-            "status": "PASS",
-            "verdict": "IMMUTABLE_FAILED_GATE_A_HISTORY_REPLAY_PASS",
-        },
+        history_archive["replay"],
     )
     if execution_class is None:
         execution_class = "FORMAL_AB16" if postseal_failure_exit_code == 0 else "DISPOSABLE_LIVE_DRILL"
@@ -745,7 +991,7 @@ def _fixture(
                         + "\n"
                     ).encode("utf-8")
                 ).hexdigest(),
-                "repository_head": "d" * 40,
+                "repository_head": history_repository_head,
                 "repository_tree": "3" * 40,
                 "schema_version": "noncert-cuts-ab16-repository-snapshot-v1",
                 "total_bytes": snapshot_member_identity["size_bytes"],
@@ -922,7 +1168,7 @@ def _fixture(
                     Path(snapshot_manifest_identity["path"])
                 )["ordered_member_digest"],
                 "package_id": package["package_id"],
-                "repository_head": "d" * 40,
+                "repository_head": history_repository_head,
                 "repository_tree": "3" * 40,
                 "schema_version": "noncert-cuts-ab16-repository-snapshot-materialization-v1",
                 "snapshot_archive_identity": {
@@ -937,7 +1183,7 @@ def _fixture(
             },
         )
         execution_source = LIFECYCLE.build_sealed_execution_source(
-            live_source_provenance_root=str(ROOT),
+            live_source_provenance_root=str(history_repository_root),
             sealed_snapshot_execution_root=str(snapshot_root),
             snapshot_manifest_identity=_detached(snapshot_manifest_identity),
             snapshot_materialization_receipt_identity=_detached(snapshot_receipt_identity),
@@ -1001,7 +1247,7 @@ def _fixture(
         and snapshot_receipt_identity is not None
     )
     launch = {
-        "cwd": str(authority_dir) if formal else str(ROOT),
+        "cwd": str(authority_dir) if formal else str(history_repository_root),
         "environment_identity": identities["environment"],
         "libsystemd_path": libsystemd_identity["path"],
         "payload_argv": payload_argv,
@@ -1030,7 +1276,7 @@ def _fixture(
         "epoch_transcript_paths": {phase: str(attempt / name) for phase, name in transcript_names.items()},
         "execution_class": execution_class,
         "expected_payload_status": expected_payload_status,
-        "live_source_provenance_root": str(ROOT),
+        "live_source_provenance_root": str(history_repository_root),
         "launch": launch,
         "manager_epoch": manager_epoch,
         "order": "ab",
@@ -1059,9 +1305,9 @@ def _fixture(
         "reference_capability_identity": capability_identity,
         "reference_capability_transcript_identity": capability_transcript_identity,
         "reference_contract": copy.deepcopy(LIFECYCLE.REFERENCE_CONTRACT),
-        "repository_head": "d" * 40,
+        "repository_head": history_repository_head,
         "repository_git_tool_identity": identities["git"],
-        "repository_root": str(ROOT),
+        "repository_root": str(history_repository_root),
         "resource_contract": dict(LIFECYCLE.FORMAL_RESOURCE_CONTRACT if formal else LIFECYCLE.DRILL_RESOURCE_CONTRACT),
         "run_nonce": "run-a",
         "runner_selection_path": str(selection_path),
@@ -1113,9 +1359,9 @@ def _fixture(
         "purpose": (
             "prospective_noncert_cuts_ab16_formal_arm" if formal else "noncert_cuts_ab16_disposable_live_drill"
         ),
-        "repository_head": "d" * 40,
+        "repository_head": history_repository_head,
         "repository_git_tool_identity": identities["git"],
-        "repository_root": str(ROOT),
+        "repository_root": str(history_repository_root),
         "run_nonce": "run-a",
         "schema_version": (
             "noncert-cuts-ab16-organic-arm-selection-v1" if formal else "noncert-cuts-ab16-organic-drill-selection-v1"

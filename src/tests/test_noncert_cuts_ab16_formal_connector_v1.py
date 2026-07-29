@@ -613,9 +613,13 @@ def test_bootstrap_dag_seals_before_materialization_without_packaging_future_rec
     assert "SNAPSHOT_MATERIALIZATION_INPUT_ROLE" not in package_roles_source
     bootstrap_source = inspect.getsource(bootstrap.bootstrap_campaign)
     receipt_assignment = bootstrap_source.index(
-        "inputs[SNAPSHOT_MATERIALIZATION_INPUT_ROLE] = materialization[\"receipt_identity\"]"
+        "inputs[SNAPSHOT_MATERIALIZATION_INPUT_ROLE] = dict(materialization_receipt)"
+    )
+    receipt_validation = bootstrap_source.index(
+        "if not isinstance(materialization_receipt, Mapping):"
     )
     assert bootstrap_source.index("_materialize_repository_snapshot(") < receipt_assignment
+    assert receipt_validation < receipt_assignment
     assert receipt_assignment < bootstrap_source.index("authority.build_campaign_root(")
 
 

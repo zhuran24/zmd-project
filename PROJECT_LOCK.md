@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-07-29 (AB16 Gate-B/formal research-only cohort and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
+**Updated**: 2026-07-29 (AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -602,6 +602,7 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   | boundary | exact accepted schemas |
   |---|---|
   | Gate-A/Gate-B qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v2`; `noncert-cuts-ab16-bootstrap-offline-candidate-v2`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v3`; `noncert-cuts-ab16-gate-b-qualification-v1`; `noncert-cuts-ab16-gate-b-resource-gate-v1`; `noncert-cuts-ab16-gate-b-owner-request-v1`; `noncert-cuts-ab16-gate-b-owner-response-v1`; `noncert-cuts-ab16-gate-b-owner-release-v1`; `noncert-cuts-ab16-gate-b-epoch-observation-v3`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v4`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1` |
+  | Gate-A terminal-reference history | `noncert-cuts-ab16-terminal-reference-history-freeze-v1`; `noncert-cuts-ab16-terminal-reference-history-replay-v2` |
   | bootstrap/package | `noncert-cuts-ab16-bootstrap-manager-capture-v2`; `noncert-cuts-ab16-campaign-bootstrap-result-v3`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v2`; `noncert-cuts-ab16-path-preregistration-v3` |
   | formal launch | `noncert-cuts-ab16-formal-launch-context-v2`; `noncert-cuts-ab16-formal-launch-owner-request-v1`; `noncert-cuts-ab16-formal-launch-owner-response-v1`; `noncert-cuts-ab16-formal-launch-admission-v1`; `noncert-cuts-ab16-outer-guardian-ready-v1`; `noncert-cuts-ab16-formal-attempt-consumption-v1`; `noncert-cuts-ab16-formal-launch-selection-v1` |
   | AB16 campaign/arms | `noncert-cuts-gate1-v4-continuation-authorization-v1`; `noncert-cuts-ab16-baseline-admission-v1`; `noncert-cuts-ab16-common-prestate-v1`; `noncert-cuts-ab16-organic-manifest-v2`; `noncert-cuts-ab16-suite-selection-v2`; `noncert-cuts-ab16-arm-binding-v2`; `noncert-cuts-ab16-organic-pre-run-authority-v2`; `noncert-cuts-ab16-organic-arm-selection-v1`; `noncert-cuts-ab16-organic-arm-consumption-v2`; `noncert-cuts-ab16-immediate-stop-v1` |
@@ -619,6 +620,41 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   Historical roots remain replayable only by their own pinned bytes and never
   become ancestors of the fresh campaign merely because a schema label
   matches.
+- The terminal-reference history freeze remains the immutable singly linked
+  regular file
+  `/home/zhuran24/zmd-pj-codex-baselines/noncert-cuts-ab-trust-20260723/.artifacts/noncert_cuts_ab16_20260724/gate-a-terminal-reference-history-freeze-a001/manifest.json`
+  at mode `0400`, size `15584`, and SHA-256
+  `f1a2edd604f06cb958258ea5bfcb3cc8a7ad154cbce184cd73e6a9b15302f619`.
+  Its historical execution HEAD remains
+  `398f8725c770f3c36408adebe9448a890ed886fe`; neither the file nor that
+  field may be rewritten. Its closed member set is exactly `67` entries:
+  `53` historical artifact members under its two declared frozen roots and
+  `14` manifest-listed v1 source members.
+- The `53` historical artifact members continue to be replayed byte-for-byte
+  from the registered worktree root. The `14` source members are replayed
+  from archival Git blobs at the fixed source-materialization commit
+  `c0a4aa717ccb3f1dbc7cd26a581934c47b7a14eb`, whose tree is
+  `1bae4f350bfdb1d7b51058cad0849c27af71b4c9` and whose sole parent is the
+  manifest execution HEAD `398f8725c770f3c36408adebe9448a890ed886fe`.
+  That archival commit must be an ancestor of the fresh committed worktree
+  HEAD. It records the source bytes; it is not reinterpreted as the historical
+  execution HEAD. Member paths, regular-blob modes, sizes and SHA-256 values
+  must match the immutable manifest exactly. The manifest's
+  `v1_source_glob` is not re-expanded against either the live tree or the
+  archival tree, and no additional matching source path becomes a member.
+- The fresh producer and independent verifier must each execute the
+  planned-source `system.git` bytes through a same-FD execution descriptor,
+  reject replacement or alternate-object indirection, and independently
+  recheck the commit, tree, exact path, blob mode and blob bytes. Fresh
+  receipts use only
+  `noncert-cuts-ab16-terminal-reference-history-replay-v2`; the earlier
+  `noncert-cuts-ab16-terminal-reference-history-replay-v1` remains valid only
+  inside immutable historical roots under those roots' own SHA-pinned
+  verifier bytes and is not accepted by the fresh cohort. Missing objects,
+  path/classification drift, live artifact drift, source-blob drift, Git
+  identity drift, HEAD drift or producer/verifier disagreement fails before
+  Gate-B qualification. This archival byte bridge grants no new experiment,
+  cut, witness, bound, production or certified authority.
 - Gate-B qualification has one persistent owner actor. The same
   PID/starttime and qualification session acquire and retain the exact three
   heavy-work locks before the first resource gate, cover the final full

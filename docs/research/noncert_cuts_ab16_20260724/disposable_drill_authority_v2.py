@@ -15,7 +15,7 @@ from collections.abc import Mapping, Sequence
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import stat
 import subprocess
@@ -46,6 +46,29 @@ RUN_NONCE_RE = re.compile(r"drill-[A-Za-z0-9][A-Za-z0-9_.-]{4,95}\Z")
 HISTORY_FREEZE_SCHEMA = "noncert-cuts-ab16-terminal-reference-history-freeze-v1"
 HISTORY_FREEZE_PURPOSE = "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE"
 HISTORY_FREEZE_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
+HISTORY_FREEZE_MANIFEST_SHA256 = (
+    "f1a2edd604f06cb958258ea5bfcb3cc8a7ad154cbce184cd73e6a9b15302f619"
+)
+HISTORY_FREEZE_MANIFEST_SIZE = 15_584
+HISTORY_REPLAY_SCHEMA = "noncert-cuts-ab16-terminal-reference-history-replay-v2"
+HISTORY_SOURCE_COMMIT = "c0a4aa717ccb3f1dbc7cd26a581934c47b7a14eb"
+HISTORY_SOURCE_TREE = "1bae4f350bfdb1d7b51058cad0849c27af71b4c9"
+HISTORY_SOURCE_GLOB = "docs/research/noncert_cuts_ab16_20260724/*_v1.py"
+HISTORY_ARTIFACT_COUNT = 53
+HISTORY_SOURCE_COUNT = 14
+HISTORY_REPOSITORY_ROOT = Path(
+    "/home/zhuran24/zmd-pj-codex-baselines/noncert-cuts-ab-trust-20260723"
+)
+HISTORY_FREEZE_MANIFEST_PATH = (
+    HISTORY_REPOSITORY_ROOT
+    / ".artifacts/noncert_cuts_ab16_20260724/"
+    "gate-a-terminal-reference-history-freeze-a001/manifest.json"
+)
+HISTORY_FREEZE_MANIFEST_MODE = 0o400
+HISTORY_FROZEN_ROOTS = (
+    ".artifacts/noncert_cuts_ab16_20260724/gate-a-20260724T043946Z-XBW4l8",
+    ".artifacts/noncert_cuts_ab16_20260724/gate-a-recovery-20260724T045351Z-mgZ1wQ",
+)
 
 TOOL_SOURCE_ROLES = {
     "busctl": "system.busctl",
@@ -65,6 +88,65 @@ TOOL_SOURCE_ROLES = {
 
 class DrillAuthorityError(RuntimeError):
     """The disposable authority could not be built without ambiguity."""
+
+
+class _HistoryDescriptor:
+    """Own exactly one descriptor until explicit release."""
+
+    def __init__(self, descriptor: int | None = None) -> None:
+        self._descriptor = descriptor
+
+    @property
+    def descriptor(self) -> int:
+        if self._descriptor is None:
+            raise RuntimeError("history descriptor ownership is absent")
+        return self._descriptor
+
+    def acquire(self, descriptor: int) -> None:
+        if self._descriptor is not None:
+            raise RuntimeError("history descriptor ownership already exists")
+        self._descriptor = descriptor
+
+    def release(self) -> int:
+        descriptor = self.descriptor
+        self._descriptor = None
+        return descriptor
+
+    def close(self) -> BaseException | None:
+        descriptor = self._descriptor
+        self._descriptor = None
+        if descriptor is None:
+            return None
+        try:
+            os.close(descriptor)
+        except BaseException as exc:
+            return exc
+        return None
+
+
+def _close_history_descriptors(
+    owners: Sequence[_HistoryDescriptor],
+    *,
+    primary: BaseException | None,
+) -> None:
+    cleanup_error: BaseException | None = None
+    for owner in owners:
+        error = owner.close()
+        if error is None:
+            continue
+        detail = (
+            "history descriptor cleanup failed: "
+            f"{type(error).__name__}: {error}"
+        )
+        if primary is not None:
+            primary.add_note(detail)
+        elif cleanup_error is None:
+            error.add_note(detail)
+            cleanup_error = error
+        else:
+            cleanup_error.add_note(detail)
+    if primary is None and cleanup_error is not None:
+        raise cleanup_error
 
 
 def _absolute(path: Path | str) -> Path:
@@ -257,9 +339,407 @@ def _observe_repository_head(
         raise DrillAuthorityError("repository HEAD replay failed closed") from exc
 
 
+def _run_history_git(
+    *,
+    repository_root: Path,
+    git_identity: Mapping[str, Any],
+    arguments: Sequence[str],
+    input_bytes: bytes | None = None,
+    output_limit: int = 64 << 20,
+) -> bytes:
+    """Run one bounded Git query through the exact planned executable bytes."""
+
+    expected = _identity(git_identity)
+    git_path = Path(str(expected["path"]))
+    if not git_path.is_absolute() or _absolute(git_path) != git_path:
+        raise DrillAuthorityError("history replay Git path is not canonical")
+    parent_owner = _HistoryDescriptor()
+    try:
+        parent, parent_descriptor = bootstrap._open_directory_fd(git_path.parent)  # noqa: SLF001
+        parent_owner.acquire(parent_descriptor)
+    except Exception as exc:
+        raise DrillAuthorityError("history replay Git parent path is invalid") from exc
+    descriptor_owner = _HistoryDescriptor()
+    primary_error: BaseException | None = None
+    try:
+        descriptor_owner.acquire(
+            os.open(
+                git_path.name,
+                os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
+                dir_fd=parent_owner.descriptor,
+            )
+        )
+        descriptor = descriptor_owner.descriptor
+        observed, before_signature = bootstrap._hash_open_executable(  # noqa: SLF001
+            descriptor,
+            absolute=parent / git_path.name,
+        )
+        projected = {
+            field: observed[field]
+            for field in ("mode", "path", "sha256", "size_bytes")
+        }
+        if projected != expected:
+            raise DrillAuthorityError("history replay Git identity drifted")
+        environment = {
+            "GIT_CONFIG_COUNT": "0",
+            "GIT_CONFIG_NOSYSTEM": "1",
+            "GIT_OPTIONAL_LOCKS": "0",
+            "HOME": "/nonexistent",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "PATH": "/usr/bin",
+        }
+        completed = subprocess.run(
+            [
+                "git",
+                "--no-replace-objects",
+                "-C",
+                str(repository_root),
+                *arguments,
+            ],
+            check=False,
+            close_fds=True,
+            env=environment,
+            executable=f"/proc/self/fd/{descriptor}",
+            input=input_bytes,
+            pass_fds=(descriptor,),
+            stdin=None if input_bytes is not None else subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+        )
+        current_path = os.stat(
+            git_path.name,
+            dir_fd=parent_owner.descriptor,
+            follow_symlinks=False,
+        )
+        if (
+            not stat.S_ISREG(current_path.st_mode)
+            or current_path.st_dev != before_signature[0]
+            or current_path.st_ino != before_signature[1]
+        ):
+            raise DrillAuthorityError("history replay Git path changed during execution")
+        after, after_signature = bootstrap._hash_open_executable(  # noqa: SLF001
+            descriptor,
+            absolute=parent / git_path.name,
+        )
+        if after_signature != before_signature or after != observed:
+            raise DrillAuthorityError("history replay Git bytes changed during execution")
+    except DrillAuthorityError as exc:
+        primary_error = exc
+        raise
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        error = DrillAuthorityError("history replay Git execution failed closed")
+        primary_error = error
+        raise error from exc
+    except BaseException as exc:
+        primary_error = exc
+        raise
+    finally:
+        _close_history_descriptors(
+            (descriptor_owner, parent_owner),
+            primary=primary_error,
+        )
+    if (
+        completed.returncode != 0
+        or completed.stderr
+        or len(completed.stdout) > output_limit
+    ):
+        raise DrillAuthorityError(
+            "history replay Git query failed closed: "
+            f"{tuple(arguments)!r}; exit={completed.returncode}"
+        )
+    return completed.stdout
+
+
+def _assert_history_alternates_absent(
+    descriptor: int,
+) -> None:
+    try:
+        os.stat(
+            "alternates",
+            dir_fd=descriptor,
+            follow_symlinks=False,
+        )
+    except FileNotFoundError:
+        return
+    except OSError as exc:
+        raise DrillAuthorityError("history replay alternate path check failed") from exc
+    raise DrillAuthorityError("history replay alternate object store is forbidden")
+
+
+def _open_history_alternates_guard(
+    *,
+    repository_root: Path,
+    git_identity: Mapping[str, Any],
+) -> tuple[int, tuple[int, ...]]:
+    raw_common = _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=("rev-parse", "--git-common-dir"),
+        output_limit=1 << 20,
+    )
+    if not raw_common.endswith(b"\n") or raw_common.count(b"\n") != 1:
+        raise DrillAuthorityError("history replay Git common directory is malformed")
+    try:
+        serialized = raw_common[:-1].decode("utf-8", "strict")
+    except UnicodeDecodeError as exc:
+        raise DrillAuthorityError("history replay Git common directory is not UTF-8") from exc
+    common = Path(serialized)
+    if not common.is_absolute():
+        common = repository_root / common
+    common = _absolute(common)
+    common_owner = _HistoryDescriptor()
+    try:
+        _, common_descriptor = bootstrap._open_directory_fd(common)  # noqa: SLF001
+        common_owner.acquire(common_descriptor)
+    except Exception as exc:
+        raise DrillAuthorityError("history replay Git common directory is invalid") from exc
+    objects_owner = _HistoryDescriptor()
+    info_owner = _HistoryDescriptor()
+    primary_error: BaseException | None = None
+    try:
+        objects_owner.acquire(
+            os.open(
+                "objects",
+                os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
+                dir_fd=common_owner.descriptor,
+            )
+        )
+        info_owner.acquire(
+            os.open(
+                "info",
+                os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
+                dir_fd=objects_owner.descriptor,
+            )
+        )
+        signature = bootstrap._stat_signature(  # noqa: SLF001
+            os.fstat(info_owner.descriptor)
+        )
+        _assert_history_alternates_absent(info_owner.descriptor)
+        _close_history_descriptors(
+            (objects_owner, common_owner),
+            primary=None,
+        )
+        return info_owner.release(), signature
+    except DrillAuthorityError as exc:
+        primary_error = exc
+        raise
+    except OSError as exc:
+        error = DrillAuthorityError("history replay object store is invalid")
+        primary_error = error
+        raise error from exc
+    except BaseException as exc:
+        primary_error = exc
+        raise
+    finally:
+        _close_history_descriptors(
+            (info_owner, objects_owner, common_owner),
+            primary=primary_error,
+        )
+
+
+def _history_source_records(
+    *,
+    repository_root: Path,
+    git_identity: Mapping[str, Any],
+    manifest_head: str,
+    current_head: str,
+    source_members: Mapping[str, Mapping[str, Any]],
+) -> tuple[str, list[dict[str, object]]]:
+    alternates_descriptor, alternates_signature = (
+        _open_history_alternates_guard(
+            repository_root=repository_root,
+            git_identity=git_identity,
+        )
+    )
+    alternates_owner = _HistoryDescriptor(alternates_descriptor)
+    primary_error: BaseException | None = None
+    try:
+        result = _history_source_records_guarded(
+            repository_root=repository_root,
+            git_identity=git_identity,
+            manifest_head=manifest_head,
+            current_head=current_head,
+            source_members=source_members,
+        )
+        _assert_history_alternates_absent(alternates_owner.descriptor)
+        if (
+            bootstrap._stat_signature(  # noqa: SLF001
+                os.fstat(alternates_owner.descriptor)
+            )
+            != alternates_signature
+        ):
+            raise DrillAuthorityError(
+                "history replay Git objects/info directory changed"
+            )
+        return result
+    except BaseException as exc:
+        primary_error = exc
+        raise
+    finally:
+        _close_history_descriptors(
+            (alternates_owner,),
+            primary=primary_error,
+        )
+
+
+def _history_source_records_guarded(
+    *,
+    repository_root: Path,
+    git_identity: Mapping[str, Any],
+    manifest_head: str,
+    current_head: str,
+    source_members: Mapping[str, Mapping[str, Any]],
+) -> tuple[str, list[dict[str, object]]]:
+    observed_head = _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=("rev-parse", "--verify", "HEAD"),
+        output_limit=128,
+    )
+    if observed_head != f"{current_head}\n".encode("ascii"):
+        raise DrillAuthorityError("history replay repository HEAD drifted")
+    parent = _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=("rev-list", "--parents", "-n", "1", HISTORY_SOURCE_COMMIT),
+        output_limit=128,
+    )
+    tree = _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=("rev-parse", "--verify", f"{HISTORY_SOURCE_COMMIT}^{{tree}}"),
+        output_limit=128,
+    )
+    if parent != f"{HISTORY_SOURCE_COMMIT} {manifest_head}\n".encode("ascii"):
+        raise DrillAuthorityError("history source commit is not the unique manifest-head child")
+    if tree != f"{HISTORY_SOURCE_TREE}\n".encode("ascii"):
+        raise DrillAuthorityError("history source commit tree identity drifted")
+    _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=(
+            "merge-base",
+            "--is-ancestor",
+            HISTORY_SOURCE_COMMIT,
+            current_head,
+        ),
+        output_limit=0,
+    )
+    ordered_paths = sorted(source_members, key=lambda value: value.encode("utf-8"))
+    tree_raw = _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=(
+            "ls-tree",
+            "-rz",
+            "-r",
+            "--full-tree",
+            HISTORY_SOURCE_COMMIT,
+            *ordered_paths,
+        ),
+    )
+    tree_records: dict[str, tuple[str, str]] = {}
+    for raw_record in tree_raw.split(b"\0"):
+        if not raw_record:
+            continue
+        try:
+            metadata, raw_path = raw_record.split(b"\t", 1)
+            mode_raw, object_type, oid_raw = metadata.split(b" ")
+            path = raw_path.decode("utf-8", "strict")
+            mode = mode_raw.decode("ascii", "strict")
+            oid = oid_raw.decode("ascii", "strict")
+        except (UnicodeDecodeError, ValueError) as exc:
+            raise DrillAuthorityError("history source Git tree record is malformed") from exc
+        if (
+            path in tree_records
+            or path not in source_members
+            or object_type != b"blob"
+            or mode not in {"100644", "100755"}
+            or re.fullmatch(r"[0-9a-f]{40}", oid) is None
+        ):
+            raise DrillAuthorityError("history source Git tree membership drifted")
+        tree_records[path] = (mode, oid)
+    if set(tree_records) != set(source_members):
+        raise DrillAuthorityError("history source Git tree path set drifted")
+
+    batch_input = b"".join(
+        f"{tree_records[path][1]}\n".encode("ascii")
+        for path in ordered_paths
+    )
+    batch = _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=("cat-file", "--batch"),
+        input_bytes=batch_input,
+    )
+    offset = 0
+    records: list[dict[str, object]] = []
+    for path in ordered_paths:
+        mode, expected_oid = tree_records[path]
+        newline = batch.find(b"\n", offset)
+        if newline < 0:
+            raise DrillAuthorityError("history source Git blob header is truncated")
+        header = batch[offset:newline].split(b" ")
+        if len(header) != 3 or header[1] != b"blob":
+            raise DrillAuthorityError("history source Git blob header drifted")
+        try:
+            oid = header[0].decode("ascii")
+            size = int(header[2])
+        except (UnicodeDecodeError, ValueError) as exc:
+            raise DrillAuthorityError("history source Git blob header is malformed") from exc
+        start = newline + 1
+        end = start + size
+        if (
+            oid != expected_oid
+            or end >= len(batch)
+            or batch[end : end + 1] != b"\n"
+        ):
+            raise DrillAuthorityError("history source Git blob framing drifted")
+        raw = batch[start:end]
+        offset = end + 1
+        member = source_members[path]
+        expected_mode = 0o755 if mode == "100755" else 0o644
+        digest = hashlib.sha256(raw).hexdigest()
+        if (
+            member["mode"] != expected_mode
+            or member["sha256"] != digest
+            or member["size_bytes"] != len(raw)
+        ):
+            raise DrillAuthorityError("history source Git blob identity drifted")
+        records.append(
+            {
+                "git_blob_oid": oid,
+                "git_mode": mode,
+                "mode": expected_mode,
+                "path": path,
+                "sha256": digest,
+                "size_bytes": len(raw),
+            }
+        )
+    if offset != len(batch):
+        raise DrillAuthorityError("history source Git blob batch has trailing bytes")
+    final_head = _run_history_git(
+        repository_root=repository_root,
+        git_identity=git_identity,
+        arguments=("rev-parse", "--verify", "HEAD"),
+        output_limit=128,
+    )
+    if final_head != observed_head:
+        raise DrillAuthorityError("history replay repository HEAD changed during replay")
+    member_digest = hashlib.sha256(
+        bootstrap.authority.canonical_json(records)
+    ).hexdigest()
+    return member_digest, records
+
+
 def _replay_history_freeze(
     *,
     manifest_path: Path | str,
+    repository_root: Path | str,
+    current_repository_head: str,
+    git_identity: Mapping[str, Any],
 ) -> dict[str, object]:
     try:
         snapshot = lifecycle.snapshot_regular(_absolute(manifest_path))
@@ -274,6 +754,13 @@ def _replay_history_freeze(
         raise DrillAuthorityError("history-freeze manifest JSON is invalid") from exc
     if bootstrap.authority.canonical_json(value) != snapshot.raw:
         raise DrillAuthorityError("history-freeze manifest is not canonical campaign-authority JSON")
+    if snapshot.identity != {
+        "mode": HISTORY_FREEZE_MANIFEST_MODE,
+        "path": str(HISTORY_FREEZE_MANIFEST_PATH),
+        "sha256": HISTORY_FREEZE_MANIFEST_SHA256,
+        "size_bytes": HISTORY_FREEZE_MANIFEST_SIZE,
+    }:
+        raise DrillAuthorityError("history-freeze manifest byte identity drifted")
     if type(value) is not dict or set(value) != {
         "created_at_utc",
         "file_count",
@@ -290,10 +777,12 @@ def _replay_history_freeze(
         value["schema_version"] != HISTORY_FREEZE_SCHEMA
         or value["purpose"] != HISTORY_FREEZE_PURPOSE
         or value["repository_head"] != HISTORY_FREEZE_HEAD
+        or value["repository_root"] != str(HISTORY_REPOSITORY_ROOT)
         or type(value["created_at_utc"]) is not str
         or type(value["repository_root"]) is not str
         or type(value["frozen_roots"]) is not list
         or type(value["v1_source_glob"]) is not str
+        or value["v1_source_glob"] != HISTORY_SOURCE_GLOB
         or type(value["file_count"]) is not int
         or type(value["files"]) is not list
         or value["file_count"] != len(value["files"])
@@ -303,6 +792,14 @@ def _replay_history_freeze(
         bootstrap._utc(value["created_at_utc"], "history-freeze created_at_utc")  # noqa: SLF001
     except Exception as exc:
         raise DrillAuthorityError("history-freeze manifest timestamp drifted") from exc
+    current_root = _absolute(repository_root)
+    if current_root != HISTORY_REPOSITORY_ROOT:
+        raise DrillAuthorityError("history replay is not running in the registered worktree")
+    if (
+        type(current_repository_head) is not str
+        or re.fullmatch(r"[0-9a-f]{40}", current_repository_head) is None
+    ):
+        raise DrillAuthorityError("history replay current HEAD is malformed")
     serialized_history_root = value["repository_root"]
     history_root = Path(serialized_history_root)
     if (
@@ -332,6 +829,8 @@ def _replay_history_freeze(
         ):
             raise DrillAuthorityError("history-freeze frozen root path is invalid")
         frozen_roots.add(raw_root)
+    if tuple(value["frozen_roots"]) != HISTORY_FROZEN_ROOTS:
+        raise DrillAuthorityError("history-freeze frozen root set drifted")
     source_glob = Path(value["v1_source_glob"])
     if (
         not value["v1_source_glob"]
@@ -342,6 +841,8 @@ def _replay_history_freeze(
         raise DrillAuthorityError("history-freeze v1 source glob is invalid")
 
     seen: set[str] = set()
+    artifact_members: dict[str, Mapping[str, Any]] = {}
+    source_members: dict[str, Mapping[str, Any]] = {}
     for raw in value["files"]:
         if type(raw) is not dict or set(raw) != {
             "mode",
@@ -369,19 +870,46 @@ def _replay_history_freeze(
         ):
             raise DrillAuthorityError("history-freeze member path is invalid")
         seen.add(relative)
-        member_path = history_root / relative_path
-        try:
-            observed = lifecycle.snapshot_regular(member_path).identity
-        except Exception as exc:
-            raise DrillAuthorityError("history-freeze member is missing, non-regular, or symlinked") from exc
-        if observed != {
-            "mode": raw["mode"],
-            "path": str(member_path),
-            "sha256": raw["sha256"],
-            "size_bytes": raw["size_bytes"],
-        }:
-            raise DrillAuthorityError("history-freeze member byte identity drifted")
+        under_frozen = any(
+            relative == frozen_root or relative.startswith(f"{frozen_root}/")
+            for frozen_root in frozen_roots
+        )
+        matches_source = PurePosixPath(relative).match(HISTORY_SOURCE_GLOB)
+        if under_frozen == matches_source:
+            raise DrillAuthorityError("history-freeze member class is ambiguous")
+        if under_frozen:
+            artifact_members[relative] = raw
+            member_path = history_root / relative_path
+            try:
+                observed = lifecycle.snapshot_regular(member_path).identity
+            except Exception as exc:
+                raise DrillAuthorityError(
+                    "history-freeze artifact is missing, non-regular, or symlinked"
+                ) from exc
+            if observed != {
+                "mode": raw["mode"],
+                "path": str(member_path),
+                "sha256": raw["sha256"],
+                "size_bytes": raw["size_bytes"],
+            }:
+                raise DrillAuthorityError("history-freeze artifact byte identity drifted")
+        else:
+            source_members[relative] = raw
+    if (
+        len(seen) != HISTORY_ARTIFACT_COUNT + HISTORY_SOURCE_COUNT
+        or len(artifact_members) != HISTORY_ARTIFACT_COUNT
+        or len(source_members) != HISTORY_SOURCE_COUNT
+    ):
+        raise DrillAuthorityError("history-freeze member class counts drifted")
+    member_digest, source_records = _history_source_records(
+        repository_root=history_root,
+        git_identity=git_identity,
+        manifest_head=value["repository_head"],
+        current_head=current_repository_head,
+        source_members=source_members,
+    )
     return {
+        "artifact_file_count": len(artifact_members),
         "authorizations": {
             "formal_campaign_creation_authorized": False,
             "organic_arm_launch_authorized": False,
@@ -389,7 +917,15 @@ def _replay_history_freeze(
         "file_count": len(seen),
         "manifest_identity": snapshot.identity,
         "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_REPLAY",
-        "schema_version": "noncert-cuts-ab16-terminal-reference-history-replay-v1",
+        "schema_version": HISTORY_REPLAY_SCHEMA,
+        "source_file_count": len(source_members),
+        "source_materialization": {
+            "commit": HISTORY_SOURCE_COMMIT,
+            "file_count": len(source_records),
+            "manifest_head_parent": value["repository_head"],
+            "member_digest": member_digest,
+            "tree": HISTORY_SOURCE_TREE,
+        },
         "status": "PASS",
         "verdict": "IMMUTABLE_FAILED_GATE_A_HISTORY_REPLAY_PASS",
     }
@@ -476,6 +1012,116 @@ def _package(
     }
 
 
+def _build_drill_source_snapshot(
+    authority_dir: Path,
+    *,
+    planned_sources: Mapping[str, Mapping[str, Any]],
+    planned_source_set_digest: str,
+    repository_head: str,
+    repository_root: Path,
+) -> dict[str, object]:
+    """Materialize the non-system Gate-A bytes required by pre-run v2.
+
+    The disposable drill never executes from this tree.  It exists solely to
+    satisfy the pre-run v2 live/sealed-source discriminator without claiming a
+    full repository snapshot or granting formal execution.
+    """
+
+    snapshot_dir = authority_dir / "source-snapshot"
+    snapshot_root = snapshot_dir / "repository"
+    _mkdir(snapshot_dir)
+    _mkdir(snapshot_root)
+    category_dirs = {
+        category: snapshot_root / category
+        for category in ("input", "script")
+    }
+    for path in category_dirs.values():
+        _mkdir(path)
+    members: list[dict[str, object]] = []
+    expected_paths: set[str] = set()
+    external_system_identities: dict[str, dict[str, object]] = {}
+    for role, planned in sorted(planned_sources.items()):
+        category, separator, name = role.partition(".")
+        if (
+            not separator
+            or category not in {"input", "script", "system"}
+            or re.fullmatch(r"[A-Za-z0-9_.-]+", name) is None
+        ):
+            raise DrillAuthorityError("planned source role is unsafe for drill snapshot")
+        if category == "system":
+            external_system_identities[role] = _identity(planned)
+            continue
+        source = lifecycle.snapshot_regular(planned["path"])
+        if source.identity != _identity(planned):
+            raise DrillAuthorityError("planned source drifted during drill snapshot")
+        target = category_dirs[category] / name
+        materialized = lifecycle.write_exclusive(target, source.raw)
+        relative = target.relative_to(snapshot_root).as_posix()
+        expected_paths.add(relative)
+        members.append(
+            {
+                "materialized_identity": materialized,
+                "path": relative,
+                "role": role,
+                "source_identity": _identity(planned),
+            }
+        )
+    actual_paths = {
+        path.relative_to(snapshot_root).as_posix()
+        for path in snapshot_root.rglob("*")
+        if path.is_file()
+    }
+    if actual_paths != expected_paths:
+        raise DrillAuthorityError("drill source snapshot member set drifted")
+    member_digest = hashlib.sha256(
+        bootstrap.authority.canonical_json(members)
+    ).hexdigest()
+    manifest_identity = _write(
+        snapshot_dir / "manifest.json",
+        {
+            "authorizations": {
+                "formal_execution_authorized": False,
+                "organic_arm_launch_authorized": False,
+                "solver_run_authorized": False,
+            },
+            "external_system_identities": external_system_identities,
+            "import_mode": "not-executed-disposable-source-snapshot",
+            "member_count": len(members),
+            "member_digest": member_digest,
+            "members": members,
+            "planned_source_set_digest": planned_source_set_digest,
+            "repository_head": repository_head,
+            "repository_root": str(repository_root),
+            "schema_version": "noncert-cuts-ab16-disposable-source-snapshot-v1",
+            "snapshot_root": str(snapshot_root),
+        },
+    )
+    receipt_identity = _write(
+        snapshot_dir / "materialization-receipt.json",
+        {
+            "authorizations": {
+                "formal_execution_authorized": False,
+                "organic_arm_launch_authorized": False,
+                "solver_run_authorized": False,
+            },
+            "manifest_identity": manifest_identity,
+            "member_count": len(members),
+            "member_digest": member_digest,
+            "planned_source_set_digest": planned_source_set_digest,
+            "schema_version": (
+                "noncert-cuts-ab16-disposable-source-snapshot-materialization-v1"
+            ),
+            "snapshot_root": str(snapshot_root),
+            "status": "PASS",
+        },
+    )
+    return {
+        "manifest_identity": manifest_identity,
+        "receipt_identity": receipt_identity,
+        "snapshot_root": str(snapshot_root),
+    }
+
+
 def _control_record(
     *,
     kind: str,
@@ -552,6 +1198,9 @@ def build_disposable_drill_authority(
         raise DrillAuthorityError("repository HEAD differs from drill preregistration")
     history_replay = _replay_history_freeze(
         manifest_path=strict_input_paths["history_freeze_manifest"],
+        repository_root=repository,
+        current_repository_head=repository_head,
+        git_identity=planned["system.git"],
     )
     capture = _capture_live_manager_epoch(planned)
     manager_epoch = capture["manager_epoch"]
@@ -625,6 +1274,13 @@ def build_disposable_drill_authority(
         "package_id": package_build["package_id"],
         "seal_identity": package_build["seal_identity"],
     }
+    source_snapshot = _build_drill_source_snapshot(
+        authority_dir,
+        planned_sources=planned,
+        planned_source_set_digest=planned_digest,
+        repository_head=repository_head,
+        repository_root=repository,
+    )
 
     common_prestate_path = authority_dir / "common-prestate.json"
     binding_path = authority_dir / "bindings" / f"{DRILL_SLOT}.json"
@@ -808,6 +1464,7 @@ def build_disposable_drill_authority(
         "reference_capability_identity": capability_identity,
         "reference_capability_transcript_identity": capability_transcript_identity,
         "history_freeze_replay_identity": history_replay_identity,
+        "live_source_provenance_root": str(repository),
         "prospective_manifest_identity": manifest_identity,
         "purpose": lifecycle.PRE_RUN_PURPOSE,
         "repository_git_tool_identity": _identity(planned["system.git"]),
@@ -818,7 +1475,12 @@ def build_disposable_drill_authority(
         "run_nonce": run_nonce,
         "runner_selection_path": str(attempt_dir / "selection.json"),
         "schema_version": lifecycle.PRE_RUN_AUTHORITY_SCHEMA,
+        "sealed_snapshot_execution_root": source_snapshot["snapshot_root"],
         "seed": 0,
+        "snapshot_manifest_identity": source_snapshot["manifest_identity"],
+        "snapshot_materialization_receipt_identity": source_snapshot[
+            "receipt_identity"
+        ],
         "slot": DRILL_SLOT,
         "solver_run_authorized": False,
         "status": "PASS",
@@ -856,6 +1518,7 @@ def build_disposable_drill_authority(
         "execution_class": "DISPOSABLE_LIVE_DRILL",
         "expected_payload_status": expected_payload_status,
         "fresh_process_required": True,
+        "live_source_provenance_root": pre_run["live_source_provenance_root"],
         "manifest_identity": manifest_identity,
         "order": "ab",
         "pre_run_authority_identity": pre_run_identity,
@@ -865,9 +1528,16 @@ def build_disposable_drill_authority(
         "repository_root": str(repository),
         "run_nonce": run_nonce,
         "schema_version": lifecycle.DRILL_SELECTION_SCHEMA,
+        "sealed_snapshot_execution_root": pre_run[
+            "sealed_snapshot_execution_root"
+        ],
         "seed": 0,
         "selection_nonce": f"{run_nonce}-selection",
         "slot": DRILL_SLOT,
+        "snapshot_manifest_identity": pre_run["snapshot_manifest_identity"],
+        "snapshot_materialization_receipt_identity": pre_run[
+            "snapshot_materialization_receipt_identity"
+        ],
         "unit_name": unit_name,
         "workers": 1,
     }

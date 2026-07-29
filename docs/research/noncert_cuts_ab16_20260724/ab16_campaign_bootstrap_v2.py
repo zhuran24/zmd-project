@@ -3527,6 +3527,61 @@ def _complete_gate_b_qualification_handoff(
     return dict(response)
 
 
+def _select_root_strict_input_identities(
+    *,
+    repository: Path,
+    strict_paths: Mapping[str, Path],
+    planned: Mapping[str, Mapping[str, Any]],
+    packaged_inputs: Mapping[str, Mapping[str, Any]],
+    snapshot_identities: Mapping[str, Mapping[str, Any]],
+) -> dict[str, dict[str, object]]:
+    """Select the exact authority identity consumed by the campaign root."""
+
+    inputs = {
+        role: dict(identity)
+        for role, identity in packaged_inputs.items()
+    }
+    for role, source_path in strict_paths.items():
+        if role == "candidate_placements":
+            relative = "data/preprocessed/candidate_placements.json"
+        else:
+            try:
+                relative = source_path.relative_to(repository).as_posix()
+            except ValueError:
+                if role == "history_freeze_manifest":
+                    # Its replay receipt binds the immutable external
+                    # manifest's complete path/mode/content identity.  The
+                    # package copy remains a sealed payload member, but it
+                    # cannot replace that source identity at the formal join.
+                    original = _detached_from_full(planned[f"input.{role}"])
+                    packaged = inputs.get(role)
+                    if (
+                        packaged is None
+                        or packaged["sha256"] != original["sha256"]
+                        or packaged["size_bytes"] != original["size_bytes"]
+                    ):
+                        raise BootstrapError(
+                            "packaged history-freeze manifest differs from its source"
+                        )
+                    inputs[role] = original
+                continue
+        materialized = snapshot_identities.get(relative)
+        if materialized is None:
+            raise BootstrapError(
+                f"repository strict input is absent from the materialized snapshot: {role}"
+            )
+        packaged = inputs[role]
+        if (
+            materialized["sha256"] != packaged["sha256"]
+            or materialized["size_bytes"] != packaged["size_bytes"]
+        ):
+            raise BootstrapError(
+                f"materialized strict input differs from sealed package: {role}"
+            )
+        inputs[role] = dict(materialized)
+    return inputs
+
+
 def bootstrap_campaign(
     *,
     campaign_dir: Path | str,
@@ -3736,25 +3791,20 @@ def bootstrap_campaign(
         raise BootstrapError("sealed attestor copy differs from epoch attestor")
     tools["manager_attestor_v4"] = epoch_attestor
     tools.update({role: _detached_from_full(system_full[role]) for role in SYSTEM_TOOL_ROLES})
-    inputs = {role: _payload_identity(package_dir, package_role) for role, package_role in input_package_roles.items()}
-    for role, source_path in strict_paths.items():
-        if role == "candidate_placements":
-            relative = "data/preprocessed/candidate_placements.json"
-        else:
-            try:
-                relative = source_path.relative_to(repository).as_posix()
-            except ValueError:
-                continue
-        materialized = snapshot_identities.get(relative)
-        if materialized is None:
-            raise BootstrapError(f"repository strict input is absent from the materialized snapshot: {role}")
-        if (
-            materialized["sha256"] != inputs[role]["sha256"]
-            or materialized["size_bytes"] != inputs[role]["size_bytes"]
-        ):
-            raise BootstrapError(f"materialized strict input differs from sealed package: {role}")
-        inputs[role] = materialized
-    inputs[SNAPSHOT_MATERIALIZATION_INPUT_ROLE] = materialization["receipt_identity"]
+    inputs = _select_root_strict_input_identities(
+        repository=repository,
+        strict_paths=strict_paths,
+        planned=planned,
+        packaged_inputs={
+            role: _payload_identity(package_dir, package_role)
+            for role, package_role in input_package_roles.items()
+        },
+        snapshot_identities=snapshot_identities,
+    )
+    materialization_receipt = materialization["receipt_identity"]
+    if not isinstance(materialization_receipt, Mapping):
+        raise BootstrapError("repository snapshot materialization identity is malformed")
+    inputs[SNAPSHOT_MATERIALIZATION_INPUT_ROLE] = dict(materialization_receipt)
 
     root = authority.build_campaign_root(
         output,

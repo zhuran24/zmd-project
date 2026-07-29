@@ -89,6 +89,8 @@ def test_project_lock_registers_one_exact_ab16_formal_cohort() -> None:
         BOOTSTRAP.REPOSITORY_SNAPSHOT_SCHEMA,
         BOOTSTRAP.SNAPSHOT_MATERIALIZATION_SCHEMA,
         BOOTSTRAP.EXTERNAL_PLATFORM_SCHEMA,
+        RESOURCE.HISTORY_FREEZE_SCHEMA,
+        RESOURCE.HISTORY_REPLAY_SCHEMA,
         _top_level_literal(qualification, "QUALIFICATION_SCHEMA"),
         _top_level_literal(qualification, "RESOURCE_GATE_SCHEMA"),
         _top_level_literal(qualification, "OWNER_REQUEST_SCHEMA"),
@@ -131,6 +133,42 @@ def test_project_lock_registers_one_exact_ab16_formal_cohort() -> None:
     assert "The main checkout is a control plane" in section
     assert "Tracked state remains `U=(1188,18)` and" in section
     assert "`L=absent`" in section
+
+
+def test_project_lock_pins_terminal_reference_history_archive_bridge() -> None:
+    lock = (ROOT / "PROJECT_LOCK.md").read_text(encoding="utf-8")
+    section = lock.split(
+        "### 3C. AB16 Gate-B and formal-campaign research-only authority boundary",
+        1,
+    )[1].split("## 4. Forbidden Changes", 1)[0]
+    history_row = next(
+        line
+        for line in section.splitlines()
+        if line.startswith("  | Gate-A terminal-reference history |")
+    )
+    assert f"`{RESOURCE.HISTORY_FREEZE_SCHEMA}`" in history_row
+    assert f"`{RESOURCE.HISTORY_REPLAY_SCHEMA}`" in history_row
+    assert (
+        "`noncert-cuts-ab16-terminal-reference-history-replay-v1`"
+        not in history_row
+    )
+    for fixed_identity in (
+        RESOURCE.HISTORY_FREEZE_MANIFEST_SHA256,
+        RESOURCE.HISTORY_FREEZE_HEAD,
+        RESOURCE.HISTORY_SOURCE_COMMIT,
+        RESOURCE.HISTORY_SOURCE_TREE,
+    ):
+        assert f"`{fixed_identity}`" in section
+    for fixed_count in (
+        f"`{RESOURCE.HISTORY_ARTIFACT_COUNT + RESOURCE.HISTORY_SOURCE_COUNT}`",
+        f"`{RESOURCE.HISTORY_ARTIFACT_COUNT}`",
+        f"`{RESOURCE.HISTORY_SOURCE_COUNT}`",
+    ):
+        assert fixed_count in section
+    assert "whose sole parent is the" in section
+    assert "`v1_source_glob` is not re-expanded" in section
+    assert "is not accepted by the fresh cohort" in section
+    assert "grants no new experiment," in section
 
 
 def test_formal_orchestrator_outer_module_entry_is_cache_free() -> None:
@@ -1027,10 +1065,51 @@ def test_materialized_repository_snapshot_replay_is_fail_closed(
 
 def _history_authority(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> tuple[dict[str, object], dict[str, object]]:
     repository = tmp_path / "history-repository"
-    member_path = repository / "frozen/member.txt"
-    member_identity = _regular(member_path, b"immutable history\n")
+    repository.mkdir()
+    git_path = Path("/usr/bin/git")
+
+    def git(*arguments: str) -> str:
+        return subprocess.run(
+            [str(git_path), "-C", str(repository), *arguments],
+            check=True,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        ).stdout.strip()
+
+    git("init", "--quiet")
+    git("config", "user.email", "ab16-history-fixture@example.invalid")
+    git("config", "user.name", "AB16 history fixture")
+    git("-c", "commit.gpgSign=false", "commit", "--quiet", "--allow-empty", "-m", "history head")
+    history_head = git("rev-parse", "--verify", "HEAD^{commit}")
+    source_relative = (
+        "docs/research/noncert_cuts_ab16_20260724/"
+        "history_role_fixture_v1.py"
+    )
+    source_path = repository / source_relative
+    archived_source = b"ARCHIVED_FIXTURE = True\n"
+    source_path.parent.mkdir(parents=True)
+    source_path.write_bytes(archived_source)
+    git("add", "--", source_relative)
+    git("-c", "commit.gpgSign=false", "commit", "--quiet", "-m", "archive source")
+    source_commit = git("rev-parse", "--verify", "HEAD^{commit}")
+    source_tree = git("rev-parse", "--verify", "HEAD^{tree}")
+    source_blob = git("rev-parse", "--verify", f"HEAD:{source_relative}")
+    source_path.write_bytes(b"LIVE_FIXTURE = True\n")
+    git("add", "--", source_relative)
+    git("-c", "commit.gpgSign=false", "commit", "--quiet", "-m", "advance live source")
+    current_head = git("rev-parse", "--verify", "HEAD^{commit}")
+
+    frozen_root = ".artifacts/noncert_cuts_ab16_fixture/history-frozen"
+    artifact_relative = f"{frozen_root}/member.txt"
+    artifact_identity = _regular(
+        repository / artifact_relative,
+        b"immutable history\n",
+    )
     sealed_snapshot_root = tmp_path / "sealed-history-snapshot"
     sealed_snapshot_root.mkdir()
     snapshot_manifest_full = _regular(
@@ -1055,45 +1134,83 @@ def _history_authority(
     }
     manifest = {
         "created_at_utc": "2026-07-24T00:00:00Z",
-        "file_count": 1,
-        "files": [
+        "file_count": 2,
+        "files": sorted(
+            [
             {
-                **member_identity,
-                "path": "frozen/member.txt",
-            }
-        ],
-        "frozen_roots": ["frozen"],
+                    **artifact_identity,
+                    "path": artifact_relative,
+                },
+                {
+                    "mode": 0o644,
+                    "path": source_relative,
+                    "sha256": hashlib.sha256(archived_source).hexdigest(),
+                    "size_bytes": len(archived_source),
+                },
+            ],
+            key=lambda item: str(item["path"]).encode("utf-8"),
+        ),
+        "frozen_roots": [frozen_root],
         "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE",
-        "repository_head": HEAD,
+        "repository_head": history_head,
         "repository_root": str(repository),
-        "live_source_provenance_root": str(repository),
-        "sealed_snapshot_execution_root": str(sealed_snapshot_root),
-        "snapshot_manifest_identity": snapshot_manifest_identity,
-        "snapshot_materialization_receipt_identity": snapshot_receipt_identity,
         "schema_version": ("noncert-cuts-ab16-terminal-reference-history-freeze-v1"),
-        "v1_source_glob": ["frozen/*"],
+        "v1_source_glob": "docs/research/noncert_cuts_ab16_20260724/*_v1.py",
     }
-    manifest_path = tmp_path / "history-manifest.json"
+    manifest_path = repository / ".artifacts/history-freeze/manifest.json"
+    manifest_path.parent.mkdir(parents=True)
     manifest_path.write_bytes(
-        json.dumps(
-            manifest,
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode()
-        + b"\n"
+        RESOURCE.canonical_json_bytes(manifest) + b"\n"
     )
-    manifest_path.chmod(0o444)
+    manifest_path.chmod(0o400)
     _raw, manifest_identity = RESOURCE.snapshot_bytes(manifest_path)
+    source_records = [
+        {
+            "git_blob_oid": source_blob,
+            "git_mode": "100644",
+            "mode": 0o644,
+            "path": source_relative,
+            "sha256": hashlib.sha256(archived_source).hexdigest(),
+            "size_bytes": len(archived_source),
+        }
+    ]
+    source_member_digest = hashlib.sha256(
+        RESOURCE.canonical_json_bytes(source_records) + b"\n"
+    ).hexdigest()
+    contract = {
+        "HISTORY_FREEZE_HEAD": history_head,
+        "HISTORY_FREEZE_MANIFEST_MODE": manifest_identity["mode"],
+        "HISTORY_FREEZE_MANIFEST_PATH": manifest_identity["path"],
+        "HISTORY_FREEZE_MANIFEST_SHA256": manifest_identity["sha256"],
+        "HISTORY_FREEZE_MANIFEST_SIZE": manifest_identity["size_bytes"],
+        "HISTORY_SOURCE_COMMIT": source_commit,
+        "HISTORY_SOURCE_TREE": source_tree,
+        "HISTORY_SOURCE_GLOB": manifest["v1_source_glob"],
+        "HISTORY_ARTIFACT_COUNT": 1,
+        "HISTORY_SOURCE_COUNT": 1,
+        "HISTORY_REPOSITORY_ROOT": repository,
+        "HISTORY_FROZEN_ROOTS": (frozen_root,),
+    }
+    for name, value in contract.items():
+        monkeypatch.setattr(RESOURCE, name, value)
     receipt = {
+        "artifact_file_count": 1,
         "authorizations": {
             "formal_campaign_creation_authorized": False,
             "organic_arm_launch_authorized": False,
         },
-        "file_count": 1,
+        "file_count": 2,
         "manifest_identity": manifest_identity,
         "purpose": "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_REPLAY",
-        "schema_version": ("noncert-cuts-ab16-terminal-reference-history-replay-v1"),
+        "schema_version": ("noncert-cuts-ab16-terminal-reference-history-replay-v2"),
+        "source_file_count": 1,
+        "source_materialization": {
+            "commit": source_commit,
+            "file_count": 1,
+            "manifest_head_parent": history_head,
+            "member_digest": source_member_digest,
+            "tree": source_tree,
+        },
         "status": "PASS",
         "verdict": "IMMUTABLE_FAILED_GATE_A_HISTORY_REPLAY_PASS",
     }
@@ -1101,9 +1218,11 @@ def _history_authority(
     receipt_path.write_bytes(RESOURCE.canonical_json_bytes(receipt))
     receipt_path.chmod(0o444)
     _raw, receipt_identity = RESOURCE.snapshot_bytes(receipt_path)
+    _raw, git_identity = RESOURCE.snapshot_bytes(git_path)
     pre_run = {
         "history_freeze_replay_identity": receipt_identity,
-        "repository_head": HEAD,
+        "repository_git_tool_identity": git_identity,
+        "repository_head": current_head,
         "repository_root": str(repository),
         "live_source_provenance_root": str(repository),
         "sealed_snapshot_execution_root": str(sealed_snapshot_root),
@@ -1122,10 +1241,11 @@ def _history_authority(
 )
 def test_history_freeze_role_is_execution_class_specific_and_source_bound(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
     execution_class: str,
     manifest_role: str,
 ) -> None:
-    pre_run, manifest_identity = _history_authority(tmp_path)
+    pre_run, manifest_identity = _history_authority(tmp_path, monkeypatch)
     pre_run["execution_class"] = execution_class
     RESOURCE._replay_history_freeze(  # noqa: SLF001
         pre_run=pre_run,
@@ -1135,7 +1255,7 @@ def test_history_freeze_role_is_execution_class_specific_and_source_bound(
     wrong_role = "history_freeze_manifest" if manifest_role.startswith("input.") else "input.history_freeze_manifest"
     with pytest.raises(
         RESOURCE.VerificationError,
-        match="receipt semantics drifted",
+        match="history freeze strict input identity",
     ):
         RESOURCE._replay_history_freeze(  # noqa: SLF001
             pre_run=pre_run,
