@@ -14,6 +14,7 @@ import socket
 import stat
 import subprocess
 import sys
+import threading
 import time
 from types import ModuleType, SimpleNamespace
 from typing import Any
@@ -1606,12 +1607,27 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
     attempt_path.parent.mkdir()
     events: list[str] = []
     published: dict[str, dict[str, object]] = {}
+    selection_before_readonly = threading.Event()
+    supervisor_observed_incomplete = threading.Event()
     actor = {
         "pid": os.getpid(),
         "role": launch_validator.OWNER_PUBLISHER_ROLE,
         "session_id": formal_orchestrator.SESSION_ID,
         "starttime": _process_starttime(os.getpid()),
     }
+    real_fchmod = authority.os.fchmod
+
+    def hold_selection_before_readonly(descriptor: int, mode: int) -> None:
+        # Keep the final name visible at 0600 until the supervisor has observed
+        # that incomplete publication state.  A consumer that waits only for
+        # path existence would race the publisher's final chmod/fsync.
+        target = Path(os.readlink(f"/proc/self/fd/{descriptor}"))
+        if target == selection_path and mode == 0o444:
+            selection_before_readonly.set()
+            assert supervisor_observed_incomplete.wait(timeout=5.0)
+        real_fchmod(descriptor, mode)
+
+    monkeypatch.setattr(authority.os, "fchmod", hold_selection_before_readonly)
 
     def publish(
         path: Path,
@@ -1680,9 +1696,24 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
         publish(guardian_path, guardian)
         publish(attempt_path, fixture.attempt_consumption)
         deadline = time.monotonic() + 5.0
-        while not selection_path.exists() and time.monotonic() < deadline:
-            time.sleep(0.01)
+        while time.monotonic() < deadline:
+            try:
+                observed = os.lstat(selection_path)
+            except FileNotFoundError:
+                time.sleep(0.01)
+                continue
+            observed_mode = stat.S_IMODE(observed.st_mode)
+            if stat.S_ISREG(observed.st_mode) and observed_mode == 0o444:
+                break
+            if stat.S_ISREG(observed.st_mode) and observed_mode == 0o600:
+                supervisor_observed_incomplete.set()
+                time.sleep(0.01)
+                continue
+            pytest.fail("formal selection has an invalid publication surface")
+        assert selection_before_readonly.is_set()
+        assert supervisor_observed_incomplete.is_set()
         assert selection_path.exists()
+        assert stat.S_IMODE(os.lstat(selection_path).st_mode) == 0o444
         selection_identity = authority.detached_identity(
             authority.snapshot_regular(selection_path)
         )
@@ -1709,6 +1740,8 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
 
     assert result["status"] == outcome
     assert result["owner_handoff_complete"] is True
+    assert selection_before_readonly.is_set()
+    assert supervisor_observed_incomplete.is_set()
     assert events == [
         "owner:1:admission",
         "supervisor:start",
