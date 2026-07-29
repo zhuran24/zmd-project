@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import socket
 import stat
+import subprocess
 import sys
 from types import ModuleType
 from types import SimpleNamespace
@@ -311,6 +312,55 @@ def test_bootstrap_final_preflight_replays_gate_a_with_unterminated_parser(
             gate_a=gate_a,
             planned=planned,
         )
+
+
+def test_bootstrap_fd_execution_resolves_renderer_identity(
+    tmp_path: Path,
+) -> None:
+    source = RESEARCH / "ab16_campaign_bootstrap_v2.py"
+    output = tmp_path / "gate-b-record.json"
+    driver = """
+import os
+from pathlib import Path
+import sys
+import types
+
+source = Path(sys.argv[1])
+descriptor = os.open(source, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+try:
+    fd_path = f"/proc/self/fd/{descriptor}"
+    raw = Path(fd_path).read_bytes()
+    module = types.ModuleType("_ab16_bootstrap_from_retained_fd")
+    module.__file__ = fd_path
+    module.__package__ = None
+    sys.modules[module.__name__] = module
+    exec(compile(raw, fd_path, "exec", dont_inherit=True), module.__dict__)
+    publisher = module._gate_b_publisher_for_parent(Path(sys.argv[2]))
+    if publisher["renderer_source"]["path"] != str(source.resolve()):
+        raise RuntimeError("renderer source did not resolve to its named source")
+finally:
+    os.close(descriptor)
+""".lstrip()
+    completed = subprocess.run(
+        [os.path.realpath(sys.executable), "-I", "-B", "-c", driver, str(source), str(output)],
+        check=False,
+        close_fds=True,
+        cwd=ROOT,
+        env={
+            "LANG": "C",
+            "LC_ALL": "C",
+            "PATH": "/usr/bin",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONNOUSERSITE": "1",
+        },
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+    )
+    assert completed.returncode == 0, completed.stderr.decode("utf-8", "replace")
+    assert completed.stdout == b""
+    assert completed.stderr == b""
 
 
 def test_preflight_environment_rejects_non_socket_bus_without_fd_leak(

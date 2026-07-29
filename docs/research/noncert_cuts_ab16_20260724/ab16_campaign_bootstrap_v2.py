@@ -1879,7 +1879,7 @@ def _validate_gate_b_publisher(
             raise BootstrapError("Gate-B qualification lock identity is malformed")
         lock_paths.append(lock["path"])
     output = _absolute(str(record["output_path"]))
-    current_renderer = _snapshot_mode_identity(Path(__file__))
+    current_renderer = _snapshot_mode_identity(Path(__file__).resolve())
     current_owner_source = _snapshot_mode_identity(
         Path(__file__).resolve().with_name("ab16_gate_b_qualification_v1.py")
     )
@@ -1956,7 +1956,7 @@ def _gate_b_publisher_for_parent(
             "session_id": session_id,
             "state": "PUBLISHED_FDS_RETAINED_PENDING_BOOTSTRAP_HANDOFF",
         },
-        "renderer_source": _snapshot_mode_identity(Path(__file__)),
+        "renderer_source": _snapshot_mode_identity(Path(__file__).resolve()),
     }
     _validate_gate_b_publisher(record, expected_output_path=output_path)
     return record
