@@ -283,6 +283,63 @@ def test_pinned_gate_a_preflight_uses_verified_session_bus_environment(
     assert _fd_count() == before
 
 
+def test_pinned_gate_a_preflight_environment_failure_closes_source_fds_once(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    entrypoint = tmp_path / "entrypoint.py"
+    entrypoint.write_bytes(b"raise AssertionError('not executed')\n")
+    real_open_regular = QUALIFICATION._open_regular  # noqa: SLF001
+    real_close = os.close
+    opened: list[int] = []
+    close_count: dict[int, int] = {}
+    primary = RuntimeError("session-env-fault")
+
+    def open_regular(path: Path | str) -> int:
+        descriptor = real_open_regular(path)
+        opened.append(descriptor)
+        return descriptor
+
+    def counted_close(descriptor: int) -> None:
+        if descriptor in opened:
+            close_count[descriptor] = close_count.get(descriptor, 0) + 1
+        real_close(descriptor)
+
+    monkeypatch.setattr(QUALIFICATION, "_open_regular", open_regular)
+    monkeypatch.setattr(QUALIFICATION.os, "close", counted_close)
+    monkeypatch.setattr(
+        QUALIFICATION,
+        "_preflight_environment",
+        lambda: (_ for _ in ()).throw(primary),
+    )
+    monkeypatch.setattr(
+        QUALIFICATION.subprocess,
+        "run",
+        lambda *_args, **_kwargs: pytest.fail("subprocess must not start"),
+    )
+    before = _fd_count()
+    with pytest.raises(RuntimeError, match="session-env-fault") as observed:
+        QUALIFICATION._run_pinned_gate_a_preflight(  # noqa: SLF001
+            {
+                "observation_identity": {
+                    "path": str(tmp_path / "observation.json"),
+                    "sha256": "a" * 64,
+                    "size_bytes": 1,
+                },
+                "planned_digest": "b" * 64,
+                "repository": tmp_path,
+                "scripts": {"gate_a_pinned_entrypoint_v2": entrypoint},
+                "system_paths": {"python3_13": Path(os.path.realpath(sys.executable))},
+            },
+            SimpleNamespace(gate_a_authority_root=tmp_path / "authority"),
+            tmp_path / "preflight",
+        )
+    assert observed.value is primary
+    assert len(opened) == 2
+    assert close_count == {descriptor: 1 for descriptor in opened}
+    assert _fd_count() == before
+
+
 def test_open_regular_runtime_failure_closes_once_without_masking_close_failure(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
