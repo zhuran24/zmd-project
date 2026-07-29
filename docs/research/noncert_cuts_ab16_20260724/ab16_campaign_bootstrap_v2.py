@@ -186,6 +186,8 @@ try:
             "-I",
             "-B",
             "/proc/self/fd/4",
+            "--loader-identity",
+            json.dumps(expected["loader"], sort_keys=True, separators=(",", ":")),
             "--authority-fd",
             "5",
             "--authority-identity",

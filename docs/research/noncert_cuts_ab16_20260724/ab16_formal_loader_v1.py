@@ -202,9 +202,13 @@ def _mode_identity(value: object, label: str) -> dict[str, object]:
     return {"mode": record["mode"], **projected}
 
 
-def _parse_authority_identity(value: object) -> dict[str, object]:
+def _parse_mode_identity_argument(
+    value: object,
+    *,
+    label: str,
+) -> dict[str, object]:
     if type(value) is not str or not value:
-        raise FormalLoaderError("authority identity argument is absent")
+        raise FormalLoaderError(f"{label} identity argument is absent")
 
     def pairs_without_duplicates(
         pairs: list[tuple[str, object]],
@@ -213,7 +217,7 @@ def _parse_authority_identity(value: object) -> dict[str, object]:
         for key, item in pairs:
             if key in result:
                 raise FormalLoaderError(
-                    "authority identity argument contains a duplicate key"
+                    f"{label} identity argument contains a duplicate key"
                 )
             result[key] = item
         return result
@@ -224,12 +228,14 @@ def _parse_authority_identity(value: object) -> dict[str, object]:
             object_pairs_hook=pairs_without_duplicates,
             parse_constant=lambda token: (_ for _ in ()).throw(
                 FormalLoaderError(
-                    f"authority identity contains invalid constant {token}"
+                    f"{label} identity contains invalid constant {token}"
                 )
             ),
         )
     except (json.JSONDecodeError, UnicodeError) as exc:
-        raise FormalLoaderError("authority identity argument is invalid JSON") from exc
+        raise FormalLoaderError(
+            f"{label} identity argument is invalid JSON"
+        ) from exc
     canonical = json.dumps(
         parsed,
         allow_nan=False,
@@ -238,8 +244,24 @@ def _parse_authority_identity(value: object) -> dict[str, object]:
         sort_keys=True,
     )
     if canonical != value:
-        raise FormalLoaderError("authority identity argument is not canonical")
-    return _mode_identity(parsed, "package-pinned authority")
+        raise FormalLoaderError(
+            f"{label} identity argument is not canonical"
+        )
+    return _mode_identity(parsed, label)
+
+
+def _parse_authority_identity(value: object) -> dict[str, object]:
+    return _parse_mode_identity_argument(
+        value,
+        label="package-pinned authority",
+    )
+
+
+def _parse_loader_identity(value: object) -> dict[str, object]:
+    return _parse_mode_identity_argument(
+        value,
+        label="selected formal loader",
+    )
 
 
 def _inside(path: Path, root: Path) -> bool:
@@ -335,7 +357,77 @@ def _repository_module(name: str) -> bool:
     )
 
 
-def _reject_ambient_modules(spec: RoleSpec, authority_module: ModuleType) -> None:
+def _verify_executing_loader(
+    expected: dict[str, object],
+) -> ModuleType:
+    module = sys.modules.get("__main__")
+    raw_file = getattr(module, "__file__", None)
+    if (
+        __name__ != "__main__"
+        or not isinstance(module, ModuleType)
+        or module.__dict__ is not globals()
+        or raw_file != "/proc/self/fd/4"
+    ):
+        raise FormalLoaderError(
+            "selected formal loader did not execute from fixed FD4"
+        )
+    expected_path = _resolved(str(expected["path"]))
+    signature_fields = (
+        "st_dev",
+        "st_ino",
+        "st_mode",
+        "st_nlink",
+        "st_size",
+        "st_mtime_ns",
+        "st_ctime_ns",
+    )
+    try:
+        before = os.fstat(4)
+        current = os.stat(expected_path, follow_symlinks=False)
+        proc_entry = os.stat(raw_file)
+        digest = hashlib.sha256()
+        offset = 0
+        while offset < before.st_size:
+            block = os.pread(4, min(1 << 20, before.st_size - offset), offset)
+            if not block:
+                raise FormalLoaderError(
+                    "selected formal loader FD4 ended early"
+                )
+            digest.update(block)
+            offset += len(block)
+        if os.pread(4, 1, offset):
+            raise FormalLoaderError("selected formal loader FD4 grew during replay")
+        after = os.fstat(4)
+    except OSError as exc:
+        raise FormalLoaderError(
+            "selected formal loader FD4 could not be replayed"
+        ) from exc
+    if (
+        not stat.S_ISREG(before.st_mode)
+        or before.st_nlink != 1
+        or stat.S_IMODE(before.st_mode) != expected["mode"]
+        or before.st_size != expected["size_bytes"]
+        or digest.hexdigest() != expected["sha256"]
+        or any(
+            getattr(before, field) != getattr(after, field)
+            for field in signature_fields
+        )
+        or (current.st_dev, current.st_ino) != (before.st_dev, before.st_ino)
+        or (proc_entry.st_dev, proc_entry.st_ino)
+        != (before.st_dev, before.st_ino)
+    ):
+        raise FormalLoaderError(
+            "selected formal loader FD4 identity drifted"
+        )
+    return module
+
+
+def _reject_ambient_modules(
+    spec: RoleSpec,
+    authority_module: ModuleType,
+    *,
+    executing_loader_module: ModuleType | None = None,
+) -> None:
     forbidden = [
         name
         for name in sys.modules
@@ -353,6 +445,12 @@ def _reject_ambient_modules(spec: RoleSpec, authority_module: ModuleType) -> Non
         if not isinstance(module, ModuleType):
             continue
         if module is authority_module:
+            continue
+        if name == "__main__" and module is executing_loader_module:
+            # The first-stage selected-byte literal has already verified FD4,
+            # and _verify_executing_loader independently joins that exact FD,
+            # path and identity.  No alias or replacement __main__ receives
+            # this exemption.
             continue
         for origin in _origin_paths(module):
             if _live_checkout_origin(origin):
@@ -532,6 +630,7 @@ def load_verified_role(
     *,
     campaign_dir: Path | str,
     role: str,
+    executing_loader_module: ModuleType | None = None,
 ) -> LoadedRole:
     """Replay, isolate and import one role through ordinary ``PathFinder``."""
 
@@ -540,7 +639,11 @@ def load_verified_role(
     spec = ROLE_MAP.get(role)
     if spec is None:
         raise FormalLoaderError(f"unknown formal loader role: {role}")
-    _reject_ambient_modules(spec, authority_module)
+    _reject_ambient_modules(
+        spec,
+        authority_module,
+        executing_loader_module=executing_loader_module,
+    )
     context = replay_loader_context(authority_module, campaign_dir=campaign_dir, role=role)
     snapshot_root = _resolved(context["snapshot_root"])
     expected_source = snapshot_root / spec.source_path
@@ -696,6 +799,7 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--authority-fd", type=int, required=True)
     parser.add_argument("--authority-identity", required=True)
+    parser.add_argument("--loader-identity", required=True)
     parser.add_argument("--campaign-dir", type=Path, required=True)
     parser.add_argument("--role", choices=tuple(ROLE_MAP), required=True)
     parser.add_argument("role_argv", nargs=argparse.REMAINDER)
@@ -710,6 +814,8 @@ def main(argv: list[str] | None = None) -> int:
     if role_argv[:1] == ["--"]:
         role_argv = role_argv[1:]
     try:
+        loader_identity = _parse_loader_identity(args.loader_identity)
+        executing_loader_module = _verify_executing_loader(loader_identity)
         authority_identity = _parse_authority_identity(args.authority_identity)
         authority_module = load_selected_authority_from_fd(
             campaign_dir=args.campaign_dir,
@@ -720,6 +826,7 @@ def main(argv: list[str] | None = None) -> int:
             authority_module,
             campaign_dir=args.campaign_dir,
             role=args.role,
+            executing_loader_module=executing_loader_module,
         )
         entrypoint = getattr(selected.module, "main", None)
         if not callable(entrypoint):

@@ -989,8 +989,14 @@ clean = {
 if dict(os.environ) != clean:
     raise SystemExit(121)
 argv = sys.argv[1:]
+try:
+    loader_identity = json.loads(argv[1])
+except (IndexError, json.JSONDecodeError):
+    raise SystemExit(122)
 if (
-    argv[:2] != ["--authority-fd", "5"]
+    argv[:1] != ["--loader-identity"]
+    or set(loader_identity) != {"mode", "path", "sha256", "size_bytes"}
+    or argv[2:4] != ["--authority-fd", "5"]
     or "--campaign-dir" not in argv
     or "--role" not in argv
     or "--" not in argv
@@ -2110,6 +2116,99 @@ print("PASS")
 
     (base_prefix / ".git").mkdir()
     assert loader._live_checkout_origin(frozen_origin) is True  # noqa: SLF001
+
+
+def test_loader_allows_only_its_executing_main_module() -> None:
+    loader_path = Path(loader.__file__).resolve()
+    command = """
+import contextlib
+import hashlib
+import io
+import os
+from pathlib import Path
+import stat
+import sys
+from types import ModuleType
+
+loader_path = Path(sys.argv[1])
+descriptor = os.open(loader_path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+os.dup2(descriptor, 4)
+if descriptor != 4:
+    os.close(descriptor)
+metadata = os.fstat(4)
+raw = os.pread(4, metadata.st_size, 0)
+expected = {
+    "mode": stat.S_IMODE(metadata.st_mode),
+    "path": str(loader_path),
+    "sha256": hashlib.sha256(raw).hexdigest(),
+    "size_bytes": len(raw),
+}
+
+def execute_main(filename):
+    module = ModuleType("__main__")
+    module.__file__ = filename
+    module.__package__ = None
+    module.__spec__ = None
+    sys.modules["__main__"] = module
+    sys.argv = [filename]
+    with contextlib.redirect_stderr(io.StringIO()):
+        try:
+            exec(compile(raw, filename, "exec"), module.__dict__, module.__dict__)
+        except SystemExit as exc:
+            assert exc.code == 2
+        else:
+            raise AssertionError("loader script unexpectedly accepted an empty CLI")
+    return module
+
+ordinary = execute_main(str(loader_path))
+try:
+    ordinary._verify_executing_loader(expected)
+except ordinary.FormalLoaderError as exc:
+    assert "did not execute from fixed FD4" in str(exc)
+else:
+    raise AssertionError("ordinary-path loader execution was accepted")
+
+module = execute_main("/proc/self/fd/4")
+drifted = dict(expected)
+drifted["sha256"] = "0" * 64
+try:
+    module._verify_executing_loader(drifted)
+except module.FormalLoaderError as exc:
+    assert "FD4 identity drifted" in str(exc)
+else:
+    raise AssertionError("loader FD4 digest drift was accepted")
+verified = module._verify_executing_loader(expected)
+assert verified is module
+module._reject_ambient_modules(
+    module.ROLE_MAP["formal-controller"],
+    ModuleType("_selected_authority"),
+    executing_loader_module=verified,
+)
+
+hijacked = ModuleType("__main__")
+hijacked.__file__ = str(loader_path)
+sys.modules["__main__"] = hijacked
+try:
+    module._reject_ambient_modules(
+        module.ROLE_MAP["formal-controller"],
+        ModuleType("_selected_authority"),
+        executing_loader_module=verified,
+    )
+except module.FormalLoaderError as exc:
+    assert "preloaded module __main__ came from a live checkout" in str(exc)
+else:
+    raise AssertionError("replacement __main__ module was accepted")
+print("PASS")
+"""
+    completed = subprocess.run(
+        [sys.executable, "-I", "-B", "-c", command, str(loader_path)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == "PASS\n"
+    assert completed.stderr == ""
 
 
 def test_loader_rejects_duplicate_identity_and_same_fd_digest_drift(
