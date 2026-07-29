@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ctypes
 import fcntl
+import hashlib
 import importlib.util
 import json
 import os
@@ -227,6 +228,41 @@ def test_fake_session_bus_fixture_accepts_long_pytest_root(
     finally:
         bus.close()
     assert {key: environment[key] for key in expected} == expected
+
+
+def test_gate_b_final_preflight_receipt_uses_unterminated_canonical_contract(
+    tmp_path: Path,
+) -> None:
+    receipt = tmp_path / "receipt.json"
+    value = {"schema_version": "fixture-v1", "status": "PASS"}
+    raw = QUALIFICATION._canonical_json(value)[:-1]  # noqa: SLF001
+    receipt.write_bytes(raw)
+    receipt.chmod(0o444)
+    before = _fd_count()
+    observed, identity = QUALIFICATION._unterminated_mode_record(  # noqa: SLF001
+        receipt,
+        "Gate-B final full-preflight receipt",
+    )
+    assert _fd_count() == before
+    assert observed == value
+    assert identity == {
+        "mode": 0o444,
+        "path": str(receipt),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+
+    terminated = tmp_path / "terminated.json"
+    terminated.write_bytes(QUALIFICATION._canonical_json(value))  # noqa: SLF001
+    with pytest.raises(
+        QUALIFICATION.QualificationError,
+        match="canonical JSON",
+    ):
+        QUALIFICATION._unterminated_mode_record(  # noqa: SLF001
+            terminated,
+            "Gate-B final full-preflight receipt",
+        )
+    assert _fd_count() == before
 
 
 def test_preflight_environment_rejects_non_socket_bus_without_fd_leak(
@@ -1001,10 +1037,6 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
         RESULT_SCHEMA = "bootstrap-v3"
 
         @staticmethod
-        def _canonical_mode_record(path: Path, _label: str) -> tuple[dict[str, object], dict[str, object]]:
-            return json.loads(path.read_bytes()), _identity(path)
-
-        @staticmethod
         def _validate_final_full_preflight(
             value: object,
             *,
@@ -1143,7 +1175,7 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
         events.append("pinned-record-preflight")
         destination.mkdir()
         (destination / "receipt.json").write_bytes(
-            QUALIFICATION._canonical_json(final_receipt)  # noqa: SLF001
+            QUALIFICATION._canonical_json(final_receipt)[:-1]  # noqa: SLF001
         )
         (destination / "receipt.json").chmod(0o444)
 
