@@ -436,13 +436,19 @@ def _wait_record(
             raise FormalCampaignError(
                 f"{label} surface could not be inspected"
             ) from exc
-        if stat.S_ISREG(observed.st_mode):
+        observed_mode = stat.S_IMODE(observed.st_mode)
+        if stat.S_ISREG(observed.st_mode) and observed_mode == 0o444:
             return _read_record(
                 target,
                 expected_identity=expected_identity,
                 label=label,
             )
-        raise FormalCampaignError(f"{label} surface is not one regular non-symlink file")
+        if stat.S_ISREG(observed.st_mode) and observed_mode == 0o600:
+            sleeper(POLL_SECONDS)
+            continue
+        raise FormalCampaignError(
+            f"{label} surface is not one completed readonly regular file"
+        )
     raise FormalCampaignError(f"{label} did not appear before its fixed deadline")
 
 
@@ -2026,8 +2032,12 @@ def _wait_arm_request(
             raise IrreversibleFormalFailure(
                 f"{slot} prelaunch request surface could not be inspected"
             ) from exc
-        if stat.S_ISREG(observed.st_mode):
+        observed_mode = stat.S_IMODE(observed.st_mode)
+        if stat.S_ISREG(observed.st_mode) and observed_mode == 0o444:
             return
+        if stat.S_ISREG(observed.st_mode) and observed_mode == 0o600:
+            time.sleep(POLL_SECONDS)
+            continue
         raise IrreversibleFormalFailure(
             f"{slot} prelaunch request surface is unsafe"
         )

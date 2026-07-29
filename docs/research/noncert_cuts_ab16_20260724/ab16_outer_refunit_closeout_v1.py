@@ -135,7 +135,7 @@ class ChildTarget:
 
 
 class ReceiptStore:
-    """Canonical O_EXCL publication with same-byte readback."""
+    """Canonical readonly O_EXCL publication with same-byte readback."""
 
     def __init__(self) -> None:
         self._attempted_paths: set[str] = set()
@@ -167,7 +167,11 @@ class ReceiptStore:
         if publication is not None and not publication.attempted:
             raise OuterCloseoutError(f"{label} publication effect was not begun")
         record = dict(value)
-        identity = authority._write_exclusive(path, authority.canonical_json(record))  # noqa: SLF001
+        identity = authority._write_exclusive(  # noqa: SLF001
+            path,
+            authority.canonical_json(record),
+            mode=0o444,
+        )
         if publication is not None:
             publication.note_returned(identity)
         replay, replay_identity = self.document(path, label)

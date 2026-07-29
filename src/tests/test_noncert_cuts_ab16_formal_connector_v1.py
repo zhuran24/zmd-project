@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import socket
+import stat
 import subprocess
 import sys
 import time
@@ -657,6 +658,76 @@ def test_launch_renderers_are_pure_canonical_and_publication_is_no_overwrite(
     with pytest.raises(Exception):
         authority._write_exclusive(publication, admission_raw, mode=0o444)  # noqa: SLF001
     assert publication.read_bytes() == admission_raw
+
+
+def test_readonly_publication_uses_mode_as_completion_signal(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    publication = tmp_path / "readonly-publication.json"
+    raw = authority.canonical_json({"status": "PASS"})
+    real_write = authority.os.write
+    real_fchmod = authority.os.fchmod
+    real_fsync = authority.os.fsync
+    events: list[str] = []
+
+    def observe_write(descriptor: int, data: bytes | bytearray | memoryview) -> int:
+        events.append(f"write:{stat.S_IMODE(os.fstat(descriptor).st_mode):04o}")
+        return real_write(descriptor, data)
+
+    def observe_fsync(descriptor: int) -> None:
+        events.append(f"fsync:{stat.S_IMODE(os.fstat(descriptor).st_mode):04o}")
+        real_fsync(descriptor)
+
+    def observe_fchmod(descriptor: int, mode: int) -> None:
+        events.append(f"fchmod:{mode:04o}")
+        real_fchmod(descriptor, mode)
+
+    monkeypatch.setattr(authority.os, "write", observe_write)
+    monkeypatch.setattr(authority.os, "fsync", observe_fsync)
+    monkeypatch.setattr(authority.os, "fchmod", observe_fchmod)
+    identity = authority._write_exclusive(  # noqa: SLF001
+        publication,
+        raw,
+        mode=0o444,
+    )
+
+    assert events == [
+        "write:0600",
+        "fsync:0600",
+        "fchmod:0444",
+        "fsync:0444",
+    ]
+    assert stat.S_IMODE(publication.stat().st_mode) == 0o444
+    assert publication.read_bytes() == raw
+    assert identity == authority.detached_identity(
+        authority.snapshot_regular(publication)
+    )
+
+
+def test_formal_controller_waits_for_readonly_completion(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    candidate = tmp_path / "arm-prelaunch-receipt.json"
+    candidate.write_bytes(authority.canonical_json({"status": "PASS"}))
+    candidate.chmod(0o600)
+    sleeps: list[float] = []
+
+    def complete_publication(seconds: float) -> None:
+        sleeps.append(seconds)
+        candidate.chmod(0o444)
+
+    monkeypatch.setattr(controller.time, "sleep", complete_publication)
+    record, identity = controller._wait_for_record(  # noqa: SLF001
+        candidate,
+        timeout_seconds=1.0,
+        label="arm prelaunch receipt",
+    )
+
+    assert record == {"status": "PASS"}
+    assert identity["path"] == str(candidate)
+    assert sleeps == [0.05]
 
 
 @pytest.mark.parametrize(
@@ -1683,6 +1754,37 @@ def test_formal_orchestrator_wait_uses_one_node_snapshot(
     assert record == {"status": "CONSUMED"}
     assert identity["path"] == str(candidate)
     assert stale_observations == 0
+
+
+def test_formal_orchestrator_waits_for_readonly_completion(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    candidate = tmp_path / "attempt-consumption.json"
+    candidate.write_bytes(authority.canonical_json({"status": "CONSUMED"}))
+    candidate.chmod(0o600)
+    sleeps: list[float] = []
+
+    def complete_publication(seconds: float) -> None:
+        sleeps.append(seconds)
+        candidate.chmod(0o444)
+
+    monkeypatch.setattr(formal_orchestrator.time, "sleep", complete_publication)
+    owner = SimpleNamespace(
+        pid=os.getpid(),
+        actor={"starttime": _process_starttime(os.getpid())},
+    )
+
+    record, identity = formal_orchestrator._wait_record(  # noqa: SLF001
+        candidate,
+        "formal attempt consumption",
+        owner=owner,
+        supervisor_alive=lambda: True,
+    )
+
+    assert record == {"status": "CONSUMED"}
+    assert identity["path"] == str(candidate)
+    assert sleeps == [formal_orchestrator.POLL_SECONDS]
 
 
 @pytest.mark.parametrize(

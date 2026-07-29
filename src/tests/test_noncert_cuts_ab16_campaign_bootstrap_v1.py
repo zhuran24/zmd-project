@@ -1401,6 +1401,9 @@ def test_owner_publisher_accepts_only_fully_sealed_memfd_and_publishes_0444(
         + hashlib.sha256(published.read_bytes()).hexdigest()
         + f" {published.stat().st_size}\n"
     )
+    source = BOOTSTRAP_V2.OWNER_OEXCL_PUBLISH_V1
+    assert "    0o600,\n    dir_fd=directory_fd,\n)" in source
+    assert source.index("os.fsync(fd)") < source.index("os.fchmod(fd, 0o444)")
 
     unsealed = _owner_publisher_probe(
         tmp_path / "unsealed",

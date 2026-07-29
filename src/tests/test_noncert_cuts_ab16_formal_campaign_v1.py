@@ -8,6 +8,7 @@ import importlib.util
 import inspect
 import os
 from pathlib import Path
+import stat
 import sys
 import threading
 from types import SimpleNamespace
@@ -3034,12 +3035,37 @@ def test_selection_wait_uses_one_node_snapshot(
     assert stale_observations == 0
 
 
+def test_selection_waits_for_readonly_completion(tmp_path: Path) -> None:
+    candidate = tmp_path / "selection.json"
+    candidate.write_bytes(FORMAL.authority.canonical_json({"status": "SELECTED"}))
+    candidate.chmod(0o600)
+    sleeps: list[float] = []
+
+    def complete_publication(seconds: float) -> None:
+        sleeps.append(seconds)
+        candidate.chmod(0o444)
+
+    record, identity = FORMAL._wait_record(
+        candidate,
+        expected_identity=None,
+        label="selection",
+        timeout_seconds=1.0,
+        monotonic=lambda: 0.0,
+        sleeper=complete_publication,
+    )
+
+    assert record == {"status": "SELECTED"}
+    assert identity["path"] == str(candidate)
+    assert sleeps == [FORMAL.POLL_SECONDS]
+
+
 def test_arm_request_wait_uses_one_node_snapshot(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     candidate = tmp_path / "arm-request.json"
     candidate.write_bytes(b"request")
+    candidate.chmod(0o444)
     real_is_file = Path.is_file
     stale_observations = 0
 
@@ -3063,6 +3089,53 @@ def test_arm_request_wait_uses_one_node_snapshot(
     )
 
     assert stale_observations == 0
+
+
+def test_arm_request_waits_for_readonly_completion(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    candidate = tmp_path / "arm-request.json"
+    candidate.write_bytes(b"request")
+    candidate.chmod(0o600)
+    sleeps: list[float] = []
+
+    def complete_publication(seconds: float) -> None:
+        sleeps.append(seconds)
+        candidate.chmod(0o444)
+
+    monkeypatch.setattr(FORMAL, "_guard_running", lambda *_args: None)
+    monkeypatch.setattr(FORMAL.time, "sleep", complete_publication)
+
+    FORMAL._wait_arm_request(
+        state=SimpleNamespace(),
+        host=SimpleNamespace(),
+        latch=SimpleNamespace(),
+        path=candidate,
+        slot="organic-arm-a001",
+        deadline=FORMAL.time.monotonic() + 1.0,
+    )
+
+    assert sleeps == [FORMAL.POLL_SECONDS]
+
+
+def test_receipt_store_publishes_readonly_validator_surface(
+    tmp_path: Path,
+) -> None:
+    candidate = tmp_path / "attempt-consumption.json"
+    store = FORMAL.closeout_helper.ReceiptStore()
+    record = {"status": "CONSUMED"}
+
+    identity = store.publish(candidate, record, "formal attempt consumption")
+    replay, replay_identity = FORMAL.launch_validator.read_canonical_record(
+        candidate,
+        expected_identity=identity,
+        label="formal attempt consumption",
+    )
+
+    assert stat.S_IMODE(candidate.stat().st_mode) == 0o444
+    assert replay == record
+    assert replay_identity == identity
 
 
 def test_guardian_connection_close_uncertainty_is_never_retried() -> None:

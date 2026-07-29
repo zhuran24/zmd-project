@@ -470,10 +470,12 @@ def _write_exclusive(path: Path | str, data: bytes, *, mode: int = 0o600) -> dic
     parent_fd = os.open(parent, os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:
         try:
+            # A requested 0444 mode is the cross-actor completion signal.  The
+            # final name remains non-ready while its bytes are still mutable.
             descriptor = os.open(
                 absolute.name,
                 os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-                mode,
+                0o600,
                 dir_fd=parent_fd,
             )
         except FileExistsError as exc:
@@ -485,6 +487,7 @@ def _write_exclusive(path: Path | str, data: bytes, *, mode: int = 0o600) -> dic
                 if written <= 0:
                     raise AuthorityError("OUTPUT_WRITE_FAILED", str(absolute))
                 view = view[written:]
+            os.fsync(descriptor)
             os.fchmod(descriptor, mode)
             os.fsync(descriptor)
         finally:

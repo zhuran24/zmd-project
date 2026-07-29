@@ -784,13 +784,19 @@ def _wait_record(
             raise FormalOrchestrationError(
                 f"{label} surface could not be inspected"
             ) from exc
-        if stat.S_ISREG(observed.st_mode):
+        observed_mode = stat.S_IMODE(observed.st_mode)
+        if stat.S_ISREG(observed.st_mode) and observed_mode == 0o444:
             return launch_validator.read_canonical_record(
                 path,
                 expected_identity=None,
                 label=label,
             )
-        raise FormalOrchestrationError(f"{label} is not a regular file")
+        if stat.S_ISREG(observed.st_mode) and observed_mode == 0o600:
+            time.sleep(POLL_SECONDS)
+            continue
+        raise FormalOrchestrationError(
+            f"{label} is not one completed readonly regular file"
+        )
     raise FormalOrchestrationError(f"{label} did not appear before deadline")
 
 

@@ -313,8 +313,27 @@ def _wait_for_record(
         raise FormalControllerError(f"{label} timeout is not positive")
     deadline = time.monotonic() + timeout_seconds
     while True:
-        if os.path.lexists(path):
+        try:
+            observed = os.lstat(path)
+        except FileNotFoundError:
+            observed = None
+        except OSError as exc:
+            raise FormalControllerError(
+                f"{label} surface could not be inspected"
+            ) from exc
+        if (
+            observed is not None
+            and stat.S_ISREG(observed.st_mode)
+            and stat.S_IMODE(observed.st_mode) == 0o444
+        ):
             return _read_record(path, expected_identity=None, label=label)
+        if observed is not None and (
+            not stat.S_ISREG(observed.st_mode)
+            or stat.S_IMODE(observed.st_mode) != 0o600
+        ):
+            raise FormalControllerError(
+                f"{label} surface is not one readonly regular file"
+            )
         if time.monotonic() >= deadline:
             raise FormalControllerError(f"{label} did not appear before its fixed deadline")
         time.sleep(0.05)

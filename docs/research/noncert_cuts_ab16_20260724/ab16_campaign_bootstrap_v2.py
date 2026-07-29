@@ -241,10 +241,12 @@ if (
     or fcntl.fcntl(source_fd, 1034) & required_seals != required_seals
 ):
     raise SystemExit(125)
+# The final name is visible but remains non-ready until the sealed source
+# bytes are durable and the publisher flips the mode to the fixed 0444 state.
 fd = os.open(
     basename,
     os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-    0o444,
+    0o600,
     dir_fd=directory_fd,
 )
 try:
@@ -254,6 +256,7 @@ try:
         if written <= 0:
             raise OSError("short write")
         view = view[written:]
+    os.fsync(fd)
     os.fchmod(fd, 0o444)
     os.fsync(fd)
 finally:
