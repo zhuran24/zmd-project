@@ -413,6 +413,50 @@ def _clean_environment() -> dict[str, str]:
     }
 
 
+def _verified_session_bus_environment() -> dict[str, str]:
+    uid = os.getuid()
+    if os.geteuid() != uid:
+        raise QualificationError("session bus environment requires matching real/effective uid")
+    runtime_path = Path(f"/run/user/{uid}")
+    bus_path = runtime_path / "bus"
+    expected_runtime = str(runtime_path)
+    expected_address = f"unix:path={bus_path}"
+
+    directory = _OwnedDescriptor()
+    try:
+        directory.acquire(_open_directory(runtime_path))
+        before = os.fstat(directory.descriptor)
+        bus = os.stat("bus", dir_fd=directory.descriptor, follow_symlinks=False)
+        after = os.fstat(directory.descriptor)
+        if (
+            _signature(before) != _signature(after)
+            or not stat.S_ISDIR(before.st_mode)
+            or stat.S_IMODE(before.st_mode) != 0o700
+            or before.st_uid != uid
+            or not stat.S_ISSOCK(bus.st_mode)
+            or bus.st_uid != uid
+            or bus.st_nlink != 1
+            or bus.st_dev != before.st_dev
+        ):
+            raise QualificationError("fixed per-user session bus node failed validation")
+    except BaseException as exc:
+        directory.close_preserving(exc)
+        raise
+    close_error = directory.close()
+    if close_error is not None:
+        _raise_cleanup_error("session bus directory descriptor", close_error)
+    return {
+        "DBUS_SESSION_BUS_ADDRESS": expected_address,
+        "XDG_RUNTIME_DIR": expected_runtime,
+    }
+
+
+def _preflight_environment() -> dict[str, str]:
+    environment = _clean_environment()
+    environment.update(_verified_session_bus_environment())
+    return environment
+
+
 def _lock_identity(descriptor: int, path: Path | str) -> dict[str, object]:
     absolute = Path(os.path.abspath(os.fspath(path)))
     metadata = os.fstat(descriptor)
@@ -1733,7 +1777,7 @@ def _run_pinned_gate_a_preflight(
             check=False,
             close_fds=True,
             cwd=context["repository"],
-            env=_clean_environment(),
+            env=_preflight_environment(),
             executable=f"/proc/self/fd/{python_fd}",
             pass_fds=(python_fd, entrypoint_fd),
             stdin=subprocess.DEVNULL,

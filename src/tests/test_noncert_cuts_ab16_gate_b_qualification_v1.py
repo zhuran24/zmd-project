@@ -125,6 +125,33 @@ def _fd_count() -> int:
     return len(os.listdir("/proc/self/fd"))
 
 
+def _install_fake_session_bus(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> tuple[socket.socket, dict[str, str]]:
+    runtime = tmp_path / "runtime"
+    runtime.mkdir(mode=0o700)
+    runtime.chmod(0o700)
+    bus = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    bus.bind(str(runtime / "bus"))
+    uid = os.getuid()
+    expected_runtime = f"/run/user/{uid}"
+    expected = {
+        "DBUS_SESSION_BUS_ADDRESS": f"unix:path={expected_runtime}/bus",
+        "XDG_RUNTIME_DIR": expected_runtime,
+    }
+    real_open_directory = QUALIFICATION._open_directory  # noqa: SLF001
+
+    def open_fake_runtime(path: Path | str) -> int:
+        assert Path(os.path.abspath(os.fspath(path))) == Path(expected_runtime)
+        return real_open_directory(runtime)
+
+    monkeypatch.setattr(QUALIFICATION, "_open_directory", open_fake_runtime)
+    for key, value in expected.items():
+        monkeypatch.setenv(key, value)
+    return bus, expected
+
+
 def _unstarted_owner(tmp_path: Path) -> object:
     return QUALIFICATION.PersistentGateBOwner(
         python_path=Path(os.path.realpath(sys.executable)),
@@ -135,6 +162,125 @@ def _unstarted_owner(tmp_path: Path) -> object:
         owner_driver="fixture",
         lock_paths=tuple(tmp_path / f"qualification-{index}.lock" for index in range(3)),
     )
+
+
+def test_preflight_environment_adds_only_verified_fixed_session_bus(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bus, expected = _install_fake_session_bus(tmp_path, monkeypatch)
+    try:
+        before = _fd_count()
+        environment = QUALIFICATION._preflight_environment()  # noqa: SLF001
+        assert _fd_count() == before
+    finally:
+        bus.close()
+
+    assert {key: environment[key] for key in expected} == expected
+    assert set(environment) == {
+        "DBUS_SESSION_BUS_ADDRESS",
+        "LANG",
+        "LC_ALL",
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONHASHSEED",
+        "PYTHONNOUSERSITE",
+        "TZ",
+        "XDG_RUNTIME_DIR",
+    }
+    clean = QUALIFICATION._clean_environment()  # noqa: SLF001
+    assert "DBUS_SESSION_BUS_ADDRESS" not in clean
+    assert "XDG_RUNTIME_DIR" not in clean
+
+
+def test_preflight_environment_ignores_inherited_session_bus_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bus, expected = _install_fake_session_bus(tmp_path, monkeypatch)
+    monkeypatch.setenv("XDG_RUNTIME_DIR", "/tmp/untrusted-runtime")
+    monkeypatch.setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/tmp/untrusted-bus")
+    try:
+        environment = QUALIFICATION._preflight_environment()  # noqa: SLF001
+    finally:
+        bus.close()
+    assert {key: environment[key] for key in expected} == expected
+
+
+def test_preflight_environment_rejects_non_socket_bus_without_fd_leak(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    runtime = tmp_path / "runtime"
+    runtime.mkdir(mode=0o700)
+    runtime.chmod(0o700)
+    (runtime / "bus").write_bytes(b"not-a-socket")
+    uid = os.getuid()
+    expected_runtime = f"/run/user/{uid}"
+    monkeypatch.setenv("XDG_RUNTIME_DIR", expected_runtime)
+    monkeypatch.setenv(
+        "DBUS_SESSION_BUS_ADDRESS",
+        f"unix:path={expected_runtime}/bus",
+    )
+    real_open_directory = QUALIFICATION._open_directory  # noqa: SLF001
+    monkeypatch.setattr(
+        QUALIFICATION,
+        "_open_directory",
+        lambda _path: real_open_directory(runtime),
+    )
+    before = _fd_count()
+    with pytest.raises(
+        QUALIFICATION.QualificationError,
+        match="session bus node failed validation",
+    ):
+        QUALIFICATION._preflight_environment()  # noqa: SLF001
+    assert _fd_count() == before
+
+
+def test_pinned_gate_a_preflight_uses_verified_session_bus_environment(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    entrypoint = tmp_path / "entrypoint.py"
+    entrypoint.write_bytes(b"raise AssertionError('not executed')\n")
+    expected_environment = {
+        **QUALIFICATION._clean_environment(),  # noqa: SLF001
+        "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1234/bus",
+        "XDG_RUNTIME_DIR": "/run/user/1234",
+    }
+    captured: dict[str, object] = {}
+
+    def run(_argv: object, **kwargs: object) -> object:
+        captured.update(kwargs)
+        return SimpleNamespace(
+            returncode=0,
+            stderr=b"",
+            stdout=b'{"status":"PASS"}\n',
+        )
+
+    monkeypatch.setattr(
+        QUALIFICATION,
+        "_preflight_environment",
+        lambda: dict(expected_environment),
+    )
+    monkeypatch.setattr(QUALIFICATION.subprocess, "run", run)
+    before = _fd_count()
+    QUALIFICATION._run_pinned_gate_a_preflight(  # noqa: SLF001
+        {
+            "observation_identity": {
+                "path": str(tmp_path / "observation.json"),
+                "sha256": "a" * 64,
+                "size_bytes": 1,
+            },
+            "planned_digest": "b" * 64,
+            "repository": tmp_path,
+            "scripts": {"gate_a_pinned_entrypoint_v2": entrypoint},
+            "system_paths": {"python3_13": Path(os.path.realpath(sys.executable))},
+        },
+        SimpleNamespace(gate_a_authority_root=tmp_path / "authority"),
+        tmp_path / "preflight",
+    )
+    assert captured["env"] == expected_environment
+    assert _fd_count() == before
 
 
 def test_open_regular_runtime_failure_closes_once_without_masking_close_failure(
