@@ -2109,6 +2109,13 @@ def _assigned_literal(
 def test_formal_pre_run_v2_shape_preregisters_and_replays_references() -> None:
     source = (TOOLS / "ab16_authority_v2.py").read_text()
     tree = ast.parse(source)
+    expected_tools = _function(tree, "_expected_pre_run_tools")
+    tool_roles = _assigned_literal(expected_tools, "tool_roles")
+    assert isinstance(tool_roles, dict)
+    assert tool_roles["attestor_python"] == "attestor_python"
+    assert tool_roles["python3_13"] == "python3_13"
+    assert tool_roles["attestor_python"] != tool_roles["python3_13"]
+
     builder = _function(tree, "_build_pre_run_candidate_unprotected")
     output_names = _assigned_literal(builder, "output_names")
     assert isinstance(output_names, dict)

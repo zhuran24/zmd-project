@@ -71,6 +71,7 @@ HISTORY_FROZEN_ROOTS = (
 )
 
 TOOL_SOURCE_ROLES = {
+    "attestor_python": "system.attestor_python",
     "busctl": "system.busctl",
     "manager_attestor": "script.manager_attestor_v4",
     "manager_epoch_authority": "script.campaign_authority_v4",

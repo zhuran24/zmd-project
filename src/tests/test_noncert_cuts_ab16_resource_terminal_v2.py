@@ -854,6 +854,9 @@ def _fixture(
         },
     )
     manager_epoch, manager_transcript = _manager_material(authority_dir)
+    workload_python_path = authority_dir / "workload-tools/python3.13"
+    workload_python_path.parent.mkdir()
+    workload_python_path.write_bytes(b"fixture workload python3.13\n")
     preselection_transcript_identity = _write(
         authority_dir / "preselection-transcript.json",
         manager_transcript,
@@ -1123,6 +1126,9 @@ def _fixture(
         "seal_identity": package_seal_identity,
     }
     tool_identities = {
+        "attestor_python": _tool_identity(
+            Path(manager_epoch["attestation_toolchain"]["python"]["path"])
+        ),
         "busctl": _tool_identity(Path(manager_epoch["observation_toolchain"]["busctl"]["path"])),
         "manager_attestor": _tool_identity(MANAGER_ATTESTOR_PATH),
         "manager_epoch_authority": _tool_identity(MANAGER_AUTHORITY_PATH),
@@ -1130,7 +1136,7 @@ def _fixture(
         "organic_resource_lifecycle": _tool_identity(LIFECYCLE_PATH),
         "organic_resource_verifier": _tool_identity(VERIFIER_PATH),
         "organic_unit_orchestrator": _tool_identity(ORCHESTRATOR_PATH),
-        "python3_13": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
+        "python3_13": _tool_identity(workload_python_path),
         "systemd_unit_reference": _tool_identity(TOOLS / "systemd_unit_reference_v1.py"),
         "libsystemd": libsystemd_identity,
         "sudo": _tool_identity(Path(manager_epoch["attestation_toolchain"]["sudo"]["path"])),
@@ -1227,12 +1233,12 @@ def _fixture(
         snapshot_manifest_identity = history_snapshot_manifest_identity
         snapshot_receipt_identity = history_snapshot_receipt_identity
         payload_argv = [
-            manager_epoch["attestation_toolchain"]["python"]["path"],
+            tool_identities["python3_13"]["path"],
             "-I",
             identities["strict"]["path"],
         ]
         supervisor_argv = [
-            manager_epoch["attestation_toolchain"]["python"]["path"],
+            tool_identities["python3_13"]["path"],
             "-I",
             str(LIFECYCLE_PATH),
             "supervise",
@@ -1251,7 +1257,7 @@ def _fixture(
         "environment_identity": identities["environment"],
         "libsystemd_path": libsystemd_identity["path"],
         "payload_argv": payload_argv,
-        "python3_13_path": manager_epoch["attestation_toolchain"]["python"]["path"],
+        "python3_13_path": tool_identities["python3_13"]["path"],
         "supervisor_argv": supervisor_argv,
         "systemctl_path": identities["systemctl"]["path"],
         "systemd_run_path": identities["systemd-run"]["path"],
@@ -1449,11 +1455,22 @@ def _offline_epoch_observer(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Any:
     transcript = VERIFIER.snapshot_json(pre_run["preselection_transcript_identity"]["path"]).value
-    authority = SimpleNamespace(
-        capture_manager_epoch_with_transcript=lambda **_kwargs: {
+    tools = pre_run["tool_identities"]
+
+    def capture_manager_epoch_with_transcript(**kwargs: object) -> dict[str, object]:
+        assert kwargs == {
+            "attestor_path": tools["manager_attestor"]["path"],
+            "busctl_path": tools["busctl"]["path"],
+            "python_path": tools["attestor_python"]["path"],
+            "sudo_path": tools["sudo"]["path"],
+        }
+        return {
             "manager_epoch": copy.deepcopy(pre_run["manager_epoch"]),
             "transcript": copy.deepcopy(transcript),
-        },
+        }
+
+    authority = SimpleNamespace(
+        capture_manager_epoch_with_transcript=capture_manager_epoch_with_transcript,
         validate_manager_epoch=MANAGER_AUTHORITY.validate_manager_epoch,
         validate_manager_epoch_capture_transcript=(MANAGER_AUTHORITY.validate_manager_epoch_capture_transcript),
     )
@@ -1498,6 +1515,73 @@ def test_pinned_epoch_observer_accepts_every_preregistered_phase(
     assert captured.manager_epoch == pre_run["manager_epoch"]
     assert captured.transcript == VERIFIER.snapshot_json(pre_run["preselection_transcript_identity"]["path"]).value
     assert not list(attempt.glob("manager-epoch-*.json"))
+
+
+def test_pinned_epoch_observer_uses_independent_attestor_python(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    tools = pre_run["tool_identities"]
+    attestor_python_path = Path(tools["attestor_python"]["path"])
+    workload_python_path = Path(tools["python3_13"]["path"])
+    assert attestor_python_path != workload_python_path
+    assert attestor_python_path.read_bytes() != workload_python_path.read_bytes()
+
+    observer = _offline_epoch_observer(
+        pre_run=pre_run,
+        monkeypatch=monkeypatch,
+    )
+
+    captured = observer("launch")
+
+    assert captured.manager_epoch == pre_run["manager_epoch"]
+
+
+def test_pinned_epoch_observer_rejects_python3_13_as_attestor(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    tools = pre_run["tool_identities"]
+    workload_python_path = Path(tools["python3_13"]["path"])
+    assert tools["attestor_python"] != tools["python3_13"]
+
+    poisoned_pre_run = copy.deepcopy(pre_run)
+    poisoned_pre_run["tool_identities"]["attestor_python"] = copy.deepcopy(
+        tools["python3_13"]
+    )
+    drifted_epoch = copy.deepcopy(pre_run["manager_epoch"])
+    drifted_epoch["attestation_toolchain"]["python"] = _full_identity(
+        workload_python_path
+    )
+
+    def capture_manager_epoch_with_transcript(**kwargs: object) -> dict[str, object]:
+        assert kwargs["python_path"] == tools["python3_13"]["path"]
+        return {
+            "manager_epoch": copy.deepcopy(drifted_epoch),
+            "transcript": {},
+        }
+
+    authority = SimpleNamespace(
+        capture_manager_epoch_with_transcript=capture_manager_epoch_with_transcript,
+        validate_manager_epoch=lambda _epoch: None,
+        validate_manager_epoch_capture_transcript=lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        ORCHESTRATOR,
+        "_load_pinned_module",
+        lambda *_args, **_kwargs: authority,
+    )
+    observer = ORCHESTRATOR.build_pinned_epoch_observer(poisoned_pre_run)
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="live manager/boot epoch drifted",
+    ):
+        observer("launch")
 
 
 @pytest.mark.parametrize("phase", ["terminal", "unknown-phase"])

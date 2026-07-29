@@ -636,6 +636,9 @@ def test_v2_authority_seals_exact_surface_and_never_authorizes_formal_use(
     assert (
         Path(pre_run["tool_identities"]["organic_unit_orchestrator"]["path"]).name == "organic_unit_orchestrator_v2.py"
     )
+    assert pre_run["tool_identities"]["attestor_python"]["path"] == str(system["attestor_python"])
+    assert pre_run["tool_identities"]["python3_13"]["path"] == str(system["python3_13"])
+    assert pre_run["tool_identities"]["attestor_python"] != pre_run["tool_identities"]["python3_13"]
     expected_source_roles = {
         *(f"script.{role}" for role in BUILDER.bootstrap.SCRIPT_TOOL_FILES),
         *(f"system.{role}" for role in BUILDER.bootstrap.SYSTEM_TOOL_ROLES),

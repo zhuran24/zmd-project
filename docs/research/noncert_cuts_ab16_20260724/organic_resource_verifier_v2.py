@@ -2091,6 +2091,7 @@ def validate_pre_run_authority(
         raise VerificationError("pre-run package identity is invalid")
     tools = _mapping(record.get("tool_identities"), "pre-run tool identities")
     if set(tools) != {
+        "attestor_python",
         "busctl",
         "manager_attestor",
         "manager_epoch_authority",

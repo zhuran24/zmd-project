@@ -167,6 +167,7 @@ OUTPUT_ROLES = (
     "attempt_result",
 )
 TOOL_ROLES = (
+    "attestor_python",
     "busctl",
     "manager_attestor",
     "manager_epoch_authority",

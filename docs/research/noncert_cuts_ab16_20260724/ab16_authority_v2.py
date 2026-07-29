@@ -3885,6 +3885,7 @@ def _expected_pre_run_tools(
     tool_roles = {
         "ab16_authority": "ab16_authority_v2",
         "ab16_formal_loader": "ab16_formal_loader_v1",
+        "attestor_python": "attestor_python",
         "busctl": "busctl",
         "manager_attestor": "manager_attestor_v4",
         "organic_arm_runner": "organic_arm_runner_v1",
