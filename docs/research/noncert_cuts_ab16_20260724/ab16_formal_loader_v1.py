@@ -428,6 +428,17 @@ def _reject_ambient_modules(
     *,
     executing_loader_module: ModuleType | None = None,
 ) -> None:
+    if executing_loader_module is not None:
+        loader_globals = executing_loader_module.__dict__
+        if (
+            sys.modules.get("__main__") is not executing_loader_module
+            or loader_globals is not globals()
+            or loader_globals.get("__name__") != "__main__"
+            or loader_globals.get("__file__") != "/proc/self/fd/4"
+        ):
+            raise FormalLoaderError(
+                "verified executing loader module or globals drifted"
+            )
     forbidden = [
         name
         for name in sys.modules

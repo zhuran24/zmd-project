@@ -2185,6 +2185,19 @@ module._reject_ambient_modules(
     executing_loader_module=verified,
 )
 
+originless_hijacked = ModuleType("__main__")
+sys.modules["__main__"] = originless_hijacked
+try:
+    module._reject_ambient_modules(
+        module.ROLE_MAP["formal-controller"],
+        ModuleType("_selected_authority"),
+        executing_loader_module=verified,
+    )
+except module.FormalLoaderError as exc:
+    assert "verified executing loader module or globals drifted" in str(exc)
+else:
+    raise AssertionError("origin-less replacement __main__ module was accepted")
+
 hijacked = ModuleType("__main__")
 hijacked.__file__ = str(loader_path)
 sys.modules["__main__"] = hijacked
@@ -2195,9 +2208,22 @@ try:
         executing_loader_module=verified,
     )
 except module.FormalLoaderError as exc:
-    assert "preloaded module __main__ came from a live checkout" in str(exc)
+    assert "verified executing loader module or globals drifted" in str(exc)
 else:
     raise AssertionError("replacement __main__ module was accepted")
+
+sys.modules["__main__"] = verified
+verified.__file__ = "/proc/self/fd/99"
+try:
+    module._reject_ambient_modules(
+        module.ROLE_MAP["formal-controller"],
+        ModuleType("_selected_authority"),
+        executing_loader_module=verified,
+    )
+except module.FormalLoaderError as exc:
+    assert "verified executing loader module or globals drifted" in str(exc)
+else:
+    raise AssertionError("verified loader globals drift was accepted")
 print("PASS")
 """
     completed = subprocess.run(
