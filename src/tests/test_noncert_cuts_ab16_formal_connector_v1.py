@@ -2025,6 +2025,52 @@ def test_loader_rejects_ambient_and_outside_snapshot_module_origins(
         )
 
 
+def test_loader_runtime_prefix_under_git_ancestor_is_platform_only(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    home = tmp_path / "home"
+    (home / ".git").mkdir(parents=True)
+    base_prefix = home / ".local/python"
+    venv_prefix = home / "live-project/.venv"
+    stdlib = base_prefix / "lib/python3.13"
+    site_packages = venv_prefix / "lib/python3.13/site-packages"
+    stdlib.mkdir(parents=True)
+    site_packages.mkdir(parents=True)
+    monkeypatch.setattr(loader.sys, "base_prefix", str(base_prefix))
+    monkeypatch.setattr(loader.sys, "base_exec_prefix", str(base_prefix))
+    monkeypatch.setattr(loader.sys, "prefix", str(venv_prefix))
+    monkeypatch.setattr(loader.sys, "exec_prefix", str(venv_prefix))
+
+    frozen_origin = stdlib / "importlib/_bootstrap.py"
+    package_origin = site_packages / "ortools/__init__.py"
+    assert loader._checkout_ancestor(frozen_origin) == home  # noqa: SLF001
+    assert loader._checkout_ancestor(package_origin) == home  # noqa: SLF001
+    assert loader._live_checkout_origin(frozen_origin) is False  # noqa: SLF001
+    assert loader._live_checkout_origin(package_origin) is False  # noqa: SLF001
+
+    live_checkout = home / "live-project"
+    (live_checkout / ".git").mkdir(parents=True)
+    assert loader._live_checkout_origin(  # noqa: SLF001
+        live_checkout / "docs/research/live.py"
+    ) is True
+
+    nested_checkout = site_packages / "ambient-plugin"
+    (nested_checkout / ".git").mkdir(parents=True)
+    assert loader._live_checkout_origin(  # noqa: SLF001
+        nested_checkout / "module.py"
+    ) is True
+
+    monkeypatch.setattr(loader.sys, "path", [str(stdlib), str(site_packages)])
+    assert loader._platform_paths(tmp_path / "snapshot") == [  # noqa: SLF001
+        str(stdlib),
+        str(site_packages),
+    ]
+    loader.sys.path.append(str(live_checkout))
+    with pytest.raises(loader.FormalLoaderError, match="checkout-shaped import path"):
+        loader._platform_paths(tmp_path / "snapshot")  # noqa: SLF001
+
+
 def test_loader_rejects_duplicate_identity_and_same_fd_digest_drift(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

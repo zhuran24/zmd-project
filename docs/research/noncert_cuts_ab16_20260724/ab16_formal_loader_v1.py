@@ -276,6 +276,37 @@ def _checkout_ancestor(path: Path) -> Path | None:
     return None
 
 
+def _runtime_prefixes() -> tuple[Path, ...]:
+    result: list[Path] = []
+    for raw in (
+        sys.base_prefix,
+        sys.base_exec_prefix,
+        sys.prefix,
+        sys.exec_prefix,
+    ):
+        if type(raw) is not str or not raw:
+            continue
+        path = _resolved(raw)
+        if path not in result:
+            result.append(path)
+    return tuple(result)
+
+
+def _live_checkout_origin(path: Path) -> bool:
+    checkout = _checkout_ancestor(path)
+    if checkout is None:
+        return False
+    for prefix in _runtime_prefixes():
+        if _inside(path, prefix) and _inside(prefix, checkout):
+            # A pinned interpreter or venv can itself live below a broader
+            # Git work tree (for example a home-directory dotfiles repo).
+            # Keep that explicit platform TCB, but do not excuse a checkout
+            # nested inside the runtime prefix: the nearest checkout would
+            # then no longer contain the prefix.
+            return False
+    return True
+
+
 def _origin_paths(module: ModuleType) -> list[Path]:
     paths: list[Path] = []
     raw_file = getattr(module, "__file__", None)
@@ -324,7 +355,7 @@ def _reject_ambient_modules(spec: RoleSpec, authority_module: ModuleType) -> Non
         if module is authority_module:
             continue
         for origin in _origin_paths(module):
-            if _checkout_ancestor(origin) is not None:
+            if _live_checkout_origin(origin):
                 raise FormalLoaderError(f"preloaded module {name} came from a live checkout")
 
 
@@ -339,7 +370,7 @@ def _platform_paths(snapshot_root: Path) -> list[str]:
             continue
         if not path.is_absolute():
             raise FormalLoaderError("isolated sys.path contains a non-absolute entry")
-        if _checkout_ancestor(path) is not None:
+        if _live_checkout_origin(path):
             raise FormalLoaderError(f"checkout-shaped import path is forbidden: {path}")
         if path not in seen:
             seen.add(path)
@@ -492,7 +523,7 @@ def _verify_import_closure(
         for origin in origins:
             if _inside(origin, snapshot_root):
                 continue
-            if _checkout_ancestor(origin) is not None:
+            if _live_checkout_origin(origin):
                 raise FormalLoaderError(f"new module {name} originated in a live checkout")
 
 
