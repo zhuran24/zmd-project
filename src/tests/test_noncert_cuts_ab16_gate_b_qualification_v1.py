@@ -209,11 +209,17 @@ def test_preflight_environment_ignores_inherited_session_bus_drift(
     bus, expected = _install_fake_session_bus(tmp_path, monkeypatch)
     monkeypatch.setenv("XDG_RUNTIME_DIR", "/tmp/untrusted-runtime")
     monkeypatch.setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/tmp/untrusted-bus")
+    monkeypatch.setenv("PYTEST_ADDOPTS", "--basetemp=/tmp/untrusted")
+    monkeypatch.setenv("PYTEST_PLUGINS", "untrusted_plugin")
+    monkeypatch.setenv("PYTHONPATH", "/tmp/untrusted-python")
     try:
         environment = QUALIFICATION._preflight_environment()  # noqa: SLF001
     finally:
         bus.close()
     assert {key: environment[key] for key in expected} == expected
+    assert "PYTEST_ADDOPTS" not in environment
+    assert "PYTEST_PLUGINS" not in environment
+    assert "PYTHONPATH" not in environment
 
 
 def test_fake_session_bus_fixture_accepts_long_pytest_root(
@@ -288,6 +294,9 @@ def test_bootstrap_final_preflight_replays_gate_a_with_unterminated_parser(
     }
     planned = {
         "input.preflight_gate": {},
+        "script.ab16_preflight_qualification_v1": {},
+        "script.ab16_pytest_collection_plugin_v1": {},
+        "script.ab16_pytest_collection_protocol_v1": {},
         "script.gate_a_validation_v2": {},
         "system.python3_13": {},
     }
@@ -311,6 +320,12 @@ def test_bootstrap_final_preflight_replays_gate_a_with_unterminated_parser(
             record,
             gate_a=gate_a,
             planned=planned,
+            receipt_identity={
+                "mode": 0o444,
+                "path": "/fixture/final-preflight.json",
+                "sha256": "f" * 64,
+                "size_bytes": 1,
+            },
         )
 
 
@@ -1316,6 +1331,7 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
     }
     campaign = tmp_path / "run-ab16-fixture"
     output = tmp_path / "qualification"
+    final_receipt_path = output / "final-full-preflight/receipt.json"
     renderer = _renderer(tmp_path / "bootstrap.py")
     owner_source = RESEARCH / "ab16_gate_b_qualification_v1.py"
     final_receipt = {"status": "PASS"}
@@ -1342,9 +1358,11 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
             *,
             gate_a: object,
             planned: object,
+            receipt_identity: object,
         ) -> object:
             del gate_a, planned
             assert value == final_receipt
+            assert receipt_identity == _identity(final_receipt_path)
             return value
 
         @staticmethod

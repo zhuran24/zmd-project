@@ -1,7 +1,7 @@
 # 24 — 仓库代码资产治理
 
 **Status:** CURRENT
-**Updated:** 2026-07-29
+**Updated:** 2026-07-30
 **Scope:** G1 代码资产清点、G2 逻辑隔离与 G3 最小公共研究基础层
 
 本文定义代码资产的可复算分类、维护者实现索引，以及 developer、evidence、replay、full
@@ -61,23 +61,23 @@ python devtools/check_repository_code_assets.py inventory --format json
 不是终态 developer 面；其中包含 6,517 个 `src/tests` nodeid 和 107 个当时被 bare discovery
 顺带收集的 auxiliary memory nodeid。
 
-G2 把 non-slow 全集拆成三个互斥面；下表是 G3 公共合同与 W0 D6
-evidence/replay tests 落地后的当前收据：
+G2 把 non-slow 全集拆成三个互斥面；下表是 2026-07-30 AB16 qualification
+收窄、既有 W0 D6 回归及治理测量闭合后的当前收据：
 
 | collect 面 | nodeids | 规范化 SHA256 |
 |---|---:|---|
-| developer | 3,541 | `a430d75867516b5b0b05516a4db191287e34d5c10bf4c1a3b188f723c7abc9d7` |
-| evidence、非 replay、非 slow | 1,512 | `362e0187f943eabb9e36b13a7d283b8ffc3d55e6a22c6e6e37bd0c263474c0d2` |
+| developer | 3,546 | `cc0c66ba0e8751665ac3da3d51cc3f33afebfdbc66572d441abfec007e73fc2a` |
+| evidence、非 replay、非 slow | 1,756 | `5341b4924b0ea12de507710956163eb2b57d4f3e1b90013ade3a796ab57baf20` |
 | replay、非 slow | 1,563 | `bac7d8817a81e5637db4c69ad9cbfe1ea4f0c3db5cadd21e6134c1387a55f75f` |
-| 三面并集 / full non-slow | 6,616 | `a635e8d531b849bdebe2c7b005299dcdfdcfd8a9abc25d7ec9946ad3e2de4855` |
-| full/all | 6,647 | `eeb6f3e1b45d491be286ece460c4da7758b677971ebf59bc766572462589ca16` |
+| 三面并集 / full non-slow | 6,865 | `c8562f86531928f02f8f75f2e05c5ef70d87df02d790f61295d4bcbcad126682` |
+| full/all | 6,896 | `8cb3f886c1d41b66db4b72530b5126f30b0841dbd5d63e8e77f340b73db8bc59` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
-full/all。G3 的 67 个快速公共合同 nodeid 进入 developer、full/non-slow 与 full/all；
-W0 D6 的 8 个 gate nodeid 进入 evidence，55 个独立 replay nodeid 进入 replay；
-slow 收据不变；`cuts_collection_counter` count 保持 958，SHA 因 lock-parity nodeid
-重命名更新为 `1431c01e8a0aa94f04bb9071e6cb5d6fdd5415d917133f3758ab9ffdf904bb0d`；
+full/all。新增 AB16 protocol/plugin/qualification、Gate-A authority 边界及普通 preflight
+隔离回归进入各自既有 lane；replay 与 slow 收据保持不变。`cuts_collection_counter`
+count 保持 958，规范化 SHA256 为
+`1431c01e8a0aa94f04bb9071e6cb5d6fdd5415d917133f3758ab9ffdf904bb0d`；
 其他既有 focused 入口收据不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。
 
 ## 分类合同

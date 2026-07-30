@@ -2028,6 +2028,7 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
             final_receipt,
             gate_a=context["gate_a"],
             planned=context["planned"],
+            receipt_identity=final_identity,
         )
         old_preflight = context["gate_a"]["full_preflight_receipt_identity"]
         if (

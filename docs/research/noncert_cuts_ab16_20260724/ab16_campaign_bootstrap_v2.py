@@ -47,7 +47,7 @@ GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v3"
 CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v2"
 RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v3"
 PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v4"
-FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v3"
+FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v5"
 REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
 EXTERNAL_PLATFORM_SCHEMA = "noncert-cuts-ab16-external-platform-assumptions-v2"
@@ -58,8 +58,14 @@ GATE_B_PURPOSE = "AB16_FORMAL_CAMPAIGN_IDENTITY_CREATION"
 GATE_B_EPOCH_PURPOSE = "AB16_GATE_B_MANAGER_EPOCH_OBSERVATION"
 FINAL_FULL_PREFLIGHT_PURPOSE = "AB16_GATE_A_FULL_PREFLIGHT"
 PATH_PREREGISTRATION_PURPOSE = "prospective_noncert_cuts_ab16_path_authority"
-FINAL_FULL_PREFLIGHT_EXECUTION_STRATEGY = "same-fd-python-prefix-and-nested-executable-v2"
+FINAL_FULL_PREFLIGHT_EXECUTION_STRATEGY = "same-fd-subreaper-ab16-qualification-runner-v4"
 FINAL_FULL_PREFLIGHT_TIMEOUT_SCALE = "12"
+FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME = "pytest-scratch"
+FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME = "basetemp"
+FINAL_FULL_PREFLIGHT_SCRATCH_POLICY = "fresh-no-overwrite-repo-local-retained-closed-tree-v1"
+FINAL_FULL_PREFLIGHT_PUBLICATION_COMMIT_SCHEMA = (
+    "noncert-cuts-ab16-gate-a-preflight-publication-commit-v1"
+)
 FINAL_FULL_PREFLIGHT_KEYS = {
     "authorizations",
     "authority_ready_identity",
@@ -68,11 +74,17 @@ FINAL_FULL_PREFLIGHT_KEYS = {
     "duration_monotonic_ns",
     "exit_code",
     "finished_at_utc",
+    "output_root_identity",
     "planned_source_set_digest",
     "pre_run_authority_identity",
+    "qualification_runner_identity",
     "preflight_script_identity",
     "preflight_timeout_scale",
     "purpose",
+    "pytest_collection",
+    "pytest_collection_plugin_identity",
+    "pytest_collection_protocol_identity",
+    "pytest_scratch",
     "python_identity",
     "repository_head",
     "repository_root",
@@ -1088,6 +1100,9 @@ AB16_SCRIPT_TOOL_FILES: dict[str, str] = {
     "ab16_outer_closeout_state_v1": "ab16_outer_closeout_state_v1.py",
     "ab16_outer_guardian_v1": "ab16_outer_guardian_v1.py",
     "ab16_outer_refunit_closeout_v1": "ab16_outer_refunit_closeout_v1.py",
+    "ab16_preflight_qualification_v1": "ab16_preflight_qualification_v1.py",
+    "ab16_pytest_collection_plugin_v1": "ab16_pytest_collection_plugin_v1.py",
+    "ab16_pytest_collection_protocol_v1": "ab16_pytest_collection_protocol_v1.py",
     "ab16_terminal_gate_v1": "ab16_terminal_gate_v1.py",
     "ab16_terminal_gate_v2": "ab16_terminal_gate_v2.py",
     "baseline_admission_v1": "baseline_admission_v1.py",
@@ -2232,11 +2247,321 @@ def _validate_gate_b(value: object) -> Mapping[str, Any]:
     return record
 
 
+def _validate_closed_preflight_scratch(
+    value: object,
+    *,
+    receipt_directory: Path,
+    label: str,
+) -> None:
+    record = _exact_keys(
+        value,
+        {
+            "basetemp_identity",
+            "basetemp_path",
+            "initial_identity",
+            "path",
+            "policy",
+            "retention_policy",
+            "status",
+        },
+        f"{label} pytest scratch",
+    )
+    identity = _exact_keys(
+        record["initial_identity"],
+        {"device", "inode", "mode", "uid"},
+        f"{label} pytest scratch initial identity",
+    )
+    basetemp_identity = _exact_keys(
+        record["basetemp_identity"],
+        {"device", "inode", "mode", "uid"},
+        f"{label} pytest basetemp identity",
+    )
+    if (
+        any(type(identity[field]) is not int for field in identity)
+        or any(type(basetemp_identity[field]) is not int for field in basetemp_identity)
+        or identity["device"] < 0
+        or identity["inode"] <= 0
+        or identity["mode"] != 0o700
+        or identity["uid"] != os.geteuid()
+        or basetemp_identity["device"] < 0
+        or basetemp_identity["inode"] <= 0
+        or basetemp_identity["mode"] != 0o700
+        or basetemp_identity["uid"] != os.geteuid()
+        or record["path"] != str(receipt_directory / FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME)
+        or record["basetemp_path"]
+        != str(
+            receipt_directory
+            / FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME
+            / FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME
+        )
+        or record["policy"] != FINAL_FULL_PREFLIGHT_SCRATCH_POLICY
+        or record["retention_policy"] != "failed"
+        or record["status"] != "CLOSED_EMPTY_BASETEMP_RETAINED_AFTER_PASS"
+    ):
+        raise BootstrapError(f"{label} pytest scratch is not an exact closed PASS")
+    descriptor: int | None = None
+    basetemp_descriptor: int | None = None
+    try:
+        _absolute_scratch, descriptor = _open_directory_fd(Path(record["path"]))
+        observed = os.fstat(descriptor)
+        if (
+            not stat.S_ISDIR(observed.st_mode)
+            or observed.st_dev != identity["device"]
+            or observed.st_ino != identity["inode"]
+            or stat.S_IMODE(observed.st_mode) != identity["mode"]
+            or observed.st_uid != identity["uid"]
+        ):
+            raise BootstrapError(f"{label} pytest scratch identity drifted")
+        with os.scandir(descriptor) as iterator:
+            entries = list(iterator)
+        if len(entries) != 1 or entries[0].name != FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME:
+            raise BootstrapError(f"{label} pytest scratch tree drifted")
+        named = entries[0].stat(follow_symlinks=False)
+        if not stat.S_ISDIR(named.st_mode):
+            raise BootstrapError(f"{label} pytest basetemp type drifted")
+        basetemp_descriptor = os.open(
+            FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME,
+            os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
+            dir_fd=descriptor,
+        )
+        opened = os.fstat(basetemp_descriptor)
+        if (
+            (named.st_dev, named.st_ino) != (opened.st_dev, opened.st_ino)
+            or opened.st_dev != basetemp_identity["device"]
+            or opened.st_ino != basetemp_identity["inode"]
+            or stat.S_IMODE(opened.st_mode) != basetemp_identity["mode"]
+            or opened.st_uid != basetemp_identity["uid"]
+        ):
+            raise BootstrapError(f"{label} pytest basetemp identity drifted")
+        with os.scandir(basetemp_descriptor) as iterator:
+            if next(iterator, None) is not None:
+                raise BootstrapError(f"{label} pytest basetemp is not empty")
+    except BaseException as exc:
+        for opened_descriptor in (basetemp_descriptor, descriptor):
+            if opened_descriptor is None:
+                continue
+            try:
+                os.close(opened_descriptor)
+            except OSError as close_error:
+                exc.add_note(
+                    f"{label} pytest scratch cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+        if isinstance(exc, OSError):
+            raise BootstrapError(f"{label} pytest scratch closure check failed") from exc
+        raise
+    close_error: OSError | None = None
+    for opened_descriptor in (basetemp_descriptor, descriptor):
+        try:
+            os.close(opened_descriptor)
+        except OSError as exc:
+            if close_error is None:
+                close_error = exc
+    if close_error is not None:
+        raise BootstrapError(f"{label} pytest scratch descriptor close failed") from close_error
+
+
+def _validate_preflight_output_root(
+    value: object,
+    *,
+    receipt_directory: Path,
+    label: str,
+) -> None:
+    identity = _exact_keys(
+        value,
+        {"device", "inode", "mode", "uid"},
+        f"{label} output-root identity",
+    )
+    if (
+        any(type(identity[field]) is not int for field in identity)
+        or identity["device"] < 0
+        or identity["inode"] <= 0
+        or identity["mode"] != 0o700
+        or identity["uid"] != os.geteuid()
+    ):
+        raise BootstrapError(f"{label} output-root identity is malformed")
+    descriptor: int | None = None
+    try:
+        _absolute_output, descriptor = _open_directory_fd(receipt_directory)
+        observed = os.fstat(descriptor)
+        if (
+            not stat.S_ISDIR(observed.st_mode)
+            or observed.st_dev != identity["device"]
+            or observed.st_ino != identity["inode"]
+            or stat.S_IMODE(observed.st_mode) != identity["mode"]
+            or observed.st_uid != identity["uid"]
+        ):
+            raise BootstrapError(f"{label} output-root identity drifted")
+        with os.scandir(descriptor) as iterator:
+            entries = {entry.name for entry in iterator}
+        if entries != {
+            FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME,
+            "receipt.commit.json",
+            "receipt.json",
+            "stderr.log",
+            "stdout.log",
+        }:
+            raise BootstrapError(f"{label} output-root member set drifted")
+    except BaseException as exc:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError as close_error:
+                exc.add_note(
+                    f"{label} output-root cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+        if isinstance(exc, OSError):
+            raise BootstrapError(f"{label} output-root validation failed") from exc
+        raise
+    try:
+        os.close(descriptor)
+    except OSError as exc:
+        raise BootstrapError(f"{label} output-root descriptor close failed") from exc
+
+
+def _validate_preflight_publication_commit(
+    *,
+    receipt_identity: Mapping[str, object],
+    output_root_identity: object,
+    label: str,
+) -> None:
+    receipt_path = Path(str(receipt_identity["path"]))
+    record, identity = _unterminated_canonical_mode_record(
+        receipt_path.parent / "receipt.commit.json",
+        f"{label} publication commit",
+    )
+    commit = _exact_keys(
+        record,
+        {
+            "output_root_identity",
+            "receipt_identity",
+            "schema_version",
+            "status",
+        },
+        f"{label} publication commit",
+    )
+    if (
+        identity["mode"] != 0o444
+        or commit["schema_version"] != FINAL_FULL_PREFLIGHT_PUBLICATION_COMMIT_SCHEMA
+        or commit["status"] != "COMMITTED"
+        or commit["receipt_identity"] != receipt_identity
+        or commit["output_root_identity"] != output_root_identity
+    ):
+        raise BootstrapError(f"{label} publication commit is invalid")
+
+
+def _validate_preflight_collection_projection(
+    value: object,
+    *,
+    label: str,
+) -> Mapping[str, Any]:
+    record = _exact_keys(
+        value,
+        {
+            "collection_count",
+            "collection_sha256",
+            "manifest_sha256",
+            "markexpr",
+            "schema_version",
+            "stage_module_origin_count",
+            "stage_sha256",
+            "terminal_module_origin_count",
+            "terminal_sha256",
+            "workflow",
+        },
+        f"{label} pytest collection projection",
+    )
+    if (
+        type(record["collection_count"]) is not int
+        or record["collection_count"] <= 0
+        or type(record["stage_module_origin_count"]) is not int
+        or record["stage_module_origin_count"] < 0
+        or type(record["terminal_module_origin_count"]) is not int
+        or record["terminal_module_origin_count"] < 0
+        or any(
+            type(record[field]) is not str
+            or SHA256_RE.fullmatch(record[field]) is None
+            for field in (
+                "collection_sha256",
+                "manifest_sha256",
+                "stage_sha256",
+                "terminal_sha256",
+            )
+        )
+        or record["markexpr"] != "not slow"
+        or record["schema_version"]
+        != "noncert-cuts-ab16-pytest-collection-binding-v1"
+        or record["workflow"] != "full"
+    ):
+        raise BootstrapError(f"{label} pytest collection projection is malformed")
+    return record
+
+
+def _expected_preflight_qualification_argv(
+    record: Mapping[str, Any],
+    *,
+    python: Mapping[str, object],
+    qualification: Mapping[str, object],
+    preflight: Mapping[str, object],
+    protocol: Mapping[str, object],
+    plugin: Mapping[str, object],
+    label: str,
+) -> list[object]:
+    collection = _validate_preflight_collection_projection(
+        record["pytest_collection"],
+        label=label,
+    )
+    repository = Path(record["repository_root"])
+    scratch = _exact_keys(
+        record["pytest_scratch"],
+        {
+            "basetemp_identity",
+            "basetemp_path",
+            "initial_identity",
+            "path",
+            "policy",
+            "retention_policy",
+            "status",
+        },
+        f"{label} pytest scratch",
+    )
+    basetemp = Path(scratch["basetemp_path"])
+    try:
+        basetemp_relative = basetemp.relative_to(repository)
+    except ValueError as exc:
+        raise BootstrapError(f"{label} basetemp is outside its repository") from exc
+    return [
+        python["path"],
+        "-I",
+        "-B",
+        qualification["path"],
+        "--repository-root",
+        str(repository),
+        "--basetemp",
+        str(basetemp),
+        "--basetemp-relative",
+        basetemp_relative.as_posix(),
+        "--expected-count",
+        str(collection["collection_count"]),
+        "--expected-sha256",
+        collection["collection_sha256"],
+        "--preflight-source",
+        preflight["path"],
+        "--collection-protocol-source",
+        protocol["path"],
+        "--collection-plugin-source",
+        plugin["path"],
+        "--full",
+    ]
+
+
 def _validate_final_full_preflight(
     value: object,
     *,
     gate_a: Mapping[str, Any],
     planned: Mapping[str, Mapping[str, object]],
+    receipt_identity: Mapping[str, object],
 ) -> Mapping[str, Any]:
     record = _exact_keys(value, FINAL_FULL_PREFLIGHT_KEYS, "Gate-B final full-preflight receipt")
     _utc(record["started_at_utc"], "Gate-B final full-preflight started_at_utc")
@@ -2245,7 +2570,10 @@ def _validate_final_full_preflight(
         "authority_ready_identity",
         "detached_replay_identity",
         "pre_run_authority_identity",
+        "qualification_runner_identity",
         "preflight_script_identity",
+        "pytest_collection_plugin_identity",
+        "pytest_collection_protocol_identity",
         "python_identity",
         "runner_tool_identity",
         "stderr_identity",
@@ -2270,6 +2598,18 @@ def _validate_final_full_preflight(
     ):
         raise BootstrapError("Gate-B final full-preflight loader identity is malformed")
     expected_preflight = _project_mode_identity(planned["input.preflight_gate"], "preflight script")
+    expected_qualification = _project_mode_identity(
+        planned["script.ab16_preflight_qualification_v1"],
+        "AB16 preflight qualification runner",
+    )
+    expected_protocol = _project_mode_identity(
+        planned["script.ab16_pytest_collection_protocol_v1"],
+        "AB16 pytest collection protocol",
+    )
+    expected_plugin = _project_mode_identity(
+        planned["script.ab16_pytest_collection_plugin_v1"],
+        "AB16 pytest collection plugin",
+    )
     expected_python = _project_mode_identity(planned["system.python3_13"], "preflight Python")
     expected_runner = _project_mode_identity(planned["script.gate_a_validation_v2"], "preflight runner")
     gate_a_preflight, gate_a_identity = _unterminated_canonical_mode_record(
@@ -2310,10 +2650,42 @@ def _validate_final_full_preflight(
         or gate_a_preflight["planned_source_set_digest"] != gate_a["planned_source_set_digest"]
         or gate_a_preflight["repository_head"] != gate_a["repository_head"]
         or gate_a_preflight["repository_root"] != gate_a["repository_root"]
+        or gate_a_preflight["preflight_script_identity"] != expected_preflight
+        or gate_a_preflight["qualification_runner_identity"] != expected_qualification
+        or gate_a_preflight["pytest_collection_protocol_identity"] != expected_protocol
+        or gate_a_preflight["pytest_collection_plugin_identity"] != expected_plugin
+        or gate_a_preflight["python_identity"] != expected_python
+        or gate_a_preflight["runner_tool_identity"] != expected_runner
         or gate_a_command["execution_strategy"] != FINAL_FULL_PREFLIGHT_EXECUTION_STRATEGY
+        or gate_a_command["argv"]
+        != _expected_preflight_qualification_argv(
+            gate_a_preflight,
+            python=expected_python,
+            qualification=expected_qualification,
+            preflight=expected_preflight,
+            protocol=expected_protocol,
+            plugin=expected_plugin,
+            label="Gate-A full-preflight receipt",
+        )
         or loader != gate_a_loader
     ):
         raise BootstrapError("Gate-A full-preflight receipt no longer joins Gate A")
+    gate_a_receipt_directory = Path(gate_a["full_preflight_receipt_identity"]["path"]).parent
+    _validate_preflight_publication_commit(
+        receipt_identity=gate_a["full_preflight_receipt_identity"],
+        output_root_identity=gate_a_preflight["output_root_identity"],
+        label="Gate-A full-preflight receipt",
+    )
+    _validate_preflight_output_root(
+        gate_a_preflight["output_root_identity"],
+        receipt_directory=gate_a_receipt_directory,
+        label="Gate-A full-preflight receipt",
+    )
+    _validate_closed_preflight_scratch(
+        gate_a_preflight["pytest_scratch"],
+        receipt_directory=gate_a_receipt_directory,
+        label="Gate-A full-preflight receipt",
+    )
     if (
         record["schema_version"] != FINAL_FULL_PREFLIGHT_SCHEMA
         or record["purpose"] != FINAL_FULL_PREFLIGHT_PURPOSE
@@ -2336,12 +2708,40 @@ def _validate_final_full_preflight(
         or record["repository_head"] != gate_a["repository_head"]
         or record["repository_root"] != gate_a["repository_root"]
         or record["preflight_script_identity"] != expected_preflight
+        or record["qualification_runner_identity"] != expected_qualification
+        or record["pytest_collection_protocol_identity"] != expected_protocol
+        or record["pytest_collection_plugin_identity"] != expected_plugin
         or record["python_identity"] != expected_python
         or record["runner_tool_identity"] != expected_runner
         or command["execution_strategy"] != FINAL_FULL_PREFLIGHT_EXECUTION_STRATEGY
-        or command["argv"] != [expected_python["path"], "-I", expected_preflight["path"], "--full"]
+        or command["argv"]
+        != _expected_preflight_qualification_argv(
+            record,
+            python=expected_python,
+            qualification=expected_qualification,
+            preflight=expected_preflight,
+            protocol=expected_protocol,
+            plugin=expected_plugin,
+            label="Gate-B final full-preflight receipt",
+        )
     ):
         raise BootstrapError("Gate-B final full-preflight is not one exact current-HEAD PASS")
+    final_receipt_directory = Path(receipt_identity["path"]).parent
+    _validate_preflight_publication_commit(
+        receipt_identity=receipt_identity,
+        output_root_identity=record["output_root_identity"],
+        label="Gate-B final full-preflight receipt",
+    )
+    _validate_preflight_output_root(
+        record["output_root_identity"],
+        receipt_directory=final_receipt_directory,
+        label="Gate-B final full-preflight receipt",
+    )
+    _validate_closed_preflight_scratch(
+        record["pytest_scratch"],
+        receipt_directory=final_receipt_directory,
+        label="Gate-B final full-preflight receipt",
+    )
     for field in ("stdout_identity", "stderr_identity"):
         if record[field]["mode"] != 0o444 or _snapshot_mode_identity(record[field]["path"]) != record[field]:
             raise BootstrapError(f"Gate-B final full-preflight {field} bytes drifted")
@@ -2445,6 +2845,7 @@ def _stat_signature(value: os.stat_result) -> tuple[int, ...]:
 def _open_directory_fd(path: Path) -> tuple[Path, int]:
     absolute = _absolute(path)
     flags = os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW
+    descriptor: int | None = None
     try:
         descriptor = os.open(absolute.anchor, flags)
         for component in absolute.parts[1:]:
@@ -2453,14 +2854,30 @@ def _open_directory_fd(path: Path) -> tuple[Path, int]:
                 flags,
                 dir_fd=descriptor,
             )
-            os.close(descriptor)
+            try:
+                os.close(descriptor)
+            except BaseException as exc:
+                try:
+                    os.close(next_descriptor)
+                except OSError as close_error:
+                    exc.add_note(
+                        "directory-chain cleanup failed: "
+                        f"{type(close_error).__name__}: {close_error}"
+                    )
+                raise
             descriptor = next_descriptor
-    except OSError as exc:
-        try:
-            os.close(descriptor)
-        except UnboundLocalError:
-            pass
-        raise BootstrapError("Git executable parent path is invalid or symlinked") from exc
+    except BaseException as exc:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError as close_error:
+                exc.add_note(
+                    "directory-chain cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+        if isinstance(exc, OSError):
+            raise BootstrapError("directory path is invalid or symlinked") from exc
+        raise
     return absolute, descriptor
 
 
@@ -3821,7 +4238,12 @@ def bootstrap_campaign(
         or final_full_preflight_identity["sha256"] == gate_a["full_preflight_receipt_identity"]["sha256"]
     ):
         raise BootstrapError("Gate-B final full-preflight is not independent from Gate A")
-    _validate_final_full_preflight(final_full_preflight, gate_a=gate_a, planned=planned)
+    _validate_final_full_preflight(
+        final_full_preflight,
+        gate_a=gate_a,
+        planned=planned,
+        receipt_identity=final_full_preflight_identity,
+    )
     gate_b_epoch_path = _absolute(gate_b["gate_b_epoch_observation_identity"]["path"])
     gate_b_epoch, gate_b_epoch_identity = _canonical_mode_record(
         gate_b_epoch_path,

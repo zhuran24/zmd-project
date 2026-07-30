@@ -111,6 +111,9 @@ def test_gate_approval_replay_uses_unterminated_parser_for_both_full_preflights(
             "input.preflight_gate",
             "script.ab16_campaign_bootstrap_v2",
             "script.ab16_gate_b_qualification_v1",
+            "script.ab16_preflight_qualification_v1",
+            "script.ab16_pytest_collection_plugin_v1",
+            "script.ab16_pytest_collection_protocol_v1",
             "script.gate_a_validation_v2",
             "system.python3_13",
         )
@@ -123,7 +126,12 @@ def test_gate_approval_replay_uses_unterminated_parser_for_both_full_preflights(
             "authority_ready_identity",
             "detached_replay_identity",
             "pre_run_authority_identity",
+            "qualification_runner_identity",
+            "preflight_script_identity",
+            "pytest_collection_plugin_identity",
+            "pytest_collection_protocol_identity",
             "python_identity",
+            "runner_tool_identity",
             "stderr_identity",
             "stdout_identity",
         )
@@ -655,6 +663,371 @@ def _gate_b_publisher(
         sequence=sequence,
         session_id=session_id,
     )
+
+
+def _directory_identity(path: Path) -> dict[str, int]:
+    metadata = path.stat(follow_symlinks=False)
+    return {
+        "device": metadata.st_dev,
+        "inode": metadata.st_ino,
+        "mode": stat.S_IMODE(metadata.st_mode),
+        "uid": metadata.st_uid,
+    }
+
+
+def _v5_full_preflight_publication(
+    tmp_path: Path,
+) -> tuple[
+    Path,
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+    dict[str, dict[str, object]],
+]:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    output = repository / "full-preflight"
+    output.mkdir(mode=0o700)
+    output.chmod(0o700)
+    scratch = output / BOOTSTRAP.FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME
+    scratch.mkdir(mode=0o700)
+    scratch.chmod(0o700)
+    basetemp = scratch / BOOTSTRAP.FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME
+    basetemp.mkdir(mode=0o700)
+    basetemp.chmod(0o700)
+    stdout_identity = _regular(output / "stdout.log", b"fixture stdout\n")
+    stderr_identity = _regular(output / "stderr.log", b"")
+
+    authority_ready = _regular(tmp_path / "authority-ready.json", b"authority ready\n")
+    detached_replay = _regular(tmp_path / "detached-replay.json", b"detached replay\n")
+    pre_run_authority = _regular(tmp_path / "pre-run-authority.json", b"pre-run authority\n")
+    preflight = _regular(tmp_path / "tools/preflight_gate.py", b"# preflight fixture\n")
+    qualification = _regular(
+        tmp_path / "tools/ab16_preflight_qualification_v1.py",
+        b"# qualification fixture\n",
+    )
+    protocol = _regular(
+        tmp_path / "tools/ab16_pytest_collection_protocol_v1.py",
+        b"# collection protocol fixture\n",
+    )
+    plugin = _regular(
+        tmp_path / "tools/ab16_pytest_collection_plugin_v1.py",
+        b"# collection plugin fixture\n",
+    )
+    runner = _regular(tmp_path / "tools/gate_a_validation_v2.py", b"# runner fixture\n")
+    python = _regular(tmp_path / "tools/python3.13", b"fixture Python\n", mode=0o755)
+    planned = {
+        "input.preflight_gate": dict(preflight),
+        "script.ab16_preflight_qualification_v1": dict(qualification),
+        "script.ab16_pytest_collection_protocol_v1": dict(protocol),
+        "script.ab16_pytest_collection_plugin_v1": dict(plugin),
+        "script.gate_a_validation_v2": dict(runner),
+        "system.python3_13": dict(python),
+    }
+    repository_root = str(repository)
+    planned_digest = "b" * 64
+    output_root_identity = _directory_identity(output)
+    collection = {
+        "collection_count": 1,
+        "collection_sha256": "d" * 64,
+        "manifest_sha256": "e" * 64,
+        "markexpr": "not slow",
+        "schema_version": "noncert-cuts-ab16-pytest-collection-binding-v1",
+        "stage_module_origin_count": 1,
+        "stage_sha256": "f" * 64,
+        "terminal_module_origin_count": 1,
+        "terminal_sha256": "0" * 64,
+        "workflow": "full",
+    }
+    record: dict[str, object] = {
+        "authority_ready_identity": authority_ready,
+        "authorizations": {
+            "formal_campaign_creation_authorized": False,
+            "organic_arm_launch_authorized": False,
+            "solver_run_authorized": False,
+        },
+        "command": {
+            "argv": [
+                python["path"],
+                "-I",
+                "-B",
+                qualification["path"],
+                "--repository-root",
+                repository_root,
+                "--basetemp",
+                str(basetemp),
+                "--basetemp-relative",
+                basetemp.relative_to(repository).as_posix(),
+                "--expected-count",
+                str(collection["collection_count"]),
+                "--expected-sha256",
+                collection["collection_sha256"],
+                "--preflight-source",
+                preflight["path"],
+                "--collection-protocol-source",
+                protocol["path"],
+                "--collection-plugin-source",
+                plugin["path"],
+                "--full",
+            ],
+            "execution_strategy": BOOTSTRAP.FINAL_FULL_PREFLIGHT_EXECUTION_STRATEGY,
+            "loader_identity": {
+                "sha256": "c" * 64,
+                "size_bytes": 1,
+            },
+        },
+        "detached_replay_identity": detached_replay,
+        "duration_monotonic_ns": 1,
+        "exit_code": 0,
+        "finished_at_utc": "2026-07-24T00:00:01Z",
+        "output_root_identity": output_root_identity,
+        "planned_source_set_digest": planned_digest,
+        "pre_run_authority_identity": pre_run_authority,
+        "qualification_runner_identity": qualification,
+        "preflight_script_identity": preflight,
+        "preflight_timeout_scale": BOOTSTRAP.FINAL_FULL_PREFLIGHT_TIMEOUT_SCALE,
+        "purpose": BOOTSTRAP.FINAL_FULL_PREFLIGHT_PURPOSE,
+        "pytest_collection": collection,
+        "pytest_collection_plugin_identity": plugin,
+        "pytest_collection_protocol_identity": protocol,
+        "pytest_scratch": {
+            "basetemp_identity": _directory_identity(basetemp),
+            "basetemp_path": str(basetemp),
+            "initial_identity": _directory_identity(scratch),
+            "path": str(scratch),
+            "policy": BOOTSTRAP.FINAL_FULL_PREFLIGHT_SCRATCH_POLICY,
+            "retention_policy": "failed",
+            "status": "CLOSED_EMPTY_BASETEMP_RETAINED_AFTER_PASS",
+        },
+        "python_identity": python,
+        "repository_head": HEAD,
+        "repository_root": repository_root,
+        "runner_tool_identity": runner,
+        "schema_version": BOOTSTRAP.FINAL_FULL_PREFLIGHT_SCHEMA,
+        "started_at_utc": "2026-07-24T00:00:00Z",
+        "status": "PASS",
+        "stderr_identity": stderr_identity,
+        "stdout_identity": stdout_identity,
+        "timed_out": False,
+    }
+    receipt_identity = _regular(
+        output / "receipt.json",
+        BOOTSTRAP.authority.canonical_json(record)[:-1],
+    )
+    _regular(
+        output / "receipt.commit.json",
+        BOOTSTRAP.authority.canonical_json(
+            {
+                "output_root_identity": output_root_identity,
+                "receipt_identity": receipt_identity,
+                "schema_version": BOOTSTRAP.FINAL_FULL_PREFLIGHT_PUBLICATION_COMMIT_SCHEMA,
+                "status": "COMMITTED",
+            }
+        )[:-1],
+    )
+    gate_a = {
+        "disposable_authority_ready_identity": authority_ready,
+        "disposable_detached_replay_identity": detached_replay,
+        "full_preflight_receipt_identity": receipt_identity,
+        "planned_source_set_digest": planned_digest,
+        "repository_head": HEAD,
+        "repository_root": repository_root,
+    }
+    return output, record, receipt_identity, gate_a, planned
+
+
+def _rewrite_unterminated_readonly(path: Path, value: object, *, mode: int = 0o444) -> None:
+    path.chmod(0o600)
+    path.write_bytes(BOOTSTRAP.authority.canonical_json(value)[:-1])
+    path.chmod(mode)
+
+
+def _validate_v5_publication_with_consumer(
+    module: ModuleType,
+    *,
+    output: Path,
+    record: dict[str, object],
+    receipt_identity: dict[str, object],
+) -> None:
+    module._validate_preflight_publication_commit(  # noqa: SLF001
+        receipt_identity=receipt_identity,
+        output_root_identity=record["output_root_identity"],
+        label="fixture full-preflight receipt",
+    )
+    module._validate_preflight_output_root(  # noqa: SLF001
+        record["output_root_identity"],
+        receipt_directory=output,
+        label="fixture full-preflight receipt",
+    )
+    module._validate_closed_preflight_scratch(  # noqa: SLF001
+        record["pytest_scratch"],
+        receipt_directory=output,
+        label="fixture full-preflight receipt",
+    )
+
+
+@pytest.mark.parametrize("module", [BOOTSTRAP, AUTHORITY], ids=["bootstrap", "authority"])
+def test_v5_full_preflight_consumers_accept_exact_committed_tree(
+    tmp_path: Path,
+    module: ModuleType,
+) -> None:
+    output, record, receipt_identity, _gate_a, _planned = _v5_full_preflight_publication(tmp_path)
+    _validate_v5_publication_with_consumer(
+        module,
+        output=output,
+        record=record,
+        receipt_identity=receipt_identity,
+    )
+
+
+@pytest.mark.parametrize("module", [BOOTSTRAP, AUTHORITY], ids=["bootstrap", "authority"])
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "extra-key",
+        "schema-drift",
+        "status-drift",
+        "receipt-identity-drift",
+        "output-root-identity-drift",
+        "staged-mode",
+    ],
+)
+def test_v5_full_preflight_consumers_reject_commit_marker_mutation(
+    tmp_path: Path,
+    module: ModuleType,
+    mutation: str,
+) -> None:
+    output, record, receipt_identity, _gate_a, _planned = _v5_full_preflight_publication(tmp_path)
+    marker_path = output / "receipt.commit.json"
+    marker = json.loads(marker_path.read_bytes())
+    marker_mode = 0o444
+    if mutation == "extra-key":
+        marker["extra"] = False
+    elif mutation == "schema-drift":
+        marker["schema_version"] = "stale-schema"
+    elif mutation == "status-drift":
+        marker["status"] = "STAGED"
+    elif mutation == "receipt-identity-drift":
+        marker["receipt_identity"]["sha256"] = "d" * 64
+    elif mutation == "output-root-identity-drift":
+        marker["output_root_identity"]["inode"] += 1
+    elif mutation == "staged-mode":
+        marker_mode = 0o600
+    else:
+        raise AssertionError(f"unknown mutation: {mutation}")
+    _rewrite_unterminated_readonly(marker_path, marker, mode=marker_mode)
+
+    error_type = module.BootstrapError if module is BOOTSTRAP else module.AuthorityError
+    with pytest.raises(error_type):
+        _validate_v5_publication_with_consumer(
+            module,
+            output=output,
+            record=record,
+            receipt_identity=receipt_identity,
+        )
+
+
+@pytest.mark.parametrize("module", [BOOTSTRAP, AUTHORITY], ids=["bootstrap", "authority"])
+@pytest.mark.parametrize("mutation", ["extra-root-member", "late-basetemp-child"])
+def test_v5_full_preflight_consumers_reject_closed_tree_mutation(
+    tmp_path: Path,
+    module: ModuleType,
+    mutation: str,
+) -> None:
+    output, record, receipt_identity, _gate_a, _planned = _v5_full_preflight_publication(tmp_path)
+    if mutation == "extra-root-member":
+        unknown = output / "unknown-member"
+    else:
+        unknown = (
+            output
+            / BOOTSTRAP.FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME
+            / BOOTSTRAP.FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME
+            / "late-child"
+        )
+    unknown.write_bytes(b"unknown retained bytes\n")
+
+    error_type = module.BootstrapError if module is BOOTSTRAP else module.AuthorityError
+    with pytest.raises(error_type):
+        _validate_v5_publication_with_consumer(
+            module,
+            output=output,
+            record=record,
+            receipt_identity=receipt_identity,
+        )
+    assert unknown.read_bytes() == b"unknown retained bytes\n"
+
+
+def test_bootstrap_final_full_preflight_rejects_rebound_v4_receipt(
+    tmp_path: Path,
+) -> None:
+    output, record, receipt_identity, gate_a, planned = _v5_full_preflight_publication(tmp_path)
+    stale_record = copy.deepcopy(record)
+    stale_record["schema_version"] = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v4"
+    receipt_path = output / "receipt.json"
+    _rewrite_unterminated_readonly(receipt_path, stale_record)
+    stale_receipt_identity = {
+        "mode": 0o444,
+        **BOOTSTRAP.authority.detached_identity(
+            BOOTSTRAP.authority.snapshot_regular(receipt_path)
+        ),
+    }
+    gate_a["full_preflight_receipt_identity"] = stale_receipt_identity
+    _rewrite_unterminated_readonly(
+        output / "receipt.commit.json",
+        {
+            "output_root_identity": record["output_root_identity"],
+            "receipt_identity": stale_receipt_identity,
+            "schema_version": BOOTSTRAP.FINAL_FULL_PREFLIGHT_PUBLICATION_COMMIT_SCHEMA,
+            "status": "COMMITTED",
+        },
+    )
+
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="no longer joins Gate A"):
+        BOOTSTRAP._validate_final_full_preflight(  # noqa: SLF001
+            stale_record,
+            gate_a=gate_a,
+            planned=planned,
+            receipt_identity=stale_receipt_identity,
+        )
+
+
+def test_bootstrap_v5_full_preflight_rejects_protocol_plugin_cross_binding(
+    tmp_path: Path,
+) -> None:
+    _output, record, receipt_identity, gate_a, planned = _v5_full_preflight_publication(tmp_path)
+    assert (
+        BOOTSTRAP._validate_final_full_preflight(  # noqa: SLF001
+            record,
+            gate_a=gate_a,
+            planned=planned,
+            receipt_identity=receipt_identity,
+        )
+        == record
+    )
+
+    tampered = copy.deepcopy(record)
+    tampered["pytest_collection_protocol_identity"] = copy.deepcopy(
+        record["pytest_collection_plugin_identity"]
+    )
+    command = tampered["command"]
+    assert isinstance(command, dict)
+    argv = command["argv"]
+    assert isinstance(argv, list)
+    protocol_path_index = argv.index("--collection-protocol-source") + 1
+    plugin_identity = record["pytest_collection_plugin_identity"]
+    assert isinstance(plugin_identity, dict)
+    argv[protocol_path_index] = plugin_identity["path"]
+
+    with pytest.raises(
+        BOOTSTRAP.BootstrapError,
+        match="exact current-HEAD PASS",
+    ):
+        BOOTSTRAP._validate_final_full_preflight(  # noqa: SLF001
+            tampered,
+            gate_a=gate_a,
+            planned=planned,
+            receipt_identity=receipt_identity,
+        )
 
 
 def test_gate_b_renderer_uses_live_planned_identity_and_joins_staged_bytes(

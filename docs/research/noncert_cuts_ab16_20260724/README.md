@@ -8,15 +8,14 @@ Organic arms: `0/16` created or run
 
 ## Current status
 
-The mandatory AB16 chain has advanced through fresh Gate-A, Gate-B,
-package/campaign creation and formal admission, but it has not consumed a
-formal selection or run an organic arm. A031 and A032 froze on pre-owner
-bootstrap failures. A033 passed Gate-B qualification and package creation,
-then published exactly
+Across the frozen attempts, the farthest formal branch was A033: it passed
+fresh Gate-A, Gate-B qualification and package/campaign creation, then
+published exactly
 `formal-ab16/formal-launch-admission-a001.json`. It has no guardian-ready,
-attempt-consumption, formal selection, unit, arm or terminal receipt. All
-three roots are immutable and cannot be retried, repaired or used as
-authority ancestors for a successor.
+attempt-consumption, formal selection, unit, arm or terminal receipt. A031
+and A032 froze earlier on pre-owner bootstrap failures. All three roots are
+immutable and cannot be retried, repaired or used as authority ancestors for
+a successor. No fresh current chain exists, and A035 has not been created.
 
 A034 is also frozen. Its no-overwrite root is
 `.artifacts/noncert_cuts_ab16_20260724/gate-a-fresh-20260730T051517Z-a034/`.
@@ -62,7 +61,53 @@ The next attempt must start from a new no-overwrite Gate-A root in the
 registered independent worktree after a clean committed HEAD, exact source
 rebinding, the fixed resource/lock/competition gate, full preflight and the
 same post-preflight gate. The interrupted pre-fix full run is not qualifying
-evidence. A031–A034 remain frozen; the next root name is A035. The schema
+evidence. The Gate-A and Gate-B pinned full-preflight invocations each create
+one fresh no-overwrite
+mode-`0700` output root containing a retained mode-`0700` `pytest-scratch`
+directory and its sole retained mode-`0700` empty `basetemp` child. The
+isolated `-I -B` runner fixes `pytest.ini`, rootdir, confcutdir, the explicit
+`randomly` plugin, serial `not slow` collection and
+`tmp_path_retention_policy=failed`; inherited Python/pytest injection and
+plugin autoload are disabled. Before and after pytest, a descriptor-relative
+guard ignores Git excludes and exactly compares the committed pytest
+configuration/governance members, complete discovery tree, and actual
+repository-root `PathFinder` source/bytecode/extension/identifier-namespace
+candidates with HEAD. Every observation closes all descriptors before
+returning and does not change `RLIMIT_NOFILE`. The same pytest process writes
+its canonical nodeid/path collection plus two terminally closed records
+through an anonymous retained regular FD. This occurs only through an
+explicit, hash-bound AB16 plugin object loaded by the qualification runner;
+shared `src/tests/conftest.py` and ordinary developer/full/slow preflight
+commands contain no AB16 handshake. Gate A independently parses the recorded
+stdout and binds that projection to the v5 receipt. Module-origin records are
+diagnostic only and prove neither fixed-HEAD import bytes nor a closed import
+set.
+
+This closes pre-existing and persistent non-adversarial same-UID pollution;
+it does not claim resistance to an actively hostile same-UID replace-then-
+restore wholly between the two snapshots. Such a threat would require a
+separate fixed-commit, no-extra-member execution snapshot; the formal lane
+instead requires its three locks and an isolated host with no such writer.
+The subreaper uses only public Python or named libc pidfd interfaces and never
+scans or signals unrelated same-UID processes. `/proc/.../children` is only a
+target-discovery aid: successful descendant closure requires
+`waitpid(-1, WNOHANG)` to report `ECHILD`, while `(0, 0)` always continues the
+fail-stop cleanup loop.
+
+On PASS no scratch path is deleted: the producer requires and records that the
+exact basetemp is empty, while downstream acceptance remains subject to the
+independent Gate-A parser and absolute-path self-replay contract. It writes
+logs, `receipt.json`, and a mode-`0600` staged
+`receipt.commit.json` through the creation-time retained output-root FD,
+closes critical parent descriptors, and then performs one mode-`0444` marker
+promotion as the publication linearization point. Before returning it
+self-replays the absolute output path, output-root identity, exact
+five-member tree, marker, receipt, logs and scratch, with closed scratch as
+the final temporal observation. Every downstream parser requires that exact
+committed marker; staged or drifted publications fail closed. Failure or
+timeout preserves the root for diagnosis, and any descendant, scratch,
+Git-surface, close, publication or replay uncertainty cannot mint Gate-A
+authority. A031–A034 remain frozen; the next root name is A035. The schema
 successors apply only to a fresh package and grant no production, certified,
 cut, witness or bound authority.
 
@@ -85,7 +130,7 @@ production CLI. Its only members are canonical, read-only
 `planned-source-observation.json`. All three exactly equal lifecycle canonical
 JSON re-encoding, have no trailing LF, and have mode `0444`.
 
-The current immutable identities are:
+The immutable identities recorded for that recovery are:
 
 | File | Size | SHA-256 |
 | --- | ---: | --- |
@@ -201,7 +246,7 @@ The previous sibling
 `gate-a-terminal-reference-recovery-20260724T065556Z-C4n0n1` and its
 `full-preflight-a001` remain immutable historical evidence and are not
 authority ancestors for this recovery. Their exact failure record is in
-`03_execution_record.md`. The current Gate-A receipt grants no solver,
+`03_execution_record.md`. That historical Gate-A receipt grants no solver,
 formal-campaign or organic-arm authorization.
 
 The byte-locked `control-a002/result.json` is provenance-only. A formal
@@ -368,7 +413,10 @@ user.
 
 The following approvals are intentionally nonmergeable.
 
-### Gate A — validation only
+### Historical 2026-07-24 Gate A — validation only
+
+This subsection records the earlier 2026-07-24 recovery cohort only. It is
+not current qualification evidence for A035.
 
 Before any formal campaign identity exists, report two separately budgeted
 actions to the supervisory thread:
@@ -391,20 +439,21 @@ used by the formal path, but its distinct purpose and authorization fields
 forbid a solver, an organic arm or a formal campaign. Its payload is inert and
 only publishes the drill result consumed by that lifecycle.
 
-The current sibling contains its canonical input authority, one completed
+The 2026-07-24 recovery sibling contained its canonical input authority, one completed
 `drill-python-fd-a001` disposable authority/live chain and one exact-PASS
-`full-preflight-a001` receipt. Gate A has been finalized by the separate
+`full-preflight-a001` receipt. Its Gate A was finalized by the separate
 exact-PASS `gate-a-receipt-a001.json`, but that receipt remains
 non-authorizing: it cannot create Gate B, a formal campaign, a solver
-selection or an organic arm.
+selection or an organic arm, and it cannot qualify A035.
 
-### Gate B — formal campaign
+### Historical 2026-07-24 Gate B planning — formal campaign
 
-Gate A has passed and released its execution phase. The supervisory thread
-may separately recheck HEAD, manager/boot epoch, memory, swap and disk and
-decide whether to schedule Gate B under its own technical authority and
-receipt boundary. A Gate-A receipt cannot authorize Gate B. The estimate for
-new Gate 1, baseline admission and AB16 is one CPU core, the
+For that historical cohort, Gate A had passed and released its execution
+phase. The supervisory thread could separately recheck HEAD,
+manager/boot epoch, memory, swap and disk before deciding whether to schedule
+Gate B under its own technical authority and receipt boundary. A Gate-A
+receipt could not authorize Gate B. The estimate for new Gate 1, baseline
+admission and AB16 was one CPU core, the
 `35/39 GiB + 16 GiB swap` contract, about `1–1.5 GiB` I/O, 3–6 hours typical
 and about 16 hours hard maximum.
 
@@ -413,21 +462,22 @@ prod-scale locks. Its final full preflight is separately included in the Gate
 B report and may not overlap S3. No formal identity, unit or arm is created
 before this approval.
 
-## Claim boundary
+## Historical 2026-07-24 claim boundary
 
-At the current status this work establishes the repaired same-FD execution
+At that historical cutoff this work established the repaired same-FD execution
 implementation, its focused local validation, a canonical byte-pinned input
 set, and one non-authorizing disposable live chain whose resource, terminal,
 cleanup and detached replay evidence passed, plus one exact-PASS full
 preflight receipt and the separate exact-PASS Gate-A finalize receipt. Gate A
-is finalized only for later independent Gate-B consideration; it does not
+was finalized only for later independent Gate-B consideration; it did not
 authorize Gate B or a formal run. The inert drill, preflight and Gate-A
 receipt establish no cut activation or empirical cuts result. This work does
 not alter a project upper or lower bound and does not establish a witness,
 SAT, UNSAT, family-global cut soundness, proof-sidecar validity, PIC, B6,
 Stage-B promotion or production `CERTIFIED` status.
 
-If the future experiment completes, its strongest possible local claims are:
+Under that historical design, a completed experiment's strongest possible
+local claims were:
 
 - `MECHANISM_CREDIBLE` from Gate 1;
 - fixed-configuration activation and censored-terminal classifications;
@@ -487,6 +537,12 @@ proof-ledger gates.
   external path maps and their planned-source observation.
 - `gate_a_validation_v2.py`: full-preflight receipt and non-authorizing Gate A
   closeout logic.
+- `ab16_preflight_qualification_v1.py`: retained-FD qualification runner that
+  loads the pinned preflight, protocol and explicit plugin objects.
+- `ab16_pytest_collection_protocol_v1.py`: centralized producer transport,
+  nonce, canonical record and validation protocol for AB16 qualification.
+- `ab16_pytest_collection_plugin_v1.py`: explicit AB16-only pytest plugin;
+  ordinary `conftest.py` and preflight commands never load it.
 - `ab16_contract_v1.py`: pure classification, aggregation and consumption
   state contract.
 

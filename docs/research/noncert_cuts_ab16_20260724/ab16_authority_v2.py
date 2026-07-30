@@ -52,7 +52,13 @@ PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v4"
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
 GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v4"
 GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v3"
-FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v3"
+FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v5"
+FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME = "pytest-scratch"
+FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME = "basetemp"
+FINAL_FULL_PREFLIGHT_SCRATCH_POLICY = "fresh-no-overwrite-repo-local-retained-closed-tree-v1"
+FINAL_FULL_PREFLIGHT_PUBLICATION_COMMIT_SCHEMA = (
+    "noncert-cuts-ab16-gate-a-preflight-publication-commit-v1"
+)
 REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
 EXTERNAL_PLATFORM_SCHEMA = "noncert-cuts-ab16-external-platform-assumptions-v2"
@@ -123,6 +129,9 @@ REQUIRED_PACKAGE_ROLES = frozenset(
         "tool.ab16_outer_closeout_state_v1.py",
         "tool.ab16_outer_guardian_v1.py",
         "tool.ab16_outer_refunit_closeout_v1.py",
+        "tool.ab16_preflight_qualification_v1.py",
+        "tool.ab16_pytest_collection_plugin_v1.py",
+        "tool.ab16_pytest_collection_protocol_v1.py",
         "tool.ab16_terminal_gate_v1.py",
         "tool.ab16_terminal_gate_v2.py",
         "tool.baseline_admission_v1.py",
@@ -1314,6 +1323,9 @@ def _validate_root_source_joins(
         "ab16_outer_closeout_state_v1": "tool.ab16_outer_closeout_state_v1.py",
         "ab16_outer_guardian_v1": "tool.ab16_outer_guardian_v1.py",
         "ab16_outer_refunit_closeout_v1": "tool.ab16_outer_refunit_closeout_v1.py",
+        "ab16_preflight_qualification_v1": "tool.ab16_preflight_qualification_v1.py",
+        "ab16_pytest_collection_plugin_v1": "tool.ab16_pytest_collection_plugin_v1.py",
+        "ab16_pytest_collection_protocol_v1": "tool.ab16_pytest_collection_protocol_v1.py",
         "ab16_terminal_gate_v1": "tool.ab16_terminal_gate_v1.py",
         "ab16_terminal_gate_v2": "tool.ab16_terminal_gate_v2.py",
         "baseline_admission_v1": "tool.baseline_admission_v1.py",
@@ -1679,6 +1691,398 @@ def _join_gate_b_renderer_identity(
     return dict(planned)
 
 
+def _open_validation_directory_no_symlinks(path: Path) -> int:
+    absolute = _absolute(path)
+    flags = os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW
+    descriptor: int | None = None
+    try:
+        descriptor = os.open(absolute.anchor, flags)
+        for component in absolute.parts[1:]:
+            following = os.open(component, flags, dir_fd=descriptor)
+            try:
+                os.close(descriptor)
+            except BaseException as exc:
+                try:
+                    os.close(following)
+                except OSError as close_error:
+                    exc.add_note(
+                        "validation directory-chain cleanup failed: "
+                        f"{type(close_error).__name__}: {close_error}"
+                    )
+                raise
+            descriptor = following
+        return descriptor
+    except BaseException as exc:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError as close_error:
+                exc.add_note(
+                    "validation directory-chain cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+        if isinstance(exc, OSError):
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                "preflight scratch directory path is invalid or symlinked",
+            ) from exc
+        raise
+
+
+def _validate_closed_preflight_scratch(
+    value: object,
+    *,
+    receipt_directory: Path,
+    label: str,
+) -> None:
+    record = _exact_keys(
+        value,
+        {
+            "basetemp_identity",
+            "basetemp_path",
+            "initial_identity",
+            "path",
+            "policy",
+            "retention_policy",
+            "status",
+        },
+        f"{label} pytest scratch",
+    )
+    identity = _exact_keys(
+        record["initial_identity"],
+        {"device", "inode", "mode", "uid"},
+        f"{label} pytest scratch initial identity",
+    )
+    basetemp_identity = _exact_keys(
+        record["basetemp_identity"],
+        {"device", "inode", "mode", "uid"},
+        f"{label} pytest basetemp identity",
+    )
+    if (
+        any(type(identity[field]) is not int for field in identity)
+        or any(type(basetemp_identity[field]) is not int for field in basetemp_identity)
+        or identity["device"] < 0
+        or identity["inode"] <= 0
+        or identity["mode"] != 0o700
+        or identity["uid"] != os.geteuid()
+        or basetemp_identity["device"] < 0
+        or basetemp_identity["inode"] <= 0
+        or basetemp_identity["mode"] != 0o700
+        or basetemp_identity["uid"] != os.geteuid()
+        or record["path"] != str(receipt_directory / FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME)
+        or record["basetemp_path"]
+        != str(
+            receipt_directory
+            / FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME
+            / FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME
+        )
+        or record["policy"] != FINAL_FULL_PREFLIGHT_SCRATCH_POLICY
+        or record["retention_policy"] != "failed"
+        or record["status"] != "CLOSED_EMPTY_BASETEMP_RETAINED_AFTER_PASS"
+    ):
+        raise AuthorityError(
+            "GATE_APPROVALS_INVALID",
+            f"{label} pytest scratch is not an exact closed PASS",
+        )
+    descriptor: int | None = None
+    basetemp_descriptor: int | None = None
+    try:
+        descriptor = _open_validation_directory_no_symlinks(Path(record["path"]))
+        observed = os.fstat(descriptor)
+        if (
+            not stat.S_ISDIR(observed.st_mode)
+            or observed.st_dev != identity["device"]
+            or observed.st_ino != identity["inode"]
+            or stat.S_IMODE(observed.st_mode) != identity["mode"]
+            or observed.st_uid != identity["uid"]
+        ):
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                f"{label} pytest scratch identity drifted",
+            )
+        with os.scandir(descriptor) as iterator:
+            entries = list(iterator)
+        if len(entries) != 1 or entries[0].name != FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME:
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                f"{label} pytest scratch tree drifted",
+            )
+        named = entries[0].stat(follow_symlinks=False)
+        if not stat.S_ISDIR(named.st_mode):
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                f"{label} pytest basetemp type drifted",
+            )
+        basetemp_descriptor = os.open(
+            FINAL_FULL_PREFLIGHT_BASETEMP_BASENAME,
+            os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
+            dir_fd=descriptor,
+        )
+        opened = os.fstat(basetemp_descriptor)
+        if (
+            (named.st_dev, named.st_ino) != (opened.st_dev, opened.st_ino)
+            or opened.st_dev != basetemp_identity["device"]
+            or opened.st_ino != basetemp_identity["inode"]
+            or stat.S_IMODE(opened.st_mode) != basetemp_identity["mode"]
+            or opened.st_uid != basetemp_identity["uid"]
+        ):
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                f"{label} pytest basetemp identity drifted",
+            )
+        with os.scandir(basetemp_descriptor) as iterator:
+            if next(iterator, None) is not None:
+                raise AuthorityError(
+                    "GATE_APPROVALS_INVALID",
+                    f"{label} pytest basetemp is not empty",
+                )
+    except BaseException as exc:
+        for opened_descriptor in (basetemp_descriptor, descriptor):
+            if opened_descriptor is None:
+                continue
+            try:
+                os.close(opened_descriptor)
+            except OSError as close_error:
+                exc.add_note(
+                    f"{label} pytest scratch cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+        if isinstance(exc, OSError):
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                f"{label} pytest scratch closure check failed",
+            ) from exc
+        raise
+    close_error: OSError | None = None
+    for opened_descriptor in (basetemp_descriptor, descriptor):
+        try:
+            os.close(opened_descriptor)
+        except OSError as exc:
+            if close_error is None:
+                close_error = exc
+    if close_error is not None:
+        raise AuthorityError(
+            "GATE_APPROVALS_INVALID",
+            f"{label} pytest scratch descriptor close failed",
+        ) from close_error
+
+
+def _validate_preflight_output_root(
+    value: object,
+    *,
+    receipt_directory: Path,
+    label: str,
+) -> None:
+    identity = _exact_keys(
+        value,
+        {"device", "inode", "mode", "uid"},
+        f"{label} output-root identity",
+    )
+    if (
+        any(type(identity[field]) is not int for field in identity)
+        or identity["device"] < 0
+        or identity["inode"] <= 0
+        or identity["mode"] != 0o700
+        or identity["uid"] != os.geteuid()
+    ):
+        raise AuthorityError(
+            "GATE_APPROVALS_INVALID",
+            f"{label} output-root identity is malformed",
+        )
+    descriptor: int | None = None
+    try:
+        descriptor = _open_validation_directory_no_symlinks(receipt_directory)
+        observed = os.fstat(descriptor)
+        if (
+            not stat.S_ISDIR(observed.st_mode)
+            or observed.st_dev != identity["device"]
+            or observed.st_ino != identity["inode"]
+            or stat.S_IMODE(observed.st_mode) != identity["mode"]
+            or observed.st_uid != identity["uid"]
+        ):
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                f"{label} output-root identity drifted",
+            )
+        with os.scandir(descriptor) as iterator:
+            entries = {entry.name for entry in iterator}
+        if entries != {
+            FINAL_FULL_PREFLIGHT_SCRATCH_BASENAME,
+            "receipt.commit.json",
+            "receipt.json",
+            "stderr.log",
+            "stdout.log",
+        }:
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                f"{label} output-root member set drifted",
+            )
+    except BaseException as exc:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError as close_error:
+                exc.add_note(
+                    f"{label} output-root cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+        if isinstance(exc, OSError):
+            raise AuthorityError(
+                "GATE_APPROVALS_INVALID",
+                f"{label} output-root validation failed",
+            ) from exc
+        raise
+    try:
+        os.close(descriptor)
+    except OSError as exc:
+        raise AuthorityError(
+            "GATE_APPROVALS_INVALID",
+            f"{label} output-root descriptor close failed",
+        ) from exc
+
+
+def _validate_preflight_publication_commit(
+    *,
+    receipt_identity: Mapping[str, object],
+    output_root_identity: object,
+    label: str,
+) -> None:
+    receipt_path = Path(str(receipt_identity["path"]))
+    snapshot = snapshot_regular(receipt_path.parent / "receipt.commit.json")
+    record = _exact_keys(
+        _unterminated_record(snapshot, f"{label} publication commit"),
+        {
+            "output_root_identity",
+            "receipt_identity",
+            "schema_version",
+            "status",
+        },
+        f"{label} publication commit",
+    )
+    if (
+        snapshot.mode != 0o444
+        or record["schema_version"] != FINAL_FULL_PREFLIGHT_PUBLICATION_COMMIT_SCHEMA
+        or record["status"] != "COMMITTED"
+        or record["receipt_identity"] != receipt_identity
+        or record["output_root_identity"] != output_root_identity
+    ):
+        raise AuthorityError(
+            "GATE_APPROVALS_INVALID",
+            f"{label} publication commit is invalid",
+        )
+
+
+def _validate_preflight_collection_projection(
+    value: object,
+    *,
+    label: str,
+) -> Mapping[str, Any]:
+    record = _exact_keys(
+        value,
+        {
+            "collection_count",
+            "collection_sha256",
+            "manifest_sha256",
+            "markexpr",
+            "schema_version",
+            "stage_module_origin_count",
+            "stage_sha256",
+            "terminal_module_origin_count",
+            "terminal_sha256",
+            "workflow",
+        },
+        f"{label} pytest collection projection",
+    )
+    if (
+        type(record["collection_count"]) is not int
+        or record["collection_count"] <= 0
+        or type(record["stage_module_origin_count"]) is not int
+        or record["stage_module_origin_count"] < 0
+        or type(record["terminal_module_origin_count"]) is not int
+        or record["terminal_module_origin_count"] < 0
+        or any(
+            type(record[field]) is not str
+            or SHA256_RE.fullmatch(record[field]) is None
+            for field in (
+                "collection_sha256",
+                "manifest_sha256",
+                "stage_sha256",
+                "terminal_sha256",
+            )
+        )
+        or record["markexpr"] != "not slow"
+        or record["schema_version"]
+        != "noncert-cuts-ab16-pytest-collection-binding-v1"
+        or record["workflow"] != "full"
+    ):
+        raise AuthorityError(
+            "GATE_APPROVALS_INVALID",
+            f"{label} pytest collection projection is malformed",
+        )
+    return record
+
+
+def _expected_preflight_qualification_argv(
+    record: Mapping[str, Any],
+    *,
+    python: Mapping[str, object],
+    qualification: Mapping[str, object],
+    preflight: Mapping[str, object],
+    protocol: Mapping[str, object],
+    plugin: Mapping[str, object],
+    label: str,
+) -> list[object]:
+    collection = _validate_preflight_collection_projection(
+        record["pytest_collection"],
+        label=label,
+    )
+    repository = Path(record["repository_root"])
+    scratch = _exact_keys(
+        record["pytest_scratch"],
+        {
+            "basetemp_identity",
+            "basetemp_path",
+            "initial_identity",
+            "path",
+            "policy",
+            "retention_policy",
+            "status",
+        },
+        f"{label} pytest scratch",
+    )
+    basetemp = Path(scratch["basetemp_path"])
+    try:
+        basetemp_relative = basetemp.relative_to(repository)
+    except ValueError as exc:
+        raise AuthorityError(
+            "GATE_APPROVALS_INVALID",
+            f"{label} basetemp is outside its repository",
+        ) from exc
+    return [
+        python["path"],
+        "-I",
+        "-B",
+        qualification["path"],
+        "--repository-root",
+        str(repository),
+        "--basetemp",
+        str(basetemp),
+        "--basetemp-relative",
+        basetemp_relative.as_posix(),
+        "--expected-count",
+        str(collection["collection_count"]),
+        "--expected-sha256",
+        collection["collection_sha256"],
+        "--preflight-source",
+        preflight["path"],
+        "--collection-protocol-source",
+        protocol["path"],
+        "--collection-plugin-source",
+        plugin["path"],
+        "--full",
+    ]
+
+
 def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
     files = context["files"]
     sources = context["sources"]
@@ -1734,6 +2138,9 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         "input.preflight_gate",
         "script.ab16_campaign_bootstrap_v2",
         "script.ab16_gate_b_qualification_v1",
+        "script.ab16_preflight_qualification_v1",
+        "script.ab16_pytest_collection_plugin_v1",
+        "script.ab16_pytest_collection_protocol_v1",
         "script.gate_a_validation_v2",
         "system.python3_13",
     ):
@@ -1779,7 +2186,10 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         set(
             "authorizations authority_ready_identity command detached_replay_identity duration_monotonic_ns "
             "exit_code finished_at_utc planned_source_set_digest pre_run_authority_identity "
-            "preflight_script_identity preflight_timeout_scale purpose python_identity repository_head "
+            "output_root_identity qualification_runner_identity preflight_script_identity "
+            "preflight_timeout_scale purpose pytest_collection pytest_collection_plugin_identity "
+            "pytest_collection_protocol_identity pytest_scratch "
+            "python_identity repository_head "
             "repository_root runner_tool_identity schema_version started_at_utc status stderr_identity "
             "stdout_identity timed_out".split()
         ),
@@ -1789,6 +2199,10 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         "authority_ready_identity",
         "detached_replay_identity",
         "pre_run_authority_identity",
+        "qualification_runner_identity",
+        "preflight_script_identity",
+        "pytest_collection_plugin_identity",
+        "pytest_collection_protocol_identity",
         "python_identity",
         "stderr_identity",
         "stdout_identity",
@@ -1813,6 +2227,38 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         set(final),
         "AB16 Gate-A full preflight",
     )
+    final_receipt_directory = final_snapshot.path.parent
+    _validate_preflight_publication_commit(
+        receipt_identity=final_identity,
+        output_root_identity=final["output_root_identity"],
+        label="AB16 Gate-B final full preflight",
+    )
+    _validate_preflight_output_root(
+        final["output_root_identity"],
+        receipt_directory=final_receipt_directory,
+        label="AB16 Gate-B final full preflight",
+    )
+    _validate_closed_preflight_scratch(
+        final["pytest_scratch"],
+        receipt_directory=final_receipt_directory,
+        label="AB16 Gate-B final full preflight",
+    )
+    gate_a_receipt_directory = gate_a_full_snapshot.path.parent
+    _validate_preflight_publication_commit(
+        receipt_identity=gate_a["full_preflight_receipt_identity"],
+        output_root_identity=gate_a_full["output_root_identity"],
+        label="AB16 Gate-A full preflight",
+    )
+    _validate_preflight_output_root(
+        gate_a_full["output_root_identity"],
+        receipt_directory=gate_a_receipt_directory,
+        label="AB16 Gate-A full preflight",
+    )
+    _validate_closed_preflight_scratch(
+        gate_a_full["pytest_scratch"],
+        receipt_directory=gate_a_receipt_directory,
+        label="AB16 Gate-A full preflight",
+    )
     gate_a_command = _exact_keys(
         gate_a_full["command"],
         {"argv", "execution_strategy", "loader_identity"},
@@ -1830,6 +2276,9 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
     )
     preflight = planned_projections["input.preflight_gate"]
     python = planned_projections["system.python3_13"]
+    qualification = planned_projections["script.ab16_preflight_qualification_v1"]
+    protocol = planned_projections["script.ab16_pytest_collection_protocol_v1"]
+    plugin = planned_projections["script.ab16_pytest_collection_plugin_v1"]
     runner_relative = "docs/research/noncert_cuts_ab16_20260724/gate_a_validation_v2.py"
     runner_member = _replay_detached(snapshot_members[runner_relative], "AB16 snapshot preflight runner")
     runner = planned_projections["script.gate_a_validation_v2"]
@@ -1969,10 +2418,22 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         or final["repository_head"] != context["root"]["repository_head"]
         or final["repository_root"] != gate_a["repository_root"]
         or final["preflight_script_identity"] != preflight
+        or final["qualification_runner_identity"] != qualification
+        or final["pytest_collection_protocol_identity"] != protocol
+        or final["pytest_collection_plugin_identity"] != plugin
         or final["python_identity"] != python
         or final["runner_tool_identity"] != runner
-        or command["execution_strategy"] != "same-fd-python-prefix-and-nested-executable-v2"
-        or command["argv"] != [python["path"], "-I", preflight["path"], "--full"]
+        or command["execution_strategy"] != "same-fd-subreaper-ab16-qualification-runner-v4"
+        or command["argv"]
+        != _expected_preflight_qualification_argv(
+            final,
+            python=python,
+            qualification=qualification,
+            preflight=preflight,
+            protocol=protocol,
+            plugin=plugin,
+            label="AB16 Gate-B final full preflight",
+        )
         or loader != gate_a_loader
         or gate_a_full["schema_version"] != FINAL_FULL_PREFLIGHT_SCHEMA
         or gate_a_full["purpose"] != "AB16_GATE_A_FULL_PREFLIGHT"
@@ -1985,6 +2446,24 @@ def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[st
         or gate_a_full["repository_head"] != gate_a["repository_head"]
         or gate_a_full["repository_root"] != gate_a["repository_root"]
         or gate_a_full["planned_source_set_digest"] != gate_a["planned_source_set_digest"]
+        or gate_a_full["preflight_script_identity"] != preflight
+        or gate_a_full["qualification_runner_identity"] != qualification
+        or gate_a_full["pytest_collection_protocol_identity"] != protocol
+        or gate_a_full["pytest_collection_plugin_identity"] != plugin
+        or gate_a_full["python_identity"] != python
+        or gate_a_full["runner_tool_identity"] != runner
+        or gate_a_command["execution_strategy"]
+        != "same-fd-subreaper-ab16-qualification-runner-v4"
+        or gate_a_command["argv"]
+        != _expected_preflight_qualification_argv(
+            gate_a_full,
+            python=python,
+            qualification=qualification,
+            preflight=preflight,
+            protocol=protocol,
+            plugin=plugin,
+            label="AB16 Gate-A full preflight",
+        )
         or final_identity["path"] == gate_a["full_preflight_receipt_identity"]["path"]
         or final_identity["sha256"] == gate_a["full_preflight_receipt_identity"]["sha256"]
         or type(loader["sha256"]) is not str

@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import os
+
+import pytest
+
 from scripts import preflight_gate
 
 
@@ -63,3 +67,146 @@ def test_slow_lane_missing_collection_can_remain_warning_for_local_probe(monkeyp
     assert any("未收集到 @slow 测试" in warning for warning in gate.warnings)
     assert not gate.blockers
     assert gate.exit_code == 0
+
+
+def _capture_pytest_command(monkeypatch, *, full: bool) -> tuple[list[str], dict[str, object]]:
+    captured: dict[str, object] = {}
+
+    def fake_run(command, **kwargs):
+        captured["command"] = command
+        captured["kwargs"] = kwargs
+        return _FakeCompletedProcess(0, "1 passed in 0.01s\n")
+
+    for name in (
+        "ZMD_AB16_PYTEST_COLLECTION_FD",
+        "ZMD_AB16_PYTEST_COLLECTION_NONCE",
+    ):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setattr(preflight_gate.subprocess, "run", fake_run)
+    monkeypatch.setattr(preflight_gate, "_pytest_xdist_available", lambda: True)
+    gate = preflight_gate.GateResult()
+
+    preflight_gate.check_tests(gate, full=full)
+
+    assert gate.exit_code == 0
+    assert isinstance(captured["command"], list)
+    assert isinstance(captured["kwargs"], dict)
+    return captured["command"], captured["kwargs"]
+
+
+def test_core_pytest_command_remains_generic_and_ab16_free(monkeypatch) -> None:
+    command, kwargs = _capture_pytest_command(monkeypatch, full=False)
+
+    assert command[:3] == [preflight_gate.sys.executable, "-m", "pytest"]
+    assert "-I" not in command
+    assert "-B" not in command
+    assert "--repository-workflow=full" not in command
+    assert "randomly" not in command
+    assert command[command.index("-n") + 1] == "auto"
+    assert not any("AB16" in item or "ab16" in item for item in command)
+    environment = kwargs["env"]
+    assert isinstance(environment, dict)
+    assert not any(name.startswith("ZMD_AB16_") for name in environment)
+    assert "pass_fds" not in kwargs
+
+
+def test_full_pytest_command_remains_generic_and_ab16_free(monkeypatch) -> None:
+    command, kwargs = _capture_pytest_command(monkeypatch, full=True)
+
+    assert command[:3] == [preflight_gate.sys.executable, "-m", "pytest"]
+    assert command[-1] == "src/tests/"
+    assert "-I" not in command
+    assert "-B" not in command
+    assert "--repository-workflow=full" not in command
+    assert "randomly" not in command
+    assert command[command.index("-n") + 1] == "auto"
+    assert not any("AB16" in item or "ab16" in item for item in command)
+    environment = kwargs["env"]
+    assert isinstance(environment, dict)
+    assert not any(name.startswith("ZMD_AB16_") for name in environment)
+    assert "pass_fds" not in kwargs
+
+
+def test_slow_pytest_command_remains_generic_and_ab16_free(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_run(command, **kwargs):
+        captured["command"] = command
+        captured["kwargs"] = kwargs
+        return _FakeCompletedProcess(0, "1 passed in 0.01s\n")
+
+    for name in (
+        "ZMD_AB16_PYTEST_COLLECTION_FD",
+        "ZMD_AB16_PYTEST_COLLECTION_NONCE",
+    ):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setattr(preflight_gate.subprocess, "run", fake_run)
+    gate = preflight_gate.GateResult()
+
+    preflight_gate.check_slow_tests(gate, require_collection=True)
+
+    command = captured["command"]
+    kwargs = captured["kwargs"]
+    assert isinstance(command, list)
+    assert isinstance(kwargs, dict)
+    assert command == [
+        preflight_gate.sys.executable,
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "--no-header",
+        "-m",
+        "slow",
+        "src/tests",
+    ]
+    assert not any("AB16" in item or "ab16" in item for item in command)
+    environment = kwargs["env"]
+    assert isinstance(environment, dict)
+    assert not any(name.startswith("ZMD_AB16_") for name in environment)
+    assert "pass_fds" not in kwargs
+
+
+@pytest.mark.parametrize(
+    ("ambient_name", "ambient_value"),
+    [
+        ("ZMD_AB16_PYTEST_COLLECTION_FD", "999999"),
+        ("ZMD_AB16_PYTEST_COLLECTION_NONCE", "0" * 64),
+    ],
+)
+def test_ordinary_pytest_ignores_one_sided_ab16_ambient_state(
+    tmp_path,
+    ambient_name: str,
+    ambient_value: str,
+) -> None:
+    environment = os.environ.copy()
+    environment.pop("PYTHONHOME", None)
+    environment.pop("PYTHONPATH", None)
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    environment[ambient_name] = ambient_value
+    completed = preflight_gate.subprocess.run(
+        [
+            preflight_gate.sys.executable,
+            "-I",
+            "-B",
+            "-m",
+            "pytest",
+            "-p",
+            "no:randomly",
+            "--repository-workflow=developer",
+            "--basetemp",
+            str(tmp_path / "nested-basetemp"),
+            "src/tests/test_preflight_gate.py::test_secret_scan_uses_default_timeout_scale",
+            "-q",
+        ],
+        check=False,
+        close_fds=True,
+        cwd=preflight_gate.PROJECT_ROOT,
+        env=environment,
+        stdin=preflight_gate.subprocess.DEVNULL,
+        stdout=preflight_gate.subprocess.PIPE,
+        stderr=preflight_gate.subprocess.PIPE,
+        timeout=30,
+    )
+
+    assert completed.returncode == 0, (completed.stdout, completed.stderr)

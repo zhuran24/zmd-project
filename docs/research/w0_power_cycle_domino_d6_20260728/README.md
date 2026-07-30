@@ -3,7 +3,7 @@
 **状态：** RESEARCH_ONLY / LOCAL_D6_ONLY / TWO_V2_NEGATIVE_ROOTS_ACCEPTED /
 SWAP_V3_REPLAY_ACCEPTED_INFEASIBLE
 
-**更新日期：** 2026-07-29
+**更新日期：** 2026-07-30
 
 **全局账本：** tracked 状态仍为 `U=(1188,18)`、`L=absent`；本目录的 local
 config/receipt/replay 不复制或声称携带 U/L。
@@ -126,10 +126,11 @@ successor 因 `PROJECT_LOCK.md` 新增 AB16 research-only cohort，改钉
 同一数学 profile 的静态 antecedent fixture 为
 `3d40e1318b631119ca5314f31443b91dbada2d5a1125e3f8da7c4c3dcf8db394`。
 当前 checked-in successor 随 AB16 formal selected-loader、pathname transport、
-no-overwrite socket retirement 与完整链/inode watch 线性化边界加固改钉
-`1f5c3ce3b843ae2fcc47177ad48ac1d8867746931bcce7a1799eb45e4b4c834e`，
+no-overwrite socket retirement、完整链/inode watch 线性化边界及 pinned full-preflight
+临时目录回收合同加固改钉
+`a2ec971f687c04966e8329868b4eab05aaa3c9fd9ad71a96f0ab79df85b92559`，
 对应静态 antecedent fixture 为
-`734ff04b4de77e202a8f16853113f5eaaaafaa863b015babe9418c66c2b04207`。
+`94f72b64d687b02894b06b16c71375ea65bff5e608248d891b1d466bfbd8c6e7`。
 这些变更只影响未来 W0 run 的 source/lock 闭包；不迁移、不补写也不重新解释
 上述历史 root。identity 变化只来自 lock scalar，不是新的 solver 结果。
 

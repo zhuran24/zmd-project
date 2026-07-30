@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-07-30 (AB16 formal selected-loader and pathname-transport hardening; AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
+**Updated**: 2026-07-30 (AB16 formal selected-loader and pathname-transport hardening; Gate-A v5 explicit-plugin qualification, committed publication/self-replay and ECHILD-only descendant closure; AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -601,7 +601,7 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
 
   | boundary | exact accepted schemas |
   |---|---|
-  | Gate-A/Gate-B qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v2`; `noncert-cuts-ab16-bootstrap-offline-candidate-v2`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v3`; `noncert-cuts-ab16-gate-b-qualification-v1`; `noncert-cuts-ab16-gate-b-resource-gate-v1`; `noncert-cuts-ab16-gate-b-owner-request-v1`; `noncert-cuts-ab16-gate-b-owner-response-v1`; `noncert-cuts-ab16-gate-b-owner-release-v1`; `noncert-cuts-ab16-gate-b-epoch-observation-v3`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v4`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1` |
+  | Gate-A/Gate-B qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v2`; `noncert-cuts-ab16-bootstrap-offline-candidate-v2`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v5`; `noncert-cuts-ab16-gate-a-preflight-publication-commit-v1`; `noncert-cuts-ab16-gate-b-qualification-v1`; `noncert-cuts-ab16-gate-b-resource-gate-v1`; `noncert-cuts-ab16-gate-b-owner-request-v1`; `noncert-cuts-ab16-gate-b-owner-response-v1`; `noncert-cuts-ab16-gate-b-owner-release-v1`; `noncert-cuts-ab16-gate-b-epoch-observation-v3`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v4`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1` |
   | Gate-A terminal-reference history | `noncert-cuts-ab16-terminal-reference-history-freeze-v1`; `noncert-cuts-ab16-terminal-reference-history-replay-v2` |
   | bootstrap/package | `noncert-cuts-ab16-bootstrap-manager-capture-v2`; `noncert-cuts-ab16-campaign-bootstrap-result-v3`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v2`; `noncert-cuts-ab16-path-preregistration-v4` |
   | formal launch | `noncert-cuts-ab16-formal-launch-context-v3`; `noncert-cuts-ab16-formal-launch-owner-request-v1`; `noncert-cuts-ab16-formal-launch-owner-response-v1`; `noncert-cuts-ab16-formal-launch-admission-v2`; `noncert-cuts-ab16-outer-guardian-ready-v1`; `noncert-cuts-ab16-formal-attempt-consumption-v1`; `noncert-cuts-ab16-formal-launch-selection-v1` |
@@ -696,8 +696,60 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   PID/starttime and qualification session acquire and retain the exact three
   heavy-work locks before the first resource gate, cover the final full
   preflight, publish the epoch observation as sequence 1, cover the second
-  identical resource gate, and publish Gate-B approval as sequence 2. That
-  actor retains the sealed request, rendered-record, renderer-source,
+  identical resource gate, and publish Gate-B approval as sequence 2. The
+  pinned preflight creates one fresh no-overwrite mode-`0700` output root,
+  its mode-`0700` `pytest-scratch` child, and exactly one mode-`0700`
+  `pytest-scratch/basetemp` child. It supplies a minimal fixed environment,
+  runs the full `not slow` pytest lane serially under `-I -B` with the pinned
+  `pytest.ini`, rootdir, confcutdir and explicit `randomly` plugin, and rejects
+  inherited Python/pytest plugin or option injection. Before and after the
+  selected preflight it independently enumerates, without Git-ignore
+  semantics, the fixed pytest configuration/governance members, the complete
+  discovery tree, and every repository-root `PathFinder` source, bytecode,
+  extension or identifier-namespace candidate. Each descriptor-relative
+  observation is compared with the committed HEAD projection, closes all of
+  its descriptors before returning, and never changes `RLIMIT_NOFILE`.
+  The AB16 qualification runner, not shared pytest configuration or the
+  ordinary preflight command, explicitly loads one hash-bound plugin object.
+  That plugin writes its canonical collected nodeid/path manifest and two
+  terminally closed records through one anonymous retained regular FD. The
+  Gate-A consumer independently parses the recorded stdout bytes and binds
+  the exact same-run collection projection to the receipt. Any reported
+  module origins are diagnostic only: they are not a fixed-HEAD byte proof or
+  a closed import-set claim.
+
+  This pre/post surface contract rejects pre-existing or persistent ambient
+  pollution. It does not claim to defeat an actively hostile same-UID writer
+  that replaces and restores a path entirely between the two observations;
+  the formal lane requires the three locks and an isolated host with no such
+  writer. If that stronger threat is ever admitted, it requires a separate
+  fixed-commit, no-extra-member execution snapshot rather than retained
+  whole-repository blob FDs. The Linux loader is a child subreaper; only
+  `waitpid(-1, WNOHANG)` reaching `ECHILD` proves descendant closure.
+  `/proc/.../children` is used only to discover direct/adopted descendants for
+  public-runtime/named-libc pidfd signaling. Unsupported capability or cleanup
+  uncertainty fails closed, and unrelated same-UID processes are never
+  scanned or terminated.
+
+  A v5 PASS requires the retained scratch identity, one unchanged basetemp
+  identity, and an empty basetemp; no producer cleanup deletes the tree.
+  Stdout, stderr, `receipt.json`, and a mode-`0600` staged
+  `receipt.commit.json` are created and verified through the retained
+  creation-time output-root FD. After critical parent descriptors close, a
+  dedicated child performs the sole mode-`0444` marker-promotion syscall.
+  The producer then independently reopens the recorded absolute path and
+  replays the exact output-root identity, exact five-member tree, receipt,
+  marker, logs and scratch before returning. The final closed-scratch
+  observation is the producer's temporal linearization check; a later
+  external mutation is a later operation, not a rewrite of that observation.
+  All Gate-A, bootstrap and authority parsers require the exact mode-`0444`
+  committed marker; a staged marker is never consumable. Failure or timeout
+  preserves the root for diagnosis, while descendant, scratch, Git-surface,
+  publication, close, or replay uncertainty cannot mint a PASS. Gate B
+  reaches the same contract through its pinned Gate-A entrypoint. Historical
+  v3 receipts remain frozen to their own source set and grant no successor
+  qualification.
+  The owner actor retains the sealed request, rendered-record, renderer-source,
   mechanical-publisher, output-directory, and lock descriptors through the
   live bootstrap handoff. It may release only after bootstrap has
   independently joined the actor, session, lock identities, source bytes,
