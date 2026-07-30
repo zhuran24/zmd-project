@@ -106,10 +106,12 @@
 - **non-certified cuts A/B**：对 production attach 机制可达性与固定配置效果进行的
   有界研究实验，不是“已证明不 sound”的同义词。Gate 1 v4 的当前最强结论仅为
   `MECHANISM_CREDIBLE`：一个具体注入 inequality 排除了同一 frozen incumbent。
-  Prospective AB16 的 A031–A033 均为 immutable frozen roots；A033 已创建
+  Prospective AB16 的 A031–A034 均为 immutable frozen roots；A033 已创建
   Gate-B package/campaign，但 formal 阶段只发布 admission，没有
-  guardian-ready、attempt consumption、selection、unit、terminal 或 organic arm，
-  arms 仍为 `0/16`。下一 fresh root 必须重新绑定 clean committed HEAD 与完整门禁；
+  guardian-ready、attempt consumption、selection、unit、terminal 或 organic arm；
+  A034 只发布 input authority 并完成 disposable drill，未 finalize Gate A、发布
+  candidate/preregistration、进入 Gate B 或消费 formal attempt，arms 仍为 `0/16`。
+  下一 fresh root 只能是 A035，且必须重新绑定 clean committed HEAD 与完整门禁；
   没有 family-global soundness、proof-sidecar、PIC、B6、上下界、optimality 或
   production `CERTIFIED` 结论。
 - **HEAD-pinned research authority**：receipt 只证明其记录的 originating HEAD、

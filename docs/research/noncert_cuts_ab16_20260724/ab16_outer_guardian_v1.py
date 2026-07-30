@@ -66,6 +66,32 @@ PEER_CREDENTIAL_SIZE = struct.calcsize("3i")
 MAX_CONTROL_POLL_SECONDS = 1.0
 MAX_UNIX_PATHNAME_BYTES = 107
 RENAME_NOREPLACE = 1
+INOTIFY_MUTATION_MASK = (
+    0x00000002  # IN_MODIFY
+    | 0x00000004  # IN_ATTRIB
+    | 0x00000008  # IN_CLOSE_WRITE
+    | 0x00000040  # IN_MOVED_FROM
+    | 0x00000080  # IN_MOVED_TO
+    | 0x00000100  # IN_CREATE
+    | 0x00000200  # IN_DELETE
+    | 0x00000400  # IN_DELETE_SELF
+    | 0x00000800  # IN_MOVE_SELF
+    | 0x00002000  # IN_UNMOUNT
+)
+INOTIFY_LEAF_MUTATION_MASK = (
+    0x00000002  # IN_MODIFY
+    | 0x00000004  # IN_ATTRIB
+    | 0x00000008  # IN_CLOSE_WRITE
+    | 0x00000400  # IN_DELETE_SELF
+    | 0x00000800  # IN_MOVE_SELF
+    | 0x00002000  # IN_UNMOUNT
+)
+INOTIFY_SELF_MUTATION_MASK = (
+    0x00000004  # IN_ATTRIB
+    | 0x00000400  # IN_DELETE_SELF
+    | 0x00000800  # IN_MOVE_SELF
+    | 0x00002000  # IN_UNMOUNT
+)
 
 HANDOFF_FIELDS = frozenset(
     {
@@ -641,6 +667,130 @@ def _open_directory_no_symlinks(path: Path) -> int:
         raise
 
 
+def _open_absolute_directory_chain(
+    path: Path,
+) -> tuple[tuple[_OwnedDescriptor, ...], tuple[str, ...]]:
+    """Retain every no-follow descriptor in one absolute directory path."""
+
+    absolute = Path(os.path.abspath(os.fspath(path)))
+    if (
+        not absolute.is_absolute()
+        or not hasattr(os, "O_DIRECTORY")
+        or not hasattr(os, "O_NOFOLLOW")
+    ):
+        raise GuardianProtocolError(
+            "guardian control requires an absolute retained directory chain"
+        )
+    flags = os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW
+    chain: list[_OwnedDescriptor] = []
+    components = tuple(absolute.parts[1:])
+    try:
+        root = _OwnedDescriptor()
+        chain.append(root)
+        root.acquire(os.open(absolute.anchor, flags))
+        for component in components:
+            retained_parent = chain[-1].descriptor
+            following = _OwnedDescriptor()
+            chain.append(following)
+            following.acquire(
+                os.open(
+                    component,
+                    flags,
+                    dir_fd=retained_parent,
+                )
+            )
+    except BaseException as exc:
+        for owned in reversed(chain):
+            owned.close_preserving(exc)
+        if isinstance(exc, OSError):
+            raise GuardianProtocolError(
+                "guardian control absolute directory chain is unavailable or symlinked"
+            ) from exc
+        raise
+    return tuple(chain), components
+
+
+def _require_retained_directory_chain_join(
+    chain: tuple[_OwnedDescriptor, ...],
+    components: tuple[str, ...],
+    parent_descriptor: int,
+) -> os.stat_result:
+    """Reopen every retained child and join the terminal parent identity."""
+
+    if len(chain) != len(components) + 1 or not chain:
+        raise GuardianProtocolError(
+            "guardian control retained directory chain shape drifted"
+        )
+    flags = os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW
+    for index, component in enumerate(components):
+        current = _OwnedDescriptor()
+        try:
+            current.acquire(
+                os.open(
+                    component,
+                    flags,
+                    dir_fd=chain[index].descriptor,
+                )
+            )
+            expected = os.fstat(chain[index + 1].descriptor)
+            observed = os.fstat(current.descriptor)
+            if (observed.st_dev, observed.st_ino) != (
+                expected.st_dev,
+                expected.st_ino,
+            ):
+                raise GuardianProtocolError(
+                    "guardian control retained directory chain identity drifted"
+                )
+        except BaseException as exc:
+            current.close_preserving(exc)
+            if isinstance(exc, OSError):
+                raise GuardianProtocolError(
+                    "guardian control retained directory chain replay failed"
+                ) from exc
+            raise
+        close_error = current.close()
+        if close_error is not None:
+            raise GuardianProtocolError(
+                "guardian control retained directory chain replay cleanup failed"
+            ) from close_error
+    retained_parent = os.fstat(chain[-1].descriptor)
+    anchored_parent = os.fstat(parent_descriptor)
+    if (retained_parent.st_dev, retained_parent.st_ino) != (
+        anchored_parent.st_dev,
+        anchored_parent.st_ino,
+    ):
+        raise GuardianProtocolError(
+            "guardian control retained directory chain terminal drifted"
+        )
+    return anchored_parent
+
+
+def _close_owned_descriptor_chain(
+    chain: tuple[_OwnedDescriptor, ...],
+) -> BaseException | None:
+    primary: BaseException | None = None
+    for owned in reversed(chain):
+        close_error = owned.close()
+        if close_error is None:
+            continue
+        if primary is None:
+            primary = close_error
+        else:
+            primary.add_note(
+                "additional descriptor cleanup failed: "
+                f"{type(close_error).__name__}: {close_error}"
+            )
+    return primary
+
+
+def _close_owned_descriptor_chain_preserving(
+    chain: tuple[_OwnedDescriptor, ...],
+    primary: BaseException,
+) -> None:
+    for owned in reversed(chain):
+        owned.close_preserving(primary)
+
+
 def _descriptor_socket_address(parent_descriptor: int, name: str) -> str:
     """Return a short kernel pathname alias for one already-open parent."""
 
@@ -676,7 +826,7 @@ def _descriptor_socket_address(parent_descriptor: int, name: str) -> str:
 def _require_directory_join(
     absolute: Path,
     anchored_descriptor: int,
-) -> None:
+) -> os.stat_result:
     current = _OwnedDescriptor()
     try:
         current.acquire(_open_directory_no_symlinks(absolute))
@@ -697,6 +847,158 @@ def _require_directory_join(
         raise GuardianProtocolError(
             "guardian control parent join cleanup failed"
         ) from close_error
+    return expected
+
+
+def _open_retired_leaf_descriptor(
+    parent_descriptor: int,
+    retirement: Path,
+    *,
+    expected_identity: Mapping[str, object] | None,
+) -> _OwnedDescriptor:
+    """Retain the exact retired inode through terminal verification."""
+
+    if not hasattr(os, "O_PATH"):
+        raise GuardianProtocolError(
+            "guardian control retired verification requires Linux O_PATH"
+        )
+    leaf = _OwnedDescriptor()
+    try:
+        leaf.acquire(
+            os.open(
+                retirement.name,
+                os.O_PATH | os.O_NOFOLLOW | os.O_CLOEXEC,
+                dir_fd=parent_descriptor,
+            )
+        )
+        observed = os.fstat(leaf.descriptor)
+        if not _socket_stat_matches_identity(observed, expected_identity):
+            raise GuardianProtocolError(
+                "guardian control retired descriptor identity drifted"
+            )
+    except BaseException as exc:
+        leaf.close_preserving(exc)
+        if isinstance(exc, OSError):
+            raise GuardianProtocolError(
+                "guardian control retired descriptor is unavailable"
+            ) from exc
+        raise
+    return leaf
+
+
+def _open_terminal_mutation_watch(
+    directory_chain: tuple[_OwnedDescriptor, ...],
+    retired_descriptor: int,
+) -> _OwnedDescriptor:
+    """Watch the absolute directory chain and retired inode until linearization."""
+
+    watch = _OwnedDescriptor()
+    try:
+        if not directory_chain:
+            raise GuardianProtocolError(
+                "guardian control mutation-watch directory chain is empty"
+            )
+        libc = ctypes.CDLL(None, use_errno=True)
+        initialize = getattr(libc, "inotify_init1", None)
+        add_watch = getattr(libc, "inotify_add_watch", None)
+        if initialize is None or add_watch is None:
+            raise GuardianProtocolError(
+                "external libc lacks directory mutation monitoring"
+            )
+        initialize.argtypes = (ctypes.c_int,)
+        initialize.restype = ctypes.c_int
+        add_watch.argtypes = (
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_uint32,
+        )
+        add_watch.restype = ctypes.c_int
+        descriptor = int(initialize(os.O_NONBLOCK | os.O_CLOEXEC))
+        if descriptor < 0:
+            error_number = ctypes.get_errno()
+            raise OSError(error_number, os.strerror(error_number))
+        watch.acquire(descriptor)
+        watched: list[tuple[str, int, int]] = [
+            (
+                "terminal parent" if index == len(directory_chain) - 1 else "ancestor",
+                owned.descriptor,
+                (
+                    INOTIFY_MUTATION_MASK
+                    if index == len(directory_chain) - 1
+                    else INOTIFY_SELF_MUTATION_MASK
+                ),
+            )
+            for index, owned in enumerate(directory_chain)
+        ]
+        watched.append(
+            (
+                "retired leaf",
+                retired_descriptor,
+                INOTIFY_LEAF_MUTATION_MASK,
+            )
+        )
+        for label, anchored_descriptor, mask in watched:
+            alias = Path(f"/proc/self/fd/{anchored_descriptor}")
+            anchored = os.fstat(anchored_descriptor)
+            through_alias = os.stat(alias)
+            if (
+                anchored.st_dev != through_alias.st_dev
+                or anchored.st_ino != through_alias.st_ino
+                or (
+                    label != "retired leaf"
+                    and not stat.S_ISDIR(anchored.st_mode)
+                )
+                or (
+                    label == "retired leaf"
+                    and not stat.S_ISSOCK(anchored.st_mode)
+                )
+            ):
+                raise GuardianProtocolError(
+                    f"guardian control mutation-watch {label} alias drifted"
+                )
+            watch_descriptor = int(
+                add_watch(
+                    watch.descriptor,
+                    os.fsencode(alias),
+                    mask,
+                )
+            )
+            if watch_descriptor < 0:
+                error_number = ctypes.get_errno()
+                raise OSError(error_number, os.strerror(error_number))
+    except BaseException as exc:
+        watch.close_preserving(exc)
+        if isinstance(exc, OSError):
+            raise GuardianProtocolError(
+                "guardian control directory mutation watch is unavailable"
+            ) from exc
+        raise
+    return watch
+
+
+def _require_directory_mutation_watch_quiet(
+    watch_descriptor: int,
+) -> None:
+    """Linearize success only when the kernel reports no queued mutation."""
+
+    try:
+        observed = os.read(watch_descriptor, 1 << 16)
+    except BlockingIOError:
+        # The nonblocking EAGAIN observation is the success linearization
+        # point.  Earlier leaf/topology snapshots remain current there because
+        # every intervening mutation would have queued an inotify event.
+        return
+    except BaseException as exc:
+        raise GuardianProtocolError(
+            "guardian control directory mutation watch is uncertain"
+        ) from exc
+    if observed:
+        raise GuardianProtocolError(
+            "guardian control parent or leaf changed during final verification"
+        )
+    raise GuardianProtocolError(
+        "guardian control directory mutation watch closed unexpectedly"
+    )
 
 
 def _control_socket_identity_at(
@@ -944,64 +1246,143 @@ def _retire_bound_socket_at(
         absolute.parent,
         parent_descriptor,
     )
-    final_parent_before = _directory_mutation_signature(
-        os.fstat(parent_descriptor)
-    )
-    _require_directory_join(
-        absolute.parent,
-        parent_descriptor,
+    directory_chain, directory_components = _open_absolute_directory_chain(
+        absolute.parent
     )
     try:
-        final_retired = os.stat(
-            retirement.name,
-            dir_fd=parent_descriptor,
-            follow_symlinks=False,
+        retired_leaf = _open_retired_leaf_descriptor(
+            parent_descriptor,
+            retirement,
+            expected_identity=expected_identity,
         )
     except BaseException as exc:
-        raise GuardianProtocolError(
-            "guardian control retired entry is unavailable after durability sync"
-        ) from exc
-    if (
-        not _socket_stat_matches_identity(final_retired, expected_identity)
-        or (
-            final_retired.st_dev,
-            final_retired.st_ino,
-            final_retired.st_mode,
-            final_retired.st_uid,
-        )
-        != (
-            retired.st_dev,
-            retired.st_ino,
-            retired.st_mode,
-            retired.st_uid,
-        )
-    ):
-        raise GuardianProtocolError(
-            "guardian control retired identity drifted after durability sync"
-        )
+        _close_owned_descriptor_chain_preserving(directory_chain, exc)
+        raise
     try:
-        os.stat(
-            absolute.name,
-            dir_fd=parent_descriptor,
-            follow_symlinks=False,
+        mutation_watch = _open_terminal_mutation_watch(
+            directory_chain,
+            retired_leaf.descriptor,
         )
-    except FileNotFoundError:
-        pass
     except BaseException as exc:
-        raise GuardianProtocolError(
-            "guardian control canonical path absence is uncertain after durability sync"
-        ) from exc
-    else:
-        raise GuardianProtocolError(
-            "guardian control canonical path was replaced during durability sync"
+        retired_leaf.close_preserving(exc)
+        _close_owned_descriptor_chain_preserving(directory_chain, exc)
+        raise
+    try:
+        joined_parent = _require_directory_join(
+            absolute.parent,
+            parent_descriptor,
         )
-    final_parent_after = _directory_mutation_signature(
-        os.fstat(parent_descriptor)
-    )
-    if final_parent_after != final_parent_before:
-        raise GuardianProtocolError(
-            "guardian control parent changed during final retirement verification"
+        retained_chain_parent = _require_retained_directory_chain_join(
+            directory_chain,
+            directory_components,
+            parent_descriptor,
         )
+        joined_parent_signature = _directory_mutation_signature(joined_parent)
+        retained_chain_parent_signature = _directory_mutation_signature(
+            retained_chain_parent
+        )
+        final_parent_before = _directory_mutation_signature(
+            os.fstat(parent_descriptor)
+        )
+        if (
+            final_parent_before != joined_parent_signature
+            or final_parent_before != retained_chain_parent_signature
+        ):
+            raise GuardianProtocolError(
+                "guardian control parent changed across final absolute chain join"
+            )
+        try:
+            final_retired = os.stat(
+                retirement.name,
+                dir_fd=parent_descriptor,
+                follow_symlinks=False,
+            )
+            final_retired_at_descriptor = os.fstat(retired_leaf.descriptor)
+        except BaseException as exc:
+            raise GuardianProtocolError(
+                "guardian control retired entry is unavailable after durability sync"
+            ) from exc
+        if (
+            not _socket_stat_matches_identity(final_retired, expected_identity)
+            or (
+                final_retired.st_dev,
+                final_retired.st_ino,
+                final_retired.st_mode,
+                final_retired.st_uid,
+            )
+            != (
+                retired.st_dev,
+                retired.st_ino,
+                retired.st_mode,
+                retired.st_uid,
+            )
+            or (
+                final_retired_at_descriptor.st_dev,
+                final_retired_at_descriptor.st_ino,
+                final_retired_at_descriptor.st_mode,
+                final_retired_at_descriptor.st_uid,
+            )
+            != (
+                retired.st_dev,
+                retired.st_ino,
+                retired.st_mode,
+                retired.st_uid,
+            )
+        ):
+            raise GuardianProtocolError(
+                "guardian control retired identity drifted after durability sync"
+            )
+        try:
+            os.stat(
+                absolute.name,
+                dir_fd=parent_descriptor,
+                follow_symlinks=False,
+            )
+        except FileNotFoundError:
+            pass
+        except BaseException as exc:
+            raise GuardianProtocolError(
+                "guardian control canonical path absence is uncertain after durability sync"
+            ) from exc
+        else:
+            raise GuardianProtocolError(
+                "guardian control canonical path was replaced during durability sync"
+            )
+        final_parent_after = _directory_mutation_signature(
+            os.fstat(parent_descriptor)
+        )
+        if final_parent_after != final_parent_before:
+            raise GuardianProtocolError(
+                "guardian control parent changed during final retirement verification"
+            )
+        _require_directory_mutation_watch_quiet(mutation_watch.descriptor)
+    except BaseException as exc:
+        mutation_watch.close_preserving(exc)
+        retired_leaf.close_preserving(exc)
+        _close_owned_descriptor_chain_preserving(directory_chain, exc)
+        raise
+    close_error = mutation_watch.close()
+    if close_error is not None:
+        primary = GuardianProtocolError(
+            "guardian control directory mutation watch cleanup failed"
+        )
+        primary.__cause__ = close_error
+        retired_leaf.close_preserving(primary)
+        _close_owned_descriptor_chain_preserving(directory_chain, primary)
+        raise primary
+    close_error = retired_leaf.close()
+    if close_error is not None:
+        primary = GuardianProtocolError(
+            "guardian control retired descriptor cleanup failed"
+        )
+        primary.__cause__ = close_error
+        _close_owned_descriptor_chain_preserving(directory_chain, primary)
+        raise primary
+    close_error = _close_owned_descriptor_chain(directory_chain)
+    if close_error is not None:
+        raise GuardianProtocolError(
+            "guardian control retained directory chain cleanup failed"
+        ) from close_error
     return launch_validator.validate_control_socket_identity(
         {
             "device": final_retired.st_dev,

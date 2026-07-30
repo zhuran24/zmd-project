@@ -678,8 +678,18 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   succeeds or not, it preserves every unknown node, fails closed, and closes
   the retained parent FD exactly once. Parent drift, leaf drift, retirement
   collision, syscall unavailability, verification uncertainty, or durability
-  uncertainty cannot report successful cleanup. The subsequent lock handoff
-  still joins the canonical socket identity with `SO_PEERCRED` PID/starttime.
+  uncertainty cannot report successful cleanup. Fresh cleanup success retains
+  every no-follow descriptor in the canonical absolute directory chain plus an
+  `O_PATH` descriptor for the exact retired inode, arms Linux mutation watches
+  for the chain and inode, and descriptor-relatively replays the complete chain
+  after the watches are armed. Only the subsequent nonblocking watch read's
+  kernel `EAGAIN`, after exact parent/retired/canonical observations and with no
+  queued mutation, is the cleanup-success linearization point; any queued
+  event, watch/read uncertainty, chain/leaf drift, or descriptor cleanup error
+  fails closed. A mutation after that kernel linearization is a later operation
+  and does not rewrite the already-linearized temporal result; this grants no
+  persistence claim beyond that point. The subsequent lock handoff still joins
+  the canonical socket identity with `SO_PEERCRED` PID/starttime.
   Historical roots remain bound to their own pinned schemas and source bytes;
   this successor cannot retrofit, replay, or authorize them.
 - Gate-B qualification has one persistent owner actor. The same

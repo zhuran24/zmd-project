@@ -39,7 +39,7 @@ from src.cuts.typed_platform import (
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _BASELINE_COMMIT = "398f8725c770f3c36408adebe9448a890ed886fe"
-_PROJECT_LOCK_SHA256 = "51939ab6e2c49307b2849fa3d115123817cd54d823c713f8e40af967a88e9a63"
+_PROJECT_LOCK_SHA256 = "1f5c3ce3b843ae2fcc47177ad48ac1d8867746931bcce7a1799eb45e4b4c834e"
 
 # Historical hashes for the six pre-existing Python surfaces touched during
 # the abandoned runtime-wiring attempt.  Five remain byte-identical to

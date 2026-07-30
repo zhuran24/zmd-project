@@ -2,7 +2,7 @@
 
 Document kind: research implementation and current-status summary
 Cutoff date: 2026-07-30
-Status: `A031_A032_A033_FROZEN / A033_ADMISSION_ONLY / FRESH_CHAIN_REQUIRED`
+Status: `A031_TO_A034_FROZEN / A034_DRILL_ONLY / A035_FRESH_CHAIN_REQUIRED`
 Formal campaign: no trusted terminal
 Organic arms: `0/16` created or run
 
@@ -17,6 +17,16 @@ then published exactly
 attempt-consumption, formal selection, unit, arm or terminal receipt. All
 three roots are immutable and cannot be retried, repaired or used as
 authority ancestors for a successor.
+
+A034 is also frozen. Its no-overwrite root is
+`.artifacts/noncert_cuts_ab16_20260724/gate-a-fresh-20260730T051517Z-a034/`.
+It published input authority once and completed only the builder plus
+disposable drill. It did not finalize Gate A, publish candidate or
+preregistration, enter Gate B, create a package/campaign, or consume a formal
+attempt. The freeze audit observed `12` directories, `110` regular files and
+`60,088,976` file bytes; that inventory is a read-only status observation,
+not a receipt or new authority. A034 must not be replayed, completed or
+supplemented.
 
 A033's selected supervisor error was lost behind the old orchestrator's
 generic pre-guardian error. The current orchestrator preserves the selected
@@ -38,16 +48,21 @@ The successor therefore registers the fixed terminal sibling
 through formal context v3/admission v2. Cleanup performs only atomic
 `renameat2(RENAME_NOREPLACE)` retirement and parent `fsync`; the authority
 chain never calls pathname unlink. The expected closed socket remains as an
-inert terminal member. Parent/leaf replacement, retirement collision,
-unsupported atomic rename, or any verification/durability uncertainty
-preserves unknown nodes, fails closed, and closes the retained anchor exactly
-once.
+inert terminal member. After the final absolute-parent join, terminal
+topology/parent/leaf observations are covered by retained descriptors and
+Linux mutation watches for the complete absolute directory chain plus the
+exact retired inode. The chain is replayed descriptor-relatively after all
+watches are armed; only a nonblocking kernel observation with no queued
+mutation can linearize cleanup success. Topology/parent/leaf replacement,
+retirement collision, unsupported atomic rename/watch, or any
+verification/durability uncertainty preserves unknown nodes, fails closed,
+and closes every retained descriptor exactly once.
 
 The next attempt must start from a new no-overwrite Gate-A root in the
 registered independent worktree after a clean committed HEAD, exact source
 rebinding, the fixed resource/lock/competition gate, full preflight and the
 same post-preflight gate. The interrupted pre-fix full run is not qualifying
-evidence, and A034 does not yet exist. A031–A033 remain frozen. The schema
+evidence. A031–A034 remain frozen; the next root name is A035. The schema
 successors apply only to a fresh package and grant no production, certified,
 cut, witness or bound authority.
 

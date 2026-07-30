@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+from collections.abc import Mapping
 from copy import deepcopy
 import ctypes
 from dataclasses import dataclass
@@ -3099,6 +3100,528 @@ def test_guardian_control_cleanup_rejects_post_join_parent_replacement(
     assert set(os.listdir("/proc/self/fd")) == before_descriptors
 
 
+def test_guardian_control_cleanup_final_join_precedes_terminal_observations(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    listener = guardian.GuardianControlListener(control_path)
+    listener.close_once()
+    real_join = guardian._require_directory_join  # noqa: SLF001
+    real_signature = guardian._directory_mutation_signature  # noqa: SLF001
+    join_count = 0
+    signature_join_counts: list[int] = []
+
+    def counted_join(
+        absolute: Path,
+        anchored_descriptor: int,
+    ) -> os.stat_result:
+        nonlocal join_count
+        join_count += 1
+        return real_join(absolute, anchored_descriptor)
+
+    def record_signature(
+        observed: os.stat_result,
+    ) -> tuple[int, ...]:
+        signature_join_counts.append(join_count)
+        return real_signature(observed)
+
+    monkeypatch.setattr(guardian, "_require_directory_join", counted_join)
+    monkeypatch.setattr(
+        guardian,
+        "_directory_mutation_signature",
+        record_signature,
+    )
+    result = listener.remove_path_once()
+    assert result["absent"] is True
+    assert join_count == 3
+    assert signature_join_counts
+    assert min(signature_join_counts) == 3
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "canonical",
+        "retired-mode",
+        "retired-identity",
+        "parent",
+    ),
+)
+@pytest.mark.parametrize("injection_point", (2, 3, 4, "pre-quiet"))
+def test_guardian_control_cleanup_rejects_terminal_observation_mutation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+    injection_point: int | str,
+) -> None:
+    formal = tmp_path / "formal"
+    moved = tmp_path / "formal-moved"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_signature = guardian._directory_mutation_signature  # noqa: SLF001
+    real_quiet = guardian._require_directory_mutation_watch_quiet  # noqa: SLF001
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    signature_count = 0
+    close_count = 0
+    injected = False
+
+    def inject() -> None:
+        nonlocal injected
+        injected = True
+        if mutation == "canonical":
+            control_path.write_bytes(b"late-canonical-replacement")
+        elif mutation == "retired-mode":
+            os.chmod(listener.retirement_path, 0o644)
+        elif mutation == "retired-identity":
+            listener.retirement_path.rename(
+                listener.retirement_path.with_suffix(".retired.saved")
+            )
+            listener.retirement_path.write_bytes(
+                b"late-retired-identity-replacement"
+            )
+        else:
+            formal.rename(moved)
+            formal.mkdir()
+            control_path.write_bytes(b"late-parent-replacement")
+
+    def mutate_after_terminal_parent_observation(
+        observed: os.stat_result,
+    ) -> tuple[int, ...]:
+        nonlocal signature_count
+        result = real_signature(observed)
+        signature_count += 1
+        if signature_count == injection_point:
+            inject()
+        return result
+
+    def mutate_before_quiet(watch_descriptor: int) -> None:
+        if injection_point == "pre-quiet":
+            inject()
+        real_quiet(watch_descriptor)
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal close_count
+        if owned is listener.parent:
+            close_count += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(
+        guardian,
+        "_directory_mutation_signature",
+        mutate_after_terminal_parent_observation,
+    )
+    monkeypatch.setattr(
+        guardian,
+        "_require_directory_mutation_watch_quiet",
+        mutate_before_quiet,
+    )
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert injected
+    if mutation == "canonical":
+        assert control_path.read_bytes() == b"late-canonical-replacement"
+        assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+    elif mutation == "retired-mode":
+        assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+        assert stat.S_IMODE(os.lstat(listener.retirement_path).st_mode) == 0o644
+    elif mutation == "retired-identity":
+        assert (
+            listener.retirement_path.read_bytes()
+            == b"late-retired-identity-replacement"
+        )
+        saved = listener.retirement_path.with_suffix(".retired.saved")
+        assert stat.S_ISSOCK(os.lstat(saved).st_mode)
+    else:
+        assert control_path.read_bytes() == b"late-parent-replacement"
+        assert not os.path.lexists(listener.retirement_path)
+        assert not os.path.lexists(moved / control_path.name)
+        assert stat.S_ISSOCK(
+            os.lstat(moved / listener.retirement_path.name).st_mode
+        )
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert close_count == 1
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_cleanup_rejects_retired_mode_drift_through_alias(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    outside = tmp_path / "outside"
+    formal.mkdir()
+    outside.mkdir()
+    control_path = formal / "guardian-control.sock"
+    alias = outside / "retired-alias.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_open_leaf = guardian._open_retired_leaf_descriptor  # noqa: SLF001
+    real_open_watch = guardian._open_terminal_mutation_watch  # noqa: SLF001
+    real_quiet = guardian._require_directory_mutation_watch_quiet  # noqa: SLF001
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    retired_leaf: guardian._OwnedDescriptor | None = None  # noqa: SLF001
+    mutation_watch: guardian._OwnedDescriptor | None = None  # noqa: SLF001
+    parent_close_count = 0
+    leaf_close_count = 0
+    watch_close_count = 0
+    injected = False
+
+    def capture_retired_leaf(
+        retained_parent: int,
+        retirement: Path,
+        *,
+        expected_identity: Mapping[str, object] | None,
+    ) -> guardian._OwnedDescriptor:  # noqa: SLF001
+        nonlocal retired_leaf
+        retired_leaf = real_open_leaf(
+            retained_parent,
+            retirement,
+            expected_identity=expected_identity,
+        )
+        return retired_leaf
+
+    def capture_mutation_watch(
+        directory_chain: tuple[guardian._OwnedDescriptor, ...],  # noqa: SLF001
+        retired_descriptor: int,
+    ) -> guardian._OwnedDescriptor:  # noqa: SLF001
+        nonlocal mutation_watch
+        mutation_watch = real_open_watch(
+            directory_chain,
+            retired_descriptor,
+        )
+        return mutation_watch
+
+    def mutate_before_quiet(watch_descriptor: int) -> None:
+        nonlocal injected
+        injected = True
+        os.link(listener.retirement_path, alias)
+        os.chmod(alias, 0o644)
+        real_quiet(watch_descriptor)
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal leaf_close_count, parent_close_count, watch_close_count
+        if owned is listener.parent:
+            parent_close_count += 1
+        elif owned is retired_leaf:
+            leaf_close_count += 1
+        elif owned is mutation_watch:
+            watch_close_count += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(
+        guardian,
+        "_open_retired_leaf_descriptor",
+        capture_retired_leaf,
+    )
+    monkeypatch.setattr(
+        guardian,
+        "_open_terminal_mutation_watch",
+        capture_mutation_watch,
+    )
+    monkeypatch.setattr(
+        guardian,
+        "_require_directory_mutation_watch_quiet",
+        mutate_before_quiet,
+    )
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert injected
+    assert retired_leaf is not None
+    assert mutation_watch is not None
+    assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+    assert stat.S_ISSOCK(os.lstat(alias).st_mode)
+    assert stat.S_IMODE(os.lstat(listener.retirement_path).st_mode) == 0o644
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert parent_close_count == 1
+    assert leaf_close_count == 1
+    assert watch_close_count == 1
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+@pytest.mark.parametrize(
+    "relative_parent",
+    (
+        Path("formal"),
+        Path("middle") / "deep" / "formal",
+    ),
+)
+def test_guardian_control_cleanup_rejects_final_ancestor_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    relative_parent: Path,
+) -> None:
+    outer = tmp_path / "outer"
+    moved = tmp_path / "outer-moved"
+    formal = outer / relative_parent
+    formal.mkdir(parents=True)
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_open_chain = guardian._open_absolute_directory_chain  # noqa: SLF001
+    real_open_leaf = guardian._open_retired_leaf_descriptor  # noqa: SLF001
+    real_open_watch = guardian._open_terminal_mutation_watch  # noqa: SLF001
+    real_quiet = guardian._require_directory_mutation_watch_quiet  # noqa: SLF001
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    directory_chain: tuple[guardian._OwnedDescriptor, ...] = ()  # noqa: SLF001
+    retired_leaf: guardian._OwnedDescriptor | None = None  # noqa: SLF001
+    mutation_watch: guardian._OwnedDescriptor | None = None  # noqa: SLF001
+    chain_close_counts: dict[int, int] = {}
+    parent_close_count = 0
+    leaf_close_count = 0
+    watch_close_count = 0
+    injected = False
+
+    def capture_directory_chain(
+        path: Path,
+    ) -> tuple[
+        tuple[guardian._OwnedDescriptor, ...],  # noqa: SLF001
+        tuple[str, ...],
+    ]:
+        nonlocal directory_chain
+        directory_chain, components = real_open_chain(path)
+        chain_close_counts.update(
+            (id(owned), 0) for owned in directory_chain
+        )
+        return directory_chain, components
+
+    def capture_retired_leaf(
+        retained_parent: int,
+        retirement: Path,
+        *,
+        expected_identity: Mapping[str, object] | None,
+    ) -> guardian._OwnedDescriptor:  # noqa: SLF001
+        nonlocal retired_leaf
+        retired_leaf = real_open_leaf(
+            retained_parent,
+            retirement,
+            expected_identity=expected_identity,
+        )
+        return retired_leaf
+
+    def capture_mutation_watch(
+        retained_chain: tuple[guardian._OwnedDescriptor, ...],  # noqa: SLF001
+        retired_descriptor: int,
+    ) -> guardian._OwnedDescriptor:  # noqa: SLF001
+        nonlocal mutation_watch
+        mutation_watch = real_open_watch(
+            retained_chain,
+            retired_descriptor,
+        )
+        return mutation_watch
+
+    def replace_ancestor_before_quiet(watch_descriptor: int) -> None:
+        nonlocal injected
+        injected = True
+        outer.rename(moved)
+        formal.mkdir(parents=True)
+        control_path.write_bytes(b"late-ancestor-replacement")
+        real_quiet(watch_descriptor)
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal leaf_close_count, parent_close_count, watch_close_count
+        if owned is listener.parent:
+            parent_close_count += 1
+        elif owned is retired_leaf:
+            leaf_close_count += 1
+        elif owned is mutation_watch:
+            watch_close_count += 1
+        elif id(owned) in chain_close_counts:
+            chain_close_counts[id(owned)] += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(
+        guardian,
+        "_open_absolute_directory_chain",
+        capture_directory_chain,
+    )
+    monkeypatch.setattr(
+        guardian,
+        "_open_retired_leaf_descriptor",
+        capture_retired_leaf,
+    )
+    monkeypatch.setattr(
+        guardian,
+        "_open_terminal_mutation_watch",
+        capture_mutation_watch,
+    )
+    monkeypatch.setattr(
+        guardian,
+        "_require_directory_mutation_watch_quiet",
+        replace_ancestor_before_quiet,
+    )
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert injected
+    assert directory_chain
+    assert retired_leaf is not None
+    assert mutation_watch is not None
+    assert control_path.read_bytes() == b"late-ancestor-replacement"
+    assert not os.path.lexists(listener.retirement_path)
+    moved_formal = moved / relative_parent
+    assert not os.path.lexists(moved_formal / control_path.name)
+    assert stat.S_ISSOCK(
+        os.lstat(moved_formal / listener.retirement_path.name).st_mode
+    )
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert parent_close_count == 1
+    assert leaf_close_count == 1
+    assert watch_close_count == 1
+    assert set(chain_close_counts.values()) == {1}
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "canonical",
+        "retired-mode",
+        "retired-identity",
+        "parent",
+    ),
+)
+def test_guardian_control_cleanup_rejects_mutation_inside_final_join(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+) -> None:
+    formal = tmp_path / "formal"
+    moved = tmp_path / "formal-moved"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_fstat = guardian.os.fstat
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    join_observation_count = 0
+    close_count = 0
+    injected = False
+
+    def mutate_inside_final_join(descriptor: int) -> os.stat_result:
+        nonlocal injected, join_observation_count
+        result = real_fstat(descriptor)
+        caller = inspect.currentframe()
+        assert caller is not None
+        parent_frame = caller.f_back
+        if (
+            parent_frame is None
+            or parent_frame.f_code is not guardian._require_directory_join.__code__  # noqa: SLF001
+            or descriptor == parent_descriptor
+        ):
+            return result
+        join_observation_count += 1
+        if join_observation_count != 3:
+            return result
+        injected = True
+        if mutation == "canonical":
+            control_path.write_bytes(b"inside-final-join-replacement")
+        elif mutation == "retired-mode":
+            os.chmod(listener.retirement_path, 0o644)
+        elif mutation == "retired-identity":
+            listener.retirement_path.rename(
+                listener.retirement_path.with_suffix(".retired.saved")
+            )
+            listener.retirement_path.write_bytes(
+                b"inside-final-join-retired-replacement"
+            )
+        else:
+            formal.rename(moved)
+            formal.mkdir()
+            control_path.write_bytes(b"inside-final-join-parent-replacement")
+        return result
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal close_count
+        if owned is listener.parent:
+            close_count += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(guardian.os, "fstat", mutate_inside_final_join)
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert injected
+    assert join_observation_count == 3
+    if mutation == "canonical":
+        assert control_path.read_bytes() == b"inside-final-join-replacement"
+        assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+    elif mutation == "retired-mode":
+        assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+        assert stat.S_IMODE(os.lstat(listener.retirement_path).st_mode) == 0o644
+    elif mutation == "retired-identity":
+        assert (
+            listener.retirement_path.read_bytes()
+            == b"inside-final-join-retired-replacement"
+        )
+        saved = listener.retirement_path.with_suffix(".retired.saved")
+        assert stat.S_ISSOCK(os.lstat(saved).st_mode)
+    else:
+        assert control_path.read_bytes() == b"inside-final-join-parent-replacement"
+        assert not os.path.lexists(listener.retirement_path)
+        assert not os.path.lexists(moved / control_path.name)
+        assert stat.S_ISSOCK(
+            os.lstat(moved / listener.retirement_path.name).st_mode
+        )
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert close_count == 1
+    with pytest.raises(OSError):
+        real_fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
 def test_guardian_control_cleanup_rejects_final_join_leaf_mode_drift(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -3118,12 +3641,13 @@ def test_guardian_control_cleanup_rejects_final_join_leaf_mode_drift(
     def drift_after_final_join(
         absolute: Path,
         anchored_descriptor: int,
-    ) -> None:
+    ) -> os.stat_result:
         nonlocal join_count
         join_count += 1
-        real_join(absolute, anchored_descriptor)
+        result = real_join(absolute, anchored_descriptor)
         if join_count == 3:
             os.chmod(listener.retirement_path, 0o644)
+        return result
 
     def counted_close(
         owned: guardian._OwnedDescriptor,  # noqa: SLF001
@@ -3177,12 +3701,13 @@ def test_guardian_control_cleanup_rejects_final_join_canonical_replacement(
     def replace_after_final_join(
         absolute: Path,
         anchored_descriptor: int,
-    ) -> None:
+    ) -> os.stat_result:
         nonlocal join_count
         join_count += 1
-        real_join(absolute, anchored_descriptor)
+        result = real_join(absolute, anchored_descriptor)
         if join_count == 3:
             control_path.write_bytes(b"final-join-window-replacement")
+        return result
 
     def counted_close(
         owned: guardian._OwnedDescriptor,  # noqa: SLF001
@@ -3236,14 +3761,15 @@ def test_guardian_control_cleanup_rejects_final_join_parent_replacement(
     def replace_parent_after_final_join(
         absolute: Path,
         anchored_descriptor: int,
-    ) -> None:
+    ) -> os.stat_result:
         nonlocal join_count
         join_count += 1
-        real_join(absolute, anchored_descriptor)
+        result = real_join(absolute, anchored_descriptor)
         if join_count == 3:
             formal.rename(moved)
             formal.mkdir()
             (formal / control_path.name).write_bytes(b"final-join-parent-replacement")
+        return result
 
     def counted_close(
         owned: guardian._OwnedDescriptor,  # noqa: SLF001
