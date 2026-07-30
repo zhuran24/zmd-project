@@ -14,7 +14,9 @@
 - **SMM4 formal 终态：** `smm4-formal-a004` 已消费且永久不得重试。内部
   `VERIFIED`/UNSAT receipt 仍为 `upper_bound_update_authorized=false`，不是账本
   授权源；`production_certified=false`。`AB16_GATE_B_AND_16_ORGANIC_ARMS`
-  已进入强制执行链；A031–A034 均已冻结，尚无可信 terminal 或 organic arm。
+  已进入强制执行链；A031–A038 均已冻结，尚无可信 terminal 或 organic arm。
+  A035–A037 只发布一次 input authority；A038 的 pinned Gate-A full preflight
+  以 `FAIL_CLOSED` 结束，fresh successor 尚未创建，organic arms 仍为 `0/16`。
   下述 W0 D6 单轴局部阶段已经完成。
 - **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
   hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
@@ -35,12 +37,17 @@
   Gate-B qualification 与 package/campaign 创建，但 formal 阶段只发布 admission；没有
   guardian-ready、attempt consumption、selection、unit、terminal 或 16 个 organic arms；
   A034 只发布 input authority 并完成 disposable drill，未 finalize Gate A、发布
-  candidate/preregistration、进入 Gate B 或消费 formal attempt。A031–A034 不可重试。
+  candidate/preregistration、进入 Gate B 或消费 formal attempt。A035–A037 各自只发布
+  一次 input authority；A038 的 pinned Gate-A full preflight 以
+  `FAIL_CLOSED`/exit `1` 结束，三项 launch authorization 均为 false。
+  A031–A038 均不可重试。
   当前 runtime fix 保留 canonical absolute socket identity，以 retained-dirfd alias 适配
   长 worktree 的 Linux AF_UNIX 调用，并在最终 absolute-parent join 后以 retained
   absolute-directory-chain 与 retired-inode mutation watches 闭合终态 topology/parent/leaf
   验证窗口；该 alias 与 watches 不授予 schema 或
-  authority。下一 root 只能是 A035，且必须从 clean committed HEAD 重跑完整前后门禁。
+  authority。fresh successor 尚未创建；后续只能使用全新 no-overwrite root，从 clean
+  committed HEAD 重新绑定全部 source observation，并依次通过 stage-specific resource
+  admission、完整 Gate A 及其余既定 authority gates。organic arms 仍为 `0/16`。
   这些结果不建立 family-global soundness、production `CERTIFIED`、上下界、witness、
   attainability 或 optimality。
 

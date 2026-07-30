@@ -42,12 +42,12 @@ V4_AUTHORITY_PATH = V4_RESEARCH_DIR / "campaign_authority_v4.py"
 
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
 CANDIDATE_SCHEMA = "noncert-cuts-ab16-bootstrap-offline-candidate-v2"
-GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v4"
-GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v3"
+GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v5"
+GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v4"
 CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v2"
-RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v3"
+RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v4"
 PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v4"
-FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v5"
+FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v6"
 REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
 EXTERNAL_PLATFORM_SCHEMA = "noncert-cuts-ab16-external-platform-assumptions-v2"
@@ -66,6 +66,7 @@ FINAL_FULL_PREFLIGHT_SCRATCH_POLICY = "fresh-no-overwrite-repo-local-retained-cl
 FINAL_FULL_PREFLIGHT_PUBLICATION_COMMIT_SCHEMA = (
     "noncert-cuts-ab16-gate-a-preflight-publication-commit-v1"
 )
+GATE_B_RESOURCE_GATE_SCHEMA = "noncert-cuts-ab16-gate-b-resource-gate-v2"
 FINAL_FULL_PREFLIGHT_KEYS = {
     "authorizations",
     "authority_ready_identity",
@@ -86,6 +87,9 @@ FINAL_FULL_PREFLIGHT_KEYS = {
     "pytest_collection_protocol_identity",
     "pytest_scratch",
     "python_identity",
+    "resource_admission",
+    "resource_admission_source_identity",
+    "resource_lock_release_identities",
     "repository_head",
     "repository_root",
     "runner_tool_identity",
@@ -1103,6 +1107,7 @@ AB16_SCRIPT_TOOL_FILES: dict[str, str] = {
     "ab16_preflight_qualification_v1": "ab16_preflight_qualification_v1.py",
     "ab16_pytest_collection_plugin_v1": "ab16_pytest_collection_plugin_v1.py",
     "ab16_pytest_collection_protocol_v1": "ab16_pytest_collection_protocol_v1.py",
+    "ab16_resource_admission_v1": "ab16_resource_admission_v1.py",
     "ab16_terminal_gate_v1": "ab16_terminal_gate_v1.py",
     "ab16_terminal_gate_v2": "ab16_terminal_gate_v2.py",
     "baseline_admission_v1": "baseline_admission_v1.py",
@@ -1179,6 +1184,10 @@ GATE_INPUT_ROLES = {
     "ab16_gate_b_approval": "input.ab16_gate_b_approval.json",
     "ab16_gate_b_epoch_observation": "input.ab16_gate_b_epoch_observation.json",
     "ab16_gate_b_final_full_preflight": "input.ab16_gate_b_final_full_preflight.json",
+    "ab16_gate_b_pre_full_resource_gate": "input.ab16_gate_b_pre_full_resource_gate.json",
+    "ab16_gate_b_pre_publication_resource_gate": (
+        "input.ab16_gate_b_pre_publication_resource_gate.json"
+    ),
 }
 CAPTURE_INPUT_ROLE = "ab16_bootstrap_manager_epoch_capture"
 CAPTURE_PACKAGE_ROLE = "input.ab16_bootstrap_manager_epoch_capture.json"
@@ -2139,6 +2148,7 @@ def render_gate_b_epoch_observation(request: object) -> bytes:
                 "gate_a_receipt_identity",
                 "manager_epoch",
                 "planned_source_set_digest",
+                "pre_full_resource_gate_identity",
                 "publisher",
                 "purpose",
                 "repository_head",
@@ -2186,6 +2196,8 @@ def _validate_gate_b(value: object) -> Mapping[str, Any]:
             "gate_a_receipt_identity",
             "gate_b_epoch_observation_identity",
             "planned_source_set_digest",
+            "pre_full_resource_gate_identity",
+            "pre_publication_resource_gate_identity",
             "publisher",
             "purpose",
             "repository_head",
@@ -2213,6 +2225,14 @@ def _validate_gate_b(value: object) -> Mapping[str, Any]:
         record["gate_b_epoch_observation_identity"],
         "Gate-B epoch observation",
     )
+    pre_full_resource_identity = _mode_identity(
+        record["pre_full_resource_gate_identity"],
+        "Gate-B pre-full resource gate",
+    )
+    pre_publication_resource_identity = _mode_identity(
+        record["pre_publication_resource_gate_identity"],
+        "Gate-B pre-publication resource gate",
+    )
     _validate_gate_b_publisher(
         record["publisher"],
         expected_output_path=record["publisher"]["output_path"],
@@ -2220,8 +2240,24 @@ def _validate_gate_b(value: object) -> Mapping[str, Any]:
     if (
         final_identity["mode"] != 0o444
         or epoch_identity["mode"] != 0o444
+        or pre_full_resource_identity["mode"] != 0o444
+        or pre_publication_resource_identity["mode"] != 0o444
         or _snapshot_mode_identity(final_identity["path"]) != final_identity
         or _snapshot_mode_identity(epoch_identity["path"]) != epoch_identity
+        or _snapshot_mode_identity(pre_full_resource_identity["path"])
+        != pre_full_resource_identity
+        or _snapshot_mode_identity(pre_publication_resource_identity["path"])
+        != pre_publication_resource_identity
+        or len(
+            {
+                final_identity["path"],
+                epoch_identity["path"],
+                pre_full_resource_identity["path"],
+                pre_publication_resource_identity["path"],
+                record["publisher"]["output_path"],
+            }
+        )
+        != 5
         or record["schema_version"] != GATE_B_SCHEMA
         or record["purpose"] != GATE_B_PURPOSE
         or record["gate"] != "B"
@@ -2556,6 +2592,301 @@ def _expected_preflight_qualification_argv(
     ]
 
 
+def _load_resource_admission_replayer(
+    expected_source: Mapping[str, object],
+    *,
+    label: str,
+) -> tuple[types.ModuleType, str | None]:
+    ambient = sys.modules.get("ab16_resource_admission_v1")
+    if ambient is not None:
+        module_path = getattr(ambient, "__file__", None)
+        if (
+            not isinstance(ambient, types.ModuleType)
+            or type(module_path) is not str
+            or _snapshot_mode_identity(module_path) != expected_source
+        ):
+            raise BootstrapError(
+                f"{label} pinned resource-admission alias identity drifted"
+            )
+        return ambient, None
+    if not _is_live_prepackage_closure_entry():
+        raise BootstrapError(
+            f"{label} lacks a pinned resource-admission replay module"
+        )
+    snapshot = authority.snapshot_regular(expected_source["path"])
+    observed = {
+        "mode": stat.S_IMODE(snapshot.stat_result.st_mode),
+        **authority.detached_identity(snapshot),
+    }
+    if observed != dict(expected_source):
+        raise BootstrapError(
+            f"{label} live resource-admission source identity drifted"
+        )
+    module_name = (
+        "_ab16_bootstrap_resource_admission_replay_"
+        f"{expected_source['sha256']}"
+    )
+    if module_name in sys.modules:
+        raise BootstrapError(
+            f"{label} resource-admission replay module name is occupied"
+        )
+    module = types.ModuleType(module_name)
+    module.__file__ = str(expected_source["path"])
+    module.__package__ = None
+    module.__cached__ = None
+    sys.modules[module_name] = module
+    try:
+        exec(
+            compile(
+                snapshot.data,
+                module.__file__,
+                "exec",
+                dont_inherit=True,
+            ),
+            module.__dict__,
+            module.__dict__,
+        )
+    except BaseException:
+        sys.modules.pop(module_name, None)
+        raise
+    return module, module_name
+
+
+def _validate_preflight_resource_admission(
+    record: Mapping[str, Any],
+    *,
+    planned: Mapping[str, Mapping[str, object]],
+    receipt_directory: Path,
+    label: str,
+) -> None:
+    try:
+        expected_source = _project_mode_identity(
+            planned["script.ab16_resource_admission_v1"],
+            "AB16 resource admission",
+        )
+    except KeyError as exc:
+        raise BootstrapError(
+            f"{label} lacks the planned resource-admission source"
+        ) from exc
+    if record["resource_admission_source_identity"] != expected_source:
+        raise BootstrapError(f"{label} resource-admission source identity drifted")
+    resource_replayer, cleanup_module_name = _load_resource_admission_replayer(
+        expected_source,
+        label=label,
+    )
+
+    resource_record = record["resource_admission"]
+    if type(resource_record) is not dict:
+        raise BootstrapError(f"{label} resource admission is malformed")
+    lock_check = resource_record.get("lock_check")
+    if type(lock_check) is not dict:
+        raise BootstrapError(f"{label} resource lock check is malformed")
+    lock_identities = lock_check.get("identities")
+    expected_observation_context = {
+        "authority_id": record["pre_run_authority_identity"]["sha256"],
+        "disk_path": record["repository_root"],
+        "kind": "GATE_A_FULL_PREFLIGHT",
+        "ordinal": 0,
+        "scope_id": record["planned_source_set_digest"],
+        "sequence": 1,
+        "slot": "",
+        "target": str(receipt_directory),
+    }
+    try:
+        try:
+            checked_resource = resource_replayer.validate_resource_admission_receipt(
+                resource_record,
+                expected_stage=resource_replayer.FULL_PREFLIGHT,
+                expected_lock_identities=lock_identities,
+                expected_lock_identity_format=resource_replayer.GATE_B_LOCK_IDENTITY_FORMAT,
+                expected_observation_context=expected_observation_context,
+            )
+        except resource_replayer.ResourceAdmissionError as exc:
+            raise BootstrapError(
+                f"{label} resource admission replay failed: {exc}"
+            ) from exc
+    finally:
+        if cleanup_module_name is not None:
+            loaded = sys.modules.get(cleanup_module_name)
+            if loaded is resource_replayer:
+                sys.modules.pop(cleanup_module_name, None)
+    if (
+        checked_resource != resource_record
+        or record["resource_lock_release_identities"] != lock_identities
+    ):
+        raise BootstrapError(f"{label} resource admission/release join drifted")
+
+    disk_target = resource_record["disk_target"]
+    if type(disk_target) is not dict:
+        raise BootstrapError(f"{label} resource disk target is malformed")
+    descriptor: int | None = None
+    try:
+        _repository, descriptor = _open_directory_fd(Path(record["repository_root"]))
+        observed = os.fstat(descriptor)
+        if (
+            not stat.S_ISDIR(observed.st_mode)
+            or disk_target
+            != {
+                "device": observed.st_dev,
+                "inode": observed.st_ino,
+                "mode": stat.S_IMODE(observed.st_mode),
+                "path": record["repository_root"],
+                "type": "directory",
+                "uid": observed.st_uid,
+            }
+        ):
+            raise BootstrapError(f"{label} resource disk target identity drifted")
+    except BaseException as exc:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError as close_error:
+                exc.add_note(
+                    f"{label} resource disk-target cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+        if isinstance(exc, OSError):
+            raise BootstrapError(
+                f"{label} resource disk-target replay failed"
+            ) from exc
+        raise
+    try:
+        os.close(descriptor)
+    except OSError as exc:
+        raise BootstrapError(
+            f"{label} resource disk-target descriptor close failed"
+        ) from exc
+
+
+def _read_gate_b_resource_gate(
+    identity_value: object,
+    *,
+    planned: Mapping[str, Mapping[str, object]],
+    expected_actor: Mapping[str, object],
+    expected_session_id: str,
+    expected_lock_identities: Sequence[Mapping[str, object]],
+    expected_path: Path,
+    expected_profile_stage: str,
+    expected_stage: str,
+    expected_disk_path: Path,
+    expected_kind: str,
+    expected_sequence: int,
+) -> tuple[Mapping[str, Any], dict[str, object]]:
+    label = f"Gate-B {expected_stage} resource gate"
+    identity = _mode_identity(identity_value, label)
+    if identity["mode"] != 0o444 or identity["path"] != str(expected_path):
+        raise BootstrapError(f"{label} fixed path or mode drifted")
+    record, observed_identity = _canonical_mode_record(expected_path, label)
+    if observed_identity != identity:
+        raise BootstrapError(f"{label} byte identity drifted")
+    checked = _exact_keys(
+        record,
+        {
+            "admission",
+            "authorizations",
+            "created_at_utc",
+            "lock_identities",
+            "owner_actor",
+            "qualification_session_id",
+            "schema_version",
+            "stage",
+            "status",
+        },
+        label,
+    )
+    _utc(checked["created_at_utc"], f"{label} created_at_utc")
+    if (
+        checked["schema_version"] != GATE_B_RESOURCE_GATE_SCHEMA
+        or checked["status"] != "PASS"
+        or checked["stage"] != expected_stage
+        or checked["authorizations"]
+        != {
+            "formal_campaign_creation_authorized": False,
+            "organic_arm_launch_authorized": False,
+            "solver_run_authorized": False,
+        }
+        or checked["owner_actor"] != dict(expected_actor)
+        or checked["qualification_session_id"] != expected_session_id
+        or checked["lock_identities"]
+        != [dict(item) for item in expected_lock_identities]
+    ):
+        raise BootstrapError(f"{label} owner/session/lock binding drifted")
+
+    try:
+        expected_source = _project_mode_identity(
+            planned["script.ab16_resource_admission_v1"],
+            "AB16 resource admission",
+        )
+    except KeyError as exc:
+        raise BootstrapError(f"{label} lacks its planned validator source") from exc
+    resource_replayer, cleanup_module_name = _load_resource_admission_replayer(
+        expected_source,
+        label=label,
+    )
+    expected_context = {
+        "authority_id": expected_session_id,
+        "disk_path": str(expected_disk_path),
+        "kind": expected_kind,
+        "ordinal": 0,
+        "scope_id": expected_session_id,
+        "sequence": expected_sequence,
+        "slot": "",
+        "target": expected_stage,
+    }
+    try:
+        try:
+            replayed = resource_replayer.validate_resource_admission_receipt(
+                checked["admission"],
+                expected_stage=expected_profile_stage,
+                expected_lock_identities=expected_lock_identities,
+                expected_lock_identity_format=resource_replayer.GATE_B_LOCK_IDENTITY_FORMAT,
+                expected_observation_context=expected_context,
+            )
+        except resource_replayer.ResourceAdmissionError as exc:
+            raise BootstrapError(f"{label} admission replay failed: {exc}") from exc
+    finally:
+        if cleanup_module_name is not None:
+            loaded = sys.modules.get(cleanup_module_name)
+            if loaded is resource_replayer:
+                sys.modules.pop(cleanup_module_name, None)
+    if replayed != checked["admission"]:
+        raise BootstrapError(f"{label} admission canonical replay drifted")
+
+    disk_target = replayed["disk_target"]
+    descriptor: int | None = None
+    try:
+        _absolute_disk_path, descriptor = _open_directory_fd(expected_disk_path)
+        observed = os.fstat(descriptor)
+        if disk_target != {
+            "device": observed.st_dev,
+            "inode": observed.st_ino,
+            "mode": stat.S_IMODE(observed.st_mode),
+            "path": str(expected_disk_path),
+            "type": "directory",
+            "uid": observed.st_uid,
+        }:
+            raise BootstrapError(f"{label} disk target identity drifted")
+    except BaseException as exc:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError as close_error:
+                exc.add_note(
+                    f"{label} disk-target cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+        if isinstance(exc, OSError):
+            raise BootstrapError(f"{label} disk-target replay failed") from exc
+        raise
+    try:
+        os.close(descriptor)
+    except OSError as exc:
+        raise BootstrapError(
+            f"{label} disk-target descriptor close failed"
+        ) from exc
+    return checked, observed_identity
+
+
 def _validate_final_full_preflight(
     value: object,
     *,
@@ -2686,6 +3017,12 @@ def _validate_final_full_preflight(
         receipt_directory=gate_a_receipt_directory,
         label="Gate-A full-preflight receipt",
     )
+    _validate_preflight_resource_admission(
+        gate_a_preflight,
+        planned=planned,
+        receipt_directory=gate_a_receipt_directory,
+        label="Gate-A full-preflight receipt",
+    )
     if (
         record["schema_version"] != FINAL_FULL_PREFLIGHT_SCHEMA
         or record["purpose"] != FINAL_FULL_PREFLIGHT_PURPOSE
@@ -2742,6 +3079,12 @@ def _validate_final_full_preflight(
         receipt_directory=final_receipt_directory,
         label="Gate-B final full-preflight receipt",
     )
+    _validate_preflight_resource_admission(
+        record,
+        planned=planned,
+        receipt_directory=final_receipt_directory,
+        label="Gate-B final full-preflight receipt",
+    )
     for field in ("stdout_identity", "stderr_identity"):
         if record[field]["mode"] != 0o444 or _snapshot_mode_identity(record[field]["path"]) != record[field]:
             raise BootstrapError(f"Gate-B final full-preflight {field} bytes drifted")
@@ -2757,6 +3100,7 @@ def _validate_gate_b_epoch_observation(
     gate_a_identity: Mapping[str, object],
     candidate_identity: Mapping[str, object],
     final_full_preflight_identity: Mapping[str, object],
+    pre_full_resource_gate_identity: Mapping[str, object],
 ) -> Mapping[str, Any]:
     record = _exact_keys(
         value,
@@ -2769,6 +3113,7 @@ def _validate_gate_b_epoch_observation(
             "gate_a_receipt_identity",
             "manager_epoch",
             "planned_source_set_digest",
+            "pre_full_resource_gate_identity",
             "publisher",
             "purpose",
             "repository_head",
@@ -2803,6 +3148,8 @@ def _validate_gate_b_epoch_observation(
         or record["candidate_identity"] != candidate_identity
         or record["gate_a_receipt_identity"] != gate_a_identity
         or record["final_full_preflight_receipt_identity"] != final_full_preflight_identity
+        or record["pre_full_resource_gate_identity"]
+        != pre_full_resource_gate_identity
         or record["publisher"]["qualification_session"]["sequence"] != 1
         or record["manager_epoch"] != gate_a["manager_epoch"]
         or any(
@@ -3807,6 +4154,8 @@ def _package_roles(
     gate_b_path: Path,
     gate_b_epoch_path: Path,
     final_full_preflight_path: Path,
+    pre_full_resource_gate_path: Path,
+    pre_publication_resource_gate_path: Path,
     capture_path: Path,
     path_preregistration_path: Path,
     snapshot_archive_path: Path,
@@ -3854,6 +4203,16 @@ def _package_roles(
             "ab16_gate_b_final_full_preflight",
             GATE_INPUT_ROLES["ab16_gate_b_final_full_preflight"],
             final_full_preflight_path,
+        ),
+        (
+            "ab16_gate_b_pre_full_resource_gate",
+            GATE_INPUT_ROLES["ab16_gate_b_pre_full_resource_gate"],
+            pre_full_resource_gate_path,
+        ),
+        (
+            "ab16_gate_b_pre_publication_resource_gate",
+            GATE_INPUT_ROLES["ab16_gate_b_pre_publication_resource_gate"],
+            pre_publication_resource_gate_path,
         ),
     ):
         input_roles[role] = filename
@@ -4226,6 +4585,45 @@ def bootstrap_campaign(
         "planned_source_set_digest"
     ] != _source_set_digest(planned):
         raise BootstrapError("planned package source bytes drifted after Gate A")
+    gate_b_session = gate_b["publisher"]["qualification_session"]
+    gate_b_lock_identities = gate_b_session["lock_identities"]
+    resource_gate_dir = gate_b_path.parent / "resource-gates"
+    pre_full_resource_gate_path = (
+        resource_gate_dir / "before-final-full-preflight.json"
+    )
+    pre_publication_resource_gate_path = (
+        resource_gate_dir / "after-final-full-preflight.json"
+    )
+    _pre_full_resource_gate, pre_full_resource_gate_identity = (
+        _read_gate_b_resource_gate(
+            gate_b["pre_full_resource_gate_identity"],
+            planned=planned,
+            expected_actor=gate_b["publisher"]["actor"],
+            expected_session_id=gate_b_session["session_id"],
+            expected_lock_identities=gate_b_lock_identities,
+            expected_path=pre_full_resource_gate_path,
+            expected_profile_stage="FULL_PREFLIGHT",
+            expected_stage="BEFORE_FINAL_FULL_PREFLIGHT",
+            expected_disk_path=gate_b_path.parent.parent,
+            expected_kind="GATE_B_FINAL_FULL_PREFLIGHT",
+            expected_sequence=1,
+        )
+    )
+    _pre_publication_resource_gate, pre_publication_resource_gate_identity = (
+        _read_gate_b_resource_gate(
+            gate_b["pre_publication_resource_gate_identity"],
+            planned=planned,
+            expected_actor=gate_b["publisher"]["actor"],
+            expected_session_id=gate_b_session["session_id"],
+            expected_lock_identities=gate_b_lock_identities,
+            expected_path=pre_publication_resource_gate_path,
+            expected_profile_stage="GATE_B_QUALIFICATION",
+            expected_stage="AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
+            expected_disk_path=gate_b_path.parent,
+            expected_kind="GATE_B_QUALIFICATION_PUBLICATION",
+            expected_sequence=2,
+        )
+    )
     final_full_preflight_path = _absolute(gate_b["final_full_preflight_receipt_identity"]["path"])
     final_full_preflight, final_full_preflight_identity = _unterminated_canonical_mode_record(
         final_full_preflight_path,
@@ -4257,6 +4655,7 @@ def bootstrap_campaign(
         gate_a_identity=gate_a_identity,
         candidate_identity=candidate_identity,
         final_full_preflight_identity=final_full_preflight_identity,
+        pre_full_resource_gate_identity=pre_full_resource_gate_identity,
     )
     if (
         gate_b_epoch["publisher"]["actor"] != gate_b["publisher"]["actor"]
@@ -4334,6 +4733,8 @@ def bootstrap_campaign(
         gate_b_path=gate_b_path,
         gate_b_epoch_path=gate_b_epoch_path,
         final_full_preflight_path=final_full_preflight_path,
+        pre_full_resource_gate_path=pre_full_resource_gate_path,
+        pre_publication_resource_gate_path=pre_publication_resource_gate_path,
         capture_path=capture_path,
         path_preregistration_path=path_preregistration_path,
         snapshot_archive_path=snapshot_build["archive_path"],
@@ -4463,6 +4864,10 @@ def bootstrap_campaign(
         "gate_b_approval_identity": gate_b_identity,
         "gate_b_epoch_observation_identity": gate_b_epoch_identity,
         "gate_b_final_full_preflight_identity": final_full_preflight_identity,
+        "gate_b_pre_full_resource_gate_identity": pre_full_resource_gate_identity,
+        "gate_b_pre_publication_resource_gate_identity": (
+            pre_publication_resource_gate_identity
+        ),
         "gate_b_qualification_handoff": qualification_handoff,
         "organic_ab16_authorized": False,
         "package_id": package["package_id"],

@@ -36,6 +36,7 @@ MAX_MODULE_BYTES = 8 * 1024 * 1024
 
 MODULE_LOAD_ORDER: tuple[tuple[str, str], ...] = (
     ("campaign_authority_v4", "script.campaign_authority_v4"),
+    ("ab16_resource_admission_v1", "script.ab16_resource_admission_v1"),
     ("ab16_campaign_bootstrap_v2", "script.ab16_campaign_bootstrap_v2"),
     ("organic_resource_lifecycle_v2", "script.organic_resource_lifecycle_v2"),
     ("organic_resource_verifier_v2", "script.organic_resource_verifier_v2"),

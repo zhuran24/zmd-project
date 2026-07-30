@@ -20,7 +20,6 @@ import os
 from pathlib import Path
 import secrets
 import select
-import shutil
 import socket
 import stat
 import subprocess
@@ -28,13 +27,13 @@ import sys
 from typing import Any
 
 
-QUALIFICATION_SCHEMA = "noncert-cuts-ab16-gate-b-qualification-v1"
+QUALIFICATION_SCHEMA = "noncert-cuts-ab16-gate-b-qualification-v2"
 OWNER_REQUEST_SCHEMA = "noncert-cuts-ab16-gate-b-owner-request-v1"
 OWNER_RESPONSE_SCHEMA = "noncert-cuts-ab16-gate-b-owner-response-v1"
 HANDOFF_REQUEST_SCHEMA = "noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1"
 HANDOFF_RESPONSE_SCHEMA = "noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1"
 OWNER_RELEASE_SCHEMA = "noncert-cuts-ab16-gate-b-owner-release-v1"
-RESOURCE_GATE_SCHEMA = "noncert-cuts-ab16-gate-b-resource-gate-v1"
+RESOURCE_GATE_SCHEMA = "noncert-cuts-ab16-gate-b-resource-gate-v2"
 OWNER_EXECUTION_STRATEGY = "persistent-owner-sealed-fd-oexcl-bootstrap-handoff-v1"
 LOCK_PATHS = (
     "/tmp/zmd-pj-codex-heavy-validation.lock",
@@ -54,22 +53,6 @@ _MAX_FRAME = 16 * 1024 * 1024
 _F_ADD_SEALS = getattr(fcntl, "F_ADD_SEALS", 1033)
 _F_GET_SEALS = getattr(fcntl, "F_GET_SEALS", 1034)
 _REQUIRED_SEALS = 0x0001 | 0x0002 | 0x0004 | 0x0008
-MIN_DISK_BYTES = 16 * 1024**3
-MIN_MEM_AVAILABLE = 36 * 1024**3
-MIN_SWAP_FREE = 16 * 1024**3
-CONFLICT_PATTERNS = (
-    "ab16_formal_campaign_v1.py",
-    "ab16_outer_guardian_v1.py",
-    "cp_model_solver",
-    "endfield",
-    "gamescope",
-    "organic_unit_orchestrator",
-    "preflight_gate.py",
-    "proton",
-    "pytest",
-    "steam",
-    "wine",
-)
 FALSE_AUTHORIZATIONS = {
     "formal_campaign_creation_authorized": False,
     "organic_arm_launch_authorized": False,
@@ -1297,6 +1280,23 @@ class PersistentGateBOwner:
     def is_alive(self) -> bool:
         return self._process is not None and self._process.poll() is None
 
+    def current_lock_identities(self) -> list[dict[str, object]]:
+        """Reclose every retained lock FD/path identity at the gate instant."""
+
+        if not self.is_alive() or len(self._lock_fds) != len(self.lock_paths):
+            raise QualificationError("owner lock lease is not live")
+        current = [
+            _lock_identity(descriptor, path)
+            for path, descriptor in zip(
+                self.lock_paths,
+                self._lock_fds,
+                strict=True,
+            )
+        ]
+        if current != self.lock_identities:
+            raise QualificationError("owner lock identities drifted after READY")
+        return current
+
     def publish(
         self,
         *,
@@ -1531,62 +1531,12 @@ def _write_exclusive(path: Path | str, raw: bytes, *, mode: int = 0o444) -> dict
     return identity
 
 
-def _meminfo() -> dict[str, int]:
-    result: dict[str, int] = {}
-    try:
-        raw = Path("/proc/meminfo").read_text(encoding="ascii")
-    except (OSError, UnicodeError) as exc:
-        raise QualificationError("resource gate cannot read /proc/meminfo") from exc
-    for line in raw.splitlines():
-        fields = line.replace(":", "").split()
-        if len(fields) == 3 and fields[1].isdigit() and fields[2] == "kB":
-            result[fields[0]] = int(fields[1]) * 1024
-    return result
-
-
-def _ancestor_pids() -> set[int]:
-    result: set[int] = set()
-    current = os.getpid()
-    while current > 1 and current not in result:
-        result.add(current)
-        try:
-            raw = Path(f"/proc/{current}/stat").read_text(encoding="ascii")
-            closing = raw.rfind(")")
-            fields = raw[closing + 2 :].split()
-            current = int(fields[1])
-        except (FileNotFoundError, ProcessLookupError, PermissionError, IndexError, ValueError):
-            break
-    return result
-
-
-def _same_uid_conflicts() -> list[dict[str, object]]:
-    ancestors = _ancestor_pids()
-    found: list[dict[str, object]] = []
-    for item in Path("/proc").iterdir():
-        if not item.name.isdigit():
-            continue
-        pid = int(item.name)
-        if pid in ancestors:
-            continue
-        try:
-            if item.stat().st_uid != os.getuid():
-                continue
-            command = (item / "cmdline").read_bytes().replace(b"\0", b" ").decode(
-                "utf-8",
-                "replace",
-            ).strip()
-        except (FileNotFoundError, ProcessLookupError, PermissionError):
-            continue
-        lowered = command.lower()
-        if command and any(pattern in lowered for pattern in CONFLICT_PATTERNS):
-            found.append({"command": command, "pid": pid})
-    return found
-
-
 def _resource_gate(
     path: Path | str,
     *,
     stage: str,
+    profile_stage: str,
+    resource_admission: Any,
     actor: Mapping[str, object],
     session_id: str,
     lock_identities: Sequence[Mapping[str, object]],
@@ -1594,44 +1544,78 @@ def _resource_gate(
     disk_free: int | None = None,
     conflicts: Sequence[Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
-    memory = dict(_meminfo() if meminfo is None else meminfo)
-    free = shutil.disk_usage(path).free if disk_free is None else disk_free
-    heavy = list(_same_uid_conflicts() if conflicts is None else conflicts)
-    if (
-        type(memory.get("MemAvailable")) is not int
-        or memory["MemAvailable"] < MIN_MEM_AVAILABLE
-        or type(memory.get("SwapFree")) is not int
-        or memory["SwapFree"] < MIN_SWAP_FREE
-        or type(free) is not int
-        or free < MIN_DISK_BYTES
-        or heavy
-    ):
-        raise QualificationError(
-            "Gate-B resource gate failed: "
-            f"MemAvailable={memory.get('MemAvailable')}, "
-            f"SwapFree={memory.get('SwapFree')}, disk={free}, conflicts={heavy}"
+    if profile_stage == resource_admission.FULL_PREFLIGHT:
+        observation_kind = "GATE_B_FINAL_FULL_PREFLIGHT"
+        sequence = 1
+    elif profile_stage == resource_admission.GATE_B_QUALIFICATION:
+        observation_kind = "GATE_B_QUALIFICATION_PUBLICATION"
+        sequence = 2
+    else:
+        raise QualificationError(f"unknown Gate-B resource profile {profile_stage!r}")
+    absolute_path = str(Path(path).absolute())
+    try:
+        admission = resource_admission.evaluate_resource_admission(
+            path,
+            stage=profile_stage,
+            lock_identities=lock_identities,
+            lock_identity_format=resource_admission.GATE_B_LOCK_IDENTITY_FORMAT,
+            observation_context={
+                "authority_id": session_id,
+                "disk_path": absolute_path,
+                "kind": observation_kind,
+                "ordinal": 0,
+                "scope_id": session_id,
+                "sequence": sequence,
+                "slot": "",
+                "target": stage,
+            },
+            meminfo=meminfo,
+            disk_free=disk_free,
+            conflicts=conflicts,
         )
+    except Exception as exc:
+        raise QualificationError(f"Gate-B stage resource admission failed: {exc}") from exc
     return {
+        "admission": admission,
         "authorizations": dict(FALSE_AUTHORIZATIONS),
         "created_at_utc": _utc_now(),
         "lock_identities": [dict(item) for item in lock_identities],
-        "measurements": {
-            "disk_free_bytes": free,
-            "mem_available_bytes": memory["MemAvailable"],
-            "same_uid_conflicts": [],
-            "swap_free_bytes": memory["SwapFree"],
-        },
         "owner_actor": dict(actor),
         "qualification_session_id": session_id,
         "schema_version": RESOURCE_GATE_SCHEMA,
         "stage": stage,
         "status": "PASS",
-        "thresholds": {
-            "disk_free_bytes_minimum": MIN_DISK_BYTES,
-            "mem_available_bytes_minimum": MIN_MEM_AVAILABLE,
-            "swap_free_bytes_minimum": MIN_SWAP_FREE,
-        },
     }
+
+
+def _load_resource_admission(context: Mapping[str, Any]) -> Any:
+    source = Path(context["scripts"]["ab16_resource_admission_v1"])
+    expected = {
+        field: context["planned"]["script.ab16_resource_admission_v1"][field]
+        for field in ("mode", "path", "sha256", "size_bytes")
+    }
+    if _mode_identity(source) != expected:
+        raise QualificationError("resource-admission source identity drifted")
+    name = f"_ab16_gate_b_resource_admission_{secrets.token_hex(8)}"
+    spec = importlib.util.spec_from_file_location(name, source)
+    if spec is None or spec.loader is None:
+        raise QualificationError("resource-admission module cannot be loaded")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    try:
+        spec.loader.exec_module(module)
+    except BaseException:
+        sys.modules.pop(name, None)
+        raise
+    if (
+        _mode_identity(source) != expected
+        or module.RESOURCE_ADMISSION_SCHEMA
+        != "noncert-cuts-ab16-stage-resource-admission-v1"
+    ):
+        sys.modules.pop(name, None)
+        raise QualificationError("resource-admission source changed across import")
+    sys.modules.pop(name, None)
+    return module
 
 
 def _load_bootstrap(repository: Path) -> Any:
@@ -1745,6 +1729,8 @@ def _run_pinned_gate_a_preflight(
     context: Mapping[str, Any],
     args: argparse.Namespace,
     output_dir: Path,
+    *,
+    resource_lock_fds: Mapping[str, int],
 ) -> None:
     scripts = context["scripts"]
     python_path = Path(context["system_paths"]["python3_13"])
@@ -1755,8 +1741,7 @@ def _run_pinned_gate_a_preflight(
         python_fd = python_owner.acquire(_open_regular(python_path))
         entrypoint_fd = entrypoint_owner.acquire(_open_regular(entrypoint))
         observation = context["observation_identity"]
-        completed = subprocess.run(
-            [
+        command = [
                 str(python_path),
                 "-I",
                 "-B",
@@ -1777,13 +1762,19 @@ def _run_pinned_gate_a_preflight(
                 str(context["repository"]),
                 "--output-dir",
                 str(output_dir),
-            ],
+        ]
+        for path in LOCK_PATHS:
+            command.extend(
+                ("--resource-lock-fd", f"{path}={resource_lock_fds[path]}")
+            )
+        completed = subprocess.run(
+            command,
             check=False,
             close_fds=True,
             cwd=context["repository"],
             env=_preflight_environment(),
             executable=f"/proc/self/fd/{python_fd}",
-            pass_fds=(python_fd, entrypoint_fd),
+            pass_fds=(python_fd, entrypoint_fd, *resource_lock_fds.values()),
             stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -1931,6 +1922,7 @@ def _build_epoch_record(
     *,
     capture: Mapping[str, object],
     final_identity: Mapping[str, object],
+    pre_full_resource_gate_identity: Mapping[str, object],
 ) -> dict[str, object]:
     gate_a = context["gate_a"]
     bootstrap = context["bootstrap"]
@@ -1943,6 +1935,9 @@ def _build_epoch_record(
         "gate_a_receipt_identity": context["gate_a_identity"],
         "manager_epoch": capture["manager_epoch"],
         "planned_source_set_digest": context["planned_digest"],
+        "pre_full_resource_gate_identity": dict(
+            pre_full_resource_gate_identity
+        ),
         "purpose": bootstrap.GATE_B_EPOCH_PURPOSE,
         "repository_head": gate_a["repository_head"],
         "repository_root": gate_a["repository_root"],
@@ -1959,6 +1954,8 @@ def _build_approval_record(
     *,
     final_identity: Mapping[str, object],
     epoch_identity: Mapping[str, object],
+    pre_full_resource_gate_identity: Mapping[str, object],
+    pre_publication_resource_gate_identity: Mapping[str, object],
 ) -> dict[str, object]:
     gate_a = context["gate_a"]
     bootstrap = context["bootstrap"]
@@ -1974,6 +1971,12 @@ def _build_approval_record(
         "gate_a_receipt_identity": context["gate_a_identity"],
         "gate_b_epoch_observation_identity": dict(epoch_identity),
         "planned_source_set_digest": context["planned_digest"],
+        "pre_full_resource_gate_identity": dict(
+            pre_full_resource_gate_identity
+        ),
+        "pre_publication_resource_gate_identity": dict(
+            pre_publication_resource_gate_identity
+        ),
         "purpose": bootstrap.GATE_B_PURPOSE,
         "repository_head": gate_a["repository_head"],
         "repository_root": gate_a["repository_root"],
@@ -2003,13 +2006,21 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
         # Revalidate the current committed source closure only after all three
         # locks are held, immediately before the first resource gate.
         context = _prepare_qualification(args, bootstrap)
+        resource_admission = _load_resource_admission(context)
+        gate_one_locks = owner.current_lock_identities()
         gate_one = _resource_gate(
             context["output"].parent,
             stage="BEFORE_FINAL_FULL_PREFLIGHT",
+            profile_stage=resource_admission.FULL_PREFLIGHT,
+            resource_admission=resource_admission,
             actor=owner.actor,
             session_id=owner.session_id,
-            lock_identities=owner.lock_identities,
+            lock_identities=gate_one_locks,
         )
+        if owner.current_lock_identities() != gate_one_locks:
+            raise QualificationError(
+                "owner lock identities drifted across the pre-full resource gate"
+            )
         output = _mkdir_exclusive(context["output"])
         resource_dir = _mkdir_exclusive(output / "resource-gates")
         gate_one_identity = _write_exclusive(
@@ -2018,7 +2029,21 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
         )
 
         final_dir = output / "final-full-preflight"
-        _run_pinned_gate_a_preflight(context, args, final_dir)
+        preflight_lock_fds = owner.duplicate_lock_fds()
+        preflight_lock_map = dict(zip(LOCK_PATHS, preflight_lock_fds, strict=True))
+        preflight_failure: BaseException | None = None
+        try:
+            _run_pinned_gate_a_preflight(
+                context,
+                args,
+                final_dir,
+                resource_lock_fds=preflight_lock_map,
+            )
+        except BaseException as exc:
+            preflight_failure = exc
+            raise
+        finally:
+            _close_descriptors(preflight_lock_fds, primary=preflight_failure)
         final_receipt_path = final_dir / "receipt.json"
         final_receipt, final_identity = bootstrap._unterminated_canonical_mode_record(  # noqa: SLF001
             final_receipt_path,
@@ -2051,6 +2076,7 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
                 context,
                 capture=capture,
                 final_identity=final_identity,
+                pre_full_resource_gate_identity=gate_one_identity,
             ),
         )
         epoch_identity = _mode_identity(epoch_path)
@@ -2060,15 +2086,24 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
             gate_a_identity=context["gate_a_identity"],
             candidate_identity=context["candidate_identity"],
             final_full_preflight_identity=final_identity,
+            pre_full_resource_gate_identity=gate_one_identity,
         )
 
+        resource_admission = _load_resource_admission(context)
+        gate_two_locks = owner.current_lock_identities()
         gate_two = _resource_gate(
             output,
             stage="AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
+            profile_stage=resource_admission.GATE_B_QUALIFICATION,
+            resource_admission=resource_admission,
             actor=owner.actor,
             session_id=owner.session_id,
-            lock_identities=owner.lock_identities,
+            lock_identities=gate_two_locks,
         )
+        if owner.current_lock_identities() != gate_two_locks:
+            raise QualificationError(
+                "owner lock identities drifted across the Gate-B publication resource gate"
+            )
         gate_two_identity = _write_exclusive(
             resource_dir / "after-final-full-preflight.json",
             _canonical_json(gate_two),
@@ -2082,6 +2117,8 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
                 args,
                 final_identity=final_identity,
                 epoch_identity=epoch_identity,
+                pre_full_resource_gate_identity=gate_one_identity,
+                pre_publication_resource_gate_identity=gate_two_identity,
             ),
         )
         approval_identity = _mode_identity(approval_path)

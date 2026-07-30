@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 import copy
 import hashlib
@@ -9,6 +9,7 @@ import inspect
 import os
 from pathlib import Path
 import stat
+import subprocess
 import sys
 import threading
 from types import SimpleNamespace
@@ -455,6 +456,671 @@ def _lock_evidence() -> list[dict[str, object]]:
         {"device": 7, "inode": index + 10, "path": path, "uid": os.getuid()}
         for index, path in enumerate(HELPER.LOCK_PATHS)
     ]
+
+
+def _formal_resource_minimums() -> dict[str, int]:
+    profile = FORMAL.resource_admission.RESOURCE_PROFILES[
+        FORMAL.resource_admission.FORMAL_ORGANIC_ARM
+    ]
+    requirements = profile["requirements"]
+    assert isinstance(requirements, dict)
+    return {
+        dimension: requirements[dimension]["minimum_available_bytes"]
+        for dimension in ("disk", "memory", "swap")
+    }
+
+
+def _formal_resource_receipt(
+    tmp_path: Path,
+    *,
+    disk_delta: int = 0,
+    memory_delta: int = 0,
+    swap_delta: int = 0,
+    conflicts: list[dict[str, object]] | None = None,
+) -> dict[str, object]:
+    minimums = _formal_resource_minimums()
+    observation_context = {
+        "authority_id": "a" * 64,
+        "disk_path": str(tmp_path.absolute()),
+        "kind": "FORMAL_INITIAL_POST_LOCK",
+        "ordinal": 0,
+        "scope_id": "b" * 64,
+        "sequence": 0,
+        "slot": "",
+        "target": str(tmp_path / "formal-attempt-a001"),
+    }
+    return FORMAL.validate_resource_gate(
+        tmp_path,
+        lock_identities=_lock_evidence(),
+        observation_context=observation_context,
+        meminfo={
+            "MemAvailable": minimums["memory"] + memory_delta,
+            "SwapFree": minimums["swap"] + swap_delta,
+        },
+        disk_free=minimums["disk"] + disk_delta,
+        conflicts=[] if conflicts is None else conflicts,
+        allowed_same_uid_processes=(),
+    )
+
+
+def test_formal_resource_gate_accepts_exact_stage_threshold_and_records_receipt(
+    tmp_path: Path,
+) -> None:
+    receipt = _formal_resource_receipt(tmp_path)
+    resource = FORMAL.resource_admission
+
+    assert set(receipt) == {
+        "authority_scope",
+        "authorizations",
+        "created_at_utc",
+        "disk_target",
+        "hard_cap_feasibility",
+        "headroom",
+        "lock_check",
+        "measurements",
+        "observation_context",
+        "observation_context_sha256",
+        "profile",
+        "schema_version",
+        "stage",
+        "status",
+    }
+    assert receipt["schema_version"] == resource.RESOURCE_ADMISSION_SCHEMA
+    assert receipt["stage"] == resource.FORMAL_ORGANIC_ARM
+    assert receipt["status"] == "PASS"
+    assert receipt["headroom"] == {
+        "disk_bytes_above_minimum": 0,
+        "memory_bytes_above_minimum": 0,
+        "swap_bytes_above_minimum": 0,
+    }
+    assert receipt["lock_check"] == {
+        "checked_after_acquisition": True,
+        "identities": _lock_evidence(),
+        "identity_format": resource.FORMAL_LOCK_IDENTITY_FORMAT,
+        "paths": list(resource.LOCK_PATHS),
+    }
+    profile = receipt["profile"]
+    assert profile["basis"]["classification"] == "CONSERVATIVE_TEMPORARY"
+    assert profile["basis"]["stage_peak_receipt_count"] == 0
+    assert profile["basis"]["warning"] == (
+        "TEMPORARY_PROFILE_NOT_A_STAGE_PEAK_MEASUREMENT"
+    )
+    assert profile["runtime_safety_limits"] == {
+        "applies": True,
+        "memory_high_bytes": 35 * resource.GIB,
+        "memory_max_bytes": 39 * resource.GIB,
+        "memory_swap_max_bytes": 16 * resource.GIB,
+        "scope": "ONE_SERIAL_ORGANIC_ARM_CGROUP",
+    }
+    assert receipt["hard_cap_feasibility"] == {
+        "applies": True,
+        "memory_after_host_reserve_bytes": 28 * resource.GIB,
+        "memory_max_bytes": 39 * resource.GIB,
+        "swap_after_host_reserve_capped_bytes": 12 * resource.GIB,
+        "total_capacity_for_memory_max_bytes": 40 * resource.GIB,
+    }
+    assert resource.validate_resource_admission_receipt(
+        receipt,
+        expected_stage=resource.FORMAL_ORGANIC_ARM,
+        expected_lock_identities=_lock_evidence(),
+        expected_lock_identity_format=resource.FORMAL_LOCK_IDENTITY_FORMAT,
+        expected_observation_context=receipt["observation_context"],
+    ) == receipt
+
+
+@pytest.mark.parametrize(
+    "dimension,kwargs",
+    (
+        ("disk", {"disk_delta": -1}),
+        ("memory", {"memory_delta": -1}),
+        ("swap", {"swap_delta": -1}),
+    ),
+)
+def test_formal_resource_gate_rejects_each_threshold_minus_one(
+    tmp_path: Path,
+    dimension: str,
+    kwargs: dict[str, int],
+) -> None:
+    with pytest.raises(
+        FORMAL.FormalCampaignError,
+        match=rf"RESOURCE_HEADROOM_INSUFFICIENT: .*{dimension}",
+    ):
+        _formal_resource_receipt(tmp_path, **kwargs)
+
+
+def test_formal_resource_gate_rejects_same_uid_conflict(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(
+        FORMAL.FormalCampaignError,
+        match="RESOURCE_CONFLICT_DETECTED",
+    ):
+        _formal_resource_receipt(
+            tmp_path,
+            conflicts=[
+                {
+                    "command": "python preflight_gate.py --full",
+                    "pid": 4242,
+                    "starttime": 31337,
+                }
+            ],
+        )
+
+
+@pytest.mark.parametrize(
+    "failure_code,mem_available,conflicts",
+    (
+        ("RESOURCE_HEADROOM_INSUFFICIENT", "MINUS_ONE", []),
+        (
+            "RESOURCE_CONFLICT_DETECTED",
+            "EXACT",
+            [
+                {
+                    "command": "python preflight_gate.py --full",
+                    "pid": 4242,
+                    "starttime": 31337,
+                }
+            ],
+        ),
+    ),
+)
+def test_launch_reevaluation_remeasures_after_receipt_and_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure_code: str,
+    mem_available: str,
+    conflicts: list[dict[str, object]],
+) -> None:
+    resource = FORMAL.resource_admission
+    expected = _formal_resource_receipt(tmp_path)
+    minimums = _formal_resource_minimums()
+    monkeypatch.setattr(resource, "_open_launch_lock_probes", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(resource, "_revalidate_launch_lock_probes", lambda _opened: None)
+
+    def close_probes(
+        _opened: object,
+        *,
+        primary: BaseException | None,
+    ) -> None:
+        if primary is not None:
+            raise primary
+
+    monkeypatch.setattr(resource, "_close_launch_lock_probes", close_probes)
+    with pytest.raises(resource.ResourceAdmissionError, match=failure_code):
+        resource.reevaluate_resource_admission_for_launch(
+            expected,
+            meminfo={
+                "MemAvailable": (
+                    minimums["memory"] - 1
+                    if mem_available == "MINUS_ONE"
+                    else minimums["memory"]
+                ),
+                "SwapFree": minimums["swap"],
+            },
+            disk_free=minimums["disk"],
+            conflicts=conflicts,
+        )
+
+
+def test_launch_reevaluation_receipt_strictly_replays_prelaunch_contract(
+    tmp_path: Path,
+) -> None:
+    resource = FORMAL.resource_admission
+    expected = _formal_resource_receipt(tmp_path)
+    minimums = _formal_resource_minimums()
+    final = resource.evaluate_resource_admission(
+        tmp_path,
+        stage=resource.FORMAL_ORGANIC_ARM,
+        lock_identities=_lock_evidence(),
+        lock_identity_format=resource.FORMAL_LOCK_IDENTITY_FORMAT,
+        observation_context=expected["observation_context"],
+        meminfo={
+            "MemAvailable": minimums["memory"] + 1,
+            "SwapFree": minimums["swap"] + 1,
+        },
+        disk_free=minimums["disk"] + 1,
+        conflicts=[],
+    )
+    assert resource.validate_launch_resource_reevaluation(
+        final,
+        expected_receipt=expected,
+    ) == final
+
+    tampered = copy.deepcopy(final)
+    tampered["measurements"]["mem_available_bytes"] += 1
+    with pytest.raises(
+        resource.ResourceAdmissionError,
+        match="RESOURCE_RECEIPT_INVALID",
+    ):
+        resource.validate_launch_resource_reevaluation(
+            tampered,
+            expected_receipt=expected,
+        )
+
+
+def test_formal_resource_observation_contexts_are_unique_across_all_launches(
+    tmp_path: Path,
+) -> None:
+    context = {
+        "campaign_dir": str(tmp_path),
+        "campaign_root_identity": _identity("campaign-root"),
+    }
+    admission_identity = _identity("admission")
+    selection_identity = _identity("selection")
+    initial = FORMAL._resource_observation_context(  # noqa: SLF001
+        context,
+        authority_identity=admission_identity,
+        kind="FORMAL_INITIAL_POST_LOCK",
+        target=str(tmp_path / "formal-attempt-a001"),
+    )
+    outer = FORMAL._resource_observation_context(  # noqa: SLF001
+        context,
+        authority_identity=selection_identity,
+        kind="FORMAL_OUTER_PRELAUNCH",
+        target="ab16-formal-outer-a001.service",
+    )
+    arms = [
+        FORMAL._resource_observation_context(  # noqa: SLF001
+            context,
+            authority_identity=selection_identity,
+            kind="FORMAL_ORGANIC_ARM_PRELAUNCH",
+            target=f"ab16-formal-{slot}.service",
+            ordinal=ordinal,
+            slot=slot,
+        )
+        for ordinal, slot in enumerate(FORMAL.ARM_SEQUENCE, start=1)
+    ]
+    observations = [initial, outer, *arms]
+
+    assert len(observations) == 18
+    assert len({tuple(sorted(item.items())) for item in observations}) == 18
+    assert [item["sequence"] for item in observations] == list(range(18))
+    assert initial["authority_id"] == admission_identity["sha256"]
+    assert all(
+        item["authority_id"] == selection_identity["sha256"]
+        for item in observations[1:]
+    )
+    assert all(
+        item["scope_id"] == context["campaign_root_identity"]["sha256"]
+        for item in observations
+    )
+    assert all(item["disk_path"] == str(tmp_path.absolute()) for item in observations)
+    assert [item["slot"] for item in arms] == list(FORMAL.ARM_SEQUENCE)
+    assert [item["ordinal"] for item in arms] == list(range(1, 17))
+
+
+def test_formal_resource_allowlist_is_exactly_supervisor_plus_guardian(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    actor = {"pid": 4242, "starttime": 31337}
+    supervisor = {"pid": os.getpid(), "starttime": 31336}
+    state = FORMAL.SupervisorState()
+    state.guardian = SimpleNamespace(
+        ready={"guardian_process_identity": copy.deepcopy(actor)}
+    )
+    monkeypatch.setattr(
+        FORMAL,
+        "_process_identity",
+        lambda pid: dict(actor if pid == actor["pid"] else supervisor),
+    )
+
+    assert FORMAL._formal_resource_allowlist(state) == [  # noqa: SLF001
+        supervisor,
+        actor,
+    ]
+    assert state.guardian.ready == {"guardian_process_identity": actor}
+
+    monkeypatch.setattr(
+        FORMAL,
+        "_process_identity",
+        lambda pid: {"pid": pid, "starttime": 31338},
+    )
+    with pytest.raises(
+        FORMAL.FormalCampaignError,
+        match="allowlist identity is no longer live",
+    ):
+        FORMAL._formal_resource_allowlist(state)  # noqa: SLF001
+
+    state.guardian.ready = {
+        "guardian_process_identity": {
+            **actor,
+            "unverified_extra": True,
+        }
+    }
+    with pytest.raises(
+        FORMAL.FormalCampaignError,
+        match="allowlist identity is malformed",
+    ):
+        FORMAL._formal_resource_allowlist(state)  # noqa: SLF001
+
+
+def test_outer_prelaunch_transmits_ready_allowlist_and_rechecks_retained_locks(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    actor = {"pid": 4242, "starttime": 31337}
+    supervisor = {"pid": os.getpid(), "starttime": 31336}
+    locks = _lock_evidence()
+    selection_identity = _identity("selection")
+    state = FORMAL.SupervisorState()
+    state.selection_identity = selection_identity
+    state.selection = {
+        "lock_identities": copy.deepcopy(locks),
+        "outer_spec": {
+            "receipt_paths": {
+                "outer_prelaunch": str(tmp_path / "outer-prelaunch.json")
+            },
+            "unit_name": "ab16-formal-outer-a001.service",
+        },
+    }
+    state.guardian = SimpleNamespace(
+        ready={"guardian_process_identity": copy.deepcopy(actor)}
+    )
+    resource_calls: list[dict[str, object]] = []
+    publications: list[dict[str, object]] = []
+
+    class Host:
+        lock_calls = 0
+
+        @classmethod
+        def lock_evidence(cls) -> list[dict[str, object]]:
+            cls.lock_calls += 1
+            return copy.deepcopy(locks)
+
+        @staticmethod
+        def show(_unit_name: str) -> dict[str, str]:
+            return dict(FORMAL.closeout_helper.ABSENT)
+
+    def validate_resource(
+        path: Path | str,
+        *,
+        lock_identities: list[dict[str, object]],
+        observation_context: dict[str, object],
+        allowed_same_uid_processes: list[dict[str, int]],
+    ) -> dict[str, object]:
+        assert path == str(tmp_path)
+        assert lock_identities == locks
+        assert allowed_same_uid_processes == [supervisor, actor]
+        resource_calls.append(copy.deepcopy(observation_context))
+        return {
+            "observation_context": copy.deepcopy(observation_context),
+            "status": "PASS",
+        }
+
+    def publish_phase(
+        _attempt: object,
+        _store: object,
+        **kwargs: object,
+    ) -> dict[str, object]:
+        publications.append(copy.deepcopy(kwargs))
+        return _identity("outer-prelaunch")
+
+    monkeypatch.setattr(
+        FORMAL,
+        "_process_identity",
+        lambda pid: dict(actor if pid == actor["pid"] else supervisor),
+    )
+    monkeypatch.setattr(FORMAL, "validate_resource_gate", validate_resource)
+    monkeypatch.setattr(FORMAL, "_publish_tracked_phase", publish_phase)
+    monkeypatch.setattr(FORMAL, "send_ledger_update", lambda *_args, **_kwargs: None)
+
+    identity = FORMAL._publish_outer_prelaunch(  # noqa: SLF001
+        context={
+            "campaign_dir": str(tmp_path),
+            "campaign_root_identity": _identity("root"),
+            "manager_epoch": {},
+            "package_id": "c" * 64,
+        },
+        state=state,
+        store=SimpleNamespace(),
+        host=Host(),  # type: ignore[arg-type]
+    )
+
+    expected_context = {
+        "authority_id": selection_identity["sha256"],
+        "disk_path": str(tmp_path.absolute()),
+        "kind": "FORMAL_OUTER_PRELAUNCH",
+        "ordinal": 0,
+        "scope_id": _identity("root")["sha256"],
+        "sequence": 1,
+        "slot": "",
+        "target": "ab16-formal-outer-a001.service",
+    }
+    assert identity == _identity("outer-prelaunch")
+    assert resource_calls == [expected_context]
+    assert Host.lock_calls == 2
+    assert len(publications) == 1
+    record = publications[0]["record"]
+    assert record["resource_admission"]["observation_context"] == expected_context
+    validator_kwargs = publications[0]["validator_kwargs"]
+    assert validator_kwargs["expected_observation_context"] == expected_context
+    assert validator_kwargs["expected_allowed_same_uid_processes"] == [
+        supervisor,
+        actor,
+    ]
+    assert state.attempt.outer_prelaunch_identity == identity
+    assert state.ledger is not None
+
+
+@pytest.mark.parametrize("failure_code", (None, "MEMORY", "CONFLICT"))
+def test_outer_pinned_host_reevaluates_live_resources_at_subprocess_edge(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure_code: str | None,
+) -> None:
+    executable = tmp_path / "systemd-run"
+    executable.write_bytes(b"fixture-systemd-run\n")
+    executable.chmod(0o755)
+    raw = executable.read_bytes()
+    host = HELPER.PinnedHost(
+        SimpleNamespace(
+            root={
+                "authority_tools": {
+                    "systemd_run": {
+                        "path": str(executable),
+                        "sha256": hashlib.sha256(raw).hexdigest(),
+                        "size_bytes": len(raw),
+                    }
+                }
+            }
+        ),
+        {},
+    )
+    events: list[str] = []
+    receipt = {"schema_version": "fixture-resource-admission"}
+
+    def lock_evidence() -> list[dict[str, object]]:
+        events.append("locks")
+        return _lock_evidence()
+
+    def owner_check() -> None:
+        events.append("guardian")
+
+    final_receipt = {"schema_version": "fixture-final-resource-admission"}
+
+    def reevaluate(observed: object) -> dict[str, object]:
+        assert observed is receipt
+        events.append("reevaluate")
+        if failure_code == "MEMORY":
+            raise HELPER.resource_admission.ResourceAdmissionError(
+                "RESOURCE_HEADROOM_INSUFFICIENT",
+                "memory=min-1",
+            )
+        if failure_code == "CONFLICT":
+            raise HELPER.resource_admission.ResourceAdmissionError(
+                "RESOURCE_CONFLICT_DETECTED",
+                "same-UID conflict injected",
+            )
+        return final_receipt
+
+    def run(
+        command: list[str],
+        **_kwargs: object,
+    ) -> subprocess.CompletedProcess[bytes]:
+        events.append("subprocess")
+        return subprocess.CompletedProcess(command, 0, b"", b"")
+
+    monkeypatch.setattr(host, "lock_evidence", lock_evidence)
+    monkeypatch.setattr(
+        HELPER.resource_admission,
+        "reevaluate_resource_admission_for_launch",
+        reevaluate,
+    )
+    monkeypatch.setattr(HELPER.subprocess, "run", run)
+
+    if failure_code is not None:
+        with pytest.raises(
+            HELPER.resource_admission.ResourceAdmissionError,
+            match=(
+                "RESOURCE_HEADROOM_INSUFFICIENT"
+                if failure_code == "MEMORY"
+                else "RESOURCE_CONFLICT_DETECTED"
+            ),
+        ):
+            host.run(
+                ["--user", "--unit=outer.service"],
+                role="systemd_run",
+                launch_resource_admission=receipt,
+                launch_owner_check=owner_check,
+            )
+        assert events == ["locks", "guardian", "reevaluate"]
+    else:
+        completed = host.run(
+            ["--user", "--unit=outer.service"],
+            role="systemd_run",
+            launch_resource_admission=receipt,
+            launch_owner_check=owner_check,
+        )
+        assert completed.returncode == 0
+        assert events == ["locks", "guardian", "reevaluate", "subprocess"]
+        assert host.take_final_launch_resource_admission() == final_receipt
+        host.run(
+            ["--user", "--unit=second.service"],
+            role="systemd_run",
+            launch_resource_admission=receipt,
+            launch_owner_check=owner_check,
+        )
+        assert events == [
+            "locks",
+            "guardian",
+            "reevaluate",
+            "subprocess",
+            "locks",
+            "guardian",
+            "reevaluate",
+            "subprocess",
+        ]
+        assert host.take_final_launch_resource_admission() == final_receipt
+
+
+@pytest.mark.parametrize(
+    "failure_point",
+    ("pending", "subprocess", "post_execution_verification"),
+)
+def test_outer_pinned_host_blocks_unconsumed_launch_before_another_effect(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure_point: str,
+) -> None:
+    executable = tmp_path / "systemd-run"
+    executable.write_bytes(b"fixture-systemd-run\n")
+    executable.chmod(0o755)
+    raw = executable.read_bytes()
+    host = HELPER.PinnedHost(
+        SimpleNamespace(
+            root={
+                "authority_tools": {
+                    "systemd_run": {
+                        "path": str(executable),
+                        "sha256": hashlib.sha256(raw).hexdigest(),
+                        "size_bytes": len(raw),
+                    }
+                }
+            }
+        ),
+        {},
+    )
+    receipt = {"schema_version": "fixture-resource-admission"}
+    final_receipt = {"schema_version": "fixture-final-resource-admission"}
+    events: list[str] = []
+    monkeypatch.setattr(
+        host,
+        "lock_evidence",
+        lambda: events.append("locks") or _lock_evidence(),
+    )
+
+    def owner_check() -> None:
+        events.append("guardian")
+
+    def reevaluate(observed: object) -> dict[str, object]:
+        assert observed is receipt
+        events.append("reevaluate")
+        return final_receipt
+
+    def run(
+        command: list[str],
+        **_kwargs: object,
+    ) -> subprocess.CompletedProcess[bytes]:
+        events.append("subprocess")
+        if failure_point == "subprocess":
+            raise subprocess.TimeoutExpired(command, 1.0)
+        return subprocess.CompletedProcess(command, 0, b"", b"")
+
+    monkeypatch.setattr(
+        HELPER.resource_admission,
+        "reevaluate_resource_admission_for_launch",
+        reevaluate,
+    )
+    monkeypatch.setattr(HELPER.subprocess, "run", run)
+    if failure_point == "post_execution_verification":
+        real_fstat = HELPER.os.fstat
+        fstat_calls = 0
+
+        def fail_second_fstat(descriptor: int) -> os.stat_result:
+            nonlocal fstat_calls
+            fstat_calls += 1
+            if fstat_calls == 2:
+                raise RuntimeError("post-execution retained-FD fault")
+            return real_fstat(descriptor)
+
+        monkeypatch.setattr(HELPER.os, "fstat", fail_second_fstat)
+    expected_match: str | None
+    if failure_point == "pending":
+        host._final_launch_resource_admission = final_receipt  # noqa: SLF001
+        expected_exception: type[BaseException] = HELPER.OuterCloseoutError
+        expected_match = "prior launch resource admission remains unconsumed"
+    elif failure_point == "subprocess":
+        expected_exception = subprocess.TimeoutExpired
+        expected_match = None
+    else:
+        expected_exception = RuntimeError
+        expected_match = "post-execution retained-FD fault"
+
+    with pytest.raises(expected_exception, match=expected_match):
+        host.run(
+            ["--user", "--unit=outer.service"],
+            role="systemd_run",
+            launch_resource_admission=receipt,
+            launch_owner_check=owner_check,
+        )
+    first_events = list(events)
+    with pytest.raises(
+        HELPER.OuterCloseoutError,
+        match="prior launch resource admission remains unconsumed",
+    ):
+        host.run(
+            ["--user", "--unit=retry.service"],
+            role="systemd_run",
+            launch_resource_admission=receipt,
+            launch_owner_check=owner_check,
+        )
+
+    assert events == first_events
+    assert host.take_final_launch_resource_admission() == final_receipt
+    if failure_point == "pending":
+        assert events == []
+    else:
+        assert events == ["locks", "guardian", "reevaluate", "subprocess"]
 
 
 def _acquire(
@@ -2616,9 +3282,18 @@ def test_prelaunch_mirror_precedes_every_child_launch_permission() -> None:
     assert "before_receipt_publish=" in service_source
 
     arm_source = inspect.getsource(HELPER.service_arm_prelaunch)
-    assert arm_source.index("before_receipt_publish(slot, checked[\"unit_name\"])") < (
+    assert arm_source.index("admission = before_receipt_publish(slot, checked[\"unit_name\"])") < (
+        arm_source.index("record =")
+    )
+    assert arm_source.index("validate_resource_admission_receipt(") < (
         arm_source.index("store.publish(")
     )
+    assert arm_source.index("\"resource_admission\": admission") < (
+        arm_source.index("store.publish(")
+    )
+    validator_source = inspect.getsource(HELPER.validate_arm_prelaunch_receipt)
+    assert "validate_resource_admission_receipt(" in validator_source
+    assert "expected_stage=resource_admission.FORMAL_ORGANIC_ARM" in validator_source
     assert FORMAL.LEDGER_PHASES == (
         "outer:prelaunch",
         "outer:formal",
@@ -2630,6 +3305,583 @@ def test_prelaunch_mirror_precedes_every_child_launch_permission() -> None:
             for phase in (f"arm:{slot}:prelaunch", f"arm:{slot}:live")
         ),
     )
+
+
+def test_fixed_campaign_passes_exact_guardian_allowlist_and_unique_arm_contexts(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    actor = {"pid": 4242, "starttime": 31337}
+    supervisor = {"pid": os.getpid(), "starttime": 31336}
+    locks = _lock_evidence()
+    selection_identity = _identity("selection")
+    state = FORMAL.SupervisorState()
+    state.selection_identity = selection_identity
+    state.selection = {
+        "arm_prelaunch_paths": {
+            slot: {"request": str(tmp_path / f"{slot}.request.json")}
+            for slot in FORMAL.ARM_SEQUENCE
+        },
+        "outer_spec": {"resource_contract": {"runtime_max_sec": 60}},
+    }
+    state.attempt.reference = object()
+    state.attempt.acquire_identity = _identity("acquire")
+    state.attempt.resource_identity = _identity("outer-resource")
+    state.guardian = SimpleNamespace(
+        ready={"guardian_process_identity": copy.deepcopy(actor)}
+    )
+    mirrored: list[tuple[str, str]] = []
+    resource_calls: list[dict[str, object]] = []
+    service_calls: list[dict[str, object]] = []
+    child_count = len(FORMAL.GATE1_SLOTS) + len(FORMAL.ARM_SEQUENCE)
+    state.ledger_sequence = len(FORMAL.LEDGER_PHASES) - child_count
+
+    class Host:
+        @staticmethod
+        def lock_evidence() -> list[dict[str, object]]:
+            return copy.deepcopy(locks)
+
+    def validate_resource(
+        path: Path | str,
+        *,
+        lock_identities: list[dict[str, object]],
+        observation_context: dict[str, object],
+        allowed_same_uid_processes: list[dict[str, int]],
+    ) -> dict[str, object]:
+        assert path == str(tmp_path)
+        assert lock_identities == locks
+        assert allowed_same_uid_processes == [supervisor, actor]
+        resource_calls.append(copy.deepcopy(observation_context))
+        return {
+            "observation_context": copy.deepcopy(observation_context),
+            "status": "PASS",
+        }
+
+    def service_arm(
+        *_args: object,
+        slot: str,
+        ordinal: int,
+        expected_allowed_same_uid_processes: list[dict[str, int]],
+        expected_resource_observation_context: dict[str, object],
+        before_receipt_publish: Callable[[str, str], dict[str, object]],
+        **_kwargs: object,
+    ) -> None:
+        assert expected_allowed_same_uid_processes == [supervisor, actor]
+        assert expected_resource_observation_context == {
+            "authority_id": selection_identity["sha256"],
+            "disk_path": str(tmp_path.absolute()),
+            "kind": "FORMAL_ORGANIC_ARM_PRELAUNCH",
+            "ordinal": ordinal,
+            "scope_id": _identity("root")["sha256"],
+            "sequence": ordinal + 1,
+            "slot": slot,
+            "target": "DERIVE_FROM_VALIDATED_PRE_RUN",
+        }
+        unit_name = f"ab16-formal-{slot}.service"
+        admission = before_receipt_publish(slot, unit_name)
+        assert admission["observation_context"]["target"] == unit_name
+        service_calls.append(
+            {
+                "ordinal": ordinal,
+                "slot": slot,
+                "unit_name": unit_name,
+            }
+        )
+
+    def mirror_child(**_kwargs: object) -> None:
+        state.ledger_sequence += 1
+
+    monkeypatch.setattr(
+        FORMAL.closeout_helper,
+        "capture_gate1_ownership",
+        lambda *_args, **_kwargs: _identity("gate1-ownership"),
+    )
+    monkeypatch.setattr(
+        FORMAL.closeout_helper,
+        "service_arm_prelaunch",
+        service_arm,
+    )
+    monkeypatch.setattr(FORMAL, "_mirror_gate1_prelaunch", lambda **_kwargs: None)
+    monkeypatch.setattr(FORMAL, "_publish_outer_barrier", lambda **_kwargs: None)
+    monkeypatch.setattr(FORMAL, "_wait_arm_request", lambda **_kwargs: None)
+    monkeypatch.setattr(
+        FORMAL,
+        "_mirror_arm_prelaunch",
+        lambda **kwargs: mirrored.append((kwargs["slot"], kwargs["unit_name"])),
+    )
+    monkeypatch.setattr(FORMAL, "_wait_and_mirror_child", mirror_child)
+    monkeypatch.setattr(FORMAL, "validate_resource_gate", validate_resource)
+    monkeypatch.setattr(
+        FORMAL,
+        "_process_identity",
+        lambda pid: dict(actor if pid == actor["pid"] else supervisor),
+    )
+    result = ({}, _identity("controller"))
+    monkeypatch.setattr(FORMAL, "_read_controller_result", lambda **_kwargs: result)
+
+    observed = FORMAL._service_fixed_campaign(  # noqa: SLF001
+        boundary=SimpleNamespace(),
+        context={
+            "campaign_dir": str(tmp_path),
+            "campaign_root_identity": _identity("root"),
+        },
+        state=state,
+        store=SimpleNamespace(),
+        host=Host(),  # type: ignore[arg-type]
+        latch=SimpleNamespace(),
+    )
+
+    assert observed == result
+    assert [item["slot"] for item in service_calls] == list(FORMAL.ARM_SEQUENCE)
+    assert [item["ordinal"] for item in service_calls] == list(range(1, 17))
+    assert mirrored == [
+        (slot, f"ab16-formal-{slot}.service")
+        for slot in FORMAL.ARM_SEQUENCE
+    ]
+    assert [item["sequence"] for item in resource_calls] == list(range(2, 18))
+    assert len(
+        {tuple(sorted(item.items())) for item in resource_calls}
+    ) == len(FORMAL.ARM_SEQUENCE)
+    assert all(
+        item["authority_id"] == selection_identity["sha256"]
+        and item["scope_id"] == _identity("root")["sha256"]
+        for item in resource_calls
+    )
+
+
+def test_arm_prelaunch_v2_replays_exact_post_lock_resource_admission(
+    tmp_path: Path,
+) -> None:
+    boundary = _boundary(tmp_path)
+    slot = HELPER.ARM_SEQUENCE[0]
+    boundary.preregistration = {
+        "arm_selection_paths": {slot: tmp_path / "selection.json"},
+        "pre_run_authority_paths": {slot: tmp_path / "pre-run.json"},
+    }
+
+    class Store:
+        receipt: dict[str, object]
+
+        @staticmethod
+        def identity(path: Path | str) -> dict[str, object]:
+            return _identity(Path(path).name)
+
+        def document(
+            self,
+            _path: Path | str,
+            _label: str,
+        ) -> tuple[dict[str, object], dict[str, object]]:
+            return self.receipt, _identity("arm-prelaunch-receipt")
+
+    store = Store()
+    locks = [
+        {
+            "device": index + 1,
+            "inode": index + 101,
+            "path": path,
+            "uid": os.getuid(),
+        }
+        for index, path in enumerate(HELPER.LOCK_PATHS)
+    ]
+    request = HELPER.build_arm_prelaunch_request(
+        boundary,
+        store,
+        store.identity(boundary.formal_dir / "selection.json"),
+        slot,
+        1,
+    )
+    admission = HELPER.resource_admission.evaluate_resource_admission(
+        boundary.formal_dir,
+        stage=HELPER.resource_admission.FORMAL_ORGANIC_ARM,
+        lock_identities=locks,
+        lock_identity_format=HELPER.resource_admission.FORMAL_LOCK_IDENTITY_FORMAT,
+        observation_context={
+            "authority_id": "a" * 64,
+            "disk_path": str(boundary.formal_dir.absolute()),
+            "kind": "FORMAL_ORGANIC_ARM_PRELAUNCH",
+            "ordinal": 1,
+            "scope_id": "b" * 64,
+            "sequence": 2,
+            "slot": slot,
+            "target": "ab16-arm-a001.service",
+        },
+        meminfo={
+            "MemAvailable": 64 * HELPER.resource_admission.GIB,
+            "SwapFree": 64 * HELPER.resource_admission.GIB,
+        },
+        disk_free=64 * HELPER.resource_admission.GIB,
+        conflicts=[],
+        observed_at_utc="2026-07-31T00:00:00Z",
+    )
+    admission["measurements"]["same_uid_allowed_processes"] = [
+        {
+            "command": "python -c loader --role outer-guardian",
+            "pid": 401,
+            "starttime": 501,
+        }
+    ]
+    store.receipt = {
+        **{key: value for key, value in request.items() if key != "status"},
+        "authorizations": dict(HELPER.FALSE_AUTHORIZATIONS),
+        "locks": locks,
+        "manager_epoch_capture": {
+            "manager_epoch": boundary.root["manager_epoch"],
+        },
+        "outer_reference_verification": {
+            "client_unique_name": ":1.99",
+            "manager_owner": ":1.42",
+            "unit_name": "ab16-formal-outer-a001.service",
+        },
+        "request_identity": _identity("request"),
+        "resource_admission": admission,
+        "status": "PASS",
+        "systemctl": dict(HELPER.ABSENT),
+        "unit_name": "ab16-arm-a001.service",
+    }
+    checked, _ = HELPER.validate_arm_prelaunch_receipt(
+        boundary,
+        store,
+        request,
+        _identity("request"),
+        tmp_path / "receipt.json",
+        expected_allowed_same_uid_processes=[
+            {"pid": 401, "starttime": 501}
+        ],
+        expected_resource_observation_context=admission["observation_context"],
+    )
+    assert checked["resource_admission"] == admission
+
+    store.receipt = copy.deepcopy(store.receipt)
+    store.receipt["resource_admission"]["lock_check"]["identities"][0]["inode"] += 1
+    with pytest.raises(HELPER.OuterCloseoutError, match="resource admission drifted"):
+        HELPER.validate_arm_prelaunch_receipt(
+            boundary,
+            store,
+            request,
+            _identity("request"),
+            tmp_path / "receipt.json",
+            expected_allowed_same_uid_processes=[
+                {"pid": 401, "starttime": 501}
+            ],
+            expected_resource_observation_context=admission["observation_context"],
+        )
+
+
+def test_child_ledger_derives_arm_resource_replay_contract_independently(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    slot = HELPER.ARM_SEQUENCE[0]
+    monkeypatch.setattr(HELPER, "ARM_SEQUENCE", (slot,))
+    monkeypatch.setattr(HELPER, "GATE1_SLOTS", ())
+    boundary = _boundary(tmp_path)
+    boundary.campaign = tmp_path
+    attempt = tmp_path / "attempt"
+    attempt.mkdir()
+    paths = {
+        "launch": attempt / "manager-epoch-launch.json",
+        "pre_run": tmp_path / "pre-run.json",
+        "receipt": tmp_path / "receipt.json",
+        "request": tmp_path / "request.json",
+        "selection": tmp_path / "selection.json",
+    }
+    for path in paths.values():
+        path.write_bytes(b"{}\n")
+    boundary.preregistration = {
+        "arm_selection_paths": {slot: str(paths["selection"])},
+        "attempt_dirs": {slot: str(attempt)},
+        "pre_run_authority_paths": {slot: str(paths["pre_run"])},
+    }
+    formal_selection = {
+        "arm_prelaunch_paths": {
+            slot: {
+                "receipt": str(paths["receipt"]),
+                "request": str(paths["request"]),
+            }
+        },
+        "gate1_prelaunch_ownership_path": str(tmp_path / "gate1-ownership.json"),
+        "outer_spec": {"unit_name": "outer.service"},
+    }
+    unit_name = "ab16-arm-a001.service"
+    locks = _lock_evidence()
+    reference_verification = {
+        "client_unique_name": ":1.7",
+        "manager_owner": ":1.42",
+        "unit_name": "outer.service",
+    }
+    documents = {
+        paths["launch"]: {"phase": "launch"},
+        paths["pre_run"]: {"attempt_dir": str(attempt), "unit_name": unit_name},
+        paths["receipt"]: {
+            "locks": locks,
+            "outer_reference_verification": reference_verification,
+            "unit_name": unit_name,
+        },
+        paths["request"]: {"slot": slot},
+        paths["selection"]: {"slot": slot},
+    }
+
+    class LedgerStore:
+        @staticmethod
+        def identity(path: Path | str) -> dict[str, object]:
+            return _identity(Path(path).name)
+
+        @staticmethod
+        def document(
+            path: Path | str,
+            _label: str,
+        ) -> tuple[dict[str, object], dict[str, object]]:
+            resolved = Path(path)
+            return copy.deepcopy(documents[resolved]), _identity(resolved.name)
+
+    class Lifecycle:
+        @staticmethod
+        def validate_pre_run_authority(
+            record: Mapping[str, object],
+            *,
+            expected_slot: str,
+        ) -> dict[str, object]:
+            assert expected_slot == slot
+            return dict(record)
+
+        @staticmethod
+        def validate_runner_selection(
+            _record: Mapping[str, object],
+            **_kwargs: object,
+        ) -> None:
+            return None
+
+    class Verifier:
+        @staticmethod
+        def validate_pre_run_authority(
+            record: Mapping[str, object],
+            *,
+            expected_slot: str,
+        ) -> dict[str, object]:
+            assert expected_slot == slot
+            return dict(record)
+
+        @staticmethod
+        def _validate_selection(  # noqa: SLF001
+            _record: Mapping[str, object],
+            **_kwargs: object,
+        ) -> None:
+            return None
+
+        @staticmethod
+        def _replay_epoch_observation_file(  # noqa: SLF001
+            **_kwargs: object,
+        ) -> None:
+            return None
+
+    monkeypatch.setattr(
+        HELPER,
+        "_gate1",
+        lambda _boundary: ({"units": {}}, _identity("gate1")),
+    )
+    monkeypatch.setattr(
+        HELPER.authority,
+        "_resource_modules",
+        lambda _context: (Lifecycle(), Verifier()),
+    )
+    expected_allowed = [
+        {"pid": 401, "starttime": 501},
+        {"pid": 402, "starttime": 502},
+    ]
+    expected_context = {
+        "authority_id": _identity("selection.json")["sha256"],
+        "disk_path": str(tmp_path.absolute()),
+        "kind": "FORMAL_ORGANIC_ARM_PRELAUNCH",
+        "ordinal": 1,
+        "scope_id": boundary.context["root_identity"]["sha256"],
+        "sequence": 2,
+        "slot": slot,
+        "target": unit_name,
+    }
+    captured: dict[str, object] = {}
+
+    def validate_receipt(
+        _boundary: object,
+        _store: object,
+        _request: Mapping[str, object],
+        _request_identity: Mapping[str, object],
+        receipt_path: Path | str,
+        *,
+        expected_allowed_same_uid_processes: Sequence[Mapping[str, int]],
+        expected_resource_observation_context: Mapping[str, object],
+    ) -> tuple[dict[str, object], dict[str, object]]:
+        captured["allowed"] = list(expected_allowed_same_uid_processes)
+        captured["context"] = dict(expected_resource_observation_context)
+        return (
+            copy.deepcopy(documents[Path(receipt_path)]),
+            _identity("receipt"),
+        )
+
+    monkeypatch.setattr(HELPER, "validate_arm_prelaunch_receipt", validate_receipt)
+    targets = HELPER.build_child_ledger(
+        boundary,
+        LedgerStore(),
+        SimpleNamespace(lock_evidence=lambda: locks),
+        FakeReference(),
+        formal_selection,
+        expected_allowed_same_uid_processes=expected_allowed,
+    )
+
+    assert captured == {
+        "allowed": expected_allowed,
+        "context": expected_context,
+    }
+    assert len(targets) == 1
+    assert targets[0].prelaunch_evidence is not None
+    assert targets[0].unit_name == unit_name
+
+
+def test_arm_prelaunch_lock_mismatch_fails_before_receipt_publication(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    boundary = _boundary(tmp_path)
+    slot = HELPER.ARM_SEQUENCE[0]
+    request_path = tmp_path / "request.json"
+    receipt_path = tmp_path / "receipt.json"
+    pre_run_path = tmp_path / "pre-run.json"
+    selection_path = tmp_path / "selection.json"
+    attempt_dir = tmp_path / "attempt"
+    boundary.preregistration = {
+        "arm_selection_paths": {slot: selection_path},
+        "attempt_dirs": {slot: str(attempt_dir)},
+        "pre_run_authority_paths": {slot: pre_run_path},
+    }
+    formal_selection = {
+        "arm_prelaunch_paths": {
+            slot: {"receipt": str(receipt_path), "request": str(request_path)}
+        }
+    }
+
+    class Store:
+        published = False
+        documents: dict[str, dict[str, object]] = {}
+
+        @staticmethod
+        def identity(path: Path | str) -> dict[str, object]:
+            return _identity(Path(path).name)
+
+        def document(
+            self,
+            path: Path | str,
+            _label: str,
+        ) -> tuple[dict[str, object], dict[str, object]]:
+            return self.documents[str(path)], self.identity(path)
+
+        def publish(self, *_args: object, **_kwargs: object) -> dict[str, object]:
+            self.published = True
+            return _identity("published")
+
+    store = Store()
+    store.documents[str(pre_run_path)] = {"kind": "pre-run"}
+    store.documents[str(selection_path)] = {"kind": "selection"}
+    store.documents[str(request_path)] = HELPER.build_arm_prelaunch_request(
+        boundary,
+        store,
+        store.identity(boundary.formal_dir / "selection.json"),
+        slot,
+        1,
+    )
+    locks = [
+        {
+            "device": index + 1,
+            "inode": index + 101,
+            "path": path,
+            "uid": os.getuid(),
+        }
+        for index, path in enumerate(HELPER.LOCK_PATHS)
+    ]
+    mismatched_locks = copy.deepcopy(locks)
+    mismatched_locks[0]["inode"] += 1
+    admission = HELPER.resource_admission.evaluate_resource_admission(
+        boundary.formal_dir,
+        stage=HELPER.resource_admission.FORMAL_ORGANIC_ARM,
+        lock_identities=mismatched_locks,
+        lock_identity_format=HELPER.resource_admission.FORMAL_LOCK_IDENTITY_FORMAT,
+        observation_context={
+            "authority_id": "a" * 64,
+            "disk_path": str(boundary.formal_dir.absolute()),
+            "kind": "FORMAL_ORGANIC_ARM_PRELAUNCH",
+            "ordinal": 1,
+            "scope_id": "b" * 64,
+            "sequence": 2,
+            "slot": slot,
+            "target": "ab16-formal-arm-a001.service",
+        },
+        meminfo={
+            "MemAvailable": 64 * HELPER.resource_admission.GIB,
+            "SwapFree": 64 * HELPER.resource_admission.GIB,
+        },
+        disk_free=64 * HELPER.resource_admission.GIB,
+        conflicts=[],
+        observed_at_utc="2026-07-31T00:00:01Z",
+    )
+    admission["measurements"]["same_uid_allowed_processes"] = [
+        {
+            "command": "python -c loader --role outer-guardian",
+            "pid": 402,
+            "starttime": 502,
+        }
+    ]
+    epoch = boundary.root["manager_epoch"]
+    checked = {
+        "attempt_dir": str(attempt_dir),
+        "manager_epoch": epoch,
+        "unit_name": "ab16-formal-arm-a001.service",
+    }
+    lifecycle = SimpleNamespace(
+        validate_pre_run_authority=lambda *_args, **_kwargs: checked,
+        validate_runner_selection=lambda *_args, **_kwargs: checked,
+    )
+    monkeypatch.setattr(
+        HELPER.authority,
+        "_resource_modules",
+        lambda _context: (lifecycle, object()),
+    )
+    monkeypatch.setattr(
+        HELPER.authority,
+        "_capture_current_manager_epoch",
+        lambda _context: {"manager_epoch": epoch},
+    )
+    host = SimpleNamespace(
+        lock_evidence=lambda: copy.deepcopy(locks),
+        show=lambda _unit_name: dict(HELPER.ABSENT),
+    )
+    reference = SimpleNamespace(
+        verify=lambda **_kwargs: {
+            "client_unique_name": ":1.99",
+            "manager_owner": ":1.42",
+            "unit_name": "ab16-formal-outer-a001.service",
+        }
+    )
+
+    with pytest.raises(
+        HELPER.OuterCloseoutError,
+        match="post-lock resource admission failed closed",
+    ):
+        HELPER.service_arm_prelaunch(
+            boundary,
+            store,
+            host,
+            formal_selection,
+            reference,
+            slot=slot,
+            ordinal=1,
+            expected_allowed_same_uid_processes=[
+                {"pid": 402, "starttime": 502}
+            ],
+            expected_resource_observation_context={
+                **admission["observation_context"],
+                "target": "DERIVE_FROM_VALIDATED_PRE_RUN",
+            },
+            before_receipt_publish=lambda _slot, _unit: admission,
+        )
+    assert store.published is False
 
 
 def test_normal_closeout_has_latch_checks_at_every_late_effect_boundary() -> None:
@@ -2708,7 +3960,18 @@ def test_latched_termination_stops_each_late_success_side_effect(
             "unit_name": "outer.service",
         }
         state.ledger = _frozen_ledger()
-        state.guardian = SimpleNamespace()
+        state.guardian = SimpleNamespace(
+            ready={
+                "guardian_process_identity": {
+                    "pid": 4101,
+                    "starttime": 5101,
+                },
+                "supervisor_process_identity": {
+                    "pid": 4102,
+                    "starttime": 5102,
+                },
+            }
+        )
         state.attempt.reference = object()
         state.attempt.acquire_identity = _identity("acquisition")
         state.attempt.barrier_identity = _identity("barrier")
@@ -2748,6 +4011,14 @@ def test_latched_termination_stops_each_late_success_side_effect(
 
         monkeypatch.setattr(FORMAL, "_normal_closeout_checkpoint", checkpoint)
         monkeypatch.setattr(FORMAL, "guardian_is_alive", lambda _session: True)
+        monkeypatch.setattr(
+            FORMAL,
+            "_formal_resource_allowlist",
+            lambda _state: [
+                {"pid": 4101, "starttime": 5101},
+                {"pid": 4102, "starttime": 5102},
+            ],
+        )
         monkeypatch.setattr(
             FORMAL.closeout_helper,
             "audit_children",
@@ -3191,6 +4462,7 @@ def test_outer_identity_is_frozen_before_resource_or_receipt_failure(
     state.selection_identity = selection_identity
     state.attempt.selection_identity = selection_identity
     state.attempt.outer_prelaunch_identity = prelaunch_identity
+    state.outer_resource_admission = {"status": "PASS"}
     state.guardian = SimpleNamespace()
     state.ledger = FORMAL.initial_ledger(
         FORMAL._outer_inactive_identity("outer.service")
@@ -3440,11 +4712,38 @@ def _patch_driver_shell(
             admission_identity,
         ),
     )
-    monkeypatch.setattr(
-        FORMAL,
-        "validate_resource_gate",
-        lambda _path: events.append("resource") or {"status": "PASS"},
-    )
+
+    def validate_resource(
+        path: Path | str,
+        *,
+        lock_identities: list[dict[str, object]],
+        observation_context: dict[str, object],
+        allowed_same_uid_processes: Sequence[Mapping[str, int]] = (),
+    ) -> dict[str, object]:
+        events.append("resource")
+        assert path == context["campaign_dir"]
+        assert lock_identities == _lock_evidence()
+        assert observation_context == {
+            "authority_id": admission_identity["sha256"],
+            "disk_path": str(tmp_path.absolute()),
+            "kind": "FORMAL_INITIAL_POST_LOCK",
+            "ordinal": 0,
+            "scope_id": context["campaign_root_identity"]["sha256"],
+            "sequence": 0,
+            "slot": "",
+            "target": str(boundary.formal_dir),
+        }
+        assert allowed_same_uid_processes == [
+            FORMAL._process_identity(os.getpid())  # noqa: SLF001
+        ]
+        return {
+            "allowed_same_uid_processes": list(allowed_same_uid_processes),
+            "lock_identities": copy.deepcopy(lock_identities),
+            "observation_context": copy.deepcopy(observation_context),
+            "status": "PASS",
+        }
+
+    monkeypatch.setattr(FORMAL, "validate_resource_gate", validate_resource)
     monkeypatch.setattr(
         FORMAL,
         "acquire_formal_locks",
@@ -3484,6 +4783,81 @@ def _patch_driver_shell(
     }
 
 
+def test_guardian_launch_rechecks_resources_and_owner_at_selected_effect(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Listener:
+        closed = False
+        bound = False
+        parent_owned = False
+        remove_attempted = False
+
+        def __init__(self, *_args: object, **_kwargs: object) -> None:
+            pass
+
+        def close_once(self) -> None:
+            self.closed = True
+
+    class Host:
+        @staticmethod
+        def show(_unit_name: str) -> dict[str, str]:
+            return dict(FORMAL.closeout_helper.ABSENT)
+
+    admission = {"publisher": {"actor": {"pid": 4040, "starttime": 5050}}}
+    resource_receipt = {"status": "PASS"}
+    owner_calls: list[tuple[object, str]] = []
+    captured: dict[str, object] = {}
+
+    monkeypatch.setattr(
+        FORMAL.guardian,
+        "GuardianControlListener",
+        Listener,
+    )
+    monkeypatch.setattr(
+        FORMAL,
+        "_validate_live_launch_owner",
+        lambda artifact, *, label: owner_calls.append((artifact, label))
+        or {"pid": 4040, "starttime": 5050},
+    )
+
+    def reject_after_edge(
+        _host: object,
+        **kwargs: object,
+    ) -> dict[str, object]:
+        captured.update(kwargs)
+        owner_check = kwargs["launch_owner_check"]
+        assert callable(owner_check)
+        owner_check()
+        raise RuntimeError("controlled post-edge stop")
+
+    monkeypatch.setattr(FORMAL, "_launch_selected_unit", reject_after_edge)
+    monkeypatch.setattr(
+        FORMAL,
+        "_wait_uncertain_unit_resolution",
+        lambda *_args, **_kwargs: dict(FORMAL.closeout_helper.ABSENT),
+    )
+
+    with pytest.raises(FORMAL.GuardianLaunchFailure):
+        FORMAL.start_guardian(
+            boundary=SimpleNamespace(),
+            context={
+                "guardian_control_retired_socket_path": "/tmp/retired.sock",
+                "guardian_control_socket_path": "/tmp/control.sock",
+                "guardian_spec": {"unit_name": "ab16-guardian.service"},
+            },
+            admission=admission,
+            admission_identity=_identity("admission"),
+            resource_admission_receipt=resource_receipt,
+            host=Host(),
+            store=SimpleNamespace(),
+        )
+
+    assert captured["resource_admission_receipt"] is resource_receipt
+    assert owner_calls == [
+        (admission, "formal launch admission at guardian launch"),
+    ]
+
+
 def test_top_level_driver_preserves_the_fixed_success_order_and_release(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -3497,7 +4871,10 @@ def test_top_level_driver_preserves_the_fixed_success_order_and_release(
         "outer_spec": {"receipt_paths": {}},
     }
 
-    def start_guardian(**_: object) -> object:
+    def start_guardian(**kwargs: object) -> object:
+        resource_receipt = kwargs["resource_admission_receipt"]
+        assert isinstance(resource_receipt, dict)
+        assert resource_receipt["status"] == "PASS"
         events.append("guardian")
         return guardian_session
 
@@ -3571,8 +4948,8 @@ def test_top_level_driver_preserves_the_fixed_success_order_and_release(
 
     assert result["outcome"] == "VERIFIED"
     assert events == [
-        "resource",
         "locks",
+        "resource",
         "guardian",
         "attempt",
         "selection",
@@ -3588,6 +4965,126 @@ def test_top_level_driver_preserves_the_fixed_success_order_and_release(
     assert len(_DriverLatch.instances) == 1
     assert _DriverLatch.instances[0].installed is True
     assert _DriverLatch.instances[0].restored is True
+
+
+def test_top_level_post_lock_resource_failure_releases_once_before_side_effects(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    events, fixture = _patch_driver_shell(monkeypatch, tmp_path)
+    hosts: list[_DriverHost] = []
+
+    def make_host(boundary: object, locks: object) -> _DriverHost:
+        host = _DriverHost(boundary, locks)
+        hosts.append(host)
+        return host
+
+    def fail_resource(
+        _path: Path | str,
+        *,
+        lock_identities: list[dict[str, object]],
+        observation_context: dict[str, object],
+        allowed_same_uid_processes: Sequence[Mapping[str, int]] = (),
+    ) -> dict[str, object]:
+        events.append("resource")
+        assert lock_identities == _lock_evidence()
+        assert observation_context["kind"] == "FORMAL_INITIAL_POST_LOCK"
+        assert allowed_same_uid_processes == [
+            FORMAL._process_identity(os.getpid())  # noqa: SLF001
+        ]
+        raise FORMAL.FormalCampaignError("fixture post-lock resource failure")
+
+    monkeypatch.setattr(FORMAL.closeout_helper, "PinnedHost", make_host)
+    monkeypatch.setattr(FORMAL, "validate_resource_gate", fail_resource)
+    for name in (
+        "start_guardian",
+        "_create_consumed_attempt",
+        "wait_and_validate_selection",
+    ):
+        monkeypatch.setattr(
+            FORMAL,
+            name,
+            lambda *args, _name=name, **kwargs: pytest.fail(
+                f"{_name} ran after post-lock resource failure"
+            ),
+        )
+
+    with pytest.raises(
+        FORMAL.FormalCampaignError,
+        match="fixture post-lock resource failure",
+    ):
+        FORMAL.run_formal_campaign(tmp_path)
+
+    assert events == ["locks", "resource"]
+    assert len(hosts) == 1
+    assert hosts[0].release_count == 1
+    assert hosts[0].locks_released is True
+    assert _DriverLatch.instances == []
+    boundary = fixture["boundary"]
+    assert isinstance(boundary, SimpleNamespace)
+    assert boundary.formal_dir.exists() is False
+
+
+def test_top_level_lock_identity_drift_across_resource_check_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    events, fixture = _patch_driver_shell(monkeypatch, tmp_path)
+    hosts: list[_DriverHost] = []
+
+    class DriftingHost(_DriverHost):
+        evidence_calls = 0
+
+        def lock_evidence(self) -> list[dict[str, object]]:
+            self.evidence_calls += 1
+            evidence = super().lock_evidence()
+            if self.evidence_calls >= 2:
+                evidence[0]["inode"] = int(evidence[0]["inode"]) + 1
+            return evidence
+
+    def make_host(boundary: object, locks: object) -> DriftingHost:
+        host = DriftingHost(boundary, locks)
+        hosts.append(host)
+        return host
+
+    def resource(
+        _path: Path | str,
+        *,
+        lock_identities: list[dict[str, object]],
+        observation_context: dict[str, object],
+        allowed_same_uid_processes: Sequence[Mapping[str, int]] = (),
+    ) -> dict[str, object]:
+        events.append("resource")
+        assert lock_identities == _lock_evidence()
+        assert observation_context["kind"] == "FORMAL_INITIAL_POST_LOCK"
+        assert allowed_same_uid_processes == [
+            FORMAL._process_identity(os.getpid())  # noqa: SLF001
+        ]
+        return {"status": "PASS"}
+
+    monkeypatch.setattr(FORMAL.closeout_helper, "PinnedHost", make_host)
+    monkeypatch.setattr(FORMAL, "validate_resource_gate", resource)
+    monkeypatch.setattr(
+        FORMAL,
+        "start_guardian",
+        lambda **_: pytest.fail("guardian ran after retained lock identity drift"),
+    )
+
+    with pytest.raises(
+        FORMAL.FormalCampaignError,
+        match="lock identities drifted across initial resource admission",
+    ):
+        FORMAL.run_formal_campaign(tmp_path)
+
+    assert events == ["locks", "resource"]
+    assert len(hosts) == 1
+    assert hosts[0].evidence_calls == 2
+    assert hosts[0].release_count == 1
+    assert hosts[0].locks_released is True
+    assert _DriverLatch.instances == []
+    boundary = fixture["boundary"]
+    assert isinstance(boundary, SimpleNamespace)
+    assert boundary.formal_dir.exists() is False
 
 
 def test_top_level_driver_routes_marker_boundary_failure_without_later_effects(
@@ -3648,7 +5145,7 @@ def test_top_level_driver_routes_marker_boundary_failure_without_later_effects(
 
     assert result["outcome"] == "INCOMPLETE"
     assert result["phase"] == "DIRECTORY_CREATED_MARKER_UNRECORDED"
-    assert events == ["resource", "locks", "guardian", "attempt", "failure-closeout"]
+    assert events == ["locks", "resource", "guardian", "attempt", "failure-closeout"]
     assert _DriverLatch.instances[0].restored is True
 
 

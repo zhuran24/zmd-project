@@ -8,7 +8,7 @@
 | 研究账本 | `U=(1188,18)`、`L=absent` |
 | authority | detached receipt 与 immutable closeout 已授权 research upper recovery |
 | production | `production_certified=false` |
-| 下一项强制任务 | `AB16_GATE_B_AND_16_ORGANIC_ARMS`（执行中；A031–A034 frozen，A035 next，arms `0/16`） |
+| 下一项强制任务 | `AB16_GATE_B_AND_16_ORGANIC_ARMS`（A031–A038 frozen；A038 `FAIL_CLOSED`；fresh successor 尚未创建；arms `0/16`） |
 
 SMM4 是对同一候选 `(1188,18)` 的有限 authority recovery，不是新 B1/B2
 武器。固定实现 HEAD、fresh sealed authority、全新 no-overwrite root 和唯一一次
@@ -98,7 +98,8 @@ SMM4 没有修改实存的
 `../noncert_cuts_ab16_20260724/04_cuts_mandatory_schedule.md` 在固定 HEAD 中缺失；
 这只是 provenance/path gap，也不是 cut 已完成的证据。SMM4 closeout 登记的
 下一项强制任务仅为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`。该任务现已进入执行链，
-但 A031–A034 均在 selection 前冻结；A034 只到 input authority 与 disposable
-drill，尚无 trusted terminal 或 organic arm。其
+但 A031–A038 均已冻结；A035–A037 只发布 input authority，A038 的 pinned
+Gate-A full preflight 以 `FAIL_CLOSED` 结束，尚无 fresh successor、trusted
+terminal 或 organic arm。其
 当前背景见 [AB16 状态](../noncert_cuts_ab16_20260724/README.md)。SMM4 收口本身
 没有执行该任务，也不为任何 AB16 attempt 授权。

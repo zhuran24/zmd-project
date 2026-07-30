@@ -44,9 +44,12 @@ from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as author
 from docs.research.noncert_cuts_ab16_20260724 import (
     ab16_formal_launch_validator_v1 as launch_validator,
 )
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_resource_admission_v1 as resource_admission,
+)
 
 
-CONTROLLER_RESULT_SCHEMA = "noncert-cuts-ab16-formal-controller-result-v1"
+CONTROLLER_RESULT_SCHEMA = "noncert-cuts-ab16-formal-controller-result-v2"
 OUTER_BARRIER_SCHEMA = "noncert-cuts-ab16-outer-barrier-release-v1"
 AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
 CONTROLLER_RESULT_NAME = "controller-result.json"
@@ -96,6 +99,8 @@ class FormalInputs:
     """Read-only validated authority needed before the barrier."""
 
     context: dict[str, object]
+    guardian_process_identity: dict[str, int]
+    supervisor_process_identity: dict[str, int]
     selection: dict[str, object]
     selection_identity: dict[str, object]
 
@@ -149,13 +154,14 @@ class ControllerPorts(Protocol):
         ordinal: int,
         request_identity: Mapping[str, object],
     ) -> dict[str, object]:
-        """Wait for the supervisor's same-request absence receipt."""
+        """Return the independently replayed receipt identity and admission."""
 
     def run_organic_arm(
         self,
         inputs: FormalInputs,
         *,
         pre_run_path: Path,
+        resource_admission_receipt: Mapping[str, object],
         selection_path: Path,
     ) -> Mapping[str, object]:
         """Delegate one selected arm to the existing organic orchestrator."""
@@ -245,11 +251,46 @@ def load_formal_inputs(
         raise FormalControllerError(f"formal selection validation failed: {exc}") from exc
     if checked["outer_spec"]["barrier_path"] != context["outer_spec"]["barrier_path"]:
         raise FormalControllerError("formal selection barrier join drifted")
+    try:
+        guardian_process_identity = launch_validator.validate_process_identity(
+            records["guardian_ready_identity"].get("guardian_process_identity"),
+            "formal controller guardian-ready process",
+        )
+        supervisor_process_identity = launch_validator.validate_process_identity(
+            records["guardian_ready_identity"].get("supervisor_process_identity"),
+            "formal controller supervisor process",
+        )
+    except Exception as exc:
+        raise FormalControllerError(
+            f"guardian-ready process validation failed: {exc}"
+        ) from exc
     return FormalInputs(
         context=dict(context),
+        guardian_process_identity=guardian_process_identity,
+        supervisor_process_identity=supervisor_process_identity,
         selection=dict(checked),
         selection_identity=selection_identity,
     )
+
+
+def _arm_resource_observation_context(
+    inputs: FormalInputs,
+    *,
+    slot: str,
+    ordinal: int,
+) -> dict[str, object]:
+    if slot != ARM_SEQUENCE[ordinal - 1]:
+        raise FormalControllerError("arm resource observation order drifted")
+    return {
+        "authority_id": inputs.selection_identity["sha256"],
+        "disk_path": str(Path(str(inputs.context["campaign_dir"])).absolute()),
+        "kind": "FORMAL_ORGANIC_ARM_PRELAUNCH",
+        "ordinal": ordinal,
+        "scope_id": inputs.context["campaign_root_identity"]["sha256"],
+        "sequence": ordinal + 1,
+        "slot": slot,
+        "target": "DERIVE_FROM_VALIDATED_PRE_RUN",
+    }
 
 
 def validate_outer_barrier(
@@ -747,24 +788,44 @@ class DefaultControllerPorts:
             label=f"{slot} prelaunch receipt",
         )
         try:
-            _receipt, receipt_identity = helper.validate_arm_prelaunch_receipt(
+            receipt, receipt_identity = helper.validate_arm_prelaunch_receipt(
                 boundary,
                 store,
                 request,
                 observed_request_identity,
                 receipt_path,
+                expected_allowed_same_uid_processes=[
+                    inputs.supervisor_process_identity,
+                    inputs.guardian_process_identity
+                ],
+                expected_resource_observation_context=(
+                    _arm_resource_observation_context(
+                        inputs,
+                        slot=slot,
+                        ordinal=ordinal,
+                    )
+                ),
             )
         except Exception as exc:
             raise FormalControllerError(f"{slot} prelaunch receipt failed: {exc}") from exc
         if slot != ARM_SEQUENCE[ordinal - 1]:
             raise FormalControllerError("prelaunch receipt order drifted")
-        return receipt_identity
+        resource_receipt = receipt.get("resource_admission")
+        if type(resource_receipt) is not dict:
+            raise FormalControllerError(
+                f"{slot} prelaunch resource admission is absent"
+            )
+        return {
+            "receipt_identity": receipt_identity,
+            "resource_admission": dict(resource_receipt),
+        }
 
     def run_organic_arm(
         self,
         inputs: FormalInputs,
         *,
         pre_run_path: Path,
+        resource_admission_receipt: Mapping[str, object],
         selection_path: Path,
     ) -> Mapping[str, object]:
         module = _import_snapshot_owner(
@@ -781,6 +842,7 @@ class DefaultControllerPorts:
         return module.run_pinned_entry(
             execution_class="FORMAL_AB16",
             pre_run_path=pre_run_path,
+            resource_admission_receipt=resource_admission_receipt,
             selection_path=selection_path,
         )
 
@@ -914,6 +976,7 @@ def _consume_selected_arm(
     )
     request_identity: dict[str, object] | None = None
     receipt_identity: dict[str, object] | None = None
+    final_resource_admission: dict[str, object] | None = None
     orchestration_error: BaseException | None = None
     try:
         request_identity = ports.publish_arm_prelaunch_request(
@@ -921,17 +984,48 @@ def _consume_selected_arm(
             slot=slot,
             ordinal=ordinal,
         )
-        receipt_identity = ports.wait_for_arm_prelaunch_receipt(
+        prelaunch = ports.wait_for_arm_prelaunch_receipt(
             inputs,
             slot=slot,
             ordinal=ordinal,
             request_identity=request_identity,
         )
-        ports.run_organic_arm(
+        receipt_identity = _identity(
+            prelaunch.get("receipt_identity"),
+            f"{slot} prelaunch receipt",
+        )
+        resource_admission_receipt = prelaunch.get("resource_admission")
+        if type(resource_admission_receipt) is not dict:
+            raise FormalControllerError(
+                f"{slot} prelaunch resource admission is absent"
+            )
+        orchestration_result = ports.run_organic_arm(
             inputs,
             pre_run_path=Path(str(pre_run_identity["path"])),
+            resource_admission_receipt=resource_admission_receipt,
             selection_path=Path(str(selection_identity["path"])),
         )
+        if (
+            type(orchestration_result) is not dict
+            or set(orchestration_result) != {
+                "detached_replay",
+                "resource_admission",
+            }
+        ):
+            raise FormalControllerError(
+                f"{slot} organic result lacks exact launch resource evidence"
+            )
+        try:
+            final_resource_admission = (
+                resource_admission.validate_launch_resource_reevaluation(
+                    orchestration_result["resource_admission"],
+                    expected_receipt=resource_admission_receipt,
+                )
+            )
+        except resource_admission.ResourceAdmissionError as exc:
+            raise FormalControllerError(
+                f"{slot} launch resource reevaluation failed replay"
+            ) from exc
     except BaseException as exc:
         orchestration_error = exc
     try:
@@ -957,7 +1051,11 @@ def _consume_selected_arm(
         or consumed.get("immediate_stop_identity") is not None
     ):
         raise FormalControllerError(f"{slot} did not reach one credible terminal")
-    if request_identity is None or receipt_identity is None:
+    if (
+        request_identity is None
+        or receipt_identity is None
+        or final_resource_admission is None
+    ):
         raise FormalControllerError(f"{slot} prelaunch evidence was not recorded")
     return {
         "arm_gate_identity": _identity(record["arm_gate_identity"], f"{slot} arm gate"),
@@ -969,6 +1067,7 @@ def _consume_selected_arm(
         "pre_run_authority_identity": pre_run_identity,
         "prelaunch_receipt_identity": receipt_identity,
         "prelaunch_request_identity": request_identity,
+        "resource_admission": final_resource_admission,
         "resource_terminal_identity": _identity(
             record["resource_terminal_identity"],
             f"{slot} resource terminal",

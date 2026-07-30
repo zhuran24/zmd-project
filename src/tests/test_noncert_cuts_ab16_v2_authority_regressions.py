@@ -51,6 +51,14 @@ RESOURCE_LIFECYCLE = _load(
     "noncert_cuts_ab16_resource_lifecycle_v2_regression",
     TOOLS / "organic_resource_lifecycle_v2.py",
 )
+RESOURCE_ADMISSION = _load(
+    "noncert_cuts_ab16_resource_admission_v1_regression",
+    TOOLS / "ab16_resource_admission_v1.py",
+)
+FORMAL_SUCCESS = _load(
+    "noncert_cuts_ab16_formal_success_verifier_v1_regression",
+    TOOLS / "ab16_formal_success_verifier_v1.py",
+)
 TERMINAL = _load(
     "noncert_cuts_ab16_terminal_gate_v2_regression",
     TOOLS / "ab16_terminal_gate_v2.py",
@@ -114,12 +122,13 @@ def test_gate_approval_replay_uses_unterminated_parser_for_both_full_preflights(
             "script.ab16_preflight_qualification_v1",
             "script.ab16_pytest_collection_plugin_v1",
             "script.ab16_pytest_collection_protocol_v1",
+            "script.ab16_resource_admission_v1",
             "script.gate_a_validation_v2",
             "system.python3_13",
         )
     }
     candidate = {"planned_source_identities": planned}
-    gate_b: dict[str, object] = {}
+    gate_b: dict[str, object] = {"created_at_utc": "2026-07-31T00:00:00Z"}
     final = {
         field: {}
         for field in (
@@ -143,6 +152,8 @@ def test_gate_approval_replay_uses_unterminated_parser_for_both_full_preflights(
         "input.ab16_gate_b_approval.json",
         "input.ab16_gate_b_final_full_preflight.json",
         "input.ab16_gate_b_epoch_observation.json",
+        "input.ab16_gate_b_pre_full_resource_gate.json",
+        "input.ab16_gate_b_pre_publication_resource_gate.json",
     )
     sources = {
         role: {
@@ -259,6 +270,8 @@ def test_project_lock_registers_one_exact_ab16_formal_cohort() -> None:
         BOOTSTRAP.EXTERNAL_PLATFORM_SCHEMA,
         RESOURCE.HISTORY_FREEZE_SCHEMA,
         RESOURCE.HISTORY_REPLAY_SCHEMA,
+        RESOURCE_ADMISSION.RESOURCE_ADMISSION_SCHEMA,
+        RESOURCE_ADMISSION.PROFILE_SET_ID,
         _top_level_literal(qualification, "QUALIFICATION_SCHEMA"),
         _top_level_literal(qualification, "RESOURCE_GATE_SCHEMA"),
         _top_level_literal(qualification, "OWNER_REQUEST_SCHEMA"),
@@ -281,6 +294,10 @@ def test_project_lock_registers_one_exact_ab16_formal_cohort() -> None:
         AUTHORITY.ARM_SELECTION_SCHEMA,
         AUTHORITY.ARM_CONSUMPTION_SCHEMA,
         AUTHORITY.CAMPAIGN_STOP_SCHEMA,
+        FORMAL_SUCCESS.PHASE_SCHEMAS["outer_prelaunch"],
+        FORMAL_SUCCESS.PHASE_SCHEMAS["outer_start"],
+        FORMAL_SUCCESS.ARM_PRELAUNCH_SCHEMA,
+        FORMAL_SUCCESS.CONTROLLER_RESULT_SCHEMA,
         _top_level_literal(success, "SUCCESS_RECEIPT_SCHEMA"),
         _top_level_literal(success, "INCOMPLETE_RECEIPT_SCHEMA"),
         _top_level_literal(success, "FAILURE_RELEASE_SCHEMA"),
@@ -298,6 +315,10 @@ def test_project_lock_registers_one_exact_ab16_formal_cohort() -> None:
     assert missing == []
     assert "Schema names cannot be independently selected, relabeled, or mixed" in section
     assert "cannot be coerced into this cohort" in section
+    assert "`noncert-cuts-ab16-formal-outer-prelaunch-v2`" in section
+    assert "`noncert-cuts-ab16-formal-outer-start-v2`" in section
+    assert "`noncert-cuts-ab16-formal-arm-prelaunch-v2`" in section
+    assert "`noncert-cuts-ab16-formal-controller-result-v2`" in section
     assert "The main checkout is a control plane" in section
     assert "Tracked state remains `U=(1188,18)` and" in section
     assert "`L=absent`" in section
@@ -343,6 +364,10 @@ def test_formal_orchestrator_outer_module_entry_is_cache_free() -> None:
     environment = os.environ.copy()
     environment.pop("PYTHONHOME", None)
     environment.pop("PYTHONPATH", None)
+    # This is the ordinary developer-facing ``python -m`` smoke test.  The
+    # safe-path selected-loader authority route has separate exact E2E
+    # coverage and must not be conflated with this entry point.
+    environment.pop("PYTHONSAFEPATH", None)
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
     completed = subprocess.run(
         [
@@ -675,7 +700,7 @@ def _directory_identity(path: Path) -> dict[str, int]:
     }
 
 
-def _v5_full_preflight_publication(
+def _v6_full_preflight_publication(
     tmp_path: Path,
 ) -> tuple[
     Path,
@@ -716,11 +741,17 @@ def _v5_full_preflight_publication(
     )
     runner = _regular(tmp_path / "tools/gate_a_validation_v2.py", b"# runner fixture\n")
     python = _regular(tmp_path / "tools/python3.13", b"fixture Python\n", mode=0o755)
+    resource_admission_source = _full(TOOLS / "ab16_resource_admission_v1.py")
+    resource_admission_source_projection = {
+        field: resource_admission_source[field]
+        for field in ("mode", "path", "sha256", "size_bytes")
+    }
     planned = {
         "input.preflight_gate": dict(preflight),
         "script.ab16_preflight_qualification_v1": dict(qualification),
         "script.ab16_pytest_collection_protocol_v1": dict(protocol),
         "script.ab16_pytest_collection_plugin_v1": dict(plugin),
+        "script.ab16_resource_admission_v1": resource_admission_source,
         "script.gate_a_validation_v2": dict(runner),
         "system.python3_13": dict(python),
     }
@@ -739,6 +770,40 @@ def _v5_full_preflight_publication(
         "terminal_sha256": "0" * 64,
         "workflow": "full",
     }
+    lock_identities = [
+        {
+            "device": 100 + index,
+            "inode": 200 + index,
+            "mode": 0o600,
+            "nlink": 1,
+            "path": path,
+            "uid": os.getuid(),
+        }
+        for index, path in enumerate(RESOURCE_ADMISSION.LOCK_PATHS)
+    ]
+    resource_receipt = RESOURCE_ADMISSION.evaluate_resource_admission(
+        repository,
+        stage=RESOURCE_ADMISSION.FULL_PREFLIGHT,
+        lock_identities=lock_identities,
+        lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        observation_context={
+            "authority_id": pre_run_authority["sha256"],
+            "disk_path": repository_root,
+            "kind": "GATE_A_FULL_PREFLIGHT",
+            "ordinal": 0,
+            "scope_id": planned_digest,
+            "sequence": 1,
+            "slot": "",
+            "target": str(output),
+        },
+        meminfo={
+            "MemAvailable": 64 * RESOURCE_ADMISSION.GIB,
+            "SwapFree": 64 * RESOURCE_ADMISSION.GIB,
+        },
+        disk_free=64 * RESOURCE_ADMISSION.GIB,
+        conflicts=[],
+        observed_at_utc="2026-07-24T00:00:00Z",
+    )
     record: dict[str, object] = {
         "authority_ready_identity": authority_ready,
         "authorizations": {
@@ -800,6 +865,9 @@ def _v5_full_preflight_publication(
             "status": "CLOSED_EMPTY_BASETEMP_RETAINED_AFTER_PASS",
         },
         "python_identity": python,
+        "resource_admission": resource_receipt,
+        "resource_admission_source_identity": resource_admission_source_projection,
+        "resource_lock_release_identities": lock_identities,
         "repository_head": HEAD,
         "repository_root": repository_root,
         "runner_tool_identity": runner,
@@ -842,7 +910,7 @@ def _rewrite_unterminated_readonly(path: Path, value: object, *, mode: int = 0o4
     path.chmod(mode)
 
 
-def _validate_v5_publication_with_consumer(
+def _validate_v6_publication_with_consumer(
     module: ModuleType,
     *,
     output: Path,
@@ -867,12 +935,12 @@ def _validate_v5_publication_with_consumer(
 
 
 @pytest.mark.parametrize("module", [BOOTSTRAP, AUTHORITY], ids=["bootstrap", "authority"])
-def test_v5_full_preflight_consumers_accept_exact_committed_tree(
+def test_v6_full_preflight_consumers_accept_exact_committed_tree(
     tmp_path: Path,
     module: ModuleType,
 ) -> None:
-    output, record, receipt_identity, _gate_a, _planned = _v5_full_preflight_publication(tmp_path)
-    _validate_v5_publication_with_consumer(
+    output, record, receipt_identity, _gate_a, _planned = _v6_full_preflight_publication(tmp_path)
+    _validate_v6_publication_with_consumer(
         module,
         output=output,
         record=record,
@@ -892,12 +960,12 @@ def test_v5_full_preflight_consumers_accept_exact_committed_tree(
         "staged-mode",
     ],
 )
-def test_v5_full_preflight_consumers_reject_commit_marker_mutation(
+def test_v6_full_preflight_consumers_reject_commit_marker_mutation(
     tmp_path: Path,
     module: ModuleType,
     mutation: str,
 ) -> None:
-    output, record, receipt_identity, _gate_a, _planned = _v5_full_preflight_publication(tmp_path)
+    output, record, receipt_identity, _gate_a, _planned = _v6_full_preflight_publication(tmp_path)
     marker_path = output / "receipt.commit.json"
     marker = json.loads(marker_path.read_bytes())
     marker_mode = 0o444
@@ -919,7 +987,7 @@ def test_v5_full_preflight_consumers_reject_commit_marker_mutation(
 
     error_type = module.BootstrapError if module is BOOTSTRAP else module.AuthorityError
     with pytest.raises(error_type):
-        _validate_v5_publication_with_consumer(
+        _validate_v6_publication_with_consumer(
             module,
             output=output,
             record=record,
@@ -929,12 +997,12 @@ def test_v5_full_preflight_consumers_reject_commit_marker_mutation(
 
 @pytest.mark.parametrize("module", [BOOTSTRAP, AUTHORITY], ids=["bootstrap", "authority"])
 @pytest.mark.parametrize("mutation", ["extra-root-member", "late-basetemp-child"])
-def test_v5_full_preflight_consumers_reject_closed_tree_mutation(
+def test_v6_full_preflight_consumers_reject_closed_tree_mutation(
     tmp_path: Path,
     module: ModuleType,
     mutation: str,
 ) -> None:
-    output, record, receipt_identity, _gate_a, _planned = _v5_full_preflight_publication(tmp_path)
+    output, record, receipt_identity, _gate_a, _planned = _v6_full_preflight_publication(tmp_path)
     if mutation == "extra-root-member":
         unknown = output / "unknown-member"
     else:
@@ -948,7 +1016,7 @@ def test_v5_full_preflight_consumers_reject_closed_tree_mutation(
 
     error_type = module.BootstrapError if module is BOOTSTRAP else module.AuthorityError
     with pytest.raises(error_type):
-        _validate_v5_publication_with_consumer(
+        _validate_v6_publication_with_consumer(
             module,
             output=output,
             record=record,
@@ -957,12 +1025,12 @@ def test_v5_full_preflight_consumers_reject_closed_tree_mutation(
     assert unknown.read_bytes() == b"unknown retained bytes\n"
 
 
-def test_bootstrap_final_full_preflight_rejects_rebound_v4_receipt(
+def test_bootstrap_final_full_preflight_rejects_rebound_v5_receipt(
     tmp_path: Path,
 ) -> None:
-    output, record, receipt_identity, gate_a, planned = _v5_full_preflight_publication(tmp_path)
+    output, record, receipt_identity, gate_a, planned = _v6_full_preflight_publication(tmp_path)
     stale_record = copy.deepcopy(record)
-    stale_record["schema_version"] = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v4"
+    stale_record["schema_version"] = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v5"
     receipt_path = output / "receipt.json"
     _rewrite_unterminated_readonly(receipt_path, stale_record)
     stale_receipt_identity = {
@@ -991,10 +1059,10 @@ def test_bootstrap_final_full_preflight_rejects_rebound_v4_receipt(
         )
 
 
-def test_bootstrap_v5_full_preflight_rejects_protocol_plugin_cross_binding(
+def test_bootstrap_v6_full_preflight_rejects_protocol_plugin_cross_binding(
     tmp_path: Path,
 ) -> None:
-    _output, record, receipt_identity, gate_a, planned = _v5_full_preflight_publication(tmp_path)
+    _output, record, receipt_identity, gate_a, planned = _v6_full_preflight_publication(tmp_path)
     assert (
         BOOTSTRAP._validate_final_full_preflight(  # noqa: SLF001
             record,
@@ -1024,6 +1092,79 @@ def test_bootstrap_v5_full_preflight_rejects_protocol_plugin_cross_binding(
     ):
         BOOTSTRAP._validate_final_full_preflight(  # noqa: SLF001
             tampered,
+            gate_a=gate_a,
+            planned=planned,
+            receipt_identity=receipt_identity,
+        )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "resource-measurement",
+        "resource-source",
+        "release-identity",
+        "observation-output-root",
+        "repository-disk-identity",
+    ),
+)
+def test_bootstrap_v6_full_preflight_replays_resource_closure(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    _output, record, receipt_identity, gate_a, planned = (
+        _v6_full_preflight_publication(tmp_path)
+    )
+    tampered = copy.deepcopy(record)
+    resource_record = tampered["resource_admission"]
+    assert isinstance(resource_record, dict)
+    if mutation == "resource-measurement":
+        resource_record["measurements"]["mem_available_bytes"] += 1
+    elif mutation == "resource-source":
+        tampered["resource_admission_source_identity"]["sha256"] = "0" * 64
+    elif mutation == "release-identity":
+        tampered["resource_lock_release_identities"][0]["inode"] += 1
+    elif mutation == "observation-output-root":
+        resource_record["observation_context"]["target"] = str(tmp_path / "replacement")
+        resource_record["observation_context_sha256"] = (
+            RESOURCE_ADMISSION._canonical_sha256(  # noqa: SLF001
+                resource_record["observation_context"]
+            )
+        )
+    elif mutation == "repository-disk-identity":
+        resource_record["disk_target"]["inode"] += 1
+    else:
+        raise AssertionError(f"unknown mutation: {mutation}")
+
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="resource"):
+        BOOTSTRAP._validate_final_full_preflight(  # noqa: SLF001
+            tampered,
+            gate_a=gate_a,
+            planned=planned,
+            receipt_identity=receipt_identity,
+        )
+
+
+@pytest.mark.parametrize(
+    "field",
+    (
+        "resource_admission",
+        "resource_admission_source_identity",
+        "resource_lock_release_identities",
+    ),
+)
+def test_bootstrap_v6_full_preflight_rejects_missing_resource_contract_field(
+    tmp_path: Path,
+    field: str,
+) -> None:
+    _output, record, receipt_identity, gate_a, planned = (
+        _v6_full_preflight_publication(tmp_path)
+    )
+    incomplete = copy.deepcopy(record)
+    incomplete.pop(field)
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="key set drifted"):
+        BOOTSTRAP._validate_final_full_preflight(  # noqa: SLF001
+            incomplete,
             gate_a=gate_a,
             planned=planned,
             receipt_identity=receipt_identity,
@@ -1734,6 +1875,14 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
             }
         ),
     )
+    pre_full_resource_identity = _regular(
+        tmp_path / "gate-b-resource-before-full.json",
+        b"{}\n",
+    )
+    pre_publication_resource_identity = _regular(
+        tmp_path / "gate-b-resource-before-publication.json",
+        b"{}\n",
+    )
     gate_b_path = tmp_path / "gate-b.json"
     gate_b = {
         "approval_id": "gate-b-fixture-v2",
@@ -1747,6 +1896,8 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         "gate_a_receipt_identity": gate_a_identity,
         "gate_b_epoch_observation_identity": epoch_identity,
         "planned_source_set_digest": digest,
+        "pre_full_resource_gate_identity": pre_full_resource_identity,
+        "pre_publication_resource_gate_identity": pre_publication_resource_identity,
         "publisher": _gate_b_publisher(gate_b_path),
         "purpose": BOOTSTRAP.GATE_B_PURPOSE,
         "repository_head": HEAD,
@@ -1781,6 +1932,11 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         "_validate_gate_b_epoch_observation",
         lambda value, **_kwargs: value,
     )
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_read_gate_b_resource_gate",
+        lambda identity_value, **_kwargs: ({"status": "PASS"}, identity_value),
+    )
 
     with pytest.raises(
         BOOTSTRAP.BootstrapError,
@@ -1812,6 +1968,14 @@ def _gate_b_record(tmp_path: Path) -> dict[str, object]:
         "gate_a_receipt_identity": {key: gate_a[key] for key in ("path", "sha256", "size_bytes")},
         "gate_b_epoch_observation_identity": _regular(tmp_path / "gate-b/epoch.json", b"{}\n"),
         "planned_source_set_digest": "a" * 64,
+        "pre_full_resource_gate_identity": _regular(
+            tmp_path / "gate-b/resource-before-full.json",
+            b"{}\n",
+        ),
+        "pre_publication_resource_gate_identity": _regular(
+            tmp_path / "gate-b/resource-before-publication.json",
+            b"{}\n",
+        ),
         "publisher": _gate_b_publisher(approval_path),
         "purpose": BOOTSTRAP.GATE_B_PURPOSE,
         "repository_head": HEAD, "repository_root": str(tmp_path / "repository"),
@@ -1825,8 +1989,12 @@ def _gate_b_record(tmp_path: Path) -> dict[str, object]:
     [
         ("final_full_preflight_receipt_identity", "missing"),
         ("gate_b_epoch_observation_identity", "missing"),
+        ("pre_full_resource_gate_identity", "missing"),
+        ("pre_publication_resource_gate_identity", "missing"),
         ("final_full_preflight_receipt_identity", "drift"),
         ("gate_b_epoch_observation_identity", "drift"),
+        ("pre_full_resource_gate_identity", "drift"),
+        ("pre_publication_resource_gate_identity", "drift"),
     ],
 )
 def test_gate_b_independent_evidence_identity_is_fail_closed(
@@ -1845,7 +2013,7 @@ def test_gate_b_independent_evidence_identity_is_fail_closed(
         BOOTSTRAP._validate_gate_b(record)  # noqa: SLF001
 
 
-def test_gate_b_v4_publisher_identity_and_schema_are_strict(
+def test_gate_b_v5_publisher_identity_and_schema_are_strict(
     tmp_path: Path,
 ) -> None:
     record = _gate_b_record(tmp_path)
@@ -1853,7 +2021,7 @@ def test_gate_b_v4_publisher_identity_and_schema_are_strict(
 
     mutations: list[dict[str, object]] = []
     old_schema = copy.deepcopy(record)
-    old_schema["schema_version"] = "noncert-cuts-ab16-bootstrap-gate-b-approval-v3"
+    old_schema["schema_version"] = "noncert-cuts-ab16-bootstrap-gate-b-approval-v4"
     mutations.append(old_schema)
     missing = copy.deepcopy(record)
     missing.pop("publisher")
@@ -1872,7 +2040,7 @@ def test_gate_b_v4_publisher_identity_and_schema_are_strict(
             BOOTSTRAP._validate_gate_b(changed)  # noqa: SLF001
 
 
-def test_gate_b_epoch_v3_joins_one_live_owner_and_rejects_legacy(
+def test_gate_b_epoch_v4_joins_one_live_owner_and_rejects_legacy(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -1889,6 +2057,10 @@ def test_gate_b_epoch_v3_joins_one_live_owner_and_rejects_legacy(
         if key in {"path", "sha256", "size_bytes"}
     }
     final_identity = _regular(tmp_path / "gate-b-epoch/final-full.json", b"{}\n")
+    pre_full_resource_identity = _regular(
+        tmp_path / "gate-b-epoch/resource-before-full.json",
+        b"{}\n",
+    )
     gate_a = {
         "manager_epoch": epoch,
         "planned_source_set_digest": "a" * 64,
@@ -1911,6 +2083,7 @@ def test_gate_b_epoch_v3_joins_one_live_owner_and_rejects_legacy(
         "gate_a_receipt_identity": gate_a_identity,
         "manager_epoch": epoch,
         "planned_source_set_digest": gate_a["planned_source_set_digest"],
+        "pre_full_resource_gate_identity": pre_full_resource_identity,
         "publisher": _gate_b_publisher(epoch_path, sequence=1),
         "purpose": BOOTSTRAP.GATE_B_EPOCH_PURPOSE,
         "repository_head": gate_a["repository_head"],
@@ -1935,6 +2108,7 @@ def test_gate_b_epoch_v3_joins_one_live_owner_and_rejects_legacy(
             gate_a_identity=gate_a_identity,
             candidate_identity=candidate_identity,
             final_full_preflight_identity=final_identity,
+            pre_full_resource_gate_identity=pre_full_resource_identity,
         )
         == record
     )
@@ -1947,7 +2121,7 @@ def test_gate_b_epoch_v3_joins_one_live_owner_and_rejects_legacy(
 
     mutations: list[dict[str, object]] = []
     old_schema = copy.deepcopy(record)
-    old_schema["schema_version"] = "noncert-cuts-ab16-gate-b-epoch-observation-v2"
+    old_schema["schema_version"] = "noncert-cuts-ab16-gate-b-epoch-observation-v3"
     mutations.append(old_schema)
     missing = copy.deepcopy(record)
     missing.pop("publisher")
@@ -1969,6 +2143,7 @@ def test_gate_b_epoch_v3_joins_one_live_owner_and_rejects_legacy(
                 gate_a_identity=gate_a_identity,
                 candidate_identity=candidate_identity,
                 final_full_preflight_identity=final_identity,
+                pre_full_resource_gate_identity=pre_full_resource_identity,
             )
 
 

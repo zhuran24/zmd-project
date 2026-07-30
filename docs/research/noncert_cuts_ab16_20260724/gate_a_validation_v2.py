@@ -14,7 +14,7 @@ Neither command creates a formal campaign, solver selection, or organic arm.
 from __future__ import annotations
 
 import argparse
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 import errno
 import hashlib
@@ -36,11 +36,12 @@ if str(RESEARCH_DIR) not in sys.path:
     sys.path.insert(0, str(RESEARCH_DIR))
 
 import ab16_campaign_bootstrap_v2 as bootstrap  # noqa: E402
+import ab16_resource_admission_v1 as resource_admission  # noqa: E402
 import disposable_drill_authority_v2 as drill_authority  # noqa: E402
 import organic_resource_verifier_v2 as verifier  # noqa: E402
 
 
-PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v5"
+PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v6"
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
 PREFLIGHT_PURPOSE = "AB16_GATE_A_FULL_PREFLIGHT"
 GATE_A_PURPOSE = "AB16_OFFLINE_SOURCE_SET_PREFLIGHT"
@@ -64,6 +65,7 @@ PREFLIGHT_SOURCE_ROLE = "input.preflight_gate"
 QUALIFICATION_SOURCE_ROLE = "script.ab16_preflight_qualification_v1"
 COLLECTION_PROTOCOL_SOURCE_ROLE = "script.ab16_pytest_collection_protocol_v1"
 COLLECTION_PLUGIN_SOURCE_ROLE = "script.ab16_pytest_collection_plugin_v1"
+RESOURCE_ADMISSION_SOURCE_ROLE = "script.ab16_resource_admission_v1"
 
 _SCRIPT_LOADER = r"""
 import ctypes
@@ -2178,6 +2180,7 @@ def _run_same_fd_python_script(
     environment: Mapping[str, str],
     timeout_seconds: float,
     support_identities: Sequence[tuple[str, Mapping[str, Any]]] = (),
+    final_prelaunch_check: Callable[[], None] | None = None,
 ) -> subprocess.CompletedProcess[bytes]:
     """Run one script while every verified source descriptor remains open."""
 
@@ -2269,20 +2272,22 @@ def _run_same_fd_python_script(
         *support_arguments,
         *forwarded,
     ]
+    popen_kwargs: dict[str, Any] = {
+        "close_fds": True,
+        "cwd": repository,
+        "env": dict(environment),
+        "executable": f"/proc/self/fd/{python_fd}",
+        "pass_fds": tuple(item[0] for item in opened),
+        "stdin": subprocess.DEVNULL,
+        "stdout": subprocess.PIPE,
+        "stderr": subprocess.PIPE,
+        "start_new_session": True,
+    }
     process: subprocess.Popen[bytes] | None = None
     try:
-        process = subprocess.Popen(
-            actual_argv,
-            close_fds=True,
-            cwd=repository,
-            env=dict(environment),
-            executable=f"/proc/self/fd/{python_fd}",
-            pass_fds=tuple(item[0] for item in opened),
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            start_new_session=True,
-        )
+        if final_prelaunch_check is not None:
+            final_prelaunch_check()
+        process = subprocess.Popen(actual_argv, **popen_kwargs)
         try:
             stdout, stderr = process.communicate(timeout=timeout_seconds)
         except subprocess.TimeoutExpired:
@@ -2331,11 +2336,12 @@ def _run_same_fd_python_script(
     return completed
 
 
-def record_full_preflight(
+def _record_full_preflight_with_lease(
     *,
     authority_root: Path | str,
     repository_root: Path | str,
     output_dir: Path | str,
+    resource_locks: resource_admission.HeldResourceLocks,
 ) -> dict[str, object]:
     """Run one package-pinned full preflight after a detached drill PASS."""
 
@@ -2379,6 +2385,13 @@ def record_full_preflight(
         COLLECTION_PLUGIN_SOURCE_ROLE,
         "AB16 pytest collection plugin",
     )
+    resource_admission_identity = _planned_source_identity(
+        sources,
+        RESOURCE_ADMISSION_SOURCE_ROLE,
+        "AB16 resource admission",
+    )
+    if _snapshot_identity(resource_admission.__file__) != resource_admission_identity:
+        raise GateAValidationError("AB16 resource-admission import identity drifted")
     expected_collection_count, expected_collection_sha256, _tracked_files = (
         _head_pytest_collection_authority(
             repository=repository,
@@ -2438,6 +2451,43 @@ def record_full_preflight(
             repository=repository,
             sources=sources,
         )
+        resource_lock_identities = resource_locks.identities()
+        resource_observation_context = {
+            "authority_id": evidence["pre_run_identity"]["sha256"],
+            "disk_path": str(repository),
+            "kind": "GATE_A_FULL_PREFLIGHT",
+            "ordinal": 0,
+            "scope_id": evidence["planned_source_set_digest"],
+            "sequence": 1,
+            "slot": "",
+            "target": str(output),
+        }
+        resource_receipt: dict[str, object] | None = None
+
+        def final_prelaunch_resource_check() -> None:
+            nonlocal resource_receipt
+            if resource_locks.identities() != resource_lock_identities:
+                raise GateAValidationError(
+                    "Gate-A lock identities drifted before final resource admission"
+                )
+            try:
+                checked_receipt = resource_admission.evaluate_resource_admission(
+                    repository,
+                    stage=resource_admission.FULL_PREFLIGHT,
+                    lock_identities=resource_lock_identities,
+                    lock_identity_format=resource_admission.GATE_B_LOCK_IDENTITY_FORMAT,
+                    observation_context=resource_observation_context,
+                )
+            except resource_admission.ResourceAdmissionError as exc:
+                raise GateAValidationError(
+                    f"Gate-A full-preflight resource admission failed: {exc}"
+                ) from exc
+            if resource_locks.identities() != resource_lock_identities:
+                raise GateAValidationError(
+                    "Gate-A lock identities drifted across final resource admission"
+                )
+            resource_receipt = checked_receipt
+
         try:
             completed = _run_same_fd_python_script(
                 python_identity=python_identity,
@@ -2451,6 +2501,7 @@ def record_full_preflight(
                 forwarded=qualification_arguments,
                 environment=environment,
                 timeout_seconds=PREFLIGHT_TIMEOUT_SECONDS,
+                final_prelaunch_check=final_prelaunch_resource_check,
             )
             exit_code = completed.returncode
             stdout = completed.stdout
@@ -2460,6 +2511,10 @@ def record_full_preflight(
             exit_code = 124
             stdout = exc.stdout or b""
             stderr = exc.stderr or b""
+        if resource_receipt is None:
+            raise GateAValidationError(
+                "full-preflight runner skipped final resource admission"
+            )
         if surface_guard is not None:
             surface_guard.verify_and_close()
             surface_guard = None
@@ -2492,6 +2547,21 @@ def record_full_preflight(
                 ).encode("ascii")
             else:
                 scratch_status = "CLOSED_EMPTY_BASETEMP_RETAINED_AFTER_PASS"
+        final_resource_lock_identities = resource_locks.identities()
+        if final_resource_lock_identities != resource_lock_identities:
+            raise GateAValidationError(
+                "Gate-A lock identities drifted across full preflight"
+            )
+        try:
+            released_resource_lock_identities = resource_locks.release_once()
+        except resource_admission.ResourceAdmissionError as exc:
+            raise GateAValidationError(
+                f"Gate-A resource-lock release failed: {exc}"
+            ) from exc
+        if released_resource_lock_identities != resource_lock_identities:
+            raise GateAValidationError(
+                "Gate-A resource-lock release identity drifted"
+            )
         finished_ns = time.monotonic_ns()
         stdout_identity = {
             "mode": 0o444,
@@ -2553,6 +2623,9 @@ def record_full_preflight(
                 "status": scratch_status,
             },
             "python_identity": python_identity,
+            "resource_admission": resource_receipt,
+            "resource_admission_source_identity": resource_admission_identity,
+            "resource_lock_release_identities": released_resource_lock_identities,
             "repository_head": expected_head,
             "repository_root": str(repository),
             "runner_tool_identity": _verify_current_tool(sources=sources),
@@ -2682,6 +2755,84 @@ def record_full_preflight(
                     f"{type(close_error).__name__}: {close_error}"
                 )
         raise
+
+
+def record_full_preflight(
+    *,
+    authority_root: Path | str,
+    repository_root: Path | str,
+    output_dir: Path | str,
+    resource_lock_fds: Mapping[str, int] | None = None,
+) -> dict[str, object]:
+    """Acquire the three-lock lease, then run one internally gated full lane."""
+
+    try:
+        if resource_lock_fds is None:
+            resource_locks = resource_admission.HeldResourceLocks.acquire(
+                identity_format=resource_admission.GATE_B_LOCK_IDENTITY_FORMAT,
+            )
+        else:
+            resource_locks = resource_admission.HeldResourceLocks.adopt_owned(
+                resource_lock_fds,
+                identity_format=resource_admission.GATE_B_LOCK_IDENTITY_FORMAT,
+            )
+    except resource_admission.ResourceAdmissionError as exc:
+        raise GateAValidationError(
+            f"Gate-A resource-lock acquisition failed: {exc}"
+        ) from exc
+    try:
+        result = _record_full_preflight_with_lease(
+            authority_root=authority_root,
+            repository_root=repository_root,
+            output_dir=output_dir,
+            resource_locks=resource_locks,
+        )
+    except BaseException as exc:
+        if not resource_locks.released:
+            try:
+                resource_locks.release_once()
+            except BaseException as cleanup_error:
+                exc.add_note(
+                    "Gate-A resource-lock failure cleanup failed: "
+                    f"{type(cleanup_error).__name__}: {cleanup_error}"
+                )
+        raise
+    if not resource_locks.released:
+        try:
+            resource_locks.release_once()
+        except BaseException as cleanup_error:
+            raise GateAValidationError(
+                "Gate-A full preflight returned with live resource locks and "
+                f"cleanup failed: {cleanup_error}"
+            ) from cleanup_error
+        raise GateAValidationError(
+            "Gate-A full preflight returned before its recorded lock release"
+        )
+    return result
+
+
+def _owned_resource_lock_fds(values: Sequence[str]) -> dict[str, int] | None:
+    if not values:
+        return None
+    parsed: dict[str, int] = {}
+    for value in values:
+        path, separator, raw_descriptor = value.rpartition("=")
+        if (
+            not separator
+            or path not in resource_admission.LOCK_PATHS
+            or path in parsed
+            or not raw_descriptor.isdigit()
+            or int(raw_descriptor) < 3
+        ):
+            raise GateAValidationError(
+                "inherited resource-lock descriptors must be the exact three path=fd bindings"
+            )
+        parsed[path] = int(raw_descriptor)
+    if set(parsed) != set(resource_admission.LOCK_PATHS):
+        raise GateAValidationError(
+            "inherited resource-lock descriptors must cover the exact three lock paths"
+        )
+    return parsed
 
 
 def _verify_closed_preflight_scratch(
@@ -3008,6 +3159,9 @@ def _verify_preflight_receipt(
         "pytest_collection_protocol_identity",
         "pytest_scratch",
         "python_identity",
+        "resource_admission",
+        "resource_admission_source_identity",
+        "resource_lock_release_identities",
         "repository_head",
         "repository_root",
         "runner_tool_identity",
@@ -3076,6 +3230,11 @@ def _verify_preflight_receipt(
         COLLECTION_PLUGIN_SOURCE_ROLE,
         "AB16 pytest collection plugin",
     )
+    expected_resource_admission = _planned_source_identity(
+        sources,
+        RESOURCE_ADMISSION_SOURCE_ROLE,
+        "AB16 resource admission",
+    )
     repository = Path(receipt["repository_root"])
     basetemp = Path(receipt["pytest_scratch"]["basetemp_path"])
     try:
@@ -3114,6 +3273,8 @@ def _verify_preflight_receipt(
         or receipt["qualification_runner_identity"] != expected_qualification
         or receipt["pytest_collection_protocol_identity"] != expected_protocol
         or receipt["pytest_collection_plugin_identity"] != expected_plugin
+        or receipt["resource_admission_source_identity"]
+        != expected_resource_admission
         or receipt["python_identity"] != evidence["pre_run"]["tool_identities"]["python3_13"]
         or receipt["runner_tool_identity"] != _verify_current_tool(sources=sources)
         or receipt["command"]
@@ -3130,6 +3291,41 @@ def _verify_preflight_receipt(
         }
     ):
         raise GateAValidationError("full-preflight tool/command identity drifted")
+    resource_record = receipt["resource_admission"]
+    if type(resource_record) is not dict:
+        raise GateAValidationError("full-preflight resource admission is malformed")
+    lock_check = resource_record.get("lock_check")
+    if type(lock_check) is not dict:
+        raise GateAValidationError("full-preflight resource lock check is malformed")
+    lock_identities = lock_check.get("identities")
+    try:
+        checked_resource = resource_admission.validate_resource_admission_receipt(
+            resource_record,
+            expected_stage=resource_admission.FULL_PREFLIGHT,
+            expected_lock_identities=lock_identities,
+            expected_lock_identity_format=resource_admission.GATE_B_LOCK_IDENTITY_FORMAT,
+            expected_observation_context={
+                "authority_id": evidence["pre_run_identity"]["sha256"],
+                "disk_path": str(repository),
+                "kind": "GATE_A_FULL_PREFLIGHT",
+                "ordinal": 0,
+                "scope_id": evidence["planned_source_set_digest"],
+                "sequence": 1,
+                "slot": "",
+                "target": str(receipt_directory),
+            },
+        )
+    except resource_admission.ResourceAdmissionError as exc:
+        raise GateAValidationError(
+            f"full-preflight resource admission replay failed: {exc}"
+        ) from exc
+    if (
+        checked_resource != resource_record
+        or receipt["resource_lock_release_identities"] != lock_identities
+    ):
+        raise GateAValidationError(
+            "full-preflight resource admission/release join drifted"
+        )
     stdout_raw: bytes | None = None
     for field in ("stdout_identity", "stderr_identity"):
         if field == "stdout_identity":
@@ -3235,6 +3431,12 @@ def _parser() -> argparse.ArgumentParser:
     preflight.add_argument("--authority-root", required=True, type=Path)
     preflight.add_argument("--repository-root", required=True, type=Path)
     preflight.add_argument("--output-dir", required=True, type=Path)
+    preflight.add_argument(
+        "--resource-lock-fd",
+        action="append",
+        default=[],
+        metavar="ABSOLUTE_PATH=FD",
+    )
     finalize = commands.add_parser("finalize")
     finalize.add_argument("--authority-root", required=True, type=Path)
     finalize.add_argument("--preflight-receipt", required=True, type=Path)
@@ -3253,6 +3455,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 authority_root=args.authority_root,
                 repository_root=args.repository_root,
                 output_dir=args.output_dir,
+                resource_lock_fds=_owned_resource_lock_fds(args.resource_lock_fd),
             )
         elif args.command == "finalize":
             result = finalize_gate_a(

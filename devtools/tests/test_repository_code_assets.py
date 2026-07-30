@@ -29,7 +29,7 @@ CURRENT_BASE_COUNTS = {
     "common_infrastructure": 477,
     "authoritative_input": 4,
     "enforcement_control": 9,
-    "historical_evidence": 472,
+    "historical_evidence": 473,
     "retirement_candidate": 19,
 }
 

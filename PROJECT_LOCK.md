@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-07-30 (AB16 formal selected-loader and pathname-transport hardening; Gate-A v5 explicit-plugin qualification, committed publication/self-replay and ECHILD-only descendant closure; AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
+**Updated**: 2026-07-30 (AB16 stage-specific conservative resource admission and prelaunch rechecks; A038 immutable FAIL_CLOSED; prior: formal selected-loader and pathname-transport hardening; Gate-A v6 explicit-plugin qualification, committed publication/self-replay and ECHILD-only descendant closure; AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -601,11 +601,12 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
 
   | boundary | exact accepted schemas |
   |---|---|
-  | Gate-A/Gate-B qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v2`; `noncert-cuts-ab16-bootstrap-offline-candidate-v2`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v5`; `noncert-cuts-ab16-gate-a-preflight-publication-commit-v1`; `noncert-cuts-ab16-gate-b-qualification-v1`; `noncert-cuts-ab16-gate-b-resource-gate-v1`; `noncert-cuts-ab16-gate-b-owner-request-v1`; `noncert-cuts-ab16-gate-b-owner-response-v1`; `noncert-cuts-ab16-gate-b-owner-release-v1`; `noncert-cuts-ab16-gate-b-epoch-observation-v3`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v4`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1` |
+  | stage resource admission | `noncert-cuts-ab16-stage-resource-admission-v1` |
+  | Gate-A/Gate-B qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v2`; `noncert-cuts-ab16-bootstrap-offline-candidate-v2`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v6`; `noncert-cuts-ab16-gate-a-preflight-publication-commit-v1`; `noncert-cuts-ab16-gate-b-qualification-v2`; `noncert-cuts-ab16-gate-b-resource-gate-v2`; `noncert-cuts-ab16-gate-b-owner-request-v1`; `noncert-cuts-ab16-gate-b-owner-response-v1`; `noncert-cuts-ab16-gate-b-owner-release-v1`; `noncert-cuts-ab16-gate-b-epoch-observation-v4`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v5`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1` |
   | Gate-A terminal-reference history | `noncert-cuts-ab16-terminal-reference-history-freeze-v1`; `noncert-cuts-ab16-terminal-reference-history-replay-v2` |
-  | bootstrap/package | `noncert-cuts-ab16-bootstrap-manager-capture-v2`; `noncert-cuts-ab16-campaign-bootstrap-result-v3`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v2`; `noncert-cuts-ab16-path-preregistration-v4` |
-  | formal launch | `noncert-cuts-ab16-formal-launch-context-v3`; `noncert-cuts-ab16-formal-launch-owner-request-v1`; `noncert-cuts-ab16-formal-launch-owner-response-v1`; `noncert-cuts-ab16-formal-launch-admission-v2`; `noncert-cuts-ab16-outer-guardian-ready-v1`; `noncert-cuts-ab16-formal-attempt-consumption-v1`; `noncert-cuts-ab16-formal-launch-selection-v1` |
-  | AB16 campaign/arms | `noncert-cuts-gate1-v4-continuation-authorization-v1`; `noncert-cuts-ab16-baseline-admission-v1`; `noncert-cuts-ab16-common-prestate-v1`; `noncert-cuts-ab16-organic-manifest-v2`; `noncert-cuts-ab16-suite-selection-v2`; `noncert-cuts-ab16-arm-binding-v2`; `noncert-cuts-ab16-organic-pre-run-authority-v2`; `noncert-cuts-ab16-organic-arm-selection-v1`; `noncert-cuts-ab16-organic-arm-consumption-v2`; `noncert-cuts-ab16-immediate-stop-v1` |
+  | bootstrap/package | `noncert-cuts-ab16-bootstrap-manager-capture-v2`; `noncert-cuts-ab16-campaign-bootstrap-result-v4`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v2`; `noncert-cuts-ab16-path-preregistration-v4` |
+  | formal launch | `noncert-cuts-ab16-formal-launch-context-v3`; `noncert-cuts-ab16-formal-launch-owner-request-v1`; `noncert-cuts-ab16-formal-launch-owner-response-v1`; `noncert-cuts-ab16-formal-launch-admission-v2`; `noncert-cuts-ab16-outer-guardian-ready-v1`; `noncert-cuts-ab16-formal-attempt-consumption-v1`; `noncert-cuts-ab16-formal-launch-selection-v1`; `noncert-cuts-ab16-formal-outer-prelaunch-v2`; `noncert-cuts-ab16-formal-outer-start-v2` |
+  | AB16 campaign/arms | `noncert-cuts-gate1-v4-continuation-authorization-v1`; `noncert-cuts-ab16-baseline-admission-v1`; `noncert-cuts-ab16-common-prestate-v1`; `noncert-cuts-ab16-organic-manifest-v2`; `noncert-cuts-ab16-suite-selection-v2`; `noncert-cuts-ab16-arm-binding-v2`; `noncert-cuts-ab16-organic-pre-run-authority-v2`; `noncert-cuts-ab16-organic-arm-selection-v1`; `noncert-cuts-ab16-organic-arm-consumption-v2`; `noncert-cuts-ab16-formal-arm-prelaunch-v2`; `noncert-cuts-ab16-formal-controller-result-v2`; `noncert-cuts-ab16-immediate-stop-v1` |
   | successful formal closeout | `noncert-cuts-ab16-formal-pre-release-success-v2`; `noncert-cuts-ab16-outer-guardian-lock-close-v1`; `noncert-cuts-ab16-formal-guardian-absence-v1`; `noncert-cuts-ab16-formal-dual-lock-release-v2` |
   | incomplete formal closeout | `noncert-cuts-ab16-formal-consumed-incomplete-v2`; `noncert-cuts-ab16-formal-pre-release-failure-v3`; `noncert-cuts-ab16-formal-detached-incomplete-v3`; `noncert-cuts-ab16-formal-failure-terminal-release-v3` |
   | containment support | `noncert-cuts-ab16-formal-markerless-incomplete-v1`; `noncert-cuts-ab16-formal-reference-lifecycle-v1`; `noncert-cuts-ab16-formal-containment-hold-v1`; `noncert-cuts-ab16-containment-guardian-absence-v1`; `noncert-cuts-ab16-formal-containment-cleared-after-hold-v1`; `noncert-cuts-ab16-formal-lock-release-v1` |
@@ -613,7 +614,11 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   Any omission of a listed discriminator, unknown discriminator version,
   legacy substitution, or cross-row mismatch fails before launch or result
   interpretation. In particular, Gate-B
-  approval v3, Gate-B epoch v2, formal context v1, detached-success v1,
+  full-preflight receipt v5, Gate-B qualification v1, Gate-B approval v4
+  and below, Gate-B epoch v3 and below, Gate-B resource gate v1,
+  campaign-bootstrap result v3, formal context v1, formal outer-prelaunch v1,
+  formal outer-start v1, formal arm-prelaunch v1, formal controller-result v1,
+  detached-success v1,
   dual-lock-release v1, consumed-incomplete v1, detached-incomplete v1/v2,
   failure-release v1/v2, and incomplete closeouts lacking a distinct
   pre-release/terminal-release join cannot be coerced into this cohort.
@@ -692,11 +697,66 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   the canonical socket identity with `SO_PEERCRED` PID/starttime.
   Historical roots remain bound to their own pinned schemas and source bytes;
   this successor cannot retrofit, replay, or authorize them.
+- Fresh AB16 resource admission uses the single
+  `noncert-cuts-ab16-resource-profile-set-v1` profile set. It does not reuse one
+  global memory/swap/disk threshold across unrelated stages. Every dimension
+  closes the exact arithmetic
+  `minimum_available = predicted_peak + safety_margin + host_reserve`; every
+  receipt records the stage/profile identity and canonical `profile_sha256`,
+  evidence basis, prediction method, all four dimension fields, runtime safety
+  limits, live memory/swap/disk observations, exact retained-lock identities,
+  same-UID conflict observation, research-only scope, all three launch
+  authorizations false, and exact `PASS` status. Missing, malformed,
+  arithmetically inconsistent, or untrusted basis/measurement/lock data raises
+  a stable fail-closed error and cannot produce an authorizing PASS receipt.
+
+  | stage profile | predicted peak | safety margin | host reserve | resulting minimum available |
+  |---|---|---|---|---|
+  | `FULL_PREFLIGHT` | memory `16 GiB`; swap `0 GiB`; disk `6 GiB` | memory `4 GiB`; swap `8 GiB`; disk `2 GiB` | memory `12 GiB`; swap `8 GiB`; disk `8 GiB` | memory `32 GiB`; swap `16 GiB`; disk `16 GiB` |
+  | `GATE_B_QUALIFICATION` | memory `2 GiB`; swap `0 GiB`; disk `2 GiB` | memory `22 GiB`; swap `8 GiB`; disk `6 GiB` | memory `12 GiB`; swap `8 GiB`; disk `8 GiB` | memory `36 GiB`; swap `16 GiB`; disk `16 GiB` |
+  | `FORMAL_ORGANIC_ARM` | memory `24 GiB`; swap `0 GiB`; disk `2 GiB` | memory `4 GiB`; swap `12 GiB`; disk `6 GiB` | memory `8 GiB`; swap `4 GiB`; disk `8 GiB` | memory `36 GiB`; swap `16 GiB`; disk `16 GiB` |
+
+  These are explicitly `CONSERVATIVE_TEMPORARY` profiles, not accepted
+  stage-peak measurements; each basis declares confidence `LOW`.
+  The full-preflight profile may cite only the
+  heterogeneous historical external sampler as scheduling evidence
+  (`13,507,510,272` bytes sampled process-tree peak RSS, `218` samples); it is
+  not receipt authority and is the only basis marked comparable to its stage.
+  Gate-B qualification has no accepted stage peak and is non-comparable.
+  Formal organic arms likewise have no accepted stage peak and use the
+  historical `24 GiB` planning upper bound only as a heterogeneous,
+  non-comparable proxy. Every basis therefore records zero accepted stage-peak
+  receipts and the warning
+  `TEMPORARY_PROFILE_NOT_A_STAGE_PEAK_MEASUREMENT`. A later measured profile
+  requires a new exact source/schema cohort; it cannot silently reinterpret
+  these values.
+
+  Admission headroom and runtime cgroup containment are distinct layers.
+  Only one serial formal organic arm uses `MemoryHigh=35 GiB`,
+  `MemoryMax=39 GiB`, `MemorySwapMax=16 GiB`, and
+  `RuntimeMaxSec=3600`; these are fail-closed safety caps, not substitutes for
+  the live profile check and not a claim that those maxima will be consumed.
+  Formal admission separately verifies that live RAM after host reserve plus
+  live swap after host reserve, capped at `MemorySwapMax`, can back
+  `MemoryMax`; that feasibility arithmetic does not become a predicted
+  working set.
+  All three stages require one worker, an exact same-UID conflict scan, and
+  the same three retained locks:
+  `/tmp/zmd-pj-codex-heavy-validation.lock`,
+  `/run/user/1000/zmd_pj_prod_scale_solver.lock`, and
+  `/run/user/1000/zmd-pj-prod-scale-solve.lock`. A conflicting process,
+  unavailable/conflicting lock, uncertain scan, or resource value even one
+  byte below the stage minimum blocks launch.
 - Gate-B qualification has one persistent owner actor. The same
   PID/starttime and qualification session acquire and retain the exact three
   heavy-work locks before the first resource gate, cover the final full
   preflight, publish the epoch observation as sequence 1, cover the second
-  identical resource gate, and publish Gate-B approval as sequence 2. The
+  stage-specific resource gate, and publish Gate-B approval as sequence 2.
+  After lock acquisition it re-closes the current three retained FD/path
+  identities and evaluates `FULL_PREFLIGHT` immediately before the pinned
+  full preflight. It re-closes those same identities and evaluates
+  `GATE_B_QUALIFICATION` immediately before approval and bootstrap. A prior
+  observation cannot be substituted after waiting or resource drift. The
   pinned preflight creates one fresh no-overwrite mode-`0700` output root,
   its mode-`0700` `pytest-scratch` child, and exactly one mode-`0700`
   `pytest-scratch/basetemp` child. It supplies a minimal fixed environment,
@@ -731,7 +791,7 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   uncertainty fails closed, and unrelated same-UID processes are never
   scanned or terminated.
 
-  A v5 PASS requires the retained scratch identity, one unchanged basetemp
+  A v6 PASS requires the retained scratch identity, one unchanged basetemp
   identity, and an empty basetemp; no producer cleanup deletes the tree.
   Stdout, stderr, `receipt.json`, and a mode-`0600` staged
   `receipt.commit.json` are created and verified through the retained
@@ -759,8 +819,9 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   Gate-B authority.
 - The formal-launch owner is a different persistent actor. One PID/starttime
   publishes admission as sequence 1 and remains alive while the
-  package-selected formal supervisor passes its resource gate, acquires the
-  same exact three formal locks, starts the guardian, and creates both
+  package-selected formal supervisor acquires the same exact three formal
+  locks, re-closes their identities, passes the post-lock
+  `FORMAL_ORGANIC_ARM` gate, starts the guardian, and creates both
   guardian-ready and the consumed-attempt marker. The same owner alone may
   then publish selection as sequence 2. Selection must bind the admission,
   guardian-ready, attempt-consumption, current three lock identities,
@@ -774,6 +835,14 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   exact-once `RefUnit`/`UnrefUnit`, post-Unref absence, and detached
   substantive replay. Only after those items close may it release the
   guardian and supervisor locks and publish the terminal release join.
+  While those locks remain live, it must repeat `FORMAL_ORGANIC_ARM` admission
+  immediately before the outer formal unit and immediately before each
+  organic arm's one-shot prelaunch publication. Each v2 prelaunch receipt
+  embeds and independently validates that admission against the current three
+  lock identities. The v2 outer-start and controller-result receipts
+  separately carry and strictly replay the final live reevaluation performed
+  at the corresponding `systemd-run` syscall edge; an earlier PASS cannot
+  authorize a later launch.
   Missing actor liveness, out-of-order publication, an unjoined lock identity,
   or any terminal/replay gap fails closed. A post-selection failure is
   consumed, retry-ineligible, and cannot be replaced by another arm or

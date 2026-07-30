@@ -210,3 +210,32 @@ def test_ordinary_pytest_ignores_one_sided_ab16_ambient_state(
     )
 
     assert completed.returncode == 0, (completed.stdout, completed.stderr)
+
+
+def test_external_artifact_check_runs_with_safe_path_environment() -> None:
+    environment = os.environ.copy()
+    environment.pop("PYTHONHOME", None)
+    environment.pop("PYTHONPATH", None)
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    environment["PYTHONSAFEPATH"] = "1"
+    completed = preflight_gate.subprocess.run(
+        [
+            preflight_gate.sys.executable,
+            "-B",
+            str(
+                preflight_gate.PROJECT_ROOT
+                / "scripts/check_external_artifacts.py"
+            ),
+        ],
+        check=False,
+        cwd=preflight_gate.PROJECT_ROOT,
+        env=environment,
+        stdin=preflight_gate.subprocess.DEVNULL,
+        stdout=preflight_gate.subprocess.PIPE,
+        stderr=preflight_gate.subprocess.PIPE,
+        text=True,
+        timeout=30,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert "external artifact check passed" in completed.stdout

@@ -27,6 +27,10 @@ import time
 from types import ModuleType
 from typing import Any, Protocol
 
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_resource_admission_v1 as resource_admission,
+)
+
 
 PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v2"
 RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
@@ -638,6 +642,7 @@ class SubprocessLifecycleAdapter:
         *,
         pre_run: Mapping[str, Any],
         epoch_observer: Callable[[str], EpochCapture],
+        launch_resource_admission: Mapping[str, object] | None = None,
         run: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
         monotonic: Callable[[], float] = time.monotonic,
         monotonic_ns: Callable[[], int] = time.monotonic_ns,
@@ -645,6 +650,13 @@ class SubprocessLifecycleAdapter:
     ) -> None:
         self.pre_run = pre_run
         self.epoch_observer = epoch_observer
+        self.launch_resource_admission = (
+            None
+            if launch_resource_admission is None
+            else dict(launch_resource_admission)
+        )
+        self.final_launch_resource_admission: dict[str, object] | None = None
+        self.launch_reevaluation_attempted = False
         self.run = run
         self._monotonic = monotonic
         self._monotonic_ns = monotonic_ns
@@ -709,19 +721,44 @@ class SubprocessLifecycleAdapter:
                 "systemctl": "systemctl",
                 "systemd_run": "systemd-run",
             }[role]
-            completed = self.run(
-                exec_command,
-                check=False,
-                close_fds=True,
-                cwd=self.pre_run["launch"]["cwd"],
-                env=dict(self.environment),
-                executable=f"/proc/self/fd/{descriptor}",
-                pass_fds=(descriptor,),
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=timeout,
-            )
+            run_kwargs = {
+                "check": False,
+                "close_fds": True,
+                "cwd": self.pre_run["launch"]["cwd"],
+                "env": dict(self.environment),
+                "executable": f"/proc/self/fd/{descriptor}",
+                "pass_fds": (descriptor,),
+                "stderr": subprocess.PIPE,
+                "stdin": subprocess.DEVNULL,
+                "stdout": subprocess.PIPE,
+                "timeout": timeout,
+            }
+            if role == "systemd_run":
+                if self.launch_reevaluation_attempted:
+                    raise OrchestratorError(
+                        "selected systemd-run resource reevaluation was already attempted"
+                    )
+                self.launch_reevaluation_attempted = True
+                if (
+                    self.pre_run.get("execution_class") == "FORMAL_AB16"
+                    and self.launch_resource_admission is None
+                ):
+                    raise OrchestratorError(
+                        "formal systemd-run lacks its resource admission"
+                    )
+                if self.launch_resource_admission is not None:
+                    final_launch_admission = (
+                        resource_admission.reevaluate_resource_admission_for_launch(
+                            self.launch_resource_admission,
+                        )
+                    )
+                else:
+                    final_launch_admission = None
+            else:
+                final_launch_admission = None
+            completed = self.run(exec_command, **run_kwargs)
+            if final_launch_admission is not None:
+                self.final_launch_resource_admission = final_launch_admission
             try:
                 current_path = os.stat(
                     absolute.name,
@@ -1606,6 +1643,7 @@ def run_pinned_entry(
     *,
     execution_class: str,
     pre_run_path: Path | str,
+    resource_admission_receipt: Mapping[str, object] | None = None,
     selection_path: Path | str,
 ) -> dict[str, object]:
     """Run the formal or disposable entry with no injectable live authority."""
@@ -1626,12 +1664,24 @@ def run_pinned_entry(
     adapter = SubprocessLifecycleAdapter(
         pre_run=pre_run,
         epoch_observer=build_pinned_epoch_observer(pre_run),
+        launch_resource_admission=resource_admission_receipt,
     )
-    return orchestrate_with_adapter(
+    result = orchestrate_with_adapter(
         pre_run_path=pre_run_path,
         selection_path=selection_path,
         adapter=adapter,
     )
+    if resource_admission_receipt is None:
+        return result
+    final_admission = adapter.final_launch_resource_admission
+    if final_admission is None:
+        raise OrchestratorError(
+            "formal organic result lacks launch-edge resource admission"
+        )
+    return {
+        "detached_replay": result,
+        "resource_admission": final_admission,
+    }
 
 
 def _parser() -> argparse.ArgumentParser:

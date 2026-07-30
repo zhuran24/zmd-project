@@ -1107,6 +1107,10 @@ def test_v2_package_role_set_is_exact_and_has_one_owner(
         gate_b_path=tmp_path / "gate-b.json",
         gate_b_epoch_path=tmp_path / "gate-b-epoch.json",
         final_full_preflight_path=tmp_path / "final-full.json",
+        pre_full_resource_gate_path=tmp_path / "pre-full-resource-gate.json",
+        pre_publication_resource_gate_path=(
+            tmp_path / "pre-publication-resource-gate.json"
+        ),
         capture_path=tmp_path / "manager-capture.json",
         path_preregistration_path=tmp_path / "path-preregistration.json",
         snapshot_archive_path=tmp_path / "repository-snapshot.zip",
@@ -1126,6 +1130,201 @@ def test_v2_package_role_set_is_exact_and_has_one_owner(
         BOOTSTRAP_V2.SNAPSHOT_MANIFEST_INPUT_ROLE,
         BOOTSTRAP_V2.EXTERNAL_PLATFORM_INPUT_ROLE,
     }
+
+
+def test_v2_authority_loads_resource_replayer_only_from_sealed_package(
+    tmp_path: Path,
+) -> None:
+    raw = (AB16_RESEARCH / "ab16_resource_admission_v1.py").read_bytes()
+    packaged_path = _write(tmp_path / "sealed" / "payload" / "resource.py", raw)
+    packaged_path.chmod(0o444)
+    packaged = AUTH_V2.snapshot_regular(packaged_path)
+    absent_live_path = tmp_path / "live-source-must-not-be-opened.py"
+    source_identity = {
+        "mode": 0o444,
+        "path": str(absent_live_path),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+    role = "tool.ab16_resource_admission_v1.py"
+    ambient_name = "ab16_resource_admission_v1"
+    previous_ambient = sys.modules.get(ambient_name)
+    ambient = ModuleType(ambient_name)
+    sys.modules[ambient_name] = ambient
+    try:
+        module, module_name = AUTH_V2._load_packaged_resource_admission_replayer(  # noqa: SLF001
+            {"payload/resource.py": packaged},
+            {
+                role: {
+                    "package_path": "payload/resource.py",
+                    "parse_json": False,
+                    "role": role,
+                    "source_identity": source_identity,
+                }
+            },
+            expected_source=source_identity,
+        )
+        try:
+            assert module is not ambient
+            assert module.__file__ == str(packaged_path)
+            assert module.FULL_PREFLIGHT == "FULL_PREFLIGHT"
+            assert not absent_live_path.exists()
+        finally:
+            assert sys.modules.pop(module_name) is module
+    finally:
+        if previous_ambient is None:
+            assert sys.modules.pop(ambient_name) is ambient
+        else:
+            sys.modules[ambient_name] = previous_ambient
+
+
+def test_v2_authority_replays_full_and_gate_b_resource_closure(
+    tmp_path: Path,
+) -> None:
+    raw = (AB16_RESEARCH / "ab16_resource_admission_v1.py").read_bytes()
+    packaged_path = _write(tmp_path / "sealed" / "payload" / "resource.py", raw)
+    packaged_path.chmod(0o444)
+    packaged = AUTH_V2.snapshot_regular(packaged_path)
+    source_identity = {
+        "mode": 0o444,
+        "path": str(tmp_path / "absent-live-resource.py"),
+        "sha256": packaged.sha256,
+        "size_bytes": packaged.size_bytes,
+    }
+    role = "tool.ab16_resource_admission_v1.py"
+    resource, module_name = AUTH_V2._load_packaged_resource_admission_replayer(  # noqa: SLF001
+        {"payload/resource.py": packaged},
+        {
+            role: {
+                "package_path": "payload/resource.py",
+                "parse_json": False,
+                "role": role,
+                "source_identity": source_identity,
+            }
+        },
+        expected_source=source_identity,
+    )
+    locks = [
+        {
+            "device": 1,
+            "inode": 100 + ordinal,
+            "mode": 0o600,
+            "nlink": 1,
+            "path": path,
+            "uid": os.geteuid(),
+        }
+        for ordinal, path in enumerate(resource.LOCK_PATHS)
+    ]
+    abundant = {"MemAvailable": 1 << 50, "SwapFree": 1 << 50}
+    try:
+        repository = tmp_path / "repository"
+        repository.mkdir()
+        receipt_directory = tmp_path / "gate-a-full"
+        receipt_directory.mkdir()
+        full_context = {
+            "authority_id": "a" * 64,
+            "disk_path": str(repository),
+            "kind": "GATE_A_FULL_PREFLIGHT",
+            "ordinal": 0,
+            "scope_id": "b" * 64,
+            "sequence": 1,
+            "slot": "",
+            "target": str(receipt_directory),
+        }
+        full_admission = resource.evaluate_resource_admission(
+            repository,
+            stage=resource.FULL_PREFLIGHT,
+            lock_identities=locks,
+            lock_identity_format=resource.GATE_B_LOCK_IDENTITY_FORMAT,
+            observation_context=full_context,
+            meminfo=abundant,
+            disk_free=1 << 50,
+            conflicts=[],
+            observed_at_utc="2026-07-31T00:00:00Z",
+        )
+        AUTH_V2._validate_preflight_resource_admission(  # noqa: SLF001
+            {
+                "planned_source_set_digest": "b" * 64,
+                "pre_run_authority_identity": {"sha256": "a" * 64},
+                "repository_root": str(repository),
+                "resource_admission": full_admission,
+                "resource_admission_source_identity": source_identity,
+                "resource_lock_release_identities": locks,
+            },
+            resource_replayer=resource,
+            expected_source=source_identity,
+            receipt_directory=receipt_directory,
+            label="test full preflight",
+        )
+
+        qualification = tmp_path / "qualification"
+        gate_b_directory = qualification / "gate-b-output"
+        resource_directory = gate_b_directory / "resource-gates"
+        resource_directory.mkdir(parents=True)
+        session_id = "c" * 64
+        actor = {
+            "pid": 1234,
+            "pid_starttime": "5678",
+            "role": "AB16_GATE_B_OWNER",
+        }
+        stage = "BEFORE_FINAL_FULL_PREFLIGHT"
+        gate_context = {
+            "authority_id": session_id,
+            "disk_path": str(qualification),
+            "kind": "GATE_B_FINAL_FULL_PREFLIGHT",
+            "ordinal": 0,
+            "scope_id": session_id,
+            "sequence": 1,
+            "slot": "",
+            "target": stage,
+        }
+        gate_admission = resource.evaluate_resource_admission(
+            qualification,
+            stage=resource.FULL_PREFLIGHT,
+            lock_identities=locks,
+            lock_identity_format=resource.GATE_B_LOCK_IDENTITY_FORMAT,
+            observation_context=gate_context,
+            meminfo=abundant,
+            disk_free=1 << 50,
+            conflicts=[],
+            observed_at_utc="2026-07-31T00:00:01Z",
+        )
+        wrapper_path = resource_directory / "before-final-full-preflight.json"
+        _write(
+            wrapper_path,
+            AUTH_V2.canonical_json(
+                {
+                    "admission": gate_admission,
+                    "authorizations": dict(resource.FALSE_AUTHORIZATIONS),
+                    "created_at_utc": "2026-07-31T00:00:02Z",
+                    "lock_identities": locks,
+                    "owner_actor": actor,
+                    "qualification_session_id": session_id,
+                    "schema_version": AUTH_V2.GATE_B_RESOURCE_GATE_SCHEMA,
+                    "stage": stage,
+                    "status": "PASS",
+                }
+            ),
+        ).chmod(0o444)
+        wrapper = AUTH_V2.snapshot_regular(wrapper_path)
+        record, identity = AUTH_V2._validate_gate_b_resource_gate(  # noqa: SLF001
+            wrapper,
+            AUTH_V2._mode_identity(wrapper),  # noqa: SLF001
+            resource_replayer=resource,
+            expected_path=wrapper_path,
+            expected_actor=actor,
+            expected_session_id=session_id,
+            expected_lock_identities=locks,
+            expected_stage=stage,
+            expected_profile_stage=resource.FULL_PREFLIGHT,
+            expected_disk_path=qualification,
+            expected_kind="GATE_B_FINAL_FULL_PREFLIGHT",
+            expected_sequence=1,
+        )
+        assert record["admission"] == gate_admission
+        assert identity == AUTH_V2._mode_identity(wrapper)  # noqa: SLF001
+    finally:
+        assert sys.modules.pop(module_name) is resource
 
 
 def test_v2_bootstrap_seals_before_materializing_without_future_identity() -> None:

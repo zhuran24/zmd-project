@@ -2214,6 +2214,8 @@ class ExistingCloseoutResidualPort:
         lease: GuardianLockLease,
         formal_selection: Mapping[str, object],
         formal_selection_identity: Mapping[str, object],
+        guardian_process_identity: Mapping[str, object],
+        supervisor_process_identity: Mapping[str, object],
     ) -> None:
         self.boundary = boundary
         self.selection = dict(formal_selection)
@@ -2221,6 +2223,22 @@ class ExistingCloseoutResidualPort:
             formal_selection_identity,
             "guardian residual selection",
         )
+        self.guardian_process_identity = (
+            launch_validator.validate_process_identity(
+                guardian_process_identity,
+                "guardian residual guardian process",
+            )
+        )
+        self.supervisor_process_identity = (
+            launch_validator.validate_process_identity(
+                supervisor_process_identity,
+                "guardian residual supervisor process",
+            )
+        )
+        if self.guardian_process_identity == self.supervisor_process_identity:
+            raise GuardianProtocolError(
+                "guardian residual process identities collapsed"
+            )
         helper = _closeout_helper_module()
         self.helper = helper
         self.store = helper.ReceiptStore()
@@ -2258,6 +2276,36 @@ class ExistingCloseoutResidualPort:
             "manager_epoch": self.boundary.root["manager_epoch"],
             "package_id": self.boundary.root["package"]["package_id"],
         }
+
+    def _outer_prelaunch_resource_contract(
+        self,
+        *,
+        unit_name: str,
+    ) -> tuple[dict[str, object], list[dict[str, int]]]:
+        campaign_root_identity = self.boundary.context["root_identity"]
+        if (
+            type(campaign_root_identity) is not dict
+            or type(campaign_root_identity.get("sha256")) is not str
+        ):
+            raise GuardianProtocolError(
+                "guardian residual campaign-root identity is malformed"
+            )
+        return (
+            {
+                "authority_id": self.selection_identity["sha256"],
+                "disk_path": str(Path(self.boundary.campaign).absolute()),
+                "kind": "FORMAL_OUTER_PRELAUNCH",
+                "ordinal": 0,
+                "scope_id": campaign_root_identity["sha256"],
+                "sequence": 1,
+                "slot": "",
+                "target": unit_name,
+            },
+            [
+                dict(self.supervisor_process_identity),
+                dict(self.guardian_process_identity),
+            ],
+        )
 
     def _recorded_reference_verification(
         self,
@@ -2317,6 +2365,9 @@ class ExistingCloseoutResidualPort:
             or checked["outer"]["control_group"]
             or checked["outer"]["processes"]
         )
+        resource_context, resource_allowlist = (
+            self._outer_prelaunch_resource_contract(unit_name=unit_name)
+        )
         owned: list[str] = []
         try:
             prelaunch, prelaunch_identity = self.store.document(
@@ -2326,8 +2377,10 @@ class ExistingCloseoutResidualPort:
             checked_prelaunch = success_verifier.validate_outer_prelaunch(
                 prelaunch,
                 expected=expected,
+                expected_allowed_same_uid_processes=resource_allowlist,
                 expected_unit_name=unit_name,
                 expected_lock_identities=self.host.lock_evidence(),
+                expected_observation_context=resource_context,
             )
             started, _started_identity = self.store.document(
                 paths["outer_start"],
@@ -2336,6 +2389,9 @@ class ExistingCloseoutResidualPort:
             checked_start = success_verifier.validate_outer_start(
                 started,
                 expected=expected,
+                expected_resource_admission=checked_prelaunch[
+                    "resource_admission"
+                ],
                 expected_unit_name=unit_name,
             )
             if (
@@ -2374,6 +2430,7 @@ class ExistingCloseoutResidualPort:
             self.host,
             self.selection,
             checked,
+            expected_allowed_same_uid_processes=resource_allowlist,
             recorded_reference_verification=recorded_reference,
         ))
         return owned
@@ -2398,6 +2455,10 @@ class ExistingCloseoutResidualPort:
                 self.host,
                 None,
                 self.selection,
+                expected_allowed_same_uid_processes=[
+                    dict(self.supervisor_process_identity),
+                    dict(self.guardian_process_identity),
+                ],
                 recorded_reference_verification=recorded_reference,
             )
             result = self.helper.freeze_takeover_child_ledger(
@@ -2755,13 +2816,20 @@ def run_guardian_session(
             completed = True
             return 2
         guardian.receive_activation(first_control)
-        if guardian.selection_record is None or guardian.selection_identity is None:
+        if (
+            guardian.selection_record is None
+            or guardian.selection_identity is None
+            or guardian.ready_record is None
+        ):
             raise GuardianProtocolError("guardian activation did not retain selection")
+        ready_record = guardian.ready_record
         port = ExistingCloseoutResidualPort(
             boundary=boundary,
             lease=guardian._require_lease(),  # noqa: SLF001
             formal_selection=guardian.selection_record,
             formal_selection_identity=guardian.selection_identity,
+            guardian_process_identity=ready_record["guardian_process_identity"],
+            supervisor_process_identity=ready_record["supervisor_process_identity"],
         )
         terminal: dict[str, object] | None = None
         while terminal is None:

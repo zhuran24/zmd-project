@@ -23,10 +23,11 @@ from typing import Any
 
 import ab16_authority_v2 as authority
 import ab16_outer_closeout_state_v1 as closeout_state
+import ab16_resource_admission_v1 as resource_admission
 
 
 GATE1_OWNERSHIP_SCHEMA = "noncert-cuts-ab16-formal-gate1-prelaunch-ownership-v1"
-ARM_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-formal-arm-prelaunch-v1"
+ARM_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-formal-arm-prelaunch-v2"
 CHILD_AUDIT_SCHEMA = "noncert-cuts-ab16-formal-child-audit-v1"
 GATE1_OWNERSHIP_FIELDS = {
     "all_units_absent",
@@ -216,17 +217,36 @@ class PinnedHost:
         self.boundary = boundary
         self.held_locks = dict(held_locks)
         self.cleaned_units: set[str] = set()
+        self._final_launch_resource_admission: dict[str, object] | None = None
         self.locks_released = False
 
     def run(
         self, arguments: Sequence[str], *, timeout: int = 60, role: str = "systemctl",
         cwd: Path | None = None, env: Mapping[str, str] | None = None,
+        launch_resource_admission: Mapping[str, object] | None = None,
+        launch_owner_check: Callable[[], None] | None = None,
     ) -> subprocess.CompletedProcess[bytes]:
+        if (launch_resource_admission is None) != (launch_owner_check is None):
+            raise OuterCloseoutError(
+                "launch resource contract and owner check must be supplied together"
+            )
+        if launch_resource_admission is not None and role != "systemd_run":
+            raise OuterCloseoutError(
+                "launch resource reevaluation may guard only the selected systemd-run effect"
+            )
+        if (
+            launch_resource_admission is not None
+            and self._final_launch_resource_admission is not None
+        ):
+            raise OuterCloseoutError(
+                "a prior launch resource admission remains unconsumed"
+            )
         expected = self.boundary.root["authority_tools"].get(role)
         if type(expected) is not dict or type(expected.get("path")) is not str:
             raise OuterCloseoutError(f"pinned {role} identity is absent")
         path = Path(expected["path"])
         descriptor = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+        final_launch_admission: dict[str, object] | None = None
         try:
             before = os.fstat(descriptor)
             digest = hashlib.sha256()
@@ -242,11 +262,35 @@ class PinnedHost:
             ):
                 raise OuterCloseoutError(f"{role} retained-FD identity drifted")
             os.lseek(descriptor, 0, os.SEEK_SET)
+            run_kwargs = {
+                "check": False,
+                "close_fds": True,
+                "cwd": cwd,
+                "env": dict(env) if env is not None else _system_env(),
+                "executable": f"/proc/self/fd/{descriptor}",
+                "pass_fds": (descriptor,),
+                "stderr": subprocess.PIPE,
+                "stdin": subprocess.DEVNULL,
+                "stdout": subprocess.PIPE,
+                "timeout": timeout,
+            }
+            if launch_resource_admission is not None:
+                self.lock_evidence()
+                assert launch_owner_check is not None
+                launch_owner_check()
+                final_launch_admission = (
+                    resource_admission.reevaluate_resource_admission_for_launch(
+                        launch_resource_admission,
+                    )
+                )
+                if self._final_launch_resource_admission is not None:
+                    raise OuterCloseoutError(
+                        "launch resource admission was not consumed exactly once"
+                    )
+                self._final_launch_resource_admission = final_launch_admission
             completed = subprocess.run(
                 [path.name, *arguments],
-                executable=f"/proc/self/fd/{descriptor}", pass_fds=(descriptor,), close_fds=True,
-                check=False, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                timeout=timeout, cwd=cwd, env=dict(env) if env is not None else _system_env(),
+                **run_kwargs,
             )
             after = os.fstat(descriptor)
             current = os.stat(path, follow_symlinks=False)
@@ -258,6 +302,13 @@ class PinnedHost:
         if completed.returncode != 0 or completed.stderr:
             raise OuterCloseoutError(f"{role} failed: exit={completed.returncode}, stderr={completed.stderr!r}")
         return completed
+
+    def take_final_launch_resource_admission(self) -> dict[str, object]:
+        value = self._final_launch_resource_admission
+        if value is None:
+            raise OuterCloseoutError("final launch resource admission is absent")
+        self._final_launch_resource_admission = None
+        return value
 
     def show(self, unit_name: str) -> dict[str, str]:
         if UNIT_RE.fullmatch(unit_name) is None:
@@ -563,6 +614,9 @@ def build_arm_prelaunch_request(
 def validate_arm_prelaunch_receipt(
     boundary: Any, store: ReceiptStore, request: Mapping[str, Any],
     request_identity: Mapping[str, Any], receipt_path: Path | str,
+    *,
+    expected_allowed_same_uid_processes: Sequence[Mapping[str, int]],
+    expected_resource_observation_context: Mapping[str, object],
 ) -> tuple[Mapping[str, Any], dict[str, object]]:
     if type(request.get("slot")) is not str or type(request.get("ordinal")) is not int:
         raise OuterCloseoutError("prelaunch request slot/ordinal types drifted")
@@ -571,8 +625,17 @@ def validate_arm_prelaunch_receipt(
         str(request.get("slot")), int(request.get("ordinal", 0)))
     receipt, receipt_identity = store.document(receipt_path, f"{request.get('slot')} prelaunch receipt")
     basis = {key: value for key, value in expected_request.items() if key != "status"}
-    extras = {"authorizations", "locks", "manager_epoch_capture", "outer_reference_verification",
-              "request_identity", "status", "systemctl", "unit_name"}
+    extras = {
+        "authorizations",
+        "locks",
+        "manager_epoch_capture",
+        "outer_reference_verification",
+        "request_identity",
+        "resource_admission",
+        "status",
+        "systemctl",
+        "unit_name",
+    }
     if (
         request != expected_request
         or set(receipt) != set(basis) | extras
@@ -584,13 +647,30 @@ def validate_arm_prelaunch_receipt(
         or not _same_epoch(boundary, receipt["manager_epoch_capture"].get("manager_epoch"))
     ):
         raise OuterCloseoutError(f"{request.get('slot')} prelaunch receipt drifted")
-    return receipt, receipt_identity
+    try:
+        checked_admission = resource_admission.validate_resource_admission_receipt(
+            receipt["resource_admission"],
+            expected_stage=resource_admission.FORMAL_ORGANIC_ARM,
+            expected_lock_identities=receipt["locks"],
+            expected_lock_identity_format=resource_admission.FORMAL_LOCK_IDENTITY_FORMAT,
+            expected_observation_context=expected_resource_observation_context,
+            expected_allowed_same_uid_processes=expected_allowed_same_uid_processes,
+        )
+    except resource_admission.ResourceAdmissionError as exc:
+        raise OuterCloseoutError(
+            f"{request.get('slot')} prelaunch resource admission drifted: {exc}"
+        ) from exc
+    checked_receipt = dict(receipt)
+    checked_receipt["resource_admission"] = checked_admission
+    return checked_receipt, receipt_identity
 
 
 def service_arm_prelaunch(
     boundary: Any, store: ReceiptStore, host: PinnedHost,
     formal_selection: Mapping[str, Any], reference: Any, *, slot: str, ordinal: int,
-    before_receipt_publish: Callable[[str, str], None] | None = None,
+    expected_allowed_same_uid_processes: Sequence[Mapping[str, int]],
+    expected_resource_observation_context: Mapping[str, object],
+    before_receipt_publish: Callable[[str, str], Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
     paths = formal_selection["arm_prelaunch_paths"][slot]
     request, request_identity = store.document(paths["request"], f"{slot} prelaunch request")
@@ -612,20 +692,58 @@ def service_arm_prelaunch(
     ):
         raise OuterCloseoutError(f"{slot} selected identity drifted")
     shown = host.show(checked["unit_name"])
+    checked_resource_context = dict(expected_resource_observation_context)
+    if checked_resource_context.get("target") != "DERIVE_FROM_VALIDATED_PRE_RUN":
+        raise OuterCloseoutError(
+            f"{slot} resource observation target was not derivable"
+        )
+    checked_resource_context["target"] = checked["unit_name"]
+    admission: Mapping[str, object] | None = None
+    if shown == ABSENT:
+        if before_receipt_publish is None:
+            raise OuterCloseoutError(
+                f"{slot} prelaunch lacks a post-lock resource admission callback"
+            )
+        admission = before_receipt_publish(slot, checked["unit_name"])
+    lease = _lease(boundary, host, reference, checked["manager_epoch"])
+    lease_locks = lease["locks"]
+    if type(lease_locks) is not list:
+        raise OuterCloseoutError(f"{slot} fresh lease lock evidence is malformed")
+    if shown == ABSENT:
+        try:
+            admission = resource_admission.validate_resource_admission_receipt(
+                admission,
+                expected_stage=resource_admission.FORMAL_ORGANIC_ARM,
+                expected_lock_identities=lease_locks,
+                expected_lock_identity_format=resource_admission.FORMAL_LOCK_IDENTITY_FORMAT,
+                expected_observation_context=checked_resource_context,
+                expected_allowed_same_uid_processes=expected_allowed_same_uid_processes,
+            )
+        except resource_admission.ResourceAdmissionError as exc:
+            raise OuterCloseoutError(
+                f"{slot} post-lock resource admission failed closed: {exc}"
+            ) from exc
     record = {
         **{key: value for key, value in expected_request.items() if key != "status"},
         "authorizations": dict(FALSE_AUTHORIZATIONS),
-        **_lease(boundary, host, reference, checked["manager_epoch"]),
+        **lease,
         "request_identity": request_identity,
+        "resource_admission": admission,
         "status": "PASS" if shown == ABSENT else "REFUSED_IDENTITY_COLLISION",
         "systemctl": shown, "unit_name": checked["unit_name"],
     }
-    if shown == ABSENT and before_receipt_publish is not None:
-        before_receipt_publish(slot, checked["unit_name"])
     identity = store.publish(paths["receipt"], record, f"{slot} prelaunch receipt")
     if shown != ABSENT:
         raise OuterCloseoutError(f"{slot} exact unit name was already present")
-    validate_arm_prelaunch_receipt(boundary, store, request, request_identity, paths["receipt"])
+    validate_arm_prelaunch_receipt(
+        boundary,
+        store,
+        request,
+        request_identity,
+        paths["receipt"],
+        expected_allowed_same_uid_processes=expected_allowed_same_uid_processes,
+        expected_resource_observation_context=checked_resource_context,
+    )
     return identity
 
 
@@ -700,6 +818,7 @@ def build_child_ledger(
     boundary: Any, store: ReceiptStore, host: PinnedHost,
     reference: Any | None, formal_selection: Mapping[str, Any],
     *,
+    expected_allowed_same_uid_processes: Sequence[Mapping[str, int]] | None = None,
     recorded_reference_verification: Mapping[str, str] | None = None,
 ) -> list[ChildTarget]:
     """Build the finite ledger only from sealed selections and fixed order."""
@@ -876,8 +995,43 @@ def build_child_ledger(
                 elif receipt_exists and launch_exists:
                     request_path = Path(formal_selection["arm_prelaunch_paths"][slot]["request"])
                     request, request_identity = store.document(request_path, f"{slot} request")
+                    if (
+                        expected_allowed_same_uid_processes is None
+                        or formal_selection_identity is None
+                    ):
+                        raise OuterCloseoutError(
+                            f"{slot} prelaunch replay lacks independently bound process identities"
+                        )
+                    ordinal = ARM_SEQUENCE.index(slot) + 1
+                    campaign_root_identity = boundary.context["root_identity"]
+                    if (
+                        type(campaign_root_identity) is not dict
+                        or type(campaign_root_identity.get("sha256")) is not str
+                        or type(formal_selection_identity.get("sha256")) is not str
+                    ):
+                        raise OuterCloseoutError(
+                            f"{slot} resource observation SHA-256 identity is malformed"
+                        )
                     receipt, receipt_identity = validate_arm_prelaunch_receipt(
-                        boundary, store, request, request_identity, receipt_path)
+                        boundary,
+                        store,
+                        request,
+                        request_identity,
+                        receipt_path,
+                        expected_allowed_same_uid_processes=(
+                            expected_allowed_same_uid_processes
+                        ),
+                        expected_resource_observation_context={
+                            "authority_id": formal_selection_identity["sha256"],
+                            "disk_path": str(Path(boundary.campaign).absolute()),
+                            "kind": "FORMAL_ORGANIC_ARM_PRELAUNCH",
+                            "ordinal": ordinal,
+                            "scope_id": campaign_root_identity["sha256"],
+                            "sequence": ordinal + 1,
+                            "slot": slot,
+                            "target": unit,
+                        },
+                    )
                     launch, launch_identity = store.document(launch_path, f"{slot} launch")
                     verifier._replay_epoch_observation_file(  # noqa: SLF001
                         pre_run=replayed_pre, phase="launch", embedded_observation=launch)
@@ -933,6 +1087,7 @@ def derive_child_containment_owned_unit_names(
     formal_selection: Mapping[str, Any],
     ledger: Mapping[str, object],
     *,
+    expected_allowed_same_uid_processes: Sequence[Mapping[str, int]],
     recorded_reference_verification: Mapping[str, str],
 ) -> list[str]:
     """Replay child ownership for guardian takeover without a second RefUnit.
@@ -950,6 +1105,7 @@ def derive_child_containment_owned_unit_names(
         host,
         None,
         formal_selection,
+        expected_allowed_same_uid_processes=expected_allowed_same_uid_processes,
         recorded_reference_verification=recorded_reference_verification,
     )
     if len(targets) != len(checked["children"]):
@@ -1141,6 +1297,7 @@ def freeze_selected_child_identity(
     reference: Any | None,
     formal_selection: Mapping[str, Any],
     *,
+    expected_allowed_same_uid_processes: Sequence[Mapping[str, int]] | None = None,
     source: str,
     slot: str,
     recorded_reference_verification: Mapping[str, str] | None = None,
@@ -1163,6 +1320,7 @@ def freeze_selected_child_identity(
         host,
         reference,
         formal_selection,
+        expected_allowed_same_uid_processes=expected_allowed_same_uid_processes,
         recorded_reference_verification=recorded_reference_verification,
     )
     matches = [target for target in targets if target.source == source and target.slot == slot]
@@ -1540,9 +1698,17 @@ def _prior_identity_gap(
 def audit_children(
     boundary: Any, store: ReceiptStore, host: PinnedHost, reference: Any,
     formal_selection: Mapping[str, Any], *, abnormal: bool,
+    expected_allowed_same_uid_processes: Sequence[Mapping[str, int]] | None = None,
     prior_launch_ledger: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
-    targets = build_child_ledger(boundary, store, host, reference, formal_selection)
+    targets = build_child_ledger(
+        boundary,
+        store,
+        host,
+        reference,
+        formal_selection,
+        expected_allowed_same_uid_processes=expected_allowed_same_uid_processes,
+    )
     if [(target.source, target.slot) for target in targets] != list(EXPECTED_CHILD_ORDER):
         raise OuterCloseoutError("finite child target order drifted")
     nonempty_units = [target.unit_name for target in targets if target.unit_name]

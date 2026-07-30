@@ -44,6 +44,12 @@ from docs.research.noncert_cuts_ab16_20260724 import (
     ab16_outer_closeout_state_v1 as closeout_state,
 )
 from docs.research.noncert_cuts_ab16_20260724 import ab16_outer_guardian_v1 as guardian
+from docs.research.noncert_cuts_ab16_20260724 import (
+    organic_unit_orchestrator_v2 as organic_orchestrator,
+)
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_resource_admission_v1 as resource_admission,
+)
 
 
 def _identity(root: Path, name: str, token: str = "a") -> dict[str, object]:
@@ -2573,6 +2579,124 @@ def test_controller_reuses_authority_owned_order_balanced_arm_sequence() -> None
         assert group[3].endswith("-ba-control")
 
 
+def test_controller_propagates_replayed_resource_admission_to_selected_arm(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    slot = controller.ARM_SEQUENCE[0]
+    events: list[str] = []
+    resource_receipt = {"schema_version": "fixture-resource-admission"}
+    request_identity = _identity(tmp_path, "prelaunch-request.json", "1")
+    expected_request_identity = request_identity
+    receipt_identity = _identity(tmp_path, "prelaunch-receipt.json", "2")
+    pre_run_identity = _identity(tmp_path, "pre-run-authority.json", "3")
+    selection_identity = _identity(tmp_path, "arm-selection.json", "4")
+    inputs = controller.FormalInputs(
+        context={"campaign_dir": str(tmp_path)},
+        guardian_process_identity={"pid": 4242, "starttime": 31337},
+        supervisor_process_identity={"pid": 4343, "starttime": 32337},
+        selection={},
+        selection_identity=_identity(tmp_path, "formal-selection.json", "5"),
+    )
+
+    class Ports:
+        @staticmethod
+        def publish_arm_prelaunch_request(
+            _inputs: controller.FormalInputs,
+            *,
+            slot: str,
+            ordinal: int,
+        ) -> dict[str, object]:
+            assert (slot, ordinal) == (controller.ARM_SEQUENCE[0], 1)
+            events.append("request")
+            return request_identity
+
+        @staticmethod
+        def wait_for_arm_prelaunch_receipt(
+            _inputs: controller.FormalInputs,
+            *,
+            slot: str,
+            ordinal: int,
+            request_identity: Mapping[str, object],
+        ) -> dict[str, object]:
+            assert (slot, ordinal) == (controller.ARM_SEQUENCE[0], 1)
+            assert request_identity == expected_request_identity
+            events.append("receipt")
+            return {
+                "receipt_identity": receipt_identity,
+                "resource_admission": resource_receipt,
+            }
+
+        @staticmethod
+        def run_organic_arm(
+            _inputs: controller.FormalInputs,
+            *,
+            pre_run_path: Path,
+            resource_admission_receipt: Mapping[str, object],
+            selection_path: Path,
+        ) -> dict[str, object]:
+            assert pre_run_path == Path(str(pre_run_identity["path"]))
+            assert selection_path == Path(str(selection_identity["path"]))
+            assert resource_admission_receipt is resource_receipt
+            events.append("launch")
+            return {
+                "detached_replay": {"status": "PASS"},
+                "resource_admission": resource_receipt,
+            }
+
+    monkeypatch.setattr(
+        controller.authority,
+        "build_pre_run_candidate",
+        lambda *_args, **_kwargs: {"status": "PASS"},
+    )
+    monkeypatch.setattr(
+        controller.authority,
+        "create_arm_selection",
+        lambda *_args, **_kwargs: {
+            "arm_selection_identity": selection_identity,
+            "pre_run_authority_identity": pre_run_identity,
+        },
+    )
+
+    def consume(*_args: object, **_kwargs: object) -> dict[str, object]:
+        events.append("consume")
+        return {
+            "consumption": {
+                "arm_gate_identity": _identity(tmp_path, "arm-gate.json", "6"),
+                "outcome": "CREDIBLE_TERMINAL",
+                "resource_terminal_identity": _identity(
+                    tmp_path,
+                    "resource-terminal.json",
+                    "7",
+                ),
+                "suite_terminal_identity": None,
+            },
+            "consumption_identity": _identity(tmp_path, "consumption.json", "8"),
+            "immediate_stop_identity": None,
+        }
+
+    monkeypatch.setattr(controller.authority, "consume_arm", consume)
+    monkeypatch.setattr(
+        controller.resource_admission,
+        "validate_launch_resource_reevaluation",
+        lambda value, *, expected_receipt: (
+            dict(value)
+            if value is expected_receipt is resource_receipt
+            else pytest.fail("resource launch replay lost its exact receipt")
+        ),
+    )
+    observed = controller._consume_selected_arm(  # noqa: SLF001
+        inputs,
+        ports=Ports(),
+        slot=slot,
+        ordinal=1,
+    )
+
+    assert events == ["request", "receipt", "launch", "consume"]
+    assert observed["prelaunch_receipt_identity"] == receipt_identity
+    assert observed["resource_admission"] == resource_receipt
+
+
 def test_controller_runs_barrier_gate1_baseline_manifest_and_fixed_arms_in_order(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -2583,6 +2707,8 @@ def test_controller_runs_barrier_gate1_baseline_manifest_and_fixed_arms_in_order
     barrier_identity = _identity(tmp_path, "barrier.json", "c")
     inputs = controller.FormalInputs(
         context={"campaign_dir": str(tmp_path), "package_id": "d" * 64},
+        guardian_process_identity={"pid": 4242, "starttime": 31337},
+        supervisor_process_identity={"pid": 4343, "starttime": 32337},
         selection={},
         selection_identity=_identity(tmp_path, "selection.json", "e"),
     )
@@ -2662,6 +2788,235 @@ def test_controller_runs_barrier_gate1_baseline_manifest_and_fixed_arms_in_order
         for ordinal, slot in enumerate(controller.ARM_SEQUENCE, start=1)
     ]
     assert events[-1] == "publish"
+
+
+@pytest.mark.parametrize("failure_code", (None, "MEMORY", "CONFLICT"))
+def test_organic_subprocess_edge_reevaluates_live_resources_last(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure_code: str | None,
+) -> None:
+    executable = tmp_path / "systemd-run"
+    executable.write_bytes(b"fixture-systemd-run\n")
+    executable.chmod(0o755)
+    identity = organic_orchestrator.snapshot_bytes(executable).identity
+    receipt = {"schema_version": "fixture-resource-admission"}
+    events: list[str] = []
+    adapter = object.__new__(organic_orchestrator.SubprocessLifecycleAdapter)
+    adapter.pre_run = {
+        "execution_class": "FORMAL_AB16",
+        "launch": {"cwd": str(tmp_path)},
+    }
+    adapter.environment = {}
+    adapter.executable_identities = {
+        str(executable): ("systemd_run", identity)
+    }
+    adapter.launch_resource_admission = receipt
+    adapter.final_launch_resource_admission = None
+    adapter.launch_reevaluation_attempted = False
+
+    def run(
+        command: list[str],
+        **_kwargs: object,
+    ) -> subprocess.CompletedProcess[bytes]:
+        events.append("subprocess")
+        return subprocess.CompletedProcess(command, 0, b"", b"")
+
+    adapter.run = run
+    final_receipt = {"schema_version": "fixture-final-resource-admission"}
+
+    def reevaluate(observed: object) -> dict[str, object]:
+        assert observed is receipt
+        events.append("reevaluate")
+        if failure_code == "MEMORY":
+            raise organic_orchestrator.resource_admission.ResourceAdmissionError(
+                "RESOURCE_HEADROOM_INSUFFICIENT",
+                "memory=min-1",
+            )
+        if failure_code == "CONFLICT":
+            raise organic_orchestrator.resource_admission.ResourceAdmissionError(
+                "RESOURCE_CONFLICT_DETECTED",
+                "same-UID conflict injected",
+            )
+        return final_receipt
+
+    monkeypatch.setattr(
+        organic_orchestrator.resource_admission,
+        "reevaluate_resource_admission_for_launch",
+        reevaluate,
+    )
+
+    if failure_code is not None:
+        with pytest.raises(
+            organic_orchestrator.resource_admission.ResourceAdmissionError,
+            match=(
+                "RESOURCE_HEADROOM_INSUFFICIENT"
+                if failure_code == "MEMORY"
+                else "RESOURCE_CONFLICT_DETECTED"
+            ),
+        ):
+            adapter._run([str(executable), "--user"], timeout=30)  # noqa: SLF001
+        assert events == ["reevaluate"]
+        assert adapter.final_launch_resource_admission is None
+    else:
+        completed = adapter._run(  # noqa: SLF001
+            [str(executable), "--user"],
+            timeout=30,
+        )
+        assert completed.returncode == 0
+        assert events == ["reevaluate", "subprocess"]
+        assert adapter.final_launch_resource_admission == final_receipt
+
+
+@pytest.mark.parametrize("drift", (None, "context", "allowlist"))
+def test_guardian_takeover_replays_outer_prelaunch_against_bound_resource_contract(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    drift: str | None,
+) -> None:
+    unit_name = "ab16-formal-outer-a001.service"
+    selection_identity = _identity(tmp_path, "formal-selection.json", "a")
+    root_identity = _identity(tmp_path, "campaign-root.json", "b")
+    prelaunch_identity = _identity(tmp_path, "outer-prelaunch.json", "c")
+    supervisor = {"pid": 4101, "starttime": 5101}
+    guardian_actor = {"pid": 4102, "starttime": 5102}
+    expected_context = {
+        "authority_id": selection_identity["sha256"],
+        "disk_path": str(tmp_path.absolute()),
+        "kind": "FORMAL_OUTER_PRELAUNCH",
+        "ordinal": 0,
+        "scope_id": root_identity["sha256"],
+        "sequence": 1,
+        "slot": "",
+        "target": unit_name,
+    }
+    expected_allowlist = [supervisor, guardian_actor]
+    recorded_context = deepcopy(expected_context)
+    recorded_allowlist = deepcopy(expected_allowlist)
+    if drift == "context":
+        recorded_context["target"] = "attacker.service"
+    if drift == "allowlist":
+        recorded_allowlist[0]["starttime"] += 1
+    prelaunch = {
+        "recorded_context": recorded_context,
+        "recorded_allowlist": recorded_allowlist,
+    }
+    started = {"kind": "outer-start"}
+    active_outer = {
+        "control_group": f"/user.slice/{unit_name}",
+        "invocation_id": "4" * 32,
+        "processes": [{"pid": 4201, "starttime": 5201}],
+        "unit_name": unit_name,
+    }
+    ledger = {"outer": active_outer}
+
+    port = object.__new__(guardian.ExistingCloseoutResidualPort)
+    port.boundary = SimpleNamespace(
+        campaign=tmp_path,
+        context={"root_identity": root_identity},
+        root={
+            "manager_epoch": {"boot_id": "fixture"},
+            "package": {"package_id": "d" * 64},
+        },
+    )
+    port.selection = {
+        "outer_spec": {
+            "receipt_paths": {
+                "outer_prelaunch": str(tmp_path / "outer-prelaunch.json"),
+                "outer_start": str(tmp_path / "outer-start.json"),
+            },
+            "unit_name": unit_name,
+        }
+    }
+    port.selection_identity = selection_identity
+    port.supervisor_process_identity = supervisor
+    port.guardian_process_identity = guardian_actor
+    port.host = SimpleNamespace(lock_evidence=lambda: [{"lock": "bound"}])
+    port.helper = SimpleNamespace(
+        derive_child_containment_owned_unit_names=lambda *_args, **_kwargs: []
+    )
+    port._recorded_reference_verification = (  # noqa: SLF001
+        lambda _checked: {
+            "client_unique_name": ":1.90",
+            "manager_owner": ":1.80",
+            "unit_name": unit_name,
+        }
+    )
+    port.ownership_errors = []
+
+    class Store:
+        @staticmethod
+        def document(path: Path | str, _label: str) -> tuple[dict[str, object], dict[str, object]]:
+            if str(path).endswith("outer-prelaunch.json"):
+                return prelaunch, prelaunch_identity
+            return started, _identity(tmp_path, "outer-start.json", "e")
+
+    port.store = Store()
+    monkeypatch.setattr(
+        guardian.closeout_state,
+        "validate_frozen_ledger",
+        lambda value: value,
+    )
+
+    def validate_prelaunch(
+        value: object,
+        **kwargs: object,
+    ) -> dict[str, object]:
+        assert kwargs["expected_observation_context"] == expected_context
+        assert kwargs["expected_allowed_same_uid_processes"] == expected_allowlist
+        assert value is prelaunch
+        if (
+            prelaunch["recorded_context"] != kwargs["expected_observation_context"]
+            or prelaunch["recorded_allowlist"]
+            != kwargs["expected_allowed_same_uid_processes"]
+        ):
+            raise success_verifier.FormalSuccessVerificationError(
+                "fixture resource contract drift"
+            )
+        return {
+            "outer_identity": {
+                "control_group": "",
+                "invocation_id": "",
+                "processes": [],
+                "unit_name": unit_name,
+            },
+            "resource_admission": {"contract": "independently-checked"},
+        }
+
+    def validate_start(
+        value: object,
+        **kwargs: object,
+    ) -> dict[str, object]:
+        assert value is started
+        assert kwargs["expected_resource_admission"] == {
+            "contract": "independently-checked"
+        }
+        return {
+            "launch_effect": {
+                "outer_prelaunch_identity": prelaunch_identity,
+            },
+            "outer_identity": active_outer,
+        }
+
+    monkeypatch.setattr(
+        guardian.success_verifier,
+        "validate_outer_prelaunch",
+        validate_prelaunch,
+    )
+    monkeypatch.setattr(
+        guardian.success_verifier,
+        "validate_outer_start",
+        validate_start,
+    )
+
+    observed = port._ownership(ledger)  # noqa: SLF001
+    if drift is None:
+        assert observed == [unit_name]
+        assert port.ownership_errors == []
+    else:
+        assert observed == []
+        assert len(port.ownership_errors) == 1
+        assert "resource contract drift" in port.ownership_errors[0]["detail"]
 
 
 def test_guardian_control_poll_observes_latch_before_receiving_frame(
@@ -4206,11 +4561,12 @@ def test_formal_campaign_abandons_guardian_parent_after_drifted_cleanup(
     with pytest.raises(formal_campaign.GuardianLaunchFailure) as caught:
         formal_campaign.start_guardian(
             boundary=SimpleNamespace(),
-            context=context,
-            admission={},
-            admission_identity={},
-            host=AbsentHost(),
-            store=SimpleNamespace(),
+                context=context,
+                admission={},
+                admission_identity={},
+                resource_admission_receipt={},
+                host=AbsentHost(),
+                store=SimpleNamespace(),
         )
 
     assert len(listeners) == len(parent_descriptors) == 1
@@ -4327,11 +4683,12 @@ def test_formal_campaign_cleanup_preserves_final_window_replacement(
     with pytest.raises(formal_campaign.GuardianLaunchFailure) as caught:
         formal_campaign.start_guardian(
             boundary=SimpleNamespace(),
-            context=context,
-            admission={},
-            admission_identity={},
-            host=host,
-            store=SimpleNamespace(),
+                context=context,
+                admission={},
+                admission_identity={},
+                resource_admission_receipt={},
+                host=host,
+                store=SimpleNamespace(),
         )
 
     assert injected
@@ -4422,6 +4779,7 @@ def test_guardian_frame_and_failure_state_are_canonical_and_monotone() -> None:
 def _valid_outer_prelaunch(
     fixture: FormalFixture,
 ) -> tuple[dict[str, object], dict[str, object]]:
+    Path(str(fixture.context["campaign_dir"])).mkdir(parents=True, exist_ok=True)
     expected = {
         "campaign_root_identity": fixture.context["campaign_root_identity"],
         "formal_selection_identity": _identity(
@@ -4452,10 +4810,98 @@ def _valid_outer_prelaunch(
             "lock_identities": fixture.lock_identities,
             "pid_absent": True,
         },
+        "resource_admission": resource_admission.evaluate_resource_admission(
+            fixture.context["campaign_dir"],
+            stage=resource_admission.FORMAL_ORGANIC_ARM,
+            lock_identities=fixture.lock_identities,
+            lock_identity_format=resource_admission.FORMAL_LOCK_IDENTITY_FORMAT,
+            observation_context={
+                "authority_id": expected["formal_selection_identity"]["sha256"],
+                "disk_path": str(
+                    Path(str(fixture.context["campaign_dir"])).absolute()
+                ),
+                "kind": "FORMAL_OUTER_PRELAUNCH",
+                "ordinal": 0,
+                "scope_id": expected["campaign_root_identity"]["sha256"],
+                "sequence": 1,
+                "slot": "",
+                "target": fixture.context["outer_spec"]["unit_name"],
+            },
+            meminfo={
+                "MemAvailable": 64 * resource_admission.GIB,
+                "SwapFree": 64 * resource_admission.GIB,
+            },
+            disk_free=64 * resource_admission.GIB,
+            conflicts=[],
+            observed_at_utc="2026-07-28T00:03:59Z",
+        ),
         "schema_version": success_verifier.PHASE_SCHEMAS["outer_prelaunch"],
         "status": "PASS",
     }
+    record["resource_admission"]["measurements"][
+        "same_uid_allowed_processes"
+    ] = [
+        {
+            "command": "python -c loader --role outer-guardian",
+            **fixture.guardian_ready["guardian_process_identity"],
+        }
+    ]
     return record, expected
+
+
+def test_outer_start_v2_strictly_replays_launch_resource_against_prelaunch(
+    tmp_path: Path,
+) -> None:
+    fixture = _formal_fixture(tmp_path)
+    prelaunch, expected = _valid_outer_prelaunch(fixture)
+    unit_name = str(fixture.context["outer_spec"]["unit_name"])
+    start = {
+        "authority_scope": success_verifier.AUTHORITY_SCOPE,
+        "authorizations": dict(success_verifier.FALSE_AUTHORIZATIONS),
+        "campaign_root_identity": expected["campaign_root_identity"],
+        "created_at_utc": "2026-07-28T00:04:01Z",
+        "formal_selection_identity": expected["formal_selection_identity"],
+        "launch_effect": {
+            "attempted": True,
+            "outer_prelaunch_identity": _identity(
+                tmp_path,
+                "outer-prelaunch.json",
+                "a",
+            ),
+            "recorded": True,
+            "returned": True,
+        },
+        "manager_epoch": expected["manager_epoch"],
+        "outer_identity": {
+            "control_group": f"/user.slice/{unit_name}",
+            "invocation_id": "4" * 32,
+            "processes": [{"pid": 904, "starttime": 123_459}],
+            "unit_name": unit_name,
+        },
+        "package_id": expected["package_id"],
+        "resource_admission": deepcopy(prelaunch["resource_admission"]),
+        "schema_version": success_verifier.PHASE_SCHEMAS["outer_start"],
+        "status": "PASS",
+    }
+    assert success_verifier.validate_outer_start(
+        start,
+        expected=expected,
+        expected_resource_admission=prelaunch["resource_admission"],
+        expected_unit_name=unit_name,
+    )["resource_admission"] == prelaunch["resource_admission"]
+
+    tampered = deepcopy(start)
+    tampered["resource_admission"]["measurements"]["mem_available_bytes"] += 1
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="resource reevaluation drifted",
+    ):
+        success_verifier.validate_outer_start(
+            tampered,
+            expected=expected,
+            expected_resource_admission=prelaunch["resource_admission"],
+            expected_unit_name=unit_name,
+        )
 
 
 def _reference_base_record(
@@ -5685,6 +6131,12 @@ def test_success_verifier_is_separate_from_producers_and_rejects_receipt_drift(
         expected=expected,
         expected_unit_name=str(fixture.context["outer_spec"]["unit_name"]),
         expected_lock_identities=fixture.lock_identities,
+        expected_observation_context=record["resource_admission"][
+            "observation_context"
+        ],
+        expected_allowed_same_uid_processes=[
+            fixture.guardian_ready["guardian_process_identity"]
+        ],
     )
     assert checked["prelaunch_absence"]["load_state"] == "not-found"
 
@@ -5699,6 +6151,12 @@ def test_success_verifier_is_separate_from_producers_and_rejects_receipt_drift(
             expected=expected,
             expected_unit_name=str(fixture.context["outer_spec"]["unit_name"]),
             expected_lock_identities=fixture.lock_identities,
+            expected_observation_context=record["resource_admission"][
+                "observation_context"
+            ],
+            expected_allowed_same_uid_processes=[
+                fixture.guardian_ready["guardian_process_identity"]
+            ],
         )
 
     authority_drift = deepcopy(record)
@@ -5712,6 +6170,31 @@ def test_success_verifier_is_separate_from_producers_and_rejects_receipt_drift(
             expected=expected,
             expected_unit_name=str(fixture.context["outer_spec"]["unit_name"]),
             expected_lock_identities=fixture.lock_identities,
+            expected_observation_context=record["resource_admission"][
+                "observation_context"
+            ],
+            expected_allowed_same_uid_processes=[
+                fixture.guardian_ready["guardian_process_identity"]
+            ],
+        )
+
+    resource_drift = deepcopy(record)
+    resource_drift["resource_admission"]["measurements"]["mem_available_bytes"] += 1
+    with pytest.raises(
+        success_verifier.FormalSuccessVerificationError,
+        match="resource admission drifted",
+    ):
+        success_verifier.validate_outer_prelaunch(
+            resource_drift,
+            expected=expected,
+            expected_unit_name=str(fixture.context["outer_spec"]["unit_name"]),
+            expected_lock_identities=fixture.lock_identities,
+            expected_observation_context=record["resource_admission"][
+                "observation_context"
+            ],
+            expected_allowed_same_uid_processes=[
+                fixture.guardian_ready["guardian_process_identity"]
+            ],
         )
 
 

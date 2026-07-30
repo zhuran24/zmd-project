@@ -1670,9 +1670,17 @@ def _write_process_group_fixture(directory: Path, *, parent_waits: bool) -> tupl
     return parent, sentinel, ready
 
 
-def _assert_proc_absent(pid: int) -> None:
+def _assert_proc_absent_or_zombie(pid: int) -> None:
     deadline = time.monotonic() + 3
     while Path(f"/proc/{pid}").exists() and time.monotonic() < deadline:
+        try:
+            raw = Path(f"/proc/{pid}/stat").read_text(encoding="ascii")
+        except FileNotFoundError:
+            continue
+        close = raw.rfind(")")
+        assert close >= 0
+        if raw[close + 2 :].split()[0] == "Z":
+            return
         time.sleep(0.02)
     assert not Path(f"/proc/{pid}").exists()
 
@@ -1702,7 +1710,7 @@ def test_batch_invoke_cleans_descendant_group_after_normal_parent_exit(
     assert record["descendant_cleanup_performed"] is True
     assert record["process_group_clean"] is True
     assert record["wall_timeout_seconds"] == 5
-    _assert_proc_absent(grandchild_pid)
+    _assert_proc_absent_or_zombie(grandchild_pid)
 
 
 def test_batch_invoke_timeout_signals_entire_owned_group_and_records_cleanup(
@@ -1734,4 +1742,33 @@ def test_batch_invoke_timeout_signals_entire_owned_group_and_records_cleanup(
     assert record["descendant_cleanup_performed"] is True
     assert record["process_group_clean"] is True
     assert record["wall_timeout_seconds"] == 0.25
-    _assert_proc_absent(grandchild_pid)
+    _assert_proc_absent_or_zombie(grandchild_pid)
+
+
+def test_batch_process_group_probe_treats_only_zombies_as_not_live(
+    batch_orchestrator: ModuleType,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    proc_root = tmp_path / "proc"
+    zombie = proc_root / "101"
+    live = proc_root / "102"
+    zombie.mkdir(parents=True)
+    live.mkdir()
+    zombie.joinpath("stat").write_text(
+        "101 (exited child) Z 1 777 777 0\n",
+        encoding="ascii",
+    )
+    live.joinpath("stat").write_text(
+        "102 (live child) S 1 888 888 0\n",
+        encoding="ascii",
+    )
+    monkeypatch.setattr(batch_orchestrator, "PROC_ROOT", proc_root)
+    monkeypatch.setattr(
+        batch_orchestrator.os,
+        "killpg",
+        lambda _pgid, _signal: None,
+    )
+
+    assert batch_orchestrator._process_group_exists(777) is False
+    assert batch_orchestrator._process_group_exists(888) is True

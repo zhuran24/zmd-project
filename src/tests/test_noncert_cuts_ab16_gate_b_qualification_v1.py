@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ctypes
+from copy import deepcopy
 import fcntl
 import hashlib
 import importlib.util
@@ -11,6 +12,7 @@ import socket
 import stat
 import subprocess
 import sys
+import time
 from types import ModuleType
 from types import SimpleNamespace
 
@@ -38,6 +40,258 @@ QUALIFICATION = _load(
     "noncert_cuts_ab16_gate_b_qualification_v1_tested",
     RESEARCH / "ab16_gate_b_qualification_v1.py",
 )
+RESOURCE_ADMISSION = _load(
+    "noncert_cuts_ab16_resource_admission_v1_tested",
+    RESEARCH / "ab16_resource_admission_v1.py",
+)
+
+
+def _gate_b_lock_identities() -> list[dict[str, object]]:
+    return [
+        {
+            "device": 100 + index,
+            "inode": 200 + index,
+            "mode": 0o600,
+            "nlink": 1,
+            "path": path,
+            "uid": os.getuid(),
+        }
+        for index, path in enumerate(RESOURCE_ADMISSION.LOCK_PATHS)
+    ]
+
+
+def _stage_minimums(stage: str) -> dict[str, int]:
+    requirements = RESOURCE_ADMISSION.RESOURCE_PROFILES[stage]["requirements"]
+    assert isinstance(requirements, dict)
+    result: dict[str, int] = {}
+    for dimension in ("disk", "memory", "swap"):
+        value = requirements[dimension]
+        assert isinstance(value, dict)
+        minimum = value["minimum_available_bytes"]
+        assert type(minimum) is int
+        result[dimension] = minimum
+    return result
+
+
+def _observation_context(tmp_path: Path, stage: str) -> dict[str, object]:
+    kind = {
+        RESOURCE_ADMISSION.FULL_PREFLIGHT: "GATE_A_FULL_PREFLIGHT",
+        RESOURCE_ADMISSION.GATE_B_QUALIFICATION: (
+            "GATE_B_QUALIFICATION_PUBLICATION"
+        ),
+        RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM: "FORMAL_INITIAL_POST_LOCK",
+    }[stage]
+    sequence = 0 if kind == "FORMAL_INITIAL_POST_LOCK" else (
+        2 if kind == "GATE_B_QUALIFICATION_PUBLICATION" else 1
+    )
+    return {
+        "authority_id": "a" * 64,
+        "disk_path": str(tmp_path.absolute()),
+        "kind": kind,
+        "ordinal": 0,
+        "scope_id": "b" * 64,
+        "sequence": sequence,
+        "slot": "",
+        "target": f"fixture:{stage}",
+    }
+
+
+def _admit_at(
+    tmp_path: Path,
+    *,
+    stage: str,
+    disk: int,
+    memory: int,
+    swap: int,
+) -> dict[str, object]:
+    return RESOURCE_ADMISSION.evaluate_resource_admission(
+        tmp_path,
+        stage=stage,
+        lock_identities=_gate_b_lock_identities(),
+        lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        observation_context=_observation_context(tmp_path, stage),
+        meminfo={"MemAvailable": memory, "SwapFree": swap},
+        disk_free=disk,
+        conflicts=[],
+        observed_at_utc="2026-07-31T00:00:00Z",
+    )
+
+
+def _track_resource_directory_descriptors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> tuple[list[int], dict[int, int]]:
+    real_open = RESOURCE_ADMISSION.os.open
+    real_close = RESOURCE_ADMISSION.os.close
+    opened: list[int] = []
+    close_counts: dict[int, int] = {}
+
+    def tracked_open(*args: object, **kwargs: object) -> int:
+        descriptor = real_open(*args, **kwargs)
+        flags = args[1]
+        assert isinstance(flags, int)
+        if flags & os.O_DIRECTORY:
+            opened.append(descriptor)
+            close_counts[descriptor] = 0
+        return descriptor
+
+    def tracked_close(descriptor: int) -> None:
+        if descriptor in close_counts:
+            close_counts[descriptor] += 1
+        real_close(descriptor)
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "open", tracked_open)
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", tracked_close)
+    return opened, close_counts
+
+
+def test_disk_measurement_rejects_target_replacement_between_fstatvfs_and_rejoin(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = tmp_path / "disk-target"
+    moved = tmp_path / "disk-target-retained"
+    target.mkdir()
+    real_fstatvfs = RESOURCE_ADMISSION.os.fstatvfs
+
+    def replace_after_measurement(descriptor: int) -> os.statvfs_result:
+        observed = real_fstatvfs(descriptor)
+        target.rename(moved)
+        target.mkdir()
+        (target / "unknown-replacement").write_bytes(b"must remain")
+        return observed
+
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION.os,
+        "fstatvfs",
+        replace_after_measurement,
+    )
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match=(
+            "RESOURCE_MEASUREMENT_UNTRUSTED: "
+            "disk target absolute-path identity changed after measurement"
+        ),
+    ):
+        RESOURCE_ADMISSION._measure_disk_target(  # noqa: SLF001
+            target,
+            disk_free=1,
+        )
+
+    assert moved.is_dir()
+    assert (target / "unknown-replacement").read_bytes() == b"must remain"
+
+
+def test_disk_measurement_closes_each_descriptor_once_on_success(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = tmp_path / "disk-target"
+    target.mkdir()
+    opened, close_counts = _track_resource_directory_descriptors(monkeypatch)
+
+    disk_free, identity = RESOURCE_ADMISSION._measure_disk_target(  # noqa: SLF001
+        target,
+        disk_free=123,
+    )
+
+    assert disk_free == 123
+    assert identity["path"] == str(target.absolute())
+    assert opened
+    assert len(opened) == len(set(opened))
+    assert close_counts == dict.fromkeys(opened, 1)
+
+
+def test_disk_measurement_preserves_baseexception_and_closes_each_descriptor_once(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class MeasurementAbort(BaseException):
+        pass
+
+    target = tmp_path / "disk-target"
+    target.mkdir()
+    opened, close_counts = _track_resource_directory_descriptors(monkeypatch)
+
+    def abort_measurement(_descriptor: int) -> None:
+        raise MeasurementAbort("controlled fstatvfs abort")
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "fstatvfs", abort_measurement)
+    with pytest.raises(MeasurementAbort, match="controlled fstatvfs abort"):
+        RESOURCE_ADMISSION._measure_disk_target(  # noqa: SLF001
+            target,
+            disk_free=123,
+        )
+
+    assert opened
+    assert close_counts == dict.fromkeys(opened, 1)
+
+
+def test_disk_measurement_converts_oserror_and_closes_each_descriptor_once(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = tmp_path / "disk-target"
+    target.mkdir()
+    opened, close_counts = _track_resource_directory_descriptors(monkeypatch)
+
+    def fail_measurement(_descriptor: int) -> None:
+        raise OSError("controlled fstatvfs failure")
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "fstatvfs", fail_measurement)
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match=(
+            "RESOURCE_MEASUREMENT_UNAVAILABLE: "
+            "disk target measurement: controlled fstatvfs failure"
+        ),
+    ):
+        RESOURCE_ADMISSION._measure_disk_target(  # noqa: SLF001
+            target,
+            disk_free=123,
+        )
+
+    assert opened
+    assert close_counts == dict.fromkeys(opened, 1)
+
+
+def test_disk_measurement_close_failure_does_not_mask_primary_exception(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class MeasurementAbort(BaseException):
+        pass
+
+    target = tmp_path / "disk-target"
+    target.mkdir()
+    opened, close_counts = _track_resource_directory_descriptors(monkeypatch)
+    tracked_close = RESOURCE_ADMISSION.os.close
+    injected = False
+
+    def abort_measurement(_descriptor: int) -> None:
+        raise MeasurementAbort("controlled primary abort")
+
+    def fail_one_close(descriptor: int) -> None:
+        nonlocal injected
+        tracked_close(descriptor)
+        if descriptor in close_counts and not injected:
+            injected = True
+            raise RuntimeError("controlled close failure")
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "fstatvfs", abort_measurement)
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", fail_one_close)
+    with pytest.raises(MeasurementAbort, match="controlled primary abort") as raised:
+        RESOURCE_ADMISSION._measure_disk_target(  # noqa: SLF001
+            target,
+            disk_free=123,
+        )
+
+    assert injected is True
+    assert opened
+    assert close_counts == dict.fromkeys(opened, 1)
+    assert any(
+        "controlled close failure" in note
+        for note in getattr(raised.value, "__notes__", ())
+    )
 
 
 def _renderer(path: Path) -> Path:
@@ -386,6 +640,25 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
         "candidate_identity": candidate_identity,
         "final_full_preflight_receipt_identity": final_preflight_identity,
         "gate_a_receipt_identity": gate_a_identity,
+        "pre_full_resource_gate_identity": {
+            "mode": 0o444,
+            "path": str(tmp_path / "resource-gates/before-final-full-preflight.json"),
+            "sha256": "3" * 64,
+            "size_bytes": 1,
+        },
+        "pre_publication_resource_gate_identity": {
+            "mode": 0o444,
+            "path": str(tmp_path / "resource-gates/after-final-full-preflight.json"),
+            "sha256": "4" * 64,
+            "size_bytes": 1,
+        },
+        "publisher": {
+            "actor": {"pid": 1, "pid_starttime": "1"},
+            "qualification_session": {
+                "lock_identities": [],
+                "session_id": "5" * 64,
+            },
+        },
     }
     records = {
         "Gate-A receipt": (gate_a, gate_a_identity),
@@ -416,6 +689,11 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
         lambda **_kwargs: (planned, {}, {}, {}),
     )
     monkeypatch.setattr(BOOTSTRAP, "_source_set_digest", lambda _planned: source_digest)
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_read_gate_b_resource_gate",
+        lambda identity, **_kwargs: ({}, dict(identity)),
+    )
 
     def parser(path: Path | str, label: str) -> tuple[object, dict[str, object]]:
         assert path == final_preflight_path
@@ -542,22 +820,32 @@ def test_pinned_gate_a_preflight_uses_verified_session_bus_environment(
     )
     monkeypatch.setattr(QUALIFICATION.subprocess, "run", run)
     before = _fd_count()
-    QUALIFICATION._run_pinned_gate_a_preflight(  # noqa: SLF001
-        {
-            "observation_identity": {
-                "path": str(tmp_path / "observation.json"),
-                "sha256": "a" * 64,
-                "size_bytes": 1,
+    inherited = {
+        path: os.open("/dev/null", os.O_RDONLY)
+        for path in QUALIFICATION.LOCK_PATHS
+    }
+    try:
+        QUALIFICATION._run_pinned_gate_a_preflight(  # noqa: SLF001
+            {
+                "observation_identity": {
+                    "path": str(tmp_path / "observation.json"),
+                    "sha256": "a" * 64,
+                    "size_bytes": 1,
+                },
+                "planned_digest": "b" * 64,
+                "repository": tmp_path,
+                "scripts": {"gate_a_pinned_entrypoint_v2": entrypoint},
+                "system_paths": {"python3_13": Path(os.path.realpath(sys.executable))},
             },
-            "planned_digest": "b" * 64,
-            "repository": tmp_path,
-            "scripts": {"gate_a_pinned_entrypoint_v2": entrypoint},
-            "system_paths": {"python3_13": Path(os.path.realpath(sys.executable))},
-        },
-        SimpleNamespace(gate_a_authority_root=tmp_path / "authority"),
-        tmp_path / "preflight",
-    )
+            SimpleNamespace(gate_a_authority_root=tmp_path / "authority"),
+            tmp_path / "preflight",
+            resource_lock_fds=inherited,
+        )
+    finally:
+        for descriptor in inherited.values():
+            os.close(descriptor)
     assert captured["env"] == expected_environment
+    assert set(inherited.values()) <= set(captured["pass_fds"])
     assert _fd_count() == before
 
 
@@ -596,22 +884,31 @@ def test_pinned_gate_a_preflight_environment_failure_closes_source_fds_once(
         lambda *_args, **_kwargs: pytest.fail("subprocess must not start"),
     )
     before = _fd_count()
-    with pytest.raises(RuntimeError, match="session-env-fault") as observed:
-        QUALIFICATION._run_pinned_gate_a_preflight(  # noqa: SLF001
-            {
-                "observation_identity": {
-                    "path": str(tmp_path / "observation.json"),
-                    "sha256": "a" * 64,
-                    "size_bytes": 1,
+    inherited = {
+        path: os.open("/dev/null", os.O_RDONLY)
+        for path in QUALIFICATION.LOCK_PATHS
+    }
+    try:
+        with pytest.raises(RuntimeError, match="session-env-fault") as observed:
+            QUALIFICATION._run_pinned_gate_a_preflight(  # noqa: SLF001
+                {
+                    "observation_identity": {
+                        "path": str(tmp_path / "observation.json"),
+                        "sha256": "a" * 64,
+                        "size_bytes": 1,
+                    },
+                    "planned_digest": "b" * 64,
+                    "repository": tmp_path,
+                    "scripts": {"gate_a_pinned_entrypoint_v2": entrypoint},
+                    "system_paths": {"python3_13": Path(os.path.realpath(sys.executable))},
                 },
-                "planned_digest": "b" * 64,
-                "repository": tmp_path,
-                "scripts": {"gate_a_pinned_entrypoint_v2": entrypoint},
-                "system_paths": {"python3_13": Path(os.path.realpath(sys.executable))},
-            },
-            SimpleNamespace(gate_a_authority_root=tmp_path / "authority"),
-            tmp_path / "preflight",
-        )
+                SimpleNamespace(gate_a_authority_root=tmp_path / "authority"),
+                tmp_path / "preflight",
+                resource_lock_fds=inherited,
+            )
+    finally:
+        for descriptor in inherited.values():
+            os.close(descriptor)
     assert observed.value is primary
     assert len(opened) == 2
     assert close_count == {descriptor: 1 for descriptor in opened}
@@ -1319,6 +1616,1177 @@ def test_bootstrap_handoff_rejects_session_or_lock_drift_before_return(
                 os.close(descriptor)
 
 
+@pytest.mark.parametrize(
+    "stage",
+    (
+        RESOURCE_ADMISSION.FULL_PREFLIGHT,
+        RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+        RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM,
+    ),
+)
+def test_stage_resource_admission_accepts_each_exact_minimum(
+    tmp_path: Path,
+    stage: str,
+) -> None:
+    minimums = _stage_minimums(stage)
+    receipt = _admit_at(
+        tmp_path,
+        stage=stage,
+        disk=minimums["disk"],
+        memory=minimums["memory"],
+        swap=minimums["swap"],
+    )
+    assert receipt["status"] == "PASS"
+    assert receipt["headroom"] == {
+        "disk_bytes_above_minimum": 0,
+        "memory_bytes_above_minimum": 0,
+        "swap_bytes_above_minimum": 0,
+    }
+    assert RESOURCE_ADMISSION.validate_resource_admission_receipt(
+        receipt,
+        expected_stage=stage,
+        expected_lock_identities=_gate_b_lock_identities(),
+        expected_lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        expected_observation_context=_observation_context(tmp_path, stage),
+    ) == receipt
+
+
+@pytest.mark.parametrize(
+    ("stage", "dimension"),
+    tuple(
+        (stage, dimension)
+        for stage in (
+            RESOURCE_ADMISSION.FULL_PREFLIGHT,
+            RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+            RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM,
+        )
+        for dimension in ("disk", "memory", "swap")
+    ),
+)
+def test_stage_resource_admission_rejects_one_byte_below_each_minimum(
+    tmp_path: Path,
+    stage: str,
+    dimension: str,
+) -> None:
+    minimums = _stage_minimums(stage)
+    minimums[dimension] -= 1
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match=rf"RESOURCE_HEADROOM_INSUFFICIENT: {stage}\.{dimension}:",
+    ):
+        _admit_at(
+            tmp_path,
+            stage=stage,
+            disk=minimums["disk"],
+            memory=minimums["memory"],
+            swap=minimums["swap"],
+        )
+
+
+def test_stage_resource_admission_receipt_has_exact_auditable_shape(
+    tmp_path: Path,
+) -> None:
+    stage = RESOURCE_ADMISSION.FULL_PREFLIGHT
+    minimums = _stage_minimums(stage)
+    receipt = _admit_at(
+        tmp_path,
+        stage=stage,
+        disk=minimums["disk"],
+        memory=minimums["memory"],
+        swap=minimums["swap"],
+    )
+    assert set(receipt) == {
+        "authority_scope",
+        "authorizations",
+        "created_at_utc",
+        "disk_target",
+        "hard_cap_feasibility",
+        "headroom",
+        "lock_check",
+        "measurements",
+        "observation_context",
+        "observation_context_sha256",
+        "profile",
+        "schema_version",
+        "stage",
+        "status",
+    }
+    assert receipt["authority_scope"] == "AB16_RESEARCH_ONLY"
+    assert receipt["authorizations"] == RESOURCE_ADMISSION.FALSE_AUTHORIZATIONS
+    assert receipt["measurements"] == {
+        "disk_free_bytes": minimums["disk"],
+        "mem_available_bytes": minimums["memory"],
+        "same_uid_allowed_processes": [],
+        "same_uid_conflicts": [],
+        "swap_free_bytes": minimums["swap"],
+    }
+    assert receipt["lock_check"] == {
+        "checked_after_acquisition": True,
+        "identities": _gate_b_lock_identities(),
+        "identity_format": RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        "paths": list(RESOURCE_ADMISSION.LOCK_PATHS),
+    }
+    profile = receipt["profile"]
+    assert isinstance(profile, dict)
+    assert set(profile) == {
+        "basis",
+        "execution",
+        "profile_id",
+        "profile_sha256",
+        "profile_set_id",
+        "requirements",
+        "runtime_safety_limits",
+        "stage",
+    }
+    assert isinstance(profile["profile_sha256"], str)
+    assert len(profile["profile_sha256"]) == 64
+    basis = profile["basis"]
+    assert isinstance(basis, dict)
+    assert set(basis) == {
+        "classification",
+        "comparable_to_stage",
+        "confidence",
+        "evidence_class",
+        "historical_observations",
+        "prediction_method",
+        "stage_peak_receipt_count",
+        "stage_peak_receipts",
+        "warning",
+    }
+    assert basis["classification"] == "CONSERVATIVE_TEMPORARY"
+    assert basis["comparable_to_stage"] is True
+    assert basis["confidence"] == "LOW"
+    assert basis["evidence_class"] == "HISTORICAL_EXTERNAL_SAMPLER_SAME_STAGE_PROXY"
+    assert basis["stage_peak_receipt_count"] == 0
+    assert basis["stage_peak_receipts"] == []
+    assert "NOT_A_STAGE_PEAK_MEASUREMENT" in str(basis["warning"])
+
+
+@pytest.mark.parametrize(
+    ("stage", "evidence_class", "comparable_to_stage"),
+    (
+        (
+            RESOURCE_ADMISSION.FULL_PREFLIGHT,
+            "HISTORICAL_EXTERNAL_SAMPLER_SAME_STAGE_PROXY",
+            True,
+        ),
+        (
+            RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+            "NO_STAGE_PEAK_EVIDENCE",
+            False,
+        ),
+        (
+            RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM,
+            "HETEROGENEOUS_PLANNING_PROXY",
+            False,
+        ),
+    ),
+)
+def test_stage_resource_admission_labels_each_temporary_basis_honestly(
+    tmp_path: Path,
+    stage: str,
+    evidence_class: str,
+    comparable_to_stage: bool,
+) -> None:
+    minimums = _stage_minimums(stage)
+    receipt = _admit_at(
+        tmp_path,
+        stage=stage,
+        disk=minimums["disk"],
+        memory=minimums["memory"],
+        swap=minimums["swap"],
+    )
+    profile = receipt["profile"]
+    assert isinstance(profile, dict)
+    basis = profile["basis"]
+    assert isinstance(basis, dict)
+    assert basis["classification"] == "CONSERVATIVE_TEMPORARY"
+    assert basis["confidence"] == "LOW"
+    assert basis["evidence_class"] == evidence_class
+    assert basis["comparable_to_stage"] is comparable_to_stage
+    assert basis["stage_peak_receipt_count"] == 0
+    assert basis["stage_peak_receipts"] == []
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ("missing-basis-field", "untrusted-classification", "stage-count-bool"),
+)
+def test_stage_resource_admission_rejects_missing_or_untrusted_basis(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+) -> None:
+    stage = RESOURCE_ADMISSION.GATE_B_QUALIFICATION
+    profile = json.loads(json.dumps(RESOURCE_ADMISSION.RESOURCE_PROFILES[stage]))
+    basis = profile["basis"]
+    assert isinstance(basis, dict)
+    if mutation == "missing-basis-field":
+        del basis["prediction_method"]
+    elif mutation == "untrusted-classification":
+        basis["classification"] = "MEASURED"
+    else:
+        basis["stage_peak_receipt_count"] = False
+    unhashed_profile = dict(profile)
+    del unhashed_profile["profile_sha256"]
+    profile["profile_sha256"] = RESOURCE_ADMISSION._canonical_sha256(  # noqa: SLF001
+        unhashed_profile
+    )
+    monkeypatch.setitem(RESOURCE_ADMISSION.RESOURCE_PROFILES, stage, profile)
+    minimums = _stage_minimums(stage)
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_PROFILE_UNTRUSTED",
+    ):
+        _admit_at(
+            tmp_path,
+            stage=stage,
+            disk=minimums["disk"],
+            memory=minimums["memory"],
+            swap=minimums["swap"],
+        )
+
+
+@pytest.mark.parametrize(
+    ("meminfo", "disk_free"),
+    (
+        ({"MemAvailable": 1}, 1),
+        ({"MemAvailable": "1", "SwapFree": 1}, 1),
+        ({"MemAvailable": 1, "SwapFree": -1}, 1),
+        ({"MemAvailable": 1, "SwapFree": 1}, True),
+    ),
+)
+def test_stage_resource_admission_rejects_missing_or_malformed_measurement(
+    tmp_path: Path,
+    meminfo: dict[str, object],
+    disk_free: object,
+) -> None:
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_MEASUREMENT_UNTRUSTED",
+    ):
+        RESOURCE_ADMISSION.evaluate_resource_admission(
+            tmp_path,
+            stage=RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+            lock_identities=_gate_b_lock_identities(),
+            lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+            observation_context=_observation_context(
+                tmp_path,
+                RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+            ),
+            meminfo=meminfo,
+            disk_free=disk_free,
+            conflicts=[],
+        )
+
+
+@pytest.mark.parametrize("mutation", ("missing", "malformed"))
+def test_stage_resource_admission_replay_rejects_measurement_drift(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    stage = RESOURCE_ADMISSION.GATE_B_QUALIFICATION
+    minimums = _stage_minimums(stage)
+    receipt = _admit_at(
+        tmp_path,
+        stage=stage,
+        disk=minimums["disk"],
+        memory=minimums["memory"],
+        swap=minimums["swap"],
+    )
+    measurements = receipt["measurements"]
+    assert isinstance(measurements, dict)
+    if mutation == "missing":
+        del measurements["swap_free_bytes"]
+    else:
+        measurements["mem_available_bytes"] = True
+    with pytest.raises(RESOURCE_ADMISSION.ResourceAdmissionError):
+        RESOURCE_ADMISSION.validate_resource_admission_receipt(
+            receipt,
+            expected_stage=stage,
+            expected_lock_identities=_gate_b_lock_identities(),
+            expected_lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+            expected_observation_context=_observation_context(tmp_path, stage),
+        )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "authorization-false-as-zero",
+        "profile-boolean-as-one",
+        "profile-stage-count-zero-as-false",
+        "lock-check-boolean-as-one",
+        "lock-mode-int-as-float",
+        "lock-nlink-one-as-true",
+        "headroom-zero-as-false",
+        "hard-cap-true-as-one",
+        "context-zero-as-false",
+    ),
+)
+def test_stage_resource_admission_replay_rejects_python_bool_int_aliases(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    stage = RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM
+    minimums = _stage_minimums(stage)
+    receipt = _admit_at(
+        tmp_path,
+        stage=stage,
+        disk=minimums["disk"],
+        memory=minimums["memory"],
+        swap=minimums["swap"],
+    )
+    original = deepcopy(receipt)
+    if mutation == "authorization-false-as-zero":
+        receipt["authorizations"]["solver_run_authorized"] = 0
+    elif mutation == "profile-boolean-as-one":
+        receipt["profile"]["execution"]["single_worker_required"] = 1
+    elif mutation == "profile-stage-count-zero-as-false":
+        receipt["profile"]["basis"]["stage_peak_receipt_count"] = False
+    elif mutation == "lock-check-boolean-as-one":
+        receipt["lock_check"]["checked_after_acquisition"] = 1
+    elif mutation == "lock-mode-int-as-float":
+        receipt["lock_check"]["identities"][0]["mode"] = float(0o600)
+    elif mutation == "lock-nlink-one-as-true":
+        receipt["lock_check"]["identities"][0]["nlink"] = True
+    elif mutation == "headroom-zero-as-false":
+        receipt["headroom"]["disk_bytes_above_minimum"] = False
+    elif mutation == "hard-cap-true-as-one":
+        receipt["hard_cap_feasibility"]["applies"] = 1
+    elif mutation == "context-zero-as-false":
+        receipt["observation_context"]["ordinal"] = False
+    else:
+        raise AssertionError(f"unknown mutation {mutation}")
+    assert receipt == original
+
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_(?:RECEIPT|LOCK_EVIDENCE)_INVALID",
+    ):
+        RESOURCE_ADMISSION.validate_resource_admission_receipt(
+            receipt,
+            expected_stage=stage,
+            expected_lock_identities=_gate_b_lock_identities(),
+            expected_lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+            expected_observation_context=_observation_context(tmp_path, stage),
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "alias"),
+    (
+        ("mode", float(0o600)),
+        ("nlink", True),
+    ),
+)
+def test_gate_b_lock_identity_rejects_equal_but_wrong_numeric_type(
+    field: str,
+    alias: object,
+) -> None:
+    identities = _gate_b_lock_identities()
+    identities[0][field] = alias
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_LOCK_EVIDENCE_INVALID",
+    ):
+        RESOURCE_ADMISSION._validate_lock_identities(  # noqa: SLF001
+            identities,
+            identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        )
+
+
+def test_stage_resource_admission_rejects_same_uid_conflict(
+    tmp_path: Path,
+) -> None:
+    minimums = _stage_minimums(RESOURCE_ADMISSION.GATE_B_QUALIFICATION)
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_CONFLICT_DETECTED",
+    ):
+        RESOURCE_ADMISSION.evaluate_resource_admission(
+            tmp_path,
+            stage=RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+            lock_identities=_gate_b_lock_identities(),
+            lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+            observation_context=_observation_context(
+                tmp_path,
+                RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+            ),
+            meminfo={
+                "MemAvailable": minimums["memory"],
+                "SwapFree": minimums["swap"],
+            },
+            disk_free=minimums["disk"],
+            conflicts=[{"command": "python scripts/preflight_gate.py --full", "pid": 12345}],
+        )
+
+
+def _controlled_resource_proc(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    *,
+    command: str,
+) -> tuple[Path, dict[str, int], dict[str, object]]:
+    proc_root = tmp_path / "controlled-proc"
+    process_root = proc_root / "4242"
+    process_root.mkdir(parents=True)
+    identity = {"pid": 4242, "starttime": 987654}
+    observation: dict[str, object] = {
+        "command": command,
+        **identity,
+        "uid": os.getuid(),
+    }
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION,
+        "_ancestor_pids",
+        lambda _proc_root: set(),
+    )
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION,
+        "_process_observation",
+        lambda path, *, pid: (
+            dict(observation)
+            if path == process_root and pid == identity["pid"]
+            else None
+        ),
+    )
+    return proc_root, identity, observation
+
+
+def test_stage_resource_admission_allows_only_the_exact_live_guardian_identity(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    proc_root, identity, observed = _controlled_resource_proc(
+        monkeypatch,
+        tmp_path,
+        command="python -I -B guardian.py --role outer-guardian",
+    )
+    scan = RESOURCE_ADMISSION._same_uid_conflicts  # noqa: SLF001
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION,
+        "_same_uid_conflicts",
+        lambda *, allowed_processes: scan(
+            allowed_processes=allowed_processes,
+            proc_root=proc_root,
+        ),
+    )
+    minimums = _stage_minimums(RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM)
+    receipt = RESOURCE_ADMISSION.evaluate_resource_admission(
+        tmp_path,
+        stage=RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM,
+        lock_identities=_gate_b_lock_identities(),
+        lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        observation_context=_observation_context(
+            tmp_path,
+            RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM,
+        ),
+        meminfo={
+            "MemAvailable": minimums["memory"],
+            "SwapFree": minimums["swap"],
+        },
+        disk_free=minimums["disk"],
+        allowed_same_uid_processes=[identity],
+        observed_at_utc="2026-07-30T00:00:00Z",
+    )
+    assert receipt["measurements"]["same_uid_allowed_processes"] == [
+        {
+            "command": observed["command"],
+            **identity,
+        }
+    ]
+    assert RESOURCE_ADMISSION.validate_resource_admission_receipt(
+        receipt,
+        expected_stage=RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM,
+        expected_lock_identities=_gate_b_lock_identities(),
+        expected_lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        expected_observation_context=_observation_context(
+            tmp_path,
+            RESOURCE_ADMISSION.FORMAL_ORGANIC_ARM,
+        ),
+        expected_allowed_same_uid_processes=[identity],
+    ) == receipt
+
+
+def test_stage_resource_admission_allowlist_identity_does_not_require_conflict_pattern(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    proc_root, identity, observed = _controlled_resource_proc(
+        monkeypatch,
+        tmp_path,
+        command="python -I -B helper.py --role retained-resource-helper",
+    )
+    assert not any(
+        pattern in str(observed["command"]).lower()
+        for pattern in RESOURCE_ADMISSION.CONFLICT_PATTERNS
+    )
+    conflicts, allowed = RESOURCE_ADMISSION._same_uid_conflicts(  # noqa: SLF001
+        allowed_processes=[identity],
+        proc_root=proc_root,
+    )
+    assert conflicts == []
+    assert allowed == [{"command": observed["command"], **identity}]
+
+
+def _temporary_resource_lock_paths(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> tuple[str, str, str]:
+    paths = tuple(str(tmp_path / f"resource-{index}.lock") for index in range(3))
+    monkeypatch.setattr(RESOURCE_ADMISSION, "LOCK_PATHS", paths)
+    return paths
+
+
+def test_held_resource_locks_normal_rechecks_and_release_do_not_leak_fds(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    before = len(os.listdir("/proc/self/fd"))
+    for _ in range(3):
+        lease = RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+            identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        )
+        identities = lease.identities()
+        assert [item["path"] for item in identities] == list(paths)
+        assert lease.release_once() == identities
+        assert lease.released is True
+    assert len(os.listdir("/proc/self/fd")) == before
+
+
+def test_held_resource_locks_rejects_name_replacement_even_when_replacement_is_locked(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    lease = RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    target = Path(paths[0])
+    retained = target.with_suffix(".retained")
+    real_open = RESOURCE_ADMISSION.os.open
+    holder: subprocess.Popen[str] | None = None
+    injected = False
+
+    def replace_before_probe(
+        path: str | bytes | os.PathLike[str] | os.PathLike[bytes],
+        flags: int,
+        mode: int = 0o777,
+        *,
+        dir_fd: int | None = None,
+    ) -> int:
+        nonlocal holder, injected
+        if (
+            os.fspath(path) == paths[0]
+            and flags & os.O_NOFOLLOW
+            and not flags & os.O_CREAT
+            and not injected
+        ):
+            injected = True
+            target.rename(retained)
+            target.write_bytes(b"unknown third-party lock")
+            target.chmod(0o600)
+            holder = subprocess.Popen(
+                [
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    "-c",
+                    (
+                        "import fcntl, os, sys, time; "
+                        "fd=os.open(sys.argv[1], os.O_RDWR); "
+                        "fcntl.flock(fd, fcntl.LOCK_EX); "
+                        "print('READY', flush=True); time.sleep(30)"
+                    ),
+                    paths[0],
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            assert holder.stdout is not None
+            assert holder.stdout.readline() == "READY\n"
+        return real_open(path, flags, mode, dir_fd=dir_fd)
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "open", replace_before_probe)
+    try:
+        with pytest.raises(
+            RESOURCE_ADMISSION.ResourceAdmissionError,
+            match="RESOURCE_LOCK_EVIDENCE_INVALID: .* probe identity drifted",
+        ):
+            lease.identities()
+        assert injected is True
+        assert retained.is_file()
+        assert target.read_bytes() == b"unknown third-party lock"
+        probe = real_open(target, os.O_RDWR | os.O_CLOEXEC | os.O_NOFOLLOW)
+        try:
+            with pytest.raises(BlockingIOError):
+                fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        finally:
+            os.close(probe)
+    finally:
+        monkeypatch.setattr(RESOURCE_ADMISSION.os, "open", real_open)
+        with pytest.raises(
+            RESOURCE_ADMISSION.ResourceAdmissionError,
+            match="RESOURCE_LOCK_EVIDENCE_INVALID",
+        ):
+            lease.release_once()
+        if holder is not None:
+            holder.terminate()
+            holder.wait(timeout=10)
+    assert lease.released is True
+    assert target.read_bytes() == b"unknown third-party lock"
+
+
+def test_held_resource_locks_rejects_replacement_during_final_name_rejoin(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    lease = RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    target = Path(paths[0])
+    retained = target.with_suffix(".retained")
+    real_stat = RESOURCE_ADMISSION.os.stat
+    target_stat_calls = 0
+
+    def replace_in_final_rejoin(
+        path: str | bytes | os.PathLike[str] | os.PathLike[bytes],
+        *,
+        dir_fd: int | None = None,
+        follow_symlinks: bool = True,
+    ) -> os.stat_result:
+        nonlocal target_stat_calls
+        if os.fspath(path) == paths[0] and follow_symlinks is False:
+            target_stat_calls += 1
+            if target_stat_calls == 2:
+                target.rename(retained)
+                target.write_bytes(b"unknown final-name replacement")
+                target.chmod(0o600)
+        return real_stat(path, dir_fd=dir_fd, follow_symlinks=follow_symlinks)
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "stat", replace_in_final_rejoin)
+    try:
+        with pytest.raises(
+            RESOURCE_ADMISSION.ResourceAdmissionError,
+            match="RESOURCE_LOCK_EVIDENCE_INVALID: .* final name identity drifted",
+        ):
+            lease.identities()
+        assert target_stat_calls == 2
+        assert retained.is_file()
+        assert target.read_bytes() == b"unknown final-name replacement"
+    finally:
+        monkeypatch.setattr(RESOURCE_ADMISSION.os, "stat", real_stat)
+        with pytest.raises(
+            RESOURCE_ADMISSION.ResourceAdmissionError,
+            match="RESOURCE_LOCK_EVIDENCE_INVALID",
+        ):
+            lease.release_once()
+    assert lease.released is True
+    assert target.read_bytes() == b"unknown final-name replacement"
+
+
+def test_held_resource_locks_adopt_owned_closes_only_passed_duplicates(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    original = RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    duplicates = {
+        path: os.dup(original._descriptors[path])  # noqa: SLF001
+        for path in paths
+    }
+    duplicate_numbers = tuple(duplicates.values())
+    adopted = RESOURCE_ADMISSION.HeldResourceLocks.adopt_owned(
+        duplicates,
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    assert adopted.identities() == original.identities()
+    adopted.release_once()
+    for descriptor in duplicate_numbers:
+        with pytest.raises(OSError):
+            os.fstat(descriptor)
+    for descriptor in original._descriptors.values():  # noqa: SLF001
+        os.fstat(descriptor)
+    original.release_once()
+
+
+def test_held_resource_locks_adopt_owned_rejects_extra_path_and_closes_once(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    original = RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    duplicates = {
+        path: os.dup(original._descriptors[path])  # noqa: SLF001
+        for path in paths
+    }
+    duplicates[str(tmp_path / "extra.lock")] = os.dup(
+        original._descriptors[paths[0]],  # noqa: SLF001
+    )
+    close_counts = {descriptor: 0 for descriptor in duplicates.values()}
+    real_close = os.close
+
+    def counted_close(descriptor: int) -> None:
+        if descriptor in close_counts:
+            close_counts[descriptor] += 1
+        real_close(descriptor)
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", counted_close)
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_LOCK_EVIDENCE_INVALID",
+    ):
+        RESOURCE_ADMISSION.HeldResourceLocks.adopt_owned(
+            duplicates,
+            identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        )
+    assert set(close_counts.values()) == {1}
+    for descriptor in original._descriptors.values():  # noqa: SLF001
+        os.fstat(descriptor)
+    original.release_once()
+
+
+def test_held_resource_locks_adopt_owned_rejects_missing_path_and_closes_once(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    original = RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    duplicates = {
+        path: os.dup(original._descriptors[path])  # noqa: SLF001
+        for path in paths[:2]
+    }
+    close_counts = {descriptor: 0 for descriptor in duplicates.values()}
+    real_close = os.close
+
+    def counted_close(descriptor: int) -> None:
+        if descriptor in close_counts:
+            close_counts[descriptor] += 1
+        real_close(descriptor)
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", counted_close)
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_LOCK_EVIDENCE_INVALID",
+    ):
+        RESOURCE_ADMISSION.HeldResourceLocks.adopt_owned(
+            duplicates,
+            identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        )
+    assert set(close_counts.values()) == {1}
+    for descriptor in original._descriptors.values():  # noqa: SLF001
+        os.fstat(descriptor)
+    original.release_once()
+
+
+def test_held_resource_locks_acquire_oserror_closes_once_with_stable_code(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    real_close = os.close
+    close_counts: dict[int, int] = {}
+
+    def counted_close(descriptor: int) -> None:
+        close_counts[descriptor] = close_counts.get(descriptor, 0) + 1
+        real_close(descriptor)
+
+    def fail_flock(_descriptor: int, _operation: int) -> None:
+        raise OSError("injected acquire flock failure")
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", counted_close)
+    monkeypatch.setattr(RESOURCE_ADMISSION.fcntl, "flock", fail_flock)
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_LOCK_ACQUISITION_FAILED",
+    ) as captured:
+        RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+            identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        )
+    assert captured.value.code == "RESOURCE_LOCK_ACQUISITION_FAILED"
+    assert close_counts and set(close_counts.values()) == {1}
+
+
+def test_held_resource_locks_acquire_cleanup_preserves_non_oserror(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    real_close = os.close
+    close_counts: dict[int, int] = {}
+
+    def close_then_fail(descriptor: int) -> None:
+        close_counts[descriptor] = close_counts.get(descriptor, 0) + 1
+        real_close(descriptor)
+        raise OSError("injected acquire cleanup close failure")
+
+    def fail_flock(_descriptor: int, _operation: int) -> None:
+        raise RuntimeError("injected acquire validation failure")
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", close_then_fail)
+    monkeypatch.setattr(RESOURCE_ADMISSION.fcntl, "flock", fail_flock)
+    with pytest.raises(RuntimeError, match="injected acquire validation failure") as captured:
+        RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+            identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        )
+    assert close_counts and set(close_counts.values()) == {1}
+    assert any("acquisition cleanup close failed" in note for note in captured.value.__notes__)
+
+
+def test_held_resource_locks_identity_probe_close_failure_preserves_primary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    lease = RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    owned = set(lease._descriptors.values())  # noqa: SLF001
+    real_flock = fcntl.flock
+    real_close = os.close
+    probe_close_counts: dict[int, int] = {}
+
+    def fail_probe_flock(descriptor: int, operation: int) -> None:
+        if descriptor not in owned:
+            raise RuntimeError("injected identity probe failure")
+        real_flock(descriptor, operation)
+
+    def fail_probe_close(descriptor: int) -> None:
+        if descriptor not in owned:
+            probe_close_counts[descriptor] = probe_close_counts.get(descriptor, 0) + 1
+            real_close(descriptor)
+            raise OSError("injected probe close failure")
+        real_close(descriptor)
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.fcntl, "flock", fail_probe_flock)
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", fail_probe_close)
+    with pytest.raises(RuntimeError, match="injected identity probe failure") as captured:
+        lease.identities()
+    assert probe_close_counts and set(probe_close_counts.values()) == {1}
+    assert any("probe close failed" in note for note in captured.value.__notes__)
+    monkeypatch.setattr(RESOURCE_ADMISSION.fcntl, "flock", real_flock)
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", real_close)
+    lease.release_once()
+
+
+def test_held_resource_locks_adopt_and_release_cleanup_preserve_primary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _temporary_resource_lock_paths(tmp_path, monkeypatch)
+    original = RESOURCE_ADMISSION.HeldResourceLocks.acquire(
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    duplicates = {
+        path: os.dup(original._descriptors[path])  # noqa: SLF001
+        for path in paths
+    }
+    duplicate_numbers = set(duplicates.values())
+    real_identities = RESOURCE_ADMISSION.HeldResourceLocks.identities
+    real_close = os.close
+    close_counts = {descriptor: 0 for descriptor in duplicate_numbers}
+    first = min(duplicate_numbers)
+
+    def fail_identities(_lease: object) -> list[dict[str, object]]:
+        raise RuntimeError("injected owned validation failure")
+
+    def close_then_fail_once(descriptor: int) -> None:
+        if descriptor in close_counts:
+            close_counts[descriptor] += 1
+            real_close(descriptor)
+            if descriptor == first:
+                raise OSError("injected owned close failure")
+            return
+        real_close(descriptor)
+
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION.HeldResourceLocks,
+        "identities",
+        fail_identities,
+    )
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", close_then_fail_once)
+    with pytest.raises(RuntimeError, match="injected owned validation failure") as captured:
+        RESOURCE_ADMISSION.HeldResourceLocks.adopt_owned(
+            duplicates,
+            identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        )
+    assert set(close_counts.values()) == {1}
+    assert any("adoption cleanup close failed" in note for note in captured.value.__notes__)
+
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION.HeldResourceLocks,
+        "identities",
+        real_identities,
+    )
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", real_close)
+    adopted = RESOURCE_ADMISSION.HeldResourceLocks.adopt_owned(
+        {
+            path: os.dup(original._descriptors[path])  # noqa: SLF001
+            for path in paths
+        },
+        identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+    )
+    release_numbers = set(adopted._descriptors.values())  # noqa: SLF001
+    release_counts = {descriptor: 0 for descriptor in release_numbers}
+    first_release = min(release_numbers)
+
+    def fail_release_identities(_lease: object) -> list[dict[str, object]]:
+        raise RuntimeError("injected release validation failure")
+
+    def release_close_then_fail_once(descriptor: int) -> None:
+        if descriptor in release_counts:
+            release_counts[descriptor] += 1
+            real_close(descriptor)
+            if descriptor == first_release:
+                raise OSError("injected release close failure")
+            return
+        real_close(descriptor)
+
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION.HeldResourceLocks,
+        "identities",
+        fail_release_identities,
+    )
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION.os,
+        "close",
+        release_close_then_fail_once,
+    )
+    with pytest.raises(RuntimeError, match="injected release validation failure") as released:
+        adopted.release_once()
+    assert adopted.released is True
+    assert set(release_counts.values()) == {1}
+    assert any("resource-lock release close failed" in note for note in released.value.__notes__)
+
+    monkeypatch.setattr(RESOURCE_ADMISSION.os, "close", real_close)
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION.HeldResourceLocks,
+        "identities",
+        real_identities,
+    )
+    original.release_once()
+
+
+def test_gate_b_resource_gate_wraps_exact_live_admission(
+    tmp_path: Path,
+) -> None:
+    stage = RESOURCE_ADMISSION.GATE_B_QUALIFICATION
+    minimums = _stage_minimums(stage)
+    actor = {"pid": 321, "pid_starttime": "10", "role": "AB16_GATE_B_OWNER"}
+    locks = _gate_b_lock_identities()
+    receipt = QUALIFICATION._resource_gate(  # noqa: SLF001
+        tmp_path,
+        stage="AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
+        profile_stage=stage,
+        resource_admission=RESOURCE_ADMISSION,
+        actor=actor,
+        session_id="a" * 64,
+        lock_identities=locks,
+        meminfo={
+            "MemAvailable": minimums["memory"],
+            "SwapFree": minimums["swap"],
+        },
+        disk_free=minimums["disk"],
+        conflicts=[],
+    )
+    assert set(receipt) == {
+        "admission",
+        "authorizations",
+        "created_at_utc",
+        "lock_identities",
+        "owner_actor",
+        "qualification_session_id",
+        "schema_version",
+        "stage",
+        "status",
+    }
+    assert receipt["status"] == "PASS"
+    assert receipt["lock_identities"] == locks
+    assert receipt["owner_actor"] == actor
+    assert RESOURCE_ADMISSION.validate_resource_admission_receipt(
+        receipt["admission"],
+        expected_stage=stage,
+        expected_lock_identities=locks,
+        expected_lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        expected_observation_context={
+            "authority_id": "a" * 64,
+            "disk_path": str(tmp_path.absolute()),
+            "kind": "GATE_B_QUALIFICATION_PUBLICATION",
+            "ordinal": 0,
+            "scope_id": "a" * 64,
+            "sequence": 2,
+            "slot": "",
+            "target": "AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
+        },
+    ) == receipt["admission"]
+
+
+def _gate_b_resource_gate_fixture(
+    tmp_path: Path,
+    *,
+    mutation: str | None = None,
+) -> tuple[
+    Path,
+    dict[str, object],
+    dict[str, object],
+    list[dict[str, object]],
+    dict[str, dict[str, object]],
+]:
+    stage = "AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL"
+    session_id = "a" * 64
+    actor = {
+        "pid": os.getpid(),
+        "pid_starttime": "10",
+        "role": "AB16_GATE_B_OWNER",
+    }
+    locks = _gate_b_lock_identities()
+    minimums = _stage_minimums(RESOURCE_ADMISSION.GATE_B_QUALIFICATION)
+    admission = RESOURCE_ADMISSION.evaluate_resource_admission(
+        tmp_path,
+        stage=RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+        lock_identities=locks,
+        lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
+        observation_context={
+            "authority_id": session_id,
+            "disk_path": str(tmp_path.absolute()),
+            "kind": "GATE_B_QUALIFICATION_PUBLICATION",
+            "ordinal": 0,
+            "scope_id": session_id,
+            "sequence": 2,
+            "slot": "",
+            "target": stage,
+        },
+        meminfo={
+            "MemAvailable": minimums["memory"],
+            "SwapFree": minimums["swap"],
+        },
+        disk_free=minimums["disk"],
+        conflicts=[],
+        observed_at_utc="2026-07-31T00:00:00Z",
+    )
+    record: dict[str, object] = {
+        "admission": admission,
+        "authorizations": dict(QUALIFICATION.FALSE_AUTHORIZATIONS),
+        "created_at_utc": "2026-07-31T00:00:01Z",
+        "lock_identities": locks,
+        "owner_actor": actor,
+        "qualification_session_id": session_id,
+        "schema_version": QUALIFICATION.RESOURCE_GATE_SCHEMA,
+        "stage": stage,
+        "status": "PASS",
+    }
+    if mutation == "untrusted-basis":
+        changed_admission = deepcopy(admission)
+        changed_admission["profile"]["basis"]["confidence"] = "HIGH"
+        record["admission"] = changed_admission
+    elif mutation == "wrong-session":
+        record["qualification_session_id"] = "b" * 64
+    elif mutation == "wrong-locks":
+        record["lock_identities"] = []
+    elif mutation == "extra-field":
+        record["unexpected"] = True
+    resource_dir = tmp_path / "resource-gates"
+    resource_dir.mkdir()
+    path = resource_dir / "after-final-full-preflight.json"
+    path.write_bytes(QUALIFICATION._canonical_json(record))  # noqa: SLF001
+    path.chmod(0o444)
+    planned = {
+        "script.ab16_resource_admission_v1": _identity(
+            RESEARCH / "ab16_resource_admission_v1.py"
+        )
+    }
+    return path, record, actor, locks, planned
+
+
+def test_bootstrap_replays_exact_gate_b_stage_resource_receipt(
+    tmp_path: Path,
+) -> None:
+    path, record, actor, locks, planned = _gate_b_resource_gate_fixture(tmp_path)
+    replayed, replayed_identity = BOOTSTRAP._read_gate_b_resource_gate(  # noqa: SLF001
+        _identity(path),
+        planned=planned,
+        expected_actor=actor,
+        expected_session_id="a" * 64,
+        expected_lock_identities=locks,
+        expected_path=path,
+        expected_profile_stage=RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+        expected_stage="AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
+        expected_disk_path=tmp_path,
+        expected_kind="GATE_B_QUALIFICATION_PUBLICATION",
+        expected_sequence=2,
+    )
+    assert replayed == record
+    assert replayed_identity == _identity(path)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["untrusted-basis", "wrong-session", "wrong-locks", "extra-field"],
+)
+def test_bootstrap_rejects_unjoined_gate_b_stage_resource_receipt(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    path, _record, actor, locks, planned = _gate_b_resource_gate_fixture(
+        tmp_path,
+        mutation=mutation,
+    )
+    with pytest.raises(BOOTSTRAP.BootstrapError):
+        BOOTSTRAP._read_gate_b_resource_gate(  # noqa: SLF001
+            _identity(path),
+            planned=planned,
+            expected_actor=actor,
+            expected_session_id="a" * 64,
+            expected_lock_identities=locks,
+            expected_path=path,
+            expected_profile_stage=RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+            expected_stage="AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
+            expected_disk_path=tmp_path,
+            expected_kind="GATE_B_QUALIFICATION_PUBLICATION",
+            expected_sequence=2,
+        )
+
+
+def test_gate_b_owner_recloses_retained_lock_identity_at_each_gate(
+    tmp_path: Path,
+) -> None:
+    lock_paths = tuple(tmp_path / f"live-{index}.lock" for index in range(3))
+    descriptors = [QUALIFICATION._acquire_lock(path) for path in lock_paths]  # noqa: SLF001
+    try:
+        owner = object.__new__(QUALIFICATION.PersistentGateBOwner)
+        owner.lock_paths = lock_paths
+        owner._lock_fds = descriptors  # noqa: SLF001
+        owner._process = SimpleNamespace(poll=lambda: None)  # noqa: SLF001
+        owner.lock_identities = [
+            QUALIFICATION._lock_identity(descriptor, path)  # noqa: SLF001
+            for descriptor, path in zip(descriptors, lock_paths, strict=True)
+        ]
+        assert owner.current_lock_identities() == owner.lock_identities
+
+        first_path = lock_paths[0]
+        first_path.rename(first_path.with_suffix(".retained"))
+        first_path.write_bytes(b"replacement")
+        first_path.chmod(0o600)
+        with pytest.raises(
+            QUALIFICATION.QualificationError,
+            match="qualification lock identity drifted",
+        ):
+            owner.current_lock_identities()
+    finally:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+
+
 def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -1440,6 +2908,10 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
                 for channel in self._channels:
                     channel.close()
 
+        def current_lock_identities(self) -> list[dict[str, object]]:
+            events.append("locks-rechecked")
+            return [dict(item) for item in self.lock_identities]
+
         def publish(
             self,
             *,
@@ -1489,7 +2961,14 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
         events.append(f"resource:{stage}")
         return {"stage": stage, "status": "PASS"}
 
-    def preflight(_context: object, _args: object, destination: Path) -> None:
+    def preflight(
+        _context: object,
+        _args: object,
+        destination: Path,
+        *,
+        resource_lock_fds: dict[str, int],
+    ) -> None:
+        assert set(resource_lock_fds) == set(QUALIFICATION.LOCK_PATHS)
         events.append("pinned-record-preflight")
         destination.mkdir()
         (destination / "receipt.json").write_bytes(
@@ -1513,6 +2992,11 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
 
     monkeypatch.setattr(QUALIFICATION, "_load_bootstrap", lambda _repository: bootstrap)
     monkeypatch.setattr(QUALIFICATION, "_prepare_qualification", prepare)
+    monkeypatch.setattr(
+        QUALIFICATION,
+        "_load_resource_admission",
+        lambda _context: RESOURCE_ADMISSION,
+    )
     monkeypatch.setattr(QUALIFICATION, "PersistentGateBOwner", FakeOwner)
     monkeypatch.setattr(QUALIFICATION, "_resource_gate", resource_gate)
     monkeypatch.setattr(QUALIFICATION, "_run_pinned_gate_a_preflight", preflight)
@@ -1531,11 +3015,15 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
         "prepare-before-locks",
         "locks-acquired",
         "prepare-under-locks",
+        "locks-rechecked",
         "resource:BEFORE_FINAL_FULL_PREFLIGHT",
+        "locks-rechecked",
         "pinned-record-preflight",
         "capture-epoch",
         "publish-epoch",
+        "locks-rechecked",
         "resource:AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
+        "locks-rechecked",
         "publish-approval",
         "attach-bootstrap",
         "bootstrap-handoff-readback",

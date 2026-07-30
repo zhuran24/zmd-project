@@ -36,6 +36,9 @@ from docs.research.noncert_cuts_ab16_20260724 import (
 from docs.research.noncert_cuts_ab16_20260724 import (
     ab16_outer_closeout_state_v1 as closeout_state,
 )
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_resource_admission_v1 as resource_admission,
+)
 
 
 AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
@@ -48,11 +51,11 @@ FAILURE_TERMINAL_RELEASE_SCHEMA = (
 CONTAINMENT_GUARDIAN_ABSENCE_SCHEMA = (
     "noncert-cuts-ab16-containment-guardian-absence-v1"
 )
-CONTROLLER_RESULT_SCHEMA = "noncert-cuts-ab16-formal-controller-result-v1"
+CONTROLLER_RESULT_SCHEMA = "noncert-cuts-ab16-formal-controller-result-v2"
 CONTROLLER_RESULT_NAME = "controller-result.json"
 CHILD_AUDIT_SCHEMA = "noncert-cuts-ab16-formal-child-audit-v1"
 GATE1_OWNERSHIP_SCHEMA = "noncert-cuts-ab16-formal-gate1-prelaunch-ownership-v1"
-ARM_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-formal-arm-prelaunch-v1"
+ARM_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-formal-arm-prelaunch-v2"
 GUARDIAN_LOCK_CLOSE_SCHEMA = "noncert-cuts-ab16-outer-guardian-lock-close-v1"
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 UNIT_RE = re.compile(r"[A-Za-z0-9_.@:-]+\.service\Z")
@@ -121,8 +124,12 @@ COMMON_RECEIPT_FIELDS = frozenset(
     }
 )
 PHASE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
-    "outer_prelaunch": frozenset({"outer_identity", "prelaunch_absence"}),
-    "outer_start": frozenset({"launch_effect", "outer_identity"}),
+    "outer_prelaunch": frozenset(
+        {"outer_identity", "prelaunch_absence", "resource_admission"}
+    ),
+    "outer_start": frozenset(
+        {"launch_effect", "outer_identity", "resource_admission"}
+    ),
     "outer_resource": frozenset({"cgroup_limits", "outer_identity", "systemd_properties"}),
     "outer_terminal": frozenset({"outer_identity", "stable_terminal"}),
     "observer": frozenset({"heavy_absence", "outer_identity"}),
@@ -167,6 +174,8 @@ PHASE_SCHEMAS = {
 PHASE_SCHEMAS["dual_lock_release"] = (
     "noncert-cuts-ab16-formal-dual-lock-release-v2"
 )
+PHASE_SCHEMAS["outer_prelaunch"] = "noncert-cuts-ab16-formal-outer-prelaunch-v2"
+PHASE_SCHEMAS["outer_start"] = "noncert-cuts-ab16-formal-outer-start-v2"
 
 CONTROLLER_RESULT_FIELDS = frozenset(
     {
@@ -204,6 +213,7 @@ ARM_RESULT_FIELDS = frozenset(
         "pre_run_authority_identity",
         "prelaunch_receipt_identity",
         "prelaunch_request_identity",
+        "resource_admission",
         "resource_terminal_identity",
         "selection_identity",
         "slot",
@@ -493,6 +503,8 @@ def validate_outer_prelaunch(
     expected: Mapping[str, object],
     expected_unit_name: str,
     expected_lock_identities: object,
+    expected_observation_context: Mapping[str, object],
+    expected_allowed_same_uid_processes: Sequence[Mapping[str, int]],
 ) -> dict[str, object]:
     record = _common(value, phase="outer_prelaunch", expected=expected)
     record["outer_identity"] = validate_outer_identity(
@@ -513,6 +525,21 @@ def validate_outer_prelaunch(
         or absence["lock_identities"] != _lock_identities(expected_lock_identities)
     ):
         raise FormalSuccessVerificationError("outer prelaunch absence/three-lock proof drifted")
+    try:
+        record["resource_admission"] = (
+            resource_admission.validate_resource_admission_receipt(
+                record["resource_admission"],
+                expected_stage=resource_admission.FORMAL_ORGANIC_ARM,
+                expected_lock_identities=absence["lock_identities"],
+                expected_lock_identity_format=resource_admission.FORMAL_LOCK_IDENTITY_FORMAT,
+                expected_observation_context=expected_observation_context,
+                expected_allowed_same_uid_processes=expected_allowed_same_uid_processes,
+            )
+        )
+    except resource_admission.ResourceAdmissionError as exc:
+        raise FormalSuccessVerificationError(
+            f"outer prelaunch resource admission drifted: {exc}"
+        ) from exc
     record["prelaunch_absence"] = absence
     return record
 
@@ -522,6 +549,7 @@ def validate_outer_start(
     *,
     expected: Mapping[str, object],
     expected_unit_name: str,
+    expected_resource_admission: Mapping[str, object],
 ) -> dict[str, object]:
     record = _common(value, phase="outer_start", expected=expected)
     record["outer_identity"] = validate_outer_identity(
@@ -544,6 +572,17 @@ def validate_outer_start(
         or effect["recorded"] is not True
     ):
         raise FormalSuccessVerificationError("outer launch effect is not fully recorded")
+    try:
+        record["resource_admission"] = (
+            resource_admission.validate_launch_resource_reevaluation(
+                record["resource_admission"],
+                expected_receipt=expected_resource_admission,
+            )
+        )
+    except resource_admission.ResourceAdmissionError as exc:
+        raise FormalSuccessVerificationError(
+            f"outer launch resource reevaluation drifted: {exc}"
+        ) from exc
     record["launch_effect"] = effect
     return record
 
@@ -1290,7 +1329,12 @@ def _read_record(
 def _load_selection(
     campaign_dir: Path,
     selection_path: Path,
-) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+) -> tuple[
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+    dict[str, object],
+]:
     try:
         context = launch_validator.replay_formal_launch_context(authority, campaign_dir)
     except Exception as exc:
@@ -1327,7 +1371,18 @@ def _load_selection(
         )
     except Exception as exc:
         raise FormalSuccessVerificationError(f"formal selection replay failed: {exc}") from exc
-    return context, checked, selection_identity
+    try:
+        checked_guardian = launch_validator.validate_guardian_ready(
+            prerequisite["guardian_ready_identity"][0],
+            admission=prerequisite["formal_admission_identity"][0],
+            admission_identity=prerequisite["formal_admission_identity"][1],
+            expected_context=context,
+        )
+    except Exception as exc:
+        raise FormalSuccessVerificationError(
+            f"guardian-ready replay failed: {exc}"
+        ) from exc
+    return context, checked, selection_identity, checked_guardian
 
 
 def _state_base(
@@ -2411,8 +2466,29 @@ def validate_controller_result(
         arm = _closed(raw, ARM_RESULT_FIELDS, f"controller arm {slot}")
         if arm["slot"] != slot or arm["ordinal"] != ordinal:
             raise FormalSuccessVerificationError(f"controller arm order drifted: {slot}")
-        for field in ARM_RESULT_FIELDS - {"ordinal", "slot", "suite_terminal_identity"}:
+        for field in ARM_RESULT_FIELDS - {
+            "ordinal",
+            "resource_admission",
+            "slot",
+            "suite_terminal_identity",
+        }:
             arm[field] = _identity(arm[field], f"controller arm {slot}.{field}")
+        prelaunch, _prelaunch_identity = _read_record(
+            arm["prelaunch_receipt_identity"]["path"],
+            expected_identity=arm["prelaunch_receipt_identity"],
+            label=f"controller arm {slot} prelaunch receipt",
+        )
+        try:
+            arm["resource_admission"] = (
+                resource_admission.validate_launch_resource_reevaluation(
+                    arm["resource_admission"],
+                    expected_receipt=prelaunch["resource_admission"],
+                )
+            )
+        except (KeyError, resource_admission.ResourceAdmissionError) as exc:
+            raise FormalSuccessVerificationError(
+                f"controller arm {slot} launch resource evidence drifted"
+            ) from exc
         terminal = arm["suite_terminal_identity"]
         if terminal is None:
             if ordinal == len(ARM_SEQUENCE):
@@ -2765,7 +2841,7 @@ def verify_incomplete(
     selection_identity: dict[str, object] | None = None
     if raw_selection != "absent":
         expected_selection = _identity(raw_selection, "failure formal selection")
-        replayed_context, selection, selection_identity = _load_selection(
+        replayed_context, selection, selection_identity, _guardian_ready = _load_selection(
             campaign,
             Path(str(context["formal_selection_path"])),
         )
@@ -2977,7 +3053,10 @@ def verify_success(
 
     campaign = Path(campaign_dir).absolute()
     selection_path = Path(formal_selection).absolute()
-    context, selection, selection_identity = _load_selection(campaign, selection_path)
+    context, selection, selection_identity, guardian_ready = _load_selection(
+        campaign,
+        selection_path,
+    )
     try:
         authority.replay_gate_approvals(campaign)
         authority.replay_repository_snapshot(campaign)
@@ -3018,12 +3097,26 @@ def verify_success(
         expected=expected_common,
         expected_unit_name=selection["outer_spec"]["unit_name"],
         expected_lock_identities=selection["lock_identities"],
+        expected_observation_context={
+            "authority_id": selection_identity["sha256"],
+            "disk_path": str(Path(str(context["campaign_dir"])).absolute()),
+            "kind": "FORMAL_OUTER_PRELAUNCH",
+            "ordinal": 0,
+            "scope_id": context["campaign_root_identity"]["sha256"],
+            "sequence": 1,
+            "slot": "",
+            "target": selection["outer_spec"]["unit_name"],
+        },
+        expected_allowed_same_uid_processes=[
+            guardian_ready["guardian_process_identity"]
+        ],
     )
     receipts["outer_prelaunch"] = prelaunch
     start = validate_outer_start(
         read_phase("outer_start"),
         expected=expected_common,
         expected_unit_name=selection["outer_spec"]["unit_name"],
+        expected_resource_admission=prelaunch["resource_admission"],
     )
     if start["launch_effect"]["outer_prelaunch_identity"] != identities["outer_prelaunch"]:
         raise FormalSuccessVerificationError("outer start/prelaunch identity join drifted")

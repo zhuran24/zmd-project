@@ -138,6 +138,11 @@ LEGACY_ALIASES = (
         "docs/research/noncert_cuts_ab16_20260724/ab16_outer_closeout_state_v1.py",
     ),
     (
+        "ab16_resource_admission_v1",
+        f"{RESEARCH_PREFIX}.ab16_resource_admission_v1",
+        "docs/research/noncert_cuts_ab16_20260724/ab16_resource_admission_v1.py",
+    ),
+    (
         "ab16_outer_refunit_closeout_v1",
         f"{RESEARCH_PREFIX}.ab16_outer_refunit_closeout_v1",
         "docs/research/noncert_cuts_ab16_20260724/ab16_outer_refunit_closeout_v1.py",

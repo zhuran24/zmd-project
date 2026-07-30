@@ -34,7 +34,6 @@ import os
 from pathlib import Path
 import re
 import selectors
-import shutil
 import signal
 import stat
 import sys
@@ -58,6 +57,9 @@ from docs.research.noncert_cuts_ab16_20260724 import (
     ab16_outer_refunit_closeout_v1 as closeout_helper,
 )
 from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_resource_admission_v1 as resource_admission,
+)
+from docs.research.noncert_cuts_ab16_20260724 import (
     systemd_unit_reference_v1 as unit_reference,
 )
 
@@ -67,9 +69,6 @@ ARM_SEQUENCE = tuple(closeout_state.ARM_SEQUENCE)
 GATE1_SLOTS = tuple(closeout_state.GATE1_SLOTS)
 LEDGER_PHASES = closeout_state.GUARDIAN_LEDGER_PHASES
 FALSE_CLAIMS = dict(launch_validator.FALSE_CLAIMS)
-MIN_DISK_BYTES = 16 * 1024**3
-MIN_MEM_AVAILABLE = 36 * 1024**3
-MIN_SWAP_FREE = 16 * 1024**3
 POLL_SECONDS = 0.10
 RECORD_WAIT_SECONDS = 600.0
 GUARDIAN_WAIT_SECONDS = 120.0
@@ -113,21 +112,6 @@ TERMINAL_FIELDS = (
     "Result",
     "SubState",
 )
-CONFLICT_PATTERNS = (
-    "ab16_formal_campaign_v1.py",
-    "ab16_outer_guardian_v1.py",
-    "cp_model_solver",
-    "endfield",
-    "gamescope",
-    "organic_unit_orchestrator",
-    "preflight_gate.py",
-    "proton",
-    "pytest",
-    "steam",
-    "wine",
-)
-
-
 class FormalCampaignError(RuntimeError):
     """One formal connector invariant failed closed."""
 
@@ -195,6 +179,7 @@ class SupervisorState:
     selection: dict[str, object] | None = None
     selection_identity: dict[str, object] | None = None
     outer_identity: dict[str, object] | None = None
+    outer_resource_admission: dict[str, object] | None = None
     guardian: GuardianSession | None = None
     ledger: dict[str, object] | None = None
     ledger_sequence: int = 0
@@ -493,88 +478,87 @@ def _publish_phase(
     return store.publish(path, checked, phase, publication=publication)
 
 
-def _meminfo() -> dict[str, int]:
-    result: dict[str, int] = {}
-    with Path("/proc/meminfo").open("r", encoding="ascii") as source:
-        for line in source:
-            fields = line.replace(":", "").split()
-            if len(fields) == 3 and fields[1].isdigit() and fields[2] == "kB":
-                result[fields[0]] = int(fields[1]) * 1024
-    return result
-
-
-def _ancestor_pids() -> set[int]:
-    result: set[int] = set()
-    current = os.getpid()
-    while current > 1 and current not in result:
-        result.add(current)
-        try:
-            raw = Path(f"/proc/{current}/stat").read_text(encoding="ascii")
-            close = raw.rfind(")")
-            fields = raw[close + 2 :].split()
-            current = int(fields[1])
-        except (FileNotFoundError, ProcessLookupError, IndexError, ValueError):
-            break
-    return result
-
-
-def _same_uid_conflicts() -> list[dict[str, object]]:
-    ancestors = _ancestor_pids()
-    found: list[dict[str, object]] = []
-    for item in Path("/proc").iterdir():
-        if not item.name.isdigit():
-            continue
-        pid = int(item.name)
-        if pid in ancestors:
-            continue
-        try:
-            if item.stat().st_uid != os.getuid():
-                continue
-            raw = (item / "cmdline").read_bytes()
-        except (FileNotFoundError, ProcessLookupError, PermissionError):
-            continue
-        command = raw.replace(b"\0", b" ").decode("utf-8", "replace").strip()
-        lowered = command.lower()
-        if command and any(pattern in lowered for pattern in CONFLICT_PATTERNS):
-            found.append({"command": command, "pid": pid})
-    return found
-
-
 def validate_resource_gate(
     campaign_dir: Path | str,
     *,
+    lock_identities: Sequence[Mapping[str, object]],
+    observation_context: Mapping[str, object],
     meminfo: Mapping[str, int] | None = None,
     disk_free: int | None = None,
     conflicts: Sequence[Mapping[str, object]] | None = None,
+    allowed_same_uid_processes: Sequence[Mapping[str, int]] = (),
 ) -> dict[str, object]:
-    """Validate the non-mutating launch gate before any attempt-side effect."""
+    """Validate one post-lock formal admission and return its strict receipt."""
 
-    memory = dict(_meminfo() if meminfo is None else meminfo)
-    free = (
-        shutil.disk_usage(Path(campaign_dir)).free
-        if disk_free is None
-        else disk_free
-    )
-    heavy = list(_same_uid_conflicts() if conflicts is None else conflicts)
-    if (
-        type(memory.get("MemAvailable")) is not int
-        or memory["MemAvailable"] < MIN_MEM_AVAILABLE
-        or type(memory.get("SwapFree")) is not int
-        or memory["SwapFree"] < MIN_SWAP_FREE
-        or type(free) is not int
-        or free < MIN_DISK_BYTES
-        or heavy
-    ):
-        raise FormalCampaignError(
-            "formal resource gate failed: "
-            f"MemAvailable={memory.get('MemAvailable')}, "
-            f"SwapFree={memory.get('SwapFree')}, disk={free}, conflicts={heavy}"
+    try:
+        return resource_admission.evaluate_resource_admission(
+            campaign_dir,
+            stage=resource_admission.FORMAL_ORGANIC_ARM,
+            lock_identities=lock_identities,
+            lock_identity_format=resource_admission.FORMAL_LOCK_IDENTITY_FORMAT,
+            observation_context=observation_context,
+            meminfo=meminfo,
+            disk_free=disk_free,
+            conflicts=conflicts,
+            allowed_same_uid_processes=allowed_same_uid_processes,
         )
+    except resource_admission.ResourceAdmissionError as exc:
+        raise FormalCampaignError(f"formal resource admission failed: {exc}") from exc
+
+
+def _formal_resource_allowlist(
+    state: SupervisorState,
+) -> list[dict[str, int]]:
+    session = state.guardian
+    if session is None:
+        raise FormalCampaignError("formal resource recheck lacks its live guardian")
+    actor = session.ready.get("guardian_process_identity")
+    if type(actor) is not dict or set(actor) != {"pid", "starttime"}:
+        raise FormalCampaignError("guardian resource allowlist identity is malformed")
+    pid = actor["pid"]
+    starttime = actor["starttime"]
+    if type(pid) is not int or type(starttime) is not int:
+        raise FormalCampaignError("guardian resource allowlist values are malformed")
+    expected = _process_identity(pid)
+    if expected != {"pid": pid, "starttime": starttime}:
+        raise FormalCampaignError("guardian resource allowlist identity is no longer live")
+    supervisor = _process_identity(os.getpid())
+    if supervisor is None or supervisor == expected:
+        raise FormalCampaignError("formal supervisor resource identity is malformed")
+    return [supervisor, {"pid": pid, "starttime": starttime}]
+
+
+def _resource_observation_context(
+    context: Mapping[str, object],
+    *,
+    authority_identity: Mapping[str, object],
+    kind: str,
+    target: str,
+    ordinal: int = 0,
+    slot: str = "",
+) -> dict[str, object]:
+    campaign_identity = context.get("campaign_root_identity")
+    if type(campaign_identity) is not dict:
+        raise FormalCampaignError("formal resource scope identity is malformed")
+    scope_id = campaign_identity.get("sha256")
+    authority_id = authority_identity.get("sha256")
+    if type(scope_id) is not str or type(authority_id) is not str:
+        raise FormalCampaignError("formal resource SHA-256 identity is malformed")
+    sequence = ordinal + 1 if kind == "FORMAL_ORGANIC_ARM_PRELAUNCH" else {
+        "FORMAL_INITIAL_POST_LOCK": 0,
+        "FORMAL_OUTER_PRELAUNCH": 1,
+    }.get(kind)
+    if sequence is None:
+        raise FormalCampaignError(f"unknown formal resource observation {kind!r}")
     return {
-        "disk_free_bytes": free,
-        "mem_available_bytes": memory["MemAvailable"],
-        "same_uid_conflicts": [],
-        "swap_free_bytes": memory["SwapFree"],
+        "authority_id": authority_id,
+        "disk_path": str(Path(str(context["campaign_dir"])).absolute()),
+        "kind": kind,
+        "ordinal": ordinal,
+        "scope_id": scope_id,
+        "sequence": sequence,
+        "slot": slot,
+        "target": target,
     }
 
 
@@ -1170,6 +1154,8 @@ def _launch_selected_unit(
     *,
     context: Mapping[str, object],
     spec: Mapping[str, object],
+    resource_admission_receipt: Mapping[str, object],
+    launch_owner_check: Callable[[], None],
 ) -> dict[str, object]:
     systemd_run = host.boundary.root["authority_tools"]["systemd_run"]
     command = build_selected_systemd_argv(
@@ -1189,9 +1175,13 @@ def _launch_selected_unit(
             "PYTHONNOUSERSITE": "1",
             "TZ": "UTC",
         },
+        launch_resource_admission=resource_admission_receipt,
+        launch_owner_check=launch_owner_check,
     )
+    final_resource_admission = host.take_final_launch_resource_admission()
     return {
         "argv": command,
+        "resource_admission": final_resource_admission,
         "returncode": completed.returncode,
         "stderr_sha256": hashlib.sha256(completed.stderr).hexdigest(),
         "stdout_sha256": hashlib.sha256(completed.stdout).hexdigest(),
@@ -1256,6 +1246,7 @@ def start_guardian(
     context: Mapping[str, object],
     admission: Mapping[str, object],
     admission_identity: Mapping[str, object],
+    resource_admission_receipt: Mapping[str, object],
     host: closeout_helper.PinnedHost,
     store: closeout_helper.ReceiptStore,
 ) -> GuardianSession:
@@ -1291,11 +1282,19 @@ def start_guardian(
             "unit_name": frozen["unit_name"],
         }
 
+    def check_launch_owner() -> None:
+        _validate_live_launch_owner(
+            admission,
+            label="formal launch admission at guardian launch",
+        )
+
     try:
         _launch_selected_unit(
             host,
             context=context,
             spec=spec,
+            resource_admission_receipt=resource_admission_receipt,
+            launch_owner_check=check_launch_owner,
         )
         shown, _cgroup, _frozen = wait_unit_live(
             host,
@@ -1785,6 +1784,7 @@ def _mirror_gate1_prelaunch(
         host,
         state.attempt.reference,
         state.selection,
+        expected_allowed_same_uid_processes=_formal_resource_allowlist(state),
     )
     gate1_targets = [target for target in targets if target.source == "gate1"]
     if [target.slot for target in gate1_targets] != list(GATE1_SLOTS):
@@ -1926,6 +1926,7 @@ def _child_unit_name(
     reference: object,
     selection: Mapping[str, object],
     *,
+    expected_allowed_same_uid_processes: Sequence[Mapping[str, int]],
     source: str,
     slot: str,
 ) -> str:
@@ -1935,6 +1936,7 @@ def _child_unit_name(
         host,
         reference,
         selection,
+        expected_allowed_same_uid_processes=expected_allowed_same_uid_processes,
     )
     matches = [
         target
@@ -1976,6 +1978,7 @@ def _wait_and_mirror_child(
         host,
         state.attempt.reference,
         state.selection,
+        expected_allowed_same_uid_processes=_formal_resource_allowlist(state),
         source=source,
         slot=slot,
     )
@@ -1997,6 +2000,9 @@ def _wait_and_mirror_child(
                 host,
                 state.attempt.reference,
                 state.selection,
+                expected_allowed_same_uid_processes=_formal_resource_allowlist(
+                    state
+                ),
                 source=source,
                 slot=slot,
             )
@@ -2192,22 +2198,48 @@ def _publish_outer_prelaunch(
         raise IrreversibleFormalFailure(
             "selected outer unit was not absent before its sole launch"
         )
+    launch_locks = host.lock_evidence()
+    launch_context = _resource_observation_context(
+        context,
+        authority_identity=state.selection_identity,
+        kind="FORMAL_OUTER_PRELAUNCH",
+        target=unit_name,
+    )
+    launch_admission = validate_resource_gate(
+        context["campaign_dir"],
+        lock_identities=launch_locks,
+        observation_context=launch_context,
+        allowed_same_uid_processes=_formal_resource_allowlist(state),
+    )
+    if host.lock_evidence() != launch_locks:
+        raise IrreversibleFormalFailure(
+            "formal lock identities drifted across outer resource admission"
+        )
     empty = _outer_inactive_identity(unit_name)
     record = _common_receipt(
         context,
         state.selection_identity,
         phase="outer_prelaunch",
         outer_identity=success_verifier.validate_outer_identity(
-            empty,
+            {
+                key: empty[key]
+                for key in (
+                    "control_group",
+                    "invocation_id",
+                    "processes",
+                    "unit_name",
+                )
+            },
             expected_unit_name=unit_name,
             active=False,
         ),
         prelaunch_absence={
             "cgroup_absent": True,
             "load_state": "not-found",
-            "lock_identities": host.lock_evidence(),
+            "lock_identities": launch_locks,
             "pid_absent": True,
         },
+        resource_admission=launch_admission,
     )
     identity = _publish_tracked_phase(
         state.attempt,
@@ -2220,9 +2252,14 @@ def _publish_outer_prelaunch(
             "expected": _normal_expected(context, state.selection_identity),
             "expected_unit_name": unit_name,
             "expected_lock_identities": state.selection["lock_identities"],
+            "expected_observation_context": launch_context,
+            "expected_allowed_same_uid_processes": _formal_resource_allowlist(
+                state
+            ),
         },
     )
     state.attempt.outer_prelaunch_identity = identity
+    state.outer_resource_admission = dict(launch_admission)
     if state.guardian is None or state.ledger is not None:
         raise IrreversibleFormalFailure(
             "outer prelaunch cannot initialize its guardian ledger"
@@ -2252,13 +2289,24 @@ def _launch_outer(
         state.selection is None
         or state.selection_identity is None
         or state.attempt.outer_prelaunch_identity is None
+        or state.outer_resource_admission is None
     ):
         raise FormalCampaignError("outer launch lacks prelaunch proof")
+
+    def require_launch_owner_live() -> None:
+        if state.guardian is None or not guardian_is_alive(state.guardian):
+            raise IrreversibleFormalFailure(
+                "guardian died before the selected outer launch syscall"
+            )
+        _formal_resource_allowlist(state)
+
     closeout_state.begin_outer_launch(state.attempt)
     effect = _launch_selected_unit(
         host,
         context=context,
         spec=state.selection["outer_spec"],
+        resource_admission_receipt=state.outer_resource_admission,
+        launch_owner_check=require_launch_owner_live,
     )
     closeout_state.record_outer_launch_return(state.attempt, effect)
 
@@ -2321,6 +2369,7 @@ def _launch_outer(
             "returned": True,
         },
         outer_identity=outer_identity,
+        resource_admission=effect["resource_admission"],
     )
     start_identity = _publish_tracked_phase(
         state.attempt,
@@ -2331,6 +2380,7 @@ def _launch_outer(
         validator=success_verifier.validate_outer_start,
         validator_kwargs={
             "expected": _normal_expected(context, state.selection_identity),
+            "expected_resource_admission": state.outer_resource_admission,
             "expected_unit_name": state.selection["outer_spec"]["unit_name"],
         },
     )
@@ -2472,6 +2522,40 @@ def _service_fixed_campaign(
             slot=slot,
             deadline=deadline,
         )
+
+        def before_arm_receipt(
+            mirrored_slot: str,
+            unit_name: str,
+        ) -> Mapping[str, object]:
+            _mirror_arm_prelaunch(
+                context=context,
+                state=state,
+                host=host,
+                slot=mirrored_slot,
+                unit_name=unit_name,
+            )
+            return validate_resource_gate(
+                context["campaign_dir"],
+                lock_identities=host.lock_evidence(),
+                observation_context=_resource_observation_context(
+                    context,
+                    authority_identity=state.selection_identity,
+                    kind="FORMAL_ORGANIC_ARM_PRELAUNCH",
+                    target=unit_name,
+                    ordinal=ordinal,
+                    slot=mirrored_slot,
+                ),
+                allowed_same_uid_processes=_formal_resource_allowlist(state),
+            )
+
+        arm_resource_context = _resource_observation_context(
+            context,
+            authority_identity=state.selection_identity,
+            kind="FORMAL_ORGANIC_ARM_PRELAUNCH",
+            target="DERIVE_FROM_VALIDATED_PRE_RUN",
+            ordinal=ordinal,
+            slot=slot,
+        )
         closeout_helper.service_arm_prelaunch(
             boundary,
             store,
@@ -2480,15 +2564,11 @@ def _service_fixed_campaign(
             state.attempt.reference,
             slot=slot,
             ordinal=ordinal,
-            before_receipt_publish=lambda mirrored_slot, unit_name: (
-                _mirror_arm_prelaunch(
-                    context=context,
-                    state=state,
-                    host=host,
-                    slot=mirrored_slot,
-                    unit_name=unit_name,
-                )
+            expected_allowed_same_uid_processes=_formal_resource_allowlist(
+                state
             ),
+            expected_resource_observation_context=arm_resource_context,
+            before_receipt_publish=before_arm_receipt,
         )
         _wait_and_mirror_child(
             boundary=boundary,
@@ -2546,6 +2626,7 @@ def _publish_normal_closeout(
         state.attempt.reference,
         state.selection,
         abnormal=False,
+        expected_allowed_same_uid_processes=_formal_resource_allowlist(state),
         prior_launch_ledger=state.ledger,
     )
     bound_ledger = closeout_helper.bind_outer_ledger(
@@ -3936,6 +4017,9 @@ def _post_barrier_closeout(
                 state.attempt.reference,
                 state.selection,
                 abnormal=True,
+                expected_allowed_same_uid_processes=_formal_resource_allowlist(
+                    state
+                ),
                 prior_launch_ledger=state.ledger,
             )
         except closeout_helper.ChildAuditPublicationError as exc:
@@ -4470,9 +4554,34 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
     boundary, context, admission, admission_identity = load_formal_admission(
         campaign_dir
     )
-    resource_gate = validate_resource_gate(context["campaign_dir"])
     held_locks = acquire_formal_locks()
     host = closeout_helper.PinnedHost(boundary, held_locks)
+    try:
+        initial_lock_identities = host.lock_evidence()
+        resource_gate = validate_resource_gate(
+            context["campaign_dir"],
+            lock_identities=initial_lock_identities,
+            observation_context=_resource_observation_context(
+                context,
+                authority_identity=admission_identity,
+                kind="FORMAL_INITIAL_POST_LOCK",
+                target=str(context["formal_attempt_dir"]),
+            ),
+            allowed_same_uid_processes=[_process_identity(os.getpid())],
+        )
+        if host.lock_evidence() != initial_lock_identities:
+            raise FormalCampaignError(
+                "formal lock identities drifted across initial resource admission"
+            )
+    except BaseException as exc:
+        try:
+            host.release_locks_once()
+        except BaseException as cleanup_error:
+            exc.add_note(
+                "formal post-lock resource admission cleanup failed: "
+                f"{type(cleanup_error).__name__}: {cleanup_error}"
+            )
+        raise
     store = closeout_helper.ReceiptStore()
     state = SupervisorState()
     latch = closeout_helper.TerminationLatch()
@@ -4489,6 +4598,7 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
                 context=context,
                 admission=admission,
                 admission_identity=admission_identity,
+                resource_admission_receipt=resource_gate,
                 host=host,
                 store=store,
             )

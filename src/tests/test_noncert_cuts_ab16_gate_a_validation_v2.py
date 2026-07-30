@@ -275,6 +275,9 @@ def _forwarded_option(kwargs: dict[str, object], option: str) -> str:
 def _create_forwarded_basetemp(kwargs: dict[str, object]) -> Path:
     basetemp = Path(_forwarded_option(kwargs, "--basetemp"))
     basetemp.mkdir(mode=0o700)
+    final_prelaunch_check = kwargs["final_prelaunch_check"]
+    assert callable(final_prelaunch_check)
+    final_prelaunch_check()
     return basetemp
 
 
@@ -308,6 +311,9 @@ def _fixture(
         tmp_path / "tools/ab16_pytest_collection_plugin_v1.py",
         b"raise AssertionError('subprocess must be monkeypatched')\n",
         mode=0o444,
+    )
+    resource_admission_identity = VALIDATION._snapshot_identity(  # noqa: SLF001
+        Path(VALIDATION.resource_admission.__file__)
     )
     current_tool = VALIDATION._snapshot_identity(Path(VALIDATION.__file__))  # noqa: SLF001
     authority_ready_identity = _regular(
@@ -399,6 +405,12 @@ def _fixture(
             "inode": 10,
             "mode_octal": f"{plugin_identity['mode']:04o}",
         },
+        VALIDATION.RESOURCE_ADMISSION_SOURCE_ROLE: {
+            **resource_admission_identity,
+            "device": 11,
+            "inode": 12,
+            "mode_octal": f"{resource_admission_identity['mode']:04o}",
+        },
         VALIDATION.TOOL_SOURCE_ROLE: {
             **current_tool,
             "device": 3,
@@ -473,6 +485,70 @@ def _fixture(
         VALIDATION,
         "_verified_session_bus_environment",
         lambda: {},
+    )
+    lock_identities = [
+        {
+            "device": 100 + index,
+            "inode": 200 + index,
+            "mode": 0o600,
+            "nlink": 1,
+            "path": path,
+            "uid": os.getuid(),
+        }
+        for index, path in enumerate(VALIDATION.resource_admission.LOCK_PATHS)
+    ]
+
+    class TestResourceLease:
+        def __init__(self) -> None:
+            self.released = False
+
+        def identities(self) -> list[dict[str, object]]:
+            assert not self.released
+            return copy.deepcopy(lock_identities)
+
+        def release_once(self) -> list[dict[str, object]]:
+            assert not self.released
+            self.released = True
+            return copy.deepcopy(lock_identities)
+
+    real_evaluate = VALIDATION.resource_admission.evaluate_resource_admission
+
+    def evaluate_resource(
+        disk_path: Path | str,
+        **kwargs: object,
+    ) -> dict[str, object]:
+        profile = VALIDATION.resource_admission.RESOURCE_PROFILES[
+            VALIDATION.resource_admission.FULL_PREFLIGHT
+        ]
+        requirements = profile["requirements"]
+        assert isinstance(requirements, dict)
+        minimums = {
+            dimension: requirements[dimension]["minimum_available_bytes"]
+            for dimension in ("disk", "memory", "swap")
+        }
+        return real_evaluate(
+            disk_path,
+            **kwargs,
+            meminfo={
+                "MemAvailable": minimums["memory"],
+                "SwapFree": minimums["swap"],
+            },
+            disk_free=minimums["disk"],
+            conflicts=[],
+            observed_at_utc="2026-07-31T00:00:00Z",
+        )
+
+    monkeypatch.setattr(
+        VALIDATION.resource_admission,
+        "HeldResourceLocks",
+        SimpleNamespace(
+            acquire=lambda **_kwargs: TestResourceLease(),
+        ),
+    )
+    monkeypatch.setattr(
+        VALIDATION.resource_admission,
+        "evaluate_resource_admission",
+        evaluate_resource,
     )
     return repository, evidence, detached_replay_path
 
@@ -664,6 +740,96 @@ def test_full_preflight_environment_failure_closes_retained_directory_descriptor
             output_dir=output,
         )
 
+    assert len(os.listdir("/proc/self/fd")) == before
+    assert output.is_dir()
+    assert not (output / "receipt.json").exists()
+
+
+@pytest.mark.parametrize(
+    ("failure_kind", "expected_code"),
+    [
+        ("memory", "RESOURCE_HEADROOM_INSUFFICIENT"),
+        ("conflict", "RESOURCE_CONFLICT_DETECTED"),
+    ],
+)
+def test_full_preflight_final_resource_recheck_blocks_before_popen(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure_kind: str,
+    expected_code: str,
+) -> None:
+    real_evaluate = VALIDATION.resource_admission.evaluate_resource_admission
+    repository, _evidence, _detached_replay_path = _fixture(tmp_path, monkeypatch)
+    profile = VALIDATION.resource_admission.RESOURCE_PROFILES[
+        VALIDATION.resource_admission.FULL_PREFLIGHT
+    ]
+    requirements = profile["requirements"]
+    assert isinstance(requirements, dict)
+    minimums = {
+        dimension: int(requirements[dimension]["minimum_available_bytes"])
+        for dimension in ("disk", "memory", "swap")
+    }
+    events: list[str] = []
+    real_open_verified = VALIDATION._open_verified  # noqa: SLF001
+
+    def observed_open_verified(
+        identity: object,
+        label: str,
+    ) -> tuple[int, tuple[int, ...]]:
+        result = real_open_verified(identity, label)
+        events.append(f"source-open:{label}")
+        return result
+
+    def final_resource_recheck(
+        disk_path: Path | str,
+        **kwargs: object,
+    ) -> dict[str, object]:
+        assert len([event for event in events if event.startswith("source-open:")]) == 5
+        events.append("final-resource-check")
+        memory_available = minimums["memory"] - (1 if failure_kind == "memory" else 0)
+        conflicts = (
+            [{"command": "python competing-heavy-solver.py", "pid": 999_999}]
+            if failure_kind == "conflict"
+            else []
+        )
+        return real_evaluate(
+            disk_path,
+            **kwargs,
+            meminfo={
+                "MemAvailable": memory_available,
+                "SwapFree": minimums["swap"],
+            },
+            disk_free=minimums["disk"],
+            conflicts=conflicts,
+            observed_at_utc="2026-07-31T00:00:01Z",
+        )
+
+    def forbidden_popen(*_args: object, **_kwargs: object) -> object:
+        events.append("popen")
+        raise AssertionError("Popen must not run after final resource rejection")
+
+    monkeypatch.setattr(VALIDATION, "_open_verified", observed_open_verified)
+    monkeypatch.setattr(
+        VALIDATION.resource_admission,
+        "evaluate_resource_admission",
+        final_resource_recheck,
+    )
+    monkeypatch.setattr(VALIDATION.subprocess, "Popen", forbidden_popen)
+    before = len(os.listdir("/proc/self/fd"))
+    output = repository / "full-preflight-a001"
+
+    with pytest.raises(
+        VALIDATION.GateAValidationError,
+        match=expected_code,
+    ):
+        VALIDATION.record_full_preflight(
+            authority_root=tmp_path / "drill",
+            repository_root=repository,
+            output_dir=output,
+        )
+
+    assert events[-1] == "final-resource-check"
+    assert "popen" not in events
     assert len(os.listdir("/proc/self/fd")) == before
     assert output.is_dir()
     assert not (output / "receipt.json").exists()
@@ -1199,6 +1365,46 @@ def test_same_fd_python_supports_two_nested_python_launches(
     assert isinstance(grandchild, dict)
     _assert_runtime_report(grandchild, expected_prefix=expected_prefix)
     assert report["child_stderr"] == ""
+
+
+def test_same_fd_final_prelaunch_check_is_immediately_before_popen(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    python_path = Path(sys.executable).resolve()
+    script_path = tmp_path / "selected.py"
+    script_identity = _regular(script_path, b"raise AssertionError('must not execute')\n")
+    events: list[str] = []
+
+    class FakeProcess:
+        returncode = 0
+
+        @staticmethod
+        def communicate(*, timeout: float) -> tuple[bytes, bytes]:
+            assert timeout == 20
+            return b"simulated stdout", b""
+
+    def final_prelaunch_check() -> None:
+        events.append("final-check")
+
+    def fake_popen(*_args: object, **_kwargs: object) -> FakeProcess:
+        events.append("popen")
+        return FakeProcess()
+
+    monkeypatch.setattr(VALIDATION.subprocess, "Popen", fake_popen)
+    completed = VALIDATION._run_same_fd_python_script(  # noqa: SLF001
+        python_identity=VALIDATION._snapshot_identity(python_path),  # noqa: SLF001
+        script_identity=script_identity,
+        repository=tmp_path,
+        forwarded=(),
+        environment=os.environ,
+        timeout_seconds=20,
+        final_prelaunch_check=final_prelaunch_check,
+    )
+
+    assert completed.returncode == 0
+    assert completed.stdout == b"simulated stdout"
+    assert events == ["final-check", "popen"]
 
 
 def test_same_fd_qualification_runner_loads_verified_plugin_object_without_authority(
