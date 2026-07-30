@@ -64,6 +64,7 @@ MAX_FRAME_BYTES = 1024 * 1024
 LOCK_COUNT = len(closeout_state.LOCK_PATHS)
 PEER_CREDENTIAL_SIZE = struct.calcsize("3i")
 MAX_CONTROL_POLL_SECONDS = 1.0
+MAX_UNIX_PATHNAME_BYTES = 107
 
 HANDOFF_FIELDS = frozenset(
     {
@@ -188,6 +189,54 @@ class GuardianPeerClosed(GuardianProtocolError):
 
 class GuardianTerminationLatched(GuardianProtocolError):
     """SIGINT/SIGTERM was recorded while the guardian still held state."""
+
+
+class _OwnedDescriptor:
+    """Own one descriptor until it is explicitly transferred or closed."""
+
+    __slots__ = ("_descriptor",)
+
+    def __init__(self) -> None:
+        self._descriptor: int | None = None
+
+    @property
+    def descriptor(self) -> int:
+        if self._descriptor is None:
+            raise RuntimeError("descriptor ownership is absent")
+        return self._descriptor
+
+    @property
+    def owned(self) -> bool:
+        return self._descriptor is not None
+
+    def acquire(self, descriptor: int) -> int:
+        if self._descriptor is not None:
+            raise RuntimeError("descriptor ownership is already present")
+        self._descriptor = descriptor
+        return descriptor
+
+    def release(self) -> int:
+        descriptor = self.descriptor
+        self._descriptor = None
+        return descriptor
+
+    def close(self) -> BaseException | None:
+        descriptor = self.release()
+        try:
+            os.close(descriptor)
+        except BaseException as exc:
+            return exc
+        return None
+
+    def close_preserving(self, primary: BaseException) -> None:
+        if self._descriptor is None:
+            return
+        cleanup_error = self.close()
+        if cleanup_error is not None:
+            primary.add_note(
+                "descriptor cleanup failed: "
+                f"{type(cleanup_error).__name__}: {cleanup_error}"
+            )
 
 
 def _closeout_helper_module() -> Any:
@@ -535,17 +584,143 @@ def control_socket_identity(path: Path | str) -> dict[str, object]:
     """Return the exact runtime identity of one owned AF_UNIX socket path."""
 
     absolute = Path(os.path.abspath(os.fspath(path)))
+    parent = _OwnedDescriptor()
     try:
-        observed = os.lstat(absolute)
+        parent.acquire(_open_directory_no_symlinks(absolute.parent))
+        result = _control_socket_identity_at(
+            parent.descriptor,
+            absolute,
+        )
+    except BaseException as exc:
+        parent.close_preserving(exc)
+        raise
+    close_error = parent.close()
+    if close_error is not None:
+        raise GuardianProtocolError(
+            "guardian control parent cleanup failed after identity read"
+        ) from close_error
+    return result
+
+
+def _open_directory_no_symlinks(path: Path) -> int:
+    """Open one absolute directory through descriptor-relative no-follow steps."""
+
+    absolute = Path(os.path.abspath(os.fspath(path)))
+    if (
+        not absolute.is_absolute()
+        or not hasattr(os, "O_DIRECTORY")
+        or not hasattr(os, "O_NOFOLLOW")
+    ):
+        raise GuardianProtocolError(
+            "guardian control requires absolute descriptor-relative directory opens"
+        )
+    flags = os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW
+    current = _OwnedDescriptor()
+    try:
+        current.acquire(os.open(absolute.anchor, flags))
+        for component in absolute.parts[1:]:
+            following = _OwnedDescriptor()
+            following.acquire(
+                os.open(component, flags, dir_fd=current.descriptor)
+            )
+            close_error = current.close()
+            if close_error is not None:
+                following.close_preserving(close_error)
+                raise GuardianProtocolError(
+                    "guardian control ancestor descriptor close failed"
+                ) from close_error
+            current = following
+        return current.release()
+    except BaseException as exc:
+        current.close_preserving(exc)
+        if isinstance(exc, OSError):
+            raise GuardianProtocolError(
+                f"guardian control parent is unavailable or symlinked: {absolute}"
+            ) from exc
+        raise
+
+
+def _descriptor_socket_address(parent_descriptor: int, name: str) -> str:
+    """Return a short kernel pathname alias for one already-open parent."""
+
+    if (
+        not name
+        or name in {".", ".."}
+        or "/" in name
+        or "\x00" in name
+    ):
+        raise GuardianProtocolError("guardian control socket basename is invalid")
+    proc_descriptor = Path(f"/proc/self/fd/{parent_descriptor}")
+    try:
+        direct = os.fstat(parent_descriptor)
+        through_proc = os.stat(proc_descriptor)
     except OSError as exc:
-        raise GuardianProtocolError(f"guardian control socket is unavailable: {absolute}") from exc
+        raise GuardianProtocolError(
+            "guardian control descriptor alias is unavailable"
+        ) from exc
+    if (
+        not stat.S_ISDIR(direct.st_mode)
+        or direct.st_dev != through_proc.st_dev
+        or direct.st_ino != through_proc.st_ino
+    ):
+        raise GuardianProtocolError("guardian control descriptor alias drifted")
+    address = f"{proc_descriptor}/{name}"
+    if len(os.fsencode(address)) > MAX_UNIX_PATHNAME_BYTES:
+        raise GuardianProtocolError(
+            "guardian control descriptor alias exceeds AF_UNIX pathname capacity"
+        )
+    return address
+
+
+def _require_directory_join(
+    absolute: Path,
+    anchored_descriptor: int,
+) -> None:
+    current = _OwnedDescriptor()
+    try:
+        current.acquire(_open_directory_no_symlinks(absolute))
+        expected = os.fstat(anchored_descriptor)
+        observed = os.fstat(current.descriptor)
+        if (observed.st_dev, observed.st_ino) != (
+            expected.st_dev,
+            expected.st_ino,
+        ):
+            raise GuardianProtocolError(
+                "guardian control absolute parent identity drifted"
+            )
+    except BaseException as exc:
+        current.close_preserving(exc)
+        raise
+    close_error = current.close()
+    if close_error is not None:
+        raise GuardianProtocolError(
+            "guardian control parent join cleanup failed"
+        ) from close_error
+
+
+def _control_socket_identity_at(
+    parent_descriptor: int,
+    absolute: Path,
+) -> dict[str, object]:
+    try:
+        observed = os.stat(
+            absolute.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+    except OSError as exc:
+        raise GuardianProtocolError(
+            f"guardian control socket is unavailable: {absolute}"
+        ) from exc
     if (
         not stat.S_ISSOCK(observed.st_mode)
         or stat.S_ISLNK(observed.st_mode)
         or observed.st_uid != os.getuid()
         or stat.S_IMODE(observed.st_mode) != 0o600
     ):
-        raise GuardianProtocolError("guardian control socket type/owner/mode drifted")
+        raise GuardianProtocolError(
+            "guardian control socket type/owner/mode drifted"
+        )
     return launch_validator.validate_control_socket_identity(
         {
             "device": observed.st_dev,
@@ -557,18 +732,118 @@ def control_socket_identity(path: Path | str) -> dict[str, object]:
     )
 
 
-def _reject_symlinked_parent(path: Path) -> None:
-    cursor = Path(path.anchor)
-    for part in path.parent.parts[1:]:
-        cursor /= part
-        try:
-            mode = os.lstat(cursor).st_mode
-        except OSError as exc:
-            raise GuardianProtocolError(f"guardian control parent is unavailable: {cursor}") from exc
-        if stat.S_ISLNK(mode):
-            raise GuardianProtocolError(f"guardian control parent is symlinked: {cursor}")
-    if not path.parent.is_dir():
-        raise GuardianProtocolError("guardian control socket parent is not a directory")
+def _remove_bound_socket_at(
+    parent_descriptor: int,
+    absolute: Path,
+    *,
+    expected_identity: Mapping[str, object] | None,
+) -> None:
+    try:
+        observed = os.stat(
+            absolute.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+    except OSError as exc:
+        raise GuardianProtocolError(
+            "guardian control socket is unavailable before removal"
+        ) from exc
+    if (
+        not stat.S_ISSOCK(observed.st_mode)
+        or observed.st_uid != os.getuid()
+        or (
+            expected_identity is not None
+            and (
+                observed.st_dev != expected_identity["device"]
+                or observed.st_ino != expected_identity["inode"]
+                or (
+                    "mode" in expected_identity
+                    and stat.S_IMODE(observed.st_mode)
+                    != expected_identity["mode"]
+                )
+            )
+        )
+    ):
+        raise GuardianProtocolError(
+            "guardian control socket identity drifted before removal"
+        )
+    os.unlink(absolute.name, dir_fd=parent_descriptor)
+    os.fsync(parent_descriptor)
+    try:
+        os.stat(
+            absolute.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+    except FileNotFoundError:
+        return
+    raise GuardianProtocolError("guardian control socket remains after removal")
+
+
+def _chmod_bound_socket_at(
+    parent_descriptor: int,
+    absolute: Path,
+    *,
+    expected_identity: Mapping[str, object],
+) -> None:
+    if not hasattr(os, "O_PATH"):
+        raise GuardianProtocolError(
+            "guardian control socket requires Linux O_PATH"
+        )
+    leaf = _OwnedDescriptor()
+    try:
+        leaf.acquire(
+            os.open(
+                absolute.name,
+                os.O_PATH | os.O_NOFOLLOW | os.O_CLOEXEC,
+                dir_fd=parent_descriptor,
+            )
+        )
+        before = os.fstat(leaf.descriptor)
+        if (
+            not stat.S_ISSOCK(before.st_mode)
+            or before.st_uid != os.getuid()
+            or before.st_dev != expected_identity["device"]
+            or before.st_ino != expected_identity["inode"]
+        ):
+            raise GuardianProtocolError(
+                "guardian control socket drifted before anchored chmod"
+            )
+        proc_leaf = Path(f"/proc/self/fd/{leaf.descriptor}")
+        through_proc = os.stat(proc_leaf)
+        if (
+            through_proc.st_dev != before.st_dev
+            or through_proc.st_ino != before.st_ino
+        ):
+            raise GuardianProtocolError(
+                "guardian control socket descriptor alias drifted before chmod"
+            )
+        os.chmod(proc_leaf, 0o600)
+        after = os.fstat(leaf.descriptor)
+        at_parent = os.stat(
+            absolute.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+        if (
+            after.st_dev != before.st_dev
+            or after.st_ino != before.st_ino
+            or at_parent.st_dev != before.st_dev
+            or at_parent.st_ino != before.st_ino
+            or stat.S_IMODE(after.st_mode) != 0o600
+            or stat.S_IMODE(at_parent.st_mode) != 0o600
+        ):
+            raise GuardianProtocolError(
+                "guardian control socket drifted across anchored chmod"
+            )
+    except BaseException as exc:
+        leaf.close_preserving(exc)
+        raise
+    close_error = leaf.close()
+    if close_error is not None:
+        raise GuardianProtocolError(
+            "guardian control socket descriptor cleanup failed after chmod"
+        ) from close_error
 
 
 class GuardianControlListener:
@@ -576,24 +851,113 @@ class GuardianControlListener:
 
     def __init__(self, path: Path | str) -> None:
         self.path = Path(os.path.abspath(os.fspath(path)))
-        _reject_symlinked_parent(self.path)
-        if os.path.lexists(self.path):
-            raise GuardianProtocolError("guardian control socket path already exists")
-        self.socket = socket.socket(
-            socket.AF_UNIX,
-            socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
-        )
+        self.parent = _OwnedDescriptor()
+        control: socket.socket | None = None
         self.accept_attempted = False
+        self.bound = False
+        self.bound_identity: dict[str, object] | None = None
         self.closed = False
+        self.parent_release_attempted = False
         self.remove_attempted = False
         try:
-            self.socket.bind(str(self.path))
-            os.chmod(self.path, 0o600, follow_symlinks=False)
-            self.socket.listen(1)
-            self.identity = control_socket_identity(self.path)
-        except BaseException:
-            self.socket.close()
+            self.parent.acquire(
+                _open_directory_no_symlinks(self.path.parent)
+            )
+            parent_stat = os.fstat(self.parent.descriptor)
+            self.parent_identity = (parent_stat.st_dev, parent_stat.st_ino)
+            try:
+                os.stat(
+                    self.path.name,
+                    dir_fd=self.parent.descriptor,
+                    follow_symlinks=False,
+                )
+            except FileNotFoundError:
+                pass
+            else:
+                raise GuardianProtocolError(
+                    "guardian control socket path already exists"
+                )
+            control = socket.socket(
+                socket.AF_UNIX,
+                socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
+            )
+            address = _descriptor_socket_address(
+                self.parent.descriptor,
+                self.path.name,
+            )
+            control.bind(address)
+            self.bound = True
+            bound_stat = os.stat(
+                self.path.name,
+                dir_fd=self.parent.descriptor,
+                follow_symlinks=False,
+            )
+            if (
+                not stat.S_ISSOCK(bound_stat.st_mode)
+                or bound_stat.st_uid != os.getuid()
+            ):
+                raise GuardianProtocolError(
+                    "guardian control bound pathname identity drifted"
+                )
+            bound_identity: dict[str, object] = {
+                "device": bound_stat.st_dev,
+                "inode": bound_stat.st_ino,
+            }
+            self.bound_identity = bound_identity
+            if control.getsockname() != address:
+                raise GuardianProtocolError(
+                    "guardian control kernel pathname alias drifted"
+                )
+            _chmod_bound_socket_at(
+                self.parent.descriptor,
+                self.path,
+                expected_identity=bound_identity,
+            )
+            control.listen(1)
+            self.socket = control
+            self.identity = _control_socket_identity_at(
+                self.parent.descriptor,
+                self.path,
+            )
+        except BaseException as exc:
+            if control is not None:
+                try:
+                    control.close()
+                except BaseException as cleanup_error:
+                    exc.add_note(
+                        "guardian control socket cleanup failed: "
+                        f"{type(cleanup_error).__name__}: {cleanup_error}"
+                    )
+            if self.bound:
+                try:
+                    if self.bound_identity is None:
+                        raise GuardianProtocolError(
+                            "guardian control bound identity is unavailable; "
+                            "pathname was not removed"
+                        )
+                    _remove_bound_socket_at(
+                        self.parent.descriptor,
+                        self.path,
+                        expected_identity=self.bound_identity,
+                    )
+                except BaseException as cleanup_error:
+                    exc.add_note(
+                        "guardian control pathname cleanup failed: "
+                        f"{type(cleanup_error).__name__}: {cleanup_error}"
+                    )
+            self.parent.close_preserving(exc)
             raise
+
+    def _require_parent_join(self) -> None:
+        anchored = os.fstat(self.parent.descriptor)
+        if (anchored.st_dev, anchored.st_ino) != self.parent_identity:
+            raise GuardianProtocolError(
+                "guardian control retained parent identity drifted"
+            )
+        _require_directory_join(
+            self.path.parent,
+            self.parent.descriptor,
+        )
 
     def accept_once(
         self,
@@ -608,7 +972,14 @@ class GuardianControlListener:
             expected_peer_process,
             "guardian listener peer",
         )
-        if control_socket_identity(self.path) != self.identity:
+        self._require_parent_join()
+        if (
+            _control_socket_identity_at(
+                self.parent.descriptor,
+                self.path,
+            )
+            != self.identity
+        ):
             raise GuardianProtocolError("guardian control socket changed before accept")
         try:
             connection, _address = self.socket.accept()
@@ -633,29 +1004,73 @@ class GuardianControlListener:
         self.closed = True
         self.socket.close()
 
+    @property
+    def parent_owned(self) -> bool:
+        return self.parent.owned
+
+    def abandon_parent_once(self) -> None:
+        """Close the retained anchor without unlinking an unverified pathname."""
+
+        if not self.closed:
+            raise GuardianProtocolError(
+                "guardian control parent cannot close before listener close"
+            )
+        if self.parent_release_attempted:
+            raise GuardianProtocolError(
+                "guardian control parent release cannot be attempted twice"
+            )
+        self.parent_release_attempted = True
+        close_error = self.parent.close()
+        if close_error is not None:
+            raise GuardianProtocolError(
+                "guardian control parent abandonment failed or is uncertain"
+            ) from close_error
+
     def remove_path_once(self) -> dict[str, object]:
         if not self.closed:
             raise GuardianProtocolError("guardian control path cannot be removed before listener close")
         if self.remove_attempted:
             raise GuardianProtocolError("guardian control path removal cannot be attempted twice")
-        if control_socket_identity(self.path) != self.identity:
+        if self.parent_release_attempted:
+            raise GuardianProtocolError(
+                "guardian control parent was already released"
+            )
+        self._require_parent_join()
+        if (
+            _control_socket_identity_at(
+                self.parent.descriptor,
+                self.path,
+            )
+            != self.identity
+        ):
             raise GuardianProtocolError("guardian control socket changed before removal")
         self.remove_attempted = True
-        parent_fd = os.open(
-            self.path.parent,
-            os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
-        )
+        primary: BaseException | None = None
         try:
-            os.unlink(self.path.name, dir_fd=parent_fd)
-            os.fsync(parent_fd)
+            _remove_bound_socket_at(
+                self.parent.descriptor,
+                self.path,
+                expected_identity=self.identity,
+            )
+            self.bound = False
         except BaseException as exc:
-            raise GuardianProtocolError(
+            primary = GuardianProtocolError(
                 f"guardian control socket removal failed or is uncertain: {exc}"
-            ) from exc
-        finally:
-            os.close(parent_fd)
-        if os.path.lexists(self.path):
-            raise GuardianProtocolError("guardian control socket remains after removal")
+            )
+            primary.__cause__ = exc
+        self.parent_release_attempted = True
+        close_error = self.parent.close()
+        if primary is not None:
+            if close_error is not None:
+                primary.add_note(
+                    "guardian control parent cleanup failed: "
+                    f"{type(close_error).__name__}: {close_error}"
+                )
+            raise primary
+        if close_error is not None:
+            raise GuardianProtocolError(
+                "guardian control parent cleanup failed after removal"
+            ) from close_error
         return {"absent": True, "removed_identity": dict(self.identity)}
 
 
@@ -663,21 +1078,46 @@ def connect_guardian_control(path: Path | str) -> socket.socket:
     """Guardian-side one-shot connect to the pre-created supervisor listener."""
 
     absolute = Path(os.path.abspath(os.fspath(path)))
-    before = control_socket_identity(absolute)
-    connection = socket.socket(
-        socket.AF_UNIX,
-        socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
-    )
+    parent = _OwnedDescriptor()
+    connection: socket.socket | None = None
     try:
-        connection.connect(str(absolute))
+        parent.acquire(_open_directory_no_symlinks(absolute.parent))
+        before = _control_socket_identity_at(parent.descriptor, absolute)
+        connection = socket.socket(
+            socket.AF_UNIX,
+            socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
+        )
+        connection.connect(
+            _descriptor_socket_address(parent.descriptor, absolute.name)
+        )
         _socket_type(connection)
-        if connection.getpeername() != str(absolute):
-            raise GuardianProtocolError("guardian connected to an unexpected socket path")
-        if control_socket_identity(absolute) != before:
+        # The server's /proc/self/fd/N spelling is process-local, so its
+        # getpeername() string is not authority.  The anchored inode join here
+        # is followed by the existing SO_PEERCRED PID/starttime handoff join.
+        if (
+            _control_socket_identity_at(parent.descriptor, absolute)
+            != before
+        ):
             raise GuardianProtocolError("guardian control socket changed across connect")
-    except BaseException:
-        connection.close()
+        _require_directory_join(absolute.parent, parent.descriptor)
+        close_error = parent.close()
+        if close_error is not None:
+            raise GuardianProtocolError(
+                "guardian control parent cleanup failed after connect"
+            ) from close_error
+    except BaseException as exc:
+        if connection is not None:
+            try:
+                connection.close()
+            except BaseException as cleanup_error:
+                exc.add_note(
+                    "guardian control connection cleanup failed: "
+                    f"{type(cleanup_error).__name__}: {cleanup_error}"
+                )
+        parent.close_preserving(exc)
         raise
+    if connection is None:
+        raise GuardianProtocolError("guardian control connection is absent")
     return connection
 
 

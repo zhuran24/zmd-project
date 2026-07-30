@@ -899,7 +899,15 @@ def orchestrate(campaign_dir: Path | str) -> dict[str, object]:
         supervisor_thread.start()
 
         def supervisor_alive() -> bool:
-            return not supervisor_done.is_set()
+            if not supervisor_done.is_set():
+                return True
+            if supervisor_error:
+                error = supervisor_error[0]
+                raise FormalOrchestrationError(
+                    "formal supervisor failed during prerequisite wait: "
+                    f"{error}"
+                ) from error
+            return False
 
         guardian, guardian_identity = _wait_record(
             Path(str(context["guardian_ready_path"])),

@@ -1,6 +1,6 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-29。**
+**状态日期：2026-07-30。**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
 
 ## 当前结论摘要
@@ -14,7 +14,8 @@
 - **SMM4 formal 终态：** `smm4-formal-a004` 已消费且永久不得重试。内部
   `VERIFIED`/UNSAT receipt 仍为 `upper_bound_update_authorized=false`，不是账本
   授权源；`production_certified=false`。`AB16_GATE_B_AND_16_ORGANIC_ARMS`
-  仍登记为后续 formal 任务，未执行且未取消；下述 W0 D6 单轴局部阶段已经完成。
+  已进入强制执行链；A031–A033 均已冻结，尚无可信 terminal 或 organic arm。
+  下述 W0 D6 单轴局部阶段已经完成。
 - **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
   hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
   research/developer infrastructure 落地。closed-root v2 的 `seed_narrow` 与
@@ -30,8 +31,12 @@
   sidecar 均为 test/offline-only shadow，`authority_effect=non_authorizing`；不改变
   production runtime、trusted apply 闭集、authority digest、P1.2 seal 或 family promotion 状态。
 - **Noncert cuts A/B：** Gate 1 v4 只建立一条具体 inequality 对一个固定 incumbent 的
-  局部 mechanism reachability 与 exclusion power；AB16 仅完成 non-authorizing Gate A，
-  Gate B、formal campaign 与 16 个 organic arms 均未创建或运行。这些结果不建立
+  局部 mechanism reachability 与 exclusion power。AB16 的 A033 已完成 fresh Gate A、
+  Gate-B qualification 与 package/campaign 创建，但 formal 阶段只发布 admission；没有
+  guardian-ready、attempt consumption、selection、unit、terminal 或 16 个 organic arms。
+  A031–A033 不可重试。当前 runtime fix 保留 canonical absolute socket identity，以
+  retained-dirfd alias 适配长 worktree 的 Linux AF_UNIX 调用；该 alias 不进入 schema 或
+  authority。下一 root 必须从 clean committed HEAD 重跑完整前后门禁。这些结果不建立
   family-global soundness、production `CERTIFIED`、上下界、witness、attainability 或 optimality。
 
 ## 2026-07-29 W0 D6 closed-root negatives 与单轴 class transfer

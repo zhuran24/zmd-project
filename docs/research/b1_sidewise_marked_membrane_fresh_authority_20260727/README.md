@@ -2,12 +2,13 @@
 
 | 字段 | 当前值 |
 |---|---|
-| 日期 | `2026-07-27` |
+| SMM4 终态日期 | `2026-07-27` |
+| 当前状态日期 | `2026-07-30` |
 | 状态 | `VERIFIED / FORMAL_A004_CONSUMED_NO_RETRY` |
 | 研究账本 | `U=(1188,18)`、`L=absent` |
 | authority | detached receipt 与 immutable closeout 已授权 research upper recovery |
 | production | `production_certified=false` |
-| 下一项强制任务 | `AB16_GATE_B_AND_16_ORGANIC_ARMS`（未执行） |
+| 下一项强制任务 | `AB16_GATE_B_AND_16_ORGANIC_ARMS`（执行中；A031–A033 frozen，arms `0/16`） |
 
 SMM4 是对同一候选 `(1188,18)` 的有限 authority recovery，不是新 B1/B2
 武器。固定实现 HEAD、fresh sealed authority、全新 no-overwrite root 和唯一一次
@@ -96,5 +97,7 @@ SMM4 没有修改实存的
 既有归档路径
 `../noncert_cuts_ab16_20260724/04_cuts_mandatory_schedule.md` 在固定 HEAD 中缺失；
 这只是 provenance/path gap，也不是 cut 已完成的证据。SMM4 closeout 登记的
-下一项强制任务仅为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`；其当前背景见
-[AB16 状态](../noncert_cuts_ab16_20260724/README.md)。SMM4 收口没有执行该任务。
+下一项强制任务仅为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`。该任务现已进入执行链，
+但 A031–A033 均在 selection 前冻结，尚无 trusted terminal 或 organic arm；其
+当前背景见 [AB16 状态](../noncert_cuts_ab16_20260724/README.md)。SMM4 收口本身
+没有执行该任务，也不为任何 AB16 attempt 授权。

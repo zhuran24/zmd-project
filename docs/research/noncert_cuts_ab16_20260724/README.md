@@ -1,19 +1,49 @@
 # Prospective non-certified cuts AB16 campaign
 
 Document kind: research implementation and current-status summary
-Cutoff date: 2026-07-24
-Status: `DISPOSABLE_LIVE_CHAIN_PASS / FULL_PREFLIGHT_PASS / GATE_A_FINALIZED / GATE_B_NOT_CREATED`
-Repository HEAD: `398f8725c770f3c36408adebe9448a890ed886fe`
-Formal campaign: not created
+Cutoff date: 2026-07-30
+Status: `A031_A032_A033_FROZEN / A033_ADMISSION_ONLY / FRESH_CHAIN_REQUIRED`
+Formal campaign: no trusted terminal
 Organic arms: `0/16` created or run
 
 ## Current status
 
-This directory contains the implementation and current Gate-A validation
-recovery state for a prospective cuts-credibility campaign. It does not
-contain a campaign result.
+The mandatory AB16 chain has advanced through fresh Gate-A, Gate-B,
+package/campaign creation and formal admission, but it has not consumed a
+formal selection or run an organic arm. A031 and A032 froze on pre-owner
+bootstrap failures. A033 passed Gate-B qualification and package creation,
+then published exactly
+`formal-ab16/formal-launch-admission-a001.json`. It has no guardian-ready,
+attempt-consumption, formal selection, unit, arm or terminal receipt. All
+three roots are immutable and cannot be retried, repaired or used as
+authority ancestors for a successor.
 
-The current no-overwrite sibling recovery is:
+A033's selected supervisor error was lost behind the old orchestrator's
+generic pre-guardian error. The current orchestrator preserves the selected
+supervisor's exact exit/stderr at that boundary, and the selected loader now
+has import-only controls for both `formal-orchestrator` and
+`formal-supervisor` through the materialized snapshot path. These controls
+do not call either role's `main()` and consume no authority.
+
+The A033 preregistration also exposed a deterministic transport blocker: its
+canonical absolute `guardian-control.sock` path is `241` bytes, beyond Linux
+pathname `AF_UNIX` capacity. The canonical preregistered path and every
+serialized identity remain unchanged. Runtime bind/connect uses only a short
+retained-directory-FD alias, pins the socket leaf with `O_PATH`, and joins
+the canonical parent, leaf identity, mode and peer PID/starttime before
+progress. Parent or leaf replacement fails closed; cleanup never unlinks an
+unverified node and closes the retained anchor exactly once.
+
+The next attempt must start from a new no-overwrite Gate-A root in the
+registered independent worktree after a clean committed HEAD, exact source
+rebinding, the fixed resource/lock/competition gate, full preflight and the
+same post-preflight gate. A031–A033 remain frozen. The path transport change
+does not alter any artifact schema or grant production, certified, cut,
+witness or bound authority.
+
+## 2026-07-24 Gate-A recovery history
+
+The no-overwrite sibling recovery recorded at the earlier cutoff was:
 
 ```text
 .artifacts/noncert_cuts_ab16_20260724/
@@ -389,6 +419,15 @@ proof-ledger gates.
 - `ab16_campaign_bootstrap_v1.py` and
   `ab16_campaign_bootstrap_v2.py`: Gate A/Gate B bootstrap generations over
   the complete v4 topology.
+- `ab16_formal_loader_v1.py`: selected-FD loader for the exact materialized
+  snapshot module and role identity.
+- `ab16_formal_orchestrator_v1.py`: persistent formal-launch owner ordering
+  and selected-supervisor result preservation.
+- `ab16_formal_campaign_v1.py`: three-lock supervisor, guardian startup,
+  selection, serial campaign and terminal closeout.
+- `ab16_outer_guardian_v1.py`: independent lock guardian; canonical absolute
+  socket identity with internal retained-dirfd AF_UNIX transport, peer
+  credential join and exact cleanup.
 - `disposable_drill_authority_v1.py` and
   `disposable_drill_authority_v2.py`: campaign-external, non-authorizing Gate A
   authority generations.

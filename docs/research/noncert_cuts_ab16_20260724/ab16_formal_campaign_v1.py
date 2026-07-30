@@ -1392,7 +1392,7 @@ def start_guardian(
                         close_error,
                     )
                 )
-        if os.path.lexists(listener.path) and not listener.remove_attempted:
+        if listener.bound and not listener.remove_attempted:
             try:
                 listener.remove_path_once()
             except BaseException as remove_error:
@@ -1400,6 +1400,16 @@ def start_guardian(
                     _failure(
                         "GUARDIAN_LISTENER_REMOVE_FAILED_OR_UNCERTAIN",
                         remove_error,
+                    )
+                )
+        if listener.parent_owned:
+            try:
+                listener.abandon_parent_once()
+            except BaseException as abandon_error:
+                cleanup_errors.append(
+                    _failure(
+                        "GUARDIAN_LISTENER_PARENT_ABANDON_FAILED_OR_UNCERTAIN",
+                        abandon_error,
                     )
                 )
         containment_cleared = False

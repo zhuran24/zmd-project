@@ -88,7 +88,7 @@
 
 ## 研究账本与有界实验
 
-- **research upper/lower ledger**：当前为 `U=(1188,22)`、`L=absent`。
+- **research upper/lower ledger**：当前为 `U=(1188,18)`、`L=absent`。
   `U` 表示给定已准入必要引理后的 research upper bound；`L=absent` 表示尚无
   feasible witness 对应的下界。上下账未相遇，因此不建立 attainability 或
   optimality，也不是 production `CERTIFIED`。
@@ -106,9 +106,12 @@
 - **non-certified cuts A/B**：对 production attach 机制可达性与固定配置效果进行的
   有界研究实验，不是“已证明不 sound”的同义词。Gate 1 v4 的当前最强结论仅为
   `MECHANISM_CREDIBLE`：一个具体注入 inequality 排除了同一 frozen incumbent。
-  Prospective AB16 当前为 `GATE_A_FINALIZED / GATE_B_NOT_CREATED`，formal campaign
-  未创建、organic arms 为 `0/16`；没有 family-global soundness、proof-sidecar、
-  PIC、B6、上下界、optimality 或 production `CERTIFIED` 结论。
+  Prospective AB16 的 A031–A033 均为 immutable frozen roots；A033 已创建
+  Gate-B package/campaign，但 formal 阶段只发布 admission，没有
+  guardian-ready、attempt consumption、selection、unit、terminal 或 organic arm，
+  arms 仍为 `0/16`。下一 fresh root 必须重新绑定 clean committed HEAD 与完整门禁；
+  没有 family-global soundness、proof-sidecar、PIC、B6、上下界、optimality 或
+  production `CERTIFIED` 结论。
 - **HEAD-pinned research authority**：receipt 只证明其记录的 originating HEAD、
   inputs、tools 与工件字节。后续 Git 合并保留该历史结果及其明确准入的账本结论，
   但不会在新 HEAD 上重新生成、重放或扩张原 receipt authority；要求 live HEAD

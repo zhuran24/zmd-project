@@ -1758,6 +1758,119 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
     ]
 
 
+def test_formal_orchestrator_preserves_supervisor_error_before_guardian_ready(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _formal_fixture(tmp_path)
+    context = fixture.context
+    admission_path = Path(str(context["formal_admission_path"]))
+    guardian_path = Path(str(context["guardian_ready_path"]))
+    attempt_path = (
+        Path(str(context["formal_attempt_dir"])) / "attempt-consumption.json"
+    )
+    selection_path = Path(str(context["formal_selection_path"]))
+    admission_path.parent.mkdir(parents=True)
+    supervisor_finished = threading.Event()
+    actor = {
+        "pid": os.getpid(),
+        "role": launch_validator.OWNER_PUBLISHER_ROLE,
+        "session_id": formal_orchestrator.SESSION_ID,
+        "starttime": _process_starttime(os.getpid()),
+    }
+
+    class FakeOwner:
+        pid = os.getpid()
+        reaped = False
+
+        def __init__(self) -> None:
+            self.actor = actor
+            self.close_count = 0
+
+        def request(
+            self,
+            *,
+            sequence: int,
+            kind: str,
+            draft: dict[str, object],
+        ) -> dict[str, object]:
+            assert sequence == 1
+            assert kind == "admission"
+            identity = authority._write_exclusive(  # noqa: SLF001
+                admission_path,
+                authority.canonical_json(draft),
+                mode=0o444,
+            )
+            return {
+                "actor": actor,
+                "artifact_identity": identity,
+                "kind": kind,
+                "schema_version": formal_orchestrator.RESPONSE_SCHEMA,
+                "sequence": sequence,
+                "status": "PUBLISHED",
+            }
+
+        def complete_handoff(self) -> None:
+            pytest.fail("pre-guardian supervisor failure cannot complete handoff")
+
+        def close(self) -> None:
+            self.close_count += 1
+            self.reaped = True
+
+    owner = FakeOwner()
+    monkeypatch.setattr(
+        formal_orchestrator.launch_validator,
+        "replay_formal_launch_context",
+        lambda _authority, _campaign: context,
+    )
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_verify_selected_self",
+        lambda _context: None,
+    )
+    monkeypatch.setattr(formal_orchestrator, "_spawn_owner", lambda _context: owner)
+
+    sentinel = b"FAIL_CLOSED: FormalCampaignError: sentinel\n"
+
+    def selected_supervisor(**kwargs: object) -> object:
+        assert kwargs["role"] == "formal-supervisor"
+        supervisor_finished.set()
+        return SimpleNamespace(
+            returncode=125,
+            stdout=b"",
+            stderr=sentinel,
+        )
+
+    monkeypatch.setattr(
+        formal_orchestrator,
+        "_formal_campaign_module",
+        lambda: SimpleNamespace(run_selected_direct_result=selected_supervisor),
+    )
+
+    def wait_for_supervisor(_seconds: float) -> None:
+        assert supervisor_finished.wait(timeout=5.0)
+
+    monkeypatch.setattr(formal_orchestrator.time, "sleep", wait_for_supervisor)
+
+    with pytest.raises(
+        formal_orchestrator.FormalOrchestrationError,
+        match="formal supervisor failed during prerequisite wait",
+    ) as caught:
+        formal_orchestrator.orchestrate(context["campaign_dir"])
+
+    assert "exit=125" in str(caught.value)
+    assert repr(sentinel) in str(caught.value)
+    assert isinstance(
+        caught.value.__cause__,
+        formal_orchestrator.FormalOrchestrationError,
+    )
+    assert owner.close_count == 1
+    assert stat.S_IMODE(os.lstat(admission_path).st_mode) == 0o444
+    assert not guardian_path.exists()
+    assert not attempt_path.exists()
+    assert not selection_path.exists()
+
+
 def test_formal_orchestrator_wait_uses_one_node_snapshot(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -2588,6 +2701,437 @@ def test_guardian_control_poll_observes_latch_before_receiving_frame(
     assert "receive_frame_interruptible(" in guardian_source
     assert "first_control = receive_frame(" not in guardian_source
     assert "frame = receive_frame(connection" not in guardian_source
+
+
+def test_guardian_control_socket_supports_long_authority_path_via_dirfd_alias(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / ("formal-" + "x" * 180)
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    assert len(os.fsencode(control_path)) >= 241
+
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    client: socket.socket | None = None
+    accepted: socket.socket | None = None
+    try:
+        assert listener.identity["path"] == str(control_path)
+        assert "/proc/self/fd/" not in str(listener.identity)
+        assert stat.S_IMODE(os.lstat(control_path).st_mode) == 0o600
+        assert (
+            fcntl.fcntl(parent_descriptor, fcntl.F_GETFD)
+            & fcntl.FD_CLOEXEC
+        )
+        assert (
+            len(
+                os.fsencode(
+                    guardian._descriptor_socket_address(  # noqa: SLF001
+                        parent_descriptor,
+                        control_path.name,
+                    )
+                )
+            )
+            <= guardian.MAX_UNIX_PATHNAME_BYTES
+        )
+        client = guardian.connect_guardian_control(control_path)
+        accepted = listener.accept_once(
+            expected_peer_process={
+                "pid": os.getpid(),
+                "starttime": guardian.read_process_starttime(os.getpid()),
+            },
+            process_starttime_reader=guardian.read_process_starttime,
+        )
+        listener.close_once()
+        removed = listener.remove_path_once()
+        assert removed == {
+            "absent": True,
+            "removed_identity": listener.identity,
+        }
+        assert not os.path.lexists(control_path)
+        with pytest.raises(OSError):
+            os.fstat(parent_descriptor)
+
+        frame = {"schema_version": "long-path-control-v1", "status": "PASS"}
+        sent = guardian.send_frame(client, frame)
+        received = guardian.receive_frame(accepted, expected_fd_count=0)
+        assert received.record == frame
+        assert received.identity == sent
+    finally:
+        if accepted is not None:
+            accepted.close()
+        if client is not None:
+            client.close()
+        if not listener.closed:
+            listener.close_once()
+        if listener.bound and not listener.remove_attempted:
+            listener.remove_path_once()
+
+
+def test_path_preregistration_keeps_canonical_guardian_socket_path(
+    tmp_path: Path,
+) -> None:
+    campaign = tmp_path / "run-focused-ab16"
+    record = bootstrap._path_preregistration(campaign)  # noqa: SLF001
+    expected = campaign.absolute() / "formal-ab16/guardian-control.sock"
+    assert record["guardian_control_socket_path"] == str(expected)
+    assert "/proc/self/fd/" not in str(record)
+    assert (
+        bootstrap.validate_path_preregistration(
+            record,
+            campaign_dir=campaign,
+        )
+        == record
+    )
+
+
+def test_guardian_control_socket_rejects_symlinked_parent_for_bind_and_connect(
+    tmp_path: Path,
+) -> None:
+    real = tmp_path / "real-formal"
+    real.mkdir()
+    symlink = tmp_path / "symlink-formal"
+    symlink.symlink_to(real, target_is_directory=True)
+    control_path = symlink / "guardian-control.sock"
+
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="parent is unavailable or symlinked",
+    ):
+        guardian.GuardianControlListener(control_path)
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="parent is unavailable or symlinked",
+    ):
+        guardian.connect_guardian_control(control_path)
+    assert not os.path.lexists(real / control_path.name)
+
+
+def test_guardian_control_cleanup_rejects_replaced_absolute_parent(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / "formal"
+    moved = tmp_path / "formal-moved"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+
+    formal.rename(moved)
+    formal.mkdir()
+    replacement = formal / control_path.name
+    replacement.write_bytes(b"do-not-delete")
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="absolute parent identity drifted",
+    ):
+        listener.remove_path_once()
+    assert replacement.read_bytes() == b"do-not-delete"
+    assert os.path.lexists(moved / control_path.name)
+
+    listener.abandon_parent_once()
+    assert not listener.parent_owned
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    replacement.unlink()
+    formal.rmdir()
+    os.unlink(moved / control_path.name)
+    moved.rmdir()
+
+
+def test_guardian_control_cleanup_rejects_replaced_leaf_and_abandons_anchor(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+
+    os.unlink(control_path)
+    control_path.write_bytes(b"replacement")
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="type/owner/mode drifted",
+    ):
+        listener.remove_path_once()
+    assert control_path.read_bytes() == b"replacement"
+    listener.abandon_parent_once()
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert control_path.read_bytes() == b"replacement"
+
+
+def test_guardian_control_connector_rejects_replaced_absolute_parent(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    moved = tmp_path / "formal-moved"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    listener = guardian.GuardianControlListener(control_path)
+    original_address = guardian._descriptor_socket_address  # noqa: SLF001
+
+    def replace_parent(parent_descriptor: int, name: str) -> str:
+        address = original_address(parent_descriptor, name)
+        formal.rename(moved)
+        formal.mkdir()
+        return address
+
+    monkeypatch.setattr(
+        guardian,
+        "_descriptor_socket_address",
+        replace_parent,
+    )
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="absolute parent identity drifted",
+    ):
+        guardian.connect_guardian_control(control_path)
+
+    formal.rmdir()
+    moved.rename(formal)
+    listener.close_once()
+    listener.remove_path_once()
+    assert not os.path.lexists(control_path)
+
+
+def test_guardian_control_listener_cleans_bound_path_when_setup_fails(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+
+    def fail_chmod(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("sentinel chmod failure")
+
+    monkeypatch.setattr(guardian.os, "chmod", fail_chmod)
+    with pytest.raises(RuntimeError, match="sentinel chmod failure"):
+        guardian.GuardianControlListener(control_path)
+    assert not os.path.lexists(control_path)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_anchored_chmod_never_follows_replacement_symlink(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    victim = tmp_path / "victim"
+    victim.write_bytes(b"unchanged")
+    victim.chmod(0o640)
+    real_chmod = guardian.os.chmod
+
+    def replace_before_chmod(
+        path: Path | str,
+        mode: int,
+        *_args: object,
+        **_kwargs: object,
+    ) -> None:
+        os.unlink(control_path)
+        control_path.symlink_to(victim)
+        real_chmod(path, mode)
+
+    monkeypatch.setattr(guardian.os, "chmod", replace_before_chmod)
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="drifted across anchored chmod",
+    ):
+        guardian.GuardianControlListener(control_path)
+    assert control_path.is_symlink()
+    assert victim.read_bytes() == b"unchanged"
+    assert stat.S_IMODE(os.lstat(victim).st_mode) == 0o640
+    control_path.unlink()
+
+
+def test_guardian_control_listener_never_removes_preexisting_target(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    control_path.write_bytes(b"preexisting")
+
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="path already exists",
+    ):
+        guardian.GuardianControlListener(control_path)
+    assert control_path.read_bytes() == b"preexisting"
+
+
+def test_guardian_control_accepts_cross_process_connector_by_peer_identity(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / ("formal-" + "x" * 180)
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    listener = guardian.GuardianControlListener(control_path)
+    repository = Path(__file__).resolve().parents[2]
+    child_code = """
+import socket
+import sys
+from pathlib import Path
+
+sys.path.insert(0, sys.argv[1])
+from docs.research.noncert_cuts_ab16_20260724 import ab16_outer_guardian_v1 as guardian
+
+connection = guardian.connect_guardian_control(Path(sys.argv[2]))
+connection.sendall(b"child-ready")
+if connection.recv(32) != b"parent-accepted":
+    raise SystemExit(3)
+connection.close()
+"""
+    child = subprocess.Popen(
+        [
+            sys.executable,
+            "-I",
+            "-B",
+            "-c",
+            child_code,
+            str(repository),
+            str(control_path),
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    accepted: socket.socket | None = None
+    try:
+        accepted = listener.accept_once(
+            expected_peer_process={
+                "pid": child.pid,
+                "starttime": guardian.read_process_starttime(child.pid),
+            },
+            process_starttime_reader=guardian.read_process_starttime,
+        )
+        assert accepted.recv(32) == b"child-ready"
+        accepted.sendall(b"parent-accepted")
+        stdout, stderr = child.communicate(timeout=10)
+        assert child.returncode == 0, (stdout, stderr)
+    finally:
+        if child.poll() is None:
+            child.kill()
+            child.communicate()
+        if accepted is not None:
+            accepted.close()
+        listener.close_once()
+        listener.remove_path_once()
+
+
+def test_guardian_control_rejects_wrong_peer_identity(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    listener = guardian.GuardianControlListener(control_path)
+    client = guardian.connect_guardian_control(control_path)
+    try:
+        with pytest.raises(
+            guardian.GuardianProtocolError,
+            match="accepted the wrong process",
+        ):
+            listener.accept_once(
+                expected_peer_process={
+                    "pid": os.getpid() + 1_000_000,
+                    "starttime": 1,
+                },
+                process_starttime_reader=guardian.read_process_starttime,
+            )
+    finally:
+        client.close()
+        listener.close_once()
+        listener.remove_path_once()
+
+
+def test_formal_campaign_abandons_guardian_parent_after_drifted_cleanup(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal_campaign = formal_orchestrator._formal_campaign_module()  # noqa: SLF001
+    formal = tmp_path / "formal-ab16"
+    moved = tmp_path / "formal-ab16-moved"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    context = {
+        "guardian_control_socket_path": str(control_path),
+        "guardian_spec": {"unit_name": "ab16-focused-guardian.service"},
+    }
+    listener_type = guardian.GuardianControlListener
+    listeners: list[guardian.GuardianControlListener] = []
+    parent_descriptors: list[int] = []
+
+    def listener_factory(path: Path | str) -> guardian.GuardianControlListener:
+        listener = listener_type(path)
+        listeners.append(listener)
+        parent_descriptors.append(listener.parent.descriptor)
+        return listener
+
+    class AbsentHost:
+        def show(self, _unit_name: str) -> dict[str, str]:
+            return dict(formal_campaign.closeout_helper.ABSENT)
+
+    def fail_after_parent_replacement(*_args: object, **_kwargs: object) -> None:
+        formal.rename(moved)
+        formal.mkdir()
+        (formal / control_path.name).write_bytes(b"do-not-delete")
+        raise RuntimeError("sentinel launch failure")
+
+    monkeypatch.setattr(
+        formal_campaign.guardian,
+        "GuardianControlListener",
+        listener_factory,
+    )
+    monkeypatch.setattr(
+        formal_campaign,
+        "_launch_selected_unit",
+        fail_after_parent_replacement,
+    )
+    monkeypatch.setattr(
+        formal_campaign,
+        "_wait_uncertain_unit_resolution",
+        lambda *_args, **_kwargs: dict(formal_campaign.closeout_helper.ABSENT),
+    )
+
+    with pytest.raises(formal_campaign.GuardianLaunchFailure) as caught:
+        formal_campaign.start_guardian(
+            boundary=SimpleNamespace(),
+            context=context,
+            admission={},
+            admission_identity={},
+            host=AbsentHost(),
+            store=SimpleNamespace(),
+        )
+
+    assert len(listeners) == len(parent_descriptors) == 1
+    assert not listeners[0].parent_owned
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptors[0])
+    replacement = formal / control_path.name
+    assert replacement.read_bytes() == b"do-not-delete"
+    assert os.path.lexists(moved / control_path.name)
+    assert any(
+        item["code"] == "GUARDIAN_LISTENER_REMOVE_FAILED_OR_UNCERTAIN"
+        for item in caught.value.cleanup_errors
+    )
+    assert not any(
+        item["code"]
+        == "GUARDIAN_LISTENER_PARENT_ABANDON_FAILED_OR_UNCERTAIN"
+        for item in caught.value.cleanup_errors
+    )
+
+    replacement.unlink()
+    formal.rmdir()
+    os.unlink(moved / control_path.name)
+    moved.rmdir()
 
 
 def test_guardian_frame_and_failure_state_are_canonical_and_monotone() -> None:
@@ -4065,8 +4609,26 @@ def _tree_bytes_snapshot(root: Path) -> dict[str, tuple[object, ...]]:
     return snapshot
 
 
-def test_selected_loader_imports_formal_orchestrator_from_materialized_snapshot_without_effects(
+@pytest.mark.parametrize(
+    ("role", "module_name", "role_relative"),
+    (
+        (
+            "formal-orchestrator",
+            "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1",
+            "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py",
+        ),
+        (
+            "formal-supervisor",
+            "docs.research.noncert_cuts_ab16_20260724.ab16_formal_campaign_v1",
+            "docs/research/noncert_cuts_ab16_20260724/ab16_formal_campaign_v1.py",
+        ),
+    ),
+)
+def test_selected_loader_imports_role_from_materialized_snapshot_without_effects(
     tmp_path: Path,
+    role: str,
+    module_name: str,
+    role_relative: str,
 ) -> None:
     repository = Path(__file__).resolve().parents[2]
     research_relative = Path("docs/research/noncert_cuts_ab16_20260724")
@@ -4116,6 +4678,9 @@ from types import ModuleType
 loader_path = Path(sys.argv[1])
 snapshot_root = Path(sys.argv[2])
 campaign_dir = Path(sys.argv[3])
+role_expected = sys.argv[4]
+module_expected = sys.argv[5]
+role_relative = sys.argv[6]
 descriptor = os.open(loader_path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
 os.dup2(descriptor, 4)
 if descriptor != 4:
@@ -4159,7 +4724,7 @@ def identity(path):
 
 role_source = (
     snapshot_root
-    / "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py"
+    / role_relative
 )
 loader_identity = identity(loader_path)
 role_identity = identity(role_source)
@@ -4167,13 +4732,9 @@ authority = ModuleType("_selected_authority")
 
 def replay_loader_context(*, campaign_dir, role, role_module, role_path):
     assert Path(campaign_dir) == campaign_dir_expected
-    assert role == "formal-orchestrator"
-    assert role_module == (
-        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1"
-    )
-    assert role_path == (
-        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py"
-    )
+    assert role == role_expected
+    assert role_module == module_expected
+    assert role_path == role_relative
     return {
         "authority_scope": "AB16_RESEARCH_ONLY",
         "campaign_dir": str(campaign_dir_expected),
@@ -4202,21 +4763,20 @@ campaign_dir_expected = campaign_dir
 loaded = module.load_verified_role(
     authority,
     campaign_dir=campaign_dir,
-    role="formal-orchestrator",
+    role=role_expected,
     executing_loader_module=verified,
 )
-assert loaded.role == "formal-orchestrator"
-assert loaded.module.__name__ == (
-    "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1"
-)
-snapshot_bootstrap = sys.modules[
-    "docs.research.noncert_cuts_ab16_20260724.ab16_campaign_bootstrap_v2"
-]
-assert loaded.module.bootstrap is snapshot_bootstrap
-assert snapshot_bootstrap._PREPACKAGE_STATE is None
-assert snapshot_bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1
-assert snapshot_bootstrap.OWNER_OEXCL_PUBLISH_V1
-assert loaded.module._FORMAL_CAMPAIGN_MODULE is None
+assert loaded.role == role_expected
+assert loaded.module.__name__ == module_expected
+if role_expected == "formal-orchestrator":
+    snapshot_bootstrap = sys.modules[
+        "docs.research.noncert_cuts_ab16_20260724.ab16_campaign_bootstrap_v2"
+    ]
+    assert loaded.module.bootstrap is snapshot_bootstrap
+    assert snapshot_bootstrap._PREPACKAGE_STATE is None
+    assert snapshot_bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1
+    assert snapshot_bootstrap.OWNER_OEXCL_PUBLISH_V1
+    assert loaded.module._FORMAL_CAMPAIGN_MODULE is None
 assert not (campaign_dir / "formal-ab16").exists()
 print("PASS")
 """
@@ -4230,6 +4790,9 @@ print("PASS")
             str(package_loader),
             str(snapshot_root),
             str(campaign),
+            role,
+            module_name,
+            role_relative,
         ],
         check=False,
         stdout=subprocess.PIPE,

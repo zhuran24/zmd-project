@@ -2,7 +2,7 @@
 
 Document kind: execution history
 Cutoff date: 2026-07-24
-Current status: `DISPOSABLE_LIVE_CHAIN_PASS / FULL_PREFLIGHT_PASS / GATE_A_FINALIZED / GATE_B_NOT_CREATED`
+Cutoff status: `DISPOSABLE_LIVE_CHAIN_PASS / FULL_PREFLIGHT_PASS / GATE_A_FINALIZED / GATE_B_NOT_CREATED`
 
 ## Immutable starting facts
 

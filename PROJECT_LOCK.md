@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-07-29 (AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
+**Updated**: 2026-07-30 (AB16 formal selected-loader and pathname-transport hardening; AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; prior: active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -655,6 +655,22 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   identity drift, HEAD drift or producer/verifier disagreement fails before
   Gate-B qualification. This archival byte bridge grants no new experiment,
   cut, witness, bound, production or certified authority.
+- `guardian_control_socket_path` remains exactly the canonical absolute
+  campaign child `formal-ab16/guardian-control.sock`. Records, handoff joins,
+  and socket identities store only that absolute path plus its exact
+  device/inode/mode/uid; a `/proc/self/fd/<retained-parent-fd>/...` spelling
+  is never serialized and grants no authority. Because the registered
+  worktree path exceeds Linux pathname `AF_UNIX` capacity, the package-pinned
+  listener and connector may pass only that short descriptor alias to the
+  kernel after opening every absolute parent component with
+  `O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC`. The listener must pin the created leaf
+  with `O_PATH`, join device/inode before and after mode `0600` installation,
+  retain the parent FD through exact unlink/fsync, reject parent or leaf
+  replacement, and close the retained FD without unlinking any unverified
+  node on failure. The subsequent lock handoff still joins the canonical
+  socket identity with `SO_PEERCRED` PID/starttime. This internal transport
+  does not change the path-preregistration or formal artifact schemas and
+  cannot retrofit, replay, or authorize an immutable historical root.
 - Gate-B qualification has one persistent owner actor. The same
   PID/starttime and qualification session acquire and retain the exact three
   heavy-work locks before the first resource gate, cover the final full
