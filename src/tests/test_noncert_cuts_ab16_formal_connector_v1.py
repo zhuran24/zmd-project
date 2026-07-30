@@ -2031,6 +2031,102 @@ def test_loader_rejects_ambient_and_outside_snapshot_module_origins(
         )
 
 
+def test_loader_accepts_only_absent_canonical_pathfinder_cache_metadata(
+    tmp_path: Path,
+) -> None:
+    snapshot = tmp_path / "snapshot"
+    snapshot.mkdir()
+    source = snapshot / "probe_role.py"
+    source.write_text("VALUE = 17\n", encoding="utf-8")
+    repository = Path(__file__).resolve().parents[2]
+    script = f"""
+import importlib
+import importlib.util
+from pathlib import Path
+import sys
+
+sys.path.insert(0, {str(repository)!r})
+sys.path.insert(0, {str(snapshot)!r})
+from docs.research.noncert_cuts_ab16_20260724 import ab16_formal_loader_v1 as loader
+
+module = importlib.import_module("probe_role")
+expected = Path({str(source)!r})
+expected_cached = importlib.util.cache_from_source(str(expected))
+assert module.__cached__ == expected_cached
+assert module.__spec__.cached == expected_cached
+assert not Path(expected_cached).exists()
+loader._verify_module_origin(
+    module,
+    expected=expected,
+    snapshot_root=Path({str(snapshot)!r}),
+)
+assert module.__cached__ is None
+assert module.__spec__.cached == expected_cached
+assert not (Path({str(snapshot)!r}) / "__pycache__").exists()
+print("PASS")
+"""
+    completed = subprocess.run(
+        [sys.executable, "-I", "-B", "-c", script],
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == "PASS\n"
+
+
+@pytest.mark.parametrize("cache_node", ("regular", "directory", "symlink"))
+def test_loader_rejects_materialized_pathfinder_bytecode_cache(
+    tmp_path: Path,
+    cache_node: str,
+) -> None:
+    snapshot = tmp_path / "snapshot"
+    source = snapshot / "probe_role.py"
+    source.parent.mkdir()
+    source.write_text("VALUE = 17\n", encoding="utf-8")
+    repository = Path(__file__).resolve().parents[2]
+    script = f"""
+import importlib
+from pathlib import Path
+import sys
+
+sys.path.insert(0, {str(repository)!r})
+sys.path.insert(0, {str(snapshot)!r})
+from docs.research.noncert_cuts_ab16_20260724 import ab16_formal_loader_v1 as loader
+
+module = importlib.import_module("probe_role")
+source = Path({str(source)!r})
+cache = Path(module.__cached__)
+cache.parent.mkdir()
+cache_node = {cache_node!r}
+if cache_node == "regular":
+    cache.write_bytes(b"not trusted bytecode")
+elif cache_node == "directory":
+    cache.mkdir()
+else:
+    cache.symlink_to(source)
+try:
+    loader._verify_module_origin(module, expected=source, snapshot_root=Path({str(snapshot)!r}))
+except loader.FormalLoaderError as exc:
+    assert "materialized bytecode cache" in str(exc)
+else:
+    raise AssertionError("materialized cache node was accepted")
+print("PASS")
+"""
+    completed = subprocess.run(
+        [sys.executable, "-I", "-B", "-c", script],
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == "PASS\n"
+
+
 def test_loader_runtime_prefix_under_git_ancestor_is_platform_only(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

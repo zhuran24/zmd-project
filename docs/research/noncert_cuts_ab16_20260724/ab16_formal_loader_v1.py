@@ -25,6 +25,7 @@ import argparse
 import hashlib
 import importlib
 from importlib.machinery import BuiltinImporter, FrozenImporter, PathFinder
+from importlib.util import cache_from_source
 import json
 import os
 from pathlib import Path
@@ -580,8 +581,36 @@ def _verify_module_origin(module: ModuleType, *, expected: Path, snapshot_root: 
     if not origins or any(not _inside(origin, snapshot_root) for origin in origins):
         raise FormalLoaderError(f"{module.__name__} escaped the verified snapshot")
     cached = getattr(module, "__cached__", None)
-    if cached is not None:
-        raise FormalLoaderError(f"{module.__name__} unexpectedly exposed bytecode cache state")
+    module_spec = getattr(module, "__spec__", None)
+    spec_cached = getattr(module_spec, "cached", None)
+    if cached is None and spec_cached is None:
+        return
+    expected_cached = os.path.abspath(cache_from_source(str(expected)))
+    if (
+        (cached is not None and (type(cached) is not str or cached != expected_cached))
+        or spec_cached != expected_cached
+        or not _inside(_resolved(expected_cached), snapshot_root)
+    ):
+        raise FormalLoaderError(
+            f"{module.__name__} exposed noncanonical bytecode cache metadata"
+        )
+    try:
+        os.lstat(expected_cached)
+    except FileNotFoundError:
+        pass
+    except OSError as exc:
+        raise FormalLoaderError(
+            f"{module.__name__} bytecode cache absence could not be proved"
+        ) from exc
+    else:
+        raise FormalLoaderError(
+            f"{module.__name__} unexpectedly materialized bytecode cache state"
+        )
+    setattr(module, "__cached__", None)
+    if getattr(module, "__cached__", None) is not None:
+        raise FormalLoaderError(
+            f"{module.__name__} bytecode cache metadata could not be cleared"
+        )
 
 
 def _prepare_legacy_aliases(snapshot_root: Path, authority_module: ModuleType) -> None:
