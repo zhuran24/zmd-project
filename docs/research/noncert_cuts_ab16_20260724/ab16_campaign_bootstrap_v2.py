@@ -1338,8 +1338,16 @@ def _prepackage_state() -> tuple[types.ModuleType, dict[str, Any]]:
     global _PREPACKAGE_STATE
     if _PREPACKAGE_STATE is not None:
         return _PREPACKAGE_STATE
+    if not _is_live_prepackage_closure_entry():
+        raise BootstrapError(
+            "pre-package authority is unavailable outside the exact live checkout entry"
+        )
     with _PREPACKAGE_STATE_LOCK:
         if _PREPACKAGE_STATE is None:
+            if not _is_live_prepackage_closure_entry():
+                raise BootstrapError(
+                    "pre-package authority is unavailable outside the exact live checkout entry"
+                )
             loaded = _load_authority_from_fixed_head()
             _PREPACKAGE_STATE = loaded
             atexit.register(_close_bootstrap_binding, loaded[1])
@@ -1370,10 +1378,78 @@ class _LazyBootstrapBinding(Mapping[str, Any]):
 authority: Any = _LazyAuthority()
 _BOOTSTRAP_BINDING: Mapping[str, Any] = _LazyBootstrapBinding()
 
+
+def _live_prepackage_repository(*, allow_retained_fd: bool) -> Path | None:
+    raw_source = Path(os.path.abspath(__file__))
+    try:
+        source_metadata = os.lstat(raw_source)
+    except OSError as exc:
+        raise BootstrapError("pre-package source metadata cannot be inspected") from exc
+    if stat.S_ISREG(source_metadata.st_mode):
+        source = raw_source.resolve(strict=False)
+        if raw_source != source:
+            return None
+    elif (
+        allow_retained_fd
+        and stat.S_ISLNK(source_metadata.st_mode)
+        and raw_source.parent == Path("/proc/self/fd")
+        and raw_source.name.isdecimal()
+    ):
+        descriptor = int(raw_source.name)
+        try:
+            retained = os.fstat(descriptor)
+            source = raw_source.resolve(strict=True)
+            named = os.stat(source, follow_symlinks=False)
+        except OSError as exc:
+            raise BootstrapError(
+                "retained pre-package source identity cannot be inspected"
+            ) from exc
+        if (
+            not stat.S_ISREG(retained.st_mode)
+            or retained.st_nlink != 1
+            or _fd_signature(retained) != _fd_signature(named)
+        ):
+            return None
+    else:
+        return None
+    repository = source.parents[3]
+    expected = (
+        repository
+        / "docs"
+        / "research"
+        / "noncert_cuts_ab16_20260724"
+        / "ab16_campaign_bootstrap_v2.py"
+    )
+    if source != expected:
+        return None
+    git_metadata = repository / ".git"
+    try:
+        metadata = os.lstat(git_metadata)
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise BootstrapError("pre-package Git metadata cannot be inspected") from exc
+    if not (stat.S_ISDIR(metadata.st_mode) or stat.S_ISREG(metadata.st_mode)):
+        return None
+    return repository
+
+
+def _is_live_prepackage_entry() -> bool:
+    """Recognize only the directly imported tracked Git entry."""
+
+    return _live_prepackage_repository(allow_retained_fd=False) is not None
+
+
+def _is_live_prepackage_closure_entry() -> bool:
+    """Also admit the same tracked source held open at ``/proc/self/fd/N``."""
+
+    return _live_prepackage_repository(allow_retained_fd=True) is not None
+
+
 # The tracked pre-package entry retains its historical import-time Git binding.
-# Package payloads have the manifest-fixed ``tool.`` basename and need only the
+# Package payloads and the Git-free sealed repository snapshot need only the
 # owner literals until a real pre-package API is requested.
-if Path(__file__).name == "ab16_campaign_bootstrap_v2.py":
+if _is_live_prepackage_entry():
     _prepackage_state()
 
 

@@ -3951,19 +3951,30 @@ def test_success_verifier_is_separate_from_producers_and_rejects_receipt_drift(
         )
 
 
-def test_packaged_bootstrap_exposes_owner_literals_without_live_git_initialization(
+def test_packaged_and_snapshot_bootstrap_expose_owner_literals_without_live_git_initialization(
     tmp_path: Path,
 ) -> None:
-    packaged = (
-        tmp_path
-        / "campaign"
-        / "campaign-authority"
-        / "package"
-        / "payload"
-        / "tool.ab16_campaign_bootstrap_v2.py"
+    sources = (
+        (
+            tmp_path
+            / "campaign"
+            / "campaign-authority"
+            / "package"
+            / "payload"
+            / "tool.ab16_campaign_bootstrap_v2.py"
+        ),
+        (
+            tmp_path
+            / "campaign"
+            / "campaign-authority"
+            / "source-snapshot-a001"
+            / "repository"
+            / "docs"
+            / "research"
+            / "noncert_cuts_ab16_20260724"
+            / "ab16_campaign_bootstrap_v2.py"
+        ),
     )
-    packaged.parent.mkdir(parents=True)
-    shutil.copy2(Path(bootstrap.__file__), packaged)
     probe = """
 import importlib.util
 from pathlib import Path
@@ -3989,11 +4000,359 @@ except module.BootstrapError:
 else:
     raise SystemExit("package bootstrap gained pre-package Git authority")
 """
+    for source in sources:
+        source.parent.mkdir(parents=True)
+        shutil.copy2(Path(bootstrap.__file__), source)
+        completed = subprocess.run(
+            [sys.executable, "-I", "-B", "-c", probe, str(source)],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        assert completed.returncode == 0, completed.stderr
+
+
+def test_tracked_live_bootstrap_retains_verified_git_descriptors() -> None:
+    assert bootstrap._is_live_prepackage_entry() is True  # noqa: SLF001
+    state = bootstrap._PREPACKAGE_STATE  # noqa: SLF001
+    assert state is not None
+    _authority_module, binding = state
+    repository = Path(bootstrap.__file__).resolve().parents[3]
+    assert binding["repository_root"] == str(repository)
+
+    git_fd = int(binding["git_fd"])
+    parent_fd = int(binding["git_parent_fd"])
+    before_git = os.fstat(git_fd)
+    before_parent = os.fstat(parent_fd)
+    bootstrap._verify_bootstrap_git(binding)  # noqa: SLF001
+    after_git = os.fstat(git_fd)
+    after_parent = os.fstat(parent_fd)
+    named = os.stat(
+        str(binding["git_name"]),
+        dir_fd=parent_fd,
+        follow_symlinks=False,
+    )
+    proc = os.stat(f"/proc/self/fd/{git_fd}")
+
+    assert bootstrap._fd_signature(before_git) == binding["git_signature"]  # noqa: SLF001
+    assert bootstrap._fd_signature(after_git) == binding["git_signature"]  # noqa: SLF001
+    assert bootstrap._fd_signature(named) == binding["git_signature"]  # noqa: SLF001
+    assert bootstrap._fd_signature(proc) == binding["git_signature"]  # noqa: SLF001
+    assert bootstrap._fd_signature(before_parent) == binding["git_parent_signature"]  # noqa: SLF001
+    assert bootstrap._fd_signature(after_parent) == binding["git_parent_signature"]  # noqa: SLF001
+
+
+def _tree_bytes_snapshot(root: Path) -> dict[str, tuple[object, ...]]:
+    snapshot: dict[str, tuple[object, ...]] = {}
+    for path in sorted(root.rglob("*")):
+        relative = path.relative_to(root).as_posix()
+        metadata = os.lstat(path)
+        if stat.S_ISDIR(metadata.st_mode):
+            snapshot[relative] = ("directory", stat.S_IMODE(metadata.st_mode))
+        elif stat.S_ISREG(metadata.st_mode):
+            raw = path.read_bytes()
+            snapshot[relative] = (
+                "regular",
+                stat.S_IMODE(metadata.st_mode),
+                len(raw),
+                hashlib.sha256(raw).hexdigest(),
+            )
+        elif stat.S_ISLNK(metadata.st_mode):
+            snapshot[relative] = ("symlink", os.readlink(path))
+        else:
+            snapshot[relative] = ("special", metadata.st_mode)
+    return snapshot
+
+
+def test_selected_loader_imports_formal_orchestrator_from_materialized_snapshot_without_effects(
+    tmp_path: Path,
+) -> None:
+    repository = Path(__file__).resolve().parents[2]
+    research_relative = Path("docs/research/noncert_cuts_ab16_20260724")
+    campaign = tmp_path / "campaign"
+    snapshot_root = (
+        campaign
+        / "campaign-authority"
+        / "source-snapshot-a001"
+        / "repository"
+    )
+    snapshot_research = snapshot_root / research_relative
+    package_loader = (
+        campaign
+        / "campaign-authority"
+        / "package"
+        / "payload"
+        / "tool.ab16_formal_loader_v1.py"
+    )
+    for relative in (Path("docs/__init__.py"), Path("docs/research/__init__.py")):
+        source = repository / relative
+        if source.exists():
+            target = snapshot_root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
+    for source in sorted((repository / research_relative).glob("*.py")):
+        target = snapshot_research / source.name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+    (snapshot_root / "src").mkdir()
+    shutil.copy2(repository / "PROJECT_LOCK.md", snapshot_root / "PROJECT_LOCK.md")
+    package_loader.parent.mkdir(parents=True)
+    shutil.copy2(Path(loader.__file__), package_loader)
+
+    formal_dir = campaign / "formal-ab16"
+    before = _tree_bytes_snapshot(campaign)
+    assert not formal_dir.exists()
+    probe = r"""
+import contextlib
+import hashlib
+import io
+import os
+from pathlib import Path
+import stat
+import sys
+from types import ModuleType
+
+loader_path = Path(sys.argv[1])
+snapshot_root = Path(sys.argv[2])
+campaign_dir = Path(sys.argv[3])
+descriptor = os.open(loader_path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+os.dup2(descriptor, 4)
+if descriptor != 4:
+    os.close(descriptor)
+metadata = os.fstat(4)
+raw = os.pread(4, metadata.st_size, 0)
+expected = {
+    "mode": stat.S_IMODE(metadata.st_mode),
+    "path": str(loader_path),
+    "sha256": hashlib.sha256(raw).hexdigest(),
+    "size_bytes": len(raw),
+}
+
+module = ModuleType("__main__")
+module.__file__ = "/proc/self/fd/4"
+module.__package__ = None
+module.__spec__ = None
+sys.modules["__main__"] = module
+sys.argv = [module.__file__]
+with contextlib.redirect_stderr(io.StringIO()):
+    try:
+        exec(
+            compile(raw, module.__file__, "exec", dont_inherit=True),
+            module.__dict__,
+            module.__dict__,
+        )
+    except SystemExit as exc:
+        assert exc.code == 2
+    else:
+        raise AssertionError("selected loader unexpectedly accepted an empty CLI")
+verified = module._verify_executing_loader(expected)
+
+def identity(path):
+    target = Path(path)
+    data = target.read_bytes()
+    return {
+        "path": str(target),
+        "sha256": hashlib.sha256(data).hexdigest(),
+        "size_bytes": len(data),
+    }
+
+role_source = (
+    snapshot_root
+    / "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py"
+)
+loader_identity = identity(loader_path)
+role_identity = identity(role_source)
+authority = ModuleType("_selected_authority")
+
+def replay_loader_context(*, campaign_dir, role, role_module, role_path):
+    assert Path(campaign_dir) == campaign_dir_expected
+    assert role == "formal-orchestrator"
+    assert role_module == (
+        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1"
+    )
+    assert role_path == (
+        "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py"
+    )
+    return {
+        "authority_scope": "AB16_RESEARCH_ONLY",
+        "campaign_dir": str(campaign_dir_expected),
+        "campaign_root_identity": loader_identity,
+        "package_id": "1" * 64,
+        "package_manifest_identity": loader_identity,
+        "package_seal_identity": loader_identity,
+        "repository_head": "2" * 40,
+        "repository_tree": "3" * 40,
+        "role": role,
+        "role_module": role_module,
+        "role_source_identity": role_identity,
+        "schema_version": "noncert-cuts-ab16-formal-loader-context-v1",
+        "snapshot_materialization_identity": loader_identity,
+        "snapshot_root": str(snapshot_root),
+        "status": "PASS",
+    }
+
+def snapshot_regular(path):
+    return Path(path)
+
+authority.replay_loader_context = replay_loader_context
+authority.snapshot_regular = snapshot_regular
+authority.detached_identity = identity
+campaign_dir_expected = campaign_dir
+loaded = module.load_verified_role(
+    authority,
+    campaign_dir=campaign_dir,
+    role="formal-orchestrator",
+    executing_loader_module=verified,
+)
+assert loaded.role == "formal-orchestrator"
+assert loaded.module.__name__ == (
+    "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1"
+)
+snapshot_bootstrap = sys.modules[
+    "docs.research.noncert_cuts_ab16_20260724.ab16_campaign_bootstrap_v2"
+]
+assert loaded.module.bootstrap is snapshot_bootstrap
+assert snapshot_bootstrap._PREPACKAGE_STATE is None
+assert snapshot_bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1
+assert snapshot_bootstrap.OWNER_OEXCL_PUBLISH_V1
+assert loaded.module._FORMAL_CAMPAIGN_MODULE is None
+assert not (campaign_dir / "formal-ab16").exists()
+print("PASS")
+"""
     completed = subprocess.run(
-        [sys.executable, "-I", "-B", "-c", probe, str(packaged)],
+        [
+            sys.executable,
+            "-I",
+            "-B",
+            "-c",
+            probe,
+            str(package_loader),
+            str(snapshot_root),
+            str(campaign),
+        ],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == "PASS\n"
+    assert completed.stderr == ""
+    assert not formal_dir.exists()
+    assert _tree_bytes_snapshot(campaign) == before
+
+
+@pytest.mark.parametrize(
+    "boundary",
+    (
+        "source-symlink",
+        "git-symlink",
+        "git-fifo",
+    ),
+)
+def test_snapshot_bootstrap_symlink_and_unsafe_git_boundaries_remain_lazy_and_fail_closed(
+    tmp_path: Path,
+    boundary: str,
+) -> None:
+    repository = tmp_path / boundary / "repository"
+    source = (
+        repository
+        / "docs"
+        / "research"
+        / "noncert_cuts_ab16_20260724"
+        / "ab16_campaign_bootstrap_v2.py"
+    )
+    source.parent.mkdir(parents=True)
+    if boundary == "source-symlink":
+        source.symlink_to(Path(bootstrap.__file__).resolve())
+    else:
+        shutil.copy2(Path(bootstrap.__file__), source)
+        if boundary == "git-symlink":
+            external = tmp_path / "external-git"
+            external.mkdir()
+            (repository / ".git").symlink_to(external, target_is_directory=True)
+        else:
+            os.mkfifo(repository / ".git")
+    probe = r"""
+import importlib.util
+from pathlib import Path
+import sys
+
+source = Path(sys.argv[1])
+spec = importlib.util.spec_from_file_location("_snapshot_bootstrap_boundary", source)
+assert spec is not None and spec.loader is not None
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+assert module._PREPACKAGE_STATE is None
+assert module.FORMAL_LAUNCH_OWNER_DRIVER_V1
+assert module.OWNER_OEXCL_PUBLISH_V1
+try:
+    module._prepackage_state()
+except module.BootstrapError as exc:
+    assert "outside the exact live checkout entry" in str(exc)
+else:
+    raise AssertionError("unsafe bootstrap entry gained live Git authority")
+print("PASS")
+"""
+    completed = subprocess.run(
+        [sys.executable, "-I", "-B", "-c", probe, str(source)],
         check=False,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
     )
     assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == "PASS\n"
+
+
+@pytest.mark.parametrize("git_node", ("forged-directory", "forged-regular"))
+def test_forged_git_nodes_cannot_complete_eager_live_authority(
+    tmp_path: Path,
+    git_node: str,
+) -> None:
+    repository = tmp_path / git_node / "repository"
+    source = (
+        repository
+        / "docs"
+        / "research"
+        / "noncert_cuts_ab16_20260724"
+        / "ab16_campaign_bootstrap_v2.py"
+    )
+    source.parent.mkdir(parents=True)
+    shutil.copy2(Path(bootstrap.__file__), source)
+    git_metadata = repository / ".git"
+    if git_node == "forged-directory":
+        git_metadata.mkdir()
+    else:
+        git_metadata.write_text("not a gitdir\n", encoding="utf-8")
+    probe = r"""
+import importlib.util
+from pathlib import Path
+import sys
+
+source = Path(sys.argv[1])
+spec = importlib.util.spec_from_file_location("_forged_live_bootstrap", source)
+assert spec is not None and spec.loader is not None
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+try:
+    spec.loader.exec_module(module)
+except module.BootstrapError:
+    pass
+else:
+    raise AssertionError("forged Git metadata gained live pre-package authority")
+assert module._PREPACKAGE_STATE is None
+print("PASS")
+"""
+    completed = subprocess.run(
+        [sys.executable, "-I", "-B", "-c", probe, str(source)],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == "PASS\n"
