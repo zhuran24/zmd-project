@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import argparse
 import atexit
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from datetime import datetime, timezone
 import hashlib
 import importlib.metadata
@@ -29,6 +29,7 @@ import socket
 import stat
 import subprocess
 import sys
+import threading
 import types
 from typing import Any
 import unicodedata
@@ -1329,8 +1330,51 @@ def _load_authority_from_fixed_head() -> tuple[types.ModuleType, dict[str, Any]]
         raise
 
 
-authority, _BOOTSTRAP_BINDING = _load_authority_from_fixed_head()
-atexit.register(_close_bootstrap_binding, _BOOTSTRAP_BINDING)
+_PREPACKAGE_STATE: tuple[types.ModuleType, dict[str, Any]] | None = None
+_PREPACKAGE_STATE_LOCK = threading.Lock()
+
+
+def _prepackage_state() -> tuple[types.ModuleType, dict[str, Any]]:
+    global _PREPACKAGE_STATE
+    if _PREPACKAGE_STATE is not None:
+        return _PREPACKAGE_STATE
+    with _PREPACKAGE_STATE_LOCK:
+        if _PREPACKAGE_STATE is None:
+            loaded = _load_authority_from_fixed_head()
+            _PREPACKAGE_STATE = loaded
+            atexit.register(_close_bootstrap_binding, loaded[1])
+    assert _PREPACKAGE_STATE is not None
+    return _PREPACKAGE_STATE
+
+
+class _LazyAuthority:
+    """Expose the live Git authority only when a pre-package API needs it."""
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(_prepackage_state()[0], name)
+
+
+class _LazyBootstrapBinding(Mapping[str, Any]):
+    """Delay the retained Git binding while package consumers read literals."""
+
+    def __getitem__(self, key: str) -> Any:
+        return _prepackage_state()[1][key]
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(_prepackage_state()[1])
+
+    def __len__(self) -> int:
+        return len(_prepackage_state()[1])
+
+
+authority: Any = _LazyAuthority()
+_BOOTSTRAP_BINDING: Mapping[str, Any] = _LazyBootstrapBinding()
+
+# The tracked pre-package entry retains its historical import-time Git binding.
+# Package payloads have the manifest-fixed ``tool.`` basename and need only the
+# owner literals until a real pre-package API is requested.
+if Path(__file__).name == "ab16_campaign_bootstrap_v2.py":
+    _prepackage_state()
 
 
 def _replay_prepackage_closure(*, planned: Mapping[str, Mapping[str, object]] | None = None) -> None:

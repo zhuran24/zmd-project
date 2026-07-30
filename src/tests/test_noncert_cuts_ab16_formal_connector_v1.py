@@ -10,6 +10,7 @@ import inspect
 import json
 import os
 from pathlib import Path
+import shutil
 import socket
 import stat
 import subprocess
@@ -3948,3 +3949,51 @@ def test_success_verifier_is_separate_from_producers_and_rejects_receipt_drift(
             expected_unit_name=str(fixture.context["outer_spec"]["unit_name"]),
             expected_lock_identities=fixture.lock_identities,
         )
+
+
+def test_packaged_bootstrap_exposes_owner_literals_without_live_git_initialization(
+    tmp_path: Path,
+) -> None:
+    packaged = (
+        tmp_path
+        / "campaign"
+        / "campaign-authority"
+        / "package"
+        / "payload"
+        / "tool.ab16_campaign_bootstrap_v2.py"
+    )
+    packaged.parent.mkdir(parents=True)
+    shutil.copy2(Path(bootstrap.__file__), packaged)
+    probe = """
+import importlib.util
+from pathlib import Path
+import sys
+
+source = Path(sys.argv[1])
+spec = importlib.util.spec_from_file_location("_packaged_ab16_bootstrap_probe", source)
+if spec is None or spec.loader is None:
+    raise SystemExit("package bootstrap loader is unavailable")
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+if module._PREPACKAGE_STATE is not None:
+    raise SystemExit("package bootstrap initialized live Git during import")
+if not module.FORMAL_LAUNCH_OWNER_DRIVER_V1 or not module.OWNER_OEXCL_PUBLISH_V1:
+    raise SystemExit("package bootstrap owner literals are unavailable")
+if module._PREPACKAGE_STATE is not None:
+    raise SystemExit("owner literal access initialized live Git")
+try:
+    module._replay_prepackage_closure()
+except module.BootstrapError:
+    pass
+else:
+    raise SystemExit("package bootstrap gained pre-package Git authority")
+"""
+    completed = subprocess.run(
+        [sys.executable, "-I", "-B", "-c", probe, str(packaged)],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
