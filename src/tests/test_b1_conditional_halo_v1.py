@@ -8,6 +8,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
 from textwrap import dedent
 from types import ModuleType, SimpleNamespace
 import sys
@@ -1088,6 +1089,7 @@ def _make_checked_pair_run(
     constructor: ModuleType,
     sat_checker: ModuleType,
     runner: ModuleType,
+    request: pytest.FixtureRequest,
 ) -> Path:
     evidence = directory / "evidence"
     evidence.mkdir(parents=True)
@@ -1117,6 +1119,13 @@ def _make_checked_pair_run(
     )
     run = directory / "pair-run"
     run.mkdir()
+
+    def remove_pair_run() -> None:
+        if run.exists():
+            shutil.rmtree(run)
+        assert not run.exists()
+
+    request.addfinalizer(remove_pair_run)
     payload, exit_code = runner._execute(
         SimpleNamespace(
             control_checked_sat=checked_paths["control"],
@@ -1140,8 +1149,9 @@ def test_recursive_manifest_independently_rechecks_dual_sat_and_rejects_symlinks
     sat_checker: ModuleType,
     runner: ModuleType,
     tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> None:
-    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner)
+    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner, request)
     manifest = run / manifest_verifier.MANIFEST_NAME
     record = run / manifest_verifier.RUN_RECORD_NAME
     result = manifest_verifier.verify(run, manifest, record, PROJECT_ROOT)
@@ -1160,8 +1170,9 @@ def test_manifest_verifier_rejects_status_only_missing_evidence_and_swapped_mode
     sat_checker: ModuleType,
     runner: ModuleType,
     tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> None:
-    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner)
+    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner, request)
     manifest = run / manifest_verifier.MANIFEST_NAME
     record = run / manifest_verifier.RUN_RECORD_NAME
     original_record = record.read_bytes()
@@ -1207,8 +1218,9 @@ def test_completion_requires_the_bound_strict_independent_evidence_check_set(
     sat_checker: ModuleType,
     runner: ModuleType,
     tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> None:
-    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner)
+    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner, request)
     manifest = run / manifest_verifier.MANIFEST_NAME
     record = run / manifest_verifier.RUN_RECORD_NAME
     verification_path = tmp_path / "manifest-verification.json"
