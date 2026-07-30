@@ -65,6 +65,7 @@ LOCK_COUNT = len(closeout_state.LOCK_PATHS)
 PEER_CREDENTIAL_SIZE = struct.calcsize("3i")
 MAX_CONTROL_POLL_SECONDS = 1.0
 MAX_UNIX_PATHNAME_BYTES = 107
+RENAME_NOREPLACE = 1
 
 HANDOFF_FIELDS = frozenset(
     {
@@ -732,12 +733,138 @@ def _control_socket_identity_at(
     )
 
 
-def _remove_bound_socket_at(
+def _guardian_control_retirement_path(absolute: Path) -> Path:
+    """Return the sole fixed terminal name for one control socket."""
+
+    return absolute.with_name(f"{absolute.name}.retired")
+
+
+def _rename_noreplace_at(
+    parent_descriptor: int,
+    source_name: str,
+    destination_name: str,
+) -> None:
+    """Atomically move one directory entry without replacing another."""
+
+    if (
+        type(parent_descriptor) is not int
+        or parent_descriptor < 0
+        or type(source_name) is not str
+        or not source_name
+        or "/" in source_name
+        or type(destination_name) is not str
+        or not destination_name
+        or "/" in destination_name
+        or source_name == destination_name
+    ):
+        raise GuardianProtocolError(
+            "guardian control retirement arguments are malformed"
+        )
+    libc = ctypes.CDLL(None, use_errno=True)
+    function = getattr(libc, "renameat2", None)
+    if function is None:
+        raise GuardianProtocolError(
+            "external libc lacks atomic no-overwrite rename"
+        )
+    function.argtypes = (
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_uint,
+    )
+    function.restype = ctypes.c_int
+    result = int(
+        function(
+            parent_descriptor,
+            os.fsencode(source_name),
+            parent_descriptor,
+            os.fsencode(destination_name),
+            RENAME_NOREPLACE,
+        )
+    )
+    if result != 0:
+        error_number = ctypes.get_errno()
+        raise OSError(error_number, os.strerror(error_number))
+
+
+def _socket_stat_matches_identity(
+    observed: os.stat_result,
+    expected_identity: Mapping[str, object] | None,
+) -> bool:
+    return bool(
+        stat.S_ISSOCK(observed.st_mode)
+        and not stat.S_ISLNK(observed.st_mode)
+        and observed.st_uid == os.getuid()
+        and (
+            expected_identity is None
+            or (
+                observed.st_dev == expected_identity["device"]
+                and observed.st_ino == expected_identity["inode"]
+                and (
+                    "mode" not in expected_identity
+                    or stat.S_IMODE(observed.st_mode)
+                    == expected_identity["mode"]
+                )
+            )
+        )
+    )
+
+
+def _directory_mutation_signature(
+    observed: os.stat_result,
+) -> tuple[int, ...]:
+    return (
+        observed.st_dev,
+        observed.st_ino,
+        observed.st_mode,
+        observed.st_nlink,
+        observed.st_uid,
+        observed.st_gid,
+        observed.st_size,
+        observed.st_mtime_ns,
+        observed.st_ctime_ns,
+    )
+
+
+def _restore_unverified_retirement(
+    parent_descriptor: int,
+    absolute: Path,
+    retirement: Path,
+    primary: BaseException,
+) -> None:
+    """Best-effort no-overwrite restore; never delete either occupant."""
+
+    try:
+        _rename_noreplace_at(
+            parent_descriptor,
+            retirement.name,
+            absolute.name,
+        )
+    except BaseException as restore_error:
+        primary.add_note(
+            "guardian control unverified node remains at the retirement "
+            f"path because no-overwrite restore failed: "
+            f"{type(restore_error).__name__}: {restore_error}"
+        )
+        return
+    try:
+        os.fsync(parent_descriptor)
+    except BaseException as restore_error:
+        primary.add_note(
+            "guardian control unverified node was restored to the canonical "
+            "path but restoration durability is uncertain: "
+            f"{type(restore_error).__name__}: {restore_error}"
+        )
+
+
+def _retire_bound_socket_at(
     parent_descriptor: int,
     absolute: Path,
     *,
     expected_identity: Mapping[str, object] | None,
-) -> None:
+) -> dict[str, object]:
+    retirement = _guardian_control_retirement_path(absolute)
     try:
         observed = os.stat(
             absolute.name,
@@ -746,29 +873,51 @@ def _remove_bound_socket_at(
         )
     except OSError as exc:
         raise GuardianProtocolError(
-            "guardian control socket is unavailable before removal"
+            "guardian control socket is unavailable before retirement"
         ) from exc
-    if (
-        not stat.S_ISSOCK(observed.st_mode)
-        or observed.st_uid != os.getuid()
-        or (
-            expected_identity is not None
-            and (
-                observed.st_dev != expected_identity["device"]
-                or observed.st_ino != expected_identity["inode"]
-                or (
-                    "mode" in expected_identity
-                    and stat.S_IMODE(observed.st_mode)
-                    != expected_identity["mode"]
-                )
-            )
-        )
-    ):
+    if not _socket_stat_matches_identity(observed, expected_identity):
         raise GuardianProtocolError(
-            "guardian control socket identity drifted before removal"
+            "guardian control socket identity drifted before retirement"
         )
-    os.unlink(absolute.name, dir_fd=parent_descriptor)
-    os.fsync(parent_descriptor)
+    try:
+        _rename_noreplace_at(
+            parent_descriptor,
+            absolute.name,
+            retirement.name,
+        )
+    except BaseException as exc:
+        raise GuardianProtocolError(
+            "guardian control socket atomic retirement failed"
+        ) from exc
+    try:
+        retired = os.stat(
+            retirement.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+    except BaseException as exc:
+        primary = GuardianProtocolError(
+            "guardian control retired entry could not be verified"
+        )
+        primary.__cause__ = exc
+        _restore_unverified_retirement(
+            parent_descriptor,
+            absolute,
+            retirement,
+            primary,
+        )
+        raise primary
+    if not _socket_stat_matches_identity(retired, expected_identity):
+        primary = GuardianProtocolError(
+            "guardian control retirement captured an unverified node"
+        )
+        _restore_unverified_retirement(
+            parent_descriptor,
+            absolute,
+            retirement,
+            primary,
+        )
+        raise primary
     try:
         os.stat(
             absolute.name,
@@ -776,8 +925,92 @@ def _remove_bound_socket_at(
             follow_symlinks=False,
         )
     except FileNotFoundError:
-        return
-    raise GuardianProtocolError("guardian control socket remains after removal")
+        pass
+    except BaseException as exc:
+        raise GuardianProtocolError(
+            "guardian control canonical path absence is uncertain after retirement"
+        ) from exc
+    else:
+        raise GuardianProtocolError(
+            "guardian control canonical path was replaced during retirement"
+        )
+    try:
+        os.fsync(parent_descriptor)
+    except BaseException as exc:
+        raise GuardianProtocolError(
+            "guardian control retirement durability is uncertain"
+        ) from exc
+    _require_directory_join(
+        absolute.parent,
+        parent_descriptor,
+    )
+    final_parent_before = _directory_mutation_signature(
+        os.fstat(parent_descriptor)
+    )
+    _require_directory_join(
+        absolute.parent,
+        parent_descriptor,
+    )
+    try:
+        final_retired = os.stat(
+            retirement.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+    except BaseException as exc:
+        raise GuardianProtocolError(
+            "guardian control retired entry is unavailable after durability sync"
+        ) from exc
+    if (
+        not _socket_stat_matches_identity(final_retired, expected_identity)
+        or (
+            final_retired.st_dev,
+            final_retired.st_ino,
+            final_retired.st_mode,
+            final_retired.st_uid,
+        )
+        != (
+            retired.st_dev,
+            retired.st_ino,
+            retired.st_mode,
+            retired.st_uid,
+        )
+    ):
+        raise GuardianProtocolError(
+            "guardian control retired identity drifted after durability sync"
+        )
+    try:
+        os.stat(
+            absolute.name,
+            dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+    except FileNotFoundError:
+        pass
+    except BaseException as exc:
+        raise GuardianProtocolError(
+            "guardian control canonical path absence is uncertain after durability sync"
+        ) from exc
+    else:
+        raise GuardianProtocolError(
+            "guardian control canonical path was replaced during durability sync"
+        )
+    final_parent_after = _directory_mutation_signature(
+        os.fstat(parent_descriptor)
+    )
+    if final_parent_after != final_parent_before:
+        raise GuardianProtocolError(
+            "guardian control parent changed during final retirement verification"
+        )
+    return launch_validator.validate_control_socket_identity(
+        {
+            "device": final_retired.st_dev,
+            "inode": final_retired.st_ino,
+            "mode": stat.S_IMODE(final_retired.st_mode),
+            "path": str(retirement),
+            "uid": final_retired.st_uid,
+        }
+    )
 
 
 def _chmod_bound_socket_at(
@@ -849,8 +1082,22 @@ def _chmod_bound_socket_at(
 class GuardianControlListener:
     """Supervisor-side pathname listener; it never carries inherited unit FDs."""
 
-    def __init__(self, path: Path | str) -> None:
+    def __init__(
+        self,
+        path: Path | str,
+        *,
+        retirement_path: Path | str | None = None,
+    ) -> None:
         self.path = Path(os.path.abspath(os.fspath(path)))
+        self.retirement_path = _guardian_control_retirement_path(self.path)
+        if (
+            retirement_path is not None
+            and Path(os.path.abspath(os.fspath(retirement_path)))
+            != self.retirement_path
+        ):
+            raise GuardianProtocolError(
+                "guardian control retirement path differs from the fixed topology"
+            )
         self.parent = _OwnedDescriptor()
         control: socket.socket | None = None
         self.accept_attempted = False
@@ -859,6 +1106,7 @@ class GuardianControlListener:
         self.closed = False
         self.parent_release_attempted = False
         self.remove_attempted = False
+        self.retired_identity: dict[str, object] | None = None
         try:
             self.parent.acquire(
                 _open_directory_no_symlinks(self.path.parent)
@@ -876,6 +1124,18 @@ class GuardianControlListener:
             else:
                 raise GuardianProtocolError(
                     "guardian control socket path already exists"
+                )
+            try:
+                os.stat(
+                    self.retirement_path.name,
+                    dir_fd=self.parent.descriptor,
+                    follow_symlinks=False,
+                )
+            except FileNotFoundError:
+                pass
+            else:
+                raise GuardianProtocolError(
+                    "guardian control socket retirement path already exists"
                 )
             control = socket.socket(
                 socket.AF_UNIX,
@@ -933,16 +1193,16 @@ class GuardianControlListener:
                     if self.bound_identity is None:
                         raise GuardianProtocolError(
                             "guardian control bound identity is unavailable; "
-                            "pathname was not removed"
+                            "pathname was not retired"
                         )
-                    _remove_bound_socket_at(
+                    self.retired_identity = _retire_bound_socket_at(
                         self.parent.descriptor,
                         self.path,
                         expected_identity=self.bound_identity,
                     )
                 except BaseException as cleanup_error:
                     exc.add_note(
-                        "guardian control pathname cleanup failed: "
+                        "guardian control pathname retirement failed: "
                         f"{type(cleanup_error).__name__}: {cleanup_error}"
                     )
             self.parent.close_preserving(exc)
@@ -1047,7 +1307,7 @@ class GuardianControlListener:
         self.remove_attempted = True
         primary: BaseException | None = None
         try:
-            _remove_bound_socket_at(
+            self.retired_identity = _retire_bound_socket_at(
                 self.parent.descriptor,
                 self.path,
                 expected_identity=self.identity,
@@ -1069,9 +1329,14 @@ class GuardianControlListener:
             raise primary
         if close_error is not None:
             raise GuardianProtocolError(
-                "guardian control parent cleanup failed after removal"
+                "guardian control parent cleanup failed after retirement"
             ) from close_error
-        return {"absent": True, "removed_identity": dict(self.identity)}
+        assert self.retired_identity is not None
+        return {
+            "absent": True,
+            "retired_identity": dict(self.retired_identity),
+            "retired_path": str(self.retirement_path),
+        }
 
 
 def connect_guardian_control(path: Path | str) -> socket.socket:

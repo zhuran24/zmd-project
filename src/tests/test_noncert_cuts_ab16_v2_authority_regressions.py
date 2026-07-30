@@ -399,6 +399,9 @@ def test_formal_launch_context_projects_gate_b_epoch_to_detached_identity(
         "formal_selection_path": str(campaign / "formal-selection.json"),
         "gate1_prelaunch_ownership_path": str(campaign / "gate1-prelaunch.json"),
         "guardian_control_socket_path": str(campaign / "guardian.sock"),
+        "guardian_control_retired_socket_path": str(
+            campaign / "guardian.sock.retired"
+        ),
         "guardian_ready_path": str(campaign / "guardian-ready.json"),
         "outer_barrier_path": str(campaign / "outer-barrier"),
         "outer_receipt_paths": {},

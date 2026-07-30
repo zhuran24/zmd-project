@@ -1025,7 +1025,7 @@ def test_v2_path_preregistration_closes_formal_outer_and_arm_paths(
         record,
         campaign_dir=campaign,
     ) == record
-    assert record["schema"] == "noncert-cuts-ab16-path-preregistration-v3"
+    assert record["schema"] == "noncert-cuts-ab16-path-preregistration-v4"
     assert record["formal_admission_path"] == str(
         campaign / "formal-ab16/formal-launch-admission-a001.json"
     )
@@ -1040,6 +1040,9 @@ def test_v2_path_preregistration_closes_formal_outer_and_arm_paths(
     )
     assert record["guardian_ready_path"] == str(
         campaign / "formal-ab16/outer-guardian-ready-a001.json"
+    )
+    assert record["guardian_control_retired_socket_path"] == str(
+        campaign / "formal-ab16/guardian-control.sock.retired"
     )
     assert record["outer_barrier_path"] == str(
         campaign / "formal-ab16/formal-attempt-a001/outer-barrier-release.json"

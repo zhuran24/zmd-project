@@ -38,8 +38,8 @@ from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as author
 from docs.research.noncert_cuts_ab16_20260724 import ab16_outer_closeout_state_v1 as closeout_state
 
 
-FORMAL_CONTEXT_SCHEMA = "noncert-cuts-ab16-formal-launch-context-v2"
-FORMAL_ADMISSION_SCHEMA = "noncert-cuts-ab16-formal-launch-admission-v1"
+FORMAL_CONTEXT_SCHEMA = "noncert-cuts-ab16-formal-launch-context-v3"
+FORMAL_ADMISSION_SCHEMA = "noncert-cuts-ab16-formal-launch-admission-v2"
 FORMAL_SELECTION_SCHEMA = "noncert-cuts-ab16-formal-launch-selection-v1"
 GUARDIAN_READY_SCHEMA = "noncert-cuts-ab16-outer-guardian-ready-v1"
 ATTEMPT_CONSUMPTION_SCHEMA = "noncert-cuts-ab16-formal-attempt-consumption-v1"
@@ -102,6 +102,7 @@ FORMAL_CONTEXT_FIELDS = frozenset(
         "gate_b_approval_identity",
         "gate_b_epoch_observation_identity",
         "guardian_control_socket_path",
+        "guardian_control_retired_socket_path",
         "guardian_runtime_identity",
         "guardian_ready_path",
         "guardian_spec",
@@ -174,6 +175,7 @@ ADMISSION_FIELDS = frozenset(
         "gate_b_approval_identity",
         "gate_b_epoch_observation_identity",
         "guardian_control_socket_path",
+        "guardian_control_retired_socket_path",
         "guardian_launch_authorized",
         "guardian_ready_path",
         "guardian_spec",
@@ -951,10 +953,18 @@ def validate_formal_context(value: object) -> dict[str, object]:
         "formal_attempt_dir",
         "formal_selection_path",
         "guardian_control_socket_path",
+        "guardian_control_retired_socket_path",
         "guardian_ready_path",
         "snapshot_root",
     ):
         result[field] = _absolute(record[field], f"formal context {field}")
+    control_socket = Path(result["guardian_control_socket_path"])
+    if Path(result["guardian_control_retired_socket_path"]) != control_socket.with_name(
+        f"{control_socket.name}.retired"
+    ):
+        raise FormalLaunchValidationError(
+            "formal context guardian retirement path drifted"
+        )
     if not Path(result["formal_attempt_dir"]).is_relative_to(Path(result["campaign_dir"])):
         raise FormalLaunchValidationError("formal attempt directory escaped the campaign")
     for field in (
@@ -1098,6 +1108,9 @@ def validate_admission(
         "gate_b_approval_identity": "gate_b_approval_identity",
         "gate_b_epoch_observation_identity": "gate_b_epoch_observation_identity",
         "guardian_control_socket_path": "guardian_control_socket_path",
+        "guardian_control_retired_socket_path": (
+            "guardian_control_retired_socket_path"
+        ),
         "guardian_ready_path": "guardian_ready_path",
         "manager_epoch_observation_identity": "manager_epoch_observation_identity",
         "package_id": "package_id",

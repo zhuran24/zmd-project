@@ -1268,7 +1268,8 @@ def start_guardian(
             "selected guardian unit was not absent before its sole launch"
         )
     listener = guardian.GuardianControlListener(
-        context["guardian_control_socket_path"]
+        context["guardian_control_socket_path"],
+        retirement_path=context["guardian_control_retired_socket_path"],
     )
     connection: Any = None
     frozen_identity: dict[str, object] | None = None

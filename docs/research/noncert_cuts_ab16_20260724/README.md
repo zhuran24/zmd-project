@@ -31,15 +31,25 @@ pathname `AF_UNIX` capacity. The canonical preregistered path and every
 serialized identity remain unchanged. Runtime bind/connect uses only a short
 retained-directory-FD alias, pins the socket leaf with `O_PATH`, and joins
 the canonical parent, leaf identity, mode and peer PID/starttime before
-progress. Parent or leaf replacement fails closed; cleanup never unlinks an
-unverified node and closes the retained anchor exactly once.
+progress. A subsequent adversarial review proved that pathname
+`stat` followed by `unlink` cannot make deletion conditional on that inode.
+The successor therefore registers the fixed terminal sibling
+`guardian-control.sock.retired` in path-preregistration v4 and binds it
+through formal context v3/admission v2. Cleanup performs only atomic
+`renameat2(RENAME_NOREPLACE)` retirement and parent `fsync`; the authority
+chain never calls pathname unlink. The expected closed socket remains as an
+inert terminal member. Parent/leaf replacement, retirement collision,
+unsupported atomic rename, or any verification/durability uncertainty
+preserves unknown nodes, fails closed, and closes the retained anchor exactly
+once.
 
 The next attempt must start from a new no-overwrite Gate-A root in the
 registered independent worktree after a clean committed HEAD, exact source
 rebinding, the fixed resource/lock/competition gate, full preflight and the
-same post-preflight gate. A031–A033 remain frozen. The path transport change
-does not alter any artifact schema or grant production, certified, cut,
-witness or bound authority.
+same post-preflight gate. The interrupted pre-fix full run is not qualifying
+evidence, and A034 does not yet exist. A031–A033 remain frozen. The schema
+successors apply only to a fresh package and grant no production, certified,
+cut, witness or bound authority.
 
 ## 2026-07-24 Gate-A recovery history
 
@@ -427,7 +437,8 @@ proof-ledger gates.
   selection, serial campaign and terminal closeout.
 - `ab16_outer_guardian_v1.py`: independent lock guardian; canonical absolute
   socket identity with internal retained-dirfd AF_UNIX transport, peer
-  credential join and exact cleanup.
+  credential join, and atomic no-overwrite terminal retirement without
+  pathname unlink.
 - `disposable_drill_authority_v1.py` and
   `disposable_drill_authority_v2.py`: campaign-external, non-authorizing Gate A
   authority generations.

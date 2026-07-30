@@ -4,6 +4,7 @@ import ast
 from copy import deepcopy
 import ctypes
 from dataclasses import dataclass
+import errno
 import fcntl
 import hashlib
 import inspect
@@ -152,6 +153,7 @@ def _formal_fixture(tmp_path: Path) -> FormalFixture:
     selection_path = formal / "formal-selection-a001.json"
     guardian_ready_path = formal / "outer-guardian-ready-a001.json"
     control_socket_path = formal / "outer-guardian-control.sock"
+    retired_control_socket_path = formal / "outer-guardian-control.sock.retired"
 
     campaign_root = _identity(campaign, "campaign-root.json", "1")
     gate1_selection = _identity(campaign, "gate1-v4/selection.json", "2")
@@ -334,6 +336,7 @@ def _formal_fixture(tmp_path: Path) -> FormalFixture:
         "gate_b_approval_identity": gate_b_approval,
         "gate_b_epoch_observation_identity": gate_b_epoch,
         "guardian_control_socket_path": str(control_socket_path),
+        "guardian_control_retired_socket_path": str(retired_control_socket_path),
         "guardian_runtime_identity": guardian_runtime_identity,
         "guardian_ready_path": str(guardian_ready_path),
         "guardian_spec": guardian_spec,
@@ -388,6 +391,7 @@ def _formal_fixture(tmp_path: Path) -> FormalFixture:
         "gate_b_approval_identity": gate_b_approval,
         "gate_b_epoch_observation_identity": gate_b_epoch,
         "guardian_control_socket_path": str(control_socket_path),
+        "guardian_control_retired_socket_path": str(retired_control_socket_path),
         "guardian_launch_authorized": True,
         "guardian_ready_path": str(guardian_ready_path),
         "guardian_spec": guardian_spec,
@@ -560,7 +564,7 @@ def _validate_selection(fixture: FormalFixture) -> dict[str, object]:
     )
 
 
-def test_formal_context_v2_rejects_legacy_and_mixed_orchestrator_identity(
+def test_formal_context_v3_rejects_legacy_and_mixed_orchestrator_identity(
     tmp_path: Path,
 ) -> None:
     fixture = _formal_fixture(tmp_path)
@@ -585,6 +589,23 @@ def test_formal_context_v2_rejects_legacy_and_mixed_orchestrator_identity(
         match="scalar drifted",
     ):
         launch_validator.validate_formal_context(mixed)
+
+
+def test_formal_context_v3_rejects_retirement_path_drift(
+    tmp_path: Path,
+) -> None:
+    fixture = _formal_fixture(tmp_path)
+    drifted = deepcopy(fixture.context)
+    drifted["guardian_control_retired_socket_path"] = str(
+        Path(str(drifted["guardian_control_socket_path"])).with_name(
+            "unregistered-retirement.sock"
+        )
+    )
+    with pytest.raises(
+        launch_validator.FormalLaunchValidationError,
+        match="guardian retirement path drifted",
+    ):
+        launch_validator.validate_formal_context(drifted)
 
 
 def _call_name(node: ast.Call) -> str:
@@ -2746,9 +2767,11 @@ def test_guardian_control_socket_supports_long_authority_path_via_dirfd_alias(
         removed = listener.remove_path_once()
         assert removed == {
             "absent": True,
-            "removed_identity": listener.identity,
+            "retired_identity": listener.retired_identity,
+            "retired_path": str(listener.retirement_path),
         }
         assert not os.path.lexists(control_path)
+        assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
         with pytest.raises(OSError):
             os.fstat(parent_descriptor)
 
@@ -2775,6 +2798,9 @@ def test_path_preregistration_keeps_canonical_guardian_socket_path(
     record = bootstrap._path_preregistration(campaign)  # noqa: SLF001
     expected = campaign.absolute() / "formal-ab16/guardian-control.sock"
     assert record["guardian_control_socket_path"] == str(expected)
+    assert record["guardian_control_retired_socket_path"] == str(
+        expected.with_name(f"{expected.name}.retired")
+    )
     assert "/proc/self/fd/" not in str(record)
     assert (
         bootstrap.validate_path_preregistration(
@@ -2862,6 +2888,531 @@ def test_guardian_control_cleanup_rejects_replaced_leaf_and_abandons_anchor(
     with pytest.raises(OSError):
         os.fstat(parent_descriptor)
     assert control_path.read_bytes() == b"replacement"
+
+
+def test_guardian_control_cleanup_rejects_final_stat_unlink_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_unlink = guardian.os.unlink
+    real_rename = guardian._rename_noreplace_at  # noqa: SLF001
+    injected = False
+    close_count = 0
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal close_count
+        if owned is listener.parent:
+            close_count += 1
+        return real_close(owned)
+
+    def replace_after_final_verification(
+        dir_fd: int,
+        source_name: str,
+        destination_name: str,
+    ) -> None:
+        nonlocal injected
+        # This is the exact post-verification action boundary where the old
+        # implementation issued its racy pathname unlink.
+        if source_name != control_path.name:
+            real_rename(dir_fd, source_name, destination_name)
+            return
+        assert not injected
+        assert destination_name == listener.retirement_path.name
+        assert dir_fd == parent_descriptor
+        injected = True
+        real_unlink(source_name, dir_fd=dir_fd)
+        replacement = os.open(
+            source_name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC,
+            0o600,
+            dir_fd=dir_fd,
+        )
+        try:
+            os.write(replacement, b"unknown-replacement")
+            os.fsync(replacement)
+        finally:
+            os.close(replacement)
+        real_rename(dir_fd, source_name, destination_name)
+
+    monkeypatch.setattr(
+        guardian,
+        "_rename_noreplace_at",
+        replace_after_final_verification,
+    )
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert injected
+    assert control_path.read_bytes() == b"unknown-replacement"
+    assert listener.remove_attempted
+    assert listener.bound
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert close_count == 1
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_cleanup_rejects_fsync_window_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_fsync = guardian.os.fsync
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    injected = False
+    close_count = 0
+
+    def inject_during_parent_fsync(descriptor: int) -> None:
+        nonlocal injected
+        if descriptor != parent_descriptor or injected:
+            real_fsync(descriptor)
+            return
+        injected = True
+        replacement = os.open(
+            control_path.name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC,
+            0o600,
+            dir_fd=parent_descriptor,
+        )
+        try:
+            os.write(replacement, b"fsync-window-replacement")
+            real_fsync(replacement)
+        finally:
+            os.close(replacement)
+        real_fsync(descriptor)
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal close_count
+        if owned is listener.parent:
+            close_count += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(guardian.os, "fsync", inject_during_parent_fsync)
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert injected
+    assert control_path.read_bytes() == b"fsync-window-replacement"
+    assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert close_count == 1
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_cleanup_rejects_post_join_parent_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    moved = tmp_path / "formal-moved"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_rename = guardian._rename_noreplace_at  # noqa: SLF001
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    injected = False
+    close_count = 0
+
+    def replace_parent_before_retirement(
+        dir_fd: int,
+        source_name: str,
+        destination_name: str,
+    ) -> None:
+        nonlocal injected
+        assert not injected
+        assert dir_fd == parent_descriptor
+        assert source_name == control_path.name
+        assert destination_name == listener.retirement_path.name
+        injected = True
+        formal.rename(moved)
+        formal.mkdir()
+        (formal / control_path.name).write_bytes(b"new-parent-replacement")
+        real_rename(dir_fd, source_name, destination_name)
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal close_count
+        if owned is listener.parent:
+            close_count += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(
+        guardian,
+        "_rename_noreplace_at",
+        replace_parent_before_retirement,
+    )
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert injected
+    assert (formal / control_path.name).read_bytes() == b"new-parent-replacement"
+    assert not os.path.lexists(formal / listener.retirement_path.name)
+    assert not os.path.lexists(moved / control_path.name)
+    assert stat.S_ISSOCK(
+        os.lstat(moved / listener.retirement_path.name).st_mode
+    )
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert close_count == 1
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_cleanup_rejects_final_join_leaf_mode_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_join = guardian._require_directory_join  # noqa: SLF001
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    join_count = 0
+    close_count = 0
+
+    def drift_after_final_join(
+        absolute: Path,
+        anchored_descriptor: int,
+    ) -> None:
+        nonlocal join_count
+        join_count += 1
+        real_join(absolute, anchored_descriptor)
+        if join_count == 3:
+            os.chmod(listener.retirement_path, 0o644)
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal close_count
+        if owned is listener.parent:
+            close_count += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(
+        guardian,
+        "_require_directory_join",
+        drift_after_final_join,
+    )
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert join_count == 3
+    assert not os.path.lexists(control_path)
+    assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+    assert stat.S_IMODE(os.lstat(listener.retirement_path).st_mode) == 0o644
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert close_count == 1
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_cleanup_rejects_final_join_canonical_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_join = guardian._require_directory_join  # noqa: SLF001
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    join_count = 0
+    close_count = 0
+
+    def replace_after_final_join(
+        absolute: Path,
+        anchored_descriptor: int,
+    ) -> None:
+        nonlocal join_count
+        join_count += 1
+        real_join(absolute, anchored_descriptor)
+        if join_count == 3:
+            control_path.write_bytes(b"final-join-window-replacement")
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal close_count
+        if owned is listener.parent:
+            close_count += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(
+        guardian,
+        "_require_directory_join",
+        replace_after_final_join,
+    )
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert join_count == 3
+    assert control_path.read_bytes() == b"final-join-window-replacement"
+    assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert close_count == 1
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_cleanup_rejects_final_join_parent_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    moved = tmp_path / "formal-moved"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    real_join = guardian._require_directory_join  # noqa: SLF001
+    real_close = guardian._OwnedDescriptor.close  # noqa: SLF001
+    join_count = 0
+    close_count = 0
+
+    def replace_parent_after_final_join(
+        absolute: Path,
+        anchored_descriptor: int,
+    ) -> None:
+        nonlocal join_count
+        join_count += 1
+        real_join(absolute, anchored_descriptor)
+        if join_count == 3:
+            formal.rename(moved)
+            formal.mkdir()
+            (formal / control_path.name).write_bytes(b"final-join-parent-replacement")
+
+    def counted_close(
+        owned: guardian._OwnedDescriptor,  # noqa: SLF001
+    ) -> BaseException | None:
+        nonlocal close_count
+        if owned is listener.parent:
+            close_count += 1
+        return real_close(owned)
+
+    monkeypatch.setattr(
+        guardian,
+        "_require_directory_join",
+        replace_parent_after_final_join,
+    )
+    monkeypatch.setattr(guardian._OwnedDescriptor, "close", counted_close)  # noqa: SLF001
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert join_count == 3
+    assert (formal / control_path.name).read_bytes() == b"final-join-parent-replacement"
+    assert not os.path.lexists(formal / listener.retirement_path.name)
+    assert not os.path.lexists(moved / control_path.name)
+    assert stat.S_ISSOCK(os.lstat(moved / listener.retirement_path.name).st_mode)
+    assert listener.bound
+    assert listener.remove_attempted
+    assert listener.parent_release_attempted
+    assert not listener.parent_owned
+    assert close_count == 1
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_cleanup_never_calls_pathname_unlink(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    listener = guardian.GuardianControlListener(control_path)
+    listener.close_once()
+
+    def reject_unlink(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("authority cleanup must not call pathname unlink")
+
+    monkeypatch.setattr(guardian.os, "unlink", reject_unlink)
+    result = listener.remove_path_once()
+    assert result["retired_path"] == str(listener.retirement_path)
+    assert not os.path.lexists(control_path)
+    assert stat.S_ISSOCK(os.lstat(listener.retirement_path).st_mode)
+
+
+def test_guardian_control_retirement_collision_preserves_both_nodes(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+    listener.retirement_path.write_bytes(b"preexisting-retirement")
+
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert stat.S_ISSOCK(os.lstat(control_path).st_mode)
+    assert listener.retirement_path.read_bytes() == b"preexisting-retirement"
+    assert listener.bound
+    assert listener.remove_attempted
+    assert not listener.parent_owned
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_retirement_unavailable_preserves_source(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener = guardian.GuardianControlListener(control_path)
+    parent_descriptor = listener.parent.descriptor
+    listener.close_once()
+
+    def unavailable(*_args: object, **_kwargs: object) -> None:
+        raise OSError(errno.ENOSYS, "renameat2 unavailable")
+
+    monkeypatch.setattr(guardian, "_rename_noreplace_at", unavailable)
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="removal failed or is uncertain",
+    ):
+        listener.remove_path_once()
+    assert stat.S_ISSOCK(os.lstat(control_path).st_mode)
+    assert not os.path.lexists(listener.retirement_path)
+    assert listener.bound
+    assert not listener.parent_owned
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptor)
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
+
+
+def test_guardian_control_constructor_retirement_race_preserves_original_error(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    retirement_path = control_path.with_name(f"{control_path.name}.retired")
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    real_unlink = guardian.os.unlink
+    real_rename = guardian._rename_noreplace_at  # noqa: SLF001
+    injected = False
+
+    def fail_chmod(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("sentinel chmod failure")
+
+    def replace_before_retirement(
+        dir_fd: int,
+        source_name: str,
+        destination_name: str,
+    ) -> None:
+        nonlocal injected
+        if source_name != control_path.name:
+            real_rename(dir_fd, source_name, destination_name)
+            return
+        assert not injected
+        injected = True
+        real_unlink(source_name, dir_fd=dir_fd)
+        descriptor = os.open(
+            source_name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC,
+            0o600,
+            dir_fd=dir_fd,
+        )
+        try:
+            os.write(descriptor, b"constructor-replacement")
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+        real_rename(dir_fd, source_name, destination_name)
+
+    monkeypatch.setattr(guardian.os, "chmod", fail_chmod)
+    monkeypatch.setattr(
+        guardian,
+        "_rename_noreplace_at",
+        replace_before_retirement,
+    )
+    with pytest.raises(RuntimeError, match="sentinel chmod failure") as caught:
+        guardian.GuardianControlListener(control_path)
+    assert injected
+    assert control_path.read_bytes() == b"constructor-replacement"
+    assert not os.path.lexists(retirement_path)
+    assert any(
+        "guardian control pathname retirement failed" in note
+        for note in getattr(caught.value, "__notes__", ())
+    )
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
 
 
 def test_guardian_control_connector_rejects_replaced_absolute_parent(
@@ -2968,6 +3519,24 @@ def test_guardian_control_listener_never_removes_preexisting_target(
     assert control_path.read_bytes() == b"preexisting"
 
 
+def test_guardian_control_listener_never_overwrites_retirement_target(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / "formal"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    retirement_path = control_path.with_name(f"{control_path.name}.retired")
+    retirement_path.write_bytes(b"preexisting-retirement")
+
+    with pytest.raises(
+        guardian.GuardianProtocolError,
+        match="retirement path already exists",
+    ):
+        guardian.GuardianControlListener(control_path)
+    assert not os.path.lexists(control_path)
+    assert retirement_path.read_bytes() == b"preexisting-retirement"
+
+
 def test_guardian_control_accepts_cross_process_connector_by_peer_identity(
     tmp_path: Path,
 ) -> None:
@@ -3063,14 +3632,21 @@ def test_formal_campaign_abandons_guardian_parent_after_drifted_cleanup(
     control_path = formal / "guardian-control.sock"
     context = {
         "guardian_control_socket_path": str(control_path),
+        "guardian_control_retired_socket_path": str(
+            control_path.with_name(f"{control_path.name}.retired")
+        ),
         "guardian_spec": {"unit_name": "ab16-focused-guardian.service"},
     }
     listener_type = guardian.GuardianControlListener
     listeners: list[guardian.GuardianControlListener] = []
     parent_descriptors: list[int] = []
 
-    def listener_factory(path: Path | str) -> guardian.GuardianControlListener:
-        listener = listener_type(path)
+    def listener_factory(
+        path: Path | str,
+        *,
+        retirement_path: Path | str | None = None,
+    ) -> guardian.GuardianControlListener:
+        listener = listener_type(path, retirement_path=retirement_path)
         listeners.append(listener)
         parent_descriptors.append(listener.parent.descriptor)
         return listener
@@ -3132,6 +3708,124 @@ def test_formal_campaign_abandons_guardian_parent_after_drifted_cleanup(
     formal.rmdir()
     os.unlink(moved / control_path.name)
     moved.rmdir()
+
+
+def test_formal_campaign_cleanup_preserves_final_window_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal_campaign = formal_orchestrator._formal_campaign_module()  # noqa: SLF001
+    formal = tmp_path / "formal-ab16"
+    formal.mkdir()
+    control_path = formal / "guardian-control.sock"
+    retirement_path = control_path.with_name(f"{control_path.name}.retired")
+    context = {
+        "guardian_control_socket_path": str(control_path),
+        "guardian_control_retired_socket_path": str(retirement_path),
+        "guardian_spec": {"unit_name": "ab16-focused-guardian.service"},
+    }
+    before_descriptors = set(os.listdir("/proc/self/fd"))
+    listener_type = guardian.GuardianControlListener
+    listeners: list[guardian.GuardianControlListener] = []
+    parent_descriptors: list[int] = []
+    real_unlink = guardian.os.unlink
+    real_rename = guardian._rename_noreplace_at  # noqa: SLF001
+    injected = False
+
+    def listener_factory(
+        path: Path | str,
+        *,
+        retirement_path: Path | str | None = None,
+    ) -> guardian.GuardianControlListener:
+        listener = listener_type(path, retirement_path=retirement_path)
+        listeners.append(listener)
+        parent_descriptors.append(listener.parent.descriptor)
+        return listener
+
+    class AbsentHost:
+        held_locks = {
+            path: object() for path in formal_campaign.closeout_state.LOCK_PATHS
+        }
+
+        def show(self, _unit_name: str) -> dict[str, str]:
+            return dict(formal_campaign.closeout_helper.ABSENT)
+
+    host = AbsentHost()
+    held_lock_sentinels = dict(host.held_locks)
+
+    def fail_launch(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("sentinel launch failure")
+
+    def replace_before_retirement(
+        dir_fd: int,
+        source_name: str,
+        destination_name: str,
+    ) -> None:
+        nonlocal injected
+        if source_name != control_path.name:
+            real_rename(dir_fd, source_name, destination_name)
+            return
+        assert not injected
+        injected = True
+        real_unlink(source_name, dir_fd=dir_fd)
+        descriptor = os.open(
+            source_name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC,
+            0o600,
+            dir_fd=dir_fd,
+        )
+        try:
+            os.write(descriptor, b"campaign-replacement")
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+        real_rename(dir_fd, source_name, destination_name)
+
+    monkeypatch.setattr(
+        formal_campaign.guardian,
+        "GuardianControlListener",
+        listener_factory,
+    )
+    monkeypatch.setattr(formal_campaign, "_launch_selected_unit", fail_launch)
+    monkeypatch.setattr(
+        formal_campaign,
+        "_wait_uncertain_unit_resolution",
+        lambda *_args, **_kwargs: dict(formal_campaign.closeout_helper.ABSENT),
+    )
+    monkeypatch.setattr(
+        guardian,
+        "_rename_noreplace_at",
+        replace_before_retirement,
+    )
+
+    with pytest.raises(formal_campaign.GuardianLaunchFailure) as caught:
+        formal_campaign.start_guardian(
+            boundary=SimpleNamespace(),
+            context=context,
+            admission={},
+            admission_identity={},
+            host=host,
+            store=SimpleNamespace(),
+        )
+
+    assert injected
+    assert len(listeners) == len(parent_descriptors) == 1
+    assert control_path.read_bytes() == b"campaign-replacement"
+    assert not os.path.lexists(retirement_path)
+    assert not listeners[0].parent_owned
+    with pytest.raises(OSError):
+        os.fstat(parent_descriptors[0])
+    assert host.held_locks == held_lock_sentinels
+    assert any(
+        item["code"] == "GUARDIAN_LISTENER_REMOVE_FAILED_OR_UNCERTAIN"
+        for item in caught.value.cleanup_errors
+    )
+    assert not any(
+        item["code"]
+        == "GUARDIAN_LISTENER_PARENT_ABANDON_FAILED_OR_UNCERTAIN"
+        for item in caught.value.cleanup_errors
+    )
+    assert set(os.listdir("/proc/self/fd")) == before_descriptors
 
 
 def test_guardian_frame_and_failure_state_are_canonical_and_monotone() -> None:

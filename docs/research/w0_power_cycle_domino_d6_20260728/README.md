@@ -125,11 +125,11 @@ successor 因 `PROJECT_LOCK.md` 新增 AB16 research-only cohort，改钉
 `e8130589effaa332122260b44df9aed367cdb9d1bc96ca17b24a1075007a24b3`，
 同一数学 profile 的静态 antecedent fixture 为
 `3d40e1318b631119ca5314f31443b91dbada2d5a1125e3f8da7c4c3dcf8db394`。
-当前 checked-in successor 随 AB16 formal selected-loader 与 pathname-transport
-边界加固改钉
-`261967a9fb8be5e1a08295f245d241ebc0cd62194bb7f659cefe1fb6913fa6c1`，
+当前 checked-in successor 随 AB16 formal selected-loader、pathname transport
+与 no-overwrite socket retirement 边界加固改钉
+`51939ab6e2c49307b2849fa3d115123817cd54d823c713f8e40af967a88e9a63`，
 对应静态 antecedent fixture 为
-`2f9bdf52826e1131715f3d00993c12c91506124f7074fe59c80a823050769610`。
+`dc3fca3d9088e55714347f15823d935d7ce8ecc402270726f4623b56adf6ad42`。
 这些变更只影响未来 W0 run 的 source/lock 闭包；不迁移、不补写也不重新解释
 上述历史 root。identity 变化只来自 lock scalar，不是新的 solver 结果。
 

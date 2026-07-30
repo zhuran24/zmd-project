@@ -46,7 +46,7 @@ GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v4"
 GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v3"
 CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v2"
 RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v3"
-PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v3"
+PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v4"
 FINAL_FULL_PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v3"
 REPOSITORY_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
@@ -3107,6 +3107,7 @@ def _path_preregistration(
         "formal_selection_path": str(formal_attempt / "selection.json"),
         "gate1_prelaunch_ownership_path": str(formal_attempt / "gate1-prelaunch-ownership.json"),
         "guardian_control_socket_path": str(formal / "guardian-control.sock"),
+        "guardian_control_retired_socket_path": str(formal / "guardian-control.sock.retired"),
         "guardian_ready_path": str(formal / "outer-guardian-ready-a001.json"),
         "immediate_stop_path": str(prospective / "immediate-stop-a001.json"),
         "manifest_path": str(prospective / "manifest-a001.json"),
@@ -3188,6 +3189,7 @@ def validate_path_preregistration(
         "formal_selection_path",
         "gate1_prelaunch_ownership_path",
         "guardian_control_socket_path",
+        "guardian_control_retired_socket_path",
         "guardian_ready_path",
         "immediate_stop_path",
         "manifest_path",

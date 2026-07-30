@@ -48,7 +48,7 @@ ARM_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
 PRE_RUN_AUTHORITY_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v2"
 ARM_CONSUMPTION_SCHEMA = "noncert-cuts-ab16-organic-arm-consumption-v2"
 CAMPAIGN_STOP_SCHEMA = "noncert-cuts-ab16-immediate-stop-v1"
-PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v3"
+PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v4"
 GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
 GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v4"
 GATE_B_EPOCH_SCHEMA = "noncert-cuts-ab16-gate-b-epoch-observation-v3"
@@ -2310,6 +2310,9 @@ def replay_formal_launch_context(*, campaign_dir: Path | str) -> dict[str, objec
         ),
         "guardian_ready_path": paths["guardian_ready_path"],
         "guardian_control_socket_path": paths["guardian_control_socket_path"],
+        "guardian_control_retired_socket_path": paths[
+            "guardian_control_retired_socket_path"
+        ],
         "guardian_spec": guardian_spec,
         "manager_epoch": root["manager_epoch"],
         "manager_epoch_observation_identity": _root_input_identity(
@@ -2331,7 +2334,7 @@ def replay_formal_launch_context(*, campaign_dir: Path | str) -> dict[str, objec
             field: python_with_mode[field] for field in ("path", "sha256", "size_bytes")
         },
         "repository_head": root["repository_head"],
-        "schema_version": "noncert-cuts-ab16-formal-launch-context-v2",
+        "schema_version": "noncert-cuts-ab16-formal-launch-context-v3",
         "snapshot_materialization_identity": snapshot["materialization_identity"],
         "snapshot_root": snapshot["repository_root"],
         "selected_byte_launch_identity": literal_identity,
@@ -2641,6 +2644,7 @@ def _path_preregistration(
             "formal_selection_path",
             "gate1_prelaunch_ownership_path",
             "guardian_control_socket_path",
+            "guardian_control_retired_socket_path",
             "guardian_ready_path",
             "immediate_stop_path",
             "launch_environment_paths",
@@ -2695,6 +2699,7 @@ def _path_preregistration(
         "formal_selection_path",
         "gate1_prelaunch_ownership_path",
         "guardian_control_socket_path",
+        "guardian_control_retired_socket_path",
         "guardian_ready_path",
         "immediate_stop_path",
         "manifest_path",
@@ -2721,6 +2726,7 @@ def _path_preregistration(
         "formal_selection_path",
         "gate1_prelaunch_ownership_path",
         "guardian_control_socket_path",
+        "guardian_control_retired_socket_path",
         "guardian_ready_path",
         "outer_barrier_path",
     }
@@ -2753,6 +2759,8 @@ def _path_preregistration(
         != formal_attempt / "gate1-prelaunch-ownership.json"
         or Path(record["child_audit_path"]) != formal_attempt / "child-audit.json"
         or Path(record["guardian_control_socket_path"]) != formal_dir / "guardian-control.sock"
+        or Path(record["guardian_control_retired_socket_path"])
+        != formal_dir / "guardian-control.sock.retired"
         or Path(record["guardian_ready_path"]) != formal_dir / "outer-guardian-ready-a001.json"
         or Path(record["outer_barrier_path"]) != formal_attempt / "outer-barrier-release.json"
     ):

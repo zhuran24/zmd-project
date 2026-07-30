@@ -603,8 +603,8 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   |---|---|
   | Gate-A/Gate-B qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v2`; `noncert-cuts-ab16-bootstrap-offline-candidate-v2`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v3`; `noncert-cuts-ab16-gate-b-qualification-v1`; `noncert-cuts-ab16-gate-b-resource-gate-v1`; `noncert-cuts-ab16-gate-b-owner-request-v1`; `noncert-cuts-ab16-gate-b-owner-response-v1`; `noncert-cuts-ab16-gate-b-owner-release-v1`; `noncert-cuts-ab16-gate-b-epoch-observation-v3`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v4`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1` |
   | Gate-A terminal-reference history | `noncert-cuts-ab16-terminal-reference-history-freeze-v1`; `noncert-cuts-ab16-terminal-reference-history-replay-v2` |
-  | bootstrap/package | `noncert-cuts-ab16-bootstrap-manager-capture-v2`; `noncert-cuts-ab16-campaign-bootstrap-result-v3`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v2`; `noncert-cuts-ab16-path-preregistration-v3` |
-  | formal launch | `noncert-cuts-ab16-formal-launch-context-v2`; `noncert-cuts-ab16-formal-launch-owner-request-v1`; `noncert-cuts-ab16-formal-launch-owner-response-v1`; `noncert-cuts-ab16-formal-launch-admission-v1`; `noncert-cuts-ab16-outer-guardian-ready-v1`; `noncert-cuts-ab16-formal-attempt-consumption-v1`; `noncert-cuts-ab16-formal-launch-selection-v1` |
+  | bootstrap/package | `noncert-cuts-ab16-bootstrap-manager-capture-v2`; `noncert-cuts-ab16-campaign-bootstrap-result-v3`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v2`; `noncert-cuts-ab16-path-preregistration-v4` |
+  | formal launch | `noncert-cuts-ab16-formal-launch-context-v3`; `noncert-cuts-ab16-formal-launch-owner-request-v1`; `noncert-cuts-ab16-formal-launch-owner-response-v1`; `noncert-cuts-ab16-formal-launch-admission-v2`; `noncert-cuts-ab16-outer-guardian-ready-v1`; `noncert-cuts-ab16-formal-attempt-consumption-v1`; `noncert-cuts-ab16-formal-launch-selection-v1` |
   | AB16 campaign/arms | `noncert-cuts-gate1-v4-continuation-authorization-v1`; `noncert-cuts-ab16-baseline-admission-v1`; `noncert-cuts-ab16-common-prestate-v1`; `noncert-cuts-ab16-organic-manifest-v2`; `noncert-cuts-ab16-suite-selection-v2`; `noncert-cuts-ab16-arm-binding-v2`; `noncert-cuts-ab16-organic-pre-run-authority-v2`; `noncert-cuts-ab16-organic-arm-selection-v1`; `noncert-cuts-ab16-organic-arm-consumption-v2`; `noncert-cuts-ab16-immediate-stop-v1` |
   | successful formal closeout | `noncert-cuts-ab16-formal-pre-release-success-v2`; `noncert-cuts-ab16-outer-guardian-lock-close-v1`; `noncert-cuts-ab16-formal-guardian-absence-v1`; `noncert-cuts-ab16-formal-dual-lock-release-v2` |
   | incomplete formal closeout | `noncert-cuts-ab16-formal-consumed-incomplete-v2`; `noncert-cuts-ab16-formal-pre-release-failure-v3`; `noncert-cuts-ab16-formal-detached-incomplete-v3`; `noncert-cuts-ab16-formal-failure-terminal-release-v3` |
@@ -665,12 +665,23 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   kernel after opening every absolute parent component with
   `O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC`. The listener must pin the created leaf
   with `O_PATH`, join device/inode before and after mode `0600` installation,
-  retain the parent FD through exact unlink/fsync, reject parent or leaf
-  replacement, and close the retained FD without unlinking any unverified
-  node on failure. The subsequent lock handoff still joins the canonical
-  socket identity with `SO_PEERCRED` PID/starttime. This internal transport
-  does not change the path-preregistration or formal artifact schemas and
-  cannot retrofit, replay, or authorize an immutable historical root.
+  and retain the parent FD through cleanup. Linux pathname unlink cannot be
+  atomically conditioned on the verified inode, so the authority chain never
+  calls pathname unlink. Instead, path preregistration v4 and formal context
+  v3/admission v2 bind the sole fixed terminal sibling
+  `formal-ab16/guardian-control.sock.retired`; cleanup atomically moves the
+  current canonical occupant there with `renameat2(RENAME_NOREPLACE)`, never
+  overwrites the terminal member, fsyncs the retained parent, and verifies the
+  captured device/inode/type/mode/uid. The expected closed socket remains as
+  that inert terminal member. If the captured node is not the verified
+  socket, cleanup attempts only a no-overwrite restoration; whether restoration
+  succeeds or not, it preserves every unknown node, fails closed, and closes
+  the retained parent FD exactly once. Parent drift, leaf drift, retirement
+  collision, syscall unavailability, verification uncertainty, or durability
+  uncertainty cannot report successful cleanup. The subsequent lock handoff
+  still joins the canonical socket identity with `SO_PEERCRED` PID/starttime.
+  Historical roots remain bound to their own pinned schemas and source bytes;
+  this successor cannot retrofit, replay, or authorize them.
 - Gate-B qualification has one persistent owner actor. The same
   PID/starttime and qualification session acquire and retain the exact three
   heavy-work locks before the first resource gate, cover the final full

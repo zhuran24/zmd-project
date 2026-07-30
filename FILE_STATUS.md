@@ -74,7 +74,7 @@
 |---|---|---|
 | `devtools/research_run_contract.py` | CURRENT_CODE_ALIGNED | G3 developer/research-only 的稳定字节快照、独占 no-overwrite run root、逐组件 no-follow artifact-root 打开、全树目录 FD/signature 保留至终检、manifest 排除 `receipt.json` 自身而完成态 closure 要求 manifest 加唯一普通文件 `receipt.json`、`-I -B` 进程合同、canonical envelope 与字节 identity replay；不进入 certified exact-source TCB 或 production authority |
 | `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion、固定 artifact label/path 合同与 stdlib-only replay；closed-root v2 的 seed-narrow、28-slot antecedent 与 v3 `d6_6b_d9_6g_swap_v1` antecedent 均为 replay-accepted local `INFEASIBLE`；v3 已通过 full preflight、前后两次相同资源门禁和两份逐字节一致的异构 replay，只关闭其 exact local antecedent，不产生全图 witness、cut、上下界或 production authority |
-| `docs/research/noncert_cuts_ab16_20260724/` | DIAGNOSTIC_ONLY | AB16 Gate-A/Gate-B/package/formal/16-arm research-only 链；A031–A033 均为不可改写 frozen roots，A033 只发布 formal admission，未发布 guardian-ready、attempt consumption、selection 或 arm。当前 runtime roles 保留 canonical absolute socket identity，仅以 retained-dirfd `/proc/self/fd` alias 适配长 worktree 的 Linux AF_UNIX 调用；alias 不进入 artifact/schema/authority，任何 parent/leaf/peer drift fail closed。下一 fresh root 必须重新绑定 committed source bytes 和完整前后门禁 |
+| `docs/research/noncert_cuts_ab16_20260724/` | DIAGNOSTIC_ONLY | AB16 Gate-A/Gate-B/package/formal/16-arm research-only 链；A031–A033 均为不可改写 frozen roots，A033 只发布 formal admission，未发布 guardian-ready、attempt consumption、selection 或 arm。当前 runtime roles 保留 canonical absolute socket identity，以 retained-dirfd alias 适配长路径，并把固定 `.retired` 终端成员绑定到 path-preregistration v4、formal context v3/admission v2；清理只执行原子 no-overwrite retirement，authority 链不调用 pathname unlink，任何 parent/leaf/peer/retirement drift 均 fail closed。A034 尚不存在，下一 fresh root 必须重新绑定 committed source bytes 和完整前后门禁 |
 | `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 15 active obligations；绑定 sink/hash/guard/critical files |
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
@@ -86,7 +86,7 @@
 
 | Path | Status | 说明 |
 |---|---|---|
-| `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-07-30 窄增 AB16 selected-loader/pathname transport 合同，保持既有 schema、绝对 artifact identity 与 research-only authority；W0 D6 v2/v3、F8 retirement、partial attach 与 Stage B boundary 不变 |
+| `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-07-30 窄增 AB16 selected-loader/pathname transport 与 fixed no-overwrite retirement 合同，并登记 path-preregistration v4、formal context v3/admission v2 successors；绝对 artifact identity 与 research-only authority 保持不变，W0 D6 v2/v3、F8 retirement、partial attach 与 Stage B boundary 不变 |
 | `README.md`, `NAV_MAP.md`, `docs/项目说明/06_current_status.md` | CURRENT_CODE_ALIGNED | 当前入口与状态摘要 |
 | `docs/项目说明/24_repository_asset_governance.md` | CURRENT_CODE_ALIGNED | G1/G2 代码资产治理与 G3 最小公共研究基础层索引；不授予认证 authority |
 | `data/repository_governance/code_assets.json` | STRUCTURAL_GATE | 可复算目录规则、显式例外与基线收据；由 schema/checker fail closed 校验 |

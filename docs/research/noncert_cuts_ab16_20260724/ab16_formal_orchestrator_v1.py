@@ -656,6 +656,9 @@ def build_admission_draft(
             "gate_b_epoch_observation_identity"
         ],
         "guardian_control_socket_path": context["guardian_control_socket_path"],
+        "guardian_control_retired_socket_path": context[
+            "guardian_control_retired_socket_path"
+        ],
         "guardian_launch_authorized": True,
         "guardian_ready_path": context["guardian_ready_path"],
         "guardian_spec": context["guardian_spec"],
