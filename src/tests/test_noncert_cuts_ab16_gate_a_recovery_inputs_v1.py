@@ -3,7 +3,9 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
+import stat
 import subprocess
 import sys
 from types import ModuleType
@@ -67,6 +69,7 @@ def _cli_fixture(tmp_path: Path) -> tuple[list[str], dict[str, str], dict[str, s
     command = [
         sys.executable,
         "-I",
+        "-B",
         str(TOOLS / "gate_a_recovery_inputs_v1.py"),
         "--output-dir",
         str(output),
@@ -98,6 +101,27 @@ def _cli_fixture(tmp_path: Path) -> tuple[list[str], dict[str, str], dict[str, s
     return command, strict, system
 
 
+def _bytecode_cache_snapshot() -> tuple[tuple[str, str], ...]:
+    cache = TOOLS / "__pycache__"
+    if cache.is_symlink():
+        return (("__pycache__", f"symlink:{os.readlink(cache)}"),)
+    if not cache.exists():
+        return ()
+    rows: list[tuple[str, str]] = []
+    for path in sorted((cache, *cache.rglob("*"))):
+        relative = path.relative_to(TOOLS).as_posix()
+        metadata = path.lstat()
+        if stat.S_ISLNK(metadata.st_mode):
+            rows.append((relative, f"symlink:{os.readlink(path)}"))
+        elif stat.S_ISDIR(metadata.st_mode):
+            rows.append((relative, "directory"))
+        elif stat.S_ISREG(metadata.st_mode):
+            rows.append((relative, hashlib.sha256(path.read_bytes()).hexdigest()))
+        else:
+            rows.append((relative, f"special:{stat.S_IFMT(metadata.st_mode):o}"))
+    return tuple(rows)
+
+
 def _canonical(value: object) -> bytes:
     return json.dumps(
         value,
@@ -112,8 +136,16 @@ def test_real_cli_publishes_exact_canonical_path_maps_and_observation(
     tmp_path: Path,
 ) -> None:
     command, expected_strict, expected_system = _cli_fixture(tmp_path)
+    assert command[:4] == [
+        sys.executable,
+        "-I",
+        "-B",
+        str(TOOLS / "gate_a_recovery_inputs_v1.py"),
+    ]
+    bytecode_before = _bytecode_cache_snapshot()
     completed = subprocess.run(command, check=False, capture_output=True)
     assert completed.returncode == 0, completed.stderr.decode()
+    assert _bytecode_cache_snapshot() == bytecode_before
 
     recovery = tmp_path / "gate-a-sibling-recovery"
     output = recovery / "input-authority-a001"
