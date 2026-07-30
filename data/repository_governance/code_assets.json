@@ -38,11 +38,11 @@
     },
     "expected_current_class_counts": {
       "active_implementation": 386,
-      "test": 652,
+      "test": 656,
       "common_infrastructure": 477,
       "authoritative_input": 4,
       "enforcement_control": 9,
-      "historical_evidence": 473,
+      "historical_evidence": 477,
       "retirement_candidate": 19
     },
     "conditional_current_assets": [
