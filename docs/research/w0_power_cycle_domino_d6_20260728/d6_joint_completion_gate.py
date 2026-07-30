@@ -31,7 +31,7 @@ CERTIFICATE_SCHEMA = "w0_d6_local_certificate_v1"
 
 COHORT = "w0_d6_swap_v3"
 CLASS_ALLOCATION_PROFILE = "d6_6b_d9_6g_swap_v1"
-PROJECT_LOCK_SHA256 = "e8130589effaa332122260b44df9aed367cdb9d1bc96ca17b24a1075007a24b3"
+PROJECT_LOCK_SHA256 = "261967a9fb8be5e1a08295f245d241ebc0cd62194bb7f659cefe1fb6913fa6c1"
 PROTOCOL = {
     "cohort": COHORT,
     "class_allocation_profile": CLASS_ALLOCATION_PROFILE,

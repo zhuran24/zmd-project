@@ -120,13 +120,18 @@ protocol object：
 ```
 
 上框记录的是已经执行并由 root 内 SHA-pinned v3 replayer 验收的历史
-swap-v3 root；不得把其中的 lock identity 就地改写。当前 checked-in
+swap-v3 root；不得把其中的 lock identity 就地改写。首个 checked-in
 successor 因 `PROJECT_LOCK.md` 新增 AB16 research-only cohort，改钉
-`e8130589effaa332122260b44df9aed367cdb9d1bc96ca17b24a1075007a24b3`。
-这只影响未来 W0 run 的 source/lock 闭包；不迁移、不补写也不重新解释上述
-历史 root。同一数学 profile 在该 successor 下重建的 antecedent SHA-256 为
-`3d40e1318b631119ca5314f31443b91dbada2d5a1125e3f8da7c4c3dcf8db394`；
-该 identity 变化只来自 lock scalar，不是新的 solver 结果。
+`e8130589effaa332122260b44df9aed367cdb9d1bc96ca17b24a1075007a24b3`，
+同一数学 profile 的静态 antecedent fixture 为
+`3d40e1318b631119ca5314f31443b91dbada2d5a1125e3f8da7c4c3dcf8db394`。
+当前 checked-in successor 随 AB16 formal selected-loader 与 pathname-transport
+边界加固改钉
+`261967a9fb8be5e1a08295f245d241ebc0cd62194bb7f659cefe1fb6913fa6c1`，
+对应静态 antecedent fixture 为
+`2f9bdf52826e1131715f3d00993c12c91506124f7074fe59c80a823050769610`。
+这些变更只影响未来 W0 run 的 source/lock 闭包；不迁移、不补写也不重新解释
+上述历史 root。identity 变化只来自 lock scalar，不是新的 solver 结果。
 
 `PROJECT_LOCK.md` 的该 SHA 是已提交运行门禁，不是 certified source pin；它只定义 W0
 research-only 合法版本矩阵与 authority/兼容边界。公共 G3 schema 保持
