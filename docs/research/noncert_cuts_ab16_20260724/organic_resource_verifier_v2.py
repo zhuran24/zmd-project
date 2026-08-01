@@ -24,26 +24,71 @@ import stat
 import subprocess
 import sys
 from types import ModuleType
-from typing import Any
+from typing import Any, Protocol
 
 
 PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v2"
+FORMAL_PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v3"
 RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
+FORMAL_RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v2"
 DRILL_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-drill-selection-v1"
+FORMAL_MANIFEST_SCHEMA = "noncert-cuts-ab16-organic-manifest-v2"
+PROSPECTIVE_FORMAL_MANIFEST_SCHEMA = "noncert-cuts-ab16-organic-manifest-v3"
 SEALED_EXECUTION_SOURCE_SCHEMA = "noncert-cuts-ab16-sealed-execution-source-v1"
-SELECTED_BYTE_LAUNCH_SCHEMA = "noncert-cuts-ab16-selected-byte-launch-v1"
+SELECTED_BYTE_LAUNCH_SCHEMA_V1 = (
+    "noncert-cuts-ab16-selected-byte-launch-v1"
+)
+SELECTED_BYTE_LAUNCH_SCHEMA_V2 = (
+    "noncert-cuts-ab16-selected-byte-launch-v2"
+)
 SNAPSHOT_MANIFEST_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
 EPOCH_SCHEMA = "noncert-cuts-ab16-manager-epoch-observation-v2"
-INNER_SCHEMA = "noncert-cuts-ab16-inner-lifecycle-v2"
-PRETERMINAL_SCHEMA = "noncert-cuts-ab16-preterminal-resource-v2"
+LEGACY_INNER_SCHEMA = "noncert-cuts-ab16-inner-lifecycle-v2"
+LEGACY_PRETERMINAL_SCHEMA = "noncert-cuts-ab16-preterminal-resource-v2"
 RESOURCE_SCHEMA = "noncert-cuts-ab16-resource-verification-v2"
-RELEASE_SCHEMA = "noncert-cuts-ab16-release-token-v2"
-TERMINAL_SCHEMA = "noncert-cuts-ab16-terminal-envelope-v2"
-CLEANUP_SCHEMA = "noncert-cuts-ab16-cleanup-v2"
-DETACHED_SCHEMA = "noncert-cuts-ab16-detached-resource-terminal-v2"
-REFERENCE_ACQUISITION_SCHEMA = "noncert-cuts-ab16-unit-reference-acquisition-v1"
-REFERENCE_RELEASE_SCHEMA = "noncert-cuts-ab16-unit-reference-release-v1"
+LEGACY_RELEASE_SCHEMA = "noncert-cuts-ab16-release-token-v2"
+LEGACY_TERMINAL_SCHEMA = "noncert-cuts-ab16-terminal-envelope-v2"
+LEGACY_CLEANUP_SCHEMA = "noncert-cuts-ab16-cleanup-v2"
+LEGACY_DETACHED_SCHEMA = "noncert-cuts-ab16-detached-resource-terminal-v2"
+LEGACY_REFERENCE_ACQUISITION_SCHEMA = (
+    "noncert-cuts-ab16-unit-reference-acquisition-v1"
+)
+LEGACY_REFERENCE_RELEASE_SCHEMA = "noncert-cuts-ab16-unit-reference-release-v1"
+PROSPECTIVE_INNER_SCHEMA = "noncert-cuts-ab16-inner-lifecycle-v3"
+PROSPECTIVE_PRETERMINAL_SCHEMA = "noncert-cuts-ab16-preterminal-resource-v3"
+PROSPECTIVE_RELEASE_SCHEMA = "noncert-cuts-ab16-release-token-v3"
+PROSPECTIVE_TERMINAL_SCHEMA = "noncert-cuts-ab16-terminal-envelope-v3"
+PROSPECTIVE_CLEANUP_SCHEMA = "noncert-cuts-ab16-cleanup-v3"
+PROSPECTIVE_DETACHED_SCHEMA = "noncert-cuts-ab16-detached-resource-terminal-v3"
+INDEPENDENT_RESOURCE_REPLAY_SCHEMA = (
+    "noncert-cuts-ab16-independent-resource-terminal-replay-v1"
+)
+INDEPENDENT_RESOURCE_REPLAY_PURPOSE = (
+    "INDEPENDENT_PROSPECTIVE_AB16_RESOURCE_TERMINAL_REPLAY"
+)
+PROSPECTIVE_REFERENCE_ACQUISITION_SCHEMA = (
+    "noncert-cuts-ab16-unit-reference-acquisition-v2"
+)
+PROSPECTIVE_REFERENCE_RELEASE_SCHEMA = (
+    "noncert-cuts-ab16-unit-reference-release-v2"
+)
+REFERENCE_CAPABILITY_SCHEMA = "noncert-cuts-ab16-reference-capability-v1"
+REFERENCE_CAPABILITY_TRANSCRIPT_SCHEMA = (
+    "noncert-cuts-ab16-reference-capability-transcript-v1"
+)
+# Public historical names remain aliases for the existing v2 replay cohort.
+INNER_SCHEMA = LEGACY_INNER_SCHEMA
+PRETERMINAL_SCHEMA = LEGACY_PRETERMINAL_SCHEMA
+RELEASE_SCHEMA = LEGACY_RELEASE_SCHEMA
+TERMINAL_SCHEMA = LEGACY_TERMINAL_SCHEMA
+CLEANUP_SCHEMA = LEGACY_CLEANUP_SCHEMA
+DETACHED_SCHEMA = LEGACY_DETACHED_SCHEMA
+REFERENCE_ACQUISITION_SCHEMA = LEGACY_REFERENCE_ACQUISITION_SCHEMA
+REFERENCE_RELEASE_SCHEMA = LEGACY_REFERENCE_RELEASE_SCHEMA
+SUPERVISOR_MODULE_ORIGIN_RECEIPT_SCHEMA = (
+    "noncert-cuts-ab16-organic-supervisor-module-origin-receipt-v1"
+)
 HISTORY_FREEZE_SCHEMA = "noncert-cuts-ab16-terminal-reference-history-freeze-v1"
 HISTORY_REPLAY_SCHEMA = "noncert-cuts-ab16-terminal-reference-history-replay-v2"
 HISTORY_FREEZE_PURPOSE = "AB16_GATE_A_TERMINAL_REFERENCE_HISTORY_FREEZE"
@@ -93,10 +138,39 @@ RESOURCE_SUCCESS_VERDICT = "RESOURCE_PRETERMINAL_PASS"
 RESOURCE_EXPECTED_FAILURE_VERDICT = "RESOURCE_PRETERMINAL_PASS_EXPECTED_PAYLOAD_FAILURE"
 FORMAL_LOADER_ROLE = "ab16_formal_loader_v1"
 FORMAL_RUNNER_MODULE = "docs.research.noncert_cuts_ab16_20260724.organic_arm_runner_v1"
-SELECTED_BYTE_EXECUTION_STRATEGY = "selected-byte-python-loader-fd-v1"
+SELECTED_BYTE_EXECUTION_STRATEGY_V1 = (
+    "selected-byte-python-loader-fd-v1"
+)
+SELECTED_BYTE_EXECUTION_STRATEGY_V2 = (
+    "selected-byte-python-loader-budget-fd-v2"
+)
 SELECTED_BYTE_TRANSPORT = "systemd-openfile-v1"
-SELECTED_BYTE_OPEN_FILE_NAMES = ["ab16-python", "ab16-loader", "ab16-authority"]
-SELECTED_BYTE_FD_MAP = {"authority": 5, "loader": 4, "python": 3}
+SELECTED_BYTE_OPEN_FILE_NAMES_V1 = [
+    "ab16-python",
+    "ab16-loader",
+    "ab16-authority",
+]
+SELECTED_BYTE_OPEN_FILE_NAMES_V2 = [
+    "ab16-python",
+    "ab16-loader",
+    "ab16-authority",
+    "ab16-native-helper-wrapper",
+    "ab16-native-helper",
+    "ab16-budget-broker",
+]
+SELECTED_BYTE_FD_MAP_V1 = {
+    "authority": 5,
+    "loader": 4,
+    "python": 3,
+}
+SELECTED_BYTE_FD_MAP_V2 = {
+    "authority": 5,
+    "budget_broker": 8,
+    "loader": 4,
+    "native_helper": 7,
+    "native_helper_wrapper": 6,
+    "python": 3,
+}
 FORMAL_IMPORT_MODE = "ordinary_pathfinder"
 FORMAL_MODULE_ORIGIN_POLICY = "sealed-snapshot-only-v1"
 DRILL_TOOL_ROLES = frozenset(
@@ -117,10 +191,15 @@ DRILL_TOOL_ROLES = frozenset(
         "systemd_run",
     }
 )
-FORMAL_TOOL_ROLES = DRILL_TOOL_ROLES | {
+FORMAL_TOOL_ROLES_V1 = DRILL_TOOL_ROLES | {
     "ab16_authority",
     "ab16_formal_loader",
 }
+FORMAL_TOOL_ROLES_V2 = FORMAL_TOOL_ROLES_V1 | {
+    "ab16_native_budget_helper",
+    "native_budget_helper",
+}
+FORMAL_TOOL_ROLES = FORMAL_TOOL_ROLES_V1
 
 GIB = 1024**3
 FORMAL_RESOURCE_CONTRACT: dict[str, object] = {
@@ -214,6 +293,22 @@ GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 
 class VerificationError(RuntimeError):
     """Immutable evidence does not establish the lifecycle claim."""
+
+
+class BudgetPublicationBackend(Protocol):
+    """Authenticated broker view supplied by the formal orchestrator."""
+
+    def maximum_bytes(self, label: str, *, artifact_class: str) -> int: ...
+
+    def publish_bytes(
+        self,
+        path: Path,
+        raw: bytes,
+        *,
+        maximum_bytes: int,
+        artifact_class: str,
+        label: str,
+    ) -> Mapping[str, object]: ...
 
 
 MAX_TOOL_BYTES = 8 * 1024 * 1024
@@ -470,11 +565,54 @@ def snapshot_bytes(path: Path | str) -> tuple[bytes, dict[str, object]]:
         os.close(descriptor)
 
 
-def write_exclusive(path: Path | str, value: object) -> dict[str, object]:
+def write_exclusive(
+    path: Path | str,
+    value: object,
+    *,
+    budget_backend: BudgetPublicationBackend | None = None,
+    budget_label: str | None = None,
+    artifact_class: str | None = None,
+) -> dict[str, object]:
     """Publish canonical JSON with O_EXCL and no symlink traversal."""
 
-    absolute, parent_descriptor, leaf = _open_parent_dirfd(Path(path))
     raw = canonical_json_bytes(value)
+    absolute = Path(os.path.abspath(path))
+    if budget_backend is not None:
+        if type(budget_label) is not str or not budget_label or type(artifact_class) is not str:
+            raise VerificationError("budgeted verifier output lacks its fixed label/class")
+        maximum = budget_backend.maximum_bytes(
+            budget_label,
+            artifact_class=artifact_class,
+        )
+        if type(maximum) is not int or maximum <= 0 or len(raw) > maximum:
+            raise VerificationError("budgeted verifier output exceeds its fixed maximum")
+        try:
+            observed = dict(
+                budget_backend.publish_bytes(
+                    absolute,
+                    raw,
+                    maximum_bytes=maximum,
+                    artifact_class=artifact_class,
+                    label=budget_label,
+                )
+            )
+        except VerificationError:
+            raise
+        except Exception as exc:
+            raise VerificationError(
+                "verifier broker publication failed or acknowledgement is uncertain"
+            ) from exc
+        expected = {
+            "path": str(absolute),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw),
+        }
+        if any(observed.get(field) != item for field, item in expected.items()):
+            raise VerificationError("verifier broker publication identity drifted")
+        return observed
+    if budget_label is not None or artifact_class is not None:
+        raise VerificationError("verifier budget metadata lacks its broker")
+    absolute, parent_descriptor, leaf = _open_parent_dirfd(absolute)
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
     try:
         descriptor = os.open(
@@ -1470,11 +1608,26 @@ def _literal_identity(value: str) -> dict[str, object]:
 
 
 def _selected_identity_argument(selected: Mapping[str, Any]) -> str:
+    schema = selected.get("schema_version")
+    roles: tuple[str, ...]
+    if schema == SELECTED_BYTE_LAUNCH_SCHEMA_V1:
+        roles = ("authority", "loader", "python")
+    elif schema == SELECTED_BYTE_LAUNCH_SCHEMA_V2:
+        roles = (
+            "authority",
+            "loader",
+            "native_helper",
+            "native_helper_wrapper",
+            "python",
+        )
+    else:
+        raise VerificationError(
+            "formal selected-byte launch schema is unsupported"
+        )
     return canonical_json_bytes(
         {
-            "authority": selected["authority_identity"],
-            "loader": selected["loader_identity"],
-            "python": selected["python_identity"],
+            role: selected[f"{role}_identity"]
+            for role in roles
         }
     ).decode("utf-8")
 
@@ -1688,18 +1841,38 @@ def validate_formal_execution_source(
     ):
         raise VerificationError("formal snapshot/package runner join failed")
 
+    prospective = (
+        pre_run.get("schema_version") == FORMAL_PRE_RUN_SCHEMA
+    )
+    identity_roles: tuple[str, ...]
+    if prospective:
+        expected_schema = SELECTED_BYTE_LAUNCH_SCHEMA_V2
+        expected_strategy = SELECTED_BYTE_EXECUTION_STRATEGY_V2
+        expected_fd_map = SELECTED_BYTE_FD_MAP_V2
+        expected_names = SELECTED_BYTE_OPEN_FILE_NAMES_V2
+        identity_roles = (
+            "authority",
+            "loader",
+            "native_helper",
+            "native_helper_wrapper",
+            "python",
+        )
+    else:
+        expected_schema = SELECTED_BYTE_LAUNCH_SCHEMA_V1
+        expected_strategy = SELECTED_BYTE_EXECUTION_STRATEGY_V1
+        expected_fd_map = SELECTED_BYTE_FD_MAP_V1
+        expected_names = SELECTED_BYTE_OPEN_FILE_NAMES_V1
+        identity_roles = ("authority", "loader", "python")
     selected = _keys(
         record["selected_byte_launch"],
         {
             "execution_strategy",
             "fd_map",
-            "authority_identity",
             "literal_identity",
-            "loader_identity",
             "open_file_names",
-            "python_identity",
             "schema_version",
             "transport",
+            *(f"{role}_identity" for role in identity_roles),
         },
         "formal selected-byte launch",
     )
@@ -1709,33 +1882,42 @@ def validate_formal_execution_source(
         "formal selected-byte literal",
     )
     if (
-        selected["schema_version"] != SELECTED_BYTE_LAUNCH_SCHEMA
-        or selected["execution_strategy"] != SELECTED_BYTE_EXECUTION_STRATEGY
+        selected["schema_version"] != expected_schema
+        or selected["execution_strategy"] != expected_strategy
         or selected["transport"] != SELECTED_BYTE_TRANSPORT
-        or selected["open_file_names"] != SELECTED_BYTE_OPEN_FILE_NAMES
-        or selected["fd_map"] != SELECTED_BYTE_FD_MAP
+        or selected["open_file_names"] != expected_names
+        or selected["fd_map"] != expected_fd_map
         or type(literal_identity["sha256"]) is not str
         or SHA256_RE.fullmatch(literal_identity["sha256"]) is None
         or type(literal_identity["size_bytes"]) is not int
         or literal_identity["size_bytes"] <= 0
     ):
         raise VerificationError("formal selected-byte launch semantics drifted")
-    python_identity = _identity(selected["python_identity"], "formal selected Python", mode_required=True)
-    loader_identity = _identity(selected["loader_identity"], "formal selected loader", mode_required=True)
-    authority_identity = _identity(
-        selected["authority_identity"],
-        "formal selected authority",
-        mode_required=True,
-    )
-    if dict(python_identity) != dict(tools["python3_13"]):
-        raise VerificationError("formal selected Python differs from package tool")
-    if dict(loader_identity) != dict(tools["ab16_formal_loader"]):
-        raise VerificationError("formal selected loader differs from named package tool")
-    if dict(authority_identity) != dict(tools["ab16_authority"]):
-        raise VerificationError("formal selected authority differs from named package tool")
-    _replay_identity(python_identity, "formal selected Python", mode_required=True)
-    _replay_identity(loader_identity, "formal selected loader", mode_required=True)
-    _replay_identity(authority_identity, "formal selected authority", mode_required=True)
+    tool_roles = {
+        "authority": "ab16_authority",
+        "loader": "ab16_formal_loader",
+        "native_helper": "native_budget_helper",
+        "native_helper_wrapper": "ab16_native_budget_helper",
+        "python": "python3_13",
+    }
+    selected_identities: dict[str, Mapping[str, Any]] = {}
+    for role in identity_roles:
+        identity = _identity(
+            selected[f"{role}_identity"],
+            f"formal selected {role}",
+            mode_required=True,
+        )
+        selected_identities[role] = identity
+        if dict(identity) != dict(tools[tool_roles[role]]):
+            raise VerificationError(
+                f"formal selected {role} differs from named package tool"
+            )
+        _replay_identity(
+            identity,
+            f"formal selected {role}",
+            mode_required=True,
+        )
+    authority_identity = selected_identities["authority"]
     package_manifest_identity = _identity(
         pre_run["package"]["manifest_identity"],
         "formal package manifest",
@@ -1869,6 +2051,236 @@ def validate_formal_execution_source(
     return record
 
 
+def _validate_supervisor_module_origin_receipt(
+    pre_run: Mapping[str, Any],
+) -> dict[str, object]:
+    launch = _mapping(pre_run.get("launch"), "supervisor-origin launch")
+    argv = launch.get("supervisor_argv")
+    if (
+        type(argv) is not list
+        or len(argv) < 2
+        or argv[-2] != "--module-origin-receipt"
+        or type(argv[-1]) is not str
+    ):
+        raise VerificationError("supervisor-origin output argv is absent")
+    attempt = Path(_text(pre_run.get("attempt_dir"), "supervisor-origin attempt"))
+    path = Path(argv[-1])
+    if path != attempt / "supervisor-module-origin-receipt.json":
+        raise VerificationError("supervisor-origin output path drifted")
+    snapshot = snapshot_json(path)
+    record = _keys(
+        snapshot.value,
+        {
+            "authorizations",
+            "import_mode",
+            "module_origins",
+            "module_origins_authoritative",
+            "package_id",
+            "schema_version",
+            "sealed_snapshot_execution_root",
+            "slot",
+            "status",
+            "supervisor_tool_identity",
+        },
+        "supervisor module-origin receipt",
+    )
+    authorizations = _keys(
+        record["authorizations"],
+        {
+            "global_claim_authorized",
+            "mathematical_claim_authorized",
+            "production_certified_authorized",
+            "runtime_effect_authorized",
+        },
+        "supervisor module-origin authorizations",
+    )
+    execution = _mapping(
+        launch.get("execution_source"),
+        "supervisor-origin execution source",
+    )
+    snapshot_root = Path(
+        _text(
+            execution.get("sealed_snapshot_execution_root"),
+            "supervisor-origin snapshot root",
+        )
+    )
+    origins = _mapping(record["module_origins"], "supervisor diagnostic module origins")
+    for name, raw_path in origins.items():
+        if type(name) is not str or not name or type(raw_path) is not str:
+            raise VerificationError("supervisor diagnostic module origin is invalid")
+        try:
+            Path(raw_path).relative_to(snapshot_root)
+        except ValueError as exc:
+            raise VerificationError(
+                "supervisor diagnostic module origin escaped sealed snapshot"
+            ) from exc
+    expected_tool = pre_run["tool_identities"]["organic_resource_lifecycle"]
+    if (
+        record["schema_version"] != SUPERVISOR_MODULE_ORIGIN_RECEIPT_SCHEMA
+        or record["status"] != "PASS"
+        or record["module_origins_authoritative"] is not False
+        or record["import_mode"] != execution.get("import_mode")
+        or record["package_id"] != pre_run["package"]["package_id"]
+        or record["slot"] != pre_run["slot"]
+        or record["sealed_snapshot_execution_root"] != str(snapshot_root)
+        or record["supervisor_tool_identity"] != expected_tool
+        or any(value is not False for value in authorizations.values())
+    ):
+        raise VerificationError("supervisor module-origin receipt semantics drifted")
+    return {
+        "identity": snapshot.identity,
+        "receipt": dict(record),
+    }
+
+
+def _validate_formal_budget_handoff(
+    value: object,
+    *,
+    attempt_dir: Path,
+    slot: str,
+) -> Mapping[str, Any]:
+    record = _keys(
+        value,
+        {
+            "arm_allocation_id",
+            "broker_actor_identity",
+            "broker_nonce",
+            "broker_socket_path",
+            "fixed_directory_layout",
+            "fixed_maxima",
+            "formal_budget_authority_identity",
+            "native_helper_package_identity",
+        },
+        "formal budget handoff",
+    )
+    if (
+        type(record["arm_allocation_id"]) is not str
+        or SHA256_RE.fullmatch(record["arm_allocation_id"]) is None
+        or type(record["broker_nonce"]) is not str
+        or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", record["broker_nonce"])
+        is None
+    ):
+        raise VerificationError("formal budget handoff identity is invalid")
+    actor = _keys(
+        record["broker_actor_identity"],
+        {"pid", "pid_starttime", "uid"},
+        "formal budget broker actor",
+    )
+    _integer(actor["pid"], "formal budget broker pid", 1)
+    _integer(actor["pid_starttime"], "formal budget broker starttime", 1)
+    _integer(actor["uid"], "formal budget broker uid")
+    _identity(
+        record["formal_budget_authority_identity"],
+        "formal budget authority identity",
+        mode_required=True,
+    )
+    _identity(
+        record["native_helper_package_identity"],
+        "formal native helper package identity",
+        mode_required=True,
+    )
+    layout = _keys(
+        record["fixed_directory_layout"],
+        {"attempt_root", "channel_directories", "directories", "formal_root"},
+        "formal budget directory layout",
+    )
+    formal_root = Path(_text(layout["formal_root"], "formal budget root"))
+    observed_attempt = Path(_text(layout["attempt_root"], "formal budget attempt"))
+    if (
+        not formal_root.is_absolute()
+        or Path(os.path.abspath(formal_root)) != formal_root
+        or observed_attempt != attempt_dir
+    ):
+        raise VerificationError("formal budget attempt/root join failed")
+    try:
+        attempt_relative = attempt_dir.relative_to(formal_root).as_posix()
+    except ValueError as exc:
+        raise VerificationError("formal budget attempt escaped formal root") from exc
+    if not attempt_relative.endswith(f"/{slot}"):
+        raise VerificationError("formal budget attempt/slot join failed")
+    directories = layout["directories"]
+    if type(directories) is not list or not directories:
+        raise VerificationError("formal budget directory layout is empty")
+    seen: set[str] = set()
+    for index, raw_directory in enumerate(directories):
+        directory = _keys(
+            raw_directory,
+            {"mode", "path"},
+            f"formal budget directory {index}",
+        )
+        relative = _text(
+            directory["path"],
+            f"formal budget directory {index}.path",
+        )
+        path = Path(relative)
+        if (
+            path.is_absolute()
+            or path.as_posix() != relative
+            or any(part in {"", ".", ".."} for part in path.parts)
+            or directory["mode"] not in {0o500, 0o700}
+            or relative in seen
+        ):
+            raise VerificationError("formal budget directory entry is invalid")
+        parent = path.parent.as_posix()
+        if parent != "." and parent not in seen:
+            raise VerificationError("formal budget directory parent closure failed")
+        seen.add(relative)
+    if attempt_relative not in seen:
+        raise VerificationError("formal budget layout omits attempt root")
+    channels = _mapping(
+        layout["channel_directories"],
+        "formal budget channel directories",
+    )
+    if not channels:
+        raise VerificationError("formal budget channel map is empty")
+    for channel, raw_relative in channels.items():
+        if (
+            type(channel) is not str
+            or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", channel) is None
+            or type(raw_relative) is not str
+            or raw_relative not in seen
+            or not raw_relative.startswith(f"{attempt_relative}/")
+        ):
+            raise VerificationError("formal budget channel closure failed")
+    maxima = _mapping(record["fixed_maxima"], "formal budget maxima")
+    if not maxima:
+        raise VerificationError("formal budget maxima are empty")
+    allowed_classes = {
+        "closeout",
+        "ledger",
+        "metadata",
+        "model",
+        "normal",
+        "publication",
+        "scratch",
+    }
+    for label, raw_maximum in maxima.items():
+        maximum = _keys(
+            raw_maximum,
+            {"artifact_class", "maximum_bytes"},
+            f"formal budget maximum {label}",
+        )
+        if (
+            type(label) is not str
+            or not label
+            or maximum["artifact_class"] not in allowed_classes
+        ):
+            raise VerificationError("formal budget maximum label/class is invalid")
+        _integer(
+            maximum["maximum_bytes"],
+            f"formal budget maximum {label}.maximum_bytes",
+            1,
+        )
+    socket_path = Path(_text(record["broker_socket_path"], "formal budget broker socket"))
+    if not socket_path.is_absolute():
+        raise VerificationError("formal budget broker socket is not absolute")
+    try:
+        socket_path.relative_to(formal_root)
+    except ValueError as exc:
+        raise VerificationError("formal budget broker socket escaped formal root") from exc
+    return record
+
+
 def validate_pre_run_authority(
     value: object,
     *,
@@ -1935,9 +2347,12 @@ def validate_pre_run_authority(
         "verdict",
         "workers",
     }
+    raw_record = _mapping(value, "pre-run authority")
+    if raw_record.get("schema_version") == FORMAL_PRE_RUN_SCHEMA:
+        expected_keys.add("budget_handoff")
     record = _keys(value, expected_keys, "pre-run authority")
     if (
-        record.get("schema_version") != PRE_RUN_SCHEMA
+        record.get("schema_version") not in {PRE_RUN_SCHEMA, FORMAL_PRE_RUN_SCHEMA}
         or record.get("purpose") != PRE_RUN_PURPOSE
         or record.get("status") != "PASS"
         or record.get("verdict") != "AB16_ORGANIC_PRE_RUN_AUTHORITY_PASS"
@@ -1950,6 +2365,14 @@ def validate_pre_run_authority(
         or record.get("execution_class") not in {"DISPOSABLE_LIVE_DRILL", "FORMAL_AB16"}
     ):
         raise VerificationError("pre-run authority semantics drifted")
+    if record["schema_version"] == FORMAL_PRE_RUN_SCHEMA:
+        if record["execution_class"] != "FORMAL_AB16":
+            raise VerificationError("formal budget handoff appeared outside formal execution")
+        _validate_formal_budget_handoff(
+            record["budget_handoff"],
+            attempt_dir=Path(_text(record["attempt_dir"], "formal budget attempt")),
+            slot=_text(record["slot"], "formal budget slot"),
+        )
     _validate_resource_contract(
         record["resource_contract"],
         execution_class=record["execution_class"],
@@ -2075,14 +2498,15 @@ def validate_pre_run_authority(
     }
     digest = _epoch_digest(record["manager_epoch"])
     if (
-        capability_record["schema_version"] != "noncert-cuts-ab16-reference-capability-v1"
+        capability_record["schema_version"] != REFERENCE_CAPABILITY_SCHEMA
         or capability_record["purpose"] != "AB16_GATE_A_REFERENCE_CAPABILITY_REPLAY"
         or capability_record["status"] != "PASS"
         or capability_record["verdict"] != "REFUNIT_UNREFUNIT_EXACT_SURFACE_PASS"
         or capability_record["manager_epoch_digest"] != digest
         or capability_record["methods"] != expected_methods
         or capability_record["transcript_identity"] != transcript_identity
-        or transcript_record["schema_version"] != "noncert-cuts-ab16-reference-capability-transcript-v1"
+        or transcript_record["schema_version"]
+        != REFERENCE_CAPABILITY_TRANSCRIPT_SCHEMA
         or transcript_record["purpose"] != "AB16_GATE_A_REFERENCE_CAPABILITY_RAW_TRANSCRIPT"
         or transcript_record["manager_epoch_digest"] != digest
         or transcript_record["busctl_identity"] != record["tool_identities"]["busctl"]
@@ -2116,11 +2540,13 @@ def validate_pre_run_authority(
     ):
         raise VerificationError("pre-run package identity is invalid")
     tools = _mapping(record.get("tool_identities"), "pre-run tool identities")
-    expected_tool_roles = (
-        FORMAL_TOOL_ROLES
-        if record["execution_class"] == "FORMAL_AB16"
-        else DRILL_TOOL_ROLES
-    )
+    expected_tool_roles = DRILL_TOOL_ROLES
+    if record["execution_class"] == "FORMAL_AB16":
+        expected_tool_roles = (
+            FORMAL_TOOL_ROLES_V2
+            if record.get("schema_version") == FORMAL_PRE_RUN_SCHEMA
+            else FORMAL_TOOL_ROLES_V1
+        )
     if set(tools) != expected_tool_roles:
         raise VerificationError("pre-run tool role set drifted")
     for role, identity in tools.items():
@@ -2318,6 +2744,16 @@ def validate_pre_run_authority(
         if root_strict is not None and record["strict_input_identities"] != root_strict:
             raise VerificationError("pre-run root strict input map join failed")
     if manifest is not None:
+        expected_manifest_schema = (
+            PROSPECTIVE_FORMAL_MANIFEST_SCHEMA
+            if record["schema_version"] == FORMAL_PRE_RUN_SCHEMA
+            else FORMAL_MANIFEST_SCHEMA
+        )
+        if (
+            record["execution_class"] == "FORMAL_AB16"
+            and manifest.get("schema_version") != expected_manifest_schema
+        ):
+            raise VerificationError("pre-run manifest cohort drifted")
         arm_sequence = manifest.get("arm_sequence")
         attempt_dirs = manifest.get("attempt_dirs")
         unit_names = manifest.get("unit_names")
@@ -2382,46 +2818,54 @@ def _validate_selection(
     pre_run: Mapping[str, Any],
     pre_run_identity: Mapping[str, Any],
 ) -> Mapping[str, Any]:
+    expected_fields = {
+        "arm",
+        "arm_binding_identity",
+        "attempt_dir",
+        "authority_chain",
+        "authorizations",
+        "baseline_admission_identity",
+        "baseline_incumbent_sha256",
+        "campaign_id",
+        "common_prestate_identity",
+        "configuration",
+        "enabled_families",
+        "execution_class",
+        "expected_payload_status",
+        "fresh_process_required",
+        "live_source_provenance_root",
+        "manifest_identity",
+        "order",
+        "pre_run_authority_identity",
+        "purpose",
+        "repository_head",
+        "repository_root",
+        "repository_git_tool_identity",
+        "run_nonce",
+        "schema_version",
+        "sealed_snapshot_execution_root",
+        "seed",
+        "selection_nonce",
+        "snapshot_manifest_identity",
+        "snapshot_materialization_receipt_identity",
+        "slot",
+        "unit_name",
+        "workers",
+    }
+    if pre_run["schema_version"] == FORMAL_PRE_RUN_SCHEMA:
+        expected_fields.add("budget_handoff")
     record = _keys(
         value,
-        {
-            "arm",
-            "arm_binding_identity",
-            "attempt_dir",
-            "authority_chain",
-            "authorizations",
-            "baseline_admission_identity",
-            "baseline_incumbent_sha256",
-            "campaign_id",
-            "common_prestate_identity",
-            "configuration",
-            "enabled_families",
-            "execution_class",
-            "expected_payload_status",
-            "fresh_process_required",
-            "live_source_provenance_root",
-            "manifest_identity",
-            "order",
-            "pre_run_authority_identity",
-            "purpose",
-            "repository_head",
-            "repository_root",
-            "repository_git_tool_identity",
-            "run_nonce",
-            "schema_version",
-            "sealed_snapshot_execution_root",
-            "seed",
-            "selection_nonce",
-            "snapshot_manifest_identity",
-            "snapshot_materialization_receipt_identity",
-            "slot",
-            "unit_name",
-            "workers",
-        },
+        expected_fields,
         "runner selection",
     )
+    formal_schema = (
+        FORMAL_RUNNER_SELECTION_SCHEMA
+        if pre_run["schema_version"] == FORMAL_PRE_RUN_SCHEMA
+        else RUNNER_SELECTION_SCHEMA
+    )
     formal = (
-        record.get("schema_version") == RUNNER_SELECTION_SCHEMA
+        record.get("schema_version") == formal_schema
         and record.get("purpose") == RUNNER_PURPOSE
         and record.get("execution_class") == "FORMAL_AB16"
     )
@@ -2430,7 +2874,14 @@ def _validate_selection(
         and record.get("purpose") == DRILL_PURPOSE
         and record.get("execution_class") == "DISPOSABLE_LIVE_DRILL"
     )
-    if (not formal and not drill) or record.get("fresh_process_required") is not True:
+    if (
+        (not formal and not drill)
+        or (
+            drill
+            and pre_run["schema_version"] != PRE_RUN_SCHEMA
+        )
+        or record.get("fresh_process_required") is not True
+    ):
         raise VerificationError("runner selection semantics drifted")
     selected_pre_run_identity = _identity(
         record.get("pre_run_authority_identity"),
@@ -2468,6 +2919,11 @@ def _validate_selection(
     for selected_field, pre_run_field in joins.items():
         if record.get(selected_field) != pre_run.get(pre_run_field):
             raise VerificationError(f"runner selection {selected_field} join failed")
+    if (
+        pre_run["schema_version"] == FORMAL_PRE_RUN_SCHEMA
+        and record["budget_handoff"] != pre_run["budget_handoff"]
+    ):
+        raise VerificationError("runner selection budget handoff join failed")
     expected_families = (
         []
         if record["arm"] == "control" or drill
@@ -2650,6 +3106,37 @@ def _expected_resource_verdict(pre_run: Mapping[str, Any]) -> str:
     raise VerificationError("unsupported payload expectation")
 
 
+def lifecycle_schema_cohort(pre_run: Mapping[str, Any]) -> dict[str, str]:
+    """Select exactly one replay cohort from the pre-run discriminator."""
+
+    schema_version = pre_run.get("schema_version")
+    if schema_version == PRE_RUN_SCHEMA:
+        return {
+            "cleanup": LEGACY_CLEANUP_SCHEMA,
+            "detached": LEGACY_DETACHED_SCHEMA,
+            "inner": LEGACY_INNER_SCHEMA,
+            "preterminal": LEGACY_PRETERMINAL_SCHEMA,
+            "reference_acquisition": LEGACY_REFERENCE_ACQUISITION_SCHEMA,
+            "reference_release": LEGACY_REFERENCE_RELEASE_SCHEMA,
+            "release": LEGACY_RELEASE_SCHEMA,
+            "terminal": LEGACY_TERMINAL_SCHEMA,
+        }
+    if schema_version == FORMAL_PRE_RUN_SCHEMA:
+        return {
+            "cleanup": PROSPECTIVE_CLEANUP_SCHEMA,
+            "detached": PROSPECTIVE_DETACHED_SCHEMA,
+            "inner": PROSPECTIVE_INNER_SCHEMA,
+            "preterminal": PROSPECTIVE_PRETERMINAL_SCHEMA,
+            "reference_acquisition": (
+                PROSPECTIVE_REFERENCE_ACQUISITION_SCHEMA
+            ),
+            "reference_release": PROSPECTIVE_REFERENCE_RELEASE_SCHEMA,
+            "release": PROSPECTIVE_RELEASE_SCHEMA,
+            "terminal": PROSPECTIVE_TERMINAL_SCHEMA,
+        }
+    raise VerificationError("pre-run lifecycle cohort is unsupported")
+
+
 def _common_join(
     record: Mapping[str, Any],
     *,
@@ -2772,6 +3259,9 @@ def verify_preterminal(
     """Derive the release prerequisite from raw preterminal evidence."""
 
     pre = validate_pre_run_authority(pre_run.value)
+    cohort = lifecycle_schema_cohort(pre)
+    if pre.get("schema_version") == FORMAL_PRE_RUN_SCHEMA:
+        _validate_supervisor_module_origin_receipt(pre)
     _validate_selection(
         selection.value,
         pre_run=pre,
@@ -2781,9 +3271,9 @@ def verify_preterminal(
         raise VerificationError("resource verifier tool identity drifted")
     inner_record = inner.value
     preterminal_record = preterminal.value
-    if inner_record.get("schema_version") != INNER_SCHEMA:
+    if inner_record.get("schema_version") != cohort["inner"]:
         raise VerificationError("inner lifecycle schema drifted")
-    if preterminal_record.get("schema_version") != PRETERMINAL_SCHEMA:
+    if preterminal_record.get("schema_version") != cohort["preterminal"]:
         raise VerificationError("preterminal schema drifted")
     invocation_id = _text(inner_record.get("invocation_id"), "inner invocation_id")
     _common_join(
@@ -2814,10 +3304,15 @@ def verify_preterminal(
     )
     if preterminal_record.get("inner_identity") != inner.identity:
         raise VerificationError("preterminal inner identity join failed")
+    expected_result_schema = (
+        "noncert-cuts-ab16-organic-arm-result-v2"
+        if pre.get("schema_version") == FORMAL_PRE_RUN_SCHEMA
+        else "noncert-cuts-ab16-organic-arm-result-v1"
+    )
     if (
         inner_record.get("payload_result_identity") != payload_result.identity
         or payload_result.identity["path"] != pre["output_paths"]["attempt_result"]
-        or payload_result.value.get("schema_version") != "noncert-cuts-ab16-organic-arm-result-v1"
+        or payload_result.value.get("schema_version") != expected_result_schema
         or payload_result.value.get("slot") != pre["slot"]
     ):
         raise VerificationError("payload result identity/schema join failed")
@@ -2900,6 +3395,7 @@ def verify_detached(
     """Replay the full two-stage lifecycle after unit cleanup."""
 
     pre = validate_pre_run_authority(pre_run.value)
+    cohort = lifecycle_schema_cohort(pre)
     _validate_selection(
         selection.value,
         pre_run=pre,
@@ -2921,15 +3417,21 @@ def verify_detached(
     reference_release_record = reference_release.value
     cleanup_record = cleanup.value
     detached_epoch_record = detached_epoch.value
-    if acquisition_record.get("schema_version") != REFERENCE_ACQUISITION_SCHEMA:
+    if (
+        acquisition_record.get("schema_version")
+        != cohort["reference_acquisition"]
+    ):
         raise VerificationError("reference acquisition schema drifted")
-    if release_record.get("schema_version") != RELEASE_SCHEMA:
+    if release_record.get("schema_version") != cohort["release"]:
         raise VerificationError("release schema drifted")
-    if terminal_record.get("schema_version") != TERMINAL_SCHEMA:
+    if terminal_record.get("schema_version") != cohort["terminal"]:
         raise VerificationError("terminal schema drifted")
-    if reference_release_record.get("schema_version") != REFERENCE_RELEASE_SCHEMA:
+    if (
+        reference_release_record.get("schema_version")
+        != cohort["reference_release"]
+    ):
         raise VerificationError("reference release schema drifted")
-    if cleanup_record.get("schema_version") != CLEANUP_SCHEMA:
+    if cleanup_record.get("schema_version") != cohort["cleanup"]:
         raise VerificationError("cleanup schema drifted")
     invocation_id = _text(inner.value.get("invocation_id"), "inner invocation_id")
     for phase, record in (
@@ -3174,13 +3676,82 @@ def verify_detached(
         "release_identity": release.identity,
         "resource_verification_identity": resource.identity,
         "runner_selection_identity": selection.identity,
-        "schema_version": DETACHED_SCHEMA,
+        "schema_version": cohort["detached"],
         "slot": pre["slot"],
         "status": "PASS",
         "terminal_identity": terminal.identity,
         "verdict": detached_verdict,
         "verifier_tool_identity": dict(verifier_tool_identity),
     }
+
+
+def build_independent_resource_replay(
+    *,
+    stored_detached: Snapshot,
+    replayed_detached: Mapping[str, object],
+    verifier_tool_identity: Mapping[str, object],
+) -> dict[str, object]:
+    """Build the closed prospective replay receipt from independently recomputed bytes."""
+
+    checked_tool = dict(
+        _identity(
+            verifier_tool_identity,
+            "independent resource replay tool",
+        )
+    )
+    replayed = dict(replayed_detached)
+    if (
+        stored_detached.value != replayed
+        or replayed.get("schema_version") != PROSPECTIVE_DETACHED_SCHEMA
+        or replayed.get("status") != "PASS"
+        or type(replayed.get("slot")) is not str
+    ):
+        raise VerificationError(
+            "prospective detached resource terminal differs from independent replay"
+        )
+    replayed_raw = canonical_json_bytes(replayed)
+    return {
+        "authorizations": {
+            "family_global_soundness_authorized": False,
+            "global_claim_authorized": False,
+            "mathematical_claim_authorized": False,
+            "production_certified_authorized": False,
+            "stage_b_promotion_authorized": False,
+        },
+        "detached_resource_terminal_identity": dict(
+            stored_detached.identity
+        ),
+        "purpose": INDEPENDENT_RESOURCE_REPLAY_PURPOSE,
+        "replayed_resource_terminal": replayed,
+        "replayed_resource_terminal_sha256": hashlib.sha256(
+            replayed_raw
+        ).hexdigest(),
+        "schema_version": INDEPENDENT_RESOURCE_REPLAY_SCHEMA,
+        "slot": replayed["slot"],
+        "status": "PASS",
+        "verifier_tool_identity": checked_tool,
+    }
+
+
+def validate_independent_resource_replay(
+    value: object,
+    *,
+    stored_detached: Snapshot,
+    replayed_detached: Mapping[str, object],
+    verifier_tool_identity: Mapping[str, object],
+) -> dict[str, object]:
+    """Fail closed unless a stored receipt equals the unique rebuilt receipt."""
+
+    expected = build_independent_resource_replay(
+        stored_detached=stored_detached,
+        replayed_detached=replayed_detached,
+        verifier_tool_identity=verifier_tool_identity,
+    )
+    if type(value) is not dict or dict(value) != expected:
+        raise VerificationError(
+            "independent resource terminal replay receipt drifted"
+        )
+    return expected
 
 
 def current_tool_identity() -> dict[str, object]:
@@ -3198,6 +3769,7 @@ def verify_preterminal_paths(
     preterminal_path: Path | str,
     payload_result_path: Path | str,
     output_path: Path | str,
+    budget_backend: BudgetPublicationBackend | None = None,
 ) -> dict[str, object]:
     receipt = verify_preterminal(
         pre_run=snapshot_json(pre_run_path),
@@ -3207,7 +3779,17 @@ def verify_preterminal_paths(
         payload_result=snapshot_json(payload_result_path),
         verifier_tool_identity=current_tool_identity(),
     )
-    write_exclusive(output_path, receipt)
+    write_exclusive(
+        output_path,
+        receipt,
+        budget_backend=budget_backend,
+        budget_label=(
+            "resource preterminal verification"
+            if budget_backend is not None
+            else None
+        ),
+        artifact_class="publication" if budget_backend is not None else None,
+    )
     return receipt
 
 
@@ -3226,6 +3808,7 @@ def verify_detached_paths(
     cleanup_path: Path | str,
     detached_epoch_path: Path | str,
     output_path: Path | str,
+    budget_backend: BudgetPublicationBackend | None = None,
 ) -> dict[str, object]:
     receipt = verify_detached(
         pre_run=snapshot_json(pre_run_path),
@@ -3242,5 +3825,15 @@ def verify_detached_paths(
         detached_epoch=snapshot_json(detached_epoch_path),
         verifier_tool_identity=current_tool_identity(),
     )
-    write_exclusive(output_path, receipt)
+    write_exclusive(
+        output_path,
+        receipt,
+        budget_backend=budget_backend,
+        budget_label=(
+            "detached resource terminal replay"
+            if budget_backend is not None
+            else None
+        ),
+        artifact_class="publication" if budget_backend is not None else None,
+    )
     return receipt

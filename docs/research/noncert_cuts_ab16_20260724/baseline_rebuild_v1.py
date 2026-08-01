@@ -16,6 +16,7 @@ import argparse
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import fcntl
 import hashlib
 import json
 import os
@@ -23,7 +24,7 @@ from pathlib import Path
 import stat
 import sys
 import time
-from typing import Any
+from typing import Any, Protocol
 
 import baseline_admission_v1 as baseline_contract
 from ortools.sat import cp_model_pb2
@@ -45,10 +46,81 @@ STRICT_INPUT_ROLES = (
     "canonical_rules",
     "mandatory_instances",
 )
+PROSPECTIVE_BASELINE_SUFFIX = (
+    "formal-ab16",
+    "artifacts",
+    "prospective",
+    "baseline",
+)
+BASELINE_BUDGET_LABELS = {
+    "AB16 baseline rebuilt model": "model",
+    "AB16 baseline incumbent": "normal",
+    "AB16 baseline rebuilt metadata": "metadata",
+    "AB16 baseline rebuild result": "publication",
+    "AB16 baseline cut segment": "ledger",
+}
+BASELINE_TMP_DIRECTORY_LABEL = "AB16 baseline tmp directory"
+BASELINE_CHECKPOINT_DIRECTORY_LABEL = "AB16 baseline checkpoint directory"
+BASELINE_CUT_DIRECTORY_LABEL = "AB16 baseline cut channel directory"
+BASELINE_CUT_CHANNEL = "ab16-baseline-rebuild-cuts"
+BASELINE_CUT_DIRECTORY_NAME = "benders-cuts"
+BASELINE_WORKER_CONFINEMENT = "landlock-read-only-worker-v1"
 
 
 class BaselineRebuildError(RuntimeError):
     """The deterministic baseline could not be rebuilt exactly."""
+
+
+class BaselineBudgetBackend(Protocol):
+    """Formal-root broker view supplied only by the package-pinned launcher."""
+
+    @property
+    def authority_binding(self) -> Mapping[str, object]: ...
+
+    def maximum_bytes(self, label: str, *, artifact_class: str) -> int: ...
+
+    def register_directory(
+        self,
+        path: Path,
+        *,
+        label: str,
+        mode_octal: str,
+    ) -> Mapping[str, object]: ...
+
+    def install_worker_confinement(
+        self,
+        retained_read_only_fds: Sequence[int],
+    ) -> Mapping[str, object]: ...
+
+    def publish_bytes(
+        self,
+        path: Path,
+        raw: bytes,
+        *,
+        maximum_bytes: int,
+        artifact_class: str,
+        label: str,
+    ) -> Mapping[str, object]: ...
+
+    def append_segment(
+        self,
+        channel: str,
+        sequence: int,
+        raw: bytes,
+        *,
+        maximum_bytes: int,
+        artifact_class: str,
+        arm_slot: str | None = None,
+    ) -> Mapping[str, object]: ...
+
+    def export_model_to_sealed_memfd(
+        self,
+        model: object,
+        path: Path,
+        *,
+        maximum_bytes: int,
+        label: str,
+    ) -> Mapping[str, object]: ...
 
 
 @dataclass
@@ -63,10 +135,46 @@ class ProvenanceOnlyOutput:
     provenance_raw: bytes
     provenance_identity: dict[str, object]
     provenance: dict[str, object]
+    initial_members: frozenset[str]
 
     def close(self) -> None:
         os.close(self.provenance_fd)
         os.close(self.directory_fd)
+
+
+@dataclass
+class BaselineBudgetWorkspace:
+    """Retained identities for the broker-created, read-only workspace."""
+
+    tmp_path: Path
+    tmp_fd: int
+    tmp_identity: tuple[int, int]
+    checkpoint_path: Path
+    checkpoint_fd: int
+    checkpoint_identity: tuple[int, int]
+
+    def verify(self, *, mode_octal: str = "0500") -> None:
+        _verify_budget_fixed_directory(
+            self.tmp_path,
+            self.tmp_fd,
+            self.tmp_identity,
+            label=BASELINE_TMP_DIRECTORY_LABEL,
+            mode_octal=mode_octal,
+        )
+        _verify_budget_fixed_directory(
+            self.checkpoint_path,
+            self.checkpoint_fd,
+            self.checkpoint_identity,
+            label=BASELINE_CHECKPOINT_DIRECTORY_LABEL,
+            mode_octal=mode_octal,
+        )
+
+    def close(self) -> None:
+        os.close(self.checkpoint_fd)
+        os.close(self.tmp_fd)
+
+    def retained_read_only_fds(self) -> tuple[int, int]:
+        return (self.tmp_fd, self.checkpoint_fd)
 
 
 def _canonical(value: object) -> bytes:
@@ -254,8 +362,74 @@ def _require_snapshot_imports(snapshot_root: Path) -> None:
             raise BaselineRebuildError(f"repository package imported outside snapshot: {name}")
 
 
-def _write_exclusive(path: Path, raw: bytes, *, mode: int = 0o600) -> dict[str, object]:
+def _budget_maximum(
+    backend: BaselineBudgetBackend,
+    label: str,
+    *,
+    artifact_class: str,
+) -> int:
+    if BASELINE_BUDGET_LABELS.get(label) != artifact_class:
+        raise BaselineRebuildError(f"{label}: baseline budget label/class is not fixed")
+    try:
+        maximum = backend.maximum_bytes(label, artifact_class=artifact_class)
+    except Exception as exc:
+        raise BaselineRebuildError(f"{label}: budget maximum lookup failed closed") from exc
+    if isinstance(maximum, bool) or not isinstance(maximum, int) or maximum <= 0:
+        raise BaselineRebuildError(f"{label}: budget maximum is not a positive exact integer")
+    return maximum
+
+
+def _write_exclusive(
+    path: Path,
+    raw: bytes,
+    *,
+    mode: int = 0o600,
+    budget_backend: BaselineBudgetBackend | None = None,
+    budget_label: str | None = None,
+    artifact_class: str | None = None,
+) -> dict[str, object]:
     absolute = Path(os.path.abspath(path))
+    path_is_prospective = _is_prospective_baseline_output(absolute.parent)
+    if path_is_prospective and budget_backend is None:
+        raise BaselineRebuildError("prospective baseline artifact lacks its formal-root budget broker")
+    if budget_backend is not None and not path_is_prospective:
+        raise BaselineRebuildError("budgeted baseline artifact path differs from the fixed layout")
+    if budget_backend is not None:
+        if mode != 0o600 or type(budget_label) is not str or type(artifact_class) is not str:
+            raise BaselineRebuildError("budgeted baseline publication lacks its fixed label/class")
+        maximum = _budget_maximum(
+            budget_backend,
+            budget_label,
+            artifact_class=artifact_class,
+        )
+        if len(raw) <= 0 or len(raw) > maximum:
+            raise BaselineRebuildError(f"{budget_label}: payload differs from its fixed allocation")
+        try:
+            observed = dict(
+                budget_backend.publish_bytes(
+                    absolute,
+                    raw,
+                    maximum_bytes=maximum,
+                    artifact_class=artifact_class,
+                    label=budget_label,
+                )
+            )
+        except BaselineRebuildError:
+            raise
+        except Exception as exc:
+            raise BaselineRebuildError(
+                f"{budget_label}: broker publication failed or acknowledgement is uncertain"
+            ) from exc
+        expected = {
+            "path": str(absolute),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw),
+        }
+        if any(observed.get(key) != value for key, value in expected.items()):
+            raise BaselineRebuildError(f"{budget_label}: broker publication identity differs")
+        return expected
+    if budget_label is not None or artifact_class is not None:
+        raise BaselineRebuildError("baseline budget metadata was supplied without its broker")
     parent, parent_fd, parent_before = _open_directory(absolute.parent, label="output parent")
     try:
         flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW
@@ -297,6 +471,277 @@ def _write_exclusive(path: Path, raw: bytes, *, mode: int = 0o600) -> dict[str, 
         "size_bytes": metadata.st_size,
         "sha256": hashlib.sha256(raw).hexdigest(),
     }
+
+
+def _is_prospective_baseline_output(path: Path) -> bool:
+    absolute = Path(os.path.abspath(path))
+    return tuple(absolute.parts[-len(PROSPECTIVE_BASELINE_SUFFIX) :]) == PROSPECTIVE_BASELINE_SUFFIX
+
+
+def _open_budget_fixed_directory(
+    backend: BaselineBudgetBackend,
+    path: Path,
+    *,
+    label: str,
+) -> tuple[int, tuple[int, int]]:
+    absolute = Path(os.path.abspath(path))
+    try:
+        observed = dict(
+            backend.register_directory(
+                absolute,
+                label=label,
+                mode_octal="0700",
+            )
+        )
+    except BaselineRebuildError:
+        raise
+    except Exception as exc:
+        raise BaselineRebuildError(f"{label}: broker directory registration failed closed") from exc
+    absolute, descriptor, opened = _open_directory(absolute, label=label)
+    try:
+        if stat.S_IMODE(opened.st_mode) != 0o700:
+            raise BaselineRebuildError(f"{label}: fixed directory is not mode 0700")
+        expected = {
+            "device": opened.st_dev,
+            "inode": opened.st_ino,
+            "mode_octal": "0700",
+            "path": str(absolute),
+        }
+        if observed != expected:
+            raise BaselineRebuildError(f"{label}: broker directory identity differs")
+        if os.listdir(descriptor):
+            raise BaselineRebuildError(f"{label}: fixed directory is not initially empty")
+        return descriptor, _object_identity(opened)
+    except BaseException:
+        os.close(descriptor)
+        raise
+
+
+def _verify_budget_fixed_directory(
+    path: Path,
+    descriptor: int,
+    identity: tuple[int, int],
+    *,
+    label: str,
+    mode_octal: str,
+) -> None:
+    _verify_directory_binding(path, descriptor, identity, label=label)
+    if mode_octal not in {"0500", "0700"}:
+        raise BaselineRebuildError(f"{label}: expected directory mode is invalid")
+    if stat.S_IMODE(os.fstat(descriptor).st_mode) != int(mode_octal, 8):
+        raise BaselineRebuildError(f"{label}: fixed directory mode drifted")
+
+
+def _validate_budget_authority_binding(backend: BaselineBudgetBackend) -> None:
+    try:
+        binding = dict(backend.authority_binding)
+    except Exception as exc:
+        raise BaselineRebuildError("baseline budget authority binding is unavailable") from exc
+    if binding.get("filesystem_write_confinement") != BASELINE_WORKER_CONFINEMENT:
+        raise BaselineRebuildError("baseline worker lacks the fixed read-only Landlock confinement")
+    forbidden = {
+        key
+        for key in binding
+        if key.endswith(("_root_fd", "_staging_fd", "_directory_fd"))
+        or key in {"root_fd", "staging_fd", "directory_fd"}
+    }
+    if forbidden:
+        raise BaselineRebuildError("baseline worker received a writable root or staging descriptor")
+
+
+def _promote_budget_directory_read_only(
+    backend: BaselineBudgetBackend,
+    path: Path,
+    descriptor: int,
+    identity: tuple[int, int],
+    *,
+    label: str,
+) -> None:
+    try:
+        observed = dict(
+            backend.register_directory(
+                path,
+                label=label,
+                mode_octal="0500",
+            )
+        )
+    except Exception as exc:
+        raise BaselineRebuildError(f"{label}: broker directory seal failed closed") from exc
+    expected = {
+        "device": identity[0],
+        "inode": identity[1],
+        "mode_octal": "0500",
+        "path": str(path),
+    }
+    if observed != expected:
+        raise BaselineRebuildError(f"{label}: broker directory seal identity differs")
+    _verify_budget_fixed_directory(
+        path,
+        descriptor,
+        identity,
+        label=label,
+        mode_octal="0500",
+    )
+
+
+def _prepare_budget_workspace(
+    output: Path,
+    backend: BaselineBudgetBackend,
+) -> BaselineBudgetWorkspace:
+    if not _is_prospective_baseline_output(output):
+        raise BaselineRebuildError("budget workspace path differs from the fixed layout")
+    _validate_budget_authority_binding(backend)
+    tmp_path = output / "tmp"
+    checkpoint_path = output / "checkpoint"
+    tmp_fd = -1
+    checkpoint_fd = -1
+    try:
+        tmp_fd, tmp_identity = _open_budget_fixed_directory(
+            backend,
+            tmp_path,
+            label=BASELINE_TMP_DIRECTORY_LABEL,
+        )
+        checkpoint_fd, checkpoint_identity = _open_budget_fixed_directory(
+            backend,
+            checkpoint_path,
+            label=BASELINE_CHECKPOINT_DIRECTORY_LABEL,
+        )
+        cut_directory = checkpoint_path / BASELINE_CUT_DIRECTORY_NAME
+        try:
+            cut_record = dict(
+                backend.register_directory(
+                    cut_directory,
+                    label=BASELINE_CUT_DIRECTORY_LABEL,
+                    mode_octal="0700",
+                )
+            )
+        except Exception as exc:
+            raise BaselineRebuildError(
+                "baseline immutable cut channel registration failed closed"
+            ) from exc
+        cut_fd = os.open(
+            BASELINE_CUT_DIRECTORY_NAME,
+            os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
+            dir_fd=checkpoint_fd,
+        )
+        try:
+            cut_metadata = os.fstat(cut_fd)
+            expected_cut_record = {
+                "device": cut_metadata.st_dev,
+                "inode": cut_metadata.st_ino,
+                "mode_octal": "0700",
+                "path": str(cut_directory),
+            }
+            if (
+                cut_record != expected_cut_record
+                or not stat.S_ISDIR(cut_metadata.st_mode)
+                or os.listdir(cut_fd)
+            ):
+                raise BaselineRebuildError("baseline immutable cut channel identity differs")
+        finally:
+            os.close(cut_fd)
+        _promote_budget_directory_read_only(
+            backend,
+            tmp_path,
+            tmp_fd,
+            tmp_identity,
+            label=BASELINE_TMP_DIRECTORY_LABEL,
+        )
+        _promote_budget_directory_read_only(
+            backend,
+            checkpoint_path,
+            checkpoint_fd,
+            checkpoint_identity,
+            label=BASELINE_CHECKPOINT_DIRECTORY_LABEL,
+        )
+        workspace = BaselineBudgetWorkspace(
+            tmp_path=tmp_path,
+            tmp_fd=tmp_fd,
+            tmp_identity=tmp_identity,
+            checkpoint_path=checkpoint_path,
+            checkpoint_fd=checkpoint_fd,
+            checkpoint_identity=checkpoint_identity,
+        )
+        workspace.verify()
+        return workspace
+    except BaseException:
+        if checkpoint_fd >= 0:
+            os.close(checkpoint_fd)
+        if tmp_fd >= 0:
+            os.close(tmp_fd)
+        raise
+
+
+def _publish_budgeted_model(
+    backend: BaselineBudgetBackend,
+    model: object,
+    path: Path,
+    expected_raw: bytes,
+) -> dict[str, object]:
+    if not _is_prospective_baseline_output(Path(os.path.abspath(path)).parent):
+        raise BaselineRebuildError("budgeted baseline model path differs from the fixed layout")
+    maximum = _budget_maximum(
+        backend,
+        "AB16 baseline rebuilt model",
+        artifact_class="model",
+    )
+    if len(expected_raw) <= 0 or len(expected_raw) > maximum:
+        raise BaselineRebuildError("rebuilt model differs from its fixed allocation")
+    try:
+        identity = dict(
+            backend.export_model_to_sealed_memfd(
+                model,
+                path,
+                maximum_bytes=maximum,
+                label="AB16 baseline rebuilt model",
+            )
+        )
+    except Exception as exc:
+        raise BaselineRebuildError(
+            "native-helper sealed baseline model export failed or acknowledgement is uncertain"
+        ) from exc
+    expected = {
+        "path": str(Path(os.path.abspath(path))),
+        "sha256": hashlib.sha256(expected_raw).hexdigest(),
+        "size_bytes": len(expected_raw),
+    }
+    if any(identity.get(key) != value for key, value in expected.items()):
+        raise BaselineRebuildError("sealed baseline model publication identity differs")
+    return expected
+
+
+def _install_budget_worker_confinement(
+    backend: BaselineBudgetBackend,
+    descriptors: Sequence[int],
+) -> dict[str, object]:
+    retained = tuple(sorted(descriptors))
+    if (
+        not retained
+        or len(set(retained)) != len(retained)
+        or any(type(descriptor) is not int or descriptor < 3 for descriptor in retained)
+    ):
+        raise BaselineRebuildError("baseline retained read-only FD allowlist is invalid")
+    for descriptor in retained:
+        try:
+            flags = fcntl.fcntl(descriptor, fcntl.F_GETFL)
+        except OSError as exc:
+            raise BaselineRebuildError("baseline retained read-only FD is unavailable") from exc
+        if flags & os.O_ACCMODE != os.O_RDONLY:
+            raise BaselineRebuildError("baseline retained FD is writable")
+    try:
+        observed = dict(backend.install_worker_confinement(retained))
+    except Exception as exc:
+        raise BaselineRebuildError(
+            "native-helper close-range/Landlock installation failed closed"
+        ) from exc
+    expected = {
+        "filesystem_write_confinement": BASELINE_WORKER_CONFINEMENT,
+        "retained_read_only_fds": list(retained),
+        "root_or_staging_writable_fd_count": 0,
+    }
+    if observed != expected:
+        raise BaselineRebuildError("baseline worker confinement receipt differs")
+    return expected
 
 
 def _mkdir_exclusive(path: Path, *, mode: int = 0o700) -> Path:
@@ -367,6 +812,8 @@ def _verify_provenance_member(state: ProvenanceOnlyOutput) -> None:
 def _open_provenance_only_output(
     output_dir: Path,
     campaign_provenance: Path,
+    *,
+    prospective: bool = False,
 ) -> ProvenanceOnlyOutput:
     output = Path(os.path.abspath(output_dir))
     provenance_path = Path(os.path.abspath(campaign_provenance))
@@ -378,7 +825,8 @@ def _open_provenance_only_output(
     provenance_fd = -1
     try:
         names_before = os.listdir(directory_fd)
-        if names_before != [CAMPAIGN_PROVENANCE_NAME]:
+        expected_members = {CAMPAIGN_PROVENANCE_NAME}
+        if set(names_before) != expected_members or len(names_before) != len(expected_members):
             raise BaselineRebuildError("baseline output is not in PROVENANCE_ONLY state")
         member_before = os.stat(
             CAMPAIGN_PROVENANCE_NAME,
@@ -432,6 +880,7 @@ def _open_provenance_only_output(
                 "size_bytes": len(raw),
             },
             provenance=provenance,
+            initial_members=frozenset(expected_members),
         )
         _verify_provenance_member(state)
         return state
@@ -503,7 +952,13 @@ def _validate_fixed_parameters(args: argparse.Namespace) -> None:
             raise BaselineRebuildError(f"strict input path is not absolute for {role}")
 
 
-def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -> int:
+def _run_rebuild(
+    args: argparse.Namespace,
+    output_state: ProvenanceOnlyOutput,
+    *,
+    budget_backend: BaselineBudgetBackend | None = None,
+    budget_workspace: BaselineBudgetWorkspace | None = None,
+) -> int:
     provenance_before = output_state.provenance
     repository_root = Path(str(provenance_before["snapshot_root"]))
     if Path.cwd() != repository_root:
@@ -519,9 +974,18 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
         ):
             raise BaselineRebuildError("ambient repository import path is forbidden")
     output = output_state.root
-    tmp_dir = _mkdir_exclusive(output / "tmp")
-    checkpoint_dir = _mkdir_exclusive(output / "checkpoint")
-    _write_exclusive(checkpoint_dir / "benders_cuts.jsonl", b"")
+    if budget_backend is None:
+        if budget_workspace is not None:
+            raise BaselineRebuildError("legacy rebuild received a prospective budget workspace")
+        tmp_dir = _mkdir_exclusive(output / "tmp")
+        checkpoint_dir = _mkdir_exclusive(output / "checkpoint")
+        _write_exclusive(checkpoint_dir / "benders_cuts.jsonl", b"")
+    else:
+        if budget_workspace is None:
+            raise BaselineRebuildError("prospective rebuild lacks its broker-created workspace")
+        budget_workspace.verify()
+        tmp_dir = budget_workspace.tmp_path
+        checkpoint_dir = budget_workspace.checkpoint_path
 
     os.environ["TMPDIR"] = str(tmp_dir)
     os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -562,12 +1026,31 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
         session.core,
         ghost_rect=(args.ghost_w, args.ghost_h),
     )
-    controller = LBBDController(
-        master=master,
-        cut_manager=CutManager(
+    if budget_backend is None:
+        cut_manager = CutManager(
             checkpoint_dir=checkpoint_dir,
             solve_mode="certified_exact",
-        ),
+        )
+    else:
+        from docs.research.noncert_cuts_ab16_20260724.ab16_budgeted_writers_v1 import (
+            AB16BudgetedCutManager,
+        )
+
+        cut_manager = AB16BudgetedCutManager(
+            checkpoint_dir=checkpoint_dir,
+            solve_mode="certified_exact",
+            immutable_budget=budget_backend,
+            budget_channel=BASELINE_CUT_CHANNEL,
+            budget_segment_max_bytes=_budget_maximum(
+                budget_backend,
+                "AB16 baseline cut segment",
+                artifact_class="ledger",
+            ),
+            budget_arm_slot=None,
+        )
+    controller = LBBDController(
+        master=master,
+        cut_manager=cut_manager,
         project_root=repository_root,
         solve_mode="certified_exact",
         master_seconds=args.master_seconds,
@@ -621,10 +1104,25 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
     consumed = parsed.ParseFromString(model_raw)
     if consumed != len(model_raw) or parsed.SerializeToString(deterministic=True) != model_raw:
         raise BaselineRebuildError("binary model export is not canonical")
-    model_identity = _write_exclusive(model_path, model_raw)
+    if budget_backend is None:
+        model_identity = _write_exclusive(model_path, model_raw)
+    else:
+        model_identity = _publish_budgeted_model(
+            budget_backend,
+            master.model,
+            model_path,
+            model_raw,
+        )
     incumbent_identity = _write_exclusive(
         output / "incumbent.json",
         _authority_json(incumbent_json),
+        budget_backend=budget_backend,
+        budget_label=(
+            "AB16 baseline incumbent"
+            if budget_backend is not None
+            else None
+        ),
+        artifact_class="normal" if budget_backend is not None else None,
     )
     _, builder_identity = _snapshot_regular(Path(__file__), limit=64 << 20)
     metadata = {
@@ -649,6 +1147,13 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
     metadata_identity = _write_exclusive(
         output / "rebuilt-model-metadata.json",
         _authority_json(metadata),
+        budget_backend=budget_backend,
+        budget_label=(
+            "AB16 baseline rebuilt metadata"
+            if budget_backend is not None
+            else None
+        ),
+        artifact_class="metadata" if budget_backend is not None else None,
     )
     record = {
         "schema_version": SCHEMA,
@@ -685,8 +1190,20 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
             ],
         },
     }
-    _write_exclusive(output / "rebuild-result.json", _authority_json(record))
+    _write_exclusive(
+        output / "rebuild-result.json",
+        _authority_json(record),
+        budget_backend=budget_backend,
+        budget_label=(
+            "AB16 baseline rebuild result"
+            if budget_backend is not None
+            else None
+        ),
+        artifact_class="publication" if budget_backend is not None else None,
+    )
     _verify_provenance_member(output_state)
+    if budget_workspace is not None:
+        budget_workspace.verify()
     expected_top_level = {
         CAMPAIGN_PROVENANCE_NAME,
         "checkpoint",
@@ -702,16 +1219,51 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
     return 0
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(
+    argv: Sequence[str] | None = None,
+    *,
+    budget_backend: BaselineBudgetBackend | None = None,
+    prospective: bool = False,
+) -> int:
     args = _parser().parse_args(argv)
     _validate_fixed_parameters(args)
+    output_is_prospective = _is_prospective_baseline_output(args.output_dir)
+    prospective = prospective or output_is_prospective
+    if prospective and not output_is_prospective:
+        raise BaselineRebuildError("prospective baseline output path differs from the fixed layout")
+    if prospective and budget_backend is None:
+        raise BaselineRebuildError("prospective baseline rebuild lacks its formal-root budget broker")
+    if not prospective and budget_backend is not None:
+        raise BaselineRebuildError("legacy baseline rebuild cannot consume prospective budget authority")
     output_state = _open_provenance_only_output(
         args.output_dir,
         args.campaign_provenance,
+        prospective=prospective,
     )
+    budget_workspace: BaselineBudgetWorkspace | None = None
     try:
-        return _run_rebuild(args, output_state)
+        if budget_backend is not None:
+            budget_workspace = _prepare_budget_workspace(
+                output_state.root,
+                budget_backend,
+            )
+            _install_budget_worker_confinement(
+                budget_backend,
+                (
+                    output_state.directory_fd,
+                    output_state.provenance_fd,
+                    *budget_workspace.retained_read_only_fds(),
+                ),
+            )
+        return _run_rebuild(
+            args,
+            output_state,
+            budget_backend=budget_backend,
+            budget_workspace=budget_workspace,
+        )
     finally:
+        if budget_workspace is not None:
+            budget_workspace.close()
         output_state.close()
 
 

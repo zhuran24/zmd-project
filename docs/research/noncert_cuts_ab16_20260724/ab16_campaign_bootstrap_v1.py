@@ -1290,6 +1290,7 @@ def bootstrap_campaign(
         authority_tools=tools,
         strict_inputs=inputs,
         created_at_utc=timestamp,
+        schema_version=authority.LEGACY_CAMPAIGN_ROOT_SCHEMA,
     )
     _validate_path_preregistration_against_root(
         path_preregistration,

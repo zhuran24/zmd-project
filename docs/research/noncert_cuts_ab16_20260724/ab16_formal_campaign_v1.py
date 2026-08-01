@@ -33,14 +33,29 @@ import json
 import os
 from pathlib import Path
 import re
+import select
 import selectors
 import signal
+import socket
 import stat
+import struct
 import sys
 import time
 from typing import Any, cast, Protocol
 
 from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as authority
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_budget_broker_v1 as budget_broker,
+)
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_formal_controller_v1 as formal_controller,
+)
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_closure_actor_v1 as closure_actor,
+)
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_final_release_actor_v1 as final_release_actor,
+)
 from docs.research.noncert_cuts_ab16_20260724 import (
     ab16_formal_launch_validator_v1 as launch_validator,
 )
@@ -62,6 +77,12 @@ from docs.research.noncert_cuts_ab16_20260724 import (
 from docs.research.noncert_cuts_ab16_20260724 import (
     systemd_unit_reference_v1 as unit_reference,
 )
+from docs.research.noncert_cuts_ab16_20260724 import (
+    replay_ab16_formal_root_alt_v1 as formal_root_replay_alternate,
+)
+from docs.research.noncert_cuts_ab16_20260724 import (
+    replay_ab16_formal_root_v1 as formal_root_replay_primary,
+)
 
 
 AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
@@ -73,13 +94,44 @@ POLL_SECONDS = 0.10
 RECORD_WAIT_SECONDS = 600.0
 GUARDIAN_WAIT_SECONDS = 120.0
 MAX_SELECTED_OUTPUT = 8 * 1024 * 1024
+MAX_FORMAL_SUPERVISOR_SESSION_BYTES = 64 * 1024
+FORMAL_SUPERVISOR_SESSION_FD = 10
+FORMAL_SUPERVISOR_SESSION_SCHEMA = (
+    "noncert-cuts-ab16-formal-supervisor-session-v1"
+)
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+_SELECTED_ROLES_V1 = ("python", "loader", "authority")
+_SELECTED_ROLES_V2 = (
+    "python",
+    "loader",
+    "authority",
+    "native_helper_wrapper",
+    "native_helper",
+)
+_SELECTED_OPENFILE_NAMES_V2 = {
+    "authority": "ab16-authority",
+    "loader": "ab16-loader",
+    "native_helper": "ab16-native-helper",
+    "native_helper_wrapper": "ab16-native-helper-wrapper",
+    "python": "ab16-python",
+}
+_BUDGET_BROKER_OPENFILE_NAME = "ab16-budget-broker"
 CONTAINMENT_GUARDIAN_ABSENCE_SCHEMA = (
     "noncert-cuts-ab16-containment-guardian-absence-v1"
 )
-FAILURE_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-pre-release-failure-v3"
+FAILURE_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-pre-release-failure-v4"
 FAILURE_TERMINAL_RELEASE_SCHEMA = (
-    "noncert-cuts-ab16-formal-failure-terminal-release-v3"
+    "noncert-cuts-ab16-formal-failure-terminal-release-v5"
+)
+FINAL_RELEASE_RESULT_SCHEMA = "noncert-cuts-ab16-final-release-result-v1"
+PRIMARY_FORMAL_ROOT_REPLAY_SCHEMA = (
+    "noncert-cuts-ab16-formal-root-outside-replay-primary-v1"
+)
+ALTERNATE_FORMAL_ROOT_REPLAY_SCHEMA = (
+    "noncert-cuts-ab16-formal-root-outside-replay-alternate-v1"
+)
+FINAL_TERMINAL_PREDECESSOR_JOIN_SCHEMA = (
+    "noncert-cuts-ab16-final-terminal-predecessor-join-v1"
 )
 
 FULL_SHOW_FIELDS = (
@@ -118,6 +170,177 @@ class FormalCampaignError(RuntimeError):
 
 class IrreversibleFormalFailure(FormalCampaignError):
     """A side effect may have happened and must never be retried."""
+
+
+class FormalTerminalTailPort(Protocol):
+    """Package-pinned capabilities for the fixed post-RefUnit closure tail."""
+
+    def bind_closure_process_baseline(
+        self,
+        resource_admission_receipt: Mapping[str, object],
+    ) -> Mapping[str, object]: ...
+
+    def prepare_closure(
+        self,
+        *,
+        branch: str,
+        terminal_join_sha256: str,
+    ) -> Mapping[str, object]: ...
+
+    def publish_disarm_intent(
+        self,
+        *,
+        terminal_join_sha256: str,
+    ) -> Mapping[str, object]: ...
+
+    def disarm_recovery_once(
+        self,
+        *,
+        disarm_intent: Mapping[str, object],
+    ) -> Mapping[str, object]: ...
+
+    def prove_recovery_absence(
+        self,
+        *,
+        disarm_observation: Mapping[str, object],
+    ) -> Mapping[str, object]: ...
+
+    def retire_broker_once(
+        self,
+        *,
+        recovery_absence: Mapping[str, object],
+    ) -> Mapping[str, object]: ...
+
+    def close_root_once(
+        self,
+        *,
+        broker_absence: Mapping[str, object],
+        terminal_join_sha256: str,
+    ) -> Mapping[str, object]: ...
+
+    def replay_closed_root(
+        self,
+        *,
+        implementation: str,
+    ) -> Mapping[str, object]: ...
+
+    def publish_final_release(
+        self,
+        payload: Mapping[str, object],
+    ) -> Mapping[str, object]: ...
+
+    def prove_final_release_absence(
+        self,
+        *,
+        final_release_result: Mapping[str, object],
+    ) -> Mapping[str, object]: ...
+
+
+class FormalSelectionTransitionPort(Protocol):
+    """Irreversible phase transition on the same preregistered broker session."""
+
+    def bind_formal_selection(
+        self,
+        selection_identity: Mapping[str, object],
+    ) -> Mapping[str, object]: ...
+
+
+@dataclass(frozen=True)
+class FormalSupervisorCapabilities:
+    """Package-pinned writable capabilities admitted by the selected loader."""
+
+    budget_backend: object
+    receipt_budget_bindings: Mapping[str, Mapping[str, object]]
+    selection_transition: FormalSelectionTransitionPort
+    terminal_tail_port: FormalTerminalTailPort
+
+
+class FormalLaunchClaimantRegistrar(Protocol):
+    """Pidfd-bound bootstrap-admin surface used before selected-child release."""
+
+    def register_formal_launch_claimant(
+        self,
+        payload: Mapping[str, object],
+        *,
+        pidfd: int,
+    ) -> object: ...
+
+    def register_formal_supervisor(
+        self,
+        payload: Mapping[str, object],
+        *,
+        pidfd: int,
+    ) -> Mapping[str, object]: ...
+
+
+def _validate_formal_supervisor_capabilities(
+    value: object,
+) -> FormalSupervisorCapabilities:
+    if type(value) is not FormalSupervisorCapabilities:
+        raise FormalCampaignError(
+            "formal supervisor lacks its package-pinned capability bundle"
+        )
+    capabilities = cast(FormalSupervisorCapabilities, value)
+    backend = capabilities.budget_backend
+    if not all(
+        callable(getattr(backend, method, None))
+        for method in ("maximum_bytes", "publish_bytes")
+    ):
+        raise FormalCampaignError(
+            "formal supervisor budget backend surface drifted"
+        )
+    bindings: dict[str, dict[str, object]] = {}
+    for raw_path, raw_binding in capabilities.receipt_budget_bindings.items():
+        path = Path(raw_path)
+        if (
+            type(raw_path) is not str
+            or not path.is_absolute()
+            or str(path) != str(path.absolute())
+            or type(raw_binding) is not dict
+            or set(raw_binding) != {"artifact_class", "label"}
+            or type(raw_binding["artifact_class"]) is not str
+            or not raw_binding["artifact_class"]
+            or type(raw_binding["label"]) is not str
+            or not raw_binding["label"]
+        ):
+            raise FormalCampaignError(
+                "formal supervisor receipt budget binding drifted"
+            )
+        bindings[raw_path] = dict(raw_binding)
+    if not bindings:
+        raise FormalCampaignError(
+            "formal supervisor receipt budget bindings are empty"
+        )
+    transition = capabilities.selection_transition
+    if not callable(getattr(transition, "bind_formal_selection", None)):
+        raise FormalCampaignError(
+            "formal supervisor selection transition capability drifted"
+        )
+    tail = capabilities.terminal_tail_port
+    if not all(
+        callable(getattr(tail, method, None))
+        for method in (
+            "prepare_closure",
+            "bind_closure_process_baseline",
+            "publish_disarm_intent",
+            "disarm_recovery_once",
+            "prove_recovery_absence",
+            "retire_broker_once",
+            "close_root_once",
+            "replay_closed_root",
+            "publish_final_release",
+            "prove_final_release_absence",
+        )
+    ):
+        raise FormalCampaignError(
+            "formal supervisor terminal-tail capability surface drifted"
+        )
+    return FormalSupervisorCapabilities(
+        budget_backend=backend,
+        receipt_budget_bindings=bindings,
+        selection_transition=transition,
+        terminal_tail_port=tail,
+    )
 
 
 @dataclass(frozen=True)
@@ -192,6 +415,11 @@ class SupervisorState:
     detached_success_identity: dict[str, object] | None = None
     reference_terminal: dict[str, object] | None = None
     guardian_close_identity: dict[str, object] | None = None
+    guardian_absence_identity: dict[str, object] | None = None
+    supervisor_raw_lock_release_identity: dict[str, object] | None = None
+    reference_connection_close_identity: dict[str, object] | None = None
+    terminal_tail_port: FormalTerminalTailPort | None = None
+    post_root_closure: dict[str, object] | None = None
     dual_release_identity: dict[str, object] | None = None
     failure: dict[str, str] | None = None
 
@@ -478,9 +706,81 @@ def _publish_phase(
     return store.publish(path, checked, phase, publication=publication)
 
 
+def _prospective_resource_authority(
+    authority_context: Mapping[str, object],
+) -> dict[str, dict[str, object]]:
+    profile_identity = authority_context.get(
+        "resource_budget_profile_identity"
+    )
+    bundles = authority_context.get(
+        "resource_calibration_authorization_bundles"
+    )
+    calibration_tools = authority_context.get(
+        "calibration_tool_content_identities"
+    )
+    if (
+        type(profile_identity) is not dict
+        or set(profile_identity)
+        != {"mode", "path", "sha256", "size_bytes"}
+        or type(bundles) is not dict
+        or type(bundles.get(resource_admission.FORMAL_ORGANIC_ARM))
+        is not dict
+        or type(calibration_tools) is not dict
+        or set(calibration_tools)
+        != resource_admission.CALIBRATION_TOOL_ROLES
+    ):
+        raise FormalCampaignError(
+            "formal resource admission lacks its exact prospective authority"
+        )
+    bundle_entry = bundles[resource_admission.FORMAL_ORGANIC_ARM]
+    if (
+        set(bundle_entry) != {"identity", "record"}
+        or type(bundle_entry["identity"]) is not dict
+        or type(bundle_entry["record"]) is not dict
+    ):
+        raise FormalCampaignError(
+            "formal resource calibration bundle is malformed"
+        )
+    profile_expected_identity = {
+        key: profile_identity[key]
+        for key in ("path", "sha256", "size_bytes")
+    }
+    if profile_identity["mode"] != 0o444:
+        raise FormalCampaignError(
+            "formal resource budget profile is not readonly"
+        )
+    profile, observed_profile_identity = _read_record(
+        cast(str, profile_identity["path"]),
+        expected_identity=profile_expected_identity,
+        label="formal resource budget profile",
+    )
+    if observed_profile_identity != profile_expected_identity:
+        raise FormalCampaignError(
+            "formal resource budget profile identity drifted"
+        )
+    return {
+        "calibration_authorization_bundle": dict(
+            bundle_entry["record"]
+        ),
+        "calibration_authorization_bundle_identity": dict(
+            bundle_entry["identity"]
+        ),
+        "enforced_budget_profile": profile,
+        # The retained authority identity additionally binds the readonly
+        # mode.  Resource-profile replay has its own exact byte-identity shape
+        # and must not receive that transport-only field.
+        "enforced_budget_profile_identity": profile_expected_identity,
+        "expected_calibration_tool_identities": {
+            role: dict(identity)
+            for role, identity in sorted(calibration_tools.items())
+        },
+    }
+
+
 def validate_resource_gate(
     campaign_dir: Path | str,
     *,
+    authority_context: Mapping[str, object],
     lock_identities: Sequence[Mapping[str, object]],
     observation_context: Mapping[str, object],
     meminfo: Mapping[str, int] | None = None,
@@ -490,13 +790,17 @@ def validate_resource_gate(
 ) -> dict[str, object]:
     """Validate one post-lock formal admission and return its strict receipt."""
 
+    prospective = _prospective_resource_authority(
+        authority_context
+    )
     try:
-        return resource_admission.evaluate_resource_admission(
+        return resource_admission.evaluate_prospective_resource_admission(
             campaign_dir,
             stage=resource_admission.FORMAL_ORGANIC_ARM,
             lock_identities=lock_identities,
             lock_identity_format=resource_admission.FORMAL_LOCK_IDENTITY_FORMAT,
             observation_context=observation_context,
+            **prospective,
             meminfo=meminfo,
             disk_free=disk_free,
             conflicts=conflicts,
@@ -609,15 +913,23 @@ def _selected_identities(spec: Mapping[str, object]) -> dict[str, dict[str, obje
         or argv[:4] != ["/proc/self/fd/3", "-I", "-B", "-c"]
         or argv[5] != "systemd-openfile"
     ):
-        raise FormalCampaignError("selected-byte argv is not the fixed three-FD form")
+        raise FormalCampaignError("selected-byte argv is not a fixed selected-FD form")
     try:
         parsed = json.loads(argv[6])
     except (TypeError, json.JSONDecodeError) as exc:
         raise FormalCampaignError("selected-byte identity JSON is malformed") from exc
-    if type(parsed) is not dict or set(parsed) != {"authority", "loader", "python"}:
+    if type(parsed) is not dict or frozenset(parsed) not in {
+        frozenset(_SELECTED_ROLES_V1),
+        frozenset(_SELECTED_ROLES_V2),
+    }:
         raise FormalCampaignError("selected-byte identity field set drifted")
     result: dict[str, dict[str, object]] = {}
-    for name in ("authority", "loader", "python"):
+    ordered_roles = (
+        _SELECTED_ROLES_V2
+        if set(parsed) == set(_SELECTED_ROLES_V2)
+        else _SELECTED_ROLES_V1
+    )
+    for name in ordered_roles:
         identity = parsed[name]
         if (
             type(identity) is not dict
@@ -635,6 +947,216 @@ def _selected_identities(spec: Mapping[str, object]) -> dict[str, dict[str, obje
     return result
 
 
+def _selected_transport(
+    spec: Mapping[str, object],
+    identities: Mapping[str, Mapping[str, object]],
+) -> dict[str, object] | None:
+    """Close the v2 retained-source and broker endpoint transport.
+
+    Historical selected-byte v1 specs have exactly three regular identities
+    and no transport extension.  Prospective v2 specs must bind all five
+    regular package members to the persistent broker owner's retained
+    ``/proc/<pid>/fd/<n>`` aliases and bind FD8 to that same owner's broker
+    endpoint.  Cross-cohort mixtures fail closed.
+    """
+
+    if set(identities) == set(_SELECTED_ROLES_V1):
+        if (
+            "selected_fd_transport" in spec
+            or "budget_broker_endpoint_identity" in spec
+        ):
+            raise FormalCampaignError(
+                "historical selected-byte spec mixed prospective transport"
+            )
+        return None
+    if set(identities) != set(_SELECTED_ROLES_V2):
+        raise FormalCampaignError("selected-byte transport cohort is unsupported")
+    transport = spec.get("selected_fd_transport")
+    endpoint = spec.get("budget_broker_endpoint_identity")
+    if (
+        type(transport) is not dict
+        or set(transport) != {"owner", "roles", "schema_version"}
+        or transport.get("schema_version")
+        != launch_validator.SELECTED_FD_TRANSPORT_SCHEMA
+        or type(endpoint) is not dict
+        or set(endpoint) != {"device", "inode", "mode", "path", "uid"}
+    ):
+        raise FormalCampaignError(
+            "prospective selected-byte transport is absent or malformed"
+        )
+    owner = transport["owner"]
+    roles = transport["roles"]
+    if (
+        type(owner) is not dict
+        or set(owner) != {"pid", "pid_starttime", "uid"}
+        or any(
+            type(owner[field]) is not int
+            or isinstance(owner[field], bool)
+            for field in ("pid", "pid_starttime", "uid")
+        )
+        or owner["pid"] <= 0
+        or owner["pid_starttime"] <= 0
+        or owner["uid"] < 0
+        or type(roles) is not dict
+        or set(roles) != set(_SELECTED_ROLES_V2)
+    ):
+        raise FormalCampaignError(
+            "prospective selected-byte transport owner/role set drifted"
+        )
+    checked_roles: dict[str, dict[str, object]] = {}
+    for role in _SELECTED_ROLES_V2:
+        item = roles[role]
+        expected = identities[role]
+        package_path = launch_validator.SELECTED_FD_TRANSPORT_PACKAGE_PATHS[role]
+        if type(item) is not dict or set(item) != {
+            "descriptor",
+            "mode",
+            "package_path",
+            "proc_fd_path",
+            "sha256",
+            "size_bytes",
+        }:
+            raise FormalCampaignError(
+                f"prospective selected-byte transport {role} is malformed"
+            )
+        descriptor = item["descriptor"]
+        if (
+            type(descriptor) is not int
+            or isinstance(descriptor, bool)
+            or descriptor < 3
+            or item["mode"] != expected["mode"]
+            or item["package_path"] != package_path
+            or item["proc_fd_path"]
+            != f"/proc/{owner['pid']}/fd/{descriptor}"
+            or item["sha256"] != expected["sha256"]
+            or item["size_bytes"] != expected["size_bytes"]
+        ):
+            raise FormalCampaignError(
+                f"prospective selected-byte transport {role} identity drifted"
+            )
+        checked_roles[role] = dict(item)
+    if (
+        type(endpoint["device"]) is not int
+        or isinstance(endpoint["device"], bool)
+        or endpoint["device"] < 0
+        or type(endpoint["inode"]) is not int
+        or isinstance(endpoint["inode"], bool)
+        or endpoint["inode"] <= 0
+        or endpoint["mode"] != 0o600
+        or type(endpoint["path"]) is not str
+        or not Path(endpoint["path"]).is_absolute()
+        or type(endpoint["uid"]) is not int
+        or isinstance(endpoint["uid"], bool)
+        or endpoint["uid"] != owner["uid"]
+    ):
+        raise FormalCampaignError(
+            "prospective selected-byte broker endpoint identity drifted"
+        )
+    return {
+        "endpoint": dict(endpoint),
+        "owner": dict(owner),
+        "roles": checked_roles,
+        "schema_version": transport["schema_version"],
+    }
+
+
+def _require_selected_transport_live(transport: Mapping[str, object]) -> None:
+    owner = cast(Mapping[str, object], transport["owner"])
+    endpoint = cast(Mapping[str, object], transport["endpoint"])
+    try:
+        if guardian.read_process_starttime(cast(int, owner["pid"])) != owner[
+            "pid_starttime"
+        ]:
+            raise FormalCampaignError(
+                "prospective selected-byte transport owner identity drifted"
+            )
+        observed = os.stat(cast(str, endpoint["path"]), follow_symlinks=False)
+    except OSError as exc:
+        raise FormalCampaignError(
+            "prospective selected-byte broker endpoint is unavailable"
+        ) from exc
+    if (
+        not stat.S_ISSOCK(observed.st_mode)
+        or observed.st_dev != endpoint["device"]
+        or observed.st_ino != endpoint["inode"]
+        or stat.S_IMODE(observed.st_mode) != endpoint["mode"]
+        or observed.st_uid != endpoint["uid"]
+    ):
+        raise FormalCampaignError(
+            "prospective selected-byte broker endpoint live identity drifted"
+        )
+    roles = cast(
+        Mapping[str, Mapping[str, object]],
+        transport["roles"],
+    )
+    for role in _SELECTED_ROLES_V2:
+        item = roles[role]
+        try:
+            descriptor = os.open(
+                cast(str, item["proc_fd_path"]),
+                os.O_RDONLY | os.O_CLOEXEC,
+            )
+        except OSError as exc:
+            raise FormalCampaignError(
+                f"selected-FD retained {role} is unavailable"
+            ) from exc
+        primary: BaseException | None = None
+        try:
+            before = os.fstat(descriptor)
+            digest = hashlib.sha256()
+            offset = 0
+            while offset < before.st_size:
+                block = os.pread(
+                    descriptor,
+                    min(1 << 20, before.st_size - offset),
+                    offset,
+                )
+                if not block:
+                    raise FormalCampaignError(
+                        f"selected-FD retained {role} ended early"
+                    )
+                digest.update(block)
+                offset += len(block)
+            after = os.fstat(descriptor)
+            signature_fields = (
+                "st_dev",
+                "st_ino",
+                "st_mode",
+                "st_nlink",
+                "st_size",
+                "st_mtime_ns",
+                "st_ctime_ns",
+            )
+            if (
+                not stat.S_ISREG(before.st_mode)
+                or before.st_nlink != 1
+                or stat.S_IMODE(before.st_mode) != item["mode"]
+                or before.st_size != item["size_bytes"]
+                or digest.hexdigest() != item["sha256"]
+                or any(
+                    getattr(before, field) != getattr(after, field)
+                    for field in signature_fields
+                )
+            ):
+                raise FormalCampaignError(
+                    f"selected-FD retained {role} identity drifted"
+                )
+        except BaseException as exc:
+            primary = exc
+            raise
+        finally:
+            try:
+                os.close(descriptor)
+            except BaseException as cleanup_exc:
+                if primary is not None:
+                    primary.add_note(
+                        f"selected-FD retained {role} cleanup failed: "
+                        f"{type(cleanup_exc).__name__}: {cleanup_exc}"
+                    )
+                else:
+                    raise
+
+
 def build_selected_systemd_argv(
     *,
     systemd_run_path: str,
@@ -645,6 +1167,7 @@ def build_selected_systemd_argv(
     if type(systemd_run_path) is not str or not Path(systemd_run_path).is_absolute():
         raise FormalCampaignError("pinned systemd-run path is malformed")
     identities = _selected_identities(spec)
+    transport = _selected_transport(spec, identities)
     contract = spec["resource_contract"]
     if type(contract) is not dict or contract != launch_validator.OUTER_RESOURCE_CONTRACT:
         raise FormalCampaignError("selected unit resource contract drifted")
@@ -658,6 +1181,32 @@ def build_selected_systemd_argv(
         or not Path(working_directory).is_absolute()
     ):
         raise FormalCampaignError("selected unit name/working directory is malformed")
+    open_file_properties: list[str]
+    if transport is None:
+        open_file_properties = [
+            f"--property=OpenFile={identities['python']['path']}:ab16-python:read-only",
+            f"--property=OpenFile={identities['loader']['path']}:ab16-loader:read-only",
+            f"--property=OpenFile={identities['authority']['path']}:ab16-authority:read-only",
+        ]
+    else:
+        _require_selected_transport_live(transport)
+        transport_roles = cast(
+            Mapping[str, Mapping[str, object]],
+            transport["roles"],
+        )
+        open_file_properties = [
+            (
+                "--property=OpenFile="
+                f"{transport_roles[role]['proc_fd_path']}:"
+                f"{_SELECTED_OPENFILE_NAMES_V2[role]}:read-only"
+            )
+            for role in _SELECTED_ROLES_V2
+        ]
+        endpoint = cast(Mapping[str, object], transport["endpoint"])
+        open_file_properties.append(
+            "--property=OpenFile="
+            f"{endpoint['path']}:{_BUDGET_BROKER_OPENFILE_NAME}"
+        )
     return [
         systemd_run_path,
         "--user",
@@ -674,9 +1223,10 @@ def build_selected_systemd_argv(
         f"--property=KillMode={contract['kill_mode']}",
         "--property=SendSIGKILL=yes",
         f"--property=RuntimeMaxSec={contract['runtime_max_sec']}",
-        f"--property=OpenFile={identities['python']['path']}:ab16-python:read-only",
-        f"--property=OpenFile={identities['loader']['path']}:ab16-loader:read-only",
-        f"--property=OpenFile={identities['authority']['path']}:ab16-authority:read-only",
+        "--property=StandardInput=null",
+        "--property=StandardOutput=journal",
+        "--property=StandardError=journal",
+        *open_file_properties,
         "--",
         *selected,
     ]
@@ -909,6 +1459,55 @@ def _open_selected(identity: Mapping[str, object], label: str) -> int:
         raise
 
 
+def _connect_selected_broker(transport: Mapping[str, object]) -> int:
+    """Connect FD8 without authenticating or minting broker authority."""
+
+    _require_selected_transport_live(transport)
+    endpoint = cast(Mapping[str, object], transport["endpoint"])
+    owner = cast(Mapping[str, object], transport["owner"])
+    connection = socket.socket(
+        socket.AF_UNIX,
+        socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
+    )
+    primary: BaseException | None = None
+    try:
+        connection.connect(cast(str, endpoint["path"]))
+        metadata = os.fstat(connection.fileno())
+        peer_raw = connection.getsockopt(
+            socket.SOL_SOCKET,
+            socket.SO_PEERCRED,
+            struct.calcsize("3i"),
+        )
+        peer_pid, peer_uid, _peer_gid = struct.unpack("3i", peer_raw)
+        if (
+            not stat.S_ISSOCK(metadata.st_mode)
+            or peer_pid != owner["pid"]
+            or peer_uid != owner["uid"]
+            or guardian.read_process_starttime(peer_pid)
+            != owner["pid_starttime"]
+        ):
+            raise FormalCampaignError(
+                "prospective selected-byte broker peer identity drifted"
+            )
+        _require_selected_transport_live(transport)
+        return connection.detach()
+    except BaseException as exc:
+        primary = exc
+        raise
+    finally:
+        if connection.fileno() >= 0:
+            try:
+                connection.close()
+            except BaseException as cleanup_exc:
+                if primary is not None:
+                    primary.add_note(
+                        "selected broker connection cleanup failed: "
+                        f"{type(cleanup_exc).__name__}: {cleanup_exc}"
+                    )
+                else:
+                    raise
+
+
 def run_selected_direct_result(
     *,
     context: Mapping[str, object],
@@ -916,17 +1515,90 @@ def run_selected_direct_result(
     role_argv: Sequence[str],
     timeout_seconds: float,
     cancel_requested: Callable[[], bool] | None = None,
+    formal_launch_claim_descriptor: int | None = None,
+    formal_launch_claim_identity: Mapping[str, object] | None = None,
+    formal_launch_claimant_registrar: (
+        FormalLaunchClaimantRegistrar | None
+    ) = None,
 ) -> SelectedDirectResult:
-    """Run one fresh selected role through fixed FDs 3/4/5.
+    """Run one fresh selected role through its exact selected-FD cohort.
 
     The embedded selected-byte literal remains the first executing trust
     primitive.  This function only opens the already-authorized bytes and
-    arranges their fixed descriptors.
+    arranges their fixed descriptors.  Prospective nonbudget roles receive an
+    unauthenticated broker connection on FD8 solely so the v2 literal can close
+    the exact six-FD transport; the selected loader closes it before invoking
+    the role.
     """
 
     outer_spec = context["outer_spec"]
     identities = _selected_identities(outer_spec)
+    transport = _selected_transport(outer_spec, identities)
     selected = outer_spec["selected_byte_argv"]
+    requires_child_bound_broker = role in {
+        "formal-orchestrator",
+        "formal-supervisor",
+    }
+    if role == "formal-orchestrator":
+        if (
+            type(formal_launch_claim_descriptor) is not int
+            or formal_launch_claim_descriptor < 3
+            or type(formal_launch_claim_identity) is not dict
+            or formal_launch_claimant_registrar is None
+            or not callable(
+                getattr(
+                    formal_launch_claimant_registrar,
+                    "register_formal_launch_claimant",
+                    None,
+                )
+            )
+        ):
+            raise FormalCampaignError(
+                "formal orchestrator lacks its sealed claim and pidfd registrar"
+            )
+        claim_argument = json.dumps(
+            dict(formal_launch_claim_identity),
+            allow_nan=False,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        )
+        claim_argv = [
+            "--formal-launch-claim-fd",
+            "9",
+            "--formal-launch-claim-identity",
+            claim_argument,
+        ]
+    elif role == "formal-supervisor":
+        if (
+            formal_launch_claim_descriptor is not None
+            or formal_launch_claim_identity is not None
+            or formal_launch_claimant_registrar is None
+            or not callable(
+                getattr(
+                    formal_launch_claimant_registrar,
+                    "register_formal_supervisor",
+                    None,
+                )
+            )
+        ):
+            raise FormalCampaignError(
+                "formal supervisor lacks its pidfd-bound session registrar"
+            )
+        claim_argv = [
+            "--formal-supervisor-session-fd",
+            str(FORMAL_SUPERVISOR_SESSION_FD),
+        ]
+    else:
+        if (
+            formal_launch_claim_descriptor is not None
+            or formal_launch_claim_identity is not None
+            or formal_launch_claimant_registrar is not None
+        ):
+            raise FormalCampaignError(
+                "non-orchestrator role received a formal-launch claim"
+            )
+        claim_argv = []
     command = [
         "/proc/self/fd/3",
         "-I",
@@ -939,6 +1611,7 @@ def run_selected_direct_result(
         str(context["campaign_dir"]),
         "--role",
         role,
+        *claim_argv,
         "--",
         *role_argv,
     ]
@@ -949,6 +1622,12 @@ def run_selected_direct_result(
     selector = selectors.DefaultSelector()
     pid: int | None = None
     child_reaped = False
+    child_ready_read = -1
+    child_ready_write = -1
+    child_release_read = -1
+    child_release_write = -1
+    supervisor_session_read = -1
+    supervisor_session_write = -1
     failure: BaseException | None = None
 
     def own_descriptor(descriptor: int) -> int:
@@ -977,12 +1656,33 @@ def run_selected_direct_result(
         return first_error
 
     try:
-        for target, identity, label in (
+        selected_files = [
             (3, identities["python"], "Python"),
             (4, identities["loader"], "loader"),
             (5, identities["authority"], "authority"),
-        ):
+        ]
+        if transport is not None:
+            selected_files.extend(
+                (
+                    (
+                        6,
+                        identities["native_helper_wrapper"],
+                        "native helper wrapper",
+                    ),
+                    (7, identities["native_helper"], "native helper"),
+                )
+            )
+        for target, identity, label in selected_files:
             opened[target] = own_descriptor(_open_selected(identity, label))
+        if transport is not None and not requires_child_bound_broker:
+            opened[8] = own_descriptor(
+                _connect_selected_broker(transport)
+            )
+        if role == "formal-orchestrator":
+            assert formal_launch_claim_descriptor is not None
+            opened[9] = own_descriptor(
+                os.dup(formal_launch_claim_descriptor)
+            )
         stdout_read, stdout_write = os.pipe2(os.O_CLOEXEC | os.O_NONBLOCK)
         pipes.update((own_descriptor(stdout_read), own_descriptor(stdout_write)))
         stderr_read, stderr_write = os.pipe2(os.O_CLOEXEC | os.O_NONBLOCK)
@@ -991,23 +1691,219 @@ def run_selected_direct_result(
             high[target] = own_descriptor(
                 fcntl.fcntl(source, fcntl.F_DUPFD_CLOEXEC, 20)
             )
-        actions: list[tuple[Any, ...]] = [
-            *((
-                os.POSIX_SPAWN_DUP2,
-                high[target],
-                target,
-            ) for target in (3, 4, 5)),
-            (os.POSIX_SPAWN_DUP2, stdout_write, 1),
-            (os.POSIX_SPAWN_DUP2, stderr_write, 2),
-            (os.POSIX_SPAWN_CLOSE, stdout_read),
-            (os.POSIX_SPAWN_CLOSE, stderr_read),
-        ]
-        pid = os.posix_spawn(
-            "/proc/self/fd/3",
-            command,
-            {},
-            file_actions=actions,
-        )
+        if requires_child_bound_broker:
+            assert transport is not None
+            assert formal_launch_claimant_registrar is not None
+            child_ready_read, child_ready_write = (
+                own_descriptor(descriptor)
+                for descriptor in os.pipe2(os.O_CLOEXEC)
+            )
+            child_release_read, child_release_write = (
+                own_descriptor(descriptor)
+                for descriptor in os.pipe2(os.O_CLOEXEC)
+            )
+            if role == "formal-supervisor":
+                supervisor_session_read, supervisor_session_write = (
+                    own_descriptor(descriptor)
+                    for descriptor in os.pipe2(os.O_CLOEXEC)
+                )
+            pid = os.fork()
+            if pid == 0:
+                try:
+                    os.close(child_ready_read)
+                    os.close(child_release_write)
+                    if supervisor_session_write >= 0:
+                        os.close(supervisor_session_write)
+                    for target, source in high.items():
+                        os.dup2(source, target, inheritable=True)
+                    os.dup2(stdout_write, 1, inheritable=True)
+                    os.dup2(stderr_write, 2, inheritable=True)
+                    os.close(stdout_read)
+                    os.close(stderr_read)
+                    broker_descriptor = _connect_selected_broker(transport)
+                    try:
+                        os.dup2(
+                            broker_descriptor,
+                            8,
+                            inheritable=True,
+                        )
+                    finally:
+                        if broker_descriptor != 8:
+                            os.close(broker_descriptor)
+                    if role == "formal-supervisor":
+                        os.dup2(
+                            supervisor_session_read,
+                            FORMAL_SUPERVISOR_SESSION_FD,
+                            inheritable=True,
+                        )
+                        if (
+                            supervisor_session_read
+                            != FORMAL_SUPERVISOR_SESSION_FD
+                        ):
+                            os.close(supervisor_session_read)
+                    if os.write(child_ready_write, b"1") != 1:
+                        os._exit(126)
+                    os.close(child_ready_write)
+                    while True:
+                        try:
+                            release = os.read(child_release_read, 1)
+                            break
+                        except InterruptedError:
+                            continue
+                    os.close(child_release_read)
+                    if release != b"1":
+                        os._exit(126)
+                    os.execve("/proc/self/fd/3", command, {})
+                except BaseException:
+                    os._exit(126)
+            ready_write_error = close_owned(child_ready_write)
+            child_ready_write = -1
+            release_read_error = close_owned(child_release_read)
+            child_release_read = -1
+            supervisor_read_error = close_owned(
+                supervisor_session_read
+            )
+            supervisor_session_read = -1
+            if ready_write_error is not None:
+                raise ready_write_error
+            if release_read_error is not None:
+                raise release_read_error
+            if supervisor_read_error is not None:
+                raise supervisor_read_error
+            ready = os.read(child_ready_read, 1)
+            ready_read_error = close_owned(child_ready_read)
+            child_ready_read = -1
+            if ready_read_error is not None:
+                raise ready_read_error
+            if ready != b"1":
+                raise FormalCampaignError(
+                    "selected formal orchestrator failed before preregistration"
+                )
+            pidfd, pidfd_method = budget_broker.open_pidfd(pid)
+            try:
+                expected_peer = {
+                    "pid": pid,
+                    "pid_starttime": guardian.read_process_starttime(pid),
+                    "uid": os.getuid(),
+                }
+                if pidfd_method not in {
+                    "python-os.pidfd_open",
+                    "libc-pidfd_open",
+                }:
+                    raise FormalCampaignError(
+                        "selected formal orchestrator pidfd source drifted"
+                    )
+                if role == "formal-orchestrator":
+                    assert formal_launch_claim_identity is not None
+                    registration = (
+                        formal_launch_claimant_registrar.
+                        register_formal_launch_claimant(
+                            {
+                                "claim_identity": dict(
+                                    formal_launch_claim_identity
+                                ),
+                                "expected_peer": expected_peer,
+                            },
+                            pidfd=pidfd,
+                        )
+                    )
+                    record = getattr(registration, "record", None)
+                    result = (
+                        record.get("result")
+                        if type(record) is dict
+                        else None
+                    )
+                    if result != {
+                        "claim_identity": dict(
+                            formal_launch_claim_identity
+                        ),
+                        "expected_peer": expected_peer,
+                        "state": "CLAIMANT_REGISTERED",
+                    }:
+                        raise FormalCampaignError(
+                            "selected formal orchestrator registration drifted"
+                        )
+                else:
+                    session = dict(
+                        formal_launch_claimant_registrar.
+                        register_formal_supervisor(
+                            {
+                                "expected_peer": expected_peer,
+                                "package_id": context["package_id"],
+                            },
+                            pidfd=pidfd,
+                        )
+                    )
+                    session_raw = authority.canonical_json(session)
+                    if (
+                        session.get("schema_version")
+                        != FORMAL_SUPERVISOR_SESSION_SCHEMA
+                        or session.get("expected_peer") != expected_peer
+                        or session.get("package_id")
+                        != context["package_id"]
+                        or not session_raw
+                        or len(session_raw)
+                        > MAX_FORMAL_SUPERVISOR_SESSION_BYTES
+                    ):
+                        raise FormalCampaignError(
+                            "selected formal supervisor session registration drifted"
+                        )
+                    if os.write(child_release_write, b"1") != 1:
+                        raise FormalCampaignError(
+                            "selected formal supervisor release was short"
+                        )
+                    release_write_error = close_owned(
+                        child_release_write
+                    )
+                    child_release_write = -1
+                    if release_write_error is not None:
+                        raise release_write_error
+                    offset = 0
+                    while offset < len(session_raw):
+                        written = os.write(
+                            supervisor_session_write,
+                            session_raw[offset:],
+                        )
+                        if written <= 0:
+                            raise FormalCampaignError(
+                                "selected formal supervisor session write made no progress"
+                            )
+                        offset += written
+                    supervisor_write_error = close_owned(
+                        supervisor_session_write
+                    )
+                    supervisor_session_write = -1
+                    if supervisor_write_error is not None:
+                        raise supervisor_write_error
+            finally:
+                os.close(pidfd)
+            if child_release_write >= 0:
+                if os.write(child_release_write, b"1") != 1:
+                    raise FormalCampaignError(
+                        f"selected {role} release was short"
+                    )
+                release_write_error = close_owned(child_release_write)
+                child_release_write = -1
+                if release_write_error is not None:
+                    raise release_write_error
+        else:
+            actions: list[tuple[Any, ...]] = [
+                *((
+                    os.POSIX_SPAWN_DUP2,
+                    high[target],
+                    target,
+                ) for target in tuple(opened)),
+                (os.POSIX_SPAWN_DUP2, stdout_write, 1),
+                (os.POSIX_SPAWN_DUP2, stderr_write, 2),
+                (os.POSIX_SPAWN_CLOSE, stdout_read),
+                (os.POSIX_SPAWN_CLOSE, stderr_read),
+            ]
+            pid = os.posix_spawn(
+                "/proc/self/fd/3",
+                command,
+                {},
+                file_actions=actions,
+            )
         high_close_error = close_many(tuple(high.values()))
         if high_close_error is not None:
             raise high_close_error
@@ -1176,6 +2072,9 @@ def _launch_selected_unit(
             "TZ": "UTC",
         },
         launch_resource_admission=resource_admission_receipt,
+        launch_resource_authority=_prospective_resource_authority(
+            context
+        ),
         launch_owner_check=launch_owner_check,
     )
     final_resource_admission = host.take_final_launch_resource_admission()
@@ -2207,6 +3106,7 @@ def _publish_outer_prelaunch(
     )
     launch_admission = validate_resource_gate(
         context["campaign_dir"],
+        authority_context=context,
         lock_identities=launch_locks,
         observation_context=launch_context,
         allowed_same_uid_processes=_formal_resource_allowlist(state),
@@ -2536,6 +3436,7 @@ def _service_fixed_campaign(
             )
             return validate_resource_gate(
                 context["campaign_dir"],
+                authority_context=context,
                 lock_identities=host.lock_evidence(),
                 observation_context=_resource_observation_context(
                     context,
@@ -2780,80 +3681,13 @@ def _publish_normal_closeout(
         pre_unref_identity,
     )
 
-    _normal_closeout_checkpoint(
-        state,
-        latch,
-        phase="exact-once RefUnit Unref/close",
-    )
-    reference_terminal = closeout_state.finalize_reference_once(
-        boundary,
-        state.attempt,
-        store,
-        unit_name=str(state.outer_identity["unit_name"]),
-        prove_unref=True,
-        reason="NORMAL_SUCCESS_CLOSEOUT",
-        observer_identity=observer_identity,
-        pre_unref_cleanup_identity=pre_unref_identity,
-    )
-    state.reference_terminal = dict(reference_terminal)
-    if reference_terminal.get("kind") != "RECORDED":
-        raise IrreversibleFormalFailure(
-            f"RefUnit release did not become canonical: {reference_terminal}"
-        )
-    _normal_closeout_checkpoint(
-        state,
-        latch,
-        phase="post-Unref absence wait",
-    )
-    post = host.wait_state(
-        str(state.outer_identity["unit_name"]),
-        str(state.outer_identity["control_group"]),
-        state.outer_identity["processes"],
-        referenced=False,
-        timeout=RECORD_WAIT_SECONDS,
-    )
-    _normal_closeout_checkpoint(
-        state,
-        latch,
-        phase="post-Unref absence receipt publication",
-    )
-    post_record = _common_receipt(
-        context,
-        state.selection_identity,
-        phase="post_unref_absence",
-        cgroup_absent=post["cgroup_absent"],
-        load_state={
-            "reference_release_identity": state.attempt.reference_release_identity,
-            "value": post["systemctl"]["LoadState"],
-        },
-        outer_identity=state.outer_identity,
-        pid_absent=post["processes_absent"],
-    )
-    post_identity = _publish_tracked_phase(
-        state.attempt,
-        store,
-        key="post_unref_absence",
-        path=paths["post_unref_absence"],
-        record=post_record,
-        validator=success_verifier.validate_post_unref_absence,
-        validator_kwargs={
-            "expected": expected,
-            "expected_outer_identity": state.outer_identity,
-        },
-    )
-    state.post_unref_identity = post_identity
-    closeout_state.record_late_proof_once(
-        state.attempt,
-        "post_unref_absence_identity",
-        post_identity,
-    )
     return {
-        "post_unref_absence_identity": post_identity,
-        "status": "SUBSTANTIVE_RECEIPTS_READY_FOR_DETACHED_REPLAY",
+        "pre_unref_cleanup_identity": pre_unref_identity,
+        "status": "PRE_UNREF_RECEIPTS_READY_FOR_DETACHED_REPLAY",
     }
 
 
-def _release_guardian_and_locks(
+def _release_guardian_and_raw_locks(
     *,
     context: Mapping[str, object],
     state: SupervisorState,
@@ -2867,7 +3701,7 @@ def _release_guardian_and_locks(
         or state.selection_identity is None
         or state.guardian is None
         or state.ledger is None
-        or state.post_unref_identity is None
+        or state.pre_unref_identity is None
         or state.detached_success_identity is None
     ):
         raise FormalCampaignError(
@@ -2908,7 +3742,7 @@ def _release_guardian_and_locks(
         type(close_record) is not dict
         or set(close_record) != set(guardian.LOCK_CLOSE_FIELDS)
         or close_record.get("schema_version")
-        != guardian.GUARDIAN_LOCK_CLOSE_SCHEMA
+        != success_verifier.GUARDIAN_LOCK_CLOSE_SCHEMA
         or close_record.get("status") != "GUARDIAN_COPIES_CLOSED"
         or close_record.get("outcome") != "SUCCESS_CANDIDATE"
         or close_record.get("success_eligible") is not True
@@ -2967,9 +3801,10 @@ def _release_guardian_and_locks(
         context,
         state.selection_identity,
         phase="guardian_absence",
+        detached_success_identity=state.detached_success_identity,
         guardian_close_identity=guardian_close_identity,
         guardian_identity=state.guardian.unit_identity,
-        post_unref_absence_identity=state.post_unref_identity,
+        pre_unref_cleanup_identity=state.pre_unref_identity,
         **guardian_absence,
     )
     guardian_absence_identity = _publish_tracked_phase(
@@ -2983,7 +3818,8 @@ def _release_guardian_and_locks(
             "expected": expected,
             "expected_guardian_close_identity": guardian_close_identity,
             "expected_guardian_identity": state.guardian.unit_identity,
-            "expected_post_unref_absence_identity": state.post_unref_identity,
+            "expected_detached_success_identity": state.detached_success_identity,
+            "expected_pre_unref_cleanup_identity": state.pre_unref_identity,
         },
     )
     closeout_state.record_late_proof_once(
@@ -2991,10 +3827,11 @@ def _release_guardian_and_locks(
         "guardian_absence_identity",
         guardian_absence_identity,
     )
+    state.guardian_absence_identity = guardian_absence_identity
 
     _post_release_signal_checkpoint(
         latch,
-        phase="supervisor exact-once lock release",
+        phase="supervisor exact-once raw lock release",
     )
     lock_identities = host.lock_evidence()
     closeout_state.begin_supervisor_lock_release(state.attempt)
@@ -3005,46 +3842,1491 @@ def _release_guardian_and_locks(
     )
     _post_release_signal_checkpoint(
         latch,
-        phase="dual-lock-release receipt publication",
+        phase="supervisor raw lock-release receipt publication",
     )
-    dual_record = _common_receipt(
+    raw_record = _common_receipt(
         context,
         state.selection_identity,
-        phase="dual_lock_release",
-        detached_success_identity=state.detached_success_identity,
+        phase="supervisor_raw_lock_release",
+        detached_substantive_identity=state.detached_success_identity,
+        detached_substantive_kind="success_v3",
+        failure_pre_release_identity="absent",
         guardian_absence_identity=guardian_absence_identity,
         guardian_close_identity=guardian_close_identity,
         lock_identities=lock_identities,
+        outcome="SUCCESS_CANDIDATE",
         supervisor_release={
             "after_guardian_absence": True,
             "attempted": True,
             "recorded": True,
             "returned": True,
         },
-        terminal_join={
-            "detached_success_before_guardian_close": True,
-            "guardian_absence_before_supervisor_release": True,
-            "locks_released_after_substantive_verification": True,
-        },
     )
-    dual_identity = _publish_tracked_phase(
+    raw_identity = _publish_tracked_phase(
         state.attempt,
         store,
-        key="dual-lock-release",
-        path=paths["dual_lock_release"],
-        record=dual_record,
-        validator=success_verifier.validate_dual_lock_release,
+        key="supervisor-raw-lock-release",
+        path=paths["supervisor_raw_lock_release"],
+        record=raw_record,
+        validator=success_verifier.validate_supervisor_raw_lock_release,
         validator_kwargs={
             "expected": expected,
             "expected_lock_identities": lock_identities,
-            "expected_detached_success_identity": (
+            "expected_detached_substantive_identity": (
                 state.detached_success_identity
             ),
+            "expected_detached_substantive_kind": "success_v3",
+            "expected_failure_pre_release_identity": "absent",
             "expected_guardian_absence_identity": (
                 guardian_absence_identity
             ),
             "expected_guardian_close_identity": guardian_close_identity,
         },
+    )
+    state.supervisor_raw_lock_release_identity = raw_identity
+    closeout_state.record_late_proof_once(
+        state.attempt,
+        "supervisor_raw_lock_release_identity",
+        raw_identity,
+    )
+    return {
+        "supervisor_raw_lock_release_identity": raw_identity,
+        "guardian_absence_identity": guardian_absence_identity,
+        "guardian_lock_close_identity": guardian_close_identity,
+        "lock_identities": lock_identities,
+        "lock_release_effect": release_effect,
+    }
+
+
+def _content_identity(
+    value: object,
+    *,
+    label: str,
+) -> dict[str, object]:
+    if (
+        type(value) is not dict
+        or set(value) != {"sha256", "size_bytes"}
+        or type(value["sha256"]) is not str
+        or SHA256_RE.fullmatch(value["sha256"]) is None
+        or isinstance(value["size_bytes"], bool)
+        or not isinstance(value["size_bytes"], int)
+        or value["size_bytes"] <= 0
+    ):
+        raise IrreversibleFormalFailure(
+            f"{label} content identity is malformed"
+        )
+    return dict(value)
+
+
+def _canonical_message_identity(value: object) -> dict[str, object]:
+    raw = authority.canonical_json(value)
+    return {
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+
+
+def _validate_closure_final_release_join(
+    closure_handoff: object,
+    final_release_handoff: object,
+    *,
+    final_release_pidfd: int,
+) -> dict[str, object]:
+    if (
+        type(closure_handoff) is not dict
+        or type(final_release_handoff) is not dict
+    ):
+        raise IrreversibleFormalFailure(
+            "closure/final-release handoff join is absent"
+        )
+    expected_final_fields = {
+        "actor",
+        "alternate_replay_source_identity",
+        "broker_actor",
+        "control_descriptor_identity",
+        "formal_root_path",
+        "nonce",
+        "pidfd_method",
+        "prepared_release_identity",
+        "primary_replay_source_identity",
+        "ready_handshake_identity",
+        "release_root_path",
+        "role",
+        "role_source_identity",
+        "schema_version",
+    }
+    actor = final_release_handoff.get("actor")
+    try:
+        pidfd_target = budget_broker._pidfd_target_pid(  # noqa: SLF001
+            final_release_pidfd
+        )
+        actor_starttime = (
+            budget_broker.process_starttime(cast(int, actor["pid"]))
+            if type(actor) is dict and type(actor.get("pid")) is int
+            else None
+        )
+        actor_exited = budget_broker.pidfd_reports_exit(
+            final_release_pidfd
+        )
+    except (OSError, budget_broker.BrokerProtocolError) as exc:
+        raise IrreversibleFormalFailure(
+            "closure/final-release actor pidfd cannot be verified"
+        ) from exc
+    if (
+        type(actor) is not dict
+        or set(actor)
+        != {"schema_version", "pid", "pid_starttime", "uid"}
+        or set(final_release_handoff) != expected_final_fields
+        or final_release_handoff.get("schema_version")
+        != final_release_actor.HANDOFF_SCHEMA
+        or final_release_handoff.get("role")
+        != final_release_actor.PACKAGE_ROLE
+        or actor["schema_version"] != final_release_actor.ACTOR_SCHEMA
+        or type(actor["pid"]) is not int
+        or type(actor["pid_starttime"]) is not int
+        or type(actor["uid"]) is not int
+        or actor["uid"] != os.getuid()
+        or closure_handoff.get("final_release_actor") != actor
+        or closure_handoff.get("final_release_pidfd_method")
+        != final_release_handoff.get("pidfd_method")
+        or closure_handoff.get("final_release_handoff_identity")
+        != _canonical_message_identity(final_release_handoff)
+        or pidfd_target != actor["pid"]
+        or actor_starttime != actor["pid_starttime"]
+        or actor_exited
+    ):
+        raise IrreversibleFormalFailure(
+            "closure/final-release actor authority join drifted"
+        )
+    return {
+        "final_release_actor": dict(actor),
+        "final_release_handoff_identity": (
+            _canonical_message_identity(final_release_handoff)
+        ),
+        "final_release_pidfd_method": final_release_handoff[
+            "pidfd_method"
+        ],
+        "state": "FINAL_RELEASE_ACTOR_PIDFD_JOINED",
+    }
+
+
+class _PersistentFormalTerminalTail:
+    """Single-session adapter from selected supervisor to closure actors."""
+
+    def __init__(
+        self,
+        *,
+        broker_client: budget_broker.BrokerSessionClient,
+        budget_backend: budget_broker.BrokerProcessFormalBudgetBackend,
+        context: Mapping[str, object],
+        formal_root: Path,
+    ) -> None:
+        self._broker = broker_client
+        self._backend = budget_backend
+        self._context = dict(context)
+        self._formal_root = Path(os.path.abspath(formal_root))
+        self._baseline: dict[str, object] | None = None
+        self._baseline_sha256: str | None = None
+        self._closure: closure_actor.DetachedClosureProcess | None = None
+        self._final_release: final_release_actor.FinalReleaseProcess | None = None
+        self._final_release_join: dict[str, object] | None = None
+        self._branch: str | None = None
+        self._terminal_join_sha256: str | None = None
+        self._disarm_observation: dict[str, object] | None = None
+        self._broker_contract: dict[str, object] | None = None
+        self._root_inventory: dict[str, object] | None = None
+
+    def bind_closure_process_baseline(
+        self,
+        resource_admission_receipt: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        if self._baseline is not None:
+            raise IrreversibleFormalFailure(
+                "closure process baseline cannot be bound twice"
+            )
+        measurements = resource_admission_receipt.get("measurements")
+        if type(measurements) is not dict:
+            raise IrreversibleFormalFailure(
+                "resource admission lacks closure process measurements"
+            )
+        baseline = measurements.get("same_uid_process_baseline")
+        baseline_sha256 = measurements.get(
+            "same_uid_process_baseline_sha256"
+        )
+        try:
+            checked = resource_admission.validate_same_uid_process_baseline(
+                baseline,
+                expected_sha256=baseline_sha256,
+                require_live=True,
+            )
+        except Exception as exc:
+            raise IrreversibleFormalFailure(
+                "closure process baseline failed independent replay"
+            ) from exc
+        self._baseline = dict(checked)
+        self._baseline_sha256 = cast(str, baseline_sha256)
+        return {
+            "same_uid_process_baseline_sha256": baseline_sha256,
+            "state": "CLOSURE_PROCESS_BASELINE_BOUND",
+        }
+
+    @staticmethod
+    def _result(
+        frame: budget_broker.ReceivedFrame,
+        *,
+        label: str,
+    ) -> dict[str, object]:
+        result = frame.record.get("result")
+        if type(result) is not dict:
+            raise IrreversibleFormalFailure(
+                f"{label} broker result is absent"
+            )
+        return dict(result)
+
+    @staticmethod
+    def _prove_pidfd_exit(
+        descriptor: int,
+        *,
+        label: str,
+        timeout_milliseconds: int = 5000,
+    ) -> None:
+        poller = select.poll()
+        poller.register(descriptor, select.POLLIN | select.POLLHUP)
+        if not poller.poll(timeout_milliseconds):
+            raise IrreversibleFormalFailure(
+                f"{label} pidfd did not report terminal exit"
+            )
+
+    def prepare_closure(
+        self,
+        *,
+        branch: str,
+        terminal_join_sha256: str,
+    ) -> Mapping[str, object]:
+        if (
+            self._closure is not None
+            or self._final_release is not None
+            or branch not in {"success", "incomplete"}
+            or SHA256_RE.fullmatch(terminal_join_sha256) is None
+        ):
+            raise IrreversibleFormalFailure(
+                "closure preparation state or identity drifted"
+            )
+        response = self._broker.request(
+            "PREPARE_CLOSURE",
+            {},
+            expected_fd_counts=frozenset({4}),
+        )
+        descriptors = list(response.descriptors)
+        result = self._result(
+            response,
+            label="closure preparation",
+        )
+        try:
+            if (
+                set(result)
+                != {
+                    "schema_version",
+                    "closure_handoff",
+                    "final_release_handoff",
+                    "registration",
+                }
+                or result["schema_version"]
+                != budget_broker.CLOSURE_CONTROL_TRANSFER_SCHEMA
+                or type(result["closure_handoff"]) is not dict
+                or type(result["final_release_handoff"]) is not dict
+                or type(result["registration"]) is not dict
+            ):
+                raise IrreversibleFormalFailure(
+                    "closure preparation envelope drifted"
+                )
+            final_release_join = _validate_closure_final_release_join(
+                result["closure_handoff"],
+                result["final_release_handoff"],
+                final_release_pidfd=descriptors[3],
+            )
+            closure = closure_actor.attach_broker_forked_closure(
+                cast(Mapping[str, object], result["closure_handoff"]),
+                tuple(descriptors[:2]),
+            )
+            descriptors[:2] = []
+            final_release = (
+                final_release_actor.attach_broker_forked_final_release(
+                    cast(
+                        Mapping[str, object],
+                        result["final_release_handoff"],
+                    ),
+                    tuple(descriptors),
+                )
+            )
+            descriptors.clear()
+        except BaseException:
+            for descriptor in descriptors:
+                try:
+                    os.close(descriptor)
+                except BaseException:
+                    pass
+            raise
+        self._closure = closure
+        self._final_release = final_release
+        self._final_release_join = final_release_join
+        self._branch = branch
+        self._terminal_join_sha256 = terminal_join_sha256
+        return {
+            "broker_registration": dict(
+                cast(Mapping[str, object], result["registration"])
+            ),
+            "closure_actor": dict(closure.actor),
+            "final_release_actor": dict(final_release.actor),
+            "final_release_handoff_identity": final_release_join[
+                "final_release_handoff_identity"
+            ],
+            "final_release_pidfd_method": final_release_join[
+                "final_release_pidfd_method"
+            ],
+            "state": "CLOSURE_AND_FINAL_RELEASE_CONTROL_PREPARED",
+            "terminal_join_sha256": terminal_join_sha256,
+        }
+
+    def publish_disarm_intent(
+        self,
+        *,
+        terminal_join_sha256: str,
+    ) -> Mapping[str, object]:
+        if (
+            self._closure is None
+            or terminal_join_sha256 != self._terminal_join_sha256
+        ):
+            raise IrreversibleFormalFailure(
+                "recovery disarm intent precedes exact closure preparation"
+            )
+        result = self._result(
+            self._broker.request(
+                "PUBLISH_DISARM_INTENT",
+                {"terminal_join_sha256": terminal_join_sha256},
+            ),
+            label="recovery disarm intent",
+        )
+        if (
+            result.get("schema_version")
+            != budget_broker.RECOVERY_DISARM_INTENT_SCHEMA
+            or result.get("state")
+            != "RECOVERY_DISARM_INTENT_PUBLISHED"
+            or result.get("terminal_join_sha256")
+            != terminal_join_sha256
+        ):
+            raise IrreversibleFormalFailure(
+                "recovery disarm intent result drifted"
+            )
+        return {
+            "intent": result,
+            "intent_sha256": _canonical_message_identity(result)["sha256"],
+            "state": "RECOVERY_DISARM_INTENT_PUBLISHED",
+        }
+
+    def disarm_recovery_once(
+        self,
+        *,
+        disarm_intent: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        intent_sha256 = disarm_intent.get("intent_sha256")
+        if (
+            SHA256_RE.fullmatch(cast(str, intent_sha256))
+            is None
+        ):
+            raise IrreversibleFormalFailure(
+                "recovery disarm intent identity is absent"
+            )
+        result = self._result(
+            self._broker.request(
+                "DISARM_RECOVERY",
+                {"disarm_intent_sha256": intent_sha256},
+            ),
+            label="recovery disarm",
+        )
+        if set(result) != {
+            "handoff_identity",
+            "lock_release",
+            "terminal",
+        }:
+            raise IrreversibleFormalFailure(
+                "recovery disarm response shape drifted"
+            )
+        self._disarm_observation = dict(result)
+        return {
+            "observation": result,
+            "state": "RECOVERY_DISARMED_ACKNOWLEDGED",
+        }
+
+    def prove_recovery_absence(
+        self,
+        *,
+        disarm_observation: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        observation = disarm_observation.get("observation")
+        if (
+            type(observation) is not dict
+            or observation != self._disarm_observation
+            or cast(Mapping[str, object], observation["terminal"]).get(
+                "pidfd_exit_proved"
+            )
+            is not True
+            or cast(Mapping[str, object], observation["lock_release"]).get(
+                "state"
+            )
+            != "RECOVERY_TAKEOVER_LOCK_RELEASED"
+        ):
+            raise IrreversibleFormalFailure(
+                "recovery absence or takeover-lock release is not proved"
+            )
+        return {
+            "observation": dict(observation),
+            "state": "RECOVERY_ABSENT_TAKEOVER_LOCK_RELEASED",
+        }
+
+    def retire_broker_once(
+        self,
+        *,
+        recovery_absence: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        if (
+            recovery_absence.get("state")
+            != "RECOVERY_ABSENT_TAKEOVER_LOCK_RELEASED"
+            or self._broker.closed
+        ):
+            raise IrreversibleFormalFailure(
+                "broker retirement precedes recovery absence"
+            )
+        status = self._result(
+            self._broker.request("STATUS", {}),
+            label="broker pre-exit status",
+        )
+        actor_pid = self._broker.actor.get("pid")
+        if isinstance(actor_pid, bool) or not isinstance(actor_pid, int):
+            raise IrreversibleFormalFailure(
+                "broker actor PID is invalid"
+            )
+        pidfd, _method = budget_broker.open_pidfd(actor_pid)
+        try:
+            if (
+                budget_broker.process_starttime(actor_pid)
+                != self._broker.actor["pid_starttime"]
+            ):
+                raise IrreversibleFormalFailure(
+                    "broker actor identity drifted before EXIT"
+                )
+            exited = self._result(
+                self._broker.request("EXIT", {}),
+                label="broker EXIT",
+            )
+            self._broker.connection.close()
+            self._broker.closed = True
+            self._prove_pidfd_exit(
+                pidfd,
+                label="persistent budget broker",
+            )
+        finally:
+            os.close(pidfd)
+        if (
+            exited.get("state") != "BROKER_EXIT_ACCEPTED"
+            or type(exited.get("root_inventory")) is not dict
+            or type(status.get("contract")) is not dict
+        ):
+            raise IrreversibleFormalFailure(
+                "broker EXIT result or root inventory drifted"
+            )
+        self._broker_contract = dict(
+            cast(Mapping[str, object], status["contract"])
+        )
+        self._root_inventory = dict(
+            cast(Mapping[str, object], exited["root_inventory"])
+        )
+        return {
+            "broker_actor": dict(self._broker.actor),
+            "contract": dict(self._broker_contract),
+            "root_inventory": dict(self._root_inventory),
+            "state": "BROKER_ABSENT_NO_ROOT_WRITERS",
+        }
+
+    def close_root_once(
+        self,
+        *,
+        broker_absence: Mapping[str, object],
+        terminal_join_sha256: str,
+    ) -> Mapping[str, object]:
+        if (
+            self._closure is None
+            or self._baseline is None
+            or self._baseline_sha256 is None
+            or self._broker_contract is None
+            or self._root_inventory is None
+            or self._final_release_join is None
+            or broker_absence.get("state")
+            != "BROKER_ABSENT_NO_ROOT_WRITERS"
+            or terminal_join_sha256 != self._terminal_join_sha256
+            or self._disarm_observation is None
+        ):
+            raise IrreversibleFormalFailure(
+                "formal root closure prerequisites are incomplete"
+            )
+        process = self._closure
+        result = process.close_root(
+            {
+                "budget_contract": self._broker_contract,
+                "disarm_observation": self._disarm_observation,
+                "root_inventory": self._root_inventory,
+                "same_uid_process_baseline": self._baseline,
+                "same_uid_process_baseline_sha256": (
+                    self._baseline_sha256
+                ),
+                "terminal_join_sha256": terminal_join_sha256,
+            }
+        )
+        process.prove_exit()
+        process.close()
+        self._closure = None
+        expected_final_release_binding = {
+            "actor": self._final_release_join["final_release_actor"],
+            "handoff_identity": self._final_release_join[
+                "final_release_handoff_identity"
+            ],
+            "phase": "FINAL_CLOSURE_SCOPE",
+            "pidfd_method": self._final_release_join[
+                "final_release_pidfd_method"
+            ],
+            "state": "LIVE_EXACT_FINAL_RELEASE_ACTOR_BOUND",
+        }
+        if (
+            result.get("state") != "ROOT_CLOSED_NO_WRITERS"
+            or result.get("final_release_binding")
+            != expected_final_release_binding
+        ):
+            raise IrreversibleFormalFailure(
+                "closure actor did not preserve the final-release identity join"
+            )
+        return result
+
+    @staticmethod
+    def _replay_receipt_bytes(
+        envelope: Mapping[str, object],
+        *,
+        implementation: str,
+    ) -> None:
+        identity = closeout_state.validate_identity_join(
+            cast(Mapping[str, object], envelope["receipt_identity"]),
+            f"{implementation} replay receipt",
+        )
+        path = Path(cast(str, identity["path"]))
+        parent_fd = budget_broker.budget._open_absolute_directory_no_symlinks(  # noqa: SLF001
+            path.parent
+        )
+        descriptor = -1
+        try:
+            descriptor = os.open(
+                path.name,
+                os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
+                dir_fd=parent_fd,
+            )
+            metadata = os.fstat(descriptor)
+            raw = b"".join(
+                os.pread(
+                    descriptor,
+                    min(1024 * 1024, metadata.st_size - offset),
+                    offset,
+                )
+                for offset in range(0, metadata.st_size, 1024 * 1024)
+            )
+        finally:
+            if descriptor >= 0:
+                os.close(descriptor)
+            os.close(parent_fd)
+        if (
+            not stat.S_ISREG(metadata.st_mode)
+            or stat.S_IMODE(metadata.st_mode) != 0o444
+            or metadata.st_nlink != 1
+            or metadata.st_size != identity["size_bytes"]
+            or hashlib.sha256(raw).hexdigest() != identity["sha256"]
+        ):
+            raise IrreversibleFormalFailure(
+                f"{implementation} replay receipt bytes drifted"
+            )
+        try:
+            record = json.loads(raw)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise IrreversibleFormalFailure(
+                f"{implementation} replay receipt is not strict JSON"
+            ) from exc
+        if (
+            type(record) is not dict
+            or authority.canonical_json(record) != raw
+            or record.get("schema_version")
+            != final_release_actor.REPLAY_RECEIPT_SCHEMA
+            or record.get("implementation") != implementation
+            or record.get("result") != envelope["result"]
+            or record.get("source_identity")
+            != envelope["source_identity"]
+            or record.get("state")
+            != "FORMAL_ROOT_REPLAY_RECEIPT_ACCEPTED"
+        ):
+            raise IrreversibleFormalFailure(
+                f"{implementation} replay receipt self-replay failed"
+            )
+
+    def replay_closed_root(
+        self,
+        *,
+        implementation: str,
+    ) -> Mapping[str, object]:
+        if self._final_release is None:
+            raise IrreversibleFormalFailure(
+                "outside replay lacks its fixed final-release actor"
+            )
+        if implementation == "primary":
+            result = formal_root_replay_primary.replay_formal_root(
+                self._formal_root
+            )
+        elif implementation == "alternate":
+            result = formal_root_replay_alternate.replay_formal_root(
+                self._formal_root
+            )
+        else:
+            raise IrreversibleFormalFailure(
+                "outside replay implementation is unknown"
+            )
+        envelope = self._final_release.publish_replay_receipt(
+            implementation=implementation,
+            result=result,
+        )
+        self._replay_receipt_bytes(
+            envelope,
+            implementation=implementation,
+        )
+        return envelope
+
+    def publish_final_release(
+        self,
+        payload: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        if self._final_release is None:
+            raise IrreversibleFormalFailure(
+                "outside final-release actor is absent"
+            )
+        return self._final_release.publish_final_release(payload)
+
+    def prove_final_release_absence(
+        self,
+        *,
+        final_release_result: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        if (
+            self._final_release is None
+            or final_release_result.get("state")
+            != "FINAL_RELEASE_PUBLISHED_UNUSED_SEALED"
+        ):
+            raise IrreversibleFormalFailure(
+                "outside final-release result is absent"
+            )
+        process = self._final_release
+        process.prove_exit()
+        actor = dict(process.actor)
+        process.close()
+        self._final_release = None
+        return {
+            "actor": actor,
+            "state": "FINAL_RELEASE_ACTOR_ABSENT",
+        }
+
+
+def formal_supervisor_capabilities_from_fd(
+    fd: int,
+    *,
+    native_budget_helper: object,
+    campaign_dir: Path | str,
+    supervisor_session: Mapping[str, object],
+) -> FormalSupervisorCapabilities:
+    """Consume the pidfd-bound FD8 session and build one shared capability."""
+
+    expected_session_fields = {
+        "broker_actor",
+        "broker_grant",
+        "broker_nonce_sha256",
+        "credential",
+        "expected_peer",
+        "formal_budget_runtime_identity",
+        "owner_actor",
+        "package_id",
+        "schema_version",
+    }
+    owned_fd = -1
+    client: budget_broker.BrokerSessionClient | None = None
+    try:
+        if fd != 8:
+            raise FormalCampaignError(
+                "formal supervisor budget broker must arrive on fixed FD8"
+            )
+        owned_fd = fcntl.fcntl(fd, fcntl.F_DUPFD_CLOEXEC, 20)
+        os.close(fd)
+        context = authority.replay_formal_launch_context(
+            campaign_dir=Path(campaign_dir)
+        )
+        runtime = context["formal_budget_runtime"]
+        expected_peer = budget_broker.process_identity()
+        actor = {
+            "schema_version": budget_broker.ACTOR_SCHEMA,
+            **cast(
+                Mapping[str, object],
+                cast(Mapping[str, object], runtime)[
+                    "broker_actor_identity"
+                ],
+            ),
+        }
+        if (
+            type(supervisor_session) is not dict
+            or set(supervisor_session) != expected_session_fields
+            or supervisor_session["schema_version"]
+            != FORMAL_SUPERVISOR_SESSION_SCHEMA
+            or supervisor_session["package_id"] != context["package_id"]
+            or supervisor_session["expected_peer"] != expected_peer
+            or supervisor_session["broker_actor"] != actor
+            or type(supervisor_session["credential"]) is not str
+            or SHA256_RE.fullmatch(
+                cast(str, supervisor_session["credential"])
+            )
+            is None
+            or supervisor_session["broker_nonce_sha256"]
+            != hashlib.sha256(
+                cast(str, cast(Mapping[str, object], runtime)["broker_nonce"])
+                .encode("ascii")
+            ).hexdigest()
+            or supervisor_session["formal_budget_runtime_identity"]
+            != _canonical_message_identity(runtime)
+            or supervisor_session["broker_grant"]
+            != budget_broker.build_session_grant(
+                credential=cast(str, supervisor_session["credential"]),
+                expected_peer=expected_peer,
+                role="formal-supervisor",
+            ).as_record()
+        ):
+            raise FormalCampaignError(
+                "formal supervisor owner session identity drifted"
+            )
+        transferred = owned_fd
+        owned_fd = -1
+        client = budget_broker.attach_registered_nonarm_session(
+            transferred,
+            broker_actor=actor,
+            broker_nonce=cast(
+                str,
+                cast(Mapping[str, object], runtime)["broker_nonce"],
+            ),
+            credential=cast(str, supervisor_session["credential"]),
+            role="formal-supervisor",
+            native_helper=cast(
+                budget_broker.NativeHelperProtocol,
+                native_budget_helper,
+            ),
+        )
+        material = formal_controller.formal_supervisor_budget_material(
+            context
+        )
+        backend = budget_broker.BrokerProcessFormalBudgetBackend(
+            broker_client=client,
+            native_helper=cast(
+                budget_broker.NativeHelperProtocol,
+                native_budget_helper,
+            ),
+            formal_root=Path(cast(str, material["formal_root"])),
+            enforced_budget_profile=cast(
+                Mapping[str, object],
+                material["profile"],
+            ),
+            resource_calibration_authorization_bundle=cast(
+                Mapping[str, object],
+                material["calibration_bundle"],
+            ),
+            resource_calibration_authorization_bundle_identity=cast(
+                Mapping[str, object],
+                material["calibration_bundle_identity"],
+            ),
+            expected_calibration_tool_identities=cast(
+                Mapping[str, Mapping[str, object]],
+                material["calibration_tool_content_identities"],
+            ),
+            authority_binding={
+                "budget_profile_identity": context[
+                    "resource_budget_profile_identity"
+                ],
+                "filesystem_write_confinement": (
+                    "not-applicable-persistent-supervisor-v1"
+                ),
+                "formal_budget_runtime": runtime,
+                "formal_root_contract_identity": cast(
+                    Mapping[str, object],
+                    runtime,
+                )["formal_root_contract_identity"],
+                "formal_resource_calibration_bundle_identity": material[
+                    "calibration_bundle_identity"
+                ],
+                "selected_fd_transport": context[
+                    "selected_fd_transport"
+                ],
+            },
+            fixed_artifacts=cast(
+                Mapping[str, Mapping[str, object]],
+                material["fixed_artifacts"],
+            ),
+            fixed_channels=cast(
+                Mapping[str, Mapping[str, object]],
+                material["fixed_channels"],
+            ),
+            fixed_directories=cast(
+                Mapping[str, Mapping[str, object]],
+                material["fixed_directories"],
+            ),
+            require_worker_confinement=False,
+        )
+        tail = _PersistentFormalTerminalTail(
+            broker_client=client,
+            budget_backend=backend,
+            context=context,
+            formal_root=Path(cast(str, material["formal_root"])),
+        )
+        return FormalSupervisorCapabilities(
+            budget_backend=backend,
+            receipt_budget_bindings=cast(
+                Mapping[str, Mapping[str, object]],
+                material["receipt_budget_bindings"],
+            ),
+            selection_transition=backend,
+            terminal_tail_port=tail,
+        )
+    except BaseException as exc:
+        try:
+            if client is not None:
+                client.close()
+            elif owned_fd >= 0:
+                os.close(owned_fd)
+        except BaseException as cleanup_error:
+            exc.add_note(
+                "formal supervisor factory cleanup also failed: "
+                f"{type(cleanup_error).__name__}: {cleanup_error}"
+            )
+        raise
+
+
+def _tail_control_result(
+    value: Mapping[str, object],
+    *,
+    state: str,
+    label: str,
+) -> dict[str, object]:
+    record = dict(value)
+    if not record or record.get("state") != state:
+        raise IrreversibleFormalFailure(
+            f"{label} did not reach its exact terminal state"
+        )
+    closeout_state.reject_none(record, label)
+    return record
+
+
+def _tail_replay_envelope(
+    value: Mapping[str, object],
+    *,
+    schema: str,
+    implementation: str,
+    label: str,
+) -> dict[str, object]:
+    if set(value) != {"receipt_identity", "result", "source_identity"}:
+        raise IrreversibleFormalFailure(
+            f"{label} envelope field set drifted"
+        )
+    receipt_identity = closeout_state.validate_identity_join(
+        cast(Mapping[str, object], value["receipt_identity"]),
+        f"{label} outside receipt",
+    )
+    source_identity = _content_identity(
+        value["source_identity"],
+        label=f"{label} package source",
+    )
+    result = value["result"]
+    if (
+        type(result) is not dict
+        or result.get("schema_version") != schema
+        or result.get("implementation") != implementation
+        or result.get("state") != "FORMAL_ROOT_CLOSURE_ACCEPTED"
+        or result.get("authority_scope") != AUTHORITY_SCOPE
+        or result.get("authority")
+        != {
+            "changes_certified_exact": False,
+            "changes_cut_state": False,
+            "changes_lower_bound": False,
+            "changes_production": False,
+            "changes_upper_bound": False,
+            "research_only": True,
+        }
+    ):
+        raise IrreversibleFormalFailure(
+            f"{label} outside replay discriminator drifted"
+        )
+    return {
+        "receipt_identity": receipt_identity,
+        "result": dict(result),
+        "source_identity": source_identity,
+    }
+
+
+def _complete_post_reference_budget_tail(
+    *,
+    context: Mapping[str, object],
+    state: SupervisorState,
+    branch: str,
+    reference_completion: Mapping[str, object],
+    terminal_basis: Mapping[str, object],
+    terminal_record_builder: Callable[
+        [Mapping[str, object]],
+        Mapping[str, object],
+    ],
+) -> dict[str, object]:
+    """Close the formal root, replay it twice, then publish one outside join."""
+
+    port = state.terminal_tail_port
+    if port is None:
+        raise IrreversibleFormalFailure(
+            "package-pinned formal terminal tail capability is absent"
+        )
+    if branch not in {"success", "incomplete"}:
+        raise IrreversibleFormalFailure(
+            "formal terminal tail branch is invalid"
+        )
+    terminal_join_sha256 = hashlib.sha256(
+        authority.canonical_json(terminal_basis)
+    ).hexdigest()
+    prepared = _tail_control_result(
+        port.prepare_closure(
+            branch=branch,
+            terminal_join_sha256=terminal_join_sha256,
+        ),
+        state="CLOSURE_AND_FINAL_RELEASE_CONTROL_PREPARED",
+        label="formal closure preparation",
+    )
+    disarm_intent = _tail_control_result(
+        port.publish_disarm_intent(
+            terminal_join_sha256=terminal_join_sha256,
+        ),
+        state="RECOVERY_DISARM_INTENT_PUBLISHED",
+        label="recovery disarm intent",
+    )
+    disarm_observation = _tail_control_result(
+        port.disarm_recovery_once(
+            disarm_intent=disarm_intent,
+        ),
+        state="RECOVERY_DISARMED_ACKNOWLEDGED",
+        label="recovery disarm",
+    )
+    recovery_absence = _tail_control_result(
+        port.prove_recovery_absence(
+            disarm_observation=disarm_observation,
+        ),
+        state="RECOVERY_ABSENT_TAKEOVER_LOCK_RELEASED",
+        label="recovery absence",
+    )
+    broker_absence = _tail_control_result(
+        port.retire_broker_once(
+            recovery_absence=recovery_absence,
+        ),
+        state="BROKER_ABSENT_NO_ROOT_WRITERS",
+        label="broker absence",
+    )
+    closure_result = _tail_control_result(
+        port.close_root_once(
+            broker_absence=broker_absence,
+            terminal_join_sha256=terminal_join_sha256,
+        ),
+        state="ROOT_CLOSED_NO_WRITERS",
+        label="formal root closure",
+    )
+    primary = _tail_replay_envelope(
+        port.replay_closed_root(implementation="primary"),
+        schema=PRIMARY_FORMAL_ROOT_REPLAY_SCHEMA,
+        implementation="package-pinned-primary-v1",
+        label="primary formal-root replay",
+    )
+    alternate = _tail_replay_envelope(
+        port.replay_closed_root(implementation="alternate"),
+        schema=ALTERNATE_FORMAL_ROOT_REPLAY_SCHEMA,
+        implementation="package-pinned-stdlib-alternate-v1",
+        label="alternate formal-root replay",
+    )
+    primary_result = cast(
+        Mapping[str, object],
+        primary["result"],
+    )
+    alternate_result = cast(
+        Mapping[str, object],
+        alternate["result"],
+    )
+    comparable = {
+        "actor_absence",
+        "authority",
+        "authority_scope",
+        "formal_manifest_identity",
+        "formal_root",
+        "manifest_entries_sha256",
+        "state",
+        "terminal_join_sha256",
+    }
+    if (
+        any(
+            primary_result.get(field) != alternate_result.get(field)
+            for field in comparable
+        )
+        or primary_result.get("terminal_join_sha256")
+        != terminal_join_sha256
+        or primary["source_identity"]["sha256"]
+        == alternate["source_identity"]["sha256"]
+        or primary["receipt_identity"]["path"]
+        == alternate["receipt_identity"]["path"]
+    ):
+        raise IrreversibleFormalFailure(
+            "formal-root outside replays disagree or are not independent"
+        )
+    formal_manifest_identity = closeout_state.validate_identity_join(
+        cast(
+            Mapping[str, object],
+            primary_result["formal_manifest_identity"],
+        ),
+        "formal root manifest",
+    )
+    evidence = {
+        "schema_version": (
+            success_verifier.POST_ROOT_CLOSURE_EVIDENCE_SCHEMA
+        ),
+        "alternate_replay_identity": _canonical_message_identity(
+            alternate_result
+        ),
+        "alternate_replay_receipt_identity": alternate[
+            "receipt_identity"
+        ],
+        "alternate_replay_source_identity": alternate["source_identity"],
+        "branch": branch,
+        "closure_result_identity": _canonical_message_identity(
+            closure_result
+        ),
+        "formal_manifest_identity": formal_manifest_identity,
+        "primary_replay_identity": _canonical_message_identity(
+            primary_result
+        ),
+        "primary_replay_receipt_identity": primary["receipt_identity"],
+        "primary_replay_source_identity": primary["source_identity"],
+        "reference_completion_identity": _canonical_message_identity(
+            reference_completion
+        ),
+        "state": "CLOSED_ROOT_DUAL_REPLAY_ACCEPTED",
+        "terminal_join_sha256": terminal_join_sha256,
+    }
+    checked_evidence = (
+        success_verifier.validate_post_root_closure_evidence(
+            evidence,
+            expected_branch=branch,
+            expected_terminal_join_sha256=terminal_join_sha256,
+        )
+    )
+    terminal_record = dict(
+        terminal_record_builder(checked_evidence)
+    )
+    publication_key = (
+        "dual-lock-release"
+        if branch == "success"
+        else "failure-terminal-release"
+    )
+    publication = state.attempt.publication(publication_key)
+    publication.begin()
+    try:
+        # The outside actor owns the exact rename/fsync/ACK boundary.  The
+        # supervisor crosses the no-retry boundary before sending the sole
+        # request because a lost reply cannot prove that publication did not
+        # occur.
+        publication.note_publication_may_have_happened()
+        final_result = port.publish_final_release(
+            {
+                "alternate_replay": alternate_result,
+                "alternate_replay_receipt_identity": alternate[
+                    "receipt_identity"
+                ],
+                "alternate_replay_source_identity": alternate[
+                    "source_identity"
+                ],
+                "branch": branch,
+                "closure_result": closure_result,
+                "primary_replay": primary_result,
+                "primary_replay_receipt_identity": primary[
+                    "receipt_identity"
+                ],
+                "primary_replay_source_identity": primary["source_identity"],
+                "reference_completion": dict(reference_completion),
+                "terminal_join_sha256": terminal_join_sha256,
+                "terminal_record": terminal_record,
+            }
+        )
+        if (
+            set(final_result)
+            != {
+                "branch",
+                "evidence",
+                "schema_version",
+                "selected_identity",
+                "state",
+                "unused_staging_identity",
+            }
+            or final_result.get("schema_version")
+            != FINAL_RELEASE_RESULT_SCHEMA
+            or final_result.get("state")
+            != "FINAL_RELEASE_PUBLISHED_UNUSED_SEALED"
+            or final_result.get("branch") != branch
+            or final_result.get("evidence") != checked_evidence
+            or type(final_result.get("unused_staging_identity")) is not dict
+            or cast(
+                Mapping[str, object],
+                final_result["unused_staging_identity"],
+            ).get("mode_octal")
+            != "0444"
+        ):
+            raise IrreversibleFormalFailure(
+                "outside-root final release result drifted"
+            )
+        selected_identity = closeout_state.validate_identity_join(
+            cast(
+                Mapping[str, object],
+                final_result["selected_identity"],
+            ),
+            "outside-root final release",
+        )
+        publication.note_returned(selected_identity)
+        final_release_absence = _tail_control_result(
+            port.prove_final_release_absence(
+                final_release_result=final_result,
+            ),
+            state="FINAL_RELEASE_ACTOR_ABSENT",
+            label="outside-root final-release actor absence",
+        )
+        publication.note_recorded(selected_identity)
+    except BaseException as exc:
+        publication.note_error(exc)
+        raise
+    state.post_root_closure = checked_evidence
+    return {
+        "closure_preparation": prepared,
+        "final_release_actor_absence": final_release_absence,
+        "post_root_closure": checked_evidence,
+        "selected_identity": selected_identity,
+        "terminal_record": terminal_record,
+    }
+
+
+def _complete_reference_and_final_success(
+    *,
+    boundary: authority.FormalRuntimeBoundary,
+    context: Mapping[str, object],
+    state: SupervisorState,
+    store: closeout_helper.ReceiptStore,
+    host: closeout_helper.PinnedHost,
+    latch: closeout_helper.TerminationLatch,
+    expected: Mapping[str, object],
+    lock_identities: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Close RefUnit on the retained connection, then publish the final join."""
+
+    if (
+        state.selection is None
+        or state.selection_identity is None
+        or state.outer_identity is None
+        or state.observer_identity is None
+        or state.pre_unref_identity is None
+        or state.detached_success_identity is None
+        or state.guardian_close_identity is None
+        or state.guardian_absence_identity is None
+        or state.supervisor_raw_lock_release_identity is None
+        or not host.locks_released
+    ):
+        raise IrreversibleFormalFailure(
+            "post-lock RefUnit completion lacks its unique predecessor chain"
+        )
+    paths = state.selection["outer_spec"]["receipt_paths"]
+    checked_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
+        lock_identities
+    )
+    _post_release_signal_checkpoint(
+        latch,
+        phase="exact-once RefUnit Unref with connection retained",
+    )
+    released = closeout_state.release_reference_retained_once(
+        boundary,
+        state.attempt,
+        store,
+        unit_name=str(state.outer_identity["unit_name"]),
+        observer_identity=state.observer_identity,
+        pre_unref_cleanup_identity=state.pre_unref_identity,
+    )
+    if released.get("kind") != "RECORDED_CONNECTION_RETAINED":
+        raise IrreversibleFormalFailure(
+            f"post-lock RefUnit Unref did not become canonical: {released}"
+        )
+    unref_record, unref_identity = store.document(
+        boundary.formal_dir / "unref-call.json",
+        "prospective Unref call",
+    )
+    checked_unref = success_verifier.validate_unref_call(
+        unref_record,
+        expected=expected,
+        expected_outer_identity=state.outer_identity,
+        expected_acquisition_identity=cast(
+            Mapping[str, object],
+            state.attempt.acquire_identity,
+        ),
+        expected_client_unique_name=str(
+            cast(Mapping[str, object], state.attempt.acquire_return)[
+                "client_unique_name"
+            ]
+        ),
+        expected_observer_identity=state.observer_identity,
+        expected_pre_unref_cleanup_identity=state.pre_unref_identity,
+    )
+    release_record, release_identity = store.document(
+        paths["reference_release"],
+        "prospective reference release",
+    )
+    success_verifier.validate_reference_release(
+        release_record,
+        expected=expected,
+        expected_outer_identity=state.outer_identity,
+        expected_acquisition_identity=cast(
+            Mapping[str, object],
+            state.attempt.acquire_identity,
+        ),
+        expected_unref_call_identity=unref_identity,
+        expected_observer_identity=state.observer_identity,
+        expected_pre_unref_cleanup_identity=state.pre_unref_identity,
+        expected_raw_lock_release_identity=(
+            state.supervisor_raw_lock_release_identity
+        ),
+    )
+    if (
+        state.attempt.unref_call_identity != unref_identity
+        or state.attempt.reference_release_identity != release_identity
+        or checked_unref["call"] != state.attempt.release_return
+    ):
+        raise IrreversibleFormalFailure(
+            "post-lock RefUnit release readback identity drifted"
+        )
+
+    _post_release_signal_checkpoint(
+        latch,
+        phase="post-Unref unit cgroup and PID absence wait",
+    )
+    post = host.wait_state(
+        str(state.outer_identity["unit_name"]),
+        str(state.outer_identity["control_group"]),
+        state.outer_identity["processes"],
+        referenced=False,
+        timeout=RECORD_WAIT_SECONDS,
+    )
+    _post_release_signal_checkpoint(
+        latch,
+        phase="post-Unref absence receipt publication",
+    )
+    post_record = _common_receipt(
+        context,
+        state.selection_identity,
+        phase="post_unref_absence",
+        cgroup_absent=post["cgroup_absent"],
+        load_state={
+            "reference_release_identity": release_identity,
+            "value": post["systemctl"]["LoadState"],
+        },
+        outer_identity=state.outer_identity,
+        pid_absent=post["processes_absent"],
+    )
+    post_identity = _publish_tracked_phase(
+        state.attempt,
+        store,
+        key="post_unref_absence",
+        path=paths["post_unref_absence"],
+        record=post_record,
+        validator=success_verifier.validate_post_unref_absence,
+        validator_kwargs={
+            "expected": expected,
+            "expected_outer_identity": state.outer_identity,
+        },
+    )
+    state.post_unref_identity = post_identity
+    closeout_state.record_late_proof_once(
+        state.attempt,
+        "post_unref_absence_identity",
+        post_identity,
+    )
+
+    _post_release_signal_checkpoint(
+        latch,
+        phase="same-connection manager client and library verification",
+    )
+    closed = closeout_state.close_released_reference_once(
+        boundary,
+        state.attempt,
+        store,
+        unit_name=str(state.outer_identity["unit_name"]),
+        post_unref_absence_identity=post_identity,
+    )
+    if closed.get("kind") != "RECORDED_CONNECTION_CLOSED":
+        raise IrreversibleFormalFailure(
+            f"post-Unref connection close did not become canonical: {closed}"
+        )
+    terminal_record, terminal_identity = store.document(
+        paths["reference_terminal"],
+        "prospective reference terminal",
+    )
+    checked_terminal = success_verifier.validate_reference_terminal(
+        terminal_record,
+        expected=expected,
+        expected_outer_identity=state.outer_identity,
+        expected_acquisition_identity=cast(
+            Mapping[str, object],
+            state.attempt.acquire_identity,
+        ),
+        expected_release_identity=release_identity,
+        expected_unref_call_identity=unref_identity,
+        expected_post_unref_absence_identity=post_identity,
+        expected_client_unique_name=str(
+            cast(Mapping[str, object], state.attempt.acquire_return)[
+                "client_unique_name"
+            ]
+        ),
+    )
+    close_record, close_identity = store.document(
+        paths["reference_connection_close"],
+        "prospective reference connection close",
+    )
+    success_verifier.validate_reference_connection_close(
+        close_record,
+        expected=expected,
+        expected_outer_identity=state.outer_identity,
+        expected_reference_terminal_identity=terminal_identity,
+        expected_connection_verification=cast(
+            Mapping[str, object],
+            checked_terminal["connection_verification"],
+        ),
+    )
+    if (
+        state.attempt.reference_terminal_identity != terminal_identity
+        or state.attempt.reference_connection_close_identity != close_identity
+    ):
+        raise IrreversibleFormalFailure(
+            "reference terminal/connection-close readback identity drifted"
+        )
+    state.reference_terminal = {
+        "identity": terminal_identity,
+        "kind": "RECORDED_CONNECTION_CLOSED",
+    }
+    state.reference_connection_close_identity = close_identity
+
+    _post_release_signal_checkpoint(
+        latch,
+        phase="formal-root closure and dual outside replay",
+    )
+    reference_completion = {
+        "kind": "RECORDED_CONNECTION_CLOSED",
+        "post_unref_absence_identity": post_identity,
+        "reference_connection_close_identity": close_identity,
+        "reference_release_identity": release_identity,
+        "reference_terminal_identity": terminal_identity,
+        "uncertainty_terminal": "absent",
+    }
+    terminal_basis = {
+        "branch": "success",
+        "detached_success_identity": state.detached_success_identity,
+        "guardian_absence_identity": state.guardian_absence_identity,
+        "guardian_close_identity": state.guardian_close_identity,
+        "lock_identities": checked_locks,
+        "reference_completion": reference_completion,
+        "schema_version": FINAL_TERMINAL_PREDECESSOR_JOIN_SCHEMA,
+        "supervisor_raw_lock_release_identity": (
+            state.supervisor_raw_lock_release_identity
+        ),
+    }
+
+    def build_dual(
+        post_root_closure: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        return _common_receipt(
+            context,
+            state.selection_identity,
+            phase="dual_lock_release",
+            detached_success_identity=state.detached_success_identity,
+            guardian_absence_identity=state.guardian_absence_identity,
+            guardian_close_identity=state.guardian_close_identity,
+            lock_identities=checked_locks,
+            post_root_closure=dict(post_root_closure),
+            post_unref_absence_identity=post_identity,
+            reference_connection_close_identity=close_identity,
+            reference_release_identity=release_identity,
+            reference_terminal_identity=terminal_identity,
+            supervisor_raw_lock_release_identity=(
+                state.supervisor_raw_lock_release_identity
+            ),
+            terminal_join={
+                "broker_absent_before_manifest": True,
+                "detached_success_before_guardian_close": True,
+                "formal_root_closed_before_outside_replays": True,
+                "guardian_absence_before_supervisor_release": True,
+                "locks_released_after_substantive_verification": True,
+                "outside_replays_before_final_join": True,
+                "post_unref_absence_before_reference_terminal": True,
+                "raw_lock_release_before_unref": True,
+                "recovery_disarmed_before_manifest": True,
+                "reference_terminal_before_connection_close": True,
+                "reference_connection_close_before_final_join": True,
+            },
+        )
+
+    tail = _complete_post_reference_budget_tail(
+        context=context,
+        state=state,
+        branch="success",
+        reference_completion=reference_completion,
+        terminal_basis=terminal_basis,
+        terminal_record_builder=build_dual,
+    )
+    dual_record = cast(Mapping[str, object], tail["terminal_record"])
+    dual_identity = closeout_state.validate_identity_join(
+        cast(Mapping[str, object], tail["selected_identity"]),
+        "success outside-root final release",
+    )
+    release_paths = context.get("formal_final_release_paths")
+    if (
+        type(release_paths) is not dict
+        or set(release_paths) != {"incomplete", "success"}
+        or dual_identity["path"] != release_paths["success"]
+    ):
+        raise IrreversibleFormalFailure(
+            "success final release escaped its fixed outside-root path"
+        )
+    success_verifier.validate_dual_lock_release(
+        dual_record,
+        expected=expected,
+        expected_lock_identities=checked_locks,
+        expected_detached_success_identity=state.detached_success_identity,
+        expected_guardian_absence_identity=state.guardian_absence_identity,
+        expected_guardian_close_identity=state.guardian_close_identity,
+        expected_raw_lock_release_identity=(
+            state.supervisor_raw_lock_release_identity
+        ),
+        expected_reference_release_identity=release_identity,
+        expected_post_unref_absence_identity=post_identity,
+        expected_reference_terminal_identity=terminal_identity,
+        expected_reference_connection_close_identity=close_identity,
+        expected_post_root_closure=cast(
+            Mapping[str, object],
+            tail["post_root_closure"],
+        ),
     )
     state.dual_release_identity = dual_identity
     closeout_state.record_late_proof_once(
@@ -3054,8 +5336,10 @@ def _release_guardian_and_locks(
     )
     return {
         "dual_lock_release_identity": dual_identity,
-        "guardian_absence_identity": guardian_absence_identity,
-        "guardian_lock_close_identity": guardian_close_identity,
+        "post_unref_absence_identity": post_identity,
+        "reference_connection_close_identity": close_identity,
+        "reference_release_identity": release_identity,
+        "reference_terminal_identity": terminal_identity,
     }
 
 
@@ -3069,10 +5353,12 @@ def _run_detached_success(
     if (
         state.selection is None
         or state.selection_identity is None
-        or state.post_unref_identity is None
+        or state.pre_unref_identity is None
+        or state.attempt.reference is None
+        or state.attempt.release_attempted
     ):
         raise FormalCampaignError(
-            "detached success verifier lacks post-Unref substantive proof"
+            "detached success verifier lacks one retained pre-Unref reference"
         )
     if host.locks_released:
         raise IrreversibleFormalFailure(
@@ -3345,6 +5631,82 @@ def _wait_ledger_absence(
         time.sleep(closeout_state.HOLD_POLL_SECONDS)
 
 
+def _wait_failure_quiescence(
+    *,
+    host: closeout_helper.PinnedHost,
+    ledger: Mapping[str, object],
+    attempt: closeout_state.AttemptState,
+    reference_retained: bool,
+) -> dict[str, object]:
+    while True:
+        try:
+            observation = host.observe_frozen_quiescence(
+                ledger,
+                reference_retained=reference_retained,
+            )
+            if observation["all_runtime_quiescent"] is True:
+                return closeout_state.validate_runtime_quiescence(
+                    observation,
+                    ledger=ledger,
+                    reference_retained=reference_retained,
+                )
+        except BaseException as exc:
+            item = _failure("FAILURE_RUNTIME_QUIESCENCE_OBSERVATION_FAILED", exc)
+            if item not in attempt.errors:
+                attempt.errors.append(item)
+        time.sleep(closeout_state.HOLD_POLL_SECONDS)
+
+
+def _failure_reference_state(
+    state: SupervisorState,
+    *,
+    context: Mapping[str, object],
+) -> dict[str, object]:
+    attempt = state.attempt
+    if attempt.acquire_identity is not None:
+        if (
+            attempt.reference is None
+            or attempt.acquire_return is None
+            or attempt.release_attempted
+            or attempt.connection_action
+        ):
+            raise IrreversibleFormalFailure(
+                "canonical failure RefUnit is not retained before detached replay"
+            )
+        verification = attempt.reference.verify(
+            expected_manager_owner=str(
+                cast(Mapping[str, object], context["manager_epoch"])[
+                    "dbus_unique_owner"
+                ]
+            )
+        )
+        return {
+            "acquisition_identity": attempt.acquire_identity,
+            "connection_verification": verification,
+            "kind": "HELD",
+            "terminal_identity": "absent",
+        }
+    terminal = _failure_reference_terminal(state)
+    if terminal["kind"] == "NO_REFERENCE_OPENED":
+        return {
+            "acquisition_identity": "absent",
+            "connection_verification": "absent",
+            "kind": "NO_REFERENCE_OPENED",
+            "terminal_identity": "absent",
+        }
+    identity = terminal.get("identity")
+    if type(identity) is not dict:
+        raise IrreversibleFormalFailure(
+            "uncertain reference connection lacks a canonical drop receipt"
+        )
+    return {
+        "acquisition_identity": "absent",
+        "connection_verification": "absent",
+        "kind": "CONNECTION_UNCERTAIN_DROPPED",
+        "terminal_identity": identity,
+    }
+
+
 def _recorded_incomplete_identity(
     state: closeout_state.AttemptState,
 ) -> dict[str, object] | str:
@@ -3353,7 +5715,9 @@ def _recorded_incomplete_identity(
             state.incomplete_identity,
             "formal incomplete",
         )
-    markerless = state.publications.get("markerless-consumed-incomplete")
+    markerless = state.publications.get(
+        closeout_state.FORMAL_MARKERLESS_INCOMPLETE
+    )
     if markerless is not None and markerless.recorded_identity is not None:
         return closeout_state.validate_identity_join(
             markerless.recorded_identity,
@@ -3369,28 +5733,61 @@ def _publish_failure_release(
     state: SupervisorState,
     store: closeout_helper.ReceiptStore,
     phase: str,
-    guardian_absence_identity: Mapping[str, object],
     ledger: Mapping[str, object],
-    final_observation: Mapping[str, object],
-    reference_terminal: Mapping[str, object],
     lock_identities: Sequence[Mapping[str, object]],
+    runtime_quiescence: Mapping[str, object] | None = None,
+    reference_state: Mapping[str, object] | None = None,
+    guardian_absence_identity: Mapping[str, object] | None = None,
+    final_observation: Mapping[str, object] | None = None,
+    reference_terminal: Mapping[str, object] | None = None,
     containment_hold_identity: Mapping[str, object] | str = "absent",
     containment_clearance_identity: Mapping[str, object] | str = "absent",
     containment_lock_release_identity: Mapping[str, object] | str = "absent",
     containment_lock_release_publication: Mapping[str, object] | str = "absent",
 ) -> dict[str, object]:
-    checked_ledger = closeout_state.validate_frozen_ledger(ledger)
-    checked_observation = closeout_state.validate_absence_observation(
-        final_observation,
-        ledger=checked_ledger,
-    )
-    if checked_observation["all_absent"] is not True:
+    del guardian_absence_identity, final_observation, reference_terminal
+    if runtime_quiescence is None or reference_state is None:
         raise IrreversibleFormalFailure(
-            "failure release cannot be published before heavy absence"
+            "legacy failure-release topology is disabled for the prospective cohort"
         )
-    checked_terminal = closeout_state._validate_reference_terminal(  # noqa: SLF001
-        reference_terminal
+    checked_ledger = closeout_state.validate_frozen_ledger(ledger)
+    checked_reference_state = dict(reference_state)
+    reference_retained = checked_reference_state.get("kind") == "HELD"
+    checked_quiescence = closeout_state.validate_runtime_quiescence(
+        runtime_quiescence,
+        ledger=checked_ledger,
+        reference_retained=reference_retained,
     )
+    if checked_quiescence["all_runtime_quiescent"] is not True:
+        raise IrreversibleFormalFailure(
+            "failure release cannot be published before runtime quiescence"
+        )
+    if set(checked_reference_state) != {
+        "acquisition_identity",
+        "connection_verification",
+        "kind",
+        "terminal_identity",
+    }:
+        raise IrreversibleFormalFailure("failure reference-state shape drifted")
+    if reference_retained:
+        checked_reference_state["acquisition_identity"] = (
+            closeout_state.validate_identity_join(
+                checked_reference_state["acquisition_identity"],
+                "failure reference acquisition",
+            )
+        )
+        if (
+            checked_reference_state["connection_verification"]
+            != state.attempt.acquire_return
+            and checked_reference_state["connection_verification"]
+            != getattr(state.attempt.reference, "verification", None)
+        ):
+            # The independent verifier will replay the exact acquisition
+            # receipt.  Here we only reject a missing producer-side join.
+            closeout_state.reject_none(
+                checked_reference_state["connection_verification"],
+                "failure retained reference verification",
+            )
     checked_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
         lock_identities
     )
@@ -3449,9 +5846,9 @@ def _publish_failure_release(
                 state.attempt.errors,
                 "failure cleanup",
             ),
-            "final_observation": checked_observation,
             "frozen_ledger": checked_ledger,
-            "reference_terminal": checked_terminal,
+            "reference_state": checked_reference_state,
+            "runtime_quiescence": checked_quiescence,
         },
         "created_at_utc": _utc_now(),
         "detached_success_output_identity": detached_success_identity,
@@ -3460,15 +5857,15 @@ def _publish_failure_release(
             if state.selection_identity is not None
             else "absent"
         ),
-        "guardian_absence_identity": closeout_state.validate_identity_join(
-            guardian_absence_identity,
-            "failure guardian absence",
-        ),
-        "heavy_identities_absent": True,
         "incomplete_identity": _recorded_incomplete_identity(state.attempt),
         "lock_identities": checked_locks,
         "lock_lifecycle": {
             "detached_incomplete_is_next_required_step": True,
+            "guardian_absence_required_after_detached": True,
+            "raw_lock_release_required_after_guardian_absence": True,
+            "reference_completion_required_after_raw_release": (
+                reference_retained
+            ),
             "supervisor_lock_release_permitted": False,
             "supervisor_locks_must_remain_held": True,
         },
@@ -3478,18 +5875,27 @@ def _publish_failure_release(
         "phase": phase,
         "production_authority_changed": False,
         "production_certified": False,
+        "reference_retained": reference_retained,
         "retry_eligible": False,
+        "runtime_quiescent": True,
         "schema_version": FAILURE_RELEASE_SCHEMA,
         "status": "INCOMPLETE_PRE_RELEASE",
         "stage_b_changed": False,
         "success_eligible": False,
         "upper_bound": [1188, 18],
     }
-    return store.publish(
+    identity = store.publish(
         boundary.formal_dir / "failure-release.json",
         record,
         "formal failure release",
     )
+    state.attempt.failure_pre_release_identity = identity
+    if reference_retained:
+        state.attempt.observer_identity = identity
+        state.attempt.pre_unref_cleanup_identity = identity
+        state.observer_identity = identity
+        state.pre_unref_identity = identity
+    return identity
 
 
 def _run_detached_incomplete(
@@ -3555,10 +5961,435 @@ def _run_detached_incomplete(
         raise IrreversibleFormalFailure(
             "supervisor locks changed during detached incomplete replay"
         )
+    state.attempt.detached_incomplete_identity = identity
     return {
         "detached_incomplete_identity": identity,
         "stderr_sha256": hashlib.sha256(stderr).hexdigest(),
         "stdout_sha256": hashlib.sha256(stdout).hexdigest(),
+    }
+
+
+def _publish_failure_raw_lock_release(
+    *,
+    context: Mapping[str, object],
+    state: SupervisorState,
+    store: closeout_helper.ReceiptStore,
+    host: closeout_helper.PinnedHost,
+    detached_identity: Mapping[str, object],
+    failure_pre_release_identity: Mapping[str, object],
+    guardian_absence_identity: Mapping[str, object],
+) -> dict[str, object]:
+    """Release the supervisor lease only after detached failure replay/guardian absence."""
+
+    checked_detached = closeout_state.validate_identity_join(
+        detached_identity,
+        "failure detached substantive replay",
+    )
+    checked_failure = closeout_state.validate_identity_join(
+        failure_pre_release_identity,
+        "failure pre-release",
+    )
+    checked_guardian = closeout_state.validate_identity_join(
+        guardian_absence_identity,
+        "failure guardian absence",
+    )
+    if (
+        state.attempt.failure_pre_release_identity != checked_failure
+        or state.attempt.detached_incomplete_identity != checked_detached
+        or state.attempt.lock_release_attempted
+        or host.locks_released
+    ):
+        raise IrreversibleFormalFailure(
+            "failure raw release crossed its detached/lock boundary"
+        )
+    lock_identities = host.lock_evidence()
+    closeout_state.begin_supervisor_lock_release(state.attempt)
+    release_effect = host.release_locks_once()
+    closeout_state.record_supervisor_lock_release_return(
+        state.attempt,
+        release_effect,
+    )
+    selection: dict[str, object] | str = (
+        state.selection_identity
+        if state.selection_identity is not None
+        else "absent"
+    )
+    record = {
+        "authority_scope": AUTHORITY_SCOPE,
+        "authorizations": dict(FALSE_CLAIMS),
+        "campaign_root_identity": context["campaign_root_identity"],
+        "created_at_utc": _utc_now(),
+        "detached_substantive_identity": checked_detached,
+        "detached_substantive_kind": "incomplete_v4",
+        "failure_pre_release_identity": checked_failure,
+        "formal_selection_identity": selection,
+        "guardian_absence_identity": checked_guardian,
+        "guardian_close_identity": "combined-in-guardian-absence",
+        "lock_identities": lock_identities,
+        "manager_epoch": dict(context["manager_epoch"]),
+        "outcome": "INCOMPLETE",
+        "package_id": context["package_id"],
+        "schema_version": closeout_state.SUPERVISOR_RAW_LOCK_RELEASE_SCHEMA,
+        "status": "INCOMPLETE",
+        "supervisor_release": {
+            "after_guardian_absence": True,
+            "attempted": True,
+            "recorded": True,
+            "returned": True,
+        },
+    }
+    expected = {
+        "campaign_root_identity": context["campaign_root_identity"],
+        "formal_selection_identity": selection,
+        "manager_epoch": context["manager_epoch"],
+        "package_id": context["package_id"],
+    }
+    path = context["outer_spec"]["receipt_paths"][
+        "supervisor_raw_lock_release"
+    ]
+    identity = _publish_tracked_phase(
+        state.attempt,
+        store,
+        key="supervisor-raw-lock-release",
+        path=path,
+        record=record,
+        validator=success_verifier.validate_supervisor_raw_lock_release,
+        validator_kwargs={
+            "expected": expected,
+            "expected_lock_identities": lock_identities,
+            "expected_detached_substantive_identity": checked_detached,
+            "expected_detached_substantive_kind": "incomplete_v4",
+            "expected_failure_pre_release_identity": checked_failure,
+            "expected_guardian_absence_identity": checked_guardian,
+            "expected_guardian_close_identity": (
+                "combined-in-guardian-absence"
+            ),
+        },
+    )
+    state.attempt.supervisor_raw_lock_release_identity = identity
+    state.supervisor_raw_lock_release_identity = identity
+    return {
+        "lock_identities": lock_identities,
+        "lock_release_effect": release_effect,
+        "supervisor_raw_lock_release_identity": identity,
+    }
+
+
+def _failure_reference_completion(
+    *,
+    boundary: authority.FormalRuntimeBoundary,
+    context: Mapping[str, object],
+    state: SupervisorState,
+    store: closeout_helper.ReceiptStore,
+    host: closeout_helper.PinnedHost,
+    failure_pre_release_identity: Mapping[str, object],
+    observer_identity: Mapping[str, object] | None = None,
+    pre_unref_cleanup_identity: Mapping[str, object] | None = None,
+) -> dict[str, object]:
+    """Complete the retained RefUnit after raw release, or report exact uncertainty."""
+
+    absent: dict[str, object] = {
+        "kind": "NO_REFERENCE_OPENED",
+        "post_unref_absence_identity": "absent",
+        "reference_connection_close_identity": "absent",
+        "reference_release_identity": "absent",
+        "reference_terminal_identity": "absent",
+        "uncertainty_terminal": "absent",
+    }
+    if state.attempt.acquire_identity is None:
+        terminal = _failure_reference_terminal(state)
+        if terminal["kind"] == "NO_REFERENCE_OPENED":
+            return absent
+        return {
+            **absent,
+            "kind": "CONNECTION_UNCERTAIN",
+            "uncertainty_terminal": terminal,
+        }
+    if (
+        state.selection_identity is None
+        or state.outer_identity is None
+        or state.supervisor_raw_lock_release_identity is None
+        or not host.locks_released
+    ):
+        raise IrreversibleFormalFailure(
+            "failure RefUnit completion lacks its post-raw predecessor chain"
+        )
+    checked_failure = closeout_state.validate_identity_join(
+        failure_pre_release_identity,
+        "failure RefUnit pre-release basis",
+    )
+    checked_observer = closeout_state.validate_identity_join(
+        observer_identity if observer_identity is not None else checked_failure,
+        "failure RefUnit observer basis",
+    )
+    checked_pre_unref = closeout_state.validate_identity_join(
+        (
+            pre_unref_cleanup_identity
+            if pre_unref_cleanup_identity is not None
+            else checked_failure
+        ),
+        "failure RefUnit pre-Unref basis",
+    )
+    expected = _normal_expected(context, state.selection_identity)
+    unit_name = str(state.outer_identity["unit_name"])
+    attempt = state.attempt
+    if not attempt.release_attempted:
+        released = closeout_state.release_reference_retained_once(
+            boundary,
+            attempt,
+            store,
+            unit_name=unit_name,
+            observer_identity=checked_observer,
+            pre_unref_cleanup_identity=checked_pre_unref,
+        )
+        if released.get("kind") != "RECORDED_CONNECTION_RETAINED":
+            return {
+                **absent,
+                "kind": "CONNECTION_UNCERTAIN",
+                "uncertainty_terminal": _failure_reference_terminal(state),
+            }
+    elif (
+        attempt.connection_action
+        or not attempt.release_returned
+        or attempt.release_return is None
+        or attempt.unref_call_identity is None
+        or attempt.reference_release_identity is None
+    ):
+        if not attempt.connection_action:
+            terminal = closeout_state.finalize_reference_once(
+                boundary,
+                attempt,
+                store,
+                unit_name=unit_name,
+                prove_unref=False,
+                reason="POST_RAW_REFERENCE_RELEASE_UNCERTAIN",
+            )
+            state.reference_terminal = dict(terminal)
+        return {
+            **absent,
+            "kind": "CONNECTION_UNCERTAIN",
+            "uncertainty_terminal": _failure_reference_terminal(state),
+        }
+    unref_record, unref_identity = store.document(
+        boundary.formal_dir / "unref-call.json",
+        "failure Unref call",
+    )
+    success_verifier.validate_unref_call(
+        unref_record,
+        expected=expected,
+        expected_outer_identity=state.outer_identity,
+        expected_acquisition_identity=cast(
+            Mapping[str, object],
+            state.attempt.acquire_identity,
+        ),
+        expected_client_unique_name=str(
+            cast(Mapping[str, object], state.attempt.acquire_return)[
+                "client_unique_name"
+            ]
+        ),
+        expected_observer_identity=checked_observer,
+        expected_pre_unref_cleanup_identity=checked_pre_unref,
+    )
+    paths = state.selection["outer_spec"]["receipt_paths"]
+    release_record, release_identity = store.document(
+        paths["reference_release"],
+        "failure reference release",
+    )
+    success_verifier.validate_reference_release(
+        release_record,
+        expected=expected,
+        expected_outer_identity=state.outer_identity,
+        expected_acquisition_identity=cast(
+            Mapping[str, object],
+            state.attempt.acquire_identity,
+        ),
+        expected_unref_call_identity=unref_identity,
+        expected_observer_identity=checked_observer,
+        expected_pre_unref_cleanup_identity=checked_pre_unref,
+        expected_raw_lock_release_identity=cast(
+            Mapping[str, object],
+            state.supervisor_raw_lock_release_identity,
+        ),
+    )
+    post = host.wait_state(
+        unit_name,
+        str(state.outer_identity["control_group"]),
+        state.outer_identity["processes"],
+        referenced=False,
+        timeout=RECORD_WAIT_SECONDS,
+    )
+    post_record = _common_receipt(
+        context,
+        state.selection_identity,
+        phase="post_unref_absence",
+        cgroup_absent=post["cgroup_absent"],
+        load_state={
+            "reference_release_identity": release_identity,
+            "value": post["systemctl"]["LoadState"],
+        },
+        outer_identity=state.outer_identity,
+        pid_absent=post["processes_absent"],
+    )
+    post_identity = _publish_tracked_phase(
+        state.attempt,
+        store,
+        key="post_unref_absence",
+        path=paths["post_unref_absence"],
+        record=post_record,
+        validator=success_verifier.validate_post_unref_absence,
+        validator_kwargs={
+            "expected": expected,
+            "expected_outer_identity": state.outer_identity,
+        },
+    )
+    state.post_unref_identity = post_identity
+    closeout_state.record_late_proof_once(
+        state.attempt,
+        "post_unref_absence_identity",
+        post_identity,
+    )
+    closed = closeout_state.close_released_reference_once(
+        boundary,
+        state.attempt,
+        store,
+        unit_name=unit_name,
+        post_unref_absence_identity=post_identity,
+    )
+    if closed.get("kind") != "RECORDED_CONNECTION_CLOSED":
+        return {
+            "kind": "CONNECTION_UNCERTAIN",
+            "post_unref_absence_identity": post_identity,
+            "reference_connection_close_identity": "unrecorded",
+            "reference_release_identity": release_identity,
+            "reference_terminal_identity": (
+                state.attempt.reference_terminal_identity or "unrecorded"
+            ),
+            "uncertainty_terminal": _failure_reference_terminal(state),
+        }
+    terminal_identity = cast(
+        Mapping[str, object],
+        state.attempt.reference_terminal_identity,
+    )
+    close_identity = cast(
+        Mapping[str, object],
+        state.attempt.reference_connection_close_identity,
+    )
+    terminal_record, terminal_readback = store.document(
+        paths["reference_terminal"],
+        "failure reference terminal",
+    )
+    checked_terminal = success_verifier.validate_reference_terminal(
+        terminal_record,
+        expected=expected,
+        expected_outer_identity=state.outer_identity,
+        expected_acquisition_identity=cast(
+            Mapping[str, object],
+            state.attempt.acquire_identity,
+        ),
+        expected_release_identity=release_identity,
+        expected_unref_call_identity=unref_identity,
+        expected_post_unref_absence_identity=post_identity,
+        expected_client_unique_name=str(
+            cast(Mapping[str, object], state.attempt.acquire_return)[
+                "client_unique_name"
+            ]
+        ),
+    )
+    close_record, close_readback = store.document(
+        paths["reference_connection_close"],
+        "failure reference connection close",
+    )
+    success_verifier.validate_reference_connection_close(
+        close_record,
+        expected=expected,
+        expected_outer_identity=state.outer_identity,
+        expected_reference_terminal_identity=terminal_identity,
+        expected_connection_verification=cast(
+            Mapping[str, object],
+            checked_terminal["connection_verification"],
+        ),
+    )
+    if terminal_readback != terminal_identity or close_readback != close_identity:
+        raise IrreversibleFormalFailure(
+            "failure reference terminal/connection close readback drifted"
+        )
+    return {
+        "kind": "RECORDED_CONNECTION_CLOSED",
+        "post_unref_absence_identity": post_identity,
+        "reference_connection_close_identity": close_identity,
+        "reference_release_identity": release_identity,
+        "reference_terminal_identity": terminal_identity,
+        "uncertainty_terminal": "absent",
+    }
+
+
+def _reference_completion_snapshot(
+    state: SupervisorState,
+) -> dict[str, object]:
+    """Capture a post-raw terminal reference state without inventing proof."""
+
+    attempt = state.attempt
+    if attempt.reference_connection_close_identity is not None:
+        return {
+            "kind": "RECORDED_CONNECTION_CLOSED",
+            "post_unref_absence_identity": closeout_state.validate_identity_join(
+                attempt.post_unref_absence_identity,
+                "failure snapshot post-Unref absence",
+            ),
+            "reference_connection_close_identity": (
+                closeout_state.validate_identity_join(
+                    attempt.reference_connection_close_identity,
+                    "failure snapshot connection close",
+                )
+            ),
+            "reference_release_identity": closeout_state.validate_identity_join(
+                attempt.reference_release_identity,
+                "failure snapshot reference release",
+            ),
+            "reference_terminal_identity": closeout_state.validate_identity_join(
+                attempt.reference_terminal_identity,
+                "failure snapshot reference terminal",
+            ),
+            "uncertainty_terminal": "absent",
+        }
+    if attempt.acquire_identity is None:
+        terminal = _failure_reference_terminal(state)
+        if terminal["kind"] == "NO_REFERENCE_OPENED":
+            return {
+                "kind": "NO_REFERENCE_OPENED",
+                "post_unref_absence_identity": "absent",
+                "reference_connection_close_identity": "absent",
+                "reference_release_identity": "absent",
+                "reference_terminal_identity": "absent",
+                "uncertainty_terminal": "absent",
+            }
+    terminal = _failure_reference_terminal(state)
+
+    def optional(value: Mapping[str, object] | None) -> dict[str, object] | str:
+        return (
+            "unrecorded"
+            if value is None
+            else closeout_state.validate_identity_join(
+                value,
+                "failure uncertain reference identity",
+            )
+        )
+
+    return {
+        "kind": "CONNECTION_UNCERTAIN",
+        "post_unref_absence_identity": optional(
+            attempt.post_unref_absence_identity
+        ),
+        "reference_connection_close_identity": optional(
+            attempt.reference_connection_close_identity
+        ),
+        "reference_release_identity": optional(
+            attempt.reference_release_identity
+        ),
+        "reference_terminal_identity": optional(
+            attempt.reference_terminal_identity
+        ),
+        "uncertainty_terminal": terminal,
     }
 
 
@@ -3574,7 +6405,9 @@ def _publish_failure_terminal_release(
     detached_substantive_identity: Mapping[str, object],
     detached_substantive_kind: str,
     failure_pre_release_identity: Mapping[str, object] | str,
-    terminal_predecessor_identity: Mapping[str, object] | str = "absent",
+    guardian_absence_identity: Mapping[str, object],
+    supervisor_raw_lock_release_identity: Mapping[str, object],
+    reference_completion: Mapping[str, object],
 ) -> dict[str, object]:
     checked_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
         lock_identities
@@ -3594,69 +6427,106 @@ def _publish_failure_terminal_release(
             failure_pre_release_identity,
             "failure pre-release",
         )
-    if (
-        type(terminal_predecessor_identity) is str
-        and terminal_predecessor_identity in {"absent", "unrecorded"}
-    ):
-        checked_predecessor: dict[str, object] | str = str(
-            terminal_predecessor_identity
-        )
-    else:
-        checked_predecessor = closeout_state.validate_identity_join(
-            terminal_predecessor_identity,
-            "failure terminal predecessor",
-        )
-    record = {
-        "authority_scope": AUTHORITY_SCOPE,
-        "authorizations": dict(FALSE_CLAIMS),
-        "b6_changed": False,
-        "bounds_changed": False,
-        "campaign_root_identity": context["campaign_root_identity"],
-        "created_at_utc": _utc_now(),
+    checked_guardian = closeout_state.validate_identity_join(
+        guardian_absence_identity,
+        "failure terminal guardian absence",
+    )
+    checked_raw = closeout_state.validate_identity_join(
+        supervisor_raw_lock_release_identity,
+        "failure terminal raw lock release",
+    )
+    checked_completion = dict(reference_completion)
+    terminal_basis = {
+        "branch": "incomplete",
         "detached_substantive_identity": detached_identity,
         "detached_substantive_kind": detached_substantive_kind,
         "failure_pre_release_identity": checked_failure,
-        "formal_selection_identity": (
-            state.selection_identity
-            if state.selection_identity is not None
-            else "absent"
-        ),
+        "guardian_absence_identity": checked_guardian,
         "lock_identities": checked_locks,
-        "lock_release_effect": checked_release,
-        "lower_bound": "absent",
-        "outcome": "INCOMPLETE",
-        "package_id": context["package_id"],
-        "phase": phase,
-        "production_authority_changed": False,
-        "production_certified": False,
-        "retry_eligible": False,
-        "schema_version": FAILURE_TERMINAL_RELEASE_SCHEMA,
-        "stage_b_changed": False,
-        "status": "INCOMPLETE_RELEASED",
-        "success_eligible": False,
-        "terminal_join": {
-            "detached_substantive_before_supervisor_release": True,
-            "locks_released_after_substantive_verification": True,
-            "terminal_predecessor_is_unique": True,
-        },
-        "terminal_predecessor_identity": checked_predecessor,
-        "upper_bound": [1188, 18],
+        "reference_completion": checked_completion,
+        "schema_version": FINAL_TERMINAL_PREDECESSOR_JOIN_SCHEMA,
+        "supervisor_raw_lock_release_identity": checked_raw,
     }
-    identity = store.publish(
-        boundary.formal_dir / "failure-terminal-release.json",
-        record,
-        "formal failure terminal release",
+
+    def build_failure_terminal(
+        post_root_closure: Mapping[str, object],
+    ) -> Mapping[str, object]:
+        return {
+            "authority_scope": AUTHORITY_SCOPE,
+            "authorizations": dict(FALSE_CLAIMS),
+            "b6_changed": False,
+            "bounds_changed": False,
+            "campaign_root_identity": context["campaign_root_identity"],
+            "created_at_utc": _utc_now(),
+            "detached_substantive_identity": detached_identity,
+            "detached_substantive_kind": detached_substantive_kind,
+            "failure_pre_release_identity": checked_failure,
+            "formal_selection_identity": (
+                state.selection_identity
+                if state.selection_identity is not None
+                else "absent"
+            ),
+            "guardian_absence_identity": checked_guardian,
+            "lock_identities": checked_locks,
+            "lock_release_effect": checked_release,
+            "lower_bound": "absent",
+            "outcome": "INCOMPLETE",
+            "package_id": context["package_id"],
+            "phase": phase,
+            "post_root_closure": dict(post_root_closure),
+            "production_authority_changed": False,
+            "production_certified": False,
+            "reference_completion": checked_completion,
+            "retry_eligible": False,
+            "schema_version": FAILURE_TERMINAL_RELEASE_SCHEMA,
+            "stage_b_changed": False,
+            "status": "INCOMPLETE_RELEASED",
+            "success_eligible": False,
+            "supervisor_raw_lock_release_identity": checked_raw,
+            "terminal_join": {
+                "broker_absent_before_manifest": True,
+                "detached_substantive_before_guardian_absence": True,
+                "formal_root_closed_before_outside_replays": True,
+                "guardian_absence_before_raw_lock_release": True,
+                "outside_replays_before_final_join": True,
+                "raw_lock_release_before_reference_completion": True,
+                "recovery_disarmed_before_manifest": True,
+                "reference_connection_close_before_final_join": (
+                    checked_completion.get("kind")
+                    == "RECORDED_CONNECTION_CLOSED"
+                ),
+                "reference_uncertainty_is_terminal": (
+                    checked_completion.get("kind")
+                    in {"CONNECTION_UNCERTAIN", "NO_REFERENCE_OPENED"}
+                ),
+            },
+            "upper_bound": [1188, 18],
+        }
+
+    tail = _complete_post_reference_budget_tail(
+        context=context,
+        state=state,
+        branch="incomplete",
+        reference_completion=checked_completion,
+        terminal_basis=terminal_basis,
+        terminal_record_builder=build_failure_terminal,
     )
-    replay, replay_identity = store.document(
-        boundary.formal_dir / "failure-terminal-release.json",
-        "formal failure terminal release",
+    record = cast(Mapping[str, object], tail["terminal_record"])
+    identity = closeout_state.validate_identity_join(
+        cast(Mapping[str, object], tail["selected_identity"]),
+        "incomplete outside-root final release",
     )
-    if replay_identity != identity:
+    release_paths = context.get("formal_final_release_paths")
+    if (
+        type(release_paths) is not dict
+        or set(release_paths) != {"incomplete", "success"}
+        or identity["path"] != release_paths["incomplete"]
+    ):
         raise IrreversibleFormalFailure(
-            "failure terminal release readback identity drifted"
+            "incomplete final release escaped its fixed outside-root path"
         )
     success_verifier.validate_failure_terminal_release(
-        replay,
+        record,
         context=context,
         expected_identity=identity,
         expected_lock_identities=checked_locks,
@@ -3664,7 +6534,13 @@ def _publish_failure_terminal_release(
         expected_detached_substantive_kind=detached_substantive_kind,
         expected_failure_pre_release_identity=checked_failure,
         expected_selection_identity=state.selection_identity,
-        expected_terminal_predecessor_identity=checked_predecessor,
+        expected_guardian_absence_identity=checked_guardian,
+        expected_raw_lock_release_identity=checked_raw,
+        expected_reference_completion=checked_completion,
+        expected_post_root_closure=cast(
+            Mapping[str, object],
+            tail["post_root_closure"],
+        ),
     )
     return identity
 
@@ -3678,9 +6554,11 @@ def _complete_pre_release_failure(
     host: closeout_helper.PinnedHost,
     phase: str,
     lock_identities: Sequence[Mapping[str, object]],
-    guardian_absence_identity: Mapping[str, object],
     failure_pre_release_identity: Mapping[str, object],
+    guardian_absence_callback: Callable[[], Mapping[str, object]] | None = None,
+    guardian_absence_identity: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
+    del guardian_absence_identity
     checked_locks = closeout_state._validate_lock_evidence(  # noqa: SLF001
         lock_identities
     )
@@ -3691,8 +6569,12 @@ def _complete_pre_release_failure(
         host=host,
         expected_lock_identities=checked_locks,
     )
+    if guardian_absence_callback is None:
+        raise IrreversibleFormalFailure(
+            "legacy pre-detached guardian absence is disabled"
+        )
     checked_guardian_absence = closeout_state.validate_identity_join(
-        guardian_absence_identity,
+        guardian_absence_callback(),
         "failure guardian absence",
     )
     if state.attempt.guardian_absence_identity is None:
@@ -3701,23 +6583,36 @@ def _complete_pre_release_failure(
         raise IrreversibleFormalFailure(
             "failure guardian absence identity changed before lock release"
         )
-    if state.attempt.lock_release_attempted or host.locks_released:
-        raise IrreversibleFormalFailure(
-            "pre-release failure reached lock release more than once"
-        )
-    closeout_state.begin_supervisor_lock_release(state.attempt)
-    release = host.release_locks_once()
-    closeout_state.record_supervisor_lock_release_return(
-        state.attempt,
-        release,
-    )
     detached_identity = closeout_state.validate_identity_join(
         cast(
             Mapping[str, object],
             detached["detached_incomplete_identity"],
         ),
-        "detached incomplete before failure terminal release",
+        "detached incomplete before failure raw release",
     )
+    raw = _publish_failure_raw_lock_release(
+        context=context,
+        state=state,
+        store=store,
+        host=host,
+        detached_identity=detached_identity,
+        failure_pre_release_identity=failure_pre_release_identity,
+        guardian_absence_identity=checked_guardian_absence,
+    )
+    try:
+        completion = _failure_reference_completion(
+            boundary=boundary,
+            context=context,
+            state=state,
+            store=store,
+            host=host,
+            failure_pre_release_identity=failure_pre_release_identity,
+        )
+    except BaseException as exc:
+        item = _failure("FAILURE_REFERENCE_COMPLETION_FAILED_OR_UNCERTAIN", exc)
+        if item not in state.attempt.errors:
+            state.attempt.errors.append(item)
+        completion = _reference_completion_snapshot(state)
     terminal_identity = _publish_failure_terminal_release(
         boundary=boundary,
         context=context,
@@ -3725,15 +6620,26 @@ def _complete_pre_release_failure(
         store=store,
         phase=phase,
         lock_identities=checked_locks,
-        lock_release_effect=release,
+        lock_release_effect=raw["lock_release_effect"],
         detached_substantive_identity=detached_identity,
-        detached_substantive_kind="detached_incomplete_v3",
+        detached_substantive_kind="incomplete_v4",
         failure_pre_release_identity=failure_pre_release_identity,
+        guardian_absence_identity=checked_guardian_absence,
+        supervisor_raw_lock_release_identity=cast(
+            Mapping[str, object],
+            raw["supervisor_raw_lock_release_identity"],
+        ),
+        reference_completion=completion,
     )
     return {
         **detached,
         "failure_terminal_release_identity": terminal_identity,
-        "lock_release": release,
+        "guardian_absence_identity": checked_guardian_absence,
+        "lock_release": raw["lock_release_effect"],
+        "reference_completion": completion,
+        "supervisor_raw_lock_release_identity": raw[
+            "supervisor_raw_lock_release_identity"
+        ],
     }
 
 
@@ -3883,7 +6789,12 @@ def _early_selected_closeout(
     latch: closeout_helper.TerminationLatch,
     error: BaseException,
 ) -> dict[str, object]:
-    phase = _failure_phase(state)
+    phase = (
+        "DIRECTORY_CREATED_MARKER_UNRECORDED"
+        if state.attempt.directory_created
+        and state.attempt.marker_identity is None
+        else _failure_phase(state)
+    )
     if state.attempt.incomplete_identity is None:
         external: dict[str, object] = {}
         frozen_outer = _freeze_failure_outer(state=state, host=host)
@@ -4123,14 +7034,6 @@ def _failure_reference_terminal(
             state.reference_terminal
         )
     attempt = state.attempt
-    if attempt.reference_release_identity is not None:
-        return {
-            "identity": closeout_state.validate_identity_join(
-                attempt.reference_release_identity,
-                "failure reference release",
-            ),
-            "kind": "RECORDED",
-        }
     abort_effect = attempt.publications.get("reference-abort-close")
     if abort_effect is not None and abort_effect.recorded_identity is not None:
         return {
@@ -4171,6 +7074,161 @@ def _failure_reference_terminal(
     return closeout_state._validate_reference_terminal(  # noqa: SLF001
         {"failure": matching, "kind": kind}
     )
+
+
+def _prepare_failure_pre_release(
+    *,
+    boundary: authority.FormalRuntimeBoundary,
+    context: Mapping[str, object],
+    state: SupervisorState,
+    store: closeout_helper.ReceiptStore,
+    host: closeout_helper.PinnedHost,
+    error: BaseException,
+) -> dict[str, object]:
+    """Freeze/contain the finite ledger and publish a locks-held failure basis."""
+
+    phase = (
+        "DIRECTORY_CREATED_MARKER_UNRECORDED"
+        if state.attempt.directory_created
+        and state.attempt.marker_identity is None
+        else _failure_phase(state)
+    )
+    if state.attempt.marker_identity is not None:
+        if state.attempt.incomplete_identity is None:
+            closeout_state.publish_consumed_incomplete(
+                boundary,
+                state.attempt,
+                store,
+                phase="PROSPECTIVE_FAILURE_CHAIN",
+                failure_record=_failure("FORMAL_CAMPAIGN_FAILED", error),
+            )
+    elif not state.attempt.directory_created:
+        raise IrreversibleFormalFailure(
+            "formal failure has no consumed no-overwrite root"
+        )
+    elif _recorded_incomplete_identity(state.attempt) == "unrecorded":
+        raise IrreversibleFormalFailure(
+            "markerless formal attempt lacks its canonical incomplete receipt"
+        )
+
+    if (
+        state.attempt.reference is not None
+        and state.attempt.acquire_identity is None
+        and not state.attempt.connection_action
+    ):
+        unit_name = (
+            str(state.selection["outer_spec"]["unit_name"])
+            if state.selection is not None
+            else str(context["outer_spec"]["unit_name"])
+        )
+        dropped = closeout_state.finalize_reference_once(
+            boundary,
+            state.attempt,
+            store,
+            unit_name=unit_name,
+            prove_unref=False,
+            reason="ACQUIRE_UNPROVEN_FAILURE_BEFORE_DETACHED_REPLAY",
+        )
+        state.reference_terminal = dict(dropped)
+        if dropped.get("kind") in {
+            "CONNECTION_DROP_FAILED_OR_UNCERTAIN",
+            "CONNECTION_DROPPED_RECEIPT_UNRECORDED",
+        }:
+            raise IrreversibleFormalFailure(
+                "unproven RefUnit connection could not be canonically dropped"
+            )
+
+    if state.selection is None:
+        ledger = initial_ledger(
+            _outer_inactive_identity(str(context["outer_spec"]["unit_name"]))
+        )
+    else:
+        frozen_outer = _freeze_failure_outer(state=state, host=host)
+        if (
+            state.ledger is not None
+            and state.attempt.barrier_identity is not None
+            and state.child_audit_identity is None
+        ):
+            child = closeout_helper.audit_children(
+                boundary,
+                store,
+                host,
+                state.attempt.reference,
+                state.selection,
+                abnormal=True,
+                expected_allowed_same_uid_processes=_formal_resource_allowlist(
+                    state
+                ),
+                prior_launch_ledger=state.ledger,
+            )
+            state.child_audit_identity = child["identity"]
+            ledger = closeout_helper.bind_outer_ledger(child, frozen_outer)
+        elif state.ledger is not None:
+            ledger = closeout_state.validate_frozen_ledger(state.ledger)
+            ledger["outer"] = frozen_outer
+        else:
+            ledger = initial_ledger(frozen_outer)
+        outer = ledger["outer"]
+        owned = (
+            [str(outer["unit_name"])]
+            if outer["identity_complete"] is True
+            and (
+                outer["invocation_id"]
+                or outer["control_group"]
+                or outer["processes"]
+            )
+            else []
+        )
+        containment = closeout_helper.contain_frozen_ledger_once(
+            host,
+            ledger,
+            owned_unit_names=owned,
+        )
+        for item in closeout_state.validate_failure_list(
+            containment["errors"],
+            "prospective failure containment",
+        ):
+            if item not in state.attempt.errors:
+                state.attempt.errors.append(item)
+        state.ledger = ledger
+        if outer["identity_complete"] is True and outer["unit_name"]:
+            state.outer_identity = {
+                key: outer[key]
+                for key in (
+                    "control_group",
+                    "invocation_id",
+                    "processes",
+                    "unit_name",
+                )
+            }
+
+    reference_state = _failure_reference_state(state, context=context)
+    quiescence = _wait_failure_quiescence(
+        host=host,
+        ledger=ledger,
+        attempt=state.attempt,
+        reference_retained=reference_state["kind"] == "HELD",
+    )
+    locks = host.lock_evidence()
+    failure_identity = _publish_failure_release(
+        boundary=boundary,
+        context=context,
+        state=state,
+        store=store,
+        phase=phase,
+        ledger=ledger,
+        runtime_quiescence=quiescence,
+        reference_state=reference_state,
+        lock_identities=locks,
+    )
+    return {
+        "failure_pre_release_identity": failure_identity,
+        "ledger": ledger,
+        "lock_identities": locks,
+        "phase": phase,
+        "reference_state": reference_state,
+        "runtime_quiescence": quiescence,
+    }
 
 
 def _late_failure_closeout(
@@ -4230,11 +7288,30 @@ def _late_failure_closeout(
             raise IrreversibleFormalFailure(
                 "released late failure lacks its locks-held substantive replay"
             )
-        terminal_predecessor: Mapping[str, object] | str = (
-            state.dual_release_identity
-            if state.dual_release_identity is not None
-            else "unrecorded"
-        )
+        if (
+            state.guardian_absence_identity is None
+            or state.supervisor_raw_lock_release_identity is None
+        ):
+            raise IrreversibleFormalFailure(
+                "released late failure lacks guardian/raw-release joins"
+            )
+        try:
+            reference_completion = _failure_reference_completion(
+                boundary=boundary,
+                context=context,
+                state=state,
+                store=store,
+                host=host,
+                failure_pre_release_identity="absent",
+            )
+        except BaseException as exc:
+            item = _failure(
+                "FAILURE_REFERENCE_COMPLETION_FAILED_OR_UNCERTAIN",
+                exc,
+            )
+            if item not in state.attempt.errors:
+                state.attempt.errors.append(item)
+            reference_completion = _reference_completion_snapshot(state)
         terminal_identity = _publish_failure_terminal_release(
             boundary=boundary,
             context=context,
@@ -4246,7 +7323,11 @@ def _late_failure_closeout(
             detached_substantive_identity=state.detached_success_identity,
             detached_substantive_kind="pre_release_success_v2",
             failure_pre_release_identity="absent",
-            terminal_predecessor_identity=terminal_predecessor,
+            guardian_absence_identity=state.guardian_absence_identity,
+            supervisor_raw_lock_release_identity=(
+                state.supervisor_raw_lock_release_identity
+            ),
+            reference_completion=reference_completion,
         )
         return {
             "failure_terminal_release_identity": terminal_identity,
@@ -4548,18 +7629,187 @@ def _close_failed_campaign(
     }
 
 
-def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
+def _close_failed_campaign_v4(
+    *,
+    boundary: authority.FormalRuntimeBoundary,
+    context: Mapping[str, object],
+    admission_identity: Mapping[str, object],
+    state: SupervisorState,
+    store: closeout_helper.ReceiptStore,
+    host: closeout_helper.PinnedHost,
+    latch: closeout_helper.TerminationLatch,
+    error: BaseException,
+) -> dict[str, object]:
+    """Prospective failure chain with RefUnit retained through raw lock release."""
+
+    state.failure = _failure("FORMAL_CAMPAIGN_FAILED", error)
+    if state.failure not in state.attempt.errors:
+        state.attempt.errors.append(state.failure)
+    if host.locks_released:
+        if (
+            state.detached_success_identity is None
+            or state.guardian_absence_identity is None
+            or state.supervisor_raw_lock_release_identity is None
+            or type(state.attempt.lock_release_return) is not dict
+            or state.selection_identity is None
+        ):
+            raise IrreversibleFormalFailure(
+                "post-raw failure lacks its locks-held substantive chain"
+            )
+        if (
+            state.attempt.acquire_identity is not None
+            and state.attempt.reference_connection_close_identity is None
+            and not state.attempt.connection_action
+        ):
+            if state.observer_identity is None or state.pre_unref_identity is None:
+                raise IrreversibleFormalFailure(
+                    "post-raw failure lacks its success cleanup basis"
+                )
+            completion = _failure_reference_completion(
+                boundary=boundary,
+                context=context,
+                state=state,
+                store=store,
+                host=host,
+                failure_pre_release_identity=state.pre_unref_identity,
+                observer_identity=state.observer_identity,
+                pre_unref_cleanup_identity=state.pre_unref_identity,
+            )
+        else:
+            completion = _reference_completion_snapshot(state)
+        terminal = _publish_failure_terminal_release(
+            boundary=boundary,
+            context=context,
+            state=state,
+            store=store,
+            phase=_failure_phase(state),
+            lock_identities=cast(
+                Sequence[Mapping[str, object]],
+                state.selection["lock_identities"],
+            ),
+            lock_release_effect=state.attempt.lock_release_return,
+            detached_substantive_identity=state.detached_success_identity,
+            detached_substantive_kind="success_v3",
+            failure_pre_release_identity="absent",
+            guardian_absence_identity=state.guardian_absence_identity,
+            supervisor_raw_lock_release_identity=(
+                state.supervisor_raw_lock_release_identity
+            ),
+            reference_completion=completion,
+        )
+        return {
+            "failure_terminal_release_identity": terminal,
+            "formal_selection_identity": state.selection_identity,
+            "outcome": "INCOMPLETE",
+            "phase": _failure_phase(state),
+            "reference_completion": completion,
+        }
+    prepared = _prepare_failure_pre_release(
+        boundary=boundary,
+        context=context,
+        state=state,
+        store=store,
+        host=host,
+        error=error,
+    )
+
+    def guardian_absence() -> Mapping[str, object]:
+        if state.selection_identity is None:
+            closed = _close_preselection(
+                context=context,
+                state=state,
+                admission_identity=admission_identity,
+                store=store,
+                host=host,
+            )
+            identity = closed["guardian_absence_identity"]
+            if type(identity) is not dict:
+                raise IrreversibleFormalFailure(
+                    "markerless/unselected failure lacks guardian absence"
+                )
+            return identity
+        port = FailureContainmentPort(
+            boundary=boundary,
+            context=context,
+            state=state,
+            store=store,
+            host=host,
+            latch=latch,
+        )
+        return port.prepare_guardian_release(
+            cast(Mapping[str, object], prepared["ledger"])
+        )
+
+    completed = _complete_pre_release_failure(
+        boundary=boundary,
+        context=context,
+        state=state,
+        store=store,
+        host=host,
+        phase=str(prepared["phase"]),
+        lock_identities=cast(
+            Sequence[Mapping[str, object]],
+            prepared["lock_identities"],
+        ),
+        failure_pre_release_identity=cast(
+            Mapping[str, object],
+            prepared["failure_pre_release_identity"],
+        ),
+        guardian_absence_callback=guardian_absence,
+    )
+    return {
+        **prepared,
+        **completed,
+        "formal_selection_identity": (
+            state.selection_identity
+            if state.selection_identity is not None
+            else "absent"
+        ),
+        "outcome": "INCOMPLETE",
+    }
+
+
+def run_formal_campaign(
+    campaign_dir: Path | str,
+    *,
+    capabilities: FormalSupervisorCapabilities | None = None,
+) -> dict[str, object]:
     """Consume exactly one externally selected formal AB16 campaign."""
 
+    checked_capabilities = _validate_formal_supervisor_capabilities(
+        capabilities
+    )
+    store = closeout_helper.ReceiptStore(
+        budget_backend=checked_capabilities.budget_backend,
+        budget_bindings=checked_capabilities.receipt_budget_bindings,
+    )
     boundary, context, admission, admission_identity = load_formal_admission(
         campaign_dir
     )
+    expected_receipt_bindings = context.get(
+        "formal_receipt_budget_bindings"
+    )
+    if (
+        type(expected_receipt_bindings) is not dict
+        or expected_receipt_bindings
+        != {
+            path: dict(binding)
+            for path, binding in sorted(
+                checked_capabilities.receipt_budget_bindings.items()
+            )
+        }
+    ):
+        raise FormalCampaignError(
+            "formal supervisor receipt budget bindings do not equal the "
+            "package-bound context"
+        )
     held_locks = acquire_formal_locks()
     host = closeout_helper.PinnedHost(boundary, held_locks)
     try:
         initial_lock_identities = host.lock_evidence()
         resource_gate = validate_resource_gate(
             context["campaign_dir"],
+            authority_context=context,
             lock_identities=initial_lock_identities,
             observation_context=_resource_observation_context(
                 context,
@@ -4573,6 +7823,9 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
             raise FormalCampaignError(
                 "formal lock identities drifted across initial resource admission"
             )
+        checked_capabilities.terminal_tail_port.bind_closure_process_baseline(
+            resource_gate
+        )
     except BaseException as exc:
         try:
             host.release_locks_once()
@@ -4582,8 +7835,9 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
                 f"{type(cleanup_error).__name__}: {cleanup_error}"
             )
         raise
-    store = closeout_helper.ReceiptStore()
-    state = SupervisorState()
+    state = SupervisorState(
+        terminal_tail_port=checked_capabilities.terminal_tail_port,
+    )
     latch = closeout_helper.TerminationLatch()
     try:
         latch.install()
@@ -4626,6 +7880,16 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
             state.selection = selection
             state.selection_identity = selection_identity
             state.attempt.selection_identity = selection_identity
+            transition_result = dict(
+                checked_capabilities.selection_transition.
+                bind_formal_selection(selection_identity)
+            )
+            if transition_result.get("selection_identity") != (
+                selection_identity
+            ):
+                raise IrreversibleFormalFailure(
+                    "formal supervisor broker selection transition drifted"
+                )
             if selection["lock_identities"] != host.lock_evidence():
                 raise IrreversibleFormalFailure(
                     "formal selection lock identities drifted"
@@ -4691,9 +7955,9 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
             _normal_closeout_checkpoint(
                 state,
                 latch,
-                phase="guardian and supervisor lock release after detached replay",
+                phase="guardian and raw supervisor lock release after detached replay",
             )
-            terminal = _release_guardian_and_locks(
+            raw_release = _release_guardian_and_raw_locks(
                 context=context,
                 state=state,
                 store=store,
@@ -4702,6 +7966,22 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
                 expected=_normal_expected(
                     context,
                     selection_identity,
+                ),
+            )
+            terminal = _complete_reference_and_final_success(
+                boundary=boundary,
+                context=context,
+                state=state,
+                store=store,
+                host=host,
+                latch=latch,
+                expected=_normal_expected(
+                    context,
+                    selection_identity,
+                ),
+                lock_identities=cast(
+                    Sequence[Mapping[str, object]],
+                    raw_release["lock_identities"],
                 ),
             )
         except BaseException as exc:
@@ -4716,7 +7996,7 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
                     ),
                 )
             try:
-                closeout = _close_failed_campaign(
+                closeout = _close_failed_campaign_v4(
                     boundary=boundary,
                     context=context,
                     admission_identity=admission_identity,
@@ -4751,6 +8031,7 @@ def run_formal_campaign(campaign_dir: Path | str) -> dict[str, object]:
         )
         return {
             **detached,
+            **raw_release,
             **terminal,
             "controller_result_identity": controller_identity,
             "formal_selection_identity": selection_identity,
@@ -4769,10 +8050,17 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(
+    argv: Sequence[str] | None = None,
+    *,
+    formal_supervisor_capabilities: FormalSupervisorCapabilities | None = None,
+) -> int:
     arguments = _parser().parse_args(argv)
     try:
-        result = run_formal_campaign(arguments.campaign_dir)
+        result = run_formal_campaign(
+            arguments.campaign_dir,
+            capabilities=formal_supervisor_capabilities,
+        )
     except BaseException as exc:
         print(
             f"FAIL_CLOSED: {type(exc).__name__}: {exc}",

@@ -38,11 +38,11 @@
     },
     "expected_current_class_counts": {
       "active_implementation": 386,
-      "test": 656,
+      "test": 679,
       "common_infrastructure": 477,
       "authoritative_input": 4,
       "enforcement_control": 9,
-      "historical_evidence": 477,
+      "historical_evidence": 497,
       "retirement_candidate": 19
     },
     "conditional_current_assets": [
@@ -1153,8 +1153,8 @@
       "argv_source": "scripts/preflight_gate.py --full",
       "baseline_count": 6486,
       "baseline_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c",
-      "expected_count": 6865,
-      "expected_sha256": "c8562f86531928f02f8f75f2e05c5ef70d87df02d790f61295d4bcbcad126682"
+      "expected_count": 7436,
+      "expected_sha256": "b4b49f5787e28f492f6802f8afb296992651b61cd36f0ae1f81372d280661f2d"
     },
     {
       "id": "preflight_slow",
@@ -1171,8 +1171,8 @@
       "argv_source": "python -m pytest -m '' src/tests",
       "baseline_count": 6517,
       "baseline_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1",
-      "expected_count": 6896,
-      "expected_sha256": "8cb3f886c1d41b66db4b72530b5126f30b0841dbd5d63e8e77f340b73db8bc59"
+      "expected_count": 7467,
+      "expected_sha256": "7980cd7ce69d90a59caa58f42e6ef87cdee04ae5c105c8495a86d60fcfa86211"
     },
     {
       "id": "auxiliary_memory_tests",
@@ -1189,8 +1189,8 @@
       "argv_source": "python -m pytest",
       "baseline_count": 6624,
       "baseline_sha256": "6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96",
-      "expected_count": 3546,
-      "expected_sha256": "cc0c66ba0e8751665ac3da3d51cc3f33afebfdbc66572d441abfec007e73fc2a"
+      "expected_count": 3547,
+      "expected_sha256": "534a549f234c3e517aa996ece0d6d354064ed0fa59622a436eab63962cf096f9"
     },
     {
       "id": "industrial_planner_checked",
@@ -1288,8 +1288,8 @@
       "argv_source": "python -m pytest --repository-workflow=evidence -m 'not slow'",
       "baseline_count": 0,
       "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "expected_count": 1756,
-      "expected_sha256": "5341b4924b0ea12de507710956163eb2b57d4f3e1b90013ade3a796ab57baf20"
+      "expected_count": 2326,
+      "expected_sha256": "c61b62327fb82492922eb27c91e894f1fcb5949315f31f476e834a3afd0d5f73"
     },
     {
       "id": "replay_non_slow",

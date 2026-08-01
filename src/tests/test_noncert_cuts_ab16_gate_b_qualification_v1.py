@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ctypes
+from collections.abc import Mapping
 from copy import deepcopy
 import fcntl
 import hashlib
@@ -21,6 +22,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs/research/noncert_cuts_ab16_20260724"
+NATIVE_HELPER = RESEARCH / "ab16_native_budget_helper_x86_64_v1.so"
 
 
 def _load(name: str, path: Path) -> ModuleType:
@@ -44,6 +46,77 @@ RESOURCE_ADMISSION = _load(
     "noncert_cuts_ab16_resource_admission_v1_tested",
     RESEARCH / "ab16_resource_admission_v1.py",
 )
+
+
+def _native_helper_full() -> dict[str, object]:
+    return BOOTSTRAP.authority.snapshot_tool(NATIVE_HELPER)[1]
+
+
+_CALIBRATION_TOOL_PLANNED_ROLES = {
+    "aggregator": "script.ab16_resource_calibration_aggregator_v1",
+    "alternate_replayer": "script.replay_ab16_resource_calibration_alt_v1",
+    "fd_loader": "script.ab16_resource_calibration_fd_loader_v1",
+    "observer_harness": "script.ab16_resource_calibration_harness_v1",
+    "package_verifier": "script.ab16_resource_calibration_package_v1",
+    "primary_replayer": "script.replay_ab16_resource_calibration_v1",
+    "protocol": "script.ab16_resource_calibration_v1",
+    "runner": "script.ab16_resource_calibration_runner_v1",
+    "workload": "script.ab16_resource_calibration_workloads_v1",
+}
+
+
+def _calibration_tool_planned_identities(
+    tmp_path: Path,
+) -> dict[str, dict[str, object]]:
+    assert BOOTSTRAP.CALIBRATION_TOOL_PLANNED_ROLES == (
+        _CALIBRATION_TOOL_PLANNED_ROLES
+    )
+    return {
+        planned_role: {
+            "path": str(tmp_path / f"calibration-tool-{index}.py"),
+            "sha256": f"{index:x}" * 64,
+            "size_bytes": index,
+        }
+        for index, planned_role in enumerate(
+            _CALIBRATION_TOOL_PLANNED_ROLES.values(),
+            start=1,
+        )
+    }
+
+
+def test_qualify_cli_requires_explicit_native_helper_path(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit) as captured:
+        QUALIFICATION._parse_args(  # noqa: SLF001
+            [
+                "qualify",
+                "--repository-root",
+                "/fixture/repository",
+                "--campaign-dir",
+                "/fixture/campaign",
+                "--output-dir",
+                "/fixture/output",
+                "--gate-a-authority-root",
+                "/fixture/gate-a-root",
+                "--gate-a-receipt",
+                "/fixture/gate-a.json",
+                "--offline-candidate",
+                "/fixture/candidate.json",
+                "--planned-source-observation",
+                "/fixture/planned.json",
+                "--approval-id",
+                "gate-b-fixture",
+                "--history-freeze-manifest",
+                "/fixture/history.json",
+                "--cuts-mandatory-schedule",
+                "/fixture/schedule.md",
+                "--legacy-control-a002",
+                "/fixture/control.json",
+            ]
+        )
+    assert captured.value.code == 2
+    assert "--native-budget-helper" in capsys.readouterr().err
 
 
 def _gate_b_lock_identities() -> list[dict[str, object]]:
@@ -626,13 +699,74 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
         "sha256": "f" * 64,
         "size_bytes": 1,
     }
-    planned = {"fixture": {"path": "/fixture", "sha256": "1" * 64, "size_bytes": 1}}
+    verifier_identity = {
+        "device": 1,
+        "inode": 1,
+        "mode": 0o644,
+        "mode_octal": "0644",
+        "path": str(tmp_path / "package_independent_verifier_v1.py"),
+        "sha256": "1" * 64,
+        "size_bytes": 1,
+    }
+    native_helper_identity = _native_helper_full()
+    resource_profile_path = tmp_path / "resource-budget-profile.json"
+    resource_profile_identity = {
+        "mode": 0o444,
+        "path": str(resource_profile_path),
+        "sha256": "6" * 64,
+        "size_bytes": 1,
+    }
+    bootstrap_contract_identity = {
+        "path": str(
+            campaign
+            / "bootstrap-authority/bootstrap-budget-contract.json"
+        ),
+        "sha256": "7" * 64,
+        "size_bytes": 1,
+    }
+    formal_contract_identity = {
+        "path": str(
+            campaign
+            / "formal-ab16/artifacts/formal-root-budget-contract.json"
+        ),
+        "sha256": "8" * 64,
+        "size_bytes": 1,
+    }
+    calibration_identities = {
+        stage: {
+            "path": str(tmp_path / f"calibration-{index}.json"),
+            "sha256": f"{index + 8:x}" * 64,
+            "size_bytes": index,
+        }
+        for index, stage in enumerate(
+            BOOTSTRAP.RESOURCE_CALIBRATION_STAGES,
+            start=1,
+        )
+    }
+    budget_binding = {
+        "bootstrap_budget_contract_identity": (
+            bootstrap_contract_identity
+        ),
+        "formal_root_budget_contract_identity": formal_contract_identity,
+        "resource_calibration_bundle_identities": (
+            calibration_identities
+        ),
+        "resource_budget_profile_identity": resource_profile_identity,
+    }
+    planned = {
+        "script.package_independent_verifier_v1": verifier_identity,
+        "system.native_budget_helper": native_helper_identity,
+        **_calibration_tool_planned_identities(tmp_path),
+    }
     gate_a = {**scalar_binding, "approval_id": "gate-a"}
     candidate = {
         **scalar_binding,
         "gate_a_receipt_identity": gate_a_identity,
+        "native_budget_helper_source_identity": native_helper_identity,
+        "package_verifier_source_identity": verifier_identity,
         "path_preregistration_identity": preregistration_identity,
         "planned_source_identities": planned,
+        **budget_binding,
     }
     gate_b = {
         **scalar_binding,
@@ -640,6 +774,8 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
         "candidate_identity": candidate_identity,
         "final_full_preflight_receipt_identity": final_preflight_identity,
         "gate_a_receipt_identity": gate_a_identity,
+        "native_budget_helper_source_identity": native_helper_identity,
+        "package_verifier_source_identity": verifier_identity,
         "pre_full_resource_gate_identity": {
             "mode": 0o444,
             "path": str(tmp_path / "resource-gates/before-final-full-preflight.json"),
@@ -659,6 +795,7 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
                 "session_id": "5" * 64,
             },
         },
+        **budget_binding,
     }
     records = {
         "Gate-A receipt": (gate_a, gate_a_identity),
@@ -670,11 +807,19 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
         ),
     }
     monkeypatch.setattr(BOOTSTRAP, "_assert_campaign_absent", lambda *_args: None)
-    monkeypatch.setattr(
-        BOOTSTRAP,
-        "_canonical_record",
-        lambda _path, label: records[label],
-    )
+    def canonical_record(
+        _path: Path | str,
+        label: str,
+    ) -> tuple[object, dict[str, object]]:
+        if label.endswith("resource calibration authorization bundle"):
+            stage = label.split(" ", 1)[0]
+            return (
+                {"fixture": True, "stage": stage},
+                calibration_identities[stage],
+            )
+        return records[label]
+
+    monkeypatch.setattr(BOOTSTRAP, "_canonical_record", canonical_record)
     monkeypatch.setattr(BOOTSTRAP, "_validate_gate_a", lambda value: value)
     monkeypatch.setattr(BOOTSTRAP, "validate_candidate", lambda value: value)
     monkeypatch.setattr(
@@ -685,6 +830,39 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
     monkeypatch.setattr(BOOTSTRAP, "_validate_gate_b", lambda value: value)
     monkeypatch.setattr(
         BOOTSTRAP,
+        "_resource_budget_profile",
+        lambda *_args, **_kwargs: ({}, resource_profile_identity),
+    )
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_resource_calibration_bundle_sources",
+        lambda _paths: (
+            {
+                stage: tmp_path / f"{stage}.json"
+                for stage in BOOTSTRAP.RESOURCE_CALIBRATION_STAGES
+            },
+            calibration_identities,
+        ),
+    )
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_planned_budget_contracts",
+        lambda **_kwargs: {
+            "bootstrap_identity": bootstrap_contract_identity,
+            "formal_identity": formal_contract_identity,
+        },
+    )
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_bootstrap_runtime_budget_bindings",
+        lambda **_kwargs: {
+            "artifact_class": "metadata",
+            "maximum_bytes": 4096,
+            "relative_path": "formal-root-budget-handoff.json",
+        },
+    )
+    monkeypatch.setattr(
+        BOOTSTRAP,
         "_planned_source_identities",
         lambda **_kwargs: (planned, {}, {}, {}),
     )
@@ -693,6 +871,19 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
         BOOTSTRAP,
         "_read_gate_b_resource_gate",
         lambda identity, **_kwargs: ({}, dict(identity)),
+    )
+    closure_replays: list[Mapping[str, Mapping[str, object]] | None] = []
+
+    def replay_prepackage_closure(
+        *,
+        planned: Mapping[str, Mapping[str, object]] | None = None,
+    ) -> None:
+        closure_replays.append(planned)
+
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_replay_prepackage_closure",
+        replay_prepackage_closure,
     )
 
     def parser(path: Path | str, label: str) -> tuple[object, dict[str, object]]:
@@ -708,9 +899,15 @@ def test_bootstrap_campaign_replays_gate_b_preflight_with_unterminated_parser(
             gate_a_receipt=gate_a_path,
             offline_candidate=candidate_path,
             gate_b_approval=gate_b_path,
+            resource_budget_profile=resource_profile_path,
+            resource_calibration_bundle_paths={
+                stage: tmp_path / f"{stage}.json"
+                for stage in BOOTSTRAP.RESOURCE_CALIBRATION_STAGES
+            },
             strict_input_paths={},
             system_tool_paths={},
         )
+    assert closure_replays == [None, None]
 
 
 def test_bootstrap_fd_execution_resolves_renderer_identity(
@@ -2130,6 +2327,121 @@ def test_stage_resource_admission_allowlist_identity_does_not_require_conflict_p
     assert allowed == [{"command": observed["command"], **identity}]
 
 
+def test_prospective_same_uid_baseline_is_exact_and_digest_bound(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    proc_root, identity, observed = _controlled_resource_proc(
+        monkeypatch,
+        tmp_path,
+        command="python -I -B helper.py --role retained-resource-helper",
+    )
+    process_root = proc_root / str(identity["pid"])
+    (process_root / "fd").mkdir()
+    (process_root / "fdinfo").mkdir()
+    conflicts, allowed, baseline = (
+        RESOURCE_ADMISSION._same_uid_conflicts_with_baseline(  # noqa: SLF001
+            allowed_processes=[identity],
+            proc_root=proc_root,
+        )
+    )
+    assert conflicts == []
+    assert allowed == [{"command": observed["command"], **identity}]
+    assert baseline["mode"] == RESOURCE_ADMISSION.SAME_UID_BASELINE_LIVE_MODE
+    assert baseline["processes"] == [
+        {
+            "classification": "ALLOWED_CAMPAIGN_ACTOR",
+            "command_sha256": hashlib.sha256(
+                str(observed["command"]).encode("utf-8")
+            ).hexdigest(),
+            **identity,
+        }
+    ]
+    digest = RESOURCE_ADMISSION._canonical_sha256(baseline)  # noqa: SLF001
+    assert RESOURCE_ADMISSION.validate_same_uid_process_baseline(
+        baseline,
+        expected_sha256=digest,
+        require_live=True,
+    ) == baseline
+    forged = deepcopy(baseline)
+    forged["processes"][0]["classification"] = "UNDECLARED_ROLE"
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_SAME_UID_BASELINE_INVALID",
+    ):
+        RESOURCE_ADMISSION.validate_same_uid_process_baseline(
+            forged,
+            expected_sha256=digest,
+            require_live=True,
+        )
+
+
+def test_prospective_same_uid_baseline_rejects_unclassifiable_process(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    proc_root, _identity, _observed = _controlled_resource_proc(
+        monkeypatch,
+        tmp_path,
+        command="",
+    )
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_CONFLICT_SCAN_UNTRUSTED",
+    ):
+        RESOURCE_ADMISSION._same_uid_conflicts_with_baseline(  # noqa: SLF001
+            allowed_processes=[],
+            proc_root=proc_root,
+        )
+
+
+def test_prospective_same_uid_baseline_does_not_require_unrelated_fd_table(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    proc_root, identity, _observed = _controlled_resource_proc(
+        monkeypatch,
+        tmp_path,
+        command="python -I -B helper.py --role retained-resource-helper",
+    )
+    descriptor_root = proc_root / str(identity["pid"]) / "fd"
+    descriptor_root.mkdir()
+    original_iterdir = Path.iterdir
+
+    def guarded_iterdir(path: Path) -> object:
+        if path == descriptor_root:
+            raise PermissionError("deterministic uninspectable FD table")
+        return original_iterdir(path)
+
+    monkeypatch.setattr(Path, "iterdir", guarded_iterdir)
+    conflicts, _allowed, baseline = (
+        RESOURCE_ADMISSION._same_uid_conflicts_with_baseline(  # noqa: SLF001
+            allowed_processes=[],
+            proc_root=proc_root,
+        )
+    )
+    assert conflicts == []
+    assert baseline["threat_boundary"] == "NONADVERSARIAL_SAME_UID_AMBIENT"
+
+
+def test_injected_same_uid_baseline_cannot_authorize_launch() -> None:
+    baseline = RESOURCE_ADMISSION._same_uid_process_baseline(  # noqa: SLF001
+        (),
+        mode=RESOURCE_ADMISSION.SAME_UID_BASELINE_TEST_MODE,
+    )
+    with pytest.raises(
+        RESOURCE_ADMISSION.ResourceAdmissionError,
+        match="RESOURCE_SAME_UID_BASELINE_NOT_LIVE",
+    ):
+        RESOURCE_ADMISSION.validate_same_uid_process_baseline(
+            baseline,
+            expected_sha256=RESOURCE_ADMISSION._canonical_sha256(  # noqa: SLF001
+                baseline
+            ),
+            require_live=True,
+        )
+
+
 def _temporary_resource_lock_paths(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -2579,16 +2891,44 @@ def test_held_resource_locks_adopt_and_release_cleanup_preserve_primary(
 
 def test_gate_b_resource_gate_wraps_exact_live_admission(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     stage = RESOURCE_ADMISSION.GATE_B_QUALIFICATION
     minimums = _stage_minimums(stage)
     actor = {"pid": 321, "pid_starttime": "10", "role": "AB16_GATE_B_OWNER"}
     locks = _gate_b_lock_identities()
+    calibration = {"fixture": True, "stage": stage}
+    calibration_identity = {
+        "path": str(tmp_path / "calibration.json"),
+        "sha256": "c" * 64,
+        "size_bytes": 1,
+    }
+    captured: dict[str, object] = {}
+
+    def evaluate(path: Path, **kwargs: object) -> dict[str, object]:
+        captured["path"] = path
+        captured.update(kwargs)
+        return {"schema_version": "prospective-fixture"}
+
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION,
+        "evaluate_prospective_resource_admission",
+        evaluate,
+    )
+    monkeypatch.setattr(
+        RESOURCE_ADMISSION,
+        "evaluate_resource_admission",
+        lambda *_args, **_kwargs: pytest.fail(
+            "legacy resource admission must not authorize prospective Gate B"
+        ),
+    )
     receipt = QUALIFICATION._resource_gate(  # noqa: SLF001
         tmp_path,
         stage="AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
         profile_stage=stage,
         resource_admission=RESOURCE_ADMISSION,
+        calibration_authorization_bundle=calibration,
+        calibration_authorization_bundle_identity=calibration_identity,
         actor=actor,
         session_id="a" * 64,
         lock_identities=locks,
@@ -2613,22 +2953,80 @@ def test_gate_b_resource_gate_wraps_exact_live_admission(
     assert receipt["status"] == "PASS"
     assert receipt["lock_identities"] == locks
     assert receipt["owner_actor"] == actor
-    assert RESOURCE_ADMISSION.validate_resource_admission_receipt(
-        receipt["admission"],
-        expected_stage=stage,
-        expected_lock_identities=locks,
-        expected_lock_identity_format=RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT,
-        expected_observation_context={
-            "authority_id": "a" * 64,
-            "disk_path": str(tmp_path.absolute()),
-            "kind": "GATE_B_QUALIFICATION_PUBLICATION",
-            "ordinal": 0,
-            "scope_id": "a" * 64,
-            "sequence": 2,
-            "slot": "",
-            "target": "AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
-        },
-    ) == receipt["admission"]
+    assert receipt["admission"] == {
+        "schema_version": "prospective-fixture"
+    }
+    assert captured["calibration_authorization_bundle"] == calibration
+    assert (
+        captured["calibration_authorization_bundle_identity"]
+        == calibration_identity
+    )
+    assert captured["stage"] == stage
+
+
+def test_gate_b_resource_calibration_source_recloses_exact_identity(
+    tmp_path: Path,
+) -> None:
+    paths: dict[str, Path] = {}
+    identities: dict[str, dict[str, object]] = {}
+    for index, stage in enumerate(
+        BOOTSTRAP.RESOURCE_CALIBRATION_STAGES,
+        start=1,
+    ):
+        path = tmp_path / f"calibration-{index}.json"
+        path.write_bytes(
+            QUALIFICATION._canonical_json(  # noqa: SLF001
+                {"fixture": index, "stage": stage}
+            )
+        )
+        path.chmod(0o444)
+        full_identity = _identity(path)
+        paths[stage] = path
+        identities[stage] = {
+            field: full_identity[field]
+            for field in ("path", "sha256", "size_bytes")
+        }
+    context = {
+        "bootstrap": BOOTSTRAP,
+        "resource_calibration_bundle_identities": identities,
+        "resource_calibration_bundle_paths": paths,
+    }
+    record, identity = (
+        QUALIFICATION._resource_calibration_authorization(  # noqa: SLF001
+            context,
+            stage=RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+        )
+    )
+    assert record["stage"] == RESOURCE_ADMISSION.GATE_B_QUALIFICATION
+    assert identity == identities[RESOURCE_ADMISSION.GATE_B_QUALIFICATION]
+
+    target = paths[RESOURCE_ADMISSION.GATE_B_QUALIFICATION]
+    target.chmod(0o644)
+    target.write_bytes(target.read_bytes() + b" ")
+    target.chmod(0o444)
+    with pytest.raises(
+        QUALIFICATION.QualificationError,
+        match="identity drifted",
+    ):
+        QUALIFICATION._resource_calibration_authorization(  # noqa: SLF001
+            context,
+            stage=RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+        )
+
+    missing = dict(context)
+    missing["resource_calibration_bundle_paths"] = {
+        stage: path
+        for stage, path in paths.items()
+        if stage != RESOURCE_ADMISSION.GATE_B_QUALIFICATION
+    }
+    with pytest.raises(
+        QUALIFICATION.QualificationError,
+        match="stage set drifted",
+    ):
+        QUALIFICATION._resource_calibration_authorization(  # noqa: SLF001
+            missing,
+            stage=RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+        )
 
 
 def _gate_b_resource_gate_fixture(
@@ -2703,18 +3101,74 @@ def _gate_b_resource_gate_fixture(
     planned = {
         "script.ab16_resource_admission_v1": _identity(
             RESEARCH / "ab16_resource_admission_v1.py"
-        )
+        ),
+        **_calibration_tool_planned_identities(tmp_path),
     }
     return path, record, actor, locks, planned
 
 
+def _install_prospective_resource_replayer(
+    monkeypatch: pytest.MonkeyPatch,
+) -> tuple[dict[str, object], dict[str, object]]:
+    calibration = {
+        "fixture": True,
+        "stage": RESOURCE_ADMISSION.GATE_B_QUALIFICATION,
+    }
+    calibration_identity = {
+        "path": "/fixture/gate-b-calibration.json",
+        "sha256": "c" * 64,
+        "size_bytes": 1,
+    }
+
+    class ReplayError(RuntimeError):
+        pass
+
+    class Replay:
+        GATE_B_LOCK_IDENTITY_FORMAT = (
+            RESOURCE_ADMISSION.GATE_B_LOCK_IDENTITY_FORMAT
+        )
+        ResourceAdmissionError = ReplayError
+
+        @staticmethod
+        def validate_prospective_resource_admission_receipt(
+            value: dict[str, object],
+            **kwargs: object,
+        ) -> dict[str, object]:
+            assert (
+                kwargs["calibration_authorization_bundle"]
+                == calibration
+            )
+            assert (
+                kwargs["calibration_authorization_bundle_identity"]
+                == calibration_identity
+            )
+            assert kwargs["enforced_budget_profile"] is None
+            assert kwargs["enforced_budget_profile_identity"] is None
+            if value["profile"]["basis"]["confidence"] == "HIGH":  # type: ignore[index]
+                raise ReplayError("untrusted prospective basis")
+            return value
+
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_load_resource_admission_replayer",
+        lambda *_args, **_kwargs: (Replay, None),
+    )
+    return calibration, calibration_identity
+
+
 def test_bootstrap_replays_exact_gate_b_stage_resource_receipt(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     path, record, actor, locks, planned = _gate_b_resource_gate_fixture(tmp_path)
+    calibration, calibration_identity = _install_prospective_resource_replayer(
+        monkeypatch
+    )
     replayed, replayed_identity = BOOTSTRAP._read_gate_b_resource_gate(  # noqa: SLF001
         _identity(path),
         planned=planned,
+        calibration_authorization_bundle=calibration,
+        calibration_authorization_bundle_identity=calibration_identity,
         expected_actor=actor,
         expected_session_id="a" * 64,
         expected_lock_identities=locks,
@@ -2736,15 +3190,21 @@ def test_bootstrap_replays_exact_gate_b_stage_resource_receipt(
 def test_bootstrap_rejects_unjoined_gate_b_stage_resource_receipt(
     tmp_path: Path,
     mutation: str,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     path, _record, actor, locks, planned = _gate_b_resource_gate_fixture(
         tmp_path,
         mutation=mutation,
     )
+    calibration, calibration_identity = _install_prospective_resource_replayer(
+        monkeypatch
+    )
     with pytest.raises(BOOTSTRAP.BootstrapError):
         BOOTSTRAP._read_gate_b_resource_gate(  # noqa: SLF001
             _identity(path),
             planned=planned,
+            calibration_authorization_bundle=calibration,
+            calibration_authorization_bundle_identity=calibration_identity,
             expected_actor=actor,
             expected_session_id="a" * 64,
             expected_lock_identities=locks,
@@ -2871,8 +3331,51 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
         "output": output,
         "planned": {
             "script.ab16_campaign_bootstrap_v2": _identity(renderer),
+            "script.package_independent_verifier_v1": _identity(renderer),
+            "system.native_budget_helper": _native_helper_full(),
         },
         "planned_digest": "d" * 64,
+        "budget_binding": {
+            "bootstrap_budget_contract_identity": {
+                "path": str(
+                    campaign
+                    / "bootstrap-authority/bootstrap-budget-contract.json"
+                ),
+                "sha256": "1" * 64,
+                "size_bytes": 1,
+            },
+            "formal_root_budget_contract_identity": {
+                "path": str(
+                    campaign
+                    / "formal-ab16/artifacts/formal-root-budget-contract.json"
+                ),
+                "sha256": "2" * 64,
+                "size_bytes": 1,
+            },
+            "resource_budget_profile_identity": {
+                "mode": 0o444,
+                "path": str(tmp_path / "resource-budget-profile.json"),
+                "sha256": "3" * 64,
+                "size_bytes": 1,
+            },
+        },
+        "resource_budget_profile_identity": {
+            "mode": 0o444,
+            "path": str(tmp_path / "resource-budget-profile.json"),
+            "sha256": "3" * 64,
+            "size_bytes": 1,
+        },
+        "resource_calibration_bundle_identities": {
+            stage: {
+                "path": str(tmp_path / f"calibration-{index}.json"),
+                "sha256": f"{index + 3:x}" * 64,
+                "size_bytes": index,
+            }
+            for index, stage in enumerate(
+                BOOTSTRAP.RESOURCE_CALIBRATION_STAGES,
+                start=1,
+            )
+        },
         "repository": ROOT,
         "scripts": {
             "ab16_campaign_bootstrap_v2": renderer,
@@ -2996,6 +3499,14 @@ def test_qualify_orders_locks_preflight_epoch_second_gate_bootstrap_and_release(
         QUALIFICATION,
         "_load_resource_admission",
         lambda _context: RESOURCE_ADMISSION,
+    )
+    monkeypatch.setattr(
+        QUALIFICATION,
+        "_resource_calibration_authorization",
+        lambda context, *, stage: (
+            {"fixture": True, "stage": stage},
+            context["resource_calibration_bundle_identities"][stage],
+        ),
     )
     monkeypatch.setattr(QUALIFICATION, "PersistentGateBOwner", FakeOwner)
     monkeypatch.setattr(QUALIFICATION, "_resource_gate", resource_gate)

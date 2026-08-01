@@ -29,9 +29,18 @@ from collections.abc import Mapping
 from typing import Any
 
 
-RESULT_SCHEMA = "noncert-cuts-ab16-campaign-package-independent-replay-v1"
+RESULT_SCHEMA = "noncert-cuts-ab16-campaign-package-independent-replay-v2"
 PACKAGE_MANIFEST_SCHEMA = "noncert-cuts-campaign-authority-manifest-v5"
 VERIFIER_PACKAGE_PATH = "payload/tool.package_independent_verifier_v1.py"
+NATIVE_HELPER_PACKAGE_PATH = "payload/system.native_budget_helper.bin"
+NATIVE_HELPER_WRAPPER_PACKAGE_PATH = "payload/tool.ab16_native_budget_helper_v1.py"
+FINAL_RELEASE_ACTOR_PACKAGE_PATH = "payload/tool.ab16_final_release_actor_v1.py"
+NATIVE_HELPER_SHA256 = (
+    "65150434dc370596413e3e425e5cdcaa2d7960b8b181109f738588e8f40dca81"
+)
+NATIVE_HELPER_SIZE_BYTES = 16512
+NATIVE_HELPER_SOURCE_MODE = 0o555
+NATIVE_HELPER_BUILD_ID_SHA1 = "808dbb57b4fd260e704cb7399e76d76fef2e3146"
 AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
 
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
@@ -578,6 +587,7 @@ def _verify_manifest(
     *,
     files: Mapping[str, Mapping[str, object]],
     file_hashes: Mapping[str, str],
+    native_helper_expected: Mapping[str, object],
     verifier_expected: Mapping[str, object],
 ) -> dict[str, object]:
     manifest = _exact_object(
@@ -649,6 +659,9 @@ def _verify_manifest(
         raise PackageVerifierError("PACKAGE_MANIFEST_DRIFT", "external source set is not exact")
     source_paths: set[str] = set()
     source_roles: set[str] = set()
+    native_source_seen = False
+    wrapper_source_seen = False
+    final_release_actor_seen = False
     for index, value in enumerate(sources_value):
         record = _exact_object(
             value,
@@ -678,8 +691,45 @@ def _verify_manifest(
                 _pread_all(_record_fd(files[path], path), metadata.st_size, path, limit=MAX_JSON_BYTES),
                 path,
             )
+        if role == "system.native_budget_helper.bin":
+            native_source_seen = True
+            if (
+                path != NATIVE_HELPER_PACKAGE_PATH
+                or source_identity["mode"] != NATIVE_HELPER_SOURCE_MODE
+                or source_identity["sha256"] != native_helper_expected["sha256"]
+                or source_identity["size_bytes"]
+                != native_helper_expected["size_bytes"]
+            ):
+                raise PackageVerifierError(
+                    "NATIVE_HELPER_SOURCE_DRIFT",
+                    "native helper manifest source identity drifted",
+                )
+        elif role == "tool.ab16_native_budget_helper_v1.py":
+            wrapper_source_seen = True
+            if path != NATIVE_HELPER_WRAPPER_PACKAGE_PATH:
+                raise PackageVerifierError(
+                    "NATIVE_HELPER_ROLE_SUBSTITUTION",
+                    "native helper wrapper package role drifted",
+                )
+        elif role == "tool.ab16_final_release_actor_v1.py":
+            final_release_actor_seen = True
+            if path != FINAL_RELEASE_ACTOR_PACKAGE_PATH:
+                raise PackageVerifierError(
+                    "FINAL_RELEASE_ACTOR_ROLE_SUBSTITUTION",
+                    "final-release actor package role drifted",
+                )
     if source_paths != set(members):
         raise PackageVerifierError("PACKAGE_MANIFEST_DRIFT", "external sources do not cover payload exactly")
+    if not native_source_seen or not wrapper_source_seen:
+        raise PackageVerifierError(
+            "NATIVE_HELPER_ROLE_MISSING",
+            "native helper binary or wrapper package role is absent",
+        )
+    if not final_release_actor_seen:
+        raise PackageVerifierError(
+            "FINAL_RELEASE_ACTOR_ROLE_MISSING",
+            "final-release actor package role is absent",
+        )
     return manifest
 
 
@@ -695,6 +745,112 @@ def _validate_expected_verifier(value: object) -> dict[str, object]:
     ):
         raise PackageVerifierError("VERIFIER_IDENTITY_INVALID", "expected verifier identity is malformed")
     return record
+
+
+def _validate_expected_native_helper(value: object) -> dict[str, object]:
+    expected = {
+        "binary_format": "ELF64",
+        "build_id_sha1": NATIVE_HELPER_BUILD_ID_SHA1,
+        "byte_order": "little",
+        "elf_abi": "SYSV",
+        "elf_machine": 62,
+        "elf_type": 3,
+        "elf_version": 1,
+        "host_machine": "x86_64",
+        "host_platform": "linux",
+        "mode": NATIVE_HELPER_SOURCE_MODE,
+        "package_path": NATIVE_HELPER_PACKAGE_PATH,
+        "sha256": NATIVE_HELPER_SHA256,
+        "size_bytes": NATIVE_HELPER_SIZE_BYTES,
+        "wrapper_package_path": NATIVE_HELPER_WRAPPER_PACKAGE_PATH,
+    }
+    record = _exact_object(value, set(expected), "expected native helper identity")
+    if record != expected:
+        raise PackageVerifierError(
+            "NATIVE_HELPER_IDENTITY_INVALID",
+            "expected native helper identity differs from the fixed cohort",
+        )
+    return record
+
+
+def _verify_native_helper_bytes(
+    raw: bytes,
+    expected: Mapping[str, object],
+) -> None:
+    if sys.platform != "linux" or os.uname().machine != "x86_64":
+        raise PackageVerifierError(
+            "NATIVE_HELPER_HOST_UNSUPPORTED",
+            "native helper requires the registered Linux x86_64 host",
+        )
+    if (
+        len(raw) != expected["size_bytes"]
+        or hashlib.sha256(raw).hexdigest() != expected["sha256"]
+        or len(raw) < 64
+        or raw[:4] != b"\x7fELF"
+        or raw[4:8] != b"\x02\x01\x01\x00"
+        or int.from_bytes(raw[16:18], "little") != expected["elf_type"]
+        or int.from_bytes(raw[18:20], "little") != expected["elf_machine"]
+        or int.from_bytes(raw[20:24], "little") != expected["elf_version"]
+    ):
+        raise PackageVerifierError(
+            "NATIVE_HELPER_ELF_DRIFT",
+            "native helper bytes or ELF header drifted",
+        )
+    program_offset = int.from_bytes(raw[32:40], "little")
+    program_entry_size = int.from_bytes(raw[54:56], "little")
+    program_count = int.from_bytes(raw[56:58], "little")
+    if program_entry_size != 56 or program_count <= 0:
+        raise PackageVerifierError(
+            "NATIVE_HELPER_ELF_DRIFT",
+            "native helper ELF program table drifted",
+        )
+    build_ids: list[str] = []
+    for index in range(program_count):
+        start = program_offset + index * program_entry_size
+        end = start + program_entry_size
+        if end > len(raw):
+            raise PackageVerifierError(
+                "NATIVE_HELPER_ELF_DRIFT",
+                "native helper ELF program table is truncated",
+            )
+        if int.from_bytes(raw[start : start + 4], "little") != 4:
+            continue
+        note_offset = int.from_bytes(raw[start + 8 : start + 16], "little")
+        note_size = int.from_bytes(raw[start + 32 : start + 40], "little")
+        note_end = note_offset + note_size
+        if note_end > len(raw):
+            raise PackageVerifierError(
+                "NATIVE_HELPER_ELF_DRIFT",
+                "native helper ELF note table is truncated",
+            )
+        cursor = note_offset
+        while cursor < note_end:
+            if cursor + 12 > note_end:
+                raise PackageVerifierError(
+                    "NATIVE_HELPER_ELF_DRIFT",
+                    "native helper ELF note header is truncated",
+                )
+            name_size = int.from_bytes(raw[cursor : cursor + 4], "little")
+            desc_size = int.from_bytes(raw[cursor + 4 : cursor + 8], "little")
+            note_type = int.from_bytes(raw[cursor + 8 : cursor + 12], "little")
+            cursor += 12
+            name_end = cursor + name_size
+            desc_start = (name_end + 3) & ~3
+            desc_end = desc_start + desc_size
+            next_note = (desc_end + 3) & ~3
+            if name_end > note_end or desc_end > note_end or next_note > note_end:
+                raise PackageVerifierError(
+                    "NATIVE_HELPER_ELF_DRIFT",
+                    "native helper ELF note payload is truncated",
+                )
+            if note_type == 3 and raw[cursor:name_end].rstrip(b"\0") == b"GNU":
+                build_ids.append(raw[desc_start:desc_end].hex())
+            cursor = next_note
+    if build_ids != [expected["build_id_sha1"]]:
+        raise PackageVerifierError(
+            "NATIVE_HELPER_ELF_DRIFT",
+            "native helper GNU BuildID drifted",
+        )
 
 
 def _write_result(descriptor: int, value: Mapping[str, object]) -> None:
@@ -716,6 +872,7 @@ def verify_package_from_fds(
     verifier_fd: int,
     result_fd: int,
     expected_verifier: Mapping[str, object],
+    expected_native_helper: Mapping[str, object],
     install_landlock: bool = True,
     enforce_ambient: bool = True,
     enforce_fd_surface: bool = True,
@@ -723,6 +880,7 @@ def verify_package_from_fds(
     """Verify one package and publish its canonical replay to ``result_fd``."""
 
     expected = _validate_expected_verifier(expected_verifier)
+    native_expected = _validate_expected_native_helper(expected_native_helper)
     _validate_result_pipe(result_fd)
     _require_read_only(package_fd, "package root")
     _require_read_only(verifier_fd, "package verifier")
@@ -773,7 +931,13 @@ def verify_package_from_fds(
         for relative, record in sorted(files.items()):
             metadata = _record_stat(record, relative)
             file_hashes[relative] = _hash_fd(_record_fd(record, relative), metadata.st_size, relative)
-        required = {"package-manifest.json", "SHA256SUMS", str(expected["package_path"])}
+        required = {
+            "package-manifest.json",
+            "SHA256SUMS",
+            str(expected["package_path"]),
+            str(native_expected["package_path"]),
+            str(native_expected["wrapper_package_path"]),
+        }
         if not required <= set(files):
             raise PackageVerifierError("PACKAGE_INCOMPLETE", "package lacks manifest, seal, or verifier member")
         expected_directories: set[str] = set()
@@ -811,8 +975,21 @@ def verify_package_from_fds(
             manifest_raw,
             files=files,
             file_hashes=file_hashes,
+            native_helper_expected=native_expected,
             verifier_expected=expected,
         )
+        native_record = files[str(native_expected["package_path"])]
+        native_stat = _record_stat(
+            native_record,
+            str(native_expected["package_path"]),
+        )
+        native_raw = _pread_all(
+            _record_fd(native_record, str(native_expected["package_path"])),
+            native_stat.st_size,
+            str(native_expected["package_path"]),
+            limit=NATIVE_HELPER_SIZE_BYTES,
+        )
+        _verify_native_helper_bytes(native_raw, native_expected)
         _recheck_tree(directories, files)
 
         artifact_manifest: list[dict[str, object]] = [
@@ -840,6 +1017,7 @@ def verify_package_from_fds(
                 "size_bytes": manifest_stat.st_size,
             },
             "manager_epoch": manifest["manager_epoch"],
+            "native_helper_identity": native_expected,
             "package_id": hashlib.sha256(seal_raw).hexdigest(),
             "repository_head": manifest["repository_head"],
             "run_nonce": manifest["run_nonce"],
@@ -871,10 +1049,16 @@ def verify_package_from_fds(
                 raise
 
 
-def _parse_cli(argv: list[str]) -> tuple[int, int, int, dict[str, object]]:
-    if len(argv) != 8 or argv[0:1] != ["--package-fd"] or argv[2:3] != ["--verifier-fd"]:
+def _parse_cli(
+    argv: list[str],
+) -> tuple[int, int, int, dict[str, object], dict[str, object]]:
+    if len(argv) != 10 or argv[0:1] != ["--package-fd"] or argv[2:3] != ["--verifier-fd"]:
         raise PackageVerifierError("ARGV_INVALID", "fixed verifier argv prefix drifted")
-    if argv[4:5] != ["--result-fd"] or argv[6:7] != ["--expected-verifier-json"]:
+    if (
+        argv[4:5] != ["--result-fd"]
+        or argv[6:7] != ["--expected-verifier-json"]
+        or argv[8:9] != ["--expected-native-helper-json"]
+    ):
         raise PackageVerifierError("ARGV_INVALID", "fixed verifier argv suffix drifted")
     try:
         package_fd = int(argv[1])
@@ -885,19 +1069,33 @@ def _parse_cli(argv: list[str]) -> tuple[int, int, int, dict[str, object]]:
     if any(value < 3 for value in (package_fd, verifier_fd, result_fd)):
         raise PackageVerifierError("ARGV_INVALID", "authority descriptors must be above stdio")
     expected = _strict_json(argv[7].encode("utf-8"), "expected verifier", require_canonical=False)
-    return package_fd, verifier_fd, result_fd, _validate_expected_verifier(expected)
+    native_expected = _strict_json(
+        argv[9].encode("utf-8"),
+        "expected native helper",
+        require_canonical=False,
+    )
+    return (
+        package_fd,
+        verifier_fd,
+        result_fd,
+        _validate_expected_verifier(expected),
+        _validate_expected_native_helper(native_expected),
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
     arguments = list(sys.argv[1:] if argv is None else argv)
     result_fd: int | None = None
     try:
-        package_fd, verifier_fd, result_fd, expected = _parse_cli(arguments)
+        package_fd, verifier_fd, result_fd, expected, native_expected = _parse_cli(
+            arguments
+        )
         verify_package_from_fds(
             package_fd=package_fd,
             verifier_fd=verifier_fd,
             result_fd=result_fd,
             expected_verifier=expected,
+            expected_native_helper=native_expected,
         )
     except PackageVerifierError as exc:
         if result_fd is not None:

@@ -30,7 +30,7 @@ from pathlib import Path
 import re
 import stat
 import sys
-from typing import Any, Mapping
+from typing import Any, Mapping, Protocol
 
 from google.protobuf import text_format
 from google.protobuf.message import DecodeError
@@ -62,6 +62,13 @@ GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 ROLE_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\Z")
 MAX_JSON_BYTES = 64 * 1024 * 1024
 MAX_MODEL_BYTES = 1024 * 1024 * 1024
+PROSPECTIVE_ADMISSION_SUFFIX = (
+    "formal-ab16",
+    "artifacts",
+    "prospective",
+    "baseline-admission-a001.json",
+)
+BASELINE_ADMISSION_BUDGET_LABEL = "AB16 baseline admission"
 CAMPAIGN_PROVENANCE_KEYS = {
     "import_mode",
     "materialization_receipt_identity",
@@ -92,6 +99,20 @@ MATERIALIZATION_KEYS = {
 
 class AdmissionError(RuntimeError):
     """The supplied bytes do not establish the baseline admission contract."""
+
+
+class BudgetPublicationBackend(Protocol):
+    def maximum_bytes(self, label: str, *, artifact_class: str) -> int: ...
+
+    def publish_bytes(
+        self,
+        path: Path,
+        raw: bytes,
+        *,
+        maximum_bytes: int,
+        artifact_class: str,
+        label: str,
+    ) -> Mapping[str, object]: ...
 
 
 @dataclass(frozen=True)
@@ -802,12 +823,66 @@ def admit_paths(
     )
 
 
-def write_exclusive(path: Path | str, value: object) -> dict[str, object]:
+def _is_prospective_admission_path(path: Path | str) -> bool:
+    absolute = Path(os.path.abspath(path))
+    return tuple(absolute.parts[-len(PROSPECTIVE_ADMISSION_SUFFIX) :]) == PROSPECTIVE_ADMISSION_SUFFIX
+
+
+def write_exclusive(
+    path: Path | str,
+    value: object,
+    *,
+    budget_backend: BudgetPublicationBackend | None = None,
+    prospective: bool = False,
+) -> dict[str, object]:
     """Publish canonical result bytes once, without following the parent symlink."""
 
     output = Path(path)
     absolute = output if output.is_absolute() else Path.cwd() / output
     absolute = Path(os.path.abspath(absolute))
+    path_is_prospective = _is_prospective_admission_path(absolute)
+    prospective = prospective or path_is_prospective
+    if prospective and not path_is_prospective:
+        raise AdmissionError("prospective baseline admission path differs from the fixed layout")
+    if prospective and budget_backend is None:
+        raise AdmissionError("prospective baseline admission lacks its formal-root budget broker")
+    if not prospective and budget_backend is not None:
+        raise AdmissionError("legacy baseline admission cannot consume prospective budget authority")
+    raw = canonical_json(value)
+    if budget_backend is not None:
+        try:
+            maximum = budget_backend.maximum_bytes(
+                BASELINE_ADMISSION_BUDGET_LABEL,
+                artifact_class="publication",
+            )
+        except Exception as exc:
+            raise AdmissionError("baseline admission budget lookup failed closed") from exc
+        if isinstance(maximum, bool) or not isinstance(maximum, int) or maximum <= 0 or len(raw) > maximum:
+            raise AdmissionError("baseline admission exceeds its fixed budget")
+        try:
+            observed = dict(
+                budget_backend.publish_bytes(
+                    absolute,
+                    raw,
+                    maximum_bytes=maximum,
+                    artifact_class="publication",
+                    label=BASELINE_ADMISSION_BUDGET_LABEL,
+                )
+            )
+        except AdmissionError:
+            raise
+        except Exception as exc:
+            raise AdmissionError(
+                "baseline admission broker publication failed or acknowledgement is uncertain"
+            ) from exc
+        expected = {
+            "path": str(absolute),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw),
+        }
+        if any(observed.get(key) != member for key, member in expected.items()):
+            raise AdmissionError("baseline admission broker publication identity differs")
+        return expected
     parent = absolute.parent
     parent_flags = os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY
     if hasattr(os, "O_NOFOLLOW"):
@@ -819,7 +894,6 @@ def write_exclusive(path: Path | str, value: object) -> dict[str, object]:
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC
     if hasattr(os, "O_NOFOLLOW"):
         flags |= os.O_NOFOLLOW
-    raw = canonical_json(value)
     try:
         descriptor = os.open(absolute.name, flags, 0o600, dir_fd=parent_fd)
         try:
@@ -855,7 +929,12 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(
+    argv: list[str] | None = None,
+    *,
+    budget_backend: BudgetPublicationBackend | None = None,
+    prospective: bool = False,
+) -> int:
     arguments = _parser().parse_args(argv)
     try:
         result = admit_paths(
@@ -866,7 +945,12 @@ def main(argv: list[str] | None = None) -> int:
             fixed_assignment_replay=arguments.fixed_assignment_replay,
             created_at_utc=arguments.created_at_utc,
         )
-        identity = write_exclusive(arguments.output, result)
+        identity = write_exclusive(
+            arguments.output,
+            result,
+            budget_backend=budget_backend,
+            prospective=prospective,
+        )
     except AdmissionError as exc:
         print(f"FAIL_CLOSED: {exc}", file=sys.stderr)
         return 2

@@ -523,6 +523,33 @@ class PersistentUnitReference:
             "unit_name": unit_name,
         }
 
+    def verify_released(self, *, expected_manager_owner: str) -> dict[str, object]:
+        """Replay the same live connection after exact-once ``UnrefUnit``.
+
+        The connection intentionally remains open so the formal supervisor can
+        bind post-Unref unit absence, the manager owner, and the original
+        client unique name before it closes the final retained reference FD.
+        """
+
+        self._ensure_open()
+        self._validate_owner(expected_manager_owner)
+        if self._acquired_unit is not None or self._reference_state_uncertain:
+            raise UnitReferenceError(
+                "released connection verification found a held or uncertain reference"
+            )
+        owner = self.manager_owner()
+        if owner != expected_manager_owner:
+            raise UnitReferenceError(
+                "manager owner drifted after UnrefUnit while the connection was retained"
+            )
+        self._recheck_library()
+        return {
+            "client_unique_name": self.client_unique_name,
+            "library_identity": dict(self.library_identity),
+            "manager_owner": owner,
+            "reference_held": False,
+        }
+
     def close(self) -> None:
         """Drop the bus and FD; a held reference is an explicit error."""
 

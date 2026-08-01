@@ -19,6 +19,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 AB16_RESEARCH = ROOT / "docs/research/noncert_cuts_ab16_20260724"
+NATIVE_HELPER = AB16_RESEARCH / "ab16_native_budget_helper_x86_64_v1.so"
 HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
 NOW = "2026-07-24T13:00:00Z"
 BOOT_ID = "11111111-2222-3333-4444-555555555555"
@@ -64,6 +65,10 @@ def _detached(path: Path) -> dict[str, object]:
 
 def _full(path: Path) -> dict[str, object]:
     return AUTH.full_identity(AUTH.snapshot_regular(path))
+
+
+def _native_helper_full() -> dict[str, object]:
+    return BOOTSTRAP_V2.authority.snapshot_tool(NATIVE_HELPER)[1]
 
 
 def _git_fixture(tmp_path: Path) -> tuple[Path, dict[str, object]]:
@@ -200,7 +205,10 @@ def test_v2_repository_snapshot_stages_repository_local_external_inputs_by_role(
         planned=planned,
         scripts={},
         strict_paths=strict_paths,
-        system_full={"python3_13": {}},
+        system_full={
+            "native_budget_helper": _native_helper_full(),
+            "python3_13": {},
+        },
     )
 
     assert result["staged_inputs"]["history_freeze_manifest"].read_bytes() == b"history\n"
@@ -231,7 +239,10 @@ def test_v2_repository_snapshot_stages_repository_local_external_inputs_by_role(
             planned=escaped_planned,
             scripts={},
             strict_paths=escaped_strict_paths,
-            system_full={"python3_13": {}},
+            system_full={
+                "native_budget_helper": _native_helper_full(),
+                "python3_13": {},
+            },
         )
 
 
@@ -1020,32 +1031,73 @@ def test_v2_path_preregistration_closes_formal_outer_and_arm_paths(
 ) -> None:
     campaign = tmp_path / "campaigns" / "run-path-prereg-v3"
     campaign.parent.mkdir()
-    record = BOOTSTRAP_V2._path_preregistration(campaign)  # noqa: SLF001
+    budget_binding = {
+        label: {
+            "path": str(campaign / f"{label}.json"),
+            "sha256": character * 64,
+            "size_bytes": 1,
+        }
+        for label, character in (
+            ("bootstrap_budget_contract_identity", "1"),
+            ("formal_root_budget_contract_identity", "2"),
+            ("resource_budget_profile_identity", "3"),
+        )
+    }
+    budget_binding["resource_calibration_bundle_identities"] = {
+        stage: {
+            "path": str(campaign / f"resource-calibration-{index}.json"),
+            "sha256": str(index + 3) * 64,
+            "size_bytes": index,
+        }
+        for index, stage in enumerate(
+            BOOTSTRAP_V2.RESOURCE_CALIBRATION_STAGES,
+            start=1,
+        )
+    }
+    record = BOOTSTRAP_V2._path_preregistration(  # noqa: SLF001
+        campaign,
+        budget_binding=budget_binding,
+    )
     assert BOOTSTRAP_V2.validate_path_preregistration(
         record,
         campaign_dir=campaign,
+        budget_binding=budget_binding,
     ) == record
-    assert record["schema"] == "noncert-cuts-ab16-path-preregistration-v4"
+    assert record["schema"] == "noncert-cuts-ab16-path-preregistration-v5"
+    assert record["package_independent_replay_path"] == str(
+        campaign / "bootstrap-authority/package-independent-replay.json"
+    )
+    assert record["package_independent_replay_staging_path"] == str(
+        campaign
+        / "bootstrap-authority/.package-independent-replay.json.staged"
+    )
     assert record["formal_admission_path"] == str(
-        campaign / "formal-ab16/formal-launch-admission-a001.json"
+        campaign
+        / "formal-ab16/artifacts/formal-launch-admission-a001.json"
     )
     assert record["formal_attempt_dir"] == str(
-        campaign / "formal-ab16/formal-attempt-a001"
+        campaign / "formal-ab16/artifacts/formal-attempt-a001"
     )
     assert record["formal_selection_path"] == str(
-        campaign / "formal-ab16/formal-attempt-a001/selection.json"
+        campaign
+        / "formal-ab16/artifacts/formal-attempt-a001/selection.json"
     )
     assert record["gate1_prelaunch_ownership_path"] == str(
-        campaign / "formal-ab16/formal-attempt-a001/gate1-prelaunch-ownership.json"
+        campaign
+        / "formal-ab16/artifacts/formal-attempt-a001/"
+        "gate1-prelaunch-ownership.json"
     )
     assert record["guardian_ready_path"] == str(
-        campaign / "formal-ab16/outer-guardian-ready-a001.json"
+        campaign / "formal-ab16/artifacts/outer-guardian-ready-a001.json"
     )
     assert record["guardian_control_retired_socket_path"] == str(
-        campaign / "formal-ab16/guardian-control.sock.retired"
+        campaign
+        / "formal-ab16/control/guardian-control.sock.retired"
     )
     assert record["outer_barrier_path"] == str(
-        campaign / "formal-ab16/formal-attempt-a001/outer-barrier-release.json"
+        campaign
+        / "formal-ab16/artifacts/formal-attempt-a001/"
+        "outer-barrier-release.json"
     )
     assert set(record["outer_receipt_paths"]) == {
         "detached_closeout",
@@ -1061,7 +1113,10 @@ def test_v2_path_preregistration_closes_formal_outer_and_arm_paths(
         "post_unref_absence",
         "pre_unref_cleanup",
         "reference_acquisition",
+        "reference_connection_close",
         "reference_release",
+        "reference_terminal",
+        "supervisor_raw_lock_release",
     }
     assert len(record["arm_prelaunch_paths"]) == 16
     assert all(
@@ -1080,6 +1135,7 @@ def test_v2_path_preregistration_closes_formal_outer_and_arm_paths(
             BOOTSTRAP_V2.validate_path_preregistration(
                 changed,
                 campaign_dir=campaign,
+                budget_binding=budget_binding,
             )
 
 
@@ -1098,10 +1154,15 @@ def test_v2_package_role_set_is_exact_and_has_one_owner(
         role: tmp_path / "inputs" / role
         for role in BOOTSTRAP_V2.STRICT_INPUT_ROLES
     }
+    resource_calibration_bundle_paths = {
+        stage: tmp_path / "resource-calibration" / f"{stage}.json"
+        for stage in BOOTSTRAP_V2.RESOURCE_CALIBRATION_STAGES
+    }
     specs, script_roles, input_roles = BOOTSTRAP_V2._package_roles(  # noqa: SLF001
         scripts=scripts,
         system_paths=systems,
         strict_paths=strict,
+        resource_calibration_bundle_paths=resource_calibration_bundle_paths,
         gate_a_path=tmp_path / "gate-a.json",
         candidate_path=tmp_path / "candidate.json",
         gate_b_path=tmp_path / "gate-b.json",
@@ -1116,6 +1177,7 @@ def test_v2_package_role_set_is_exact_and_has_one_owner(
         snapshot_archive_path=tmp_path / "repository-snapshot.zip",
         snapshot_manifest_path=tmp_path / "repository-snapshot.json",
         external_platform_path=tmp_path / "external-platform.json",
+        resource_budget_profile_path=tmp_path / "resource-budget-profile.json",
     )
     roles = [spec.role for spec in specs]
     assert len(roles) == len(set(roles))
@@ -1129,7 +1191,102 @@ def test_v2_package_role_set_is_exact_and_has_one_owner(
         BOOTSTRAP_V2.SNAPSHOT_ARCHIVE_INPUT_ROLE,
         BOOTSTRAP_V2.SNAPSHOT_MANIFEST_INPUT_ROLE,
         BOOTSTRAP_V2.EXTERNAL_PLATFORM_INPUT_ROLE,
+        BOOTSTRAP_V2.RESOURCE_BUDGET_PROFILE_INPUT_ROLE,
+        *BOOTSTRAP_V2.RESOURCE_CALIBRATION_INPUT_ROLES.values(),
     }
+
+
+def test_v2_native_helper_path_mode_sha_and_arch_are_fail_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    ordinary_tool = Path(os.path.realpath(sys.executable))
+    valid_paths = {
+        role: ordinary_tool
+        for role in BOOTSTRAP_V2.SYSTEM_TOOL_ROLES
+    }
+    valid_paths["native_budget_helper"] = NATIVE_HELPER
+    _resolved, identities = BOOTSTRAP_V2._resolved_system_tools(  # noqa: SLF001
+        valid_paths
+    )
+    assert identities["native_budget_helper"] == _native_helper_full()
+
+    missing = dict(valid_paths)
+    missing.pop("native_budget_helper")
+    with pytest.raises(
+        BOOTSTRAP_V2.BootstrapError,
+        match="exact pre-registered roles",
+    ):
+        BOOTSTRAP_V2._resolved_system_tools(missing)  # noqa: SLF001
+
+    wrong_mode = tmp_path / "native-wrong-mode.so"
+    shutil.copy2(NATIVE_HELPER, wrong_mode)
+    wrong_mode.chmod(0o444)
+    mode_paths = dict(valid_paths)
+    mode_paths["native_budget_helper"] = wrong_mode
+    with pytest.raises(BOOTSTRAP_V2.BootstrapError):
+        BOOTSTRAP_V2._resolved_system_tools(mode_paths)  # noqa: SLF001
+
+    wrong_sha = tmp_path / "native-wrong-sha.so"
+    wrong_raw = bytearray(NATIVE_HELPER.read_bytes())
+    wrong_raw[-1] ^= 1
+    wrong_sha.write_bytes(wrong_raw)
+    wrong_sha.chmod(0o555)
+    sha_paths = dict(valid_paths)
+    sha_paths["native_budget_helper"] = wrong_sha
+    with pytest.raises(
+        BOOTSTRAP_V2.BootstrapError,
+        match="fixed byte identity drifted",
+    ):
+        BOOTSTRAP_V2._resolved_system_tools(sha_paths)  # noqa: SLF001
+
+    wrong_arch = bytearray(NATIVE_HELPER.read_bytes())
+    wrong_arch[18:20] = (183).to_bytes(2, "little")  # EM_AARCH64
+    wrong_arch_digest = hashlib.sha256(wrong_arch).hexdigest()
+    monkeypatch.setattr(
+        BOOTSTRAP_V2,
+        "NATIVE_BUDGET_HELPER_SHA256",
+        wrong_arch_digest,
+    )
+    with pytest.raises(
+        BOOTSTRAP_V2.BootstrapError,
+        match="ELF identity drifted",
+    ):
+        BOOTSTRAP_V2._native_helper_elf_capability(  # noqa: SLF001
+            bytes(wrong_arch),
+            source_identity={
+                "mode": 0o555,
+                "sha256": wrong_arch_digest,
+                "size_bytes": len(wrong_arch),
+            },
+        )
+
+
+def test_v2_candidate_cli_requires_explicit_native_helper_path(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit) as captured:
+        BOOTSTRAP_V2._parse_args(  # noqa: SLF001
+            [
+                "candidate",
+                "--campaign-dir",
+                "/fixture/campaign",
+                "--repository-root",
+                "/fixture/repository",
+                "--gate-a-receipt",
+                "/fixture/gate-a.json",
+                "--history-freeze-manifest",
+                "/fixture/history.json",
+                "--cuts-mandatory-schedule",
+                "/fixture/schedule.md",
+                "--legacy-control-a002",
+                "/fixture/control.json",
+                "--candidate-output",
+                "/fixture/candidate.json",
+            ]
+        )
+    assert captured.value.code == 2
+    assert "--native-budget-helper" in capsys.readouterr().err
 
 
 def test_v2_authority_loads_resource_replayer_only_from_sealed_package(
@@ -1386,16 +1543,17 @@ def test_v2_bootstrap_seals_before_materializing_without_future_identity() -> No
     assert "package_id" not in BOOTSTRAP_V2._build_repository_snapshot_sources.__annotations__  # noqa: SLF001
 
 
-def test_v2_external_platform_freezes_three_fds_and_dual_holder_literals() -> None:
+def test_v2_external_platform_freezes_prospective_fd_cohort_and_dual_holder_literals() -> None:
     python_path = Path(os.path.realpath(sys.executable))
     record = BOOTSTRAP_V2._external_platform_record(  # noqa: SLF001
+        native_helper_identity=_native_helper_full(),
         repository_head=HEAD,
         python_identity=AUTH_V2.full_identity(
             AUTH_V2.snapshot_regular(python_path)
         ),
     )
     assert record["schema_version"] == (
-        "noncert-cuts-ab16-external-platform-assumptions-v2"
+        "noncert-cuts-ab16-external-platform-assumptions-v3"
     )
     assert record["dual_holder_survival"] == {
         "assumption_id": "AB16_DUAL_HOLDER_SURVIVAL_V1",
@@ -1404,21 +1562,50 @@ def test_v2_external_platform_freezes_three_fds_and_dual_holder_literals() -> No
         "single_holder_death_must_be_contained": True,
     }
     assert record["selected_byte_launch"] == {
-        "direct_fd_map": {"authority": 5, "loader": 4, "python": 3},
-        "execution_strategy": "selected-byte-python-loader-fd-v1",
+        "direct_fd_map": {
+            "authority": 5,
+            "budget_broker": 8,
+            "loader": 4,
+            "native_helper": 7,
+            "native_helper_wrapper": 6,
+            "python": 3,
+        },
+        "execution_strategy": "selected-byte-python-loader-budget-fd-v2",
         "literal_identity": BOOTSTRAP_V2._literal_identity(  # noqa: SLF001
-            BOOTSTRAP_V2.SELECTED_BYTE_LAUNCH_V1
+            BOOTSTRAP_V2.SELECTED_BYTE_LAUNCH_V2
         ),
-        "systemd_fd_map": {"authority": 5, "loader": 4, "python": 3},
+        "systemd_fd_map": {
+            "authority": 5,
+            "budget_broker": 8,
+            "loader": 4,
+            "native_helper": 7,
+            "native_helper_wrapper": 6,
+            "python": 3,
+        },
         "systemd_fd_names": [
             "ab16-python",
             "ab16-loader",
             "ab16-authority",
+            "ab16-native-helper-wrapper",
+            "ab16-native-helper",
+            "ab16-budget-broker",
         ],
     }
+    assert (
+        BOOTSTRAP_V2._literal_identity(  # noqa: SLF001
+            BOOTSTRAP_V2.SELECTED_BYTE_LAUNCH_V1
+        )
+        == {
+            "sha256": (
+                "619b0906281cf0ebd3d9361c6b6468b0"
+                "a0cc9cb66a46dc0c98b18c25d89e43ff"
+            ),
+            "size_bytes": 2531,
+        }
+    )
     assert record["formal_launch_owner_driver"] == (
         BOOTSTRAP_V2._literal_identity(  # noqa: SLF001
-            BOOTSTRAP_V2.FORMAL_LAUNCH_OWNER_DRIVER_V1
+            BOOTSTRAP_V2.FORMAL_LAUNCH_OWNER_DRIVER_V2
         )
     )
     assert record["gate_b_owner_driver"] == (

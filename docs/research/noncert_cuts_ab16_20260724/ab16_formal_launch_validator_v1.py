@@ -32,17 +32,23 @@ import re
 import stat
 import sys
 from types import ModuleType
-from typing import Any
+from typing import Any, cast
 
 from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as authority
 from docs.research.noncert_cuts_ab16_20260724 import ab16_outer_closeout_state_v1 as closeout_state
 
 
-FORMAL_CONTEXT_SCHEMA = "noncert-cuts-ab16-formal-launch-context-v3"
-FORMAL_ADMISSION_SCHEMA = "noncert-cuts-ab16-formal-launch-admission-v2"
-FORMAL_SELECTION_SCHEMA = "noncert-cuts-ab16-formal-launch-selection-v1"
-GUARDIAN_READY_SCHEMA = "noncert-cuts-ab16-outer-guardian-ready-v1"
-ATTEMPT_CONSUMPTION_SCHEMA = "noncert-cuts-ab16-formal-attempt-consumption-v1"
+FORMAL_CONTEXT_SCHEMA = "noncert-cuts-ab16-formal-launch-context-v6"
+FORMAL_ADMISSION_SCHEMA = "noncert-cuts-ab16-formal-launch-admission-v3"
+FORMAL_SELECTION_SCHEMA = "noncert-cuts-ab16-formal-launch-selection-v2"
+FORMAL_SELECTION_SCHEMA_V3 = (
+    "noncert-cuts-ab16-formal-launch-selection-v3"
+)
+MANAGER_OPENFILE_GRANT_SCHEMA = (
+    "noncert-cuts-ab16-formal-manager-openfile-grant-v1"
+)
+GUARDIAN_READY_SCHEMA = "noncert-cuts-ab16-formal-guardian-ready-v2"
+ATTEMPT_CONSUMPTION_SCHEMA = "noncert-cuts-ab16-formal-attempt-consumption-v2"
 
 OWNER_PUBLISHER_ROLE = "AB16_OWNER_FORMAL_LAUNCH_PUBLISHER_V1"
 OWNER_EXECUTION_STRATEGY = (
@@ -88,12 +94,17 @@ FORMAL_CONTEXT_FIELDS = frozenset(
     {
         "authority_scope",
         "baseline_identity",
+        "bootstrap_budget_terminal_identity",
+        "budget_broker_endpoint_identity",
+        "calibration_tool_content_identities",
         "campaign_dir",
         "campaign_root_identity",
         "controller_identity",
         "dual_holder_platform_assumption",
         "formal_admission_path",
         "formal_attempt_dir",
+        "formal_budget_runtime",
+        "formal_receipt_budget_bindings",
         "formal_loader_identity",
         "formal_launch_owner_driver_identity",
         "formal_orchestrator_identity",
@@ -111,20 +122,58 @@ FORMAL_CONTEXT_FIELDS = frozenset(
         "manager_epoch",
         "manager_epoch_observation_identity",
         "mechanical_oexcl_publisher_identity",
+        "native_helper_identity",
+        "native_helper_wrapper_identity",
         "outer_spec",
         "package_id",
         "package_manifest_identity",
         "package_seal_identity",
         "python_identity",
         "repository_head",
+        "resource_budget_profile_identity",
+        "resource_calibration_authorization_bundles",
         "schema_version",
         "selected_byte_launch_identity",
+        "selected_fd_transport",
         "snapshot_materialization_identity",
         "snapshot_root",
         "status",
         "success_verifier_identity",
     }
 )
+
+
+def _formal_receipt_budget_bindings(
+    value: object,
+    *,
+    formal_root: Path,
+) -> dict[str, dict[str, object]]:
+    if type(value) is not dict or not value:
+        raise FormalLaunchValidationError(
+            "formal receipt budget binding table is absent"
+        )
+    result: dict[str, dict[str, object]] = {}
+    for raw_path, raw_binding in value.items():
+        if (
+            type(raw_path) is not str
+            or not Path(raw_path).is_absolute()
+            or Path(raw_path) != Path(raw_path).absolute()
+            or not Path(raw_path).is_relative_to(formal_root)
+            or type(raw_binding) is not dict
+            or set(raw_binding) != {"artifact_class", "label"}
+            or type(raw_binding["artifact_class"]) is not str
+            or not raw_binding["artifact_class"]
+            or type(raw_binding["label"]) is not str
+            or not raw_binding["label"]
+        ):
+            raise FormalLaunchValidationError(
+                "formal receipt budget binding entry drifted"
+            )
+        result[raw_path] = dict(raw_binding)
+    return {
+        path: result[path]
+        for path in sorted(result)
+    }
 
 PUBLISHER_FIELDS = frozenset(
     {
@@ -208,6 +257,7 @@ OUTER_SPEC_FIELDS = frozenset(
     {
         "arm_prelaunch_paths",
         "barrier_path",
+        "budget_broker_endpoint_identity",
         "child_audit_path",
         "controller_identity",
         "gate1_prelaunch_ownership_path",
@@ -216,6 +266,7 @@ OUTER_SPEC_FIELDS = frozenset(
         "receipt_paths",
         "resource_contract",
         "selected_byte_argv",
+        "selected_fd_transport",
         "unit_name",
         "working_directory",
     }
@@ -236,14 +287,19 @@ OUTER_RECEIPT_PATH_FIELDS = frozenset(
         "post_unref_absence",
         "pre_unref_cleanup",
         "reference_acquisition",
+        "reference_connection_close",
         "reference_release",
+        "reference_terminal",
+        "supervisor_raw_lock_release",
     }
 )
 
 GUARDIAN_SPEC_FIELDS = frozenset(
     {
+        "budget_broker_endpoint_identity",
         "resource_contract",
         "selected_byte_argv",
+        "selected_fd_transport",
         "unit_name",
         "working_directory",
     }
@@ -339,6 +395,41 @@ SELECTION_FIELDS = frozenset(
         "status",
     }
 )
+SELECTION_FIELDS_V3 = frozenset(
+    {*SELECTION_FIELDS, "manager_openfile_grant"}
+)
+
+MANAGER_OPENFILE_GRANT_FIELDS = frozenset(
+    {
+        "attempt_consumption_identity",
+        "budget_profile_identity",
+        "credential_sha256",
+        "formal_budget_runtime",
+        "formal_root_contract_identity",
+        "formal_resource_calibration_bundle_identity",
+        "grant_id",
+        "manager_epoch_identity",
+        "preregistration_receipt_identity",
+        "schema_version",
+        "selected_fd_transport",
+        "selection_path",
+        "state",
+        "unit_name",
+    }
+)
+
+SELECTED_FD_TRANSPORT_SCHEMA = (
+    "noncert-cuts-ab16-package-selected-fd-transport-v1"
+)
+SELECTED_FD_TRANSPORT_PACKAGE_PATHS = {
+    "authority": "payload/tool.ab16_authority_v2.py",
+    "loader": "payload/tool.ab16_formal_loader_v1.py",
+    "native_helper": "payload/system.native_budget_helper.bin",
+    "native_helper_wrapper": (
+        "payload/tool.ab16_native_budget_helper_v1.py"
+    ),
+    "python": "payload/system.python3_13.bin",
+}
 
 ATTEMPT_CONSUMPTION_FIELDS = frozenset(
     {
@@ -425,6 +516,87 @@ def _message_identity(value: object, label: str) -> dict[str, object]:
     return record
 
 
+def _resource_calibration_authorization_bundles(
+    value: object,
+) -> dict[str, dict[str, object]]:
+    stages = {
+        "FULL_PREFLIGHT",
+        "GATE_B_QUALIFICATION",
+        "FORMAL_ORGANIC_ARM",
+    }
+    record = _closed(
+        value,
+        frozenset(stages),
+        "resource calibration authorization bundles",
+    )
+    result: dict[str, dict[str, object]] = {}
+    for stage in sorted(stages):
+        entry = _closed(
+            record[stage],
+            frozenset({"identity", "record"}),
+            f"{stage} resource calibration authorization bundle",
+        )
+        identity = _identity(
+            entry["identity"],
+            f"{stage} resource calibration authorization bundle",
+        )
+        bundle = entry["record"]
+        if type(bundle) is not dict:
+            raise FormalLaunchValidationError(
+                f"{stage} resource calibration bundle is not an object"
+            )
+        raw = authority.canonical_json(bundle)
+        if (
+            hashlib.sha256(raw).hexdigest() != identity["sha256"]
+            or len(raw) != identity["size_bytes"]
+        ):
+            raise FormalLaunchValidationError(
+                f"{stage} resource calibration bundle identity drifted"
+            )
+        published, observed = read_canonical_record(
+            cast(str, identity["path"]),
+            expected_identity=identity,
+            label=f"{stage} resource calibration authorization bundle",
+        )
+        if published != bundle or observed != identity:
+            raise FormalLaunchValidationError(
+                f"{stage} resource calibration bundle bytes drifted"
+            )
+        result[stage] = {
+            "identity": identity,
+            "record": dict(bundle),
+        }
+    return result
+
+
+def _calibration_tool_content_identities(
+    value: object,
+) -> dict[str, dict[str, object]]:
+    roles = {
+        "aggregator",
+        "alternate_replayer",
+        "fd_loader",
+        "observer_harness",
+        "package_verifier",
+        "primary_replayer",
+        "protocol",
+        "runner",
+        "workload",
+    }
+    record = _closed(
+        value,
+        frozenset(roles),
+        "calibration tool content identities",
+    )
+    return {
+        role: _message_identity(
+            record[role],
+            f"calibration tool {role}",
+        )
+        for role in sorted(roles)
+    }
+
+
 def _mode_identity(value: object, label: str) -> dict[str, object]:
     record = _closed(
         value,
@@ -482,14 +654,125 @@ def _selected_identity_argument(value: str) -> dict[str, dict[str, object]]:
         raise FormalLaunchValidationError(
             "selected-byte identity argument is not canonical"
         )
-    record = _closed(
-        parsed,
+    if type(parsed) is not dict or frozenset(parsed) not in {
         frozenset({"authority", "loader", "python"}),
-        "selected-byte identity set",
-    )
+        frozenset(SELECTED_FD_TRANSPORT_PACKAGE_PATHS),
+    }:
+        raise FormalLaunchValidationError(
+            "selected-byte identity field set drifted"
+        )
+    record = parsed
     return {
         name: _mode_identity(record[name], f"selected-byte {name}")
-        for name in ("authority", "loader", "python")
+        for name in sorted(record)
+    }
+
+
+def _budget_broker_endpoint_identity(
+    value: object,
+    label: str,
+) -> dict[str, object]:
+    record = _closed(
+        value,
+        frozenset({"device", "inode", "mode", "path", "uid"}),
+        label,
+    )
+    if (
+        type(record["device"]) is not int
+        or isinstance(record["device"], bool)
+        or record["device"] < 0
+        or type(record["inode"]) is not int
+        or isinstance(record["inode"], bool)
+        or record["inode"] <= 0
+        or record["mode"] != 0o600
+        or type(record["path"]) is not str
+        or not Path(record["path"]).is_absolute()
+        or type(record["uid"]) is not int
+        or isinstance(record["uid"], bool)
+        or record["uid"] < 0
+    ):
+        raise FormalLaunchValidationError(f"{label} is malformed")
+    return dict(record)
+
+
+def _selected_fd_transport(
+    value: object,
+    *,
+    selected_identities: Mapping[str, Mapping[str, object]],
+    label: str,
+) -> dict[str, object]:
+    record = _closed(
+        value,
+        frozenset({"owner", "roles", "schema_version"}),
+        label,
+    )
+    owner_raw = _closed(
+        record["owner"],
+        frozenset({"pid", "pid_starttime", "uid"}),
+        f"{label} owner",
+    )
+    if any(
+        type(owner_raw[field]) is not int
+        or isinstance(owner_raw[field], bool)
+        for field in ("pid", "pid_starttime", "uid")
+    ) or (
+        owner_raw["pid"] <= 0
+        or owner_raw["pid_starttime"] <= 0
+        or owner_raw["uid"] < 0
+    ):
+        raise FormalLaunchValidationError(f"{label} owner is invalid")
+    owner = {
+        field: int(owner_raw[field])
+        for field in ("pid", "pid_starttime", "uid")
+    }
+    roles = record["roles"]
+    if (
+        record["schema_version"] != SELECTED_FD_TRANSPORT_SCHEMA
+        or set(selected_identities)
+        != set(SELECTED_FD_TRANSPORT_PACKAGE_PATHS)
+        or type(roles) is not dict
+        or set(roles) != set(SELECTED_FD_TRANSPORT_PACKAGE_PATHS)
+    ):
+        raise FormalLaunchValidationError(f"{label} role cohort drifted")
+    checked_roles: dict[str, dict[str, object]] = {}
+    for role, package_path in sorted(
+        SELECTED_FD_TRANSPORT_PACKAGE_PATHS.items()
+    ):
+        item = _closed(
+            roles[role],
+            frozenset(
+                {
+                    "descriptor",
+                    "mode",
+                    "package_path",
+                    "proc_fd_path",
+                    "sha256",
+                    "size_bytes",
+                }
+            ),
+            f"{label} {role}",
+        )
+        descriptor = item["descriptor"]
+        expected = selected_identities[role]
+        if (
+            type(descriptor) is not int
+            or isinstance(descriptor, bool)
+            or descriptor < 3
+            or item["mode"] != expected["mode"]
+            or item["package_path"] != package_path
+            or item["proc_fd_path"]
+            != f"/proc/{owner['pid']}/fd/{descriptor}"
+            or item["sha256"] != expected["sha256"]
+            or item["size_bytes"] != expected["size_bytes"]
+        ):
+            raise FormalLaunchValidationError(
+                f"{label} {role} identity drifted"
+            )
+        checked_roles[role] = dict(item)
+    return {
+        "owner": owner,
+        "roles": checked_roles,
+        "schema_version": record["schema_version"],
     }
 
 
@@ -719,8 +1002,11 @@ def _selected_role_argv(
     python_identity: Mapping[str, object],
     selected_byte_launch_identity: Mapping[str, object],
     label: str,
+    require_prospective_transport: bool = False,
+    native_helper_identity: Mapping[str, object] | None = None,
+    native_helper_wrapper_identity: Mapping[str, object] | None = None,
 ) -> list[str]:
-    """Validate one closed FD3/FD4/FD5 selected-byte loader invocation."""
+    """Validate one closed selected-byte loader invocation."""
 
     argv = validate_argv(value, label)
     expected = [
@@ -750,6 +1036,33 @@ def _selected_role_argv(
         raise FormalLaunchValidationError("selected-byte launch literal drifted")
     selected_identities = _selected_identity_argument(argv[6])
     if (
+        (
+            require_prospective_transport
+            and set(selected_identities)
+            != set(SELECTED_FD_TRANSPORT_PACKAGE_PATHS)
+        )
+        or (
+            require_prospective_transport
+            and (
+                native_helper_identity is None
+                or native_helper_wrapper_identity is None
+                or {
+                    name: selected_identities["native_helper"][name]
+                    for name in ("path", "sha256", "size_bytes")
+                }
+                != dict(native_helper_identity)
+                or {
+                    name: selected_identities["native_helper_wrapper"][name]
+                    for name in ("path", "sha256", "size_bytes")
+                }
+                != dict(native_helper_wrapper_identity)
+                or selected_identities["native_helper_wrapper"]["mode"]
+                != PACKAGE_PAYLOAD_MODE
+                or selected_identities["native_helper"]["mode"] & 0o111 == 0
+                or selected_identities["native_helper"]["mode"] & 0o022
+            )
+        )
+        or
         {
             name: selected_identities["python"][name]
             for name in ("path", "sha256", "size_bytes")
@@ -784,6 +1097,10 @@ def _outer_spec(
     loader_identity: Mapping[str, object],
     python_identity: Mapping[str, object],
     selected_byte_launch_identity: Mapping[str, object],
+    selected_fd_transport: Mapping[str, object],
+    budget_broker_endpoint_identity: Mapping[str, object],
+    native_helper_identity: Mapping[str, object],
+    native_helper_wrapper_identity: Mapping[str, object],
     formal_selection_path: str,
     snapshot_root: str,
 ) -> dict[str, object]:
@@ -817,8 +1134,23 @@ def _outer_spec(
         python_identity=python_identity,
         selected_byte_launch_identity=selected_byte_launch_identity,
         label="selected outer argv",
+        require_prospective_transport=True,
+        native_helper_identity=native_helper_identity,
+        native_helper_wrapper_identity=native_helper_wrapper_identity,
     )
     result["selected_byte_argv"] = argv
+    selected_identities = _selected_identity_argument(argv[6])
+    result["selected_fd_transport"] = _selected_fd_transport(
+        record["selected_fd_transport"],
+        selected_identities=selected_identities,
+        label="selected outer FD transport",
+    )
+    result["budget_broker_endpoint_identity"] = (
+        _budget_broker_endpoint_identity(
+            record["budget_broker_endpoint_identity"],
+            "selected outer broker endpoint",
+        )
+    )
     if (
         type(record["unit_name"]) is not str
         or closeout_state.UNIT_RE.fullmatch(record["unit_name"]) is None
@@ -826,6 +1158,10 @@ def _outer_spec(
         or result["controller_identity"] != dict(controller_identity)
         or result["loader_identity"] != dict(loader_identity)
         or result["python_identity"] != dict(python_identity)
+        or result["selected_fd_transport"]
+        != dict(selected_fd_transport)
+        or result["budget_broker_endpoint_identity"]
+        != dict(budget_broker_endpoint_identity)
         or record["resource_contract"] != OUTER_RESOURCE_CONTRACT
     ):
         raise FormalLaunchValidationError("selected outer byte/resource identity drifted")
@@ -893,6 +1229,10 @@ def _guardian_spec(
     loader_identity: Mapping[str, object],
     python_identity: Mapping[str, object],
     selected_byte_launch_identity: Mapping[str, object],
+    selected_fd_transport: Mapping[str, object],
+    budget_broker_endpoint_identity: Mapping[str, object],
+    native_helper_identity: Mapping[str, object],
+    native_helper_wrapper_identity: Mapping[str, object],
     snapshot_root: str,
 ) -> dict[str, object]:
     """Validate the independently selected guardian unit and runtime argv."""
@@ -917,11 +1257,32 @@ def _guardian_spec(
         python_identity=python_identity,
         selected_byte_launch_identity=selected_byte_launch_identity,
         label="selected guardian argv",
+        require_prospective_transport=True,
+        native_helper_identity=native_helper_identity,
+        native_helper_wrapper_identity=native_helper_wrapper_identity,
+    )
+    selected_identities = _selected_identity_argument(
+        result["selected_byte_argv"][6]
+    )
+    result["selected_fd_transport"] = _selected_fd_transport(
+        record["selected_fd_transport"],
+        selected_identities=selected_identities,
+        label="selected guardian FD transport",
+    )
+    result["budget_broker_endpoint_identity"] = (
+        _budget_broker_endpoint_identity(
+            record["budget_broker_endpoint_identity"],
+            "selected guardian broker endpoint",
+        )
     )
     if (
         type(record["unit_name"]) is not str
         or closeout_state.UNIT_RE.fullmatch(record["unit_name"]) is None
         or record["working_directory"] != snapshot_root
+        or result["selected_fd_transport"]
+        != dict(selected_fd_transport)
+        or result["budget_broker_endpoint_identity"]
+        != dict(budget_broker_endpoint_identity)
         or record["resource_contract"] != OUTER_RESOURCE_CONTRACT
     ):
         raise FormalLaunchValidationError(
@@ -967,6 +1328,16 @@ def validate_formal_context(value: object) -> dict[str, object]:
         )
     if not Path(result["formal_attempt_dir"]).is_relative_to(Path(result["campaign_dir"])):
         raise FormalLaunchValidationError("formal attempt directory escaped the campaign")
+    result["formal_receipt_budget_bindings"] = (
+        _formal_receipt_budget_bindings(
+            record["formal_receipt_budget_bindings"],
+            formal_root=(
+                Path(result["campaign_dir"])
+                / "formal-ab16"
+                / "artifacts"
+            ),
+        )
+    )
     for field in (
         "campaign_root_identity",
         "gate1_selection_identity",
@@ -984,7 +1355,10 @@ def validate_formal_context(value: object) -> dict[str, object]:
         "snapshot_materialization_identity",
         "controller_identity",
         "baseline_identity",
+        "bootstrap_budget_terminal_identity",
         "success_verifier_identity",
+        "native_helper_identity",
+        "native_helper_wrapper_identity",
     ):
         result[field] = _identity(record[field], f"formal context {field}")
     result["selected_byte_launch_identity"] = _message_identity(
@@ -1003,6 +1377,63 @@ def validate_formal_context(value: object) -> dict[str, object]:
         raise FormalLaunchValidationError("formal context manager epoch is malformed")
     _reject_none(record["manager_epoch"], "formal context manager epoch")
     result["manager_epoch"] = dict(record["manager_epoch"])
+    result["resource_calibration_authorization_bundles"] = (
+        _resource_calibration_authorization_bundles(
+            record["resource_calibration_authorization_bundles"]
+        )
+    )
+    result["calibration_tool_content_identities"] = (
+        _calibration_tool_content_identities(
+            record["calibration_tool_content_identities"]
+        )
+    )
+    result["resource_budget_profile_identity"] = _mode_identity(
+        record["resource_budget_profile_identity"],
+        "formal context resource budget profile",
+    )
+    try:
+        result["formal_budget_runtime"] = (
+            authority.validate_formal_budget_runtime(
+                record["formal_budget_runtime"],
+                replay_artifacts=True,
+            )
+        )
+    except Exception as exc:
+        raise FormalLaunchValidationError(
+            f"formal context budget runtime is invalid: {exc}"
+        ) from exc
+    outer_raw = record["outer_spec"]
+    if type(outer_raw) is not dict:
+        raise FormalLaunchValidationError(
+            "formal context selected outer spec is malformed"
+        )
+    outer_argv = validate_argv(
+        outer_raw.get("selected_byte_argv"),
+        "formal context selected outer argv",
+    )
+    if len(outer_argv) <= 6:
+        raise FormalLaunchValidationError(
+            "formal context selected outer argv is truncated"
+        )
+    selected_identities = _selected_identity_argument(outer_argv[6])
+    result["selected_fd_transport"] = _selected_fd_transport(
+        record["selected_fd_transport"],
+        selected_identities=selected_identities,
+        label="formal context selected-FD transport",
+    )
+    result["budget_broker_endpoint_identity"] = (
+        _budget_broker_endpoint_identity(
+            record["budget_broker_endpoint_identity"],
+            "formal context budget broker endpoint",
+        )
+    )
+    if (
+        result["selected_fd_transport"]["owner"]["uid"]
+        != result["budget_broker_endpoint_identity"]["uid"]
+    ):
+        raise FormalLaunchValidationError(
+            "formal context selected-FD owner/broker endpoint drifted"
+        )
     authority_digests = {
         result["launch_renderer_identity"]["sha256"],
         result["launch_validator_identity"]["sha256"],
@@ -1032,6 +1463,14 @@ def validate_formal_context(value: object) -> dict[str, object]:
         loader_identity=result["formal_loader_identity"],
         python_identity=result["python_identity"],
         selected_byte_launch_identity=result["selected_byte_launch_identity"],
+        selected_fd_transport=result["selected_fd_transport"],
+        budget_broker_endpoint_identity=result[
+            "budget_broker_endpoint_identity"
+        ],
+        native_helper_identity=result["native_helper_identity"],
+        native_helper_wrapper_identity=result[
+            "native_helper_wrapper_identity"
+        ],
         formal_selection_path=result["formal_selection_path"],
         snapshot_root=result["snapshot_root"],
     )
@@ -1044,10 +1483,27 @@ def validate_formal_context(value: object) -> dict[str, object]:
         loader_identity=result["formal_loader_identity"],
         python_identity=result["python_identity"],
         selected_byte_launch_identity=result["selected_byte_launch_identity"],
+        selected_fd_transport=result["selected_fd_transport"],
+        budget_broker_endpoint_identity=result[
+            "budget_broker_endpoint_identity"
+        ],
+        native_helper_identity=result["native_helper_identity"],
+        native_helper_wrapper_identity=result[
+            "native_helper_wrapper_identity"
+        ],
         snapshot_root=result["snapshot_root"],
     )
     if result["guardian_spec"]["unit_name"] == result["outer_spec"]["unit_name"]:
         raise FormalLaunchValidationError("guardian and outer unit identities collapsed")
+    if (
+        result["formal_budget_runtime"]["broker_actor_identity"]
+        != result["selected_fd_transport"]["owner"]
+        or result["formal_budget_runtime"]["broker_endpoint_identity"]
+        != result["budget_broker_endpoint_identity"]
+    ):
+        raise FormalLaunchValidationError(
+            "formal context budget runtime transport join drifted"
+        )
     return result
 
 
@@ -1132,6 +1588,14 @@ def validate_admission(
         loader_identity=context["formal_loader_identity"],
         python_identity=context["python_identity"],
         selected_byte_launch_identity=context["selected_byte_launch_identity"],
+        selected_fd_transport=context["selected_fd_transport"],
+        budget_broker_endpoint_identity=context[
+            "budget_broker_endpoint_identity"
+        ],
+        native_helper_identity=context["native_helper_identity"],
+        native_helper_wrapper_identity=context[
+            "native_helper_wrapper_identity"
+        ],
         snapshot_root=context["snapshot_root"],
     )
     if (
@@ -1225,6 +1689,246 @@ def validate_guardian_ready(
     return result
 
 
+def _validate_manager_openfile_grant(
+    value: object,
+    *,
+    context: Mapping[str, object],
+    attempt_consumption_identity: Mapping[str, object],
+) -> dict[str, object]:
+    """Validate the non-self-referential preregistration carried by v3."""
+
+    record = _closed(
+        value,
+        MANAGER_OPENFILE_GRANT_FIELDS,
+        "formal manager OpenFile grant",
+    )
+    result = dict(record)
+    result["grant_id"] = _token(
+        record["grant_id"],
+        "formal manager OpenFile grant ID",
+    )
+    credential = record["credential_sha256"]
+    if (
+        type(credential) is not str
+        or SHA256_RE.fullmatch(credential) is None
+    ):
+        raise FormalLaunchValidationError(
+            "formal manager OpenFile credential is malformed"
+        )
+    result["credential_sha256"] = credential
+    result["preregistration_receipt_identity"] = _message_identity(
+        record["preregistration_receipt_identity"],
+        "formal manager OpenFile preregistration receipt",
+    )
+    result["attempt_consumption_identity"] = _identity(
+        record["attempt_consumption_identity"],
+        "formal manager OpenFile attempt consumption",
+    )
+    result["manager_epoch_identity"] = _message_identity(
+        record["manager_epoch_identity"],
+        "formal manager OpenFile manager epoch",
+    )
+    result["budget_profile_identity"] = _mode_identity(
+        record["budget_profile_identity"],
+        "formal manager OpenFile budget profile",
+    )
+    result["formal_root_contract_identity"] = _identity(
+        record["formal_root_contract_identity"],
+        "formal manager OpenFile formal-root contract",
+    )
+    result["formal_resource_calibration_bundle_identity"] = _identity(
+        record["formal_resource_calibration_bundle_identity"],
+        "formal manager OpenFile calibration bundle",
+    )
+    try:
+        result["formal_budget_runtime"] = (
+            authority.validate_formal_budget_runtime(
+                record["formal_budget_runtime"],
+                replay_artifacts=True,
+            )
+        )
+    except Exception as exc:
+        raise FormalLaunchValidationError(
+            f"formal manager OpenFile runtime is invalid: {exc}"
+        ) from exc
+    transport = _closed(
+        record["selected_fd_transport"],
+        frozenset({"owner", "roles", "schema_version"}),
+        "formal manager OpenFile selected-FD transport",
+    )
+    owner_raw = _closed(
+        transport["owner"],
+        frozenset({"pid", "pid_starttime", "uid"}),
+        "formal manager OpenFile selected-FD owner",
+    )
+    if any(
+        isinstance(owner_raw[field], bool)
+        or not isinstance(owner_raw[field], int)
+        for field in ("pid", "pid_starttime", "uid")
+    ) or (
+        owner_raw["pid"] <= 0
+        or owner_raw["pid_starttime"] <= 0
+        or owner_raw["uid"] < 0
+    ):
+        raise FormalLaunchValidationError(
+            "formal manager OpenFile selected-FD owner is invalid"
+        )
+    owner = {
+        field: int(owner_raw[field])
+        for field in ("pid", "pid_starttime", "uid")
+    }
+    roles = transport["roles"]
+    if type(roles) is not dict or set(roles) != set(
+        SELECTED_FD_TRANSPORT_PACKAGE_PATHS
+    ):
+        raise FormalLaunchValidationError(
+            "formal manager OpenFile selected-FD role set drifted"
+        )
+    checked_roles: dict[str, dict[str, object]] = {}
+    for role, package_path in sorted(
+        SELECTED_FD_TRANSPORT_PACKAGE_PATHS.items()
+    ):
+        item = _closed(
+            roles[role],
+            frozenset(
+                {
+                    "descriptor",
+                    "mode",
+                    "package_path",
+                    "proc_fd_path",
+                    "sha256",
+                    "size_bytes",
+                }
+            ),
+            f"formal manager OpenFile selected-FD {role}",
+        )
+        descriptor = item["descriptor"]
+        expected_proc_path = (
+            f"/proc/{owner['pid']}/fd/{descriptor}"
+            if type(descriptor) is int
+            and not isinstance(descriptor, bool)
+            and descriptor >= 3
+            else None
+        )
+        package_payload_role = role in {
+            "authority",
+            "loader",
+            "native_helper_wrapper",
+        }
+        mode = item["mode"]
+        mode_valid = (
+            mode == PACKAGE_PAYLOAD_MODE
+            if package_payload_role
+            else (
+                type(mode) is int
+                and mode & 0o111 != 0
+                and mode & 0o022 == 0
+            )
+        )
+        if (
+            expected_proc_path is None
+            or not mode_valid
+            or item["package_path"] != package_path
+            or item["proc_fd_path"] != expected_proc_path
+            or type(item["sha256"]) is not str
+            or SHA256_RE.fullmatch(item["sha256"]) is None
+            or type(item["size_bytes"]) is not int
+            or isinstance(item["size_bytes"], bool)
+            or item["size_bytes"] <= 0
+        ):
+            raise FormalLaunchValidationError(
+                f"formal manager OpenFile selected-FD {role} identity drifted"
+            )
+        checked_roles[role] = dict(item)
+    result["selected_fd_transport"] = {
+        "owner": owner,
+        "roles": checked_roles,
+        "schema_version": transport["schema_version"],
+    }
+    manager_raw = authority.canonical_json(context["manager_epoch"])
+    expected_manager_identity = {
+        "sha256": hashlib.sha256(manager_raw).hexdigest(),
+        "size_bytes": len(manager_raw),
+    }
+    contract, contract_identity = read_canonical_record(
+        result["formal_root_contract_identity"]["path"],
+        expected_identity=result["formal_root_contract_identity"],
+        label="formal manager OpenFile formal-root contract",
+    )
+    contract_expected_fields = {
+        "authority",
+        "budget_profile_identity",
+        "budget_profile_sha256",
+        "category_limits",
+        "fixed_overhead_category_limits",
+        "root_path",
+        "run_nonce",
+        "schema_version",
+    }
+    if set(contract) != contract_expected_fields:
+        raise FormalLaunchValidationError(
+            "formal-root budget contract field set drifted"
+        )
+    profile_identity = _mode_identity(
+        contract["budget_profile_identity"],
+        "formal-root contract budget profile",
+    )
+    profile, observed_profile_identity = read_canonical_record(
+        profile_identity["path"],
+        expected_identity={
+            key: profile_identity[key]
+            for key in ("path", "sha256", "size_bytes")
+        },
+        label="formal manager OpenFile budget profile",
+    )
+    if (
+        record["schema_version"] != MANAGER_OPENFILE_GRANT_SCHEMA
+        or record["state"] != "PREREGISTERED_UNBOUND"
+        or record["selection_path"] != context["formal_selection_path"]
+        or record["unit_name"] != context["outer_spec"]["unit_name"]
+        or result["attempt_consumption_identity"]
+        != dict(attempt_consumption_identity)
+        or result["manager_epoch_identity"]
+        != expected_manager_identity
+        or transport["schema_version"] != SELECTED_FD_TRANSPORT_SCHEMA
+        or owner
+        != result["formal_budget_runtime"]["broker_actor_identity"]
+        or result["formal_root_contract_identity"]
+        != result["formal_budget_runtime"][
+            "formal_root_contract_identity"
+        ]
+        or contract_identity
+        != result["formal_root_contract_identity"]
+        or profile_identity != result["budget_profile_identity"]
+        or result["budget_profile_identity"]
+        != context["resource_budget_profile_identity"]
+        or result["formal_resource_calibration_bundle_identity"]
+        != context["resource_calibration_authorization_bundles"][
+            "FORMAL_ORGANIC_ARM"
+        ]["identity"]
+        or observed_profile_identity
+        != {
+            key: profile_identity[key]
+            for key in ("path", "sha256", "size_bytes")
+        }
+        or contract["budget_profile_sha256"]
+        != profile.get("profile_sha256")
+        or profile.get("launch_ready") is not True
+        or contract["root_path"]
+        != str(
+            Path(context["campaign_dir"])
+            / "formal-ab16/artifacts"
+        )
+        or contract["run_nonce"] != Path(
+            context["campaign_dir"]
+        ).name
+    ):
+        raise FormalLaunchValidationError(
+            "formal manager OpenFile grant join drifted"
+        )
+    return result
+
+
 def validate_selection(
     value: object,
     *,
@@ -1257,7 +1961,24 @@ def validate_selection(
         != str(Path(context["formal_attempt_dir"]) / "attempt-consumption.json")
     ):
         raise FormalLaunchValidationError("formal selection prerequisite path drifted")
-    record = _closed(value, SELECTION_FIELDS, "formal launch selection")
+    if type(value) is not dict:
+        raise FormalLaunchValidationError(
+            "formal launch selection is not one object"
+        )
+    selection_schema = value.get("schema_version")
+    if selection_schema == FORMAL_SELECTION_SCHEMA:
+        selection_fields = SELECTION_FIELDS
+    elif selection_schema == FORMAL_SELECTION_SCHEMA_V3:
+        selection_fields = SELECTION_FIELDS_V3
+    else:
+        raise FormalLaunchValidationError(
+            "formal launch selection schema is unsupported"
+        )
+    record = _closed(
+        value,
+        selection_fields,
+        "formal launch selection",
+    )
     result = dict(record)
     result["selection_id"] = _token(record["selection_id"], "formal selection ID")
     result["created_at_utc"] = _timestamp(record["created_at_utc"], "formal selection timestamp")
@@ -1295,6 +2016,14 @@ def validate_selection(
         loader_identity=context["formal_loader_identity"],
         python_identity=context["python_identity"],
         selected_byte_launch_identity=context["selected_byte_launch_identity"],
+        selected_fd_transport=context["selected_fd_transport"],
+        budget_broker_endpoint_identity=context[
+            "budget_broker_endpoint_identity"
+        ],
+        native_helper_identity=context["native_helper_identity"],
+        native_helper_wrapper_identity=context[
+            "native_helper_wrapper_identity"
+        ],
         snapshot_root=context["snapshot_root"],
     )
     result["lock_identities"] = _lock_identities(record["lock_identities"])
@@ -1306,9 +2035,37 @@ def validate_selection(
         loader_identity=context["formal_loader_identity"],
         python_identity=context["python_identity"],
         selected_byte_launch_identity=context["selected_byte_launch_identity"],
+        selected_fd_transport=context["selected_fd_transport"],
+        budget_broker_endpoint_identity=context[
+            "budget_broker_endpoint_identity"
+        ],
+        native_helper_identity=context["native_helper_identity"],
+        native_helper_wrapper_identity=context[
+            "native_helper_wrapper_identity"
+        ],
         formal_selection_path=context["formal_selection_path"],
         snapshot_root=context["snapshot_root"],
     )
+    if selection_schema == FORMAL_SELECTION_SCHEMA_V3:
+        result["manager_openfile_grant"] = (
+            _validate_manager_openfile_grant(
+                record["manager_openfile_grant"],
+                context=context,
+                attempt_consumption_identity=checked_consumption,
+            )
+        )
+        manager_grant = result["manager_openfile_grant"]
+        if (
+            manager_grant["selected_fd_transport"]
+            != context["selected_fd_transport"]
+            or manager_grant["formal_budget_runtime"][
+                "broker_endpoint_identity"
+            ]
+            != context["budget_broker_endpoint_identity"]
+        ):
+            raise FormalLaunchValidationError(
+                "formal manager OpenFile transport/context join drifted"
+            )
     if (
         result["publisher"]["python_identity"] != context["python_identity"]
         or result["publisher"]["renderer_identity"] != context["launch_renderer_identity"]
@@ -1361,7 +2118,8 @@ def validate_selection(
     if any(result[field] != expected for field, expected in direct_joins.items()):
         raise FormalLaunchValidationError("formal selection upstream identity join drifted")
     if (
-        record["schema_version"] != FORMAL_SELECTION_SCHEMA
+        record["schema_version"]
+        not in {FORMAL_SELECTION_SCHEMA, FORMAL_SELECTION_SCHEMA_V3}
         or record["status"] != "SELECTED"
         or record["authority_scope"] != AUTHORITY_SCOPE
         or record["publication_path"] != context["formal_selection_path"]

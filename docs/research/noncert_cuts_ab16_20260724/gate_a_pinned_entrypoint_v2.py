@@ -337,8 +337,45 @@ def _planned_sources(
     if type(expected_set_digest) is not str or SHA256_RE.fullmatch(expected_set_digest) is None:
         raise PinnedEntrypointError("planned source-set digest is malformed")
     record = _strict_loads(raw, "planned-source observation")
-    if set(record) != {"planned_source_identities", "planned_source_set_digest"}:
+    if set(record) != {
+        "planned_source_identities",
+        "planned_source_set_digest",
+        "resource_calibration_bundle_identities",
+    }:
         raise PinnedEntrypointError("planned-source observation key set drifted")
+    calibration = record["resource_calibration_bundle_identities"]
+    stages = {
+        "FULL_PREFLIGHT",
+        "GATE_B_QUALIFICATION",
+        "FORMAL_ORGANIC_ARM",
+    }
+    if type(calibration) is not dict or set(calibration) != stages:
+        raise PinnedEntrypointError(
+            "resource calibration bundle stage set drifted"
+        )
+    calibration_paths: set[str] = set()
+    calibration_shas: set[str] = set()
+    for stage in sorted(stages):
+        identity = calibration[stage]
+        if (
+            type(identity) is not dict
+            or set(identity) != {"path", "sha256", "size_bytes"}
+            or type(identity["path"]) is not str
+            or not Path(identity["path"]).is_absolute()
+            or type(identity["sha256"]) is not str
+            or SHA256_RE.fullmatch(identity["sha256"]) is None
+            or type(identity["size_bytes"]) is not int
+            or identity["size_bytes"] <= 0
+        ):
+            raise PinnedEntrypointError(
+                f"resource calibration bundle identity is malformed: {stage}"
+            )
+        calibration_paths.add(identity["path"])
+        calibration_shas.add(identity["sha256"])
+    if len(calibration_paths) != 3 or len(calibration_shas) != 3:
+        raise PinnedEntrypointError(
+            "resource calibration bundle identities are not stage-distinct"
+        )
     sources = record["planned_source_identities"]
     if type(sources) is not dict or any(type(role) is not str for role in sources):
         raise PinnedEntrypointError("planned-source identities are malformed")

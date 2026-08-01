@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import importlib.util
+import json
 from pathlib import Path
 import sys
 from types import ModuleType
@@ -155,6 +156,10 @@ def _cut_free(
     directory: Path,
     incumbent_identity: dict[str, object],
 ) -> Path:
+    incumbent = json.loads(Path(str(incumbent_identity["path"])).read_bytes())
+    incumbent_digest = hashlib.sha256(
+        REPLAY._compact_json(incumbent)  # noqa: SLF001
+    ).hexdigest()
     metadata = _json(directory / "metadata.json", {"fixture": "metadata"})
     model = _json(directory / "model.json", {"fixture": "model"})
     tool = _write(directory / "fixed-replay.py", b"# inert fixture\n")
@@ -168,7 +173,7 @@ def _cut_free(
             "fixed_assignment_count": 1,
             "global_claim_authorized": False,
             "incumbent_identity": incumbent_identity,
-            "incumbent_sha256": incumbent_identity["sha256"],
+            "incumbent_sha256": incumbent_digest,
             "legacy_control_used_as_truth_root": False,
             "metadata_identity": _identity(metadata),
             "model_constraint_count": 1,
@@ -385,6 +390,62 @@ def test_replay_classifies_raw_journal_branches(
     assert receipt["slot"] == "region-capacity-ab-treatment"
     if branch == "applied":
         assert receipt["applied_inequality_evaluations"][0]["violated"] is True
+
+
+def test_formal_replay_emits_v2_and_preserves_exact_budget_binding(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path, "zero")
+    result = REPLAY._strict_json(  # noqa: SLF001
+        fixture["result"].read_bytes(),
+        "fixture result",
+        canonical=True,
+        allow_float=True,
+    )
+    formal_identity = _identity(
+        _json(tmp_path / "formal-budget-authority.json", {"authority": "fixture"})
+    )
+    binding = {
+        "arm_allocation_id": "a" * 64,
+        "arm_slot": result["slot"],
+        "broker_nonce": "b" * 64,
+        "broker_socket_fd": 8,
+        "filesystem_write_confinement": "landlock-read-only-worker-v1",
+        "formal_budget_authority_identity": formal_identity,
+        "next_sequence": 1,
+    }
+    result["budget_authority_binding"] = binding
+    result["schema_version"] = REPLAY.FORMAL_RESULT_SCHEMA
+    for field, path in (
+        ("compile_attach_journal_identity", fixture["journal"]),
+        ("cut_ledger_identity", fixture["ledger"]),
+    ):
+        raw = path.read_bytes()
+        result["evidence"][field] = {
+            "channel": field,
+            "event_count": 1,
+            "schema_version": REPLAY.BUDGET_SEGMENT_BUNDLE_SCHEMA,
+            "segment_identities": [_identity(path)],
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw),
+        }
+    fixture["result"].write_bytes(REPLAY.canonical_json(result))
+    cut_free = REPLAY._strict_json(  # noqa: SLF001
+        fixture["cut_free"].read_bytes(),
+        "fixture cut-free replay",
+        canonical=True,
+    )
+    cut_free["schema_version"] = REPLAY.FORMAL_CUT_FREE_SCHEMA
+    fixture["cut_free"].write_bytes(REPLAY.canonical_json(cut_free))
+
+    receipt = REPLAY.replay_arm(
+        arm_result=fixture["result"],
+        cut_free_replay=fixture["cut_free"],
+        replay_tool_identity=_identity(TOOL_PATH),
+    )
+
+    assert receipt["schema_version"] == REPLAY.FORMAL_RECEIPT_SCHEMA
+    assert receipt["budget_authority_binding"] == binding
 
 
 def test_budget_unknown_without_new_incumbent_replays_admitted_baseline(

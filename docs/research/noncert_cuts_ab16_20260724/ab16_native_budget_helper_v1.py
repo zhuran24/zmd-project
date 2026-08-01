@@ -11,16 +11,26 @@ from __future__ import annotations
 from collections.abc import Sequence
 import ctypes
 import errno
+import fcntl
 import hashlib
 import os
 from pathlib import Path
 import stat
 import subprocess
+import sys
 from typing import NoReturn
 
 
 NATIVE_HELPER_SCHEMA = "noncert-cuts-ab16-native-budget-helper-v1"
 MAX_HELPER_BYTES = 4 * 1024 * 1024
+NATIVE_HELPER_PACKAGE_PATH = "payload/system.native_budget_helper.bin"
+NATIVE_HELPER_WRAPPER_PACKAGE_PATH = "payload/tool.ab16_native_budget_helper_v1.py"
+NATIVE_HELPER_SHA256 = (
+    "65150434dc370596413e3e425e5cdcaa2d7960b8b181109f738588e8f40dca81"
+)
+NATIVE_HELPER_SIZE_BYTES = 16512
+NATIVE_HELPER_SOURCE_MODE = 0o555
+NATIVE_HELPER_BUILD_ID_SHA1 = "808dbb57b4fd260e704cb7399e76d76fef2e3146"
 
 
 class NativeBudgetHelperError(RuntimeError):
@@ -186,19 +196,156 @@ def build_shared_object(
     return snapshot_regular(output_path, executable=True)
 
 
+def expected_package_identity() -> dict[str, object]:
+    return {
+        "binary_format": "ELF64",
+        "build_id_sha1": NATIVE_HELPER_BUILD_ID_SHA1,
+        "byte_order": "little",
+        "elf_abi": "SYSV",
+        "elf_machine": 62,
+        "elf_type": 3,
+        "elf_version": 1,
+        "host_machine": "x86_64",
+        "host_platform": "linux",
+        "mode": NATIVE_HELPER_SOURCE_MODE,
+        "package_path": NATIVE_HELPER_PACKAGE_PATH,
+        "sha256": NATIVE_HELPER_SHA256,
+        "size_bytes": NATIVE_HELPER_SIZE_BYTES,
+        "wrapper_package_path": NATIVE_HELPER_WRAPPER_PACKAGE_PATH,
+    }
+
+
+def _verify_elf(raw: bytes) -> None:
+    expected = expected_package_identity()
+    if sys.platform != "linux" or os.uname().machine != "x86_64":
+        _fail(
+            "NATIVE_HELPER_HOST_UNSUPPORTED",
+            "native helper requires the registered Linux x86_64 host",
+        )
+    if (
+        len(raw) != expected["size_bytes"]
+        or hashlib.sha256(raw).hexdigest() != expected["sha256"]
+        or len(raw) < 64
+        or raw[:4] != b"\x7fELF"
+        or raw[4:8] != b"\x02\x01\x01\x00"
+        or int.from_bytes(raw[16:18], "little") != expected["elf_type"]
+        or int.from_bytes(raw[18:20], "little") != expected["elf_machine"]
+        or int.from_bytes(raw[20:24], "little") != expected["elf_version"]
+    ):
+        _fail("NATIVE_HELPER_ELF_DRIFT", "native helper bytes or ELF header drifted")
+    program_offset = int.from_bytes(raw[32:40], "little")
+    program_entry_size = int.from_bytes(raw[54:56], "little")
+    program_count = int.from_bytes(raw[56:58], "little")
+    if program_entry_size != 56 or program_count <= 0:
+        _fail("NATIVE_HELPER_ELF_DRIFT", "native helper ELF program table drifted")
+    build_ids: list[str] = []
+    for index in range(program_count):
+        start = program_offset + index * program_entry_size
+        end = start + program_entry_size
+        if end > len(raw):
+            _fail("NATIVE_HELPER_ELF_DRIFT", "native helper ELF program table is truncated")
+        if int.from_bytes(raw[start : start + 4], "little") != 4:
+            continue
+        note_offset = int.from_bytes(raw[start + 8 : start + 16], "little")
+        note_size = int.from_bytes(raw[start + 32 : start + 40], "little")
+        note_end = note_offset + note_size
+        if note_end > len(raw):
+            _fail("NATIVE_HELPER_ELF_DRIFT", "native helper ELF note table is truncated")
+        cursor = note_offset
+        while cursor < note_end:
+            if cursor + 12 > note_end:
+                _fail("NATIVE_HELPER_ELF_DRIFT", "native helper ELF note header is truncated")
+            name_size = int.from_bytes(raw[cursor : cursor + 4], "little")
+            desc_size = int.from_bytes(raw[cursor + 4 : cursor + 8], "little")
+            note_type = int.from_bytes(raw[cursor + 8 : cursor + 12], "little")
+            cursor += 12
+            name_end = cursor + name_size
+            desc_start = (name_end + 3) & ~3
+            desc_end = desc_start + desc_size
+            next_note = (desc_end + 3) & ~3
+            if name_end > note_end or desc_end > note_end or next_note > note_end:
+                _fail("NATIVE_HELPER_ELF_DRIFT", "native helper ELF note payload is truncated")
+            if note_type == 3 and raw[cursor:name_end].rstrip(b"\0") == b"GNU":
+                build_ids.append(raw[desc_start:desc_end].hex())
+            cursor = next_note
+    if build_ids != [expected["build_id_sha1"]]:
+        _fail("NATIVE_HELPER_ELF_DRIFT", "native helper GNU BuildID drifted")
+
+
+def snapshot_retained_package_member(descriptor: int) -> dict[str, object]:
+    if type(descriptor) is not int or descriptor < 3:
+        _fail("NATIVE_HELPER_RETAINED_FD_INVALID", repr(descriptor))
+    try:
+        flags = fcntl.fcntl(descriptor, fcntl.F_GETFL)
+        before = os.fstat(descriptor)
+    except OSError as exc:
+        _fail("NATIVE_HELPER_RETAINED_FD_INVALID", str(exc))
+    if (
+        flags & os.O_ACCMODE != os.O_RDONLY
+        or not stat.S_ISREG(before.st_mode)
+        or before.st_nlink != 1
+        or before.st_size != NATIVE_HELPER_SIZE_BYTES
+    ):
+        _fail(
+            "NATIVE_HELPER_RETAINED_FD_INVALID",
+            "descriptor is not the fixed read-only package member",
+        )
+    raw = bytearray()
+    offset = 0
+    while offset < before.st_size:
+        block = os.pread(
+            descriptor,
+            min(1024 * 1024, before.st_size - offset),
+            offset,
+        )
+        if not block:
+            _fail("NATIVE_HELPER_RETAINED_FD_DRIFT", "short read")
+        raw.extend(block)
+        offset += len(block)
+    if os.pread(descriptor, 1, before.st_size):
+        _fail("NATIVE_HELPER_RETAINED_FD_DRIFT", "member grew")
+    after = os.fstat(descriptor)
+    stable = (
+        "st_dev",
+        "st_ino",
+        "st_mode",
+        "st_nlink",
+        "st_size",
+        "st_mtime_ns",
+        "st_ctime_ns",
+    )
+    if any(getattr(before, field) != getattr(after, field) for field in stable):
+        _fail("NATIVE_HELPER_RETAINED_FD_DRIFT", "member identity changed")
+    _verify_elf(bytes(raw))
+    return expected_package_identity()
+
+
 class NativeBudgetHelper:
     """Identity-bound access to the native helper's narrow ABI."""
 
-    def __init__(self, path: Path | str, *, expected_identity: dict[str, object]) -> None:
-        observed = snapshot_regular(path, executable=True)
-        if (
-            set(expected_identity) != {"path", "sha256", "size_bytes"}
-            or observed != expected_identity
-        ):
-            _fail("NATIVE_HELPER_PIN_MISMATCH", str(path))
+    def __init__(
+        self,
+        retained_package_member_fd: int,
+        *,
+        expected_identity: dict[str, object],
+    ) -> None:
+        if type(retained_package_member_fd) is not int:
+            _fail(
+                "NATIVE_HELPER_AMBIENT_LOAD_FORBIDDEN",
+                "native helper must be loaded from a retained package member FD",
+            )
+        observed = snapshot_retained_package_member(
+            retained_package_member_fd
+        )
+        if expected_identity != observed:
+            _fail(
+                "NATIVE_HELPER_PIN_MISMATCH",
+                "retained package member disagrees with independent replay",
+            )
         self.identity = observed
+        origin = f"/proc/self/fd/{retained_package_member_fd}"
         try:
-            library = ctypes.CDLL(str(observed["path"]), use_errno=True)
+            library = ctypes.CDLL(origin, use_errno=True)
         except OSError as exc:
             _fail("NATIVE_HELPER_LOAD_FAILED", str(exc))
         self._library = library
@@ -225,7 +372,10 @@ class NativeBudgetHelper:
         library.ab16_install_no_filesystem_writes_landlock.restype = ctypes.c_int
         library.ab16_fd_has_writable_mapping.argtypes = [ctypes.c_int]
         library.ab16_fd_has_writable_mapping.restype = ctypes.c_int
-        if snapshot_regular(path, executable=True) != observed:
+        if (
+            snapshot_retained_package_member(retained_package_member_fd)
+            != observed
+        ):
             _fail("NATIVE_HELPER_PIN_MISMATCH", "helper changed while loading")
 
     @staticmethod

@@ -34,7 +34,6 @@ from datetime import datetime, timezone
 import argparse
 import fcntl
 import hashlib
-import importlib
 import math
 import os
 from pathlib import Path
@@ -50,6 +49,9 @@ from docs.research.noncert_cuts_ab16_20260724 import ab16_authority_v2 as author
 from docs.research.noncert_cuts_ab16_20260724 import ab16_formal_launch_validator_v1 as launch_validator
 from docs.research.noncert_cuts_ab16_20260724 import ab16_formal_success_verifier_v1 as success_verifier
 from docs.research.noncert_cuts_ab16_20260724 import ab16_outer_closeout_state_v1 as closeout_state
+from docs.research.noncert_cuts_ab16_20260724 import (
+    ab16_outer_refunit_closeout_v1 as closeout_helper,
+)
 
 
 LOCK_HANDOFF_SCHEMA = "noncert-cuts-ab16-outer-guardian-lock-handoff-v1"
@@ -59,6 +61,7 @@ GUARDIAN_PRESELECTION_CANCEL_SCHEMA = "noncert-cuts-ab16-outer-guardian-preselec
 GUARDIAN_PRESELECTION_ACK_SCHEMA = "noncert-cuts-ab16-outer-guardian-preselection-ack-v1"
 GUARDIAN_TERMINAL_SCHEMA = "noncert-cuts-ab16-outer-guardian-terminal-command-v1"
 GUARDIAN_LOCK_CLOSE_SCHEMA = "noncert-cuts-ab16-outer-guardian-lock-close-v1"
+SUPERVISOR_DEATH_SCHEMA = "noncert-cuts-ab16-supervisor-death-v1"
 
 MAX_FRAME_BYTES = 1024 * 1024
 LOCK_COUNT = len(closeout_state.LOCK_PATHS)
@@ -271,10 +274,7 @@ def _closeout_helper_module() -> Any:
 
     sys.modules.setdefault("ab16_authority_v2", authority)
     sys.modules.setdefault("ab16_outer_closeout_state_v1", closeout_state)
-    return importlib.import_module(
-        "docs.research.noncert_cuts_ab16_20260724."
-        "ab16_outer_refunit_closeout_v1"
-    )
+    return closeout_helper
 
 
 class ResidualRuntimePort(Protocol):
@@ -446,7 +446,7 @@ class SupervisorDeathWitness:
             return {
                 "pidfd_exit_ready": True,
                 "process_identity": dict(self.process_identity),
-                "schema_version": "noncert-cuts-ab16-supervisor-death-v1",
+                "schema_version": SUPERVISOR_DEATH_SCHEMA,
                 "status": "SUPERVISOR_DEATH_PROVED",
             }
         if not self.exit_observer(self.descriptor):
@@ -455,7 +455,7 @@ class SupervisorDeathWitness:
         return {
             "pidfd_exit_ready": True,
             "process_identity": dict(self.process_identity),
-            "schema_version": "noncert-cuts-ab16-supervisor-death-v1",
+            "schema_version": SUPERVISOR_DEATH_SCHEMA,
             "status": "SUPERVISOR_DEATH_PROVED",
         }
 
@@ -531,7 +531,7 @@ def validate_supervisor_death_observation(
         "expected supervisor death process",
     )
     if (
-        record["schema_version"] != "noncert-cuts-ab16-supervisor-death-v1"
+        record["schema_version"] != SUPERVISOR_DEATH_SCHEMA
         or record["status"] != "SUPERVISOR_DEATH_PROVED"
         or record["pidfd_exit_ready"] is not True
         or process != expected

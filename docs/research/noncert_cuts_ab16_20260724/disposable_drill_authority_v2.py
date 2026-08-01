@@ -38,6 +38,10 @@ ROOT_SCHEMA = "noncert-cuts-ab16-disposable-drill-root-v2"
 CONTROL_SCHEMA = "noncert-cuts-ab16-disposable-drill-control-v2"
 PACKAGE_SCHEMA = "noncert-cuts-ab16-disposable-drill-package-manifest-v2"
 RESULT_SCHEMA = "noncert-cuts-ab16-disposable-drill-authority-result-v2"
+SOURCE_SNAPSHOT_SCHEMA = "noncert-cuts-ab16-disposable-source-snapshot-v1"
+SOURCE_SNAPSHOT_MATERIALIZATION_SCHEMA = (
+    "noncert-cuts-ab16-disposable-source-snapshot-materialization-v1"
+)
 PURPOSE = "AB16_GATE_A_DISPOSABLE_DRILL_AUTHORITY"
 PACKAGE_PURPOSE = "AB16_GATE_A_DISPOSABLE_DRILL_SOURCE_PACKAGE"
 RESULT_PURPOSE = "AB16_GATE_A_DISPOSABLE_DRILL_AUTHORITY_READY"
@@ -1093,7 +1097,7 @@ def _build_drill_source_snapshot(
             "planned_source_set_digest": planned_source_set_digest,
             "repository_head": repository_head,
             "repository_root": str(repository_root),
-            "schema_version": "noncert-cuts-ab16-disposable-source-snapshot-v1",
+            "schema_version": SOURCE_SNAPSHOT_SCHEMA,
             "snapshot_root": str(snapshot_root),
         },
     )
@@ -1110,7 +1114,7 @@ def _build_drill_source_snapshot(
             "member_digest": member_digest,
             "planned_source_set_digest": planned_source_set_digest,
             "schema_version": (
-                "noncert-cuts-ab16-disposable-source-snapshot-materialization-v1"
+                SOURCE_SNAPSHOT_MATERIALIZATION_SCHEMA
             ),
             "snapshot_root": str(snapshot_root),
             "status": "PASS",

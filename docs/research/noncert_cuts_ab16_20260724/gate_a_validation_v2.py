@@ -41,8 +41,8 @@ import disposable_drill_authority_v2 as drill_authority  # noqa: E402
 import organic_resource_verifier_v2 as verifier  # noqa: E402
 
 
-PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v6"
-GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v2"
+PREFLIGHT_SCHEMA = "noncert-cuts-ab16-gate-a-full-preflight-receipt-v7"
+GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v3"
 PREFLIGHT_PURPOSE = "AB16_GATE_A_FULL_PREFLIGHT"
 GATE_A_PURPOSE = "AB16_OFFLINE_SOURCE_SET_PREFLIGHT"
 PREFLIGHT_EXECUTION_STRATEGY = "same-fd-subreaper-ab16-qualification-runner-v4"
@@ -54,7 +54,7 @@ PREFLIGHT_SCRATCH_BASENAME = "pytest-scratch"
 PREFLIGHT_BASETEMP_BASENAME = "basetemp"
 PREFLIGHT_SCRATCH_POLICY = "fresh-no-overwrite-repo-local-retained-closed-tree-v1"
 PREFLIGHT_SCRATCH_CLOSURE_FAILURE_EXIT_CODE = 125
-PREFLIGHT_PUBLICATION_COMMIT_SCHEMA = "noncert-cuts-ab16-gate-a-preflight-publication-commit-v1"
+PREFLIGHT_PUBLICATION_COMMIT_SCHEMA = "noncert-cuts-ab16-gate-a-preflight-publication-commit-v2"
 PYTEST_COLLECTION_STAGE_SCHEMA = "ab16-pytest-collection-stage-v1"
 PYTEST_COLLECTION_TERMINAL_SCHEMA = "ab16-pytest-collection-terminal-v1"
 PYTEST_COLLECTION_BINDING_SCHEMA = "noncert-cuts-ab16-pytest-collection-binding-v1"

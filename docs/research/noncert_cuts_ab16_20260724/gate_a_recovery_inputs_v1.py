@@ -19,7 +19,7 @@ from collections.abc import Mapping, Sequence
 import os
 from pathlib import Path
 import sys
-from typing import Any
+from typing import Any, cast
 
 
 RESEARCH_DIR = Path(__file__).resolve().parent
@@ -89,6 +89,7 @@ def publish_recovery_inputs(
     output_dir: Path | str,
     strict_input_paths: Mapping[str, Path | str],
     system_tool_paths: Mapping[str, Path | str],
+    resource_calibration_bundle_paths: Mapping[str, Path | str],
 ) -> dict[str, object]:
     """Create one exact three-file recovery input directory."""
 
@@ -111,9 +112,19 @@ def publish_recovery_inputs(
         strict_input_paths=strict_map,
         system_tool_paths=system_map,
     )
+    (
+        _calibration_paths,
+        calibration_identities,
+    ) = bootstrap._resource_calibration_bundle_sources(  # noqa: SLF001
+        resource_calibration_bundle_paths
+    )
+    observation["resource_calibration_bundle_identities"] = (
+        calibration_identities
+    )
     if type(observation) is not dict or set(observation) != {
         "planned_source_identities",
         "planned_source_set_digest",
+        "resource_calibration_bundle_identities",
     }:
         raise RecoveryInputError("planned-source observation schema drifted")
 
@@ -150,6 +161,9 @@ def publish_recovery_inputs(
         strict_input_paths=reloaded_strict,
         system_tool_paths=reloaded_system,
     )
+    replayed_observation["resource_calibration_bundle_identities"] = (
+        calibration_identities
+    )
     if replayed_observation != observation:
         raise RecoveryInputError("planned-source observation drifted after path-map publication")
     observation_identity = lifecycle.write_exclusive(
@@ -177,7 +191,12 @@ def publish_recovery_inputs(
             "solver_run_authorized": False,
         },
         "input_authority_dir": str(input_authority_dir),
-        "planned_source_count": len(observation["planned_source_identities"]),
+        "planned_source_count": len(
+            cast(
+                Mapping[str, object],
+                observation["planned_source_identities"],
+            )
+        ),
         "planned_source_observation_identity": _identity(
             observation_raw,
             observation_identity,
@@ -220,6 +239,7 @@ def _system_tools(arguments: argparse.Namespace) -> dict[str, Path]:
         "busctl": arguments.busctl,
         "git": arguments.git,
         "libsystemd": arguments.libsystemd,
+        "native_budget_helper": arguments.native_budget_helper,
         "python3_13": arguments.python3_13,
         "sudo": arguments.sudo,
         "systemctl": arguments.systemctl,
@@ -247,6 +267,22 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--busctl", type=Path, default=Path("/usr/bin/busctl"))
     parser.add_argument("--git", type=Path, default=Path("/usr/bin/git"))
     parser.add_argument("--libsystemd", type=Path, default=Path("/usr/lib/libsystemd.so.0"))
+    parser.add_argument("--native-budget-helper", type=Path, required=True)
+    parser.add_argument(
+        "--resource-calibration-full-preflight",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--resource-calibration-gate-b-qualification",
+        type=Path,
+        required=True,
+    )
+    parser.add_argument(
+        "--resource-calibration-formal-organic-arm",
+        type=Path,
+        required=True,
+    )
     parser.add_argument("--sudo", type=Path, default=Path("/usr/bin/sudo"))
     parser.add_argument("--systemctl", type=Path, default=Path("/usr/bin/systemctl"))
     parser.add_argument("--systemd-run", type=Path, default=Path("/usr/bin/systemd-run"))
@@ -261,6 +297,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             output_dir=arguments.output_dir,
             strict_input_paths=_strict_inputs(repository, arguments),
             system_tool_paths=_system_tools(arguments),
+            resource_calibration_bundle_paths=(
+                bootstrap._cli_resource_calibration_bundle_paths(  # noqa: SLF001
+                    arguments
+                )
+            ),
         )
     except Exception as exc:
         sys.stderr.buffer.write(

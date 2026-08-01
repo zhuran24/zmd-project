@@ -42,21 +42,29 @@ from docs.research.noncert_cuts_ab16_20260724 import (
 
 
 AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
-SUCCESS_RECEIPT_SCHEMA = "noncert-cuts-ab16-formal-pre-release-success-v2"
-INCOMPLETE_RECEIPT_SCHEMA = "noncert-cuts-ab16-formal-detached-incomplete-v3"
-FAILURE_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-pre-release-failure-v3"
+SUCCESS_RECEIPT_SCHEMA = "noncert-cuts-ab16-formal-pre-release-success-v3"
+INCOMPLETE_RECEIPT_SCHEMA = "noncert-cuts-ab16-formal-detached-incomplete-v4"
+FAILURE_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-pre-release-failure-v4"
 FAILURE_TERMINAL_RELEASE_SCHEMA = (
-    "noncert-cuts-ab16-formal-failure-terminal-release-v3"
+    "noncert-cuts-ab16-formal-failure-terminal-release-v5"
 )
 CONTAINMENT_GUARDIAN_ABSENCE_SCHEMA = (
     "noncert-cuts-ab16-containment-guardian-absence-v1"
 )
-CONTROLLER_RESULT_SCHEMA = "noncert-cuts-ab16-formal-controller-result-v2"
+CONTROLLER_RESULT_SCHEMA = "noncert-cuts-ab16-formal-controller-result-v3"
 CONTROLLER_RESULT_NAME = "controller-result.json"
 CHILD_AUDIT_SCHEMA = "noncert-cuts-ab16-formal-child-audit-v1"
 GATE1_OWNERSHIP_SCHEMA = "noncert-cuts-ab16-formal-gate1-prelaunch-ownership-v1"
-ARM_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-formal-arm-prelaunch-v2"
-GUARDIAN_LOCK_CLOSE_SCHEMA = "noncert-cuts-ab16-outer-guardian-lock-close-v1"
+ARM_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-formal-arm-prelaunch-v3"
+GUARDIAN_LOCK_CLOSE_SCHEMA = "noncert-cuts-ab16-outer-guardian-lock-close-v2"
+OUTER_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-outer-formal-prelaunch-v3"
+OUTER_START_SCHEMA = "noncert-cuts-ab16-outer-formal-start-v3"
+FORMAL_CONTAINMENT_SCHEMA = "noncert-cuts-ab16-formal-containment-v2"
+GUARDIAN_ABSENCE_SCHEMA = "noncert-cuts-ab16-formal-guardian-absence-v2"
+DUAL_LOCK_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-dual-lock-release-v4"
+POST_ROOT_CLOSURE_EVIDENCE_SCHEMA = (
+    "noncert-cuts-ab16-post-root-closure-evidence-v1"
+)
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 UNIT_RE = re.compile(r"[A-Za-z0-9_.@:-]+\.service\Z")
 INVOCATION_RE = re.compile(r"[0-9a-f]{32}\Z")
@@ -81,9 +89,6 @@ PRE_RELEASE_PHASES = (
     "outer_terminal",
     "observer",
     "pre_unref_cleanup",
-    "unref_call",
-    "reference_release",
-    "post_unref_absence",
 )
 FALSE_AUTHORIZATIONS = dict(launch_validator.FALSE_CLAIMS)
 REFERENCE_FALSE_AUTHORIZATIONS = dict(closeout_state.FALSE_AUTHORIZATIONS)
@@ -148,12 +153,25 @@ PHASE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
     "guardian_absence": frozenset(
         {
             "cgroup_absent",
+            "detached_success_identity",
             "guardian_close_identity",
             "guardian_identity",
             "pid_absent",
-            "post_unref_absence_identity",
+            "pre_unref_cleanup_identity",
             "systemctl",
             "unit_absent",
+        }
+    ),
+    "supervisor_raw_lock_release": frozenset(
+        {
+            "detached_substantive_identity",
+            "detached_substantive_kind",
+            "failure_pre_release_identity",
+            "guardian_absence_identity",
+            "guardian_close_identity",
+            "lock_identities",
+            "outcome",
+            "supervisor_release",
         }
     ),
     "dual_lock_release": frozenset(
@@ -162,7 +180,12 @@ PHASE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
             "guardian_absence_identity",
             "guardian_close_identity",
             "lock_identities",
-            "supervisor_release",
+            "post_unref_absence_identity",
+            "post_root_closure",
+            "reference_connection_close_identity",
+            "reference_release_identity",
+            "reference_terminal_identity",
+            "supervisor_raw_lock_release_identity",
             "terminal_join",
         }
     ),
@@ -172,10 +195,16 @@ PHASE_SCHEMAS = {
     for phase in PHASE_PAYLOAD_FIELDS
 }
 PHASE_SCHEMAS["dual_lock_release"] = (
-    "noncert-cuts-ab16-formal-dual-lock-release-v2"
+    DUAL_LOCK_RELEASE_SCHEMA
 )
-PHASE_SCHEMAS["outer_prelaunch"] = "noncert-cuts-ab16-formal-outer-prelaunch-v2"
-PHASE_SCHEMAS["outer_start"] = "noncert-cuts-ab16-formal-outer-start-v2"
+PHASE_SCHEMAS["guardian_absence"] = (
+    GUARDIAN_ABSENCE_SCHEMA
+)
+PHASE_SCHEMAS["supervisor_raw_lock_release"] = (
+    closeout_state.SUPERVISOR_RAW_LOCK_RELEASE_SCHEMA
+)
+PHASE_SCHEMAS["outer_prelaunch"] = OUTER_PRELAUNCH_SCHEMA
+PHASE_SCHEMAS["outer_start"] = OUTER_START_SCHEMA
 
 CONTROLLER_RESULT_FIELDS = frozenset(
     {
@@ -233,8 +262,6 @@ FAILURE_RELEASE_FIELDS = frozenset(
         "created_at_utc",
         "detached_success_output_identity",
         "formal_selection_identity",
-        "guardian_absence_identity",
-        "heavy_identities_absent",
         "incomplete_identity",
         "lock_identities",
         "lock_lifecycle",
@@ -244,7 +271,9 @@ FAILURE_RELEASE_FIELDS = frozenset(
         "phase",
         "production_authority_changed",
         "production_certified",
+        "reference_retained",
         "retry_eligible",
+        "runtime_quiescent",
         "schema_version",
         "stage_b_changed",
         "status",
@@ -264,6 +293,7 @@ FAILURE_TERMINAL_RELEASE_FIELDS = frozenset(
         "detached_substantive_kind",
         "failure_pre_release_identity",
         "formal_selection_identity",
+        "guardian_absence_identity",
         "lock_identities",
         "lock_release_effect",
         "lower_bound",
@@ -272,13 +302,15 @@ FAILURE_TERMINAL_RELEASE_FIELDS = frozenset(
         "phase",
         "production_authority_changed",
         "production_certified",
+        "post_root_closure",
+        "reference_completion",
         "retry_eligible",
         "schema_version",
         "stage_b_changed",
         "status",
         "success_eligible",
+        "supervisor_raw_lock_release_identity",
         "terminal_join",
-        "terminal_predecessor_identity",
         "upper_bound",
     }
 )
@@ -289,9 +321,9 @@ CLEANUP_EVIDENCE_FIELDS = frozenset(
         "containment_lock_release_identity",
         "containment_lock_release_publication",
         "errors",
-        "final_observation",
         "frozen_ledger",
-        "reference_terminal",
+        "reference_state",
+        "runtime_quiescence",
     }
 )
 DETACHED_SUCCESS_FIELDS = frozenset(
@@ -397,6 +429,101 @@ def _identity(value: object, label: str) -> dict[str, object]:
         return launch_validator.validate_detached_identity(value, label)
     except Exception as exc:
         raise FormalSuccessVerificationError(f"{label} identity is invalid: {exc}") from exc
+
+
+def _content_identity(value: object, label: str) -> dict[str, object]:
+    record = _closed(
+        value,
+        frozenset({"sha256", "size_bytes"}),
+        label,
+    )
+    if (
+        type(record["sha256"]) is not str
+        or SHA256_RE.fullmatch(record["sha256"]) is None
+        or isinstance(record["size_bytes"], bool)
+        or not isinstance(record["size_bytes"], int)
+        or record["size_bytes"] <= 0
+    ):
+        raise FormalSuccessVerificationError(
+            f"{label} content identity is malformed"
+        )
+    return record
+
+
+def validate_post_root_closure_evidence(
+    value: object,
+    *,
+    expected_branch: str,
+    expected_terminal_join_sha256: str | None = None,
+) -> dict[str, object]:
+    """Validate the fixed outside-root closure/replay join independently."""
+
+    record = _closed(
+        value,
+        frozenset(
+            {
+                "alternate_replay_identity",
+                "alternate_replay_receipt_identity",
+                "alternate_replay_source_identity",
+                "branch",
+                "closure_result_identity",
+                "formal_manifest_identity",
+                "primary_replay_identity",
+                "primary_replay_receipt_identity",
+                "primary_replay_source_identity",
+                "reference_completion_identity",
+                "schema_version",
+                "state",
+                "terminal_join_sha256",
+            }
+        ),
+        "post-root closure evidence",
+    )
+    if expected_branch not in {"success", "incomplete"}:
+        raise FormalSuccessVerificationError(
+            "expected post-root closure branch is invalid"
+        )
+    for field in (
+        "alternate_replay_identity",
+        "alternate_replay_source_identity",
+        "closure_result_identity",
+        "primary_replay_identity",
+        "primary_replay_source_identity",
+        "reference_completion_identity",
+    ):
+        record[field] = _content_identity(
+            record[field],
+            f"post-root closure {field}",
+        )
+    for field in (
+        "alternate_replay_receipt_identity",
+        "formal_manifest_identity",
+        "primary_replay_receipt_identity",
+    ):
+        record[field] = _identity(
+            record[field],
+            f"post-root closure {field}",
+        )
+    terminal_join = record["terminal_join_sha256"]
+    if (
+        record["schema_version"] != POST_ROOT_CLOSURE_EVIDENCE_SCHEMA
+        or record["state"] != "CLOSED_ROOT_DUAL_REPLAY_ACCEPTED"
+        or record["branch"] != expected_branch
+        or type(terminal_join) is not str
+        or SHA256_RE.fullmatch(terminal_join) is None
+        or (
+            expected_terminal_join_sha256 is not None
+            and terminal_join != expected_terminal_join_sha256
+        )
+        or record["primary_replay_source_identity"]["sha256"]
+        == record["alternate_replay_source_identity"]["sha256"]
+        or record["primary_replay_receipt_identity"]["path"]
+        == record["alternate_replay_receipt_identity"]["path"]
+    ):
+        raise FormalSuccessVerificationError(
+            "post-root closure evidence discriminator or independence drifted"
+        )
+    return record
 
 
 def _process(value: object, label: str) -> dict[str, int]:
@@ -672,8 +799,13 @@ def _reference_base(
         record["campaign_root_identity"],
         f"{status} reference campaign root",
     )
+    expected_schema = (
+        closeout_state.REFERENCE_ACQUISITION_SCHEMA_V2
+        if status == "HELD"
+        else closeout_state.REFERENCE_SCHEMA
+    )
     if (
-        record["schema_version"] != closeout_state.REFERENCE_SCHEMA
+        record["schema_version"] != expected_schema
         or record["status"] != status
         or record["unit_name"] != expected_unit_name
         or record["authorizations"] != REFERENCE_FALSE_AUTHORIZATIONS
@@ -1122,34 +1254,81 @@ def validate_reference_release(
     expected_outer_identity: Mapping[str, object],
     expected_acquisition_identity: Mapping[str, object],
     expected_unref_call_identity: Mapping[str, object],
+    expected_observer_identity: Mapping[str, object],
+    expected_pre_unref_cleanup_identity: Mapping[str, object],
+    expected_raw_lock_release_identity: Mapping[str, object],
 ) -> dict[str, object]:
-    """Validate state-owned RELEASED evidence after exact-once close."""
+    """Validate exact-once Unref while the same connection remains open."""
 
     outer = validate_outer_identity(
         expected_outer_identity,
         expected_unit_name=str(expected_outer_identity["unit_name"]),
         active=True,
     )
-    record = _reference_base(
+    payload_fields = frozenset(
+        {
+            "acquisition_identity",
+            "call",
+            "connection_retained",
+            "observer_identity",
+            "pre_unref_cleanup_identity",
+            "supervisor_raw_lock_release_identity",
+            "unref_call_identity",
+        }
+    )
+    record = _closed(
         value,
-        status="RELEASED",
-        expected=expected,
+        closeout_state.BASE_FIELDS
+        | frozenset({"schema_version", "status", "unit_name"})
+        | payload_fields,
+        "prospective reference release",
+    )
+    record["campaign_root_identity"] = _identity(
+        record["campaign_root_identity"],
+        "reference release campaign root",
+    )
+    for field in (
+        "acquisition_identity",
+        "observer_identity",
+        "pre_unref_cleanup_identity",
+        "supervisor_raw_lock_release_identity",
+        "unref_call_identity",
+    ):
+        record[field] = _identity(record[field], f"reference release {field}")
+    manager_epoch = expected.get("manager_epoch")
+    if type(manager_epoch) is not dict:
+        raise FormalSuccessVerificationError(
+            "reference release expected manager epoch is malformed"
+        )
+    call = _reference_call(
+        record["call"],
+        expected_manager_owner=str(manager_epoch.get("dbus_unique_owner", "")),
         expected_unit_name=str(outer["unit_name"]),
-    )
-    record["acquisition_identity"] = _identity(
-        record["acquisition_identity"],
-        "reference release acquisition",
-    )
-    record["unref_call_identity"] = _identity(
-        record["unref_call_identity"],
-        "reference release Unref call",
+        label="prospective UnrefUnit call",
     )
     if (
-        record["acquisition_identity"] != dict(expected_acquisition_identity)
+        record["schema_version"] != closeout_state.REFERENCE_RELEASE_SCHEMA_V2
+        or record["status"] != "UNREF_RETURNED_CONNECTION_RETAINED"
+        or record["unit_name"] != outer["unit_name"]
+        or record["authorizations"] != REFERENCE_FALSE_AUTHORIZATIONS
+        or record["campaign_root_identity"] != expected["campaign_root_identity"]
+        or record["package_id"] != expected["package_id"]
+        or record["upper_bound"] != [1188, 18]
+        or record["lower_bound"] is not None
+        or record["production_certified"] is not False
+        or record["acquisition_identity"] != dict(expected_acquisition_identity)
         or record["unref_call_identity"] != dict(expected_unref_call_identity)
-        or record["connection_close_returned"] is not True
+        or record["observer_identity"] != dict(expected_observer_identity)
+        or record["pre_unref_cleanup_identity"]
+        != dict(expected_pre_unref_cleanup_identity)
+        or record["supervisor_raw_lock_release_identity"]
+        != dict(expected_raw_lock_release_identity)
+        or record["connection_retained"] is not True
     ):
-        raise FormalSuccessVerificationError("reference release/connection close join drifted")
+        raise FormalSuccessVerificationError(
+            "reference release retained-connection join drifted"
+        )
+    record["call"] = call
     return record
 
 
@@ -1185,13 +1364,191 @@ def validate_post_unref_absence(
     return record
 
 
+def _released_connection_verification(
+    value: object,
+    *,
+    expected_client_unique_name: str,
+    expected_manager_owner: str,
+) -> dict[str, object]:
+    record = _closed(
+        value,
+        frozenset(
+            {
+                "client_unique_name",
+                "library_identity",
+                "manager_owner",
+                "reference_held",
+            }
+        ),
+        "released RefUnit connection verification",
+    )
+    record["library_identity"] = _identity(
+        record["library_identity"],
+        "released RefUnit library",
+    )
+    if (
+        record["client_unique_name"] != expected_client_unique_name
+        or record["manager_owner"] != expected_manager_owner
+        or record["reference_held"] is not False
+    ):
+        raise FormalSuccessVerificationError(
+            "released RefUnit manager/client/reference state drifted"
+        )
+    return record
+
+
+def validate_reference_terminal(
+    value: object,
+    *,
+    expected: Mapping[str, object],
+    expected_outer_identity: Mapping[str, object],
+    expected_acquisition_identity: Mapping[str, object],
+    expected_release_identity: Mapping[str, object],
+    expected_unref_call_identity: Mapping[str, object],
+    expected_post_unref_absence_identity: Mapping[str, object],
+    expected_client_unique_name: str,
+) -> dict[str, object]:
+    """Validate post-absence same-connection identity and library replay."""
+
+    outer = validate_outer_identity(
+        expected_outer_identity,
+        expected_unit_name=str(expected_outer_identity["unit_name"]),
+        active=True,
+    )
+    fields = frozenset(
+        {
+            "acquisition_identity",
+            "connection_verification",
+            "post_unref_absence_identity",
+            "reference_release_identity",
+            "unref_call_identity",
+        }
+    )
+    record = _closed(
+        value,
+        closeout_state.BASE_FIELDS
+        | frozenset({"schema_version", "status", "unit_name"})
+        | fields,
+        "prospective reference terminal",
+    )
+    record["campaign_root_identity"] = _identity(
+        record["campaign_root_identity"],
+        "reference terminal campaign root",
+    )
+    for field in fields - {"connection_verification"}:
+        record[field] = _identity(record[field], f"reference terminal {field}")
+    manager_epoch = expected.get("manager_epoch")
+    if type(manager_epoch) is not dict:
+        raise FormalSuccessVerificationError(
+            "reference terminal manager epoch is malformed"
+        )
+    verification = _released_connection_verification(
+        record["connection_verification"],
+        expected_client_unique_name=expected_client_unique_name,
+        expected_manager_owner=str(manager_epoch.get("dbus_unique_owner", "")),
+    )
+    if (
+        record["schema_version"] != closeout_state.REFERENCE_TERMINAL_SCHEMA
+        or record["status"] != "UNREFERENCED_CONNECTION_VERIFIED"
+        or record["unit_name"] != outer["unit_name"]
+        or record["authorizations"] != REFERENCE_FALSE_AUTHORIZATIONS
+        or record["campaign_root_identity"] != expected["campaign_root_identity"]
+        or record["package_id"] != expected["package_id"]
+        or record["upper_bound"] != [1188, 18]
+        or record["lower_bound"] is not None
+        or record["production_certified"] is not False
+        or record["acquisition_identity"] != dict(expected_acquisition_identity)
+        or record["reference_release_identity"] != dict(expected_release_identity)
+        or record["unref_call_identity"] != dict(expected_unref_call_identity)
+        or record["post_unref_absence_identity"]
+        != dict(expected_post_unref_absence_identity)
+    ):
+        raise FormalSuccessVerificationError(
+            "reference terminal predecessor join drifted"
+        )
+    record["connection_verification"] = verification
+    return record
+
+
+def validate_reference_connection_close(
+    value: object,
+    *,
+    expected: Mapping[str, object],
+    expected_outer_identity: Mapping[str, object],
+    expected_reference_terminal_identity: Mapping[str, object],
+    expected_connection_verification: Mapping[str, object],
+) -> dict[str, object]:
+    """Validate the exact-once close receipt after the terminal record."""
+
+    outer = validate_outer_identity(
+        expected_outer_identity,
+        expected_unit_name=str(expected_outer_identity["unit_name"]),
+        active=True,
+    )
+    fields = frozenset(
+        {
+            "connection_close_attempts",
+            "connection_close_returned",
+            "connection_verification",
+            "reference_terminal_identity",
+        }
+    )
+    record = _closed(
+        value,
+        closeout_state.BASE_FIELDS
+        | frozenset({"schema_version", "status", "unit_name"})
+        | fields,
+        "prospective reference connection close",
+    )
+    record["campaign_root_identity"] = _identity(
+        record["campaign_root_identity"],
+        "reference connection close campaign root",
+    )
+    record["reference_terminal_identity"] = _identity(
+        record["reference_terminal_identity"],
+        "reference connection close terminal",
+    )
+    expected_verification = dict(expected_connection_verification)
+    record["connection_verification"] = _released_connection_verification(
+        record["connection_verification"],
+        expected_client_unique_name=str(
+            expected_verification.get("client_unique_name", "")
+        ),
+        expected_manager_owner=str(
+            expected_verification.get("manager_owner", "")
+        ),
+    )
+    if (
+        record["schema_version"]
+        != closeout_state.REFERENCE_CONNECTION_CLOSE_SCHEMA
+        or record["status"] != "CONNECTION_CLOSED"
+        or record["unit_name"] != outer["unit_name"]
+        or record["authorizations"] != REFERENCE_FALSE_AUTHORIZATIONS
+        or record["campaign_root_identity"] != expected["campaign_root_identity"]
+        or record["package_id"] != expected["package_id"]
+        or record["upper_bound"] != [1188, 18]
+        or record["lower_bound"] is not None
+        or record["production_certified"] is not False
+        or record["connection_close_attempts"] != 1
+        or record["connection_close_returned"] is not True
+        or record["connection_verification"] != expected_verification
+        or record["reference_terminal_identity"]
+        != dict(expected_reference_terminal_identity)
+    ):
+        raise FormalSuccessVerificationError(
+            "reference connection-close join drifted"
+        )
+    return record
+
+
 def validate_guardian_absence(
     value: object,
     *,
     expected: Mapping[str, object],
     expected_guardian_identity: Mapping[str, object],
     expected_guardian_close_identity: Mapping[str, object],
-    expected_post_unref_absence_identity: Mapping[str, object],
+    expected_detached_success_identity: Mapping[str, object],
+    expected_pre_unref_cleanup_identity: Mapping[str, object],
 ) -> dict[str, object]:
     """Prove the selected guardian absent before supervisor lock release."""
 
@@ -1206,9 +1563,13 @@ def validate_guardian_absence(
         expected_unit_name=str(expected_guardian_identity["unit_name"]),
         active=True,
     )
-    record["post_unref_absence_identity"] = _identity(
-        record["post_unref_absence_identity"],
-        "guardian absence post-Unref basis",
+    record["detached_success_identity"] = _identity(
+        record["detached_success_identity"],
+        "guardian absence detached substantive basis",
+    )
+    record["pre_unref_cleanup_identity"] = _identity(
+        record["pre_unref_cleanup_identity"],
+        "guardian absence pre-Unref cleanup basis",
     )
     record["guardian_close_identity"] = _identity(
         record["guardian_close_identity"],
@@ -1223,8 +1584,10 @@ def validate_guardian_absence(
         guardian != expected_guardian
         or record["guardian_close_identity"]
         != dict(expected_guardian_close_identity)
-        or record["post_unref_absence_identity"]
-        != dict(expected_post_unref_absence_identity)
+        or record["detached_success_identity"]
+        != dict(expected_detached_success_identity)
+        or record["pre_unref_cleanup_identity"]
+        != dict(expected_pre_unref_cleanup_identity)
         or systemctl != ABSENT_SYSTEMD
         or record["unit_absent"] is not True
         or record["cgroup_absent"] is not True
@@ -1238,6 +1601,123 @@ def validate_guardian_absence(
     return record
 
 
+def validate_supervisor_raw_lock_release(
+    value: object,
+    *,
+    expected: Mapping[str, object],
+    expected_lock_identities: object,
+    expected_detached_substantive_identity: Mapping[str, object],
+    expected_detached_substantive_kind: str,
+    expected_failure_pre_release_identity: Mapping[str, object] | str,
+    expected_guardian_absence_identity: Mapping[str, object],
+    expected_guardian_close_identity: Mapping[str, object] | str,
+) -> dict[str, object]:
+    """Validate the raw three-lock release, not the final terminal join."""
+
+    record = _closed(
+        value,
+        COMMON_RECEIPT_FIELDS
+        | PHASE_PAYLOAD_FIELDS["supervisor_raw_lock_release"],
+        "supervisor raw lock release",
+    )
+    record["campaign_root_identity"] = _identity(
+        record["campaign_root_identity"],
+        "raw release campaign root",
+    )
+    expected_selection = expected["formal_selection_identity"]
+    if expected_selection == "absent":
+        selection: dict[str, object] | str = "absent"
+    else:
+        selection = _identity(
+            expected_selection,
+            "expected raw release formal selection",
+        )
+    if selection != "absent":
+        record["formal_selection_identity"] = _identity(
+            record["formal_selection_identity"],
+            "raw release formal selection",
+        )
+    _utc(record["created_at_utc"], "raw release created_at_utc")
+    record["detached_substantive_identity"] = _identity(
+        record["detached_substantive_identity"],
+        "raw release detached replay",
+    )
+    record["guardian_absence_identity"] = _identity(
+        record["guardian_absence_identity"],
+        "raw release guardian absence",
+    )
+    if expected_guardian_close_identity == "combined-in-guardian-absence":
+        guardian_close: dict[str, object] | str = (
+            "combined-in-guardian-absence"
+        )
+    else:
+        guardian_close = _identity(
+            expected_guardian_close_identity,
+            "expected raw release guardian close",
+        )
+    if expected_failure_pre_release_identity == "absent":
+        failure_pre_release: dict[str, object] | str = "absent"
+    else:
+        failure_pre_release = _identity(
+            expected_failure_pre_release_identity,
+            "expected raw release pre-release failure",
+        )
+    record["lock_identities"] = _lock_identities(record["lock_identities"])
+    release = _closed(
+        record["supervisor_release"],
+        frozenset(
+            {
+                "after_guardian_absence",
+                "attempted",
+                "recorded",
+                "returned",
+            }
+        ),
+        "raw supervisor lock release",
+    )
+    if (
+        record["schema_version"]
+        != closeout_state.SUPERVISOR_RAW_LOCK_RELEASE_SCHEMA
+        or record["status"]
+        != ("PASS" if expected_detached_substantive_kind == "success_v3" else "INCOMPLETE")
+        or record["authority_scope"] != AUTHORITY_SCOPE
+        or record["authorizations"] != FALSE_AUTHORIZATIONS
+        or record["campaign_root_identity"] != expected["campaign_root_identity"]
+        or record["formal_selection_identity"] != selection
+        or record["package_id"] != expected["package_id"]
+        or record["manager_epoch"] != expected["manager_epoch"]
+        or record["lock_identities"] != _lock_identities(expected_lock_identities)
+        or record["detached_substantive_identity"]
+        != dict(expected_detached_substantive_identity)
+        or record["detached_substantive_kind"]
+        != expected_detached_substantive_kind
+        or record["failure_pre_release_identity"] != failure_pre_release
+        or record["guardian_absence_identity"]
+        != dict(expected_guardian_absence_identity)
+        or record["guardian_close_identity"] != guardian_close
+        or record["outcome"]
+        != (
+            "SUCCESS_CANDIDATE"
+            if expected_detached_substantive_kind == "success_v3"
+            else "INCOMPLETE"
+        )
+        or (
+            expected_detached_substantive_kind == "success_v3"
+            and failure_pre_release != "absent"
+        )
+        or (
+            expected_detached_substantive_kind == "incomplete_v4"
+            and type(failure_pre_release) is not dict
+        )
+        or any(value is not True for value in release.values())
+    ):
+        raise FormalSuccessVerificationError(
+            "raw supervisor lock-release ordering drifted"
+        )
+    record["supervisor_release"] = release
+    return record
+
+
 def validate_dual_lock_release(
     value: object,
     *,
@@ -1246,6 +1726,12 @@ def validate_dual_lock_release(
     expected_detached_success_identity: Mapping[str, object],
     expected_guardian_absence_identity: Mapping[str, object],
     expected_guardian_close_identity: Mapping[str, object],
+    expected_raw_lock_release_identity: Mapping[str, object],
+    expected_reference_release_identity: Mapping[str, object],
+    expected_post_unref_absence_identity: Mapping[str, object],
+    expected_reference_terminal_identity: Mapping[str, object],
+    expected_reference_connection_close_identity: Mapping[str, object],
+    expected_post_root_closure: Mapping[str, object],
 ) -> dict[str, object]:
     record = _common(value, phase="dual_lock_release", expected=expected)
     record["detached_success_identity"] = _identity(
@@ -1260,19 +1746,38 @@ def validate_dual_lock_release(
         record["guardian_absence_identity"],
         "guardian absence",
     )
+    for field, label in (
+        ("supervisor_raw_lock_release_identity", "raw supervisor lock release"),
+        ("reference_release_identity", "reference release"),
+        ("post_unref_absence_identity", "post-Unref absence"),
+        ("reference_terminal_identity", "reference terminal"),
+        ("reference_connection_close_identity", "reference connection close"),
+    ):
+        record[field] = _identity(record[field], label)
     record["lock_identities"] = _lock_identities(record["lock_identities"])
-    supervisor = _closed(
-        record["supervisor_release"],
-        frozenset({"after_guardian_absence", "attempted", "recorded", "returned"}),
-        "supervisor lock release",
+    record["post_root_closure"] = validate_post_root_closure_evidence(
+        record["post_root_closure"],
+        expected_branch="success",
+    )
+    expected_closure = validate_post_root_closure_evidence(
+        expected_post_root_closure,
+        expected_branch="success",
     )
     terminal = _closed(
         record["terminal_join"],
         frozenset(
             {
                 "detached_success_before_guardian_close",
+                "formal_root_closed_before_outside_replays",
                 "guardian_absence_before_supervisor_release",
                 "locks_released_after_substantive_verification",
+                "outside_replays_before_final_join",
+                "post_unref_absence_before_reference_terminal",
+                "raw_lock_release_before_unref",
+                "recovery_disarmed_before_manifest",
+                "broker_absent_before_manifest",
+                "reference_terminal_before_connection_close",
+                "reference_connection_close_before_final_join",
             }
         ),
         "formal terminal join",
@@ -1285,14 +1790,20 @@ def validate_dual_lock_release(
         != dict(expected_guardian_absence_identity)
         or record["guardian_close_identity"]
         != dict(expected_guardian_close_identity)
-        or any(
-            supervisor[field] is not True
-            for field in ("after_guardian_absence", "attempted", "returned", "recorded")
-        )
+        or record["supervisor_raw_lock_release_identity"]
+        != dict(expected_raw_lock_release_identity)
+        or record["reference_release_identity"]
+        != dict(expected_reference_release_identity)
+        or record["post_unref_absence_identity"]
+        != dict(expected_post_unref_absence_identity)
+        or record["reference_terminal_identity"]
+        != dict(expected_reference_terminal_identity)
+        or record["reference_connection_close_identity"]
+        != dict(expected_reference_connection_close_identity)
+        or record["post_root_closure"] != expected_closure
         or any(value is not True for value in terminal.values())
     ):
         raise FormalSuccessVerificationError("guardian/supervisor lock release ordering drifted")
-    record["supervisor_release"] = supervisor
     record["terminal_join"] = terminal
     return record
 
@@ -1306,6 +1817,7 @@ PHASE_VALIDATORS = {
     "pre_unref_cleanup": validate_pre_unref_cleanup,
     "post_unref_absence": validate_post_unref_absence,
     "guardian_absence": validate_guardian_absence,
+    "supervisor_raw_lock_release": validate_supervisor_raw_lock_release,
     "dual_lock_release": validate_dual_lock_release,
 }
 
@@ -1616,7 +2128,8 @@ def validate_markerless_incomplete(
     attempt = Path(str(context["formal_attempt_dir"]))
     if (
         record["schema_version"] != closeout_state.MARKERLESS_SCHEMA
-        or record["status"] != "CONSUMED_INCOMPLETE"
+        or record["status"]
+        != closeout_state.FORMAL_MARKERLESS_INCOMPLETE
         or record["phase"] != expected_phase
         or expected_phase != "DIRECTORY_CREATED_MARKER_UNRECORDED"
         or record["consumed"] is not True
@@ -1626,7 +2139,7 @@ def validate_markerless_incomplete(
         or effect["attempted"] is not True
         or effect["recorded"] is not False
         or record["formal_dir_identity"] != _directory_identity(attempt)
-        or identity["path"] != str(attempt / "markerless-consumed-incomplete.json")
+        or identity["path"] != str(attempt / "markerless-incomplete.json")
         or os.path.lexists(attempt / "attempt-consumption.json")
     ):
         raise FormalSuccessVerificationError("markerless no-backfill/directory join drifted")
@@ -1741,10 +2254,9 @@ def _validate_cleanup_evidence(
     *,
     context: Mapping[str, object],
     incomplete: Mapping[str, object],
-    guardian_absence: Mapping[str, object],
     phase: str,
 ) -> dict[str, object]:
-    """Replay the producer's frozen ledger and final all-absence observation."""
+    """Replay locks-held failure cleanup without requiring RefUnit release."""
 
     record = _closed(value, CLEANUP_EVIDENCE_FIELDS, "failure cleanup evidence")
     try:
@@ -1755,16 +2267,72 @@ def _validate_cleanup_evidence(
                 child_audit,
                 "failure cleanup child audit",
             )
-        observation = closeout_state.validate_absence_observation(
-            record["final_observation"],
+        reference_state = _closed(
+            record["reference_state"],
+            frozenset(
+                {
+                    "acquisition_identity",
+                    "connection_verification",
+                    "kind",
+                    "terminal_identity",
+                }
+            ),
+            "failure cleanup reference state",
+        )
+        kind = reference_state["kind"]
+        if kind == "HELD":
+            reference_state["acquisition_identity"] = _identity(
+                reference_state["acquisition_identity"],
+                "failure cleanup reference acquisition",
+            )
+            if (
+                type(reference_state["connection_verification"]) is not dict
+                or reference_state["terminal_identity"] != "absent"
+            ):
+                raise FormalSuccessVerificationError(
+                    "held failure reference state is malformed"
+                )
+            retained = True
+        elif kind == "NO_REFERENCE_OPENED":
+            if (
+                reference_state["acquisition_identity"] != "absent"
+                or reference_state["connection_verification"] != "absent"
+                or reference_state["terminal_identity"] != "absent"
+            ):
+                raise FormalSuccessVerificationError(
+                    "no-reference failure state is malformed"
+                )
+            retained = False
+        elif kind == "CONNECTION_UNCERTAIN_DROPPED":
+            if (
+                reference_state["connection_verification"] != "absent"
+                or type(reference_state["terminal_identity"]) is not dict
+            ):
+                raise FormalSuccessVerificationError(
+                    "uncertain failure reference state is malformed"
+                )
+            reference_state["terminal_identity"] = _identity(
+                reference_state["terminal_identity"],
+                "failure cleanup uncertain connection terminal",
+            )
+            if reference_state["acquisition_identity"] != "absent":
+                reference_state["acquisition_identity"] = _identity(
+                    reference_state["acquisition_identity"],
+                    "failure cleanup uncertain acquisition",
+                )
+            retained = False
+        else:
+            raise FormalSuccessVerificationError(
+                "failure cleanup reference state kind drifted"
+            )
+        quiescence = closeout_state.validate_runtime_quiescence(
+            record["runtime_quiescence"],
             ledger=ledger,
+            reference_retained=retained,
         )
         errors = closeout_state.validate_failure_list(
             record["errors"],
             "failure cleanup",
-        )
-        reference_terminal = closeout_state._validate_reference_terminal(  # noqa: SLF001
-            record["reference_terminal"]
         )
     except Exception as exc:
         raise FormalSuccessVerificationError(
@@ -1845,18 +2413,16 @@ def _validate_cleanup_evidence(
             "containment failure cleanup lacks incomplete joins"
         )
 
-    ledger_sha = hashlib.sha256(authority.canonical_json(ledger)).hexdigest()
     if (
         record["frozen_ledger"] != ledger
-        or record["final_observation"] != observation
+        or record["runtime_quiescence"] != quiescence
         or record["errors"] != errors
-        or record["reference_terminal"] != reference_terminal
-        or guardian_absence["frozen_ledger_sha256"] != ledger_sha
+        or record["reference_state"] != reference_state
     ):
         raise FormalSuccessVerificationError(
-            "failure cleanup ledger/absence/guardian join drifted"
+            "failure cleanup ledger/quiescence/reference join drifted"
         )
-    if reference_terminal["kind"] == "NO_REFERENCE_OPENED":
+    if reference_state["kind"] == "NO_REFERENCE_OPENED":
         effects = incomplete.get("effects")
         if type(effects) is dict and (
             effects["acquire_attempted"] is not False
@@ -1870,9 +2436,9 @@ def _validate_cleanup_evidence(
         **optional,
         "containment_lock_release_publication": publication,
         "errors": errors,
-        "final_observation": observation,
         "frozen_ledger": ledger,
-        "reference_terminal": reference_terminal,
+        "reference_state": reference_state,
+        "runtime_quiescence": quiescence,
     }
 
 
@@ -1917,6 +2483,8 @@ def validate_pre_release_success(
         frozenset(
             {
                 "guardian_close_is_next_required_step",
+                "reference_connection_must_remain_open",
+                "refunit_must_remain_held",
                 "supervisor_lock_release_permitted",
                 "supervisor_locks_must_remain_held",
             }
@@ -1936,6 +2504,8 @@ def validate_pre_release_success(
         or record["lock_identities"]
         != _lock_identities(expected_lock_identities)
         or lifecycle["guardian_close_is_next_required_step"] is not True
+        or lifecycle["reference_connection_must_remain_open"] is not True
+        or lifecycle["refunit_must_remain_held"] is not True
         or lifecycle["supervisor_lock_release_permitted"] is not False
         or lifecycle["supervisor_locks_must_remain_held"] is not True
         or record["upper_bound"] != [1188, 18]
@@ -2017,8 +2587,6 @@ def validate_failure_release(
     expected_identity: Mapping[str, object],
     expected_incomplete: Mapping[str, object],
     expected_incomplete_identity: Mapping[str, object],
-    expected_guardian_absence: Mapping[str, object],
-    expected_guardian_absence_identity: Mapping[str, object],
     expected_marker_identity: Mapping[str, object] | None,
     expected_selection_identity: Mapping[str, object] | None,
     expected_lock_identities: object,
@@ -2028,10 +2596,6 @@ def validate_failure_release(
     record = _closed(value, FAILURE_RELEASE_FIELDS, "formal failure release")
     identity = _identity(expected_identity, "formal failure release")
     incomplete = _identity(expected_incomplete_identity, "failure incomplete")
-    guardian_absence = _identity(
-        expected_guardian_absence_identity,
-        "failure guardian absence",
-    )
     locks = _lock_identities(record["lock_identities"])
     expected_locks = _lock_identities(expected_lock_identities)
     lifecycle = _closed(
@@ -2039,6 +2603,9 @@ def validate_failure_release(
         frozenset(
             {
                 "detached_incomplete_is_next_required_step",
+                "guardian_absence_required_after_detached",
+                "raw_lock_release_required_after_guardian_absence",
+                "reference_completion_required_after_raw_release",
                 "supervisor_lock_release_permitted",
                 "supervisor_locks_must_remain_held",
             }
@@ -2062,9 +2629,53 @@ def validate_failure_release(
         record["cleanup_evidence"],
         context=context,
         incomplete=expected_incomplete,
-        guardian_absence=expected_guardian_absence,
         phase=phase,
     )
+    if cleanup["reference_state"]["kind"] == "HELD":
+        if expected_selection_identity is None:
+            raise FormalSuccessVerificationError(
+                "held failure RefUnit lacks a formal selection"
+            )
+        acquisition_identity = cleanup["reference_state"][
+            "acquisition_identity"
+        ]
+        acquisition_raw, acquisition_readback = _read_record(
+            acquisition_identity["path"],
+            expected_identity=acquisition_identity,
+            label="failure retained reference acquisition",
+        )
+        outer = cleanup["frozen_ledger"]["outer"]
+        expected_outer = {
+            key: outer[key]
+            for key in (
+                "control_group",
+                "invocation_id",
+                "processes",
+                "unit_name",
+            )
+        }
+        acquisition = validate_reference_acquisition(
+            acquisition_raw,
+            expected={
+                "campaign_root_identity": context["campaign_root_identity"],
+                "formal_selection_identity": expected_selection_identity,
+                "manager_epoch": context["manager_epoch"],
+                "package_id": context["package_id"],
+            },
+            expected_outer_identity=expected_outer,
+            expected_lock_identities=expected_locks,
+            transcript_validator=None,
+        )
+        if (
+            acquisition_readback != acquisition_identity
+            or acquisition_identity["path"]
+            != str(Path(str(context["formal_attempt_dir"])) / "reference-acquisition.json")
+            or acquisition["connection_verification"]
+            != cleanup["reference_state"]["connection_verification"]
+        ):
+            raise FormalSuccessVerificationError(
+                "held failure RefUnit acquisition/connection join drifted"
+            )
     prior_success = _validate_prior_success_output(
         record["detached_success_output_identity"],
         context=context,
@@ -2084,9 +2695,12 @@ def validate_failure_release(
         or record["formal_selection_identity"] != selection
         or record["attempt_marker_identity"] != marker
         or record["incomplete_identity"] != incomplete
-        or record["guardian_absence_identity"] != guardian_absence
         or record["attempt_directory_created"] is not True
-        or record["heavy_identities_absent"] is not True
+        or record["runtime_quiescent"] is not True
+        or record["reference_retained"]
+        is not (
+            cleanup["reference_state"]["kind"] == "HELD"
+        )
         or record["retry_eligible"] is not False
         or record["success_eligible"] is not False
         or record["b6_changed"] is not False
@@ -2098,6 +2712,10 @@ def validate_failure_release(
         or record["production_certified"] is not False
         or locks != expected_locks
         or lifecycle["detached_incomplete_is_next_required_step"] is not True
+        or lifecycle["guardian_absence_required_after_detached"] is not True
+        or lifecycle["raw_lock_release_required_after_guardian_absence"] is not True
+        or lifecycle["reference_completion_required_after_raw_release"]
+        is not record["reference_retained"]
         or lifecycle["supervisor_lock_release_permitted"] is not False
         or lifecycle["supervisor_locks_must_remain_held"] is not True
         or identity["path"]
@@ -2123,7 +2741,10 @@ def validate_failure_terminal_release(
     expected_detached_substantive_kind: str,
     expected_failure_pre_release_identity: Mapping[str, object] | str,
     expected_selection_identity: Mapping[str, object] | None,
-    expected_terminal_predecessor_identity: Mapping[str, object] | str,
+    expected_guardian_absence_identity: Mapping[str, object],
+    expected_raw_lock_release_identity: Mapping[str, object],
+    expected_reference_completion: Mapping[str, object],
+    expected_post_root_closure: Mapping[str, object],
 ) -> dict[str, object]:
     """Validate the sole post-release INCOMPLETE terminal join."""
 
@@ -2156,17 +2777,86 @@ def validate_failure_terminal_release(
             expected_failure_pre_release_identity,
             "expected pre-release failure",
         )
-    if (
-        type(expected_terminal_predecessor_identity) is str
-        and expected_terminal_predecessor_identity in {"absent", "unrecorded"}
-    ):
-        terminal_predecessor: dict[str, object] | str = str(
-            expected_terminal_predecessor_identity
+    guardian_absence = _identity(
+        expected_guardian_absence_identity,
+        "expected failure guardian absence",
+    )
+    raw_release = _identity(
+        expected_raw_lock_release_identity,
+        "expected failure raw lock release",
+    )
+    completion = _closed(
+        expected_reference_completion,
+        frozenset(
+            {
+                "kind",
+                "post_unref_absence_identity",
+                "reference_connection_close_identity",
+                "reference_release_identity",
+                "reference_terminal_identity",
+                "uncertainty_terminal",
+            }
+        ),
+        "expected failure reference completion",
+    )
+    completion_kind = completion["kind"]
+    closure_evidence = validate_post_root_closure_evidence(
+        record["post_root_closure"],
+        expected_branch="incomplete",
+    )
+    expected_closure_evidence = validate_post_root_closure_evidence(
+        expected_post_root_closure,
+        expected_branch="incomplete",
+    )
+    identity_fields = (
+        "post_unref_absence_identity",
+        "reference_connection_close_identity",
+        "reference_release_identity",
+        "reference_terminal_identity",
+    )
+    if completion_kind == "RECORDED_CONNECTION_CLOSED":
+        for field in identity_fields:
+            completion[field] = _identity(
+                completion[field],
+                f"failure reference completion {field}",
+            )
+        if completion["uncertainty_terminal"] != "absent":
+            raise FormalSuccessVerificationError(
+                "closed failure reference completion contains uncertainty"
+            )
+    elif completion_kind == "NO_REFERENCE_OPENED":
+        if any(completion[field] != "absent" for field in identity_fields) or (
+            completion["uncertainty_terminal"] != "absent"
+        ):
+            raise FormalSuccessVerificationError(
+                "no-reference failure completion contains reference evidence"
+            )
+    elif completion_kind == "CONNECTION_UNCERTAIN":
+        for field in identity_fields:
+            if completion[field] not in {"absent", "unrecorded"}:
+                completion[field] = _identity(
+                    completion[field],
+                    f"uncertain failure reference completion {field}",
+                )
+        if type(completion["uncertainty_terminal"]) is not dict:
+            raise FormalSuccessVerificationError(
+                "uncertain failure completion lacks terminal evidence"
+            )
+        completion["uncertainty_terminal"] = (
+            closeout_state._validate_reference_terminal(  # noqa: SLF001
+                completion["uncertainty_terminal"]
+            )
         )
+        if completion["uncertainty_terminal"]["kind"] in {
+            "NO_REFERENCE_OPENED",
+            "RECORDED",
+        }:
+            raise FormalSuccessVerificationError(
+                "uncertain failure completion claims a certain terminal"
+            )
     else:
-        terminal_predecessor = _identity(
-            expected_terminal_predecessor_identity,
-            "expected terminal predecessor",
+        raise FormalSuccessVerificationError(
+            "failure reference completion kind drifted"
         )
     selection: dict[str, object] | str = (
         "absent"
@@ -2177,40 +2867,58 @@ def validate_failure_terminal_release(
         record["terminal_join"],
         frozenset(
             {
-                "detached_substantive_before_supervisor_release",
-                "locks_released_after_substantive_verification",
-                "terminal_predecessor_is_unique",
+                "detached_substantive_before_guardian_absence",
+                "formal_root_closed_before_outside_replays",
+                "guardian_absence_before_raw_lock_release",
+                "outside_replays_before_final_join",
+                "raw_lock_release_before_reference_completion",
+                "recovery_disarmed_before_manifest",
+                "broker_absent_before_manifest",
+                "reference_connection_close_before_final_join",
+                "reference_uncertainty_is_terminal",
             }
         ),
         "failure terminal join",
     )
     attempt = Path(str(context["formal_attempt_dir"]))
-    if expected_detached_substantive_kind == "detached_incomplete_v3":
+    raw_path = str(
+        context["outer_spec"]["receipt_paths"]["supervisor_raw_lock_release"]
+    )
+    if expected_detached_substantive_kind == "incomplete_v4":
         topology_valid = (
             type(failure_pre_release) is dict
             and failure_pre_release["path"] == str(attempt / "failure-release.json")
             and detached["path"]
             == str(attempt / "detached-incomplete-closeout.json")
-            and terminal_predecessor == "absent"
+            and guardian_absence["path"]
+            == str(attempt / "containment-guardian-absence.json")
+            and raw_release["path"] == raw_path
         )
-    elif expected_detached_substantive_kind == "pre_release_success_v2":
-        dual_path = str(
-            context["outer_spec"]["receipt_paths"]["dual_lock_release"]
-        )
+    elif expected_detached_substantive_kind == "success_v3":
         topology_valid = (
             failure_pre_release == "absent"
             and detached["path"]
             == str(context["outer_spec"]["receipt_paths"]["detached_closeout"])
-            and (
-                terminal_predecessor == "unrecorded"
-                or (
-                    type(terminal_predecessor) is dict
-                    and terminal_predecessor["path"] == dual_path
-                )
-            )
+            and guardian_absence["path"]
+            == str(context["outer_spec"]["receipt_paths"]["guardian_absence"])
+            and raw_release["path"] == raw_path
         )
     else:
         topology_valid = False
+    if completion_kind == "RECORDED_CONNECTION_CLOSED":
+        topology_valid = topology_valid and all(
+            completion[field]["path"]
+            == str(context["outer_spec"]["receipt_paths"][path_key])
+            for field, path_key in (
+                ("post_unref_absence_identity", "post_unref_absence"),
+                (
+                    "reference_connection_close_identity",
+                    "reference_connection_close",
+                ),
+                ("reference_release_identity", "reference_release"),
+                ("reference_terminal_identity", "reference_terminal"),
+            )
+        )
     _utc(record["created_at_utc"], "formal failure terminal created_at_utc")
     if (
         record["schema_version"] != FAILURE_TERMINAL_RELEASE_SCHEMA
@@ -2226,16 +2934,31 @@ def validate_failure_terminal_release(
         or record["detached_substantive_kind"]
         != expected_detached_substantive_kind
         or record["failure_pre_release_identity"] != failure_pre_release
-        or record["terminal_predecessor_identity"] != terminal_predecessor
+        or record["guardian_absence_identity"] != guardian_absence
+        or record["supervisor_raw_lock_release_identity"] != raw_release
+        or record["reference_completion"] != completion
+        or closure_evidence != expected_closure_evidence
         or topology_valid is not True
         or locks != expected_locks
         or effect["lock_identities"] != expected_locks
         or effect["released"] is not True
-        or terminal_join["detached_substantive_before_supervisor_release"]
+        or terminal_join["detached_substantive_before_guardian_absence"]
         is not True
-        or terminal_join["locks_released_after_substantive_verification"]
+        or terminal_join["guardian_absence_before_raw_lock_release"]
         is not True
-        or terminal_join["terminal_predecessor_is_unique"] is not True
+        or terminal_join["raw_lock_release_before_reference_completion"]
+        is not True
+        or terminal_join["reference_connection_close_before_final_join"]
+        is not (completion_kind == "RECORDED_CONNECTION_CLOSED")
+        or terminal_join["reference_uncertainty_is_terminal"]
+        is not (
+            completion_kind in {"CONNECTION_UNCERTAIN", "NO_REFERENCE_OPENED"}
+        )
+        or terminal_join["formal_root_closed_before_outside_replays"]
+        is not True
+        or terminal_join["outside_replays_before_final_join"] is not True
+        or terminal_join["recovery_disarmed_before_manifest"] is not True
+        or terminal_join["broker_absent_before_manifest"] is not True
         or record["retry_eligible"] is not False
         or record["success_eligible"] is not False
         or record["b6_changed"] is not False
@@ -2257,6 +2980,8 @@ def validate_failure_terminal_release(
     record["detached_substantive_identity"] = detached
     record["lock_identities"] = locks
     record["lock_release_effect"] = effect
+    record["reference_completion"] = completion
+    record["post_root_closure"] = closure_evidence
     record["terminal_join"] = terminal_join
     return record
 
@@ -2923,7 +3648,7 @@ def verify_incomplete(
             incomplete_raw,
             context=context,
             expected_identity=incomplete_identity,
-            expected_phase=phase,
+            expected_phase=str(incomplete_raw.get("phase", "")),
         )
     else:
         incomplete = validate_consumed_incomplete(
@@ -2931,62 +3656,20 @@ def verify_incomplete(
             context=context,
             expected_identity=incomplete_identity,
             expected_marker_identity=marker_identity,
-            expected_phase=phase,
+            expected_phase=str(incomplete_raw.get("phase", "")),
             expected_selection_identity=selection_identity,
         )
 
-    guardian_absence_identity = _identity(
-        release_raw["guardian_absence_identity"],
-        "failure guardian absence",
-    )
-    guardian_raw, guardian_read_identity = _read_record(
-        guardian_absence_identity["path"],
-        expected_identity=guardian_absence_identity,
-        label="failure guardian absence",
-    )
-    if guardian_read_identity != guardian_absence_identity:
-        raise FormalSuccessVerificationError(
-            "failure guardian absence identity drifted"
-        )
-    guardian_absence = validate_failure_guardian_absence(
-        guardian_raw,
-        context=context,
-        expected_identity=guardian_absence_identity,
-        expected_selection_identity=selection_identity,
-        expected_guardian_identity=(
-            selection["guardian_unit_identity"] if selection is not None else None
-        ),
-    )
     release = validate_failure_release(
         release_raw,
         context=context,
         expected_identity=release_identity,
         expected_incomplete=incomplete,
         expected_incomplete_identity=incomplete_identity,
-        expected_guardian_absence=guardian_absence,
-        expected_guardian_absence_identity=guardian_absence_identity,
         expected_marker_identity=marker_identity,
         expected_selection_identity=selection_identity,
         expected_lock_identities=expected_locks,
     )
-    containment_identities: dict[str, dict[str, object]] = {}
-    if phase in {
-        "CONTAINMENT_HOLD",
-        "BARRIER_FAILED_OR_UNCERTAIN_CONTAINMENT_HOLD",
-    }:
-        if marker_identity is None or selection_identity is None:
-            raise FormalSuccessVerificationError(
-                "containment failure lacks selected marker topology"
-            )
-        containment_identities = _validate_containment_failure_chain(
-            context=context,
-            incomplete=incomplete,
-            incomplete_identity=incomplete_identity,
-            guardian_absence=guardian_absence,
-            guardian_absence_identity=guardian_absence_identity,
-            cleanup_evidence=release["cleanup_evidence"],
-        )
-
     final = {
         "authority_scope": AUTHORITY_SCOPE,
         "authorizations": dict(FALSE_AUTHORIZATIONS),
@@ -3003,12 +3686,10 @@ def verify_incomplete(
             "formal_selection_identity": (
                 selection_identity if selection_identity is not None else "absent"
             ),
-            "guardian_absence_identity": guardian_absence_identity,
             "incomplete_identity": incomplete_identity,
             "prior_detached_success_identity": release[
                 "detached_success_output_identity"
             ],
-            **containment_identities,
         },
         "lower_bound": "absent",
         "package_id": context["package_id"],
@@ -3182,41 +3863,18 @@ def verify_success(
     ):
         raise FormalSuccessVerificationError("pre-Unref cleanup/observer join drifted")
     receipts["pre_unref_cleanup"] = pre_unref
-    unref_raw, unref_identity = _read_record(
-        Path(str(context["formal_attempt_dir"])) / "unref-call.json",
-        expected_identity=None,
-        label="Unref call",
-    )
-    unref = validate_unref_call(
-        unref_raw,
-        expected=expected_common,
-        expected_outer_identity=outer_identity,
-        expected_acquisition_identity=identities["reference_acquisition"],
-        expected_client_unique_name=acquisition["acquire_call"]["client_unique_name"],
-        expected_observer_identity=identities["observer"],
-        expected_pre_unref_cleanup_identity=identities["pre_unref_cleanup"],
-    )
-    receipts["unref_call"] = unref
-    identities["unref_call"] = unref_identity
-    release = validate_reference_release(
-        read_phase("reference_release"),
-        expected=expected_common,
-        expected_outer_identity=outer_identity,
-        expected_acquisition_identity=identities["reference_acquisition"],
-        expected_unref_call_identity=unref_identity,
-    )
-    receipts["reference_release"] = release
-    post_unref = validate_post_unref_absence(
-        read_phase("post_unref_absence"),
-        expected=expected_common,
-        expected_outer_identity=outer_identity,
-    )
-    if post_unref["load_state"]["reference_release_identity"] != identities["reference_release"]:
-        raise FormalSuccessVerificationError("post-Unref/reference-release identity join drifted")
-    receipts["post_unref_absence"] = post_unref
+    if os.path.lexists(Path(str(context["formal_attempt_dir"])) / "unref-call.json"):
+        raise FormalSuccessVerificationError(
+            "pre-release verifier observed future receipt: unref_call"
+        )
     for forbidden in (
         "guardian_lock_close",
         "guardian_absence",
+        "supervisor_raw_lock_release",
+        "reference_release",
+        "post_unref_absence",
+        "reference_terminal",
+        "reference_connection_close",
         "dual_lock_release",
     ):
         if os.path.lexists(paths[forbidden]):
@@ -3237,6 +3895,8 @@ def verify_success(
         "lock_identities": _lock_identities(selection["lock_identities"]),
         "lock_lifecycle": {
             "guardian_close_is_next_required_step": True,
+            "reference_connection_must_remain_open": True,
+            "refunit_must_remain_held": True,
             "supervisor_lock_release_permitted": False,
             "supervisor_locks_must_remain_held": True,
         },

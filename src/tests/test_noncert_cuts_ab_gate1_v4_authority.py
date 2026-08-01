@@ -603,6 +603,17 @@ def test_campaign_root_predeclares_gate1_and_reserved_ab16_without_creating_futu
     }
     assert not positive_root.exists()
     prospective = root["stage_topology"]["prospective_ab16"]
+    prospective_root = authority["campaign"] / "formal-ab16/artifacts/prospective"
+    assert root["schema_version"] == AUTH.CAMPAIGN_ROOT_SCHEMA
+    assert Path(prospective["manifest_path"]) == (
+        prospective_root / "manifest-a001.json"
+    )
+    assert Path(prospective["arm_selection_path"]) == (
+        prospective_root / "selection-a001.json"
+    )
+    assert {
+        Path(arm["attempt_dir"]).parent for arm in prospective["arms"]
+    } == {prospective_root / "arms"}
     assert len(prospective["arms"]) == 16
     assert len({arm["unit_name"] for arm in prospective["arms"]}) == 16
     assert not Path(prospective["manifest_path"]).exists()
@@ -625,6 +636,111 @@ def test_campaign_root_predeclares_gate1_and_reserved_ab16_without_creating_futu
     )
     with pytest.raises(AUTH.AuthorityError, match="digest|admission"):
         AUTH.validate_campaign_root(drifted_epoch_path)
+
+
+def _retarget_campaign_root_cohort(
+    root: dict[str, Any],
+    *,
+    schema_version: str,
+    prospective_root: Path,
+) -> dict[str, Any]:
+    result = copy.deepcopy(root)
+    result["schema_version"] = schema_version
+    prospective = result["stage_topology"]["prospective_ab16"]
+    prospective["manifest_path"] = str(prospective_root / "manifest-a001.json")
+    prospective["arm_selection_path"] = str(
+        prospective_root / "selection-a001.json"
+    )
+    prospective["terminal_classification_path"] = str(
+        prospective_root / "terminal-classification-a001.json"
+    )
+    for arm in prospective["arms"]:
+        arm["attempt_dir"] = str(prospective_root / "arms" / arm["slot"])
+    digest = AUTH._campaign_digest(result)  # noqa: SLF001
+    old_namespace = result["unit_namespace"]
+    new_namespace = f"cuts-g1v4-{digest[:12]}"
+    result["unit_namespace"] = new_namespace
+    for unit in result["stage_topology"]["gate1_v4"]["units"].values():
+        unit["unit_name"] = unit["unit_name"].replace(
+            old_namespace,
+            new_namespace,
+        )
+    for arm in prospective["arms"]:
+        arm["unit_name"] = arm["unit_name"].replace(
+            old_namespace,
+            new_namespace,
+        )
+    result["campaign_id"] = digest
+    return result
+
+
+def test_campaign_root_cohorts_preserve_v4_and_reject_path_mixing(
+    tmp_path: Path,
+) -> None:
+    authority = _authority(tmp_path)
+    current = authority["root"]
+    legacy_root = authority["campaign"] / "prospective-ab16"
+    legacy = _retarget_campaign_root_cohort(
+        current,
+        schema_version=AUTH.LEGACY_CAMPAIGN_ROOT_SCHEMA,
+        prospective_root=legacy_root,
+    )
+    assert (
+        AUTH.validate_campaign_root(
+            legacy,
+            campaign_dir=authority["campaign"],
+        )["schema_version"]
+        == AUTH.LEGACY_CAMPAIGN_ROOT_SCHEMA
+    )
+
+    for mixed in (
+        _retarget_campaign_root_cohort(
+            current,
+            schema_version=AUTH.CAMPAIGN_ROOT_SCHEMA,
+            prospective_root=legacy_root,
+        ),
+        _retarget_campaign_root_cohort(
+            current,
+            schema_version=AUTH.LEGACY_CAMPAIGN_ROOT_SCHEMA,
+            prospective_root=(
+                authority["campaign"]
+                / "formal-ab16/artifacts/prospective"
+            ),
+        ),
+    ):
+        with pytest.raises(AUTH.AuthorityError, match="cohort"):
+            AUTH.validate_campaign_root(
+                mixed,
+                campaign_dir=authority["campaign"],
+            )
+
+    arm_mixed = copy.deepcopy(legacy)
+    arm_mixed["stage_topology"]["prospective_ab16"]["arms"][0][
+        "attempt_dir"
+    ] = str(
+        authority["campaign"]
+        / "formal-ab16/artifacts/prospective/arms"
+        / arm_mixed["stage_topology"]["prospective_ab16"]["arms"][0]["slot"]
+    )
+    arm_mixed["campaign_id"] = AUTH._campaign_digest(arm_mixed)  # noqa: SLF001
+    old_namespace = arm_mixed["unit_namespace"]
+    new_namespace = f"cuts-g1v4-{arm_mixed['campaign_id'][:12]}"
+    arm_mixed["unit_namespace"] = new_namespace
+    for unit in arm_mixed["stage_topology"]["gate1_v4"]["units"].values():
+        unit["unit_name"] = unit["unit_name"].replace(
+            old_namespace,
+            new_namespace,
+        )
+    for arm in arm_mixed["stage_topology"]["prospective_ab16"]["arms"]:
+        arm["unit_name"] = arm["unit_name"].replace(
+            old_namespace,
+            new_namespace,
+        )
+    with pytest.raises(AUTH.AuthorityError, match="slot/name"):
+        AUTH.validate_campaign_root(
+            arm_mixed,
+            campaign_dir=authority["campaign"],
+        )
 
 
 def test_gate1_selection_binds_exact_bytes_epoch_contract_and_reserved_slots(tmp_path: Path) -> None:
@@ -891,7 +1007,7 @@ def test_selection_rejects_future_slot_precreation_and_epoch_drift(tmp_path: Pat
         created_at_utc=NOW,
     )
     future = Path(authority["root"]["stage_topology"]["prospective_ab16"]["manifest_path"])
-    future.parent.mkdir()
+    future.parent.mkdir(parents=True)
     future.write_text("{}\n", encoding="utf-8")
     with pytest.raises(AUTH.AuthorityError, match="child path exists"):
         AUTH.write_gate1_selection(
