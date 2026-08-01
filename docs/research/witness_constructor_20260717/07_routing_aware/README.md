@@ -47,7 +47,9 @@
 - layout、geometry snapshot、checker report、objective audit 和 manifest 按内容摘要命名。同名同字节可幂等复用，同名异字节立即拒绝。
 - 所有 CLI 输出必须位于本目录的研究子树。
 - prod-scale 同时只允许一个。launcher 从 busy preflight 起到终态证据落盘一直持有 `/run/user/$UID/zmd-pj-prod-scale-solve.lock`，并检查相关 user unit 与进程。
-- worker 必须运行在 cgroup v2 合同 `MemoryHigh=34G`、`MemoryMax=38G`、`MemorySwapMax=16G`、`OOMPolicy=continue` 下。启动与结束时都从 cgroupfs 读取前三项的 leaf/ancestor 有效限制、`memory.events`、peak 与 swap；`OOMPolicy=continue` 则由记录的 exact systemd argv 与定向测试约束。合同或遥测缺失均拒绝。
+- worker 必须运行在 cgroup v2 合同 `MemoryHigh=35G`、`MemoryMax=39G`、`MemorySwapMax=16G`、`OOMPolicy=continue` 下。启动与结束时都从 cgroupfs 读取前三项的 leaf/ancestor 有效限制、`memory.events`、peak 与 swap；`OOMPolicy=continue` 则由记录的 exact systemd argv 与定向测试约束。合同或遥测缺失均拒绝。
+- 固定路由的墙钟合同分三层：worker 限额默认是 CP-SAT 内部时限再加 900 秒，覆盖依赖加载、建模、求解和结果复验；systemd `RuntimeMaxSec` 再留 30 秒收口，并以 `TimeoutStopSec=15s`、`SendSIGKILL=yes` 保证终止；launcher client 最后再留 30 秒等待，超时后以 15 秒上限读取 exact unit state。`WORKER_WALL_TIMEOUT` 只表示未得到可接受结果，必须保留空 routes，不能解释为不可行。
+- 上述墙钟阶梯已有定向单元测试与模拟超时覆盖，但尚未经过一次真实 prod-scale 长跑验证；在取得该运行回执前，不得把测试覆盖表述为现场验证完成。
 - `OOMPolicy=continue` 用于保留分类证据，不把 OOM 美化为普通 timeout/unknown。`memory.events` 的 `oom`、`oom_kill`、`oom_group_kill` 与进程退出信息共同决定崩溃分类。
 - `CLEAN_RESULT` 只表示进程、结果 schema/integrity 与 OOM 遥测均干净；它不等于 `geometry_ready`。只有结果实际携带可 replay 的完整几何，`geometry_ready` 才可为 true。
 

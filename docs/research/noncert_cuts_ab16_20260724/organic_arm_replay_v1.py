@@ -29,7 +29,7 @@ from pathlib import Path
 import re
 import stat
 import sys
-from typing import Any
+from typing import Any, Protocol
 
 from google.protobuf.message import DecodeError
 from google.protobuf import text_format
@@ -38,12 +38,18 @@ from ortools.sat.python import cp_model
 
 
 RESULT_SCHEMA = "noncert-cuts-ab16-organic-arm-result-v1"
+FORMAL_RESULT_SCHEMA = "noncert-cuts-ab16-organic-arm-result-v2"
+BUDGET_SEGMENT_BUNDLE_SCHEMA = "noncert-cuts-ab16-budget-segment-bundle-v1"
 JOURNAL_SCHEMA = "noncert-cuts-ab16-compile-attach-journal-v1"
 LEDGER_SCHEMA = "cut-ledger-v1"
 CUT_FREE_SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v1"
+FORMAL_CUT_FREE_SCHEMA = (
+    "noncert-cuts-ab16-organic-cut-free-incumbent-replay-v1"
+)
 CORPUS_SCHEMA = "noncert-cuts-ab16-concrete-inequality-corpus-v1"
 ASSIGNMENT_SCHEMA = "noncert-cuts-ab16-applied-assignment-v1"
 RECEIPT_SCHEMA = "noncert-cuts-ab16-independent-organic-arm-replay-v1"
+FORMAL_RECEIPT_SCHEMA = "noncert-cuts-ab16-independent-organic-arm-replay-v2"
 CORPUS_PURPOSE = "independent_concrete_applied_inequality_join"
 ASSIGNMENT_PURPOSE = "organic_cut_attach_assignment"
 RECEIPT_PURPOSE = "independent_organic_arm_event_and_arithmetic_replay"
@@ -92,6 +98,20 @@ MAX_MODEL_BYTES = 2 * 1024 * 1024 * 1024
 
 class ReplayError(RuntimeError):
     """The supplied arm evidence failed closed."""
+
+
+class BudgetPublicationBackend(Protocol):
+    def maximum_bytes(self, label: str, *, artifact_class: str) -> int: ...
+
+    def publish_bytes(
+        self,
+        path: Path,
+        raw: bytes,
+        *,
+        maximum_bytes: int,
+        artifact_class: str,
+        label: str,
+    ) -> Mapping[str, object]: ...
 
 
 @dataclass(frozen=True)
@@ -291,6 +311,59 @@ def _replay_identity(
     return current
 
 
+def _replay_segment_bundle(
+    value: object,
+    label: str,
+) -> Snapshot:
+    bundle = _exact_keys(
+        value,
+        {
+            "channel",
+            "event_count",
+            "schema_version",
+            "segment_identities",
+            "sha256",
+            "size_bytes",
+        },
+        label,
+    )
+    if bundle["schema_version"] != BUDGET_SEGMENT_BUNDLE_SCHEMA:
+        raise ReplayError(f"{label}: schema drifted")
+    segments = bundle["segment_identities"]
+    if type(segments) is not list or not segments:
+        raise ReplayError(f"{label}: segment list is empty")
+    raw_segments: list[bytes] = []
+    for index, value_identity in enumerate(segments):
+        if type(value_identity) is not dict:
+            raise ReplayError(f"{label}: segment {index} is not an object")
+        required = {"path", "sha256", "size_bytes"}
+        if not required.issubset(value_identity):
+            raise ReplayError(f"{label}: segment {index} lacks byte identity")
+        identity = {
+            field: value_identity[field]
+            for field in ("path", "sha256", "size_bytes")
+        }
+        expected = _identity(identity, f"{label} segment {index}")
+        snapshot = snapshot_regular(
+            expected["path"],
+            max_bytes=MAX_JSON_BYTES,
+        )
+        if snapshot.identity != expected:
+            raise ReplayError(f"{label}: segment {index} identity drifted")
+        raw_segments.append(snapshot.data)
+    raw = b"".join(raw_segments)
+    if (
+        type(bundle["event_count"]) is not int
+        or bundle["event_count"] != len(segments)
+        or type(bundle["size_bytes"]) is not int
+        or bundle["size_bytes"] != len(raw)
+        or type(bundle["sha256"]) is not str
+        or hashlib.sha256(raw).hexdigest() != bundle["sha256"]
+    ):
+        raise ReplayError(f"{label}: aggregate identity drifted")
+    return Snapshot(data=raw, identity=dict(bundle))
+
+
 def _utc(value: object, label: str) -> None:
     if type(value) is not str:
         raise ReplayError(f"{label}: timestamp is not a string")
@@ -402,9 +475,7 @@ def _validate_result(
     *,
     result_identity: Mapping[str, object],
 ) -> Mapping[str, Any]:
-    record = _exact_keys(
-        value,
-        {
+    common_fields = {
             "arm",
             "authority_identities",
             "authorizations",
@@ -423,11 +494,17 @@ def _validate_result(
             "slot",
             "status",
             "workers",
-        },
+        }
+    raw = value if type(value) is dict else {}
+    if raw.get("schema_version") == FORMAL_RESULT_SCHEMA:
+        common_fields.add("budget_authority_binding")
+    record = _exact_keys(
+        value,
+        common_fields,
         "organic arm result",
     )
     if (
-        record["schema_version"] != RESULT_SCHEMA
+        record["schema_version"] not in {RESULT_SCHEMA, FORMAL_RESULT_SCHEMA}
         or record["status"] != "RAW_ARM_OBSERVATION_COMPLETE"
         or record["arm"] not in {"control", "treatment"}
         or record["fresh_process_required"] is not True
@@ -444,6 +521,37 @@ def _validate_result(
         or type(record["raw_proof_summary"]) is not dict
     ):
         raise ReplayError("organic arm result scalar semantics drifted")
+    if record["schema_version"] == FORMAL_RESULT_SCHEMA:
+        binding = _exact_keys(
+            record["budget_authority_binding"],
+            {
+                "arm_allocation_id",
+                "arm_slot",
+                "broker_nonce",
+                "broker_socket_fd",
+                "filesystem_write_confinement",
+                "formal_budget_authority_identity",
+                "next_sequence",
+            },
+            "organic arm budget authority binding",
+        )
+        _identity(
+            binding["formal_budget_authority_identity"],
+            "organic arm formal budget authority",
+        )
+        if (
+            type(binding["arm_allocation_id"]) is not str
+            or SHA256_RE.fullmatch(binding["arm_allocation_id"]) is None
+            or binding["arm_slot"] != record["slot"]
+            or type(binding["broker_nonce"]) is not str
+            or type(binding["broker_socket_fd"]) is not int
+            or binding["broker_socket_fd"] < 0
+            or binding["filesystem_write_confinement"]
+            != "landlock-read-only-worker-v1"
+            or type(binding["next_sequence"]) is not int
+            or binding["next_sequence"] <= 0
+        ):
+            raise ReplayError("organic arm budget authority binding drifted")
     authorizations = _exact_keys(
         record["authorizations"],
         {
@@ -477,11 +585,43 @@ def _validate_result(
         },
         "result evidence",
     )
-    _identity(
-        evidence["compile_attach_journal_identity"],
-        "result journal identity",
-    )
-    _identity(evidence["cut_ledger_identity"], "result ledger identity")
+    if record["schema_version"] == FORMAL_RESULT_SCHEMA:
+        for field in (
+            "compile_attach_journal_identity",
+            "cut_ledger_identity",
+        ):
+            bundle = _exact_keys(
+                evidence[field],
+                {
+                    "channel",
+                    "event_count",
+                    "schema_version",
+                    "segment_identities",
+                    "sha256",
+                    "size_bytes",
+                },
+                f"result {field} bundle",
+            )
+            if (
+                bundle["schema_version"] != BUDGET_SEGMENT_BUNDLE_SCHEMA
+                or type(bundle["channel"]) is not str
+                or not bundle["channel"]
+                or type(bundle["event_count"]) is not int
+                or bundle["event_count"] <= 0
+                or type(bundle["segment_identities"]) is not list
+                or len(bundle["segment_identities"]) != bundle["event_count"]
+                or type(bundle["sha256"]) is not str
+                or SHA256_RE.fullmatch(bundle["sha256"]) is None
+                or type(bundle["size_bytes"]) is not int
+                or bundle["size_bytes"] <= 0
+            ):
+                raise ReplayError(f"result {field} bundle is invalid")
+    else:
+        _identity(
+            evidence["compile_attach_journal_identity"],
+            "result journal identity",
+        )
+        _identity(evidence["cut_ledger_identity"], "result ledger identity")
     if (
         evidence["cut_ledger_status"] != "complete"
         or type(evidence["journal_event_counts"]) is not dict
@@ -524,6 +664,8 @@ def _validate_cut_free(
     value: object,
     *,
     arm_incumbent_identity: Mapping[str, object],
+    arm_incumbent_sha256: str,
+    expected_schema: str = CUT_FREE_SCHEMA,
 ) -> Mapping[str, Any]:
     record = _exact_keys(
         value,
@@ -563,14 +705,13 @@ def _validate_cut_free(
     ):
         _identity(record[field], f"cut-free {field}")
     if (
-        record["schema_version"] != CUT_FREE_SCHEMA
+        record["schema_version"] != expected_schema
         or record["purpose"] != "strict_ab16_incumbent_fixed_assignment_replay"
         or record["status"] != "PASS"
         or record["verdict"] != "INCUMBENT_FIXED_ASSIGNMENT_REPLAY_PASS"
         or record["solver_status"] != "OPTIMAL"
         or record["incumbent_identity"] != arm_incumbent_identity
-        or type(record["incumbent_sha256"]) is not str
-        or SHA256_RE.fullmatch(record["incumbent_sha256"]) is None
+        or record["incumbent_sha256"] != arm_incumbent_sha256
         or record["all_fixed_equalities_added"] is not True
         or record["solution_matches_fixed_assignments"] is not True
         or record["legacy_control_used_as_truth_root"] is not False
@@ -1493,16 +1634,26 @@ def replay_arm(
         result_value,
         result_identity=result_snapshot.identity,
     )
-    ledger_snapshot = _replay_identity(
-        result["evidence"]["cut_ledger_identity"],
-        "organic ledger",
-        max_bytes=1_000_000_000,
-    )
-    journal_snapshot = _replay_identity(
-        result["evidence"]["compile_attach_journal_identity"],
-        "compile/attach journal",
-        max_bytes=1_000_000_000,
-    )
+    if result["schema_version"] == FORMAL_RESULT_SCHEMA:
+        ledger_snapshot = _replay_segment_bundle(
+            result["evidence"]["cut_ledger_identity"],
+            "organic ledger",
+        )
+        journal_snapshot = _replay_segment_bundle(
+            result["evidence"]["compile_attach_journal_identity"],
+            "compile/attach journal",
+        )
+    else:
+        ledger_snapshot = _replay_identity(
+            result["evidence"]["cut_ledger_identity"],
+            "organic ledger",
+            max_bytes=1_000_000_000,
+        )
+        journal_snapshot = _replay_identity(
+            result["evidence"]["compile_attach_journal_identity"],
+            "compile/attach journal",
+            max_bytes=1_000_000_000,
+        )
     ledger_events = _parse_ledger(ledger_snapshot)
     journal_events = _parse_journal(journal_snapshot)
     ledger_counts = _event_counts(ledger_events)
@@ -1567,6 +1718,17 @@ def replay_arm(
         )
     else:
         replay_subject_snapshot = baseline_snapshot
+    replay_subject_value = _strict_json(
+        replay_subject_snapshot.data,
+        "cut-free replay subject",
+        canonical=True,
+        allow_float=True,
+    )
+    if type(replay_subject_value) is not dict:
+        raise ReplayError("cut-free replay subject is not an incumbent object")
+    replay_subject_digest = hashlib.sha256(
+        _compact_json(replay_subject_value)
+    ).hexdigest()
     cut_free_snapshot = snapshot_regular(cut_free_replay)
     cut_free_value = _strict_json(
         cut_free_snapshot.data,
@@ -1576,6 +1738,12 @@ def replay_arm(
     _validate_cut_free(
         cut_free_value,
         arm_incumbent_identity=replay_subject_snapshot.identity,
+        arm_incumbent_sha256=replay_subject_digest,
+        expected_schema=(
+            FORMAL_CUT_FREE_SCHEMA
+            if result["schema_version"] == FORMAL_RESULT_SCHEMA
+            else CUT_FREE_SCHEMA
+        ),
     )
     evaluations = _replay_attached_inequalities(
         journal_events=journal_events,
@@ -1602,7 +1770,7 @@ def replay_arm(
             "result manifest identity",
         )
     )
-    return {
+    receipt = {
         "applied_inequality_evaluations": evaluations,
         "arm_incumbent_present": arm_incumbent_present,
         "arm_result_identity": result_snapshot.identity,
@@ -1630,13 +1798,59 @@ def replay_arm(
         "slot": result["slot"],
         "status": "PASS",
     }
+    if result["schema_version"] == FORMAL_RESULT_SCHEMA:
+        receipt["budget_authority_binding"] = dict(
+            result["budget_authority_binding"]
+        )
+        receipt["schema_version"] = FORMAL_RECEIPT_SCHEMA
+    return receipt
 
 
 def write_exclusive(
     output: Path | str,
     value: Mapping[str, object],
+    *,
+    budget_backend: BudgetPublicationBackend | None = None,
+    budget_label: str | None = None,
+    artifact_class: str | None = None,
 ) -> dict[str, object]:
     absolute = _absolute(output)
+    raw = canonical_json(value)
+    if budget_backend is not None:
+        if type(budget_label) is not str or not budget_label or type(artifact_class) is not str:
+            raise ReplayError("budgeted replay output lacks its fixed label/class")
+        maximum = budget_backend.maximum_bytes(
+            budget_label,
+            artifact_class=artifact_class,
+        )
+        if type(maximum) is not int or maximum <= 0 or len(raw) > maximum:
+            raise ReplayError("budgeted replay output exceeds its fixed maximum")
+        try:
+            observed = dict(
+                budget_backend.publish_bytes(
+                    absolute,
+                    raw,
+                    maximum_bytes=maximum,
+                    artifact_class=artifact_class,
+                    label=budget_label,
+                )
+            )
+        except ReplayError:
+            raise
+        except Exception as exc:
+            raise ReplayError(
+                "replay broker publication failed or acknowledgement is uncertain"
+            ) from exc
+        expected = {
+            "path": str(absolute),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw),
+        }
+        if any(observed.get(field) != item for field, item in expected.items()):
+            raise ReplayError("replay broker publication identity drifted")
+        return observed
+    if budget_label is not None or artifact_class is not None:
+        raise ReplayError("replay budget metadata lacks its broker")
     _reject_symlink_chain(absolute.parent)
     if not absolute.parent.is_dir():
         raise ReplayError("output parent is not a directory")
@@ -1644,7 +1858,6 @@ def write_exclusive(
         absolute.parent,
         os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
     )
-    raw = canonical_json(value)
     try:
         descriptor = os.open(
             absolute.name,
@@ -1679,7 +1892,11 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(
+    argv: Sequence[str] | None = None,
+    *,
+    budget_backend: BudgetPublicationBackend | None = None,
+) -> int:
     arguments = _parse_args(argv)
     try:
         receipt = replay_arm(
@@ -1687,7 +1904,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             cut_free_replay=arguments.cut_free_replay,
             replay_tool_identity=snapshot_regular(arguments.replay_tool).identity,
         )
-        identity = write_exclusive(arguments.output, receipt)
+        identity = write_exclusive(
+            arguments.output,
+            receipt,
+            budget_backend=budget_backend,
+            budget_label=(
+                "organic arm replay receipt"
+                if budget_backend is not None
+                else None
+            ),
+            artifact_class="publication" if budget_backend is not None else None,
+        )
     except ReplayError as exc:
         sys.stderr.buffer.write(
             canonical_json(

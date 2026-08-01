@@ -50,9 +50,14 @@ provenance:
   reason: owner 2026-07-02 round-18 第 12 轮外审 relay 时确立;先拼接单条被纠正为逐条,随后 owner 明示"每次外审都这么做"并要求记入记忆。
   evidence:
     - "2026-07-02 round-18:6 份 pr2_5_round18_review_entry_{1..6}_*.md 逐条入剪贴板历史;首次沙箱 Set-Clipboard 静默失败(回读仍是旧内容)、首条竞态回读 0,重试后 6/6 OK。"
-updated_at: "2026-07-02"
+updated_at: "2026-07-20"
 ---
 每轮 GPT Pro 外审 relay 的剪贴板 staging 规程(owner 固定偏好,relay 备好即做、不等开口):
+
+== Linux 侧(CachyOS,2026-07-20 owner 确认)==
+- 工具 = `wl-copy`;剪贴板管理器**有历史**(同 Win+V),owner 从历史里挑着贴。
+- 所以**逐条连发即可,条间隔 ~2s**;不需要"先放路径、90s 后换正文"的延迟两段式(07-19/20 曾用过,owner 已明示不必)。
+- 顺序同 Windows 口径:倒序写入(提示词 N→…→1,最后写包路径),历史顶→底 = 使用顺序。附件包 = zip(非 .7z)。
 
 == 放什么 ==
 - 【审包 .7z 完整路径】(如 `C:\Users\22957\pr2_pkg\zmd_pr2_5_roundNN_<hash>.7z`)——owner 用它在 GPT Pro 上传附件。

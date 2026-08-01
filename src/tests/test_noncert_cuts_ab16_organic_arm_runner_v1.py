@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import ast
+import ctypes
+import fcntl
 import hashlib
 import importlib.util
 import inspect
@@ -8,12 +10,13 @@ import json
 import os
 from pathlib import Path
 import shutil
+import socket
 import stat
 import subprocess
 import sys
 import textwrap
 from types import ModuleType
-from typing import Any
+from typing import Any, Callable
 
 import pytest
 
@@ -21,6 +24,13 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER_PATH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724" / "organic_arm_runner_v1.py"
 CONTRACT_PATH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724" / "ab16_contract_v1.py"
+LIFECYCLE_PATH = (
+    ROOT
+    / "docs"
+    / "research"
+    / "noncert_cuts_ab16_20260724"
+    / "organic_resource_lifecycle_v2.py"
+)
 GIT_PATH = Path(shutil.which("git") or "").resolve(strict=True)
 REPOSITORY_HEAD = subprocess.check_output(
     [str(GIT_PATH), "-C", str(ROOT), "rev-parse", "--verify", "HEAD^{commit}"],
@@ -39,6 +49,7 @@ def _load(path: Path, name: str) -> ModuleType:
 
 RUNNER = _load(RUNNER_PATH, "noncert_cuts_ab16_organic_arm_runner_v1")
 CONTRACT = _load(CONTRACT_PATH, "noncert_cuts_ab16_contract_for_runner_test")
+LIFECYCLE = _load(LIFECYCLE_PATH, "noncert_cuts_ab16_lifecycle_for_runner_test")
 
 
 def _write(path: Path, raw: bytes) -> dict[str, object]:
@@ -53,6 +64,10 @@ def _write(path: Path, raw: bytes) -> dict[str, object]:
 
 def _authority(path: Path, value: object) -> dict[str, object]:
     return _write(path, RUNNER.canonical_json(value))
+
+
+def _detached(identity: dict[str, object]) -> dict[str, object]:
+    return {key: identity[key] for key in ("path", "sha256", "size_bytes")}
 
 
 def _existing_identity(path: Path) -> dict[str, object]:
@@ -136,12 +151,14 @@ class FakeHooks:
         self.construct_env: str | None = "unobserved"
         self.attach_env: str | None = "unobserved"
         self.enabled_families: tuple[str, ...] | None = None
+        self.repository_root: Path | None = None
         self.workers: int | None = None
 
     def construct(self, context: object) -> object:
         self.constructed = True
         self.construct_env = os.environ.get(RUNNER.ATTACH_ENV)
         self.enabled_families = context.enabled_families
+        self.repository_root = context.repository_root
         self.workers = context.workers
         return context
 
@@ -220,6 +237,212 @@ class EvidenceRequiredHooks(FakeHooks):
     requires_model_evidence = True
 
 
+class _BudgetBackend:
+    def __init__(self, fixture: dict[str, Any]) -> None:
+        self.records: list[dict[str, object]] = []
+        self.sequences: dict[str, int] = {}
+        allocation_sha256 = hashlib.sha256(b"arm-allocation").hexdigest()
+        self._binding = {
+            "arm_allocation_id": allocation_sha256,
+            "arm_allocation_identity": {
+                "sha256": allocation_sha256,
+                "size_bytes": len(b"arm-allocation"),
+            },
+            "arm_slot": fixture["selection"]["slot"],
+            "broker_nonce": "broker-nonce",
+            "broker_socket_fd": 91,
+            "filesystem_write_confinement": RUNNER.BUDGET_WORKER_CONFINEMENT,
+            "formal_budget_authority_identity": _existing_identity(
+                fixture["selection_path"]
+            ),
+            "next_sequence": 1,
+        }
+
+    @property
+    def authority_binding(self) -> dict[str, object]:
+        return dict(self._binding)
+
+    def maximum_bytes(self, label: str, *, artifact_class: str) -> int:
+        assert label
+        assert artifact_class in {
+            "closeout",
+            "ledger",
+            "metadata",
+            "model",
+            "publication",
+        }
+        return 4 * 1024 * 1024
+
+    def publish_bytes(
+        self,
+        path: Path,
+        raw: bytes,
+        *,
+        maximum_bytes: int,
+        artifact_class: str,
+        label: str,
+    ) -> dict[str, object]:
+        assert len(raw) <= maximum_bytes
+        record = {
+            "artifact_class": artifact_class,
+            "label": label,
+            "path": str(path),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw),
+        }
+        self.records.append(record)
+        return record
+
+    def append_segment(
+        self,
+        channel: str,
+        sequence: int,
+        raw: bytes,
+        *,
+        maximum_bytes: int,
+        artifact_class: str,
+        arm_slot: str | None = None,
+    ) -> dict[str, object]:
+        assert len(raw) <= maximum_bytes
+        assert sequence == self.sequences.get(channel, 0)
+        self.sequences[channel] = sequence + 1
+        record = {
+            "arm_slot": arm_slot,
+            "artifact_class": artifact_class,
+            "path": f"channels/{channel}/segment-{sequence:08d}.bin",
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "size_bytes": len(raw),
+        }
+        self.records.append(record)
+        return record
+
+    def export_model_to_sealed_memfd(
+        self,
+        model: object,
+        path: Path,
+        *,
+        maximum_bytes: int,
+        label: str,
+    ) -> dict[str, object]:
+        del model, path, maximum_bytes, label
+        raise AssertionError("fixture hooks must not export an OR-Tools model")
+
+
+class _ModelBudgetBackend:
+    def __init__(self, result: object) -> None:
+        self.result = result
+
+    def maximum_bytes(self, label: str, *, artifact_class: str) -> int:
+        assert label == "attach model evidence"
+        assert artifact_class == "model"
+        return 1024
+
+    def export_model_to_sealed_memfd(
+        self,
+        model: object,
+        path: Path,
+        *,
+        maximum_bytes: int,
+        label: str,
+    ) -> object:
+        del model, path, maximum_bytes, label
+        if isinstance(self.result, BaseException):
+            raise self.result
+        return self.result
+
+
+class _NativeMemfdHelper:
+    final_seal_mask = (
+        getattr(fcntl, "F_SEAL_WRITE", 0x0008)
+        | getattr(fcntl, "F_SEAL_GROW", 0x0004)
+        | getattr(fcntl, "F_SEAL_SHRINK", 0x0002)
+        | getattr(fcntl, "F_SEAL_SEAL", 0x0001)
+        | getattr(fcntl, "F_SEAL_FUTURE_WRITE", 0x0010)
+    )
+
+    def create_memfd(self, name: str) -> int:
+        function = ctypes.CDLL(None, use_errno=True).memfd_create
+        function.argtypes = [ctypes.c_char_p, ctypes.c_uint]
+        function.restype = ctypes.c_int
+        descriptor = int(function(name.encode("ascii"), 0x0001 | 0x0002))
+        if descriptor < 0:
+            raise OSError(ctypes.get_errno(), "libc memfd_create failed")
+        return descriptor
+
+    def has_writable_mapping(self, descriptor: int) -> bool:
+        del descriptor
+        return False
+
+    def install_final_seals(self, descriptor: int) -> int:
+        fcntl.fcntl(
+            descriptor,
+            getattr(fcntl, "F_ADD_SEALS", 1033),
+            self.final_seal_mask,
+        )
+        return self.get_seals(descriptor)
+
+    @staticmethod
+    def get_seals(descriptor: int) -> int:
+        return int(fcntl.fcntl(descriptor, getattr(fcntl, "F_GET_SEALS", 1034)))
+
+
+class _BrokerResponse:
+    def __init__(self, result: dict[str, object]) -> None:
+        self.record = {"result": result}
+
+
+class _BrokerClient:
+    def __init__(self, helper: _NativeMemfdHelper) -> None:
+        self.connection, self._peer = socket.socketpair(
+            socket.AF_UNIX,
+            socket.SOCK_SEQPACKET,
+        )
+        self.native_helper = helper
+        self.nonce = "broker-nonce"
+        self.sequence = 0
+        self.published: list[bytes] = []
+
+    def publish_descriptor(
+        self,
+        payload: dict[str, object],
+        *,
+        descriptor: int,
+        publication_boundary: Callable[[], None] | None = None,
+    ) -> _BrokerResponse:
+        self.sequence += 1
+        if publication_boundary is not None:
+            publication_boundary()
+        size = int(payload["size_bytes"])
+        raw = os.pread(descriptor, size, 0)
+        assert hashlib.sha256(raw).hexdigest() == payload["expected_sha256"]
+        assert self.native_helper.get_seals(descriptor) == (
+            self.native_helper.final_seal_mask
+        )
+        self.published.append(raw)
+        return _BrokerResponse(
+            {
+                "artifact_class": payload["artifact_class"],
+                "maximum_bytes": payload["maximum_bytes"],
+                "path": payload["relative_path"],
+                "sha256": payload["expected_sha256"],
+                "size_bytes": size,
+                "source_seal_mask": self.native_helper.final_seal_mask,
+            }
+        )
+
+    def close(self) -> None:
+        self.connection.close()
+        self._peer.close()
+
+
+class _OTruncModel:
+    @staticmethod
+    def export_to_file(path: str) -> bool:
+        with open(path, "wb") as handle:
+            handle.write(b"tiny-model")
+        return True
+
+
 def _fixture(
     tmp_path: Path,
     *,
@@ -280,6 +503,75 @@ def _fixture(
         root / "authority" / "SHA256SUMS",
         b"fixture immutable package seal\n",
     )
+    runner_relative = "docs/research/noncert_cuts_ab16_20260724/organic_arm_runner_v1.py"
+    snapshot_root = root / "campaign-authority/source-snapshot-a001/repository"
+    snapshot_runner = snapshot_root / runner_relative
+    snapshot_runner.parent.mkdir(parents=True)
+    snapshot_runner_identity = _write(snapshot_runner, RUNNER_PATH.read_bytes())
+    snapshot_runner.chmod(0o444)
+    snapshot_runner_identity = _existing_identity_with_mode(snapshot_runner)
+    snapshot_member = {
+        "git_blob_oid": "1" * 40,
+        "git_mode": "100644",
+        "materialized_mode": 0o444,
+        "path": runner_relative,
+        "raw_sha256": snapshot_runner_identity["sha256"],
+        "size_bytes": snapshot_runner_identity["size_bytes"],
+        "source_kind": "git_blob",
+    }
+    snapshot_manifest_identity = _authority(
+        root / "authority/package/payload/input.ab16_repository_snapshot.json",
+        {
+            "archive_descriptor": {
+                "package_role": "input.ab16_repository_snapshot.zip",
+                "sha256": "2" * 64,
+                "size_bytes": 1,
+            },
+            "authority_scope": "AB16_RESEARCH_ONLY",
+            "import_mode": "ordinary_pathfinder",
+            "member_count": 1,
+            "members": [snapshot_member],
+            "ordered_member_digest": hashlib.sha256(RUNNER.canonical_json([snapshot_member])).hexdigest(),
+            "repository_head": REPOSITORY_HEAD,
+            "repository_tree": "3" * 40,
+            "schema_version": RUNNER.SNAPSHOT_MANIFEST_SCHEMA,
+            "total_bytes": snapshot_runner_identity["size_bytes"],
+        },
+    )
+    snapshot_receipt_identity = _authority(
+        root / "campaign-authority/source-snapshot-a001/materialization-receipt.json",
+        {
+            "authority_scope": "AB16_RESEARCH_ONLY",
+            "candidate_identity": common_identity,
+            "created_at_utc": "2026-07-27T00:00:00Z",
+            "import_mode": "ordinary_pathfinder",
+            "member_count": 1,
+            "ordered_member_digest": hashlib.sha256(RUNNER.canonical_json([snapshot_member])).hexdigest(),
+            "package_id": package_seal_identity["sha256"],
+            "repository_head": REPOSITORY_HEAD,
+            "repository_tree": "3" * 40,
+            "schema_version": RUNNER.SNAPSHOT_MATERIALIZATION_SCHEMA,
+            "snapshot_archive_identity": {
+                "path": str(root / "authority/package/payload/input.ab16_repository_snapshot.zip"),
+                "sha256": "2" * 64,
+                "size_bytes": 1,
+            },
+            "snapshot_manifest_identity": snapshot_manifest_identity,
+            "snapshot_root": str(snapshot_root),
+            "status": "PASS",
+            "total_bytes": snapshot_runner_identity["size_bytes"],
+        },
+    )
+    selected_python_identity = _existing_identity_with_mode(Path(sys.executable).resolve())
+    selected_loader_path = root / "authority/package/payload/tool.ab16_formal_loader_v1.py"
+    _write(selected_loader_path, b"# fixture formal loader\n")
+    selected_loader_path.chmod(0o444)
+    selected_loader_identity = _existing_identity_with_mode(selected_loader_path)
+    selected_authority_path = root / "authority/package/payload/tool.ab16_authority_v2.py"
+    _write(selected_authority_path, b"# fixture package-pinned authority\n")
+    selected_authority_path.chmod(0o444)
+    selected_authority_identity = _existing_identity_with_mode(selected_authority_path)
+    selected_literal = "fixture-selected-byte-launch-v1"
     authority_chain = {
         "campaign_root_identity": _authority(
             root / "authority" / "campaign-root.json",
@@ -380,6 +672,7 @@ def _fixture(
         "configuration_families": {key: list(value) for key, value in RUNNER.CONFIGURATION_FAMILIES.items()},
         "experiment_contract": RUNNER.EXPERIMENT_CONTRACT,
         "forbidden_families": list(RUNNER.FORBIDDEN_FAMILIES),
+        "live_source_provenance_root": str(ROOT),
         "per_arm_tool_identities": per_arm_tools,
         "purpose": RUNNER.MANIFEST_PURPOSE,
         "repository_git_tool_identity": _existing_identity_with_mode(GIT_PATH),
@@ -398,8 +691,11 @@ def _fixture(
             "post_attach_seconds": 120,
             "routing_seconds": 600,
         },
-        "schema_version": RUNNER.MANIFEST_SCHEMA,
+        "schema_version": RUNNER.FORMAL_MANIFEST_SCHEMA,
+        "sealed_snapshot_execution_root": str(snapshot_root),
         "seed": 2026072301,
+        "snapshot_manifest_identity": _detached(snapshot_manifest_identity),
+        "snapshot_materialization_receipt_identity": _detached(snapshot_receipt_identity),
         "unit_names": unit_names,
         "workers": 1,
     }
@@ -409,14 +705,50 @@ def _fixture(
     enabled = [] if arm == "control" else list(RUNNER.CONFIGURATION_FAMILIES[configuration])
     attempt_dir = Path(attempts[slot])
     attempt_dir.mkdir()
+    pre_run_path = attempt_dir / "pre-run-authority.json"
+    selection_path = attempt_dir / "selection.json"
+    execution_source = LIFECYCLE.build_sealed_execution_source(
+        live_source_provenance_root=str(ROOT),
+        sealed_snapshot_execution_root=str(snapshot_root),
+        snapshot_manifest_identity=_detached(snapshot_manifest_identity),
+        snapshot_materialization_receipt_identity=_detached(snapshot_receipt_identity),
+        package_id=str(package_seal_identity["sha256"]),
+        literal_identity={
+            "sha256": hashlib.sha256(selected_literal.encode()).hexdigest(),
+            "size_bytes": len(selected_literal.encode()),
+        },
+        python_identity=selected_python_identity,
+        loader_identity=selected_loader_identity,
+        authority_identity=selected_authority_identity,
+        native_helper_wrapper_identity=None,
+        native_helper_identity=None,
+        selected_byte_schema=LIFECYCLE.SELECTED_BYTE_LAUNCH_SCHEMA_V1,
+        runner_snapshot_relative_path=runner_relative,
+        runner_snapshot_member_identity=snapshot_runner_identity,
+        runner_package_tool_identity=_existing_identity_with_mode(RUNNER_PATH),
+        initial_working_directory=str(root),
+        pre_run_authority_path=str(pre_run_path),
+        runner_selection_path=str(selection_path),
+        module_origin_receipt_path=str(attempt_dir / "module-origin-receipt.json"),
+        tmpdir=str(attempt_dir / "tmp"),
+    )
     pre_run_authority_identity = _authority(
-        attempt_dir / "pre-run-authority.json",
+        pre_run_path,
         {
+            "attempt_dir": str(attempt_dir),
             "authorizations": {
                 "organic_arm_launch_authorized": False,
                 "solver_run_authorized": False,
             },
+            "launch": {
+                "execution_source": execution_source,
+            },
+            "package": authority_chain["package"],
+            "pre_run_authority_path": str(pre_run_path),
             "purpose": "fixture-nonauthorizing-pre-run-authority",
+            "repository_head": REPOSITORY_HEAD,
+            "repository_root": str(ROOT),
+            "runner_selection_path": str(selection_path),
             "schema_version": "fixture-pre-run-authority-v1",
             "slot": slot,
             "status": "PASS",
@@ -447,6 +779,7 @@ def _fixture(
             "signal": 0,
         },
         "fresh_process_required": True,
+        "live_source_provenance_root": manifest["live_source_provenance_root"],
         "manifest_identity": manifest_identity,
         "order": order,
         "pre_run_authority_identity": pre_run_authority_identity,
@@ -456,23 +789,32 @@ def _fixture(
         "repository_root": manifest["repository_root"],
         "run_nonce": manifest["run_nonce"],
         "schema_version": RUNNER.SELECTION_SCHEMA,
+        "sealed_snapshot_execution_root": manifest[
+            "sealed_snapshot_execution_root"
+        ],
         "seed": manifest["seed"],
         "selection_nonce": f"selection-{slot}",
+        "snapshot_manifest_identity": manifest["snapshot_manifest_identity"],
+        "snapshot_materialization_receipt_identity": manifest[
+            "snapshot_materialization_receipt_identity"
+        ],
         "slot": slot,
         "unit_name": unit_names[slot],
         "workers": 1,
     }
-    selection_path = attempt_dir / "selection.json"
     _authority(selection_path, selection)
     return {
         "attempt_dir": attempt_dir,
         "bindings": bindings,
         "common_path": Path(common_identity["path"]),
+        "execution_source": execution_source,
         "incumbent": incumbent,
         "manifest": manifest,
         "manifest_path": manifest_path,
         "selection": selection,
         "selection_path": selection_path,
+        "snapshot_root": snapshot_root,
+        "snapshot_runner": snapshot_runner,
     }
 
 
@@ -503,12 +845,14 @@ def test_treatment_records_every_compiled_cut_and_attach_hook(
     assert hooks.construct_env is None
     assert hooks.attach_env == "1"
     assert hooks.enabled_families == ("region_capacity",)
+    assert hooks.repository_root == fixture["snapshot_root"]
     assert hooks.workers == 1
     assert result["cut_activity"] == {
         "applied": 2,
         "compiled": 2,
         "generated": 2,
     }
+    assert result["schema_version"] == RUNNER.RESULT_SCHEMA
     assert result["evidence"]["journal_event_counts"] == {
         "ATTACH_HOOK_BEGIN": 2,
         "ATTACH_HOOK_END": 2,
@@ -537,6 +881,326 @@ def test_treatment_records_every_compiled_cut_and_attach_hook(
         "production_certified_authorized": False,
     }
     assert CONTRACT.classify_cut_activity(result["cut_activity"])["activation_class"] == CONTRACT.ORGANIC_APPLIED
+
+
+def test_budgeted_arm_uses_only_immutable_backend_outputs(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    for suffix, mode in RUNNER.BUDGET_ARM_DIRECTORY_SUFFIX_MODES:
+        path = fixture["attempt_dir"] / suffix
+        path.mkdir(parents=True, exist_ok=True)
+        path.chmod(mode)
+    backend = _BudgetBackend(fixture)
+    result = RUNNER._run_with_hooks(
+        fixture["selection_path"],
+        FakeHooks(
+            fixture["incumbent"],
+            cuts=(_compiled_cut(1),),
+        ),
+        enforce_single_process_use=False,
+        budget_backend=backend,
+    )
+    assert result["cut_activity"] == {
+        "applied": 1,
+        "compiled": 1,
+        "generated": 1,
+    }
+    assert result["schema_version"] == RUNNER.FORMAL_RESULT_SCHEMA
+    assert result["budget_authority_binding"] == backend.authority_binding
+    assert result["evidence"]["cut_ledger_identity"]["schema_version"] == (
+        RUNNER.BUDGET_SEGMENT_BUNDLE_SCHEMA
+    )
+    assert result["evidence"]["compile_attach_journal_identity"]["schema_version"] == (
+        RUNNER.BUDGET_SEGMENT_BUNDLE_SCHEMA
+    )
+    assert set(path.name for path in fixture["attempt_dir"].iterdir()) == {
+        "checkpoint",
+        "ledger",
+        "pre-run-authority.json",
+        "replays",
+        "runtime",
+        "selection.json",
+        "tmp",
+    }
+    assert backend.sequences
+    assert all(record["size_bytes"] >= 0 for record in backend.records)
+
+
+def test_budgeted_arm_rejects_writable_tmp_before_any_publication(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path)
+    for suffix, mode in RUNNER.BUDGET_ARM_DIRECTORY_SUFFIX_MODES:
+        path = fixture["attempt_dir"] / suffix
+        path.mkdir(parents=True, exist_ok=True)
+        path.chmod(0o700 if suffix == "tmp" else mode)
+    backend = _BudgetBackend(fixture)
+    with pytest.raises(RUNNER.RunnerError, match="tmp mode/identity drifted"):
+        RUNNER._run_with_hooks(
+            fixture["selection_path"],
+            FakeHooks(fixture["incumbent"]),
+            enforce_single_process_use=False,
+            budget_backend=backend,
+        )
+    assert backend.records == []
+
+
+@pytest.mark.parametrize(
+    "backend_result",
+    [
+        RuntimeError("O_TRUNC export failed"),
+        RuntimeError("RLIMIT_FSIZE exceeded"),
+        RuntimeError("final memfd seal failed"),
+        {
+            "path": "/wrong/model.pb",
+            "sha256": "0" * 64,
+            "size_bytes": 1,
+        },
+    ],
+)
+def test_budgeted_model_export_failures_never_fall_back_to_path_write(
+    tmp_path: Path,
+    backend_result: object,
+) -> None:
+    target = tmp_path / "model.pb"
+    with pytest.raises(RUNNER.RunnerError, match="failed closed|receipt differs"):
+        RUNNER.ProductionArmHooks._export_model(
+            object(),
+            target,
+            budget_backend=_ModelBudgetBackend(backend_result),
+        )
+    assert not target.exists()
+
+
+def test_broker_process_backend_uses_sealed_descriptor_for_all_writes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    formal = tmp_path / "formal"
+    attempt = formal / "arms" / "arm-01"
+    attempt.mkdir(parents=True)
+    helper = _NativeMemfdHelper()
+    broker = _BrokerClient(helper)
+    allocation_sha256 = hashlib.sha256(b"allocation").hexdigest()
+    binding = {
+        "arm_allocation_id": allocation_sha256,
+        "arm_allocation_identity": {
+            "sha256": allocation_sha256,
+            "size_bytes": len(b"allocation"),
+        },
+        "arm_slot": "arm-01",
+        "broker_nonce": broker.nonce,
+        "broker_socket_fd": broker.connection.fileno(),
+        "filesystem_write_confinement": RUNNER.BUDGET_WORKER_CONFINEMENT,
+        "formal_budget_authority_identity": _write(
+            tmp_path / "budget-authority.json",
+            b"authority",
+        ),
+        "next_sequence": 1,
+    }
+    maxima = {
+        label: {
+            "artifact_class": artifact_class,
+            "branch": "common",
+            "maximum_bytes": 4096,
+            "maximum_publications": (
+                0 if label.endswith("segment") else 1
+            ),
+            "multiplicity_source": {},
+            "path_contract": {},
+        }
+        for label, artifact_class in RUNNER.BUDGET_ARTIFACT_CLASS_BY_LABEL.items()
+    }
+    maxima["organic arm result"]["path_contract"] = {
+        "kind": "fixed",
+        "root": "formal-root",
+        "root_relative_path": "arms/arm-01/result.json",
+    }
+    maxima["AB16 immediate stop"]["path_contract"] = {
+        "kind": "fixed",
+        "root": "formal-root",
+        "root_relative_path": "prospective/immediate-stop-a001.json",
+    }
+    backend = RUNNER.BrokerProcessArmBudgetBackend(
+        broker_client=broker,
+        native_helper=helper,
+        formal_root=formal,
+        attempt_root=attempt,
+        expected_calibration_tool_identities={
+            role: {
+                "sha256": hashlib.sha256(role.encode("ascii")).hexdigest(),
+                "size_bytes": len(role),
+            }
+            for role in RUNNER.CALIBRATION_TOOL_ROLES
+        },
+        authority_binding=binding,
+        fixed_maxima=maxima,
+        channel_contracts={
+            "arm-arm-01-compile-journal": {
+                "artifact_class": "ledger",
+                "label": "compile attach journal segment",
+                "maximum_bytes": 4096,
+                "maximum_segments": 221,
+                "relative_path": (
+                    "arms/arm-01/ledger/compile-attach-journal"
+                ),
+            },
+            "arm-arm-01-cut-ledger": {
+                "artifact_class": "ledger",
+                "label": "cut ledger segment",
+                "maximum_bytes": 4096,
+                "maximum_segments": 258,
+                "relative_path": "arms/arm-01/ledger/cut-ledger",
+            },
+            "arm-arm-01-runtime-cuts": {
+                "artifact_class": "ledger",
+                "label": "runtime cut segment",
+                "maximum_bytes": 4096,
+                "maximum_segments": 0,
+                "relative_path": "arms/arm-01/checkpoint/runtime-cuts",
+            },
+        },
+    )
+    try:
+        publication = backend.publish_bytes(
+            attempt / "result.json",
+            b'{"status":"fixture"}\n',
+            maximum_bytes=4096,
+            artifact_class="publication",
+            label="organic arm result",
+        )
+        immediate_stop = backend.publish_bytes(
+            formal / "prospective/immediate-stop-a001.json",
+            b'{"status":"STOP"}\n',
+            maximum_bytes=4096,
+            artifact_class="closeout",
+            label="AB16 immediate stop",
+        )
+        with pytest.raises(
+            RUNNER.RunnerError,
+            match="differs from its fixed target",
+        ):
+            backend.publish_bytes(
+                attempt / "immediate-stop-a001.json",
+                b'{"status":"STOP"}\n',
+                maximum_bytes=4096,
+                artifact_class="closeout",
+                label="AB16 immediate stop",
+            )
+        segment = backend.append_segment(
+            "arm-arm-01-cut-ledger",
+            0,
+            b'{"event":"GENESIS"}\n',
+            maximum_bytes=4096,
+            artifact_class="ledger",
+            arm_slot="arm-01",
+        )
+        limit_updates: list[tuple[int, int]] = []
+        monkeypatch.setattr(
+            RUNNER.resource,
+            "getrlimit",
+            lambda _kind: (16_384, 65_536),
+        )
+        monkeypatch.setattr(
+            RUNNER.resource,
+            "setrlimit",
+            lambda _kind, limits: limit_updates.append(limits),
+        )
+        model = backend.export_model_to_sealed_memfd(
+            _OTruncModel(),
+            attempt / "runtime" / "model.pb",
+            maximum_bytes=4096,
+            label="attach model evidence",
+        )
+    finally:
+        broker.close()
+    assert publication["path"] == str(attempt / "result.json")
+    assert immediate_stop["path"] == str(
+        formal / "prospective/immediate-stop-a001.json"
+    )
+    assert segment["path"].endswith("/ledger/cut-ledger/segment-00000000.bin")
+    assert model["path"] == str(attempt / "runtime" / "model.pb")
+    assert broker.published == [
+        b'{"status":"fixture"}\n',
+        b'{"status":"STOP"}\n',
+        b'{"event":"GENESIS"}\n',
+        b"tiny-model",
+    ]
+    assert limit_updates == [(4096, 65_536), (16_384, 65_536)]
+
+
+def test_broker_process_backend_rejects_nonfixed_channel_layout(
+    tmp_path: Path,
+) -> None:
+    formal = tmp_path / "formal"
+    attempt = formal / "arms" / "arm-01"
+    attempt.mkdir(parents=True)
+    helper = _NativeMemfdHelper()
+    broker = _BrokerClient(helper)
+    allocation_sha256 = hashlib.sha256(b"allocation").hexdigest()
+    binding = {
+        "arm_allocation_id": allocation_sha256,
+        "arm_allocation_identity": {
+            "sha256": allocation_sha256,
+            "size_bytes": len(b"allocation"),
+        },
+        "arm_slot": "arm-01",
+        "broker_nonce": broker.nonce,
+        "broker_socket_fd": broker.connection.fileno(),
+        "filesystem_write_confinement": RUNNER.BUDGET_WORKER_CONFINEMENT,
+        "formal_budget_authority_identity": _write(
+            tmp_path / "budget-authority.json",
+            b"authority",
+        ),
+        "next_sequence": 1,
+    }
+    maxima = {
+        label: {
+            "artifact_class": artifact_class,
+            "branch": "common",
+            "maximum_bytes": 4096,
+            "maximum_publications": (
+                0 if label.endswith("segment") else 1
+            ),
+            "multiplicity_source": {},
+            "path_contract": {},
+        }
+        for label, artifact_class in RUNNER.BUDGET_ARTIFACT_CLASS_BY_LABEL.items()
+    }
+    try:
+        with pytest.raises(
+            RUNNER.RunnerError,
+            match="differs from fixed arm layout",
+        ):
+            RUNNER.BrokerProcessArmBudgetBackend(
+                broker_client=broker,
+                native_helper=helper,
+                formal_root=formal,
+                attempt_root=attempt,
+                expected_calibration_tool_identities={
+                    role: {
+                        "sha256": hashlib.sha256(
+                            role.encode("ascii")
+                        ).hexdigest(),
+                        "size_bytes": len(role),
+                    }
+                    for role in RUNNER.CALIBRATION_TOOL_ROLES
+                },
+                authority_binding=binding,
+                fixed_maxima=maxima,
+                channel_contracts={
+                    "arm-arm-01-cut-ledger": {
+                        "artifact_class": "ledger",
+                        "label": "cut ledger segment",
+                        "maximum_bytes": 4096,
+                        "maximum_segments": 258,
+                        "relative_path": (
+                            "arms/arm-01/ledger/cut-ledger"
+                        ),
+                    },
+                },
+            )
+    finally:
+        broker.close()
 
 
 def test_production_adapter_observes_natural_runtime_without_manual_attach() -> None:
@@ -1038,3 +1702,69 @@ def test_public_entry_is_single_use_per_process(
             FakeHooks(fixture["incumbent"]),
             enforce_single_process_use=True,
         )
+
+
+def _clear_src_modules(monkeypatch: pytest.MonkeyPatch) -> None:
+    for name in list(sys.modules):
+        if name == "src" or name.startswith("src."):
+            monkeypatch.delitem(sys.modules, name, raising=False)
+
+
+def test_initial_import_boundary_rejects_preloaded_and_live_checkout_paths(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path, arm="control")
+    source = fixture["execution_source"]
+    snapshot_root = fixture["snapshot_root"]
+    monkeypatch.chdir(snapshot_root)
+    monkeypatch.setattr(RUNNER, "__file__", str(fixture["snapshot_runner"]))
+    _clear_src_modules(monkeypatch)
+    monkeypatch.setattr(
+        sys,
+        "path",
+        [str(snapshot_root), "/usr/lib/python3.13"],
+    )
+    RUNNER._assert_initial_import_boundary(source)
+
+    ambient = ModuleType("src.ambient")
+    ambient.__file__ = str(ROOT / "src/ambient.py")
+    monkeypatch.setitem(sys.modules, "src.ambient", ambient)
+    with pytest.raises(RUNNER.RunnerError, match="preloaded"):
+        RUNNER._assert_initial_import_boundary(source)
+    monkeypatch.delitem(sys.modules, "src.ambient")
+
+    monkeypatch.setattr(
+        sys,
+        "path",
+        [str(snapshot_root), str(ROOT), "/usr/lib/python3.13"],
+    )
+    with pytest.raises(RUNNER.RunnerError, match="live checkout"):
+        RUNNER._assert_initial_import_boundary(source)
+
+
+def test_module_origin_audit_rejects_outside_file_and_package_paths(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path, arm="control")
+    source = fixture["execution_source"]
+    snapshot_src = fixture["snapshot_root"] / "src"
+    snapshot_src.mkdir()
+    good_path = snapshot_src / "good.py"
+    good_path.write_text("# sealed fixture\n", encoding="utf-8")
+    _clear_src_modules(monkeypatch)
+    package = ModuleType("src")
+    package.__path__ = [str(snapshot_src)]
+    good = ModuleType("src.good")
+    good.__file__ = str(good_path)
+    monkeypatch.setitem(sys.modules, "src", package)
+    monkeypatch.setitem(sys.modules, "src.good", good)
+    observations = RUNNER._audit_src_module_origins(source)
+    assert {item["module"] for item in observations} == {"src", "src.good"}
+
+    bad = ModuleType("src.bad")
+    bad.__file__ = str(ROOT / "src/bad.py")
+    monkeypatch.setitem(sys.modules, "src.bad", bad)
+    with pytest.raises(RUNNER.RunnerError, match="outside the sealed snapshot"):
+        RUNNER._audit_src_module_origins(source)

@@ -4787,7 +4787,9 @@ def test_ghost_signature_bucket_mandatory_region_counting_falls_back_for_unsuppo
     assert top_entry["bucket_id"] == "__all__"
     assert top_entry["reason"] == "unsupported_or_missing_template_footprint"
     assert top_entry["legacy_scan_count"] > 0
-    assert top_entry["legacy_pose_hits"] > 0
+    # This list is ranked by elapsed time, so its slowest entry need not be
+    # the hit-producing entry already established by mandatory_pose_hits.
+    assert top_entry["legacy_pose_hits"] >= 0
     assert top_entry["elapsed_seconds"] >= 0.0
 
 

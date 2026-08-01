@@ -139,6 +139,7 @@ _codex_archive/
 #   v28_gpt_review/, phase3b_accel_tuning/, phase3b_ai_accel_20260429/, _v28_*.
 # Ignore ONLY the regenerable runtime prefixes named in that manifest:
 # ----------------------------------------------------------------------------
+/.artifacts/research_runs/
 /.artifacts/takeover_read_20260607/
 /.artifacts/industrial_planner_checked_artifacts/
 /.artifacts/industrial_planner_single_base_delivery_surface_alignment/

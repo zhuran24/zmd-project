@@ -1,6 +1,9 @@
 # 02 — 核心数学原理（active 8 family + retired F8 history + sound deduction/scope/replay）
 
-> **阅读边界（2026-07-11）**：本文保留九族设计史；当前 registry 为 F1-F7+F9，F8 已退役。F1/F5/F6/F7 direct Step-8 已落地但仍 unsafe/default-off，默认 certified 路径、发布 authority 和 phase 状态以 `01_overview.md`、`06_current_status.md`、`11_dependency_graph.md` 与 `PROJECT_LOCK.md` 为准。
+> **阅读边界（2026-07-27）**：本文保留九族设计史；当前 registry 为 F1-F7+F9，
+> F8 已退役。typed lowering 仅 F1/F6/F7；F5 为 shadow-only、无 apply/lowering；
+> attach 仍 unsafe/default-off。默认 certified 路径、发布 authority 和 phase 状态以
+> `01_overview.md`、`06_current_status.md`、`11_dependency_graph.md` 与 `PROJECT_LOCK.md` 为准。
 
 
 ### 2.1 paradigm 选择 — LBBD + cut framework 累积外部知识
@@ -188,12 +191,16 @@ cut 从产到 attach master 经 lifecycle [cite lifecycle §2]。**编号 0-inde
 | 5 | validate | validator 重算 cert, 决定 sound/unsound | active F1-F7+F9 validator 已注册；F8 retired |
 | 6 | attach-scope check | scope.matches(state) (source_digest/ghost/blocked/artifact/oracle/assumption) | Phase 1.1 dispatch |
 | 7 | evaluate | body 重算当前 state 是否仍 violate (family dispatch) | active F1-F7+F9 evaluator 已接入；F8 retired |
-| 8 | apply-to-master | cut.body → master constraint（**CP-SAT 无真 lazy callback**，累积切面+重新求解）| F1/F5/F6/F7 translator 已落；F2/F3/F4/F9 fail-closed，F8 retired；certified promotion 尚未完成 |
+| 8 | apply-to-master | cut.body → master constraint（**CP-SAT 无真 lazy callback**，累积切面+重新求解）| typed lowering 仅 F1/F6/F7；F5 shadow-only、无 lowering；F2/F3/F4/F9 fail-closed，F8 retired；certified promotion 尚未完成 |
 | 9 | replay/regression (on ghost/state change) | re-validate active/held cut, decide ATTACH/HOLD/QUARANTINE | Phase 1.1 闭环 (Step M fail-closed) |
 
-**Step 8 当前边界**：F1/F5/F6/F7 已能翻译并经 direct bridge 注入 master；F2/F3/F4/F9 在未具备 production theorem 时继续抛 `NotImplementedError`，F8 已退役。该 direct bridge 仍 unsafe/default-off，不能等同于 certified promotion。
+**Step 8 当前边界**：typed lowering 仅 F1/F6/F7；F5 保持 shadow-only、无
+apply/lowering；F2/F3/F4/F9 在 registry 边界 fail-closed，F8 已退役。attach
+仍 unsafe/default-off，不能等同于 certified promotion。
 
-> **(2026-07-11 现状提示)** 上表的 “Phase 1.1 闭环 / defer Phase 1.2” 属历史口径。当前状态以 `06_current_status.md`、`soundness_gap_roadmap.md`、`CLAUDE.md` 和 `PROJECT_LOCK.md` 为准。
+> **(2026-07-27 现状提示)** 上表的 “Phase 1.1 闭环 / defer Phase 1.2” 属历史口径。
+> 当前人类可读状态以 `06_current_status.md` 为准，release 边界以 `PROJECT_LOCK.md`
+> 和机器 gate 为准；`soundness_gap_roadmap.md` 只保存截至 2026-07-11 的 P1.2 历史快照。
 
 **Step 2 当前边界**：通用 `lifecycle.step_2_minimize()` 仍 fail-closed；F5 已在 family-specific oracle 中使用 deletion minimizer。不得把 F5 的专用实现写成通用 Step 2 已完成。
 
@@ -546,4 +553,3 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 - 是否需 F10+ family? — defer Phase 2+ 决策
 
 ---
-

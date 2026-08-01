@@ -24,13 +24,13 @@ import tempfile
 from typing import Any, Callable, Iterable, Iterator, Mapping, Sequence, TextIO
 
 
-MEMORY_HIGH = "34G"
-MEMORY_MAX = "38G"
+MEMORY_HIGH = "35G"
+MEMORY_MAX = "39G"
 MEMORY_SWAP_MAX = "16G"
 OOM_POLICY = "continue"
 
-MEMORY_HIGH_BYTES = 34 * 1024**3
-MEMORY_MAX_BYTES = 38 * 1024**3
+MEMORY_HIGH_BYTES = 35 * 1024**3
+MEMORY_MAX_BYTES = 39 * 1024**3
 MEMORY_SWAP_MAX_BYTES = 16 * 1024**3
 
 CGROUP_PROPERTIES = (
@@ -57,6 +57,8 @@ REQUIRED_MEMORY_EVENT_KEYS = (
 )
 
 RELATED_UNIT_PREFIXES = ("zmd-witness-", "zmd-r45-", "zmd-b4-")
+NONTERMINAL_UNIT_STATES = ("active", "activating", "reloading", "deactivating")
+CONTROL_PLANE_QUERY_TIMEOUT_SECONDS = 15.0
 RELATED_PROCESS_MARKERS = frozenset(
     {
         "run_supervisor.py",
@@ -660,20 +662,24 @@ def query_active_related_units(
 ) -> tuple[str, ...]:
     """Read active user units.  This helper never starts, stops, or kills one."""
 
-    completed = runner(
-        [
-            "systemctl",
-            "--user",
-            "list-units",
-            "--type=service",
-            "--state=running",
-            "--no-legend",
-            "--no-pager",
-        ],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        completed = runner(
+            [
+                "systemctl",
+                "--user",
+                "list-units",
+                "--type=service",
+                f"--state={','.join(NONTERMINAL_UNIT_STATES)}",
+                "--no-legend",
+                "--no-pager",
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=CONTROL_PLANE_QUERY_TIMEOUT_SECONDS,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise SupervisorError(f"cannot query active user units: {exc}") from exc
     if completed.returncode != 0:
         raise SupervisorError(f"cannot query active user units: {completed.stderr.strip()}")
     return parse_active_related_units(completed.stdout)

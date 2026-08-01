@@ -7,12 +7,26 @@
 1. `PROJECT_LOCK.md`: exactness、命题 P、发布边界、Accepted Invariants 和 Forbidden Changes。
 2. `data/proof_obligations/p1_2_proof_obligations.json`: P1.2 机器义务、proof-bearing sink inventory 和 source/hash floor。
 3. `data/review_gates/phase_1_2_spike_close.json`: owner 手动 phase gate。当前为 `closed_manual_owner_decision`，P1.3 entry allowed；但不能由测试、receipt 或 Markdown 自动打开，2026-07-07 的关门动作只认显式 `owner_manual_decision`。
-4. `docs/项目说明/06_current_status.md` 与 `docs/项目说明/soundness_gap_roadmap.md`: 当前实现状态和未闭边界。
+4. `docs/项目说明/06_current_status.md`: 当前人类可读状态。`docs/项目说明/soundness_gap_roadmap.md`
+   只保存截至 2026-07-11 的 P1.2 soundness 历史快照，不是当前 authority。
 5. 其它 `docs/`、`specs/` 和 runbook: 在上述边界内解释具体组件。
 
 ## 现行发布链
 
-producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint 字节复验并铸造持久化终端 `CERTIFIED`；其生产入口是独立命令 `scripts/run_supervisor_seal.py`（从 proposal-ready marker 驱动，`349c56c`），普通 `main.py` 运行不会 seal。`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的 campaign authority 事务式发布 canonical solution、blueprint 和 manifest。fixed-witness verifier、P1.2 open gate 与 supervisor 调度入口均已落地；owner 已于 2026-07-07 以显式 owner_manual_decision 关闭 P1.2、开启 P1.3（三轮收口外审 0 上-TCB 洞、gate=`closed_manual_owner_decision`）。截至 2026-07-11，F1/F5/F6/F7 direct attach 与 Stage B B0/B1/B1.5 已落地，但 attach 仍 unsafe/default-off，B2-B5、PIC C/D/E 与 B6 owner promotion 尚未完成。「仅防蓄意内鬼」的 PR2 L0/L1 受控 loader/read-once/TCB 深化项按 2026-07-06 令移至发布时点、非 P1.2 闭合前提。
+producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint
+字节复验并铸造持久化终端 `CERTIFIED`；其生产入口是独立命令
+`scripts/run_supervisor_seal.py`，普通 `main.py` 运行不会 seal。
+`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的
+campaign authority 事务式发布 canonical solution、blueprint 和 manifest。owner 已于
+2026-07-07 以显式 `owner_manual_decision` 关闭 P1.2、开启 P1.3。
+
+截至 2026-07-27，Stage B B0-B5b 工程面已完成；typed lowering 仅 F1/F6/F7，F5 仍为
+shadow-only，attach 仍 unsafe/default-off，B6 owner promotion 未关闭。研究账本为
+`U=(1188,22)`、`L=absent`，`(1188,18)` 为 `FORMAL_AUTHORITY_INCOMPLETE`。
+Rule/cut evolution 仍是 test/offline shadow，noncert cuts A/B 仍是有界、non-authorizing
+研究；二者都不建立 production `CERTIFIED`、项目上下界、witness 或 optimality。
+「仅防蓄意内鬼」的 PR2 L0/L1 受控 loader/read-once/TCB 深化项按 2026-07-06 令移至发布时点、
+非 P1.2 闭合前提。
 
 ## 历史 subject/projection 文本
 

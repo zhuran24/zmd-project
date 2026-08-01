@@ -60,6 +60,7 @@ CHILD_WALL_TIMEOUT_SECONDS = 300
 PROCESS_GROUP_TERM_GRACE_SECONDS = 5.0
 PROCESS_GROUP_KILL_GRACE_SECONDS = 5.0
 PROCESS_GROUP_POLL_SECONDS = 0.05
+PROC_ROOT = Path("/proc")
 LOCKED_CORPUS_SHA256 = "8ec528984431b89bed95008f8d56290b11d5e105d89aec107b1aa85689d7843d"
 LOCKED_GEOMETRY_ADMISSION_SHA256 = "22f25ecb1b0cf22190f8ea3add3a5f422d6f51f19577d906286a6c97a571d0da"
 LOCKED_STENCIL_SHA256 = "e862ac93b6a27793de764507ace7b2c736122efdd8184f30a205aba551bda1e7"
@@ -417,13 +418,42 @@ def _prepare_output(args: argparse.Namespace, identity: Mapping[str, Any]) -> Pa
 
 
 def _process_group_exists(pgid: int) -> bool:
+    """Return whether the uniquely owned process group has a live member."""
+
     try:
         os.killpg(pgid, 0)
     except ProcessLookupError:
         return False
     except PermissionError:
         return True
-    return True
+    try:
+        entries = tuple(PROC_ROOT.iterdir())
+    except OSError:
+        return True
+    for entry in entries:
+        if not entry.name.isdigit():
+            continue
+        try:
+            raw = (entry / "stat").read_text(encoding="ascii")
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+        except OSError:
+            return True
+        close = raw.rfind(")")
+        if close < 0:
+            return True
+        fields = raw[close + 2 :].split()
+        try:
+            state = fields[0]
+            process_group = int(fields[2])
+        except (IndexError, ValueError):
+            return True
+        if process_group == pgid and state != "Z":
+            return True
+    # A nested child-subreaper can retain exited descendants as zombies until
+    # its outer transaction reaches waitpid(...)=ECHILD.  They cannot execute
+    # or fork and therefore do not make this uniquely owned group live.
+    return False
 
 
 def _wait_for_process_group_exit(pgid: int, timeout: float) -> bool:

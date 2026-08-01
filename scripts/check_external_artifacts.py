@@ -8,9 +8,17 @@ full certified-exact solve that needs it.
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 import sys
 
-from external_artifacts import find_artifact, load_manifest, verify_artifact
+# AB16 qualification intentionally exports PYTHONSAFEPATH=1.  Bind this
+# tracked sibling helper explicitly instead of relying on an implicit
+# script-directory entry in sys.path.
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from external_artifacts import find_artifact, load_manifest, verify_artifact  # noqa: E402
 
 
 def main() -> int:

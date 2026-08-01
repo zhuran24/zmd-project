@@ -1,9 +1,13 @@
 """Authority-preservation contracts for the rule/cut evolution shadow batch.
 
-These tests intentionally bind the authority-sensitive runtime surfaces to the
-398f872 baseline.  The new semantic/family specifications may be imported by
-tests and by one another, but the existing runtime must remain byte-identical
-and must not import them during this non-authorizing batch.
+These tests bind the authority-sensitive runtime surfaces to exact authorized
+bytes.  Five production surfaces remain at the 398f872 baseline;
+preflight_gate.py is pinned to the timeout-scale-only successor from 8292983,
+and PROJECT_LOCK.md is pinned to the W0 D6 plus AB16 research-only protocol
+successor.
+The new semantic/family specifications may be imported by tests and by one
+another, but the existing runtime must not import them during this
+non-authorizing batch.
 """
 
 from __future__ import annotations
@@ -35,22 +39,24 @@ from src.cuts.typed_platform import (
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _BASELINE_COMMIT = "398f8725c770f3c36408adebe9448a890ed886fe"
-_PROJECT_LOCK_SHA256 = "33632dfdb2297425e42066b2cf0749ca6b9ab1f8653e810b6f2e53ded1025410"
+_PROJECT_LOCK_SHA256 = "114ea93e86c37f5bfedf954437b70b6e72d43bedeb5e41b2f9b21dd6c0f35b9b"
 
-# These are the six pre-existing Python surfaces touched during the abandoned
-# runtime-wiring attempt.  They must remain byte-identical to 398f872 in this
-# shadow-only batch; the hashes avoid depending on a .git directory in CI.
-# preflight_gate.py baseline advanced past 398f872 once: Track B merge 54b1686
-# carried an independent, gate-semantics-neutral timeout-scaling change
-# (30s -> 30*_TIMEOUT_SCALE in check_publish_secret_scan); the guard's target
-# is the rule-cut evolution batch, which still leaves this surface untouched.
+# Historical hashes for the six pre-existing Python surfaces touched during
+# the abandoned runtime-wiring attempt.  Five remain byte-identical to
+# 398f872; the sole authorized preflight successor is overlaid below.
 _BASELINE_SURFACE_SHA256 = {
-    "scripts/preflight_gate.py": "c38fdc7eda47d231ebbaf64a7f221c7a19e9ee1934c71c1253563c7e921c8562",
+    "scripts/preflight_gate.py": "3c5e938df409b33bd789091d4dc1bae945acda27d3481969b7b4699117c65677",
     "src/cuts/lifecycle.py": "9b944572c3bc787317a2e9bfaaf4e3ce472ba8fd953269772b24535bbef1ac1a",
     "src/cuts/replay.py": "50a03470b0f9ddea85bb9b8fce246e326fa10a870ea930c7ebbf0c025604feed",
     "src/cuts/store.py": "6266f86dd37f1ca9d6654cb8596ffbece47e420ff526ecb112be505b60870b37",
     "src/cuts/typed_platform.py": "cce881457c63647dbba58750e1c4884351a31987057ac72b9cd0aeecaf44b45b",
     "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
+}
+
+# 8292983 authorizes only the preflight secret-scan timeout-scale successor.
+_PROTECTED_SURFACE_SHA256 = {
+    **_BASELINE_SURFACE_SHA256,
+    "scripts/preflight_gate.py": "c38fdc7eda47d231ebbaf64a7f221c7a19e9ee1934c71c1253563c7e921c8562",
 }
 
 _P1_2_SINK_SHA256 = {
@@ -280,17 +286,17 @@ def _is_forbidden_runtime_import(module_name: str) -> bool:
     )
 
 
-def test_project_lock_remains_bound_to_398f872_baseline() -> None:
+def test_project_lock_matches_authorized_research_protocol_successor() -> None:
     assert _BASELINE_COMMIT == "398f8725c770f3c36408adebe9448a890ed886fe"
     assert _sha256(_PROJECT_ROOT / "PROJECT_LOCK.md") == _PROJECT_LOCK_SHA256
 
 
-def test_preexisting_runtime_surfaces_remain_byte_identical_to_398f872() -> None:
+def test_protected_surfaces_match_398f872_except_authorized_preflight_successor() -> None:
     actual = {
         relative_path: _sha256(_PROJECT_ROOT / relative_path)
-        for relative_path in _BASELINE_SURFACE_SHA256
+        for relative_path in _PROTECTED_SURFACE_SHA256
     }
-    assert actual == _BASELINE_SURFACE_SHA256
+    assert actual == _PROTECTED_SURFACE_SHA256
 
 
 def test_p1_2_manifest_and_registered_sink_bytes_remain_at_sealed_hashes() -> None:

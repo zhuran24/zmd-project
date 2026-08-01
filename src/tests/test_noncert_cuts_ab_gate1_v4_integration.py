@@ -1199,7 +1199,7 @@ def test_formal_campaign_join_and_identity_mutations_fail_closed(
 def test_prospective_child_precreation_fails_closed(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
     future = Path(fixture["root"]["stage_topology"]["prospective_ab16"]["manifest_path"])
-    future.parent.mkdir()
+    future.parent.mkdir(parents=True)
     future.write_bytes(b"{}\n")
     with pytest.raises(GATE.GateError, match="prospective AB16 child"):
         _evaluate(fixture)

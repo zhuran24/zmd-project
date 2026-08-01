@@ -13,7 +13,8 @@ import sys
 import traceback
 from typing import Any
 
-os.environ.setdefault("HF_HOME", r"E:\caches\huggingface")
+# Dual-boot machine: per-OS default for the shared HF cache; env always overrides.
+os.environ.setdefault("HF_HOME", r"E:\caches\huggingface" if os.name == "nt" else "/mnt/wd_external/caches/huggingface")
 os.environ.setdefault("HF_HUB_CACHE", os.path.join(os.environ["HF_HOME"], "hub"))
 os.environ.setdefault("HF_XET_CACHE", os.path.join(os.environ["HF_HOME"], "xet"))
 os.environ.setdefault("HF_HUB_OFFLINE", "1")

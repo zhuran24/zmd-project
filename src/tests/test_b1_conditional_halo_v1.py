@@ -8,6 +8,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
 from textwrap import dedent
 from types import ModuleType, SimpleNamespace
 import sys
@@ -1088,6 +1089,7 @@ def _make_checked_pair_run(
     constructor: ModuleType,
     sat_checker: ModuleType,
     runner: ModuleType,
+    request: pytest.FixtureRequest,
 ) -> Path:
     evidence = directory / "evidence"
     evidence.mkdir(parents=True)
@@ -1117,6 +1119,13 @@ def _make_checked_pair_run(
     )
     run = directory / "pair-run"
     run.mkdir()
+
+    def remove_pair_run() -> None:
+        if run.exists():
+            shutil.rmtree(run)
+        assert not run.exists()
+
+    request.addfinalizer(remove_pair_run)
     payload, exit_code = runner._execute(
         SimpleNamespace(
             control_checked_sat=checked_paths["control"],
@@ -1140,8 +1149,9 @@ def test_recursive_manifest_independently_rechecks_dual_sat_and_rejects_symlinks
     sat_checker: ModuleType,
     runner: ModuleType,
     tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> None:
-    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner)
+    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner, request)
     manifest = run / manifest_verifier.MANIFEST_NAME
     record = run / manifest_verifier.RUN_RECORD_NAME
     result = manifest_verifier.verify(run, manifest, record, PROJECT_ROOT)
@@ -1160,8 +1170,9 @@ def test_manifest_verifier_rejects_status_only_missing_evidence_and_swapped_mode
     sat_checker: ModuleType,
     runner: ModuleType,
     tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> None:
-    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner)
+    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner, request)
     manifest = run / manifest_verifier.MANIFEST_NAME
     record = run / manifest_verifier.RUN_RECORD_NAME
     original_record = record.read_bytes()
@@ -1207,8 +1218,9 @@ def test_completion_requires_the_bound_strict_independent_evidence_check_set(
     sat_checker: ModuleType,
     runner: ModuleType,
     tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> None:
-    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner)
+    run = _make_checked_pair_run(tmp_path, paired_fixture, constructor, sat_checker, runner, request)
     manifest = run / manifest_verifier.MANIFEST_NAME
     record = run / manifest_verifier.RUN_RECORD_NAME
     verification_path = tmp_path / "manifest-verification.json"
@@ -1658,9 +1670,17 @@ def _write_process_group_fixture(directory: Path, *, parent_waits: bool) -> tupl
     return parent, sentinel, ready
 
 
-def _assert_proc_absent(pid: int) -> None:
+def _assert_proc_absent_or_zombie(pid: int) -> None:
     deadline = time.monotonic() + 3
     while Path(f"/proc/{pid}").exists() and time.monotonic() < deadline:
+        try:
+            raw = Path(f"/proc/{pid}/stat").read_text(encoding="ascii")
+        except FileNotFoundError:
+            continue
+        close = raw.rfind(")")
+        assert close >= 0
+        if raw[close + 2 :].split()[0] == "Z":
+            return
         time.sleep(0.02)
     assert not Path(f"/proc/{pid}").exists()
 
@@ -1690,7 +1710,7 @@ def test_batch_invoke_cleans_descendant_group_after_normal_parent_exit(
     assert record["descendant_cleanup_performed"] is True
     assert record["process_group_clean"] is True
     assert record["wall_timeout_seconds"] == 5
-    _assert_proc_absent(grandchild_pid)
+    _assert_proc_absent_or_zombie(grandchild_pid)
 
 
 def test_batch_invoke_timeout_signals_entire_owned_group_and_records_cleanup(
@@ -1722,4 +1742,33 @@ def test_batch_invoke_timeout_signals_entire_owned_group_and_records_cleanup(
     assert record["descendant_cleanup_performed"] is True
     assert record["process_group_clean"] is True
     assert record["wall_timeout_seconds"] == 0.25
-    _assert_proc_absent(grandchild_pid)
+    _assert_proc_absent_or_zombie(grandchild_pid)
+
+
+def test_batch_process_group_probe_treats_only_zombies_as_not_live(
+    batch_orchestrator: ModuleType,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    proc_root = tmp_path / "proc"
+    zombie = proc_root / "101"
+    live = proc_root / "102"
+    zombie.mkdir(parents=True)
+    live.mkdir()
+    zombie.joinpath("stat").write_text(
+        "101 (exited child) Z 1 777 777 0\n",
+        encoding="ascii",
+    )
+    live.joinpath("stat").write_text(
+        "102 (live child) S 1 888 888 0\n",
+        encoding="ascii",
+    )
+    monkeypatch.setattr(batch_orchestrator, "PROC_ROOT", proc_root)
+    monkeypatch.setattr(
+        batch_orchestrator.os,
+        "killpg",
+        lambda _pgid, _signal: None,
+    )
+
+    assert batch_orchestrator._process_group_exists(777) is False
+    assert batch_orchestrator._process_group_exists(888) is True

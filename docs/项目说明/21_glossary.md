@@ -2,6 +2,7 @@
 
 > 当前 authority 与状态以 `PROJECT_LOCK.md`、`06_current_status.md` 和机器 gate 为准。
 > 历史研究术语可在 `docs/research/` 查阅，但不能覆盖下列发布语义。
+> **术语状态日期：2026-07-27（研究证据截止 2026-07-25）。**
 
 ## 认证与发布
 
@@ -85,6 +86,43 @@
 - **GHOST_AGNOSTIC / source digest / replay**：cut scope/currentness 机制，不能替代 campaign
   supervisor 或 public publisher 的 currentness contract。
 
+## 研究账本与有界实验
+
+- **research upper/lower ledger**：当前为 `U=(1188,18)`、`L=absent`。
+  `U` 表示给定已准入必要引理后的 research upper bound；`L=absent` 表示尚无
+  feasible witness 对应的下界。上下账未相遇，因此不建立 attainability 或
+  optimality，也不是 production `CERTIFIED`。
+- **Track B**：上界证明研究线，与 typed cut 平台的 **Stage B** 无关。
+  R4 `a004` admission 只准入几何必要引理供 B1 encoder 使用；随后独立的
+  proof-bearing PB/RoundingSat/VeriPB 链才建立 `U=(1188,22)`。
+- **`FORMAL_AUTHORITY_INCOMPLETE`**：内部 solver/verifier 结果不足以补齐
+  terminal resource、provenance 或 detached receipt authority 时的失败关闭终态。
+  面向 `(1188,18)` 的 strict/SMM3 attempts 均属此状态，
+  `upper_bound_update_authorized=false`，不构成账本更新 authority。
+- **routing-aware witness / W2b**：HEAD/input-pinned 的研究构造、运行监督与独立
+  六项复验基础设施。只有通过完整验收链的 content-addressed layout 才能形成具体
+  feasible lower-bound 证据；当前没有被账本接受的 layout，故 `L=absent`。该基础设施
+  不属于发布面，也不产生 production authority。
+- **non-certified cuts A/B**：对 production attach 机制可达性与固定配置效果进行的
+  有界研究实验，不是“已证明不 sound”的同义词。Gate 1 v4 的当前最强结论仅为
+  `MECHANISM_CREDIBLE`：一个具体注入 inequality 排除了同一 frozen incumbent。
+  Prospective AB16 的 A031–A038 均为 immutable frozen roots；A033 已创建
+  Gate-B package/campaign，但 formal 阶段只发布 admission，没有
+  guardian-ready、attempt consumption、selection、unit、terminal 或 organic arm；
+  A034 只发布 input authority 并完成 disposable drill，未 finalize Gate A、发布
+  candidate/preregistration、进入 Gate B 或消费 formal attempt。A035–A037
+  各自只发布一次 input authority；A038 的 pinned Gate-A full preflight 以
+  `FAIL_CLOSED`/exit `1` 结束，三项 launch authorization 均为 false，arms 仍为
+  `0/16`。fresh successor 尚未创建；下一 root 必须是新的 no-overwrite root，
+  重新绑定 clean committed HEAD 与 source observation，并通过 stage-specific resource
+  admission、完整 Gate A 及其余既定门禁；
+  没有 family-global soundness、proof-sidecar、PIC、B6、上下界、optimality 或
+  production `CERTIFIED` 结论。
+- **HEAD-pinned research authority**：receipt 只证明其记录的 originating HEAD、
+  inputs、tools 与工件字节。后续 Git 合并保留该历史结果及其明确准入的账本结论，
+  但不会在新 HEAD 上重新生成、重放或扩张原 receipt authority；要求 live HEAD
+  身份一致的消费必须失败关闭。
+
 ## 测试词
 
 - **collected**：pytest 发现了测试，不表示测试执行通过。
@@ -140,7 +178,9 @@
 
 ### 已知命名碰撞（读文档时注意消歧）
 
-- **B1**：①五月 pose-bool master 范式（史料）②Stage B 的 bundle/snapshot 批。
+- **B0/B1**：① Track B 的上界证明研究阶段；② Stage B typed-cut 工程序列的批次；
+  此外 **B1** 还可指五月 pose-bool master 范式史料。新文档必须写全
+  `Track B/B0`、`Track B/B1` 或 `Stage B/B0`、`Stage B/B1`，不得裸写。
 - **F1-F9**：①cut family（本表上文）②15 号文档的 red fixture 编号（无关）。
 - **F-6**：批C 发现编号（binding↔routing 枚举循环），**不是** cut family F6。
 - **round-N**：①Gemini 设计外审轮（PROJECT_LOCK §3A）②研究线 go/no-go 轮

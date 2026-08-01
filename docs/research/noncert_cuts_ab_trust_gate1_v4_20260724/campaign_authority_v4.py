@@ -27,13 +27,14 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 
-PACKAGE_SCHEMA = "noncert-cuts-campaign-authority-package-v4"
-PACKAGE_MANIFEST_SCHEMA = "noncert-cuts-campaign-authority-manifest-v4"
+PACKAGE_SCHEMA = "noncert-cuts-campaign-authority-package-v5"
+PACKAGE_MANIFEST_SCHEMA = "noncert-cuts-campaign-authority-manifest-v5"
 MANAGER_EPOCH_SCHEMA = "noncert-cuts-manager-boot-epoch-v4"
 MANAGER_EPOCH_TRANSCRIPT_SCHEMA = "noncert-cuts-manager-boot-epoch-capture-transcript-v4"
 ATTESTOR_SCHEMA = "noncert-cuts-privileged-manager-attestation-v4"
 ATTESTOR_AUDIT_SCHEMA = "noncert-cuts-read-only-attestor-audit-v4"
-CAMPAIGN_ROOT_SCHEMA = "noncert-cuts-campaign-root-v4"
+LEGACY_CAMPAIGN_ROOT_SCHEMA = "noncert-cuts-campaign-root-v4"
+CAMPAIGN_ROOT_SCHEMA = "noncert-cuts-campaign-root-v5"
 GATE1_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-child-selection-v1"
 CONTINUATION_SCHEMA = "noncert-cuts-gate1-v4-continuation-authorization-v1"
 GATE_ADMISSION_EPOCH_SCHEMA = "noncert-cuts-gate1-v4-manager-epoch-checkpoint-v2"
@@ -1588,13 +1589,37 @@ def verify_package(
     }
 
 
-def _future_ab16_slots(campaign_dir: Path, namespace: str) -> list[dict[str, object]]:
+def _prospective_ab16_root(
+    campaign_dir: Path,
+    *,
+    schema_version: str,
+) -> Path:
+    if schema_version == LEGACY_CAMPAIGN_ROOT_SCHEMA:
+        return campaign_dir / "prospective-ab16"
+    if schema_version == CAMPAIGN_ROOT_SCHEMA:
+        return campaign_dir / "formal-ab16/artifacts/prospective"
+    raise AuthorityError(
+        "CAMPAIGN_ROOT_INVALID",
+        "campaign-root topology cohort is unknown",
+    )
+
+
+def _future_ab16_slots(
+    campaign_dir: Path,
+    namespace: str,
+    *,
+    schema_version: str = CAMPAIGN_ROOT_SCHEMA,
+) -> list[dict[str, object]]:
+    prospective_root = _prospective_ab16_root(
+        campaign_dir,
+        schema_version=schema_version,
+    )
     slots: list[dict[str, object]] = []
     for configuration in AB16_CONFIGURATIONS:
         for order in AB16_ORDERS:
             for arm in AB16_ARMS:
                 slot = f"{configuration}-{order}-{arm}"
-                attempt = campaign_dir / "prospective-ab16" / "arms" / slot
+                attempt = prospective_root / "arms" / slot
                 slots.append(
                     {
                         "arm": arm,
@@ -1618,12 +1643,21 @@ def build_campaign_root(
     authority_tools: Mapping[str, object],
     strict_inputs: Mapping[str, object],
     created_at_utc: str,
+    schema_version: str = CAMPAIGN_ROOT_SCHEMA,
 ) -> dict[str, object]:
     """Build the immutable root for Gate 1 and the reserved AB16 child."""
 
     directory = _absolute(campaign_dir)
     if not directory.is_dir():
         raise AuthorityError("CAMPAIGN_DIR_INVALID", "campaign directory must already exist")
+    if schema_version not in {
+        LEGACY_CAMPAIGN_ROOT_SCHEMA,
+        CAMPAIGN_ROOT_SCHEMA,
+    }:
+        raise AuthorityError(
+            "CAMPAIGN_ROOT_INVALID",
+            "campaign-root topology cohort is unknown",
+        )
     if GIT_SHA_RE.fullmatch(repository_head) is None or not run_nonce or len(run_nonce) > 128:
         raise AuthorityError("CAMPAIGN_IDENTITY_INVALID", "HEAD or run nonce is invalid")
     _utc(created_at_utc, "campaign created_at_utc")
@@ -1667,7 +1701,7 @@ def build_campaign_root(
         "purpose": CAMPAIGN_PURPOSE,
         "repository_head": repository_head,
         "run_nonce": run_nonce,
-        "schema_version": CAMPAIGN_ROOT_SCHEMA,
+        "schema_version": schema_version,
         "strict_inputs": dict(inputs),
         "unit_namespace": "",
     }
@@ -1678,6 +1712,10 @@ def build_campaign_root(
     positive_bindings_dir = positive_dir / "bindings"
     positive_arms_dir = positive_dir / "arms"
     positive_exports_dir = positive_dir / "builder-exports"
+    prospective_root = _prospective_ab16_root(
+        directory,
+        schema_version=schema_version,
+    )
     gate_units: dict[str, dict[str, object]] = {}
     for slot in GATE1_SLOTS:
         attempt = gate1_dir / "units" / slot
@@ -1740,13 +1778,19 @@ def build_campaign_root(
             "units": gate_units,
         },
         "prospective_ab16": {
-            "arm_selection_path": str(directory / "prospective-ab16" / "selection-a001.json"),
-            "arms": _future_ab16_slots(directory, namespace),
-            "manifest_path": str(directory / "prospective-ab16" / "manifest-a001.json"),
+            "arm_selection_path": str(prospective_root / "selection-a001.json"),
+            "arms": _future_ab16_slots(
+                directory,
+                namespace,
+                schema_version=schema_version,
+            ),
+            "manifest_path": str(prospective_root / "manifest-a001.json"),
             "order": 2,
             "requires_continuation_schema": CONTINUATION_SCHEMA,
             "suite": "prospective-ab16",
-            "terminal_classification_path": str(directory / "prospective-ab16" / "terminal-classification-a001.json"),
+            "terminal_classification_path": str(
+                prospective_root / "terminal-classification-a001.json"
+            ),
         },
     }
     root: dict[str, object] = {
@@ -1791,8 +1835,10 @@ def validate_campaign_root(
         },
         "campaign root",
     )
+    schema_version = record["schema_version"]
     if (
-        record["schema_version"] != CAMPAIGN_ROOT_SCHEMA
+        schema_version
+        not in {LEGACY_CAMPAIGN_ROOT_SCHEMA, CAMPAIGN_ROOT_SCHEMA}
         or record["purpose"] != CAMPAIGN_PURPOSE
         or record["campaign_closed"] is not False
         or record["authority_ancestors"] != ["cuts-v4-package"]
@@ -2002,6 +2048,29 @@ def validate_campaign_root(
         or len(prospective["arms"]) != 16
     ):
         raise AuthorityError("TOPOLOGY_INVALID", "prospective AB16 stage drifted")
+    gate_selection = Path(str(gate["selection_path"]))
+    if not gate_selection.is_absolute() or gate_selection.parent.name != "gate1-v4":
+        raise AuthorityError(
+            "TOPOLOGY_INVALID",
+            "Gate 1 selection cannot derive the campaign directory",
+        )
+    derived_campaign_dir = gate_selection.parent.parent
+    expected_prospective_root = _prospective_ab16_root(
+        derived_campaign_dir,
+        schema_version=str(schema_version),
+    )
+    if (
+        Path(str(prospective["manifest_path"]))
+        != expected_prospective_root / "manifest-a001.json"
+        or Path(str(prospective["arm_selection_path"]))
+        != expected_prospective_root / "selection-a001.json"
+        or Path(str(prospective["terminal_classification_path"]))
+        != expected_prospective_root / "terminal-classification-a001.json"
+    ):
+        raise AuthorityError(
+            "TOPOLOGY_INVALID",
+            "prospective AB16 paths mix campaign-root cohorts",
+        )
     expected_triplets = {
         (configuration, order, arm)
         for configuration in AB16_CONFIGURATIONS
@@ -2022,7 +2091,8 @@ def validate_campaign_root(
         if (
             arm["slot"] != expected_slot
             or arm["unit_name"] != f"{namespace}-ab16-{expected_slot}.service"
-            or not Path(arm["attempt_dir"]).is_absolute()
+            or Path(str(arm["attempt_dir"]))
+            != expected_prospective_root / "arms" / expected_slot
         ):
             raise AuthorityError("TOPOLOGY_INVALID", "AB16 arm slot/name drifted")
         future_names.add(arm["unit_name"])
@@ -2030,6 +2100,11 @@ def validate_campaign_root(
         raise AuthorityError("TOPOLOGY_INVALID", "AB16 arm coverage or uniqueness drifted")
     if campaign_dir is not None:
         directory = _absolute(campaign_dir)
+        if derived_campaign_dir != directory:
+            raise AuthorityError(
+                "TOPOLOGY_INVALID",
+                "derived campaign directory differs from replay root",
+            )
         for field in (
             "selection_path",
             "gate_path",

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 worker = importlib.import_module("docs.research.witness_constructor_20260717.07_routing_aware.fixed_geometry_router")
@@ -64,15 +65,23 @@ class _Terminal:
 
 
 class _FakeRouter:
-    def __init__(self, calls: list[str], status: object) -> None:
+    def __init__(
+        self,
+        calls: list[str],
+        status: object,
+        build_error: Exception | None,
+    ) -> None:
         self.calls = calls
         self.status = status
+        self.build_error = build_error
         self.model = object()
         self.phys_vars = {"physical": object()}
         self.build_stats: dict = {}
 
     def build(self) -> None:
         self.calls.append("router.build")
+        if self.build_error is not None:
+            raise self.build_error
 
     def solve(self, *, time_limit: float) -> object:
         self.calls.append(f"router.solve:{time_limit}")
@@ -84,10 +93,20 @@ class _FakeRouter:
 
 
 class _Fixture:
-    def __init__(self, *, status: object = "FEASIBLE", oom: str = "NO_CGROUP_OOM") -> None:
+    def __init__(
+        self,
+        *,
+        status: object = "FEASIBLE",
+        oom: str = "NO_CGROUP_OOM",
+        final_oom: str | None = None,
+        build_error: Exception | None = None,
+    ) -> None:
         self.calls: list[str] = []
         self.status = status
         self.oom = oom
+        self.final_oom = final_oom
+        self.finish_count = 0
+        self.build_error = build_error
         self.reachability_error: Exception | None = None
         self.bound_binding_override: dict[str, str] | None = None
         self.selected_port_bindings: dict[str, dict[str, str]] | None = None
@@ -171,7 +190,7 @@ class _Fixture:
         def make_router(grid, commodities, **kwargs):
             del grid, commodities, kwargs
             calls.append("router.init")
-            return _FakeRouter(calls, self.status)
+            return _FakeRouter(calls, self.status, self.build_error)
 
         def add_l1(model, physical_vars, **kwargs):
             del model
@@ -219,7 +238,13 @@ class _Fixture:
         def finish(start):
             assert start == {"start": True}
             calls.append("cgroup.finish")
-            return {"oom_attribution": self.oom, "memory.peak": 123}
+            self.finish_count += 1
+            observed_oom = (
+                self.final_oom
+                if self.finish_count > 1 and self.final_oom is not None
+                else self.oom
+            )
+            return {"oom_attribution": observed_oom, "memory.peak": 123}
 
         return worker.WorkerDependencies(
             resolve_placement_solution=resolve,
@@ -274,8 +299,26 @@ class FixedGeometryRouterWorkerTests(unittest.TestCase):
         self.assertLess(fixture.calls.index("router.build"), fixture.calls.index("add_l1"))
         self.assertLess(fixture.calls.index("add_l1"), fixture.calls.index("router.solve:2.5"))
         self.assertLess(fixture.calls.index("adapt"), fixture.calls.index("reachability"))
+        self.assertLess(fixture.calls.index("cgroup.begin:tiny.service"), fixture.calls.index("router.build"))
         self.assertLess(fixture.calls.index("cgroup.begin:tiny.service"), fixture.calls.index("router.solve:2.5"))
-        self.assertLess(fixture.calls.index("router.solve:2.5"), fixture.calls.index("cgroup.finish"))
+        finish_indices = [
+            index for index, call in enumerate(fixture.calls) if call == "cgroup.finish"
+        ]
+        self.assertEqual(len(finish_indices), 2)
+        self.assertLess(fixture.calls.index("router.solve:2.5"), finish_indices[0])
+        self.assertLess(fixture.calls.index("reachability"), finish_indices[1])
+
+    def test_build_exception_still_finishes_cgroup_telemetry_and_fails_closed(self) -> None:
+        fixture = _Fixture(build_error=RuntimeError("synthetic build failure"))
+        result = fixture.run()
+        self.assertEqual(result["status"], "REJECTED")
+        self.assertEqual(result["classification"], "FAIL_CLOSED_EXCEPTION")
+        self.assertEqual(result["phase"], "routing_build")
+        self.assertEqual(result["route_components"], [])
+        self.assertLess(fixture.calls.index("cgroup.begin:tiny.service"), fixture.calls.index("router.build"))
+        self.assertLess(fixture.calls.index("router.build"), fixture.calls.index("cgroup.finish"))
+        self.assertNotIn("router.solve:2.5", fixture.calls)
+        self.assertEqual(result["telemetry"]["cgroup"]["oom_attribution"], "NO_CGROUP_OOM")
 
     def test_timeout_is_unproven_and_never_extracts_routes(self) -> None:
         fixture = _Fixture(status="TIMEOUT")
@@ -301,6 +344,27 @@ class FixedGeometryRouterWorkerTests(unittest.TestCase):
         self.assertEqual(result["route_components"], [])
         self.assertNotIn("router.extract", fixture.calls)
 
+    def test_post_route_cgroup_oom_discards_independently_checked_routes(self) -> None:
+        fixture = _Fixture(final_oom="CGROUP_OOM_EVENT")
+        result = fixture.run()
+        self.assertEqual(result["status"], "REJECTED")
+        self.assertEqual(result["classification"], "CGROUP_OOM")
+        self.assertEqual(result["phase"], "post_route_telemetry")
+        self.assertEqual(result["route_components"], [])
+        self.assertIn("reachability", fixture.calls)
+        self.assertEqual(fixture.calls.count("cgroup.finish"), 2)
+
+    def test_post_route_cgroup_oom_overrides_reachability_exception(self) -> None:
+        fixture = _Fixture(final_oom="CGROUP_OOM_EVENT")
+        fixture.reachability_error = ValueError("not reachable")
+        result = fixture.run()
+        self.assertEqual(result["status"], "REJECTED")
+        self.assertEqual(result["classification"], "CGROUP_OOM")
+        self.assertEqual(result["phase"], "post_route_telemetry")
+        self.assertEqual(result["message"], "CGROUP_OOM_EVENT")
+        self.assertEqual(result["route_components"], [])
+        self.assertEqual(fixture.calls.count("cgroup.finish"), 2)
+
     def test_independent_lane_reachability_failure_discards_routes(self) -> None:
         fixture = _Fixture()
         fixture.reachability_error = ValueError("not reachable")
@@ -309,6 +373,8 @@ class FixedGeometryRouterWorkerTests(unittest.TestCase):
         self.assertEqual(result["classification"], "FAIL_CLOSED_EXCEPTION")
         self.assertEqual(result["phase"], "independent_reachability")
         self.assertEqual(result["route_components"], [])
+        self.assertEqual(result["telemetry"]["cgroup"]["oom_attribution"], "NO_CGROUP_OOM")
+        self.assertEqual(fixture.calls.count("cgroup.finish"), 2)
 
     def test_dependency_exception_fails_closed_before_binding(self) -> None:
         fixture = _Fixture()
@@ -424,6 +490,20 @@ class FixedGeometryRouterWorkerTests(unittest.TestCase):
             with self.assertRaises(worker.FixedGeometryRouterError) as caught:
                 worker.load_geometry_payload(path, expected_sha256="0" * 64)
         self.assertEqual(caught.exception.code, "GEOMETRY_HASH_MISMATCH")
+
+    def test_dependency_snapshot_does_not_swallow_external_worker_timeout(self) -> None:
+        class ExternalWorkerTimeout(RuntimeError):
+            code = "WORKER_WALL_TIMEOUT"
+
+        class FakeStrictContract:
+            @staticmethod
+            def load_and_reconcile(project_root):
+                del project_root
+                raise ExternalWorkerTimeout("expired")
+
+        with patch.object(worker.importlib, "import_module", return_value=FakeStrictContract):
+            with self.assertRaises(ExternalWorkerTimeout):
+                worker.load_production_input_snapshot(Path.cwd())
 
     def test_supervised_entry_rejects_hash_mismatch_before_dependency_or_solver_work(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

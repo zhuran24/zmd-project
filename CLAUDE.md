@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 1. **`PROJECT_LOCK.md`** 是 release 边界最高权威（`F-*`/`PCR-*`/`CUT-*` fail-closed 条款）；与任何其他文档/记忆冲突时以它为准。
 2. **`README.md`** 是完整的项目 handoff 史料（六章决策记录：架构、认证链、PR1/PR2 saga、坑、开放问题）。它是记录不是命令，凡涉及证明/认证的断言先对源码自查。
 3. `NAV_MAP.md` 是调用链导航，现已显式列出 `certified_artifact_contract.py`、`candidate_proof_replay.py`、PR2 L0 child/core、parallel scheduler 与 Stage B cut snapshot 链；细节仍以源码符号为准。
-4. **`docs/项目说明/00_master_roadmap.md`**（2026-07-05 立）是全项目工作线的**总图 + 排期快照 + owner 拍板台账**——问"接下来做什么/某条线排在哪/哪些事等 owner 定"先看它。它不是状态权威（release 边界仍以 1 为准，当前实现状态以 `06_current_status` + `soundness_gap_roadmap` 为准）。
+4. **`docs/项目说明/00_master_roadmap.md`**（2026-07-05 立）是全项目工作线的**总图 + 排期快照 + owner 拍板台账**——问"接下来做什么/某条线排在哪/哪些事等 owner 定"先看它。它不是状态权威（release 边界仍以 1 为准，当前实现状态以 `06_current_status` 为准）；`soundness_gap_roadmap` 只保存截至 2026-07-11 的 P1.2 历史快照。
 
 **⚠ 本仓库是交付副本，git 历史被重建过**：README 里引用的所有 commit hash（`b35e5f9`、`9bbb3a6`、`099f5a3`…）在本仓库 `git cat-file` 均不可解析——它们是原机器的历史，只能当叙事线索，不能 `git show`。remote 配置因副本而异（CachyOS 活跃副本 2026-07-12 有 `origin`=GitHub + `winc`=Windows NTFS 挂载；打包分发出去的审查副本可能既无 remote 也无 `.git`）。分支：`main`、`topology-opt`（S0-S3 diagnostic 模块已进 main 历史，是 main 祖先；生产接线未做）。原 `pr2-5-domain-frontier-gate`（close-kernel 硬化线）已于 `6e06922` 合入 main（round-19/20 全吸收）、分支指针已删。核对 HEAD 以实测为准，别死认文档里记的 hash。**凡 `git ...` 命令与 `scripts/select_tests_for_paths.py` 的 affected/codegraph 选择语义都以真实 checkout 为前提**：在无 `.git` 的 stripped 审查树里它们要么不可用、要么只剩保守回退（FULL），不得把回退当精确受影响闭包。
 

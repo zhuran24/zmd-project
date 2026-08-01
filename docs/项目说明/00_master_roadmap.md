@@ -4,8 +4,10 @@
 > 2026-07-05 起立此存照。它不复制各阶段计划的细节（细节仍在 08/09/10 与
 > docs/research/ 各设计稿），也**不是**状态权威——release 边界以
 > `PROJECT_LOCK.md` + gate JSON 为准，当前实现状态以
-> [06_current_status](06_current_status.md) + [soundness_gap_roadmap](soundness_gap_roadmap.md)
-> 为准，主线执行序以 owner 拍板的排期卡
+> [06_current_status](06_current_status.md) 为准。
+> [soundness_gap_roadmap](soundness_gap_roadmap.md) 是截止 2026-07-11 的 P1.2
+> soundness 历史快照，不是当前 authority；其中 throughput 的 P1.2 scope exclusion
+> 不覆盖本文 §1e 的后续 owner 决定。主线执行序以 owner 拍板的排期卡
 > （`cc_memory_vnext/cards/p1-2-closeout-then-tcb-backlog-order.md`，
 > **以其正文 2026-07-04 晚修正版为准**）为准。本文档过时时，以上述权威为准
 > 并回来修这里。
@@ -16,12 +18,34 @@
 > 文档没有它们的位置。08/09/10/13 是"史料+现行混排"的 ledger，**保持
 > 原样加注、不重写**；总图由本文档承担。
 
-## 0. 一句话现状（2026-07-18）
+## 0. 一句话现状（2026-07-30；研究证据截止 2026-07-30）
 
 P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 进行中，
-三条活跃工作线的位置：
+研究双账当前为 `U=(1188,18)`、`L=absent`。strict/SMM3 与前两个 SMM4 root
+的失败事实继续保留；第三个 fresh-authority root 的唯一 formal one-shot 已由
+最终 detached receipt 与 immutable closeout 授权 research upper recovery。
+该结果不建立 `(1188,18)` attainability、global optimality、whole-instance
+infeasibility、lower bound 或 production `CERTIFIED`。最近已完成的最小研究实现是
+W0 power-cycle domino 的局部 D6 joint completion；closed-root v2 的 seed-narrow 与
+28-slot antecedent 均已被异构 replay 接受为 local `INFEASIBLE`。随后唯一放宽
+`d6_6b_d9_6g_swap_v1` 单轴 class transfer 也已通过 clean 实施提交、full preflight、两次
+相同资源门禁与双异构 replay，终态仍为 exact local D6 `INFEASIBLE`；本轮据此停止。
+AB16 强制链已冻结 A031–A038：A033 停在 formal admission；A034 只发布 input
+authority 并完成 disposable drill；A035–A037 只发布 input authority；A038 的 pinned
+Gate-A full preflight 以 `FAIL_CLOSED` 结束。A038 不得补写、重放或复用，目前没有
+fresh successor、Gate-B 新 authority、formal trusted terminal 或 organic arm，仍为
+`0/16`。下一 fresh successor 必须绑定 clean 修复提交和新的 stage-specific resource
+profile set 后从完整 Gate A 重来；A038 与此前 full 均不构成资格证据。
 
-| 工作线 | 现在在哪 | 下一步 | 等谁 |
+| 工作线 | 当前终态坐标 | Authority 边界 |
+|---|---|---|
+| **cut 框架工程线** | Production family 状态不变：F1/F6/F7 为 typed，F5 为 shadow-only，F2/F3/F4/F9 为 `LEGACY_DIAGNOSTIC`，F8 retired；attach 仍 unsafe/default-off，B6 未授权。07-24 rule/cut evolution 只增加 test/offline shadow 维护面。Noncert cuts Gate 1 v4 只建立 `MECHANISM_CREDIBLE`。AB16 A031–A038 均已冻结；A033 完成 Gate-B/package 后只发布 formal admission，A034 停在 Gate-A input authority 与 disposable drill，A035–A037 只发布 input authority，A038 的 full preflight 为 `FAIL_CLOSED`；没有新 Gate-A/Gate-B authority、guardian-ready、attempt consumption、selection、unit、terminal 或 organic arm，仍为 `0/16`。 | Shadow 与 noncert 结果都不授权 production attach、family-global soundness、上下界、witness 或 optimality。 |
+| **求解与研究线** | SMM4 fresh-authority 的 `smm4-formal-a004` 已消费且不得重试；最终 detached receipt 与 immutable closeout 均为 `VERIFIED` 并授权 research upper ledger 更新为 `U=(1188,18)`，`L=absent`。内部 formal receipt 即使 `VERIFIED`/UNSAT 仍为 `upper_bound_update_authorized=false`；routing-aware witness/W2b 仍没有被账本接受的 layout。W0 D6 已具备 hash-pinned、no-overwrite、cache-free、逐组件 no-follow 打开、全树目录 FD/signature 终检、固定 artifact label/path 与独立 replay；closed-root v2 的 seed-narrow、28-slot antecedent，以及保持 geometry/pairing/tile split/28 slots/全局 ledger 不变的 v3 `d6_6b_d9_6g_swap_v1`，均为 replay-accepted local `INFEASIBLE`。本轮停在 v3 精确局部结论。`AB16_GATE_B_AND_16_ORGANIC_ARMS` 停在 A038 `FAIL_CLOSED` 后的实现收口；下一 fresh successor 只可在 stage-specific resource admission、独立 worktree 快进与完整 Gate-A 门禁闭合后创建。 | D6 的 `FEASIBLE` 只证明完整一致的局部 antecedent，`INFEASIBLE` 只关闭同一局部 antecedent，`UNKNOWN` 无拒绝语义；D9 在 swap 中只作 ledger 算术补偿、不被求解。W0 v3 与 AB16 transport/resource admission 条款均不扩大 certified/production authority，不改变上下界或 cut。旧 receipt-payload-v1 root 不证明完整 run root 已封存。 |
+| **支线** | P3.0 轴 A 已有 68 条定理；轴 B 待开工。P2.0 吞吐认证仍是 owner 判定的必做线；TNS 设计稿完成未排。 | P2.0 不受 P1.2 历史 theorem scope exclusion 覆盖。 |
+
+下表保存 **2026-07-20 的执行快照**，仅用于追溯当时的排期，不覆盖上表终态：
+
+| 工作线 | 当时在哪 | 当时下一步 | 当时等谁 |
 |---|---|---|---|
 | **cut 框架工程线** | Stage B 工程面全部完成（B0-B5b + 批D F5 独立 verifier + 修复批 α/α2/β + B6 前置工程批 + 批E RFC-003 + prod 形态适配批）。family 现状：F1/F6/F7 = COMPILABLE/TYPED；F5 = shadow-only（compiler=None，真 adapter 修复挂 F5 转正批）；F2/F3/F4/F9 = LEGACY_DIAGNOSTIC；F8 retired。certified 下 attach 保持双重禁用（env unsafe-map） | B6 owner flip → F5 转正批 | **owner**（B6 手动门；PIC-4/5 生产层 APPLIED>0 证据口径见台账 #9） |
 | **求解与研究线** | C1 编码 = certified 默认 master 表示（首解之墙 07-09 已破）。全局最优证明已规约为「3 负锚点 + 1 witness = 4 个固定小实例」（07-14 八人会议）。RAB-SEP 通道收编 certified（默认 OFF，`F-BL-R11-01`）；front-clear 必要条件上收 master 编码（`F-GM-FCL-01`，默认 OFF，语义三面实证正确、OFF 路径零回归；presolve off 为 lift-ON 必要操作配方）。6×6 锚点 lift-ON 下 30min 单发 fixed/automatic 均无 incumbent 无 INFEASIBLE。**⚠ 07-18 front 错位 P0 事故：旧实验数字全部在错位语义下跑出，批 4 全量重跑前处于撤回状态**；修复批序列 批1（`060aeb6`）/批2（`bb415f1`）/批3+5（`9c0f724`，封号窗口 codex 代刀，新池 81,797 异构对账全中、五钉一致，合并终态门 07-18 晚两连绿）已落地；批4 部分（`a0f7525`：重建 witness FEASIBLE、"24 杠杆穷尽/结构墙"维持撤回）；**07-19 值夜**：RAB-on SIGSEGV 销项+FCL 生产 lift A/B 齐（on 臂 0 cuts/2.4h，**lift 默认 OFF 维持**，台账 #10 不变；doc `04`）；owner 第 4 笔域缺口（未启用口朝外合法）→ codex `0c8603d` 修复**池 82,829**（core+488/box+544，闭式对账全中）+严格三层规格书 `5a697c8`（validator 不外发防牵引）→ 合并 `b1cf014` 终态门双绿；R1 严格版已交 owner 外发 GPT Pro | 批 4 余量：witness maximize 臂（在跑）+ rounds 1-5 重跑（清单三梯队已立）+ PB 闭环 | 批 4 自主推进；R1 回复到达后按 rubric 判读 |
@@ -47,6 +71,14 @@ P1.2 认证链 **CLOSED**（2026-07-07 owner `owner_manual_decision`）。P1.3 �
 
 | 07-19 | 值夜批：RAB-on SIGSEGV 复现销项（clean 逐字一致；根因=内存超频环境层）+FCL 生产 lift A/B 收齐（on 臂 0 cuts/2.4h→lift 默认 OFF 维持）+owner 第 4 笔域缺口定谳（未启用口朝外/被堵合法）→codex 修复池 82,829+严格三层规格书（validator 不外发）→合并 `b1cf014` 终态门双绿；R1 严格版外发 GPT Pro；rounds 1-5 重跑清单三梯队；stop hook v1.7（23 键泄漏修复）；witness 链独立零违规审计收官（`d8bb218`，两臂零违规+五路突变金丝雀） | `front_offset_incident_20260718/03`-`04`；`cleanroom_rederivation_20260718/strict/` |
 | 07-20 | **Rounds 梯队 3 主件收官（RND-06 重验完成）**：codex plan 模式端到端试点成功（owner 教的 plan 问答循环→选1→执行→自提交流程全链走通；机器重启后 owner 亲驱 codex 续完）——round45 bespoke coordinate master 修正语义重建 `9219498`：**10,816 var/16,513 constraint（对比历史 10.7K），六臂（seed 71-73×600s/1200s）全 clean 完成、三锚点全 UNKNOWN=无上界证书**；旧 18-20GiB 内存墙未复现（峰值 1.44GiB）但不得升级为新结论，"结构墙"判词维持撤回；campaign 工件哈希/soundness 抽审/独立 oracle 验收全绿后合并 `74ff084`。附带 `c8fe04e` 严格包确定性账本修复（对已外发 R1 三件套零影响=不必重发，六向哈希比对）。owner 侧：A 社订阅再封→中转链就位；⚠ 中转配额紧→**owner 拍板默认委托路由改 codex 直调（MCP/shell），claude 只管计划诞生+判读验收**。**R1 严格版判读（`7d013c3`）：12/12 满分+十条假设零违背（严格包完备性干净房间级确认）+两项 certified 前置引理异构复算收编——47 边界模式塌缩（每边恰23台/gap≡0 mod3/角互斥）+**全局面积上界 (1326,34)**（P≥2→自由格≤1348→46 接驳格强制→47×1,182 枚举；项目首个 certified 上界；`verify_r1_strict_bounds.py` 复现）。**PB-03 收官=批 4 清单全清**（codex 端到端第二单，`3888407`→合并 `18a6270`，门 19/19）：(1326,34) 带内 22 尺寸的 residual-band OPB（16,749 var）经独立 translation gate（14/14 PASS、最小 |R∪Q|=1,351>1,348）→RoundingSat 25.5MB proof→**VeriPB 3.0.2 VERIFIED UNSATISFIABLE**——项目首份机器可验上界证书；claim=两段式（带外 1,763 尺寸初等排除+带内 VeriPB），研究级非 sealed。干净房间 R3（方法论移植轮）材料备好（`95b4843`）；**R2 判读（`f931d1a`）：五问全中靶心——判据层被独立公式化（owner=max scope 归属公式/P⇒E 投影铁律/六 soundness gates/cut-dependent proof ledger），四条量化断言复算逐字全中、11 假设零违背；六条超出增量入收编候选（归属公式候补 00 号 §0b 待 owner；proof ledger+minimality witness 归 Stage B promotion 前置；两条免费投影转 witness/负锚点线）**。主线回归 4 小实例框架：witness routing-aware 构造器委托已发（codex 端到端第三单，计划已批执行中）。**R3 判读（`cb32e07`）：方法论移植轮直接命中——两个未走过的方向产出更强上界：certified 全局上界收紧至 (1190,34)**（端口膜计数：对侧单向口+外部每格≤4 接驳 ⇒ wh+⌈(580−w−h)/4⌉≤1320）**+杆数下界 P≥9**（供电光环 396 权重证书，840 放置不等式复算零违例）——两证书 `verify_r3_certificates.py` 异构复算全过，(1326,34) 被严格超越（PB-03 证书自身 claim 不受影响）；等式挖矿三强制（ceiling 下恰 9 杆/零箱/矩形不贴边）；方法论批判六条（语义 ledger 三极性/cut 带前件/主动挖对偶/micro-oracle/信任三段/双 ledger）与 R2 归属公式合并候补 00 号 §0b（待 owner）。**(1190,34)+P≥9 对抗复核批已过（`11` 号：codex exec ultra 对抗席 14 攻击面全 CONFIRMED、两证书 SURVIVES）——certified 待遇正式生效**；待办：PB 化评估；光环推广与 frontier 逐维排除入换攻法候选 | `front_offset_incident_20260718/06`-`07`；round45 目录+`.artifacts/.../r45-6120809f5de8b4f5/`；`cleanroom_rederivation_20260718/04`-`06` |
+| 07-23 | R4 `a004` 只把 `(1188,22)` 准入为 B1 encoder-design 输入；随后 B1 proof-bearing PB/RoundingSat/VeriPB 链完整关闭 lex-better band，research upper ledger 更新为 `U=(1188,22)`，`L=absent` | `r4_response_review_20260723/`；`b1_r4_1188_22_pb_20260723/` |
+| 07-24 | `(1188,18)` sidewise strict 与 SMM3 recovery 均以 `FORMAL_AUTHORITY_INCOMPLETE` 失败关闭，账本不变。Rule/cut evolution 保持 test/offline shadow。Noncert Gate 1 v4 仅建立单个注入 inequality 的 `MECHANISM_CREDIBLE`；AB16 停在 Gate A，未创建 formal campaign 或 organic arm | `b1_sidewise_marked_membrane_strict_20260724/`；`b1_sidewise_marked_membrane_authority_recovery_20260724/`；`23_rule_cut_evolution_protocol.md`；`noncert_cuts_ab_trust_gate1_v4_20260724/`；`noncert_cuts_ab16_20260724/` |
+| 07-25 | 合并态 provenance gate 保留 Track B、R4 与 noncert 研究 authority 的原始 HEAD/input/tool 身份；旧 receipt 不因进入后续 HEAD 而成为新生成 authority，研究双账仍为 `U=(1188,22)`、`L=absent` | `src/tests/conftest.py` |
+| 07-27 | SMM4 第三个 fresh-authority root 完成唯一 formal one-shot；`smm4-formal-a004` 已消费且不得重试。最终 detached receipt 与 immutable closeout 均为 `VERIFIED`，且只有二者授权 research upper ledger 更新为 `U=(1188,18)`、`L=absent`；`production_certified=false`。下一项强制任务登记为 `AB16_GATE_B_AND_16_ORGANIC_ARMS`，未执行 | [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md) |
+| 07-28 | G3 最小公共研究基础层与 W0 D6 层落地后，发现 historical seed-narrow `receipt_payload_v1` root 有两个未登记 `.pyc`；其命名字节图局部 `INFEASIBLE` 保留，但完整 root closure 不成立。G3 v2 以逐组件 no-follow 打开并保留全部目录 FD/signature 至终检，采用排除固定 `receipt.json` 自指的 exact path/type manifest 与 `-I -B` 进程合同；W0 replayer 同步该遍历合同并钉死 artifact label/path，对真正 `receipt_payload_v1` 稳定返回 `ROOT_CLOSURE_CONTRACT_MISSING`，并拒绝整体改名和任何额外节点。截至 07-28 当时，强制 seed-narrow v2 重跑仍等待 Endfield 退出，随后还须通过 full preflight 及资源/竞争 solver/项目锁/clean-HEAD 门禁，才按 FEASIBLE / failure-or-UNKNOWN / replay-accepted INFEASIBLE 自动分支。tracked 状态与 `U=(1188,18)`、`L=absent`、production authority 不变。AB16 未取消，继续后置 | [W0 D6 research gate](../research/w0_power_cycle_domino_d6_20260728/README.md)；[24号治理](24_repository_asset_governance.md) |
+| 07-29 | W0 D6 v3 协议与单轴 `d6_6b_d9_6g_swap_v1` 落地于 `db00416d3c68`；full preflight `19 passed`，两次相同资源门禁均通过。新 no-overwrite producer root 返回 `INFEASIBLE`，exact antecedent 为 `dab2a328…a9221`；CPython 3.13.13 与 3.14.6 的两份 root-pinned replay 均 `PASS`、输出逐字节一致（SHA-256 `568b58bb…cc6f24`）。该结果只关闭 exact local D6 swap antecedent；D9 只作未求解的 ledger 算术补偿。本轮停止，不自动进入另一轴、D7 或多轴放宽；tracked `U=(1188,18)`、`L=absent`、cut 与 production/certified authority 均不变 | [W0 D6 research gate](../research/w0_power_cycle_domino_d6_20260728/README.md) |
+| 07-30 | AB16 强制链的 A031–A034 均已冻结。A033 通过 fresh Gate A、Gate-B qualification 与 package/campaign 创建，但 formal 阶段只发布 admission；A034 只发布 input authority 并完成 disposable drill，未 finalize Gate A、发布 candidate/preregistration、进入 Gate B 或消费 formal attempt。冻结证据不能恢复被旧 orchestrator 遮蔽的 selected-supervisor stderr；241-byte canonical guardian socket path 暴露 Linux pathname AF_UNIX 阻断，而后续审查又证明 pathname unlink 与未经闭合的 retirement 验证不能授权清理成功。当前修复保留 canonical absolute identity 与 retained-dirfd transport，以 path-preregistration v4、formal context v3/admission v2 登记固定 `.retired` 终端成员；cleanup 只执行 `renameat2(RENAME_NOREPLACE)` 与 parent fsync，authority 链不调用 pathname unlink，并在最终 absolute-parent join 后以 retained absolute-directory-chain 与 retired-inode mutation watches 闭合 topology/parent/leaf 验证窗口。A031–A034 不可修补或重试；此前 full 无资格意义，下一 fresh root 只能是 A035，必须重新绑定提交与完整门禁 | [AB16 current status](../research/noncert_cuts_ab16_20260724/README.md) |
+| 07-30 | AB16 后续 A035–A037 均只发布一次 input authority 后冻结；A038 的 pinned Gate-A full preflight 以 `FAIL_CLOSED`/exit `1` 结束，三项 launch authorization 均为 false。A031–A038 与所有历史 roots 保持不可变，fresh successor 尚未创建，organic arms 仍为 `0/16`。下一实现把原跨阶段统一阈值拆为 `FULL_PREFLIGHT`、`GATE_B_QUALIFICATION`、`FORMAL_ORGANIC_ARM` 三个有 basis/predicted peak/safety margin/host reserve/live measurement 的 conservative temporary profile；三锁、same-UID 冲突、单 worker 与 formal `35/39 GiB + 16 GiB swap` cgroup 硬上限保留，且在拿锁后及每个实际重负载 prelaunch 前重新判定。该协议只治理 research admission，不新增 Gate-A/Gate-B/formal authority，也不改变 `U=(1188,18)`、`L=absent`、cut、production/certified 状态 | [AB16 current status](../research/noncert_cuts_ab16_20260724/README.md) |
 
 ### 0b. 方法论：规则归属判据 v2 → v2.3（2026-07-17 三轮推出 v1/v2/v2.1；07-18 两轮补 cut 方法论与四问统一；07-20 干净房间 R2/R3 外部收编）
 
@@ -154,17 +186,12 @@ solve 解不动时先问"这格是否合并过头"——候选=两段式 master�
 > **Shadow-only 实现注（2026-07-24；non-authorizing）：**
 > [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md) 记录由本节
 > 判据导出的 test/offline-only 静态台账、一致性门、合同矩阵与 onboarding fixture。
-> 当前状态为 `full_preflight_passed`：验收基线
-> `fd015a9ac49a182b242895433a2ff2d2e5ee57de` 的干净工作树在 coherent backup venv、
-> 清除 `PYTHONPATH`/`PYTHONHOME` 并持有独占资源互斥锁时，full preflight 返回 `0`
->（总体 19 passed；pytest `4701 passed, 74 skipped in 98.52s`）。完整 stdout/stderr
-> 日志 SHA-256 为 `fedf7de80905b47c626b874213f0471a2e499a7fdd56bbc862bab47027138bc1`，
-> `PROJECT_LOCK.md` SHA-256 仍为
-> `33632dfdb2297425e42066b2cf0749ca6b9ab1f8653e810b6f2e53ded1025410`。
-> 该通过只验收 test/offline shadow 维护面；它不修订 §0b 方法论，不改变 production
+> 协议中的 `full_preflight_passed` receipt 绑定
+> `fd015a9ac49a182b242895433a2ff2d2e5ee57de`，只验收该 HEAD 的 test/offline shadow
+> 维护面；它不修订 §0b 方法论，不改变 production
 > runtime、owner、phase gate、authority digest 或 P1.2 封存，也不授权 production
 > 接线、family 晋级、owner flip、P1.2 reseal、持久化 schema 变更或新的数学结论。
-> production 接线与持久化 schema 变更延期到独立 owner-authorized 批次。
+> 该历史 receipt 不外推为其他 HEAD 上新生成的 authority。
 
 ## 1. 主线（关键路径，串行）
 
@@ -223,7 +250,7 @@ F8 retired）；Stage B 工程面完成，当前只待 B6 owner promotion。
 真生产 registry 注入、route schema 拍板、F2 max-flow witness、
 **F3 active_port_witness 硬门**（生产默认开启前二选一）。
 
-### 1e. P2.0 吞吐认证（owner 2026-07-04 改判**必做**；旧文档"圈外"口径作废）
+### 1e. P2.0 吞吐认证（owner 2026-07-04 改判**必做**；P1.2 历史 scope exclusion 不适用于 P2.0）
 
 P2.0a 残余：toy path-phase 证书 + prototype checker E2E（设计稿已含 v3 终审）。
 P2.0b（P1.3 后）：按吞吐稿 §6 落 TP7-S/TP7-D 证书链 + 伪造红测。

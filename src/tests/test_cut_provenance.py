@@ -88,9 +88,11 @@ def test_certified_exact_rejects_legacy_cut_file(tmp_path: Path) -> None:
     )
 
     manager = CutManager(
+        checkpoint_dir=tmp_path / "checkpoints",
         solve_mode="certified_exact",
         current_hashes={"candidate_placements": "abc", "mandatory_exact_instances": "def"},
     )
+    assert manager.checkpoint_dir == tmp_path / "checkpoints"
     stats = manager.load(legacy_path)
     assert stats["loaded"] == 0
     assert stats["rejected_legacy"] == 1
@@ -779,9 +781,11 @@ def test_cut_manager_load_rejects_duplicate_exact_safe_key(tmp_path: Path) -> No
     )
 
     manager = CutManager(
+        checkpoint_dir=tmp_path / "checkpoints",
         solve_mode="certified_exact",
         current_hashes={"candidate_placements": "abc"},
     )
+    assert manager.checkpoint_dir == tmp_path / "checkpoints"
 
     with pytest.raises(ValueError, match="duplicate JSON key"):
         manager.load(exact_path)
@@ -814,9 +818,11 @@ def test_cut_manager_load_rejects_json_nan_constant(tmp_path: Path) -> None:
     )
 
     manager = CutManager(
+        checkpoint_dir=tmp_path / "checkpoints",
         solve_mode="certified_exact",
         current_hashes={"candidate_placements": "abc"},
     )
+    assert manager.checkpoint_dir == tmp_path / "checkpoints"
 
     with pytest.raises(ValueError, match="invalid JSON constant"):
         manager.load(exact_path)
@@ -1025,7 +1031,12 @@ def test_certified_exact_loads_only_matching_exact_safe_cuts(tmp_path: Path) -> 
         encoding="utf-8",
     )
 
-    manager = CutManager(solve_mode="certified_exact", current_hashes=matching_hashes)
+    manager = CutManager(
+        checkpoint_dir=tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes=matching_hashes,
+    )
+    assert manager.checkpoint_dir == tmp_path / "checkpoints"
     stats = manager.load(exact_path)
     assert stats["loaded"] == 1
     assert stats["rejected_hash"] == 1
@@ -1102,7 +1113,12 @@ def test_certified_exact_loads_new_fine_grained_exact_safe_cut_types(tmp_path: P
         encoding="utf-8",
     )
 
-    manager = CutManager(solve_mode="certified_exact", current_hashes=matching_hashes)
+    manager = CutManager(
+        checkpoint_dir=tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes=matching_hashes,
+    )
+    assert manager.checkpoint_dir == tmp_path / "checkpoints"
     stats = manager.load(exact_path)
 
     assert stats["loaded"] == 2

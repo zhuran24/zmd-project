@@ -1,6 +1,8 @@
 # 08 — Phase 1.2 plan (P1.2A entry ✅ done + P1.2B-F5/F6/F7/F8/F9)
 
-> **历史计划与现行 scope 混合文档**：F5–F9 的计划段保留作设计来源；当前 P1.2 状态以 `06_current_status.md` 与 `soundness_gap_roadmap.md` 为准。V99 及其测试/封存数字绑定旧 source hashes，后续 PR1 工作树修改已要求重新封存。
+> **历史计划与现行 scope 混合文档**：F5–F9 的计划段保留作设计来源；当前状态以
+> `06_current_status.md` 为准，`soundness_gap_roadmap.md` 只保存截至 2026-07-11 的
+> P1.2 历史快照。V99 及其测试/封存数字绑定旧 source hashes，后续 PR1 工作树修改已要求重新封存。
 
 
 > **2026-05-23 v2 命名更新**: 原 plan 把 `P1.11` 同时用作 "入门 7 项" 跟 "F5 pattern_nogood", 误导. v2 拆: **P1.2A** 入门 (entry hardening, 已落地) + **P1.2B-F{5,6,7,8,9}** 各 family.

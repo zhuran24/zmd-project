@@ -1,7 +1,146 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-24（规则/cut 演化 shadow 终态验收；其余事实按各段日期）**
+**状态日期：2026-07-30。**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
+
+## 当前结论摘要
+
+- **研究上下界账本：** `U=(1188,18)`，`L=absent`。SMM4 最终 detached receipt
+  与 immutable closeout 均为 `VERIFIED`，且只有这两项明确给出
+  `upper_bound_update_authorized=true`。该结果只更新 research upper ledger；
+  不建立 `(1188,18)` attainability、global optimality、whole-instance
+  infeasibility、任何 lower bound 或 production `CERTIFIED`。证据与边界见
+  [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md)。
+- **SMM4 formal 终态：** `smm4-formal-a004` 已消费且永久不得重试。内部
+  `VERIFIED`/UNSAT receipt 仍为 `upper_bound_update_authorized=false`，不是账本
+  授权源；`production_certified=false`。`AB16_GATE_B_AND_16_ORGANIC_ARMS`
+  已进入强制执行链；A031–A038 均已冻结，尚无可信 terminal 或 organic arm。
+  A035–A037 只发布一次 input authority；A038 的 pinned Gate-A full preflight
+  以 `FAIL_CLOSED` 结束，fresh successor 尚未创建，organic arms 仍为 `0/16`。
+  下述 W0 D6 单轴局部阶段已经完成。
+- **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
+  hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
+  research/developer infrastructure 落地。closed-root v2 的 `seed_narrow` 与
+  `all_legal_d6_slots` 已分别得到 replay-accepted `INFEASIBLE`，只关闭各自 exact local
+  antecedent。保持 28 slots、geometry、pairing、tile split 与全局 class ledger 不变的
+  `d6_6b_d9_6g_swap_v1` 单轴 class transfer 也已通过 full preflight、前后两次相同资源
+  门禁与两份异构 replay，得到 replay-accepted `INFEASIBLE`。它只关闭 exact local D6 swap
+  antecedent，不写入 tracked 状态，不产生 cut、拒绝、下界或全局结论。
+- **Routing-aware witness / W2b：** 已有研究构造、运行监督与独立复验基础设施；
+  当前没有通过其 HEAD/input-pinned 验收链的 content-addressed layout，故
+  `L=absent` 不变。该基础设施不属于发布面，也不产生 production authority。
+- **规则与 cut 演化：** 静态规格、一致性门、onboarding fixture 与 rejection audit
+  sidecar 均为 test/offline-only shadow，`authority_effect=non_authorizing`；不改变
+  production runtime、trusted apply 闭集、authority digest、P1.2 seal 或 family promotion 状态。
+- **Noncert cuts A/B：** Gate 1 v4 只建立一条具体 inequality 对一个固定 incumbent 的
+  局部 mechanism reachability 与 exclusion power。AB16 的 A033 已完成 fresh Gate A、
+  Gate-B qualification 与 package/campaign 创建，但 formal 阶段只发布 admission；没有
+  guardian-ready、attempt consumption、selection、unit、terminal 或 16 个 organic arms；
+  A034 只发布 input authority 并完成 disposable drill，未 finalize Gate A、发布
+  candidate/preregistration、进入 Gate B 或消费 formal attempt。A035–A037 各自只发布
+  一次 input authority；A038 的 pinned Gate-A full preflight 以
+  `FAIL_CLOSED`/exit `1` 结束，三项 launch authorization 均为 false。
+  A031–A038 均不可重试。
+  当前 runtime fix 保留 canonical absolute socket identity，以 retained-dirfd alias 适配
+  长 worktree 的 Linux AF_UNIX 调用，并在最终 absolute-parent join 后以 retained
+  absolute-directory-chain 与 retired-inode mutation watches 闭合终态 topology/parent/leaf
+  验证窗口；该 alias 与 watches 不授予 schema 或
+  authority。fresh successor 尚未创建；后续只能使用全新 no-overwrite root，从 clean
+  committed HEAD 重新绑定全部 source observation，并依次通过 stage-specific resource
+  admission、完整 Gate A 及其余既定 authority gates。organic arms 仍为 `0/16`。
+  这些结果不建立 family-global soundness、production `CERTIFIED`、上下界、witness、
+  attainability 或 optimality。
+
+## 2026-07-29 W0 D6 closed-root negatives 与单轴 class transfer
+
+当前候选只以 research input 收编：strict instance SHA-256 为
+`e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849c`，
+framework SHA-256 为
+`db6046cf598f9b5738b7f8950c91ea31834e8214e7e07995175b71eb04bdbb89`，
+实际 geometry seed SHA-256 为
+`18c72669105f486bf54a2665bd74d1ff952ce2eeb39b28a7b30d5ce8d5d2f5f1`。
+seed 内 producer 自报的
+`295bfef9b2681193e3a9cc085c479a960f87de0131abfbdfacb676479bdb2aa5`
+没有绑定实际 seed bytes，明确拒绝作为验收 identity；外部 validation 与冻结 geometry
+front probe 也只保留为背景材料。
+
+实现分成两个可独立验收的层次。`devtools/research_run_contract.py` 只提供严格稳定
+bytes snapshot、实际 SHA-256、exclusive/no-overwrite run root、canonical
+config/receipt、逐组件 descriptor-relative no-follow root 打开、保留全树目录
+FD/signature 至终检、排除固定 `receipt.json` 自身的完整 path/type manifest、`-I -B`
+进程合同与 byte-identity replay，不解释 W0 数学。D6 专用目录
+[`w0_power_cycle_domino_d6_20260728`](../research/w0_power_cycle_domino_d6_20260728/README.md)
+联合决定 body、operation class、mode、active physical ports/fronts、合法 transport
+incidence，以及 cycle output-injection/input-tap 的双极可达性；seed anchors 只作 hint，
+不能恢复“先冻结 body、再补 fronts”。W0 replayer 另行钉死每个 D6 artifact label 的唯一
+root-relative path；该实验语义不进入 G3 公共层。
+
+`FEASIBLE` 只证明 receipt 绑定的局部 D6 实例；`INFEASIBLE` 只关闭完全一致的
+antecedent、源码与 solver config；`UNKNOWN`、中断、intake 失败或异常均没有拒绝语义。
+历史 seed-narrow receipt-payload-v1 root 的命名字节图绑定 antecedent
+`7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f`
+并重放为局部 `INFEASIBLE`，但 root 内两个未登记 `.pyc` 使完整目录闭包不成立；历史 root
+保持原样且不得充当 v2 root-closure 证据。
+
+两个已接受 v2 roots 使用完整
+`antecedent_v1 + config_v2 + receipt_payload_v2 + replay_v2` cohort：
+seed-narrow antecedent `7dd634386b4c27a695a7115bd0dddf1c67556ab58923e9dfe526e5f7ee54e59f`
+与 28-slot antecedent
+`a5fc8a3a3814970f2401d4c27800e422f8cb46cd358b6d07451f9935f76ddef3`
+均为 replay-accepted `INFEASIBLE`。前者没有排除其他 attachment slots；后者排除了仅移动
+attachment slot 的修复，但两者都没有排除 class transfer、safe pole anchors、tile 内 size
+分配或 domino pairing。
+
+第三个已接受的局部 negative 使用
+`antecedent_v2 + config_v3 + receipt_payload_v3 + replay_v3` 的
+`d6_6b_d9_6g_swap_v1`：D6 用 `1×6G` 替换 `1×6B`，D9 做反向算术补偿，故 D6 active inputs
+由 25 降为 23、D9 由 30 升为 32，全局九类 ledger 不变。D9 不建模、不求解；任何
+`INFEASIBLE` 仍只关闭 exact local D6 swap antecedent。`PROJECT_LOCK.md` 仅新增 W0
+research-only v2/v3 合法矩阵、兼容与 authority 边界，并未把这些源码或 receipt 加入
+certified exact-source TCB。
+
+实现提交 `db00416d3c687dfca28695fa972b768a3f31ee4e` 后，执行链持有三把既有
+heavy/production-solver locks，在 full preflight 前后分别检查 RAM、swap、disk、PSI、
+竞争进程、项目锁、clean HEAD 与三份 pinned inputs。full preflight 为 `19 passed`，其中
+non-slow pytest 为 `6463 passed, 153 skipped`。正式 producer root
+`w0-d6-6b-d9-6g-swap-v3-20260728T202427Z-db00416d3c68` 返回
+`INFEASIBLE`；exact antecedent SHA-256 为
+`dab2a3282b4d4c632d4e0260cc364f397b567f108dbf6480db5d1553a41a9221`，
+producer receipt SHA-256 为
+`1f5236c39d6f9b827c6244da49fb16f81d97faf0822062042de5dff1e57e620c`。
+coherent CPython 3.13.13 与 `/usr/bin/python3` 3.14.6 的两份 root-pinned replay 均为
+`PASS` 且逐字节一致，replay receipt SHA-256 为
+`568b58bb5e72580dead23936242faa69a7ccbda9e2ec4e3b7476a9bc66cc6f24`。
+
+该 receipt 只关闭上述 exact local D6 swap antecedent；D9 仍只作未求解的 ledger 算术
+补偿。按三态合同，本轮在 replay-accepted `INFEASIBLE` 处停止，不自动进入另一轴、D7 或
+多轴放宽。H20 row-power oracle、G4、D7、全图 solve 与多轴联合放宽继续后置。
+solver/cut production 控制流、checkpoint identity、冻结或密封 bytes、
+`U=(1188,18)`、`L=absent` 与 `production_certified=false` 均不变。
+
+## 2026-07-27 SMM4 research upper recovery 终态
+
+成功 fresh root 为
+`.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b/`，
+external authority package ID 为
+`bed3a65a788655b95b445c944292b28fdf6a9f6fce74b27c4f0f8a2617a0622b`。
+formal `smm4-formal-a004` 已唯一选择、唯一启动并消费，后续不得重试或改号续跑。
+
+内部 formal receipt 为 `VERIFIED`/UNSAT，但明确保持
+`upper_bound_update_authorized=false`。unit 清理后的独立 verifier 执行第二轮
+VeriPB，并关闭 resource、terminal/cleanup、unit/cgroup 与 PID absence 证据。
+最终 detached receipt SHA-256 为
+`9a590d3e0ba6805dc2c1d6abebe60274e4cc5ced868126ab962b0b1a627ddafe`，
+immutable closeout SHA-256 为
+`e839073a0f20942141147045db541050cc7aad58be91a1459d58835e081d863f`；
+两者均为 `VERIFIED` 且明确 `upper_bound_update_authorized=true`。
+
+该 closeout 把 research upper ledger 更新为 `U=(1188,18)`，同时保持
+`L=absent`、`production_certified=false`。其证明范围只连接旧
+`U=(1188,22)` 的完整 band、SMM-209 geometry admission、2-selector delta
+公式/变量映射与 `(22,54)`、`(54,22)` 两个方向；不外推为 attainability、
+global optimality、whole-instance infeasibility、lower bound 或 production
+`CERTIFIED`。旧 SMM2/SMM3 与前两个 SMM4 root 的失败事实继续保留。
 
 ## 2026-07-24 规则与 cut 演化 shadow 协议终态
 
@@ -10,12 +149,10 @@ rule_cut_evolution_status: full_preflight_passed
 - **范围：test/offline-only。** 本批增加规则与 family 静态规格、一致性门、
   合同矩阵、onboarding fixture 和 rejection audit sidecar；详见
   [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md)。
-- **验收：full preflight 通过。** 验收基线为干净的
-  `fd015a9ac49a182b242895433a2ff2d2e5ee57de`；使用 coherent backup venv、清除
-  `PYTHONPATH`/`PYTHONHOME` 并持有独占资源互斥锁时，
-  `scripts/preflight_gate.py --full` 返回 `0`，总体 `PASSED`（19 passed），pytest 为
-  `4701 passed, 74 skipped in 98.52s`。完整 stdout/stderr 日志 SHA-256 为
-  `fedf7de80905b47c626b874213f0471a2e499a7fdd56bbc862bab47027138bc1`。
+- **验收：** `full_preflight_passed` 是绑定
+  `fd015a9ac49a182b242895433a2ff2d2e5ee57de` 的批次级 receipt；详细记录见
+  [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md)。该 receipt
+  不外推为其他 HEAD 的 full-suite 结果或任何 production authority。
 - **Authority：non-authorizing。** `PROJECT_LOCK.md`、P1.2 seal/hash、public wire
   与 digest、production 控制流及 trusted apply 闭集不变；`PROJECT_LOCK.md` SHA-256
   仍为 `33632dfdb2297425e42066b2cf0749ca6b9ab1f8653e810b6f2e53ded1025410`。
@@ -49,8 +186,8 @@ rule_cut_evolution_status: full_preflight_passed
 - **cut framework 通电前修复批**（`68b4557`）：F1 BState ghost 轴反置修复（soundness 级）+F2 scope 全 map 严格相等+F3 step_8 入口完整性纵深。**attach 通电 spike 判决 GO**（`e719e5d`：10K cut attach 16.6s+solve +4.1%,效度边界四条）;production integration checklist 立册（PIC-0~7,`4fceb9f`）,PIC-3 预算 env 化已落（`b9fcca9`,BUDGET fail-closed resolver+双注册）,PIC-7 已归因关闭。批 B（宿主形态+RFC-001 评估）已于 2026-07-11 完成；Stage B 规格定稿并已全部执行完（B0-B5b，见顶部 07-12 增量段）——本行早期「待 B2-B5」的表述是 07-11 凌晨快照。
 - **exploratory 模式在 prod-scale 上不可用**的坑已钉死（port clearance 启发式 build 爆炸+legacy master+all_facility 实例集,py-spy 实锤,memory 卡+spike 规格书）。
 
-本页描述当前工作树，不以 Git HEAD 的提交时间替代工作树事实。未提交的 PR1 发布面 soundness 修复
-属于当前实现状态。
+本页顶部摘要描述当前已提交状态与 authority 边界；各带日期的增量段保留当时事实，
+其中 receipt 只绑定其明确标注的 HEAD，不外推为其他 HEAD 的 authority。
 
 ## 已落地的边界
 
