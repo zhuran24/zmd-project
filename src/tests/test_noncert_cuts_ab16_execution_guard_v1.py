@@ -92,43 +92,7 @@ def test_formal_entry_holds_locks_for_the_complete_orchestration(
     monkeypatch.setattr(ORCHESTRATOR, "orchestrate_with_adapter", fake_orchestrate)
 
     assert ORCHESTRATOR.run_pinned_entry(
-        execution_class="FORMAL_AB16",
         pre_run_path=Path("pre-run.json"),
         selection_path=Path("selection.json"),
     ) == {"status": "PASS"}
     assert state == {"locked": False, "orchestrated": True}
-
-
-def test_disposable_drill_does_not_take_prod_scale_locks(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    pre_run = {
-        "execution_class": "DISPOSABLE_LIVE_DRILL",
-        "tool_identities": {"organic_unit_orchestrator": {}},
-    }
-    monkeypatch.setattr(
-        ORCHESTRATOR,
-        "snapshot_bytes",
-        lambda _path: SimpleNamespace(identity={"sha256": "0" * 64}),
-    )
-    monkeypatch.setattr(ORCHESTRATOR, "_strict_load", lambda _snapshot, _label: pre_run)
-    monkeypatch.setattr(ORCHESTRATOR, "_identity_matches", lambda *_args: None)
-    monkeypatch.setattr(ORCHESTRATOR, "build_pinned_epoch_observer", lambda _pre_run: object())
-    monkeypatch.setattr(ORCHESTRATOR, "SubprocessLifecycleAdapter", lambda **_kwargs: object())
-    monkeypatch.setattr(
-        ORCHESTRATOR,
-        "orchestrate_with_adapter",
-        lambda **_kwargs: {"status": "PASS"},
-    )
-
-    @contextmanager
-    def forbidden_locks():
-        raise AssertionError("disposable drills must not claim prod-scale locks")
-        yield
-
-    monkeypatch.setattr(ORCHESTRATOR, "_exclusive_prod_scale_locks", forbidden_locks)
-    assert ORCHESTRATOR.run_pinned_entry(
-        execution_class="DISPOSABLE_LIVE_DRILL",
-        pre_run_path=Path("pre-run.json"),
-        selection_path=Path("selection.json"),
-    ) == {"status": "PASS"}

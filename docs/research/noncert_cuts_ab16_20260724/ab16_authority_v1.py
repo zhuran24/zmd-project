@@ -1,3426 +1,962 @@
 #!/usr/bin/env python3
-"""Publish and replay the AB16 child of one existing Gate-1-v4 campaign.
+"""Append-only retry authority for the research-only AB16 campaign.
 
-This tool never creates a campaign root, authority package, Gate-1 selection,
-unit, arm, or solver process.  It consumes the single campaign root produced
-by ``campaign_authority_v4.py`` and permits the following no-overwrite sequence:
-
-1. a fresh, same-campaign Gate-1 continuation and the package-pinned baseline
-   admission authorize publication of the runner-exact organic manifest;
-2. a non-launching suite selection freezes that manifest and launch order;
-3. each arm independently passes a current epoch/package/HEAD/input/resource
-   preflight before the authority creates its attempt directory, copies the
-   non-authorizing pre-run bytes, and publishes the runner-exact selection;
-4. each selected arm must be consumed as a credible terminal before the next
-   slot, while any credibility failure writes an immutable immediate stop.
-
-The selected campaign package must already contain every AB16 tool/input byte,
-the distinct Gate-A/Gate-B records, strict inputs, legacy provenance, and the
-manager/boot epoch authority.  A historical Gate-1 package with
-``PACKAGE_SEAL_DRIFT`` cannot pass this consumer.
+The scientific preregistration is immutable.  Execution attempts are not:
+an incomplete attempt remains as evidence and the same fixed slot may be
+retried after a clean committed code repair.  No record produced here grants
+cut, witness, bound, production, certified, or Stage-B authority.
 """
 
 from __future__ import annotations
 
 import argparse
+from collections.abc import Mapping, Sequence
 import hashlib
 import json
 import os
+from pathlib import Path
 import re
 import stat
 import subprocess
 import sys
-import time
-from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
-from types import ModuleType
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 
+RESEARCH_DIR = Path(__file__).resolve().parent
+if str(RESEARCH_DIR) not in sys.path:
+    sys.path.insert(0, str(RESEARCH_DIR))
+
+import ab16_campaign_bootstrap_v1 as bootstrap  # noqa: E402
+import ab16_contract_v1 as contract  # noqa: E402
+
+
+INPUT_SET_SCHEMA = "noncert-cuts-ab16-attempt-input-set-v1"
+ATTEMPT_OPEN_SCHEMA = "noncert-cuts-ab16-attempt-open-v1"
+SELECTION_BINDING_SCHEMA = "noncert-cuts-ab16-attempt-selection-binding-v1"
+RESULT_ENVELOPE_SCHEMA = "noncert-cuts-ab16-attempt-result-envelope-v1"
+REPLAY_SCHEMA = "noncert-cuts-ab16-retry-campaign-replay-v1"
+
+CREDIBLE_TERMINAL = "CREDIBLE_TERMINAL"
+CREDIBILITY_INCOMPLETE = "CREDIBILITY_INCOMPLETE"
+ATTEMPT_RE = re.compile(r"attempt-([0-9]{4,})\Z")
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
-HEAD_RE = re.compile(r"[0-9a-f]{40}\Z")
+GIT_HEAD_RE = re.compile(r"[0-9a-f]{40}\Z")
+ROLE_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,95}\Z")
 
-MANIFEST_SCHEMA = "noncert-cuts-ab16-organic-manifest-v1"
-SUITE_SELECTION_SCHEMA = "noncert-cuts-ab16-suite-selection-v1"
-ARM_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
-PRE_RUN_AUTHORITY_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v1"
-ARM_CONSUMPTION_SCHEMA = "noncert-cuts-ab16-organic-arm-consumption-v2"
-CAMPAIGN_STOP_SCHEMA = "noncert-cuts-ab16-immediate-stop-v1"
-PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v1"
-GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v1"
-GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v1"
-CONTINUATION_SCHEMA = "noncert-cuts-gate1-v4-continuation-authorization-v1"
-BASELINE_ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v1"
-COMMON_PRESTATE_SCHEMA = "noncert-cuts-ab16-common-prestate-v1"
-COMMON_PRESTATE_PURPOSE = "prospective_noncert_cuts_ab16_common_prestate"
-ARM_BINDING_SCHEMA = "noncert-cuts-ab16-arm-binding-v1"
-ARM_BINDING_PURPOSE = "prospective_noncert_cuts_ab16_arm_binding"
-
-CONFIGURATIONS = (
-    "region-capacity",
-    "shape-packing-hall",
-    "power-hitting-set",
-    "bundle",
-)
-ORDERS = ("ab", "ba")
-ARMS = ("control", "treatment")
-GATE1_SLOTS = (
-    "q-success",
-    "q-postseal-fail",
-    "forced-control",
-    "forced-treatment",
-)
-
-REQUIRED_PACKAGE_ROLES = frozenset(
-    {
-        "campaign_authority_v4.py",
-        "input.ab16_gate_a_receipt.json",
-        "input.ab16_gate_b_approval.json",
-        "input.ab16_offline_candidate.json",
-        "input.ab16_path_preregistration.json",
-        "input.ab16_bootstrap_manager_epoch_capture.json",
-        "input.candidate_placements.json",
-        "input.canonical_rules.json",
-        "input.cuts_mandatory_schedule.txt",
-        "input.history_freeze_manifest.json",
-        "input.legacy_control_a002.json",
-        "input.mandatory_instances.json",
-        "input.project_lock.txt",
-        "system.attestor_python.bin",
-        "system.busctl.bin",
-        "system.git.bin",
-        "system.python3_13.bin",
-        "system.sudo.bin",
-        "system.systemctl.bin",
-        "system.systemd_run.bin",
-        "tool.ab16_authority_v1.py",
-        "tool.ab16_campaign_bootstrap_v1.py",
-        "tool.ab16_contract_v1.py",
-        "tool.ab16_terminal_gate_v1.py",
-        "tool.baseline_admission_v1.py",
-        "tool.baseline_rebuild_v1.py",
-        "tool.cut_free_incumbent_replay_v1.py",
-        "tool.disposable_drill_authority_v1.py",
-        "tool.disposable_drill_payload_v1.py",
-        "tool.organic_arm_runner_v1.py",
-        "tool.organic_arm_replay_v1.py",
-        "tool.organic_resource_lifecycle_v1.py",
-        "tool.organic_resource_verifier_v1.py",
-        "tool.organic_unit_orchestrator_v1.py",
-        "tool.gate1_campaign_bootstrap_v4.py",
-        "tool.gate1_campaign_driver_v4.py",
-        "tool.gate1_campaign_execution_v4.py",
-        "tool.gate1_payload_v4.py",
-        "tool.gate1_unit_orchestrator_v4.py",
-        "tool.independent_arithmetic_v4.py",
-        "tool.manager_attestor_v4.py",
-        "tool.positive_control_formal_v4.py",
-        "tool.positive_control_gate_v4.py",
-        "tool.positive_control_v4.py",
-        "tool.resource_lifecycle_v4.py",
-        "tool.resource_verifier_v4.py",
-    }
-)
-
-EXPERIMENT_CONTRACT: dict[str, object] = {
-    "aggregation": {
-        "claim_gate": "conservative_worst_pair_delta",
-        "descriptive_summary": "arithmetic_mean_of_ab_and_ba",
-        "inconsistent_repeats": "FIXED_RUN_OBSERVATIONS_ONLY",
-        "runtime_effect_requires": [
-            "both_order_balanced_pairs_credible",
-            "both_pair_deltas_cross_same_preregistered_threshold",
-            "no_primary_metric_regression",
-            "organic_applied_required_for_positive_runtime_effect",
-        ],
-    },
-    "arm_semantics": {
-        "bundle": {
-            "control_enabled_families": [],
-            "treatment_enabled_families": [
-                "region_capacity",
-                "shape_packing_hall",
-                "power_hitting_set",
-            ],
-        },
-        "power-hitting-set": {
-            "control_enabled_families": [],
-            "treatment_enabled_families": ["power_hitting_set"],
-        },
-        "region-capacity": {
-            "control_enabled_families": [],
-            "treatment_enabled_families": ["region_capacity"],
-        },
-        "shape-packing-hall": {
-            "control_enabled_families": [],
-            "treatment_enabled_families": ["shape_packing_hall"],
-        },
-    },
-    "budget": {
-        "arm_hard_guard_seconds": 3600,
-        "binding_seconds": 600,
-        "ledger_cap_bytes": 1_000_000_000,
-        "master_seconds": 900,
-        "max_iterations": 30,
-        "post_attach_seconds": 120,
-        "routing_seconds": 600,
-        "runtime_max_seconds": 3600,
-    },
-    "censoring": {
-        "internal_budget_unknown": "VALID_RIGHT_CENSORED_TERMINAL",
-        "nonactivation": "VALID_FIXED_CONFIGURATION_RESULT",
-        "outer_timeout_oom_kill_or_limit_drift": "CREDIBILITY_INCOMPLETE",
-        "unknown_without_internal_budget_reached": "CREDIBILITY_INCOMPLETE",
-    },
-    "classification": {
-        "compiled_or_applied_zero_after_generation": "NO_ORGANIC_APPLIED_CUT",
-        "generated_zero": "ORGANIC_NONACTIVATION",
-        "single_pair_maximum_claim": "SINGLE_PAIR_OBSERVED_DELTA",
-        "two_credible_consistent_beneficial_pairs": "RUNTIME_EFFECT_CANDIDATE",
-        "two_credible_consistent_no_effect_pairs": "FIXED_CONFIGURATION_NO_EFFECT",
-        "two_credible_consistent_regression_pairs": "FIXED_CONFIGURATION_REGRESSION",
-        "inconsistent_pairs": "INCONSISTENT_FIXED_RUN_OBSERVATIONS",
-    },
-    "metrics": {
-        "primary": {
-            "direction": "false_to_true_is_better",
-            "metric": "arm_incumbent_present_after_cut_free_replay",
-            "threshold": "boolean_state_change",
-        },
-        "secondary": [
-            {
-                "direction": "lower_is_better",
-                "metric": "cumulative_deterministic_time_at_normal_controller_terminal",
-                "milestone": "normal controller return under the preregistered internal budget",
-                "threshold_absolute": 0.000001,
-                "threshold_effective_rule": "max(1e-6,abs(control)*0.01)",
-                "threshold_relative_control": 0.01,
-            },
-            {
-                "claim_weight": "DESCRIPTIVE_ONLY",
-                "metrics": [
-                    "branches",
-                    "conflicts",
-                    "binary_propagations",
-                    "integer_propagations",
-                    "generated",
-                    "compiled",
-                    "applied",
-                    "first_cut_deterministic_time",
-                ],
-            },
-        ],
-        "wall_time": "RESOURCE_DIAGNOSTIC_ONLY",
-    },
-    "bundle_interaction_diagnostic": {
-        "basis": "same cumulative_deterministic_time_at_normal_controller_terminal definition",
-        "formula_by_order": "D_bundle - (D_region + D_shape + D_power)",
-        "orders": ["ab", "ba"],
-        "threshold_effective_rule": "max(1e-6,abs(control)*0.01)",
-    },
-    "order": [
-        f"{configuration}-{order}-{arm}"
-        for configuration in CONFIGURATIONS
-        for order, arms in (
-            ("ab", ("control", "treatment")),
-            ("ba", ("treatment", "control")),
-        )
-        for arm in arms
-    ],
-    "resource_contract": {
-        "collect_mode": "inactive-or-failed",
-        "kill_mode": "control-group",
-        "memory_high_bytes": 35 * 1024**3,
-        "memory_max_bytes": 39 * 1024**3,
-        "memory_swap_max_bytes": 16 * 1024**3,
-        "oom_policy": "continue",
-        "runtime_max_sec": 3600,
-        "send_sigkill": True,
-        "single_worker": True,
-    },
-    "schema_version": "noncert-cuts-ab16-experiment-contract-v1",
-    "solver_parameters": {
-        "binding_alt_cap": 200,
-        "fixed_search_branching": True,
-        "ghost_rectangle": [6, 6],
-        "num_search_workers": 1,
-        "probing_level": 3,
-        "random_seed": 2026072301,
-        "symmetry_level": 3,
-    },
+RESEARCH_ONLY_AUTHORIZATIONS = {
+    "cut_authorized": False,
+    "family_global_soundness_authorized": False,
+    "global_claim_authorized": False,
+    "lower_bound_authorized": False,
+    "mathematical_claim_authorized": False,
+    "optimality_authorized": False,
+    "production_certified_authorized": False,
+    "stage_b_promotion_authorized": False,
+    "upper_bound_authorized": False,
+    "witness_authorized": False,
 }
 
-IMMEDIATE_STOP_POLICY: dict[str, object] = {
-    "classification": "CREDIBILITY_INCOMPLETE",
-    "no_cross_epoch_or_run_splicing": True,
-    "preserve_consumed_arm": True,
-    "selection_after_launch_failure": "ARM_CONSUMED",
-    "selection_before_launch_failure": "DO_NOT_LAUNCH",
-    "stop_before_next_arm_on": [
-        "AUTHORITY_OR_TOOL_DRIFT",
-        "MANAGER_OR_BOOT_EPOCH_DRIFT",
-        "RESOURCE_OR_LIMIT_DRIFT",
-        "LEDGER_OR_REPLAY_INCOMPLETE",
-        "OUTER_TIMEOUT_OOM_KILL_OR_CRASH",
-        "PAIR_COMPARABILITY_FAILURE",
-    ],
+EXECUTION_TOOL_FILES = {
+    "ab16_authority": "ab16_authority_v1.py",
+    "ab16_campaign_bootstrap": "ab16_campaign_bootstrap_v1.py",
+    "ab16_contract": "ab16_contract_v1.py",
+    "ab16_terminal_gate": "ab16_terminal_gate_v1.py",
+    "baseline_admission": "baseline_admission_v1.py",
+    "baseline_rebuild": "baseline_rebuild_v1.py",
+    "cut_free_incumbent_replay": "cut_free_incumbent_replay_v1.py",
+    "organic_arm_replay": "organic_arm_replay_v1.py",
+    "organic_arm_runner": "organic_arm_runner_v1.py",
+    "organic_resource_lifecycle": "organic_resource_lifecycle_v1.py",
+    "organic_resource_verifier": "organic_resource_verifier_v1.py",
+    "organic_unit_orchestrator": "organic_unit_orchestrator_v1.py",
 }
 
 
 class AuthorityError(RuntimeError):
-    """Fail-closed authority error with a stable code."""
-
-    def __init__(self, code: str, detail: str):
-        super().__init__(f"{code}: {detail}")
-        self.code = code
-        self.detail = detail
-
-
-@dataclass(frozen=True)
-class Snapshot:
-    path: Path
-    data: bytes
-    device: int
-    inode: int
-    mode: int
-    size_bytes: int
-    sha256: str
+    """The retry campaign could not be interpreted without ambiguity."""
 
 
 def canonical_json(value: object) -> bytes:
-    return (
-        json.dumps(
-            value,
-            allow_nan=False,
-            ensure_ascii=False,
-            separators=(",", ":"),
-            sort_keys=True,
-        ).encode("utf-8")
-        + b"\n"
-    )
+    return contract.canonical_json_bytes(value)
+
+
+def _exact_mapping(value: object, keys: set[str], label: str) -> Mapping[str, Any]:
+    if type(value) is not dict or set(value) != keys:
+        raise AuthorityError(f"{label} must have the exact key set")
+    return value
 
 
 def _absolute(path: Path | str) -> Path:
     return Path(os.path.abspath(os.fspath(path)))
 
 
-def _assert_no_symlink_chain(path: Path | str, *, include_leaf: bool = True) -> None:
+def _snapshot(path: Path | str) -> tuple[bytes, dict[str, object]]:
     absolute = _absolute(path)
-    parts = absolute.parts
-    cursor = Path(parts[0])
-    limit = len(parts) if include_leaf else len(parts) - 1
-    for part in parts[1:limit]:
-        cursor /= part
-        try:
-            mode = os.lstat(cursor).st_mode
-        except FileNotFoundError as exc:
-            raise AuthorityError("PATH_MISSING", str(cursor)) from exc
-        if stat.S_ISLNK(mode):
-            raise AuthorityError("SYMLINK_REJECTED", str(cursor))
-
-
-def snapshot_regular(path: Path | str) -> Snapshot:
-    absolute = _absolute(path)
-    _assert_no_symlink_chain(absolute, include_leaf=False)
-    if not hasattr(os, "O_NOFOLLOW"):
-        raise AuthorityError("NOFOLLOW_UNAVAILABLE", "O_NOFOLLOW is required")
     try:
-        descriptor = os.open(
-            absolute,
-            os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
-        )
+        descriptor = os.open(absolute, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
     except OSError as exc:
-        raise AuthorityError("INPUT_OPEN_FAILED", f"{absolute}: {exc}") from exc
+        raise AuthorityError(f"cannot open regular input: {absolute}") from exc
     try:
         before = os.fstat(descriptor)
         if not stat.S_ISREG(before.st_mode):
-            raise AuthorityError("INPUT_NOT_REGULAR", str(absolute))
+            raise AuthorityError(f"input is not a regular file: {absolute}")
         chunks: list[bytes] = []
-        while True:
-            block = os.read(descriptor, 1024 * 1024)
-            if not block:
-                break
+        while block := os.read(descriptor, 1024 * 1024):
             chunks.append(block)
         after = os.fstat(descriptor)
     finally:
         os.close(descriptor)
-    stable = ("st_dev", "st_ino", "st_mode", "st_size", "st_mtime_ns", "st_ctime_ns")
-    data = b"".join(chunks)
-    if any(getattr(before, field) != getattr(after, field) for field in stable) or len(data) != before.st_size:
-        raise AuthorityError("SAME_FD_INPUT_DRIFT", str(absolute))
-    return Snapshot(
-        path=absolute,
-        data=data,
-        device=int(before.st_dev),
-        inode=int(before.st_ino),
-        mode=stat.S_IMODE(before.st_mode),
-        size_bytes=len(data),
-        sha256=hashlib.sha256(data).hexdigest(),
-    )
-
-
-def detached_identity(snapshot: Snapshot) -> dict[str, object]:
-    return {
-        "path": str(snapshot.path),
-        "sha256": snapshot.sha256,
-        "size_bytes": snapshot.size_bytes,
+    fields = ("st_dev", "st_ino", "st_mode", "st_nlink", "st_size", "st_mtime_ns", "st_ctime_ns")
+    raw = b"".join(chunks)
+    if any(getattr(before, field) != getattr(after, field) for field in fields) or len(raw) != after.st_size:
+        raise AuthorityError(f"input changed during read: {absolute}")
+    return raw, {
+        "mode": stat.S_IMODE(after.st_mode),
+        "path": str(absolute),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
     }
 
 
-def full_identity(snapshot: Snapshot) -> dict[str, object]:
-    return {
-        "device": snapshot.device,
-        "inode": snapshot.inode,
-        "mode": snapshot.mode,
-        **detached_identity(snapshot),
-    }
-
-
-def _pairs_without_duplicates(pairs: Sequence[tuple[str, Any]]) -> dict[str, Any]:
-    result: dict[str, Any] = {}
-    for key, value in pairs:
-        if key in result:
-            raise AuthorityError("JSON_DUPLICATE_KEY", key)
-        result[key] = value
-    return result
-
-
-def strict_loads(data: bytes, label: str, *, canonical: bool = True) -> Any:
+def _load_record(path: Path | str, label: str) -> tuple[Mapping[str, Any], dict[str, object]]:
+    raw, identity = _snapshot(path)
     try:
-        value = json.loads(
-            data.decode("utf-8"),
-            object_pairs_hook=_pairs_without_duplicates,
-            parse_constant=lambda token: (_ for _ in ()).throw(AuthorityError("JSON_CONSTANT_INVALID", token)),
-        )
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise AuthorityError("JSON_INVALID", label) from exc
-    if canonical and canonical_json(value) != data:
-        raise AuthorityError("JSON_NOT_CANONICAL", label)
-    return value
-
-
-def _record(snapshot: Snapshot, label: str, *, canonical: bool = True) -> Mapping[str, Any]:
-    value = strict_loads(snapshot.data, label, canonical=canonical)
+        value = contract.strict_loads(raw)
+    except contract.ContractError as exc:
+        raise AuthorityError(f"{label} is not canonical strict JSON") from exc
     if type(value) is not dict:
-        raise AuthorityError("JSON_RECORD_INVALID", label)
-    return value
+        raise AuthorityError(f"{label} must be a JSON object")
+    return value, identity
 
 
-def _exact_keys(value: object, keys: set[str], label: str) -> Mapping[str, Any]:
-    if type(value) is not dict or set(value) != keys:
-        raise AuthorityError("SCHEMA_KEYS_INVALID", label)
-    return value
-
-
-def _write_exclusive(path: Path | str, data: bytes) -> dict[str, object]:
+def _write_bytes_exclusive(path: Path, raw: bytes) -> dict[str, object]:
     absolute = _absolute(path)
-    parent = absolute.parent
-    _assert_no_symlink_chain(parent)
-    if not parent.is_dir():
-        raise AuthorityError("OUTPUT_PARENT_INVALID", str(parent))
-    parent_fd = os.open(parent, os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:
+        parent_fd = os.open(absolute.parent, os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except OSError as exc:
+        raise AuthorityError(f"output parent is unavailable: {absolute.parent}") from exc
+    try:
+        descriptor = os.open(
+            absolute.name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
+            0o600,
+            dir_fd=parent_fd,
+        )
         try:
-            descriptor = os.open(
-                absolute.name,
-                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-                0o600,
-                dir_fd=parent_fd,
-            )
-        except FileExistsError as exc:
-            raise AuthorityError("NO_OVERWRITE_COLLISION", str(absolute)) from exc
-        try:
-            view = memoryview(data)
+            view = memoryview(raw)
             while view:
                 written = os.write(descriptor, view)
                 if written <= 0:
-                    raise AuthorityError("OUTPUT_WRITE_FAILED", str(absolute))
+                    raise AuthorityError(f"short write: {absolute}")
                 view = view[written:]
             os.fsync(descriptor)
         finally:
             os.close(descriptor)
+        os.fsync(parent_fd)
+    except OSError as exc:
+        raise AuthorityError(f"no-overwrite publication failed: {absolute}") from exc
     finally:
         os.close(parent_fd)
-    return detached_identity(snapshot_regular(absolute))
+    _raw, identity = _snapshot(absolute)
+    if _raw != raw:
+        raise AuthorityError(f"published bytes changed: {absolute}")
+    return identity
 
 
-def _mkdir_exclusive(path: Path | str) -> Path:
+def _write_record(path: Path, value: object) -> dict[str, object]:
+    return _write_bytes_exclusive(path, canonical_json(value))
+
+
+def _make_directory(path: Path) -> None:
     absolute = _absolute(path)
-    parent = absolute.parent
-    _assert_no_symlink_chain(parent)
-    if not parent.is_dir():
-        raise AuthorityError("OUTPUT_PARENT_INVALID", str(parent))
-    if absolute.exists() or absolute.is_symlink():
-        raise AuthorityError("NO_OVERWRITE_COLLISION", str(absolute))
     try:
-        os.mkdir(absolute, 0o700)
+        absolute.mkdir(mode=0o700)
     except FileExistsError as exc:
-        raise AuthorityError("NO_OVERWRITE_COLLISION", str(absolute)) from exc
+        raise AuthorityError(f"no-overwrite directory already exists: {absolute}") from exc
+    metadata = absolute.lstat()
+    if not stat.S_ISDIR(metadata.st_mode) or absolute.is_symlink():
+        raise AuthorityError(f"created path is not a real directory: {absolute}")
+
+
+def _existing_directory(path: Path, label: str) -> Path:
+    absolute = _absolute(path)
+    try:
+        metadata = absolute.lstat()
+    except OSError as exc:
+        raise AuthorityError(f"{label} is unavailable: {absolute}") from exc
+    if absolute.is_symlink() or not stat.S_ISDIR(metadata.st_mode):
+        raise AuthorityError(f"{label} is not a real directory: {absolute}")
     return absolute
 
 
-def _safe_rel(value: str) -> str:
-    path = PurePosixPath(value)
-    if not value or path.is_absolute() or "\\" in value or any(part in {"", ".", ".."} for part in path.parts):
-        raise AuthorityError("PACKAGE_PATH_INVALID", value)
-    return path.as_posix()
-
-
-def _scan_package(package_dir: Path | str) -> dict[str, Snapshot]:
-    root = _absolute(package_dir)
-    _assert_no_symlink_chain(root)
-    if not root.is_dir():
-        raise AuthorityError("PACKAGE_INVALID", str(root))
-    result: dict[str, Snapshot] = {}
-    for current, dirnames, filenames in os.walk(root, topdown=True, followlinks=False):
-        current_path = Path(current)
-        for dirname in dirnames:
-            child = current_path / dirname
-            rel = child.relative_to(root).as_posix()
-            mode = os.lstat(child).st_mode
-            if stat.S_ISLNK(mode):
-                raise AuthorityError("PACKAGE_SYMLINK_REJECTED", rel)
-            if dirname == "__pycache__":
-                raise AuthorityError("PACKAGE_PYCACHE_REJECTED", rel)
-        for filename in filenames:
-            child = current_path / filename
-            rel = child.relative_to(root).as_posix()
-            mode = os.lstat(child).st_mode
-            if stat.S_ISLNK(mode):
-                raise AuthorityError("PACKAGE_SYMLINK_REJECTED", rel)
-            if filename.endswith(".pyc"):
-                raise AuthorityError("PACKAGE_PYCACHE_REJECTED", rel)
-            result[rel] = snapshot_regular(child)
-    return result
-
-
-def _parse_seal(data: bytes) -> dict[str, str]:
-    try:
-        text = data.decode("ascii")
-    except UnicodeDecodeError as exc:
-        raise AuthorityError("PACKAGE_SEAL_INVALID", "non-ASCII") from exc
-    if not text or not text.endswith("\n"):
-        raise AuthorityError("PACKAGE_SEAL_INVALID", "framing")
-    result: dict[str, str] = {}
-    for line in text.splitlines():
-        if len(line) < 67 or line[64:66] != "  ":
-            raise AuthorityError("PACKAGE_SEAL_INVALID", line)
-        digest = line[:64]
-        rel = _safe_rel(line[66:])
-        if SHA256_RE.fullmatch(digest) is None or rel == "SHA256SUMS" or rel in result:
-            raise AuthorityError("PACKAGE_SEAL_INVALID", line)
-        result[rel] = digest
-    if text != "".join(f"{result[rel]}  {rel}\n" for rel in sorted(result)):
-        raise AuthorityError("PACKAGE_SEAL_INVALID", "noncanonical ordering")
-    return result
-
-
-def _validate_source_identity(value: object, label: str) -> Mapping[str, Any]:
-    if type(value) is not dict:
-        raise AuthorityError("SOURCE_IDENTITY_INVALID", label)
-    required = {"path", "sha256", "size_bytes"}
-    if not required <= set(value):
-        raise AuthorityError("SOURCE_IDENTITY_INVALID", label)
+def _identity(value: object, label: str) -> Mapping[str, Any]:
+    record = _exact_mapping(value, {"mode", "path", "sha256", "size_bytes"}, label)
     if (
-        type(value["path"]) is not str
-        or not Path(value["path"]).is_absolute()
-        or type(value["sha256"]) is not str
-        or SHA256_RE.fullmatch(value["sha256"]) is None
-        or type(value["size_bytes"]) is not int
-        or value["size_bytes"] < 0
-    ):
-        raise AuthorityError("SOURCE_IDENTITY_INVALID", label)
-    return value
-
-
-def _package_sources(
-    package_dir: Path | str,
-) -> tuple[dict[str, Snapshot], Mapping[str, Any], dict[str, Mapping[str, Any]]]:
-    files = _scan_package(package_dir)
-    if {"SHA256SUMS", "package-manifest.json"} - set(files):
-        raise AuthorityError("PACKAGE_SEAL_DRIFT", "manifest or seal missing")
-    seal = _parse_seal(files["SHA256SUMS"].data)
-    actual = set(files) - {"SHA256SUMS"}
-    if set(seal) != actual or any(files[path].sha256 != digest for path, digest in seal.items()):
-        raise AuthorityError("PACKAGE_SEAL_DRIFT", "member set or digest")
-    manifest = _record(files["package-manifest.json"], "campaign package manifest")
-    sources = manifest.get("external_sources")
-    if type(sources) is not list:
-        raise AuthorityError("PACKAGE_MANIFEST_INVALID", "external_sources")
-    by_role: dict[str, Mapping[str, Any]] = {}
-    for item in sources:
-        record = _exact_keys(
-            item,
-            {"package_path", "parse_json", "role", "source_identity"},
-            "package source",
-        )
-        role = record["role"]
-        package_path = record["package_path"]
-        if (
-            type(role) is not str
-            or not role
-            or role in by_role
-            or type(package_path) is not str
-            or package_path not in files
-            or type(record["parse_json"]) is not bool
-        ):
-            raise AuthorityError("PACKAGE_MANIFEST_INVALID", "source role/path")
-        source = _validate_source_identity(record["source_identity"], f"package source {role}")
-        current = snapshot_regular(source["path"])
-        if (
-            current.sha256 != source["sha256"]
-            or current.size_bytes != source["size_bytes"]
-            or files[package_path].data != current.data
-        ):
-            raise AuthorityError("PACKAGE_SOURCE_DRIFT", role)
-        by_role[role] = record
-    if set(by_role) != REQUIRED_PACKAGE_ROLES:
-        missing = sorted(REQUIRED_PACKAGE_ROLES - set(by_role))
-        extra = sorted(set(by_role) - REQUIRED_PACKAGE_ROLES)
-        raise AuthorityError(
-            "AB16_PACKAGE_ROLE_SET_DRIFT",
-            f"missing={missing}; extra={extra}",
-        )
-    return files, manifest, by_role
-
-
-def _load_module(snapshot: Snapshot, name: str) -> ModuleType:
-    namespace = ModuleType(name)
-    namespace.__file__ = str(snapshot.path)
-    namespace.__package__ = None
-    sys.modules[name] = namespace
-    try:
-        code = compile(snapshot.data, str(snapshot.path), "exec", dont_inherit=True)
-        exec(code, namespace.__dict__, namespace.__dict__)
-    except Exception as exc:
-        sys.modules.pop(name, None)
-        raise AuthorityError("PINNED_TOOL_LOAD_FAILED", name) from exc
-    return namespace
-
-
-def _source_snapshot(
-    files: Mapping[str, Snapshot],
-    sources: Mapping[str, Mapping[str, Any]],
-    role: str,
-) -> Snapshot:
-    record = sources[role]
-    packaged = files[record["package_path"]]
-    source = _validate_source_identity(record["source_identity"], f"package source {role}")
-    current = snapshot_regular(source["path"])
-    if (
-        current.sha256 != source["sha256"]
-        or current.size_bytes != source["size_bytes"]
-        or current.data != packaged.data
-    ):
-        raise AuthorityError("PACKAGE_SOURCE_DRIFT", role)
-    return current
-
-
-def _detached_from_source(value: Mapping[str, Any]) -> dict[str, object]:
-    return {
-        "path": value["path"],
-        "sha256": value["sha256"],
-        "size_bytes": value["size_bytes"],
-    }
-
-
-def _validate_root_source_joins(
-    root: Mapping[str, Any],
-    files: Mapping[str, Snapshot],
-    sources: Mapping[str, Mapping[str, Any]],
-) -> None:
-    tools = root.get("authority_tools")
-    inputs = root.get("strict_inputs")
-    if type(tools) is not dict or type(inputs) is not dict:
-        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "tool/input identity maps")
-    script_roles = {
-        "campaign_authority_v4": "campaign_authority_v4.py",
-        "ab16_authority_v1": "tool.ab16_authority_v1.py",
-        "ab16_campaign_bootstrap_v1": "tool.ab16_campaign_bootstrap_v1.py",
-        "ab16_contract_v1": "tool.ab16_contract_v1.py",
-        "baseline_admission_v1": "tool.baseline_admission_v1.py",
-        "baseline_rebuild_v1": "tool.baseline_rebuild_v1.py",
-        "cut_free_incumbent_replay_v1": "tool.cut_free_incumbent_replay_v1.py",
-        "disposable_drill_authority_v1": "tool.disposable_drill_authority_v1.py",
-        "disposable_drill_payload_v1": "tool.disposable_drill_payload_v1.py",
-        "organic_arm_runner_v1": "tool.organic_arm_runner_v1.py",
-        "organic_arm_replay_v1": "tool.organic_arm_replay_v1.py",
-        "organic_resource_lifecycle_v1": "tool.organic_resource_lifecycle_v1.py",
-        "organic_resource_verifier_v1": "tool.organic_resource_verifier_v1.py",
-        "organic_unit_orchestrator_v1": "tool.organic_unit_orchestrator_v1.py",
-        "gate1_campaign_bootstrap_v4": "tool.gate1_campaign_bootstrap_v4.py",
-        "gate1_campaign_driver_v4": "tool.gate1_campaign_driver_v4.py",
-        "gate1_campaign_execution_v4": "tool.gate1_campaign_execution_v4.py",
-        "gate1_payload_v4": "tool.gate1_payload_v4.py",
-        "gate1_unit_orchestrator_v4": "tool.gate1_unit_orchestrator_v4.py",
-        "independent_arithmetic_v4": "tool.independent_arithmetic_v4.py",
-        "manager_attestor_v4": "tool.manager_attestor_v4.py",
-        "positive_control_formal_v4": "tool.positive_control_formal_v4.py",
-        "positive_control_gate_v4": "tool.positive_control_gate_v4.py",
-        "positive_control_v4": "tool.positive_control_v4.py",
-        "resource_lifecycle_v4": "tool.resource_lifecycle_v4.py",
-        "resource_verifier_v4": "tool.resource_verifier_v4.py",
-        "attestor_python": "system.attestor_python.bin",
-        "busctl": "system.busctl.bin",
-        "git": "system.git.bin",
-        "python3_13": "system.python3_13.bin",
-        "sudo": "system.sudo.bin",
-        "systemctl": "system.systemctl.bin",
-        "systemd_run": "system.systemd_run.bin",
-    }
-    input_roles = {
-        "ab16_bootstrap_manager_epoch_capture": "input.ab16_bootstrap_manager_epoch_capture.json",
-        "ab16_gate_a_receipt": "input.ab16_gate_a_receipt.json",
-        "ab16_gate_b_approval": "input.ab16_gate_b_approval.json",
-        "ab16_offline_candidate": "input.ab16_offline_candidate.json",
-        "ab16_path_preregistration": "input.ab16_path_preregistration.json",
-        "candidate_placements": "input.candidate_placements.json",
-        "canonical_rules": "input.canonical_rules.json",
-        "cuts_mandatory_schedule": "input.cuts_mandatory_schedule.txt",
-        "history_freeze_manifest": "input.history_freeze_manifest.json",
-        "legacy_control_a002": "input.legacy_control_a002.json",
-        "mandatory_instances": "input.mandatory_instances.json",
-        "project_lock": "input.project_lock.txt",
-    }
-    if not set(script_roles) <= set(tools) or not set(input_roles) <= set(inputs):
-        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "required AB16 root roles absent")
-    for root_role, package_role in {**script_roles, **input_roles}.items():
-        group = tools if root_role in script_roles else inputs
-        selected = group[root_role]
-        source_identity = _detached_from_source(sources[package_role]["source_identity"])
-        packaged_identity = detached_identity(files[sources[package_role]["package_path"]])
-        if (
-            (selected != source_identity and selected != packaged_identity)
-            or selected["sha256"] != source_identity["sha256"]
-            or selected["size_bytes"] != source_identity["size_bytes"]
-        ):
-            raise AuthorityError("CAMPAIGN_ROOT_INVALID", f"source join {root_role}")
-
-
-def _campaign_context(campaign_dir: Path | str) -> dict[str, object]:
-    directory = _absolute(campaign_dir)
-    root_snapshot = snapshot_regular(directory / "campaign-root.json")
-    root = _record(root_snapshot, "campaign root")
-    if root.get("repository_head") is None or HEAD_RE.fullmatch(str(root["repository_head"])) is None:
-        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "repository HEAD")
-    package = root.get("package")
-    if type(package) is not dict or type(package.get("package_dir")) is not str:
-        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "package binding")
-    files, package_manifest, sources = _package_sources(package["package_dir"])
-    campaign_tool = _load_module(
-        _source_snapshot(files, sources, "campaign_authority_v4.py"),
-        f"_ab16_campaign_authority_{root_snapshot.sha256[:16]}",
-    )
-    try:
-        campaign_tool.validate_campaign_root(root, campaign_dir=directory)
-        replay = campaign_tool.verify_package(
-            package["package_dir"],
-            expected_manager_epoch=root["manager_epoch"],
-            replay_external=True,
-        )
-    except Exception as exc:
-        raise AuthorityError("CAMPAIGN_AUTHORITY_REPLAY_FAILED", str(exc)) from exc
-    if (
-        replay.get("package_id") != package.get("package_id")
-        or replay.get("manifest_identity") != package.get("manifest_identity")
-        or replay.get("seal_identity") != package.get("seal_identity")
-    ):
-        raise AuthorityError("CAMPAIGN_PACKAGE_BINDING_DRIFT", "root/package replay")
-    if (
-        package_manifest.get("manager_epoch") != root.get("manager_epoch")
-        or package_manifest.get("repository_head") != root.get("repository_head")
-        or package_manifest.get("run_nonce") != root.get("run_nonce")
-    ):
-        raise AuthorityError("CAMPAIGN_PACKAGE_BINDING_DRIFT", "manifest/root")
-    _validate_root_source_joins(root, files, sources)
-    gate = root["stage_topology"]["gate1_v4"]
-    positive = gate["positive_control"]
-    required_positive = {
-        "binding_paths",
-        "binding_seal_path",
-        "common_artifact_paths",
-        "common_manifest_path",
-    }
-    if not required_positive <= set(positive):
-        raise AuthorityError("CAMPAIGN_ROOT_INVALID", "common-prestate/bindings not preregistered")
-    return {
-        "campaign_module": campaign_tool,
-        "directory": directory,
-        "files": files,
-        "package_manifest": package_manifest,
-        "root": root,
-        "root_identity": detached_identity(root_snapshot),
-        "sources": sources,
-    }
-
-
-def _validate_gate_approvals(context: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
-    files = context["files"]
-    sources = context["sources"]
-    gate_a_snapshot = _source_snapshot(files, sources, "input.ab16_gate_a_receipt.json")
-    gate_b_snapshot = _source_snapshot(files, sources, "input.ab16_gate_b_approval.json")
-    gate_a = _record(gate_a_snapshot, "AB16 Gate-A")
-    gate_b = _record(gate_b_snapshot, "AB16 Gate-B")
-    gate_a_identity = _detached_from_source(sources["input.ab16_gate_a_receipt.json"]["source_identity"])
-    if (
-        gate_a.get("schema_version") != GATE_A_SCHEMA
-        or gate_a.get("gate") != "A"
-        or gate_a.get("decision") != "PASS"
-        or gate_a.get("purpose") != "AB16_OFFLINE_SOURCE_SET_PREFLIGHT"
-        or gate_a.get("offline_candidate_only") is not True
-        or gate_a.get("formal_campaign_creation_authorized") is not False
-        or gate_a.get("arm_launch_authorized") is not False
-        or gate_b.get("schema_version") != GATE_B_SCHEMA
-        or gate_b.get("gate") != "B"
-        or gate_b.get("decision") != "APPROVED"
-        or gate_b.get("purpose") != "AB16_FORMAL_CAMPAIGN_IDENTITY_CREATION"
-        or gate_b.get("formal_campaign_creation_authorized") is not True
-        or gate_b.get("arm_launch_authorized") is not False
-        or gate_b.get("gate_a_receipt_identity") != gate_a_identity
-        or gate_a.get("repository_root") != gate_b.get("repository_root")
-        or type(gate_a.get("repository_root")) is not str
-        or not Path(gate_a["repository_root"]).is_absolute()
-        or gate_a.get("approval_id") == gate_b.get("approval_id")
-        or gate_a_snapshot.sha256 == gate_b_snapshot.sha256
-    ):
-        raise AuthorityError("GATE_APPROVALS_INVALID", "Gate-A/Gate-B are not distinct and bound")
-    return {
-        "gate_a_identity": gate_a_identity,
-        "gate_b_identity": _detached_from_source(sources["input.ab16_gate_b_approval.json"]["source_identity"]),
-        "repository_root": gate_a["repository_root"],
-    }
-
-
-def _replay_detached(value: object, label: str) -> Snapshot:
-    record = _exact_keys(value, {"path", "sha256", "size_bytes"}, label)
-    if (
-        type(record["path"]) is not str
+        type(record["mode"]) is not int
+        or not 0 <= record["mode"] <= 0o7777
+        or type(record["path"]) is not str
         or not Path(record["path"]).is_absolute()
         or type(record["sha256"]) is not str
         or SHA256_RE.fullmatch(record["sha256"]) is None
         or type(record["size_bytes"]) is not int
         or record["size_bytes"] < 0
     ):
-        raise AuthorityError("DETACHED_IDENTITY_INVALID", label)
-    snapshot = snapshot_regular(record["path"])
-    if detached_identity(snapshot) != record:
-        raise AuthorityError("DETACHED_IDENTITY_DRIFT", label)
-    return snapshot
+        raise AuthorityError(f"{label} is malformed")
+    return record
 
 
-def _replay_identity_with_optional_mode(
-    value: object,
-    label: str,
-) -> Snapshot:
-    if type(value) is not dict or not {"path", "sha256", "size_bytes"} <= set(value):
-        raise AuthorityError("DETACHED_IDENTITY_INVALID", label)
-    if set(value) - {"mode", "path", "sha256", "size_bytes"}:
-        raise AuthorityError("DETACHED_IDENTITY_INVALID", label)
-    detached = {key: value[key] for key in ("path", "sha256", "size_bytes")}
-    snapshot = _replay_detached(detached, label)
-    if "mode" in value and value["mode"] != snapshot.mode:
-        raise AuthorityError("DETACHED_IDENTITY_DRIFT", f"{label} mode")
-    return snapshot
+def _verify_identity(value: object, label: str) -> Mapping[str, Any]:
+    expected = _identity(value, label)
+    _raw, actual = _snapshot(expected["path"])
+    if actual != expected:
+        raise AuthorityError(f"{label} bytes or metadata drifted")
+    return expected
 
 
-def _normalized_identity(value: object, label: str) -> dict[str, object]:
-    snapshot = _replay_identity_with_optional_mode(value, label)
-    return detached_identity(snapshot)
+def _identity_map(value: object, label: str, *, verify: bool) -> Mapping[str, Mapping[str, Any]]:
+    if type(value) is not dict or not value:
+        raise AuthorityError(f"{label} must be a non-empty object")
+    result: dict[str, Mapping[str, Any]] = {}
+    for role, member in value.items():
+        if type(role) is not str or ROLE_RE.fullmatch(role) is None:
+            raise AuthorityError(f"{label} contains an invalid role")
+        result[role] = _verify_identity(member, f"{label}.{role}") if verify else _identity(member, f"{label}.{role}")
+    return result
 
 
-def _observe_repository_head(context: Mapping[str, Any]) -> str:
-    gate_a = _record(
-        _source_snapshot(
-            context["files"],
-            context["sources"],
-            "input.ab16_gate_a_receipt.json",
-        ),
-        "AB16 Gate-A",
+def _load_preregistration(path: Path | str) -> tuple[Mapping[str, Any], dict[str, object]]:
+    record, identity = _load_record(path, "scientific preregistration")
+    try:
+        bootstrap.validate_path_preregistration(record, campaign_dir=record.get("campaign_dir", ""))
+    except (bootstrap.BootstrapError, TypeError, ValueError) as exc:
+        raise AuthorityError("scientific preregistration drifted") from exc
+    if record["arm_sequence"] != list(contract.ARM_SEQUENCE):
+        raise AuthorityError("scientific arm order differs from the classifier")
+    return record, identity
+
+
+def _scientific_source_paths(
+    preregistration_path: Path,
+    preregistration: Mapping[str, Any],
+    slot: str,
+) -> dict[str, Path]:
+    return {
+        "baseline_admission": Path(preregistration["baseline_admission_path"]),
+        "baseline_fixed_replay": Path(preregistration["baseline_fixed_replay_path"]),
+        "baseline_incumbent": Path(preregistration["baseline_incumbent_path"]),
+        "baseline_rebuilt_metadata": Path(preregistration["baseline_rebuilt_metadata_path"]),
+        "baseline_rebuilt_model": Path(preregistration["baseline_rebuilt_model_path"]),
+        "classification_contract": Path(preregistration["classification_contract_path"]),
+        "common_prestate": Path(preregistration["common_prestate_path"]),
+        "scientific_manifest": Path(preregistration["manifest_path"]),
+        "scientific_preregistration": preregistration_path,
+        "selected_binding": Path(preregistration["binding_paths"][slot]),
+        "suite_selection": Path(preregistration["suite_selection_path"]),
+    }
+
+
+def _execution_tool_paths(extra: Mapping[str, Path | str] | None) -> dict[str, Path]:
+    paths = {role: RESEARCH_DIR / filename for role, filename in EXECUTION_TOOL_FILES.items()}
+    for role, path in (extra or {}).items():
+        if ROLE_RE.fullmatch(role) is None or role in paths:
+            raise AuthorityError(f"invalid or duplicate execution-tool role: {role}")
+        paths[role] = _absolute(path)
+    return paths
+
+
+def _capture_sources(paths: Mapping[str, Path], label: str) -> dict[str, tuple[bytes, dict[str, object]]]:
+    if not paths:
+        raise AuthorityError(f"{label} set is empty")
+    result: dict[str, tuple[bytes, dict[str, object]]] = {}
+    for role in sorted(paths):
+        if ROLE_RE.fullmatch(role) is None:
+            raise AuthorityError(f"{label} role is invalid: {role}")
+        result[role] = _snapshot(paths[role])
+    return result
+
+
+def _observe_clean_head(repository_root: Path | str) -> str:
+    root = _existing_directory(_absolute(repository_root), "repository root")
+    commands = (
+        ("git", "diff", "--quiet", "--"),
+        ("git", "diff", "--cached", "--quiet", "--"),
     )
-    repository_root = gate_a.get("repository_root")
-    if type(repository_root) is not str or not Path(repository_root).is_absolute():
-        raise AuthorityError("HEAD_REPLAY_FAILED", "Gate-A repository root")
-    git_identity = context["root"]["authority_tools"].get("git")
-    git_snapshot = _replay_detached(git_identity, "campaign git tool")
-    try:
-        completed = subprocess.run(
-            [
-                str(git_snapshot.path),
-                "-C",
-                repository_root,
-                "rev-parse",
-                "--verify",
-                "HEAD^{commit}",
-            ],
-            check=False,
-            capture_output=True,
-            env={"LC_ALL": "C", "PATH": "/usr/bin:/bin"},
-            text=False,
-            timeout=30,
-        )
-    except (OSError, subprocess.SubprocessError) as exc:
-        raise AuthorityError("HEAD_REPLAY_FAILED", str(exc)) from exc
-    try:
-        head = completed.stdout.decode("ascii").strip()
-    except UnicodeDecodeError as exc:
-        raise AuthorityError("HEAD_REPLAY_FAILED", "non-ASCII output") from exc
-    if completed.returncode != 0 or completed.stderr or HEAD_RE.fullmatch(head) is None:
-        raise AuthorityError(
-            "HEAD_REPLAY_FAILED",
-            f"exit={completed.returncode}; stderr={completed.stderr!r}",
-        )
+    for command in commands:
+        completed = subprocess.run(command, cwd=root, check=False, capture_output=True)
+        if completed.returncode != 0:
+            raise AuthorityError("repository tracked tree or index is not clean")
+    completed = subprocess.run(
+        ("git", "rev-parse", "--verify", "HEAD"),
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    head = completed.stdout.strip()
+    if completed.returncode != 0 or GIT_HEAD_RE.fullmatch(head) is None:
+        raise AuthorityError("repository HEAD observation failed")
     return head
 
 
-def _continuation(context: Mapping[str, Any]) -> tuple[Mapping[str, Any], dict[str, object]]:
-    root = context["root"]
-    continuation_path = root["stage_topology"]["gate1_v4"]["continuation_path"]
-    snapshot = snapshot_regular(continuation_path)
-    continuation = _record(snapshot, "Gate-1 continuation")
-    try:
-        context["campaign_module"].validate_continuation_authorization(
-            continuation,
-            root=root,
-        )
-    except Exception as exc:
-        raise AuthorityError("GATE1_CONTINUATION_INVALID", str(exc)) from exc
-    replay_ids = continuation.get("detached_replay_identities")
-    if type(replay_ids) is not dict or set(replay_ids) != set(GATE1_SLOTS):
-        raise AuthorityError("GATE1_CONTINUATION_INVALID", "detached replay set")
-    for slot in GATE1_SLOTS:
-        _replay_detached(replay_ids[slot], f"Gate-1 continuation {slot}")
-    if (
-        continuation.get("schema_version") != CONTINUATION_SCHEMA
-        or continuation.get("continuation_authorized") is not True
-        or continuation.get("continuation_eligible") is not True
-        or continuation.get("organic_arm_launch_authorized") is not False
-        or continuation.get("campaign_closed") is not False
-        or continuation.get("campaign_id") != root["campaign_id"]
-        or continuation.get("run_nonce") != root["run_nonce"]
-        or continuation.get("manager_epoch") != root["manager_epoch"]
-        or continuation.get("campaign_root_identity") != context["root_identity"]
-    ):
-        raise AuthorityError("GATE1_CONTINUATION_INVALID", "fresh campaign/epoch binding")
-    future = continuation.get("future_child")
-    prospective = root["stage_topology"]["prospective_ab16"]
-    if (
-        type(future) is not dict
-        or future.get("suite") != "prospective-ab16"
-        or future.get("manifest_path") != prospective["manifest_path"]
-        or future.get("arm_selection_path") != prospective["arm_selection_path"]
-        or future.get("slots_absent") is not True
-    ):
-        raise AuthorityError("GATE1_CONTINUATION_INVALID", "future child binding")
-    return continuation, detached_identity(snapshot)
-
-
-def _launch_plan(root: Mapping[str, Any]) -> list[dict[str, object]]:
-    arms = root["stage_topology"]["prospective_ab16"]["arms"]
-    if type(arms) is not list or len(arms) != 16:
-        raise AuthorityError("AB16_LAUNCH_PLAN_INVALID", "arm count")
-    by_triplet: dict[tuple[str, str, str], Mapping[str, Any]] = {}
-    for item in arms:
-        record = _exact_keys(
-            item,
-            {"arm", "attempt_dir", "configuration", "order", "slot", "unit_name"},
-            "campaign AB16 arm",
-        )
-        triplet = (record["configuration"], record["order"], record["arm"])
-        if (
-            triplet in by_triplet
-            or triplet[0] not in CONFIGURATIONS
-            or triplet[1] not in ORDERS
-            or triplet[2] not in ARMS
-            or record["slot"] != "-".join(triplet)
-            or type(record["attempt_dir"]) is not str
-            or not Path(record["attempt_dir"]).is_absolute()
-            or type(record["unit_name"]) is not str
-            or not record["unit_name"]
-        ):
-            raise AuthorityError("AB16_LAUNCH_PLAN_INVALID", "campaign arm")
-        by_triplet[triplet] = record
-    result: list[dict[str, object]] = []
-    ordinal = 0
-    for configuration in CONFIGURATIONS:
-        for order in ORDERS:
-            roles = ARMS if order == "ab" else tuple(reversed(ARMS))
-            for arm in roles:
-                ordinal += 1
-                source = by_triplet[(configuration, order, arm)]
-                attempt = Path(source["attempt_dir"])
-                result.append(
-                    {
-                        **dict(source),
-                        "arithmetic_replay_path": str(attempt / "replays/independent-arithmetic.json"),
-                        "arm_gate_path": str(attempt / "replays/arm-credibility.json"),
-                        "arm_selection_path": str(attempt / "selection.json"),
-                        "cut_free_replay_path": str(attempt / "replays/cut-free-incumbent.json"),
-                        "epoch_checkpoint_paths": {
-                            phase: str(attempt / "authority" / f"manager-epoch-{phase}.json")
-                            for phase in (
-                                "launch",
-                                "preterminal",
-                                "release",
-                                "terminal",
-                                "cleanup",
-                                "detached-replay",
-                            )
-                        },
-                        "launch_ordinal": ordinal,
-                        "raw_dir": str(attempt / "raw"),
-                        "resource_replay_path": str(attempt / "replays/independent-resource-terminal.json"),
-                        "result_path": str(attempt / "result.json"),
-                        "terminal_dir": str(attempt / "terminal"),
-                    }
-                )
-    if [item["slot"] for item in result] != EXPERIMENT_CONTRACT["order"]:
-        raise AuthorityError("AB16_LAUNCH_PLAN_INVALID", "AB/BA order")
-    return result
-
-
-def _digest_without(record: Mapping[str, object], field: str) -> str:
-    copied = dict(record)
-    copied[field] = ""
-    return hashlib.sha256(canonical_json(copied)).hexdigest()
-
-
-def _source_identities(context: Mapping[str, Any]) -> dict[str, object]:
-    return {role: dict(context["sources"][role]["source_identity"]) for role in sorted(REQUIRED_PACKAGE_ROLES)}
-
-
-def _package_role_identity(
-    context: Mapping[str, Any],
-    role: str,
-) -> dict[str, object]:
-    """Return the detached identity of one package-pinned live source."""
-
-    _source_snapshot(context["files"], context["sources"], role)
-    return _detached_from_source(context["sources"][role]["source_identity"])
-
-
-def _root_tool_identity(
-    context: Mapping[str, Any],
-    root_role: str,
-    package_role: str,
-) -> dict[str, object]:
-    _source_snapshot(context["files"], context["sources"], package_role)
-    identity = context["root"]["authority_tools"].get(root_role)
-    _replay_detached(identity, f"campaign root tool {root_role}")
-    return dict(identity)
-
-
-def _root_tool_identity_with_mode(
-    context: Mapping[str, Any],
-    root_role: str,
-    package_role: str,
-) -> dict[str, object]:
-    identity = _root_tool_identity(context, root_role, package_role)
-    snapshot = _replay_detached(identity, f"campaign root tool {root_role}")
-    return {
-        "mode": snapshot.mode,
-        **identity,
+def _projection_digest(schema: str, identities: Mapping[str, Mapping[str, Any]]) -> str:
+    projection = {
+        "members": {
+            role: {
+                "mode": identities[role]["mode"],
+                "sha256": identities[role]["sha256"],
+                "size_bytes": identities[role]["size_bytes"],
+            }
+            for role in sorted(identities)
+        },
+        "schema": schema,
     }
+    return hashlib.sha256(canonical_json(projection)).hexdigest()
 
 
-def _root_input_identity(
-    context: Mapping[str, Any],
-    root_role: str,
-    package_role: str,
-) -> dict[str, object]:
-    _source_snapshot(context["files"], context["sources"], package_role)
-    identity = context["root"]["strict_inputs"].get(root_role)
-    _replay_detached(identity, f"campaign root input {root_role}")
-    return dict(identity)
+def _attempt_directories(slot_root: Path) -> list[tuple[int, Path]]:
+    if not slot_root.exists() and not slot_root.is_symlink():
+        return []
+    _existing_directory(slot_root, "slot root")
+    members: list[tuple[int, Path]] = []
+    for child in slot_root.iterdir():
+        match = ATTEMPT_RE.fullmatch(child.name)
+        if match is None or child.is_symlink() or not child.is_dir():
+            raise AuthorityError(f"unknown or unsafe slot-root child: {child}")
+        ordinal = int(match.group(1))
+        if ordinal < 1 or child.name != f"attempt-{ordinal:04d}":
+            raise AuthorityError(f"noncanonical attempt name: {child}")
+        members.append((ordinal, child))
+    members.sort()
+    if [ordinal for ordinal, _path in members] != list(range(1, len(members) + 1)):
+        raise AuthorityError(f"attempt ordinal gap under {slot_root}")
+    return members
 
 
-def _runner_module(context: Mapping[str, Any]) -> ModuleType:
-    snapshot = _source_snapshot(
-        context["files"],
-        context["sources"],
-        "tool.organic_arm_runner_v1.py",
-    )
-    runner = _load_module(
-        snapshot,
-        f"_ab16_organic_runner_{snapshot.sha256[:16]}",
-    )
-    if (
-        getattr(runner, "MANIFEST_SCHEMA", None) != MANIFEST_SCHEMA
-        or getattr(runner, "SELECTION_SCHEMA", None) != ARM_SELECTION_SCHEMA
-        or type(getattr(runner, "FORMAL_ARITHMETIC_PURPOSE", None)) is not str
-    ):
-        raise AuthorityError(
-            "RUNNER_CONTRACT_DRIFT",
-            "organic runner schema/purpose differs from the authority consumer",
-        )
-    return runner
-
-
-def _path_preregistration(
-    context: Mapping[str, Any],
+def _validate_input_set(
+    attempt_dir: Path,
+    preregistration_identity: Mapping[str, Any],
 ) -> tuple[Mapping[str, Any], dict[str, object]]:
-    """Replay the package/root-bound prospective AB16 path authority."""
-
-    snapshot = _source_snapshot(
-        context["files"],
-        context["sources"],
-        "input.ab16_path_preregistration.json",
-    )
-    record = _exact_keys(
-        _record(snapshot, "AB16 path preregistration"),
-        {
-            "arithmetic_replay_paths",
-            "arm_gate_paths",
-            "arm_selection_paths",
-            "attempt_dirs",
-            "baseline_admission_path",
-            "baseline_fixed_replay_path",
-            "baseline_incumbent_path",
-            "baseline_rebuilt_metadata_path",
-            "baseline_rebuilt_model_path",
-            "binding_paths",
-            "campaign_dir",
-            "classification_contract_path",
-            "common_prestate_path",
-            "cut_free_replay_paths",
-            "immediate_stop_path",
-            "launch_environment_paths",
-            "manifest_path",
-            "preselection_epoch_paths",
-            "preselection_transcript_paths",
-            "pre_run_candidate_paths",
-            "pre_run_authority_paths",
-            "resource_replay_paths",
-            "purpose",
-            "run_nonce",
-            "schema",
-            "suite_selection_path",
-            "terminal_classification_path",
-        },
-        "AB16 path preregistration",
-    )
-    root = context["root"]
-    prospective = root["stage_topology"]["prospective_ab16"]
-    slots = [item["slot"] for item in _launch_plan(root)]
-    if (
-        record["schema"] != PATH_PREREGISTRATION_SCHEMA
-        or record["purpose"] != "prospective_noncert_cuts_ab16_path_authority"
-        or record["campaign_dir"] != str(context["directory"])
-        or record["run_nonce"] != root["run_nonce"]
-        or record["manifest_path"] != prospective["manifest_path"]
-        or record["suite_selection_path"] != prospective["arm_selection_path"]
-        or record["terminal_classification_path"] != prospective["terminal_classification_path"]
-    ):
-        raise AuthorityError(
-            "PATH_PREREGISTRATION_INVALID",
-            "campaign/root scalar binding",
-        )
-    path_fields = (
-        "baseline_admission_path",
-        "baseline_fixed_replay_path",
-        "baseline_incumbent_path",
-        "baseline_rebuilt_metadata_path",
-        "baseline_rebuilt_model_path",
-        "classification_contract_path",
-        "common_prestate_path",
-        "immediate_stop_path",
-        "manifest_path",
-        "suite_selection_path",
-        "terminal_classification_path",
-    )
-    prospective_dir = Path(prospective["manifest_path"]).parent
-    for field in path_fields:
-        value = record[field]
-        if (
-            type(value) is not str
-            or not Path(value).is_absolute()
-            or Path(value) == context["directory"]
-            or (field != "classification_contract_path" and prospective_dir not in (Path(value), *Path(value).parents))
-        ):
-            raise AuthorityError(
-                "PATH_PREREGISTRATION_INVALID",
-                f"{field} is not an absolute prospective child path",
-            )
-    maps: dict[str, Mapping[str, Any]] = {}
-    for field in (
-        "arithmetic_replay_paths",
-        "arm_gate_paths",
-        "arm_selection_paths",
-        "attempt_dirs",
-        "binding_paths",
-        "cut_free_replay_paths",
-        "launch_environment_paths",
-        "preselection_epoch_paths",
-        "preselection_transcript_paths",
-        "pre_run_candidate_paths",
-        "pre_run_authority_paths",
-        "resource_replay_paths",
-    ):
-        value = _exact_keys(record[field], set(slots), f"path preregistration {field}")
-        if len(set(value.values())) != len(slots):
-            raise AuthorityError(
-                "PATH_PREREGISTRATION_INVALID",
-                f"{field} paths are not unique",
-            )
-        maps[field] = value
-    root_attempts = {item["slot"]: item["attempt_dir"] for item in prospective["arms"]}
-    if dict(maps["attempt_dirs"]) != root_attempts:
-        raise AuthorityError(
-            "PATH_PREREGISTRATION_INVALID",
-            "attempt dirs differ from campaign root",
-        )
-    for slot in slots:
-        attempt = Path(str(maps["attempt_dirs"][slot]))
-        expected = {
-            "arithmetic_replay_paths": (attempt / "replays/independent-arithmetic.json"),
-            "arm_gate_paths": attempt / "replays/arm-credibility.json",
-            "arm_selection_paths": attempt / "selection.json",
-            "cut_free_replay_paths": (attempt / "replays/cut-free-incumbent.json"),
-            "pre_run_authority_paths": attempt / "pre-run-authority.json",
-            "resource_replay_paths": (attempt / "replays/independent-resource-terminal.json"),
-        }
-        for field, path in expected.items():
-            if Path(str(maps[field][slot])) != path:
-                raise AuthorityError(
-                    "PATH_PREREGISTRATION_INVALID",
-                    f"{field}.{slot} is not derived from attempt_dir",
-                )
-        binding = Path(str(maps["binding_paths"][slot]))
-        if (
-            not binding.is_absolute()
-            or binding.parent != prospective_dir / "bindings"
-            or binding.name != f"{slot}.json"
-        ):
-            raise AuthorityError(
-                "PATH_PREREGISTRATION_INVALID",
-                f"binding path drift for {slot}",
-            )
-        candidate = Path(str(maps["pre_run_candidate_paths"][slot]))
-        if (
-            not candidate.is_absolute()
-            or candidate.parent != prospective_dir / "pre-run-candidates"
-            or candidate.name != f"{slot}.json"
-        ):
-            raise AuthorityError(
-                "PATH_PREREGISTRATION_INVALID",
-                f"pre-run candidate path drift for {slot}",
-            )
-        candidate_parent = prospective_dir / "pre-run-candidates"
-        expected_candidate_artifacts = {
-            "launch_environment_paths": (candidate_parent / f"{slot}-launch-environment.json"),
-            "preselection_epoch_paths": (candidate_parent / f"{slot}-preselection-epoch.json"),
-            "preselection_transcript_paths": (candidate_parent / f"{slot}-preselection-transcript.json"),
-        }
-        for field, expected_path in expected_candidate_artifacts.items():
-            if Path(str(maps[field][slot])) != expected_path:
-                raise AuthorityError(
-                    "PATH_PREREGISTRATION_INVALID",
-                    f"{field}.{slot} is not the canonical candidate child",
-                )
-    expected_fixed_paths = {
-        "baseline_admission_path": prospective_dir / "baseline-admission-a001.json",
-        "baseline_fixed_replay_path": prospective_dir / "baseline/fixed-replay-a001.json",
-        "baseline_incumbent_path": prospective_dir / "baseline/incumbent.json",
-        "baseline_rebuilt_metadata_path": (prospective_dir / "baseline/rebuilt-model-metadata.json"),
-        "baseline_rebuilt_model_path": (prospective_dir / "baseline/cut-free-model.bin"),
-        "classification_contract_path": (
-            context["directory"] / "campaign-authority/package/payload/tool.ab16_contract_v1.py"
-        ),
-        "common_prestate_path": prospective_dir / "common-prestate-a001.json",
-        "immediate_stop_path": prospective_dir / "immediate-stop-a001.json",
-    }
-    for field, expected in expected_fixed_paths.items():
-        if Path(str(record[field])) != expected:
-            raise AuthorityError(
-                "PATH_PREREGISTRATION_INVALID",
-                f"{field} differs from the canonical campaign child path",
-            )
-    return record, _root_input_identity(
-        context,
-        "ab16_path_preregistration",
-        "input.ab16_path_preregistration.json",
-    )
-
-
-def _expected_runtime_parameters(runner: ModuleType) -> dict[str, object]:
-    contract = runner.EXPERIMENT_CONTRACT
-    budget = contract["budget"]
-    solver = contract["solver_parameters"]
-    return {
-        "attach_iteration": 1,
-        "attach_trigger": "after_byte_locked_cut_free_baseline_before_attach",
-        "binding_alt_cap": solver["binding_alt_cap"],
-        "binding_seconds": budget["binding_seconds"],
-        "ghost_rect": list(solver["ghost_rectangle"]),
-        "master_seconds": budget["master_seconds"],
-        "max_iterations": budget["max_iterations"],
-        "post_attach_seconds": budget["post_attach_seconds"],
-        "routing_seconds": budget["routing_seconds"],
-    }
-
-
-def _baseline_manifest_inputs(
-    context: Mapping[str, Any],
-) -> dict[str, object]:
-    preregistration, preregistration_identity = _path_preregistration(context)
-    paths = {
-        name: snapshot_regular(preregistration[name])
-        for name in (
-            "baseline_admission_path",
-            "baseline_incumbent_path",
-            "classification_contract_path",
-        )
-    }
-    baseline = _replay_baseline_admission(
-        context,
-        paths["baseline_admission_path"],
-    )
-    incumbent_identity = detached_identity(paths["baseline_incumbent_path"])
-    fixed_replay = baseline.get("fixed_assignment_replay")
-    expected_baseline = baseline.get("expected_baseline")
-    if (
-        type(fixed_replay) is not dict
-        or fixed_replay.get("incumbent_identity") != incumbent_identity
-        or type(expected_baseline) is not dict
-        or expected_baseline.get("incumbent_sha256") != incumbent_identity["sha256"]
-    ):
-        raise AuthorityError(
-            "BASELINE_ADMISSION_INVALID",
-            "incumbent identity/digest does not join the preregistered bytes",
-        )
-    return {
-        "baseline": baseline,
-        "baseline_admission_identity": detached_identity(paths["baseline_admission_path"]),
-        "baseline_incumbent_identity": incumbent_identity,
-        "classification_contract_identity": detached_identity(paths["classification_contract_path"]),
-        "path_preregistration": preregistration,
-        "path_preregistration_identity": preregistration_identity,
-    }
-
-
-def _common_prestate_expected(
-    context: Mapping[str, Any],
-    *,
-    inputs: Mapping[str, Any],
-    runner: ModuleType,
-) -> dict[str, object]:
-    baseline = inputs["baseline"]
-    approvals = _validate_gate_approvals(context)
-    return {
-        "authorizations": {
-            "arm_launch_authorized": False,
-            "global_claim_authorized": False,
-            "manifest_published": False,
-            "mathematical_claim_authorized": False,
-            "production_certified_authorized": False,
-            "solver_run_authorized": False,
-        },
-        "baseline_admission_identity": inputs["baseline_admission_identity"],
-        "baseline_incumbent_identity": baseline["fixed_assignment_replay"]["incumbent_identity"],
-        "builder_identity": _root_tool_identity(
-            context,
-            "ab16_authority_v1",
-            "tool.ab16_authority_v1.py",
-        ),
-        "campaign_id": context["root"]["campaign_id"],
-        "classification_contract_identity": inputs["classification_contract_identity"],
-        "experiment_contract": runner.EXPERIMENT_CONTRACT,
-        "fixed_assignment_replay_identity": baseline["fixed_assignment_replay"]["receipt_identity"],
-        "purpose": COMMON_PRESTATE_PURPOSE,
-        "rebuilt_metadata_identity": baseline["rebuilt_model"]["metadata"]["metadata_identity"],
-        "rebuilt_model_identity": baseline["rebuilt_model"]["identity"],
-        "repository_head": context["root"]["repository_head"],
-        "repository_root": approvals["repository_root"],
-        "run_nonce": context["root"]["run_nonce"],
-        "runtime_parameters": _expected_runtime_parameters(runner),
-        "schema_version": COMMON_PRESTATE_SCHEMA,
-        "seed": runner.EXPERIMENT_CONTRACT["solver_parameters"]["random_seed"],
-        "status": "PASS",
-        "verdict": "AB16_COMMON_PRESTATE_FROZEN",
-        "workers": 1,
-    }
-
-
-def _binding_expected(
-    context: Mapping[str, Any],
-    *,
-    common_prestate_identity: Mapping[str, Any],
-    plan: Mapping[str, Any],
-    runner: ModuleType,
-) -> dict[str, object]:
-    enabled = [] if plan["arm"] == "control" else list(runner.CONFIGURATION_FAMILIES[plan["configuration"]])
-    return {
-        "arm": plan["arm"],
-        "attempt_dir": plan["attempt_dir"],
-        "authorizations": {
-            "arm_launch_authorized": False,
-            "manifest_published": False,
-            "solver_run_authorized": False,
-        },
-        "builder_identity": _root_tool_identity(
-            context,
-            "ab16_authority_v1",
-            "tool.ab16_authority_v1.py",
-        ),
-        "campaign_id": context["root"]["campaign_id"],
-        "common_prestate_identity": dict(common_prestate_identity),
-        "configuration": plan["configuration"],
-        "enabled_families": enabled,
-        "order": plan["order"],
-        "purpose": ARM_BINDING_PURPOSE,
-        "repository_head": context["root"]["repository_head"],
-        "run_nonce": context["root"]["run_nonce"],
-        "schema_version": ARM_BINDING_SCHEMA,
-        "slot": plan["slot"],
-        "status": "PASS",
-        "unit_name": plan["unit_name"],
-        "verdict": "AB16_ARM_BINDING_FROZEN",
-    }
-
-
-def _empty_child_directory(path: Path, label: str) -> None:
-    if path.exists() or path.is_symlink():
-        _assert_no_symlink_chain(path)
-        if not path.is_dir() or any(path.iterdir()):
-            raise AuthorityError("PRE_MANIFEST_CHILD_INVALID", label)
-        return
-    _mkdir_exclusive(path)
-
-
-def _build_pre_manifest_inputs(
-    context: Mapping[str, Any],
-    *,
-    inputs: Mapping[str, Any],
-    runner: ModuleType,
-) -> None:
-    preregistration = inputs["path_preregistration"]
-    common_path = _absolute(preregistration["common_prestate_path"])
-    binding_paths = {slot: _absolute(path) for slot, path in preregistration["binding_paths"].items()}
-    if (
-        common_path.exists()
-        or common_path.is_symlink()
-        or any(path.exists() or path.is_symlink() for path in binding_paths.values())
-    ):
-        raise AuthorityError(
-            "PRE_MANIFEST_INPUT_ALREADY_CONSUMED",
-            "common prestate or arm binding already exists",
-        )
-    prospective = common_path.parent
-    _assert_no_symlink_chain(prospective)
-    if not prospective.is_dir():
-        raise AuthorityError(
-            "PRE_MANIFEST_PARENT_INVALID",
-            "prospective child parent does not exist",
-        )
-    binding_parent = next(iter(binding_paths.values())).parent
-    _empty_child_directory(binding_parent, "binding directory")
-    _empty_child_directory(prospective / "arms", "attempt directory parent")
-    _empty_child_directory(
-        prospective / "pre-run-candidates",
-        "pre-run candidate directory",
-    )
-    common = _common_prestate_expected(
-        context,
-        inputs=inputs,
-        runner=runner,
-    )
-    common_identity = _write_exclusive(common_path, runner.canonical_json(common))
-    plans = {item["slot"]: item for item in _launch_plan(context["root"])}
-    for slot in runner.ARM_SEQUENCE:
-        binding = _binding_expected(
-            context,
-            common_prestate_identity=common_identity,
-            plan=plans[slot],
-            runner=runner,
-        )
-        _write_exclusive(
-            binding_paths[slot],
-            runner.canonical_json(binding),
-        )
-
-
-def _manifest_inputs(
-    context: Mapping[str, Any],
-) -> dict[str, object]:
-    result = _baseline_manifest_inputs(context)
-    preregistration = result["path_preregistration"]
-    runner = _runner_module(context)
-    common_snapshot = snapshot_regular(preregistration["common_prestate_path"])
-    common = _record(common_snapshot, "AB16 common prestate")
-    expected_common = _common_prestate_expected(
-        context,
-        inputs=result,
-        runner=runner,
-    )
-    if common != expected_common:
-        raise AuthorityError(
-            "COMMON_PRESTATE_INVALID",
-            "common prestate semantics differ from replayed baseline/contract",
-        )
-    common_identity = detached_identity(common_snapshot)
-    plans = {item["slot"]: item for item in _launch_plan(context["root"])}
-    binding_identities: dict[str, dict[str, object]] = {}
-    for slot in runner.ARM_SEQUENCE:
-        snapshot = snapshot_regular(preregistration["binding_paths"][slot])
-        binding = _record(snapshot, f"AB16 arm binding {slot}")
-        expected_binding = _binding_expected(
-            context,
-            common_prestate_identity=common_identity,
-            plan=plans[slot],
-            runner=runner,
-        )
-        if binding != expected_binding:
-            raise AuthorityError(
-                "ARM_BINDING_INVALID",
-                f"{slot} semantics differ from the preregistered arm",
-            )
-        binding_identities[slot] = detached_identity(snapshot)
-    result.update(
-        {
-            "binding_identities": binding_identities,
-            "common_prestate_identity": common_identity,
-        }
-    )
-    return result
-
-
-def _organic_authority_chain(
-    context: Mapping[str, Any],
-    continuation_identity: Mapping[str, Any],
-) -> dict[str, object]:
-    root = context["root"]
-    return {
-        "campaign_root_identity": context["root_identity"],
-        "continuation_identity": dict(continuation_identity),
-        "manager_epoch_authority_identity": _root_input_identity(
-            context,
-            "ab16_bootstrap_manager_epoch_capture",
-            "input.ab16_bootstrap_manager_epoch_capture.json",
-        ),
-        "package": {
-            "manifest_identity": root["package"]["manifest_identity"],
-            "package_id": root["package"]["package_id"],
-            "seal_identity": root["package"]["seal_identity"],
-        },
-    }
-
-
-def _per_arm_tool_identities(
-    context: Mapping[str, Any],
-) -> dict[str, dict[str, object]]:
-    return {
-        "cut_free_replay": _root_tool_identity(
-            context,
-            "cut_free_incumbent_replay_v1",
-            "tool.cut_free_incumbent_replay_v1.py",
-        ),
-        "resource_lifecycle": _root_tool_identity(
-            context,
-            "organic_resource_lifecycle_v1",
-            "tool.organic_resource_lifecycle_v1.py",
-        ),
-        "resource_verifier": _root_tool_identity(
-            context,
-            "organic_resource_verifier_v1",
-            "tool.organic_resource_verifier_v1.py",
-        ),
-        "terminal_gate": _root_tool_identity(
-            context,
-            "ab16_terminal_gate_v1",
-            "tool.ab16_terminal_gate_v1.py",
-        ),
-        "terminal_replay": _root_tool_identity(
-            context,
-            "organic_arm_replay_v1",
-            "tool.organic_arm_replay_v1.py",
-        ),
-        "unit_orchestrator": _root_tool_identity(
-            context,
-            "organic_unit_orchestrator_v1",
-            "tool.organic_unit_orchestrator_v1.py",
-        ),
-    }
-
-
-def build_manifest(campaign_dir: Path | str) -> dict[str, object]:
-    """Publish the runner-exact manifest only after continuation and baseline PASS."""
-
-    context = _campaign_context(campaign_dir)
-    approvals = _validate_gate_approvals(context)
-    continuation, continuation_identity = _continuation(context)
-    runner = _runner_module(context)
-    baseline_inputs = _baseline_manifest_inputs(context)
-    root = context["root"]
-    preregistration = baseline_inputs["path_preregistration"]
-    output = _absolute(preregistration["manifest_path"])
-    suite_selection = _absolute(preregistration["suite_selection_path"])
-    terminal = _absolute(preregistration["terminal_classification_path"])
-    immediate_stop = _absolute(preregistration["immediate_stop_path"])
-    if any(path.exists() or path.is_symlink() for path in (output, suite_selection, terminal, immediate_stop)):
-        raise AuthorityError(
-            "PROSPECTIVE_CHILD_ALREADY_CONSUMED",
-            "manifest, suite selection, terminal, or immediate-stop already exists",
-        )
-    for path in preregistration["attempt_dirs"].values():
-        absolute = _absolute(path)
-        if absolute.exists() or absolute.is_symlink():
-            raise AuthorityError("PROSPECTIVE_CHILD_ALREADY_CONSUMED", str(absolute))
-    _build_pre_manifest_inputs(
-        context,
-        inputs=baseline_inputs,
-        runner=runner,
-    )
-    inputs = _manifest_inputs(context)
-    launch_plan = _launch_plan(root)
-    attempts = {item["slot"]: item["attempt_dir"] for item in launch_plan}
-    unit_names = {item["slot"]: item["unit_name"] for item in launch_plan}
-    record: dict[str, object] = {
-        "arithmetic_verifier": {
-            "purpose": runner.FORMAL_ARITHMETIC_PURPOSE,
-            "tool_identity": _root_tool_identity(
-                context,
-                "organic_arm_replay_v1",
-                "tool.organic_arm_replay_v1.py",
-            ),
-        },
-        "arm_binding_identities": inputs["binding_identities"],
-        "arm_sequence": list(runner.ARM_SEQUENCE),
-        "attempt_dirs": attempts,
-        "authority_chain": _organic_authority_chain(
-            context,
-            continuation_identity,
-        ),
-        "authorizations": {
-            "global_claim_authorized": False,
-            "mathematical_claim_authorized": False,
-            "organic_arm_launch_authorized": True,
-            "production_certified_authorized": False,
-        },
-        "baseline_admission_identity": inputs["baseline_admission_identity"],
-        "baseline_incumbent_identity": inputs["baseline_incumbent_identity"],
-        "campaign_id": root["campaign_id"],
-        "classification_contract_identity": inputs["classification_contract_identity"],
-        "common_prestate_identity": inputs["common_prestate_identity"],
-        "configuration_families": {
-            configuration: list(families) for configuration, families in runner.CONFIGURATION_FAMILIES.items()
-        },
-        "experiment_contract": runner.EXPERIMENT_CONTRACT,
-        "forbidden_families": list(runner.FORBIDDEN_FAMILIES),
-        "per_arm_tool_identities": _per_arm_tool_identities(context),
-        "purpose": runner.MANIFEST_PURPOSE,
-        "repository_git_tool_identity": _root_tool_identity_with_mode(
-            context,
-            "git",
-            "system.git.bin",
-        ),
-        "repository_head": root["repository_head"],
-        "repository_root": approvals["repository_root"],
-        "run_nonce": root["run_nonce"],
-        "runner_tool_identity": _root_tool_identity(
-            context,
-            "organic_arm_runner_v1",
-            "tool.organic_arm_runner_v1.py",
-        ),
-        "runtime_parameters": _expected_runtime_parameters(runner),
-        "schema_version": runner.MANIFEST_SCHEMA,
-        "seed": runner.EXPERIMENT_CONTRACT["solver_parameters"]["random_seed"],
-        "unit_names": unit_names,
-        "workers": 1,
-    }
-    validate_manifest(record, context=context, continuation=continuation)
-    _assert_no_symlink_chain(output.parent)
-    if not output.parent.is_dir():
-        raise AuthorityError(
-            "MANIFEST_PARENT_INVALID",
-            "baseline/common/binding parent must already exist",
-        )
-    identity = _write_exclusive(output, runner.canonical_json(record))
-    return {"manifest": record, "manifest_identity": identity, "status": "PASS"}
-
-
-def validate_manifest(
-    value: object,
-    *,
-    context: Mapping[str, Any],
-    continuation: Mapping[str, Any],
-) -> Mapping[str, Any]:
-    runner = _runner_module(context)
-    try:
-        record = runner.validate_manifest(value)
-    except Exception as exc:
-        raise AuthorityError("MANIFEST_INVALID", str(exc)) from exc
-    root = context["root"]
-    inputs = _manifest_inputs(context)
-    preregistration = inputs["path_preregistration"]
-    continuation_snapshot = _replay_detached(
-        record["authority_chain"]["continuation_identity"],
-        "manifest continuation",
-    )
-    if _record(continuation_snapshot, "manifest continuation") != continuation:
-        raise AuthorityError("MANIFEST_INVALID", "continuation bytes")
-    expected_launch = _launch_plan(root)
-    if (
-        record["campaign_id"] != root["campaign_id"]
-        or record["repository_head"] != root["repository_head"]
-        or record["run_nonce"] != root["run_nonce"]
-        or record["arm_sequence"] != [item["slot"] for item in expected_launch]
-        or record["attempt_dirs"] != preregistration["attempt_dirs"]
-        or record["unit_names"] != {item["slot"]: item["unit_name"] for item in expected_launch}
-        or record["authority_chain"]
-        != _organic_authority_chain(
-            context,
-            record["authority_chain"]["continuation_identity"],
-        )
-        or record["baseline_admission_identity"] != inputs["baseline_admission_identity"]
-        or record["baseline_incumbent_identity"] != inputs["baseline_incumbent_identity"]
-        or record["classification_contract_identity"] != inputs["classification_contract_identity"]
-        or record["common_prestate_identity"] != inputs["common_prestate_identity"]
-        or record["arm_binding_identities"] != inputs["binding_identities"]
-        or record["per_arm_tool_identities"] != _per_arm_tool_identities(context)
-        or record["runner_tool_identity"]
-        != _root_tool_identity(
-            context,
-            "organic_arm_runner_v1",
-            "tool.organic_arm_runner_v1.py",
-        )
-        or record["repository_git_tool_identity"]
-        != _root_tool_identity_with_mode(
-            context,
-            "git",
-            "system.git.bin",
-        )
-        or record["repository_root"] != _validate_gate_approvals(context)["repository_root"]
-        or record["arithmetic_verifier"]
-        != {
-            "purpose": runner.FORMAL_ARITHMETIC_PURPOSE,
-            "tool_identity": _root_tool_identity(
-                context,
-                "organic_arm_replay_v1",
-                "tool.organic_arm_replay_v1.py",
-            ),
-        }
-        or record["runtime_parameters"] != _expected_runtime_parameters(runner)
-    ):
-        raise AuthorityError("MANIFEST_INVALID", "authority/path/input binding")
-    return record
-
-
-def _replay_baseline_admission(
-    context: Mapping[str, Any],
-    receipt_snapshot: Snapshot,
-) -> Mapping[str, Any]:
-    receipt = _record(receipt_snapshot, "baseline admission")
-    if (
-        receipt.get("schema_version") != BASELINE_ADMISSION_SCHEMA
-        or receipt.get("status") != "PASS"
-        or receipt.get("verdict") != "AB16_BASELINE_INPUTS_ADMITTED"
-    ):
-        raise AuthorityError("BASELINE_ADMISSION_INVALID", "status/schema")
-    authorizations = receipt.get("authorizations")
-    if authorizations != {
-        "baseline_inputs_admitted": True,
-        "global_claim_authorized": False,
-        "mathematical_claim_authorized": False,
-        "organic_arm_launch_authorized": False,
-        "solver_run_authorized": False,
-    }:
-        raise AuthorityError("BASELINE_ADMISSION_INVALID", "claim boundary")
-    admission_tool = _load_module(
-        _source_snapshot(
-            context["files"],
-            context["sources"],
-            "tool.baseline_admission_v1.py",
-        ),
-        f"_ab16_baseline_admission_{receipt_snapshot.sha256[:16]}",
-    )
-    try:
-        replayed = admission_tool.admit_paths(
-            legacy_control=receipt["legacy_control"]["identity"]["path"],
-            rebuilt_model=receipt["rebuilt_model"]["identity"]["path"],
-            rebuilt_metadata=receipt["rebuilt_model"]["metadata"]["metadata_identity"]["path"],
-            fixed_assignment_replay=receipt["fixed_assignment_replay"]["receipt_identity"]["path"],
-            created_at_utc=receipt["created_at_utc"],
-        )
-    except Exception as exc:
-        raise AuthorityError("BASELINE_ADMISSION_REPLAY_FAILED", str(exc)) from exc
-    if replayed != receipt:
-        raise AuthorityError("BASELINE_ADMISSION_REPLAY_FAILED", "semantic replay differs")
-    preregistration, _ = _path_preregistration(context)
-    expected_tools = {
-        "admission": _root_tool_identity(
-            context,
-            "baseline_admission_v1",
-            "tool.baseline_admission_v1.py",
-        ),
-        "builder": _root_tool_identity(
-            context,
-            "baseline_rebuild_v1",
-            "tool.baseline_rebuild_v1.py",
-        ),
-        "fixed_replay": _root_tool_identity(
-            context,
-            "cut_free_incumbent_replay_v1",
-            "tool.cut_free_incumbent_replay_v1.py",
-        ),
-    }
-    metadata = receipt["rebuilt_model"]["metadata"]
-    expected_inputs = {
-        role: context["root"]["strict_inputs"][role]
-        for role in (
-            "candidate_placements",
-            "canonical_rules",
-            "mandatory_instances",
-        )
-    }
-    expected_paths = {
-        "fixed_replay": preregistration["baseline_fixed_replay_path"],
-        "incumbent": preregistration["baseline_incumbent_path"],
-        "metadata": preregistration["baseline_rebuilt_metadata_path"],
-        "model": preregistration["baseline_rebuilt_model_path"],
-    }
-    if (
-        receipt["admission_tool_identity"] != expected_tools["admission"]
-        or metadata["builder_identity"] != expected_tools["builder"]
-        or metadata["input_identities"] != expected_inputs
-        or receipt["fixed_assignment_replay"]["replay_tool_identity"] != expected_tools["fixed_replay"]
-        or receipt["legacy_control"]["identity"] != context["root"]["strict_inputs"]["legacy_control_a002"]
-        or receipt["rebuilt_model"]["identity"]["path"] != expected_paths["model"]
-        or metadata["metadata_identity"]["path"] != expected_paths["metadata"]
-        or receipt["fixed_assignment_replay"]["incumbent_identity"]["path"] != expected_paths["incumbent"]
-        or receipt["fixed_assignment_replay"]["receipt_identity"]["path"] != expected_paths["fixed_replay"]
-    ):
-        raise AuthorityError(
-            "BASELINE_ADMISSION_ROOT_JOIN_FAILED",
-            "package tools/inputs or preregistered baseline paths differ",
-        )
-    return receipt
-
-
-def _read_organic_manifest(
-    context: Mapping[str, Any],
-    *,
-    continuation: Mapping[str, Any],
-) -> tuple[Mapping[str, Any], Snapshot]:
-    preregistration, _ = _path_preregistration(context)
-    snapshot = snapshot_regular(preregistration["manifest_path"])
-    runner = _runner_module(context)
-    try:
-        value = runner._strict_loads(  # noqa: SLF001 - sealed tool API replay
-            snapshot.data,
-            "organic manifest",
-        )
-    except Exception as exc:
-        raise AuthorityError("MANIFEST_INVALID", str(exc)) from exc
-    return (
-        validate_manifest(
-            value,
-            context=context,
-            continuation=continuation,
-        ),
-        snapshot,
-    )
-
-
-def create_suite_selection(
-    campaign_dir: Path | str,
-) -> dict[str, object]:
-    """Publish the non-launching suite selection after the exact manifest."""
-
-    context = _campaign_context(campaign_dir)
-    continuation, continuation_identity = _continuation(context)
-    manifest, manifest_snapshot = _read_organic_manifest(
-        context,
-        continuation=continuation,
-    )
-    inputs = _manifest_inputs(context)
-    preregistration = inputs["path_preregistration"]
-    output = _absolute(preregistration["suite_selection_path"])
-    terminal = _absolute(preregistration["terminal_classification_path"])
-    immediate_stop = _absolute(preregistration["immediate_stop_path"])
-    if terminal.exists() or terminal.is_symlink() or immediate_stop.exists() or immediate_stop.is_symlink():
-        raise AuthorityError(
-            "PROSPECTIVE_CHILD_ALREADY_CONSUMED",
-            "terminal or immediate-stop exists",
-        )
-    for path_value in preregistration["attempt_dirs"].values():
-        path = _absolute(path_value)
-        if path.exists() or path.is_symlink():
-            raise AuthorityError("PROSPECTIVE_CHILD_ALREADY_CONSUMED", str(path))
-    record: dict[str, object] = {
-        "arm_launch_authorized": False,
-        "baseline_admission_identity": inputs["baseline_admission_identity"],
-        "baseline_admission_pass": True,
-        "campaign_root_identity": context["root_identity"],
-        "continuation_identity": continuation_identity,
-        "experiment_contract": manifest["experiment_contract"],
-        "immediate_stop_policy": IMMEDIATE_STOP_POLICY,
-        "launch_plan": _launch_plan(context["root"]),
-        "manifest_identity": detached_identity(manifest_snapshot),
-        "next_required_gate": "PER_ARM_MANAGER_EPOCH_RESOURCE_AND_TERMINAL_PREFLIGHT",
-        "organic_manifest_validated": True,
-        "package_id": context["root"]["package"]["package_id"],
-        "path_preregistration_identity": inputs["path_preregistration_identity"],
-        "purpose": "AB16_SUITE_SELECTION_NO_ARM_LAUNCH",
-        "run_nonce": context["root"]["run_nonce"],
-        "schema_version": SUITE_SELECTION_SCHEMA,
-        "selection_id": "",
-        "solver_run_authorized": False,
-    }
-    record["selection_id"] = _digest_without(record, "selection_id")
-    validate_suite_selection(
+    record, identity = _load_record(attempt_dir / "attempt-input-set.json", "attempt input set")
+    checked = _exact_mapping(
         record,
-        context=context,
-        continuation_identity=continuation_identity,
-        manifest_identity=detached_identity(manifest_snapshot),
-        baseline_identity=inputs["baseline_admission_identity"],
-    )
-    identity = _write_exclusive(output, canonical_json(record))
-    return {"selection": record, "selection_identity": identity, "status": "PASS"}
-
-
-def validate_suite_selection(
-    value: object,
-    *,
-    context: Mapping[str, Any],
-    continuation_identity: Mapping[str, Any],
-    manifest_identity: Mapping[str, Any],
-    baseline_identity: Mapping[str, Any],
-) -> Mapping[str, Any]:
-    record = _exact_keys(
-        value,
         {
-            "arm_launch_authorized",
-            "baseline_admission_identity",
-            "baseline_admission_pass",
-            "campaign_root_identity",
-            "continuation_identity",
-            "experiment_contract",
-            "immediate_stop_policy",
-            "launch_plan",
-            "manifest_identity",
-            "next_required_gate",
-            "organic_manifest_validated",
-            "package_id",
-            "path_preregistration_identity",
-            "purpose",
-            "run_nonce",
+            "authorizations",
+            "input_set_sha256",
+            "preregistration_identity",
+            "preregistration_sha256",
+            "repository_head",
             "schema_version",
-            "selection_id",
-            "solver_run_authorized",
+            "scientific_input_set_sha256",
+            "source_strict_input_identities",
+            "source_tool_identities",
+            "strict_input_identities",
+            "tool_identities",
         },
-        "AB16 suite selection",
+        "attempt input set",
     )
-    root = context["root"]
-    inputs = _manifest_inputs(context)
-    manifest, _ = _read_organic_manifest(
-        context,
-        continuation=_record(
-            _replay_detached(continuation_identity, "suite continuation"),
-            "suite continuation",
-        ),
-    )
+    strict_inputs = _identity_map(checked["strict_input_identities"], "strict input snapshots", verify=True)
+    tools = _identity_map(checked["tool_identities"], "tool snapshots", verify=True)
+    source_inputs = _identity_map(checked["source_strict_input_identities"], "strict input sources", verify=False)
+    source_tools = _identity_map(checked["source_tool_identities"], "tool sources", verify=False)
+    if set(strict_inputs) != set(source_inputs) or set(tools) != set(source_tools):
+        raise AuthorityError("source and snapshot role sets differ")
+    for snapshots, sources in ((strict_inputs, source_inputs), (tools, source_tools)):
+        for role in snapshots:
+            if any(snapshots[role][field] != sources[role][field] for field in ("sha256", "size_bytes")):
+                raise AuthorityError(f"source/snapshot bytes differ for role {role}")
     if (
-        record["schema_version"] != SUITE_SELECTION_SCHEMA
-        or record["purpose"] != "AB16_SUITE_SELECTION_NO_ARM_LAUNCH"
-        or record["arm_launch_authorized"] is not False
-        or record["solver_run_authorized"] is not False
-        or record["baseline_admission_pass"] is not True
-        or record["organic_manifest_validated"] is not True
-        or record["campaign_root_identity"] != context["root_identity"]
-        or record["continuation_identity"] != continuation_identity
-        or record["manifest_identity"] != manifest_identity
-        or record["baseline_admission_identity"] != baseline_identity
-        or record["path_preregistration_identity"] != inputs["path_preregistration_identity"]
-        or record["experiment_contract"] != manifest["experiment_contract"]
-        or record["immediate_stop_policy"] != IMMEDIATE_STOP_POLICY
-        or record["launch_plan"] != _launch_plan(root)
-        or record["next_required_gate"] != "PER_ARM_MANAGER_EPOCH_RESOURCE_AND_TERMINAL_PREFLIGHT"
-        or record["package_id"] != root["package"]["package_id"]
-        or record["run_nonce"] != root["run_nonce"]
-        or record["selection_id"] != _digest_without(record, "selection_id")
+        checked["schema_version"] != INPUT_SET_SCHEMA
+        or checked["authorizations"] != RESEARCH_ONLY_AUTHORIZATIONS
+        or checked["preregistration_identity"] != preregistration_identity
+        or checked["preregistration_sha256"] != preregistration_identity["sha256"]
+        or type(checked["repository_head"]) is not str
+        or GIT_HEAD_RE.fullmatch(checked["repository_head"]) is None
+        or checked["scientific_input_set_sha256"]
+        != _projection_digest("noncert-cuts-ab16-scientific-input-set-v1", strict_inputs)
+        or checked["input_set_sha256"]
+        != contract.attempt_input_set_sha256(
+            preregistration_sha256=checked["preregistration_sha256"],
+            repository_head=checked["repository_head"],
+            strict_input_identities=strict_inputs,
+            tool_identities=tools,
+        )
     ):
-        raise AuthorityError("SELECTION_INVALID", "binding or claim boundary")
-    return record
+        raise AuthorityError("attempt input-set joins drifted")
+    return checked, identity
 
 
-def create_selection(
-    campaign_dir: Path | str,
-    *,
-    baseline_admission: Path | str | None = None,
-) -> dict[str, object]:
-    """Compatibility wrapper; baseline path is fixed by preregistration."""
-
-    if baseline_admission is not None:
-        context = _campaign_context(campaign_dir)
-        preregistration, _ = _path_preregistration(context)
-        if _absolute(baseline_admission) != _absolute(preregistration["baseline_admission_path"]):
-            raise AuthorityError(
-                "BASELINE_ADMISSION_INVALID",
-                "caller path differs from package-pinned preregistration",
-            )
-    return create_suite_selection(campaign_dir)
-
-
-def _read_suite_selection(
-    context: Mapping[str, Any],
-    *,
-    continuation_identity: Mapping[str, Any],
-    manifest_identity: Mapping[str, Any],
-) -> tuple[Mapping[str, Any], Snapshot]:
-    inputs = _manifest_inputs(context)
-    path = inputs["path_preregistration"]["suite_selection_path"]
-    snapshot = snapshot_regular(path)
-    value = _record(snapshot, "AB16 suite selection")
-    return (
-        validate_suite_selection(
-            value,
-            context=context,
-            continuation_identity=continuation_identity,
-            manifest_identity=manifest_identity,
-            baseline_identity=inputs["baseline_admission_identity"],
-        ),
-        snapshot,
-    )
-
-
-def _resource_modules(
-    context: Mapping[str, Any],
-) -> tuple[ModuleType, ModuleType]:
-    lifecycle_snapshot = _source_snapshot(
-        context["files"],
-        context["sources"],
-        "tool.organic_resource_lifecycle_v1.py",
-    )
-    verifier_snapshot = _source_snapshot(
-        context["files"],
-        context["sources"],
-        "tool.organic_resource_verifier_v1.py",
-    )
-    lifecycle = _load_module(
-        lifecycle_snapshot,
-        f"_ab16_resource_lifecycle_{lifecycle_snapshot.sha256[:16]}",
-    )
-    verifier = _load_module(
-        verifier_snapshot,
-        f"_ab16_resource_verifier_{verifier_snapshot.sha256[:16]}",
-    )
-    if (
-        getattr(lifecycle, "PRE_RUN_AUTHORITY_SCHEMA", None) != getattr(verifier, "PRE_RUN_SCHEMA", None)
-        or getattr(lifecycle, "RUNNER_SELECTION_SCHEMA", None) != ARM_SELECTION_SCHEMA
-    ):
-        raise AuthorityError(
-            "RESOURCE_CONTRACT_DRIFT",
-            "lifecycle/verifier/runner schemas differ",
-        )
-    return lifecycle, verifier
-
-
-def _arm_evidence_modules(
-    context: Mapping[str, Any],
-) -> tuple[ModuleType, ModuleType, ModuleType]:
-    replay_snapshot = _source_snapshot(
-        context["files"],
-        context["sources"],
-        "tool.organic_arm_replay_v1.py",
-    )
-    gate_snapshot = _source_snapshot(
-        context["files"],
-        context["sources"],
-        "tool.ab16_terminal_gate_v1.py",
-    )
-    contract_snapshot = _source_snapshot(
-        context["files"],
-        context["sources"],
-        "tool.ab16_contract_v1.py",
-    )
-    replay_tool = _load_module(
-        replay_snapshot,
-        f"_ab16_arm_replay_{replay_snapshot.sha256[:16]}",
-    )
-    gate_tool = _load_module(
-        gate_snapshot,
-        f"_ab16_terminal_gate_{gate_snapshot.sha256[:16]}",
-    )
-    contract_tool = _load_module(
-        contract_snapshot,
-        f"_ab16_contract_{contract_snapshot.sha256[:16]}",
-    )
-    if (
-        getattr(replay_tool, "RECEIPT_SCHEMA", None) != getattr(gate_tool, "ARITHMETIC_SCHEMA", None)
-        or getattr(replay_tool, "RECEIPT_PURPOSE", None) != getattr(gate_tool, "ARITHMETIC_PURPOSE", None)
-        or tuple(getattr(gate_tool, "ARM_SEQUENCE", ())) != tuple(getattr(contract_tool, "ARM_SEQUENCE", ()))
-    ):
-        raise AuthorityError(
-            "ARM_EVIDENCE_CONTRACT_DRIFT",
-            "arithmetic/gate/contract schemas or order differ",
-        )
-    return replay_tool, gate_tool, contract_tool
-
-
-def _resource_campaign_root_view(
-    context: Mapping[str, Any],
-) -> dict[str, object]:
-    """Project independently replayed campaign authority for the resource gate."""
-
-    root = context["root"]
-    strict_inputs: dict[str, dict[str, object]] = {}
-    for role, identity in root["strict_inputs"].items():
-        snapshot = _replay_detached(identity, f"resource root strict input {role}")
-        strict_inputs[role] = {
-            "mode": snapshot.mode,
-            **detached_identity(snapshot),
-        }
-    return {
-        **root,
-        "package": {
-            "manifest_identity": root["package"]["manifest_identity"],
-            "package_id": root["package"]["package_id"],
-            "seal_identity": root["package"]["seal_identity"],
-        },
-        "repository_git_tool_identity": _root_tool_identity_with_mode(
-            context,
-            "git",
-            "system.git.bin",
-        ),
-        "repository_root": _validate_gate_approvals(context)["repository_root"],
-        "strict_input_identities": strict_inputs,
-    }
-
-
-def _expected_pre_run_tools(
-    context: Mapping[str, Any],
-) -> dict[str, dict[str, object]]:
-    tool_roles = {
-        "busctl": "busctl",
-        "manager_attestor": "manager_attestor_v4",
-        "organic_arm_runner": "organic_arm_runner_v1",
-        "organic_resource_lifecycle": "organic_resource_lifecycle_v1",
-        "organic_resource_verifier": "organic_resource_verifier_v1",
-        "organic_unit_orchestrator": "organic_unit_orchestrator_v1",
-        "python3_13": "python3_13",
-        "sudo": "sudo",
-        "systemctl": "systemctl",
-        "systemd_run": "systemd_run",
-    }
-    result: dict[str, dict[str, object]] = {}
-    for output_role, root_role in tool_roles.items():
-        identity = context["root"]["authority_tools"][root_role]
-        snapshot = _replay_detached(identity, f"pre-run tool {root_role}")
-        result[output_role] = {
-            "mode": snapshot.mode,
-            **detached_identity(snapshot),
-        }
-    epoch_identity = context["root"]["authority_tools"]["campaign_authority_v4"]
-    epoch_snapshot = _replay_detached(
-        epoch_identity,
-        "pre-run manager epoch authority",
-    )
-    result["manager_epoch_authority"] = {
-        "mode": epoch_snapshot.mode,
-        **detached_identity(epoch_snapshot),
-    }
-    return result
-
-
-def _validate_preselection_epoch(
-    lifecycle: ModuleType,
-    pre_run: Mapping[str, Any],
-    *,
-    root_epoch: Mapping[str, Any],
-) -> None:
-    transcript_snapshot = _replay_identity_with_optional_mode(
-        pre_run["preselection_transcript_identity"],
-        "preselection manager epoch capture transcript",
-    )
-    transcript_identity = {
-        "mode": transcript_snapshot.mode,
-        **detached_identity(transcript_snapshot),
-    }
-    snapshot = _replay_identity_with_optional_mode(
-        pre_run["preselection_epoch_identity"],
-        "preselection manager epoch observation",
-    )
-    try:
-        observation = lifecycle.strict_loads(
-            snapshot.data,
-            "preselection manager epoch observation",
-        )
-        rebuilt = lifecycle.build_epoch_observation(
-            phase="preselection",
-            slot=pre_run["slot"],
-            observed_epoch=observation["observed_epoch"],
-            observed_at_monotonic_ns=observation["observed_at_monotonic_ns"],
-            capture_transcript_identity=observation["capture_transcript_identity"],
-        )
-    except Exception as exc:
-        raise AuthorityError("PRE_RUN_EPOCH_INVALID", str(exc)) from exc
-    if (
-        observation != rebuilt
-        or observation["observed_epoch"] != root_epoch
-        or observation["capture_transcript_identity"] != transcript_identity
-    ):
-        raise AuthorityError(
-            "PRE_RUN_EPOCH_INVALID",
-            "preselection observation/transcript differs from the campaign manager/boot epoch",
-        )
-
-
-def _capture_current_manager_epoch(
-    context: Mapping[str, Any],
-) -> Mapping[str, Any]:
-    """Capture the live manager epoch with only package-pinned tools."""
-
-    tools = context["root"]["authority_tools"]
-    authority = context["campaign_module"]
-    try:
-        captured = authority.capture_manager_epoch_with_transcript(
-            attestor_path=tools["manager_attestor_v4"]["path"],
-            busctl_path=tools["busctl"]["path"],
-            python_path=tools["attestor_python"]["path"],
-            sudo_path=tools["sudo"]["path"],
-        )
-        if type(captured) is not dict or set(captured) != {
-            "manager_epoch",
-            "transcript",
-        }:
-            raise ValueError("live capture returned the wrong exact schema")
-        authority.validate_manager_epoch(captured["manager_epoch"])
-        authority.validate_manager_epoch_capture_transcript(
-            captured["transcript"],
-            expected_epoch=captured["manager_epoch"],
-        )
-    except Exception as exc:
-        raise AuthorityError("PRE_RUN_EPOCH_CAPTURE_FAILED", str(exc)) from exc
-    return captured
-
-
-def _launch_environment_record(lifecycle: ModuleType) -> dict[str, object]:
-    """Freeze the exact ambient-free environment for one future child."""
-
-    variables = {
-        "DBUS_SESSION_BUS_ADDRESS": os.environ.get(
-            "DBUS_SESSION_BUS_ADDRESS",
-            "",
-        ),
-        "HOME": os.environ.get("HOME", ""),
-        "LANG": "C.UTF-8",
-        "LC_ALL": "C.UTF-8",
-        "PATH": os.environ.get("PATH", ""),
-        "PYTHONHASHSEED": "0",
-        "TZ": "UTC",
-        "XDG_RUNTIME_DIR": os.environ.get("XDG_RUNTIME_DIR", ""),
-    }
-    record: dict[str, object] = {
-        "clear_ambient": True,
-        "schema_version": lifecycle.LAUNCH_ENVIRONMENT_SCHEMA,
-        "variables": variables,
-    }
-    try:
-        lifecycle.validate_launch_environment(record)
-    except Exception as exc:
-        raise AuthorityError(
-            "LAUNCH_ENVIRONMENT_INVALID",
-            str(exc),
-        ) from exc
-    return record
-
-
-def _build_pre_run_candidate_unprotected(
-    campaign_dir: Path | str,
+def _validate_open(
+    attempt_dir: Path,
     *,
     slot: str,
-) -> dict[str, object]:
-    """Publish one non-launching, package-pinned pre-run authority candidate."""
-
-    context = _campaign_context(campaign_dir)
-    continuation, continuation_identity = _continuation(context)
-    manifest, manifest_snapshot = _read_organic_manifest(
-        context,
-        continuation=continuation,
-    )
-    suite, suite_snapshot = _read_suite_selection(
-        context,
-        continuation_identity=continuation_identity,
-        manifest_identity=detached_identity(manifest_snapshot),
-    )
-    _assert_arm_selection_order(context, slot=slot)
-    inputs = _manifest_inputs(context)
-    preregistration = inputs["path_preregistration"]
-    candidate_paths = {
-        "candidate": Path(preregistration["pre_run_candidate_paths"][slot]),
-        "environment": Path(preregistration["launch_environment_paths"][slot]),
-        "epoch": Path(preregistration["preselection_epoch_paths"][slot]),
-        "transcript": Path(preregistration["preselection_transcript_paths"][slot]),
-    }
-    if any(path.exists() or path.is_symlink() for path in candidate_paths.values()):
-        raise AuthorityError(
-            "PRE_RUN_CANDIDATE_ALREADY_EXISTS",
-            slot,
-        )
-    captured = _capture_current_manager_epoch(context)
-    if captured["manager_epoch"] != context["root"]["manager_epoch"]:
-        raise AuthorityError(
-            "PRE_RUN_EPOCH_DRIFT",
-            "live manager/boot epoch differs before candidate publication",
-        )
-    if _observe_repository_head(context) != context["root"]["repository_head"]:
-        raise AuthorityError("HEAD_REPLAY_FAILED", "repository HEAD drifted")
-
-    lifecycle, verifier = _resource_modules(context)
-    environment_record = _launch_environment_record(lifecycle)
-    transcript_identity = _write_exclusive(
-        candidate_paths["transcript"],
-        lifecycle.canonical_json_bytes(captured["transcript"]),
-    )
-    transcript_snapshot = snapshot_regular(candidate_paths["transcript"])
-    transcript_identity_with_mode = {
-        "mode": transcript_snapshot.mode,
-        **transcript_identity,
-    }
-    epoch_record = lifecycle.build_epoch_observation(
-        phase="preselection",
-        slot=slot,
-        observed_epoch=captured["manager_epoch"],
-        observed_at_monotonic_ns=time.monotonic_ns(),
-        capture_transcript_identity=transcript_identity_with_mode,
-    )
-    epoch_identity = _write_exclusive(
-        candidate_paths["epoch"],
-        lifecycle.canonical_json_bytes(epoch_record),
-    )
-    environment_identity = _write_exclusive(
-        candidate_paths["environment"],
-        lifecycle.canonical_json_bytes(environment_record),
-    )
-    environment_snapshot = snapshot_regular(candidate_paths["environment"])
-    environment_identity_with_mode = {
-        "mode": environment_snapshot.mode,
-        **environment_identity,
-    }
-
-    plan = next(item for item in _launch_plan(context["root"]) if item["slot"] == slot)
-    configuration = plan["configuration"]
-    arm = plan["arm"]
-    tools = _expected_pre_run_tools(context)
-    strict_inputs = {
-        role: {
-            "mode": snapshot.mode,
-            **detached_identity(snapshot),
-        }
-        for role, identity in context["root"]["strict_inputs"].items()
-        for snapshot in [
-            _replay_detached(
-                identity,
-                f"pre-run strict input {role}",
-            )
-        ]
-    }
-    attempt = Path(plan["attempt_dir"])
-    output_names = {
-        "attempt_result": "result.json",
-        "cleanup": "cleanup.json",
-        "detached_replay": "detached-replay.json",
-        "inner": "inner-lifecycle.json",
-        "preterminal": "preterminal-resource.json",
-        "release": "release-token.json",
-        "resource_verification": "resource-verification.json",
-        "terminal": "terminal-envelope.json",
-    }
-    phases = (
-        "launch",
-        "preterminal",
-        "release",
-        "terminal",
-        "cleanup",
-        "detached-replay",
-    )
-    expected_package = {
-        "manifest_identity": context["root"]["package"]["manifest_identity"],
-        "package_id": context["root"]["package"]["package_id"],
-        "seal_identity": context["root"]["package"]["seal_identity"],
-    }
-    expected_payload_status = {
-        "exit_code": 0,
-        "expectation": "SUCCESS",
-        "signal": 0,
-    }
-    record: dict[str, object] = {
-        "arm": arm,
-        "arm_binding_identity": manifest["arm_binding_identities"][slot],
-        "arm_launch_authorized": False,
-        "arm_selection_write_authorized": True,
-        "attempt_dir": str(attempt),
-        "authority_chain": manifest["authority_chain"],
-        "baseline_admission_identity": manifest["baseline_admission_identity"],
-        "baseline_incumbent_sha256": manifest["baseline_incumbent_identity"]["sha256"],
-        "campaign_id": context["root"]["campaign_id"],
-        "campaign_root_identity": context["root_identity"],
-        "common_prestate_identity": manifest["common_prestate_identity"],
-        "configuration": configuration,
-        "continuation_identity": continuation_identity,
-        "epoch_observation_paths": {phase: str(attempt / f"manager-epoch-{phase}.json") for phase in phases},
-        "epoch_transcript_paths": {phase: str(attempt / f"manager-transcript-{phase}.json") for phase in phases},
-        "execution_class": "FORMAL_AB16",
-        "expected_payload_status": expected_payload_status,
-        "launch": {
-            "cwd": manifest["repository_root"],
-            "environment_identity": environment_identity_with_mode,
-            "payload_argv": [
-                tools["python3_13"]["path"],
-                "-I",
-                tools["organic_arm_runner"]["path"],
-                "--selection",
-                preregistration["arm_selection_paths"][slot],
-            ],
-            "python3_13_path": tools["python3_13"]["path"],
-            "supervisor_argv": [
-                tools["python3_13"]["path"],
-                "-I",
-                tools["organic_resource_lifecycle"]["path"],
-                "supervise",
-                "--pre-run",
-                preregistration["pre_run_authority_paths"][slot],
-                "--selection",
-                preregistration["arm_selection_paths"][slot],
-            ],
-            "systemctl_path": tools["systemctl"]["path"],
-            "systemd_run_path": tools["systemd_run"]["path"],
-        },
-        "manager_epoch": context["root"]["manager_epoch"],
-        "order": plan["order"],
-        "output_paths": {role: str(attempt / name) for role, name in output_names.items()},
-        "package": expected_package,
-        "pre_run_authority_path": preregistration["pre_run_authority_paths"][slot],
-        "prelaunch_allowlist": [
-            "pre-run-authority.json",
-            "selection.json",
-        ],
-        "preflight_results": {
-            "epoch_identity_pass": True,
-            "head_identity_pass": True,
-            "package_replay_pass": True,
-            "path_preregistration_pass": True,
-            "resource_contract_pass": True,
-            "slot_order_pass": True,
-            "strict_inputs_replay_pass": True,
-            "tool_identities_replay_pass": True,
-        },
-        "preselection_epoch_identity": epoch_identity,
-        "preselection_transcript_identity": (transcript_identity_with_mode),
-        "prospective_manifest_identity": detached_identity(manifest_snapshot),
-        "purpose": lifecycle.PRE_RUN_PURPOSE,
-        "repository_git_tool_identity": manifest["repository_git_tool_identity"],
-        "repository_head": manifest["repository_head"],
-        "repository_root": manifest["repository_root"],
-        "resource_contract": lifecycle.RESOURCE_CONTRACTS["FORMAL_AB16"],
-        "run_nonce": manifest["run_nonce"],
-        "runner_selection_path": preregistration["arm_selection_paths"][slot],
-        "schema_version": lifecycle.PRE_RUN_AUTHORITY_SCHEMA,
-        "seed": manifest["seed"],
-        "slot": slot,
-        "solver_run_authorized": False,
-        "status": "PASS",
-        "strict_input_identities": strict_inputs,
-        "suite_selection_identity": detached_identity(suite_snapshot),
-        "tool_identities": tools,
-        "unit_name": plan["unit_name"],
-        "verdict": "AB16_ORGANIC_PRE_RUN_AUTHORITY_PASS",
-        "workers": 1,
-    }
-    try:
-        verifier.validate_pre_run_authority(
-            record,
-            campaign_root=_resource_campaign_root_view(context),
-            manifest=manifest,
-            suite_selection=suite,
-            expected_slot=slot,
-        )
-    except Exception as exc:
-        raise AuthorityError(
-            "PRE_RUN_AUTHORITY_INVALID",
-            str(exc),
-        ) from exc
-    candidate_identity = _write_exclusive(
-        candidate_paths["candidate"],
-        lifecycle.canonical_json_bytes(record),
-    )
-    return {
-        "candidate": record,
-        "candidate_identity": candidate_identity,
-        "environment_identity": environment_identity_with_mode,
-        "preselection_epoch_identity": epoch_identity,
-        "preselection_transcript_identity": (transcript_identity_with_mode),
-        "status": "PASS",
-    }
-
-
-def _optional_existing_identity(path: Path) -> dict[str, object] | None:
-    """Return one same-FD identity without following a hostile leaf."""
-
-    try:
-        return detached_identity(snapshot_regular(path))
-    except AuthorityError:
-        return None
-
-
-def _publish_preselection_stop(
-    campaign_dir: Path | str,
-    *,
-    slot: str,
-    failure: BaseException,
-) -> dict[str, object] | None:
-    """Permanently stop a campaign after a non-launching preselection failure."""
-
-    context = _campaign_context(campaign_dir)
-    preregistration, _ = _path_preregistration(context)
-    stop_path = Path(preregistration["immediate_stop_path"])
-    if stop_path.exists() or stop_path.is_symlink():
-        return None
-    partial_paths = {
-        "candidate": Path(preregistration["pre_run_candidate_paths"][slot]),
-        "environment": Path(preregistration["launch_environment_paths"][slot]),
-        "epoch": Path(preregistration["preselection_epoch_paths"][slot]),
-        "transcript": Path(preregistration["preselection_transcript_paths"][slot]),
-    }
-    failure_code = failure.code if isinstance(failure, AuthorityError) else "PRESELECTION_UNEXPECTED_FAILURE"
-    stop = {
-        "arm_slot_consumed": False,
-        "campaign_id": context["root"]["campaign_id"],
-        "code": "AB16_PRESELECTION_FAIL_CLOSED",
-        "failed_slot": slot,
-        "failure_code": failure_code,
-        "partial_output_identities": {role: _optional_existing_identity(path) for role, path in partial_paths.items()},
-        "phase": "PRESELECTION",
-        "purpose": "AB16_IMMEDIATE_STOP",
-        "run_nonce": context["root"]["run_nonce"],
-        "schema_version": CAMPAIGN_STOP_SCHEMA,
-        "selection_created": False,
-    }
-    return _write_exclusive(stop_path, canonical_json(stop))
-
-
-def build_pre_run_candidate(
-    campaign_dir: Path | str,
-    *,
-    slot: str,
-) -> dict[str, object]:
-    """Publish one candidate or immutably stop before any arm selection."""
-
-    try:
-        return _build_pre_run_candidate_unprotected(
-            campaign_dir,
-            slot=slot,
-        )
-    except BaseException as exc:
-        try:
-            _publish_preselection_stop(
-                campaign_dir,
-                slot=slot,
-                failure=exc,
-            )
-        except BaseException as stop_exc:
-            raise AuthorityError(
-                "PRESELECTION_STOP_PUBLICATION_FAILED",
-                f"{type(exc).__name__}: {exc}; stop: {type(stop_exc).__name__}: {stop_exc}",
-            ) from stop_exc
-        raise
-
-
-def _validate_pre_run_candidate(
-    context: Mapping[str, Any],
-    *,
-    slot: str,
-    manifest: Mapping[str, Any],
-    manifest_identity: Mapping[str, Any],
-    suite_selection: Mapping[str, Any],
-    suite_selection_identity: Mapping[str, Any],
-    continuation_identity: Mapping[str, Any],
-) -> tuple[Mapping[str, Any], Snapshot]:
-    inputs = _manifest_inputs(context)
-    preregistration = inputs["path_preregistration"]
-    candidate_snapshot = snapshot_regular(preregistration["pre_run_candidate_paths"][slot])
-    lifecycle, verifier = _resource_modules(context)
-    try:
-        candidate = verifier.strict_loads(
-            candidate_snapshot.data,
-            "AB16 pre-run authority candidate",
-        )
-        candidate = verifier.validate_pre_run_authority(
-            candidate,
-            campaign_root=_resource_campaign_root_view(context),
-            manifest=manifest,
-            suite_selection=suite_selection,
-            expected_slot=slot,
-        )
-    except Exception as exc:
-        raise AuthorityError("PRE_RUN_AUTHORITY_INVALID", str(exc)) from exc
-    plan = next(item for item in _launch_plan(context["root"]) if item["slot"] == slot)
-    expected_package = {
-        "manifest_identity": context["root"]["package"]["manifest_identity"],
-        "package_id": context["root"]["package"]["package_id"],
-        "seal_identity": context["root"]["package"]["seal_identity"],
-    }
-    if (
-        candidate["campaign_root_identity"] != context["root_identity"]
-        or candidate["continuation_identity"] != continuation_identity
-        or candidate["prospective_manifest_identity"] != manifest_identity
-        or candidate["suite_selection_identity"] != suite_selection_identity
-        or candidate["authority_chain"] != manifest["authority_chain"]
-        or candidate["package"] != expected_package
-        or candidate["manager_epoch"] != context["root"]["manager_epoch"]
-        or candidate["repository_head"] != context["root"]["repository_head"]
-        or candidate["baseline_admission_identity"] != manifest["baseline_admission_identity"]
-        or candidate["baseline_incumbent_sha256"] != manifest["baseline_incumbent_identity"]["sha256"]
-        or candidate["common_prestate_identity"] != manifest["common_prestate_identity"]
-        or candidate["arm_binding_identity"] != manifest["arm_binding_identities"][slot]
-        or candidate["seed"] != manifest["seed"]
-        or candidate["workers"] != manifest["workers"]
-        or candidate["attempt_dir"] != plan["attempt_dir"]
-        or candidate["unit_name"] != plan["unit_name"]
-        or candidate["pre_run_authority_path"] != preregistration["pre_run_authority_paths"][slot]
-        or candidate["runner_selection_path"] != preregistration["arm_selection_paths"][slot]
-        or candidate["prelaunch_allowlist"] != ["pre-run-authority.json", "selection.json"]
-    ):
-        raise AuthorityError(
-            "PRE_RUN_AUTHORITY_INVALID",
-            "campaign/manifest/path binding",
-        )
-    strict = {
-        role: _normalized_identity(identity, f"pre-run strict input {role}")
-        for role, identity in candidate["strict_input_identities"].items()
-    }
-    if strict != context["root"]["strict_inputs"]:
-        raise AuthorityError(
-            "PRE_RUN_AUTHORITY_INVALID",
-            "strict input identity map differs from campaign root",
-        )
-    tools = {
-        role: _normalized_identity(identity, f"pre-run tool {role}")
-        for role, identity in candidate["tool_identities"].items()
-    }
-    expected_tools = {
-        role: {key: value for key, value in identity.items() if key in {"path", "sha256", "size_bytes"}}
-        for role, identity in _expected_pre_run_tools(context).items()
-    }
-    if tools != expected_tools:
-        raise AuthorityError(
-            "PRE_RUN_AUTHORITY_INVALID",
-            "tool identities differ from campaign package/root",
-        )
-    runner_resource = dict(manifest["experiment_contract"]["resource_contract"])
-    runner_resource["runtime_max_seconds"] = runner_resource.pop("runtime_max_sec")
-    if (
-        candidate["resource_contract"] != lifecycle.RESOURCE_CONTRACTS["FORMAL_AB16"]
-        or candidate["resource_contract"] != runner_resource
-    ):
-        raise AuthorityError(
-            "PRE_RUN_AUTHORITY_INVALID",
-            "35/39/16 GiB or 3600-second resource contract drift",
-        )
-    _validate_preselection_epoch(
-        lifecycle,
-        candidate,
-        root_epoch=context["root"]["manager_epoch"],
-    )
-    if _observe_repository_head(context) != context["root"]["repository_head"]:
-        raise AuthorityError("HEAD_REPLAY_FAILED", "repository HEAD drifted")
-    return candidate, candidate_snapshot
-
-
-def _load_consumption(
-    context: Mapping[str, Any],
-    *,
-    slot: str,
-    required_credible: bool,
-) -> Mapping[str, Any]:
-    preregistration, _ = _path_preregistration(context)
-    path = Path(preregistration["attempt_dirs"][slot]) / "consumption.json"
-    snapshot = snapshot_regular(path)
-    record = _exact_keys(
-        _record(snapshot, f"arm consumption {slot}"),
+    ordinal: int,
+    preregistration_identity: Mapping[str, Any],
+) -> tuple[Mapping[str, Any], Mapping[str, Any], dict[str, object]]:
+    inputs, input_identity = _validate_input_set(attempt_dir, preregistration_identity)
+    record, identity = _load_record(attempt_dir / "attempt-open.json", "attempt-open receipt")
+    checked = _exact_mapping(
+        record,
         {
-            "arm_gate_identity",
-            "arm_result_identity",
-            "arithmetic_receipt_identity",
-            "campaign_id",
-            "consumption_id",
-            "failure_code",
-            "immediate_stop_required",
-            "next_arm_authorized",
-            "outcome",
-            "purpose",
-            "resource_preterminal_identity",
-            "resource_replay_identity",
-            "resource_terminal_identity",
-            "run_nonce",
+            "attempt_dir",
+            "attempt_ordinal",
+            "authorizations",
+            "input_set_identity",
+            "input_set_sha256",
+            "preregistration_sha256",
+            "repository_head",
             "schema_version",
-            "selection_identity",
             "slot",
-            "suite_terminal_identity",
+            "status",
         },
-        f"arm consumption {slot}",
-    )
-    if record["selection_identity"] is not None:
-        _replay_detached(record["selection_identity"], f"arm selection {slot}")
-    evidence_fields = (
-        "arm_gate_identity",
-        "arm_result_identity",
-        "arithmetic_receipt_identity",
-        "resource_preterminal_identity",
-        "resource_replay_identity",
-        "resource_terminal_identity",
-        "suite_terminal_identity",
-    )
-    for field in evidence_fields:
-        identity = record[field]
-        if identity is not None:
-            _replay_detached(identity, f"arm consumption {field} {slot}")
-    if (
-        record["schema_version"] != ARM_CONSUMPTION_SCHEMA
-        or record["purpose"] != "AB16_ARM_CONSUMPTION"
-        or record["campaign_id"] != context["root"]["campaign_id"]
-        or record["run_nonce"] != context["root"]["run_nonce"]
-        or record["slot"] != slot
-        or record["outcome"] not in {"CREDIBLE_TERMINAL", "CREDIBILITY_INCOMPLETE"}
-        or type(record["failure_code"]) is not str
-        or record["consumption_id"] != _digest_without(record, "consumption_id")
-    ):
-        raise AuthorityError("ARM_CONSUMPTION_INVALID", slot)
-    credible = record["outcome"] == "CREDIBLE_TERMINAL"
-    final_slot = slot == _launch_plan(context["root"])[-1]["slot"]
-    required_evidence_present = all(
-        record[field] is not None for field in evidence_fields if field != "suite_terminal_identity"
+        "attempt-open receipt",
     )
     if (
-        record["next_arm_authorized"] is not (credible and not final_slot)
-        or record["immediate_stop_required"] is credible
-        or (credible and record["failure_code"] != "")
-        or (not credible and not record["failure_code"])
-        or (credible and record["selection_identity"] is None)
-        or (credible and not required_evidence_present)
-        or (credible and (record["suite_terminal_identity"] is not None) is not final_slot)
-        or (required_credible and not credible)
+        checked["schema_version"] != ATTEMPT_OPEN_SCHEMA
+        or checked["status"] != "OPEN"
+        or checked["slot"] != slot
+        or checked["attempt_ordinal"] != ordinal
+        or checked["attempt_dir"] != str(attempt_dir)
+        or checked["authorizations"] != RESEARCH_ONLY_AUTHORIZATIONS
+        or checked["input_set_identity"] != input_identity
+        or checked["input_set_sha256"] != inputs["input_set_sha256"]
+        or checked["preregistration_sha256"] != preregistration_identity["sha256"]
+        or checked["repository_head"] != inputs["repository_head"]
     ):
-        raise AuthorityError("ARM_CONSUMPTION_INVALID", f"{slot} outcome")
-    if credible:
-        replayed_gate, replayed_suite = _replay_consumed_arm(
-            context,
-            slot=slot,
-        )
-        if record["arm_gate_identity"] != replayed_gate or record["suite_terminal_identity"] != replayed_suite:
-            raise AuthorityError(
-                "ARM_CONSUMPTION_INVALID",
-                f"{slot} gate replay identity",
-            )
-    return record
+        raise AuthorityError("attempt-open receipt drifted")
+    return checked, inputs, identity
 
 
-def _assert_arm_selection_order(
-    context: Mapping[str, Any],
-    *,
-    slot: str,
-) -> int:
-    preregistration, _ = _path_preregistration(context)
-    plan = _launch_plan(context["root"])
-    slots = [item["slot"] for item in plan]
-    if slot not in slots:
-        raise AuthorityError("ARM_SLOT_INVALID", slot)
-    stop = Path(preregistration["immediate_stop_path"])
-    if stop.exists() or stop.is_symlink():
-        raise AuthorityError("CAMPAIGN_IMMEDIATE_STOPPED", str(stop))
-    index = slots.index(slot)
-    for prior in slots[:index]:
-        _load_consumption(context, slot=prior, required_credible=True)
-    for pending in slots[index:]:
-        attempt = Path(preregistration["attempt_dirs"][pending])
-        if attempt.exists() or attempt.is_symlink():
-            raise AuthorityError(
-                "ARM_ORDER_OR_NO_OVERWRITE_VIOLATION",
-                f"{pending} attempt already exists",
-            )
-    return index + 1
-
-
-def create_arm_selection(
-    campaign_dir: Path | str,
-    *,
-    slot: str,
-    selection_nonce: str,
-) -> dict[str, object]:
-    """Copy a validated pre-run receipt and publish one exact runner selection."""
-
-    context = _campaign_context(campaign_dir)
-    continuation, continuation_identity = _continuation(context)
-    manifest, manifest_snapshot = _read_organic_manifest(
-        context,
-        continuation=continuation,
+def _optional_selection(attempt_dir: Path) -> tuple[Mapping[str, Any] | None, dict[str, object] | None]:
+    path = attempt_dir / "selection-binding.json"
+    if not path.exists() and not path.is_symlink():
+        return None, None
+    record, identity = _load_record(path, "selection binding")
+    checked = _exact_mapping(
+        record,
+        {"authorizations", "schema_version", "selection_identity", "status"},
+        "selection binding",
     )
-    suite, suite_snapshot = _read_suite_selection(
-        context,
-        continuation_identity=continuation_identity,
-        manifest_identity=detached_identity(manifest_snapshot),
-    )
-    ordinal = _assert_arm_selection_order(context, slot=slot)
-    pre_run, candidate_snapshot = _validate_pre_run_candidate(
-        context,
-        slot=slot,
-        manifest=manifest,
-        manifest_identity=detached_identity(manifest_snapshot),
-        suite_selection=suite,
-        suite_selection_identity=detached_identity(suite_snapshot),
-        continuation_identity=continuation_identity,
-    )
-    preregistration, _ = _path_preregistration(context)
-    attempt = _absolute(preregistration["attempt_dirs"][slot])
-    _mkdir_exclusive(attempt)
-    pre_run_identity: dict[str, object] | None = None
-    try:
-        pre_run_identity = _write_exclusive(
-            preregistration["pre_run_authority_paths"][slot],
-            candidate_snapshot.data,
-        )
-        runner = _runner_module(context)
-        configuration = pre_run["configuration"]
-        arm = pre_run["arm"]
-        enabled = [] if arm == "control" else list(runner.CONFIGURATION_FAMILIES[configuration])
-        record = {
-            "arm": arm,
-            "arm_binding_identity": manifest["arm_binding_identities"][slot],
-            "attempt_dir": str(attempt),
-            "authority_chain": manifest["authority_chain"],
-            "authorizations": {
-                "global_claim_authorized": False,
-                "mathematical_claim_authorized": False,
-                "organic_arm_launch_authorized": True,
-                "production_certified_authorized": False,
-                "solver_run_authorized": True,
-            },
-            "baseline_admission_identity": manifest["baseline_admission_identity"],
-            "baseline_incumbent_sha256": manifest["baseline_incumbent_identity"]["sha256"],
-            "campaign_id": manifest["campaign_id"],
-            "common_prestate_identity": manifest["common_prestate_identity"],
-            "configuration": configuration,
-            "enabled_families": enabled,
-            "execution_class": pre_run["execution_class"],
-            "expected_payload_status": pre_run["expected_payload_status"],
-            "fresh_process_required": True,
-            "manifest_identity": detached_identity(manifest_snapshot),
-            "order": pre_run["order"],
-            "pre_run_authority_identity": pre_run_identity,
-            "purpose": runner.SELECTION_PURPOSE,
-            "repository_git_tool_identity": manifest["repository_git_tool_identity"],
-            "repository_head": manifest["repository_head"],
-            "repository_root": manifest["repository_root"],
-            "run_nonce": manifest["run_nonce"],
-            "schema_version": runner.SELECTION_SCHEMA,
-            "seed": manifest["seed"],
-            "selection_nonce": selection_nonce,
-            "slot": slot,
-            "unit_name": manifest["unit_names"][slot],
-            "workers": manifest["workers"],
-        }
-        try:
-            runner.validate_selection(record, manifest=manifest)
-            lifecycle, _ = _resource_modules(context)
-            lifecycle.validate_runner_selection(
-                record,
-                pre_run_authority=pre_run,
-                pre_run_authority_identity=pre_run_identity,
-            )
-        except Exception as exc:
-            raise AuthorityError("ARM_SELECTION_INVALID", str(exc)) from exc
-        selection_identity = _write_exclusive(
-            preregistration["arm_selection_paths"][slot],
-            runner.canonical_json(record),
-        )
-    except Exception as exc:
-        stop_record = {
-            "campaign_id": context["root"]["campaign_id"],
-            "code": "ARM_SELECTION_PUBLICATION_FAILED",
-            "detail": str(exc),
-            "failed_slot": slot,
-            "package_id": context["root"]["package"]["package_id"],
-            "purpose": "AB16_IMMEDIATE_STOP",
-            "run_nonce": context["root"]["run_nonce"],
-            "schema_version": CAMPAIGN_STOP_SCHEMA,
-        }
-        stop_path = Path(preregistration["immediate_stop_path"])
-        if not stop_path.exists() and not stop_path.is_symlink():
-            _write_exclusive(stop_path, canonical_json(stop_record))
-        raise
-    return {
-        "arm_selection": record,
-        "arm_selection_identity": selection_identity,
-        "launch_ordinal": ordinal,
-        "pre_run_authority_identity": pre_run_identity,
-        "status": "PASS",
-    }
+    _verify_identity(checked["selection_identity"], "bound selection")
+    if (
+        checked["schema_version"] != SELECTION_BINDING_SCHEMA
+        or checked["status"] != "BOUND"
+        or checked["authorizations"] != RESEARCH_ONLY_AUTHORIZATIONS
+    ):
+        raise AuthorityError("selection binding drifted")
+    return checked, identity
 
 
-def _optional_identity_at(path: Path | str) -> dict[str, object] | None:
-    try:
-        return detached_identity(snapshot_regular(path))
-    except AuthorityError:
-        return None
-
-
-def _consumption_evidence_identities(
-    preregistration: Mapping[str, Any],
+def _optional_envelope(
+    attempt_dir: Path,
     *,
     slot: str,
-    pre_run: Mapping[str, Any] | None,
-) -> dict[str, dict[str, object] | None]:
-    attempt = Path(preregistration["attempt_dirs"][slot])
-    output_paths = pre_run.get("output_paths", {}) if pre_run is not None else {}
-    paths = {
-        "arm_gate_identity": Path(preregistration["arm_gate_paths"][slot]),
-        "arm_result_identity": Path(output_paths.get("attempt_result", attempt / "result.json")),
-        "arithmetic_receipt_identity": Path(preregistration["arithmetic_replay_paths"][slot]),
-        "resource_preterminal_identity": Path(
-            output_paths.get(
-                "resource_verification",
-                attempt / "resource-verification.json",
-            )
-        ),
-        "resource_replay_identity": Path(preregistration["resource_replay_paths"][slot]),
-        "resource_terminal_identity": Path(
-            output_paths.get(
-                "detached_replay",
-                attempt / "detached-replay.json",
-            )
-        ),
-    }
-    return {field: _optional_identity_at(path) for field, path in paths.items()}
-
-
-def _write_arm_consumption(
-    context: Mapping[str, Any],
-    *,
-    preregistration: Mapping[str, Any],
-    slot: str,
-    outcome: str,
+    ordinal: int,
+    preregistration_identity: Mapping[str, Any],
+    input_record: Mapping[str, Any],
+    input_identity: Mapping[str, Any],
     selection_identity: Mapping[str, Any] | None,
-    evidence: Mapping[str, Mapping[str, Any] | None],
-    failure_code: str,
-    suite_terminal_identity: Mapping[str, Any] | None,
-) -> dict[str, object]:
-    credible = outcome == "CREDIBLE_TERMINAL"
-    slots = [item["slot"] for item in _launch_plan(context["root"])]
-    final_slot = slot == slots[-1]
-    record: dict[str, object] = {
-        "arm_gate_identity": (None if evidence["arm_gate_identity"] is None else dict(evidence["arm_gate_identity"])),
-        "arm_result_identity": (
-            None if evidence["arm_result_identity"] is None else dict(evidence["arm_result_identity"])
-        ),
-        "arithmetic_receipt_identity": (
-            None if evidence["arithmetic_receipt_identity"] is None else dict(evidence["arithmetic_receipt_identity"])
-        ),
-        "campaign_id": context["root"]["campaign_id"],
-        "consumption_id": "",
-        "failure_code": failure_code,
-        "immediate_stop_required": not credible,
-        "next_arm_authorized": credible and not final_slot,
-        "outcome": outcome,
-        "purpose": "AB16_ARM_CONSUMPTION",
-        "resource_preterminal_identity": (
-            None
-            if evidence["resource_preterminal_identity"] is None
-            else dict(evidence["resource_preterminal_identity"])
-        ),
-        "resource_replay_identity": (
-            None if evidence["resource_replay_identity"] is None else dict(evidence["resource_replay_identity"])
-        ),
-        "resource_terminal_identity": (
-            None if evidence["resource_terminal_identity"] is None else dict(evidence["resource_terminal_identity"])
-        ),
-        "run_nonce": context["root"]["run_nonce"],
-        "schema_version": ARM_CONSUMPTION_SCHEMA,
-        "selection_identity": (None if selection_identity is None else dict(selection_identity)),
-        "slot": slot,
-        "suite_terminal_identity": (None if suite_terminal_identity is None else dict(suite_terminal_identity)),
-    }
-    record["consumption_id"] = _digest_without(record, "consumption_id")
-    path = Path(preregistration["attempt_dirs"][slot]) / "consumption.json"
-    identity = _write_exclusive(path, canonical_json(record))
-    stop_identity: dict[str, object] | None = None
-    if not credible:
-        stop = {
-            "campaign_id": context["root"]["campaign_id"],
-            "code": failure_code,
-            "consumption_identity": identity,
-            "failed_slot": slot,
-            "package_id": context["root"]["package"]["package_id"],
-            "phase": "POST_SELECTION",
-            "purpose": "AB16_IMMEDIATE_STOP",
-            "run_nonce": context["root"]["run_nonce"],
-            "schema_version": CAMPAIGN_STOP_SCHEMA,
-            "selection_identity": (None if selection_identity is None else dict(selection_identity)),
-        }
-        stop_identity = _write_exclusive(
-            preregistration["immediate_stop_path"],
-            canonical_json(stop),
-        )
-    return {
-        "consumption": record,
-        "consumption_identity": identity,
-        "immediate_stop_identity": stop_identity,
-        "status": "PASS",
-    }
-
-
-def _replay_selected_arm_evidence(
-    context: Mapping[str, Any],
-    *,
-    preregistration: Mapping[str, Any],
-    manifest: Mapping[str, Any],
-    selection: Mapping[str, Any],
-    selection_snapshot: Snapshot,
-    pre_run: Mapping[str, Any],
-    pre_run_snapshot: Snapshot,
-    slot: str,
-    publish: bool,
-) -> tuple[dict[str, object], dict[str, object] | None]:
-    runner = _runner_module(context)
-    _lifecycle, verifier = _resource_modules(context)
-    replay_tool, gate_tool, contract_tool = _arm_evidence_modules(context)
-    attempt = Path(preregistration["attempt_dirs"][slot])
-    replays_dir = attempt / "replays"
-    if publish:
-        _mkdir_exclusive(replays_dir)
-    elif not replays_dir.is_dir() or replays_dir.is_symlink():
-        raise AuthorityError("ARM_REPLAY_DIRECTORY_INVALID", slot)
-
-    result_snapshot = snapshot_regular(pre_run["output_paths"]["attempt_result"])
-    arm_result = runner._strict_loads(  # noqa: SLF001 - package-pinned strict parser
-        result_snapshot.data,
-        f"arm result {slot}",
+) -> tuple[Mapping[str, Any] | None, dict[str, object] | None]:
+    path = attempt_dir / "attempt-result.json"
+    if not path.exists() and not path.is_symlink():
+        return None, None
+    record, identity = _load_record(path, "attempt result envelope")
+    checked = _exact_mapping(
+        record,
+        {
+            "attempt_ordinal",
+            "authorizations",
+            "envelope_id",
+            "evidence_identities",
+            "failure_code",
+            "input_set_identity",
+            "input_set_sha256",
+            "outcome",
+            "preregistration_identity",
+            "preregistration_sha256",
+            "repository_head",
+            "retry_disposition",
+            "schema_version",
+            "selection_binding_identity",
+            "slot",
+        },
+        "attempt result envelope",
     )
-    arithmetic_tool_identity = manifest["arithmetic_verifier"]["tool_identity"]
-    replayed_arithmetic = replay_tool.replay_arm(
-        arm_result=result_snapshot.path,
-        cut_free_replay=preregistration["cut_free_replay_paths"][slot],
-        replay_tool_identity=arithmetic_tool_identity,
-    )
-    arithmetic_path = Path(preregistration["arithmetic_replay_paths"][slot])
-    if publish:
-        arithmetic_identity = _write_exclusive(
-            arithmetic_path,
-            canonical_json(replayed_arithmetic),
-        )
-    else:
-        arithmetic_identity = detached_identity(snapshot_regular(arithmetic_path))
-    arithmetic_snapshot = snapshot_regular(arithmetic_path)
-    arithmetic_receipt = _record(
-        arithmetic_snapshot,
-        f"arithmetic receipt {slot}",
-    )
-    if arithmetic_receipt != replayed_arithmetic:
-        raise AuthorityError("ARITHMETIC_RECEIPT_REPLAY_FAILED", slot)
-    second_arithmetic = replay_tool.replay_arm(
-        arm_result=result_snapshot.path,
-        cut_free_replay=preregistration["cut_free_replay_paths"][slot],
-        replay_tool_identity=arithmetic_tool_identity,
-    )
-
-    verifier_tool_identity = manifest["per_arm_tool_identities"]["resource_verifier"]
-    pre_snapshot = verifier.snapshot_json(pre_run_snapshot.path)
-    selected_snapshot = verifier.snapshot_json(selection_snapshot.path)
-    inner_snapshot = verifier.snapshot_json(pre_run["output_paths"]["inner"])
-    preterminal_snapshot = verifier.snapshot_json(pre_run["output_paths"]["preterminal"])
-    payload_snapshot = verifier.snapshot_json(pre_run["output_paths"]["attempt_result"])
-    stored_preterminal_snapshot = verifier.snapshot_json(pre_run["output_paths"]["resource_verification"])
-    replayed_preterminal = verifier.verify_preterminal(
-        pre_run=pre_snapshot,
-        selection=selected_snapshot,
-        inner=inner_snapshot,
-        preterminal=preterminal_snapshot,
-        payload_result=payload_snapshot,
-        verifier_tool_identity=verifier_tool_identity,
-    )
-    if stored_preterminal_snapshot.value != replayed_preterminal:
-        raise AuthorityError(
-            "RESOURCE_PRETERMINAL_REPLAY_FAILED",
-            slot,
-        )
-    release_snapshot = verifier.snapshot_json(pre_run["output_paths"]["release"])
-    terminal_snapshot = verifier.snapshot_json(pre_run["output_paths"]["terminal"])
-    cleanup_snapshot = verifier.snapshot_json(pre_run["output_paths"]["cleanup"])
-    detached_epoch_snapshot = verifier.snapshot_json(pre_run["epoch_observation_paths"]["detached-replay"])
-    stored_detached_snapshot = verifier.snapshot_json(pre_run["output_paths"]["detached_replay"])
-    replayed_detached = verifier.verify_detached(
-        pre_run=pre_snapshot,
-        selection=selected_snapshot,
-        inner=inner_snapshot,
-        preterminal=preterminal_snapshot,
-        payload_result=payload_snapshot,
-        resource=stored_preterminal_snapshot,
-        release=release_snapshot,
-        terminal=terminal_snapshot,
-        cleanup=cleanup_snapshot,
-        detached_epoch=detached_epoch_snapshot,
-        verifier_tool_identity=verifier_tool_identity,
-    )
-    if stored_detached_snapshot.value != replayed_detached:
-        raise AuthorityError("RESOURCE_TERMINAL_REPLAY_FAILED", slot)
-    resource_replay_path = Path(preregistration["resource_replay_paths"][slot])
-    if publish:
-        _write_exclusive(
-            resource_replay_path,
-            canonical_json(replayed_detached),
-        )
-    elif (
-        _record(
-            snapshot_regular(resource_replay_path),
-            f"resource replay receipt {slot}",
-        )
-        != replayed_detached
+    evidence = checked["evidence_identities"]
+    if type(evidence) is not dict:
+        raise AuthorityError("attempt evidence identities must be an object")
+    for role, member in evidence.items():
+        if type(role) is not str or ROLE_RE.fullmatch(role) is None:
+            raise AuthorityError("attempt evidence role is invalid")
+        _verify_identity(member, f"attempt evidence {role}")
+    without_id = dict(checked)
+    without_id["envelope_id"] = ""
+    expected_id = hashlib.sha256(canonical_json(without_id)).hexdigest()
+    if (
+        checked["schema_version"] != RESULT_ENVELOPE_SCHEMA
+        or checked["slot"] != slot
+        or checked["attempt_ordinal"] != ordinal
+        or checked["authorizations"] != RESEARCH_ONLY_AUTHORIZATIONS
+        or checked["envelope_id"] != expected_id
+        or checked["preregistration_identity"] != preregistration_identity
+        or checked["preregistration_sha256"] != preregistration_identity["sha256"]
+        or checked["input_set_identity"] != input_identity
+        or checked["input_set_sha256"] != input_record["input_set_sha256"]
+        or checked["repository_head"] != input_record["repository_head"]
+        or checked["selection_binding_identity"] != selection_identity
     ):
-        raise AuthorityError("RESOURCE_REPLAY_RECEIPT_DRIFT", slot)
-
-    gate_tool_identity = manifest["per_arm_tool_identities"]["terminal_gate"]
-    arm_gate = gate_tool.build_arm_gate(
-        selection=selection,
-        selection_identity=detached_identity(selection_snapshot),
-        arm_result=arm_result,
-        arm_result_identity=detached_identity(result_snapshot),
-        arithmetic_receipt=arithmetic_receipt,
-        arithmetic_receipt_identity=arithmetic_identity,
-        replayed_arithmetic_receipt=second_arithmetic,
-        arithmetic_tool_identity=arithmetic_tool_identity,
-        resource_receipt=stored_detached_snapshot.value,
-        resource_receipt_identity=stored_detached_snapshot.identity,
-        replayed_resource_receipt=replayed_detached,
-        resource_preterminal_receipt=stored_preterminal_snapshot.value,
-        resource_preterminal_identity=stored_preterminal_snapshot.identity,
-        replayed_resource_preterminal_receipt=replayed_preterminal,
-        resource_verifier_tool_identity=verifier_tool_identity,
-        experiment_contract=manifest["experiment_contract"],
-        gate_tool_identity=gate_tool_identity,
-    )
-    arm_gate_path = Path(preregistration["arm_gate_paths"][slot])
-    if publish:
-        arm_gate_identity = _write_exclusive(
-            arm_gate_path,
-            canonical_json(arm_gate),
-        )
+        raise AuthorityError("attempt result envelope joins drifted")
+    if checked["outcome"] == CREDIBLE_TERMINAL:
+        if checked["failure_code"] is not None or checked["retry_disposition"] != "SLOT_CLOSED":
+            raise AuthorityError("credible envelope terminal fields drifted")
+        if selection_identity is None or "arm_gate" not in evidence:
+            raise AuthorityError("credible envelope lacks selection or arm gate")
+    elif checked["outcome"] == CREDIBILITY_INCOMPLETE:
+        if (
+            type(checked["failure_code"]) is not str
+            or not checked["failure_code"]
+            or checked["retry_disposition"] != "SAME_SLOT_RETRY_ALLOWED"
+        ):
+            raise AuthorityError("incomplete envelope terminal fields drifted")
     else:
-        arm_gate_snapshot = snapshot_regular(arm_gate_path)
-        if _record(arm_gate_snapshot, f"arm gate {slot}") != arm_gate:
-            raise AuthorityError("ARM_GATE_REPLAY_FAILED", slot)
-        arm_gate_identity = detached_identity(arm_gate_snapshot)
+        raise AuthorityError("attempt outcome is unsupported")
+    return checked, identity
 
-    suite_terminal_identity: dict[str, object] | None = None
-    if slot == manifest["arm_sequence"][-1]:
-        arm_gates: list[Mapping[str, Any]] = []
-        for prior_slot in manifest["arm_sequence"][:-1]:
-            prior = _load_consumption(
-                context,
-                slot=prior_slot,
-                required_credible=True,
+
+def replay_campaign(preregistration_path: Path | str) -> dict[str, object]:
+    """Rebuild retry state from immutable attempt receipts on disk."""
+
+    preregistration_path = _absolute(preregistration_path)
+    preregistration, preregistration_identity = _load_preregistration(preregistration_path)
+    state = contract.new_consumption_state()
+    active: dict[str, object] | None = None
+    attempts_summary: list[dict[str, object]] = []
+    slot_attempt_counts: dict[str, int] = {}
+    slot_scientific_digests: dict[str, str] = {}
+
+    for slot_index, slot in enumerate(contract.ARM_SEQUENCE):
+        slot_root = Path(preregistration["slot_roots"][slot])
+        attempts = _attempt_directories(slot_root)
+        slot_attempt_counts[slot] = len(attempts)
+        if slot_index > state["next_index"] and attempts:
+            raise AuthorityError("future slot contains an attempt")
+        for attempt_index, (ordinal, attempt_dir) in enumerate(attempts):
+            if state["next_index"] >= len(contract.ARM_SEQUENCE) or contract.ARM_SEQUENCE[state["next_index"]] != slot:
+                raise AuthorityError("attempt exists after its slot closed or out of order")
+            _open, inputs, _open_identity = _validate_open(
+                attempt_dir,
+                slot=slot,
+                ordinal=ordinal,
+                preregistration_identity=preregistration_identity,
             )
-            gate_identity = prior["arm_gate_identity"]
-            if gate_identity is None:
-                raise AuthorityError(
-                    "SUITE_GATE_INPUT_MISSING",
-                    prior_slot,
-                )
-            arm_gates.append(
-                _record(
-                    _replay_detached(
-                        gate_identity,
-                        f"suite arm gate {prior_slot}",
-                    ),
-                    f"suite arm gate {prior_slot}",
-                )
+            input_identity = _snapshot(attempt_dir / "attempt-input-set.json")[1]
+            previous_digest = slot_scientific_digests.setdefault(slot, inputs["scientific_input_set_sha256"])
+            if previous_digest != inputs["scientific_input_set_sha256"]:
+                raise AuthorityError("scientific inputs changed between retries")
+            _selection, selection_binding_identity = _optional_selection(attempt_dir)
+            envelope, envelope_identity = _optional_envelope(
+                attempt_dir,
+                slot=slot,
+                ordinal=ordinal,
+                preregistration_identity=preregistration_identity,
+                input_record=inputs,
+                input_identity=input_identity,
+                selection_identity=selection_binding_identity,
             )
-        arm_gates.append(arm_gate)
-        terminal_classification = gate_tool.build_suite_gate(
-            arm_gates=arm_gates,
-            contract=contract_tool,
-        )
-        if publish:
-            suite_terminal_identity = _write_exclusive(
-                preregistration["terminal_classification_path"],
-                canonical_json(terminal_classification),
-            )
-        else:
-            suite_snapshot = snapshot_regular(preregistration["terminal_classification_path"])
-            if (
-                _record(
-                    suite_snapshot,
-                    "AB16 terminal classification",
+            summary = {
+                "attempt_ordinal": ordinal,
+                "envelope_identity": envelope_identity,
+                "input_set_sha256": inputs["input_set_sha256"],
+                "outcome": None if envelope is None else envelope["outcome"],
+                "repository_head": inputs["repository_head"],
+                "slot": slot,
+            }
+            attempts_summary.append(summary)
+            if envelope is None:
+                if attempt_index != len(attempts) - 1:
+                    raise AuthorityError("unresolved attempt has a later sibling")
+                if selection_binding_identity is not None:
+                    state = contract.transition_consumption_state(
+                        state,
+                        {"attempt_ordinal": ordinal, "event": "SELECTION_CREATED", "reason": None, "slot": slot},
+                    )
+                active = {"attempt_dir": str(attempt_dir), "attempt_ordinal": ordinal, "slot": slot}
+                break
+            if selection_binding_identity is None:
+                if envelope["outcome"] != CREDIBILITY_INCOMPLETE:
+                    raise AuthorityError("credible attempt lacks a selection")
+                state = contract.transition_consumption_state(
+                    state,
+                    {
+                        "attempt_ordinal": ordinal,
+                        "event": "PRESELECTION_FAILURE",
+                        "reason": envelope["failure_code"],
+                        "slot": slot,
+                    },
                 )
-                != terminal_classification
-            ):
-                raise AuthorityError("SUITE_GATE_REPLAY_FAILED", slot)
-            suite_terminal_identity = detached_identity(suite_snapshot)
-    del replays_dir
-    return arm_gate_identity, suite_terminal_identity
+            else:
+                state = contract.transition_consumption_state(
+                    state,
+                    {"attempt_ordinal": ordinal, "event": "SELECTION_CREATED", "reason": None, "slot": slot},
+                )
+                event = "ARM_CREDIBILITY_PASS" if envelope["outcome"] == CREDIBLE_TERMINAL else "ARM_CREDIBILITY_INCOMPLETE"
+                state = contract.transition_consumption_state(
+                    state,
+                    {
+                        "attempt_ordinal": ordinal,
+                        "event": event,
+                        "reason": None if event == "ARM_CREDIBILITY_PASS" else envelope["failure_code"],
+                        "slot": slot,
+                    },
+                )
+            if envelope["outcome"] == CREDIBLE_TERMINAL and attempt_index != len(attempts) - 1:
+                raise AuthorityError("credible attempt has a later retry")
+        if active is not None or state["next_index"] == slot_index:
+            for future_slot in contract.ARM_SEQUENCE[slot_index + 1 :]:
+                if _attempt_directories(Path(preregistration["slot_roots"][future_slot])):
+                    raise AuthorityError("future slot contains an attempt")
+            break
 
-
-def _replay_consumed_arm(
-    context: Mapping[str, Any],
-    *,
-    slot: str,
-) -> tuple[dict[str, object], dict[str, object] | None]:
-    """Rebuild the package-pinned gate behind one credible consumption."""
-
-    continuation, continuation_identity = _continuation(context)
-    manifest, manifest_snapshot = _read_organic_manifest(
-        context,
-        continuation=continuation,
-    )
-    _read_suite_selection(
-        context,
-        continuation_identity=continuation_identity,
-        manifest_identity=detached_identity(manifest_snapshot),
-    )
-    preregistration, _ = _path_preregistration(context)
-    selection_snapshot = snapshot_regular(preregistration["arm_selection_paths"][slot])
-    pre_run_snapshot = snapshot_regular(preregistration["pre_run_authority_paths"][slot])
-    runner = _runner_module(context)
-    lifecycle, verifier = _resource_modules(context)
-    selection = runner._strict_loads(  # noqa: SLF001 - package-pinned parser
-        selection_snapshot.data,
-        f"consumed arm selection {slot}",
-    )
-    runner.validate_selection(selection, manifest=manifest)
-    pre_run = verifier.strict_loads(
-        pre_run_snapshot.data,
-        f"consumed pre-run authority {slot}",
-    )
-    verifier.validate_pre_run_authority(
-        pre_run,
-        campaign_root=_resource_campaign_root_view(context),
-        manifest=manifest,
-        expected_slot=slot,
-    )
-    lifecycle.validate_runner_selection(
-        selection,
-        pre_run_authority=pre_run,
-        pre_run_authority_identity=detached_identity(pre_run_snapshot),
-    )
-    return _replay_selected_arm_evidence(
-        context,
-        preregistration=preregistration,
-        manifest=manifest,
-        selection=selection,
-        selection_snapshot=selection_snapshot,
-        pre_run=pre_run,
-        pre_run_snapshot=pre_run_snapshot,
-        slot=slot,
-        publish=False,
-    )
-
-
-def consume_arm(
-    campaign_dir: Path | str,
-    *,
-    slot: str,
-) -> dict[str, object]:
-    """Derive one selected arm's credibility; caller claims are not accepted."""
-
-    context = _campaign_context(campaign_dir)
-    continuation, continuation_identity = _continuation(context)
-    manifest, manifest_snapshot = _read_organic_manifest(
-        context,
-        continuation=continuation,
-    )
-    _read_suite_selection(
-        context,
-        continuation_identity=continuation_identity,
-        manifest_identity=detached_identity(manifest_snapshot),
-    )
-    preregistration, _ = _path_preregistration(context)
-    if slot not in manifest["arm_sequence"]:
-        raise AuthorityError("ARM_SLOT_INVALID", slot)
-    stop_path = Path(preregistration["immediate_stop_path"])
-    if stop_path.exists() or stop_path.is_symlink():
-        raise AuthorityError("CAMPAIGN_IMMEDIATE_STOPPED", str(stop_path))
-    attempt = Path(preregistration["attempt_dirs"][slot])
-    consumption_path = attempt / "consumption.json"
-    if consumption_path.exists() or consumption_path.is_symlink():
-        raise AuthorityError("ARM_ALREADY_CONSUMED", slot)
-
-    selection_identity: dict[str, object] | None = None
-    pre_run: Mapping[str, Any] | None = None
-    try:
-        selection_snapshot = snapshot_regular(preregistration["arm_selection_paths"][slot])
-        selection_identity = detached_identity(selection_snapshot)
-        pre_run_snapshot = snapshot_regular(preregistration["pre_run_authority_paths"][slot])
-        runner = _runner_module(context)
-        lifecycle, verifier = _resource_modules(context)
-        selection = runner._strict_loads(  # noqa: SLF001 - sealed tool API replay
-            selection_snapshot.data,
-            f"arm selection {slot}",
-        )
-        runner.validate_selection(selection, manifest=manifest)
-        pre_run = verifier.strict_loads(
-            pre_run_snapshot.data,
-            f"pre-run authority {slot}",
-        )
-        verifier.validate_pre_run_authority(
-            pre_run,
-            campaign_root=_resource_campaign_root_view(context),
-            manifest=manifest,
-            expected_slot=slot,
-        )
-        lifecycle.validate_runner_selection(
-            selection,
-            pre_run_authority=pre_run,
-            pre_run_authority_identity=detached_identity(pre_run_snapshot),
-        )
-        _replay_selected_arm_evidence(
-            context,
-            preregistration=preregistration,
-            manifest=manifest,
-            selection=selection,
-            selection_snapshot=selection_snapshot,
-            pre_run=pre_run,
-            pre_run_snapshot=pre_run_snapshot,
-            slot=slot,
-            publish=True,
-        )
-        evidence = _consumption_evidence_identities(
-            preregistration,
-            slot=slot,
-            pre_run=pre_run,
-        )
-        suite_terminal_identity = (
-            _optional_identity_at(preregistration["terminal_classification_path"])
-            if slot == manifest["arm_sequence"][-1]
-            else None
-        )
-        return _write_arm_consumption(
-            context,
-            preregistration=preregistration,
-            slot=slot,
-            outcome="CREDIBLE_TERMINAL",
-            selection_identity=selection_identity,
-            evidence=evidence,
-            failure_code="",
-            suite_terminal_identity=suite_terminal_identity,
-        )
-    except Exception as exc:
-        if not attempt.exists() and not attempt.is_symlink():
-            if isinstance(exc, AuthorityError):
-                raise
-            raise AuthorityError(
-                "ARM_CONSUMPTION_INVALID",
-                str(exc),
-            ) from exc
-        evidence = _consumption_evidence_identities(
-            preregistration,
-            slot=slot,
-            pre_run=pre_run,
-        )
-        result = _write_arm_consumption(
-            context,
-            preregistration=preregistration,
-            slot=slot,
-            outcome="CREDIBILITY_INCOMPLETE",
-            selection_identity=selection_identity,
-            evidence=evidence,
-            failure_code="POST_SELECTION_EVIDENCE_REPLAY_FAILED",
-            suite_terminal_identity=None,
-        )
-        result["failure_detail"] = f"{type(exc).__name__}: {exc}"
-        return result
-
-
-def replay(campaign_dir: Path | str, *, selection_required: bool) -> dict[str, object]:
-    context = _campaign_context(campaign_dir)
-    continuation, continuation_identity = _continuation(context)
-    manifest, manifest_snapshot = _read_organic_manifest(
-        context,
-        continuation=continuation,
-    )
-    inputs = _manifest_inputs(context)
-    preregistration = inputs["path_preregistration"]
-    result: dict[str, object] = {
-        "campaign_root_identity": context["root_identity"],
-        "continuation_identity": continuation_identity,
-        "manifest_identity": detached_identity(manifest_snapshot),
-        "package_id": context["root"]["package"]["package_id"],
-        "selection_present": False,
+    return {
+        "active_attempt": active,
+        "attempts": attempts_summary,
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
+        "consumption_state": state,
+        "preregistration_identity": preregistration_identity,
+        "schema_version": REPLAY_SCHEMA,
+        "slot_attempt_counts": slot_attempt_counts,
         "status": "PASS",
     }
-    if selection_required:
-        baseline_snapshot = snapshot_regular(preregistration["baseline_admission_path"])
-        _replay_baseline_admission(context, baseline_snapshot)
-        selection_snapshot = snapshot_regular(preregistration["suite_selection_path"])
-        validate_suite_selection(
-            _record(selection_snapshot, "AB16 selection"),
-            context=context,
-            continuation_identity=continuation_identity,
-            manifest_identity=detached_identity(manifest_snapshot),
-            baseline_identity=detached_identity(baseline_snapshot),
+
+
+def prepare_attempt(
+    preregistration_path: Path | str,
+    *,
+    repository_root: Path | str,
+    slot: str | None = None,
+    additional_strict_inputs: Mapping[str, Path | str] | None = None,
+    additional_execution_tools: Mapping[str, Path | str] | None = None,
+) -> dict[str, object]:
+    """Create the next append-only attempt and bind its actual input bytes."""
+
+    preregistration_path = _absolute(preregistration_path)
+    replay = replay_campaign(preregistration_path)
+    if replay["active_attempt"] is not None:
+        raise AuthorityError("the current attempt must close before retry")
+    state = replay["consumption_state"]
+    next_index = state["next_index"]
+    if next_index == len(contract.ARM_SEQUENCE):
+        raise AuthorityError("all preregistered slots are already complete")
+    expected_slot = contract.ARM_SEQUENCE[next_index]
+    if slot is not None and slot != expected_slot:
+        raise AuthorityError(f"next preregistered slot is {expected_slot}")
+    slot = expected_slot
+    preregistration, preregistration_identity = _load_preregistration(preregistration_path)
+    ordinal = replay["slot_attempt_counts"].get(slot, 0) + 1
+
+    scientific_paths = _scientific_source_paths(preregistration_path, preregistration, slot)
+    for role, path in (additional_strict_inputs or {}).items():
+        if ROLE_RE.fullmatch(role) is None or role in scientific_paths:
+            raise AuthorityError(f"invalid or duplicate strict-input role: {role}")
+        scientific_paths[role] = _absolute(path)
+    tool_paths = _execution_tool_paths(additional_execution_tools)
+
+    head_before = _observe_clean_head(repository_root)
+    scientific_sources = _capture_sources(scientific_paths, "strict input")
+    tool_sources = _capture_sources(tool_paths, "execution tool")
+    head_after = _observe_clean_head(repository_root)
+    if head_before != head_after:
+        raise AuthorityError("repository HEAD changed during input capture")
+
+    prospective_scientific_identities = {
+        role: {
+            "mode": 0o600,
+            "path": source_identity["path"],
+            "sha256": source_identity["sha256"],
+            "size_bytes": source_identity["size_bytes"],
+        }
+        for role, (_raw, source_identity) in scientific_sources.items()
+    }
+    scientific_digest = _projection_digest(
+        "noncert-cuts-ab16-scientific-input-set-v1",
+        prospective_scientific_identities,
+    )
+
+    slot_root = Path(preregistration["slot_roots"][slot])
+    prior_attempts = _attempt_directories(slot_root)
+    if prior_attempts:
+        prior_input, _prior_identity = _validate_input_set(prior_attempts[0][1], preregistration_identity)
+        if prior_input["scientific_input_set_sha256"] != scientific_digest:
+            raise AuthorityError("scientific inputs changed between retries")
+    if not slot_root.exists() and not slot_root.is_symlink():
+        parent = slot_root.parent
+        if not parent.exists() and not parent.is_symlink():
+            grandparent = _existing_directory(parent.parent, "prospective AB16 directory")
+            if grandparent != Path(preregistration["campaign_dir"]) / "prospective-ab16":
+                raise AuthorityError("slot-root parent is outside the preregistered topology")
+            _make_directory(parent)
+        else:
+            _existing_directory(parent, "slot-root parent")
+        _make_directory(slot_root)
+    else:
+        _existing_directory(slot_root, "slot root")
+    attempt_dir = slot_root / f"attempt-{ordinal:04d}"
+    _make_directory(attempt_dir)
+    input_snapshot_dir = attempt_dir / "input-snapshots"
+    tool_snapshot_dir = attempt_dir / "tool-snapshots"
+    work_dir = attempt_dir / "work"
+    for directory in (input_snapshot_dir, tool_snapshot_dir, work_dir):
+        _make_directory(directory)
+
+    def publish_snapshots(
+        sources: Mapping[str, tuple[bytes, dict[str, object]]],
+        directory: Path,
+    ) -> tuple[dict[str, dict[str, object]], dict[str, dict[str, object]]]:
+        snapshots: dict[str, dict[str, object]] = {}
+        source_identities: dict[str, dict[str, object]] = {}
+        for index, role in enumerate(sorted(sources)):
+            raw, source_identity = sources[role]
+            snapshots[role] = _write_bytes_exclusive(directory / f"{index:04d}.bin", raw)
+            source_identities[role] = source_identity
+        return snapshots, source_identities
+
+    strict_inputs, source_strict_inputs = publish_snapshots(scientific_sources, input_snapshot_dir)
+    tools, source_tools = publish_snapshots(tool_sources, tool_snapshot_dir)
+    if _projection_digest("noncert-cuts-ab16-scientific-input-set-v1", strict_inputs) != scientific_digest:
+        raise AuthorityError("published scientific snapshots differ from captured inputs")
+    input_set_sha256 = contract.attempt_input_set_sha256(
+        preregistration_sha256=preregistration_identity["sha256"],
+        repository_head=head_before,
+        strict_input_identities=strict_inputs,
+        tool_identities=tools,
+    )
+    input_record = {
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
+        "input_set_sha256": input_set_sha256,
+        "preregistration_identity": preregistration_identity,
+        "preregistration_sha256": preregistration_identity["sha256"],
+        "repository_head": head_before,
+        "schema_version": INPUT_SET_SCHEMA,
+        "scientific_input_set_sha256": scientific_digest,
+        "source_strict_input_identities": source_strict_inputs,
+        "source_tool_identities": source_tools,
+        "strict_input_identities": strict_inputs,
+        "tool_identities": tools,
+    }
+    input_identity = _write_record(attempt_dir / "attempt-input-set.json", input_record)
+    open_record = {
+        "attempt_dir": str(attempt_dir),
+        "attempt_ordinal": ordinal,
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
+        "input_set_identity": input_identity,
+        "input_set_sha256": input_set_sha256,
+        "preregistration_sha256": preregistration_identity["sha256"],
+        "repository_head": head_before,
+        "schema_version": ATTEMPT_OPEN_SCHEMA,
+        "slot": slot,
+        "status": "OPEN",
+    }
+    open_identity = _write_record(attempt_dir / "attempt-open.json", open_record)
+    return {
+        "attempt_dir": str(attempt_dir),
+        "attempt_open_identity": open_identity,
+        "attempt_ordinal": ordinal,
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
+        "input_set_identity": input_identity,
+        "input_set_sha256": input_set_sha256,
+        "preregistration_sha256": preregistration_identity["sha256"],
+        "repository_head": head_before,
+        "slot": slot,
+        "status": "ATTEMPT_PREPARED",
+        "work_dir": str(work_dir),
+    }
+
+
+def bind_selection(
+    preregistration_path: Path | str,
+    *,
+    slot: str,
+    attempt_ordinal: int,
+    selection_path: Path | str,
+) -> dict[str, object]:
+    replay = replay_campaign(preregistration_path)
+    active = replay["active_attempt"]
+    if active != {
+        "attempt_dir": str(Path(replay["preregistration_identity"]["path"]).parent),
+        "attempt_ordinal": attempt_ordinal,
+        "slot": slot,
+    }:
+        # Compare the stable fields separately; the preregistration file need
+        # not live beside the attempt tree.
+        if active is None or active["slot"] != slot or active["attempt_ordinal"] != attempt_ordinal:
+            raise AuthorityError("selection does not target the active attempt")
+    attempt_dir = Path(active["attempt_dir"])
+    _raw, selection_identity = _snapshot(selection_path)
+    record = {
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
+        "schema_version": SELECTION_BINDING_SCHEMA,
+        "selection_identity": selection_identity,
+        "status": "BOUND",
+    }
+    identity = _write_record(attempt_dir / "selection-binding.json", record)
+    return {"selection_binding_identity": identity, "status": "SELECTION_BOUND"}
+
+
+def _validate_credible_gate(path: Path | str, *, slot: str, selection_identity: Mapping[str, Any]) -> dict[str, object]:
+    gate, identity = _load_record(path, "arm credibility gate")
+    authorizations = gate.get("authorizations")
+    if (
+        gate.get("schema_version") != "noncert-cuts-ab16-arm-credibility-gate-v1"
+        or gate.get("status") != "PASS"
+        or gate.get("credibility_status") != "PASS"
+        or gate.get("slot") != slot
+        or type(authorizations) is not dict
+        or not authorizations
+        or any(value is not False for value in authorizations.values())
+        or gate.get("selection_identity") != selection_identity
+    ):
+        raise AuthorityError("arm credibility gate is not a research-only PASS for the selected attempt")
+    return identity
+
+
+def close_attempt(
+    preregistration_path: Path | str,
+    *,
+    slot: str,
+    attempt_ordinal: int,
+    outcome: str,
+    failure_code: str | None = None,
+    evidence_paths: Mapping[str, Path | str] | None = None,
+) -> dict[str, object]:
+    """Close the active attempt; incomplete closure leaves its slot retryable."""
+
+    preregistration, preregistration_identity = _load_preregistration(preregistration_path)
+    replay = replay_campaign(preregistration_path)
+    active = replay["active_attempt"]
+    if active is None or active["slot"] != slot or active["attempt_ordinal"] != attempt_ordinal:
+        raise AuthorityError("only the active attempt may be closed")
+    attempt_dir = Path(active["attempt_dir"])
+    _open, inputs, _open_identity = _validate_open(
+        attempt_dir,
+        slot=slot,
+        ordinal=attempt_ordinal,
+        preregistration_identity=preregistration_identity,
+    )
+    input_identity = _snapshot(attempt_dir / "attempt-input-set.json")[1]
+    selection, selection_binding_identity = _optional_selection(attempt_dir)
+    evidence_identities: dict[str, dict[str, object]] = {}
+    for role, path in sorted((evidence_paths or {}).items()):
+        if ROLE_RE.fullmatch(role) is None:
+            raise AuthorityError(f"invalid evidence role: {role}")
+        _raw, evidence_identities[role] = _snapshot(path)
+    if outcome == CREDIBLE_TERMINAL:
+        if failure_code is not None or selection is None or "arm_gate" not in evidence_identities:
+            raise AuthorityError("credible closure requires a bound selection and arm_gate only, with no failure code")
+        gate_identity = _validate_credible_gate(
+            evidence_paths["arm_gate"],
+            slot=slot,
+            selection_identity=selection["selection_identity"],
         )
-        result["baseline_admission_identity"] = detached_identity(baseline_snapshot)
-        result["selection_identity"] = detached_identity(selection_snapshot)
-        result["selection_present"] = True
+        if gate_identity != evidence_identities["arm_gate"]:
+            raise AuthorityError("arm gate identity changed during validation")
+        retry_disposition = "SLOT_CLOSED"
+    elif outcome == CREDIBILITY_INCOMPLETE:
+        if type(failure_code) is not str or not failure_code:
+            raise AuthorityError("incomplete closure requires a failure code")
+        retry_disposition = "SAME_SLOT_RETRY_ALLOWED"
+    else:
+        raise AuthorityError("attempt outcome is unsupported")
+    envelope: dict[str, object] = {
+        "attempt_ordinal": attempt_ordinal,
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
+        "envelope_id": "",
+        "evidence_identities": evidence_identities,
+        "failure_code": failure_code,
+        "input_set_identity": input_identity,
+        "input_set_sha256": inputs["input_set_sha256"],
+        "outcome": outcome,
+        "preregistration_identity": preregistration_identity,
+        "preregistration_sha256": preregistration_identity["sha256"],
+        "repository_head": inputs["repository_head"],
+        "retry_disposition": retry_disposition,
+        "schema_version": RESULT_ENVELOPE_SCHEMA,
+        "selection_binding_identity": selection_binding_identity,
+        "slot": slot,
+    }
+    envelope["envelope_id"] = hashlib.sha256(canonical_json(envelope)).hexdigest()
+    envelope_identity = _write_record(attempt_dir / "attempt-result.json", envelope)
+    return {
+        "attempt_result_identity": envelope_identity,
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
+        "outcome": outcome,
+        "retry_disposition": retry_disposition,
+        "status": "ATTEMPT_CLOSED",
+    }
+
+
+def _role_paths(values: Sequence[str]) -> dict[str, Path]:
+    result: dict[str, Path] = {}
+    for value in values:
+        role, separator, path = value.partition("=")
+        if not separator or ROLE_RE.fullmatch(role) is None or role in result or not path:
+            raise AuthorityError(f"expected unique ROLE=PATH value, got {value!r}")
+        result[role] = _absolute(path)
     return result
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    sub = parser.add_subparsers(dest="command", required=True)
-    manifest = sub.add_parser("publish-manifest")
-    manifest.add_argument("--campaign-dir", required=True, type=Path)
-    selection = sub.add_parser("create-suite-selection")
-    selection.add_argument("--campaign-dir", required=True, type=Path)
-    candidate = sub.add_parser("build-pre-run-candidate")
-    candidate.add_argument("--campaign-dir", required=True, type=Path)
-    candidate.add_argument("--slot", required=True)
-    arm = sub.add_parser("create-arm-selection")
-    arm.add_argument("--campaign-dir", required=True, type=Path)
-    arm.add_argument("--slot", required=True)
-    arm.add_argument("--selection-nonce", required=True)
-    consume = sub.add_parser("consume-arm")
-    consume.add_argument("--campaign-dir", required=True, type=Path)
-    consume.add_argument("--slot", required=True)
-    replay_parser = sub.add_parser("replay")
-    replay_parser.add_argument("--campaign-dir", required=True, type=Path)
-    replay_parser.add_argument("--without-selection", action="store_true")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+    replay_parser = subparsers.add_parser("replay")
+    replay_parser.add_argument("--preregistration", type=Path, required=True)
+    prepare_parser = subparsers.add_parser("prepare")
+    prepare_parser.add_argument("--preregistration", type=Path, required=True)
+    prepare_parser.add_argument("--repository-root", type=Path, required=True)
+    prepare_parser.add_argument("--slot")
+    prepare_parser.add_argument("--strict-input", action="append", default=[])
+    prepare_parser.add_argument("--execution-tool", action="append", default=[])
+    bind_parser = subparsers.add_parser("bind-selection")
+    bind_parser.add_argument("--preregistration", type=Path, required=True)
+    bind_parser.add_argument("--slot", required=True)
+    bind_parser.add_argument("--attempt-ordinal", type=int, required=True)
+    bind_parser.add_argument("--selection", type=Path, required=True)
+    close_parser = subparsers.add_parser("close")
+    close_parser.add_argument("--preregistration", type=Path, required=True)
+    close_parser.add_argument("--slot", required=True)
+    close_parser.add_argument("--attempt-ordinal", type=int, required=True)
+    close_parser.add_argument("--outcome", choices=(CREDIBLE_TERMINAL, CREDIBILITY_INCOMPLETE), required=True)
+    close_parser.add_argument("--failure-code")
+    close_parser.add_argument("--evidence", action="append", default=[])
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    arguments = _parser().parse_args(argv)
-    try:
-        if arguments.command == "publish-manifest":
-            result = build_manifest(arguments.campaign_dir)
-        elif arguments.command == "create-suite-selection":
-            result = create_suite_selection(arguments.campaign_dir)
-        elif arguments.command == "build-pre-run-candidate":
-            result = build_pre_run_candidate(
-                arguments.campaign_dir,
-                slot=arguments.slot,
-            )
-        elif arguments.command == "create-arm-selection":
-            result = create_arm_selection(
-                arguments.campaign_dir,
-                slot=arguments.slot,
-                selection_nonce=arguments.selection_nonce,
-            )
-        elif arguments.command == "consume-arm":
-            result = consume_arm(
-                arguments.campaign_dir,
-                slot=arguments.slot,
-            )
-        else:
-            result = replay(
-                arguments.campaign_dir,
-                selection_required=not arguments.without_selection,
-            )
-    except AuthorityError as exc:
-        print(
-            json.dumps(
-                {"code": exc.code, "detail": exc.detail, "status": "FAIL_CLOSED"},
-                sort_keys=True,
-            ),
-            file=sys.stderr,
+    args = _parser().parse_args(argv)
+    if args.command == "replay":
+        result = replay_campaign(args.preregistration)
+    elif args.command == "prepare":
+        result = prepare_attempt(
+            args.preregistration,
+            repository_root=args.repository_root,
+            slot=args.slot,
+            additional_strict_inputs=_role_paths(args.strict_input),
+            additional_execution_tools=_role_paths(args.execution_tool),
         )
-        return 2
+    elif args.command == "bind-selection":
+        result = bind_selection(
+            args.preregistration,
+            slot=args.slot,
+            attempt_ordinal=args.attempt_ordinal,
+            selection_path=args.selection,
+        )
+    else:
+        result = close_attempt(
+            args.preregistration,
+            slot=args.slot,
+            attempt_ordinal=args.attempt_ordinal,
+            outcome=args.outcome,
+            failure_code=args.failure_code,
+            evidence_paths=_role_paths(args.evidence),
+        )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 

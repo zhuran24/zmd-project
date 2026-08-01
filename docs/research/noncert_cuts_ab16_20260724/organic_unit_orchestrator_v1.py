@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Callable, Mapping, Sequence
-from contextlib import contextmanager, nullcontext
+from contextlib import contextmanager
 from dataclasses import dataclass
 import fcntl
 import hashlib
@@ -32,7 +32,7 @@ from typing import Any, Protocol
 
 PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v1"
 RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
-DRILL_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-drill-selection-v1"
+EXECUTION_CLASS = "FORMAL_AB16"
 LAUNCH_ENVIRONMENT_SCHEMA = "noncert-cuts-ab16-launch-environment-v1"
 LAUNCH_ENVIRONMENT_KEYS = frozenset(
     {
@@ -546,7 +546,7 @@ def _proc_starttime(pid: int) -> int | None:
 def build_pinned_epoch_observer(
     pre_run: Mapping[str, Any],
 ) -> Callable[[str], EpochCapture]:
-    """Build the sole formal/drill epoch callback from package-pinned bytes."""
+    """Build the sole formal epoch callback from package-pinned bytes."""
 
     tools = pre_run.get("tool_identities")
     if type(tools) is not dict:
@@ -1064,10 +1064,7 @@ def _orchestrate_with_adapter_unprotected(
             "selection_identity": selection_snapshot.identity,
         }
     )
-    if pre_run.get("schema_version") != PRE_RUN_SCHEMA or selection.get("schema_version") not in {
-        RUNNER_SELECTION_SCHEMA,
-        DRILL_SELECTION_SCHEMA,
-    }:
+    if pre_run.get("schema_version") != PRE_RUN_SCHEMA or selection.get("schema_version") != RUNNER_SELECTION_SCHEMA:
         raise OrchestratorError("pre-run/selection schema mismatch")
     tool_identities = pre_run.get("tool_identities")
     if type(tool_identities) is not dict:
@@ -1388,16 +1385,15 @@ def orchestrate_with_adapter(
 
 def run_pinned_entry(
     *,
-    execution_class: str,
     pre_run_path: Path | str,
     selection_path: Path | str,
 ) -> dict[str, object]:
-    """Run the formal or disposable entry with no injectable live authority."""
+    """Run the formal entry with no injectable live authority."""
 
     pre_run_snapshot = snapshot_bytes(pre_run_path)
     pre_run = _strict_load(pre_run_snapshot, "pre-run authority")
-    if pre_run.get("execution_class") != execution_class:
-        raise OrchestratorError("CLI execution class differs from pre-run authority")
+    if pre_run.get("execution_class") != EXECUTION_CLASS:
+        raise OrchestratorError("pre-run execution class is not FORMAL_AB16")
     tools = pre_run.get("tool_identities")
     if type(tools) is not dict:
         raise OrchestratorError("pre-run tool identity map is absent")
@@ -1407,8 +1403,7 @@ def run_pinned_entry(
         tools["organic_unit_orchestrator"],
         "organic unit orchestrator",
     )
-    lock_context = _exclusive_prod_scale_locks() if execution_class == "FORMAL_AB16" else nullcontext()
-    with lock_context:
+    with _exclusive_prod_scale_locks():
         adapter = SubprocessLifecycleAdapter(
             pre_run=pre_run,
             epoch_observer=build_pinned_epoch_observer(pre_run),
@@ -1423,19 +1418,16 @@ def run_pinned_entry(
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subcommands = parser.add_subparsers(dest="command", required=True)
-    for command in ("drill", "formal"):
-        target = subcommands.add_parser(command)
-        target.add_argument("--pre-run", required=True, type=Path)
-        target.add_argument("--selection", required=True, type=Path)
+    target = subcommands.add_parser("formal")
+    target.add_argument("--pre-run", required=True, type=Path)
+    target.add_argument("--selection", required=True, type=Path)
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = _parser().parse_args(argv)
-    execution_class = "DISPOSABLE_LIVE_DRILL" if arguments.command == "drill" else "FORMAL_AB16"
     try:
         result = run_pinned_entry(
-            execution_class=execution_class,
             pre_run_path=arguments.pre_run,
             selection_path=arguments.selection,
         )

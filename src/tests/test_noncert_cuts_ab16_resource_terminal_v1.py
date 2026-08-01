@@ -6,7 +6,7 @@ import importlib.util
 from pathlib import Path
 import sys
 from types import ModuleType, SimpleNamespace
-from typing import Any, Mapping, Sequence
+from typing import Any, Sequence
 
 import pytest
 
@@ -399,7 +399,6 @@ def _fixture(
     tmp_path: Path,
     *,
     postseal_failure_exit_code: int = 0,
-    execution_class: str | None = None,
 ) -> tuple[Path, Path, Path]:
     attempt = tmp_path / "attempt"
     attempt.mkdir()
@@ -501,15 +500,13 @@ def _fixture(
         "manager_epoch_authority_identity": identities["preselection"],
         "package": package,
     }
-    if execution_class is None:
-        execution_class = "FORMAL_AB16" if postseal_failure_exit_code == 0 else "DISPOSABLE_LIVE_DRILL"
-    formal = execution_class == "FORMAL_AB16"
+    execution_class = "FORMAL_AB16"
     expected_payload_status = {
         "exit_code": postseal_failure_exit_code,
         "expectation": ("SUCCESS" if postseal_failure_exit_code == 0 else "POST_SEAL_FAILURE"),
         "signal": 0,
     }
-    payload_script = str(TOOLS / "organic_arm_runner_v1.py") if formal else identities["strict"]["path"]
+    payload_script = str(TOOLS / "organic_arm_runner_v1.py")
     pre_run = {
         "arm": "control",
         "arm_binding_identity": identities["binding"],
@@ -573,7 +570,7 @@ def _fixture(
         "repository_head": "d" * 40,
         "repository_git_tool_identity": identities["git"],
         "repository_root": str(ROOT),
-        "resource_contract": dict(LIFECYCLE.FORMAL_RESOURCE_CONTRACT if formal else LIFECYCLE.DRILL_RESOURCE_CONTRACT),
+        "resource_contract": dict(LIFECYCLE.FORMAL_RESOURCE_CONTRACT),
         "run_nonce": "run-a",
         "runner_selection_path": str(selection_path),
         "schema_version": "noncert-cuts-ab16-organic-pre-run-authority-v1",
@@ -610,9 +607,9 @@ def _fixture(
         "authorizations": {
             "global_claim_authorized": False,
             "mathematical_claim_authorized": False,
-            "organic_arm_launch_authorized": formal,
+            "organic_arm_launch_authorized": True,
             "production_certified_authorized": False,
-            "solver_run_authorized": formal,
+            "solver_run_authorized": True,
         },
         "baseline_admission_identity": identities["baseline"],
         "baseline_incumbent_sha256": "b" * 64,
@@ -626,16 +623,12 @@ def _fixture(
         "manifest_identity": identities["manifest"],
         "order": "ab",
         "pre_run_authority_identity": pre_run_identity,
-        "purpose": (
-            "prospective_noncert_cuts_ab16_formal_arm" if formal else "noncert_cuts_ab16_disposable_live_drill"
-        ),
+        "purpose": "prospective_noncert_cuts_ab16_formal_arm",
         "repository_head": "d" * 40,
         "repository_git_tool_identity": identities["git"],
         "repository_root": str(ROOT),
         "run_nonce": "run-a",
-        "schema_version": (
-            "noncert-cuts-ab16-organic-arm-selection-v1" if formal else "noncert-cuts-ab16-organic-drill-selection-v1"
-        ),
+        "schema_version": "noncert-cuts-ab16-organic-arm-selection-v1",
         "seed": 2026072301,
         "selection_nonce": "selection-a",
         "slot": "region-capacity-ab-control",
@@ -653,8 +646,6 @@ def _fixture(
 
 def _run(
     tmp_path: Path,
-    *,
-    execution_class: str | None = None,
     **adapter_kwargs: object,
 ) -> tuple[Path, dict[str, object]]:
     exit_code = adapter_kwargs.get("payload_exit_code", 0)
@@ -662,7 +653,6 @@ def _run(
     attempt, pre_run_path, selection_path = _fixture(
         tmp_path,
         postseal_failure_exit_code=exit_code,
-        execution_class=execution_class,
     )
     result = ORCHESTRATOR.orchestrate_with_adapter(
         pre_run_path=pre_run_path,
@@ -725,36 +715,6 @@ def test_postseal_payload_failure_is_not_hidden_by_keeper(tmp_path: Path) -> Non
     assert (attempt / "terminal-envelope.json").is_file()
     assert (attempt / "cleanup.json").is_file()
     assert (attempt / "detached-replay.json").is_file()
-
-
-@pytest.mark.parametrize(
-    ("execution_class", "payload_exit_code", "expected_verdict"),
-    [
-        (
-            "FORMAL_AB16",
-            7,
-            "EXPECTED_POST_SEAL_FAILURE_REPLAY_PASS",
-        ),
-        (
-            "DISPOSABLE_LIVE_DRILL",
-            0,
-            "RESOURCE_TERMINAL_CLEANUP_REPLAY_PASS",
-        ),
-    ],
-)
-def test_expected_payload_status_is_independent_of_execution_class(
-    tmp_path: Path,
-    execution_class: str,
-    payload_exit_code: int,
-    expected_verdict: str,
-) -> None:
-    _attempt, result = _run(
-        tmp_path,
-        execution_class=execution_class,
-        payload_exit_code=payload_exit_code,
-    )
-    assert result["status"] == "PASS"
-    assert result["verdict"] == expected_verdict
 
 
 def test_unregistered_payload_failure_still_fails_closed(tmp_path: Path) -> None:
@@ -914,38 +874,6 @@ def test_pre_run_repository_and_execution_mutations_fail_closed(
         VERIFIER.validate_pre_run_authority(pre_run)
 
 
-@pytest.mark.parametrize(
-    ("execution_class", "wrong_contract"),
-    [
-        ("FORMAL_AB16", LIFECYCLE.DRILL_RESOURCE_CONTRACT),
-        ("DISPOSABLE_LIVE_DRILL", LIFECYCLE.FORMAL_RESOURCE_CONTRACT),
-    ],
-)
-def test_execution_class_rejects_cross_class_resource_contract(
-    tmp_path: Path,
-    execution_class: str,
-    wrong_contract: Mapping[str, object],
-) -> None:
-    exit_code = 0
-    _attempt, pre_run_path, _selection_path = _fixture(
-        tmp_path,
-        postseal_failure_exit_code=exit_code,
-        execution_class=execution_class,
-    )
-    pre_run = copy.deepcopy(VERIFIER.snapshot_json(pre_run_path).value)
-    pre_run["resource_contract"] = copy.deepcopy(wrong_contract)
-    with pytest.raises(
-        VERIFIER.VerificationError,
-        match="resource contract differs",
-    ):
-        VERIFIER.validate_pre_run_authority(pre_run)
-    with pytest.raises(
-        LIFECYCLE.LifecycleError,
-        match="resource contract differs",
-    ):
-        LIFECYCLE.validate_pre_run_authority(pre_run)
-
-
 def test_resource_contract_constants_and_systemd_argv_are_exact() -> None:
     assert LIFECYCLE.FORMAL_RESOURCE_CONTRACT == {
         "collect_mode": "inactive-or-failed",
@@ -958,19 +886,7 @@ def test_resource_contract_constants_and_systemd_argv_are_exact() -> None:
         "send_sigkill": True,
         "single_worker": True,
     }
-    assert LIFECYCLE.DRILL_RESOURCE_CONTRACT == {
-        "collect_mode": "inactive-or-failed",
-        "kill_mode": "control-group",
-        "memory_high_bytes": 2 * 1024**3,
-        "memory_max_bytes": 4 * 1024**3,
-        "memory_swap_max_bytes": 1024**3,
-        "oom_policy": "continue",
-        "runtime_max_seconds": 900,
-        "send_sigkill": True,
-        "single_worker": True,
-    }
     assert VERIFIER.FORMAL_RESOURCE_CONTRACT == LIFECYCLE.FORMAL_RESOURCE_CONTRACT
-    assert VERIFIER.DRILL_RESOURCE_CONTRACT == LIFECYCLE.DRILL_RESOURCE_CONTRACT
     formal_argv = LIFECYCLE.build_systemd_run_argv(
         systemd_run_path="/usr/bin/systemd-run",
         unit_name="cuts-ab16-formal-fixture.service",
@@ -978,17 +894,8 @@ def test_resource_contract_constants_and_systemd_argv_are_exact() -> None:
         resource_contract=LIFECYCLE.FORMAL_RESOURCE_CONTRACT,
         execution_class="FORMAL_AB16",
     )
-    drill_argv = LIFECYCLE.build_systemd_run_argv(
-        systemd_run_path="/usr/bin/systemd-run",
-        unit_name="cuts-ab16-drill-fixture.service",
-        supervisor_argv=["/python", "-I", "/supervisor.py"],
-        resource_contract=LIFECYCLE.DRILL_RESOURCE_CONTRACT,
-        execution_class="DISPOSABLE_LIVE_DRILL",
-    )
     assert "--property=RuntimeMaxSec=3600" in formal_argv
-    assert "--property=RuntimeMaxSec=900" in drill_argv
     assert "--property=CollectMode=inactive-or-failed" in formal_argv
-    assert "--property=CollectMode=inactive-or-failed" in drill_argv
 
 
 @pytest.mark.parametrize("field", ["send_sigkill", "single_worker"])

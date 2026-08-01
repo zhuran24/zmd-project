@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -13,6 +14,141 @@ SPEC = importlib.util.spec_from_file_location("noncert_cuts_ab16_contract_v1", M
 assert SPEC is not None and SPEC.loader is not None
 CONTRACT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CONTRACT)
+
+
+def _input_identity(
+    path: str,
+    *,
+    mode: int = 0o444,
+    sha256: str = "a" * 64,
+    size_bytes: int = 17,
+) -> dict[str, object]:
+    return {
+        "mode": mode,
+        "path": path,
+        "sha256": sha256,
+        "size_bytes": size_bytes,
+    }
+
+
+def test_attempt_input_set_sha256_uses_canonical_content_projection() -> None:
+    strict_inputs = {
+        "frozen_rules": _input_identity("/campaign/input/rules.json"),
+    }
+    tools = {
+        "runner": _input_identity(
+            "/campaign/tools/runner.py",
+            mode=0o555,
+            sha256="b" * 64,
+            size_bytes=29,
+        ),
+    }
+    actual = CONTRACT.attempt_input_set_sha256(
+        preregistration_sha256="1" * 64,
+        repository_head="2" * 40,
+        strict_input_identities=strict_inputs,
+        tool_identities=tools,
+    )
+    projection = {
+        "preregistration_sha256": "1" * 64,
+        "repository_head": "2" * 40,
+        "schema": CONTRACT.ATTEMPT_INPUT_SET_SCHEMA,
+        "strict_input_identities": {
+            "frozen_rules": {
+                "mode": 0o444,
+                "sha256": "a" * 64,
+                "size_bytes": 17,
+            },
+        },
+        "tool_identities": {
+            "runner": {
+                "mode": 0o555,
+                "sha256": "b" * 64,
+                "size_bytes": 29,
+            },
+        },
+    }
+    assert actual == hashlib.sha256(CONTRACT.canonical_json_bytes(projection)).hexdigest()
+
+    relocated = CONTRACT.attempt_input_set_sha256(
+        preregistration_sha256="1" * 64,
+        repository_head="2" * 40,
+        strict_input_identities={
+            "frozen_rules": _input_identity("/different/location/rules.json"),
+        },
+        tool_identities={
+            "runner": _input_identity(
+                "/different/location/runner.py",
+                mode=0o555,
+                sha256="b" * 64,
+                size_bytes=29,
+            ),
+        },
+    )
+    assert relocated == actual
+
+    changed_bytes = CONTRACT.attempt_input_set_sha256(
+        preregistration_sha256="1" * 64,
+        repository_head="2" * 40,
+        strict_input_identities={
+            "frozen_rules": _input_identity(
+                "/campaign/input/rules.json",
+                sha256="c" * 64,
+            ),
+        },
+        tool_identities=tools,
+    )
+    assert changed_bytes != actual
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "empty_strict_inputs",
+        "empty_tools",
+        "extra_identity_field",
+        "invalid_identity_digest",
+        "invalid_role",
+        "noncanonical_head",
+        "noncanonical_preregistration_digest",
+        "nonexact_mode",
+        "nonexact_size",
+        "relative_path",
+    ),
+)
+def test_attempt_input_set_sha256_rejects_malformed_identity_sets(mutation: str) -> None:
+    preregistration_sha256: object = "1" * 64
+    repository_head: object = "2" * 40
+    strict_inputs: object = {"frozen_rules": _input_identity("/campaign/input/rules.json")}
+    tools: object = {"runner": _input_identity("/campaign/tools/runner.py", mode=0o555)}
+    if mutation == "empty_strict_inputs":
+        strict_inputs = {}
+    elif mutation == "empty_tools":
+        tools = {}
+    elif mutation == "extra_identity_field":
+        strict_inputs["frozen_rules"]["inode"] = 99
+    elif mutation == "invalid_identity_digest":
+        strict_inputs["frozen_rules"]["sha256"] = "A" * 64
+    elif mutation == "invalid_role":
+        strict_inputs = {1: _input_identity("/campaign/input/rules.json")}
+    elif mutation == "noncanonical_head":
+        repository_head = "2" * 39
+    elif mutation == "noncanonical_preregistration_digest":
+        preregistration_sha256 = "A" * 64
+    elif mutation == "nonexact_mode":
+        strict_inputs["frozen_rules"]["mode"] = True
+    elif mutation == "nonexact_size":
+        strict_inputs["frozen_rules"]["size_bytes"] = True
+    else:
+        strict_inputs["frozen_rules"]["path"] = "relative/rules.json"
+
+    with pytest.raises(CONTRACT.ContractError):
+        CONTRACT.attempt_input_set_sha256(
+            preregistration_sha256=preregistration_sha256,
+            repository_head=repository_head,
+            strict_input_identities=strict_inputs,
+            tool_identities=tools,
+        )
 
 
 def _terminal(**changes: object) -> dict[str, object]:
@@ -314,60 +450,108 @@ def test_suite_gate_is_credibility_first_and_rejects_omission() -> None:
         CONTRACT.suite_gate({"configuration_records": omitted})
 
 
-def test_preselection_stop_does_not_consume_slot() -> None:
+def test_initial_consumption_state_is_research_only_and_unattempted() -> None:
     state = CONTRACT.new_consumption_state()
-    stopped = CONTRACT.transition_consumption_state(
+    assert state["schema"] == CONTRACT.STATE_SCHEMA
+    assert state["next_index"] == 0
+    assert state["authorizations"] == CONTRACT.RESEARCH_ONLY_AUTHORIZATIONS
+    assert all(value is False for value in state["authorizations"].values())
+    assert state["slots"] == [
+        {"attempt_count": 0, "slot": slot, "state": "PENDING"}
+        for slot in CONTRACT.ARM_SEQUENCE
+    ]
+
+
+def test_preselection_failure_keeps_slot_retryable() -> None:
+    state = CONTRACT.new_consumption_state()
+    retryable = CONTRACT.transition_consumption_state(
         state,
         {
+            "attempt_ordinal": 1,
             "event": "PRESELECTION_FAILURE",
             "slot": CONTRACT.ARM_SEQUENCE[0],
             "reason": "manager_epoch_mismatch",
         },
     )
     assert state["slots"][0]["state"] == "PENDING"
-    assert stopped["slots"][0]["state"] == "PENDING"
-    assert stopped["next_index"] == 0
-    assert stopped["stopped"] is True
+    assert retryable["slots"][0] == {
+        "attempt_count": 1,
+        "slot": CONTRACT.ARM_SEQUENCE[0],
+        "state": "RETRYABLE",
+    }
+    assert retryable["next_index"] == 0
 
-
-def test_postselection_failure_consumes_slot_and_stops_immediately() -> None:
-    initial = CONTRACT.new_consumption_state()
     selected = CONTRACT.transition_consumption_state(
-        initial,
+        retryable,
         {
+            "attempt_ordinal": 2,
             "event": "SELECTION_CREATED",
             "slot": CONTRACT.ARM_SEQUENCE[0],
             "reason": None,
         },
     )
-    stopped = CONTRACT.transition_consumption_state(
+    assert selected["slots"][0]["attempt_count"] == 2
+    assert selected["slots"][0]["state"] == "ACTIVE"
+
+
+def test_postselection_failure_retries_same_slot_without_advancing() -> None:
+    initial = CONTRACT.new_consumption_state()
+    selected = CONTRACT.transition_consumption_state(
+        initial,
+        {
+            "attempt_ordinal": 1,
+            "event": "SELECTION_CREATED",
+            "slot": CONTRACT.ARM_SEQUENCE[0],
+            "reason": None,
+        },
+    )
+    retryable = CONTRACT.transition_consumption_state(
         selected,
         {
+            "attempt_ordinal": 1,
             "event": "ARM_CREDIBILITY_INCOMPLETE",
             "slot": CONTRACT.ARM_SEQUENCE[0],
             "reason": "outer_timeout",
         },
     )
-    assert stopped["slots"][0]["state"] == "INCOMPLETE"
-    assert stopped["slots"][1]["state"] == "PENDING"
-    with pytest.raises(CONTRACT.ContractError, match="stopped campaign"):
+    assert retryable["next_index"] == 0
+    assert retryable["slots"][0]["attempt_count"] == 1
+    assert retryable["slots"][0]["state"] == "RETRYABLE"
+    assert retryable["slots"][1]["state"] == "PENDING"
+
+    with pytest.raises(CONTRACT.ContractError, match="next preregistered arm slot"):
         CONTRACT.transition_consumption_state(
-            stopped,
+            retryable,
             {
+                "attempt_ordinal": 1,
                 "event": "SELECTION_CREATED",
                 "slot": CONTRACT.ARM_SEQUENCE[1],
                 "reason": None,
             },
         )
 
+    retried = CONTRACT.transition_consumption_state(
+        retryable,
+        {
+            "attempt_ordinal": 2,
+            "event": "SELECTION_CREATED",
+            "slot": CONTRACT.ARM_SEQUENCE[0],
+            "reason": None,
+        },
+    )
+    assert retried["slots"][0]["attempt_count"] == 2
+    assert retried["slots"][0]["state"] == "ACTIVE"
+
 
 def test_consumption_state_rejects_out_of_order_future_mutation() -> None:
     state = CONTRACT.new_consumption_state()
+    state["slots"][1]["attempt_count"] = 1
     state["slots"][1]["state"] = "COMPLETE"
     with pytest.raises(CONTRACT.ContractError, match="future arm slot"):
         CONTRACT.transition_consumption_state(
             state,
             {
+                "attempt_ordinal": 1,
                 "event": "SELECTION_CREATED",
                 "slot": CONTRACT.ARM_SEQUENCE[0],
                 "reason": None,
@@ -377,10 +561,11 @@ def test_consumption_state_rejects_out_of_order_future_mutation() -> None:
 
 def test_credible_arm_advances_only_after_selection() -> None:
     state = CONTRACT.new_consumption_state()
-    with pytest.raises(CONTRACT.ContractError, match="consumed selection"):
+    with pytest.raises(CONTRACT.ContractError, match="active attempt"):
         CONTRACT.transition_consumption_state(
             state,
             {
+                "attempt_ordinal": 1,
                 "event": "ARM_CREDIBILITY_PASS",
                 "slot": CONTRACT.ARM_SEQUENCE[0],
                 "reason": None,
@@ -389,6 +574,7 @@ def test_credible_arm_advances_only_after_selection() -> None:
     selected = CONTRACT.transition_consumption_state(
         state,
         {
+            "attempt_ordinal": 1,
             "event": "SELECTION_CREATED",
             "slot": CONTRACT.ARM_SEQUENCE[0],
             "reason": None,
@@ -397,6 +583,7 @@ def test_credible_arm_advances_only_after_selection() -> None:
     completed = CONTRACT.transition_consumption_state(
         selected,
         {
+            "attempt_ordinal": 1,
             "event": "ARM_CREDIBILITY_PASS",
             "slot": CONTRACT.ARM_SEQUENCE[0],
             "reason": None,
@@ -404,6 +591,74 @@ def test_credible_arm_advances_only_after_selection() -> None:
     )
     assert completed["next_index"] == 1
     assert completed["slots"][0]["state"] == "COMPLETE"
+    assert completed["slots"][0]["attempt_count"] == 1
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("authority", "may not grant authority"),
+        ("pending-count", "identity/state drifted"),
+        ("retryable-zero", "identity/state drifted"),
+        ("future-count", "identity/state drifted"),
+    ],
+)
+def test_consumption_state_rejects_authority_or_attempt_drift(
+    mutation: str,
+    message: str,
+) -> None:
+    state = CONTRACT.new_consumption_state()
+    if mutation == "authority":
+        state["authorizations"]["production_certified_authorized"] = True
+    elif mutation == "pending-count":
+        state["slots"][0]["attempt_count"] = 1
+    elif mutation == "retryable-zero":
+        state["slots"][0]["state"] = "RETRYABLE"
+    else:
+        state["slots"][1]["attempt_count"] = 1
+    with pytest.raises(CONTRACT.ContractError, match=message):
+        CONTRACT.transition_consumption_state(
+            state,
+            {
+                "attempt_ordinal": 1,
+                "event": "SELECTION_CREATED",
+                "slot": CONTRACT.ARM_SEQUENCE[0],
+                "reason": None,
+            },
+        )
+
+
+def test_consumption_events_reject_attempt_gaps_and_stale_terminals() -> None:
+    state = CONTRACT.new_consumption_state()
+    with pytest.raises(CONTRACT.ContractError, match="selection creation state drifted"):
+        CONTRACT.transition_consumption_state(
+            state,
+            {
+                "attempt_ordinal": 2,
+                "event": "SELECTION_CREATED",
+                "slot": CONTRACT.ARM_SEQUENCE[0],
+                "reason": None,
+            },
+        )
+    selected = CONTRACT.transition_consumption_state(
+        state,
+        {
+            "attempt_ordinal": 1,
+            "event": "SELECTION_CREATED",
+            "slot": CONTRACT.ARM_SEQUENCE[0],
+            "reason": None,
+        },
+    )
+    with pytest.raises(CONTRACT.ContractError, match="active attempt"):
+        CONTRACT.transition_consumption_state(
+            selected,
+            {
+                "attempt_ordinal": 2,
+                "event": "ARM_CREDIBILITY_INCOMPLETE",
+                "slot": CONTRACT.ARM_SEQUENCE[0],
+                "reason": "wrong attempt",
+            },
+        )
 
 
 def test_strict_json_rejects_duplicates_noncanonical_and_nan() -> None:

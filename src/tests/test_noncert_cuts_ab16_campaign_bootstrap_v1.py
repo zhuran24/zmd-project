@@ -35,6 +35,10 @@ BOOTSTRAP = _load(
     AB16_RESEARCH / "ab16_campaign_bootstrap_v1.py",
 )
 AUTH = BOOTSTRAP.authority
+CONTRACT = _load(
+    "noncert_cuts_ab16_contract_v1_for_bootstrap",
+    AB16_RESEARCH / "ab16_contract_v1.py",
+)
 
 
 def test_cli_default_python_uses_the_current_merged_repository() -> None:
@@ -425,16 +429,104 @@ def test_gate_a_creates_only_nonauthorizing_candidate(
     assert path_preregistration == BOOTSTRAP._path_preregistration(  # noqa: SLF001
         fixture["campaign"]
     )
-    assert len(path_preregistration["attempt_dirs"]) == 16
-    assert set(path_preregistration["attempt_dirs"]) == {
-        f"{configuration}-{order}-{arm}"
-        for configuration in AUTH.AB16_CONFIGURATIONS
-        for order in AUTH.AB16_ORDERS
-        for arm in AUTH.AB16_ARMS
+    assert set(path_preregistration) == {
+        "arm_sequence",
+        "attempt_directory_pattern",
+        "baseline_admission_path",
+        "baseline_fixed_replay_path",
+        "baseline_incumbent_path",
+        "baseline_rebuilt_metadata_path",
+        "baseline_rebuilt_model_path",
+        "binding_paths",
+        "campaign_dir",
+        "classification_contract_path",
+        "common_prestate_path",
+        "experiment_contract_sha256",
+        "manifest_path",
+        "purpose",
+        "retry_policy",
+        "run_nonce",
+        "runtime_max_sec",
+        "schema",
+        "seed",
+        "slot_roots",
+        "suite_selection_path",
+        "terminal_classification_path",
+        "workers",
+    }
+    assert path_preregistration["schema"] == "noncert-cuts-ab16-scientific-preregistration-v2"
+    assert path_preregistration["arm_sequence"] == list(CONTRACT.ARM_SEQUENCE)
+    assert path_preregistration["attempt_directory_pattern"] == "attempt-[0-9]{4,}"
+    assert len(path_preregistration["slot_roots"]) == 16
+    assert set(path_preregistration["slot_roots"]) == set(CONTRACT.ARM_SEQUENCE)
+    assert path_preregistration["experiment_contract_sha256"] == (
+        "24b45e110952505e6ffa92d3ddfdf33874cc3cb4503397e993898e79174ded9e"
+    )
+    assert path_preregistration["seed"] == 2026072301
+    assert path_preregistration["workers"] == 1
+    assert path_preregistration["runtime_max_sec"] == 3600
+    assert path_preregistration["retry_policy"] == {
+        "credible_terminal_closes_slot": True,
+        "failed_attempt_retryable": True,
+        "lowest_credible_ordinal_wins": True,
+        "no_overwrite_per_attempt": True,
+        "retry_limit": None,
     }
     assert Path(path_preregistration["baseline_rebuilt_model_path"]).name == "cut-free-model.bin"
     assert Path(path_preregistration["baseline_rebuilt_metadata_path"]).name == "rebuilt-model-metadata.json"
     assert Path(path_preregistration["baseline_incumbent_path"]).name == ("incumbent.json")
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "arm_sequence",
+        "attempt_directory_pattern",
+        "experiment_contract_sha256",
+        "extra_key",
+        "retry_policy",
+        "runtime_max_sec",
+        "seed",
+        "slot_root",
+        "workers",
+    ),
+)
+def test_scientific_preregistration_rejects_design_or_topology_drift(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    campaign = tmp_path / "campaigns" / "run-preregistration-a001"
+    preregistration = BOOTSTRAP._path_preregistration(campaign)  # noqa: SLF001
+    if mutation == "arm_sequence":
+        preregistration["arm_sequence"][:2] = reversed(preregistration["arm_sequence"][:2])
+    elif mutation == "attempt_directory_pattern":
+        preregistration["attempt_directory_pattern"] = "attempt-[0-9]{3}"
+    elif mutation == "experiment_contract_sha256":
+        preregistration["experiment_contract_sha256"] = "0" * 64
+    elif mutation == "extra_key":
+        preregistration["attempt_candidate_paths"] = {}
+    elif mutation == "retry_policy":
+        preregistration["retry_policy"]["failed_attempt_retryable"] = False
+    elif mutation == "runtime_max_sec":
+        preregistration["runtime_max_sec"] = 3599
+    elif mutation == "seed":
+        preregistration["seed"] = 2026072302
+    elif mutation == "slot_root":
+        first = CONTRACT.ARM_SEQUENCE[0]
+        preregistration["slot_roots"][first] = str(campaign / "prospective-ab16" / "arms" / "wrong")
+    else:
+        preregistration["workers"] = 2
+
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="key set drifted|topology drifted"):
+        BOOTSTRAP.validate_path_preregistration(
+            preregistration,
+            campaign_dir=campaign,
+        )
+
+
+def test_bootstrap_source_set_excludes_retired_disposable_drill_modules() -> None:
+    assert "disposable_drill_authority_v1" not in BOOTSTRAP.SCRIPT_TOOL_FILES
+    assert "disposable_drill_payload_v1" not in BOOTSTRAP.SCRIPT_TOOL_FILES
 
 
 def test_gate_a_receipt_schema_and_candidate_no_overwrite(
@@ -557,8 +649,16 @@ def test_gate_b_creates_complete_v4_root_and_seals_full_source_set(
     )
     assert preregistration["manifest_path"] == prospective["manifest_path"]
     assert preregistration["suite_selection_path"] == prospective["arm_selection_path"]
-    assert preregistration["attempt_dirs"] == {arm["slot"]: arm["attempt_dir"] for arm in prospective["arms"]}
+    assert preregistration["slot_roots"] == {arm["slot"]: arm["attempt_dir"] for arm in prospective["arms"]}
     assert preregistration["classification_contract_path"] == str(package_dir / "payload" / "tool.ab16_contract_v1.py")
+    wrong_root = copy.deepcopy(root)
+    wrong_root["stage_topology"]["prospective_ab16"]["arms"][0]["attempt_dir"] += "-wrong"
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="differs from v4 root"):
+        BOOTSTRAP._validate_path_preregistration_against_root(  # noqa: SLF001
+            preregistration,
+            wrong_root,
+            campaign_dir=fixture["campaign"],
+        )
     assert (
         AUTH.verify_package(
             package_dir,

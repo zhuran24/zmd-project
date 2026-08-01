@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 import copy
+import hashlib
 import json
 import math
 from typing import Any
@@ -55,7 +56,15 @@ SINGLE_FAMILY_RUNTIME_EFFECT = "SINGLE_FAMILY_RUNTIME_EFFECT"
 BUNDLE_RUNTIME_EFFECT = "BUNDLE_RUNTIME_EFFECT"
 SUITE_COMPLETE = "AB16_FIXED_CONFIGURATION_SUITE_COMPLETE"
 
-STATE_SCHEMA = "noncert-cuts-ab16-consumption-state-v1"
+STATE_SCHEMA = "noncert-cuts-ab16-consumption-state-v2"
+ATTEMPT_INPUT_SET_SCHEMA = "noncert-cuts-ab16-attempt-input-set-v1"
+RESEARCH_ONLY_AUTHORIZATIONS = {
+    "family_global_soundness_authorized": False,
+    "global_claim_authorized": False,
+    "mathematical_claim_authorized": False,
+    "production_certified_authorized": False,
+    "stage_b_promotion_authorized": False,
+}
 TERMINAL_STATUSES = frozenset(
     {
         "CERTIFIED",
@@ -147,6 +156,83 @@ def canonical_json_bytes(value: object) -> bytes:
         separators=(",", ":"),
         allow_nan=False,
     ).encode("utf-8")
+
+
+def _strict_lower_hex(value: object, *, length: int, label: str) -> str:
+    digest = _strict_nonempty_string(value, label)
+    if len(digest) != length or any(character not in "0123456789abcdef" for character in digest):
+        raise ContractError(f"{label} must be exactly {length} lowercase hex characters")
+    return digest
+
+
+def _content_identity_projection(value: object, label: str) -> dict[str, object]:
+    identity = _strict_mapping(
+        value,
+        {"mode", "path", "sha256", "size_bytes"},
+        label,
+    )
+    path = _strict_nonempty_string(identity["path"], f"{label}.path")
+    if not path.startswith("/"):
+        raise ContractError(f"{label}.path must be absolute")
+    mode = _strict_nonnegative_int(identity["mode"], f"{label}.mode")
+    if mode > 0o7777:
+        raise ContractError(f"{label}.mode is outside the permission-bit range")
+    return {
+        "mode": mode,
+        "sha256": _strict_lower_hex(
+            identity["sha256"],
+            length=64,
+            label=f"{label}.sha256",
+        ),
+        "size_bytes": _strict_nonnegative_int(
+            identity["size_bytes"],
+            f"{label}.size_bytes",
+        ),
+    }
+
+
+def _identity_map_projection(value: object, label: str) -> dict[str, dict[str, object]]:
+    if type(value) is not dict or not value:
+        raise ContractError(f"{label} must be an exact non-empty object")
+    if any(type(role) is not str or not role for role in value):
+        raise ContractError(f"{label} roles must be non-empty strings")
+    projection: dict[str, dict[str, object]] = {}
+    for role in sorted(value):
+        projection[role] = _content_identity_projection(value[role], f"{label}.{role}")
+    return projection
+
+
+def attempt_input_set_sha256(
+    *,
+    preregistration_sha256: object,
+    repository_head: object,
+    strict_input_identities: object,
+    tool_identities: object,
+) -> str:
+    """Hash the actual attempt inputs while excluding location-only paths."""
+
+    projection = {
+        "preregistration_sha256": _strict_lower_hex(
+            preregistration_sha256,
+            length=64,
+            label="preregistration_sha256",
+        ),
+        "repository_head": _strict_lower_hex(
+            repository_head,
+            length=40,
+            label="repository_head",
+        ),
+        "schema": ATTEMPT_INPUT_SET_SCHEMA,
+        "strict_input_identities": _identity_map_projection(
+            strict_input_identities,
+            "strict_input_identities",
+        ),
+        "tool_identities": _identity_map_projection(
+            tool_identities,
+            "tool_identities",
+        ),
+    }
+    return hashlib.sha256(canonical_json_bytes(projection)).hexdigest()
 
 
 def strict_loads(raw: bytes) -> object:
@@ -613,15 +699,15 @@ def suite_gate(record: Mapping[str, object]) -> dict[str, object]:
 
 
 def new_consumption_state() -> dict[str, object]:
-    """Return the immutable-value initial state for the fixed sixteen slots."""
+    """Return the retryable initial state for the fixed sixteen slots."""
 
     return {
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
         "schema": STATE_SCHEMA,
         "next_index": 0,
-        "stopped": False,
-        "stop_reason": None,
         "slots": [
             {
+                "attempt_count": 0,
                 "slot": slot,
                 "state": "PENDING",
             }
@@ -633,47 +719,55 @@ def new_consumption_state() -> dict[str, object]:
 def _validate_consumption_state(value: object) -> Mapping[str, Any]:
     state = _strict_mapping(
         value,
-        {"schema", "next_index", "stopped", "stop_reason", "slots"},
+        {"authorizations", "schema", "next_index", "slots"},
         "consumption state",
     )
     if state["schema"] != STATE_SCHEMA:
         raise ContractError("consumption state schema drifted")
+    authorizations = _strict_mapping(
+        state["authorizations"],
+        set(RESEARCH_ONLY_AUTHORIZATIONS),
+        "consumption state authorizations",
+    )
+    if authorizations != RESEARCH_ONLY_AUTHORIZATIONS:
+        raise ContractError("consumption state may not grant authority")
     next_index = _strict_nonnegative_int(state["next_index"], "next_index")
     if next_index > len(ARM_SEQUENCE):
         raise ContractError("next_index is out of range")
-    stopped = _strict_bool(state["stopped"], "stopped")
-    stop_reason = state["stop_reason"]
-    if stop_reason is not None and (type(stop_reason) is not str or not stop_reason):
-        raise ContractError("stop_reason must be null or a non-empty string")
-    if stopped != (stop_reason is not None):
-        raise ContractError("stopped and stop_reason disagree")
     slots = state["slots"]
     if type(slots) is not list or len(slots) != len(ARM_SEQUENCE):
         raise ContractError("consumption slot set drifted")
-    allowed_states = {"PENDING", "CONSUMED", "COMPLETE", "INCOMPLETE"}
+    allowed_states = {"PENDING", "ACTIVE", "RETRYABLE", "COMPLETE"}
     for index, expected_slot in enumerate(ARM_SEQUENCE):
         member = _strict_mapping(
             slots[index],
-            {"slot", "state"},
+            {"attempt_count", "slot", "state"},
             f"consumption slot {index}",
         )
-        if member["slot"] != expected_slot or member["state"] not in allowed_states:
+        attempt_count = _strict_nonnegative_int(
+            member["attempt_count"],
+            f"consumption slot {index} attempt_count",
+        )
+        if (
+            member["slot"] != expected_slot
+            or member["state"] not in allowed_states
+            or (member["state"] == "PENDING") is not (attempt_count == 0)
+        ):
             raise ContractError("consumption slot identity/state drifted")
-    complete_prefix = all(slots[index]["state"] == "COMPLETE" for index in range(next_index))
-    if not complete_prefix:
+    if any(slots[index]["state"] != "COMPLETE" for index in range(next_index)):
         raise ContractError("consumption state lacks a complete prefix")
     if next_index == len(ARM_SEQUENCE):
-        if stopped or any(member["state"] != "COMPLETE" for member in slots):
+        if any(member["state"] != "COMPLETE" for member in slots):
             raise ContractError("completed consumption state drifted")
         return state
     current_state = slots[next_index]["state"]
-    if any(member["state"] != "PENDING" for member in slots[next_index + 1 :]):
+    if current_state not in {"PENDING", "ACTIVE", "RETRYABLE"}:
+        raise ContractError("current consumption slot has an invalid state")
+    if any(
+        member["state"] != "PENDING" or member["attempt_count"] != 0
+        for member in slots[next_index + 1 :]
+    ):
         raise ContractError("a future arm slot was consumed out of order")
-    if stopped:
-        if current_state not in {"PENDING", "INCOMPLETE"}:
-            raise ContractError("stopped consumption state has an invalid current slot")
-    elif current_state not in {"PENDING", "CONSUMED"}:
-        raise ContractError("active consumption state has an invalid current slot")
     return state
 
 
@@ -686,11 +780,9 @@ def transition_consumption_state(
     checked_state = _validate_consumption_state(state)
     checked_event = _strict_mapping(
         event,
-        {"event", "slot", "reason"},
+        {"attempt_ordinal", "event", "slot", "reason"},
         "consumption event",
     )
-    if checked_state["stopped"]:
-        raise ContractError("a stopped campaign cannot consume another event")
     index = checked_state["next_index"]
     if index == len(ARM_SEQUENCE):
         raise ContractError("all arm slots are already complete")
@@ -706,29 +798,41 @@ def transition_consumption_state(
         "ARM_CREDIBILITY_INCOMPLETE",
     }:
         raise ContractError("consumption event is unsupported")
-    current = checked_state["slots"][index]["state"]
+    attempt_ordinal = _strict_nonnegative_int(
+        checked_event["attempt_ordinal"],
+        "attempt_ordinal",
+    )
+    if attempt_ordinal == 0:
+        raise ContractError("attempt_ordinal must be positive")
+    current_member = checked_state["slots"][index]
+    current = current_member["state"]
+    attempt_count = current_member["attempt_count"]
     result = copy.deepcopy(dict(checked_state))
+    result_member = result["slots"][index]
     if event_name == "PRESELECTION_FAILURE":
         _strict_nonempty_string(reason, "preselection failure reason")
-        if current != "PENDING":
-            raise ContractError("preselection failure occurred after slot consumption")
-        result["stopped"] = True
-        result["stop_reason"] = reason
+        if current not in {"PENDING", "RETRYABLE"} or attempt_ordinal != attempt_count + 1:
+            raise ContractError("preselection failure attempt order drifted")
+        result_member["attempt_count"] = attempt_ordinal
+        result_member["state"] = "RETRYABLE"
     elif event_name == "SELECTION_CREATED":
-        if reason is not None or current != "PENDING":
+        if (
+            reason is not None
+            or current not in {"PENDING", "RETRYABLE"}
+            or attempt_ordinal != attempt_count + 1
+        ):
             raise ContractError("selection creation state drifted")
-        result["slots"][index]["state"] = "CONSUMED"
+        result_member["attempt_count"] = attempt_ordinal
+        result_member["state"] = "ACTIVE"
     elif event_name == "ARM_CREDIBILITY_PASS":
-        if reason is not None or current != "CONSUMED":
-            raise ContractError("credible arm completion lacks a consumed selection")
-        result["slots"][index]["state"] = "COMPLETE"
+        if reason is not None or current != "ACTIVE" or attempt_ordinal != attempt_count:
+            raise ContractError("credible arm completion lacks the active attempt")
+        result_member["state"] = "COMPLETE"
         result["next_index"] = index + 1
     else:
         _strict_nonempty_string(reason, "arm credibility failure reason")
-        if current != "CONSUMED":
-            raise ContractError("incomplete arm lacks a consumed selection")
-        result["slots"][index]["state"] = "INCOMPLETE"
-        result["stopped"] = True
-        result["stop_reason"] = reason
+        if current != "ACTIVE" or attempt_ordinal != attempt_count:
+            raise ContractError("incomplete arm lacks the active attempt")
+        result_member["state"] = "RETRYABLE"
     _validate_consumption_state(result)
     return result

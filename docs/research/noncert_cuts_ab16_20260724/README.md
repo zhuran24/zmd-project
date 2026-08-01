@@ -1,409 +1,105 @@
 # Prospective non-certified cuts AB16 campaign
 
-Document kind: research implementation and current-status summary
-Cutoff date: 2026-07-30
-Status: `A031_TO_A038_FROZEN / A038_FAIL_CLOSED / FRESH_SUCCESSOR_NOT_CREATED`
-Formal campaign: no trusted terminal
-Organic arms: `0/16` created or run
+Document kind: research implementation contract
 
-## Current status
+Cutoff date: 2026-08-01
 
-Across the frozen attempts, the farthest formal branch was A033: it passed
-fresh Gate-A, Gate-B qualification and package/campaign creation, then
-published exactly
-`formal-ab16/formal-launch-admission-a001.json`. It has no guardian-ready,
-attempt-consumption, formal selection, unit, arm or terminal receipt. A031
-and A032 froze earlier on pre-owner bootstrap failures. All three roots are
-immutable and cannot be retried, repaired or used as authority ancestors for
-a successor.
+Status: implementation slimmed; experiment not yet run; organic arms `0/16`
 
-A034 is also frozen. Its no-overwrite root is
-`.artifacts/noncert_cuts_ab16_20260724/gate-a-fresh-20260730T051517Z-a034/`.
-It published input authority once and completed only the builder plus
-disposable drill. It did not finalize Gate A, publish candidate or
-preregistration, enter Gate B, create a package/campaign, or consume a formal
-attempt. The freeze audit observed `12` directories, `110` regular files and
-`60,088,976` file bytes; that inventory is a read-only status observation,
-not a receipt or new authority. A034 must not be replayed, completed or
-supplemented.
+## Scope
 
-A035, A036 and A037 each stopped after their one-shot input-authority
-publication and remain immutable. A038 is the latest frozen root:
-`.artifacts/noncert_cuts_ab16_20260724/gate-a-fresh-20260730T145321Z-a038/`.
-Its pinned Gate-A full-preflight receipt is `FAIL_CLOSED` with exit code `1`
-at committed HEAD `6a953df694ca8aa3568fe38cc98999b2a0fffe10`; all three
-authorization booleans remain false. That root must not be repaired,
-supplemented, replayed as a PASS, or reused. No successor root has been
-created, no Gate-A authority has been finalized after the failure, and no
-organic arm exists.
+This directory implements one research-only A/B experiment: test whether the
+three non-certified cut families can improve solver runtime organically. It
+does not authorize a cut, a witness, an upper or lower bound, production use,
+certification, Stage-B promotion, attainability, optimality, SAT, or UNSAT.
+Every claim-bearing authorization field remains `false`; project state remains
+`U=(1188,18)` and `L=absent`.
 
-A033's selected supervisor error was lost behind the old orchestrator's
-generic pre-guardian error. The current orchestrator preserves the selected
-supervisor's exact exit/stderr at that boundary, and the selected loader now
-has import-only controls for both `formal-orchestrator` and
-`formal-supervisor` through the materialized snapshot path. These controls
-do not call either role's `main()` and consume no authority.
+Gate 1 v4 is a separate trust line. Its existing artifacts and tests are not
+part of this slimdown and are neither reinterpreted nor promoted by AB16.
 
-The A033 preregistration also exposed a deterministic transport blocker: its
-canonical absolute `guardian-control.sock` path is `241` bytes, beyond Linux
-pathname `AF_UNIX` capacity. The canonical preregistered path and every
-serialized identity remain unchanged. Runtime bind/connect uses only a short
-retained-directory-FD alias, pins the socket leaf with `O_PATH`, and joins
-the canonical parent, leaf identity, mode and peer PID/starttime before
-progress. A subsequent adversarial review proved that pathname
-`stat` followed by `unlink` cannot make deletion conditional on that inode.
-The successor therefore registers the fixed terminal sibling
-`guardian-control.sock.retired` in path-preregistration v4 and binds it
-through formal context v3/admission v2. Cleanup performs only atomic
-`renameat2(RENAME_NOREPLACE)` retirement and parent `fsync`; the authority
-chain never calls pathname unlink. The expected closed socket remains as an
-inert terminal member. After the final absolute-parent join, terminal
-topology/parent/leaf observations are covered by retained descriptors and
-Linux mutation watches for the complete absolute directory chain plus the
-exact retired inode. The chain is replayed descriptor-relatively after all
-watches are armed; only a nonblocking kernel observation with no queued
-mutation can linearize cleanup success. Topology/parent/leaf replacement,
-retirement collision, unsupported atomic rename/watch, or any
-verification/durability uncertainty preserves unknown nodes, fails closed,
-and closes every retained descriptor exactly once.
-
-The next attempt must start from a new no-overwrite Gate-A root in the
-registered independent worktree after a clean committed HEAD, exact source
-rebinding, the stage-specific resource/lock/competition gate, full preflight
-and the applicable post-preflight gate. A038 and the earlier pre-fix full
-runs are not qualifying evidence. The Gate-A and Gate-B pinned
-full-preflight invocations each create
-one fresh no-overwrite
-mode-`0700` output root containing a retained mode-`0700` `pytest-scratch`
-directory and its sole retained mode-`0700` empty `basetemp` child. The
-isolated `-I -B` runner fixes `pytest.ini`, rootdir, confcutdir, the explicit
-`randomly` plugin, serial `not slow` collection and
-`tmp_path_retention_policy=failed`; inherited Python/pytest injection and
-plugin autoload are disabled. Before and after pytest, a descriptor-relative
-guard ignores Git excludes and exactly compares the committed pytest
-configuration/governance members, complete discovery tree, and actual
-repository-root `PathFinder` source/bytecode/extension/identifier-namespace
-candidates with HEAD. Every observation closes all descriptors before
-returning and does not change `RLIMIT_NOFILE`. The same pytest process writes
-its canonical nodeid/path collection plus two terminally closed records
-through an anonymous retained regular FD. This occurs only through an
-explicit, hash-bound AB16 plugin object loaded by the qualification runner;
-shared `src/tests/conftest.py` and ordinary developer/full/slow preflight
-commands contain no AB16 handshake. Gate A independently parses the recorded
-stdout and binds that projection to the v6 receipt. Module-origin records are
-diagnostic only and prove neither fixed-HEAD import bytes nor a closed import
-set.
-
-This closes pre-existing and persistent non-adversarial same-UID pollution;
-it does not claim resistance to an actively hostile same-UID replace-then-
-restore wholly between the two snapshots. Such a threat would require a
-separate fixed-commit, no-extra-member execution snapshot; the formal lane
-instead requires its three locks and an isolated host with no such writer.
-The subreaper uses only public Python or named libc pidfd interfaces and never
-scans or signals unrelated same-UID processes. `/proc/.../children` is only a
-target-discovery aid: successful descendant closure requires
-`waitpid(-1, WNOHANG)` to report `ECHILD`, while `(0, 0)` always continues the
-fail-stop cleanup loop.
-
-On PASS no scratch path is deleted: the producer requires and records that the
-exact basetemp is empty, while downstream acceptance remains subject to the
-independent Gate-A parser and absolute-path self-replay contract. It writes
-logs, `receipt.json`, and a mode-`0600` staged
-`receipt.commit.json` through the creation-time retained output-root FD,
-closes critical parent descriptors, and then performs one mode-`0444` marker
-promotion as the publication linearization point. Before returning it
-self-replays the absolute output path, output-root identity, exact
-five-member tree, marker, receipt, logs and scratch, with closed scratch as
-the final temporal observation. Every downstream parser requires that exact
-committed marker; staged or drifted publications fail closed. Failure or
-timeout preserves the root for diagnosis, and any descendant, scratch,
-Git-surface, close, publication or replay uncertainty cannot mint Gate-A
-authority. A031–A038 remain frozen and no successor root exists. The schema
-successors apply only to a future fresh package and grant no production,
-certified, cut, witness or bound authority.
-
-## 2026-07-24 Gate-A recovery history
-
-The no-overwrite sibling recovery recorded at the earlier cutoff was:
+The 38 historical Gate-A roots (`a001` through `a038`) are no longer local.
+They are archive-only history under:
 
 ```text
-.artifacts/noncert_cuts_ab16_20260724/
-  gate-a-python-fd-recovery-20260724T074207Z-FD2v2/
-    input-authority-a001/
-    drill-python-fd-a001/
-    full-preflight-a001/
-    gate-a-receipt-a001.json
+/mnt/wd_external/archives/zmd-codex-autonomy-20260801/
 ```
 
-`gate_a_recovery_inputs_v1.py` created that input authority through the real
-production CLI. Its only members are canonical, read-only
-`strict-inputs.json`, `system-tools.json` and
-`planned-source-observation.json`. All three exactly equal lifecycle canonical
-JSON re-encoding, have no trailing LF, and have mode `0444`.
+No current code or document may treat an archived root as a local execution
+path or as authority for a new attempt.
 
-The immutable identities recorded for that recovery are:
+## Fixed scientific design
 
-| File | Size | SHA-256 |
-| --- | ---: | --- |
-| `strict-inputs.json` | 1,217 B | `b7c6daa41eacd8bde444438c1365db0b52557ce374e5226ba0e1c6ed4e113f74` |
-| `system-tools.json` | 343 B | `67694704c4cd859fa913b7b706199783763a33e1d56d5018fc144d67b878e2de` |
-| `planned-source-observation.json` | 17,962 B | `876e203fb5f92c8948948538f2869af409e85b11ced1e44a82681e275711214e` |
-
-The observation binds `54` source identities with source-set digest
-`e8c814ca4dbc5d427a492c95b442fe589321e5120ee0f2e1cbc5fb1d1f64473d`.
-It includes the producer at SHA-256
-`40c59fd6c171ca08ed5635d92bce2fb17466c6b0b555ac7de363cae7592ddde8`
-and the repaired validation runner's `30,555` bytes at SHA-256
-`382f0c3833a7a2eab7e2d0faba96a34e8c5d4c61d7161ae60b0134f5e3ae6e31`.
-
-Fresh checks under `/tmp/zmd-pj-codex-heavy-validation.lock` reproduced all
-`54` planned source identities, the fixed HEAD and the three input
-identities. They also reproduced the same manager/boot epoch, found no
-residual drill unit or process, and observed:
-
-- `33,808,166,912` bytes `MemAvailable`;
-- `50,168,647,680` bytes `SwapFree`;
-- `28,753,612,800` filesystem bytes available.
-
-The retained-FD pinned builder then created exactly
-`drill-python-fd-a001`. Its immutable authority result is:
-
-| Evidence | Status | Size | SHA-256 |
-| --- | --- | ---: | --- |
-| `authority/authority-ready.json` | `PASS` | 1,154 B | `1261fd7148d3133b1ee7b602ead14bf76ce6bc8cad7beba7f4a339ed8eea4bb1` |
-| `attempt/pre-run-authority.json` | `PASS` | 37,916 B | `f6065e9efa8dbb8a0428ba02e6864099e5287d1976b594d4aea6b5a2c18f3e9e` |
-| `attempt/selection.json` | disposable selection | 4,010 B | `facd7984d37c2a09a77c4f39e4342e52a097d43d26daa69d1c2209a3f2ae0240` |
-
-The one disposable live drill completed with unit
-`noncert-cuts-ab16-gatea-drill-7f168834c123.service` and InvocationID
-`32140fb363dd47baaa9bc6293f5b4289`. Its evidence is:
-
-| Evidence | Terminal meaning | Size | SHA-256 |
-| --- | --- | ---: | --- |
-| `attempt/result.json` | `DISPOSABLE_DRILL_PAYLOAD_COMPLETE` | 714 B | `df89564a1dfc52388a093e6a5b16ed1085b04b0d4c1cbd9fce262c88422b8170` |
-| `attempt/resource-verification.json` | `PASS` | 2,801 B | `073061365ad226de3cd6906714b8940c0ccba4b209e19cf2fc2b87f5d278f5f0` |
-| `attempt/terminal-envelope.json` | stable `Result=success` | 8,520 B | `eee89a523fb1d49694aaab5fee7943aa2844f3968cb119af2c0b9063c858e612` |
-| `attempt/cleanup.json` | cleanup semantics replayed | 5,164 B | `2031b0b9a1d1ac4cceeaf4d4afacc58ef89fbc725f86b7b5a8c5fee66412a087` |
-| `attempt/detached-replay.json` | `PASS` | 5,002 B | `624a543e7c0394b4f303c94963bb445313099c9d96bc0d34313095023491bc57` |
-
-The resource verifier measured `12,914,688` bytes current memory and
-`19,570,688` bytes peak memory. Swap use was zero, and every recorded memory
-event was zero, including `oom`, `oom_kill` and `oom_group_kill`. Both
-terminal snapshots retained the same InvocationID with
-`Result=success`, `ExecMainCode=1` and `ExecMainStatus=0`. Cleanup found no
-payload or keeper process, cgroup or unit. A separate read-only replay
-reproduced the stored detached receipt exactly and returned `PASS`.
-
-The drill lock was released. A post-release check found the unit `not-found`,
-no forbidden output, and the lock available.
-
-The runner now launches CPython from its continuously held, verified
-executable FD while using the same pinned absolute path only as `argv[0]` for
-CPython prefix initialization. The loader rechecks both inherited FDs, then
-sets `sys.executable` and `_base_executable` to the current preflight
-process's `/proc/<pid>/fd/<python_fd>` path. Direct child and grandchild
-Python launches therefore remain backed by the verified FD while the pinned
-process is alive. New receipts use schema
-`noncert-cuts-ab16-gate-a-full-preflight-receipt-v3` and execution strategy
-`same-fd-python-prefix-and-nested-executable-v2`, including a detached loader
-identity that strict replay must match.
-
-The fixed sibling's one full preflight subsequently ran under a newly
-acquired shared lock after a fresh replay of HEAD, all `54` sources, the
-manager epoch, the complete drill chain, the three old failure artifacts,
-resources and absence of residual units or processes. Its immutable result
-is:
-
-| Evidence | Status | Size | SHA-256 |
-| --- | --- | ---: | --- |
-| `full-preflight-a001/receipt.json` | `PASS` | 3,532 B | `978b0c0297346b11372273d27f0132e97576f231f556c5148402861362fc1160` |
-| `full-preflight-a001/stdout.log` | `19 passed` | 2,283 B | `d5026b145ab117c4725e9cf3ff3a9b1e5f93e7a222320adedf29db72c4a56749` |
-| `full-preflight-a001/stderr.log` | empty | 0 B | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
-
-The receipt uses schema
-`noncert-cuts-ab16-gate-a-full-preflight-receipt-v3` and strategy
-`same-fd-python-prefix-and-nested-executable-v2`. It records
-`exit_code=0`, `timed_out=false` and duration `113,605,206,168 ns`. The full
-gate reports `5108 passed, 74 skipped` for pytest and `19 passed` overall.
-
-External sampling observed a peak process-tree RSS of `13,507,510,272` bytes,
-minimum `MemAvailable` of `22,188,326,912` bytes, unchanged minimum
-`SwapFree` of `50,168,647,680` bytes and minimum filesystem availability of
-`28,302,282,752` bytes. The post-run replay reproduced the same HEAD,
-source-set digest, manager epoch and detached drill receipt. The shared lock
-was released, and no residual unit exists.
-
-Gate A was then finalized through the retained-FD pinned entrypoint after
-another lock-held replay of the fixed HEAD, all `54` source identities, the
-manager/boot epoch, the complete drill chain and the full-preflight receipt.
-The immutable result is:
-
-| Evidence | Decision | Size | SHA-256 |
-| --- | --- | ---: | --- |
-| `gate-a-receipt-a001.json` | `PASS` | 5,590 B | `91fbc5488749d9682db8c449923d9ddacd7f85933ce7fe6f7a1a47d1421e8473` |
-
-The receipt uses schema
-`noncert-cuts-ab16-bootstrap-gate-a-receipt-v2`, approval ID
-`gate-a-ab16-20260724T081638Z-preflight-978b0c0297346b11372273d27f0132e97576f231f556c5148402861362fc1160`
-and future run nonce
-`run-20260724T081638Z-ab16-preflight-978b0c0297346b11372273d27f0132e97576f231f556c5148402861362fc1160`.
-Its target campaign directory remains absent. Strict downstream replay
-returned `PASS`; `offline_candidate_only=true`,
-`formal_campaign_creation_authorized=false` and
-`arm_launch_authorized=false`. Gate B, a formal campaign, a solver selection,
-a suite/arm selection and every organic arm remain absent.
-
-The previous sibling
-`gate-a-terminal-reference-recovery-20260724T065556Z-C4n0n1` and its
-`full-preflight-a001` remain immutable historical evidence and are not
-authority ancestors for this recovery. Their exact failure record is in
-`03_execution_record.md`. That historical Gate-A receipt grants no solver,
-formal-campaign or organic-arm authorization.
-
-The byte-locked `control-a002/result.json` is provenance-only. A formal
-campaign must rerun all Gate 1 v4 units and independently rebuild the cut-free
-baseline before it may publish a baseline-admission receipt or an AB16
-experiment manifest.
-
-## Single campaign authority
-
-The new formal run, if Gate A and Gate B are separately authorized and pass,
-will be one no-overwrite v4 campaign root. Its immutable topology contains:
-
-1. Gate 1 v4 synthetic success;
-2. Gate 1 v4 synthetic post-SEAL failure;
-3. Gate 1 v4 forced control;
-4. Gate 1 v4 forced treatment;
-5. a reserved prospective AB16 child containing the baseline admission,
-   experiment manifest, suite selection, 16 per-arm selections and terminal
-   classification.
-
-Gate 1 success may issue a continuation authorization bound to that exact
-campaign package, run nonce and manager/boot epoch. It does not close the run
-and does not authorize an arm by itself. AB16 can proceed only in the reserved
-child of the same campaign. An epoch change makes that campaign immutable
-incomplete; a later run must repeat Gate 1 in full and may not splice old and
-new evidence.
-
-Every authority input is intended to be read, hashed and parsed or copied from
-the same `O_NOFOLLOW` file descriptor with before/after `fstat` checks.
-Authority outputs use exclusive creation and reject symlinked parents.
-Package replay binds the strict inputs, tool bytes, repository HEAD, manager
-epoch and resource contract before any launch selection can be consumed.
-
-## Baseline admission
-
-The old incumbent may be listed as strict provenance, but it is not an
-authority ancestor. The new package-pinned builder must independently rebuild
-the cut-free model from strict inputs and reproduce:
-
-- model-proto digest;
-- `37,760` variables;
-- `95,136` constraints;
-- stable selector name/index/domain mapping.
-
-The old incumbent must then pass a cut-free fixed-assignment feasibility
-replay against that rebuilt binary proto. Admission fails closed on any
-identity, protobuf, cardinality, selector, assignment or feasibility drift.
-Failure stops the new campaign before its first organic arm; it does not
-permit changing the seed.
-
-## Gate 1 positive-control meaning
-
-The forced control and treatment first seal the same response, solution and
-incumbent from an identical pre-injection model. Only afterward do separate
-post-model clones run an empty control injection or the treatment's forced
-provider and production attach chain.
-
-Gate 1 passes only if:
-
-```text
-control:   APPLIED = 0
-treatment: GENERATED > 0, COMPILED > 0, APPLIED > 0
-```
-
-An independent checker must rebuild at least one treatment inequality from
-the frozen model, selector mapping, assignment, compiled cut and `APPLIED`
-ledger event, and show that it is active with `lhs > rhs` at the pre-injection
-incumbent. Resource, terminal, cleanup, epoch and detached replay must also
-pass.
-
-A future PASS of those gates would establish only `MECHANISM_CREDIBLE`: the
-attach mechanism is reachable and a concrete injected inequality excludes
-that frozen incumbent. It would not establish organic usefulness,
-family-global soundness, SAT, UNSAT, a bound, a witness, or a proof claim.
-
-## Prospective AB16 contract
-
-After Gate 1 and baseline admission, the immutable manifest preregisters four
-configurations:
+The scientific preregistration is immutable. It fixes four configurations:
 
 | Configuration | Control | Treatment |
 | --- | --- | --- |
-| `region-capacity` | attach enabled, no cut families | only `region_capacity` |
-| `shape-packing-hall` | attach enabled, no cut families | only `shape_packing_hall` |
-| `power-hitting-set` | attach enabled, no cut families | only `power_hitting_set` |
-| `bundle` | attach enabled, no cut families | all three named families |
+| `region-capacity` | attach path enabled; no family | `region_capacity` only |
+| `shape-packing-hall` | attach path enabled; no family | `shape_packing_hall` only |
+| `power-hitting-set` | attach path enabled; no family | `power_hitting_set` only |
+| `bundle` | attach path enabled; no family | all three families |
 
-Each configuration has two fresh-process, single-worker matched pairs:
-`AB` runs control then treatment; `BA` runs treatment then control. This yields
-16 serial arms. `pattern_nogood` is forbidden. Inputs, prestate, tool bytes,
-seed, ordering, internal budget, resource limits, metrics, thresholds,
-censoring and aggregation are fixed before any per-arm selection.
-
-The activation classifier is credibility-first and mutually exclusive:
-
-- `ORGANIC_NONACTIVATION`: `G=C=A=0` and the zero-event ledger replay passes;
-- `NO_ORGANIC_APPLIED_CUT`: `G>0,C=0` or `C>0,A=0`, with the appropriate
-  compiler/`APPLIED` absence join;
-- `ORGANIC_APPLIED`: `A>0`, with every applied inequality joined one-to-one to
-  generated, compiled, assignment and ledger evidence;
-- any non-integer, impossible or non-monotone count is
-  `CREDIBILITY_INCOMPLETE`.
-
-Every otherwise credible branch also performs a cut-free replay of its
-incumbent. A normal solver return of `UNKNOWN` after the preregistered internal
-budget is `BUDGET_CENSORED_UNKNOWN`, a valid right-censored result. An outer
-timeout, `RuntimeMaxSec`, OOM, kill, crash, limit drift, authority/replay gap,
-arm mismatch or cross-run/epoch splice is `CREDIBILITY_INCOMPLETE`.
-
-Each pair first records the primary delta in cut-free-replay incumbent
-presence. A treatment-only incumbent is better, a control-only incumbent is a
-regression, and only a primary tie delegates the decision to cumulative
-deterministic time at the common terminal milestone. The raw secondary delta
-for each of `AB` and `BA` is retained; their arithmetic mean is descriptive,
-while the conservative two-pair band is the claim gate. For the bundle,
-`D_r = bundle_benefit_r - sum(single_family_benefit_r)` uses that same
-secondary deterministic-time definition and is reported separately for `AB`
-and `BA`, plus a descriptive mean. It has no effect threshold and cannot
-establish an interaction claim.
-
-A per-arm selection is the consumption boundary. Drift before selection
-creates no arm and consumes no slot. Any credibility failure after selection
-consumes that arm, stops the entire suite immediately and forbids retrying or
-running later arms.
-
-## Manager and resource authority
-
-The cuts campaign independently fixes:
+Each configuration has two fresh-process matched pairs and two arms per pair:
+`AB` runs control then treatment; `BA` runs treatment then control. The exact
+order is therefore 16 serial, single-worker arms. `pattern_nogood` is
+forbidden. The fixed seed is `2026072301`; `RuntimeMaxSec` is `3600` seconds.
+The scientific experiment-contract digest is:
 
 ```text
-boot_id
-+ DBus unique owner
-+ manager PID/starttime
-+ manager executable path/size/mode/SHA-256
-+ manager Version/Features
+24b45e110952505e6ffa92d3ddfdf33874cc3cb4503397e993898e79174ded9e
 ```
 
-The epoch is replayed at launch, pre-terminal, terminal, cleanup, pair gate and
-detached replay. A unit `InvocationID` anchors only that unit and cannot replace
-the campaign epoch.
+The preregistration also fixes the baseline and binding inputs, metrics,
+censoring rules, pair aggregation, classification contract, resource limits,
+and evaluation thresholds. A code repair may not alter any of those values.
 
-Each real arm uses the two-stage supervisor/payload/keeper protocol. While the
-keeper preserves the cgroup, an external observer records the payload status,
-limits, memory/swap/events, process membership and cgroup state. It then
-releases the keeper and records the same unit's terminal systemd state and
-cleanup. The contract is:
+## Retry semantics
+
+Each of the 16 fixed slots owns a stable slot root. Attempts are append-only
+children named `attempt-0001`, `attempt-0002`, and so on, with no retry limit.
+Every child and every receipt is created with no-overwrite semantics.
+
+- A preparation or credibility failure closes that attempt as incomplete and
+  leaves the same slot retryable.
+- A repair may change the clean committed HEAD and execution-tool bytes.
+- Each attempt records the actual HEAD and tool identities used for it.
+- Each result binds both the immutable scientific preregistration digest and
+  the hash of the actual input set used by that attempt.
+- Earlier failed attempts remain available for audit and are never overwritten
+  or relabeled as successful.
+- The first credible terminal result closes the slot; only then may the next
+  preregistered slot begin.
+
+There is no campaign-wide immediate-stop record, permanent root freeze,
+successor-root ceremony, or recursive read-only `chmod` ritual. Tamper evidence
+comes from the immutable preregistration bytes, per-attempt exclusive
+publication, and input/result hash joins.
+
+## Credibility and evaluation
+
+The activation classifier is mutually exclusive:
+
+- `ORGANIC_NONACTIVATION`: `G=C=A=0` and zero-event replay passes;
+- `NO_ORGANIC_APPLIED_CUT`: generation or compilation occurs but `A=0`, with
+  the required absence joins;
+- `ORGANIC_APPLIED`: `A>0` and every applied inequality joins to generated,
+  compiled, assignment, and ledger evidence;
+- malformed, inconsistent, or unverifiable evidence is
+  `CREDIBILITY_INCOMPLETE` and is retryable after repair.
+
+An otherwise credible solver `UNKNOWN` at the fixed internal budget is a valid
+right-censored `BUDGET_CENSORED_UNKNOWN`. An outer timeout, OOM, kill, crash,
+limit drift, input mismatch, or replay gap is credibility-incomplete.
+
+Each matched pair first compares cut-free-replay incumbent presence. Only a
+primary tie delegates to cumulative deterministic time at the common terminal
+milestone. AB and BA secondary deltas are retained separately; their mean is
+descriptive. The bundle interaction quantity is also descriptive and grants
+no interaction or global-soundness claim.
+
+## Resource containment and exclusivity
+
+The retained per-arm cgroup limits are:
 
 ```text
 MemoryHigh=35G
@@ -415,48 +111,8 @@ SendSIGKILL=yes
 RuntimeMaxSec=3600
 ```
 
-Only the fixed read-only privileged attestor runs through `sudo -n`; it may
-open and identify the DBus-resolved manager executable but may not write,
-signal, manage units or run a solver. All other code runs as the ordinary
-user.
-
-## Current stage-specific resource admission
-
-The fresh successor does not apply one fixed memory/swap/disk gate to every
-stage. It uses
-`noncert-cuts-ab16-stage-resource-admission-v1` and profile set
-`noncert-cuts-ab16-resource-profile-set-v1`. For each resource dimension,
-`minimum_available_bytes` must exactly equal
-`predicted_peak_bytes + safety_margin_bytes + host_reserve_bytes`:
-
-| profile | predicted peak (memory/swap/disk) | safety margin | host reserve | minimum available |
-|---|---:|---:|---:|---:|
-| `FULL_PREFLIGHT` | `16/0/6 GiB` | `4/8/2 GiB` | `12/8/8 GiB` | `32/16/16 GiB` |
-| `GATE_B_QUALIFICATION` | `2/0/2 GiB` | `22/8/6 GiB` | `12/8/8 GiB` | `36/16/16 GiB` |
-| `FORMAL_ORGANIC_ARM` | `24/0/2 GiB` | `4/12/6 GiB` | `8/4/8 GiB` | `36/16/16 GiB` |
-
-All three profiles are deliberately
-`CONSERVATIVE_TEMPORARY`, with
-`confidence=LOW`,
-`stage_peak_receipt_count=0` and
-`TEMPORARY_PROFILE_NOT_A_STAGE_PEAK_MEASUREMENT`. The full-preflight basis
-records the historical external sampler's `13,507,510,272`-byte process-tree
-peak over `218` samples only as heterogeneous scheduling evidence and is the
-only basis marked comparable to its stage. Gate-B has no accepted stage peak
-and is non-comparable; the formal-arm memory value uses the historical
-`24 GiB` planning upper bound only as a heterogeneous, non-comparable proxy,
-not organic-arm measurement. These statements must appear in the receipt;
-missing or rewritten basis is not a PASS.
-
-Every resource receipt records the exact schema/profile/stage and canonical
-`profile_sha256`, evidence basis and prediction method, all
-predicted/margin/reserve/minimum values, the live
-`MemAvailable`/`SwapFree`/filesystem observation, the three retained lock
-identities, same-UID conflict result, runtime safety limits, research-only
-scope, three false launch authorizations and exact `PASS` status. A failing
-observation returns a stable fail-closed error and cannot produce an
-authorizing PASS receipt.
-The lock paths remain exactly:
+Only one production-scale solve may run at a time. A formal arm holds the
+complete exclusive lock set for its orchestration:
 
 ```text
 /tmp/zmd-pj-codex-heavy-validation.lock
@@ -464,191 +120,23 @@ The lock paths remain exactly:
 /run/user/1000/zmd-pj-prod-scale-solve.lock
 ```
 
-All stages are serial, single-worker, and fail closed on a conflicting
-same-UID heavy solver/campaign/preflight process, uncertain process scan,
-unavailable/drifted lock, untrusted measurement, or a live value below its
-profile by even one byte. The Gate-B owner holds all three locks and performs
-`FULL_PREFLIGHT` admission immediately before its pinned full preflight, then
-re-closes the retained lock identities and performs
-`GATE_B_QUALIFICATION` immediately before approval/bootstrap. The distinct
-formal-launch owner publishes admission first; the formal supervisor then
-acquires all three locks and passes `FORMAL_ORGANIC_ARM` before guardian
-launch. While retaining those locks it repeats that profile immediately before
-the outer formal unit and before every serial organic-arm prelaunch. The v2
-outer/arm prelaunch receipts embed that result. The v2 outer-start and
-controller-result receipts separately carry and strictly replay the final live
-reevaluation at the corresponding `systemd-run` syscall edge. An earlier
-observation cannot authorize work after a wait.
+The limits and locks prevent a repeat of the historical dual OOM event. They
+do not defend against hostile same-UID processes and do not grant scientific
+or production authority.
 
-The cgroup contract remains a separate containment layer:
-`MemoryHigh=35 GiB`, `MemoryMax=39 GiB`, `MemorySwapMax=16 GiB`,
-`RuntimeMaxSec=3600`, one worker. These are hard safety caps, not resource
-headroom estimates and not replacements for the stage admission calculation.
-The formal receipt separately proves that live RAM after its host reserve plus
-live swap after its host reserve, capped at `MemorySwapMax`, can back
-`MemoryMax`; that capacity check is not represented as a predicted swap
-working set.
+## Machine-checked boundary
 
-The accepted fresh schema successors are:
+The retained versioned schema cohort is declared and validated in
+`ab16_schema_declaration_v1.py`. `PROJECT_LOCK.md` keeps only the project
+boundary; it does not duplicate the schema matrix.
 
-- `noncert-cuts-ab16-stage-resource-admission-v1`;
-- `noncert-cuts-ab16-gate-a-full-preflight-receipt-v6`;
-- `noncert-cuts-ab16-gate-b-qualification-v2`;
-- `noncert-cuts-ab16-gate-b-resource-gate-v2`;
-- `noncert-cuts-ab16-gate-b-epoch-observation-v4`;
-- `noncert-cuts-ab16-bootstrap-gate-b-approval-v5`;
-- `noncert-cuts-ab16-campaign-bootstrap-result-v4`;
-- `noncert-cuts-ab16-formal-outer-prelaunch-v2`;
-- `noncert-cuts-ab16-formal-outer-start-v2`;
-- `noncert-cuts-ab16-formal-arm-prelaunch-v2`;
-- `noncert-cuts-ab16-formal-controller-result-v2`.
+Use the pinned project interpreter for validation:
 
-Their full-preflight receipt v5, Gate-B qualification v1, resource-gate v1,
-epoch v3, approval v4, bootstrap-result v3 and formal-prelaunch v1
-predecessors, plus outer-start v1 and controller-result v1, remain
-historical-root-local under their original SHA-pinned sources. No version
-mixing, retrofit, authority expansion, cut, witness, bound, production or
-certified claim is permitted.
+```bash
+/home/zhuran24/zmd-pj/.venv-uvbolt-backup/bin/python \
+  docs/research/noncert_cuts_ab16_20260724/ab16_schema_declaration_v1.py
+/home/zhuran24/zmd-pj/.venv-uvbolt-backup/bin/python \
+  scripts/preflight_gate.py --full
+```
 
-## Historical separate heavy-work gates
-
-The following approvals are intentionally nonmergeable.
-
-### Historical 2026-07-24 Gate A — validation only
-
-This subsection records the earlier 2026-07-24 recovery cohort only. It is
-not current qualification evidence for any fresh successor.
-
-Before any formal campaign identity exists, report two separately budgeted
-actions to the supervisory thread:
-
-1. disposable live drill: about 1 CPU core, `2/4 GiB` memory plus `1 GiB` swap,
-   at most `1 GiB` I/O, about 5–15 minutes;
-2. pre-run full preflight: `pytest -n auto`, up to about 24 logical cores,
-   `12–24 GiB` RAM, `2–6 GiB` I/O, about 5–20 minutes.
-
-Both require the shared lock
-`/tmp/zmd-pj-codex-heavy-validation.lock` and a fresh check that no S3 or other
-thread is running heavy validation. The supervisory thread decides whether to
-run immediately or wait from the roadmap, live resources, lock state and user
-activity. A busy lock or resource drift pauses the work. Gate A may not create
-the formal campaign identity.
-
-The drill authority is created outside every formal campaign root. It binds
-the same two-stage resource lifecycle, terminal schema and pinned source set
-used by the formal path, but its distinct purpose and authorization fields
-forbid a solver, an organic arm or a formal campaign. Its payload is inert and
-only publishes the drill result consumed by that lifecycle.
-
-The 2026-07-24 recovery sibling contained its canonical input authority, one completed
-`drill-python-fd-a001` disposable authority/live chain and one exact-PASS
-`full-preflight-a001` receipt. Its Gate A was finalized by the separate
-exact-PASS `gate-a-receipt-a001.json`, but that receipt remains
-non-authorizing: it cannot create Gate B, a formal campaign, a solver
-selection or an organic arm, and it cannot qualify a fresh successor.
-
-### Historical 2026-07-24 Gate B planning — formal campaign
-
-For that historical cohort, Gate A had passed and released its execution
-phase. The supervisory thread could separately recheck HEAD,
-manager/boot epoch, memory, swap and disk before deciding whether to schedule
-Gate B under its own technical authority and receipt boundary. A Gate-A
-receipt could not authorize Gate B. The estimate for new Gate 1, baseline
-admission and AB16 was one CPU core, the
-`35/39 GiB + 16 GiB swap` contract, about `1–1.5 GiB` I/O, 3–6 hours typical
-and about 16 hours hard maximum.
-
-The formal phase must hold the shared validation lock and both existing
-prod-scale locks. Its final full preflight is separately included in the Gate
-B report and may not overlap S3. No formal identity, unit or arm is created
-before this approval.
-
-## Historical 2026-07-24 claim boundary
-
-At that historical cutoff this work established the repaired same-FD execution
-implementation, its focused local validation, a canonical byte-pinned input
-set, and one non-authorizing disposable live chain whose resource, terminal,
-cleanup and detached replay evidence passed, plus one exact-PASS full
-preflight receipt and the separate exact-PASS Gate-A finalize receipt. Gate A
-was finalized only for later independent Gate-B consideration; it did not
-authorize Gate B or a formal run. The inert drill, preflight and Gate-A
-receipt establish no cut activation or empirical cuts result. This work does
-not alter a project upper or lower bound and does not establish a witness,
-SAT, UNSAT, family-global cut soundness, proof-sidecar validity, PIC, B6,
-Stage-B promotion or production `CERTIFIED` status.
-
-Under that historical design, a completed experiment's strongest possible
-local claims were:
-
-- `MECHANISM_CREDIBLE` from Gate 1;
-- fixed-configuration activation and censored-terminal classifications;
-- `SINGLE_PAIR_OBSERVED_DELTA` for one credible pair;
-- a repeated single-family or bundle runtime-effect label only when both
-  preregistered order-balanced pairs meet the consistency and conservative
-  threshold rule.
-
-Promotion still requires separate family-global soundness, proof-sidecar and
-proof-ledger gates.
-
-## Files
-
-- `ab16_campaign_bootstrap_v1.py` and
-  `ab16_campaign_bootstrap_v2.py`: Gate A/Gate B bootstrap generations over
-  the complete v4 topology.
-- `ab16_formal_loader_v1.py`: selected-FD loader for the exact materialized
-  snapshot module and role identity.
-- `ab16_formal_orchestrator_v1.py`: persistent formal-launch owner ordering
-  and selected-supervisor result preservation.
-- `ab16_formal_campaign_v1.py`: three-lock supervisor, guardian startup,
-  selection, serial campaign and terminal closeout.
-- `ab16_resource_admission_v1.py`: shared AB16-only stage-profile arithmetic,
-  live resource/conflict/retained-lock checks, canonical receipt and strict
-  replay.
-- `ab16_outer_guardian_v1.py`: independent lock guardian; canonical absolute
-  socket identity with internal retained-dirfd AF_UNIX transport, peer
-  credential join, and atomic no-overwrite terminal retirement without
-  pathname unlink.
-- `disposable_drill_authority_v1.py` and
-  `disposable_drill_authority_v2.py`: campaign-external, non-authorizing Gate A
-  authority generations.
-- `disposable_drill_payload_v1.py`: inert drill payload with a purpose distinct
-  from every formal arithmetic or arm selection.
-- `ab16_authority_v1.py`: prospective manifest, suite selection and authority
-  replay inside the reserved v4 child.
-- `baseline_rebuild_v1.py`: independent cut-free model rebuild.
-- `cut_free_incumbent_replay_v1.py`: strict binary-proto fixed-assignment
-  replay.
-- `baseline_admission_v1.py`: no-overwrite baseline admission.
-- `organic_arm_runner_v1.py`: fresh-process production-path arm runner.
-- `organic_arm_replay_v1.py`: credibility-first activation, ledger,
-  inequality/absence-join and cut-free incumbent replay.
-- `systemd_unit_reference_v1.py`: persistent same-connection
-  `RefUnit`/`UnrefUnit` helper with exact DBus-owner binding.
-- `organic_resource_lifecycle_v1.py` and
-  `organic_resource_lifecycle_v2.py`: two-stage payload/keeper lifecycle and
-  terminal-reference-aware phase evidence.
-- `organic_resource_verifier_v1.py` and
-  `organic_resource_verifier_v2.py`: independent resource, terminal, reference
-  and cleanup replay.
-- `organic_unit_orchestrator_v1.py` and
-  `organic_unit_orchestrator_v2.py`: same-FD systemd execution and
-  ordinary-user unit orchestration.
-- `ab16_terminal_gate_v1.py` and `ab16_terminal_gate_v2.py`: per-arm and
-  terminal-suite fail-closed gates.
-- `gate_a_pinned_entrypoint_v2.py`: same-FD, byte-pinned Gate A-only dispatcher
-  with no formal, solver or organic-arm command.
-- `gate_a_recovery_inputs_v1.py`: no-overwrite canonical producer for the two
-  external path maps and their planned-source observation.
-- `gate_a_validation_v2.py`: full-preflight receipt and non-authorizing Gate A
-  closeout logic.
-- `ab16_preflight_qualification_v1.py`: retained-FD qualification runner that
-  loads the pinned preflight, protocol and explicit plugin objects.
-- `ab16_pytest_collection_protocol_v1.py`: centralized producer transport,
-  nonce, canonical record and validation protocol for AB16 qualification.
-- `ab16_pytest_collection_plugin_v1.py`: explicit AB16-only pytest plugin;
-  ordinary `conftest.py` and preflight commands never load it.
-- `ab16_contract_v1.py`: pure classification, aggregation and consumption
-  state contract.
-
-The execution history and validation boundary are recorded separately in
-`03_execution_record.md`.
+Running the 16 arms is intentionally outside this slimdown batch.

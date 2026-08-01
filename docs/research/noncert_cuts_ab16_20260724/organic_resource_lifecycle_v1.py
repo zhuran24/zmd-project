@@ -32,7 +32,6 @@ from typing import Any
 
 PRE_RUN_AUTHORITY_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v1"
 RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
-DRILL_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-drill-selection-v1"
 EPOCH_OBSERVATION_SCHEMA = "noncert-cuts-ab16-manager-epoch-observation-v1"
 INNER_SCHEMA = "noncert-cuts-ab16-inner-lifecycle-v1"
 PRETERMINAL_SCHEMA = "noncert-cuts-ab16-preterminal-resource-v1"
@@ -43,8 +42,7 @@ CLEANUP_SCHEMA = "noncert-cuts-ab16-cleanup-v1"
 PURPOSE = "PROSPECTIVE_AB16_ORGANIC_ARM_RESOURCE_AUTHORITY"
 PRE_RUN_PURPOSE = "PROSPECTIVE_AB16_ORGANIC_ARM_PRE_RUN_AUTHORITY"
 RUNNER_SELECTION_PURPOSE = "prospective_noncert_cuts_ab16_formal_arm"
-DRILL_SELECTION_PURPOSE = "noncert_cuts_ab16_disposable_live_drill"
-EXECUTION_CLASSES = ("DISPOSABLE_LIVE_DRILL", "FORMAL_AB16")
+EXECUTION_CLASS = "FORMAL_AB16"
 LAUNCH_ENVIRONMENT_SCHEMA = "noncert-cuts-ab16-launch-environment-v1"
 LAUNCH_ENVIRONMENT_KEYS = frozenset(
     {
@@ -100,22 +98,6 @@ FORMAL_RESOURCE_CONTRACT: dict[str, object] = {
     "send_sigkill": True,
     "single_worker": True,
 }
-DRILL_RESOURCE_CONTRACT: dict[str, object] = {
-    "collect_mode": "inactive-or-failed",
-    "kill_mode": "control-group",
-    "memory_high_bytes": 2 * GIB,
-    "memory_max_bytes": 4 * GIB,
-    "memory_swap_max_bytes": 1 * GIB,
-    "oom_policy": "continue",
-    "runtime_max_seconds": 15 * 60,
-    "send_sigkill": True,
-    "single_worker": True,
-}
-RESOURCE_CONTRACTS = {
-    "DISPOSABLE_LIVE_DRILL": DRILL_RESOURCE_CONTRACT,
-    "FORMAL_AB16": FORMAL_RESOURCE_CONTRACT,
-}
-
 OUTPUT_ROLES = (
     "inner",
     "preterminal",
@@ -512,11 +494,11 @@ def validate_resource_contract(
     *,
     execution_class: str,
 ) -> Mapping[str, Any]:
-    """Validate the class-specific single-worker resource contract."""
+    """Validate the formal single-worker resource contract."""
 
-    expected = RESOURCE_CONTRACTS.get(execution_class)
-    if expected is None:
+    if execution_class != EXECUTION_CLASS:
         raise LifecycleError("resource contract execution class is invalid")
+    expected = FORMAL_RESOURCE_CONTRACT
     record = _keys(value, set(expected), "resource contract")
     for name in (
         "memory_high_bytes",
@@ -687,7 +669,7 @@ def validate_pre_run_authority(
         "repository_git_tool_identity",
         mode_required=True,
     )
-    if record["execution_class"] not in EXECUTION_CLASSES:
+    if record["execution_class"] != EXECUTION_CLASS:
         raise LifecycleError("pre-run execution_class is invalid")
     expected_payload = _keys(
         record["expected_payload_status"],
@@ -840,11 +822,8 @@ def validate_pre_run_authority(
         or launch["supervisor_argv"][2] != tools["organic_resource_lifecycle"]["path"]
     ):
         raise LifecycleError("supervisor argv does not invoke pinned lifecycle tool")
-    if record["execution_class"] == "FORMAL_AB16":
-        if len(launch["payload_argv"]) < 3 or launch["payload_argv"][2] != tools["organic_arm_runner"]["path"]:
-            raise LifecycleError("formal payload argv does not invoke pinned arm runner")
-    elif launch["payload_argv"][2] not in {identity["path"] for identity in strict_inputs.values()}:
-        raise LifecycleError("drill payload is not a package/test-pinned strict input")
+    if len(launch["payload_argv"]) < 3 or launch["payload_argv"][2] != tools["organic_arm_runner"]["path"]:
+        raise LifecycleError("formal payload argv does not invoke pinned arm runner")
     if record["prelaunch_allowlist"] != [
         "pre-run-authority.json",
         "selection.json",
@@ -957,14 +936,9 @@ def validate_runner_selection(
     formal = (
         record["schema_version"] == RUNNER_SELECTION_SCHEMA
         and record["purpose"] == RUNNER_SELECTION_PURPOSE
-        and record["execution_class"] == "FORMAL_AB16"
+        and record["execution_class"] == EXECUTION_CLASS
     )
-    drill = (
-        record["schema_version"] == DRILL_SELECTION_SCHEMA
-        and record["purpose"] == DRILL_SELECTION_PURPOSE
-        and record["execution_class"] == "DISPOSABLE_LIVE_DRILL"
-    )
-    if (not formal and not drill) or record["fresh_process_required"] is not True:
+    if not formal or record["fresh_process_required"] is not True:
         raise LifecycleError("runner selection schema/purpose drifted")
     for field in (
         "arm",
@@ -1005,7 +979,7 @@ def validate_runner_selection(
         raise LifecycleError("runner selection pre-run authority identity differs")
     expected_families = (
         []
-        if record["arm"] == "control" or drill
+        if record["arm"] == "control"
         else {
             "region-capacity": ["region_capacity"],
             "shape-packing-hall": ["shape_packing_hall"],
@@ -1027,9 +1001,9 @@ def validate_runner_selection(
     expected_authorizations = {
         "global_claim_authorized": False,
         "mathematical_claim_authorized": False,
-        "organic_arm_launch_authorized": formal,
+        "organic_arm_launch_authorized": True,
         "production_certified_authorized": False,
-        "solver_run_authorized": formal,
+        "solver_run_authorized": True,
     }
     if record["authorizations"] != expected_authorizations:
         raise LifecycleError("runner selection authorization boundary drifted")

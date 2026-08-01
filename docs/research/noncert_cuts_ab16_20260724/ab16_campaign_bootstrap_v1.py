@@ -39,17 +39,35 @@ CANDIDATE_SCHEMA = "noncert-cuts-ab16-bootstrap-offline-candidate-v1"
 GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v1"
 CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v1"
 RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v1"
-PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-path-preregistration-v1"
+PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-scientific-preregistration-v2"
 
 GATE_A_PURPOSE = "AB16_OFFLINE_SOURCE_SET_PREFLIGHT"
 CANDIDATE_PURPOSE = "AB16_OFFLINE_NONAUTHORIZING_CANDIDATE"
 GATE_B_PURPOSE = "AB16_FORMAL_CAMPAIGN_IDENTITY_CREATION"
-PATH_PREREGISTRATION_PURPOSE = "prospective_noncert_cuts_ab16_path_authority"
+PATH_PREREGISTRATION_PURPOSE = "prospective_noncert_cuts_ab16_scientific_preregistration"
 
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 RUN_NONCE_RE = re.compile(r"run-[A-Za-z0-9][A-Za-z0-9._-]{4,123}\Z")
 APPROVAL_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{5,127}\Z")
+
+AB16_ARM_SEQUENCE = tuple(
+    f"{configuration}-{order}-{arm}"
+    for configuration in authority.AB16_CONFIGURATIONS
+    for order, ordered_arms in (
+        ("ab", authority.AB16_ARMS),
+        ("ba", tuple(reversed(authority.AB16_ARMS))),
+    )
+    for arm in ordered_arms
+)
+AB16_EXPERIMENT_CONTRACT_SHA256 = "24b45e110952505e6ffa92d3ddfdf33874cc3cb4503397e993898e79174ded9e"
+AB16_RETRY_POLICY: dict[str, object] = {
+    "credible_terminal_closes_slot": True,
+    "failed_attempt_retryable": True,
+    "lowest_credible_ordinal_wins": True,
+    "no_overwrite_per_attempt": True,
+    "retry_limit": None,
+}
 
 V4_SCRIPT_TOOL_FILES: dict[str, str] = {
     "campaign_authority_v4": "campaign_authority_v4.py",
@@ -74,8 +92,6 @@ AB16_SCRIPT_TOOL_FILES: dict[str, str] = {
     "baseline_admission_v1": "baseline_admission_v1.py",
     "baseline_rebuild_v1": "baseline_rebuild_v1.py",
     "cut_free_incumbent_replay_v1": "cut_free_incumbent_replay_v1.py",
-    "disposable_drill_authority_v1": "disposable_drill_authority_v1.py",
-    "disposable_drill_payload_v1": "disposable_drill_payload_v1.py",
     "organic_arm_replay_v1": "organic_arm_replay_v1.py",
     "organic_arm_runner_v1": "organic_arm_runner_v1.py",
     "organic_resource_lifecycle_v1": "organic_resource_lifecycle_v1.py",
@@ -705,59 +721,40 @@ def _capture_epoch(
 def _path_preregistration(
     campaign_dir: Path | str,
 ) -> dict[str, object]:
-    """Build the deterministic AB16 child-path registry without writing it."""
+    """Build the immutable scientific design and retryable slot-root registry."""
 
     campaign = _absolute(campaign_dir)
     prospective = campaign / "prospective-ab16"
     baseline = prospective / "baseline"
     package_payload = campaign / "campaign-authority" / "package" / "payload"
-    slots = tuple(
-        f"{configuration}-{order}-{arm}"
-        for configuration in authority.AB16_CONFIGURATIONS
-        for order in authority.AB16_ORDERS
-        for arm in authority.AB16_ARMS
-    )
-    attempt_dirs = {slot: str(prospective / "arms" / slot) for slot in slots}
+    slot_roots = {slot: str(prospective / "arms" / slot) for slot in AB16_ARM_SEQUENCE}
     return {
-        "arithmetic_replay_paths": {
-            slot: str(Path(attempt_dirs[slot]) / "replays/independent-arithmetic.json") for slot in slots
-        },
-        "arm_gate_paths": {slot: str(Path(attempt_dirs[slot]) / "replays/arm-credibility.json") for slot in slots},
-        "arm_selection_paths": {slot: str(Path(attempt_dirs[slot]) / "selection.json") for slot in slots},
-        "attempt_dirs": attempt_dirs,
+        "arm_sequence": list(AB16_ARM_SEQUENCE),
+        "attempt_directory_pattern": "attempt-[0-9]{4,}",
         "baseline_admission_path": str(prospective / "baseline-admission-a001.json"),
         "baseline_fixed_replay_path": str(baseline / "fixed-replay-a001.json"),
         "baseline_incumbent_path": str(baseline / "incumbent.json"),
         "baseline_rebuilt_metadata_path": str(baseline / "rebuilt-model-metadata.json"),
         "baseline_rebuilt_model_path": str(baseline / "cut-free-model.bin"),
-        "binding_paths": {slot: str(prospective / "bindings" / f"{slot}.json") for slot in slots},
+        "binding_paths": {
+            slot: str(prospective / "bindings" / f"{slot}.json")
+            for slot in AB16_ARM_SEQUENCE
+        },
         "campaign_dir": str(campaign),
         "classification_contract_path": str(package_payload / "tool.ab16_contract_v1.py"),
         "common_prestate_path": str(prospective / "common-prestate-a001.json"),
-        "cut_free_replay_paths": {
-            slot: str(Path(attempt_dirs[slot]) / "replays/cut-free-incumbent.json") for slot in slots
-        },
-        "immediate_stop_path": str(prospective / "immediate-stop-a001.json"),
+        "experiment_contract_sha256": AB16_EXPERIMENT_CONTRACT_SHA256,
         "manifest_path": str(prospective / "manifest-a001.json"),
-        "launch_environment_paths": {
-            slot: str(prospective / "pre-run-candidates" / f"{slot}-launch-environment.json") for slot in slots
-        },
-        "preselection_epoch_paths": {
-            slot: str(prospective / "pre-run-candidates" / f"{slot}-preselection-epoch.json") for slot in slots
-        },
-        "preselection_transcript_paths": {
-            slot: str(prospective / "pre-run-candidates" / f"{slot}-preselection-transcript.json") for slot in slots
-        },
-        "pre_run_authority_paths": {slot: str(Path(attempt_dirs[slot]) / "pre-run-authority.json") for slot in slots},
-        "pre_run_candidate_paths": {slot: str(prospective / "pre-run-candidates" / f"{slot}.json") for slot in slots},
-        "resource_replay_paths": {
-            slot: str(Path(attempt_dirs[slot]) / "replays/independent-resource-terminal.json") for slot in slots
-        },
         "purpose": PATH_PREREGISTRATION_PURPOSE,
+        "retry_policy": dict(AB16_RETRY_POLICY),
         "run_nonce": campaign.name,
+        "runtime_max_sec": 3600,
         "schema": PATH_PREREGISTRATION_SCHEMA,
+        "seed": 2026072301,
+        "slot_roots": slot_roots,
         "suite_selection_path": str(prospective / "selection-a001.json"),
         "terminal_classification_path": str(prospective / "terminal-classification-a001.json"),
+        "workers": 1,
     }
 
 
@@ -766,7 +763,7 @@ def validate_path_preregistration(
     *,
     campaign_dir: Path | str,
 ) -> Mapping[str, Any]:
-    """Reject any path registry that differs from the fixed v4 child topology."""
+    """Reject any scientific design or slot-root topology drift."""
 
     expected = _path_preregistration(campaign_dir)
     record = _exact_keys(
@@ -785,33 +782,25 @@ def validate_path_preregistration(
         "baseline_rebuilt_model_path",
         "classification_contract_path",
         "common_prestate_path",
-        "immediate_stop_path",
         "manifest_path",
         "suite_selection_path",
         "terminal_classification_path",
     }
     paths = [Path(record[field]) for field in path_fields]
-    for mapping_field in (
-        "arithmetic_replay_paths",
-        "arm_gate_paths",
-        "arm_selection_paths",
-        "attempt_dirs",
-        "binding_paths",
-        "cut_free_replay_paths",
-        "launch_environment_paths",
-        "preselection_epoch_paths",
-        "preselection_transcript_paths",
-        "pre_run_candidate_paths",
-        "pre_run_authority_paths",
-        "resource_replay_paths",
-    ):
+    for mapping_field in ("binding_paths", "slot_roots"):
         mapping = _exact_keys(
             record[mapping_field],
-            set(expected[mapping_field]),
+            set(AB16_ARM_SEQUENCE),
             f"AB16 path preregistration {mapping_field}",
         )
         paths.extend(Path(path) for path in mapping.values())
-    if any(not path.is_absolute() or not path.is_relative_to(campaign) for path in paths):
+    slot_roots = record["slot_roots"]
+    expected_parent = campaign / "prospective-ab16" / "arms"
+    if (
+        len(set(slot_roots.values())) != len(AB16_ARM_SEQUENCE)
+        or any(Path(slot_roots[slot]).parent != expected_parent for slot in AB16_ARM_SEQUENCE)
+        or any(not path.is_absolute() or not path.is_relative_to(campaign) for path in paths)
+    ):
         raise BootstrapError("AB16 path preregistration escaped the campaign")
     return record
 
@@ -829,26 +818,15 @@ def _validate_path_preregistration_against_root(
         campaign_dir=campaign_dir,
     )
     prospective = root["stage_topology"]["prospective_ab16"]
-    root_attempts = {arm["slot"]: arm["attempt_dir"] for arm in prospective["arms"]}
+    root_slot_roots = {arm["slot"]: arm["attempt_dir"] for arm in prospective["arms"]}
     if (
         record["manifest_path"] != prospective["manifest_path"]
         or record["suite_selection_path"] != prospective["arm_selection_path"]
         or record["terminal_classification_path"] != prospective["terminal_classification_path"]
-        or record["attempt_dirs"] != root_attempts
+        or record["slot_roots"] != root_slot_roots
+        or set(root_slot_roots) != set(AB16_ARM_SEQUENCE)
     ):
         raise BootstrapError("AB16 path preregistration differs from v4 root")
-    for slot, attempt_dir in root_attempts.items():
-        attempt = Path(attempt_dir)
-        expected_paths = {
-            "arithmetic_replay_paths": attempt / "replays/independent-arithmetic.json",
-            "arm_gate_paths": attempt / "replays/arm-credibility.json",
-            "arm_selection_paths": attempt / "selection.json",
-            "cut_free_replay_paths": attempt / "replays/cut-free-incumbent.json",
-            "pre_run_authority_paths": attempt / "pre-run-authority.json",
-            "resource_replay_paths": attempt / "replays/independent-resource-terminal.json",
-        }
-        if any(record[field][slot] != str(path) for field, path in expected_paths.items()):
-            raise BootstrapError("AB16 per-arm preregistration differs from v4 root")
 
 
 def build_gate_a_candidate(

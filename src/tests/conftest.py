@@ -402,7 +402,6 @@ _TRACK_B_NODEID_GUARDS: dict[str, "callable[[], str | None]"] = {
     # noncert-cuts A/B trust (merged 2026-07-25): same two failure modes.
     # HEAD-pin: repository-head replay asserts the codex worktree HEAD.
     "test_noncert_cuts_ab16_campaign_bootstrap_v1.py::test_repository_head_executes_the_same_pinned_git_fd": _head_drifted_from_track_b_pin,
-    "test_noncert_cuts_ab16_disposable_drill_authority_v1.py::test_serialized_planned_git_path_replays_real_repository_head": _head_drifted_from_track_b_pin,
     # artifact-absent: positive-control closeout replays .artifacts/noncert_cuts_ab_trust_20260723 bytes.
     "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_complete_history_manifest_replays_all_v1_bytes": _missing_noncert_cuts_ab_trust_artifacts,
     "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_current_gate_a002_remains_fail_closed_on_missing_resource_authority": _missing_noncert_cuts_ab_trust_artifacts,

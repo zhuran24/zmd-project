@@ -28,7 +28,6 @@ from typing import Any
 
 PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v1"
 RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
-DRILL_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-drill-selection-v1"
 EPOCH_SCHEMA = "noncert-cuts-ab16-manager-epoch-observation-v1"
 INNER_SCHEMA = "noncert-cuts-ab16-inner-lifecycle-v1"
 PRETERMINAL_SCHEMA = "noncert-cuts-ab16-preterminal-resource-v1"
@@ -41,7 +40,7 @@ DETACHED_SCHEMA = "noncert-cuts-ab16-detached-resource-terminal-v1"
 PURPOSE = "PROSPECTIVE_AB16_ORGANIC_ARM_RESOURCE_AUTHORITY"
 PRE_RUN_PURPOSE = "PROSPECTIVE_AB16_ORGANIC_ARM_PRE_RUN_AUTHORITY"
 RUNNER_PURPOSE = "prospective_noncert_cuts_ab16_formal_arm"
-DRILL_PURPOSE = "noncert_cuts_ab16_disposable_live_drill"
+EXECUTION_CLASS = "FORMAL_AB16"
 LAUNCH_ENVIRONMENT_SCHEMA = "noncert-cuts-ab16-launch-environment-v1"
 LAUNCH_ENVIRONMENT_KEYS = frozenset(
     {
@@ -69,21 +68,6 @@ FORMAL_RESOURCE_CONTRACT: dict[str, object] = {
     "runtime_max_seconds": 60 * 60,
     "send_sigkill": True,
     "single_worker": True,
-}
-DRILL_RESOURCE_CONTRACT: dict[str, object] = {
-    "collect_mode": "inactive-or-failed",
-    "kill_mode": "control-group",
-    "memory_high_bytes": 2 * GIB,
-    "memory_max_bytes": 4 * GIB,
-    "memory_swap_max_bytes": 1 * GIB,
-    "oom_policy": "continue",
-    "runtime_max_seconds": 15 * 60,
-    "send_sigkill": True,
-    "single_worker": True,
-}
-RESOURCE_CONTRACTS = {
-    "DISPOSABLE_LIVE_DRILL": DRILL_RESOURCE_CONTRACT,
-    "FORMAL_AB16": FORMAL_RESOURCE_CONTRACT,
 }
 SYSTEMD_PRETERMINAL_FIELDS = frozenset(
     {
@@ -446,9 +430,9 @@ def _validate_resource_contract(
     *,
     execution_class: object,
 ) -> Mapping[str, Any]:
-    if type(execution_class) is not str or execution_class not in RESOURCE_CONTRACTS:
+    if execution_class != EXECUTION_CLASS:
         raise VerificationError("resource contract execution class is invalid")
-    expected = RESOURCE_CONTRACTS[execution_class]
+    expected = FORMAL_RESOURCE_CONTRACT
     record = _keys(value, set(expected), "resource contract")
     for name in (
         "memory_high_bytes",
@@ -635,7 +619,7 @@ def validate_pre_run_authority(
         or record.get("workers") != 1
         or type(record.get("repository_head")) is not str
         or GIT_SHA_RE.fullmatch(record["repository_head"]) is None
-        or record.get("execution_class") not in {"DISPOSABLE_LIVE_DRILL", "FORMAL_AB16"}
+        or record.get("execution_class") != EXECUTION_CLASS
     ):
         raise VerificationError("pre-run authority semantics drifted")
     _validate_resource_contract(
@@ -837,11 +821,8 @@ def validate_pre_run_authority(
             raise VerificationError(f"pre-run launch {field} Python isolation drifted")
     if launch["supervisor_argv"][2] != tools["organic_resource_lifecycle"]["path"]:
         raise VerificationError("pre-run supervisor tool path drifted")
-    if record["execution_class"] == "FORMAL_AB16":
-        if launch["payload_argv"][2] != tools["organic_arm_runner"]["path"]:
-            raise VerificationError("pre-run formal payload tool path drifted")
-    elif launch["payload_argv"][2] not in {identity["path"] for identity in strict_inputs.values()}:
-        raise VerificationError("pre-run drill payload is not a strict input")
+    if launch["payload_argv"][2] != tools["organic_arm_runner"]["path"]:
+        raise VerificationError("pre-run formal payload tool path drifted")
     preflight = _mapping(record.get("preflight_results"), "pre-run preflight")
     required_preflight = {
         "epoch_identity_pass",
@@ -965,14 +946,9 @@ def _validate_selection(
     formal = (
         record.get("schema_version") == RUNNER_SELECTION_SCHEMA
         and record.get("purpose") == RUNNER_PURPOSE
-        and record.get("execution_class") == "FORMAL_AB16"
+        and record.get("execution_class") == EXECUTION_CLASS
     )
-    drill = (
-        record.get("schema_version") == DRILL_SELECTION_SCHEMA
-        and record.get("purpose") == DRILL_PURPOSE
-        and record.get("execution_class") == "DISPOSABLE_LIVE_DRILL"
-    )
-    if (not formal and not drill) or record.get("fresh_process_required") is not True:
+    if not formal or record.get("fresh_process_required") is not True:
         raise VerificationError("runner selection semantics drifted")
     selected_pre_run_identity = _identity(
         record.get("pre_run_authority_identity"),
@@ -1008,7 +984,7 @@ def _validate_selection(
             raise VerificationError(f"runner selection {selected_field} join failed")
     expected_families = (
         []
-        if record["arm"] == "control" or drill
+        if record["arm"] == "control"
         else {
             "region-capacity": ["region_capacity"],
             "shape-packing-hall": ["shape_packing_hall"],
