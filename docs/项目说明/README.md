@@ -32,6 +32,7 @@ Option B）另列发布时点，非 P1.2 blocker。
 | 历史死路 | [03_paradigm_death_baseline.md](03_paradigm_death_baseline.md) + [07_historical_review.md](07_historical_review.md) |
 | 项目怎么走到今天（人话编年史） | [22_project_journey_plain_language.md](22_project_journey_plain_language.md) |
 | 规则与 cut 演化 shadow 协议（test-only；production deferred） | [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md) |
+| 07-20 自治作战交接书（史料：GHOST 方法论+十天计划） | [24_autonomy_campaign_plan_20260720.md](24_autonomy_campaign_plan_20260720.md) |
 | 后续 P1.3 | [09_phase_1_3_plan.md](09_phase_1_3_plan.md) |
 | 测试与审查 | [12_go_criteria.md](12_go_criteria.md), [15_workflow_testing.md](15_workflow_testing.md), [16_workflow_review.md](16_workflow_review.md) |
 
