@@ -38,11 +38,11 @@
     },
     "expected_current_class_counts": {
       "active_implementation": 386,
-      "test": 640,
+      "test": 641,
       "common_infrastructure": 477,
       "authoritative_input": 4,
       "enforcement_control": 9,
-      "historical_evidence": 445,
+      "historical_evidence": 446,
       "retirement_candidate": 19
     },
     "conditional_current_assets": [
@@ -1113,8 +1113,8 @@
       "argv_source": "scripts/preflight_gate.py --full",
       "baseline_count": 6486,
       "baseline_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c",
-      "expected_count": 6359,
-      "expected_sha256": "2361f3f25a49940273dfd6808e0384e700b51ef33b400ecee0b144d991442a66"
+      "expected_count": 6368,
+      "expected_sha256": "6bf868e5c0ec8ee9fcfec770ee5d9a00a7ebb0a4f4107b022820ee523e22487f"
     },
     {
       "id": "preflight_slow",
@@ -1131,8 +1131,8 @@
       "argv_source": "python -m pytest -m '' src/tests",
       "baseline_count": 6517,
       "baseline_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1",
-      "expected_count": 6390,
-      "expected_sha256": "0ee097e791452728e0d034ebafb682bf7e3eeb8429e106bfabec5ada45424265"
+      "expected_count": 6399,
+      "expected_sha256": "8a94631b41f5a1a2640f478fe109328a6303f24967f513d60a725e196c49b3a0"
     },
     {
       "id": "auxiliary_memory_tests",
@@ -1248,8 +1248,8 @@
       "argv_source": "python -m pytest --repository-workflow=evidence -m 'not slow'",
       "baseline_count": 0,
       "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "expected_count": 1249,
-      "expected_sha256": "8cbf9e1d980a73fc79d02609bdd91fe41952e909571f536e053b15eff2c74e65"
+      "expected_count": 1258,
+      "expected_sha256": "fad45157ed9533e34cd33613e6b75de005c05d548902b929200c7ecbaa64f4df"
     },
     {
       "id": "replay_non_slow",

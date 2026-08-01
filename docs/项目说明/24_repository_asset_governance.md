@@ -67,16 +67,16 @@ G2 把 non-slow 全集拆成三个互斥面；下表是 2026-08-01 AB16 防御�
 | collect 面 | nodeids | 规范化 SHA256 |
 |---|---:|---|
 | developer | 3,547 | `534a549f234c3e517aa996ece0d6d354064ed0fa59622a436eab63962cf096f9` |
-| evidence、非 replay、非 slow | 1,249 | `8cbf9e1d980a73fc79d02609bdd91fe41952e909571f536e053b15eff2c74e65` |
+| evidence、非 replay、非 slow | 1,258 | `fad45157ed9533e34cd33613e6b75de005c05d548902b929200c7ecbaa64f4df` |
 | replay、非 slow | 1,563 | `bac7d8817a81e5637db4c69ad9cbfe1ea4f0c3db5cadd21e6134c1387a55f75f` |
-| 三面并集 / full non-slow | 6,359 | `2361f3f25a49940273dfd6808e0384e700b51ef33b400ecee0b144d991442a66` |
-| full/all | 6,390 | `0ee097e791452728e0d034ebafb682bf7e3eeb8429e106bfabec5ada45424265` |
+| 三面并集 / full non-slow | 6,368 | `6bf868e5c0ec8ee9fcfec770ee5d9a00a7ebb0a4f4107b022820ee523e22487f` |
+| full/all | 6,399 | `8a94631b41f5a1a2640f478fe109328a6303f24967f513d60a725e196c49b3a0` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
 full/all。AB16 formal/guardian、Gate-B、PathFinder qualification、v2 防御链和 disposable-drill
-专属测试已随机制退役；retryable attempt/input-hash 合同测试进入 evidence 面，replay 与 slow
-收据保持不变。`cuts_collection_counter`
+专属测试已随机制退役；retryable attempt/input-hash 与 schema declaration 合同测试进入 evidence
+面，replay 与 slow 收据保持不变。`cuts_collection_counter`
 count 保持 958，规范化 SHA256 为
 `1431c01e8a0aa94f04bb9071e6cb5d6fdd5415d917133f3758ab9ffdf904bb0d`；
 其他既有 focused 入口收据不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。
