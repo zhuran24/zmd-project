@@ -38,11 +38,11 @@
     },
     "expected_current_class_counts": {
       "active_implementation": 386,
-      "test": 652,
+      "test": 641,
       "common_infrastructure": 477,
       "authoritative_input": 4,
       "enforcement_control": 9,
-      "historical_evidence": 473,
+      "historical_evidence": 447,
       "retirement_candidate": 19
     },
     "conditional_current_assets": [
@@ -901,16 +901,6 @@
           ],
           "authority_source": "checkpoint compatibility contract",
           "lifecycle": "current"
-        },
-        {
-          "path": "docs/research/noncert_cuts_ab16_20260724/ab16_authority_v2.py",
-          "symbol": "strict_loads",
-          "role": "sealed_replay",
-          "consumers": [
-            "AB16 immutable replay"
-          ],
-          "authority_source": "AB16 frozen evidence bytes",
-          "lifecycle": "frozen"
         }
       ]
     },
@@ -962,16 +952,6 @@
             "SMM4 same-FD identity closure"
           ],
           "authority_source": "SMM4 frozen evidence bytes",
-          "lifecycle": "frozen"
-        },
-        {
-          "path": "docs/research/noncert_cuts_ab16_20260724/ab16_authority_v2.py",
-          "symbol": "snapshot_regular",
-          "role": "sealed_replay",
-          "consumers": [
-            "AB16 same-FD identity closure"
-          ],
-          "authority_source": "AB16 frozen evidence bytes",
           "lifecycle": "frozen"
         }
       ]
@@ -1089,16 +1069,6 @@
       "shared_authority": null,
       "implementations": [
         {
-          "path": "docs/research/noncert_cuts_ab16_20260724/ab16_authority_v2.py",
-          "symbol": "_replay_selected_arm_evidence",
-          "role": "sealed_replay",
-          "consumers": [
-            "AB16 immutable closeout"
-          ],
-          "authority_source": "AB16 frozen evidence bytes",
-          "lifecycle": "frozen"
-        },
-        {
           "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/verify_smm4_two_stage_v1.py",
           "symbol": "_validate_resource_receipt",
           "role": "required_independent",
@@ -1123,16 +1093,6 @@
           ],
           "authority_source": "PROJECT_LOCK terminal certification contract",
           "lifecycle": "current"
-        },
-        {
-          "path": "docs/research/noncert_cuts_ab16_20260724/ab16_authority_v2.py",
-          "symbol": "_replay_selected_arm_evidence",
-          "role": "sealed_replay",
-          "consumers": [
-            "AB16 immutable closeout"
-          ],
-          "authority_source": "AB16 frozen evidence bytes",
-          "lifecycle": "frozen"
         }
       ]
     }
@@ -1153,8 +1113,8 @@
       "argv_source": "scripts/preflight_gate.py --full",
       "baseline_count": 6486,
       "baseline_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c",
-      "expected_count": 6865,
-      "expected_sha256": "c8562f86531928f02f8f75f2e05c5ef70d87df02d790f61295d4bcbcad126682"
+      "expected_count": 6348,
+      "expected_sha256": "1a1682a2feee7562529d7e753a62d3f4ef0864bb16430346c58bfa86cce4a4a6"
     },
     {
       "id": "preflight_slow",
@@ -1171,8 +1131,8 @@
       "argv_source": "python -m pytest -m '' src/tests",
       "baseline_count": 6517,
       "baseline_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1",
-      "expected_count": 6896,
-      "expected_sha256": "8cb3f886c1d41b66db4b72530b5126f30b0841dbd5d63e8e77f340b73db8bc59"
+      "expected_count": 6379,
+      "expected_sha256": "26741f07c6ce72c685285421820f9e7ece64ce0420d6facec68e6dd60e2fbdb0"
     },
     {
       "id": "auxiliary_memory_tests",
@@ -1189,8 +1149,8 @@
       "argv_source": "python -m pytest",
       "baseline_count": 6624,
       "baseline_sha256": "6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96",
-      "expected_count": 3546,
-      "expected_sha256": "cc0c66ba0e8751665ac3da3d51cc3f33afebfdbc66572d441abfec007e73fc2a"
+      "expected_count": 3547,
+      "expected_sha256": "534a549f234c3e517aa996ece0d6d354064ed0fa59622a436eab63962cf096f9"
     },
     {
       "id": "industrial_planner_checked",
@@ -1288,8 +1248,8 @@
       "argv_source": "python -m pytest --repository-workflow=evidence -m 'not slow'",
       "baseline_count": 0,
       "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "expected_count": 1756,
-      "expected_sha256": "5341b4924b0ea12de507710956163eb2b57d4f3e1b90013ade3a796ab57baf20"
+      "expected_count": 1238,
+      "expected_sha256": "dbc3c412f73fd7afce715053d062410e9912ee0232dc723d2f0c67e635900939"
     },
     {
       "id": "replay_non_slow",

@@ -61,21 +61,21 @@ python devtools/check_repository_code_assets.py inventory --format json
 不是终态 developer 面；其中包含 6,517 个 `src/tests` nodeid 和 107 个当时被 bare discovery
 顺带收集的 auxiliary memory nodeid。
 
-G2 把 non-slow 全集拆成三个互斥面；下表是 2026-07-30 AB16 qualification
-收窄、既有 W0 D6 回归及治理测量闭合后的当前收据：
+G2 把 non-slow 全集拆成三个互斥面；下表是 2026-08-01 AB16 防御层退役并重新测量
+当前代码资产后的收据：
 
 | collect 面 | nodeids | 规范化 SHA256 |
 |---|---:|---|
-| developer | 3,546 | `cc0c66ba0e8751665ac3da3d51cc3f33afebfdbc66572d441abfec007e73fc2a` |
-| evidence、非 replay、非 slow | 1,756 | `5341b4924b0ea12de507710956163eb2b57d4f3e1b90013ade3a796ab57baf20` |
+| developer | 3,547 | `534a549f234c3e517aa996ece0d6d354064ed0fa59622a436eab63962cf096f9` |
+| evidence、非 replay、非 slow | 1,238 | `dbc3c412f73fd7afce715053d062410e9912ee0232dc723d2f0c67e635900939` |
 | replay、非 slow | 1,563 | `bac7d8817a81e5637db4c69ad9cbfe1ea4f0c3db5cadd21e6134c1387a55f75f` |
-| 三面并集 / full non-slow | 6,865 | `c8562f86531928f02f8f75f2e05c5ef70d87df02d790f61295d4bcbcad126682` |
-| full/all | 6,896 | `8cb3f886c1d41b66db4b72530b5126f30b0841dbd5d63e8e77f340b73db8bc59` |
+| 三面并集 / full non-slow | 6,348 | `1a1682a2feee7562529d7e753a62d3f4ef0864bb16430346c58bfa86cce4a4a6` |
+| full/all | 6,379 | `26741f07c6ce72c685285421820f9e7ece64ce0420d6facec68e6dd60e2fbdb0` |
 | slow | 31 | `9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd` |
 
 三个快速面两两无交，其并集逐 nodeid 等于 full/non-slow；non-slow 与 slow 的并集等于
-full/all。新增 AB16 protocol/plugin/qualification、Gate-A authority 边界及普通 preflight
-隔离回归进入各自既有 lane；replay 与 slow 收据保持不变。`cuts_collection_counter`
+full/all。AB16 formal/guardian、Gate-B、PathFinder qualification 与 v2 防御链的专属测试
+已随机制退役；replay 与 slow 收据保持不变。`cuts_collection_counter`
 count 保持 958，规范化 SHA256 为
 `1431c01e8a0aa94f04bb9071e6cb5d6fdd5415d917133f3758ab9ffdf904bb0d`；
 其他既有 focused 入口收据不变。所有数字都是收集面身份，不是通过数量或 soundness 证明。

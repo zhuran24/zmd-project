@@ -1364,7 +1364,7 @@ def _add_common_cli_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--python3-13",
         type=Path,
-        default=Path("/home/zhuran24/zmd-pj-codex/.venv-uvbolt-backup/bin/python3.13"),
+        default=Path("/home/zhuran24/zmd-pj/.venv-uvbolt-backup/bin/python3.13"),
     )
     parser.add_argument(
         "--attestor-python",

@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -38,8 +37,6 @@ METADATA_SCHEMA = baseline_contract.METADATA_SCHEMA
 MODEL_BACKEND = "ortools.sat.cp_model_pb2.CpModelProto"
 MODEL_BINARY_FORMAT = "deterministic-protobuf-v1"
 REBUILD_PURPOSE = "strict_ab16_baseline_model_rebuild"
-CAMPAIGN_PROVENANCE_NAME = "campaign-provenance.json"
-MAX_PROVENANCE_BYTES = 64 * 1024 * 1024
 STRICT_INPUT_ROLES = (
     "candidate_placements",
     "canonical_rules",
@@ -49,24 +46,6 @@ STRICT_INPUT_ROLES = (
 
 class BaselineRebuildError(RuntimeError):
     """The deterministic baseline could not be rebuilt exactly."""
-
-
-@dataclass
-class ProvenanceOnlyOutput:
-    """One retained-FD view of the formal baseline output prestate."""
-
-    root: Path
-    directory_fd: int
-    provenance_fd: int
-    directory_object: tuple[int, int]
-    provenance_signature: tuple[int, ...]
-    provenance_raw: bytes
-    provenance_identity: dict[str, object]
-    provenance: dict[str, object]
-
-    def close(self) -> None:
-        os.close(self.provenance_fd)
-        os.close(self.directory_fd)
 
 
 def _canonical(value: object) -> bytes:
@@ -118,98 +97,6 @@ def _reject_symlink_chain(
     return absolute
 
 
-def _snapshot_signature(item: os.stat_result) -> tuple[int, ...]:
-    return (
-        item.st_dev,
-        item.st_ino,
-        item.st_mode,
-        item.st_nlink,
-        item.st_uid,
-        item.st_gid,
-        item.st_size,
-        item.st_mtime_ns,
-        item.st_ctime_ns,
-    )
-
-
-def _object_identity(item: os.stat_result) -> tuple[int, int]:
-    return item.st_dev, item.st_ino
-
-
-def _open_directory(path: Path, *, label: str) -> tuple[Path, int, os.stat_result]:
-    absolute = _reject_symlink_chain(path, leaf_may_not_exist=False)
-    if not hasattr(os, "O_NOFOLLOW"):
-        raise BaselineRebuildError("O_NOFOLLOW is required")
-    try:
-        descriptor = os.open(
-            absolute,
-            os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
-        )
-    except OSError as exc:
-        raise BaselineRebuildError(f"{label} is not an openable real directory") from exc
-    try:
-        opened = os.fstat(descriptor)
-        named = os.stat(absolute, follow_symlinks=False)
-        if (
-            not stat.S_ISDIR(opened.st_mode)
-            or not stat.S_ISDIR(named.st_mode)
-            or _object_identity(opened) != _object_identity(named)
-        ):
-            raise BaselineRebuildError(f"{label} directory identity is invalid")
-    except BaseException:
-        os.close(descriptor)
-        raise
-    return absolute, descriptor, opened
-
-
-def _verify_directory_binding(path: Path, descriptor: int, expected: tuple[int, int], *, label: str) -> None:
-    opened = os.fstat(descriptor)
-    try:
-        named = os.stat(path, follow_symlinks=False)
-    except OSError as exc:
-        raise BaselineRebuildError(f"{label} path binding disappeared") from exc
-    if (
-        not stat.S_ISDIR(opened.st_mode)
-        or not stat.S_ISDIR(named.st_mode)
-        or _object_identity(opened) != expected
-        or _object_identity(named) != expected
-    ):
-        raise BaselineRebuildError(f"{label} path binding drifted")
-
-
-def _read_stable_fd(
-    descriptor: int,
-    *,
-    label: str,
-    limit: int,
-) -> tuple[bytes, os.stat_result]:
-    before = os.fstat(descriptor)
-    if (
-        not stat.S_ISREG(before.st_mode)
-        or before.st_nlink != 1
-        or before.st_size < 0
-        or before.st_size > limit
-    ):
-        raise BaselineRebuildError(f"{label} is not an admissible regular file")
-    chunks: list[bytes] = []
-    offset = 0
-    while offset < before.st_size:
-        chunk = os.pread(descriptor, min(1 << 20, before.st_size - offset), offset)
-        if not chunk:
-            raise BaselineRebuildError(f"{label} was truncated during same-FD read")
-        chunks.append(chunk)
-        offset += len(chunk)
-    if os.pread(descriptor, 1, before.st_size):
-        raise BaselineRebuildError(f"{label} grew during same-FD read")
-    after = os.fstat(descriptor)
-    if _snapshot_signature(before) != _snapshot_signature(after):
-        raise BaselineRebuildError(f"{label} changed during same-FD read")
-    raw = b"".join(chunks)
-    if len(raw) != before.st_size:
-        raise BaselineRebuildError(f"{label} size replay failed")
-    return raw, before
-
-
 def _snapshot_regular(path: Path, *, limit: int) -> tuple[bytes, dict[str, object]]:
     absolute = _reject_symlink_chain(
         path,
@@ -220,9 +107,37 @@ def _snapshot_regular(path: Path, *, limit: int) -> tuple[bytes, dict[str, objec
         os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
     )
     try:
-        raw, _ = _read_stable_fd(descriptor, label=f"strict input {absolute}", limit=limit)
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1 or before.st_size > limit:
+            raise BaselineRebuildError(f"invalid strict input: {absolute}")
+        chunks: list[bytes] = []
+        remaining = before.st_size
+        while remaining:
+            chunk = os.read(descriptor, min(1 << 20, remaining))
+            if not chunk:
+                raise BaselineRebuildError(f"truncated strict input: {absolute}")
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        if os.read(descriptor, 1):
+            raise BaselineRebuildError(f"growing strict input: {absolute}")
+        after = os.fstat(descriptor)
     finally:
         os.close(descriptor)
+
+    def signature(item: os.stat_result) -> tuple[int, ...]:
+        return (
+            item.st_dev,
+            item.st_ino,
+            item.st_mode,
+            item.st_nlink,
+            item.st_size,
+            item.st_mtime_ns,
+            item.st_ctime_ns,
+        )
+
+    if signature(before) != signature(after):
+        raise BaselineRebuildError(f"strict input changed during read: {absolute}")
+    raw = b"".join(chunks)
     return raw, {
         "path": str(absolute),
         "size_bytes": len(raw),
@@ -254,192 +169,41 @@ def _require_snapshot_imports(snapshot_root: Path) -> None:
             raise BaselineRebuildError(f"repository package imported outside snapshot: {name}")
 
 
-def _write_exclusive(path: Path, raw: bytes, *, mode: int = 0o600) -> dict[str, object]:
-    absolute = Path(os.path.abspath(path))
-    parent, parent_fd, parent_before = _open_directory(absolute.parent, label="output parent")
+def _write_exclusive(path: Path, raw: bytes) -> dict[str, object]:
+    if path.is_symlink():
+        raise BaselineRebuildError(f"symlink output rejected: {path}")
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC
+    descriptor = os.open(path, flags, 0o600)
     try:
-        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW
-        try:
-            descriptor = os.open(absolute.name, flags, mode, dir_fd=parent_fd)
-        except OSError as exc:
-            raise BaselineRebuildError(f"exclusive output creation failed: {absolute}") from exc
-        try:
-            view = memoryview(raw)
-            while view:
-                written = os.write(descriptor, view)
-                if written <= 0:
-                    raise BaselineRebuildError(f"short write: {absolute}")
-                view = view[written:]
-            os.fsync(descriptor)
-            metadata = os.fstat(descriptor)
-            named = os.stat(absolute.name, dir_fd=parent_fd, follow_symlinks=False)
-            if (
-                not stat.S_ISREG(metadata.st_mode)
-                or metadata.st_nlink != 1
-                or _snapshot_signature(metadata) != _snapshot_signature(named)
-                or stat.S_IMODE(metadata.st_mode) != mode
-                or metadata.st_size != len(raw)
-            ):
-                raise BaselineRebuildError(f"exclusive output identity failed: {absolute}")
-        finally:
-            os.close(descriptor)
-        os.fsync(parent_fd)
-        _verify_directory_binding(
-            parent,
-            parent_fd,
-            _object_identity(parent_before),
-            label="output parent",
-        )
+        view = memoryview(raw)
+        while view:
+            written = os.write(descriptor, view)
+            if written <= 0:
+                raise BaselineRebuildError(f"short write: {path}")
+            view = view[written:]
+        os.fsync(descriptor)
+        metadata = os.fstat(descriptor)
     finally:
-        os.close(parent_fd)
+        os.close(descriptor)
     return {
-        "path": str(absolute),
+        "path": str(path.resolve(strict=True)),
         "size_bytes": metadata.st_size,
         "sha256": hashlib.sha256(raw).hexdigest(),
     }
 
 
-def _mkdir_exclusive(path: Path, *, mode: int = 0o700) -> Path:
-    absolute = Path(os.path.abspath(path))
-    parent, parent_fd, parent_before = _open_directory(absolute.parent, label="directory parent")
-    try:
-        try:
-            os.mkdir(absolute.name, mode, dir_fd=parent_fd)
-        except OSError as exc:
-            raise BaselineRebuildError(f"exclusive directory creation failed: {absolute}") from exc
-        child_fd = -1
-        try:
-            child_fd = os.open(
-                absolute.name,
-                os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW,
-                dir_fd=parent_fd,
-            )
-            opened = os.fstat(child_fd)
-            named = os.stat(absolute.name, dir_fd=parent_fd, follow_symlinks=False)
-            if (
-                not stat.S_ISDIR(opened.st_mode)
-                or _snapshot_signature(opened) != _snapshot_signature(named)
-                or stat.S_IMODE(opened.st_mode) != mode
-            ):
-                raise BaselineRebuildError(f"exclusive directory identity failed: {absolute}")
-        finally:
-            if child_fd >= 0:
-                os.close(child_fd)
-        os.fsync(parent_fd)
-        _verify_directory_binding(
-            parent,
-            parent_fd,
-            _object_identity(parent_before),
-            label="directory parent",
-        )
-    finally:
-        os.close(parent_fd)
+def _prepare_output(path: Path) -> Path:
+    absolute = _reject_symlink_chain(
+        path,
+        leaf_may_not_exist=True,
+    )
+    if os.path.lexists(absolute):
+        raise BaselineRebuildError(f"output already exists: {absolute}")
+    parent = absolute.parent
+    if not parent.is_dir():
+        raise BaselineRebuildError("output parent must be a non-symlink directory")
+    os.mkdir(absolute, 0o700)
     return absolute
-
-
-def _verify_provenance_member(state: ProvenanceOnlyOutput) -> None:
-    _verify_directory_binding(
-        state.root,
-        state.directory_fd,
-        state.directory_object,
-        label="baseline output",
-    )
-    named = os.stat(
-        CAMPAIGN_PROVENANCE_NAME,
-        dir_fd=state.directory_fd,
-        follow_symlinks=False,
-    )
-    opened = os.fstat(state.provenance_fd)
-    if (
-        _snapshot_signature(named) != state.provenance_signature
-        or _snapshot_signature(opened) != state.provenance_signature
-    ):
-        raise BaselineRebuildError("campaign provenance member identity drifted")
-    raw, _ = _read_stable_fd(
-        state.provenance_fd,
-        label="campaign provenance",
-        limit=MAX_PROVENANCE_BYTES,
-    )
-    if raw != state.provenance_raw:
-        raise BaselineRebuildError("campaign provenance bytes drifted")
-
-
-def _open_provenance_only_output(
-    output_dir: Path,
-    campaign_provenance: Path,
-) -> ProvenanceOnlyOutput:
-    output = Path(os.path.abspath(output_dir))
-    provenance_path = Path(os.path.abspath(campaign_provenance))
-    if not output_dir.is_absolute() or output_dir != output:
-        raise BaselineRebuildError("output directory must be an absolute normalized path")
-    if provenance_path != output / CAMPAIGN_PROVENANCE_NAME:
-        raise BaselineRebuildError("campaign provenance is not the canonical baseline child")
-    output, directory_fd, directory_before = _open_directory(output, label="baseline output")
-    provenance_fd = -1
-    try:
-        names_before = os.listdir(directory_fd)
-        if names_before != [CAMPAIGN_PROVENANCE_NAME]:
-            raise BaselineRebuildError("baseline output is not in PROVENANCE_ONLY state")
-        member_before = os.stat(
-            CAMPAIGN_PROVENANCE_NAME,
-            dir_fd=directory_fd,
-            follow_symlinks=False,
-        )
-        if (
-            not stat.S_ISREG(member_before.st_mode)
-            or member_before.st_nlink != 1
-            or stat.S_IMODE(member_before.st_mode) != 0o444
-        ):
-            raise BaselineRebuildError("campaign provenance member is not regular nlink1 mode0444")
-        provenance_fd = os.open(
-            CAMPAIGN_PROVENANCE_NAME,
-            os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
-            dir_fd=directory_fd,
-        )
-        opened = os.fstat(provenance_fd)
-        if _snapshot_signature(opened) != _snapshot_signature(member_before):
-            raise BaselineRebuildError("campaign provenance lstat/fstat identity mismatch")
-        raw, stable_member = _read_stable_fd(
-            provenance_fd,
-            label="campaign provenance",
-            limit=MAX_PROVENANCE_BYTES,
-        )
-        member_after = os.stat(
-            CAMPAIGN_PROVENANCE_NAME,
-            dir_fd=directory_fd,
-            follow_symlinks=False,
-        )
-        directory_after = os.fstat(directory_fd)
-        if (
-            _snapshot_signature(stable_member) != _snapshot_signature(member_after)
-            or _snapshot_signature(directory_before) != _snapshot_signature(directory_after)
-            or os.listdir(directory_fd) != names_before
-        ):
-            raise BaselineRebuildError("PROVENANCE_ONLY member set changed during validation")
-        provenance = _campaign_provenance(provenance_path)
-        if baseline_contract.canonical_json(provenance) != raw:
-            raise BaselineRebuildError("campaign provenance bytes are not canonical and identity-bound")
-        state = ProvenanceOnlyOutput(
-            root=output,
-            directory_fd=directory_fd,
-            provenance_fd=provenance_fd,
-            directory_object=_object_identity(directory_before),
-            provenance_signature=_snapshot_signature(stable_member),
-            provenance_raw=raw,
-            provenance_identity={
-                "path": str(provenance_path),
-                "sha256": hashlib.sha256(raw).hexdigest(),
-                "size_bytes": len(raw),
-            },
-            provenance=provenance,
-        )
-        _verify_provenance_member(state)
-        return state
-    except BaseException:
-        if provenance_fd >= 0:
-            os.close(provenance_fd)
-        os.close(directory_fd)
-        raise
 
 
 def _utc_now() -> str:
@@ -503,8 +267,10 @@ def _validate_fixed_parameters(args: argparse.Namespace) -> None:
             raise BaselineRebuildError(f"strict input path is not absolute for {role}")
 
 
-def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -> int:
-    provenance_before = output_state.provenance
+def main(argv: Sequence[str] | None = None) -> int:
+    args = _parser().parse_args(argv)
+    _validate_fixed_parameters(args)
+    provenance_before = _campaign_provenance(args.campaign_provenance)
     repository_root = Path(str(provenance_before["snapshot_root"]))
     if Path.cwd() != repository_root:
         raise BaselineRebuildError("working directory is not the campaign snapshot root")
@@ -518,10 +284,9 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
             and (candidate / "src").is_dir()
         ):
             raise BaselineRebuildError("ambient repository import path is forbidden")
-    output = output_state.root
-    tmp_dir = _mkdir_exclusive(output / "tmp")
-    checkpoint_dir = _mkdir_exclusive(output / "checkpoint")
-    _write_exclusive(checkpoint_dir / "benders_cuts.jsonl", b"")
+    output = _prepare_output(args.output_dir)
+    tmp_dir = output / "tmp"
+    os.mkdir(tmp_dir, 0o700)
 
     os.environ["TMPDIR"] = str(tmp_dir)
     os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -565,7 +330,7 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
     controller = LBBDController(
         master=master,
         cut_manager=CutManager(
-            checkpoint_dir=checkpoint_dir,
+            checkpoint_dir=output / "checkpoint",
             solve_mode="certified_exact",
         ),
         project_root=repository_root,
@@ -610,18 +375,22 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
     }
     if observed != expected:
         raise BaselineRebuildError(f"historical baseline did not reproduce: {observed!r}")
-    _verify_provenance_member(output_state)
     if _campaign_provenance(args.campaign_provenance) != provenance_before:
         raise BaselineRebuildError("campaign provenance drifted during baseline rebuild")
-    _verify_provenance_member(output_state)
 
     model_path = output / "cut-free-model.bin"
-    model_raw = master.model.Proto().SerializeToString(deterministic=True)
+    if os.path.lexists(model_path) or not master.model.export_to_file(str(model_path)):
+        raise BaselineRebuildError("official binary model export failed")
+    model_raw, model_identity = _snapshot_regular(model_path, limit=1 << 30)
     parsed = cp_model_pb2.CpModelProto()
     consumed = parsed.ParseFromString(model_raw)
     if consumed != len(model_raw) or parsed.SerializeToString(deterministic=True) != model_raw:
         raise BaselineRebuildError("binary model export is not canonical")
-    model_identity = _write_exclusive(model_path, model_raw)
+    model_identity = {
+        "path": str(model_path.resolve(strict=True)),
+        "size_bytes": len(model_raw),
+        "sha256": hashlib.sha256(model_raw).hexdigest(),
+    }
     incumbent_identity = _write_exclusive(
         output / "incumbent.json",
         _authority_json(incumbent_json),
@@ -686,33 +455,8 @@ def _run_rebuild(args: argparse.Namespace, output_state: ProvenanceOnlyOutput) -
         },
     }
     _write_exclusive(output / "rebuild-result.json", _authority_json(record))
-    _verify_provenance_member(output_state)
-    expected_top_level = {
-        CAMPAIGN_PROVENANCE_NAME,
-        "checkpoint",
-        "cut-free-model.bin",
-        "incumbent.json",
-        "rebuilt-model-metadata.json",
-        "rebuild-result.json",
-        "tmp",
-    }
-    if set(os.listdir(output_state.directory_fd)) != expected_top_level:
-        raise BaselineRebuildError("baseline output member set drifted after rebuild")
     print(json.dumps({"status": "REBUILT_PENDING_INDEPENDENT_REPLAY"}))
     return 0
-
-
-def main(argv: Sequence[str] | None = None) -> int:
-    args = _parser().parse_args(argv)
-    _validate_fixed_parameters(args)
-    output_state = _open_provenance_only_output(
-        args.output_dir,
-        args.campaign_provenance,
-    )
-    try:
-        return _run_rebuild(args, output_state)
-    finally:
-        output_state.close()
 
 
 if __name__ == "__main__":

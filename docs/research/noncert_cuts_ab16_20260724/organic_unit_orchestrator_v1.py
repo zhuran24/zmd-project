@@ -14,7 +14,9 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Callable, Mapping, Sequence
+from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass
+import fcntl
 import hashlib
 import json
 import math
@@ -46,10 +48,51 @@ LAUNCH_ENVIRONMENT_KEYS = frozenset(
 )
 MAX_TOOL_BYTES = 8 * 1024 * 1024
 MAX_EXECUTABLE_BYTES = 64 * 1024 * 1024
+PROD_SCALE_LOCK_PATHS = (
+    Path("/tmp/zmd-pj-codex-heavy-validation.lock"),
+    Path("/run/user/1000/zmd_pj_prod_scale_solver.lock"),
+    Path("/run/user/1000/zmd-pj-prod-scale-solve.lock"),
+)
 
 
 class OrchestratorError(RuntimeError):
     """Authority, lifecycle, or adapter observation failed closed."""
+
+
+@contextmanager
+def _exclusive_prod_scale_locks(
+    lock_paths: Sequence[Path] = PROD_SCALE_LOCK_PATHS,
+):
+    """Hold every compatibility lock for one formal prod-scale solve."""
+
+    if tuple(lock_paths) == () or len(set(lock_paths)) != len(lock_paths):
+        raise OrchestratorError("prod-scale lock path set is empty or duplicated")
+    descriptors: list[int] = []
+    try:
+        for lock_path in lock_paths:
+            absolute = Path(os.path.abspath(lock_path))
+            if not absolute.parent.is_dir():
+                raise OrchestratorError(f"prod-scale lock parent is unavailable: {absolute.parent}")
+            try:
+                descriptor = os.open(
+                    absolute,
+                    os.O_RDWR | os.O_CREAT | os.O_CLOEXEC | os.O_NOFOLLOW,
+                    0o600,
+                )
+            except OSError as exc:
+                raise OrchestratorError(f"prod-scale lock is unavailable: {absolute}") from exc
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except OSError as exc:
+                os.close(descriptor)
+                reason = "already held" if isinstance(exc, BlockingIOError) else "unavailable"
+                raise OrchestratorError(f"prod-scale lock is {reason}: {absolute}") from exc
+            descriptors.append(descriptor)
+        yield
+    finally:
+        for descriptor in reversed(descriptors):
+            fcntl.flock(descriptor, fcntl.LOCK_UN)
+            os.close(descriptor)
 
 
 @dataclass(frozen=True)
@@ -1364,15 +1407,17 @@ def run_pinned_entry(
         tools["organic_unit_orchestrator"],
         "organic unit orchestrator",
     )
-    adapter = SubprocessLifecycleAdapter(
-        pre_run=pre_run,
-        epoch_observer=build_pinned_epoch_observer(pre_run),
-    )
-    return orchestrate_with_adapter(
-        pre_run_path=pre_run_path,
-        selection_path=selection_path,
-        adapter=adapter,
-    )
+    lock_context = _exclusive_prod_scale_locks() if execution_class == "FORMAL_AB16" else nullcontext()
+    with lock_context:
+        adapter = SubprocessLifecycleAdapter(
+            pre_run=pre_run,
+            epoch_observer=build_pinned_epoch_observer(pre_run),
+        )
+        return orchestrate_with_adapter(
+            pre_run_path=pre_run_path,
+            selection_path=selection_path,
+            adapter=adapter,
+        )
 
 
 def _parser() -> argparse.ArgumentParser:

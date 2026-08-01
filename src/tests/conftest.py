@@ -365,13 +365,6 @@ def _missing_noncert_cuts_ab_trust_artifacts() -> str | None:
     return None
 
 
-def _missing_noncert_cuts_ab16_artifacts() -> str | None:
-    target = PROJECT_ROOT / ".artifacts" / "noncert_cuts_ab16_20260724"
-    if not target.exists():
-        return f"fixture missing: {target.relative_to(PROJECT_ROOT)} (noncert-cuts ab16 artifact, not in git)"
-    return None
-
-
 # Track B provenance gates: exact `module.py::test_name` suffixes (parametrized
 # variants share the base name, so the [param] suffix is stripped before match).
 # Each maps to the guard that explains why it cannot run on the merged tree.
@@ -410,8 +403,6 @@ _TRACK_B_NODEID_GUARDS: dict[str, "callable[[], str | None]"] = {
     # HEAD-pin: repository-head replay asserts the codex worktree HEAD.
     "test_noncert_cuts_ab16_campaign_bootstrap_v1.py::test_repository_head_executes_the_same_pinned_git_fd": _head_drifted_from_track_b_pin,
     "test_noncert_cuts_ab16_disposable_drill_authority_v1.py::test_serialized_planned_git_path_replays_real_repository_head": _head_drifted_from_track_b_pin,
-    # artifact-absent: ab16 authority/gate-A replay reads .artifacts/noncert_cuts_ab16_20260724 bytes.
-    "test_noncert_cuts_ab16_gate_a_validation_v2.py::test_successful_full_preflight_finalizes_only_nonauthorizing_gate_a": _missing_noncert_cuts_ab16_artifacts,
     # artifact-absent: positive-control closeout replays .artifacts/noncert_cuts_ab_trust_20260723 bytes.
     "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_complete_history_manifest_replays_all_v1_bytes": _missing_noncert_cuts_ab_trust_artifacts,
     "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_current_gate_a002_remains_fail_closed_on_missing_resource_authority": _missing_noncert_cuts_ab_trust_artifacts,

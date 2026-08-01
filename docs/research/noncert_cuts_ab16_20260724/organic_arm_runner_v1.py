@@ -47,7 +47,6 @@ from typing import Any, Protocol
 
 
 MANIFEST_SCHEMA = "noncert-cuts-ab16-organic-manifest-v1"
-FORMAL_MANIFEST_SCHEMA = "noncert-cuts-ab16-organic-manifest-v2"
 SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
 RESULT_SCHEMA = "noncert-cuts-ab16-organic-arm-result-v1"
 JOURNAL_SCHEMA = "noncert-cuts-ab16-compile-attach-journal-v1"
@@ -58,14 +57,6 @@ FORMAL_ARITHMETIC_PURPOSE = "prospective_noncert_cuts_ab16_formal_applied_inequa
 ATTACH_ENV = "EXACT_CUT_FRAMEWORK_ATTACH"
 BASELINE_ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v1"
 BASELINE_ADMISSION_VERDICT = "AB16_BASELINE_INPUTS_ADMITTED"
-SEALED_EXECUTION_SOURCE_SCHEMA = "noncert-cuts-ab16-sealed-execution-source-v1"
-SNAPSHOT_MANIFEST_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
-SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
-SELECTED_BYTE_LAUNCH_SCHEMA = "noncert-cuts-ab16-selected-byte-launch-v1"
-SELECTED_BYTE_EXECUTION_STRATEGY = "selected-byte-python-loader-fd-v1"
-FORMAL_LOADER_ROLE = "ab16_formal_loader_v1"
-FORMAL_RUNNER_MODULE = "docs.research.noncert_cuts_ab16_20260724.organic_arm_runner_v1"
-MODULE_ORIGIN_RECEIPT_SCHEMA = "noncert-cuts-ab16-module-origin-receipt-v1"
 
 CONFIGURATION_FAMILIES = {
     "region-capacity": ("region_capacity",),
@@ -238,8 +229,6 @@ class ArmContext:
     ledger: Any
     manifest: Mapping[str, Any]
     repository_root: Path
-    execution_source: Mapping[str, Any]
-    live_source_provenance_root: Path
     selection: Mapping[str, Any]
     workers: int
 
@@ -557,280 +546,6 @@ def _replay_repository_head(manifest: Mapping[str, Any]) -> Path:
     return repository_root
 
 
-def _within(path: Path, root: Path) -> bool:
-    try:
-        path.relative_to(root)
-    except ValueError:
-        return False
-    return True
-
-
-def _validate_execution_source(
-    value: object,
-    *,
-    pre_run: Mapping[str, Any],
-    manifest: Mapping[str, Any],
-    runner_package_snapshot: Snapshot,
-) -> Mapping[str, Any]:
-    record = _exact_keys(
-        value,
-        {
-            "environment",
-            "execution_working_directory",
-            "import_mode",
-            "initial_working_directory",
-            "live_source_provenance_root",
-            "loader_argv",
-            "loader_role",
-            "module_origin_policy",
-            "module_origin_receipt_path",
-            "package_id",
-            "runner_module",
-            "runner_package_tool_identity",
-            "runner_snapshot_member_identity",
-            "runner_snapshot_relative_path",
-            "schema_version",
-            "sealed_snapshot_execution_root",
-            "selected_byte_launch",
-            "snapshot_manifest_identity",
-            "snapshot_materialization_receipt_identity",
-        },
-        "sealed execution source",
-    )
-    if (
-        record["schema_version"] != SEALED_EXECUTION_SOURCE_SCHEMA
-        or record["loader_role"] != FORMAL_LOADER_ROLE
-        or record["runner_module"] != FORMAL_RUNNER_MODULE
-        or record["import_mode"] != "ordinary_pathfinder"
-        or record["module_origin_policy"] != "sealed-snapshot-only-v1"
-        or record["package_id"] != manifest["authority_chain"]["package"]["package_id"]
-    ):
-        raise RunnerError("sealed execution source semantics drifted")
-    live_root = Path(str(record["live_source_provenance_root"]))
-    execution_root = Path(str(record["sealed_snapshot_execution_root"]))
-    execution_cwd = Path(str(record["execution_working_directory"]))
-    if (
-        not live_root.is_absolute()
-        or not execution_root.is_absolute()
-        or not execution_cwd.is_absolute()
-        or live_root != Path(manifest["repository_root"])
-        or live_root == execution_root
-        or execution_cwd != execution_root
-    ):
-        raise RunnerError("sealed execution source root join failed")
-    directory_fd = _open_directory_chain(execution_root)
-    os.close(directory_fd)
-
-    manifest_identity = _exact_identity(
-        record["snapshot_manifest_identity"],
-        "snapshot manifest identity",
-    )
-    receipt_identity = _exact_identity(
-        record["snapshot_materialization_receipt_identity"],
-        "snapshot materialization receipt identity",
-    )
-    manifest_snapshot = replay_identity(manifest_identity, "snapshot manifest")
-    receipt_snapshot = replay_identity(receipt_identity, "snapshot materialization receipt")
-    snapshot_manifest = _strict_loads(manifest_snapshot.data, "snapshot manifest")
-    snapshot_receipt = _strict_loads(receipt_snapshot.data, "snapshot materialization receipt")
-    snapshot_manifest = _exact_keys(
-        snapshot_manifest,
-        {
-            "archive_descriptor",
-            "authority_scope",
-            "import_mode",
-            "member_count",
-            "members",
-            "ordered_member_digest",
-            "repository_head",
-            "repository_tree",
-            "schema_version",
-            "total_bytes",
-        },
-        "snapshot manifest",
-    )
-    snapshot_receipt = _exact_keys(
-        snapshot_receipt,
-        {
-            "authority_scope",
-            "candidate_identity",
-            "created_at_utc",
-            "import_mode",
-            "member_count",
-            "ordered_member_digest",
-            "package_id",
-            "repository_head",
-            "repository_tree",
-            "schema_version",
-            "snapshot_archive_identity",
-            "snapshot_manifest_identity",
-            "snapshot_root",
-            "status",
-            "total_bytes",
-        },
-        "snapshot materialization receipt",
-    )
-    members = snapshot_manifest["members"]
-    if type(members) is not list or any(type(item) is not dict for item in members):
-        raise RunnerError("snapshot member list is malformed")
-    if (
-        snapshot_manifest["schema_version"] != SNAPSHOT_MANIFEST_SCHEMA
-        or snapshot_manifest["authority_scope"] != "AB16_RESEARCH_ONLY"
-        or snapshot_manifest["import_mode"] != "ordinary_pathfinder"
-        or snapshot_manifest["repository_head"] != manifest["repository_head"]
-        or snapshot_manifest["member_count"] != len(members)
-        or snapshot_manifest["ordered_member_digest"]
-        != hashlib.sha256(canonical_json(members)).hexdigest()
-        or snapshot_receipt["schema_version"] != SNAPSHOT_MATERIALIZATION_SCHEMA
-        or snapshot_receipt["status"] != "PASS"
-        or snapshot_receipt["package_id"] != record["package_id"]
-        or snapshot_receipt["snapshot_manifest_identity"] != dict(manifest_identity)
-        or Path(snapshot_receipt["snapshot_root"]) != execution_root
-        or snapshot_receipt["repository_head"] != snapshot_manifest["repository_head"]
-        or snapshot_receipt["repository_tree"] != snapshot_manifest["repository_tree"]
-        or snapshot_receipt["member_count"] != snapshot_manifest["member_count"]
-        or snapshot_receipt["ordered_member_digest"] != snapshot_manifest["ordered_member_digest"]
-        or snapshot_receipt["total_bytes"] != snapshot_manifest["total_bytes"]
-    ):
-        raise RunnerError("snapshot materialization replay failed")
-
-    relative_text = record["runner_snapshot_relative_path"]
-    if type(relative_text) is not str:
-        raise RunnerError("runner snapshot relative path is invalid")
-    relative = Path(relative_text)
-    matching = [member for member in members if member.get("path") == relative_text]
-    if relative.is_absolute() or relative.as_posix() != relative_text or ".." in relative.parts or len(matching) != 1:
-        raise RunnerError("runner snapshot relative path escaped")
-    runner_identity = _exact_identity_with_mode(
-        record["runner_snapshot_member_identity"],
-        "runner snapshot member identity",
-    )
-    runner_snapshot = replay_identity_with_mode(
-        runner_identity,
-        "runner snapshot member",
-    )
-    member = matching[0]
-    if (
-        Path(runner_identity["path"]) != execution_root / relative
-        or runner_identity["sha256"] != member.get("raw_sha256")
-        or runner_identity["size_bytes"] != member.get("size_bytes")
-        or runner_identity["mode"] != member.get("materialized_mode")
-    ):
-        raise RunnerError("runner snapshot member join failed")
-    package_identity = _exact_identity_with_mode(
-        record["runner_package_tool_identity"],
-        "runner package tool identity",
-    )
-    if (
-        {key: package_identity[key] for key in runner_package_snapshot.identity}
-        != runner_package_snapshot.identity
-        or package_identity["sha256"] != runner_snapshot.identity["sha256"]
-        or package_identity["size_bytes"] != runner_snapshot.identity["size_bytes"]
-    ):
-        raise RunnerError("runner package/snapshot byte join failed")
-    selected = _exact_keys(
-        record["selected_byte_launch"],
-        {
-            "authority_identity",
-            "execution_strategy",
-            "fd_map",
-            "literal_identity",
-            "loader_identity",
-            "open_file_names",
-            "python_identity",
-            "schema_version",
-            "transport",
-        },
-        "selected-byte launch",
-    )
-    literal_identity = _exact_keys(
-        selected["literal_identity"],
-        {"sha256", "size_bytes"},
-        "selected-byte literal identity",
-    )
-    if (
-        selected["schema_version"] != SELECTED_BYTE_LAUNCH_SCHEMA
-        or selected["execution_strategy"] != SELECTED_BYTE_EXECUTION_STRATEGY
-        or selected["transport"] != "systemd-openfile-v1"
-        or selected["open_file_names"]
-        != ["ab16-python", "ab16-loader", "ab16-authority"]
-        or selected["fd_map"] != {"authority": 5, "loader": 4, "python": 3}
-        or type(literal_identity["sha256"]) is not str
-        or SHA256_RE.fullmatch(literal_identity["sha256"]) is None
-        or type(literal_identity["size_bytes"]) is not int
-        or literal_identity["size_bytes"] <= 0
-    ):
-        raise RunnerError("selected-byte launch semantics drifted")
-    for role in ("authority", "loader", "python"):
-        replay_identity_with_mode(
-            _exact_identity_with_mode(
-                selected[f"{role}_identity"],
-                f"selected-byte {role} identity",
-            ),
-            f"selected-byte {role}",
-        )
-    origin_path = Path(str(record["module_origin_receipt_path"]))
-    if origin_path != Path(pre_run["attempt_dir"]) / "module-origin-receipt.json":
-        raise RunnerError("module-origin receipt path escaped attempt")
-    return record
-
-
-def _assert_initial_import_boundary(execution_source: Mapping[str, Any]) -> None:
-    execution_root = Path(str(execution_source["sealed_snapshot_execution_root"])).resolve()
-    live_root = Path(str(execution_source["live_source_provenance_root"])).resolve()
-    execution_cwd = Path(str(execution_source["execution_working_directory"])).resolve()
-    runner_path = Path(str(execution_source["runner_snapshot_member_identity"]["path"])).resolve()
-    if Path.cwd().resolve() != execution_cwd:
-        raise RunnerError("formal runner cwd is not the sealed execution root")
-    if Path(__file__).resolve() != runner_path:
-        raise RunnerError("formal runner was not imported from its sealed snapshot member")
-    if any(name == "src" or name.startswith("src.") for name in sys.modules):
-        raise RunnerError("ambient src module was preloaded before formal construction")
-    roots: list[Path] = []
-    for raw in sys.path:
-        if not raw:
-            raise RunnerError("implicit cwd entry is forbidden in isolated sys.path")
-        path = Path(raw).resolve()
-        roots.append(path)
-        if path != execution_root and (path == live_root or _within(path, live_root)):
-            raise RunnerError("live checkout path leaked into isolated sys.path")
-        if path != execution_root and ((path / ".git").exists() or (path / "PROJECT_LOCK.md").exists()):
-            raise RunnerError("checkout-shaped ambient path leaked into isolated sys.path")
-    if roots.count(execution_root) != 1:
-        raise RunnerError("sealed execution root must be the unique project import root")
-
-
-def _audit_src_module_origins(execution_source: Mapping[str, Any]) -> list[dict[str, object]]:
-    execution_root = Path(str(execution_source["sealed_snapshot_execution_root"])).resolve()
-    observations: list[dict[str, object]] = []
-    for name, module in sorted(sys.modules.items()):
-        if name != "src" and not name.startswith("src."):
-            continue
-        raw_file = getattr(module, "__file__", None)
-        raw_path = getattr(module, "__path__", None)
-        if raw_file is not None:
-            path = Path(str(raw_file)).resolve()
-            if not _within(path, execution_root):
-                raise RunnerError(f"module {name} originated outside the sealed snapshot")
-            observations.append({"kind": "file", "module": name, "path": str(path)})
-        elif raw_path is None:
-            raise RunnerError(f"module {name} lacks a sealed file or package path")
-        if raw_path is not None:
-            paths = [Path(str(item)).resolve() for item in raw_path]
-            if not paths or any(not _within(path, execution_root) for path in paths):
-                raise RunnerError(f"package {name} path escaped the sealed snapshot")
-            observations.append(
-                {
-                    "kind": "package",
-                    "module": name,
-                    "paths": [str(path) for path in paths],
-                }
-            )
-    if not observations:
-        raise RunnerError("formal construction imported no sealed src modules")
-    return observations
-
-
 def _load_pinned_module(snapshot: Snapshot, role: str) -> ModuleType:
     """Execute one already verified tool from the exact bytes just read."""
 
@@ -1018,57 +733,41 @@ def _authority_chain(value: object) -> Mapping[str, Any]:
 def validate_manifest(value: object) -> Mapping[str, Any]:
     """Validate the immutable experiment manifest used by every arm."""
 
-    legacy_fields = {
-        "arithmetic_verifier",
-        "arm_binding_identities",
-        "arm_sequence",
-        "attempt_dirs",
-        "authority_chain",
-        "authorizations",
-        "baseline_admission_identity",
-        "baseline_incumbent_identity",
-        "campaign_id",
-        "classification_contract_identity",
-        "common_prestate_identity",
-        "configuration_families",
-        "experiment_contract",
-        "forbidden_families",
-        "per_arm_tool_identities",
-        "purpose",
-        "repository_git_tool_identity",
-        "repository_head",
-        "repository_root",
-        "run_nonce",
-        "runner_tool_identity",
-        "runtime_parameters",
-        "schema_version",
-        "seed",
-        "unit_names",
-        "workers",
-    }
-    if type(value) is not dict:
-        raise RunnerError("organic manifest: exact key set drifted")
-    schema_version = value.get("schema_version")
-    if schema_version == MANIFEST_SCHEMA:
-        expected_fields = legacy_fields
-        sealed_execution = False
-    elif schema_version == FORMAL_MANIFEST_SCHEMA:
-        expected_fields = legacy_fields | {
-            "live_source_provenance_root",
-            "sealed_snapshot_execution_root",
-            "snapshot_manifest_identity",
-            "snapshot_materialization_receipt_identity",
-        }
-        sealed_execution = True
-    else:
-        raise RunnerError("organic manifest schema drifted")
     record = _exact_keys(
         value,
-        expected_fields,
+        {
+            "arithmetic_verifier",
+            "arm_binding_identities",
+            "arm_sequence",
+            "attempt_dirs",
+            "authority_chain",
+            "authorizations",
+            "baseline_admission_identity",
+            "baseline_incumbent_identity",
+            "campaign_id",
+            "classification_contract_identity",
+            "common_prestate_identity",
+            "configuration_families",
+            "experiment_contract",
+            "forbidden_families",
+            "per_arm_tool_identities",
+            "purpose",
+            "repository_git_tool_identity",
+            "repository_head",
+            "repository_root",
+            "run_nonce",
+            "runner_tool_identity",
+            "runtime_parameters",
+            "schema_version",
+            "seed",
+            "unit_names",
+            "workers",
+        },
         "organic manifest",
     )
     if (
-        record["purpose"] != MANIFEST_PURPOSE
+        record["schema_version"] != MANIFEST_SCHEMA
+        or record["purpose"] != MANIFEST_PURPOSE
         or type(record["campaign_id"]) is not str
         or SHA256_RE.fullmatch(record["campaign_id"]) is None
         or type(record["repository_head"]) is not str
@@ -1084,14 +783,6 @@ def validate_manifest(value: object) -> Mapping[str, Any]:
         or record["forbidden_families"] != list(FORBIDDEN_FAMILIES)
     ):
         raise RunnerError("organic manifest scalar semantics drifted")
-    if sealed_execution and (
-        record["live_source_provenance_root"] != record["repository_root"]
-        or type(record["sealed_snapshot_execution_root"]) is not str
-        or not Path(record["sealed_snapshot_execution_root"]).is_absolute()
-        or record["sealed_snapshot_execution_root"]
-        == record["live_source_provenance_root"]
-    ):
-        raise RunnerError("organic manifest sealed-source semantics drifted")
     families = _exact_keys(
         record["configuration_families"],
         set(CONFIGURATION_FAMILIES),
@@ -1113,21 +804,13 @@ def validate_manifest(value: object) -> Mapping[str, Any]:
         set(ARM_SEQUENCE),
         "manifest arm bindings",
     )
-    identity_fields = [
+    for field in (
         "baseline_admission_identity",
         "baseline_incumbent_identity",
         "classification_contract_identity",
         "common_prestate_identity",
         "runner_tool_identity",
-    ]
-    if sealed_execution:
-        identity_fields.extend(
-            (
-                "snapshot_manifest_identity",
-                "snapshot_materialization_receipt_identity",
-            )
-        )
-    for field in identity_fields:
+    ):
         _exact_identity(record[field], f"manifest {field}")
     _exact_identity_with_mode(
         record["repository_git_tool_identity"],
@@ -1191,53 +874,38 @@ def validate_selection(
 ) -> Mapping[str, Any]:
     """Validate one per-arm formal selection against the manifest."""
 
-    legacy_fields = {
-        "arm",
-        "arm_binding_identity",
-        "attempt_dir",
-        "authority_chain",
-        "authorizations",
-        "baseline_admission_identity",
-        "baseline_incumbent_sha256",
-        "campaign_id",
-        "common_prestate_identity",
-        "configuration",
-        "enabled_families",
-        "execution_class",
-        "expected_payload_status",
-        "fresh_process_required",
-        "manifest_identity",
-        "order",
-        "pre_run_authority_identity",
-        "purpose",
-        "repository_git_tool_identity",
-        "repository_head",
-        "repository_root",
-        "run_nonce",
-        "schema_version",
-        "seed",
-        "selection_nonce",
-        "slot",
-        "unit_name",
-        "workers",
-    }
-    manifest_schema = manifest.get("schema_version")
-    if manifest_schema == MANIFEST_SCHEMA:
-        expected_fields = legacy_fields
-        sealed_execution = False
-    elif manifest_schema == FORMAL_MANIFEST_SCHEMA:
-        expected_fields = legacy_fields | {
-            "live_source_provenance_root",
-            "sealed_snapshot_execution_root",
-            "snapshot_manifest_identity",
-            "snapshot_materialization_receipt_identity",
-        }
-        sealed_execution = True
-    else:
-        raise RunnerError("selection parent manifest schema drifted")
     record = _exact_keys(
         value,
-        expected_fields,
+        {
+            "arm",
+            "arm_binding_identity",
+            "attempt_dir",
+            "authority_chain",
+            "authorizations",
+            "baseline_admission_identity",
+            "baseline_incumbent_sha256",
+            "campaign_id",
+            "common_prestate_identity",
+            "configuration",
+            "enabled_families",
+            "execution_class",
+            "expected_payload_status",
+            "fresh_process_required",
+            "manifest_identity",
+            "order",
+            "pre_run_authority_identity",
+            "purpose",
+            "repository_git_tool_identity",
+            "repository_head",
+            "repository_root",
+            "run_nonce",
+            "schema_version",
+            "seed",
+            "selection_nonce",
+            "slot",
+            "unit_name",
+            "workers",
+        },
         "organic arm selection",
     )
     configuration = record["configuration"]
@@ -1258,7 +926,7 @@ def validate_selection(
         or SAFE_TOKEN_RE.fullmatch(record["selection_nonce"]) is None
     ):
         raise RunnerError("organic arm selection scalar semantics drifted")
-    joined_fields = [
+    for field in (
         "campaign_id",
         "repository_git_tool_identity",
         "repository_head",
@@ -1266,17 +934,7 @@ def validate_selection(
         "run_nonce",
         "workers",
         "seed",
-    ]
-    if sealed_execution:
-        joined_fields.extend(
-            (
-                "live_source_provenance_root",
-                "sealed_snapshot_execution_root",
-                "snapshot_manifest_identity",
-                "snapshot_materialization_receipt_identity",
-            )
-        )
-    for field in joined_fields:
+    ):
         if record[field] != manifest[field]:
             raise RunnerError(f"selection {field} differs from manifest")
     if record["authority_chain"] != manifest["authority_chain"]:
@@ -1908,7 +1566,6 @@ def _load_authority(
     Mapping[str, Any],
     Mapping[str, Any],
     dict[str, dict[str, object]],
-    Mapping[str, Any],
 ]:
     selection_snapshot = snapshot_regular(
         selection_path,
@@ -1975,6 +1632,8 @@ def _load_authority(
         authority_snapshots[role] = snapshot
         replayed[role] = snapshot.identity
 
+    if Path(authority_snapshots["runner_tool"].identity["path"]) != Path(__file__).resolve():
+        raise RunnerError("manifest runner tool identity does not select this runner")
     if selection_snapshot.identity["path"] != str(Path(selection["attempt_dir"]) / "selection.json"):
         raise RunnerError("organic arm selection path escaped its attempt directory")
 
@@ -1999,15 +1658,6 @@ def _load_authority(
         raise RunnerError("package-pinned pre-run authority or selection replay failed") from exc
     if dict(checked_pre_run) != dict(pre_run_value) or dict(checked_selection) != dict(selection):
         raise RunnerError("package-pinned pre-run semantic replay changed its inputs")
-    launch = pre_run_value.get("launch")
-    if not isinstance(launch, Mapping):
-        raise RunnerError("formal pre-run launch is absent")
-    execution_source = _validate_execution_source(
-        launch.get("execution_source"),
-        pre_run=pre_run_value,
-        manifest=manifest,
-        runner_package_snapshot=authority_snapshots["runner_tool"],
-    )
 
     admission_value = _strict_loads(
         authority_snapshots["baseline_admission"].data,
@@ -2024,7 +1674,7 @@ def _load_authority(
     )
     if type(incumbent) is not dict or semantic_digest(incumbent) != expected_digest:
         raise RunnerError("baseline incumbent bytes do not match admitted digest")
-    return manifest, selection, replayed, execution_source
+    return manifest, selection, replayed
 
 
 def _event_counts(events: Sequence[Mapping[str, object]]) -> dict[str, int]:
@@ -2181,9 +1831,7 @@ def _run_with_hooks(
             raise RunnerError("fresh process contract forbids a second arm")
         _PUBLIC_RUN_STARTED = True
 
-    manifest, selection, authority_identities, execution_source = _load_authority(selection_path)
-    if bool(getattr(hooks, "requires_sealed_import_boundary", False)):
-        _assert_initial_import_boundary(execution_source)
+    manifest, selection, authority_identities = _load_authority(selection_path)
     attempt_dir = _prepare_selected_attempt(Path(selection["attempt_dir"]))
 
     from src.cuts.ledger import CutLedgerWriter, read_segment
@@ -2224,11 +1872,9 @@ def _run_with_hooks(
             context = ArmContext(
                 attempt_dir=attempt_dir,
                 enabled_families=tuple(selection["enabled_families"]),
-                execution_source=execution_source,
                 ledger=ledger,
-                live_source_provenance_root=Path(selection["repository_root"]),
                 manifest=manifest,
-                repository_root=Path(execution_source["sealed_snapshot_execution_root"]),
+                repository_root=Path(selection["repository_root"]),
                 selection=selection,
                 workers=1,
             )
@@ -2482,7 +2128,6 @@ class ProductionArmHooks:
     """Lazy production adapter; importing this class does not run a solver."""
 
     requires_model_evidence = True
-    requires_sealed_import_boundary = True
 
     @staticmethod
     def _export_model(model: Any, path: Path) -> dict[str, object]:
@@ -2502,33 +2147,12 @@ class ProductionArmHooks:
             raise RunnerError("production construction observed attach env")
         parameters = _runtime_parameters(context.manifest["runtime_parameters"])
         os.environ["EXACT_B1_BINDING_ALT_CAP"] = str(parameters["binding_alt_cap"])
+        if str(context.repository_root) not in sys.path:
+            sys.path.insert(0, str(context.repository_root))
         from src.models.cut_manager import CutManager
         from src.models.master_model import MasterPlacementModel
         from src.search.benders_loop import ExactSearchSession, LBBDController
 
-        origins = _audit_src_module_origins(context.execution_source)
-        origin_receipt = {
-            "authorizations": {
-                "global_claim_authorized": False,
-                "mathematical_claim_authorized": False,
-                "production_certified_authorized": False,
-            },
-            "import_mode": "ordinary_pathfinder",
-            "module_origins": origins,
-            "module_origin_policy": "sealed-snapshot-only-v1",
-            "runner_module": FORMAL_RUNNER_MODULE,
-            "runner_snapshot_member_identity": dict(
-                context.execution_source["runner_snapshot_member_identity"]
-            ),
-            "schema_version": MODULE_ORIGIN_RECEIPT_SCHEMA,
-            "sealed_snapshot_execution_root": str(context.repository_root),
-            "status": "PASS",
-        }
-        _write_exclusive(
-            Path(context.execution_source["module_origin_receipt_path"]),
-            canonical_json(origin_receipt),
-            label="module-origin receipt",
-        )
         session = ExactSearchSession.create(
             context.repository_root,
             solve_mode="certified_exact",

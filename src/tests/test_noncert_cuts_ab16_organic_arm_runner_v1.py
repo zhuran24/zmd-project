@@ -21,13 +21,6 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER_PATH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724" / "organic_arm_runner_v1.py"
 CONTRACT_PATH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724" / "ab16_contract_v1.py"
-LIFECYCLE_PATH = (
-    ROOT
-    / "docs"
-    / "research"
-    / "noncert_cuts_ab16_20260724"
-    / "organic_resource_lifecycle_v2.py"
-)
 GIT_PATH = Path(shutil.which("git") or "").resolve(strict=True)
 REPOSITORY_HEAD = subprocess.check_output(
     [str(GIT_PATH), "-C", str(ROOT), "rev-parse", "--verify", "HEAD^{commit}"],
@@ -46,7 +39,6 @@ def _load(path: Path, name: str) -> ModuleType:
 
 RUNNER = _load(RUNNER_PATH, "noncert_cuts_ab16_organic_arm_runner_v1")
 CONTRACT = _load(CONTRACT_PATH, "noncert_cuts_ab16_contract_for_runner_test")
-LIFECYCLE = _load(LIFECYCLE_PATH, "noncert_cuts_ab16_lifecycle_for_runner_test")
 
 
 def _write(path: Path, raw: bytes) -> dict[str, object]:
@@ -61,10 +53,6 @@ def _write(path: Path, raw: bytes) -> dict[str, object]:
 
 def _authority(path: Path, value: object) -> dict[str, object]:
     return _write(path, RUNNER.canonical_json(value))
-
-
-def _detached(identity: dict[str, object]) -> dict[str, object]:
-    return {key: identity[key] for key in ("path", "sha256", "size_bytes")}
 
 
 def _existing_identity(path: Path) -> dict[str, object]:
@@ -148,14 +136,12 @@ class FakeHooks:
         self.construct_env: str | None = "unobserved"
         self.attach_env: str | None = "unobserved"
         self.enabled_families: tuple[str, ...] | None = None
-        self.repository_root: Path | None = None
         self.workers: int | None = None
 
     def construct(self, context: object) -> object:
         self.constructed = True
         self.construct_env = os.environ.get(RUNNER.ATTACH_ENV)
         self.enabled_families = context.enabled_families
-        self.repository_root = context.repository_root
         self.workers = context.workers
         return context
 
@@ -294,75 +280,6 @@ def _fixture(
         root / "authority" / "SHA256SUMS",
         b"fixture immutable package seal\n",
     )
-    runner_relative = "docs/research/noncert_cuts_ab16_20260724/organic_arm_runner_v1.py"
-    snapshot_root = root / "campaign-authority/source-snapshot-a001/repository"
-    snapshot_runner = snapshot_root / runner_relative
-    snapshot_runner.parent.mkdir(parents=True)
-    snapshot_runner_identity = _write(snapshot_runner, RUNNER_PATH.read_bytes())
-    snapshot_runner.chmod(0o444)
-    snapshot_runner_identity = _existing_identity_with_mode(snapshot_runner)
-    snapshot_member = {
-        "git_blob_oid": "1" * 40,
-        "git_mode": "100644",
-        "materialized_mode": 0o444,
-        "path": runner_relative,
-        "raw_sha256": snapshot_runner_identity["sha256"],
-        "size_bytes": snapshot_runner_identity["size_bytes"],
-        "source_kind": "git_blob",
-    }
-    snapshot_manifest_identity = _authority(
-        root / "authority/package/payload/input.ab16_repository_snapshot.json",
-        {
-            "archive_descriptor": {
-                "package_role": "input.ab16_repository_snapshot.zip",
-                "sha256": "2" * 64,
-                "size_bytes": 1,
-            },
-            "authority_scope": "AB16_RESEARCH_ONLY",
-            "import_mode": "ordinary_pathfinder",
-            "member_count": 1,
-            "members": [snapshot_member],
-            "ordered_member_digest": hashlib.sha256(RUNNER.canonical_json([snapshot_member])).hexdigest(),
-            "repository_head": REPOSITORY_HEAD,
-            "repository_tree": "3" * 40,
-            "schema_version": RUNNER.SNAPSHOT_MANIFEST_SCHEMA,
-            "total_bytes": snapshot_runner_identity["size_bytes"],
-        },
-    )
-    snapshot_receipt_identity = _authority(
-        root / "campaign-authority/source-snapshot-a001/materialization-receipt.json",
-        {
-            "authority_scope": "AB16_RESEARCH_ONLY",
-            "candidate_identity": common_identity,
-            "created_at_utc": "2026-07-27T00:00:00Z",
-            "import_mode": "ordinary_pathfinder",
-            "member_count": 1,
-            "ordered_member_digest": hashlib.sha256(RUNNER.canonical_json([snapshot_member])).hexdigest(),
-            "package_id": package_seal_identity["sha256"],
-            "repository_head": REPOSITORY_HEAD,
-            "repository_tree": "3" * 40,
-            "schema_version": RUNNER.SNAPSHOT_MATERIALIZATION_SCHEMA,
-            "snapshot_archive_identity": {
-                "path": str(root / "authority/package/payload/input.ab16_repository_snapshot.zip"),
-                "sha256": "2" * 64,
-                "size_bytes": 1,
-            },
-            "snapshot_manifest_identity": snapshot_manifest_identity,
-            "snapshot_root": str(snapshot_root),
-            "status": "PASS",
-            "total_bytes": snapshot_runner_identity["size_bytes"],
-        },
-    )
-    selected_python_identity = _existing_identity_with_mode(Path(sys.executable).resolve())
-    selected_loader_path = root / "authority/package/payload/tool.ab16_formal_loader_v1.py"
-    _write(selected_loader_path, b"# fixture formal loader\n")
-    selected_loader_path.chmod(0o444)
-    selected_loader_identity = _existing_identity_with_mode(selected_loader_path)
-    selected_authority_path = root / "authority/package/payload/tool.ab16_authority_v2.py"
-    _write(selected_authority_path, b"# fixture package-pinned authority\n")
-    selected_authority_path.chmod(0o444)
-    selected_authority_identity = _existing_identity_with_mode(selected_authority_path)
-    selected_literal = "fixture-selected-byte-launch-v1"
     authority_chain = {
         "campaign_root_identity": _authority(
             root / "authority" / "campaign-root.json",
@@ -463,7 +380,6 @@ def _fixture(
         "configuration_families": {key: list(value) for key, value in RUNNER.CONFIGURATION_FAMILIES.items()},
         "experiment_contract": RUNNER.EXPERIMENT_CONTRACT,
         "forbidden_families": list(RUNNER.FORBIDDEN_FAMILIES),
-        "live_source_provenance_root": str(ROOT),
         "per_arm_tool_identities": per_arm_tools,
         "purpose": RUNNER.MANIFEST_PURPOSE,
         "repository_git_tool_identity": _existing_identity_with_mode(GIT_PATH),
@@ -482,11 +398,8 @@ def _fixture(
             "post_attach_seconds": 120,
             "routing_seconds": 600,
         },
-        "schema_version": RUNNER.FORMAL_MANIFEST_SCHEMA,
-        "sealed_snapshot_execution_root": str(snapshot_root),
+        "schema_version": RUNNER.MANIFEST_SCHEMA,
         "seed": 2026072301,
-        "snapshot_manifest_identity": _detached(snapshot_manifest_identity),
-        "snapshot_materialization_receipt_identity": _detached(snapshot_receipt_identity),
         "unit_names": unit_names,
         "workers": 1,
     }
@@ -496,47 +409,14 @@ def _fixture(
     enabled = [] if arm == "control" else list(RUNNER.CONFIGURATION_FAMILIES[configuration])
     attempt_dir = Path(attempts[slot])
     attempt_dir.mkdir()
-    pre_run_path = attempt_dir / "pre-run-authority.json"
-    selection_path = attempt_dir / "selection.json"
-    execution_source = LIFECYCLE.build_sealed_execution_source(
-        live_source_provenance_root=str(ROOT),
-        sealed_snapshot_execution_root=str(snapshot_root),
-        snapshot_manifest_identity=_detached(snapshot_manifest_identity),
-        snapshot_materialization_receipt_identity=_detached(snapshot_receipt_identity),
-        package_id=str(package_seal_identity["sha256"]),
-        literal_identity={
-            "sha256": hashlib.sha256(selected_literal.encode()).hexdigest(),
-            "size_bytes": len(selected_literal.encode()),
-        },
-        python_identity=selected_python_identity,
-        loader_identity=selected_loader_identity,
-        authority_identity=selected_authority_identity,
-        runner_snapshot_relative_path=runner_relative,
-        runner_snapshot_member_identity=snapshot_runner_identity,
-        runner_package_tool_identity=_existing_identity_with_mode(RUNNER_PATH),
-        initial_working_directory=str(root),
-        pre_run_authority_path=str(pre_run_path),
-        runner_selection_path=str(selection_path),
-        module_origin_receipt_path=str(attempt_dir / "module-origin-receipt.json"),
-        tmpdir=str(attempt_dir / "tmp"),
-    )
     pre_run_authority_identity = _authority(
-        pre_run_path,
+        attempt_dir / "pre-run-authority.json",
         {
-            "attempt_dir": str(attempt_dir),
             "authorizations": {
                 "organic_arm_launch_authorized": False,
                 "solver_run_authorized": False,
             },
-            "launch": {
-                "execution_source": execution_source,
-            },
-            "package": authority_chain["package"],
-            "pre_run_authority_path": str(pre_run_path),
             "purpose": "fixture-nonauthorizing-pre-run-authority",
-            "repository_head": REPOSITORY_HEAD,
-            "repository_root": str(ROOT),
-            "runner_selection_path": str(selection_path),
             "schema_version": "fixture-pre-run-authority-v1",
             "slot": slot,
             "status": "PASS",
@@ -567,7 +447,6 @@ def _fixture(
             "signal": 0,
         },
         "fresh_process_required": True,
-        "live_source_provenance_root": manifest["live_source_provenance_root"],
         "manifest_identity": manifest_identity,
         "order": order,
         "pre_run_authority_identity": pre_run_authority_identity,
@@ -577,32 +456,23 @@ def _fixture(
         "repository_root": manifest["repository_root"],
         "run_nonce": manifest["run_nonce"],
         "schema_version": RUNNER.SELECTION_SCHEMA,
-        "sealed_snapshot_execution_root": manifest[
-            "sealed_snapshot_execution_root"
-        ],
         "seed": manifest["seed"],
         "selection_nonce": f"selection-{slot}",
-        "snapshot_manifest_identity": manifest["snapshot_manifest_identity"],
-        "snapshot_materialization_receipt_identity": manifest[
-            "snapshot_materialization_receipt_identity"
-        ],
         "slot": slot,
         "unit_name": unit_names[slot],
         "workers": 1,
     }
+    selection_path = attempt_dir / "selection.json"
     _authority(selection_path, selection)
     return {
         "attempt_dir": attempt_dir,
         "bindings": bindings,
         "common_path": Path(common_identity["path"]),
-        "execution_source": execution_source,
         "incumbent": incumbent,
         "manifest": manifest,
         "manifest_path": manifest_path,
         "selection": selection,
         "selection_path": selection_path,
-        "snapshot_root": snapshot_root,
-        "snapshot_runner": snapshot_runner,
     }
 
 
@@ -633,7 +503,6 @@ def test_treatment_records_every_compiled_cut_and_attach_hook(
     assert hooks.construct_env is None
     assert hooks.attach_env == "1"
     assert hooks.enabled_families == ("region_capacity",)
-    assert hooks.repository_root == fixture["snapshot_root"]
     assert hooks.workers == 1
     assert result["cut_activity"] == {
         "applied": 2,
@@ -1169,69 +1038,3 @@ def test_public_entry_is_single_use_per_process(
             FakeHooks(fixture["incumbent"]),
             enforce_single_process_use=True,
         )
-
-
-def _clear_src_modules(monkeypatch: pytest.MonkeyPatch) -> None:
-    for name in list(sys.modules):
-        if name == "src" or name.startswith("src."):
-            monkeypatch.delitem(sys.modules, name, raising=False)
-
-
-def test_initial_import_boundary_rejects_preloaded_and_live_checkout_paths(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fixture = _fixture(tmp_path, arm="control")
-    source = fixture["execution_source"]
-    snapshot_root = fixture["snapshot_root"]
-    monkeypatch.chdir(snapshot_root)
-    monkeypatch.setattr(RUNNER, "__file__", str(fixture["snapshot_runner"]))
-    _clear_src_modules(monkeypatch)
-    monkeypatch.setattr(
-        sys,
-        "path",
-        [str(snapshot_root), "/usr/lib/python3.13"],
-    )
-    RUNNER._assert_initial_import_boundary(source)
-
-    ambient = ModuleType("src.ambient")
-    ambient.__file__ = str(ROOT / "src/ambient.py")
-    monkeypatch.setitem(sys.modules, "src.ambient", ambient)
-    with pytest.raises(RUNNER.RunnerError, match="preloaded"):
-        RUNNER._assert_initial_import_boundary(source)
-    monkeypatch.delitem(sys.modules, "src.ambient")
-
-    monkeypatch.setattr(
-        sys,
-        "path",
-        [str(snapshot_root), str(ROOT), "/usr/lib/python3.13"],
-    )
-    with pytest.raises(RUNNER.RunnerError, match="live checkout"):
-        RUNNER._assert_initial_import_boundary(source)
-
-
-def test_module_origin_audit_rejects_outside_file_and_package_paths(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fixture = _fixture(tmp_path, arm="control")
-    source = fixture["execution_source"]
-    snapshot_src = fixture["snapshot_root"] / "src"
-    snapshot_src.mkdir()
-    good_path = snapshot_src / "good.py"
-    good_path.write_text("# sealed fixture\n", encoding="utf-8")
-    _clear_src_modules(monkeypatch)
-    package = ModuleType("src")
-    package.__path__ = [str(snapshot_src)]
-    good = ModuleType("src.good")
-    good.__file__ = str(good_path)
-    monkeypatch.setitem(sys.modules, "src", package)
-    monkeypatch.setitem(sys.modules, "src.good", good)
-    observations = RUNNER._audit_src_module_origins(source)
-    assert {item["module"] for item in observations} == {"src", "src.good"}
-
-    bad = ModuleType("src.bad")
-    bad.__file__ = str(ROOT / "src/bad.py")
-    monkeypatch.setitem(sys.modules, "src.bad", bad)
-    with pytest.raises(RUNNER.RunnerError, match="outside the sealed snapshot"):
-        RUNNER._audit_src_module_origins(source)
