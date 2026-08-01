@@ -40,8 +40,12 @@ _PROJECT_LOCK_SHA256 = "33632dfdb2297425e42066b2cf0749ca6b9ab1f8653e810b6f2e53de
 # These are the six pre-existing Python surfaces touched during the abandoned
 # runtime-wiring attempt.  They must remain byte-identical to 398f872 in this
 # shadow-only batch; the hashes avoid depending on a .git directory in CI.
+# preflight_gate.py baseline advanced past 398f872 once: Track B merge 54b1686
+# carried an independent, gate-semantics-neutral timeout-scaling change
+# (30s -> 30*_TIMEOUT_SCALE in check_publish_secret_scan); the guard's target
+# is the rule-cut evolution batch, which still leaves this surface untouched.
 _BASELINE_SURFACE_SHA256 = {
-    "scripts/preflight_gate.py": "3c5e938df409b33bd789091d4dc1bae945acda27d3481969b7b4699117c65677",
+    "scripts/preflight_gate.py": "c38fdc7eda47d231ebbaf64a7f221c7a19e9ee1934c71c1253563c7e921c8562",
     "src/cuts/lifecycle.py": "9b944572c3bc787317a2e9bfaaf4e3ce472ba8fd953269772b24535bbef1ac1a",
     "src/cuts/replay.py": "50a03470b0f9ddea85bb9b8fce246e326fa10a870ea930c7ebbf0c025604feed",
     "src/cuts/store.py": "6266f86dd37f1ca9d6654cb8596ffbece47e420ff526ecb112be505b60870b37",
