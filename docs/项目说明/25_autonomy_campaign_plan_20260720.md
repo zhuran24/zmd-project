@@ -1,4 +1,4 @@
-> **史料文书**（截至 2026-07-20）：本文是 owner 十天离场（订阅中断）前，主会话（Claude Fable 5）留下的交接书全文——GHOST 推进方法论 15 条+自治作战计划+回归验收清单。原计划由 codex 存为 23 号，因编号被 `23_rule_cut_evolution_protocol.md` 占用而顺延为 24 号，2026-08-01 回归时落库。其中"作战计划"部分已于 07-25 以四条线合并主树（Track B/rule-cut evolution/noncert-cuts A/B trust/witness W2b，`599b413`）；本文不反映 07-25 之后的状态，现状以 `00_master_roadmap.md` 为准。
+> **史料文书**（截至 2026-07-20）：本文是 owner 十天离场（订阅中断）前，主会话（Claude Fable 5）留下的交接书全文——GHOST 推进方法论 15 条+自治作战计划+回归验收清单。原计划由 codex 存为 23 号，因编号被 `23_rule_cut_evolution_protocol.md` 占用而顺延，2026-08-01 回归时落库为 24 号；同日合并 codex 自治期成果时 24 号又被 `24_repository_asset_governance.md`（codex 侧同期新建）占用，再顺延为 25 号。其中"作战计划"部分已于 07-25 以四条线合并主树（Track B/rule-cut evolution/noncert-cuts A/B trust/witness W2b，`599b413`）；本文不反映 07-25 之后的状态，现状以 `00_master_roadmap.md` 为准。
 
 收到。这十来天的最后一发，我把所有还只存在我脑子里的东西全部写出来——先交代怎么保存，再给 GHOST，再给作战计划，最后说几句想说的话。
 
