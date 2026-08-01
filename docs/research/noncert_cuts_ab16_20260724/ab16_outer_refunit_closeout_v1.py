@@ -21,18 +21,13 @@ import subprocess
 import time
 from typing import Any
 
-if __package__:
-    from . import ab16_authority_v2 as authority
-    from . import ab16_outer_closeout_state_v1 as closeout_state
-    from . import ab16_resource_admission_v1 as resource_admission
-else:
-    import ab16_authority_v2 as authority
-    import ab16_outer_closeout_state_v1 as closeout_state
-    import ab16_resource_admission_v1 as resource_admission
+import ab16_authority_v2 as authority
+import ab16_outer_closeout_state_v1 as closeout_state
+import ab16_resource_admission_v1 as resource_admission
 
 
 GATE1_OWNERSHIP_SCHEMA = "noncert-cuts-ab16-formal-gate1-prelaunch-ownership-v1"
-ARM_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-formal-arm-prelaunch-v3"
+ARM_PRELAUNCH_SCHEMA = "noncert-cuts-ab16-formal-arm-prelaunch-v2"
 CHILD_AUDIT_SCHEMA = "noncert-cuts-ab16-formal-child-audit-v1"
 GATE1_OWNERSHIP_FIELDS = {
     "all_units_absent",
@@ -143,22 +138,8 @@ class ChildTarget:
 class ReceiptStore:
     """Canonical readonly O_EXCL publication with same-byte readback."""
 
-    def __init__(
-        self,
-        *,
-        budget_backend: Any | None = None,
-        budget_bindings: Mapping[str, Mapping[str, object]] | None = None,
-    ) -> None:
+    def __init__(self) -> None:
         self._attempted_paths: set[str] = set()
-        self._budget_backend = budget_backend
-        self._budget_bindings = {
-            str(Path(path).absolute()): dict(binding)
-            for path, binding in dict(budget_bindings or {}).items()
-        }
-        if (budget_backend is None) != (budget_bindings is None):
-            raise OuterCloseoutError(
-                "receipt budget backend and fixed path bindings must be supplied together"
-            )
 
     @staticmethod
     def identity(path: Path | str) -> dict[str, object]:
@@ -187,91 +168,11 @@ class ReceiptStore:
         if publication is not None and not publication.attempted:
             raise OuterCloseoutError(f"{label} publication effect was not begun")
         record = dict(value)
-        raw = authority.canonical_json(record)
-        if self._budget_backend is None:
-            if publication is not None:
-                publication.note_publication_may_have_happened()
-            identity = authority._write_exclusive(  # noqa: SLF001
-                path,
-                raw,
-                mode=0o444,
-            )
-        else:
-            try:
-                binding = self._budget_bindings[absolute]
-            except KeyError as exc:
-                raise OuterCloseoutError(
-                    f"{label} path is not package-bound in the formal budget profile"
-                ) from exc
-            if set(binding) != {"artifact_class", "label"}:
-                raise OuterCloseoutError(
-                    f"{label} budget binding shape drifted"
-                )
-            budget_label = binding["label"]
-            artifact_class = binding["artifact_class"]
-            if (
-                type(budget_label) is not str
-                or not budget_label
-                or type(artifact_class) is not str
-                or not artifact_class
-            ):
-                raise OuterCloseoutError(
-                    f"{label} budget binding is invalid"
-                )
-            try:
-                maximum = self._budget_backend.maximum_bytes(
-                    budget_label,
-                    artifact_class=artifact_class,
-                )
-                tracked_publisher = getattr(
-                    self._budget_backend,
-                    "publish_bytes_with_publication_boundary",
-                    None,
-                )
-                if publication is not None and callable(tracked_publisher):
-                    identity = dict(
-                        tracked_publisher(
-                            Path(absolute),
-                            raw,
-                            maximum_bytes=maximum,
-                            artifact_class=artifact_class,
-                            label=budget_label,
-                            publication_boundary=(
-                                publication.note_publication_may_have_happened
-                            ),
-                        )
-                    )
-                else:
-                    if publication is not None:
-                        # A legacy publisher cannot expose a narrower
-                        # pre-send boundary, so entering it is conservatively
-                        # published-or-uncertain.
-                        publication.note_publication_may_have_happened()
-                    identity = dict(
-                        self._budget_backend.publish_bytes(
-                            Path(absolute),
-                            raw,
-                            maximum_bytes=maximum,
-                            artifact_class=artifact_class,
-                            label=budget_label,
-                        )
-                    )
-            except OuterCloseoutError:
-                raise
-            except Exception as exc:
-                raise OuterCloseoutError(
-                    f"{label} broker publication failed or acknowledgement is uncertain"
-                ) from exc
-            expected = {
-                "path": absolute,
-                "sha256": hashlib.sha256(raw).hexdigest(),
-                "size_bytes": len(raw),
-            }
-            if any(identity.get(key) != item for key, item in expected.items()):
-                raise OuterCloseoutError(
-                    f"{label} broker publication identity drifted"
-                )
-            identity = expected
+        identity = authority._write_exclusive(  # noqa: SLF001
+            path,
+            authority.canonical_json(record),
+            mode=0o444,
+        )
         if publication is not None:
             publication.note_returned(identity)
         replay, replay_identity = self.document(path, label)
@@ -317,40 +218,17 @@ class PinnedHost:
         self.held_locks = dict(held_locks)
         self.cleaned_units: set[str] = set()
         self._final_launch_resource_admission: dict[str, object] | None = None
-        self.lock_release_attempted = False
-        self.lock_release_uncertain = False
         self.locks_released = False
 
     def run(
         self, arguments: Sequence[str], *, timeout: int = 60, role: str = "systemctl",
         cwd: Path | None = None, env: Mapping[str, str] | None = None,
         launch_resource_admission: Mapping[str, object] | None = None,
-        launch_resource_authority: Mapping[str, Mapping[str, object]]
-        | None = None,
         launch_owner_check: Callable[[], None] | None = None,
     ) -> subprocess.CompletedProcess[bytes]:
-        if (
-            launch_resource_admission is None
-        ) != (
-            launch_owner_check is None
-        ):
+        if (launch_resource_admission is None) != (launch_owner_check is None):
             raise OuterCloseoutError(
                 "launch resource contract and owner check must be supplied together"
-            )
-        prospective_receipt = (
-            launch_resource_admission is not None
-            and launch_resource_admission.get("schema_version")
-            == resource_admission.PROSPECTIVE_RESOURCE_ADMISSION_SCHEMA
-        )
-        if (
-            prospective_receipt
-            and launch_resource_authority is None
-        ) or (
-            not prospective_receipt
-            and launch_resource_authority is not None
-        ):
-            raise OuterCloseoutError(
-                "prospective launch receipt and authority pairing drifted"
             )
         if launch_resource_admission is not None and role != "systemd_run":
             raise OuterCloseoutError(
@@ -384,7 +262,7 @@ class PinnedHost:
             ):
                 raise OuterCloseoutError(f"{role} retained-FD identity drifted")
             os.lseek(descriptor, 0, os.SEEK_SET)
-            run_kwargs: dict[str, Any] = {
+            run_kwargs = {
                 "check": False,
                 "close_fds": True,
                 "cwd": cwd,
@@ -400,46 +278,11 @@ class PinnedHost:
                 self.lock_evidence()
                 assert launch_owner_check is not None
                 launch_owner_check()
-                if prospective_receipt:
-                    assert launch_resource_authority is not None
-                    if set(launch_resource_authority) != {
-                        "calibration_authorization_bundle",
-                        "calibration_authorization_bundle_identity",
-                        "enforced_budget_profile",
-                        "enforced_budget_profile_identity",
-                    }:
-                        raise OuterCloseoutError(
-                            "launch resource authority field set drifted"
-                        )
-                    final_launch_admission = (
-                        resource_admission.reevaluate_prospective_resource_admission_for_launch(
-                            launch_resource_admission,
-                            calibration_authorization_bundle=(
-                                launch_resource_authority[
-                                    "calibration_authorization_bundle"
-                                ]
-                            ),
-                            calibration_authorization_bundle_identity=(
-                                launch_resource_authority[
-                                    "calibration_authorization_bundle_identity"
-                                ]
-                            ),
-                            enforced_budget_profile=launch_resource_authority[
-                                "enforced_budget_profile"
-                            ],
-                            enforced_budget_profile_identity=(
-                                launch_resource_authority[
-                                    "enforced_budget_profile_identity"
-                                ]
-                            ),
-                        )
+                final_launch_admission = (
+                    resource_admission.reevaluate_resource_admission_for_launch(
+                        launch_resource_admission,
                     )
-                else:
-                    final_launch_admission = (
-                        resource_admission.reevaluate_resource_admission_for_launch(
-                            launch_resource_admission,
-                        )
-                    )
+                )
                 if self._final_launch_resource_admission is not None:
                     raise OuterCloseoutError(
                         "launch resource admission was not consumed exactly once"
@@ -639,78 +482,8 @@ class PinnedHost:
             for record in records
         ), "records": records}
 
-    def observe_frozen_quiescence(
-        self,
-        ledger: Mapping[str, object],
-        *,
-        reference_retained: bool,
-    ) -> dict[str, object]:
-        """Observe failure cleanup without requiring a retained outer to unload."""
-
-        checked = validate_frozen_ledger(ledger)
-        records: list[dict[str, object]] = []
-        for item in [*checked["children"], checked["outer"]]:
-            unit_name = str(item["unit_name"])
-            shown = ABSENT if not unit_name else self.show(unit_name)
-            control_group = str(item["control_group"])
-            if item["identity_complete"] is True:
-                group_absent = (
-                    not control_group
-                    or not os.path.lexists(self.cgroup_path(control_group))
-                )
-                process_absent = self.processes_absent(item["processes"])
-            else:
-                group_absent = False
-                process_absent = False
-            retained_here = reference_retained and item["source"] == "outer"
-            unit_state = (
-                "REFERENCED_INACTIVE"
-                if retained_here
-                and shown["LoadState"] == "loaded"
-                and shown["ActiveState"] == "inactive"
-                else "ABSENT"
-                if not retained_here and shown == ABSENT
-                else "NOT_QUIESCENT"
-            )
-            records.append(
-                {
-                    "cgroup_absent": group_absent,
-                    "control_group": control_group,
-                    "identity_complete": item["identity_complete"],
-                    "processes": [dict(process) for process in item["processes"]],
-                    "processes_absent": process_absent,
-                    "reference_retained": retained_here,
-                    "slot": item["slot"],
-                    "source": item["source"],
-                    "systemctl": shown,
-                    "unit_state": unit_state,
-                    "unit_name": unit_name,
-                }
-            )
-        result = {
-            "all_runtime_quiescent": all(
-                record["unit_state"] != "NOT_QUIESCENT"
-                and record["cgroup_absent"]
-                and record["processes_absent"]
-                for record in records
-            ),
-            "records": records,
-            "reference_retained": reference_retained,
-        }
-        if result["all_runtime_quiescent"] is True:
-            return closeout_state.validate_runtime_quiescence(
-                result,
-                ledger=checked,
-                reference_retained=reference_retained,
-            )
-        return result
-
     def lock_evidence(self) -> list[dict[str, object]]:
-        if (
-            set(self.held_locks) != set(LOCK_PATHS)
-            or self.lock_release_attempted
-            or self.locks_released
-        ):
+        if set(self.held_locks) != set(LOCK_PATHS) or self.locks_released:
             raise OuterCloseoutError("the exact three-lock lease is not held")
         evidence = []
         for path in LOCK_PATHS:
@@ -737,38 +510,10 @@ class PinnedHost:
         return evidence
 
     def release_locks_once(self) -> dict[str, object]:
-        if self.lock_release_attempted:
-            raise OuterCloseoutError(
-                "the exact three-lock release was already attempted"
-            )
         identities = self.lock_evidence()
-        self.lock_release_attempted = True
-        primary: BaseException | None = None
-        for path in LOCK_PATHS:
-            descriptor = self.held_locks[path]
-            try:
-                os.close(descriptor)
-            except BaseException as exc:
-                self.lock_release_uncertain = True
-                if primary is None:
-                    primary = exc
-                else:
-                    primary.add_note(
-                        "additional formal lock close failed or is uncertain: "
-                        f"{path}: {type(exc).__name__}: {exc}"
-                    )
-            else:
-                self.held_locks.pop(path)
-        if primary is not None:
-            raise OuterCloseoutError(
-                "the exact three-lock release failed or is uncertain"
-            ) from primary
-        if self.held_locks:
-            self.lock_release_uncertain = True
-            raise OuterCloseoutError(
-                "the exact three-lock release retained unexpected ownership"
-            )
         self.locks_released = True
+        for path in LOCK_PATHS:
+            os.close(self.held_locks.pop(path))
         return {"lock_identities": identities, "released": True}
 
 
@@ -1586,7 +1331,6 @@ def freeze_selected_child_identity(
     if (
         not target.unit_name
         or type(evidence) is not dict
-        or target.selection_identity is None
         or not _prelaunch_evidence_matches(target)
     ):
         raise OuterCloseoutError("selected child lacks exact prelaunch ownership")
@@ -1770,11 +1514,7 @@ def _contain(
             and selection_join
         )
         attributable = prelaunch_owned and inner_join
-        expected_invocation = (
-            invocation
-            if attributable and isinstance(invocation, str)
-            else ""
-        )
+        expected_invocation = invocation if attributable else ""
     identity_ok = (
         attributable
         and shown["LoadState"] == "loaded"
@@ -2133,18 +1873,8 @@ def audit_children(
         }
         audit_errors.append(observation_error)
     all_absent = observation["all_absent"]
-
-    def exact_cleanup_count(item: Mapping[str, object], field: str) -> int:
-        value = item.get(field, 0)
-        if type(value) is not int or value < 0:
-            raise OuterCloseoutError(
-                f"child cleanup {field} is not one nonnegative integer"
-            )
-        return value
-
     containment_used = any(
-        exact_cleanup_count(item, "stop_count") > 0
-        or exact_cleanup_count(item, "reset_count") > 0
+        int(item.get("stop_count", 0)) > 0 or int(item.get("reset_count", 0)) > 0
         for item in records
     )
     record = {

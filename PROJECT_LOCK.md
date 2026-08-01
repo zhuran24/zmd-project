@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-08-01 (AB16 prospective resource-budget authority-readiness schema cohort registered launch-blocked; A031–A038 immutable; prior: stage-specific conservative resource admission and prelaunch rechecks; formal selected-loader and pathname-transport hardening; Gate-A v6 explicit-plugin qualification, committed publication/self-replay and ECHILD-only descendant closure; AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
+**Updated**: 2026-07-31 (AB16 prospective resource-budget authority-readiness schema cohort registered launch-blocked; A031–A038 immutable; prior: stage-specific conservative resource admission and prelaunch rechecks; formal selected-loader and pathname-transport hardening; Gate-A v6 explicit-plugin qualification, committed publication/self-replay and ECHILD-only descendant closure; AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -644,69 +644,22 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
 
   | discriminator group | exact prospective schemas |
   |---|---|
-  | resource admission | `noncert-cuts-ab16-resource-profile-set-v2`; `noncert-cuts-ab16-stage-resource-admission-v3`; `noncert-cuts-ab16-same-uid-process-baseline-v1` |
-  | resource calibration | `noncert-cuts-ab16-resource-calibration-declaration-v1`; `noncert-cuts-ab16-resource-calibration-sample-v1`; `noncert-cuts-ab16-resource-calibration-validation-v1`; `noncert-cuts-ab16-resource-calibration-aggregate-v1`; `noncert-cuts-ab16-resource-calibration-profile-candidate-v1`; `noncert-cuts-ab16-resource-calibration-outside-replay-v1`; `noncert-cuts-ab16-calibration-prelaunch-resource-admission-v2`; `noncert-cuts-ab16-resource-calibration-controller-plan-v1`; `noncert-cuts-ab16-resource-calibration-controller-terminal-v1`; `noncert-cuts-ab16-resource-calibration-controller-inspection-v1`; `noncert-cuts-ab16-resource-calibration-acceptance-terminal-v1`; `noncert-cuts-ab16-resource-calibration-cohort-incomplete-v1` |
-  | Gate-A qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v3`; `noncert-cuts-ab16-bootstrap-offline-candidate-v4`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v7`; `noncert-cuts-ab16-gate-a-preflight-publication-commit-v2` |
-  | Gate-B qualification and owner | `noncert-cuts-ab16-gate-b-qualification-v3`; `noncert-cuts-ab16-gate-b-resource-gate-v3`; `noncert-cuts-ab16-gate-b-owner-request-v2`; `noncert-cuts-ab16-gate-b-owner-response-v2`; `noncert-cuts-ab16-gate-b-owner-release-v2`; `noncert-cuts-ab16-gate-b-epoch-observation-v5`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v7`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v2`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v2` |
+  | resource admission | `noncert-cuts-ab16-resource-profile-set-v2`; `noncert-cuts-ab16-stage-resource-admission-v2` |
+  | resource calibration | `noncert-cuts-ab16-resource-calibration-declaration-v1`; `noncert-cuts-ab16-resource-calibration-sample-v1`; `noncert-cuts-ab16-resource-calibration-validation-v1`; `noncert-cuts-ab16-resource-calibration-aggregate-v1`; `noncert-cuts-ab16-resource-calibration-profile-candidate-v1`; `noncert-cuts-ab16-resource-calibration-outside-replay-v1` |
+  | Gate-A qualification | `noncert-cuts-ab16-bootstrap-gate-a-receipt-v3`; `noncert-cuts-ab16-bootstrap-offline-candidate-v3`; `noncert-cuts-ab16-gate-a-full-preflight-receipt-v7`; `noncert-cuts-ab16-gate-a-preflight-publication-commit-v2` |
+  | Gate-B qualification and owner | `noncert-cuts-ab16-gate-b-qualification-v3`; `noncert-cuts-ab16-gate-b-resource-gate-v3`; `noncert-cuts-ab16-gate-b-owner-request-v2`; `noncert-cuts-ab16-gate-b-owner-response-v2`; `noncert-cuts-ab16-gate-b-owner-release-v2`; `noncert-cuts-ab16-gate-b-epoch-observation-v5`; `noncert-cuts-ab16-bootstrap-gate-b-approval-v6`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v2`; `noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v2` |
   | immutable history bridge | `noncert-cuts-ab16-terminal-reference-history-freeze-v1`; `noncert-cuts-ab16-terminal-reference-history-replay-v2` |
-  | bootstrap/package base | `noncert-cuts-ab16-bootstrap-manager-epoch-capture-v3`; `noncert-cuts-ab16-campaign-bootstrap-result-v6`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v3`; `noncert-cuts-ab16-path-preregistration-v5` |
-  | bootstrap and hierarchical budget | `noncert-cuts-ab16-bootstrap-budget-contract-v1`; `noncert-cuts-ab16-bootstrap-budget-terminal-v1`; `noncert-cuts-ab16-bootstrap-retained-directory-handoff-v1`; `noncert-cuts-ab16-bootstrap-staging-handoff-v1`; `noncert-cuts-ab16-bootstrap-budget-account-handoff-v1`; `noncert-cuts-ab16-bootstrap-structural-handoff-v1`; `noncert-cuts-ab16-bootstrap-package-failure-closeout-v1`; `noncert-cuts-ab16-formal-root-budget-contract-v1`; `noncert-cuts-ab16-budget-broker-journal-event-v1`; `noncert-cuts-ab16-formal-root-budget-terminal-v2`; `noncert-cuts-ab16-outside-final-release-capability-v1`; `noncert-cuts-ab16-outside-final-release-adopted-handoff-v1`; `noncert-cuts-ab16-arm-budget-allocation-v1`; `noncert-cuts-ab16-arm-budget-terminal-v1` |
-  | package-independent verification | `noncert-cuts-ab16-campaign-package-independent-replay-v2`; `noncert-cuts-ab16-package-writer-inventory-v1`; package roles `tool.package_independent_verifier_v1.py`, `tool.ab16_native_budget_helper_v1.py`, `tool.ab16_budgeted_writers_v1.py`, `tool.ab16_final_release_actor_v1.py`, and `system.native_budget_helper.bin` |
-  | formal owner and launch | `noncert-cuts-ab16-formal-launch-context-v6`; `noncert-cuts-ab16-formal-launch-owner-request-v2`; `noncert-cuts-ab16-formal-launch-owner-response-v2`; `noncert-cuts-ab16-formal-launch-admission-v3`; `noncert-cuts-ab16-formal-guardian-ready-v2`; `noncert-cuts-ab16-formal-attempt-consumption-v2`; `noncert-cuts-ab16-formal-launch-selection-v3`; `noncert-cuts-ab16-formal-launch-owner-broker-handoff-v1`; `noncert-cuts-ab16-formal-launch-owner-claim-authentication-v1`; `noncert-cuts-ab16-formal-launch-owner-claim-identity-v1`; `noncert-cuts-ab16-formal-supervisor-session-v1`; `noncert-cuts-ab16-budget-broker-manager-openfile-selection-binding-v1`; `noncert-cuts-ab16-formal-closeout-owner-broker-handoff-v1`; `noncert-cuts-ab16-outer-formal-prelaunch-v3`; `noncert-cuts-ab16-outer-formal-start-v3` |
+  | bootstrap/package base | `noncert-cuts-ab16-bootstrap-manager-epoch-capture-v3`; `noncert-cuts-ab16-campaign-bootstrap-result-v5`; `noncert-cuts-ab16-repository-snapshot-v1`; `noncert-cuts-ab16-repository-snapshot-materialization-v1`; `noncert-cuts-ab16-external-platform-assumptions-v2`; `noncert-cuts-ab16-path-preregistration-v5` |
+  | bootstrap and hierarchical budget | `noncert-cuts-ab16-bootstrap-budget-contract-v1`; `noncert-cuts-ab16-bootstrap-budget-terminal-v1`; `noncert-cuts-ab16-bootstrap-package-failure-closeout-v1`; `noncert-cuts-ab16-formal-root-budget-contract-v1`; `noncert-cuts-ab16-formal-root-budget-journal-v1`; `noncert-cuts-ab16-formal-root-budget-terminal-v1`; `noncert-cuts-ab16-arm-budget-allocation-v1`; `noncert-cuts-ab16-arm-budget-terminal-v1` |
+  | package-independent verification | `noncert-cuts-ab16-campaign-package-independent-replay-v1`; package role `package_independent_verifier_v1` |
+  | formal owner and launch | `noncert-cuts-ab16-formal-launch-context-v4`; `noncert-cuts-ab16-formal-launch-owner-request-v2`; `noncert-cuts-ab16-formal-launch-owner-response-v2`; `noncert-cuts-ab16-formal-launch-admission-v3`; `noncert-cuts-ab16-formal-guardian-ready-v2`; `noncert-cuts-ab16-formal-attempt-consumption-v2`; `noncert-cuts-ab16-formal-launch-selection-v2`; `noncert-cuts-ab16-outer-formal-prelaunch-v3`; `noncert-cuts-ab16-outer-formal-start-v3` |
   | unchanged campaign inputs | `noncert-cuts-gate1-v4-continuation-authorization-v1`; `noncert-cuts-ab16-baseline-admission-v1`; `noncert-cuts-ab16-common-prestate-v1`; `noncert-cuts-ab16-arm-binding-v2`; `noncert-cuts-ab16-fixed-assignment-replay-v2` |
   | campaign and arm authority | `noncert-cuts-ab16-organic-manifest-v3`; `noncert-cuts-ab16-suite-selection-v3`; `noncert-cuts-ab16-organic-pre-run-authority-v3`; `noncert-cuts-ab16-organic-arm-selection-v2`; `noncert-cuts-ab16-organic-arm-result-v2`; `noncert-cuts-ab16-organic-arm-module-origin-receipt-v2`; `noncert-cuts-ab16-organic-supervisor-module-origin-receipt-v1`; `noncert-cuts-ab16-organic-arm-consumption-v3`; `noncert-cuts-ab16-arm-allocation-unselected-terminal-v1`; `noncert-cuts-ab16-arm-consumed-incomplete-v1`; `noncert-cuts-ab16-immediate-stop-v2`; `noncert-cuts-ab16-formal-arm-prelaunch-v3`; `noncert-cuts-ab16-formal-controller-result-v3` |
   | arm lifecycle and RefUnit | `noncert-cuts-ab16-inner-lifecycle-v3`; `noncert-cuts-ab16-preterminal-resource-v3`; `noncert-cuts-ab16-release-token-v3`; `noncert-cuts-ab16-terminal-envelope-v3`; `noncert-cuts-ab16-cleanup-v3`; `noncert-cuts-ab16-unit-reference-acquisition-v2`; `noncert-cuts-ab16-unit-reference-release-v2`; `noncert-cuts-ab16-manager-epoch-observation-v2`; `noncert-cuts-ab16-reference-capability-transcript-v1`; `noncert-cuts-ab16-formal-reference-lifecycle-v1`; `noncert-cuts-ab16-unit-reference-post-unref-absence-v1`; `noncert-cuts-ab16-unit-reference-terminal-v1`; `noncert-cuts-ab16-unit-reference-connection-close-v1` |
   | arm replay and closure | `noncert-cuts-ab16-detached-resource-terminal-v3`; `noncert-cuts-ab16-independent-resource-terminal-replay-v1`; `noncert-cuts-ab16-organic-cut-free-incumbent-replay-v1`; `noncert-cuts-ab16-independent-organic-arm-replay-v2`; `noncert-cuts-ab16-arm-credibility-gate-v3`; `noncert-cuts-ab16-terminal-classification-v3`; `noncert-cuts-ab16-organic-attempt-artifact-manifest-v1`; `noncert-cuts-ab16-organic-attempt-root-replay-v1` |
-  | recovery and final closure | `noncert-cuts-ab16-recovery-disarm-intent-v1`; `noncert-cuts-ab16-recovery-disarm-terminal-v1`; `noncert-cuts-ab16-closure-actor-ready-v1`; `noncert-cuts-ab16-formal-manifest-v2`; `noncert-cuts-ab16-closure-result-v2`; `noncert-cuts-ab16-formal-root-outside-replay-primary-v1`; `noncert-cuts-ab16-formal-root-outside-replay-alternate-v1`; `noncert-cuts-ab16-formal-root-replay-receipt-v1`; `noncert-cuts-ab16-final-release-actor-ready-v1`; `noncert-cuts-ab16-final-release-request-v1`; `noncert-cuts-ab16-final-release-response-v1`; `noncert-cuts-ab16-final-release-actor-v1`; `noncert-cuts-ab16-final-release-owner-handoff-v1`; `noncert-cuts-ab16-post-root-closure-evidence-v1`; `noncert-cuts-ab16-final-release-result-v1`; `noncert-cuts-ab16-final-terminal-predecessor-join-v1`; `noncert-cuts-ab16-formal-containment-v2` |
-  | successful formal closeout | `noncert-cuts-ab16-formal-pre-release-success-v3`; `noncert-cuts-ab16-outer-guardian-lock-close-v2`; `noncert-cuts-ab16-formal-guardian-absence-v2`; `noncert-cuts-ab16-formal-supervisor-raw-lock-release-v1`; `noncert-cuts-ab16-formal-dual-lock-release-v4` |
-  | incomplete formal closeout | `noncert-cuts-ab16-formal-markerless-incomplete-v2`; `noncert-cuts-ab16-formal-consumed-incomplete-v3`; `noncert-cuts-ab16-formal-pre-release-failure-v4`; `noncert-cuts-ab16-formal-detached-incomplete-v4`; `noncert-cuts-ab16-formal-failure-terminal-release-v5` |
-
-  The same matrix also names the following lower-level transport, writer,
-  recovery, drill, calibration, and closure discriminators explicitly. They
-  are not an auxiliary or unversioned compatibility surface:
-
-  `noncert-cuts-ab16-abandoned-reservation-v1`; `noncert-cuts-ab16-abort-cleanup-v2`; `noncert-cuts-ab16-abort-reference-release-v1`; `noncert-cuts-ab16-applied-assignment-v1`;
-  `noncert-cuts-ab16-arm-budget-reconcile-v1`; `noncert-cuts-ab16-baseline-rebuild-v1`; `noncert-cuts-ab16-bootstrap-broker-runtime-v2`; `noncert-cuts-ab16-budget-broker-actor-v1`;
-  `noncert-cuts-ab16-budget-broker-authentication-v1`; `noncert-cuts-ab16-budget-broker-endpoint-v1`; `noncert-cuts-ab16-budget-broker-manager-openfile-authentication-v1`;
-  `noncert-cuts-ab16-budget-broker-manager-openfile-grant-v1`; `noncert-cuts-ab16-budget-broker-manager-openfile-arm-authentication-v1`; `noncert-cuts-ab16-budget-broker-manager-openfile-arm-grant-v1`;
-  `noncert-cuts-ab16-budget-broker-request-v1`; `noncert-cuts-ab16-budget-broker-response-v1`; `noncert-cuts-ab16-budget-broker-session-grant-v1`;
-  `noncert-cuts-ab16-budget-broker-transfer-ack-v1`; `noncert-cuts-ab16-budget-contract-v1`; `noncert-cuts-ab16-budget-ownership-handoff-v1`; `noncert-cuts-ab16-budget-prepared-extent-v1`;
-  `noncert-cuts-ab16-budget-published-artifact-v1`; `noncert-cuts-ab16-budget-retained-directory-v1`; `noncert-cuts-ab16-budget-retained-staging-v1`; `noncert-cuts-ab16-budget-root-closure-v1`;
-  `noncert-cuts-ab16-budget-segment-bundle-v1`; `noncert-cuts-ab16-calibration-observer-protocol-v1`; `noncert-cuts-ab16-calibration-observer-result-v1`; `noncert-cuts-ab16-campaign-snapshot-provenance-v1`;
-  `noncert-cuts-ab16-closure-actor-v1`; `noncert-cuts-ab16-closure-control-transfer-v1`; `noncert-cuts-ab16-closure-lock-consumption-v1`; `noncert-cuts-ab16-closure-owner-handoff-v1`;
-  `noncert-cuts-ab16-closure-request-v1`; `noncert-cuts-ab16-closure-response-v1`; `noncert-cuts-ab16-closure-result-v2`; `noncert-cuts-ab16-compile-attach-journal-v1`;
-  `noncert-cuts-ab16-concrete-inequality-corpus-v1`; `noncert-cuts-ab16-consumption-state-v1`; `noncert-cuts-ab16-controller-terminal-v1`; `noncert-cuts-ab16-detached-transfer-incomplete-v1`;
-  `noncert-cuts-ab16-disposable-drill-authority-result-v2`; `noncert-cuts-ab16-disposable-drill-authority-v2`; `noncert-cuts-ab16-disposable-drill-control-v2`; `noncert-cuts-ab16-disposable-drill-package-manifest-v2`;
-  `noncert-cuts-ab16-disposable-drill-root-v2`; `noncert-cuts-ab16-disposable-source-snapshot-materialization-v1`; `noncert-cuts-ab16-disposable-source-snapshot-v1`; `noncert-cuts-ab16-experiment-contract-v1`;
-  `noncert-cuts-ab16-formal-arm-budget-handoff-v2`; `noncert-cuts-ab16-formal-child-audit-v1`; `noncert-cuts-ab16-formal-gate1-prelaunch-ownership-v1`;
-  `noncert-cuts-ab16-formal-loader-context-v1`; `noncert-cuts-ab16-formal-manager-openfile-grant-v1`; `noncert-cuts-ab16-formal-manifest-v2`; `noncert-cuts-ab16-formal-root-budget-handoff-v2`;
-  `noncert-cuts-ab16-formal-root-inventory-v1`; `noncert-cuts-ab16-formal-worker-session-v1`; `noncert-cuts-ab16-gate-a-recovery-inputs-v1`; `noncert-cuts-ab16-launch-environment-v2`;
-  `noncert-cuts-ab16-module-origin-receipt-v1`; `noncert-cuts-ab16-native-budget-helper-v1`; `noncert-cuts-ab16-organic-arm-result-v1`; `noncert-cuts-ab16-organic-drill-selection-v1`;
-  `noncert-cuts-ab16-outer-barrier-release-v1`; `noncert-cuts-ab16-outer-guardian-ledger-update-v1`; `noncert-cuts-ab16-outer-guardian-lock-handoff-v1`; `noncert-cuts-ab16-outer-guardian-preselection-ack-v1`;
-  `noncert-cuts-ab16-outer-guardian-preselection-cancel-v1`; `noncert-cuts-ab16-outer-guardian-selection-activation-v1`; `noncert-cuts-ab16-outer-guardian-terminal-command-v1`; `noncert-cuts-ab16-package-selected-fd-transport-v1`;
-  `noncert-cuts-ab16-package-writer-inventory-v1`;
-  `noncert-cuts-ab16-prepared-recovery-v2`; `noncert-cuts-ab16-prior-arm-seal-response-accepted-v1`; `noncert-cuts-ab16-pytest-collection-binding-v1`; `noncert-cuts-ab16-rebuilt-model-metadata-v2`;
-  `noncert-cuts-ab16-recovery-actor-v1`; `noncert-cuts-ab16-recovery-disarm-observation-v1`; `noncert-cuts-ab16-recovery-lock-consumption-v1`; `noncert-cuts-ab16-recovery-owner-handoff-v1`;
-  `noncert-cuts-ab16-recovery-owner-observation-v2`; `noncert-cuts-ab16-recovery-request-v1`; `noncert-cuts-ab16-recovery-response-v1`; `noncert-cuts-ab16-recovery-takeover-consumed-incomplete-v1`;
-  `noncert-cuts-ab16-recovery-unused-closeout-v1`; `noncert-cuts-ab16-reference-capability-v1`; `noncert-cuts-ab16-resource-budget-profile-v1`; `noncert-cuts-ab16-resource-calibration-authorization-bundle-set-v1`;
-  `noncert-cuts-ab16-resource-calibration-authorization-bundle-v1`; `noncert-cuts-ab16-resource-calibration-bundle-set-receipt-v1`; `noncert-cuts-ab16-resource-calibration-fd-loader-v2`; `noncert-cuts-ab16-resource-calibration-formal-fixture-v1`; `noncert-cuts-ab16-resource-calibration-formal-fixture-v2`;
-  `noncert-cuts-ab16-resource-calibration-gate-b-fixture-v1`; `noncert-cuts-ab16-resource-calibration-observer-result-v1`; `noncert-cuts-ab16-resource-calibration-package-v2`; `noncert-cuts-ab16-resource-calibration-root-receipt-v1`;
-  `noncert-cuts-ab16-resource-calibration-stage-terminal-v1`; `noncert-cuts-ab16-resource-calibration-workload-result-v1`; `noncert-cuts-ab16-resource-execution-surface-v3`; `noncert-cuts-ab16-resource-verification-v2`;
-  `noncert-cuts-ab16-sealed-execution-source-v1`; `noncert-cuts-ab16-selected-byte-launch-v2`; `noncert-cuts-ab16-supervisor-death-v1`.
-
-  The prospective same-UID resource boundary is non-adversarial ambient
-  process accounting, not a claim that arbitrary same-UID peers cannot race
-  pathname or descriptor state. The immediately preceding resource gate
-  records the complete same-UID PID/starttime set and one closed command
-  classification per member; injected evidence is test-only and cannot launch.
-  Before a package actor starts or final closure succeeds, the live set must be
-  exactly a surviving member of that baseline or an explicitly identified
-  package actor. Baseline exits are allowed; new identities and PID reuse fail
-  closed. This process-scope receipt never substitutes for root-writer
-  authority: writable capabilities are instead confined to package-pinned
-  broker/recovery/closure actors, their preregistered retained FDs, and the
-  enforced Landlock/close-range boundary. No global same-UID `/proc/*/fd`
-  absence claim is made.
+  | recovery and final closure | `noncert-cuts-ab16-recovery-disarm-intent-v1`; `noncert-cuts-ab16-recovery-disarm-terminal-v1`; `noncert-cuts-ab16-closure-actor-ready-v1`; `noncert-cuts-ab16-formal-containment-v2` |
+  | successful formal closeout | `noncert-cuts-ab16-formal-pre-release-success-v3`; `noncert-cuts-ab16-outer-guardian-lock-close-v2`; `noncert-cuts-ab16-formal-guardian-absence-v2`; `noncert-cuts-ab16-formal-dual-lock-release-v3` |
+  | incomplete formal closeout | `noncert-cuts-ab16-formal-markerless-incomplete-v1`; `noncert-cuts-ab16-formal-consumed-incomplete-v3`; `noncert-cuts-ab16-formal-pre-release-failure-v4`; `noncert-cuts-ab16-formal-detached-incomplete-v4`; `noncert-cuts-ab16-formal-failure-terminal-release-v4` |
 
   The four stop branches remain distinct. A formal attempt whose marker was
   definitely not published is `formal-markerless-incomplete`; a published
@@ -718,8 +671,7 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   branch may be relabeled as another.
 
   The package verifier is the package role
-  `tool.package_independent_verifier_v1.py`; it is not an ambient repository
-  executor.
+  `package_independent_verifier_v1`; it is not an ambient repository executor.
   Gate-B approval and the bootstrap planned-source set bind its source
   identity, size, and SHA-256. The sole pre-package executor,
   `ab16_campaign_bootstrap_v2.py`, may perform only a retained-FD mechanical
@@ -731,34 +683,6 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   helper, or another package role until its result is accepted. Its receipt
   outside the package is published only by the existing bootstrap/Gate-B owner
   chain through pre-registered staging.
-
-  The native budget capability consists of package roles
-  `tool.ab16_native_budget_helper_v1.py` and
-  `system.native_budget_helper.bin`. Gate-A source observation, the offline
-  candidate, Gate-B approval, the package manifest, external-platform
-  assumptions v3, and independent replay v2 bind both roles. The binary source
-  is the explicitly supplied regular file
-  `ab16_native_budget_helper_x86_64_v1.so` at mode `0555`, size `16512`, and
-  SHA-256
-  `65150434dc370596413e3e425e5cdcaa2d7960b8b181109f738588e8f40dca81`.
-  Its only accepted platform identity is Linux `x86_64`, ELF64 little-endian
-  SYSV `ET_DYN`/`EM_X86_64`, ELF version `1`, with GNU BuildID
-  `808dbb57b4fd260e704cb7399e76d76fef2e3146`. Authority CLIs require an
-  explicit binary path and have no default. The compiler, C source, and
-  `build_shared_object` are never executed by Gate-A, Gate-B, bootstrap,
-  verifier, broker, recovery, or formal roles. The tracked provisioning
-  metadata is planning provenance only and cannot substitute for direct
-  same-FD binary verification. After the package verifier reports PASS,
-  package roles may load the binary only from its retained package-member FD;
-  an ambient or repository pathname load fails closed. The package-pinned
-  bootstrap factory validates replay v2 before opening either runtime role,
-  then uses only descriptor-relative `O_NOFOLLOW` opens below the retained
-  package-root/payload directory, rechecks the package manifest's external
-  source/member joins, and returns one explicit owner for the retained
-  manifest, seal, payload, wrapper, and binary FDs. Every factory failure
-  closes each acquired FD exactly once; the authority-loaded wrapper removes
-  its developer-only compiler/build surface before it is handed to a broker
-  or supervisor.
 
   A package, formal, or arm root manifest registers every descendant except
   its one fixed, path-preregistered manifest path. The exact closure equation
@@ -774,18 +698,6 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   complete_replay_root_descendant_paths`; the receipt contains neither its own
   SHA-256 nor its own size. Symlinks, special nodes, undeclared descendants,
   and writes after either fixed terminal member fail closed.
-  The two formal-root outside replayers are distinct retained package roles,
-  `tool.replay_ab16_formal_root_v1.py` and
-  `tool.replay_ab16_formal_root_alt_v1.py`. They may execute only after the
-  package verifier has accepted their externally pinned package members and
-  only from those retained FDs; repository/worktree imports are not an
-  authority path. Their source SHA-256 identities must differ, while both
-  results must join the same closed root identity, formal-manifest identity,
-  manifest-entry digest, terminal-join digest, and exact broker/recovery/
-  closure actor absence. The replayers are read-only and hold no output-root
-  capability. Their no-overwrite receipts are published outside the formal
-  root by the existing package-pinned closeout writer; neither receipt can
-  amend or reinterpret the already closed root.
 - The terminal-reference history freeze remains the immutable singly linked
   regular file
   `/home/zhuran24/zmd-pj-codex-baselines/noncert-cuts-ab-trust-20260723/.artifacts/noncert_cuts_ab16_20260724/gate-a-terminal-reference-history-freeze-a001/manifest.json`
@@ -991,21 +903,11 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   this cohort the owner handoff closes only after the selected supervisor
   returns its selection-bound `VERIFIED` or `INCOMPLETE` result.
 - The formal supervisor retains all three locks through the fixed Gate-1
-  units, baseline admission, manifest/suite selection, every eligible serial
-  organic arm, observers, stable terminal evidence, cleanup, detached
-  substantive replay, and guardian close/absence. The same persistent manager
-  connection holds its `RefUnit` continuously from release authorization
-  through all of those phases. Only after guardian absence may the supervisor
-  release the raw three locks and record the supervisor raw-lock-release
-  receipt. After that receipt is recorded, the original manager connection
-  performs exact-once `UnrefUnit`, proves post-Unref cgroup/PID absence,
-  verifies the manager-owner and client unique names, publishes the reference
-  terminal, closes that same connection, and publishes the connection-close
-  receipt. The success `dual-lock-release` or incomplete
-  `failure-terminal-release` is the unique final join and may appear only
-  after the connection-close receipt. Any reply, connection-close, or receipt
-  uncertainty is `INCOMPLETE`, is never retried, and cannot be relabeled as a
-  completed reference lifecycle.
+  units, baseline admission, manifest/suite selection, all serial organic
+  arms that remain eligible, observers, terminal evidence, cleanup,
+  exact-once `RefUnit`/`UnrefUnit`, post-Unref absence, and detached
+  substantive replay. Only after those items close may it release the
+  guardian and supervisor locks and publish the terminal release join.
   While those locks remain live, it must repeat `FORMAL_ORGANIC_ARM` admission
   immediately before the outer formal unit and immediately before each
   organic arm's one-shot prelaunch publication. Each v2 prelaunch receipt

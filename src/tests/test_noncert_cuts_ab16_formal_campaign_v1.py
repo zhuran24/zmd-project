@@ -6,18 +6,14 @@ import copy
 import hashlib
 import importlib.util
 import inspect
-import json
 import os
 from pathlib import Path
-import socket
 import stat
 import subprocess
 import sys
-import tempfile
 import threading
 from types import SimpleNamespace
 from typing import Any
-from unittest import mock
 
 import pytest
 
@@ -37,9 +33,6 @@ try:
     from docs.research.noncert_cuts_ab16_20260724 import (
         ab16_formal_campaign_v1 as FORMAL,
     )
-    from docs.research.noncert_cuts_ab16_20260724 import (
-        ab16_resource_budget_profile_builder_v1 as PROFILE_BUILDER,
-    )
 finally:
     sys.path.remove(str(RESEARCH))
 STATE = sys.modules["ab16_outer_closeout_state_v1"]
@@ -51,365 +44,6 @@ def _identity(tag: str) -> dict[str, object]:
         "sha256": hashlib.sha256(tag.encode()).hexdigest(),
         "size_bytes": len(tag),
     }
-
-
-def _selected_v2_spec(
-    tmp_path: Path,
-) -> tuple[dict[str, object], list[int], socket.socket, Path]:
-    roles = (
-        "python",
-        "loader",
-        "authority",
-        "native_helper_wrapper",
-        "native_helper",
-    )
-    modes = {
-        "authority": 0o600,
-        "loader": 0o600,
-        "native_helper": 0o555,
-        "native_helper_wrapper": 0o600,
-        "python": 0o555,
-    }
-    retained: list[int] = []
-    identities: dict[str, dict[str, object]] = {}
-    transport_roles: dict[str, dict[str, object]] = {}
-    owner = {
-        "pid": os.getpid(),
-        "pid_starttime": FORMAL.guardian.read_process_starttime(os.getpid()),
-        "uid": os.getuid(),
-    }
-    for ordinal, role in enumerate(roles):
-        path = tmp_path / f"{role}.bin"
-        raw = f"{role}-selected-bytes\n".encode()
-        path.write_bytes(raw)
-        path.chmod(modes[role])
-        descriptor = os.open(path, os.O_RDONLY | os.O_CLOEXEC)
-        retained.append(descriptor)
-        identity = {
-            "mode": modes[role],
-            "path": str(path),
-            "sha256": hashlib.sha256(raw).hexdigest(),
-            "size_bytes": len(raw),
-        }
-        identities[role] = identity
-        transport_roles[role] = {
-            "descriptor": descriptor,
-            "mode": modes[role],
-            "package_path": (
-                FORMAL.launch_validator.SELECTED_FD_TRANSPORT_PACKAGE_PATHS[
-                    role
-                ]
-            ),
-            "proc_fd_path": f"/proc/{owner['pid']}/fd/{descriptor}",
-            "sha256": identity["sha256"],
-            "size_bytes": identity["size_bytes"],
-        }
-    socket_parent = Path(
-        tempfile.mkdtemp(prefix="ab16-v2-sock-", dir="/tmp")
-    )
-    endpoint_path = socket_parent / "budget-broker.sock"
-    listener = socket.socket(
-        socket.AF_UNIX,
-        socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
-    )
-    listener.bind(str(endpoint_path))
-    listener.listen(1)
-    endpoint_path.chmod(0o600)
-    endpoint_stat = os.stat(endpoint_path, follow_symlinks=False)
-    transport = {
-        "owner": owner,
-        "roles": transport_roles,
-        "schema_version": (
-            FORMAL.launch_validator.SELECTED_FD_TRANSPORT_SCHEMA
-        ),
-    }
-    selected_argument = json.dumps(
-        identities,
-        allow_nan=False,
-        ensure_ascii=False,
-        separators=(",", ":"),
-        sort_keys=True,
-    )
-    return (
-        {
-            "budget_broker_endpoint_identity": {
-                "device": endpoint_stat.st_dev,
-                "inode": endpoint_stat.st_ino,
-                "mode": 0o600,
-                "path": str(endpoint_path),
-                "uid": os.getuid(),
-            },
-            "resource_contract": dict(
-                FORMAL.launch_validator.OUTER_RESOURCE_CONTRACT
-            ),
-            "selected_byte_argv": [
-                "/proc/self/fd/3",
-                "-I",
-                "-B",
-                "-c",
-                "selected-v2-literal",
-                "systemd-openfile",
-                selected_argument,
-            ],
-            "selected_fd_transport": transport,
-            "unit_name": "ab16-formal-outer-a001.service",
-            "working_directory": str(tmp_path),
-        },
-        retained,
-        listener,
-        socket_parent,
-    )
-
-
-def _close_selected_v2_spec(
-    retained: Sequence[int],
-    listener: socket.socket,
-    socket_parent: Path,
-) -> None:
-    listener.close()
-    endpoint = socket_parent / "budget-broker.sock"
-    if os.path.lexists(endpoint):
-        endpoint.unlink()
-    socket_parent.rmdir()
-    for descriptor in retained:
-        os.close(descriptor)
-
-
-def test_selected_systemd_v2_uses_exact_six_openfile_transport(
-    tmp_path: Path,
-) -> None:
-    spec, retained, listener, socket_parent = _selected_v2_spec(tmp_path)
-    try:
-        argv = FORMAL.build_selected_systemd_argv(
-            systemd_run_path="/usr/bin/systemd-run",
-            spec=spec,
-        )
-        open_files = [
-            item
-            for item in argv
-            if item.startswith("--property=OpenFile=")
-        ]
-        roles = spec["selected_fd_transport"]["roles"]
-        assert argv[argv.index(open_files[0]) - 3 : argv.index(open_files[0])] == [
-            "--property=StandardInput=null",
-            "--property=StandardOutput=journal",
-            "--property=StandardError=journal",
-        ]
-        assert open_files == [
-            (
-                "--property=OpenFile="
-                f"{roles['python']['proc_fd_path']}:ab16-python:read-only"
-            ),
-            (
-                "--property=OpenFile="
-                f"{roles['loader']['proc_fd_path']}:ab16-loader:read-only"
-            ),
-            (
-                "--property=OpenFile="
-                f"{roles['authority']['proc_fd_path']}:ab16-authority:read-only"
-            ),
-            (
-                "--property=OpenFile="
-                f"{roles['native_helper_wrapper']['proc_fd_path']}:"
-                "ab16-native-helper-wrapper:read-only"
-            ),
-            (
-                "--property=OpenFile="
-                f"{roles['native_helper']['proc_fd_path']}:"
-                "ab16-native-helper:read-only"
-            ),
-            (
-                "--property=OpenFile="
-                f"{spec['budget_broker_endpoint_identity']['path']}:"
-                "ab16-budget-broker"
-            ),
-        ]
-    finally:
-        _close_selected_v2_spec(retained, listener, socket_parent)
-
-
-@pytest.mark.parametrize("drift", ("fd6-missing", "fd7-drift", "fd8-drift"))
-def test_selected_systemd_v2_rejects_missing_or_drifted_transport(
-    tmp_path: Path,
-    drift: str,
-) -> None:
-    spec, retained, listener, socket_parent = _selected_v2_spec(tmp_path)
-    try:
-        if drift == "fd6-missing":
-            identities = json.loads(spec["selected_byte_argv"][6])
-            identities.pop("native_helper_wrapper")
-            spec["selected_byte_argv"][6] = json.dumps(
-                identities,
-                allow_nan=False,
-                ensure_ascii=False,
-                separators=(",", ":"),
-                sort_keys=True,
-            )
-        elif drift == "fd7-drift":
-            spec["selected_fd_transport"]["roles"]["native_helper"][
-                "proc_fd_path"
-            ] = f"/proc/{os.getpid()}/fd/999999"
-        else:
-            spec["budget_broker_endpoint_identity"]["inode"] += 1
-        with pytest.raises(FORMAL.FormalCampaignError):
-            FORMAL.build_selected_systemd_argv(
-                systemd_run_path="/usr/bin/systemd-run",
-                spec=spec,
-            )
-    finally:
-        _close_selected_v2_spec(retained, listener, socket_parent)
-
-
-def test_direct_nonbudget_broker_connection_mints_no_authority_frame(
-    tmp_path: Path,
-) -> None:
-    spec, retained, listener, socket_parent = _selected_v2_spec(tmp_path)
-    accepted: socket.socket | None = None
-    connected = -1
-    try:
-        identities = FORMAL._selected_identities(spec)  # noqa: SLF001
-        transport = FORMAL._selected_transport(  # noqa: SLF001
-            spec,
-            identities,
-        )
-        assert transport is not None
-        connected = FORMAL._connect_selected_broker(transport)  # noqa: SLF001
-        accepted, _address = listener.accept()
-        accepted.setblocking(False)
-        with pytest.raises(BlockingIOError):
-            accepted.recv(1)
-        assert stat.S_ISSOCK(os.fstat(connected).st_mode)
-    finally:
-        if connected >= 0:
-            os.close(connected)
-        if accepted is not None:
-            accepted.close()
-        _close_selected_v2_spec(retained, listener, socket_parent)
-
-
-def test_selected_direct_v2_owns_and_closes_fds_three_through_eight(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    class BrokenSelector:
-        def register(self, *_args: object) -> None:
-            raise RuntimeError("selected-v2-register-fault")
-
-        def close(self) -> None:
-            return None
-
-    real_close = os.close
-    tracked: set[int] = set()
-    close_count: dict[int, int] = {}
-    captured_targets: list[int] = []
-    peer, child = socket.socketpair(
-        socket.AF_UNIX,
-        socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
-    )
-
-    def tracked_close(descriptor: int) -> None:
-        if descriptor in tracked:
-            close_count[descriptor] = close_count.get(descriptor, 0) + 1
-        real_close(descriptor)
-
-    def opened(*_args: object) -> int:
-        descriptor = os.open("/dev/null", os.O_RDONLY)
-        tracked.add(descriptor)
-        return descriptor
-
-    broker_descriptor = child.detach()
-    tracked.add(broker_descriptor)
-    monkeypatch.setattr(
-        FORMAL,
-        "_selected_identities",
-        lambda _spec: {
-            role: {}
-            for role in (
-                "python",
-                "loader",
-                "authority",
-                "native_helper_wrapper",
-                "native_helper",
-            )
-        },
-    )
-    monkeypatch.setattr(
-        FORMAL,
-        "_selected_transport",
-        lambda _spec, _identities: {"transport": "v2"},
-    )
-    monkeypatch.setattr(FORMAL, "_open_selected", opened)
-    monkeypatch.setattr(
-        FORMAL,
-        "_connect_selected_broker",
-        lambda _transport: broker_descriptor,
-    )
-    real_fcntl = FORMAL.fcntl.fcntl
-
-    def duplicate(
-        descriptor: int,
-        command: int,
-        argument: int = 0,
-    ) -> int:
-        result = real_fcntl(descriptor, command, argument)
-        if command == FORMAL.fcntl.F_DUPFD_CLOEXEC:
-            tracked.add(result)
-        return result
-
-    def spawn(
-        _path: str,
-        _argv: Sequence[str],
-        _env: Mapping[str, str],
-        *,
-        file_actions: Sequence[tuple[object, ...]],
-    ) -> int:
-        captured_targets.extend(
-            int(action[2])
-            for action in file_actions
-            if action[0] == os.POSIX_SPAWN_DUP2
-            and int(action[2]) in {3, 4, 5, 6, 7, 8}
-        )
-        return 4242
-
-    monkeypatch.setattr(FORMAL.fcntl, "fcntl", duplicate)
-    monkeypatch.setattr(FORMAL.os, "close", tracked_close)
-    monkeypatch.setattr(FORMAL.os, "posix_spawn", spawn)
-    monkeypatch.setattr(FORMAL.selectors, "DefaultSelector", BrokenSelector)
-    monkeypatch.setattr(FORMAL.os, "kill", lambda _pid, _sig: None)
-    monkeypatch.setattr(
-        FORMAL.os,
-        "waitpid",
-        lambda pid, _flags: (pid, 0),
-    )
-    try:
-        with pytest.raises(
-            RuntimeError,
-            match="selected-v2-register-fault",
-        ):
-            FORMAL.run_selected_direct_result(
-                context={
-                    "campaign_dir": "/fixture/campaign",
-                    "outer_spec": {
-                        "selected_byte_argv": [
-                            "/proc/self/fd/3",
-                            "-I",
-                            "-B",
-                            "-c",
-                            "selected-loader",
-                            "direct",
-                            "selected-identities",
-                        ],
-                    },
-                },
-                role="formal-success-verifier",
-                role_argv=("--campaign-dir", "/fixture/campaign"),
-                timeout_seconds=1.0,
-            )
-        assert captured_targets == [3, 4, 5, 6, 7, 8]
-        assert close_count == {
-            descriptor: 1 for descriptor in tracked
-        }
-    finally:
-        peer.close()
 
 
 class Campaign:
@@ -499,7 +133,7 @@ def test_selected_direct_post_spawn_failure_reaps_once_without_masking(
                     ],
                 },
             },
-            role="formal-success-verifier",
+            role="formal-supervisor",
             role_argv=("--campaign-dir", "/fixture/campaign"),
             timeout_seconds=1.0,
         )
@@ -621,7 +255,7 @@ def test_selected_direct_staged_fd_ownership_is_fail_closed(
                     ],
                 },
             },
-            role="formal-success-verifier",
+            role="formal-supervisor",
             role_argv=("--campaign-dir", "/fixture/campaign"),
             timeout_seconds=1.0,
         )
@@ -690,7 +324,7 @@ def test_selected_direct_cleanup_faults_do_not_mask_original(
                     ],
                 },
             },
-            role="formal-success-verifier",
+            role="formal-supervisor",
             role_argv=("--campaign-dir", "/fixture/campaign"),
             timeout_seconds=1.0,
         )
@@ -731,16 +365,9 @@ def test_open_selected_close_fault_preserves_validation_error(
 
 
 class Store:
-    def __init__(
-        self,
-        fail: str = "",
-        *,
-        return_before_fail: bool = False,
-        uncertain_before_fail: bool = False,
-    ) -> None:
+    def __init__(self, fail: str = "", *, return_before_fail: bool = False) -> None:
         self.fail = fail
         self.return_before_fail = return_before_fail
-        self.uncertain_before_fail = uncertain_before_fail
         self.records: dict[str, dict[str, Any]] = {}
         self.attempts: dict[str, int] = {}
 
@@ -765,8 +392,6 @@ class Store:
         self.attempts[name] = self.attempts.get(name, 0) + 1
         identity = self._identity(path)
         if name == self.fail:
-            if publication is not None and self.uncertain_before_fail:
-                publication.note_publication_may_have_happened()
             if publication is not None and self.return_before_fail:
                 publication.note_returned(identity)
             raise OSError(f"injected {name} publication failure")
@@ -778,14 +403,6 @@ class Store:
         if publication is not None:
             publication.note_recorded(identity)
         return identity
-
-    def document(
-        self,
-        path: Path | str,
-        _label: str,
-    ) -> tuple[dict[str, Any], dict[str, object]]:
-        name = Path(path).name
-        return dict(self.records[name]), self._identity(path)
 
 
 class FakeReference:
@@ -826,19 +443,6 @@ class FakeReference:
             "unit_name": unit_name,
         }
 
-    def verify_released(
-        self,
-        *,
-        expected_manager_owner: str,
-    ) -> dict[str, object]:
-        self._event("verify_released")
-        return {
-            "client_unique_name": self.client,
-            "library_identity": _identity("libsystemd"),
-            "manager_owner": expected_manager_owner,
-            "reference_held": False,
-        }
-
     def close(self) -> None:
         self._event("close")
 
@@ -854,131 +458,15 @@ def _lock_evidence() -> list[dict[str, object]]:
     ]
 
 
-def _formal_resource_fixture(tmp_path: Path) -> dict[str, object]:
-    members = {
-        PROFILE_BUILDER.BUILDER_SOURCE_RELATIVE_PATH: (
-            RESEARCH / "ab16_resource_budget_profile_builder_v1.py"
-        ).stat().st_size,
-        PROFILE_BUILDER.PROFILE_RELATIVE_PATH: (
-            PROFILE_BUILDER.PROFILE_SELF_MAXIMUM_BYTES
-        ),
-        "PROJECT_LOCK.md": (ROOT / "PROJECT_LOCK.md").stat().st_size,
-        "src/example.py": 17,
-    }
-    profile = PROFILE_BUILDER.build_profile(
-        repository_root=ROOT,
-        repository_members=members,
-        execution_surface_sha256="f" * 64,
-        profile_id="ab16-formal-resource-gate-fixture-v1",
-        launch_ready=True,
-        launch_ready_acknowledgement=(
-            PROFILE_BUILDER.LAUNCH_READY_ACKNOWLEDGEMENT
-        ),
-    )
-    raw = PROFILE_BUILDER.canonical_json(profile)
-    profile_path = tmp_path / "formal-resource-profile.json"
-    if profile_path.exists():
-        assert profile_path.read_bytes() == raw
-    else:
-        profile_path.write_bytes(raw)
-        profile_path.chmod(0o444)
-    profile_identity = {
-        "mode": 0o444,
-        "path": str(profile_path.absolute()),
-        "sha256": hashlib.sha256(raw).hexdigest(),
-        "size_bytes": len(raw),
-    }
-    bundle_record = {
-        "fixture": "independently-validated-calibration-bundle"
-    }
-    bundle_raw = json.dumps(
-        bundle_record,
-        allow_nan=False,
-        ensure_ascii=False,
-        separators=(",", ":"),
-        sort_keys=True,
-    ).encode() + b"\n"
-    bundle_identity = {
-        "path": str((tmp_path / "calibration-bundle.json").absolute()),
-        "sha256": hashlib.sha256(bundle_raw).hexdigest(),
-        "size_bytes": len(bundle_raw),
-    }
-    tool_identities = {
-        role: {
-            "sha256": hashlib.sha256(role.encode()).hexdigest(),
-            "size_bytes": len(role),
-        }
-        for role in FORMAL.resource_admission.CALIBRATION_TOOL_ROLES
-    }
-    authority_context = {
-        "resource_budget_profile_identity": profile_identity,
-        "resource_calibration_authorization_bundles": {
-            FORMAL.resource_admission.FORMAL_ORGANIC_ARM: {
-                "identity": bundle_identity,
-                "record": bundle_record,
-            }
-        },
-        "calibration_tool_content_identities": tool_identities,
-    }
-    prospective = FORMAL._prospective_resource_authority(  # noqa: SLF001
-        authority_context
-    )
-    return {
-        "authority_context": authority_context,
-        "prospective": prospective,
-    }
-
-
-@contextmanager
-def _accept_fixture_calibration() -> Iterator[None]:
-    resource = FORMAL.resource_admission
-    live_baseline = resource._same_uid_process_baseline(  # noqa: SLF001
-        (),
-        mode=resource.SAME_UID_BASELINE_LIVE_MODE,
-    )
-    with (
-        mock.patch.object(
-            resource,
-            "validate_calibration_authorization_bundle",
-            side_effect=lambda value, **_kwargs: dict(value),
-        ),
-        mock.patch.object(
-            resource,
-            "_same_uid_conflicts_with_baseline",
-            return_value=([], [], live_baseline),
-        ),
-    ):
-        yield
-
-
-def _formal_resource_passing_measurements(
-    prospective: Mapping[str, object],
-) -> dict[str, int]:
-    profile = FORMAL.resource_admission._validated_prospective_profile(  # noqa: SLF001
-        FORMAL.resource_admission.FORMAL_ORGANIC_ARM,
-        enforced_budget_profile=prospective["enforced_budget_profile"],
-        enforced_budget_profile_identity=(
-            prospective["enforced_budget_profile_identity"]
-        ),
-    )
+def _formal_resource_minimums() -> dict[str, int]:
+    profile = FORMAL.resource_admission.RESOURCE_PROFILES[
+        FORMAL.resource_admission.FORMAL_ORGANIC_ARM
+    ]
     requirements = profile["requirements"]
     assert isinstance(requirements, dict)
-    limits = profile["runtime_safety_limits"]
-    assert isinstance(limits, dict)
-    memory = requirements["memory"]["minimum_available_bytes"]
-    usable_memory = (
-        memory - requirements["memory"]["host_reserve_bytes"]
-    )
-    usable_swap = max(0, limits["memory_max_bytes"] - usable_memory)
-    swap = (
-        requirements["swap"]["host_reserve_bytes"] + usable_swap
-        if usable_swap
-        else 0
-    )
     return {
-        "disk": requirements["disk"]["minimum_available_bytes"],
-        "memory": memory,
-        "swap": swap,
+        dimension: requirements[dimension]["minimum_available_bytes"]
+        for dimension in ("disk", "memory", "swap")
     }
 
 
@@ -990,10 +478,7 @@ def _formal_resource_receipt(
     swap_delta: int = 0,
     conflicts: list[dict[str, object]] | None = None,
 ) -> dict[str, object]:
-    fixture = _formal_resource_fixture(tmp_path)
-    prospective = fixture["prospective"]
-    assert isinstance(prospective, dict)
-    passing = _formal_resource_passing_measurements(prospective)
+    minimums = _formal_resource_minimums()
     observation_context = {
         "authority_id": "a" * 64,
         "disk_path": str(tmp_path.absolute()),
@@ -1004,22 +489,18 @@ def _formal_resource_receipt(
         "slot": "",
         "target": str(tmp_path / "formal-attempt-a001"),
     }
-    authority_context = fixture["authority_context"]
-    assert isinstance(authority_context, dict)
-    with _accept_fixture_calibration():
-        return FORMAL.validate_resource_gate(
-            tmp_path,
-            authority_context=authority_context,
-            lock_identities=_lock_evidence(),
-            observation_context=observation_context,
-            meminfo={
-                "MemAvailable": passing["memory"] + memory_delta,
-                "SwapFree": passing["swap"] + swap_delta,
-            },
-            disk_free=passing["disk"] + disk_delta,
-            conflicts=conflicts,
-            allowed_same_uid_processes=(),
-        )
+    return FORMAL.validate_resource_gate(
+        tmp_path,
+        lock_identities=_lock_evidence(),
+        observation_context=observation_context,
+        meminfo={
+            "MemAvailable": minimums["memory"] + memory_delta,
+            "SwapFree": minimums["swap"] + swap_delta,
+        },
+        disk_free=minimums["disk"] + disk_delta,
+        conflicts=[] if conflicts is None else conflicts,
+        allowed_same_uid_processes=(),
+    )
 
 
 def test_formal_resource_gate_accepts_exact_stage_threshold_and_records_receipt(
@@ -1031,8 +512,6 @@ def test_formal_resource_gate_accepts_exact_stage_threshold_and_records_receipt(
     assert set(receipt) == {
         "authority_scope",
         "authorizations",
-        "calibration_authorization_bundle",
-        "calibration_authorization_bundle_identity",
         "created_at_utc",
         "disk_target",
         "hard_cap_feasibility",
@@ -1046,17 +525,13 @@ def test_formal_resource_gate_accepts_exact_stage_threshold_and_records_receipt(
         "stage",
         "status",
     }
-    assert (
-        receipt["schema_version"]
-        == resource.PROSPECTIVE_RESOURCE_ADMISSION_SCHEMA
-    )
+    assert receipt["schema_version"] == resource.RESOURCE_ADMISSION_SCHEMA
     assert receipt["stage"] == resource.FORMAL_ORGANIC_ARM
     assert receipt["status"] == "PASS"
     assert receipt["headroom"] == {
         "disk_bytes_above_minimum": 0,
         "memory_bytes_above_minimum": 0,
-        "swap_bytes_above_minimum": 15 * resource.GIB,
-        "swap_bytes_usable_for_combined_capacity": 11 * resource.GIB,
+        "swap_bytes_above_minimum": 0,
     }
     assert receipt["lock_check"] == {
         "checked_after_acquisition": True,
@@ -1081,22 +556,16 @@ def test_formal_resource_gate_accepts_exact_stage_threshold_and_records_receipt(
         "applies": True,
         "memory_after_host_reserve_bytes": 28 * resource.GIB,
         "memory_max_bytes": 39 * resource.GIB,
-        "planned_memory_peak_bytes": 28 * resource.GIB,
-        "swap_after_host_reserve_capped_bytes": 11 * resource.GIB,
-        "total_capacity_for_memory_max_bytes": 39 * resource.GIB,
+        "swap_after_host_reserve_capped_bytes": 12 * resource.GIB,
+        "total_capacity_for_memory_max_bytes": 40 * resource.GIB,
     }
-    fixture = _formal_resource_fixture(tmp_path)
-    prospective = fixture["prospective"]
-    assert isinstance(prospective, dict)
-    with _accept_fixture_calibration():
-        assert resource.validate_prospective_resource_admission_receipt(
-            receipt,
-            expected_stage=resource.FORMAL_ORGANIC_ARM,
-            expected_lock_identities=_lock_evidence(),
-            expected_lock_identity_format=resource.FORMAL_LOCK_IDENTITY_FORMAT,
-            expected_observation_context=receipt["observation_context"],
-            **prospective,
-        ) == receipt
+    assert resource.validate_resource_admission_receipt(
+        receipt,
+        expected_stage=resource.FORMAL_ORGANIC_ARM,
+        expected_lock_identities=_lock_evidence(),
+        expected_lock_identity_format=resource.FORMAL_LOCK_IDENTITY_FORMAT,
+        expected_observation_context=receipt["observation_context"],
+    ) == receipt
 
 
 @pytest.mark.parametrize(
@@ -1104,6 +573,7 @@ def test_formal_resource_gate_accepts_exact_stage_threshold_and_records_receipt(
     (
         ("disk", {"disk_delta": -1}),
         ("memory", {"memory_delta": -1}),
+        ("swap", {"swap_delta": -1}),
     ),
 )
 def test_formal_resource_gate_rejects_each_threshold_minus_one(
@@ -1116,69 +586,6 @@ def test_formal_resource_gate_rejects_each_threshold_minus_one(
         match=rf"RESOURCE_HEADROOM_INSUFFICIENT: .*{dimension}",
     ):
         _formal_resource_receipt(tmp_path, **kwargs)
-
-
-def test_formal_resource_gate_rejects_insufficient_combined_capacity(
-    tmp_path: Path,
-) -> None:
-    with pytest.raises(
-        FORMAL.FormalCampaignError,
-        match="RESOURCE_HARD_CAP_FEASIBILITY_FAILED",
-    ):
-        _formal_resource_receipt(tmp_path, swap_delta=-1)
-
-
-def test_formal_resource_gate_accepts_high_ram_without_free_swap(
-    tmp_path: Path,
-) -> None:
-    resource = FORMAL.resource_admission
-    fixture = _formal_resource_fixture(tmp_path)
-    prospective = fixture["prospective"]
-    authority_context = fixture["authority_context"]
-    assert isinstance(prospective, dict)
-    assert isinstance(authority_context, dict)
-    passing = _formal_resource_passing_measurements(prospective)
-    profile = prospective["enforced_budget_profile"]
-    assert isinstance(profile, dict)
-    formal_profile = resource._validated_prospective_profile(  # noqa: SLF001
-        resource.FORMAL_ORGANIC_ARM,
-        enforced_budget_profile=profile,
-        enforced_budget_profile_identity=(
-            prospective["enforced_budget_profile_identity"]
-        ),
-    )
-    memory_requirement = formal_profile["requirements"]["memory"]
-    memory_available = (
-        formal_profile["runtime_safety_limits"]["memory_max_bytes"]
-        + memory_requirement["host_reserve_bytes"]
-    )
-    with _accept_fixture_calibration():
-        receipt = FORMAL.validate_resource_gate(
-            tmp_path,
-            authority_context=authority_context,
-            lock_identities=_lock_evidence(),
-            observation_context={
-                "authority_id": "a" * 64,
-                "disk_path": str(tmp_path.absolute()),
-                "kind": "FORMAL_INITIAL_POST_LOCK",
-                "ordinal": 0,
-                "scope_id": "b" * 64,
-                "sequence": 0,
-                "slot": "",
-                "target": str(tmp_path / "formal-attempt-a001"),
-            },
-            meminfo={
-                "MemAvailable": memory_available,
-                "SwapFree": 0,
-            },
-            disk_free=passing["disk"],
-            conflicts=[],
-            allowed_same_uid_processes=(),
-        )
-    assert receipt["status"] == "PASS"
-    assert receipt["hard_cap_feasibility"][
-        "swap_after_host_reserve_capped_bytes"
-    ] == 0
 
 
 def test_formal_resource_gate_rejects_same_uid_conflict(
@@ -1226,10 +633,7 @@ def test_launch_reevaluation_remeasures_after_receipt_and_fails_closed(
 ) -> None:
     resource = FORMAL.resource_admission
     expected = _formal_resource_receipt(tmp_path)
-    fixture = _formal_resource_fixture(tmp_path)
-    prospective = fixture["prospective"]
-    assert isinstance(prospective, dict)
-    passing = _formal_resource_passing_measurements(prospective)
+    minimums = _formal_resource_minimums()
     monkeypatch.setattr(resource, "_open_launch_lock_probes", lambda *_args, **_kwargs: [])
     monkeypatch.setattr(resource, "_revalidate_launch_lock_probes", lambda _opened: None)
 
@@ -1243,21 +647,19 @@ def test_launch_reevaluation_remeasures_after_receipt_and_fails_closed(
 
     monkeypatch.setattr(resource, "_close_launch_lock_probes", close_probes)
     with pytest.raises(resource.ResourceAdmissionError, match=failure_code):
-        with _accept_fixture_calibration():
-            resource.reevaluate_prospective_resource_admission_for_launch(
-                expected,
-                **prospective,
-                meminfo={
-                    "MemAvailable": (
-                        passing["memory"] - 1
-                        if mem_available == "MINUS_ONE"
-                        else passing["memory"]
-                    ),
-                    "SwapFree": passing["swap"],
-                },
-                disk_free=passing["disk"],
-                conflicts=conflicts,
-            )
+        resource.reevaluate_resource_admission_for_launch(
+            expected,
+            meminfo={
+                "MemAvailable": (
+                    minimums["memory"] - 1
+                    if mem_available == "MINUS_ONE"
+                    else minimums["memory"]
+                ),
+                "SwapFree": minimums["swap"],
+            },
+            disk_free=minimums["disk"],
+            conflicts=conflicts,
+        )
 
 
 def test_launch_reevaluation_receipt_strictly_replays_prelaunch_contract(
@@ -1265,30 +667,24 @@ def test_launch_reevaluation_receipt_strictly_replays_prelaunch_contract(
 ) -> None:
     resource = FORMAL.resource_admission
     expected = _formal_resource_receipt(tmp_path)
-    fixture = _formal_resource_fixture(tmp_path)
-    prospective = fixture["prospective"]
-    assert isinstance(prospective, dict)
-    passing = _formal_resource_passing_measurements(prospective)
-    with _accept_fixture_calibration():
-        final = resource.evaluate_prospective_resource_admission(
-            tmp_path,
-            stage=resource.FORMAL_ORGANIC_ARM,
-            lock_identities=_lock_evidence(),
-            lock_identity_format=resource.FORMAL_LOCK_IDENTITY_FORMAT,
-            observation_context=expected["observation_context"],
-            **prospective,
-            meminfo={
-                "MemAvailable": passing["memory"] + 1,
-                "SwapFree": passing["swap"] + 1,
-            },
-            disk_free=passing["disk"] + 1,
-            conflicts=None,
-        )
-        assert resource.validate_prospective_launch_resource_reevaluation(
-            final,
-            expected_receipt=expected,
-            **prospective,
-        ) == final
+    minimums = _formal_resource_minimums()
+    final = resource.evaluate_resource_admission(
+        tmp_path,
+        stage=resource.FORMAL_ORGANIC_ARM,
+        lock_identities=_lock_evidence(),
+        lock_identity_format=resource.FORMAL_LOCK_IDENTITY_FORMAT,
+        observation_context=expected["observation_context"],
+        meminfo={
+            "MemAvailable": minimums["memory"] + 1,
+            "SwapFree": minimums["swap"] + 1,
+        },
+        disk_free=minimums["disk"] + 1,
+        conflicts=[],
+    )
+    assert resource.validate_launch_resource_reevaluation(
+        final,
+        expected_receipt=expected,
+    ) == final
 
     tampered = copy.deepcopy(final)
     tampered["measurements"]["mem_available_bytes"] += 1
@@ -1296,12 +692,10 @@ def test_launch_reevaluation_receipt_strictly_replays_prelaunch_contract(
         resource.ResourceAdmissionError,
         match="RESOURCE_RECEIPT_INVALID",
     ):
-        with _accept_fixture_calibration():
-            resource.validate_prospective_launch_resource_reevaluation(
-                tampered,
-                expected_receipt=expected,
-                **prospective,
-            )
+        resource.validate_launch_resource_reevaluation(
+            tampered,
+            expected_receipt=expected,
+        )
 
 
 def test_formal_resource_observation_contexts_are_unique_across_all_launches(
@@ -1440,13 +834,11 @@ def test_outer_prelaunch_transmits_ready_allowlist_and_rechecks_retained_locks(
     def validate_resource(
         path: Path | str,
         *,
-        authority_context: Mapping[str, object],
         lock_identities: list[dict[str, object]],
         observation_context: dict[str, object],
         allowed_same_uid_processes: list[dict[str, int]],
     ) -> dict[str, object]:
         assert path == str(tmp_path)
-        assert authority_context["campaign_dir"] == str(tmp_path)
         assert lock_identities == locks
         assert allowed_same_uid_processes == [supervisor, actor]
         resource_calls.append(copy.deepcopy(observation_context))
@@ -1896,400 +1288,6 @@ def test_normal_unref_binds_observer_and_precleanup_before_side_effect(
     assert reference2.events.count("release") == 0
 
 
-def test_successor_unref_retains_same_connection_until_terminal_close(
-    tmp_path: Path,
-) -> None:
-    boundary, state, store = _boundary(tmp_path), STATE.AttemptState(), Store()
-    reference = FakeReference()
-    assert _acquire(boundary, state, store, reference)["kind"] == "RECORDED"
-    state.lock_release_attempted = True
-    state.lock_release_return = {
-        "lock_identities": _lock_evidence(),
-        "released": True,
-    }
-    state.supervisor_raw_lock_release_identity = _identity("raw-lock-release")
-    observer = _identity("observer-v2")
-    cleanup = _identity("pre-unref-cleanup-v2")
-
-    released = STATE.release_reference_retained_once(
-        boundary,
-        state,
-        store,
-        unit_name="outer.service",
-        observer_identity=observer,
-        pre_unref_cleanup_identity=cleanup,
-    )
-
-    assert released["kind"] == "RECORDED_CONNECTION_RETAINED"
-    assert reference.events[-1] == "release"
-    assert "close" not in reference.events
-    release_record = store.records["reference-release.json"]
-    assert release_record["schema_version"] == STATE.REFERENCE_RELEASE_SCHEMA_V2
-    assert release_record["connection_retained"] is True
-
-    post_unref = _identity("post-unref-absence-v2")
-    closed = STATE.close_released_reference_once(
-        boundary,
-        state,
-        store,
-        unit_name="outer.service",
-        post_unref_absence_identity=post_unref,
-    )
-
-    assert closed["kind"] == "RECORDED_CONNECTION_CLOSED"
-    assert reference.events[-2:] == ["verify_released", "close"]
-    assert (
-        store.records["reference-terminal.json"]["schema_version"]
-        == STATE.REFERENCE_TERMINAL_SCHEMA
-    )
-    assert (
-        store.records["reference-connection-close.json"]["schema_version"]
-        == STATE.REFERENCE_CONNECTION_CLOSE_SCHEMA
-    )
-    with pytest.raises(STATE.CloseoutStateError, match="exact-once"):
-        STATE.close_released_reference_once(
-            boundary,
-            state,
-            store,
-            unit_name="outer.service",
-            post_unref_absence_identity=post_unref,
-        )
-
-
-@pytest.mark.parametrize(
-    ("fault", "expected_kind", "abort_count", "close_count"),
-    [
-        (
-            "verify_released",
-            "UNREF_UNPROVEN_CONNECTION_DROPPED",
-            1,
-            0,
-        ),
-        (
-            "close",
-            "CONNECTION_CLOSE_FAILED_OR_UNCERTAIN",
-            0,
-            1,
-        ),
-    ],
-)
-def test_successor_post_unref_uncertainty_never_repeats_terminal_effect(
-    tmp_path: Path,
-    fault: str,
-    expected_kind: str,
-    abort_count: int,
-    close_count: int,
-) -> None:
-    boundary, state, store = _boundary(tmp_path), STATE.AttemptState(), Store()
-    reference = FakeReference()
-    assert _acquire(boundary, state, store, reference)["kind"] == "RECORDED"
-    state.lock_release_attempted = True
-    state.lock_release_return = {
-        "lock_identities": _lock_evidence(),
-        "released": True,
-    }
-    state.supervisor_raw_lock_release_identity = _identity("raw-lock-release")
-    assert (
-        STATE.release_reference_retained_once(
-            boundary,
-            state,
-            store,
-            unit_name="outer.service",
-            observer_identity=_identity("observer-v2"),
-            pre_unref_cleanup_identity=_identity("cleanup-v2"),
-        )["kind"]
-        == "RECORDED_CONNECTION_RETAINED"
-    )
-    reference.fault = fault
-
-    result = STATE.close_released_reference_once(
-        boundary,
-        state,
-        store,
-        unit_name="outer.service",
-        post_unref_absence_identity=_identity("post-unref-v2"),
-    )
-
-    assert result["kind"] == expected_kind
-    assert reference.events.count("verify_released") == 1
-    assert reference.events.count("abort_close") == abort_count
-    assert reference.events.count("close") == close_count
-    with pytest.raises(STATE.CloseoutStateError):
-        STATE.close_released_reference_once(
-            boundary,
-            state,
-            store,
-            unit_name="outer.service",
-            post_unref_absence_identity=_identity("post-unref-v2"),
-        )
-
-
-def test_failure_successor_unref_uncertainty_becomes_one_terminal_snapshot(
-    tmp_path: Path,
-) -> None:
-    boundary, attempt, store = _boundary(tmp_path), STATE.AttemptState(), Store()
-    reference = FakeReference()
-    assert _acquire(boundary, attempt, store, reference)["kind"] == "RECORDED"
-    attempt.lock_release_attempted = True
-    attempt.lock_release_return = {
-        "lock_identities": _lock_evidence(),
-        "released": True,
-    }
-    attempt.supervisor_raw_lock_release_identity = _identity("raw-lock-release")
-    reference.fault = "release"
-
-    result = STATE.release_reference_retained_once(
-        boundary,
-        attempt,
-        store,
-        unit_name="outer.service",
-        observer_identity=_identity("failure-release"),
-        pre_unref_cleanup_identity=_identity("failure-release"),
-    )
-
-    assert result["kind"] == "UNREF_UNPROVEN_CONNECTION_DROPPED"
-    assert reference.events.count("release") == 1
-    assert reference.events.count("abort_close") == 1
-    supervisor = FORMAL.SupervisorState(attempt=attempt)
-    completion = FORMAL._reference_completion_snapshot(supervisor)  # noqa: SLF001
-    assert completion["kind"] == "CONNECTION_UNCERTAIN"
-    assert completion["uncertainty_terminal"]["kind"] == (
-        "UNREF_UNPROVEN_CONNECTION_DROPPED"
-    )
-
-
-@pytest.mark.parametrize(
-    ("fault", "expected_terminal_kind"),
-    [
-        ("verify_released", "UNREF_UNPROVEN_CONNECTION_DROPPED"),
-        ("close", "CONNECTION_CLOSE_FAILED_OR_UNCERTAIN"),
-    ],
-)
-def test_failure_post_unref_uncertainty_never_misstates_retained_release_as_closed(
-    tmp_path: Path,
-    fault: str,
-    expected_terminal_kind: str,
-) -> None:
-    boundary, attempt, store = _boundary(tmp_path), STATE.AttemptState(), Store()
-    reference = FakeReference()
-    assert _acquire(boundary, attempt, store, reference)["kind"] == "RECORDED"
-    attempt.lock_release_attempted = True
-    attempt.lock_release_return = {
-        "lock_identities": _lock_evidence(),
-        "released": True,
-    }
-    attempt.supervisor_raw_lock_release_identity = _identity("raw-lock-release")
-    assert (
-        STATE.release_reference_retained_once(
-            boundary,
-            attempt,
-            store,
-            unit_name="outer.service",
-            observer_identity=_identity("failure-release"),
-            pre_unref_cleanup_identity=_identity("failure-release"),
-        )["kind"]
-        == "RECORDED_CONNECTION_RETAINED"
-    )
-    reference.fault = fault
-    post_unref = _identity("post-unref-v2")
-    attempt.post_unref_absence_identity = post_unref
-    closed = STATE.close_released_reference_once(
-        boundary,
-        attempt,
-        store,
-        unit_name="outer.service",
-        post_unref_absence_identity=post_unref,
-    )
-    assert closed["kind"] != "RECORDED_CONNECTION_CLOSED"
-
-    completion = FORMAL._reference_completion_snapshot(  # noqa: SLF001
-        FORMAL.SupervisorState(attempt=attempt)
-    )
-    assert completion["kind"] == "CONNECTION_UNCERTAIN"
-    assert completion["reference_release_identity"] == (
-        attempt.reference_release_identity
-    )
-    assert completion["reference_connection_close_identity"] == "unrecorded"
-    assert completion["uncertainty_terminal"]["kind"] == expected_terminal_kind
-
-
-@pytest.mark.parametrize(
-    ("fault", "expected_kind", "abort_count", "close_count"),
-    [
-        ("release", "UNREF_UNPROVEN_CONNECTION_DROPPED", 1, 0),
-        ("verify_released", "UNREF_UNPROVEN_CONNECTION_DROPPED", 1, 0),
-        ("close", "CONNECTION_CLOSE_FAILED_OR_UNCERTAIN", 0, 1),
-    ],
-)
-def test_successor_reference_baseexception_is_terminal_and_never_retried(
-    tmp_path: Path,
-    fault: str,
-    expected_kind: str,
-    abort_count: int,
-    close_count: int,
-) -> None:
-    class InterruptedReference(FakeReference):
-        def _event(self, name: str) -> None:
-            self.events.append(name)
-            if self.fault == name:
-                raise KeyboardInterrupt(f"interrupted {name}")
-
-    boundary, attempt, store = _boundary(tmp_path), STATE.AttemptState(), Store()
-    reference = InterruptedReference()
-    assert _acquire(boundary, attempt, store, reference)["kind"] == "RECORDED"
-    attempt.lock_release_attempted = True
-    attempt.lock_release_return = {
-        "lock_identities": _lock_evidence(),
-        "released": True,
-    }
-    attempt.supervisor_raw_lock_release_identity = _identity("raw-lock-release")
-    if fault == "release":
-        reference.fault = fault
-        result = STATE.release_reference_retained_once(
-            boundary,
-            attempt,
-            store,
-            unit_name="outer.service",
-            observer_identity=_identity("failure-release"),
-            pre_unref_cleanup_identity=_identity("failure-release"),
-        )
-    else:
-        assert (
-            STATE.release_reference_retained_once(
-                boundary,
-                attempt,
-                store,
-                unit_name="outer.service",
-                observer_identity=_identity("failure-release"),
-                pre_unref_cleanup_identity=_identity("failure-release"),
-            )["kind"]
-            == "RECORDED_CONNECTION_RETAINED"
-        )
-        reference.fault = fault
-        result = STATE.close_released_reference_once(
-            boundary,
-            attempt,
-            store,
-            unit_name="outer.service",
-            post_unref_absence_identity=_identity("post-unref-v2"),
-        )
-
-    assert result["kind"] == expected_kind
-    assert reference.events.count(fault) == 1
-    assert reference.events.count("abort_close") == abort_count
-    assert reference.events.count("close") == close_count
-    if fault == "release":
-        with pytest.raises(STATE.CloseoutStateError):
-            STATE.release_reference_retained_once(
-                boundary,
-                attempt,
-                store,
-                unit_name="outer.service",
-                observer_identity=_identity("failure-release"),
-                pre_unref_cleanup_identity=_identity("failure-release"),
-            )
-    else:
-        with pytest.raises(STATE.CloseoutStateError):
-            STATE.close_released_reference_once(
-                boundary,
-                attempt,
-                store,
-                unit_name="outer.service",
-                post_unref_absence_identity=_identity("post-unref-v2"),
-            )
-
-
-def test_failure_reference_completion_resumes_after_recorded_unref_without_replay(
-    tmp_path: Path,
-) -> None:
-    boundary, store = _boundary(tmp_path), Store()
-    state = FORMAL.SupervisorState()
-    reference = FakeReference()
-    selection_identity = _identity("selection")
-    assert (
-        _acquire(
-            boundary,
-            state.attempt,
-            store,
-            reference,
-            selection_identity=selection_identity,
-        )["kind"]
-        == "RECORDED"
-    )
-    state.selection_identity = selection_identity
-    state.attempt.lock_release_attempted = True
-    state.attempt.lock_release_return = {
-        "lock_identities": _lock_evidence(),
-        "released": True,
-    }
-    raw_identity = _identity("raw-lock-release")
-    state.attempt.supervisor_raw_lock_release_identity = raw_identity
-    state.supervisor_raw_lock_release_identity = raw_identity
-    failure_identity = _identity("failure-release")
-    assert (
-        STATE.release_reference_retained_once(
-            boundary,
-            state.attempt,
-            store,
-            unit_name="outer.service",
-            observer_identity=failure_identity,
-            pre_unref_cleanup_identity=failure_identity,
-        )["kind"]
-        == "RECORDED_CONNECTION_RETAINED"
-    )
-    attempt = boundary.formal_dir
-    receipt_paths = {
-        "post_unref_absence": str(attempt / "post-unref-absence.json"),
-        "reference_connection_close": str(
-            attempt / "reference-connection-close.json"
-        ),
-        "reference_release": str(attempt / "reference-release.json"),
-        "reference_terminal": str(attempt / "reference-terminal.json"),
-    }
-    state.selection = {"outer_spec": {"receipt_paths": receipt_paths}}
-    state.outer_identity = {
-        "control_group": "/user.slice/outer.service",
-        "invocation_id": "a" * 32,
-        "processes": [{"pid": 401, "starttime": 501}],
-        "unit_name": "outer.service",
-    }
-    context = {
-        "campaign_root_identity": boundary.context["root_identity"],
-        "formal_attempt_dir": str(attempt),
-        "manager_epoch": boundary.root["manager_epoch"],
-        "outer_spec": {"receipt_paths": receipt_paths},
-        "package_id": boundary.root["package"]["package_id"],
-    }
-
-    class ResumeHost:
-        locks_released = True
-
-        @staticmethod
-        def wait_state(
-            *_args: object,
-            **_kwargs: object,
-        ) -> dict[str, object]:
-            return {
-                "cgroup_absent": True,
-                "processes_absent": True,
-                "systemctl": dict(HELPER.ABSENT),
-            }
-
-    completion = FORMAL._failure_reference_completion(  # noqa: SLF001
-        boundary=boundary,
-        context=context,
-        state=state,
-        store=store,  # type: ignore[arg-type]
-        host=ResumeHost(),  # type: ignore[arg-type]
-        failure_pre_release_identity=failure_identity,
-    )
-
-    assert completion["kind"] == "RECORDED_CONNECTION_CLOSED"
-    assert reference.events.count("release") == 1
-    assert reference.events.count("verify_released") == 1
-    assert reference.events.count("close") == 1
-
-
 @pytest.mark.parametrize(
     "mutation",
     ["acquire_keys", "acquire_owner", "verify_client", "lock_count"],
@@ -2401,11 +1399,9 @@ def test_outer_launch_effect_is_monotone_without_start_proof() -> None:
     assert state.outer_start_identity is None
 
 
-def test_definitely_unpublished_marker_is_markerless_without_future_joins(
-    tmp_path: Path,
-) -> None:
+def test_markerless_directory_is_consumed_without_future_joins(tmp_path: Path) -> None:
     boundary, state = _boundary(tmp_path), STATE.AttemptState(directory_created=True)
-    store = Store("attempt-consumption.json")
+    store = Store("attempt-consumption.json", return_before_fail=True)
     with pytest.raises(STATE.CloseoutStateError, match="markerless"):
         STATE.publish_attempt_consumption(
             boundary,
@@ -2413,18 +1409,11 @@ def test_definitely_unpublished_marker_is_markerless_without_future_joins(
             store,
             created_at_utc="2026-07-27T00:00:00Z",
         )
-    record = store.records["markerless-incomplete.json"]
-    assert record["status"] == STATE.FORMAL_MARKERLESS_INCOMPLETE
+    record = store.records["markerless-consumed-incomplete.json"]
     assert record["no_backfill"] is True
     assert record["phase"] == "DIRECTORY_CREATED_MARKER_UNRECORDED"
     assert record["marker_canonical_identity_recorded"] is False
-    assert record["attempt_consumption_effect"]["returned"] is False
-    assert (
-        record["attempt_consumption_effect"]["error"]["code"]
-        == "CANONICAL_PUBLICATION_DEFINITELY_NOT_PUBLISHED"
-    )
-    assert record["failure"]["code"] == "ATTEMPT_MARKER_DEFINITELY_NOT_PUBLISHED"
-    assert state.formal_consumption_state == STATE.FORMAL_MARKERLESS_INCOMPLETE
+    assert record["attempt_consumption_effect"]["returned"] is True
     assert "selection_identity" not in record
     assert "reference_release_identity" not in record
     with pytest.raises(STATE.CloseoutStateError):
@@ -2435,134 +1424,7 @@ def test_definitely_unpublished_marker_is_markerless_without_future_joins(
             created_at_utc="2026-07-27T00:00:01Z",
         )
     assert store.attempts["attempt-consumption.json"] == 1
-    assert store.attempts["markerless-incomplete.json"] == 1
-
-
-@pytest.mark.parametrize(
-    ("return_before_fail", "uncertain_before_fail"),
-    [(False, True), (True, False)],
-    ids=("rename-or-fsync-uncertain", "ack-uncertain"),
-)
-def test_published_or_uncertain_marker_is_formal_consumed_not_markerless(
-    tmp_path: Path,
-    *,
-    return_before_fail: bool,
-    uncertain_before_fail: bool,
-) -> None:
-    boundary, state = _boundary(tmp_path), STATE.AttemptState(directory_created=True)
-    store = Store(
-        "attempt-consumption.json",
-        return_before_fail=return_before_fail,
-        uncertain_before_fail=uncertain_before_fail,
-    )
-    with pytest.raises(STATE.CloseoutStateError, match="formal-consumed-incomplete"):
-        STATE.publish_attempt_consumption(
-            boundary,
-            state,
-            store,
-            created_at_utc="2026-07-27T00:00:00Z",
-        )
-    assert state.formal_consumption_state == STATE.FORMAL_CONSUMED_INCOMPLETE
-    assert state.irreversible_incomplete is True
-    assert state.errors[-1]["code"] == "ATTEMPT_MARKER_PUBLISHED_OR_UNCERTAIN"
-    assert "markerless-incomplete.json" not in store.records
-    assert store.attempts == {"attempt-consumption.json": 1}
-    with pytest.raises(STATE.CloseoutStateError, match="wrong predecessor"):
-        STATE.publish_attempt_consumption(
-            boundary,
-            state,
-            store,
-            created_at_utc="2026-07-27T00:00:01Z",
-        )
-    assert store.attempts == {"attempt-consumption.json": 1}
-
-
-@pytest.mark.parametrize(
-    ("cross_boundary", "expected_state"),
-    [
-        (False, STATE.FORMAL_MARKERLESS_INCOMPLETE),
-        (True, STATE.FORMAL_CONSUMED_INCOMPLETE),
-    ],
-    ids=("pre-send-rejection", "post-send-ack-loss"),
-)
-def test_receipt_store_preserves_the_broker_publication_boundary(
-    tmp_path: Path,
-    *,
-    cross_boundary: bool,
-    expected_state: str,
-) -> None:
-    boundary, state = _boundary(tmp_path), STATE.AttemptState(directory_created=True)
-    attempt_path = boundary.formal_dir / "attempt-consumption.json"
-    markerless_path = boundary.formal_dir / "markerless-incomplete.json"
-
-    class Backend:
-        @staticmethod
-        def maximum_bytes(
-            _label: str,
-            *,
-            artifact_class: str,
-        ) -> int:
-            assert artifact_class == "closeout"
-            return 64 * 1024
-
-        @staticmethod
-        def publish_bytes_with_publication_boundary(
-            path: Path,
-            raw: bytes,
-            *,
-            maximum_bytes: int,
-            artifact_class: str,
-            label: str,
-            publication_boundary: Callable[[], None],
-        ) -> dict[str, object]:
-            assert maximum_bytes == 64 * 1024
-            assert artifact_class == "closeout"
-            if label == "attempt":
-                if cross_boundary:
-                    publication_boundary()
-                    path.write_bytes(raw)
-                    path.chmod(0o444)
-                raise OSError("injected broker publication failure")
-            assert label == "markerless"
-            publication_boundary()
-            path.write_bytes(raw)
-            path.chmod(0o444)
-            return {
-                "path": str(path.absolute()),
-                "sha256": hashlib.sha256(raw).hexdigest(),
-                "size_bytes": len(raw),
-            }
-
-    store = HELPER.ReceiptStore(
-        budget_backend=Backend(),
-        budget_bindings={
-            str(attempt_path.absolute()): {
-                "artifact_class": "closeout",
-                "label": "attempt",
-            },
-            str(markerless_path.absolute()): {
-                "artifact_class": "closeout",
-                "label": "markerless",
-            },
-        },
-    )
-    with pytest.raises(
-        STATE.CloseoutStateError,
-        match=(
-            "formal-consumed-incomplete"
-            if cross_boundary
-            else "markerless"
-        ),
-    ):
-        STATE.publish_attempt_consumption(
-            boundary,
-            state,
-            store,
-            created_at_utc="2026-07-27T00:00:00Z",
-        )
-    assert state.formal_consumption_state == expected_state
-    assert attempt_path.exists() is cross_boundary
-    assert markerless_path.exists() is (not cross_boundary)
+    assert store.attempts["markerless-consumed-incomplete.json"] == 1
 
 
 def _consumed_state(**proofs: object) -> Any:
@@ -3586,24 +2448,50 @@ def test_normal_child_cleanup_replays_exact_gate1_and_all_organic_receipts_once(
     assert host.stops == 0
 
 
-def test_successor_late_proof_order_keeps_ref_before_raw_release_and_final_join() -> None:
-    state = STATE.AttemptState(
+def _late_closeout_state(phase: str) -> Any:
+    call = {
+        "client_unique_name": ":1.7",
+        "manager_owner_after": ":1.42",
+        "manager_owner_before": ":1.42",
+        "unit_name": "outer.service",
+    }
+    state = _consumed_state(
+        selection_identity=_identity("selection"),
+        outer_prelaunch_identity=_identity("outer-prelaunch"),
+        outer_start_identity=_identity("outer-start"),
+        resource_identity=_identity("resource"),
         acquire_identity=_identity("acquisition"),
         barrier_identity=_identity("barrier"),
+        unref_call_identity=_identity("unref-call"),
+        reference_release_identity=_identity("reference-release"),
     )
+    state.outer_launch_attempted = True
+    state.outer_launch_return = {"runner_returned": True}
+    state.acquire_attempted = True
+    state.acquire_returned = True
+    state.acquire_return = dict(call)
+    state.release_attempted = True
+    state.release_returned = True
+    state.release_return = dict(call)
+    state.close_attempted = True
+    state.close_returned = True
+    state.connection_action = "close"
     STATE.record_late_proof_once(state, "observer_identity", _identity("observer"))
     STATE.record_late_proof_once(
         state,
         "pre_unref_cleanup_identity",
         _identity("pre-unref-cleanup"),
     )
-    with pytest.raises(STATE.CloseoutStateError, match="predecessor"):
-        STATE.record_late_proof_once(
-            state,
-            "guardian_close_identity",
-            _identity("guardian-close-too-early"),
-        )
+    STATE.record_late_proof_once(
+        state,
+        "post_unref_absence_identity",
+        _identity("post-unref-absence"),
+    )
+    if phase == "DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED":
+        return state
     STATE.begin_detached_success_verifier(state)
+    if phase == "DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN":
+        return state
     STATE.record_detached_success_verifier_return(
         state,
         {"stdout_sha256": "1" * 64},
@@ -3613,39 +2501,140 @@ def test_successor_late_proof_order_keeps_ref_before_raw_release_and_final_join(
         "detached_success_identity",
         _identity("detached-success"),
     )
+    if phase == "GUARDIAN_CLOSE_NOT_ATTEMPTED":
+        return state
     STATE.begin_guardian_close(state)
+    if phase == "GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN":
+        return state
     STATE.record_guardian_close_return(state, {"acknowledged": True})
     STATE.record_late_proof_once(
         state,
         "guardian_close_identity",
         _identity("guardian-close"),
     )
+    if phase == "GUARDIAN_ABSENCE_UNPROVED":
+        return state
     STATE.record_late_proof_once(
         state,
         "guardian_absence_identity",
         _identity("guardian-absence"),
     )
+    if phase == "SUPERVISOR_LOCK_RELEASE_NOT_ATTEMPTED":
+        return state
     STATE.begin_supervisor_lock_release(state)
-    STATE.record_supervisor_lock_release_return(
-        state,
-        {"lock_identities": _lock_evidence(), "released": True},
-    )
-    raw = _identity("raw-lock-release")
-    publication = state.publication("supervisor-raw-lock-release")
+    if phase == "SUPERVISOR_LOCK_RELEASE_FAILED_OR_UNCERTAIN":
+        return state
+    STATE.record_supervisor_lock_release_return(state, {"released": True})
+    if phase == "DUAL_LOCK_RELEASE_RECEIPT_NOT_ATTEMPTED":
+        return state
+    publication = state.publication("dual-lock-release")
     publication.begin()
-    publication.note_returned(raw)
-    publication.note_recorded(raw)
+    if phase == "DUAL_LOCK_RELEASE_RECEIPT_FAILED_OR_UNCERTAIN":
+        publication.note_error(OSError("injected dual-lock publication uncertainty"))
+        return state
+    dual_identity = _identity("dual-lock-release")
+    publication.note_returned(dual_identity)
+    publication.note_recorded(dual_identity)
     STATE.record_late_proof_once(
         state,
-        "supervisor_raw_lock_release_identity",
-        raw,
+        "dual_lock_release_identity",
+        dual_identity,
     )
-    assert state.release_attempted is False
-    with pytest.raises(STATE.CloseoutStateError, match="predecessor"):
-        STATE.record_late_proof_once(
+    return state
+
+
+@pytest.mark.parametrize(
+    ("phase", "last_join"),
+    [
+        ("DETACHED_SUCCESS_VERIFIER_NOT_ATTEMPTED", "post_unref_absence_identity"),
+        ("DETACHED_SUCCESS_VERIFIER_FAILED_OR_UNCERTAIN", "post_unref_absence_identity"),
+        ("GUARDIAN_CLOSE_NOT_ATTEMPTED", "detached_success_identity"),
+        ("GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN", "detached_success_identity"),
+        ("GUARDIAN_ABSENCE_UNPROVED", "guardian_close_identity"),
+        ("SUPERVISOR_LOCK_RELEASE_NOT_ATTEMPTED", "guardian_absence_identity"),
+        ("SUPERVISOR_LOCK_RELEASE_FAILED_OR_UNCERTAIN", "guardian_absence_identity"),
+        ("DUAL_LOCK_RELEASE_RECEIPT_NOT_ATTEMPTED", "guardian_absence_identity"),
+        ("DUAL_LOCK_RELEASE_RECEIPT_FAILED_OR_UNCERTAIN", "guardian_absence_identity"),
+        ("FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN", "dual_lock_release_identity"),
+    ],
+)
+def test_late_incomplete_phases_bind_only_established_proofs(
+    tmp_path: Path,
+    phase: str,
+    last_join: str,
+) -> None:
+    state = _late_closeout_state(phase)
+    supervisor = FORMAL.SupervisorState()
+    supervisor.attempt = state
+    assert FORMAL._failure_phase(supervisor) == phase
+    result = STATE.publish_consumed_incomplete(
+        _boundary(tmp_path),
+        state,
+        Store(),
+        phase=phase,
+        failure_record={"code": phase, "detail": "injected late closeout failure"},
+        external_joins={
+            "child_audit_identity": _identity("child-audit"),
+            "outer_terminal_identity": _identity("outer-terminal"),
+        },
+    )
+
+    record = result["record"]
+    assert record["status"] == "CONSUMED_INCOMPLETE"
+    assert record["retry_eligible"] is False
+    assert not any(record["authorizations"].values())
+    assert last_join in record["joins"]
+    phase_order = [
+        "post_unref_absence_identity",
+        "detached_success_identity",
+        "guardian_close_identity",
+        "guardian_absence_identity",
+        "dual_lock_release_identity",
+    ]
+    assert not any(
+        name in record["joins"]
+        for name in phase_order[phase_order.index(last_join) + 1 :]
+    )
+
+
+def test_late_incomplete_rejects_future_proof_and_missing_dual_publication(
+    tmp_path: Path,
+) -> None:
+    state = _late_closeout_state("GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN")
+    state.guardian_absence_identity = _identity("future-guardian-absence")
+    with pytest.raises(STATE.CloseoutStateError, match="future proof"):
+        STATE.publish_consumed_incomplete(
+            _boundary(tmp_path),
             state,
-            "dual_lock_release_identity",
-            _identity("dual-too-early"),
+            Store(),
+            phase="GUARDIAN_CLOSE_FAILED_OR_UNCERTAIN",
+            failure_record={"code": "LATE", "detail": "expected"},
+            external_joins={
+                "child_audit_identity": _identity("child-audit"),
+                "outer_terminal_identity": _identity("outer-terminal"),
+            },
+        )
+
+    missing_publication = _late_closeout_state(
+        "SUPERVISOR_LOCK_RELEASE_FAILED_OR_UNCERTAIN"
+    )
+    STATE.record_supervisor_lock_release_return(
+        missing_publication,
+        {"released": True},
+    )
+    missing_root = tmp_path / "missing-publication"
+    missing_root.mkdir()
+    with pytest.raises(STATE.CloseoutStateError, match="attempted publication"):
+        STATE.publish_consumed_incomplete(
+            _boundary(missing_root),
+            missing_publication,
+            Store(),
+            phase="DUAL_LOCK_RELEASE_RECEIPT_FAILED_OR_UNCERTAIN",
+            failure_record={"code": "LATE", "detail": "expected"},
+            external_joins={
+                "child_audit_identity": _identity("child-audit"),
+                "outer_terminal_identity": _identity("outer-terminal"),
+            },
         )
 
 
@@ -4355,13 +3344,11 @@ def test_fixed_campaign_passes_exact_guardian_allowlist_and_unique_arm_contexts(
     def validate_resource(
         path: Path | str,
         *,
-        authority_context: Mapping[str, object],
         lock_identities: list[dict[str, object]],
         observation_context: dict[str, object],
         allowed_same_uid_processes: list[dict[str, int]],
     ) -> dict[str, object]:
         assert path == str(tmp_path)
-        assert authority_context["campaign_dir"] == str(tmp_path)
         assert lock_identities == locks
         assert allowed_same_uid_processes == [supervisor, actor]
         resource_calls.append(copy.deepcopy(observation_context))
@@ -4462,7 +3449,7 @@ def test_fixed_campaign_passes_exact_guardian_allowlist_and_unique_arm_contexts(
     )
 
 
-def test_arm_prelaunch_v3_replays_exact_post_lock_resource_admission(
+def test_arm_prelaunch_v2_replays_exact_post_lock_resource_admission(
     tmp_path: Path,
 ) -> None:
     boundary = _boundary(tmp_path)
@@ -4564,40 +3551,6 @@ def test_arm_prelaunch_v3_replays_exact_post_lock_resource_admission(
     )
     assert checked["resource_admission"] == admission
 
-    current_receipt = copy.deepcopy(store.receipt)
-    prior_request = copy.deepcopy(request)
-    prior_request["schema_version"] = "noncert-cuts-ab16-formal-arm-prelaunch-v2"
-    with pytest.raises(HELPER.OuterCloseoutError, match="receipt drifted"):
-        HELPER.validate_arm_prelaunch_receipt(
-            boundary,
-            store,
-            prior_request,
-            _identity("request"),
-            tmp_path / "receipt.json",
-            expected_allowed_same_uid_processes=[
-                {"pid": 401, "starttime": 501}
-            ],
-            expected_resource_observation_context=admission["observation_context"],
-        )
-
-    store.receipt = copy.deepcopy(current_receipt)
-    store.receipt["schema_version"] = (
-        "noncert-cuts-ab16-formal-arm-prelaunch-v2"
-    )
-    with pytest.raises(HELPER.OuterCloseoutError, match="receipt drifted"):
-        HELPER.validate_arm_prelaunch_receipt(
-            boundary,
-            store,
-            request,
-            _identity("request"),
-            tmp_path / "receipt.json",
-            expected_allowed_same_uid_processes=[
-                {"pid": 401, "starttime": 501}
-            ],
-            expected_resource_observation_context=admission["observation_context"],
-        )
-
-    store.receipt = current_receipt
     store.receipt = copy.deepcopy(store.receipt)
     store.receipt["resource_admission"]["lock_check"]["identities"][0]["inode"] += 1
     with pytest.raises(HELPER.OuterCloseoutError, match="resource admission drifted"):
@@ -4933,8 +3886,7 @@ def test_arm_prelaunch_lock_mismatch_fails_before_receipt_publication(
 
 def test_normal_closeout_has_latch_checks_at_every_late_effect_boundary() -> None:
     normal = inspect.getsource(FORMAL._publish_normal_closeout)
-    release = inspect.getsource(FORMAL._release_guardian_and_raw_locks)
-    reference = inspect.getsource(FORMAL._complete_reference_and_final_success)
+    release = inspect.getsource(FORMAL._release_guardian_and_locks)
     driver = inspect.getsource(FORMAL.run_formal_campaign)
     for phase in (
         "normal child cleanup replay",
@@ -4943,6 +3895,9 @@ def test_normal_closeout_has_latch_checks_at_every_late_effect_boundary() -> Non
         "outer scoped stop/reset",
         "observer receipt publication",
         "pre-Unref cleanup receipt publication",
+        "exact-once RefUnit Unref/close",
+        "post-Unref absence wait",
+        "post-Unref absence receipt publication",
     ):
         assert f'phase="{phase}"' in normal
     for phase in (
@@ -4951,23 +3906,14 @@ def test_normal_closeout_has_latch_checks_at_every_late_effect_boundary() -> Non
         "guardian control connection close",
         "guardian terminal absence wait",
         "guardian absence receipt publication",
-        "supervisor exact-once raw lock release",
-        "supervisor raw lock-release receipt publication",
+        "supervisor exact-once lock release",
+        "dual-lock-release receipt publication",
     ):
         assert f'phase="{phase}"' in release
-    for phase in (
-        "exact-once RefUnit Unref with connection retained",
-        "post-Unref unit cgroup and PID absence wait",
-        "post-Unref absence receipt publication",
-        "same-connection manager client and library verification",
-        "formal-root closure and dual outside replay",
-    ):
-        assert f'phase="{phase}"' in reference
     assert 'phase="detached substantive success verifier launch"' in driver
     assert (
         driver.index("_run_detached_success(")
-        < driver.index("_release_guardian_and_raw_locks(")
-        < driver.index("_complete_reference_and_final_success(")
+        < driver.index("_release_guardian_and_locks(")
     )
     assert 'phase="VERIFIED supervisor return"' in driver
 
@@ -4976,6 +3922,7 @@ def test_normal_closeout_has_latch_checks_at_every_late_effect_boundary() -> Non
     "boundary_name",
     [
         "after-child-audit",
+        "before-unref",
         "before-guardian-close",
         "before-supervisor-lock-release",
         "before-detached-verifier",
@@ -4989,7 +3936,7 @@ def test_latched_termination_stops_each_late_success_side_effect(
     events: list[str] = []
     latch = SimpleNamespace(records=[])
 
-    if boundary_name == "after-child-audit":
+    if boundary_name in {"after-child-audit", "before-unref"}:
         state = FORMAL.SupervisorState()
         state.selection_identity = _identity("selection")
         state.selection = {
@@ -5029,7 +3976,11 @@ def test_latched_termination_stops_each_late_success_side_effect(
         state.attempt.acquire_identity = _identity("acquisition")
         state.attempt.barrier_identity = _identity("barrier")
         original = FORMAL._normal_closeout_checkpoint
-        target = "outer stable terminal wait"
+        target = (
+            "outer stable terminal wait"
+            if boundary_name == "after-child-audit"
+            else "exact-once RefUnit Unref/close"
+        )
 
         def checkpoint(
             checked_state: Any,
@@ -5098,6 +4049,18 @@ def test_latched_termination_stops_each_late_success_side_effect(
             or _identity(key),
         )
 
+        def unref(*_args: object, **_kwargs: object) -> object:
+            events.append("unref")
+            raise AssertionError("latched closeout reached Unref")
+
+        monkeypatch.setattr(FORMAL.closeout_state, "finalize_reference_once", unref)
+        monkeypatch.setattr(
+            FORMAL,
+            "_release_guardian_and_locks",
+            lambda **_kwargs: (_ for _ in ()).throw(
+                AssertionError("latched closeout reached guardian release")
+            ),
+        )
         with pytest.raises(
             FORMAL.IrreversibleFormalFailure,
             match="termination signal latched",
@@ -5115,7 +4078,11 @@ def test_latched_termination_stops_each_late_success_side_effect(
                 latch=latch,  # type: ignore[arg-type]
                 controller_identity=_identity("controller"),
             )
-        assert events == ["child-audit"]
+        if boundary_name == "after-child-audit":
+            assert events == ["child-audit"]
+        else:
+            assert "publish:pre_unref_cleanup" in events
+            assert "unref" not in events
         return
 
     if boundary_name in {
@@ -5130,13 +4097,12 @@ def test_latched_termination_stops_each_late_success_side_effect(
                     "dual_lock_release": str(tmp_path / "dual.json"),
                     "guardian_absence": str(tmp_path / "guardian-absence.json"),
                     "guardian_lock_close": str(tmp_path / "guardian-close.json"),
-                    "supervisor_raw_lock_release": str(tmp_path / "raw-lock.json"),
                 }
             }
         }
         state.ledger = _frozen_ledger()
-        state.pre_unref_identity = _identity("pre-unref")
-        state.attempt.pre_unref_cleanup_identity = state.pre_unref_identity
+        state.post_unref_identity = _identity("post-unref")
+        state.attempt.post_unref_absence_identity = state.post_unref_identity
         state.detached_success_identity = _identity("detached-success")
         state.attempt.detached_success_verifier_attempted = True
         state.attempt.detached_success_verifier_return = {
@@ -5172,7 +4138,7 @@ def test_latched_termination_stops_each_late_success_side_effect(
         def post_checkpoint(checked_latch: Any, *, phase: str) -> None:
             if (
                 boundary_name == "before-supervisor-lock-release"
-                and phase == "supervisor exact-once raw lock release"
+                and phase == "supervisor exact-once lock release"
             ):
                 checked_latch.records.append({"signal": 15})
             original_post(checked_latch, phase=phase)
@@ -5183,7 +4149,7 @@ def test_latched_termination_stops_each_late_success_side_effect(
                 "errors": [],
                 "frozen_ledger": state.ledger,
                 "outcome": "SUCCESS_CANDIDATE",
-                "schema_version": FORMAL.success_verifier.GUARDIAN_LOCK_CLOSE_SCHEMA,
+                "schema_version": FORMAL.guardian.GUARDIAN_LOCK_CLOSE_SCHEMA,
                 "status": "GUARDIAN_COPIES_CLOSED",
                 "success_eligible": True,
             }
@@ -5248,7 +4214,7 @@ def test_latched_termination_stops_each_late_success_side_effect(
             FORMAL.IrreversibleFormalFailure,
             match="termination signal latched",
         ):
-            FORMAL._release_guardian_and_raw_locks(
+            FORMAL._release_guardian_and_locks(
                 context={
                     "campaign_root_identity": _identity("root"),
                     "manager_epoch": {},
@@ -5578,7 +4544,7 @@ class _DriverHost:
         }
 
 
-def test_failure_terminal_order_is_detached_guardian_raw_unref_then_join(
+def test_failure_terminal_order_is_detached_then_release_then_join(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -5587,7 +4553,12 @@ def test_failure_terminal_order_is_detached_guardian_raw_unref_then_join(
     state.selection_identity = _identity("selection")
     state.attempt.selection_identity = state.selection_identity
 
-    host = _DriverHost(None, None)
+    class Host(_DriverHost):
+        def release_locks_once(self) -> dict[str, object]:
+            events.append("release")
+            return super().release_locks_once()
+
+    host = Host(None, None)
     detached_identity = _identity("detached-incomplete")
     failure_identity = _identity("failure-pre-release")
     guardian_absence_identity = _identity("guardian-absence")
@@ -5611,37 +4582,7 @@ def test_failure_terminal_order_is_detached_guardian_raw_unref_then_join(
         events.append("terminal")
         return terminal_identity
 
-    def raw(**kwargs: object) -> dict[str, object]:
-        events.append("raw-release")
-        host.locks_released = True
-        state.attempt.lock_release_attempted = True
-        state.attempt.lock_release_return = {
-            "lock_identities": copy.deepcopy(host.lock_identities),
-            "released": True,
-        }
-        identity = _identity("raw-release")
-        state.attempt.supervisor_raw_lock_release_identity = identity
-        state.supervisor_raw_lock_release_identity = identity
-        return {
-            "lock_identities": copy.deepcopy(host.lock_identities),
-            "lock_release_effect": state.attempt.lock_release_return,
-            "supervisor_raw_lock_release_identity": identity,
-        }
-
-    def reference(**_kwargs: object) -> dict[str, object]:
-        events.append("reference")
-        return {
-            "kind": "NO_REFERENCE_OPENED",
-            "post_unref_absence_identity": "absent",
-            "reference_connection_close_identity": "absent",
-            "reference_release_identity": "absent",
-            "reference_terminal_identity": "absent",
-            "uncertainty_terminal": "absent",
-        }
-
     monkeypatch.setattr(FORMAL, "_run_detached_incomplete", detached)
-    monkeypatch.setattr(FORMAL, "_publish_failure_raw_lock_release", raw)
-    monkeypatch.setattr(FORMAL, "_failure_reference_completion", reference)
     monkeypatch.setattr(FORMAL, "_publish_failure_terminal_release", terminal)
     result = FORMAL._complete_pre_release_failure(  # noqa: SLF001
         boundary=SimpleNamespace(formal_dir=tmp_path),
@@ -5651,19 +4592,12 @@ def test_failure_terminal_order_is_detached_guardian_raw_unref_then_join(
         host=host,  # type: ignore[arg-type]
         phase="SELECTION_RECORDED_OUTER_NOT_LAUNCHED",
         lock_identities=host.lock_identities,
+        guardian_absence_identity=guardian_absence_identity,
         failure_pre_release_identity=failure_identity,
-        guardian_absence_callback=lambda: (
-            events.append("guardian") or guardian_absence_identity
-        ),
     )
 
-    assert events == [
-        "detached",
-        "guardian",
-        "raw-release",
-        "reference",
-        "terminal",
-    ]
+    assert events == ["detached", "release", "terminal"]
+    assert host.release_count == 1
     assert state.attempt.lock_release_attempted is True
     assert state.attempt.lock_release_return == result["lock_release"]
     assert (
@@ -5672,15 +4606,14 @@ def test_failure_terminal_order_is_detached_guardian_raw_unref_then_join(
     )
 
 
-def test_post_raw_failure_uses_existing_detached_and_never_replays(
+def test_post_release_failure_uses_existing_detached_and_never_replays(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     state = FORMAL.SupervisorState()
     state.selection_identity = _identity("selection")
     state.selection = {"lock_identities": _lock_evidence()}
     state.detached_success_identity = _identity("detached-success")
-    state.guardian_absence_identity = _identity("guardian-absence")
-    state.supervisor_raw_lock_release_identity = _identity("raw-release")
+    state.dual_release_identity = _identity("dual-release")
     state.child_audit_identity = _identity("child-audit")
     state.outer_terminal_identity = _identity("outer-terminal")
     state.attempt.lock_release_attempted = True
@@ -5692,6 +4625,11 @@ def test_post_raw_failure_uses_existing_detached_and_never_replays(
     host.locks_released = True
     events: list[str] = []
 
+    monkeypatch.setattr(
+        FORMAL,
+        "_failure_phase",
+        lambda _state: "FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN",
+    )
     monkeypatch.setattr(
         STATE,
         "publish_consumed_incomplete",
@@ -5705,36 +4643,17 @@ def test_post_raw_failure_uses_existing_detached_and_never_replays(
         assert kwargs["detached_substantive_identity"] == (
             state.detached_success_identity
         )
-        assert kwargs["detached_substantive_kind"] == "success_v3"
+        assert kwargs["detached_substantive_kind"] == "pre_release_success_v2"
         assert kwargs["failure_pre_release_identity"] == "absent"
-        assert kwargs["guardian_absence_identity"] == (
-            state.guardian_absence_identity
-        )
-        assert kwargs["supervisor_raw_lock_release_identity"] == (
-            state.supervisor_raw_lock_release_identity
+        assert kwargs["terminal_predecessor_identity"] == (
+            state.dual_release_identity
         )
         return _identity("failure-terminal")
 
     monkeypatch.setattr(FORMAL, "_publish_failure_terminal_release", terminal)
-    monkeypatch.setattr(
-        FORMAL,
-        "_reference_completion_snapshot",
-        lambda _state: {
-            "kind": "CONNECTION_UNCERTAIN",
-            "post_unref_absence_identity": "unrecorded",
-            "reference_connection_close_identity": "unrecorded",
-            "reference_release_identity": "unrecorded",
-            "reference_terminal_identity": "unrecorded",
-            "uncertainty_terminal": {
-                "failure": {"code": "FAULT", "detail": "injected"},
-                "kind": "REFERENCE_TERMINAL_FAILED_OR_UNCERTAIN",
-            },
-        },
-    )
-    result = FORMAL._close_failed_campaign_v4(  # noqa: SLF001
+    result = FORMAL._late_failure_closeout(  # noqa: SLF001
         boundary=SimpleNamespace(),
         context={},
-        admission_identity=_identity("admission"),
         state=state,
         store=SimpleNamespace(),
         host=host,  # type: ignore[arg-type]
@@ -5743,6 +4662,7 @@ def test_post_raw_failure_uses_existing_detached_and_never_replays(
     )
 
     assert events == ["terminal"]
+    assert result["post_release_terminal_only"] is True
     assert result["failure_terminal_release_identity"] == _identity(
         "failure-terminal"
     )
@@ -5777,14 +4697,6 @@ def _patch_driver_shell(
         "campaign_dir": str(tmp_path),
         "campaign_root_identity": _identity("root"),
         "formal_attempt_dir": str(boundary.formal_dir),
-        "formal_receipt_budget_bindings": {
-            str(
-                (tmp_path / "fixture-budgeted-receipt.json").absolute()
-            ): {
-                "artifact_class": "normal",
-                "label": "fixture-budgeted-receipt",
-            }
-        },
         "manager_epoch": {},
         "package_id": "c" * 64,
     }
@@ -5804,14 +4716,12 @@ def _patch_driver_shell(
     def validate_resource(
         path: Path | str,
         *,
-        authority_context: Mapping[str, object],
         lock_identities: list[dict[str, object]],
         observation_context: dict[str, object],
         allowed_same_uid_processes: Sequence[Mapping[str, int]] = (),
     ) -> dict[str, object]:
         events.append("resource")
         assert path == context["campaign_dir"]
-        assert authority_context is context
         assert lock_identities == _lock_evidence()
         assert observation_context == {
             "authority_id": admission_identity["sha256"],
@@ -5847,7 +4757,7 @@ def _patch_driver_shell(
     monkeypatch.setattr(
         FORMAL.closeout_helper,
         "ReceiptStore",
-        lambda **_kwargs: SimpleNamespace(),
+        lambda: SimpleNamespace(),
     )
     _DriverLatch.instances.clear()
     monkeypatch.setattr(
@@ -5871,103 +4781,6 @@ def _patch_driver_shell(
         "boundary": boundary,
         "context": context,
     }
-
-
-def _driver_capabilities(
-    tmp_path: Path,
-    *,
-    terminal_tail: object | None = None,
-) -> FORMAL.FormalSupervisorCapabilities:
-    if terminal_tail is None:
-        terminal_tail = SimpleNamespace(
-            prepare_closure=lambda **_kwargs: {},
-            bind_closure_process_baseline=lambda *_args, **_kwargs: {},
-            publish_disarm_intent=lambda **_kwargs: {},
-            disarm_recovery_once=lambda **_kwargs: {},
-            prove_recovery_absence=lambda **_kwargs: {},
-            retire_broker_once=lambda **_kwargs: {},
-            close_root_once=lambda **_kwargs: {},
-            replay_closed_root=lambda **_kwargs: {},
-            publish_final_release=lambda *_args, **_kwargs: {},
-            prove_final_release_absence=lambda **_kwargs: {},
-        )
-    backend = SimpleNamespace(
-        bind_formal_selection=lambda identity: {
-            "selection_identity": dict(identity),
-        },
-        maximum_bytes=lambda *_args, **_kwargs: 4096,
-        publish_bytes=lambda *_args, **_kwargs: {},
-    )
-    return FORMAL.FormalSupervisorCapabilities(
-        budget_backend=backend,
-        receipt_budget_bindings={
-            str((tmp_path / "fixture-budgeted-receipt.json").absolute()): {
-                "artifact_class": "normal",
-                "label": "fixture-budgeted-receipt",
-            }
-        },
-        selection_transition=backend,
-        terminal_tail_port=terminal_tail,
-    )
-
-
-def test_formal_campaign_requires_capability_bundle_before_authority_or_locks(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-) -> None:
-    monkeypatch.setattr(
-        FORMAL,
-        "load_formal_admission",
-        lambda *_args, **_kwargs: pytest.fail(
-            "authority replay ran without a capability bundle"
-        ),
-    )
-    monkeypatch.setattr(
-        FORMAL,
-        "acquire_formal_locks",
-        lambda: pytest.fail("locks acquired without a capability bundle"),
-    )
-    with pytest.raises(
-        FORMAL.FormalCampaignError,
-        match="lacks its package-pinned capability bundle",
-    ):
-        FORMAL.run_formal_campaign(tmp_path)
-
-
-def test_formal_campaign_rejects_receipt_binding_drift_before_locks(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-) -> None:
-    boundary = SimpleNamespace()
-    context = {"formal_receipt_budget_bindings": {}}
-    monkeypatch.setattr(
-        FORMAL,
-        "load_formal_admission",
-        lambda *_args, **_kwargs: (
-            boundary,
-            context,
-            {},
-            _identity("admission"),
-        ),
-    )
-    monkeypatch.setattr(
-        FORMAL.closeout_helper,
-        "ReceiptStore",
-        lambda **_kwargs: SimpleNamespace(),
-    )
-    monkeypatch.setattr(
-        FORMAL,
-        "acquire_formal_locks",
-        lambda: pytest.fail("locks acquired after binding drift"),
-    )
-    with pytest.raises(
-        FORMAL.FormalCampaignError,
-        match="do not equal the package-bound context",
-    ):
-        FORMAL.run_formal_campaign(
-            tmp_path,
-            capabilities=_driver_capabilities(tmp_path),
-        )
 
 
 def test_guardian_launch_rechecks_resources_and_owner_at_selected_effect(
@@ -6121,37 +4934,17 @@ def test_top_level_driver_preserves_the_fixed_success_order_and_release(
         return {"detached_success_identity": identity}
 
     def release(**kwargs: object) -> dict[str, object]:
-        events.append("guardian-raw-lock-release")
+        events.append("guardian-lock-release")
         host = kwargs["host"]
         assert isinstance(host, _DriverHost)
         assert host.locks_released is False
-        effect = host.release_locks_once()
-        return {
-            "lock_identities": _lock_evidence(),
-            "lock_release_effect": effect,
-            "supervisor_raw_lock_release_identity": _identity("raw-release"),
-        }
-
-    def complete(**kwargs: object) -> dict[str, object]:
-        events.append("reference-close-final-join")
-        host = kwargs["host"]
-        assert isinstance(host, _DriverHost)
-        assert host.locks_released is True
-        assert kwargs["lock_identities"] == _lock_evidence()
+        host.release_locks_once()
         return {"dual_lock_release_identity": _identity("dual")}
 
     monkeypatch.setattr(FORMAL, "_run_detached_success", detached_success)
-    monkeypatch.setattr(FORMAL, "_release_guardian_and_raw_locks", release)
-    monkeypatch.setattr(
-        FORMAL,
-        "_complete_reference_and_final_success",
-        complete,
-    )
+    monkeypatch.setattr(FORMAL, "_release_guardian_and_locks", release)
 
-    result = FORMAL.run_formal_campaign(
-        tmp_path,
-        capabilities=_driver_capabilities(tmp_path),
-    )
+    result = FORMAL.run_formal_campaign(tmp_path)
 
     assert result["outcome"] == "VERIFIED"
     assert events == [
@@ -6167,475 +4960,10 @@ def test_top_level_driver_preserves_the_fixed_success_order_and_release(
         "campaign",
         "normal-closeout",
         "detached-success",
-        "guardian-raw-lock-release",
-        "reference-close-final-join",
+        "guardian-lock-release",
     ]
     assert len(_DriverLatch.instances) == 1
     assert _DriverLatch.instances[0].installed is True
-    assert _DriverLatch.instances[0].restored is True
-
-
-def test_top_level_selected_path_runs_real_same_connection_refunit_tail(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-) -> None:
-    """Prove the production driver reaches the real prospective RefUnit tail."""
-
-    events, fixture = _patch_driver_shell(monkeypatch, tmp_path)
-    boundary = fixture["boundary"]
-    context = fixture["context"]
-    assert isinstance(boundary, SimpleNamespace)
-    assert isinstance(context, dict)
-    boundary.formal_dir.mkdir()
-    boundary.root = {
-        "manager_epoch": {
-            "boot_id": "b" * 32,
-            "dbus_unique_owner": ":1.42",
-        },
-        "package": {"package_id": "c" * 64},
-    }
-    boundary.context = {
-        "campaign_module": Campaign,
-        "root_identity": context["campaign_root_identity"],
-    }
-    context["manager_epoch"] = boundary.root["manager_epoch"]
-    context["formal_final_release_paths"] = {
-        "incomplete": str(tmp_path / "failure-terminal-release.json"),
-        "success": str(tmp_path / "dual-lock-release.json"),
-    }
-    store = Store()
-    reference = FakeReference()
-    monkeypatch.setattr(
-        FORMAL.closeout_helper,
-        "ReceiptStore",
-        lambda **_kwargs: store,
-    )
-
-    receipt_paths = {
-        name: str(boundary.formal_dir / f"{name.replace('_', '-')}.json")
-        for name in (
-            "dual_lock_release",
-            "post_unref_absence",
-            "reference_connection_close",
-            "reference_release",
-            "reference_terminal",
-        )
-    }
-    selection_identity = _identity("selection")
-    selection: dict[str, object] = {
-        "lock_identities": _lock_evidence(),
-        "outer_spec": {
-            "receipt_paths": receipt_paths,
-            "unit_name": "outer.service",
-        },
-    }
-    context["outer_spec"] = selection["outer_spec"]
-    guardian_session = SimpleNamespace()
-    marker: dict[str, object] = {"consumed": True}
-    marker_identity = _identity("marker")
-    captured_state: dict[str, FORMAL.SupervisorState] = {}
-    final_records: dict[str, dict[str, object]] = {}
-
-    class TerminalTail:
-        def __init__(self) -> None:
-            self.terminal_join_sha256: str | None = None
-
-        def bind_closure_process_baseline(
-            self,
-            resource_admission_receipt: Mapping[str, object],
-        ) -> Mapping[str, object]:
-            events.append("tail-bind-baseline")
-            return dict(resource_admission_receipt)
-
-        def prepare_closure(
-            self,
-            *,
-            branch: str,
-            terminal_join_sha256: str,
-        ) -> dict[str, object]:
-            events.append("tail-prepare")
-            self.terminal_join_sha256 = terminal_join_sha256
-            return {
-                "branch": branch,
-                "state": "CLOSURE_AND_FINAL_RELEASE_CONTROL_PREPARED",
-                "terminal_join_sha256": terminal_join_sha256,
-            }
-
-        def publish_disarm_intent(
-            self,
-            *,
-            terminal_join_sha256: str,
-        ) -> dict[str, object]:
-            events.append("tail-disarm-intent")
-            return {
-                "state": "RECOVERY_DISARM_INTENT_PUBLISHED",
-                "terminal_join_sha256": terminal_join_sha256,
-            }
-
-        def disarm_recovery_once(
-            self,
-            *,
-            disarm_intent: Mapping[str, object],
-        ) -> dict[str, object]:
-            events.append("tail-disarm")
-            return {
-                "disarm_intent": dict(disarm_intent),
-                "state": "RECOVERY_DISARMED_ACKNOWLEDGED",
-            }
-
-        def prove_recovery_absence(
-            self,
-            *,
-            disarm_observation: Mapping[str, object],
-        ) -> dict[str, object]:
-            events.append("tail-recovery-absence")
-            return {
-                "disarm_observation": dict(disarm_observation),
-                "state": "RECOVERY_ABSENT_TAKEOVER_LOCK_RELEASED",
-            }
-
-        def retire_broker_once(
-            self,
-            *,
-            recovery_absence: Mapping[str, object],
-        ) -> dict[str, object]:
-            events.append("tail-broker-absence")
-            return {
-                "recovery_absence": dict(recovery_absence),
-                "state": "BROKER_ABSENT_NO_ROOT_WRITERS",
-            }
-
-        def close_root_once(
-            self,
-            *,
-            broker_absence: Mapping[str, object],
-            terminal_join_sha256: str,
-        ) -> dict[str, object]:
-            events.append("tail-close-root")
-            return {
-                "broker_absence": dict(broker_absence),
-                "formal_manifest_identity": _identity("formal-manifest"),
-                "state": "ROOT_CLOSED_NO_WRITERS",
-                "terminal_join_sha256": terminal_join_sha256,
-            }
-
-        def replay_closed_root(
-            self,
-            *,
-            implementation: str,
-        ) -> dict[str, object]:
-            events.append(f"tail-replay-{implementation}")
-            schema, implementation_name, source_tag = {
-                "primary": (
-                    FORMAL.PRIMARY_FORMAL_ROOT_REPLAY_SCHEMA,
-                    "package-pinned-primary-v1",
-                    "primary-replay-source",
-                ),
-                "alternate": (
-                    FORMAL.ALTERNATE_FORMAL_ROOT_REPLAY_SCHEMA,
-                    "package-pinned-stdlib-alternate-v1",
-                    "alternate-replay-source",
-                ),
-            }[implementation]
-            source_raw = source_tag.encode()
-            # The closure join is supplied to prepare_closure first and is
-            # retained by this deterministic zero-authority test port.
-            assert self.terminal_join_sha256 is not None
-            result = {
-                "actor_absence": {
-                    "broker_absent": True,
-                    "closure_actor_absent": True,
-                    "recovery_absent": True,
-                },
-                "authority": {
-                    "changes_certified_exact": False,
-                    "changes_cut_state": False,
-                    "changes_lower_bound": False,
-                    "changes_production": False,
-                    "changes_upper_bound": False,
-                    "research_only": True,
-                },
-                "authority_scope": FORMAL.AUTHORITY_SCOPE,
-                "formal_manifest_identity": _identity("formal-manifest"),
-                "formal_root": str(boundary.formal_dir),
-                "implementation": implementation_name,
-                "manifest_entries_sha256": "e" * 64,
-                "schema_version": schema,
-                "state": "FORMAL_ROOT_CLOSURE_ACCEPTED",
-                "terminal_join_sha256": self.terminal_join_sha256,
-            }
-            receipt = _identity(f"{implementation}-outside-replay")
-            return {
-                "receipt_identity": receipt,
-                "result": result,
-                "source_identity": {
-                    "sha256": hashlib.sha256(source_raw).hexdigest(),
-                    "size_bytes": len(source_raw),
-                },
-            }
-
-        def publish_final_release(
-            self,
-            payload: Mapping[str, object],
-        ) -> dict[str, object]:
-            events.append("tail-final-release")
-            branch = payload["branch"]
-            terminal_record = payload["terminal_record"]
-            assert isinstance(branch, str)
-            assert isinstance(terminal_record, Mapping)
-            final_records[branch] = dict(terminal_record)
-            release_paths = context["formal_final_release_paths"]
-            assert isinstance(release_paths, Mapping)
-            path = release_paths[branch]
-            assert isinstance(path, str)
-            selected = _identity(f"{branch}-final-release")
-            selected["path"] = path
-            return {
-                "branch": branch,
-                "evidence": terminal_record["post_root_closure"],
-                "schema_version": FORMAL.FINAL_RELEASE_RESULT_SCHEMA,
-                "selected_identity": selected,
-                "state": "FINAL_RELEASE_PUBLISHED_UNUSED_SEALED",
-                "unused_staging_identity": {"mode_octal": "0444"},
-            }
-
-        def prove_final_release_absence(
-            self,
-            *,
-            final_release_result: Mapping[str, object],
-        ) -> dict[str, object]:
-            events.append("tail-final-release-absence")
-            return {
-                "final_release_result": dict(final_release_result),
-                "state": "FINAL_RELEASE_ACTOR_ABSENT",
-            }
-
-    terminal_tail = TerminalTail()
-
-    class ReachableHost(_DriverHost):
-        def wait_state(
-            self,
-            *_args: object,
-            **_kwargs: object,
-        ) -> dict[str, object]:
-            assert self.locks_released is True
-            assert reference.events[-1] == "release"
-            events.append("post-unref-absence")
-            return {
-                "cgroup_absent": True,
-                "processes_absent": True,
-                "systemctl": dict(HELPER.ABSENT),
-            }
-
-    monkeypatch.setattr(FORMAL.closeout_helper, "PinnedHost", ReachableHost)
-
-    def start_guardian(**_kwargs: object) -> object:
-        events.append("guardian")
-        return guardian_session
-
-    def create_attempt(
-        **kwargs: object,
-    ) -> tuple[dict[str, object], dict[str, object]]:
-        events.append("attempt")
-        state = kwargs["state"]
-        assert isinstance(state, FORMAL.SupervisorState)
-        captured_state["state"] = state
-        state.attempt.directory_created = True
-        state.attempt.marker_identity = marker_identity
-        return marker, marker_identity
-
-    def acquire_reference(**kwargs: object) -> dict[str, object]:
-        events.append("ref-acquire")
-        state = kwargs["state"]
-        host = kwargs["host"]
-        assert isinstance(state, FORMAL.SupervisorState)
-        assert isinstance(host, ReachableHost)
-        result = _acquire(
-            boundary,
-            state.attempt,
-            store,
-            reference,
-            selection_identity=state.selection_identity,
-            locks=host.lock_evidence(),
-        )
-        assert result["kind"] == "RECORDED"
-        return result
-
-    def normal_closeout(**kwargs: object) -> dict[str, object]:
-        events.append("normal-closeout")
-        state = kwargs["state"]
-        assert isinstance(state, FORMAL.SupervisorState)
-        assert reference.events.count("release") == 0
-        state.outer_identity = {
-            "control_group": "/user.slice/outer.service",
-            "invocation_id": "a" * 32,
-            "processes": [{"pid": 401, "starttime": 501}],
-            "unit_name": "outer.service",
-        }
-        state.observer_identity = _identity("observer")
-        state.pre_unref_identity = _identity("pre-unref-cleanup")
-        state.attempt.observer_identity = state.observer_identity
-        state.attempt.pre_unref_cleanup_identity = state.pre_unref_identity
-        return {"status": "PASS"}
-
-    def detached_success(**kwargs: object) -> dict[str, object]:
-        events.append("detached-success")
-        state = kwargs["state"]
-        assert isinstance(state, FORMAL.SupervisorState)
-        assert reference.events.count("release") == 0
-        identity = _identity("detached-success")
-        state.detached_success_identity = identity
-        state.attempt.detached_success_identity = identity
-        return {"detached_success_identity": identity}
-
-    def release_guardian_and_locks(**kwargs: object) -> dict[str, object]:
-        events.append("guardian-absence")
-        state = kwargs["state"]
-        host = kwargs["host"]
-        assert isinstance(state, FORMAL.SupervisorState)
-        assert isinstance(host, ReachableHost)
-        assert reference.events.count("release") == 0
-        state.guardian_close_identity = _identity("guardian-close")
-        state.guardian_absence_identity = _identity("guardian-absence")
-        state.attempt.guardian_close_identity = state.guardian_close_identity
-        state.attempt.guardian_absence_identity = state.guardian_absence_identity
-        lock_effect = host.release_locks_once()
-        state.attempt.lock_release_attempted = True
-        state.attempt.lock_release_return = lock_effect
-        raw_identity = _identity("raw-lock-release")
-        state.attempt.supervisor_raw_lock_release_identity = raw_identity
-        state.supervisor_raw_lock_release_identity = raw_identity
-        events.append("raw-lock-release")
-        return {
-            "guardian_absence_identity": state.guardian_absence_identity,
-            "guardian_lock_close_identity": state.guardian_close_identity,
-            "lock_identities": lock_effect["lock_identities"],
-            "lock_release_effect": lock_effect,
-            "supervisor_raw_lock_release_identity": raw_identity,
-        }
-
-    monkeypatch.setattr(FORMAL, "start_guardian", start_guardian)
-    monkeypatch.setattr(FORMAL, "_create_consumed_attempt", create_attempt)
-
-    def select(**_kwargs: object) -> tuple[dict[str, object], dict[str, object]]:
-        events.append("selection")
-        return selection, selection_identity
-
-    monkeypatch.setattr(
-        FORMAL,
-        "wait_and_validate_selection",
-        select,
-    )
-
-    def record_stage(
-        *_args: object,
-        _event: str,
-        **_kwargs: object,
-    ) -> dict[str, object]:
-        events.append(_event)
-        return {"status": "PASS"}
-
-    for name, event in (
-        ("activate_guardian", "activate"),
-        ("_publish_outer_prelaunch", "outer-prelaunch"),
-        ("_launch_outer", "outer-launch"),
-    ):
-        monkeypatch.setattr(
-            FORMAL,
-            name,
-            lambda *args, _event=event, **kwargs: record_stage(
-                *args,
-                _event=_event,
-                **kwargs,
-            ),
-        )
-    monkeypatch.setattr(FORMAL, "_acquire_outer_reference", acquire_reference)
-    controller_identity = _identity("controller")
-
-    def service_campaign(
-        **_kwargs: object,
-    ) -> tuple[dict[str, object], dict[str, object]]:
-        events.append("campaign")
-        return {"status": "PASS"}, controller_identity
-
-    monkeypatch.setattr(
-        FORMAL,
-        "_service_fixed_campaign",
-        service_campaign,
-    )
-    monkeypatch.setattr(FORMAL, "_publish_normal_closeout", normal_closeout)
-    monkeypatch.setattr(FORMAL, "_run_detached_success", detached_success)
-    monkeypatch.setattr(
-        FORMAL,
-        "_release_guardian_and_raw_locks",
-        release_guardian_and_locks,
-    )
-
-    result = FORMAL.run_formal_campaign(
-        tmp_path,
-        capabilities=_driver_capabilities(
-            tmp_path,
-            terminal_tail=terminal_tail,
-        ),
-    )
-
-    assert result["outcome"] == "VERIFIED"
-    assert reference.events == [
-        "acquire",
-        "verify",
-        "release",
-        "verify_released",
-        "close",
-    ]
-    assert events.index("detached-success") < events.index("guardian-absence")
-    assert events.index("raw-lock-release") < events.index("post-unref-absence")
-    assert store.records["reference-release.json"]["connection_retained"] is True
-    assert (
-        store.records["reference-terminal.json"]["connection_verification"][
-            "client_unique_name"
-        ]
-        == reference.client
-    )
-    assert (
-        store.records["reference-terminal.json"]["connection_verification"][
-            "manager_owner"
-        ]
-        == reference.owner
-    )
-    assert (
-        store.records["reference-connection-close.json"][
-            "connection_close_attempts"
-        ]
-        == 1
-    )
-    assert final_records["success"]["terminal_join"] == {
-        "broker_absent_before_manifest": True,
-        "detached_success_before_guardian_close": True,
-        "formal_root_closed_before_outside_replays": True,
-        "guardian_absence_before_supervisor_release": True,
-        "locks_released_after_substantive_verification": True,
-        "outside_replays_before_final_join": True,
-        "post_unref_absence_before_reference_terminal": True,
-        "raw_lock_release_before_unref": True,
-        "recovery_disarmed_before_manifest": True,
-        "reference_connection_close_before_final_join": True,
-        "reference_terminal_before_connection_close": True,
-    }
-    assert events.index("post-unref-absence") < events.index("tail-prepare")
-    assert events[-10:] == [
-        "tail-prepare",
-        "tail-disarm-intent",
-        "tail-disarm",
-        "tail-recovery-absence",
-        "tail-broker-absence",
-        "tail-close-root",
-        "tail-replay-primary",
-        "tail-replay-alternate",
-        "tail-final-release",
-        "tail-final-release-absence",
-    ]
-    assert captured_state["state"].attempt.release_attempted is True
-    assert captured_state["state"].attempt.close_attempted is True
     assert _DriverLatch.instances[0].restored is True
 
 
@@ -6654,13 +4982,11 @@ def test_top_level_post_lock_resource_failure_releases_once_before_side_effects(
     def fail_resource(
         _path: Path | str,
         *,
-        authority_context: Mapping[str, object],
         lock_identities: list[dict[str, object]],
         observation_context: dict[str, object],
         allowed_same_uid_processes: Sequence[Mapping[str, int]] = (),
     ) -> dict[str, object]:
         events.append("resource")
-        assert authority_context is fixture["context"]
         assert lock_identities == _lock_evidence()
         assert observation_context["kind"] == "FORMAL_INITIAL_POST_LOCK"
         assert allowed_same_uid_processes == [
@@ -6687,10 +5013,7 @@ def test_top_level_post_lock_resource_failure_releases_once_before_side_effects(
         FORMAL.FormalCampaignError,
         match="fixture post-lock resource failure",
     ):
-        FORMAL.run_formal_campaign(
-            tmp_path,
-            capabilities=_driver_capabilities(tmp_path),
-        )
+        FORMAL.run_formal_campaign(tmp_path)
 
     assert events == ["locks", "resource"]
     assert len(hosts) == 1
@@ -6727,13 +5050,11 @@ def test_top_level_lock_identity_drift_across_resource_check_fails_closed(
     def resource(
         _path: Path | str,
         *,
-        authority_context: Mapping[str, object],
         lock_identities: list[dict[str, object]],
         observation_context: dict[str, object],
         allowed_same_uid_processes: Sequence[Mapping[str, int]] = (),
     ) -> dict[str, object]:
         events.append("resource")
-        assert authority_context is fixture["context"]
         assert lock_identities == _lock_evidence()
         assert observation_context["kind"] == "FORMAL_INITIAL_POST_LOCK"
         assert allowed_same_uid_processes == [
@@ -6753,10 +5074,7 @@ def test_top_level_lock_identity_drift_across_resource_check_fails_closed(
         FORMAL.FormalCampaignError,
         match="lock identities drifted across initial resource admission",
     ):
-        FORMAL.run_formal_campaign(
-            tmp_path,
-            capabilities=_driver_capabilities(tmp_path),
-        )
+        FORMAL.run_formal_campaign(tmp_path)
 
     assert events == ["locks", "resource"]
     assert len(hosts) == 1
@@ -6804,7 +5122,7 @@ def test_top_level_driver_routes_marker_boundary_failure_without_later_effects(
             "phase": "DIRECTORY_CREATED_MARKER_UNRECORDED",
         }
 
-    monkeypatch.setattr(FORMAL, "_close_failed_campaign_v4", close_failed)
+    monkeypatch.setattr(FORMAL, "_close_failed_campaign", close_failed)
     for name in (
         "wait_and_validate_selection",
         "activate_guardian",
@@ -6823,10 +5141,7 @@ def test_top_level_driver_routes_marker_boundary_failure_without_later_effects(
             ),
         )
 
-    result = FORMAL.run_formal_campaign(
-        tmp_path,
-        capabilities=_driver_capabilities(tmp_path),
-    )
+    result = FORMAL.run_formal_campaign(tmp_path)
 
     assert result["outcome"] == "INCOMPLETE"
     assert result["phase"] == "DIRECTORY_CREATED_MARKER_UNRECORDED"

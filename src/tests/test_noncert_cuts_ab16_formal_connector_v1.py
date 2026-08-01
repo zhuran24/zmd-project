@@ -60,75 +60,12 @@ def _identity(root: Path, name: str, token: str = "a") -> dict[str, object]:
     }
 
 
-def _post_root_closure(
-    root: Path,
-    *,
-    branch: str,
-) -> dict[str, object]:
-    def content(tag: str) -> dict[str, object]:
-        raw = tag.encode()
-        return {
-            "sha256": hashlib.sha256(raw).hexdigest(),
-            "size_bytes": len(raw),
-        }
-
-    return {
-        "alternate_replay_identity": content("alternate-replay-result"),
-        "alternate_replay_receipt_identity": _identity(
-            root,
-            "alternate-replay-receipt.json",
-            "a",
-        ),
-        "alternate_replay_source_identity": content(
-            "alternate-replay-source"
-        ),
-        "branch": branch,
-        "closure_result_identity": content("closure-result"),
-        "formal_manifest_identity": _identity(
-            root,
-            "formal-manifest.json",
-            "b",
-        ),
-        "primary_replay_identity": content("primary-replay-result"),
-        "primary_replay_receipt_identity": _identity(
-            root,
-            "primary-replay-receipt.json",
-            "c",
-        ),
-        "primary_replay_source_identity": content(
-            "primary-replay-source"
-        ),
-        "reference_completion_identity": content(
-            "reference-completion"
-        ),
-        "schema_version": (
-            success_verifier.POST_ROOT_CLOSURE_EVIDENCE_SCHEMA
-        ),
-        "state": "CLOSED_ROOT_DUAL_REPLAY_ACCEPTED",
-        "terminal_join_sha256": "d" * 64,
-    }
-
-
 def _mode_identity(
     identity: dict[str, object],
     *,
     mode: int,
 ) -> dict[str, object]:
     return {"mode": mode, **identity}
-
-
-def _write_identity(
-    path: Path,
-    raw: bytes,
-) -> dict[str, object]:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(raw)
-    path.chmod(0o444)
-    return {
-        "path": str(path.absolute()),
-        "sha256": hashlib.sha256(raw).hexdigest(),
-        "size_bytes": len(raw),
-    }
 
 
 def _publisher(
@@ -214,22 +151,16 @@ class FormalFixture:
     lock_identities: list[dict[str, object]]
 
 
-def _formal_fixture(
-    tmp_path: Path,
-    *,
-    formal_root_contract_identity: Mapping[str, object] | None = None,
-    resource_budget_profile_identity: Mapping[str, object] | None = None,
-) -> FormalFixture:
+def _formal_fixture(tmp_path: Path) -> FormalFixture:
     campaign = tmp_path / "campaign"
     formal = campaign / "formal-ab16"
-    formal_artifacts = formal / "artifacts"
-    attempt = formal_artifacts / "formal-attempt-a001"
+    attempt = formal / "formal-attempt-a001"
     snapshot = campaign / "campaign-authority" / "repository-snapshot"
-    admission_path = formal_artifacts / "formal-launch-admission-a001.json"
-    selection_path = attempt / "selection.json"
-    guardian_ready_path = formal_artifacts / "outer-guardian-ready-a001.json"
-    control_socket_path = formal / "control/guardian-control.sock"
-    retired_control_socket_path = formal / "control/guardian-control.sock.retired"
+    admission_path = formal / "formal-admission-a001.json"
+    selection_path = formal / "formal-selection-a001.json"
+    guardian_ready_path = formal / "outer-guardian-ready-a001.json"
+    control_socket_path = formal / "outer-guardian-control.sock"
+    retired_control_socket_path = formal / "outer-guardian-control.sock.retired"
 
     campaign_root = _identity(campaign, "campaign-root.json", "1")
     gate1_selection = _identity(campaign, "gate1-v4/selection.json", "2")
@@ -252,19 +183,6 @@ def _formal_fixture(
         campaign,
         "campaign-authority/package/payload/tool.ab16_authority_v2.py",
         "a",
-    )
-    native_helper_identity = _identity(
-        campaign,
-        "campaign-authority/package/payload/system.native_budget_helper.bin",
-        "5",
-    )
-    native_helper_wrapper_identity = _identity(
-        campaign,
-        (
-            "campaign-authority/package/payload/"
-            "tool.ab16_native_budget_helper_v1.py"
-        ),
-        "6",
     )
     python_identity = _identity(tmp_path, "platform/python3.13", "b")
     controller_identity = _identity(
@@ -313,14 +231,6 @@ def _formal_fixture(
             loader_identity,
             mode=launch_validator.PACKAGE_PAYLOAD_MODE,
         ),
-        "native_helper": _mode_identity(
-            native_helper_identity,
-            mode=0o500,
-        ),
-        "native_helper_wrapper": _mode_identity(
-            native_helper_wrapper_identity,
-            mode=launch_validator.PACKAGE_PAYLOAD_MODE,
-        ),
         "python": _mode_identity(python_identity, mode=0o555),
     }
     selected_identity_argument = json.dumps(
@@ -337,38 +247,6 @@ def _formal_fixture(
     mechanical_publisher_identity = {
         "sha256": "3" * 64,
         "size_bytes": 37,
-    }
-    broker_actor = {
-        "pid": 811,
-        "pid_starttime": 812,
-        "uid": os.getuid(),
-    }
-    broker_endpoint_identity = {
-        "device": 71,
-        "inode": 72,
-        "mode": 0o600,
-        "path": str(campaign / "control/budget-broker.sock"),
-        "uid": os.getuid(),
-    }
-    selected_fd_transport = {
-        "owner": dict(broker_actor),
-        "roles": {
-            role: {
-                "descriptor": 20 + index,
-                "mode": selected_identities[role]["mode"],
-                "package_path": package_path,
-                "proc_fd_path": f"/proc/{broker_actor['pid']}/fd/{20 + index}",
-                "sha256": selected_identities[role]["sha256"],
-                "size_bytes": selected_identities[role]["size_bytes"],
-            }
-            for index, (role, package_path) in enumerate(
-                sorted(
-                    launch_validator.SELECTED_FD_TRANSPORT_PACKAGE_PATHS.items()
-                ),
-                start=1,
-            )
-        },
-        "schema_version": launch_validator.SELECTED_FD_TRANSPORT_SCHEMA,
     }
 
     receipt_paths = {
@@ -387,9 +265,6 @@ def _formal_fixture(
     outer_spec = {
         "arm_prelaunch_paths": arm_prelaunch_paths,
         "barrier_path": str(attempt / "outer-barrier-release.json"),
-        "budget_broker_endpoint_identity": dict(
-            broker_endpoint_identity
-        ),
         "child_audit_path": child_audit,
         "controller_identity": controller_identity,
         "gate1_prelaunch_ownership_path": gate1_prelaunch,
@@ -415,14 +290,10 @@ def _formal_fixture(
             "--formal-selection",
             str(selection_path),
         ],
-        "selected_fd_transport": dict(selected_fd_transport),
         "unit_name": "ab16-formal-outer-a001.service",
         "working_directory": str(snapshot),
     }
     guardian_spec = {
-        "budget_broker_endpoint_identity": dict(
-            broker_endpoint_identity
-        ),
         "resource_contract": dict(launch_validator.OUTER_RESOURCE_CONTRACT),
         "selected_byte_argv": [
             "/proc/self/fd/3",
@@ -446,7 +317,6 @@ def _formal_fixture(
             "--ready-output",
             str(guardian_ready_path),
         ],
-        "selected_fd_transport": dict(selected_fd_transport),
         "unit_name": "ab16-outer-guardian-a001.service",
         "working_directory": str(snapshot),
     }
@@ -456,99 +326,15 @@ def _formal_fixture(
         "manager_invocation_id": "c" * 32,
         "manager_pid": 700,
     }
-    runtime_artifacts = {
-        "formal_budget_handoff_identity": _write_identity(
-            formal_artifacts / "budget-handoff.json",
-            b"formal-budget-handoff",
-        ),
-        "formal_root_contract_identity": (
-            dict(formal_root_contract_identity)
-            if formal_root_contract_identity is not None
-            else _write_identity(
-                formal_artifacts / "formal-root-budget-contract.json",
-                b"formal-root-contract",
-            )
-        ),
-        "package_independent_replay_identity": _write_identity(
-            campaign / "package-independent-replay.json",
-            b"package-independent-replay",
-        ),
-    }
-    formal_budget_runtime = {
-        "broker_actor_identity": dict(broker_actor),
-        "broker_endpoint_identity": dict(broker_endpoint_identity),
-        "broker_nonce": "a" * 64,
-        **runtime_artifacts,
-        "recovery_actor_identity": {
-            "pid": 813,
-            "pid_starttime": 814,
-            "uid": os.getuid(),
-        },
-        "recovery_extent_identity": {
-            "sha256": hashlib.sha256(b"recovery-extent").hexdigest(),
-            "size_bytes": len(b"recovery-extent"),
-        },
-    }
-    calibration_bundles: dict[str, dict[str, object]] = {}
-    for stage in (
-        "FULL_PREFLIGHT",
-        "GATE_B_QUALIFICATION",
-        "FORMAL_ORGANIC_ARM",
-    ):
-        record = {"stage": stage, "status": "FIXTURE_ACCEPTED"}
-        raw = authority.canonical_json(record)
-        identity = _write_identity(
-            campaign / "calibration" / f"{stage.lower()}.json",
-            raw,
-        )
-        calibration_bundles[stage] = {
-            "identity": identity,
-            "record": record,
-        }
-    calibration_tool_identities = {
-        role: {
-            "sha256": hashlib.sha256(role.encode()).hexdigest(),
-            "size_bytes": len(role),
-        }
-        for role in (
-            "aggregator",
-            "alternate_replayer",
-            "fd_loader",
-            "observer_harness",
-            "package_verifier",
-            "primary_replayer",
-            "protocol",
-            "runner",
-            "workload",
-        )
-    }
     context = {
         "authority_scope": launch_validator.AUTHORITY_SCOPE,
         "baseline_identity": baseline_identity,
-        "bootstrap_budget_terminal_identity": _identity(
-            campaign,
-            "bootstrap-budget-terminal.json",
-            "7",
-        ),
-        "budget_broker_endpoint_identity": dict(
-            broker_endpoint_identity
-        ),
-        "calibration_tool_content_identities": (
-            calibration_tool_identities
-        ),
         "campaign_dir": str(campaign),
         "campaign_root_identity": campaign_root,
         "controller_identity": controller_identity,
         "dual_holder_platform_assumption": launch_validator.DUAL_HOLDER_PLATFORM_ASSUMPTION,
         "formal_admission_path": str(admission_path),
         "formal_attempt_dir": str(attempt),
-        "formal_budget_runtime": formal_budget_runtime,
-        "formal_receipt_budget_bindings": {
-            str(attempt / "attempt-consumption.json"): {
-                "artifact_class": "metadata",
-                "label": "formal attempt consumption",
-            },
-        },
         "formal_loader_identity": loader_identity,
         "formal_launch_owner_driver_identity": owner_driver_identity,
         "formal_orchestrator_identity": formal_orchestrator_identity,
@@ -566,33 +352,17 @@ def _formal_fixture(
         "manager_epoch": manager_epoch,
         "manager_epoch_observation_identity": manager_epoch_observation,
         "mechanical_oexcl_publisher_identity": mechanical_publisher_identity,
-        "native_helper_identity": native_helper_identity,
-        "native_helper_wrapper_identity": (
-            native_helper_wrapper_identity
-        ),
         "outer_spec": outer_spec,
         "package_id": "d" * 64,
         "package_manifest_identity": package_manifest,
         "package_seal_identity": package_seal,
         "python_identity": python_identity,
         "repository_head": "e" * 40,
-        "resource_budget_profile_identity": (
-            dict(resource_budget_profile_identity)
-            if resource_budget_profile_identity is not None
-            else _mode_identity(
-                _identity(campaign, "resource-budget-profile.json", "8"),
-                mode=0o444,
-            )
-        ),
-        "resource_calibration_authorization_bundles": (
-            calibration_bundles
-        ),
         "schema_version": launch_validator.FORMAL_CONTEXT_SCHEMA,
         "selected_byte_launch_identity": {
             "sha256": hashlib.sha256(selected_literal_raw).hexdigest(),
             "size_bytes": len(selected_literal_raw),
         },
-        "selected_fd_transport": dict(selected_fd_transport),
         "snapshot_materialization_identity": snapshot_materialization,
         "snapshot_root": str(snapshot),
         "status": "PASS",
@@ -646,11 +416,7 @@ def _formal_fixture(
         "snapshot_root": str(snapshot),
         "status": "ADMITTED",
     }
-    admission_identity = _identity(
-        admission_path.parent,
-        admission_path.name,
-        "2",
-    )
+    admission_identity = _identity(formal, admission_path.name, "2")
 
     lock_identities = [
         {
@@ -702,11 +468,7 @@ def _formal_fixture(
         },
         "supervisor_process_identity": supervisor_process,
     }
-    guardian_ready_identity = _identity(
-        guardian_ready_path.parent,
-        guardian_ready_path.name,
-        "4",
-    )
+    guardian_ready_identity = _identity(formal, guardian_ready_path.name, "4")
 
     attempt_consumption = {
         "authorizations": dict(closeout_state.FALSE_AUTHORIZATIONS),
@@ -809,7 +571,7 @@ def _validate_selection(fixture: FormalFixture) -> dict[str, object]:
     )
 
 
-def test_formal_context_v4_rejects_legacy_and_mixed_orchestrator_identity(
+def test_formal_context_v3_rejects_legacy_and_mixed_orchestrator_identity(
     tmp_path: Path,
 ) -> None:
     fixture = _formal_fixture(tmp_path)
@@ -817,14 +579,6 @@ def test_formal_context_v4_rejects_legacy_and_mixed_orchestrator_identity(
     assert checked["formal_orchestrator_identity"] == (
         fixture.context["formal_orchestrator_identity"]
     )
-
-    prior = dict(fixture.context)
-    prior["schema_version"] = "noncert-cuts-ab16-formal-launch-context-v3"
-    with pytest.raises(
-        launch_validator.FormalLaunchValidationError,
-        match="scalar drifted",
-    ):
-        launch_validator.validate_formal_context(prior)
 
     legacy = dict(fixture.context)
     legacy.pop("formal_orchestrator_identity")
@@ -844,7 +598,7 @@ def test_formal_context_v4_rejects_legacy_and_mixed_orchestrator_identity(
         launch_validator.validate_formal_context(mixed)
 
 
-def test_formal_context_v4_rejects_retirement_path_drift(
+def test_formal_context_v3_rejects_retirement_path_drift(
     tmp_path: Path,
 ) -> None:
     fixture = _formal_fixture(tmp_path)
@@ -861,68 +615,6 @@ def test_formal_context_v4_rejects_retirement_path_drift(
         launch_validator.validate_formal_context(drifted)
 
 
-def test_prospective_formal_launch_schema_matrix_rejects_each_previous_version(
-    tmp_path: Path,
-) -> None:
-    fixture = _formal_fixture(tmp_path)
-
-    admission = deepcopy(fixture.admission)
-    admission["schema_version"] = "noncert-cuts-ab16-formal-launch-admission-v2"
-    with pytest.raises(
-        launch_validator.FormalLaunchValidationError,
-        match="crossed its authority boundary",
-    ):
-        launch_validator.validate_admission(
-            admission,
-            expected_context=fixture.context,
-        )
-
-    guardian_ready = deepcopy(fixture.guardian_ready)
-    guardian_ready["schema_version"] = (
-        "noncert-cuts-ab16-outer-guardian-ready-v1"
-    )
-    with pytest.raises(
-        launch_validator.FormalLaunchValidationError,
-        match="identity/authority drifted",
-    ):
-        launch_validator.validate_guardian_ready(
-            guardian_ready,
-            admission=fixture.admission,
-            admission_identity=fixture.admission_identity,
-            expected_context=fixture.context,
-        )
-
-    consumption = deepcopy(fixture.attempt_consumption)
-    consumption["schema_version"] = (
-        "noncert-cuts-ab16-formal-attempt-consumption-v1"
-    )
-    with pytest.raises(
-        launch_validator.FormalLaunchValidationError,
-        match="crossed its state/claim boundary",
-    ):
-        launch_validator.validate_attempt_consumption(
-            consumption,
-            expected_context=fixture.context,
-        )
-
-    selection = deepcopy(fixture.selection)
-    selection["schema_version"] = "noncert-cuts-ab16-formal-launch-selection-v1"
-    with pytest.raises(
-        launch_validator.FormalLaunchValidationError,
-        match="schema is unsupported",
-    ):
-        launch_validator.validate_selection(
-            selection,
-            admission=fixture.admission,
-            admission_identity=fixture.admission_identity,
-            guardian_ready=fixture.guardian_ready,
-            guardian_ready_identity=fixture.guardian_ready_identity,
-            attempt_consumption=fixture.attempt_consumption,
-            attempt_consumption_identity=fixture.attempt_consumption_identity,
-            expected_context=fixture.context,
-        )
-
-
 def _call_name(node: ast.Call) -> str:
     cursor = node.func
     parts: list[str] = []
@@ -935,10 +627,7 @@ def _call_name(node: ast.Call) -> str:
 
 
 def test_bootstrap_dag_seals_before_materialization_without_packaging_future_receipt() -> None:
-    bootstrap_source = inspect.getsource(
-        bootstrap._bootstrap_campaign_unwrapped  # noqa: SLF001
-    )
-    tree = ast.parse(bootstrap_source)
+    tree = ast.parse(inspect.getsource(bootstrap.bootstrap_campaign))
     calls = sorted(
         ((node.lineno, _call_name(node)) for node in ast.walk(tree) if isinstance(node, ast.Call)),
         key=lambda item: item[0],
@@ -947,12 +636,13 @@ def test_bootstrap_dag_seals_before_materialization_without_packaging_future_rec
 
     assert (
         lines["_build_repository_snapshot_sources"]
-        < lines["budget_writer.build_package"]
+        < lines["authority.build_package"]
         < lines["_materialize_repository_snapshot"]
         < lines["authority.build_campaign_root"]
     )
     package_roles_source = inspect.getsource(bootstrap._package_roles)
     assert "SNAPSHOT_MATERIALIZATION_INPUT_ROLE" not in package_roles_source
+    bootstrap_source = inspect.getsource(bootstrap.bootstrap_campaign)
     receipt_assignment = bootstrap_source.index(
         "inputs[SNAPSHOT_MATERIALIZATION_INPUT_ROLE] = dict(materialization_receipt)"
     )
@@ -1190,7 +880,7 @@ def test_formal_render_candidate_requires_sealed_memfd_not_published_mode() -> N
     }
 
 
-OWNER_REQUEST_SCHEMA = "noncert-cuts-ab16-formal-launch-owner-request-v2"
+OWNER_REQUEST_SCHEMA = "noncert-cuts-ab16-formal-launch-owner-request-v1"
 OWNER_CLEAN_ENV = {
     "LANG": "C",
     "LC_ALL": "C",
@@ -1288,27 +978,6 @@ def _owner_handoff() -> bytes:
     return authority.canonical_json(
         {
             "kind": "handoff-complete",
-            "schema_version": OWNER_REQUEST_SCHEMA,
-            "sequence": 4,
-        }
-    )
-
-
-def _owner_selection_commit(
-    prepared_selection_identity: Mapping[str, object],
-) -> bytes:
-    return authority.canonical_json(
-        {
-            "broker_binding_receipt_identity": _literal_identity(
-                "fixture-broker-binding-receipt"
-            ),
-            "kind": "selection-commit",
-            "prepared_selection_identity": dict(
-                prepared_selection_identity
-            ),
-            "preregistration_receipt_identity": _literal_identity(
-                "fixture-preregistration-receipt"
-            ),
             "schema_version": OWNER_REQUEST_SCHEMA,
             "sequence": 3,
         }
@@ -1416,8 +1085,6 @@ else:
     selected = {
         "authority": _selected_file_identity(authority_path),
         "loader": _selected_file_identity(loader_path),
-        "native_helper": _selected_file_identity(authority_path),
-        "native_helper_wrapper": _selected_file_identity(authority_path),
         "python": _selected_file_identity(python_path),
     }
     selected_argument = json.dumps(
@@ -1433,7 +1100,7 @@ else:
         "formal_admission_path": str(admission_path),
         "formal_attempt_dir": str(attempt),
         "formal_launch_owner_driver_identity": _literal_identity(
-            bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2
+            bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1
         ),
         "formal_selection_path": str(selection_path),
         "guardian_ready_path": str(formal / "outer-guardian-ready-a001.json"),
@@ -1446,7 +1113,7 @@ else:
                 "-I",
                 "-B",
                 "-c",
-                bootstrap.SELECTED_BYTE_LAUNCH_V2,
+                bootstrap.SELECTED_BYTE_LAUNCH_V1,
                 "systemd-openfile",
                 selected_argument,
             ]
@@ -1456,7 +1123,7 @@ else:
             for key in ("path", "sha256", "size_bytes")
         },
         "selected_byte_launch_identity": _literal_identity(
-            bootstrap.SELECTED_BYTE_LAUNCH_V2
+            bootstrap.SELECTED_BYTE_LAUNCH_V1
         ),
     }
     context_raw = authority.canonical_json(context)
@@ -1520,7 +1187,7 @@ os.execve(
         sort_keys=True,
     )
     driver_identity = json.dumps(
-        _literal_identity(bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2),
+        _literal_identity(bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1),
         separators=(",", ":"),
         sort_keys=True,
     )
@@ -1531,7 +1198,7 @@ os.execve(
             "-B",
             "-c",
             wrapper,
-            bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2,
+            bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1,
             "formal-owner-session-a001",
             context_identity,
             driver_identity,
@@ -1642,15 +1309,6 @@ def test_formal_owner_driver_uses_one_actor_and_fixed_selected_byte_protocol(
         )
         selection = _owner_response(probe.control)
         assert selection is not None
-        assert selection["status"] == "PREPARED"
-        assert selection["actor"] == actor
-        selection_path = Path(str(probe.context["formal_selection_path"]))
-        assert not selection_path.exists()
-        probe.control.send(
-            _owner_selection_commit(selection["artifact_identity"])
-        )
-        selection = _owner_response(probe.control)
-        assert selection is not None
         assert selection["status"] == "PUBLISHED"
         assert selection["actor"] == actor
         assert probe.process.poll() is None
@@ -1663,6 +1321,7 @@ def test_formal_owner_driver_uses_one_actor_and_fixed_selected_byte_protocol(
         stdout, stderr = probe.process.communicate(timeout=10)
         assert probe.process.returncode == 0, stderr
         assert stdout == b""
+        selection_path = Path(str(probe.context["formal_selection_path"]))
         assert selection_path.stat().st_mode & 0o7777 == 0o444
         assert selection_path.stat().st_nlink == 1
     finally:
@@ -1671,37 +1330,14 @@ def test_formal_owner_driver_uses_one_actor_and_fixed_selected_byte_protocol(
         else:
             probe.control.close()
 
-    source = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2
+    source = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1
     assert "python_fd, publisher_fd, context_fd, control_fd = 3, 4, 5, 6" in source
     assert "for expected_sequence, expected_kind in ((1, \"admission\"), (2, \"selection\"))" in source
     assert "dict(os.environ) != clean" in source
-    assert source.count("publisher_child(") == 3
+    assert source.count("publisher_child(") == 2
 
 
-def test_prospective_formal_owner_driver_uses_only_the_v2_protocol() -> None:
-    legacy = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1
-    prospective = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2
-    assert "formal-launch-owner-request-v1" in legacy
-    assert "formal-launch-owner-response-v1" in legacy
-    assert "formal-launch-owner-request-v1" not in prospective
-    assert "formal-launch-owner-response-v1" not in prospective
-    assert (
-        "noncert-cuts-ab16-formal-launch-owner-request-v2"
-        in prospective
-    )
-    assert (
-        "noncert-cuts-ab16-formal-launch-owner-response-v2"
-        in prospective
-    )
-    assert formal_orchestrator.REQUEST_SCHEMA.endswith(
-        "formal-launch-owner-request-v2"
-    )
-    assert formal_orchestrator.RESPONSE_SCHEMA.endswith(
-        "formal-launch-owner-response-v2"
-    )
-
-
-def test_formal_orchestrator_builds_admission_and_requires_preregistered_selection_grant(
+def test_formal_orchestrator_builds_one_actor_admission_and_selection(
     tmp_path: Path,
 ) -> None:
     fixture = _formal_fixture(tmp_path)
@@ -1714,22 +1350,24 @@ def test_formal_orchestrator_builds_admission_and_requires_preregistered_selecti
     assert admission["guardian_launch_authorized"] is True
     assert admission["outer_launch_authorized"] is False
 
-    with pytest.raises(
-        formal_orchestrator.FormalOrchestrationError,
-        match="lacks its preregistered manager OpenFile grant",
-    ):
-        formal_orchestrator.build_selection_draft(
-            fixture.context,
-            actor,
-            admission=admission,
-            admission_identity=fixture.admission_identity,
-            guardian_ready=fixture.guardian_ready,
-            guardian_ready_identity=fixture.guardian_ready_identity,
-            attempt_consumption=fixture.attempt_consumption,
-            attempt_consumption_identity=(
-                fixture.attempt_consumption_identity
-            ),
-        )
+    selection = formal_orchestrator.build_selection_draft(
+        fixture.context,
+        actor,
+        admission=admission,
+        admission_identity=fixture.admission_identity,
+        guardian_ready=fixture.guardian_ready,
+        guardian_ready_identity=fixture.guardian_ready_identity,
+        attempt_consumption=fixture.attempt_consumption,
+        attempt_consumption_identity=fixture.attempt_consumption_identity,
+    )
+    assert selection["publisher"]["actor"] == actor
+    assert selection["formal_admission_identity"] == fixture.admission_identity
+    assert selection["guardian_ready_identity"] == fixture.guardian_ready_identity
+    assert (
+        selection["attempt_consumption_identity"]
+        == fixture.attempt_consumption_identity
+    )
+    assert selection["lock_identities"] == fixture.lock_identities
 
 
 def test_formal_orchestrator_fixed_order_keeps_owner_through_handoff() -> None:
@@ -1738,77 +1376,15 @@ def test_formal_orchestrator_fixed_order_keeps_owner_through_handoff() -> None:
         "supervisor_thread.start()"
     )
     assert source.index('"outer guardian ready"') < source.index(
-        "owner.prepare_bound_selection("
+        'kind="selection"'
     )
     assert source.index('"formal attempt consumption"') < source.index(
-        "owner.prepare_bound_selection("
-    )
-    assert source.index("owner.prepare_bound_selection(") < source.index(
-        "owner.commit_bound_selection("
+        'kind="selection"'
     )
     assert source.index("supervisor_thread.join(") < source.index(
         "owner.complete_handoff()"
     )
     assert "role=\"formal-supervisor\"" in source
-
-
-@pytest.mark.parametrize(
-    ("handoff_complete", "expected_calls"),
-    (
-        (False, ["raw-close"]),
-        (True, ["close-session"]),
-    ),
-)
-def test_claimed_owner_close_uses_protocol_only_after_complete_handoff(
-    handoff_complete: bool,
-    expected_calls: list[str],
-) -> None:
-    calls: list[str] = []
-
-    class BrokerClient:
-        closed = False
-
-        def close_session(self) -> None:
-            calls.append("close-session")
-            self.closed = True
-
-        def close(self) -> None:
-            calls.append("raw-close")
-            self.closed = True
-
-    session = formal_orchestrator.ClaimedOwnerSession(
-        owner=SimpleNamespace(_close_control_once=lambda: None),
-        broker_client=BrokerClient(),
-        claim_identity={"sha256": "a" * 64, "size_bytes": 1},
-        handoff_complete=handoff_complete,
-    )
-    session.close()
-    assert calls == expected_calls
-
-
-def test_claimed_owner_uncertain_protocol_close_raw_closes_once() -> None:
-    calls: list[str] = []
-
-    class BrokerClient:
-        closed = False
-
-        def close_session(self) -> None:
-            calls.append("close-session")
-            raise RuntimeError("injected protocol close uncertainty")
-
-        def close(self) -> None:
-            calls.append("raw-close")
-            self.closed = True
-
-    session = formal_orchestrator.ClaimedOwnerSession(
-        owner=SimpleNamespace(_close_control_once=lambda: None),
-        broker_client=BrokerClient(),
-        claim_identity={"sha256": "a" * 64, "size_bytes": 1},
-        handoff_complete=True,
-    )
-    with pytest.raises(RuntimeError, match="protocol close uncertainty"):
-        session.close()
-    assert calls == ["close-session", "raw-close"]
 
 
 def test_formal_owner_cleanup_closes_stderr_even_when_kill_fails(
@@ -1850,7 +1426,7 @@ def test_formal_owner_cleanup_closes_stderr_even_when_kill_fails(
 def test_formal_owner_spawn_failure_retries_wait_and_closes_all_resources(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    driver_raw = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2.encode("utf-8")
+    driver_raw = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1.encode("utf-8")
     publisher_raw = bootstrap.OWNER_OEXCL_PUBLISH_V1.encode("utf-8")
     context = {
         "formal_launch_owner_driver_identity": {
@@ -1986,7 +1562,7 @@ def test_formal_owner_handoff_cleanup_preserves_original_and_closes_once(
         lambda *_args: {
             "actor": actor,
             "schema_version": formal_orchestrator.RESPONSE_SCHEMA,
-            "sequence": 4,
+            "sequence": 3,
             "status": "HANDOFF_COMPLETE",
         },
     )
@@ -2062,8 +1638,8 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
     attempt_path = (
         Path(str(context["formal_attempt_dir"])) / "attempt-consumption.json"
     )
-    admission_path.parent.mkdir(parents=True, exist_ok=True)
-    attempt_path.parent.mkdir(exist_ok=True)
+    admission_path.parent.mkdir(parents=True)
+    attempt_path.parent.mkdir()
     events: list[str] = []
     published: dict[str, dict[str, object]] = {}
     selection_before_readonly = threading.Event()
@@ -2104,13 +1680,6 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
 
         def __init__(self) -> None:
             self.actor = actor
-            self.prepared_selection: dict[str, object] | None = None
-
-        def deliver_context(
-            self,
-            delivered: Mapping[str, object],
-        ) -> None:
-            assert delivered == context
 
         def request(
             self,
@@ -2133,73 +1702,8 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
                 "status": "PUBLISHED",
             }
 
-        def prepare_bound_selection(
-            self,
-            *,
-            admission: Mapping[str, object],
-            admission_identity: Mapping[str, object],
-            guardian_ready: Mapping[str, object],
-            guardian_ready_identity: Mapping[str, object],
-            attempt_consumption: Mapping[str, object],
-            attempt_consumption_identity: Mapping[str, object],
-        ) -> dict[str, object]:
-            events.append("owner:3:selection-prepare")
-            assert admission["publisher"]["actor"] == actor
-            assert admission["publication_path"] == str(admission_path)
-            assert guardian_ready["formal_admission_identity"] == (
-                admission_identity
-            )
-            assert attempt_consumption == fixture.attempt_consumption
-            selection = deepcopy(fixture.selection)
-            selection["attempt_consumption_identity"] = dict(
-                attempt_consumption_identity
-            )
-            selection["formal_admission_identity"] = dict(
-                admission_identity
-            )
-            selection["guardian_ready_identity"] = dict(
-                guardian_ready_identity
-            )
-            selection["publisher"]["actor"] = actor
-            self.prepared_selection = selection
-            raw = authority.canonical_json(selection)
-            return {
-                "actor": actor,
-                "artifact_identity": {
-                    "path": str(selection_path),
-                    "sha256": hashlib.sha256(raw).hexdigest(),
-                    "size_bytes": len(raw),
-                },
-                "kind": "selection-prepare",
-                "schema_version": formal_orchestrator.RESPONSE_SCHEMA,
-                "sequence": 3,
-                "status": "PREPARED",
-            }
-
-        def commit_bound_selection(
-            self,
-            *,
-            prepared_selection_identity: Mapping[str, object],
-        ) -> dict[str, object]:
-            events.append("owner:4:selection-commit")
-            assert self.prepared_selection is not None
-            identity = publish(
-                selection_path,
-                self.prepared_selection,
-            )
-            assert identity == prepared_selection_identity
-            published["selection"] = identity
-            return {
-                "actor": actor,
-                "artifact_identity": identity,
-                "kind": "selection-commit",
-                "schema_version": formal_orchestrator.RESPONSE_SCHEMA,
-                "sequence": 4,
-                "status": "PUBLISHED",
-            }
-
         def complete_handoff(self) -> None:
-            events.append("owner:5:handoff")
+            events.append("owner:3:handoff")
             self.reaped = True
 
         def close(self) -> None:
@@ -2217,11 +1721,7 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
         "_verify_selected_self",
         lambda _context: None,
     )
-    claim_transport = SimpleNamespace(
-        claim=lambda claimed_context: owner
-        if claimed_context == context
-        else pytest.fail("formal claim context drifted")
-    )
+    monkeypatch.setattr(formal_orchestrator, "_spawn_owner", lambda _context: owner)
 
     def selected_supervisor(**kwargs: object) -> object:
         events.append("supervisor:start")
@@ -2271,10 +1771,7 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
         lambda: SimpleNamespace(run_selected_direct_result=selected_supervisor),
     )
 
-    result = formal_orchestrator.orchestrate(
-        context["campaign_dir"],
-        claim_transport=claim_transport,
-    )
+    result = formal_orchestrator.orchestrate(context["campaign_dir"])
 
     assert result["status"] == outcome
     assert result["owner_handoff_complete"] is True
@@ -2283,11 +1780,9 @@ def test_formal_orchestrator_integrates_persistent_owner_and_supervisor(
     assert events == [
         "owner:1:admission",
         "supervisor:start",
-        "owner:3:selection-prepare",
-        "owner:4:selection-commit",
+        "owner:2:selection",
         "supervisor:return",
-        "owner:5:handoff",
-        "owner:close",
+        "owner:3:handoff",
     ]
 
 
@@ -2303,7 +1798,7 @@ def test_formal_orchestrator_preserves_supervisor_error_before_guardian_ready(
         Path(str(context["formal_attempt_dir"])) / "attempt-consumption.json"
     )
     selection_path = Path(str(context["formal_selection_path"]))
-    admission_path.parent.mkdir(parents=True, exist_ok=True)
+    admission_path.parent.mkdir(parents=True)
     supervisor_finished = threading.Event()
     actor = {
         "pid": os.getpid(),
@@ -2319,12 +1814,6 @@ def test_formal_orchestrator_preserves_supervisor_error_before_guardian_ready(
         def __init__(self) -> None:
             self.actor = actor
             self.close_count = 0
-
-        def deliver_context(
-            self,
-            delivered: Mapping[str, object],
-        ) -> None:
-            assert delivered == context
 
         def request(
             self,
@@ -2367,11 +1856,7 @@ def test_formal_orchestrator_preserves_supervisor_error_before_guardian_ready(
         "_verify_selected_self",
         lambda _context: None,
     )
-    claim_transport = SimpleNamespace(
-        claim=lambda claimed_context: owner
-        if claimed_context == context
-        else pytest.fail("formal claim context drifted")
-    )
+    monkeypatch.setattr(formal_orchestrator, "_spawn_owner", lambda _context: owner)
 
     sentinel = b"FAIL_CLOSED: FormalCampaignError: sentinel\n"
 
@@ -2399,10 +1884,7 @@ def test_formal_orchestrator_preserves_supervisor_error_before_guardian_ready(
         formal_orchestrator.FormalOrchestrationError,
         match="formal supervisor failed during prerequisite wait",
     ) as caught:
-        formal_orchestrator.orchestrate(
-            context["campaign_dir"],
-            claim_transport=claim_transport,
-        )
+        formal_orchestrator.orchestrate(context["campaign_dir"])
 
     assert "exit=125" in str(caught.value)
     assert repr(sentinel) in str(caught.value)
@@ -2521,18 +2003,13 @@ def test_formal_owner_driver_rejects_sequence_and_actor_drift(
                 probe.control.send(
                     _owner_request(actor=actor, sequence=2, kind="selection")
                 )
-                prepared = _owner_response(probe.control)
-                assert prepared["status"] == "PREPARED"
-                probe.control.send(
-                    _owner_selection_commit(prepared["artifact_identity"])
-                )
                 assert _owner_response(probe.control)["status"] == "PUBLISHED"
                 probe.control.send(
                     authority.canonical_json(
                         {
                             "kind": "handoff-complete",
                             "schema_version": OWNER_REQUEST_SCHEMA,
-                            "sequence": 3,
+                            "sequence": 4,
                         }
                     )
                 )
@@ -3083,7 +2560,7 @@ def test_formal_selected_package_tools_reject_legacy_read_only_mode(
         )
     with pytest.raises(
         launch_validator.FormalLaunchValidationError,
-        match="selected-FD transport authority identity drifted",
+        match="selected-byte open-file identity set drifted",
     ):
         launch_validator.validate_admission(
             fixture.admission,
@@ -3121,74 +2598,8 @@ def test_controller_propagates_replayed_resource_admission_to_selected_arm(
         selection={},
         selection_identity=_identity(tmp_path, "formal-selection.json", "5"),
     )
-    budget_handoff = {"schema_version": "fixture-arm-budget-handoff"}
-    budget_profile = {"schema_version": "fixture-budget-profile"}
-    budget_profile_identity = _identity(tmp_path, "budget-profile.json", "9")
-    calibration_bundle = {"schema_version": "fixture-calibration-bundle"}
-    calibration_bundle_identity = _identity(
-        tmp_path,
-        "calibration-bundle.json",
-        "a",
-    )
-    calibration_tool_identities = {
-        role: {
-            "sha256": hashlib.sha256(role.encode("ascii")).hexdigest(),
-            "size_bytes": len(role),
-        }
-        for role in controller.resource_admission.CALIBRATION_TOOL_ROLES
-    }
-    prepared = {
-        "arm_attempt_prefix": f"prospective/arms/{slot}",
-        "closure_bindings": {},
-        "formal_root": str(tmp_path),
-        "slot": slot,
-        "state": "PREPARED_NOT_CONSUMED",
-    }
-
-    class Backend:
-        @property
-        def enforced_budget_profile(self) -> Mapping[str, object]:
-            return budget_profile
-
-        @property
-        def enforced_budget_profile_identity(self) -> Mapping[str, object]:
-            return budget_profile_identity
-
-        @property
-        def resource_calibration_authorization_bundle(
-            self,
-        ) -> Mapping[str, object]:
-            return calibration_bundle
-
-        @property
-        def resource_calibration_authorization_bundle_identity(
-            self,
-        ) -> Mapping[str, object]:
-            return calibration_bundle_identity
-
-        @property
-        def expected_calibration_tool_identities(
-            self,
-        ) -> Mapping[str, Mapping[str, object]]:
-            return calibration_tool_identities
-
-        @staticmethod
-        def close() -> None:
-            events.append("close")
-
-    backend = Backend()
 
     class Ports:
-        @staticmethod
-        def prepare_arm_budget(
-            _inputs: controller.FormalInputs,
-            *,
-            slot: str,
-        ) -> tuple[Mapping[str, object], Backend]:
-            assert slot == controller.ARM_SEQUENCE[0]
-            events.append("budget")
-            return budget_handoff, backend
-
         @staticmethod
         def publish_arm_prelaunch_request(
             _inputs: controller.FormalInputs,
@@ -3220,12 +2631,10 @@ def test_controller_propagates_replayed_resource_admission_to_selected_arm(
         def run_organic_arm(
             _inputs: controller.FormalInputs,
             *,
-            arm_budget_backend: object,
             pre_run_path: Path,
             resource_admission_receipt: Mapping[str, object],
             selection_path: Path,
         ) -> dict[str, object]:
-            assert arm_budget_backend is backend
             assert pre_run_path == Path(str(pre_run_identity["path"]))
             assert selection_path == Path(str(selection_identity["path"]))
             assert resource_admission_receipt is resource_receipt
@@ -3238,12 +2647,7 @@ def test_controller_propagates_replayed_resource_admission_to_selected_arm(
     monkeypatch.setattr(
         controller.authority,
         "build_pre_run_candidate",
-        lambda *_args, **kwargs: (
-            {"status": "PASS"}
-            if kwargs["budget_handoff"] is budget_handoff
-            and kwargs["budget_backend"] is backend
-            else pytest.fail("pre-run lost its exact budget handoff")
-        ),
+        lambda *_args, **_kwargs: {"status": "PASS"},
     )
     monkeypatch.setattr(
         controller.authority,
@@ -3254,25 +2658,8 @@ def test_controller_propagates_replayed_resource_admission_to_selected_arm(
         },
     )
 
-    monkeypatch.setattr(
-        controller.authority,
-        "prepare_arm_consumption_evidence",
-        lambda *_args, **kwargs: (
-            prepared
-            if kwargs["budget_backend"] is backend
-            else pytest.fail("prepared consumption lost its arm backend")
-        ),
-    )
-
-    def consume(*_args: object, **kwargs: object) -> dict[str, object]:
+    def consume(*_args: object, **_kwargs: object) -> dict[str, object]:
         events.append("consume")
-        assert _args == (inputs,)
-        assert kwargs == {
-            "slot": slot,
-            "ordinal": 1,
-            "prepared": prepared,
-            "arm_budget_backend": backend,
-        }
         return {
             "consumption": {
                 "arm_gate_identity": _identity(tmp_path, "arm-gate.json", "6"),
@@ -3288,22 +2675,13 @@ def test_controller_propagates_replayed_resource_admission_to_selected_arm(
             "immediate_stop_identity": None,
         }
 
-    monkeypatch.setattr(controller, "_close_and_consume_prepared_arm", consume)
+    monkeypatch.setattr(controller.authority, "consume_arm", consume)
     monkeypatch.setattr(
         controller.resource_admission,
-        "validate_prospective_launch_resource_reevaluation",
-        lambda value, **kwargs: (
+        "validate_launch_resource_reevaluation",
+        lambda value, *, expected_receipt: (
             dict(value)
-            if value is kwargs["expected_receipt"] is resource_receipt
-            and kwargs["calibration_authorization_bundle"]
-            is calibration_bundle
-            and kwargs["calibration_authorization_bundle_identity"]
-            is calibration_bundle_identity
-            and kwargs["expected_calibration_tool_identities"]
-            is calibration_tool_identities
-            and kwargs["enforced_budget_profile"] is budget_profile
-            and kwargs["enforced_budget_profile_identity"]
-            is budget_profile_identity
+            if value is expected_receipt is resource_receipt
             else pytest.fail("resource launch replay lost its exact receipt")
         ),
     )
@@ -3314,7 +2692,7 @@ def test_controller_propagates_replayed_resource_admission_to_selected_arm(
         ordinal=1,
     )
 
-    assert events == ["budget", "request", "receipt", "launch", "consume", "close"]
+    assert events == ["request", "receipt", "launch", "consume"]
     assert observed["prelaunch_receipt_identity"] == receipt_identity
     assert observed["resource_admission"] == resource_receipt
 
@@ -3401,7 +2779,6 @@ def test_controller_runs_barrier_gate1_baseline_manifest_and_fixed_arms_in_order
         campaign_dir=tmp_path,
         formal_selection=tmp_path / "formal-selection.json",
         ports=FakePorts(),
-        budget_backend=SimpleNamespace(),
     )
 
     assert result["status"] == "PASS"
@@ -3411,40 +2788,6 @@ def test_controller_runs_barrier_gate1_baseline_manifest_and_fixed_arms_in_order
         for ordinal, slot in enumerate(controller.ARM_SEQUENCE, start=1)
     ]
     assert events[-1] == "publish"
-
-
-def test_controller_result_v3_rejects_v2_discriminator_before_interpretation(
-    tmp_path: Path,
-) -> None:
-    fixture = _formal_fixture(tmp_path)
-    selection_identity = _identity(tmp_path, "selection.json", "e")
-    record = {
-        field: None
-        for field in success_verifier.CONTROLLER_RESULT_FIELDS
-    }
-    record.update(
-        {
-            "authority_scope": success_verifier.AUTHORITY_SCOPE,
-            "authorizations": dict(success_verifier.FALSE_AUTHORIZATIONS),
-            "campaign_root_identity": fixture.context["campaign_root_identity"],
-            "formal_selection_identity": selection_identity,
-            "package_id": fixture.context["package_id"],
-            "schema_version": "noncert-cuts-ab16-formal-controller-result-v2",
-            "status": "PASS",
-        }
-    )
-    assert controller.CONTROLLER_RESULT_SCHEMA == (
-        success_verifier.CONTROLLER_RESULT_SCHEMA
-    )
-    with pytest.raises(
-        success_verifier.FormalSuccessVerificationError,
-        match="common join drifted",
-    ):
-        success_verifier.validate_controller_result(
-            record,
-            context=fixture.context,
-            selection_identity=selection_identity,
-        )
 
 
 @pytest.mark.parametrize("failure_code", (None, "MEMORY", "CONFLICT"))
@@ -3808,42 +3151,8 @@ def test_path_preregistration_keeps_canonical_guardian_socket_path(
     tmp_path: Path,
 ) -> None:
     campaign = tmp_path / "run-focused-ab16"
-    budget_binding = {
-        "bootstrap_budget_contract_identity": _identity(
-            campaign,
-            "bootstrap-budget-contract.json",
-            "1",
-        ),
-        "formal_root_budget_contract_identity": _identity(
-            campaign,
-            "formal-root-budget-contract.json",
-            "2",
-        ),
-        "resource_calibration_bundle_identities": {
-            stage: _identity(
-                campaign,
-                f"resource-calibration-{stage.lower()}.json",
-                str(index),
-            )
-            for index, stage in enumerate(
-                bootstrap.RESOURCE_CALIBRATION_STAGES,
-                start=3,
-            )
-        },
-        "resource_budget_profile_identity": _identity(
-            campaign,
-            "resource-budget-profile.json",
-            "6",
-        ),
-    }
-    record = bootstrap._path_preregistration(  # noqa: SLF001
-        campaign,
-        budget_binding=budget_binding,
-    )
-    expected = (
-        campaign.absolute()
-        / "formal-ab16/control/guardian-control.sock"
-    )
+    record = bootstrap._path_preregistration(campaign)  # noqa: SLF001
+    expected = campaign.absolute() / "formal-ab16/guardian-control.sock"
     assert record["guardian_control_socket_path"] == str(expected)
     assert record["guardian_control_retired_socket_path"] == str(
         expected.with_name(f"{expected.name}.retired")
@@ -3853,7 +3162,6 @@ def test_path_preregistration_keeps_canonical_guardian_socket_path(
         bootstrap.validate_path_preregistration(
             record,
             campaign_dir=campaign,
-            budget_binding=budget_binding,
         )
         == record
     )
@@ -5541,43 +4849,12 @@ def _valid_outer_prelaunch(
     return record, expected
 
 
-def test_outer_prelaunch_and_start_v3_reject_v2_and_replay_launch_resource(
+def test_outer_start_v2_strictly_replays_launch_resource_against_prelaunch(
     tmp_path: Path,
 ) -> None:
     fixture = _formal_fixture(tmp_path)
     prelaunch, expected = _valid_outer_prelaunch(fixture)
     unit_name = str(fixture.context["outer_spec"]["unit_name"])
-    allowed = [fixture.guardian_ready["guardian_process_identity"]]
-    success_verifier.validate_outer_prelaunch(
-        prelaunch,
-        expected=expected,
-        expected_unit_name=unit_name,
-        expected_lock_identities=fixture.lock_identities,
-        expected_observation_context=prelaunch["resource_admission"][
-            "observation_context"
-        ],
-        expected_allowed_same_uid_processes=allowed,
-    )
-
-    prior_prelaunch = deepcopy(prelaunch)
-    prior_prelaunch["schema_version"] = (
-        "noncert-cuts-ab16-formal-outer-prelaunch-v2"
-    )
-    with pytest.raises(
-        success_verifier.FormalSuccessVerificationError,
-        match="common authority join drifted",
-    ):
-        success_verifier.validate_outer_prelaunch(
-            prior_prelaunch,
-            expected=expected,
-            expected_unit_name=unit_name,
-            expected_lock_identities=fixture.lock_identities,
-            expected_observation_context=prelaunch["resource_admission"][
-                "observation_context"
-            ],
-            expected_allowed_same_uid_processes=allowed,
-        )
-
     start = {
         "authority_scope": success_verifier.AUTHORITY_SCOPE,
         "authorizations": dict(success_verifier.FALSE_AUTHORIZATIONS),
@@ -5613,19 +4890,6 @@ def test_outer_prelaunch_and_start_v3_reject_v2_and_replay_launch_resource(
         expected_unit_name=unit_name,
     )["resource_admission"] == prelaunch["resource_admission"]
 
-    prior_start = deepcopy(start)
-    prior_start["schema_version"] = "noncert-cuts-ab16-formal-outer-start-v2"
-    with pytest.raises(
-        success_verifier.FormalSuccessVerificationError,
-        match="common authority join drifted",
-    ):
-        success_verifier.validate_outer_start(
-            prior_start,
-            expected=expected,
-            expected_resource_admission=prelaunch["resource_admission"],
-            expected_unit_name=unit_name,
-        )
-
     tampered = deepcopy(start)
     tampered["resource_admission"]["measurements"]["mem_available_bytes"] += 1
     with pytest.raises(
@@ -5646,18 +4910,13 @@ def _reference_base_record(
     status: str,
     unit_name: str,
 ) -> dict[str, object]:
-    schema_version = (
-        closeout_state.REFERENCE_ACQUISITION_SCHEMA_V2
-        if status == "HELD"
-        else closeout_state.REFERENCE_SCHEMA
-    )
     return {
         "authorizations": dict(closeout_state.FALSE_AUTHORIZATIONS),
         "campaign_root_identity": fixture.context["campaign_root_identity"],
         "lower_bound": None,
         "package_id": fixture.context["package_id"],
         "production_certified": False,
-        "schema_version": schema_version,
+        "schema_version": closeout_state.REFERENCE_SCHEMA,
         "status": status,
         "unit_name": unit_name,
         "upper_bound": [1188, 18],
@@ -5674,7 +4933,6 @@ def test_success_verifier_uses_state_owned_reference_schemas_and_exact_joins(
     observer_identity = _identity(tmp_path, "observer.json", "d")
     cleanup_identity = _identity(tmp_path, "pre-unref-cleanup.json", "e")
     unref_identity = _identity(tmp_path, "unref-call.json", "f")
-    raw_release_identity = _identity(tmp_path, "raw-lock-release.json", "1")
     unit_name = str(fixture.context["outer_spec"]["unit_name"])
     outer = {
         "control_group": "/user.slice/ab16-formal-outer-a001.service",
@@ -5788,22 +5046,10 @@ def test_success_verifier_uses_state_owned_reference_schemas_and_exact_joins(
         )
 
     release = {
-        "authorizations": dict(closeout_state.FALSE_AUTHORIZATIONS),
+        **_reference_base_record(fixture, status="RELEASED", unit_name=unit_name),
         "acquisition_identity": acquisition_identity,
-        "call": call,
-        "campaign_root_identity": fixture.context["campaign_root_identity"],
-        "connection_retained": True,
-        "lower_bound": None,
-        "observer_identity": observer_identity,
-        "package_id": fixture.context["package_id"],
-        "pre_unref_cleanup_identity": cleanup_identity,
-        "production_certified": False,
-        "schema_version": closeout_state.REFERENCE_RELEASE_SCHEMA_V2,
-        "status": "UNREF_RETURNED_CONNECTION_RETAINED",
-        "supervisor_raw_lock_release_identity": raw_release_identity,
-        "unit_name": unit_name,
+        "connection_close_returned": True,
         "unref_call_identity": unref_identity,
-        "upper_bound": [1188, 18],
     }
     checked_release = success_verifier.validate_reference_release(
         release,
@@ -5811,11 +5057,8 @@ def test_success_verifier_uses_state_owned_reference_schemas_and_exact_joins(
         expected_outer_identity=outer,
         expected_acquisition_identity=acquisition_identity,
         expected_unref_call_identity=unref_identity,
-        expected_observer_identity=observer_identity,
-        expected_pre_unref_cleanup_identity=cleanup_identity,
-        expected_raw_lock_release_identity=raw_release_identity,
     )
-    assert checked_release["connection_retained"] is True
+    assert checked_release["connection_close_returned"] is True
 
 
 def _absence_record(frozen: dict[str, object]) -> dict[str, object]:
@@ -5843,11 +5086,6 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
     guardian_absence_identity = _identity(tmp_path, "guardian-absence.json", "d")
     guardian_close_identity = _identity(tmp_path, "guardian-close.json", "e")
     detached_success_identity = _identity(tmp_path, "detached-closeout.json", "f")
-    pre_unref_cleanup_identity = _identity(tmp_path, "pre-unref-cleanup.json", "1")
-    raw_release_identity = _identity(tmp_path, "raw-release.json", "2")
-    reference_release_identity = _identity(tmp_path, "reference-release.json", "3")
-    reference_terminal_identity = _identity(tmp_path, "reference-terminal.json", "4")
-    reference_close_identity = _identity(tmp_path, "reference-close.json", "5")
     expected = {
         "campaign_root_identity": fixture.context["campaign_root_identity"],
         "formal_selection_identity": selection_identity,
@@ -5950,13 +5188,12 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
         "created_at_utc": "2026-07-28T00:05:00Z",
         "formal_selection_identity": selection_identity,
         "guardian_close_identity": guardian_close_identity,
-        "detached_success_identity": detached_success_identity,
-        "pre_unref_cleanup_identity": pre_unref_cleanup_identity,
         "manager_epoch": fixture.context["manager_epoch"],
         "package_id": fixture.context["package_id"],
         "schema_version": success_verifier.PHASE_SCHEMAS["guardian_absence"],
         "status": "PASS",
         "guardian_identity": guardian_identity,
+        "post_unref_absence_identity": post_unref_identity,
         "systemctl": dict(success_verifier.ABSENT_SYSTEMD),
         "unit_absent": True,
         "cgroup_absent": True,
@@ -5967,12 +5204,7 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
         expected=expected,
         expected_guardian_identity=guardian_identity,
         expected_guardian_close_identity=guardian_close_identity,
-        expected_detached_success_identity=detached_success_identity,
-        expected_pre_unref_cleanup_identity=pre_unref_cleanup_identity,
-    )
-    post_root_closure = _post_root_closure(
-        tmp_path,
-        branch="success",
+        expected_post_unref_absence_identity=post_unref_identity,
     )
     dual = {
         "authority_scope": success_verifier.AUTHORITY_SCOPE,
@@ -5986,26 +5218,18 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
         "lock_identities": fixture.lock_identities,
         "manager_epoch": fixture.context["manager_epoch"],
         "package_id": fixture.context["package_id"],
-        "post_root_closure": post_root_closure,
         "schema_version": success_verifier.PHASE_SCHEMAS["dual_lock_release"],
         "status": "PASS",
-        "post_unref_absence_identity": post_unref_identity,
-        "reference_connection_close_identity": reference_close_identity,
-        "reference_release_identity": reference_release_identity,
-        "reference_terminal_identity": reference_terminal_identity,
-        "supervisor_raw_lock_release_identity": raw_release_identity,
+        "supervisor_release": {
+            "after_guardian_absence": True,
+            "attempted": True,
+            "recorded": True,
+            "returned": True,
+        },
         "terminal_join": {
-            "broker_absent_before_manifest": True,
             "detached_success_before_guardian_close": True,
-            "formal_root_closed_before_outside_replays": True,
             "guardian_absence_before_supervisor_release": True,
             "locks_released_after_substantive_verification": True,
-            "outside_replays_before_final_join": True,
-            "post_unref_absence_before_reference_terminal": True,
-            "raw_lock_release_before_unref": True,
-            "recovery_disarmed_before_manifest": True,
-            "reference_connection_close_before_final_join": True,
-            "reference_terminal_before_connection_close": True,
         },
     }
     success_verifier.validate_dual_lock_release(
@@ -6015,12 +5239,6 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
         expected_detached_success_identity=detached_success_identity,
         expected_guardian_absence_identity=guardian_absence_identity,
         expected_guardian_close_identity=guardian_close_identity,
-        expected_raw_lock_release_identity=raw_release_identity,
-        expected_reference_release_identity=reference_release_identity,
-        expected_post_unref_absence_identity=post_unref_identity,
-        expected_reference_terminal_identity=reference_terminal_identity,
-        expected_reference_connection_close_identity=reference_close_identity,
-        expected_post_root_closure=post_root_closure,
     )
     legacy_dual = deepcopy(dual)
     legacy_dual["schema_version"] = (
@@ -6037,102 +5255,6 @@ def test_success_verifier_binds_guardian_frozen_ledger_and_absence_order(
             expected_detached_success_identity=detached_success_identity,
             expected_guardian_absence_identity=guardian_absence_identity,
             expected_guardian_close_identity=guardian_close_identity,
-            expected_raw_lock_release_identity=raw_release_identity,
-            expected_reference_release_identity=reference_release_identity,
-            expected_post_unref_absence_identity=post_unref_identity,
-            expected_reference_terminal_identity=reference_terminal_identity,
-            expected_reference_connection_close_identity=reference_close_identity,
-            expected_post_root_closure=post_root_closure,
-        )
-
-
-@pytest.mark.parametrize(
-    ("kind", "status", "outcome", "failure_kind"),
-    [
-        ("success_v3", "PASS", "SUCCESS_CANDIDATE", "absent"),
-        ("incomplete_v4", "INCOMPLETE", "INCOMPLETE", "identity"),
-    ],
-)
-def test_raw_lock_release_schema_closes_success_failure_mixing(
-    tmp_path: Path,
-    kind: str,
-    status: str,
-    outcome: str,
-    failure_kind: str,
-) -> None:
-    fixture = _formal_fixture(tmp_path)
-    selection_identity = _identity(tmp_path, "selection.json", "1")
-    detached_identity = _identity(tmp_path, "detached.json", "2")
-    guardian_identity = _identity(tmp_path, "guardian-absence.json", "3")
-    guardian_close: dict[str, object] | str = (
-        _identity(tmp_path, "guardian-close.json", "4")
-        if kind == "success_v3"
-        else "combined-in-guardian-absence"
-    )
-    failure_identity: dict[str, object] | str = (
-        "absent"
-        if failure_kind == "absent"
-        else _identity(tmp_path, "failure-release.json", "5")
-    )
-    expected = {
-        "campaign_root_identity": fixture.context["campaign_root_identity"],
-        "formal_selection_identity": selection_identity,
-        "manager_epoch": fixture.context["manager_epoch"],
-        "package_id": fixture.context["package_id"],
-    }
-    record = {
-        "authority_scope": success_verifier.AUTHORITY_SCOPE,
-        "authorizations": dict(success_verifier.FALSE_AUTHORIZATIONS),
-        "campaign_root_identity": fixture.context["campaign_root_identity"],
-        "created_at_utc": "2026-07-29T00:00:00Z",
-        "detached_substantive_identity": detached_identity,
-        "detached_substantive_kind": kind,
-        "failure_pre_release_identity": failure_identity,
-        "formal_selection_identity": selection_identity,
-        "guardian_absence_identity": guardian_identity,
-        "guardian_close_identity": guardian_close,
-        "lock_identities": fixture.lock_identities,
-        "manager_epoch": fixture.context["manager_epoch"],
-        "outcome": outcome,
-        "package_id": fixture.context["package_id"],
-        "schema_version": closeout_state.SUPERVISOR_RAW_LOCK_RELEASE_SCHEMA,
-        "status": status,
-        "supervisor_release": {
-            "after_guardian_absence": True,
-            "attempted": True,
-            "recorded": True,
-            "returned": True,
-        },
-    }
-    success_verifier.validate_supervisor_raw_lock_release(
-        record,
-        expected=expected,
-        expected_lock_identities=fixture.lock_identities,
-        expected_detached_substantive_identity=detached_identity,
-        expected_detached_substantive_kind=kind,
-        expected_failure_pre_release_identity=failure_identity,
-        expected_guardian_absence_identity=guardian_identity,
-        expected_guardian_close_identity=guardian_close,
-    )
-    mixed = deepcopy(record)
-    mixed["failure_pre_release_identity"] = (
-        _identity(tmp_path, "mixed-failure.json", "6")
-        if failure_identity == "absent"
-        else "absent"
-    )
-    with pytest.raises(
-        success_verifier.FormalSuccessVerificationError,
-        match="raw supervisor lock-release ordering drifted",
-    ):
-        success_verifier.validate_supervisor_raw_lock_release(
-            mixed,
-            expected=expected,
-            expected_lock_identities=fixture.lock_identities,
-            expected_detached_substantive_identity=detached_identity,
-            expected_detached_substantive_kind=kind,
-            expected_failure_pre_release_identity=failure_identity,
-            expected_guardian_absence_identity=guardian_identity,
-            expected_guardian_close_identity=guardian_close,
         )
 
 
@@ -6210,29 +5332,6 @@ def _failure_observation(ledger: dict[str, object]) -> dict[str, object]:
     }
 
 
-def _failure_quiescence(ledger: dict[str, object]) -> dict[str, object]:
-    return {
-        "all_runtime_quiescent": True,
-        "records": [
-            {
-                "cgroup_absent": True,
-                "control_group": item["control_group"],
-                "identity_complete": True,
-                "processes": item["processes"],
-                "processes_absent": True,
-                "reference_retained": False,
-                "slot": item["slot"],
-                "source": item["source"],
-                "systemctl": dict(closeout_state.ABSENT_SYSTEMD_STATE),
-                "unit_state": "ABSENT",
-                "unit_name": item["unit_name"],
-            }
-            for item in [*ledger["children"], ledger["outer"]]
-        ],
-        "reference_retained": False,
-    }
-
-
 def _write_record(path: Path, record: dict[str, object]) -> dict[str, object]:
     return authority._write_exclusive(  # noqa: SLF001 - test fixture publication
         path,
@@ -6264,8 +5363,6 @@ def _pre_release_success_record(
         "lock_identities": fixture.lock_identities,
         "lock_lifecycle": {
             "guardian_close_is_next_required_step": True,
-            "reference_connection_must_remain_open": True,
-            "refunit_must_remain_held": True,
             "supervisor_lock_release_permitted": False,
             "supervisor_locks_must_remain_held": True,
         },
@@ -6296,7 +5393,7 @@ def _pre_release_success_record(
     }
 
 
-def test_pre_release_success_v3_rejects_v1_and_mixed_failure_join(
+def test_pre_release_success_v2_rejects_v1_and_mixed_failure_join(
     tmp_path: Path,
 ) -> None:
     fixture = _formal_fixture(tmp_path)
@@ -6391,7 +5488,6 @@ def _failure_release_record(
     marker_identity: dict[str, object] | str,
     phase: str,
 ) -> dict[str, object]:
-    del guardian_absence_identity
     return {
         "attempt_directory_created": True,
         "attempt_marker_identity": marker_identity,
@@ -6404,13 +5500,12 @@ def _failure_release_record(
         "created_at_utc": "2026-07-28T03:00:00Z",
         "detached_success_output_identity": "absent",
         "formal_selection_identity": formal_selection_identity,
+        "guardian_absence_identity": guardian_absence_identity,
+        "heavy_identities_absent": True,
         "incomplete_identity": incomplete_identity,
         "lock_identities": fixture.lock_identities,
         "lock_lifecycle": {
             "detached_incomplete_is_next_required_step": True,
-            "guardian_absence_required_after_detached": True,
-            "raw_lock_release_required_after_guardian_absence": True,
-            "reference_completion_required_after_raw_release": False,
             "supervisor_lock_release_permitted": False,
             "supervisor_locks_must_remain_held": True,
         },
@@ -6420,9 +5515,7 @@ def _failure_release_record(
         "phase": phase,
         "production_authority_changed": False,
         "production_certified": False,
-        "reference_retained": False,
         "retry_eligible": False,
-        "runtime_quiescent": True,
         "schema_version": success_verifier.FAILURE_RELEASE_SCHEMA,
         "stage_b_changed": False,
         "status": "INCOMPLETE_PRE_RELEASE",
@@ -6440,10 +5533,7 @@ def test_detached_incomplete_markerless_replay_is_oexcl_and_non_authorizing(
     attempt = Path(str(fixture.context["formal_attempt_dir"]))
     attempt.mkdir(parents=True)
     directory_identity = success_verifier._directory_identity(attempt)  # noqa: SLF001
-    failure = {
-        "code": "ATTEMPT_MARKER_DEFINITELY_NOT_PUBLISHED",
-        "detail": "write rejected before the publication boundary",
-    }
+    failure = {"code": "ATTEMPT_MARKER_FAILED_OR_UNCERTAIN", "detail": "write failed"}
     markerless = {
         "attempt_consumption_effect": {
             "attempted": True,
@@ -6464,44 +5554,23 @@ def test_detached_incomplete_markerless_replay_is_oexcl_and_non_authorizing(
         "production_certified": False,
         "retry_eligible": False,
         "schema_version": closeout_state.MARKERLESS_SCHEMA,
-        "status": closeout_state.FORMAL_MARKERLESS_INCOMPLETE,
+        "status": "CONSUMED_INCOMPLETE",
         "upper_bound": [1188, 18],
     }
     incomplete_identity = _write_record(
-        attempt / "markerless-incomplete.json",
+        attempt / "markerless-consumed-incomplete.json",
         markerless,
     )
-    legacy_status = deepcopy(markerless)
-    legacy_status["status"] = "CONSUMED_INCOMPLETE"
-    with pytest.raises(
-        success_verifier.FormalSuccessVerificationError,
-        match="markerless no-backfill/directory join drifted",
-    ):
-        success_verifier.validate_markerless_incomplete(
-            legacy_status,
-            context=fixture.context,
-            expected_identity=incomplete_identity,
-            expected_phase="DIRECTORY_CREATED_MARKER_UNRECORDED",
-        )
-    legacy_path = dict(incomplete_identity)
-    legacy_path["path"] = str(
-        attempt / "markerless-consumed-incomplete.json"
-    )
-    with pytest.raises(
-        success_verifier.FormalSuccessVerificationError,
-        match="markerless no-backfill/directory join drifted",
-    ):
-        success_verifier.validate_markerless_incomplete(
-            markerless,
-            context=fixture.context,
-            expected_identity=legacy_path,
-            expected_phase="DIRECTORY_CREATED_MARKER_UNRECORDED",
-        )
     ledger = _failure_ledger(fixture)
-    guardian_identity = _identity(
-        attempt,
-        "containment-guardian-absence.json",
-        "b",
+    observation = _failure_observation(ledger)
+    guardian = _failure_guardian_record(
+        fixture,
+        ledger=ledger,
+        formal_selection_identity="absent",
+    )
+    guardian_identity = _write_record(
+        attempt / "containment-guardian-absence.json",
+        guardian,
     )
     cleanup = {
         "containment_clearance_identity": "absent",
@@ -6509,14 +5578,9 @@ def test_detached_incomplete_markerless_replay_is_oexcl_and_non_authorizing(
         "containment_lock_release_identity": "absent",
         "containment_lock_release_publication": "absent",
         "errors": [failure],
+        "final_observation": observation,
         "frozen_ledger": ledger,
-        "reference_state": {
-            "acquisition_identity": "absent",
-            "connection_verification": "absent",
-            "kind": "NO_REFERENCE_OPENED",
-            "terminal_identity": "absent",
-        },
-        "runtime_quiescence": _failure_quiescence(ledger),
+        "reference_terminal": {"kind": "NO_REFERENCE_OPENED"},
     }
     release = _failure_release_record(
         fixture,
@@ -6550,7 +5614,7 @@ def test_detached_incomplete_markerless_replay_is_oexcl_and_non_authorizing(
     )
     assert result["status"] == "PRE_RELEASE_VERIFIED_INCOMPLETE"
     assert result["detached_incomplete"]["schema_version"] == (
-        success_verifier.INCOMPLETE_RECEIPT_SCHEMA
+        "noncert-cuts-ab16-formal-detached-incomplete-v3"
     )
     assert result["detached_incomplete"]["authorizations"] == dict(
         success_verifier.FALSE_AUTHORIZATIONS
@@ -6662,6 +5726,11 @@ def test_detached_incomplete_selected_release_binds_selection_and_cleanup(
             expected_selection_identity=selection_identity,
         )
     ledger = _failure_ledger(fixture)
+    guardian = _failure_guardian_record(
+        fixture,
+        ledger=ledger,
+        formal_selection_identity=selection_identity,
+    )
     guardian_identity = _identity(
         attempt,
         "containment-guardian-absence.json",
@@ -6673,14 +5742,9 @@ def test_detached_incomplete_selected_release_binds_selection_and_cleanup(
         "containment_lock_release_identity": "absent",
         "containment_lock_release_publication": "absent",
         "errors": [],
+        "final_observation": _failure_observation(ledger),
         "frozen_ledger": ledger,
-        "reference_state": {
-            "acquisition_identity": "absent",
-            "connection_verification": "absent",
-            "kind": "NO_REFERENCE_OPENED",
-            "terminal_identity": "absent",
-        },
-        "runtime_quiescence": _failure_quiescence(ledger),
+        "reference_terminal": {"kind": "NO_REFERENCE_OPENED"},
     }
     release = _failure_release_record(
         fixture,
@@ -6697,6 +5761,8 @@ def test_detached_incomplete_selected_release_binds_selection_and_cleanup(
         expected_identity=_identity(attempt, "failure-release.json", "c"),
         expected_incomplete=incomplete,
         expected_incomplete_identity=incomplete_identity,
+        expected_guardian_absence=guardian,
+        expected_guardian_absence_identity=guardian_identity,
         expected_marker_identity=marker_identity,
         expected_selection_identity=selection_identity,
         expected_lock_identities=fixture.lock_identities,
@@ -6716,14 +5782,16 @@ def test_detached_incomplete_selected_release_binds_selection_and_cleanup(
             expected_identity=_identity(attempt, "failure-release.json", "c"),
             expected_incomplete=incomplete,
             expected_incomplete_identity=incomplete_identity,
+            expected_guardian_absence=guardian,
+            expected_guardian_absence_identity=guardian_identity,
             expected_marker_identity=marker_identity,
             expected_selection_identity=selection_identity,
             expected_lock_identities=fixture.lock_identities,
         )
     drifted = deepcopy(release)
-    drifted["cleanup_evidence"]["runtime_quiescence"]["records"][0][
-        "unit_state"
-    ] = "NOT_QUIESCENT"
+    drifted["cleanup_evidence"]["final_observation"]["records"][0][
+        "unit_absent"
+    ] = False
     with pytest.raises(
         success_verifier.FormalSuccessVerificationError,
         match="cleanup evidence replay failed",
@@ -6734,13 +5802,15 @@ def test_detached_incomplete_selected_release_binds_selection_and_cleanup(
             expected_identity=_identity(attempt, "failure-release.json", "c"),
             expected_incomplete=incomplete,
             expected_incomplete_identity=incomplete_identity,
+            expected_guardian_absence=guardian,
+            expected_guardian_absence_identity=guardian_identity,
             expected_marker_identity=marker_identity,
             expected_selection_identity=selection_identity,
             expected_lock_identities=fixture.lock_identities,
         )
 
 
-def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
+def test_failure_terminal_release_v3_binds_locks_held_detached_replay(
     tmp_path: Path,
 ) -> None:
     fixture = _formal_fixture(tmp_path)
@@ -6757,28 +5827,6 @@ def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
         "failure-terminal-release.json",
         "4",
     )
-    guardian_absence_identity = _identity(
-        attempt,
-        "containment-guardian-absence.json",
-        "5",
-    )
-    raw_release_identity = _identity(
-        attempt,
-        "supervisor-raw-lock-release.json",
-        "6",
-    )
-    no_reference_completion = {
-        "kind": "NO_REFERENCE_OPENED",
-        "post_unref_absence_identity": "absent",
-        "reference_connection_close_identity": "absent",
-        "reference_release_identity": "absent",
-        "reference_terminal_identity": "absent",
-        "uncertainty_terminal": "absent",
-    }
-    post_root_closure = _post_root_closure(
-        tmp_path,
-        branch="incomplete",
-    )
     record = {
         "authority_scope": success_verifier.AUTHORITY_SCOPE,
         "authorizations": dict(success_verifier.FALSE_AUTHORIZATIONS),
@@ -6787,10 +5835,9 @@ def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
         "campaign_root_identity": fixture.context["campaign_root_identity"],
         "created_at_utc": "2026-07-29T04:00:00Z",
         "detached_substantive_identity": detached_identity,
-        "detached_substantive_kind": "incomplete_v4",
+        "detached_substantive_kind": "detached_incomplete_v3",
         "failure_pre_release_identity": pre_release_identity,
         "formal_selection_identity": selection_identity,
-        "guardian_absence_identity": guardian_absence_identity,
         "lock_identities": fixture.lock_identities,
         "lock_release_effect": {
             "lock_identities": fixture.lock_identities,
@@ -6800,27 +5847,19 @@ def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
         "outcome": "INCOMPLETE",
         "package_id": fixture.context["package_id"],
         "phase": "SELECTION_RECORDED_OUTER_NOT_LAUNCHED",
-        "post_root_closure": post_root_closure,
         "production_authority_changed": False,
         "production_certified": False,
-        "reference_completion": no_reference_completion,
         "retry_eligible": False,
         "schema_version": success_verifier.FAILURE_TERMINAL_RELEASE_SCHEMA,
         "stage_b_changed": False,
         "status": "INCOMPLETE_RELEASED",
         "success_eligible": False,
-        "supervisor_raw_lock_release_identity": raw_release_identity,
         "terminal_join": {
-            "broker_absent_before_manifest": True,
-            "detached_substantive_before_guardian_absence": True,
-            "formal_root_closed_before_outside_replays": True,
-            "guardian_absence_before_raw_lock_release": True,
-            "outside_replays_before_final_join": True,
-            "raw_lock_release_before_reference_completion": True,
-            "recovery_disarmed_before_manifest": True,
-            "reference_connection_close_before_final_join": False,
-            "reference_uncertainty_is_terminal": True,
+            "detached_substantive_before_supervisor_release": True,
+            "locks_released_after_substantive_verification": True,
+            "terminal_predecessor_is_unique": True,
         },
+        "terminal_predecessor_identity": "absent",
         "upper_bound": [1188, 18],
     }
     checked = success_verifier.validate_failure_terminal_release(
@@ -6829,19 +5868,16 @@ def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
         expected_identity=terminal_identity,
         expected_lock_identities=fixture.lock_identities,
         expected_detached_substantive_identity=detached_identity,
-        expected_detached_substantive_kind="incomplete_v4",
+        expected_detached_substantive_kind="detached_incomplete_v3",
         expected_failure_pre_release_identity=pre_release_identity,
         expected_selection_identity=selection_identity,
-        expected_guardian_absence_identity=guardian_absence_identity,
-        expected_raw_lock_release_identity=raw_release_identity,
-        expected_reference_completion=no_reference_completion,
-        expected_post_root_closure=post_root_closure,
+        expected_terminal_predecessor_identity="absent",
     )
     assert checked["detached_substantive_identity"] == detached_identity
 
     legacy = deepcopy(record)
     legacy["schema_version"] = (
-        "noncert-cuts-ab16-formal-failure-terminal-release-v3"
+        "noncert-cuts-ab16-formal-failure-release-v2"
     )
     with pytest.raises(
         success_verifier.FormalSuccessVerificationError,
@@ -6853,13 +5889,10 @@ def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
             expected_identity=terminal_identity,
             expected_lock_identities=fixture.lock_identities,
             expected_detached_substantive_identity=detached_identity,
-            expected_detached_substantive_kind="incomplete_v4",
+            expected_detached_substantive_kind="detached_incomplete_v3",
             expected_failure_pre_release_identity=pre_release_identity,
             expected_selection_identity=selection_identity,
-            expected_guardian_absence_identity=guardian_absence_identity,
-            expected_raw_lock_release_identity=raw_release_identity,
-            expected_reference_completion=no_reference_completion,
-            expected_post_root_closure=post_root_closure,
+            expected_terminal_predecessor_identity="absent",
         )
 
     success_detached = _identity(
@@ -6879,59 +5912,31 @@ def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
         ).name,
         "5",
     )
-    closed_completion = {
-        "kind": "RECORDED_CONNECTION_CLOSED",
-        "post_unref_absence_identity": _identity(
-            attempt, "post-unref-absence.json", "7"
-        ),
-        "reference_connection_close_identity": _identity(
-            attempt, "reference-connection-close.json", "8"
-        ),
-        "reference_release_identity": _identity(
-            attempt, "reference-release.json", "9"
-        ),
-        "reference_terminal_identity": _identity(
-            attempt, "reference-terminal.json", "a"
-        ),
-        "uncertainty_terminal": "absent",
-    }
-    success_guardian_absence_identity = _identity(
+    dual_identity = _identity(
         Path(
             str(
                 fixture.context["outer_spec"]["receipt_paths"][
-                    "guardian_absence"
+                    "dual_lock_release"
                 ]
             )
         ).parent,
         Path(
             str(
                 fixture.context["outer_spec"]["receipt_paths"][
-                    "guardian_absence"
+                    "dual_lock_release"
                 ]
             )
         ).name,
-        "b",
+        "6",
     )
     post_release = deepcopy(record)
     post_release.update(
         {
             "detached_substantive_identity": success_detached,
-            "detached_substantive_kind": "success_v3",
+            "detached_substantive_kind": "pre_release_success_v2",
             "failure_pre_release_identity": "absent",
-            "guardian_absence_identity": success_guardian_absence_identity,
             "phase": "FINAL_SUCCESS_RETURN_FAILED_OR_UNCERTAIN",
-            "reference_completion": closed_completion,
-            "terminal_join": {
-                "broker_absent_before_manifest": True,
-                "detached_substantive_before_guardian_absence": True,
-                "formal_root_closed_before_outside_replays": True,
-                "guardian_absence_before_raw_lock_release": True,
-                "outside_replays_before_final_join": True,
-                "raw_lock_release_before_reference_completion": True,
-                "recovery_disarmed_before_manifest": True,
-                "reference_connection_close_before_final_join": True,
-                "reference_uncertainty_is_terminal": False,
-            },
+            "terminal_predecessor_identity": dual_identity,
         }
     )
     checked_post_release = (
@@ -6941,20 +5946,17 @@ def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
             expected_identity=terminal_identity,
             expected_lock_identities=fixture.lock_identities,
             expected_detached_substantive_identity=success_detached,
-            expected_detached_substantive_kind="success_v3",
+            expected_detached_substantive_kind="pre_release_success_v2",
             expected_failure_pre_release_identity="absent",
             expected_selection_identity=selection_identity,
-            expected_guardian_absence_identity=success_guardian_absence_identity,
-            expected_raw_lock_release_identity=raw_release_identity,
-            expected_reference_completion=closed_completion,
-            expected_post_root_closure=post_root_closure,
+            expected_terminal_predecessor_identity=dual_identity,
         )
     )
-    assert checked_post_release["reference_completion"] == closed_completion
+    assert checked_post_release["terminal_predecessor_identity"] == dual_identity
 
     early_release = deepcopy(record)
     early_release["terminal_join"][
-        "detached_substantive_before_guardian_absence"
+        "detached_substantive_before_supervisor_release"
     ] = False
     with pytest.raises(
         success_verifier.FormalSuccessVerificationError,
@@ -6966,45 +5968,10 @@ def test_failure_terminal_release_v4_binds_raw_release_and_reference_terminal(
             expected_identity=terminal_identity,
             expected_lock_identities=fixture.lock_identities,
             expected_detached_substantive_identity=detached_identity,
-            expected_detached_substantive_kind="incomplete_v4",
+            expected_detached_substantive_kind="detached_incomplete_v3",
             expected_failure_pre_release_identity=pre_release_identity,
             expected_selection_identity=selection_identity,
-            expected_guardian_absence_identity=guardian_absence_identity,
-            expected_raw_lock_release_identity=raw_release_identity,
-            expected_reference_completion=no_reference_completion,
-            expected_post_root_closure=post_root_closure,
-        )
-
-    false_uncertainty = {
-        "kind": "CONNECTION_UNCERTAIN",
-        "post_unref_absence_identity": "unrecorded",
-        "reference_connection_close_identity": "unrecorded",
-        "reference_release_identity": "unrecorded",
-        "reference_terminal_identity": "unrecorded",
-        "uncertainty_terminal": {
-            "identity": _identity(attempt, "reference-release.json", "c"),
-            "kind": "RECORDED",
-        },
-    }
-    false_uncertainty_record = deepcopy(record)
-    false_uncertainty_record["reference_completion"] = false_uncertainty
-    with pytest.raises(
-        success_verifier.FormalSuccessVerificationError,
-        match="uncertain failure completion claims a certain terminal",
-    ):
-        success_verifier.validate_failure_terminal_release(
-            false_uncertainty_record,
-            context=fixture.context,
-            expected_identity=terminal_identity,
-            expected_lock_identities=fixture.lock_identities,
-            expected_detached_substantive_identity=detached_identity,
-            expected_detached_substantive_kind="incomplete_v4",
-            expected_failure_pre_release_identity=pre_release_identity,
-            expected_selection_identity=selection_identity,
-            expected_guardian_absence_identity=guardian_absence_identity,
-            expected_raw_lock_release_identity=raw_release_identity,
-            expected_reference_completion=false_uncertainty,
-            expected_post_root_closure=post_root_closure,
+            expected_terminal_predecessor_identity="absent",
         )
 
 
@@ -7015,6 +5982,11 @@ def test_containment_pre_release_cleanup_rejects_any_lock_release_effect(
     ledger = _failure_ledger(
         fixture,
         child_audit_identity=_identity(tmp_path, "child-audit.json", "1"),
+    )
+    guardian = _failure_guardian_record(
+        fixture,
+        ledger=ledger,
+        formal_selection_identity=_identity(tmp_path, "selection.json", "2"),
     )
     returned = _identity(
         Path(str(fixture.context["formal_attempt_dir"])),
@@ -7041,14 +6013,9 @@ def test_containment_pre_release_cleanup_rejects_any_lock_release_effect(
             "returned_identity": returned,
         },
         "errors": [],
+        "final_observation": _failure_observation(ledger),
         "frozen_ledger": ledger,
-        "reference_state": {
-            "acquisition_identity": "absent",
-            "connection_verification": "absent",
-            "kind": "NO_REFERENCE_OPENED",
-            "terminal_identity": "absent",
-        },
-        "runtime_quiescence": _failure_quiescence(ledger),
+        "reference_terminal": {"kind": "NO_REFERENCE_OPENED"},
     }
     incomplete = {
         "joins": {
@@ -7064,6 +6031,7 @@ def test_containment_pre_release_cleanup_rejects_any_lock_release_effect(
             cleanup,
             context=fixture.context,
             incomplete=incomplete,
+            guardian_absence=guardian,
             phase="CONTAINMENT_HOLD",
         )
     clean = deepcopy(cleanup)
@@ -7073,6 +6041,7 @@ def test_containment_pre_release_cleanup_rejects_any_lock_release_effect(
         clean,
         context=fixture.context,
         incomplete=incomplete,
+        guardian_absence=guardian,
         phase="CONTAINMENT_HOLD",
     )
     assert checked["containment_lock_release_identity"] == "absent"
@@ -7090,6 +6059,7 @@ def test_containment_pre_release_cleanup_rejects_any_lock_release_effect(
         direct,
         context=fixture.context,
         incomplete={"joins": {}},
+        guardian_absence=guardian,
         phase="SELECTION_RECORDED_OUTER_NOT_LAUNCHED",
     )
     assert checked_direct["containment_lock_release_publication"] == "absent"
@@ -7380,9 +6350,6 @@ def test_selected_loader_imports_role_from_materialized_snapshot_without_effects
         / "payload"
         / "tool.ab16_formal_loader_v1.py"
     )
-    package_authority = package_loader.with_name(
-        "tool.ab16_authority_v2.py"
-    )
     for relative in (Path("docs/__init__.py"), Path("docs/research/__init__.py")):
         source = repository / relative
         if source.exists():
@@ -7397,8 +6364,6 @@ def test_selected_loader_imports_role_from_materialized_snapshot_without_effects
     shutil.copy2(repository / "PROJECT_LOCK.md", snapshot_root / "PROJECT_LOCK.md")
     package_loader.parent.mkdir(parents=True)
     shutil.copy2(Path(loader.__file__), package_loader)
-    shutil.copy2(Path(authority.__file__), package_authority)
-    package_authority.chmod(loader.PACKAGE_PAYLOAD_MODE)
 
     formal_dir = campaign / "formal-ab16"
     before = _tree_bytes_snapshot(campaign)
@@ -7414,23 +6379,15 @@ import sys
 from types import ModuleType
 
 loader_path = Path(sys.argv[1])
-authority_path = Path(sys.argv[2])
-snapshot_root = Path(sys.argv[3])
-campaign_dir = Path(sys.argv[4])
-role_expected = sys.argv[5]
-module_expected = sys.argv[6]
-role_relative = sys.argv[7]
+snapshot_root = Path(sys.argv[2])
+campaign_dir = Path(sys.argv[3])
+role_expected = sys.argv[4]
+module_expected = sys.argv[5]
+role_relative = sys.argv[6]
 descriptor = os.open(loader_path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
 os.dup2(descriptor, 4)
 if descriptor != 4:
     os.close(descriptor)
-authority_descriptor = os.open(
-    authority_path,
-    os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
-)
-os.dup2(authority_descriptor, 5)
-if authority_descriptor != 5:
-    os.close(authority_descriptor)
 metadata = os.fstat(4)
 raw = os.pread(4, metadata.st_size, 0)
 expected = {
@@ -7474,18 +6431,7 @@ role_source = (
 )
 loader_identity = identity(loader_path)
 role_identity = identity(role_source)
-authority_metadata = os.fstat(5)
-authority_raw = os.pread(5, authority_metadata.st_size, 0)
-selected_authority = module.load_selected_authority_from_fd(
-    campaign_dir=campaign_dir,
-    descriptor=5,
-    expected_identity={
-        "mode": stat.S_IMODE(authority_metadata.st_mode),
-        "path": str(authority_path),
-        "sha256": hashlib.sha256(authority_raw).hexdigest(),
-        "size_bytes": len(authority_raw),
-    },
-)
+authority = ModuleType("_selected_authority")
 
 def replay_loader_context(*, campaign_dir, role, role_module, role_path):
     assert Path(campaign_dir) == campaign_dir_expected
@@ -7513,10 +6459,12 @@ def replay_loader_context(*, campaign_dir, role, role_module, role_path):
 def snapshot_regular(path):
     return Path(path)
 
-selected_authority.replay_loader_context = replay_loader_context
+authority.replay_loader_context = replay_loader_context
+authority.snapshot_regular = snapshot_regular
+authority.detached_identity = identity
 campaign_dir_expected = campaign_dir
 loaded = module.load_verified_role(
-    selected_authority,
+    authority,
     campaign_dir=campaign_dir,
     role=role_expected,
     executing_loader_module=verified,
@@ -7530,11 +6478,8 @@ if role_expected == "formal-orchestrator":
     assert loaded.module.bootstrap is snapshot_bootstrap
     assert snapshot_bootstrap._PREPACKAGE_STATE is None
     assert snapshot_bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1
-    assert snapshot_bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2
     assert snapshot_bootstrap.OWNER_OEXCL_PUBLISH_V1
-    assert loaded.module._formal_campaign_module() is sys.modules[
-        "docs.research.noncert_cuts_ab16_20260724.ab16_formal_campaign_v1"
-    ]
+    assert loaded.module._FORMAL_CAMPAIGN_MODULE is None
 assert not (campaign_dir / "formal-ab16").exists()
 print("PASS")
 """
@@ -7546,7 +6491,6 @@ print("PASS")
             "-c",
             probe,
             str(package_loader),
-            str(package_authority),
             str(snapshot_root),
             str(campaign),
             role,

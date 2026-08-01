@@ -21,8 +21,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import secrets
-import signal
 import socket
 import stat
 import sys
@@ -36,24 +34,13 @@ from docs.research.noncert_cuts_ab16_20260724 import (
     ab16_campaign_bootstrap_v2 as bootstrap,
 )
 from docs.research.noncert_cuts_ab16_20260724 import (
-    ab16_budget_broker_v1 as budget_broker,
-)
-from docs.research.noncert_cuts_ab16_20260724 import (
-    ab16_formal_campaign_v1 as formal_campaign,
-)
-from docs.research.noncert_cuts_ab16_20260724 import (
     ab16_formal_launch_validator_v1 as launch_validator,
 )
 
 
 AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
-LEGACY_REQUEST_SCHEMA = "noncert-cuts-ab16-formal-launch-owner-request-v1"
-LEGACY_RESPONSE_SCHEMA = "noncert-cuts-ab16-formal-launch-owner-response-v1"
-REQUEST_SCHEMA = "noncert-cuts-ab16-formal-launch-owner-request-v2"
-RESPONSE_SCHEMA = "noncert-cuts-ab16-formal-launch-owner-response-v2"
-FORMAL_SUPERVISOR_SESSION_SCHEMA = (
-    "noncert-cuts-ab16-formal-supervisor-session-v1"
-)
+REQUEST_SCHEMA = "noncert-cuts-ab16-formal-launch-owner-request-v1"
+RESPONSE_SCHEMA = "noncert-cuts-ab16-formal-launch-owner-response-v1"
 SESSION_ID = "formal-owner-session-a001"
 PREREQUISITE_WAIT_SECONDS = 600.0
 SUPERVISOR_WAIT_SECONDS = 64_800.0
@@ -78,10 +65,25 @@ class FormalOrchestrationError(RuntimeError):
     """The external owner/supervisor join failed closed."""
 
 
-def _formal_campaign_module() -> ModuleType:
-    """Return the package-pinned supervisor bound during retained-FD load."""
+_FORMAL_CAMPAIGN_MODULE: ModuleType | None = None
 
-    return formal_campaign
+
+def _formal_campaign_module() -> ModuleType:
+    """Import the package-pinned supervisor with its legacy local imports."""
+
+    global _FORMAL_CAMPAIGN_MODULE
+    if _FORMAL_CAMPAIGN_MODULE is not None:
+        return _FORMAL_CAMPAIGN_MODULE
+    research = str(Path(__file__).resolve().parent)
+    sys.path.insert(0, research)
+    try:
+        from docs.research.noncert_cuts_ab16_20260724 import (
+            ab16_formal_campaign_v1,
+        )
+    finally:
+        sys.path.remove(research)
+    _FORMAL_CAMPAIGN_MODULE = ab16_formal_campaign_v1
+    return ab16_formal_campaign_v1
 
 
 def _utc_now() -> str:
@@ -240,7 +242,6 @@ class OwnerSession:
         sequence: int,
         kind: str,
         draft: Mapping[str, object],
-        expected_status: str = "PUBLISHED",
     ) -> dict[str, Any]:
         if self.reaped or _process_starttime(self.pid) != self.actor["starttime"]:
             raise FormalOrchestrationError("formal owner actor is no longer live")
@@ -265,89 +266,13 @@ class OwnerSession:
                 "status",
             }
             or response["schema_version"] != RESPONSE_SCHEMA
-            or response["status"] != expected_status
+            or response["status"] != "PUBLISHED"
             or response["sequence"] != sequence
             or response["kind"] != kind
             or response["actor"] != self.actor
         ):
             raise FormalOrchestrationError(
                 f"formal owner {kind} response drifted"
-            )
-        return response
-
-    def prepare_selection(
-        self,
-        draft: Mapping[str, object],
-    ) -> dict[str, Any]:
-        """Render and validate once without creating the selection path."""
-
-        return self.request(
-            sequence=2,
-            kind="selection",
-            draft=draft,
-            expected_status="PREPARED",
-        )
-
-    def commit_prepared_selection(
-        self,
-        *,
-        prepared_selection_identity: Mapping[str, object],
-        preregistration_receipt_identity: Mapping[str, object],
-        broker_binding_receipt_identity: Mapping[str, object],
-    ) -> dict[str, Any]:
-        """Publish only the exact bytes returned by PREPARE."""
-
-        if self.reaped or _process_starttime(self.pid) != self.actor["starttime"]:
-            raise FormalOrchestrationError(
-                "formal owner died before selection commit"
-            )
-        _send_frame(
-            self.control,
-            {
-                "broker_binding_receipt_identity": dict(
-                    broker_binding_receipt_identity
-                ),
-                "kind": "selection-commit",
-                "prepared_selection_identity": dict(
-                    prepared_selection_identity
-                ),
-                "preregistration_receipt_identity": dict(
-                    preregistration_receipt_identity
-                ),
-                "schema_version": REQUEST_SCHEMA,
-                "sequence": 3,
-            },
-        )
-        response = _read_frame(
-            self.control,
-            "formal owner selection commit",
-        )
-        if (
-            set(response)
-            != {
-                "actor",
-                "artifact_identity",
-                "broker_binding_receipt_identity",
-                "kind",
-                "preregistration_receipt_identity",
-                "schema_version",
-                "sequence",
-                "status",
-            }
-            or response["schema_version"] != RESPONSE_SCHEMA
-            or response["status"] != "PUBLISHED"
-            or response["sequence"] != 3
-            or response["kind"] != "selection-commit"
-            or response["actor"] != self.actor
-            or response["artifact_identity"]
-            != dict(prepared_selection_identity)
-            or response["preregistration_receipt_identity"]
-            != dict(preregistration_receipt_identity)
-            or response["broker_binding_receipt_identity"]
-            != dict(broker_binding_receipt_identity)
-        ):
-            raise FormalOrchestrationError(
-                "formal owner selection COMMIT response drifted"
             )
         return response
 
@@ -370,14 +295,14 @@ class OwnerSession:
                 {
                     "kind": "handoff-complete",
                     "schema_version": REQUEST_SCHEMA,
-                    "sequence": 4,
+                    "sequence": 3,
                 },
             )
             response = _read_frame(self.control, "formal owner handoff")
             if response != {
                 "actor": self.actor,
                 "schema_version": RESPONSE_SCHEMA,
-                "sequence": 4,
+                "sequence": 3,
                 "status": "HANDOFF_COMPLETE",
             }:
                 raise FormalOrchestrationError(
@@ -444,1309 +369,8 @@ class OwnerSession:
             ) from errors[0]
 
 
-@dataclass
-class DelayedFormalLaunchOwnerProcess:
-    """Package-loaded actor blocked until the broker registers its grant."""
-
-    pid: int
-    pidfd: int
-    pidfd_method: str
-    control: socket.socket | None
-    release_descriptor: int
-    actor: dict[str, object]
-    released: bool = False
-    control_transferred: bool = False
-
-    def _control(self) -> socket.socket:
-        if self.control is None:
-            raise FormalOrchestrationError(
-                "delayed formal owner control was already transferred"
-            )
-        return self.control
-
-    def release_and_wait_ready(
-        self,
-        *,
-        expected_grant: Mapping[str, object],
-    ) -> dict[str, object]:
-        if self.released:
-            raise FormalOrchestrationError(
-                "delayed formal owner cannot be released twice"
-            )
-        self.released = True
-        descriptor = self.release_descriptor
-        self.release_descriptor = -1
-        try:
-            if os.write(descriptor, b"1") != 1:
-                raise FormalOrchestrationError(
-                    "delayed formal owner release was short"
-                )
-        finally:
-            os.close(descriptor)
-        ready = _read_frame(
-            self._control(),
-            "delayed formal owner ready",
-        )
-        if (
-            ready.get("schema_version") == RESPONSE_SCHEMA
-            and ready.get("status") == "FAIL_CLOSED"
-            and isinstance(ready.get("error"), str)
-        ):
-            raise FormalOrchestrationError(
-                "delayed formal owner failed before READY: "
-                f"{ready['error']}"
-            )
-        if (
-            ready
-            != {
-                "actor": self.actor,
-                "broker_grant": dict(expected_grant),
-                "schema_version": RESPONSE_SCHEMA,
-                "status": "BROKER_SESSION_RETAINED",
-            }
-        ):
-            raise FormalOrchestrationError(
-                "delayed formal owner READY drifted"
-            )
-        return dict(ready)
-
-    def deliver_context(
-        self,
-        context: Mapping[str, object],
-    ) -> dict[str, object]:
-        if not self.released:
-            raise FormalOrchestrationError(
-                "delayed formal owner lacks its broker session"
-            )
-        raw = authority.canonical_json(dict(context))
-        identity = _message_identity(raw)
-        _send_frame(
-            self._control(),
-            {
-                "context": dict(context),
-                "context_identity": identity,
-                "kind": "delayed-context",
-                "schema_version": REQUEST_SCHEMA,
-                "sequence": 1,
-            },
-        )
-        response = _read_frame(
-            self._control(),
-            "delayed formal owner context acknowledgement",
-        )
-        if (
-            response
-            != {
-                "actor": self.actor,
-                "context_identity": identity,
-                "schema_version": RESPONSE_SCHEMA,
-                "sequence": 1,
-                "status": "CONTEXT_RETAINED",
-            }
-        ):
-            raise FormalOrchestrationError(
-                "delayed formal owner context acknowledgement drifted"
-            )
-        return dict(response)
-
-    def detach_control_descriptor(self) -> int:
-        if (
-            not self.released
-            or self.control_transferred
-            or self.control is None
-        ):
-            raise FormalOrchestrationError(
-                "delayed formal owner control cannot be transferred"
-            )
-        self.control_transferred = True
-        control = self.control
-        self.control = None
-        return control.detach()
-
-    def close(self) -> None:
-        primary: BaseException | None = None
-        if self.release_descriptor >= 0:
-            try:
-                os.close(self.release_descriptor)
-            except BaseException as exc:
-                primary = exc
-            self.release_descriptor = -1
-        control = self.control
-        self.control = None
-        if control is not None:
-            try:
-                control.close()
-            except BaseException as exc:
-                if primary is None:
-                    primary = exc
-                else:
-                    primary.add_note(
-                        f"delayed owner control close also failed: {exc}"
-                    )
-        try:
-            while True:
-                try:
-                    observed, _status = os.waitpid(self.pid, 0)
-                    if observed != self.pid:
-                        raise FormalOrchestrationError(
-                            "delayed owner wait returned a different PID"
-                        )
-                    break
-                except InterruptedError:
-                    continue
-        except ChildProcessError:
-            pass
-        except BaseException as exc:
-            if primary is None:
-                primary = exc
-            else:
-                primary.add_note(
-                    f"delayed owner wait also failed: {exc}"
-                )
-        try:
-            os.close(self.pidfd)
-        except BaseException as exc:
-            if primary is None:
-                primary = exc
-            else:
-                primary.add_note(
-                    f"delayed owner pidfd close also failed: {exc}"
-                )
-        self.pidfd = -1
-        if primary is not None:
-            raise primary
-
-
-@dataclass
-class ClaimedOwnerSession:
-    """One broker-relayed control FD for the already-running package actor."""
-
-    owner: OwnerSession
-    broker_client: Any
-    claim_identity: dict[str, object]
-    handoff_complete: bool = False
-
-    @property
-    def actor(self) -> dict[str, object]:
-        return self.owner.actor
-
-    @property
-    def pid(self) -> int:
-        return self.owner.pid
-
-    @property
-    def reaped(self) -> bool:
-        return self.owner.reaped
-
-    def deliver_context(
-        self,
-        context: Mapping[str, object],
-    ) -> dict[str, object]:
-        raw = authority.canonical_json(dict(context))
-        identity = _message_identity(raw)
-        _send_frame(
-            self.owner.control,
-            {
-                "context": dict(context),
-                "context_identity": identity,
-                "kind": "delayed-context",
-                "schema_version": REQUEST_SCHEMA,
-                "sequence": 1,
-            },
-        )
-        response = _read_frame(
-            self.owner.control,
-            "claimed formal owner context acknowledgement",
-        )
-        if response != {
-            "actor": self.actor,
-            "context_identity": identity,
-            "schema_version": RESPONSE_SCHEMA,
-            "sequence": 1,
-            "status": "CONTEXT_RETAINED",
-        }:
-            raise FormalOrchestrationError(
-                "claimed formal owner context acknowledgement drifted"
-            )
-        return dict(response)
-
-    def request(self, **kwargs: object) -> dict[str, Any]:
-        return self.owner.request(**kwargs)
-
-    def register_formal_supervisor(
-        self,
-        payload: Mapping[str, object],
-        *,
-        pidfd: int,
-    ) -> dict[str, object]:
-        expected_peer = payload.get("expected_peer")
-        package_id = payload.get("package_id")
-        if (
-            type(expected_peer) is not dict
-            or type(package_id) is not str
-            or len(package_id) != 64
-        ):
-            raise FormalOrchestrationError(
-                "formal supervisor registration payload drifted"
-            )
-        _send_frame(
-            self.owner.control,
-            {
-                "expected_peer": dict(expected_peer),
-                "kind": "supervisor-register",
-                "package_id": package_id,
-                "schema_version": REQUEST_SCHEMA,
-                "sequence": 2,
-            },
-        )
-        self.broker_client.native_helper.send_fd(
-            self.owner.control.fileno(),
-            pidfd,
-        )
-        response = _read_frame(
-            self.owner.control,
-            "claimed formal owner supervisor registration",
-        )
-        session = response.get("session")
-        if (
-            set(response)
-            != {
-                "actor",
-                "schema_version",
-                "sequence",
-                "session",
-                "status",
-            }
-            or response["actor"] != self.actor
-            or response["schema_version"] != RESPONSE_SCHEMA
-            or response["sequence"] != 2
-            or response["status"] != "SUPERVISOR_REGISTERED"
-            or type(session) is not dict
-            or session.get("schema_version")
-            != FORMAL_SUPERVISOR_SESSION_SCHEMA
-            or session.get("expected_peer") != expected_peer
-            or session.get("package_id") != package_id
-            or session.get("owner_actor") != self.actor
-        ):
-            raise FormalOrchestrationError(
-                "claimed formal owner supervisor registration drifted"
-            )
-        return dict(session)
-
-    def prepare_selection(
-        self,
-        draft: Mapping[str, object],
-    ) -> dict[str, Any]:
-        return self.owner.prepare_selection(draft)
-
-    def commit_prepared_selection(
-        self,
-        **kwargs: object,
-    ) -> dict[str, Any]:
-        return self.owner.commit_prepared_selection(**kwargs)
-
-    def prepare_bound_selection(
-        self,
-        *,
-        admission: Mapping[str, object],
-        admission_identity: Mapping[str, object],
-        guardian_ready: Mapping[str, object],
-        guardian_ready_identity: Mapping[str, object],
-        attempt_consumption: Mapping[str, object],
-        attempt_consumption_identity: Mapping[str, object],
-    ) -> dict[str, Any]:
-        _send_frame(
-            self.owner.control,
-            {
-                "admission": dict(admission),
-                "admission_identity": dict(admission_identity),
-                "attempt_consumption": dict(attempt_consumption),
-                "attempt_consumption_identity": dict(
-                    attempt_consumption_identity
-                ),
-                "guardian_ready": dict(guardian_ready),
-                "guardian_ready_identity": dict(
-                    guardian_ready_identity
-                ),
-                "kind": "selection-prepare",
-                "schema_version": REQUEST_SCHEMA,
-                "sequence": 3,
-            },
-        )
-        response = _read_frame(
-            self.owner.control,
-            "claimed formal owner selection PREPARE",
-        )
-        if (
-            response.get("status") == "FAIL_CLOSED"
-            and type(response.get("error")) is str
-        ):
-            raise FormalOrchestrationError(
-                "claimed formal owner selection PREPARE failed closed: "
-                f"{response['error']}"
-            )
-        if (
-            set(response)
-            != {
-                "actor",
-                "artifact_identity",
-                "kind",
-                "manager_openfile_grant",
-                "preregistration_receipt_identity",
-                "schema_version",
-                "sequence",
-                "status",
-            }
-            or response["actor"] != self.actor
-            or response["kind"] != "selection-prepare"
-            or response["schema_version"] != RESPONSE_SCHEMA
-            or response["sequence"] != 3
-            or response["status"] != "PREPARED"
-        ):
-            raise FormalOrchestrationError(
-                "claimed formal owner selection PREPARE drifted"
-            )
-        return response
-
-    def commit_bound_selection(
-        self,
-        *,
-        prepared_selection_identity: Mapping[str, object],
-    ) -> dict[str, Any]:
-        _send_frame(
-            self.owner.control,
-            {
-                "kind": "selection-commit",
-                "prepared_selection_identity": dict(
-                    prepared_selection_identity
-                ),
-                "schema_version": REQUEST_SCHEMA,
-                "sequence": 4,
-            },
-        )
-        response = _read_frame(
-            self.owner.control,
-            "claimed formal owner selection COMMIT",
-        )
-        if (
-            response.get("status") == "FAIL_CLOSED"
-            and type(response.get("error")) is str
-        ):
-            raise FormalOrchestrationError(
-                "claimed formal owner selection COMMIT failed closed: "
-                f"{response['error']}"
-            )
-        if (
-            set(response)
-            != {
-                "actor",
-                "artifact_identity",
-                "broker_binding_receipt_identity",
-                "kind",
-                "preregistration_receipt_identity",
-                "schema_version",
-                "sequence",
-                "status",
-            }
-            or response["actor"] != self.actor
-            or response["kind"] != "selection-commit"
-            or response["schema_version"] != RESPONSE_SCHEMA
-            or response["sequence"] != 4
-            or response["status"] != "PUBLISHED"
-        ):
-            raise FormalOrchestrationError(
-                "claimed formal owner selection COMMIT drifted"
-            )
-        return response
-
-    def complete_handoff(self) -> None:
-        _send_frame(
-            self.owner.control,
-            {
-                "kind": "handoff-complete",
-                "schema_version": REQUEST_SCHEMA,
-                "sequence": 5,
-            },
-        )
-        response = _read_frame(
-            self.owner.control,
-            "claimed formal owner handoff",
-        )
-        if response != {
-            "actor": self.actor,
-            "schema_version": RESPONSE_SCHEMA,
-            "sequence": 5,
-            "status": "HANDOFF_COMPLETE",
-        }:
-            raise FormalOrchestrationError(
-                "claimed formal owner handoff response drifted"
-            )
-        self.handoff_complete = True
-
-    def close(self) -> None:
-        primary: BaseException | None = None
-        control_error = self.owner._close_control_once()  # noqa: SLF001
-        if control_error is not None:
-            primary = control_error
-        try:
-            if self.handoff_complete:
-                self.broker_client.close_session()
-            else:
-                self.broker_client.close()
-        except BaseException as exc:
-            if not self.broker_client.closed:
-                try:
-                    self.broker_client.close()
-                except BaseException as cleanup_error:
-                    exc.add_note(
-                        "claim broker raw close also failed: "
-                        f"{type(cleanup_error).__name__}: {cleanup_error}"
-                    )
-            if primary is None:
-                primary = exc
-            else:
-                primary.add_note(
-                    "claim broker session close also failed: "
-                    f"{type(exc).__name__}: {exc}"
-                )
-        if primary is not None:
-            raise primary
-
-
-@dataclass
-class FormalLaunchClaimTransport:
-    """Explicit single-use capability for claiming the delayed package actor."""
-
-    broker_module: Any
-    broker_parent_descriptor: int
-    broker_endpoint_name: str
-    broker_actor: Mapping[str, object]
-    broker_nonce: str
-    claim_descriptor: int
-    claim_identity: Mapping[str, object]
-    native_helper: Any
-    consumed: bool = False
-
-    def claim(
-        self,
-        _context: Mapping[str, object] | None = None,
-    ) -> ClaimedOwnerSession:
-        if self.consumed:
-            raise FormalOrchestrationError(
-                "formal-launch claim transport was already consumed"
-            )
-        # Consumption linearizes before the broker request.  Any transport,
-        # reply, or ACK uncertainty is non-retriable.
-        self.consumed = True
-        return claim_delayed_formal_launch_owner(
-            broker_module=self.broker_module,
-            broker_parent_descriptor=self.broker_parent_descriptor,
-            broker_endpoint_name=self.broker_endpoint_name,
-            broker_actor=self.broker_actor,
-            broker_nonce=self.broker_nonce,
-            claim_descriptor=self.claim_descriptor,
-            claim_identity=self.claim_identity,
-            native_helper=self.native_helper,
-        )
-
-
-@dataclass
-class ConnectedFormalLaunchClaimTransport:
-    """Single-use FD8/FD9 transport supplied by the selected loader."""
-
-    broker_module: Any
-    broker_descriptor: int
-    claim_descriptor: int
-    claim_identity: Mapping[str, object]
-    native_helper: Any
-    consumed: bool = False
-
-    def claim(
-        self,
-        context: Mapping[str, object] | None = None,
-    ) -> ClaimedOwnerSession:
-        if self.consumed:
-            raise FormalOrchestrationError(
-                "connected formal-launch claim was already consumed"
-            )
-        if context is None:
-            raise FormalOrchestrationError(
-                "connected formal-launch claim lacks validated context"
-            )
-        runtime = cast(
-            Mapping[str, object],
-            context["formal_budget_runtime"],
-        )
-        actor = cast(
-            Mapping[str, object],
-            runtime["broker_actor_identity"],
-        )
-        self.consumed = True
-        return claim_delayed_formal_launch_owner_from_descriptor(
-            broker_module=self.broker_module,
-            broker_descriptor=self.broker_descriptor,
-            broker_actor={
-                "schema_version": self.broker_module.ACTOR_SCHEMA,
-                **dict(actor),
-            },
-            broker_nonce=cast(str, runtime["broker_nonce"]),
-            claim_descriptor=self.claim_descriptor,
-            claim_identity=self.claim_identity,
-            native_helper=self.native_helper,
-        )
-
-
-def formal_launch_claim_transport_from_fds(
-    *,
-    broker_descriptor: int,
-    claim_descriptor: int,
-    claim_identity: Mapping[str, object],
-    native_helper: Any,
-) -> ConnectedFormalLaunchClaimTransport:
-    """Adopt only the selected loader's fixed FD8/FD9 capability pair."""
-
-    if broker_descriptor != 8 or claim_descriptor != 9:
-        raise FormalOrchestrationError(
-            "selected formal-launch claim FD assignment drifted"
-        )
-    # The retained-FD loader binds this exact broker before executing the
-    # orchestrator.  Never consult an ambient alias after that transition.
-    broker_module = budget_broker
-    broker_origin = getattr(broker_module, "__file__", None)
-    expected_broker = Path(__file__).resolve().with_name(
-        "ab16_budget_broker_v1.py"
-    )
-    if (
-        type(broker_origin) is not str
-        or Path(broker_origin).resolve(strict=True) != expected_broker
-    ):
-        raise FormalOrchestrationError(
-            "selected formal-launch broker escaped the materialized snapshot"
-        )
-    return ConnectedFormalLaunchClaimTransport(
-        broker_module=broker_module,
-        broker_descriptor=broker_descriptor,
-        claim_descriptor=claim_descriptor,
-        claim_identity=dict(claim_identity),
-        native_helper=native_helper,
-    )
-
-
-def _claim_control_from_client(
-    client: Any,
-    *,
-    claim_identity: Mapping[str, object],
-) -> ClaimedOwnerSession:
-    claimed, acknowledged = client.claim_formal_launch_owner_control()
-    result = claimed.record.get("result")
-    acknowledgement = acknowledged.record.get("result")
-    if (
-        type(result) is not dict
-        or type(acknowledgement) is not dict
-        or result.get("claim_identity") != dict(claim_identity)
-        or acknowledgement
-        != {
-            "claim_identity": dict(claim_identity),
-            "state": "CONTROL_FD_CLAIM_ACKNOWLEDGED",
-        }
-        or result.get("state")
-        != "CONTROL_FD_TRANSFERRED_PENDING_ACK"
-        or len(claimed.descriptors) != 1
-        or type(result.get("owner_actor")) is not dict
-    ):
-        for received in claimed.descriptors:
-            os.close(received)
-        raise FormalOrchestrationError(
-            "formal-launch owner claim response drifted"
-        )
-    control = socket.socket(fileno=claimed.descriptors[0])
-    actor = dict(cast(Mapping[str, object], result["owner_actor"]))
-    return ClaimedOwnerSession(
-        owner=OwnerSession(
-            pid=cast(int, actor["pid"]),
-            control=control,
-            stderr_descriptor=-1,
-            actor=actor,
-        ),
-        broker_client=client,
-        claim_identity=dict(claim_identity),
-    )
-
-
-def claim_delayed_formal_launch_owner_from_descriptor(
-    *,
-    broker_module: Any,
-    broker_descriptor: int,
-    broker_actor: Mapping[str, object],
-    broker_nonce: str,
-    claim_descriptor: int,
-    claim_identity: Mapping[str, object],
-    native_helper: Any,
-) -> ClaimedOwnerSession:
-    """Consume one already-connected selected-loader broker descriptor."""
-
-    client: Any | None = None
-    try:
-        client = broker_module.attach_formal_launch_claim_session(
-            broker_descriptor,
-            broker_actor=broker_actor,
-            broker_nonce=broker_nonce,
-            claim_descriptor=claim_descriptor,
-            claim_identity=claim_identity,
-            native_helper=native_helper,
-        )
-        return _claim_control_from_client(
-            client,
-            claim_identity=claim_identity,
-        )
-    except BaseException:
-        if client is not None:
-            client.close()
-        raise
-
-
-def claim_delayed_formal_launch_owner(
-    *,
-    broker_module: Any,
-    broker_parent_descriptor: int,
-    broker_endpoint_name: str,
-    broker_actor: Mapping[str, object],
-    broker_nonce: str,
-    claim_descriptor: int,
-    claim_identity: Mapping[str, object],
-    native_helper: Any,
-) -> ClaimedOwnerSession:
-    """Claim the sole retained actor control FD without a plaintext token."""
-
-    connection = socket.socket(
-        socket.AF_UNIX,
-        socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
-    )
-    client: Any | None = None
-    try:
-        connection.connect(
-            f"/proc/self/fd/{broker_parent_descriptor}/"
-            f"{broker_endpoint_name}"
-        )
-        descriptor = connection.detach()
-        client = broker_module.attach_formal_launch_claim_session(
-            descriptor,
-            broker_actor=broker_actor,
-            broker_nonce=broker_nonce,
-            claim_descriptor=claim_descriptor,
-            claim_identity=claim_identity,
-            native_helper=native_helper,
-        )
-        return _claim_control_from_client(
-            client,
-            claim_identity=claim_identity,
-        )
-    except BaseException:
-        connection.close()
-        if client is not None:
-            client.close()
-        raise
-
-
-def spawn_delayed_formal_launch_owner(
-    *,
-    broker_module: Any,
-    broker_parent_descriptor: int,
-    broker_endpoint_name: str,
-    broker_actor: Mapping[str, object],
-    broker_nonce: str,
-    credential: str,
-    native_helper: Any,
-    session_id: str,
-) -> DelayedFormalLaunchOwnerProcess:
-    """Fork the package-loaded owner before releasing its broker grant.
-
-    This entrypoint performs no publication, unit start, or solver work.  The
-    child first blocks on a one-byte release.  The broker registers its exact
-    PID/starttime/uid and pidfd grant, then releases it to authenticate and
-    retain the sole control session.
-    """
-
-    parent, child = socket.socketpair(
-        socket.AF_UNIX,
-        socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
-    )
-    release_read, release_write = os.pipe2(os.O_CLOEXEC)
-    pid = os.fork()
-    if pid == 0:
-        parent.close()
-        os.close(release_write)
-        code = 125
-        client: Any | None = None
-        broker_connection: socket.socket | None = None
-        broker_descriptor = -1
-        try:
-            broker_module.close_unlisted_descriptors(
-                {
-                    0,
-                    1,
-                    2,
-                    broker_parent_descriptor,
-                    child.fileno(),
-                    release_read,
-                }
-            )
-            broker_connection = socket.socket(
-                socket.AF_UNIX,
-                socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC,
-            )
-            broker_connection.connect(
-                f"/proc/self/fd/{broker_parent_descriptor}/"
-                f"{broker_endpoint_name}"
-            )
-            os.close(broker_parent_descriptor)
-            broker_parent_descriptor = -1
-            broker_descriptor = broker_connection.detach()
-            broker_connection = None
-            if os.read(release_read, 1) != b"1":
-                raise FormalOrchestrationError(
-                    "delayed formal owner release is absent"
-                )
-            os.close(release_read)
-            release_read = -1
-            client = broker_module.attach_registered_nonarm_session(
-                broker_descriptor,
-                broker_actor=broker_actor,
-                broker_nonce=broker_nonce,
-                credential=credential,
-                role="formal-launch-owner",
-                native_helper=native_helper,
-            )
-            broker_descriptor = -1
-            actor = {
-                "pid": os.getpid(),
-                "role": launch_validator.OWNER_PUBLISHER_ROLE,
-                "session_id": session_id,
-                "starttime": _process_starttime(os.getpid()),
-            }
-            _send_frame(
-                child,
-                {
-                    "actor": actor,
-                    "broker_grant": client.grant.as_record(),
-                    "schema_version": RESPONSE_SCHEMA,
-                    "status": "BROKER_SESSION_RETAINED",
-                },
-            )
-            request = _read_frame(
-                child,
-                "delayed formal owner context",
-            )
-            if (
-                set(request)
-                != {
-                    "context",
-                    "context_identity",
-                    "kind",
-                    "schema_version",
-                    "sequence",
-                }
-                or request["schema_version"] != REQUEST_SCHEMA
-                or request["kind"] != "delayed-context"
-                or request["sequence"] != 1
-                or type(request["context"]) is not dict
-                or request["context_identity"]
-                != _message_identity(
-                    authority.canonical_json(request["context"])
-                )
-            ):
-                raise FormalOrchestrationError(
-                    "delayed formal owner context frame drifted"
-                )
-            checked_context = launch_validator.validate_formal_context(
-                request["context"]
-            )
-            # Retain the validated object in this actor.  Formal admission is
-            # released only by the later explicit lifecycle command; bootstrap
-            # context delivery itself performs no heavy or authority action.
-            retained_context = dict(checked_context)
-            if not retained_context:
-                raise FormalOrchestrationError(
-                    "delayed formal owner context is empty"
-                )
-            _send_frame(
-                child,
-                {
-                    "actor": actor,
-                    "context_identity": request["context_identity"],
-                    "schema_version": RESPONSE_SCHEMA,
-                    "sequence": 1,
-                    "status": "CONTEXT_RETAINED",
-                },
-            )
-            prepared_raw: bytes | None = None
-            prepared_identity: dict[str, object] | None = None
-            manager_credential: str | None = None
-            preregistration_receipt: dict[str, object] | None = None
-            supervisor_session_issued = False
-
-            def publish_launch_artifact(
-                *,
-                label: str,
-                raw: bytes,
-                expected_path: str,
-            ) -> dict[str, object]:
-                specification = client.request(
-                    "GET_FORMAL_LAUNCH_ARTIFACT_SPEC",
-                    {"label": label},
-                ).record["result"]
-                if type(specification) is not dict:
-                    raise FormalOrchestrationError(
-                        "formal-launch artifact specification is absent"
-                    )
-                root = Path(
-                    str(
-                        cast(
-                            Mapping[str, object],
-                            retained_context["formal_budget_runtime"],
-                        )["formal_root_contract_identity"]["path"]  # type: ignore[index]
-                    )
-                ).parent
-                target = root / str(specification["relative_path"])
-                if target != Path(expected_path):
-                    raise FormalOrchestrationError(
-                        "formal-launch artifact path differs from broker policy"
-                    )
-                source = native_helper.create_memfd(
-                    "ab16-formal-launch-artifact"
-                )
-                try:
-                    offset = 0
-                    while offset < len(raw):
-                        count = os.pwrite(source, raw[offset:], offset)
-                        if count <= 0:
-                            raise FormalOrchestrationError(
-                                "formal-launch memfd write made no progress"
-                            )
-                        offset += count
-                    os.fsync(source)
-                    if (
-                        native_helper.install_final_seals(source)
-                        != native_helper.final_seal_mask
-                        or native_helper.get_seals(source)
-                        != native_helper.final_seal_mask
-                        or native_helper.has_writable_mapping(source)
-                    ):
-                        raise FormalOrchestrationError(
-                            "formal-launch memfd seal verification failed"
-                        )
-                    publication = client.publish_descriptor(
-                        {
-                            "arm_slot": None,
-                            "artifact_class": specification[
-                                "artifact_class"
-                            ],
-                            "channel": None,
-                            "expected_sha256": hashlib.sha256(
-                                raw
-                            ).hexdigest(),
-                            "label": label,
-                            "maximum_bytes": specification[
-                                "maximum_bytes"
-                            ],
-                            "relative_path": specification[
-                                "relative_path"
-                            ],
-                            "sequence": None,
-                            "size_bytes": len(raw),
-                        },
-                        descriptor=source,
-                    ).record["result"]
-                finally:
-                    os.close(source)
-                if (
-                    type(publication) is not dict
-                    or publication.get("sha256")
-                    != hashlib.sha256(raw).hexdigest()
-                    or publication.get("size_bytes") != len(raw)
-                ):
-                    raise FormalOrchestrationError(
-                        "formal-launch broker publication drifted"
-                    )
-                return {
-                    "path": str(target),
-                    "sha256": publication["sha256"],
-                    "size_bytes": publication["size_bytes"],
-                }
-
-            while True:
-                command = _read_frame(
-                    child,
-                    "delayed formal owner lifecycle command",
-                )
-                kind = command.get("kind")
-                sequence = command.get("sequence")
-                if (
-                    kind == "admission"
-                    and sequence == 1
-                    and set(command)
-                    == {"draft", "kind", "schema_version", "sequence"}
-                ):
-                    admission = launch_validator.validate_admission(
-                        command["draft"],
-                        expected_context=retained_context,
-                    )
-                    admission_raw = authority.canonical_json(admission)
-                    identity = publish_launch_artifact(
-                        label="formal launch admission",
-                        raw=admission_raw,
-                        expected_path=str(
-                            retained_context["formal_admission_path"]
-                        ),
-                    )
-                    _send_frame(
-                        child,
-                        {
-                            "actor": actor,
-                            "artifact_identity": identity,
-                            "kind": "admission",
-                            "schema_version": RESPONSE_SCHEMA,
-                            "sequence": 1,
-                            "status": "PUBLISHED",
-                        },
-                    )
-                    continue
-                if (
-                    kind == "supervisor-register"
-                    and sequence == 2
-                    and set(command)
-                    == {
-                        "expected_peer",
-                        "kind",
-                        "package_id",
-                        "schema_version",
-                        "sequence",
-                    }
-                    and not supervisor_session_issued
-                ):
-                    expected_peer = command["expected_peer"]
-                    package_id = command["package_id"]
-                    if (
-                        type(expected_peer) is not dict
-                        or package_id != retained_context["package_id"]
-                    ):
-                        raise FormalOrchestrationError(
-                            "formal supervisor registration binding drifted"
-                        )
-                    pidfd = native_helper.recv_fd(child.fileno())
-                    try:
-                        credential = secrets.token_hex(32)
-                        response = client.register_bound_nonarm_grant(
-                            {
-                                "credential": credential,
-                                "expected_peer": dict(expected_peer),
-                                "role": "formal-supervisor",
-                            },
-                            pidfd=pidfd,
-                        )
-                    finally:
-                        os.close(pidfd)
-                    grant = response.record.get("result")
-                    expected_grant = broker_module.build_session_grant(
-                        credential=credential,
-                        expected_peer=cast(
-                            Mapping[str, object],
-                            expected_peer,
-                        ),
-                        role="formal-supervisor",
-                    ).as_record()
-                    if grant != expected_grant:
-                        raise FormalOrchestrationError(
-                            "formal supervisor broker grant drifted"
-                        )
-                    supervisor_session_issued = True
-                    session = {
-                        "broker_actor": dict(client.actor),
-                        "broker_grant": expected_grant,
-                        "broker_nonce_sha256": hashlib.sha256(
-                            broker_nonce.encode("ascii")
-                        ).hexdigest(),
-                        "credential": credential,
-                        "expected_peer": dict(expected_peer),
-                        "formal_budget_runtime_identity": (
-                            _message_identity(
-                                authority.canonical_json(
-                                    retained_context[
-                                        "formal_budget_runtime"
-                                    ]
-                                )
-                            )
-                        ),
-                        "owner_actor": actor,
-                        "package_id": package_id,
-                        "schema_version": (
-                            FORMAL_SUPERVISOR_SESSION_SCHEMA
-                        ),
-                    }
-                    _send_frame(
-                        child,
-                        {
-                            "actor": actor,
-                            "schema_version": RESPONSE_SCHEMA,
-                            "sequence": 2,
-                            "session": session,
-                            "status": "SUPERVISOR_REGISTERED",
-                        },
-                    )
-                    continue
-                if (
-                    kind == "selection-prepare"
-                    and sequence == 3
-                    and set(command)
-                    == {
-                        "admission",
-                        "admission_identity",
-                        "attempt_consumption",
-                        "attempt_consumption_identity",
-                        "guardian_ready",
-                        "guardian_ready_identity",
-                        "kind",
-                        "schema_version",
-                        "sequence",
-                    }
-                    and supervisor_session_issued
-                ):
-                    grant, manager_credential, preregistration_receipt = (
-                        preregister_formal_manager_grant(
-                            retained_context,
-                            attempt_consumption_identity=cast(
-                                Mapping[str, object],
-                                command["attempt_consumption_identity"],
-                            ),
-                            broker_client=client,
-                        )
-                    )
-                    selection = build_selection_draft(
-                        retained_context,
-                        actor,
-                        admission=cast(
-                            Mapping[str, object],
-                            command["admission"],
-                        ),
-                        admission_identity=cast(
-                            Mapping[str, object],
-                            command["admission_identity"],
-                        ),
-                        guardian_ready=cast(
-                            Mapping[str, object],
-                            command["guardian_ready"],
-                        ),
-                        guardian_ready_identity=cast(
-                            Mapping[str, object],
-                            command["guardian_ready_identity"],
-                        ),
-                        attempt_consumption=cast(
-                            Mapping[str, object],
-                            command["attempt_consumption"],
-                        ),
-                        attempt_consumption_identity=cast(
-                            Mapping[str, object],
-                            command["attempt_consumption_identity"],
-                        ),
-                        manager_openfile_grant=grant,
-                    )
-                    prepared_raw = authority.canonical_json(selection)
-                    prepared_identity = {
-                        "path": retained_context[
-                            "formal_selection_path"
-                        ],
-                        **_message_identity(prepared_raw),
-                    }
-                    _send_frame(
-                        child,
-                        {
-                            "actor": actor,
-                            "artifact_identity": prepared_identity,
-                            "kind": "selection-prepare",
-                            "manager_openfile_grant": grant,
-                            "preregistration_receipt_identity": (
-                                _message_identity(
-                                    authority.canonical_json(
-                                        preregistration_receipt
-                                    )
-                                )
-                            ),
-                            "schema_version": RESPONSE_SCHEMA,
-                            "sequence": 3,
-                            "status": "PREPARED",
-                        },
-                    )
-                    continue
-                if (
-                    kind == "selection-commit"
-                    and sequence == 4
-                    and set(command)
-                    == {
-                        "kind",
-                        "prepared_selection_identity",
-                        "schema_version",
-                        "sequence",
-                    }
-                    and prepared_raw is not None
-                    and prepared_identity is not None
-                    and manager_credential is not None
-                    and preregistration_receipt is not None
-                    and supervisor_session_issued
-                    and command["prepared_selection_identity"]
-                    == prepared_identity
-                ):
-                    binding = client.bind_manager_openfile_selection(
-                        {
-                            "credential": manager_credential,
-                            "selection_identity": prepared_identity,
-                        }
-                    ).record["result"]
-                    if type(binding) is not dict:
-                        raise FormalOrchestrationError(
-                            "formal selection binding is absent"
-                        )
-                    identity = publish_launch_artifact(
-                        label="formal selection",
-                        raw=prepared_raw,
-                        expected_path=str(
-                            retained_context["formal_selection_path"]
-                        ),
-                    )
-                    _send_frame(
-                        child,
-                        {
-                            "actor": actor,
-                            "artifact_identity": identity,
-                            "broker_binding_receipt_identity": (
-                                _message_identity(
-                                    authority.canonical_json(binding)
-                                )
-                            ),
-                            "kind": "selection-commit",
-                            "preregistration_receipt_identity": (
-                                _message_identity(
-                                    authority.canonical_json(
-                                        preregistration_receipt
-                                    )
-                                )
-                            ),
-                            "schema_version": RESPONSE_SCHEMA,
-                            "sequence": 4,
-                            "status": "PUBLISHED",
-                        },
-                    )
-                    manager_credential = None
-                    continue
-                if (
-                    kind == "handoff-complete"
-                    and sequence == 5
-                    and set(command)
-                    == {"kind", "schema_version", "sequence"}
-                    and prepared_raw is not None
-                    and prepared_identity is not None
-                    and manager_credential is None
-                    and supervisor_session_issued
-                ):
-                    _send_frame(
-                        child,
-                        {
-                            "actor": actor,
-                            "schema_version": RESPONSE_SCHEMA,
-                            "sequence": 5,
-                            "status": "HANDOFF_COMPLETE",
-                        },
-                    )
-                    code = 0
-                    break
-                raise FormalOrchestrationError(
-                    "delayed formal owner lifecycle command drifted"
-                )
-        except BaseException:
-            code = 125
-            try:
-                _send_frame(
-                    child,
-                    {
-                        "error": (
-                            f"{type(sys.exception()).__name__}: "
-                            f"{sys.exception()}"
-                        ),
-                        "schema_version": RESPONSE_SCHEMA,
-                        "status": "FAIL_CLOSED",
-                    },
-                )
-            except BaseException:
-                pass
-        finally:
-            if client is not None:
-                try:
-                    if code == 0:
-                        client.close_session()
-                    else:
-                        client.close()
-                except BaseException:
-                    code = 125
-                    if not client.closed:
-                        try:
-                            client.close()
-                        except BaseException:
-                            pass
-            if release_read >= 0:
-                try:
-                    os.close(release_read)
-                except BaseException:
-                    pass
-            if broker_descriptor >= 0:
-                try:
-                    os.close(broker_descriptor)
-                except BaseException:
-                    pass
-            if broker_parent_descriptor >= 0:
-                try:
-                    os.close(broker_parent_descriptor)
-                except BaseException:
-                    pass
-            if broker_connection is not None:
-                try:
-                    broker_connection.close()
-                except BaseException:
-                    pass
-            try:
-                child.close()
-            except BaseException:
-                pass
-        os._exit(code)
-    child.close()
-    os.close(release_read)
-    try:
-        pidfd, pidfd_method = broker_module.open_pidfd(pid)
-        actor = {
-            "pid": pid,
-            "role": launch_validator.OWNER_PUBLISHER_ROLE,
-            "session_id": session_id,
-            "starttime": _process_starttime(pid),
-        }
-        return DelayedFormalLaunchOwnerProcess(
-            pid=pid,
-            pidfd=pidfd,
-            pidfd_method=pidfd_method,
-            control=parent,
-            release_descriptor=release_write,
-            actor=actor,
-        )
-    except BaseException:
-        parent.close()
-        os.close(release_write)
-        try:
-            os.kill(pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        os.waitpid(pid, 0)
-        raise
-
-
 def _spawn_owner(context: Mapping[str, object]) -> OwnerSession:
-    driver_raw = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2.encode("utf-8")
+    driver_raw = bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1.encode("utf-8")
     publisher_raw = bootstrap.OWNER_OEXCL_PUBLISH_V1.encode("utf-8")
     driver_identity = _message_identity(driver_raw)
     publisher_identity = _message_identity(publisher_raw)
@@ -1857,7 +481,7 @@ def _spawn_owner(context: Mapping[str, object]) -> OwnerSession:
                 "-I",
                 "-B",
                 "-c",
-                bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V2,
+                bootstrap.FORMAL_LAUNCH_OWNER_DRIVER_V1,
                 SESSION_ID,
                 _canonical_argument(context_identity),
                 _canonical_argument(driver_identity),
@@ -2072,13 +696,7 @@ def build_selection_draft(
     guardian_ready_identity: Mapping[str, object],
     attempt_consumption: Mapping[str, object],
     attempt_consumption_identity: Mapping[str, object],
-    manager_openfile_grant: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
-    if manager_openfile_grant is None:
-        raise FormalOrchestrationError(
-            "prospective formal selection lacks its preregistered manager "
-            "OpenFile grant"
-        )
     outer_spec = cast(Mapping[str, object], context["outer_spec"])
     draft = {
         "arm_prelaunch_paths": outer_spec["arm_prelaunch_paths"],
@@ -2123,7 +741,7 @@ def build_selection_draft(
         "publisher": _publisher(context, actor, kind="selection"),
         "repository_head": context["repository_head"],
         "retry_eligible": False,
-        "schema_version": launch_validator.FORMAL_SELECTION_SCHEMA_V3,
+        "schema_version": launch_validator.FORMAL_SELECTION_SCHEMA,
         "selection_id": "formal-selection-a001",
         "snapshot_materialization_identity": context[
             "snapshot_materialization_identity"
@@ -2131,7 +749,6 @@ def build_selection_draft(
         "snapshot_root": context["snapshot_root"],
         "status": "SELECTED",
     }
-    draft["manager_openfile_grant"] = dict(manager_openfile_grant)
     return launch_validator.validate_selection(
         draft,
         admission=admission,
@@ -2142,149 +759,6 @@ def build_selection_draft(
         attempt_consumption_identity=attempt_consumption_identity,
         expected_context=context,
     )
-
-
-def preregister_formal_manager_grant(
-    context: Mapping[str, object],
-    *,
-    attempt_consumption_identity: Mapping[str, object],
-    broker_client: Any,
-    credential: str | None = None,
-) -> tuple[dict[str, object], str, dict[str, object]]:
-    """Create the non-self-referential manager grant before PREPARE.
-
-    The plaintext credential and broker response remain out of the selection.
-    The immutable selection carries only the credential hash and the canonical
-    result-message identity.  A later broker binding receipt joins that
-    preregistration to the final PREPARE identity before COMMIT.
-    """
-
-    token = secrets.token_hex(32) if credential is None else credential
-    if (
-        not isinstance(token, str)
-        or len(token) != 64
-        or any(character not in "0123456789abcdef" for character in token)
-    ):
-        raise FormalOrchestrationError(
-            "formal manager OpenFile credential is malformed"
-        )
-    manager_epoch_identity = _message_identity(
-        authority.canonical_json(context["manager_epoch"])
-    )
-    response = broker_client.request(
-        "PREREGISTER_MANAGER_OPENFILE_GRANT",
-        {
-            "attempt_consumption_identity": dict(
-                attempt_consumption_identity
-            ),
-            "credential": token,
-            "manager_epoch_identity": manager_epoch_identity,
-            "selection_path": context["formal_selection_path"],
-            "unit_name": cast(
-                Mapping[str, object],
-                context["outer_spec"],
-            )["unit_name"],
-        },
-    )
-    result = response.record.get("result")
-    if (
-        type(result) is not dict
-        or result.get("state") != "UNBOUND"
-        or result.get("credential_sha256")
-        != hashlib.sha256(token.encode("ascii")).hexdigest()
-        or result.get("selection_path")
-        != context["formal_selection_path"]
-        or result.get("manager_epoch_identity")
-        != manager_epoch_identity
-    ):
-        raise FormalOrchestrationError(
-            "formal manager OpenFile preregistration response drifted"
-        )
-    preregistration_identity = _message_identity(
-        authority.canonical_json(result)
-    )
-    runtime = cast(
-        Mapping[str, object],
-        context["formal_budget_runtime"],
-    )
-    grant = {
-        "attempt_consumption_identity": dict(
-            attempt_consumption_identity
-        ),
-        "budget_profile_identity": context[
-            "resource_budget_profile_identity"
-        ],
-        "credential_sha256": result["credential_sha256"],
-        "formal_budget_runtime": dict(runtime),
-        "formal_root_contract_identity": runtime[
-            "formal_root_contract_identity"
-        ],
-        "formal_resource_calibration_bundle_identity": cast(
-            Mapping[str, Mapping[str, object]],
-            context["resource_calibration_authorization_bundles"],
-        )["FORMAL_ORGANIC_ARM"]["identity"],
-        "grant_id": "formal-manager-openfile-a001",
-        "manager_epoch_identity": manager_epoch_identity,
-        "preregistration_receipt_identity": preregistration_identity,
-        "schema_version": launch_validator.MANAGER_OPENFILE_GRANT_SCHEMA,
-        "selected_fd_transport": context["selected_fd_transport"],
-        "selection_path": context["formal_selection_path"],
-        "state": "PREREGISTERED_UNBOUND",
-        "unit_name": cast(
-            Mapping[str, object],
-            context["outer_spec"],
-        )["unit_name"],
-    }
-    return grant, token, dict(result)
-
-
-def bind_and_commit_prepared_selection(
-    *,
-    owner: OwnerSession,
-    broker_client: Any,
-    selection_draft: Mapping[str, object],
-    manager_credential: str,
-    preregistration_receipt: Mapping[str, object],
-) -> tuple[dict[str, Any], dict[str, object]]:
-    """Linearize broker BIND between immutable PREPARE and COMMIT."""
-
-    prepared = owner.prepare_selection(selection_draft)
-    prepared_identity = cast(
-        Mapping[str, object],
-        prepared["artifact_identity"],
-    )
-    binding = broker_client.bind_manager_openfile_selection(
-        {
-            "credential": manager_credential,
-            "selection_identity": dict(prepared_identity),
-        }
-    )
-    binding_result = binding.record.get("result")
-    if (
-        type(binding_result) is not dict
-        or binding_result.get("state") != "PREPARED_SELECTION_BOUND"
-        or binding_result.get("selection_identity")
-        != dict(prepared_identity)
-        or binding_result.get("credential_sha256")
-        != hashlib.sha256(
-            manager_credential.encode("ascii")
-        ).hexdigest()
-    ):
-        raise FormalOrchestrationError(
-            "formal prepared-selection broker binding drifted"
-        )
-    preregistration_identity = _message_identity(
-        authority.canonical_json(dict(preregistration_receipt))
-    )
-    binding_identity = _message_identity(
-        authority.canonical_json(binding_result)
-    )
-    committed = owner.commit_prepared_selection(
-        prepared_selection_identity=prepared_identity,
-        preregistration_receipt_identity=preregistration_identity,
-        broker_binding_receipt_identity=binding_identity,
-    )
-    return committed, dict(binding_result)
 
 
 def _wait_record(
@@ -2350,20 +824,13 @@ def _verify_selected_self(context: Mapping[str, object]) -> None:
         )
 
 
-def orchestrate(
-    campaign_dir: Path | str,
-    *,
-    claim_transport: (
-        FormalLaunchClaimTransport
-        | ConnectedFormalLaunchClaimTransport
-    ),
-) -> dict[str, object]:
+def orchestrate(campaign_dir: Path | str) -> dict[str, object]:
     """Run one fixed admission-to-selection-to-supervisor lifecycle."""
 
     campaign = Path(campaign_dir).absolute()
     context = launch_validator.replay_formal_launch_context(authority, campaign)
     _verify_selected_self(context)
-    owner = claim_transport.claim(context)
+    owner = _spawn_owner(context)
     supervisor_result: dict[str, object] = {}
     supervisor_error: list[BaseException] = []
     supervisor_returncode: list[int] = []
@@ -2379,7 +846,6 @@ def orchestrate(
                 role_argv=("--campaign-dir", str(campaign)),
                 timeout_seconds=SUPERVISOR_WAIT_SECONDS,
                 cancel_requested=supervisor_cancel.is_set,
-                formal_launch_claimant_registrar=owner,
             )
             if (
                 selected_result.returncode not in {0, 2}
@@ -2412,7 +878,6 @@ def orchestrate(
     supervisor_thread: threading.Thread | None = None
     failure: BaseException | None = None
     try:
-        owner.deliver_context(context)
         admission_draft = build_admission_draft(context, owner.actor)
         admission_response = owner.request(
             sequence=1,
@@ -2459,7 +924,9 @@ def orchestrate(
             owner=owner,
             supervisor_alive=supervisor_alive,
         )
-        prepared_selection = owner.prepare_bound_selection(
+        selection_draft = build_selection_draft(
+            context,
+            owner.actor,
             admission=admission,
             admission_identity=admission_identity,
             guardian_ready=guardian,
@@ -2467,11 +934,10 @@ def orchestrate(
             attempt_consumption=attempt,
             attempt_consumption_identity=attempt_identity,
         )
-        selection_response = owner.commit_bound_selection(
-            prepared_selection_identity=cast(
-                Mapping[str, object],
-                prepared_selection["artifact_identity"],
-            ),
+        selection_response = owner.request(
+            sequence=2,
+            kind="selection",
+            draft=selection_draft,
         )
         selection, selection_identity = launch_validator.read_canonical_record(
             str(context["formal_selection_path"]),
@@ -2534,11 +1000,12 @@ def orchestrate(
                 cleanup_error = FormalOrchestrationError(
                     "formal supervisor did not stop after coordinator cancellation"
                 )
-        try:
-            owner.close()
-        except BaseException as exc:
-            if cleanup_error is None:
-                cleanup_error = exc
+        if not owner.reaped:
+            try:
+                owner.close()
+            except BaseException as exc:
+                if cleanup_error is None:
+                    cleanup_error = exc
         if failure is None and cleanup_error is not None:
             raise cleanup_error
 
@@ -2589,32 +1056,14 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(
-    argv: Sequence[str] | None = None,
-    *,
-    claim_transport: (
-        FormalLaunchClaimTransport
-        | ConnectedFormalLaunchClaimTransport
-        | None
-    ) = None,
-) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     arguments = _parser().parse_args(argv)
     try:
-        if arguments.selected:
-            if claim_transport is None:
-                raise FormalOrchestrationError(
-                    "selected formal orchestrator lacks its explicit claim transport"
-                )
-            result = orchestrate(
-                arguments.campaign_dir,
-                claim_transport=claim_transport,
-            )
-        else:
-            if claim_transport is not None:
-                raise FormalOrchestrationError(
-                    "outer launcher received a selected claim transport"
-                )
-            result = launch_selected(arguments.campaign_dir)
+        result = (
+            orchestrate(arguments.campaign_dir)
+            if arguments.selected
+            else launch_selected(arguments.campaign_dir)
+        )
     except BaseException as exc:
         print(
             f"FAIL_CLOSED: {type(exc).__name__}: {exc}",

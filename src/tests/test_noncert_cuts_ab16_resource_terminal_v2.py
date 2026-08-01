@@ -1212,11 +1212,6 @@ def _fixture(
             python_identity=tool_identities["python3_13"],
             loader_identity=formal_loader_identity,
             authority_identity=formal_authority_identity,
-            native_helper_wrapper_identity=None,
-            native_helper_identity=None,
-            selected_byte_schema=(
-                LIFECYCLE.SELECTED_BYTE_LAUNCH_SCHEMA_V1
-            ),
             runner_snapshot_relative_path=runner_relative,
             runner_snapshot_member_identity=snapshot_member_identity,
             runner_package_tool_identity=tool_identities["organic_arm_runner"],

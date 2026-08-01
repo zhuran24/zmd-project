@@ -33,12 +33,6 @@ BUILDER = _load(
     "noncert_cuts_ab16_disposable_drill_authority_v2_tested",
     TOOLS / "disposable_drill_authority_v2.py",
 )
-GATE_A_AUTHORITY = _load(
-    "noncert_cuts_ab16_disposable_drill_gate_a_authority_v4_tested",
-    ROOT
-    / "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724"
-    / "campaign_authority_v4.py",
-)
 
 
 @dataclass(frozen=True)
@@ -278,16 +272,8 @@ def _inputs(
             continue
         path = tmp_path / "system" / role
         path.parent.mkdir(parents=True, exist_ok=True)
-        if role == "native_budget_helper":
-            path.write_bytes(
-                (
-                    TOOLS / "ab16_native_budget_helper_x86_64_v1.so"
-                ).read_bytes()
-            )
-            path.chmod(0o555)
-        else:
-            path.write_bytes(f"fixture {role}\n".encode())
-            path.chmod(0o755)
+        path.write_bytes(f"fixture {role}\n".encode())
+        path.chmod(0o755)
         system[role] = path
     return strict, system
 
@@ -405,7 +391,7 @@ def _capture(
     tmp_path: Path,
     system: dict[str, Path],
 ) -> dict[str, object]:
-    authority = GATE_A_AUTHORITY
+    authority = BUILDER.bootstrap.authority
     manager = tmp_path / "manager"
     manager.write_bytes(b"fixture manager\n")
     full = lambda path: authority.full_identity(  # noqa: E731

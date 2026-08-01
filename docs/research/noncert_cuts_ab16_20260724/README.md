@@ -422,61 +422,40 @@ user.
 
 ## Current stage-specific resource admission
 
-The prospective cohort uses
-`noncert-cuts-ab16-stage-resource-admission-v3` and profile set
-`noncert-cuts-ab16-resource-profile-set-v2`. It does not carry the historical
-`36/16/16 GiB` floor into unrelated work. RAM, swap and retained disk are
-derived separately for each stage:
+The fresh successor does not apply one fixed memory/swap/disk gate to every
+stage. It uses
+`noncert-cuts-ab16-stage-resource-admission-v1` and profile set
+`noncert-cuts-ab16-resource-profile-set-v1`. For each resource dimension,
+`minimum_available_bytes` must exactly equal
+`predicted_peak_bytes + safety_margin_bytes + host_reserve_bytes`:
 
-| profile | RAM prediction + error + host reserve | swap rule | retained disk prediction + error + host reserve |
-|---|---:|---|---:|
-| `FULL_PREFLIGHT` | `16 + 4 + 12 = 32 GiB` | independent `2 + 2 + 4 = 8 GiB` | `6 + 2 + 4 = 12 GiB` |
-| `GATE_B_QUALIFICATION` | `2 + 2 + 8 = 12 GiB` | independent `0 + 1 + 2 = 3 GiB` | `2 + 1 + 4 = 7 GiB` |
-| `FORMAL_ORGANIC_ARM` | `24 + 4 + 8 = 36 GiB` | no fixed SwapFree floor; RAM after reserve plus swap after its `4 GiB` reserve, capped by `MemorySwapMax`, must cover `MemoryMax` | the launch-ready formal-root aggregate budget + `max(64 MiB, ceil(10%))` filesystem uncertainty + `4 GiB` host reserve |
+| profile | predicted peak (memory/swap/disk) | safety margin | host reserve | minimum available |
+|---|---:|---:|---:|---:|
+| `FULL_PREFLIGHT` | `16/0/6 GiB` | `4/8/2 GiB` | `12/8/8 GiB` | `32/16/16 GiB` |
+| `GATE_B_QUALIFICATION` | `2/0/2 GiB` | `22/8/6 GiB` | `12/8/8 GiB` | `36/16/16 GiB` |
+| `FORMAL_ORGANIC_ARM` | `24/0/2 GiB` | `4/12/6 GiB` | `8/4/8 GiB` | `36/16/16 GiB` |
 
-The full profile is accepted only for its exact execution fingerprint: pinned
-command, canonical collected-test inventory, xdist availability, and effective
-serial or parallel worker mode. A serial fallback is a different fingerprint
-and cannot inherit a parallel sample or threshold. Gate-B is a bounded,
-single-worker parse/hash/publication workload. Its independent error
-allowances are not chosen to reconstruct an old global floor.
+All three profiles are deliberately
+`CONSERVATIVE_TEMPORARY`, with
+`confidence=LOW`,
+`stage_peak_receipt_count=0` and
+`TEMPORARY_PROFILE_NOT_A_STAGE_PEAK_MEASUREMENT`. The full-preflight basis
+records the historical external sampler's `13,507,510,272`-byte process-tree
+peak over `218` samples only as heterogeneous scheduling evidence and is the
+only basis marked comparable to its stage. Gate-B has no accepted stage peak
+and is non-comparable; the formal-arm memory value uses the historical
+`24 GiB` planning upper bound only as a heterogeneous, non-comparable proxy,
+not organic-arm measurement. These statements must appear in the receipt;
+missing or rewritten basis is not a PASS.
 
-Formal disk admission is tied to an enforceable byte budget, not to the sum of
-per-file guard maxima. Before the first retained package byte, the bootstrap
-creates one formal-root budget authority and physically preallocates its fixed
-closeout reserve. Each of the sixteen arm allocations is atomically and
-nonrefundably debited from that root. Every normal artifact, append segment,
-model export, scratch member and closeout member uses a preallocated hidden
-staging inode and no-replace publication. The formal disk requirement is the
-single root's category total plus explicit filesystem uncertainty and host
-reserve. A per-file cap remains only a local guard and cannot inflate or
-replace that aggregate.
-
-The current temporary predictions are not accepted stage peaks. Full may cite
-the historical external sampler's `13,507,510,272`-byte process-tree RSS peak
-over `218` samples only as heterogeneous planning input. Gate-B has no prior
-comparable stage receipt. Formal memory retains the historical `24 GiB`
-planning proxy, explicitly not an organic-arm measurement. A launch-ready
-profile therefore also requires, for each exact execution surface, three
-fresh no-authority samples and the closed chain
-`declaration → sample → validation → aggregate → installed-profile candidate
-→ two byte-identical heterogeneous replays`. The persistent observer reads
-the fresh transient cgroup's memory peak, swap behavior and disk growth before
-that cgroup disappears. The executing sample cannot lower its own admission
-profile.
-
-The tracked Phase 2 profile is canonical but remains `launch_ready=false`.
-It does not authorize or create A039, Gate A, Gate B, a formal attempt, or an
-organic arm; those transitions remain blocked pending the later calibrated
-candidate and its prescribed resource and authority gates.
-
-Every resource receipt records the schema/profile/stage, canonical profile and
-execution-surface identities, evidence basis, predicted peak, error allowance,
-host reserve, live `MemAvailable`/`SwapFree`/filesystem observation, exact
-retained lock identities, same-UID conflict result, cgroup safety limits and
-all-false research authority. Missing, non-comparable, forged, mixed-mode or
-arithmetically inconsistent evidence fails closed and cannot produce a
-consumable `PASS`.
+Every resource receipt records the exact schema/profile/stage and canonical
+`profile_sha256`, evidence basis and prediction method, all
+predicted/margin/reserve/minimum values, the live
+`MemAvailable`/`SwapFree`/filesystem observation, the three retained lock
+identities, same-UID conflict result, runtime safety limits, research-only
+scope, three false launch authorizations and exact `PASS` status. A failing
+observation returns a stable fail-closed error and cannot produce an
+authorizing PASS receipt.
 The lock paths remain exactly:
 
 ```text
@@ -485,28 +464,51 @@ The lock paths remain exactly:
 /run/user/1000/zmd-pj-prod-scale-solve.lock
 ```
 
-The qualification and formal stages are single-worker; full uses only the
-worker mode named by its fingerprint. Every stage fails closed on a
-conflicting same-UID heavy solver/campaign/preflight process, uncertain process
-scan, unavailable or drifted lock, untrusted measurement, or a live value one
-byte below the applicable rule. The Gate-B owner retains all three locks
-across final full, the post-full resource check, approval and bootstrap. The
-distinct formal-launch owner publishes admission first; the formal supervisor
-then acquires the same three locks and repeats the formal profile immediately
-before the outer unit and every serial organic-arm prelaunch. The retained
-lock identities and immediately preceding observation are joined into the
-corresponding receipt. An earlier check cannot authorize work after a wait.
+All stages are serial, single-worker, and fail closed on a conflicting
+same-UID heavy solver/campaign/preflight process, uncertain process scan,
+unavailable/drifted lock, untrusted measurement, or a live value below its
+profile by even one byte. The Gate-B owner holds all three locks and performs
+`FULL_PREFLIGHT` admission immediately before its pinned full preflight, then
+re-closes the retained lock identities and performs
+`GATE_B_QUALIFICATION` immediately before approval/bootstrap. The distinct
+formal-launch owner publishes admission first; the formal supervisor then
+acquires all three locks and passes `FORMAL_ORGANIC_ARM` before guardian
+launch. While retaining those locks it repeats that profile immediately before
+the outer formal unit and before every serial organic-arm prelaunch. The v2
+outer/arm prelaunch receipts embed that result. The v2 outer-start and
+controller-result receipts separately carry and strictly replay the final live
+reevaluation at the corresponding `systemd-run` syscall edge. An earlier
+observation cannot authorize work after a wait.
 
-The formal cgroup contract remains a separate containment layer:
-`MemoryHigh=35 GiB`, `MemoryMax=39 GiB`, `MemorySwapMax=16 GiB`, one worker.
-These are hard safety caps, not headroom estimates or fixed swap-admission
-floors. Enough usable RAM can satisfy the compositional capacity rule with
-little or no free swap; insufficient RAM plus capped swap fails closed.
+The cgroup contract remains a separate containment layer:
+`MemoryHigh=35 GiB`, `MemoryMax=39 GiB`, `MemorySwapMax=16 GiB`,
+`RuntimeMaxSec=3600`, one worker. These are hard safety caps, not resource
+headroom estimates and not replacements for the stage admission calculation.
+The formal receipt separately proves that live RAM after its host reserve plus
+live swap after its host reserve, capped at `MemorySwapMax`, can back
+`MemoryMax`; that capacity check is not represented as a predicted swap
+working set.
 
-The complete prospective discriminator matrix is in `PROJECT_LOCK.md` and
-`ab16_artifact_cohort_v1.py`. Historical A031–A038 roots remain bound to their
-own source-pinned schema sets. No version mixing, retrofit, authority
-expansion, cut, witness, bound, production or certified claim is permitted.
+The accepted fresh schema successors are:
+
+- `noncert-cuts-ab16-stage-resource-admission-v1`;
+- `noncert-cuts-ab16-gate-a-full-preflight-receipt-v6`;
+- `noncert-cuts-ab16-gate-b-qualification-v2`;
+- `noncert-cuts-ab16-gate-b-resource-gate-v2`;
+- `noncert-cuts-ab16-gate-b-epoch-observation-v4`;
+- `noncert-cuts-ab16-bootstrap-gate-b-approval-v5`;
+- `noncert-cuts-ab16-campaign-bootstrap-result-v4`;
+- `noncert-cuts-ab16-formal-outer-prelaunch-v2`;
+- `noncert-cuts-ab16-formal-outer-start-v2`;
+- `noncert-cuts-ab16-formal-arm-prelaunch-v2`;
+- `noncert-cuts-ab16-formal-controller-result-v2`.
+
+Their full-preflight receipt v5, Gate-B qualification v1, resource-gate v1,
+epoch v3, approval v4, bootstrap-result v3 and formal-prelaunch v1
+predecessors, plus outer-start v1 and controller-result v1, remain
+historical-root-local under their original SHA-pinned sources. No version
+mixing, retrofit, authority expansion, cut, witness, bound, production or
+certified claim is permitted.
 
 ## Historical separate heavy-work gates
 
@@ -602,9 +604,6 @@ proof-ledger gates.
 - `ab16_resource_admission_v1.py`: shared AB16-only stage-profile arithmetic,
   live resource/conflict/retained-lock checks, canonical receipt and strict
   replay.
-- `ab16_budgeted_writers_v1.py`: package-pinned, research-only immutable
-  adapters for the production ledger and cut-manager interfaces; the
-  production modules remain byte-for-byte unchanged.
 - `ab16_outer_guardian_v1.py`: independent lock guardian; canonical absolute
   socket identity with internal retained-dirfd AF_UNIX transport, peer
   credential join, and atomic no-overwrite terminal retirement without

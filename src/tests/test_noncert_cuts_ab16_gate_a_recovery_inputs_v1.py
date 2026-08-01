@@ -15,7 +15,6 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 TOOLS = ROOT / "docs/research/noncert_cuts_ab16_20260724"
-NATIVE_HELPER = TOOLS / "ab16_native_budget_helper_x86_64_v1.so"
 
 
 def _load(name: str, path: Path) -> ModuleType:
@@ -65,26 +64,7 @@ def _cli_fixture(tmp_path: Path) -> tuple[list[str], dict[str, str], dict[str, s
         role: _file(tmp_path / "system" / role, executable=role != "libsystemd")
         for role in sorted(PRODUCER.bootstrap.SYSTEM_TOOL_ROLES)
     }
-    system_paths["native_budget_helper"] = NATIVE_HELPER
     system = {role: str(path) for role, path in system_paths.items()}
-    calibration_paths: dict[str, Path] = {}
-    for stage, option in (
-        ("FULL_PREFLIGHT", "--resource-calibration-full-preflight"),
-        (
-            "GATE_B_QUALIFICATION",
-            "--resource-calibration-gate-b-qualification",
-        ),
-        (
-            "FORMAL_ORGANIC_ARM",
-            "--resource-calibration-formal-organic-arm",
-        ),
-    ):
-        path = _file(
-            tmp_path / "calibration" / f"{stage.lower()}.json",
-            _canonical({"fixture": stage, "stage": stage}) + b"\n",
-        )
-        path.chmod(0o444)
-        calibration_paths[option] = path
     output = tmp_path / "gate-a-sibling-recovery"
     command = [
         sys.executable,
@@ -111,18 +91,6 @@ def _cli_fixture(tmp_path: Path) -> tuple[list[str], dict[str, str], dict[str, s
         system["git"],
         "--libsystemd",
         system["libsystemd"],
-        "--native-budget-helper",
-        system["native_budget_helper"],
-        "--resource-calibration-full-preflight",
-        str(calibration_paths["--resource-calibration-full-preflight"]),
-        "--resource-calibration-gate-b-qualification",
-        str(
-            calibration_paths[
-                "--resource-calibration-gate-b-qualification"
-            ]
-        ),
-        "--resource-calibration-formal-organic-arm",
-        str(calibration_paths["--resource-calibration-formal-organic-arm"]),
         "--sudo",
         system["sudo"],
         "--systemctl",
@@ -152,30 +120,6 @@ def _bytecode_cache_snapshot() -> tuple[tuple[str, str], ...]:
         else:
             rows.append((relative, f"special:{stat.S_IFMT(metadata.st_mode):o}"))
     return tuple(rows)
-
-
-def _calibration_paths_from_command(command: list[str]) -> dict[str, Path]:
-    return {
-        "FULL_PREFLIGHT": Path(
-            command[
-                command.index("--resource-calibration-full-preflight") + 1
-            ]
-        ),
-        "GATE_B_QUALIFICATION": Path(
-            command[
-                command.index(
-                    "--resource-calibration-gate-b-qualification"
-                )
-                + 1
-            ]
-        ),
-        "FORMAL_ORGANIC_ARM": Path(
-            command[
-                command.index("--resource-calibration-formal-organic-arm")
-                + 1
-            ]
-        ),
-    }
 
 
 def _canonical(value: object) -> bytes:
@@ -234,11 +178,6 @@ def test_real_cli_publishes_exact_canonical_path_maps_and_observation(
     assert result["recovery_dir"] == str(recovery)
     assert result["input_authority_dir"] == str(output)
     assert "script.gate_a_recovery_inputs_v1" in observation["planned_source_identities"]
-    assert set(observation["resource_calibration_bundle_identities"]) == {
-        "FULL_PREFLIGHT",
-        "GATE_B_QUALIFICATION",
-        "FORMAL_ORGANIC_ARM",
-    }
     for filename, field in (
         ("strict-inputs.json", "strict_inputs_identity"),
         ("system-tools.json", "system_tools_identity"),
@@ -314,59 +253,6 @@ def test_real_cli_publishes_exact_canonical_path_maps_and_observation(
         )
 
 
-def test_planned_observation_rejects_missing_or_mixed_calibration_stage(
-    tmp_path: Path,
-) -> None:
-    command, _strict, _system = _cli_fixture(tmp_path)
-    completed = subprocess.run(command, check=False, capture_output=True)
-    assert completed.returncode == 0, completed.stderr.decode()
-    observation = json.loads(
-        (
-            tmp_path
-            / "gate-a-sibling-recovery/input-authority-a001/planned-source-observation.json"
-        ).read_bytes()
-    )
-
-    missing = dict(observation)
-    missing["resource_calibration_bundle_identities"] = dict(
-        observation["resource_calibration_bundle_identities"]
-    )
-    missing["resource_calibration_bundle_identities"].pop(
-        "FORMAL_ORGANIC_ARM"
-    )
-    with pytest.raises(
-        Exception,
-        match="resource calibration bundle stage set drifted",
-    ):
-        PINNED._planned_sources(  # noqa: SLF001
-            _canonical(missing),
-            expected_set_digest=observation["planned_source_set_digest"],
-        )
-
-    mixed = dict(observation)
-    mixed["resource_calibration_bundle_identities"] = {
-        stage: dict(identity)
-        for stage, identity in observation[
-            "resource_calibration_bundle_identities"
-        ].items()
-    }
-    mixed["resource_calibration_bundle_identities"][
-        "FORMAL_ORGANIC_ARM"
-    ] = dict(
-        mixed["resource_calibration_bundle_identities"][
-            "GATE_B_QUALIFICATION"
-        ]
-    )
-    with pytest.raises(
-        Exception,
-        match="not stage-distinct",
-    ):
-        PINNED._planned_sources(  # noqa: SLF001
-            _canonical(mixed),
-            expected_set_digest=observation["planned_source_set_digest"],
-        )
-
-
 def test_real_cli_is_no_overwrite(tmp_path: Path) -> None:
     command, _strict, _system = _cli_fixture(tmp_path)
     first = subprocess.run(command, check=False, capture_output=True)
@@ -380,18 +266,6 @@ def test_real_cli_is_no_overwrite(tmp_path: Path) -> None:
     assert failure["status"] == "FAIL_CLOSED"
     assert "already exists" in failure["detail"]
     assert before == {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in output.iterdir()}
-
-
-def test_native_helper_cli_path_is_required_without_default(
-    tmp_path: Path,
-) -> None:
-    command, _strict, _system = _cli_fixture(tmp_path)
-    option_index = command.index("--native-budget-helper")
-    del command[option_index : option_index + 2]
-    completed = subprocess.run(command, check=False, capture_output=True)
-    assert completed.returncode == 2
-    assert b"--native-budget-helper" in completed.stderr
-    assert not (tmp_path / "gate-a-sibling-recovery").exists()
 
 
 def test_real_cli_rejects_symlinked_output_parent(tmp_path: Path) -> None:
@@ -412,7 +286,7 @@ def test_real_cli_rejects_symlinked_output_parent(tmp_path: Path) -> None:
 def test_publish_rejects_role_drift_before_consuming_directory(
     tmp_path: Path,
 ) -> None:
-    command, strict, system = _cli_fixture(tmp_path)
+    _command, strict, system = _cli_fixture(tmp_path)
     strict.pop("candidate_placements")
     output = tmp_path / "role-drift"
     with pytest.raises(
@@ -423,9 +297,6 @@ def test_publish_rejects_role_drift_before_consuming_directory(
             output_dir=output,
             strict_input_paths=strict,
             system_tool_paths=system,
-            resource_calibration_bundle_paths=(
-                _calibration_paths_from_command(command)
-            ),
         )
     assert not output.exists()
 
@@ -446,7 +317,7 @@ def test_publish_rejects_exact_map_schema_drift_before_output(
     target: str,
     mutation: str,
 ) -> None:
-    command, strict, system = _cli_fixture(tmp_path)
+    _command, strict, system = _cli_fixture(tmp_path)
     selected: object = strict if target == "strict" else system
     assert type(selected) is dict
     if mutation == "missing_role":
@@ -466,8 +337,5 @@ def test_publish_rejects_exact_map_schema_drift_before_output(
             output_dir=output,
             strict_input_paths=strict,
             system_tool_paths=system,
-            resource_calibration_bundle_paths=(
-                _calibration_paths_from_command(command)
-            ),
         )
     assert not output.exists()

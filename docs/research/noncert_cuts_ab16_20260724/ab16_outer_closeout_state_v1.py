@@ -29,26 +29,10 @@ import stat
 import time
 from typing import Any
 
-CONSUMPTION_SCHEMA = "noncert-cuts-ab16-formal-attempt-consumption-v2"
-MARKERLESS_SCHEMA = "noncert-cuts-ab16-formal-markerless-incomplete-v2"
-INCOMPLETE_SCHEMA = "noncert-cuts-ab16-formal-consumed-incomplete-v3"
-FORMAL_MARKERLESS_INCOMPLETE = "markerless-incomplete"
-FORMAL_CONSUMED_INCOMPLETE = "formal-consumed-incomplete"
+CONSUMPTION_SCHEMA = "noncert-cuts-ab16-formal-attempt-consumption-v1"
+MARKERLESS_SCHEMA = "noncert-cuts-ab16-formal-markerless-incomplete-v1"
+INCOMPLETE_SCHEMA = "noncert-cuts-ab16-formal-consumed-incomplete-v2"
 REFERENCE_SCHEMA = "noncert-cuts-ab16-formal-reference-lifecycle-v1"
-REFERENCE_ACQUISITION_SCHEMA_V2 = (
-    "noncert-cuts-ab16-unit-reference-acquisition-v2"
-)
-REFERENCE_RELEASE_SCHEMA_V2 = "noncert-cuts-ab16-unit-reference-release-v2"
-REFERENCE_TERMINAL_SCHEMA = "noncert-cuts-ab16-unit-reference-terminal-v1"
-REFERENCE_CONNECTION_CLOSE_SCHEMA = (
-    "noncert-cuts-ab16-unit-reference-connection-close-v1"
-)
-REFERENCE_POST_UNREF_ABSENCE_SCHEMA = (
-    "noncert-cuts-ab16-unit-reference-post-unref-absence-v1"
-)
-SUPERVISOR_RAW_LOCK_RELEASE_SCHEMA = (
-    "noncert-cuts-ab16-formal-supervisor-raw-lock-release-v1"
-)
 HOLD_SCHEMA = "noncert-cuts-ab16-formal-containment-hold-v1"
 HOLD_CLEAR_SCHEMA = "noncert-cuts-ab16-formal-containment-cleared-after-hold-v1"
 LOCK_RELEASE_SCHEMA = "noncert-cuts-ab16-formal-lock-release-v1"
@@ -115,19 +99,6 @@ ABSENCE_RECORD_FIELDS = {
     "unit_absent",
     "unit_name",
 }
-QUIESCENCE_RECORD_FIELDS = {
-    "cgroup_absent",
-    "control_group",
-    "identity_complete",
-    "processes",
-    "processes_absent",
-    "reference_retained",
-    "slot",
-    "source",
-    "systemctl",
-    "unit_state",
-    "unit_name",
-}
 FALSE_AUTHORIZATIONS = {
     key: False
     for key in (
@@ -163,19 +134,14 @@ REFERENCE_PROOF_FIELDS = (
     "barrier_identity",
     "unref_call_identity",
     "reference_release_identity",
-    "reference_terminal_identity",
-    "reference_connection_close_identity",
 )
 LATE_PROOF_FIELDS = (
     "observer_identity",
     "pre_unref_cleanup_identity",
+    "post_unref_absence_identity",
     "detached_success_identity",
-    "failure_pre_release_identity",
-    "detached_incomplete_identity",
     "guardian_close_identity",
     "guardian_absence_identity",
-    "supervisor_raw_lock_release_identity",
-    "post_unref_absence_identity",
     "dual_lock_release_identity",
 )
 PROOF_FIELDS = (*REFERENCE_PROOF_FIELDS, *LATE_PROOF_FIELDS)
@@ -377,84 +343,6 @@ def validate_absence_observation(
     return {"all_absent": True, "records": checked_records}
 
 
-def validate_runtime_quiescence(
-    value: object,
-    *,
-    ledger: Mapping[str, object],
-    reference_retained: bool,
-) -> dict[str, object]:
-    """Validate failure cleanup while preserving one canonical outer RefUnit."""
-
-    checked_ledger = validate_frozen_ledger(ledger)
-    if type(reference_retained) is not bool:
-        raise CloseoutStateError("failure quiescence reference state is malformed")
-    if type(value) is not dict or set(value) != {
-        "all_runtime_quiescent",
-        "records",
-        "reference_retained",
-    }:
-        raise CloseoutStateError("failure runtime quiescence field set drifted")
-    records = value["records"]
-    expected_identities = [*checked_ledger["children"], checked_ledger["outer"]]
-    if (
-        value["all_runtime_quiescent"] is not True
-        or value["reference_retained"] is not reference_retained
-        or type(records) is not list
-        or len(records) != len(expected_identities)
-    ):
-        raise CloseoutStateError("failure runtime quiescence status drifted")
-    checked_records: list[dict[str, object]] = []
-    for index, (raw, identity) in enumerate(
-        zip(records, expected_identities, strict=True)
-    ):
-        if type(raw) is not dict or set(raw) != QUIESCENCE_RECORD_FIELDS:
-            raise CloseoutStateError(
-                f"failure quiescence record {index} field set drifted"
-            )
-        record = dict(raw)
-        is_outer = identity["source"] == "outer"
-        retained_here = reference_retained and is_outer
-        if (
-            record["source"] != identity["source"]
-            or record["slot"] != identity["slot"]
-            or record["unit_name"] != identity["unit_name"]
-            or record["control_group"] != identity["control_group"]
-            or record["processes"] != identity["processes"]
-            or record["identity_complete"] is not True
-            or identity["identity_complete"] is not True
-            or record["cgroup_absent"] is not True
-            or record["processes_absent"] is not True
-            or record["reference_retained"] is not retained_here
-        ):
-            raise CloseoutStateError(
-                f"failure quiescence record {index} does not bind its frozen identity"
-            )
-        if retained_here:
-            systemctl = record["systemctl"]
-            if (
-                type(systemctl) is not dict
-                or systemctl.get("LoadState") != "loaded"
-                or systemctl.get("ActiveState") != "inactive"
-                or record["unit_state"] != "REFERENCED_INACTIVE"
-            ):
-                raise CloseoutStateError(
-                    "failure quiescence did not preserve the referenced outer unit"
-                )
-        elif (
-            record["systemctl"] != ABSENT_SYSTEMD_STATE
-            or record["unit_state"] != "ABSENT"
-        ):
-            raise CloseoutStateError(
-                f"failure quiescence record {index} is not absent"
-            )
-        checked_records.append(record)
-    return {
-        "all_runtime_quiescent": True,
-        "records": checked_records,
-        "reference_retained": reference_retained,
-    }
-
-
 def same_epoch(boundary: Any, observed: object) -> bool:
     try:
         return bool(
@@ -475,7 +363,6 @@ class PublicationEffect:
     returned_identity: dict[str, object] | None = None
     recorded_identity: dict[str, object] | None = None
     error: dict[str, str] | None = None
-    publication_may_have_happened: bool = False
 
     def begin(self) -> None:
         if self.attempted:
@@ -485,17 +372,7 @@ class PublicationEffect:
     def note_returned(self, identity: Mapping[str, object]) -> None:
         if not self.attempted or self.returned_identity is not None:
             raise CloseoutStateError("canonical publication return is not monotone")
-        self.note_publication_may_have_happened()
         self.returned_identity = validate_identity_join(identity, "publication return")
-
-    def note_publication_may_have_happened(self) -> None:
-        """Cross the no-retry boundary before rename/create/fsync/ACK uncertainty."""
-
-        if not self.attempted:
-            raise CloseoutStateError(
-                "canonical publication uncertainty precedes its logical attempt"
-            )
-        self.publication_may_have_happened = True
 
     def note_recorded(self, identity: Mapping[str, object]) -> None:
         checked = validate_identity_join(identity, "publication readback")
@@ -505,14 +382,7 @@ class PublicationEffect:
 
     def note_error(self, error: BaseException) -> None:
         if self.error is None:
-            self.error = failure(
-                (
-                    "CANONICAL_PUBLICATION_FAILED_OR_UNCERTAIN"
-                    if self.publication_may_have_happened
-                    else "CANONICAL_PUBLICATION_DEFINITELY_NOT_PUBLISHED"
-                ),
-                error,
-            )
+            self.error = failure("CANONICAL_PUBLICATION_FAILED_OR_UNCERTAIN", error)
 
     def record(self) -> dict[str, object]:
         result: dict[str, object] = {
@@ -535,7 +405,6 @@ class AttemptState:
 
     directory_created: bool = False
     marker_identity: dict[str, object] | None = None
-    formal_consumption_state: str = ""
     selection_identity: dict[str, object] | None = None
     outer_prelaunch_identity: dict[str, object] | None = None
     outer_launch_attempted: bool = False
@@ -552,17 +421,12 @@ class AttemptState:
     release_returned: bool = False
     release_return: dict[str, str] | None = None
     unref_call_identity: dict[str, object] | None = None
-    released_connection_verification: dict[str, object] | None = None
     abort_close_attempted: bool = False
     abort_close_return: bool | None = None
     close_attempted: bool = False
     close_returned: bool = False
     connection_action: str = ""
     reference_release_identity: dict[str, object] | None = None
-    reference_terminal_identity: dict[str, object] | None = None
-    reference_connection_close_identity: dict[str, object] | None = None
-    failure_pre_release_identity: dict[str, object] | None = None
-    detached_incomplete_identity: dict[str, object] | None = None
     observer_identity: dict[str, object] | None = None
     pre_unref_cleanup_identity: dict[str, object] | None = None
     post_unref_absence_identity: dict[str, object] | None = None
@@ -571,7 +435,6 @@ class AttemptState:
     guardian_close_return: dict[str, object] | None = None
     guardian_close_identity: dict[str, object] | None = None
     guardian_absence_identity: dict[str, object] | None = None
-    supervisor_raw_lock_release_identity: dict[str, object] | None = None
     detached_success_verifier_attempted: bool = False
     detached_success_verifier_return: dict[str, object] | None = None
     dual_lock_release_identity: dict[str, object] | None = None
@@ -1390,10 +1253,6 @@ INCOMPLETE_PHASES = {
         ),
         required_publications=("dual-lock-release",),
     ),
-    "PROSPECTIVE_FAILURE_CHAIN": IncompletePhaseRule(
-        (),
-        (*PROOF_FIELDS,),
-    ),
 }
 
 
@@ -1571,23 +1430,16 @@ def record_late_proof_once(
     predecessors = {
         "observer_identity": ("acquire_identity", "barrier_identity"),
         "pre_unref_cleanup_identity": ("observer_identity",),
-        "detached_success_identity": ("pre_unref_cleanup_identity",),
-        "guardian_close_identity": ("detached_success_identity",),
-        "guardian_absence_identity": ("guardian_close_identity",),
-        "supervisor_raw_lock_release_identity": (
-            "guardian_absence_identity",
-        ),
         "post_unref_absence_identity": (
-            "supervisor_raw_lock_release_identity",
+            "pre_unref_cleanup_identity",
             "reference_release_identity",
         ),
+        "detached_success_identity": ("post_unref_absence_identity",),
+        "guardian_close_identity": ("detached_success_identity",),
+        "guardian_absence_identity": ("guardian_close_identity",),
         "dual_lock_release_identity": (
             "detached_success_identity",
             "guardian_absence_identity",
-            "supervisor_raw_lock_release_identity",
-            "post_unref_absence_identity",
-            "reference_terminal_identity",
-            "reference_connection_close_identity",
         ),
     }
     if name not in predecessors:
@@ -1622,17 +1474,6 @@ def record_late_proof_once(
         ):
             raise CloseoutStateError(
                 "dual-lock release proof precedes its effect or canonical readback"
-            )
-    if name == "supervisor_raw_lock_release_identity":
-        publication = state.publications.get("supervisor-raw-lock-release")
-        if (
-            not state.lock_release_attempted
-            or state.lock_release_return is None
-            or publication is None
-            or publication.recorded_identity != checked
-        ):
-            raise CloseoutStateError(
-                "raw lock release proof precedes its effect or canonical readback"
             )
     setattr(state, name, checked)
     return checked
@@ -1686,18 +1527,16 @@ def begin_detached_success_verifier(state: AttemptState) -> None:
     if state.detached_success_verifier_attempted:
         raise CloseoutStateError("detached success verifier cannot be attempted twice")
     validate_identity_join(
-        state.pre_unref_cleanup_identity,
-        "detached verifier pre-Unref cleanup",
+        state.post_unref_absence_identity,
+        "detached verifier post-Unref absence",
     )
     if (
-        state.release_attempted
-        or state.connection_action
-        or state.guardian_close_attempted
+        state.guardian_close_attempted
         or state.lock_release_attempted
         or state.dual_lock_release_identity is not None
     ):
         raise CloseoutStateError(
-            "detached success verifier started after RefUnit/guardian/lock release"
+            "detached success verifier started after guardian/lock release"
         )
     state.detached_success_verifier_attempted = True
 
@@ -1726,12 +1565,7 @@ def publish_attempt_consumption(
 ) -> dict[str, object]:
     """Publish the sole marker, or permanently consume this markerless directory."""
 
-    if (
-        not state.directory_created
-        or state.marker_identity is not None
-        or state.formal_consumption_state
-        or state.irreversible_incomplete
-    ):
+    if not state.directory_created or state.marker_identity is not None:
         raise CloseoutStateError("attempt marker has the wrong predecessor")
     marker = {
         **_base(boundary),
@@ -1752,42 +1586,27 @@ def publish_attempt_consumption(
         )
     except Exception as exc:
         state.irreversible_incomplete = True
-        effect = state.publication("attempt-consumption")
-        if (
-            effect.publication_may_have_happened
-            or effect.returned_identity is not None
-            or effect.recorded_identity is not None
-        ):
-            state.formal_consumption_state = FORMAL_CONSUMED_INCOMPLETE
-            state.errors.append(
-                failure("ATTEMPT_MARKER_PUBLISHED_OR_UNCERTAIN", exc)
-            )
-            raise CloseoutStateError(
-                "formal-consumed-incomplete: attempt marker publication, "
-                "rename/fsync, or acknowledgement is uncertain"
-            ) from exc
-        state.formal_consumption_state = FORMAL_MARKERLESS_INCOMPLETE
         markerless = {
             **_base(boundary),
-            "attempt_consumption_effect": effect.record(),
+            "attempt_consumption_effect": state.publication("attempt-consumption").record(),
             "consumed": True,
-            "failure": failure("ATTEMPT_MARKER_DEFINITELY_NOT_PUBLISHED", exc),
+            "failure": failure("ATTEMPT_MARKER_FAILED_OR_UNCERTAIN", exc),
             "formal_dir_identity": _basis(boundary, state)["directory_identity"],
             "marker_canonical_identity_recorded": False,
             "no_backfill": True,
             "phase": "DIRECTORY_CREATED_MARKER_UNRECORDED",
             "retry_eligible": False,
             "schema_version": MARKERLESS_SCHEMA,
-            "status": FORMAL_MARKERLESS_INCOMPLETE,
+            "status": "CONSUMED_INCOMPLETE",
         }
         try:
             markerless_identity = _publish_once(
                 state,
                 store,
-                FORMAL_MARKERLESS_INCOMPLETE,
-                boundary.formal_dir / "markerless-incomplete.json",
+                "markerless-consumed-incomplete",
+                boundary.formal_dir / "markerless-consumed-incomplete.json",
                 markerless,
-                "markerless incomplete",
+                "markerless consumed incomplete",
             )
         except Exception as markerless_error:
             state.errors.append(failure("MARKERLESS_RECEIPT_FAILED_OR_UNCERTAIN", markerless_error))
@@ -1795,8 +1614,7 @@ def publish_attempt_consumption(
                 "formal directory is permanently consumed but its markerless receipt is unproved"
             ) from markerless_error
         raise CloseoutStateError(
-            "formal directory is markerless-incomplete and permanently "
-            f"stopped: {markerless_identity}"
+            f"formal directory is markerless and permanently consumed: {markerless_identity}"
         ) from exc
     return state.marker_identity
 
@@ -2121,20 +1939,16 @@ def acquire_reference_once(
             expected_epoch=manager_epoch_capture["manager_epoch"],
         )
         checked_locks = _validate_lock_evidence(lock_evidence)
-        record = _prospective_reference_record(
+        record = _reference_record(
             boundary,
-            schema_version=REFERENCE_ACQUISITION_SCHEMA_V2,
-            status="HELD",
-            unit_name=unit_name,
-            fields={
-                "acquire_call": state.acquire_return,
-                "connection_verification": verification,
-                "lock_evidence": checked_locks,
-                "manager_epoch_capture": dict(manager_epoch_capture),
-                "resource_identity": checked_resource,
-                "selection_identity": checked_selection,
-            },
-            expected_fields=REFERENCE_FIELDS["HELD"],
+            "HELD",
+            unit_name,
+            acquire_call=state.acquire_return,
+            connection_verification=verification,
+            lock_evidence=checked_locks,
+            manager_epoch_capture=dict(manager_epoch_capture),
+            resource_identity=checked_resource,
+            selection_identity=checked_selection,
         )
         state.acquire_identity = _publish_once(
             state,
@@ -2171,7 +1985,7 @@ def _abort_reference_once(
     state.abort_close_attempted = True
     try:
         state.abort_close_return = bool(state.reference.abort_close())
-    except BaseException as exc:
+    except Exception as exc:
         state.errors.append(failure("CONNECTION_DROP_FAILED_OR_UNCERTAIN", exc))
         return {
             "failure": state.errors[-1],
@@ -2195,7 +2009,7 @@ def _abort_reference_once(
             record,
             "reference abort close",
         )
-    except BaseException as exc:
+    except Exception as exc:
         state.errors.append(failure("CONNECTION_DROPPED_RECEIPT_UNRECORDED", exc))
         return {
             "failure": state.errors[-1],
@@ -2315,7 +2129,7 @@ def finalize_reference_once(
         if checked_observer is not None and checked_cleanup is not None:
             state.observer_identity = dict(checked_observer)
             state.pre_unref_cleanup_identity = dict(checked_cleanup)
-    except BaseException as exc:
+    except Exception as exc:
         reason = (
             "UNREF_RETURNED_BUT_UNRECORDED"
             if state.release_returned
@@ -2366,382 +2180,6 @@ def finalize_reference_once(
             "kind": "CONNECTION_CLOSED_RELEASE_UNRECORDED",
         }
     return {"identity": state.reference_release_identity, "kind": "RECORDED"}
-
-
-def _prospective_reference_record(
-    boundary: Any,
-    *,
-    schema_version: str,
-    status: str,
-    unit_name: str,
-    fields: Mapping[str, object],
-    expected_fields: frozenset[str],
-) -> dict[str, object]:
-    """Build one closed successor-cohort RefUnit record.
-
-    The historical lifecycle-v1 builder above remains untouched for pinned
-    roots.  These records are accepted only by the prospective cohort.
-    """
-
-    if set(fields) != set(expected_fields):
-        raise CloseoutStateError(
-            f"{schema_version} {status} reference receipt field set drifted"
-        )
-    reject_none(fields, f"{schema_version} {status} reference receipt")
-    record = {
-        **_base(boundary),
-        "schema_version": schema_version,
-        "status": status,
-        "unit_name": unit_name,
-        **dict(fields),
-    }
-    expected = BASE_FIELDS | {
-        "schema_version",
-        "status",
-        "unit_name",
-    } | set(expected_fields)
-    if set(record) != expected:
-        raise CloseoutStateError(
-            f"{schema_version} {status} reference receipt schema drifted"
-        )
-    return record
-
-
-def release_reference_retained_once(
-    boundary: Any,
-    state: AttemptState,
-    store: Any,
-    *,
-    unit_name: str,
-    observer_identity: Mapping[str, object],
-    pre_unref_cleanup_identity: Mapping[str, object],
-) -> dict[str, object]:
-    """Unref exactly once while retaining the same manager connection.
-
-    This is the prospective successor to ``finalize_reference_once``.  It is
-    callable only after detached verification, guardian absence, and the
-    canonical raw three-lock release receipt.  It deliberately leaves the
-    same manager connection open for post-Unref absence and identity replay.
-    """
-
-    if state.reference is None:
-        raise CloseoutStateError("prospective Unref lacks one live reference")
-    if (
-        state.acquire_identity is None
-        or state.supervisor_raw_lock_release_identity is None
-        or not state.lock_release_attempted
-        or state.lock_release_return is None
-        or state.release_attempted
-        or state.connection_action
-        or state.close_attempted
-        or state.reference_release_identity is not None
-    ):
-        raise CloseoutStateError(
-            "prospective Unref crossed its exact-once retained-connection boundary"
-        )
-    if state.acquire_return is not None and state.acquire_return.get("unit_name") != unit_name:
-        raise CloseoutStateError(
-            "prospective Unref unit drifted from RefUnit acquisition"
-        )
-    checked_observer = validate_identity_join(
-        observer_identity,
-        "prospective Unref observer",
-    )
-    checked_cleanup = validate_identity_join(
-        pre_unref_cleanup_identity,
-        "prospective Unref pre-cleanup",
-    )
-    if (
-        state.observer_identity not in (None, checked_observer)
-        or state.pre_unref_cleanup_identity not in (None, checked_cleanup)
-    ):
-        raise CloseoutStateError(
-            "prospective Unref prerequisite identity drifted"
-        )
-    owner = boundary.root["manager_epoch"]["dbus_unique_owner"]
-    state.release_attempted = True
-    try:
-        released = state.reference.release(
-            unit_name=unit_name,
-            expected_manager_owner=owner,
-        )
-        state.release_returned = True
-        state.release_return = _validate_reference_call(
-            released,
-            label="prospective UnrefUnit return",
-            unit_name=unit_name,
-            expected_owner=owner,
-        )
-        call = _reference_record(
-            boundary,
-            "UNREF_RETURNED",
-            unit_name,
-            acquisition_identity=validate_identity_join(
-                state.acquire_identity,
-                "prospective reference acquisition",
-            ),
-            call=state.release_return,
-            observer_identity=checked_observer,
-            pre_unref_cleanup_identity=checked_cleanup,
-        )
-        state.unref_call_identity = _publish_once(
-            state,
-            store,
-            "unref-call",
-            boundary.formal_dir / "unref-call.json",
-            call,
-            "prospective Unref call",
-        )
-        release_record = _prospective_reference_record(
-            boundary,
-            schema_version=REFERENCE_RELEASE_SCHEMA_V2,
-            status="UNREF_RETURNED_CONNECTION_RETAINED",
-            unit_name=unit_name,
-            fields={
-                "acquisition_identity": validate_identity_join(
-                    state.acquire_identity,
-                    "prospective reference acquisition",
-                ),
-                "call": state.release_return,
-                "connection_retained": True,
-                "observer_identity": checked_observer,
-                "pre_unref_cleanup_identity": checked_cleanup,
-                "supervisor_raw_lock_release_identity": validate_identity_join(
-                    state.supervisor_raw_lock_release_identity,
-                    "prospective raw supervisor lock release",
-                ),
-                "unref_call_identity": validate_identity_join(
-                    state.unref_call_identity,
-                    "prospective Unref call",
-                ),
-            },
-            expected_fields=frozenset(
-                {
-                    "acquisition_identity",
-                    "call",
-                    "connection_retained",
-                    "observer_identity",
-                    "pre_unref_cleanup_identity",
-                    "supervisor_raw_lock_release_identity",
-                    "unref_call_identity",
-                }
-            ),
-        )
-        state.reference_release_identity = _publish_once(
-            state,
-            store,
-            "reference-release-v2",
-            boundary.formal_dir / "reference-release.json",
-            release_record,
-            "prospective reference release",
-        )
-        state.observer_identity = checked_observer
-        state.pre_unref_cleanup_identity = checked_cleanup
-        return {
-            "identity": state.reference_release_identity,
-            "kind": "RECORDED_CONNECTION_RETAINED",
-        }
-    except BaseException as exc:
-        reason = (
-            "UNREF_RETURNED_BUT_SUCCESSOR_RECORD_UNCERTAIN"
-            if state.release_returned
-            else "UNREF_FAILED_OR_UNCERTAIN"
-        )
-        state.errors.append(failure(reason, exc))
-        return _abort_reference_once(
-            boundary,
-            state,
-            store,
-            unit_name=unit_name,
-            reason=reason,
-        )
-
-
-def _validate_released_connection(
-    value: object,
-    *,
-    expected_owner: str,
-    expected_client: str,
-) -> dict[str, object]:
-    if type(value) is not dict or set(value) != {
-        "client_unique_name",
-        "library_identity",
-        "manager_owner",
-        "reference_held",
-    }:
-        raise CloseoutStateError(
-            "released RefUnit connection verification schema drifted"
-        )
-    if (
-        value["client_unique_name"] != expected_client
-        or value["manager_owner"] != expected_owner
-        or value["reference_held"] is not False
-    ):
-        raise CloseoutStateError(
-            "released RefUnit connection identity or state drifted"
-        )
-    checked = dict(value)
-    checked["library_identity"] = validate_identity_join(
-        value["library_identity"],
-        "released RefUnit library",
-    )
-    return checked
-
-
-def close_released_reference_once(
-    boundary: Any,
-    state: AttemptState,
-    store: Any,
-    *,
-    unit_name: str,
-    post_unref_absence_identity: Mapping[str, object],
-) -> dict[str, object]:
-    """Verify and close the retained post-Unref connection exactly once."""
-
-    checked_absence = validate_identity_join(
-        post_unref_absence_identity,
-        "prospective post-Unref absence",
-    )
-    if state.post_unref_absence_identity not in (None, checked_absence):
-        raise CloseoutStateError("prospective post-Unref absence identity drifted")
-    if (
-        state.reference is None
-        or state.reference_release_identity is None
-        or state.unref_call_identity is None
-        or not state.release_returned
-        or state.release_return is None
-        or state.connection_action
-        or state.close_attempted
-        or state.reference_terminal_identity is not None
-        or state.reference_connection_close_identity is not None
-    ):
-        raise CloseoutStateError(
-            "released reference close crossed its exact-once boundary"
-        )
-    if state.release_return.get("unit_name") != unit_name:
-        raise CloseoutStateError(
-            "released reference close unit drifted from UnrefUnit"
-        )
-    owner = boundary.root["manager_epoch"]["dbus_unique_owner"]
-    expected_client = state.release_return["client_unique_name"]
-    try:
-        verification = _validate_released_connection(
-            state.reference.verify_released(
-                expected_manager_owner=owner,
-            ),
-            expected_owner=owner,
-            expected_client=expected_client,
-        )
-        state.released_connection_verification = verification
-        terminal_record = _prospective_reference_record(
-            boundary,
-            schema_version=REFERENCE_TERMINAL_SCHEMA,
-            status="UNREFERENCED_CONNECTION_VERIFIED",
-            unit_name=unit_name,
-            fields={
-                "acquisition_identity": validate_identity_join(
-                    state.acquire_identity,
-                    "prospective reference acquisition",
-                ),
-                "connection_verification": verification,
-                "post_unref_absence_identity": checked_absence,
-                "reference_release_identity": validate_identity_join(
-                    state.reference_release_identity,
-                    "prospective reference release",
-                ),
-                "unref_call_identity": validate_identity_join(
-                    state.unref_call_identity,
-                    "prospective Unref call",
-                ),
-            },
-            expected_fields=frozenset(
-                {
-                    "acquisition_identity",
-                    "connection_verification",
-                    "post_unref_absence_identity",
-                    "reference_release_identity",
-                    "unref_call_identity",
-                }
-            ),
-        )
-        state.reference_terminal_identity = _publish_once(
-            state,
-            store,
-            "reference-terminal",
-            boundary.formal_dir / "reference-terminal.json",
-            terminal_record,
-            "prospective reference terminal",
-        )
-        state.post_unref_absence_identity = checked_absence
-    except BaseException as exc:
-        reason = "POST_UNREF_CONNECTION_VERIFICATION_FAILED_OR_UNCERTAIN"
-        state.errors.append(failure(reason, exc))
-        return _abort_reference_once(
-            boundary,
-            state,
-            store,
-            unit_name=unit_name,
-            reason=reason,
-        )
-
-    state.connection_action = "close"
-    state.close_attempted = True
-    try:
-        state.reference.close()
-        state.close_returned = True
-    except BaseException as exc:
-        state.errors.append(
-            failure("CONNECTION_CLOSE_FAILED_OR_UNCERTAIN", exc)
-        )
-        return {
-            "failure": state.errors[-1],
-            "kind": "CONNECTION_CLOSE_FAILED_OR_UNCERTAIN",
-        }
-    close_record = _prospective_reference_record(
-        boundary,
-        schema_version=REFERENCE_CONNECTION_CLOSE_SCHEMA,
-        status="CONNECTION_CLOSED",
-        unit_name=unit_name,
-        fields={
-            "connection_close_attempts": 1,
-            "connection_close_returned": True,
-            "connection_verification": state.released_connection_verification,
-            "reference_terminal_identity": validate_identity_join(
-                state.reference_terminal_identity,
-                "prospective reference terminal",
-            ),
-        },
-        expected_fields=frozenset(
-            {
-                "connection_close_attempts",
-                "connection_close_returned",
-                "connection_verification",
-                "reference_terminal_identity",
-            }
-        ),
-    )
-    try:
-        state.reference_connection_close_identity = _publish_once(
-            state,
-            store,
-            "reference-connection-close",
-            boundary.formal_dir / "reference-connection-close.json",
-            close_record,
-            "prospective reference connection close",
-        )
-    except BaseException as exc:
-        state.errors.append(
-            failure("CONNECTION_CLOSED_RECEIPT_UNRECORDED", exc)
-        )
-        return {
-            "failure": state.errors[-1],
-            "kind": "CONNECTION_CLOSED_RECEIPT_UNRECORDED",
-        }
-    return {
-        "identity": state.reference_connection_close_identity,
-        "kind": "RECORDED_CONNECTION_CLOSED",
-        "reference_terminal_identity": state.reference_terminal_identity,
-    }
 
 
 def _exact_record_fields(

@@ -24,7 +24,7 @@ import os
 from pathlib import Path
 import re
 import stat
-from typing import Any, Protocol
+from typing import Any
 
 import baseline_admission_v1 as baseline_contract
 from google.protobuf import text_format
@@ -33,22 +33,12 @@ from ortools.sat.python import cp_model
 
 
 SCHEMA = baseline_contract.REPLAY_SCHEMA
-ARM_SCHEMA = "noncert-cuts-ab16-organic-cut-free-incumbent-replay-v1"
 METADATA_SCHEMA = baseline_contract.METADATA_SCHEMA
 PURPOSE = "strict_ab16_incumbent_fixed_assignment_replay"
 VERDICT = "INCUMBENT_FIXED_ASSIGNMENT_REPLAY_PASS"
 EXPECTED_INCUMBENT_SHA256 = "13f88404d7f5e4fde86929f82997a2b9850fa1cc4791d710c0363ed3e072f223"
 EXPECTED_ASSIGNMENT_COUNT = 293
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
-PROSPECTIVE_FIXED_REPLAY_SUFFIX = (
-    "formal-ab16",
-    "artifacts",
-    "prospective",
-    "baseline",
-    "fixed-replay-a001.json",
-)
-BASELINE_FIXED_REPLAY_BUDGET_LABEL = "AB16 baseline fixed replay"
-ARM_FIXED_REPLAY_BUDGET_LABEL = "cut-free incumbent replay receipt"
 METADATA_KEYS = {
     "builder_identity",
     "campaign_provenance",
@@ -72,20 +62,6 @@ METADATA_KEYS = {
 
 class ReplayError(RuntimeError):
     """The cut-free fixed-assignment replay failed closed."""
-
-
-class BudgetPublicationBackend(Protocol):
-    def maximum_bytes(self, label: str, *, artifact_class: str) -> int: ...
-
-    def publish_bytes(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        label: str,
-    ) -> Mapping[str, object]: ...
 
 
 def _pairs(items: Sequence[tuple[str, Any]]) -> dict[str, Any]:
@@ -231,9 +207,6 @@ def _placement_indices(
         operation_type = entry.get("operation_type", "")
         if any(type(value) is not str for value in (instance_id, facility_type, operation_type)):
             raise ReplayError("mandatory instance identity is invalid")
-        assert isinstance(instance_id, str)
-        assert isinstance(facility_type, str)
-        assert isinstance(operation_type, str)
         grouped.setdefault((facility_type, operation_type), []).append(instance_id)
     group_by_instance: dict[str, str] = {}
     for group_index, ((facility_type, operation_type), members) in enumerate(sorted(grouped.items())):
@@ -268,10 +241,10 @@ def _placement_indices(
                 -1,
             )
         elif bound_type == "exact":
-            resolved_group_id = group_by_instance.get(instance_id)
-            if resolved_group_id is None:
+            group_id = group_by_instance.get(instance_id)
+            if group_id is None:
                 raise ReplayError("mandatory incumbent lacks a group")
-            index = by_name.get(f"z__{resolved_group_id}__{pose_idx}", -1)
+            index = by_name.get(f"z__{group_id}__{pose_idx}", -1)
         elif bound_type == "exact_pose_optional":
             facility_type = raw_assignment.get("facility_type")
             if type(facility_type) is not str:
@@ -355,59 +328,7 @@ def replay_fixed_assignment(
     }
 
 
-def _write_exclusive(
-    path: Path,
-    raw: bytes,
-    *,
-    budget_backend: BudgetPublicationBackend | None = None,
-    budget_label: str | None = None,
-    artifact_class: str | None = None,
-) -> dict[str, object]:
-    absolute = Path(os.path.abspath(path))
-    path_is_baseline = _is_prospective_fixed_replay_path(absolute)
-    if path_is_baseline and budget_backend is None:
-        raise ReplayError("prospective baseline replay lacks its formal-root budget broker")
-    if (
-        budget_backend is not None
-        and budget_label == BASELINE_FIXED_REPLAY_BUDGET_LABEL
-        and not path_is_baseline
-    ):
-        raise ReplayError("baseline replay publication path differs from its fixed layout")
-    if budget_backend is not None:
-        if type(budget_label) is not str or not budget_label or type(artifact_class) is not str:
-            raise ReplayError("budgeted cut-free receipt lacks its fixed label/class")
-        maximum = budget_backend.maximum_bytes(
-            budget_label,
-            artifact_class=artifact_class,
-        )
-        if type(maximum) is not int or maximum <= 0 or len(raw) > maximum:
-            raise ReplayError("budgeted cut-free receipt exceeds its fixed maximum")
-        try:
-            observed = dict(
-                budget_backend.publish_bytes(
-                    absolute,
-                    raw,
-                    maximum_bytes=maximum,
-                    artifact_class=artifact_class,
-                    label=budget_label,
-                )
-            )
-        except ReplayError:
-            raise
-        except Exception as exc:
-            raise ReplayError(
-                "cut-free broker publication failed or acknowledgement is uncertain"
-            ) from exc
-        expected = {
-            "path": str(absolute),
-            "size_bytes": len(raw),
-            "sha256": hashlib.sha256(raw).hexdigest(),
-        }
-        if any(observed.get(field) != item for field, item in expected.items()):
-            raise ReplayError("cut-free broker publication identity drifted")
-        return expected
-    if budget_label is not None or artifact_class is not None:
-        raise ReplayError("cut-free budget metadata lacks its broker")
+def _write_exclusive(path: Path, raw: bytes) -> dict[str, object]:
     if path.is_symlink() or not path.parent.is_dir() or path.parent.is_symlink():
         raise ReplayError("output path is not a stable non-symlink location")
     descriptor = os.open(
@@ -432,13 +353,6 @@ def _write_exclusive(
     }
 
 
-def _is_prospective_fixed_replay_path(path: Path) -> bool:
-    absolute = Path(os.path.abspath(path))
-    return tuple(
-        absolute.parts[-len(PROSPECTIVE_FIXED_REPLAY_SUFFIX) :]
-    ) == PROSPECTIVE_FIXED_REPLAY_SUFFIX
-
-
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--campaign-provenance", required=True, type=Path)
@@ -450,37 +364,10 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(
-    argv: Sequence[str] | None = None,
-    *,
-    budget_backend: BudgetPublicationBackend | None = None,
-    expected_incumbent_sha256: str = EXPECTED_INCUMBENT_SHA256,
-    emit_summary: bool = True,
-    publication_label: str | None = None,
-) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
-    if (
-        type(expected_incumbent_sha256) is not str
-        or SHA256_RE.fullmatch(expected_incumbent_sha256) is None
-    ):
-        raise ReplayError("expected incumbent semantic digest is invalid")
     if not args.campaign_provenance.is_absolute():
         raise ReplayError("campaign provenance path is not absolute")
-    baseline_publication = _is_prospective_fixed_replay_path(args.output)
-    if baseline_publication and budget_backend is None:
-        raise ReplayError("prospective baseline replay lacks its formal-root budget broker")
-    if budget_backend is None and publication_label is not None:
-        raise ReplayError("cut-free replay publication label lacks its budget broker")
-    expected_publication_label = (
-        BASELINE_FIXED_REPLAY_BUDGET_LABEL
-        if baseline_publication
-        else ARM_FIXED_REPLAY_BUDGET_LABEL
-    )
-    if budget_backend is not None:
-        if publication_label is None:
-            publication_label = expected_publication_label
-        elif publication_label != expected_publication_label:
-            raise ReplayError("cut-free replay publication label differs from its fixed path")
     provenance_before = _campaign_provenance(args.campaign_provenance)
     snapshot_root = Path(str(provenance_before["snapshot_root"]))
     if Path.cwd() != snapshot_root:
@@ -507,11 +394,7 @@ def main(
         raise ReplayError("metadata does not bind the supplied model")
     if type(incumbent) is not dict:
         raise ReplayError("incumbent must be an exact object")
-    incumbent_digest = _semantic_digest(incumbent)
-    if (
-        len(incumbent) != EXPECTED_ASSIGNMENT_COUNT
-        or incumbent_digest != expected_incumbent_sha256
-    ):
+    if len(incumbent) != EXPECTED_ASSIGNMENT_COUNT or _semantic_digest(incumbent) != EXPECTED_INCUMBENT_SHA256:
         raise ReplayError("incumbent digest or assignment count drifted")
     input_identities = metadata.get("input_identities")
     if type(input_identities) is not dict or set(input_identities) != {
@@ -565,11 +448,7 @@ def main(
         raise ReplayError("campaign provenance drifted during fixed-assignment replay")
     _, tool_identity = _snapshot(Path(__file__), limit=64 << 20)
     receipt = {
-        "schema_version": (
-            ARM_SCHEMA
-            if budget_backend is not None and not baseline_publication
-            else SCHEMA
-        ),
+        "schema_version": SCHEMA,
         "status": "PASS",
         "verdict": VERDICT,
         "purpose": PURPOSE,
@@ -578,7 +457,7 @@ def main(
         "model_identity": model_identity,
         "metadata_identity": metadata_identity,
         "incumbent_identity": incumbent_identity,
-        "incumbent_sha256": incumbent_digest,
+        "incumbent_sha256": EXPECTED_INCUMBENT_SHA256,
         "replay_tool_identity": tool_identity,
         "solver_status": result["solver_status"],
         "model_variable_count": result["variable_count"],
@@ -594,19 +473,8 @@ def main(
         "replay_errors": [],
         "global_claim_authorized": False,
     }
-    identity = _write_exclusive(
-        args.output,
-        _authority_json(receipt),
-        budget_backend=budget_backend,
-        budget_label=(
-            publication_label
-            if budget_backend is not None
-            else None
-        ),
-        artifact_class="publication" if budget_backend is not None else None,
-    )
-    if emit_summary:
-        print(json.dumps({"status": "PASS", "receipt": identity}, sort_keys=True))
+    identity = _write_exclusive(args.output, _authority_json(receipt))
+    print(json.dumps({"status": "PASS", "receipt": identity}, sort_keys=True))
     return 0
 
 

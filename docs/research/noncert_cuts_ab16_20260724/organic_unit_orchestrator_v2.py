@@ -33,15 +33,9 @@ from docs.research.noncert_cuts_ab16_20260724 import (
 
 
 PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v2"
-FORMAL_PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v3"
 RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
-FORMAL_RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v2"
 DRILL_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-drill-selection-v1"
 LAUNCH_ENVIRONMENT_SCHEMA = "noncert-cuts-ab16-launch-environment-v2"
-ABORT_CLEANUP_SCHEMA = "noncert-cuts-ab16-abort-cleanup-v2"
-ABORT_REFERENCE_RELEASE_SCHEMA = (
-    "noncert-cuts-ab16-abort-reference-release-v1"
-)
 LAUNCH_ENVIRONMENT_KEYS = frozenset(
     {
         "DBUS_SESSION_BUS_ADDRESS",
@@ -237,58 +231,6 @@ class LifecycleAdapter(Protocol):
         control_group: str | None,
     ) -> CleanupEvidence:
         """Stop only the selected InvocationID and prove no residual state."""
-
-
-class BudgetPublicationBackend(Protocol):
-    """Authenticated arm allocation used by all formal evidence writers."""
-
-    @property
-    def enforced_budget_profile(self) -> Mapping[str, object]: ...
-
-    @property
-    def enforced_budget_profile_identity(
-        self,
-    ) -> Mapping[str, object]: ...
-
-    @property
-    def resource_calibration_authorization_bundle(
-        self,
-    ) -> Mapping[str, object]: ...
-
-    @property
-    def resource_calibration_authorization_bundle_identity(
-        self,
-    ) -> Mapping[str, object]: ...
-
-    @property
-    def expected_calibration_tool_identities(
-        self,
-    ) -> Mapping[str, Mapping[str, object]]: ...
-
-    def maximum_bytes(self, label: str, *, artifact_class: str) -> int: ...
-
-    def publish_bytes(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        label: str,
-    ) -> Mapping[str, object]: ...
-
-    def bind_manager_openfile_arm_grant(
-        self,
-        *,
-        application_peer: Mapping[str, object],
-        pidfd: int,
-        pidfd_method: str,
-    ) -> Mapping[str, object]: ...
-
-    def open_manager_openfile_pidfd(
-        self,
-        pid: int,
-    ) -> tuple[int, str]: ...
 
 
 SYSTEMD_PRETERMINAL_FIELDS = (
@@ -701,9 +643,6 @@ class SubprocessLifecycleAdapter:
         pre_run: Mapping[str, Any],
         epoch_observer: Callable[[str], EpochCapture],
         launch_resource_admission: Mapping[str, object] | None = None,
-        launch_resource_authority: Mapping[str, Mapping[str, object]]
-        | None = None,
-        formal_budget_backend: BudgetPublicationBackend | None = None,
         run: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
         monotonic: Callable[[], float] = time.monotonic,
         monotonic_ns: Callable[[], int] = time.monotonic_ns,
@@ -716,30 +655,6 @@ class SubprocessLifecycleAdapter:
             if launch_resource_admission is None
             else dict(launch_resource_admission)
         )
-        self.launch_resource_authority = (
-            None
-            if launch_resource_authority is None
-            else {
-                key: dict(value)
-                for key, value in launch_resource_authority.items()
-            }
-        )
-        self.formal_budget_backend = formal_budget_backend
-        prospective_receipt = (
-            self.launch_resource_admission is not None
-            and self.launch_resource_admission.get("schema_version")
-            == resource_admission.PROSPECTIVE_RESOURCE_ADMISSION_SCHEMA
-        )
-        if (
-            prospective_receipt
-            and self.launch_resource_authority is None
-        ) or (
-            not prospective_receipt
-            and self.launch_resource_authority is not None
-        ):
-            raise OrchestratorError(
-                "prospective launch receipt and authority pairing drifted"
-            )
         self.final_launch_resource_admission: dict[str, object] | None = None
         self.launch_reevaluation_attempted = False
         self.run = run
@@ -762,104 +677,6 @@ class SubprocessLifecycleAdapter:
             if identity["path"] in self.executable_identities:
                 raise OrchestratorError("pinned system-tool paths must be distinct")
             self.executable_identities[identity["path"]] = (role, identity)
-
-    def _bind_formal_arm_supervisor(
-        self,
-        *,
-        unit_name: str,
-    ) -> None:
-        """Bind manager OpenFile FD8 to the observed selected unit MainPID."""
-
-        if self.pre_run.get("schema_version") != FORMAL_PRE_RUN_SCHEMA:
-            return
-        backend = self.formal_budget_backend
-        bind = getattr(
-            backend,
-            "bind_manager_openfile_arm_grant",
-            None,
-        )
-        if backend is None or not callable(bind):
-            raise OrchestratorError(
-                "formal arm launch lacks manager OpenFile bind authority"
-            )
-        deadline = self._monotonic() + 30.0
-        pid = 0
-        starttime: int | None = None
-        while self._monotonic() <= deadline:
-            observed = self._show(
-                unit_name,
-                (
-                    "ActiveState",
-                    "InvocationID",
-                    "MainPID",
-                    "SubState",
-                ),
-                timeout=5,
-            )
-            if (
-                not observed["InvocationID"]
-                or observed["ActiveState"]
-                in {"failed", "inactive"}
-            ):
-                raise OrchestratorError(
-                    "formal arm supervisor terminated before FD8 binding"
-                )
-            try:
-                pid = int(observed["MainPID"])
-            except ValueError as exc:
-                raise OrchestratorError(
-                    "formal arm supervisor MainPID is malformed"
-                ) from exc
-            if pid > 0:
-                starttime = _proc_starttime(pid)
-                if starttime is not None:
-                    break
-            self.sleep(0.05)
-        if pid <= 0 or starttime is None:
-            raise OrchestratorError(
-                "formal arm supervisor MainPID was not stable before deadline"
-            )
-        opener = getattr(
-            backend,
-            "open_manager_openfile_pidfd",
-            None,
-        )
-        if not callable(opener):
-            raise OrchestratorError(
-                "formal arm supervisor pidfd capability is unavailable"
-            )
-        pidfd = -1
-        try:
-            pidfd, pidfd_method = opener(pid)
-            result = bind(
-                application_peer={
-                    "pid": pid,
-                    "pid_starttime": starttime,
-                    "uid": os.getuid(),
-                },
-                pidfd=pidfd,
-                pidfd_method=pidfd_method,
-            )
-        except BaseException as exc:
-            raise OrchestratorError(
-                "formal arm supervisor FD8 binding failed or is uncertain"
-            ) from exc
-        finally:
-            if pidfd >= 0:
-                os.close(pidfd)
-        if (
-            type(result) is not dict
-            or result.get("state") != "BOUND"
-            or result.get("application_peer")
-            != {
-                "pid": pid,
-                "pid_starttime": starttime,
-                "uid": os.getuid(),
-            }
-        ):
-            raise OrchestratorError(
-                "formal arm supervisor FD8 bind receipt drifted"
-            )
 
     def observe_manager_epoch(self, phase: str) -> EpochCapture:
         observed = self.epoch_observer(phase)
@@ -930,67 +747,11 @@ class SubprocessLifecycleAdapter:
                         "formal systemd-run lacks its resource admission"
                     )
                 if self.launch_resource_admission is not None:
-                    if (
-                        self.launch_resource_admission.get(
-                            "schema_version"
+                    final_launch_admission = (
+                        resource_admission.reevaluate_resource_admission_for_launch(
+                            self.launch_resource_admission,
                         )
-                        == resource_admission.PROSPECTIVE_RESOURCE_ADMISSION_SCHEMA
-                    ):
-                        authority_record = getattr(
-                            self,
-                            "launch_resource_authority",
-                            None,
-                        )
-                        if (
-                            type(authority_record) is not dict
-                            or set(authority_record)
-                            != {
-                                "calibration_authorization_bundle",
-                                "calibration_authorization_bundle_identity",
-                                "enforced_budget_profile",
-                                "enforced_budget_profile_identity",
-                                "expected_calibration_tool_identities",
-                            }
-                        ):
-                            raise OrchestratorError(
-                                "prospective launch resource authority is absent or drifted"
-                            )
-                        final_launch_admission = (
-                            resource_admission.reevaluate_prospective_resource_admission_for_launch(
-                                self.launch_resource_admission,
-                                calibration_authorization_bundle=(
-                                    authority_record[
-                                        "calibration_authorization_bundle"
-                                    ]
-                                ),
-                                calibration_authorization_bundle_identity=(
-                                    authority_record[
-                                        "calibration_authorization_bundle_identity"
-                                    ]
-                                ),
-                                enforced_budget_profile=(
-                                    authority_record[
-                                        "enforced_budget_profile"
-                                    ]
-                                ),
-                                enforced_budget_profile_identity=(
-                                    authority_record[
-                                        "enforced_budget_profile_identity"
-                                    ]
-                                ),
-                                expected_calibration_tool_identities=(
-                                    authority_record[
-                                        "expected_calibration_tool_identities"
-                                    ]
-                                ),
-                            )
-                        )
-                    else:
-                        final_launch_admission = (
-                            resource_admission.reevaluate_resource_admission_for_launch(
-                                self.launch_resource_admission,
-                            )
-                        )
+                    )
                 else:
                     final_launch_admission = None
             else:
@@ -1102,21 +863,14 @@ class SubprocessLifecycleAdapter:
         if list(payload_argv) != self.pre_run["launch"]["payload_argv"]:
             raise OrchestratorError("live payload argv drifted")
         self._run(systemd_run_argv, timeout=30)
-        self._bind_formal_arm_supervisor(unit_name=unit_name)
         inner_path = Path(self.pre_run["output_paths"]["inner"])
         deadline = self._monotonic() + int(self.pre_run["resource_contract"]["runtime_max_seconds"]) - 60
         while self._monotonic() <= deadline:
             if os.path.lexists(inner_path):
                 snapshot = snapshot_bytes(inner_path)
                 value = _strict_load(snapshot, "inner lifecycle")
-                expected_inner_schema = (
-                    "noncert-cuts-ab16-inner-lifecycle-v3"
-                    if self.pre_run.get("schema_version")
-                    == FORMAL_PRE_RUN_SCHEMA
-                    else "noncert-cuts-ab16-inner-lifecycle-v2"
-                )
                 if (
-                    value.get("schema_version") != expected_inner_schema
+                    value.get("schema_version") != "noncert-cuts-ab16-inner-lifecycle-v2"
                     or value.get("unit_name") != unit_name
                 ):
                     raise OrchestratorError("live inner lifecycle schema/unit drifted")
@@ -1387,16 +1141,12 @@ def _write_epoch(
     pre_run: Mapping[str, Any],
     adapter: LifecycleAdapter,
     phase: str,
-    budget_backend: BudgetPublicationBackend | None = None,
 ) -> tuple[Mapping[str, Any], dict[str, object]]:
     capture = adapter.observe_manager_epoch(phase)
     transcript_path = Path(pre_run["epoch_transcript_paths"][phase])
     transcript_identity = lifecycle.write_json_exclusive(
         transcript_path,
         capture.transcript,
-        budget_backend=budget_backend,
-        budget_label="manager epoch transcript" if budget_backend is not None else None,
-        artifact_class="metadata" if budget_backend is not None else None,
     )
     observation = lifecycle.build_epoch_observation(
         phase=phase,
@@ -1406,13 +1156,7 @@ def _write_epoch(
         capture_transcript_identity=transcript_identity,
     )
     output = Path(pre_run["epoch_observation_paths"][phase])
-    identity = lifecycle.write_json_exclusive(
-        output,
-        observation,
-        budget_backend=budget_backend,
-        budget_label="manager epoch observation" if budget_backend is not None else None,
-        artifact_class="metadata" if budget_backend is not None else None,
-    )
+    identity = lifecycle.write_json_exclusive(output, observation)
     return observation, identity
 
 
@@ -1422,7 +1166,6 @@ def _orchestrate_with_adapter_unprotected(
     selection_path: Path | str,
     adapter: LifecycleAdapter,
     cleanup_state: dict[str, Any],
-    budget_backend: BudgetPublicationBackend | None = None,
 ) -> dict[str, object]:
     """Execute and independently replay one selected two-stage arm.
 
@@ -1440,25 +1183,11 @@ def _orchestrate_with_adapter_unprotected(
             "pre_run_identity": pre_run_snapshot.identity,
             "selection": selection,
             "selection_identity": selection_snapshot.identity,
-            "budget_backend": budget_backend,
         }
     )
-    schema_pair = (
-        pre_run.get("schema_version"),
-        selection.get("schema_version"),
-    )
-    if (
-        schema_pair == (FORMAL_PRE_RUN_SCHEMA, FORMAL_RUNNER_SELECTION_SCHEMA)
-        and pre_run.get("execution_class") == "FORMAL_AB16"
-        and budget_backend is None
-    ):
-        raise OrchestratorError(
-            "formal organic orchestrator lacks broker-backed budget authority"
-        )
-    if schema_pair not in {
-        (PRE_RUN_SCHEMA, RUNNER_SELECTION_SCHEMA),
-        (PRE_RUN_SCHEMA, DRILL_SELECTION_SCHEMA),
-        (FORMAL_PRE_RUN_SCHEMA, FORMAL_RUNNER_SELECTION_SCHEMA),
+    if pre_run.get("schema_version") != PRE_RUN_SCHEMA or selection.get("schema_version") not in {
+        RUNNER_SELECTION_SCHEMA,
+        DRILL_SELECTION_SCHEMA,
     }:
         raise OrchestratorError("pre-run/selection schema mismatch")
     tool_identities = pre_run.get("tool_identities")
@@ -1491,7 +1220,6 @@ def _orchestrate_with_adapter_unprotected(
         pre_run=pre_run,
         adapter=adapter,
         phase="launch",
-        budget_backend=budget_backend,
     )
     systemd_argv = lifecycle.build_systemd_run_argv(
         systemd_run_path=pre_run["launch"]["systemd_run_path"],
@@ -1499,21 +1227,6 @@ def _orchestrate_with_adapter_unprotected(
         supervisor_argv=pre_run["launch"]["supervisor_argv"],
         resource_contract=pre_run["resource_contract"],
         execution_class=pre_run["execution_class"],
-        formal_budget_handoff=(
-            pre_run["budget_handoff"]
-            if pre_run.get("schema_version") == FORMAL_PRE_RUN_SCHEMA
-            else None
-        ),
-        formal_arm_slot=(
-            pre_run["slot"]
-            if pre_run.get("schema_version") == FORMAL_PRE_RUN_SCHEMA
-            else None
-        ),
-        formal_attempt_root=(
-            pre_run["attempt_dir"]
-            if pre_run.get("schema_version") == FORMAL_PRE_RUN_SCHEMA
-            else None
-        ),
     )
     launch = adapter.launch_and_wait_for_keeper(
         unit_name=pre_run["unit_name"],
@@ -1552,7 +1265,6 @@ def _orchestrate_with_adapter_unprotected(
         pre_run=pre_run,
         adapter=adapter,
         phase="preterminal",
-        budget_backend=budget_backend,
     )
     observed_preterminal = adapter.capture_preterminal(
         unit_name=pre_run["unit_name"],
@@ -1576,9 +1288,6 @@ def _orchestrate_with_adapter_unprotected(
     lifecycle.write_json_exclusive(
         Path(pre_run["output_paths"]["preterminal"]),
         preterminal,
-        budget_backend=budget_backend,
-        budget_label="lifecycle preterminal" if budget_backend is not None else None,
-        artifact_class="metadata" if budget_backend is not None else None,
     )
     resource_receipt = verifier.verify_preterminal_paths(
         pre_run_path=pre_run_path,
@@ -1587,7 +1296,6 @@ def _orchestrate_with_adapter_unprotected(
         preterminal_path=pre_run["output_paths"]["preterminal"],
         payload_result_path=pre_run["output_paths"]["attempt_result"],
         output_path=pre_run["output_paths"]["resource_verification"],
-        budget_backend=budget_backend,
     )
     resource_identity = verifier.snapshot_json(pre_run["output_paths"]["resource_verification"]).identity
     if resource_receipt.get("status") != "PASS":
@@ -1599,7 +1307,6 @@ def _orchestrate_with_adapter_unprotected(
         pre_run=pre_run,
         adapter=adapter,
         phase="reference-acquire",
-        budget_backend=budget_backend,
     )
     expected_manager_owner = pre_run["manager_epoch"]["dbus_unique_owner"]
     acquisition_call = reference.acquire(
@@ -1624,16 +1331,12 @@ def _orchestrate_with_adapter_unprotected(
     reference_acquisition_identity = lifecycle.write_json_exclusive(
         Path(pre_run["output_paths"]["reference_acquisition"]),
         reference_acquisition,
-        budget_backend=budget_backend,
-        budget_label="unit reference acquisition" if budget_backend is not None else None,
-        artifact_class="metadata" if budget_backend is not None else None,
     )
     release_observation, _release_epoch_identity = _write_epoch(
         lifecycle=lifecycle,
         pre_run=pre_run,
         adapter=adapter,
         phase="release",
-        budget_backend=budget_backend,
     )
     preterminal_identity = verifier.snapshot_json(pre_run["output_paths"]["preterminal"]).identity
     release = lifecycle.build_release_record(
@@ -1651,13 +1354,7 @@ def _orchestrate_with_adapter_unprotected(
         release_monotonic_ns=adapter.monotonic_ns(),
     )
     release_path = Path(pre_run["output_paths"]["release"])
-    release_identity = lifecycle.write_json_exclusive(
-        release_path,
-        release,
-        budget_backend=budget_backend,
-        budget_label="keeper release token" if budget_backend is not None else None,
-        artifact_class="metadata" if budget_backend is not None else None,
-    )
+    release_identity = lifecycle.write_json_exclusive(release_path, release)
     adapter.release_keeper(
         unit_name=pre_run["unit_name"],
         release_path=release_path,
@@ -1668,7 +1365,6 @@ def _orchestrate_with_adapter_unprotected(
         pre_run=pre_run,
         adapter=adapter,
         phase="terminal-first",
-        budget_backend=budget_backend,
     )
     first_terminal = adapter.capture_terminal(
         unit_name=pre_run["unit_name"],
@@ -1681,7 +1377,6 @@ def _orchestrate_with_adapter_unprotected(
         pre_run=pre_run,
         adapter=adapter,
         phase="terminal-stable",
-        budget_backend=budget_backend,
     )
     reference.verify(expected_manager_owner=expected_manager_owner)
     stable_terminal = adapter.capture_terminal(
@@ -1706,16 +1401,12 @@ def _orchestrate_with_adapter_unprotected(
     terminal_identity = lifecycle.write_json_exclusive(
         Path(pre_run["output_paths"]["terminal"]),
         terminal,
-        budget_backend=budget_backend,
-        budget_label="terminal envelope" if budget_backend is not None else None,
-        artifact_class="closeout" if budget_backend is not None else None,
     )
     reference_release_observation, _reference_release_epoch_identity = _write_epoch(
         lifecycle=lifecycle,
         pre_run=pre_run,
         adapter=adapter,
         phase="reference-release",
-        budget_backend=budget_backend,
     )
     reference_release_call = reference.release(
         unit_name=pre_run["unit_name"],
@@ -1736,9 +1427,6 @@ def _orchestrate_with_adapter_unprotected(
     reference_release_identity = lifecycle.write_json_exclusive(
         Path(pre_run["output_paths"]["reference_release"]),
         reference_release,
-        budget_backend=budget_backend,
-        budget_label="unit reference release" if budget_backend is not None else None,
-        artifact_class="closeout" if budget_backend is not None else None,
     )
     reference.close()
     cleanup_state["reference"] = None
@@ -1747,7 +1435,6 @@ def _orchestrate_with_adapter_unprotected(
         pre_run=pre_run,
         adapter=adapter,
         phase="cleanup",
-        budget_backend=budget_backend,
     )
     control_group = resource_receipt["derived"]["control_group"]
     cleanup_state["control_group"] = control_group
@@ -1778,16 +1465,12 @@ def _orchestrate_with_adapter_unprotected(
     lifecycle.write_json_exclusive(
         Path(pre_run["output_paths"]["cleanup"]),
         cleanup,
-        budget_backend=budget_backend,
-        budget_label="selected unit cleanup" if budget_backend is not None else None,
-        artifact_class="closeout" if budget_backend is not None else None,
     )
     _detached_observation, _detached_epoch_identity = _write_epoch(
         lifecycle=lifecycle,
         pre_run=pre_run,
         adapter=adapter,
         phase="detached-replay",
-        budget_backend=budget_backend,
     )
     detached = verifier.verify_detached_paths(
         pre_run_path=pre_run_path,
@@ -1803,7 +1486,6 @@ def _orchestrate_with_adapter_unprotected(
         cleanup_path=pre_run["output_paths"]["cleanup"],
         detached_epoch_path=pre_run["epoch_observation_paths"]["detached-replay"],
         output_path=pre_run["output_paths"]["detached_replay"],
-        budget_backend=budget_backend,
     )
     if detached.get("status") != "PASS":
         raise OrchestratorError("detached resource/terminal replay did not PASS")
@@ -1856,21 +1538,14 @@ def _publish_abort_cleanup(
         "purpose": "PROSPECTIVE_AB16_SELECTED_UNIT_FAIL_CLOSED_CLEANUP",
         "run_nonce": pre_run["run_nonce"],
         "runner_selection_identity": cleanup_state["selection_identity"],
-        "schema_version": ABORT_CLEANUP_SCHEMA,
+        "schema_version": "noncert-cuts-ab16-abort-cleanup-v2",
         "slot": pre_run["slot"],
         "status": "PASS",
         "unit_load_state": evidence.unit_load_state,
         "unit_name": pre_run["unit_name"],
         "verdict": "SELECTED_UNIT_ABORT_CLEANUP_PASS",
     }
-    budget_backend = cleanup_state.get("budget_backend")
-    lifecycle.write_json_exclusive(
-        output,
-        record,
-        budget_backend=budget_backend,
-        budget_label="selected unit abort cleanup" if budget_backend is not None else None,
-        artifact_class="closeout" if budget_backend is not None else None,
-    )
+    lifecycle.write_json_exclusive(output, record)
 
 
 def _publish_abort_reference_release(
@@ -1904,20 +1579,13 @@ def _publish_abort_reference_release(
         "purpose": "AB16_SELECTED_UNIT_REFERENCE_ABORT_EVIDENCE",
         "run_nonce": pre_run["run_nonce"],
         "runner_selection_identity": cleanup_state["selection_identity"],
-        "schema_version": ABORT_REFERENCE_RELEASE_SCHEMA,
+        "schema_version": "noncert-cuts-ab16-abort-reference-release-v1",
         "slot": pre_run["slot"],
         "status": "RECORDED",
         "unit_name": pre_run["unit_name"],
         "verdict": "REFERENCE_CONNECTION_ABORTED_NO_PASS",
     }
-    budget_backend = cleanup_state.get("budget_backend")
-    lifecycle.write_json_exclusive(
-        output,
-        record,
-        budget_backend=budget_backend,
-        budget_label="abort reference release" if budget_backend is not None else None,
-        artifact_class="closeout" if budget_backend is not None else None,
-    )
+    lifecycle.write_json_exclusive(output, record)
 
 
 def orchestrate_with_adapter(
@@ -1925,7 +1593,6 @@ def orchestrate_with_adapter(
     pre_run_path: Path | str,
     selection_path: Path | str,
     adapter: LifecycleAdapter,
-    budget_backend: BudgetPublicationBackend | None = None,
 ) -> dict[str, object]:
     """Execute one arm and fail-closed clean any post-launch exception."""
 
@@ -1936,7 +1603,6 @@ def orchestrate_with_adapter(
             selection_path=selection_path,
             adapter=adapter,
             cleanup_state=cleanup_state,
-            budget_backend=budget_backend,
         )
     except Exception as original_failure:
         launch = cleanup_state.get("launch")
@@ -1979,7 +1645,6 @@ def run_pinned_entry(
     pre_run_path: Path | str,
     resource_admission_receipt: Mapping[str, object] | None = None,
     selection_path: Path | str,
-    budget_backend: BudgetPublicationBackend | None = None,
 ) -> dict[str, object]:
     """Run the formal or disposable entry with no injectable live authority."""
 
@@ -1987,14 +1652,6 @@ def run_pinned_entry(
     pre_run = _strict_load(pre_run_snapshot, "pre-run authority")
     if pre_run.get("execution_class") != execution_class:
         raise OrchestratorError("CLI execution class differs from pre-run authority")
-    if (
-        execution_class == "FORMAL_AB16"
-        and pre_run.get("schema_version") == FORMAL_PRE_RUN_SCHEMA
-        and budget_backend is None
-    ):
-        raise OrchestratorError(
-            "formal entry lacks package-pinned broker-backed budget authority"
-        )
     tools = pre_run.get("tool_identities")
     if type(tools) is not dict:
         raise OrchestratorError("pre-run tool identity map is absent")
@@ -2008,37 +1665,11 @@ def run_pinned_entry(
         pre_run=pre_run,
         epoch_observer=build_pinned_epoch_observer(pre_run),
         launch_resource_admission=resource_admission_receipt,
-        launch_resource_authority=(
-            None
-            if budget_backend is None
-            else {
-                "calibration_authorization_bundle": dict(
-                    budget_backend.resource_calibration_authorization_bundle
-                ),
-                "calibration_authorization_bundle_identity": dict(
-                    budget_backend.resource_calibration_authorization_bundle_identity
-                ),
-                "enforced_budget_profile": dict(
-                    budget_backend.enforced_budget_profile
-                ),
-                "enforced_budget_profile_identity": dict(
-                    budget_backend.enforced_budget_profile_identity
-                ),
-                "expected_calibration_tool_identities": {
-                    role: dict(identity)
-                    for role, identity in sorted(
-                        budget_backend.expected_calibration_tool_identities.items()
-                    )
-                },
-            }
-        ),
-        formal_budget_backend=budget_backend,
     )
     result = orchestrate_with_adapter(
         pre_run_path=pre_run_path,
         selection_path=selection_path,
         adapter=adapter,
-        budget_backend=budget_backend,
     )
     if resource_admission_receipt is None:
         return result

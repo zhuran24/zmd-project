@@ -12,7 +12,6 @@ import stat
 import subprocess
 import sys
 from types import ModuleType
-from typing import Mapping
 import zipfile
 
 import pytest
@@ -20,10 +19,6 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 TOOLS = ROOT / "docs/research/noncert_cuts_ab16_20260724"
-NATIVE_HELPER = TOOLS / "ab16_native_budget_helper_x86_64_v1.so"
-BLOCKED_BUDGET_PROFILE = (
-    TOOLS / "ab16_resource_budget_profile_phase2_blocked_v1.json"
-)
 HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
 
 
@@ -39,14 +34,6 @@ def _load(name: str, path: Path) -> ModuleType:
 BOOTSTRAP = _load(
     "noncert_cuts_ab16_campaign_bootstrap_v2_regression",
     TOOLS / "ab16_campaign_bootstrap_v2.py",
-)
-V4_AUTHORITY = _load(
-    "noncert_cuts_ab16_campaign_authority_v4_regression",
-    (
-        ROOT
-        / "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724"
-        / "campaign_authority_v4.py"
-    ),
 )
 AUTHORITY = _load(
     "noncert_cuts_ab16_authority_v2_regression",
@@ -80,57 +67,6 @@ TERMINAL_V1_FIXTURE = _load(
     "noncert_cuts_ab16_terminal_gate_v1_fixture_regression",
     ROOT / "src/tests/test_noncert_cuts_ab16_terminal_gate_v1.py",
 )
-
-
-def _launch_ready_budget_profile(tmp_path: Path) -> Path:
-    value = json.loads(BLOCKED_BUDGET_PROFILE.read_bytes())
-    value["launch_ready"] = True
-    value["profile_id"] = "synthetic-v2-authority-regression-profile-v1"
-    value["bootstrap"]["failure_closeout_reserve"]["target_name"] = (
-        "bootstrap-package-failure-closeout.json"
-    )
-    value["formal_root"]["fixed_purpose_reservations"] = [
-        {
-            "purpose": purpose,
-            **dict(specification),
-        }
-        for purpose, specification in sorted(
-            BOOTSTRAP._FORMAL_FIXED_RESERVATION_CONTRACT.items(),  # noqa: SLF001
-            key=lambda item: item[0].encode("utf-8"),
-        )
-    ]
-    added_outside_replay_reserve = 2 * 4 * 1024 * 1024
-    value["formal_root"]["fixed_overhead_category_limits"][
-        "closeout"
-    ] += added_outside_replay_reserve
-    value["formal_root"]["category_limits"][
-        "closeout"
-    ] += added_outside_replay_reserve
-    value["profile_sha256"] = BOOTSTRAP._budget_digest_without(  # noqa: SLF001
-        value,
-        "profile_sha256",
-    )
-    path = tmp_path / "resource-budget-profile.json"
-    path.write_bytes(BOOTSTRAP._budget_canonical_json(value))  # noqa: SLF001
-    path.chmod(0o444)
-    return path
-
-
-def _resource_calibration_paths(tmp_path: Path) -> dict[str, Path]:
-    result: dict[str, Path] = {}
-    for index, stage in enumerate(
-        BOOTSTRAP.RESOURCE_CALIBRATION_STAGES,
-        start=1,
-    ):
-        path = tmp_path / f"resource-calibration-{index}.json"
-        path.write_bytes(
-            BOOTSTRAP._budget_canonical_json(  # noqa: SLF001
-                {"fixture": stage, "stage": stage}
-            )
-        )
-        path.chmod(0o444)
-        result[stage] = path
-    return result
 
 
 def test_authority_unterminated_record_requires_exact_unterminated_canonical_json(
@@ -188,7 +124,6 @@ def test_gate_approval_replay_uses_unterminated_parser_for_both_full_preflights(
             "script.ab16_pytest_collection_protocol_v1",
             "script.ab16_resource_admission_v1",
             "script.gate_a_validation_v2",
-            "script.package_independent_verifier_v1",
             "system.python3_13",
         )
     }
@@ -346,7 +281,7 @@ def test_project_lock_registers_one_exact_ab16_formal_cohort() -> None:
         _top_level_literal(qualification, "HANDOFF_RESPONSE_SCHEMA"),
         _top_level_literal(launch, "FORMAL_CONTEXT_SCHEMA"),
         _top_level_literal(launch, "FORMAL_ADMISSION_SCHEMA"),
-        _top_level_literal(launch, "FORMAL_SELECTION_SCHEMA_V3"),
+        _top_level_literal(launch, "FORMAL_SELECTION_SCHEMA"),
         _top_level_literal(launch, "GUARDIAN_READY_SCHEMA"),
         _top_level_literal(launch, "ATTEMPT_CONSUMPTION_SCHEMA"),
         AUTHORITY.CONTINUATION_SCHEMA,
@@ -463,12 +398,6 @@ def test_formal_orchestrator_is_one_package_and_loader_authority_source() -> Non
         == "ab16_formal_orchestrator_v1.py"
     )
     assert "tool.ab16_formal_orchestrator_v1.py" in AUTHORITY.REQUIRED_PACKAGE_ROLES
-    assert "tool.ab16_final_release_actor_v1.py" in AUTHORITY.REQUIRED_PACKAGE_ROLES
-    assert {
-        "input.resource_calibration_formal_organic_arm.json",
-        "input.resource_calibration_full_preflight.json",
-        "input.resource_calibration_gate_b_qualification.json",
-    } <= AUTHORITY.REQUIRED_PACKAGE_ROLES
     assert AUTHORITY.FORMAL_ROLE_SOURCES["formal-orchestrator"] == (
         "docs.research.noncert_cuts_ab16_20260724.ab16_formal_orchestrator_v1",
         "docs/research/noncert_cuts_ab16_20260724/ab16_formal_orchestrator_v1.py",
@@ -499,7 +428,6 @@ def test_formal_launch_context_projects_gate_b_epoch_to_detached_identity(
         "arm_prelaunch_paths": {},
         "child_audit_path": str(campaign / "child-audit.json"),
         "formal_admission_path": str(campaign / "formal-admission.json"),
-        "formal_artifact_root": str(campaign / "formal-ab16/artifacts"),
         "formal_attempt_dir": str(campaign / "formal-attempt-a001"),
         "formal_selection_path": str(campaign / "formal-selection.json"),
         "gate1_prelaunch_ownership_path": str(campaign / "gate1-prelaunch.json"),
@@ -579,64 +507,7 @@ def test_formal_launch_context_projects_gate_b_epoch_to_detached_identity(
     monkeypatch.setattr(
         AUTHORITY,
         "_bootstrap_literal_values",
-        lambda *_args: {"SELECTED_BYTE_LAUNCH_V2": "pass"},
-    )
-    selected_roles = {
-        role: {
-            "descriptor": 20 + ordinal,
-            "mode": tool_identity["mode"],
-            "package_path": package_path,
-            "proc_fd_path": f"/proc/101/fd/{20 + ordinal}",
-            "sha256": tool_identity["sha256"],
-            "size_bytes": tool_identity["size_bytes"],
-        }
-        for ordinal, (role, package_path) in enumerate(
-            sorted(
-                {
-                    "authority": "payload/tool.ab16_authority_v2.py",
-                    "loader": "payload/tool.ab16_formal_loader_v1.py",
-                    "native_helper": "payload/system.native_budget_helper.bin",
-                    "native_helper_wrapper": (
-                        "payload/tool.ab16_native_budget_helper_v1.py"
-                    ),
-                    "python": "payload/system.python3_13.bin",
-                }.items()
-            )
-        )
-    }
-    monkeypatch.setattr(
-        AUTHORITY,
-        "_bootstrap_selected_transport",
-        lambda *_args, **_kwargs: {
-            "bootstrap_budget_terminal_identity": detached_tool,
-            "budget_broker_endpoint_identity": {
-                "device": 1,
-                "inode": 2,
-                "mode": 0o600,
-                "path": str(campaign / "formal-ab16/budget-broker.sock"),
-                "uid": os.getuid(),
-            },
-            "formal_budget_runtime": {},
-            "resource_budget_profile_identity": detached_tool,
-            "resource_calibration_authorization_bundles": {},
-            "calibration_tool_content_identities": {},
-            "selected_fd_transport": {
-                "owner": {
-                    "pid": 101,
-                    "pid_starttime": 202,
-                    "uid": os.getuid(),
-                },
-                "roles": selected_roles,
-                "schema_version": (
-                    "noncert-cuts-ab16-package-selected-fd-transport-v1"
-                ),
-            },
-        },
-    )
-    monkeypatch.setattr(
-        AUTHORITY,
-        "_formal_receipt_budget_bindings",
-        lambda **_kwargs: {},
+        lambda *_args: {"SELECTED_BYTE_LAUNCH_V1": "pass"},
     )
 
     replay = AUTHORITY.replay_formal_launch_context(campaign_dir=campaign)
@@ -651,31 +522,6 @@ def test_formal_launch_context_projects_gate_b_epoch_to_detached_identity(
         replay["gate_b_epoch_observation_identity"],
         "formal context gate_b_epoch_observation_identity",
     ) == expected_epoch
-    assert replay["bootstrap_budget_terminal_identity"] == detached_tool
-    assert replay["selected_fd_transport"]["owner"] == {
-        "pid": 101,
-        "pid_starttime": 202,
-        "uid": os.getuid(),
-    }
-    for spec_name in ("outer_spec", "guardian_spec"):
-        assert (
-            replay[spec_name]["selected_fd_transport"]
-            == replay["selected_fd_transport"]
-        )
-        assert (
-            replay[spec_name]["budget_broker_endpoint_identity"]
-            == replay["budget_broker_endpoint_identity"]
-        )
-        selected = json.loads(replay[spec_name]["selected_byte_argv"][6])
-        assert set(selected) == {
-            "authority",
-            "loader",
-            "native_helper",
-            "native_helper_wrapper",
-            "python",
-        }
-        assert selected["native_helper_wrapper"] == tool_identity
-        assert selected["native_helper"] == tool_identity
 
 
 def _regular(path: Path, raw: bytes, *, mode: int = 0o444) -> dict[str, object]:
@@ -687,269 +533,6 @@ def _regular(path: Path, raw: bytes, *, mode: int = 0o444) -> dict[str, object]:
         "mode": stat.S_IMODE(snapshot.stat_result.st_mode),
         **BOOTSTRAP.authority.detached_identity(snapshot),
     }
-
-
-def test_bootstrap_selected_transport_replays_terminal_and_package_bytes(
-    tmp_path: Path,
-) -> None:
-    campaign = tmp_path / "campaign"
-    campaign.mkdir()
-    package_id = "b" * 64
-    actor = {
-        "pid": 101,
-        "pid_starttime": 202,
-        "uid": os.getuid(),
-    }
-    endpoint = {
-        "device": 1,
-        "inode": 2,
-        "mode": 0o600,
-        "path": str(campaign / "formal-ab16/budget-broker.sock"),
-        "uid": os.getuid(),
-    }
-    package_paths = {
-        "authority": "payload/tool.ab16_authority_v2.py",
-        "loader": "payload/tool.ab16_formal_loader_v1.py",
-        "native_helper": "payload/system.native_budget_helper.bin",
-        "native_helper_wrapper": "payload/tool.ab16_native_budget_helper_v1.py",
-        "python": "payload/system.python3_13.bin",
-    }
-    selected_identities = {
-        role: _regular(
-            campaign / "package" / relative_path,
-            f"{role}\n".encode(),
-            mode=0o555 if role in {"native_helper", "python"} else 0o444,
-        )
-        for role, relative_path in package_paths.items()
-    }
-    owner_package_role = "payload/tool.ab16_formal_orchestrator_v1.py"
-    owner_source = _regular(
-        campaign / "package" / owner_package_role,
-        b"formal launch owner fixture\n",
-    )
-    owner_content_identity = {
-        field: owner_source[field]
-        for field in ("sha256", "size_bytes")
-    }
-    profile_path = _launch_ready_budget_profile(campaign)
-    profile_snapshot = AUTHORITY.snapshot_regular(profile_path)
-    profile_identity = {
-        "mode": profile_snapshot.mode,
-        **AUTHORITY.detached_identity(profile_snapshot),
-    }
-    calibration_envelopes: dict[str, dict[str, object]] = {}
-    for stage, path in _resource_calibration_paths(campaign).items():
-        snapshot = AUTHORITY.snapshot_regular(path)
-        calibration_envelopes[stage] = {
-            "identity": AUTHORITY.detached_identity(snapshot),
-            "record": json.loads(snapshot.data),
-        }
-    calibration_tool_identities = {
-        role: {
-            "sha256": hashlib.sha256(role.encode("utf-8")).hexdigest(),
-            "size_bytes": len(role.encode("utf-8")),
-        }
-        for role in AUTHORITY.CALIBRATION_TOOL_ROLES
-    }
-    selected_transport = {
-        "owner": actor,
-        "roles": {
-            role: {
-                "descriptor": 20 + ordinal,
-                "mode": selected_identities[role]["mode"],
-                "package_path": relative_path,
-                "proc_fd_path": f"/proc/{actor['pid']}/fd/{20 + ordinal}",
-                "sha256": selected_identities[role]["sha256"],
-                "size_bytes": selected_identities[role]["size_bytes"],
-            }
-            for ordinal, (role, relative_path) in enumerate(
-                sorted(package_paths.items())
-            )
-        },
-        "schema_version": BOOTSTRAP.PACKAGE_SELECTED_FD_TRANSPORT_SCHEMA,
-    }
-    formal_contract = _regular(
-        campaign / "formal-root-budget-contract.json",
-        b"formal contract\n",
-    )
-    package_replay = _regular(
-        campaign / "package-independent-replay.json",
-        b"package replay\n",
-    )
-    recovery_extent = {
-        "sha256": hashlib.sha256(b"recovery extent\n").hexdigest(),
-        "size_bytes": len(b"recovery extent\n"),
-    }
-    recovery_observation = {
-        "actor": {
-            **actor,
-            "schema_version": "fixture-recovery-actor-v1",
-        },
-        "broker_actor": actor,
-        "control_owner": "persistent-budget-broker",
-        "pidfd_method": "fixture",
-        "prepared_recovery_identity": recovery_extent,
-        "role": "ab16-recovery-closeout-v1",
-        "role_source_identity": {},
-        "schema_version": "fixture-recovery-observation-v1",
-        "state": "BROKER_RETAINED_CONTROL",
-    }
-    final_release_handoff = {
-        "directory_handoff": {},
-        "reservation_handoffs": {},
-        "schema_version": "fixture-final-release-parent-handoff-v1",
-        "to_owner_nonce": "fixture-owner",
-    }
-    owner_observation = {
-        "context_state": "AWAITING_DELAYED_CONTEXT",
-        "credential_sha256": "d" * 64,
-        "grant": {},
-        "owner_actor": {
-            "pid": 303,
-            "role": "AB16_OWNER_FORMAL_LAUNCH_PUBLISHER_V1",
-            "session_id": "fixture-owner-session",
-            "starttime": 404,
-        },
-        "owner_pidfd_method": "fixture",
-        "owner_role_source_identity": owner_content_identity,
-        "ready": {},
-        "registration_confirmation": {},
-        "schema_version": (
-            "noncert-cuts-ab16-formal-launch-owner-broker-handoff-v1"
-        ),
-        "state": "BROKER_HOSTED_OWNER_RETAINED",
-    }
-    run_nonce = campaign.name
-    formal_handoff_record = {
-        "authority": dict(AUTHORITY.BUDGET_FALSE_AUTHORITY),
-        "calibration_tool_content_identities": calibration_tool_identities,
-        "formal_account_handoff": {},
-        "formal_control_parent_handoff": {},
-        "formal_final_release_parent_handoff": final_release_handoff,
-        "formal_reservation_handoffs": {},
-        "formal_resource_calibration_bundle_identity": (
-            calibration_envelopes["FORMAL_ORGANIC_ARM"]["identity"]
-        ),
-        "formal_root_budget_contract_identity": {
-            field: formal_contract[field]
-            for field in ("path", "sha256", "size_bytes")
-        },
-        "package_id": package_id,
-        "recovery_owner_observation": recovery_observation,
-        "resource_budget_profile_identity": profile_identity,
-        "resource_calibration_authorization_bundles": (
-            calibration_envelopes
-        ),
-        "run_nonce": run_nonce,
-        "schema_version": BOOTSTRAP.FORMAL_ROOT_BUDGET_HANDOFF_SCHEMA,
-        "state": "PERSISTENT_BROKER_AND_RECOVERY_READY",
-        "status": "PASS",
-    }
-    formal_handoff_path = campaign / "formal-root-budget-handoff.json"
-    formal_handoff_path.write_bytes(
-        AUTHORITY.canonical_json(formal_handoff_record)
-    )
-    formal_handoff_path.chmod(0o444)
-    formal_handoff = _full(formal_handoff_path)
-    terminal = {
-        "authority": {},
-        "bootstrap_writer_release_contract": {},
-        "campaign_dir": str(campaign),
-        "package_id": package_id,
-        "persistent_budget_runtime": {
-            "authority": {},
-            "broker_actor": actor,
-            "broker_endpoint_identity": endpoint,
-            "broker_nonce": "c" * 64,
-            "broker_pidfd_method": "fixture",
-            "formal_account_handoff": {},
-            "formal_control_parent_handoff": {},
-            "formal_final_release_parent_handoff": final_release_handoff,
-            "formal_launch_owner_observation": owner_observation,
-            "formal_reservation_handoffs": {},
-            "formal_root_budget_handoff_identity": {
-                field: formal_handoff[field]
-                for field in ("path", "sha256", "size_bytes")
-            },
-            "recovery_owner_observation": recovery_observation,
-            "schema_version": BOOTSTRAP.BOOTSTRAP_BROKER_RUNTIME_SCHEMA,
-            "selected_fd_transport": selected_transport,
-            "state": "PERSISTENT_BROKER_AND_RECOVERY_READY",
-        },
-        "schema_version": BOOTSTRAP.BOOTSTRAP_BUDGET_TERMINAL_SCHEMA,
-        "state": "PERSISTENT_BROKER_AND_RECOVERY_READY",
-        "status": "PASS",
-        "unused_failure_closeout_identity": {},
-    }
-    terminal_path = campaign / "bootstrap-budget-terminal.json"
-    terminal_path.write_bytes(AUTHORITY.canonical_json(terminal))
-    terminal_path.chmod(0o444)
-
-    class CampaignModule:
-        BOOTSTRAP_BROKER_RUNTIME_SCHEMA = (
-            BOOTSTRAP.BOOTSTRAP_BROKER_RUNTIME_SCHEMA
-        )
-        BOOTSTRAP_BUDGET_TERMINAL_SCHEMA = (
-            BOOTSTRAP.BOOTSTRAP_BUDGET_TERMINAL_SCHEMA
-        )
-        FORMAL_ROOT_BUDGET_HANDOFF_SCHEMA = (
-            BOOTSTRAP.FORMAL_ROOT_BUDGET_HANDOFF_SCHEMA
-        )
-        PACKAGE_SELECTED_FD_TRANSPORT_SCHEMA = (
-            BOOTSTRAP.PACKAGE_SELECTED_FD_TRANSPORT_SCHEMA
-        )
-
-    result = AUTHORITY._bootstrap_selected_transport(  # noqa: SLF001
-        {
-            "campaign_module": CampaignModule,
-            "directory": campaign,
-            "files": {
-                owner_package_role: AUTHORITY.snapshot_regular(
-                    owner_source["path"]
-                ),
-            },
-            "root": {
-                "authority_tools": {
-                    "ab16_formal_orchestrator_v1": {
-                        field: owner_source[field]
-                        for field in ("path", "sha256", "size_bytes")
-                    },
-                },
-                "package": {"package_id": package_id},
-                "run_nonce": run_nonce,
-                "strict_inputs": {
-                    "ab16_package_independent_replay": {
-                        field: package_replay[field]
-                        for field in ("path", "sha256", "size_bytes")
-                    },
-                },
-            },
-            "sources": {
-                "tool.ab16_formal_orchestrator_v1.py": {
-                    "package_path": owner_package_role,
-                    "source_identity": {
-                        field: owner_source[field]
-                        for field in ("path", "sha256", "size_bytes")
-                    },
-                },
-            },
-        },
-        paths={
-            "bootstrap_budget_terminal_path": str(terminal_path),
-            "budget_broker_control_socket_path": endpoint["path"],
-            "formal_root_budget_contract_identity": {
-                field: formal_contract[field]
-                for field in ("path", "sha256", "size_bytes")
-            },
-            "formal_root_budget_handoff_path": str(formal_handoff_path),
-            "resource_budget_profile_identity": profile_identity,
-        },
-        selected_identities=selected_identities,
-    )
-
-    assert result["budget_broker_endpoint_identity"] == endpoint
-    assert result["selected_fd_transport"] == selected_transport
-    assert result["formal_budget_runtime"]["broker_actor_identity"] == actor
 
 
 def _full(path: Path) -> dict[str, object]:
@@ -992,9 +575,7 @@ def _manager_epoch(tmp_path: Path) -> dict[str, object]:
             "python": _full(python),
             "sudo": _full(sudo),
         },
-        "attestor_ast_audit": V4_AUTHORITY.audit_attestor_source(
-            attestor.read_bytes()
-        ),
+        "attestor_ast_audit": BOOTSTRAP.authority.audit_attestor_source(attestor.read_bytes()),
         "boot_id": "11111111-2222-3333-4444-555555555555",
         "capture_protocol": ("double-unprivileged-join-plus-read-only-sudo-attestation-v4"),
         "dbus_unique_owner": ":1.77",
@@ -1004,9 +585,9 @@ def _manager_epoch(tmp_path: Path) -> dict[str, object]:
         "manager_pid_starttime": 987654,
         "manager_version": "systemd 261.1",
         "observation_toolchain": {"busctl": _full(busctl)},
-        "schema": V4_AUTHORITY.MANAGER_EPOCH_SCHEMA,
+        "schema": BOOTSTRAP.authority.MANAGER_EPOCH_SCHEMA,
     }
-    V4_AUTHORITY.validate_manager_epoch(value)
+    BOOTSTRAP.authority.validate_manager_epoch(value)
     return value
 
 
@@ -1073,13 +654,8 @@ def _planned_sources(
         scripts[role] = path
         planned[f"script.{role}"] = _full(path)
     for role in BOOTSTRAP.SYSTEM_TOOL_ROLES:
-        path = (
-            NATIVE_HELPER
-            if role == "native_budget_helper"
-            else tmp_path / "planned/system" / role
-        )
-        if role != "native_budget_helper":
-            _regular(path, f"{role}\n".encode(), mode=0o755)
+        path = tmp_path / "planned/system" / role
+        _regular(path, f"{role}\n".encode(), mode=0o755)
         systems[role] = path
         planned[f"system.{role}"] = {
             **_full(path),
@@ -1659,12 +1235,6 @@ def _manager_candidate_fixture(
             "sha256": "a" * 64,
             "size_bytes": 1,
         },
-        "native_budget_helper_source_identity": dict(
-            planned["system.native_budget_helper"]
-        ),
-        "package_verifier_source_identity": dict(
-            planned["script.package_independent_verifier_v1"]
-        ),
         "path_preregistration_identity": {
             "path": str(tmp_path / "preregistration.json"),
             "sha256": "b" * 64,
@@ -1678,7 +1248,7 @@ def _manager_candidate_fixture(
         "repository_head": HEAD,
         "repository_root": str(repository),
         "run_nonce": root["run_nonce"],
-        "schema_version": "noncert-cuts-ab16-bootstrap-offline-candidate-v4",
+        "schema_version": "noncert-cuts-ab16-bootstrap-offline-candidate-v2",
         "target_campaign_dir": str(tmp_path / "campaigns" / str(root["run_nonce"])),
     }
     without_id = dict(candidate)
@@ -1853,11 +1423,6 @@ def _root_source_join_fixture(
         AUTHORITY.snapshot_regular(materialization_path)
     )
     inputs["ab16_repository_snapshot_materialization"] = materialization_identity
-    inputs["ab16_package_independent_replay"] = {
-        "path": str(tmp_path / "package-independent-replay.json"),
-        "sha256": "c" * 64,
-        "size_bytes": 1,
-    }
     manager = planned["script.manager_attestor_v4"]
     root = {
         **root_base,
@@ -1908,40 +1473,6 @@ def test_root_source_join_wiring_accepts_only_two_exact_live_roles(
         )
     assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
     assert exc_info.value.detail == "source join ab16_authority_v1"
-
-
-@pytest.mark.parametrize("mutation", ["absent", "tampered"])
-def test_root_source_join_binds_ab16_budgeted_writer_adapter(
-    tmp_path: Path,
-    mutation: str,
-) -> None:
-    directory, root, files, sources, repository_snapshot, _planned = (
-        _root_source_join_fixture(tmp_path)
-    )
-    tools = root["authority_tools"]
-    assert isinstance(tools, dict)
-    if mutation == "absent":
-        tools.pop("ab16_budgeted_writers_v1")
-    else:
-        identity = tools["ab16_budgeted_writers_v1"]
-        assert isinstance(identity, dict)
-        identity["sha256"] = "0" * 64
-
-    with pytest.raises(AUTHORITY.AuthorityError) as exc_info:
-        AUTHORITY._validate_root_source_joins(  # noqa: SLF001
-            directory,
-            root,
-            files,
-            sources,
-            repository_snapshot,
-        )
-    assert exc_info.value.code == "CAMPAIGN_ROOT_INVALID"
-    expected_detail = (
-        "required AB16 root roles absent"
-        if mutation == "absent"
-        else "source join ab16_budgeted_writers_v1"
-    )
-    assert exc_info.value.detail == expected_detail
 
 
 def test_campaign_context_closes_gate_approvals_before_live_source_joins(
@@ -2286,10 +1817,6 @@ def test_gate_a_evidence_mutation_fails_before_campaign_creation(
             gate_a_receipt=gate_a_path,
             repository_root=tmp_path / "repository",
             target_campaign_dir=campaign,
-            resource_budget_profile=_launch_ready_budget_profile(tmp_path),
-            resource_calibration_bundle_paths=(
-                _resource_calibration_paths(tmp_path)
-            ),
             strict_input_paths={},
             system_tool_paths={},
         )
@@ -2315,8 +1842,6 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
     )
     gate_a_path = tmp_path / "gate-a.json"
     gate_a_identity = _write_authority_json(gate_a_path, gate_a)
-    resource_budget_profile = _launch_ready_budget_profile(tmp_path)
-    resource_calibration_paths = _resource_calibration_paths(tmp_path)
 
     monkeypatch.setattr(
         BOOTSTRAP,
@@ -2333,8 +1858,6 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         gate_a_receipt=gate_a_path,
         repository_root=tmp_path / "repository",
         target_campaign_dir=campaign,
-        resource_budget_profile=resource_budget_profile,
-        resource_calibration_bundle_paths=resource_calibration_paths,
         strict_input_paths={},
         system_tool_paths={},
     )
@@ -2364,26 +1887,14 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
     gate_b = {
         "approval_id": "gate-b-fixture-v2",
         "arm_launch_authorized": False,
-        "bootstrap_budget_contract_identity": candidate_result["candidate"][
-            "bootstrap_budget_contract_identity"
-        ],
         "candidate_identity": candidate_result["candidate_identity"],
         "created_at_utc": "2026-07-24T00:01:00Z",
         "decision": "APPROVED",
         "final_full_preflight_receipt_identity": final_identity,
         "formal_campaign_creation_authorized": True,
-        "formal_root_budget_contract_identity": candidate_result["candidate"][
-            "formal_root_budget_contract_identity"
-        ],
         "gate": "B",
         "gate_a_receipt_identity": gate_a_identity,
         "gate_b_epoch_observation_identity": epoch_identity,
-        "native_budget_helper_source_identity": dict(
-            planned["system.native_budget_helper"]
-        ),
-        "package_verifier_source_identity": dict(
-            planned["script.package_independent_verifier_v1"]
-        ),
         "planned_source_set_digest": digest,
         "pre_full_resource_gate_identity": pre_full_resource_identity,
         "pre_publication_resource_gate_identity": pre_publication_resource_identity,
@@ -2391,12 +1902,6 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         "purpose": BOOTSTRAP.GATE_B_PURPOSE,
         "repository_head": HEAD,
         "repository_root": str(tmp_path / "repository"),
-        "resource_budget_profile_identity": candidate_result["candidate"][
-            "resource_budget_profile_identity"
-        ],
-        "resource_calibration_bundle_identities": candidate_result[
-            "candidate"
-        ]["resource_calibration_bundle_identities"],
         "run_nonce": campaign.name,
         "schema_version": BOOTSTRAP.GATE_B_SCHEMA,
         "target_campaign_dir": str(campaign),
@@ -2432,12 +1937,6 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
         "_read_gate_b_resource_gate",
         lambda identity_value, **_kwargs: ({"status": "PASS"}, identity_value),
     )
-    closure_replays: list[Mapping[str, Mapping[str, object]] | None] = []
-    monkeypatch.setattr(
-        BOOTSTRAP,
-        "_replay_prepackage_closure",
-        lambda *, planned=None: closure_replays.append(planned),
-    )
 
     with pytest.raises(
         BOOTSTRAP.BootstrapError,
@@ -2449,12 +1948,9 @@ def test_current_manager_epoch_drift_fails_before_campaign_mkdir(
             gate_a_receipt=gate_a_path,
             offline_candidate=tmp_path / "candidate.json",
             gate_b_approval=gate_b_path,
-            resource_budget_profile=resource_budget_profile,
-            resource_calibration_bundle_paths=resource_calibration_paths,
             strict_input_paths={},
             system_tool_paths={},
         )
-    assert closure_replays == [None, None]
     assert not campaign.exists()
 
 
@@ -2465,42 +1961,12 @@ def _gate_b_record(tmp_path: Path) -> dict[str, object]:
     gate_a = _regular(tmp_path / "gate-b/gate-a.json", b"{}\n")
     return {
         "approval_id": "gate-b-evidence-v2", "arm_launch_authorized": False,
-        "bootstrap_budget_contract_identity": {
-            key: value
-            for key, value in _regular(
-                tmp_path
-                / "campaigns/run-gate-b-evidence-v2/bootstrap-authority/bootstrap-budget-contract.json",
-                b"{}\n",
-            ).items()
-            if key != "mode"
-        },
         "candidate_identity": {key: candidate[key] for key in ("path", "sha256", "size_bytes")},
         "created_at_utc": "2026-07-24T00:01:00Z", "decision": "APPROVED",
         "final_full_preflight_receipt_identity": _regular(tmp_path / "gate-b/final.json", b"{}\n"),
         "formal_campaign_creation_authorized": True, "gate": "B",
-        "formal_root_budget_contract_identity": {
-            key: value
-            for key, value in _regular(
-                tmp_path
-                / "campaigns/run-gate-b-evidence-v2/formal-ab16/artifacts/formal-root-budget-contract.json",
-                b"{}\n",
-            ).items()
-            if key != "mode"
-        },
         "gate_a_receipt_identity": {key: gate_a[key] for key in ("path", "sha256", "size_bytes")},
         "gate_b_epoch_observation_identity": _regular(tmp_path / "gate-b/epoch.json", b"{}\n"),
-        "native_budget_helper_source_identity": BOOTSTRAP.authority.snapshot_tool(
-            NATIVE_HELPER
-        )[1],
-        "package_verifier_source_identity": {
-            "device": 1,
-            "inode": 1,
-            "mode": 0o644,
-            "mode_octal": "0644",
-            "path": str(tmp_path / "repository/package_independent_verifier_v1.py"),
-            "sha256": "b" * 64,
-            "size_bytes": 1,
-        },
         "planned_source_set_digest": "a" * 64,
         "pre_full_resource_gate_identity": _regular(
             tmp_path / "gate-b/resource-before-full.json",
@@ -2513,26 +1979,6 @@ def _gate_b_record(tmp_path: Path) -> dict[str, object]:
         "publisher": _gate_b_publisher(approval_path),
         "purpose": BOOTSTRAP.GATE_B_PURPOSE,
         "repository_head": HEAD, "repository_root": str(tmp_path / "repository"),
-        "resource_budget_profile_identity": _regular(
-            tmp_path / "gate-b/resource-budget-profile.json",
-            b"{}\n",
-        ),
-        "resource_calibration_bundle_identities": {
-            stage: {
-                key: value
-                for key, value in _regular(
-                    tmp_path / f"gate-b/calibration-{index}.json",
-                    BOOTSTRAP._budget_canonical_json(  # noqa: SLF001
-                        {"stage": stage}
-                    ),
-                ).items()
-                if key != "mode"
-            }
-            for index, stage in enumerate(
-                BOOTSTRAP.RESOURCE_CALIBRATION_STAGES,
-                start=1,
-            )
-        },
         "run_nonce": campaign.name, "schema_version": BOOTSTRAP.GATE_B_SCHEMA,
         "target_campaign_dir": str(campaign),
     }
@@ -2567,7 +2013,7 @@ def test_gate_b_independent_evidence_identity_is_fail_closed(
         BOOTSTRAP._validate_gate_b(record)  # noqa: SLF001
 
 
-def test_gate_b_v7_publisher_identity_and_schema_are_strict(
+def test_gate_b_v5_publisher_identity_and_schema_are_strict(
     tmp_path: Path,
 ) -> None:
     record = _gate_b_record(tmp_path)
@@ -2575,9 +2021,7 @@ def test_gate_b_v7_publisher_identity_and_schema_are_strict(
 
     mutations: list[dict[str, object]] = []
     old_schema = copy.deepcopy(record)
-    old_schema["schema_version"] = (
-        "noncert-cuts-ab16-bootstrap-gate-b-approval-v6"
-    )
+    old_schema["schema_version"] = "noncert-cuts-ab16-bootstrap-gate-b-approval-v4"
     mutations.append(old_schema)
     missing = copy.deepcopy(record)
     missing.pop("publisher")
@@ -2862,7 +2306,6 @@ def _materialized_snapshot_fixture(
     manifest_path.write_bytes(AUTHORITY.canonical_json(manifest))
     manifest_path.chmod(0o444)
     platform = BOOTSTRAP._external_platform_record(  # noqa: SLF001
-        native_helper_identity=BOOTSTRAP.authority.snapshot_tool(NATIVE_HELPER)[1],
         repository_head=HEAD,
         python_identity=_full(python_path),
     )
@@ -2899,9 +2342,6 @@ def _materialized_snapshot_fixture(
     bootstrap_payload = payload / "tool.ab16_campaign_bootstrap_v2.py"
     bootstrap_payload.write_bytes(bootstrap_source.read_bytes())
     bootstrap_payload.chmod(0o444)
-    native_payload = payload / "system.native_budget_helper.bin"
-    native_payload.write_bytes(NATIVE_HELPER.read_bytes())
-    native_payload.chmod(0o444)
     files = {
         path.name: AUTHORITY.snapshot_regular(path)
         for path in (
@@ -2909,7 +2349,6 @@ def _materialized_snapshot_fixture(
             bootstrap_payload,
             candidate_path,
             manifest_path,
-            native_payload,
             platform_path,
         )
     }
@@ -2922,22 +2361,9 @@ def _materialized_snapshot_fixture(
             "package_path": bootstrap_payload.name,
             "source_identity": _full(bootstrap_source),
         },
-        "system.native_budget_helper.bin": {
-            "package_path": native_payload.name,
-            "source_identity": BOOTSTRAP.authority.snapshot_tool(
-                NATIVE_HELPER
-            )[1],
-        },
     }
     root = {
-        "authority_tools": {
-            "native_budget_helper": AUTHORITY.detached_identity(
-                AUTHORITY.snapshot_regular(NATIVE_HELPER)
-            ),
-            "python3_13": AUTHORITY.detached_identity(
-                AUTHORITY.snapshot_regular(python_path)
-            ),
-        },
+        "authority_tools": {"python3_13": AUTHORITY.detached_identity(AUTHORITY.snapshot_regular(python_path))},
         "package": {"package_id": package_id},
         "repository_head": HEAD,
         "strict_inputs": {
@@ -3366,10 +2792,10 @@ def test_formal_pre_run_v2_shape_preregisters_and_replays_references() -> None:
     assert tool_roles["python3_13"] == "python3_13"
     assert tool_roles["attestor_python"] != tool_roles["python3_13"]
     assert set(tool_roles) | {"manager_epoch_authority"} == set(
-        RESOURCE_LIFECYCLE.FORMAL_TOOL_ROLES_V2
+        RESOURCE_LIFECYCLE.FORMAL_TOOL_ROLES
     )
     assert set(tool_roles) | {"manager_epoch_authority"} == (
-        RESOURCE.FORMAL_TOOL_ROLES_V2
+        RESOURCE.FORMAL_TOOL_ROLES
     )
 
     builder = _function(tree, "_build_pre_run_candidate_unprotected")

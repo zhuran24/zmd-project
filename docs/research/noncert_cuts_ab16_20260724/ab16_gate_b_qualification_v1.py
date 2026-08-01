@@ -27,13 +27,13 @@ import sys
 from typing import Any
 
 
-QUALIFICATION_SCHEMA = "noncert-cuts-ab16-gate-b-qualification-v3"
-OWNER_REQUEST_SCHEMA = "noncert-cuts-ab16-gate-b-owner-request-v2"
-OWNER_RESPONSE_SCHEMA = "noncert-cuts-ab16-gate-b-owner-response-v2"
-HANDOFF_REQUEST_SCHEMA = "noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v2"
-HANDOFF_RESPONSE_SCHEMA = "noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v2"
-OWNER_RELEASE_SCHEMA = "noncert-cuts-ab16-gate-b-owner-release-v2"
-RESOURCE_GATE_SCHEMA = "noncert-cuts-ab16-gate-b-resource-gate-v3"
+QUALIFICATION_SCHEMA = "noncert-cuts-ab16-gate-b-qualification-v2"
+OWNER_REQUEST_SCHEMA = "noncert-cuts-ab16-gate-b-owner-request-v1"
+OWNER_RESPONSE_SCHEMA = "noncert-cuts-ab16-gate-b-owner-response-v1"
+HANDOFF_REQUEST_SCHEMA = "noncert-cuts-ab16-gate-b-bootstrap-handoff-request-v1"
+HANDOFF_RESPONSE_SCHEMA = "noncert-cuts-ab16-gate-b-bootstrap-handoff-response-v1"
+OWNER_RELEASE_SCHEMA = "noncert-cuts-ab16-gate-b-owner-release-v1"
+RESOURCE_GATE_SCHEMA = "noncert-cuts-ab16-gate-b-resource-gate-v2"
 OWNER_EXECUTION_STRATEGY = "persistent-owner-sealed-fd-oexcl-bootstrap-handoff-v1"
 LOCK_PATHS = (
     "/tmp/zmd-pj-codex-heavy-validation.lock",
@@ -1537,8 +1537,6 @@ def _resource_gate(
     stage: str,
     profile_stage: str,
     resource_admission: Any,
-    calibration_authorization_bundle: Mapping[str, object],
-    calibration_authorization_bundle_identity: Mapping[str, object],
     actor: Mapping[str, object],
     session_id: str,
     lock_identities: Sequence[Mapping[str, object]],
@@ -1556,7 +1554,7 @@ def _resource_gate(
         raise QualificationError(f"unknown Gate-B resource profile {profile_stage!r}")
     absolute_path = str(Path(path).absolute())
     try:
-        admission = resource_admission.evaluate_prospective_resource_admission(
+        admission = resource_admission.evaluate_resource_admission(
             path,
             stage=profile_stage,
             lock_identities=lock_identities,
@@ -1571,12 +1569,6 @@ def _resource_gate(
                 "slot": "",
                 "target": stage,
             },
-            calibration_authorization_bundle=(
-                calibration_authorization_bundle
-            ),
-            calibration_authorization_bundle_identity=(
-                calibration_authorization_bundle_identity
-            ),
             meminfo=meminfo,
             disk_free=disk_free,
             conflicts=conflicts,
@@ -1594,61 +1586,6 @@ def _resource_gate(
         "stage": stage,
         "status": "PASS",
     }
-
-
-def _resource_calibration_authorization(
-    context: Mapping[str, Any],
-    *,
-    stage: str,
-) -> tuple[dict[str, object], dict[str, object]]:
-    paths = context["resource_calibration_bundle_paths"]
-    identities = context["resource_calibration_bundle_identities"]
-    bootstrap = context["bootstrap"]
-    expected_stages = set(bootstrap.RESOURCE_CALIBRATION_STAGES)
-    if (
-        type(paths) is not dict
-        or type(identities) is not dict
-        or set(paths) != expected_stages
-        or set(identities) != expected_stages
-        or stage not in paths
-    ):
-        raise QualificationError(
-            "resource calibration authorization stage set drifted"
-        )
-    path = Path(paths[stage])
-    expected_identity = identities[stage]
-    if (
-        type(expected_identity) is not dict
-        or set(expected_identity) != {"path", "sha256", "size_bytes"}
-    ):
-        raise QualificationError(
-            f"{stage} resource calibration identity is malformed"
-        )
-    raw = _read_stable_path(
-        path,
-        label=f"{stage} resource calibration authorization",
-    )
-    current = _mode_identity(path)
-    current_identity = {
-        field: current[field]
-        for field in ("path", "sha256", "size_bytes")
-    }
-    if (
-        current["mode"] != 0o444
-        or current_identity != expected_identity
-    ):
-        raise QualificationError(
-            f"{stage} resource calibration identity drifted"
-        )
-    value = _strict_json(
-        raw,
-        f"{stage} resource calibration authorization",
-    )
-    if type(value) is not dict or _canonical_json(value) != raw:
-        raise QualificationError(
-            f"{stage} resource calibration authorization is not canonical"
-        )
-    return dict(value), dict(expected_identity)
 
 
 def _load_resource_admission(context: Mapping[str, Any]) -> Any:
@@ -1720,33 +1657,6 @@ def _prepare_qualification(args: argparse.Namespace, bootstrap: Any) -> dict[str
         "offline candidate",
     )
     candidate = bootstrap.validate_candidate(candidate)
-    budget_profile, budget_profile_identity = bootstrap._resource_budget_profile(  # noqa: SLF001
-        args.resource_budget_profile,
-        require_launch_ready=True,
-    )
-    (
-        resource_calibration_bundle_paths,
-        resource_calibration_bundle_identities,
-    ) = bootstrap._resource_calibration_bundle_sources(  # noqa: SLF001
-        bootstrap._cli_resource_calibration_bundle_paths(args)  # noqa: SLF001
-    )
-    budget_contracts = bootstrap._planned_budget_contracts(  # noqa: SLF001
-        campaign_dir=campaign,
-        profile=budget_profile,
-        profile_identity=budget_profile_identity,
-    )
-    budget_binding = {
-        "bootstrap_budget_contract_identity": budget_contracts[
-            "bootstrap_identity"
-        ],
-        "formal_root_budget_contract_identity": budget_contracts[
-            "formal_identity"
-        ],
-        "resource_calibration_bundle_identities": (
-            resource_calibration_bundle_identities
-        ),
-        "resource_budget_profile_identity": budget_profile_identity,
-    }
     strict_inputs = bootstrap._production_strict_inputs(repository, args)  # noqa: SLF001
     system_tools = bootstrap._cli_system_tools(args)  # noqa: SLF001
     planned, scripts, system_paths, _strict_paths = bootstrap._planned_source_identities(  # noqa: SLF001
@@ -1768,7 +1678,6 @@ def _prepare_qualification(args: argparse.Namespace, bootstrap: Any) -> dict[str
         or candidate["planned_source_set_digest"] != planned_digest
         or gate_a["target_campaign_dir"] != str(campaign)
         or gate_a["repository_root"] != str(repository)
-        or any(candidate[field] != expected for field, expected in budget_binding.items())
     ):
         raise QualificationError("Gate-A/candidate/current source binding drifted")
     observation_raw = _read_stable_path(
@@ -1783,9 +1692,6 @@ def _prepare_qualification(args: argparse.Namespace, bootstrap: Any) -> dict[str
     if observation != {
         "planned_source_identities": planned,
         "planned_source_set_digest": planned_digest,
-        "resource_calibration_bundle_identities": (
-            resource_calibration_bundle_identities
-        ),
     }:
         raise QualificationError("planned-source observation differs from candidate/current bytes")
     if gate_a["approval_id"] == args.approval_id:
@@ -1811,19 +1717,11 @@ def _prepare_qualification(args: argparse.Namespace, bootstrap: Any) -> dict[str
         "output": output,
         "planned": planned,
         "planned_digest": planned_digest,
-        "resource_budget_profile_identity": budget_profile_identity,
-        "resource_calibration_bundle_identities": (
-            resource_calibration_bundle_identities
-        ),
-        "resource_calibration_bundle_paths": (
-            resource_calibration_bundle_paths
-        ),
         "repository": repository,
         "scripts": scripts,
         "strict_inputs": strict_inputs,
         "system_paths": system_paths,
         "system_tools": system_tools,
-        "budget_binding": budget_binding,
     }
 
 
@@ -1951,28 +1849,6 @@ def _run_bootstrap_child(
             str(context["system_tools"]["git"]),
             "--libsystemd",
             str(context["system_tools"]["libsystemd"]),
-            "--native-budget-helper",
-            str(context["system_tools"]["native_budget_helper"]),
-            "--resource-budget-profile",
-            str(Path(os.path.abspath(args.resource_budget_profile))),
-            "--resource-calibration-full-preflight",
-            str(Path(os.path.abspath(args.resource_calibration_full_preflight))),
-            "--resource-calibration-gate-b-qualification",
-            str(
-                Path(
-                    os.path.abspath(
-                        args.resource_calibration_gate_b_qualification
-                    )
-                )
-            ),
-            "--resource-calibration-formal-organic-arm",
-            str(
-                Path(
-                    os.path.abspath(
-                        args.resource_calibration_formal_organic_arm
-                    )
-                )
-            ),
             "--sudo",
             str(context["system_tools"]["sudo"]),
             "--systemctl",
@@ -2086,26 +1962,14 @@ def _build_approval_record(
     return {
         "approval_id": args.approval_id,
         "arm_launch_authorized": False,
-        "bootstrap_budget_contract_identity": dict(
-            context["budget_binding"]["bootstrap_budget_contract_identity"]
-        ),
         "candidate_identity": context["candidate_identity"],
         "created_at_utc": _utc_now(),
         "decision": "APPROVED",
         "final_full_preflight_receipt_identity": dict(final_identity),
         "formal_campaign_creation_authorized": True,
-        "formal_root_budget_contract_identity": dict(
-            context["budget_binding"]["formal_root_budget_contract_identity"]
-        ),
         "gate": "B",
         "gate_a_receipt_identity": context["gate_a_identity"],
         "gate_b_epoch_observation_identity": dict(epoch_identity),
-        "native_budget_helper_source_identity": dict(
-            context["planned"]["system.native_budget_helper"]
-        ),
-        "package_verifier_source_identity": dict(
-            context["planned"]["script.package_independent_verifier_v1"]
-        ),
         "planned_source_set_digest": context["planned_digest"],
         "pre_full_resource_gate_identity": dict(
             pre_full_resource_gate_identity
@@ -2116,15 +1980,6 @@ def _build_approval_record(
         "purpose": bootstrap.GATE_B_PURPOSE,
         "repository_head": gate_a["repository_head"],
         "repository_root": gate_a["repository_root"],
-        "resource_budget_profile_identity": dict(
-            context["resource_budget_profile_identity"]
-        ),
-        "resource_calibration_bundle_identities": {
-            stage: dict(identity)
-            for stage, identity in sorted(
-                context["resource_calibration_bundle_identities"].items()
-            )
-        },
         "run_nonce": gate_a["run_nonce"],
         "schema_version": bootstrap.GATE_B_SCHEMA,
         "target_campaign_dir": gate_a["target_campaign_dir"],
@@ -2153,21 +2008,11 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
         context = _prepare_qualification(args, bootstrap)
         resource_admission = _load_resource_admission(context)
         gate_one_locks = owner.current_lock_identities()
-        gate_one_calibration, gate_one_calibration_identity = (
-            _resource_calibration_authorization(
-                context,
-                stage=resource_admission.FULL_PREFLIGHT,
-            )
-        )
         gate_one = _resource_gate(
             context["output"].parent,
             stage="BEFORE_FINAL_FULL_PREFLIGHT",
             profile_stage=resource_admission.FULL_PREFLIGHT,
             resource_admission=resource_admission,
-            calibration_authorization_bundle=gate_one_calibration,
-            calibration_authorization_bundle_identity=(
-                gate_one_calibration_identity
-            ),
             actor=owner.actor,
             session_id=owner.session_id,
             lock_identities=gate_one_locks,
@@ -2246,21 +2091,11 @@ def qualify(args: argparse.Namespace) -> dict[str, object]:
 
         resource_admission = _load_resource_admission(context)
         gate_two_locks = owner.current_lock_identities()
-        gate_two_calibration, gate_two_calibration_identity = (
-            _resource_calibration_authorization(
-                context,
-                stage=resource_admission.GATE_B_QUALIFICATION,
-            )
-        )
         gate_two = _resource_gate(
             output,
             stage="AFTER_FINAL_FULL_PREFLIGHT_BEFORE_GATE_B_APPROVAL",
             profile_stage=resource_admission.GATE_B_QUALIFICATION,
             resource_admission=resource_admission,
-            calibration_authorization_bundle=gate_two_calibration,
-            calibration_authorization_bundle_identity=(
-                gate_two_calibration_identity
-            ),
             actor=owner.actor,
             session_id=owner.session_id,
             lock_identities=gate_two_locks,
@@ -2367,27 +2202,6 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     qualify_parser.add_argument("--busctl", type=Path, default=Path("/usr/bin/busctl"))
     qualify_parser.add_argument("--git", type=Path, default=Path("/usr/bin/git"))
     qualify_parser.add_argument("--libsystemd", type=Path, default=Path("/usr/lib/libsystemd.so.0"))
-    qualify_parser.add_argument("--native-budget-helper", type=Path, required=True)
-    qualify_parser.add_argument(
-        "--resource-budget-profile",
-        type=Path,
-        required=True,
-    )
-    qualify_parser.add_argument(
-        "--resource-calibration-full-preflight",
-        type=Path,
-        required=True,
-    )
-    qualify_parser.add_argument(
-        "--resource-calibration-gate-b-qualification",
-        type=Path,
-        required=True,
-    )
-    qualify_parser.add_argument(
-        "--resource-calibration-formal-organic-arm",
-        type=Path,
-        required=True,
-    )
     qualify_parser.add_argument("--sudo", type=Path, default=Path("/usr/bin/sudo"))
     qualify_parser.add_argument("--systemctl", type=Path, default=Path("/usr/bin/systemctl"))
     qualify_parser.add_argument("--systemd-run", type=Path, default=Path("/usr/bin/systemd-run"))

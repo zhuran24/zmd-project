@@ -113,28 +113,10 @@ def test_observation_is_detached_and_canonical(tmp_path: Path) -> None:
         **{role: _identity(source) for _module_name, role in ENTRYPOINT.MODULE_LOAD_ORDER},
     }
     digest = hashlib.sha256(_canonical(sources) + b"\n").hexdigest()
-    calibration_identities = {
-        stage: {
-            "path": str((tmp_path / f"calibration-{index}.json").absolute()),
-            "sha256": str(index) * 64,
-            "size_bytes": index,
-        }
-        for index, stage in enumerate(
-            (
-                "FULL_PREFLIGHT",
-                "GATE_B_QUALIFICATION",
-                "FORMAL_ORGANIC_ARM",
-            ),
-            start=1,
-        )
-    }
     raw = _canonical(
         {
             "planned_source_identities": sources,
             "planned_source_set_digest": digest,
-            "resource_calibration_bundle_identities": (
-                calibration_identities
-            ),
         }
     )
     observation = tmp_path / "planned.json"

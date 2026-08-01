@@ -17,10 +17,6 @@ ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs/research/noncert_cuts_ab16_20260724"
 WRAPPER = RESEARCH / "ab16_native_budget_helper_v1.py"
 SOURCE = RESEARCH / "ab16_native_budget_helper_v1.c"
-PREBUILT = RESEARCH / "ab16_native_budget_helper_x86_64_v1.so"
-PROVENANCE = (
-    RESEARCH / "ab16_native_budget_helper_x86_64_v1.provenance.json"
-)
 BUDGET_SOURCE = RESEARCH / "ab16_budget_authority_v1.py"
 PINNED_PYTHON = ROOT / ".venv-uvbolt-backup/bin/python3.13"
 COMPILER = Path("/usr/bin/gcc")
@@ -42,119 +38,6 @@ def _load_budget() -> ModuleType:
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
-
-
-def _helper_from_retained_member(module: ModuleType, path: Path) -> object:
-    descriptor = os.open(path, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
-    try:
-        return module.NativeBudgetHelper(
-            descriptor,
-            expected_identity=module.expected_package_identity(),
-        )
-    finally:
-        os.close(descriptor)
-
-
-def test_prebuilt_helper_and_planning_provenance_are_exact() -> None:
-    module = _load()
-    expected = module.expected_package_identity()
-    raw = PREBUILT.read_bytes()
-    metadata = PREBUILT.stat(follow_symlinks=False)
-    assert {
-        "mode": metadata.st_mode & 0o7777,
-        "nlink": metadata.st_nlink,
-        "sha256": hashlib.sha256(raw).hexdigest(),
-        "size_bytes": len(raw),
-    } == {
-        "mode": 0o555,
-        "nlink": 1,
-        "sha256": expected["sha256"],
-        "size_bytes": expected["size_bytes"],
-    }
-    descriptor = os.open(PREBUILT, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
-    try:
-        assert module.snapshot_retained_package_member(descriptor) == expected
-    finally:
-        os.close(descriptor)
-
-    provenance_raw = PROVENANCE.read_bytes()
-    provenance = json.loads(provenance_raw)
-    assert provenance_raw == (
-        json.dumps(
-            provenance,
-            allow_nan=False,
-            ensure_ascii=False,
-            separators=(",", ":"),
-            sort_keys=True,
-        )
-        + "\n"
-    ).encode()
-    assert provenance["schema"] == (
-        "noncert-cuts-ab16-native-budget-helper-provisioning-provenance-v1"
-    )
-    assert provenance["planning_only"] is True
-    assert provenance["authority_receipt"] is False
-    assert provenance["self_attesting"] is False
-    assert provenance["substitutes_for_direct_binary_verification"] is False
-    assert provenance["host"] == {"machine": "x86_64", "platform": "linux"}
-    assert provenance["binary"] == {
-        "build_id_sha1": expected["build_id_sha1"],
-        "byte_order": "little",
-        "elf_abi": "SYSV",
-        "elf_class": "ELF64",
-        "elf_machine": 62,
-        "elf_type": 3,
-        "elf_version": 1,
-        "mode": 0o555,
-        "path": PREBUILT.name,
-        "sha256": expected["sha256"],
-        "size_bytes": expected["size_bytes"],
-    }
-    assert provenance["build"]["source"] == {
-        "mode": 0o644,
-        "nlink": 1,
-        "path": SOURCE.name,
-        "sha256": "251414a4f1e7934a343329ae8461936ddc823a45302645f878f5ecc0a906a60a",
-        "size_bytes": 8286,
-    }
-    assert provenance["build"]["compiler"] == {
-        "mode": 0o755,
-        "nlink": 3,
-        "path": "/usr/bin/gcc",
-        "sha256": "25bc8289ab5f2c036d74a4234a5f5a8be87e7cc0d61a919268d6f9febb61fbbb",
-        "size_bytes": 2451072,
-    }
-    assert provenance["build"]["argv"] == [
-        "/usr/bin/gcc",
-        "-shared",
-        "-fPIC",
-        "-O2",
-        "-std=c17",
-        "-Wall",
-        "-Wextra",
-        "-Werror",
-        "-Wl,-z,relro,-z,now",
-        "-o",
-        "<same-directory-hidden-staging>",
-        "<ab16_native_budget_helper_v1.c>",
-    ]
-
-
-def test_authority_flow_never_invokes_native_build_surface() -> None:
-    for name in (
-        "ab16_campaign_bootstrap_v2.py",
-        "ab16_gate_b_qualification_v1.py",
-        "gate_a_recovery_inputs_v1.py",
-        "package_independent_verifier_v1.py",
-        "ab16_authority_v2.py",
-        "ab16_budget_broker_v1.py",
-        "ab16_formal_campaign_v1.py",
-        "organic_arm_runner_v1.py",
-    ):
-        source = (RESEARCH / name).read_text(encoding="utf-8")
-        assert "build_shared_object(" not in source
-        assert "ab16_native_budget_helper_v1.c" not in source
-        assert '"/usr/bin/gcc"' not in source
 
 
 @pytest.fixture()
@@ -184,7 +67,7 @@ def test_identity_pin_and_scm_rights_round_trip(
     built_helper: tuple[ModuleType, Path, dict[str, object]],
 ) -> None:
     module, output, identity = built_helper
-    helper = _helper_from_retained_member(module, output)
+    helper = module.NativeBudgetHelper(output, expected_identity=identity)
     descriptor = helper.create_memfd("ab16-test")
     left, right = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
     try:
@@ -199,28 +82,16 @@ def test_identity_pin_and_scm_rights_round_trip(
         left.close()
         right.close()
         os.close(descriptor)
-    forged = module.expected_package_identity()
+    forged = dict(identity)
     forged["sha256"] = "0" * 64
-    descriptor = os.open(output, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
     with pytest.raises(module.NativeBudgetHelperError) as captured:
-        module.NativeBudgetHelper(descriptor, expected_identity=forged)
-    os.close(descriptor)
+        module.NativeBudgetHelper(output, expected_identity=forged)
     assert captured.value.code == "NATIVE_HELPER_PIN_MISMATCH"
-    with pytest.raises(module.NativeBudgetHelperError) as captured:
-        module.NativeBudgetHelper(
-            output,
-            expected_identity=module.expected_package_identity(),
-        )
-    assert captured.value.code == "NATIVE_HELPER_AMBIENT_LOAD_FORBIDDEN"
 
 
 def _run_isolated(script: str, *, helper_path: Path, helper_identity: dict[str, object]) -> subprocess.CompletedProcess[bytes]:
     environment = {
-        "AB16_HELPER_IDENTITY": json.dumps(
-            _load().expected_package_identity(),
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
+        "AB16_HELPER_IDENTITY": json.dumps(helper_identity, sort_keys=True, separators=(",", ":")),
         "AB16_HELPER_PATH": str(helper_path),
         "AB16_WRAPPER_PATH": str(WRAPPER),
         "HOME": str(ROOT),
@@ -255,9 +126,7 @@ module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = module
 spec.loader.exec_module(module)
 identity = json.loads(os.environ["AB16_HELPER_IDENTITY"])
-helper_fd = os.open(os.environ["AB16_HELPER_PATH"], os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
-helper = module.NativeBudgetHelper(helper_fd, expected_identity=identity)
-os.close(helper_fd)
+helper = module.NativeBudgetHelper(os.environ["AB16_HELPER_PATH"], expected_identity=identity)
 fd = helper.create_memfd("ab16-ortools")
 try:
     os.write(fd, b"stale-bytes-that-must-be-truncated")
@@ -297,120 +166,11 @@ finally:
     assert result["seals"] > 0
 
 
-def test_real_landlock_blocks_restored_baseline_workspace_but_not_broker_child(
-    built_helper: tuple[ModuleType, Path, dict[str, object]],
-    tmp_path: Path,
-) -> None:
-    _, helper_path, _helper_identity = built_helper
-    worker_tmp = tmp_path / "formal-ab16/artifacts/prospective/baseline/tmp"
-    checkpoint = (
-        tmp_path / "formal-ab16/artifacts/prospective/baseline/checkpoint"
-    )
-    cut_channel = checkpoint / "benders-cuts"
-    worker_tmp.mkdir(parents=True)
-    cut_channel.mkdir(parents=True)
-    worker_tmp.chmod(0o500)
-    checkpoint.chmod(0o500)
-    script = r"""
-import importlib.util, json, os, socket, sys
-
-spec = importlib.util.spec_from_file_location("_native", os.environ["AB16_WRAPPER_PATH"])
-module = importlib.util.module_from_spec(spec)
-sys.modules[spec.name] = module
-spec.loader.exec_module(module)
-helper_fd = os.open(os.environ["AB16_HELPER_PATH"], os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
-helper = module.NativeBudgetHelper(
-    helper_fd,
-    expected_identity=json.loads(os.environ["AB16_HELPER_IDENTITY"]),
-)
-os.close(helper_fd)
-worker, broker = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
-pid = os.fork()
-if pid == 0:
-    worker.close()
-    try:
-        if broker.recv(1) != b"C":
-            os._exit(111)
-        os.chmod(os.environ["AB16_TMP"], 0o700)
-        os.chmod(os.environ["AB16_CHECKPOINT"], 0o700)
-        broker.sendall(b"C")
-        if broker.recv(1) != b"P":
-            os._exit(112)
-        target = os.path.join(os.environ["AB16_CUT_CHANNEL"], "segment-00000000.bin")
-        fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC, 0o600)
-        os.write(fd, b"broker-segment\n")
-        os.fsync(fd)
-        os.close(fd)
-        broker.sendall(b"P")
-        os._exit(0)
-    except BaseException:
-        os._exit(113)
-broker.close()
-helper.close_range_allowlist([1, 2, worker.fileno()])
-helper.install_no_filesystem_writes_landlock()
-worker.sendall(b"C")
-if worker.recv(1) != b"C":
-    raise SystemExit("BROKER_CHMOD_FAILED")
-for parent in (os.environ["AB16_TMP"], os.environ["AB16_CHECKPOINT"]):
-    try:
-        fd = os.open(
-            os.path.join(parent, "worker-write-forbidden"),
-            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC,
-            0o600,
-        )
-    except PermissionError:
-        pass
-    else:
-        os.close(fd)
-        raise SystemExit("LANDLOCK_RESTORED_MODE_WRITE_ALLOWED")
-worker.sendall(b"P")
-if worker.recv(1) != b"P":
-    raise SystemExit("BROKER_PUBLICATION_FAILED")
-worker.close()
-waited, status = os.waitpid(pid, 0)
-if waited != pid or status != 0:
-    raise SystemExit("BROKER_CHILD_FAILED")
-print(json.dumps({"status": "PASS"}))
-"""
-    environment = {
-        "AB16_CHECKPOINT": str(checkpoint),
-        "AB16_CUT_CHANNEL": str(cut_channel),
-        "AB16_HELPER_IDENTITY": json.dumps(
-            _load().expected_package_identity(),
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
-        "AB16_HELPER_PATH": str(helper_path),
-        "AB16_TMP": str(worker_tmp),
-        "AB16_WRAPPER_PATH": str(WRAPPER),
-        "HOME": str(ROOT),
-        "PATH": "/usr/bin:/bin",
-        "PYTHONDONTWRITEBYTECODE": "1",
-        "PYTHONHASHSEED": "0",
-        "PYTHONNOUSERSITE": "1",
-    }
-    completed = subprocess.run(
-        [str(PINNED_PYTHON), "-I", "-B", "-c", script],
-        cwd="/",
-        env=environment,
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-        timeout=30,
-    )
-    assert completed.returncode == 0, completed.stderr.decode("utf-8", "replace")
-    assert json.loads(completed.stdout) == {"status": "PASS"}
-    assert (cut_channel / "segment-00000000.bin").read_bytes() == b"broker-segment\n"
-    assert not (worker_tmp / "worker-write-forbidden").exists()
-    assert not (checkpoint / "worker-write-forbidden").exists()
-
-
 def test_close_range_keeps_only_exact_allowlist(
     built_helper: tuple[ModuleType, Path, dict[str, object]],
 ) -> None:
     module, output, identity = built_helper
-    helper = _helper_from_retained_member(module, output)
+    helper = module.NativeBudgetHelper(output, expected_identity=identity)
     parent, child = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
     retained = os.open("/dev/null", os.O_RDONLY | os.O_CLOEXEC)
     discarded = os.open("/dev/null", os.O_RDONLY | os.O_CLOEXEC)
@@ -449,15 +209,11 @@ def test_tiny_ortools_sealed_memfd_to_budgeted_no_replace_publish(
     tmp_path: Path,
 ) -> None:
     module, helper_path, helper_identity = built_helper
-    helper = _helper_from_retained_member(module, helper_path)
+    helper = module.NativeBudgetHelper(helper_path, expected_identity=helper_identity)
     parent, child = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
     environment = {
         "AB16_BROKER_SOCKET_FD": str(child.fileno()),
-        "AB16_HELPER_IDENTITY": json.dumps(
-            module.expected_package_identity(),
-            sort_keys=True,
-            separators=(",", ":"),
-        ),
+        "AB16_HELPER_IDENTITY": json.dumps(helper_identity, sort_keys=True, separators=(",", ":")),
         "AB16_HELPER_PATH": str(helper_path),
         "AB16_WRAPPER_PATH": str(WRAPPER),
         "HOME": str(ROOT),
@@ -474,12 +230,10 @@ spec = importlib.util.spec_from_file_location("_native", os.environ["AB16_WRAPPE
 module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = module
 spec.loader.exec_module(module)
-helper_fd = os.open(os.environ["AB16_HELPER_PATH"], os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
 helper = module.NativeBudgetHelper(
-    helper_fd,
+    os.environ["AB16_HELPER_PATH"],
     expected_identity=json.loads(os.environ["AB16_HELPER_IDENTITY"]),
 )
-os.close(helper_fd)
 broker = int(os.environ["AB16_BROKER_SOCKET_FD"])
 model_fd = helper.create_memfd("ab16-budget-e2e")
 resource.setrlimit(resource.RLIMIT_FSIZE, (1024 * 1024, 1024 * 1024))
@@ -560,12 +314,10 @@ spec = importlib.util.spec_from_file_location("_native", os.environ["AB16_WRAPPE
 module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = module
 spec.loader.exec_module(module)
-helper_fd = os.open(os.environ["AB16_HELPER_PATH"], os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
 helper = module.NativeBudgetHelper(
-    helper_fd,
+    os.environ["AB16_HELPER_PATH"],
     expected_identity=json.loads(os.environ["AB16_HELPER_IDENTITY"]),
 )
-os.close(helper_fd)
 fd = helper.create_memfd("ab16-limit")
 seen = []
 signal.signal(signal.SIGXFSZ, lambda *_: seen.append("SIGXFSZ"))
@@ -595,7 +347,7 @@ def test_seal_fails_while_writable_mapping_exists(
     built_helper: tuple[ModuleType, Path, dict[str, object]],
 ) -> None:
     module, output, identity = built_helper
-    helper = _helper_from_retained_member(module, output)
+    helper = module.NativeBudgetHelper(output, expected_identity=identity)
     descriptor = helper.create_memfd("ab16-mapped")
     import mmap
 

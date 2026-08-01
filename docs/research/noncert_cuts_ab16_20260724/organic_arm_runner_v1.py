@@ -14,10 +14,8 @@ selected by the manifest.  ``pattern_nogood`` is forbidden in every arm.
 
 Two independent append-only surfaces are retained:
 
-* the ordinary :class:`src.cuts.ledger.CutLedgerWriter`, or the package-pinned
-  AB16 immutable adapter with the same append surface, records every
-  GENERATED/APPLIED lifecycle event emitted by the production attach chain;
-  and
+* :class:`src.cuts.ledger.CutLedgerWriter` records every GENERATED/APPLIED
+  lifecycle event emitted by the production attach chain; and
 * a separate hash-chained journal records every observed ``CompiledCut`` and
   every attach-hook entry/exit, instead of relying on
   ``cut_framework_attach_last``.
@@ -31,32 +29,27 @@ directory.  A failed arm remains a consumed, immutable attempt.
 from __future__ import annotations
 
 import argparse
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import dataclass
-import fcntl
 import hashlib
 import json
 import math
 import os
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 import re
-import resource
 import stat
 import subprocess
 import sys
 import time
 from types import ModuleType
-from typing import Any, Protocol, cast
+from typing import Any, Protocol
 
 
 MANIFEST_SCHEMA = "noncert-cuts-ab16-organic-manifest-v1"
 FORMAL_MANIFEST_SCHEMA = "noncert-cuts-ab16-organic-manifest-v2"
-PROSPECTIVE_FORMAL_MANIFEST_SCHEMA = "noncert-cuts-ab16-organic-manifest-v3"
 SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
-FORMAL_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v2"
 RESULT_SCHEMA = "noncert-cuts-ab16-organic-arm-result-v1"
-FORMAL_RESULT_SCHEMA = "noncert-cuts-ab16-organic-arm-result-v2"
 JOURNAL_SCHEMA = "noncert-cuts-ab16-compile-attach-journal-v1"
 CONTROLLER_TERMINAL_SCHEMA = "noncert-cuts-ab16-controller-terminal-v1"
 MANIFEST_PURPOSE = "prospective_noncert_cuts_ab16"
@@ -68,118 +61,11 @@ BASELINE_ADMISSION_VERDICT = "AB16_BASELINE_INPUTS_ADMITTED"
 SEALED_EXECUTION_SOURCE_SCHEMA = "noncert-cuts-ab16-sealed-execution-source-v1"
 SNAPSHOT_MANIFEST_SCHEMA = "noncert-cuts-ab16-repository-snapshot-v1"
 SNAPSHOT_MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
-SELECTED_BYTE_LAUNCH_SCHEMA_V1 = (
-    "noncert-cuts-ab16-selected-byte-launch-v1"
-)
-SELECTED_BYTE_LAUNCH_SCHEMA_V2 = (
-    "noncert-cuts-ab16-selected-byte-launch-v2"
-)
-SELECTED_BYTE_EXECUTION_STRATEGY_V1 = (
-    "selected-byte-python-loader-fd-v1"
-)
-SELECTED_BYTE_EXECUTION_STRATEGY_V2 = (
-    "selected-byte-python-loader-budget-fd-v2"
-)
-SELECTED_BYTE_FD_MAP_V1 = {
-    "authority": 5,
-    "loader": 4,
-    "python": 3,
-}
-SELECTED_BYTE_FD_MAP_V2 = {
-    "authority": 5,
-    "budget_broker": 8,
-    "loader": 4,
-    "native_helper": 7,
-    "native_helper_wrapper": 6,
-    "python": 3,
-}
-SELECTED_BYTE_OPEN_FILE_NAMES_V1 = [
-    "ab16-python",
-    "ab16-loader",
-    "ab16-authority",
-]
-SELECTED_BYTE_OPEN_FILE_NAMES_V2 = [
-    "ab16-python",
-    "ab16-loader",
-    "ab16-authority",
-    "ab16-native-helper-wrapper",
-    "ab16-native-helper",
-    "ab16-budget-broker",
-]
+SELECTED_BYTE_LAUNCH_SCHEMA = "noncert-cuts-ab16-selected-byte-launch-v1"
+SELECTED_BYTE_EXECUTION_STRATEGY = "selected-byte-python-loader-fd-v1"
 FORMAL_LOADER_ROLE = "ab16_formal_loader_v1"
 FORMAL_RUNNER_MODULE = "docs.research.noncert_cuts_ab16_20260724.organic_arm_runner_v1"
-FORMAL_WORKER_SESSION_SCHEMA = (
-    "noncert-cuts-ab16-formal-worker-session-v1"
-)
-MANAGER_OPENFILE_ARM_GRANT_SCHEMA = (
-    "noncert-cuts-ab16-budget-broker-manager-openfile-arm-grant-v1"
-)
 MODULE_ORIGIN_RECEIPT_SCHEMA = "noncert-cuts-ab16-module-origin-receipt-v1"
-FORMAL_MODULE_ORIGIN_RECEIPT_SCHEMA = (
-    "noncert-cuts-ab16-organic-arm-module-origin-receipt-v2"
-)
-BUDGET_SEGMENT_BUNDLE_SCHEMA = "noncert-cuts-ab16-budget-segment-bundle-v1"
-BUDGET_WORKER_CONFINEMENT = "landlock-read-only-worker-v1"
-CALIBRATION_TOOL_ROLES = frozenset(
-    {
-        "aggregator",
-        "alternate_replayer",
-        "fd_loader",
-        "observer_harness",
-        "package_verifier",
-        "primary_replayer",
-        "protocol",
-        "runner",
-        "workload",
-    }
-)
-ARM_ROOT_INVENTORY_SCHEMA = "noncert-cuts-ab16-formal-root-inventory-v1"
-ARM_MANIFEST_NAME = "attempt-artifact-manifest.json"
-ARM_TERMINAL_DIRECTORY = "budget/arm-terminals"
-ARM_REPLAY_DIRECTORY = "replays/arm-attempt-roots"
-ARM_MANIFEST_BUDGET_LABEL = "AB16 organic attempt artifact manifest"
-ARM_TERMINAL_BUDGET_LABEL = "AB16 arm budget terminal"
-ARM_REPLAY_BUDGET_LABEL = "AB16 organic attempt root replay"
-BUDGET_ARTIFACT_CLASS_BY_LABEL = {
-    "AB16 immediate stop": "closeout",
-    "attach model evidence": "model",
-    "attach solution-vector evidence": "publication",
-    "AB16 arm budget terminal": "closeout",
-    "AB16 organic attempt artifact manifest": "publication",
-    "AB16 organic attempt root replay": "closeout",
-    "arm allocation unselected terminal": "closeout",
-    "arm consumed incomplete": "closeout",
-    "arm credibility gate": "publication",
-    "arm launch environment": "metadata",
-    "compile attach journal segment": "ledger",
-    "cut ledger segment": "ledger",
-    "cut-free incumbent replay receipt": "publication",
-    "independent arithmetic replay receipt": "publication",
-    "independent resource terminal replay": "publication",
-    "module-origin receipt": "metadata",
-    "organic arm failure record": "closeout",
-    "organic arm consumption": "closeout",
-    "organic arm result": "publication",
-    "organic arm selection": "metadata",
-    "organic pre-run authority": "metadata",
-    "organic pre-run candidate": "metadata",
-    "preselection manager epoch": "metadata",
-    "preselection manager transcript": "metadata",
-    "raw incumbent export": "publication",
-    "raw solution-vector export": "publication",
-    "runtime cut segment": "ledger",
-    "terminal classification": "publication",
-}
-BUDGET_ARM_DIRECTORY_SUFFIX_MODES = (
-    ("checkpoint", 0o700),
-    ("checkpoint/runtime-cuts", 0o700),
-    ("ledger", 0o700),
-    ("ledger/compile-attach-journal", 0o700),
-    ("ledger/cut-ledger", 0o700),
-    ("replays", 0o700),
-    ("runtime", 0o700),
-    ("tmp", 0o500),
-)
 
 CONFIGURATION_FAMILIES = {
     "region-capacity": ("region_capacity",),
@@ -344,20 +230,10 @@ class Snapshot:
 
 
 @dataclass(frozen=True)
-class PinnedCutFreeReplayInputs:
-    """Package-bound inputs retained for the per-arm cut-free replay."""
-
-    admission: Mapping[str, Any]
-    admission_tool: Snapshot
-    cut_free_tool: Snapshot
-
-
-@dataclass(frozen=True)
 class ArmContext:
     """Strict inputs passed to an arm implementation."""
 
     attempt_dir: Path
-    budget_backend: "ArmBudgetBackend | None"
     enabled_families: tuple[str, ...]
     ledger: Any
     manifest: Mapping[str, Any]
@@ -393,1455 +269,6 @@ class ArmHooks(Protocol):
         recorder: "CompileAttachRecorder",
     ) -> ArmOutcome:
         """Run attach/post-attach work while the attach environment is on."""
-
-
-class ArmBudgetBackend(Protocol):
-    """Runner-facing view of one already allocated broker-backed arm budget.
-
-    The formal owner supplies this object only after package verification and
-    arm allocation.  It owns the connected broker transport; the worker never
-    receives a writable root or staging descriptor.
-    """
-
-    @property
-    def authority_binding(self) -> Mapping[str, object]: ...
-
-    def maximum_bytes(self, label: str, *, artifact_class: str) -> int: ...
-
-    def publish_bytes(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        label: str,
-    ) -> Mapping[str, object]: ...
-
-    def append_segment(
-        self,
-        channel: str,
-        sequence: int,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        arm_slot: str | None = None,
-    ) -> Mapping[str, object]: ...
-
-    def export_model_to_sealed_memfd(
-        self,
-        model: object,
-        path: Path,
-        *,
-        maximum_bytes: int,
-        label: str,
-    ) -> Mapping[str, object]: ...
-
-
-def _validate_budget_binding(
-    backend: ArmBudgetBackend,
-    *,
-    expected_arm_slot: str,
-) -> dict[str, object]:
-    record = _exact_keys(
-        backend.authority_binding,
-        {
-            "arm_allocation_id",
-            "arm_allocation_identity",
-            "arm_slot",
-            "broker_nonce",
-            "broker_socket_fd",
-            "filesystem_write_confinement",
-            "formal_budget_authority_identity",
-            "next_sequence",
-        },
-        "arm budget authority binding",
-    )
-    _exact_identity(
-        record["formal_budget_authority_identity"],
-        "formal budget authority identity",
-    )
-    allocation_identity = record["arm_allocation_identity"]
-    if (
-        type(allocation_identity) is not dict
-        or set(allocation_identity) != {"sha256", "size_bytes"}
-        or type(allocation_identity["sha256"]) is not str
-        or SHA256_RE.fullmatch(allocation_identity["sha256"]) is None
-        or type(allocation_identity["size_bytes"]) is not int
-        or allocation_identity["size_bytes"] <= 0
-        or type(record["arm_allocation_id"]) is not str
-        or SHA256_RE.fullmatch(record["arm_allocation_id"]) is None
-        or record["arm_allocation_id"] != allocation_identity["sha256"]
-        or record["arm_slot"] != expected_arm_slot
-        or type(record["broker_nonce"]) is not str
-        or SAFE_TOKEN_RE.fullmatch(record["broker_nonce"]) is None
-        or type(record["broker_socket_fd"]) is not int
-        or record["broker_socket_fd"] < 0
-        or type(record["next_sequence"]) is not int
-        or record["next_sequence"] <= 0
-        or record["filesystem_write_confinement"] != BUDGET_WORKER_CONFINEMENT
-    ):
-        raise RunnerError("arm budget authority binding drifted")
-    return dict(record)
-
-
-def _budget_maximum(
-    backend: ArmBudgetBackend,
-    label: str,
-    *,
-    artifact_class: str,
-) -> int:
-    if BUDGET_ARTIFACT_CLASS_BY_LABEL.get(label) != artifact_class:
-        raise RunnerError(f"{label}: artifact label/class is not preregistered")
-    maximum = backend.maximum_bytes(label, artifact_class=artifact_class)
-    if isinstance(maximum, bool) or not isinstance(maximum, int) or maximum <= 0:
-        raise RunnerError(f"{label}: budget backend returned an invalid fixed maximum")
-    return maximum
-
-
-class BrokerProcessArmBudgetBackend:
-    """Package-side adapter over one already connected persistent broker.
-
-    Construction does not allocate an arm or create directories.  Those
-    operations belong to the owner/supervisor authority chain.  This adapter
-    accepts only the fixed maxima and channel directories that chain already
-    bound, and moves payloads through fully sealed anonymous memfds.
-    """
-
-    def __init__(
-        self,
-        *,
-        broker_client: Any,
-        native_helper: Any,
-        formal_root: Path,
-        attempt_root: Path,
-        formal_budget_runtime: Mapping[str, object] | None = None,
-        enforced_budget_profile: Mapping[str, object] | None = None,
-        enforced_budget_profile_identity: Mapping[str, object] | None = None,
-        resource_calibration_authorization_bundle: Mapping[
-            str, object
-        ]
-        | None = None,
-        resource_calibration_authorization_bundle_identity: Mapping[
-            str, object
-        ]
-        | None = None,
-        expected_calibration_tool_identities: Mapping[
-            str, Mapping[str, object]
-        ]
-        | None = None,
-        authority_binding: Mapping[str, object],
-        fixed_maxima: Mapping[str, Mapping[str, object]],
-        channel_contracts: Mapping[str, Mapping[str, object]],
-        manager_openfile_arm_grant: Mapping[str, object] | None = None,
-        guardian_ready_identity: Mapping[str, object] | None = None,
-        pidfd_opener: Callable[[int], tuple[int, str]] | None = None,
-    ) -> None:
-        self._broker = broker_client
-        self._helper = native_helper
-        self._formal_root = Path(os.path.abspath(formal_root))
-        self._attempt_root = Path(os.path.abspath(attempt_root))
-        self._formal_budget_runtime = (
-            None
-            if formal_budget_runtime is None
-            else dict(formal_budget_runtime)
-        )
-        self._enforced_budget_profile = (
-            None
-            if enforced_budget_profile is None
-            else dict(enforced_budget_profile)
-        )
-        self._enforced_budget_profile_identity = (
-            None
-            if enforced_budget_profile_identity is None
-            else dict(enforced_budget_profile_identity)
-        )
-        self._resource_calibration_authorization_bundle = (
-            None
-            if resource_calibration_authorization_bundle is None
-            else dict(resource_calibration_authorization_bundle)
-        )
-        self._resource_calibration_authorization_bundle_identity = (
-            None
-            if resource_calibration_authorization_bundle_identity is None
-            else dict(
-                resource_calibration_authorization_bundle_identity
-            )
-        )
-        if (
-            type(expected_calibration_tool_identities) is not dict
-            or set(expected_calibration_tool_identities)
-            != CALIBRATION_TOOL_ROLES
-        ):
-            raise RunnerError(
-                "arm calibration tool identity cohort is absent or mixed"
-            )
-        checked_calibration_tools: dict[
-            str, dict[str, object]
-        ] = {}
-        for role, identity in sorted(
-            expected_calibration_tool_identities.items()
-        ):
-            if (
-                type(identity) is not dict
-                or set(identity) != {"sha256", "size_bytes"}
-                or type(identity["sha256"]) is not str
-                or SHA256_RE.fullmatch(identity["sha256"]) is None
-                or isinstance(identity["size_bytes"], bool)
-                or not isinstance(identity["size_bytes"], int)
-                or identity["size_bytes"] <= 0
-            ):
-                raise RunnerError(
-                    "arm calibration tool content identity is malformed"
-                )
-            checked_calibration_tools[role] = dict(identity)
-        self._expected_calibration_tool_identities = (
-            checked_calibration_tools
-        )
-        try:
-            self._attempt_root.relative_to(self._formal_root)
-        except ValueError as exc:
-            raise RunnerError("budgeted attempt root escaped formal root") from exc
-        self._binding = dict(authority_binding)
-        self._manager_openfile_arm_grant = (
-            None
-            if manager_openfile_arm_grant is None
-            else dict(manager_openfile_arm_grant)
-        )
-        self._guardian_ready_identity = (
-            None
-            if guardian_ready_identity is None
-            else dict(guardian_ready_identity)
-        )
-        self._pidfd_opener = pidfd_opener
-        if (
-            self._manager_openfile_arm_grant is None
-        ) != (
-            self._guardian_ready_identity is None
-        ):
-            raise RunnerError(
-                "manager OpenFile arm binding inputs are incomplete"
-            )
-        broker_sequence = getattr(broker_client, "sequence", None)
-        if (
-            getattr(broker_client, "nonce", None) != self._binding.get("broker_nonce")
-            or getattr(getattr(broker_client, "connection", None), "fileno", lambda: -1)()
-            != self._binding.get("broker_socket_fd")
-            or type(broker_sequence) is not int
-            or broker_sequence + 1
-            != self._binding.get("next_sequence")
-            or getattr(broker_client, "native_helper", None) is not native_helper
-        ):
-            raise RunnerError("connected budget broker identity differs from binding")
-        checked_maxima: dict[str, tuple[str, int]] = {}
-        checked_fixed_paths: dict[str, str] = {}
-        for label, raw in fixed_maxima.items():
-            if (
-                type(label) is not str
-                or not label
-                or type(raw) is not dict
-                or set(raw)
-                != {
-                    "artifact_class",
-                    "branch",
-                    "maximum_bytes",
-                    "maximum_publications",
-                    "multiplicity_source",
-                    "path_contract",
-                }
-                or type(raw["artifact_class"]) is not str
-                or isinstance(raw["maximum_bytes"], bool)
-                or not isinstance(raw["maximum_bytes"], int)
-                or raw["maximum_bytes"] <= 0
-                or isinstance(raw["maximum_publications"], bool)
-                or not isinstance(raw["maximum_publications"], int)
-                or raw["maximum_publications"] < 0
-                or raw["branch"] not in {"common", "failure", "success"}
-                or type(raw["multiplicity_source"]) is not dict
-                or type(raw["path_contract"]) is not dict
-            ):
-                raise RunnerError("fixed arm artifact maximum table is invalid")
-            checked_maxima[label] = (
-                raw["artifact_class"],
-                raw["maximum_bytes"],
-            )
-            path_contract = cast(
-                Mapping[str, object],
-                raw["path_contract"],
-            )
-            if path_contract.get("kind") == "fixed":
-                if (
-                    set(path_contract)
-                    != {"kind", "root", "root_relative_path"}
-                    or path_contract.get("root") != "formal-root"
-                    or type(path_contract.get("root_relative_path"))
-                    is not str
-                ):
-                    raise RunnerError(
-                        "fixed arm artifact path contract is invalid"
-                    )
-                relative = Path(
-                    cast(str, path_contract["root_relative_path"])
-                )
-                if (
-                    relative.is_absolute()
-                    or not relative.parts
-                    or any(
-                        part in {"", ".", ".."}
-                        for part in relative.parts
-                    )
-                ):
-                    raise RunnerError(
-                        "fixed arm artifact path escaped formal root"
-                    )
-                checked_fixed_paths[label] = relative.as_posix()
-        self._fixed_maxima = checked_maxima
-        self._fixed_paths = checked_fixed_paths
-        if set(checked_maxima) != set(BUDGET_ARTIFACT_CLASS_BY_LABEL):
-            raise RunnerError("fixed arm artifact maximum table is incomplete")
-        for label, (artifact_class, _maximum) in checked_maxima.items():
-            if BUDGET_ARTIFACT_CLASS_BY_LABEL[label] != artifact_class:
-                raise RunnerError("fixed arm artifact maximum class differs")
-        checked_channels: dict[str, str] = {}
-        checked_channel_labels: dict[str, str] = {}
-        checked_channel_maximum_segments: dict[str, int] = {}
-        for channel, raw in channel_contracts.items():
-            if (
-                type(channel) is not str
-                or SAFE_TOKEN_RE.fullmatch(channel) is None
-                or type(raw) is not dict
-                or set(raw)
-                != {
-                    "artifact_class",
-                    "label",
-                    "maximum_bytes",
-                    "maximum_segments",
-                    "relative_path",
-                }
-                or type(raw["label"]) is not str
-                or type(raw["artifact_class"]) is not str
-                or isinstance(raw["maximum_bytes"], bool)
-                or not isinstance(raw["maximum_bytes"], int)
-                or raw["maximum_bytes"] <= 0
-                or isinstance(raw["maximum_segments"], bool)
-                or not isinstance(raw["maximum_segments"], int)
-                or raw["maximum_segments"] < 0
-                or type(raw["relative_path"]) is not str
-            ):
-                raise RunnerError("immutable channel directory table is invalid")
-            relative = raw["relative_path"]
-            relative_path = Path(relative)
-            if (
-                relative_path.is_absolute()
-                or not relative_path.parts
-                or any(part in {"", ".", ".."} for part in relative_path.parts)
-            ):
-                raise RunnerError("immutable channel directory escaped formal root")
-            checked_channels[channel] = relative_path.as_posix()
-            checked_channel_labels[channel] = raw["label"]
-            checked_channel_maximum_segments[channel] = raw[
-                "maximum_segments"
-            ]
-        arm_slot = self._binding.get("arm_slot")
-        if type(arm_slot) is not str or SAFE_TOKEN_RE.fullmatch(arm_slot) is None:
-            raise RunnerError("budget broker arm slot is invalid")
-        allocation_identity = self._binding.get("arm_allocation_identity")
-        if (
-            type(allocation_identity) is not dict
-            or set(allocation_identity) != {"sha256", "size_bytes"}
-            or type(allocation_identity["sha256"]) is not str
-            or SHA256_RE.fullmatch(allocation_identity["sha256"]) is None
-            or type(allocation_identity["size_bytes"]) is not int
-            or allocation_identity["size_bytes"] <= 0
-            or self._binding.get("arm_allocation_id")
-            != allocation_identity["sha256"]
-        ):
-            raise RunnerError("budget broker arm allocation identity is invalid")
-        attempt_relative = self._attempt_root.relative_to(self._formal_root).as_posix()
-        expected_channels = {
-            f"arm-{arm_slot}-compile-journal": (
-                f"{attempt_relative}/ledger/compile-attach-journal"
-            ),
-            f"arm-{arm_slot}-cut-ledger": f"{attempt_relative}/ledger/cut-ledger",
-            f"arm-{arm_slot}-runtime-cuts": (
-                f"{attempt_relative}/checkpoint/runtime-cuts"
-            ),
-        }
-        if checked_channels != expected_channels:
-            raise RunnerError("immutable channel directory table differs from fixed arm layout")
-        expected_channel_labels = {
-            f"arm-{arm_slot}-compile-journal": (
-                "compile attach journal segment"
-            ),
-            f"arm-{arm_slot}-cut-ledger": "cut ledger segment",
-            f"arm-{arm_slot}-runtime-cuts": "runtime cut segment",
-        }
-        if (
-            checked_channel_labels != expected_channel_labels
-            or checked_channel_maximum_segments
-            != {
-                f"arm-{arm_slot}-compile-journal": 221,
-                f"arm-{arm_slot}-cut-ledger": 258,
-                f"arm-{arm_slot}-runtime-cuts": 0,
-            }
-            or any(
-                raw["artifact_class"] != "ledger"
-                or raw["maximum_bytes"]
-                != checked_maxima[checked_channel_labels[channel]][1]
-                for channel, raw in channel_contracts.items()
-            )
-        ):
-            raise RunnerError(
-                "immutable channel multiplicity contract drifted"
-            )
-        self._channel_directories = checked_channels
-        self._channel_labels = checked_channel_labels
-        self._channel_maximum_segments = (
-            checked_channel_maximum_segments
-        )
-        self._channel_next: dict[str, int] = {}
-        self._confinement_installed = False
-        self._accepted_arm_seal: dict[str, object] | None = None
-        self._post_seal_replay_identity: dict[str, object] | None = None
-        self._worker_grant_registered = False
-        self._manager_openfile_arm_bind_attempted = False
-
-    @property
-    def authority_binding(self) -> Mapping[str, object]:
-        return dict(self._binding)
-
-    @property
-    def formal_budget_runtime(self) -> Mapping[str, object]:
-        if self._formal_budget_runtime is None:
-            raise RunnerError(
-                "arm budget backend lacks its closed formal runtime binding"
-            )
-        return dict(self._formal_budget_runtime)
-
-    @property
-    def enforced_budget_profile(self) -> Mapping[str, object]:
-        if self._enforced_budget_profile is None:
-            raise RunnerError("arm budget profile is absent")
-        return dict(self._enforced_budget_profile)
-
-    @property
-    def enforced_budget_profile_identity(
-        self,
-    ) -> Mapping[str, object]:
-        if self._enforced_budget_profile_identity is None:
-            raise RunnerError("arm budget profile identity is absent")
-        return dict(self._enforced_budget_profile_identity)
-
-    @property
-    def resource_calibration_authorization_bundle(
-        self,
-    ) -> Mapping[str, object]:
-        if self._resource_calibration_authorization_bundle is None:
-            raise RunnerError("arm resource calibration bundle is absent")
-        return dict(self._resource_calibration_authorization_bundle)
-
-    @property
-    def resource_calibration_authorization_bundle_identity(
-        self,
-    ) -> Mapping[str, object]:
-        if (
-            self._resource_calibration_authorization_bundle_identity
-            is None
-        ):
-            raise RunnerError(
-                "arm resource calibration bundle identity is absent"
-            )
-        return dict(
-            self._resource_calibration_authorization_bundle_identity
-        )
-
-    @property
-    def expected_calibration_tool_identities(
-        self,
-    ) -> Mapping[str, Mapping[str, object]]:
-        return {
-            role: dict(identity)
-            for role, identity in sorted(
-                self._expected_calibration_tool_identities.items()
-            )
-        }
-
-    def install_worker_confinement(
-        self,
-        retained_read_only_fds: Sequence[int],
-    ) -> Mapping[str, object]:
-        if (
-            self._binding.get("filesystem_write_confinement")
-            != "landlock-read-only-worker-v1"
-            or self._confinement_installed
-        ):
-            raise RunnerError(
-                "arm worker confinement is unavailable or already installed"
-            )
-        from docs.research.noncert_cuts_ab16_20260724 import (
-            ab16_budget_broker_v1 as broker_module,
-        )
-
-        try:
-            stdio_contract = broker_module.validate_worker_stdio_contract()
-        except broker_module.BrokerProtocolError as exc:
-            raise RunnerError(
-                f"arm worker stdio contract failed: {exc.code}"
-            ) from exc
-        connection_fd = self._broker.connection.fileno()
-        keep = {0, 1, 2, connection_fd}
-        for descriptor in retained_read_only_fds:
-            if (
-                isinstance(descriptor, bool)
-                or not isinstance(descriptor, int)
-                or descriptor < 0
-                or fcntl.fcntl(descriptor, fcntl.F_GETFL)
-                & os.O_ACCMODE
-                != os.O_RDONLY
-            ):
-                raise RunnerError(
-                    "arm retained read-only FD allowlist is invalid"
-                )
-            keep.add(descriptor)
-        if self._helper.landlock_abi() < 1:
-            raise RunnerError("arm worker requires a positive Landlock ABI")
-        self._helper.close_range_allowlist(sorted(keep))
-        self._helper.install_no_filesystem_writes_landlock()
-        self._confinement_installed = True
-        return {
-            "filesystem_write_confinement": (
-                "landlock-read-only-worker-v1"
-            ),
-            "retained_read_only_fds": sorted(
-                descriptor
-                for descriptor in keep
-                if descriptor not in {0, 1, 2, connection_fd}
-            ),
-            "root_or_staging_writable_fd_count": 0,
-            "stdio_contract": stdio_contract,
-        }
-
-    def register_arm_worker_grant(
-        self,
-        *,
-        credential: str,
-        expected_peer: Mapping[str, object],
-        pidfd: int,
-    ) -> Mapping[str, object]:
-        """Bind the one organic worker to this manager-selected supervisor."""
-
-        selection_identity = self._binding.get("selection_identity")
-        allocation_identity = self._binding.get(
-            "arm_allocation_identity"
-        )
-        arm_slot = self._binding.get("arm_slot")
-        if (
-            self._binding.get("filesystem_write_confinement")
-            != "not-applicable-persistent-supervisor-v1"
-            or self._worker_grant_registered
-            or type(selection_identity) is not dict
-            or type(allocation_identity) is not dict
-            or type(arm_slot) is not str
-        ):
-            raise RunnerError(
-                "arm supervisor worker-grant authority is absent or consumed"
-            )
-        try:
-            response = self._broker.register_bound_arm_grant(
-                {
-                    "allocation_identity": dict(allocation_identity),
-                    "arm_slot": arm_slot,
-                    "credential": credential,
-                    "expected_peer": dict(expected_peer),
-                    "role": "arm",
-                    "selection_identity": dict(selection_identity),
-                },
-                pidfd=pidfd,
-            )
-            result = response.record.get("result")
-        except Exception as exc:
-            raise RunnerError(
-                "arm worker grant registration failed or is uncertain"
-            ) from exc
-        self._worker_grant_registered = True
-        if (
-            type(result) is not dict
-            or result.get("role") != "arm"
-            or result.get("arm_slot") != arm_slot
-            or result.get("selection_identity")
-            != selection_identity
-            or result.get("allocation_identity")
-            != allocation_identity
-        ):
-            raise RunnerError("arm worker grant receipt drifted")
-        return dict(result)
-
-    def bind_manager_openfile_arm_grant(
-        self,
-        *,
-        application_peer: Mapping[str, object],
-        pidfd: int,
-        pidfd_method: str,
-    ) -> Mapping[str, object]:
-        """Bind the selected systemd unit MainPID before FD8 authentication."""
-
-        handoff = self._manager_openfile_arm_grant
-        guardian_ready = self._guardian_ready_identity
-        if (
-            self._binding.get("filesystem_write_confinement")
-            != "not-applicable-persistent-supervisor-v1"
-            or handoff is None
-            or guardian_ready is None
-            or self._manager_openfile_arm_bind_attempted
-        ):
-            raise RunnerError(
-                "manager OpenFile arm bind authority is absent or consumed"
-            )
-        self._manager_openfile_arm_bind_attempted = True
-        record = _exact_keys(
-            handoff,
-            {"credential", "preregistration"},
-            "manager OpenFile arm handoff",
-        )
-        preregistration = _exact_keys(
-            record["preregistration"],
-            {
-                "allocation_identity",
-                "arm_slot",
-                "attempt_consumption_identity",
-                "credential_sha256",
-                "manager_epoch_identity",
-                "schema_version",
-                "selection_identity",
-                "state",
-                "unit_name",
-            },
-            "manager OpenFile arm preregistration",
-        )
-        credential = record["credential"]
-        if (
-            type(credential) is not str
-            or SHA256_RE.fullmatch(credential) is None
-            or preregistration["credential_sha256"]
-            != hashlib.sha256(credential.encode("ascii")).hexdigest()
-            or preregistration["allocation_identity"]
-            != self._binding.get("arm_allocation_identity")
-            or preregistration["arm_slot"]
-            != self._binding.get("arm_slot")
-            or type(pidfd_method) is not str
-            or not pidfd_method
-        ):
-            raise RunnerError(
-                "manager OpenFile arm handoff identity drifted"
-            )
-        try:
-            response = self._broker.bind_manager_openfile_arm_grant(
-                {
-                    "allocation_identity": dict(
-                        cast(
-                            Mapping[str, object],
-                            preregistration[
-                                "allocation_identity"
-                            ],
-                        )
-                    ),
-                    "application_peer": dict(application_peer),
-                    "arm_slot": preregistration["arm_slot"],
-                    "attempt_consumption_identity": dict(
-                        cast(
-                            Mapping[str, object],
-                            preregistration[
-                                "attempt_consumption_identity"
-                            ],
-                        )
-                    ),
-                    "credential": credential,
-                    "guardian_ready_identity": dict(guardian_ready),
-                    "pidfd_method": pidfd_method,
-                    "selection_identity": dict(
-                        cast(
-                            Mapping[str, object],
-                            preregistration["selection_identity"],
-                        )
-                    ),
-                },
-                pidfd=pidfd,
-            )
-            result = response.record.get("result")
-        except Exception as exc:
-            raise RunnerError(
-                "manager OpenFile arm bind failed or is uncertain"
-            ) from exc
-        if (
-            type(result) is not dict
-            or result.get("schema_version")
-            != MANAGER_OPENFILE_ARM_GRANT_SCHEMA
-            or result.get("state") != "BOUND"
-            or result.get("application_peer")
-            != dict(application_peer)
-            or result.get("allocation_identity")
-            != preregistration["allocation_identity"]
-            or result.get("arm_slot") != preregistration["arm_slot"]
-            or result.get("selection_identity")
-            != preregistration["selection_identity"]
-            or result.get("guardian_ready_identity")
-            != guardian_ready
-        ):
-            raise RunnerError(
-                "manager OpenFile arm bind receipt drifted"
-            )
-        return dict(result)
-
-    def open_manager_openfile_pidfd(
-        self,
-        pid: int,
-    ) -> tuple[int, str]:
-        """Open the MainPID capability through the package-pinned broker."""
-
-        if (
-            self._binding.get("filesystem_write_confinement")
-            != "not-applicable-persistent-supervisor-v1"
-            or self._pidfd_opener is None
-        ):
-            raise RunnerError(
-                "manager OpenFile pidfd authority is unavailable"
-            )
-        try:
-            descriptor, method = self._pidfd_opener(pid)
-        except Exception as exc:
-            raise RunnerError(
-                "manager OpenFile pidfd open failed"
-            ) from exc
-        if (
-            isinstance(descriptor, bool)
-            or not isinstance(descriptor, int)
-            or descriptor < 0
-            or type(method) is not str
-            or not method
-        ):
-            if type(descriptor) is int and descriptor >= 0:
-                os.close(descriptor)
-            raise RunnerError(
-                "manager OpenFile pidfd opener returned invalid authority"
-            )
-        return descriptor, method
-
-    def close(self) -> None:
-        close_session = getattr(self._broker, "close_session", None)
-        if callable(close_session):
-            close_session()
-            return
-        close = getattr(self._broker, "close", None)
-        if callable(close):
-            close()
-
-    def maximum_bytes(self, label: str, *, artifact_class: str) -> int:
-        try:
-            expected_class, maximum = self._fixed_maxima[label]
-        except KeyError as exc:
-            raise RunnerError(f"{label}: no predeclared artifact maximum") from exc
-        if artifact_class != expected_class:
-            raise RunnerError(f"{label}: artifact class differs from fixed maximum")
-        return maximum
-
-    def _relative_output(self, path: Path, *, label: str | None = None) -> str:
-        absolute = Path(os.path.abspath(path))
-        if label is not None and label in self._fixed_paths:
-            expected = self._formal_root / self._fixed_paths[label]
-            if absolute != expected:
-                raise RunnerError(
-                    "arm artifact differs from its fixed target"
-                )
-            return self._fixed_paths[label]
-        try:
-            absolute.relative_to(self._attempt_root)
-            relative = absolute.relative_to(self._formal_root)
-        except ValueError as exc:
-            raise RunnerError("budgeted arm output escaped its attempt root") from exc
-        return relative.as_posix()
-
-    @staticmethod
-    def _sha256_descriptor(descriptor: int, size_bytes: int) -> str:
-        digest = hashlib.sha256()
-        offset = 0
-        while offset < size_bytes:
-            block = os.pread(descriptor, min(1024 * 1024, size_bytes - offset), offset)
-            if not block:
-                raise RunnerError("sealed memfd ended before its stated size")
-            digest.update(block)
-            offset += len(block)
-        if os.pread(descriptor, 1, size_bytes):
-            raise RunnerError("sealed memfd exceeds its stated size")
-        return digest.hexdigest()
-
-    def _publish_descriptor(
-        self,
-        descriptor: int,
-        *,
-        path: Path,
-        size_bytes: int,
-        digest: str,
-        maximum_bytes: int,
-        artifact_class: str,
-        label: str,
-        channel: str | None = None,
-        sequence: int | None = None,
-        publication_boundary: Callable[[], None] | None = None,
-    ) -> dict[str, object]:
-        relative = self._relative_output(path, label=label)
-        try:
-            response = self._broker.publish_descriptor(
-                {
-                    "arm_slot": self._binding["arm_slot"],
-                    "artifact_class": artifact_class,
-                    "channel": channel,
-                    "expected_sha256": digest,
-                    "label": label,
-                    "maximum_bytes": maximum_bytes,
-                    "relative_path": relative,
-                    "sequence": sequence,
-                    "size_bytes": size_bytes,
-                },
-                descriptor=descriptor,
-                publication_boundary=publication_boundary,
-            )
-            result = dict(response.record["result"])
-        except Exception as exc:
-            raise RunnerError(
-                "broker descriptor publication failed or acknowledgement is uncertain"
-            ) from exc
-        if (
-            result.get("path") != relative
-            or result.get("sha256") != digest
-            or result.get("size_bytes") != size_bytes
-            or result.get("maximum_bytes") != maximum_bytes
-            or type(result.get("source_seal_mask")) is not int
-            or result["source_seal_mask"] != self._helper.final_seal_mask
-        ):
-            raise RunnerError("broker descriptor publication receipt differs")
-        return {
-            **result,
-            "path": str(Path(os.path.abspath(path))),
-        }
-
-    def _sealed_bytes_memfd(self, raw: bytes, *, label: str) -> int:
-        descriptor = self._helper.create_memfd(
-            f"ab16-{hashlib.sha256(label.encode()).hexdigest()[:16]}"
-        )
-        try:
-            offset = 0
-            while offset < len(raw):
-                written = os.pwrite(descriptor, raw[offset:], offset)
-                if written <= 0:
-                    raise RunnerError(f"{label}: memfd write made no progress")
-                offset += written
-            os.fsync(descriptor)
-            if os.fstat(descriptor).st_size != len(raw):
-                raise RunnerError(f"{label}: memfd size differs")
-            if self._sha256_descriptor(descriptor, len(raw)) != hashlib.sha256(raw).hexdigest():
-                raise RunnerError(f"{label}: memfd digest differs")
-            if self._helper.has_writable_mapping(descriptor):
-                raise RunnerError(f"{label}: memfd has a writable mapping")
-            installed = self._helper.install_final_seals(descriptor)
-            if (
-                installed != self._helper.final_seal_mask
-                or self._helper.get_seals(descriptor) != self._helper.final_seal_mask
-            ):
-                raise RunnerError(f"{label}: final memfd seal mask differs")
-            return descriptor
-        except BaseException:
-            os.close(descriptor)
-            raise
-
-    def publish_bytes(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        label: str,
-    ) -> Mapping[str, object]:
-        return self._publish_fixed_bytes(
-            path,
-            raw,
-            maximum_bytes=maximum_bytes,
-            artifact_class=artifact_class,
-            label=label,
-            publication_boundary=None,
-        )
-
-    def publish_bytes_with_publication_boundary(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        label: str,
-        publication_boundary: Callable[[], None],
-    ) -> Mapping[str, object]:
-        """Expose the broker client's exact last pre-send boundary."""
-
-        if not callable(publication_boundary):
-            raise RunnerError("arm publication boundary is not callable")
-        return self._publish_fixed_bytes(
-            path,
-            raw,
-            maximum_bytes=maximum_bytes,
-            artifact_class=artifact_class,
-            label=label,
-            publication_boundary=publication_boundary,
-        )
-
-    def _publish_fixed_bytes(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        label: str,
-        publication_boundary: Callable[[], None] | None,
-    ) -> Mapping[str, object]:
-        if type(raw) is not bytes or len(raw) <= 0 or len(raw) > maximum_bytes:
-            raise RunnerError(f"{label}: payload differs from its fixed allocation")
-        if maximum_bytes != self.maximum_bytes(label, artifact_class=artifact_class):
-            raise RunnerError(f"{label}: allocation maximum drifted")
-        descriptor = self._sealed_bytes_memfd(raw, label=label)
-        try:
-            return self._publish_descriptor(
-                descriptor,
-                path=path,
-                size_bytes=len(raw),
-                digest=hashlib.sha256(raw).hexdigest(),
-                maximum_bytes=maximum_bytes,
-                artifact_class=artifact_class,
-                label=label,
-                publication_boundary=publication_boundary,
-            )
-        finally:
-            os.close(descriptor)
-
-    def expected_root_path_types(self) -> list[dict[str, str]]:
-        """Return the broker's current exact formal-root path/type inventory."""
-
-        try:
-            response = self._broker.request("STATUS", {})
-            result = response.record.get("result")
-        except Exception as exc:
-            raise RunnerError(
-                "broker root inventory request failed or acknowledgement is uncertain"
-            ) from exc
-        if (
-            type(result) is not dict
-            or set(result) != {"contract", "root_closure", "root_inventory"}
-            or type(result["root_inventory"]) is not dict
-            or set(result["root_inventory"])
-            != {"expected_path_types", "schema_version"}
-            or result["root_inventory"]["schema_version"]
-            != ARM_ROOT_INVENTORY_SCHEMA
-            or type(result["root_inventory"]["expected_path_types"]) is not list
-        ):
-            raise RunnerError("broker root inventory receipt differs")
-        rows: list[dict[str, str]] = []
-        for item in result["root_inventory"]["expected_path_types"]:
-            if (
-                type(item) is not dict
-                or set(item) != {"path", "type"}
-                or type(item["path"]) is not str
-                or type(item["type"]) is not str
-                or item["type"] not in {"directory", "regular"}
-            ):
-                raise RunnerError("broker root inventory row differs")
-            path = PurePosixPath(item["path"])
-            if (
-                path.is_absolute()
-                or not path.parts
-                or any(part in {"", ".", ".."} for part in path.parts)
-                or path.as_posix() != item["path"]
-            ):
-                raise RunnerError("broker root inventory path is invalid")
-            rows.append({"path": item["path"], "type": item["type"]})
-        if (
-            rows != sorted(rows, key=lambda item: (item["path"], item["type"]))
-            or len({item["path"] for item in rows}) != len(rows)
-        ):
-            raise RunnerError("broker root inventory is not canonical")
-        return rows
-
-    def publish_arm_manifest_and_seal(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        label: str,
-        arm_slot: str,
-        arm_attempt_prefix: str,
-        arm_allocation_identity: Mapping[str, object],
-        expected_path_types_before: Sequence[Mapping[str, object]],
-    ) -> Mapping[str, object]:
-        """Atomically publish the arm manifest and pending-ACK terminal."""
-
-        slot = cast(str, self._binding["arm_slot"])
-        allocation_identity = cast(
-            dict[str, object],
-            self._binding["arm_allocation_identity"],
-        )
-        expected_manifest = self._attempt_root / ARM_MANIFEST_NAME
-        expected_prefix = self._attempt_root.relative_to(
-            self._formal_root
-        ).as_posix()
-        if (
-            label != ARM_MANIFEST_BUDGET_LABEL
-            or artifact_class != "publication"
-            or arm_slot != slot
-            or arm_attempt_prefix != expected_prefix
-            or Path(os.path.abspath(path)) != expected_manifest
-            or dict(arm_allocation_identity) != allocation_identity
-            or maximum_bytes
-            != self.maximum_bytes(
-                ARM_MANIFEST_BUDGET_LABEL,
-                artifact_class="publication",
-            )
-            or type(raw) is not bytes
-            or not 0 < len(raw) <= maximum_bytes
-        ):
-            raise RunnerError("arm manifest seal request differs from its fixed authority")
-        rows: list[dict[str, str]] = []
-        for item in expected_path_types_before:
-            if (
-                type(item) is not dict
-                or set(item) != {"path", "type"}
-                or type(item["path"]) is not str
-                or type(item["type"]) is not str
-                or item["type"] not in {"directory", "regular"}
-            ):
-                raise RunnerError("arm seal root inventory row differs")
-            rows.append(
-                {
-                    "path": cast(str, item["path"]),
-                    "type": cast(str, item["type"]),
-                }
-            )
-        if (
-            rows != sorted(rows, key=lambda item: (item["path"], item["type"]))
-            or len({item["path"] for item in rows}) != len(rows)
-        ):
-            raise RunnerError("arm seal root inventory is not canonical")
-        terminal_maximum = self.maximum_bytes(
-            ARM_TERMINAL_BUDGET_LABEL,
-            artifact_class="closeout",
-        )
-        replay_maximum = self.maximum_bytes(
-            ARM_REPLAY_BUDGET_LABEL,
-            artifact_class="closeout",
-        )
-        consumption_maximum = self.maximum_bytes(
-            "organic arm consumption",
-            artifact_class="closeout",
-        )
-        descriptor = self._sealed_bytes_memfd(
-            raw,
-            label=ARM_MANIFEST_BUDGET_LABEL,
-        )
-        try:
-            response = self._broker.publish_arm_manifest_and_seal(
-                {
-                    "arm_allocation_identity": dict(allocation_identity),
-                    "arm_attempt_prefix": expected_prefix,
-                    "arm_slot": slot,
-                    "expected_path_types_before": rows,
-                    "manifest_expected_sha256": hashlib.sha256(raw).hexdigest(),
-                    "manifest_maximum_bytes": maximum_bytes,
-                    "manifest_size_bytes": len(raw),
-                    "replay_maximum_bytes": replay_maximum,
-                    "consumption_maximum_bytes": consumption_maximum,
-                    "terminal_maximum_bytes": terminal_maximum,
-                },
-                descriptor=descriptor,
-            )
-        except Exception as exc:
-            raise RunnerError(
-                "arm manifest seal failed or acknowledgement is uncertain"
-            ) from exc
-        finally:
-            os.close(descriptor)
-        result = response.record.get("result")
-        if (
-            type(result) is not dict
-            or set(result) != {"terminal", "terminal_identity"}
-            or type(result["terminal"]) is not dict
-            or type(result["terminal_identity"]) is not dict
-        ):
-            raise RunnerError("arm manifest seal acknowledgement differs")
-        terminal = cast(dict[str, object], result["terminal"])
-        terminal_identity = cast(
-            dict[str, object],
-            result["terminal_identity"],
-        )
-        terminal_size = terminal_identity.get("size_bytes")
-        expected_terminal = (
-            self._formal_root
-            / ARM_TERMINAL_DIRECTORY
-            / f"{slot}.json"
-        )
-        if (
-            set(terminal_identity) != {"path", "sha256", "size_bytes"}
-            or terminal_identity.get("path") != str(expected_terminal)
-            or type(terminal_identity.get("sha256")) is not str
-            or SHA256_RE.fullmatch(
-                cast(str, terminal_identity["sha256"])
-            )
-            is None
-            or type(terminal_size) is not int
-            or terminal_size <= 0
-            or terminal.get("status") != "SEAL_DURABLE_PENDING_ACK"
-            or terminal.get("allocation_state") != "SEALED_PENDING_ACK"
-            or terminal.get("arm_slot") != slot
-            or terminal.get("arm_attempt_prefix") != expected_prefix
-            or terminal.get("arm_allocation_identity")
-            != allocation_identity
-        ):
-            raise RunnerError("arm manifest seal terminal join differs")
-        return {
-            "response_authentication": {
-                "nonce": self._broker.nonce,
-                "response_sequence": self._broker.sequence,
-                "response_sha256": response.sha256,
-            },
-            "terminal": dict(terminal),
-            "terminal_identity": dict(terminal_identity),
-        }
-
-    def accept_prior_arm_seal_response(
-        self,
-        *,
-        continuation: str,
-        successor_arm_slot: str | None,
-    ) -> Mapping[str, object]:
-        """Durably accept the immediately preceding seal on this connection."""
-
-        try:
-            response = self._broker.accept_prior_arm_seal_response(
-                continuation=continuation,
-                successor_arm_slot=successor_arm_slot,
-            )
-        except Exception as exc:
-            raise RunnerError(
-                "prior arm seal acceptance failed or acknowledgement is uncertain"
-            ) from exc
-        result = response.record.get("result")
-        journal = response.record.get("journal")
-        if (
-            type(result) is not dict
-            or result.get("state") != "PRIOR_RESPONSE_ACCEPTED"
-            or type(journal) is not dict
-            or set(journal) != {"path", "sha256", "size_bytes"}
-            or type(journal["path"]) is not str
-            or type(journal["sha256"]) is not str
-            or SHA256_RE.fullmatch(journal["sha256"]) is None
-            or type(journal["size_bytes"]) is not int
-            or journal["size_bytes"] <= 0
-        ):
-            raise RunnerError("prior arm seal acceptance receipt differs")
-        accepted = {
-            "accepted": dict(result),
-            "journal": {
-                "path": str(self._formal_root / journal["path"]),
-                "sha256": journal["sha256"],
-                "size_bytes": journal["size_bytes"],
-            },
-        }
-        self._accepted_arm_seal = accepted
-        return accepted
-
-    def _publish_post_seal_bytes(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        label: str,
-        kind: str,
-        prerequisite_identity: Mapping[str, object] | None,
-    ) -> Mapping[str, object]:
-        accepted = self._accepted_arm_seal
-        if accepted is None:
-            raise RunnerError(
-                "post-seal publication precedes durable response acceptance"
-            )
-        expected_label = (
-            ARM_REPLAY_BUDGET_LABEL
-            if kind == "replay"
-            else "organic arm consumption"
-        )
-        expected_path = (
-            self._formal_root
-            / ARM_REPLAY_DIRECTORY
-            / f"{self._binding['arm_slot']}.json"
-            if kind == "replay"
-            else self._formal_root
-            / "prospective/consumptions"
-            / f"{self._binding['arm_slot']}.json"
-        )
-        if (
-            label != expected_label
-            or Path(os.path.abspath(path)) != expected_path
-            or maximum_bytes
-            != self.maximum_bytes(label, artifact_class="closeout")
-            or type(raw) is not bytes
-            or not 0 < len(raw) <= maximum_bytes
-            or (
-                kind == "replay"
-                and prerequisite_identity is not None
-            )
-            or (
-                kind == "consumption"
-                and (
-                    prerequisite_identity is None
-                    or dict(prerequisite_identity)
-                    != self._post_seal_replay_identity
-                )
-            )
-        ):
-            raise RunnerError(
-                "post-seal publication differs from its fixed arm authority"
-            )
-        descriptor = self._sealed_bytes_memfd(raw, label=label)
-        payload = {
-            "allocation_identity": dict(
-                cast(
-                    dict[str, object],
-                    self._binding["arm_allocation_identity"],
-                )
-            ),
-            "arm_slot": self._binding["arm_slot"],
-            "expected_sha256": hashlib.sha256(raw).hexdigest(),
-            "maximum_bytes": maximum_bytes,
-            "prerequisite_identity": (
-                None
-                if prerequisite_identity is None
-                else dict(prerequisite_identity)
-            ),
-            "prior_response_accepted_identity": dict(
-                cast(dict[str, object], accepted["journal"])
-            ),
-            "relative_path": expected_path.relative_to(
-                self._formal_root
-            ).as_posix(),
-            "size_bytes": len(raw),
-        }
-        try:
-            response = (
-                self._broker.publish_accepted_arm_replay(
-                    payload,
-                    descriptor=descriptor,
-                )
-                if kind == "replay"
-                else self._broker.publish_arm_consumption(
-                    payload,
-                    descriptor=descriptor,
-                )
-            )
-        except Exception as exc:
-            raise RunnerError(
-                f"post-seal {kind} publication failed or acknowledgement is uncertain"
-            ) from exc
-        finally:
-            os.close(descriptor)
-        result = response.record.get("result")
-        if (
-            type(result) is not dict
-            or set(result) != {"publication_identity", "state"}
-            or type(result["publication_identity"]) is not dict
-            or result["state"]
-            != (
-                "REPLAY_PUBLISHED"
-                if kind == "replay"
-                else "ARM_CLOSED"
-            )
-            or result["publication_identity"]
-            != {
-                "path": str(expected_path),
-                "sha256": hashlib.sha256(raw).hexdigest(),
-                "size_bytes": len(raw),
-            }
-        ):
-            raise RunnerError(
-                f"post-seal {kind} publication receipt differs"
-            )
-        identity = dict(
-            cast(dict[str, object], result["publication_identity"])
-        )
-        if kind == "replay":
-            self._post_seal_replay_identity = identity
-        return identity
-
-    def publish_accepted_arm_replay(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        label: str,
-    ) -> Mapping[str, object]:
-        return self._publish_post_seal_bytes(
-            path,
-            raw,
-            maximum_bytes=maximum_bytes,
-            label=label,
-            kind="replay",
-            prerequisite_identity=None,
-        )
-
-    def publish_arm_consumption(
-        self,
-        path: Path,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        label: str,
-        replay_identity: Mapping[str, object],
-    ) -> Mapping[str, object]:
-        return self._publish_post_seal_bytes(
-            path,
-            raw,
-            maximum_bytes=maximum_bytes,
-            label=label,
-            kind="consumption",
-            prerequisite_identity=replay_identity,
-        )
-
-    def append_segment(
-        self,
-        channel: str,
-        sequence: int,
-        raw: bytes,
-        *,
-        maximum_bytes: int,
-        artifact_class: str,
-        arm_slot: str | None = None,
-    ) -> Mapping[str, object]:
-        if arm_slot != self._binding.get("arm_slot"):
-            raise RunnerError("immutable channel arm allocation identity drifted")
-        try:
-            directory = self._channel_directories[channel]
-        except KeyError as exc:
-            raise RunnerError("immutable channel was not preregistered") from exc
-        expected = self._channel_next.get(channel, 0)
-        if (
-            sequence != expected
-            or sequence >= self._channel_maximum_segments[channel]
-        ):
-            raise RunnerError("immutable channel sequence drifted")
-        label = self._channel_labels[channel]
-        if maximum_bytes != self.maximum_bytes(label, artifact_class=artifact_class):
-            raise RunnerError("immutable channel allocation maximum drifted")
-        target = self._formal_root / directory / f"segment-{sequence:08d}.bin"
-        if type(raw) is not bytes or not 0 < len(raw) <= maximum_bytes:
-            raise RunnerError(
-                "immutable channel payload differs from its segment cap"
-            )
-        descriptor = self._sealed_bytes_memfd(
-            raw,
-            label=f"{label}:{sequence}",
-        )
-        try:
-            receipt = self._publish_descriptor(
-                descriptor,
-                path=target,
-                size_bytes=len(raw),
-                digest=hashlib.sha256(raw).hexdigest(),
-                maximum_bytes=maximum_bytes,
-                artifact_class=artifact_class,
-                label=label,
-                channel=channel,
-                sequence=sequence,
-            )
-        finally:
-            os.close(descriptor)
-        self._channel_next[channel] = sequence + 1
-        return receipt
-
-    def export_model_to_sealed_memfd(
-        self,
-        model: object,
-        path: Path,
-        *,
-        maximum_bytes: int,
-        label: str,
-    ) -> Mapping[str, object]:
-        if maximum_bytes != self.maximum_bytes(label, artifact_class="model"):
-            raise RunnerError(f"{label}: model allocation maximum drifted")
-        descriptor = self._helper.create_memfd(
-            f"ab16-model-{hashlib.sha256(str(path).encode()).hexdigest()[:16]}"
-        )
-        try:
-            stale = b"AB16_O_TRUNC_SENTINEL"
-            if os.pwrite(descriptor, stale, 0) != len(stale):
-                raise RunnerError("model memfd sentinel write failed")
-            original_limits = resource.getrlimit(resource.RLIMIT_FSIZE)
-            _soft, hard = original_limits
-            if hard != resource.RLIM_INFINITY and maximum_bytes > hard:
-                raise RunnerError("model maximum exceeds retained RLIMIT_FSIZE hard limit")
-            resource.setrlimit(resource.RLIMIT_FSIZE, (maximum_bytes, hard))
-            exporter = getattr(model, "export_to_file", None)
-            try:
-                if (
-                    not callable(exporter)
-                    or exporter(f"/proc/self/fd/{descriptor}") is not True
-                ):
-                    raise RunnerError("official O_TRUNC model export failed")
-            except BaseException as primary:
-                try:
-                    resource.setrlimit(
-                        resource.RLIMIT_FSIZE,
-                        original_limits,
-                    )
-                except BaseException as restore_error:
-                    primary.add_note(
-                        "RLIMIT_FSIZE restore also failed: "
-                        f"{restore_error!r}"
-                    )
-                raise
-            try:
-                resource.setrlimit(
-                    resource.RLIMIT_FSIZE,
-                    original_limits,
-                )
-            except BaseException as exc:
-                raise RunnerError(
-                    "RLIMIT_FSIZE could not be restored before publication"
-                ) from exc
-            metadata = os.fstat(descriptor)
-            if metadata.st_size <= 0 or metadata.st_size > maximum_bytes:
-                raise RunnerError("model export exceeds its fixed allocation")
-            if os.pread(descriptor, len(stale), 0).startswith(stale):
-                raise RunnerError("official model export did not O_TRUNC the memfd")
-            digest = self._sha256_descriptor(descriptor, metadata.st_size)
-            if self._helper.has_writable_mapping(descriptor):
-                raise RunnerError("model memfd has a writable mapping")
-            installed = self._helper.install_final_seals(descriptor)
-            if (
-                installed != self._helper.final_seal_mask
-                or self._helper.get_seals(descriptor) != self._helper.final_seal_mask
-            ):
-                raise RunnerError("model memfd final seal mask differs")
-            return self._publish_descriptor(
-                descriptor,
-                path=path,
-                size_bytes=metadata.st_size,
-                digest=digest,
-                maximum_bytes=maximum_bytes,
-                artifact_class="model",
-                label=label,
-            )
-        finally:
-            os.close(descriptor)
 
 
 def _canonical_compact(value: object) -> bytes:
@@ -2301,38 +728,18 @@ def _validate_execution_source(
         or package_identity["size_bytes"] != runner_snapshot.identity["size_bytes"]
     ):
         raise RunnerError("runner package/snapshot byte join failed")
-    prospective = (
-        manifest.get("schema_version")
-        == PROSPECTIVE_FORMAL_MANIFEST_SCHEMA
-    )
-    if prospective:
-        expected_schema = SELECTED_BYTE_LAUNCH_SCHEMA_V2
-        expected_strategy = SELECTED_BYTE_EXECUTION_STRATEGY_V2
-        expected_fd_map = SELECTED_BYTE_FD_MAP_V2
-        expected_names = SELECTED_BYTE_OPEN_FILE_NAMES_V2
-        identity_roles = (
-            "authority",
-            "loader",
-            "native_helper",
-            "native_helper_wrapper",
-            "python",
-        )
-    else:
-        expected_schema = SELECTED_BYTE_LAUNCH_SCHEMA_V1
-        expected_strategy = SELECTED_BYTE_EXECUTION_STRATEGY_V1
-        expected_fd_map = SELECTED_BYTE_FD_MAP_V1
-        expected_names = SELECTED_BYTE_OPEN_FILE_NAMES_V1
-        identity_roles = ("authority", "loader", "python")
     selected = _exact_keys(
         record["selected_byte_launch"],
         {
+            "authority_identity",
             "execution_strategy",
             "fd_map",
             "literal_identity",
+            "loader_identity",
             "open_file_names",
+            "python_identity",
             "schema_version",
             "transport",
-            *(f"{role}_identity" for role in identity_roles),
         },
         "selected-byte launch",
     )
@@ -2342,18 +749,19 @@ def _validate_execution_source(
         "selected-byte literal identity",
     )
     if (
-        selected["schema_version"] != expected_schema
-        or selected["execution_strategy"] != expected_strategy
+        selected["schema_version"] != SELECTED_BYTE_LAUNCH_SCHEMA
+        or selected["execution_strategy"] != SELECTED_BYTE_EXECUTION_STRATEGY
         or selected["transport"] != "systemd-openfile-v1"
-        or selected["open_file_names"] != expected_names
-        or selected["fd_map"] != expected_fd_map
+        or selected["open_file_names"]
+        != ["ab16-python", "ab16-loader", "ab16-authority"]
+        or selected["fd_map"] != {"authority": 5, "loader": 4, "python": 3}
         or type(literal_identity["sha256"]) is not str
         or SHA256_RE.fullmatch(literal_identity["sha256"]) is None
         or type(literal_identity["size_bytes"]) is not int
         or literal_identity["size_bytes"] <= 0
     ):
         raise RunnerError("selected-byte launch semantics drifted")
-    for role in identity_roles:
+    for role in ("authority", "loader", "python"):
         replay_identity_with_mode(
             _exact_identity_with_mode(
                 selected[f"{role}_identity"],
@@ -2444,122 +852,6 @@ def _load_pinned_module(snapshot: Snapshot, role: str) -> ModuleType:
     return module
 
 
-def _execute_pinned_module_as(snapshot: Snapshot, module_name: str) -> ModuleType:
-    """Execute one exact snapshot under a required import name."""
-
-    if module_name in sys.modules:
-        raise RunnerError(f"ambient module alias is forbidden: {module_name}")
-    module = ModuleType(module_name)
-    module.__file__ = str(snapshot.identity["path"])
-    sys.modules[module_name] = module
-    try:
-        code = compile(
-            snapshot.data,
-            str(snapshot.identity["path"]),
-            "exec",
-            dont_inherit=True,
-        )
-        exec(code, module.__dict__)
-    except BaseException:
-        sys.modules.pop(module_name, None)
-        raise
-    return module
-
-
-def _publish_cut_free_incumbent_replay(
-    *,
-    attempt_dir: Path,
-    incumbent_identity: Mapping[str, object],
-    incumbent_value: Mapping[str, object],
-    inputs: PinnedCutFreeReplayInputs,
-    budget_backend: ArmBudgetBackend,
-) -> dict[str, object]:
-    """Run the package-pinned cut-free tool and publish its per-arm receipt."""
-
-    admission = inputs.admission
-    rebuilt = admission.get("rebuilt_model")
-    if not isinstance(rebuilt, Mapping):
-        raise RunnerError("baseline admission lacks rebuilt model authority")
-    model_identity = _exact_identity(
-        rebuilt.get("identity"),
-        "baseline rebuilt model identity",
-    )
-    metadata = rebuilt.get("metadata")
-    if not isinstance(metadata, Mapping):
-        raise RunnerError("baseline admission lacks rebuilt metadata authority")
-    metadata_identity = _exact_identity(
-        metadata.get("metadata_identity"),
-        "baseline rebuilt metadata identity",
-    )
-    model_path = Path(str(model_identity["path"]))
-    metadata_path = Path(str(metadata_identity["path"]))
-    campaign_provenance_path = model_path.parent / "campaign-provenance.json"
-    if metadata_path.parent != model_path.parent:
-        raise RunnerError("baseline replay model/metadata directory join failed")
-    output = attempt_dir / "replays" / "cut-free-incumbent.json"
-    if Path(str(incumbent_identity["path"])) not in {
-        attempt_dir / "raw-incumbent.json",
-        Path(str(admission["fixed_assignment_replay"]["incumbent_identity"]["path"])),
-    }:
-        raise RunnerError("cut-free replay incumbent path is not an admitted subject")
-
-    baseline_alias = _execute_pinned_module_as(
-        inputs.admission_tool,
-        "baseline_admission_v1",
-    )
-    cut_free_module_name: str | None = None
-    try:
-        cut_free_module = _load_pinned_module(
-            inputs.cut_free_tool,
-            "cut_free_incumbent_replay",
-        )
-        cut_free_module_name = cut_free_module.__name__
-        exit_code = cut_free_module.main(
-            [
-                "--campaign-provenance",
-                str(campaign_provenance_path),
-                "--model",
-                str(model_path),
-                "--metadata",
-                str(metadata_path),
-                "--incumbent",
-                str(incumbent_identity["path"]),
-                "--output",
-                str(output),
-            ],
-            budget_backend=budget_backend,
-            expected_incumbent_sha256=semantic_digest(dict(incumbent_value)),
-            emit_summary=False,
-        )
-    except Exception as exc:
-        raise RunnerError("package-pinned per-arm cut-free replay failed closed") from exc
-    finally:
-        if sys.modules.get("baseline_admission_v1") is baseline_alias:
-            sys.modules.pop("baseline_admission_v1", None)
-        if cut_free_module_name is not None:
-            sys.modules.pop(cut_free_module_name, None)
-    if exit_code != 0:
-        raise RunnerError("package-pinned per-arm cut-free replay returned nonzero")
-    receipt = snapshot_regular(
-        output,
-        label="per-arm cut-free replay receipt",
-    )
-    value = _strict_loads(
-        receipt.data,
-        "per-arm cut-free replay receipt",
-    )
-    if (
-        not isinstance(value, Mapping)
-        or value.get("status") != "PASS"
-        or value.get("verdict") != "INCUMBENT_FIXED_ASSIGNMENT_REPLAY_PASS"
-        or value.get("incumbent_identity") != dict(incumbent_identity)
-        or value.get("incumbent_sha256") != semantic_digest(dict(incumbent_value))
-        or value.get("replay_tool_identity") != inputs.cut_free_tool.identity
-    ):
-        raise RunnerError("per-arm cut-free replay receipt self-replay failed")
-    return receipt.identity
-
-
 def _mkdir_exclusive(path: Path, *, label: str) -> Path:
     absolute = Path(os.path.abspath(path))
     parent_fd = _open_directory_chain(absolute.parent)
@@ -2575,52 +867,27 @@ def _mkdir_exclusive(path: Path, *, label: str) -> Path:
     return absolute
 
 
-def _prepare_selected_attempt(
-    path: Path,
-    *,
-    budget_backend: ArmBudgetBackend | None = None,
-) -> Path:
+def _prepare_selected_attempt(path: Path) -> Path:
     """Open the authority-created attempt and exclusively add runner dirs."""
 
     absolute = Path(os.path.abspath(path))
     descriptor = _open_directory_chain(absolute)
     required = {"pre-run-authority.json", "selection.json"}
-    legacy_owned = {"checkpoint", "ledger", "runtime", "tmp"}
-    owned = legacy_owned if budget_backend is None else legacy_owned | {"replays"}
+    owned = {"checkpoint", "ledger", "runtime", "tmp"}
     try:
         before = os.fstat(descriptor)
         if not stat.S_ISDIR(before.st_mode):
             raise RunnerError("organic arm attempt is not a directory")
-        observed_members = set(os.listdir(descriptor))
-        if budget_backend is None:
-            if observed_members != required:
-                raise RunnerError("organic arm attempt prelaunch contents drifted")
-            for name in sorted(owned):
-                try:
-                    os.mkdir(name, 0o700, dir_fd=descriptor)
-                except FileExistsError as exc:
-                    raise RunnerError(f"organic arm {name}: no-overwrite collision") from exc
-                except OSError as exc:
-                    raise RunnerError(f"organic arm {name}: exclusive directory creation failed") from exc
-            os.fsync(descriptor)
-        else:
-            # The broker/package chain must create every directory before
-            # dropping the worker into read-only Landlock confinement.
-            if observed_members != required | owned:
-                raise RunnerError("budgeted organic arm preregistered directories drifted")
-            for suffix, expected_mode in BUDGET_ARM_DIRECTORY_SUFFIX_MODES:
-                child = _open_directory_chain(absolute / suffix)
-                try:
-                    metadata = os.fstat(child)
-                finally:
-                    os.close(child)
-                if (
-                    not stat.S_ISDIR(metadata.st_mode)
-                    or stat.S_IMODE(metadata.st_mode) != expected_mode
-                ):
-                    raise RunnerError(
-                        f"budgeted organic arm {suffix} mode/identity drifted"
-                    )
+        if set(os.listdir(descriptor)) != required:
+            raise RunnerError("organic arm attempt prelaunch contents drifted")
+        for name in sorted(owned):
+            try:
+                os.mkdir(name, 0o700, dir_fd=descriptor)
+            except FileExistsError as exc:
+                raise RunnerError(f"organic arm {name}: no-overwrite collision") from exc
+            except OSError as exc:
+                raise RunnerError(f"organic arm {name}: exclusive directory creation failed") from exc
+        os.fsync(descriptor)
         after = os.fstat(descriptor)
         if (
             before.st_dev,
@@ -2643,45 +910,8 @@ def _prepare_selected_attempt(
     return absolute
 
 
-def _write_exclusive(
-    path: Path,
-    raw: bytes,
-    *,
-    label: str,
-    budget_backend: ArmBudgetBackend | None = None,
-    artifact_class: str = "normal",
-) -> dict[str, object]:
+def _write_exclusive(path: Path, raw: bytes, *, label: str) -> dict[str, object]:
     absolute = Path(os.path.abspath(path))
-    if budget_backend is not None:
-        maximum = _budget_maximum(
-            budget_backend,
-            label,
-            artifact_class=artifact_class,
-        )
-        if len(raw) > maximum:
-            raise RunnerError(f"{label}: payload exceeds its predeclared budget maximum")
-        try:
-            record = dict(
-                budget_backend.publish_bytes(
-                    absolute,
-                    raw,
-                    maximum_bytes=maximum,
-                    artifact_class=artifact_class,
-                    label=label,
-                )
-            )
-        except RunnerError:
-            raise
-        except Exception as exc:
-            raise RunnerError(f"{label}: broker publication failed closed") from exc
-        if (
-            not {"path", "sha256", "size_bytes"} <= set(record)
-            or record.get("path") != str(absolute)
-            or record.get("sha256") != hashlib.sha256(raw).hexdigest()
-            or record.get("size_bytes") != len(raw)
-        ):
-            raise RunnerError(f"{label}: broker receipt identity differs")
-        return record
     parent_fd = _open_directory_chain(absolute.parent)
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW
     try:
@@ -2830,15 +1060,6 @@ def validate_manifest(value: object) -> Mapping[str, Any]:
             "snapshot_materialization_receipt_identity",
         }
         sealed_execution = True
-    elif schema_version == PROSPECTIVE_FORMAL_MANIFEST_SCHEMA:
-        expected_fields = legacy_fields | {
-            "formal_budget_runtime",
-            "live_source_provenance_root",
-            "sealed_snapshot_execution_root",
-            "snapshot_manifest_identity",
-            "snapshot_materialization_receipt_identity",
-        }
-        sealed_execution = True
     else:
         raise RunnerError("organic manifest schema drifted")
     record = _exact_keys(
@@ -2871,11 +1092,6 @@ def validate_manifest(value: object) -> Mapping[str, Any]:
         == record["live_source_provenance_root"]
     ):
         raise RunnerError("organic manifest sealed-source semantics drifted")
-    if (
-        schema_version == PROSPECTIVE_FORMAL_MANIFEST_SCHEMA
-        and type(record["formal_budget_runtime"]) is not dict
-    ):
-        raise RunnerError("organic manifest formal budget runtime is not an object")
     families = _exact_keys(
         record["configuration_families"],
         set(CONFIGURATION_FAMILIES),
@@ -3017,15 +1233,6 @@ def validate_selection(
             "snapshot_materialization_receipt_identity",
         }
         sealed_execution = True
-    elif manifest_schema == PROSPECTIVE_FORMAL_MANIFEST_SCHEMA:
-        expected_fields = legacy_fields | {
-            "budget_handoff",
-            "live_source_provenance_root",
-            "sealed_snapshot_execution_root",
-            "snapshot_manifest_identity",
-            "snapshot_materialization_receipt_identity",
-        }
-        sealed_execution = True
     else:
         raise RunnerError("selection parent manifest schema drifted")
     record = _exact_keys(
@@ -3037,12 +1244,7 @@ def validate_selection(
     order = record["order"]
     arm = record["arm"]
     if (
-        record["schema_version"]
-        != (
-            FORMAL_SELECTION_SCHEMA
-            if manifest_schema == PROSPECTIVE_FORMAL_MANIFEST_SCHEMA
-            else SELECTION_SCHEMA
-        )
+        record["schema_version"] != SELECTION_SCHEMA
         or record["purpose"] != SELECTION_PURPOSE
         or configuration not in CONFIGURATION_FAMILIES
         or order not in ORDERS
@@ -3079,11 +1281,6 @@ def validate_selection(
             raise RunnerError(f"selection {field} differs from manifest")
     if record["authority_chain"] != manifest["authority_chain"]:
         raise RunnerError("selection authority chain differs from manifest")
-    if (
-        manifest_schema == PROSPECTIVE_FORMAL_MANIFEST_SCHEMA
-        and type(record["budget_handoff"]) is not dict
-    ):
-        raise RunnerError("selection budget handoff is not an object")
     _authority_chain(record["authority_chain"])
     slot = record["slot"]
     if record["attempt_dir"] != manifest["attempt_dirs"][slot] or record["unit_name"] != manifest["unit_names"][slot]:
@@ -3215,59 +1412,28 @@ def _validate_baseline_admission(
 
 
 class HashChainJournal:
-    """Local JSONL journal or explicit immutable broker segment sequence."""
+    """Single-FD, append-only, O_EXCL compile/attach journal."""
 
     def __init__(
         self,
         path: Path,
         *,
         genesis: Mapping[str, object],
-        budget_backend: ArmBudgetBackend | None = None,
-        budget_channel: str | None = None,
-        budget_segment_max_bytes: int | None = None,
-        budget_arm_slot: str | None = None,
     ) -> None:
         self.path = Path(os.path.abspath(path))
-        self._budget_backend = budget_backend
-        self._budget_channel = budget_channel
-        self._budget_segment_max_bytes = budget_segment_max_bytes
-        self._budget_arm_slot = budget_arm_slot
-        self._segment_records: list[dict[str, object]] = []
-        self._events: list[dict[str, object]] = []
-        self._raw_segments: list[bytes] = []
-        if budget_backend is None:
-            if any(
-                value is not None
-                for value in (
-                    budget_channel,
-                    budget_segment_max_bytes,
-                    budget_arm_slot,
-                )
-            ):
-                raise RunnerError("journal budget options require budget_backend")
-            parent_fd = _open_directory_chain(self.path.parent)
-            flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_APPEND | os.O_CLOEXEC | os.O_NOFOLLOW
-            try:
-                self._fd = os.open(self.path.name, flags, 0o600, dir_fd=parent_fd)
-            except FileExistsError as exc:
-                os.close(parent_fd)
-                raise RunnerError("compile/attach journal already exists") from exc
-            except OSError as exc:
-                os.close(parent_fd)
-                raise RunnerError("compile/attach journal creation failed") from exc
-            else:
-                os.fsync(parent_fd)
-                os.close(parent_fd)
+        parent_fd = _open_directory_chain(self.path.parent)
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_APPEND | os.O_CLOEXEC | os.O_NOFOLLOW
+        try:
+            self._fd = os.open(self.path.name, flags, 0o600, dir_fd=parent_fd)
+        except FileExistsError as exc:
+            os.close(parent_fd)
+            raise RunnerError("compile/attach journal already exists") from exc
+        except OSError as exc:
+            os.close(parent_fd)
+            raise RunnerError("compile/attach journal creation failed") from exc
         else:
-            if (
-                not isinstance(budget_channel, str)
-                or SAFE_TOKEN_RE.fullmatch(budget_channel) is None
-                or isinstance(budget_segment_max_bytes, bool)
-                or not isinstance(budget_segment_max_bytes, int)
-                or budget_segment_max_bytes <= 0
-            ):
-                raise RunnerError("journal immutable segment allocation is invalid")
-            self._fd = -1
+            os.fsync(parent_fd)
+            os.close(parent_fd)
         self._seq = 0
         self._tail = "0" * 64
         self._sealed = False
@@ -3277,29 +1443,6 @@ class HashChainJournal:
     @property
     def counts(self) -> dict[str, int]:
         return dict(sorted(self._counts.items()))
-
-    @property
-    def recorded_events(self) -> tuple[Mapping[str, object], ...]:
-        return tuple(dict(event) for event in self._events)
-
-    @property
-    def immutable_segment_records(self) -> tuple[Mapping[str, object], ...]:
-        return tuple(dict(record) for record in self._segment_records)
-
-    def segment_bundle(self) -> dict[str, object]:
-        if self._budget_backend is None:
-            raise RunnerError("local journal does not have an immutable segment bundle")
-        raw = b"".join(self._raw_segments)
-        return {
-            "schema_version": BUDGET_SEGMENT_BUNDLE_SCHEMA,
-            "channel": self._budget_channel,
-            "event_count": len(self._events),
-            "segment_identities": [
-                dict(record) for record in self._segment_records
-            ],
-            "sha256": hashlib.sha256(raw).hexdigest(),
-            "size_bytes": len(raw),
-        }
 
     def append(self, event: str, payload: Mapping[str, object]) -> None:
         if self._sealed:
@@ -3315,46 +1458,13 @@ class HashChainJournal:
             "seq": self._seq,
         }
         raw = _canonical_compact(record)
-        segment = raw + b"\n"
-        if self._budget_backend is None:
-            view = memoryview(segment)
-            while view:
-                written = os.write(self._fd, view)
-                if written <= 0:
-                    raise RunnerError("compile/attach journal write made no progress")
-                view = view[written:]
-            os.fsync(self._fd)
-        else:
-            assert self._budget_channel is not None
-            assert self._budget_segment_max_bytes is not None
-            if len(segment) > self._budget_segment_max_bytes:
-                raise RunnerError(
-                    "compile/attach journal event exceeds its fixed allocation"
-                )
-            try:
-                receipt = dict(
-                    self._budget_backend.append_segment(
-                        self._budget_channel,
-                        self._seq,
-                        segment,
-                        maximum_bytes=self._budget_segment_max_bytes,
-                        artifact_class="ledger",
-                        arm_slot=self._budget_arm_slot,
-                    )
-                )
-            except Exception as exc:
-                raise RunnerError(
-                    "compile/attach journal broker publication failed closed"
-                ) from exc
-            if (
-                not {"path", "sha256", "size_bytes"} <= set(receipt)
-                or receipt.get("sha256") != hashlib.sha256(segment).hexdigest()
-                or receipt.get("size_bytes") != len(segment)
-            ):
-                raise RunnerError("compile/attach journal broker receipt differs")
-            self._segment_records.append(receipt)
-            self._raw_segments.append(segment)
-            self._events.append(dict(record))
+        view = memoryview(raw + b"\n")
+        while view:
+            written = os.write(self._fd, view)
+            if written <= 0:
+                raise RunnerError("compile/attach journal write made no progress")
+            view = view[written:]
+        os.fsync(self._fd)
         self._tail = hashlib.sha256(raw).hexdigest()
         self._seq += 1
         self._counts[event] = self._counts.get(event, 0) + 1
@@ -3369,10 +1479,9 @@ class HashChainJournal:
                 "tail_before_seal": self._tail,
             },
         )
-        if self._budget_backend is None:
-            os.fsync(self._fd)
-            os.close(self._fd)
-            self._fd = -1
+        os.fsync(self._fd)
+        os.close(self._fd)
+        self._fd = -1
         self._sealed = True
 
     def abort(self) -> None:
@@ -3793,65 +1902,6 @@ def _read_journal(path: Path) -> tuple[list[Mapping[str, Any]], dict[str, object
     return events, snapshot.identity
 
 
-def _journal_observation(
-    journal: HashChainJournal,
-) -> tuple[list[Mapping[str, Any]], dict[str, object]]:
-    if journal._budget_backend is None:  # noqa: SLF001 - same-module protocol join
-        return _read_journal(journal.path)
-    events: list[Mapping[str, Any]] = [
-        dict(event) for event in journal.recorded_events
-    ]
-    if not events or events[-1].get("event") != "JOURNAL_SEAL":
-        raise RunnerError("immutable compile/attach journal lacks a terminal seal")
-    tail = "0" * 64
-    for sequence, event in enumerate(events):
-        if (
-            event.get("schema_version") != JOURNAL_SCHEMA
-            or event.get("seq") != sequence
-            or event.get("prev_event_sha256") != tail
-        ):
-            raise RunnerError("immutable compile/attach journal replay failed")
-        tail = hashlib.sha256(_canonical_compact(event)).hexdigest()
-    return events, journal.segment_bundle()
-
-
-def _budgeted_ledger_observation(
-    ledger: Any,
-) -> tuple[list[Mapping[str, Any]], dict[str, object]]:
-    events: list[Mapping[str, Any]] = [
-        dict(event) for event in ledger.recorded_events
-    ]
-    records = [dict(record) for record in ledger.immutable_segment_records]
-    if (
-        not events
-        or events[-1].get("event") != "SEGMENT_SEAL"
-        or len(events) != len(records)
-    ):
-        raise RunnerError("immutable cut ledger lacks one complete segment sequence")
-    previous = "0" * 64
-    raw_segments: list[bytes] = []
-    for sequence, (event, record) in enumerate(zip(events, records, strict=True)):
-        raw = _canonical_compact(event) + b"\n"
-        if (
-            event.get("seq") != sequence
-            or event.get("prev_event_hash") != previous
-            or record.get("sha256") != hashlib.sha256(raw).hexdigest()
-            or record.get("size_bytes") != len(raw)
-        ):
-            raise RunnerError("immutable cut ledger replay failed")
-        previous = hashlib.sha256(raw[:-1]).hexdigest()
-        raw_segments.append(raw)
-    joined = b"".join(raw_segments)
-    return events, {
-        "schema_version": BUDGET_SEGMENT_BUNDLE_SCHEMA,
-        "channel": "cut-ledger",
-        "event_count": len(events),
-        "segment_identities": records,
-        "sha256": hashlib.sha256(joined).hexdigest(),
-        "size_bytes": len(joined),
-    }
-
-
 def _load_authority(
     selection_path: Path,
 ) -> tuple[
@@ -3859,7 +1909,6 @@ def _load_authority(
     Mapping[str, Any],
     dict[str, dict[str, object]],
     Mapping[str, Any],
-    PinnedCutFreeReplayInputs,
 ]:
     selection_snapshot = snapshot_regular(
         selection_path,
@@ -3975,356 +2024,7 @@ def _load_authority(
     )
     if type(incumbent) is not dict or semantic_digest(incumbent) != expected_digest:
         raise RunnerError("baseline incumbent bytes do not match admitted digest")
-    if not isinstance(admission_value, Mapping):
-        raise RunnerError("baseline admission is not an object")
-    admission_tool = replay_identity(
-        admission_value.get("admission_tool_identity"),
-        "baseline admission tool",
-    )
-    replayed["baseline_admission_tool"] = admission_tool.identity
-    return (
-        manifest,
-        selection,
-        replayed,
-        execution_source,
-        PinnedCutFreeReplayInputs(
-            admission=dict(admission_value),
-            admission_tool=admission_tool,
-            cut_free_tool=authority_snapshots["per_arm_tool_cut_free_replay"],
-        ),
-    )
-
-
-def _consume_budget_socket_fd(fd: int, *, label: str) -> int:
-    """Consume one loader-owned broker FD and return one CLOEXEC duplicate."""
-
-    if isinstance(fd, bool) or not isinstance(fd, int) or fd < 0:
-        raise RunnerError(f"{label} is not one descriptor")
-    duplicate = -1
-    try:
-        duplicate = fcntl.fcntl(
-            fd,
-            fcntl.F_DUPFD_CLOEXEC,
-            20,
-        )
-    except BaseException:
-        try:
-            os.close(fd)
-        except BaseException:
-            pass
-        raise
-    try:
-        os.close(fd)
-    except BaseException:
-        try:
-            os.close(duplicate)
-        except BaseException:
-            pass
-        raise
-    return duplicate
-
-
-def formal_arm_worker_budget_backend_from_fd(
-    fd: int,
-    *,
-    native_budget_helper: object,
-    campaign_dir: Path | str,
-    pre_run_path: Path | str,
-    selection_path: Path | str,
-    worker_session: Mapping[str, object],
-) -> ArmBudgetBackend:
-    """Attach the exact pidfd-bound organic worker on fixed FD8."""
-
-    owned_fd = _consume_budget_socket_fd(
-        fd,
-        label="formal arm worker broker FD",
-    )
-    if fd != 8:
-        os.close(owned_fd)
-        raise RunnerError(
-            "formal arm worker broker must arrive on fixed FD8"
-        )
-    client: Any | None = None
-    try:
-        manifest, selection, _replayed, _source, _inputs = (
-            _load_authority(Path(selection_path))
-        )
-        expected_pre_run = _exact_identity(
-            selection["pre_run_authority_identity"],
-            "formal arm worker pre-run authority",
-        )
-        if (
-            expected_pre_run["path"]
-            != str(Path(os.path.abspath(pre_run_path)))
-            or selection["execution_class"] != "FORMAL_AB16"
-        ):
-            raise RunnerError(
-                "formal arm worker pre-run/selection join drifted"
-            )
-        handoff = _exact_keys(
-            selection["budget_handoff"],
-            {
-                "arm_allocation_id",
-                "broker_actor_identity",
-                "broker_nonce",
-                "broker_socket_path",
-                "calibration_tool_content_identities",
-                "fixed_directory_layout",
-                "fixed_maxima",
-                "formal_budget_authority_identity",
-                "manager_openfile_arm_grant",
-                "native_helper_package_identity",
-            },
-            "formal arm worker budget handoff",
-        )
-        manager_grant = _exact_keys(
-            handoff["manager_openfile_arm_grant"],
-            {"credential", "preregistration"},
-            "formal arm manager grant",
-        )
-        preregistration = _exact_keys(
-            manager_grant["preregistration"],
-            {
-                "allocation_identity",
-                "arm_slot",
-                "attempt_consumption_identity",
-                "credential_sha256",
-                "manager_epoch_identity",
-                "schema_version",
-                "selection_identity",
-                "state",
-                "unit_name",
-            },
-            "formal arm manager preregistration",
-        )
-        session = _exact_keys(
-            worker_session,
-            {"broker_grant", "credential", "schema_version"},
-            "formal arm worker session",
-        )
-        credential = session["credential"]
-        broker_grant = _exact_keys(
-            session["broker_grant"],
-            {
-                "allocation_identity",
-                "arm_slot",
-                "credential_sha256",
-                "expected_peer",
-                "role",
-                "schema_version",
-                "selection_identity",
-            },
-            "formal arm worker broker grant",
-        )
-        if (
-            session["schema_version"] != FORMAL_WORKER_SESSION_SCHEMA
-            or type(credential) is not str
-            or SHA256_RE.fullmatch(credential) is None
-            or broker_grant["role"] != "arm"
-            or broker_grant["arm_slot"] != selection["slot"]
-            or broker_grant["arm_slot"] != preregistration["arm_slot"]
-            or broker_grant["selection_identity"]
-            != preregistration["selection_identity"]
-            or broker_grant["allocation_identity"]
-            != preregistration["allocation_identity"]
-            or broker_grant["credential_sha256"]
-            != hashlib.sha256(credential.encode("ascii")).hexdigest()
-        ):
-            raise RunnerError(
-                "formal arm worker session authority drifted"
-            )
-
-        from docs.research.noncert_cuts_ab16_20260724 import (
-            ab16_budget_broker_v1 as broker_module,
-        )
-        from docs.research.noncert_cuts_ab16_20260724 import (
-            ab16_formal_controller_v1 as formal_controller,
-        )
-
-        snapshot_root = Path(
-            cast(str, manifest["sealed_snapshot_execution_root"])
-        )
-        expected_origins = {
-            broker_module: (
-                "docs/research/noncert_cuts_ab16_20260724/"
-                "ab16_budget_broker_v1.py"
-            ),
-            formal_controller: (
-                "docs/research/noncert_cuts_ab16_20260724/"
-                "ab16_formal_controller_v1.py"
-            ),
-        }
-        for module, relative in expected_origins.items():
-            origin = getattr(module, "__file__", None)
-            if (
-                type(origin) is not str
-                or Path(origin).resolve(strict=False)
-                != (snapshot_root / relative).resolve(strict=False)
-            ):
-                raise RunnerError(
-                    "formal arm worker dependency escaped the sealed snapshot"
-                )
-        formal_selection_identity = _exact_identity(
-            preregistration["selection_identity"],
-            "formal arm worker formal selection",
-        )
-        formal_inputs = formal_controller.load_formal_inputs(
-            campaign_dir=campaign_dir,
-            formal_selection=formal_selection_identity["path"],
-        )
-        if (
-            formal_inputs.selection_identity
-            != formal_selection_identity
-        ):
-            raise RunnerError(
-                "formal arm worker formal selection replay drifted"
-            )
-        formal_runtime = formal_inputs.selection[
-            "manager_openfile_grant"
-        ]["formal_budget_runtime"]
-        if (
-            formal_runtime["broker_actor_identity"]
-            != handoff["broker_actor_identity"]
-            or formal_runtime["broker_nonce"]
-            != handoff["broker_nonce"]
-            or formal_runtime["broker_endpoint_identity"]["path"]
-            != handoff["broker_socket_path"]
-        ):
-            raise RunnerError(
-                "formal arm worker broker runtime join drifted"
-            )
-        expected_peer = broker_module.process_identity()
-        if (
-            broker_grant["schema_version"]
-            != broker_module.SESSION_GRANT_SCHEMA
-            or broker_grant["expected_peer"] != expected_peer
-        ):
-            raise RunnerError(
-                "formal arm worker pidfd-bound peer drifted"
-            )
-        actor = {
-            "schema_version": broker_module.ACTOR_SCHEMA,
-            **cast(
-                Mapping[str, object],
-                handoff["broker_actor_identity"],
-            ),
-        }
-        transferred_fd = owned_fd
-        owned_fd = -1
-        client = broker_module.attach_registered_arm_session(
-            transferred_fd,
-            broker_actor=actor,
-            broker_nonce=cast(str, handoff["broker_nonce"]),
-            credential=credential,
-            role="arm",
-            arm_slot=cast(str, selection["slot"]),
-            selection_identity=cast(
-                Mapping[str, object],
-                preregistration["selection_identity"],
-            ),
-            allocation_identity=cast(
-                Mapping[str, object],
-                preregistration["allocation_identity"],
-            ),
-            native_helper=cast(Any, native_budget_helper),
-        )
-        formal_root = Path(
-            cast(
-                str,
-                cast(
-                    Mapping[str, object],
-                    handoff["fixed_directory_layout"],
-                )["formal_root"],
-            )
-        )
-        expected_formal_root, profile, _a, _c, _d = (
-            formal_controller._formal_budget_tables(  # noqa: SLF001
-                formal_inputs
-            )
-        )
-        calibration, calibration_identity = (
-            formal_controller._formal_resource_calibration_bundle(  # noqa: SLF001
-                formal_inputs
-            )
-        )
-        if formal_root != expected_formal_root:
-            raise RunnerError(
-                "formal arm worker formal-root profile join drifted"
-            )
-        binding = {
-            "arm_allocation_id": handoff["arm_allocation_id"],
-            "arm_allocation_identity": dict(
-                cast(
-                    Mapping[str, object],
-                    preregistration["allocation_identity"],
-                )
-            ),
-            "arm_slot": selection["slot"],
-            "broker_nonce": handoff["broker_nonce"],
-            "broker_socket_fd": client.connection.fileno(),
-            "filesystem_write_confinement": (
-                "landlock-read-only-worker-v1"
-            ),
-            "formal_budget_authority_identity": dict(
-                cast(
-                    Mapping[str, object],
-                    handoff["formal_budget_authority_identity"],
-                )
-            ),
-            "next_sequence": client.sequence + 1,
-        }
-        layout = cast(
-            Mapping[str, object],
-            handoff["fixed_directory_layout"],
-        )
-        backend = BrokerProcessArmBudgetBackend(
-            broker_client=client,
-            native_helper=native_budget_helper,
-            formal_root=formal_root,
-            attempt_root=Path(cast(str, layout["attempt_root"])),
-            formal_budget_runtime=cast(
-                Mapping[str, object],
-                formal_runtime,
-            ),
-            enforced_budget_profile=profile,
-            enforced_budget_profile_identity=cast(
-                Mapping[str, object],
-                formal_inputs.selection["manager_openfile_grant"][
-                    "budget_profile_identity"
-                ],
-            ),
-            resource_calibration_authorization_bundle=calibration,
-            resource_calibration_authorization_bundle_identity=(
-                calibration_identity
-            ),
-            expected_calibration_tool_identities=cast(
-                Mapping[str, Mapping[str, object]],
-                handoff["calibration_tool_content_identities"],
-            ),
-            authority_binding=binding,
-            fixed_maxima=cast(
-                Mapping[str, Mapping[str, object]],
-                handoff["fixed_maxima"],
-            ),
-            channel_contracts=cast(
-                Mapping[str, Mapping[str, object]],
-                layout["channel_contracts"],
-            ),
-        )
-        client = None
-        return backend
-    except BaseException as exc:
-        try:
-            if client is not None:
-                client.close()
-            elif owned_fd >= 0:
-                os.close(owned_fd)
-        except BaseException as cleanup_error:
-            exc.add_note(
-                "formal arm worker backend cleanup failed: "
-                f"{type(cleanup_error).__name__}: {cleanup_error}"
-            )
-        raise
+    return manifest, selection, replayed, execution_source
 
 
 def _event_counts(events: Sequence[Mapping[str, object]]) -> dict[str, int]:
@@ -4434,12 +2134,7 @@ def _join_ledger_and_journal(
 
 
 @contextmanager
-def _arm_environment(
-    attempt_dir: Path,
-    *,
-    seed: int,
-    budgeted: bool = False,
-) -> Any:
+def _arm_environment(attempt_dir: Path, *, seed: int) -> Any:
     keys = {
         ATTACH_ENV,
         "EXACT_CP_SAT_WORKERS",
@@ -4454,16 +2149,6 @@ def _arm_environment(
     previous = {key: os.environ.get(key) for key in keys}
     if previous[ATTACH_ENV] is not None:
         raise RunnerError("attach environment must be absent before construction")
-    if budgeted:
-        tmp_metadata = os.stat(
-            attempt_dir / "tmp",
-            follow_symlinks=False,
-        )
-        if (
-            not stat.S_ISDIR(tmp_metadata.st_mode)
-            or stat.S_IMODE(tmp_metadata.st_mode) & 0o222
-        ):
-            raise RunnerError("budgeted TMPDIR is not a retained read-only directory")
     try:
         os.environ["EXACT_CP_SAT_WORKERS"] = "1"
         os.environ["EXACT_MASTER_CP_SAT_WORKERS"] = "1"
@@ -4487,7 +2172,6 @@ def _run_with_hooks(
     hooks: ArmHooks,
     *,
     enforce_single_process_use: bool,
-    budget_backend: ArmBudgetBackend | None = None,
 ) -> dict[str, object]:
     """Execute one selected arm; tests inject small hooks through this seam."""
 
@@ -4497,95 +2181,36 @@ def _run_with_hooks(
             raise RunnerError("fresh process contract forbids a second arm")
         _PUBLIC_RUN_STARTED = True
 
-    (
-        manifest,
-        selection,
-        authority_identities,
-        execution_source,
-        cut_free_inputs,
-    ) = _load_authority(selection_path)
-    if (
-        bool(getattr(hooks, "requires_budget_authority", False))
-        and budget_backend is None
-    ):
-        raise RunnerError("production organic arm requires broker-backed budget authority")
-    budget_binding = (
-        _validate_budget_binding(
-            budget_backend,
-            expected_arm_slot=str(selection["slot"]),
-        )
-        if budget_backend is not None
-        else None
-    )
-    result_schema = (
-        FORMAL_RESULT_SCHEMA if budget_backend is not None else RESULT_SCHEMA
-    )
+    manifest, selection, authority_identities, execution_source = _load_authority(selection_path)
     if bool(getattr(hooks, "requires_sealed_import_boundary", False)):
         _assert_initial_import_boundary(execution_source)
-    attempt_dir = _prepare_selected_attempt(
-        Path(selection["attempt_dir"]),
-        budget_backend=budget_backend,
-    )
+    attempt_dir = _prepare_selected_attempt(Path(selection["attempt_dir"]))
 
     from src.cuts.ledger import CutLedgerWriter, read_segment
 
-    ledger_genesis = {
-        "arm": selection["arm"],
-        "campaign_id": selection["campaign_id"],
-        "enabled_families": list(selection["enabled_families"]),
-        "manifest_sha256": authority_identities["manifest"]["sha256"],
-        "selection_sha256": authority_identities["selection"]["sha256"],
-        "selection_nonce": selection["selection_nonce"],
-    }
-    journal_genesis = {
-        "arm": selection["arm"],
-        "campaign_id": selection["campaign_id"],
-        "enabled_families": list(selection["enabled_families"]),
-        "selection_identity": authority_identities["selection"],
-        "slot": selection["slot"],
-    }
-    if budget_backend is None:
-        ledger = CutLedgerWriter(
-            attempt_dir / "ledger",
-            scope_id=str(selection["slot"]),
-            writer_id="organic-arm-v1",
-            genesis_context=ledger_genesis,
-        )
-        journal = HashChainJournal(
-            attempt_dir / "compile-attach-journal.jsonl",
-            genesis=journal_genesis,
-        )
-    else:
-        from docs.research.noncert_cuts_ab16_20260724.ab16_budgeted_writers_v1 import (
-            AB16BudgetedCutLedgerWriter,
-        )
-
-        ledger = AB16BudgetedCutLedgerWriter(
-            attempt_dir / "ledger",
-            scope_id=str(selection["slot"]),
-            writer_id="organic-arm-v1",
-            genesis_context=ledger_genesis,
-            immutable_budget=budget_backend,
-            budget_channel=f"arm-{selection['slot']}-cut-ledger",
-            budget_segment_max_bytes=_budget_maximum(
-                budget_backend,
-                "cut ledger segment",
-                artifact_class="ledger",
-            ),
-            budget_arm_slot=str(selection["slot"]),
-        )
-        journal = HashChainJournal(
-            attempt_dir / "compile-attach-journal.jsonl",
-            genesis=journal_genesis,
-            budget_backend=budget_backend,
-            budget_channel=f"arm-{selection['slot']}-compile-journal",
-            budget_segment_max_bytes=_budget_maximum(
-                budget_backend,
-                "compile attach journal segment",
-                artifact_class="ledger",
-            ),
-            budget_arm_slot=str(selection["slot"]),
-        )
+    ledger = CutLedgerWriter(
+        attempt_dir / "ledger",
+        scope_id=str(selection["slot"]),
+        writer_id="organic-arm-v1",
+        genesis_context={
+            "arm": selection["arm"],
+            "campaign_id": selection["campaign_id"],
+            "enabled_families": list(selection["enabled_families"]),
+            "manifest_sha256": authority_identities["manifest"]["sha256"],
+            "selection_sha256": authority_identities["selection"]["sha256"],
+            "selection_nonce": selection["selection_nonce"],
+        },
+    )
+    journal = HashChainJournal(
+        attempt_dir / "compile-attach-journal.jsonl",
+        genesis={
+            "arm": selection["arm"],
+            "campaign_id": selection["campaign_id"],
+            "enabled_families": list(selection["enabled_families"]),
+            "selection_identity": authority_identities["selection"],
+            "slot": selection["slot"],
+        },
+    )
     recorder = CompileAttachRecorder(
         journal,
         expected_solution_digest=str(selection["baseline_incumbent_sha256"]),
@@ -4595,14 +2220,9 @@ def _run_with_hooks(
     failure: BaseException | None = None
     started_ns = time.monotonic_ns()
     try:
-        with _arm_environment(
-            attempt_dir,
-            seed=int(selection["seed"]),
-            budgeted=budget_backend is not None,
-        ):
+        with _arm_environment(attempt_dir, seed=int(selection["seed"])):
             context = ArmContext(
                 attempt_dir=attempt_dir,
-                budget_backend=budget_backend,
                 enabled_families=tuple(selection["enabled_families"]),
                 execution_source=execution_source,
                 ledger=ledger,
@@ -4651,7 +2271,7 @@ def _run_with_hooks(
                 "production_certified_authorized": False,
             },
             "error": f"{type(failure).__name__}: {failure}",
-            "schema_version": result_schema,
+            "schema_version": RESULT_SCHEMA,
             "selection_identity": authority_identities["selection"],
             "status": "CREDIBILITY_INCOMPLETE",
         }
@@ -4659,8 +2279,6 @@ def _run_with_hooks(
             attempt_dir / "failure.json",
             canonical_json(failure_record),
             label="organic arm failure record",
-            budget_backend=budget_backend,
-            artifact_class="closeout",
         )
         if isinstance(failure, RunnerError):
             raise failure
@@ -4668,22 +2286,12 @@ def _run_with_hooks(
 
     if outcome is None:  # pragma: no cover - guarded by failure/outcome flow
         raise RunnerError("organic arm outcome is absent")
-    if budget_backend is not None:
-        ledger_events, ledger_identity = _budgeted_ledger_observation(ledger)
-        ledger_status = "complete"
-    else:
-        ledger_result = read_segment(ledger.path)
-        if ledger_result.status != "complete":
-            raise RunnerError("cut ledger is not a complete sealed segment")
-        ledger_events = list(ledger_result.events)
-        ledger_identity = snapshot_regular(
-            ledger.path,
-            label="cut ledger segment",
-        ).identity
-        ledger_status = ledger_result.status
-    journal_events, journal_identity = _journal_observation(journal)
+    ledger_result = read_segment(ledger.path)
+    if ledger_result.status != "complete":
+        raise RunnerError("cut ledger is not a complete sealed segment")
+    journal_events, journal_identity = _read_journal(journal.path)
     cut_activity = _join_ledger_and_journal(
-        ledger_events,
+        ledger_result.events,
         journal_events,
         enabled_families=list(selection["enabled_families"]),
     )
@@ -4694,6 +2302,7 @@ def _run_with_hooks(
         "ATTACH_HOOK_END", 0
     ):
         raise RunnerError("attach-hook journal entry/exit counts differ")
+    ledger_snapshot = snapshot_regular(ledger.path, label="cut ledger segment")
     if outcome.raw_incumbent is None:
         incumbent_export: dict[str, object] = {
             "incumbent_identity": None,
@@ -4706,49 +2315,14 @@ def _run_with_hooks(
                 attempt_dir / "raw-incumbent.json",
                 canonical_json(dict(outcome.raw_incumbent)),
                 label="raw incumbent export",
-                budget_backend=budget_backend,
-                artifact_class="publication",
             ),
             "present": True,
             "solution_vector_identity": _write_exclusive(
                 attempt_dir / "raw-solution-vector.json",
                 canonical_json(list(outcome.raw_solution_vector or ())),
                 label="raw solution-vector export",
-                budget_backend=budget_backend,
-                artifact_class="publication",
             ),
         }
-    if (
-        budget_backend is not None
-        and bool(getattr(hooks, "requires_budget_authority", False))
-    ):
-        replay_subject = (
-            dict(outcome.raw_incumbent)
-            if outcome.raw_incumbent is not None
-            else _strict_loads(
-                replay_identity(
-                    manifest["baseline_incumbent_identity"],
-                    "baseline incumbent",
-                ).data,
-                "baseline incumbent",
-            )
-        )
-        if not isinstance(replay_subject, Mapping):
-            raise RunnerError("cut-free replay subject is not an incumbent object")
-        subject_identity = (
-            incumbent_export["incumbent_identity"]
-            if incumbent_export["present"] is True
-            else manifest["baseline_incumbent_identity"]
-        )
-        if not isinstance(subject_identity, Mapping):
-            raise RunnerError("cut-free replay subject identity is absent")
-        _publish_cut_free_incumbent_replay(
-            attempt_dir=attempt_dir,
-            incumbent_identity=subject_identity,
-            incumbent_value=replay_subject,
-            inputs=cut_free_inputs,
-            budget_backend=budget_backend,
-        )
     result = {
         "arm": selection["arm"],
         "authority_identities": authority_identities,
@@ -4764,10 +2338,10 @@ def _run_with_hooks(
         "enabled_families": list(selection["enabled_families"]),
         "evidence": {
             "compile_attach_journal_identity": journal_identity,
-            "cut_ledger_identity": ledger_identity,
-            "cut_ledger_status": ledger_status,
+            "cut_ledger_identity": ledger_snapshot.identity,
+            "cut_ledger_status": ledger_result.status,
             "journal_event_counts": journal_counts,
-            "ledger_event_counts": _event_counts(ledger_events),
+            "ledger_event_counts": _event_counts(ledger_result.events),
         },
         "fresh_process_required": True,
         "incumbent_export": incumbent_export,
@@ -4775,20 +2349,16 @@ def _run_with_hooks(
         "raw_proof_summary": dict(outcome.raw_proof_summary),
         "raw_solver_status": outcome.raw_solver_status,
         "runtime_wall_monotonic_ns": time.monotonic_ns() - started_ns,
-        "schema_version": result_schema,
+        "schema_version": RESULT_SCHEMA,
         "selection_nonce": selection["selection_nonce"],
         "slot": selection["slot"],
         "status": "RAW_ARM_OBSERVATION_COMPLETE",
         "workers": 1,
     }
-    if budget_binding is not None:
-        result["budget_authority_binding"] = budget_binding
     result_identity = _write_exclusive(
         attempt_dir / "result.json",
         canonical_json(result),
         label="organic arm result",
-        budget_backend=budget_backend,
-        artifact_class="publication",
     )
     return {
         **result,
@@ -4913,46 +2483,9 @@ class ProductionArmHooks:
 
     requires_model_evidence = True
     requires_sealed_import_boundary = True
-    requires_budget_authority = True
 
     @staticmethod
-    def _export_model(
-        model: Any,
-        path: Path,
-        *,
-        budget_backend: ArmBudgetBackend | None = None,
-    ) -> dict[str, object]:
-        if budget_backend is not None:
-            maximum = _budget_maximum(
-                budget_backend,
-                "attach model evidence",
-                artifact_class="model",
-            )
-            try:
-                identity = dict(
-                    budget_backend.export_model_to_sealed_memfd(
-                        model,
-                        Path(os.path.abspath(path)),
-                        maximum_bytes=maximum,
-                        label="attach model evidence",
-                    )
-                )
-            except Exception as exc:
-                raise RunnerError(
-                    "sealed memfd model export or broker transfer failed closed"
-                ) from exc
-            size_bytes = identity.get("size_bytes")
-            if (
-                not {"path", "sha256", "size_bytes"} <= set(identity)
-                or identity.get("path") != str(Path(os.path.abspath(path)))
-                or type(identity.get("sha256")) is not str
-                or SHA256_RE.fullmatch(str(identity["sha256"])) is None
-                or type(size_bytes) is not int
-                or size_bytes < 0
-                or size_bytes > maximum
-            ):
-                raise RunnerError("sealed memfd model export receipt differs")
-            return identity
+    def _export_model(model: Any, path: Path) -> dict[str, object]:
         if os.path.lexists(path):
             raise RunnerError("attach model evidence path already exists")
         exported = model.export_to_file(str(path))
@@ -4969,6 +2502,7 @@ class ProductionArmHooks:
             raise RunnerError("production construction observed attach env")
         parameters = _runtime_parameters(context.manifest["runtime_parameters"])
         os.environ["EXACT_B1_BINDING_ALT_CAP"] = str(parameters["binding_alt_cap"])
+        from src.models.cut_manager import CutManager
         from src.models.master_model import MasterPlacementModel
         from src.search.benders_loop import ExactSearchSession, LBBDController
 
@@ -4986,11 +2520,7 @@ class ProductionArmHooks:
             "runner_snapshot_member_identity": dict(
                 context.execution_source["runner_snapshot_member_identity"]
             ),
-            "schema_version": (
-                FORMAL_MODULE_ORIGIN_RECEIPT_SCHEMA
-                if context.budget_backend is not None
-                else MODULE_ORIGIN_RECEIPT_SCHEMA
-            ),
+            "schema_version": MODULE_ORIGIN_RECEIPT_SCHEMA,
             "sealed_snapshot_execution_root": str(context.repository_root),
             "status": "PASS",
         }
@@ -4998,8 +2528,6 @@ class ProductionArmHooks:
             Path(context.execution_source["module_origin_receipt_path"]),
             canonical_json(origin_receipt),
             label="module-origin receipt",
-            budget_backend=context.budget_backend,
-            artifact_class="metadata",
         )
         session = ExactSearchSession.create(
             context.repository_root,
@@ -5009,33 +2537,12 @@ class ProductionArmHooks:
             session.core,
             ghost_rect=tuple(parameters["ghost_rect"]),
         )
-        if context.budget_backend is None:
-            from src.models.cut_manager import CutManager
-
-            cut_manager = CutManager(
-                checkpoint_dir=context.attempt_dir / "checkpoint",
-                solve_mode="certified_exact",
-            )
-        else:
-            from docs.research.noncert_cuts_ab16_20260724.ab16_budgeted_writers_v1 import (
-                AB16BudgetedCutManager,
-            )
-
-            cut_manager = AB16BudgetedCutManager(
-                checkpoint_dir=context.attempt_dir / "checkpoint",
-                solve_mode="certified_exact",
-                immutable_budget=context.budget_backend,
-                budget_channel=f"arm-{context.selection['slot']}-runtime-cuts",
-                budget_segment_max_bytes=_budget_maximum(
-                    context.budget_backend,
-                    "runtime cut segment",
-                    artifact_class="ledger",
-                ),
-                budget_arm_slot=str(context.selection["slot"]),
-            )
         controller = LBBDController(
             master=master,
-            cut_manager=cut_manager,
+            cut_manager=CutManager(
+                checkpoint_dir=context.attempt_dir / "checkpoint",
+                solve_mode="certified_exact",
+            ),
             project_root=context.repository_root,
             solve_mode="certified_exact",
             master_seconds=float(parameters["master_seconds"]),
@@ -5119,13 +2626,10 @@ class ProductionArmHooks:
                     evidence_prefix.with_name(evidence_prefix.name + "-solution-vector.json"),
                     canonical_json(solution_vector),
                     label="attach solution-vector evidence",
-                    budget_backend=context.budget_backend,
-                    artifact_class="publication",
                 )
                 pre_model_identity = self._export_model(
                     runtime.master.model,
                     evidence_prefix.with_name(evidence_prefix.name + "-pre-model.pb"),
-                    budget_backend=context.budget_backend,
                 )
                 attached = production_attach_entry(
                     trigger=trigger,
@@ -5135,7 +2639,6 @@ class ProductionArmHooks:
                 post_model_identity = self._export_model(
                     runtime.master.model,
                     evidence_prefix.with_name(evidence_prefix.name + "-post-model.pb"),
-                    budget_backend=context.budget_backend,
                 )
                 recorder.record_attach_model_evidence(
                     completion.hook_id,
@@ -5219,18 +2722,13 @@ class ProductionArmHooks:
         )
 
 
-def run_selected_arm(
-    selection_path: Path | str,
-    *,
-    budget_backend: ArmBudgetBackend | None = None,
-) -> dict[str, object]:
+def run_selected_arm(selection_path: Path | str) -> dict[str, object]:
     """Public one-shot entry: one selected arm per fresh Python process."""
 
     return _run_with_hooks(
         Path(selection_path),
         ProductionArmHooks(),
         enforce_single_process_use=True,
-        budget_backend=budget_backend,
     )
 
 
