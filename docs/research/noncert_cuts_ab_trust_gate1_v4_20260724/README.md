@@ -216,3 +216,49 @@ campaign cannot be spliced with a replacement run. The incomplete campaign
 must remain immutable and a new campaign must repeat Gate 1 in full.
 
 Execution chronology and exact commands are in `01_execution_record.md`.
+
+## R13 fresh-HEAD qualification and terminal-failure recovery
+
+This 2026-08-03 addendum governs campaigns created after the R13 change. The
+authority run and identities above remain historical evidence; they are not
+rewritten or migrated.
+
+R13 separates two facts that the original terminal gate incorrectly treated
+as one cross-generation equality:
+
+1. The independent checker receipt HEAD is the birth HEAD in the sealed
+   package manifest. The checker accepts no caller-supplied HEAD. It locates
+   its own canonical package member through `__file__`, joins its executing
+   bytes to `SHA256SUMS`, the manifest member, and the external-source role,
+   and emits that manifest HEAD. The gate independently repeats the selected
+   checker-to-package join.
+2. The formal pair selection and common prestate HEAD equal the Gate 1
+   selection HEAD. The terminal gate uses the exact selected Git executable
+   to prove the selected `PROJECT_LOCK.md` repository is the Git top level,
+   its tracked worktree and index are clean, and its live HEAD equals that
+   selection HEAD.
+
+The package birth HEAD and live execution HEAD are deliberately not compared.
+They describe different authority domains, and each value now has its own
+non-self-reported source. This permits a sealed checker package to be replayed
+on a fresh clean commit while preserving the byte ancestry of the checker
+that actually ran. The exact eight arithmetic PASS checks, canonical receipt
+replay, selected inequality checks, lifecycle/resource replay, manager-epoch
+joins, and no-overwrite rules remain mandatory. Changed exact-key and HEAD
+semantics use v2 selection, receipt, and final-gate schemas, so an old v1
+artifact cannot be reinterpreted under the new contract.
+
+A failure after publication of the Gate 1 admission checkpoint is terminal
+for that campaign root. The supported recovery operation writes the fixed,
+exclusive `gate1-v4/authority/terminal-assembly-failure-a001.json` closeout.
+It passively replays the root, selection, sealed package, admission checkpoint,
+and failure evidence without loading selected Python from the failed package;
+it also freezes every pre-closeout regular member of the root. The closeout
+sets continuation, organic-arm, global-claim, AB16-slot-attempt, resume, and
+package-reuse authority to false. Normal Gate 1 execution and continuation
+publication reject a closed root.
+
+Recovery therefore requires a new offline candidate, path preregistration,
+campaign root, run nonce, and sealed package after the repair is committed.
+The failed root remains evidence and cannot become an AB16 attempt or consume
+an AB16 slot.

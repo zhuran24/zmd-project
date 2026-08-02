@@ -500,6 +500,8 @@ _SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
         "test_p1_min_tcb_closure_redlines.py::test_target_l0_snapshot_manifest_is_explicit_minimal_whitelist",
         # AB16 R12 clean-checkout producer-byte chain sentinel (~13s).
         "test_noncert_cuts_ab16_self_contained_chain_v1.py::test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_close",
+        # AB16 R13 fresh-HEAD production Gate-1 qualification chain sentinel.
+        "test_noncert_cuts_ab_gate1_v4_fresh_head_production_chain.py::test_fresh_clean_head_reaches_real_package_pinned_assemble_formal",
     }
 )
 

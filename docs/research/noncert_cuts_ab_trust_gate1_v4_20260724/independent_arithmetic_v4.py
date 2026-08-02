@@ -30,14 +30,14 @@ from google.protobuf.message import DecodeError, Message
 from ortools.sat import cp_model_pb2
 
 
-SELECTION_SCHEMA = "noncert-cuts-gate1-v4-fixture-selection-v1"
+SELECTION_SCHEMA = "noncert-cuts-gate1-v4-fixture-selection-v2"
 DRILL_PURPOSE = "gate1_v4_e2e_drill"
-FORMAL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-formal-positive-selection-v1"
+FORMAL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-formal-positive-selection-v2"
 FORMAL_PURPOSE = "gate1_v4_formal_campaign_positive_control"
-PRODUCTION_DRILL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-production-drill-positive-selection-v1"
+PRODUCTION_DRILL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-production-drill-positive-selection-v2"
 PRODUCTION_DRILL_PURPOSE = "gate1_v4_disposable_production_positive_control"
 DRILL_RECEIPT_SCHEMA = "noncert-cuts-gate1-v4-independent-arithmetic-receipt-v1"
-FORMAL_RECEIPT_SCHEMA = "noncert-cuts-gate1-v4-formal-independent-arithmetic-receipt-v1"
+FORMAL_RECEIPT_SCHEMA = "noncert-cuts-gate1-v4-formal-independent-arithmetic-receipt-v2"
 PRODUCTION_DRILL_RECEIPT_SCHEMA = "noncert-cuts-gate1-v4-production-drill-independent-arithmetic-receipt-v1"
 FORMAL_ARM_SCHEMA = "noncert-cuts-gate1-v4-formal-positive-control-arm-v1"
 FORMAL_COMPILED_SCHEMA = "noncert-cuts-gate1-v4-formal-production-compiled-record-v1"
@@ -51,6 +51,8 @@ ARM_SCHEMA = "noncert-cuts-gate1-v4-positive-control-arm-v1"
 ASSIGNMENT_SCHEMA = "noncert-cuts-gate1-v4-frozen-assignment-v1"
 SAMPLE_SCHEMA = "noncert-cuts-gate1-v4-arithmetic-sample-v1"
 LEDGER_SCHEMA = "cut-ledger-v1"
+PACKAGE_MANIFEST_SCHEMA = "noncert-cuts-campaign-authority-manifest-v4"
+PACKAGE_CHECKER_ROLE = "tool.independent_arithmetic_v4.py"
 EXPECTED_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
 _GHOST_PREFIX = "ghost__"
 _GHOST_DIGEST_PREFIX = b"zmd.ghost-rect.v1:"
@@ -217,6 +219,134 @@ def _require_identity(actual: object, reported: object, *, label: str) -> None:
         label=f"{label} reported",
     ):
         raise ValueError(f"{label}: detached identity drift")
+
+
+def _parse_package_seal(raw: bytes) -> dict[str, str]:
+    try:
+        lines = raw.decode("ascii").splitlines()
+    except UnicodeDecodeError as exc:
+        raise ValueError("checker package seal is not ASCII") from exc
+    if not lines or not raw.endswith(b"\n"):
+        raise ValueError("checker package seal framing drifted")
+    entries: dict[str, str] = {}
+    for line in lines:
+        if len(line) < 67 or line[64:66] != "  ":
+            raise ValueError("checker package seal line is malformed")
+        digest = line[:64]
+        path = line[66:]
+        if (
+            len(digest) != 64
+            or any(character not in "0123456789abcdef" for character in digest)
+            or not path
+            or path.startswith("/")
+            or "\\" in path
+            or any(part in {"", ".", ".."} for part in path.split("/"))
+            or path in entries
+        ):
+            raise ValueError("checker package seal entry is invalid")
+        entries[path] = digest
+    return entries
+
+
+def _package_birth_repository_head() -> str:
+    """Derive this checker's birth HEAD from its own sealed package bytes.
+
+    No caller supplies a HEAD.  The executing checker locates the adjacent
+    package manifest from ``__file__``, binds its own exact payload bytes into
+    that manifest and the immutable SHA256SUMS bytes, and only then returns the
+    manifest's repository identity.
+    """
+
+    checker_path = _absolute(Path(__file__))
+    if checker_path.name != PACKAGE_CHECKER_ROLE or checker_path.parent.name != "payload":
+        raise ValueError("formal checker is not executing from its canonical package member")
+    package_dir = checker_path.parent.parent
+    manifest_path = package_dir / "package-manifest.json"
+    seal_path = package_dir / "SHA256SUMS"
+    checker_raw, checker_identity = read_snapshot(checker_path)
+    manifest_raw, manifest_identity = read_snapshot(manifest_path)
+    seal_raw, _seal_identity = read_snapshot(seal_path)
+    manifest = _strict_json(manifest_raw, label="checker package manifest")
+    expected_manifest_keys = {
+        "authorization_semantics",
+        "external_sources",
+        "manager_epoch",
+        "package_members",
+        "repository_head",
+        "run_nonce",
+        "schema",
+        "seal_contract",
+    }
+    if (
+        type(manifest) is not dict
+        or set(manifest) != expected_manifest_keys
+        or canonical_json(manifest) + b"\n" != manifest_raw
+        or manifest.get("schema") != PACKAGE_MANIFEST_SCHEMA
+        or manifest.get("authorization_semantics")
+        != "byte qualification only; package PASS cannot launch any child"
+    ):
+        raise ValueError("checker package manifest semantics drifted")
+    repository_head = manifest.get("repository_head")
+    if (
+        type(repository_head) is not str
+        or len(repository_head) != 40
+        or any(character not in "0123456789abcdef" for character in repository_head)
+    ):
+        raise ValueError("checker package birth HEAD is malformed")
+    relative_checker = checker_path.relative_to(package_dir).as_posix()
+    seal_entries = _parse_package_seal(seal_raw)
+    if (
+        seal_entries.get("package-manifest.json") != manifest_identity["sha256"]
+        or seal_entries.get(relative_checker) != checker_identity["sha256"]
+    ):
+        raise ValueError("checker or package manifest is outside the package seal")
+    package_members = manifest.get("package_members")
+    if type(package_members) is not list:
+        raise ValueError("checker package member set is malformed")
+    matching_members = [
+        member
+        for member in package_members
+        if type(member) is dict and member.get("path") == relative_checker
+    ]
+    if len(matching_members) != 1 or matching_members[0] != {
+        "path": relative_checker,
+        "sha256": checker_identity["sha256"],
+        "size_bytes": len(checker_raw),
+    }:
+        raise ValueError("executing checker bytes do not match their package member")
+    external_sources = manifest.get("external_sources")
+    if type(external_sources) is not list:
+        raise ValueError("checker package external source set is malformed")
+    matching_sources = [
+        source
+        for source in external_sources
+        if type(source) is dict
+        and source.get("role") == PACKAGE_CHECKER_ROLE
+        and source.get("package_path") == relative_checker
+    ]
+    if (
+        len(matching_sources) != 1
+        or set(matching_sources[0])
+        != {"package_path", "parse_json", "role", "source_identity"}
+        or matching_sources[0].get("parse_json") is not False
+    ):
+        raise ValueError("checker package source role is absent or duplicated")
+    source_identity = matching_sources[0].get("source_identity")
+    if (
+        type(source_identity) is not dict
+        or set(source_identity)
+        != {"device", "inode", "mode", "mode_octal", "path", "sha256", "size_bytes"}
+        or type(source_identity.get("device")) is not int
+        or type(source_identity.get("inode")) is not int
+        or type(source_identity.get("mode")) is not int
+        or source_identity.get("mode_octal") != f"{source_identity.get('mode'):04o}"
+        or type(source_identity.get("path")) is not str
+        or not Path(source_identity["path"]).is_absolute()
+        or source_identity.get("sha256") != checker_identity["sha256"]
+        or source_identity.get("size_bytes") != checker_identity["size_bytes"]
+    ):
+        raise ValueError("checker package source bytes differ from the executing member")
+    return repository_head
 
 
 def _rectangle_digest(x: int, y: int, width: int, height: int) -> str:
@@ -546,10 +676,14 @@ def _verify_selection_and_common(
             "run_nonce",
             "manager_epoch_digest",
             "gate1_formal_eligible",
+            "repository_head",
         }
         or selection.get("schema") != selection_schema
         or selection.get("purpose") != purpose
         or selection.get("gate1_formal_eligible") is not formal_eligible
+        or type(selection.get("repository_head")) is not str
+        or len(selection["repository_head"]) != 40
+        or any(character not in "0123456789abcdef" for character in selection["repository_head"])
     ):
         profile = "formal campaign" if formal_eligible else "offline fixture"
         raise ValueError(f"{profile} selection drifted")
@@ -584,7 +718,7 @@ def _verify_selection_and_common(
         or set(common) != expected_common_keys
         or common.get("schema") != COMMON_SCHEMA
         or common.get("phase") != "pre_injection"
-        or common.get("repository_head") != EXPECTED_HEAD
+        or common.get("repository_head") != selection["repository_head"]
         or common.get("post_solve_performed") is not False
         or common.get("campaign_id") != selection["campaign_id"]
         or common.get("run_nonce") != selection["run_nonce"]
@@ -1187,10 +1321,14 @@ def _production_selection(
             "run_nonce",
             "manager_epoch_digest",
             "gate1_formal_eligible",
+            "repository_head",
         }
         or selection.get("schema") != selection_schema
         or selection.get("purpose") != purpose
         or selection.get("gate1_formal_eligible") is not formal_eligible
+        or type(selection.get("repository_head")) is not str
+        or len(selection["repository_head"]) != 40
+        or any(character not in "0123456789abcdef" for character in selection["repository_head"])
     ):
         raise ValueError(f"{label} selection drifted")
     arms = bundle.get("arms")
@@ -1854,11 +1992,12 @@ def verify_formal_bundle(bundle: Mapping[str, object]) -> dict[str, object]:
     )
     if control_selected is not None or selected is None:
         raise ValueError("formal pair selected-inequality cardinality drifted")
+    package_birth_head = _package_birth_repository_head()
     return {
         "schema": FORMAL_RECEIPT_SCHEMA,
         "checker": "independent_arithmetic_v4.verify_formal_bundle",
         "status": "PASS_FORMAL_MECHANISM_POSITIVE_CONTROL",
-        "repository_head": EXPECTED_HEAD,
+        "repository_head": package_birth_head,
         "selection_identity": state["selection_identity"],
         "common_prestate_id": state["common"]["common_prestate_id"],
         "common_prestate": {

@@ -3,7 +3,9 @@ from __future__ import annotations
 import copy
 import hashlib
 import importlib.util
+import inspect
 import json
+import stat
 from pathlib import Path
 from typing import Any, Callable
 
@@ -12,6 +14,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs" / "research" / "noncert_cuts_ab_trust_gate1_v4_20260724"
+PACKAGE_HEAD = "1" * 40
+EXECUTION_HEAD = "2" * 40
 
 
 def _load(name: str, filename: str) -> Any:
@@ -32,11 +36,71 @@ CHECKER = _load(
 )
 
 
+def _packaged_checker(tmp_path: Path) -> Any:
+    source_path = RESEARCH / "independent_arithmetic_v4.py"
+    source_raw = source_path.read_bytes()
+    package_dir = tmp_path / "checker-package"
+    checker_path = package_dir / "payload" / "tool.independent_arithmetic_v4.py"
+    checker_path.parent.mkdir(parents=True)
+    checker_path.write_bytes(source_raw)
+    source_stat = source_path.stat()
+    source_mode = stat.S_IMODE(source_stat.st_mode)
+    checker_digest = hashlib.sha256(source_raw).hexdigest()
+    manifest = {
+        "authorization_semantics": "byte qualification only; package PASS cannot launch any child",
+        "external_sources": [
+            {
+                "package_path": "payload/tool.independent_arithmetic_v4.py",
+                "parse_json": False,
+                "role": "tool.independent_arithmetic_v4.py",
+                "source_identity": {
+                    "device": source_stat.st_dev,
+                    "inode": source_stat.st_ino,
+                    "mode": source_mode,
+                    "mode_octal": f"{source_mode:04o}",
+                    "path": str(source_path),
+                    "sha256": checker_digest,
+                    "size_bytes": len(source_raw),
+                },
+            }
+        ],
+        "manager_epoch": {"fixture": "sealed-checker-birth"},
+        "package_members": [
+            {
+                "path": "payload/tool.independent_arithmetic_v4.py",
+                "sha256": checker_digest,
+                "size_bytes": len(source_raw),
+            }
+        ],
+        "repository_head": PACKAGE_HEAD,
+        "run_nonce": "formal-checker-package-fixture",
+        "schema": CHECKER.PACKAGE_MANIFEST_SCHEMA,
+        "seal_contract": {
+            "package_id": "sha256(SHA256SUMS exact bytes)",
+            "sha256sums_domain": "all regular files below package except SHA256SUMS",
+            "writes_after_seal": "forbidden",
+        },
+    }
+    manifest_raw = CHECKER.canonical_json(manifest) + b"\n"
+    manifest_path = package_dir / "package-manifest.json"
+    manifest_path.write_bytes(manifest_raw)
+    seal_raw = (
+        f"{hashlib.sha256(manifest_raw).hexdigest()}  package-manifest.json\n"
+        f"{checker_digest}  payload/tool.independent_arithmetic_v4.py\n"
+    ).encode("ascii")
+    (package_dir / "SHA256SUMS").write_bytes(seal_raw)
+    return _load(
+        f"noncert_cuts_gate1_v4_packaged_arithmetic_{tmp_path.name}",
+        str(checker_path),
+    )
+
+
 def _selection(
     root: Path,
     *,
     profile: str = FORMAL.FORMAL_PROFILE,
     purpose: str | None = None,
+    repository_head: str = EXECUTION_HEAD,
 ) -> None:
     root.mkdir()
     if profile == FORMAL.FORMAL_PROFILE:
@@ -58,6 +122,7 @@ def _selection(
             "run_nonce": "disposable-run-nonce",
             "manager_epoch_digest": "disposable-manager-epoch",
             "gate1_formal_eligible": formal_eligible,
+            "repository_head": repository_head,
         },
     )
 
@@ -75,11 +140,15 @@ def test_genuine_production_f1_pair_passes_formal_checker(
         export_dir=tmp_path / "exports",
         solve_seconds=3.0,
     )
-    receipt = CHECKER.verify_formal_bundle(CHECKER.load_fixture(root))
+    packaged_checker = _packaged_checker(tmp_path)
+    assert list(inspect.signature(packaged_checker.verify_formal_bundle).parameters) == ["bundle"]
+    receipt = packaged_checker.verify_formal_bundle(CHECKER.load_fixture(root))
     with pytest.raises(ValueError, match="disposable production drill selection"):
         CHECKER.verify_production_drill_bundle(CHECKER.load_fixture(root))
 
     assert receipt["status"] == "PASS_FORMAL_MECHANISM_POSITIVE_CONTROL"
+    assert receipt["repository_head"] == PACKAGE_HEAD
+    assert receipt["repository_head"] != EXECUTION_HEAD
     assert receipt["control"] == {"generated": 0, "compiled": 0, "applied": 0}
     assert receipt["treatment"] == {
         "generated": 1,
@@ -125,8 +194,9 @@ def test_disposable_production_pair_uses_strict_nonformal_receipt(
     assert receipt["selected"]["lhs"] == FORMAL.MANDATORY_COUNT
     assert receipt["selected"]["rhs"] == FORMAL.EXPECTED_CAPACITY
     assert result["post_attach_solve_performed"] is False
+    packaged_checker = _packaged_checker(tmp_path)
     with pytest.raises(ValueError, match="formal campaign selection"):
-        CHECKER.verify_formal_bundle(bundle)
+        packaged_checker.verify_formal_bundle(bundle)
 
 
 def test_common_and_both_bindings_are_sealed_before_per_arm_callbacks(
@@ -172,8 +242,10 @@ def test_common_and_both_bindings_are_sealed_before_per_arm_callbacks(
     assert treatment["injection"]["generated"] == 1
     assert treatment["injection"]["compiled"] == 1
     assert treatment["injection"]["applied"] == 1
+    packaged_checker = _packaged_checker(tmp_path)
     assert (
-        CHECKER.verify_formal_bundle(CHECKER.load_fixture(root))["status"] == "PASS_FORMAL_MECHANISM_POSITIVE_CONTROL"
+        packaged_checker.verify_formal_bundle(CHECKER.load_fixture(root))["status"]
+        == "PASS_FORMAL_MECHANISM_POSITIVE_CONTROL"
     )
 
 
@@ -195,6 +267,7 @@ def test_selected_per_arm_entrypoint_requires_selected_support_identity(
             "run_nonce": "nonce",
             "manager_epoch_digest": manager_digest,
             "gate1_formal_eligible": True,
+            "repository_head": EXECUTION_HEAD,
         },
     )
     (root / "builder-exports").mkdir()
@@ -328,8 +401,9 @@ def test_formal_checker_rejects_self_consistent_production_ledger_field_drift(
         root / "arms/treatment/ledger.jsonl",
         mutate,
     )
+    packaged_checker = _packaged_checker(tmp_path)
     with pytest.raises(ValueError, match="formal GENERATED"):
-        CHECKER.verify_formal_bundle(CHECKER.load_fixture(root))
+        packaged_checker.verify_formal_bundle(CHECKER.load_fixture(root))
 
 
 def test_formal_checker_rejects_malformed_epoch_instance_even_with_valid_chain(
@@ -353,8 +427,9 @@ def test_formal_checker_rejects_malformed_epoch_instance_even_with_valid_chain(
         root / "arms/treatment/ledger.jsonl",
         mutate,
     )
+    packaged_checker = _packaged_checker(tmp_path)
     with pytest.raises(ValueError, match="formal GENERATED"):
-        CHECKER.verify_formal_bundle(CHECKER.load_fixture(root))
+        packaged_checker.verify_formal_bundle(CHECKER.load_fixture(root))
 
 
 def test_formal_pair_is_no_overwrite_and_preserves_first_bytes(

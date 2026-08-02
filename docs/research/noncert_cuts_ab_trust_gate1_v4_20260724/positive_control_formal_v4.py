@@ -49,9 +49,9 @@ from src.models.master_model import MasterPlacementModel
 from src.search.benders_loop import LBBDController
 
 
-FORMAL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-formal-positive-selection-v1"
+FORMAL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-formal-positive-selection-v2"
 FORMAL_PURPOSE = "gate1_v4_formal_campaign_positive_control"
-PRODUCTION_DRILL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-production-drill-positive-selection-v1"
+PRODUCTION_DRILL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-production-drill-positive-selection-v2"
 PRODUCTION_DRILL_PURPOSE = "gate1_v4_disposable_production_positive_control"
 FORMAL_PROFILE = "formal_campaign"
 PRODUCTION_DRILL_PROFILE = "disposable_drill"
@@ -66,7 +66,6 @@ FACILITY_TYPE = "boundary_storage_port"
 OPERATION_TYPE = "boundary_io"
 MANDATORY_COUNT = 46
 EXPECTED_CAPACITY = 45
-EXPECTED_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
 _RESEARCH_DIR = Path(__file__).resolve().parent
 if "_PROJECT_ROOT" not in globals():
     _PROJECT_ROOT = _RESEARCH_DIR.parents[3]
@@ -131,6 +130,7 @@ def _read_profile_selection(
         "run_nonce",
         "manager_epoch_digest",
         "gate1_formal_eligible",
+        "repository_head",
     }
     if (
         type(value) is not dict
@@ -142,6 +142,9 @@ def _read_profile_selection(
             type(value.get(key)) is not str or not value[key]
             for key in ("campaign_id", "run_nonce", "manager_epoch_digest")
         )
+        or type(value.get("repository_head")) is not str
+        or len(value["repository_head"]) != 40
+        or any(character not in "0123456789abcdef" for character in value["repository_head"])
     ):
         raise ValueError(f"{label} positive selection drifted")
     return value, identity
@@ -169,7 +172,11 @@ def _read_drill_selection(
     )
 
 
-def _sources(*, purpose: str = FORMAL_PURPOSE) -> dict[str, object]:
+def _sources(
+    *,
+    repository_head: str,
+    purpose: str = FORMAL_PURPOSE,
+) -> dict[str, object]:
     instances = [
         {
             "instance_id": f"boundary_{index:03d}",
@@ -207,7 +214,7 @@ def _sources(*, purpose: str = FORMAL_PURPOSE) -> dict[str, object]:
         "candidate_placements": candidates,
         "canonical_rules": rules,
         "certified_exact_source_tree": {
-            "repository_head": EXPECTED_HEAD,
+            "repository_head": repository_head,
             "purpose": purpose,
         },
         "commodity_demands": {},
@@ -915,7 +922,10 @@ def _prepare_positive_common(
         raise TypeError("positive selection reader must be callable")
     selection, selection_identity = selection_reader(root)
     export_dir = _require_fresh_directory(export_dir)
-    sources = _sources(purpose=purpose)
+    sources = _sources(
+        repository_head=selection["repository_head"],
+        purpose=purpose,
+    )
     core = _build_core(sources)
 
     pre_master = _prepare_master(core, sources)
@@ -963,6 +973,7 @@ def _prepare_positive_common(
         campaign_id=selection["campaign_id"],
         run_nonce=selection["run_nonce"],
         manager_epoch_digest=selection["manager_epoch_digest"],
+        repository_head=selection["repository_head"],
     )
     bindings = _SUPPORT.create_arm_bindings(root)
     return {
@@ -1032,12 +1043,15 @@ def _materialize_positive_arm(
         raise ValueError("attach must be absent before the selected arm callback")
     if not callable(selection_reader):
         raise TypeError("positive selection reader must be callable")
-    _selection, _selection_identity = selection_reader(root)
+    pair_selection, _selection_identity = selection_reader(root)
     common, _binding, artifacts = _SUPPORT._load_binding_state(  # noqa: SLF001
         root,
         arm,
     )
-    sources = _sources(purpose=purpose)
+    sources = _sources(
+        repository_head=pair_selection["repository_head"],
+        purpose=purpose,
+    )
     if (
         artifacts["mandatory"] != canonical_json(sources["instances"]) + b"\n"
         or artifacts["candidates"] != canonical_json(sources["candidates"]) + b"\n"

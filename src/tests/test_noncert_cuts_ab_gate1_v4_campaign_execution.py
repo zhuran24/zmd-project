@@ -61,6 +61,7 @@ def _fixture(tmp_path: Path, name: str) -> dict[str, Any]:
     root = {
         "campaign_id": "a" * 64,
         "run_nonce": "fixture",
+        "repository_head": "3" * 40,
         "manager_epoch": {"epoch": "fixture"},
         "stage_topology": {
             "gate1_v4": {
@@ -137,6 +138,92 @@ def test_mode_boundary_and_public_formal_surface_are_exact(
             }
             & parameters
         )
+
+
+def test_terminal_failure_archive_surface_is_passive_fixed_and_nonauthorizing(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path, "run-terminal-failure")
+    failure_path = tmp_path / "assemble-formal.log"
+    failure_path.write_text("GateError: terminal assembly failed\n", encoding="utf-8")
+    failure_identity = _identity(failure_path)
+    marker_path = fixture["campaign"] / "gate1-v4/authority/terminal-assembly-failure-a001.json"
+    marker_path.parent.mkdir(parents=True)
+    marker_path.write_text("{}\n", encoding="utf-8")
+    marker_identity = _identity(marker_path)
+    observed: dict[str, object] = {}
+
+    def archive(**kwargs: object) -> dict[str, object]:
+        observed.update(kwargs)
+        return marker_identity
+
+    monkeypatch.setattr(
+        EXECUTION,
+        "_load_authorities",
+        lambda *_: (_ for _ in ()).throw(AssertionError("selected execution must stay unreachable")),
+    )
+    monkeypatch.setattr(AUTH, "archive_terminal_assembly_failure", archive)
+    monkeypatch.setattr(
+        AUTH,
+        "replay_terminal_assembly_failure_archive",
+        lambda **_: {"status": AUTH.TERMINAL_ASSEMBLY_FAILURE_STATUS},
+    )
+    result = EXECUTION.archive_terminal_assembly_failure(
+        campaign_root_identity=fixture["root_identity"],
+        selection_identity=fixture["selection_identity"],
+        failure_evidence_identity=failure_identity,
+    )
+    assert observed["campaign_root_identity"] == fixture["root_identity"]
+    assert observed["gate1_selection_identity"] == fixture["selection_identity"]
+    assert observed["failure_evidence_identity"] == failure_identity
+    assert set(observed["archive_tool_identities"]) == {
+        "campaign_authority_v4",
+        "gate1_campaign_execution_v4",
+    }
+    assert result == {
+        "ab16_slot_attempt": False,
+        "archive_identity": marker_identity,
+        "continuation_authorized": False,
+        "failed_package_reuse_authorized": False,
+        "global_claim_authorized": False,
+        "mode": "archive-only",
+        "new_campaign_root_required": True,
+        "organic_arm_launch_authorized": False,
+        "resume_authorized": False,
+        "status": AUTH.TERMINAL_ASSEMBLY_FAILURE_STATUS,
+    }
+    assert set(inspect.signature(EXECUTION.archive_terminal_assembly_failure).parameters) == {
+        "campaign_root_identity",
+        "selection_identity",
+        "failure_evidence_identity",
+    }
+    arguments = EXECUTION._parser().parse_args(  # noqa: SLF001
+        [
+            "archive-terminal-failure",
+            "--campaign-root",
+            str(fixture["root_identity"]["path"]),
+            "--campaign-root-size",
+            str(fixture["root_identity"]["size_bytes"]),
+            "--campaign-root-sha256",
+            str(fixture["root_identity"]["sha256"]),
+            "--selection",
+            str(fixture["selection_identity"]["path"]),
+            "--selection-size",
+            str(fixture["selection_identity"]["size_bytes"]),
+            "--selection-sha256",
+            str(fixture["selection_identity"]["sha256"]),
+            "--failure-evidence",
+            str(failure_identity["path"]),
+            "--failure-evidence-size",
+            str(failure_identity["size_bytes"]),
+            "--failure-evidence-sha256",
+            str(failure_identity["sha256"]),
+        ]
+    )
+    assert arguments.command == "archive-terminal-failure"
+    assert not hasattr(arguments, "formal_authorized")
+    assert not hasattr(arguments, "output")
 
 
 def test_units_are_orchestrated_in_fixed_order(
@@ -221,6 +308,7 @@ def test_prepare_uses_profile_specific_purpose_before_arms(
             "gate1_formal_eligible": eligible,
             "manager_epoch_digest": hashlib.sha256(AUTH.canonical_json(fixture["root"]["manager_epoch"])).hexdigest(),
             "purpose": purpose,
+            "repository_head": "3" * 40,
             "run_nonce": "fixture",
             "schema": schema,
         }

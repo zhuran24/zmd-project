@@ -3,7 +3,7 @@
 
 This module never creates a campaign root or Gate-1 child selection.  It
 consumes their detached identities, executes authority-selected Python bytes
-from the same snapshots used to verify them, and exposes three explicit
+from the same snapshots used to verify them, and exposes four explicit
 operations:
 
 * prepare the formal-positive pair selection, common prestate, and both arm
@@ -12,6 +12,8 @@ operations:
 * independently rebuild the arithmetic and lifecycle inputs to the final
   Gate-1 gate, then publish either an unprivileged drill observation or the
   formal gate plus continuation.
+* passively seal a post-admission terminal-assembly failure as non-authorizing
+  evidence, without executing or adopting the failed campaign's selected code.
 
 The disposable mode is intentionally non-authorizing.  It accepts only a
 ``dev-drill-*`` campaign directory, never writes the pre-registered gate or
@@ -73,9 +75,9 @@ RESOURCE_FILENAMES = {
 LAUNCH_FILENAME = "systemd-run-launch.json"
 OBSERVATION_SCHEMA = "noncert-cuts-gate1-v4-dev-drill-observation-v1"
 OBSERVATION_RESULT_SCHEMA = "noncert-cuts-gate1-v4-dev-drill-replay-result-v1"
-FORMAL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-formal-positive-selection-v1"
+FORMAL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-formal-positive-selection-v2"
 FORMAL_PURPOSE = "gate1_v4_formal_campaign_positive_control"
-DRILL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-production-drill-positive-selection-v1"
+DRILL_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-production-drill-positive-selection-v2"
 DRILL_PURPOSE = "gate1_v4_disposable_production_positive_control"
 FORMAL_SOLVE_SECONDS = 5.0
 DETACHED_REPLAY_FILENAME = "detached-resource-replay.json"
@@ -167,6 +169,8 @@ def _load_authorities(
         str(selected_authority["path"])
     ):
         raise ExecutionError("campaign execution imported non-selected authority bytes")
+    if os.path.lexists(authority.terminal_assembly_failure_path(root)):
+        raise ExecutionError("campaign is sealed as an archived terminal-assembly failure")
     for group in ("tools", "inputs"):
         for role, identity in _mapping(selection[group], f"selected {group}").items():
             authority.replay_detached_identity(identity, f"selected {group}.{role}")
@@ -459,6 +463,7 @@ def _prepare_positive_pair(
         "run_nonce": root["run_nonce"],
         "manager_epoch_digest": hashlib.sha256(authority.canonical_json(root["manager_epoch"])).hexdigest(),
         "gate1_formal_eligible": profile["formal_eligible"],
+        "repository_head": root["repository_head"],
     }
     pair_selection_path = Path(str(positive["selection_path"]))
     pair_selection_identity = authority.write_exclusive(
@@ -1075,6 +1080,48 @@ def assemble_and_publish_formal_gate(
     }
 
 
+def archive_terminal_assembly_failure(
+    *,
+    campaign_root_identity: Mapping[str, object],
+    selection_identity: Mapping[str, object],
+    failure_evidence_identity: Mapping[str, object],
+) -> dict[str, object]:
+    """Passively tombstone a failed root; this path can only remove authority."""
+
+    current_execution = authority.detached_identity(
+        authority.snapshot_regular(Path(__file__).absolute())
+    )
+    current_authority = authority.detached_identity(
+        authority.snapshot_regular(Path(str(authority.__file__)).absolute())
+    )
+    archive_identity = authority.archive_terminal_assembly_failure(
+        campaign_root_identity=campaign_root_identity,
+        gate1_selection_identity=selection_identity,
+        failure_evidence_identity=failure_evidence_identity,
+        archive_tool_identities={
+            "campaign_authority_v4": current_authority,
+            "gate1_campaign_execution_v4": current_execution,
+        },
+        archived_at_utc=_utc_now(),
+    )
+    archived = authority.replay_terminal_assembly_failure_archive(
+        campaign_root_identity=campaign_root_identity,
+        archive_identity=archive_identity,
+    )
+    return {
+        "ab16_slot_attempt": False,
+        "archive_identity": archive_identity,
+        "continuation_authorized": False,
+        "failed_package_reuse_authorized": False,
+        "global_claim_authorized": False,
+        "mode": "archive-only",
+        "new_campaign_root_required": True,
+        "organic_arm_launch_authorized": False,
+        "resume_authorized": False,
+        "status": archived["status"],
+    }
+
+
 def _identity_from_arguments(
     arguments: argparse.Namespace,
     prefix: str,
@@ -1118,6 +1165,11 @@ def _parser() -> argparse.ArgumentParser:
             action="store_true",
             required=True,
         )
+    archive = subparsers.add_parser("archive-terminal-failure")
+    add_authority(archive)
+    archive.add_argument("--failure-evidence", required=True, type=Path)
+    archive.add_argument("--failure-evidence-size", required=True, type=int)
+    archive.add_argument("--failure-evidence-sha256", required=True)
     return parser
 
 
@@ -1149,6 +1201,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         result = assemble_disposable_observation(
             campaign_root_identity=root_identity,
             selection_identity=selection_identity,
+        )
+    elif command == "archive-terminal-failure":
+        result = archive_terminal_assembly_failure(
+            campaign_root_identity=root_identity,
+            selection_identity=selection_identity,
+            failure_evidence_identity=_identity_from_arguments(
+                arguments,
+                "failure-evidence",
+            ),
         )
     else:
         result = assemble_and_publish_formal_gate(

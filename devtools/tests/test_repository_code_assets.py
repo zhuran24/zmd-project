@@ -25,7 +25,7 @@ BASELINE_COUNTS = {
 }
 CURRENT_BASE_COUNTS = {
     "active_implementation": 386,
-    "test": 641,
+    "test": 644,
     "common_infrastructure": 477,
     "authoritative_input": 4,
     "enforcement_control": 9,

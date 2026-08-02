@@ -37,6 +37,15 @@ CAMPAIGN_ROOT_SCHEMA = "noncert-cuts-campaign-root-v4"
 GATE1_SELECTION_SCHEMA = "noncert-cuts-gate1-v4-child-selection-v1"
 CONTINUATION_SCHEMA = "noncert-cuts-gate1-v4-continuation-authorization-v1"
 GATE_ADMISSION_EPOCH_SCHEMA = "noncert-cuts-gate1-v4-manager-epoch-checkpoint-v2"
+TERMINAL_ASSEMBLY_FAILURE_SCHEMA = (
+    "noncert-cuts-gate1-v4-terminal-assembly-failure-archive-v1"
+)
+TERMINAL_ASSEMBLY_FAILURE_FILENAME = "terminal-assembly-failure-a001.json"
+TERMINAL_ASSEMBLY_FAILURE_STATUS = "TERMINAL_ASSEMBLY_FAILED_CAMPAIGN_ARCHIVED"
+TERMINAL_ASSEMBLY_FAILURE_PURPOSE = "archive_only_non_authorizing_terminal_failure"
+CAMPAIGN_TREE_PROJECTION_DOMAIN = (
+    "all campaign-root-relative regular-file bytes and directory names except the fixed terminal-failure marker"
+)
 
 GATE1_PURPOSE = "gate1_v4_child_suite"
 CAMPAIGN_PURPOSE = "cuts_credibility_mandatory_campaign"
@@ -66,6 +75,7 @@ REQUIRED_GATE1_TOOL_ROLES = frozenset(
         "gate1_campaign_execution_v4",
         "gate1_payload_v4",
         "gate1_unit_orchestrator_v4",
+        "git",
         "independent_arithmetic_v4",
         "manager_attestor_v4",
         "positive_control_formal_v4",
@@ -1473,6 +1483,165 @@ def _scan_regular_tree(root: Path | str) -> dict[str, Snapshot]:
     return result
 
 
+def _safe_tree_relative(value: object, label: str) -> str:
+    if type(value) is not str:
+        raise AuthorityError("TREE_PROJECTION_INVALID", f"{label}: path is not text")
+    path = PurePosixPath(value)
+    if (
+        not value
+        or path.is_absolute()
+        or "\\" in value
+        or any(part in {"", ".", ".."} for part in path.parts)
+        or value != path.as_posix()
+    ):
+        raise AuthorityError("TREE_PROJECTION_INVALID", f"{label}: unsafe relative path")
+    return path.as_posix()
+
+
+def _campaign_tree_projection_once(
+    campaign_dir: Path,
+    *,
+    excluded_path: Path,
+) -> dict[str, object]:
+    directory = _absolute(campaign_dir)
+    excluded = _absolute(excluded_path)
+    _reject_symlink_chain(directory)
+    if not directory.is_dir() or not excluded.is_relative_to(directory):
+        raise AuthorityError("TREE_INVALID", "campaign tree or exclusion path is invalid")
+    directories: list[str] = []
+    members: list[dict[str, object]] = []
+    for path in sorted(directory.rglob("*")):
+        relative = path.relative_to(directory).as_posix()
+        mode = os.lstat(path).st_mode
+        if stat.S_ISLNK(mode):
+            raise AuthorityError("SYMLINK_REJECTED", f"symlink in campaign tree: {path}")
+        if stat.S_ISDIR(mode):
+            directories.append(relative)
+        elif stat.S_ISREG(mode):
+            if path == excluded:
+                continue
+            snapshot = snapshot_regular(path)
+            members.append(
+                {
+                    "path": relative,
+                    "sha256": snapshot.sha256,
+                    "size_bytes": snapshot.size,
+                }
+            )
+        else:
+            raise AuthorityError("TREE_INVALID", f"non-regular object in campaign tree: {path}")
+    digest_payload = {"directories": directories, "members": members}
+    return {
+        "directory_count": len(directories),
+        "directories": directories,
+        "domain": CAMPAIGN_TREE_PROJECTION_DOMAIN,
+        "member_count": len(members),
+        "members": members,
+        "projection_sha256": sha256_bytes(canonical_json(digest_payload)),
+    }
+
+
+def validate_campaign_tree_projection(value: object) -> Mapping[str, Any]:
+    """Validate the canonical path/byte projection used to freeze a failed root."""
+
+    record = _exact_keys(
+        value,
+        {
+            "directory_count",
+            "directories",
+            "domain",
+            "member_count",
+            "members",
+            "projection_sha256",
+        },
+        "campaign tree projection",
+    )
+    directories = record["directories"]
+    members = record["members"]
+    if (
+        record["domain"] != CAMPAIGN_TREE_PROJECTION_DOMAIN
+        or not isinstance(directories, list)
+        or not isinstance(members, list)
+        or type(record["directory_count"]) is not int
+        or record["directory_count"] != len(directories)
+        or type(record["member_count"]) is not int
+        or record["member_count"] != len(members)
+        or type(record["projection_sha256"]) is not str
+        or SHA256_RE.fullmatch(record["projection_sha256"]) is None
+    ):
+        raise AuthorityError("TREE_PROJECTION_INVALID", "campaign tree projection semantics drifted")
+    checked_directories = [
+        _safe_tree_relative(path, "campaign tree directory") for path in directories
+    ]
+    if checked_directories != sorted(set(checked_directories)):
+        raise AuthorityError("TREE_PROJECTION_INVALID", "campaign tree directory set is not canonical")
+    checked_members: list[dict[str, object]] = []
+    for member in members:
+        item = _exact_keys(
+            member,
+            {"path", "sha256", "size_bytes"},
+            "campaign tree member",
+        )
+        relative = _safe_tree_relative(item["path"], "campaign tree member")
+        if (
+            type(item["sha256"]) is not str
+            or SHA256_RE.fullmatch(item["sha256"]) is None
+            or type(item["size_bytes"]) is not int
+            or item["size_bytes"] < 0
+        ):
+            raise AuthorityError("TREE_PROJECTION_INVALID", "campaign tree member identity is malformed")
+        checked_members.append(
+            {
+                "path": relative,
+                "sha256": item["sha256"],
+                "size_bytes": item["size_bytes"],
+            }
+        )
+    member_paths = [str(member["path"]) for member in checked_members]
+    if member_paths != sorted(set(member_paths)):
+        raise AuthorityError("TREE_PROJECTION_INVALID", "campaign tree member set is not canonical")
+    expected_digest = sha256_bytes(
+        canonical_json(
+            {
+                "directories": checked_directories,
+                "members": checked_members,
+            }
+        )
+    )
+    if record["projection_sha256"] != expected_digest:
+        raise AuthorityError("TREE_PROJECTION_INVALID", "campaign tree projection digest drifted")
+    return record
+
+
+def campaign_tree_projection(
+    campaign_dir: Path | str,
+    *,
+    excluded_path: Path | str,
+) -> dict[str, object]:
+    """Capture the complete campaign tree twice to reject concurrent drift."""
+
+    directory = _absolute(campaign_dir)
+    excluded = _absolute(excluded_path)
+    first = _campaign_tree_projection_once(directory, excluded_path=excluded)
+    second = _campaign_tree_projection_once(directory, excluded_path=excluded)
+    if first != second:
+        raise AuthorityError("TREE_RACE", "campaign tree changed while it was projected")
+    validate_campaign_tree_projection(second)
+    return second
+
+
+def replay_campaign_tree_projection(
+    expected: Mapping[str, object],
+    *,
+    campaign_dir: Path | str,
+    excluded_path: Path | str,
+) -> None:
+    validate_campaign_tree_projection(expected)
+    current = campaign_tree_projection(campaign_dir, excluded_path=excluded_path)
+    if current != dict(expected):
+        raise AuthorityError("CAMPAIGN_TREE_DRIFT", "archived campaign tree changed after sealing")
+
+
 def _safe_checksum_path(value: str) -> str:
     path = PurePosixPath(value)
     if (
@@ -1584,6 +1753,138 @@ def verify_package(
         "manifest_identity": detached_identity(files["package-manifest.json"]),
         "package_id": files["SHA256SUMS"].sha256,
         "seal_identity": detached_identity(files["SHA256SUMS"]),
+        "status": "PASS",
+    }
+
+
+def _verify_archived_package_seal(
+    root: Mapping[str, Any],
+    *,
+    campaign_dir: Path,
+) -> dict[str, object]:
+    """Replay only the sealed domain; runtime package extras are tree-frozen, never executed."""
+
+    package = root["package"]
+    package_dir = _absolute(package["package_dir"])
+    if package_dir != campaign_dir / "campaign-authority" / "package":
+        raise AuthorityError("PACKAGE_BINDING_INVALID", "failed package escaped its campaign root")
+    manifest_identity = validate_detached_identity(
+        package["manifest_identity"],
+        "failed package manifest identity",
+    )
+    seal_identity = validate_detached_identity(
+        package["seal_identity"],
+        "failed package seal identity",
+    )
+    if (
+        _absolute(manifest_identity["path"]) != package_dir / "package-manifest.json"
+        or _absolute(seal_identity["path"]) != package_dir / "SHA256SUMS"
+    ):
+        raise AuthorityError("PACKAGE_BINDING_INVALID", "failed package fixed member paths drifted")
+    seal_snapshot = replay_detached_identity(seal_identity, "failed package seal")
+    if seal_snapshot.sha256 != package["package_id"]:
+        raise AuthorityError("PACKAGE_BINDING_INVALID", "failed package_id does not bind its seal")
+    entries = _parse_sha256sums(seal_snapshot.data)
+    if "package-manifest.json" not in entries:
+        raise AuthorityError("PACKAGE_INCOMPLETE", "failed package seal omits its manifest")
+    sealed_members: dict[str, Snapshot] = {}
+    for relative, expected_digest in entries.items():
+        snapshot = snapshot_regular(package_dir / PurePosixPath(relative))
+        if snapshot.sha256 != expected_digest:
+            raise AuthorityError("PACKAGE_SEAL_DRIFT", f"failed sealed package member drifted: {relative}")
+        sealed_members[relative] = snapshot
+    manifest_snapshot = sealed_members["package-manifest.json"]
+    if detached_identity(manifest_snapshot) != dict(manifest_identity):
+        raise AuthorityError("PACKAGE_BINDING_INVALID", "failed package manifest identity drifted")
+    manifest_value = strict_loads(manifest_snapshot.data, "failed package manifest")
+    manifest = _exact_keys(
+        manifest_value,
+        {
+            "authorization_semantics",
+            "external_sources",
+            "manager_epoch",
+            "package_members",
+            "repository_head",
+            "run_nonce",
+            "schema",
+            "seal_contract",
+        },
+        "failed package manifest",
+    )
+    if (
+        canonical_json(manifest) != manifest_snapshot.data
+        or manifest["schema"] != PACKAGE_MANIFEST_SCHEMA
+        or manifest["authorization_semantics"]
+        != "byte qualification only; package PASS cannot launch any child"
+        or type(manifest["repository_head"]) is not str
+        or GIT_SHA_RE.fullmatch(manifest["repository_head"]) is None
+        or manifest["run_nonce"] != root["run_nonce"]
+        or not same_manager_epoch(manifest["manager_epoch"], root["manager_epoch"])
+        or manifest["seal_contract"]
+        != {
+            "package_id": "sha256(SHA256SUMS exact bytes)",
+            "sha256sums_domain": "all regular files below package except SHA256SUMS",
+            "writes_after_seal": "forbidden",
+        }
+    ):
+        raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package manifest semantics drifted")
+
+    member_records = manifest["package_members"]
+    if not isinstance(member_records, list):
+        raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package member records are invalid")
+    expected_members: dict[str, tuple[object, object]] = {}
+    for item in member_records:
+        record = _exact_keys(item, {"path", "sha256", "size_bytes"}, "failed package member")
+        path = _safe_checksum_path(record["path"])
+        if path in expected_members:
+            raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "duplicate failed package member record")
+        expected_members[path] = (record["sha256"], record["size_bytes"])
+    sealed_payload = set(entries) - {"package-manifest.json"}
+    if set(expected_members) != sealed_payload:
+        raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package member set drifted")
+    for path, (digest, size) in expected_members.items():
+        snapshot = sealed_members[path]
+        if snapshot.sha256 != digest or snapshot.size != size:
+            raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package member identity drifted")
+
+    sources = manifest["external_sources"]
+    if not isinstance(sources, list) or len(sources) != len(expected_members):
+        raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package external source set drifted")
+    source_roles: set[str] = set()
+    source_package_paths: set[str] = set()
+    for item in sources:
+        source = _exact_keys(
+            item,
+            {"package_path", "parse_json", "role", "source_identity"},
+            "failed package external source",
+        )
+        if type(source["role"]) is not str:
+            raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package source role is malformed")
+        _validate_role(source["role"])
+        package_path = _safe_checksum_path(source["package_path"])
+        source_identity = _validate_full_tool_identity(
+            source["source_identity"],
+            "failed package external source identity",
+        )
+        if source["parse_json"] is not True and source["parse_json"] is not False:
+            raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package parse_json is not exact bool")
+        if source["role"] in source_roles or package_path in source_package_paths:
+            raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package external source is duplicated")
+        sealed_snapshot = sealed_members.get(package_path)
+        if (
+            sealed_snapshot is None
+            or source_identity["sha256"] != sealed_snapshot.sha256
+            or source_identity["size_bytes"] != sealed_snapshot.size
+        ):
+            raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package source/member identity drifted")
+        source_roles.add(source["role"])
+        source_package_paths.add(package_path)
+    if source_package_paths != sealed_payload:
+        raise AuthorityError("PACKAGE_MANIFEST_DRIFT", "failed package source/member join drifted")
+    return {
+        "manifest_identity": dict(manifest_identity),
+        "package_id": seal_snapshot.sha256,
+        "seal_identity": dict(seal_identity),
         "status": "PASS",
     }
 
@@ -2077,6 +2378,22 @@ def write_campaign_root(
     return write_exclusive(root_path, canonical_json(root))
 
 
+def _terminal_assembly_failure_path_unchecked(root: Mapping[str, object]) -> Path:
+    gate = root["stage_topology"]["gate1_v4"]
+    return _absolute(
+        Path(str(gate["selection_path"])).parent
+        / "authority"
+        / TERMINAL_ASSEMBLY_FAILURE_FILENAME
+    )
+
+
+def terminal_assembly_failure_path(root: Mapping[str, object]) -> Path:
+    """Return the sole campaign-local archive marker path."""
+
+    validate_campaign_root(root)
+    return _terminal_assembly_failure_path_unchecked(root)
+
+
 def reserved_child_paths(root: Mapping[str, object]) -> list[Path]:
     validate_campaign_root(root)
     gate = root["stage_topology"]["gate1_v4"]
@@ -2086,6 +2403,7 @@ def reserved_child_paths(root: Mapping[str, object]) -> list[Path]:
         _absolute(gate["gate_path"]),
         _absolute(gate["continuation_path"]),
         _absolute(gate["gate_admission_epoch_path"]),
+        _terminal_assembly_failure_path_unchecked(root),
         _absolute(gate["positive_common_dir"]),
         _absolute(prospective["manifest_path"]),
         _absolute(prospective["arm_selection_path"]),
@@ -2266,6 +2584,7 @@ def write_gate1_selection(
         _absolute(gate["gate_path"]),
         _absolute(gate["continuation_path"]),
         _absolute(gate["gate_admission_epoch_path"]),
+        _terminal_assembly_failure_path_unchecked(root),
         _absolute(gate["positive_common_dir"]),
         _absolute(prospective["manifest_path"]),
         _absolute(prospective["arm_selection_path"]),
@@ -2390,12 +2709,542 @@ def validate_gate_admission_epoch_checkpoint(
     return record
 
 
+def _load_terminal_archive_context(
+    campaign_root_identity: Mapping[str, object],
+    gate1_selection_identity: Mapping[str, object],
+) -> tuple[Mapping[str, Any], Mapping[str, Any], Path]:
+    """Load archival authority as data only; never execute selected source bytes."""
+
+    checked_root = validate_detached_identity(
+        campaign_root_identity,
+        "terminal failure campaign root identity",
+    )
+    root_snapshot = replay_detached_identity(checked_root, "terminal failure campaign root")
+    campaign_dir = Path(str(checked_root["path"])).parent
+    if (
+        Path(str(checked_root["path"])) != campaign_dir / "campaign-root.json"
+        or not campaign_dir.name.startswith("run-")
+    ):
+        raise AuthorityError(
+            "TERMINAL_FAILURE_INVALID",
+            "terminal failure archive requires the fixed root of a formal run-* campaign",
+        )
+    root_value = strict_loads(root_snapshot.data, "terminal failure campaign root")
+    if canonical_json(root_value) != root_snapshot.data:
+        raise AuthorityError("JSON_NONCANONICAL", "terminal failure campaign root is not canonical")
+    root = validate_campaign_root(root_value, campaign_dir=campaign_dir)
+
+    checked_selection = validate_detached_identity(
+        gate1_selection_identity,
+        "terminal failure Gate 1 selection identity",
+    )
+    expected_selection_path = campaign_dir / "gate1-v4" / "selection-a001.json"
+    if _absolute(root["stage_topology"]["gate1_v4"]["selection_path"]) != expected_selection_path:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure selection topology drifted")
+    if _absolute(checked_selection["path"]) != expected_selection_path:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure selection path drifted")
+    selection_snapshot = replay_detached_identity(
+        checked_selection,
+        "terminal failure Gate 1 selection",
+    )
+    selection = load_gate1_selection_bytes(selection_snapshot.data, checked_selection)
+    validate_gate1_selection(selection, root=root)
+    if selection["campaign_root_identity"] != dict(checked_root):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure selection/root join drifted")
+
+    package_replay = _verify_archived_package_seal(root, campaign_dir=campaign_dir)
+    expected_package = {
+        "manifest_identity": root["package"]["manifest_identity"],
+        "package_id": root["package"]["package_id"],
+        "seal_identity": root["package"]["seal_identity"],
+        "status": "PASS",
+    }
+    if package_replay != expected_package:
+        raise AuthorityError("PACKAGE_BINDING_INVALID", "failed package does not join campaign root")
+    return root, selection, campaign_dir
+
+
+def _terminal_failure_state(
+    root: Mapping[str, Any],
+    selection: Mapping[str, Any],
+    campaign_dir: Path,
+    *,
+    marker_must_be_absent: bool,
+) -> dict[str, object]:
+    gate = root["stage_topology"]["gate1_v4"]
+    prospective = root["stage_topology"]["prospective_ab16"]
+    marker_path = _terminal_assembly_failure_path_unchecked(root)
+    if marker_must_be_absent and os.path.lexists(marker_path):
+        raise AuthorityError("NO_OVERWRITE_COLLISION", "terminal failure archive already exists")
+    continuation_path = _absolute(gate["continuation_path"])
+    if os.path.lexists(continuation_path):
+        raise AuthorityError(
+            "TERMINAL_FAILURE_INVALID",
+            "an authorized continuation cannot be reclassified as terminal failure",
+        )
+    prospective_root = campaign_dir / "prospective-ab16"
+    prospective_paths = [
+        _absolute(prospective["manifest_path"]),
+        _absolute(prospective["arm_selection_path"]),
+        _absolute(prospective["terminal_classification_path"]),
+        *(_absolute(arm["attempt_dir"]) for arm in prospective["arms"]),
+    ]
+    if (
+        any(not path.is_relative_to(prospective_root) for path in prospective_paths)
+        or os.path.lexists(prospective_root)
+        or any(os.path.lexists(path) for path in prospective_paths)
+    ):
+        raise AuthorityError(
+            "FUTURE_SLOT_CONSUMED",
+            "terminal failure archive requires the entire prospective AB16 stage to be absent",
+        )
+
+    admission_path = _absolute(gate["gate_admission_epoch_path"])
+    admission_snapshot = snapshot_regular(admission_path)
+    admission = strict_loads(admission_snapshot.data, "terminal failure Gate 1 admission epoch")
+    if canonical_json(admission) != admission_snapshot.data:
+        raise AuthorityError("JSON_NONCANONICAL", "terminal failure admission checkpoint is not canonical")
+    validate_gate_admission_epoch_checkpoint(admission, root=root, selection=selection)
+
+    receipt_path = _absolute(gate["positive_control"]["arithmetic_receipt_path"])
+    receipt_identity = detached_identity(snapshot_regular(receipt_path))
+    gate_path = _absolute(gate["gate_path"])
+    partial_gate_identity: dict[str, object] | None = None
+    if os.path.lexists(gate_path):
+        gate_snapshot = snapshot_regular(gate_path)
+        gate_value = strict_loads(gate_snapshot.data, "partial Gate 1 result")
+        if canonical_json(gate_value) != gate_snapshot.data:
+            raise AuthorityError("JSON_NONCANONICAL", "partial Gate 1 result is not canonical")
+        partial_gate_identity = detached_identity(gate_snapshot)
+    return {
+        "gate_admission_epoch_identity": detached_identity(admission_snapshot),
+        "independent_arithmetic_receipt_identity": receipt_identity,
+        "partial_gate_identity": partial_gate_identity,
+    }
+
+
+def validate_terminal_assembly_failure_archive(
+    value: object,
+    *,
+    root: Mapping[str, object],
+    selection: Mapping[str, object],
+) -> Mapping[str, Any]:
+    """Validate the exact non-authorizing semantics of a failure tombstone."""
+
+    validate_campaign_root(root)
+    validate_gate1_selection(selection, root=root)
+    record = _exact_keys(
+        value,
+        {
+            "ab16_slot_attempt",
+            "archive_tool_identities",
+            "archive_tool_selected_by_failed_campaign",
+            "archived_at_utc",
+            "campaign_id",
+            "campaign_root_identity",
+            "campaign_tree_projection",
+            "continuation_authorized",
+            "failed_campaign_package",
+            "failure_evidence_identity",
+            "gate1_selection_identity",
+            "gate_admission_epoch_identity",
+            "global_claim_authorized",
+            "independent_arithmetic_receipt_identity",
+            "organic_arm_launch_authorized",
+            "partial_gate_identity",
+            "purpose",
+            "replacement_policy",
+            "repository_head",
+            "resume_authorized",
+            "run_nonce",
+            "schema_version",
+            "selected_failed_campaign_tool_identities",
+            "status",
+        },
+        "terminal assembly failure archive",
+    )
+    expected_false = (
+        "ab16_slot_attempt",
+        "continuation_authorized",
+        "global_claim_authorized",
+        "organic_arm_launch_authorized",
+        "resume_authorized",
+    )
+    if (
+        record["schema_version"] != TERMINAL_ASSEMBLY_FAILURE_SCHEMA
+        or record["status"] != TERMINAL_ASSEMBLY_FAILURE_STATUS
+        or record["purpose"] != TERMINAL_ASSEMBLY_FAILURE_PURPOSE
+        or record["campaign_id"] != root["campaign_id"]
+        or record["run_nonce"] != root["run_nonce"]
+        or record["repository_head"] != root["repository_head"]
+        or any(record[field] is not False for field in expected_false)
+    ):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure archive semantics drifted")
+    _utc(record["archived_at_utc"], "terminal failure archived_at_utc")
+
+    root_identity = validate_detached_identity(
+        record["campaign_root_identity"],
+        "terminal failure campaign root identity",
+    )
+    selection_identity = validate_detached_identity(
+        record["gate1_selection_identity"],
+        "terminal failure Gate 1 selection identity",
+    )
+    if (
+        selection["campaign_root_identity"] != dict(root_identity)
+        or _absolute(selection_identity["path"])
+        != _absolute(root["stage_topology"]["gate1_v4"]["selection_path"])
+    ):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure authority join drifted")
+    admission_identity = validate_detached_identity(
+        record["gate_admission_epoch_identity"],
+        "terminal failure Gate 1 admission identity",
+    )
+    receipt_identity = validate_detached_identity(
+        record["independent_arithmetic_receipt_identity"],
+        "terminal failure arithmetic receipt identity",
+    )
+    gate = root["stage_topology"]["gate1_v4"]
+    if (
+        _absolute(admission_identity["path"]) != _absolute(gate["gate_admission_epoch_path"])
+        or _absolute(receipt_identity["path"])
+        != _absolute(gate["positive_control"]["arithmetic_receipt_path"])
+    ):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure evidence path drifted")
+    failure_identity = validate_detached_identity(
+        record["failure_evidence_identity"],
+        "terminal failure external evidence identity",
+    )
+    campaign_dir = Path(str(root_identity["path"])).parent
+    if _absolute(failure_identity["path"]).is_relative_to(campaign_dir):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "failure evidence must remain outside the failed root")
+
+    failed_package = _exact_keys(
+        record["failed_campaign_package"],
+        {"manifest_identity", "package_id", "seal_identity"},
+        "terminal failure package binding",
+    )
+    expected_package = {
+        "manifest_identity": root["package"]["manifest_identity"],
+        "package_id": root["package"]["package_id"],
+        "seal_identity": root["package"]["seal_identity"],
+    }
+    if dict(failed_package) != expected_package:
+        raise AuthorityError("PACKAGE_BINDING_INVALID", "terminal failure package binding drifted")
+
+    selected_tools = _identity_map(
+        record["selected_failed_campaign_tool_identities"],
+        "terminal failure selected tools",
+    )
+    archive_tools = _identity_map(record["archive_tool_identities"], "terminal failure archive tools")
+    required_archive_roles = {"campaign_authority_v4", "gate1_campaign_execution_v4"}
+    if set(selected_tools) != required_archive_roles or set(archive_tools) != required_archive_roles:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure archive tool set drifted")
+    expected_selected = {role: selection["tools"][role] for role in required_archive_roles}
+    selected_by_failed_campaign = dict(archive_tools) == expected_selected
+    if (
+        dict(selected_tools) != expected_selected
+        or record["archive_tool_selected_by_failed_campaign"] is not selected_by_failed_campaign
+    ):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure archive tool identity drifted")
+
+    partial_gate = record["partial_gate_identity"]
+    if partial_gate is not None:
+        partial_identity = validate_detached_identity(partial_gate, "terminal failure partial Gate 1 identity")
+        if _absolute(partial_identity["path"]) != _absolute(gate["gate_path"]):
+            raise AuthorityError("TERMINAL_FAILURE_INVALID", "partial Gate 1 result path drifted")
+    replacement = _exact_keys(
+        record["replacement_policy"],
+        {
+            "failed_package_reuse_authorized",
+            "new_campaign_root_required",
+            "new_offline_candidate_required",
+            "new_path_preregistration_required",
+            "new_run_nonce_required",
+        },
+        "terminal failure replacement policy",
+    )
+    if dict(replacement) != {
+        "failed_package_reuse_authorized": False,
+        "new_campaign_root_required": True,
+        "new_offline_candidate_required": True,
+        "new_path_preregistration_required": True,
+        "new_run_nonce_required": True,
+    }:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure replacement policy drifted")
+    validate_campaign_tree_projection(record["campaign_tree_projection"])
+    marker_relative = _terminal_assembly_failure_path_unchecked(root).relative_to(campaign_dir).as_posix()
+    projected_paths = {
+        member["path"] for member in record["campaign_tree_projection"]["members"]
+    }
+    if marker_relative in projected_paths:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal marker entered its own tree projection")
+    return record
+
+
+def _replay_terminal_failure_bound_evidence(
+    record: Mapping[str, Any],
+    *,
+    root: Mapping[str, Any],
+    selection: Mapping[str, Any],
+    campaign_dir: Path,
+) -> None:
+    replay_detached_identity(record["campaign_root_identity"], "terminal failure campaign root")
+    replay_detached_identity(record["gate1_selection_identity"], "terminal failure Gate 1 selection")
+    replay_detached_identity(record["gate_admission_epoch_identity"], "terminal failure admission epoch")
+    replay_detached_identity(
+        record["independent_arithmetic_receipt_identity"],
+        "terminal failure arithmetic receipt",
+    )
+    replay_detached_identity(record["failure_evidence_identity"], "terminal failure external evidence")
+    for role, identity in record["selected_failed_campaign_tool_identities"].items():
+        replay_detached_identity(identity, f"terminal failure selected failed-campaign tool {role}")
+    for role, identity in record["archive_tool_identities"].items():
+        replay_detached_identity(identity, f"terminal failure archive tool {role}")
+    partial_gate = record["partial_gate_identity"]
+    if partial_gate is not None:
+        replay_detached_identity(partial_gate, "terminal failure partial Gate 1 result")
+    state = _terminal_failure_state(
+        root,
+        selection,
+        campaign_dir,
+        marker_must_be_absent=False,
+    )
+    if (
+        state["gate_admission_epoch_identity"] != record["gate_admission_epoch_identity"]
+        or state["independent_arithmetic_receipt_identity"]
+        != record["independent_arithmetic_receipt_identity"]
+        or state["partial_gate_identity"] != record["partial_gate_identity"]
+    ):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure state identity drifted")
+    replay_campaign_tree_projection(
+        record["campaign_tree_projection"],
+        campaign_dir=campaign_dir,
+        excluded_path=_terminal_assembly_failure_path_unchecked(root),
+    )
+
+
+def archive_terminal_assembly_failure(
+    *,
+    campaign_root_identity: Mapping[str, object],
+    gate1_selection_identity: Mapping[str, object],
+    failure_evidence_identity: Mapping[str, object],
+    archive_tool_identities: Mapping[str, object],
+    archived_at_utc: str,
+) -> dict[str, object]:
+    """Seal a post-admission failure without granting any continuation authority."""
+
+    root, selection, campaign_dir = _load_terminal_archive_context(
+        campaign_root_identity,
+        gate1_selection_identity,
+    )
+    state = _terminal_failure_state(
+        root,
+        selection,
+        campaign_dir,
+        marker_must_be_absent=True,
+    )
+    checked_failure = validate_detached_identity(
+        failure_evidence_identity,
+        "terminal failure external evidence identity",
+    )
+    if _absolute(checked_failure["path"]).is_relative_to(campaign_dir):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "failure evidence must remain outside the failed root")
+    failure_snapshot = replay_detached_identity(checked_failure, "terminal failure external evidence")
+    if failure_snapshot.size == 0:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure evidence is empty")
+    archive_tools = _identity_map(archive_tool_identities, "terminal failure archive tools")
+    required_archive_roles = {"campaign_authority_v4", "gate1_campaign_execution_v4"}
+    if set(archive_tools) != required_archive_roles:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure archive tool set drifted")
+    current_authority = detached_identity(snapshot_regular(Path(__file__)))
+    if dict(archive_tools["campaign_authority_v4"]) != current_authority:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "archive did not use the imported authority bytes")
+    current_execution = detached_identity(
+        snapshot_regular(Path(__file__).with_name("gate1_campaign_execution_v4.py"))
+    )
+    if dict(archive_tools["gate1_campaign_execution_v4"]) != current_execution:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "archive did not use the production execution bytes")
+    for role, identity in archive_tools.items():
+        replay_detached_identity(identity, f"terminal failure archive tool {role}")
+
+    marker_path = _terminal_assembly_failure_path_unchecked(root)
+    projection = campaign_tree_projection(
+        campaign_dir,
+        excluded_path=marker_path,
+    )
+    selected_archive_tools = {
+        role: selection["tools"][role] for role in sorted(required_archive_roles)
+    }
+    record = {
+        "ab16_slot_attempt": False,
+        "archive_tool_identities": dict(archive_tools),
+        "archive_tool_selected_by_failed_campaign": dict(archive_tools) == selected_archive_tools,
+        "archived_at_utc": archived_at_utc,
+        "campaign_id": root["campaign_id"],
+        "campaign_root_identity": dict(campaign_root_identity),
+        "campaign_tree_projection": projection,
+        "continuation_authorized": False,
+        "failed_campaign_package": {
+            "manifest_identity": root["package"]["manifest_identity"],
+            "package_id": root["package"]["package_id"],
+            "seal_identity": root["package"]["seal_identity"],
+        },
+        "failure_evidence_identity": dict(checked_failure),
+        "gate1_selection_identity": dict(gate1_selection_identity),
+        "gate_admission_epoch_identity": state["gate_admission_epoch_identity"],
+        "global_claim_authorized": False,
+        "independent_arithmetic_receipt_identity": state[
+            "independent_arithmetic_receipt_identity"
+        ],
+        "organic_arm_launch_authorized": False,
+        "partial_gate_identity": state["partial_gate_identity"],
+        "purpose": TERMINAL_ASSEMBLY_FAILURE_PURPOSE,
+        "replacement_policy": {
+            "failed_package_reuse_authorized": False,
+            "new_campaign_root_required": True,
+            "new_offline_candidate_required": True,
+            "new_path_preregistration_required": True,
+            "new_run_nonce_required": True,
+        },
+        "repository_head": root["repository_head"],
+        "resume_authorized": False,
+        "run_nonce": root["run_nonce"],
+        "schema_version": TERMINAL_ASSEMBLY_FAILURE_SCHEMA,
+        "selected_failed_campaign_tool_identities": selected_archive_tools,
+        "status": TERMINAL_ASSEMBLY_FAILURE_STATUS,
+    }
+    validate_terminal_assembly_failure_archive(record, root=root, selection=selection)
+    _replay_terminal_failure_bound_evidence(
+        record,
+        root=root,
+        selection=selection,
+        campaign_dir=campaign_dir,
+    )
+    archive_identity = write_exclusive(marker_path, canonical_json(record))
+    replayed = replay_detached_identity(archive_identity, "terminal failure archive")
+    replayed_record = strict_loads(replayed.data, "terminal failure archive")
+    if canonical_json(replayed_record) != replayed.data:
+        raise AuthorityError("JSON_NONCANONICAL", "terminal failure archive is not canonical")
+    checked_record = validate_terminal_assembly_failure_archive(
+        replayed_record,
+        root=root,
+        selection=selection,
+    )
+    _replay_terminal_failure_bound_evidence(
+        checked_record,
+        root=root,
+        selection=selection,
+        campaign_dir=campaign_dir,
+    )
+    return archive_identity
+
+
+def replay_terminal_assembly_failure_archive(
+    *,
+    campaign_root_identity: Mapping[str, object],
+    archive_identity: Mapping[str, object],
+) -> Mapping[str, Any]:
+    """Replay a sealed failure marker and every byte/tree identity it binds."""
+
+    checked_archive = validate_detached_identity(archive_identity, "terminal failure archive identity")
+    archive_snapshot = replay_detached_identity(checked_archive, "terminal failure archive")
+    archive_value = strict_loads(archive_snapshot.data, "terminal failure archive")
+    if canonical_json(archive_value) != archive_snapshot.data:
+        raise AuthorityError("JSON_NONCANONICAL", "terminal failure archive is not canonical")
+    if not isinstance(archive_value, Mapping):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure archive is not a mapping")
+    provisional = archive_value
+    selection_identity = provisional.get("gate1_selection_identity")
+    if not isinstance(selection_identity, Mapping):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure selection identity is absent")
+    root, selection, campaign_dir = _load_terminal_archive_context(
+        campaign_root_identity,
+        selection_identity,
+    )
+    marker_path = _terminal_assembly_failure_path_unchecked(root)
+    if _absolute(checked_archive["path"]) != marker_path:
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure archive path drifted")
+    record = validate_terminal_assembly_failure_archive(
+        archive_value,
+        root=root,
+        selection=selection,
+    )
+    if record["campaign_root_identity"] != dict(campaign_root_identity):
+        raise AuthorityError("TERMINAL_FAILURE_INVALID", "terminal failure root identity drifted")
+    _replay_terminal_failure_bound_evidence(
+        record,
+        root=root,
+        selection=selection,
+        campaign_dir=campaign_dir,
+    )
+    return record
+
+
 def _validate_gate_continuation_eligibility(
     gate_result: Mapping[str, object],
     *,
     root: Mapping[str, object],
+    selection: Mapping[str, object],
     gate_admission_epoch_identity: Mapping[str, object],
 ) -> None:
+    validate_gate1_selection(selection, root=root)
+    manifest_identity = validate_detached_identity(
+        root["package"]["manifest_identity"],
+        "continuation package manifest identity",
+    )
+    package_dir = _absolute(root["package"]["package_dir"])
+    if _absolute(manifest_identity["path"]) != package_dir / "package-manifest.json":
+        raise AuthorityError("CONTINUATION_INVALID", "continuation package manifest path drifted")
+    manifest_snapshot = replay_detached_identity(
+        manifest_identity,
+        "continuation package manifest",
+    )
+    manifest_value = strict_loads(manifest_snapshot.data, "continuation package manifest")
+    manifest = _exact_keys(
+        manifest_value,
+        {
+            "authorization_semantics",
+            "external_sources",
+            "manager_epoch",
+            "package_members",
+            "repository_head",
+            "run_nonce",
+            "schema",
+            "seal_contract",
+        },
+        "continuation package manifest",
+    )
+    package_birth_head = manifest["repository_head"]
+    if (
+        canonical_json(manifest) != manifest_snapshot.data
+        or manifest["schema"] != PACKAGE_MANIFEST_SCHEMA
+        or type(package_birth_head) is not str
+        or GIT_SHA_RE.fullmatch(package_birth_head) is None
+        or manifest["run_nonce"] != root["run_nonce"]
+        or not same_manager_epoch(manifest["manager_epoch"], root["manager_epoch"])
+    ):
+        raise AuthorityError("CONTINUATION_INVALID", "continuation package birth identity drifted")
+    join = _exact_keys(
+        gate_result.get("repository_identity_join"),
+        {
+            "checker_package_birth_head",
+            "checker_receipt_package_birth_joined",
+            "checker_selected_package_member_joined",
+            "gate1_selection_execution_head",
+            "selection_live_execution_joined",
+            "tracked_checkout_clean",
+        },
+        "Gate 1 repository identity join",
+    )
+    expected_join = {
+        "checker_package_birth_head": package_birth_head,
+        "checker_receipt_package_birth_joined": True,
+        "checker_selected_package_member_joined": True,
+        "gate1_selection_execution_head": root["repository_head"],
+        "selection_live_execution_joined": True,
+        "tracked_checkout_clean": True,
+    }
     expected = {
         "campaign_id": root["campaign_id"],
         "continuation_authorized": False,
@@ -2403,11 +3252,15 @@ def _validate_gate_continuation_eligibility(
         "gate_admission_epoch_identity": dict(gate_admission_epoch_identity),
         "mechanism_credible": True,
         "organic_arm_launch_authorized": False,
+        "repository_head": root["repository_head"],
+        "schema_version": "noncert-cuts-gate1-v4-final-gate-v2",
         "status": "CUTS_GATE1_V4_AUTHORITY_COMPLETION_PASS",
     }
-    if any(gate_result.get(key) != value for key, value in expected.items()) or not same_manager_epoch(
-        gate_result.get("manager_epoch"),
-        root["manager_epoch"],
+    if (
+        selection["repository_head"] != root["repository_head"]
+        or dict(join) != expected_join
+        or any(gate_result.get(key) != value for key, value in expected.items())
+        or not same_manager_epoch(gate_result.get("manager_epoch"), root["manager_epoch"])
     ):
         raise AuthorityError(
             "CONTINUATION_INVALID",
@@ -2430,6 +3283,11 @@ def make_continuation_authorization(
     """Build the only Gate 1 PASS continuation token."""
 
     validate_campaign_root(root)
+    if os.path.lexists(_terminal_assembly_failure_path_unchecked(root)):
+        raise AuthorityError(
+            "CAMPAIGN_ARCHIVED",
+            "archived terminal-assembly failure cannot mint continuation authority",
+        )
     _utc(created_at_utc, "continuation created_at_utc")
     if not same_manager_epoch(root["manager_epoch"], current_manager_epoch):
         raise AuthorityError("MANAGER_EPOCH_DRIFT", "continuation epoch does not join campaign")
@@ -2443,11 +3301,6 @@ def make_continuation_authorization(
     replay_ids = _identity_map(detached_replay_identities, "continuation detached replays")
     if set(replay_ids) != set(GATE1_SLOTS):
         raise AuthorityError("CONTINUATION_INVALID", "continuation requires exactly four unit replays")
-    _validate_gate_continuation_eligibility(
-        gate_result,
-        root=root,
-        gate_admission_epoch_identity=gate_admission_epoch_identity,
-    )
     gate_topology = root["stage_topology"]["gate1_v4"]
     inferred_campaign_dir = _absolute(gate_topology["selection_path"]).parent.parent
     expected_paths = {
@@ -2474,6 +3327,12 @@ def make_continuation_authorization(
         gate1_selection_identity,
     )
     validate_gate1_selection(selection, root=root)
+    _validate_gate_continuation_eligibility(
+        gate_result,
+        root=root,
+        selection=selection,
+        gate_admission_epoch_identity=gate_admission_epoch_identity,
+    )
     checkpoint_snapshot = replay_detached_identity(
         gate_admission_epoch_identity,
         "continuation Gate 1 admission epoch",
@@ -2534,6 +3393,12 @@ def validate_continuation_authorization(
     *,
     root: Mapping[str, object],
 ) -> Mapping[str, Any]:
+    validate_campaign_root(root)
+    if os.path.lexists(_terminal_assembly_failure_path_unchecked(root)):
+        raise AuthorityError(
+            "CAMPAIGN_ARCHIVED",
+            "archived terminal-assembly failure cannot carry continuation authority",
+        )
     record = _exact_keys(
         value,
         {
@@ -2587,6 +3452,28 @@ def validate_continuation_authorization(
             "CONTINUATION_INVALID",
             "continuation detached authority path drifted",
         )
+    selection_snapshot = replay_detached_identity(
+        record["gate1_selection_identity"],
+        "continuation Gate 1 selection",
+    )
+    selection = load_gate1_selection_bytes(
+        selection_snapshot.data,
+        record["gate1_selection_identity"],
+    )
+    validate_gate1_selection(selection, root=root)
+    gate_snapshot = replay_detached_identity(
+        record["gate1_result_identity"],
+        "continuation Gate 1 result",
+    )
+    gate_result = strict_loads(gate_snapshot.data, "continuation Gate 1 result")
+    if not isinstance(gate_result, Mapping) or canonical_json(gate_result) != gate_snapshot.data:
+        raise AuthorityError("CONTINUATION_INVALID", "continuation Gate 1 result is not canonical")
+    _validate_gate_continuation_eligibility(
+        gate_result,
+        root=root,
+        selection=selection,
+        gate_admission_epoch_identity=record["gate_admission_epoch_identity"],
+    )
     replay = _identity_map(record["detached_replay_identities"], "continuation detached replays")
     if set(replay) != set(GATE1_SLOTS):
         raise AuthorityError("CONTINUATION_INVALID", "continuation replay set drifted")
@@ -2612,6 +3499,11 @@ def write_continuation_authorization(
     continuation: Mapping[str, object],
 ) -> dict[str, object]:
     root, _ = load_campaign_root(campaign_root_path, campaign_root_identity)
+    if os.path.lexists(_terminal_assembly_failure_path_unchecked(root)):
+        raise AuthorityError(
+            "CAMPAIGN_ARCHIVED",
+            "archived terminal-assembly failure cannot publish continuation authority",
+        )
     validate_continuation_authorization(continuation, root=root)
     replay_detached_identity(
         continuation["campaign_root_identity"],
@@ -2656,6 +3548,7 @@ def write_continuation_authorization(
     _validate_gate_continuation_eligibility(
         gate_result,
         root=root,
+        selection=selection,
         gate_admission_epoch_identity=continuation["gate_admission_epoch_identity"],
     )
     for slot, identity in continuation["detached_replay_identities"].items():

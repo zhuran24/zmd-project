@@ -164,6 +164,7 @@ def test_common_prestate_and_both_bindings_must_precede_any_clone(
         "run_nonce": "nonce",
         "manager_epoch_digest": "epoch",
         "gate1_formal_eligible": False,
+        "repository_head": POSITIVE.EXPECTED_HEAD,
     }
     selection_identity = POSITIVE._write_json_exclusive(  # noqa: SLF001
         root / "selection.json",
@@ -177,6 +178,7 @@ def test_common_prestate_and_both_bindings_must_precede_any_clone(
         campaign_id="campaign",
         run_nonce="nonce",
         manager_epoch_digest="epoch",
+        repository_head=POSITIVE.EXPECTED_HEAD,
     )
     assert not (root / "bindings").exists()
     assert not (root / "arms").exists()

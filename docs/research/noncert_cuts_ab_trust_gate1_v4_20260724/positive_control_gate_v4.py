@@ -19,6 +19,7 @@ import hashlib
 import json
 import os
 import stat
+import subprocess
 import sys
 import types
 from collections.abc import Mapping, Sequence
@@ -27,7 +28,7 @@ from pathlib import Path
 from typing import Any
 
 
-GATE_SCHEMA = "noncert-cuts-gate1-v4-final-gate-v1"
+GATE_SCHEMA = "noncert-cuts-gate1-v4-final-gate-v2"
 CHECKPOINT_SCHEMA = "noncert-cuts-gate1-v4-manager-epoch-checkpoint-v2"
 GATE_STATUS = "CUTS_GATE1_V4_AUTHORITY_COMPLETION_PASS"
 GATE_VERDICT = "MECHANISM_CREDIBLE"
@@ -68,7 +69,7 @@ EXPECTED_PAYLOAD_RETURNCODE = {
 DETACHED_RESOURCE_SCHEMA = "noncert-cuts-gate1-v4-detached-lifecycle-v1"
 PAYLOAD_RESULT_SCHEMA = "noncert-cuts-gate1-v4-payload-result-v1"
 PAYLOAD_SEAL_SCHEMA = "noncert-cuts-gate1-v4-payload-seal-v1"
-ARITHMETIC_SCHEMA = "noncert-cuts-gate1-v4-formal-independent-arithmetic-receipt-v1"
+ARITHMETIC_SCHEMA = "noncert-cuts-gate1-v4-formal-independent-arithmetic-receipt-v2"
 SHA256_HEX = frozenset("0123456789abcdef")
 MAX_JSON_BYTES = 64 * 1024 * 1024
 
@@ -180,6 +181,248 @@ def _strict_sha256(value: object, label: str) -> str:
     if type(value) is not str or len(value) != 64 or not set(value) <= SHA256_HEX:
         raise GateError(f"{label}: expected a lowercase SHA-256 digest")
     return value
+
+
+def _parse_package_seal(raw: bytes) -> dict[str, str]:
+    try:
+        lines = raw.decode("ascii").splitlines()
+    except UnicodeDecodeError as exc:
+        raise GateError("package seal is not ASCII") from exc
+    if not lines or not raw.endswith(b"\n"):
+        raise GateError("package seal framing drifted")
+    entries: dict[str, str] = {}
+    for line in lines:
+        if len(line) < 67 or line[64:66] != "  ":
+            raise GateError("package seal line is malformed")
+        digest = line[:64]
+        path = line[66:]
+        if (
+            len(digest) != 64
+            or not set(digest) <= SHA256_HEX
+            or not path
+            or path.startswith("/")
+            or "\\" in path
+            or any(part in {"", ".", ".."} for part in path.split("/"))
+            or path in entries
+        ):
+            raise GateError("package seal entry is invalid")
+        entries[path] = digest
+    return entries
+
+
+def _package_birth_repository_head(
+    *,
+    root: Mapping[str, Any],
+    selection: Mapping[str, Any],
+) -> str:
+    """Replay the selected checker's birth HEAD from the sealed package."""
+
+    package = _keys(
+        root.get("package"),
+        {"manifest_identity", "package_dir", "package_id", "seal_identity"},
+        "campaign package",
+    )
+    package_dir = Path(str(package["package_dir"]))
+    if not package_dir.is_absolute():
+        raise GateError("campaign package directory is not absolute")
+    manifest_path = package_dir / "package-manifest.json"
+    seal_path = package_dir / "SHA256SUMS"
+    if Path(str(_identity(package["manifest_identity"], "package manifest identity")["path"])) != manifest_path:
+        raise GateError("package manifest escaped the selected package")
+    if Path(str(_identity(package["seal_identity"], "package seal identity")["path"])) != seal_path:
+        raise GateError("package seal escaped the selected package")
+    manifest_raw, manifest_identity = snapshot_regular(
+        manifest_path,
+        expected_identity=package["manifest_identity"],
+    )
+    seal_raw, seal_identity = snapshot_regular(
+        seal_path,
+        expected_identity=package["seal_identity"],
+    )
+    if seal_identity["sha256"] != package.get("package_id"):
+        raise GateError("campaign package id differs from its seal bytes")
+    manifest = _keys(
+        _bound_json(
+            manifest_raw,
+            manifest_identity,
+            "package manifest",
+            newline=True,
+        ),
+        {
+            "authorization_semantics",
+            "external_sources",
+            "manager_epoch",
+            "package_members",
+            "repository_head",
+            "run_nonce",
+            "schema",
+            "seal_contract",
+        },
+        "package manifest",
+    )
+    if (
+        manifest["schema"] != "noncert-cuts-campaign-authority-manifest-v4"
+        or manifest["authorization_semantics"]
+        != "byte qualification only; package PASS cannot launch any child"
+        or manifest["run_nonce"] != root["run_nonce"]
+        or manifest["manager_epoch"] != root["manager_epoch"]
+    ):
+        raise GateError("package manifest birth semantics drifted")
+    repository_head = manifest["repository_head"]
+    if (
+        type(repository_head) is not str
+        or len(repository_head) != 40
+        or any(character not in "0123456789abcdef" for character in repository_head)
+    ):
+        raise GateError("package manifest birth HEAD is malformed")
+    checker_identity = _identity(
+        _mapping(selection.get("tools"), "selected Gate 1 tools").get("independent_arithmetic_v4"),
+        "selected independent arithmetic checker",
+    )
+    checker_path = Path(str(checker_identity["path"]))
+    expected_checker_path = package_dir / "payload" / "tool.independent_arithmetic_v4.py"
+    if checker_path != expected_checker_path:
+        raise GateError("selected arithmetic checker escaped its canonical package member")
+    snapshot_regular(checker_path, expected_identity=checker_identity)
+    relative_checker = checker_path.relative_to(package_dir).as_posix()
+    seal_entries = _parse_package_seal(seal_raw)
+    if (
+        seal_entries.get("package-manifest.json") != manifest_identity["sha256"]
+        or seal_entries.get(relative_checker) != checker_identity["sha256"]
+    ):
+        raise GateError("selected arithmetic checker or manifest is outside the package seal")
+    members = manifest["package_members"]
+    if type(members) is not list:
+        raise GateError("package member set is malformed")
+    matching_members = [
+        member
+        for member in members
+        if type(member) is dict and member.get("path") == relative_checker
+    ]
+    if len(matching_members) != 1 or matching_members[0] != {
+        "path": relative_checker,
+        "sha256": checker_identity["sha256"],
+        "size_bytes": checker_identity["size_bytes"],
+    }:
+        raise GateError("selected arithmetic checker does not join its package member")
+    sources = manifest["external_sources"]
+    if type(sources) is not list:
+        raise GateError("package external source set is malformed")
+    matching_sources = [
+        source
+        for source in sources
+        if type(source) is dict
+        and source.get("role") == "tool.independent_arithmetic_v4.py"
+        and source.get("package_path") == relative_checker
+    ]
+    if (
+        len(matching_sources) != 1
+        or set(matching_sources[0])
+        != {"package_path", "parse_json", "role", "source_identity"}
+        or matching_sources[0].get("parse_json") is not False
+    ):
+        raise GateError("independent arithmetic package source role drifted")
+    source_identity = matching_sources[0].get("source_identity")
+    if (
+        type(source_identity) is not dict
+        or set(source_identity)
+        != {"device", "inode", "mode", "mode_octal", "path", "sha256", "size_bytes"}
+        or type(source_identity.get("device")) is not int
+        or type(source_identity.get("inode")) is not int
+        or type(source_identity.get("mode")) is not int
+        or source_identity.get("mode_octal") != f"{source_identity.get('mode'):04o}"
+        or type(source_identity.get("path")) is not str
+        or not Path(source_identity["path"]).is_absolute()
+        or source_identity.get("sha256") != checker_identity["sha256"]
+        or source_identity.get("size_bytes") != checker_identity["size_bytes"]
+    ):
+        raise GateError("independent arithmetic source bytes differ from the selected package member")
+    return repository_head
+
+
+def _execution_repository_head(selection: Mapping[str, Any]) -> str:
+    """Observe one clean live checkout with the exact Git selected by Gate 1."""
+
+    tools = _mapping(selection.get("tools"), "selected Gate 1 tools")
+    inputs = _mapping(selection.get("inputs"), "selected Gate 1 inputs")
+    git_identity = _identity(tools.get("git"), "selected Git executable")
+    project_lock_identity = _identity(inputs.get("project_lock"), "selected repository PROJECT_LOCK")
+    project_lock_path = Path(str(project_lock_identity["path"]))
+    if project_lock_path.name != "PROJECT_LOCK.md" or not project_lock_path.is_absolute():
+        raise GateError("selected repository root binding drifted")
+    git_path = Path(str(git_identity["path"]))
+    repository_dir = project_lock_path.parent
+    snapshot_regular(project_lock_path, expected_identity=project_lock_identity)
+    snapshot_regular(git_path, expected_identity=git_identity)
+
+    environment = {
+        "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_OPTIONAL_LOCKS": "0",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PATH": "/usr/bin",
+    }
+
+    def run_git(*arguments: str, label: str) -> subprocess.CompletedProcess[bytes]:
+        try:
+            return subprocess.run(
+                [str(git_path), "-C", str(repository_dir), *arguments],
+                check=False,
+                env=environment,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=10,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise GateError(f"live repository {label} observation failed") from exc
+
+    top_level = run_git("rev-parse", "--show-toplevel", label="top-level")
+    expected_top_level = os.fsencode(repository_dir) + b"\n"
+    if (
+        top_level.returncode != 0
+        or top_level.stderr
+        or top_level.stdout != expected_top_level
+    ):
+        raise GateError("selected PROJECT_LOCK parent is not the live repository top-level")
+
+    completed = run_git("rev-parse", "--verify", "HEAD", label="HEAD")
+    if (
+        completed.returncode != 0
+        or completed.stderr
+        or len(completed.stdout) != 41
+        or not completed.stdout.endswith(b"\n")
+    ):
+        raise GateError("live repository HEAD observation was not one clean SHA")
+    try:
+        observed = completed.stdout[:-1].decode("ascii")
+    except UnicodeDecodeError as exc:
+        raise GateError("live repository HEAD was not ASCII") from exc
+    if len(observed) != 40 or any(character not in "0123456789abcdef" for character in observed):
+        raise GateError("live repository HEAD was malformed")
+
+    for arguments, label in (
+        (("diff", "--quiet", "--no-ext-diff", "--"), "tracked worktree"),
+        (("diff", "--cached", "--quiet", "--no-ext-diff", "--"), "tracked index"),
+    ):
+        clean = run_git(*arguments, label=label)
+        if clean.returncode != 0 or clean.stdout or clean.stderr:
+            raise GateError(f"live repository {label} is not clean")
+
+    final_head = run_git("rev-parse", "--verify", "HEAD", label="final HEAD")
+    if (
+        final_head.returncode != 0
+        or final_head.stderr
+        or final_head.stdout != completed.stdout
+    ):
+        raise GateError("live repository HEAD drifted during Gate 1 observation")
+
+    snapshot_regular(git_path, expected_identity=git_identity)
+    snapshot_regular(project_lock_path, expected_identity=project_lock_identity)
+    if observed != selection.get("repository_head"):
+        raise GateError("Gate 1 selection HEAD differs from the live execution HEAD")
+    return observed
 
 
 def _tool_namespace(
@@ -778,6 +1021,7 @@ def _arithmetic_replay(
     root: Mapping[str, Any],
     selection: Mapping[str, Any],
     checker: Mapping[str, object],
+    package_birth_head: str,
 ) -> tuple[Mapping[str, Any], dict[str, Mapping[str, Any]]]:
     record = _keys(
         positive,
@@ -816,6 +1060,7 @@ def _arithmetic_replay(
         or pair_selection.get("run_nonce") != root["run_nonce"]
         or pair_selection.get("manager_epoch_digest") != _epoch_digest(root["manager_epoch"])
         or pair_selection.get("gate1_formal_eligible") is not True
+        or pair_selection.get("repository_head") != selection["repository_head"]
     ):
         raise GateError("positive pair is not formally joined to this campaign")
     identities = {
@@ -905,6 +1150,7 @@ def _arithmetic_replay(
         or common.get("campaign_id") != root["campaign_id"]
         or common.get("run_nonce") != root["run_nonce"]
         or common.get("manager_epoch_digest") != _epoch_digest(root["manager_epoch"])
+        or common.get("repository_head") != selection["repository_head"]
         or common_prestate_id != expected_common_prestate_id
     ):
         raise GateError("positive common_prestate_id derivation drifted")
@@ -1048,7 +1294,7 @@ def _arithmetic_replay(
         "schema": ARITHMETIC_SCHEMA,
         "checker": "independent_arithmetic_v4.verify_formal_bundle",
         "status": "PASS_FORMAL_MECHANISM_POSITIVE_CONTROL",
-        "repository_head": selection["repository_head"],
+        "repository_head": package_birth_head,
         "selection_identity": dict(identities["pair_selection"]),
         "checks": required_checks,
         "control": {"generated": 0, "compiled": 0, "applied": 0},
@@ -1189,6 +1435,11 @@ def evaluate_gate(
         raise GateError("selection does not bind the detached campaign root bytes")
     if root["campaign_closed"] is not False:
         raise GateError("campaign was already closed")
+    package_birth_head = _package_birth_repository_head(
+        root=root,
+        selection=selection,
+    )
+    execution_head = _execution_repository_head(selection)
     prospective = root["stage_topology"]["prospective_ab16"]
     future_paths = [
         prospective["manifest_path"],
@@ -1364,6 +1615,7 @@ def evaluate_gate(
         root=root,
         selection=selection,
         checker=namespaces["independent_arithmetic_v4"],
+        package_birth_head=package_birth_head,
     )
     arithmetic_common_id = _strict_sha256(
         arithmetic.get("common_prestate_id"),
@@ -1415,6 +1667,14 @@ def evaluate_gate(
         "campaign_id": root["campaign_id"],
         "run_nonce": root["run_nonce"],
         "repository_head": root["repository_head"],
+        "repository_identity_join": {
+            "checker_package_birth_head": package_birth_head,
+            "gate1_selection_execution_head": execution_head,
+            "checker_receipt_package_birth_joined": True,
+            "checker_selected_package_member_joined": True,
+            "selection_live_execution_joined": True,
+            "tracked_checkout_clean": True,
+        },
         "campaign_root_identity": dict(campaign_root_identity),
         "gate1_selection_identity": dict(selection_identity),
         "manager_epoch": dict(admission["manager_epoch"]),

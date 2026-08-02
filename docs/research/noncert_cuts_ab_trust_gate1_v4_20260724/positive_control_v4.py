@@ -32,7 +32,7 @@ from google.protobuf.message import DecodeError, Message
 from ortools.sat import cp_model_pb2
 
 
-SELECTION_SCHEMA = "noncert-cuts-gate1-v4-fixture-selection-v1"
+SELECTION_SCHEMA = "noncert-cuts-gate1-v4-fixture-selection-v2"
 COMMON_SCHEMA = "noncert-cuts-gate1-v4-common-prestate-v1"
 BINDING_SCHEMA = "noncert-cuts-gate1-v4-arm-prestate-binding-v1"
 BINDING_SET_SCHEMA = "noncert-cuts-gate1-v4-binding-set-v1"
@@ -491,6 +491,7 @@ def seal_common_prestate(
     campaign_id: str,
     run_nonce: str,
     manager_epoch_digest: str,
+    repository_head: str,
 ) -> dict[str, object]:
     """Seal all pre-injection truth before either arm can create a clone."""
 
@@ -527,6 +528,12 @@ def seal_common_prestate(
     }.items():
         if type(value) is not str or not value:
             raise ValueError(f"{label} must be a non-empty string")
+    if (
+        type(repository_head) is not str
+        or len(repository_head) != 40
+        or any(character not in "0123456789abcdef" for character in repository_head)
+    ):
+        raise ValueError("repository_head must be a lowercase 40-hex Git identity")
     artifact_identities = {
         "pre_model": _write_exclusive(common_dir / "pre-injection-model.pb", model_raw),
         "response": _write_exclusive(common_dir / "pre-injection-response.pb", response_raw),
@@ -555,7 +562,7 @@ def seal_common_prestate(
         "campaign_id": campaign_id,
         "run_nonce": run_nonce,
         "manager_epoch_digest": manager_epoch_digest,
-        "repository_head": EXPECTED_HEAD,
+        "repository_head": repository_head,
         "selection_identity": selection,
         "common_prestate_id": common_id,
         "artifacts": artifact_identities,
@@ -1334,6 +1341,7 @@ def build_tiny_offline_fixture(root: Path) -> dict[str, object]:
         "run_nonce": "offline-run-v4",
         "manager_epoch_digest": "offline-manager-epoch-v4",
         "gate1_formal_eligible": False,
+        "repository_head": EXPECTED_HEAD,
     }
     selection_identity = _write_json_exclusive(root / "selection.json", selection)
     values = tiny_inputs()
@@ -1344,6 +1352,7 @@ def build_tiny_offline_fixture(root: Path) -> dict[str, object]:
         campaign_id=selection["campaign_id"],
         run_nonce=selection["run_nonce"],
         manager_epoch_digest=selection["manager_epoch_digest"],
+        repository_head=selection["repository_head"],
     )
     bindings = create_arm_bindings(root)
     control = materialize_arm(root, "control")

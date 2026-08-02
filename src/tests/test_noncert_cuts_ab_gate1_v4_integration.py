@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import subprocess
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -16,7 +17,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724"
-HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
+PACKAGE_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
 NOW = "2026-07-24T00:00:00Z"
 BOOT = "11111111-2222-3333-4444-555555555555"
 
@@ -98,6 +99,62 @@ def _json(path: Path, value: object, *, newline: bool = True) -> dict[str, objec
     raw = GATE.canonical_json(value) + (b"\n" if newline else b"")
     _write(path, raw)
     return {"raw": raw, "identity": _detached(path)}
+
+
+def _clean_git_checkout(tmp_path: Path) -> tuple[Path, Path, str]:
+    repository = tmp_path / "repo"
+    project_lock = _write(repository / "PROJECT_LOCK.md", b"# fixture project lock\n")
+    _write(repository / "tracked.txt", b"tracked fixture bytes\n")
+    git = "/usr/bin/git"
+    environment = {
+        "GIT_AUTHOR_DATE": "2026-07-24T00:00:00+00:00",
+        "GIT_COMMITTER_DATE": "2026-07-24T00:00:00+00:00",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PATH": "/usr/bin",
+    }
+    commands = (
+        (git, "init", "--quiet", str(repository)),
+        (git, "-C", str(repository), "add", "--", "PROJECT_LOCK.md", "tracked.txt"),
+        (
+            git,
+            "-C",
+            str(repository),
+            "-c",
+            "core.hooksPath=/dev/null",
+            "-c",
+            "user.name=Gate1 fixture",
+            "-c",
+            "user.email=gate1-fixture@example.invalid",
+            "commit",
+            "--quiet",
+            "-m",
+            "Gate1 fixture",
+        ),
+    )
+    for command in commands:
+        subprocess.run(
+            command,
+            check=True,
+            env=environment,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=10,
+        )
+    completed = subprocess.run(
+        (git, "-C", str(repository), "rev-parse", "--verify", "HEAD"),
+        check=True,
+        env=environment,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=10,
+    )
+    repository_head = completed.stdout.decode("ascii").strip()
+    assert len(repository_head) == 40 and repository_head != PACKAGE_HEAD
+    return repository, project_lock, repository_head
 
 
 def _epoch(tmp_path: Path) -> dict[str, object]:
@@ -202,6 +259,7 @@ def _fixture(
 ) -> dict[str, Any]:
     campaign = tmp_path / campaign_name
     (campaign / "campaign-authority").mkdir(parents=True)
+    _repository, project_lock, execution_head = _clean_git_checkout(tmp_path)
     mandatory = _write(tmp_path / "inputs/mandatory.json", b'{"instances":[]}\n')
     candidates = _write(
         tmp_path / "inputs/candidates.json",
@@ -239,42 +297,38 @@ def _fixture(
     tools["python3_13"] = _detached(Path(epoch["attestation_toolchain"]["python"]["path"]))
     tools["sudo"] = _detached(Path(epoch["attestation_toolchain"]["sudo"]["path"]))
     tools["resource_verifier_v4"] = _detached(fake_resource)
-    tools["independent_arithmetic_v4"] = _detached(fake_checker)
+    tools["git"] = _detached(Path("/usr/bin/git"))
     tools["positive_control_gate_v4"] = _detached(RESEARCH / "positive_control_gate_v4.py")
     inputs = {
         "candidate_placements": _detached(candidates),
         "mandatory_instances": _detached(mandatory),
+        "project_lock": _detached(project_lock),
     }
     for role in AUTH.REQUIRED_GATE1_INPUT_ROLES:
         if role not in inputs:
-            path = (
-                _write(
-                    tmp_path / "repo/PROJECT_LOCK.md",
-                    b"# fixture project lock\n",
-                )
-                if role == "project_lock"
-                else _write(
-                    tmp_path / f"inputs/{role}",
-                    f"fixture input role: {role}\n".encode(),
-                )
+            path = _write(
+                tmp_path / f"inputs/{role}",
+                f"fixture input role: {role}\n".encode(),
             )
             inputs[role] = _detached(path)
     package = AUTH.build_package(
         campaign / "campaign-authority/package",
         [
             AUTH.SourceSpec("candidates.json", candidates, parse_json=True),
-            AUTH.SourceSpec("fake-checker.py", fake_checker),
+            AUTH.SourceSpec("tool.independent_arithmetic_v4.py", fake_checker),
             AUTH.SourceSpec("fake-resource.py", fake_resource),
             AUTH.SourceSpec("mandatory.json", mandatory, parse_json=True),
         ],
-        repository_head=HEAD,
+        repository_head=PACKAGE_HEAD,
         run_nonce="gate1-v4-integration-fixture",
         manager_epoch=epoch,
     )
+    packaged_checker = Path(package["package_dir"]) / "payload/tool.independent_arithmetic_v4.py"
+    tools["independent_arithmetic_v4"] = _detached(packaged_checker)
     root = AUTH.build_campaign_root(
         campaign,
         package=package,
-        repository_head=HEAD,
+        repository_head=execution_head,
         run_nonce="gate1-v4-integration-fixture",
         manager_epoch=epoch,
         authority_tools=tools,
@@ -300,12 +354,13 @@ def _fixture(
     positive_dir = Path(positive_topology["root_dir"])
     positive_manager_epoch_digest = hashlib.sha256(GATE.canonical_json(epoch) + b"\n").hexdigest()
     pair_selection = {
-        "schema": "noncert-cuts-gate1-v4-formal-positive-selection-v1",
+        "schema": "noncert-cuts-gate1-v4-formal-positive-selection-v2",
         "purpose": "gate1_v4_formal_campaign_positive_control",
         "campaign_id": root["campaign_id"],
         "run_nonce": root["run_nonce"],
         "manager_epoch_digest": positive_manager_epoch_digest,
         "gate1_formal_eligible": True,
+        "repository_head": execution_head,
     }
     pair_member = _json(positive_dir / "selection.json", pair_selection)
     common_artifacts = {
@@ -317,6 +372,7 @@ def _fixture(
         "campaign_id": root["campaign_id"],
         "run_nonce": root["run_nonce"],
         "manager_epoch_digest": positive_manager_epoch_digest,
+        "repository_head": execution_head,
         "selection_identity": pair_member["identity"],
         "artifacts": {role: member["identity"] for role, member in common_artifacts.items()},
     }
@@ -662,7 +718,7 @@ def _fixture(
         "schema": GATE.ARITHMETIC_SCHEMA,
         "checker": "independent_arithmetic_v4.verify_formal_bundle",
         "status": "PASS_FORMAL_MECHANISM_POSITIVE_CONTROL",
-        "repository_head": HEAD,
+        "repository_head": PACKAGE_HEAD,
         "selection_identity": pair_member["identity"],
         "common_prestate_id": common_prestate_id,
         "common_prestate": {
@@ -747,7 +803,7 @@ def _fixture(
             "resource_lifecycle_v4": _bound(RESEARCH / "resource_lifecycle_v4.py"),
             "resource_verifier_v4": _bound(fake_resource),
             "gate1_unit_orchestrator_v4": _bound(RESEARCH / "gate1_unit_orchestrator_v4.py"),
-            "independent_arithmetic_v4": _bound(fake_checker),
+            "independent_arithmetic_v4": _bound(packaged_checker),
             "positive_control_gate_v4": _bound(RESEARCH / "positive_control_gate_v4.py"),
         },
         "checkpoints": checkpoints,
@@ -755,6 +811,10 @@ def _fixture(
         "resources": resource_replays,
         "positive": positive,
         "gate_admission": gate_admission,
+        "package_head": PACKAGE_HEAD,
+        "package_dir": Path(package["package_dir"]),
+        "execution_head": execution_head,
+        "repository": _repository,
     }
 
 
@@ -820,7 +880,10 @@ def test_gate_pass_is_only_mechanism_credible_and_keeps_campaign_open(
     tmp_path: Path,
 ) -> None:
     fixture = _fixture(tmp_path)
+    _write(fixture["repository"] / ".artifacts/untracked-evidence.txt", b"untracked evidence\n")
+    _write(fixture["package_dir"] / "payload/__pycache__/runtime.pyc", b"runtime cache\n")
     result = _evaluate(fixture)
+    assert result["schema_version"] == "noncert-cuts-gate1-v4-final-gate-v2"
     assert result["status"] == GATE.GATE_STATUS
     assert result["verdict"] == "MECHANISM_CREDIBLE"
     assert result["mechanism_credible"] is True
@@ -840,6 +903,15 @@ def test_gate_pass_is_only_mechanism_credible_and_keeps_campaign_open(
     assert result["positive_control"]["control"]["applied"] == 0
     assert result["positive_control"]["treatment"]["applied"] == 1
     assert result["positive_control"]["selected"]["lhs"] > result["positive_control"]["selected"]["rhs"]
+    assert fixture["package_head"] != fixture["execution_head"]
+    assert result["repository_identity_join"] == {
+        "checker_package_birth_head": fixture["package_head"],
+        "gate1_selection_execution_head": fixture["execution_head"],
+        "checker_receipt_package_birth_joined": True,
+        "checker_selected_package_member_joined": True,
+        "selection_live_execution_joined": True,
+        "tracked_checkout_clean": True,
+    }
 
 
 def test_final_gate_refuses_a_generic_or_drill_arithmetic_api(
@@ -854,7 +926,67 @@ def test_final_gate_refuses_a_generic_or_drill_arithmetic_api(
             checker={
                 "verify_bundle": lambda bundle: bundle["expected_receipt"],
             },
+            package_birth_head=fixture["package_head"],
         )
+
+
+def test_arithmetic_checker_cannot_echo_the_live_execution_head(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path)
+    receipt = fixture["positive"]["bundle"]["expected_receipt"]
+    receipt["repository_head"] = fixture["execution_head"]
+    raw = GATE.canonical_json(receipt) + b"\n"
+    fixture["positive"]["arithmetic_raw"] = raw
+    fixture["positive"]["arithmetic_identity"] = {
+        **fixture["positive"]["arithmetic_identity"],
+        "size_bytes": len(raw),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+    }
+
+    with pytest.raises(GATE.GateError, match="PASS semantics drifted"):
+        _evaluate(fixture)
+
+
+def test_selected_checker_must_be_the_canonical_sealed_package_member(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path)
+    selected = fixture["selection"]["tools"]["independent_arithmetic_v4"]
+    selected_path = Path(selected["path"])
+    outside_path = _write(tmp_path / "outside/independent_arithmetic_v4.py", selected_path.read_bytes())
+    outside_identity = _detached(outside_path)
+    assert outside_identity["sha256"] == selected["sha256"]
+    selection = copy.deepcopy(fixture["selection"])
+    selection["tools"]["independent_arithmetic_v4"] = outside_identity
+
+    with pytest.raises(GATE.GateError, match="canonical package member"):
+        GATE._package_birth_repository_head(  # noqa: SLF001
+            root=fixture["root"],
+            selection=selection,
+        )
+
+
+@pytest.mark.parametrize("staging", [False, True], ids=["worktree", "index"])
+def test_live_execution_checkout_must_be_tracked_clean(
+    tmp_path: Path,
+    staging: bool,
+) -> None:
+    fixture = _fixture(tmp_path)
+    _write(fixture["repository"] / "tracked.txt", b"tracked drift\n")
+    expected = "tracked worktree"
+    if staging:
+        subprocess.run(
+            ("/usr/bin/git", "-C", str(fixture["repository"]), "add", "--", "tracked.txt"),
+            check=True,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=10,
+        )
+        expected = "tracked index"
+    with pytest.raises(GATE.GateError, match=expected):
+        _evaluate(fixture)
 
 
 def test_missing_resource_or_manager_checkpoint_fails_closed(tmp_path: Path) -> None:

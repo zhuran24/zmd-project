@@ -33,6 +33,7 @@ def _load(name: str, filename: str) -> ModuleType:
 AUTH = _load("noncert_cuts_campaign_authority_v4", "campaign_authority_v4.py")
 ATTESTOR = _load("noncert_cuts_manager_attestor_v4", "manager_attestor_v4.py")
 sys.modules["campaign_authority_v4"] = AUTH
+EXECUTION = _load("noncert_cuts_gate1_campaign_execution_v4", "gate1_campaign_execution_v4.py")
 DRIVER = _load("noncert_cuts_gate1_campaign_driver_v4", "gate1_campaign_driver_v4.py")
 LIFECYCLE = _load("noncert_cuts_resource_lifecycle_v4", "resource_lifecycle_v4.py")
 RESOURCE_VERIFIER = _load("noncert_cuts_resource_verifier_v4", "resource_verifier_v4.py")
@@ -153,8 +154,14 @@ def _capture_result(
     }
 
 
-def _authority(tmp_path: Path) -> dict[str, Any]:
-    campaign = tmp_path / "campaign"
+def _authority(
+    tmp_path: Path,
+    *,
+    campaign_name: str = "campaign",
+    package_head: str = HEAD,
+    selected_execution_path: Path | None = None,
+) -> dict[str, Any]:
+    campaign = tmp_path / campaign_name
     (campaign / "campaign-authority").mkdir(parents=True)
     mandatory = _write(tmp_path / "inputs/mandatory.json", b'{"instances":[]}\n')
     candidates = _write(tmp_path / "inputs/candidates.json", b'{"facility_pools":{}}\n')
@@ -169,7 +176,7 @@ def _authority(tmp_path: Path) -> dict[str, Any]:
             AUTH.SourceSpec("mandatory.json", mandatory, parse_json=True),
             AUTH.SourceSpec("observer.py", observer),
         ],
-        repository_head=HEAD,
+        repository_head=package_head,
         run_nonce="cuts-gate1-v4-fixture",
         manager_epoch=epoch,
     )
@@ -187,6 +194,8 @@ def _authority(tmp_path: Path) -> dict[str, Any]:
     tools["manager_attestor_v4"] = _detached(Path(epoch["attestation_toolchain"]["attestor"]["path"]))
     tools["python3_13"] = _detached(Path(epoch["attestation_toolchain"]["python"]["path"]))
     tools["sudo"] = _detached(Path(epoch["attestation_toolchain"]["sudo"]["path"]))
+    if selected_execution_path is not None:
+        tools["gate1_campaign_execution_v4"] = _detached(selected_execution_path)
     tools.update({"driver": _detached(driver), "observer": _detached(observer)})
     inputs: dict[str, dict[str, object]] = {}
     for role in AUTH.REQUIRED_GATE1_INPUT_ROLES:
@@ -290,6 +299,9 @@ def _gate_result(
     authority: dict[str, Any],
     gate_admission_epoch_identity: dict[str, object],
 ) -> dict[str, object]:
+    manifest = json.loads(
+        Path(authority["package"]["manifest_identity"]["path"]).read_bytes()
+    )
     return {
         "campaign_id": authority["root"]["campaign_id"],
         "continuation_authorized": False,
@@ -298,7 +310,69 @@ def _gate_result(
         "manager_epoch": authority["epoch"],
         "mechanism_credible": True,
         "organic_arm_launch_authorized": False,
+        "repository_head": authority["root"]["repository_head"],
+        "repository_identity_join": {
+            "checker_package_birth_head": manifest["repository_head"],
+            "checker_receipt_package_birth_joined": True,
+            "checker_selected_package_member_joined": True,
+            "gate1_selection_execution_head": authority["root"]["repository_head"],
+            "selection_live_execution_joined": True,
+            "tracked_checkout_clean": True,
+        },
+        "schema_version": "noncert-cuts-gate1-v4-final-gate-v2",
         "status": "CUTS_GATE1_V4_AUTHORITY_COMPLETION_PASS",
+    }
+
+
+def _terminal_archive_fixture(
+    tmp_path: Path,
+    *,
+    legacy_execution: bool = True,
+    package_head: str = "2" * 40,
+    runtime_extra: bool = True,
+) -> dict[str, Any]:
+    selected_execution_path: Path | None = None
+    if legacy_execution:
+        selected_execution_path = _write(
+            tmp_path / "legacy-selected/gate1_campaign_execution_v4.py",
+            (RESEARCH / "gate1_campaign_execution_v4.py").read_bytes(),
+        )
+    authority = _authority(
+        tmp_path,
+        campaign_name="run-terminal-failure-fixture",
+        package_head=package_head,
+        selected_execution_path=selected_execution_path,
+    )
+    selection, selection_identity = _selection(authority)
+    _, admission_identity = _gate_admission_epoch(authority, selection)
+    receipt_path = Path(
+        authority["root"]["stage_topology"]["gate1_v4"]["positive_control"][
+            "arithmetic_receipt_path"
+        ]
+    )
+    _write(receipt_path, b'{"status":"PASS_BEFORE_TERMINAL_ASSEMBLY"}\n')
+    receipt_identity = _detached(receipt_path)
+    runtime_path = Path(authority["package"]["package_dir"]) / "payload/__pycache__/runtime.cpython-313.pyc"
+    if runtime_extra:
+        _write(runtime_path, b"runtime cache outside sealed package domain\n")
+    failure_path = _write(
+        tmp_path / "terminal-assembly-failure.log",
+        b"GateError: independent arithmetic PASS semantics drifted\n",
+    )
+    archive_tools = {
+        "campaign_authority_v4": _detached(RESEARCH / "campaign_authority_v4.py"),
+        "gate1_campaign_execution_v4": _detached(RESEARCH / "gate1_campaign_execution_v4.py"),
+    }
+    return {
+        **authority,
+        "admission_identity": admission_identity,
+        "archive_tools": archive_tools,
+        "failure_identity": _detached(failure_path),
+        "failure_path": failure_path,
+        "receipt_identity": receipt_identity,
+        "runtime_path": runtime_path,
+        "selection": selection,
+        "selection_identity": selection_identity,
     }
 
 
@@ -575,6 +649,12 @@ def test_campaign_root_predeclares_gate1_and_reserved_ab16_without_creating_futu
         authority["campaign"] / "gate1-v4" / "authority" / "manager-epoch-gate-admission.json"
     )
     assert not Path(gate["gate_admission_epoch_path"]).exists()
+    terminal_failure_path = AUTH.terminal_assembly_failure_path(root)
+    assert terminal_failure_path == (
+        authority["campaign"] / "gate1-v4/authority/terminal-assembly-failure-a001.json"
+    )
+    assert terminal_failure_path in AUTH.reserved_child_paths(root)
+    assert not terminal_failure_path.exists()
     positive = gate["positive_control"]
     positive_root = Path(gate["positive_common_dir"])
     assert Path(positive["root_dir"]) == positive_root
@@ -634,6 +714,7 @@ def test_gate1_selection_binds_exact_bytes_epoch_contract_and_reserved_slots(tmp
     loaded = AUTH.load_gate1_selection_bytes(raw, identity)
     assert loaded["selection_id"] == selection["selection_id"]
     assert loaded["resource_contract"] == AUTH.RESOURCE_CONTRACT
+    assert "git" in loaded["tools"]
     root, replayed = AUTH.replay_gate1_selection(
         authority["root_path"],
         authority["root_identity"],
@@ -905,7 +986,7 @@ def test_selection_rejects_future_slot_precreation_and_epoch_drift(tmp_path: Pat
 
 
 def test_continuation_keeps_campaign_open_and_cannot_consume_future_slots(tmp_path: Path) -> None:
-    authority = _authority(tmp_path)
+    authority = _authority(tmp_path, package_head="2" * 40)
     selection, selection_identity = _selection(authority)
     _, gate_admission_identity = _gate_admission_epoch(
         authority,
@@ -940,6 +1021,8 @@ def test_continuation_keeps_campaign_open_and_cannot_consume_future_slots(tmp_pa
     assert continuation["continuation_authorized"] is True
     assert continuation["gate_admission_epoch_identity"] == gate_admission_identity
     assert continuation["organic_arm_launch_authorized"] is False
+    assert gate_result["repository_identity_join"]["checker_package_birth_head"] == "2" * 40
+    assert gate_result["repository_identity_join"]["gate1_selection_execution_head"] == HEAD
     assert Path(continuation_identity["path"]).exists()
     prospective = authority["root"]["stage_topology"]["prospective_ab16"]
     assert not Path(prospective["manifest_path"]).exists()
@@ -1004,12 +1087,23 @@ def test_gate_admission_epoch_and_eligible_only_gate_are_fail_closed(
             b'{"status":"PASS"}\n',
         )
 
+    false_join = copy.deepcopy(gate_result)
+    false_join["repository_identity_join"]["selection_live_execution_joined"] = False
+    wrong_birth = copy.deepcopy(gate_result)
+    wrong_birth["repository_identity_join"]["checker_package_birth_head"] = "2" * 40
+    incomplete_join = copy.deepcopy(gate_result)
+    incomplete_join["repository_identity_join"].pop("tracked_checkout_clean")
     for mutation in (
         dict(gate_result, continuation_eligible=False),
         dict(gate_result, continuation_authorized=True),
         dict(gate_result, gate_admission_epoch_identity=gate_identity),
+        dict(gate_result, repository_head="2" * 40),
+        dict(gate_result, schema_version="noncert-cuts-gate1-v4-final-gate-v1"),
+        false_join,
+        wrong_birth,
+        incomplete_join,
     ):
-        with pytest.raises(AUTH.AuthorityError, match="does not authorize"):
+        with pytest.raises(AUTH.AuthorityError, match="does not authorize|key set drifted"):
             AUTH.make_continuation_authorization(
                 authority["root"],
                 campaign_root_identity=authority["root_identity"],
@@ -1099,4 +1193,184 @@ def test_continuation_write_rechecks_detached_replay_bytes(tmp_path: Path) -> No
             detached_replay_identities=replay_identities,
             current_manager_epoch=drifted,
             created_at_utc=NOW,
+        )
+
+
+def test_terminal_failure_archive_freezes_runtime_extras_and_only_removes_authority(
+    tmp_path: Path,
+) -> None:
+    fixture = _terminal_archive_fixture(tmp_path)
+    archive_identity = AUTH.archive_terminal_assembly_failure(
+        campaign_root_identity=fixture["root_identity"],
+        gate1_selection_identity=fixture["selection_identity"],
+        failure_evidence_identity=fixture["failure_identity"],
+        archive_tool_identities=fixture["archive_tools"],
+        archived_at_utc=NOW,
+    )
+    marker_path = AUTH.terminal_assembly_failure_path(fixture["root"])
+    assert Path(archive_identity["path"]) == marker_path
+    record = AUTH.replay_terminal_assembly_failure_archive(
+        campaign_root_identity=fixture["root_identity"],
+        archive_identity=archive_identity,
+    )
+    assert record["status"] == AUTH.TERMINAL_ASSEMBLY_FAILURE_STATUS
+    assert record["archive_tool_selected_by_failed_campaign"] is False
+    assert record["campaign_root_identity"] == fixture["root_identity"]
+    assert record["gate1_selection_identity"] == fixture["selection_identity"]
+    assert record["gate_admission_epoch_identity"] == fixture["admission_identity"]
+    assert record["independent_arithmetic_receipt_identity"] == fixture["receipt_identity"]
+    assert record["partial_gate_identity"] is None
+    assert record["repository_head"] == HEAD
+    package_manifest = json.loads(
+        Path(fixture["package"]["manifest_identity"]["path"]).read_bytes()
+    )
+    assert package_manifest["repository_head"] == "2" * 40 != record["repository_head"]
+    assert all(
+        record[field] is False
+        for field in (
+            "ab16_slot_attempt",
+            "continuation_authorized",
+            "global_claim_authorized",
+            "organic_arm_launch_authorized",
+            "resume_authorized",
+        )
+    )
+    assert record["replacement_policy"] == {
+        "failed_package_reuse_authorized": False,
+        "new_campaign_root_required": True,
+        "new_offline_candidate_required": True,
+        "new_path_preregistration_required": True,
+        "new_run_nonce_required": True,
+    }
+    projected = {
+        member["path"]: member
+        for member in record["campaign_tree_projection"]["members"]
+    }
+    runtime_relative = fixture["runtime_path"].relative_to(fixture["campaign"]).as_posix()
+    assert projected[runtime_relative]["sha256"] == _detached(fixture["runtime_path"])["sha256"]
+    assert not marker_path.is_relative_to(fixture["campaign"] / "prospective-ab16/arms")
+    assert "attempt-" not in marker_path.name
+
+    with pytest.raises(AUTH.AuthorityError, match="already exists"):
+        AUTH.archive_terminal_assembly_failure(
+            campaign_root_identity=fixture["root_identity"],
+            gate1_selection_identity=fixture["selection_identity"],
+            failure_evidence_identity=fixture["failure_identity"],
+            archive_tool_identities=fixture["archive_tools"],
+            archived_at_utc=NOW,
+        )
+    with pytest.raises(EXECUTION.ExecutionError, match="not running from the selected bytes"):
+        EXECUTION._load_authorities(  # noqa: SLF001
+            fixture["root_identity"],
+            fixture["selection_identity"],
+        )
+    with pytest.raises(AUTH.AuthorityError, match="cannot mint continuation"):
+        AUTH.make_continuation_authorization(
+            fixture["root"],
+            campaign_root_identity={},
+            gate1_selection_identity={},
+            gate_result={},
+            gate_result_identity={},
+            gate_admission_epoch_identity={},
+            detached_replay_identities={},
+            current_manager_epoch={},
+            created_at_utc=NOW,
+        )
+    with pytest.raises(AUTH.AuthorityError, match="cannot carry continuation"):
+        AUTH.validate_continuation_authorization({}, root=fixture["root"])
+
+    _write(fixture["campaign"] / "post-archive-mutation.txt", b"mutation\n")
+    with pytest.raises(AUTH.AuthorityError, match="changed after sealing"):
+        AUTH.replay_terminal_assembly_failure_archive(
+            campaign_root_identity=fixture["root_identity"],
+            archive_identity=archive_identity,
+        )
+
+
+def test_current_selected_execution_still_rejects_archived_campaign(
+    tmp_path: Path,
+) -> None:
+    fixture = _terminal_archive_fixture(
+        tmp_path,
+        legacy_execution=False,
+        runtime_extra=False,
+    )
+    archive_identity = AUTH.archive_terminal_assembly_failure(
+        campaign_root_identity=fixture["root_identity"],
+        gate1_selection_identity=fixture["selection_identity"],
+        failure_evidence_identity=fixture["failure_identity"],
+        archive_tool_identities=fixture["archive_tools"],
+        archived_at_utc=NOW,
+    )
+    record = AUTH.replay_terminal_assembly_failure_archive(
+        campaign_root_identity=fixture["root_identity"],
+        archive_identity=archive_identity,
+    )
+    assert record["archive_tool_selected_by_failed_campaign"] is True
+    with pytest.raises(EXECUTION.ExecutionError, match="archived terminal-assembly failure"):
+        EXECUTION._load_authorities(  # noqa: SLF001
+            fixture["root_identity"],
+            fixture["selection_identity"],
+        )
+
+
+@pytest.mark.parametrize("invalid_state", ("admission", "receipt", "continuation", "prospective"))
+def test_terminal_failure_archive_requires_exact_post_admission_pre_ab16_state(
+    tmp_path: Path,
+    invalid_state: str,
+) -> None:
+    fixture = _terminal_archive_fixture(tmp_path, runtime_extra=False)
+    gate = fixture["root"]["stage_topology"]["gate1_v4"]
+    if invalid_state == "admission":
+        Path(fixture["admission_identity"]["path"]).unlink()
+    elif invalid_state == "receipt":
+        Path(fixture["receipt_identity"]["path"]).unlink()
+    elif invalid_state == "continuation":
+        _write(Path(gate["continuation_path"]), b"{}\n")
+    else:
+        (fixture["campaign"] / "prospective-ab16").mkdir()
+    with pytest.raises(AUTH.AuthorityError):
+        AUTH.archive_terminal_assembly_failure(
+            campaign_root_identity=fixture["root_identity"],
+            gate1_selection_identity=fixture["selection_identity"],
+            failure_evidence_identity=fixture["failure_identity"],
+            archive_tool_identities=fixture["archive_tools"],
+            archived_at_utc=NOW,
+        )
+    assert not AUTH.terminal_assembly_failure_path(fixture["root"]).exists()
+
+
+def test_terminal_failure_archive_rejects_splices_and_sealed_member_drift(
+    tmp_path: Path,
+) -> None:
+    first = _terminal_archive_fixture(tmp_path / "first", runtime_extra=False)
+    second = _terminal_archive_fixture(tmp_path / "second", runtime_extra=False)
+    with pytest.raises(AUTH.AuthorityError, match="selection|join"):
+        AUTH.archive_terminal_assembly_failure(
+            campaign_root_identity=first["root_identity"],
+            gate1_selection_identity=second["selection_identity"],
+            failure_evidence_identity=first["failure_identity"],
+            archive_tool_identities=first["archive_tools"],
+            archived_at_utc=NOW,
+        )
+
+    sealed_member = Path(first["package"]["package_dir"]) / "payload/driver.py"
+    sealed_member.write_bytes(b"drifted sealed member\n")
+    with pytest.raises(AUTH.AuthorityError, match="sealed package member drifted"):
+        AUTH.archive_terminal_assembly_failure(
+            campaign_root_identity=first["root_identity"],
+            gate1_selection_identity=first["selection_identity"],
+            failure_evidence_identity=first["failure_identity"],
+            archive_tool_identities=first["archive_tools"],
+            archived_at_utc=NOW,
+        )
+
+    second["failure_path"].write_bytes(b"changed failure evidence\n")
+    with pytest.raises(AUTH.AuthorityError, match="current bytes drifted"):
+        AUTH.archive_terminal_assembly_failure(
+            campaign_root_identity=second["root_identity"],
+            gate1_selection_identity=second["selection_identity"],
+            failure_evidence_identity=second["failure_identity"],
+            archive_tool_identities=second["archive_tools"],
+            archived_at_utc=NOW,
         )
