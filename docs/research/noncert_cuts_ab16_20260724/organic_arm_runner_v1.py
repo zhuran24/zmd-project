@@ -32,6 +32,7 @@ import argparse
 from collections.abc import Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import dataclass
+import fcntl
 import hashlib
 import json
 import math
@@ -222,10 +223,62 @@ SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 SAFE_TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\Z")
 MAX_AUTHORITY_BYTES = 64 * 1024 * 1024
+PROD_SCALE_LOCK_PATHS = (
+    Path("/tmp/zmd-pj-codex-heavy-validation.lock"),
+    Path("/run/user/1000/zmd_pj_prod_scale_solver.lock"),
+    Path("/run/user/1000/zmd-pj-prod-scale-solve.lock"),
+)
+_PROD_SCALE_LOCK_DESCRIPTORS: tuple[int, ...] | None = None
 
 
 class RunnerError(RuntimeError):
     """An authority, lifecycle, evidence, or no-overwrite gate failed."""
+
+
+def _acquire_prod_scale_locks(
+    lock_paths: Sequence[Path] = PROD_SCALE_LOCK_PATHS,
+) -> tuple[int, ...]:
+    """Acquire every compatibility lock, closing any partial acquisition."""
+
+    if tuple(lock_paths) == () or len(set(lock_paths)) != len(lock_paths):
+        raise RunnerError("prod-scale lock path set is empty or duplicated")
+    descriptors: list[int] = []
+    try:
+        for lock_path in lock_paths:
+            absolute = Path(os.path.abspath(lock_path))
+            if not absolute.parent.is_dir():
+                raise RunnerError(f"prod-scale lock parent is unavailable: {absolute.parent}")
+            try:
+                descriptor = os.open(
+                    absolute,
+                    os.O_RDWR | os.O_CREAT | os.O_CLOEXEC | os.O_NOFOLLOW,
+                    0o600,
+                )
+            except OSError as exc:
+                raise RunnerError(f"prod-scale lock is unavailable: {absolute}") from exc
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except OSError as exc:
+                os.close(descriptor)
+                reason = "already held" if isinstance(exc, BlockingIOError) else "unavailable"
+                raise RunnerError(f"prod-scale lock is {reason}: {absolute}") from exc
+            descriptors.append(descriptor)
+        return tuple(descriptors)
+    except BaseException:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+        raise
+
+
+def _retain_process_lifetime_prod_scale_locks(
+    lock_paths: Sequence[Path] = PROD_SCALE_LOCK_PATHS,
+) -> None:
+    """Retain the formal lease until interpreter/process teardown closes its FDs."""
+
+    global _PROD_SCALE_LOCK_DESCRIPTORS
+    if _PROD_SCALE_LOCK_DESCRIPTORS is not None:
+        raise RunnerError("prod-scale process-lifetime locks are already initialized")
+    _PROD_SCALE_LOCK_DESCRIPTORS = _acquire_prod_scale_locks(lock_paths)
 
 
 @dataclass(frozen=True)
@@ -2187,11 +2240,107 @@ def _install_repository_import_root(repository_root: object) -> Path:
     return root
 
 
+def _read_small_ascii(path: Path, label: str) -> str:
+    """Read one procfs/cgroupfs control through a no-symlink descriptor."""
+
+    absolute = Path(os.path.abspath(path))
+    try:
+        parent_fd = _open_directory_chain(absolute.parent)
+    except OSError as exc:
+        raise RunnerError(f"{label} parent path is unavailable") from exc
+    flags = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW
+    try:
+        descriptor = os.open(absolute.name, flags, dir_fd=parent_fd)
+    except OSError as exc:
+        os.close(parent_fd)
+        raise RunnerError(f"{label} is unavailable") from exc
+    os.close(parent_fd)
+    try:
+        try:
+            before = os.fstat(descriptor)
+            if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1:
+                raise RunnerError(f"{label} is not a singly linked regular control")
+            chunks: list[bytes] = []
+            size = 0
+            while True:
+                chunk = os.read(descriptor, 4096)
+                if not chunk:
+                    break
+                size += len(chunk)
+                if size > 64 * 1024:
+                    raise RunnerError(f"{label} exceeds the bounded control size")
+                chunks.append(chunk)
+            after = os.fstat(descriptor)
+        except OSError as exc:
+            raise RunnerError(f"{label} same-FD read failed") from exc
+    finally:
+        os.close(descriptor)
+    if (before.st_dev, before.st_ino, before.st_mode, before.st_nlink) != (
+        after.st_dev,
+        after.st_ino,
+        after.st_mode,
+        after.st_nlink,
+    ):
+        raise RunnerError(f"{label} changed during same-FD read")
+    try:
+        text = b"".join(chunks).decode("ascii")
+    except UnicodeDecodeError as exc:
+        raise RunnerError(f"{label} is not ASCII") from exc
+    if "\x00" in text or "\r" in text:
+        raise RunnerError(f"{label} contains invalid control bytes")
+    return text
+
+
+def _current_unified_cgroup_path() -> Path:
+    records: list[str] = []
+    membership_path = Path("/proc") / str(os.getpid()) / "cgroup"
+    for line in _read_small_ascii(membership_path, "runner cgroup membership").splitlines():
+        hierarchy, separator, remainder = line.partition(":")
+        controllers, second_separator, path = remainder.partition(":")
+        if not separator or not second_separator:
+            raise RunnerError("runner cgroup membership is malformed")
+        if hierarchy == "0" and controllers == "":
+            records.append(path)
+    if len(records) != 1:
+        raise RunnerError("runner lacks one unified cgroup membership")
+    raw_path = records[0]
+    if not raw_path.startswith("/") or any(component in {"", ".", ".."} for component in raw_path.split("/")[1:]):
+        raise RunnerError("runner unified cgroup path is unsafe")
+    return Path(raw_path)
+
+
+def _require_prod_scale_unit_context(
+    unit_name: str,
+    resource_contract: Mapping[str, Any],
+) -> None:
+    """Reject a public run outside its selected, resource-capped unit."""
+
+    if os.geteuid() != os.getuid() or os.geteuid() == 0:
+        raise RunnerError("prod-scale runner must be the ordinary selected user")
+    control_group = _current_unified_cgroup_path()
+    if control_group.name != unit_name:
+        raise RunnerError(f"selected prod-scale resource unit context is absent: {unit_name}")
+    expected = {
+        "memory.high": str(resource_contract["memory_high_bytes"]),
+        "memory.max": str(resource_contract["memory_max_bytes"]),
+        "memory.swap.max": str(resource_contract["memory_swap_max_bytes"]),
+    }
+    cgroup_root = Path("/sys/fs/cgroup").joinpath(*control_group.parts[1:])
+    for control_name, expected_value in expected.items():
+        observed = _read_small_ascii(cgroup_root / control_name, f"runner cgroup {control_name}")
+        if observed.endswith("\n"):
+            observed = observed[:-1]
+        if "\n" in observed or observed != expected_value:
+            raise RunnerError(f"runner cgroup {control_name} differs from the prod-scale contract")
+
+
 def _run_with_hooks(
     selection_path: Path,
     hooks: ArmHooks,
     *,
     enforce_single_process_use: bool,
+    require_prod_scale_unit_context: bool = False,
+    retain_prod_scale_locks: bool = False,
 ) -> dict[str, object]:
     """Execute one selected arm; tests inject small hooks through this seam."""
 
@@ -2202,6 +2351,13 @@ def _run_with_hooks(
         _PUBLIC_RUN_STARTED = True
 
     manifest, selection, authority_identities, pre_run = _load_authority(selection_path)
+    if require_prod_scale_unit_context:
+        _require_prod_scale_unit_context(
+            str(selection["unit_name"]),
+            pre_run["resource_contract"],
+        )
+    if retain_prod_scale_locks:
+        _retain_process_lifetime_prod_scale_locks()
     attempt_dir = _prepare_selected_attempt(Path(selection["attempt_dir"]), pre_run)
     _install_repository_import_root(selection["repository_root"])
 
@@ -2718,12 +2874,14 @@ class ProductionArmHooks:
 
 
 def run_selected_arm(selection_path: Path | str) -> dict[str, object]:
-    """Public one-shot entry: one selected arm per fresh Python process."""
+    """Public one-shot entry owned by the selected prod-scale unit payload."""
 
     return _run_with_hooks(
         Path(selection_path),
         ProductionArmHooks(),
         enforce_single_process_use=True,
+        require_prod_scale_unit_context=True,
+        retain_prod_scale_locks=True,
     )
 
 

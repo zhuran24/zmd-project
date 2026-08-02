@@ -14,9 +14,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Callable, Mapping, Sequence
-from contextlib import contextmanager
 from dataclasses import dataclass
-import fcntl
 import hashlib
 import json
 import math
@@ -47,51 +45,10 @@ LAUNCH_ENVIRONMENT_KEYS = frozenset(
     }
 )
 MAX_TOOL_BYTES = 8 * 1024 * 1024
-PROD_SCALE_LOCK_PATHS = (
-    Path("/tmp/zmd-pj-codex-heavy-validation.lock"),
-    Path("/run/user/1000/zmd_pj_prod_scale_solver.lock"),
-    Path("/run/user/1000/zmd-pj-prod-scale-solve.lock"),
-)
 
 
 class OrchestratorError(RuntimeError):
     """Authority, lifecycle, or adapter observation failed closed."""
-
-
-@contextmanager
-def _exclusive_prod_scale_locks(
-    lock_paths: Sequence[Path] = PROD_SCALE_LOCK_PATHS,
-):
-    """Hold every compatibility lock for one formal prod-scale solve."""
-
-    if tuple(lock_paths) == () or len(set(lock_paths)) != len(lock_paths):
-        raise OrchestratorError("prod-scale lock path set is empty or duplicated")
-    descriptors: list[int] = []
-    try:
-        for lock_path in lock_paths:
-            absolute = Path(os.path.abspath(lock_path))
-            if not absolute.parent.is_dir():
-                raise OrchestratorError(f"prod-scale lock parent is unavailable: {absolute.parent}")
-            try:
-                descriptor = os.open(
-                    absolute,
-                    os.O_RDWR | os.O_CREAT | os.O_CLOEXEC | os.O_NOFOLLOW,
-                    0o600,
-                )
-            except OSError as exc:
-                raise OrchestratorError(f"prod-scale lock is unavailable: {absolute}") from exc
-            try:
-                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except OSError as exc:
-                os.close(descriptor)
-                reason = "already held" if isinstance(exc, BlockingIOError) else "unavailable"
-                raise OrchestratorError(f"prod-scale lock is {reason}: {absolute}") from exc
-            descriptors.append(descriptor)
-        yield
-    finally:
-        for descriptor in reversed(descriptors):
-            fcntl.flock(descriptor, fcntl.LOCK_UN)
-            os.close(descriptor)
 
 
 @dataclass(frozen=True)
@@ -221,6 +178,14 @@ class LifecycleAdapter(Protocol):
         """Stop only the selected InvocationID and prove no residual state."""
 
 
+SYSTEMD_LAUNCH_FIELDS = (
+    "ActiveState",
+    "SubState",
+    "MainPID",
+    "Result",
+    "ExecMainCode",
+    "ExecMainStatus",
+)
 SYSTEMD_PRETERMINAL_FIELDS = (
     "ActiveState",
     "CollectMode",
@@ -720,6 +685,24 @@ class SubprocessLifecycleAdapter:
         if list(payload_argv) != self.pre_run["launch"]["payload_argv"]:
             raise OrchestratorError("live payload argv drifted")
         self._run(systemd_run_argv, timeout=30)
+        try:
+            launch_state = self._show(unit_name, SYSTEMD_LAUNCH_FIELDS)
+        except OrchestratorError as exc:
+            raise OrchestratorError("selected unit disappeared before inner lifecycle") from exc
+        if launch_state["ActiveState"] in {"failed", "inactive"}:
+            raise OrchestratorError(
+                "selected unit terminated before inner lifecycle "
+                f"(ActiveState={launch_state['ActiveState']}, Result={launch_state['Result']}, "
+                f"ExecMainCode={launch_state['ExecMainCode']}, "
+                f"ExecMainStatus={launch_state['ExecMainStatus']})"
+            )
+        try:
+            supervisor_pid = int(launch_state["MainPID"])
+        except ValueError as exc:
+            raise OrchestratorError("selected unit MainPID is malformed") from exc
+        supervisor_starttime = _proc_starttime(supervisor_pid)
+        if supervisor_pid <= 0 or supervisor_starttime is None:
+            raise OrchestratorError("selected unit supervisor is absent before inner lifecycle")
         inner_path = Path(self.pre_run["output_paths"]["inner"])
         deadline = self._monotonic() + int(self.pre_run["resource_contract"]["runtime_max_seconds"]) - 60
         while self._monotonic() <= deadline:
@@ -744,6 +727,8 @@ class SubprocessLifecycleAdapter:
                     payload_reaped=value["payload_reaped"],
                     keeper_ready_monotonic_ns=value["keeper_ready_monotonic_ns"],
                 )
+            if _proc_starttime(supervisor_pid) != supervisor_starttime:
+                raise OrchestratorError("selected unit supervisor exited before inner lifecycle")
             self.sleep(0.05)
         raise OrchestratorError("inner lifecycle did not appear before internal deadline")
 
@@ -1318,16 +1303,15 @@ def run_pinned_entry(
         tools["organic_unit_orchestrator"],
         "organic unit orchestrator",
     )
-    with _exclusive_prod_scale_locks():
-        adapter = SubprocessLifecycleAdapter(
-            pre_run=pre_run,
-            epoch_observer=build_pinned_epoch_observer(pre_run),
-        )
-        return orchestrate_with_adapter(
-            pre_run_path=pre_run_path,
-            selection_path=selection_path,
-            adapter=adapter,
-        )
+    adapter = SubprocessLifecycleAdapter(
+        pre_run=pre_run,
+        epoch_observer=build_pinned_epoch_observer(pre_run),
+    )
+    return orchestrate_with_adapter(
+        pre_run_path=pre_run_path,
+        selection_path=selection_path,
+        adapter=adapter,
+    )
 
 
 def _parser() -> argparse.ArgumentParser:
