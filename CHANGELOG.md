@@ -4,6 +4,14 @@ This file is the canonical home for dated engineering history that used to be
 split between `PROJECT_LOCK.md` and `FILE_STATUS.md`. Date-stamped test counts and
 status claims below are historical snapshots, not assertions about the current worktree.
 
+## 2026-08-02
+
+- Completed the four-commit AB16 slimdown from `12448c9` through `c18a007`: the original diff records 2,628 insertions and 93,657 deletions (net -91,029 lines), retiring the phase-1 budget authority, same-UID/retained-FD/selected-loader defense stack, permanent root freeze, disposable drill, and in-directory schema block while preserving the research-only scientific and certified boundaries.
+- Reworked the surviving path into an executable append-only retry state machine. Scientific manifest bytes no longer contain attempt directories; per-attempt execution records carry topology, formal selection joins slot/ordinal/preregistration/input identities, and credible close rebuilds the terminal gate from the real runner result and resource receipts.
+- Made authority publication crash-recoverable with same-directory staging, fsync, exclusive final linking, staging recovery, and append-only abandonment of an interrupted prepare. The campaign preregistration now pins one cross-slot scientific-input constant, and prepare/replay reject shared-input drift.
+- Replaced the deleted repository-snapshot/materialization producers with a thin tracked-clean-checkout provenance producer and consumer chain bound to the campaign root, package, package-pinned Git, exact Git top-level, committed HEAD/tree, and three baseline inputs. Fixed-assignment replay is v2-only; the schema declaration now records the Gate1 v4 continuation discriminator as a Gate1-owned cross-line reference; the experiment contract digest is machine-checked.
+- Kept launch on ordinary absolute paths and retained the 35/39/16 GiB, one-hour resource contract. No AB16 arm was run. Real-arm readiness remains blocked until production lock ownership survives controller death and direct runner entry cannot bypass the lock set.
+
 ## 2026-07-04
 
 - Landed the production supervisor certify entrypoint `scripts/run_supervisor_seal.py`: an independent command that resumes a committed `CANDIDATE_PROPOSED` proposal, validates the proposal-ready marker before sealing, calls `ExactCampaign.supervisor_seal()` for the real isolated L0 recheck, and exits according to success/error.

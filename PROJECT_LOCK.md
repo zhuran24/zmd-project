@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-07-30 (AB16 stage-specific conservative resource admission and prelaunch rechecks; A038 immutable FAIL_CLOSED; prior: formal selected-loader and pathname-transport hardening; Gate-A v6 explicit-plugin qualification, committed publication/self-replay and ECHILD-only descendant closure; AB16 Gate-B/formal research-only cohort, terminal-reference archive replay v2 and persistent-owner lifecycle; W0 D6 research-only artifact protocol cohorts; active-port boundary-domain correction and candidate reseal; front-offset incident batches 3+5 authority closure; physical, routed generic-input providers; provider/instance-aware lower bound; V94 fresh-witness dominance; batch-1 identity reseal; P1.2 owner-close; F8 retirement; Stage B complete through B5b — typed lowering F1/F6/F7 only, F5 shadow-only since B5a; RAB-SEP certified allowlisting F-BL-R11-01; front-clear lift F-GM-FCL-01)
+**Updated**: 2026-08-02 (AB16 slimdown rework: retryable per-attempt execution, crash-recoverable append-only publication, campaign-global scientific-input anchoring, tracked-clean baseline self-bootstrap, ordinary-path launch, and explicit Gate1-owned schema reference; prior certified, W0, P1.2, and Stage B boundaries unchanged)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -587,14 +587,39 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   contract SHA-256
   `24b45e110952505e6ffa92d3ddfdf33874cc3cb4503397e993898e79174ded9e`.
   `pattern_nogood` remains excluded. A repair may not alter those bytes or
-  reinterpret an earlier attempt under a different scientific contract.
+  reinterpret an earlier attempt under a different scientific contract. The
+  bootstrap preregistration pins one campaign-global
+  `scientific_input_set_sha256`; prepare and replay must reject any cross-slot
+  baseline, manifest, prestate, suite-selection, or binding drift. The runner
+  contract digest is machine-recomputed from its canonical in-code contract.
 - Execution failures do not permanently freeze a campaign root. Each fixed
   slot has append-only, no-overwrite children `attempt-0001`,
   `attempt-0002`, and so on, with no retry limit. An incomplete attempt
   remains immutable evidence and leaves that same slot retryable; the first
   credible terminal attempt closes the slot and permits the next
   preregistered slot. No later attempt may overwrite, relabel, or splice an
-  earlier one.
+  earlier one. Authority records publish through same-directory staging,
+  file and directory fsync, and an exclusive final link; interrupted staging
+  can be recovered, and a prepare interrupted before `attempt-open` can be
+  closed only by an append-only `abandon-attempt` record.
+- The scientific manifest contains only arm order, seed, contract, and input
+  identities. Attempt directory and run-directory topology live in a separate
+  per-attempt execution record. Thin producers create the manifest,
+  suite-selection, pre-run authority, formal arm selection, and binding.
+  Selection must parse its formal schema and join slot, ordinal,
+  preregistration, manifest, and attempt inputs. A credible close accepts only
+  an arm gate rebuilt by `ab16_terminal_gate_v1.build_arm_gate()` from the real
+  runner result and resource receipts; handwritten selection or gate objects
+  do not close a slot.
+- Baseline rebuild self-bootstraps from the append-only
+  `noncert-cuts-ab16-tracked-clean-checkout-provenance-v1` record. Its producer
+  and consumers bind the validated campaign root, package manifest/seal,
+  package-pinned ordinary Git executable, exact Git top-level, committed
+  HEAD/tree, clean tracked worktree and index, and the candidate placements,
+  canonical rules, and mandatory instances byte identities. This is a
+  tracked-clean claim, not a claim that every untracked research artifact is
+  absent. The retired ZIP repository-snapshot manifest and materialization
+  receipt are not part of the current bootstrap path.
 - Every attempt records the clean committed repository HEAD, the actual
   execution-tool and strict-input byte identities, the immutable
   preregistration digest, and a canonical input-set digest. Every result
@@ -603,22 +628,32 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   required.
 - Each formal arm remains serial and single-worker with
   `MemoryHigh=35 GiB`, `MemoryMax=39 GiB`, `MemorySwapMax=16 GiB`, and
-  `RuntimeMaxSec=3600`. It holds the complete production-scale exclusive
-  lock set for the full orchestration:
+  `RuntimeMaxSec=3600`. Launch uses ordinary absolute executable paths with
+  fixed environments, timeouts, and return-code handling; retained-FD and
+  post-exec pathname/inode replacement defenses are retired. The intended
+  production-scale exclusive lock set is:
   `/tmp/zmd-pj-codex-heavy-validation.lock`,
   `/run/user/1000/zmd_pj_prod_scale_solver.lock`, and
-  `/run/user/1000/zmd-pj-prod-scale-solve.lock`. These are resource and
-  concurrency controls, not scientific or production authority. Hostile
-  same-UID process defense is outside the project threat model.
+  `/run/user/1000/zmd-pj-prod-scale-solve.lock`. The current controller owns
+  those flocks outside the transient unit, so controller death can release
+  them while the unit remains alive; direct `run_selected_arm()` also does not
+  acquire them. No real formal arm may launch until lock ownership is moved
+  into the unit lifetime or an equivalent owner-approved fix lands. These are
+  resource/readiness controls, not scientific or production authority.
+  Hostile same-UID process defense is outside the project threat model.
 - The surviving version-sensitive AB16 record cohort is declared in
   `docs/research/noncert_cuts_ab16_20260724/ab16_schema_declaration_v1.py`.
   Its constants and `validate_schema_projection` function are the
   machine-checked discriminator matrix; omission, duplication, unknown
   version, order drift, or cross-cohort mixing fails closed. That declaration
-  is metadata and grants no execution or claim authority.
-- Gate 1 v4 is a separate retained trust line. Its existing artifacts and
-  tests are unchanged and cannot be reinterpreted, promoted, or minted by
-  this AB16 campaign.
+  is metadata and grants no execution or claim authority. It declares the
+  Gate1 v4 continuation discriminator as an explicit Gate1-owned cross-line
+  reference and accepts fixed-assignment replay v2 only.
+- Gate 1 v4 is a separate retained trust line. A fresh AB16 bootstrap may call
+  the package-pinned Gate1 v4 constructor to write the continuation selection
+  required by that fresh campaign. This does not reinterpret or promote an
+  existing Gate1 artifact, and AB16 cannot mint Gate1 terminal, completion,
+  production, or certified authority.
 - Every AB16 claim-bearing authorization remains false, including
   whole-instance, witness, upper/lower-bound, cut/promotion, runtime-effect,
   family-global soundness, production/certified, attainability, optimality,

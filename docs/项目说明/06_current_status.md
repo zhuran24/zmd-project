@@ -1,6 +1,6 @@
 # 06 — 当前状态
 
-**状态日期：2026-07-30。**
+**状态日期：2026-08-02。**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
 
 ## 当前结论摘要
@@ -13,10 +13,10 @@
   [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md)。
 - **SMM4 formal 终态：** `smm4-formal-a004` 已消费且永久不得重试。内部
   `VERIFIED`/UNSAT receipt 仍为 `upper_bound_update_authorized=false`，不是账本
-  授权源；`production_certified=false`。`AB16_GATE_B_AND_16_ORGANIC_ARMS`
-  已进入强制执行链；A031–A038 均已冻结，尚无可信 terminal 或 organic arm。
-  A035–A037 只发布一次 input authority；A038 的 pinned Gate-A full preflight
-  以 `FAIL_CLOSED` 结束，fresh successor 尚未创建，organic arms 仍为 `0/16`。
+  授权源；`production_certified=false`。AB16 当前实现已收敛为固定科学预注册加
+  append-only per-attempt retry 链；历史 A031–A038 仍是不可改写研究证据，但不再是
+  当前 runtime 的 frozen-root 控制流。fresh campaign 尚未创建，organic arms 仍为
+  `0/16`，且锁生命周期 blocker 关闭前不得真跑。
   下述 W0 D6 单轴局部阶段已经完成。
 - **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
   hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
@@ -33,21 +33,17 @@
   sidecar 均为 test/offline-only shadow，`authority_effect=non_authorizing`；不改变
   production runtime、trusted apply 闭集、authority digest、P1.2 seal 或 family promotion 状态。
 - **Noncert cuts A/B：** Gate 1 v4 只建立一条具体 inequality 对一个固定 incumbent 的
-  局部 mechanism reachability 与 exclusion power。AB16 的 A033 已完成 fresh Gate A、
-  Gate-B qualification 与 package/campaign 创建，但 formal 阶段只发布 admission；没有
-  guardian-ready、attempt consumption、selection、unit、terminal 或 16 个 organic arms；
-  A034 只发布 input authority 并完成 disposable drill，未 finalize Gate A、发布
-  candidate/preregistration、进入 Gate B 或消费 formal attempt。A035–A037 各自只发布
-  一次 input authority；A038 的 pinned Gate-A full preflight 以
-  `FAIL_CLOSED`/exit `1` 结束，三项 launch authorization 均为 false。
-  A031–A038 均不可重试。
-  当前 runtime fix 保留 canonical absolute socket identity，以 retained-dirfd alias 适配
-  长 worktree 的 Linux AF_UNIX 调用，并在最终 absolute-parent join 后以 retained
-  absolute-directory-chain 与 retired-inode mutation watches 闭合终态 topology/parent/leaf
-  验证窗口；该 alias 与 watches 不授予 schema 或
-  authority。fresh successor 尚未创建；后续只能使用全新 no-overwrite root，从 clean
-  committed HEAD 重新绑定全部 source observation，并依次通过 stage-specific resource
-  admission、完整 Gate A 及其余既定 authority gates。organic arms 仍为 `0/16`。
+  局部 mechanism reachability 与 exclusion power。AB16 当前代码提供最小 manifest、
+  suite-selection、pre-run、formal selection、bind 与 credible-close 生产链；scientific
+  manifest 不再冻结 attempt 目录，失败 slot 以 append-only `attempt-NNNN` 修复重试，
+  半写发布可恢复或用 append-only abandon 关闭。可信关闭从真实 runner result 与资源
+  receipts 重建 gate，手写 selection/gate 不能关 slot。共享科学输入由 campaign-global
+  digest 跨 slot 锚定；baseline 通过 tracked-clean checkout provenance 在仓库内自举，
+  不再依赖 snapshot ZIP/materialization producer。执行使用普通绝对路径，retained-FD、
+  pathname replacement 与 disposable drill 已退役。历史 A031–A038 仍按原字节保留，
+  不被新实现重解释或删除；fresh campaign 尚未创建，organic arms 仍为 `0/16`。
+  真跑前仍须把三把 prod-scale flock 的所有权移入 transient unit 生命周期（或落地等价
+  owner-approved 修复），并封住 direct `run_selected_arm()` 绕锁入口。
   这些结果不建立 family-global soundness、production `CERTIFIED`、上下界、witness、
   attainability 或 optimality。
 

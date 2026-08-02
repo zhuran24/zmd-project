@@ -2,7 +2,7 @@
 
 > 当前 authority 与状态以 `PROJECT_LOCK.md`、`06_current_status.md` 和机器 gate 为准。
 > 历史研究术语可在 `docs/research/` 查阅，但不能覆盖下列发布语义。
-> **术语状态日期：2026-07-27（研究证据截止 2026-07-25）。**
+> **术语状态日期：2026-08-02（AB16 返工代码已落，实验仍为 0/16）。**
 
 ## 认证与发布
 
@@ -106,16 +106,14 @@
 - **non-certified cuts A/B**：对 production attach 机制可达性与固定配置效果进行的
   有界研究实验，不是“已证明不 sound”的同义词。Gate 1 v4 的当前最强结论仅为
   `MECHANISM_CREDIBLE`：一个具体注入 inequality 排除了同一 frozen incumbent。
-  Prospective AB16 的 A031–A038 均为 immutable frozen roots；A033 已创建
-  Gate-B package/campaign，但 formal 阶段只发布 admission，没有
-  guardian-ready、attempt consumption、selection、unit、terminal 或 organic arm；
-  A034 只发布 input authority 并完成 disposable drill，未 finalize Gate A、发布
-  candidate/preregistration、进入 Gate B 或消费 formal attempt。A035–A037
-  各自只发布一次 input authority；A038 的 pinned Gate-A full preflight 以
-  `FAIL_CLOSED`/exit `1` 结束，三项 launch authorization 均为 false，arms 仍为
-  `0/16`。fresh successor 尚未创建；下一 root 必须是新的 no-overwrite root，
-  重新绑定 clean committed HEAD 与 source observation，并通过 stage-specific resource
-  admission、完整 Gate A 及其余既定门禁；
+  Prospective AB16 当前指固定科学预注册加 append-only per-attempt retry 的 research-only
+  16-arm 设计：scientific manifest 不含 attempt topology，首次可信 terminal 关闭 slot，
+  失败 attempt 保持不可改写并允许同 slot 新 ordinal；campaign-global input digest 禁止
+  16 臂之间共享输入漂移。baseline 由 tracked-clean checkout provenance 自举；
+  fixed-assignment replay 只接受 v2。历史 A031–A038 是不可改写证据而非当前 frozen-root
+  runtime。fresh campaign/arm 尚未运行（`0/16`）；控制器 flock 生命周期与 direct runner
+  绕锁在修复前阻止真跑。Gate1 v4 仍是独立 trust line，AB16 只可经 package-pinned
+  constructor 写 fresh continuation selection，不能铸造 Gate1 terminal/production/certified authority；
   没有 family-global soundness、proof-sidecar、PIC、B6、上下界、optimality 或
   production `CERTIFIED` 结论。
 - **HEAD-pinned research authority**：receipt 只证明其记录的 originating HEAD、

@@ -1,7 +1,7 @@
 # FILE_STATUS.md
 
 **Status:** CURRENT_INVENTORY  
-**Updated:** 2026-07-30
+**Updated:** 2026-08-02
 **Release state:** P1.2 OWNER-CLOSED / P1.3 IN PROGRESS (cut attach not yet promoted)
 **History**: Engineering history lives in [CHANGELOG.md](CHANGELOG.md).
 
@@ -74,7 +74,7 @@
 |---|---|---|
 | `devtools/research_run_contract.py` | CURRENT_CODE_ALIGNED | G3 developer/research-only 的稳定字节快照、独占 no-overwrite run root、逐组件 no-follow artifact-root 打开、全树目录 FD/signature 保留至终检、manifest 排除 `receipt.json` 自身而完成态 closure 要求 manifest 加唯一普通文件 `receipt.json`、`-I -B` 进程合同、canonical envelope 与字节 identity replay；不进入 certified exact-source TCB 或 production authority |
 | `docs/research/w0_power_cycle_domino_d6_20260728/` | DIAGNOSTIC_ONLY | W0 专用 D6 intake、exact front-aware joint completion、固定 artifact label/path 合同与 stdlib-only replay；closed-root v2 的 seed-narrow、28-slot antecedent 与 v3 `d6_6b_d9_6g_swap_v1` antecedent 均为 replay-accepted local `INFEASIBLE`；v3 已通过 full preflight、前后两次相同资源门禁和两份逐字节一致的异构 replay，只关闭其 exact local antecedent，不产生全图 witness、cut、上下界或 production authority |
-| `docs/research/noncert_cuts_ab16_20260724/` | DIAGNOSTIC_ONLY | AB16 Gate-A/Gate-B/package/formal/16-arm research-only 链；A031–A034 均为不可改写 frozen roots：A033 已闭合 Gate-B/package，其 formal phase 停在 admission，未发布 guardian-ready、attempt-consumption、selection、arm 或 terminal；A034 只发布 input authority 并完成 disposable drill，未 finalize Gate A、发布 candidate/preregistration、进入 Gate B 或消费 formal attempt。当前 runtime roles 保留 canonical absolute socket identity，以 retained-dirfd alias 适配长路径，并把固定 `.retired` 终端成员绑定到 path-preregistration v4、formal context v3/admission v2；清理只执行原子 no-overwrite retirement，authority 链不调用 pathname unlink，最终 join 后以 retained absolute-directory-chain 与 retired-inode mutation watches 闭合 topology/parent/leaf 漂移。下一 fresh root 只能是 A035，并须重新绑定 committed source bytes 和完整前后门禁 |
+| `docs/research/noncert_cuts_ab16_20260724/` | DIAGNOSTIC_ONLY | AB16 research-only 16-arm 执行面与 append-only retry coordinator；科学预注册钉 campaign-global input digest，attempt topology 独立于 scientific manifest，正式 selection/bind/credible-close 链已恢复，发布采用 crash-recoverable staging+fsync+exclusive-link。baseline 由 package/root/Git/HEAD/tree/三输入绑定的 tracked-clean checkout provenance 自举；runner/replay 仅接 fixed-assignment v2。retained-FD、pathname replacement、snapshot ZIP/materialization 与 disposable drill 已退役。历史 A031–A038 只保留为不可改写证据，不是当前控制流；fresh campaign/arm 均未运行（0/16）。控制器 flock 生命周期与 direct runner 绕锁仍是真跑前 blocker |
 | `data/proof_obligations/p1_2_proof_obligations.json` | STRUCTURAL_GATE | 15 active obligations；绑定 sink/hash/guard/critical files |
 | `data/proof_obligations/strong_status_write_allowlist.json` | STRUCTURAL_GATE | deny-by-default strong-status occurrence registry；不是 completeness proof |
 | `scripts/check_p1_2_proof_obligations.py` | STRUCTURAL_GATE | checker PASS 只表示登记结构一致 |
@@ -86,7 +86,7 @@
 
 | Path | Status | 说明 |
 |---|---|---|
-| `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-07-30 窄增 AB16 selected-loader/pathname transport、fixed no-overwrite retirement、完整 absolute-directory-chain/retired-inode watch 与 kernel `EAGAIN` 线性化合同，以及 Gate-A v5 显式 plugin qualification、committed publication/self-replay、ECHILD-only descendant closure，并登记 path-preregistration v4、formal context v3/admission v2 successors；绝对 artifact identity 与 research-only authority 保持不变，W0 D6 v2/v3、F8 retirement、partial attach 与 Stage B boundary 不变 |
+| `PROJECT_LOCK.md` | CURRENT_CODE_ALIGNED | 认证边界权威；2026-08-02 的 AB16 §3C 对齐 retryable per-attempt topology、原子发布/恢复、campaign-global scientific input、tracked-clean baseline self-bootstrap、ordinary-path launch、Gate1-owned cross-line schema reference 与真跑前锁生命周期 blocker；§3B、§4–EOF 及 certified/W0/P1.2/Stage B 边界不变 |
 | `README.md`, `NAV_MAP.md`, `docs/项目说明/06_current_status.md` | CURRENT_CODE_ALIGNED | 当前入口与状态摘要 |
 | `docs/项目说明/24_repository_asset_governance.md` | CURRENT_CODE_ALIGNED | G1/G2 代码资产治理与 G3 最小公共研究基础层索引；不授予认证 authority |
 | `data/repository_governance/code_assets.json` | STRUCTURAL_GATE | 可复算目录规则、显式例外与基线收据；由 schema/checker fail closed 校验 |
