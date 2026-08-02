@@ -47,7 +47,6 @@ LAUNCH_ENVIRONMENT_KEYS = frozenset(
     }
 )
 MAX_TOOL_BYTES = 8 * 1024 * 1024
-MAX_EXECUTABLE_BYTES = 64 * 1024 * 1024
 PROD_SCALE_LOCK_PATHS = (
     Path("/tmp/zmd-pj-codex-heavy-validation.lock"),
     Path("/run/user/1000/zmd_pj_prod_scale_solver.lock"),
@@ -321,51 +320,6 @@ def _open_regular(path: Path | str) -> tuple[Path, int]:
         raise OrchestratorError("symlink or invalid file path") from exc
     os.close(parent_descriptor)
     return absolute, descriptor
-
-
-def _stat_signature(value: os.stat_result) -> tuple[int, ...]:
-    return (
-        value.st_dev,
-        value.st_ino,
-        value.st_mode,
-        value.st_nlink,
-        value.st_size,
-        value.st_mtime_ns,
-        value.st_ctime_ns,
-    )
-
-
-def _hash_open_executable(
-    descriptor: int,
-    *,
-    absolute: Path,
-) -> tuple[dict[str, object], tuple[int, ...]]:
-    """Hash one executable through the descriptor later passed to exec."""
-
-    before = os.fstat(descriptor)
-    if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1 or before.st_size > MAX_EXECUTABLE_BYTES:
-        raise OrchestratorError(f"invalid pinned executable: {absolute}")
-    os.lseek(descriptor, 0, os.SEEK_SET)
-    digest = hashlib.sha256()
-    size = 0
-    while True:
-        chunk = os.read(descriptor, 1024 * 1024)
-        if not chunk:
-            break
-        digest.update(chunk)
-        size += len(chunk)
-    after = os.fstat(descriptor)
-    if _stat_signature(before) != _stat_signature(after) or size != after.st_size:
-        raise OrchestratorError(f"pinned executable changed during same-FD hash: {absolute}")
-    return (
-        {
-            "mode": stat.S_IMODE(after.st_mode),
-            "path": str(absolute),
-            "sha256": digest.hexdigest(),
-            "size_bytes": size,
-        },
-        _stat_signature(after),
-    )
 
 
 def snapshot_bytes(path: Path | str) -> ByteSnapshot:
@@ -668,68 +622,29 @@ class SubprocessLifecycleAdapter:
         allowed_exit_codes: frozenset[int] = frozenset({0}),
     ) -> subprocess.CompletedProcess[bytes]:
         command = list(argv)
-        if not command or command[0] not in self.executable_identities:
+        if (
+            not command
+            or not Path(command[0]).is_absolute()
+            or command[0] not in self.executable_identities
+        ):
             raise OrchestratorError("ordinary-user executable is not package-pinned")
         role, expected = self.executable_identities[command[0]]
-        parent, parent_descriptor = _open_directory_fd(Path(command[0]).parent)
-        absolute = parent / Path(command[0]).name
-        flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+        observed = snapshot_bytes(command[0])
+        _identity_matches(observed.identity, expected, "ordinary-user executable")
         try:
-            descriptor = os.open(
-                absolute.name,
-                flags,
-                dir_fd=parent_descriptor,
-            )
-        except OSError as exc:
-            os.close(parent_descriptor)
-            raise OrchestratorError("pinned executable path is invalid or symlinked") from exc
-        try:
-            observed, before_signature = _hash_open_executable(
-                descriptor,
-                absolute=absolute,
-            )
-            _identity_matches(observed, expected, "ordinary-user executable")
-            exec_command = command.copy()
-            exec_command[0] = {
-                "systemctl": "systemctl",
-                "systemd_run": "systemd-run",
-            }[role]
             completed = self.run(
-                exec_command,
+                command,
                 check=False,
                 close_fds=True,
                 cwd=self.pre_run["launch"]["cwd"],
                 env=dict(self.environment),
-                executable=f"/proc/self/fd/{descriptor}",
-                pass_fds=(descriptor,),
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 timeout=timeout,
             )
-            try:
-                current_path = os.stat(
-                    absolute.name,
-                    dir_fd=parent_descriptor,
-                    follow_symlinks=False,
-                )
-            except OSError as exc:
-                raise OrchestratorError("pinned executable path changed during execution") from exc
-            if (
-                not stat.S_ISREG(current_path.st_mode)
-                or current_path.st_dev != before_signature[0]
-                or current_path.st_ino != before_signature[1]
-            ):
-                raise OrchestratorError("pinned executable path changed during execution")
-            post_observed, after_signature = _hash_open_executable(
-                descriptor,
-                absolute=absolute,
-            )
-            if before_signature != after_signature or post_observed != observed:
-                raise OrchestratorError("pinned executable bytes or metadata changed during execution")
-        finally:
-            os.close(descriptor)
-            os.close(parent_descriptor)
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise OrchestratorError(f"{role} command execution failed: {command[0]}") from exc
         if completed.returncode not in allowed_exit_codes:
             raise OrchestratorError(f"ordinary-user command failed ({completed.returncode}): {argv[0]}")
         return completed

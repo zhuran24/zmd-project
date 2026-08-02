@@ -3,7 +3,6 @@ from __future__ import annotations
 import base64
 import copy
 import importlib.util
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -90,18 +89,17 @@ def _git_fixture(tmp_path: Path) -> tuple[Path, dict[str, object]]:
     return target, AUTH.snapshot_tool(target)[1]
 
 
-def test_repository_head_executes_the_same_pinned_git_fd(
+def test_repository_head_executes_pinned_git_by_absolute_path(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     git_path, identity = _git_fixture(tmp_path)
-    real_run = subprocess.run
     observed: dict[str, object] = {}
 
-    def record_run(*args: object, **kwargs: object):
-        observed["executable"] = kwargs.get("executable")
-        observed["pass_fds"] = kwargs.get("pass_fds")
-        return real_run(*args, **kwargs)
+    def record_run(arguments: object, **kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        observed["arguments"] = arguments
+        observed["kwargs"] = kwargs
+        return subprocess.CompletedProcess(arguments, 0, f"{HEAD}\n".encode(), b"")
 
     monkeypatch.setattr(BOOTSTRAP.subprocess, "run", record_run)
     assert (
@@ -112,26 +110,29 @@ def test_repository_head_executes_the_same_pinned_git_fd(
         )
         == HEAD
     )
-    assert str(observed["executable"]).startswith("/proc/self/fd/")
-    assert type(observed["pass_fds"]) is tuple and len(observed["pass_fds"]) == 1
+    arguments = observed["arguments"]
+    kwargs = observed["kwargs"]
+    assert isinstance(arguments, list)
+    assert arguments[0] == str(git_path)
+    assert isinstance(kwargs, dict)
+    assert "executable" not in kwargs
+    assert "pass_fds" not in kwargs
+    assert kwargs["env"] == {"LANG": "C", "LC_ALL": "C", "PATH": "/usr/bin"}
+    assert kwargs["timeout"] == 10
 
 
-def test_repository_head_rejects_path_swap_during_fd_exec(
+def test_repository_head_reports_executable_launch_failure(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     git_path, identity = _git_fixture(tmp_path)
-    real_run = subprocess.run
 
-    def swap_after_run(*args: object, **kwargs: object):
-        completed = real_run(*args, **kwargs)
-        replacement = git_path.with_name("replacement-git")
-        shutil.copy2(git_path, replacement)
-        os.replace(replacement, git_path)
-        return completed
+    def fail_run(*args: object, **kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        del args, kwargs
+        raise OSError("git is unavailable")
 
-    monkeypatch.setattr(BOOTSTRAP.subprocess, "run", swap_after_run)
-    with pytest.raises(BOOTSTRAP.BootstrapError, match="path changed"):
+    monkeypatch.setattr(BOOTSTRAP.subprocess, "run", fail_run)
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="observation failed"):
         BOOTSTRAP._observe_repository_head(  # noqa: SLF001
             ROOT,
             git_path,
@@ -139,24 +140,18 @@ def test_repository_head_rejects_path_swap_during_fd_exec(
         )
 
 
-def test_repository_head_rejects_same_inode_byte_drift(
+def test_repository_head_rejects_nonzero_git_result(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     git_path, identity = _git_fixture(tmp_path)
-    real_run = subprocess.run
 
-    def mutate_after_run(*args: object, **kwargs: object):
-        completed = real_run(*args, **kwargs)
-        with git_path.open("r+b", buffering=0) as stream:
-            first = stream.read(1)
-            stream.seek(0)
-            stream.write(bytes([first[0] ^ 1]))
-            os.fsync(stream.fileno())
-        return completed
+    def fail_run(arguments: object, **kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        del kwargs
+        return subprocess.CompletedProcess(arguments, 128, b"", b"fatal: not a repository\n")
 
-    monkeypatch.setattr(BOOTSTRAP.subprocess, "run", mutate_after_run)
-    with pytest.raises(BOOTSTRAP.BootstrapError, match="bytes changed"):
+    monkeypatch.setattr(BOOTSTRAP.subprocess, "run", fail_run)
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="not one clean SHA"):
         BOOTSTRAP._observe_repository_head(  # noqa: SLF001
             ROOT,
             git_path,

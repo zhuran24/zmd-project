@@ -21,7 +21,6 @@ import hashlib
 import os
 from pathlib import Path
 import re
-import stat
 import subprocess
 import sys
 from typing import Any
@@ -557,83 +556,6 @@ def _assert_campaign_absent(campaign_dir: Path) -> None:
         raise BootstrapError("campaign directory already exists; no-overwrite applies")
 
 
-def _stat_signature(value: os.stat_result) -> tuple[int, ...]:
-    return (
-        value.st_dev,
-        value.st_ino,
-        value.st_mode,
-        value.st_nlink,
-        value.st_uid,
-        value.st_gid,
-        value.st_size,
-        value.st_mtime_ns,
-        value.st_ctime_ns,
-    )
-
-
-def _open_directory_fd(path: Path) -> tuple[Path, int]:
-    absolute = _absolute(path)
-    flags = os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW
-    try:
-        descriptor = os.open(absolute.anchor, flags)
-        for component in absolute.parts[1:]:
-            next_descriptor = os.open(
-                component,
-                flags,
-                dir_fd=descriptor,
-            )
-            os.close(descriptor)
-            descriptor = next_descriptor
-    except OSError as exc:
-        try:
-            os.close(descriptor)
-        except UnboundLocalError:
-            pass
-        raise BootstrapError("Git executable parent path is invalid or symlinked") from exc
-    return absolute, descriptor
-
-
-def _hash_open_executable(
-    descriptor: int,
-    *,
-    absolute: Path,
-) -> tuple[dict[str, object], tuple[int, ...]]:
-    before = os.fstat(descriptor)
-    if (
-        not stat.S_ISREG(before.st_mode)
-        or before.st_nlink != 1
-        or before.st_size < 0
-        or before.st_size > 1 << 30
-        or stat.S_IMODE(before.st_mode) & 0o111 == 0
-    ):
-        raise BootstrapError(f"Git executable is not one bounded executable: {absolute}")
-    os.lseek(descriptor, 0, os.SEEK_SET)
-    digest = hashlib.sha256()
-    size = 0
-    while True:
-        chunk = os.read(descriptor, 1 << 20)
-        if not chunk:
-            break
-        digest.update(chunk)
-        size += len(chunk)
-    after = os.fstat(descriptor)
-    if _stat_signature(before) != _stat_signature(after) or size != after.st_size:
-        raise BootstrapError("Git executable changed during same-FD hash")
-    mode = stat.S_IMODE(after.st_mode)
-    return (
-        {
-            "device": after.st_dev,
-            "inode": after.st_ino,
-            "mode": mode,
-            "mode_octal": f"{mode:04o}",
-            "path": str(absolute),
-            "sha256": digest.hexdigest(),
-            "size_bytes": size,
-        },
-        _stat_signature(after),
-    )
-
-
 def _assert_expected_tool_identity(
     observed: Mapping[str, object],
     expected: Mapping[str, object],
@@ -657,68 +579,32 @@ def _observe_repository_head(
     *,
     expected_identity: Mapping[str, object],
 ) -> str:
-    parent, parent_descriptor = _open_directory_fd(git_path.parent)
-    absolute = parent / git_path.name
+    absolute = _absolute(git_path)
     try:
-        descriptor = os.open(
-            absolute.name,
-            os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
-            dir_fd=parent_descriptor,
-        )
-    except OSError as exc:
-        os.close(parent_descriptor)
-        raise BootstrapError("Git executable path is invalid or symlinked") from exc
+        _, observed = authority.snapshot_tool(absolute)
+    except authority.AuthorityError as exc:
+        raise BootstrapError(f"Git executable path is invalid: {exc}") from exc
+    _assert_expected_tool_identity(observed, expected_identity)
     try:
-        observed, before_signature = _hash_open_executable(
-            descriptor,
-            absolute=absolute,
+        completed = subprocess.run(
+            [
+                str(absolute),
+                "-C",
+                str(repository_root),
+                "rev-parse",
+                "--verify",
+                "HEAD",
+            ],
+            check=False,
+            close_fds=True,
+            env={"LANG": "C", "LC_ALL": "C", "PATH": "/usr/bin"},
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=10,
         )
-        _assert_expected_tool_identity(observed, expected_identity)
-        try:
-            completed = subprocess.run(
-                [
-                    "git",
-                    "-C",
-                    str(repository_root),
-                    "rev-parse",
-                    "--verify",
-                    "HEAD",
-                ],
-                check=False,
-                close_fds=True,
-                env={"LANG": "C", "LC_ALL": "C", "PATH": "/usr/bin"},
-                executable=f"/proc/self/fd/{descriptor}",
-                pass_fds=(descriptor,),
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=10,
-            )
-        except (OSError, subprocess.TimeoutExpired) as exc:
-            raise BootstrapError(f"repository HEAD observation failed: {exc}") from exc
-        try:
-            current_path = os.stat(
-                absolute.name,
-                dir_fd=parent_descriptor,
-                follow_symlinks=False,
-            )
-        except OSError as exc:
-            raise BootstrapError("Git executable path changed during HEAD observation") from exc
-        if (
-            not stat.S_ISREG(current_path.st_mode)
-            or current_path.st_dev != before_signature[0]
-            or current_path.st_ino != before_signature[1]
-        ):
-            raise BootstrapError("Git executable path changed during HEAD observation")
-        after, after_signature = _hash_open_executable(
-            descriptor,
-            absolute=absolute,
-        )
-        if after_signature != before_signature or after != observed:
-            raise BootstrapError("Git executable bytes changed during HEAD observation")
-    finally:
-        os.close(descriptor)
-        os.close(parent_descriptor)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise BootstrapError(f"repository HEAD observation failed: {exc}") from exc
     if (
         completed.returncode != 0
         or completed.stderr

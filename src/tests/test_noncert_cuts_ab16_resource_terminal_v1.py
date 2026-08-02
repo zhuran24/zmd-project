@@ -1031,16 +1031,12 @@ def test_live_adapter_passes_only_pinned_environment_to_commands(
     _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
     pre_run = VERIFIER.snapshot_json(pre_run_path).value
     calls: list[tuple[list[str], dict[str, object]]] = []
-    selected_bytes: list[bytes] = []
 
     def fake_run(
         argv: Sequence[str],
         **kwargs: object,
     ) -> SimpleNamespace:
         calls.append((list(argv), dict(kwargs)))
-        descriptor = kwargs["pass_fds"][0]
-        assert type(descriptor) is int
-        selected_bytes.append(ORCHESTRATOR.os.pread(descriptor, 1024 * 1024, 0))
         return SimpleNamespace(returncode=0, stdout=b"", stderr=b"")
 
     monkeypatch.setenv("AB16_UNPINNED_SECRET", "must-not-propagate")
@@ -1055,11 +1051,11 @@ def test_live_adapter_passes_only_pinned_environment_to_commands(
     )
     assert len(calls) == 1
     argv, kwargs = calls[0]
-    assert argv == ["systemctl", "--version"]
-    pass_fds = kwargs["pass_fds"]
-    assert isinstance(pass_fds, tuple) and len(pass_fds) == 1
-    assert kwargs["executable"] == f"/proc/self/fd/{pass_fds[0]}"
-    assert selected_bytes == [Path(pre_run["launch"]["systemctl_path"]).read_bytes()]
+    assert argv == [pre_run["launch"]["systemctl_path"], "--version"]
+    assert Path(argv[0]).is_absolute()
+    assert "pass_fds" not in kwargs
+    assert "executable" not in kwargs
+    assert kwargs["close_fds"] is True
     assert kwargs["env"] == {
         "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
         "HOME": "/home/fixture",
@@ -1074,17 +1070,16 @@ def test_live_adapter_passes_only_pinned_environment_to_commands(
 
 
 @pytest.mark.parametrize(
-    ("role", "launch_field", "canonical_argv0"),
+    ("role", "launch_field"),
     [
-        ("systemctl", "systemctl_path", "systemctl"),
-        ("systemd_run", "systemd_run_path", "systemd-run"),
+        ("systemctl", "systemctl_path"),
+        ("systemd_run", "systemd_run_path"),
     ],
 )
-def test_fd_exec_uses_role_canonical_argv0_not_package_basename(
+def test_live_adapter_uses_pinned_absolute_path_as_argv0(
     tmp_path: Path,
     role: str,
     launch_field: str,
-    canonical_argv0: str,
 ) -> None:
     _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
     pre_run = VERIFIER.snapshot_json(pre_run_path).value
@@ -1100,75 +1095,77 @@ def test_fd_exec_uses_role_canonical_argv0_not_package_basename(
 
     assert pre_run["tool_identities"][role]["path"] == pinned_path
     assert Path(pinned_path).name not in {"systemctl", "systemd-run"}
+    assert Path(pinned_path).is_absolute()
     adapter = ORCHESTRATOR.SubprocessLifecycleAdapter(
         pre_run=pre_run,
         epoch_observer=lambda _phase: pytest.fail("epoch observer was called"),
         run=fake_run,
     )
     adapter._run([pinned_path, "--fixture-probe"], timeout=1)  # noqa: SLF001
-    assert observed_argv == [[canonical_argv0, "--fixture-probe"]]
+    assert observed_argv == [[pinned_path, "--fixture-probe"]]
 
 
-def test_fd_exec_path_swap_is_detected_after_exact_bytes_are_selected(
+def test_live_adapter_rejects_prelaunch_executable_byte_drift(
     tmp_path: Path,
 ) -> None:
     _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
     pre_run = VERIFIER.snapshot_json(pre_run_path).value
     executable = Path(pre_run["launch"]["systemctl_path"])
-    original = executable.with_name("systemctl-original.json")
-    selected_bytes: list[bytes] = []
-
-    def swapping_run(
-        _argv: Sequence[str],
-        **kwargs: object,
-    ) -> SimpleNamespace:
-        descriptor = kwargs["pass_fds"][0]
-        assert type(descriptor) is int
-        selected_bytes.append(ORCHESTRATOR.os.pread(descriptor, 1024 * 1024, 0))
-        executable.rename(original)
-        executable.write_bytes(b"replacement executable bytes")
-        executable.chmod(0o444)
-        return SimpleNamespace(returncode=0, stdout=b"", stderr=b"")
+    executable.chmod(0o644)
+    executable.write_bytes(b"ordinary prelaunch package drift")
 
     adapter = ORCHESTRATOR.SubprocessLifecycleAdapter(
         pre_run=pre_run,
         epoch_observer=lambda _phase: pytest.fail("epoch observer was called"),
-        run=swapping_run,
+        run=lambda *_args, **_kwargs: pytest.fail("drifted executable was launched"),
     )
     with pytest.raises(
         ORCHESTRATOR.OrchestratorError,
-        match="path changed during execution",
+        match="ordinary-user executable byte identity drifted",
     ):
         adapter._run([str(executable), "--version"], timeout=1)  # noqa: SLF001
-    assert selected_bytes == [original.read_bytes()]
-    assert executable.read_bytes() != selected_bytes[0]
 
 
-def test_fd_exec_same_inode_byte_drift_is_detected(
+@pytest.mark.parametrize(
+    ("outcome", "message"),
+    [
+        (OSError("fixture exec failure"), "systemctl command execution failed"),
+        (
+            ORCHESTRATOR.subprocess.TimeoutExpired(cmd=["fixture-systemctl"], timeout=1),
+            "systemctl command execution failed",
+        ),
+        (
+            SimpleNamespace(returncode=23, stdout=b"", stderr=b"fixture failure"),
+            r"ordinary-user command failed \(23\)",
+        ),
+    ],
+)
+def test_live_adapter_reports_ordinary_command_failures(
     tmp_path: Path,
+    outcome: object,
+    message: str,
 ) -> None:
     _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
     pre_run = VERIFIER.snapshot_json(pre_run_path).value
     executable = Path(pre_run["launch"]["systemctl_path"])
 
-    def mutating_run(
+    def failing_run(
         _argv: Sequence[str],
         **_kwargs: object,
     ) -> SimpleNamespace:
-        executable.chmod(0o644)
-        raw = bytearray(executable.read_bytes())
-        raw[0] ^= 1
-        executable.write_bytes(raw)
-        return SimpleNamespace(returncode=0, stdout=b"", stderr=b"")
+        if isinstance(outcome, BaseException):
+            raise outcome
+        assert isinstance(outcome, SimpleNamespace)
+        return outcome
 
     adapter = ORCHESTRATOR.SubprocessLifecycleAdapter(
         pre_run=pre_run,
         epoch_observer=lambda _phase: pytest.fail("epoch observer was called"),
-        run=mutating_run,
+        run=failing_run,
     )
     with pytest.raises(
         ORCHESTRATOR.OrchestratorError,
-        match="changed during",
+        match=message,
     ):
         adapter._run([str(executable), "--version"], timeout=1)  # noqa: SLF001
 
@@ -1180,7 +1177,7 @@ def test_fd_exec_same_inode_byte_drift_is_detected(
         ("systemd_run", "systemd_run_path"),
     ],
 )
-def test_fd_exec_helper_runs_a_small_local_fixture_binary_for_each_system_tool(
+def test_live_adapter_runs_a_small_local_fixture_binary_for_each_system_tool(
     tmp_path: Path,
     role: str,
     launch_field: str,
