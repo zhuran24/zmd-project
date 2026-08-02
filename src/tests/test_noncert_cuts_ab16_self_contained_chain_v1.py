@@ -787,8 +787,13 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
 
     At the baseline solver seam, a tiny deterministic result is injected above
     the production helper-to-generated conversion, validation, and exclusive
-    writer.  The production-scale solve, fresh-process/resource qualification,
-    and Gate1 detached replay payload semantics remain outside this sentinel.
+    writer.  The fixed-replay mapping/solve result is likewise injected because
+    this chain fixture intentionally combines the production input identities
+    with a one-variable ghost model; the subsection therefore covers provenance,
+    receipt schema, and exclusive publication only.  Coordinate-master assignment
+    mapping is covered by the production-builder regression in the focused replay
+    suite.  The production-scale solve, fresh-process/resource qualification, and
+    Gate1 detached replay payload semantics remain outside this sentinel.
     """
 
     checkout = _clean_checkout(tmp_path)
@@ -888,6 +893,30 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
         assert len(published_model.variables) == len(raw_model.variables)
         assert len(published_model.constraints) == len(raw_model.constraints)
         assert published_model.constraints[0].WhichOneof("constraint") == "linear"
+
+        def injected_fixed_replay(
+            model_raw: bytes,
+            *,
+            incumbent: Mapping[str, Any],
+            mandatory_instances: object,
+            candidate_placements: object,
+            max_time_seconds: float,
+        ) -> dict[str, object]:
+            del mandatory_instances, candidate_placements
+            assert model_raw == Path(preregistration["baseline_rebuilt_model_path"]).read_bytes()
+            assert set(incumbent) == {"ghost_pick"}
+            assert max_time_seconds == 5.0
+            return {
+                "status": "PASS",
+                "solver_status": "OPTIMAL",
+                "variable_count": 1,
+                "constraint_count_before_fixing": 1,
+                "fixed_assignment_count": 1,
+                "workers": 1,
+                "max_time_seconds": 5.0,
+            }
+
+        monkeypatch.setattr(fixed_replay, "replay_fixed_assignment", injected_fixed_replay)
         fixed_receipt, fixed_identity = fixed_replay._replay_paths(  # noqa: SLF001 - real replay writer
             campaign_provenance_path=provenance_path,
             model_path=preregistration["baseline_rebuilt_model_path"],
