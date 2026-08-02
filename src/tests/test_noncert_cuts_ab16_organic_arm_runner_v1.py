@@ -506,7 +506,10 @@ def _fixture(
         "continuation_identity": authority_chain["continuation_identity"],
         "input_set_identity": _existing_identity_with_mode(input_set_path),
         "input_set_sha256": input_set_sha256,
-        "manager_epoch": {"fixture": "manager-epoch"},
+        "manager_epoch": {
+            "attestation_toolchain": {"python": execution_tools["attestor_python"]},
+            "fixture": "manager-epoch",
+        },
         "manifest_identity": manifest_identity,
         "package": authority_chain["package"],
         "pre_run_authority_path": str((attempt_dir / "pre-run-authority.json").resolve()),

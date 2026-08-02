@@ -97,6 +97,7 @@ EXECUTION_TOOL_ROLES = frozenset(
     {
         "ab16_contract",
         "ab16_terminal_gate",
+        "attestor_python",
         "busctl",
         "manager_attestor",
         "manager_epoch_authority",
@@ -961,7 +962,11 @@ def validate_manifest(value: object) -> Mapping[str, Any]:
     return record
 
 
-def validate_attempt_execution(value: object) -> Mapping[str, Any]:
+def validate_attempt_execution(
+    value: object,
+    *,
+    allow_legacy_attestor_omission: bool = False,
+) -> Mapping[str, Any]:
     """Validate per-attempt paths, repository state, and tool authority."""
 
     record = _exact_keys(
@@ -1072,9 +1077,24 @@ def validate_attempt_execution(value: object) -> Mapping[str, Any]:
         or chain["continuation_identity"] != record["continuation_identity"]
     ):
         raise RunnerError("attempt execution authority-chain projection drifted")
-    tools = _exact_keys(record["tool_identities"], set(EXECUTION_TOOL_ROLES), "attempt execution tools")
-    for role in EXECUTION_TOOL_ROLES:
+    expected_tool_roles = set(EXECUTION_TOOL_ROLES)
+    legacy_tool_roles = expected_tool_roles - {"attestor_python"}
+    observed_tool_roles = set(record["tool_identities"]) if type(record["tool_identities"]) is dict else set()
+    legacy_omission = allow_legacy_attestor_omission and observed_tool_roles == legacy_tool_roles
+    selected_tool_roles = legacy_tool_roles if legacy_omission else expected_tool_roles
+    tools = _exact_keys(record["tool_identities"], selected_tool_roles, "attempt execution tools")
+    for role in selected_tool_roles:
         _exact_identity_with_mode(tools[role], f"attempt execution tool {role}")
+    if not legacy_omission:
+        try:
+            manager_python = record["manager_epoch"]["attestation_toolchain"]["python"]
+        except (KeyError, TypeError) as exc:
+            raise RunnerError("attempt execution manager epoch lacks attestor Python") from exc
+        if type(manager_python) is not dict:
+            raise RunnerError("attempt execution manager epoch attestor Python is malformed")
+        attestor_python = tools["attestor_python"]
+        if any(manager_python.get(field) != attestor_python[field] for field in attestor_python):
+            raise RunnerError("attempt execution attestor Python differs from manager epoch")
     return record
 
 

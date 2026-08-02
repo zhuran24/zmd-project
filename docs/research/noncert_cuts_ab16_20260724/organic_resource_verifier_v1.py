@@ -61,6 +61,7 @@ ATTEMPT_EXECUTION_TOOL_ROLES = frozenset(
     {
         "ab16_contract",
         "ab16_terminal_gate",
+        "attestor_python",
         "busctl",
         "manager_attestor",
         "manager_epoch_authority",
@@ -593,6 +594,23 @@ def _epoch(value: object, label: str) -> Mapping[str, Any]:
     return record
 
 
+def _epoch_attestor_python(value: object, label: str) -> Mapping[str, Any]:
+    epoch = _epoch(value, label)
+    toolchain = _mapping(epoch.get("attestation_toolchain"), f"{label}.attestation_toolchain")
+    python = _mapping(toolchain.get("python"), f"{label}.attestation_toolchain.python")
+    if (
+        not Path(_text(python.get("path"), f"{label}.attestation_toolchain.python.path")).is_absolute()
+        or type(python.get("sha256")) is not str
+        or SHA256_RE.fullmatch(python["sha256"]) is None
+        or type(python.get("size_bytes")) is not int
+        or python["size_bytes"] < 0
+        or type(python.get("mode")) is not int
+        or python["mode"] < 0
+    ):
+        raise VerificationError(f"{label}.attestation_toolchain.python identity is invalid")
+    return python
+
+
 def _epoch_digest(value: object) -> str:
     return hashlib.sha256(canonical_json_bytes(_epoch(value, "manager epoch"))).hexdigest()
 
@@ -727,6 +745,12 @@ def _validate_attempt_execution(value: object) -> Mapping[str, Any]:
     tools = _keys(record["tool_identities"], ATTEMPT_EXECUTION_TOOL_ROLES, "attempt execution tools")
     for role, identity in tools.items():
         _identity(identity, f"attempt execution tool {role}", mode_required=True)
+    manager_python = _epoch_attestor_python(record["manager_epoch"], "attempt execution manager epoch")
+    if any(
+        manager_python[field] != tools["attestor_python"][field]
+        for field in tools["attestor_python"]
+    ):
+        raise VerificationError("attempt execution attestor Python differs from manager epoch")
     return record
 
 
@@ -889,6 +913,7 @@ def validate_pre_run_authority(
         raise VerificationError("pre-run package identity is invalid")
     tools = _mapping(record.get("tool_identities"), "pre-run tool identities")
     if set(tools) != {
+        "attestor_python",
         "busctl",
         "manager_attestor",
         "manager_epoch_authority",
@@ -904,6 +929,12 @@ def validate_pre_run_authority(
         raise VerificationError("pre-run tool role set drifted")
     for role, identity in tools.items():
         _replay_identity(identity, f"pre-run tool {role}", mode_required=True)
+    manager_python = _epoch_attestor_python(record.get("manager_epoch"), "pre-run manager epoch")
+    if any(
+        manager_python[field] != tools["attestor_python"][field]
+        for field in tools["attestor_python"]
+    ):
+        raise VerificationError("pre-run attestor Python differs from manager epoch")
     outputs = _mapping(record.get("output_paths"), "pre-run output paths")
     required_outputs = {
         "attempt_result",
@@ -1068,6 +1099,7 @@ def validate_pre_run_authority(
         if record.get(pre_run_field) != execution[execution_field]:
             raise VerificationError(f"pre-run {pre_run_field} differs from attempt execution")
     for role in (
+        "attestor_python",
         "busctl",
         "manager_attestor",
         "manager_epoch_authority",

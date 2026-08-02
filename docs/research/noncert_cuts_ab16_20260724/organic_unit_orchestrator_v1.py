@@ -474,6 +474,11 @@ def build_pinned_epoch_observer(
         tools["manager_epoch_authority"],
         module_name=f"_ab16_epoch_authority_{tools['manager_epoch_authority']['sha256'][:12]}",
     )
+    authority.validate_manager_epoch(pre_run["manager_epoch"])
+    attestor_python = tools["attestor_python"]
+    manager_python = pre_run["manager_epoch"]["attestation_toolchain"]["python"]
+    if any(manager_python.get(field) != attestor_python[field] for field in attestor_python):
+        raise OrchestratorError("pinned attestor Python differs from the manager epoch")
     pinned_environment = _load_pinned_environment(pre_run)
 
     def observe(phase: str) -> EpochCapture:
@@ -493,7 +498,7 @@ def build_pinned_epoch_observer(
             captured = authority.capture_manager_epoch_with_transcript(
                 attestor_path=tools["manager_attestor"]["path"],
                 busctl_path=tools["busctl"]["path"],
-                python_path=tools["python3_13"]["path"],
+                python_path=attestor_python["path"],
                 sudo_path=tools["sudo"]["path"],
             )
         finally:
@@ -515,9 +520,9 @@ def build_pinned_epoch_observer(
         if type(rounds) is not list or len(rounds) != 2:
             raise OrchestratorError("manager epoch transcript round count drifted")
         expected_roles = {
+            "attestor_python": ("attestation_toolchain", "python"),
             "busctl": ("observation_toolchain", "busctl"),
             "manager_attestor": ("attestation_toolchain", "attestor"),
-            "python3_13": ("attestation_toolchain", "python"),
             "sudo": ("attestation_toolchain", "sudo"),
         }
         for round_record in rounds:

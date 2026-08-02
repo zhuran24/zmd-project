@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import base64
 from collections.abc import Iterator, Mapping, Sequence
 from contextlib import contextmanager
 import copy
@@ -27,7 +26,6 @@ GATE1_RELATIVE = Path("docs/research/noncert_cuts_ab_trust_gate1_v4_20260724")
 T0 = "2026-08-02T23:40:00Z"
 T1 = "2026-08-02T23:41:00Z"
 T2 = "2026-08-02T23:42:00Z"
-BOOT_ID = "11111111-2222-3333-4444-555555555555"
 
 
 def _command(
@@ -217,14 +215,55 @@ def _detached(identity: Mapping[str, object]) -> dict[str, object]:
     return {field: identity[field] for field in ("path", "sha256", "size_bytes")}
 
 
-def _system_tools() -> dict[str, Path]:
-    selected_python = (ROOT / ".venv-uvbolt-backup/bin/python3.13").resolve(strict=True)
+def _system_tools(tmp_path: Path) -> dict[str, Path]:
+    attestor_python = Path("/usr/bin/python3.14").resolve(strict=True)
+    runtime_python = (ROOT / ".venv-uvbolt-backup/bin/python").resolve(strict=True)
+    assert attestor_python != runtime_python
+    assert hashlib.sha256(attestor_python.read_bytes()).digest() != hashlib.sha256(runtime_python.read_bytes()).digest()
+
+    tool_dir = tmp_path / "manager-capture-tools"
+    tool_dir.mkdir()
+    busctl = tool_dir / "busctl"
+    sudo = tool_dir / "sudo"
+    busctl.write_text(
+        f"""#!{attestor_python}
+import json
+import sys
+
+arguments = sys.argv[1:]
+if "GetNameOwner" in arguments:
+    reply = {{"data": [":1.77"], "type": "s"}}
+elif "GetConnectionUnixProcessID" in arguments:
+    reply = {{"data": [{os.getpid()}], "type": "u"}}
+elif arguments[-1:] == ["Features"]:
+    reply = {{"data": "+PAM +AUDIT", "type": "s"}}
+elif arguments[-1:] == ["Version"]:
+    reply = {{"data": "systemd fixture 261.1", "type": "s"}}
+else:
+    raise SystemExit(2)
+sys.stdout.write(json.dumps(reply, ensure_ascii=False, separators=(",", ":"), sort_keys=True))
+""",
+        encoding="utf-8",
+    )
+    sudo.write_text(
+        f"""#!{attestor_python}
+import os
+import sys
+
+if sys.argv[1:3] != ["-n", "--"] or len(sys.argv) < 4:
+    raise SystemExit(2)
+os.execv(sys.argv[3], sys.argv[3:])
+""",
+        encoding="utf-8",
+    )
+    busctl.chmod(0o755)
+    sudo.chmod(0o755)
     result = {
-        "attestor_python": selected_python,
-        "busctl": Path("/usr/bin/busctl"),
+        "attestor_python": attestor_python,
+        "busctl": busctl,
         "git": Path("/usr/bin/git"),
-        "python3_13": selected_python,
-        "sudo": Path("/usr/bin/sudo"),
+        "python3_13": runtime_python,
+        "sudo": sudo,
         "systemctl": Path("/usr/bin/systemctl"),
         "systemd_run": Path("/usr/bin/systemd-run"),
     }
@@ -239,86 +278,12 @@ def _manager_capture(
     system_tools: Mapping[str, Path],
     clock_base_ns: int,
 ) -> dict[str, object]:
-    manager = Path("/usr/lib/systemd/systemd")
-    assert manager.is_file()
-
-    def full(path: Path) -> dict[str, object]:
-        return gate1.full_identity(gate1.snapshot_regular(path))
-
-    state: dict[str, object] = {
-        "boot_id": BOOT_ID,
-        "dbus_unique_owner": ":1.77",
-        "manager_features": "+PAM +AUDIT",
-        "manager_pid": 2118,
-        "manager_pid_starttime": 987654,
-        "manager_version": "systemd 261.1",
-    }
-    attestation = {
-        "manager_executable": full(manager),
-        "request": {
-            "boot_id": state["boot_id"],
-            "dbus_unique_owner": state["dbus_unique_owner"],
-            "manager_pid": state["manager_pid"],
-            "manager_pid_starttime": state["manager_pid_starttime"],
-        },
-        "schema": gate1.ATTESTOR_SCHEMA,
-        "status": "PASS",
-    }
-    tools = {
-        "attestor": full(attestor_path),
-        "python": full(system_tools["attestor_python"]),
-        "sudo": full(system_tools["sudo"]),
-    }
-    audit = gate1.audit_attestor_source(attestor_path.read_bytes())
-    invocation = {
-        "argv": [
-            str(system_tools["sudo"]),
-            "-n",
-            "--",
-            str(system_tools["attestor_python"]),
-            "-I",
-            "-c",
-            gate1._LOADER,  # noqa: SLF001 - exact public capture transcript contract
-            "--pid",
-            str(state["manager_pid"]),
-            "--expected-starttime",
-            str(state["manager_pid_starttime"]),
-            "--expected-boot-id",
-            str(state["boot_id"]),
-            "--dbus-owner",
-            str(state["dbus_unique_owner"]),
-        ],
-        "exit_code": 0,
-        "stdin_sha256": tools["attestor"]["sha256"],
-        "stdin_size_bytes": tools["attestor"]["size_bytes"],
-        "stdout_base64": base64.b64encode(gate1.canonical_json(attestation)).decode("ascii"),
-    }
-
-    def probe(_: str) -> dict[str, object]:
-        return copy.deepcopy(state)
-
-    def invoke(
-        expected: Mapping[str, object],
-    ) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
-        assert dict(expected) == state
-        return (
-            copy.deepcopy(attestation),
-            copy.deepcopy(tools),
-            {
-                "audit": copy.deepcopy(audit),
-                "invocation": copy.deepcopy(invocation),
-            },
-        )
-
-    ticks = iter(clock_base_ns + offset for offset in (10, 20, 30, 40))
+    del clock_base_ns
     return gate1.capture_manager_epoch_with_transcript(
         attestor_path=attestor_path,
         busctl_path=system_tools["busctl"],
         python_path=system_tools["attestor_python"],
         sudo_path=system_tools["sudo"],
-        probe=probe,
-        invoke=invoke,
-        monotonic_ns=lambda: next(ticks),
     )
 
 
@@ -396,7 +361,7 @@ def _install_retained_gate1_precondition(
         "campaign_id": root["campaign_id"],
         "capture_transcript": transcript,
         "captured_at_utc": T1,
-        "captured_monotonic_ns": 150,
+        "captured_monotonic_ns": transcript["rounds"][-1]["observation_finished_monotonic_ns"] + 1,
         "manager_epoch": admission_capture["manager_epoch"],
         "manager_epoch_digest": gate1.sha256_bytes(gate1.canonical_json(root["manager_epoch"])),
         "phase": "gate-admission",
@@ -804,7 +769,7 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
         admission = modules.admission
         rebuild = modules.rebuild
         fixed_replay = modules.fixed_replay
-        system_tools = _system_tools()
+        system_tools = _system_tools(tmp_path)
         strict_inputs = bootstrap._production_strict_inputs(checkout)  # noqa: SLF001
         offline_dir = tmp_path / "offline"
         campaign_parent = tmp_path / "campaigns"
@@ -933,6 +898,11 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
             campaign / "campaign-root.json",
             boot["campaign_root_identity"],
         )
+        root_attestor_python = root["authority_tools"]["attestor_python"]
+        root_runtime_python = root["authority_tools"]["python3_13"]
+        assert root_attestor_python["path"] != root_runtime_python["path"]
+        assert root_attestor_python["sha256"] != root_runtime_python["sha256"]
+        assert _detached(root["manager_epoch"]["attestation_toolchain"]["python"]) == root_attestor_python
         archive_locator = root["strict_inputs"]["legacy_control_a002"]["path"]
         admission_record = admission._admit_paths(  # noqa: SLF001 - tiny immutable expectation
             campaign_provenance_path=provenance_path,
@@ -961,12 +931,22 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
         )
         slot = prepared["slot"]
         assert slot == "region-capacity-ab-control"
+        attempt_dir = Path(prepared["attempt_dir"])
+        execution, _ = authority._load_record(  # noqa: SLF001 - inspect the producer's exact bytes
+            attempt_dir / "attempt-execution.json",
+            "R16 manager recapture seam attempt execution",
+        )
+        epoch_attestor_python = execution["manager_epoch"]["attestation_toolchain"]["python"]
+        runtime_python = execution["tool_identities"]["python3_13"]
+        assert epoch_attestor_python["path"] != runtime_python["path"]
+        assert epoch_attestor_python["sha256"] != runtime_python["sha256"]
+        assert _detached(epoch_attestor_python) == root_attestor_python
+        assert _detached(runtime_python) == root_runtime_python
         produced = authority.produce_selection(
             preregistration_path,
             slot=slot,
             attempt_ordinal=1,
             selection_nonce="r12-self-contained-sentinel-a001",
-            manager_capture=copy.deepcopy(capture),
             launch_environment={
                 "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
                 "HOME": str(tmp_path / "sentinel-home"),
@@ -978,6 +958,24 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
                 "XDG_RUNTIME_DIR": "/run/user/1000",
             },
         )
+        attestor_python = execution["tool_identities"]["attestor_python"]
+        assert _detached(attestor_python) == _detached(epoch_attestor_python)
+        preselection_transcript, _ = authority._load_record(  # noqa: SLF001 - inspect real capture bytes
+            Path(execution["support_dir"]) / "preselection-manager-transcript.json",
+            "R16 preselection manager transcript",
+        )
+        assert all(
+            _detached(round_record["attestation_toolchain"]["python"]) == _detached(attestor_python)
+            for round_record in preselection_transcript["rounds"]
+        )
+        pre_run, _ = authority._load_record(  # noqa: SLF001 - inspect real runtime projection bytes
+            Path(execution["pre_run_authority_path"]),
+            "R16 pre-run authority",
+        )
+        assert pre_run["tool_identities"]["attestor_python"] == attestor_python
+        assert pre_run["launch"]["python3_13_path"] == runtime_python["path"]
+        assert pre_run["launch"]["payload_argv"][0] == runtime_python["path"]
+        assert pre_run["launch"]["supervisor_argv"][0] == runtime_python["path"]
         bound = authority.bind_selection(
             preregistration_path,
             slot=slot,
@@ -986,11 +984,6 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
         )
         assert bound["status"] == "SELECTION_BOUND"
 
-        attempt_dir = Path(prepared["attempt_dir"])
-        execution, _ = authority._load_record(  # noqa: SLF001 - read the producer's exact bytes
-            attempt_dir / "attempt-execution.json",
-            "R12 sentinel attempt execution",
-        )
         runner = _load_pinned_module(execution["tool_identities"]["organic_arm_runner"], "runner")
         lifecycle = _load_pinned_module(
             execution["tool_identities"]["organic_resource_lifecycle"],

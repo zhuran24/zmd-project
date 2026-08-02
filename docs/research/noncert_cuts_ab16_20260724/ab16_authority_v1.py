@@ -843,6 +843,7 @@ def _campaign_execution_context(
 
     root_tools = root["authority_tools"]
     system_roles = {
+        "attestor_python": "attestor_python",
         "busctl": "busctl",
         "manager_attestor": "manager_attestor_v4",
         "manager_epoch_authority": "campaign_authority_v4",
@@ -866,6 +867,9 @@ def _campaign_execution_context(
             root_tools[root_role],
             f"campaign tool {root_role}",
         )
+    epoch_attestor_python = root["manager_epoch"]["attestation_toolchain"]["python"]
+    if any(epoch_attestor_python.get(field) != tools["attestor_python"][field] for field in tools["attestor_python"]):
+        raise AuthorityError("campaign manager epoch attestor Python identity drifted")
     for output_role, attempt_role in code_roles.items():
         if attempt_role not in attempt_tool_identities:
             raise AuthorityError(f"attempt tool set lacks {attempt_role}")
@@ -901,7 +905,12 @@ def _campaign_execution_context(
     }
 
 
-def _validate_execution_context(value: object, *, slot: str) -> Mapping[str, Any]:
+def _validate_execution_context(
+    value: object,
+    *,
+    slot: str,
+    allow_legacy_attestor_omission: bool = False,
+) -> Mapping[str, Any]:
     record = _exact_mapping(
         value,
         {
@@ -931,10 +940,21 @@ def _validate_execution_context(value: object, *, slot: str) -> Mapping[str, Any
         or "/" in record["unit_name"]
     ):
         raise AuthorityError(f"attempt execution context is malformed for {slot}")
+    try:
+        bootstrap.authority.validate_manager_epoch(record["manager_epoch"])
+    except Exception as exc:
+        raise AuthorityError("attempt execution manager epoch is invalid") from exc
     _identity(record["repository_git_tool_identity"], "execution git identity")
     tools = _identity_map(record["tool_identities"], "execution tool identities", verify=True)
-    if set(tools) != set(runner.EXECUTION_TOOL_ROLES):
+    expected_tool_roles = set(runner.EXECUTION_TOOL_ROLES)
+    legacy_tool_roles = expected_tool_roles - {"attestor_python"}
+    legacy_omission = allow_legacy_attestor_omission and set(tools) == legacy_tool_roles
+    if set(tools) != expected_tool_roles and not legacy_omission:
         raise AuthorityError("execution tool role set drifted")
+    if not legacy_omission:
+        manager_python = record["manager_epoch"]["attestation_toolchain"]["python"]
+        if any(manager_python.get(field) != tools["attestor_python"][field] for field in tools["attestor_python"]):
+            raise AuthorityError("execution attestor Python differs from the manager epoch")
     _exact_mapping(
         record["package"],
         {"manifest_identity", "package_id", "seal_identity"},
@@ -1260,6 +1280,7 @@ def _validate_attempt_execution(
     preregistration_identity: Mapping[str, Any],
     input_record: Mapping[str, Any],
     input_identity: Mapping[str, Any],
+    allow_legacy_attestor_omission: bool = False,
 ) -> tuple[Mapping[str, Any], dict[str, object]]:
     record, identity = _load_record(attempt_dir / "attempt-execution.json", "attempt execution")
     checked = _exact_mapping(
@@ -1345,10 +1366,17 @@ def _validate_attempt_execution(
             "unit_name",
         )
     }
-    _validate_execution_context(context, slot=slot)
+    _validate_execution_context(
+        context,
+        slot=slot,
+        allow_legacy_attestor_omission=allow_legacy_attestor_omission,
+    )
     if hasattr(runner, "validate_attempt_execution"):
         try:
-            runner.validate_attempt_execution(checked)
+            runner.validate_attempt_execution(
+                checked,
+                allow_legacy_attestor_omission=allow_legacy_attestor_omission,
+            )
         except Exception as exc:
             raise AuthorityError("runner rejected attempt execution") from exc
     return checked, identity
@@ -1361,6 +1389,7 @@ def _validate_open(
     ordinal: int,
     preregistration: Mapping[str, Any],
     preregistration_identity: Mapping[str, Any],
+    allow_legacy_attestor_omission: bool = False,
 ) -> tuple[Mapping[str, Any], Mapping[str, Any], dict[str, object]]:
     inputs, input_identity = _validate_input_set(attempt_dir, preregistration, preregistration_identity)
     execution, execution_identity = _validate_attempt_execution(
@@ -1371,6 +1400,7 @@ def _validate_open(
         preregistration_identity=preregistration_identity,
         input_record=inputs,
         input_identity=input_identity,
+        allow_legacy_attestor_omission=allow_legacy_attestor_omission,
     )
     record, identity = _load_record(attempt_dir / "attempt-open.json", "attempt-open receipt")
     checked = _exact_mapping(
@@ -1728,12 +1758,16 @@ def replay_campaign(
                     "uncommitted": True,
                 }
                 break
+            result_path = attempt_dir / "attempt-result.json"
+            # The pre-R16 r6 stop is already closed and lacks only this role.  Active attempts have no result
+            # envelope, so they cannot enter the read-only compatibility path or recapture with a fallback.
             _open, inputs, _open_identity = _validate_open(
                 attempt_dir,
                 slot=slot,
                 ordinal=ordinal,
                 preregistration=preregistration,
                 preregistration_identity=preregistration_identity,
+                allow_legacy_attestor_omission=result_path.exists() or result_path.is_symlink(),
             )
             input_identity = _snapshot(attempt_dir / "attempt-input-set.json")[1]
             if inputs["scientific_input_set_sha256"] != campaign_scientific_digest:
@@ -2109,11 +2143,16 @@ def _manager_capture(
 ) -> Mapping[str, Any]:
     tools = execution["tool_identities"]
     try:
+        bootstrap.authority.validate_manager_epoch(execution["manager_epoch"])
+        attestor_python = tools["attestor_python"]
+        expected_python = execution["manager_epoch"]["attestation_toolchain"]["python"]
+        if any(expected_python.get(field) != attestor_python[field] for field in attestor_python):
+            raise AuthorityError("attempt attestor Python differs from the manager epoch")
         capture = (
             bootstrap.authority.capture_manager_epoch_with_transcript(
                 attestor_path=tools["manager_attestor"]["path"],
                 busctl_path=tools["busctl"]["path"],
-                python_path=tools["python3_13"]["path"],
+                python_path=attestor_python["path"],
                 sudo_path=tools["sudo"]["path"],
             )
             if supplied is None

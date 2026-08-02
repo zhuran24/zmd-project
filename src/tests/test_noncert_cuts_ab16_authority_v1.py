@@ -297,11 +297,14 @@ def _fixture(
     authority_dir = tmp_path / "execution-authority"
     authority_dir.mkdir()
     manager_epoch, manager_transcript, manager_tools = _manager_material(authority_dir)
+    runtime_python = authority_dir / "runtime-python"
+    runtime_python.write_bytes(b"fixture runtime Python distinct from attestor Python\n")
     system_tools = {
+        "attestor_python": manager_tools["python"],
         "busctl": manager_tools["busctl"],
         "manager_attestor": MANAGER_ATTESTOR_PATH,
         "manager_epoch_authority": Path(AUTH.bootstrap.authority.__file__),
-        "python3_13": manager_tools["python"],
+        "python3_13": runtime_python,
         "sudo": manager_tools["sudo"],
         "systemctl": authority_dir / "systemctl",
         "systemd_run": authority_dir / "systemd-run",
@@ -948,6 +951,34 @@ def test_selection_uses_the_admitted_incumbent_semantic_digest(tmp_path: Path) -
     assert selection["baseline_incumbent_sha256"] == semantic_digest
 
 
+def test_manager_epoch_equality_remains_exact_before_selection_publication(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    prepared = _prepare(fixture)
+    drifted_capture = copy.deepcopy(fixture["manager_capture"])
+    drifted_capture["manager_epoch"]["manager_version"] = "systemd fixture drift"
+    for round_record in drifted_capture["transcript"]["rounds"]:
+        round_record["unprivileged_before"]["manager_version"] = "systemd fixture drift"
+        round_record["unprivileged_after"]["manager_version"] = "systemd fixture drift"
+    AUTH.bootstrap.authority.validate_manager_epoch_capture_transcript(
+        drifted_capture["transcript"],
+        expected_epoch=drifted_capture["manager_epoch"],
+    )
+
+    with pytest.raises(AUTH.AuthorityError, match="manager epoch drifted before selection production"):
+        AUTH.produce_selection(
+            fixture["preregistration_path"],
+            slot=prepared["slot"],
+            attempt_ordinal=prepared["attempt_ordinal"],
+            selection_nonce="manager-drift-must-still-fail",
+            manager_capture=drifted_capture,
+            launch_environment=fixture["launch_environment"],
+        )
+
+    attempt_dir = Path(prepared["attempt_dir"])
+    assert not any((attempt_dir / "execution-support").iterdir())
+    assert not any((attempt_dir / "work").iterdir())
+
+
 def test_incomplete_attempt_can_retry_after_clean_code_fix(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
     slot = AUTH.contract.ARM_SEQUENCE[0]
@@ -1032,6 +1063,82 @@ def test_incomplete_attempt_can_retry_after_clean_code_fix(tmp_path: Path) -> No
         second_attempt / "attempt-result.json",
     ):
         _assert_false_authorizations(json.loads(path.read_text(encoding="utf-8")))
+
+
+def test_closed_pre_r16_attempt_replays_read_only_and_retry_carries_attestor_role(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    slot = AUTH.contract.ARM_SEQUENCE[0]
+    first = _prepare(fixture, slot=slot)
+    AUTH.close_attempt(
+        fixture["preregistration_path"],
+        slot=slot,
+        attempt_ordinal=1,
+        outcome=AUTH.CREDIBILITY_INCOMPLETE,
+        failure_code="PRE_R16_ATTESTOR_ROLE_OMITTED",
+    )
+
+    first_attempt = Path(first["attempt_dir"])
+    execution_path = first_attempt / "attempt-execution.json"
+    execution = json.loads(execution_path.read_text(encoding="utf-8"))
+    del execution["tool_identities"]["attestor_python"]
+    _write(execution_path, execution)
+    open_path = first_attempt / "attempt-open.json"
+    open_record = json.loads(open_path.read_text(encoding="utf-8"))
+    open_record["attempt_execution_identity"] = _identity(execution_path)
+    _write(open_path, open_record)
+    frozen_first_attempt = {
+        path.relative_to(first_attempt): path.read_bytes()
+        for path in first_attempt.rglob("*")
+        if path.is_file()
+    }
+
+    replayed = AUTH.replay_campaign(fixture["preregistration_path"])
+    assert replayed["active_attempt"] is None
+    assert replayed["consumption_state"]["slots"][0]["state"] == "RETRYABLE"
+
+    fixture["tracked"].write_text("R16 attestor role repair\n", encoding="utf-8")
+    _commit(fixture["repository"], "repair attestor role")
+    second = _prepare(fixture, slot=slot)
+    assert second["attempt_ordinal"] == 2
+    second_execution = json.loads(
+        (Path(second["attempt_dir"]) / "attempt-execution.json").read_text(encoding="utf-8")
+    )
+    attestor_python = second_execution["tool_identities"]["attestor_python"]
+    manager_python = second_execution["manager_epoch"]["attestation_toolchain"]["python"]
+    assert _detached(attestor_python) == _detached(manager_python)
+    assert {
+        path.relative_to(first_attempt): path.read_bytes()
+        for path in first_attempt.rglob("*")
+        if path.is_file()
+    } == frozen_first_attempt
+
+
+def test_active_attempt_cannot_omit_attestor_role_or_fallback_to_runtime_python(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    prepared = _prepare(fixture)
+    attempt_dir = Path(prepared["attempt_dir"])
+    execution_path = attempt_dir / "attempt-execution.json"
+    execution = json.loads(execution_path.read_text(encoding="utf-8"))
+    assert execution["tool_identities"]["attestor_python"] != execution["tool_identities"]["python3_13"]
+    del execution["tool_identities"]["attestor_python"]
+    _write(execution_path, execution)
+    open_path = attempt_dir / "attempt-open.json"
+    open_record = json.loads(open_path.read_text(encoding="utf-8"))
+    open_record["attempt_execution_identity"] = _identity(execution_path)
+    _write(open_path, open_record)
+
+    with pytest.raises(AUTH.AuthorityError, match="execution tool role set drifted"):
+        AUTH.produce_selection(
+            fixture["preregistration_path"],
+            slot=prepared["slot"],
+            attempt_ordinal=prepared["attempt_ordinal"],
+            selection_nonce="missing-attestor-must-not-fallback",
+            manager_capture=fixture["manager_capture"],
+            launch_environment=fixture["launch_environment"],
+        )
+
+    assert not any((attempt_dir / "execution-support").iterdir())
+    assert not any((attempt_dir / "work").iterdir())
 
 
 def test_unresolved_attempt_blocks_retry_and_records_are_no_overwrite(tmp_path: Path) -> None:

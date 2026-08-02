@@ -447,6 +447,8 @@ def _fixture(
         },
     )
     manager_epoch, manager_transcript = _manager_material(authority_dir)
+    runtime_python = authority_dir / "runtime-python"
+    runtime_python.write_bytes(b"fixture runtime python distinct from attestor python\n")
     preselection_transcript_identity = _write(
         authority_dir / "preselection-transcript.json",
         manager_transcript,
@@ -514,6 +516,7 @@ def _fixture(
         "signal": 0,
     }
     tool_identities = {
+        "attestor_python": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
         "busctl": _tool_identity(Path(manager_epoch["observation_toolchain"]["busctl"]["path"])),
         "manager_attestor": _tool_identity(MANAGER_ATTESTOR_PATH),
         "manager_epoch_authority": _tool_identity(MANAGER_AUTHORITY_PATH),
@@ -521,7 +524,7 @@ def _fixture(
         "organic_resource_lifecycle": _tool_identity(LIFECYCLE_PATH),
         "organic_resource_verifier": _tool_identity(VERIFIER_PATH),
         "organic_unit_orchestrator": _tool_identity(ORCHESTRATOR_PATH),
-        "python3_13": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
+        "python3_13": _tool_identity(runtime_python),
         "sudo": _tool_identity(Path(manager_epoch["attestation_toolchain"]["sudo"]["path"])),
         "systemctl": identities["systemctl"],
         "systemd_run": identities["systemd-run"],
@@ -605,13 +608,13 @@ def _fixture(
             "cwd": str(ROOT),
             "environment_identity": identities["environment"],
             "payload_argv": [
-                manager_epoch["attestation_toolchain"]["python"]["path"],
+                tool_identities["python3_13"]["path"],
                 "-I",
                 payload_script,
             ],
-            "python3_13_path": manager_epoch["attestation_toolchain"]["python"]["path"],
+            "python3_13_path": tool_identities["python3_13"]["path"],
             "supervisor_argv": [
-                manager_epoch["attestation_toolchain"]["python"]["path"],
+                tool_identities["python3_13"]["path"],
                 "-I",
                 str(LIFECYCLE_PATH),
                 "supervise",
@@ -1206,12 +1209,21 @@ def test_epoch_attestor_capture_uses_pinned_environment_and_restores_ambient(
     pre_run = VERIFIER.snapshot_json(pre_run_path).value
     transcript = VERIFIER.snapshot_json(pre_run["preselection_transcript_identity"]["path"]).value
     captured_environments: list[dict[str, str]] = []
+    attestor_python = pre_run["tool_identities"]["attestor_python"]
+    epoch_attestor_python = pre_run["manager_epoch"]["attestation_toolchain"]["python"]
+    runtime_python = pre_run["tool_identities"]["python3_13"]
+    assert attestor_python["path"] != runtime_python["path"]
+    assert attestor_python["sha256"] != runtime_python["sha256"]
+    assert all(
+        epoch_attestor_python[field] == attestor_python[field]
+        for field in ("mode", "path", "sha256", "size_bytes")
+    )
 
     def capture_manager_epoch_with_transcript(**kwargs: str) -> dict[str, object]:
         assert kwargs == {
             "attestor_path": pre_run["tool_identities"]["manager_attestor"]["path"],
             "busctl_path": pre_run["tool_identities"]["busctl"]["path"],
-            "python_path": pre_run["tool_identities"]["python3_13"]["path"],
+            "python_path": attestor_python["path"],
             "sudo_path": pre_run["tool_identities"]["sudo"]["path"],
         }
         captured_environments.append(dict(ORCHESTRATOR.os.environ))

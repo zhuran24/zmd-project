@@ -110,6 +110,7 @@ OUTPUT_ROLES = (
     "attempt_result",
 )
 TOOL_ROLES = (
+    "attestor_python",
     "busctl",
     "manager_attestor",
     "manager_epoch_authority",
@@ -350,6 +351,21 @@ def _epoch(value: object, label: str) -> Mapping[str, Any]:
     _string(record["manager_features"], f"{label}.manager_features")
     _check_json(record, label)
     return record
+
+
+def _epoch_attestor_python(value: object, label: str) -> Mapping[str, Any]:
+    epoch = _epoch(value, label)
+    toolchain = _mapping(epoch.get("attestation_toolchain"), f"{label}.attestation_toolchain")
+    python = _mapping(toolchain.get("python"), f"{label}.attestation_toolchain.python")
+    path = _string(python.get("path"), f"{label}.attestation_toolchain.python.path")
+    if not Path(path).is_absolute():
+        raise LifecycleError(f"{label}.attestation_toolchain.python.path must be absolute")
+    digest = _string(python.get("sha256"), f"{label}.attestation_toolchain.python.sha256")
+    if SHA256_RE.fullmatch(digest) is None:
+        raise LifecycleError(f"{label}.attestation_toolchain.python.sha256 is invalid")
+    _integer(python.get("size_bytes"), f"{label}.attestation_toolchain.python.size_bytes")
+    _integer(python.get("mode"), f"{label}.attestation_toolchain.python.mode")
+    return python
 
 
 def epoch_digest(value: object) -> str:
@@ -714,6 +730,12 @@ def validate_attempt_execution(value: object) -> Mapping[str, Any]:
     tools = _keys(record["tool_identities"], set(ATTEMPT_EXECUTION_TOOL_ROLES), "attempt execution tools")
     for role, identity in tools.items():
         _identity(identity, f"attempt execution tool {role}", mode_required=True)
+    manager_python = _epoch_attestor_python(record["manager_epoch"], "attempt execution manager epoch")
+    if any(
+        manager_python[field] != tools["attestor_python"][field]
+        for field in tools["attestor_python"]
+    ):
+        raise LifecycleError("attempt execution attestor Python differs from manager epoch")
     return record
 
 
@@ -925,6 +947,12 @@ def validate_pre_run_authority(
     tools = _keys(record["tool_identities"], set(TOOL_ROLES), "tool identities")
     for role in TOOL_ROLES:
         _identity(tools[role], f"tool identity {role}", mode_required=True)
+    manager_python = _epoch_attestor_python(record["manager_epoch"], "pre-run manager epoch")
+    if any(
+        manager_python[field] != tools["attestor_python"][field]
+        for field in tools["attestor_python"]
+    ):
+        raise LifecycleError("pre-run attestor Python differs from manager epoch")
     strict_inputs = _mapping(record["strict_input_identities"], "strict inputs")
     if not strict_inputs:
         raise LifecycleError("strict input identity map must be non-empty")
