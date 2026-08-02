@@ -25,6 +25,7 @@ import time
 from typing import Any
 
 import baseline_admission_v1 as baseline_contract
+from google.protobuf import text_format
 from ortools.sat import cp_model_pb2
 
 
@@ -48,7 +49,7 @@ class BaselineRebuildError(RuntimeError):
 class BaselineComputation:
     """Solver-produced values consumed by the one canonical rebuild writer."""
 
-    model: cp_model_pb2.CpModelProto
+    model: object
     incumbent: Mapping[str, Any]
     solution_values: tuple[int, ...]
     runner_status: str
@@ -346,6 +347,44 @@ def _prepare_rebuild_context(
     )
 
 
+def _portable_cp_model_proto(raw_proto: object) -> cp_model_pb2.CpModelProto:
+    """Normalize an OR-Tools model proto to the portable generated message."""
+
+    if isinstance(raw_proto, cp_model_pb2.CpModelProto):
+        return raw_proto
+    if (
+        getattr(raw_proto, "constraints", None) is None
+        or callable(getattr(raw_proto, "SerializeToString", None))
+    ):
+        raise BaselineRebuildError(
+            "baseline computation model is neither a generated nor helper CpModelProto"
+        )
+
+    portable = cp_model_pb2.CpModelProto()
+    try:
+        text_format.Parse(str(raw_proto), portable)
+    except (text_format.ParseError, TypeError, ValueError) as exc:
+        raise BaselineRebuildError(
+            "baseline computation model could not be converted to portable protobuf"
+        ) from exc
+    return portable
+
+
+def _portable_baseline_computation(
+    computation: BaselineComputation,
+) -> BaselineComputation:
+    if not isinstance(computation, BaselineComputation):
+        raise BaselineRebuildError("baseline computation has the wrong type")
+    return BaselineComputation(
+        model=_portable_cp_model_proto(computation.model),
+        incumbent=computation.incumbent,
+        solution_values=computation.solution_values,
+        runner_status=computation.runner_status,
+        proof_summary=computation.proof_summary,
+        wall_seconds=computation.wall_seconds,
+    )
+
+
 def _validated_computation(
     computation: BaselineComputation,
     expectation: baseline_contract.BaselineExpectation,
@@ -421,6 +460,7 @@ def _publish_rebuild(
     if not isinstance(parameters, Mapping):
         raise BaselineRebuildError("baseline parameters are invalid")
     _validate_created_at(created_at_utc)
+    computation = _portable_baseline_computation(computation)
     model_raw, incumbent_json, observed = _validated_computation(computation, expectation)
 
     targets = {
@@ -622,10 +662,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not incumbent or "ghost_pick" not in incumbent or master._solver is None:
         raise BaselineRebuildError("baseline run did not retain a complete incumbent")
 
-    model = cp_model_pb2.CpModelProto()
-    model.CopyFrom(master.model.Proto())
     computation = BaselineComputation(
-        model=model,
+        model=master.model.Proto(),
         incumbent=incumbent,
         solution_values=tuple(int(value) for value in master._solver.ResponseProto().solution),
         runner_status=str(status),

@@ -11,7 +11,9 @@ import sys
 from types import ModuleType
 from typing import Any
 
+from google.protobuf import text_format
 from ortools.sat import cp_model_pb2
+from ortools.sat.python import cp_model
 import pytest
 
 
@@ -76,6 +78,13 @@ def _tiny_model() -> cp_model_pb2.CpModelProto:
     variable.name = "ghost_pick"
     variable.domain.extend([0, 1])
     return model
+
+
+class _MalformedHelperProto:
+    constraints: tuple[object, ...] = ()
+
+    def __str__(self) -> str:
+        return 'variables { name: "unterminated }'
 
 
 def _tiny_incumbent() -> dict[str, object]:
@@ -209,6 +218,66 @@ def _assert_no_rebuild_outputs(fixture: dict[str, Any]) -> None:
         "rebuild-result.json",
     ):
         assert not (fixture["output_dir"] / name).exists()
+
+
+def test_generated_model_proto_uses_direct_portable_path() -> None:
+    model = _tiny_model()
+
+    assert REBUILD._portable_cp_model_proto(model) is model
+
+
+def test_real_nonempty_pybind_model_proto_converts_semantically() -> None:
+    model = cp_model.CpModel()
+    ghost = model.new_bool_var("ghost_pick")
+    model.add(ghost == 1)
+    raw_proto = model.Proto()
+
+    assert not isinstance(raw_proto, cp_model_pb2.CpModelProto)
+    assert not callable(getattr(raw_proto, "SerializeToString", None))
+    assert len(raw_proto.variables) == 1
+    assert len(raw_proto.constraints) == 1
+    assert raw_proto.constraints[0].has_linear()
+
+    portable = REBUILD._portable_cp_model_proto(raw_proto)
+
+    assert isinstance(portable, cp_model_pb2.CpModelProto)
+    assert len(portable.variables) == len(raw_proto.variables)
+    assert len(portable.constraints) == len(raw_proto.constraints)
+    assert portable.constraints[0].WhichOneof("constraint") == "linear"
+    expected = cp_model_pb2.CpModelProto()
+    variable = expected.variables.add()
+    variable.name = "ghost_pick"
+    variable.domain.extend((0, 1))
+    constraint = expected.constraints.add()
+    constraint.linear.vars.append(0)
+    constraint.linear.coeffs.append(1)
+    constraint.linear.domain.extend((1, 1))
+    portable_raw = portable.SerializeToString(deterministic=True)
+    assert portable_raw == expected.SerializeToString(deterministic=True)
+    reparsed = cp_model_pb2.CpModelProto()
+    assert reparsed.ParseFromString(portable_raw) == len(portable_raw)
+    assert reparsed.SerializeToString(deterministic=True) == portable_raw
+
+
+def test_malformed_helper_text_fails_before_any_output(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path)
+    fixture["computation"] = replace(
+        fixture["computation"],
+        model=_MalformedHelperProto(),
+    )
+    monkeypatch.chdir(fixture["repository_root"])
+
+    with pytest.raises(
+        REBUILD.BaselineRebuildError,
+        match="could not be converted to portable protobuf",
+    ) as exc_info:
+        _rebuild(fixture)
+
+    assert isinstance(exc_info.value.__cause__, text_format.ParseError)
+    _assert_no_rebuild_outputs(fixture)
 
 
 def test_tiny_computation_uses_canonical_production_writer(

@@ -17,7 +17,6 @@ import sys
 from types import ModuleType, SimpleNamespace
 from typing import Any
 
-from google.protobuf import text_format
 from ortools.sat import cp_model_pb2
 from ortools.sat.python import cp_model
 
@@ -420,6 +419,14 @@ def _install_retained_gate1_precondition(
         checkpoint_path,
         gate1.canonical_json(checkpoint),
     )
+    package_manifest_snapshot = gate1.replay_detached_identity(
+        root["package"]["manifest_identity"],
+        "retained Gate1 package manifest",
+    )
+    package_manifest = gate1.strict_loads(
+        package_manifest_snapshot.data,
+        "retained Gate1 package manifest",
+    )
     gate_result = {
         "campaign_id": root["campaign_id"],
         "continuation_authorized": False,
@@ -428,6 +435,16 @@ def _install_retained_gate1_precondition(
         "manager_epoch": root["manager_epoch"],
         "mechanism_credible": True,
         "organic_arm_launch_authorized": False,
+        "repository_head": root["repository_head"],
+        "repository_identity_join": {
+            "checker_package_birth_head": package_manifest["repository_head"],
+            "checker_receipt_package_birth_joined": True,
+            "checker_selected_package_member_joined": True,
+            "gate1_selection_execution_head": root["repository_head"],
+            "selection_live_execution_joined": True,
+            "tracked_checkout_clean": True,
+        },
+        "schema_version": "noncert-cuts-gate1-v4-final-gate-v2",
         "status": "CUTS_GATE1_V4_AUTHORITY_COMPLETION_PASS",
     }
     gate_path = Path(topology["gate_path"])
@@ -463,7 +480,7 @@ def _install_retained_gate1_precondition(
 
 def _tiny_baseline(
     admission: ModuleType,
-) -> tuple[cp_model_pb2.CpModelProto, dict[str, object], Any, tuple[int, ...]]:
+) -> tuple[object, dict[str, object], Any, tuple[int, ...]]:
     model = cp_model.CpModel()
     ghost = model.new_bool_var("ghost__0_0_6_6")
     model.add(ghost == 1)
@@ -480,8 +497,15 @@ def _tiny_baseline(
             "pose_idx": 0,
         }
     }
+    raw_proto = model.Proto()
     proto = cp_model_pb2.CpModelProto()
-    text_format.Parse(str(model.Proto()), proto)
+    variable = proto.variables.add()
+    variable.name = "ghost__0_0_6_6"
+    variable.domain.extend((0, 1))
+    constraint = proto.constraints.add()
+    constraint.linear.vars.append(0)
+    constraint.linear.coeffs.append(1)
+    constraint.linear.domain.extend((1, 1))
     expectation = admission.BaselineExpectation(
         profile="r12-self-contained-chain-sentinel-v1",
         legacy_size_bytes=507_095,
@@ -492,7 +516,7 @@ def _tiny_baseline(
         incumbent_sha256=admission.semantic_digest(incumbent),
         incumbent_assignment_count=len(incumbent),
     )
-    return proto, incumbent, expectation, (int(solver.value(ghost)),)
+    return raw_proto, incumbent, expectation, (int(solver.value(ghost)),)
 
 
 class _MicroArmHooks:
@@ -759,6 +783,14 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
     tmp_path: Path,
     monkeypatch: Any,
 ) -> None:
+    """Exercise the R12 chain through the shared R14 proto-conversion boundary.
+
+    At the baseline solver seam, a tiny deterministic result is injected above
+    the production helper-to-generated conversion, validation, and exclusive
+    writer.  The production-scale solve, fresh-process/resource qualification,
+    and Gate1 detached replay payload semantics remain outside this sentinel.
+    """
+
     checkout = _clean_checkout(tmp_path)
     with _load_checkout_modules(checkout, tmp_path) as modules:
         bootstrap = modules.bootstrap
@@ -820,17 +852,24 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
         )
         provenance_path = Path(provenance["campaign_provenance_identity"]["path"])
         preregistration, _ = authority._load_preregistration(preregistration_path)  # noqa: SLF001
-        model, incumbent, expectation, solution_values = _tiny_baseline(admission)
+        raw_model, incumbent, expectation, solution_values = _tiny_baseline(admission)
+        assert not isinstance(raw_model, cp_model_pb2.CpModelProto)
+        assert not callable(getattr(raw_model, "SerializeToString", None))
+        assert len(raw_model.variables) == 1
+        assert len(raw_model.constraints) == 1
         computation = rebuild.BaselineComputation(
-            model=model,
+            model=raw_model,
             incumbent=incumbent,
             solution_values=solution_values,
             runner_status="OPTIMAL",
-            proof_summary={"solver_status": "OPTIMAL", "test_scope": "tiny deterministic solver only"},
+            proof_summary={
+                "solver_status": "OPTIMAL",
+                "test_scope": "tiny deterministic solver substitution above production proto conversion",
+            },
             wall_seconds=0.0,
         )
         monkeypatch.chdir(checkout)
-        rebuild._rebuild_paths(  # noqa: SLF001 - real writer seam with injected tiny computation
+        rebuild._rebuild_paths(  # noqa: SLF001 - solver result injected above real conversion/validator/writer
             output_dir=Path(preregistration["baseline_rebuilt_model_path"]).parent,
             campaign_provenance_path=provenance_path,
             candidate_placements=checkout / "data/preprocessed/candidate_placements.json",
@@ -842,6 +881,13 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
             parameters={"solver_substitution": "single constrained ghost boolean"},
             created_at_utc=T2,
         )
+        published_model = admission._parse_model(  # noqa: SLF001 - consume the real writer's bytes
+            Path(preregistration["baseline_rebuilt_model_path"]).read_bytes(),
+            expectation,
+        )
+        assert len(published_model.variables) == len(raw_model.variables)
+        assert len(published_model.constraints) == len(raw_model.constraints)
+        assert published_model.constraints[0].WhichOneof("constraint") == "linear"
         fixed_receipt, fixed_identity = fixed_replay._replay_paths(  # noqa: SLF001 - real replay writer
             campaign_provenance_path=provenance_path,
             model_path=preregistration["baseline_rebuilt_model_path"],
@@ -936,7 +982,7 @@ def test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_c
             runner=runner,
             attempt_dir=run_dir,
             selection_path=Path(produced["selection_identity"]["path"]),
-            hooks=_MicroArmHooks(runner, model, incumbent),
+            hooks=_MicroArmHooks(runner, published_model, incumbent),
         )
         resource_result = orchestrator.orchestrate_with_adapter(
             pre_run_path=produced["pre_run_authority_identity"]["path"],
