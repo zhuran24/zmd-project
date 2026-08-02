@@ -427,7 +427,8 @@ def test_gate_a_creates_only_nonauthorizing_candidate(
     assert fixture["candidate"]["formal_campaign_created"] is False
     assert fixture["path_preregistration_path"].is_file()
     assert path_preregistration == BOOTSTRAP._path_preregistration(  # noqa: SLF001
-        fixture["campaign"]
+        fixture["campaign"],
+        scientific_input_set_sha256=path_preregistration["scientific_input_set_sha256"],
     )
     assert set(path_preregistration) == {
         "arm_sequence",
@@ -449,12 +450,16 @@ def test_gate_a_creates_only_nonauthorizing_candidate(
         "runtime_max_sec",
         "schema",
         "seed",
+        "scientific_input_set_sha256",
         "slot_roots",
         "suite_selection_path",
         "terminal_classification_path",
         "workers",
     }
-    assert path_preregistration["schema"] == "noncert-cuts-ab16-scientific-preregistration-v2"
+    assert path_preregistration["schema"] == "noncert-cuts-ab16-scientific-preregistration-v3"
+    assert path_preregistration["scientific_input_set_sha256"] == BOOTSTRAP._scientific_input_set_digest(  # noqa: SLF001
+        candidate["planned_source_identities"]
+    )
     assert path_preregistration["arm_sequence"] == list(CONTRACT.ARM_SEQUENCE)
     assert path_preregistration["attempt_directory_pattern"] == "attempt-[0-9]{4,}"
     assert len(path_preregistration["slot_roots"]) == 16
@@ -477,6 +482,43 @@ def test_gate_a_creates_only_nonauthorizing_candidate(
     assert Path(path_preregistration["baseline_incumbent_path"]).name == ("incumbent.json")
 
 
+def test_scientific_input_anchor_is_content_only_and_design_scoped(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _offline_fixture(tmp_path, monkeypatch)
+    planned = copy.deepcopy(fixture["candidate"]["candidate"]["planned_source_identities"])
+    digest = BOOTSTRAP._scientific_input_set_digest(planned)  # noqa: SLF001
+    first_role = f"input.{sorted(BOOTSTRAP.STRICT_INPUT_ROLES)[0]}"
+
+    relocated = copy.deepcopy(planned)
+    relocated[first_role]["path"] = "/different/scientific/source"
+    relocated[first_role]["mode"] = relocated[first_role]["mode"] ^ 0o111
+    assert BOOTSTRAP._scientific_input_set_digest(relocated) == digest  # noqa: SLF001
+
+    changed_bytes = copy.deepcopy(planned)
+    changed_bytes[first_role]["sha256"] = "0" * 64
+    if changed_bytes[first_role]["sha256"] == planned[first_role]["sha256"]:
+        changed_bytes[first_role]["sha256"] = "1" * 64
+    assert BOOTSTRAP._scientific_input_set_digest(changed_bytes) != digest  # noqa: SLF001
+
+    wrong_roles = copy.deepcopy(planned)
+    wrong_roles["input.unregistered"] = wrong_roles.pop(first_role)
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="roles drifted"):
+        BOOTSTRAP._scientific_input_set_digest(wrong_roles)  # noqa: SLF001
+
+    design_changes = (
+        ("AB16_ARM_SEQUENCE", tuple(reversed(BOOTSTRAP.AB16_ARM_SEQUENCE))),
+        ("AB16_EXPERIMENT_CONTRACT_SHA256", "0" * 64),
+        ("AB16_SEED", BOOTSTRAP.AB16_SEED + 1),
+        ("AB16_WORKERS", BOOTSTRAP.AB16_WORKERS + 1),
+    )
+    for attribute, value in design_changes:
+        with monkeypatch.context() as patch:
+            patch.setattr(BOOTSTRAP, attribute, value)
+            assert BOOTSTRAP._scientific_input_set_digest(planned) != digest  # noqa: SLF001
+
+
 @pytest.mark.parametrize(
     "mutation",
     (
@@ -487,6 +529,7 @@ def test_gate_a_creates_only_nonauthorizing_candidate(
         "retry_policy",
         "runtime_max_sec",
         "seed",
+        "scientific_input_set_sha256",
         "slot_root",
         "workers",
     ),
@@ -496,7 +539,10 @@ def test_scientific_preregistration_rejects_design_or_topology_drift(
     mutation: str,
 ) -> None:
     campaign = tmp_path / "campaigns" / "run-preregistration-a001"
-    preregistration = BOOTSTRAP._path_preregistration(campaign)  # noqa: SLF001
+    preregistration = BOOTSTRAP._path_preregistration(  # noqa: SLF001
+        campaign,
+        scientific_input_set_sha256="5" * 64,
+    )
     if mutation == "arm_sequence":
         preregistration["arm_sequence"][:2] = reversed(preregistration["arm_sequence"][:2])
     elif mutation == "attempt_directory_pattern":
@@ -511,13 +557,15 @@ def test_scientific_preregistration_rejects_design_or_topology_drift(
         preregistration["runtime_max_sec"] = 3599
     elif mutation == "seed":
         preregistration["seed"] = 2026072302
+    elif mutation == "scientific_input_set_sha256":
+        preregistration["scientific_input_set_sha256"] = "0" * 63
     elif mutation == "slot_root":
         first = CONTRACT.ARM_SEQUENCE[0]
         preregistration["slot_roots"][first] = str(campaign / "prospective-ab16" / "arms" / "wrong")
     else:
         preregistration["workers"] = 2
 
-    with pytest.raises(BOOTSTRAP.BootstrapError, match="key set drifted|topology drifted"):
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="key set drifted|topology drifted|digest is malformed"):
         BOOTSTRAP.validate_path_preregistration(
             preregistration,
             campaign_dir=campaign,
@@ -763,6 +811,43 @@ def test_path_preregistration_drift_fails_before_live_capture(
         BOOTSTRAP.BootstrapError,
         match="preregistration identity drifted",
     ):
+        _bootstrap(fixture)
+    assert not fixture["campaign"].exists()
+
+
+def test_well_formed_wrong_scientific_anchor_fails_before_live_capture(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _offline_fixture(tmp_path, monkeypatch)
+    preregistration = AUTH.strict_loads(
+        fixture["path_preregistration_path"].read_bytes(),
+        "AB16 path preregistration",
+    )
+    preregistration["scientific_input_set_sha256"] = "0" * 64
+    if preregistration["scientific_input_set_sha256"] == BOOTSTRAP._scientific_input_set_digest(  # noqa: SLF001
+        fixture["candidate"]["candidate"]["planned_source_identities"]
+    ):
+        preregistration["scientific_input_set_sha256"] = "1" * 64
+    fixture["path_preregistration_path"].write_bytes(AUTH.canonical_json(preregistration))
+
+    candidate = AUTH.strict_loads(fixture["candidate_path"].read_bytes(), "offline candidate")
+    candidate["path_preregistration_identity"] = _detached(fixture["path_preregistration_path"])
+    candidate["candidate_id"] = BOOTSTRAP._digest_without(candidate, "candidate_id")  # noqa: SLF001
+    fixture["candidate_path"].write_bytes(AUTH.canonical_json(candidate))
+    fixture["gate_b"] = _gate_b(
+        tmp_path,
+        campaign=fixture["campaign"],
+        gate_a=fixture["gate_a"],
+        candidate=fixture["candidate_path"],
+        planned_digest=fixture["planned"]["planned_source_set_digest"],
+    )
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_capture_epoch",
+        lambda **_: pytest.fail("capture must not run after scientific anchor drift"),
+    )
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="anchor differs from planned sources"):
         _bootstrap(fixture)
     assert not fixture["campaign"].exists()
 

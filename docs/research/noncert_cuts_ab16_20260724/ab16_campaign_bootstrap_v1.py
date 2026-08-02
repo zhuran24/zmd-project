@@ -39,7 +39,7 @@ CANDIDATE_SCHEMA = "noncert-cuts-ab16-bootstrap-offline-candidate-v1"
 GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v1"
 CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v1"
 RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v1"
-PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-scientific-preregistration-v2"
+PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-scientific-preregistration-v3"
 
 GATE_A_PURPOSE = "AB16_OFFLINE_SOURCE_SET_PREFLIGHT"
 CANDIDATE_PURPOSE = "AB16_OFFLINE_NONAUTHORIZING_CANDIDATE"
@@ -61,6 +61,9 @@ AB16_ARM_SEQUENCE = tuple(
     for arm in ordered_arms
 )
 AB16_EXPERIMENT_CONTRACT_SHA256 = "24b45e110952505e6ffa92d3ddfdf33874cc3cb4503397e993898e79174ded9e"
+AB16_SCIENTIFIC_INPUT_SET_SCHEMA = "noncert-cuts-ab16-campaign-scientific-input-set-v1"
+AB16_SEED = 2026072301
+AB16_WORKERS = 1
 AB16_RETRY_POLICY: dict[str, object] = {
     "credible_terminal_closes_slot": True,
     "failed_attempt_retryable": True,
@@ -205,6 +208,44 @@ def _digest_without(record: Mapping[str, object], field: str) -> str:
 
 def _source_set_digest(source_identities: Mapping[str, object]) -> str:
     return hashlib.sha256(authority.canonical_json(source_identities)).hexdigest()
+
+
+def _scientific_input_set_digest(source_identities: Mapping[str, object]) -> str:
+    """Digest only bootstrap-known strict scientific input bytes, never paths or tools."""
+
+    expected_roles = {f"input.{role}" for role in STRICT_INPUT_ROLES}
+    actual_roles = {
+        role for role in source_identities if type(role) is str and role.startswith("input.")
+    }
+    if actual_roles != expected_roles:
+        raise BootstrapError("scientific input source roles drifted")
+    members: dict[str, dict[str, object]] = {}
+    for source_role in sorted(expected_roles):
+        identity = source_identities[source_role]
+        if not isinstance(identity, Mapping):
+            raise BootstrapError(f"scientific input identity {source_role} is malformed")
+        sha256 = identity.get("sha256")
+        size_bytes = identity.get("size_bytes")
+        if (
+            type(sha256) is not str
+            or SHA256_RE.fullmatch(sha256) is None
+            or type(size_bytes) is not int
+            or size_bytes < 0
+        ):
+            raise BootstrapError(f"scientific input identity {source_role} is malformed")
+        members[source_role.removeprefix("input.")] = {
+            "sha256": sha256,
+            "size_bytes": size_bytes,
+        }
+    projection = {
+        "arm_sequence": list(AB16_ARM_SEQUENCE),
+        "experiment_contract_sha256": AB16_EXPERIMENT_CONTRACT_SHA256,
+        "members": members,
+        "schema": AB16_SCIENTIFIC_INPUT_SET_SCHEMA,
+        "seed": AB16_SEED,
+        "workers": AB16_WORKERS,
+    }
+    return hashlib.sha256(authority.canonical_json(projection)).hexdigest()
 
 
 def _script_paths() -> dict[str, Path]:
@@ -720,9 +761,13 @@ def _capture_epoch(
 
 def _path_preregistration(
     campaign_dir: Path | str,
+    *,
+    scientific_input_set_sha256: str,
 ) -> dict[str, object]:
     """Build the immutable scientific design and retryable slot-root registry."""
 
+    if type(scientific_input_set_sha256) is not str or SHA256_RE.fullmatch(scientific_input_set_sha256) is None:
+        raise BootstrapError("scientific input-set digest is malformed")
     campaign = _absolute(campaign_dir)
     prospective = campaign / "prospective-ab16"
     baseline = prospective / "baseline"
@@ -750,11 +795,12 @@ def _path_preregistration(
         "run_nonce": campaign.name,
         "runtime_max_sec": 3600,
         "schema": PATH_PREREGISTRATION_SCHEMA,
-        "seed": 2026072301,
+        "seed": AB16_SEED,
+        "scientific_input_set_sha256": scientific_input_set_sha256,
         "slot_roots": slot_roots,
         "suite_selection_path": str(prospective / "selection-a001.json"),
         "terminal_classification_path": str(prospective / "terminal-classification-a001.json"),
-        "workers": 1,
+        "workers": AB16_WORKERS,
     }
 
 
@@ -765,7 +811,15 @@ def validate_path_preregistration(
 ) -> Mapping[str, Any]:
     """Reject any scientific design or slot-root topology drift."""
 
-    expected = _path_preregistration(campaign_dir)
+    if not isinstance(value, Mapping):
+        raise BootstrapError("AB16 path preregistration key set drifted")
+    scientific_input_set_sha256 = value.get("scientific_input_set_sha256")
+    if type(scientific_input_set_sha256) is not str:
+        raise BootstrapError("scientific input-set digest is malformed")
+    expected = _path_preregistration(
+        campaign_dir,
+        scientific_input_set_sha256=scientific_input_set_sha256,
+    )
     record = _exact_keys(
         value,
         set(expected),
@@ -879,7 +933,10 @@ def build_gate_a_candidate(
         raise BootstrapError("Gate-A receipt does not bind the offline candidate")
     timestamp = created_at_utc or _utc_now()
     _utc(timestamp, "candidate created_at_utc")
-    preregistration = _path_preregistration(campaign_dir)
+    preregistration = _path_preregistration(
+        campaign_dir,
+        scientific_input_set_sha256=_scientific_input_set_digest(planned),
+    )
     validate_path_preregistration(
         preregistration,
         campaign_dir=campaign_dir,
@@ -1169,6 +1226,8 @@ def bootstrap_campaign(
         "planned_source_set_digest"
     ] != _source_set_digest(planned):
         raise BootstrapError("planned package source bytes drifted after Gate A")
+    if path_preregistration["scientific_input_set_sha256"] != _scientific_input_set_digest(planned):
+        raise BootstrapError("scientific input-set anchor differs from planned sources")
     system_full = {role: planned[f"system.{role}"] for role in SYSTEM_TOOL_ROLES}
     repository_head = _observe_repository_head(
         repository,
@@ -1269,6 +1328,13 @@ def bootstrap_campaign(
         strict_inputs=inputs,
         created_at_utc=timestamp,
     )
+    root_scientific_sources = {
+        f"input.{role}": root["strict_inputs"][role] for role in STRICT_INPUT_ROLES
+    }
+    if path_preregistration["scientific_input_set_sha256"] != _scientific_input_set_digest(
+        root_scientific_sources
+    ):
+        raise BootstrapError("package scientific input-set anchor differs from preregistration")
     _validate_path_preregistration_against_root(
         path_preregistration,
         root,

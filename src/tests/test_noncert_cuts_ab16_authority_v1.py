@@ -278,18 +278,6 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
     campaign = tmp_path / "run-ab16-test"
     campaign.mkdir()
     (campaign / "prospective-ab16").mkdir()
-    preregistration = AUTH.bootstrap._path_preregistration(campaign)  # noqa: SLF001
-    preregistration_path = campaign / "scientific-preregistration.json"
-    _write(preregistration_path, preregistration)
-
-    scientific_paths = AUTH._scientific_material_paths(preregistration)  # noqa: SLF001
-    for index, path in enumerate(sorted(set(scientific_paths.values()), key=os.fspath)):
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(f"fixed-scientific-input-{index}\n".encode())
-
-    manifest = AUTH.build_manifest(preregistration_path)
-    suite_selection = AUTH.create_suite_selection(preregistration_path)
-
     authority_dir = tmp_path / "execution-authority"
     authority_dir.mkdir()
     manager_epoch, manager_transcript, manager_tools = _manager_material(authority_dir)
@@ -306,18 +294,63 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
         system_tools[role].write_bytes(f"fixture {role}\n".encode())
     system_tool_identities = {role: _identity(path) for role, path in system_tools.items()}
 
-    campaign_root_path = authority_dir / "campaign-root.json"
     continuation_path = authority_dir / "continuation.json"
     package_manifest_path = authority_dir / "package-manifest.json"
     package_seal_path = authority_dir / "package-seal.json"
     for path, payload in (
-        (campaign_root_path, b"campaign root\n"),
         (continuation_path, b"continuation\n"),
         (package_manifest_path, b"package manifest\n"),
         (package_seal_path, b"package seal\n"),
     ):
         path.write_bytes(payload)
     seal_identity = _detached(_identity(package_seal_path))
+
+    preregistration = AUTH.bootstrap._path_preregistration(  # noqa: SLF001
+        campaign,
+        scientific_input_set_sha256="5" * 64,
+    )
+    package_dir = campaign / "campaign-authority" / "package"
+    package_payload_dir = package_dir / "payload"
+    package_payload_dir.mkdir(parents=True)
+    preregistration_path = package_payload_dir / AUTH.bootstrap.PATH_PREREGISTRATION_PACKAGE_ROLE
+    _write(preregistration_path, preregistration)
+
+    scientific_paths = AUTH._scientific_material_paths(preregistration)  # noqa: SLF001
+    for index, path in enumerate(sorted(set(scientific_paths.values()), key=os.fspath)):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(f"fixed-scientific-input-{index}\n".encode())
+
+    campaign_root = AUTH.bootstrap.authority.build_campaign_root(
+        campaign,
+        package={
+            "manifest_identity": _detached(_identity(package_manifest_path)),
+            "package_dir": str(package_dir),
+            "package_id": seal_identity["sha256"],
+            "schema": AUTH.bootstrap.authority.PACKAGE_SCHEMA,
+            "seal_identity": seal_identity,
+            "status": "SEALED",
+        },
+        repository_head=first_head,
+        run_nonce=campaign.name,
+        manager_epoch=manager_epoch,
+        authority_tools={
+            "campaign_authority_v4": _detached(_identity(Path(AUTH.bootstrap.authority.__file__)))
+        },
+        strict_inputs={
+            AUTH.bootstrap.PATH_PREREGISTRATION_INPUT_ROLE: _detached(_identity(preregistration_path))
+        },
+        created_at_utc="2026-08-02T00:00:00Z",
+    )
+    campaign_root_path = campaign / "campaign-root.json"
+    _write(campaign_root_path, campaign_root)
+
+    manifest = AUTH.build_manifest(preregistration_path)
+    suite_selection = AUTH.create_suite_selection(preregistration_path)
+    assert manifest["manifest"]["scientific_input_set_sha256"] == preregistration["scientific_input_set_sha256"]
+    assert manifest["manifest"]["scientific_materialization_sha256"] != preregistration[
+        "scientific_input_set_sha256"
+    ]
+
     git_path = shutil.which("git")
     assert git_path is not None
 
@@ -567,6 +600,43 @@ def _fake_credible_gate(attempt_dir: Path, *, slot: str, selection_identity: dic
     return path
 
 
+def _advance_first_slot_for_state_setup(
+    fixture: dict[str, object],
+    monkeypatch: pytest.MonkeyPatch,
+) -> dict[str, object]:
+    """Advance one slot while isolating terminal evidence unrelated to state tests."""
+
+    first_slot = AUTH.contract.ARM_SEQUENCE[0]
+    prepared = _prepare(fixture, slot=first_slot)
+    produced = _produce(fixture, prepared)
+    AUTH.bind_selection(
+        fixture["preregistration_path"],
+        slot=first_slot,
+        attempt_ordinal=1,
+        selection_path=produced["selection_identity"]["path"],
+    )
+
+    def state_setup_gate(attempt_dir: Path, **_kwargs: object) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+        gate_path = _fake_credible_gate(
+            attempt_dir,
+            slot=first_slot,
+            selection_identity=produced["selection_identity"],
+        )
+        gate = json.loads(gate_path.read_text(encoding="utf-8"))
+        gate_identity = _identity(gate_path)
+        return gate, gate_identity, {"arm_gate": gate_identity}
+
+    with monkeypatch.context() as patch:
+        patch.setattr(AUTH, "_build_credible_gate", state_setup_gate)
+        AUTH.close_attempt(
+            fixture["preregistration_path"],
+            slot=first_slot,
+            attempt_ordinal=1,
+            outcome=AUTH.CREDIBLE_TERMINAL,
+        )
+    return prepared
+
+
 def _assert_false_authorizations(value: object) -> None:
     if type(value) is dict:
         for key, member in value.items():
@@ -764,6 +834,102 @@ def test_scientific_input_drift_is_rejected_before_allocating_retry(tmp_path: Pa
     slot_root = Path(preregistration["slot_roots"][slot])
     assert sorted(path.name for path in slot_root.iterdir()) == ["attempt-0001"]
     assert Path(first["attempt_dir"]).is_dir()
+
+
+@pytest.mark.parametrize(
+    "case",
+    ("baseline", "common_prestate", "later_binding", "manifest", "suite_selection"),
+)
+def test_campaign_scientific_anchor_blocks_cross_slot_replay_and_prepare(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    case: str,
+) -> None:
+    fixture = _fixture(tmp_path)
+    second_slot = AUTH.contract.ARM_SEQUENCE[1]
+    _advance_first_slot_for_state_setup(fixture, monkeypatch)
+    assert AUTH.replay_campaign(fixture["preregistration_path"])["consumption_state"]["next_index"] == 1
+
+    preregistration = fixture["preregistration"]
+    if case == "baseline":
+        Path(preregistration["baseline_incumbent_path"]).write_bytes(b"drifted baseline\n")
+    elif case == "common_prestate":
+        Path(preregistration["common_prestate_path"]).write_bytes(b"drifted prestate\n")
+    elif case == "later_binding":
+        Path(preregistration["binding_paths"][second_slot]).write_bytes(b"drifted binding\n")
+    elif case == "manifest":
+        manifest_path = Path(preregistration["manifest_path"])
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["scientific_materialization_sha256"] = "0" * 64
+        _write(manifest_path, manifest)
+    else:
+        suite_path = Path(preregistration["suite_selection_path"])
+        suite = json.loads(suite_path.read_text(encoding="utf-8"))
+        suite["status"] = "DRIFTED"
+        _write(suite_path, suite)
+
+    with pytest.raises(AUTH.AuthorityError, match="scientific|suite selection"):
+        AUTH.replay_campaign(fixture["preregistration_path"])
+    with pytest.raises(AUTH.AuthorityError, match="scientific|suite selection"):
+        _prepare(fixture, slot=second_slot)
+    assert not Path(preregistration["slot_roots"][second_slot]).exists()
+
+
+def test_manifest_cannot_replace_the_preregistered_scientific_anchor(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    preregistration = fixture["preregistration"]
+    manifest_path = Path(preregistration["manifest_path"])
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["scientific_input_set_sha256"] = "6" * 64
+    _write(manifest_path, manifest)
+
+    with pytest.raises(AUTH.AuthorityError, match="preregistration join"):
+        _prepare(fixture)
+    first_slot_root = Path(preregistration["slot_roots"][AUTH.contract.ARM_SEQUENCE[0]])
+    assert not first_slot_root.exists()
+
+
+def test_campaign_root_rejects_a_self_consistent_forged_preregistration(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    forged = copy.deepcopy(fixture["preregistration"])
+    forged["scientific_input_set_sha256"] = "6" * 64
+    forged_path = tmp_path / "forged-scientific-preregistration.json"
+    _write(forged_path, forged)
+
+    with pytest.raises(AUTH.AuthorityError, match="differs from the campaign root"):
+        AUTH.build_manifest(forged_path)
+
+
+def test_second_slot_archived_input_cannot_introduce_a_new_campaign_anchor(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path)
+    _advance_first_slot_for_state_setup(fixture, monkeypatch)
+    second = _prepare(fixture, slot=AUTH.contract.ARM_SEQUENCE[1])
+    attempt_dir = Path(second["attempt_dir"])
+
+    input_path = attempt_dir / "attempt-input-set.json"
+    input_record = json.loads(input_path.read_text(encoding="utf-8"))
+    input_record["scientific_input_set_sha256"] = "6" * 64
+    _write(input_path, input_record)
+    input_identity = _identity(input_path)
+
+    execution_path = attempt_dir / "attempt-execution.json"
+    execution = json.loads(execution_path.read_text(encoding="utf-8"))
+    execution["input_set_identity"] = input_identity
+    execution["scientific_input_set_sha256"] = "6" * 64
+    _write(execution_path, execution)
+    execution_identity = _identity(execution_path)
+
+    open_path = attempt_dir / "attempt-open.json"
+    open_record = json.loads(open_path.read_text(encoding="utf-8"))
+    open_record["input_set_identity"] = input_identity
+    open_record["attempt_execution_identity"] = execution_identity
+    _write(open_path, open_record)
+
+    with pytest.raises(AUTH.AuthorityError, match="attempt input-set joins drifted"):
+        AUTH.replay_campaign(fixture["preregistration_path"])
 
 
 def test_tracked_dirty_repository_is_rejected_without_consuming_attempt(tmp_path: Path) -> None:

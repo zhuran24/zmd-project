@@ -388,7 +388,7 @@ def build_manifest(preregistration_path: Path | str) -> dict[str, object]:
     preregistration_path = _absolute(preregistration_path)
     preregistration, preregistration_identity = _load_preregistration(preregistration_path)
     materialization_sha256 = _materialization_digest(preregistration)
-    scientific_input_sha256 = preregistration.get("scientific_input_set_sha256", materialization_sha256)
+    scientific_input_sha256 = preregistration["scientific_input_set_sha256"]
     if type(scientific_input_sha256) is not str or SHA256_RE.fullmatch(scientific_input_sha256) is None:
         raise AuthorityError("scientific input-set digest is malformed")
     record = {
@@ -425,7 +425,10 @@ def _load_manifest(
         checked = runner.validate_manifest(record)
     except Exception as exc:
         raise AuthorityError("scientific manifest is invalid") from exc
-    if checked["preregistration_sha256"] != preregistration_identity["sha256"]:
+    if (
+        checked["preregistration_sha256"] != preregistration_identity["sha256"]
+        or checked["scientific_input_set_sha256"] != preregistration["scientific_input_set_sha256"]
+    ):
         raise AuthorityError("scientific manifest preregistration join drifted")
     return checked, identity
 
@@ -442,7 +445,7 @@ def create_suite_selection(preregistration_path: Path | str) -> dict[str, object
         "preregistration_sha256": preregistration_identity["sha256"],
         "purpose": "AB16_SUITE_SELECTION_NO_ARM_LAUNCH",
         "schema_version": SUITE_SELECTION_SCHEMA,
-        "scientific_input_set_sha256": manifest["scientific_input_set_sha256"],
+        "scientific_input_set_sha256": preregistration["scientific_input_set_sha256"],
         "scientific_materialization_sha256": manifest["scientific_materialization_sha256"],
         "selection_id": "",
         "status": "PASS",
@@ -501,6 +504,17 @@ def _load_preregistration(path: Path | str) -> tuple[Mapping[str, Any], dict[str
         raise AuthorityError("scientific preregistration drifted") from exc
     if record["arm_sequence"] != list(contract.ARM_SEQUENCE):
         raise AuthorityError("scientific arm order differs from the classifier")
+    campaign_dir = Path(record["campaign_dir"])
+    root, _root_identity = _load_record(campaign_dir / "campaign-root.json", "campaign root")
+    try:
+        root = bootstrap.authority.validate_campaign_root(root, campaign_dir=campaign_dir)
+    except Exception as exc:
+        raise AuthorityError("campaign root is invalid") from exc
+    pinned_identity = root["strict_inputs"].get(bootstrap.PATH_PREREGISTRATION_INPUT_ROLE)
+    if not isinstance(pinned_identity, Mapping) or any(
+        pinned_identity.get(field) != identity[field] for field in ("sha256", "size_bytes")
+    ):
+        raise AuthorityError("scientific preregistration differs from the campaign root")
     return record, identity
 
 
@@ -786,6 +800,7 @@ def _validate_input_set(
         or checked["preregistration_sha256"] != preregistration_identity["sha256"]
         or type(checked["repository_head"]) is not str
         or GIT_HEAD_RE.fullmatch(checked["repository_head"]) is None
+        or checked["scientific_input_set_sha256"] != preregistration["scientific_input_set_sha256"]
         or checked["scientific_input_set_sha256"] != manifest["scientific_input_set_sha256"]
         or checked["scientific_materialization_sha256"] != materialization_sha256
         or checked["scientific_materialization_sha256"] != manifest["scientific_materialization_sha256"]
@@ -1212,7 +1227,10 @@ def replay_campaign(
     active: dict[str, object] | None = None
     attempts_summary: list[dict[str, object]] = []
     slot_attempt_counts: dict[str, int] = {}
-    slot_scientific_digests: dict[str, str] = {}
+    manifest, _manifest_identity = _load_manifest(preregistration, preregistration_identity)
+    if _materialization_digest(preregistration) != manifest["scientific_materialization_sha256"]:
+        raise AuthorityError("shared scientific material drifted from the campaign manifest")
+    campaign_scientific_digest = preregistration["scientific_input_set_sha256"]
 
     for slot_index, slot in enumerate(contract.ARM_SEQUENCE):
         slot_root = Path(preregistration["slot_roots"][slot])
@@ -1283,9 +1301,8 @@ def replay_campaign(
                 preregistration_identity=preregistration_identity,
             )
             input_identity = _snapshot(attempt_dir / "attempt-input-set.json")[1]
-            previous_digest = slot_scientific_digests.setdefault(slot, inputs["scientific_input_set_sha256"])
-            if previous_digest != inputs["scientific_input_set_sha256"]:
-                raise AuthorityError("scientific inputs changed between retries")
+            if inputs["scientific_input_set_sha256"] != campaign_scientific_digest:
+                raise AuthorityError("attempt scientific inputs differ from the campaign anchor")
             _selection, selection_binding_identity = _optional_selection(
                 attempt_dir,
                 slot=slot,
@@ -1535,7 +1552,7 @@ def prepare_attempt(
         "preregistration_sha256": preregistration_identity["sha256"],
         "repository_head": head_before,
         "schema_version": INPUT_SET_SCHEMA,
-        "scientific_input_set_sha256": manifest["scientific_input_set_sha256"],
+        "scientific_input_set_sha256": preregistration["scientific_input_set_sha256"],
         "scientific_materialization_sha256": materialization_sha256,
         "source_strict_input_identities": source_strict_inputs,
         "source_tool_identities": source_tools,
@@ -1574,7 +1591,7 @@ def prepare_attempt(
         "run_dir": str(work_dir),
         "run_nonce": context["run_nonce"],
         "schema_version": ATTEMPT_EXECUTION_SCHEMA,
-        "scientific_input_set_sha256": manifest["scientific_input_set_sha256"],
+        "scientific_input_set_sha256": preregistration["scientific_input_set_sha256"],
         "scientific_materialization_sha256": materialization_sha256,
         "selection_path": str(work_dir / "selection.json"),
         "slot": slot,
