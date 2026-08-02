@@ -151,6 +151,23 @@ def _compiled(plan: dict[str, object]) -> dict[str, object]:
     return payload
 
 
+def _controller_terminal() -> dict[str, object]:
+    return {
+        "budget_censor_evidence": {
+            "internal_budget_reached": False,
+            "kind": "none",
+            "limit": None,
+            "observed": {},
+        },
+        "controller_completed": True,
+        "controller_status": "UNKNOWN",
+        "cumulative_deterministic_time": 0.0,
+        "master_last_solve": {},
+        "master_solve_history": [],
+        "schema_version": REPLAY.CONTROLLER_TERMINAL_SCHEMA,
+    }
+
+
 def _cut_free(
     directory: Path,
     incumbent_identity: dict[str, object],
@@ -345,6 +362,7 @@ def _fixture(tmp_path: Path, branch: str) -> dict[str, Path]:
                 "production_certified_authorized": False,
             },
             "campaign_id": "1" * 64,
+            "controller_terminal": _controller_terminal(),
             "cut_activity": activity,
             "enabled_families": ["region_capacity"],
             "evidence": {
@@ -413,6 +431,54 @@ def test_replay_classifies_raw_journal_branches(
         assert receipt["applied_inequality_evaluations"][0]["violated"] is True
 
 
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    (
+        ("missing", "key set drifted"),
+        ("extra", "key set drifted"),
+        ("terminal_extra", "controller terminal: key set drifted"),
+        ("terminal_schema", "controller terminal scalar semantics drifted"),
+        ("cumulative", "cumulative deterministic time drifted"),
+        ("status_join", "raw solver status differs"),
+    ),
+)
+def test_result_requires_the_real_controller_terminal_schema(
+    tmp_path: Path,
+    mutation: str,
+    message: str,
+) -> None:
+    fixture = _fixture(tmp_path, "zero")
+    result = REPLAY._strict_json(  # noqa: SLF001
+        fixture["result"].read_bytes(),
+        "fixture result",
+        canonical=True,
+        allow_float=True,
+    )
+    assert isinstance(result, dict)
+    if mutation == "missing":
+        result.pop("controller_terminal")
+    elif mutation == "extra":
+        result["unexpected"] = True
+    else:
+        terminal = result["controller_terminal"]
+        assert isinstance(terminal, dict)
+        if mutation == "terminal_extra":
+            terminal["unexpected"] = True
+        elif mutation == "terminal_schema":
+            terminal["schema_version"] = "noncert-cuts-ab16-controller-terminal-v999"
+        elif mutation == "cumulative":
+            terminal["cumulative_deterministic_time"] = 1.0
+        else:
+            result["raw_solver_status"] = "INFEASIBLE"
+    fixture["result"].write_bytes(REPLAY.canonical_json(result))
+    with pytest.raises(REPLAY.ReplayError, match=message):
+        REPLAY.replay_arm(
+            arm_result=fixture["result"],
+            cut_free_replay=fixture["cut_free"],
+            replay_tool_identity=_identity(TOOL_PATH),
+        )
+
+
 def test_budget_unknown_without_new_incumbent_replays_admitted_baseline(
     tmp_path: Path,
 ) -> None:
@@ -440,6 +506,52 @@ def test_budget_unknown_without_new_incumbent_replays_admitted_baseline(
     )
     assert receipt["arm_incumbent_present"] is False
     assert receipt["cut_free_replay_subject_identity"] == _identity(fixture["baseline"])
+
+
+def test_cut_free_incumbent_accepts_only_content_preserving_relocation(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path, "zero")
+    result = REPLAY._strict_json(  # noqa: SLF001
+        fixture["result"].read_bytes(),
+        "fixture result",
+        canonical=True,
+        allow_float=True,
+    )
+    assert isinstance(result, dict)
+    result["incumbent_export"] = {
+        "incumbent_identity": None,
+        "present": False,
+        "solution_vector_identity": None,
+    }
+    fixture["result"].write_bytes(REPLAY.canonical_json(result))
+
+    relocated = _write(
+        tmp_path / "relocated-source" / "baseline.json",
+        fixture["baseline"].read_bytes(),
+    )
+    relocated_cut_free = _cut_free(
+        tmp_path / "relocated-cut-free",
+        _identity(relocated),
+    )
+    receipt = REPLAY.replay_arm(
+        arm_result=fixture["result"],
+        cut_free_replay=relocated_cut_free,
+        replay_tool_identity=_identity(TOOL_PATH),
+    )
+    assert receipt["cut_free_replay_subject_identity"] == _identity(fixture["baseline"])
+
+    drifted = _json(tmp_path / "drifted-source" / "baseline.json", {"x": 0, "y": 0})
+    drifted_cut_free = _cut_free(
+        tmp_path / "drifted-cut-free",
+        _identity(drifted),
+    )
+    with pytest.raises(REPLAY.ReplayError, match="not a PASS"):
+        REPLAY.replay_arm(
+            arm_result=fixture["result"],
+            cut_free_replay=drifted_cut_free,
+            replay_tool_identity=_identity(TOOL_PATH),
+        )
 
 
 @pytest.mark.parametrize(

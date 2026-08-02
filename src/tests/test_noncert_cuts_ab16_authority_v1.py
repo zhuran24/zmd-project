@@ -266,7 +266,14 @@ def _launch_environment(tmp_path: Path) -> dict[str, str]:
     }
 
 
-def _fixture(tmp_path: Path) -> dict[str, object]:
+def _fixture(
+    tmp_path: Path,
+    *,
+    materialize_pre_manifest: bool = True,
+    publish_manifest: bool = True,
+) -> dict[str, object]:
+    if publish_manifest and not materialize_pre_manifest:
+        raise ValueError("the manifest requires materialized pre-manifest inputs")
     git_path = shutil.which("git")
     assert git_path is not None
     repository = tmp_path / "repository"
@@ -322,7 +329,7 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
     package_payload_dir = package_dir / "payload"
     package_payload_dir.mkdir(parents=True)
     preregistration_path = package_payload_dir / AUTH.bootstrap.PATH_PREREGISTRATION_PACKAGE_ROLE
-    _write(preregistration_path, preregistration)
+    preregistration_path.write_bytes(AUTH.bootstrap.authority.canonical_json(preregistration))
     checkout_inputs = {
         "candidate_placements": candidate_placements,
         "canonical_rules": canonical_rules,
@@ -334,10 +341,55 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
         destination.write_bytes(source.read_bytes())
         package_inputs[role] = destination
 
-    scientific_paths = AUTH._scientific_material_paths(preregistration)  # noqa: SLF001
-    for index, path in enumerate(sorted(set(scientific_paths.values()), key=os.fspath)):
+    baseline_paths = AUTH._baseline_material_paths(preregistration)  # noqa: SLF001
+    for index, path in enumerate(sorted(set(baseline_paths.values()), key=os.fspath)):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(f"fixed-scientific-input-{index}\n".encode())
+    fixture_incumbent = {"fixture_pick": {"instance_id": "fixture_pick", "pose_idx": 0}}
+    baseline_paths["baseline_incumbent"].write_bytes(BASELINE.canonical_json(fixture_incumbent))
+    fixture_provenance = {"fixture": "shared baseline provenance"}
+    fixture_incumbent_identity = _detached(_identity(baseline_paths["baseline_incumbent"]))
+    baseline_admission = {
+        "admission_tool_identity": _detached(_identity(Path(BASELINE.__file__))),
+        "authorizations": {
+            "baseline_inputs_admitted": True,
+            "global_claim_authorized": False,
+            "mathematical_claim_authorized": False,
+            "organic_arm_launch_authorized": False,
+            "solver_run_authorized": False,
+        },
+        "campaign_provenance": fixture_provenance,
+        "created_at_utc": "2026-08-02T00:00:00Z",
+        "expectation_profile": "authority-state-fixture-v1",
+        "expected_baseline": {
+            "historical_model_text_sha256": "1" * 64,
+            "incumbent_assignment_count": 1,
+            "incumbent_sha256": BASELINE.semantic_digest(fixture_incumbent),
+            "model_constraint_count": 1,
+            "model_variable_count": 1,
+        },
+        "fixed_assignment_replay": {
+            "campaign_provenance": fixture_provenance,
+            "incumbent_identity": fixture_incumbent_identity,
+            "receipt_identity": _detached(_identity(baseline_paths["baseline_fixed_replay"])),
+            "replay_tool_identity": _detached(_identity(Path(BASELINE.__file__))),
+            "solver_status": "OPTIMAL",
+            "status": "PASS",
+            "verdict": "INCUMBENT_FIXED_ASSIGNMENT_REPLAY_PASS",
+        },
+        "legacy_control": {},
+        "rebuilt_model": {
+            "canonical_binary": True,
+            "identity": _detached(_identity(baseline_paths["baseline_rebuilt_model"])),
+            "metadata": {"campaign_provenance": fixture_provenance},
+            "model_backend": "fixture",
+            "model_binary_format": "fixture",
+        },
+        "schema_version": BASELINE.ADMISSION_SCHEMA,
+        "status": "PASS",
+        "verdict": BASELINE.ADMISSION_VERDICT,
+    }
+    baseline_paths["baseline_admission"].write_bytes(BASELINE.canonical_json(baseline_admission))
 
     campaign_root = AUTH.bootstrap.authority.build_campaign_root(
         campaign,
@@ -363,14 +415,20 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
         created_at_utc="2026-08-02T00:00:00Z",
     )
     campaign_root_path = campaign / "campaign-root.json"
-    _write(campaign_root_path, campaign_root)
+    campaign_root_path.write_bytes(AUTH.bootstrap.authority.canonical_json(campaign_root))
 
-    manifest = AUTH.build_manifest(preregistration_path)
-    suite_selection = AUTH.create_suite_selection(preregistration_path)
-    assert manifest["manifest"]["scientific_input_set_sha256"] == preregistration["scientific_input_set_sha256"]
-    assert manifest["manifest"]["scientific_materialization_sha256"] != preregistration[
-        "scientific_input_set_sha256"
-    ]
+    materialized = (
+        AUTH.materialize_pre_manifest_inputs(preregistration_path) if materialize_pre_manifest else None
+    )
+    manifest = AUTH.build_manifest(preregistration_path) if publish_manifest else None
+    suite_selection = AUTH.create_suite_selection(preregistration_path) if publish_manifest else None
+    if manifest is not None:
+        assert manifest["manifest"]["scientific_input_set_sha256"] == preregistration[
+            "scientific_input_set_sha256"
+        ]
+        assert manifest["manifest"]["scientific_materialization_sha256"] != preregistration[
+            "scientific_input_set_sha256"
+        ]
 
     return {
         "campaign": campaign,
@@ -382,6 +440,7 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
         "manager_capture": {"manager_epoch": manager_epoch, "transcript": manager_transcript},
         "manager_epoch": manager_epoch,
         "manifest": manifest,
+        "materialized": materialized,
         "package": {
             "manifest_identity": _detached(_identity(package_manifest_path)),
             "package_id": seal_identity["sha256"],
@@ -674,6 +733,221 @@ def _assert_false_authorizations(value: object) -> None:
             _assert_false_authorizations(member)
 
 
+def test_pre_manifest_materializer_derives_v2_common_and_bindings(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path, publish_manifest=False)
+    preregistration = fixture["preregistration"]
+    assert isinstance(preregistration, dict)
+
+    common_path = Path(preregistration["common_prestate_path"])
+    common = json.loads(common_path.read_text(encoding="utf-8"))
+    assert set(common) == {
+        "authorizations",
+        "baseline_admission_identity",
+        "baseline_fixed_replay_identity",
+        "baseline_incumbent_identity",
+        "baseline_rebuilt_metadata_identity",
+        "baseline_rebuilt_model_identity",
+        "campaign_root_identity",
+        "classification_contract_identity",
+        "experiment_contract",
+        "preregistration_identity",
+        "purpose",
+        "schema_version",
+        "scientific_input_set_sha256",
+        "status",
+        "verdict",
+    }
+    assert common["schema_version"] == AUTH.COMMON_PRESTATE_SCHEMA
+    assert common["preregistration_identity"] == _detached(_identity(Path(fixture["preregistration_path"])))
+    assert common["campaign_root_identity"] == fixture["campaign_root_identity"]
+    assert common["scientific_input_set_sha256"] == preregistration["scientific_input_set_sha256"]
+    assert common["experiment_contract"] == AUTH.runner.EXPERIMENT_CONTRACT
+    for role, path_field in {
+        "baseline_admission_identity": "baseline_admission_path",
+        "baseline_fixed_replay_identity": "baseline_fixed_replay_path",
+        "baseline_incumbent_identity": "baseline_incumbent_path",
+        "baseline_rebuilt_metadata_identity": "baseline_rebuilt_metadata_path",
+        "baseline_rebuilt_model_identity": "baseline_rebuilt_model_path",
+        "classification_contract_identity": "classification_contract_path",
+    }.items():
+        assert common[role] == _detached(_identity(Path(preregistration[path_field])))
+
+    common_identity = _detached(_identity(common_path))
+    root = json.loads((Path(fixture["campaign"]) / "campaign-root.json").read_text(encoding="utf-8"))
+    units = {
+        item["slot"]: item["unit_name"]
+        for item in root["stage_topology"]["prospective_ab16"]["arms"]
+    }
+    for slot_index, slot in enumerate(AUTH.contract.ARM_SEQUENCE):
+        binding = json.loads(Path(preregistration["binding_paths"][slot]).read_text(encoding="utf-8"))
+        configuration, order, arm = AUTH._slot_parts(slot)  # noqa: SLF001
+        assert set(binding) == {
+            "arm",
+            "authorizations",
+            "common_prestate_identity",
+            "configuration",
+            "enabled_families",
+            "order",
+            "preregistration_identity",
+            "purpose",
+            "schema_version",
+            "slot",
+            "slot_index",
+            "slot_root",
+            "status",
+            "unit_name",
+            "verdict",
+        }
+        assert binding["schema_version"] == AUTH.ARM_BINDING_SCHEMA
+        assert binding["slot_index"] == slot_index
+        assert (binding["configuration"], binding["order"], binding["arm"]) == (configuration, order, arm)
+        assert binding["enabled_families"] == (
+            [] if arm == "control" else list(AUTH.runner.CONFIGURATION_FAMILIES[configuration])
+        )
+        assert binding["common_prestate_identity"] == common_identity
+        assert binding["preregistration_identity"] == common["preregistration_identity"]
+        assert binding["slot_root"] == preregistration["slot_roots"][slot]
+        assert binding["unit_name"] == units[slot]
+        assert not {"attempt_dir", "attempt_ordinal", "selection_nonce"} & set(binding)
+
+
+@pytest.mark.parametrize("target", ("common", "binding"))
+def test_build_manifest_replays_pre_manifest_semantics_before_hashing(tmp_path: Path, target: str) -> None:
+    fixture = _fixture(tmp_path, publish_manifest=False)
+    preregistration = fixture["preregistration"]
+    assert isinstance(preregistration, dict)
+    if target == "common":
+        path = Path(preregistration["common_prestate_path"])
+        record = json.loads(path.read_text(encoding="utf-8"))
+        record["scientific_input_set_sha256"] = "0" * 64
+    else:
+        slot = AUTH.contract.ARM_SEQUENCE[-1]
+        path = Path(preregistration["binding_paths"][slot])
+        record = json.loads(path.read_text(encoding="utf-8"))
+        record["slot_index"] = 0
+    _write(path, record)
+
+    with pytest.raises(AUTH.AuthorityError, match="replayed record"):
+        AUTH.build_manifest(fixture["preregistration_path"])
+    assert not Path(preregistration["manifest_path"]).exists()
+
+
+def test_pre_manifest_partial_publication_recovers_only_exact_existing_bytes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path, materialize_pre_manifest=False, publish_manifest=False)
+    preregistration = fixture["preregistration"]
+    assert isinstance(preregistration, dict)
+    failed_slot = AUTH.contract.ARM_SEQUENCE[2]
+    failed_path = Path(preregistration["binding_paths"][failed_slot])
+    original_write = AUTH._write_record  # noqa: SLF001
+
+    def stop_mid_publication(path: Path, value: object) -> dict[str, object]:
+        if Path(path) == failed_path:
+            raise AUTH.AuthorityError("injected pre-manifest interruption")
+        return original_write(path, value)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(AUTH, "_write_record", stop_mid_publication)
+        with pytest.raises(AUTH.AuthorityError, match="injected pre-manifest interruption"):
+            AUTH.materialize_pre_manifest_inputs(fixture["preregistration_path"])
+
+    preserved_paths = [
+        Path(preregistration["common_prestate_path"]),
+        *(Path(preregistration["binding_paths"][slot]) for slot in AUTH.contract.ARM_SEQUENCE[:2]),
+    ]
+    preserved = {
+        path: (path.read_bytes(), path.stat().st_ino, path.stat().st_mtime_ns) for path in preserved_paths
+    }
+    resumed = AUTH.materialize_pre_manifest_inputs(fixture["preregistration_path"])
+
+    assert resumed["replayed_roles"] == [
+        f"arm_binding.{AUTH.contract.ARM_SEQUENCE[0]}",
+        f"arm_binding.{AUTH.contract.ARM_SEQUENCE[1]}",
+        "common_prestate",
+    ]
+    assert f"arm_binding.{failed_slot}" in resumed["published_roles"]
+    for path, before in preserved.items():
+        assert (path.read_bytes(), path.stat().st_ino, path.stat().st_mtime_ns) == before
+    assert all(Path(path).is_file() for path in preregistration["binding_paths"].values())
+
+
+def test_pre_manifest_replay_is_no_overwrite_when_all_bytes_are_exact(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path, publish_manifest=False)
+    preregistration = fixture["preregistration"]
+    assert isinstance(preregistration, dict)
+    paths = [
+        Path(preregistration["common_prestate_path"]),
+        *(Path(path) for path in preregistration["binding_paths"].values()),
+    ]
+    before = {path: (path.read_bytes(), path.stat().st_ino, path.stat().st_mtime_ns) for path in paths}
+
+    replayed = AUTH.materialize_pre_manifest_inputs(fixture["preregistration_path"])
+
+    assert replayed["published_roles"] == []
+    assert len(replayed["replayed_roles"]) == 1 + len(AUTH.contract.ARM_SEQUENCE)
+    assert {path: (path.read_bytes(), path.stat().st_ino, path.stat().st_mtime_ns) for path in paths} == before
+
+
+def test_pre_manifest_materializer_does_not_repair_changed_existing_bytes(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path, publish_manifest=False)
+    preregistration = fixture["preregistration"]
+    assert isinstance(preregistration, dict)
+    common_path = Path(preregistration["common_prestate_path"])
+    common_path.write_bytes(common_path.read_bytes() + b"\n")
+    changed = common_path.read_bytes()
+
+    with pytest.raises(AUTH.AuthorityError, match="differ from the replayed record"):
+        AUTH.materialize_pre_manifest_inputs(fixture["preregistration_path"])
+    assert common_path.read_bytes() == changed
+
+
+def test_pre_manifest_materializer_rejects_extra_binding_directory_member(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path, materialize_pre_manifest=False, publish_manifest=False)
+    preregistration = fixture["preregistration"]
+    assert isinstance(preregistration, dict)
+    binding_dir = Path(preregistration["binding_paths"][AUTH.contract.ARM_SEQUENCE[0]]).parent
+    binding_dir.mkdir()
+    (binding_dir / "unexpected.json").write_text("unexpected\n", encoding="utf-8")
+
+    with pytest.raises(AUTH.AuthorityError, match="unexpected members"):
+        AUTH.materialize_pre_manifest_inputs(fixture["preregistration_path"])
+    assert not Path(preregistration["common_prestate_path"]).exists()
+
+
+def test_materialize_pre_manifest_cli_uses_the_real_producer(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    fixture = _fixture(tmp_path, materialize_pre_manifest=False, publish_manifest=False)
+
+    assert AUTH.main(
+        [
+            "materialize-pre-manifest",
+            "--preregistration",
+            str(fixture["preregistration_path"]),
+        ]
+    ) == 0
+    output = json.loads(capsys.readouterr().out)
+    assert output["status"] == "PRE_MANIFEST_INPUTS_READY"
+    assert output["published_roles"][0] == "common_prestate"
+
+
+def test_selection_uses_the_admitted_incumbent_semantic_digest(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    prepared = _prepare(fixture)
+    produced = _produce(fixture, prepared)
+    pre_run = json.loads(Path(produced["pre_run_authority_identity"]["path"]).read_bytes())
+    selection = json.loads(Path(produced["selection_identity"]["path"]).read_bytes())
+    preregistration = fixture["preregistration"]
+    assert isinstance(preregistration, dict)
+    incumbent_raw = Path(preregistration["baseline_incumbent_path"]).read_bytes()
+    incumbent = json.loads(incumbent_raw)
+    semantic_digest = BASELINE.semantic_digest(incumbent)
+
+    assert semantic_digest != hashlib.sha256(incumbent_raw).hexdigest()
+    assert pre_run["baseline_incumbent_sha256"] == semantic_digest
+    assert selection["baseline_incumbent_sha256"] == semantic_digest
+
+
 def test_incomplete_attempt_can_retry_after_clean_code_fix(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
     slot = AUTH.contract.ARM_SEQUENCE[0]
@@ -916,7 +1190,7 @@ def test_campaign_root_rejects_a_self_consistent_forged_preregistration(tmp_path
     forged = copy.deepcopy(fixture["preregistration"])
     forged["scientific_input_set_sha256"] = "6" * 64
     forged_path = tmp_path / "forged-scientific-preregistration.json"
-    _write(forged_path, forged)
+    forged_path.write_bytes(AUTH.bootstrap.authority.canonical_json(forged))
 
     with pytest.raises(AUTH.AuthorityError, match="differs from the campaign root"):
         AUTH.build_manifest(forged_path)

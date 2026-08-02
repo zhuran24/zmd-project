@@ -319,6 +319,18 @@ def _fixture(
             "seal_identity": package_seal_identity,
         },
     }
+    campaign_provenance = {
+        "authority_scope": "AB16_RESEARCH_ONLY",
+        "campaign_root_identity": authority_chain["campaign_root_identity"],
+        "git_identity": _existing_identity(GIT_PATH),
+        "import_mode": "tracked_clean_pinned_checkout",
+        "input_identities": {},
+        "package": authority_chain["package"],
+        "repository_head": REPOSITORY_HEAD,
+        "repository_root": str(ROOT),
+        "repository_tree": "b" * 40,
+        "schema_version": "noncert-cuts-ab16-tracked-clean-checkout-provenance-v1",
+    }
     admission = {
         "admission_tool_identity": _write(
             root / "tools" / "baseline-admission.py",
@@ -331,6 +343,7 @@ def _fixture(
             "organic_arm_launch_authorized": False,
             "solver_run_authorized": False,
         },
+        "campaign_provenance": campaign_provenance,
         "created_at_utc": "2026-07-24T01:00:00Z",
         "expectation_profile": "small-fixture-v1",
         "expected_baseline": {
@@ -341,6 +354,7 @@ def _fixture(
             "model_variable_count": 2,
         },
         "fixed_assignment_replay": {
+            "campaign_provenance": campaign_provenance,
             "incumbent_identity": incumbent_identity,
             "receipt_identity": _write(
                 root / "baseline" / "fixed-replay-receipt.json",
@@ -355,7 +369,13 @@ def _fixture(
             "verdict": "INCUMBENT_FIXED_ASSIGNMENT_REPLAY_PASS",
         },
         "legacy_control": {},
-        "rebuilt_model": {},
+        "rebuilt_model": {
+            "canonical_binary": True,
+            "identity": {},
+            "metadata": {"campaign_provenance": campaign_provenance},
+            "model_backend": "CpModelProto",
+            "model_binary_format": "deterministic-protobuf-v1",
+        },
         "schema_version": RUNNER.BASELINE_ADMISSION_SCHEMA,
         "status": "PASS",
         "verdict": RUNNER.BASELINE_ADMISSION_VERDICT,
@@ -653,6 +673,74 @@ def test_treatment_records_every_compiled_cut_and_attach_hook(
         "production_certified_authorized": False,
     }
     assert CONTRACT.classify_cut_activity(result["cut_activity"])["activation_class"] == CONTRACT.ORGANIC_APPLIED
+
+
+def test_baseline_admission_joins_source_identity_to_relocated_attempt_snapshot(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path)
+    admission_path = Path(fixture["selection"]["baseline_admission_identity"]["path"])
+    admission = json.loads(admission_path.read_text(encoding="utf-8"))
+    source_identity = admission["fixed_assignment_replay"]["incumbent_identity"]
+    source_path = Path(source_identity["path"])
+    relocated_path = tmp_path / "attempt-snapshot" / "baseline-incumbent.json"
+    relocated_identity = _write(relocated_path, source_path.read_bytes())
+
+    assert RUNNER._validate_baseline_admission(  # noqa: SLF001
+        admission,
+        baseline_incumbent_identity=relocated_identity,
+        baseline_incumbent_source_identity=_existing_identity_with_mode(source_path),
+        selection=fixture["selection"],
+    ) == fixture["selection"]["baseline_incumbent_sha256"]
+
+    alternate_source = tmp_path / "alternate-source" / "baseline-incumbent.json"
+    _write(alternate_source, source_path.read_bytes())
+    with pytest.raises(RUNNER.RunnerError, match="source input"):
+        RUNNER._validate_baseline_admission(  # noqa: SLF001
+            admission,
+            baseline_incumbent_identity=relocated_identity,
+            baseline_incumbent_source_identity=_existing_identity_with_mode(alternate_source),
+            selection=fixture["selection"],
+        )
+
+    drifted_identity = _authority(
+        tmp_path / "drifted-snapshot" / "baseline-incumbent.json",
+        {"not": "the admitted incumbent"},
+    )
+    with pytest.raises(RUNNER.RunnerError, match="source bytes"):
+        RUNNER._validate_baseline_admission(  # noqa: SLF001
+            admission,
+            baseline_incumbent_identity=drifted_identity,
+            baseline_incumbent_source_identity=_existing_identity_with_mode(source_path),
+            selection=fixture["selection"],
+        )
+
+
+@pytest.mark.parametrize("mutation", ("missing", "replay", "metadata"))
+def test_baseline_admission_requires_one_campaign_provenance_join(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    fixture = _fixture(tmp_path)
+    admission_path = Path(fixture["selection"]["baseline_admission_identity"]["path"])
+    admission = json.loads(admission_path.read_text(encoding="utf-8"))
+    source_path = Path(admission["fixed_assignment_replay"]["incumbent_identity"]["path"])
+    if mutation == "missing":
+        admission.pop("campaign_provenance")
+        message = "exact key set"
+    elif mutation == "replay":
+        admission["fixed_assignment_replay"]["campaign_provenance"] = {"drifted": True}
+        message = "provenance join"
+    else:
+        admission["rebuilt_model"]["metadata"]["campaign_provenance"] = {"drifted": True}
+        message = "provenance join"
+    with pytest.raises(RUNNER.RunnerError, match=message):
+        RUNNER._validate_baseline_admission(  # noqa: SLF001
+            admission,
+            baseline_incumbent_identity=_existing_identity(source_path),
+            baseline_incumbent_source_identity=_existing_identity_with_mode(source_path),
+            selection=fixture["selection"],
+        )
 
 
 def test_production_adapter_observes_natural_runtime_without_manual_attach() -> None:

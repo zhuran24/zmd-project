@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import copy
+import hashlib
 import importlib.util
 from pathlib import Path
 import shutil
@@ -48,14 +49,6 @@ def test_cli_default_python_uses_the_current_merged_repository() -> None:
             "campaign",
             "--repository-root",
             "repository",
-            "--gate-a-receipt",
-            "gate-a.json",
-            "--history-freeze-manifest",
-            "history.json",
-            "--cuts-mandatory-schedule",
-            "cuts.json",
-            "--legacy-control-a002",
-            "legacy.json",
             "--candidate-output",
             "candidate.json",
         ]
@@ -163,13 +156,24 @@ def _fixture_sources(
     tmp_path: Path,
 ) -> tuple[dict[str, Path], dict[str, Path]]:
     strict: dict[str, Path] = {}
+    archive_locators = _json(
+        tmp_path / "inputs" / "archive-locators.json",
+        {
+            "authorizing": False,
+            "entries": copy.deepcopy(BOOTSTRAP.ARCHIVE_LOCATOR_ENTRIES),
+            "local_bytes_required": False,
+            "purpose": BOOTSTRAP.ARCHIVE_LOCATORS_PURPOSE,
+            "schema_version": BOOTSTRAP.ARCHIVE_LOCATORS_SCHEMA,
+        },
+    )
     for role in sorted(BOOTSTRAP.STRICT_INPUT_ROLES):
+        if role in BOOTSTRAP.ARCHIVED_SCIENTIFIC_INPUT_ROLES:
+            strict[role] = archive_locators
+            continue
         if role in BOOTSTRAP.CANONICAL_JSON_INPUT_ROLES:
             raw = AUTH.canonical_json({"fixture": True, "role": role})
         elif role == "canonical_rules":
             raw = b'{"fixture_float":1.25}\n'
-        elif role == "legacy_control_a002":
-            raw = b'{"historical_float":0.5}\n'
         else:
             raw = f"fixture {role}\n".encode()
         strict[role] = _write(tmp_path / "inputs" / role, raw)
@@ -266,66 +270,6 @@ def _capture_result(
     )
 
 
-def _gate_a(
-    tmp_path: Path,
-    *,
-    campaign: Path,
-    planned_digest: str,
-    approval_id: str = "gate-a-fixture-pass",
-) -> Path:
-    return _json(
-        tmp_path / "approvals" / "gate-a.json",
-        {
-            "approval_id": approval_id,
-            "arm_launch_authorized": False,
-            "created_at_utc": "2026-07-24T12:55:00Z",
-            "decision": "PASS",
-            "formal_campaign_creation_authorized": False,
-            "gate": "A",
-            "offline_candidate_only": True,
-            "planned_source_set_digest": planned_digest,
-            "purpose": BOOTSTRAP.GATE_A_PURPOSE,
-            "repository_head": HEAD,
-            "repository_root": str(ROOT),
-            "run_nonce": campaign.name,
-            "schema_version": BOOTSTRAP.GATE_A_SCHEMA,
-            "target_campaign_dir": str(campaign),
-        },
-    )
-
-
-def _gate_b(
-    tmp_path: Path,
-    *,
-    campaign: Path,
-    gate_a: Path,
-    candidate: Path,
-    planned_digest: str,
-    approval_id: str = "gate-b-fixture-approval",
-    formal_authorized: bool = True,
-) -> Path:
-    return _json(
-        tmp_path / "approvals" / "gate-b.json",
-        {
-            "approval_id": approval_id,
-            "arm_launch_authorized": False,
-            "candidate_identity": _detached(candidate),
-            "created_at_utc": "2026-07-24T12:59:00Z",
-            "decision": "APPROVED",
-            "formal_campaign_creation_authorized": formal_authorized,
-            "gate": "B",
-            "gate_a_receipt_identity": _detached(gate_a),
-            "planned_source_set_digest": planned_digest,
-            "purpose": BOOTSTRAP.GATE_B_PURPOSE,
-            "repository_head": HEAD,
-            "repository_root": str(ROOT),
-            "run_nonce": campaign.name,
-            "schema_version": BOOTSTRAP.GATE_B_SCHEMA,
-            "target_campaign_dir": str(campaign),
-        },
-    )
-
-
 def _offline_fixture(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -339,20 +283,18 @@ def _offline_fixture(
         "_observe_repository_head",
         lambda *_, **__: HEAD,
     )
-    observed = BOOTSTRAP.observe_planned_sources(
-        strict_input_paths=strict,
-        system_tool_paths=system,
-    )
-    gate_a = _gate_a(
-        tmp_path,
-        campaign=campaign,
-        planned_digest=observed["planned_source_set_digest"],
+    # The fixture exercises bootstrap semantics with tiny source bytes.  The
+    # unpatched production pin is covered directly below and by the clean-
+    # checkout chain sentinel.
+    monkeypatch.setattr(
+        BOOTSTRAP,
+        "_validate_candidate_placements_preregistration",
+        lambda *_, **__: {},
     )
     candidate_path = tmp_path / "offline" / "candidate-a001.json"
     candidate_path.parent.mkdir()
-    candidate = BOOTSTRAP.build_gate_a_candidate(
+    candidate = BOOTSTRAP.build_offline_candidate(
         output_path=candidate_path,
-        gate_a_receipt=gate_a,
         repository_root=ROOT,
         target_campaign_dir=campaign,
         strict_input_paths=strict,
@@ -364,8 +306,10 @@ def _offline_fixture(
         "candidate": candidate,
         "candidate_path": candidate_path,
         "path_preregistration_path": (candidate_path.parent / "ab16-path-preregistration.json"),
-        "gate_a": gate_a,
-        "planned": observed,
+        "planned": BOOTSTRAP.observe_planned_sources(
+            strict_input_paths=strict,
+            system_tool_paths=system,
+        ),
         "strict": strict,
         "system": system,
     }
@@ -376,38 +320,61 @@ def _complete_fixture(
     monkeypatch: pytest.MonkeyPatch,
 ) -> dict[str, Any]:
     fixture = _offline_fixture(tmp_path, monkeypatch)
-    gate_b = _gate_b(
-        tmp_path,
-        campaign=fixture["campaign"],
-        gate_a=fixture["gate_a"],
-        candidate=fixture["candidate_path"],
-        planned_digest=fixture["planned"]["planned_source_set_digest"],
-    )
     capture = _capture_result(tmp_path, fixture["system"])
-    monkeypatch.setattr(
-        BOOTSTRAP,
-        "_capture_epoch",
-        lambda **_: copy.deepcopy(capture),
-    )
     fixture["capture"] = capture
-    fixture["gate_b"] = gate_b
     return fixture
+
+
+def test_candidate_placements_preregistration_replays_tracked_manifest_and_bytes() -> None:
+    identity = BOOTSTRAP._validate_candidate_placements_preregistration(  # noqa: SLF001
+        ROOT,
+        ROOT / BOOTSTRAP.CANDIDATE_PLACEMENTS_PIN["path"],
+    )
+    assert identity["path"] == str(ROOT / BOOTSTRAP.CANDIDATE_PLACEMENTS_PIN["path"])
+    assert identity["sha256"] == BOOTSTRAP.CANDIDATE_PLACEMENTS_PIN["sha256"]
+    assert identity["size_bytes"] == BOOTSTRAP.CANDIDATE_PLACEMENTS_PIN["size_bytes"]
+
+
+def test_candidate_placements_preregistration_rejects_wrong_bytes_or_manifest_pin(
+    tmp_path: Path,
+) -> None:
+    repository = tmp_path / "repository"
+    manifest_path = repository / "data/external_artifacts.json"
+    candidate_path = repository / BOOTSTRAP.CANDIDATE_PLACEMENTS_PIN["path"]
+    manifest_path.parent.mkdir(parents=True)
+    candidate_path.parent.mkdir(parents=True)
+    shutil.copy2(ROOT / "data/external_artifacts.json", manifest_path)
+    candidate_path.write_bytes(b"not the preregistered candidate\n")
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="bytes differ"):
+        BOOTSTRAP._validate_candidate_placements_preregistration(  # noqa: SLF001
+            repository,
+            candidate_path,
+        )
+
+    manifest = AUTH.strict_loads(manifest_path.read_bytes(), "external artifact fixture")
+    assert isinstance(manifest, dict)
+    manifest["artifacts"][0]["sha256"] = "0" * 64
+    manifest_path.write_bytes(AUTH.canonical_json(manifest))
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="pin drifted"):
+        BOOTSTRAP._validate_candidate_placements_preregistration(  # noqa: SLF001
+            repository,
+            candidate_path,
+        )
 
 
 def _bootstrap(fixture: dict[str, Any]) -> dict[str, object]:
     return BOOTSTRAP.bootstrap_campaign(
         campaign_dir=fixture["campaign"],
         repository_root=ROOT,
-        gate_a_receipt=fixture["gate_a"],
         offline_candidate=fixture["candidate_path"],
-        gate_b_approval=fixture["gate_b"],
         strict_input_paths=fixture["strict"],
         system_tool_paths=fixture["system"],
         created_at_utc=NOW,
+        manager_capture=copy.deepcopy(fixture.get("capture")),
     )
 
 
-def test_gate_a_creates_only_nonauthorizing_candidate(
+def test_candidate_creation_is_nonauthorizing_and_campaign_free(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -417,6 +384,8 @@ def test_gate_a_creates_only_nonauthorizing_candidate(
     candidate = fixture["candidate"]["candidate"]
     path_preregistration = fixture["candidate"]["path_preregistration"]
     assert candidate["candidate_only"] is True
+    assert candidate["schema_version"] == BOOTSTRAP.CANDIDATE_SCHEMA
+    assert "gate_a_receipt_identity" not in candidate
     assert candidate["formal_campaign_creation_authorized"] is False
     assert candidate["arm_launch_authorized"] is False
     assert fixture["candidate"]["formal_campaign_created"] is False
@@ -514,6 +483,46 @@ def test_scientific_input_anchor_is_content_only_and_design_scoped(
             assert BOOTSTRAP._scientific_input_set_digest(planned) != digest  # noqa: SLF001
 
 
+def test_archive_locator_bytes_and_archived_scientific_targets_have_distinct_digest_roles(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _offline_fixture(tmp_path, monkeypatch)
+    planned = fixture["candidate"]["candidate"]["planned_source_identities"]
+    locator_sha256 = planned["input.history_freeze_manifest"]["sha256"]
+    assert locator_sha256 == planned["input.legacy_control_a002"]["sha256"]
+    assert locator_sha256 not in {
+        entry["sha256"] for entry in BOOTSTRAP.ARCHIVE_LOCATOR_ENTRIES.values()
+    }
+    members = {
+        role: {
+            "sha256": planned[f"input.{role}"]["sha256"],
+            "size_bytes": planned[f"input.{role}"]["size_bytes"],
+        }
+        for role in BOOTSTRAP.SCIENTIFIC_INPUT_ROLES - BOOTSTRAP.ARCHIVED_SCIENTIFIC_INPUT_ROLES
+    }
+    members.update(
+        {
+            role: {
+                "sha256": entry["sha256"],
+                "size_bytes": entry["size_bytes"],
+            }
+            for role, entry in BOOTSTRAP.ARCHIVE_LOCATOR_ENTRIES.items()
+        }
+    )
+    projection = {
+        "arm_sequence": list(BOOTSTRAP.AB16_ARM_SEQUENCE),
+        "experiment_contract_sha256": BOOTSTRAP.AB16_EXPERIMENT_CONTRACT_SHA256,
+        "members": {role: members[role] for role in sorted(members)},
+        "schema": BOOTSTRAP.AB16_SCIENTIFIC_INPUT_SET_SCHEMA,
+        "seed": BOOTSTRAP.AB16_SEED,
+        "workers": BOOTSTRAP.AB16_WORKERS,
+    }
+    assert BOOTSTRAP._scientific_input_set_digest(planned) == hashlib.sha256(  # noqa: SLF001
+        AUTH.canonical_json(projection)
+    ).hexdigest()
+
+
 @pytest.mark.parametrize(
     "mutation",
     (
@@ -572,37 +581,36 @@ def test_bootstrap_source_set_excludes_retired_disposable_drill_modules() -> Non
     assert "disposable_drill_payload_v1" not in BOOTSTRAP.SCRIPT_TOOL_FILES
 
 
-def test_gate_a_receipt_schema_and_candidate_no_overwrite(
+def test_candidate_no_overwrite_and_archive_locator_is_exact(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     fixture = _offline_fixture(tmp_path, monkeypatch)
-    gate_a_before = fixture["gate_a"].read_bytes()
+    candidate_before = fixture["candidate_path"].read_bytes()
     with pytest.raises(
         BOOTSTRAP.BootstrapError,
         match="already exists",
     ):
-        BOOTSTRAP.build_gate_a_candidate(
+        BOOTSTRAP.build_offline_candidate(
             output_path=fixture["candidate_path"],
-            gate_a_receipt=fixture["gate_a"],
             repository_root=ROOT,
             target_campaign_dir=fixture["campaign"],
             strict_input_paths=fixture["strict"],
             system_tool_paths=fixture["system"],
             created_at_utc="2026-07-24T12:57:00Z",
         )
-    assert fixture["gate_a"].read_bytes() == gate_a_before
+    assert fixture["candidate_path"].read_bytes() == candidate_before
     assert not fixture["campaign"].exists()
 
-    value = AUTH.strict_loads(gate_a_before, "Gate-A")
+    locator = fixture["strict"]["history_freeze_manifest"]
+    value = AUTH.strict_loads(locator.read_bytes(), "archive locators")
     value["unexpected"] = False
-    fixture["gate_a"].write_bytes(AUTH.canonical_json(value))
+    locator.write_bytes(AUTH.canonical_json(value))
     fresh_candidate = tmp_path / "offline-a002" / "candidate-a002.json"
     fresh_candidate.parent.mkdir()
     with pytest.raises(BOOTSTRAP.BootstrapError, match="key set drifted"):
-        BOOTSTRAP.build_gate_a_candidate(
+        BOOTSTRAP.build_offline_candidate(
             output_path=fresh_candidate,
-            gate_a_receipt=fixture["gate_a"],
             repository_root=ROOT,
             target_campaign_dir=fixture["campaign"],
             strict_input_paths=fixture["strict"],
@@ -612,13 +620,11 @@ def test_gate_a_receipt_schema_and_candidate_no_overwrite(
     assert not fixture["campaign"].exists()
 
 
-def test_gate_b_creates_complete_v4_root_and_seals_full_source_set(
+def test_bootstrap_creates_complete_v4_root_and_seals_full_source_set(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     fixture = _complete_fixture(tmp_path, monkeypatch)
-    gate_a_before = fixture["gate_a"].read_bytes()
-    gate_b_before = fixture["gate_b"].read_bytes()
     candidate_before = fixture["candidate_path"].read_bytes()
     result = _bootstrap(fixture)
     campaign = fixture["campaign"]
@@ -630,9 +636,15 @@ def test_gate_b_creates_complete_v4_root_and_seals_full_source_set(
     assert result["status"] == ("FORMAL_CAMPAIGN_AUTHORITY_READY_NO_UNIT_LAUNCHED")
     assert result["formal_arm_launch_authorized"] is False
     assert result["organic_ab16_authorized"] is False
-    assert fixture["gate_a"].read_bytes() == gate_a_before
-    assert fixture["gate_b"].read_bytes() == gate_b_before
     assert fixture["candidate_path"].read_bytes() == candidate_before
+    assert result["schema"] == BOOTSTRAP.RESULT_SCHEMA
+    assert not {"gate_a_receipt_identity", "gate_b_approval_identity"} & set(result)
+    capture = AUTH.strict_loads(
+        (campaign / "bootstrap-authority" / "manager-epoch-capture.json").read_bytes(),
+        "bootstrap capture",
+    )
+    assert capture["schema"] == BOOTSTRAP.CAPTURE_SCHEMA
+    assert not {"gate_a_receipt_identity", "gate_b_approval_identity"} & set(capture)
     assert set(root["stage_topology"]) == {
         "gate1_v4",
         "prospective_ab16",
@@ -671,7 +683,7 @@ def test_gate_b_creates_complete_v4_root_and_seals_full_source_set(
         "input.legacy_control_a002.json",
         "input.mandatory_instances.json",
         "input.project_lock.txt",
-        *BOOTSTRAP.GATE_INPUT_ROLES.values(),
+        BOOTSTRAP.CANDIDATE_PACKAGE_ROLE,
         BOOTSTRAP.CAPTURE_PACKAGE_ROLE,
         BOOTSTRAP.PATH_PREREGISTRATION_PACKAGE_ROLE,
     }
@@ -681,7 +693,7 @@ def test_gate_b_creates_complete_v4_root_and_seals_full_source_set(
     assert {
         *AUTH.REQUIRED_GATE1_INPUT_ROLES,
         "legacy_control_a002",
-        *BOOTSTRAP.GATE_INPUT_ROLES,
+        BOOTSTRAP.CANDIDATE_INPUT_ROLE,
         BOOTSTRAP.CAPTURE_INPUT_ROLE,
         BOOTSTRAP.PATH_PREREGISTRATION_INPUT_ROLE,
     } <= set(root["strict_inputs"])
@@ -694,6 +706,17 @@ def test_gate_b_creates_complete_v4_root_and_seals_full_source_set(
     assert preregistration["suite_selection_path"] == prospective["arm_selection_path"]
     assert preregistration["slot_roots"] == {arm["slot"]: arm["attempt_dir"] for arm in prospective["arms"]}
     assert preregistration["classification_contract_path"] == str(package_dir / "payload" / "tool.ab16_contract_v1.py")
+    history_locator = Path(root["strict_inputs"]["history_freeze_manifest"]["path"])
+    legacy_locator = Path(root["strict_inputs"]["legacy_control_a002"]["path"])
+    assert history_locator.read_bytes() == legacy_locator.read_bytes()
+    BOOTSTRAP.load_archive_locators(history_locator)
+    assert AUTH.make_gate1_selection(
+        root,
+        campaign_root_identity=AUTH.detached_identity(root_snapshot),
+        tools=root["authority_tools"],
+        inputs=root["strict_inputs"],
+        created_at_utc=NOW,
+    )["schema_version"] == AUTH.GATE1_SELECTION_SCHEMA
     wrong_root = copy.deepcopy(root)
     wrong_root["stage_topology"]["prospective_ab16"]["arms"][0]["attempt_dir"] += "-wrong"
     with pytest.raises(BOOTSTRAP.BootstrapError, match="differs from v4 root"):
@@ -715,56 +738,38 @@ def test_gate_b_creates_complete_v4_root_and_seals_full_source_set(
 @pytest.mark.parametrize(
     ("mutation", "match"),
     (
-        ("not_authorized", "does not authorize"),
-        ("same_approval_id", "byte binding"),
-        ("wrong_candidate", "byte binding"),
+        ("wrong_campaign", "does not target"),
+        ("wrong_repository", "does not target"),
+        ("extra_field", "key set drifted"),
     ),
 )
-def test_gate_b_mutations_fail_before_campaign_creation(
+def test_candidate_mutations_fail_before_campaign_creation(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     mutation: str,
     match: str,
 ) -> None:
     fixture = _offline_fixture(tmp_path, monkeypatch)
-    gate_b = _gate_b(
-        tmp_path,
-        campaign=fixture["campaign"],
-        gate_a=fixture["gate_a"],
-        candidate=fixture["candidate_path"],
-        planned_digest=fixture["planned"]["planned_source_set_digest"],
-        approval_id=("gate-a-fixture-pass" if mutation == "same_approval_id" else "gate-b-fixture-approval"),
-        formal_authorized=mutation != "not_authorized",
-    )
-    if mutation == "wrong_candidate":
-        value = AUTH.strict_loads(gate_b.read_bytes(), "Gate-B")
-        wrong = _json(tmp_path / "offline" / "wrong.json", {"wrong": True})
-        value["candidate_identity"] = _detached(wrong)
-        gate_b.write_bytes(AUTH.canonical_json(value))
-    fixture["gate_b"] = gate_b
-    monkeypatch.setattr(
-        BOOTSTRAP,
-        "_capture_epoch",
-        lambda **_: pytest.fail("capture must not run before Gate-B admission"),
-    )
+    value = AUTH.strict_loads(fixture["candidate_path"].read_bytes(), "candidate")
+    if mutation == "wrong_campaign":
+        value["target_campaign_dir"] = str(tmp_path / "campaigns" / "run-other")
+        value["run_nonce"] = "run-other"
+    elif mutation == "wrong_repository":
+        value["repository_root"] = str(tmp_path)
+    else:
+        value["unexpected"] = False
+    value["candidate_id"] = BOOTSTRAP._digest_without(value, "candidate_id")  # noqa: SLF001
+    fixture["candidate_path"].write_bytes(AUTH.canonical_json(value))
     with pytest.raises(BOOTSTRAP.BootstrapError, match=match):
         _bootstrap(fixture)
     assert not fixture["campaign"].exists()
 
 
-def test_source_drift_after_gate_a_fails_before_live_capture(
+def test_source_drift_after_candidate_fails_before_live_capture(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     fixture = _offline_fixture(tmp_path, monkeypatch)
-    gate_b = _gate_b(
-        tmp_path,
-        campaign=fixture["campaign"],
-        gate_a=fixture["gate_a"],
-        candidate=fixture["candidate_path"],
-        planned_digest=fixture["planned"]["planned_source_set_digest"],
-    )
-    fixture["gate_b"] = gate_b
     fixture["strict"]["mandatory_instances"].write_bytes(AUTH.canonical_json({"drifted": True}))
     monkeypatch.setattr(
         BOOTSTRAP,
@@ -784,13 +789,6 @@ def test_path_preregistration_drift_fails_before_live_capture(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     fixture = _offline_fixture(tmp_path, monkeypatch)
-    fixture["gate_b"] = _gate_b(
-        tmp_path,
-        campaign=fixture["campaign"],
-        gate_a=fixture["gate_a"],
-        candidate=fixture["candidate_path"],
-        planned_digest=fixture["planned"]["planned_source_set_digest"],
-    )
     preregistration = AUTH.strict_loads(
         fixture["path_preregistration_path"].read_bytes(),
         "AB16 path preregistration",
@@ -830,13 +828,6 @@ def test_well_formed_wrong_scientific_anchor_fails_before_live_capture(
     candidate["path_preregistration_identity"] = _detached(fixture["path_preregistration_path"])
     candidate["candidate_id"] = BOOTSTRAP._digest_without(candidate, "candidate_id")  # noqa: SLF001
     fixture["candidate_path"].write_bytes(AUTH.canonical_json(candidate))
-    fixture["gate_b"] = _gate_b(
-        tmp_path,
-        campaign=fixture["campaign"],
-        gate_a=fixture["gate_a"],
-        candidate=fixture["candidate_path"],
-        planned_digest=fixture["planned"]["planned_source_set_digest"],
-    )
     monkeypatch.setattr(
         BOOTSTRAP,
         "_capture_epoch",
@@ -847,28 +838,34 @@ def test_well_formed_wrong_scientific_anchor_fails_before_live_capture(
     assert not fixture["campaign"].exists()
 
 
-def test_gate_b_extra_field_fails_before_live_capture(
+@pytest.mark.parametrize(
+    ("mutation", "match"),
+    (
+        ("unsafe_path", "safe relative reference"),
+        ("wrong_sha", "pinned provenance"),
+        ("local_required", "authority boundary"),
+        ("authorizing", "authority boundary"),
+    ),
+)
+def test_archive_locator_mutation_fails_before_live_capture(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+    match: str,
 ) -> None:
     fixture = _offline_fixture(tmp_path, monkeypatch)
-    gate_b = _gate_b(
-        tmp_path,
-        campaign=fixture["campaign"],
-        gate_a=fixture["gate_a"],
-        candidate=fixture["candidate_path"],
-        planned_digest=fixture["planned"]["planned_source_set_digest"],
-    )
-    value = AUTH.strict_loads(gate_b.read_bytes(), "Gate-B")
-    value["unexpected"] = False
-    gate_b.write_bytes(AUTH.canonical_json(value))
-    fixture["gate_b"] = gate_b
-    monkeypatch.setattr(
-        BOOTSTRAP,
-        "_capture_epoch",
-        lambda **_: pytest.fail("capture must not run after schema drift"),
-    )
-    with pytest.raises(BOOTSTRAP.BootstrapError, match="key set drifted"):
+    locator = fixture["strict"]["history_freeze_manifest"]
+    value = AUTH.strict_loads(locator.read_bytes(), "archive locators")
+    if mutation == "unsafe_path":
+        value["entries"]["history_freeze_manifest"]["archive_locator"] = "archive:/absolute"
+    elif mutation == "wrong_sha":
+        value["entries"]["legacy_control_a002"]["sha256"] = "0" * 64
+    elif mutation == "local_required":
+        value["local_bytes_required"] = True
+    else:
+        value["authorizing"] = True
+    locator.write_bytes(AUTH.canonical_json(value))
+    with pytest.raises(BOOTSTRAP.BootstrapError, match=match):
         _bootstrap(fixture)
     assert not fixture["campaign"].exists()
 
@@ -878,13 +875,6 @@ def test_manager_toolchain_mismatch_fails_before_campaign_creation(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     fixture = _offline_fixture(tmp_path, monkeypatch)
-    fixture["gate_b"] = _gate_b(
-        tmp_path,
-        campaign=fixture["campaign"],
-        gate_a=fixture["gate_a"],
-        candidate=fixture["candidate_path"],
-        planned_digest=fixture["planned"]["planned_source_set_digest"],
-    )
     other_system = {
         role: _write(
             tmp_path / "other-system" / role,
@@ -893,11 +883,7 @@ def test_manager_toolchain_mismatch_fails_before_campaign_creation(
         for role in sorted(BOOTSTRAP.SYSTEM_TOOL_ROLES)
     }
     mismatched_capture = _capture_result(tmp_path / "other", other_system)
-    monkeypatch.setattr(
-        BOOTSTRAP,
-        "_capture_epoch",
-        lambda **_: copy.deepcopy(mismatched_capture),
-    )
+    fixture["capture"] = mismatched_capture
     with pytest.raises(
         BOOTSTRAP.BootstrapError,
         match="does not match selected bytes",
@@ -907,7 +893,7 @@ def test_manager_toolchain_mismatch_fails_before_campaign_creation(
 
 
 @pytest.mark.parametrize("command", ("candidate", "bootstrap"))
-def test_cli_has_distinct_executable_gate_a_and_gate_b_paths(
+def test_cli_is_self_contained_and_uses_only_repository_inputs(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     capsysbinary: pytest.CaptureFixture[bytes],
@@ -931,7 +917,7 @@ def test_cli_has_distinct_executable_gate_a_and_gate_b_paths(
     monkeypatch.setattr(BOOTSTRAP, "_cli_system_tools", lambda *_: {})
     monkeypatch.setattr(
         BOOTSTRAP,
-        "build_gate_a_candidate",
+        "build_offline_candidate",
         candidate_call,
     )
     monkeypatch.setattr(BOOTSTRAP, "bootstrap_campaign", bootstrap_call)
@@ -941,14 +927,6 @@ def test_cli_has_distinct_executable_gate_a_and_gate_b_paths(
         str(tmp_path / "campaigns" / "run-fixture-cli"),
         "--repository-root",
         str(ROOT),
-        "--gate-a-receipt",
-        str(tmp_path / "gate-a.json"),
-        "--history-freeze-manifest",
-        str(tmp_path / "history.json"),
-        "--cuts-mandatory-schedule",
-        str(tmp_path / "schedule.md"),
-        "--legacy-control-a002",
-        str(tmp_path / "legacy.json"),
     ]
     if command == "candidate":
         base.extend(
@@ -962,19 +940,50 @@ def test_cli_has_distinct_executable_gate_a_and_gate_b_paths(
             [
                 "--offline-candidate",
                 str(tmp_path / "candidate.json"),
-                "--gate-b-approval",
-                str(tmp_path / "gate-b.json"),
             ]
         )
     assert BOOTSTRAP.main(base) == 0
     output = AUTH.strict_loads(capsysbinary.readouterr().out, "CLI output")
     if command == "candidate":
         assert output["status"] == "CANDIDATE_FIXTURE"
-        assert "gate_b_approval" not in called
         assert called["output_path"] == tmp_path / "candidate.json"
     else:
         assert output["status"] == "BOOTSTRAP_FIXTURE"
-        assert called["gate_b_approval"] == tmp_path / "gate-b.json"
+        assert called["offline_candidate"] == tmp_path / "candidate.json"
+    assert not {
+        "gate_a_receipt",
+        "gate_b_approval",
+        "history_freeze_manifest",
+        "legacy_control_a002",
+        "cuts_mandatory_schedule",
+    } & set(called)
+
+
+@pytest.mark.parametrize(
+    "retired_flag",
+    (
+        "--gate-a-receipt",
+        "--gate-b-approval",
+        "--history-freeze-manifest",
+        "--legacy-control-a002",
+        "--cuts-mandatory-schedule",
+    ),
+)
+def test_cli_rejects_retired_external_input_flags(retired_flag: str) -> None:
+    with pytest.raises(SystemExit):
+        BOOTSTRAP._parse_args(  # noqa: SLF001
+            [
+                "candidate",
+                "--campaign-dir",
+                "campaign",
+                "--repository-root",
+                "repository",
+                "--candidate-output",
+                "candidate.json",
+                retired_flag,
+                "retired.json",
+            ]
+        )
 
 
 def test_source_switch_between_admission_and_package_is_rejected(
@@ -991,7 +1000,7 @@ def test_source_switch_between_admission_and_package_is_rejected(
     monkeypatch.setattr(AUTH, "build_package", switched_build_package)
     with pytest.raises(
         BOOTSTRAP.BootstrapError,
-        match="package source changed after Gate A",
+        match="package source changed after candidate capture",
     ):
         _bootstrap(fixture)
     assert fixture["campaign"].is_dir()
@@ -1004,11 +1013,7 @@ def test_no_overwrite_fails_before_second_capture(
 ) -> None:
     fixture = _complete_fixture(tmp_path, monkeypatch)
     _bootstrap(fixture)
-    monkeypatch.setattr(
-        BOOTSTRAP,
-        "_capture_epoch",
-        lambda **_: pytest.fail("no-overwrite must stop before capture"),
-    )
+    fixture["capture"] = {"invalid": True}
     with pytest.raises(
         BOOTSTRAP.BootstrapError,
         match="already exists",
@@ -1031,16 +1036,20 @@ def test_candidate_source_digest_mutation_is_rejected(
         "candidate_id",
     )
     fixture["candidate_path"].write_bytes(AUTH.canonical_json(value))
-    fixture["gate_b"] = _gate_b(
-        tmp_path,
-        campaign=fixture["campaign"],
-        gate_a=fixture["gate_a"],
-        candidate=fixture["candidate_path"],
-        planned_digest=fixture["planned"]["planned_source_set_digest"],
-    )
     with pytest.raises(
         BOOTSTRAP.BootstrapError,
         match="offline candidate semantics drifted",
     ):
+        _bootstrap(fixture)
+    assert not fixture["campaign"].exists()
+
+
+def test_invalid_injected_manager_capture_fails_before_campaign_creation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _offline_fixture(tmp_path, monkeypatch)
+    fixture["capture"] = {"manager_epoch": {}}
+    with pytest.raises(BOOTSTRAP.BootstrapError, match="wrong exact schema"):
         _bootstrap(fixture)
     assert not fixture["campaign"].exists()

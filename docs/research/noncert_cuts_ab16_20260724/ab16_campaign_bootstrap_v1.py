@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Two-gate bootstrap for one prospective non-certified-cuts AB16 campaign.
+"""Self-contained bootstrap for one prospective non-certified-cuts AB16 campaign.
 
-Gate A can create only an offline, non-authorizing candidate that freezes the
-planned external source set.  A distinct Gate B must bind the exact Gate-A
-receipt and candidate bytes before this module may call the unchanged Gate-1
-v4 authority API.  The resulting root therefore retains the complete Gate-1
-four-unit suite, continuation slot, common-prestate/bindings paths, and the
-reserved prospective AB16 topology.
+The offline candidate freezes the planned repository-local source set without
+creating a campaign or authorizing an arm.  Bootstrap replays those bytes,
+HEAD, the manager epoch, and the scientific preregistration before calling the
+unchanged Gate-1 v4 authority API.  Historical Gate inputs are represented by
+one pinned, non-authorizing archive locator; their archived bytes are never a
+local bootstrap requirement.
 
 This module creates authority bytes only.  It never starts a unit, solver, arm,
 or experiment.
@@ -19,7 +19,7 @@ from collections.abc import Mapping, Sequence
 from datetime import datetime, timezone
 import hashlib
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import subprocess
 import sys
@@ -33,22 +33,21 @@ if str(V4_RESEARCH_DIR) not in sys.path:
 import campaign_authority_v4 as authority  # noqa: E402
 
 
-GATE_A_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-a-receipt-v1"
-CANDIDATE_SCHEMA = "noncert-cuts-ab16-bootstrap-offline-candidate-v1"
-GATE_B_SCHEMA = "noncert-cuts-ab16-bootstrap-gate-b-approval-v1"
-CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v1"
-RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v1"
+CANDIDATE_SCHEMA = "noncert-cuts-ab16-bootstrap-offline-candidate-v2"
+CAPTURE_SCHEMA = "noncert-cuts-ab16-bootstrap-manager-capture-v2"
+RESULT_SCHEMA = "noncert-cuts-ab16-campaign-bootstrap-result-v2"
 PATH_PREREGISTRATION_SCHEMA = "noncert-cuts-ab16-scientific-preregistration-v3"
+ARCHIVE_LOCATORS_SCHEMA = "noncert-cuts-ab16-archive-locators-v1"
 
-GATE_A_PURPOSE = "AB16_OFFLINE_SOURCE_SET_PREFLIGHT"
 CANDIDATE_PURPOSE = "AB16_OFFLINE_NONAUTHORIZING_CANDIDATE"
-GATE_B_PURPOSE = "AB16_FORMAL_CAMPAIGN_IDENTITY_CREATION"
 PATH_PREREGISTRATION_PURPOSE = "prospective_noncert_cuts_ab16_scientific_preregistration"
+ARCHIVE_LOCATORS_PURPOSE = "AB16_ARCHIVE_ONLY_PROVENANCE_LOCATORS"
+EXTERNAL_ARTIFACTS_SCHEMA = 1
 
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 RUN_NONCE_RE = re.compile(r"run-[A-Za-z0-9][A-Za-z0-9._-]{4,123}\Z")
-APPROVAL_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{5,127}\Z")
+ARCHIVE_NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9._-]*\Z")
 
 AB16_ARM_SEQUENCE = tuple(
     f"{configuration}-{order}-{arm}"
@@ -113,6 +112,13 @@ STRICT_INPUT_ROLES = frozenset(
         "project_lock",
     }
 )
+ARCHIVED_SCIENTIFIC_INPUT_ROLES = frozenset(
+    {
+        "history_freeze_manifest",
+        "legacy_control_a002",
+    }
+)
+SCIENTIFIC_INPUT_ROLES = STRICT_INPUT_ROLES
 SYSTEM_TOOL_ROLES = frozenset(
     {
         "attestor_python",
@@ -137,19 +143,43 @@ CANONICAL_JSON_INPUT_ROLES = frozenset(
     {
         "candidate_placements",
         "history_freeze_manifest",
+        "legacy_control_a002",
         "mandatory_instances",
     }
 )
 
-GATE_INPUT_ROLES = {
-    "ab16_gate_a_receipt": "input.ab16_gate_a_receipt.json",
-    "ab16_offline_candidate": "input.ab16_offline_candidate.json",
-    "ab16_gate_b_approval": "input.ab16_gate_b_approval.json",
-}
+CANDIDATE_INPUT_ROLE = "ab16_offline_candidate"
+CANDIDATE_PACKAGE_ROLE = "input.ab16_offline_candidate.json"
 CAPTURE_INPUT_ROLE = "ab16_bootstrap_manager_epoch_capture"
 CAPTURE_PACKAGE_ROLE = "input.ab16_bootstrap_manager_epoch_capture.json"
 PATH_PREREGISTRATION_INPUT_ROLE = "ab16_path_preregistration"
 PATH_PREREGISTRATION_PACKAGE_ROLE = "input.ab16_path_preregistration.json"
+ARCHIVE_LOCATORS_PATH = Path(__file__).resolve().with_name("archive_locators_v1.json")
+CANDIDATE_PLACEMENTS_PIN: dict[str, object] = {
+    "id": "candidate_placements",
+    "path": "data/preprocessed/candidate_placements.json",
+    "sha256": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
+    "size_bytes": 54_467_709,
+}
+ARCHIVE_LOCATOR_ENTRIES: dict[str, dict[str, object]] = {
+    "history_freeze_manifest": {
+        "archive_locator": (
+            "zmd-codex-autonomy-20260801:"
+            ".artifacts/noncert_cuts_ab_trust_gate1_v4_20260724/history-freeze-a001/manifest.json"
+        ),
+        "sha256": "35e99c96482573976b70698f3422c9ab586afb1df3366e466ff93f901114de68",
+        "size_bytes": 1_397_516,
+    },
+    "legacy_control_a002": {
+        "archive_locator": (
+            "zmd-codex-autonomy-20260801:"
+            ".artifacts/noncert_cuts_ab_trust_20260723/run-20260723T113911Z-SrJBE0/"
+            "positive-control/control-a002/result.json"
+        ),
+        "sha256": "9e747c214c2108b7fc73fede1d31873b24bf765d74857cf4a846cf5178ebcff6",
+        "size_bytes": 507_095,
+    },
+}
 
 
 class BootstrapError(RuntimeError):
@@ -199,6 +229,151 @@ def _canonical_record(
     return value, authority.detached_identity(snapshot)
 
 
+def validate_archive_locators(value: object) -> Mapping[str, Any]:
+    """Validate the sole non-authorizing reference to retired historical bytes."""
+
+    record = _exact_keys(
+        value,
+        {
+            "authorizing",
+            "entries",
+            "local_bytes_required",
+            "purpose",
+            "schema_version",
+        },
+        "archive locators",
+    )
+    entries = _exact_keys(
+        record["entries"],
+        set(ARCHIVED_SCIENTIFIC_INPUT_ROLES),
+        "archive locator entries",
+    )
+    for role, expected in ARCHIVE_LOCATOR_ENTRIES.items():
+        entry = _exact_keys(
+            entries[role],
+            {"archive_locator", "sha256", "size_bytes"},
+            f"archive locator {role}",
+        )
+        locator = entry["archive_locator"]
+        if type(locator) is not str:
+            raise BootstrapError(f"archive locator {role} is malformed")
+        namespace, separator, relative = locator.partition(":")
+        relative_path = PurePosixPath(relative)
+        if (
+            not separator
+            or ARCHIVE_NAMESPACE_RE.fullmatch(namespace) is None
+            or not relative
+            or relative.startswith("/")
+            or "\\" in relative
+            or relative_path.is_absolute()
+            or ".." in relative_path.parts
+            or str(relative_path) != relative
+        ):
+            raise BootstrapError(f"archive locator {role} is not a safe relative reference")
+        if dict(entry) != expected:
+            raise BootstrapError(f"archive locator {role} differs from its pinned provenance")
+    if (
+        record["schema_version"] != ARCHIVE_LOCATORS_SCHEMA
+        or record["purpose"] != ARCHIVE_LOCATORS_PURPOSE
+        or record["local_bytes_required"] is not False
+        or type(record["local_bytes_required"]) is not bool
+        or record["authorizing"] is not False
+        or type(record["authorizing"]) is not bool
+    ):
+        raise BootstrapError("archive locator authority boundary drifted")
+    return record
+
+
+def load_archive_locators(
+    path: Path | str,
+    *,
+    expected_identity: Mapping[str, object] | None = None,
+) -> tuple[Mapping[str, Any], dict[str, object]]:
+    record, identity = _canonical_record(path, "archive locators")
+    record = validate_archive_locators(record)
+    if expected_identity is not None:
+        for field in ("path", "sha256", "size_bytes"):
+            if expected_identity.get(field) != identity[field]:
+                raise BootstrapError("archive locator identity drifted")
+    return record, identity
+
+
+def _validate_candidate_placements_preregistration(
+    repository_root: Path | str,
+    candidate_placements: Path | str,
+) -> dict[str, object]:
+    """Replay the tracked external-artifact pin before admitting candidate bytes."""
+
+    repository = _absolute(repository_root)
+    candidate_path = _absolute(candidate_placements)
+    expected_path = repository / str(CANDIDATE_PLACEMENTS_PIN["path"])
+    if candidate_path != expected_path:
+        raise BootstrapError("candidate placements is not the preregistered repository input")
+
+    manifest_snapshot = authority.snapshot_regular(repository / "data" / "external_artifacts.json")
+    try:
+        manifest = authority.strict_loads(manifest_snapshot.data, "external artifact manifest")
+    except Exception as exc:
+        raise BootstrapError("external artifact manifest is not strict JSON") from exc
+    manifest = _exact_keys(
+        manifest,
+        {"artifacts", "description", "schema_version"},
+        "external artifact manifest",
+    )
+    artifacts = manifest["artifacts"]
+    if (
+        manifest["schema_version"] != EXTERNAL_ARTIFACTS_SCHEMA
+        or type(manifest["schema_version"]) is not int
+        or type(manifest["description"]) is not str
+        or not manifest["description"]
+        or type(artifacts) is not list
+    ):
+        raise BootstrapError("external artifact manifest semantics drifted")
+    entries = [
+        entry
+        for entry in artifacts
+        if isinstance(entry, Mapping) and entry.get("id") == CANDIDATE_PLACEMENTS_PIN["id"]
+    ]
+    if len(entries) != 1:
+        raise BootstrapError("external artifact manifest lacks one candidate placements pin")
+    entry = _exact_keys(
+        entries[0],
+        {
+            "id",
+            "optional_in_lightweight_checkout",
+            "path",
+            "required_for",
+            "restore_hints",
+            "sha256",
+            "size_bytes",
+        },
+        "candidate placements external artifact entry",
+    )
+    if any(entry[field] != expected for field, expected in CANDIDATE_PLACEMENTS_PIN.items()):
+        raise BootstrapError("candidate placements external artifact pin drifted")
+    if (
+        entry["optional_in_lightweight_checkout"] is not True
+        or type(entry["optional_in_lightweight_checkout"]) is not bool
+        or type(entry["required_for"]) is not list
+        or not entry["required_for"]
+        or any(type(value) is not str or not value for value in entry["required_for"])
+        or len(set(entry["required_for"])) != len(entry["required_for"])
+        or type(entry["restore_hints"]) is not list
+        or not entry["restore_hints"]
+        or any(type(value) is not str or not value for value in entry["restore_hints"])
+    ):
+        raise BootstrapError("candidate placements external artifact metadata drifted")
+
+    observed = authority.full_identity(authority.snapshot_regular(candidate_path))
+    if (
+        observed["path"] != str(expected_path)
+        or observed["sha256"] != CANDIDATE_PLACEMENTS_PIN["sha256"]
+        or observed["size_bytes"] != CANDIDATE_PLACEMENTS_PIN["size_bytes"]
+    ):
+        raise BootstrapError("candidate placements bytes differ from the preregistered pin")
+    return observed
+
+
 def _digest_without(record: Mapping[str, object], field: str) -> str:
     value = dict(record)
     value.pop(field, None)
@@ -219,7 +394,8 @@ def _scientific_input_set_digest(source_identities: Mapping[str, object]) -> str
     if actual_roles != expected_roles:
         raise BootstrapError("scientific input source roles drifted")
     members: dict[str, dict[str, object]] = {}
-    for source_role in sorted(expected_roles):
+    archived_source_roles = {f"input.{role}" for role in ARCHIVED_SCIENTIFIC_INPUT_ROLES}
+    for source_role in sorted(expected_roles - archived_source_roles):
         identity = source_identities[source_role]
         if not isinstance(identity, Mapping):
             raise BootstrapError(f"scientific input identity {source_role} is malformed")
@@ -236,6 +412,21 @@ def _scientific_input_set_digest(source_identities: Mapping[str, object]) -> str
             "sha256": sha256,
             "size_bytes": size_bytes,
         }
+    for role in sorted(ARCHIVED_SCIENTIFIC_INPUT_ROLES):
+        locator_identity = source_identities[f"input.{role}"]
+        if not isinstance(locator_identity, Mapping):
+            raise BootstrapError(f"scientific input identity input.{role} is malformed")
+        archive_locators, _identity = load_archive_locators(
+            str(locator_identity.get("path", "")),
+            expected_identity=locator_identity,
+        )
+        entry = archive_locators["entries"][role]
+        members[role] = {
+            "sha256": entry["sha256"],
+            "size_bytes": entry["size_bytes"],
+        }
+    if set(members) != set(SCIENTIFIC_INPUT_ROLES):
+        raise BootstrapError("scientific input member projection drifted")
     projection = {
         "arm_sequence": list(AB16_ARM_SEQUENCE),
         "experiment_contract_sha256": AB16_EXPERIMENT_CONTRACT_SHA256,
@@ -302,6 +493,7 @@ def _planned_source_identities(
     *,
     strict_input_paths: Mapping[str, Path | str],
     system_tool_paths: Mapping[str, Path | str],
+    repository_root: Path | str | None = None,
 ) -> tuple[
     dict[str, dict[str, object]],
     dict[str, Path],
@@ -313,6 +505,14 @@ def _planned_source_identities(
         STRICT_INPUT_ROLES,
         "strict inputs",
     )
+    if strict_paths["history_freeze_manifest"] != strict_paths["legacy_control_a002"]:
+        raise BootstrapError("historical roles must share the one tracked archive locator")
+    load_archive_locators(strict_paths["history_freeze_manifest"])
+    if repository_root is not None:
+        _validate_candidate_placements_preregistration(
+            repository_root,
+            strict_paths["candidate_placements"],
+        )
     system_paths, system_identities = _resolved_system_tools(system_tool_paths)
     scripts = _script_paths()
     identities: dict[str, dict[str, object]] = {}
@@ -330,7 +530,7 @@ def observe_planned_sources(
     strict_input_paths: Mapping[str, Path | str],
     system_tool_paths: Mapping[str, Path | str],
 ) -> dict[str, object]:
-    """Read-only Gate-A helper; it never creates a candidate or campaign."""
+    """Observe planned sources without creating a candidate or campaign."""
 
     identities, _, _, _ = _planned_source_identities(
         strict_input_paths=strict_input_paths,
@@ -340,54 +540,6 @@ def observe_planned_sources(
         "planned_source_identities": identities,
         "planned_source_set_digest": _source_set_digest(identities),
     }
-
-
-def _validate_gate_a(value: object) -> Mapping[str, Any]:
-    record = _exact_keys(
-        value,
-        {
-            "approval_id",
-            "arm_launch_authorized",
-            "created_at_utc",
-            "decision",
-            "formal_campaign_creation_authorized",
-            "gate",
-            "offline_candidate_only",
-            "planned_source_set_digest",
-            "purpose",
-            "repository_head",
-            "repository_root",
-            "run_nonce",
-            "schema_version",
-            "target_campaign_dir",
-        },
-        "Gate-A receipt",
-    )
-    _utc(record["created_at_utc"], "Gate-A created_at_utc")
-    if (
-        record["schema_version"] != GATE_A_SCHEMA
-        or record["purpose"] != GATE_A_PURPOSE
-        or record["gate"] != "A"
-        or record["decision"] != "PASS"
-        or record["offline_candidate_only"] is not True
-        or record["formal_campaign_creation_authorized"] is not False
-        or record["arm_launch_authorized"] is not False
-        or type(record["approval_id"]) is not str
-        or APPROVAL_ID_RE.fullmatch(record["approval_id"]) is None
-        or type(record["repository_head"]) is not str
-        or GIT_SHA_RE.fullmatch(record["repository_head"]) is None
-        or type(record["repository_root"]) is not str
-        or not Path(record["repository_root"]).is_absolute()
-        or type(record["run_nonce"]) is not str
-        or RUN_NONCE_RE.fullmatch(record["run_nonce"]) is None
-        or type(record["planned_source_set_digest"]) is not str
-        or SHA256_RE.fullmatch(record["planned_source_set_digest"]) is None
-        or type(record["target_campaign_dir"]) is not str
-        or not Path(record["target_campaign_dir"]).is_absolute()
-        or Path(record["target_campaign_dir"]).name != record["run_nonce"]
-    ):
-        raise BootstrapError("Gate-A receipt is not a non-authorizing PASS")
-    return record
 
 
 def _validate_source_identities(
@@ -446,7 +598,6 @@ def validate_candidate(value: object) -> Mapping[str, Any]:
             "candidate_only",
             "created_at_utc",
             "formal_campaign_creation_authorized",
-            "gate_a_receipt_identity",
             "path_preregistration_identity",
             "planned_source_identities",
             "planned_source_set_digest",
@@ -460,10 +611,6 @@ def validate_candidate(value: object) -> Mapping[str, Any]:
         "offline candidate",
     )
     _utc(record["created_at_utc"], "candidate created_at_utc")
-    authority.validate_detached_identity(
-        record["gate_a_receipt_identity"],
-        "candidate Gate-A receipt",
-    )
     authority.validate_detached_identity(
         record["path_preregistration_identity"],
         "candidate AB16 path preregistration",
@@ -489,62 +636,6 @@ def validate_candidate(value: object) -> Mapping[str, Any]:
         or record["planned_source_set_digest"] != _source_set_digest(sources)
     ):
         raise BootstrapError("offline candidate semantics drifted")
-    return record
-
-
-def _validate_gate_b(value: object) -> Mapping[str, Any]:
-    record = _exact_keys(
-        value,
-        {
-            "approval_id",
-            "arm_launch_authorized",
-            "candidate_identity",
-            "created_at_utc",
-            "decision",
-            "formal_campaign_creation_authorized",
-            "gate",
-            "gate_a_receipt_identity",
-            "planned_source_set_digest",
-            "purpose",
-            "repository_head",
-            "repository_root",
-            "run_nonce",
-            "schema_version",
-            "target_campaign_dir",
-        },
-        "Gate-B approval",
-    )
-    _utc(record["created_at_utc"], "Gate-B created_at_utc")
-    authority.validate_detached_identity(
-        record["candidate_identity"],
-        "Gate-B candidate",
-    )
-    authority.validate_detached_identity(
-        record["gate_a_receipt_identity"],
-        "Gate-B Gate-A receipt",
-    )
-    if (
-        record["schema_version"] != GATE_B_SCHEMA
-        or record["purpose"] != GATE_B_PURPOSE
-        or record["gate"] != "B"
-        or record["decision"] != "APPROVED"
-        or record["formal_campaign_creation_authorized"] is not True
-        or record["arm_launch_authorized"] is not False
-        or type(record["approval_id"]) is not str
-        or APPROVAL_ID_RE.fullmatch(record["approval_id"]) is None
-        or type(record["repository_head"]) is not str
-        or GIT_SHA_RE.fullmatch(record["repository_head"]) is None
-        or type(record["repository_root"]) is not str
-        or not Path(record["repository_root"]).is_absolute()
-        or type(record["run_nonce"]) is not str
-        or RUN_NONCE_RE.fullmatch(record["run_nonce"]) is None
-        or type(record["planned_source_set_digest"]) is not str
-        or SHA256_RE.fullmatch(record["planned_source_set_digest"]) is None
-        or type(record["target_campaign_dir"]) is not str
-        or not Path(record["target_campaign_dir"]).is_absolute()
-        or Path(record["target_campaign_dir"]).name != record["run_nonce"]
-    ):
-        raise BootstrapError("Gate-B approval does not authorize identity creation")
     return record
 
 
@@ -621,17 +712,8 @@ def _observe_repository_head(
     return head
 
 
-def _capture_epoch(
-    *,
-    scripts: Mapping[str, Path],
-    system_paths: Mapping[str, Path],
-) -> dict[str, object]:
-    captured = authority.capture_manager_epoch_with_transcript(
-        attestor_path=scripts["manager_attestor_v4"],
-        busctl_path=system_paths["busctl"],
-        python_path=system_paths["attestor_python"],
-        sudo_path=system_paths["sudo"],
-    )
+def _validate_manager_capture(value: object) -> dict[str, object]:
+    captured = value
     if type(captured) is not dict or set(captured) != {
         "manager_epoch",
         "transcript",
@@ -643,6 +725,21 @@ def _capture_epoch(
         expected_epoch=captured["manager_epoch"],
     )
     return captured
+
+
+def _capture_epoch(
+    *,
+    scripts: Mapping[str, Path],
+    system_paths: Mapping[str, Path],
+) -> dict[str, object]:
+    return _validate_manager_capture(
+        authority.capture_manager_epoch_with_transcript(
+            attestor_path=scripts["manager_attestor_v4"],
+            busctl_path=system_paths["busctl"],
+            python_path=system_paths["attestor_python"],
+            sudo_path=system_paths["sudo"],
+        )
+    )
 
 
 def _path_preregistration(
@@ -769,10 +866,9 @@ def _validate_path_preregistration_against_root(
         raise BootstrapError("AB16 path preregistration differs from v4 root")
 
 
-def build_gate_a_candidate(
+def build_offline_candidate(
     *,
     output_path: Path | str,
-    gate_a_receipt: Path | str,
     repository_root: Path | str,
     target_campaign_dir: Path | str,
     strict_input_paths: Mapping[str, Path | str],
@@ -794,14 +890,10 @@ def build_gate_a_candidate(
         or preregistration_output.is_symlink()
     ):
         raise BootstrapError("offline candidate or path preregistration already exists")
-    gate_a, gate_a_identity = _canonical_record(
-        gate_a_receipt,
-        "Gate-A receipt",
-    )
-    gate_a = _validate_gate_a(gate_a)
     planned, _, system_paths, _ = _planned_source_identities(
         strict_input_paths=strict_input_paths,
         system_tool_paths=system_tool_paths,
+        repository_root=repository,
     )
     digest = _source_set_digest(planned)
     observed_head = _observe_repository_head(
@@ -809,14 +901,6 @@ def build_gate_a_candidate(
         system_paths["git"],
         expected_identity=planned["system.git"],
     )
-    if (
-        gate_a["target_campaign_dir"] != str(campaign_dir)
-        or gate_a["run_nonce"] != campaign_dir.name
-        or gate_a["repository_root"] != str(repository)
-        or gate_a["planned_source_set_digest"] != digest
-        or gate_a["repository_head"] != observed_head
-    ):
-        raise BootstrapError("Gate-A receipt does not bind the offline candidate")
     timestamp = created_at_utc or _utc_now()
     _utc(timestamp, "candidate created_at_utc")
     preregistration = _path_preregistration(
@@ -837,7 +921,6 @@ def build_gate_a_candidate(
         "candidate_only": True,
         "created_at_utc": timestamp,
         "formal_campaign_creation_authorized": False,
-        "gate_a_receipt_identity": gate_a_identity,
         "path_preregistration_identity": preregistration_identity,
         "planned_source_identities": planned,
         "planned_source_set_digest": digest,
@@ -855,7 +938,7 @@ def build_gate_a_candidate(
         authority.canonical_json(candidate),
     )
     if campaign_dir.exists() or campaign_dir.is_symlink():
-        raise BootstrapError("Gate A illegally created the campaign directory")
+        raise BootstrapError("candidate creation illegally created the campaign directory")
     return {
         "candidate": candidate,
         "candidate_identity": candidate_identity,
@@ -877,9 +960,7 @@ def _package_roles(
     scripts: Mapping[str, Path],
     system_paths: Mapping[str, Path],
     strict_paths: Mapping[str, Path],
-    gate_a_path: Path,
     candidate_path: Path,
-    gate_b_path: Path,
     capture_path: Path,
     path_preregistration_path: Path,
 ) -> tuple[
@@ -907,17 +988,8 @@ def _package_roles(
                 parse_json=role in CANONICAL_JSON_INPUT_ROLES,
             )
         )
-    for role, filename, path in (
-        ("ab16_gate_a_receipt", GATE_INPUT_ROLES["ab16_gate_a_receipt"], gate_a_path),
-        (
-            "ab16_offline_candidate",
-            GATE_INPUT_ROLES["ab16_offline_candidate"],
-            candidate_path,
-        ),
-        ("ab16_gate_b_approval", GATE_INPUT_ROLES["ab16_gate_b_approval"], gate_b_path),
-    ):
-        input_roles[role] = filename
-        specs.append(authority.SourceSpec(filename, path, parse_json=True))
+    input_roles[CANDIDATE_INPUT_ROLE] = CANDIDATE_PACKAGE_ROLE
+    specs.append(authority.SourceSpec(CANDIDATE_PACKAGE_ROLE, candidate_path, parse_json=True))
     input_roles[CAPTURE_INPUT_ROLE] = CAPTURE_PACKAGE_ROLE
     specs.append(
         authority.SourceSpec(
@@ -949,9 +1021,7 @@ def _package_source_join(
     package_dir: Path,
     *,
     planned: Mapping[str, Mapping[str, object]],
-    gate_a_identity: Mapping[str, object],
     candidate_identity: Mapping[str, object],
-    gate_b_identity: Mapping[str, object],
     capture_identity: Mapping[str, object],
     path_preregistration_identity: Mapping[str, object],
 ) -> None:
@@ -995,8 +1065,8 @@ def _package_source_join(
         expected_full[f"input.{role}{suffix}"] = planned[f"input.{role}"]
     if set(records) != (
         set(expected_full)
-        | set(GATE_INPUT_ROLES.values())
         | {
+            CANDIDATE_PACKAGE_ROLE,
             CAPTURE_PACKAGE_ROLE,
             PATH_PREREGISTRATION_PACKAGE_ROLE,
         }
@@ -1007,17 +1077,15 @@ def _package_source_join(
         normalized_expected = dict(expected)
         normalized_expected.pop("requested_path", None)
         if actual != normalized_expected:
-            raise BootstrapError(f"package source changed after Gate A: {role}")
+            raise BootstrapError(f"package source changed after candidate capture: {role}")
     detached_expectations = {
-        GATE_INPUT_ROLES["ab16_gate_a_receipt"]: gate_a_identity,
-        GATE_INPUT_ROLES["ab16_offline_candidate"]: candidate_identity,
-        GATE_INPUT_ROLES["ab16_gate_b_approval"]: gate_b_identity,
+        CANDIDATE_PACKAGE_ROLE: candidate_identity,
         CAPTURE_PACKAGE_ROLE: capture_identity,
         PATH_PREREGISTRATION_PACKAGE_ROLE: path_preregistration_identity,
     }
     for role, expected in detached_expectations.items():
         if _detached_from_full(records[role]) != expected:
-            raise BootstrapError(f"package gate/capture source changed during creation: {role}")
+            raise BootstrapError(f"package candidate/capture source changed during creation: {role}")
 
 
 def _check_epoch_toolchain(
@@ -1046,23 +1114,18 @@ def bootstrap_campaign(
     *,
     campaign_dir: Path | str,
     repository_root: Path | str,
-    gate_a_receipt: Path | str,
     offline_candidate: Path | str,
-    gate_b_approval: Path | str,
     strict_input_paths: Mapping[str, Path | str],
     system_tool_paths: Mapping[str, Path | str],
     created_at_utc: str | None = None,
+    manager_capture: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
-    """Create a complete v4 campaign authority only after both gates bind."""
+    """Create a complete v4 campaign authority from one replayed candidate."""
 
     output = _absolute(campaign_dir)
     repository = _absolute(repository_root)
     _assert_campaign_absent(output)
-    gate_a_path = _absolute(gate_a_receipt)
     candidate_path = _absolute(offline_candidate)
-    gate_b_path = _absolute(gate_b_approval)
-    gate_a, gate_a_identity = _canonical_record(gate_a_path, "Gate-A receipt")
-    gate_a = _validate_gate_a(gate_a)
     candidate, candidate_identity = _canonical_record(
         candidate_path,
         "offline candidate",
@@ -1079,39 +1142,22 @@ def bootstrap_campaign(
         path_preregistration,
         campaign_dir=output,
     )
-    gate_b, gate_b_identity = _canonical_record(gate_b_path, "Gate-B approval")
-    gate_b = _validate_gate_b(gate_b)
     if (
-        gate_a["approval_id"] == gate_b["approval_id"]
-        or gate_a_identity["path"] == gate_b_identity["path"]
-        or gate_a_identity["sha256"] == gate_b_identity["sha256"]
-        or candidate["gate_a_receipt_identity"] != gate_a_identity
-        or gate_b["gate_a_receipt_identity"] != gate_a_identity
-        or gate_b["candidate_identity"] != candidate_identity
+        candidate["target_campaign_dir"] != str(output)
+        or candidate["run_nonce"] != output.name
+        or candidate["repository_root"] != str(repository)
     ):
-        raise BootstrapError("Gate-A/candidate/Gate-B byte binding is invalid")
-    scalar_binding = {
-        "planned_source_set_digest",
-        "repository_head",
-        "repository_root",
-        "run_nonce",
-        "target_campaign_dir",
-    }
-    if any(candidate[field] != gate_a[field] or candidate[field] != gate_b[field] for field in scalar_binding):
-        raise BootstrapError("Gate-A/candidate/Gate-B scalar binding drifted")
-    if gate_b["target_campaign_dir"] != str(output):
-        raise BootstrapError("Gate-B target is not this campaign directory")
-    if gate_b["repository_root"] != str(repository):
-        raise BootstrapError("Gate-B repository root is not this repository")
+        raise BootstrapError("offline candidate does not target this campaign checkout")
 
     planned, scripts, system_paths, strict_paths = _planned_source_identities(
         strict_input_paths=strict_input_paths,
         system_tool_paths=system_tool_paths,
+        repository_root=repository,
     )
     if candidate["planned_source_identities"] != planned or candidate[
         "planned_source_set_digest"
     ] != _source_set_digest(planned):
-        raise BootstrapError("planned package source bytes drifted after Gate A")
+        raise BootstrapError("planned package source bytes drifted after candidate capture")
     if path_preregistration["scientific_input_set_sha256"] != _scientific_input_set_digest(planned):
         raise BootstrapError("scientific input-set anchor differs from planned sources")
     system_full = {role: planned[f"system.{role}"] for role in SYSTEM_TOOL_ROLES}
@@ -1122,7 +1168,11 @@ def bootstrap_campaign(
     )
     if repository_head != candidate["repository_head"]:
         raise BootstrapError("repository HEAD drifted before campaign creation")
-    captured = _capture_epoch(scripts=scripts, system_paths=system_paths)
+    captured = (
+        _capture_epoch(scripts=scripts, system_paths=system_paths)
+        if manager_capture is None
+        else _validate_manager_capture(manager_capture)
+    )
     epoch_attestor = _check_epoch_toolchain(
         captured["manager_epoch"],
         scripts=scripts,
@@ -1145,10 +1195,8 @@ def bootstrap_campaign(
     capture_record = {
         "candidate_identity": candidate_identity,
         "formal_arm_launch_authorized": False,
-        "gate_a_receipt_identity": gate_a_identity,
-        "gate_b_approval_identity": gate_b_identity,
         "manager_epoch": captured["manager_epoch"],
-        "purpose": "manager epoch captured after Gate B for v4 campaign creation",
+        "purpose": "manager epoch captured after candidate replay for v4 campaign creation",
         "repository_head": repository_head,
         "run_nonce": output.name,
         "schema": CAPTURE_SCHEMA,
@@ -1164,9 +1212,7 @@ def bootstrap_campaign(
         scripts=scripts,
         system_paths=system_paths,
         strict_paths=strict_paths,
-        gate_a_path=gate_a_path,
         candidate_path=candidate_path,
-        gate_b_path=gate_b_path,
         capture_path=capture_path,
         path_preregistration_path=path_preregistration_path,
     )
@@ -1180,9 +1226,7 @@ def bootstrap_campaign(
     _package_source_join(
         package_dir,
         planned=planned,
-        gate_a_identity=gate_a_identity,
         candidate_identity=candidate_identity,
-        gate_b_identity=gate_b_identity,
         capture_identity=capture_source_identity,
         path_preregistration_identity=path_preregistration_identity,
     )
@@ -1271,8 +1315,6 @@ def bootstrap_campaign(
         "candidate_identity": candidate_identity,
         "formal_arm_launch_authorized": False,
         "gate1_selection_identity": selection_identity,
-        "gate_a_receipt_identity": gate_a_identity,
-        "gate_b_approval_identity": gate_b_identity,
         "organic_ab16_authorized": False,
         "package_id": package["package_id"],
         "path_preregistration_identity": inputs[PATH_PREREGISTRATION_INPUT_ROLE],
@@ -1286,10 +1328,6 @@ def bootstrap_campaign(
 def _add_common_cli_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--campaign-dir", type=Path, required=True)
     parser.add_argument("--repository-root", type=Path, required=True)
-    parser.add_argument("--gate-a-receipt", type=Path, required=True)
-    parser.add_argument("--history-freeze-manifest", type=Path, required=True)
-    parser.add_argument("--cuts-mandatory-schedule", type=Path, required=True)
-    parser.add_argument("--legacy-control-a002", type=Path, required=True)
     parser.add_argument("--created-at-utc")
     parser.add_argument(
         "--python3-13",
@@ -1321,33 +1359,41 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     commands = parser.add_subparsers(dest="command", required=True)
     candidate = commands.add_parser(
         "candidate",
-        help=("consume an external Gate-A receipt and write only one non-authorizing O_EXCL candidate"),
+        help="freeze repository-local sources in one non-authorizing O_EXCL candidate",
     )
     _add_common_cli_arguments(candidate)
     candidate.add_argument("--candidate-output", type=Path, required=True)
     bootstrap = commands.add_parser(
         "bootstrap",
-        help=(
-            "consume the Gate-A receipt/candidate and a distinct external "
-            "Gate-B approval, then create v4 campaign authority"
-        ),
+        help="replay one offline candidate and create v4 campaign authority",
     )
     _add_common_cli_arguments(bootstrap)
     bootstrap.add_argument("--offline-candidate", type=Path, required=True)
-    bootstrap.add_argument("--gate-b-approval", type=Path, required=True)
     return parser.parse_args(argv)
 
 
 def _production_strict_inputs(
     repository: Path,
-    args: argparse.Namespace,
 ) -> dict[str, Path]:
+    archive_locators = (
+        repository
+        / "docs"
+        / "research"
+        / "noncert_cuts_ab16_20260724"
+        / "archive_locators_v1.json"
+    )
     return {
         "candidate_placements": (repository / "data" / "preprocessed" / "candidate_placements.json"),
         "canonical_rules": repository / "rules" / "canonical_rules.json",
-        "cuts_mandatory_schedule": args.cuts_mandatory_schedule,
-        "history_freeze_manifest": args.history_freeze_manifest,
-        "legacy_control_a002": args.legacy_control_a002,
+        "cuts_mandatory_schedule": (
+            repository
+            / "docs"
+            / "research"
+            / "b1_sidewise_marked_membrane_authority_recovery_20260724"
+            / "04_cuts_mandatory_schedule.md"
+        ),
+        "history_freeze_manifest": archive_locators,
+        "legacy_control_a002": archive_locators,
         "mandatory_instances": (repository / "data" / "preprocessed" / "mandatory_exact_instances.json"),
         "project_lock": repository / "PROJECT_LOCK.md",
     }
@@ -1370,12 +1416,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     repository = _absolute(args.repository_root)
     try:
         if args.command == "candidate":
-            result = build_gate_a_candidate(
+            result = build_offline_candidate(
                 output_path=args.candidate_output,
-                gate_a_receipt=args.gate_a_receipt,
                 repository_root=repository,
                 target_campaign_dir=args.campaign_dir,
-                strict_input_paths=_production_strict_inputs(repository, args),
+                strict_input_paths=_production_strict_inputs(repository),
                 system_tool_paths=_cli_system_tools(args),
                 created_at_utc=args.created_at_utc,
             )
@@ -1383,10 +1428,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = bootstrap_campaign(
                 campaign_dir=args.campaign_dir,
                 repository_root=repository,
-                gate_a_receipt=args.gate_a_receipt,
                 offline_candidate=args.offline_candidate,
-                gate_b_approval=args.gate_b_approval,
-                strict_input_paths=_production_strict_inputs(repository, args),
+                strict_input_paths=_production_strict_inputs(repository),
                 system_tool_paths=_cli_system_tools(args),
                 created_at_utc=args.created_at_utc,
             )

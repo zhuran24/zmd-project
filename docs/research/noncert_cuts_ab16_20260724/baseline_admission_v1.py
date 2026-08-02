@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Fail-closed admission for the prospective non-certified-cuts AB16 baseline.
 
-The historical ``control-a002`` result is accepted only as byte-locked
-provenance.  It cannot authorize a baseline, an arm, a solver run, or a
+The historical ``control-a002`` result is referenced only by one package-pinned
+archive locator.  Its archived bytes are not opened or required locally, and
+the locator cannot authorize a baseline, an arm, a solver run, or a
 mathematical claim.  Baseline admission instead requires:
 
 * a freshly rebuilt, canonical binary ``CpModelProto``;
@@ -26,7 +27,7 @@ from decimal import Decimal
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import stat
 import subprocess
@@ -38,7 +39,9 @@ from google.protobuf.message import DecodeError
 from ortools.sat import cp_model_pb2
 
 
-ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v1"
+ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v2"
+ARCHIVE_LOCATORS_SCHEMA = "noncert-cuts-ab16-archive-locators-v1"
+ARCHIVE_LOCATORS_PURPOSE = "AB16_ARCHIVE_ONLY_PROVENANCE_LOCATORS"
 METADATA_SCHEMA = "noncert-cuts-ab16-rebuilt-model-metadata-v2"
 REPLAY_SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v2"
 CAMPAIGN_PROVENANCE_SCHEMA = "noncert-cuts-ab16-tracked-clean-checkout-provenance-v1"
@@ -61,6 +64,7 @@ REQUIRED_REBUILD_INPUT_ROLES = frozenset(
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 ROLE_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\Z")
+ARCHIVE_NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9._-]*\Z")
 MAX_JSON_BYTES = 64 * 1024 * 1024
 MAX_MODEL_BYTES = 1024 * 1024 * 1024
 CAMPAIGN_PROVENANCE_KEYS = {
@@ -84,6 +88,25 @@ CHECKOUT_INPUT_PATHS = {
     "candidate_placements": Path("data/preprocessed/candidate_placements.json"),
     "canonical_rules": Path("rules/canonical_rules.json"),
     "mandatory_instances": Path("data/preprocessed/mandatory_exact_instances.json"),
+}
+ARCHIVE_LOCATOR_ENTRIES: dict[str, dict[str, object]] = {
+    "history_freeze_manifest": {
+        "archive_locator": (
+            "zmd-codex-autonomy-20260801:"
+            ".artifacts/noncert_cuts_ab_trust_gate1_v4_20260724/history-freeze-a001/manifest.json"
+        ),
+        "sha256": "35e99c96482573976b70698f3422c9ab586afb1df3366e466ff93f901114de68",
+        "size_bytes": 1_397_516,
+    },
+    "legacy_control_a002": {
+        "archive_locator": (
+            "zmd-codex-autonomy-20260801:"
+            ".artifacts/noncert_cuts_ab_trust_20260723/run-20260723T113911Z-SrJBE0/"
+            "positive-control/control-a002/result.json"
+        ),
+        "sha256": "9e747c214c2108b7fc73fede1d31873b24bf765d74857cf4a846cf5178ebcff6",
+        "size_bytes": 507_095,
+    },
 }
 
 
@@ -504,57 +527,95 @@ def campaign_provenance(path: Path | str) -> dict[str, object]:
     return dict(record)
 
 
-def _validate_legacy(
+def _validate_archive_locators(
     snapshot: Snapshot,
+    *,
+    campaign_provenance: Mapping[str, Any],
     expectation: BaselineExpectation,
 ) -> dict[str, object]:
-    if (
-        snapshot.identity["sha256"] != expectation.legacy_sha256
-        or snapshot.identity["size_bytes"] != expectation.legacy_size_bytes
-    ):
-        raise AdmissionError("legacy control-a002 bytes do not match pinned provenance")
-    value = _mapping(
-        _strict_loads(
-            snapshot.data,
-            "legacy control-a002",
-            canonical=False,
-            allow_historical_floats=True,
-        ),
-        "legacy control-a002",
+    value = _exact_keys(
+        _strict_loads(snapshot.data, "archive locators", canonical=True),
+        {
+            "authorizing",
+            "entries",
+            "local_bytes_required",
+            "purpose",
+            "schema_version",
+        },
+        "archive locators",
     )
-    prestate = _mapping(value.get("prestate"), "legacy prestate")
-    injection = _mapping(value.get("injection"), "legacy injection")
+    entries = _exact_keys(
+        value["entries"],
+        set(ARCHIVE_LOCATOR_ENTRIES),
+        "archive locator entries",
+    )
+    expected_entries = {
+        role: dict(entry)
+        for role, entry in ARCHIVE_LOCATOR_ENTRIES.items()
+    }
+    expected_entries["legacy_control_a002"].update(
+        {
+            "sha256": expectation.legacy_sha256,
+            "size_bytes": expectation.legacy_size_bytes,
+        }
+    )
+    for role, expected in expected_entries.items():
+        entry = _exact_keys(
+            entries[role],
+            {"archive_locator", "sha256", "size_bytes"},
+            f"archive locator {role}",
+        )
+        locator = entry["archive_locator"]
+        if type(locator) is not str:
+            raise AdmissionError(f"archive locator {role}: malformed reference")
+        namespace, separator, relative = locator.partition(":")
+        relative_path = PurePosixPath(relative)
+        if (
+            not separator
+            or ARCHIVE_NAMESPACE_RE.fullmatch(namespace) is None
+            or not relative
+            or relative.startswith("/")
+            or "\\" in relative
+            or relative_path.is_absolute()
+            or ".." in relative_path.parts
+            or str(relative_path) != relative
+        ):
+            raise AdmissionError(f"archive locator {role}: unsafe relative reference")
+        if dict(entry) != expected:
+            raise AdmissionError(f"archive locator {role}: pinned provenance drifted")
     if (
-        value.get("schema_version") != 1
-        or type(value.get("schema_version")) is not int
-        or value.get("run_tag") != "pc-control-a002"
-        or value.get("arm") != "control"
-        or value.get("terminal_status") != "ARM_COMPLETE"
-        or (prestate.get("model_proto_sha256") != expectation.historical_model_text_sha256)
-        or prestate.get("model_variable_count") != expectation.model_variable_count
-        or type(prestate.get("model_variable_count")) is not int
-        or prestate.get("model_constraint_count") != expectation.model_constraint_count
-        or type(prestate.get("model_constraint_count")) is not int
-        or prestate.get("incumbent_sha256") != expectation.incumbent_sha256
-        or type(prestate.get("incumbent")) is not dict
-        or len(prestate["incumbent"]) != expectation.incumbent_assignment_count
-        or injection.get("compiled_observed") != 0
-        or type(injection.get("compiled_observed")) is not int
-        or injection.get("arithmetic_sample_count") != 0
-        or type(injection.get("arithmetic_sample_count")) is not int
+        value["schema_version"] != ARCHIVE_LOCATORS_SCHEMA
+        or value["purpose"] != ARCHIVE_LOCATORS_PURPOSE
+        or value["local_bytes_required"] is not False
+        or type(value["local_bytes_required"]) is not bool
+        or value["authorizing"] is not False
+        or type(value["authorizing"]) is not bool
     ):
-        raise AdmissionError("legacy control-a002 provenance semantics drifted")
+        raise AdmissionError("archive locator authority boundary drifted")
+
+    root_snapshot = _replay_identity(
+        campaign_provenance["campaign_root_identity"],
+        "archive locator campaign root",
+    )
+    root = _mapping(
+        _strict_loads(root_snapshot.data, "archive locator campaign root", canonical=False),
+        "archive locator campaign root",
+    )
+    strict_inputs = _mapping(root.get("strict_inputs"), "campaign root strict inputs")
+    package_identity = _identity(strict_inputs.get("legacy_control_a002"), "campaign archive locators")
+    _require_identity(snapshot.identity, package_identity, "campaign archive locators")
+    legacy = entries["legacy_control_a002"]
     return {
-        "arm": "control",
-        "identity": dict(snapshot.identity),
-        "reported_incumbent_sha256": prestate["incumbent_sha256"],
-        "reported_model_constraint_count": prestate["model_constraint_count"],
-        "reported_historical_model_text_sha256": prestate["model_proto_sha256"],
-        "reported_model_variable_count": prestate["model_variable_count"],
-        "run_tag": "pc-control-a002",
-        "terminal_status": "ARM_COMPLETE",
+        "archive_locator": legacy["archive_locator"],
+        "archive_locator_identity": dict(snapshot.identity),
+        "archive_target": {
+            "sha256": legacy["sha256"],
+            "size_bytes": legacy["size_bytes"],
+        },
         "authorizing": False,
+        "local_bytes_replayed": False,
         "provenance_only": True,
+        "verification_basis": "PINNED_ARCHIVE_LOCATOR_ONLY",
     }
 
 
@@ -769,6 +830,7 @@ def _validate_replay(
         "fixed-assignment replay tool",
     )
     return {
+        "campaign_provenance": dict(campaign_provenance),
         "incumbent_identity": dict(incumbent_snapshot.identity),
         "receipt_identity": dict(snapshot.identity),
         "replay_tool_identity": dict(replay_tool.identity),
@@ -781,7 +843,7 @@ def _validate_replay(
 def _admit_paths(
     *,
     campaign_provenance_path: Path | str,
-    legacy_control: Path | str,
+    archive_locators: Path | str,
     rebuilt_model: Path | str,
     rebuilt_metadata: Path | str,
     fixed_assignment_replay: Path | str,
@@ -792,10 +854,10 @@ def _admit_paths(
 
     _utc(created_at_utc, "admission created_at_utc")
     provenance_before = campaign_provenance(campaign_provenance_path)
-    legacy_snapshot = snapshot_regular(
-        legacy_control,
+    archive_locator_snapshot = snapshot_regular(
+        archive_locators,
         max_bytes=MAX_JSON_BYTES,
-        label="legacy control-a002",
+        label="archive locators",
     )
     model_snapshot = snapshot_regular(
         rebuilt_model,
@@ -818,7 +880,11 @@ def _admit_paths(
         label="baseline admission tool",
     )
 
-    legacy = _validate_legacy(legacy_snapshot, expectation)
+    legacy = _validate_archive_locators(
+        archive_locator_snapshot,
+        campaign_provenance=provenance_before,
+        expectation=expectation,
+    )
     _parse_model(model_snapshot.data, expectation)
     metadata = _validate_metadata(
         metadata_snapshot,
@@ -872,7 +938,7 @@ def _admit_paths(
 def admit_paths(
     *,
     campaign_provenance_path: Path | str,
-    legacy_control: Path | str,
+    archive_locators: Path | str,
     rebuilt_model: Path | str,
     rebuilt_metadata: Path | str,
     fixed_assignment_replay: Path | str,
@@ -882,7 +948,7 @@ def admit_paths(
 
     return _admit_paths(
         campaign_provenance_path=campaign_provenance_path,
-        legacy_control=legacy_control,
+        archive_locators=archive_locators,
         rebuilt_model=rebuilt_model,
         rebuilt_metadata=rebuilt_metadata,
         fixed_assignment_replay=fixed_assignment_replay,
@@ -935,7 +1001,7 @@ def write_exclusive(path: Path | str, value: object) -> dict[str, object]:
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--campaign-provenance", required=True, type=Path)
-    parser.add_argument("--legacy-control", required=True, type=Path)
+    parser.add_argument("--archive-locators", required=True, type=Path)
     parser.add_argument("--rebuilt-model", required=True, type=Path)
     parser.add_argument("--rebuilt-metadata", required=True, type=Path)
     parser.add_argument("--fixed-assignment-replay", required=True, type=Path)
@@ -949,7 +1015,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         result = admit_paths(
             campaign_provenance_path=arguments.campaign_provenance,
-            legacy_control=arguments.legacy_control,
+            archive_locators=arguments.archive_locators,
             rebuilt_model=arguments.rebuilt_model,
             rebuilt_metadata=arguments.rebuilt_metadata,
             fixed_assignment_replay=arguments.fixed_assignment_replay,

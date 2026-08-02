@@ -60,7 +60,7 @@ MANIFEST_PURPOSE = "prospective_noncert_cuts_ab16"
 SELECTION_PURPOSE = "prospective_noncert_cuts_ab16_formal_arm"
 FORMAL_ARITHMETIC_PURPOSE = "prospective_noncert_cuts_ab16_formal_applied_inequality_replay_v1"
 ATTACH_ENV = "EXACT_CUT_FRAMEWORK_ATTACH"
-BASELINE_ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v1"
+BASELINE_ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v2"
 BASELINE_ADMISSION_VERDICT = "AB16_BASELINE_INPUTS_ADMITTED"
 
 CONFIGURATION_FAMILIES = {
@@ -1351,6 +1351,7 @@ def _validate_baseline_admission(
     value: object,
     *,
     baseline_incumbent_identity: Mapping[str, Any],
+    baseline_incumbent_source_identity: Mapping[str, Any],
     selection: Mapping[str, Any],
 ) -> str:
     record = _exact_keys(
@@ -1358,6 +1359,7 @@ def _validate_baseline_admission(
         {
             "admission_tool_identity",
             "authorizations",
+            "campaign_provenance",
             "created_at_utc",
             "expectation_profile",
             "expected_baseline",
@@ -1408,12 +1410,33 @@ def _validate_baseline_admission(
     replay = record["fixed_assignment_replay"]
     if not isinstance(replay, Mapping):
         raise RunnerError("baseline fixed-assignment replay is not an object")
+    provenance = record["campaign_provenance"]
+    rebuilt = record["rebuilt_model"]
+    if type(provenance) is not dict or not provenance:
+        raise RunnerError("baseline admission campaign provenance is not an object")
+    if not isinstance(rebuilt, Mapping) or not isinstance(rebuilt.get("metadata"), Mapping):
+        raise RunnerError("baseline admission rebuilt metadata is absent")
+    if replay.get("campaign_provenance") != provenance or rebuilt["metadata"].get("campaign_provenance") != provenance:
+        raise RunnerError("baseline admission campaign provenance join drifted")
     incumbent_identity = _exact_identity(
         replay.get("incumbent_identity"),
         "baseline replay incumbent identity",
     )
-    if dict(incumbent_identity) != dict(baseline_incumbent_identity):
-        raise RunnerError("baseline incumbent identity differs from current attempt input set")
+    source_identity = _exact_identity_with_mode(
+        baseline_incumbent_source_identity,
+        "baseline incumbent source identity",
+    )
+    snapshot_identity = _exact_identity(
+        baseline_incumbent_identity,
+        "baseline incumbent attempt snapshot identity",
+    )
+    if dict(incumbent_identity) != _detached_identity(source_identity):
+        raise RunnerError("baseline replay incumbent identity differs from attempt source input")
+    if any(
+        incumbent_identity[field] != snapshot_identity[field]
+        for field in ("sha256", "size_bytes")
+    ):
+        raise RunnerError("baseline incumbent source bytes differ from current attempt snapshot")
     if replay.get("status") != "PASS" or replay.get("solver_status") != "OPTIMAL":
         raise RunnerError("baseline fixed-assignment replay status drifted")
     return digest
@@ -2075,6 +2098,7 @@ def _load_authority(
     expected_digest = _validate_baseline_admission(
         admission_value,
         baseline_incumbent_identity=authority_snapshots["baseline_incumbent"].identity,
+        baseline_incumbent_source_identity=input_set["source_strict_input_identities"]["baseline_incumbent"],
         selection=selection,
     )
     incumbent = _strict_loads(

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
-import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -93,31 +92,24 @@ def _model() -> cp_model_pb2.CpModelProto:
     return model
 
 
-def _legacy(
-    *,
-    historical_model_text_sha256: str,
-    variable_count: int,
-    constraint_count: int,
-    incumbent_sha256: str,
-    incumbent: dict[str, object],
-) -> dict[str, object]:
+def _archive_locators(expectation: object) -> dict[str, object]:
+    assert isinstance(expectation, ADMISSION.BaselineExpectation)
+    entries = {
+        role: dict(entry)
+        for role, entry in ADMISSION.ARCHIVE_LOCATOR_ENTRIES.items()
+    }
+    entries["legacy_control_a002"].update(
+        {
+            "sha256": expectation.legacy_sha256,
+            "size_bytes": expectation.legacy_size_bytes,
+        }
+    )
     return {
-        "arm": "control",
-        "injection": {
-            "arithmetic_sample_count": 0,
-            "compiled_observed": 0,
-            "wall_seconds": 0.0,
-        },
-        "prestate": {
-            "incumbent": incumbent,
-            "incumbent_sha256": incumbent_sha256,
-            "model_constraint_count": constraint_count,
-            "model_proto_sha256": historical_model_text_sha256,
-            "model_variable_count": variable_count,
-        },
-        "run_tag": "pc-control-a002",
-        "schema_version": 1,
-        "terminal_status": "ARM_COMPLETE",
+        "authorizing": False,
+        "entries": entries,
+        "local_bytes_required": False,
+        "purpose": ADMISSION.ARCHIVE_LOCATORS_PURPOSE,
+        "schema_version": ADMISSION.ARCHIVE_LOCATORS_SCHEMA,
     }
 
 
@@ -130,6 +122,17 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
     incumbent = _incumbent()
     incumbent_sha256 = ADMISSION.semantic_digest(incumbent)
     incumbent_identity = _write(tmp_path / "incumbent.json", _canonical(incumbent))
+    legacy_target_raw = b"archived control-a002 fixture bytes\n"
+    expectation = ADMISSION.BaselineExpectation(
+        profile="small-fixture-v1",
+        legacy_size_bytes=len(legacy_target_raw),
+        legacy_sha256=hashlib.sha256(legacy_target_raw).hexdigest(),
+        historical_model_text_sha256=historical_model_text_sha256,
+        model_variable_count=len(model.variables),
+        model_constraint_count=len(model.constraints),
+        incumbent_sha256=incumbent_sha256,
+        incumbent_assignment_count=len(incumbent),
+    )
     builder_identity = _write(tmp_path / "builder.py", b"# fixture builder\n")
     replay_tool_identity = _write(tmp_path / "fixed_replay.py", b"# fixture replay\n")
     inputs = {
@@ -168,6 +171,11 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
         role: _write(package_payload / f"input.{role}.json", Path(identity["path"]).read_bytes())
         for role, identity in inputs.items()
     }
+    archive_locator_identity = _write(
+        package_payload / "input.legacy_control_a002.json",
+        _canonical(_archive_locators(expectation)),
+    )
+    package_inputs["legacy_control_a002"] = archive_locator_identity
     package_manifest_identity = _write(package_dir / "package-manifest.json", b"fixture package manifest\n")
     package_seal_identity = _write(package_dir / "SHA256SUMS", b"fixture package seal\n")
     package = {
@@ -245,26 +253,8 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
         "verdict": ADMISSION.REPLAY_VERDICT,
     }
     replay_identity = _write(tmp_path / "replay.json", _canonical(replay))
-    legacy = _legacy(
-        historical_model_text_sha256=historical_model_text_sha256,
-        variable_count=len(model.variables),
-        constraint_count=len(model.constraints),
-        incumbent_sha256=incumbent_sha256,
-        incumbent=incumbent,
-    )
-    legacy_raw = json.dumps(legacy, indent=2, sort_keys=True).encode() + b"\n"
-    legacy_identity = _write(tmp_path / "control-a002-result.json", legacy_raw)
-    expectation = ADMISSION.BaselineExpectation(
-        profile="small-fixture-v1",
-        legacy_size_bytes=legacy_identity["size_bytes"],
-        legacy_sha256=legacy_identity["sha256"],
-        historical_model_text_sha256=historical_model_text_sha256,
-        model_variable_count=len(model.variables),
-        model_constraint_count=len(model.constraints),
-        incumbent_sha256=incumbent_sha256,
-        incumbent_assignment_count=len(incumbent),
-    )
     return {
+        "archive_locators_path": Path(archive_locator_identity["path"]),
         "campaign_provenance": campaign_provenance,
         "campaign_provenance_path": Path(campaign_provenance_identity["path"]),
         "campaign_root_path": Path(campaign_root_identity["path"]),
@@ -272,7 +262,6 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
         "expectation": expectation,
         "incumbent": incumbent,
         "incumbent_path": Path(incumbent_identity["path"]),
-        "legacy_path": Path(legacy_identity["path"]),
         "package_manifest_path": Path(package_manifest_identity["path"]),
         "metadata": metadata,
         "metadata_path": Path(metadata_identity["path"]),
@@ -286,7 +275,7 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
 def _admit(fixture: dict[str, Any]) -> dict[str, object]:
     return ADMISSION._admit_paths(
         campaign_provenance_path=fixture["campaign_provenance_path"],
-        legacy_control=fixture["legacy_path"],
+        archive_locators=fixture["archive_locators_path"],
         rebuilt_model=fixture["model_path"],
         rebuilt_metadata=fixture["metadata_path"],
         fixed_assignment_replay=fixture["replay_path"],
@@ -310,10 +299,17 @@ def test_small_rebuilt_baseline_is_admitted_without_downstream_authority(
 ) -> None:
     fixture = _fixture(tmp_path)
     result = _admit(fixture)
+    assert result["schema_version"] == ADMISSION.ADMISSION_SCHEMA
     assert result["status"] == "PASS"
     assert result["verdict"] == ADMISSION.ADMISSION_VERDICT
     assert result["legacy_control"]["provenance_only"] is True
     assert result["legacy_control"]["authorizing"] is False
+    assert result["legacy_control"]["local_bytes_replayed"] is False
+    assert result["legacy_control"]["verification_basis"] == "PINNED_ARCHIVE_LOCATOR_ONLY"
+    assert result["legacy_control"]["archive_target"] == {
+        "sha256": fixture["expectation"].legacy_sha256,
+        "size_bytes": fixture["expectation"].legacy_size_bytes,
+    }
     assert result["authorizations"] == {
         "baseline_inputs_admitted": True,
         "global_claim_authorized": False,
@@ -329,6 +325,7 @@ def test_small_rebuilt_baseline_is_admitted_without_downstream_authority(
     )
     assert result["rebuilt_model"]["identity"]["sha256"] != result["expected_baseline"]["historical_model_text_sha256"]
     assert result["fixed_assignment_replay"]["status"] == "PASS"
+    assert result["fixed_assignment_replay"]["campaign_provenance"] == result["campaign_provenance"]
 
 
 def test_production_expectation_is_exactly_pinned() -> None:
@@ -342,10 +339,50 @@ def test_production_expectation_is_exactly_pinned() -> None:
     assert expected.legacy_sha256 == ("9e747c214c2108b7fc73fede1d31873b24bf765d74857cf4a846cf5178ebcff6")
 
 
-def test_legacy_bytes_are_provenance_only_and_byte_locked(tmp_path: Path) -> None:
+def test_archive_locator_is_provenance_only_and_byte_locked(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
-    fixture["legacy_path"].write_bytes(fixture["legacy_path"].read_bytes() + b" ")
-    with pytest.raises(ADMISSION.AdmissionError, match="pinned provenance"):
+    locator = _archive_locators(fixture["expectation"])
+    locator["entries"]["legacy_control_a002"]["sha256"] = "0" * 64
+    fixture["archive_locators_path"].write_bytes(_canonical(locator))
+    with pytest.raises(ADMISSION.AdmissionError, match="pinned provenance drifted"):
+        _admit(fixture)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "match"),
+    (
+        ("unsafe_path", "unsafe relative reference"),
+        ("local_required", "authority boundary"),
+        ("authorizing", "authority boundary"),
+        ("extra", "key set drifted"),
+    ),
+)
+def test_archive_locator_schema_and_authority_mutations_fail_closed(
+    tmp_path: Path,
+    mutation: str,
+    match: str,
+) -> None:
+    fixture = _fixture(tmp_path)
+    locator = _archive_locators(fixture["expectation"])
+    if mutation == "unsafe_path":
+        locator["entries"]["legacy_control_a002"]["archive_locator"] = "archive:../result.json"
+    elif mutation == "local_required":
+        locator["local_bytes_required"] = True
+    elif mutation == "authorizing":
+        locator["authorizing"] = True
+    else:
+        locator["unexpected"] = False
+    fixture["archive_locators_path"].write_bytes(_canonical(locator))
+    with pytest.raises(ADMISSION.AdmissionError, match=match):
+        _admit(fixture)
+
+
+def test_admission_rejects_non_package_archive_locator_even_with_equal_bytes(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    copied = tmp_path / "copied-archive-locators.json"
+    copied.write_bytes(fixture["archive_locators_path"].read_bytes())
+    fixture["archive_locators_path"] = copied
+    with pytest.raises(ADMISSION.AdmissionError, match="detached identity mismatch"):
         _admit(fixture)
 
 

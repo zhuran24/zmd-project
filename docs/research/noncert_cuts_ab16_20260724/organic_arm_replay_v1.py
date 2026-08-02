@@ -38,6 +38,7 @@ from ortools.sat.python import cp_model
 
 
 RESULT_SCHEMA = "noncert-cuts-ab16-organic-arm-result-v1"
+CONTROLLER_TERMINAL_SCHEMA = "noncert-cuts-ab16-controller-terminal-v1"
 JOURNAL_SCHEMA = "noncert-cuts-ab16-compile-attach-journal-v1"
 LEDGER_SCHEMA = "cut-ledger-v1"
 CUT_FREE_SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v2"
@@ -457,6 +458,102 @@ def _event_counts(
     return dict(sorted(counts.items()))
 
 
+def _validate_controller_terminal(value: object) -> Mapping[str, Any]:
+    record = _exact_keys(
+        value,
+        {
+            "budget_censor_evidence",
+            "controller_completed",
+            "controller_status",
+            "cumulative_deterministic_time",
+            "master_last_solve",
+            "master_solve_history",
+            "schema_version",
+        },
+        "controller terminal",
+    )
+    if (
+        record["schema_version"] != CONTROLLER_TERMINAL_SCHEMA
+        or record["controller_completed"] is not True
+        or record["controller_status"] not in {"CERTIFIED", "INFEASIBLE", "UNKNOWN", "UNPROVEN"}
+        or type(record["cumulative_deterministic_time"]) not in {int, float}
+        or record["cumulative_deterministic_time"] < 0
+        or type(record["master_last_solve"]) is not dict
+        or type(record["master_solve_history"]) is not list
+    ):
+        raise ReplayError("controller terminal scalar semantics drifted")
+    cumulative = 0.0
+    for ordinal, raw in enumerate(record["master_solve_history"], start=1):
+        item = _exact_keys(
+            raw,
+            {
+                "binary_propagations",
+                "branches",
+                "conflicts",
+                "deterministic_time",
+                "integer_propagations",
+                "ordinal",
+                "requested_time_limit_seconds",
+                "status",
+                "user_time",
+                "wall_time",
+            },
+            f"controller master solve {ordinal}",
+        )
+        if (
+            item["ordinal"] != ordinal
+            or type(item["status"]) is not str
+            or not item["status"]
+            or type(item["requested_time_limit_seconds"]) not in {int, float}
+            or item["requested_time_limit_seconds"] <= 0
+        ):
+            raise ReplayError("controller master solve identity/status drifted")
+        for field in (
+            "binary_propagations",
+            "branches",
+            "conflicts",
+            "integer_propagations",
+        ):
+            if type(item[field]) is not int or item[field] < 0:
+                raise ReplayError("controller master solve counter is invalid")
+        for field in ("deterministic_time", "user_time", "wall_time"):
+            if type(item[field]) not in {int, float} or item[field] < 0:
+                raise ReplayError("controller master solve time is invalid")
+        cumulative += float(item["deterministic_time"])
+    if abs(cumulative - float(record["cumulative_deterministic_time"])) > 1e-9:
+        raise ReplayError("controller cumulative deterministic time drifted")
+    budget = _exact_keys(
+        record["budget_censor_evidence"],
+        {"internal_budget_reached", "kind", "limit", "observed"},
+        "controller budget censor evidence",
+    )
+    if type(budget["internal_budget_reached"]) is not bool:
+        raise ReplayError("controller budget censor flag is invalid")
+    if budget["internal_budget_reached"]:
+        if (
+            budget["kind"]
+            not in {
+                "binding_seconds",
+                "master_seconds",
+                "max_iterations",
+                "routing_seconds",
+            }
+            or type(budget["limit"]) not in {int, float}
+            or budget["limit"] <= 0
+            or type(budget["observed"]) is not dict
+            or not budget["observed"]
+        ):
+            raise ReplayError("controller budget censor evidence is invalid")
+    elif budget != {
+        "internal_budget_reached": False,
+        "kind": "none",
+        "limit": None,
+        "observed": {},
+    }:
+        raise ReplayError("controller non-censor evidence is not canonical")
+    return record
+
+
 def _validate_result(
     value: object,
     *,
@@ -469,6 +566,7 @@ def _validate_result(
             "authority_identities",
             "authorizations",
             "campaign_id",
+            "controller_terminal",
             "cut_activity",
             "enabled_families",
             "evidence",
@@ -504,6 +602,9 @@ def _validate_result(
         or type(record["raw_proof_summary"]) is not dict
     ):
         raise ReplayError("organic arm result scalar semantics drifted")
+    terminal = _validate_controller_terminal(record["controller_terminal"])
+    if record["raw_solver_status"] != terminal["controller_status"]:
+        raise ReplayError("raw solver status differs from controller terminal status")
     authorizations = _exact_keys(
         record["authorizations"],
         {
@@ -630,7 +731,10 @@ def _validate_cut_free(
         or record["status"] != "PASS"
         or record["verdict"] != "INCUMBENT_FIXED_ASSIGNMENT_REPLAY_PASS"
         or record["solver_status"] != "OPTIMAL"
-        or record["incumbent_identity"] != arm_incumbent_identity
+        or any(
+            record["incumbent_identity"][field] != arm_incumbent_identity[field]
+            for field in ("sha256", "size_bytes")
+        )
         or type(record["incumbent_sha256"]) is not str
         or SHA256_RE.fullmatch(record["incumbent_sha256"]) is None
         or record["all_fixed_equalities_added"] is not True

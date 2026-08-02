@@ -66,10 +66,10 @@ def test_self_check_reports_the_closed_surviving_cohort() -> None:
             "replay_terminal",
             "gate1_owned_reference",
         ),
-        "schema_count": 48,
+        "schema_count": 49,
         "status": "PASS",
     }
-    assert len(DECLARATION.ORDERED_ACTIVE_SCHEMAS) == len(DECLARATION.ACTIVE_SCHEMA_SET) == 48
+    assert len(DECLARATION.ORDERED_ACTIVE_SCHEMAS) == len(DECLARATION.ACTIVE_SCHEMA_SET) == 49
 
 
 def test_declaration_exactly_covers_surviving_source_discriminators() -> None:
@@ -133,7 +133,7 @@ def test_exact_projection_and_cli_self_check_pass() -> None:
             "replay_terminal",
             "gate1_owned_reference",
         ],
-        "schema_count": 48,
+        "schema_count": 49,
         "status": "PASS",
     }
 

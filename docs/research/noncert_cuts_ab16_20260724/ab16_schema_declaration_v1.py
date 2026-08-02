@@ -23,13 +23,14 @@ SCHEMA_STEM_RE = re.compile(r"(?P<stem>.+)-v(?P<version>[1-9][0-9]*)\Z")
 
 
 BOOTSTRAP_RETRY_SCHEMAS = (
-    "noncert-cuts-ab16-bootstrap-gate-a-receipt-v1",
-    "noncert-cuts-ab16-bootstrap-gate-b-approval-v1",
-    "noncert-cuts-ab16-bootstrap-manager-capture-v1",
-    "noncert-cuts-ab16-bootstrap-offline-candidate-v1",
-    "noncert-cuts-ab16-campaign-bootstrap-result-v1",
+    "noncert-cuts-ab16-archive-locators-v1",
+    "noncert-cuts-ab16-bootstrap-manager-capture-v2",
+    "noncert-cuts-ab16-bootstrap-offline-candidate-v2",
+    "noncert-cuts-ab16-campaign-bootstrap-result-v2",
     "noncert-cuts-ab16-scientific-preregistration-v3",
     "noncert-cuts-ab16-campaign-scientific-input-set-v1",
+    "noncert-cuts-ab16-common-prestate-v2",
+    "noncert-cuts-ab16-arm-binding-v2",
     "noncert-cuts-ab16-scientific-materialization-v1",
     "noncert-cuts-ab16-suite-selection-v1",
     "noncert-cuts-ab16-attempt-input-set-v1",
@@ -50,7 +51,7 @@ BASELINE_SCHEMAS = (
     "noncert-cuts-ab16-rebuilt-model-metadata-v2",
     "noncert-cuts-ab16-tracked-clean-checkout-provenance-v1",
     "noncert-cuts-ab16-fixed-assignment-replay-v2",
-    "noncert-cuts-ab16-baseline-admission-v1",
+    "noncert-cuts-ab16-baseline-admission-v2",
 )
 
 ORGANIC_EXECUTION_SCHEMAS = (

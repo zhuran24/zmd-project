@@ -45,6 +45,10 @@ RESULT_ENVELOPE_SCHEMA = "noncert-cuts-ab16-attempt-result-envelope-v1"
 REPLAY_SCHEMA = "noncert-cuts-ab16-retry-campaign-replay-v1"
 SUITE_SELECTION_SCHEMA = "noncert-cuts-ab16-suite-selection-v1"
 BASELINE_PROVENANCE_SCHEMA = "noncert-cuts-ab16-tracked-clean-checkout-provenance-v1"
+COMMON_PRESTATE_SCHEMA = "noncert-cuts-ab16-common-prestate-v2"
+ARM_BINDING_SCHEMA = "noncert-cuts-ab16-arm-binding-v2"
+COMMON_PRESTATE_PURPOSE = "prospective_noncert_cuts_ab16_common_prestate"
+ARM_BINDING_PURPOSE = "prospective_noncert_cuts_ab16_arm_binding"
 BASELINE_IMPORT_MODE = "tracked_clean_pinned_checkout"
 GIT_OBSERVATION_TIMEOUT_SECONDS = 10.0
 
@@ -142,6 +146,21 @@ def _load_record(path: Path | str, label: str) -> tuple[Mapping[str, Any], dict[
         value = contract.strict_loads(raw)
     except contract.ContractError as exc:
         raise AuthorityError(f"{label} is not canonical strict JSON") from exc
+    if type(value) is not dict:
+        raise AuthorityError(f"{label} must be a JSON object")
+    return value, identity
+
+
+def _load_line_framed_record(path: Path | str, label: str) -> tuple[Mapping[str, Any], dict[str, object]]:
+    """Load the exact single-LF framing published by bootstrap/baseline tools."""
+
+    raw, identity = _snapshot(path)
+    if not raw.endswith(b"\n") or raw.endswith(b"\n\n"):
+        raise AuthorityError(f"{label} is not canonical single-LF JSON framing")
+    try:
+        value = contract.strict_loads(raw[:-1])
+    except contract.ContractError as exc:
+        raise AuthorityError(f"{label} is not canonical single-LF JSON") from exc
     if type(value) is not dict:
         raise AuthorityError(f"{label} must be a JSON object")
     return value, identity
@@ -350,18 +369,22 @@ def _runtime_parameters() -> dict[str, object]:
     }
 
 
-def _scientific_material_paths(preregistration: Mapping[str, Any]) -> dict[str, Path]:
-    """Return the non-self-referential shared scientific material set."""
-
-    paths = {
+def _baseline_material_paths(preregistration: Mapping[str, Any]) -> dict[str, Path]:
+    return {
         "baseline_admission": Path(preregistration["baseline_admission_path"]),
         "baseline_fixed_replay": Path(preregistration["baseline_fixed_replay_path"]),
         "baseline_incumbent": Path(preregistration["baseline_incumbent_path"]),
         "baseline_rebuilt_metadata": Path(preregistration["baseline_rebuilt_metadata_path"]),
         "baseline_rebuilt_model": Path(preregistration["baseline_rebuilt_model_path"]),
         "classification_contract": Path(preregistration["classification_contract_path"]),
-        "common_prestate": Path(preregistration["common_prestate_path"]),
     }
+
+
+def _scientific_material_paths(preregistration: Mapping[str, Any]) -> dict[str, Path]:
+    """Return the non-self-referential shared scientific material set."""
+
+    paths = _baseline_material_paths(preregistration)
+    paths["common_prestate"] = Path(preregistration["common_prestate_path"])
     paths.update(
         {
             f"arm_binding.{slot}": Path(preregistration["binding_paths"][slot])
@@ -391,12 +414,254 @@ def _scientific_materialization_digest(identities: Mapping[str, Mapping[str, Any
     return hashlib.sha256(canonical_json(projection)).hexdigest()
 
 
+def _validated_campaign_root(
+    preregistration: Mapping[str, Any],
+) -> tuple[Mapping[str, Any], dict[str, object]]:
+    campaign_dir = Path(preregistration["campaign_dir"])
+    root, root_identity = _load_line_framed_record(campaign_dir / "campaign-root.json", "campaign root")
+    try:
+        checked = bootstrap.authority.validate_campaign_root(root, campaign_dir=campaign_dir)
+    except Exception as exc:
+        raise AuthorityError("campaign root is invalid") from exc
+    return checked, root_identity
+
+
+def _expected_record_identity(path: Path, record: Mapping[str, Any]) -> dict[str, object]:
+    raw = canonical_json(record)
+    return {
+        "path": str(_absolute(path)),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+
+
+def _pre_manifest_expectations(preregistration_path: Path | str) -> dict[str, object]:
+    preregistration_path = _absolute(preregistration_path)
+    preregistration, preregistration_identity_with_mode = _load_preregistration(preregistration_path)
+    root, root_identity_with_mode = _validated_campaign_root(preregistration)
+    preregistration_identity = _detached_identity(preregistration_identity_with_mode)
+    root_identity = _detached_identity(root_identity_with_mode)
+    material_sources = _capture_sources(_baseline_material_paths(preregistration), "baseline material")
+    material_identities = {
+        role: _detached_identity(identity) for role, (_raw, identity) in material_sources.items()
+    }
+
+    experiment_contract_sha256 = hashlib.sha256(runner.canonical_json(runner.EXPERIMENT_CONTRACT)).hexdigest()
+    if experiment_contract_sha256 != preregistration["experiment_contract_sha256"]:
+        raise AuthorityError("experiment contract differs from the scientific preregistration")
+    common_record: dict[str, object] = {
+        "authorizations": {
+            "arm_launch_authorized": False,
+            "global_claim_authorized": False,
+            "manifest_published": False,
+            "mathematical_claim_authorized": False,
+            "production_certified_authorized": False,
+            "solver_run_authorized": False,
+        },
+        "baseline_admission_identity": material_identities["baseline_admission"],
+        "baseline_fixed_replay_identity": material_identities["baseline_fixed_replay"],
+        "baseline_incumbent_identity": material_identities["baseline_incumbent"],
+        "baseline_rebuilt_metadata_identity": material_identities["baseline_rebuilt_metadata"],
+        "baseline_rebuilt_model_identity": material_identities["baseline_rebuilt_model"],
+        "campaign_root_identity": root_identity,
+        "classification_contract_identity": material_identities["classification_contract"],
+        "experiment_contract": runner.EXPERIMENT_CONTRACT,
+        "preregistration_identity": preregistration_identity,
+        "purpose": COMMON_PRESTATE_PURPOSE,
+        "schema_version": COMMON_PRESTATE_SCHEMA,
+        "scientific_input_set_sha256": preregistration["scientific_input_set_sha256"],
+        "status": "PASS",
+        "verdict": "AB16_COMMON_PRESTATE_FROZEN",
+    }
+    common_path = _absolute(preregistration["common_prestate_path"])
+    common_identity = _expected_record_identity(common_path, common_record)
+
+    topology = _exact_mapping(
+        root["stage_topology"],
+        {"gate1_v4", "prospective_ab16"},
+        "campaign stage topology",
+    )
+    prospective = _exact_mapping(
+        topology["prospective_ab16"],
+        {
+            "arm_selection_path",
+            "arms",
+            "manifest_path",
+            "order",
+            "requires_continuation_schema",
+            "suite",
+            "terminal_classification_path",
+        },
+        "prospective AB16 topology",
+    )
+    raw_arms = prospective["arms"]
+    if type(raw_arms) is not list or len(raw_arms) != len(contract.ARM_SEQUENCE):
+        raise AuthorityError("campaign root AB16 arm topology is incomplete")
+    arms_by_slot: dict[str, Mapping[str, Any]] = {}
+    for raw_arm in raw_arms:
+        arm_record = _exact_mapping(
+            raw_arm,
+            {"arm", "attempt_dir", "configuration", "order", "slot", "unit_name"},
+            "campaign root AB16 arm",
+        )
+        slot = arm_record["slot"]
+        if type(slot) is not str or slot in arms_by_slot:
+            raise AuthorityError("campaign root AB16 slot coverage drifted")
+        arms_by_slot[slot] = arm_record
+    if set(arms_by_slot) != set(contract.ARM_SEQUENCE):
+        raise AuthorityError("campaign root AB16 slot coverage drifted")
+
+    binding_paths_raw = preregistration["binding_paths"]
+    slot_roots_raw = preregistration["slot_roots"]
+    if not isinstance(binding_paths_raw, Mapping) or not isinstance(slot_roots_raw, Mapping):
+        raise AuthorityError("scientific preregistration binding topology is malformed")
+    binding_records: dict[str, dict[str, object]] = {}
+    binding_paths: dict[str, Path] = {}
+    for slot_index, slot in enumerate(contract.ARM_SEQUENCE):
+        configuration, order, arm = _slot_parts(slot)
+        plan = arms_by_slot[slot]
+        slot_root = _absolute(slot_roots_raw[slot])
+        if (
+            plan["configuration"] != configuration
+            or plan["order"] != order
+            or plan["arm"] != arm
+            or _absolute(plan["attempt_dir"]) != slot_root
+        ):
+            raise AuthorityError(f"campaign root and preregistration differ for {slot}")
+        binding_records[slot] = {
+            "arm": arm,
+            "authorizations": {
+                "arm_launch_authorized": False,
+                "manifest_published": False,
+                "solver_run_authorized": False,
+            },
+            "common_prestate_identity": common_identity,
+            "configuration": configuration,
+            "enabled_families": (
+                [] if arm == "control" else list(runner.CONFIGURATION_FAMILIES[configuration])
+            ),
+            "order": order,
+            "preregistration_identity": preregistration_identity,
+            "purpose": ARM_BINDING_PURPOSE,
+            "schema_version": ARM_BINDING_SCHEMA,
+            "slot": slot,
+            "slot_index": slot_index,
+            "slot_root": str(slot_root),
+            "status": "PASS",
+            "unit_name": plan["unit_name"],
+            "verdict": "AB16_ARM_BINDING_FROZEN",
+        }
+        binding_paths[slot] = _absolute(binding_paths_raw[slot])
+
+    return {
+        "binding_paths": binding_paths,
+        "binding_records": binding_records,
+        "common_path": common_path,
+        "common_record": common_record,
+        "preregistration": preregistration,
+    }
+
+
+def _binding_directory(expectations: Mapping[str, Any], *, create: bool) -> Path:
+    binding_paths = expectations["binding_paths"]
+    if not isinstance(binding_paths, Mapping) or not binding_paths:
+        raise AuthorityError("arm binding path set is empty")
+    parents = {_absolute(path).parent for path in binding_paths.values()}
+    if len(parents) != 1:
+        raise AuthorityError("arm binding paths do not share one directory")
+    parent = parents.pop()
+    if parent.exists() or parent.is_symlink():
+        _existing_directory(parent, "arm binding directory")
+    elif create:
+        _existing_directory(parent.parent, "prospective AB16 directory")
+        _make_directory(parent)
+    else:
+        raise AuthorityError("arm binding directory is absent")
+    expected_names = {Path(path).name for path in binding_paths.values()}
+    observed_names = {path.name for path in parent.iterdir()}
+    unexpected = observed_names - expected_names
+    if unexpected:
+        raise AuthorityError(f"arm binding directory contains unexpected members: {sorted(unexpected)!r}")
+    return parent
+
+
+def _validate_existing_pre_manifest_records(
+    expectations: Mapping[str, Any],
+) -> tuple[dict[str, dict[str, object]], list[tuple[str, Path, Mapping[str, Any]]]]:
+    targets: list[tuple[str, Path, Mapping[str, Any]]] = [
+        ("common_prestate", expectations["common_path"], expectations["common_record"]),
+    ]
+    binding_paths = expectations["binding_paths"]
+    binding_records = expectations["binding_records"]
+    targets.extend(
+        (f"arm_binding.{slot}", binding_paths[slot], binding_records[slot])
+        for slot in contract.ARM_SEQUENCE
+    )
+    existing: dict[str, dict[str, object]] = {}
+    missing: list[tuple[str, Path, Mapping[str, Any]]] = []
+    for role, path, expected in targets:
+        if path.exists() or path.is_symlink():
+            try:
+                metadata = path.lstat()
+            except OSError as exc:
+                raise AuthorityError(f"existing {role} is unavailable") from exc
+            if path.is_symlink() or not stat.S_ISREG(metadata.st_mode) or metadata.st_nlink != 1:
+                raise AuthorityError(f"existing {role} is not one private regular file")
+            raw, identity = _snapshot(path)
+            if raw != canonical_json(expected):
+                raise AuthorityError(f"existing {role} bytes differ from the replayed record")
+            existing[role] = identity
+        else:
+            missing.append((role, path, expected))
+    return existing, missing
+
+
+def _replay_pre_manifest_inputs(preregistration_path: Path | str) -> dict[str, object]:
+    expectations = _pre_manifest_expectations(preregistration_path)
+    _existing_directory(Path(expectations["common_path"]).parent, "prospective AB16 directory")
+    _binding_directory(expectations, create=False)
+    identities, missing = _validate_existing_pre_manifest_records(expectations)
+    if missing:
+        raise AuthorityError(f"pre-manifest inputs are incomplete: {[role for role, _path, _record in missing]!r}")
+    return {
+        "arm_binding_identities": {
+            slot: identities[f"arm_binding.{slot}"] for slot in contract.ARM_SEQUENCE
+        },
+        "common_prestate_identity": identities["common_prestate"],
+    }
+
+
+def materialize_pre_manifest_inputs(preregistration_path: Path | str) -> dict[str, object]:
+    """Derive and publish the common prestate and all 16 attempt-free arm bindings."""
+
+    expectations = _pre_manifest_expectations(preregistration_path)
+    _existing_directory(Path(expectations["common_path"]).parent, "prospective AB16 directory")
+    _binding_directory(expectations, create=True)
+    existing, missing = _validate_existing_pre_manifest_records(expectations)
+    published: list[str] = []
+    for role, path, record in missing:
+        existing[role] = _write_record(path, record)
+        published.append(role)
+    replayed = _replay_pre_manifest_inputs(preregistration_path)
+    return {
+        **replayed,
+        "published_roles": published,
+        "replayed_roles": sorted(set(existing) - set(published)),
+        "status": "PRE_MANIFEST_INPUTS_READY",
+    }
+
+
 def build_manifest(preregistration_path: Path | str) -> dict[str, object]:
     """Publish the immutable scientific manifest without execution topology."""
 
     preregistration_path = _absolute(preregistration_path)
     preregistration, preregistration_identity = _load_preregistration(preregistration_path)
+    replayed_before = _replay_pre_manifest_inputs(preregistration_path)
     materialization_sha256 = _materialization_digest(preregistration)
+    replayed_after = _replay_pre_manifest_inputs(preregistration_path)
+    materialization_after = _materialization_digest(preregistration)
+    if replayed_after != replayed_before or materialization_after != materialization_sha256:
+        raise AuthorityError("pre-manifest inputs changed during scientific manifest replay")
     scientific_input_sha256 = preregistration["scientific_input_set_sha256"]
     if type(scientific_input_sha256) is not str or SHA256_RE.fullmatch(scientific_input_sha256) is None:
         raise AuthorityError("scientific input-set digest is malformed")
@@ -506,7 +771,7 @@ def _load_suite_selection(
 
 
 def _load_preregistration(path: Path | str) -> tuple[Mapping[str, Any], dict[str, object]]:
-    record, identity = _load_record(path, "scientific preregistration")
+    record, identity = _load_line_framed_record(path, "scientific preregistration")
     try:
         bootstrap.validate_path_preregistration(record, campaign_dir=record.get("campaign_dir", ""))
     except (bootstrap.BootstrapError, TypeError, ValueError) as exc:
@@ -514,7 +779,7 @@ def _load_preregistration(path: Path | str) -> tuple[Mapping[str, Any], dict[str
     if record["arm_sequence"] != list(contract.ARM_SEQUENCE):
         raise AuthorityError("scientific arm order differs from the classifier")
     campaign_dir = Path(record["campaign_dir"])
-    root, _root_identity = _load_record(campaign_dir / "campaign-root.json", "campaign root")
+    root, _root_identity = _load_line_framed_record(campaign_dir / "campaign-root.json", "campaign root")
     try:
         root = bootstrap.authority.validate_campaign_root(root, campaign_dir=campaign_dir)
     except Exception as exc:
@@ -564,13 +829,13 @@ def _campaign_execution_context(
     """Join retained Gate-1 ancestry to retry-local execution bytes."""
 
     campaign_dir = Path(preregistration["campaign_dir"])
-    root, root_identity = _load_record(campaign_dir / "campaign-root.json", "campaign root")
+    root, root_identity = _load_line_framed_record(campaign_dir / "campaign-root.json", "campaign root")
     try:
         root = bootstrap.authority.validate_campaign_root(root, campaign_dir=campaign_dir)
     except Exception as exc:
         raise AuthorityError("campaign root is invalid") from exc
     continuation_path = Path(root["stage_topology"]["gate1_v4"]["continuation_path"])
-    continuation, continuation_identity = _load_record(continuation_path, "Gate-1 continuation")
+    continuation, continuation_identity = _load_line_framed_record(continuation_path, "Gate-1 continuation")
     try:
         bootstrap.authority.validate_continuation_authorization(continuation, root=root)
     except Exception as exc:
@@ -791,7 +1056,7 @@ def prepare_baseline_provenance(
     preregistration_path = _absolute(preregistration_path)
     preregistration, _preregistration_identity = _load_preregistration(preregistration_path)
     campaign_dir = Path(preregistration["campaign_dir"])
-    root, root_identity = _load_record(campaign_dir / "campaign-root.json", "campaign root")
+    root, root_identity = _load_line_framed_record(campaign_dir / "campaign-root.json", "campaign root")
     try:
         root = bootstrap.authority.validate_campaign_root(root, campaign_dir=campaign_dir)
     except Exception as exc:
@@ -1871,6 +2136,38 @@ def _manager_capture(
     return checked
 
 
+def _admitted_baseline_incumbent_digest(inputs: Mapping[str, Any]) -> str:
+    strict_inputs = inputs["strict_input_identities"]
+    source_inputs = inputs["source_strict_input_identities"]
+    admission_identity = strict_inputs["baseline_admission"]
+    admission, observed_identity = _load_line_framed_record(
+        admission_identity["path"],
+        "baseline admission",
+    )
+    if observed_identity != admission_identity:
+        raise AuthorityError("baseline admission attempt snapshot identity drifted")
+    expected = admission.get("expected_baseline")
+    digest = expected.get("incumbent_sha256") if isinstance(expected, Mapping) else None
+    try:
+        admitted_digest = runner._validate_baseline_admission(  # noqa: SLF001 - shared producer/runner join
+            admission,
+            baseline_incumbent_identity=_detached_identity(strict_inputs["baseline_incumbent"]),
+            baseline_incumbent_source_identity=source_inputs["baseline_incumbent"],
+            selection={"baseline_incumbent_sha256": digest},
+        )
+    except Exception as exc:
+        raise AuthorityError("baseline admission cannot authorize the selection digest") from exc
+    incumbent, incumbent_identity = _load_line_framed_record(
+        strict_inputs["baseline_incumbent"]["path"],
+        "baseline incumbent",
+    )
+    if incumbent_identity != strict_inputs["baseline_incumbent"]:
+        raise AuthorityError("baseline incumbent attempt snapshot identity drifted")
+    if hashlib.sha256(canonical_json(incumbent)).hexdigest() != admitted_digest:
+        raise AuthorityError("baseline incumbent semantic digest differs from its admission")
+    return admitted_digest
+
+
 def produce_selection(
     preregistration_path: Path | str,
     *,
@@ -1943,6 +2240,7 @@ def produce_selection(
     for role in ("baseline_admission", "baseline_incumbent", "common_prestate", binding_role):
         if role not in strict_inputs:
             raise AuthorityError(f"attempt input set lacks {role}")
+    baseline_incumbent_sha256 = _admitted_baseline_incumbent_digest(inputs)
     pre_run_tools = {role: execution["tool_identities"][role] for role in lifecycle.TOOL_ROLES}
     output_names = {
         "attempt_result": "result.json",
@@ -1966,7 +2264,7 @@ def produce_selection(
         "attempt_ordinal": attempt_ordinal,
         "authority_chain": execution["authority_chain"],
         "baseline_admission_identity": _detached_identity(strict_inputs["baseline_admission"]),
-        "baseline_incumbent_sha256": strict_inputs["baseline_incumbent"]["sha256"],
+        "baseline_incumbent_sha256": baseline_incumbent_sha256,
         "campaign_id": execution["campaign_id"],
         "campaign_root_identity": execution["campaign_root_identity"],
         "common_prestate_identity": _detached_identity(strict_inputs["common_prestate"]),
@@ -2411,6 +2709,8 @@ def _role_paths(values: Sequence[str]) -> dict[str, Path]:
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
+    materialize_parser = subparsers.add_parser("materialize-pre-manifest")
+    materialize_parser.add_argument("--preregistration", type=Path, required=True)
     manifest_parser = subparsers.add_parser("build-manifest")
     manifest_parser.add_argument("--preregistration", type=Path, required=True)
     baseline_parser = subparsers.add_parser("prepare-baseline-provenance")
@@ -2455,7 +2755,9 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
-    if args.command == "build-manifest":
+    if args.command == "materialize-pre-manifest":
+        result = materialize_pre_manifest_inputs(args.preregistration)
+    elif args.command == "build-manifest":
         result = build_manifest(args.preregistration)
     elif args.command == "prepare-baseline-provenance":
         result = prepare_baseline_provenance(

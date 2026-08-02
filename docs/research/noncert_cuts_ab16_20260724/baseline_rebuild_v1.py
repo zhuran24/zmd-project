@@ -2,7 +2,7 @@
 """Rebuild the historical AB16 baseline from package-pinned strict inputs.
 
 This is a formal-stage payload.  Importing it is side-effect free; the CLI is
-only run after the separately authorized Gate B selection.  Its output is
+only run after the self-contained campaign bootstrap.  Its output is
 evidence for the independent baseline admission tool, never an admission by
 itself.  Repository code is imported with ordinary Python semantics only from
 the tracked-clean pinned checkout named by the canonical campaign-provenance record.
@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -27,10 +28,6 @@ import baseline_admission_v1 as baseline_contract
 from ortools.sat import cp_model_pb2
 
 
-EXPECTED_MODEL_PROTO_SHA256 = "3a9be08dcca722fc4bf7dfc9bcf7be4a1213af14ded9ec7b769909a029904d32"
-EXPECTED_INCUMBENT_SHA256 = "13f88404d7f5e4fde86929f82997a2b9850fa1cc4791d710c0363ed3e072f223"
-EXPECTED_VARIABLE_COUNT = 37_760
-EXPECTED_CONSTRAINT_COUNT = 95_136
 SCHEMA = "noncert-cuts-ab16-baseline-rebuild-v1"
 METADATA_SCHEMA = baseline_contract.METADATA_SCHEMA
 MODEL_BACKEND = "ortools.sat.cp_model_pb2.CpModelProto"
@@ -45,6 +42,26 @@ STRICT_INPUT_ROLES = (
 
 class BaselineRebuildError(RuntimeError):
     """The deterministic baseline could not be rebuilt exactly."""
+
+
+@dataclass(frozen=True)
+class BaselineComputation:
+    """Solver-produced values consumed by the one canonical rebuild writer."""
+
+    model: cp_model_pb2.CpModelProto
+    incumbent: Mapping[str, Any]
+    solution_values: tuple[int, ...]
+    runner_status: str
+    proof_summary: Mapping[str, Any]
+    wall_seconds: float
+
+
+@dataclass(frozen=True)
+class _RebuildContext:
+    output: Path
+    campaign_provenance_path: Path
+    provenance: dict[str, object]
+    input_identities: dict[str, dict[str, object]]
 
 
 def _canonical(value: object) -> bytes:
@@ -191,17 +208,25 @@ def _write_exclusive(path: Path, raw: bytes) -> dict[str, object]:
     }
 
 
-def _prepare_output(path: Path) -> Path:
+def _prepare_output(path: Path, campaign_provenance: Path) -> Path:
     absolute = _reject_symlink_chain(
         path,
-        leaf_may_not_exist=True,
+        leaf_may_not_exist=False,
     )
-    if os.path.lexists(absolute):
-        raise BaselineRebuildError(f"output already exists: {absolute}")
-    parent = absolute.parent
-    if not parent.is_dir():
-        raise BaselineRebuildError("output parent must be a non-symlink directory")
-    os.mkdir(absolute, 0o700)
+    provenance = _reject_symlink_chain(
+        campaign_provenance,
+        leaf_may_not_exist=False,
+    )
+    expected_provenance = absolute / "campaign-provenance.json"
+    if provenance != expected_provenance:
+        raise BaselineRebuildError("campaign provenance is not the canonical output child")
+    metadata = os.lstat(absolute)
+    if not stat.S_ISDIR(metadata.st_mode):
+        raise BaselineRebuildError("output must be the precreated non-symlink baseline directory")
+    members = list(absolute.iterdir())
+    if len(members) != 1 or members[0] != expected_provenance:
+        raise BaselineRebuildError("output must initially contain only campaign-provenance.json")
+    _snapshot_regular(expected_provenance, limit=64 << 20)
     return absolute
 
 
@@ -266,13 +291,269 @@ def _validate_fixed_parameters(args: argparse.Namespace) -> None:
             raise BaselineRebuildError(f"strict input path is not absolute for {role}")
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    args = _parser().parse_args(argv)
-    _validate_fixed_parameters(args)
-    provenance_before = _campaign_provenance(args.campaign_provenance)
+def _validate_created_at(value: str) -> None:
+    if type(value) is not str or not value.endswith("Z"):
+        raise BaselineRebuildError("created_at_utc must be an explicit UTC timestamp")
+    try:
+        parsed = datetime.fromisoformat(value[:-1] + "+00:00")
+    except ValueError as exc:
+        raise BaselineRebuildError("created_at_utc must be an explicit UTC timestamp") from exc
+    if parsed.utcoffset() != timezone.utc.utcoffset(parsed):
+        raise BaselineRebuildError("created_at_utc must be an explicit UTC timestamp")
+
+
+def _prepare_rebuild_context(
+    *,
+    output_dir: Path,
+    campaign_provenance_path: Path,
+    strict_inputs: Mapping[str, Path],
+) -> _RebuildContext:
+    if set(strict_inputs) != set(STRICT_INPUT_ROLES):
+        raise BaselineRebuildError("strict input role set drifted")
+    provenance_before = _campaign_provenance(campaign_provenance_path)
     repository_root = Path(str(provenance_before["repository_root"]))
     if Path.cwd() != repository_root:
         raise BaselineRebuildError("working directory is not the campaign repository root")
+
+    supplied_inputs = {
+        role: Path(os.path.abspath(strict_inputs[role]))
+        for role in STRICT_INPUT_ROLES
+    }
+    expected_inputs = {
+        "candidate_placements": repository_root / "data" / "preprocessed" / "candidate_placements.json",
+        "canonical_rules": repository_root / "rules" / "canonical_rules.json",
+        "mandatory_instances": repository_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+    }
+    if supplied_inputs != expected_inputs:
+        raise BaselineRebuildError("strict input paths are not the campaign checkout members")
+
+    input_identities: dict[str, dict[str, object]] = {}
+    for role, path in supplied_inputs.items():
+        _, identity = _snapshot_regular(path, limit=1 << 30)
+        input_identities[role] = identity
+    if provenance_before.get("input_identities") != input_identities:
+        raise BaselineRebuildError("strict input identities differ from campaign provenance")
+
+    output = _prepare_output(output_dir, campaign_provenance_path)
+    provenance_absolute = output / "campaign-provenance.json"
+    if _campaign_provenance(provenance_absolute) != provenance_before:
+        raise BaselineRebuildError("campaign provenance drifted before baseline rebuild")
+    return _RebuildContext(
+        output=output,
+        campaign_provenance_path=provenance_absolute,
+        provenance=provenance_before,
+        input_identities=input_identities,
+    )
+
+
+def _validated_computation(
+    computation: BaselineComputation,
+    expectation: baseline_contract.BaselineExpectation,
+) -> tuple[bytes, dict[str, object], dict[str, object]]:
+    if not isinstance(computation, BaselineComputation):
+        raise BaselineRebuildError("baseline computation has the wrong type")
+    if not isinstance(computation.model, cp_model_pb2.CpModelProto):
+        raise BaselineRebuildError("baseline computation model is not a CpModelProto")
+    model_raw = computation.model.SerializeToString(deterministic=True)
+    parsed = cp_model_pb2.CpModelProto()
+    consumed = parsed.ParseFromString(model_raw)
+    if consumed != len(model_raw) or parsed.SerializeToString(deterministic=True) != model_raw:
+        raise BaselineRebuildError("baseline computation model is not canonical")
+    without_unknown = cp_model_pb2.CpModelProto()
+    without_unknown.CopyFrom(parsed)
+    without_unknown.DiscardUnknownFields()
+    if without_unknown.SerializeToString(deterministic=True) != model_raw:
+        raise BaselineRebuildError("baseline computation model has unknown protobuf fields")
+
+    if (
+        type(computation.solution_values) is not tuple
+        or any(type(value) is not int for value in computation.solution_values)
+        or len(computation.solution_values) != len(parsed.variables)
+    ):
+        raise BaselineRebuildError("solver response length or values do not match model variables")
+    if not isinstance(computation.incumbent, Mapping) or "ghost_pick" not in computation.incumbent:
+        raise BaselineRebuildError("baseline computation did not retain a complete incumbent")
+    incumbent_json = _jsonable(computation.incumbent)
+    if not isinstance(incumbent_json, dict):
+        raise BaselineRebuildError("baseline computation incumbent is not a JSON object")
+    if type(computation.runner_status) is not str or not computation.runner_status:
+        raise BaselineRebuildError("baseline computation runner status is invalid")
+    if not isinstance(computation.proof_summary, Mapping):
+        raise BaselineRebuildError("baseline computation proof summary is invalid")
+    if (
+        type(computation.wall_seconds) is not float
+        or computation.wall_seconds < 0.0
+        or computation.wall_seconds != computation.wall_seconds
+        or computation.wall_seconds in (float("inf"), float("-inf"))
+    ):
+        raise BaselineRebuildError("baseline computation wall time is invalid")
+
+    observed = {
+        "model_proto_sha256": baseline_contract.historical_model_text_sha256(parsed),
+        "model_variable_count": len(parsed.variables),
+        "model_constraint_count": len(parsed.constraints),
+        "incumbent_sha256": _digest(incumbent_json),
+        "incumbent_assignment_count": len(incumbent_json),
+    }
+    expected = {
+        "model_proto_sha256": expectation.historical_model_text_sha256,
+        "model_variable_count": expectation.model_variable_count,
+        "model_constraint_count": expectation.model_constraint_count,
+        "incumbent_sha256": expectation.incumbent_sha256,
+        "incumbent_assignment_count": expectation.incumbent_assignment_count,
+    }
+    if observed != expected:
+        raise BaselineRebuildError(f"historical baseline did not reproduce: {observed!r}")
+    return model_raw, incumbent_json, observed
+
+
+def _publish_rebuild(
+    *,
+    context: _RebuildContext,
+    computation: BaselineComputation,
+    expectation: baseline_contract.BaselineExpectation,
+    run_nonce: str,
+    parameters: Mapping[str, object],
+    created_at_utc: str,
+) -> dict[str, object]:
+    if type(run_nonce) is not str or not run_nonce or len(run_nonce) > 128:
+        raise BaselineRebuildError("run nonce is invalid")
+    if not isinstance(parameters, Mapping):
+        raise BaselineRebuildError("baseline parameters are invalid")
+    _validate_created_at(created_at_utc)
+    model_raw, incumbent_json, observed = _validated_computation(computation, expectation)
+
+    targets = {
+        "model": context.output / "cut-free-model.bin",
+        "incumbent": context.output / "incumbent.json",
+        "metadata": context.output / "rebuilt-model-metadata.json",
+        "result": context.output / "rebuild-result.json",
+    }
+    if any(os.path.lexists(path) for path in targets.values()):
+        raise BaselineRebuildError("canonical rebuild output already exists")
+    if _campaign_provenance(context.campaign_provenance_path) != context.provenance:
+        raise BaselineRebuildError("campaign provenance drifted during baseline rebuild")
+
+    model_identity = _write_exclusive(targets["model"], model_raw)
+    incumbent_identity = _write_exclusive(
+        targets["incumbent"],
+        _authority_json(incumbent_json),
+    )
+    _, builder_identity = _snapshot_regular(Path(__file__), limit=64 << 20)
+    metadata = {
+        "schema_version": METADATA_SCHEMA,
+        "status": "PASS",
+        "purpose": REBUILD_PURPOSE,
+        "created_at_utc": created_at_utc,
+        "campaign_provenance": context.provenance,
+        "model_backend": MODEL_BACKEND,
+        "model_binary_format": MODEL_BINARY_FORMAT,
+        "canonical_binary": True,
+        "model_identity": model_identity,
+        "historical_model_text_sha256": observed["model_proto_sha256"],
+        "model_variable_count": observed["model_variable_count"],
+        "model_constraint_count": observed["model_constraint_count"],
+        "builder_identity": builder_identity,
+        "input_identities": context.input_identities,
+        "legacy_control_used_as_build_input": False,
+        "global_claim_authorized": False,
+        "errors": [],
+    }
+    metadata_identity = _write_exclusive(
+        targets["metadata"],
+        _authority_json(metadata),
+    )
+    record = {
+        "schema_version": SCHEMA,
+        "created_at_utc": created_at_utc,
+        "campaign_provenance": context.provenance,
+        "run_nonce": run_nonce,
+        "parameters": _jsonable(parameters),
+        "runner_status": computation.runner_status,
+        "proof_summary": _jsonable(computation.proof_summary),
+        "wall_seconds": round(computation.wall_seconds, 6),
+        "observed": observed,
+        "cut_free_model_identity": model_identity,
+        "incumbent_identity": incumbent_identity,
+        "rebuilt_metadata_identity": metadata_identity,
+        "claim_boundary": {
+            "authorizing": False,
+            "establishes": ["deterministic baseline bytes reproduced"],
+            "does_not_establish": [
+                "baseline admission",
+                "organic cut credibility",
+                "SAT or UNSAT",
+                "witness or bound",
+            ],
+        },
+    }
+    _write_exclusive(targets["result"], _authority_json(record))
+    if _campaign_provenance(context.campaign_provenance_path) != context.provenance:
+        raise BaselineRebuildError("campaign provenance drifted after baseline rebuild")
+    return record
+
+
+def _rebuild_paths(
+    *,
+    output_dir: Path,
+    campaign_provenance_path: Path,
+    candidate_placements: Path,
+    canonical_rules: Path,
+    mandatory_instances: Path,
+    computation: BaselineComputation,
+    expectation: baseline_contract.BaselineExpectation,
+    run_nonce: str,
+    parameters: Mapping[str, object],
+    created_at_utc: str,
+) -> dict[str, object]:
+    """Exercise the production provenance checks and canonical writer with supplied solver output."""
+
+    context = _prepare_rebuild_context(
+        output_dir=output_dir,
+        campaign_provenance_path=campaign_provenance_path,
+        strict_inputs={
+            "candidate_placements": candidate_placements,
+            "canonical_rules": canonical_rules,
+            "mandatory_instances": mandatory_instances,
+        },
+    )
+    return _publish_rebuild(
+        context=context,
+        computation=computation,
+        expectation=expectation,
+        run_nonce=run_nonce,
+        parameters=parameters,
+        created_at_utc=created_at_utc,
+    )
+
+
+def _production_parameters(args: argparse.Namespace) -> dict[str, object]:
+    return {
+        "ghost_rect": [args.ghost_w, args.ghost_h],
+        "master_seconds": args.master_seconds,
+        "binding_seconds": args.binding_seconds,
+        "routing_seconds": args.routing_seconds,
+        "max_iterations": args.max_iterations,
+        "binding_alt_cap": args.binding_alt_cap,
+        "workers": args.workers,
+        "seed": args.seed,
+        "enabled_cut_families": [],
+        "framework_attach_enabled": False,
+    }
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = _parser().parse_args(argv)
+    _validate_fixed_parameters(args)
+    context = _prepare_rebuild_context(
+        output_dir=args.output_dir,
+        campaign_provenance_path=args.campaign_provenance,
+        strict_inputs={
+            role: Path(getattr(args, role))
+            for role in STRICT_INPUT_ROLES
+        },
+    )
+    repository_root = Path(str(context.provenance["repository_root"]))
     if any(name == "src" or name.startswith("src.") for name in sys.modules):
         raise BaselineRebuildError("repository modules were imported before checkout activation")
     for entry in sys.path:
@@ -283,7 +564,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             and (candidate / "src").is_dir()
         ):
             raise BaselineRebuildError("ambient repository import path is forbidden")
-    output = _prepare_output(args.output_dir)
+    output = context.output
     tmp_dir = output / "tmp"
     os.mkdir(tmp_dir, 0o700)
 
@@ -297,19 +578,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     os.environ["EXACT_MASTER_CP_MODEL_PROBING_LEVEL"] = "3"
     os.environ["EXACT_MASTER_SYMMETRY_LEVEL"] = "3"
     os.environ["EXACT_B1_BINDING_ALT_CAP"] = str(args.binding_alt_cap)
-
-    strict_inputs = {role: Path(os.path.abspath(getattr(args, role))) for role in STRICT_INPUT_ROLES}
-    expected_inputs = {
-        "candidate_placements": repository_root / "data" / "preprocessed" / "candidate_placements.json",
-        "canonical_rules": repository_root / "rules" / "canonical_rules.json",
-        "mandatory_instances": repository_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
-    }
-    if strict_inputs != expected_inputs:
-        raise BaselineRebuildError("strict input paths are not the campaign checkout members")
-    input_identities: dict[str, dict[str, object]] = {}
-    for role, path in strict_inputs.items():
-        _, identity = _snapshot_regular(path, limit=1 << 30)
-        input_identities[role] = identity
 
     sys.path.insert(0, str(repository_root))
     from src.models.cut_manager import CutManager
@@ -354,106 +622,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not incumbent or "ghost_pick" not in incumbent or master._solver is None:
         raise BaselineRebuildError("baseline run did not retain a complete incumbent")
 
-    solution_values = [int(value) for value in master._solver.ResponseProto().solution]
-    if len(solution_values) != len(master.model.Proto().variables):
-        raise BaselineRebuildError("solver response length does not match model variables")
-
-    incumbent_json = _jsonable(incumbent)
-    model_text = str(master.model.Proto()).encode("utf-8")
-    observed = {
-        "model_proto_sha256": hashlib.sha256(model_text).hexdigest(),
-        "model_variable_count": len(master.model.Proto().variables),
-        "model_constraint_count": len(master.model.Proto().constraints),
-        "incumbent_sha256": _digest(incumbent_json),
-    }
-    expected = {
-        "model_proto_sha256": EXPECTED_MODEL_PROTO_SHA256,
-        "model_variable_count": EXPECTED_VARIABLE_COUNT,
-        "model_constraint_count": EXPECTED_CONSTRAINT_COUNT,
-        "incumbent_sha256": EXPECTED_INCUMBENT_SHA256,
-    }
-    if observed != expected:
-        raise BaselineRebuildError(f"historical baseline did not reproduce: {observed!r}")
-    if _campaign_provenance(args.campaign_provenance) != provenance_before:
-        raise BaselineRebuildError("campaign provenance drifted during baseline rebuild")
-
-    model_path = output / "cut-free-model.bin"
-    if os.path.lexists(model_path) or not master.model.export_to_file(str(model_path)):
-        raise BaselineRebuildError("official binary model export failed")
-    model_raw, model_identity = _snapshot_regular(model_path, limit=1 << 30)
-    parsed = cp_model_pb2.CpModelProto()
-    consumed = parsed.ParseFromString(model_raw)
-    if consumed != len(model_raw) or parsed.SerializeToString(deterministic=True) != model_raw:
-        raise BaselineRebuildError("binary model export is not canonical")
-    model_identity = {
-        "path": str(model_path.resolve(strict=True)),
-        "size_bytes": len(model_raw),
-        "sha256": hashlib.sha256(model_raw).hexdigest(),
-    }
-    incumbent_identity = _write_exclusive(
-        output / "incumbent.json",
-        _authority_json(incumbent_json),
+    model = cp_model_pb2.CpModelProto()
+    model.CopyFrom(master.model.Proto())
+    computation = BaselineComputation(
+        model=model,
+        incumbent=incumbent,
+        solution_values=tuple(int(value) for value in master._solver.ResponseProto().solution),
+        runner_status=str(status),
+        proof_summary=controller.last_proof_summary or {},
+        wall_seconds=time.perf_counter() - started,
     )
-    _, builder_identity = _snapshot_regular(Path(__file__), limit=64 << 20)
-    metadata = {
-        "schema_version": METADATA_SCHEMA,
-        "status": "PASS",
-        "purpose": REBUILD_PURPOSE,
-        "created_at_utc": _utc_now(),
-        "campaign_provenance": provenance_before,
-        "model_backend": MODEL_BACKEND,
-        "model_binary_format": MODEL_BINARY_FORMAT,
-        "canonical_binary": True,
-        "model_identity": model_identity,
-        "historical_model_text_sha256": observed["model_proto_sha256"],
-        "model_variable_count": observed["model_variable_count"],
-        "model_constraint_count": observed["model_constraint_count"],
-        "builder_identity": builder_identity,
-        "input_identities": input_identities,
-        "legacy_control_used_as_build_input": False,
-        "global_claim_authorized": False,
-        "errors": [],
-    }
-    metadata_identity = _write_exclusive(
-        output / "rebuilt-model-metadata.json",
-        _authority_json(metadata),
+    _publish_rebuild(
+        context=context,
+        computation=computation,
+        expectation=baseline_contract.PRODUCTION_EXPECTATION,
+        run_nonce=args.run_nonce,
+        parameters=_production_parameters(args),
+        created_at_utc=_utc_now(),
     )
-    record = {
-        "schema_version": SCHEMA,
-        "created_at_utc": _utc_now(),
-        "campaign_provenance": provenance_before,
-        "run_nonce": args.run_nonce,
-        "parameters": {
-            "ghost_rect": [args.ghost_w, args.ghost_h],
-            "master_seconds": args.master_seconds,
-            "binding_seconds": args.binding_seconds,
-            "routing_seconds": args.routing_seconds,
-            "max_iterations": args.max_iterations,
-            "binding_alt_cap": args.binding_alt_cap,
-            "workers": args.workers,
-            "seed": args.seed,
-            "enabled_cut_families": [],
-            "framework_attach_enabled": False,
-        },
-        "runner_status": str(status),
-        "proof_summary": _jsonable(controller.last_proof_summary or {}),
-        "wall_seconds": round(time.perf_counter() - started, 6),
-        "observed": observed,
-        "cut_free_model_identity": model_identity,
-        "incumbent_identity": incumbent_identity,
-        "rebuilt_metadata_identity": metadata_identity,
-        "claim_boundary": {
-            "authorizing": False,
-            "establishes": ["deterministic baseline bytes reproduced"],
-            "does_not_establish": [
-                "baseline admission",
-                "organic cut credibility",
-                "SAT or UNSAT",
-                "witness or bound",
-            ],
-        },
-    }
-    _write_exclusive(output / "rebuild-result.json", _authority_json(record))
     print(json.dumps({"status": "REBUILT_PENDING_INDEPENDENT_REPLAY"}))
     return 0
 

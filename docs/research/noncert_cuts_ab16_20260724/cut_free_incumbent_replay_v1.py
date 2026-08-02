@@ -36,8 +36,6 @@ SCHEMA = baseline_contract.REPLAY_SCHEMA
 METADATA_SCHEMA = baseline_contract.METADATA_SCHEMA
 PURPOSE = "strict_ab16_incumbent_fixed_assignment_replay"
 VERDICT = "INCUMBENT_FIXED_ASSIGNMENT_REPLAY_PASS"
-EXPECTED_INCUMBENT_SHA256 = "13f88404d7f5e4fde86929f82997a2b9850fa1cc4791d710c0363ed3e072f223"
-EXPECTED_ASSIGNMENT_COUNT = 293
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 METADATA_KEYS = {
     "builder_identity",
@@ -364,17 +362,33 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    args = _parser().parse_args(argv)
-    if not args.campaign_provenance.is_absolute():
+def _replay_paths(
+    *,
+    campaign_provenance_path: Path | str,
+    model_path: Path | str,
+    metadata_path: Path | str,
+    incumbent_path: Path | str,
+    output_path: Path | str,
+    expectation: baseline_contract.BaselineExpectation,
+    created_at_utc: str,
+    max_time_seconds: float,
+) -> tuple[dict[str, object], dict[str, object]]:
+    """Replay and publish one receipt; tests may supply a small expectation."""
+
+    campaign_provenance_path = Path(campaign_provenance_path)
+    model_path = Path(model_path)
+    metadata_path = Path(metadata_path)
+    incumbent_path = Path(incumbent_path)
+    output_path = Path(output_path)
+    if not campaign_provenance_path.is_absolute():
         raise ReplayError("campaign provenance path is not absolute")
-    provenance_before = _campaign_provenance(args.campaign_provenance)
+    provenance_before = _campaign_provenance(campaign_provenance_path)
     repository_root = Path(str(provenance_before["repository_root"]))
     if Path.cwd() != repository_root:
         raise ReplayError("working directory is not the campaign repository root")
-    model_raw, model_identity = _snapshot(args.model, limit=1 << 30)
-    metadata_raw, metadata_identity = _snapshot(args.metadata, limit=64 << 20)
-    incumbent_raw, incumbent_identity = _snapshot(args.incumbent, limit=64 << 20)
+    model_raw, model_identity = _snapshot(model_path, limit=1 << 30)
+    metadata_raw, metadata_identity = _snapshot(metadata_path, limit=64 << 20)
+    incumbent_raw, incumbent_identity = _snapshot(incumbent_path, limit=64 << 20)
     metadata = _exact_mapping(
         _strict_json(metadata_raw, "metadata"),
         METADATA_KEYS,
@@ -388,13 +402,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         or metadata["global_claim_authorized"] is not False
         or metadata["legacy_control_used_as_build_input"] is not False
         or metadata["errors"] != []
+        or metadata["historical_model_text_sha256"] != expectation.historical_model_text_sha256
+        or metadata["model_variable_count"] != expectation.model_variable_count
+        or type(metadata["model_variable_count"]) is not int
+        or metadata["model_constraint_count"] != expectation.model_constraint_count
+        or type(metadata["model_constraint_count"]) is not int
     ):
         raise ReplayError("metadata semantics drifted")
     if _identity(metadata.get("model_identity"), "metadata model") != model_identity:
         raise ReplayError("metadata does not bind the supplied model")
     if type(incumbent) is not dict:
         raise ReplayError("incumbent must be an exact object")
-    if len(incumbent) != EXPECTED_ASSIGNMENT_COUNT or _semantic_digest(incumbent) != EXPECTED_INCUMBENT_SHA256:
+    if (
+        len(incumbent) != expectation.incumbent_assignment_count
+        or _semantic_digest(incumbent) != expectation.incumbent_sha256
+    ):
         raise ReplayError("incumbent digest or assignment count drifted")
     input_identities = metadata.get("input_identities")
     if type(input_identities) is not dict or set(input_identities) != {
@@ -442,9 +464,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         incumbent=incumbent,
         mandatory_instances=mandatory,
         candidate_placements=candidate,
-        max_time_seconds=args.max_time_seconds,
+        max_time_seconds=max_time_seconds,
     )
-    if _campaign_provenance(args.campaign_provenance) != provenance_before:
+    if (
+        result["variable_count"] != expectation.model_variable_count
+        or result["constraint_count_before_fixing"] != expectation.model_constraint_count
+    ):
+        raise ReplayError("model variable or constraint count drifted")
+    if _campaign_provenance(campaign_provenance_path) != provenance_before:
         raise ReplayError("campaign provenance drifted during fixed-assignment replay")
     _, tool_identity = _snapshot(Path(__file__), limit=64 << 20)
     receipt = {
@@ -452,12 +479,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         "status": "PASS",
         "verdict": VERDICT,
         "purpose": PURPOSE,
-        "created_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "created_at_utc": created_at_utc,
         "campaign_provenance": provenance_before,
         "model_identity": model_identity,
         "metadata_identity": metadata_identity,
         "incumbent_identity": incumbent_identity,
-        "incumbent_sha256": EXPECTED_INCUMBENT_SHA256,
+        "incumbent_sha256": expectation.incumbent_sha256,
         "replay_tool_identity": tool_identity,
         "solver_status": result["solver_status"],
         "model_variable_count": result["variable_count"],
@@ -473,7 +500,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         "replay_errors": [],
         "global_claim_authorized": False,
     }
-    identity = _write_exclusive(args.output, _authority_json(receipt))
+    identity = _write_exclusive(output_path, _authority_json(receipt))
+    return receipt, identity
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = _parser().parse_args(argv)
+    _, identity = _replay_paths(
+        campaign_provenance_path=args.campaign_provenance,
+        model_path=args.model,
+        metadata_path=args.metadata,
+        incumbent_path=args.incumbent,
+        output_path=args.output,
+        expectation=baseline_contract.PRODUCTION_EXPECTATION,
+        created_at_utc=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        max_time_seconds=args.max_time_seconds,
+    )
     print(json.dumps({"status": "PASS", "receipt": identity}, sort_keys=True))
     return 0
 

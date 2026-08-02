@@ -1315,6 +1315,46 @@ def test_same_fd_reader_rejects_mid_read_metadata_change(
         LIFECYCLE.snapshot_regular(source)
 
 
+def test_payload_result_parser_is_runner_framed_without_relaxing_authority_json(
+    tmp_path: Path,
+) -> None:
+    value = {
+        "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+        "slot": "region-capacity-ab-control",
+    }
+    compact = LIFECYCLE.canonical_json_bytes(value)
+    authority_path = tmp_path / "authority.json"
+    runner_path = tmp_path / "result.json"
+    LIFECYCLE.write_exclusive(authority_path, compact)
+    LIFECYCLE.write_exclusive(runner_path, compact + b"\n")
+
+    assert LIFECYCLE._load_json_snapshot(authority_path, "authority")[0] == value  # noqa: SLF001
+    assert LIFECYCLE._load_runner_json_snapshot(runner_path, "payload result")[0] == value  # noqa: SLF001
+    with pytest.raises(LIFECYCLE.LifecycleError, match="exactly one trailing LF"):
+        LIFECYCLE._load_runner_json_snapshot(authority_path, "payload result")  # noqa: SLF001
+    with pytest.raises(LIFECYCLE.LifecycleError, match="canonical JSON"):
+        LIFECYCLE._load_json_snapshot(runner_path, "authority")  # noqa: SLF001
+
+
+@pytest.mark.parametrize(
+    "raw",
+    (
+        b'{"schema_version":"noncert-cuts-ab16-organic-arm-result-v1","slot":"x"}\n\n',
+        b'{"schema_version":"noncert-cuts-ab16-organic-arm-result-v1","slot":"x"}\r\n',
+        b'{"schema_version":"noncert-cuts-ab16-organic-arm-result-v1", "slot":"x"}\n',
+        b'{"schema_version":"noncert-cuts-ab16-organic-arm-result-v1","slot":"x","slot":"y"}\n',
+    ),
+)
+def test_payload_result_parser_rejects_noncanonical_line_framing(
+    tmp_path: Path,
+    raw: bytes,
+) -> None:
+    path = tmp_path / "result.json"
+    LIFECYCLE.write_exclusive(path, raw)
+    with pytest.raises(LIFECYCLE.LifecycleError):
+        LIFECYCLE._load_runner_json_snapshot(path, "payload result")  # noqa: SLF001
+
+
 @pytest.mark.parametrize("payload_exit_code", [0, 7])
 def test_ordinary_user_supervisor_writes_inner_and_waits_for_pass_release(
     tmp_path: Path,
@@ -1341,13 +1381,16 @@ def test_ordinary_user_supervisor_writes_inner_and_waits_for_pass_release(
         capture_transcript_identity=launch_transcript_identity,
     )
     _write(attempt / "manager-epoch-launch.json", launch_epoch)
-    _write(
+    LIFECYCLE.write_exclusive(
         attempt / "result.json",
-        {
-            "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
-            "slot": pre_run["slot"],
-            "status": "UNKNOWN",
-        },
+        LIFECYCLE.canonical_json_bytes(
+            {
+                "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+                "slot": pre_run["slot"],
+                "status": "UNKNOWN",
+            }
+        )
+        + b"\n",
     )
 
     class FakeProcess:

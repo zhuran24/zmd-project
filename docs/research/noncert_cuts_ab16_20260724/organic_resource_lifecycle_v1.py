@@ -1745,6 +1745,18 @@ def _load_json_snapshot(path: Path, label: str) -> tuple[Mapping[str, Any], Deta
     return value, snapshot
 
 
+def _load_runner_json_snapshot(path: Path, label: str) -> tuple[Mapping[str, Any], DetachedDocument]:
+    """Read the runner's canonical object framing with exactly one trailing LF."""
+
+    snapshot = snapshot_regular(path)
+    if not snapshot.raw.endswith(b"\n") or snapshot.raw.endswith(b"\n\n"):
+        raise LifecycleError(f"{label} must use exactly one trailing LF")
+    value = strict_loads(snapshot.raw[:-1], label)
+    if type(value) is not dict:
+        raise LifecycleError(f"{label} must be an exact object")
+    return value, snapshot
+
+
 def _validate_keeper_release(
     value: object,
     *,
@@ -1860,7 +1872,7 @@ def supervise_payload(
         raise LifecycleError("payload exceeded preregistered internal timeout")
     expected_returncode = _returncode_from_waitid(status)
     result_path = Path(pre_run["output_paths"]["attempt_result"])
-    payload_result, payload_result_snapshot = _load_json_snapshot(
+    payload_result, payload_result_snapshot = _load_runner_json_snapshot(
         result_path,
         "payload result",
     )

@@ -592,6 +592,13 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   `scientific_input_set_sha256`; prepare and replay must reject any cross-slot
   baseline, manifest, prestate, suite-selection, or binding drift. The runner
   contract digest is machine-recomputed from its canonical in-code contract.
+  Retired Gate-A and Gate-B receipts are not bootstrap inputs. Candidate and
+  campaign creation replay only the preregistered, repository-local source
+  set. The history-freeze manifest and legacy control-a002 remain immutable
+  archive provenance pins: one canonical non-authorizing locator records their
+  SHA-256 and size without requiring the archived bytes locally. Package
+  replay pins the locator bytes, while the scientific input-set projection
+  continues to use the two archived object identities.
 - Execution failures do not permanently freeze a campaign root. Each fixed
   slot has append-only, no-overwrite children `attempt-0001`,
   `attempt-0002`, and so on, with no retry limit. An incomplete attempt
@@ -604,13 +611,17 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   closed only by an append-only `abandon-attempt` record.
 - The scientific manifest contains only arm order, seed, contract, and input
   identities. Attempt directory and run-directory topology live in a separate
-  per-attempt execution record. Thin producers create the manifest,
-  suite-selection, pre-run authority, formal arm selection, and binding.
-  Selection must parse its formal schema and join slot, ordinal,
-  preregistration, manifest, and attempt inputs. A credible close accepts only
-  an arm gate rebuilt by `ab16_terminal_gate_v1.build_arm_gate()` from the real
-  runner result and resource receipts; handwritten selection or gate objects
-  do not close a slot.
+  per-attempt execution record. Before manifest publication, tracked thin
+  producers must publish and replay the baseline admission, fixed replay,
+  rebuilt model/metadata/incumbent, one common prestate, and all 16 immutable
+  slot bindings. Thin producers then create the manifest, suite-selection,
+  pre-run authority, formal arm selection, and attempt binding. Selection must
+  parse its formal schema and join slot, ordinal, preregistration, manifest,
+  and attempt inputs. A credible close accepts only an arm gate rebuilt by
+  `ab16_terminal_gate_v1.build_arm_gate()` from the real runner result and
+  resource receipts; handwritten scientific material, selection, result, or
+  gate objects do not close a slot. Arithmetic replay consumes that same real
+  runner result schema; no replay-only parallel result is permitted.
 - Baseline rebuild self-bootstraps from the append-only
   `noncert-cuts-ab16-tracked-clean-checkout-provenance-v1` record. Its producer
   and consumers bind the validated campaign root, package manifest/seal,
@@ -618,8 +629,14 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   HEAD/tree, clean tracked worktree and index, and the candidate placements,
   canonical rules, and mandatory instances byte identities. This is a
   tracked-clean claim, not a claim that every untracked research artifact is
-  absent. The retired ZIP repository-snapshot manifest and materialization
-  receipt are not part of the current bootstrap path.
+  absent. Its output directory may be reused only when its sole member is the
+  exact preregistered campaign-provenance record; every other pre-existing
+  member fails before solver import. Fixed-assignment replay and baseline
+  admission precede common-prestate/binding materialization and manifest
+  publication. The retired ZIP repository-snapshot manifest and
+  materialization receipt are not part of the current bootstrap path, and
+  baseline admission v2 consumes only the pinned legacy archive locator rather
+  than archived control bytes.
 - Every attempt records the clean committed repository HEAD, the actual
   execution-tool and strict-input byte identities, the immutable
   preregistration digest, and a canonical input-set digest. Every result
@@ -648,7 +665,10 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   version, order drift, or cross-cohort mixing fails closed. That declaration
   is metadata and grants no execution or claim authority. It declares the
   Gate1 v4 continuation discriminator as an explicit Gate1-owned cross-line
-  reference and accepts fixed-assignment replay v2 only.
+  reference, accepts fixed-assignment replay v2 only, and contains no retired
+  Gate-A or Gate-B receipt discriminator. Bootstrap candidate/capture/result,
+  baseline admission, common prestate, and arm bindings use their declared R12
+  successors; unknown earlier or later versions fail closed.
 - Gate 1 v4 is a separate retained trust line. A fresh AB16 bootstrap may call
   the package-pinned Gate1 v4 constructor to write the continuation selection
   required by that fresh campaign. This does not reinterpret or promote an
