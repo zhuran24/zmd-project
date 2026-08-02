@@ -1,0 +1,667 @@
+{
+  "artifact_status": "construction framework, not a valid witness",
+  "date": "2026-07-28",
+  "grid": [
+    70,
+    70
+  ],
+  "coordinate_system": "zero-based, southwest origin",
+  "boundary_pattern": {
+    "left_gap": 0,
+    "bottom_gap": 0,
+    "left_bodies": "anchor (0,1+3k), size 1x3, k=0..22; access (1,2+3k)",
+    "bottom_bodies": "anchor (1+3k,0), size 3x1, k=0..22; access (2+3k,1)"
+  },
+  "power_cells": {
+    "partition": "T[i,j]=[14i,14i+13] x [14j,14j+13], i,j=0..4",
+    "core_only_cell": [
+      0,
+      4
+    ],
+    "ordinary_pole_local_anchor": [
+      6,
+      6
+    ],
+    "protected_cell": [
+      2,
+      2
+    ],
+    "protected_pole_local_anchor": [
+      7,
+      7
+    ],
+    "manufacturing_containment": "each manufacturing body remains wholly in one 14x14 power cell",
+    "pole_count": 24
+  },
+  "protected_rectangle": {
+    "anchor": [
+      29,
+      28
+    ],
+    "size": [
+      6,
+      7
+    ],
+    "body_only": true
+  },
+  "protocol_core": {
+    "anchor": [
+      3,
+      59
+    ],
+    "size": [
+      9,
+      9
+    ],
+    "mode": "inputs_east_west",
+    "active_final_inputs": [
+      {
+        "commodity": "qiaoyu_capsule",
+        "suggested_port": "input_E_3"
+      },
+      {
+        "commodity": "valley_battery",
+        "suggested_port": "input_E_5"
+      }
+    ],
+    "active_outputs": [
+      {
+        "commodity": "source_ore",
+        "port": "output_N_1"
+      },
+      {
+        "commodity": "source_ore",
+        "port": "output_N_4"
+      },
+      {
+        "commodity": "source_ore",
+        "port": "output_N_7"
+      },
+      {
+        "commodity": "source_ore",
+        "port": "output_S_1"
+      },
+      {
+        "commodity": "source_ore",
+        "port": "output_S_4"
+      },
+      {
+        "commodity": "source_ore",
+        "port": "output_S_7"
+      }
+    ]
+  },
+  "raw_assignment": {
+    "blue_iron_ore": "all 23 left-boundary outputs plus bottom outputs k=0..10 (34 total)",
+    "source_ore": "bottom outputs k=11..22 plus all six protocol-core outputs (18 total)"
+  },
+  "storage_boxes": 0,
+  "directed_cycle": {
+    "cell_count": 534,
+    "segments": [
+      {
+        "from": [
+          1,
+          1
+        ],
+        "to": [
+          68,
+          1
+        ],
+        "direction": "E"
+      },
+      {
+        "from": [
+          68,
+          1
+        ],
+        "to": [
+          68,
+          15
+        ],
+        "direction": "N"
+      },
+      {
+        "from": [
+          68,
+          15
+        ],
+        "to": [
+          2,
+          15
+        ],
+        "direction": "W"
+      },
+      {
+        "from": [
+          2,
+          15
+        ],
+        "to": [
+          2,
+          29
+        ],
+        "direction": "N"
+      },
+      {
+        "from": [
+          2,
+          29
+        ],
+        "to": [
+          68,
+          29
+        ],
+        "direction": "E"
+      },
+      {
+        "from": [
+          68,
+          29
+        ],
+        "to": [
+          68,
+          43
+        ],
+        "direction": "N"
+      },
+      {
+        "from": [
+          68,
+          43
+        ],
+        "to": [
+          2,
+          43
+        ],
+        "direction": "W"
+      },
+      {
+        "from": [
+          2,
+          43
+        ],
+        "to": [
+          2,
+          57
+        ],
+        "direction": "N"
+      },
+      {
+        "from": [
+          2,
+          57
+        ],
+        "to": [
+          68,
+          57
+        ],
+        "direction": "E"
+      },
+      {
+        "from": [
+          68,
+          57
+        ],
+        "to": [
+          68,
+          69
+        ],
+        "direction": "N"
+      },
+      {
+        "from": [
+          68,
+          69
+        ],
+        "to": [
+          1,
+          69
+        ],
+        "direction": "W"
+      },
+      {
+        "from": [
+          1,
+          69
+        ],
+        "to": [
+          1,
+          1
+        ],
+        "direction": "S"
+      }
+    ],
+    "attachment_rule": "output branches enter distinct noncorner cells by a legal merger; input branches leave distinct noncorner cells by a legal splitter; no cell serves both roles"
+  },
+  "tile_type_count_seed": {
+    "0,0": [
+      5,
+      2,
+      1
+    ],
+    "0,1": [
+      5,
+      2,
+      1
+    ],
+    "0,2": [
+      6,
+      1,
+      2
+    ],
+    "0,3": [
+      5,
+      2,
+      1
+    ],
+    "1,0": [
+      5,
+      3,
+      1
+    ],
+    "1,1": [
+      9,
+      2,
+      1
+    ],
+    "1,2": [
+      5,
+      3,
+      1
+    ],
+    "1,3": [
+      6,
+      2,
+      2
+    ],
+    "1,4": [
+      1,
+      4,
+      1
+    ],
+    "2,0": [
+      5,
+      2,
+      2
+    ],
+    "2,1": [
+      9,
+      1,
+      2
+    ],
+    "2,2": [
+      5,
+      1,
+      2
+    ],
+    "2,3": [
+      6,
+      1,
+      3
+    ],
+    "2,4": [
+      5,
+      3,
+      1
+    ],
+    "3,0": [
+      5,
+      3,
+      1
+    ],
+    "3,1": [
+      9,
+      2,
+      1
+    ],
+    "3,2": [
+      5,
+      3,
+      1
+    ],
+    "3,3": [
+      9,
+      2,
+      1
+    ],
+    "3,4": [
+      7,
+      3,
+      0
+    ],
+    "4,0": [
+      3,
+      2,
+      2
+    ],
+    "4,1": [
+      6,
+      2,
+      2
+    ],
+    "4,2": [
+      3,
+      2,
+      2
+    ],
+    "4,3": [
+      1,
+      1,
+      5
+    ],
+    "4,4": [
+      7,
+      0,
+      2
+    ]
+  },
+  "routing_macrocells": {
+    "D1": [
+      [
+        1,
+        4
+      ],
+      [
+        2,
+        4
+      ]
+    ],
+    "D2": [
+      [
+        3,
+        4
+      ],
+      [
+        4,
+        4
+      ]
+    ],
+    "D3": [
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "D4": [
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "D5": [
+      [
+        3,
+        3
+      ],
+      [
+        4,
+        3
+      ]
+    ],
+    "D6": [
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "D7": [
+      [
+        3,
+        2
+      ],
+      [
+        4,
+        2
+      ]
+    ],
+    "D8": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "D9": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    "D10": [
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "D11": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "D12": [
+      [
+        3,
+        0
+      ],
+      [
+        4,
+        0
+      ]
+    ]
+  },
+  "operation_classes": {
+    "3L": {
+      "size": "3x3",
+      "need": [
+        1,
+        1
+      ],
+      "count": 109
+    },
+    "3I2": {
+      "size": "3x3",
+      "need": [
+        2,
+        1
+      ],
+      "count": 6,
+      "operation": "molding_bottle"
+    },
+    "3O2": {
+      "size": "3x3",
+      "need": [
+        1,
+        2
+      ],
+      "count": 6,
+      "operation": "crusher_buckwheat"
+    },
+    "3O3": {
+      "size": "3x3",
+      "need": [
+        1,
+        3
+      ],
+      "count": 11,
+      "operation": "crusher_sandleaf"
+    },
+    "5L": {
+      "size": "5x5",
+      "need": [
+        1,
+        1
+      ],
+      "count": 32
+    },
+    "5O2": {
+      "size": "5x5",
+      "need": [
+        1,
+        2
+      ],
+      "count": 17
+    },
+    "6G": {
+      "size": "6x4 or 4x6",
+      "need": [
+        3,
+        1
+      ],
+      "count": 32
+    },
+    "6F": {
+      "size": "6x4 or 4x6",
+      "need": [
+        4,
+        1
+      ],
+      "count": 3,
+      "operation": "filling_capsule"
+    },
+    "6B": {
+      "size": "6x4 or 4x6",
+      "need": [
+        5,
+        1
+      ],
+      "count": 3,
+      "operation": "packaging_battery"
+    }
+  },
+  "macrocell_class_allocation_seed": {
+    "D1": {
+      "3L": 3,
+      "3I2": 1,
+      "3O3": 2,
+      "5L": 5,
+      "5O2": 2,
+      "6G": 1,
+      "6F": 1
+    },
+    "D2": {
+      "3L": 11,
+      "3O3": 3,
+      "5L": 1,
+      "5O2": 2,
+      "6G": 1,
+      "6B": 1
+    },
+    "D3": {
+      "3L": 9,
+      "3I2": 2,
+      "5L": 1,
+      "5O2": 2,
+      "6G": 3
+    },
+    "D4": {
+      "3L": 9,
+      "3I2": 3,
+      "5L": 2,
+      "5O2": 1,
+      "6G": 5
+    },
+    "D5": {
+      "3L": 8,
+      "3O2": 2,
+      "5L": 1,
+      "5O2": 2,
+      "6G": 6
+    },
+    "D6": {
+      "3L": 7,
+      "3O3": 3,
+      "5L": 2,
+      "5O2": 2,
+      "6G": 2,
+      "6B": 1
+    },
+    "D7": {
+      "3L": 5,
+      "3O3": 3,
+      "5L": 3,
+      "5O2": 2,
+      "6G": 2,
+      "6B": 1
+    },
+    "D8": {
+      "3L": 10,
+      "5L": 4,
+      "6G": 2
+    },
+    "D9": {
+      "3L": 18,
+      "5L": 3,
+      "6G": 3
+    },
+    "D10": {
+      "3L": 14,
+      "3O2": 1,
+      "5L": 2,
+      "5O2": 2,
+      "6G": 2,
+      "6F": 1
+    },
+    "D11": {
+      "3L": 10,
+      "5L": 5,
+      "6G": 3
+    },
+    "D12": {
+      "3L": 5,
+      "3O2": 3,
+      "5L": 3,
+      "5O2": 2,
+      "6G": 2,
+      "6F": 1
+    }
+  },
+  "local_oracle_contract": {
+    "fixed": "boundary/core/pole/protected cells and directed-cycle cells",
+    "decisions": "body coordinates inside power cells, modes, exact active port binding, local transport components, cycle attachment cells",
+    "must_prove": [
+      "body nonoverlap",
+      "active access cells free",
+      "legal incidence pattern at every used transport cell",
+      "all local outputs reach a cycle merge slot",
+      "all local inputs are reachable from a cycle split slot"
+    ],
+    "interface": "only directed-cycle attachment roles are exported"
+  },
+  "not_yet_proved": [
+    "front-feasible placement for all 219 manufacturing facilities",
+    "exact port binding",
+    "local or global transport component legality",
+    "commodity route replay",
+    "complete layout validity",
+    "maximum body-only empty rectangle"
+  ]
+}
