@@ -498,6 +498,8 @@ _SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
         "test_p1_min_tcb_closure_redlines.py::test_malicious_fixture_fail_closed",
         "test_p1_min_tcb_closure_redlines.py::test_target_l0_child_runtime_excludes_scripts_from_snapshot",
         "test_p1_min_tcb_closure_redlines.py::test_target_l0_snapshot_manifest_is_explicit_minimal_whitelist",
+        # AB16 R12 clean-checkout producer-byte chain sentinel (~13s).
+        "test_noncert_cuts_ab16_self_contained_chain_v1.py::test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_close",
     }
 )
 

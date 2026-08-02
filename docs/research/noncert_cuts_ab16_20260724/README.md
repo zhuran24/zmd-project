@@ -2,9 +2,10 @@
 
 Document kind: research implementation contract
 
-Cutoff date: 2026-08-01
+Cutoff date: 2026-08-02
 
-Status: implementation slimmed; experiment not yet run; organic arms `0/16`
+Status: R12 self-contained producer chain implemented; experiment not yet run;
+organic arms `0/16`
 
 ## Scope
 
@@ -26,7 +27,66 @@ They are archive-only history under:
 ```
 
 No current code or document may treat an archived root as a local execution
-path or as authority for a new attempt.
+path or as authority for a new attempt. The tracked
+`archive_locators_v1.json` records only the frozen SHA-256 and byte size of the
+history-freeze manifest and legacy control-a002. The archived bytes are not
+opened, copied, or required locally. Both package input roles use that one
+non-authorizing locator, while the unchanged scientific input-set projection
+continues to bind the two archived object identities.
+
+## Self-contained producer order
+
+A clean committed checkout plus the hash-pinned preregistered
+`candidate_placements.json` contains every source needed to materialize a
+fresh AB16 campaign. That 54,467,709-byte large artifact may be omitted from a
+lightweight Git distribution, so it must first match its tracked
+`data/external_artifacts.json` SHA-256/size contract. Both candidate creation
+and bootstrap replay that fixed manifest entry and the actual ignored-file
+bytes before publishing authority. Gate-A and Gate-B are retired and are not
+candidate or bootstrap inputs. The executable order is:
+
+1. publish the offline candidate, then bootstrap the campaign and its sealed
+   package from repository-local inputs;
+2. publish tracked-clean checkout provenance in the preregistered baseline
+   directory;
+3. run the cut-free baseline rebuild, fixed-assignment replay, and baseline
+   admission v2 in that order;
+4. derive the common prestate and all 16 attempt-free bindings with
+   `materialize-pre-manifest`, then publish the manifest and suite selection;
+5. after the separate retained Gate1 v4 qualification has published its valid
+   continuation, prepare the next attempt, produce and bind its formal
+   selection, run it, replay its arithmetic, and close it.
+
+The baseline rebuild accepts the precreated baseline directory only when its
+sole member is the canonical `campaign-provenance.json`. Common prestate and
+bindings are derived from the preregistration, validated campaign root,
+baseline identities, and fixed experiment contract; callers cannot supply
+their record bodies. Existing equal bytes are replayed, while drift, extra
+members, or partial conflicting materialization fails closed without
+overwrite.
+
+The runner publishes one `noncert-cuts-ab16-organic-arm-result-v1` record.
+Resource lifecycle and arithmetic replay consume those same bytes, including
+`controller_terminal`; there is no replay-only result artifact.
+
+The regression sentinel is
+`src/tests/test_noncert_cuts_ab16_self_contained_chain_v1.py`. It creates a
+clean temporary checkout, imports only the manifest-verified preregistered
+candidate as the checkout's still-ignored preregistration artifact, and drives
+the real R12 producers through credible close. No AB16 candidate, bootstrap,
+baseline, materialization, selection, runner-result, replay, or close record
+body is fixture-authored. A one-variable deterministic CP-SAT computation
+replaces the production-scale solve. To stay hermetic, deterministic manager
+and resource observations enter the existing capture/adapter interfaces; the
+real capture, runner, lifecycle, replay, and close code validates and writes
+all resulting bytes. The test therefore proves producer/consumer joins, not a
+fresh-process, single-process-lock, systemd, or cgroup qualification.
+
+Gate1 remains a separate zero-touch trust line. The sentinel installs an
+explicit test-only retained-continuation scaffold through Gate1's constructors
+and exclusive writers so AB16 can exercise its continuation identity/path
+join. It does not validate the detached Gate1 replay payload schemas and does
+not claim to re-run Gate1's systemd qualification.
 
 ## Fixed scientific design
 
@@ -139,4 +199,4 @@ Use the pinned project interpreter for validation:
   scripts/preflight_gate.py --full
 ```
 
-Running the 16 arms is intentionally outside this slimdown batch.
+Running the 16 arms is intentionally outside R12.
