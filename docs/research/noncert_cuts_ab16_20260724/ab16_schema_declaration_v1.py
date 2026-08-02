@@ -35,6 +35,7 @@ BOOTSTRAP_RETRY_SCHEMAS = (
     "noncert-cuts-ab16-attempt-input-set-v2",
     "noncert-cuts-ab16-attempt-execution-v1",
     "noncert-cuts-ab16-attempt-open-v2",
+    "noncert-cuts-ab16-attempt-abandoned-v1",
     "noncert-cuts-ab16-attempt-selection-binding-v2",
     "noncert-cuts-ab16-attempt-result-envelope-v1",
     "noncert-cuts-ab16-retry-campaign-replay-v1",

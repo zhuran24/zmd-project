@@ -39,6 +39,7 @@ import organic_resource_lifecycle_v1 as lifecycle  # noqa: E402
 INPUT_SET_SCHEMA = "noncert-cuts-ab16-attempt-input-set-v2"
 ATTEMPT_OPEN_SCHEMA = "noncert-cuts-ab16-attempt-open-v2"
 ATTEMPT_EXECUTION_SCHEMA = "noncert-cuts-ab16-attempt-execution-v1"
+ATTEMPT_ABANDONED_SCHEMA = "noncert-cuts-ab16-attempt-abandoned-v1"
 SELECTION_BINDING_SCHEMA = "noncert-cuts-ab16-attempt-selection-binding-v2"
 RESULT_ENVELOPE_SCHEMA = "noncert-cuts-ab16-attempt-result-envelope-v1"
 REPLAY_SCHEMA = "noncert-cuts-ab16-retry-campaign-replay-v1"
@@ -137,19 +138,72 @@ def _load_record(path: Path | str, label: str) -> tuple[Mapping[str, Any], dict[
     return value, identity
 
 
-def _write_bytes_exclusive(path: Path, raw: bytes) -> dict[str, object]:
+def recover_staging(path: Path | str) -> dict[str, object]:
+    """Remove only this final path's interrupted same-directory staging files."""
+
     absolute = _absolute(path)
+    prefix = f".{absolute.name}.pending-"
     try:
         parent_fd = os.open(absolute.parent, os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW)
     except OSError as exc:
         raise AuthorityError(f"output parent is unavailable: {absolute.parent}") from exc
+    removed: list[str] = []
+    try:
+        try:
+            final_stat = os.stat(absolute.name, dir_fd=parent_fd, follow_symlinks=False)
+        except FileNotFoundError:
+            final_stat = None
+        if final_stat is not None and not stat.S_ISREG(final_stat.st_mode):
+            raise AuthorityError(f"published final is not a regular file: {absolute}")
+        for name in sorted(os.listdir(parent_fd)):
+            if not name.startswith(prefix):
+                continue
+            try:
+                pending_stat = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+            except FileNotFoundError:
+                continue
+            if not stat.S_ISREG(pending_stat.st_mode):
+                raise AuthorityError(f"staging recovery found a non-regular entry: {name}")
+            os.unlink(name, dir_fd=parent_fd)
+            removed.append(name)
+        if removed:
+            os.fsync(parent_fd)
+        if final_stat is not None:
+            final_after = os.stat(absolute.name, dir_fd=parent_fd, follow_symlinks=False)
+            if not stat.S_ISREG(final_after.st_mode) or final_after.st_nlink != 1:
+                raise AuthorityError(f"published final still has staging aliases: {absolute}")
+    except OSError as exc:
+        raise AuthorityError(f"staging recovery failed: {absolute}") from exc
+    finally:
+        os.close(parent_fd)
+    identity = None if final_stat is None else _snapshot(absolute)[1]
+    return {
+        "final_identity": identity,
+        "path": str(absolute),
+        "recovered_pending": removed,
+        "status": "STAGING_RECOVERED",
+    }
+
+
+def _write_bytes_exclusive(path: Path, raw: bytes) -> dict[str, object]:
+    absolute = _absolute(path)
+    recovered = recover_staging(absolute)
+    if recovered["final_identity"] is not None:
+        raise AuthorityError(f"no-overwrite publication failed: {absolute}")
+    try:
+        parent_fd = os.open(absolute.parent, os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except OSError as exc:
+        raise AuthorityError(f"output parent is unavailable: {absolute.parent}") from exc
+    pending_name = f".{absolute.name}.pending-{os.getpid()}-{time.monotonic_ns()}"
+    pending_exists = False
     try:
         descriptor = os.open(
-            absolute.name,
+            pending_name,
             os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
             0o600,
             dir_fd=parent_fd,
         )
+        pending_exists = True
         try:
             view = memoryview(raw)
             while view:
@@ -160,10 +214,26 @@ def _write_bytes_exclusive(path: Path, raw: bytes) -> dict[str, object]:
             os.fsync(descriptor)
         finally:
             os.close(descriptor)
+        os.link(
+            pending_name,
+            absolute.name,
+            src_dir_fd=parent_fd,
+            dst_dir_fd=parent_fd,
+            follow_symlinks=False,
+        )
+        os.fsync(parent_fd)
+        os.unlink(pending_name, dir_fd=parent_fd)
+        pending_exists = False
         os.fsync(parent_fd)
     except OSError as exc:
         raise AuthorityError(f"no-overwrite publication failed: {absolute}") from exc
     finally:
+        if pending_exists:
+            try:
+                os.unlink(pending_name, dir_fd=parent_fd)
+                os.fsync(parent_fd)
+            except OSError:
+                pass
         os.close(parent_fd)
     _raw, identity = _snapshot(absolute)
     if _raw != raw:
@@ -1080,7 +1150,60 @@ def _optional_envelope(
     return checked, identity
 
 
-def replay_campaign(preregistration_path: Path | str) -> dict[str, object]:
+def _optional_abandoned(
+    attempt_dir: Path,
+    *,
+    slot: str,
+    ordinal: int,
+    preregistration_identity: Mapping[str, Any],
+) -> tuple[Mapping[str, Any] | None, dict[str, object] | None]:
+    path = attempt_dir / "attempt-abandoned.json"
+    if not path.exists() and not path.is_symlink():
+        return None, None
+    record, identity = _load_record(path, "attempt abandonment")
+    checked = _exact_mapping(
+        record,
+        {
+            "attempt_dir",
+            "attempt_ordinal",
+            "authorizations",
+            "failure_code",
+            "preregistration_identity",
+            "preregistration_sha256",
+            "retry_disposition",
+            "schema_version",
+            "slot",
+            "status",
+        },
+        "attempt abandonment",
+    )
+    if any(
+        (attempt_dir / name).exists() or (attempt_dir / name).is_symlink()
+        for name in ("attempt-open.json", "selection-binding.json", "attempt-result.json")
+    ):
+        raise AuthorityError("abandoned attempt contains a committed open, selection, or result")
+    if (
+        checked["schema_version"] != ATTEMPT_ABANDONED_SCHEMA
+        or checked["status"] != "ABANDONED"
+        or checked["slot"] != slot
+        or checked["attempt_ordinal"] != ordinal
+        or checked["attempt_dir"] != str(attempt_dir)
+        or checked["authorizations"] != RESEARCH_ONLY_AUTHORIZATIONS
+        or type(checked["failure_code"]) is not str
+        or not checked["failure_code"]
+        or checked["preregistration_identity"] != preregistration_identity
+        or checked["preregistration_sha256"] != preregistration_identity["sha256"]
+        or checked["retry_disposition"] != "SAME_SLOT_RETRY_ALLOWED"
+    ):
+        raise AuthorityError("attempt abandonment drifted")
+    return checked, identity
+
+
+def replay_campaign(
+    preregistration_path: Path | str,
+    *,
+    _allow_uncommitted: tuple[str, int] | None = None,
+) -> dict[str, object]:
     """Rebuild retry state from immutable attempt receipts on disk."""
 
     preregistration_path = _absolute(preregistration_path)
@@ -1100,6 +1223,58 @@ def replay_campaign(preregistration_path: Path | str) -> dict[str, object]:
         for attempt_index, (ordinal, attempt_dir) in enumerate(attempts):
             if state["next_index"] >= len(contract.ARM_SEQUENCE) or contract.ARM_SEQUENCE[state["next_index"]] != slot:
                 raise AuthorityError("attempt exists after its slot closed or out of order")
+            abandoned, abandoned_identity = _optional_abandoned(
+                attempt_dir,
+                slot=slot,
+                ordinal=ordinal,
+                preregistration_identity=preregistration_identity,
+            )
+            if abandoned is not None:
+                state = contract.transition_consumption_state(
+                    state,
+                    {
+                        "attempt_ordinal": ordinal,
+                        "event": "PRESELECTION_FAILURE",
+                        "reason": abandoned["failure_code"],
+                        "slot": slot,
+                    },
+                )
+                attempts_summary.append(
+                    {
+                        "attempt_ordinal": ordinal,
+                        "envelope_identity": abandoned_identity,
+                        "input_set_sha256": None,
+                        "outcome": CREDIBILITY_INCOMPLETE,
+                        "repository_head": None,
+                        "slot": slot,
+                    }
+                )
+                continue
+            if _allow_uncommitted == (slot, ordinal):
+                if attempt_index != len(attempts) - 1:
+                    raise AuthorityError("uncommitted attempt has a later sibling")
+                if any(
+                    (attempt_dir / name).exists() or (attempt_dir / name).is_symlink()
+                    for name in ("attempt-open.json", "selection-binding.json", "attempt-result.json")
+                ):
+                    raise AuthorityError("only an unpublished prepare attempt may be abandoned")
+                attempts_summary.append(
+                    {
+                        "attempt_ordinal": ordinal,
+                        "envelope_identity": None,
+                        "input_set_sha256": None,
+                        "outcome": None,
+                        "repository_head": None,
+                        "slot": slot,
+                    }
+                )
+                active = {
+                    "attempt_dir": str(attempt_dir),
+                    "attempt_ordinal": ordinal,
+                    "slot": slot,
+                    "uncommitted": True,
+                }
+                break
             _open, inputs, _open_identity = _validate_open(
                 attempt_dir,
                 slot=slot,
@@ -1191,6 +1366,64 @@ def replay_campaign(preregistration_path: Path | str) -> dict[str, object]:
         "schema_version": REPLAY_SCHEMA,
         "slot_attempt_counts": slot_attempt_counts,
         "status": "PASS",
+    }
+
+
+def abandon_attempt(
+    preregistration_path: Path | str,
+    *,
+    slot: str,
+    attempt_ordinal: int,
+    failure_code: str,
+) -> dict[str, object]:
+    """Append an explicit retry marker for a prepare killed before its open receipt."""
+
+    if type(attempt_ordinal) is not int or attempt_ordinal <= 0:
+        raise AuthorityError("attempt abandonment requires a positive ordinal")
+    if type(failure_code) is not str or not failure_code:
+        raise AuthorityError("attempt abandonment requires a failure code")
+    preregistration_path = _absolute(preregistration_path)
+    _preregistration, preregistration_identity = _load_preregistration(preregistration_path)
+    replay = replay_campaign(
+        preregistration_path,
+        _allow_uncommitted=(slot, attempt_ordinal),
+    )
+    active = replay["active_attempt"]
+    if (
+        type(active) is not dict
+        or active.get("slot") != slot
+        or active.get("attempt_ordinal") != attempt_ordinal
+        or active.get("uncommitted") is not True
+    ):
+        raise AuthorityError("abandonment does not target the sole unpublished attempt")
+    attempt_dir = Path(active["attempt_dir"])
+    record = {
+        "attempt_dir": str(attempt_dir),
+        "attempt_ordinal": attempt_ordinal,
+        "authorizations": dict(RESEARCH_ONLY_AUTHORIZATIONS),
+        "failure_code": failure_code,
+        "preregistration_identity": preregistration_identity,
+        "preregistration_sha256": preregistration_identity["sha256"],
+        "retry_disposition": "SAME_SLOT_RETRY_ALLOWED",
+        "schema_version": ATTEMPT_ABANDONED_SCHEMA,
+        "slot": slot,
+        "status": "ABANDONED",
+    }
+    identity = _write_record(attempt_dir / "attempt-abandoned.json", record)
+    replayed = replay_campaign(preregistration_path)
+    if replayed["active_attempt"] is not None:
+        raise AuthorityError("abandoned attempt remained active after replay")
+    state = replayed["consumption_state"]
+    current = state["slots"][state["next_index"]]
+    if current["slot"] != slot or current["state"] != "RETRYABLE" or current["attempt_count"] != attempt_ordinal:
+        raise AuthorityError("abandoned attempt did not become retryable")
+    return {
+        "attempt_abandoned_identity": identity,
+        "attempt_ordinal": attempt_ordinal,
+        "failure_code": failure_code,
+        "retry_disposition": "SAME_SLOT_RETRY_ALLOWED",
+        "slot": slot,
+        "status": "ATTEMPT_ABANDONED",
     }
 
 
@@ -1997,6 +2230,13 @@ def _parser() -> argparse.ArgumentParser:
     suite_parser.add_argument("--preregistration", type=Path, required=True)
     replay_parser = subparsers.add_parser("replay")
     replay_parser.add_argument("--preregistration", type=Path, required=True)
+    recover_parser = subparsers.add_parser("recover-staging")
+    recover_parser.add_argument("--path", type=Path, required=True)
+    abandon_parser = subparsers.add_parser("abandon-attempt")
+    abandon_parser.add_argument("--preregistration", type=Path, required=True)
+    abandon_parser.add_argument("--slot", required=True)
+    abandon_parser.add_argument("--attempt-ordinal", type=int, required=True)
+    abandon_parser.add_argument("--failure-code", required=True)
     prepare_parser = subparsers.add_parser("prepare")
     prepare_parser.add_argument("--preregistration", type=Path, required=True)
     prepare_parser.add_argument("--repository-root", type=Path, required=True)
@@ -2031,6 +2271,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         result = create_suite_selection(args.preregistration)
     elif args.command == "replay":
         result = replay_campaign(args.preregistration)
+    elif args.command == "recover-staging":
+        result = recover_staging(args.path)
+    elif args.command == "abandon-attempt":
+        result = abandon_attempt(
+            args.preregistration,
+            slot=args.slot,
+            attempt_ordinal=args.attempt_ordinal,
+            failure_code=args.failure_code,
+        )
     elif args.command == "prepare":
         result = prepare_attempt(
             args.preregistration,

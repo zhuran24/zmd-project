@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import signal
 import subprocess
 import sys
 from types import ModuleType
@@ -379,6 +380,170 @@ def _produce(
     )
 
 
+def _run_atomic_publication_crash(final_path: Path, raw: bytes, *, phase: str) -> subprocess.CompletedProcess[bytes]:
+    child = r"""
+import importlib.util
+import os
+from pathlib import Path
+import signal
+import sys
+
+source = Path(sys.argv[1])
+final_path = Path(sys.argv[2])
+raw = bytes.fromhex(sys.argv[3])
+phase = sys.argv[4]
+spec = importlib.util.spec_from_file_location("ab16_atomic_crash_child", source)
+assert spec is not None and spec.loader is not None
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+if phase == "write":
+    original_write = module.os.write
+
+    def crash_write(descriptor, data):
+        written = original_write(descriptor, data[: max(1, len(data) // 2)])
+        os.kill(os.getpid(), signal.SIGKILL)
+        return written
+
+    module.os.write = crash_write
+elif phase == "link":
+    original_unlink = module.os.unlink
+
+    def crash_unlink(path, *args, **kwargs):
+        if str(path).startswith(f".{final_path.name}.pending-"):
+            os.kill(os.getpid(), signal.SIGKILL)
+        return original_unlink(path, *args, **kwargs)
+
+    module.os.unlink = crash_unlink
+else:
+    raise AssertionError(phase)
+module._write_bytes_exclusive(final_path, raw)
+"""
+    return subprocess.run(
+        (
+            sys.executable,
+            "-c",
+            child,
+            str(RESEARCH_DIR / "ab16_authority_v1.py"),
+            str(final_path),
+            raw.hex(),
+            phase,
+        ),
+        check=False,
+        capture_output=True,
+    )
+
+
+def _run_prepare_before_open_crash(
+    fixture: dict[str, object],
+    *,
+    slot: str,
+) -> subprocess.CompletedProcess[bytes]:
+    context_path = Path(fixture["campaign"]) / "prepare-crash-execution-context.json"
+    _write(context_path, _execution_context(fixture, slot=slot, attempt_ordinal=1))
+    child = r"""
+import importlib.util
+import json
+import os
+from pathlib import Path
+import signal
+import sys
+
+source = Path(sys.argv[1])
+preregistration = Path(sys.argv[2])
+repository = Path(sys.argv[3])
+slot = sys.argv[4]
+context = json.loads(Path(sys.argv[5]).read_text(encoding="utf-8"))
+spec = importlib.util.spec_from_file_location("ab16_prepare_crash_child", source)
+assert spec is not None and spec.loader is not None
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+original_write_record = module._write_record
+
+def crash_before_open(path, value):
+    if Path(path).name == "attempt-open.json":
+        os.kill(os.getpid(), signal.SIGKILL)
+    return original_write_record(path, value)
+
+module._write_record = crash_before_open
+module.prepare_attempt(
+    preregistration,
+    repository_root=repository,
+    slot=slot,
+    execution_context=context,
+)
+"""
+    return subprocess.run(
+        (
+            sys.executable,
+            "-c",
+            child,
+            str(RESEARCH_DIR / "ab16_authority_v1.py"),
+            str(fixture["preregistration_path"]),
+            str(fixture["repository"]),
+            slot,
+            str(context_path),
+        ),
+        check=False,
+        capture_output=True,
+    )
+
+
+def _run_incomplete_close_write_crash(
+    fixture: dict[str, object],
+    *,
+    slot: str,
+    attempt_ordinal: int,
+) -> subprocess.CompletedProcess[bytes]:
+    child = r"""
+import importlib.util
+import os
+from pathlib import Path
+import signal
+import sys
+
+source = Path(sys.argv[1])
+spec = importlib.util.spec_from_file_location("ab16_close_crash_child", source)
+assert spec is not None and spec.loader is not None
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+original_write = module.os.write
+
+def crash_write(descriptor, data):
+    written = original_write(descriptor, data[: max(1, len(data) // 2)])
+    os.kill(os.getpid(), signal.SIGKILL)
+    return written
+
+module.os.write = crash_write
+module.close_attempt(
+    Path(sys.argv[2]),
+    slot=sys.argv[3],
+    attempt_ordinal=int(sys.argv[4]),
+    outcome=module.CREDIBILITY_INCOMPLETE,
+    failure_code="INJECTED_CLOSE_CRASH",
+)
+"""
+    return subprocess.run(
+        (
+            sys.executable,
+            "-c",
+            child,
+            str(RESEARCH_DIR / "ab16_authority_v1.py"),
+            str(fixture["preregistration_path"]),
+            slot,
+            str(attempt_ordinal),
+        ),
+        check=False,
+        capture_output=True,
+    )
+
+
+def _pending_paths(final_path: Path) -> list[Path]:
+    return sorted(final_path.parent.glob(f".{final_path.name}.pending-*"))
+
+
 def _fake_credible_gate(attempt_dir: Path, *, slot: str, selection_identity: dict[str, object]) -> Path:
     path = attempt_dir / "work" / "arm-gate.json"
     _write(
@@ -740,3 +905,103 @@ def test_attempt_input_digest_recomputes_from_snapshots(tmp_path: Path) -> None:
     assert hashlib.sha256(Path(record["preregistration_identity"]["path"]).read_bytes()).hexdigest() == record[
         "preregistration_sha256"
     ]
+
+
+def test_atomic_publication_recovers_partial_pending_without_exposing_final(tmp_path: Path) -> None:
+    publication_dir = tmp_path / "atomic-partial"
+    publication_dir.mkdir()
+    final_path = publication_dir / "result.json"
+    raw = _canonical({"payload": "x" * 16_384, "schema_version": "atomic-test-v1"})
+
+    crashed = _run_atomic_publication_crash(final_path, raw, phase="write")
+
+    assert crashed.returncode == -signal.SIGKILL
+    assert not final_path.exists()
+    pending = _pending_paths(final_path)
+    assert len(pending) == 1
+    assert 0 < pending[0].stat().st_size < len(raw)
+
+    AUTH.recover_staging(final_path)
+    assert not _pending_paths(final_path)
+    published = AUTH._write_bytes_exclusive(final_path, raw)  # noqa: SLF001
+    assert published["sha256"] == hashlib.sha256(raw).hexdigest()
+    assert final_path.read_bytes() == raw
+    assert final_path.stat().st_nlink == 1
+
+
+def test_atomic_publication_recovers_linked_pending_alias(tmp_path: Path) -> None:
+    publication_dir = tmp_path / "atomic-linked"
+    publication_dir.mkdir()
+    final_path = publication_dir / "result.json"
+    raw = _canonical({"payload": "complete", "schema_version": "atomic-test-v1"})
+
+    crashed = _run_atomic_publication_crash(final_path, raw, phase="link")
+
+    assert crashed.returncode == -signal.SIGKILL
+    assert final_path.read_bytes() == raw
+    pending = _pending_paths(final_path)
+    assert len(pending) == 1
+    assert pending[0].stat().st_ino == final_path.stat().st_ino
+    assert final_path.stat().st_nlink == 2
+
+    AUTH.recover_staging(final_path)
+    assert not _pending_paths(final_path)
+    assert final_path.read_bytes() == raw
+    assert final_path.stat().st_nlink == 1
+
+
+def test_abandon_incomplete_prepare_then_allocate_next_attempt(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    slot = AUTH.contract.ARM_SEQUENCE[0]
+    preregistration = fixture["preregistration"]
+    assert isinstance(preregistration, dict)
+    attempt_dir = Path(preregistration["slot_roots"][slot]) / "attempt-0001"
+
+    crashed = _run_prepare_before_open_crash(fixture, slot=slot)
+
+    assert crashed.returncode == -signal.SIGKILL
+    assert attempt_dir.is_dir()
+    assert not (attempt_dir / "attempt-open.json").exists()
+    with pytest.raises(AUTH.AuthorityError):
+        AUTH.replay_campaign(fixture["preregistration_path"])
+
+    abandoned = AUTH.abandon_attempt(
+        fixture["preregistration_path"],
+        slot=slot,
+        attempt_ordinal=1,
+        failure_code="PREPARE_PROCESS_KILLED",
+    )
+    assert abandoned["status"] == "ATTEMPT_ABANDONED"
+    second = _prepare(fixture, slot=slot)
+    assert second["attempt_ordinal"] == 2
+    assert Path(second["attempt_dir"]).name == "attempt-0002"
+
+
+def test_incomplete_close_partial_envelope_is_recoverable_and_reentrant(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    slot = AUTH.contract.ARM_SEQUENCE[0]
+    prepared = _prepare(fixture, slot=slot)
+    result_path = Path(prepared["attempt_dir"]) / "attempt-result.json"
+
+    crashed = _run_incomplete_close_write_crash(fixture, slot=slot, attempt_ordinal=1)
+
+    assert crashed.returncode == -signal.SIGKILL
+    assert not result_path.exists()
+    pending = _pending_paths(result_path)
+    assert len(pending) == 1
+    assert pending[0].stat().st_size > 0
+    assert AUTH.replay_campaign(fixture["preregistration_path"])["active_attempt"] is not None
+
+    AUTH.recover_staging(result_path)
+    closed = AUTH.close_attempt(
+        fixture["preregistration_path"],
+        slot=slot,
+        attempt_ordinal=1,
+        outcome=AUTH.CREDIBILITY_INCOMPLETE,
+        failure_code="INJECTED_CLOSE_CRASH",
+    )
+    assert closed["retry_disposition"] == "SAME_SLOT_RETRY_ALLOWED"
+    assert not _pending_paths(result_path)
+    assert result_path.stat().st_nlink == 1
+    envelope = json.loads(result_path.read_text(encoding="utf-8"))
+    assert envelope["failure_code"] == "INJECTED_CLOSE_CRASH"
