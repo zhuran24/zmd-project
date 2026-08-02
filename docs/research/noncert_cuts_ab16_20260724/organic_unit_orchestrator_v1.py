@@ -30,8 +30,8 @@ from types import ModuleType
 from typing import Any, Protocol
 
 
-PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v1"
-RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
+PRE_RUN_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v2"
+RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v2"
 EXECUTION_CLASS = "FORMAL_AB16"
 LAUNCH_ENVIRONMENT_SCHEMA = "noncert-cuts-ab16-launch-environment-v1"
 LAUNCH_ENVIRONMENT_KEYS = frozenset(
@@ -1110,7 +1110,7 @@ def _orchestrate_with_adapter_unprotected(
         payload_argv=pre_run["launch"]["payload_argv"],
     )
     cleanup_state["launch"] = launch
-    payload_result = verifier.snapshot_json(pre_run["output_paths"]["attempt_result"])
+    payload_result = verifier.snapshot_runner_json(pre_run["output_paths"]["attempt_result"])
     inner_snapshot = verifier.snapshot_json(pre_run["output_paths"]["inner"])
     inner = inner_snapshot.value
     observed_launch = {

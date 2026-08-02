@@ -30,8 +30,9 @@ import time
 from typing import Any
 
 
-PRE_RUN_AUTHORITY_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v1"
-RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v1"
+PRE_RUN_AUTHORITY_SCHEMA = "noncert-cuts-ab16-organic-pre-run-authority-v2"
+RUNNER_SELECTION_SCHEMA = "noncert-cuts-ab16-organic-arm-selection-v2"
+ATTEMPT_EXECUTION_SCHEMA = "noncert-cuts-ab16-attempt-execution-v1"
 EPOCH_OBSERVATION_SCHEMA = "noncert-cuts-ab16-manager-epoch-observation-v1"
 INNER_SCHEMA = "noncert-cuts-ab16-inner-lifecycle-v1"
 PRETERMINAL_SCHEMA = "noncert-cuts-ab16-preterminal-resource-v1"
@@ -121,6 +122,11 @@ TOOL_ROLES = (
     "systemctl",
     "systemd_run",
 )
+ATTEMPT_EXECUTION_TOOL_ROLES = frozenset(TOOL_ROLES) | {
+    "ab16_contract",
+    "ab16_terminal_gate",
+    "organic_arm_replay",
+}
 
 SYSTEMD_PRETERMINAL_FIELDS = (
     "ActiveState",
@@ -576,6 +582,154 @@ def _expected_resource_verdict(pre_run: Mapping[str, Any]) -> str:
     raise LifecycleError("unsupported payload expectation")
 
 
+def _detached_identity(value: Mapping[str, Any]) -> dict[str, object]:
+    return {field: value[field] for field in ("path", "sha256", "size_bytes")}
+
+
+def _research_only_authorizations(value: object, label: str) -> Mapping[str, Any]:
+    record = _keys(
+        value,
+        {
+            "cut_authorized",
+            "family_global_soundness_authorized",
+            "global_claim_authorized",
+            "lower_bound_authorized",
+            "mathematical_claim_authorized",
+            "optimality_authorized",
+            "production_certified_authorized",
+            "stage_b_promotion_authorized",
+            "upper_bound_authorized",
+            "witness_authorized",
+        },
+        label,
+    )
+    if any(type(item) is not bool or item is not False for item in record.values()):
+        raise LifecycleError(f"{label} must remain research-only")
+    return record
+
+
+def validate_attempt_execution(value: object) -> Mapping[str, Any]:
+    """Validate the non-scientific topology and tool binding for one retry."""
+
+    record = _keys(
+        value,
+        {
+            "attempt_ordinal",
+            "authorizations",
+            "authority_attempt_dir",
+            "authority_chain",
+            "campaign_id",
+            "campaign_root_identity",
+            "continuation_identity",
+            "input_set_identity",
+            "input_set_sha256",
+            "manager_epoch",
+            "manifest_identity",
+            "package",
+            "pre_run_authority_path",
+            "preregistration_sha256",
+            "repository_git_tool_identity",
+            "repository_head",
+            "repository_root",
+            "run_dir",
+            "run_nonce",
+            "schema_version",
+            "scientific_input_set_sha256",
+            "scientific_materialization_sha256",
+            "selection_path",
+            "slot",
+            "status",
+            "suite_selection_identity",
+            "support_dir",
+            "tool_identities",
+            "unit_name",
+        },
+        "attempt execution",
+    )
+    if (
+        record["schema_version"] != ATTEMPT_EXECUTION_SCHEMA
+        or record["status"] != "READY"
+        or record["slot"] not in ARM_SEQUENCE
+        or _integer(record["attempt_ordinal"], "attempt execution ordinal", minimum=1) < 1
+        or re.fullmatch(r"[0-9a-f]{64}", _string(record["preregistration_sha256"], "preregistration digest"))
+        is None
+        or re.fullmatch(r"[0-9a-f]{64}", _string(record["campaign_id"], "campaign id")) is None
+        or re.fullmatch(r"[0-9a-f]{40}", _string(record["repository_head"], "repository head")) is None
+    ):
+        raise LifecycleError("attempt execution scalar semantics drifted")
+    for field in ("input_set_sha256", "scientific_input_set_sha256", "scientific_materialization_sha256"):
+        if re.fullmatch(r"[0-9a-f]{64}", _string(record[field], f"attempt execution {field}")) is None:
+            raise LifecycleError(f"attempt execution {field} is invalid")
+    _research_only_authorizations(record["authorizations"], "attempt execution authorizations")
+    for field in ("input_set_identity", "repository_git_tool_identity"):
+        _identity(record[field], f"attempt execution {field}", mode_required=True)
+    for field in ("campaign_root_identity", "continuation_identity", "manifest_identity", "suite_selection_identity"):
+        _identity(record[field], f"attempt execution {field}")
+    repository_root = Path(_string(record["repository_root"], "attempt execution repository root"))
+    authority_attempt = Path(_string(record["authority_attempt_dir"], "authority attempt dir"))
+    run_dir = Path(_string(record["run_dir"], "attempt run dir"))
+    support_dir = Path(_string(record["support_dir"], "attempt support dir"))
+    pre_run_path = Path(_string(record["pre_run_authority_path"], "attempt pre-run path"))
+    selection_path = Path(_string(record["selection_path"], "attempt selection path"))
+    if (
+        any(not path.is_absolute() for path in (repository_root, authority_attempt, run_dir, support_dir))
+        or run_dir.parent != authority_attempt
+        or support_dir.parent != authority_attempt
+        or run_dir == support_dir
+        or pre_run_path != run_dir / "pre-run-authority.json"
+        or selection_path != run_dir / "selection.json"
+        or Path(record["input_set_identity"]["path"]) != authority_attempt / "attempt-input-set.json"
+    ):
+        raise LifecycleError("attempt execution topology drifted")
+    unit_name = _string(record["unit_name"], "attempt execution unit name")
+    if not unit_name.endswith(".service") or "/" in unit_name:
+        raise LifecycleError("attempt execution unit name is invalid")
+    _epoch(record["manager_epoch"], "attempt execution manager epoch")
+    package = _keys(
+        record["package"],
+        {"manifest_identity", "package_id", "seal_identity"},
+        "attempt execution package",
+    )
+    _identity(package["manifest_identity"], "attempt execution package manifest")
+    seal = _identity(package["seal_identity"], "attempt execution package seal")
+    if (
+        type(package["package_id"]) is not str
+        or SHA256_RE.fullmatch(package["package_id"]) is None
+        or package["package_id"] != seal["sha256"]
+    ):
+        raise LifecycleError("attempt execution package identity drifted")
+    chain = _keys(
+        record["authority_chain"],
+        {"campaign_root_identity", "continuation_identity", "manager_epoch_authority_identity", "package"},
+        "attempt execution authority chain",
+    )
+    for field in ("campaign_root_identity", "continuation_identity", "manager_epoch_authority_identity"):
+        _identity(chain[field], f"attempt execution authority chain {field}")
+    if (
+        chain["campaign_root_identity"] != record["campaign_root_identity"]
+        or chain["continuation_identity"] != record["continuation_identity"]
+        or chain["package"] != package
+    ):
+        raise LifecycleError("attempt execution authority-chain projection drifted")
+    tools = _keys(record["tool_identities"], set(ATTEMPT_EXECUTION_TOOL_ROLES), "attempt execution tools")
+    for role, identity in tools.items():
+        _identity(identity, f"attempt execution tool {role}", mode_required=True)
+    return record
+
+
+def _load_attempt_execution(identity: object) -> tuple[Mapping[str, Any], dict[str, object]]:
+    expected = _identity(identity, "attempt execution identity")
+    snapshot = snapshot_regular(Path(expected["path"]))
+    observed = _detached_identity(snapshot.identity)
+    if observed != dict(expected):
+        raise LifecycleError("attempt execution identity replay failed")
+    value = strict_loads(snapshot.raw, "attempt execution")
+    checked = validate_attempt_execution(value)
+    if snapshot.path != Path(checked["authority_attempt_dir"]) / "attempt-execution.json":
+        raise LifecycleError("attempt execution record escaped its authority attempt")
+    return checked, observed
+
+
 def validate_pre_run_authority(
     value: object,
     *,
@@ -583,6 +737,8 @@ def validate_pre_run_authority(
     manifest: Mapping[str, Any] | None = None,
     suite_selection: Mapping[str, Any] | None = None,
     expected_slot: str | None = None,
+    attempt_execution: Mapping[str, Any] | None = None,
+    attempt_execution_identity: Mapping[str, Any] | None = None,
 ) -> Mapping[str, Any]:
     """Validate the non-authorizing authority frozen before arm selection."""
 
@@ -600,6 +756,8 @@ def validate_pre_run_authority(
         "configuration",
         "order",
         "arm",
+        "attempt_execution_identity",
+        "attempt_ordinal",
         "unit_name",
         "attempt_dir",
         "pre_run_authority_path",
@@ -611,6 +769,7 @@ def validate_pre_run_authority(
         "continuation_identity",
         "prospective_manifest_identity",
         "suite_selection_identity",
+        "preregistration_sha256",
         "baseline_admission_identity",
         "common_prestate_identity",
         "arm_binding_identity",
@@ -642,6 +801,21 @@ def validate_pre_run_authority(
         or record["verdict"] != "AB16_ORGANIC_PRE_RUN_AUTHORITY_PASS"
     ):
         raise LifecycleError("pre-run authority schema/purpose mismatch")
+    selected_execution_identity = _identity(
+        record["attempt_execution_identity"],
+        "pre-run attempt execution identity",
+    )
+    loaded_execution, loaded_execution_identity = _load_attempt_execution(selected_execution_identity)
+    if attempt_execution is not None and validate_attempt_execution(attempt_execution) != loaded_execution:
+        raise LifecycleError("supplied attempt execution differs from replayed bytes")
+    if attempt_execution_identity is not None:
+        supplied_execution_identity = _identity(
+            attempt_execution_identity,
+            "supplied attempt execution identity",
+        )
+        if dict(supplied_execution_identity) != loaded_execution_identity:
+            raise LifecycleError("supplied attempt execution identity differs from replayed bytes")
+    execution = loaded_execution
     if (
         _bool(record["arm_launch_authorized"], "arm_launch_authorized") is not False
         or _bool(record["solver_run_authorized"], "solver_run_authorized") is not False
@@ -656,6 +830,17 @@ def validate_pre_run_authority(
     configuration, order, arm = _slot_parts(slot)
     if record["configuration"] != configuration or record["order"] != order or record["arm"] != arm:
         raise LifecycleError("arm selection slot metadata mismatch")
+    if (
+        _integer(record["attempt_ordinal"], "pre-run attempt ordinal", minimum=1)
+        != execution["attempt_ordinal"]
+        or record["preregistration_sha256"] != execution["preregistration_sha256"]
+    ):
+        raise LifecycleError("pre-run attempt ordinal/preregistration join failed")
+    if (
+        type(record["preregistration_sha256"]) is not str
+        or SHA256_RE.fullmatch(record["preregistration_sha256"]) is None
+    ):
+        raise LifecycleError("pre-run preregistration digest is invalid")
     _string(record["campaign_id"], "campaign_id")
     _string(record["run_nonce"], "run_nonce")
     repository_head = _string(record["repository_head"], "repository_head")
@@ -845,6 +1030,31 @@ def validate_pre_run_authority(
     )
     if any(type(item) is not bool or item is not True for item in preflight.values()):
         raise LifecycleError("pre-run preflight did not pass every mandatory gate")
+    execution_joins = {
+        "attempt_dir": "run_dir",
+        "authority_chain": "authority_chain",
+        "campaign_id": "campaign_id",
+        "campaign_root_identity": "campaign_root_identity",
+        "continuation_identity": "continuation_identity",
+        "manager_epoch": "manager_epoch",
+        "package": "package",
+        "pre_run_authority_path": "pre_run_authority_path",
+        "prospective_manifest_identity": "manifest_identity",
+        "repository_git_tool_identity": "repository_git_tool_identity",
+        "repository_head": "repository_head",
+        "repository_root": "repository_root",
+        "run_nonce": "run_nonce",
+        "runner_selection_path": "selection_path",
+        "slot": "slot",
+        "suite_selection_identity": "suite_selection_identity",
+        "unit_name": "unit_name",
+    }
+    for pre_run_field, execution_field in execution_joins.items():
+        if record[pre_run_field] != execution[execution_field]:
+            raise LifecycleError(f"pre-run {pre_run_field} differs from attempt execution")
+    for role in TOOL_ROLES:
+        if tools[role] != execution["tool_identities"][role]:
+            raise LifecycleError(f"pre-run tool {role} differs from attempt execution")
     if expected_slot is not None and record["slot"] != expected_slot:
         raise LifecycleError("pre-run expected slot differs")
     if campaign_root is not None:
@@ -864,32 +1074,32 @@ def validate_pre_run_authority(
             raise LifecycleError("pre-run campaign strict input map differs")
     if manifest is not None:
         sequence = manifest.get("arm_sequence")
-        attempts = manifest.get("attempt_dirs")
-        units = manifest.get("unit_names")
         if (
             type(sequence) is not list
-            or type(attempts) is not dict
-            or type(units) is not dict
             or record["slot"] not in sequence
-            or attempts.get(record["slot"]) != record["attempt_dir"]
-            or units.get(record["slot"]) != record["unit_name"]
-            or manifest.get("campaign_id") != record["campaign_id"]
-            or manifest.get("run_nonce") != record["run_nonce"]
-            or manifest.get("repository_head") != record["repository_head"]
-            or manifest.get("repository_root") != record["repository_root"]
-            or manifest.get("repository_git_tool_identity") != record["repository_git_tool_identity"]
-            or manifest.get("authority_chain") != record["authority_chain"]
+            or manifest.get("preregistration_sha256") != record["preregistration_sha256"]
+            or manifest.get("seed") != record["seed"]
+            or manifest.get("workers") != record["workers"]
+            or manifest.get("scientific_input_set_sha256") != execution["scientific_input_set_sha256"]
+            or manifest.get("scientific_materialization_sha256") != execution["scientific_materialization_sha256"]
         ):
             raise LifecycleError("pre-run organic manifest join failed")
-        bindings = manifest.get("arm_binding_identities")
-        if type(bindings) is not dict or bindings.get(record["slot"]) != record["arm_binding_identity"]:
-            raise LifecycleError("pre-run arm-binding manifest join failed")
-    if suite_selection is not None and (
-        suite_selection.get("arm_launch_authorized") is not False
-        or suite_selection.get("run_nonce") != record["run_nonce"]
-        or suite_selection.get("package_id") != record["package"]["package_id"]
-    ):
-        raise LifecycleError("pre-run suite selection join failed")
+    if suite_selection is not None:
+        suite_authorizations = suite_selection.get("authorizations")
+        if (
+            suite_selection.get("schema_version") != "noncert-cuts-ab16-suite-selection-v1"
+            or suite_selection.get("purpose") != "AB16_SUITE_SELECTION_NO_ARM_LAUNCH"
+            or suite_selection.get("status") != "PASS"
+            or type(suite_authorizations) is not dict
+            or not suite_authorizations
+            or any(value is not False for value in suite_authorizations.values())
+            or suite_selection.get("manifest_identity") != record["prospective_manifest_identity"]
+            or suite_selection.get("preregistration_sha256") != record["preregistration_sha256"]
+            or suite_selection.get("scientific_input_set_sha256") != execution["scientific_input_set_sha256"]
+            or suite_selection.get("scientific_materialization_sha256")
+            != execution["scientific_materialization_sha256"]
+        ):
+            raise LifecycleError("pre-run suite selection join failed")
     return record
 
 
@@ -898,14 +1108,25 @@ def validate_runner_selection(
     *,
     pre_run_authority: Mapping[str, Any],
     pre_run_authority_identity: Mapping[str, Any],
+    attempt_execution: Mapping[str, Any] | None = None,
+    attempt_execution_identity: Mapping[str, Any] | None = None,
 ) -> Mapping[str, Any]:
     """Validate the runner's exact selection schema against pre-run bytes."""
 
     pre_run = validate_pre_run_authority(pre_run_authority)
+    execution, execution_identity = _load_attempt_execution(pre_run["attempt_execution_identity"])
+    if attempt_execution is not None and validate_attempt_execution(attempt_execution) != execution:
+        raise LifecycleError("selection supplied attempt execution differs from replayed bytes")
+    if attempt_execution_identity is not None and dict(
+        _identity(attempt_execution_identity, "selection supplied attempt execution identity")
+    ) != execution_identity:
+        raise LifecycleError("selection supplied attempt execution identity differs")
     expected = {
         "arm",
         "arm_binding_identity",
+        "attempt_execution_identity",
         "attempt_dir",
+        "attempt_ordinal",
         "authority_chain",
         "authorizations",
         "baseline_admission_identity",
@@ -918,6 +1139,7 @@ def validate_runner_selection(
         "manifest_identity",
         "order",
         "pre_run_authority_identity",
+        "preregistration_sha256",
         "purpose",
         "repository_head",
         "repository_root",
@@ -943,7 +1165,9 @@ def validate_runner_selection(
     for field in (
         "arm",
         "arm_binding_identity",
+        "attempt_execution_identity",
         "attempt_dir",
+        "attempt_ordinal",
         "authority_chain",
         "baseline_admission_identity",
         "baseline_incumbent_sha256",
@@ -951,6 +1175,7 @@ def validate_runner_selection(
         "common_prestate_identity",
         "configuration",
         "order",
+        "preregistration_sha256",
         "repository_head",
         "repository_root",
         "repository_git_tool_identity",
@@ -967,6 +1192,19 @@ def validate_runner_selection(
             raise LifecycleError(f"runner selection {field} differs from pre-run authority")
     if record["manifest_identity"] != pre_run["prospective_manifest_identity"]:
         raise LifecycleError("runner selection manifest identity differs from pre-run")
+    if (
+        record["attempt_execution_identity"] != execution_identity
+        or record["attempt_dir"] != execution["run_dir"]
+        or record["attempt_ordinal"] != execution["attempt_ordinal"]
+        or record["preregistration_sha256"] != execution["preregistration_sha256"]
+        or record["slot"] != execution["slot"]
+        or record["unit_name"] != execution["unit_name"]
+        or record["repository_head"] != execution["repository_head"]
+        or record["repository_root"] != execution["repository_root"]
+        or record["repository_git_tool_identity"] != execution["repository_git_tool_identity"]
+        or record["authority_chain"] != execution["authority_chain"]
+    ):
+        raise LifecycleError("runner selection differs from attempt execution")
     selected_pre_run_identity = _identity(
         record["pre_run_authority_identity"],
         "runner selection pre-run authority identity",
@@ -1547,7 +1785,7 @@ def _validate_keeper_release(
         resource.get("schema_version") != "noncert-cuts-ab16-resource-verification-v1"
         or resource.get("status") != "PASS"
         or resource.get("verdict") != _expected_resource_verdict(pre_run)
-        or resource.get("inner_identity") != inner_identity
+        or resource.get("inner_identity") != _detached_identity(inner_identity)
     ):
         raise LifecycleError("keeper release lacks independent resource PASS")
 

@@ -40,6 +40,10 @@ def _identity(path: Path) -> dict[str, object]:
     return dict(LIFECYCLE.snapshot_regular(path).identity)
 
 
+def _detached(identity: dict[str, object]) -> dict[str, object]:
+    return {field: identity[field] for field in ("path", "sha256", "size_bytes")}
+
+
 def _write(path: Path, value: object) -> dict[str, object]:
     path.parent.mkdir(parents=True, exist_ok=True)
     return LIFECYCLE.write_json_exclusive(path, value)
@@ -227,13 +231,14 @@ class FakeAdapter:
         assert f"--property=CollectMode={self.resource_contract['collect_mode']}" in systemd_run_argv
         assert f"--property=RuntimeMaxSec={self.resource_contract['runtime_max_seconds']}" in systemd_run_argv
         assert payload_argv
-        payload_result_identity = _write(
+        payload_result = {
+            "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+            "slot": self.slot,
+            "status": "UNKNOWN",
+        }
+        payload_result_identity = LIFECYCLE.write_exclusive(
             self.attempt_dir / "result.json",
-            {
-                "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
-                "slot": self.slot,
-                "status": "UNKNOWN",
-            },
+            LIFECYCLE.canonical_json_bytes(payload_result) + b"\n",
         )
         launch = ORCHESTRATOR.LaunchEvidence(
             invocation_id=self.invocation,
@@ -400,8 +405,10 @@ def _fixture(
     *,
     postseal_failure_exit_code: int = 0,
 ) -> tuple[Path, Path, Path]:
-    attempt = tmp_path / "attempt"
-    attempt.mkdir()
+    authority_attempt = tmp_path / "attempt"
+    attempt = authority_attempt / "run"
+    attempt.mkdir(parents=True)
+    (authority_attempt / "support").mkdir()
     authority_dir = tmp_path / "authority"
     authority_dir.mkdir()
     identities: dict[str, dict[str, object]] = {}
@@ -506,13 +513,82 @@ def _fixture(
         "expectation": ("SUCCESS" if postseal_failure_exit_code == 0 else "POST_SEAL_FAILURE"),
         "signal": 0,
     }
+    tool_identities = {
+        "busctl": _tool_identity(Path(manager_epoch["observation_toolchain"]["busctl"]["path"])),
+        "manager_attestor": _tool_identity(MANAGER_ATTESTOR_PATH),
+        "manager_epoch_authority": _tool_identity(MANAGER_AUTHORITY_PATH),
+        "organic_arm_runner": _tool_identity(TOOLS / "organic_arm_runner_v1.py"),
+        "organic_resource_lifecycle": _tool_identity(LIFECYCLE_PATH),
+        "organic_resource_verifier": _tool_identity(VERIFIER_PATH),
+        "organic_unit_orchestrator": _tool_identity(ORCHESTRATOR_PATH),
+        "python3_13": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
+        "sudo": _tool_identity(Path(manager_epoch["attestation_toolchain"]["sudo"]["path"])),
+        "systemctl": identities["systemctl"],
+        "systemd_run": identities["systemd-run"],
+    }
+    execution_tool_identities = {
+        **tool_identities,
+        "ab16_contract": _tool_identity(TOOLS / "ab16_contract_v1.py"),
+        "ab16_terminal_gate": _tool_identity(TOOLS / "ab16_terminal_gate_v1.py"),
+        "organic_arm_replay": _tool_identity(TOOLS / "organic_arm_replay_v1.py"),
+    }
+    research_only_authorizations = {
+        "cut_authorized": False,
+        "family_global_soundness_authorized": False,
+        "global_claim_authorized": False,
+        "lower_bound_authorized": False,
+        "mathematical_claim_authorized": False,
+        "optimality_authorized": False,
+        "production_certified_authorized": False,
+        "stage_b_promotion_authorized": False,
+        "upper_bound_authorized": False,
+        "witness_authorized": False,
+    }
+    input_set_identity = _write(
+        authority_attempt / "attempt-input-set.json",
+        {"schema_version": "noncert-cuts-ab16-attempt-input-set-v2"},
+    )
+    execution = {
+        "attempt_ordinal": 1,
+        "authorizations": research_only_authorizations,
+        "authority_attempt_dir": str(authority_attempt),
+        "authority_chain": authority_chain,
+        "campaign_id": "c" * 64,
+        "campaign_root_identity": identities["root"],
+        "continuation_identity": identities["continuation"],
+        "input_set_identity": input_set_identity,
+        "input_set_sha256": "e" * 64,
+        "manager_epoch": manager_epoch,
+        "manifest_identity": _detached(identities["manifest"]),
+        "package": package,
+        "pre_run_authority_path": str(pre_run_path),
+        "preregistration_sha256": "f" * 64,
+        "repository_git_tool_identity": identities["git"],
+        "repository_head": "d" * 40,
+        "repository_root": str(ROOT),
+        "run_dir": str(attempt),
+        "run_nonce": "run-a",
+        "schema_version": LIFECYCLE.ATTEMPT_EXECUTION_SCHEMA,
+        "scientific_input_set_sha256": "1" * 64,
+        "scientific_materialization_sha256": "2" * 64,
+        "selection_path": str(selection_path),
+        "slot": "region-capacity-ab-control",
+        "status": "READY",
+        "suite_selection_identity": _detached(identities["suite-selection"]),
+        "support_dir": str(authority_attempt / "support"),
+        "tool_identities": execution_tool_identities,
+        "unit_name": "cuts-ab16-region-capacity-ab-control.service",
+    }
+    execution_identity = _detached(_write(authority_attempt / "attempt-execution.json", execution))
     payload_script = str(TOOLS / "organic_arm_runner_v1.py")
     pre_run = {
         "arm": "control",
         "arm_binding_identity": identities["binding"],
         "arm_launch_authorized": False,
         "arm_selection_write_authorized": True,
+        "attempt_execution_identity": execution_identity,
         "attempt_dir": str(attempt),
+        "attempt_ordinal": 1,
         "authority_chain": authority_chain,
         "baseline_admission_identity": identities["baseline"],
         "baseline_incumbent_sha256": "b" * 64,
@@ -565,7 +641,8 @@ def _fixture(
         },
         "preselection_epoch_identity": identities["preselection"],
         "preselection_transcript_identity": preselection_transcript_identity,
-        "prospective_manifest_identity": identities["manifest"],
+        "prospective_manifest_identity": _detached(identities["manifest"]),
+        "preregistration_sha256": "f" * 64,
         "purpose": "PROSPECTIVE_AB16_ORGANIC_ARM_PRE_RUN_AUTHORITY",
         "repository_head": "d" * 40,
         "repository_git_tool_identity": identities["git"],
@@ -573,36 +650,26 @@ def _fixture(
         "resource_contract": dict(LIFECYCLE.FORMAL_RESOURCE_CONTRACT),
         "run_nonce": "run-a",
         "runner_selection_path": str(selection_path),
-        "schema_version": "noncert-cuts-ab16-organic-pre-run-authority-v1",
+        "schema_version": LIFECYCLE.PRE_RUN_AUTHORITY_SCHEMA,
         "seed": 2026072301,
         "slot": "region-capacity-ab-control",
         "solver_run_authorized": False,
         "status": "PASS",
         "strict_input_identities": {"strict": identities["strict"]},
-        "suite_selection_identity": identities["suite-selection"],
-        "tool_identities": {
-            "busctl": _tool_identity(Path(manager_epoch["observation_toolchain"]["busctl"]["path"])),
-            "manager_attestor": _tool_identity(MANAGER_ATTESTOR_PATH),
-            "manager_epoch_authority": _tool_identity(MANAGER_AUTHORITY_PATH),
-            "organic_arm_runner": _tool_identity(TOOLS / "organic_arm_runner_v1.py"),
-            "organic_resource_lifecycle": _tool_identity(LIFECYCLE_PATH),
-            "organic_resource_verifier": _tool_identity(VERIFIER_PATH),
-            "organic_unit_orchestrator": _tool_identity(ORCHESTRATOR_PATH),
-            "python3_13": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
-            "sudo": _tool_identity(Path(manager_epoch["attestation_toolchain"]["sudo"]["path"])),
-            "systemctl": identities["systemctl"],
-            "systemd_run": identities["systemd-run"],
-        },
+        "suite_selection_identity": _detached(identities["suite-selection"]),
+        "tool_identities": tool_identities,
         "unit_name": "cuts-ab16-region-capacity-ab-control.service",
         "verdict": "AB16_ORGANIC_PRE_RUN_AUTHORITY_PASS",
         "workers": 1,
     }
     LIFECYCLE.validate_pre_run_authority(pre_run)
-    pre_run_identity = _write(pre_run_path, pre_run)
+    pre_run_identity = _detached(_write(pre_run_path, pre_run))
     selection = {
         "arm": "control",
         "arm_binding_identity": identities["binding"],
+        "attempt_execution_identity": execution_identity,
         "attempt_dir": str(attempt),
+        "attempt_ordinal": 1,
         "authority_chain": authority_chain,
         "authorizations": {
             "global_claim_authorized": False,
@@ -620,15 +687,16 @@ def _fixture(
         "execution_class": execution_class,
         "expected_payload_status": expected_payload_status,
         "fresh_process_required": True,
-        "manifest_identity": identities["manifest"],
+        "manifest_identity": _detached(identities["manifest"]),
         "order": "ab",
         "pre_run_authority_identity": pre_run_identity,
+        "preregistration_sha256": "f" * 64,
         "purpose": "prospective_noncert_cuts_ab16_formal_arm",
         "repository_head": "d" * 40,
         "repository_git_tool_identity": identities["git"],
         "repository_root": str(ROOT),
         "run_nonce": "run-a",
-        "schema_version": "noncert-cuts-ab16-organic-arm-selection-v1",
+        "schema_version": LIFECYCLE.RUNNER_SELECTION_SCHEMA,
         "seed": 2026072301,
         "selection_nonce": "selection-a",
         "slot": "region-capacity-ab-control",
@@ -1337,7 +1405,7 @@ def test_ordinary_user_supervisor_writes_inner_and_waits_for_pass_release(
             return
         inner_identity = _identity(inner_path)
         resource = {
-            "inner_identity": inner_identity,
+            "inner_identity": _detached(inner_identity),
             "schema_version": "noncert-cuts-ab16-resource-verification-v1",
             "status": "PASS",
             "verdict": LIFECYCLE._expected_resource_verdict(pre_run),  # noqa: SLF001

@@ -55,6 +55,10 @@ def _authority(path: Path, value: object) -> dict[str, object]:
     return _write(path, RUNNER.canonical_json(value))
 
 
+def _authority_compact(path: Path, value: object) -> dict[str, object]:
+    return _write(path, RUNNER._canonical_compact(value))
+
+
 def _existing_identity(path: Path) -> dict[str, object]:
     raw = path.read_bytes()
     return {
@@ -243,35 +247,51 @@ def _fixture(
             "schema_version": "fixture-common-prestate-v1",
         },
     )
-    arithmetic_tool_identity = _write(
-        root / "tools" / "independent-arithmetic-formal.py",
-        b"# independently pinned formal arithmetic verifier fixture\n",
-    )
-    per_arm_tools = {}
-    for role in sorted(RUNNER.PER_ARM_TOOL_ROLES):
-        raw = f"# pinned {role} fixture\n".encode()
-        if role == "resource_lifecycle":
-            raw = textwrap.dedent(
-                """
-                def validate_pre_run_authority(value):
-                    if value.get("status") != "PASS":
-                        raise ValueError("pre-run authority did not pass")
-                    return value
+    execution_tools: dict[str, dict[str, object]] = {}
+    input_tools: dict[str, dict[str, object]] = {}
+    code_roles = {
+        "ab16_contract",
+        "ab16_terminal_gate",
+        "organic_arm_replay",
+        "organic_arm_runner",
+        "organic_resource_lifecycle",
+        "organic_resource_verifier",
+        "organic_unit_orchestrator",
+    }
+    for role in sorted(RUNNER.EXECUTION_TOOL_ROLES):
+        if role == "organic_arm_runner":
+            path = RUNNER_PATH
+        else:
+            raw = f"# pinned {role} fixture\n".encode()
+            if role == "organic_resource_lifecycle":
+                raw = textwrap.dedent(
+                    """
+                    def validate_pre_run_authority(value, **kwargs):
+                        del kwargs
+                        if value.get("status") != "PASS":
+                            raise ValueError("pre-run authority did not pass")
+                        return value
 
-                def validate_runner_selection(
-                    value,
-                    *,
-                    pre_run_authority,
-                    pre_run_authority_identity,
-                ):
-                    if value.get("pre_run_authority_identity") != pre_run_authority_identity:
-                        raise ValueError("pre-run identity mismatch")
-                    if pre_run_authority.get("slot") != value.get("slot"):
-                        raise ValueError("pre-run slot mismatch")
-                    return value
-                """
-            ).encode()
-        per_arm_tools[role] = _write(root / "tools" / f"{role}.py", raw)
+                    def validate_runner_selection(
+                        value,
+                        *,
+                        pre_run_authority,
+                        pre_run_authority_identity,
+                        **kwargs,
+                    ):
+                        del kwargs
+                        if value.get("pre_run_authority_identity") != pre_run_authority_identity:
+                            raise ValueError("pre-run identity mismatch")
+                        if pre_run_authority.get("slot") != value.get("slot"):
+                            raise ValueError("pre-run slot mismatch")
+                        return value
+                    """
+                ).encode()
+            path = root / "tools" / f"{role}.py"
+            _write(path, raw)
+        execution_tools[role] = _existing_identity_with_mode(path)
+        if role in code_roles:
+            input_tools[role] = execution_tools[role]
     package_manifest_identity = _authority(
         root / "authority" / "package-manifest.json",
         {"schema_version": "fixture-package-manifest-v1"},
@@ -355,38 +375,21 @@ def _fixture(
         )
         for slot in RUNNER.ARM_SEQUENCE
     }
-    attempts = {slot: str((arms_parent / slot).resolve()) for slot in RUNNER.ARM_SEQUENCE}
-    unit_names = {slot: f"cuts-fixture-ab16-{slot}.service" for slot in RUNNER.ARM_SEQUENCE}
+    preregistration_path = prospective / "path-preregistration.json"
+    preregistration_identity = _authority(
+        preregistration_path,
+        {"schema_version": "fixture-preregistration-v1"},
+    )
+    preregistration_identity_with_mode = _existing_identity_with_mode(preregistration_path)
+    scientific_input_set_sha256 = "7" * 64
+    scientific_materialization_sha256 = "8" * 64
     manifest = {
-        "arithmetic_verifier": {
-            "purpose": RUNNER.FORMAL_ARITHMETIC_PURPOSE,
-            "tool_identity": arithmetic_tool_identity,
-        },
-        "arm_binding_identities": bindings,
         "arm_sequence": list(RUNNER.ARM_SEQUENCE),
-        "attempt_dirs": attempts,
-        "authority_chain": authority_chain,
-        "authorizations": {
-            "global_claim_authorized": False,
-            "mathematical_claim_authorized": False,
-            "organic_arm_launch_authorized": True,
-            "production_certified_authorized": False,
-        },
-        "baseline_admission_identity": admission_identity,
-        "baseline_incumbent_identity": incumbent_identity,
-        "campaign_id": "a" * 64,
-        "classification_contract_identity": _existing_identity(CONTRACT_PATH),
-        "common_prestate_identity": common_identity,
         "configuration_families": {key: list(value) for key, value in RUNNER.CONFIGURATION_FAMILIES.items()},
         "experiment_contract": RUNNER.EXPERIMENT_CONTRACT,
         "forbidden_families": list(RUNNER.FORBIDDEN_FAMILIES),
-        "per_arm_tool_identities": per_arm_tools,
+        "preregistration_sha256": preregistration_identity["sha256"],
         "purpose": RUNNER.MANIFEST_PURPOSE,
-        "repository_git_tool_identity": _existing_identity_with_mode(GIT_PATH),
-        "repository_head": REPOSITORY_HEAD,
-        "repository_root": str(ROOT),
-        "run_nonce": "fixture-run-a001",
-        "runner_tool_identity": _existing_identity(RUNNER_PATH),
         "runtime_parameters": {
             "attach_iteration": 1001,
             "attach_trigger": "binding_infeasible",
@@ -399,25 +402,131 @@ def _fixture(
             "routing_seconds": 600,
         },
         "schema_version": RUNNER.MANIFEST_SCHEMA,
+        "scientific_input_set_sha256": scientific_input_set_sha256,
+        "scientific_materialization_sha256": scientific_materialization_sha256,
         "seed": 2026072301,
-        "unit_names": unit_names,
         "workers": 1,
     }
     manifest_path = prospective / "manifest-a001.json"
-    manifest_identity = _authority(manifest_path, manifest)
+    manifest_identity = _authority_compact(manifest_path, manifest)
+    suite_selection = {
+        "arm_sequence": list(RUNNER.ARM_SEQUENCE),
+        "authorizations": {
+            "cut_authorized": False,
+            "family_global_soundness_authorized": False,
+            "global_claim_authorized": False,
+            "lower_bound_authorized": False,
+            "mathematical_claim_authorized": False,
+            "optimality_authorized": False,
+            "production_certified_authorized": False,
+            "stage_b_promotion_authorized": False,
+            "upper_bound_authorized": False,
+            "witness_authorized": False,
+        },
+        "manifest_identity": manifest_identity,
+        "preregistration_sha256": preregistration_identity["sha256"],
+        "purpose": "AB16_SUITE_SELECTION_NO_ARM_LAUNCH",
+        "schema_version": RUNNER.SUITE_SELECTION_SCHEMA,
+        "scientific_input_set_sha256": scientific_input_set_sha256,
+        "scientific_materialization_sha256": scientific_materialization_sha256,
+        "selection_id": "",
+        "status": "PASS",
+    }
+    suite_selection["selection_id"] = hashlib.sha256(RUNNER._canonical_compact(suite_selection)).hexdigest()
+    suite_selection_path = prospective / "selection-a001.json"
+    suite_selection_identity = _authority_compact(suite_selection_path, suite_selection)
     slot = f"{configuration}-{order}-{arm}"
     enabled = [] if arm == "control" else list(RUNNER.CONFIGURATION_FAMILIES[configuration])
-    attempt_dir = Path(attempts[slot])
-    attempt_dir.mkdir()
-    pre_run_authority_identity = _authority(
+    authority_attempt_dir = arms_parent / slot / "attempt-0001"
+    attempt_dir = authority_attempt_dir / "run"
+    support_dir = authority_attempt_dir / "support"
+    attempt_dir.mkdir(parents=True)
+    support_dir.mkdir()
+    strict_inputs = {
+        "baseline_admission": _existing_identity_with_mode(Path(admission_identity["path"])),
+        "baseline_incumbent": _existing_identity_with_mode(Path(incumbent_identity["path"])),
+        "common_prestate": _existing_identity_with_mode(Path(common_identity["path"])),
+        "scientific_manifest": _existing_identity_with_mode(manifest_path),
+        "suite_selection": _existing_identity_with_mode(suite_selection_path),
+        f"arm_binding.{slot}": _existing_identity_with_mode(Path(bindings[slot]["path"])),
+    }
+    input_set_sha256 = RUNNER._attempt_input_set_digest(
+        preregistration_sha256=preregistration_identity["sha256"],
+        repository_head=REPOSITORY_HEAD,
+        strict_inputs=strict_inputs,
+        tools=input_tools,
+    )
+    research_only = dict(suite_selection["authorizations"])
+    input_set_path = authority_attempt_dir / "attempt-input-set.json"
+    _authority_compact(
+        input_set_path,
+        {
+            "authorizations": research_only,
+            "input_set_sha256": input_set_sha256,
+            "preregistration_identity": preregistration_identity_with_mode,
+            "preregistration_sha256": preregistration_identity["sha256"],
+            "repository_head": REPOSITORY_HEAD,
+            "schema_version": RUNNER.INPUT_SET_SCHEMA,
+            "scientific_input_set_sha256": scientific_input_set_sha256,
+            "scientific_materialization_sha256": scientific_materialization_sha256,
+            "source_strict_input_identities": strict_inputs,
+            "source_tool_identities": input_tools,
+            "strict_input_identities": strict_inputs,
+            "tool_identities": input_tools,
+        },
+    )
+    unit_name = f"cuts-fixture-ab16-{slot}-a0001.service"
+    execution = {
+        "attempt_ordinal": 1,
+        "authorizations": research_only,
+        "authority_attempt_dir": str(authority_attempt_dir.resolve()),
+        "authority_chain": authority_chain,
+        "campaign_id": "a" * 64,
+        "campaign_root_identity": authority_chain["campaign_root_identity"],
+        "continuation_identity": authority_chain["continuation_identity"],
+        "input_set_identity": _existing_identity_with_mode(input_set_path),
+        "input_set_sha256": input_set_sha256,
+        "manager_epoch": {"fixture": "manager-epoch"},
+        "manifest_identity": manifest_identity,
+        "package": authority_chain["package"],
+        "pre_run_authority_path": str((attempt_dir / "pre-run-authority.json").resolve()),
+        "preregistration_sha256": preregistration_identity["sha256"],
+        "repository_git_tool_identity": _existing_identity_with_mode(GIT_PATH),
+        "repository_head": REPOSITORY_HEAD,
+        "repository_root": str(ROOT),
+        "run_dir": str(attempt_dir.resolve()),
+        "run_nonce": "fixture-run-a001",
+        "schema_version": RUNNER.ATTEMPT_EXECUTION_SCHEMA,
+        "scientific_input_set_sha256": scientific_input_set_sha256,
+        "scientific_materialization_sha256": scientific_materialization_sha256,
+        "selection_path": str((attempt_dir / "selection.json").resolve()),
+        "slot": slot,
+        "status": "READY",
+        "suite_selection_identity": suite_selection_identity,
+        "support_dir": str(support_dir.resolve()),
+        "tool_identities": execution_tools,
+        "unit_name": unit_name,
+    }
+    execution_path = authority_attempt_dir / "attempt-execution.json"
+    execution_identity = _authority_compact(execution_path, execution)
+    pre_run_authority_identity = _authority_compact(
         attempt_dir / "pre-run-authority.json",
         {
+            "attempt_execution_identity": execution_identity,
+            "attempt_ordinal": 1,
             "authorizations": {
                 "organic_arm_launch_authorized": False,
                 "solver_run_authorized": False,
             },
+            "epoch_observation_paths": {
+                "launch": str((attempt_dir / "manager-epoch-launch.json").resolve()),
+            },
+            "epoch_transcript_paths": {
+                "launch": str((attempt_dir / "manager-transcript-launch.json").resolve()),
+            },
+            "preregistration_sha256": preregistration_identity["sha256"],
             "purpose": "fixture-nonauthorizing-pre-run-authority",
-            "schema_version": "fixture-pre-run-authority-v1",
+            "schema_version": RUNNER.PRE_RUN_SCHEMA,
             "slot": slot,
             "status": "PASS",
         },
@@ -425,7 +534,9 @@ def _fixture(
     selection = {
         "arm": arm,
         "arm_binding_identity": bindings[slot],
-        "attempt_dir": attempts[slot],
+        "attempt_execution_identity": execution_identity,
+        "attempt_dir": str(attempt_dir.resolve()),
+        "attempt_ordinal": 1,
         "authority_chain": authority_chain,
         "authorizations": {
             "global_claim_authorized": False,
@@ -436,7 +547,7 @@ def _fixture(
         },
         "baseline_admission_identity": admission_identity,
         "baseline_incumbent_sha256": RUNNER.semantic_digest(incumbent),
-        "campaign_id": manifest["campaign_id"],
+        "campaign_id": execution["campaign_id"],
         "common_prestate_identity": common_identity,
         "configuration": configuration,
         "enabled_families": enabled,
@@ -450,24 +561,29 @@ def _fixture(
         "manifest_identity": manifest_identity,
         "order": order,
         "pre_run_authority_identity": pre_run_authority_identity,
+        "preregistration_sha256": preregistration_identity["sha256"],
         "purpose": RUNNER.SELECTION_PURPOSE,
-        "repository_git_tool_identity": manifest["repository_git_tool_identity"],
-        "repository_head": manifest["repository_head"],
-        "repository_root": manifest["repository_root"],
-        "run_nonce": manifest["run_nonce"],
+        "repository_git_tool_identity": execution["repository_git_tool_identity"],
+        "repository_head": execution["repository_head"],
+        "repository_root": execution["repository_root"],
+        "run_nonce": execution["run_nonce"],
         "schema_version": RUNNER.SELECTION_SCHEMA,
         "seed": manifest["seed"],
         "selection_nonce": f"selection-{slot}",
         "slot": slot,
-        "unit_name": unit_names[slot],
+        "unit_name": unit_name,
         "workers": 1,
     }
     selection_path = attempt_dir / "selection.json"
-    _authority(selection_path, selection)
+    _authority_compact(selection_path, selection)
+    _authority_compact(attempt_dir / "manager-epoch-launch.json", {"phase": "launch"})
+    _authority_compact(attempt_dir / "manager-transcript-launch.json", {"phase": "launch"})
     return {
         "attempt_dir": attempt_dir,
         "bindings": bindings,
         "common_path": Path(common_identity["path"]),
+        "execution": execution,
+        "execution_path": execution_path,
         "incumbent": incumbent,
         "manifest": manifest,
         "manifest_path": manifest_path,
@@ -477,7 +593,7 @@ def _fixture(
 
 
 def _rewrite_authority(path: Path, value: object) -> dict[str, object]:
-    path.write_bytes(RUNNER.canonical_json(value))
+    path.write_bytes(RUNNER._canonical_compact(value))
     raw = path.read_bytes()
     return {
         "path": str(path.resolve()),
@@ -715,30 +831,24 @@ def test_pattern_nogood_or_nonexact_treatment_set_is_rejected(
         )
     assert hooks.constructed is False
     assert {path.name for path in fixture["attempt_dir"].iterdir()} == {
+        "manager-epoch-launch.json",
+        "manager-transcript-launch.json",
         "pre-run-authority.json",
         "selection.json",
     }
 
 
-def test_formal_arithmetic_purpose_cannot_be_replaced_by_drill(
-    tmp_path: Path,
-) -> None:
+def test_scientific_manifest_contains_no_attempt_topology(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
-    fixture["manifest"]["arithmetic_verifier"]["purpose"] = "gate1_v4_disposable_drill_arithmetic"
-    manifest_identity = _rewrite_authority(
-        fixture["manifest_path"],
-        fixture["manifest"],
-    )
-    fixture["selection"]["manifest_identity"] = manifest_identity
-    _rewrite_authority(fixture["selection_path"], fixture["selection"])
-    hooks = FakeHooks(fixture["incumbent"])
-    with pytest.raises(RUNNER.RunnerError, match="formal arithmetic-verifier"):
-        RUNNER._run_with_hooks(
-            fixture["selection_path"],
-            hooks,
-            enforce_single_process_use=False,
-        )
-    assert hooks.constructed is False
+    assert RUNNER.validate_manifest(fixture["manifest"]) == fixture["manifest"]
+    assert not {
+        "attempt_dirs",
+        "unit_names",
+        "repository_head",
+        "repository_root",
+        "authority_chain",
+        "per_arm_tool_identities",
+    } & set(fixture["manifest"])
 
 
 def test_resource_contract_mutation_is_rejected_before_arm(
@@ -748,20 +858,8 @@ def test_resource_contract_mutation_is_rejected_before_arm(
     changed = json.loads(json.dumps(RUNNER.EXPERIMENT_CONTRACT))
     changed["resource_contract"]["memory_max_bytes"] -= 1
     fixture["manifest"]["experiment_contract"] = changed
-    manifest_identity = _rewrite_authority(
-        fixture["manifest_path"],
-        fixture["manifest"],
-    )
-    fixture["selection"]["manifest_identity"] = manifest_identity
-    _rewrite_authority(fixture["selection_path"], fixture["selection"])
-    hooks = FakeHooks(fixture["incumbent"])
     with pytest.raises(RUNNER.RunnerError, match="experiment contract"):
-        RUNNER._run_with_hooks(
-            fixture["selection_path"],
-            hooks,
-            enforce_single_process_use=False,
-        )
-    assert hooks.constructed is False
+        RUNNER.validate_manifest(fixture["manifest"])
 
 
 def test_runtime_guard_is_exactly_one_hour() -> None:
@@ -773,7 +871,7 @@ def test_resource_verifier_tool_drift_is_rejected_before_arm(
     tmp_path: Path,
 ) -> None:
     fixture = _fixture(tmp_path)
-    verifier = Path(fixture["manifest"]["per_arm_tool_identities"]["resource_verifier"]["path"])
+    verifier = Path(fixture["execution"]["tool_identities"]["organic_resource_verifier"]["path"])
     verifier.write_bytes(verifier.read_bytes() + b"# drift\n")
     hooks = FakeHooks(fixture["incumbent"])
     with pytest.raises(RUNNER.RunnerError, match="identity replay failed"):
@@ -836,6 +934,44 @@ def test_unregistered_prelaunch_file_is_rejected_before_arm(
     assert hooks.constructed is False
 
 
+def test_missing_orchestrator_launch_receipt_is_rejected_before_arm(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    (fixture["attempt_dir"] / "manager-epoch-launch.json").unlink()
+    hooks = FakeHooks(fixture["incumbent"])
+    with pytest.raises(RUNNER.RunnerError, match="prelaunch contents drifted"):
+        RUNNER._run_with_hooks(
+            fixture["selection_path"],
+            hooks,
+            enforce_single_process_use=False,
+        )
+    assert hooks.constructed is False
+
+
+def test_isolated_python_installs_replayed_repository_before_src_import() -> None:
+    program = textwrap.dedent(
+        f"""
+        import importlib.util
+        import sys
+        spec = importlib.util.spec_from_file_location("isolated_ab16_runner", {str(RUNNER_PATH)!r})
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+        module._install_repository_import_root({str(ROOT)!r})
+        from src.cuts.ledger import CutLedgerWriter
+        assert CutLedgerWriter.__name__ == "CutLedgerWriter"
+        """
+    )
+    completed = subprocess.run(
+        (sys.executable, "-I", "-c", program),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
+    run_source = inspect.getsource(RUNNER._run_with_hooks)
+    assert run_source.index("_install_repository_import_root") < run_source.index("from src.cuts.ledger")
+
+
 def test_selection_purpose_must_be_formal_not_drill(
     tmp_path: Path,
 ) -> None:
@@ -881,6 +1017,8 @@ def test_binding_drift_fails_before_runner_owned_attempt_outputs(
         )
     assert hooks.constructed is False
     assert {path.name for path in fixture["attempt_dir"].iterdir()} == {
+        "manager-epoch-launch.json",
+        "manager-transcript-launch.json",
         "pre-run-authority.json",
         "selection.json",
     }
@@ -933,18 +1071,8 @@ def test_strict_manifest_extra_key_is_rejected(
 ) -> None:
     fixture = _fixture(tmp_path)
     fixture["manifest"]["unexpected"] = False
-    manifest_identity = _rewrite_authority(
-        fixture["manifest_path"],
-        fixture["manifest"],
-    )
-    fixture["selection"]["manifest_identity"] = manifest_identity
-    _rewrite_authority(fixture["selection_path"], fixture["selection"])
     with pytest.raises(RUNNER.RunnerError, match="exact key set"):
-        RUNNER._run_with_hooks(
-            fixture["selection_path"],
-            FakeHooks(fixture["incumbent"]),
-            enforce_single_process_use=False,
-        )
+        RUNNER.validate_manifest(fixture["manifest"])
 
 
 def test_noncanonical_selection_is_rejected(
