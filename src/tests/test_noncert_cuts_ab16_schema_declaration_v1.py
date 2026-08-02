@@ -15,6 +15,11 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 AB16_RESEARCH = ROOT / "docs/research/noncert_cuts_ab16_20260724"
 DECLARATION_PATH = AB16_RESEARCH / "ab16_schema_declaration_v1.py"
+GATE1_AUTHORITY_PATH = (
+    ROOT
+    / "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724"
+    / "campaign_authority_v4.py"
+)
 
 
 def _load(name: str, path: Path) -> ModuleType:
@@ -27,6 +32,7 @@ def _load(name: str, path: Path) -> ModuleType:
 
 
 DECLARATION = _load("noncert_cuts_ab16_schema_declaration_v1_tested", DECLARATION_PATH)
+GATE1_AUTHORITY = _load("noncert_cuts_gate1_v4_authority_for_ab16_schema_test", GATE1_AUTHORITY_PATH)
 
 
 def _projection() -> dict[str, list[str]]:
@@ -51,22 +57,58 @@ def _surviving_source_schemas() -> set[str]:
 
 def test_self_check_reports_the_closed_surviving_cohort() -> None:
     assert DECLARATION.self_check() == {
-        "cohort_count": 5,
+        "cohort_count": 6,
         "cohort_names": (
             "bootstrap_retry",
             "baseline",
             "organic_execution",
             "resource_lifecycle",
             "replay_terminal",
+            "gate1_owned_reference",
         ),
-        "schema_count": 49,
+        "schema_count": 48,
         "status": "PASS",
     }
-    assert len(DECLARATION.ORDERED_ACTIVE_SCHEMAS) == len(DECLARATION.ACTIVE_SCHEMA_SET) == 49
+    assert len(DECLARATION.ORDERED_ACTIVE_SCHEMAS) == len(DECLARATION.ACTIVE_SCHEMA_SET) == 48
 
 
 def test_declaration_exactly_covers_surviving_source_discriminators() -> None:
-    assert _surviving_source_schemas() == DECLARATION.ACTIVE_SCHEMA_SET
+    local_schemas = _surviving_source_schemas()
+    assert local_schemas == DECLARATION.AB16_OWNED_SCHEMA_SET
+    assert local_schemas.isdisjoint(DECLARATION.GATE1_OWNED_REFERENCE_SCHEMA_SET)
+    assert (
+        local_schemas | DECLARATION.GATE1_OWNED_REFERENCE_SCHEMA_SET
+        == DECLARATION.ACTIVE_SCHEMA_SET
+    )
+
+
+def test_gate1_owned_reference_matches_its_read_only_owner() -> None:
+    assert DECLARATION.SCHEMA_COHORT_OWNER_BY_NAME == {
+        "bootstrap_retry": "ab16",
+        "baseline": "ab16",
+        "organic_execution": "ab16",
+        "resource_lifecycle": "ab16",
+        "replay_terminal": "ab16",
+        "gate1_owned_reference": "gate1_v4",
+    }
+    assert DECLARATION.GATE1_OWNED_REFERENCE_SCHEMAS == (
+        GATE1_AUTHORITY.CONTINUATION_SCHEMA,
+    )
+    assert DECLARATION.GATE1_OWNED_REFERENCE_SCHEMA_SET == frozenset(
+        {GATE1_AUTHORITY.CONTINUATION_SCHEMA}
+    )
+
+
+def test_fixed_assignment_replay_declaration_is_v2_only() -> None:
+    fixed_assignment_schemas = tuple(
+        schema
+        for schema in DECLARATION.ORDERED_ACTIVE_SCHEMAS
+        if schema.startswith("noncert-cuts-ab16-fixed-assignment-replay-v")
+    )
+    assert fixed_assignment_schemas == ("noncert-cuts-ab16-fixed-assignment-replay-v2",)
+    assert DECLARATION.schema_cohort_for(fixed_assignment_schemas[0]) == "baseline"
+    with pytest.raises(DECLARATION.SchemaDeclarationError, match="unknown schema version"):
+        DECLARATION.schema_cohort_for("noncert-cuts-ab16-fixed-assignment-replay-v1")
 
 
 def test_exact_projection_and_cli_self_check_pass() -> None:
@@ -82,15 +124,16 @@ def test_exact_projection_and_cli_self_check_pass() -> None:
     )
     assert completed.returncode == 0, completed.stderr
     assert json.loads(completed.stdout) == {
-        "cohort_count": 5,
+        "cohort_count": 6,
         "cohort_names": [
             "bootstrap_retry",
             "baseline",
             "organic_execution",
             "resource_lifecycle",
             "replay_terminal",
+            "gate1_owned_reference",
         ],
-        "schema_count": 49,
+        "schema_count": 48,
         "status": "PASS",
     }
 

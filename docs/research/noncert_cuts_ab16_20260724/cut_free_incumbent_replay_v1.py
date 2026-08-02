@@ -6,11 +6,11 @@ descriptors, parses the official binary protobuf, independently maps every
 incumbent record to a real placement selector, and solves a fresh model with
 those placements fixed.  It does not import the baseline builder or an
 organic arm runner.  It reuses only the package-pinned admission module's
-campaign-snapshot provenance validator.
+tracked-clean-checkout provenance validator.
 
 The model metadata and this receipt share one exact package-bound repository
-snapshot provenance record.  Its manifest and materialization receipt are
-replayed before and after the solve; the live checkout is not consulted.
+checkout provenance record.  Its campaign root, package, Git tool, pinned HEAD
+and three baseline inputs are replayed before and after the solve.
 """
 
 from __future__ import annotations
@@ -369,9 +369,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not args.campaign_provenance.is_absolute():
         raise ReplayError("campaign provenance path is not absolute")
     provenance_before = _campaign_provenance(args.campaign_provenance)
-    snapshot_root = Path(str(provenance_before["snapshot_root"]))
-    if Path.cwd() != snapshot_root:
-        raise ReplayError("working directory is not the campaign snapshot root")
+    repository_root = Path(str(provenance_before["repository_root"]))
+    if Path.cwd() != repository_root:
+        raise ReplayError("working directory is not the campaign repository root")
     model_raw, model_identity = _snapshot(args.model, limit=1 << 30)
     metadata_raw, metadata_identity = _snapshot(args.metadata, limit=64 << 20)
     incumbent_raw, incumbent_identity = _snapshot(args.incumbent, limit=64 << 20)
@@ -407,16 +407,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     canonical_rules_identity = _identity(input_identities["canonical_rules"], "canonical rules")
     mandatory_identity = _identity(input_identities["mandatory_instances"], "mandatory")
     expected_paths = {
-        "candidate": snapshot_root / "data" / "preprocessed" / "candidate_placements.json",
-        "canonical_rules": snapshot_root / "rules" / "canonical_rules.json",
-        "mandatory": snapshot_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+        "candidate": repository_root / "data" / "preprocessed" / "candidate_placements.json",
+        "canonical_rules": repository_root / "rules" / "canonical_rules.json",
+        "mandatory": repository_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
     }
     if (
         Path(str(candidate_identity["path"])) != expected_paths["candidate"]
         or Path(str(canonical_rules_identity["path"])) != expected_paths["canonical_rules"]
         or Path(str(mandatory_identity["path"])) != expected_paths["mandatory"]
     ):
-        raise ReplayError("metadata strict inputs are not campaign snapshot members")
+        raise ReplayError("metadata strict inputs are not campaign checkout members")
     candidate_raw, candidate_actual = _snapshot(
         Path(str(candidate_identity["path"])),
         limit=1 << 30,

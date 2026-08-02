@@ -48,8 +48,7 @@ BASELINE_SCHEMAS = (
     "noncert-cuts-ab16-experiment-contract-v1",
     "noncert-cuts-ab16-baseline-rebuild-v1",
     "noncert-cuts-ab16-rebuilt-model-metadata-v2",
-    "noncert-cuts-ab16-repository-snapshot-materialization-v1",
-    "noncert-cuts-ab16-campaign-snapshot-provenance-v1",
+    "noncert-cuts-ab16-tracked-clean-checkout-provenance-v1",
     "noncert-cuts-ab16-fixed-assignment-replay-v2",
     "noncert-cuts-ab16-baseline-admission-v1",
 )
@@ -78,12 +77,15 @@ RESOURCE_LIFECYCLE_SCHEMAS = (
 )
 
 REPLAY_TERMINAL_SCHEMAS = (
-    "noncert-cuts-ab16-fixed-assignment-replay-v1",
     "noncert-cuts-ab16-concrete-inequality-corpus-v1",
     "noncert-cuts-ab16-applied-assignment-v1",
     "noncert-cuts-ab16-independent-organic-arm-replay-v1",
     "noncert-cuts-ab16-arm-credibility-gate-v1",
     "noncert-cuts-ab16-terminal-classification-v1",
+)
+
+GATE1_OWNED_REFERENCE_SCHEMAS = (
+    "noncert-cuts-gate1-v4-continuation-authorization-v1",
 )
 
 SCHEMA_COHORTS = (
@@ -92,11 +94,28 @@ SCHEMA_COHORTS = (
     ("organic_execution", ORGANIC_EXECUTION_SCHEMAS),
     ("resource_lifecycle", RESOURCE_LIFECYCLE_SCHEMAS),
     ("replay_terminal", REPLAY_TERMINAL_SCHEMAS),
+    ("gate1_owned_reference", GATE1_OWNED_REFERENCE_SCHEMAS),
+)
+SCHEMA_COHORT_OWNERS = (
+    ("bootstrap_retry", "ab16"),
+    ("baseline", "ab16"),
+    ("organic_execution", "ab16"),
+    ("resource_lifecycle", "ab16"),
+    ("replay_terminal", "ab16"),
+    ("gate1_owned_reference", "gate1_v4"),
 )
 
 ORDERED_ACTIVE_SCHEMAS = tuple(schema for _name, schemas in SCHEMA_COHORTS for schema in schemas)
 ACTIVE_SCHEMA_SET = frozenset(ORDERED_ACTIVE_SCHEMAS)
 SCHEMA_COHORT_NAMES = tuple(name for name, _schemas in SCHEMA_COHORTS)
+SCHEMA_COHORT_OWNER_BY_NAME = dict(SCHEMA_COHORT_OWNERS)
+AB16_OWNED_SCHEMA_SET = frozenset(
+    schema
+    for name, schemas in SCHEMA_COHORTS
+    if SCHEMA_COHORT_OWNER_BY_NAME[name] == "ab16"
+    for schema in schemas
+)
+GATE1_OWNED_REFERENCE_SCHEMA_SET = frozenset(GATE1_OWNED_REFERENCE_SCHEMAS)
 
 
 class SchemaDeclarationError(ValueError):
@@ -142,8 +161,26 @@ def validate_schema_declaration() -> dict[str, object]:
             ordered.append(schema)
     if tuple(names) != SCHEMA_COHORT_NAMES:
         raise SchemaDeclarationError("schema cohort-name projection drifted")
+    if (
+        type(SCHEMA_COHORT_OWNERS) is not tuple
+        or any(type(item) is not tuple or len(item) != 2 for item in SCHEMA_COHORT_OWNERS)
+        or tuple(name for name, _owner in SCHEMA_COHORT_OWNERS) != SCHEMA_COHORT_NAMES
+        or any(type(owner) is not str or owner not in {"ab16", "gate1_v4"} for _name, owner in SCHEMA_COHORT_OWNERS)
+        or SCHEMA_COHORT_OWNER_BY_NAME.get("gate1_owned_reference") != "gate1_v4"
+        or any(
+            owner != "ab16"
+            for name, owner in SCHEMA_COHORT_OWNERS
+            if name != "gate1_owned_reference"
+        )
+    ):
+        raise SchemaDeclarationError("schema cohort owner metadata drifted")
     if tuple(ordered) != ORDERED_ACTIVE_SCHEMAS or frozenset(ordered) != ACTIVE_SCHEMA_SET:
         raise SchemaDeclarationError("active schema projection drifted")
+    if (
+        AB16_OWNED_SCHEMA_SET & GATE1_OWNED_REFERENCE_SCHEMA_SET
+        or AB16_OWNED_SCHEMA_SET | GATE1_OWNED_REFERENCE_SCHEMA_SET != ACTIVE_SCHEMA_SET
+    ):
+        raise SchemaDeclarationError("schema owner projection drifted")
     return {
         "cohort_count": len(names),
         "cohort_names": tuple(names),

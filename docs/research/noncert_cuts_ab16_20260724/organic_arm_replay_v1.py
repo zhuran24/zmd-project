@@ -40,7 +40,13 @@ from ortools.sat.python import cp_model
 RESULT_SCHEMA = "noncert-cuts-ab16-organic-arm-result-v1"
 JOURNAL_SCHEMA = "noncert-cuts-ab16-compile-attach-journal-v1"
 LEDGER_SCHEMA = "cut-ledger-v1"
-CUT_FREE_SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v1"
+CUT_FREE_SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v2"
+CAMPAIGN_PROVENANCE_SCHEMA = "noncert-cuts-ab16-tracked-clean-checkout-provenance-v1"
+CAMPAIGN_PROVENANCE_AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
+CHECKOUT_IMPORT_MODE = "tracked_clean_pinned_checkout"
+CAMPAIGN_PROVENANCE_INPUT_ROLES = frozenset(
+    {"candidate_placements", "canonical_rules", "mandatory_instances"}
+)
 CORPUS_SCHEMA = "noncert-cuts-ab16-concrete-inequality-corpus-v1"
 ASSIGNMENT_SCHEMA = "noncert-cuts-ab16-applied-assignment-v1"
 RECEIPT_SCHEMA = "noncert-cuts-ab16-independent-organic-arm-replay-v1"
@@ -53,6 +59,7 @@ NO_ORGANIC_APPLIED_CUT = "NO_ORGANIC_APPLIED_CUT"
 ORGANIC_APPLIED = "ORGANIC_APPLIED"
 
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+GIT_SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 LEDGER_EVENTS = frozenset(
     {
         "GENESIS",
@@ -275,6 +282,59 @@ def _identity(value: object, label: str) -> Mapping[str, Any]:
         or record["size_bytes"] < 0
     ):
         raise ReplayError(f"{label}: malformed identity")
+    return record
+
+
+def _campaign_provenance(value: object) -> Mapping[str, Any]:
+    record = _exact_keys(
+        value,
+        {
+            "authority_scope",
+            "campaign_root_identity",
+            "git_identity",
+            "import_mode",
+            "input_identities",
+            "package",
+            "repository_head",
+            "repository_root",
+            "repository_tree",
+            "schema_version",
+        },
+        "cut-free campaign provenance",
+    )
+    _identity(record["campaign_root_identity"], "cut-free campaign root")
+    _identity(record["git_identity"], "cut-free campaign Git tool")
+    package = _exact_keys(
+        record["package"],
+        {"manifest_identity", "package_id", "seal_identity"},
+        "cut-free campaign package",
+    )
+    _identity(package["manifest_identity"], "cut-free campaign package manifest")
+    seal_identity = _identity(package["seal_identity"], "cut-free campaign package seal")
+    input_identities = _exact_keys(
+        record["input_identities"],
+        set(CAMPAIGN_PROVENANCE_INPUT_ROLES),
+        "cut-free campaign inputs",
+    )
+    for role in sorted(CAMPAIGN_PROVENANCE_INPUT_ROLES):
+        _identity(input_identities[role], f"cut-free campaign input {role}")
+    repository_root = record["repository_root"]
+    if (
+        record["schema_version"] != CAMPAIGN_PROVENANCE_SCHEMA
+        or record["authority_scope"] != CAMPAIGN_PROVENANCE_AUTHORITY_SCOPE
+        or record["import_mode"] != CHECKOUT_IMPORT_MODE
+        or type(record["repository_head"]) is not str
+        or GIT_SHA_RE.fullmatch(record["repository_head"]) is None
+        or type(record["repository_tree"]) is not str
+        or GIT_SHA_RE.fullmatch(record["repository_tree"]) is None
+        or type(package["package_id"]) is not str
+        or SHA256_RE.fullmatch(package["package_id"]) is None
+        or seal_identity["sha256"] != package["package_id"]
+        or type(repository_root) is not str
+        or not Path(repository_root).is_absolute()
+        or Path(os.path.abspath(repository_root)) != Path(repository_root)
+    ):
+        raise ReplayError("cut-free campaign provenance semantics drifted")
     return record
 
 
@@ -530,6 +590,7 @@ def _validate_cut_free(
         {
             "all_fixed_equalities_added",
             "assignment_count",
+            "campaign_provenance",
             "conflicting_assignment_count",
             "created_at_utc",
             "fixed_assignment_count",
@@ -555,6 +616,7 @@ def _validate_cut_free(
         "cut-free replay receipt",
     )
     _utc(record["created_at_utc"], "cut-free replay created_at_utc")
+    _campaign_provenance(record["campaign_provenance"])
     for field in (
         "incumbent_identity",
         "metadata_identity",

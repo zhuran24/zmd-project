@@ -4,6 +4,8 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 from types import ModuleType
 from typing import Any
@@ -38,8 +40,28 @@ def _write(path: Path, raw: bytes) -> dict[str, object]:
     }
 
 
+def _identity(path: Path) -> dict[str, object]:
+    raw = path.read_bytes()
+    return {
+        "path": str(path.resolve()),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+
+
 def _canonical(value: object) -> bytes:
     return ADMISSION.canonical_json(value)
+
+
+def _git(repository: Path, *args: str) -> str:
+    completed = subprocess.run(
+        ("git", *args),
+        cwd=repository,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return completed.stdout.strip()
 
 
 def _incumbent() -> dict[str, object]:
@@ -111,53 +133,69 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
     builder_identity = _write(tmp_path / "builder.py", b"# fixture builder\n")
     replay_tool_identity = _write(tmp_path / "fixed_replay.py", b"# fixture replay\n")
     inputs = {
-        role: _write(tmp_path / f"{role}.json", _canonical({"role": role}))
-        for role in sorted(ADMISSION.REQUIRED_REBUILD_INPUT_ROLES)
+        role: _write(tmp_path / relative, _canonical({"role": role}))
+        for role, relative in ADMISSION.CHECKOUT_INPUT_PATHS.items()
     }
-    snapshot_manifest_identity = _write(
-        tmp_path / "repository-snapshot.json",
-        _canonical({"schema_version": "fixture-repository-snapshot-v1"}),
+    _git(tmp_path, "init")
+    _git(
+        tmp_path,
+        "add",
+        "--",
+        ADMISSION.CHECKOUT_INPUT_PATHS["canonical_rules"].as_posix(),
+        ADMISSION.CHECKOUT_INPUT_PATHS["mandatory_instances"].as_posix(),
     )
-    snapshot_archive_identity = _write(
-        tmp_path / "repository-snapshot.zip",
-        b"fixture snapshot archive\n",
+    _git(
+        tmp_path,
+        "-c",
+        "user.name=AB16 Test",
+        "-c",
+        "user.email=ab16@example.invalid",
+        "commit",
+        "-m",
+        "fixture checkout",
     )
-    candidate_identity = _write(
-        tmp_path / "candidate-overlay.json",
-        _canonical({"fixture": True}),
-    )
-    materialization = {
-        "authority_scope": ADMISSION.MATERIALIZATION_AUTHORITY_SCOPE,
-        "candidate_identity": candidate_identity,
-        "created_at_utc": "2026-07-24T00:59:59Z",
-        "import_mode": ADMISSION.SNAPSHOT_IMPORT_MODE,
-        "member_count": 4,
-        "ordered_member_digest": "3" * 64,
-        "package_id": "b" * 64,
-        "repository_head": "a" * 40,
-        "repository_tree": "2" * 40,
-        "schema_version": ADMISSION.MATERIALIZATION_SCHEMA,
-        "snapshot_archive_identity": snapshot_archive_identity,
-        "snapshot_manifest_identity": snapshot_manifest_identity,
-        "snapshot_root": str(tmp_path.resolve()),
-        "status": "PASS",
-        "total_bytes": 1234,
+    repository_head = _git(tmp_path, "rev-parse", "HEAD")
+    repository_tree = _git(tmp_path, "rev-parse", "HEAD^{tree}")
+    git_path = shutil.which("git")
+    assert git_path is not None
+    git_identity = _identity(Path(git_path))
+
+    campaign_dir = tmp_path / "run-ab16-fixture"
+    package_dir = campaign_dir / "campaign-authority" / "package"
+    package_payload = package_dir / "payload"
+    package_payload.mkdir(parents=True)
+    package_inputs = {
+        role: _write(package_payload / f"input.{role}.json", Path(identity["path"]).read_bytes())
+        for role, identity in inputs.items()
     }
-    materialization_identity = _write(
-        tmp_path / "repository-snapshot-materialization.json",
-        _canonical(materialization),
-    )
+    package_manifest_identity = _write(package_dir / "package-manifest.json", b"fixture package manifest\n")
+    package_seal_identity = _write(package_dir / "SHA256SUMS", b"fixture package seal\n")
+    package = {
+        "manifest_identity": package_manifest_identity,
+        "package_id": package_seal_identity["sha256"],
+        "seal_identity": package_seal_identity,
+    }
+    campaign_root = {
+        "authority_tools": {"git": git_identity},
+        "package": {**package, "package_dir": str(package_dir)},
+        "repository_head": repository_head,
+        "strict_inputs": package_inputs,
+    }
+    campaign_root_identity = _write(campaign_dir / "campaign-root.json", _canonical(campaign_root))
     campaign_provenance = {
-        "import_mode": ADMISSION.SNAPSHOT_IMPORT_MODE,
-        "materialization_receipt_identity": materialization_identity,
-        "package_id": "b" * 64,
-        "repository_head": "a" * 40,
+        "authority_scope": ADMISSION.CAMPAIGN_PROVENANCE_AUTHORITY_SCOPE,
+        "campaign_root_identity": campaign_root_identity,
+        "git_identity": git_identity,
+        "import_mode": ADMISSION.CHECKOUT_IMPORT_MODE,
+        "input_identities": inputs,
+        "package": package,
+        "repository_head": repository_head,
+        "repository_root": str(tmp_path.resolve()),
+        "repository_tree": repository_tree,
         "schema_version": ADMISSION.CAMPAIGN_PROVENANCE_SCHEMA,
-        "snapshot_manifest_identity": snapshot_manifest_identity,
-        "snapshot_root": str(tmp_path.resolve()),
     }
     campaign_provenance_identity = _write(
-        tmp_path / "campaign-provenance.json",
+        campaign_dir / "prospective-ab16" / "baseline" / "campaign-provenance.json",
         _canonical(campaign_provenance),
     )
     metadata = {
@@ -229,11 +267,13 @@ def _fixture(tmp_path: Path) -> dict[str, Any]:
     return {
         "campaign_provenance": campaign_provenance,
         "campaign_provenance_path": Path(campaign_provenance_identity["path"]),
+        "campaign_root_path": Path(campaign_root_identity["path"]),
+        "checkout_inputs": {role: Path(identity["path"]) for role, identity in inputs.items()},
         "expectation": expectation,
         "incumbent": incumbent,
         "incumbent_path": Path(incumbent_identity["path"]),
         "legacy_path": Path(legacy_identity["path"]),
-        "materialization_path": Path(materialization_identity["path"]),
+        "package_manifest_path": Path(package_manifest_identity["path"]),
         "metadata": metadata,
         "metadata_path": Path(metadata_identity["path"]),
         "model_identity": model_identity,
@@ -362,7 +402,7 @@ def test_metadata_key_set_drift_is_rejected(
         _admit(fixture)
 
 
-def test_replay_campaign_snapshot_provenance_drift_is_rejected(tmp_path: Path) -> None:
+def test_replay_clean_checkout_provenance_drift_is_rejected(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
     changed = dict(fixture["campaign_provenance"])
     changed["repository_head"] = "c" * 40
@@ -375,16 +415,16 @@ def test_replay_campaign_snapshot_provenance_drift_is_rejected(tmp_path: Path) -
 def test_campaign_provenance_extra_field_is_rejected(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
     changed = dict(fixture["campaign_provenance"])
-    changed["repository_root"] = str(tmp_path)
+    changed["snapshot_root"] = str(tmp_path)
     _write(fixture["campaign_provenance_path"], _canonical(changed))
     with pytest.raises(ADMISSION.AdmissionError, match="key set drifted"):
         _admit(fixture)
 
 
-def test_materialization_receipt_drift_is_rejected(tmp_path: Path) -> None:
+def test_package_manifest_drift_is_rejected(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
-    fixture["materialization_path"].write_bytes(
-        fixture["materialization_path"].read_bytes() + b" "
+    fixture["package_manifest_path"].write_bytes(
+        fixture["package_manifest_path"].read_bytes() + b" "
     )
     with pytest.raises(ADMISSION.AdmissionError, match="detached identity drifted|detached identity mismatch"):
         _admit(fixture)

@@ -5,9 +5,8 @@ This is a formal-stage payload.  Importing it is side-effect free; the CLI is
 only run after the separately authorized Gate B selection.  Its output is
 evidence for the independent baseline admission tool, never an admission by
 itself.  Repository code is imported with ordinary Python semantics only from
-the package-bound, no-overwrite campaign snapshot named by the canonical
-campaign-provenance record.  Every data input is an exact member of that same
-snapshot; the live checkout is not an execution source.
+the tracked-clean pinned checkout named by the canonical campaign-provenance record.
+Every data input is an exact package-pinned member of that same checkout.
 """
 
 from __future__ import annotations
@@ -152,21 +151,21 @@ def _campaign_provenance(path: Path) -> dict[str, object]:
         raise BaselineRebuildError(f"campaign provenance failed closed: {exc}") from exc
 
 
-def _require_snapshot_imports(snapshot_root: Path) -> None:
+def _require_repository_imports(repository_root: Path) -> None:
     for name, module in tuple(sys.modules.items()):
         if name != "src" and not name.startswith("src."):
             continue
         source = getattr(module, "__file__", None)
         if type(source) is str:
-            if not Path(os.path.abspath(source)).is_relative_to(snapshot_root):
-                raise BaselineRebuildError(f"repository module imported outside snapshot: {name}")
+            if not Path(os.path.abspath(source)).is_relative_to(repository_root):
+                raise BaselineRebuildError(f"repository module imported outside pinned checkout: {name}")
             continue
         search_path = getattr(module, "__path__", None)
         if search_path is None or any(
-            not Path(os.path.abspath(item)).is_relative_to(snapshot_root)
+            not Path(os.path.abspath(item)).is_relative_to(repository_root)
             for item in search_path
         ):
-            raise BaselineRebuildError(f"repository package imported outside snapshot: {name}")
+            raise BaselineRebuildError(f"repository package imported outside pinned checkout: {name}")
 
 
 def _write_exclusive(path: Path, raw: bytes) -> dict[str, object]:
@@ -271,11 +270,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     _validate_fixed_parameters(args)
     provenance_before = _campaign_provenance(args.campaign_provenance)
-    repository_root = Path(str(provenance_before["snapshot_root"]))
+    repository_root = Path(str(provenance_before["repository_root"]))
     if Path.cwd() != repository_root:
-        raise BaselineRebuildError("working directory is not the campaign snapshot root")
+        raise BaselineRebuildError("working directory is not the campaign repository root")
     if any(name == "src" or name.startswith("src.") for name in sys.modules):
-        raise BaselineRebuildError("repository modules were imported before snapshot activation")
+        raise BaselineRebuildError("repository modules were imported before checkout activation")
     for entry in sys.path:
         candidate = Path(os.path.abspath(entry or Path.cwd()))
         if (
@@ -306,7 +305,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "mandatory_instances": repository_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
     }
     if strict_inputs != expected_inputs:
-        raise BaselineRebuildError("strict input paths are not the campaign snapshot members")
+        raise BaselineRebuildError("strict input paths are not the campaign checkout members")
     input_identities: dict[str, dict[str, object]] = {}
     for role, path in strict_inputs.items():
         _, identity = _snapshot_regular(path, limit=1 << 30)
@@ -317,7 +316,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     from src.models.master_model import MasterPlacementModel
     from src.search.benders_loop import ExactSearchSession, LBBDController
 
-    _require_snapshot_imports(repository_root)
+    _require_repository_imports(repository_root)
     started = time.perf_counter()
     session = ExactSearchSession.create(
         repository_root,

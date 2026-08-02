@@ -867,6 +867,13 @@ def test_runtime_guard_is_exactly_one_hour() -> None:
     assert RUNNER.EXPERIMENT_CONTRACT["resource_contract"]["runtime_max_sec"] == 3600
 
 
+def test_experiment_contract_canonical_digest_is_locked() -> None:
+    assert (
+        hashlib.sha256(RUNNER.canonical_json(RUNNER.EXPERIMENT_CONTRACT)).hexdigest()
+        == "24b45e110952505e6ffa92d3ddfdf33874cc3cb4503397e993898e79174ded9e"
+    )
+
+
 def test_resource_verifier_tool_drift_is_rejected_before_arm(
     tmp_path: Path,
 ) -> None:

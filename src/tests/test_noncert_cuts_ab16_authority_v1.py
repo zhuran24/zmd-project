@@ -32,6 +32,7 @@ def _load(path: Path, name: str) -> ModuleType:
 
 
 AUTH = _load(RESEARCH_DIR / "ab16_authority_v1.py", "ab16_retry_authority_tested")
+BASELINE = _load(RESEARCH_DIR / "baseline_admission_v1.py", "ab16_baseline_admission_for_authority_tested")
 
 
 def _canonical(value: object) -> bytes:
@@ -266,14 +267,22 @@ def _launch_environment(tmp_path: Path) -> dict[str, str]:
 
 
 def _fixture(tmp_path: Path) -> dict[str, object]:
+    git_path = shutil.which("git")
+    assert git_path is not None
     repository = tmp_path / "repository"
     repository.mkdir()
     _git(repository, "init")
     tracked = repository / "tracked.txt"
     repairable_tool = repository / "repairable_tool.py"
+    canonical_rules = repository / "rules" / "canonical_rules.json"
+    mandatory_instances = repository / "data" / "preprocessed" / "mandatory_exact_instances.json"
     tracked.write_text("initial\n", encoding="utf-8")
     repairable_tool.write_text("VERSION = 1\n", encoding="utf-8")
+    _write(canonical_rules, {"fixture": "canonical-rules"})
+    _write(mandatory_instances, [{"instance_id": "fixture"}])
     first_head = _commit(repository, "initial")
+    candidate_placements = repository / "data" / "preprocessed" / "candidate_placements.json"
+    _write(candidate_placements, {"facility_pools": {}})
 
     campaign = tmp_path / "run-ab16-test"
     campaign.mkdir()
@@ -314,6 +323,16 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
     package_payload_dir.mkdir(parents=True)
     preregistration_path = package_payload_dir / AUTH.bootstrap.PATH_PREREGISTRATION_PACKAGE_ROLE
     _write(preregistration_path, preregistration)
+    checkout_inputs = {
+        "candidate_placements": candidate_placements,
+        "canonical_rules": canonical_rules,
+        "mandatory_instances": mandatory_instances,
+    }
+    package_inputs: dict[str, Path] = {}
+    for role, source in checkout_inputs.items():
+        destination = package_payload_dir / f"input.{role}.json"
+        destination.write_bytes(source.read_bytes())
+        package_inputs[role] = destination
 
     scientific_paths = AUTH._scientific_material_paths(preregistration)  # noqa: SLF001
     for index, path in enumerate(sorted(set(scientific_paths.values()), key=os.fspath)):
@@ -334,10 +353,12 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
         run_nonce=campaign.name,
         manager_epoch=manager_epoch,
         authority_tools={
-            "campaign_authority_v4": _detached(_identity(Path(AUTH.bootstrap.authority.__file__)))
+            "campaign_authority_v4": _detached(_identity(Path(AUTH.bootstrap.authority.__file__))),
+            "git": _detached(_identity(Path(git_path))),
         },
         strict_inputs={
-            AUTH.bootstrap.PATH_PREREGISTRATION_INPUT_ROLE: _detached(_identity(preregistration_path))
+            AUTH.bootstrap.PATH_PREREGISTRATION_INPUT_ROLE: _detached(_identity(preregistration_path)),
+            **{role: _detached(_identity(path)) for role, path in package_inputs.items()},
         },
         created_at_utc="2026-08-02T00:00:00Z",
     )
@@ -350,9 +371,6 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
     assert manifest["manifest"]["scientific_materialization_sha256"] != preregistration[
         "scientific_input_set_sha256"
     ]
-
-    git_path = shutil.which("git")
-    assert git_path is not None
 
     return {
         "campaign": campaign,
@@ -369,10 +387,14 @@ def _fixture(tmp_path: Path) -> dict[str, object]:
             "package_id": seal_identity["sha256"],
             "seal_identity": seal_identity,
         },
+        "package_manifest_path": package_manifest_path,
+        "package_seal_path": package_seal_path,
+        "package_inputs": package_inputs,
         "preregistration": preregistration,
         "preregistration_path": preregistration_path,
         "repairable_tool": repairable_tool,
         "repository": repository,
+        "checkout_inputs": checkout_inputs,
         "suite_selection": suite_selection,
         "system_tool_identities": system_tool_identities,
         "tracked": tracked,
@@ -930,6 +952,172 @@ def test_second_slot_archived_input_cannot_introduce_a_new_campaign_anchor(
 
     with pytest.raises(AUTH.AuthorityError, match="attempt input-set joins drifted"):
         AUTH.replay_campaign(fixture["preregistration_path"])
+
+
+def test_prepare_baseline_provenance_bootstraps_the_clean_checkout_consumer(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+
+    produced = AUTH.prepare_baseline_provenance(
+        fixture["preregistration_path"],
+        repository_root=fixture["repository"],
+    )
+    provenance_path = Path(produced["campaign_provenance_identity"]["path"])
+    replayed = BASELINE.campaign_provenance(provenance_path)
+
+    assert replayed == produced["campaign_provenance"]
+    assert replayed["schema_version"] == AUTH.BASELINE_PROVENANCE_SCHEMA == BASELINE.CAMPAIGN_PROVENANCE_SCHEMA
+    assert replayed["import_mode"] == AUTH.BASELINE_IMPORT_MODE == BASELINE.CHECKOUT_IMPORT_MODE
+    assert set(replayed) == {
+        "authority_scope",
+        "campaign_root_identity",
+        "git_identity",
+        "import_mode",
+        "input_identities",
+        "package",
+        "repository_head",
+        "repository_root",
+        "repository_tree",
+        "schema_version",
+    }
+    assert set(replayed["input_identities"]) == set(AUTH.BASELINE_CHECKOUT_INPUT_PATHS)
+    for role, relative in AUTH.BASELINE_CHECKOUT_INPUT_PATHS.items():
+        assert replayed["input_identities"][role]["path"] == str(Path(fixture["repository"]) / relative)
+
+
+def test_baseline_provenance_ignores_ambient_git_repository_overrides(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path)
+    monkeypatch.setenv("GIT_DIR", str(tmp_path / "ambient.git"))
+    monkeypatch.setenv("GIT_WORK_TREE", str(tmp_path / "ambient-worktree"))
+    monkeypatch.setenv("GIT_INDEX_FILE", str(tmp_path / "ambient-index"))
+
+    produced = AUTH.prepare_baseline_provenance(
+        fixture["preregistration_path"],
+        repository_root=fixture["repository"],
+    )
+
+    assert BASELINE.campaign_provenance(
+        Path(produced["campaign_provenance_identity"]["path"])
+    ) == produced["campaign_provenance"]
+
+
+def test_prepare_baseline_provenance_requires_the_git_top_level(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    nested = Path(fixture["repository"]) / "untracked-nested-checkout"
+    nested.mkdir()
+
+    with pytest.raises(AUTH.AuthorityError, match="not the Git top-level"):
+        AUTH.prepare_baseline_provenance(
+            fixture["preregistration_path"],
+            repository_root=nested,
+        )
+
+
+def test_clean_checkout_consumer_requires_the_git_top_level(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    produced = AUTH.prepare_baseline_provenance(
+        fixture["preregistration_path"],
+        repository_root=fixture["repository"],
+    )
+    provenance_path = Path(produced["campaign_provenance_identity"]["path"])
+    nested = Path(fixture["repository"]) / "untracked-nested-checkout"
+    nested_inputs: dict[str, dict[str, object]] = {}
+    for role, relative in AUTH.BASELINE_CHECKOUT_INPUT_PATHS.items():
+        source = Path(fixture["repository"]) / relative
+        destination = nested / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(source.read_bytes())
+        nested_inputs[role] = _detached(_identity(destination))
+    record = copy.deepcopy(produced["campaign_provenance"])
+    record["repository_root"] = str(nested)
+    record["input_identities"] = nested_inputs
+    provenance_path.write_bytes(BASELINE.canonical_json(record))
+
+    with pytest.raises(BASELINE.AdmissionError, match="not the Git top-level"):
+        BASELINE.campaign_provenance(provenance_path)
+
+
+@pytest.mark.parametrize(
+    ("case", "message"),
+    (
+        ("head", "HEAD differs"),
+        ("dirty", "tracked tree or index"),
+        ("input", "input differs from the campaign root"),
+    ),
+)
+def test_prepare_baseline_provenance_rejects_checkout_drift_before_publication(
+    tmp_path: Path,
+    case: str,
+    message: str,
+) -> None:
+    fixture = _fixture(tmp_path)
+    repository = Path(fixture["repository"])
+    if case == "head":
+        Path(fixture["repairable_tool"]).write_text("VERSION = 2\n", encoding="utf-8")
+        _commit(repository, "different head")
+    elif case == "dirty":
+        Path(fixture["tracked"]).write_text("dirty\n", encoding="utf-8")
+    else:
+        candidate = fixture["checkout_inputs"]["candidate_placements"]
+        Path(candidate).write_bytes(_canonical({"facility_pools": {"drifted": []}}))
+
+    with pytest.raises(AUTH.AuthorityError, match=message):
+        AUTH.prepare_baseline_provenance(
+            fixture["preregistration_path"],
+            repository_root=repository,
+        )
+    assert not (Path(fixture["preregistration"]["baseline_rebuilt_model_path"]).parent / "campaign-provenance.json").exists()
+
+
+@pytest.mark.parametrize(
+    ("case", "message"),
+    (
+        ("root", "detached identity mismatch"),
+        ("package", "detached identity mismatch"),
+        ("input", "detached identity mismatch"),
+        ("dirty", "tracked tree or index"),
+        ("head", "HEAD or tree drifted"),
+        ("tree", "HEAD or tree drifted"),
+        ("git", "root/package/Git join drifted"),
+    ),
+)
+def test_clean_checkout_provenance_replay_fails_closed_on_drift(
+    tmp_path: Path,
+    case: str,
+    message: str,
+) -> None:
+    fixture = _fixture(tmp_path)
+    produced = AUTH.prepare_baseline_provenance(
+        fixture["preregistration_path"],
+        repository_root=fixture["repository"],
+    )
+    provenance_path = Path(produced["campaign_provenance_identity"]["path"])
+    if case == "root":
+        campaign_root_path = Path(produced["campaign_provenance"]["campaign_root_identity"]["path"])
+        campaign_root_path.write_bytes(campaign_root_path.read_bytes() + b" ")
+    elif case == "package":
+        Path(fixture["package_manifest_path"]).write_bytes(b"drifted package manifest\n")
+    elif case == "input":
+        Path(fixture["checkout_inputs"]["candidate_placements"]).write_bytes(
+            _canonical({"facility_pools": {"drifted": []}})
+        )
+    elif case == "dirty":
+        Path(fixture["tracked"]).write_text("dirty\n", encoding="utf-8")
+    elif case == "head":
+        Path(fixture["repairable_tool"]).write_text("VERSION = 2\n", encoding="utf-8")
+        _commit(Path(fixture["repository"]), "different head")
+    else:
+        record = copy.deepcopy(produced["campaign_provenance"])
+        if case == "tree":
+            record["repository_tree"] = "0" * 40
+        else:
+            record["git_identity"] = _detached(_identity(Path(fixture["package_manifest_path"])))
+        provenance_path.write_bytes(BASELINE.canonical_json(record))
+
+    with pytest.raises(BASELINE.AdmissionError, match=message):
+        BASELINE.campaign_provenance(provenance_path)
 
 
 def test_tracked_dirty_repository_is_rejected_without_consuming_attempt(tmp_path: Path) -> None:

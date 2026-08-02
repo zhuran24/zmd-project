@@ -9,8 +9,8 @@ mathematical claim.  Baseline admission instead requires:
 * strict rebuild metadata binding the builder and all rebuild inputs; and
 * an independently produced fixed-assignment replay receipt binding the same
   model, metadata, incumbent, and replay tool.
-* one package-bound repository-snapshot provenance record replayed before and
-  after admission, shared exactly by rebuild metadata and replay receipt.
+* one package- and campaign-root-bound tracked-clean-checkout provenance record replayed
+  before and after admission, shared exactly by rebuild metadata and replay receipt.
 
 Every file is read once through an ``O_NOFOLLOW`` file descriptor and checked
 with before/after ``fstat``.  The only write is an ``O_EXCL`` result after all
@@ -29,6 +29,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import subprocess
 import sys
 from typing import Any, Mapping
 
@@ -40,10 +41,10 @@ from ortools.sat import cp_model_pb2
 ADMISSION_SCHEMA = "noncert-cuts-ab16-baseline-admission-v1"
 METADATA_SCHEMA = "noncert-cuts-ab16-rebuilt-model-metadata-v2"
 REPLAY_SCHEMA = "noncert-cuts-ab16-fixed-assignment-replay-v2"
-CAMPAIGN_PROVENANCE_SCHEMA = "noncert-cuts-ab16-campaign-snapshot-provenance-v1"
-MATERIALIZATION_SCHEMA = "noncert-cuts-ab16-repository-snapshot-materialization-v1"
-MATERIALIZATION_AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
-SNAPSHOT_IMPORT_MODE = "ordinary_pathfinder"
+CAMPAIGN_PROVENANCE_SCHEMA = "noncert-cuts-ab16-tracked-clean-checkout-provenance-v1"
+CAMPAIGN_PROVENANCE_AUTHORITY_SCOPE = "AB16_RESEARCH_ONLY"
+CHECKOUT_IMPORT_MODE = "tracked_clean_pinned_checkout"
+GIT_OBSERVATION_TIMEOUT_SECONDS = 10.0
 MODEL_BACKEND = "ortools.sat.cp_model_pb2.CpModelProto"
 MODEL_BINARY_FORMAT = "deterministic-protobuf-v1"
 REBUILD_PURPOSE = "strict_ab16_baseline_model_rebuild"
@@ -63,30 +64,26 @@ ROLE_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\Z")
 MAX_JSON_BYTES = 64 * 1024 * 1024
 MAX_MODEL_BYTES = 1024 * 1024 * 1024
 CAMPAIGN_PROVENANCE_KEYS = {
-    "import_mode",
-    "materialization_receipt_identity",
-    "package_id",
-    "repository_head",
-    "schema_version",
-    "snapshot_manifest_identity",
-    "snapshot_root",
-}
-MATERIALIZATION_KEYS = {
     "authority_scope",
-    "candidate_identity",
-    "created_at_utc",
+    "campaign_root_identity",
+    "git_identity",
     "import_mode",
-    "member_count",
-    "ordered_member_digest",
-    "package_id",
+    "input_identities",
+    "package",
     "repository_head",
+    "repository_root",
     "repository_tree",
     "schema_version",
-    "snapshot_archive_identity",
-    "snapshot_manifest_identity",
-    "snapshot_root",
-    "status",
-    "total_bytes",
+}
+CAMPAIGN_PROVENANCE_PACKAGE_KEYS = {
+    "manifest_identity",
+    "package_id",
+    "seal_identity",
+}
+CHECKOUT_INPUT_PATHS = {
+    "candidate_placements": Path("data/preprocessed/candidate_placements.json"),
+    "canonical_rules": Path("rules/canonical_rules.json"),
+    "mandatory_instances": Path("data/preprocessed/mandatory_exact_instances.json"),
 }
 
 
@@ -320,24 +317,92 @@ def _replay_identity(value: object, label: str, *, max_bytes: int = MAX_JSON_BYT
     return snapshot
 
 
-def _snapshot_root(value: object) -> Path:
+def _repository_root(value: object) -> Path:
     if type(value) is not str or not Path(value).is_absolute():
-        raise AdmissionError("campaign provenance snapshot_root is not absolute")
+        raise AdmissionError("campaign provenance repository_root is not absolute")
     root = Path(value)
     if Path(os.path.abspath(root)) != root:
-        raise AdmissionError("campaign provenance snapshot_root is not normalized")
+        raise AdmissionError("campaign provenance repository_root is not normalized")
     current = Path(root.anchor)
     for component in root.parts[1:]:
         current /= component
         try:
             metadata = os.lstat(current)
         except OSError as exc:
-            raise AdmissionError("campaign provenance snapshot_root is unavailable") from exc
+            raise AdmissionError("campaign provenance repository_root is unavailable") from exc
         if stat.S_ISLNK(metadata.st_mode):
-            raise AdmissionError("campaign provenance snapshot_root contains a symlink")
+            raise AdmissionError("campaign provenance repository_root contains a symlink")
     if not root.is_dir():
-        raise AdmissionError("campaign provenance snapshot_root is not a directory")
+        raise AdmissionError("campaign provenance repository_root is not a directory")
     return root
+
+
+def _observe_clean_checkout(repository_root: Path, git_path: Path) -> tuple[str, str]:
+    git_environment = {
+        "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_OPTIONAL_LOCKS": "0",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PATH": os.defpath,
+    }
+    try:
+        top_level = subprocess.run(
+            (os.fspath(git_path), "rev-parse", "--show-toplevel"),
+            cwd=repository_root,
+            check=False,
+            capture_output=True,
+            text=True,
+            env=git_environment,
+            timeout=GIT_OBSERVATION_TIMEOUT_SECONDS,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise AdmissionError("campaign provenance Git top-level observation failed") from exc
+    observed_top_level = top_level.stdout.strip()
+    if (
+        top_level.returncode != 0
+        or top_level.stderr
+        or not Path(observed_top_level).is_absolute()
+        or Path(os.path.abspath(observed_top_level)) != repository_root
+    ):
+        raise AdmissionError("campaign provenance repository is not the Git top-level")
+    commands = (
+        ("diff", "--no-ext-diff", "--quiet", "--"),
+        ("diff", "--cached", "--quiet", "--"),
+    )
+    for arguments in commands:
+        try:
+            completed = subprocess.run(
+                (os.fspath(git_path), *arguments),
+                cwd=repository_root,
+                check=False,
+                capture_output=True,
+                env=git_environment,
+                timeout=GIT_OBSERVATION_TIMEOUT_SECONDS,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise AdmissionError("campaign provenance Git invocation failed") from exc
+        if completed.returncode != 0:
+            raise AdmissionError("campaign provenance repository tracked tree or index is not clean")
+    observed: list[str] = []
+    for revision, label in (("HEAD", "HEAD"), ("HEAD^{tree}", "tree")):
+        try:
+            completed = subprocess.run(
+                (os.fspath(git_path), "rev-parse", "--verify", revision),
+                cwd=repository_root,
+                check=False,
+                capture_output=True,
+                text=True,
+                env=git_environment,
+                timeout=GIT_OBSERVATION_TIMEOUT_SECONDS,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise AdmissionError(f"campaign provenance repository {label} observation failed") from exc
+        value = completed.stdout.strip()
+        if completed.returncode != 0 or completed.stderr or GIT_SHA_RE.fullmatch(value) is None:
+            raise AdmissionError(f"campaign provenance repository {label} observation failed")
+        observed.append(value)
+    return observed[0], observed[1]
 
 
 def campaign_provenance(path: Path | str) -> dict[str, object]:
@@ -357,61 +422,85 @@ def campaign_provenance(path: Path | str) -> dict[str, object]:
     )
     if (
         record["schema_version"] != CAMPAIGN_PROVENANCE_SCHEMA
+        or record["authority_scope"] != CAMPAIGN_PROVENANCE_AUTHORITY_SCOPE
         or type(record["repository_head"]) is not str
         or GIT_SHA_RE.fullmatch(record["repository_head"]) is None
-        or type(record["package_id"]) is not str
-        or SHA256_RE.fullmatch(record["package_id"]) is None
-        or record["import_mode"] != SNAPSHOT_IMPORT_MODE
+        or type(record["repository_tree"]) is not str
+        or GIT_SHA_RE.fullmatch(record["repository_tree"]) is None
+        or record["import_mode"] != CHECKOUT_IMPORT_MODE
     ):
         raise AdmissionError("campaign provenance semantics drifted")
-    root = _snapshot_root(record["snapshot_root"])
-    manifest = _replay_identity(
-        record["snapshot_manifest_identity"],
-        "campaign snapshot manifest",
-    )
-    _mapping(
+    repository_root = _repository_root(record["repository_root"])
+    root_snapshot = _replay_identity(record["campaign_root_identity"], "campaign root")
+    root_record = _mapping(
         _strict_loads(
-            manifest.data,
-            "campaign snapshot manifest",
-            canonical=True,
+            root_snapshot.data,
+            "campaign root",
+            canonical=False,
         ),
-        "campaign snapshot manifest",
+        "campaign root",
     )
-    materialization = _replay_identity(
-        record["materialization_receipt_identity"],
-        "campaign snapshot materialization receipt",
+    provenance_path = Path(str(provenance_snapshot.identity["path"]))
+    expected_root_path = provenance_path.parents[2] / "campaign-root.json"
+    if root_snapshot.identity["path"] != str(expected_root_path):
+        raise AdmissionError("campaign provenance is not rooted in its campaign")
+
+    package = _exact_keys(
+        record["package"],
+        CAMPAIGN_PROVENANCE_PACKAGE_KEYS,
+        "campaign provenance package",
     )
-    receipt = _exact_keys(
-        _strict_loads(
-            materialization.data,
-            "campaign snapshot materialization receipt",
-            canonical=True,
-        ),
-        MATERIALIZATION_KEYS,
-        "campaign snapshot materialization receipt",
+    package_id = package["package_id"]
+    if type(package_id) is not str or SHA256_RE.fullmatch(package_id) is None:
+        raise AdmissionError("campaign provenance package id is malformed")
+    manifest = _replay_identity(package["manifest_identity"], "campaign package manifest")
+    seal = _replay_identity(package["seal_identity"], "campaign package seal")
+    git = _replay_identity(record["git_identity"], "campaign Git tool")
+
+    input_claims = _exact_keys(
+        record["input_identities"],
+        set(CHECKOUT_INPUT_PATHS),
+        "campaign provenance inputs",
     )
-    _utc(receipt["created_at_utc"], "campaign snapshot materialization created_at_utc")
-    _integer(receipt["member_count"], "campaign snapshot materialization member_count", 1)
-    _integer(receipt["total_bytes"], "campaign snapshot materialization total_bytes", 1)
-    _identity(receipt["snapshot_manifest_identity"], "materialization snapshot manifest")
-    _identity(receipt["snapshot_archive_identity"], "materialization snapshot archive")
-    _identity(receipt["candidate_identity"], "materialization candidate")
+    inputs: dict[str, dict[str, object]] = {}
+    for role, relative in CHECKOUT_INPUT_PATHS.items():
+        replayed = _replay_identity(
+            input_claims[role],
+            f"campaign checkout input {role}",
+            max_bytes=MAX_MODEL_BYTES if role == "candidate_placements" else MAX_JSON_BYTES,
+        )
+        if replayed.identity["path"] != str(repository_root / relative):
+            raise AdmissionError(f"campaign checkout input path drifted for {role}")
+        inputs[role] = dict(replayed.identity)
+
+    root_package = _mapping(root_record.get("package"), "campaign root package")
+    root_tools = _mapping(root_record.get("authority_tools"), "campaign root tools")
+    root_inputs = _mapping(root_record.get("strict_inputs"), "campaign root inputs")
     if (
-        receipt["schema_version"] != MATERIALIZATION_SCHEMA
-        or receipt["status"] != "PASS"
-        or receipt["authority_scope"] != MATERIALIZATION_AUTHORITY_SCOPE
-        or receipt["repository_head"] != record["repository_head"]
-        or type(receipt["repository_tree"]) is not str
-        or GIT_SHA_RE.fullmatch(receipt["repository_tree"]) is None
-        or receipt["package_id"] != record["package_id"]
-        or receipt["snapshot_manifest_identity"] != dict(manifest.identity)
-        or receipt["snapshot_manifest_identity"] != record["snapshot_manifest_identity"]
-        or receipt["snapshot_root"] != str(root)
-        or receipt["import_mode"] != SNAPSHOT_IMPORT_MODE
-        or type(receipt["ordered_member_digest"]) is not str
-        or SHA256_RE.fullmatch(receipt["ordered_member_digest"]) is None
+        seal.identity["sha256"] != package_id
+        or root_record.get("repository_head") != record["repository_head"]
+        or root_package.get("package_id") != package_id
+        or root_package.get("manifest_identity") != dict(manifest.identity)
+        or root_package.get("seal_identity") != dict(seal.identity)
+        or root_tools.get("git") != dict(git.identity)
     ):
-        raise AdmissionError("campaign snapshot materialization semantics drifted")
+        raise AdmissionError("campaign provenance root/package/Git join drifted")
+    for role, actual in inputs.items():
+        pinned = _identity(root_inputs.get(role), f"campaign root input {role}")
+        _replay_identity(
+            pinned,
+            f"package-pinned campaign input {role}",
+            max_bytes=MAX_MODEL_BYTES if role == "candidate_placements" else MAX_JSON_BYTES,
+        )
+        if any(pinned[field] != actual[field] for field in ("sha256", "size_bytes")):
+            raise AdmissionError(f"campaign checkout input differs from package pin: {role}")
+
+    observed_head, observed_tree = _observe_clean_checkout(
+        repository_root,
+        Path(str(git.identity["path"])),
+    )
+    if observed_head != record["repository_head"] or observed_tree != record["repository_tree"]:
+        raise AdmissionError("campaign checkout HEAD or tree drifted")
     return dict(record)
 
 

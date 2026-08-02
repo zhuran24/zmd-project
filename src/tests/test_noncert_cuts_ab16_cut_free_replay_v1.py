@@ -193,4 +193,4 @@ def test_baseline_builder_declares_non_authorizing_output() -> None:
     assert "sys.meta_path" not in source
     assert "importlib" not in source
     assert "baseline_contract.campaign_provenance" in source
-    assert BASELINE_CONTRACT.SNAPSHOT_IMPORT_MODE == "ordinary_pathfinder"
+    assert BASELINE_CONTRACT.CHECKOUT_IMPORT_MODE == "tracked_clean_pinned_checkout"

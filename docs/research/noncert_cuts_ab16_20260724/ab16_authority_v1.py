@@ -44,6 +44,9 @@ SELECTION_BINDING_SCHEMA = "noncert-cuts-ab16-attempt-selection-binding-v2"
 RESULT_ENVELOPE_SCHEMA = "noncert-cuts-ab16-attempt-result-envelope-v1"
 REPLAY_SCHEMA = "noncert-cuts-ab16-retry-campaign-replay-v1"
 SUITE_SELECTION_SCHEMA = "noncert-cuts-ab16-suite-selection-v1"
+BASELINE_PROVENANCE_SCHEMA = "noncert-cuts-ab16-tracked-clean-checkout-provenance-v1"
+BASELINE_IMPORT_MODE = "tracked_clean_pinned_checkout"
+GIT_OBSERVATION_TIMEOUT_SECONDS = 10.0
 
 CREDIBLE_TERMINAL = "CREDIBLE_TERMINAL"
 CREDIBILITY_INCOMPLETE = "CREDIBILITY_INCOMPLETE"
@@ -51,6 +54,12 @@ ATTEMPT_RE = re.compile(r"attempt-([0-9]{4,})\Z")
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 GIT_HEAD_RE = re.compile(r"[0-9a-f]{40}\Z")
 ROLE_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,95}\Z")
+
+BASELINE_CHECKOUT_INPUT_PATHS = {
+    "candidate_placements": Path("data/preprocessed/candidate_placements.json"),
+    "canonical_rules": Path("rules/canonical_rules.json"),
+    "mandatory_instances": Path("data/preprocessed/mandatory_exact_instances.json"),
+}
 
 RESEARCH_ONLY_AUTHORIZATIONS = {
     "cut_authorized": False,
@@ -695,27 +704,188 @@ def _capture_sources(paths: Mapping[str, Path], label: str) -> dict[str, tuple[b
     return result
 
 
-def _observe_clean_head(repository_root: Path | str) -> str:
+def _observe_clean_checkout(
+    repository_root: Path | str,
+    *,
+    git_path: Path | str = "git",
+) -> tuple[str, str]:
     root = _existing_directory(_absolute(repository_root), "repository root")
+    git_environment = {
+        "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_OPTIONAL_LOCKS": "0",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PATH": os.defpath,
+    }
+    try:
+        top_level = subprocess.run(
+            (os.fspath(git_path), "rev-parse", "--show-toplevel"),
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            env=git_environment,
+            timeout=GIT_OBSERVATION_TIMEOUT_SECONDS,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise AuthorityError("repository Git top-level observation failed") from exc
+    observed_top_level = top_level.stdout.strip()
+    if (
+        top_level.returncode != 0
+        or top_level.stderr
+        or not Path(observed_top_level).is_absolute()
+        or _absolute(observed_top_level) != root
+    ):
+        raise AuthorityError("repository root is not the Git top-level")
     commands = (
-        ("git", "diff", "--quiet", "--"),
-        ("git", "diff", "--cached", "--quiet", "--"),
+        (os.fspath(git_path), "diff", "--no-ext-diff", "--quiet", "--"),
+        (os.fspath(git_path), "diff", "--cached", "--quiet", "--"),
     )
     for command in commands:
-        completed = subprocess.run(command, cwd=root, check=False, capture_output=True)
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=root,
+                check=False,
+                capture_output=True,
+                env=git_environment,
+                timeout=GIT_OBSERVATION_TIMEOUT_SECONDS,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise AuthorityError("repository Git invocation failed") from exc
         if completed.returncode != 0:
             raise AuthorityError("repository tracked tree or index is not clean")
-    completed = subprocess.run(
-        ("git", "rev-parse", "--verify", "HEAD"),
-        cwd=root,
-        check=False,
-        capture_output=True,
-        text=True,
+    observed: list[str] = []
+    for revision, label in (("HEAD", "HEAD"), ("HEAD^{tree}", "tree")):
+        try:
+            completed = subprocess.run(
+                (os.fspath(git_path), "rev-parse", "--verify", revision),
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=True,
+                env=git_environment,
+                timeout=GIT_OBSERVATION_TIMEOUT_SECONDS,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise AuthorityError(f"repository {label} observation failed") from exc
+        value = completed.stdout.strip()
+        if completed.returncode != 0 or completed.stderr or GIT_HEAD_RE.fullmatch(value) is None:
+            raise AuthorityError(f"repository {label} observation failed")
+        observed.append(value)
+    return observed[0], observed[1]
+
+
+def _observe_clean_head(repository_root: Path | str) -> str:
+    return _observe_clean_checkout(repository_root)[0]
+
+
+def prepare_baseline_provenance(
+    preregistration_path: Path | str,
+    *,
+    repository_root: Path | str,
+) -> dict[str, object]:
+    """Bind baseline inputs to one tracked-clean checkout of the campaign's pinned HEAD."""
+
+    preregistration_path = _absolute(preregistration_path)
+    preregistration, _preregistration_identity = _load_preregistration(preregistration_path)
+    campaign_dir = Path(preregistration["campaign_dir"])
+    root, root_identity = _load_record(campaign_dir / "campaign-root.json", "campaign root")
+    try:
+        root = bootstrap.authority.validate_campaign_root(root, campaign_dir=campaign_dir)
+    except Exception as exc:
+        raise AuthorityError("campaign root is invalid") from exc
+
+    package = _exact_mapping(
+        root["package"],
+        {"manifest_identity", "package_dir", "package_id", "seal_identity"},
+        "campaign package",
     )
-    head = completed.stdout.strip()
-    if completed.returncode != 0 or GIT_HEAD_RE.fullmatch(head) is None:
-        raise AuthorityError("repository HEAD observation failed")
-    return head
+    package_record = {
+        "manifest_identity": _detached_identity(
+            _verify_detached_identity_with_mode(package["manifest_identity"], "campaign package manifest")
+        ),
+        "package_id": package["package_id"],
+        "seal_identity": _detached_identity(
+            _verify_detached_identity_with_mode(package["seal_identity"], "campaign package seal")
+        ),
+    }
+    if package_record["seal_identity"]["sha256"] != package_record["package_id"]:
+        raise AuthorityError("campaign package identity drifted")
+
+    root_tools = root["authority_tools"]
+    if not isinstance(root_tools, Mapping):
+        raise AuthorityError("campaign root tool map is malformed")
+    if "git" not in root_tools:
+        raise AuthorityError("campaign root lacks its package-pinned Git identity")
+    git_identity_with_mode = _verify_detached_identity_with_mode(root_tools["git"], "campaign Git tool")
+    git_identity = _detached_identity(git_identity_with_mode)
+
+    repository_root = _existing_directory(_absolute(repository_root), "baseline repository root")
+    head_before, tree_before = _observe_clean_checkout(
+        repository_root,
+        git_path=git_identity["path"],
+    )
+    if head_before != root["repository_head"]:
+        raise AuthorityError("baseline checkout HEAD differs from the campaign root")
+
+    root_inputs = root["strict_inputs"]
+    if not isinstance(root_inputs, Mapping):
+        raise AuthorityError("campaign root input map is malformed")
+    input_identities: dict[str, dict[str, object]] = {}
+    for role, relative in BASELINE_CHECKOUT_INPUT_PATHS.items():
+        if role not in root_inputs:
+            raise AuthorityError(f"campaign root lacks baseline input {role}")
+        pinned_with_mode = _verify_detached_identity_with_mode(
+            root_inputs[role],
+            f"campaign baseline input {role}",
+        )
+        _raw, checkout_identity_with_mode = _snapshot(repository_root / relative)
+        if any(
+            checkout_identity_with_mode[field] != pinned_with_mode[field]
+            for field in ("sha256", "size_bytes")
+        ):
+            raise AuthorityError(f"baseline checkout input differs from the campaign root: {role}")
+        input_identities[role] = _detached_identity(checkout_identity_with_mode)
+
+    head_after, tree_after = _observe_clean_checkout(
+        repository_root,
+        git_path=git_identity["path"],
+    )
+    if (head_after, tree_after) != (head_before, tree_before):
+        raise AuthorityError("baseline checkout changed during provenance capture")
+    if _snapshot(campaign_dir / "campaign-root.json")[1] != root_identity:
+        raise AuthorityError("campaign root changed during provenance capture")
+
+    record = {
+        "authority_scope": "AB16_RESEARCH_ONLY",
+        "campaign_root_identity": _detached_identity(root_identity),
+        "git_identity": git_identity,
+        "import_mode": BASELINE_IMPORT_MODE,
+        "input_identities": input_identities,
+        "package": package_record,
+        "repository_head": head_before,
+        "repository_root": str(repository_root),
+        "repository_tree": tree_before,
+        "schema_version": BASELINE_PROVENANCE_SCHEMA,
+    }
+    baseline_dir = Path(preregistration["baseline_rebuilt_model_path"]).parent
+    for directory, label in (
+        (baseline_dir.parent, "prospective AB16 directory"),
+        (baseline_dir, "baseline directory"),
+    ):
+        if directory.exists() or directory.is_symlink():
+            _existing_directory(directory, label)
+        else:
+            _make_directory(directory)
+    provenance_path = baseline_dir / "campaign-provenance.json"
+    provenance_identity = _write_bytes_exclusive(provenance_path, canonical_json(record) + b"\n")
+    return {
+        "campaign_provenance": record,
+        "campaign_provenance_identity": _detached_identity(provenance_identity),
+        "status": "BASELINE_CLEAN_CHECKOUT_PROVENANCE_READY",
+    }
 
 
 def _projection_digest(schema: str, identities: Mapping[str, Mapping[str, Any]]) -> str:
@@ -2243,6 +2413,9 @@ def _parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
     manifest_parser = subparsers.add_parser("build-manifest")
     manifest_parser.add_argument("--preregistration", type=Path, required=True)
+    baseline_parser = subparsers.add_parser("prepare-baseline-provenance")
+    baseline_parser.add_argument("--preregistration", type=Path, required=True)
+    baseline_parser.add_argument("--repository-root", type=Path, required=True)
     suite_parser = subparsers.add_parser("suite-selection")
     suite_parser.add_argument("--preregistration", type=Path, required=True)
     replay_parser = subparsers.add_parser("replay")
@@ -2284,6 +2457,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     if args.command == "build-manifest":
         result = build_manifest(args.preregistration)
+    elif args.command == "prepare-baseline-provenance":
+        result = prepare_baseline_provenance(
+            args.preregistration,
+            repository_root=args.repository_root,
+        )
     elif args.command == "suite-selection":
         result = create_suite_selection(args.preregistration)
     elif args.command == "replay":

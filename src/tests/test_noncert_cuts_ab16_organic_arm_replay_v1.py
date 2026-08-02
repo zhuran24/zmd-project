@@ -158,11 +158,37 @@ def _cut_free(
     metadata = _json(directory / "metadata.json", {"fixture": "metadata"})
     model = _json(directory / "model.json", {"fixture": "model"})
     tool = _write(directory / "fixed-replay.py", b"# inert fixture\n")
+    campaign_root = _json(directory / "campaign-root.json", {"fixture": "campaign root"})
+    git_tool = _write(directory / "git", b"fixture git tool\n")
+    package_manifest = _json(directory / "package-manifest.json", {"fixture": "package manifest"})
+    package_seal = _write(directory / "SHA256SUMS", b"fixture package seal\n")
+    campaign_inputs = {
+        role: _json(directory / f"input.{role}.json", {"fixture": role})
+        for role in sorted(REPLAY.CAMPAIGN_PROVENANCE_INPUT_ROLES)
+    }
     return _json(
         directory / "cut-free.json",
         {
             "all_fixed_equalities_added": True,
             "assignment_count": 1,
+            "campaign_provenance": {
+                "authority_scope": REPLAY.CAMPAIGN_PROVENANCE_AUTHORITY_SCOPE,
+                "campaign_root_identity": _identity(campaign_root),
+                "git_identity": _identity(git_tool),
+                "import_mode": REPLAY.CHECKOUT_IMPORT_MODE,
+                "input_identities": {
+                    role: _identity(path) for role, path in campaign_inputs.items()
+                },
+                "package": {
+                    "manifest_identity": _identity(package_manifest),
+                    "package_id": _identity(package_seal)["sha256"],
+                    "seal_identity": _identity(package_seal),
+                },
+                "repository_head": "a" * 40,
+                "repository_root": str(directory.resolve()),
+                "repository_tree": "c" * 40,
+                "schema_version": REPLAY.CAMPAIGN_PROVENANCE_SCHEMA,
+            },
             "conflicting_assignment_count": 0,
             "created_at_utc": "2026-07-24T00:00:00Z",
             "fixed_assignment_count": 1,
@@ -414,6 +440,74 @@ def test_budget_unknown_without_new_incumbent_replays_admitted_baseline(
     )
     assert receipt["arm_incumbent_present"] is False
     assert receipt["cut_free_replay_subject_identity"] == _identity(fixture["baseline"])
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    (
+        ("v1", "not a PASS"),
+        ("missing_campaign_provenance", "key set drifted"),
+        ("extra_receipt_field", "key set drifted"),
+    ),
+)
+def test_cut_free_v1_and_top_level_key_drift_are_rejected(
+    tmp_path: Path,
+    mutation: str,
+    message: str,
+) -> None:
+    fixture = _fixture(tmp_path, "zero")
+    cut_free = REPLAY._strict_json(  # noqa: SLF001
+        fixture["cut_free"].read_bytes(),
+        "fixture cut-free replay",
+        canonical=True,
+    )
+    assert isinstance(cut_free, dict)
+    if mutation == "v1":
+        cut_free["schema_version"] = "noncert-cuts-ab16-fixed-assignment-replay-v1"
+    elif mutation == "missing_campaign_provenance":
+        cut_free.pop("campaign_provenance")
+    else:
+        cut_free["unexpected"] = "field"
+    fixture["cut_free"].write_bytes(REPLAY.canonical_json(cut_free))
+    with pytest.raises(REPLAY.ReplayError, match=message):
+        REPLAY.replay_arm(
+            arm_result=fixture["result"],
+            cut_free_replay=fixture["cut_free"],
+            replay_tool_identity=_identity(TOOL_PATH),
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    (
+        ("repository_head", "A" * 40, "semantics drifted"),
+        ("repository_root", "relative/checkout", "semantics drifted"),
+        ("unexpected", True, "key set drifted"),
+    ),
+)
+def test_cut_free_campaign_provenance_is_validated_independently(
+    tmp_path: Path,
+    field: str,
+    value: object,
+    message: str,
+) -> None:
+    fixture = _fixture(tmp_path, "zero")
+    cut_free = REPLAY._strict_json(  # noqa: SLF001
+        fixture["cut_free"].read_bytes(),
+        "fixture cut-free replay",
+        canonical=True,
+    )
+    assert isinstance(cut_free, dict)
+    provenance = cut_free["campaign_provenance"]
+    assert isinstance(provenance, dict)
+    provenance[field] = value
+    fixture["cut_free"].write_bytes(REPLAY.canonical_json(cut_free))
+    with pytest.raises(REPLAY.ReplayError, match=message):
+        REPLAY.replay_arm(
+            arm_result=fixture["result"],
+            cut_free_replay=fixture["cut_free"],
+            replay_tool_identity=_identity(TOOL_PATH),
+        )
 
 
 def test_generated_compiled_applied_lineage_mutations_fail_closed() -> None:
