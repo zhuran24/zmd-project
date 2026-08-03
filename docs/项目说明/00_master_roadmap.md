@@ -83,7 +83,7 @@ profile set 后从完整 Gate A 重来；A038 与此前 full 均不构成资格�
 | 08-02 | **AB16 减法批 + 返工批验收合并**（owner 已拍板"不封顶、做减法"）：codex 端到端四刀（拆预算权威 phase-1 逐字节逆向/拆防御栈 8.2 万行/one-shot 冻结改可修复重跑/lock §3C 瘦身 1004→700 行 + 44→49 schema 外移为 machine-checked declaration）经三方验收（opus 六维工作流 20 代理 + codex 对照席 ×2 + 主会话独立 preflight ×3 与分歧亲裁）判"刀1 过、刀2/3/4 返工"——坐实 4 blocker（16 臂生产链断头+冻结 manifest 钉死 attempt_dir 结构性不可重试/终名直写无原子发布=新冻死类/科学输入无 campaign 级锚可跨 slot 漂移/retained-FD 防御残留）+5 concern；另 6 条指控经对抗复核驳倒入禁修清单（Gate1/trust §3C 条款删除裁定属 ab16 范畴合规）。返工 6 提交全部落地（生产链+recover-staging/abandon-attempt 原子恢复+预注册钉 campaign 科学锚+普通路径执行+baseline 自举+文档四件套），复验收九项逐证据点核过、独立 preflight `19 passed` 后 ff 合并 `93835fd`（净 −87,127 行）。**ab16 剩余 = 资源标定→真跑 16 臂→预注册口径评估报告，然后按 owner 停止令停下**；R11（flock 随控制进程死亡先于 transient unit 释放+`run_selected_arm` 直调不获锁）为真跑前必修遗留。**新排期候选（owner 08-01 监督线程提出、codex 四层分类答复）：「基础机制→派生定理→人工 cut」批**——派生结论按性质四分（必要投影/带前件条件 cut/充分限制/启发式），五个候选方向（端口 Hall/单格路由方向签名/供电 hitting-set/组件分隔带/孔洞条件 Hall）与 R1 弹药清单及 3 号 GPT 诊断 G1 三路汇流；排 ab16 收尾后 shadow-only 起步。另记环境债：6 个 track-b/R3/R4 测试硬编码 `/home/zhuran24/zmd-pj-codex*` 绝对路径，现靠 host symlink（→wd_external 归档/→主仓）垫绿，耐久修复另立小批 | 本文档；`.artifacts/ab16_slimdown_20260801/`（task_brief/rework_brief/RESULT/三轮 preflight 日志）；[AB16 current status](../research/noncert_cuts_ab16_20260724/README.md) |
 | 08-03 | **AB16 十六臂正式实验完成并按 owner 停止令收官**。真跑阶段以「停机→gated 修复批→重试」循环连清七块执行链化石（R14 baseline 导出 pybind→generated protobuf 桥/R15 fixed-replay 从 pose-bool 选择器面改为消费真实 coordinate-master 变量面、293 条 incumbent 独立复核/R16 manager-epoch 重捕获改用 bootstrap 钉死的 attestor_python 独立身份/R17 零 attach-hook 正常终态如实发布+payload 失败输出接进 supervisor 生命周期/R18 systemd unit 回收竞态下以 wait-observer AddRef 保住 identity-bound 终态取证/R19 ALT_CAP_REACHED=200 对称编码为合法内部截断/R20 suite gate 跨 attempt 工具身份按字节内容归并且 provenance 全保留），每批 codex 执行、主会话逐证据点亲手验收（含「修复前必红」在旧树独立复现）+独立 full preflight 后 ff 合并（`d0e6fad`→`9b29da7` 七提交）。campaign root `run-20260802T221714Z-r6` 共 21 attempts=16 credible+5 工程史料（slot1 磨 5 次），**16/16 臂全部 `BUDGET_CENSORED_UNKNOWN`（binding_alt_cap=200 右删失）+ `ORGANIC_NONACTIVATION`（G/C/A=0/0/0）**，det. time 全带 48.2~49.4s、峰值 ~14.7GiB 零 memory event。正式 v2 分类（sha `8745361b…5769`）：region-capacity/power-hitting-set=`INCONSISTENT_FIXED_RUN_OBSERVATIONS`、shape-packing-hall/bundle=`FIXED_CONFIGURATION_NO_EFFECT`——**本实验没有一个 cut 配置展示可归因的有机 runtime 改善，根因是四个 treatment 的 cut 触发点（binding-infeasible/routing-exhausted 分支）在撞 alternatives cap 前从未到达**；结论只覆盖本冻结实例+seed+删失里程碑，不外推 cut 激活时性能、不授权任何 soundness/promotion claim（authority 全 false，U=(1188,18)/L=absent 不变）。**对 B6 的含义：有机激活率为零 → promotion 实测依据缺位，B6 owner 门的前置数据现状如实为「无有机暴露证据」**。新欠账：PROJECT_LOCK 遗留 R11 blocker 过期文案（attempt-0003 EVAL 判定文档漂移非因果）、`host_gate_quarantine/` 两个可逆迁移的 pytest scratch 目录待处置、6 硬编码路径测试耐久修复仍挂账。ab16 线就此停止；后续 = B6 owner 手动门（真人输入）/派生定理四层分类批（shadow-only）/W0 转向复算（先亲手验 3 号 GPT「129/219 绑不上端口」死刑指控）均待 owner 拍板 | 最终 [EVAL](../../.artifacts/ab16_arms_20260802/EVAL.md)（sha `0320a9ac…1784`）；`ARM_CLOSURES_R6.log`（16 行）；`R6_POSTCLOSE_SUITE_GATE_FAILURE_20260803T0753Z.md`；r3/r4/r5 失败 root 与 EVAL_r*_stopped 系列史料；RESULT.md R14-R20 小节 |
 
-### 0b. 方法论：规则归属判据 v2 → v2.3（2026-07-17 三轮推出 v1/v2/v2.1；07-18 两轮补 cut 方法论与四问统一；07-20 干净房间 R2/R3 外部收编）
+### 0b. 方法论：规则归属判据 v2 → v2.4（2026-07-17 三轮推出 v1/v2/v2.1；07-18 两轮补 cut 方法论与四问统一；07-20 干净房间 R2/R3 外部收编；08-03 管线门序泛化）
 
 **一条规则的归属不是"上收/下放"一维选择，是切分后各片的四元组位置：**
 
@@ -185,6 +185,20 @@ solve 解不动时先问"这格是否合并过头"——候选=两段式 master�
 6. **双 ledger 汇报（R3）**：下界账（witness 只抬此账）与上界账（松弛
    证书只压此账）分开记，同 instance hash+同假设下两账相遇才准报
    optimal；资源中止不改任何账。
+
+**管线门序泛化（v2.4 补，2026-08-03 owner 认可）**：本判据的管辖对象不只
+"一条规则住求解器哪层"，而是**任何管线的门序设计**——构造线/研究线的工作
+流同样是管线，其工序位置服从同一套定律：不依赖下层决策即可求值的必要条件
+（§0b-1 的健全影子）必须前置为便宜门；按实测拒绝成本从便宜到贵排；早期门
+带证书、终审留给精确本体（§0b-4）。**反面校准：W0 pinned seed（08-03 判
+死，19/20 号文书）**——"先钉机身、端口后补"把可毫秒级求值、不依赖任何路
+由决策的端口合法性隐式埋进末端小时级大求解，六次 UNKNOWN 被读成"难"而非
+"无解"；外脑用一个前置影子检查毫秒判死整条线（129/219 绑不上端口，主会话
+复算在 repo 语义下更强）。与五月 47,666 惨案构成同构对偶：那次是违反信息
+依赖**硬合并**（把依赖下层决策的规则整条上收），这次是违反管线序**硬后置**
+（把不依赖下层的必要条件埋到最后）。执行纪律：新开任何构造/求解管线，门序
+须显式对照本节过堂并留记录（17 号处方的 G1/G2/G3 天然即此结构，开线时补
+过堂）；外脑交付的构造方案以"待审管线设计"身份进场，不因算术闭合美感免检。
 
 > **Shadow-only 实现注（2026-07-24；non-authorizing）：**
 > [23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md) 记录由本节
