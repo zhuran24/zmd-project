@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
+import errno
 import hashlib
 import json
 import math
@@ -267,6 +268,9 @@ def _open_directory_fd(path: Path) -> tuple[Path, int]:
             os.close(descriptor)
             descriptor = next_descriptor
         return absolute, descriptor
+    except FileNotFoundError as exc:
+        os.close(descriptor)
+        raise OrchestratorError(f"path component does not exist: {absolute}") from exc
     except OSError as exc:
         os.close(descriptor)
         raise OrchestratorError("symlink or invalid path component") from exc
@@ -280,9 +284,14 @@ def _open_regular(path: Path | str) -> tuple[Path, int]:
     flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
     try:
         descriptor = os.open(absolute.name, flags, dir_fd=parent_descriptor)
+    except FileNotFoundError as exc:
+        os.close(parent_descriptor)
+        raise OrchestratorError(f"file does not exist: {absolute}") from exc
     except OSError as exc:
         os.close(parent_descriptor)
-        raise OrchestratorError("symlink or invalid file path") from exc
+        if exc.errno == errno.ELOOP:
+            raise OrchestratorError(f"symlink file path is forbidden: {absolute}") from exc
+        raise OrchestratorError(f"file path could not be opened: {absolute}") from exc
     os.close(parent_descriptor)
     return absolute, descriptor
 
@@ -332,6 +341,58 @@ def snapshot_bytes(path: Path | str) -> ByteSnapshot:
         os.close(descriptor)
 
 
+def _inner_publication_state(path: Path, *, supervisor_pid: int) -> str:
+    """Classify only this supervisor's transient hard-link publication window."""
+
+    absolute = Path(os.path.abspath(path))
+    _parent, parent_descriptor = _open_directory_fd(absolute.parent)
+
+    def final_is_ready() -> bool:
+        try:
+            observed = os.stat(absolute.name, dir_fd=parent_descriptor, follow_symlinks=False)
+        except FileNotFoundError:
+            return False
+        return (
+            stat.S_ISREG(observed.st_mode)
+            and observed.st_nlink == 1
+            and stat.S_IMODE(observed.st_mode) == 0o444
+        )
+
+    try:
+        try:
+            final = os.stat(absolute.name, dir_fd=parent_descriptor, follow_symlinks=False)
+        except FileNotFoundError:
+            return "absent"
+        if not stat.S_ISREG(final.st_mode):
+            return "invalid"
+        if final.st_nlink == 1:
+            return "ready"
+        if final.st_nlink != 2 or stat.S_IMODE(final.st_mode) != 0o444:
+            return "invalid"
+        base_prefix = f".{absolute.name}.pending-"
+        expected_prefix = f"{base_prefix}{supervisor_pid}-"
+        pending_names = sorted(name for name in os.listdir(parent_descriptor) if name.startswith(base_prefix))
+        if len(pending_names) != 1 or not pending_names[0].startswith(expected_prefix):
+            return "ready" if final_is_ready() else "invalid"
+        try:
+            pending = os.stat(pending_names[0], dir_fd=parent_descriptor, follow_symlinks=False)
+        except FileNotFoundError:
+            return "ready" if final_is_ready() else "invalid"
+        if (
+            not stat.S_ISREG(pending.st_mode)
+            or pending.st_nlink != 2
+            or stat.S_IMODE(pending.st_mode) != 0o444
+            or (pending.st_dev, pending.st_ino, pending.st_size)
+            != (final.st_dev, final.st_ino, final.st_size)
+        ):
+            return "invalid"
+        return "publishing"
+    except OSError as exc:
+        raise OrchestratorError(f"could not inspect inner lifecycle publication: {absolute}") from exc
+    finally:
+        os.close(parent_descriptor)
+
+
 def _strict_load(snapshot: ByteSnapshot, label: str) -> Mapping[str, Any]:
     def pairs(items: list[tuple[str, object]]) -> dict[str, object]:
         result: dict[str, object] = {}
@@ -354,6 +415,17 @@ def _strict_load(snapshot: ByteSnapshot, label: str) -> Mapping[str, Any]:
     if type(value) is not dict or canonical_json_bytes(value) != snapshot.raw:
         raise OrchestratorError(f"{label} is not canonical JSON")
     return value
+
+
+def _strict_load_runner(snapshot: ByteSnapshot, label: str) -> Mapping[str, Any]:
+    """Parse the runner's canonical object framing with exactly one trailing LF."""
+
+    if not snapshot.raw.endswith(b"\n") or snapshot.raw.endswith(b"\n\n"):
+        raise OrchestratorError(f"{label} must use exactly one trailing LF")
+    return _strict_load(
+        ByteSnapshot(raw=snapshot.raw[:-1], identity=snapshot.identity),
+        label,
+    )
 
 
 def _load_pinned_environment(pre_run: Mapping[str, Any]) -> dict[str, str]:
@@ -402,6 +474,48 @@ def _identity_matches(
 ) -> None:
     if dict(observed) != dict(expected):
         raise OrchestratorError(f"{label} byte identity drifted")
+
+
+def _payload_failure_error(
+    value: object,
+    *,
+    selection_identity: Mapping[str, Any],
+) -> str:
+    """Validate a runner failure record and return its exact error surface."""
+
+    expected_keys = {
+        "authorizations",
+        "error",
+        "schema_version",
+        "selection_identity",
+        "status",
+    }
+    if type(value) is not dict or set(value) != expected_keys:
+        raise OrchestratorError("payload failure must have the exact key set")
+    authorizations = value["authorizations"]
+    expected_authorization_keys = {
+        "global_claim_authorized",
+        "mathematical_claim_authorized",
+        "organic_runtime_effect_authorized",
+        "production_certified_authorized",
+    }
+    detached_selection_identity = {
+        field: selection_identity[field]
+        for field in ("path", "sha256", "size_bytes")
+    }
+    if (
+        value["schema_version"] != "noncert-cuts-ab16-organic-arm-result-v1"
+        or value["status"] != "CREDIBILITY_INCOMPLETE"
+        or value["selection_identity"] != detached_selection_identity
+        or type(authorizations) is not dict
+        or set(authorizations) != expected_authorization_keys
+        or any(item is not False for item in authorizations.values())
+    ):
+        raise OrchestratorError("payload failure schema/selection/authorization drifted")
+    error = value["error"]
+    if type(error) is not str or not error:
+        raise OrchestratorError("payload failure error is absent")
+    return error
 
 
 def _load_pinned_module(
@@ -710,9 +824,27 @@ class SubprocessLifecycleAdapter:
             raise OrchestratorError("selected unit supervisor is absent before inner lifecycle")
         inner_path = Path(self.pre_run["output_paths"]["inner"])
         deadline = self._monotonic() + int(self.pre_run["resource_contract"]["runtime_max_seconds"]) - 60
+        publication_retries_remaining = 20
+        ready_retry_available = True
         while self._monotonic() <= deadline:
             if os.path.lexists(inner_path):
-                snapshot = snapshot_bytes(inner_path)
+                try:
+                    snapshot = snapshot_bytes(inner_path)
+                except OrchestratorError:
+                    publication_state = _inner_publication_state(
+                        inner_path,
+                        supervisor_pid=supervisor_pid,
+                    )
+                    if publication_state == "ready" and ready_retry_available:
+                        ready_retry_available = False
+                        continue
+                    if publication_state != "publishing" or publication_retries_remaining <= 0:
+                        raise
+                    if _proc_starttime(supervisor_pid) != supervisor_starttime:
+                        raise OrchestratorError("selected unit supervisor exited during inner lifecycle publication")
+                    publication_retries_remaining -= 1
+                    self.sleep(0.05)
+                    continue
                 value = _strict_load(snapshot, "inner lifecycle")
                 if (
                     value.get("schema_version") != "noncert-cuts-ab16-inner-lifecycle-v1"
@@ -1015,9 +1147,9 @@ def _orchestrate_with_adapter_unprotected(
         payload_argv=pre_run["launch"]["payload_argv"],
     )
     cleanup_state["launch"] = launch
-    payload_result = verifier.snapshot_runner_json(pre_run["output_paths"]["attempt_result"])
     inner_snapshot = verifier.snapshot_json(pre_run["output_paths"]["inner"])
     inner = inner_snapshot.value
+    cleanup_state["inner_identity"] = inner_snapshot.identity
     observed_launch = {
         "invocation_id": launch.invocation_id,
         "keeper_pid": launch.supervisor_pid,
@@ -1037,9 +1169,39 @@ def _orchestrate_with_adapter_unprotected(
         raise OrchestratorError("adapter launch evidence differs from supervisor inner bytes")
     if (
         inner.get("manager_epoch_observation") != launch_observation
-        or inner.get("payload_result_identity") != payload_result.identity
+        or inner.get("pre_run_authority_identity") != pre_run_snapshot.identity
+        or inner.get("runner_selection_identity") != selection_snapshot.identity
+        or inner.get("campaign_id") != pre_run["campaign_id"]
+        or inner.get("run_nonce") != pre_run["run_nonce"]
+        or inner.get("slot") != pre_run["slot"]
+        or inner.get("unit_name") != pre_run["unit_name"]
     ):
-        raise OrchestratorError("supervisor inner authority/result join failed")
+        raise OrchestratorError("supervisor inner authority join failed")
+    payload_result_identity = inner.get("payload_result_identity")
+    payload_failure_identity = inner.get("payload_failure_identity")
+    if (payload_result_identity is None) == (payload_failure_identity is None):
+        raise OrchestratorError("supervisor inner must bind exactly one payload result/failure")
+    if payload_failure_identity is not None:
+        failure_path = Path(pre_run["attempt_dir"]) / "failure.json"
+        payload_failure = snapshot_bytes(failure_path)
+        if payload_failure.identity != payload_failure_identity:
+            raise OrchestratorError("supervisor inner payload failure identity drifted")
+        failure_error = _payload_failure_error(
+            _strict_load_runner(payload_failure, "payload failure"),
+            selection_identity=selection_snapshot.identity,
+        )
+        cleanup_state["payload_failure_identity"] = payload_failure.identity
+        if (launch.payload_exit_code, launch.payload_signal) != (2, 0):
+            raise OrchestratorError(
+                "payload failure terminal mismatch: expected exit_code=2 signal=0, "
+                f"observed exit_code={launch.payload_exit_code} signal={launch.payload_signal}; "
+                f"payload error: {failure_error}"
+            )
+        raise OrchestratorError(f"payload failed: {failure_error}")
+
+    payload_result = verifier.snapshot_runner_json(pre_run["output_paths"]["attempt_result"])
+    if payload_result.identity != payload_result_identity:
+        raise OrchestratorError("supervisor inner payload result identity drifted")
     inner_identity = inner_snapshot.identity
     preterminal_observation, _preterminal_epoch_identity = _write_epoch(
         lifecycle=lifecycle,
@@ -1228,11 +1390,13 @@ def _publish_abort_cleanup(
         "cgroup_path": evidence.cgroup_path,
         "cgroup_path_exists": evidence.cgroup_path_exists,
         "failure_class": type(original_failure).__name__,
+        "inner_identity": cleanup_state.get("inner_identity"),
         "invocation_id": launch.invocation_id,
         "keeper_current_starttime": evidence.keeper_current_starttime,
         "keeper_pid": launch.supervisor_pid,
         "matching_unit_names": list(evidence.matching_unit_names),
         "payload_current_starttime": evidence.payload_current_starttime,
+        "payload_failure_identity": cleanup_state.get("payload_failure_identity"),
         "payload_pid": launch.payload_pid,
         "pre_run_authority_identity": cleanup_state["pre_run_identity"],
         "purpose": "PROSPECTIVE_AB16_SELECTED_UNIT_FAIL_CLOSED_CLEANUP",

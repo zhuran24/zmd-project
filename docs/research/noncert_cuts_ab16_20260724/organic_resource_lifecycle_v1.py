@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
+import errno
 import hashlib
 import json
 import math
@@ -392,6 +393,9 @@ def _open_parent_dirfd(path: Path) -> tuple[Path, int, str]:
             os.close(descriptor)
             descriptor = next_descriptor
         return absolute, descriptor, absolute.name
+    except FileNotFoundError as exc:
+        os.close(descriptor)
+        raise LifecycleError(f"path component does not exist: {absolute}") from exc
     except OSError as exc:
         os.close(descriptor)
         raise LifecycleError("symlink or invalid path component") from exc
@@ -404,9 +408,14 @@ def snapshot_regular(path: Path) -> DetachedDocument:
     flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
     try:
         descriptor = os.open(leaf, flags, dir_fd=parent_descriptor)
+    except FileNotFoundError as exc:
+        os.close(parent_descriptor)
+        raise LifecycleError(f"file does not exist: {absolute}") from exc
     except OSError as exc:
         os.close(parent_descriptor)
-        raise LifecycleError("symlink or invalid file path") from exc
+        if exc.errno == errno.ELOOP:
+            raise LifecycleError(f"symlink file path is forbidden: {absolute}") from exc
+        raise LifecycleError(f"file path could not be opened: {absolute}") from exc
     os.close(parent_descriptor)
     try:
         before = os.fstat(descriptor)
@@ -493,10 +502,71 @@ def write_exclusive(path: Path, raw: bytes) -> dict[str, object]:
     }
 
 
+def write_atomic_exclusive(path: Path, raw: bytes) -> dict[str, object]:
+    """Atomically publish one immutable handoff file without overwriting."""
+
+    if type(raw) is not bytes:
+        raise LifecycleError("exclusive payload must be bytes")
+    absolute, parent_descriptor, leaf = _open_parent_dirfd(path)
+    pending_name = f".{leaf}.pending-{os.getpid()}-{time.monotonic_ns()}"
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    pending_exists = False
+    try:
+        descriptor = os.open(pending_name, flags, 0o600, dir_fd=parent_descriptor)
+        pending_exists = True
+        try:
+            view = memoryview(raw)
+            while view:
+                written = os.write(descriptor, view)
+                if written <= 0:
+                    raise LifecycleError(f"short write: {absolute}")
+                view = view[written:]
+            os.fchmod(descriptor, 0o444)
+            os.fsync(descriptor)
+            metadata = os.fstat(descriptor)
+            if metadata.st_size != len(raw) or stat.S_IMODE(metadata.st_mode) != 0o444:
+                raise LifecycleError(f"wrong staged output metadata: {absolute}")
+        finally:
+            os.close(descriptor)
+        os.link(
+            pending_name,
+            leaf,
+            src_dir_fd=parent_descriptor,
+            dst_dir_fd=parent_descriptor,
+            follow_symlinks=False,
+        )
+        os.fsync(parent_descriptor)
+        os.unlink(pending_name, dir_fd=parent_descriptor)
+        pending_exists = False
+        os.fsync(parent_descriptor)
+    except FileExistsError as exc:
+        raise LifecycleError(f"no-overwrite output already exists or staging collided: {absolute}") from exc
+    except OSError as exc:
+        raise LifecycleError(f"atomic no-overwrite publication failed: {absolute}") from exc
+    finally:
+        if pending_exists:
+            try:
+                os.unlink(pending_name, dir_fd=parent_descriptor)
+                os.fsync(parent_descriptor)
+            except OSError:
+                pass
+        os.close(parent_descriptor)
+    published = snapshot_regular(absolute)
+    if published.raw != raw:
+        raise LifecycleError(f"published output bytes changed: {absolute}")
+    return published.identity
+
+
 def write_json_exclusive(path: Path, value: object) -> dict[str, object]:
     """Write one canonical JSON document without overwriting."""
 
     return write_exclusive(path, canonical_json_bytes(value))
+
+
+def write_json_atomic_exclusive(path: Path, value: object) -> dict[str, object]:
+    """Atomically publish one canonical JSON handoff without overwriting."""
+
+    return write_atomic_exclusive(path, canonical_json_bytes(value))
 
 
 def _slot_parts(slot: str) -> tuple[str, str, str]:
@@ -1383,8 +1453,9 @@ def build_inner_record(
     payload_exit_code: int,
     payload_signal: int,
     payload_reaped: bool,
-    payload_result_identity: Mapping[str, Any],
+    payload_result_identity: Mapping[str, Any] | None,
     keeper_ready_monotonic_ns: int,
+    payload_failure_identity: Mapping[str, Any] | None = None,
 ) -> dict[str, object]:
     """Build the inner raw chain after the payload has exited and been reaped."""
 
@@ -1419,6 +1490,18 @@ def build_inner_record(
         raise LifecycleError("payload must be distinct from supervisor/keeper")
     if type(payload_exit_code) is not int or type(payload_signal) is not int:
         raise LifecycleError("payload exit status fields must be exact integers")
+    if (payload_result_identity is None) == (payload_failure_identity is None):
+        raise LifecycleError("inner record requires exactly one payload result/failure identity")
+    result_identity = (
+        None
+        if payload_result_identity is None
+        else dict(_identity(payload_result_identity, "payload result identity"))
+    )
+    failure_identity = (
+        None
+        if payload_failure_identity is None
+        else dict(_identity(payload_failure_identity, "payload failure identity"))
+    )
     return {
         **join,
         "keeper_pid": supervisor,
@@ -1426,9 +1509,10 @@ def build_inner_record(
         "keeper_starttime": supervisor_start,
         "payload_exit_code": payload_exit_code,
         "payload_exit_monotonic_ns": exited,
+        "payload_failure_identity": failure_identity,
         "payload_pid": payload,
         "payload_reaped": _bool(payload_reaped, "payload_reaped"),
-        "payload_result_identity": dict(_identity(payload_result_identity, "payload result identity")),
+        "payload_result_identity": result_identity,
         "payload_seal_monotonic_ns": seal,
         "payload_signal": payload_signal,
         "payload_starttime": payload_start,
@@ -1785,6 +1869,64 @@ def _load_runner_json_snapshot(path: Path, label: str) -> tuple[Mapping[str, Any
     return value, snapshot
 
 
+def _load_payload_output(
+    *,
+    pre_run: Mapping[str, Any],
+    selection_identity: Mapping[str, Any],
+) -> tuple[str, Mapping[str, Any], DetachedDocument]:
+    """Snapshot and validate exactly one real runner result/failure branch."""
+
+    result_path = Path(pre_run["output_paths"]["attempt_result"])
+    failure_path = Path(pre_run["attempt_dir"]) / "failure.json"
+    result_present = os.path.lexists(result_path)
+    failure_present = os.path.lexists(failure_path)
+    if result_present and failure_present:
+        raise LifecycleError("payload published both result.json and failure.json")
+    if not result_present and not failure_present:
+        raise LifecycleError("payload exited without result.json or failure.json")
+    if result_present:
+        result, snapshot = _load_runner_json_snapshot(result_path, "payload result")
+        if (
+            result.get("schema_version") != "noncert-cuts-ab16-organic-arm-result-v1"
+            or result.get("slot") != pre_run["slot"]
+        ):
+            raise LifecycleError("payload result schema/slot drifted")
+        return "result", result, snapshot
+
+    failure, snapshot = _load_runner_json_snapshot(failure_path, "payload failure")
+    record = _keys(
+        failure,
+        {
+            "authorizations",
+            "error",
+            "schema_version",
+            "selection_identity",
+            "status",
+        },
+        "payload failure",
+    )
+    authorizations = _keys(
+        record["authorizations"],
+        {
+            "global_claim_authorized",
+            "mathematical_claim_authorized",
+            "organic_runtime_effect_authorized",
+            "production_certified_authorized",
+        },
+        "payload failure authorizations",
+    )
+    expected_selection_identity = _detached_identity(selection_identity)
+    if (
+        record["schema_version"] != "noncert-cuts-ab16-organic-arm-result-v1"
+        or record["status"] != "CREDIBILITY_INCOMPLETE"
+        or record["selection_identity"] != expected_selection_identity
+        or any(value is not False for value in authorizations.values())
+    ):
+        raise LifecycleError("payload failure schema/selection/authorization drifted")
+    _string(record["error"], "payload failure error")
+    return "failure", record, snapshot
+
+
 def _validate_keeper_release(
     value: object,
     *,
@@ -1899,21 +2041,26 @@ def supervise_payload(
         _terminate_exact_child(process)
         raise LifecycleError("payload exceeded preregistered internal timeout")
     expected_returncode = _returncode_from_waitid(status)
-    result_path = Path(pre_run["output_paths"]["attempt_result"])
-    payload_result, payload_result_snapshot = _load_runner_json_snapshot(
-        result_path,
-        "payload result",
-    )
-    if (
-        payload_result.get("schema_version") != "noncert-cuts-ab16-organic-arm-result-v1"
-        or payload_result.get("slot") != pre_run["slot"]
-    ):
-        raise LifecycleError("payload result schema/slot drifted")
+    payload_output_kind: str | None = None
+    payload_output: Mapping[str, Any] | None = None
+    payload_output_snapshot: DetachedDocument | None = None
+    output_failure: Exception | None = None
+    try:
+        payload_output_kind, payload_output, payload_output_snapshot = _load_payload_output(
+            pre_run=pre_run,
+            selection_identity=selection_snapshot.identity,
+        )
+    except Exception as exc:
+        output_failure = exc
     payload_seal_ns = monotonic_ns()
     returncode = int(process.wait())
     payload_exit_ns = monotonic_ns()
     if returncode != expected_returncode or proc_starttime(process.pid) is not None:
         raise LifecycleError("payload waitid/waitpid/reap mismatch")
+    if output_failure is not None:
+        raise output_failure
+    if payload_output_kind is None or payload_output is None or payload_output_snapshot is None:
+        raise LifecycleError("payload output branch was not established")
     payload_signal = -returncode if returncode < 0 else 0
     payload_exit_code = returncode if returncode >= 0 else 0
     inner = build_inner_record(
@@ -1932,10 +2079,15 @@ def supervise_payload(
         payload_exit_code=payload_exit_code,
         payload_signal=payload_signal,
         payload_reaped=True,
-        payload_result_identity=payload_result_snapshot.identity,
+        payload_result_identity=(
+            payload_output_snapshot.identity if payload_output_kind == "result" else None
+        ),
         keeper_ready_monotonic_ns=monotonic_ns(),
+        payload_failure_identity=(
+            payload_output_snapshot.identity if payload_output_kind == "failure" else None
+        ),
     )
-    inner_identity = write_json_exclusive(
+    inner_identity = write_json_atomic_exclusive(
         Path(pre_run["output_paths"]["inner"]),
         inner,
     )

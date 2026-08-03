@@ -1569,6 +1569,10 @@ class CompileAttachRecorder:
     def compiled_count(self) -> int:
         return self._compiled_count
 
+    @property
+    def first_attach_solution_authorized(self) -> bool:
+        return self._solution_authorized
+
     def authorize_first_attach_solution(
         self,
         solution: Mapping[str, object],
@@ -1767,12 +1771,16 @@ class CompileAttachRecorder:
             )
 
     def finalize(self) -> None:
-        if not self._solution_authorized:
-            raise RunnerError("first attach solution was never authorized")
         if self._open_hook is not None:
             raise RunnerError("attach hook remained open at finalization")
-        if self._hook_count <= 0:
-            raise RunnerError("arm completed without traversing an attach hook")
+        if self._hook_count == 0:
+            if self._solution_authorized:
+                raise RunnerError("first attach solution was authorized without an attach hook")
+            if self._compiled_count != 0 or self._model_evidence_hooks:
+                raise RunnerError("zero-hook arm recorded attach-only evidence")
+            return
+        if not self._solution_authorized:
+            raise RunnerError("first attach solution was never authorized")
 
 
 def _validate_outcome(value: object) -> ArmOutcome:
@@ -2465,6 +2473,8 @@ def _run_with_hooks(
         try:
             ledger.seal(
                 {
+                    "attach_hook_count": recorder.hook_count,
+                    "first_attach_solution_authorized": recorder.first_attach_solution_authorized,
                     "runner_completed": failure is None,
                     "slot": selection["slot"],
                 }

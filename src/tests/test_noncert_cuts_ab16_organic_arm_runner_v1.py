@@ -12,7 +12,7 @@ import stat
 import subprocess
 import sys
 import textwrap
-from types import ModuleType
+from types import ModuleType, SimpleNamespace
 from typing import Any
 
 import pytest
@@ -222,6 +222,99 @@ class FakeHooks:
 
 class EvidenceRequiredHooks(FakeHooks):
     requires_model_evidence = True
+
+
+class FakeProductionMaster:
+    def __init__(
+        self,
+        incumbent: dict[str, object],
+        *,
+        solve_status: str,
+        solve_wall_time: float,
+        solution_vector: list[int],
+    ) -> None:
+        self._incumbent = incumbent
+        self._solve_status = solve_status
+        self._solve_wall_time = solve_wall_time
+        self._solver = SimpleNamespace(
+            ResponseProto=lambda: SimpleNamespace(
+                best_objective_bound=0.0,
+                deterministic_time=1.25,
+                num_binary_propagations=11,
+                num_booleans=2,
+                num_branches=13,
+                num_conflicts=17,
+                num_integer_propagations=19,
+                objective_value=0.0,
+                solution=list(solution_vector),
+                user_time=solve_wall_time,
+                wall_time=solve_wall_time,
+            )
+        )
+        self.model = SimpleNamespace(
+            Proto=lambda: SimpleNamespace(variables=[object() for _item in solution_vector]),
+            export_to_file=self._export_model,
+        )
+        self.build_stats: dict[str, object] = {}
+
+    @staticmethod
+    def _export_model(path: str) -> bool:
+        Path(path).write_bytes(b"fixture production model")
+        return True
+
+    def solve(self, *, time_limit_seconds: float, **_kwargs: object) -> str:
+        self.build_stats["last_solve"] = {
+            "binary_propagations": 11,
+            "branches": 13,
+            "conflicts": 17,
+            "deterministic_time": 1.25,
+            "integer_propagations": 19,
+            "status": self._solve_status,
+            "user_time": self._solve_wall_time,
+            "wall_time": self._solve_wall_time,
+        }
+        assert time_limit_seconds == 900
+        return self._solve_status
+
+    def extract_solution(self) -> dict[str, object]:
+        return self._incumbent
+
+
+class FakeProductionController:
+    def __init__(
+        self,
+        master: FakeProductionMaster,
+        *,
+        controller_status: str,
+        proof_summary: dict[str, object],
+        attach_solution: dict[str, object] | None = None,
+    ) -> None:
+        self.master = master
+        self.controller_status = controller_status
+        self.proof_summary = proof_summary
+        self.attach_solution = attach_solution
+        self.last_proof_summary: dict[str, object] | None = None
+
+    @staticmethod
+    def _maybe_attach_framework_cuts(
+        *,
+        trigger: str,
+        iteration: int,
+        solution: dict[str, object],
+    ) -> int:
+        del trigger, iteration, solution
+        return 0
+
+    def run_with_status(self) -> tuple[str, dict[str, object] | None]:
+        self.master.solve(time_limit_seconds=900)
+        if self.attach_solution is not None:
+            self._maybe_attach_framework_cuts(
+                trigger="binding_infeasible",
+                iteration=1,
+                solution=self.attach_solution,
+            )
+        self.last_proof_summary = dict(self.proof_summary)
+        return self.controller_status, None
 
 
 def _fixture(
@@ -764,6 +857,251 @@ def test_production_adapter_observes_natural_runtime_without_manual_attach() -> 
     assert "attach_iteration" not in run_source
 
 
+@pytest.mark.parametrize(
+    (
+        "terminal_stage",
+        "controller_status",
+        "master_status",
+        "proof_summary",
+        "solve_wall_time",
+        "solution_vector",
+        "expected_budget_kind",
+    ),
+    (
+        (
+            "master-infeasible",
+            "INFEASIBLE",
+            "INFEASIBLE",
+            {"benders_iterations": 1, "master_status": "INFEASIBLE"},
+            2.0,
+            [],
+            "none",
+        ),
+        (
+            "master-budget",
+            "UNKNOWN",
+            "UNKNOWN",
+            {"benders_iterations": 1, "master_status": "UNKNOWN"},
+            900.0,
+            [],
+            "master_seconds",
+        ),
+        (
+            "binding-budget",
+            "UNKNOWN",
+            "FEASIBLE",
+            {
+                "benders_iterations": 1,
+                "binding_status": "TIMEOUT",
+                "master_status": "FEASIBLE",
+            },
+            3.0,
+            [0, 1],
+            "binding_seconds",
+        ),
+        (
+            "routing-budget",
+            "UNKNOWN",
+            "FEASIBLE",
+            {
+                "benders_iterations": 1,
+                "binding_status": "FEASIBLE",
+                "master_status": "FEASIBLE",
+                "routing_status": "TIMEOUT",
+            },
+            4.0,
+            [0, 1],
+            "routing_seconds",
+        ),
+        (
+            "routing-certified",
+            "CERTIFIED",
+            "FEASIBLE",
+            {
+                "benders_iterations": 1,
+                "binding_status": "FEASIBLE",
+                "master_status": "FEASIBLE",
+                "routing_status": "FEASIBLE",
+            },
+            5.0,
+            [0, 1],
+            "none",
+        ),
+    ),
+)
+def test_production_zero_hook_controller_terminals_publish_complete_result(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    terminal_stage: str,
+    controller_status: str,
+    master_status: str,
+    proof_summary: dict[str, object],
+    solve_wall_time: float,
+    solution_vector: list[int],
+    expected_budget_kind: str,
+) -> None:
+    fixture = _fixture(tmp_path, arm="control")
+    master = FakeProductionMaster(
+        fixture["incumbent"],
+        solve_status=master_status,
+        solve_wall_time=solve_wall_time,
+        solution_vector=solution_vector,
+    )
+    runtime = RUNNER._ProductionRuntime(  # noqa: SLF001
+        controller=FakeProductionController(
+            master,
+            controller_status=controller_status,
+            proof_summary=proof_summary,
+        ),
+        master=master,
+    )
+    hooks = RUNNER.ProductionArmHooks()
+    monkeypatch.setattr(hooks, "construct", lambda _context: runtime)
+
+    result = RUNNER._run_with_hooks(  # noqa: SLF001
+        fixture["selection_path"],
+        hooks,
+        enforce_single_process_use=False,
+    )
+
+    assert result["raw_solver_status"] == controller_status
+    terminal = result["controller_terminal"]
+    assert terminal["controller_status"] == controller_status
+    assert terminal["master_solve_history"] == [
+        {
+            "binary_propagations": 11,
+            "branches": 13,
+            "conflicts": 17,
+            "deterministic_time": 1.25,
+            "integer_propagations": 19,
+            "ordinal": 1,
+            "requested_time_limit_seconds": 900.0,
+            "status": master_status,
+            "user_time": solve_wall_time,
+            "wall_time": solve_wall_time,
+        }
+    ]
+    assert terminal["budget_censor_evidence"]["kind"] == expected_budget_kind
+    assert result["incumbent_export"]["present"] is bool(solution_vector)
+    if solution_vector:
+        incumbent_path = Path(result["incumbent_export"]["incumbent_identity"]["path"])
+        vector_path = Path(result["incumbent_export"]["solution_vector_identity"]["path"])
+        assert json.loads(incumbent_path.read_text(encoding="utf-8")) == fixture["incumbent"]
+        assert json.loads(vector_path.read_text(encoding="utf-8")) == solution_vector
+    else:
+        assert result["incumbent_export"] == {
+            "incumbent_identity": None,
+            "present": False,
+            "solution_vector_identity": None,
+        }
+    published = json.loads((fixture["attempt_dir"] / "result.json").read_text(encoding="utf-8"))
+    assert published["raw_solver_status"] == controller_status
+    assert published["controller_terminal"] == terminal
+    assert published["incumbent_export"] == result["incumbent_export"]
+    assert not (fixture["attempt_dir"] / "failure.json").exists()
+
+    journal_events, _identity = RUNNER._read_journal(  # noqa: SLF001
+        fixture["attempt_dir"] / "compile-attach-journal.jsonl"
+    )
+    assert [event["event"] for event in journal_events] == [
+        "GENESIS",
+        "JOURNAL_SEAL",
+    ], terminal_stage
+    assert journal_events[-1]["payload"]["event_counts_before_seal"] == {"GENESIS": 1}
+    ledger_path = next((fixture["attempt_dir"] / "ledger").rglob("segment_*.jsonl"))
+    ledger_seal = json.loads(ledger_path.read_text(encoding="utf-8").splitlines()[-1])
+    assert ledger_seal["event"] == "SEGMENT_SEAL"
+    assert ledger_seal["attach_hook_count"] == 0
+    assert ledger_seal["first_attach_solution_authorized"] is False
+    assert ledger_seal["runner_completed"] is True
+
+
+def test_production_first_real_attach_still_requires_baseline_incumbent(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path)
+    wrong_solution = json.loads(json.dumps(fixture["incumbent"]))
+    wrong_solution["machine_001"]["pose_idx"] = 99
+    master = FakeProductionMaster(
+        fixture["incumbent"],
+        solve_status="FEASIBLE",
+        solve_wall_time=2.0,
+        solution_vector=[0, 1],
+    )
+    runtime = RUNNER._ProductionRuntime(  # noqa: SLF001
+        controller=FakeProductionController(
+            master,
+            controller_status="UNKNOWN",
+            proof_summary={"binding_status": "INFEASIBLE", "master_status": "FEASIBLE"},
+            attach_solution=wrong_solution,
+        ),
+        master=master,
+    )
+    hooks = RUNNER.ProductionArmHooks()
+    monkeypatch.setattr(hooks, "construct", lambda _context: runtime)
+
+    with pytest.raises(RUNNER.RunnerError, match="first attach solution differs"):
+        RUNNER._run_with_hooks(  # noqa: SLF001
+            fixture["selection_path"],
+            hooks,
+            enforce_single_process_use=False,
+        )
+
+    journal = (fixture["attempt_dir"] / "compile-attach-journal.jsonl").read_text(encoding="utf-8")
+    assert "FIRST_ATTACH_SOLUTION_VERIFIED" not in journal
+    assert "ATTACH_HOOK_BEGIN" not in journal
+
+
+def test_production_hooked_terminal_records_authorized_join_in_ledger(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture = _fixture(tmp_path)
+    master = FakeProductionMaster(
+        fixture["incumbent"],
+        solve_status="FEASIBLE",
+        solve_wall_time=2.0,
+        solution_vector=[0, 1],
+    )
+    runtime = RUNNER._ProductionRuntime(  # noqa: SLF001
+        controller=FakeProductionController(
+            master,
+            controller_status="UNKNOWN",
+            proof_summary={"binding_status": "INFEASIBLE", "master_status": "FEASIBLE"},
+            attach_solution=fixture["incumbent"],
+        ),
+        master=master,
+    )
+    hooks = RUNNER.ProductionArmHooks()
+    monkeypatch.setattr(hooks, "construct", lambda _context: runtime)
+
+    result = RUNNER._run_with_hooks(  # noqa: SLF001
+        fixture["selection_path"],
+        hooks,
+        enforce_single_process_use=False,
+    )
+
+    assert result["evidence"]["journal_event_counts"]["FIRST_ATTACH_SOLUTION_VERIFIED"] == 1
+    assert result["evidence"]["journal_event_counts"]["ATTACH_HOOK_BEGIN"] == 1
+    journal_events, _identity = RUNNER._read_journal(  # noqa: SLF001
+        fixture["attempt_dir"] / "compile-attach-journal.jsonl"
+    )
+    assert [event["event"] for event in journal_events] == [
+        "GENESIS",
+        "FIRST_ATTACH_SOLUTION_VERIFIED",
+        "ATTACH_HOOK_BEGIN",
+        "ATTACH_MODEL_EVIDENCE",
+        "ATTACH_HOOK_END",
+        "JOURNAL_SEAL",
+    ]
+    ledger_path = next((fixture["attempt_dir"] / "ledger").rglob("segment_*.jsonl"))
+    ledger_seal = json.loads(ledger_path.read_text(encoding="utf-8").splitlines()[-1])
+    assert ledger_seal["attach_hook_count"] == 1
+    assert ledger_seal["first_attach_solution_authorized"] is True
+    assert ledger_seal["runner_completed"] is True
+
+
 def test_control_also_opens_attach_with_empty_family_set(
     tmp_path: Path,
 ) -> None:
@@ -1205,6 +1543,25 @@ def test_compiled_observation_outside_attach_hook_fails_closed(
     recorder.authorize_first_attach_solution(_incumbent())
     with pytest.raises(RUNNER.RunnerError, match="outside an attach hook"):
         recorder.record_compiled_cut(_compiled_cut())
+    journal.abort()
+
+
+def test_zero_hook_finalization_rejects_pre_authorized_solution(
+    tmp_path: Path,
+) -> None:
+    journal = RUNNER.HashChainJournal(
+        tmp_path / "journal.jsonl",
+        genesis={"fixture": True},
+    )
+    incumbent = _incumbent()
+    recorder = RUNNER.CompileAttachRecorder(
+        journal,
+        expected_solution_digest=RUNNER.semantic_digest(incumbent),
+        require_model_evidence=False,
+    )
+    recorder.authorize_first_attach_solution(incumbent)
+    with pytest.raises(RUNNER.RunnerError, match="authorized without an attach hook"):
+        recorder.finalize()
     journal.abort()
 
 

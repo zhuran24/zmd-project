@@ -3,7 +3,9 @@ from __future__ import annotations
 import base64
 import copy
 import importlib.util
+import os
 from pathlib import Path
+import stat
 import sys
 from types import ModuleType, SimpleNamespace
 from typing import Any, Sequence
@@ -177,6 +179,8 @@ class FakeAdapter:
         abort_cleanup_residual: bool = False,
         memory_max_adjustment: int = 0,
         collect_mode: str = "inactive-or-failed",
+        payload_failure_error: str | None = None,
+        payload_signal: int = 0,
     ) -> None:
         self.attempt_dir = attempt_dir
         self.slot = slot
@@ -189,6 +193,8 @@ class FakeAdapter:
         self.abort_cleanup_residual = abort_cleanup_residual
         self.memory_max_adjustment = memory_max_adjustment
         self.collect_mode = collect_mode
+        self.payload_failure_error = payload_failure_error
+        self.payload_signal = payload_signal
         self.clock = 100
         self.invocation = "0123456789abcdef0123456789abcdef"
         self.keeper_pid = 4100
@@ -231,15 +237,6 @@ class FakeAdapter:
         assert f"--property=CollectMode={self.resource_contract['collect_mode']}" in systemd_run_argv
         assert f"--property=RuntimeMaxSec={self.resource_contract['runtime_max_seconds']}" in systemd_run_argv
         assert payload_argv
-        payload_result = {
-            "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
-            "slot": self.slot,
-            "status": "UNKNOWN",
-        }
-        payload_result_identity = LIFECYCLE.write_exclusive(
-            self.attempt_dir / "result.json",
-            LIFECYCLE.canonical_json_bytes(payload_result) + b"\n",
-        )
         launch = ORCHESTRATOR.LaunchEvidence(
             invocation_id=self.invocation,
             supervisor_pid=self.keeper_pid,
@@ -249,7 +246,7 @@ class FakeAdapter:
             payload_seal_monotonic_ns=300,
             payload_exit_monotonic_ns=400,
             payload_exit_code=self.payload_exit_code,
-            payload_signal=0,
+            payload_signal=self.payload_signal,
             payload_reaped=True,
             keeper_ready_monotonic_ns=500,
         )
@@ -260,6 +257,39 @@ class FakeAdapter:
             selection_snapshot.raw,
             "fixture selection",
         )
+        if self.payload_failure_error is None:
+            payload_output_kind = "result"
+            payload_output_identity = LIFECYCLE.write_exclusive(
+                self.attempt_dir / "result.json",
+                LIFECYCLE.canonical_json_bytes(
+                    {
+                        "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+                        "slot": self.slot,
+                        "status": "UNKNOWN",
+                    }
+                )
+                + b"\n",
+            )
+        else:
+            payload_output_kind = "failure"
+            payload_output_identity = LIFECYCLE.write_exclusive(
+                self.attempt_dir / "failure.json",
+                LIFECYCLE.canonical_json_bytes(
+                    {
+                        "authorizations": {
+                            "global_claim_authorized": False,
+                            "mathematical_claim_authorized": False,
+                            "organic_runtime_effect_authorized": False,
+                            "production_certified_authorized": False,
+                        },
+                        "error": self.payload_failure_error,
+                        "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+                        "selection_identity": _detached(selection_snapshot.identity),
+                        "status": "CREDIBILITY_INCOMPLETE",
+                    }
+                )
+                + b"\n",
+            )
         launch_epoch_snapshot = LIFECYCLE.snapshot_regular(self.attempt_dir / "manager-epoch-launch.json")
         launch_epoch = LIFECYCLE.strict_loads(
             launch_epoch_snapshot.raw,
@@ -281,8 +311,13 @@ class FakeAdapter:
             payload_exit_code=launch.payload_exit_code,
             payload_signal=launch.payload_signal,
             payload_reaped=launch.payload_reaped,
-            payload_result_identity=payload_result_identity,
+            payload_result_identity=(
+                payload_output_identity if payload_output_kind == "result" else None
+            ),
             keeper_ready_monotonic_ns=launch.keeper_ready_monotonic_ns,
+            payload_failure_identity=(
+                payload_output_identity if payload_output_kind == "failure" else None
+            ),
         )
         _write(self.attempt_dir / "inner-lifecycle.json", inner)
         return launch
@@ -404,6 +439,7 @@ def _fixture(
     tmp_path: Path,
     *,
     postseal_failure_exit_code: int = 0,
+    postseal_failure_signal: int = 0,
 ) -> tuple[Path, Path, Path]:
     authority_attempt = tmp_path / "attempt"
     attempt = authority_attempt / "run"
@@ -512,8 +548,12 @@ def _fixture(
     execution_class = "FORMAL_AB16"
     expected_payload_status = {
         "exit_code": postseal_failure_exit_code,
-        "expectation": ("SUCCESS" if postseal_failure_exit_code == 0 else "POST_SEAL_FAILURE"),
-        "signal": 0,
+        "expectation": (
+            "SUCCESS"
+            if postseal_failure_exit_code == 0 and postseal_failure_signal == 0
+            else "POST_SEAL_FAILURE"
+        ),
+        "signal": postseal_failure_signal,
     }
     tool_identities = {
         "attestor_python": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
@@ -834,6 +874,98 @@ def test_post_launch_failure_stops_selected_unit_and_proves_cleanup(
     assert cleanup["status"] == "PASS"
     assert cleanup["verdict"] == "SELECTED_UNIT_ABORT_CLEANUP_PASS"
     assert cleanup["authorizations"]["runtime_effect_authorized"] is False
+
+
+def test_payload_failure_output_reaches_outer_error_and_abort_cleanup(
+    tmp_path: Path,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = FakeAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+        payload_exit_code=2,
+        payload_failure_error="RunnerError: injected production-path failure",
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="payload failed: RunnerError: injected production-path failure",
+    ) as raised:
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=adapter,
+        )
+
+    assert "symlink or invalid file path" not in str(raised.value)
+    assert adapter.abort_count == 1
+    assert not (attempt / "result.json").exists()
+    inner = VERIFIER.snapshot_json(attempt / "inner-lifecycle.json").value
+    failure_identity = VERIFIER.snapshot_runner_json(attempt / "failure.json").identity
+    assert inner["payload_failure_identity"] == failure_identity
+    assert inner["payload_result_identity"] is None
+    cleanup = VERIFIER.snapshot_json(attempt / "cleanup.json").value
+    assert cleanup["schema_version"] == "noncert-cuts-ab16-abort-cleanup-v1"
+    assert cleanup["failure_class"] == "OrchestratorError"
+    assert cleanup["payload_failure_identity"] == failure_identity
+    assert cleanup["status"] == "PASS"
+    for name in (
+        "preterminal-resource.json",
+        "independent-resource-verification.json",
+        "release-token.json",
+        "terminal-envelope.json",
+        "detached-replay.json",
+    ):
+        assert not (attempt / name).exists()
+
+
+@pytest.mark.parametrize(
+    ("payload_exit_code", "payload_signal", "observed_terminal"),
+    (
+        (7, 0, "observed exit_code=7 signal=0"),
+        (0, 9, "observed exit_code=0 signal=9"),
+    ),
+    ids=("wrong-exit", "signal"),
+)
+def test_payload_failure_terminal_mismatch_is_precise_and_still_cleans_up(
+    tmp_path: Path,
+    payload_exit_code: int,
+    payload_signal: int,
+    observed_terminal: str,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = FakeAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+        payload_exit_code=payload_exit_code,
+        payload_failure_error="RunnerError: injected terminal mismatch",
+        payload_signal=payload_signal,
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="payload failure terminal mismatch",
+    ) as raised:
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=adapter,
+        )
+
+    assert "expected exit_code=2 signal=0" in str(raised.value)
+    assert observed_terminal in str(raised.value)
+    assert "payload error: RunnerError: injected terminal mismatch" in str(raised.value)
+    assert adapter.abort_count == 1
+    inner_snapshot = VERIFIER.snapshot_json(attempt / "inner-lifecycle.json")
+    inner = inner_snapshot.value
+    assert inner["payload_exit_code"] == payload_exit_code
+    assert inner["payload_signal"] == payload_signal
+    failure_identity = VERIFIER.snapshot_runner_json(attempt / "failure.json").identity
+    assert inner["payload_failure_identity"] == failure_identity
+    cleanup = VERIFIER.snapshot_json(attempt / "cleanup.json").value
+    assert cleanup["inner_identity"] == inner_snapshot.identity
+    assert cleanup["payload_failure_identity"] == failure_identity
+    assert cleanup["status"] == "PASS"
 
 
 def test_post_launch_failure_without_cleanup_proof_is_incomplete(
@@ -1274,6 +1406,158 @@ def test_same_fd_reader_rejects_hardlink_and_symlink(tmp_path: Path) -> None:
         VERIFIER.snapshot_json(target)
 
 
+def test_lifecycle_same_fd_reader_reports_missing_file_honestly(
+    tmp_path: Path,
+) -> None:
+    missing = tmp_path / "missing.json"
+    with pytest.raises(LIFECYCLE.LifecycleError, match="does not exist") as raised:
+        LIFECYCLE.snapshot_regular(missing)
+    assert "symlink" not in str(raised.value)
+    with pytest.raises(ORCHESTRATOR.OrchestratorError, match="does not exist") as outer_raised:
+        ORCHESTRATOR.snapshot_bytes(missing)
+    assert "symlink" not in str(outer_raised.value)
+    missing_parent = tmp_path / "missing-parent" / "missing.json"
+    with pytest.raises(LIFECYCLE.LifecycleError, match="does not exist") as lifecycle_parent_raised:
+        LIFECYCLE.snapshot_regular(missing_parent)
+    assert "symlink" not in str(lifecycle_parent_raised.value)
+    with pytest.raises(ORCHESTRATOR.OrchestratorError, match="does not exist") as parent_raised:
+        ORCHESTRATOR.snapshot_bytes(missing_parent)
+    assert "symlink" not in str(parent_raised.value)
+
+
+def test_lifecycle_exclusive_publication_hides_partial_final(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output = tmp_path / "inner-lifecycle.json"
+    raw = LIFECYCLE.canonical_json_bytes(
+        {
+            "payload": "x" * 16_384,
+            "schema_version": "atomic-inner-publication-test-v1",
+        }
+    )
+    original_write = LIFECYCLE.os.write
+    original_link = LIFECYCLE.os.link
+    observed_writes: list[bool] = []
+    observed_links: list[tuple[str, str]] = []
+
+    def short_write(descriptor: int, value: bytes | memoryview) -> int:
+        observed_writes.append(os.path.lexists(output))
+        return original_write(descriptor, value[:31])
+
+    def inspect_link(source: str, target: str, **kwargs: object) -> None:
+        assert not os.path.lexists(output)
+        assert (tmp_path / source).read_bytes() == raw
+        assert stat.S_IMODE((tmp_path / source).stat().st_mode) == 0o444
+        observed_links.append((source, target))
+        original_link(source, target, **kwargs)
+
+    monkeypatch.setattr(LIFECYCLE.os, "write", short_write)
+    monkeypatch.setattr(LIFECYCLE.os, "link", inspect_link)
+    identity = LIFECYCLE.write_atomic_exclusive(output, raw)
+
+    assert observed_writes and not any(observed_writes)
+    assert len(observed_links) == 1
+    assert observed_links[0][1] == output.name
+    assert output.read_bytes() == raw
+    assert output.stat().st_nlink == 1
+    assert identity == _identity(output)
+    assert not list(tmp_path.glob(f".{output.name}.pending-*"))
+
+
+def test_live_adapter_retries_controlled_inner_link_publication_window(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inner_path = tmp_path / "inner-lifecycle.json"
+    supervisor_pid = 4242
+    pending = tmp_path / f".{inner_path.name}.pending-{supervisor_pid}-123"
+    inner = {
+        "invocation_id": "0123456789abcdef0123456789abcdef",
+        "keeper_ready_monotonic_ns": 500,
+        "payload_exit_code": 2,
+        "payload_exit_monotonic_ns": 400,
+        "payload_pid": 4243,
+        "payload_reaped": True,
+        "payload_seal_monotonic_ns": 300,
+        "payload_signal": 0,
+        "payload_starttime": 78,
+        "schema_version": "noncert-cuts-ab16-inner-lifecycle-v1",
+        "supervisor_pid": supervisor_pid,
+        "supervisor_starttime": 77,
+        "unit_name": "cuts-ab16-selected.service",
+    }
+    pending.write_bytes(ORCHESTRATOR.canonical_json_bytes(inner))
+    pending.chmod(0o444)
+    os.link(pending, inner_path)
+    assert inner_path.stat().st_nlink == 2
+
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter.pre_run = {
+        "launch": {"payload_argv": ["payload"]},
+        "output_paths": {"inner": str(inner_path)},
+        "resource_contract": {"runtime_max_seconds": 120},
+    }
+    adapter._run = lambda _argv, timeout: SimpleNamespace(returncode=0)  # type: ignore[method-assign]
+    adapter._show = lambda _unit, _fields: {  # type: ignore[method-assign]
+        "ActiveState": "active",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "MainPID": str(supervisor_pid),
+        "Result": "success",
+        "SubState": "running",
+    }
+    adapter._monotonic = lambda: 0.0
+    sleeps: list[float] = []
+
+    def finish_publication(seconds: float) -> None:
+        sleeps.append(seconds)
+        pending.unlink()
+
+    adapter.sleep = finish_publication
+    monkeypatch.setattr(ORCHESTRATOR.os, "geteuid", lambda: 1000)
+    monkeypatch.setattr(ORCHESTRATOR.os, "getuid", lambda: 1000)
+    monkeypatch.setattr(ORCHESTRATOR, "_proc_starttime", lambda _pid: 77)
+
+    launch = adapter.launch_and_wait_for_keeper(
+        unit_name="cuts-ab16-selected.service",
+        systemd_run_argv=["/usr/bin/systemd-run"],
+        payload_argv=["payload"],
+    )
+    assert sleeps == [0.05]
+    assert launch.payload_reaped is True
+    assert launch.payload_exit_code == 2
+    assert inner_path.stat().st_nlink == 1
+
+
+def test_inner_publication_classifier_handles_unlink_after_pending_list(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inner_path = tmp_path / "inner-lifecycle.json"
+    supervisor_pid = 4242
+    pending = tmp_path / f".{inner_path.name}.pending-{supervisor_pid}-456"
+    pending.write_bytes(b"{}")
+    pending.chmod(0o444)
+    os.link(pending, inner_path)
+    original_listdir = ORCHESTRATOR.os.listdir
+
+    def unlink_after_list(descriptor: int) -> list[str]:
+        names = original_listdir(descriptor)
+        pending.unlink()
+        return names
+
+    monkeypatch.setattr(ORCHESTRATOR.os, "listdir", unlink_after_list)
+    assert (
+        ORCHESTRATOR._inner_publication_state(  # noqa: SLF001
+            inner_path,
+            supervisor_pid=supervisor_pid,
+        )
+        == "ready"
+    )
+    assert inner_path.stat().st_nlink == 1
+
+
 def test_dirfd_walk_rejects_symlinked_parent_for_reads_and_writes(
     tmp_path: Path,
 ) -> None:
@@ -1367,15 +1651,44 @@ def test_payload_result_parser_rejects_noncanonical_line_framing(
         LIFECYCLE._load_runner_json_snapshot(path, "payload result")  # noqa: SLF001
 
 
-@pytest.mark.parametrize("payload_exit_code", [0, 7])
+@pytest.mark.parametrize(
+    (
+        "payload_returncode",
+        "payload_output_kind",
+        "preregistered_exit_code",
+        "preregistered_signal",
+        "expected_inner_exit_code",
+        "expected_inner_signal",
+    ),
+    (
+        (0, "result", 0, 0, 0, 0),
+        (7, "result", 7, 0, 7, 0),
+        (2, "failure", 2, 0, 2, 0),
+        (7, "failure", 7, 0, 7, 0),
+        (-9, "failure", 0, 9, 0, 9),
+    ),
+    ids=(
+        "success-result",
+        "expected-postseal-result",
+        "runner-failure",
+        "failure-wrong-exit",
+        "failure-signal",
+    ),
+)
 def test_ordinary_user_supervisor_writes_inner_and_waits_for_pass_release(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
-    payload_exit_code: int,
+    payload_returncode: int,
+    payload_output_kind: str,
+    preregistered_exit_code: int,
+    preregistered_signal: int,
+    expected_inner_exit_code: int,
+    expected_inner_signal: int,
 ) -> None:
     attempt, pre_run_path, selection_path = _fixture(
         tmp_path,
-        postseal_failure_exit_code=payload_exit_code,
+        postseal_failure_exit_code=preregistered_exit_code,
+        postseal_failure_signal=preregistered_signal,
     )
     pre_run_snapshot = LIFECYCLE.snapshot_regular(pre_run_path)
     selection_snapshot = LIFECYCLE.snapshot_regular(selection_path)
@@ -1393,27 +1706,41 @@ def test_ordinary_user_supervisor_writes_inner_and_waits_for_pass_release(
         capture_transcript_identity=launch_transcript_identity,
     )
     _write(attempt / "manager-epoch-launch.json", launch_epoch)
+    if payload_output_kind == "result":
+        payload_output_path = attempt / "result.json"
+        payload_output = {
+            "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+            "slot": pre_run["slot"],
+            "status": "UNKNOWN",
+        }
+    else:
+        payload_output_path = attempt / "failure.json"
+        payload_output = {
+            "authorizations": {
+                "global_claim_authorized": False,
+                "mathematical_claim_authorized": False,
+                "organic_runtime_effect_authorized": False,
+                "production_certified_authorized": False,
+            },
+            "error": "RunnerError: injected supervisor failure",
+            "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+            "selection_identity": _detached(selection_snapshot.identity),
+            "status": "CREDIBILITY_INCOMPLETE",
+        }
     LIFECYCLE.write_exclusive(
-        attempt / "result.json",
-        LIFECYCLE.canonical_json_bytes(
-            {
-                "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
-                "slot": pre_run["slot"],
-                "status": "UNKNOWN",
-            }
-        )
-        + b"\n",
+        payload_output_path,
+        LIFECYCLE.canonical_json_bytes(payload_output) + b"\n",
     )
 
     class FakeProcess:
         pid = 9191
-        returncode = payload_exit_code
+        returncode = payload_returncode
         reaped = False
 
         def wait(self, timeout: float | None = None) -> int:
             del timeout
             self.reaped = True
-            return payload_exit_code
+            return payload_returncode
 
         def send_signal(self, value: int) -> None:
             raise AssertionError(f"unexpected signal {value}")
@@ -1446,8 +1773,8 @@ def test_ordinary_user_supervisor_writes_inner_and_waits_for_pass_release(
         del timeout_seconds, monotonic, sleep
         assert pid == process.pid
         return SimpleNamespace(
-            si_code=LIFECYCLE.os.CLD_EXITED,
-            si_status=payload_exit_code,
+            si_code=(LIFECYCLE.os.CLD_EXITED if payload_returncode >= 0 else LIFECYCLE.os.CLD_KILLED),
+            si_status=(payload_returncode if payload_returncode >= 0 else -payload_returncode),
         )
 
     def release_on_sleep(_seconds: float) -> None:
@@ -1502,10 +1829,20 @@ def test_ordinary_user_supervisor_writes_inner_and_waits_for_pass_release(
         proc_starttime=proc_starttime,
         wait_without_reaping=wait_without_reaping,
     )
-    assert result == payload_exit_code
+    assert result == (payload_returncode if payload_returncode >= 0 else 128 - payload_returncode)
+    assert process.reaped is True
     inner = VERIFIER.snapshot_json(attempt / "inner-lifecycle.json").value
     assert inner["payload_reaped"] is True
     assert inner["keeper_pid"] == LIFECYCLE.os.getpid()
+    assert inner["payload_exit_code"] == expected_inner_exit_code
+    assert inner["payload_signal"] == expected_inner_signal
+    payload_output_identity = VERIFIER.snapshot_runner_json(payload_output_path).identity
+    assert inner["payload_failure_identity"] == (
+        payload_output_identity if payload_output_kind == "failure" else None
+    )
+    assert inner["payload_result_identity"] == (
+        payload_output_identity if payload_output_kind == "result" else None
+    )
     popen_kwargs = observed_popen["kwargs"]
     assert isinstance(popen_kwargs, dict)
     assert popen_kwargs["env"] == {
