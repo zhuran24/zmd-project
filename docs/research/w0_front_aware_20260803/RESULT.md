@@ -312,3 +312,70 @@ root closure 验过，两位独立审查者也逐字段核过磁盘。以下观�
 实施 worktree 有一个有意保留的未跟踪项：`.venv-uvbolt-backup`（指向仓库根同名 venv 的
 symlink），preflight 与所有 G1 运行都用它当解释器。除此之外无未跟踪文件、无未提交改动，
 `git diff --check` 零告警。
+
+---
+
+## 10. 修复批（2026-08-03，三席审查之后）
+
+G1 没有重跑，终态与所有数字不变。本批做的是四件事：把记账改对、把 fail-open 的门改成
+fail-closed、把机器证据搬进 git、把 `.artifacts` 根登记进治理台账。
+
+### 10.1 四笔提交
+
+| 提交 | 内容 | preflight 收据（`.artifacts/w0_front_aware_20260803/g1_run/stage_c/`） |
+|---|---|---|
+| `26a0cbe` | 生成器冒烟测试的墙钟闸 2 s → 30 s，消掉并发假红 | `preflight_c3_stability_20260803T212945Z.log` |
+| `d61acd1` | 记账：端口语义冲突记录、21 号更正文书、L2–L4 改口径、收据勘误（§9） | `preflight_c4_docs_20260803T213246Z.log` |
+| `29252c8` | 代码：receipt 第五门 fail-closed、审计自证隔离、generic_io 进管线、预门矛盾断言 | `preflight_c5_failclosed_20260803T214903Z.log` |
+| 本笔 | 证据耐久 + 治理登记 + 本节 | `preflight_c6_evidence_20260803T215915Z.log` |
+
+每笔提交前在 worktree 内跑一次 `preflight_gate.py --full`，日志一笔一个文件、真实时间戳、
+不复制（§9.1 的缺口从本批起不再产生）。
+
+### 10.2 门判定的三处实质变化
+
+1. **第五条（run receipt）从 fail-open 变 fail-closed。** run root 的 manifest 改为
+   「这次运行写了什么」，不再是「枚举目录看到什么」——枚举出来的 manifest 会把闯入的文件
+   一起收编，对它做闭合检查永远失败不了。现在闭合检查先于 receipt 写出，写完再验一次，
+   后一次失败就删掉刚写的 receipt。**闭合失败留不下 receipt，也留不下 PASS。**
+   两条端到端回归复现了 08-03 对抗审查的故障注入场景。
+2. **第四条（审计隔离）改为消费子进程的自证。** `front_viability_audit.py` 的报告新增
+   `environment` 块（`ortools_importable` / 解释器 flags / `sys.path` / 已加载的 `g1_*`
+   与 `src.*` 模块），门读它，而不是读自己九行前构造的 argv（那在生产路径上恒真）。
+3. **预门与 master 的矛盾会被抬起来。** `pre_gate` 判 `SHORT`（无求解器地证明这份 catalog
+   盖不住普查）而 master 却给出解，说明两者之一错了——现在是第一条 fail 并具名，
+   不再是两份文件并排躺在 run root 里。
+
+另外 `run_g1.py` 开始消费 `data/preprocessed/generic_io_requirements.json`：
+required 52 output slots / 2 input slots 对固定家具的 52 / 14，覆盖不成立就 fail-closed，
+sha256 绑进 `config.json` 与 receipt。
+
+### 10.3 机器证据进 git
+
+两个 master run root 的 12 个小文件（`{config,gate,receipt}.json` +
+`master/{pre_gate,master_result}.json` + `master/cpsat.log`，共 47 KB）**字节原样**拷进
+`evidence/`，来源路径与逐文件 sha256 见 `evidence/README.md`。
+`.artifacts/` 里的原件一个字节没动（它们的 root closure 经不起任何改动）。
+catalog（约 9 MB）不进 git，它的 per-file sha256 记在两个 `config.json` 里。
+
+### 10.4 治理登记与它的后果
+
+`.artifacts/w0_front_aware_20260803/` 已按 `data/repository_governance/README.md` 的步骤
+登记进 `code_assets.json` 的 `read_only_historical_evidence_roots`（`research_evidence` /
+`non_code_asset` / `read_only_preserve_in_place`）。同时把 `expected_current_class_counts`
+更新到本分支实况（本线新增 10 个测试模块 + 9 个研究模块 = test 655 / historical_evidence 455），
+live checker 因此从「计数漂移」变成 PASS——那个漂移是甲/乙段就带上的，不是本批引入的。
+
+**后果，下一批必须知道**：治理 README 明写「不得往已登记的根里追加」。W0 线的下一批
+（L2 / G2）要另开一个新的顶层 `.artifacts/<root>/`，不能继续写进
+`.artifacts/w0_front_aware_20260803/`。
+
+### 10.5 本批没做的三件事
+
+- **19 号文书的反向指针没加。** 本批允许改动面里只有新建 21 号，19 号本体一个字节未改；
+  从 19 号指向 21 号的那半句留给有权改它的批次。指针目前由 21 号与章程 §4 单向承担。
+- **`evaluate_pattern` 的 distinct-representatives 检查没加。** 跨 body front 共享的
+  合法性论证与「同时性未证」义务已登记（章程 §5 的 `O-FRONT-SIMULTANEITY`），
+  按义务写明在 G1 转绿前必须二选一补上。本批选了登记，不选改判据——改判据会动 catalog
+  的准入语义，那是重跑 G1 的量级。
+- **L2 与任何 G1 重跑。** 按修复批任务书不做，等 owner 知悉本批结论后另立批。

@@ -23,13 +23,16 @@ BASELINE_COUNTS = {
     "historical_evidence": 464,
     "retirement_candidate": 19,
 }
+# The W0 front-aware research line (branch w0/front-aware-g1-20260803) adds ten
+# test modules and nine research modules under docs/research/, hence +10 test and
+# +9 historical_evidence over the 0dcb531 snapshot.
 CURRENT_BASE_COUNTS = {
     "active_implementation": 386,
-    "test": 645,
+    "test": 655,
     "common_infrastructure": 477,
     "authoritative_input": 4,
     "enforcement_control": 9,
-    "historical_evidence": 446,
+    "historical_evidence": 455,
     "retirement_candidate": 19,
 }
 EXPECTED_READ_ONLY_HISTORICAL_EVIDENCE_ROOTS = {
@@ -41,6 +44,7 @@ EXPECTED_READ_ONLY_HISTORICAL_EVIDENCE_ROOTS = {
     ".artifacts/h20_row_power_oracle_20260803/": "research_evidence",
     ".artifacts/merge_codex_20260801/": "research_evidence",
     ".artifacts/rab_drill_20260716/": "research_evidence",
+    ".artifacts/w0_front_aware_20260803/": "research_evidence",
 }
 
 
