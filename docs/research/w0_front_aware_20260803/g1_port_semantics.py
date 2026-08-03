@@ -69,6 +69,7 @@ __all__ = [
     "ClassRow",
     "ClassTable",
     "CLASS_TABLE",
+    "CLASS_BY_ID",
     "CLASS_DEMAND",
     "CLASS_ORDER",
     "BUCKET_SERVABLE",

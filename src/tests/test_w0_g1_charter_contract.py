@@ -88,6 +88,91 @@ def test_charter_and_registry_carry_the_same_ids() -> None:
     assert mentioned == set(ids), mentioned.symmetric_difference(ids)
 
 
+#: The prose table writes the layer in Chinese; the JSON mirror writes it in the
+#: registry's vocabulary.  This is the only place the two spellings meet.
+_LAYER_BY_PROSE = {
+    "精确语义": "exact_semantics",
+    "必要投影": "necessary_projection",
+    "带前件条件 cut": "condition_required_cut",
+    "充分限制": "sufficient_restriction",
+    "启发式": "heuristic",
+}
+
+
+def _charter_layer_column() -> dict[str, str]:
+    """The ``层`` column of the charter's registry table, id -> registry layer.
+
+    A row reads ``| `T-DEAD-BODY` | **必要投影** | G1 | anchor |``; the bold
+    markers and the parenthetical qualifier after the layer name are commentary,
+    the layer itself is the leading token.
+    """
+    prose: dict[str, str] = {}
+    for line in CHARTER.read_text(encoding="utf-8").splitlines():
+        cells = [cell.strip() for cell in line.split("|")]
+        if len(cells) < 6:
+            continue
+        match = re.fullmatch(r"`([TRH]-[A-Z0-9-]+)`", cells[1])
+        if match is None:
+            continue
+        layer = cells[2].replace("**", "").split("（")[0].strip()
+        assert layer in _LAYER_BY_PROSE, (match.group(1), cells[2])
+        prose[match.group(1)] = _LAYER_BY_PROSE[layer]
+    return prose
+
+
+def test_the_charter_layer_column_matches_the_registry_layer_field() -> None:
+    """[31d] The prose table's second column is bound to the JSON, not eyeballed.
+
+    Every other pairing between the charter and the mirror is pinned; this one
+    was maintained by hand, which is the state a registry is supposed to end.
+    """
+    prose = _charter_layer_column()
+    registry = {entry["id"]: entry["layer"] for entry in _registry()["theorems"]}
+    assert prose, "the charter table must still carry a layer column"
+    assert prose == registry, {
+        theorem_id: (prose.get(theorem_id), registry.get(theorem_id))
+        for theorem_id in set(prose) ^ set(registry)
+        | {key for key in set(prose) & set(registry) if prose[key] != registry[key]}
+    }
+
+
+def test_open_obligations_are_registered_in_both_places() -> None:
+    """[31e] An unproved assumption the line depends on has to be visible.
+
+    Capability is evaluated per body with no cross-body simultaneity check, which
+    is sound for an INFEASIBLE (the model is more permissive than the rule) and
+    unsound to carry into a PASS.  It is therefore registered as an obligation
+    rather than left in a review thread.
+    """
+    registry = _registry()
+    charter = CHARTER.read_text(encoding="utf-8")
+    obligations = registry["open_obligations"]
+    assert obligations, "the obligation list must not silently empty out"
+    for entry in obligations:
+        assert set(entry) == {
+            "id",
+            "statement",
+            "affects",
+            "effect_on_this_batch",
+            "must_close_before",
+            "closure_options",
+        }, entry["id"]
+        assert entry["id"] in charter, f"{entry['id']} is missing from the charter"
+        assert entry["must_close_before"] == "any G1 PASS"
+        assert len(entry["closure_options"]) >= 2
+        for theorem_id in entry["affects"]:
+            assert theorem_id in {row["id"] for row in registry["theorems"]}
+    assert "O-FRONT-SIMULTANEITY" in {entry["id"] for entry in obligations}
+    # The pole label and the computation have to agree: the bucket abstraction is
+    # a relaxation, so it may not advertise itself as lossless.
+    bucket = next(
+        entry for entry in registry["theorems"] if entry["id"] == "T-CAPABILITY-BUCKET"
+    )
+    assert bucket["layer"] == "necessary_projection"
+    assert "O-FRONT-SIMULTANEITY" in bucket["statement"]
+    assert "necessary_projection" in registry["layer_notes"]
+
+
 def test_registry_layers_are_the_four_layer_taxonomy() -> None:
     """[31b] Four layers plus exact semantics, and the empty layer is explained."""
     registry = _registry()
@@ -202,5 +287,3 @@ def test_research_line_never_touches_the_certified_surface() -> None:
                 module = node.names[0].name
             if module and module.startswith(forbidden_prefixes):
                 pytest.fail(f"{path.name} imports {module}")
-
-

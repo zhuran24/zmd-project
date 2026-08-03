@@ -56,6 +56,7 @@ from __future__ import annotations
 import argparse
 from fractions import Fraction
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -1051,6 +1052,44 @@ def self_test() -> int:
 # --------------------------------------------------------------------------
 
 
+def child_environment() -> Dict[str, Any]:
+    """What this process could actually reach, stated by this process.
+
+    G1 gate clause four is about the auditor's independence.  The parent cannot
+    settle that by inspecting the argv it built itself -- that check passes by
+    construction.  So the child reports it: whether a solver is importable at all
+    from here, whether any module of the generation line or of ``src`` was loaded,
+    and the search path those answers came from.  Under ``python -I -S -B`` the
+    answers are false / empty / empty; run without isolation they are not, which
+    is exactly what the clause needs to be able to see.
+
+    ``find_spec`` searches, it does not execute: asking the question cannot
+    itself import the solver.
+    """
+    try:
+        ortools_importable = importlib.util.find_spec("ortools") is not None
+    except (ImportError, ValueError):  # pragma: no cover - malformed installation
+        ortools_importable = False
+    return {
+        "executable": sys.executable,
+        "version": sys.version.split()[0],
+        "flags": {
+            "isolated": bool(sys.flags.isolated),
+            "no_site": bool(sys.flags.no_site),
+            "ignore_environment": bool(sys.flags.ignore_environment),
+            "dont_write_bytecode": bool(sys.flags.dont_write_bytecode),
+        },
+        "sys_path": [str(entry) for entry in sys.path],
+        "ortools_importable": ortools_importable,
+        "line_modules_loaded": sorted(
+            name for name in sys.modules if name.startswith("g1_")
+        ),
+        "src_modules_loaded": sorted(
+            name for name in sys.modules if name == "src" or name.startswith("src.")
+        ),
+    }
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="W0 G1 independent front-viability audit")
     parser.add_argument("--geometry", type=Path)
@@ -1091,6 +1130,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "rules": {"path": str(args.rules), "sha256": sha256_file(args.rules)},
         "instances": {"path": str(args.instances), "sha256": sha256_file(args.instances)},
     }
+    report["environment"] = child_environment()
     payload = json.dumps(report, indent=2, sort_keys=True, ensure_ascii=True) + "\n"
     args.output.parent.mkdir(parents=True, exist_ok=True)
     handle = tempfile.NamedTemporaryFile(

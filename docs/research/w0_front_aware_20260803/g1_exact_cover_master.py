@@ -85,9 +85,9 @@ from g1_pattern_schema import (  # noqa: E402
 from g1_port_semantics import (  # noqa: E402
     BUCKET_ORDER,
     BUCKET_SERVABLE,
+    CLASS_BY_ID,
     CLASS_DEMAND,
     CLASS_ORDER,
-    CLASS_TABLE,
     TEMPLATE_SIZES,
 )
 from g1_region_model import (  # noqa: E402
@@ -527,10 +527,23 @@ def build_master(
 
 
 def _ortools_version() -> str:
-    try:
-        from ortools.sat.python import cp_model
+    """The solver version, from the two places that actually carry it.
 
-        return str(getattr(cp_model, "__version__", "unknown"))
+    ``cp_model`` has no ``__version__`` in ortools 9.x, so the old
+    ``getattr(cp_model, "__version__", "unknown")`` recorded an unknown solver
+    version in every receipt this line wrote while the run itself was perfectly
+    reproducible.  The imported package carries the version; the installed
+    distribution carries it as an independent second source.
+    """
+    try:
+        import ortools
+
+        version = str(getattr(ortools, "__version__", "") or "")
+        if version:
+            return version
+        from importlib import metadata
+
+        return metadata.version("ortools")
     except Exception:  # pragma: no cover - reported, never fatal
         return "unavailable"
 
@@ -798,9 +811,20 @@ def bucket_supply_ceiling(
 
     Independent of the master and much cheaper: take, for each region class, the
     pattern with the most bodies of that bucket, times the class multiplicity.
+
+    The buckets counted are the frozen ones *plus* whatever the columns actually
+    carry.  Missing a bucket the catalog uses would under-count supply, and an
+    under-counted ceiling is the one error direction this pre-gate cannot afford:
+    it would accuse a catalog of a shortage it does not have.
     """
     ceiling: Dict[str, int] = {}
-    for bucket in BUCKET_ORDER:
+    present = {
+        bucket
+        for block in columns.values()
+        for record in block.patterns
+        for bucket in record.bucket_counts
+    }
+    for bucket in sorted(set(BUCKET_ORDER) | present):
         total = 0
         for name in sorted(columns):
             block = columns[name]
@@ -861,6 +885,23 @@ def class_supply_pre_gate(
     }
 
 
+def _area_demand(demand: Mapping[str, int]) -> Optional[int]:
+    """Cells the given class demand occupies, or ``None`` if it is not derivable.
+
+    Each class fixes its template, hence its footprint, so any demand over the
+    frozen classes has an area.  An unknown class id means the caller is running a
+    synthetic vocabulary and no area statement can be made about it.
+    """
+    total = 0
+    for class_id, count in demand.items():
+        row = CLASS_BY_ID.get(class_id)
+        if row is None:
+            return None
+        width, height = TEMPLATE_SIZES[row.template]
+        total += int(count) * width * height
+    return total
+
+
 def _count_pre_gates(
     columns: Mapping[str, RegionClassColumns], demand: Mapping[str, int]
 ) -> List[Dict[str, Any]]:
@@ -877,9 +918,13 @@ def _count_pre_gates(
     ``__template:M3__`` and friends do the same per template family, which is
     where a shortage can hide from both totals.
 
-    The area row only uses the frozen census, so it is meaningful only under the
-    real class table; a synthetic ``demand`` leaves it comparing this catalog's
-    area against the real 3325 and it should be read as noise there.
+    The area rows follow the ``demand`` they are given: each class's bodies occupy
+    its template's footprint, so the area demand is derivable from any demand whose
+    classes are real.  A demand naming classes outside the frozen table has no
+    derivable area, and the rows then carry ``demand: None`` and ``short: False``
+    -- a row that cannot decide must not accuse.  (Reading a synthetic catalog's
+    area against the real 3325 census is exactly the spurious ``SHORT`` this
+    avoids.)
     """
     rows: List[Dict[str, Any]] = []
     area_ceiling = sum(
@@ -887,16 +932,13 @@ def _count_pre_gates(
         * block.multiplicity
         for block in columns.values()
     )
-    area_demand = sum(
-        row.count * TEMPLATE_SIZES[row.template][0] * TEMPLATE_SIZES[row.template][1]
-        for row in CLASS_TABLE
-    )
+    area_demand = _area_demand(demand)
     rows.append(
         {
             "class": "__body_area__",
             "supply_ceiling": area_ceiling,
             "demand": area_demand,
-            "short": area_ceiling < area_demand,
+            "short": area_demand is not None and area_ceiling < area_demand,
         }
     )
     # Sharper.  Exactly one region has to carry the hole, and a hole-carrying
@@ -919,7 +961,7 @@ def _count_pre_gates(
                 "class": "__body_area_with_hole__",
                 "supply_ceiling": holed,
                 "demand": area_demand,
-                "short": holed < area_demand,
+                "short": area_demand is not None and holed < area_demand,
             }
         )
     total_ceiling = sum(

@@ -1063,10 +1063,21 @@ def _source_digest() -> Dict[str, str]:
 
 
 def _ortools_version() -> str:
-    try:
-        from ortools.sat.python import cp_model
+    """The solver version, from the two places that actually carry it.
 
-        return str(getattr(cp_model, "__version__", "unknown"))
+    ``cp_model.__version__`` does not exist in ortools 9.x; reading it there is
+    how the stage A manifest ended up recording ``"ortools": "unknown"``.  The
+    imported package carries the version, the installed distribution repeats it.
+    """
+    try:
+        import ortools
+
+        version = str(getattr(ortools, "__version__", "") or "")
+        if version:
+            return version
+        from importlib import metadata
+
+        return metadata.version("ortools")
     except Exception:  # pragma: no cover - reported, never fatal
         return "unavailable"
 

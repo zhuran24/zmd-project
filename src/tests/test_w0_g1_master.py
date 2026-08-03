@@ -375,6 +375,11 @@ def test_the_supply_pre_gate_reports_area_and_the_hole_penalty() -> None:
     the 42 body-free cells, because exactly one of them must.  Both directions are
     checked -- a class with no hole-carrying pattern must not contribute a penalty
     of zero and quietly disable the sharper row.
+
+    The verdict is checked too, not just the ceilings.  The area rows used to be
+    computed against the frozen 3325-cell census whatever demand was passed, so
+    this toy catalog's 140 cells were compared with the real board and the whole
+    report came back ``SHORT`` -- a shortfall of nothing against nothing.
     """
     columns = {
         "A": _columns(
@@ -400,6 +405,50 @@ def test_the_supply_pre_gate_reports_area_and_the_hole_penalty() -> None:
     # Only A can carry the hole, and it costs 50 - 30 = 20.
     assert rows["__body_area_with_hole__"]["supply_ceiling"] == 120
     assert rows["__total_bodies__"]["supply_ceiling"] == 5
+    # A synthetic class has no template, hence no derivable area demand: the row
+    # is reported and decides nothing.
+    for name in ("__body_area__", "__body_area_with_hole__"):
+        assert rows[name]["demand"] is None
+        assert rows[name]["short"] is False
+    assert report["shortfalls"] == []
+    assert report["verdict"] == "NOT_EXCLUDED"
+
+
+def test_the_area_rows_follow_the_demand_they_are_given() -> None:
+    """[24b, T-SUPPLY-CEILING] Real classes, real area demand, real SHORT.
+
+    With a demand over the frozen class table the area rows do have a meaning:
+    ten 3x3 bodies occupy 90 cells, a catalog that can supply 18 is short, and the
+    report says so.  Direction is the whole point of this pre-gate -- only
+    ``ceiling < demand`` concludes anything -- so both halves are pinned.
+    """
+    from g1_port_semantics import BUCKET_SERVABLE
+
+    columns = {
+        "A": _columns(
+            "A",
+            2,
+            [_record("A", "a1", {"M3_1i1o": 1}, area=9)],
+        )
+    }
+    short = class_supply_pre_gate(
+        columns, demand={"3L": 10}, bucket_servable=BUCKET_SERVABLE
+    )
+    rows = {entry["class"]: entry for entry in short["classes"]}
+    assert rows["__body_area__"]["demand"] == 90
+    assert rows["__body_area__"]["supply_ceiling"] == 18
+    assert rows["__body_area__"]["short"] is True
+    assert rows["__total_bodies__"]["demand"] == 10
+    assert short["verdict"] == "SHORT"
+    assert "__body_area__" in {entry["class"] for entry in short["shortfalls"]}
+
+    covered = class_supply_pre_gate(
+        columns, demand={"3L": 2}, bucket_servable=BUCKET_SERVABLE
+    )
+    covered_rows = {entry["class"]: entry for entry in covered["classes"]}
+    assert covered_rows["__body_area__"]["demand"] == 18
+    assert covered_rows["__body_area__"]["short"] is False
+    assert covered["verdict"] == "NOT_EXCLUDED"
 
 
 def test_the_target_menu_can_be_aimed_at_dense_targets() -> None:

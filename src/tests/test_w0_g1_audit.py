@@ -256,10 +256,19 @@ def test_audit_source_never_imports_a_solver() -> None:
     assert "src" not in imported
     assert not {name for name in imported if name.startswith("g1_")}
     allowed = {
-        "argparse", "fractions", "hashlib", "json", "os", "pathlib", "sys",
-        "tempfile", "typing", "__future__",
+        "argparse", "fractions", "hashlib", "importlib", "json", "os", "pathlib",
+        "sys", "tempfile", "typing", "__future__",
     }
     assert imported <= allowed, sorted(imported - allowed)
+    # ``importlib`` is on the list so the auditor can *ask* whether a solver is
+    # reachable (``find_spec`` searches, it never executes), which is what gate
+    # clause four consumes.  Asking must not turn into importing.
+    assert "importlib.util" in {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
 
 
 def test_audit_runs_isolated_and_binds_its_inputs(tmp_path: Path) -> None:
@@ -297,6 +306,19 @@ def test_audit_runs_isolated_and_binds_its_inputs(tmp_path: Path) -> None:
     ):
         assert report["inputs"][key]["sha256"] == fva.sha256_file(path)
 
+    # The child states its own isolation, which is what gate clause four reads.
+    environment = report["environment"]
+    assert environment["ortools_importable"] is False
+    assert environment["line_modules_loaded"] == []
+    assert environment["src_modules_loaded"] == []
+    assert environment["flags"] == {
+        "isolated": True,
+        "no_site": True,
+        "ignore_environment": True,
+        "dont_write_bytecode": True,
+    }
+    assert environment["sys_path"], "the search path those answers came from"
+
     # A failing geometry must come back as exit code 1 with a matching verdict.
     broken = copy.deepcopy(geometry)
     broken["placements"][0]["active_input_fronts"] = [[3, 7]]
@@ -317,6 +339,45 @@ def test_audit_runs_isolated_and_binds_its_inputs(tmp_path: Path) -> None:
     )
     assert failing.returncode == 1, failing.stderr
     assert json.loads(broken_output.read_text(encoding="utf-8"))["verdict"] == "FAIL"
+
+
+def test_the_environment_block_can_actually_report_a_reachable_solver(
+    tmp_path: Path,
+) -> None:
+    """[26b, RED LINE] Clause four's field is a measurement, not a constant.
+
+    The point of having the child report ``ortools_importable`` is that the answer
+    changes when the isolation does.  Running the same script with the same
+    interpreter but *without* ``-I -S -B`` reaches this virtual environment's
+    site-packages, so the field comes back true and the flags come back false --
+    which is precisely the state the gate clause has to be able to reject.
+    """
+    rules, instances, geometry = _toy()
+    rules_path = tmp_path / "rules.json"
+    instances_path = tmp_path / "instances.json"
+    geometry_path = tmp_path / "geometry.json"
+    output_path = tmp_path / "audit.json"
+    rules_path.write_text(json.dumps(rules), encoding="utf-8")
+    instances_path.write_text(json.dumps(instances), encoding="utf-8")
+    geometry_path.write_text(json.dumps(geometry), encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            sys.executable, str(AUDIT_PATH),
+            "--geometry", str(geometry_path),
+            "--rules", str(rules_path),
+            "--instances", str(instances_path),
+            "--output", str(output_path),
+        ],
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert result.returncode == 0, result.stderr
+    environment = json.loads(output_path.read_text(encoding="utf-8"))["environment"]
+    assert environment["ortools_importable"] is True
+    assert environment["flags"]["isolated"] is False
+    assert environment["flags"]["no_site"] is False
 
 
 def test_self_test_exits_zero() -> None:
