@@ -258,8 +258,25 @@ capability level、忽略连通性），得到的是**供给上界**：
 所以 `supply < demand` 会**否定整个限制档位**，而 `supply ≥ demand` **什么也不排除**。
 当前结论是 `NOT_EXCLUDED_BY_AREA` —— 面积上过关，但 master 必须把几乎每个区域都塞到它被证明的极限。
 
-对照实测：CLEAN 区域连通性过关的最好 pattern 只装到 134 格 body 面积（ceiling 是 146），
-即连通性要求本身就吃掉约 8% 容量。乙段应当预期 G1 很紧。
+试过一条加强：给上界模型补「每个被承诺的 front 格必须保留一个自由邻格」——
+这是 evaluator 存活判据的必要后果，加上仍是 sound 上界。实测**十个 class 的 ceiling
+一格没降**。本地度数不是瓶颈，真正杀死本体的是自由空间分裂成多个分量，那是 G2 的活。
+
+### catalog 供给比需求少 312 格
+
+正式 catalog（1354 个签名，manifest sha256 `dbcb32ef…`）每类取面积最大的 pattern
+乘倍数求和 = 3013，比 demand 3325 少 **312 格（9.4%）**。
+**在这份 catalog 上跑 G1 必然 INFEASIBLE，且只说明 catalog 薄**——
+按 §9 的措辞纪律不得写成关于几何的结论。
+
+机制不只是预算不够。把 CLEAN 菜单里面积顶到 ceiling 的目标用 30–90s 重解：
+名次 107 的目标 CP-SAT 最优地摆出 11 台、面积正好 146，evaluator 一过只剩 2 台、面积 50。
+**建模内的 front 代理弱于 evaluator 的存活判据**——模型只要求那一侧留够空 front 格，
+evaluator 还要求这些格落在自由空间分量里；密度顶到 ceiling 时自由空间碎掉，
+front 格名义上空着实际够不着。这也解释了 catalog 里 `rejected_dead_body = 0`
+而 `stripped_to_smaller` 高达 168–238：死体不是被拒绝，是被剥掉。
+
+完整数字与乙段加深方向见 `CATALOG_REPORT.md`。
 
 ---
 
