@@ -38,11 +38,11 @@
     },
     "expected_current_class_counts": {
       "active_implementation": 386,
-      "test": 646,
+      "test": 660,
       "common_infrastructure": 478,
       "authoritative_input": 4,
       "enforcement_control": 10,
-      "historical_evidence": 446,
+      "historical_evidence": 455,
       "retirement_candidate": 19
     },
     "conditional_current_assets": [
@@ -170,6 +170,13 @@
       "content_treatment": "non_code_asset",
       "mutation_expectation": "read_only_preserve_in_place",
       "rationale": "RAB drill control, resource, memory, and execution evidence."
+    },
+    {
+      "path": ".artifacts/w0_front_aware_20260803/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "W0 front-aware G1 opening brief, pattern catalog, master run roots, and preflight receipts. Line still active: append-only extension subpaths (g1_run/stage_c/ preflight logs, probe_20260803/, l2_consult_20260803/) keep accumulating until the line closes; existing bytes are immutable."
     }
   ],
   "classification": {
