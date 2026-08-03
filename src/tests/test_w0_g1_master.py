@@ -30,6 +30,7 @@ for _path in (str(PROJECT_ROOT), str(G1_DIR)):
 
 from g1_exact_cover_master import (  # noqa: E402
     COLLAPSE_EQUIVALENCE,
+    class_supply_pre_gate,
     SCALE_MAX_VARIABLES,
     MasterConfig,
     PatternRecord,
@@ -63,6 +64,7 @@ def _record(
     buckets: Mapping[str, int],
     *,
     hole: bool = False,
+    area: int = 0,
 ) -> PatternRecord:
     return PatternRecord(
         region_class=region_class,
@@ -71,6 +73,7 @@ def _record(
         hole=hole,
         body_count=sum(buckets.values()),
         origin="synthetic",
+        body_area=area,
     )
 
 
@@ -362,6 +365,65 @@ def test_scale_gate_stops_before_the_solver(monkeypatch: pytest.MonkeyPatch) -> 
     assert result["scale"]["num_variables"] > SCALE_MAX_VARIABLES
     assert result["stats"]["solved"] is False
     assert result["selection"] == []
+
+
+def test_the_supply_pre_gate_reports_area_and_the_hole_penalty() -> None:
+    """[24, T-SUPPLY-CEILING] The area rows, on a catalog with hand-set areas.
+
+    The plain area ceiling takes each region class's densest pattern; the
+    hole-aware one subtracts the cheapest price any region would pay for carrying
+    the 42 body-free cells, because exactly one of them must.  Both directions are
+    checked -- a class with no hole-carrying pattern must not contribute a penalty
+    of zero and quietly disable the sharper row.
+    """
+    columns = {
+        "A": _columns(
+            "A",
+            2,
+            [
+                _record("A", "a1", {"B1": 2}, area=50),
+                _record("A", "a2", {"B1": 2}, hole=True, area=30),
+            ],
+        ),
+        "B": _columns(
+            "B",
+            1,
+            [_record("B", "b1", {"B1": 1}, area=40)],
+        ),
+    }
+    report = class_supply_pre_gate(
+        columns, demand={"K1": 5}, bucket_servable=SYNTHETIC_BUCKETS
+    )
+    rows = {entry["class"]: entry for entry in report["classes"]}
+    # A contributes 50 twice, B contributes 40 once.
+    assert rows["__body_area__"]["supply_ceiling"] == 140
+    # Only A can carry the hole, and it costs 50 - 30 = 20.
+    assert rows["__body_area_with_hole__"]["supply_ceiling"] == 120
+    assert rows["__total_bodies__"]["supply_ceiling"] == 5
+
+
+def test_the_target_menu_can_be_aimed_at_dense_targets() -> None:
+    """[23, H-TARGET-MENU] ``min_bodies`` filters without touching the ordering.
+
+    219 bodies over the 24 usable regions is 9.125 each, so a catalog whose
+    densest pattern holds nine is short by arithmetic -- and the targets that
+    would fix that sit hundreds of ranks out under the proportional-share
+    ordering.  The filter is what lets a second generation pass aim there; it must
+    remove targets and nothing else, so the filtered menu has to stay an exact
+    order-preserving subsequence of the unfiltered one.
+    """
+    from g1_pattern_generator import build_target_menu
+    from g1_region_model import REGION_CLASSES
+
+    region = REGION_CLASSES["CLEAN"]
+    everything = build_target_menu(region)
+    dense = build_target_menu(region, min_bodies=10)
+    assert dense, "CLEAN must admit targets of ten bodies or more"
+    assert len(dense) < len(everything)
+    assert all(target.body_total >= 10 for target in dense)
+    expected = tuple(target for target in everything if target.body_total >= 10)
+    assert dense == expected
+    assert build_target_menu(region, min_bodies=1) == everything
 
 
 def test_the_scale_gate_is_not_tripped_by_the_designed_envelope() -> None:

@@ -213,6 +213,7 @@ class GeneratorConfig:
     seed: int = 0
     spine: bool = False
     max_targets: Optional[int] = None
+    min_bodies: int = 1
     ceiling_seconds: float = 30.0
     region_classes: Tuple[str, ...] = REGION_CLASS_ORDER
 
@@ -226,6 +227,7 @@ class GeneratorConfig:
             "seed": self.seed,
             "spine": self.spine,
             "max_targets": self.max_targets,
+            "min_bodies": self.min_bodies,
             "ceiling_seconds": self.ceiling_seconds,
             "region_classes": list(self.region_classes),
         }
@@ -389,7 +391,9 @@ _GLOBAL_SHARE: Dict[str, float] = {
 }
 
 
-def build_target_menu(region: RegionClass, *, spine: bool = False) -> Tuple[Target, ...]:
+def build_target_menu(
+    region: RegionClass, *, spine: bool = False, min_bodies: int = 1
+) -> Tuple[Target, ...]:
     """H-TARGET-MENU.
 
     Enumerate ``(n3, n5, n6)`` count vectors that still fit the region's free
@@ -398,6 +402,15 @@ def build_target_menu(region: RegionClass, *, spine: bool = False) -> Tuple[Targ
     the hole flag, then order by distance from the region's proportional share of
     the global 132 / 49 / 38 census.  Centre-band targets are therefore generated
     first and a budget cut-off leaves a deterministic, reproducible prefix.
+
+    ``min_bodies`` drops every target below a body count (stage B knob, default 1
+    = no filter).  The proportional-share ordering is right when the question is
+    "what does an average region look like" and wrong when it is "can a region
+    hold ten bodies at all": 219 bodies over the 24 usable regions needs 9.125 on
+    average, so a catalog whose densest pattern holds nine is short by
+    arithmetic, and the targets that would fix it sit hundreds of ranks out.
+    Filtering, rather than reordering, keeps the registered ordering heuristic
+    intact and makes the aimed run a separate, nameable pass.
     """
     budget = REGION_CELLS_LOCAL - len(region.fixed_local) - len(_forced_free(region, spine=spine))
     share = {
@@ -409,7 +422,7 @@ def build_target_menu(region: RegionClass, *, spine: bool = False) -> Tuple[Targ
     for n3 in range(max_counts["manufacturing_3x3"] + 1):
         for n5 in range(max_counts["manufacturing_5x5"] + 1):
             for n6 in range(max_counts["manufacturing_6x4"] + 1):
-                if n3 + n5 + n6 == 0:
+                if n3 + n5 + n6 < max(1, min_bodies):
                     continue
                 area = 9 * n3 + 25 * n5 + 24 * n6 + 4
                 if area > budget:
@@ -850,7 +863,9 @@ def generate_catalog(
     full_menu_size: Dict[str, int] = {}
     for name in config.region_classes:
         region = REGION_CLASSES[name]
-        menu = build_target_menu(region, spine=config.spine)
+        menu = build_target_menu(
+            region, spine=config.spine, min_bodies=config.min_bodies
+        )
         full_menu_size[name] = len(menu)
         if config.max_targets is not None:
             menu = menu[: config.max_targets]
@@ -1066,6 +1081,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--max-targets", type=int, default=None)
+    parser.add_argument("--min-bodies", type=int, default=1)
     parser.add_argument("--hard-spine", dest="spine", action="store_true")
     parser.add_argument(
         "--region-class", dest="region_classes", action="append", default=None
@@ -1081,6 +1097,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         seed=args.seed,
         spine=args.spine,
         max_targets=args.max_targets,
+        min_bodies=args.min_bodies,
         region_classes=tuple(args.region_classes or REGION_CLASS_ORDER),
     )
     manifest = generate_catalog(config, output_dir=args.output_dir)

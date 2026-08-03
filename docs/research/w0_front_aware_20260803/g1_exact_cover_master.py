@@ -87,6 +87,8 @@ from g1_port_semantics import (  # noqa: E402
     BUCKET_SERVABLE,
     CLASS_DEMAND,
     CLASS_ORDER,
+    CLASS_TABLE,
+    TEMPLATE_SIZES,
 )
 from g1_region_model import (  # noqa: E402
     REGION_CLASS_ORDER,
@@ -105,6 +107,7 @@ __all__ = [
     "MasterConfig",
     "MasterError",
     "empty_pattern_record",
+    "catalog_directories",
     "load_catalogs",
     "build_master",
     "solve_master",
@@ -154,6 +157,10 @@ class PatternRecord:
     hole: bool
     body_count: int
     origin: str
+    #: Cells the bodies of this pattern occupy.  Not part of what the master
+    #: reasons with -- it never sees geometry -- but the cheapest binding
+    #: necessary condition this line has, so it rides along for the pre-gate.
+    body_area: int = 0
 
     @property
     def signature(self) -> Tuple[Tuple[Tuple[str, int], ...], bool]:
@@ -166,6 +173,7 @@ class PatternRecord:
             "bucket_counts": dict(sorted(self.bucket_counts.items())),
             "hole": self.hole,
             "body_count": self.body_count,
+            "body_area": self.body_area,
             "origin": self.origin,
         }
 
@@ -211,8 +219,20 @@ def empty_pattern_record(region_class: str) -> Tuple[PatternRecord, PatternEvalu
     return record, evaluation
 
 
+def catalog_directories(
+    catalog_dirs: Path | str | Sequence[Path | str],
+) -> Tuple[Path, ...]:
+    """Normalise one directory or an ordered list of them."""
+    if isinstance(catalog_dirs, (str, Path)):
+        return (Path(catalog_dirs),)
+    directories = tuple(Path(item) for item in catalog_dirs)
+    if not directories:
+        raise MasterError("no catalog directory was given")
+    return directories
+
+
 def load_catalogs(
-    catalog_dir: Path | str,
+    catalog_dirs: Path | str | Sequence[Path | str],
     *,
     region_classes: Sequence[str] = REGION_CLASS_ORDER,
     admit_empty: bool = True,
@@ -224,51 +244,76 @@ def load_catalogs(
     content and refuses the whole file on any disagreement.  The two mask digests
     are checked against the live region model as well, so a catalog generated
     against a different fixed-furniture layout cannot be consumed by accident.
+
+    Several directories may be given.  They are unioned per region class and
+    deduplicated by *signature*, first directory wins -- which is sound because a
+    signature is exactly what the master can see, so two patterns sharing one are
+    interchangeable by construction (T-CAPABILITY-BUCKET).  Generation passes are
+    aimed at different bands of the target menu (the ordering heuristic is right
+    for an average region and wrong for a dense one), and unioning their outputs
+    is how a run uses more than one aim without regenerating everything.
     """
-    directory = Path(catalog_dir)
+    directories = catalog_directories(catalog_dirs)
     columns: Dict[str, RegionClassColumns] = {}
     for name in region_classes:
         region = REGION_CLASSES[name]
-        path = directory / f"{name}.json"
-        payload = load_strict(path)
-        catalog = CatalogSpec.from_json(payload, what=f"catalog[{name}]")
-        if catalog.region_class != name:
-            raise MasterError(
-                f"{path} declares region class {catalog.region_class!r}, expected {name!r}"
-            )
-        if catalog.region_multiplicity != region.multiplicity:
-            raise MasterError(
-                f"{path} claims multiplicity {catalog.region_multiplicity}, the region "
-                f"model says {region.multiplicity}"
-            )
-        if catalog.fixed_mask_sha256 != mask_sha256(region.fixed_local):
-            raise MasterError(f"{path} was generated against a different fixed mask")
-        if catalog.reserved_mask_sha256 != mask_sha256(region.reserved_local):
-            raise MasterError(f"{path} was generated against a different reserved mask")
-
         records: List[PatternRecord] = []
         seen: Dict[object, str] = {}
-        for index, stored in enumerate(catalog.patterns):
-            try:
-                evaluation = load_pattern(stored, region_class=name)
-            except SchemaError as exc:
-                raise MasterError(f"{path} pattern {index} rejected: {exc}") from exc
-            record = PatternRecord(
-                region_class=name,
-                pattern_id=evaluation.spec.pattern_id,
-                bucket_counts=dict(sorted(evaluation.bucket_counts.items())),
-                hole=evaluation.hole is not None,
-                body_count=len(evaluation.spec.bodies),
-                origin="catalog",
-            )
-            if record.signature in seen:
+        digests: List[str] = []
+        complete = True
+        for directory in directories:
+            path = directory / f"{name}.json"
+            payload = load_strict(path)
+            catalog = CatalogSpec.from_json(payload, what=f"catalog[{name}]")
+            if catalog.region_class != name:
                 raise MasterError(
-                    f"{path} carries two patterns with signature {record.signature!r} "
-                    f"({seen[record.signature]} and {record.pattern_id}); the catalog "
-                    "is supposed to be signature-deduplicated"
+                    f"{path} declares region class {catalog.region_class!r}, expected "
+                    f"{name!r}"
                 )
-            seen[record.signature] = record.pattern_id
-            records.append(record)
+            if catalog.region_multiplicity != region.multiplicity:
+                raise MasterError(
+                    f"{path} claims multiplicity {catalog.region_multiplicity}, the "
+                    f"region model says {region.multiplicity}"
+                )
+            if catalog.fixed_mask_sha256 != mask_sha256(region.fixed_local):
+                raise MasterError(f"{path} was generated against a different fixed mask")
+            if catalog.reserved_mask_sha256 != mask_sha256(region.reserved_local):
+                raise MasterError(
+                    f"{path} was generated against a different reserved mask"
+                )
+            digests.append(sha256_of_bytes(path.read_bytes()))
+            complete = complete and catalog.complete
+
+            local: Dict[object, str] = {}
+            for index, stored in enumerate(catalog.patterns):
+                try:
+                    evaluation = load_pattern(stored, region_class=name)
+                except SchemaError as exc:
+                    raise MasterError(f"{path} pattern {index} rejected: {exc}") from exc
+                record = PatternRecord(
+                    region_class=name,
+                    pattern_id=evaluation.spec.pattern_id,
+                    bucket_counts=dict(sorted(evaluation.bucket_counts.items())),
+                    hole=evaluation.hole is not None,
+                    body_count=len(evaluation.spec.bodies),
+                    body_area=sum(
+                        TEMPLATE_SIZES[body.template][0] * TEMPLATE_SIZES[body.template][1]
+                        for body in evaluation.spec.bodies
+                    ),
+                    origin="catalog",
+                )
+                if record.signature in local:
+                    raise MasterError(
+                        f"{path} carries two patterns with signature "
+                        f"{record.signature!r} ({local[record.signature]} and "
+                        f"{record.pattern_id}); one catalog is supposed to be "
+                        "signature-deduplicated"
+                    )
+                local[record.signature] = record.pattern_id
+                if record.signature in seen:
+                    continue
+                seen[record.signature] = record.pattern_id
+                records.append(record)
         if admit_empty:
             empty, _evaluation = empty_pattern_record(name)
             if empty.signature not in seen:
@@ -277,8 +322,8 @@ def load_catalogs(
             region_class=name,
             multiplicity=region.multiplicity,
             regions=region.regions,
-            complete=catalog.complete,
-            catalog_sha256=sha256_of_bytes(path.read_bytes()),
+            complete=complete,
+            catalog_sha256=digests[0] if len(digests) == 1 else "+".join(digests),
             patterns=tuple(records),
         )
     return columns
@@ -549,7 +594,7 @@ def solve_master(
     demand: Mapping[str, int] = CLASS_DEMAND,
     bucket_servable: Mapping[str, FrozenSet[str]] = BUCKET_SERVABLE,
     catalog_manifest_sha256: Optional[str] = None,
-    core_seconds: float = 300.0,
+    core_seconds: float = 60.0,
 ) -> Dict[str, Any]:
     """Build, gate on scale, solve, and return the ``w0_g1_master_result_v1`` doc."""
     from ortools.sat.python import cp_model
@@ -690,6 +735,10 @@ def _extract_core(
     its family (dropping it is not justified), and the report says so via
     ``proved_minimal``.  A non-minimal core is still a sufficient explanation --
     it is just not the tightest one.
+
+    Cost is bounded by one solve per family at ``seconds`` each; the default
+    budget is 60s a solve against a model that answers in fractions of a second,
+    so the loop is cheap in practice and cannot run away in the worst case.
     """
     from ortools.sat.python import cp_model
 
@@ -817,14 +866,62 @@ def _count_pre_gates(
 ) -> List[Dict[str, Any]]:
     """Two more ceilings from the same over-counting argument.
 
+    ``__body_area__`` -- the census fixes how many cells the 219 bodies occupy
+    (3325), so the same "best pattern per region class, independently" ceiling
+    applies to occupied area.  It is the tightest of the three in practice,
+    because a catalog can hold plenty of *bodies* while its dense patterns are all
+    3x3.
     ``__total_bodies__`` -- every region takes one pattern, so the board can hold
     at most the sum over region classes of (best body count in that class) times
     its multiplicity.  Below 219 the catalog is provably short, no solve needed.
     ``__template:M3__`` and friends do the same per template family, which is
-    where a shortage usually shows up first (a catalog can be rich in 3x3 patterns
-    and starved of dense 6x4 ones without the total ever noticing).
+    where a shortage can hide from both totals.
+
+    The area row only uses the frozen census, so it is meaningful only under the
+    real class table; a synthetic ``demand`` leaves it comparing this catalog's
+    area against the real 3325 and it should be read as noise there.
     """
     rows: List[Dict[str, Any]] = []
+    area_ceiling = sum(
+        max((record.body_area for record in block.patterns), default=0)
+        * block.multiplicity
+        for block in columns.values()
+    )
+    area_demand = sum(
+        row.count * TEMPLATE_SIZES[row.template][0] * TEMPLATE_SIZES[row.template][1]
+        for row in CLASS_TABLE
+    )
+    rows.append(
+        {
+            "class": "__body_area__",
+            "supply_ceiling": area_ceiling,
+            "demand": area_demand,
+            "short": area_ceiling < area_demand,
+        }
+    )
+    # Sharper.  Exactly one region has to carry the hole, and a hole-carrying
+    # pattern of a region class is never denser than that class's densest pattern
+    # -- the hole is 42 body-free cells.  So the board gives up at least the
+    # cheapest such penalty, whichever region ends up holding it.  A region class
+    # with no hole-carrying pattern simply cannot be the one that does.
+    penalties = []
+    for block in columns.values():
+        best = max((record.body_area for record in block.patterns), default=0)
+        with_hole = max(
+            (record.body_area for record in block.patterns if record.hole), default=None
+        )
+        if with_hole is not None:
+            penalties.append(best - with_hole)
+    if penalties:
+        holed = area_ceiling - min(penalties)
+        rows.append(
+            {
+                "class": "__body_area_with_hole__",
+                "supply_ceiling": holed,
+                "demand": area_demand,
+                "short": holed < area_demand,
+            }
+        )
     total_ceiling = sum(
         max((record.body_count for record in block.patterns), default=0)
         * block.multiplicity

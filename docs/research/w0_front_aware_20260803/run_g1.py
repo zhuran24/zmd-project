@@ -109,17 +109,26 @@ GATE_CLAUSES: Tuple[str, ...] = (
 
 @dataclass(frozen=True)
 class RunPaths:
-    catalog: Optional[Path]
+    catalogs: Tuple[Path, ...]
     rules: Path
     instances: Path
 
 
-def _catalog_digests(catalog_dir: Path) -> Dict[str, str]:
+def _catalog_digests(catalog_dirs: Sequence[Path]) -> Dict[str, str]:
+    """Per region class, the digests of every catalog file the run consumed.
+
+    A union of catalogs is still one input: the gate binds the master's answer to
+    all of them, so a plus-joined digest is what has to match.
+    """
     digests: Dict[str, str] = {}
     for name in list(REGION_CLASS_ORDER) + ["manifest"]:
-        path = catalog_dir / f"{name}.json"
-        if path.exists():
-            digests[name] = sha256_of_bytes(path.read_bytes())
+        parts = [
+            sha256_of_bytes((directory / f"{name}.json").read_bytes())
+            for directory in catalog_dirs
+            if (directory / f"{name}.json").exists()
+        ]
+        if parts:
+            digests[name] = parts[0] if len(parts) == 1 else "+".join(parts)
     return digests
 
 
@@ -141,13 +150,15 @@ def _area_pre_gate() -> Dict[str, Any]:
     }
 
 
-def _precheck(columns: Mapping[str, Any], catalog_dir: Path) -> Dict[str, Any]:
+def _precheck(columns: Mapping[str, Any], catalog_dirs: Sequence[Path]) -> Dict[str, Any]:
     supply = class_supply_pre_gate(columns)
-    manifest_path = catalog_dir / "manifest.json"
     manifest_pre_gate: Optional[Any] = None
-    if manifest_path.exists():
-        manifest = load_strict(manifest_path)
-        manifest_pre_gate = manifest.get("arithmetic_pre_gate")
+    for directory in catalog_dirs:
+        manifest_path = directory / "manifest.json"
+        if manifest_path.exists():
+            manifest = load_strict(manifest_path)
+            manifest_pre_gate = manifest.get("arithmetic_pre_gate")
+            break
     return {
         "schema": "w0_g1_precheck_v1",
         "authority": {
@@ -257,12 +268,21 @@ def _gate_verdict(
         "isolation_flags": [flag for flag in ("-I", "-S", "-B") if flag in argv],
         "returncode": observation.get("returncode"),
     }
-    # Clause 5 is filled in by the caller once the receipt actually closes.
-    clauses[GATE_CLAUSES[4]] = {"ok": False, "note": "not evaluated yet"}
+    # Clause 5 cannot be self-reported: the receipt is written *after* this
+    # document, because the root manifest has to enumerate a finished root.  What
+    # settles it is the presence of a valid ``receipt.json`` in this run root --
+    # if the closure check fails the process raises and no receipt exists at all,
+    # so a reader can decide the clause from the directory rather than from a
+    # claim made inside it.
+    clauses[GATE_CLAUSES[4]] = {
+        "ok": None,
+        "decided_by": "receipt.json in this run root; absent = clause 5 failed",
+    }
     return clauses
 
 
 def _terminal_state(master: Mapping[str, Any], clauses: Mapping[str, Any]) -> str:
+    """Terminal state from clauses 1-4; clause 5 is settled by the receipt."""
     if master.get("status") == "SCALE_ABORT":
         return "SCALE_ABORT"
     if master.get("status") == "INFEASIBLE":
@@ -271,7 +291,10 @@ def _terminal_state(master: Mapping[str, Any], clauses: Mapping[str, Any]) -> st
         return "UNKNOWN"
     if not clauses[GATE_CLAUSES[2]]["ok"]:
         return "AUDIT_FAIL"
-    return "PASS" if all(entry.get("ok") for entry in clauses.values()) else "GATE_FAIL"
+    decided = [
+        entry.get("ok") for name, entry in clauses.items() if name != GATE_CLAUSES[4]
+    ]
+    return "PASS" if all(decided) else "GATE_FAIL"
 
 
 # --------------------------------------------------------------------------
@@ -335,9 +358,9 @@ def _int_payload(value: Any) -> Any:
 
 
 def _paths(args: argparse.Namespace) -> RunPaths:
-    catalog = getattr(args, "catalog", None)
+    catalogs = getattr(args, "catalogs", None) or ()
     return RunPaths(
-        catalog=None if catalog is None else Path(catalog).resolve(),
+        catalogs=tuple(Path(item).resolve() for item in catalogs),
         rules=Path(getattr(args, "rules", None) or DEFAULT_RULES_PATH).resolve(),
         instances=Path(
             getattr(args, "instances", None) or DEFAULT_INSTANCES_PATH
@@ -357,6 +380,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
         ("--workers", args.workers),
         ("--seed", args.seed),
         ("--max-targets", args.max_targets),
+        ("--min-bodies", args.min_bodies),
     ):
         if value is not None:
             forwarded.extend([flag, str(value)])
@@ -365,10 +389,10 @@ def cmd_generate(args: argparse.Namespace) -> int:
     return generator_main(forwarded)
 
 
-def _require_catalog(paths: RunPaths) -> Path:
-    if paths.catalog is None:  # pragma: no cover - argparse makes it required
-        raise SystemExit("this subcommand needs --catalog")
-    return paths.catalog
+def _require_catalog(paths: RunPaths) -> Tuple[Path, ...]:
+    if not paths.catalogs:  # pragma: no cover - argparse makes it required
+        raise SystemExit("this subcommand needs at least one --catalog")
+    return paths.catalogs
 
 
 def cmd_precheck(args: argparse.Namespace) -> int:
@@ -379,7 +403,10 @@ def cmd_precheck(args: argparse.Namespace) -> int:
     run = _Run(
         Path(args.run_root),
         "w0_g1_precheck",
-        {"catalog": str(catalog), "catalog_digests": _catalog_digests(catalog)},
+        {
+            "catalogs": [str(item) for item in catalog],
+            "catalog_digests": _catalog_digests(catalog),
+        },
     )
     run.write("precheck.json", "precheck", report)
     run.close(_int_payload({"verdict": report["catalog_class_supply"]["verdict"]}))
@@ -388,37 +415,51 @@ def cmd_precheck(args: argparse.Namespace) -> int:
     return 0
 
 
-def _solve(args: argparse.Namespace, paths: RunPaths) -> Tuple[Any, Dict[str, Any], Dict[str, Any]]:
+def _solve(
+    args: argparse.Namespace, paths: RunPaths
+) -> Tuple[Any, Dict[str, Any], Dict[str, Any], bytes]:
+    """Load, solve, and hand back the solver log as bytes.
+
+    The CP-SAT log is written to a scratch file and returned rather than written
+    where it lands: everything a run publishes has to go through the exclusive run
+    root's write-once API, and a solver writing straight into the root would be a
+    second author of the evidence.
+    """
     catalog = _require_catalog(paths)
     columns = load_catalogs(catalog)
     digests = _catalog_digests(catalog)
-    config = MasterConfig(
-        collapse=not args.no_archetype_collapse,
-        max_time_in_seconds=float(args.max_seconds),
-        workers=int(args.workers),
-        seed=int(args.seed),
-    )
-    result = solve_master(
-        columns,
-        config,
-        catalog_manifest_sha256=digests.get("manifest"),
-    )
-    return columns, digests, result
+    with tempfile.TemporaryDirectory(prefix="w0g1solve") as scratch:
+        log_path = Path(scratch) / "cpsat.log"
+        config = MasterConfig(
+            collapse=not args.no_archetype_collapse,
+            max_time_in_seconds=float(args.max_seconds),
+            workers=int(args.workers),
+            seed=int(args.seed),
+            log_path=log_path,
+        )
+        result = solve_master(
+            columns,
+            config,
+            catalog_manifest_sha256=digests.get("manifest"),
+        )
+        log_bytes = log_path.read_bytes() if log_path.exists() else b""
+    return columns, digests, result, log_bytes
 
 
 def cmd_solve(args: argparse.Namespace) -> int:
     paths = _paths(args)
     catalog = _require_catalog(paths)
     started = time.monotonic()
-    columns, digests, result = _solve(args, paths)
+    columns, digests, result, log_bytes = _solve(args, paths)
     run = _Run(
         Path(args.run_root),
         "w0_g1_solve",
-        {"catalog": str(catalog), "catalog_digests": digests},
+        {"catalogs": [str(item) for item in catalog], "catalog_digests": digests},
     )
     run.mkdir("master")
     run.write("master/pre_gate.json", "pre_gate", _precheck(columns, catalog))
     run.write("master/master_result.json", "master_result", result)
+    run.write_bytes("master/cpsat.log", "cpsat_log", log_bytes)
     run.close(
         _int_payload(
             {
@@ -441,7 +482,10 @@ def cmd_expand(args: argparse.Namespace) -> int:
     run = _Run(
         Path(args.run_root),
         "w0_g1_expand",
-        {"catalog": str(catalog), "master": str(Path(args.master).resolve())},
+        {
+            "catalogs": [str(item) for item in catalog],
+            "master": str(Path(args.master).resolve()),
+        },
     )
     run.mkdir("geometry")
     run.write("geometry/g1_geometry.json", "geometry", geometry)
@@ -473,13 +517,13 @@ def cmd_gate(args: argparse.Namespace) -> int:
     paths = _paths(args)
     catalog = _require_catalog(paths)
     started = time.monotonic()
-    columns, digests, master = _solve(args, paths)
+    columns, digests, master, log_bytes = _solve(args, paths)
 
     run = _Run(
         Path(args.run_root),
         "w0_g1_gate",
         {
-            "catalog": str(catalog),
+            "catalogs": [str(item) for item in catalog],
             "catalog_digests": digests,
             "rules": str(paths.rules),
             "instances": str(paths.instances),
@@ -493,6 +537,7 @@ def cmd_gate(args: argparse.Namespace) -> int:
     run.mkdir("master")
     run.write("master/pre_gate.json", "pre_gate", _precheck(columns, catalog))
     run.write("master/master_result.json", "master_result", master)
+    run.write_bytes("master/cpsat.log", "cpsat_log", log_bytes)
 
     geometry: Optional[Dict[str, Any]] = None
     geometry_sha256: Optional[str] = None
@@ -523,6 +568,7 @@ def cmd_gate(args: argparse.Namespace) -> int:
         },
         "terminal_state": terminal,
         "verdict": "PASS" if terminal == "PASS" else "NOT_PASSED",
+        "verdict_is_conditional_on_receipt": terminal == "PASS",
         "clauses": clauses,
         "master_status": master["status"],
         "infeasibility_core": master.get("infeasibility_core"),
@@ -545,6 +591,7 @@ def cmd_gate(args: argparse.Namespace) -> int:
                 "terminal_state": terminal,
                 "master_status": master["status"],
                 "infeasibility_core": master.get("infeasibility_core"),
+                "gate_clause_five": "closed: this receipt exists and the root closes",
             }
         )
     )
@@ -570,7 +617,10 @@ def cmd_gate(args: argparse.Namespace) -> int:
 
 
 def _add_catalog_args(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--catalog", required=True, type=Path)
+    parser.add_argument(
+        "--catalog", dest="catalogs", required=True, action="append", type=Path,
+        help="catalog directory; repeat to union several generation passes",
+    )
     parser.add_argument("--rules", type=Path, default=None)
     parser.add_argument("--instances", type=Path, default=None)
 
@@ -595,6 +645,7 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--workers", type=int, default=None)
     generate.add_argument("--seed", type=int, default=None)
     generate.add_argument("--max-targets", type=int, default=None)
+    generate.add_argument("--min-bodies", type=int, default=None)
     generate.add_argument("--region-class", dest="region_classes", action="append")
     generate.set_defaults(func=cmd_generate)
 

@@ -39,11 +39,12 @@ from dataclasses import dataclass
 import json
 from pathlib import Path
 import sys
-from typing import Any, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from g1_exact_cover_master import catalog_directories  # noqa: E402
 from g1_pattern_evaluator import (  # noqa: E402
     body_cells,
     evaluate_pattern,
@@ -143,10 +144,18 @@ class PlacedBody:
         )
 
 
-def _pattern_index(catalog_payload: Any, region_class: str) -> Dict[str, Any]:
+def _pattern_index(directories: Sequence[Path], region_class: str) -> Dict[str, Any]:
+    """Every stored pattern of one region class, across all catalog directories.
+
+    The master may have been given a union of catalogs, so a selected pattern id
+    can come from any of them.  First directory wins on collision, matching the
+    loader's union rule -- and a collision means the same content address anyway.
+    """
     index: Dict[str, Any] = {}
-    for stored in catalog_payload["patterns"]:
-        index[str(stored["pattern_id"])] = stored
+    for directory in directories:
+        payload = load_strict(Path(directory) / f"{region_class}.json")
+        for stored in payload["patterns"]:
+            index.setdefault(str(stored["pattern_id"]), stored)
     return index
 
 
@@ -166,7 +175,7 @@ def _instances_by_operation(instances_path: Path | str) -> Dict[str, List[str]]:
 
 def expand_master_solution(
     master_result: Mapping[str, Any],
-    catalog_dir: Path | str,
+    catalog_dirs: Path | str | Sequence[Path | str],
     *,
     instances_path: Path | str = DEFAULT_INSTANCES_PATH,
 ) -> Dict[str, Any]:
@@ -175,8 +184,7 @@ def expand_master_solution(
     if status not in {"OPTIMAL", "FEASIBLE"}:
         raise ExpansionError(f"master status {status!r} has nothing to expand")
 
-    directory = Path(catalog_dir)
-    payload_cache: Dict[str, Any] = {}
+    directories = catalog_directories(catalog_dirs)
     pattern_cache: Dict[str, Dict[str, Any]] = {}
 
     placed: List[PlacedBody] = []
@@ -188,11 +196,8 @@ def expand_master_solution(
         region = (int(row["region"][0]), int(row["region"][1]))
         region_class = str(row["region_class"])
         pattern_id = str(row["pattern_id"])
-        if region_class not in payload_cache:
-            payload_cache[region_class] = load_strict(directory / f"{region_class}.json")
-            pattern_cache[region_class] = _pattern_index(
-                payload_cache[region_class], region_class
-            )
+        if region_class not in pattern_cache:
+            pattern_cache[region_class] = _pattern_index(directories, region_class)
         stored = pattern_cache[region_class].get(pattern_id)
         if stored is None:
             # The empty pattern is synthesised by the master loader, not stored.

@@ -124,6 +124,85 @@ def _write_catalog(directory: Path) -> Path:
     return catalog
 
 
+def _second_pattern() -> PatternSpec:
+    """A different legal CLEAN pattern: same two bodies, no hole.
+
+    Its bucket counts match the seed pattern's, so the two differ only in the
+    hole flag -- which is exactly the pair a union has to keep both halves of.
+    """
+    return PatternSpec(
+        region_class="CLEAN",
+        bodies=_seed_pattern().bodies,
+        poles=_seed_pattern().poles,
+        hole=None,
+    )
+
+
+def _write_second_catalog(directory: Path) -> Path:
+    catalog = directory / "catalog2"
+    catalog.mkdir(parents=True, exist_ok=True)
+    evaluation = evaluate_pattern(_second_pattern())
+    assert evaluation.ok, evaluation.violations
+    for name in REGION_CLASS_ORDER:
+        region = REGION_CLASSES[name]
+        patterns: List[Dict[str, Any]] = []
+        if name == "CLEAN":
+            patterns.append(pattern_to_json(evaluation, generator={"source": "test2"}))
+        dump_canonical(
+            catalog / f"{name}.json",
+            {
+                "schema": CATALOG_SCHEMA,
+                "authority": dict(RESEARCH_AUTHORITY),
+                "region_class": name,
+                "region_multiplicity": region.multiplicity,
+                "fixed_mask_sha256": mask_sha256(region.fixed_local),
+                "reserved_mask_sha256": mask_sha256(region.reserved_local),
+                "complete": False,
+                "patterns": patterns,
+            },
+        )
+    return catalog
+
+
+def test_two_generation_passes_union_into_one_column_set(tmp_path: Path) -> None:
+    """[E6] Aimed passes are unioned per region class, deduplicated by signature.
+
+    The loader has to keep both patterns (they differ in the hole flag), inherit
+    the *weakest* completeness claim, and record both file digests -- a union that
+    silently reported one pass's digest would let the gate bind the master's
+    answer to half its input.
+    """
+    first = _write_catalog(tmp_path)
+    second = _write_second_catalog(tmp_path)
+    alone = load_catalogs(first)["CLEAN"]
+    together = load_catalogs([first, second])["CLEAN"]
+    assert len(alone.patterns) == 2  # the seed pattern plus the synthesised empty
+    assert len(together.patterns) == 3
+    assert sum(1 for record in together.patterns if record.hole) == 1
+    assert alone.complete is True
+    assert together.complete is False
+    assert "+" in str(together.catalog_sha256)
+    assert load_catalogs([first])["CLEAN"].catalog_sha256 == alone.catalog_sha256
+
+
+def test_expansion_finds_patterns_from_either_catalog_of_a_union(
+    tmp_path: Path
+) -> None:
+    """[E7] A pattern selected out of the second pass still expands."""
+    first = _write_catalog(tmp_path)
+    second = _write_second_catalog(tmp_path)
+    columns = load_catalogs([first, second])
+    master = solve_master(
+        columns,
+        MasterConfig(max_time_in_seconds=60.0, workers=2),
+        demand={"3L": 2},
+    )
+    assert master["status"] in {"OPTIMAL", "FEASIBLE"}, master
+    geometry = expand_master_solution(master, [first, second])
+    assert len(geometry["placements"]) == 2
+    assert geometry["hole"] is not None
+
+
 def _solved(catalog: Path) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     columns = load_catalogs(catalog)
     master = solve_master(
@@ -230,7 +309,7 @@ def test_the_independent_audit_only_faults_the_census(
         encoding="utf-8",
     )
     paths = run_g1.RunPaths(
-        catalog=expanded["catalog"],
+        catalogs=(expanded["catalog"],),
         rules=run_g1.DEFAULT_RULES_PATH,
         instances=run_g1.DEFAULT_INSTANCES_PATH,
     )
