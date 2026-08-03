@@ -44,6 +44,20 @@ CROSS_LAYER_FIND_HINT = (
     "提示: 记忆分三层各有各的库,这一层没有 != 没记过 —— "
     "跨层查找: python cc_memory/mem.py find <id>"
 )
+# owner 2026-08-03 拍板:本库冻结为只读档案。写路径一条都没删——档案要能订正——
+# 但收件箱地位交给了文件记忆层,新记忆不再进这里。读侧(read/search/find/impact)
+# 一切照旧,考古是这个库现在的全部工作。
+ARCHIVE_FROZEN_AT = "2026-08-03"
+ARCHIVE_BANNER = (
+    f"## 本库已冻结为只读档案({ARCHIVE_FROZEN_AT},owner 拍板)\n"
+    "- 新记忆写文件记忆层(~/.claude/projects/-home-zhuran24-zmd-pj/memory/),不再写这里。\n"
+    "- 这里照常可读:`read <id> --body` / `search <词>` / `find <id>`(跨三层) / `impact <id>`。\n"
+    "- 写命令保留但只为档案订正;每次会先提醒一句,不会拦。"
+)
+ARCHIVE_WRITE_WARNING = (
+    f"⚠ cc_memory 已冻结为只读档案({ARCHIVE_FROZEN_AT}),确认这是档案修订而非新记忆"
+    " —— 新记忆应写文件记忆层。"
+)
 FIND_ID_RE = re.compile(r"^\s*id\s*:\s*['\"]?([A-Za-z0-9][\w.-]*)", re.MULTILINE)
 HARD_EDGE_TYPES = {"DEPENDS_ON", "DERIVED_FROM", "SUPERSEDES", "CONTRADICTS"}
 ALL_EDGE_TYPES = HARD_EDGE_TYPES | {"MENTIONS", "RELATED_TO", "SUPPORTS", "PROJECTS_TO"}
@@ -2503,6 +2517,8 @@ def cmd_boot(args: argparse.Namespace) -> int:
     rc, check_lines = check_db(con, export_path=args.export)
     print("# Memory boot")
     print("")
+    print(ARCHIVE_BANNER)
+    print("")
     print("One source of truth: `cc_memory/memory.db`. Generated views under `cc_memory/exports/` are disposable.")
     print("")
     print(f"status: {'OK' if rc == 0 else 'FAIL'}")
@@ -2566,20 +2582,13 @@ def cmd_boot(args: argparse.Namespace) -> int:
     for r in pinned:
         print(f"- `{r['id']}` — {node_summary(con, 'entry', r['id'])}")
     print("")
-    print("## Commands")
+    print("## Commands (read side — what this archive is for now)")
     print("- `python cc_memory/mem.py search \"query\"`")
-    print("- `python cc_memory/mem.py suggest --title \"...\" --body \"...\"` before adding memory")
-    print("- `python cc_memory/mem.py read <id>`")
-    print("- `python cc_memory/mem.py impact <id>` before changing a fact or entry")
-    print("- `python cc_memory/mem.py add-event --text \"...\"` then `set-fact` / `add-entry` / `relations` review")
-    print("- `python cc_memory/mem.py propose --operation update_fact --touches <id> --reason \"...\"`")
-    print("- `python cc_memory/mem.py check && python cc_memory/mem.py export`")
-    print("")
-    print("## Semantic + rerank retrieval (optional GPU layer, P1/P2)")
-    print("- `--semantic` (on suggest/add-entry/set-fact) adds dense recall: finds concept/synonym matches that lexical misses. RELIABLE — this is the main win; prefer it.")
-    print("- `--rerank` adds a cross-encoder that prunes false-positives. STRICT/conservative: great when the draft is specific & content-rich, but it over-prunes SHORT/ABSTRACT queries (can return nothing). Add it only for specific drafts, not vague one-line queries.")
-    print("- run `python cc_memory/mem.py rebuild-embeddings` after adding nodes so `--semantic` can retrieve them (incremental by content hash).")
-    print("- candidates still pass the review gate; loads GPU models (slower) and silently falls back to lexical-only if the GPU venv is absent.")
+    print("- `python cc_memory/mem.py read <id> --body`")
+    print("- `python cc_memory/mem.py find <id>` — 跨三层找一个 id 在哪层")
+    print("- `python cc_memory/mem.py impact <id>` — 改档案前先看牵连面")
+    print("- 写命令(add-entry / set-fact / add-event / propose / supersede …)仍在,只为档案订正;")
+    print("  新记忆写文件记忆层。改完照旧 `python cc_memory/mem.py finalize` 收口。")
     print("")
     if rc:
         print("## Check failures")
@@ -3564,9 +3573,32 @@ def make_parser() -> argparse.ArgumentParser:
     return p
 
 
+# Every command that mutates the archive.  Named by function object rather than
+# by string so that renaming a subcommand cannot silently drop one out of the
+# set.  ``finalize`` is deliberately absent: it is the closing action for a
+# revision that already got warned about, and warning again would only train the
+# reader to skip the line.
+ARCHIVE_WRITE_COMMANDS = frozenset(
+    {
+        cmd_add_entry,
+        cmd_set_fact,
+        cmd_add_event,
+        cmd_propose,
+        cmd_supersede,
+        cmd_link,
+        cmd_archive,
+        cmd_unarchive,
+        cmd_review_relation,
+    }
+)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = make_parser()
     args = parser.parse_args(argv)
+    if args.func in ARCHIVE_WRITE_COMMANDS:
+        # Advisory, never blocking: the archive still has to be correctable.
+        print(ARCHIVE_WRITE_WARNING, file=sys.stderr)
     return args.func(args)
 
 

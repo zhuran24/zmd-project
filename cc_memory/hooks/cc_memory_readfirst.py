@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""SessionStart hook: inject cc_memory's pinned "Read first" meta-memory tier.
+"""SessionStart hook: inject the cc_memory archive's pinned index.
+
+cc_memory has been a **read-only archive since 2026-08-03** (owner ruling).  New
+memory goes to the file-memory layer; this hook's job is no longer "here is how
+to use the memory system", it is "here is what the archive still holds, and how
+to look something up in it".  The wording follows that: no boot-first
+instruction, no impact-before-change instruction, no retrieval-feature pitch.
 
 PROJECT-LOCAL by design (registered in this repo's .claude/settings.local.json, NOT
 global): cc_memory is project-scoped, so this hook must only fire for sessions in this
@@ -54,7 +60,7 @@ def main() -> None:
     # cc-memory-meta-index is ALSO injected as a vnext L0 card (full text) at SessionStart;
     # skip it here to kill the only true session-start double-injection (2026-06-28 整合清理).
     VNEXT_L0_DUP = {"cc-memory-meta-index"}
-    lines = ["## Read first"]
+    lines = ["## 档案里被 pin 的条目"]
     for r in rows:
         if r["id"] in VNEXT_L0_DUP:
             continue
@@ -104,16 +110,16 @@ def main() -> None:
                 parts.append(f"长尾({tail})")
             domain_line = " · ".join(parts)
             toc = (
-                "\n\n## cc_memory 还覆盖这些方面(碰到相关话题,先 "
-                "`python cc_memory/mem.py search <词>` 再动手,别只信上下文里现有的):\n" + domain_line
+                "\n\n## 档案里还存着这些方面(要查:`python cc_memory/mem.py search <词>`;"
+                "只知道 id 不知道在哪层:`python cc_memory/mem.py find <id>`):\n" + domain_line
             )
     except Exception:
         toc = ""
 
-    # Read-only maintenance surfacing (hook backstop layer-1, D项): show at session start
-    # whether memory is dirty / has pending review / last finalize failed, so the state is
-    # visible without manually running boot. Stays mode=ro — never writes (unlike boot,
-    # which would touch_watermark+commit and race concurrent sessions).
+    # Maintenance surfacing, kept for one reason after the freeze: an archive left
+    # dirty or half-finalized is a real defect, and nobody runs boot on an archive
+    # any more, so this is the only place it would surface. Stays mode=ro — never
+    # writes (unlike boot, which would touch_watermark+commit and race sessions).
     maint = ""
     try:
         mx = mem.max_mutation_id(con)
@@ -133,7 +139,8 @@ def main() -> None:
         maint = ""
 
     header = (
-        "cc_memory 元记忆层(改记忆系统自身行为前先读;全文 `python cc_memory/mem.py read <id> --body`):"
+        "cc_memory = 只读档案层(2026-08-03 冻结,owner 拍板)。新记忆写文件记忆层;"
+        "这里只供考古,全文 `python cc_memory/mem.py read <id> --body`。存着这些:"
     )
     ctx = header + "\n\n" + block + toc + maint
     print(json.dumps({
