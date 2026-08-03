@@ -66,11 +66,20 @@ def test_target_menu_is_deterministic_and_area_feasible() -> None:
 
 
 def test_generate_reload_round_trip(tmp_path: Path) -> None:
-    """One real CP-SAT target: catalog is written, then recomputed on load."""
+    """One real CP-SAT target: catalog is written, then recomputed on load.
+
+    The three second budgets are **timeouts, not workloads**: on an idle machine
+    this test finishes in about 2.3s because both solves return early.  They are
+    set far above that because the whole fast lane runs under ``pytest -n auto``
+    on 24 logical cores, and a 2s solver cap starved by 23 sibling workers turns a
+    solvable centre-band target into an empty catalog -- a wall-clock false red
+    (observed 2026-08-03).  Raising the caps converts that into a slower pass and
+    changes nothing about what is asserted.
+    """
     config = gen.GeneratorConfig(
-        budget_seconds=60.0,
-        target_seconds=2.0,
-        ceiling_seconds=1.0,
+        budget_seconds=180.0,
+        target_seconds=30.0,
+        ceiling_seconds=15.0,
         solutions_per_target=1,
         max_derived_subsets=1,
         workers=4,
