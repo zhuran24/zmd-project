@@ -29,6 +29,7 @@ ARITHMETIC_PURPOSE = "independent_organic_arm_event_and_arithmetic_replay"
 RESOURCE_SCHEMA = "noncert-cuts-ab16-detached-resource-terminal-v1"
 RESOURCE_PRETERMINAL_SCHEMA = "noncert-cuts-ab16-resource-verification-v1"
 RESOURCE_PURPOSE = "PROSPECTIVE_AB16_ORGANIC_ARM_RESOURCE_AUTHORITY"
+EXPECTED_BINDING_ALT_CAP = 200
 
 CREDIBILITY_PASS = "PASS"
 CREDIBILITY_INCOMPLETE = "CREDIBILITY_INCOMPLETE"
@@ -215,6 +216,9 @@ def _controller_terminal(
     if type(internal) is not bool:
         raise GateError("budget censor flag is not an exact boolean")
     controller_status = record["controller_status"]
+    binding_status = controller_proof_summary.get("binding_status")
+    if binding_status == "ALT_CAP_REACHED" and controller_status not in {"UNKNOWN", "UNPROVEN"}:
+        raise GateError("binding alternative cap censor requires an unknown controller terminal")
     terminal_class: str | None
     failure_reasons: list[str] = []
     if not internal:
@@ -237,53 +241,76 @@ def _controller_terminal(
         observed = censor["observed"]
         if type(observed) is not dict or not observed:
             raise GateError("budget censor observation is empty")
-        expected_limit_name = {
-            "binding_seconds": "binding_seconds",
-            "master_seconds": "master_seconds",
-            "max_iterations": "max_iterations",
-            "routing_seconds": "routing_seconds",
-        }.get(kind)
-        if expected_limit_name is None:
-            raise GateError("budget censor kind is unsupported")
-        expected_limit = budget_contract.get(expected_limit_name)
-        if type(expected_limit) not in {int, float} or censor["limit"] != expected_limit:
-            raise GateError("budget censor limit differs from manifest")
-        if kind == "max_iterations":
-            expected_observed = {
-                "benders_iterations": controller_proof_summary.get("benders_iterations"),
-                "master_status": controller_proof_summary.get("master_status"),
-            }
+        if binding_status == "ALT_CAP_REACHED":
+            solver_contract = experiment_contract.get("solver_parameters")
+            if type(solver_contract) is not dict:
+                raise GateError("binding alternative cap contract is absent")
+            expected_limit = solver_contract.get("binding_alt_cap")
+            reported_cap = controller_proof_summary.get("binding_alternative_cap")
             if (
-                expected_observed
-                != {
-                    "benders_iterations": expected_limit,
-                    "master_status": "MAX_ITERATIONS",
-                }
-                or observed != expected_observed
+                kind != "binding_alt_cap"
+                or type(expected_limit) is not int
+                or expected_limit != EXPECTED_BINDING_ALT_CAP
+                or type(censor["limit"]) is not int
+                or censor["limit"] != expected_limit
+                or type(reported_cap) is not int
+                or reported_cap != expected_limit
+                or set(observed) != {"binding_alternative_cap", "binding_status"}
+                or type(observed["binding_alternative_cap"]) is not int
+                or observed["binding_alternative_cap"] != reported_cap
+                or observed["binding_status"] != "ALT_CAP_REACHED"
             ):
-                raise GateError("max-iterations censor evidence drifted")
-        elif kind == "binding_seconds":
-            expected_observed = {"binding_status": controller_proof_summary.get("binding_status")}
-            if expected_observed != {"binding_status": "TIMEOUT"} or observed != expected_observed:
-                raise GateError("binding censor evidence drifted")
-        elif kind == "routing_seconds":
-            expected_observed = {"routing_status": controller_proof_summary.get("routing_status")}
-            if expected_observed != {"routing_status": "TIMEOUT"} or observed != expected_observed:
-                raise GateError("routing censor evidence drifted")
+                raise GateError("binding alternative cap censor evidence drifted")
         else:
-            if not history:
-                raise GateError("master-time censor lacks a master solve")
-            last = history[-1]
-            if (
-                controller_proof_summary.get("master_status") != "UNKNOWN"
-                or observed.get("master_status") != "UNKNOWN"
-                or observed.get("solver_status") != "UNKNOWN"
-                or observed.get("wall_time") != last["wall_time"]
-                or last["status"] != "UNKNOWN"
-                or last["requested_time_limit_seconds"] != expected_limit
-                or float(last["wall_time"]) < float(expected_limit) * 0.99
-            ):
-                raise GateError("master-time censor evidence drifted")
+            if kind == "binding_alt_cap":
+                raise GateError("binding alternative cap censor lacks ALT_CAP_REACHED")
+            expected_limit_name = {
+                "binding_seconds": "binding_seconds",
+                "master_seconds": "master_seconds",
+                "max_iterations": "max_iterations",
+                "routing_seconds": "routing_seconds",
+            }.get(kind)
+            if expected_limit_name is None:
+                raise GateError("budget censor kind is unsupported")
+            expected_limit = budget_contract.get(expected_limit_name)
+            if type(expected_limit) not in {int, float} or censor["limit"] != expected_limit:
+                raise GateError("budget censor limit differs from manifest")
+            if kind == "max_iterations":
+                expected_observed = {
+                    "benders_iterations": controller_proof_summary.get("benders_iterations"),
+                    "master_status": controller_proof_summary.get("master_status"),
+                }
+                if (
+                    expected_observed
+                    != {
+                        "benders_iterations": expected_limit,
+                        "master_status": "MAX_ITERATIONS",
+                    }
+                    or observed != expected_observed
+                ):
+                    raise GateError("max-iterations censor evidence drifted")
+            elif kind == "binding_seconds":
+                expected_observed = {"binding_status": controller_proof_summary.get("binding_status")}
+                if expected_observed != {"binding_status": "TIMEOUT"} or observed != expected_observed:
+                    raise GateError("binding censor evidence drifted")
+            elif kind == "routing_seconds":
+                expected_observed = {"routing_status": controller_proof_summary.get("routing_status")}
+                if expected_observed != {"routing_status": "TIMEOUT"} or observed != expected_observed:
+                    raise GateError("routing censor evidence drifted")
+            else:
+                if not history:
+                    raise GateError("master-time censor lacks a master solve")
+                last = history[-1]
+                if (
+                    controller_proof_summary.get("master_status") != "UNKNOWN"
+                    or observed.get("master_status") != "UNKNOWN"
+                    or observed.get("solver_status") != "UNKNOWN"
+                    or observed.get("wall_time") != last["wall_time"]
+                    or last["status"] != "UNKNOWN"
+                    or last["requested_time_limit_seconds"] != expected_limit
+                    or float(last["wall_time"]) < float(expected_limit) * 0.99
+                ):
+                    raise GateError("master-time censor evidence drifted")
         terminal_class = BUDGET_CENSORED_UNKNOWN
 
     return {

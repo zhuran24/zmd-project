@@ -1899,6 +1899,7 @@ def _validate_controller_terminal(value: object) -> Mapping[str, Any]:
         if (
             budget["kind"]
             not in {
+                "binding_alt_cap",
                 "binding_seconds",
                 "master_seconds",
                 "max_iterations",
@@ -1910,6 +1911,19 @@ def _validate_controller_terminal(value: object) -> Mapping[str, Any]:
             or not budget["observed"]
         ):
             raise RunnerError("controller budget censor evidence is invalid")
+        if budget["kind"] == "binding_alt_cap":
+            observed = budget["observed"]
+            contract_cap = EXPERIMENT_CONTRACT["solver_parameters"]["binding_alt_cap"]
+            if (
+                type(contract_cap) is not int
+                or type(budget["limit"]) is not int
+                or budget["limit"] != contract_cap
+                or set(observed) != {"binding_alternative_cap", "binding_status"}
+                or type(observed["binding_alternative_cap"]) is not int
+                or observed["binding_alternative_cap"] != contract_cap
+                or observed["binding_status"] != "ALT_CAP_REACHED"
+            ):
+                raise RunnerError("controller binding alternative cap budget censor evidence is invalid")
     elif budget != {
         "internal_budget_reached": False,
         "kind": "none",
@@ -2634,6 +2648,7 @@ def _controller_terminal_record(
     if controller_status not in CONTROLLER_STATUSES:
         raise RunnerError("controller returned an unsupported terminal status")
     budget = EXPERIMENT_CONTRACT["budget"]
+    binding_alt_cap = EXPERIMENT_CONTRACT["solver_parameters"]["binding_alt_cap"]
     evidence: dict[str, object] = {
         "internal_budget_reached": False,
         "kind": "none",
@@ -2641,7 +2656,23 @@ def _controller_terminal_record(
         "observed": {},
     }
     if controller_status in {"UNKNOWN", "UNPROVEN"}:
-        if (
+        if proof_summary.get("binding_status") == "ALT_CAP_REACHED":
+            reported_cap = proof_summary.get("binding_alternative_cap")
+            if (
+                type(binding_alt_cap) is int
+                and type(reported_cap) is int
+                and reported_cap == binding_alt_cap
+            ):
+                evidence = {
+                    "internal_budget_reached": True,
+                    "kind": "binding_alt_cap",
+                    "limit": binding_alt_cap,
+                    "observed": {
+                        "binding_alternative_cap": reported_cap,
+                        "binding_status": "ALT_CAP_REACHED",
+                    },
+                }
+        elif (
             proof_summary.get("master_status") == "MAX_ITERATIONS"
             and proof_summary.get("benders_iterations") == budget["max_iterations"]
         ):

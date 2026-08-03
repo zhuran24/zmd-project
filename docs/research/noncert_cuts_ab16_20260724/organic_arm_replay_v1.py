@@ -533,6 +533,7 @@ def _validate_controller_terminal(value: object) -> Mapping[str, Any]:
         if (
             budget["kind"]
             not in {
+                "binding_alt_cap",
                 "binding_seconds",
                 "master_seconds",
                 "max_iterations",
@@ -544,6 +545,16 @@ def _validate_controller_terminal(value: object) -> Mapping[str, Any]:
             or not budget["observed"]
         ):
             raise ReplayError("controller budget censor evidence is invalid")
+        if budget["kind"] == "binding_alt_cap":
+            observed = budget["observed"]
+            if (
+                type(budget["limit"]) is not int
+                or set(observed) != {"binding_alternative_cap", "binding_status"}
+                or type(observed["binding_alternative_cap"]) is not int
+                or observed["binding_alternative_cap"] != budget["limit"]
+                or observed["binding_status"] != "ALT_CAP_REACHED"
+            ):
+                raise ReplayError("controller binding alternative cap budget censor evidence is invalid")
     elif budget != {
         "internal_budget_reached": False,
         "kind": "none",

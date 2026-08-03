@@ -21,6 +21,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER_PATH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724" / "organic_arm_runner_v1.py"
 CONTRACT_PATH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724" / "ab16_contract_v1.py"
+GATE_PATH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724" / "ab16_terminal_gate_v1.py"
 GIT_PATH = Path(shutil.which("git") or "").resolve(strict=True)
 REPOSITORY_HEAD = subprocess.check_output(
     [str(GIT_PATH), "-C", str(ROOT), "rev-parse", "--verify", "HEAD^{commit}"],
@@ -39,6 +40,7 @@ def _load(path: Path, name: str) -> ModuleType:
 
 RUNNER = _load(RUNNER_PATH, "noncert_cuts_ab16_organic_arm_runner_v1")
 CONTRACT = _load(CONTRACT_PATH, "noncert_cuts_ab16_contract_for_runner_test")
+GATE = _load(GATE_PATH, "noncert_cuts_ab16_terminal_gate_for_runner_test")
 
 
 def _write(path: Path, raw: bytes) -> dict[str, object]:
@@ -858,6 +860,238 @@ def test_production_adapter_observes_natural_runtime_without_manual_attach() -> 
 
 
 @pytest.mark.parametrize(
+    ("proof_summary", "expected_evidence"),
+    (
+        pytest.param(
+            {
+                "binding_alternative_cap": 200,
+                "binding_status": "ALT_CAP_REACHED",
+                "master_status": "FEASIBLE",
+                "routing_status": "PRECHECK_FRONT_BLOCKED",
+            },
+            {
+                "internal_budget_reached": True,
+                "kind": "binding_alt_cap",
+                "limit": 200,
+                "observed": {
+                    "binding_alternative_cap": 200,
+                    "binding_status": "ALT_CAP_REACHED",
+                },
+            },
+            id="exact-contract-cap",
+        ),
+        pytest.param(
+            {
+                "binding_alternative_cap": 200,
+                "binding_status": "ALT_CAP_REACHED",
+                "master_status": "FEASIBLE",
+                "routing_status": "INFEASIBLE",
+            },
+            {
+                "internal_budget_reached": True,
+                "kind": "binding_alt_cap",
+                "limit": 200,
+                "observed": {
+                    "binding_alternative_cap": 200,
+                    "binding_status": "ALT_CAP_REACHED",
+                },
+            },
+            id="exact-cap-independent-of-routing-status",
+        ),
+        pytest.param(
+            {
+                "binding_alternative_cap": 199,
+                "binding_status": "ALT_CAP_REACHED",
+                "routing_status": "TIMEOUT",
+            },
+            {
+                "internal_budget_reached": False,
+                "kind": "none",
+                "limit": None,
+                "observed": {},
+            },
+            id="drifted-cap-does-not-fall-through",
+        ),
+        pytest.param(
+            {
+                "binding_alternative_cap": 200.0,
+                "binding_status": "ALT_CAP_REACHED",
+                "routing_status": "TIMEOUT",
+            },
+            {
+                "internal_budget_reached": False,
+                "kind": "none",
+                "limit": None,
+                "observed": {},
+            },
+            id="float-cap-does-not-fall-through",
+        ),
+        pytest.param(
+            {
+                "binding_alternative_cap": "200",
+                "binding_status": "ALT_CAP_REACHED",
+            },
+            {
+                "internal_budget_reached": False,
+                "kind": "none",
+                "limit": None,
+                "observed": {},
+            },
+            id="string-cap",
+        ),
+        pytest.param(
+            {
+                "binding_alternative_cap": True,
+                "binding_status": "ALT_CAP_REACHED",
+            },
+            {
+                "internal_budget_reached": False,
+                "kind": "none",
+                "limit": None,
+                "observed": {},
+            },
+            id="boolean-cap",
+        ),
+        pytest.param(
+            {"binding_status": "ALT_CAP_REACHED"},
+            {
+                "internal_budget_reached": False,
+                "kind": "none",
+                "limit": None,
+                "observed": {},
+            },
+            id="missing-cap",
+        ),
+    ),
+)
+def test_binding_alt_cap_censor_requires_exact_contract_integer(
+    proof_summary: dict[str, object],
+    expected_evidence: dict[str, object],
+) -> None:
+    terminal = RUNNER._controller_terminal_record(  # noqa: SLF001
+        controller_status="UNKNOWN",
+        proof_summary=proof_summary,
+        master_last_solve={},
+        master_solve_history=[],
+    )
+
+    assert terminal["budget_censor_evidence"] == expected_evidence
+
+
+def test_binding_alt_cap_runner_output_passes_independent_terminal_gate() -> None:
+    proof_summary = {
+        "binding_alternative_cap": 200,
+        "binding_status": "ALT_CAP_REACHED",
+        "master_status": "FEASIBLE",
+    }
+    terminal = RUNNER._controller_terminal_record(  # noqa: SLF001
+        controller_status="UNKNOWN",
+        proof_summary=proof_summary,
+        master_last_solve={},
+        master_solve_history=[],
+    )
+
+    replayed = GATE._controller_terminal(  # noqa: SLF001
+        terminal,
+        experiment_contract=RUNNER.EXPERIMENT_CONTRACT,
+        controller_proof_summary=proof_summary,
+    )
+
+    assert replayed["credibility_status"] == GATE.CREDIBILITY_PASS
+    assert replayed["failure_reasons"] == []
+    assert replayed["solver_terminal_class"] == GATE.BUDGET_CENSORED_UNKNOWN
+
+
+def test_generic_unknown_remains_uncensored_in_runner() -> None:
+    terminal = RUNNER._controller_terminal_record(  # noqa: SLF001
+        controller_status="UNKNOWN",
+        proof_summary={"master_status": "FEASIBLE"},
+        master_last_solve={},
+        master_solve_history=[],
+    )
+
+    assert terminal["budget_censor_evidence"] == {
+        "internal_budget_reached": False,
+        "kind": "none",
+        "limit": None,
+        "observed": {},
+    }
+
+
+@pytest.mark.parametrize(
+    ("kind", "proof_summary", "master_solve_history", "expected_observed"),
+    (
+        (
+            "binding_seconds",
+            {"binding_status": "TIMEOUT"},
+            [],
+            {"binding_status": "TIMEOUT"},
+        ),
+        (
+            "routing_seconds",
+            {"routing_status": "TIMEOUT"},
+            [],
+            {"routing_status": "TIMEOUT"},
+        ),
+        (
+            "max_iterations",
+            {"benders_iterations": 30, "master_status": "MAX_ITERATIONS"},
+            [],
+            {"benders_iterations": 30, "master_status": "MAX_ITERATIONS"},
+        ),
+        (
+            "master_seconds",
+            {"master_status": "UNKNOWN"},
+            [
+                {
+                    "binary_propagations": 0,
+                    "branches": 0,
+                    "conflicts": 0,
+                    "deterministic_time": 0.0,
+                    "integer_propagations": 0,
+                    "ordinal": 1,
+                    "requested_time_limit_seconds": 900.0,
+                    "status": "UNKNOWN",
+                    "user_time": 900.0,
+                    "wall_time": 900.0,
+                }
+            ],
+            {
+                "master_status": "UNKNOWN",
+                "solver_status": "UNKNOWN",
+                "wall_time": 900.0,
+            },
+        ),
+    ),
+)
+def test_existing_controller_budget_censors_are_unchanged(
+    kind: str,
+    proof_summary: dict[str, object],
+    master_solve_history: list[dict[str, object]],
+    expected_observed: dict[str, object],
+) -> None:
+    terminal = RUNNER._controller_terminal_record(  # noqa: SLF001
+        controller_status="UNKNOWN",
+        proof_summary=proof_summary,
+        master_last_solve={},
+        master_solve_history=master_solve_history,
+    )
+    expected_limits = {
+        "binding_seconds": 600,
+        "master_seconds": 900,
+        "max_iterations": 30,
+        "routing_seconds": 600,
+    }
+
+    assert terminal["budget_censor_evidence"] == {
+        "internal_budget_reached": True,
+        "kind": kind,
+        "limit": expected_limits[kind],
+        "observed": expected_observed,
+    }
+
+
+@pytest.mark.parametrize(
     (
         "terminal_stage",
         "controller_status",
@@ -898,6 +1132,21 @@ def test_production_adapter_observes_natural_runtime_without_manual_attach() -> 
             3.0,
             [0, 1],
             "binding_seconds",
+        ),
+        (
+            "binding-alt-cap-budget",
+            "UNKNOWN",
+            "FEASIBLE",
+            {
+                "benders_iterations": 1,
+                "binding_alternative_cap": 200,
+                "binding_status": "ALT_CAP_REACHED",
+                "master_status": "FEASIBLE",
+                "routing_status": "INFEASIBLE",
+            },
+            3.0,
+            [0, 1],
+            "binding_alt_cap",
         ),
         (
             "routing-budget",

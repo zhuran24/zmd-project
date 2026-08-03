@@ -235,7 +235,8 @@ def _arm_inputs(
                 "master_seconds": 900,
                 "max_iterations": 30,
                 "routing_seconds": 600,
-            }
+            },
+            "solver_parameters": {"binding_alt_cap": 200},
         },
         "replayed_arithmetic_receipt": dict(arithmetic),
         "replayed_resource_receipt": dict(resource),
@@ -286,6 +287,229 @@ def test_arm_gate_rejects_joint_receipt_and_terminal_mutations() -> None:
     joint_resource_mutation["replayed_resource_preterminal_receipt"]["payload_result_identity"] = wrong_result
     with pytest.raises(GATE.GateError, match="identity chain"):
         GATE.build_arm_gate(**joint_resource_mutation)
+
+
+def _binding_alt_cap_unknown_inputs() -> dict[str, object]:
+    values = _arm_inputs(arm_incumbent_present=False)
+    terminal = values["arm_result"]["controller_terminal"]
+    terminal["controller_status"] = "UNKNOWN"
+    values["arm_result"]["raw_proof_summary"]["controller_last_proof_summary"] = {
+        "binding_alternative_cap": 200,
+        "binding_status": "ALT_CAP_REACHED",
+        "master_status": "FEASIBLE",
+        "routing_status": "PRECHECK_FRONT_BLOCKED",
+    }
+    terminal["budget_censor_evidence"] = {
+        "internal_budget_reached": True,
+        "kind": "binding_alt_cap",
+        "limit": 200,
+        "observed": {
+            "binding_alternative_cap": 200,
+            "binding_status": "ALT_CAP_REACHED",
+        },
+    }
+    return values
+
+
+def test_exact_binding_alt_cap_unknown_is_credible() -> None:
+    result = GATE.build_arm_gate(**_binding_alt_cap_unknown_inputs())
+
+    assert result["solver_terminal_class"] == GATE.BUDGET_CENSORED_UNKNOWN
+    assert result["credibility_status"] == GATE.CREDIBILITY_PASS
+
+
+@pytest.mark.parametrize(
+    ("reported_cap", "remove_cap"),
+    (
+        pytest.param(199, False, id="drifted"),
+        pytest.param(200.0, False, id="float"),
+        pytest.param("200", False, id="string"),
+        pytest.param(True, False, id="boolean"),
+        pytest.param(None, True, id="missing"),
+    ),
+)
+def test_binding_alt_cap_unknown_rejects_drifted_or_noninteger_report(
+    reported_cap: object,
+    remove_cap: bool,
+) -> None:
+    values = _binding_alt_cap_unknown_inputs()
+    proof = values["arm_result"]["raw_proof_summary"]["controller_last_proof_summary"]
+    if remove_cap:
+        proof.pop("binding_alternative_cap")
+    else:
+        proof["binding_alternative_cap"] = reported_cap
+
+    with pytest.raises(GATE.GateError, match="binding alternative cap"):
+        GATE.build_arm_gate(**values)
+
+
+@pytest.mark.parametrize(
+    "censor_limit",
+    (
+        pytest.param(199, id="drifted"),
+        pytest.param(200.0, id="float"),
+        pytest.param("200", id="string"),
+        pytest.param(True, id="boolean"),
+        pytest.param(None, id="null"),
+    ),
+)
+def test_binding_alt_cap_unknown_rejects_drifted_or_noninteger_censor_limit(
+    censor_limit: object,
+) -> None:
+    values = _binding_alt_cap_unknown_inputs()
+    values["arm_result"]["controller_terminal"]["budget_censor_evidence"]["limit"] = censor_limit
+
+    with pytest.raises(GATE.GateError, match="binding alternative cap"):
+        GATE.build_arm_gate(**values)
+
+
+@pytest.mark.parametrize(
+    "observed",
+    (
+        pytest.param(
+            {"binding_alternative_cap": 199, "binding_status": "ALT_CAP_REACHED"},
+            id="drifted-cap",
+        ),
+        pytest.param(
+            {"binding_alternative_cap": 200.0, "binding_status": "ALT_CAP_REACHED"},
+            id="float-cap",
+        ),
+        pytest.param(
+            {"binding_status": "ALT_CAP_REACHED"},
+            id="missing-cap",
+        ),
+        pytest.param(
+            {
+                "binding_alternative_cap": 200,
+                "binding_status": "ALT_CAP_REACHED",
+                "extra": True,
+            },
+            id="extra-key",
+        ),
+        pytest.param(
+            {"binding_alternative_cap": 200, "binding_status": "TIMEOUT"},
+            id="forged-status",
+        ),
+    ),
+)
+def test_binding_alt_cap_unknown_rejects_forged_observed_evidence(
+    observed: dict[str, object],
+) -> None:
+    values = _binding_alt_cap_unknown_inputs()
+    values["arm_result"]["controller_terminal"]["budget_censor_evidence"]["observed"] = observed
+
+    with pytest.raises(GATE.GateError, match="binding alternative cap"):
+        GATE.build_arm_gate(**values)
+
+
+@pytest.mark.parametrize(
+    "contract_cap",
+    (
+        pytest.param(199, id="drifted"),
+        pytest.param(200.0, id="float"),
+        pytest.param("200", id="string"),
+        pytest.param(True, id="boolean"),
+        pytest.param(None, id="missing"),
+    ),
+)
+def test_binding_alt_cap_unknown_rejects_contract_drift(contract_cap: object) -> None:
+    values = _binding_alt_cap_unknown_inputs()
+    if contract_cap is None:
+        values["experiment_contract"]["solver_parameters"].pop("binding_alt_cap")
+    else:
+        values["experiment_contract"]["solver_parameters"]["binding_alt_cap"] = contract_cap
+
+    with pytest.raises(GATE.GateError, match="binding alternative cap"):
+        GATE.build_arm_gate(**values)
+
+
+@pytest.mark.parametrize("controller_status", ("CERTIFIED", "INFEASIBLE"))
+def test_binding_alt_cap_report_cannot_accompany_nonunknown_controller(
+    controller_status: str,
+) -> None:
+    values = _binding_alt_cap_unknown_inputs()
+    terminal = values["arm_result"]["controller_terminal"]
+    terminal["controller_status"] = controller_status
+    terminal["budget_censor_evidence"] = {
+        "internal_budget_reached": False,
+        "kind": "none",
+        "limit": None,
+        "observed": {},
+    }
+
+    with pytest.raises(GATE.GateError, match="binding alternative cap"):
+        GATE.build_arm_gate(**values)
+
+
+def test_generic_unknown_without_censor_evidence_still_fails_closed() -> None:
+    values = _arm_inputs()
+    values["arm_result"]["controller_terminal"]["controller_status"] = "UNKNOWN"
+
+    with pytest.raises(GATE.GateError, match="controller_unknown_without_internal_budget_censor"):
+        GATE.build_arm_gate(**values)
+
+
+@pytest.mark.parametrize(
+    "kind",
+    ("binding_seconds", "routing_seconds", "max_iterations", "master_seconds"),
+)
+def test_existing_terminal_gate_budget_censors_are_unchanged(kind: str) -> None:
+    values = _arm_inputs(arm_incumbent_present=False)
+    terminal = values["arm_result"]["controller_terminal"]
+    terminal["controller_status"] = "UNKNOWN"
+    proof: dict[str, object]
+    if kind == "binding_seconds":
+        proof = {"binding_status": "TIMEOUT", "master_status": "FEASIBLE"}
+        evidence = {
+            "internal_budget_reached": True,
+            "kind": kind,
+            "limit": 600,
+            "observed": {"binding_status": "TIMEOUT"},
+        }
+    elif kind == "routing_seconds":
+        proof = {"master_status": "FEASIBLE", "routing_status": "TIMEOUT"}
+        evidence = {
+            "internal_budget_reached": True,
+            "kind": kind,
+            "limit": 600,
+            "observed": {"routing_status": "TIMEOUT"},
+        }
+    elif kind == "max_iterations":
+        proof = {"benders_iterations": 30, "master_status": "MAX_ITERATIONS"}
+        evidence = {
+            "internal_budget_reached": True,
+            "kind": kind,
+            "limit": 30,
+            "observed": {
+                "benders_iterations": 30,
+                "master_status": "MAX_ITERATIONS",
+            },
+        }
+    else:
+        proof = {"master_status": "UNKNOWN"}
+        history = terminal["master_solve_history"][0]
+        history["status"] = "UNKNOWN"
+        history["wall_time"] = 899.0
+        terminal["master_last_solve"] = {"status": "UNKNOWN"}
+        values["arm_result"]["raw_proof_summary"]["master_last_solve"] = {
+            "status": "UNKNOWN"
+        }
+        evidence = {
+            "internal_budget_reached": True,
+            "kind": kind,
+            "limit": 900,
+            "observed": {
+                "master_status": "UNKNOWN",
+                "solver_status": "UNKNOWN",
+                "wall_time": 899.0,
+            },
+        }
+    values["arm_result"]["raw_proof_summary"]["controller_last_proof_summary"] = proof
+    terminal["budget_censor_evidence"] = evidence
+
+    result = GATE.build_arm_gate(**values)
+
+    assert result["solver_terminal_class"] == GATE.BUDGET_CENSORED_UNKNOWN
 
 
 def test_budget_censored_unknown_is_credible_only_with_rebuilt_evidence() -> None:

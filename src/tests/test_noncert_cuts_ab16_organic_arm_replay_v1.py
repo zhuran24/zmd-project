@@ -168,6 +168,38 @@ def _controller_terminal() -> dict[str, object]:
     }
 
 
+def test_binding_alt_cap_terminal_structure_is_replayable_only_with_exact_integers() -> None:
+    terminal = _controller_terminal()
+    terminal["budget_censor_evidence"] = {
+        "internal_budget_reached": True,
+        "kind": "binding_alt_cap",
+        "limit": 200,
+        "observed": {
+            "binding_alternative_cap": 200,
+            "binding_status": "ALT_CAP_REACHED",
+        },
+    }
+
+    assert REPLAY._validate_controller_terminal(terminal) == terminal  # noqa: SLF001
+
+    terminal["budget_censor_evidence"]["limit"] = 200.0
+    with pytest.raises(REPLAY.ReplayError, match="budget censor evidence"):
+        REPLAY._validate_controller_terminal(terminal)  # noqa: SLF001
+
+    terminal["budget_censor_evidence"]["limit"] = 200
+    terminal["budget_censor_evidence"]["observed"]["binding_alternative_cap"] = 200.0
+    with pytest.raises(REPLAY.ReplayError, match="budget censor evidence"):
+        REPLAY._validate_controller_terminal(terminal)  # noqa: SLF001
+
+    terminal["budget_censor_evidence"]["observed"] = {
+        "binding_alternative_cap": 200,
+        "binding_status": "ALT_CAP_REACHED",
+        "extra": True,
+    }
+    with pytest.raises(REPLAY.ReplayError, match="budget censor evidence"):
+        REPLAY._validate_controller_terminal(terminal)  # noqa: SLF001
+
+
 def _cut_free(
     directory: Path,
     incumbent_identity: dict[str, object],
@@ -429,6 +461,37 @@ def test_replay_classifies_raw_journal_branches(
     assert receipt["slot"] == "region-capacity-ab-treatment"
     if branch == "applied":
         assert receipt["applied_inequality_evaluations"][0]["violated"] is True
+
+
+def test_replay_arm_accepts_canonical_binding_alt_cap_terminal(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path, "zero")
+    result = REPLAY._strict_json(  # noqa: SLF001
+        fixture["result"].read_bytes(),
+        "fixture result",
+        canonical=True,
+        allow_float=True,
+    )
+    result["controller_terminal"]["budget_censor_evidence"] = {
+        "internal_budget_reached": True,
+        "kind": "binding_alt_cap",
+        "limit": 200,
+        "observed": {
+            "binding_alternative_cap": 200,
+            "binding_status": "ALT_CAP_REACHED",
+        },
+    }
+    fixture["result"].write_bytes(REPLAY.canonical_json(result))
+
+    receipt = REPLAY.replay_arm(
+        arm_result=fixture["result"],
+        cut_free_replay=fixture["cut_free"],
+        replay_tool_identity=_identity(TOOL_PATH),
+    )
+
+    assert receipt["status"] == "PASS"
+    assert receipt["classification"] == REPLAY.ORGANIC_NONACTIVATION
 
 
 @pytest.mark.parametrize(
