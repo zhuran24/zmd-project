@@ -9,7 +9,10 @@ deliberately out of scope — those belong to the advisory LLM lens, never here.
 Properties this module keeps, deliberately:
 
 * Pure standard library, read-only against the repository, no LLM, no network.
-  The only thing it writes is its own report under ``.prune/``.
+  The only thing it writes is its own report under ``.prune/``, and that is
+  enforced by the write primitive itself: the destination must be a
+  repository-relative file under ``.prune/`` reached without traversal and
+  without passing through a symlink.
 * The document class registry is at a constant path, and it must be tracked and
   committed.  Classes are the safety gate, so the file that defines them cannot
   be swapped out by a caller, and a path claimed by two classes is a structural
@@ -39,6 +42,7 @@ import hashlib
 import json
 import os
 import re
+import stat
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -50,6 +54,7 @@ from typing import Any, Mapping, Sequence
 ROOT = Path(__file__).resolve().parents[1]
 
 REGISTRY_RELPATH = "data/repository_governance/doc_classes.json"
+REPORT_DIR_RELPATH = ".prune"
 REPORT_RELPATH = ".prune/docs_reference_report.json"
 
 REGISTRY_SCHEMA_VERSION = "repository_doc_classes_v1"
@@ -1478,12 +1483,77 @@ def build_report(root: Path) -> dict[str, Any]:
     }
 
 
+def resolve_report_destination(root: Path, relpath: str) -> Path:
+    """Resolve the one place a report may be written, or fail closed.
+
+    This is the scanner's only write primitive, so it is also the whole of its
+    blast radius.  Left unconstrained it is a general-purpose "overwrite any
+    file" tool that happens to be reachable from a read-only analysis command:
+    ``scan --output PROJECT_LOCK.md`` overwrites a locked file, and a planted
+    ``.prune/docs_reference_report.json -> ../PROJECT_LOCK.md`` symlink does the
+    same thing with no arguments at all.  Four constraints, all fail-closed:
+
+    * the path is repository-relative — no absolute paths, no backslashes;
+    * it may not traverse upwards, so it cannot leave the repository;
+    * it is rooted at ``.prune/`` and names a file inside it;
+    * no component below the repository root may be a symlink, and an existing
+      destination must be a plain file.
+
+    The write itself then uses ``O_NOFOLLOW`` so that a symlink planted between
+    this check and the write still cannot be followed.
+    """
+    if not isinstance(relpath, str) or not relpath.strip():
+        raise DocScanError("report path must be a non-empty repository-relative path")
+    if "\0" in relpath or "\\" in relpath:
+        raise DocScanError(f"report path is not a safe repository-relative path: {relpath!r}")
+    if relpath.startswith("/") or PurePosixPath(relpath).is_absolute() or Path(relpath).is_absolute():
+        raise DocScanError(f"report path must be relative, not absolute: {relpath!r}")
+
+    parts = [part for part in PurePosixPath(relpath).parts if part != "."]
+    if any(part == ".." for part in parts):
+        raise DocScanError(f"report path may not traverse upwards: {relpath!r}")
+    if len(parts) < 2 or parts[0] != REPORT_DIR_RELPATH:
+        raise DocScanError(
+            f"report path must name a file under {REPORT_DIR_RELPATH}/: {relpath!r}"
+        )
+
+    if not root.is_dir():
+        raise DocScanError(f"repository root is not a directory: {root}")
+    walked = root
+    for index, part in enumerate(parts):
+        walked = walked / part
+        so_far = "/".join(parts[: index + 1])
+        try:
+            status = walked.lstat()
+        except FileNotFoundError:
+            # Nothing exists from here down, so nothing below can be a symlink.
+            break
+        except OSError as exc:
+            raise DocScanError(f"cannot inspect report path component {so_far}: {exc}") from exc
+        if stat.S_ISLNK(status.st_mode):
+            raise DocScanError(f"refusing to write through a symlink: {so_far}")
+        if index == len(parts) - 1:
+            if not stat.S_ISREG(status.st_mode):
+                raise DocScanError(f"report destination is not a regular file: {so_far}")
+        elif not stat.S_ISDIR(status.st_mode):
+            raise DocScanError(f"report path component is not a directory: {so_far}")
+    return root.joinpath(*parts)
+
+
 def write_report(root: Path, report: Mapping[str, Any], *, relpath: str = REPORT_RELPATH) -> Path:
-    destination = root / relpath
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    destination = resolve_report_destination(root, relpath)
+    parent = destination.parent
+    parent.mkdir(parents=True, exist_ok=True)
+    if parent.is_symlink() or not parent.is_dir():
+        raise DocScanError(f"report directory is not a plain directory: {parent}")
+    payload = json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        handle = os.open(destination, flags, 0o644)
+    except OSError as exc:
+        raise DocScanError(f"cannot open report destination {destination}: {exc}") from exc
+    with os.fdopen(handle, "w", encoding="utf-8") as stream:
+        stream.write(payload)
     return destination
 
 
@@ -1517,7 +1587,11 @@ def _build_parser() -> argparse.ArgumentParser:
     scan_parser = subparsers.add_parser(
         "scan", help="run the fail-closed reference scan and write the report"
     )
-    scan_parser.add_argument("--output", default=REPORT_RELPATH, help="repo-relative report path")
+    scan_parser.add_argument(
+        "--output",
+        default=REPORT_RELPATH,
+        help=f"report path, which must be a repository-relative file under {REPORT_DIR_RELPATH}/",
+    )
 
     subparsers.add_parser(
         "validate-registry",
@@ -1532,6 +1606,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     root = Path(args.repo_root).resolve()
     try:
         if args.command == "scan":
+            # Validate the write target before doing any work, so an illegal
+            # destination cannot even reach the point of having bytes to write.
+            resolve_report_destination(root, args.output)
             report = build_report(root)
             destination = write_report(root, report, relpath=args.output)
             summary = {

@@ -468,6 +468,95 @@ def test_the_cli_writes_the_report_when_the_preconditions_hold(tmp_path: Path) -
 
 
 # --------------------------------------------------------------------------
+# the write primitive: .prune/ or nothing
+# --------------------------------------------------------------------------
+
+
+def _guide_bytes(root: Path) -> bytes:
+    return (root / "GUIDE.md").read_bytes()
+
+
+@pytest.mark.parametrize(
+    "output",
+    [
+        "GUIDE.md",
+        "data/repository_governance/doc_classes.json",
+        "../escaped.json",
+        ".prune/../GUIDE.md",
+        ".prune/../../escaped.json",
+        ".prune",
+        "",
+    ],
+)
+def test_a_report_target_outside_the_prune_directory_is_refused(
+    tmp_path: Path, output: str
+) -> None:
+    root = make_repo(tmp_path)
+    before = _guide_bytes(root)
+    exit_code = scan.main(["--repo-root", str(root), "scan", "--output", output])
+    assert exit_code == 1
+    assert _guide_bytes(root) == before
+    assert not (root / scan.REPORT_RELPATH).exists()
+    assert _git(root, "status", "--porcelain") == ""
+
+
+def test_an_absolute_report_target_is_refused(tmp_path: Path) -> None:
+    root = make_repo(tmp_path)
+    victim = tmp_path / "outside.json"
+    victim.write_text("untouched\n", encoding="utf-8")
+    exit_code = scan.main(["--repo-root", str(root), "scan", "--output", str(victim)])
+    assert exit_code == 1
+    assert victim.read_text(encoding="utf-8") == "untouched\n"
+
+
+def test_a_symlinked_report_file_is_refused(tmp_path: Path) -> None:
+    root = make_repo(tmp_path)
+    before = _guide_bytes(root)
+    prune = root / scan.REPORT_DIR_RELPATH
+    prune.mkdir()
+    (prune / "docs_reference_report.json").symlink_to(root / "GUIDE.md")
+    exit_code = scan.main(["--repo-root", str(root), "scan"])
+    assert exit_code == 1
+    assert _guide_bytes(root) == before
+    assert (prune / "docs_reference_report.json").is_symlink()
+
+
+def test_a_symlinked_prune_directory_is_refused(tmp_path: Path) -> None:
+    root = make_repo(tmp_path)
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    (root / scan.REPORT_DIR_RELPATH).symlink_to(elsewhere, target_is_directory=True)
+    exit_code = scan.main(["--repo-root", str(root), "scan"])
+    assert exit_code == 1
+    assert list(elsewhere.iterdir()) == []
+
+
+def test_a_symlinked_nested_report_directory_is_refused(tmp_path: Path) -> None:
+    root = make_repo(tmp_path)
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    prune = root / scan.REPORT_DIR_RELPATH
+    prune.mkdir()
+    (prune / "nested").symlink_to(elsewhere, target_is_directory=True)
+    exit_code = scan.main(["--repo-root", str(root), "scan", "--output", ".prune/nested/out.json"])
+    assert exit_code == 1
+    assert list(elsewhere.iterdir()) == []
+
+
+def test_a_legal_nested_report_target_under_prune_is_written(tmp_path: Path) -> None:
+    root = make_repo(tmp_path)
+    exit_code = scan.main(
+        ["--repo-root", str(root), "scan", "--output", ".prune/history/run.json"]
+    )
+    assert exit_code == 0
+    written = root / ".prune" / "history" / "run.json"
+    assert json.loads(written.read_text(encoding="utf-8"))["schema_version"] == (
+        scan.REPORT_SCHEMA_VERSION
+    )
+    assert _git(root, "status", "--porcelain", "--untracked-files=no") == ""
+
+
+# --------------------------------------------------------------------------
 # shared output contract
 # --------------------------------------------------------------------------
 
