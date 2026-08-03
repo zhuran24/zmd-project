@@ -10,7 +10,14 @@
 1. 三层各自能被命中、层名与路径都报出来;
 2. 全不命中时 exit 1 且把查过哪几层说清;
 3. read/search 未命中时提示 find;
-4. find 全程只读:memory.db 字节不变(含 -wal/-shm 不落地)。
+4. find 全程零文件系统足迹:**WAL 模式**库(生产同构)查完 -wal / -shm 都不落地、
+   主库字节不变,连目录本身 0555 只读都照样查得动;
+5. 层隔离:第一层炸掉只降级成一行警告,其余两层照常汇总。
+
+第 4/5 两条是 2026-08-03 审查打回来的:上一版 fixture 造的是 DELETE 模式最小库,
+只比主库 sha256 又只看 -wal,把 `mode=ro` 会新建 -wal/-shm、在只读目录直接
+"attempt to write a readonly database" 这件事整个漏过去了;三次 hits.extend 之间
+也没有 try/except,首层一炸后两层的命中一起消失。
 
 全部用 tmp fixture 造的库/目录,不碰真实 memory.db 与真实卡片目录。
 """
@@ -18,6 +25,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import os
 import sqlite3
 import subprocess
 import sys
@@ -43,9 +51,18 @@ def _mem_module():
 
 @pytest.fixture()
 def layers(tmp_path):
-    """A three-layer fixture: tiny sqlite db + vnext cards dir + file-memory dir."""
-    db = tmp_path / "memory.db"
+    """A three-layer fixture: tiny sqlite db + vnext cards dir + file-memory dir.
+
+    The db is deliberately in **WAL** mode, like the real `cc_memory/memory.db`
+    (`connect()` sets `PRAGMA journal_mode = WAL`). Journal mode is the whole
+    difference between "read-only" and "leaves no trace": a DELETE-mode fixture
+    can never reproduce the `-wal`/`-shm` sidecars a `mode=ro` open creates.
+    """
+    db_dir = tmp_path / "db"
+    db_dir.mkdir()
+    db = db_dir / "memory.db"
     con = sqlite3.connect(db)
+    con.execute("PRAGMA journal_mode = WAL")
     con.execute("CREATE TABLE entries (id TEXT PRIMARY KEY, title TEXT)")
     con.execute("CREATE TABLE facts (id TEXT PRIMARY KEY, value TEXT)")
     con.execute("CREATE TABLE aliases (alias TEXT PRIMARY KEY, target_type TEXT, target_id TEXT)")
@@ -145,12 +162,47 @@ def test_find_tolerates_missing_layer_directories(layers, tmp_path):
 
 
 def test_find_never_writes_to_the_db(layers):
-    before = hashlib.sha256(layers["db"].read_bytes()).hexdigest()
+    db = layers["db"]
+    before = hashlib.sha256(db.read_bytes()).hexdigest()
     assert _find(layers, "only-in-sqlite").returncode == 0
     assert _find(layers, "nothing-anywhere").returncode == 1
-    after = hashlib.sha256(layers["db"].read_bytes()).hexdigest()
+    after = hashlib.sha256(db.read_bytes()).hexdigest()
     assert before == after
-    assert not (layers["db"].parent / "memory.db-wal").exists()
+    # 零侧车:-wal 和 -shm 都不许被创建出来(`mode=ro` 在 WAL 库上两个都建)。
+    leftovers = sorted(p.name for p in db.parent.iterdir() if p.name != db.name)
+    assert leftovers == [], f"find 在 WAL 库旁留下了侧车文件: {leftovers}"
+
+
+def test_find_works_when_the_db_directory_is_read_only(layers):
+    """0555 目录:`mode=ro` 会直接 'attempt to write a readonly database'。"""
+    db_dir = layers["db"].parent
+    os.chmod(db_dir, 0o555)
+    try:
+        result = _find(layers, "only-in-sqlite")
+        assert result.returncode == 0, result.stdout + result.stderr
+        assert "entry:only-in-sqlite" in result.stdout
+        assert "查不了" not in result.stdout, "只读目录不该把 cc_memory 层整层降级掉"
+    finally:
+        os.chmod(db_dir, 0o755)
+    assert sorted(p.name for p in db_dir.iterdir()) == ["memory.db"]
+
+
+def test_find_reports_other_layers_when_the_sqlite_layer_explodes(layers):
+    """首层炸掉 = 一行警告 + 其余两层照常汇总(走完三层是硬语义)。"""
+    layers["db"].write_bytes(b"this is not a sqlite database at all")
+    result = _find(layers, "only-in-vnext")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "cc_memory 层查不了" in result.stdout
+    assert "cc_memory_vnext" in result.stdout
+    assert "only-in-vnext.md" in result.stdout
+
+
+def test_find_still_exits_1_when_a_layer_explodes_and_nothing_matches(layers):
+    layers["db"].write_bytes(b"this is not a sqlite database at all")
+    result = _find(layers, "nothing-anywhere")
+    assert result.returncode == 1
+    assert "cc_memory 层查不了" in result.stdout
+    assert "no layer has" in result.stdout
 
 
 def test_read_and_search_misses_point_at_find():

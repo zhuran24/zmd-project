@@ -263,13 +263,59 @@ def connect(db: Path = DEFAULT_DB) -> sqlite3.Connection:
 
 
 def connect_readonly(db: Path = DEFAULT_DB) -> sqlite3.Connection:
-    """Open the memory DB for diagnostics that must not mutate SQLite state."""
+    """Open the memory DB for diagnostics that must not mutate SQLite state.
+
+    `mode=ro` blocks writes to the *data*, not to the filesystem: opening a
+    WAL-mode database this way still creates `memory.db-wal` / `memory.db-shm`
+    beside it, and on a read-only directory it fails outright with "attempt to
+    write a readonly database". Callers that need a genuinely zero-footprint
+    read want `connect_immutable()`.
+    """
     db = Path(db)
     if not db.exists():
         raise SystemExit(f"memory db not found: {db}")
     con = sqlite3.connect(db.resolve().as_uri() + "?mode=ro", uri=True)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
+    return con
+
+
+def connect_immutable(db: Path) -> sqlite3.Connection:
+    """Open the memory DB with zero filesystem footprint (`immutable=1`).
+
+    Why `immutable=1` and not `mode=ro`, measured 2026-08-03 on a WAL-mode
+    database matching production shape:
+
+    * `mode=ro`   -> creates `memory.db-wal` (0 B) and `memory.db-shm` (32 KB);
+                    on a 0555 directory it raises OperationalError
+                    "attempt to write a readonly database".
+    * `immutable=1` -> no sidecar files at all, and it reads fine out of a 0555
+                    directory. SQLite is told the file cannot change, so it skips
+                    locking and the shared-memory index entirely.
+
+    The tradeoff is real and one-directional: `immutable=1` also skips the WAL,
+    so rows a *concurrent writer* has committed but not yet checkpointed are
+    invisible (same probe: the immutable reader saw the checkpointed row only,
+    the `mode=ro` reader saw both). We take that deal here because this opener
+    serves `find`, a locator — its whole answer is "which layer holds this id",
+    and an id that was created seconds ago in another process is the one case
+    where the user already knows where it is. It also lands on the right side of
+    where cc_memory is heading: the layer is being frozen into a read-only
+    archive, so "the file cannot change" is about to be literally true. Anything
+    that must see live writes (`connect()`, or `connect_readonly()` for
+    diagnostics run beside a writer) must not use this opener.
+
+    Falls back to `mode=ro` if the immutable open itself fails, so an
+    unexpected SQLite build/VFS still answers rather than losing the layer.
+    """
+    db = Path(db)
+    uri = db.resolve().as_uri()
+    try:
+        con = sqlite3.connect(uri + "?immutable=1", uri=True)
+        con.execute("SELECT 1")
+    except sqlite3.Error:
+        con = sqlite3.connect(uri + "?mode=ro", uri=True)
+    con.row_factory = sqlite3.Row
     return con
 
 
@@ -2586,12 +2632,18 @@ def _find_display_path(path: Path) -> str:
 
 
 def _find_in_cc_memory(db: Path, needle: str, limit: int) -> list[tuple[str, str, str]]:
-    """Read-only id lookup in the SQLite layer. Never opens the db for writing."""
+    """Read-only id lookup in the SQLite layer.
+
+    Uses `connect_immutable()` so the lookup leaves nothing behind at all — not
+    even the `-wal`/`-shm` sidecars a plain `mode=ro` open creates — and still
+    works when the directory itself is read-only. See that function for the
+    concurrent-writer tradeoff this buys.
+    """
     hits: list[tuple[str, str, str]] = []
     db = Path(db)
     if not db.exists():
         return hits
-    con = connect_readonly(db)
+    con = connect_immutable(db)
     try:
         resolved = resolve_node(con, needle)
         if resolved:
@@ -2634,15 +2686,33 @@ def _find_in_markdown_dir(directory: Path, needle: str, layer: str, limit: int) 
 
 
 def cmd_find(args: argparse.Namespace) -> int:
-    """Locate an id across all three memory layers (read-only, writes nothing)."""
+    """Locate an id across all three memory layers (read-only, writes nothing).
+
+    Walking all three layers is the *point* of this command — the 40-minute hunt
+    it exists to prevent was someone looking in one layer, believing the miss,
+    and stopping. So each layer gets its own guard: a layer that blows up
+    degrades to one warning line and the other two still report. A shared
+    try/except would have let a corrupt `memory.db` hide a card that was sitting
+    in `cc_memory_vnext/cards/` the whole time.
+    """
     needle = str(args.node).strip()
     if not needle:
         print("find: empty id")
         return 1
     hits: list[tuple[str, str, str]] = []
-    hits.extend(_find_in_cc_memory(args.db, needle, args.limit))
-    hits.extend(_find_in_markdown_dir(Path(args.cards_dir), needle, "cc_memory_vnext", args.limit))
-    hits.extend(_find_in_markdown_dir(Path(args.file_memory_dir), needle, "file_memory", args.limit))
+    warnings: list[str] = []
+    layers: list[tuple[str, Any]] = [
+        ("cc_memory", lambda: _find_in_cc_memory(args.db, needle, args.limit)),
+        ("cc_memory_vnext", lambda: _find_in_markdown_dir(Path(args.cards_dir), needle, "cc_memory_vnext", args.limit)),
+        ("file_memory", lambda: _find_in_markdown_dir(Path(args.file_memory_dir), needle, "file_memory", args.limit)),
+    ]
+    for label, probe in layers:
+        try:
+            hits.extend(probe())
+        except (Exception, SystemExit) as exc:  # noqa: BLE001 - one bad layer must not hide the others
+            warnings.append(f"! {label} 层查不了,已跳过(其余层照常): {type(exc).__name__}: {exc}")
+    for warning in warnings:
+        print(warning)
     if not hits:
         print(f"find: no layer has {needle!r}")
         print("  查过: cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 memory/*.md")
