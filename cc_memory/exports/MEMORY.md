@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 4
-- entries: 11
+- entries: 12
 - hard edges: 7
 - pending relation suggestions: 3
 
@@ -25,7 +25,7 @@ python cc_memory/mem.py boot
 - `fact-generated-memory-md-is-view` — cc_memory/exports/MEMORY.md 由 memory.db 生成, 可删可重建, 禁止手改当真相源。
 - `fact-hard-edge-soft-link-separation` — DEPENDS_ON/DERIVED_FROM/SUPERSEDES/CONTRADICTS 是硬边触发传播; MENTIONS/RELATED_TO/SUPPORTS 只帮助检索和阅读。
 - `fact-impact-before-memory-change` — 改 fact 或 entry 前先跑 impact/read, 只重写硬依赖影响面。
-- `fact-single-source-memory-db` — cc_memory/memory.db 是唯一活记忆真相; Markdown exports 和 archive 都不是源状态。
+- `fact-single-source-memory-db` — cc_memory/memory.db 2026-08-03 起为只读档案(owner 拍板),不再是活记忆真相源;活记忆=文件记忆层(harness memory)+cc_memory_vnext 卡。exports 仍是生成视图。
 
 ## Entries
 
@@ -35,5 +35,6 @@ python cc_memory/mem.py boot
 - `batch-c-leftover-day-20260714` — 门6 prod 演习揭示共享 snapshot 构建(F1 投影 coercions=False)在 frozen 数据 int orientation 上 raise→prod 整条 attach fail-closed(所有族含 power),不止 F1/F6;新增 prod 形态适配批插 B6 前…
 - `codex-needs-explicit-read-memory` — Codex 记忆 2026-06: RULE, 子代理不会自动读 CLAUDE/cc_memory, 提示词要写明。
 - `cut-framework-stage-b-current-20260712` — 07-12 文档实态外审 F12 消解:F1/F6/F7=COMPILABLE typed 链唯一写 master;F5=ShadowValidated 无 lowering(真 adapter verifier 前 fail-closed);F2/F3/F4/F9=LEGACY_DIAGNOSTIC…
+- `frozen-archive-map-20260803` — 冻结=不再写入(仅档案订正);迁出3处/原地存档12处;跨层入口 mem.py find;依据=剪枝v2使用普查
 - `p1-3-batch1-m5-current-20260712` — 07-12 文档实态外审 F12 消解:Batch1 完成、C1 默认、首解存在性关闭、M5 默认参数病态证伪(smoke#4 死于旧内存条款,~60G 固有尖峰);单跑铁律保留;不要再申请 owner 拍板或把性能当可行性 blocker
 - `test-lane-current-20260712` — 取代 07-04 提速条目的快照数字(5.5min/slow 19/60 sinks 已过时);批次 commit 的 cuts N 都是当时快照;慢 lane 解释器 flake SOP=pytest-forked,xdist 禁用
