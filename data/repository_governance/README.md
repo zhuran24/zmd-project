@@ -1,5 +1,28 @@
 # Repository governance ledger
 
+Two registries live here. `code_assets.json` governs code assets; `doc_classes.json` governs
+documents. Both are descriptive projections: neither can authorize an edit, close a phase, or
+certify anything.
+
+## `doc_classes.json` — document classification
+
+`doc_classes.json` names which tracked markdown files the prune-system docs adapter
+(`devtools/docs_reference_scan.py`) may look at, and how. Three classes: `locked` documents are
+never scanned at all; `historical` documents can only ever produce FYI observations, because a
+stale reference inside dated evidence is a property of the evidence; `living` documents are the
+only ones whose findings become cleanup candidates. A tracked markdown file inside the declared
+scan scope that matches no rule is reported as `unregistered_doc`, and every tracked markdown file
+must be either in scope or listed under `scan_scope.out_of_scope_notes` with a reason — there is no
+silent third state.
+
+To add a document, register it in `rules` (or widen `scan_scope`), then run
+`python devtools/docs_reference_scan.py validate-registry`, which fails closed if a registered
+member is untracked, a list is unsorted, or a markdown file has fallen through the coverage
+invariant. Changing a classification is an owner-visible judgement, not a mechanical fix:
+demoting a document to `historical` permanently exempts it from cleanup candidates.
+
+## `code_assets.json` — code asset ledger
+
 `code_assets.json` and its adjacent schema are the repository code-asset governance ledger. The
 `read_only_historical_evidence_roots` entries name non-authorizing, read-only `.artifacts/<root>/`
 collection boundaries whose contents remain Git-visible but are not inspected or counted as code assets. A registration
