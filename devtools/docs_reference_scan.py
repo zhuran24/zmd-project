@@ -89,15 +89,19 @@ _LINK_TARGET_RE = re.compile(r"\[[^\]\n]*\]\(\s*([^)\s]+)")
 _FENCE_RE = re.compile(r"^\s{0,3}(?:```|~~~)")
 _HEADING_RE = re.compile(r"^\s{0,3}(#{1,6})\s+(.*)$")
 
-_FILE_LINE_RE = re.compile(r"^(?P<path>[^\s:]+/[^\s:]+):(?P<start>\d+)(?:-(?P<end>\d+))?$")
+_FILE_LINE_RE = re.compile(r"^(?P<path>[^\s:]+):(?P<start>\d+)(?:-(?P<end>\d+))?$")
 _SYMBOL_RE = re.compile(
     r"^(?P<qualifier>(?:[A-Za-z_][A-Za-z0-9_]*\.)*)(?P<name>[A-Za-z_][A-Za-z0-9_]*)\(\)$"
 )
 _COMMIT_HASH_RE = re.compile(r"^[0-9a-f]{7,40}$")
 _SECTION_RE = re.compile(r"§\s*(?P<section>[0-9A-Za-z]+(?:[.\-][0-9A-Za-z]+)*)")
-_HEADING_NUMBER_RE = re.compile(r"^(?P<id>[0-9]+[a-z]?(?:\.[0-9]+[a-z]?)*)[.．]?(?:\s|$)")
-_PATH_CHARS_RE = re.compile(r"^[0-9A-Za-z_./*?+\-㐀-鿿]+$")
+# Section suffixes are letters, either case: this repository's most cited
+# headings are ``## 1A.``, ``## 2B.``, ``### 3C.`` alongside ``### 0b.``.
+_HEADING_NUMBER_RE = re.compile(r"^(?P<id>[0-9]+[A-Za-z]?(?:\.[0-9]+[A-Za-z]?)*)[.．]?(?:\s|$)")
+_PATH_CHARS_RE = re.compile(r"^[0-9A-Za-z_./#*?+\-㐀-鿿]+$")
 _SUFFIX_RE = re.compile(r"^\.[A-Za-z0-9]+$")
+_ANCHOR_DEDUP_SUFFIX_RE = re.compile(r"-\d+$")
+_SETEXT_UNDERLINE_RE = re.compile(r"^\s{0,3}(?:=+|-+)\s*$")
 
 _TRAILING_PUNCTUATION = "，。、；：！？）】」》,;:!?)]}>”’"
 _LEADING_PUNCTUATION = "（【「《([{<“‘"
@@ -849,12 +853,56 @@ def _normalize_path_token(raw: str) -> str | None:
         return None
     if token.startswith("/") or "\\" in token or "\0" in token:
         return None
-    # A segment made only of dots is either a traversal or a prose ellipsis
-    # placeholder such as ``docs/research/.../external_review/``.  Neither is a
-    # format-explicit reference to a real path.
-    if any(part and set(part) == {"."} for part in token.split("/")):
+    # ``docs/research/.../external_review/`` is a prose ellipsis placeholder,
+    # not a path.  ``./`` and ``../`` are ordinary relative-path tokens and
+    # standard Markdown link syntax, so only a literal three-or-more dot
+    # segment is rejected.
+    if any(len(part) >= 3 and set(part) == {"."} for part in token.split("/")):
         return None
     return token
+
+
+def _normalize_relative(token: str) -> str | None:
+    """Lexically resolve ``.``/``..`` inside a repository-relative token.
+
+    Returns ``None`` when the token would climb above the repository root.
+    This is purely lexical on purpose: the scanner never resolves symlinks, so
+    it can never be talked into reading outside the tree.
+    """
+    parts: list[str] = []
+    for part in PurePosixPath(token).parts:
+        if part in {"", "."}:
+            continue
+        if part == "..":
+            if not parts:
+                return None
+            parts.pop()
+            continue
+        parts.append(part)
+    if not parts:
+        return None
+    return "/".join(parts)
+
+
+def _document_candidates(relpath: str, token: str) -> tuple[str, ...]:
+    """Where a Markdown link in ``relpath`` may point, most likely first.
+
+    Markdown resolves a relative link against the *citing* document, so that
+    order comes first; the repository root is kept as a fallback because this
+    repository's prose also cites root-relative paths in link syntax.  Getting
+    the order backwards silently resolves ``docs/GUIDE.md`` → ``PLAN.md`` to
+    the root file and misses a real dead link to ``docs/PLAN.md``.
+    """
+    candidates: list[str] = []
+    parent = PurePosixPath(relpath).parent
+    if str(parent) not in {"", "."}:
+        local = _normalize_relative(f"{parent}/{token}")
+        if local is not None:
+            candidates.append(local)
+    root_relative = _normalize_relative(token)
+    if root_relative is not None and root_relative not in candidates:
+        candidates.append(root_relative)
+    return tuple(candidates)
 
 
 # --------------------------------------------------------------------------
@@ -942,6 +990,9 @@ class DocumentScanner:
         self.tracked = tuple(tracked)
         self.tracked_set = set(tracked)
         self.top_level_dirs = {path.split("/", 1)[0] for path in tracked if "/" in path}
+        self.root_level_suffixes = {
+            PurePosixPath(path).suffix for path in tracked if "/" not in path
+        } - {""}
         reference_scan = registry.reference_scan
         self.markers = tuple(reference_scan["context_suppression_markers"])
         self.symbol_ignore = frozenset(reference_scan["symbol_reference_ignore"])
@@ -957,7 +1008,7 @@ class DocumentScanner:
         self.symbols = build_symbol_universe(root, scope.symbol_sources)
         self.suppressions = Suppressions()
         self.consulted: set[str] = set()
-        self._heading_cache: dict[str, tuple[frozenset[str], frozenset[str]]] = {}
+        self._heading_cache: dict[str, AnchorIndex] = {}
         self._line_count_cache: dict[str, int | None] = {}
 
     # -- helpers ---------------------------------------------------------
@@ -1000,11 +1051,29 @@ class DocumentScanner:
         return token in self.tracked_set or (self.root / token).exists()
 
     def _is_repo_path_token(self, token: str) -> bool:
-        if "/" not in token:
-            return False
         if not _PATH_CHARS_RE.fullmatch(token):
             return False
-        return token.split("/", 1)[0] in self.top_level_dirs
+        resolved = _normalize_relative(token)
+        if resolved is None or "/" not in resolved:
+            return False
+        return resolved.split("/", 1)[0] in self.top_level_dirs
+
+    def _is_file_line_target(self, path: str) -> bool:
+        """Is ``path`` in ``path:line`` shaped like a file this repository has?
+
+        A repository-root file is just as format-explicit as a nested one, so
+        ``main.py:123`` is in scope.  The guard against reading ``9.16:0`` or a
+        clock time as a file reference is the suffix: it must be one that some
+        tracked root-level file actually uses.
+        """
+        if "#" in path or not _PATH_CHARS_RE.fullmatch(path):
+            return False
+        suffix = PurePosixPath(path).suffix
+        if not _SUFFIX_RE.fullmatch(suffix):
+            return False
+        if "/" in path:
+            return self._is_repo_path_token(path)
+        return suffix in self.root_level_suffixes
 
     def _allowlisted_absent(self, token: str) -> str | None:
         if token in self.external_artifacts:
@@ -1032,30 +1101,16 @@ class DocumentScanner:
                     self._line_count_cache[relpath] = count if raw.endswith(b"\n") else count + 1
         return self._line_count_cache[relpath]
 
-    def _anchors(self, relpath: str) -> tuple[frozenset[str], frozenset[str]]:
+    def _anchors(self, relpath: str) -> AnchorIndex:
         self._consult(relpath)
         if relpath not in self._heading_cache:
-            text = _read_text(self.root / relpath, relpath)
-            slugs: set[str] = set()
-            sections: set[str] = set()
-            for line in text.split("\n"):
-                match = _HEADING_RE.match(line)
-                if match is None:
-                    continue
-                heading = match.group(2).strip()
-                slugs.add(_slugify(heading))
-                sections.update(_heading_section_ids(heading))
-            self._heading_cache[relpath] = (frozenset(slugs), frozenset(sections))
+            self._heading_cache[relpath] = _anchor_index(
+                _read_text(self.root / relpath, relpath)
+            )
         return self._heading_cache[relpath]
 
     def _resolve_document(self, relpath: str, token: str) -> str | None:
-        candidates = [token]
-        parent = PurePosixPath(relpath).parent
-        if str(parent) not in {"", "."}:
-            candidates.append(str(parent / token))
-        for candidate in candidates:
-            if ".." in PurePosixPath(candidate).parts:
-                continue
+        for candidate in _document_candidates(relpath, token):
             self._consult(candidate)
             if (self.root / candidate).is_file():
                 return candidate
@@ -1091,11 +1146,7 @@ class DocumentScanner:
         raw = token.text.strip()
 
         file_line = _FILE_LINE_RE.match(raw)
-        if (
-            file_line is not None
-            and self._is_repo_path_token(file_line.group("path"))
-            and _SUFFIX_RE.fullmatch(PurePosixPath(file_line.group("path")).suffix)
-        ):
+        if file_line is not None and self._is_file_line_target(file_line.group("path")):
             return self._scan_file_line(relpath, document_class, token, context, file_line)
 
         symbol = _SYMBOL_RE.match(raw)
@@ -1122,10 +1173,17 @@ class DocumentScanner:
             self.suppressions.not_format_explicit += 1
             return None
 
-        if not self._is_repo_path_token(normalized):
+        # ``#`` is only meaningful as a Markdown heading fragment, handled
+        # above; anywhere else it makes the token something other than a plain
+        # repository path, so no judgement is offered.
+        if "#" in normalized or not self._is_repo_path_token(normalized):
             self.suppressions.not_format_explicit += 1
             return None
-        return self._scan_repo_path(relpath, document_class, token, context, normalized)
+        target = _normalize_relative(normalized)
+        if target is None:
+            self.suppressions.not_format_explicit += 1
+            return None
+        return self._scan_repo_path(relpath, document_class, token, context, target)
 
     def _scan_repo_path(
         self, relpath: str, document_class: str, token: Token, context: str, normalized: str
@@ -1299,8 +1357,8 @@ class DocumentScanner:
             )
         if not fragment:
             return None
-        slugs, _sections = self._anchors(resolved)
-        if _slugify(fragment) in slugs:
+        anchors = self._anchors(resolved)
+        if not anchors.checkable or _fragment_is_live(fragment, anchors):
             return None
         if self._suppressed_by_context(context):
             self.suppressions.context_marker += 1
@@ -1328,8 +1386,8 @@ class DocumentScanner:
             resolved = self._resolve_document(relpath, target_token.partition("#")[0])
             if resolved is None:
                 continue
-            _slugs, sections = self._anchors(resolved)
-            if section.lower() in sections:
+            anchors = self._anchors(resolved)
+            if not anchors.checkable or section.lower() in anchors.sections:
                 continue
             if self._suppressed_by_context(context):
                 self.suppressions.context_marker += 1
@@ -1347,6 +1405,69 @@ class DocumentScanner:
                 )
             )
         return findings
+
+
+@dataclass(frozen=True)
+class AnchorIndex:
+    """What a document offers as anchor targets, and whether we may judge it.
+
+    ``checkable`` is the honest half.  This scanner models ATX headings only,
+    so a document that also carries Setext headings or hand-written HTML
+    anchors has targets it cannot see.  For those documents it still answers
+    "this document does not exist" but declines to answer "this anchor does not
+    exist": a missed dead anchor costs nothing, a false one costs the reader's
+    trust in every other finding.
+    """
+
+    slugs: frozenset[str]
+    sections: frozenset[str]
+    checkable: bool
+
+
+def _anchor_index(text: str) -> AnchorIndex:
+    lines = text.split("\n")
+    slugs: set[str] = set()
+    sections: set[str] = set()
+    for line in lines:
+        match = _HEADING_RE.match(line)
+        if match is None:
+            continue
+        heading = match.group(2).strip()
+        slugs.add(_slugify(heading))
+        sections.update(_heading_section_ids(heading))
+    return AnchorIndex(
+        slugs=frozenset(slugs),
+        sections=frozenset(sections),
+        checkable=_anchors_are_checkable(lines, text),
+    )
+
+
+def _anchors_are_checkable(lines: Sequence[str], text: str) -> bool:
+    if "<a " in text or "{#" in text:
+        return False
+    for index in range(1, len(lines)):
+        previous = lines[index - 1]
+        if not previous.strip() or _HEADING_RE.match(previous):
+            continue
+        underline = lines[index].strip()
+        if len(underline) >= 3 and _SETEXT_UNDERLINE_RE.match(lines[index]):
+            return False  # a Setext heading, which this scanner does not model
+    return True
+
+
+def _fragment_is_live(fragment: str, index: AnchorIndex) -> bool:
+    """Conservative ``#fragment`` matching: under-report rather than over-report."""
+    if "%" in fragment:
+        # Percent-encoded anchors are not decoded here, so no judgement.
+        return True
+    slug = _slugify(fragment)
+    if not slug:
+        return True
+    if slug in index.slugs:
+        return True
+    # Repeated headings are disambiguated with a ``-1``/``-2`` suffix; treat
+    # those as live whenever the base slug exists.
+    return _ANCHOR_DEDUP_SUFFIX_RE.sub("", slug) in index.slugs
 
 
 def _heading_section_ids(heading: str) -> frozenset[str]:

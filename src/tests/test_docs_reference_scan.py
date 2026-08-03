@@ -267,6 +267,201 @@ def test_unregistered_document_in_scope_is_caught(tmp_path: Path) -> None:
 
 
 # --------------------------------------------------------------------------
+# anchors, fragments and relative links
+# --------------------------------------------------------------------------
+
+
+def _docs_registry() -> dict[str, Any]:
+    """The default registry, widened to a ``docs/`` family."""
+    registry = _default_registry()
+    registry["scan_scope"]["include_globs"] = ["*.md", "docs/*.md"]
+    registry["rules"].append(
+        {
+            "id": "docs_family",
+            "match": {"glob": "docs/*.md"},
+            "document_class": "living",
+            "rationale": "Nested living documents.",
+        }
+    )
+    registry["rules"].append(
+        {
+            "id": "root_plan",
+            "match": {"path": "PLAN.md"},
+            "document_class": "living",
+            "rationale": "Root-level plan.",
+        }
+    )
+    return registry
+
+
+def test_a_heading_fragment_link_to_a_missing_document_is_a_candidate(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nSee [the plan](PLAN.md#definitely-missing).\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "PLAN.md#definitely-missing")
+    ]
+    assert report["candidates"][0]["signals"] == ["referenced_document_does_not_exist"]
+
+
+def test_a_heading_fragment_that_no_heading_provides_is_a_candidate(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nSee [the record](HISTORY.md#no-such-heading).\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "HISTORY.md#no-such-heading")
+    ]
+    assert report["candidates"][0]["signals"] == ["referenced_heading_anchor_does_not_exist"]
+    assert report["candidates"][0]["evidence"]["detail"]["fragment"] == "no-such-heading"
+
+
+@pytest.mark.parametrize("fragment", ["history", "1-real", "history-1", "%E5%8E%86%E5%8F%B2"])
+def test_a_live_or_unjudgeable_heading_fragment_is_not_a_candidate(
+    tmp_path: Path, fragment: str
+) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": f"# Guide\n\nSee [the record](HISTORY.md#{fragment}).\n"},
+    )
+    assert build(root)["candidates"] == []
+
+
+def test_setext_headings_switch_off_anchor_checking_but_not_missing_document_checking(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={
+            "HISTORY.md": "History\n=======\n\nOld business\n------------\n\nNothing.\n",
+            "GUIDE.md": (
+                "# Guide\n\n"
+                "See [the record](HISTORY.md#no-such-heading) and [the plan](PLAN.md#x).\n"
+            ),
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [("dead_doc_anchor", "GUIDE.md", "PLAN.md#x")]
+
+
+def test_a_relative_link_resolves_against_the_citing_document_before_the_root(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(
+        tmp_path,
+        registry=_docs_registry(),
+        documents={
+            "PLAN.md": "# Plan\n\n## 1. present at the root\n",
+            "docs/PLAN.md": "# Nested plan\n\n## 2. only section two\n",
+            "docs/GUIDE2.md": "# Nested guide\n\nRuling recorded in `PLAN.md` §1.\n",
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [("dead_doc_anchor", "docs/GUIDE2.md", "PLAN.md §1")]
+    assert report["candidates"][0]["evidence"]["detail"]["target"] == "docs/PLAN.md"
+
+
+def test_a_parent_relative_markdown_link_is_scanned(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        registry=_docs_registry(),
+        documents={
+            "PLAN.md": "# Plan\n",
+            "docs/PLAN.md": "# Nested plan\n",
+            "docs/GUIDE2.md": "# Nested guide\n\nUp one: [gone](../MISSING.md).\n",
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_doc_anchor", "docs/GUIDE2.md", "../MISSING.md")
+    ]
+
+
+def test_a_dot_slash_relative_markdown_link_is_scanned(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nRight here: [gone](./MISSING.md).\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [("dead_doc_anchor", "GUIDE.md", "./MISSING.md")]
+
+
+def test_a_dot_slash_repository_path_is_scanned(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nRun `./scripts/vanished_tool.py`.\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/vanished_tool.py")
+    ]
+
+
+def test_a_literal_ellipsis_placeholder_is_still_not_a_reference(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nEvidence lands in `docs/research/.../review/`.\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["not_format_explicit"] == 1
+
+
+def test_an_uppercase_section_number_heading_is_recognised(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={
+            "HISTORY.md": "# History\n\n## 1A. Certified Theorem Scope\n\n### 3C. Boundary\n",
+            "GUIDE.md": "# Guide\n\nScope in `HISTORY.md` §1A, boundary in `HISTORY.md` §3C.\n",
+        },
+    )
+    assert build(root)["candidates"] == []
+
+    root_missing = make_repo(
+        tmp_path,
+        name="repo_missing",
+        documents={
+            "HISTORY.md": "# History\n\n## 1A. Certified Theorem Scope\n",
+            "GUIDE.md": "# Guide\n\nBoundary in `HISTORY.md` §9Z.\n",
+        },
+    )
+    assert flags(build(root_missing)["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "HISTORY.md §9Z")
+    ]
+
+
+def test_the_real_project_lock_uppercase_sections_are_recognised() -> None:
+    """The repository's most cited anchors are ``## 1A.`` / ``### 3C.`` shaped."""
+    text = (PROJECT_ROOT / "PROJECT_LOCK.md").read_text(encoding="utf-8")
+    index = scan._anchor_index(text)
+    assert index.checkable is True
+    assert {"1a", "2a", "2b", "3a", "3b", "3c"} <= index.sections
+
+
+def test_a_repository_root_file_line_reference_is_scanned(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nGuard lives at `HISTORY.md:4096`.\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [("dead_symbol_ref", "GUIDE.md", "HISTORY.md:4096")]
+    assert report["candidates"][0]["signals"] == ["referenced_line_range_is_outside_the_file"]
+
+
+def test_a_colon_number_token_with_no_repository_suffix_is_not_a_file_line_reference(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nortools `9.16:0` and clock `12:30`.\n"},
+    )
+    assert build(root)["candidates"] == []
+
+
+# --------------------------------------------------------------------------
 # negative cases: the three-premise exclusions, one at a time
 # --------------------------------------------------------------------------
 
