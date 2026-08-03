@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-08-02 (AB16 slimdown rework: retryable per-attempt execution, crash-recoverable append-only publication, campaign-global scientific-input anchoring, tracked-clean baseline self-bootstrap, ordinary-path launch, and explicit Gate1-owned schema reference; prior certified, W0, P1.2, and Stage B boundaries unchanged)
+**Updated**: 2026-08-03 (AB16 completed 16/16 after the R11 runner-lifetime lock repair; final classification v2 remains non-authorizing; prior certified, W0, P1.2, and Stage B boundaries unchanged)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -576,10 +576,13 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
 
 ### 3C. AB16 research-only experiment boundary
 
-- This boundary applies only to the prospective non-certified AB16 campaign
-  under `docs/research/noncert_cuts_ab16_20260724/`. AB16 inputs, gates,
-  attempts, results, replays, and classifications are research evidence only.
-  They do not enter §2 Certified Source of Truth or the `certified_exact` TCB.
+- This boundary applies only to the completed non-certified AB16 campaign under
+  `docs/research/noncert_cuts_ab16_20260724/`. Campaign root
+  `run-20260802T221714Z-r6` closed all 16 preregistered arms; the final EVAL and
+  terminal classification v2 are indexed by the 2026-08-03 row of
+  `docs/项目说明/00_master_roadmap.md`. AB16 inputs, gates, attempts, results,
+  replays, and classifications are research evidence only. They do not enter
+  §2 Certified Source of Truth or the `certified_exact` TCB.
 - The scientific preregistration is immutable and fixes exactly four cut
   configurations, matched `AB` and `BA` ordering, two fresh-process replicas
   per ordered pair, 16 serial single-worker arms, seed `2026072301`,
@@ -647,15 +650,17 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   `MemoryHigh=35 GiB`, `MemoryMax=39 GiB`, `MemorySwapMax=16 GiB`, and
   `RuntimeMaxSec=3600`. Launch uses ordinary absolute executable paths with
   fixed environments, timeouts, and return-code handling; retained-FD and
-  post-exec pathname/inode replacement defenses are retired. The intended
+  post-exec pathname/inode replacement defenses are retired. The
   production-scale exclusive lock set is:
   `/tmp/zmd-pj-codex-heavy-validation.lock`,
   `/run/user/1000/zmd_pj_prod_scale_solver.lock`, and
-  `/run/user/1000/zmd-pj-prod-scale-solve.lock`. The current controller owns
-  those flocks outside the transient unit, so controller death can release
-  them while the unit remains alive; direct `run_selected_arm()` also does not
-  acquire them. No real formal arm may launch until lock ownership is moved
-  into the unit lifetime or an equivalent owner-approved fix lands. These are
+  `/run/user/1000/zmd-pj-prod-scale-solve.lock`. The R11 repair in `0b8b343`
+  moved all three acquisitions into the validated transient-unit runner: the
+  runner takes `LOCK_EX|LOCK_NB` in fixed order and retains the descriptors for
+  its process lifetime, while the public `run_selected_arm()` entry requires
+  that exact unit context. This closed the former launch blocker before formal
+  execution. The r6 first-arm stopped-run EVAL later classified the remaining
+  blocker text as documentation drift, not a cause of that run's failure. These are
   resource/readiness controls, not scientific or production authority.
   Hostile same-UID process defense is outside the project threat model.
 - The surviving version-sensitive AB16 record cohort is declared in
