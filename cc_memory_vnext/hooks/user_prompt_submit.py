@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 """Thin UserPromptSubmit hook wrapper for zmem MVP-0.
 
-Not installed by this task. It reads hook JSON from stdin and prints L0+L1.
+Reads hook JSON from stdin and prints the L0+L1 packet. This hook IS wired in
+`.claude/settings.local.json` and runs on every real prompt, so every failure
+path here stays fail-open: any error means "print nothing", never a blocked
+prompt (`zmem context` failing prints a note to stderr and exits 0).
 """
 
 from __future__ import annotations
@@ -15,6 +18,27 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 ZMEM = ROOT / "zmem.py"
+
+# Prompts the harness generates for itself — subagent task notifications, slash
+# command plumbing, system notices. Nobody reads a memory packet attached to
+# those, and the 2026-08-03 usage census measured them as 56% of all UPS
+# injections. Skipping them is a pure token/noise cut: recall for real user
+# prompts is untouched, and skipping can only ever mean "inject nothing", which
+# is the same fail-open direction the rest of this hook already takes.
+MACHINE_PROMPT_PREFIXES = (
+    "[SYSTEM NOTIFICATION",
+    "<task-notification",
+    "<local-command",
+)
+
+
+def is_machine_prompt(prompt: str) -> bool:
+    """True when the whole prompt is one of the harness's own machine messages.
+
+    Anchored at the start on purpose: a user prompt that merely quotes one of
+    these markers further in must still get its packet.
+    """
+    return prompt.lstrip().startswith(MACHINE_PROMPT_PREFIXES)
 
 
 def _list(value: Any) -> list[str]:
@@ -41,8 +65,11 @@ def main() -> int:
         payload = json.loads(raw) if raw.strip() else {}
     except json.JSONDecodeError:
         payload = {"prompt": raw}
+    prompt = prompt_from_payload(payload)
+    if is_machine_prompt(prompt):
+        return 0
     frame = {
-        "prompt": prompt_from_payload(payload),
+        "prompt": prompt,
         "intents": _list(payload.get("intents")),
         "keywords": _list(payload.get("keywords")),
         "paths": _list(payload.get("paths")),
