@@ -759,10 +759,35 @@ def score_card(card_data: dict[str, Any], frame: dict[str, Any], dense_enabled: 
     return {"score": round(score, 6), "features": features}
 
 
+def card_snippet(card_data: dict[str, Any]) -> str:
+    """The payload one injected card carries into the packet.
+
+    Frontmatter ``summary`` is the field cards are *authored* to put the payload
+    in (card ``memory-payload-at-injection-point-not-circular`` says so
+    explicitly: "L1 自动注入给我看的就是它"). The previous implementation took
+    ``body.splitlines()[0]`` instead, which for every card whose body opens with
+    a markdown heading — or with a blank line — injected a heading marker or
+    nothing at all (2026-08-03 usage census: 24.2% of all injections carried a
+    title-only payload). Body text stays as the fallback for cards that have no
+    summary, now skipping blank lines and headings so the fallback is real prose.
+    """
+    meta = as_dict(card_data.get("meta"))
+    summary = str(meta.get("summary") or "").strip()
+    if summary:
+        # The packet renderer prints one snippet per line, so a block-scalar
+        # summary is folded back to a single line here.
+        return re.sub(r"\s*\n\s*", " ", summary)
+    for line in str(card_data.get("body", "")).splitlines():
+        text = line.strip()
+        if not text or text.startswith("#"):
+            continue
+        return text
+    return ""
+
+
 def card_packet_entry(card_data: dict[str, Any], layer: str, score_data: dict[str, Any], reason: str) -> dict[str, Any]:
     meta = card_data["meta"]
-    body = str(card_data.get("body", ""))
-    snippet = body.splitlines()[0] if body else ""
+    snippet = card_snippet(card_data)
     return {
         "id": meta.get("id"),
         "kind": meta.get("kind"),
