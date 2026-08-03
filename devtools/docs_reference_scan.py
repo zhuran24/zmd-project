@@ -1,0 +1,1518 @@
+#!/usr/bin/env python3
+"""Deterministic reference-integrity scanner for registered repository documents.
+
+This is the prune-system docs adapter (design v2 §1).  It answers exactly one
+question per finding: *does this reference still resolve against the repository
+as it is right now?*  Content, tone, duplication and staleness of narrative are
+deliberately out of scope — those belong to the advisory LLM lens, never here.
+
+Properties this module keeps, deliberately:
+
+* Pure standard library, read-only against the repository, no LLM, no network.
+  The only thing it writes is its own report under ``.prune/``.
+* Fail-closed self check.  A report may only be produced from ``main`` with the
+  scanned truth sources committed.  There is no override flag; a dirty or
+  branched tree gets a refusal and a non-zero exit, not a caveated report.
+* Every finding carries the byte-exact source line it came from, so a reader can
+  verify it without trusting this program.
+* The report is advisory.  Nothing in the repository consumes it, and producing
+  it authorizes no edit.  ``locked`` documents are never scanned at all and
+  ``historical`` documents can only ever reach the FYI section.
+
+The scanner intentionally under-reports.  Three exclusions inherited from the
+dead-reference postmortem apply to every flag: prose that is not a
+format-explicit reference is skipped, a reference whose surrounding paragraph is
+already talking about removal/history is suppressed, and paths that are absent by
+design (external artifacts, generated proof outputs) are allowlisted.
+"""
+
+from __future__ import annotations
+
+import argparse
+import ast
+import builtins
+import hashlib
+import json
+import os
+import re
+import subprocess
+import sys
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from functools import lru_cache
+from pathlib import Path, PurePosixPath
+from typing import Any, Mapping, Sequence
+
+ROOT = Path(__file__).resolve().parents[1]
+
+REGISTRY_RELPATH = "data/repository_governance/doc_classes.json"
+REPORT_RELPATH = ".prune/docs_reference_report.json"
+
+REGISTRY_SCHEMA_VERSION = "repository_doc_classes_v1"
+REPORT_SCHEMA_VERSION = "prune_docs_reference_report_v1"
+GENERATOR = "devtools/docs_reference_scan.py"
+GENERATOR_VERSION = "1"
+
+REQUIRED_BRANCH = "main"
+LAYER = "docs"
+CONFIDENCE = "deterministic"
+
+DOCUMENT_CLASSES = ("locked", "historical", "living")
+SUBJECT_CLASSES = frozenset({"historical", "living"})
+UNREGISTERED_CLASS = "unregistered"
+CANDIDATE_CLASSES = frozenset({"living", UNREGISTERED_CLASS})
+
+FLAGS = (
+    "dead_repo_path",
+    "dead_symbol_ref",
+    "dead_doc_anchor",
+    "dead_commit_hash",
+    "unregistered_doc",
+)
+
+_MATCH_SELECTORS = ("path", "prefix", "glob", "paths")
+
+_STDLIB_MODULES = frozenset(sys.stdlib_module_names)
+_BUILTIN_NAMES = frozenset(dir(builtins))
+
+_INLINE_CODE_RE = re.compile(r"(?<!`)`([^`\n]+)`(?!`)")
+_LINK_TARGET_RE = re.compile(r"\[[^\]\n]*\]\(\s*([^)\s]+)")
+_FENCE_RE = re.compile(r"^\s{0,3}(?:```|~~~)")
+_HEADING_RE = re.compile(r"^\s{0,3}(#{1,6})\s+(.*)$")
+
+_FILE_LINE_RE = re.compile(r"^(?P<path>[^\s:]+/[^\s:]+):(?P<start>\d+)(?:-(?P<end>\d+))?$")
+_SYMBOL_RE = re.compile(
+    r"^(?P<qualifier>(?:[A-Za-z_][A-Za-z0-9_]*\.)*)(?P<name>[A-Za-z_][A-Za-z0-9_]*)\(\)$"
+)
+_COMMIT_HASH_RE = re.compile(r"^[0-9a-f]{7,40}$")
+_SECTION_RE = re.compile(r"§\s*(?P<section>[0-9A-Za-z]+(?:[.\-][0-9A-Za-z]+)*)")
+_HEADING_NUMBER_RE = re.compile(r"^(?P<id>[0-9]+[a-z]?(?:\.[0-9]+[a-z]?)*)[.．]?(?:\s|$)")
+_PATH_CHARS_RE = re.compile(r"^[0-9A-Za-z_./*?+\-㐀-鿿]+$")
+_SUFFIX_RE = re.compile(r"^\.[A-Za-z0-9]+$")
+
+_TRAILING_PUNCTUATION = "，。、；：！？）】」》,;:!?)]}>”’"
+_LEADING_PUNCTUATION = "（【「《([{<“‘"
+
+
+class DocScanError(RuntimeError):
+    """A fail-closed docs-adapter error."""
+
+
+class SelfCheckRefusal(DocScanError):
+    """The generation preconditions were not met, so no report is produced."""
+
+
+# --------------------------------------------------------------------------
+# strict JSON + git plumbing
+# --------------------------------------------------------------------------
+
+
+def _reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise DocScanError(f"duplicate JSON key: {key!r}")
+        result[key] = value
+    return result
+
+
+def _reject_json_constant(value: str) -> None:
+    raise DocScanError(f"non-finite JSON constant: {value}")
+
+
+def _load_json_object(path: Path) -> dict[str, Any]:
+    try:
+        value = json.loads(
+            path.read_text(encoding="utf-8"),
+            object_pairs_hook=_reject_duplicate_keys,
+            parse_constant=_reject_json_constant,
+        )
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise DocScanError(f"cannot read strict JSON {path}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise DocScanError(f"{path} root must be a JSON object")
+    return value
+
+
+def _run_git(root: Path, args: Sequence[str]) -> bytes:
+    completed = subprocess.run(
+        ["git", *args],
+        cwd=str(root),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if completed.returncode != 0:
+        stderr = completed.stderr.decode("utf-8", "replace").strip()
+        raise DocScanError(f"git {' '.join(args)} failed: {stderr}")
+    return completed.stdout
+
+
+def _git_batch_check(root: Path, revisions: Sequence[str]) -> dict[str, bool]:
+    """Resolve many revisions in one plumbing call.  True means 'is a commit'."""
+    if not revisions:
+        return {}
+    payload = "".join(f"{revision}^{{commit}}\n" for revision in revisions).encode("utf-8")
+    completed = subprocess.run(
+        ["git", "cat-file", "--batch-check"],
+        cwd=str(root),
+        input=payload,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if completed.returncode != 0:
+        stderr = completed.stderr.decode("utf-8", "replace").strip()
+        raise DocScanError(f"git cat-file --batch-check failed: {stderr}")
+    lines = completed.stdout.decode("utf-8", "replace").splitlines()
+    if len(lines) != len(revisions):
+        raise DocScanError("git cat-file --batch-check returned an unexpected record count")
+    resolved: dict[str, bool] = {}
+    for revision, line in zip(revisions, lines):
+        parts = line.split()
+        resolved[revision] = len(parts) >= 2 and parts[1] == "commit"
+    return resolved
+
+
+def _parse_nul_paths(raw: bytes) -> tuple[str, ...]:
+    return tuple(os.fsdecode(item) for item in raw.split(b"\0") if item)
+
+
+def tracked_paths(root: Path) -> tuple[str, ...]:
+    paths = _parse_nul_paths(_run_git(root, ["ls-files", "--cached", "-z"]))
+    for path in paths:
+        if path.startswith("/") or ".." in PurePosixPath(path).parts or "\\" in path:
+            raise DocScanError(f"unsafe tracked path: {path!r}")
+    if len(paths) != len(set(paths)):
+        raise DocScanError("tracked path enumeration contains duplicates")
+    return tuple(sorted(paths))
+
+
+def _parse_porcelain(raw: bytes) -> tuple[tuple[str, str], ...]:
+    """Return (status_code, path) records from ``git status --porcelain=v1 -z``."""
+    items = [item for item in raw.split(b"\0")]
+    records: list[tuple[str, str]] = []
+    index = 0
+    while index < len(items):
+        item = items[index]
+        index += 1
+        if not item:
+            continue
+        decoded = os.fsdecode(item)
+        if len(decoded) < 4:
+            raise DocScanError(f"malformed git status record: {decoded!r}")
+        status = decoded[:2]
+        path = decoded[3:]
+        records.append((status, path))
+        if status[0] in {"R", "C"} or status[1] in {"R", "C"}:
+            if index >= len(items):
+                raise DocScanError("git status rename record is missing its origin path")
+            records.append((status, os.fsdecode(items[index])))
+            index += 1
+    return tuple(records)
+
+
+# --------------------------------------------------------------------------
+# glob + matcher helpers
+# --------------------------------------------------------------------------
+
+
+@lru_cache(maxsize=None)
+def _glob_to_regex(pattern: str) -> re.Pattern[str]:
+    out = ["^"]
+    index = 0
+    length = len(pattern)
+    while index < length:
+        char = pattern[index]
+        if char == "*":
+            if pattern.startswith("**/", index):
+                out.append("(?:[^/]+/)*")
+                index += 3
+                continue
+            if pattern.startswith("**", index):
+                out.append(".*")
+                index += 2
+                continue
+            out.append("[^/]*")
+            index += 1
+            continue
+        if char == "?":
+            out.append("[^/]")
+            index += 1
+            continue
+        out.append(re.escape(char))
+        index += 1
+    out.append("$")
+    return re.compile("".join(out))
+
+
+def _glob_match(path: str, pattern: str) -> bool:
+    return _glob_to_regex(pattern).match(path) is not None
+
+
+def _matches(path: str, matcher: Mapping[str, Any]) -> bool:
+    if len(matcher) != 1:
+        raise DocScanError(f"match object must contain exactly one selector: {matcher!r}")
+    if "path" in matcher:
+        return path == matcher["path"]
+    if "prefix" in matcher:
+        return path.startswith(matcher["prefix"])
+    if "glob" in matcher:
+        return _glob_match(path, matcher["glob"])
+    if "paths" in matcher:
+        return path in set(matcher["paths"])
+    raise DocScanError(f"unsupported match selector: {matcher!r}")
+
+
+def _validate_repository_pattern(value: Any, label: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise DocScanError(f"{label} must be a non-empty string")
+    pure = PurePosixPath(value)
+    if value.startswith("/") or ".." in pure.parts or "\\" in value or "\0" in value:
+        raise DocScanError(f"{label} is not a safe repository-relative pattern")
+    return value
+
+
+def _require_string_list(value: Any, label: str, *, nonempty: bool = False) -> list[str]:
+    if not isinstance(value, list) or (nonempty and not value):
+        raise DocScanError(f"{label} must be {'a non-empty' if nonempty else 'a'} list")
+    if any(not isinstance(item, str) or not item for item in value):
+        raise DocScanError(f"{label} must contain non-empty strings")
+    if len(value) != len(set(value)):
+        raise DocScanError(f"{label} contains duplicates")
+    return value
+
+
+# --------------------------------------------------------------------------
+# registry
+# --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Registry:
+    path: Path
+    relpath: str
+    sha256: str
+    payload: dict[str, Any]
+
+    @property
+    def include_globs(self) -> list[str]:
+        return list(self.payload["scan_scope"]["include_globs"])
+
+    @property
+    def exclude_globs(self) -> list[str]:
+        return list(self.payload["scan_scope"]["exclude_globs"])
+
+    @property
+    def out_of_scope_patterns(self) -> list[str]:
+        return [note["pattern"] for note in self.payload["scan_scope"]["out_of_scope_notes"]]
+
+    @property
+    def rules(self) -> list[dict[str, Any]]:
+        return list(self.payload["rules"])
+
+    @property
+    def reference_scan(self) -> dict[str, Any]:
+        return dict(self.payload["reference_scan"])
+
+
+def load_registry(root: Path, *, relpath: str = REGISTRY_RELPATH) -> Registry:
+    path = root / relpath
+    payload = _load_json_object(path)
+    _validate_registry_shape(payload)
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    return Registry(path=path, relpath=relpath, sha256=digest, payload=payload)
+
+
+def _validate_registry_shape(payload: Mapping[str, Any]) -> None:
+    if payload.get("schema_version") != REGISTRY_SCHEMA_VERSION:
+        raise DocScanError("unsupported doc class registry schema_version")
+
+    authority = payload.get("authority")
+    if not isinstance(authority, dict):
+        raise DocScanError("authority must be an object")
+    if authority.get("role") != "descriptive_governance_projection":
+        raise DocScanError("registry must remain a descriptive governance projection")
+    _require_string_list(authority.get("higher_authorities"), "authority.higher_authorities", nonempty=True)
+    _require_string_list(authority.get("cannot_grant"), "authority.cannot_grant", nonempty=True)
+
+    if tuple(payload.get("document_classes", ())) != DOCUMENT_CLASSES:
+        raise DocScanError("document_classes order or membership drifted")
+
+    scope = payload.get("scan_scope")
+    if not isinstance(scope, dict) or set(scope) != {"include_globs", "exclude_globs", "out_of_scope_notes"}:
+        raise DocScanError("scan_scope has invalid fields")
+    include = _require_string_list(scope.get("include_globs"), "scan_scope.include_globs", nonempty=True)
+    for index, pattern in enumerate(include):
+        _validate_repository_pattern(pattern, f"scan_scope.include_globs[{index}]")
+    if include != sorted(include):
+        raise DocScanError("scan_scope.include_globs must be sorted")
+    exclude = _require_string_list(scope.get("exclude_globs"), "scan_scope.exclude_globs")
+    for index, pattern in enumerate(exclude):
+        _validate_repository_pattern(pattern, f"scan_scope.exclude_globs[{index}]")
+    if exclude != sorted(exclude):
+        raise DocScanError("scan_scope.exclude_globs must be sorted")
+
+    notes = scope.get("out_of_scope_notes")
+    if not isinstance(notes, list) or not notes:
+        raise DocScanError("scan_scope.out_of_scope_notes must be a non-empty list")
+    note_patterns: list[str] = []
+    for index, note in enumerate(notes):
+        label = f"scan_scope.out_of_scope_notes[{index}]"
+        if not isinstance(note, dict) or set(note) != {"pattern", "rationale"}:
+            raise DocScanError(f"{label} has invalid fields")
+        note_patterns.append(_validate_repository_pattern(note["pattern"], f"{label}.pattern"))
+        if not isinstance(note["rationale"], str) or not note["rationale"].strip():
+            raise DocScanError(f"{label}.rationale must be a non-empty string")
+    if note_patterns != sorted(note_patterns):
+        raise DocScanError("scan_scope.out_of_scope_notes must be sorted by pattern")
+    if len(note_patterns) != len(set(note_patterns)):
+        raise DocScanError("scan_scope.out_of_scope_notes contains duplicate patterns")
+
+    rules = payload.get("rules")
+    if not isinstance(rules, list) or not rules:
+        raise DocScanError("rules must be a non-empty list")
+    rule_ids: set[str] = set()
+    for index, rule in enumerate(rules):
+        label = f"rules[{index}]"
+        if not isinstance(rule, dict) or set(rule) != {"id", "match", "document_class", "rationale"}:
+            raise DocScanError(f"{label} has invalid fields")
+        rule_id = rule["id"]
+        if not isinstance(rule_id, str) or not re.fullmatch(r"[a-z0-9_]+", rule_id):
+            raise DocScanError(f"{label}.id must be a lowercase identifier")
+        if rule_id in rule_ids:
+            raise DocScanError(f"duplicate rule id: {rule_id}")
+        rule_ids.add(rule_id)
+        matcher = rule["match"]
+        if not isinstance(matcher, dict) or len(matcher) != 1:
+            raise DocScanError(f"{label}.match must contain exactly one selector")
+        selector, value = next(iter(matcher.items()))
+        if selector not in _MATCH_SELECTORS:
+            raise DocScanError(f"{label}.match has unsupported selector {selector!r}")
+        if selector == "paths":
+            members = _require_string_list(value, f"{label}.match.paths", nonempty=True)
+            for member_index, member in enumerate(members):
+                _validate_repository_pattern(member, f"{label}.match.paths[{member_index}]")
+            if members != sorted(members):
+                raise DocScanError(f"{label}.match.paths must be sorted")
+        else:
+            _validate_repository_pattern(value, f"{label}.match.{selector}")
+        if rule["document_class"] not in DOCUMENT_CLASSES:
+            raise DocScanError(f"{label}.document_class is invalid")
+        if not isinstance(rule["rationale"], str) or not rule["rationale"].strip():
+            raise DocScanError(f"{label}.rationale must be a non-empty string")
+
+    reference_scan = payload.get("reference_scan")
+    expected_fields = {
+        "symbol_source_globs",
+        "context_suppression_markers",
+        "external_artifact_manifest",
+        "absent_by_design_prefixes",
+        "symbol_reference_ignore",
+        "known_historical_commit_hashes",
+    }
+    if not isinstance(reference_scan, dict) or set(reference_scan) != expected_fields:
+        raise DocScanError("reference_scan has invalid fields")
+    symbol_globs = _require_string_list(
+        reference_scan.get("symbol_source_globs"), "reference_scan.symbol_source_globs", nonempty=True
+    )
+    for index, pattern in enumerate(symbol_globs):
+        _validate_repository_pattern(pattern, f"reference_scan.symbol_source_globs[{index}]")
+    if symbol_globs != sorted(symbol_globs):
+        raise DocScanError("reference_scan.symbol_source_globs must be sorted")
+    markers = _require_string_list(
+        reference_scan.get("context_suppression_markers"),
+        "reference_scan.context_suppression_markers",
+        nonempty=True,
+    )
+    if markers != sorted(markers):
+        raise DocScanError("reference_scan.context_suppression_markers must be sorted")
+    _validate_repository_pattern(
+        reference_scan.get("external_artifact_manifest"), "reference_scan.external_artifact_manifest"
+    )
+    absent = reference_scan.get("absent_by_design_prefixes")
+    if not isinstance(absent, list):
+        raise DocScanError("reference_scan.absent_by_design_prefixes must be a list")
+    absent_prefixes: list[str] = []
+    for index, entry in enumerate(absent):
+        label = f"reference_scan.absent_by_design_prefixes[{index}]"
+        if not isinstance(entry, dict) or set(entry) != {"prefix", "rationale"}:
+            raise DocScanError(f"{label} has invalid fields")
+        absent_prefixes.append(_validate_repository_pattern(entry["prefix"], f"{label}.prefix"))
+        if not isinstance(entry["rationale"], str) or not entry["rationale"].strip():
+            raise DocScanError(f"{label}.rationale must be a non-empty string")
+    if absent_prefixes != sorted(absent_prefixes):
+        raise DocScanError("reference_scan.absent_by_design_prefixes must be sorted by prefix")
+    if len(absent_prefixes) != len(set(absent_prefixes)):
+        raise DocScanError("reference_scan.absent_by_design_prefixes contains duplicates")
+    ignores = _require_string_list(
+        reference_scan.get("symbol_reference_ignore"), "reference_scan.symbol_reference_ignore"
+    )
+    if ignores != sorted(ignores):
+        raise DocScanError("reference_scan.symbol_reference_ignore must be sorted")
+
+    hashes = reference_scan.get("known_historical_commit_hashes")
+    if not isinstance(hashes, list):
+        raise DocScanError("reference_scan.known_historical_commit_hashes must be a list")
+    hash_values: list[str] = []
+    for index, entry in enumerate(hashes):
+        label = f"reference_scan.known_historical_commit_hashes[{index}]"
+        if not isinstance(entry, dict) or set(entry) != {"hash", "cited_in", "rationale"}:
+            raise DocScanError(f"{label} has invalid fields")
+        value = entry["hash"]
+        if not isinstance(value, str) or not _COMMIT_HASH_RE.fullmatch(value):
+            raise DocScanError(f"{label}.hash must be 7-40 lowercase hex characters")
+        hash_values.append(value)
+        _validate_repository_pattern(entry["cited_in"], f"{label}.cited_in")
+        if not isinstance(entry["rationale"], str) or not entry["rationale"].strip():
+            raise DocScanError(f"{label}.rationale must be a non-empty string")
+    if hash_values != sorted(hash_values):
+        raise DocScanError("reference_scan.known_historical_commit_hashes must be sorted by hash")
+    if len(hash_values) != len(set(hash_values)):
+        raise DocScanError("reference_scan.known_historical_commit_hashes contains duplicates")
+
+
+# --------------------------------------------------------------------------
+# scope resolution
+# --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Scope:
+    documents: tuple[tuple[str, str], ...]
+    unregistered: tuple[str, ...]
+    class_counts: dict[str, int]
+    symbol_sources: tuple[str, ...]
+
+    @property
+    def paths(self) -> tuple[str, ...]:
+        return tuple(path for path, _document_class in self.documents)
+
+    @property
+    def subjects(self) -> tuple[tuple[str, str], ...]:
+        return tuple(
+            (path, document_class)
+            for path, document_class in self.documents
+            if document_class in SUBJECT_CLASSES
+        )
+
+
+def resolve_scope(registry: Registry, tracked: Sequence[str]) -> Scope:
+    tracked_set = set(tracked)
+    markdown = [path for path in tracked if path.endswith(".md")]
+
+    include = registry.include_globs
+    exclude = registry.exclude_globs
+    in_scope = [
+        path
+        for path in markdown
+        if any(_glob_match(path, pattern) for pattern in include)
+        and not any(_glob_match(path, pattern) for pattern in exclude)
+    ]
+    in_scope_set = set(in_scope)
+
+    note_patterns = registry.out_of_scope_patterns
+    uncovered = [
+        path
+        for path in markdown
+        if path not in in_scope_set
+        and not any(_glob_match(path, pattern) for pattern in note_patterns)
+    ]
+    if uncovered:
+        raise DocScanError(
+            "tracked markdown is neither in scan scope nor declared out of scope: "
+            f"{uncovered[:10]!r}"
+        )
+    overlapping = [
+        path
+        for path in in_scope
+        if any(_glob_match(path, pattern) for pattern in note_patterns)
+    ]
+    if overlapping:
+        raise DocScanError(
+            f"out_of_scope_notes overlap the scan scope: {overlapping[:10]!r}"
+        )
+    for index, pattern in enumerate(note_patterns):
+        if not any(_glob_match(path, pattern) for path in markdown):
+            raise DocScanError(
+                f"scan_scope.out_of_scope_notes[{index}].pattern matches no tracked markdown: {pattern}"
+            )
+    for index, pattern in enumerate(include):
+        if not any(_glob_match(path, pattern) for path in markdown):
+            raise DocScanError(
+                f"scan_scope.include_globs[{index}] matches no tracked markdown: {pattern}"
+            )
+
+    _validate_rule_members(registry, tracked, tracked_set)
+
+    documents: list[tuple[str, str]] = []
+    unregistered: list[str] = []
+    for path in sorted(in_scope):
+        document_class = _classify(path, registry.rules)
+        if document_class is None:
+            unregistered.append(path)
+            continue
+        documents.append((path, document_class))
+
+    class_counts = {name: 0 for name in DOCUMENT_CLASSES}
+    for _path, document_class in documents:
+        class_counts[document_class] += 1
+
+    symbol_sources = tuple(
+        sorted(
+            path
+            for path in tracked
+            if path.endswith(".py")
+            and any(_glob_match(path, pattern) for pattern in registry.reference_scan["symbol_source_globs"])
+        )
+    )
+    if not symbol_sources:
+        raise DocScanError("reference_scan.symbol_source_globs selected no tracked python sources")
+
+    return Scope(
+        documents=tuple(documents),
+        unregistered=tuple(unregistered),
+        class_counts=class_counts,
+        symbol_sources=symbol_sources,
+    )
+
+
+def _classify(path: str, rules: Sequence[Mapping[str, Any]]) -> str | None:
+    for rule in rules:
+        if _matches(path, rule["match"]):
+            return str(rule["document_class"])
+    return None
+
+
+def _validate_rule_members(registry: Registry, tracked: Sequence[str], tracked_set: set[str]) -> None:
+    for rule in registry.rules:
+        rule_id = rule["id"]
+        matcher = rule["match"]
+        selector, value = next(iter(matcher.items()))
+        if selector == "path":
+            if value not in tracked_set:
+                raise DocScanError(f"rule {rule_id}: registered member is not tracked: {value}")
+        elif selector == "paths":
+            missing = [member for member in value if member not in tracked_set]
+            if missing:
+                raise DocScanError(f"rule {rule_id}: registered members are not tracked: {missing!r}")
+        elif selector == "prefix":
+            if not any(path.startswith(value) for path in tracked):
+                raise DocScanError(f"rule {rule_id}: prefix matches no tracked path: {value}")
+        else:
+            if not any(_glob_match(path, value) for path in tracked):
+                raise DocScanError(f"rule {rule_id}: glob matches no tracked path: {value}")
+
+    reference_scan = registry.reference_scan
+    manifest = reference_scan["external_artifact_manifest"]
+    if manifest not in tracked_set:
+        raise DocScanError(f"reference_scan.external_artifact_manifest is not tracked: {manifest}")
+    for entry in reference_scan["known_historical_commit_hashes"]:
+        if entry["cited_in"] not in tracked_set:
+            raise DocScanError(
+                f"known historical commit hash cites an untracked document: {entry['cited_in']}"
+            )
+
+
+# --------------------------------------------------------------------------
+# symbol universe
+# --------------------------------------------------------------------------
+
+
+def build_symbol_universe(root: Path, sources: Sequence[str]) -> frozenset[str]:
+    names: set[str] = set()
+    for relpath in sources:
+        path = root / relpath
+        try:
+            tree = ast.parse(path.read_bytes(), filename=relpath)
+        except (OSError, SyntaxError, ValueError) as exc:
+            raise DocScanError(f"cannot AST-parse symbol source {relpath}: {exc}") from exc
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                names.add(node.name)
+    return frozenset(names)
+
+
+def _external_artifact_paths(root: Path, manifest_relpath: str) -> frozenset[str]:
+    payload = _load_json_object(root / manifest_relpath)
+    artifacts = payload.get("artifacts")
+    if not isinstance(artifacts, list):
+        raise DocScanError(f"{manifest_relpath} has no artifacts list")
+    paths: set[str] = set()
+    for entry in artifacts:
+        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+            raise DocScanError(f"{manifest_relpath} has a malformed artifact record")
+        paths.add(entry["path"])
+    return frozenset(paths)
+
+
+# --------------------------------------------------------------------------
+# document parsing
+# --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Token:
+    line: int
+    column: int
+    text: str
+    kind: str
+
+
+@dataclass(frozen=True)
+class ParsedDocument:
+    relpath: str
+    lines: tuple[str, ...]
+    tokens: tuple[Token, ...]
+    contexts: tuple[str, ...]
+    headings: tuple[str, ...]
+    fenced_lines: int
+    section_references: tuple[tuple[int, str, str], ...]
+
+
+def _read_text(path: Path, relpath: str) -> str:
+    try:
+        return path.read_bytes().decode("utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        raise DocScanError(f"cannot read document {relpath}: {exc}") from exc
+
+
+def parse_document(root: Path, relpath: str) -> ParsedDocument:
+    text = _read_text(root / relpath, relpath)
+    lines = tuple(text.split("\n"))
+
+    inside_fence = False
+    prose_flags: list[bool] = []
+    fenced_lines = 0
+    for line in lines:
+        if _FENCE_RE.match(line):
+            inside_fence = not inside_fence
+            prose_flags.append(False)
+            fenced_lines += 1
+            continue
+        prose_flags.append(not inside_fence)
+        if inside_fence:
+            fenced_lines += 1
+
+    headings = tuple(
+        _HEADING_RE.match(line).group(2).strip() if _HEADING_RE.match(line) else ""
+        for line in lines
+    )
+
+    contexts = _build_contexts(lines, prose_flags)
+
+    tokens: list[Token] = []
+    section_references: list[tuple[int, str, str]] = []
+    for index, line in enumerate(lines):
+        if not prose_flags[index]:
+            continue
+        line_number = index + 1
+        code_tokens: list[Token] = []
+        for match in _INLINE_CODE_RE.finditer(line):
+            code_tokens.append(
+                Token(line=line_number, column=match.start(1) + 1, text=match.group(1), kind="inline_code")
+            )
+        for match in _LINK_TARGET_RE.finditer(line):
+            code_tokens.append(
+                Token(line=line_number, column=match.start(1) + 1, text=match.group(1), kind="link_target")
+            )
+        tokens.extend(code_tokens)
+        for section_match in _SECTION_RE.finditer(line):
+            document_token = _preceding_markdown_token(code_tokens, section_match.start())
+            if document_token is None:
+                continue
+            section_references.append((line_number, document_token, section_match.group("section")))
+
+    return ParsedDocument(
+        relpath=relpath,
+        lines=lines,
+        tokens=tuple(tokens),
+        contexts=contexts,
+        headings=headings,
+        fenced_lines=fenced_lines,
+        section_references=tuple(section_references),
+    )
+
+
+def _preceding_markdown_token(tokens: Sequence[Token], column: int) -> str | None:
+    best: str | None = None
+    for token in tokens:
+        if token.column - 1 > column:
+            continue
+        normalized = _normalize_path_token(token.text)
+        if normalized is None or not normalized.endswith(".md"):
+            continue
+        best = normalized
+    return best
+
+
+def _build_contexts(lines: Sequence[str], prose_flags: Sequence[bool]) -> tuple[str, ...]:
+    contexts: list[str] = [""] * len(lines)
+    index = 0
+    last_heading = ""
+    while index < len(lines):
+        if _HEADING_RE.match(lines[index]) and prose_flags[index]:
+            last_heading = lines[index]
+        if not lines[index].strip():
+            contexts[index] = last_heading
+            index += 1
+            continue
+        start = index
+        while index < len(lines) and lines[index].strip():
+            index += 1
+        block = "\n".join(lines[start:index])
+        merged = f"{last_heading}\n{block}"
+        for position in range(start, index):
+            contexts[position] = merged
+    return tuple(contexts)
+
+
+def _normalize_path_token(raw: str) -> str | None:
+    token = raw.strip()
+    while token and token[0] in _LEADING_PUNCTUATION:
+        token = token[1:]
+    while token and token[-1] in _TRAILING_PUNCTUATION:
+        token = token[:-1]
+    if not token:
+        return None
+    if "://" in token or token.startswith("#") or token.startswith("mailto:"):
+        return None
+    if token.startswith("/") or "\\" in token or "\0" in token:
+        return None
+    # A segment made only of dots is either a traversal or a prose ellipsis
+    # placeholder such as ``docs/research/.../external_review/``.  Neither is a
+    # format-explicit reference to a real path.
+    if any(part and set(part) == {"."} for part in token.split("/")):
+        return None
+    return token
+
+
+# --------------------------------------------------------------------------
+# finding construction
+# --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Finding:
+    flag: str
+    document: str
+    document_class: str
+    line: int
+    column: int
+    reference: str
+    signals: tuple[str, ...]
+    detail: dict[str, Any]
+
+
+def _item_id(finding: Finding) -> str:
+    payload = "␟".join(
+        (LAYER, finding.flag, finding.document, str(finding.line), str(finding.column), finding.reference)
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+
+
+def _to_item(finding: Finding, line_text: str) -> dict[str, Any]:
+    if finding.document_class not in set(DOCUMENT_CLASSES) | {UNREGISTERED_CLASS}:
+        raise DocScanError(f"unknown document class in finding: {finding.document_class!r}")
+    locked = finding.document_class not in CANDIDATE_CLASSES
+    reasons: list[str] = []
+    if finding.document_class == "historical":
+        reasons.append("historical_evidence_class_never_yields_a_change_candidate")
+    if finding.document_class == "locked":
+        reasons.append("locked_class_is_never_a_scan_subject")
+    return {
+        "item_id": _item_id(finding),
+        "layer": LAYER,
+        "flag": finding.flag,
+        "signals": list(finding.signals),
+        "safety_lock": {"locked": locked, "reasons": reasons},
+        "confidence": CONFIDENCE,
+        "evidence": {
+            "document": finding.document,
+            "document_class": finding.document_class,
+            "line": finding.line,
+            "column": finding.column,
+            "reference": finding.reference,
+            "line_text": line_text,
+            "detail": finding.detail,
+        },
+    }
+
+
+# --------------------------------------------------------------------------
+# scanning
+# --------------------------------------------------------------------------
+
+
+@dataclass
+class Suppressions:
+    context_marker: int = 0
+    external_artifact_allowlist: int = 0
+    absent_by_design: int = 0
+    not_format_explicit: int = 0
+    fenced_code_lines: int = 0
+    commit_hash_classified_known_historical: int = 0
+
+    def as_dict(self) -> dict[str, int]:
+        return {
+            "context_marker": self.context_marker,
+            "external_artifact_allowlist": self.external_artifact_allowlist,
+            "absent_by_design": self.absent_by_design,
+            "not_format_explicit": self.not_format_explicit,
+            "fenced_code_lines": self.fenced_code_lines,
+            "commit_hash_classified_known_historical": self.commit_hash_classified_known_historical,
+        }
+
+
+class DocumentScanner:
+    def __init__(self, root: Path, registry: Registry, scope: Scope, tracked: Sequence[str]) -> None:
+        self.root = root
+        self.registry = registry
+        self.scope = scope
+        self.tracked = tuple(tracked)
+        self.tracked_set = set(tracked)
+        self.top_level_dirs = {path.split("/", 1)[0] for path in tracked if "/" in path}
+        reference_scan = registry.reference_scan
+        self.markers = tuple(reference_scan["context_suppression_markers"])
+        self.symbol_ignore = frozenset(reference_scan["symbol_reference_ignore"])
+        self.absent_prefixes = tuple(
+            entry["prefix"] for entry in reference_scan["absent_by_design_prefixes"]
+        )
+        self.external_artifacts = _external_artifact_paths(
+            root, reference_scan["external_artifact_manifest"]
+        )
+        self.known_hashes = frozenset(
+            entry["hash"] for entry in reference_scan["known_historical_commit_hashes"]
+        )
+        self.symbols = build_symbol_universe(root, scope.symbol_sources)
+        self.suppressions = Suppressions()
+        self._heading_cache: dict[str, tuple[frozenset[str], frozenset[str]]] = {}
+        self._line_count_cache: dict[str, int | None] = {}
+
+    # -- helpers ---------------------------------------------------------
+
+    def _suppressed_by_context(self, context: str) -> bool:
+        lowered = context.lower()
+        return any(marker.lower() in lowered for marker in self.markers)
+
+    def _path_exists(self, token: str) -> bool:
+        if "*" in token or "?" in token:
+            prefix = re.split(r"[*?]", token, maxsplit=1)[0]
+            if not prefix:
+                return True
+            return any(path.startswith(prefix) for path in self.tracked) or (self.root / prefix).exists()
+        if token.endswith("/"):
+            return (self.root / token).is_dir() or any(
+                path.startswith(token) for path in self.tracked
+            )
+        return token in self.tracked_set or (self.root / token).exists()
+
+    def _is_repo_path_token(self, token: str) -> bool:
+        if "/" not in token:
+            return False
+        if not _PATH_CHARS_RE.fullmatch(token):
+            return False
+        return token.split("/", 1)[0] in self.top_level_dirs
+
+    def _allowlisted_absent(self, token: str) -> str | None:
+        if token in self.external_artifacts:
+            return "external_artifact_allowlist"
+        for prefix in self.absent_prefixes:
+            if token == prefix or token.startswith(prefix):
+                return "absent_by_design"
+        return None
+
+    def _line_count(self, relpath: str) -> int | None:
+        if relpath not in self._line_count_cache:
+            path = self.root / relpath
+            if not path.is_file():
+                self._line_count_cache[relpath] = None
+            else:
+                try:
+                    raw = path.read_bytes()
+                except OSError as exc:
+                    raise DocScanError(f"cannot read referenced file {relpath}: {exc}") from exc
+                if not raw:
+                    self._line_count_cache[relpath] = 0
+                else:
+                    count = raw.count(b"\n")
+                    self._line_count_cache[relpath] = count if raw.endswith(b"\n") else count + 1
+        return self._line_count_cache[relpath]
+
+    def _anchors(self, relpath: str) -> tuple[frozenset[str], frozenset[str]]:
+        if relpath not in self._heading_cache:
+            text = _read_text(self.root / relpath, relpath)
+            slugs: set[str] = set()
+            sections: set[str] = set()
+            for line in text.split("\n"):
+                match = _HEADING_RE.match(line)
+                if match is None:
+                    continue
+                heading = match.group(2).strip()
+                slugs.add(_slugify(heading))
+                sections.update(_heading_section_ids(heading))
+            self._heading_cache[relpath] = (frozenset(slugs), frozenset(sections))
+        return self._heading_cache[relpath]
+
+    def _resolve_document(self, relpath: str, token: str) -> str | None:
+        candidates = [token]
+        parent = PurePosixPath(relpath).parent
+        if str(parent) not in {"", "."}:
+            candidates.append(str(parent / token))
+        for candidate in candidates:
+            if ".." in PurePosixPath(candidate).parts:
+                continue
+            if (self.root / candidate).is_file():
+                return candidate
+        return None
+
+    # -- per-document scan -----------------------------------------------
+
+    def scan(
+        self, relpath: str, document_class: str
+    ) -> tuple[ParsedDocument, list[Finding], list[Finding]]:
+        document = parse_document(self.root, relpath)
+        self.suppressions.fenced_code_lines += document.fenced_lines
+        findings: list[Finding] = []
+        hash_candidates: list[Finding] = []
+
+        for token in document.tokens:
+            context = document.contexts[token.line - 1]
+            produced = self._scan_token(relpath, document_class, token, context)
+            if produced is None:
+                continue
+            kind, finding = produced
+            if kind == "commit":
+                hash_candidates.append(finding)
+            else:
+                findings.append(finding)
+
+        findings.extend(self._scan_section_references(relpath, document_class, document))
+        return document, findings, hash_candidates
+
+    def _scan_token(
+        self, relpath: str, document_class: str, token: Token, context: str
+    ) -> tuple[str, Finding] | None:
+        raw = token.text.strip()
+
+        file_line = _FILE_LINE_RE.match(raw)
+        if (
+            file_line is not None
+            and self._is_repo_path_token(file_line.group("path"))
+            and _SUFFIX_RE.fullmatch(PurePosixPath(file_line.group("path")).suffix)
+        ):
+            return self._scan_file_line(relpath, document_class, token, context, file_line)
+
+        symbol = _SYMBOL_RE.match(raw)
+        if symbol is not None:
+            return self._scan_symbol(relpath, document_class, token, context, symbol)
+
+        if _COMMIT_HASH_RE.fullmatch(raw) and _has_digit_and_letter(raw):
+            return self._scan_commit_hash(relpath, document_class, token, context, raw)
+
+        normalized = _normalize_path_token(token.text)
+        if normalized is None or not _PATH_CHARS_RE.fullmatch(normalized):
+            self.suppressions.not_format_explicit += 1
+            return None
+
+        # A markdown reference resolves relative to the citing document, so it
+        # does not need to start at a repository top-level directory — but a
+        # bare basename in prose (`some-card.md`) names a document rather than
+        # pointing at one, so only a real link or a path-shaped token counts.
+        if normalized.endswith(".md") or ".md#" in normalized:
+            if token.kind == "link_target" or self._is_repo_path_token(normalized):
+                return self._scan_document_reference(
+                    relpath, document_class, token, context, normalized
+                )
+            self.suppressions.not_format_explicit += 1
+            return None
+
+        if not self._is_repo_path_token(normalized):
+            self.suppressions.not_format_explicit += 1
+            return None
+        return self._scan_repo_path(relpath, document_class, token, context, normalized)
+
+    def _scan_repo_path(
+        self, relpath: str, document_class: str, token: Token, context: str, normalized: str
+    ) -> tuple[str, Finding] | None:
+        if self._path_exists(normalized):
+            return None
+        allow = self._allowlisted_absent(normalized)
+        if allow == "external_artifact_allowlist":
+            self.suppressions.external_artifact_allowlist += 1
+            return None
+        if allow == "absent_by_design":
+            self.suppressions.absent_by_design += 1
+            return None
+        if self._suppressed_by_context(context):
+            self.suppressions.context_marker += 1
+            return None
+        return (
+            "plain",
+            Finding(
+                flag="dead_repo_path",
+                document=relpath,
+                document_class=document_class,
+                line=token.line,
+                column=token.column,
+                reference=normalized,
+                signals=("referenced_repository_path_does_not_exist",),
+                detail={"token_kind": token.kind},
+            ),
+        )
+
+    def _scan_file_line(
+        self,
+        relpath: str,
+        document_class: str,
+        token: Token,
+        context: str,
+        match: re.Match[str],
+    ) -> tuple[str, Finding] | None:
+        target = match.group("path")
+        start = int(match.group("start"))
+        end = int(match.group("end")) if match.group("end") else start
+        line_count = self._line_count(target)
+        if line_count is None:
+            if self._allowlisted_absent(target) is not None:
+                self.suppressions.external_artifact_allowlist += 1
+                return None
+            if self._suppressed_by_context(context):
+                self.suppressions.context_marker += 1
+                return None
+            signals = ("referenced_source_file_does_not_exist",)
+            detail: dict[str, Any] = {"target": target, "start": start, "end": end}
+        elif start < 1 or end < start or end > line_count:
+            if self._suppressed_by_context(context):
+                self.suppressions.context_marker += 1
+                return None
+            signals = ("referenced_line_range_is_outside_the_file",)
+            detail = {"target": target, "start": start, "end": end, "file_line_count": line_count}
+        else:
+            return None
+        return (
+            "plain",
+            Finding(
+                flag="dead_symbol_ref",
+                document=relpath,
+                document_class=document_class,
+                line=token.line,
+                column=token.column,
+                reference=token.text.strip(),
+                signals=signals,
+                detail=detail,
+            ),
+        )
+
+    def _scan_symbol(
+        self,
+        relpath: str,
+        document_class: str,
+        token: Token,
+        context: str,
+        match: re.Match[str],
+    ) -> tuple[str, Finding] | None:
+        name = match.group("name")
+        qualifier = match.group("qualifier")
+        if qualifier:
+            # ``cp_model.CpModel()`` / ``Path.write_text()`` name third-party or
+            # standard-library surfaces.  Only follow a qualified reference when
+            # its owner is itself a repository symbol, e.g.
+            # ``ExactCampaign.supervisor_seal()``.
+            head = qualifier.split(".", 1)[0]
+            if head in _STDLIB_MODULES or head not in self.symbols:
+                self.suppressions.not_format_explicit += 1
+                return None
+        if name in self.symbols or name in _BUILTIN_NAMES or name in self.symbol_ignore:
+            return None
+        if self._suppressed_by_context(context):
+            self.suppressions.context_marker += 1
+            return None
+        return (
+            "plain",
+            Finding(
+                flag="dead_symbol_ref",
+                document=relpath,
+                document_class=document_class,
+                line=token.line,
+                column=token.column,
+                reference=token.text.strip(),
+                signals=("referenced_symbol_is_not_defined_in_repository_sources",),
+                detail={"symbol": name},
+            ),
+        )
+
+    def _scan_commit_hash(
+        self, relpath: str, document_class: str, token: Token, context: str, raw: str
+    ) -> tuple[str, Finding] | None:
+        if raw in self.known_hashes:
+            self.suppressions.commit_hash_classified_known_historical += 1
+            return None
+        if document_class != "living":
+            self.suppressions.commit_hash_classified_known_historical += 1
+            return None
+        if self._suppressed_by_context(context):
+            self.suppressions.context_marker += 1
+            return None
+        return (
+            "commit",
+            Finding(
+                flag="dead_commit_hash",
+                document=relpath,
+                document_class=document_class,
+                line=token.line,
+                column=token.column,
+                reference=raw,
+                signals=("cited_commit_is_not_resolvable_in_this_checkout",),
+                detail={"commit": raw},
+            ),
+        )
+
+    def _scan_document_reference(
+        self, relpath: str, document_class: str, token: Token, context: str, normalized: str
+    ) -> tuple[str, Finding] | None:
+        target, _, fragment = normalized.partition("#")
+        if "*" in target or "?" in target:
+            # ``F1-F5*.md`` names a family, not a document; a glob cannot be
+            # resolved to one file, so it is not a format-explicit reference.
+            self.suppressions.not_format_explicit += 1
+            return None
+        resolved = self._resolve_document(relpath, target)
+        if resolved is None:
+            if self._suppressed_by_context(context):
+                self.suppressions.context_marker += 1
+                return None
+            return (
+                "plain",
+                Finding(
+                    flag="dead_doc_anchor",
+                    document=relpath,
+                    document_class=document_class,
+                    line=token.line,
+                    column=token.column,
+                    reference=normalized,
+                    signals=("referenced_document_does_not_exist",),
+                    detail={"target": target},
+                ),
+            )
+        if not fragment:
+            return None
+        slugs, _sections = self._anchors(resolved)
+        if _slugify(fragment) in slugs:
+            return None
+        if self._suppressed_by_context(context):
+            self.suppressions.context_marker += 1
+            return None
+        return (
+            "plain",
+            Finding(
+                flag="dead_doc_anchor",
+                document=relpath,
+                document_class=document_class,
+                line=token.line,
+                column=token.column,
+                reference=normalized,
+                signals=("referenced_heading_anchor_does_not_exist",),
+                detail={"target": resolved, "fragment": fragment},
+            ),
+        )
+
+    def _scan_section_references(
+        self, relpath: str, document_class: str, document: ParsedDocument
+    ) -> list[Finding]:
+        findings: list[Finding] = []
+        for line_number, target_token, section in document.section_references:
+            context = document.contexts[line_number - 1]
+            resolved = self._resolve_document(relpath, target_token.partition("#")[0])
+            if resolved is None:
+                continue
+            _slugs, sections = self._anchors(resolved)
+            if section.lower() in sections:
+                continue
+            if self._suppressed_by_context(context):
+                self.suppressions.context_marker += 1
+                continue
+            findings.append(
+                Finding(
+                    flag="dead_doc_anchor",
+                    document=relpath,
+                    document_class=document_class,
+                    line=line_number,
+                    column=1,
+                    reference=f"{target_token} §{section}",
+                    signals=("referenced_section_anchor_does_not_exist",),
+                    detail={"target": resolved, "section": section},
+                )
+            )
+        return findings
+
+
+def _heading_section_ids(heading: str) -> frozenset[str]:
+    """Section identifiers a ``§`` reference may legitimately name.
+
+    Two conventions live side by side in this repository: headings numbered as
+    ``## 4. 拍板台账`` / ``### 0b. 方法论`` / ``### 6.4 边界``, and headings that
+    spell the section marker out as ``§1A``.  Both are accepted.
+    """
+    ids: set[str] = set()
+    number = _HEADING_NUMBER_RE.match(heading)
+    if number is not None:
+        ids.add(number.group("id").lower())
+    for section_match in _SECTION_RE.finditer(heading):
+        ids.add(section_match.group("section").lower())
+    return frozenset(ids)
+
+
+def _has_digit_and_letter(value: str) -> bool:
+    return any(char.isdigit() for char in value) and any(char.isalpha() for char in value)
+
+
+def _slugify(text: str) -> str:
+    lowered = text.strip().lower()
+    kept = "".join(
+        char for char in lowered if char.isalnum() or char in {"-", "_", " ", "§"}
+    )
+    return kept.replace(" ", "-").strip("-")
+
+
+# --------------------------------------------------------------------------
+# self check
+# --------------------------------------------------------------------------
+
+
+def run_self_check(root: Path, registry: Registry, scope: Scope) -> dict[str, Any]:
+    branch = _run_git(root, ["rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip()
+    if branch != REQUIRED_BRANCH:
+        raise SelfCheckRefusal(
+            f"refusing to generate a report: HEAD is {branch!r}, not {REQUIRED_BRANCH!r}"
+        )
+    head = _run_git(root, ["rev-parse", "HEAD"]).decode("utf-8").strip()
+
+    truth_sources = set(scope.paths)
+    truth_sources.update(scope.unregistered)
+    truth_sources.add(registry.relpath)
+    truth_sources.update(scope.symbol_sources)
+    truth_sources.add(registry.reference_scan["external_artifact_manifest"])
+
+    records = _parse_porcelain(
+        _run_git(root, ["status", "--porcelain=v1", "-z", "--untracked-files=all"])
+    )
+    dirty: list[str] = []
+    untracked_in_scope: list[str] = []
+    include = registry.include_globs
+    exclude = registry.exclude_globs
+    for status, path in records:
+        if status == "??":
+            if (
+                path.endswith(".md")
+                and any(_glob_match(path, pattern) for pattern in include)
+                and not any(_glob_match(path, pattern) for pattern in exclude)
+            ):
+                untracked_in_scope.append(path)
+            continue
+        if path in truth_sources:
+            dirty.append(path)
+    if dirty:
+        raise SelfCheckRefusal(
+            "refusing to generate a report: scanned truth sources have uncommitted changes: "
+            f"{sorted(set(dirty))[:10]!r}"
+        )
+    if untracked_in_scope:
+        raise SelfCheckRefusal(
+            "refusing to generate a report: untracked documents fall inside the scan scope: "
+            f"{sorted(set(untracked_in_scope))[:10]!r}"
+        )
+
+    return {
+        "required_branch": REQUIRED_BRANCH,
+        "observed_branch": branch,
+        "head_commit": head,
+        "truth_sources_clean": True,
+        "truth_source_kinds": [
+            "registered scan-scope documents",
+            "doc class registry",
+            "external artifact manifest",
+            "tracked python symbol sources",
+        ],
+        "truth_source_count": len(truth_sources),
+        "verified_by": [
+            "git rev-parse --abbrev-ref HEAD",
+            "git rev-parse HEAD",
+            "git status --porcelain=v1 -z --untracked-files=all",
+        ],
+    }
+
+
+# --------------------------------------------------------------------------
+# report
+# --------------------------------------------------------------------------
+
+
+def build_report(root: Path, *, registry_relpath: str = REGISTRY_RELPATH) -> dict[str, Any]:
+    registry = load_registry(root, relpath=registry_relpath)
+    tracked = tracked_paths(root)
+    scope = resolve_scope(registry, tracked)
+    preconditions = run_self_check(root, registry, scope)
+
+    scanner = DocumentScanner(root, registry, scope, tracked)
+    findings: list[Finding] = []
+    commit_findings: list[Finding] = []
+    line_texts: dict[tuple[str, int], str] = {}
+
+    for relpath, document_class in scope.subjects:
+        document, document_findings, hash_candidates = scanner.scan(relpath, document_class)
+        for finding in document_findings:
+            findings.append(finding)
+            line_texts[(relpath, finding.line)] = document.lines[finding.line - 1]
+        for finding in hash_candidates:
+            commit_findings.append(finding)
+            line_texts[(relpath, finding.line)] = document.lines[finding.line - 1]
+
+    revisions = sorted({finding.reference for finding in commit_findings})
+    resolved = _git_batch_check(root, revisions)
+    for finding in commit_findings:
+        if resolved.get(finding.reference, False):
+            continue
+        findings.append(finding)
+
+    for relpath in scope.unregistered:
+        findings.append(
+            Finding(
+                flag="unregistered_doc",
+                document=relpath,
+                document_class="unregistered",
+                line=1,
+                column=1,
+                reference=relpath,
+                signals=("document_is_in_scan_scope_but_absent_from_doc_classes",),
+                detail={"registry": registry.relpath},
+            )
+        )
+        line_texts[(relpath, 1)] = ""
+
+    findings.sort(key=lambda item: (item.document, item.line, item.column, item.flag, item.reference))
+
+    candidates: list[dict[str, Any]] = []
+    fyi: list[dict[str, Any]] = []
+    for finding in findings:
+        item = _to_item(finding, line_texts.get((finding.document, finding.line), ""))
+        if item["safety_lock"]["locked"]:
+            fyi.append(item)
+        else:
+            candidates.append(item)
+
+    flag_counts = {flag: 0 for flag in FLAGS}
+    for finding in findings:
+        flag_counts[finding.flag] += 1
+
+    return {
+        "schema_version": REPORT_SCHEMA_VERSION,
+        "metadata": {
+            "generator": GENERATOR,
+            "generator_version": GENERATOR_VERSION,
+            "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "layer": LAYER,
+            "advisory": True,
+            "applies_nothing": (
+                "This report authorizes no edit; nothing in the repository consumes it."
+            ),
+            "preconditions": preconditions,
+            "registry": {"path": registry.relpath, "sha256": registry.sha256},
+            "scope": {
+                "in_scope_document_count": len(scope.documents) + len(scope.unregistered),
+                "subject_document_count": len(scope.subjects),
+                "class_counts": dict(scope.class_counts),
+                "unregistered_document_count": len(scope.unregistered),
+                "symbol_source_count": len(scope.symbol_sources),
+                "symbol_universe_size": len(scanner.symbols),
+            },
+            "flag_counts": flag_counts,
+            "suppression_counts": scanner.suppressions.as_dict(),
+            "candidate_count": len(candidates),
+            "fyi_count": len(fyi),
+        },
+        "candidates": candidates,
+        "fyi": fyi,
+    }
+
+
+def write_report(root: Path, report: Mapping[str, Any], *, relpath: str = REPORT_RELPATH) -> Path:
+    destination = root / relpath
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return destination
+
+
+# --------------------------------------------------------------------------
+# CLI
+# --------------------------------------------------------------------------
+
+
+def validate_registry(root: Path, *, registry_relpath: str = REGISTRY_RELPATH) -> dict[str, Any]:
+    registry = load_registry(root, relpath=registry_relpath)
+    tracked = tracked_paths(root)
+    scope = resolve_scope(registry, tracked)
+    return {
+        "status": "PASS",
+        "registry": registry.relpath,
+        "registry_sha256": registry.sha256,
+        "in_scope_document_count": len(scope.documents) + len(scope.unregistered),
+        "class_counts": dict(scope.class_counts),
+        "unregistered_documents": list(scope.unregistered),
+        "symbol_source_count": len(scope.symbol_sources),
+    }
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0] if __doc__ else None)
+    parser.add_argument("--repo-root", default=str(ROOT), help="repository root to scan")
+    parser.add_argument(
+        "--registry", default=REGISTRY_RELPATH, help="repo-relative doc class registry path"
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    scan_parser = subparsers.add_parser(
+        "scan", help="run the fail-closed reference scan and write the report"
+    )
+    scan_parser.add_argument("--output", default=REPORT_RELPATH, help="repo-relative report path")
+
+    subparsers.add_parser(
+        "validate-registry",
+        help="validate the doc class registry and scope without producing a report",
+    )
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = _build_parser()
+    args = parser.parse_args(argv)
+    root = Path(args.repo_root).resolve()
+    try:
+        if args.command == "scan":
+            report = build_report(root, registry_relpath=args.registry)
+            destination = write_report(root, report, relpath=args.output)
+            summary = {
+                "status": "REPORT_WRITTEN",
+                "report": str(destination),
+                "candidates": report["metadata"]["candidate_count"],
+                "fyi": report["metadata"]["fyi_count"],
+            }
+            print(json.dumps(summary, ensure_ascii=False, sort_keys=True))
+        elif args.command == "validate-registry":
+            print(json.dumps(validate_registry(root, registry_relpath=args.registry), ensure_ascii=False, sort_keys=True))
+        else:
+            parser.error(f"unsupported command: {args.command}")
+            return 1
+    except SelfCheckRefusal as exc:
+        print(f"docs reference scan refused: {exc}", file=sys.stderr)
+        return 1
+    except DocScanError as exc:
+        print(f"docs reference scan failed: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
