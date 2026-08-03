@@ -1,30 +1,38 @@
 # -*- coding: utf-8 -*-
-"""撞错召回:blob 形状 + 两张收窄卡的真假信号(2026-08-03 普查 §3.5 / 审查 ④)。
+"""撞错召回:策略转向后的形状、退役卡与蛇吞尾排除(2026-08-03 普查 §3.5)。
 
 不接 CI(preflight 快 lane 只跑 src/tests);手跑:
-    python -m pytest -p no:randomly --basetemp=.pytest_tmp/recall \
+    python -m pytest -p no:randomly --basetemp=/tmp/recall \
         cc_memory_vnext/tests/test_error_recall_triggers.py -q
 
-三件事,全部用**仓库里真实的卡片文件**走真实 YAML 加载链,不手造 dict:
-1. `build_error_blob()` 的形状(`# cwd:` / `$ 命令` / 输出)——两张卡的正则字面
-   依赖它,改形状必须在这里先红;
-2. 两张卡的正反例:审查列出的每一条假阳性/漏报都有对应用例
-   (git pathspec 误命中 / worktree 内相对路径漏报 / 读旧红日志误命中 / 跑绿误命中);
-3. **eval 数据自己不许自触发**:模拟 sed/cat/rg 读 `eval/regression.jsonl`,
-   全窗口扫一遍,任何一张卡命中都算红——审查 ④ 指出这正是新增回归数据当时干的事,
-   而且假命中还会把 seen-once 账本消费掉、把后面真该弹的一次压掉。
+本文件钉的是**退出正则军备竞赛**这个决定,不是又一版更聪明的正则:
+
+1. `build_error_blob()` 的形状回到「$ 命令 + 输出」,不含 cwd —— 那一行是为一张
+   已经退役的卡加的,代价是 12 张活卡里 10 张能被一行普通 cwd 文本假触发;
+2. 两张卡(memory-db-feature-branch-stale / test-suite-speedup-landed-map)的
+   error_regex 全空,历史上那些「真信号」形状现在一条都不许弹 —— 它们历史真阳
+   是 0,其余触发面(keywords/intents/paths)照常保留;
+3. **蛇吞尾排除**:读写本系统自己的治理件(卡片 / 回归数据 / 两套记忆测试 /
+   剪枝普查产物)时整条召回跳过。这条不再靠给数据打码来防(打码只挡 raw
+   reader,`jq` 按 JSON 语义读就还原了),而是 hook 自己认路径。end-to-end 用
+   真 hook 子进程 + 真卡片编出来的索引跑,不是对着正则自说自话。
 """
 from __future__ import annotations
 
 import importlib.util
+import json
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
 import pytest
 
 VNEXT = Path(__file__).resolve().parents[1]
+REPO = VNEXT.parent
 CARDS_DIR = VNEXT / "cards"
 EVAL_FILE = VNEXT / "eval" / "regression.jsonl"
+HOOK_PATH = VNEXT / "hooks" / "post_tool_error_recall.py"
 MEM_CARD = "memory-db-feature-branch-stale-do-ops-on-main"
 PYTEST_CARD = "test-suite-speedup-landed-map"
 RESPONSE_TAIL_CHARS = 6000
@@ -53,7 +61,7 @@ def zmem():
 def recall():
     if str(VNEXT) not in sys.path:
         sys.path.insert(0, str(VNEXT))
-    mod = _load("post_tool_error_recall_under_test", VNEXT / "hooks" / "post_tool_error_recall.py")
+    mod = _load("post_tool_error_recall_under_test", HOOK_PATH)
     yield mod
     sys.modules.pop("post_tool_error_recall_under_test", None)
 
@@ -73,15 +81,18 @@ def card_patterns(zmem):
     return patterns
 
 
-def _fires(zmem, card_patterns, card_id, blob):
-    assert card_id in card_patterns, f"{card_id} 没有 error_regex 了?"
-    return zmem.error_regex_hit(card_patterns[card_id], [blob])
+def _fires_any(zmem, card_patterns, blob) -> list[str]:
+    return sorted(
+        card_id
+        for card_id, patterns in card_patterns.items()
+        if zmem.error_regex_hit(patterns, [blob])
+    )
 
 
-# --- 1. blob 形状 ------------------------------------------------------------
+# --- 1. blob 形状:cwd 拼接已撤销 --------------------------------------------
 
 
-def test_blob_puts_cwd_then_command_then_output(recall):
+def test_blob_is_command_then_output_with_no_cwd_line(recall):
     blob = recall.build_error_blob(
         {
             "cwd": "/home/zhuran24/zmd-pj/.claude/worktrees/wf-x",
@@ -90,110 +101,126 @@ def test_blob_puts_cwd_then_command_then_output(recall):
         }
     )
     assert blob.splitlines() == [
-        "# cwd: /home/zhuran24/zmd-pj/.claude/worktrees/wf-x",
         "$ python cc_memory/mem.py search pr2-5",
         "no matches",
     ]
+    assert "cwd" not in blob
 
 
 def test_blob_omits_missing_pieces(recall):
     assert recall.build_error_blob({"tool_response": "boom"}) == "boom"
-    assert recall.build_error_blob({"cwd": "/repo", "tool_response": "boom"}) == "# cwd: /repo\nboom"
+    assert recall.build_error_blob({"cwd": "/repo", "tool_response": "boom"}) == "boom"
     assert recall.build_error_blob({"cwd": "/repo", "tool_input": {}}) == ""
 
 
-# --- 2. 两张卡的正反例 -------------------------------------------------------
+def test_hook_never_reads_the_payload_cwd(recall):
+    """撤销要撤干净:整个 hook 不许再碰 payload 的 cwd(不然下次又被拼回去)。"""
+    source = HOOK_PATH.read_text(encoding="utf-8")
+    code_lines = [
+        line for line in source.splitlines() if 'payload.get("cwd")' in line or "payload['cwd']" in line
+    ]
+    assert code_lines == [], f"hook 又读了 payload.cwd: {code_lines}"
 
-MEM_CASES = [
+
+# --- 2. 两张卡退出 error_regex 通道 -------------------------------------------
+
+
+@pytest.mark.parametrize("card_id", [MEM_CARD, PYTEST_CARD])
+def test_retired_cards_have_no_error_regex_at_all(zmem, card_id):
+    card = zmem.load_frontmatter(CARDS_DIR / f"{card_id}.md")
+    triggers = zmem.as_dict(card.meta.get("triggers"))
+    assert zmem.normalize_list(triggers.get("error_regex")) == []
+    assert zmem.normalize_list(card.meta.get("error_regex")) == []
+
+
+@pytest.mark.parametrize("card_id", [MEM_CARD, PYTEST_CARD])
+def test_retired_cards_keep_every_other_trigger_surface(zmem, card_id):
+    """退的是错误文本定向召回这一条通道,卡本身有价值,别把它一起废了。"""
+    card = zmem.load_frontmatter(CARDS_DIR / f"{card_id}.md")
+    triggers = zmem.as_dict(card.meta.get("triggers"))
+    assert zmem.normalize_list(triggers.get("keywords"))
+    assert zmem.normalize_list(triggers.get("intents"))
+    assert zmem.normalize_list(triggers.get("examples"))
+    assert str(card.meta.get("status")) == "active"
+
+
+# 三轮收窄里被当成「真信号」的每一种形状,现在一条都不许弹任何卡。
+RETIRED_POSITIVES = [
     pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ python /home/zhuran24/zmd-pj/.claude/worktrees/wf-x/cc_memory/mem.py search pr2-5\nno matches",
-        True,
-        id="absolute-worktree-path-fires",
+        "$ python /home/zhuran24/zmd-pj/.claude/worktrees/wf-x/cc_memory/mem.py search pr2-5\nno matches",
+        id="mem-absolute-worktree-path",
     ),
     pytest.param(
         "# cwd: /home/zhuran24/zmd-pj/.claude/worktrees/wf-x\n$ python cc_memory/mem.py search pr2-5\nno matches",
-        True,
-        id="relative-path-with-worktree-cwd-fires",
+        id="mem-relative-path-with-cwd-header",
     ),
     pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ python cc_memory/mem.py search pr2-5\nno matches",
-        False,
-        id="on-main-does-not-fire",
+        "$ python cc_memory/mem.py search pr2-5\nno matches",
+        id="mem-bare-no-matches",
     ),
     pytest.param(
-        # 审查 ④ 点名的假阳性:mem.py 只是 git pathspec,不是记忆操作。
-        "# cwd: /home/zhuran24/zmd-pj\n$ git -C /home/zhuran24/zmd-pj/.claude/worktrees/wf-x stash push -- cc_memory/mem.py\nSaved working directory",
-        False,
-        id="git-pathspec-does-not-fire",
+        "$ python -m pytest -p no:randomly -q\n2 failed, 42 passed, 3525 deselected in 12.30s",
+        id="pytest-red-summary",
     ),
     pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ git checkout -- cc_memory/mem.py\n",
-        False,
-        id="git-checkout-pathspec-does-not-fire",
+        "# cwd: /home/zhuran24/zmd-pj\n$ python -m pytest -q\n1 failed, 9 passed in 3.0s",
+        id="pytest-red-summary-with-cwd-header",
     ),
     pytest.param(
-        # 只是读到一段引用了该命令的文本,没人真的跑过它。
-        "# cwd: /home/zhuran24/zmd-pj\n$ cat notes.md\n$ python /repo/.claude/worktrees/wf-x/cc_memory/mem.py search pr2-5\nno matches",
-        False,
-        id="quoted-in-output-does-not-fire",
+        "$ python -m pytest -p no:randomly -q\n44 passed, 3525 deselected in 12.30s",
+        id="pytest-green-summary",
     ),
 ]
 
 
-@pytest.mark.parametrize(("blob", "should_fire"), MEM_CASES)
-def test_memory_db_stale_card_triggers(zmem, card_patterns, blob, should_fire):
-    assert _fires(zmem, card_patterns, MEM_CARD, blob) is should_fire
+@pytest.mark.parametrize("blob", RETIRED_POSITIVES)
+def test_retired_shapes_fire_nothing(zmem, card_patterns, blob):
+    assert _fires_any(zmem, card_patterns, blob) == []
 
 
-PYTEST_CASES = [
-    pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ python -m pytest -p no:randomly -q\n2 failed, 42 passed, 3525 deselected in 12.30s",
-        True,
-        id="red-run-fires",
-    ),
-    pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ cd /repo && /home/zhuran24/zmd-pj/.venv/bin/python -m pytest src/tests -q\n1 failed, 9 passed in 3.0s",
-        True,
-        id="red-run-with-cd-and-abs-interpreter-fires",
-    ),
-    pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ python -m pytest -p no:randomly -q\n44 passed, 3525 deselected in 12.30s",
-        False,
-        id="green-run-does-not-fire",
-    ),
-    pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ python -m pytest -q\n0 failed, 44 passed in 1.0s",
-        False,
-        id="zero-failed-does-not-fire",
-    ),
-    pytest.param(
-        # 审查 ④ 点名的假阳性:只是 grep/rg 读一份历史红日志。
-        "# cwd: /home/zhuran24/zmd-pj\n$ rg -n pytest .artifacts/full_rerun_20260725.log\n2 failed, 42 passed, 3525 deselected in 12.30s",
-        False,
-        id="reading-old-log-does-not-fire",
-    ),
-    pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ cat .artifacts/preflight_full.log\n$ python -m pytest -q\n2 failed, 42 passed in 9s",
-        False,
-        id="cat-of-log-quoting-the-command-does-not-fire",
-    ),
-    pytest.param(
-        "# cwd: /home/zhuran24/zmd-pj\n$ python -m pytest -q\n3 xfailed, 44 passed in 1.0s",
-        False,
-        id="xfailed-does-not-fire",
-    ),
+# --- 3. 蛇吞尾排除 ------------------------------------------------------------
+
+GOVERNANCE_HITS = [
+    pytest.param({"command": "sed -n '1,80p' cc_memory_vnext/eval/regression.jsonl"}, id="bash-eval"),
+    pytest.param({"command": "cat cc_memory_vnext/cards/vnext-self-history.md"}, id="bash-card"),
+    pytest.param({"command": "python -m pytest cc_memory/tests -q"}, id="bash-mem-tests"),
+    pytest.param({"command": "python -m pytest cc_memory_vnext/tests -q"}, id="bash-vnext-tests"),
+    pytest.param({"command": "rg drift .artifacts/prune_v2_20260803/usage_census/report.md"}, id="bash-census"),
+    pytest.param({"file_path": str(EVAL_FILE)}, id="read-eval-abs"),
+    pytest.param({"file_path": r"C:\repo\cc_memory_vnext\cards\x.md"}, id="windows-separators"),
+    pytest.param({"path": "cc_memory_vnext/tests", "pattern": "error_regex"}, id="grep-in-tests"),
 ]
 
 
-@pytest.mark.parametrize(("blob", "should_fire"), PYTEST_CASES)
-def test_test_suite_speedup_card_triggers(zmem, card_patterns, blob, should_fire):
-    assert _fires(zmem, card_patterns, PYTEST_CARD, blob) is should_fire
+@pytest.mark.parametrize("tool_input", GOVERNANCE_HITS)
+def test_governance_targets_are_excluded(recall, tool_input):
+    assert recall.governance_target({"tool_input": tool_input}) is not None
 
 
-# --- 3. eval 数据不许自触发 --------------------------------------------------
+GOVERNANCE_MISSES = [
+    pytest.param({"command": "python -m pytest src/tests -q"}, id="ordinary-tests"),
+    pytest.param({"command": "python cc_memory/mem.py search pr2-5"}, id="mem-cli-is-not-governance"),
+    pytest.param({"file_path": "src/search/outer_search.py"}, id="ordinary-source"),
+    pytest.param({"command": "git push"}, id="git"),
+    pytest.param({}, id="empty-tool-input"),
+]
 
 
-def _read_windows(text):
+@pytest.mark.parametrize("tool_input", GOVERNANCE_MISSES)
+def test_ordinary_work_is_not_excluded(recall, tool_input):
+    assert recall.governance_target({"tool_input": tool_input}) is None
+
+
+def test_exclusion_ignores_the_tool_response(recall):
+    """真报错的输出里【提到】治理件路径不算 —— 那是真信号,误排除会静默吃掉它。"""
+    payload = {
+        "tool_input": {"command": "python -m pytest src/tests -q"},
+        "tool_response": "FileNotFoundError: cc_memory_vnext/eval/regression.jsonl",
+    }
+    assert recall.governance_target(payload) is None
+
+
+def _eval_windows(text):
     """整篇 + 每个 6000 字滑窗 + 逐行/相邻两行,覆盖任意读法截出的片段。"""
     yield text
     for start in range(0, max(len(text) - RESPONSE_TAIL_CHARS, 0) + 1, 2000):
@@ -205,40 +232,134 @@ def _read_windows(text):
             yield "\n".join(lines[i:i + 2])
 
 
-READ_COMMANDS = (
-    "sed -n '1,80p' cc_memory_vnext/eval/regression.jsonl",
-    "cat cc_memory_vnext/eval/regression.jsonl",
-    "rg -n error_regex cc_memory_vnext/eval/regression.jsonl",
-    "grep -n pytest cc_memory_vnext/eval/regression.jsonl",
-    "tail -20 cc_memory_vnext/eval/regression.jsonl",
-)
+RAW_READ = "sed -n '1,80p' cc_memory_vnext/eval/regression.jsonl"
+JQ_READ = "jq -r '.frame.errors[]?' cc_memory_vnext/eval/regression.jsonl"
 
 
-def test_reading_the_eval_file_fires_no_card(zmem, recall, card_patterns):
+def _jq_decoded(text: str) -> str:
+    """`jq -r '.frame.errors[]?'` 会做的事:按 JSON 语义读出来,转义全还原。"""
+    out = []
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        frame = json.loads(line).get("frame") or {}
+        out.extend(str(err) for err in (frame.get("errors") or []))
+    return "\n".join(out)
+
+
+@pytest.mark.parametrize("command", [RAW_READ, JQ_READ], ids=["raw", "jq"])
+def test_reading_the_eval_file_never_recalls(recall, zmem, card_patterns, command):
+    """读回归数据(raw 或 jq)在任何窗口下都不许召回 —— 排除闸挡在建 blob 之前。"""
     text = EVAL_FILE.read_text(encoding="utf-8")
-    offenders = []
-    for command in READ_COMMANDS:
-        for chunk in _read_windows(text):
-            blob = recall.build_error_blob(
-                {
-                    "cwd": "/home/zhuran24/zmd-pj",
-                    "tool_input": {"command": command},
-                    "tool_response": chunk,
-                }
-            )
-            for card_id, patterns in card_patterns.items():
-                if zmem.error_regex_hit(patterns, [blob]):
-                    offenders.append((command.split()[0], card_id))
-    assert not offenders, (
-        "读 eval/regression.jsonl 就把卡打出来了(自触发,还会消费 seen-once 账本): "
-        + ", ".join(sorted({f"{cmd} -> {cid}" for cmd, cid in offenders}))
+    body = _jq_decoded(text) if command is JQ_READ else text
+    for chunk in _eval_windows(body):
+        payload = {
+            "cwd": str(REPO),
+            "tool_input": {"command": command},
+            "tool_response": chunk,
+        }
+        assert recall.governance_target(payload) is not None
+
+
+def test_the_exclusion_is_load_bearing_not_decorative(recall, zmem, card_patterns):
+    """反证:没有排除闸,读这份数据确实会自弹 —— 所以打码撤掉是安全的。"""
+    body = _jq_decoded(EVAL_FILE.read_text(encoding="utf-8"))
+    offenders = set()
+    for chunk in _eval_windows(body):
+        blob = recall.build_error_blob(
+            {"tool_input": {"command": JQ_READ}, "tool_response": chunk}
+        )
+        offenders.update(_fires_any(zmem, card_patterns, blob))
+    assert offenders, "回归数据不再含任何可自触发的字面?那这条排除闸的必要性就没被证明"
+
+
+# --- 3b. end-to-end:真 hook 子进程 + 真卡片编的索引 --------------------------
+
+
+@pytest.fixture(scope="module")
+def hook_tree(tmp_path_factory):
+    """真实 hook + 真实 zmem + 真实卡片,在 tmp 里编一份索引跑起来。
+
+    不用仓库里那份 `.index/cards_index.json`:它是 git-ignored 的生成物,可能
+    stale、也可能根本不存在,拿它当被测对象等于测了个不确定的东西。
+    """
+    root = tmp_path_factory.mktemp("recall_tree") / "vnext"
+    (root / "hooks").mkdir(parents=True)
+    shutil.copy2(VNEXT / "zmem.py", root / "zmem.py")
+    shutil.copy2(HOOK_PATH, root / "hooks" / HOOK_PATH.name)
+    shutil.copytree(CARDS_DIR, root / "cards")
+    built = subprocess.run(
+        [sys.executable, str(root / "zmem.py"), "build-index"],
+        capture_output=True,
+        text=True,
+        timeout=180,
+    )
+    assert built.returncode == 0, built.stdout + built.stderr
+    return root / "hooks" / HOOK_PATH.name
+
+
+def _run_hook(hook: Path, payload: dict, session: str):
+    body = dict(payload)
+    body["session_id"] = session
+    return subprocess.run(
+        [sys.executable, str(hook)],
+        input=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+        capture_output=True,
+        timeout=120,
     )
 
 
-def test_eval_file_still_parses_and_keeps_its_cases(zmem):
-    """打码只许改磁盘上的写法,不许改解析出来的值。"""
-    import json
+def test_end_to_end_real_error_on_ordinary_file_still_recalls(hook_tree):
+    """先证明这条通道是通的:普通源码上的真报错照常弹卡。"""
+    proc = _run_hook(
+        hook_tree,
+        {
+            "cwd": str(REPO),
+            "tool_input": {"command": "python -m pytest src/tests/test_binding.py -q"},
+            "tool_response": "MODEL_INVALID: does not refer to a supported interval",
+        },
+        "sess-ordinary",
+    )
+    assert proc.returncode == 0, proc.stderr.decode("utf-8", "replace")
+    assert b"ortools-915-proto-wrapper-pitfalls" in proc.stdout
 
+
+@pytest.mark.parametrize("command", [RAW_READ, JQ_READ], ids=["raw", "jq"])
+def test_end_to_end_reading_the_eval_file_prints_nothing(hook_tree, command):
+    text = EVAL_FILE.read_text(encoding="utf-8")
+    body = _jq_decoded(text) if command is JQ_READ else text
+    proc = _run_hook(
+        hook_tree,
+        {
+            "cwd": str(REPO),
+            "tool_input": {"command": command},
+            "tool_response": body,
+        },
+        "sess-" + ("raw" if command is RAW_READ else "jq"),
+    )
+    assert proc.returncode == 0, proc.stderr.decode("utf-8", "replace")
+    assert proc.stdout == b"", proc.stdout.decode("utf-8", "replace")
+
+
+def test_end_to_end_reading_a_card_prints_nothing(hook_tree):
+    card = CARDS_DIR / f"{MEM_CARD}.md"
+    proc = _run_hook(
+        hook_tree,
+        {
+            "cwd": str(REPO),
+            "tool_input": {"command": f"cat cc_memory_vnext/cards/{card.name}"},
+            "tool_response": card.read_text(encoding="utf-8"),
+        },
+        "sess-card",
+    )
+    assert proc.returncode == 0, proc.stderr.decode("utf-8", "replace")
+    assert proc.stdout == b""
+
+
+# --- 4. 回归数据本身 ----------------------------------------------------------
+
+
+def test_eval_file_parses_and_keeps_its_cases():
     ids = []
     for line in EVAL_FILE.read_text(encoding="utf-8").splitlines():
         if not line.strip():
@@ -247,6 +368,15 @@ def test_eval_file_still_parses_and_keeps_its_cases(zmem):
         ids.append(case["id"])
         for err in (case.get("frame") or {}).get("errors") or []:
             assert isinstance(err, str)
-    assert "error-regex-mempy-relative-in-worktree-cwd-fires-20260803" in ids
+    # 08-03 那三条「正例」随卡片退役翻成负例,数据形状留着当反例。
+    assert "error-regex-retired-mempy-relative-in-worktree-must-not-fire-20260803" in ids
+    assert "error-regex-retired-pytest-red-summary-must-not-fire-20260803" in ids
     assert "error-regex-pytest-red-text-only-read-must-not-fire-20260803" in ids
     assert len(ids) == len(set(ids)), "eval case id 撞车"
+
+
+def test_eval_file_is_readable_plaintext_again():
+    """打码撤销:磁盘上就是明文。防自触发的是 hook 的排除闸,不是这份数据的写法。"""
+    raw = EVAL_FILE.read_text(encoding="utf-8")
+    assert "\\u00" not in raw and "\\u002" not in raw
+    assert "$ git push" in raw, "反证:明文字面确实回来了"

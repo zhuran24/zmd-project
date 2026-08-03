@@ -54,23 +54,18 @@ triggers:
     - src/tests/conftest.py
     - scripts/select_tests_for_paths.py
   symbols: []
-  # 2026-08-03 收窄:裸 "deselected" 出现在【每一条】pytest 汇总行里,跑绿也弹
-  # (普查 §3.5 第二噪声源)。现在要求 pytest 命令语境 + 汇总行里真有 failed,
-  # 也就是这张卡三个坑(sealed 毒化假红/并发挤压假红/slow 登记认知过期)真正
-  # 用得上的那一刻。跨 59 份转录 6260 条 Bash 结果复算:旧式 68 命中 -> 8 命中。
-  #
-  # 2026-08-03 二次收窄(审查打回):第一版只要求 `$ …pytest…`,所以 `rg pytest 旧日志`
-  # / `cat` 一份历史红日志照样命中——命中的是【读到 pytest 这个词】而不是【跑了
-  # pytest】。现在锚定到调用形态:命令必须是 `… -m pytest …`(前缀里不许有引号或
-  # 管道,命令头也不许是 grep/rg/sed/cat/tail/head/… 这些读取工具)或者命令头就是
-  # 裸 `pytest`;失败数用 [1-9]\d*,免得 "0 failed" 也算。`deselected` 不再是必要
-  # 条件——它只在带 -m 过滤的跑法里出现,而这张卡对任何真红的 pytest 跑法都成立。
-  # 再用 \A 锚到 blob 开头(= hook 拼的 `# cwd:`/`$ 命令` 头两行):这样【输出里
-  # 引用了一条 pytest 命令】的日志(cat 一份 preflight 日志就是)也不再命中,
-  # 只有 blob 头那条真跑的命令算数。
-  error_regex:
-    - "\\A(?:# cwd: [^\\n]*\\n)?\\$ (?!(?:cd [^\\n&|]*&& *)?(?:grep|rg|sed|awk|cat|tail|head|less|bat|nl|strings|git)\\b)[^\\n\"'|]*\\s-m\\s+pytest\\b[^\\n]*\\n[\\s\\S]{0,6000}?\\b[1-9]\\d* failed\\b"
-    - "\\A(?:# cwd: [^\\n]*\\n)?\\$ pytest\\b[^\\n]*\\n[\\s\\S]{0,6000}?\\b[1-9]\\d* failed\\b"
+  # 2026-08-03 终局:本卡退出 error_regex 定向召回,空表是刻意的、别再填。
+  # 两轮收窄的账:裸 "deselected" 出现在【每一条】pytest 汇总行里、跑绿也弹
+  # (普查 §3.5 第二噪声源,68 命中);收窄成"命令语境 + 汇总行真有 failed"后
+  # 剩 8 条,复核发现里面含父/子转录镜像重复、且至少一条只是 grep 读旧红日志;
+  # 再锚定调用形态后仍有绿跑误判(外层 `1 passed` 里嵌套一句 `2 failed`)与
+  # 多类漏报(绝对路径 pytest 入口、带引号的环境变量前缀、`2 errors` 汇总)。
+  # 历史真阳=0。普查 §3.5 的总账(39 次唯一注入里 30.8% 自触发、53.8% 良性输出、
+  # 真阳 3 次、唯一一次被采纳的触发本身还是假阳性)说明这是个高假阳机制,
+  # 正确处置是退出赛道、不是继续雕正则。
+  # 本卡其余触发面(keywords / intents / paths / examples)全部保留:改测试、
+  # 排 PR2 批次、retune slow 登记时照常靠意图/关键词召回。
+  error_regex: []
   examples:
     - 为什么 slow 登记只剩 19 条了
     - 给新慢测试登记 slow
@@ -90,6 +85,7 @@ provenance:
     - "60 sinks 名单核实(data/proof_obligations/p1_2_proof_obligations.json close_kernel_contract.sink_files):outer_search/exact_campaign/certified_frontier/benders_loop/candidate_proof_replay/terminal_fixed_witness_*/pr2_l0_* 全在列;b5_anchor_sprint.py 不在(故 B5A 改动未触发 reseal)。"
     - "2026-08-03 普查 §3.5:triggers.error_regex 原为裸 [\"deselected\"],该词在每条 pytest 汇总行里都有(`44 passed, 3525 deselected`),跑绿也弹=第二大噪声源。收窄为 pytest 命令锚点 + 汇总行含 failed;跨 59 份转录 6260 条 Bash 结果复算 68 命中 -> 8 命中。"
     - "2026-08-03 审查复核:那 8 条里含父/子转录镜像重复,且至少一条只是 grep 读旧红日志的文本、不是真跑 pytest——所以「8 条全是真红 pytest 运行」不成立。二次收窄改成锚定调用形态(`-m pytest` 或命令头就是 pytest,且命令头不是 grep/rg/sed/cat/tail/head 这类读取工具),读旧日志整类不再命中。"
+    - "2026-08-03 收尾(本卡 error_regex 归零):二次收窄后仍被实测打回——外层跑绿(`outer: 1 passed`)但输出里嵌了一句 `inner: 2 failed` 会误判成红测并消费 seen-once 账本,而绝对路径 pytest 入口、带引号的 PYTHONWARNINGS 前缀、`2 errors` 汇总又整类漏报。两轮收窄下来本卡历史真阳仍是 0,遂退出 error_regex 通道。"
   updated_at: "2026-08-03"
 ---
 2026-07-04 测试提速线全部落地并收编。**其他线程必须更新的认知**:

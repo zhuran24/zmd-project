@@ -8,6 +8,13 @@ observable-commitment-gate: post_tool_use = result_driven_recall。
 
 同会话注入账本(design pro-action 席): 同一张卡本会话只弹一次,账本只活在
 建议通道、绝不参与 deny。Fail-safe: 任何异常 exit 0 不注入。
+
+蛇吞尾排除(六月既有不变量,2026-08-03 才落成机制): 读/写本系统自己的治理件
+(卡片、回归数据、两套记忆测试、剪枝普查产物)时整条召回跳过 —— 那些文件里
+天然就密集写着运行时要匹配的错误文本,一读就自弹,而假命中还会把 seen-once
+账本消费掉、把本会话后面真该弹的那一次静默压掉。判据只看 tool_input 里的
+路径/命令文本,不看 tool_response(真错误输出里【提到】治理件路径不算),
+宁可漏排除、不可误排除。
 """
 
 from __future__ import annotations
@@ -22,6 +29,41 @@ sys.path.insert(0, str(ROOT))
 
 RESPONSE_TAIL_CHARS = 6000
 LEDGER_DIR_NAME = "error_recall_seen"
+
+# 蛇吞尾排除面:本系统自己的治理件。命中即整条召回跳过。
+# 都是【带斜杠的目录路径】,普通源码路径撞不上;末尾不带斜杠是为了同时认
+# `pytest cc_memory/tests -q` 这种把目录当参数的写法。
+GOVERNANCE_MARKERS = (
+    "cc_memory_vnext/eval",
+    "cc_memory_vnext/cards",
+    "cc_memory_vnext/tests",
+    "cc_memory/tests",
+    ".artifacts/prune_v2_",
+)
+
+
+def governance_target(payload: dict) -> str | None:
+    """撞错召回的自我排除闸:这次工具调用碰的是不是本系统自己的治理件?
+
+    返回命中的标记(便于测试/取证),没碰就返回 None。
+
+    只扫 `tool_input` 的顶层字符串值(Bash 的 `command`、Read/Write/Edit 的
+    `file_path`、Grep/Glob 的 `path`/`glob` 都在这一层),**不扫 tool_response**
+    —— 一条真实报错的输出里完全可能引用到卡片路径,那是真信号,不该被排除。
+    嵌套结构(MultiEdit 的 edits 列表等)故意不递归:实现从简,漏排除只是多弹
+    一次卡,误排除会静默吃掉真信号。
+    """
+    tool_input = payload.get("tool_input")
+    if not isinstance(tool_input, dict):
+        return None
+    for value in tool_input.values():
+        if not isinstance(value, str) or not value:
+            continue
+        haystack = value.replace("\\", "/")
+        for marker in GOVERNANCE_MARKERS:
+            if marker in haystack:
+                return marker
+    return None
 
 
 def response_text(payload: dict) -> str:
@@ -40,7 +82,6 @@ def build_error_blob(payload: dict) -> str:
 
     Shape, in order, and cards depend on it literally:
 
-        # cwd: <payload.cwd>        <- omitted when the payload has no cwd
         $ <tool_input.command>      <- omitted when the tool had no command
         <tail of tool_response>
 
@@ -48,21 +89,22 @@ def build_error_blob(payload: dict) -> str:
     is emitted by half the tools in the repo, so cards anchor on the command
     that produced it.
 
-    Why the cwd line (2026-08-03 review): the command alone cannot say *which
-    working copy* the work happened in — `python cc_memory/mem.py search x` is
-    byte-identical in the main repo and inside `.claude/worktrees/…`, and that
-    distinction is the only thing the feature-branch-stale card can actually
-    tell apart. Changing this shape means changing every card anchored on it;
-    `tests/test_error_recall_triggers.py` pins both directions.
+    Why there is **no** cwd line (2026-08-03, reverting the same day's earlier
+    change): a `# cwd: <dir>` header was added so one card could tell a
+    worktree checkout apart from the main repo. Measured cost: 10 of the 12
+    live error-regex cards could then be fired by an ordinary working
+    directory string alone, and every such false hit burns that card's
+    once-per-session ledger slot — silencing the real hit that comes later.
+    The card it served has since dropped error-regex recall entirely (census
+    §3.5), so the header buys nothing and is gone. Do not re-add it to give a
+    card more context to match on; that is the arms race this batch exits.
     """
     errors_text = response_text(payload)
     if not errors_text:
         return ""
     tool_input = payload.get("tool_input") or {}
     command = str(tool_input.get("command") or "") if isinstance(tool_input, dict) else ""
-    cwd = str(payload.get("cwd") or "")
-    header = f"# cwd: {cwd}\n" if cwd else ""
-    return f"{header}$ {command}\n{errors_text}" if command else f"{header}{errors_text}"
+    return f"$ {command}\n{errors_text}" if command else errors_text
 
 
 def load_ledger(path: Path) -> set[str]:
@@ -86,6 +128,11 @@ def main() -> int:
     except Exception:
         return 0
     try:
+        # 蛇吞尾排除必须在建 blob 之前:blob 一旦匹配上就会消费 seen-once
+        # 账本,之后再判断就晚了。(放在 try 内,保持"任何异常 exit 0"。)
+        if governance_target(payload):
+            return 0
+
         import zmem
 
         error_blob = build_error_blob(payload)
