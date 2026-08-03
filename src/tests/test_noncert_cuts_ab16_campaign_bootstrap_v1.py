@@ -666,6 +666,19 @@ def test_bootstrap_creates_complete_v4_root_and_seals_full_source_set(
             assert not reserved.is_symlink()
 
     package_dir = Path(root["package"]["package_dir"])
+    packaged_terminal_gate_path = package_dir / "payload" / "tool.ab16_terminal_gate_v1.py"
+    canonical_terminal_gate_path = AB16_RESEARCH / "ab16_terminal_gate_v1.py"
+    assert packaged_terminal_gate_path.read_bytes() == canonical_terminal_gate_path.read_bytes()
+    with monkeypatch.context() as no_bytecode:
+        no_bytecode.setattr(sys, "dont_write_bytecode", True)
+        packaged_terminal_gate = _load(
+            "noncert_cuts_ab16_terminal_gate_v1_from_sealed_package",
+            packaged_terminal_gate_path,
+        )
+    assert packaged_terminal_gate.SUITE_GATE_SCHEMA == (
+        "noncert-cuts-ab16-terminal-classification-v2"
+    )
+    assert not (packaged_terminal_gate_path.parent / "__pycache__").exists()
     package_manifest = AUTH.strict_loads(
         (package_dir / "package-manifest.json").read_bytes(),
         "package manifest",

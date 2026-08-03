@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import hashlib
+import importlib.machinery
 import importlib.util
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -10,13 +13,17 @@ ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs" / "research" / "noncert_cuts_ab16_20260724"
 
 
-def _load(name: str):
-    path = RESEARCH / f"{name}.py"
-    spec = importlib.util.spec_from_file_location(name, path)
-    assert spec is not None and spec.loader is not None
+def _load_path(name: str, path: Path):
+    loader = importlib.machinery.SourceFileLoader(name, str(path))
+    spec = importlib.util.spec_from_loader(name, loader)
+    assert spec is not None
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    loader.exec_module(module)
     return module
+
+
+def _load(name: str):
+    return _load_path(name, RESEARCH / f"{name}.py")
 
 
 GATE = _load("ab16_terminal_gate_v1")
@@ -29,6 +36,31 @@ def _identity(name: str) -> dict[str, object]:
         "sha256": (name.encode("utf-8").hex() + "0" * 64)[:64],
         "size_bytes": len(name),
     }
+
+
+def _file_identity(path: Path) -> dict[str, object]:
+    raw = path.read_bytes()
+    return {
+        "path": str(path.absolute()),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+
+
+def _suite_gate_consumer(
+    consumer_kind: str,
+    snapshot_paths: list[Path],
+    monkeypatch: pytest.MonkeyPatch,
+):
+    if consumer_kind == "tracked-source":
+        return GATE
+    assert consumer_kind == "first-attempt-package-snapshot"
+    packaged = snapshot_paths[0]
+    with monkeypatch.context() as no_bytecode:
+        no_bytecode.setattr(sys, "dont_write_bytecode", True)
+        module = _load_path("ab16_terminal_gate_v1_sealed_package_test", packaged)
+    assert not (packaged.parent / "__pycache__").exists()
+    return module
 
 
 def _arm_inputs(
@@ -311,6 +343,44 @@ def _binding_alt_cap_unknown_inputs() -> dict[str, object]:
     return values
 
 
+def _real_topology_arm_gates(
+    tmp_path: Path,
+    *,
+    primary_incumbent_delta: bool = False,
+) -> tuple[list[dict[str, object]], list[Path]]:
+    snapshot_bytes = (RESEARCH / "ab16_terminal_gate_v1.py").read_bytes()
+    arm_gates: list[dict[str, object]] = []
+    snapshot_paths: list[Path] = []
+    for index, slot in enumerate(GATE.ARM_SEQUENCE):
+        is_treatment = slot.endswith("-treatment")
+        snapshot_path = (
+            tmp_path
+            / slot
+            / f"attempt-{index + 1:04d}"
+            / "tool-snapshots"
+            / "0003.bin"
+        )
+        snapshot_path.parent.mkdir(parents=True)
+        snapshot_path.write_bytes(snapshot_bytes)
+        values = _arm_inputs(
+            slot,
+            deterministic_time=(
+                20.0
+                if primary_incumbent_delta and is_treatment
+                else (10.0 if primary_incumbent_delta else 10.0 - (index % 2))
+            ),
+            generated=1 if is_treatment else 0,
+            compiled=1 if is_treatment else 0,
+            applied=1 if is_treatment else 0,
+            arm_incumbent_present=(is_treatment if primary_incumbent_delta else True),
+        )
+        values["gate_tool_identity"] = _file_identity(snapshot_path)
+        arm_gates.append(GATE.build_arm_gate(**values))
+        snapshot_paths.append(snapshot_path)
+    assert len({str(path) for path in snapshot_paths}) == len(GATE.ARM_SEQUENCE)
+    return arm_gates, snapshot_paths
+
+
 def test_exact_binding_alt_cap_unknown_is_credible() -> None:
     result = GATE.build_arm_gate(**_binding_alt_cap_unknown_inputs())
 
@@ -544,23 +614,121 @@ def test_budget_censored_unknown_is_credible_only_with_rebuilt_evidence() -> Non
         GATE.build_arm_gate(**values)
 
 
-def test_suite_gate_requires_all_16_ordered_credible_arms() -> None:
-    arms = []
-    for index, slot in enumerate(GATE.ARM_SEQUENCE):
-        generated = 1 if slot.endswith("-treatment") else 0
-        compiled = generated
-        applied = generated
-        arms.append(
-            GATE.build_arm_gate(
-                **_arm_inputs(
-                    slot,
-                    deterministic_time=10.0 - (index % 2),
-                    generated=generated,
-                    compiled=compiled,
-                    applied=applied,
-                )
-            )
+@pytest.mark.parametrize(
+    "consumer_kind",
+    ("tracked-source", "first-attempt-package-snapshot"),
+)
+def test_suite_gate_merges_real_attempt_paths_by_verified_content_and_preserves_provenance(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    consumer_kind: str,
+) -> None:
+    arms, snapshot_paths = _real_topology_arm_gates(tmp_path)
+    suite_gate_consumer = _suite_gate_consumer(
+        consumer_kind,
+        snapshot_paths,
+        monkeypatch,
+    )
+
+    result = suite_gate_consumer.build_suite_gate(
+        arm_gates=arms,
+        contract=CONTRACT,
+    )
+
+    first_identity = _file_identity(snapshot_paths[0])
+    assert set(result) == {
+        "arm_gate_slots",
+        "authorizations",
+        "bundle_nonadditivity_diagnostic",
+        "configuration_results",
+        "credibility_status",
+        "gate_tool_content_identity",
+        "gate_tool_provenance_by_slot",
+        "manifest_identity",
+        "schema_version",
+        "status",
+    }
+    assert result["schema_version"] == "noncert-cuts-ab16-terminal-classification-v2"
+    assert result["gate_tool_content_identity"] == {
+        "sha256": first_identity["sha256"],
+        "size_bytes": first_identity["size_bytes"],
+    }
+    assert result["gate_tool_provenance_by_slot"] == {
+        slot: _file_identity(path)
+        for slot, path in zip(
+            suite_gate_consumer.ARM_SEQUENCE,
+            snapshot_paths,
+            strict=True,
         )
+    }
+    assert len(
+        {
+            identity["path"]
+            for identity in result["gate_tool_provenance_by_slot"].values()
+        }
+    ) == len(suite_gate_consumer.ARM_SEQUENCE)
+    assert "gate_tool_identity" not in result
+
+
+@pytest.mark.parametrize(
+    "consumer_kind",
+    ("tracked-source", "first-attempt-package-snapshot"),
+)
+@pytest.mark.parametrize(
+    ("drift", "error"),
+    (
+        pytest.param("bytes", "recorded byte identity", id="bytes"),
+        pytest.param("sha256", "recorded byte identity", id="recorded-sha256"),
+        pytest.param("size_bytes", "recorded byte identity", id="recorded-size"),
+        pytest.param("self_consistent_content", "gate-tool content identity", id="self-consistent-content"),
+        pytest.param("nul_path", "detached byte identity", id="nul-path"),
+    ),
+)
+def test_suite_gate_rejects_any_attempt_local_gate_tool_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    consumer_kind: str,
+    drift: str,
+    error: str,
+) -> None:
+    arms, snapshot_paths = _real_topology_arm_gates(tmp_path)
+    suite_gate_consumer = _suite_gate_consumer(
+        consumer_kind,
+        snapshot_paths,
+        monkeypatch,
+    )
+    last = dict(arms[-1])
+    identity = dict(last["gate_tool_identity"])
+    if drift == "bytes":
+        raw = snapshot_paths[-1].read_bytes()
+        snapshot_paths[-1].write_bytes(bytes([raw[0] ^ 1]) + raw[1:])
+    elif drift == "sha256":
+        identity["sha256"] = "0" * 64
+        last["gate_tool_identity"] = identity
+        arms[-1] = last
+    elif drift == "size_bytes":
+        identity["size_bytes"] = int(identity["size_bytes"]) + 1
+        last["gate_tool_identity"] = identity
+        arms[-1] = last
+    elif drift == "nul_path":
+        identity["path"] = "/tmp/\x00snapshot"
+        last["gate_tool_identity"] = identity
+        arms[-1] = last
+    else:
+        raw = snapshot_paths[-1].read_bytes()
+        snapshot_paths[-1].write_bytes(bytes([raw[0] ^ 1]) + raw[1:])
+        last["gate_tool_identity"] = _file_identity(snapshot_paths[-1])
+        arms[-1] = last
+
+    with pytest.raises(suite_gate_consumer.GateError, match=error):
+        suite_gate_consumer.build_suite_gate(
+            arm_gates=arms,
+            contract=CONTRACT,
+        )
+
+
+def test_suite_gate_requires_all_16_ordered_credible_arms(tmp_path: Path) -> None:
+    arms, _snapshot_paths = _real_topology_arm_gates(tmp_path)
     result = GATE.build_suite_gate(
         arm_gates=arms,
         contract=CONTRACT,
@@ -587,22 +755,11 @@ def test_suite_gate_requires_all_16_ordered_credible_arms() -> None:
         )
 
 
-def test_suite_gate_uses_primary_incumbent_delta_before_time() -> None:
-    arms = []
-    for slot in GATE.ARM_SEQUENCE:
-        is_treatment = slot.endswith("-treatment")
-        arms.append(
-            GATE.build_arm_gate(
-                **_arm_inputs(
-                    slot,
-                    deterministic_time=(20.0 if is_treatment else 10.0),
-                    generated=1 if is_treatment else 0,
-                    compiled=1 if is_treatment else 0,
-                    applied=1 if is_treatment else 0,
-                    arm_incumbent_present=is_treatment,
-                )
-            )
-        )
+def test_suite_gate_uses_primary_incumbent_delta_before_time(tmp_path: Path) -> None:
+    arms, _snapshot_paths = _real_topology_arm_gates(
+        tmp_path,
+        primary_incumbent_delta=True,
+    )
     result = GATE.build_suite_gate(
         arm_gates=arms,
         contract=CONTRACT,

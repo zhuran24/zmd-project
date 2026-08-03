@@ -7,6 +7,12 @@ arithmetic and resource replay builders.  It then supplies both the immutable
 receipts and the freshly replayed values here; byte-equal semantics are a
 mandatory input to every non-incomplete arm result.
 
+Terminal classification v2 treats per-attempt gate-tool snapshots as one
+content identity only after every original path is stably read and its bytes,
+SHA-256, and size are verified.  The raw bytes must also be equal across all
+16 arms.  The content identity omits path, while the classification retains
+every slot-bound original path identity as provenance.
+
 Passing this gate establishes only a credible observation for the fixed
 campaign configuration.  It never establishes family-global soundness,
 SAT/UNSAT, a project bound, a witness, Stage-B promotion, or production
@@ -16,13 +22,16 @@ SAT/UNSAT, a project bound, a witness, Stage-B promotion, or production
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+import hashlib
 import math
+import os
 import re
+import stat
 from typing import Any, Protocol
 
 
 ARM_GATE_SCHEMA = "noncert-cuts-ab16-arm-credibility-gate-v1"
-SUITE_GATE_SCHEMA = "noncert-cuts-ab16-terminal-classification-v1"
+SUITE_GATE_SCHEMA = "noncert-cuts-ab16-terminal-classification-v2"
 CONTROLLER_TERMINAL_SCHEMA = "noncert-cuts-ab16-controller-terminal-v1"
 ARITHMETIC_SCHEMA = "noncert-cuts-ab16-independent-organic-arm-replay-v1"
 ARITHMETIC_PURPOSE = "independent_organic_arm_event_and_arithmetic_replay"
@@ -95,6 +104,7 @@ def _identity(value: object, label: str) -> Mapping[str, Any]:
     if (
         type(record["path"]) is not str
         or not record["path"].startswith("/")
+        or "\x00" in record["path"]
         or type(record["sha256"]) is not str
         or SHA256_RE.fullmatch(record["sha256"]) is None
         or type(record["size_bytes"]) is not int
@@ -102,6 +112,58 @@ def _identity(value: object, label: str) -> Mapping[str, Any]:
     ):
         raise GateError(f"{label} is not a detached byte identity")
     return record
+
+
+def _verified_identity_bytes(
+    identity: Mapping[str, Any],
+    label: str,
+) -> bytes:
+    """Read one detached identity from its original path and verify its bytes."""
+
+    path = identity["path"]
+    absolute = os.path.abspath(path)
+    if absolute != path:
+        raise GateError(f"{label} path is not normalized")
+    try:
+        descriptor = os.open(absolute, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
+        try:
+            before = os.fstat(descriptor)
+            if not stat.S_ISREG(before.st_mode):
+                raise GateError(f"{label} path is not a regular file")
+            chunks: list[bytes] = []
+            while block := os.read(descriptor, 1024 * 1024):
+                chunks.append(block)
+            after = os.fstat(descriptor)
+        finally:
+            os.close(descriptor)
+        current = os.stat(absolute, follow_symlinks=False)
+    except (OSError, ValueError, OverflowError) as exc:
+        raise GateError(f"{label} bytes could not be verified") from exc
+    fields = (
+        "st_dev",
+        "st_ino",
+        "st_mode",
+        "st_nlink",
+        "st_size",
+        "st_mtime_ns",
+        "st_ctime_ns",
+    )
+    if (
+        not stat.S_ISREG(after.st_mode)
+        or not stat.S_ISREG(current.st_mode)
+        or any(getattr(before, field) != getattr(after, field) for field in fields)
+        or any(getattr(after, field) != getattr(current, field) for field in fields)
+    ):
+        raise GateError(f"{label} changed during verification")
+    raw = b"".join(chunks)
+    actual_identity = {
+        "path": absolute,
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "size_bytes": len(raw),
+    }
+    if len(raw) != after.st_size or actual_identity != dict(identity):
+        raise GateError(f"{label} does not match its recorded byte identity")
+    return raw
 
 
 def _number(value: object, label: str) -> int | float:
@@ -659,13 +721,15 @@ def build_suite_gate(
     arm_gates: Sequence[Mapping[str, Any]],
     contract: ContractModule,
 ) -> dict[str, object]:
-    """Classify all 16 credible arms using the package-pinned pure contract."""
+    """Classify 16 arms after verifying path-bound tools by common content."""
 
     if type(arm_gates) is not list or len(arm_gates) != len(ARM_SEQUENCE):
         raise GateError("terminal suite requires exactly 16 arm gates")
     by_slot: dict[str, Mapping[str, Any]] = {}
     common_manifest_identity: Mapping[str, Any] | None = None
-    common_gate_tool_identity: Mapping[str, Any] | None = None
+    common_gate_tool_content_identity: dict[str, object] | None = None
+    common_gate_tool_bytes: bytes | None = None
+    gate_tool_provenance_by_slot: dict[str, dict[str, object]] = {}
     for expected_slot, raw_arm_gate in zip(
         ARM_SEQUENCE,
         arm_gates,
@@ -772,9 +836,25 @@ def build_suite_gate(
         )
         if common_manifest_identity is None:
             common_manifest_identity = manifest_identity
-            common_gate_tool_identity = gate_tool_identity
-        elif manifest_identity != common_manifest_identity or gate_tool_identity != common_gate_tool_identity:
-            raise GateError("terminal suite crosses a manifest or gate-tool identity")
+        elif manifest_identity != common_manifest_identity:
+            raise GateError("terminal suite crosses a manifest identity")
+        gate_tool_bytes = _verified_identity_bytes(
+            gate_tool_identity,
+            f"{expected_slot} gate tool identity",
+        )
+        gate_tool_content_identity = {
+            "sha256": gate_tool_identity["sha256"],
+            "size_bytes": gate_tool_identity["size_bytes"],
+        }
+        if common_gate_tool_content_identity is None:
+            common_gate_tool_content_identity = gate_tool_content_identity
+            common_gate_tool_bytes = gate_tool_bytes
+        elif (
+            gate_tool_content_identity != common_gate_tool_content_identity
+            or gate_tool_bytes != common_gate_tool_bytes
+        ):
+            raise GateError("terminal suite crosses a gate-tool content identity")
+        gate_tool_provenance_by_slot[expected_slot] = dict(gate_tool_identity)
         by_slot[expected_slot] = arm_gate
 
     configuration_records: dict[str, dict[str, object]] = {}
@@ -827,7 +907,8 @@ def build_suite_gate(
         "bundle_nonadditivity_diagnostic": replayed["bundle_nonadditivity_diagnostic"],
         "configuration_results": replayed["configuration_results"],
         "credibility_status": CREDIBILITY_PASS,
-        "gate_tool_identity": dict(common_gate_tool_identity or {}),
+        "gate_tool_content_identity": dict(common_gate_tool_content_identity or {}),
+        "gate_tool_provenance_by_slot": gate_tool_provenance_by_slot,
         "manifest_identity": dict(common_manifest_identity or {}),
         "schema_version": SUITE_GATE_SCHEMA,
         "status": "AB16_FIXED_CONFIGURATION_SUITE_COMPLETE",

@@ -111,6 +111,20 @@ def test_fixed_assignment_replay_declaration_is_v2_only() -> None:
         DECLARATION.schema_cohort_for("noncert-cuts-ab16-fixed-assignment-replay-v1")
 
 
+def test_terminal_classification_declaration_is_v2_only() -> None:
+    terminal_classification_schemas = tuple(
+        schema
+        for schema in DECLARATION.ORDERED_ACTIVE_SCHEMAS
+        if schema.startswith("noncert-cuts-ab16-terminal-classification-v")
+    )
+    assert terminal_classification_schemas == (
+        "noncert-cuts-ab16-terminal-classification-v2",
+    )
+    assert DECLARATION.schema_cohort_for(terminal_classification_schemas[0]) == "replay_terminal"
+    with pytest.raises(DECLARATION.SchemaDeclarationError, match="unknown schema version"):
+        DECLARATION.schema_cohort_for("noncert-cuts-ab16-terminal-classification-v1")
+
+
 def test_exact_projection_and_cli_self_check_pass() -> None:
     projection = _projection()
     assert DECLARATION.validate_schema_projection(projection) == {

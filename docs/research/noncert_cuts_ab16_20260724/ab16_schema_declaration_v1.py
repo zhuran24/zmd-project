@@ -82,7 +82,7 @@ REPLAY_TERMINAL_SCHEMAS = (
     "noncert-cuts-ab16-applied-assignment-v1",
     "noncert-cuts-ab16-independent-organic-arm-replay-v1",
     "noncert-cuts-ab16-arm-credibility-gate-v1",
-    "noncert-cuts-ab16-terminal-classification-v1",
+    "noncert-cuts-ab16-terminal-classification-v2",
 )
 
 GATE1_OWNED_REFERENCE_SCHEMAS = (
