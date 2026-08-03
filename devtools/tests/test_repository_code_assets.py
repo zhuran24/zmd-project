@@ -16,11 +16,11 @@ from devtools import check_repository_code_assets as assets
 BASELINE = "201c1988243951e16473af15f5d670ab11edf964"
 BASELINE_COUNTS = {
     "active_implementation": 386,
-    "test": 660,
-    "common_infrastructure": 478,
+    "test": 646,
+    "common_infrastructure": 475,
     "authoritative_input": 4,
-    "enforcement_control": 11,
-    "historical_evidence": 455,
+    "enforcement_control": 7,
+    "historical_evidence": 464,
     "retirement_candidate": 19,
 }
 # The W0 front-aware research line (branch w0/front-aware-g1-20260803) adds ten
@@ -31,7 +31,7 @@ CURRENT_BASE_COUNTS = {
     "test": 660,
     "common_infrastructure": 478,
     "authoritative_input": 4,
-    "enforcement_control": 11,
+    "enforcement_control": 10,
     "historical_evidence": 455,
     "retirement_candidate": 19,
 }
