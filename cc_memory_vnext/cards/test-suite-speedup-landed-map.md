@@ -54,8 +54,12 @@ triggers:
     - src/tests/conftest.py
     - scripts/select_tests_for_paths.py
   symbols: []
+  # 2026-08-03 收窄:裸 "deselected" 出现在【每一条】pytest 汇总行里,跑绿也弹
+  # (普查 §3.5 第二噪声源)。现在要求 pytest 命令语境 + 汇总行里真有 failed,
+  # 也就是这张卡三个坑(sealed 毒化假红/并发挤压假红/slow 登记认知过期)真正
+  # 用得上的那一刻。跨 59 份转录 6260 条 Bash 结果复算:旧式 68 命中 -> 8 命中。
   error_regex:
-    - "deselected"
+    - "\\$ [^\\n]*pytest[\\s\\S]{0,6000}\\d+ failed[\\s\\S]{0,200}deselected"
   examples:
     - 为什么 slow 登记只剩 19 条了
     - 给新慢测试登记 slow
@@ -73,7 +77,8 @@ provenance:
     - "preflight --full 最终态 19/19 PASSED,快 lane 3819 passed/338.97s。"
     - "slow lane 无并发串行扫描 41 条 859s;2 条失败(sink_replay_authority/parallel_scheduler)无并发重跑 2 passed 46.7s,系并发 pytest 挤压假红。"
     - "60 sinks 名单核实(data/proof_obligations/p1_2_proof_obligations.json close_kernel_contract.sink_files):outer_search/exact_campaign/certified_frontier/benders_loop/candidate_proof_replay/terminal_fixed_witness_*/pr2_l0_* 全在列;b5_anchor_sprint.py 不在(故 B5A 改动未触发 reseal)。"
-  updated_at: "2026-07-07"
+    - "2026-08-03 普查 §3.5:triggers.error_regex 原为裸 [\"deselected\"],该词在每条 pytest 汇总行里都有(`44 passed, 3525 deselected`),跑绿也弹=第二大噪声源。收窄为 pytest 命令锚点 + 汇总行含 failed;跨 59 份转录 6260 条 Bash 结果复算 68 命中 -> 8 命中,8 条都是真红的 pytest 运行。"
+  updated_at: "2026-08-03"
 ---
 2026-07-04 测试提速线全部落地并收编。**其他线程必须更新的认知**:
 
