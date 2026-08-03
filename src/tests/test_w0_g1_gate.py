@@ -376,6 +376,9 @@ def test_a_file_appearing_while_the_receipt_is_written_removes_that_receipt(
     assert (run_root / STRAY_FILE).exists(), "the run must not delete foreign files"
     gate_doc = json.loads((run_root / "gate.json").read_text(encoding="utf-8"))
     assert gate_doc["verdict"] == "NOT_PASSED"
+    assert gate_doc["terminal_state"] == "ROOT_CLOSURE_FAILED"
+    assert gate_doc["invalidated_by"] == "post_gate_root_closure_failure"
+    assert gate_doc["verdict_is_conditional_on_receipt"] is False
 
 
 def test_an_undisturbed_gate_run_closes_its_root(tmp_path: Path) -> None:

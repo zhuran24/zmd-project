@@ -121,7 +121,7 @@ r_out = Σ_c slots(outputs[c])
 - 实测 `crusher_sandleaf` 的 outputs 是 `{"sandleaf_powder": 3}`：**1 个商品种类、3 个 slot**。
 
 种类数比真需求**更弱**，照它放行的几何在 G3 必死。slot 九行表是**健全且更紧**的必要条件——
-凡它判死的身位，种类数语义下同样死；差别只在放行面，不在死刑面。更正文书见
+凡种类数语义判死的身位，slot 语义下同样死（更强的必要条件只会多杀、不会少杀）；反向不成立——slot 判死而种类数放行的那部分，正是会带病走到 G3 才死的几何。更正文书见
 `../cleanroom_rederivation_20260718/21_w0_port_semantics_correction_20260803.md`。
 
 **必须主动点破的巧合**：按 slot 推出的九行表逐行等于 17 号文书的 `operation_classes`
@@ -138,7 +138,7 @@ r_out = Σ_c slots(outputs[c])
 46 个 boundary_storage_port 口 + protocol_core 的 6 个输出口 = **52 个 output 口**，
 core 的 **14 个 input 口** ≥ 2。两侧都被覆盖，且 output 侧**一格不剩**——
 `R-CORE-FRONT-RESERVE` 把这 66 个口前格全部留空，正是这条核算的执行形态。
-`run_g1.py` 每次运行都重算这条核算并把该文件的 sha256 绑进 `config.json` 与 `receipt.json`；
+`run_g1.py` 的 precheck / solve / gate 路径每次都重算这条核算并把该文件的 sha256 绑进 `config.json` 与 `receipt.json`（独立的 expand / audit 子命令不消费 generic_io、不绑）；
 覆盖不成立就 fail-closed，不进 master。
 
 ### 九行类表

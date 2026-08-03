@@ -176,7 +176,7 @@
       "nature": "research_evidence",
       "content_treatment": "non_code_asset",
       "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "W0 front-aware G1 opening brief, pattern catalog, master run roots, and preflight receipts."
+      "rationale": "W0 front-aware G1 opening brief, pattern catalog, master run roots, and preflight receipts. Line still active: append-only extension subpaths (g1_run/stage_c/ preflight logs, probe_20260803/, l2_consult_20260803/) keep accumulating until the line closes; existing bytes are immutable."
     }
   ],
   "classification": {

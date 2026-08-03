@@ -220,7 +220,7 @@ new best valid: 10 bodies
 | **L3** negotiated portal | 两轮的极小核里没有出现 seam 族（本档位下 master 就没有 seam 约束），所以当前模型里它加 0 格 | **不是**"反事实增益为零"。L3 改的是 portal / 连通性词汇，换词汇后的 catalog 是另一份 catalog；当前核里没有 seam 族只说明当前模型没有这个词 |
 | **L4** 跨缝孔洞 fragment | 当前列集的孔洞代价是 19 格（并集实测 3,113 − 3,094） | **不是**跨缝 hole 新词汇的健全上界。19 是"这份 catalog 里最密 pattern 与最密带孔 pattern 的差"，不是新词汇能回收多少 |
 
-所以停在 L1 的理由不是"算术已经排除了后面三档"，而是本批的预算与授权到此为止：
+所以停在 L1 不是任何算术判定的结果——L2–L4 未跑、未被排除；停下只因本批的预算与授权到此为止：
 L2 要重生成全部 catalog，属于另立一批的量级；L5（跨区供电）开线书明写停下交 owner。
 
 有一个量是确定的：**松弛上界 3,392 与实际造得出的 3,113 之间那 279 格**。
@@ -280,7 +280,7 @@ L5（跨区供电）按开线书明写停下交 owner。
 | `27fbe46` / `81e8316` | 提交正文写 19/19，并留下 `stage_b/preflight_c1.log` 与 `preflight_c2.log`——但两份**字节相同**（sha256 `f0f21fda…23bef`，同为 6798 passed / 170 skipped、192.87 s）。两份文件只能证明**一次**运行：wall clock 不可能复现到厘秒 |
 
 所以「每笔提交前 full 全绿」这句话在证据上不成立。能说的只有：**当前 HEAD 全量绿有独立复核**
-——08-03 三席审查中，codex 对抗席与 opus 质量席各自在独立 worktree 跑过 full preflight。
+——08-03 三席审查中，codex 对抗席在独立 worktree 跑出 full preflight 19/19 全绿；opus 质量席在独立 worktree 跑的快 lane 有 1 处失败、经其在基线 `0dcb531` 上复现判为预先存在（非本线回归）。
 前五笔无留档收据是可 bisect 性与收据完整性的缺口，不是健全性缺口（`aecbd71` 是那五笔之后的
 累积绿灯）。**本文不补写历史。**
 
@@ -320,7 +320,7 @@ symlink），preflight 与所有 G1 运行都用它当解释器。除此之外�
 G1 没有重跑，终态与所有数字不变。本批做的是四件事：把记账改对、把 fail-open 的门改成
 fail-closed、把机器证据搬进 git、把 `.artifacts` 根登记进治理台账。
 
-### 10.1 四笔提交
+### 10.1 五笔提交
 
 | 提交 | 内容 | preflight 收据（`.artifacts/w0_front_aware_20260803/g1_run/stage_c/`） |
 |---|---|---|

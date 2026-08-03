@@ -819,7 +819,8 @@ def cmd_gate(args: argparse.Namespace) -> int:
         ),
     }
     run.write("gate.json", "gate", gate_doc)
-    receipt = run.close(
+    try:
+        receipt = run.close(
         _int_payload(
             {
                 "terminal_state": terminal,
@@ -832,7 +833,19 @@ def cmd_gate(args: argparse.Namespace) -> int:
                 ),
             }
         )
-    )
+        )
+    except BaseException:
+        # The root failed to close after gate.json was written.  A verdict that
+        # was conditional on a receipt must not stay behind as the last word in
+        # a root that has none.
+        gate_doc["terminal_state"] = "ROOT_CLOSURE_FAILED"
+        gate_doc["verdict"] = "NOT_PASSED"
+        gate_doc["verdict_is_conditional_on_receipt"] = False
+        gate_doc["invalidated_by"] = "post_gate_root_closure_failure"
+        (run.root.path / "gate.json").write_bytes(
+            canonical_json_bytes(gate_doc) + b"\n"
+        )
+        raise
     print(
         json.dumps(
             {
