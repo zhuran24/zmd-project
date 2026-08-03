@@ -32,6 +32,16 @@ CURRENT_BASE_COUNTS = {
     "historical_evidence": 446,
     "retirement_candidate": 19,
 }
+EXPECTED_READ_ONLY_HISTORICAL_EVIDENCE_ROOTS = {
+    ".artifacts/ab16_arms_20260802/": "failed_campaign_history",
+    ".artifacts/ab16_slimdown_20260801/": "research_evidence",
+    ".artifacts/adapt_batch_gates/": "research_evidence",
+    ".artifacts/batch_c_leftovers_20260714/": "failed_campaign_history",
+    ".artifacts/cleanroom_r3_adversarial/": "research_evidence",
+    ".artifacts/h20_row_power_oracle_20260803/": "research_evidence",
+    ".artifacts/merge_codex_20260801/": "research_evidence",
+    ".artifacts/rab_drill_20260716/": "research_evidence",
+}
 
 
 def test_manifest_validates_against_durable_json_schema() -> None:
@@ -92,6 +102,171 @@ def test_current_inventory_has_only_declared_g1_and_conditional_assets() -> None
             expected[conditional["primary_class"]] += 1
     assert measured["class_counts"] == expected
     assert measured["code_asset_count"] == sum(expected.values())
+    assert measured["git_visible_count"] == len(visible)
+
+
+def test_current_tracked_inventory_keeps_the_portable_class_counts() -> None:
+    manifest = assets.load_manifest()
+    measured = assets.inventory(commit="HEAD", include_assets=False)
+    expected = dict(manifest["measurement"]["expected_current_class_counts"])
+    expected["enforcement_control"] += 1  # .rgignore is tracked at current HEAD.
+    assert measured["class_counts"] == expected
+    assert measured["code_asset_count"] == sum(expected.values())
+
+
+def test_commit_inventory_never_exempts_registered_root_code(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    tracked_path = ".artifacts/ab16_arms_20260802/tracked.py"
+    monkeypatch.setattr(
+        assets,
+        "_commit_blobs",
+        lambda _commit: {tracked_path: b"raise AssertionError\n"},
+    )
+    monkeypatch.setattr(
+        assets,
+        "_run_git",
+        lambda _args, **_kwargs: b"1" * 40 + b"\n",
+    )
+    measured = assets.inventory(commit="synthetic", include_assets=True)
+    assert measured["revision"] == "1" * 40
+    assert measured["git_visible_count"] == 1
+    assert measured["code_asset_count"] == 1
+    assert measured["class_counts"]["historical_evidence"] == 1
+    assert measured["assets"][0]["path"] == tracked_path
+    assert measured["assets"][0]["rule_id"] == "artifact_history"
+
+
+def test_read_only_historical_evidence_root_registry_is_exact_and_not_git_ignored() -> None:
+    manifest = assets.load_manifest()
+    records = manifest["read_only_historical_evidence_roots"]
+    actual = {record["path"]: record["nature"] for record in records}
+    assert actual == EXPECTED_READ_ONLY_HISTORICAL_EVIDENCE_ROOTS
+    assert [record["path"] for record in records] == sorted(actual)
+    assets._validate_read_only_historical_evidence_roots(manifest)
+
+    for root in actual:
+        completed = subprocess.run(
+            [
+                "git",
+                "check-ignore",
+                "--no-index",
+                "-q",
+                f"{root}__repository_governance_probe__.py",
+            ],
+            cwd=assets.ROOT,
+            check=False,
+        )
+        assert completed.returncode == 1, root
+
+
+def test_registered_historical_roots_are_non_code_assets_without_prefix_bleed() -> None:
+    manifest = assets.load_manifest()
+    registered = ".artifacts/ab16_arms_20260802/"
+    measured = assets._measurement(
+        {
+            f"{registered}probe.py": b"raise AssertionError\n",
+            f"{registered}opaque.bin": b"#!/bin/sh\nexit 1\n",
+            ".artifacts/ab16_arms_20260802-copy/probe.py": b"raise AssertionError\n",
+            ".artifacts/future_campaign/probe.py": b"raise AssertionError\n",
+        },
+        manifest,
+        include_assets=True,
+    )
+    assert measured["git_visible_count"] == 4
+    assert measured["code_asset_count"] == 2
+    assert measured["class_counts"]["historical_evidence"] == 2
+    assert {record["path"] for record in measured["assets"]} == {
+        ".artifacts/ab16_arms_20260802-copy/probe.py",
+        ".artifacts/future_campaign/probe.py",
+    }
+
+
+def test_inventory_does_not_read_registered_root_contents(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    registered = ".artifacts/h20_row_power_oracle_20260803/opaque.bin"
+    unregistered = ".artifacts/future_campaign/probe.py"
+    reads: list[str] = []
+
+    monkeypatch.setattr(assets, "git_visible_paths", lambda: (registered, unregistered))
+
+    def read_current(path: str) -> bytes:
+        reads.append(path)
+        return b"#!/usr/bin/env python3\n"
+
+    monkeypatch.setattr(assets, "_current_bytes", read_current)
+    measured = assets.inventory(include_assets=True)
+    assert reads == [unregistered]
+    assert measured["git_visible_count"] == 2
+    assert measured["class_counts"]["historical_evidence"] == 1
+    assert [record["path"] for record in measured["assets"]] == [unregistered]
+
+
+@pytest.mark.parametrize(
+    "invalid_path",
+    (
+        ".artifacts/",
+        ".artifacts/missing-trailing-slash",
+        ".artifacts/nested/root/",
+        ".artifacts/*/",
+        ".artifacts/../",
+    ),
+)
+def test_read_only_historical_evidence_registry_rejects_non_exact_roots(
+    invalid_path: str,
+) -> None:
+    manifest = copy.deepcopy(assets.load_manifest())
+    manifest["read_only_historical_evidence_roots"][0]["path"] = invalid_path
+    with pytest.raises(assets.GovernanceError, match="read_only_historical_evidence_roots"):
+        assets._read_only_historical_evidence_roots(manifest)
+
+
+def test_read_only_historical_evidence_registry_rejects_duplicate_and_unsorted_roots() -> None:
+    duplicate = copy.deepcopy(assets.load_manifest())
+    duplicate["read_only_historical_evidence_roots"].insert(
+        1,
+        copy.deepcopy(duplicate["read_only_historical_evidence_roots"][0]),
+    )
+    with pytest.raises(assets.GovernanceError, match="duplicate paths"):
+        assets._read_only_historical_evidence_roots(duplicate)
+
+    unsorted = copy.deepcopy(assets.load_manifest())
+    roots = unsorted["read_only_historical_evidence_roots"]
+    roots[0], roots[1] = roots[1], roots[0]
+    with pytest.raises(assets.GovernanceError, match="sorted by path"):
+        assets._read_only_historical_evidence_roots(unsorted)
+
+
+def test_read_only_historical_evidence_registry_cannot_cover_tracked_paths(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = assets.load_manifest()
+    tracked = b".artifacts/ab16_arms_20260802/tracked.py\0"
+    monkeypatch.setattr(assets, "_run_git", lambda _args: tracked)
+    with pytest.raises(assets.GovernanceError, match="must not cover tracked paths"):
+        assets._validate_read_only_historical_evidence_roots(manifest)
+
+
+def test_unregistered_artifact_code_asset_still_fails_the_current_count_gate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = assets.load_manifest()
+    synthetic = assets._measurement(
+        {".artifacts/future_campaign/probe.py": b"raise AssertionError\n"},
+        manifest,
+        include_assets=True,
+    )
+    assert synthetic["class_counts"]["historical_evidence"] == 1
+    assert synthetic["assets"][0]["rule_id"] == "artifact_history"
+
+    actual_counts = dict(manifest["measurement"]["expected_current_class_counts"])
+    actual_counts["enforcement_control"] += 1
+    actual_counts["historical_evidence"] += 1
+    monkeypatch.setattr(assets, "inventory", lambda **_kwargs: {"class_counts": actual_counts})
+    monkeypatch.setattr(assets, "git_visible_paths", lambda: (".rgignore",))
+    with pytest.raises(assets.GovernanceError, match="current class counts drifted"):
+        assets._validate_current(manifest)
 
 
 def test_pose_bool_backend_is_active_guarded_and_default_visible() -> None:

@@ -38,6 +38,18 @@ PRIMARY_CLASSES = (
     "retirement_candidate",
 )
 PYTEST_LANES = frozenset({"developer", "evidence", "replay"})
+READ_ONLY_HISTORICAL_EVIDENCE_NATURES = frozenset(
+    {"research_evidence", "failed_campaign_history"}
+)
+READ_ONLY_HISTORICAL_EVIDENCE_FIELDS = frozenset(
+    {
+        "path",
+        "nature",
+        "content_treatment",
+        "mutation_expectation",
+        "rationale",
+    }
+)
 AUTHORITY_ASSET_ROLES = frozenset(
     {
         "certified_source_of_truth",
@@ -153,6 +165,76 @@ def _validate_path_set(paths: Sequence[str]) -> None:
         pure = PurePosixPath(path)
         if path.startswith("/") or ".." in pure.parts or "\\" in path or "\0" in path:
             raise GovernanceError(f"unsafe repository path: {path!r}")
+
+
+def _read_only_historical_evidence_roots(manifest: Mapping[str, Any]) -> tuple[str, ...]:
+    records = manifest.get("read_only_historical_evidence_roots")
+    if not isinstance(records, list) or not records:
+        raise GovernanceError("read_only_historical_evidence_roots must be a non-empty list")
+
+    roots: list[str] = []
+    for index, record in enumerate(records):
+        label = f"read_only_historical_evidence_roots[{index}]"
+        if not isinstance(record, dict) or set(record) != READ_ONLY_HISTORICAL_EVIDENCE_FIELDS:
+            raise GovernanceError(f"{label} has invalid fields")
+        path = record["path"]
+        if not isinstance(path, str):
+            raise GovernanceError(f"{label}.path must be a string")
+        _validate_repository_pattern(path, f"{label}.path")
+        parts = PurePosixPath(path).parts
+        if (
+            len(parts) != 2
+            or parts[0] != ".artifacts"
+            or path != f".artifacts/{parts[1]}/"
+            or any(character in parts[1] for character in "*?[")
+        ):
+            raise GovernanceError(
+                f"{label}.path must be an exact top-level .artifacts root with a trailing slash"
+            )
+        if record["nature"] not in READ_ONLY_HISTORICAL_EVIDENCE_NATURES:
+            raise GovernanceError(f"{label}.nature is invalid")
+        if record["content_treatment"] != "non_code_asset":
+            raise GovernanceError(f"{label}.content_treatment must remain non_code_asset")
+        if record["mutation_expectation"] != "read_only_preserve_in_place":
+            raise GovernanceError(
+                f"{label}.mutation_expectation must remain read_only_preserve_in_place"
+            )
+        if not isinstance(record["rationale"], str) or not record["rationale"].strip():
+            raise GovernanceError(f"{label}.rationale must be a non-empty string")
+        roots.append(path)
+
+    if roots != sorted(roots):
+        raise GovernanceError("read-only historical evidence roots must be sorted by path")
+    if len(roots) != len(set(roots)):
+        raise GovernanceError("read-only historical evidence roots contain duplicate paths")
+    for index, root in enumerate(roots):
+        for other in roots[index + 1 :]:
+            if root.startswith(other) or other.startswith(root):
+                raise GovernanceError(
+                    "read-only historical evidence roots must not overlap: "
+                    f"{root!r} and {other!r}"
+                )
+    return tuple(roots)
+
+
+def _is_read_only_historical_evidence_path(
+    path: str,
+    roots: Sequence[str],
+) -> bool:
+    return any(path.startswith(root) for root in roots)
+
+
+def _validate_read_only_historical_evidence_roots(manifest: Mapping[str, Any]) -> None:
+    roots = _read_only_historical_evidence_roots(manifest)
+    tracked = _parse_nul_paths(_run_git(["ls-files", "--cached", "-z"]))
+    covered_tracked = sorted(
+        path for path in tracked if _is_read_only_historical_evidence_path(path, roots)
+    )
+    if covered_tracked:
+        raise GovernanceError(
+            "read-only historical evidence roots must not cover tracked paths: "
+            f"{covered_tracked!r}"
+        )
 
 
 def _current_bytes(path: str) -> bytes:
@@ -280,13 +362,22 @@ def _measurement(
     manifest: Mapping[str, Any],
     *,
     include_assets: bool,
+    git_visible_count: int | None = None,
+    exclude_read_only_historical_evidence: bool = True,
 ) -> dict[str, Any]:
     selector = manifest["code_selector"]
+    read_only_roots = (
+        _read_only_historical_evidence_roots(manifest)
+        if exclude_read_only_historical_evidence
+        else ()
+    )
     class_counts = {name: 0 for name in PRIMARY_CLASSES}
     raw_bytes = 0
     lf_count = 0
     assets: list[dict[str, Any]] = []
     for path in sorted(paths_and_bytes):
+        if _is_read_only_historical_evidence_path(path, read_only_roots):
+            continue
         raw = paths_and_bytes[path]
         if not _is_code_asset(path, raw, selector):
             continue
@@ -313,7 +404,7 @@ def _measurement(
                 }
             )
     result: dict[str, Any] = {
-        "git_visible_count": len(paths_and_bytes),
+        "git_visible_count": len(paths_and_bytes) if git_visible_count is None else git_visible_count,
         "code_asset_count": sum(class_counts.values()),
         "raw_bytes": raw_bytes,
         "lf_count": lf_count,
@@ -326,14 +417,27 @@ def _measurement(
 
 def inventory(*, commit: str | None = None, include_assets: bool = True) -> dict[str, Any]:
     manifest = load_manifest()
+    read_only_roots = _read_only_historical_evidence_roots(manifest)
     if commit is None:
         paths = git_visible_paths()
-        blobs = {path: _current_bytes(path) for path in paths}
+        blobs = {
+            path: _current_bytes(path)
+            for path in paths
+            if not _is_read_only_historical_evidence_path(path, read_only_roots)
+        }
+        git_visible_count = len(paths)
         revision = "WORKTREE"
     else:
         blobs = _commit_blobs(commit)
+        git_visible_count = len(blobs)
         revision = _run_git(["rev-parse", "--verify", f"{commit}^{{commit}}"]).decode().strip()
-    result = _measurement(blobs, manifest, include_assets=include_assets)
+    result = _measurement(
+        blobs,
+        manifest,
+        include_assets=include_assets,
+        git_visible_count=git_visible_count,
+        exclude_read_only_historical_evidence=commit is None,
+    )
     result["revision"] = revision
     return result
 
@@ -391,6 +495,8 @@ def _validate_manifest_shape(manifest: Mapping[str, Any]) -> None:
             _require_string_list(selector.get(field), f"code_selector.{field}")
         ):
             _validate_repository_pattern(value, f"code_selector.{field}[{index}]")
+
+    _read_only_historical_evidence_roots(manifest)
 
     classification = manifest.get("classification")
     if not isinstance(classification, dict):
@@ -838,6 +944,7 @@ def check() -> dict[str, Any]:
     manifest = load_manifest()
     _validate_against_schema(schema, manifest)
     _validate_manifest_shape(manifest)
+    _validate_read_only_historical_evidence_roots(manifest)
     baseline = _validate_baseline(manifest)
     current = _validate_current(manifest)
     _validate_pytest_lanes(manifest)

@@ -9,6 +9,7 @@
     "authority",
     "measurement",
     "code_selector",
+    "read_only_historical_evidence_roots",
     "classification",
     "asset_role_rules",
     "logical_isolation",
@@ -167,6 +168,14 @@
           "uniqueItems": true
         }
       }
+    },
+    "read_only_historical_evidence_roots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/readOnlyHistoricalEvidenceRoot"
+      },
+      "uniqueItems": true
     },
     "classification": {
       "type": "object",
@@ -349,6 +358,45 @@
           "pattern": "[*?\\[]"
         }
       ]
+    },
+    "readOnlyHistoricalEvidenceRoot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "nature",
+        "content_treatment",
+        "mutation_expectation",
+        "rationale"
+      ],
+      "properties": {
+        "path": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/repositoryPath"
+            },
+            {
+              "pattern": "^\\.artifacts/[^/]+/$"
+            }
+          ]
+        },
+        "nature": {
+          "enum": [
+            "research_evidence",
+            "failed_campaign_history"
+          ]
+        },
+        "content_treatment": {
+          "const": "non_code_asset"
+        },
+        "mutation_expectation": {
+          "const": "read_only_preserve_in_place"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
     "classCounts": {
       "type": "object",

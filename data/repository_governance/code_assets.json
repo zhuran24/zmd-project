@@ -114,6 +114,64 @@
       "data/repository_governance/*.json"
     ]
   },
+  "read_only_historical_evidence_roots": [
+    {
+      "path": ".artifacts/ab16_arms_20260802/",
+      "nature": "failed_campaign_history",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "AB16 r3-r6 campaign attempts, retained tool snapshots, failure receipts, and closeout evidence."
+    },
+    {
+      "path": ".artifacts/ab16_slimdown_20260801/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "AB16 governance and simplification execution logs, launch records, preflight receipts, and result history."
+    },
+    {
+      "path": ".artifacts/adapt_batch_gates/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "Batch-gate adaptation, full-gate, slow-lane, and interpreter comparison receipts."
+    },
+    {
+      "path": ".artifacts/batch_c_leftovers_20260714/",
+      "nature": "failed_campaign_history",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "Retained Batch-C drill, crash, restart, and ledger-rescue campaign history."
+    },
+    {
+      "path": ".artifacts/cleanroom_r3_adversarial/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "Clean-room adversarial run prompt, execution log, and verdict evidence."
+    },
+    {
+      "path": ".artifacts/h20_row_power_oracle_20260803/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "H20 row-power oracle, independent checker, receipts, and bounded research result."
+    },
+    {
+      "path": ".artifacts/merge_codex_20260801/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "Retained merge preflight and gate execution evidence."
+    },
+    {
+      "path": ".artifacts/rab_drill_20260716/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "RAB drill control, resource, memory, and execution evidence."
+    }
+  ],
   "classification": {
     "primary_classes": [
       "active_implementation",
@@ -1167,8 +1225,8 @@
       "argv_source": ".github/workflows/project_foundation.yml repository-governance step",
       "baseline_count": 0,
       "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "expected_count": 25,
-      "expected_sha256": "53673c3baed9831cbb7b2ad2326d9ab79ff4f3d77ab1796d45417f06a8f66f1e"
+      "expected_count": 38,
+      "expected_sha256": "602844389a3864ecd81ceabebecb6a1cd6e1bfb603607491ab2a96ff202747c5"
     },
     {
       "id": "industrial_planner_single_base",
