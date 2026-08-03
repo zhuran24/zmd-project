@@ -457,7 +457,7 @@ def test_a_repository_root_file_line_reference_is_scanned(tmp_path: Path) -> Non
     assert report["candidates"][0]["signals"] == ["referenced_line_range_is_outside_the_file"]
 
 
-def test_a_colon_number_token_with_no_repository_suffix_is_not_a_file_line_reference(
+def test_a_colon_number_token_that_names_no_tracked_root_file_is_not_a_reference(
     tmp_path: Path,
 ) -> None:
     root = make_repo(
@@ -465,6 +465,45 @@ def test_a_colon_number_token_with_no_repository_suffix_is_not_a_file_line_refer
         documents={"GUIDE.md": "# Guide\n\nortools `9.16:0` and clock `12:30`.\n"},
     )
     assert build(root)["candidates"] == []
+
+
+def test_a_bare_basename_file_line_reference_to_a_nested_file_is_not_judged(
+    tmp_path: Path,
+) -> None:
+    """``thing.py:99`` is shorthand for ``src/thing.py``, not a missing root file.
+
+    The repository-root ``main.py`` is what makes this ambiguous: it puts a
+    root-level ``.py`` in the tree, so a bare ``.py`` basename becomes
+    plausible as a root file — and this repository's prose uses exactly that
+    shorthand (``exact_campaign.py:3532`` for a file under ``src/``).
+    """
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nGuard lives at `thing.py:99`.\n"},
+        extra_files={"main.py": "print(0)\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    # The root-level file that really is tracked stays checkable.
+    checked = make_repo(
+        tmp_path,
+        name="repo_root_main",
+        documents={"GUIDE.md": "# Guide\n\nGuard lives at `main.py:99`.\n"},
+        extra_files={"main.py": "print(0)\n"},
+    )
+    assert flags(build(checked)["candidates"]) == [("dead_symbol_ref", "GUIDE.md", "main.py:99")]
+
+
+def test_a_trailing_slash_directory_reference_keeps_its_absent_by_design_allowlist(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nNever commit `data/generated/`.\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["absent_by_design"] == 1
 
 
 # --------------------------------------------------------------------------

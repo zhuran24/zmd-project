@@ -871,7 +871,10 @@ def _normalize_relative(token: str) -> str | None:
 
     Returns ``None`` when the token would climb above the repository root.
     This is purely lexical on purpose: the scanner never resolves symlinks, so
-    it can never be talked into reading outside the tree.
+    it can never be talked into reading outside the tree.  A trailing slash is
+    preserved because it is meaningful downstream: ``data/checkpoints/`` names
+    a directory, and both the existence check and the absent-by-design prefix
+    allowlist are written in terms of that shape.
     """
     parts: list[str] = []
     for part in PurePosixPath(token).parts:
@@ -885,7 +888,7 @@ def _normalize_relative(token: str) -> str | None:
         parts.append(part)
     if not parts:
         return None
-    return "/".join(parts)
+    return "/".join(parts) + ("/" if token.endswith("/") else "")
 
 
 def _document_candidates(relpath: str, token: str) -> tuple[str, ...]:
@@ -1003,9 +1006,6 @@ class DocumentScanner:
         self.tracked = tuple(tracked)
         self.tracked_set = set(tracked)
         self.top_level_dirs = {path.split("/", 1)[0] for path in tracked if "/" in path}
-        self.root_level_suffixes = {
-            PurePosixPath(path).suffix for path in tracked if "/" not in path
-        } - {""}
         reference_scan = registry.reference_scan
         self.markers = tuple(reference_scan["context_suppression_markers"])
         self.symbol_ignore = frozenset(reference_scan["symbol_reference_ignore"])
@@ -1075,18 +1075,24 @@ class DocumentScanner:
         """Is ``path`` in ``path:line`` shaped like a file this repository has?
 
         A repository-root file is just as format-explicit as a nested one, so
-        ``main.py:123`` is in scope.  The guard against reading ``9.16:0`` or a
-        clock time as a file reference is the suffix: it must be one that some
-        tracked root-level file actually uses.
+        ``main.py:123`` is in scope.  A bare basename is only judged when the
+        repository really does track that name at the root, and that condition
+        is doing real work: in this repository a bare basename is usually
+        shorthand for a nested file (``exact_campaign.py:3532`` means
+        ``src/optimization/exact_campaign.py``), and shorthand is
+        indistinguishable from a genuinely missing root-level file.  Requiring
+        the tracked root file keeps the useful half — the line range is still
+        checked, so a stale ``main.py:99999`` is still caught — and drops the
+        half that would only produce false positives.  It also keeps ``9.16:0``
+        and clock times from being read as file references.
         """
         if "#" in path or not _PATH_CHARS_RE.fullmatch(path):
             return False
-        suffix = PurePosixPath(path).suffix
-        if not _SUFFIX_RE.fullmatch(suffix):
+        if not _SUFFIX_RE.fullmatch(PurePosixPath(path).suffix):
             return False
         if "/" in path:
             return self._is_repo_path_token(path)
-        return suffix in self.root_level_suffixes
+        return path in self.tracked_set
 
     def _allowlisted_absent(self, token: str) -> str | None:
         if token in self.external_artifacts:
