@@ -1,6 +1,6 @@
 # 06 — 当前状态
 
-**状态日期：2026-08-02。**
+**状态日期：2026-08-03。**
 **发布结论：P1.2 CLOSED（owner 2026-07-07 显式 owner_manual_decision）；P1.3 已开放。**
 
 ## 当前结论摘要
@@ -13,11 +13,7 @@
   [SMM4 fresh-authority recovery](../research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md)。
 - **SMM4 formal 终态：** `smm4-formal-a004` 已消费且永久不得重试。内部
   `VERIFIED`/UNSAT receipt 仍为 `upper_bound_update_authorized=false`，不是账本
-  授权源；`production_certified=false`。AB16 当前实现已收敛为固定科学预注册加
-  append-only per-attempt retry 链；历史 A031–A038 仍是不可改写研究证据，但不再是
-  当前 runtime 的 frozen-root 控制流。fresh campaign 尚未创建，organic arms 仍为
-  `0/16`，且锁生命周期 blocker 关闭前不得真跑。
-  下述 W0 D6 单轴局部阶段已经完成。
+  授权源；`production_certified=false`。下述 W0 D6 单轴局部阶段已经完成。
 - **W0 power-cycle domino / D6：** G3 最小公共研究合同与 W0 专用的
   hash-pinned intake、exact front-aware joint completion gate、独立 replay 已作为
   research/developer infrastructure 落地。closed-root v2 的 `seed_narrow` 与
@@ -33,19 +29,17 @@
   sidecar 均为 test/offline-only shadow，`authority_effect=non_authorizing`；不改变
   production runtime、trusted apply 闭集、authority digest、P1.2 seal 或 family promotion 状态。
 - **Noncert cuts A/B：** Gate 1 v4 只建立一条具体 inequality 对一个固定 incumbent 的
-  局部 mechanism reachability 与 exclusion power。AB16 当前代码提供最小 manifest、
-  suite-selection、pre-run、formal selection、bind 与 credible-close 生产链；scientific
-  manifest 不再冻结 attempt 目录，失败 slot 以 append-only `attempt-NNNN` 修复重试，
-  半写发布可恢复或用 append-only abandon 关闭。可信关闭从真实 runner result 与资源
-  receipts 重建 gate，手写 selection/gate 不能关 slot。共享科学输入由 campaign-global
-  digest 跨 slot 锚定；baseline 通过 tracked-clean checkout provenance 在仓库内自举，
-  不再依赖 snapshot ZIP/materialization producer。执行使用普通绝对路径，retained-FD、
-  pathname replacement 与 disposable drill 已退役。历史 A031–A038 仍按原字节保留，
-  不被新实现重解释或删除；fresh campaign 尚未创建，organic arms 仍为 `0/16`。
-  真跑前仍须把三把 prod-scale flock 的所有权移入 transient unit 生命周期（或落地等价
-  owner-approved 修复），并封住 direct `run_selected_arm()` 绕锁入口。
-  这些结果不建立 family-global soundness、production `CERTIFIED`、上下界、witness、
-  attainability 或 optimality。
+  局部 mechanism reachability 与 exclusion power。AB16 减法批与 R11–R20 已落地；
+  `run-20260802T221714Z-r6` 的 16/16 预注册臂已可信关闭并按 owner 停止令收官。
+  历史 A031–A038 以及旧 frozen-root、retained-FD、pathname replacement 与 disposable
+  drill 记录按原字节保留为研究史料，不被重解释，也不再约束当前控制流。终态细节只以
+  [roadmap 08-03 行](00_master_roadmap.md) 和
+  [最终 EVAL](../../.artifacts/ab16_arms_20260802/EVAL.md)为索引；EVAL SHA-256 为
+  `0320a9ace162651eb1e4618641f31c6e5bb33695b97b2458ae45d01a44911784`，terminal
+  classification v2 SHA-256 为
+  `8745361b540d99ceaa97218f3297c2049ba26bbc37d254abaeafa3aeb0bd5769`。全部 claim-bearing
+  authority 仍为 false，`U=(1188,18)`、`L=absent` 不变；不建立 family-global
+  soundness、production `CERTIFIED`、witness、attainability 或 optimality。
 
 ## 2026-07-29 W0 D6 closed-root negatives 与单轴 class transfer
 
