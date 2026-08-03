@@ -739,7 +739,6 @@ class ParsedDocument:
     lines: tuple[str, ...]
     tokens: tuple[Token, ...]
     contexts: tuple[str, ...]
-    headings: tuple[str, ...]
     fenced_lines: int
     section_references: tuple[tuple[int, str, str], ...]
 
@@ -755,6 +754,11 @@ def parse_document(root: Path, relpath: str) -> ParsedDocument:
     text = _read_text(root / relpath, relpath)
     lines = tuple(text.split("\n"))
 
+    # The fence state machine treats ``` and ~~~ as one delimiter and does not
+    # remember which one opened a block, so an unpaired or mixed fence would
+    # silently skip the rest of the document.  Measured across all 537 subject
+    # documents no file has an odd fence count, so this does not bite today —
+    # but the failure mode is silent under-reporting, not a visible error.
     inside_fence = False
     prose_flags: list[bool] = []
     fenced_lines = 0
@@ -767,11 +771,6 @@ def parse_document(root: Path, relpath: str) -> ParsedDocument:
         prose_flags.append(not inside_fence)
         if inside_fence:
             fenced_lines += 1
-
-    headings = tuple(
-        _HEADING_RE.match(line).group(2).strip() if _HEADING_RE.match(line) else ""
-        for line in lines
-    )
 
     contexts = _build_contexts(lines, prose_flags)
 
@@ -802,15 +801,20 @@ def parse_document(root: Path, relpath: str) -> ParsedDocument:
         lines=lines,
         tokens=tuple(tokens),
         contexts=contexts,
-        headings=headings,
         fenced_lines=fenced_lines,
         section_references=tuple(section_references),
     )
 
 
 def _preceding_markdown_token(tokens: Sequence[Token], column: int) -> str | None:
+    """The nearest document named to the left of a ``§`` marker.
+
+    Sorting matters: tokens are collected inline-code-first and then
+    link-target, so list order is not left-to-right order, and a line naming
+    both would otherwise attribute the section to the wrong document.
+    """
     best: str | None = None
-    for token in tokens:
+    for token in sorted(tokens, key=lambda item: item.column):
         if token.column - 1 > column:
             continue
         normalized = _normalize_path_token(token.text)
@@ -969,7 +973,13 @@ class Suppressions:
     absent_by_design: int = 0
     not_format_explicit: int = 0
     fenced_code_lines: int = 0
-    commit_hash_classified_known_historical: int = 0
+    # Two different mechanisms suppress a commit hash: the registry allowlist,
+    # and the document's own class.  One shared counter hid which of them was
+    # actually carrying the load — in this repository the allowlist entries all
+    # cite a historical document, so the class rule suppresses them anyway and
+    # the allowlist's observable effect is nil.
+    commit_hash_registered_known_historical: int = 0
+    commit_hash_in_non_living_document: int = 0
 
     def as_dict(self) -> dict[str, int]:
         return {
@@ -978,7 +988,10 @@ class Suppressions:
             "absent_by_design": self.absent_by_design,
             "not_format_explicit": self.not_format_explicit,
             "fenced_code_lines": self.fenced_code_lines,
-            "commit_hash_classified_known_historical": self.commit_hash_classified_known_historical,
+            "commit_hash_registered_known_historical": (
+                self.commit_hash_registered_known_historical
+            ),
+            "commit_hash_in_non_living_document": self.commit_hash_in_non_living_document,
         }
 
 
@@ -1306,10 +1319,13 @@ class DocumentScanner:
         self, relpath: str, document_class: str, token: Token, context: str, raw: str
     ) -> tuple[str, Finding] | None:
         if raw in self.known_hashes:
-            self.suppressions.commit_hash_classified_known_historical += 1
+            self.suppressions.commit_hash_registered_known_historical += 1
             return None
         if document_class != "living":
-            self.suppressions.commit_hash_classified_known_historical += 1
+            # Deliberately living-only: an unresolvable hash inside dated
+            # evidence is a property of the evidence, so it is not even worth a
+            # FYI line.  The counter above records how many were dropped here.
+            self.suppressions.commit_hash_in_non_living_document += 1
             return None
         if self._suppressed_by_context(context):
             self.suppressions.context_marker += 1

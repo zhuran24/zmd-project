@@ -21,6 +21,17 @@ member is untracked, a list is unsorted, or a markdown file has fallen through t
 invariant. Changing a classification is an owner-visible judgement, not a mechanical fix:
 demoting a document to `historical` permanently exempts it from cleanup candidates.
 
+Two consequences worth knowing before adding markdown anywhere in this repository. First, the
+coverage invariant is a **repository-wide gate, not an advisory signal**: a tracked markdown file
+that is neither in `scan_scope` nor listed under `out_of_scope_notes` makes the scanner and its
+test fail, so a new `data/README.md`, a new `docs/项目说明/子目录/x.md`, or any new top-level
+directory containing markdown turns the fast test lane red until someone updates this registry.
+That is the intended R22 negative-example semantics — registration is the point — but it is a
+cost paid by whoever adds the file, not by whoever maintains the registry. Second, a path claimed
+by two rules with different classes is a **structural error**, not a first-match-wins race: rule
+order carries no meaning, so a broad rule cannot silently reclassify the documents below it.
+Redundant rules that agree on the class are fine.
+
 ## `code_assets.json` — code asset ledger
 
 `code_assets.json` and its adjacent schema are the repository code-asset governance ledger. The

@@ -1,10 +1,16 @@
 """Behavioural tests for the prune-system docs reference adapter.
 
-Every scenario is built inside a throwaway fixture repository so that the tests
-state what the scanner does rather than what this repository currently happens
-to contain.  Two tests deliberately look at the real repository: one asserts the
-committed registry is internally complete, the other asserts the shipped scanner
-refuses to produce a report from a feature branch.
+Almost every scenario is built inside a throwaway fixture repository so that
+the tests state what the scanner does rather than what this repository happens
+to contain.  Four look at the real repository, and only at things a fixture
+cannot stand in for: two assert the committed registry is internally complete
+and names only tracked members, one asserts the anchor parser recognises
+``PROJECT_LOCK.md``'s uppercase section numbering, and one drives the committed
+suppression-marker list through the scanner one marker at a time.
+
+A real-repository *scan* is deliberately not tested here: the scanner refuses
+to produce a report from anything but ``main`` with a clean tree, so the
+end-to-end refusal path is exercised on fixture repositories instead.
 """
 
 from __future__ import annotations
@@ -478,6 +484,35 @@ def test_a_reference_whose_paragraph_talks_about_removal_is_suppressed(tmp_path:
     assert report["metadata"]["suppression_counts"]["context_marker"] == 1
 
 
+COMMITTED_SUPPRESSION_MARKERS = tuple(
+    scan.load_registry(PROJECT_ROOT).reference_scan["context_suppression_markers"]
+)
+
+
+@pytest.mark.parametrize("marker", COMMITTED_SUPPRESSION_MARKERS)
+def test_every_registered_suppression_marker_actually_suppresses(
+    tmp_path: Path, marker: str
+) -> None:
+    """Pin every marker the committed registry declares, not just one of them.
+
+    A marker that stops working — a spelling drift, an accidental deletion —
+    is invisible unless each one is exercised, and the whole three-premise
+    exclusion rests on this list.
+    """
+    registry = _default_registry()
+    registry["reference_scan"]["context_suppression_markers"] = sorted(
+        COMMITTED_SUPPRESSION_MARKERS
+    )
+    root = make_repo(
+        tmp_path,
+        registry=registry,
+        documents={"GUIDE.md": f"# Guide\n\n`scripts/vanished_tool.py` {marker} 2026-01-01.\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["context_marker"] == 1
+
+
 def test_an_external_artifact_path_is_allowlisted_even_though_it_is_absent(
     tmp_path: Path,
 ) -> None:
@@ -500,6 +535,35 @@ def test_an_absent_by_design_generated_path_is_allowlisted(tmp_path: Path) -> No
     assert report["metadata"]["suppression_counts"]["absent_by_design"] == 1
 
 
+def test_an_absent_by_design_file_line_reference_is_counted_as_absent_by_design(
+    tmp_path: Path,
+) -> None:
+    """It was counted against the external-artifact allowlist, which it is not."""
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nSee `data/generated/run.json:12`.\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    counts = report["metadata"]["suppression_counts"]
+    assert counts["absent_by_design"] == 1
+    assert counts["external_artifact_allowlist"] == 0
+
+
+def test_an_external_artifact_file_line_reference_is_counted_against_the_allowlist(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nSee `data/external/big.json:12`.\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    counts = report["metadata"]["suppression_counts"]
+    assert counts["external_artifact_allowlist"] == 1
+    assert counts["absent_by_design"] == 0
+
+
 def test_prose_and_fenced_code_are_not_format_explicit_references(tmp_path: Path) -> None:
     root = make_repo(
         tmp_path,
@@ -518,6 +582,32 @@ def test_prose_and_fenced_code_are_not_format_explicit_references(tmp_path: Path
     assert report["metadata"]["suppression_counts"]["fenced_code_lines"] == 3
 
 
+def test_the_fence_state_machine_skips_only_what_is_inside_the_fence(tmp_path: Path) -> None:
+    """Sensitive to the mechanism, not just to the absence of findings.
+
+    The token inside the fence is a real format-explicit dead reference and the
+    one after it is identical, so this stays green only while the state machine
+    both enters *and* leaves the fenced block.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": (
+                "# Guide\n\n"
+                "```bash\n"
+                "Inside the fence: `scripts/inside_tool.py` and [link](INSIDE.md).\n"
+                "```\n\n"
+                "Outside the fence: `scripts/outside_tool.py`.\n"
+            )
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/outside_tool.py")
+    ]
+    assert report["metadata"]["suppression_counts"]["fenced_code_lines"] == 3
+
+
 def test_a_registered_known_historical_commit_hash_never_becomes_a_candidate(
     tmp_path: Path,
 ) -> None:
@@ -528,7 +618,9 @@ def test_a_registered_known_historical_commit_hash_never_becomes_a_candidate(
     report = build(root)
     assert report["candidates"] == []
     assert report["fyi"] == []
-    assert report["metadata"]["suppression_counts"]["commit_hash_classified_known_historical"] == 1
+    counts = report["metadata"]["suppression_counts"]
+    assert counts["commit_hash_registered_known_historical"] == 1
+    assert counts["commit_hash_in_non_living_document"] == 0
 
 
 def test_a_historical_document_only_ever_reaches_the_fyi_section(tmp_path: Path) -> None:
@@ -557,7 +649,11 @@ def test_a_historical_document_never_reports_an_unresolvable_commit_hash(tmp_pat
     report = build(root)
     assert report["candidates"] == []
     assert report["fyi"] == []
-    assert report["metadata"]["suppression_counts"]["commit_hash_classified_known_historical"] == 1
+    counts = report["metadata"]["suppression_counts"]
+    # The two suppression mechanisms are counted apart, so a reader can tell
+    # which one actually kept this hash out of the report.
+    assert counts["commit_hash_in_non_living_document"] == 1
+    assert counts["commit_hash_registered_known_historical"] == 0
 
 
 def test_a_locked_document_is_never_a_scan_subject(tmp_path: Path) -> None:
