@@ -315,8 +315,18 @@ def validate_card_shape(card: Card) -> list[str]:
         if not validity:
             errors.append(f"{card.path}: status cards require validity")
     elif kind == "pitfall":
-        if "error_regex" not in meta or not normalize_list(meta.get("error_regex")):
-            errors.append(f"{card.path}: pitfall cards require top-level error_regex")
+        # No requirement here on purpose.  This rule used to demand a non-empty
+        # top-level error_regex, which encoded the assumption that a pitfall is
+        # something you recognise by its error text.  The 2026-08-03 usage census
+        # (§3.5) retired that assumption: across 39 unique error-recall
+        # injections it counted 3 true positives, and the one injection that was
+        # ever acted on was itself a false positive.  A card whose trigger is
+        # "which copy of the database am I standing on" has no error text to
+        # match, and forcing one made cards lie about how they should be
+        # recalled — one card was filed as a `decision` purely to escape this
+        # check.  An empty or absent error_regex is now a legitimate shape;
+        # keywords, intents, paths and examples carry the recall instead.
+        pass
     elif kind == "open_obligation":
         validity = as_dict(meta.get("validity"))
         if not validity.get("until") or not validity.get("invalidated_by"):

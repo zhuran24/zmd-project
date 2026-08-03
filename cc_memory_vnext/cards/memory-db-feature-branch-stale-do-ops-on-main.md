@@ -1,13 +1,12 @@
 ---
 id: memory-db-feature-branch-stale-do-ops-on-main
-# 2026-08-03:kind 从 pitfall 改成 decision。不是重新定性,是被 schema 逼的——
-# zmem verify 规定「pitfall 卡必须有顶层 error_regex」,而本卡这一批正好退出了
-# error_regex 定向召回(见下方 triggers 注释)。这条 schema 规则本身编码了
-# 「坑=靠报错文本认出来」的假设,普查 §3.5 否掉的正是这个假设;改规则要动
-# zmem.py(不在本批授权面),所以先按卡真正承载的东西登记:一条操作规则
-# (记忆读写去 main 权威库做)。运行时影响=零:compile_context 对 decision 与
-# pitfall 走同一条路径,L1_QUOTA 两者同为 3。
-kind: decision
+# kind 归位记录(2026-08-03,P2 主批)。P2.2 曾把它从 pitfall 改成 decision——
+# 不是重新定性,是被 schema 逼的:当时 zmem verify 规定「pitfall 卡必须有非空
+# error_regex」,而本卡这一批正好退出了 error_regex 定向召回(见下方 triggers
+# 注释)。那条规则编码的正是普查 §3.5 否掉的假设「坑=靠报错文本认出来」,于是
+# 本批把规则放宽(zmem.py:kind == "pitfall" 分支不再有要求),这张卡随之改回它
+# 语义上本来的类型。**不需要再借 kind 绕行。**
+kind: pitfall
 title: feature 分支的 memory.db 可能早于 main → 记忆读写要在 main 权威库做
 summary: 在 feature 分支上 search/read cc_memory 可能【假 no-match】,因为该分支的 cc_memory/memory.db 比 main 旧、缺 main 上新建的条目;cc_memory 读写应切到 main 权威库做。
 scope:
