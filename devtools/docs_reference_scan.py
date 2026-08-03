@@ -197,6 +197,39 @@ def tracked_paths(root: Path) -> tuple[str, ...]:
     return tuple(sorted(paths))
 
 
+def _assume_unchanged_paths(root: Path) -> tuple[str, ...]:
+    """Paths git has been told to stop watching.
+
+    ``git update-index --assume-unchanged`` (lowercase status letter) and
+    ``--skip-worktree`` (``S``) both make git trust the index and stop reporting
+    real worktree edits.  Every dirty check below reads ``git status``, so a
+    single such mark silently switches the whole self check off.
+    """
+    raw = _run_git(root, ["ls-files", "-v", "-z"])
+    hidden: list[str] = []
+    for item in raw.split(b"\0"):
+        if not item:
+            continue
+        decoded = os.fsdecode(item)
+        if len(decoded) < 3 or decoded[1] != " ":
+            raise DocScanError(f"malformed git ls-files -v record: {decoded!r}")
+        flag, path = decoded[0], decoded[2:]
+        if flag.islower() or flag == "S":
+            hidden.append(path)
+    return tuple(sorted(set(hidden)))
+
+
+def _staged_removals(root: Path) -> tuple[str, ...]:
+    """Paths deleted from the index relative to HEAD.
+
+    These cannot be caught by comparing against index-derived truth sources:
+    the object is already gone from the index by the time the scope is
+    resolved, so it never enters the truth set in the first place.
+    """
+    raw = _run_git(root, ["diff", "--cached", "--name-only", "--diff-filter=D", "-z", "HEAD"])
+    return tuple(sorted(set(_parse_nul_paths(raw))))
+
+
 def _parse_porcelain(raw: bytes) -> tuple[tuple[str, str], ...]:
     """Return (status_code, path) records from ``git status --porcelain=v1 -z``."""
     items = [item for item in raw.split(b"\0")]
@@ -923,10 +956,30 @@ class DocumentScanner:
         )
         self.symbols = build_symbol_universe(root, scope.symbol_sources)
         self.suppressions = Suppressions()
+        self.consulted: set[str] = set()
         self._heading_cache: dict[str, tuple[frozenset[str], frozenset[str]]] = {}
         self._line_count_cache: dict[str, int | None] = {}
 
     # -- helpers ---------------------------------------------------------
+
+    def _consult(self, relpath: str) -> None:
+        """Record that the answer depends on the state of ``relpath``.
+
+        Anything recorded here is re-checked for uncommitted state before the
+        report is published, so that a finding can never be shaped — or made to
+        disappear — by a file nobody committed.  Allowlisted-absent paths are
+        deliberately excluded: the registry declares that whether they exist on
+        a given machine is not a property of the document citing them, so the
+        scan's answer does not depend on them either.
+        """
+        if not relpath:
+            return
+        if relpath in self.external_artifacts:
+            return
+        for prefix in self.absent_prefixes:
+            if relpath == prefix or relpath.startswith(prefix):
+                return
+        self.consulted.add(relpath)
 
     def _suppressed_by_context(self, context: str) -> bool:
         lowered = context.lower()
@@ -937,7 +990,9 @@ class DocumentScanner:
             prefix = re.split(r"[*?]", token, maxsplit=1)[0]
             if not prefix:
                 return True
+            self._consult(prefix)
             return any(path.startswith(prefix) for path in self.tracked) or (self.root / prefix).exists()
+        self._consult(token.rstrip("/"))
         if token.endswith("/"):
             return (self.root / token).is_dir() or any(
                 path.startswith(token) for path in self.tracked
@@ -960,6 +1015,7 @@ class DocumentScanner:
         return None
 
     def _line_count(self, relpath: str) -> int | None:
+        self._consult(relpath)
         if relpath not in self._line_count_cache:
             path = self.root / relpath
             if not path.is_file():
@@ -977,6 +1033,7 @@ class DocumentScanner:
         return self._line_count_cache[relpath]
 
     def _anchors(self, relpath: str) -> tuple[frozenset[str], frozenset[str]]:
+        self._consult(relpath)
         if relpath not in self._heading_cache:
             text = _read_text(self.root / relpath, relpath)
             slugs: set[str] = set()
@@ -999,6 +1056,7 @@ class DocumentScanner:
         for candidate in candidates:
             if ".." in PurePosixPath(candidate).parts:
                 continue
+            self._consult(candidate)
             if (self.root / candidate).is_file():
                 return candidate
         return None
@@ -1072,14 +1130,17 @@ class DocumentScanner:
     def _scan_repo_path(
         self, relpath: str, document_class: str, token: Token, context: str, normalized: str
     ) -> tuple[str, Finding] | None:
-        if self._path_exists(normalized):
-            return None
+        # Allowlist first, so that an allowlisted path is never even consulted:
+        # whether it happens to exist on this machine must not enter the
+        # report's dependency set.
         allow = self._allowlisted_absent(normalized)
         if allow == "external_artifact_allowlist":
             self.suppressions.external_artifact_allowlist += 1
             return None
         if allow == "absent_by_design":
             self.suppressions.absent_by_design += 1
+            return None
+        if self._path_exists(normalized):
             return None
         if self._suppressed_by_context(context):
             self.suppressions.context_marker += 1
@@ -1109,11 +1170,15 @@ class DocumentScanner:
         target = match.group("path")
         start = int(match.group("start"))
         end = int(match.group("end")) if match.group("end") else start
+        allow = self._allowlisted_absent(target)
+        if allow == "external_artifact_allowlist":
+            self.suppressions.external_artifact_allowlist += 1
+            return None
+        if allow == "absent_by_design":
+            self.suppressions.absent_by_design += 1
+            return None
         line_count = self._line_count(target)
         if line_count is None:
-            if self._allowlisted_absent(target) is not None:
-                self.suppressions.external_artifact_allowlist += 1
-                return None
             if self._suppressed_by_context(context):
                 self.suppressions.context_marker += 1
                 return None
@@ -1317,15 +1382,86 @@ def _slugify(text: str) -> str:
 # --------------------------------------------------------------------------
 
 
-def run_self_check(
-    root: Path, registry: Registry, scope: Scope, tracked: Sequence[str]
-) -> dict[str, Any]:
-    branch = _run_git(root, ["rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip()
-    if branch != REQUIRED_BRANCH:
-        raise SelfCheckRefusal(
-            f"refusing to generate a report: HEAD is {branch!r}, not {REQUIRED_BRANCH!r}"
+@dataclass(frozen=True)
+class WorktreeState:
+    """One snapshot of everything git can say about uncommitted state."""
+
+    branch: str
+    head: str
+    records: tuple[tuple[str, str], ...]
+    staged_removals: tuple[str, ...]
+    assume_unchanged: tuple[str, ...]
+
+    @property
+    def uncommitted_paths(self) -> frozenset[str]:
+        paths = {path for _status, path in self.records}
+        paths.update(self.staged_removals)
+        return frozenset(paths)
+
+
+def capture_worktree_state(root: Path) -> WorktreeState:
+    """Snapshot uncommitted state *before* anything is derived from the index.
+
+    Order matters.  Resolving the scan scope from the index and only then
+    asking whether the tree is clean cannot see a staged deletion: the deleted
+    object left the index before the scope was built, so it never became a
+    truth source that a dirty check could flag.
+    """
+    return WorktreeState(
+        branch=_run_git(root, ["rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip(),
+        head=_run_git(root, ["rev-parse", "HEAD"]).decode("utf-8").strip(),
+        records=_parse_porcelain(
+            _run_git(root, ["status", "--porcelain=v1", "-z", "--untracked-files=all"])
+        ),
+        staged_removals=_staged_removals(root),
+        assume_unchanged=_assume_unchanged_paths(root),
+    )
+
+
+_VERIFIED_BY = (
+    "git rev-parse --abbrev-ref HEAD",
+    "git rev-parse HEAD",
+    "git status --porcelain=v1 -z --untracked-files=all",
+    "git diff --cached --name-only --diff-filter=D -z HEAD",
+    "git ls-files -v -z",
+)
+
+
+def _is_truth_source_shaped(path: str, registry: Registry) -> bool:
+    """Would this path have been a truth source if it were still in the index?"""
+    if path == registry.relpath:
+        return True
+    if path == registry.reference_scan["external_artifact_manifest"]:
+        return True
+    if path.endswith(".md"):
+        return any(_glob_match(path, pattern) for pattern in registry.include_globs) and not any(
+            _glob_match(path, pattern) for pattern in registry.exclude_globs
         )
-    head = _run_git(root, ["rev-parse", "HEAD"]).decode("utf-8").strip()
+    if path.endswith(".py"):
+        return any(
+            _glob_match(path, pattern)
+            for pattern in registry.reference_scan["symbol_source_globs"]
+        )
+    return False
+
+
+def run_self_check(
+    root: Path,
+    registry: Registry,
+    scope: Scope,
+    tracked: Sequence[str],
+    state: WorktreeState,
+) -> tuple[dict[str, Any], frozenset[str]]:
+    if state.branch != REQUIRED_BRANCH:
+        raise SelfCheckRefusal(
+            f"refusing to generate a report: HEAD is {state.branch!r}, not {REQUIRED_BRANCH!r}"
+        )
+    if state.assume_unchanged:
+        raise SelfCheckRefusal(
+            "refusing to generate a report: git has been told to ignore worktree changes for "
+            f"{list(state.assume_unchanged)[:10]!r} (assume-unchanged / skip-worktree), "
+            "so no dirty check below can be trusted"
+        )
 
     # The registry decides which documents may ever yield a candidate, so an
     # untracked registry is an unreviewed registry: it never passed through a
@@ -1341,14 +1477,11 @@ def run_self_check(
     truth_sources.update(scope.symbol_sources)
     truth_sources.add(registry.reference_scan["external_artifact_manifest"])
 
-    records = _parse_porcelain(
-        _run_git(root, ["status", "--porcelain=v1", "-z", "--untracked-files=all"])
-    )
     dirty: list[str] = []
     untracked_in_scope: list[str] = []
     include = registry.include_globs
     exclude = registry.exclude_globs
-    for status, path in records:
+    for status, path in state.records:
         if status == "??":
             if (
                 path.endswith(".md")
@@ -1369,24 +1502,66 @@ def run_self_check(
             "refusing to generate a report: untracked documents fall inside the scan scope: "
             f"{sorted(set(untracked_in_scope))[:10]!r}"
         )
+    removed = [path for path in state.staged_removals if _is_truth_source_shaped(path, registry)]
+    if removed:
+        raise SelfCheckRefusal(
+            "refusing to generate a report: truth sources are deleted in the index: "
+            f"{removed[:10]!r}"
+        )
 
-    return {
+    preconditions = {
         "required_branch": REQUIRED_BRANCH,
-        "observed_branch": branch,
-        "head_commit": head,
+        "observed_branch": state.branch,
+        "head_commit": state.head,
         "truth_sources_clean": True,
         "truth_source_kinds": [
             "registered scan-scope documents",
             "doc class registry",
             "external artifact manifest",
             "tracked python symbol sources",
+            "every filesystem path the scan consulted",
         ],
         "truth_source_count": len(truth_sources),
-        "verified_by": [
-            "git rev-parse --abbrev-ref HEAD",
-            "git rev-parse HEAD",
-            "git status --porcelain=v1 -z --untracked-files=all",
-        ],
+        "verified_by": list(_VERIFIED_BY),
+    }
+    return preconditions, frozenset(truth_sources)
+
+
+def verify_consulted_state_is_committed(
+    root: Path, before: WorktreeState, consulted: frozenset[str]
+) -> dict[str, Any]:
+    """Re-run the dirty check over everything the scan actually read.
+
+    The truth-source set is derived from the registry; the *consulted* set is
+    derived from the documents themselves, and it is strictly larger: a
+    reference reaches out to any path it names.  Checking only the first set
+    lets a report be shaped by uncommitted state — an edited out-of-scope
+    file, a fresh untracked file at a cited path, a staged deletion — while
+    the report still claims its truth sources were clean.
+    """
+    after = capture_worktree_state(root)
+    if after.branch != before.branch or after.head != before.head:
+        raise SelfCheckRefusal(
+            "refusing to publish a report: the checkout moved during the scan "
+            f"({before.branch}@{before.head[:12]} -> {after.branch}@{after.head[:12]})"
+        )
+    if after.assume_unchanged:
+        raise SelfCheckRefusal(
+            "refusing to publish a report: git has been told to ignore worktree changes for "
+            f"{list(after.assume_unchanged)[:10]!r} (assume-unchanged / skip-worktree)"
+        )
+    touched = sorted(
+        (before.uncommitted_paths | after.uncommitted_paths) & consulted
+    )
+    if touched:
+        raise SelfCheckRefusal(
+            "refusing to publish a report: filesystem state consulted by the scan is not "
+            f"committed: {touched[:10]!r}"
+        )
+    return {
+        "consulted_path_count": len(consulted),
+        "reverified_after_scan": True,
+        "verified_by": list(_VERIFIED_BY),
     }
 
 
@@ -1396,10 +1571,12 @@ def run_self_check(
 
 
 def build_report(root: Path) -> dict[str, Any]:
+    # Snapshot uncommitted state before anything is derived from the index.
+    state = capture_worktree_state(root)
     registry = load_registry(root)
     tracked = tracked_paths(root)
     scope = resolve_scope(registry, tracked)
-    preconditions = run_self_check(root, registry, scope, tracked)
+    preconditions, truth_sources = run_self_check(root, registry, scope, tracked, state)
 
     scanner = DocumentScanner(root, registry, scope, tracked)
     findings: list[Finding] = []
@@ -1451,6 +1628,9 @@ def build_report(root: Path) -> dict[str, Any]:
     flag_counts = {flag: 0 for flag in FLAGS}
     for finding in findings:
         flag_counts[finding.flag] += 1
+
+    consulted = frozenset(scanner.consulted) | truth_sources
+    preconditions["consulted_paths"] = verify_consulted_state_is_committed(root, state, consulted)
 
     return {
         "schema_version": REPORT_SCHEMA_VERSION,

@@ -440,6 +440,109 @@ def test_an_untracked_in_scope_document_hard_refuses_the_report(tmp_path: Path) 
     assert "DRAFT.md" in str(excinfo.value)
 
 
+# The six bypasses below share one shape: the report's content depends on
+# filesystem state that the old truth-source set did not cover, so the scan
+# answered a different question while still certifying its inputs were clean.
+
+
+def test_a_modified_file_line_target_outside_the_symbol_globs_hard_refuses(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nEntry point at `scripts/real_tool.py:5`.\n"},
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_symbol_ref", "GUIDE.md", "scripts/real_tool.py:5")
+    ]
+    # scripts/ is outside the fixture's symbol_source_globs, so this file was
+    # never a truth source — but the finding is a function of its line count.
+    (root / "scripts" / "real_tool.py").write_text("print(1)\n" * 6, encoding="utf-8")
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "scripts/real_tool.py" in str(excinfo.value)
+
+
+def test_a_modified_out_of_scope_anchor_target_hard_refuses(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nRuling in `notes/aside.md` §2.\n"},
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "notes/aside.md §2")
+    ]
+    # notes/** is declared out of scope, so it is not a scanned document — but
+    # its headings decide whether the anchor above resolves.
+    (root / "notes" / "aside.md").write_text(
+        "# Aside\n\n## 2. now it exists\n\nOut of scope: `src/never.py`.\n", encoding="utf-8"
+    )
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "notes/aside.md" in str(excinfo.value)
+
+
+def test_a_new_untracked_file_at_a_referenced_path_hard_refuses(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nRun `scripts/vanished_tool.py` first.\n"},
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/vanished_tool.py")
+    ]
+    (root / "scripts" / "vanished_tool.py").write_text("print(2)\n", encoding="utf-8")
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "scripts/vanished_tool.py" in str(excinfo.value)
+
+
+def test_a_staged_deletion_of_a_symbol_source_hard_refuses(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nCall `existing_symbol()` to parse.\n"},
+        extra_files={"src/other.py": "def other_symbol() -> int:\n    return 2\n"},
+    )
+    assert build(root)["candidates"] == []
+    _git(root, "rm", "-q", "src/thing.py")
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    message = str(excinfo.value)
+    assert "deleted in the index" in message
+    assert "src/thing.py" in message
+
+
+def test_a_staged_deletion_of_an_in_scope_document_hard_refuses(tmp_path: Path) -> None:
+    root = make_repo(tmp_path, documents={"NEWCOMER.md": "# Newcomer\n\nHello.\n"})
+    assert flags(build(root)["candidates"]) == [
+        ("unregistered_doc", "NEWCOMER.md", "NEWCOMER.md")
+    ]
+    _git(root, "rm", "-q", "NEWCOMER.md")
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    message = str(excinfo.value)
+    assert "deleted in the index" in message
+    assert "NEWCOMER.md" in message
+
+
+def test_an_assume_unchanged_document_hard_refuses(tmp_path: Path) -> None:
+    root = make_repo(tmp_path)
+    _git(root, "update-index", "--assume-unchanged", "GUIDE.md")
+    (root / "GUIDE.md").write_text("# Guide\n\nGone: `scripts/vanished_tool.py`.\n", encoding="utf-8")
+    assert _git(root, "status", "--porcelain") == ""
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    message = str(excinfo.value)
+    assert "assume-unchanged" in message
+    assert "GUIDE.md" in message
+
+
+def test_a_skip_worktree_document_hard_refuses(tmp_path: Path) -> None:
+    root = make_repo(tmp_path)
+    _git(root, "update-index", "--skip-worktree", "GUIDE.md")
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "GUIDE.md" in str(excinfo.value)
+
+
 def test_the_cli_refuses_with_a_non_zero_exit_and_writes_no_report(tmp_path: Path) -> None:
     root = make_repo(tmp_path)
     _git(root, "checkout", "-q", "-b", "feature/whatever")
@@ -462,6 +565,9 @@ def test_the_cli_writes_the_report_when_the_preconditions_hold(tmp_path: Path) -
     assert preconditions["required_branch"] == "main"
     assert preconditions["truth_sources_clean"] is True
     assert len(preconditions["head_commit"]) == 40
+    consulted = preconditions["consulted_paths"]
+    assert consulted["reverified_after_scan"] is True
+    assert consulted["consulted_path_count"] >= 1
     assert report["metadata"]["registry"]["path"] == scan.REGISTRY_RELPATH
     assert len(report["metadata"]["registry"]["sha256"]) == 64
     assert report["metadata"]["advisory"] is True
