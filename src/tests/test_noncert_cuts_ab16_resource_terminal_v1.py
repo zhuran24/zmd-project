@@ -5,10 +5,11 @@ import copy
 import importlib.util
 import os
 from pathlib import Path
+import select
 import stat
 import sys
 from types import ModuleType, SimpleNamespace
-from typing import Any, Sequence
+from typing import Any, Callable, Sequence
 
 import pytest
 
@@ -777,6 +778,158 @@ def _run(
     return attempt, result
 
 
+class _HeldSystemdWaiter:
+    pid = 42420
+
+    def __init__(self) -> None:
+        self.returncode: int | None = None
+        self.stopped = False
+        self.reaped = False
+        self.gc_attempted = False
+
+    def poll(self) -> int | None:
+        return self.returncode
+
+    def send_signal(self, value: int) -> None:
+        assert value == ORCHESTRATOR.signal.SIGSTOP
+        assert self.returncode is None
+        self.stopped = True
+
+    def kill(self) -> None:
+        self.returncode = -ORCHESTRATOR.signal.SIGKILL
+
+    def communicate(self, timeout: float | None = None) -> tuple[bytes, bytes]:
+        assert timeout is not None and timeout > 0
+        assert self.returncode == -ORCHESTRATOR.signal.SIGKILL
+        self.reaped = True
+        return b"", b""
+
+
+def _prearmed_live_terminal_adapter(
+    *,
+    unit_name: str,
+    expected_invocation_id: str,
+    visible_invocation_id: str,
+    install_wait_observer: bool = True,
+) -> Any:
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter._monotonic = lambda: 1.0
+    adapter._monotonic_ns = lambda: 1100
+    adapter.sleep = lambda _seconds: None
+    waiter = _HeldSystemdWaiter()
+
+    def show(_unit: str, _fields: Sequence[str]) -> dict[str, str]:
+        # The controlled manager performs the real race transition: after
+        # keeper release, only a stopped wait client's AddRef prevents GC.
+        invocation_id = visible_invocation_id or (
+            expected_invocation_id if not waiter.gc_attempted or waiter.stopped else ""
+        )
+        return {
+            "ActiveState": "inactive",
+            "ControlGroup": "",
+            "ExecMainCode": "exited" if invocation_id else "0",
+            "ExecMainStatus": "0",
+            "InvocationID": invocation_id,
+            "Result": "success",
+            "SubState": "dead",
+        }
+
+    adapter._show = show
+    adapter._fixture_waiter = waiter
+    if install_wait_observer:
+        adapter._systemd_wait_process = waiter
+        adapter._systemd_wait_unit_name = unit_name
+        adapter._systemd_wait_invocation_id = expected_invocation_id
+        adapter._systemd_wait_stopped = False
+        adapter.waitid = lambda _idtype, _pid, _options: (
+            SimpleNamespace(
+                si_code=ORCHESTRATOR.os.CLD_STOPPED,
+                si_status=ORCHESTRATOR.signal.SIGSTOP,
+            )
+            if waiter.stopped
+            else None
+        )
+    else:
+        adapter._systemd_wait_process = None
+        waiter.gc_attempted = True
+    return adapter
+
+
+class _CollectionRaceAdapter(FakeAdapter):
+    def __init__(
+        self,
+        *,
+        attempt_dir: Path,
+        slot: str,
+        replacement_invocation_id: str = "",
+    ) -> None:
+        super().__init__(attempt_dir=attempt_dir, slot=slot)
+        self.released = False
+        self.collection_window_entered = False
+        self.live = _prearmed_live_terminal_adapter(
+            unit_name="cuts-ab16-region-capacity-ab-control.service",
+            expected_invocation_id=self.invocation,
+            visible_invocation_id=replacement_invocation_id,
+        )
+
+    def launch_and_wait_for_keeper(
+        self,
+        *,
+        unit_name: str,
+        systemd_run_argv: Sequence[str],
+        payload_argv: Sequence[str],
+    ) -> Any:
+        launch = super().launch_and_wait_for_keeper(
+            unit_name=unit_name,
+            systemd_run_argv=systemd_run_argv,
+            payload_argv=payload_argv,
+        )
+        hold = getattr(self.live, "_stop_systemd_wait_observer", None)
+        if hold is not None:
+            hold(unit_name=unit_name, invocation_id=launch.invocation_id)
+        return launch
+
+    def release_keeper(
+        self,
+        *,
+        unit_name: str,
+        release_path: Path,
+        launch: Any,
+    ) -> None:
+        super().release_keeper(
+            unit_name=unit_name,
+            release_path=release_path,
+            launch=launch,
+        )
+        self.released = True
+        self.live._fixture_waiter.gc_attempted = True  # noqa: SLF001
+
+    def capture_terminal(
+        self,
+        *,
+        unit_name: str,
+        invocation_id: str,
+    ) -> Any:
+        assert self.released is True
+        self.collection_window_entered = True
+        return self.live.capture_terminal(
+            unit_name=unit_name,
+            invocation_id=invocation_id,
+        )
+
+    def capture_cleanup(self, **kwargs: object) -> Any:
+        kill = getattr(self.live, "_kill_systemd_wait_observer", None)
+        if kill is not None:
+            kill()
+        return super().capture_cleanup(**kwargs)
+
+    def abort_and_capture_cleanup(self, **kwargs: object) -> Any:
+        kill = getattr(self.live, "_kill_systemd_wait_observer", None)
+        if kill is not None:
+            kill()
+        return super().abort_and_capture_cleanup(**kwargs)
+
+
 def test_two_stage_success_and_detached_replay(tmp_path: Path) -> None:
     attempt, result = _run(tmp_path)
     assert result["status"] == "PASS"
@@ -788,6 +941,83 @@ def test_two_stage_success_and_detached_replay(tmp_path: Path) -> None:
     assert terminal["systemd_raw"]["ControlGroup"] == ""
     assert cleanup["cgroup_path_exists"] is False
     assert cleanup["unit_load_state"] == "not-found"
+
+
+def test_collected_same_invocation_terminal_is_published_from_prearmed_live_observer(
+    tmp_path: Path,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = _CollectionRaceAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+    )
+
+    result = ORCHESTRATOR.orchestrate_with_adapter(
+        pre_run_path=pre_run,
+        selection_path=selection,
+        adapter=adapter,
+    )
+
+    assert adapter.released is True
+    assert adapter.collection_window_entered is True
+    assert adapter.live._systemd_wait_process is None  # noqa: SLF001
+    assert adapter.live._fixture_waiter.stopped is True  # noqa: SLF001
+    assert adapter.live._fixture_waiter.gc_attempted is True  # noqa: SLF001
+    assert adapter.live._fixture_waiter.reaped is True  # noqa: SLF001
+    assert result["status"] == "PASS"
+    terminal = VERIFIER.snapshot_json(attempt / "terminal-envelope.json").value
+    assert terminal["invocation_id"] == adapter.invocation
+    assert terminal["systemd_raw"]["InvocationID"] == adapter.invocation
+    assert terminal["systemd_raw"]["Result"] == "success"
+    assert (attempt / "detached-replay.json").is_file()
+
+
+def test_prearmed_terminal_observer_rejects_same_name_different_invocation(
+    tmp_path: Path,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = _CollectionRaceAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+        replacement_invocation_id="fedcba9876543210fedcba9876543210",
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="terminal InvocationID drifted",
+    ):
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=adapter,
+        )
+
+    assert adapter.released is True
+    assert adapter.collection_window_entered is True
+    assert adapter.live._systemd_wait_process is None  # noqa: SLF001
+    assert adapter.live._fixture_waiter.reaped is True  # noqa: SLF001
+    assert not (attempt / "terminal-envelope.json").exists()
+    assert not (attempt / "detached-replay.json").exists()
+
+
+def test_collected_default_shell_without_bound_observation_is_rejected() -> None:
+    unit_name = "cuts-ab16-region-capacity-ab-control.service"
+    invocation_id = "0123456789abcdef0123456789abcdef"
+    adapter = _prearmed_live_terminal_adapter(
+        unit_name=unit_name,
+        expected_invocation_id=invocation_id,
+        visible_invocation_id="",
+        install_wait_observer=False,
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="terminal InvocationID drifted",
+    ):
+        adapter.capture_terminal(
+            unit_name=unit_name,
+            invocation_id=invocation_id,
+        )
 
 
 def test_every_live_phase_binds_fresh_double_round_epoch_transcript(
@@ -1097,8 +1327,25 @@ def test_resource_contract_constants_and_systemd_argv_are_exact() -> None:
         resource_contract=LIFECYCLE.FORMAL_RESOURCE_CONTRACT,
         execution_class="FORMAL_AB16",
     )
-    assert "--property=RuntimeMaxSec=3600" in formal_argv
-    assert "--property=CollectMode=inactive-or-failed" in formal_argv
+    assert formal_argv == [
+        "/usr/bin/systemd-run",
+        "--user",
+        "--quiet",
+        "--wait",
+        "--unit=cuts-ab16-formal-fixture",
+        f"--property=MemoryHigh={35 * 1024**3}",
+        f"--property=MemoryMax={39 * 1024**3}",
+        f"--property=MemorySwapMax={16 * 1024**3}",
+        "--property=CollectMode=inactive-or-failed",
+        "--property=OOMPolicy=continue",
+        "--property=KillMode=control-group",
+        "--property=SendSIGKILL=yes",
+        "--property=RuntimeMaxSec=3600",
+        "--",
+        "/python",
+        "-I",
+        "/supervisor.py",
+    ]
 
 
 @pytest.mark.parametrize("field", ["send_sigkill", "single_worker"])
@@ -1528,6 +1775,443 @@ def test_live_adapter_retries_controlled_inner_link_publication_window(
     assert launch.payload_reaped is True
     assert launch.payload_exit_code == 2
     assert inner_path.stat().st_nlink == 1
+
+
+def test_live_launch_holds_identity_bound_wait_observer_before_return(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    unit_name = "cuts-ab16-selected.service"
+    invocation_id = "0123456789abcdef0123456789abcdef"
+    supervisor_pid = 4242
+    inner_path = tmp_path / "inner-lifecycle.json"
+    inner_path.write_bytes(
+        ORCHESTRATOR.canonical_json_bytes(
+            {
+                "invocation_id": invocation_id,
+                "keeper_ready_monotonic_ns": 500,
+                "payload_exit_code": 0,
+                "payload_exit_monotonic_ns": 400,
+                "payload_pid": 4243,
+                "payload_reaped": True,
+                "payload_seal_monotonic_ns": 300,
+                "payload_signal": 0,
+                "payload_starttime": 78,
+                "schema_version": "noncert-cuts-ab16-inner-lifecycle-v1",
+                "supervisor_pid": supervisor_pid,
+                "supervisor_starttime": 77,
+                "unit_name": unit_name,
+            }
+        )
+    )
+    waiter = _HeldSystemdWaiter()
+    popen_kwargs: dict[str, object] = {}
+
+    def fake_popen(_argv: Sequence[str], **kwargs: object) -> _HeldSystemdWaiter:
+        popen_kwargs.update(kwargs)
+        return waiter
+
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter.pre_run = {
+        "launch": {"cwd": str(tmp_path), "payload_argv": ["payload"]},
+        "output_paths": {"inner": str(inner_path)},
+        "resource_contract": {"runtime_max_seconds": 120},
+    }
+    adapter.environment = {"PATH": "/usr/bin:/bin"}
+    adapter.popen = fake_popen
+    adapter.waitid = lambda _idtype, _pid, _options: (
+        SimpleNamespace(
+            si_code=ORCHESTRATOR.os.CLD_STOPPED,
+            si_status=ORCHESTRATOR.signal.SIGSTOP,
+        )
+        if waiter.stopped
+        else None
+    )
+    adapter._pinned_command = lambda argv: (list(argv), "systemd_run")  # type: ignore[method-assign]
+    adapter._show = lambda _unit, fields: (  # type: ignore[method-assign]
+        {
+            "ActiveState": "active",
+            "ExecMainCode": "0",
+            "ExecMainStatus": "0",
+            "InvocationID": invocation_id,
+            "LoadState": "loaded",
+            "MainPID": str(supervisor_pid),
+            "Result": "success",
+            "SubState": "running",
+        }
+        if tuple(fields) == ORCHESTRATOR.SYSTEMD_WAIT_LAUNCH_FIELDS
+        else pytest.fail("wrong fields")
+    )
+    adapter._monotonic = lambda: 1.0
+    adapter._monotonic_ns = lambda: 1
+    adapter.sleep = lambda _seconds: None
+    adapter._systemd_wait_process = None
+    adapter._systemd_wait_unit_name = ""
+    adapter._systemd_wait_invocation_id = ""
+    adapter._systemd_wait_stopped = False
+    monkeypatch.setattr(ORCHESTRATOR.os, "geteuid", lambda: 1000)
+    monkeypatch.setattr(ORCHESTRATOR.os, "getuid", lambda: 1000)
+    monkeypatch.setattr(ORCHESTRATOR, "_proc_starttime", lambda _pid: 77)
+
+    launch = adapter.launch_and_wait_for_keeper(
+        unit_name=unit_name,
+        systemd_run_argv=["/pinned/systemd-run", "--wait"],
+        payload_argv=["payload"],
+    )
+
+    assert launch.invocation_id == invocation_id
+    assert waiter.stopped is True
+    assert adapter._systemd_wait_stopped is True  # noqa: SLF001
+    setup = popen_kwargs["preexec_fn"]
+    assert setup.func is ORCHESTRATOR._arm_parent_death_sigkill  # type: ignore[attr-defined]  # noqa: SLF001
+    assert setup.args == (os.getpid(),)  # type: ignore[attr-defined]
+    assert popen_kwargs["close_fds"] is True
+    assert popen_kwargs["env"] == {"PATH": "/usr/bin:/bin"}
+    adapter._kill_systemd_wait_observer()  # noqa: SLF001
+    assert waiter.reaped is True
+
+
+def test_wait_observer_reap_timeout_retains_control_handle() -> None:
+    class UnreapedWaiter:
+        pid = 42421
+        returncode = None
+
+        def poll(self) -> None:
+            return None
+
+        def kill(self) -> None:
+            return None
+
+        def communicate(self, timeout: float | None = None) -> tuple[bytes, bytes]:
+            assert timeout == 15
+            raise ORCHESTRATOR.subprocess.TimeoutExpired(cmd="systemd-run", timeout=timeout)
+
+    waiter = UnreapedWaiter()
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter._systemd_wait_process = waiter
+    adapter._systemd_wait_unit_name = "cuts-ab16-selected.service"
+    adapter._systemd_wait_invocation_id = "0123456789abcdef0123456789abcdef"
+    adapter._systemd_wait_stopped = True
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="could not be reaped",
+    ):
+        adapter._kill_systemd_wait_observer()  # noqa: SLF001
+
+    assert adapter._systemd_wait_process is waiter  # noqa: SLF001
+    assert adapter._systemd_wait_unit_name == "cuts-ab16-selected.service"  # noqa: SLF001
+    assert adapter._systemd_wait_stopped is True  # noqa: SLF001
+
+
+def test_terminal_replacement_blocks_production_abort_without_name_mutation() -> None:
+    expected_invocation = "0123456789abcdef0123456789abcdef"
+    replacement_invocation = "fedcba9876543210fedcba9876543210"
+    unit_name = "cuts-ab16-selected.service"
+    waiter = _HeldSystemdWaiter()
+    waiter.stopped = True
+    commands: list[list[str]] = []
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter._systemd_wait_process = waiter
+    adapter._systemd_wait_unit_name = unit_name
+    adapter._systemd_wait_invocation_id = expected_invocation
+    adapter._systemd_wait_stopped = True
+    adapter._terminal_invocation_drifted = False
+    adapter._monotonic = lambda: 1.0
+    adapter._show = lambda _unit, _fields: {  # type: ignore[method-assign]
+        "ActiveState": "active",
+        "ControlGroup": "/user.slice/replacement.service",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "InvocationID": replacement_invocation,
+        "Result": "success",
+        "SubState": "running",
+    }
+    adapter._run = lambda argv, **_kwargs: commands.append(list(argv))  # type: ignore[method-assign]
+    launch = ORCHESTRATOR.LaunchEvidence(
+        invocation_id=expected_invocation,
+        supervisor_pid=4242,
+        supervisor_starttime=77,
+        payload_pid=4243,
+        payload_starttime=78,
+        payload_seal_monotonic_ns=300,
+        payload_exit_monotonic_ns=400,
+        payload_exit_code=0,
+        payload_signal=0,
+        payload_reaped=True,
+        keeper_ready_monotonic_ns=500,
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="terminal InvocationID drifted",
+    ):
+        adapter.capture_terminal(
+            unit_name=unit_name,
+            invocation_id=expected_invocation,
+        )
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="refusing cleanup after terminal InvocationID drift",
+    ):
+        adapter.abort_and_capture_cleanup(
+            unit_name=unit_name,
+            launch=launch,
+            control_group=None,
+        )
+
+    assert waiter.reaped is True
+    assert commands == []
+
+
+def test_normal_terminal_cleanup_observes_absence_without_stop_or_reset() -> None:
+    unit_name = "cuts-ab16-selected.service"
+    control_group = "/user.slice/cuts-ab16-selected.service"
+    commands: list[list[str]] = []
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter._systemd_wait_process = None
+    adapter.systemctl = "/pinned/systemctl"
+    adapter._selected_unit_state = lambda **_kwargs: (True, control_group)  # type: ignore[method-assign]
+
+    def run(argv: Sequence[str], **_kwargs: object) -> SimpleNamespace:
+        command = list(argv)
+        commands.append(command)
+        assert "stop" not in command and "reset-failed" not in command
+        if "list-units" in command:
+            return SimpleNamespace(returncode=0, stdout=b"", stderr=b"")
+        assert "--property=LoadState" in command
+        return SimpleNamespace(returncode=0, stdout=b"not-found\n", stderr=b"")
+
+    adapter._run = run
+    adapter._monotonic = lambda: 1.0
+    adapter._monotonic_ns = lambda: 1300
+    adapter.sleep = lambda _seconds: None
+    launch = ORCHESTRATOR.LaunchEvidence(
+        invocation_id="0123456789abcdef0123456789abcdef",
+        supervisor_pid=999_999_991,
+        supervisor_starttime=77,
+        payload_pid=999_999_992,
+        payload_starttime=78,
+        payload_seal_monotonic_ns=300,
+        payload_exit_monotonic_ns=400,
+        payload_exit_code=0,
+        payload_signal=0,
+        payload_reaped=True,
+        keeper_ready_monotonic_ns=500,
+    )
+
+    cleanup = adapter.capture_cleanup(
+        unit_name=unit_name,
+        launch=launch,
+        control_group=control_group,
+    )
+
+    assert cleanup.unit_load_state == "not-found"
+    assert cleanup.matching_unit_names == []
+    assert all("stop" not in command and "reset-failed" not in command for command in commands)
+
+
+def test_wait_observer_parent_death_sigkill_releases_stopped_child() -> None:
+    helper_code = r"""
+import functools
+import importlib.util
+import os
+import signal
+import subprocess
+import sys
+
+spec = importlib.util.spec_from_file_location("ab16_r18_pdeath_helper", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+child = subprocess.Popen(
+    [sys.executable, "-c", "import time; time.sleep(60)", sys.argv[2]],
+    close_fds=True,
+    preexec_fn=functools.partial(module._arm_parent_death_sigkill, os.getpid()),
+    stdin=subprocess.DEVNULL,
+    stdout=sys.stdout,
+    stderr=subprocess.DEVNULL,
+)
+child.send_signal(signal.SIGSTOP)
+status = os.waitid(os.P_PID, child.pid, os.WEXITED | os.WNOWAIT | os.WSTOPPED)
+assert status.si_code == os.CLD_STOPPED and status.si_status == signal.SIGSTOP
+print(child.pid, flush=True)
+sys.stdin.buffer.read(1)
+os._exit(0)
+"""
+    child_token = f"ab16-r18-pdeath-{os.getpid()}-{ORCHESTRATOR.time.monotonic_ns()}"
+    helper = ORCHESTRATOR.subprocess.Popen(
+        [sys.executable, "-c", helper_code, str(ORCHESTRATOR_PATH), child_token],
+        close_fds=True,
+        stdin=ORCHESTRATOR.subprocess.PIPE,
+        stdout=ORCHESTRATOR.subprocess.PIPE,
+        stderr=ORCHESTRATOR.subprocess.PIPE,
+        text=True,
+    )
+    assert helper.stdout is not None
+    child_pid = int(helper.stdout.readline())
+    child_starttime = ORCHESTRATOR._proc_starttime(child_pid)  # noqa: SLF001
+    assert child_starttime is not None
+    try:
+        assert helper.stdin is not None
+        helper.stdin.write("x")
+        helper.stdin.close()
+        assert helper.wait(timeout=5) == 0
+        readable, _writable, _exceptional = select.select([helper.stdout], [], [], 5)
+        assert readable == [helper.stdout]
+        assert helper.stdout.read() == ""
+    finally:
+        if helper.poll() is None:
+            helper.kill()
+            helper.wait()
+        if ORCHESTRATOR._proc_starttime(child_pid) == child_starttime:  # noqa: SLF001
+            try:
+                cmdline = Path(f"/proc/{child_pid}/cmdline").read_bytes().split(b"\0")
+            except FileNotFoundError:
+                cmdline = []
+            if child_token.encode("ascii") in cmdline:
+                try:
+                    os.kill(child_pid, ORCHESTRATOR.signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+
+
+def test_live_user_manager_collection_race_retains_identity_until_observer_reap() -> None:
+    suffix = f"{os.getpid()}-{ORCHESTRATOR.time.monotonic_ns()}"
+    unheld_unit = f"codex-r18-unheld-{suffix}.service"
+    held_unit = f"codex-r18-held-{suffix}.service"
+    fields = (
+        "LoadState",
+        "ActiveState",
+        "SubState",
+        "InvocationID",
+        "Result",
+        "ExecMainCode",
+        "ExecMainStatus",
+    )
+
+    def show(unit_name: str) -> dict[str, str]:
+        completed = ORCHESTRATOR.subprocess.run(
+            [
+                "/usr/bin/systemctl",
+                "--user",
+                "show",
+                unit_name,
+                *(f"--property={field}" for field in fields),
+            ],
+            check=False,
+            close_fds=True,
+            stdin=ORCHESTRATOR.subprocess.DEVNULL,
+            stdout=ORCHESTRATOR.subprocess.PIPE,
+            stderr=ORCHESTRATOR.subprocess.PIPE,
+            timeout=5,
+        )
+        assert completed.returncode == 0, completed.stderr.decode(errors="replace")
+        state = dict(line.split("=", 1) for line in completed.stdout.decode("utf-8").splitlines())
+        assert set(state) == set(fields)
+        return state
+
+    def wait_for(
+        unit_name: str,
+        predicate: Callable[[dict[str, str]], bool],
+    ) -> dict[str, str]:
+        deadline = ORCHESTRATOR.time.monotonic() + 5
+        while ORCHESTRATOR.time.monotonic() <= deadline:
+            state = show(unit_name)
+            if predicate(state):
+                return state
+            ORCHESTRATOR.time.sleep(0.02)
+        raise AssertionError(f"timed out waiting for {unit_name}: {state}")
+
+    def launch(unit_name: str, seconds: str) -> Any:
+        return ORCHESTRATOR.subprocess.Popen(
+            [
+                "/usr/bin/systemd-run",
+                "--user",
+                "--quiet",
+                "--wait",
+                f"--unit={unit_name.removesuffix('.service')}",
+                "--property=CollectMode=inactive-or-failed",
+                "--",
+                "/usr/bin/sleep",
+                seconds,
+            ],
+            close_fds=True,
+            preexec_fn=ORCHESTRATOR.partial(
+                ORCHESTRATOR._arm_parent_death_sigkill,  # noqa: SLF001
+                os.getpid(),
+            ),
+            stdin=ORCHESTRATOR.subprocess.DEVNULL,
+            stdout=ORCHESTRATOR.subprocess.PIPE,
+            stderr=ORCHESTRATOR.subprocess.PIPE,
+        )
+
+    unheld = launch(unheld_unit, "0.1")
+    held: Any | None = None
+    try:
+        stdout, stderr = unheld.communicate(timeout=5)
+        assert (unheld.returncode, stdout, stderr) == (0, b"", b"")
+        collected = wait_for(
+            unheld_unit,
+            lambda state: state["LoadState"] == "not-found",
+        )
+        assert collected == {
+            "ActiveState": "inactive",
+            "ExecMainCode": "0",
+            "ExecMainStatus": "0",
+            "InvocationID": "",
+            "LoadState": "not-found",
+            "Result": "success",
+            "SubState": "dead",
+        }
+
+        held = launch(held_unit, "0.4")
+        launch_state = wait_for(
+            held_unit,
+            lambda state: state["LoadState"] == "loaded" and bool(state["InvocationID"]),
+        )
+        invocation_id = launch_state["InvocationID"]
+        held.send_signal(ORCHESTRATOR.signal.SIGSTOP)
+        stop_status = ORCHESTRATOR.os.waitid(
+            ORCHESTRATOR.os.P_PID,
+            held.pid,
+            ORCHESTRATOR.os.WEXITED
+            | ORCHESTRATOR.os.WNOHANG
+            | ORCHESTRATOR.os.WNOWAIT
+            | ORCHESTRATOR.os.WSTOPPED,
+        )
+        if stop_status is None:
+            stop_status = ORCHESTRATOR.os.waitid(
+                ORCHESTRATOR.os.P_PID,
+                held.pid,
+                ORCHESTRATOR.os.WEXITED | ORCHESTRATOR.os.WNOWAIT | ORCHESTRATOR.os.WSTOPPED,
+            )
+        assert stop_status.si_code == ORCHESTRATOR.os.CLD_STOPPED
+        assert stop_status.si_status == ORCHESTRATOR.signal.SIGSTOP
+        ORCHESTRATOR.time.sleep(0.7)
+
+        retained = show(held_unit)
+        assert retained["LoadState"] == "loaded"
+        assert retained["InvocationID"] == invocation_id
+        assert retained["ActiveState"] == "inactive"
+        assert retained["SubState"] == "dead"
+        assert retained["Result"] == "success"
+        assert retained["ExecMainCode"] in {"exited", "1"}
+        assert retained["ExecMainStatus"] == "0"
+
+        held.kill()
+        held.communicate(timeout=5)
+        assert held.returncode == -ORCHESTRATOR.signal.SIGKILL
+        recollected = wait_for(
+            held_unit,
+            lambda state: state["LoadState"] == "not-found",
+        )
+        assert recollected["InvocationID"] == ""
+    finally:
+        for process in (unheld, held):
+            if process is not None and process.poll() is None:
+                process.kill()
+                process.communicate(timeout=5)
 
 
 def test_inner_publication_classifier_handles_unlink_after_pending_list(

@@ -1782,6 +1782,7 @@ def build_systemd_run_argv(
         executable,
         "--user",
         "--quiet",
+        "--wait",
         f"--unit={unit.removesuffix('.service')}",
         f"--property=MemoryHigh={contract['memory_high_bytes']}",
         f"--property=MemoryMax={contract['memory_max_bytes']}",

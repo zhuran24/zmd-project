@@ -14,13 +14,16 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Callable, Mapping, Sequence
+import ctypes
 from dataclasses import dataclass
 import errno
+from functools import partial
 import hashlib
 import json
 import math
 import os
 from pathlib import Path
+import signal
 import stat
 import subprocess
 import sys
@@ -187,6 +190,11 @@ SYSTEMD_LAUNCH_FIELDS = (
     "ExecMainCode",
     "ExecMainStatus",
 )
+SYSTEMD_WAIT_LAUNCH_FIELDS = (
+    *SYSTEMD_LAUNCH_FIELDS,
+    "InvocationID",
+    "LoadState",
+)
 SYSTEMD_PRETERMINAL_FIELDS = (
     "ActiveState",
     "CollectMode",
@@ -222,6 +230,26 @@ CGROUP_FIELDS = (
     "cgroup.procs",
     "cgroup.events",
 )
+
+_PR_SET_PDEATHSIG = 1
+_LIBC_PRCTL = ctypes.CDLL(None, use_errno=True).prctl
+_LIBC_PRCTL.argtypes = (
+    ctypes.c_int,
+    ctypes.c_ulong,
+    ctypes.c_ulong,
+    ctypes.c_ulong,
+    ctypes.c_ulong,
+)
+_LIBC_PRCTL.restype = ctypes.c_int
+
+
+def _arm_parent_death_sigkill(expected_parent_pid: int) -> None:
+    """Make the wait observer die even if its stopped parent disappears."""
+
+    if _LIBC_PRCTL(_PR_SET_PDEATHSIG, signal.SIGKILL, 0, 0, 0) != 0:
+        os._exit(127)
+    if os.getppid() != expected_parent_pid:
+        os._exit(127)
 
 
 def _strict_json(value: object, label: str = "value") -> None:
@@ -662,6 +690,8 @@ class SubprocessLifecycleAdapter:
         pre_run: Mapping[str, Any],
         epoch_observer: Callable[[str], EpochCapture],
         run: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
+        popen: Callable[..., subprocess.Popen[bytes]] = subprocess.Popen,
+        waitid: Callable[..., Any] = os.waitid,
         monotonic: Callable[[], float] = time.monotonic,
         monotonic_ns: Callable[[], int] = time.monotonic_ns,
         sleep: Callable[[float], None] = time.sleep,
@@ -669,9 +699,16 @@ class SubprocessLifecycleAdapter:
         self.pre_run = pre_run
         self.epoch_observer = epoch_observer
         self.run = run
+        self.popen = popen
+        self.waitid = waitid
         self._monotonic = monotonic
         self._monotonic_ns = monotonic_ns
         self.sleep = sleep
+        self._systemd_wait_process: subprocess.Popen[bytes] | None = None
+        self._systemd_wait_unit_name = ""
+        self._systemd_wait_invocation_id = ""
+        self._systemd_wait_stopped = False
+        self._terminal_invocation_drifted = False
         self.systemctl = str(pre_run["launch"]["systemctl_path"])
         self.environment = _load_pinned_environment(pre_run)
         tools = pre_run.get("tool_identities")
@@ -698,13 +735,7 @@ class SubprocessLifecycleAdapter:
     def monotonic_ns(self) -> int:
         return self._monotonic_ns()
 
-    def _run(
-        self,
-        argv: Sequence[str],
-        *,
-        timeout: float,
-        allowed_exit_codes: frozenset[int] = frozenset({0}),
-    ) -> subprocess.CompletedProcess[bytes]:
+    def _pinned_command(self, argv: Sequence[str]) -> tuple[list[str], str]:
         command = list(argv)
         if (
             not command
@@ -715,6 +746,16 @@ class SubprocessLifecycleAdapter:
         role, expected = self.executable_identities[command[0]]
         observed = snapshot_bytes(command[0])
         _identity_matches(observed.identity, expected, "ordinary-user executable")
+        return command, role
+
+    def _run(
+        self,
+        argv: Sequence[str],
+        *,
+        timeout: float,
+        allowed_exit_codes: frozenset[int] = frozenset({0}),
+    ) -> subprocess.CompletedProcess[bytes]:
+        command, role = self._pinned_command(argv)
         try:
             completed = self.run(
                 command,
@@ -732,6 +773,117 @@ class SubprocessLifecycleAdapter:
         if completed.returncode not in allowed_exit_codes:
             raise OrchestratorError(f"ordinary-user command failed ({completed.returncode}): {argv[0]}")
         return completed
+
+    def _start_systemd_wait_observer(
+        self,
+        *,
+        unit_name: str,
+        argv: Sequence[str],
+    ) -> None:
+        """Launch systemd-run itself as the identity-bound terminal observer."""
+
+        command, role = self._pinned_command(argv)
+        if role != "systemd_run" or command.count("--wait") != 1:
+            raise OrchestratorError("selected unit requires one package-pinned systemd-run --wait observer")
+        if self._systemd_wait_process is not None:
+            raise OrchestratorError("systemd-run wait observer is already installed")
+        parent_pid = os.getpid()
+        try:
+            process = self.popen(
+                command,
+                close_fds=True,
+                cwd=self.pre_run["launch"]["cwd"],
+                env=dict(self.environment),
+                preexec_fn=partial(_arm_parent_death_sigkill, parent_pid),
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+        except OSError as exc:
+            raise OrchestratorError(f"{role} command execution failed: {command[0]}") from exc
+        self._systemd_wait_process = process
+        self._systemd_wait_unit_name = unit_name
+        self._systemd_wait_invocation_id = ""
+        self._systemd_wait_stopped = False
+
+    def _require_systemd_wait_observer(
+        self,
+        *,
+        unit_name: str,
+        invocation_id: str,
+        stopped: bool,
+    ) -> subprocess.Popen[bytes]:
+        process = self._systemd_wait_process
+        if (
+            process is None
+            or self._systemd_wait_unit_name != unit_name
+            or self._systemd_wait_invocation_id != invocation_id
+            or self._systemd_wait_stopped is not stopped
+            or process.poll() is not None
+        ):
+            raise OrchestratorError("identity-bound systemd-run wait observer is unavailable")
+        return process
+
+    def _stop_systemd_wait_observer(
+        self,
+        *,
+        unit_name: str,
+        invocation_id: str,
+    ) -> None:
+        """Freeze the observer so its D-Bus AddRef survives keeper release."""
+
+        process = self._require_systemd_wait_observer(
+            unit_name=unit_name,
+            invocation_id=invocation_id,
+            stopped=False,
+        )
+        try:
+            process.send_signal(signal.SIGSTOP)
+        except OSError as exc:
+            raise OrchestratorError("could not stop systemd-run wait observer") from exc
+        deadline = self._monotonic() + 5
+        options = os.WEXITED | os.WNOHANG | os.WNOWAIT | os.WSTOPPED
+        while self._monotonic() <= deadline:
+            try:
+                status = self.waitid(os.P_PID, process.pid, options)
+            except ChildProcessError as exc:
+                raise OrchestratorError("systemd-run wait observer disappeared while stopping") from exc
+            if status is None:
+                self.sleep(0.01)
+                continue
+            if status.si_code == os.CLD_STOPPED and status.si_status == signal.SIGSTOP:
+                self._systemd_wait_stopped = True
+                return
+            if status.si_code in {os.CLD_DUMPED, os.CLD_EXITED, os.CLD_KILLED}:
+                process.poll()
+                raise OrchestratorError("systemd-run wait observer exited before terminal capture")
+            raise OrchestratorError("systemd-run wait observer stop state is invalid")
+        raise OrchestratorError("systemd-run wait observer did not stop before release")
+
+    def _kill_systemd_wait_observer(self) -> None:
+        """Drop AddRef and reap the observer only after terminal persistence."""
+
+        process = getattr(self, "_systemd_wait_process", None)
+        if process is None:
+            return
+        if process.poll() is None:
+            try:
+                process.kill()
+            except ProcessLookupError:
+                if process.poll() is None:
+                    raise OrchestratorError("systemd-run wait observer disappeared before reap") from None
+            except OSError as exc:
+                raise OrchestratorError("systemd-run wait observer could not be killed") from exc
+        try:
+            process.communicate(timeout=15)
+        except subprocess.TimeoutExpired as exc:
+            raise OrchestratorError("systemd-run wait observer could not be reaped") from exc
+        if process.returncode is None:
+            raise OrchestratorError("systemd-run wait observer reap status is unavailable")
+        self._systemd_wait_process = None
+        self._systemd_wait_unit_name = ""
+        self._systemd_wait_invocation_id = ""
+        self._systemd_wait_stopped = False
 
     @staticmethod
     def _parse_show(raw: bytes, fields: Sequence[str]) -> dict[str, str]:
@@ -803,71 +955,113 @@ class SubprocessLifecycleAdapter:
             raise OrchestratorError("live adapter must run as the ordinary selected user")
         if list(payload_argv) != self.pre_run["launch"]["payload_argv"]:
             raise OrchestratorError("live payload argv drifted")
-        self._run(systemd_run_argv, timeout=30)
+        wait_observer = "--wait" in systemd_run_argv
         try:
-            launch_state = self._show(unit_name, SYSTEMD_LAUNCH_FIELDS)
-        except OrchestratorError as exc:
-            raise OrchestratorError("selected unit disappeared before inner lifecycle") from exc
-        if launch_state["ActiveState"] in {"failed", "inactive"}:
-            raise OrchestratorError(
-                "selected unit terminated before inner lifecycle "
-                f"(ActiveState={launch_state['ActiveState']}, Result={launch_state['Result']}, "
-                f"ExecMainCode={launch_state['ExecMainCode']}, "
-                f"ExecMainStatus={launch_state['ExecMainStatus']})"
-            )
-        try:
-            supervisor_pid = int(launch_state["MainPID"])
-        except ValueError as exc:
-            raise OrchestratorError("selected unit MainPID is malformed") from exc
-        supervisor_starttime = _proc_starttime(supervisor_pid)
-        if supervisor_pid <= 0 or supervisor_starttime is None:
-            raise OrchestratorError("selected unit supervisor is absent before inner lifecycle")
-        inner_path = Path(self.pre_run["output_paths"]["inner"])
-        deadline = self._monotonic() + int(self.pre_run["resource_contract"]["runtime_max_seconds"]) - 60
-        publication_retries_remaining = 20
-        ready_retry_available = True
-        while self._monotonic() <= deadline:
-            if os.path.lexists(inner_path):
-                try:
-                    snapshot = snapshot_bytes(inner_path)
-                except OrchestratorError:
-                    publication_state = _inner_publication_state(
-                        inner_path,
-                        supervisor_pid=supervisor_pid,
-                    )
-                    if publication_state == "ready" and ready_retry_available:
-                        ready_retry_available = False
-                        continue
-                    if publication_state != "publishing" or publication_retries_remaining <= 0:
-                        raise
-                    if _proc_starttime(supervisor_pid) != supervisor_starttime:
-                        raise OrchestratorError("selected unit supervisor exited during inner lifecycle publication")
-                    publication_retries_remaining -= 1
-                    self.sleep(0.05)
-                    continue
-                value = _strict_load(snapshot, "inner lifecycle")
-                if (
-                    value.get("schema_version") != "noncert-cuts-ab16-inner-lifecycle-v1"
-                    or value.get("unit_name") != unit_name
-                ):
-                    raise OrchestratorError("live inner lifecycle schema/unit drifted")
-                return LaunchEvidence(
-                    invocation_id=value["invocation_id"],
-                    supervisor_pid=value["supervisor_pid"],
-                    supervisor_starttime=value["supervisor_starttime"],
-                    payload_pid=value["payload_pid"],
-                    payload_starttime=value["payload_starttime"],
-                    payload_seal_monotonic_ns=value["payload_seal_monotonic_ns"],
-                    payload_exit_monotonic_ns=value["payload_exit_monotonic_ns"],
-                    payload_exit_code=value["payload_exit_code"],
-                    payload_signal=value["payload_signal"],
-                    payload_reaped=value["payload_reaped"],
-                    keeper_ready_monotonic_ns=value["keeper_ready_monotonic_ns"],
+            if wait_observer:
+                self._start_systemd_wait_observer(
+                    unit_name=unit_name,
+                    argv=systemd_run_argv,
                 )
-            if _proc_starttime(supervisor_pid) != supervisor_starttime:
-                raise OrchestratorError("selected unit supervisor exited before inner lifecycle")
-            self.sleep(0.05)
-        raise OrchestratorError("inner lifecycle did not appear before internal deadline")
+                launch_deadline = self._monotonic() + 30
+                while True:
+                    process = self._systemd_wait_process
+                    if process is None or process.poll() is not None:
+                        raise OrchestratorError("systemd-run wait observer exited before selected unit launch")
+                    launch_state = self._show(unit_name, SYSTEMD_WAIT_LAUNCH_FIELDS)
+                    if launch_state["LoadState"] == "loaded" and launch_state["InvocationID"]:
+                        self._systemd_wait_invocation_id = launch_state["InvocationID"]
+                        break
+                    if self._monotonic() > launch_deadline:
+                        raise OrchestratorError("selected unit did not appear after systemd-run launch")
+                    self.sleep(0.05)
+            else:
+                self._run(systemd_run_argv, timeout=30)
+                try:
+                    launch_state = self._show(unit_name, SYSTEMD_LAUNCH_FIELDS)
+                except OrchestratorError as exc:
+                    raise OrchestratorError("selected unit disappeared before inner lifecycle") from exc
+            if launch_state["ActiveState"] in {"failed", "inactive"}:
+                raise OrchestratorError(
+                    "selected unit terminated before inner lifecycle "
+                    f"(ActiveState={launch_state['ActiveState']}, Result={launch_state['Result']}, "
+                    f"ExecMainCode={launch_state['ExecMainCode']}, "
+                    f"ExecMainStatus={launch_state['ExecMainStatus']})"
+                )
+            try:
+                supervisor_pid = int(launch_state["MainPID"])
+            except ValueError as exc:
+                raise OrchestratorError("selected unit MainPID is malformed") from exc
+            supervisor_starttime = _proc_starttime(supervisor_pid)
+            if supervisor_pid <= 0 or supervisor_starttime is None:
+                raise OrchestratorError("selected unit supervisor is absent before inner lifecycle")
+            inner_path = Path(self.pre_run["output_paths"]["inner"])
+            deadline = self._monotonic() + int(self.pre_run["resource_contract"]["runtime_max_seconds"]) - 60
+            publication_retries_remaining = 20
+            ready_retry_available = True
+            while self._monotonic() <= deadline:
+                if wait_observer:
+                    process = self._systemd_wait_process
+                    if process is None or process.poll() is not None:
+                        raise OrchestratorError("systemd-run wait observer exited before inner lifecycle")
+                if os.path.lexists(inner_path):
+                    try:
+                        snapshot = snapshot_bytes(inner_path)
+                    except OrchestratorError:
+                        publication_state = _inner_publication_state(
+                            inner_path,
+                            supervisor_pid=supervisor_pid,
+                        )
+                        if publication_state == "ready" and ready_retry_available:
+                            ready_retry_available = False
+                            continue
+                        if publication_state != "publishing" or publication_retries_remaining <= 0:
+                            raise
+                        if _proc_starttime(supervisor_pid) != supervisor_starttime:
+                            raise OrchestratorError("selected unit supervisor exited during inner lifecycle publication")
+                        publication_retries_remaining -= 1
+                        self.sleep(0.05)
+                        continue
+                    value = _strict_load(snapshot, "inner lifecycle")
+                    if (
+                        value.get("schema_version") != "noncert-cuts-ab16-inner-lifecycle-v1"
+                        or value.get("unit_name") != unit_name
+                    ):
+                        raise OrchestratorError("live inner lifecycle schema/unit drifted")
+                    launch = LaunchEvidence(
+                        invocation_id=value["invocation_id"],
+                        supervisor_pid=value["supervisor_pid"],
+                        supervisor_starttime=value["supervisor_starttime"],
+                        payload_pid=value["payload_pid"],
+                        payload_starttime=value["payload_starttime"],
+                        payload_seal_monotonic_ns=value["payload_seal_monotonic_ns"],
+                        payload_exit_monotonic_ns=value["payload_exit_monotonic_ns"],
+                        payload_exit_code=value["payload_exit_code"],
+                        payload_signal=value["payload_signal"],
+                        payload_reaped=value["payload_reaped"],
+                        keeper_ready_monotonic_ns=value["keeper_ready_monotonic_ns"],
+                    )
+                    if wait_observer:
+                        if launch.invocation_id != launch_state["InvocationID"]:
+                            raise OrchestratorError("launch InvocationID drifted before terminal observer hold")
+                        self._stop_systemd_wait_observer(
+                            unit_name=unit_name,
+                            invocation_id=launch.invocation_id,
+                        )
+                    return launch
+                if _proc_starttime(supervisor_pid) != supervisor_starttime:
+                    raise OrchestratorError("selected unit supervisor exited before inner lifecycle")
+                self.sleep(0.05)
+            raise OrchestratorError("inner lifecycle did not appear before internal deadline")
+        except BaseException as original_failure:
+            if wait_observer:
+                try:
+                    self._kill_systemd_wait_observer()
+                except BaseException as cleanup_failure:
+                    raise OrchestratorError("pre-launch wait observer cleanup failed") from BaseExceptionGroup(
+                        "selected unit launch failure and wait-observer cleanup failure",
+                        [original_failure, cleanup_failure],
+                    )
+            raise
 
     def capture_preterminal(
         self,
@@ -875,7 +1069,15 @@ class SubprocessLifecycleAdapter:
         unit_name: str,
         launch: LaunchEvidence,
     ) -> PreterminalEvidence:
+        if getattr(self, "_systemd_wait_process", None) is not None:
+            self._require_systemd_wait_observer(
+                unit_name=unit_name,
+                invocation_id=launch.invocation_id,
+                stopped=True,
+            )
         systemd_raw = self._show(unit_name, SYSTEMD_PRETERMINAL_FIELDS)
+        if systemd_raw["InvocationID"] != launch.invocation_id:
+            raise OrchestratorError("preterminal InvocationID drifted")
         control_group = systemd_raw["ControlGroup"]
         cgroup_raw = {name: self._read_cgroup_file(control_group, name) for name in CGROUP_FIELDS}
         return PreterminalEvidence(
@@ -893,7 +1095,12 @@ class SubprocessLifecycleAdapter:
         release_path: Path,
         launch: LaunchEvidence,
     ) -> None:
-        del unit_name, launch
+        if getattr(self, "_systemd_wait_process", None) is not None:
+            self._require_systemd_wait_observer(
+                unit_name=unit_name,
+                invocation_id=launch.invocation_id,
+                stopped=True,
+            )
         snapshot_bytes(release_path)
 
     def capture_terminal(
@@ -902,10 +1109,17 @@ class SubprocessLifecycleAdapter:
         unit_name: str,
         invocation_id: str,
     ) -> TerminalEvidence:
+        if getattr(self, "_systemd_wait_process", None) is not None:
+            self._require_systemd_wait_observer(
+                unit_name=unit_name,
+                invocation_id=invocation_id,
+                stopped=True,
+            )
         deadline = self._monotonic() + 30
         while self._monotonic() <= deadline:
             raw = self._show(unit_name, SYSTEMD_TERMINAL_FIELDS)
             if raw["InvocationID"] != invocation_id:
+                self._terminal_invocation_drifted = True
                 raise OrchestratorError("terminal InvocationID drifted")
             if raw["ActiveState"] in {"inactive", "failed"}:
                 return TerminalEvidence(
@@ -922,10 +1136,12 @@ class SubprocessLifecycleAdapter:
         launch: LaunchEvidence,
         control_group: str,
     ) -> CleanupEvidence:
+        self._kill_systemd_wait_observer()
         return self._cleanup_selected_unit(
             unit_name=unit_name,
             launch=launch,
             control_group=control_group,
+            stop_selected=False,
         )
 
     def abort_and_capture_cleanup(
@@ -935,10 +1151,14 @@ class SubprocessLifecycleAdapter:
         launch: LaunchEvidence,
         control_group: str | None,
     ) -> CleanupEvidence:
+        self._kill_systemd_wait_observer()
+        if self._terminal_invocation_drifted:
+            raise OrchestratorError("refusing cleanup after terminal InvocationID drift")
         return self._cleanup_selected_unit(
             unit_name=unit_name,
             launch=launch,
             control_group=control_group or "",
+            stop_selected=True,
         )
 
     def _selected_unit_state(
@@ -976,6 +1196,7 @@ class SubprocessLifecycleAdapter:
         unit_name: str,
         launch: LaunchEvidence,
         control_group: str,
+        stop_selected: bool,
     ) -> CleanupEvidence:
         present, observed_control_group = self._selected_unit_state(
             unit_name=unit_name,
@@ -986,7 +1207,7 @@ class SubprocessLifecycleAdapter:
         effective_control_group = control_group or observed_control_group
         if present and (not effective_control_group or not effective_control_group.startswith("/")):
             raise OrchestratorError("selected unit ControlGroup unavailable before cleanup")
-        if present:
+        if present and stop_selected and _proc_starttime(launch.supervisor_pid) == launch.supervisor_starttime:
             self._run(
                 [self.systemctl, "--user", "stop", unit_name],
                 timeout=15,
