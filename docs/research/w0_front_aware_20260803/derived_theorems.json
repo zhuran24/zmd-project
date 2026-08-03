@@ -72,6 +72,24 @@
       "source": "blueprint section 5.1; stage B must supply the cross-check test"
     },
     {
+      "id": "T-EMPTY-PATTERN",
+      "layer": "exact_semantics",
+      "statement": "A region holding no body, no pole and no hole is a legal pattern of every region class. The stage A generator never emits it because every menu target asks for at least one body, so the master's catalog loader synthesises it and puts it through the ordinary evaluator before admitting it. Without it the CORE region -- which provably holds no manufacturing body -- would have nothing to take and the master would report INFEASIBLE for a bookkeeping reason.",
+      "gates": ["G1"],
+      "code_anchor": "g1_exact_cover_master.EMPTY_PATTERN",
+      "stage": "B",
+      "source": "this line; the CORE catalog is empty and complete, not truncated"
+    },
+    {
+      "id": "T-SUPPLY-CEILING",
+      "layer": "necessary_projection",
+      "statement": "Every region takes exactly one pattern, so for any bucket the board can hold at most the sum over region classes of (that class's richest pattern in that bucket) times its multiplicity. The same argument bounds the total body count and each template family. Each ceiling over-counts, because it picks every region class's best pattern independently; a ceiling below the census therefore proves the catalog cannot cover it, while a ceiling above the census excludes nothing.",
+      "gates": ["G1"],
+      "code_anchor": "g1_exact_cover_master.bucket_supply_ceiling",
+      "stage": "B",
+      "source": "blueprint section 11 item 4; solver-free, runs before the master"
+    },
+    {
       "id": "T-POLE-MINIMAL",
       "layer": "sufficient_restriction",
       "statement": "An inclusion-minimal covering pole set satisfies the repository power-irredundancy predicate: every pole is some instance's sole coverer and those instances are pairwise distinct, hence poles <= powered instances.",

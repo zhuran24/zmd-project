@@ -173,6 +173,8 @@ cap = max over pairs with both sides non-empty of max(n_X, n_Y)
 | `T-DEAD-BODY` | **必要投影** | G1 | `g1_pattern_evaluator.dead_for_any_actual_class` |
 | `T-CAPABILITY-BUCKET` | **必要投影**（无损抽象） | G1 | `g1_port_semantics.BUCKET_SERVABLE` |
 | `T-ARCHETYPE-COLLAPSE` | **必要投影**（等价变换） | G1 | `g1_exact_cover_master.COLLAPSE_EQUIVALENCE`（乙段） |
+| `T-SUPPLY-CEILING` | **必要投影**（算术上界） | G1 | `g1_exact_cover_master.bucket_supply_ceiling`（乙段） |
+| `T-EMPTY-PATTERN` | 精确语义（词汇完备性） | G1 | `g1_exact_cover_master.EMPTY_PATTERN`（乙段） |
 | `T-POLE-MINIMAL` | **充分限制**（带证明） | G1/G3 | `g1_pattern_evaluator.minimize_poles` |
 | `R-BODY-IN-REGION` | **充分限制** | G1 | `g1_region_model.BODY_IN_REGION` |
 | `R-FRONT-IN-REGION` | **充分限制** | G1 | `g1_region_model.FRONT_IN_REGION` |
@@ -187,6 +189,19 @@ cap = max over pairs with both sides non-empty of max(n_X, n_Y)
 | `H-GEN-OBJECTIVE` | 启发式 | G1 | `g1_pattern_generator.FRONT_PROXY_OBJECTIVE` |
 | `H-SPINE-LANE` | 启发式 | G1 | `g1_pattern_generator.SPINE_LANE` |
 | `H-DERIVED-SUBSETS` | 启发式 | G1 | `g1_pattern_generator.derive_subsets` |
+
+两条乙段新登记的说明：
+
+- `T-EMPTY-PATTERN` 是**词汇完备性**而不是限制。甲段生成器的每个菜单目标都要求 ≥1 台机器，
+  所以它从不产出"什么都不放"的 pattern；而 CORE 区域已被证明放不下任何机身（§7）。
+  两件事凑在一起，master 会因为"CORE 无 pattern 可选"报 INFEASIBLE——那是记账错误冒充结论。
+  因此 master 的 catalog loader 现场合成空 pattern，并**照常过 evaluator** 才准入。
+- `T-SUPPLY-CEILING` 是把 §7 的面积预门推广到 bucket / 总台数 / 模板族三个口径，
+  无求解器、跑在 master 之前。方向唯一：**ceiling < demand 才是结论**（证明这份 catalog 盖不住普查），
+  ceiling ≥ demand 什么也不排除。
+- `T-POLE-MINIMAL` 在乙段是**全局**跑的：`R-POWER-LOCAL` 是买来给 master 省约束的每区限制，
+  板面一旦成型，邻区的杆本来就可能已经覆盖到某台机器，而仓库的不冗余谓词管的是整板。
+  删杆只会让格子变自由，因此不可能作废任何 front 见证或缩小孔洞。
 
 **「带前件条件 cut」一层在 G1 为空**，理由必须写明：本线 shadow-only，不向任何 master 输出学习 cut；
 生成器内部的 nogood 只在单次子解生命周期内存在、不导出、不跨 antecedent 复用，
@@ -292,7 +307,11 @@ front 格名义上空着实际够不着。这也解释了 catalog 里 `rejected_
 | `g1_pattern_evaluator.py` | 几何 → capability 的唯一真相源；catalog loader 在此重算 |
 | `g1_pattern_generator.py` | 目标驱动的局部 CP-SAT + 签名去重 + 预算闸 + 算术预门 |
 | `front_viability_audit.py` | 独立复核器（stdlib-only、可 `-I -S -B`、15 条 issue code） |
+| `g1_exact_cover_master.py` | exact-cover master（C1–C5）、空 pattern 合成、供给预门、删除法不可行核 |
+| `g1_expand_solution.py` | master 解 → 70×70 几何：类指派、全局杆极小化、provisional 实例、`g1_geometry.json` |
+| `run_g1.py` | 六个子命令的编排器；独占 run root + receipt 闭合；G1 五条判定 |
 | `CATALOG_REPORT.md` | 甲段交接物：catalog 规模与算术预门结论 |
+| `RESULT.md` | 乙段收口：G1 终态、机器证据、升级梯走到哪档 |
 
 **甲段 / 乙段冻结线 = catalog**。`g1_pattern_schema.py` 的五个 schema 常量是冻结面：
 乙段可以并列新增 `w0_g1_*_v2`，不得改动任何 `_v1` 字段。
