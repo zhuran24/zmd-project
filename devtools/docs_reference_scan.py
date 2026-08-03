@@ -10,6 +10,10 @@ Properties this module keeps, deliberately:
 
 * Pure standard library, read-only against the repository, no LLM, no network.
   The only thing it writes is its own report under ``.prune/``.
+* The document class registry is at a constant path, and it must be tracked and
+  committed.  Classes are the safety gate, so the file that defines them cannot
+  be swapped out by a caller, and a path claimed by two classes is a structural
+  error rather than a race between rule orderings.
 * Fail-closed self check.  A report may only be produced from ``main`` with the
   scanned truth sources committed.  There is no override flag; a dirty or
   branched tree gets a refusal and a non-zero exit, not a caveated report.
@@ -316,7 +320,17 @@ class Registry:
         return dict(self.payload["reference_scan"])
 
 
-def load_registry(root: Path, *, relpath: str = REGISTRY_RELPATH) -> Registry:
+def load_registry(root: Path) -> Registry:
+    """Load *the* registry.
+
+    The registry location is a constant, not a parameter.  A caller-supplied
+    path would be a way around the classification gate itself: an attacker (or
+    a careless operator) could point the scanner at a structurally valid file
+    that reclassifies ``PROJECT_LOCK.md`` as ``living`` and get change
+    candidates for a locked document.  The class hard-gate is only a hard gate
+    if the thing that defines the classes cannot be swapped out.
+    """
+    relpath = REGISTRY_RELPATH
     path = root / relpath
     payload = _load_json_object(path)
     _validate_registry_shape(payload)
@@ -578,10 +592,28 @@ def resolve_scope(registry: Registry, tracked: Sequence[str]) -> Scope:
 
 
 def _classify(path: str, rules: Sequence[Mapping[str, Any]]) -> str | None:
-    for rule in rules:
-        if _matches(path, rule["match"]):
-            return str(rule["document_class"])
-    return None
+    """Classify one document, refusing any ambiguity.
+
+    First-match-wins would make rule *order* load-bearing: a broad ``*.md ->
+    living`` rule inserted at the top silently reclassifies every locked and
+    historical document underneath it.  A path that two rules claim for two
+    different classes is a structural error in the registry, so it fails closed
+    instead of resolving to whichever rule happens to come first.
+    """
+    matched = [
+        (str(rule["id"]), str(rule["document_class"]))
+        for rule in rules
+        if _matches(path, rule["match"])
+    ]
+    if not matched:
+        return None
+    classes = {document_class for _rule_id, document_class in matched}
+    if len(classes) > 1:
+        raise DocScanError(
+            f"conflicting document class rules for {path}: "
+            f"{sorted(f'{rule_id}={document_class}' for rule_id, document_class in matched)!r}"
+        )
+    return matched[0][1]
 
 
 def _validate_rule_members(registry: Registry, tracked: Sequence[str], tracked_set: set[str]) -> None:
@@ -1280,13 +1312,23 @@ def _slugify(text: str) -> str:
 # --------------------------------------------------------------------------
 
 
-def run_self_check(root: Path, registry: Registry, scope: Scope) -> dict[str, Any]:
+def run_self_check(
+    root: Path, registry: Registry, scope: Scope, tracked: Sequence[str]
+) -> dict[str, Any]:
     branch = _run_git(root, ["rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip()
     if branch != REQUIRED_BRANCH:
         raise SelfCheckRefusal(
             f"refusing to generate a report: HEAD is {branch!r}, not {REQUIRED_BRANCH!r}"
         )
     head = _run_git(root, ["rev-parse", "HEAD"]).decode("utf-8").strip()
+
+    # The registry decides which documents may ever yield a candidate, so an
+    # untracked registry is an unreviewed registry: it never passed through a
+    # commit anybody could read.
+    if registry.relpath not in set(tracked):
+        raise SelfCheckRefusal(
+            f"refusing to generate a report: the doc class registry is not tracked: {registry.relpath}"
+        )
 
     truth_sources = set(scope.paths)
     truth_sources.update(scope.unregistered)
@@ -1348,11 +1390,11 @@ def run_self_check(root: Path, registry: Registry, scope: Scope) -> dict[str, An
 # --------------------------------------------------------------------------
 
 
-def build_report(root: Path, *, registry_relpath: str = REGISTRY_RELPATH) -> dict[str, Any]:
-    registry = load_registry(root, relpath=registry_relpath)
+def build_report(root: Path) -> dict[str, Any]:
+    registry = load_registry(root)
     tracked = tracked_paths(root)
     scope = resolve_scope(registry, tracked)
-    preconditions = run_self_check(root, registry, scope)
+    preconditions = run_self_check(root, registry, scope, tracked)
 
     scanner = DocumentScanner(root, registry, scope, tracked)
     findings: list[Finding] = []
@@ -1450,8 +1492,8 @@ def write_report(root: Path, report: Mapping[str, Any], *, relpath: str = REPORT
 # --------------------------------------------------------------------------
 
 
-def validate_registry(root: Path, *, registry_relpath: str = REGISTRY_RELPATH) -> dict[str, Any]:
-    registry = load_registry(root, relpath=registry_relpath)
+def validate_registry(root: Path) -> dict[str, Any]:
+    registry = load_registry(root)
     tracked = tracked_paths(root)
     scope = resolve_scope(registry, tracked)
     return {
@@ -1468,9 +1510,8 @@ def validate_registry(root: Path, *, registry_relpath: str = REGISTRY_RELPATH) -
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0] if __doc__ else None)
     parser.add_argument("--repo-root", default=str(ROOT), help="repository root to scan")
-    parser.add_argument(
-        "--registry", default=REGISTRY_RELPATH, help="repo-relative doc class registry path"
-    )
+    # There is deliberately no --registry flag: the registry path is a constant
+    # so that the document class gate cannot be swapped out from the CLI.
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     scan_parser = subparsers.add_parser(
@@ -1491,7 +1532,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     root = Path(args.repo_root).resolve()
     try:
         if args.command == "scan":
-            report = build_report(root, registry_relpath=args.registry)
+            report = build_report(root)
             destination = write_report(root, report, relpath=args.output)
             summary = {
                 "status": "REPORT_WRITTEN",
@@ -1501,7 +1542,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             }
             print(json.dumps(summary, ensure_ascii=False, sort_keys=True))
         elif args.command == "validate-registry":
-            print(json.dumps(validate_registry(root, registry_relpath=args.registry), ensure_ascii=False, sort_keys=True))
+            print(json.dumps(validate_registry(root), ensure_ascii=False, sort_keys=True))
         else:
             parser.error(f"unsupported command: {args.command}")
             return 1

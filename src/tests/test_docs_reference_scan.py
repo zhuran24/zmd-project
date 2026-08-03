@@ -9,6 +9,7 @@ refuses to produce a report from a feature branch.
 
 from __future__ import annotations
 
+import inspect
 import json
 import subprocess
 import sys
@@ -590,6 +591,85 @@ def test_duplicate_json_keys_in_the_registry_are_rejected(tmp_path: Path) -> Non
     with pytest.raises(scan.DocScanError) as excinfo:
         scan.load_registry(root)
     assert "duplicate JSON key" in str(excinfo.value)
+
+
+# --------------------------------------------------------------------------
+# the registry is the class gate, so it cannot be swapped out or contradicted
+# --------------------------------------------------------------------------
+
+
+def test_the_registry_path_is_a_constant_with_no_caller_supplied_override(tmp_path: Path) -> None:
+    """A caller-chosen registry would be a way around the document class gate."""
+    for function in (scan.load_registry, scan.build_report, scan.validate_registry):
+        parameters = set(inspect.signature(function).parameters)
+        assert parameters == {"root"}, f"{function.__name__} accepts more than a repository root"
+
+    root = make_repo(tmp_path)
+    rogue = tmp_path / "rogue_doc_classes.json"
+    rogue_registry = _default_registry()
+    rogue_registry["rules"][0]["document_class"] = "living"
+    rogue.write_text(json.dumps(rogue_registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(SystemExit) as excinfo:
+        scan.main(["--repo-root", str(root), "--registry", str(rogue), "scan"])
+    assert excinfo.value.code == 2
+    assert not (root / scan.REPORT_RELPATH).exists()
+
+    # The committed registry is the only one the scanner will ever read.
+    assert scan.load_registry(root).relpath == scan.REGISTRY_RELPATH
+    report = build(root)
+    documents = {item["evidence"]["document"] for item in report["candidates"] + report["fyi"]}
+    assert "LOCKED.md" not in documents
+
+
+def test_an_untracked_registry_hard_refuses_the_report(tmp_path: Path) -> None:
+    root = make_repo(tmp_path)
+    _git(root, "rm", "-q", "--cached", scan.REGISTRY_RELPATH)
+    _git(root, "commit", "-q", "-m", "untrack the registry")
+    assert (root / scan.REGISTRY_RELPATH).is_file()
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "not tracked" in str(excinfo.value)
+    assert scan.REGISTRY_RELPATH in str(excinfo.value)
+
+
+def test_two_rules_claiming_one_document_for_different_classes_are_rejected(
+    tmp_path: Path,
+) -> None:
+    registry = _default_registry()
+    registry["rules"].insert(
+        0,
+        {
+            "id": "catch_all",
+            "match": {"glob": "*.md"},
+            "document_class": "living",
+            "rationale": "A broad rule that contradicts the locked and historical rules.",
+        },
+    )
+    root = make_repo(tmp_path, registry=registry)
+    with pytest.raises(scan.DocScanError) as excinfo:
+        scan.validate_registry(root)
+    message = str(excinfo.value)
+    assert "conflicting document class rules" in message
+    assert "catch_all=living" in message
+    with pytest.raises(scan.DocScanError) as locked_conflict:
+        scan._classify("LOCKED.md", registry["rules"])
+    assert "LOCKED.md" in str(locked_conflict.value)
+
+
+def test_two_rules_claiming_one_document_for_the_same_class_are_accepted(tmp_path: Path) -> None:
+    registry = _default_registry()
+    registry["rules"].insert(
+        0,
+        {
+            "id": "living_doc_again",
+            "match": {"glob": "GUIDE.*"},
+            "document_class": "living",
+            "rationale": "Redundant but not contradictory.",
+        },
+    )
+    root = make_repo(tmp_path, registry=registry)
+    assert scan.validate_registry(root)["class_counts"]["living"] == 1
 
 
 # --------------------------------------------------------------------------
