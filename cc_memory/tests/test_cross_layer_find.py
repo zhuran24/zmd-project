@@ -12,12 +12,20 @@
 3. read/search 未命中时提示 find;
 4. find 全程零文件系统足迹:**WAL 模式**库(生产同构)查完 -wal / -shm 都不落地、
    主库字节不变,连目录本身 0555 只读都照样查得动;
-5. 层隔离:第一层炸掉只降级成一行警告,其余两层照常汇总。
+5. 层隔离:第一层炸掉只降级成一行警告,其余两层照常汇总;
+6. **零足迹是全路径不变量**:路径不存在时不许"顺手建一个 0 字节库",打不开也
+   不许回退到会写侧车的裸 mode=ro;
+7. **degraded miss ≠ 完整 miss**:任一层降级(整层炸了 / immutable 读跳过了
+   live WAL)时,未命中要如实说"这不等于不存在",只有三层都跑完的未命中才配
+   印那句"no layer has"。
 
-第 4/5 两条是 2026-08-03 审查打回来的:上一版 fixture 造的是 DELETE 模式最小库,
-只比主库 sha256 又只看 -wal,把 `mode=ro` 会新建 -wal/-shm、在只读目录直接
+第 4/5 两条是 2026-08-03 第一轮审查打回来的:上一版 fixture 造的是 DELETE 模式
+最小库,只比主库 sha256 又只看 -wal,把 `mode=ro` 会新建 -wal/-shm、在只读目录直接
 "attempt to write a readonly database" 这件事整个漏过去了;三次 hits.extend 之间
 也没有 try/except,首层一炸后两层的命中一起消失。
+第 6/7 两条是同日第二轮复验实测打回来的:`?immutable=1` 少了 `mode=ro`,对不存在
+的路径会**创建** 0 字节文件并答 SELECT 1;回退分支又把侧车写了回来;而有 writer
+持着未 checkpoint 的行时,find 对一条真实存在的 id 印了 "no layer has"。
 
 全部用 tmp fixture 造的库/目录,不碰真实 memory.db 与真实卡片目录。
 """
@@ -132,11 +140,13 @@ def test_find_walks_every_layer_not_just_the_first(layers):
 
 
 def test_find_miss_names_the_layers_it_checked(layers):
+    """三层都正常跑完的未命中 = 干净的完整 miss,不许挂降级字样。"""
     result = _find(layers, "nothing-anywhere")
     assert result.returncode == 1
     assert "no layer has" in result.stdout
     assert "cc_memory_vnext" in result.stdout
     assert str(layers["file_memory"]) in result.stdout
+    assert "降级" not in result.stdout, "全层正常的未命中被误标成降级"
 
 
 def test_find_tolerates_missing_layer_directories(layers, tmp_path):
@@ -198,11 +208,114 @@ def test_find_reports_other_layers_when_the_sqlite_layer_explodes(layers):
 
 
 def test_find_still_exits_1_when_a_layer_explodes_and_nothing_matches(layers):
+    """炸掉一层后的未命中 = degraded miss:退出码仍是 1,但文案不许说"三层都没有"。"""
     layers["db"].write_bytes(b"this is not a sqlite database at all")
     result = _find(layers, "nothing-anywhere")
     assert result.returncode == 1
     assert "cc_memory 层查不了" in result.stdout
-    assert "no layer has" in result.stdout
+    assert "降级" in result.stdout
+    assert "未命中不等于不存在" in result.stdout
+    assert "no layer has" not in result.stdout, "整层没查成还宣称三层查无=把 degraded miss 说成完整 miss"
+
+
+# --- B1/B2 2026-08-03 审查:纯只读不是"少写一点",degraded miss 不是 miss ----
+
+
+def _connect_immutable(db: Path):
+    mod = _mem_module()
+    try:
+        return mod.connect_immutable(db)
+    finally:
+        sys.modules.pop("mem_under_test_find", None)
+
+
+def test_immutable_open_never_creates_a_database_file(tmp_path):
+    """不存在的路径:必须报错,不许"顺手建一个 0 字节库"再答 SELECT 1。"""
+    missing = tmp_path / "no-such-dir"
+    missing.mkdir()
+    db = missing / "memory.db"
+    assert not db.exists()
+    with pytest.raises(sqlite3.Error):
+        _connect_immutable(db)
+    assert not db.exists(), "只读 opener 建出了一个数据库文件"
+    assert sorted(p.name for p in missing.iterdir()) == []
+
+
+def test_immutable_open_leaves_no_sidecars_on_a_wal_database(layers):
+    db = layers["db"]
+    before = hashlib.sha256(db.read_bytes()).hexdigest()
+    con = _connect_immutable(db)
+    try:
+        assert con.execute("SELECT id FROM entries").fetchall()
+    finally:
+        con.close()
+    assert hashlib.sha256(db.read_bytes()).hexdigest() == before
+    assert sorted(p.name for p in db.parent.iterdir()) == ["memory.db"]
+
+
+def test_immutable_open_has_no_sidecar_creating_fallback(layers):
+    """旧版在 immutable 打不开时回退裸 mode=ro,把侧车写回来了 —— 不许再有。
+
+    用真实的 opener + 一次真实的 sqlite3.connect 失败来验:失败必须原样抛出,
+    而不是换个更宽松的 URI 再试一次(那次重试正是侧车的来源)。
+    """
+    mod = _mem_module()
+    try:
+        db = layers["db"]
+        real_connect = sqlite3.connect
+        uris: list[str] = []
+
+        def flaky(database, *a, **kw):
+            uris.append(str(database))
+            if len(uris) == 1:
+                raise sqlite3.OperationalError("simulated: this build has no immutable VFS")
+            return real_connect(database, *a, **kw)
+
+        mod.sqlite3.connect = flaky
+        try:
+            with pytest.raises(sqlite3.Error):
+                mod.connect_immutable(db)
+        finally:
+            mod.sqlite3.connect = real_connect
+        assert len(uris) == 1, f"打不开就该抛,不该再试一次:{uris}"
+        assert "immutable=1" in uris[0] and "mode=ro" in uris[0]
+        assert sorted(p.name for p in db.parent.iterdir()) == ["memory.db"]
+    finally:
+        sys.modules.pop("mem_under_test_find", None)
+
+
+def test_find_degrades_the_whole_answer_when_a_live_wal_hides_rows(layers):
+    """有并发写者、行还没 checkpoint:immutable 读看不见 -> 未命中必须标降级。"""
+    writer = sqlite3.connect(layers["db"])
+    writer.execute("PRAGMA journal_mode = WAL")
+    writer.execute("INSERT INTO entries VALUES ('wal-only', '还没 checkpoint 的行')")
+    writer.commit()
+    try:
+        wal = Path(str(layers["db"]) + "-wal")
+        assert wal.exists() and wal.stat().st_size > 0, "fixture 没造出 live WAL"
+        result = _find(layers, "wal-only")
+        assert result.returncode == 1
+        assert "降级" in result.stdout
+        assert "未命中不等于不存在" in result.stdout
+        assert "live WAL" in result.stdout
+        assert "no layer has" not in result.stdout
+    finally:
+        writer.close()
+
+
+def test_find_still_answers_cleanly_for_rows_the_live_wal_already_holds(layers):
+    """同一个 live WAL 下,主库里已有的行照常命中 —— 只是清单要标"可能不全"。"""
+    writer = sqlite3.connect(layers["db"])
+    writer.execute("PRAGMA journal_mode = WAL")
+    writer.execute("INSERT INTO entries VALUES ('wal-only', '还没 checkpoint 的行')")
+    writer.commit()
+    try:
+        result = _find(layers, "only-in-sqlite")
+        assert result.returncode == 0, result.stdout + result.stderr
+        assert "entry:only-in-sqlite" in result.stdout
+        assert "可能不全" in result.stdout
+    finally:
+        writer.close()
 
 
 def test_read_and_search_misses_point_at_find():

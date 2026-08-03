@@ -281,10 +281,10 @@ def connect_readonly(db: Path = DEFAULT_DB) -> sqlite3.Connection:
 
 
 def connect_immutable(db: Path) -> sqlite3.Connection:
-    """Open the memory DB with zero filesystem footprint (`immutable=1`).
+    """Open the memory DB with zero filesystem footprint (`mode=ro&immutable=1`).
 
-    Why `immutable=1` and not `mode=ro`, measured 2026-08-03 on a WAL-mode
-    database matching production shape:
+    Why `immutable=1` and not a bare `mode=ro`, measured 2026-08-03 on a
+    WAL-mode database matching production shape:
 
     * `mode=ro`   -> creates `memory.db-wal` (0 B) and `memory.db-shm` (32 KB);
                     on a 0555 directory it raises OperationalError
@@ -293,30 +293,61 @@ def connect_immutable(db: Path) -> sqlite3.Connection:
                     directory. SQLite is told the file cannot change, so it skips
                     locking and the shared-memory index entirely.
 
-    The tradeoff is real and one-directional: `immutable=1` also skips the WAL,
-    so rows a *concurrent writer* has committed but not yet checkpointed are
-    invisible (same probe: the immutable reader saw the checkpointed row only,
-    the `mode=ro` reader saw both). We take that deal here because this opener
-    serves `find`, a locator — its whole answer is "which layer holds this id",
-    and an id that was created seconds ago in another process is the one case
-    where the user already knows where it is. It also lands on the right side of
-    where cc_memory is heading: the layer is being frozen into a read-only
-    archive, so "the file cannot change" is about to be literally true. Anything
-    that must see live writes (`connect()`, or `connect_readonly()` for
-    diagnostics run beside a writer) must not use this opener.
+    Why `mode=ro` is nevertheless kept in the URI (2026-08-03 review, measured):
+    `immutable=1` **alone does not imply read-only at open time**. Pointed at a
+    path that does not exist it happily *creates* a 0-byte file and answers
+    `SELECT 1`; `mode=ro&immutable=1` raises "unable to open database file" and
+    creates nothing. `_find_in_cc_memory` checks `exists()` first, but that is a
+    TOCTOU window — a purely read-only locator must not be able to write a file
+    even if it loses the race.
 
-    Falls back to `mode=ro` if the immutable open itself fails, so an
-    unexpected SQLite build/VFS still answers rather than losing the layer.
+    There is **no fallback opener**. An earlier version fell back to a bare
+    `mode=ro` when the immutable open failed, which put the sidecar writes and
+    the read-only-directory failure right back — exactly what this function
+    exists to avoid. If the immutable open fails the error propagates:
+    `cmd_find` degrades that one layer, says so, and marks the whole result as
+    degraded so a miss is not read as "not there".
+
+    The remaining tradeoff is real and one-directional: `immutable=1` skips the
+    WAL, so rows a *concurrent writer* has committed but not yet checkpointed
+    are invisible (same probe: the immutable reader saw the checkpointed row
+    only, the `mode=ro` reader saw both). `find` handles that honestly rather
+    than silently — see `live_wal_note()` and `cmd_find`. Anything that must see
+    live writes (`connect()`, or `connect_readonly()` for diagnostics run beside
+    a writer) must not use this opener.
     """
     db = Path(db)
-    uri = db.resolve().as_uri()
+    uri = db.resolve().as_uri() + "?mode=ro&immutable=1"
+    con = sqlite3.connect(uri, uri=True)
     try:
-        con = sqlite3.connect(uri + "?immutable=1", uri=True)
         con.execute("SELECT 1")
     except sqlite3.Error:
-        con = sqlite3.connect(uri + "?mode=ro", uri=True)
+        con.close()
+        raise
     con.row_factory = sqlite3.Row
     return con
+
+
+def live_wal_note(db: Path) -> str | None:
+    """Is there a non-empty WAL beside `db` that an immutable read cannot see?
+
+    A cleanly closed SQLite database has no `-wal` file at all (the last
+    connection checkpoints and removes it). A non-empty one means some writer is
+    holding the database open with committed-but-uncheckpointed rows — the exact
+    rows `connect_immutable()` is blind to. That makes "not found" inconclusive,
+    so `find` has to say so out loud.
+    """
+    wal = Path(str(db) + "-wal")
+    try:
+        size = wal.stat().st_size
+    except OSError:
+        return None
+    if size <= 0:
+        return None
+    return (
+        f"cc_memory 层跳过了 live WAL({wal.name} 有 {size} 字节未 checkpoint):"
+        "只读 immutable 打开看不到并发写者刚提交、还没落主库的行"
+    )
 
 
 def jdump(value: Any) -> str:
@@ -2631,18 +2662,22 @@ def _find_display_path(path: Path) -> str:
         return str(path)
 
 
-def _find_in_cc_memory(db: Path, needle: str, limit: int) -> list[tuple[str, str, str]]:
-    """Read-only id lookup in the SQLite layer.
+def _find_in_cc_memory(
+    db: Path, needle: str, limit: int
+) -> tuple[list[tuple[str, str, str]], list[str]]:
+    """Read-only id lookup in the SQLite layer; returns (hits, degradation notes).
 
     Uses `connect_immutable()` so the lookup leaves nothing behind at all — not
-    even the `-wal`/`-shm` sidecars a plain `mode=ro` open creates — and still
-    works when the directory itself is read-only. See that function for the
-    concurrent-writer tradeoff this buys.
+    even the `-wal`/`-shm` sidecars a plain `mode=ro` open creates, and not even
+    a 0-byte database when the path does not exist — and still works when the
+    directory itself is read-only. See that function for the concurrent-writer
+    tradeoff this buys, and `live_wal_note()` for how we own up to it.
     """
     hits: list[tuple[str, str, str]] = []
     db = Path(db)
     if not db.exists():
-        return hits
+        return hits, []
+    notes = [note for note in (live_wal_note(db),) if note]
     con = connect_immutable(db)
     try:
         resolved = resolve_node(con, needle)
@@ -2658,7 +2693,7 @@ def _find_in_cc_memory(db: Path, needle: str, limit: int) -> list[tuple[str, str
                     hits.append(("cc_memory", locator, f"python cc_memory/mem.py read {row['id']} --body"))
     finally:
         con.close()
-    return hits
+    return hits, notes
 
 
 def _find_in_markdown_dir(directory: Path, needle: str, layer: str, limit: int) -> list[tuple[str, str, str]]:
@@ -2694,6 +2729,15 @@ def cmd_find(args: argparse.Namespace) -> int:
     degrades to one warning line and the other two still report. A shared
     try/except would have let a corrupt `memory.db` hide a card that was sitting
     in `cc_memory_vnext/cards/` the whole time.
+
+    **A degraded miss is not a complete miss** (2026-08-03 review, measured: with
+    a writer holding uncheckpointed rows, `find` printed "no layer has 'x'" for a
+    row that existed). A locator whose whole value is "believe this miss" must
+    never present a partial sweep as a full one, so any layer that failed or that
+    was read with a known blind spot is named, and the miss is labelled
+    inconclusive. The exit code stays 1 either way — 0 would claim a hit that
+    does not exist — but the wording has to be honest about which of the two
+    kinds of miss this was.
     """
     needle = str(args.node).strip()
     if not needle:
@@ -2701,25 +2745,48 @@ def cmd_find(args: argparse.Namespace) -> int:
         return 1
     hits: list[tuple[str, str, str]] = []
     warnings: list[str] = []
+    degraded: list[str] = []
     layers: list[tuple[str, Any]] = [
         ("cc_memory", lambda: _find_in_cc_memory(args.db, needle, args.limit)),
-        ("cc_memory_vnext", lambda: _find_in_markdown_dir(Path(args.cards_dir), needle, "cc_memory_vnext", args.limit)),
-        ("file_memory", lambda: _find_in_markdown_dir(Path(args.file_memory_dir), needle, "file_memory", args.limit)),
+        (
+            "cc_memory_vnext",
+            lambda: (_find_in_markdown_dir(Path(args.cards_dir), needle, "cc_memory_vnext", args.limit), []),
+        ),
+        (
+            "file_memory",
+            lambda: (_find_in_markdown_dir(Path(args.file_memory_dir), needle, "file_memory", args.limit), []),
+        ),
     ]
     for label, probe in layers:
         try:
-            hits.extend(probe())
+            layer_hits, layer_notes = probe()
         except (Exception, SystemExit) as exc:  # noqa: BLE001 - one bad layer must not hide the others
             warnings.append(f"! {label} 层查不了,已跳过(其余层照常): {type(exc).__name__}: {exc}")
+            degraded.append(f"{label} 层整层没查成({type(exc).__name__})")
+            continue
+        hits.extend(layer_hits)
+        degraded.extend(layer_notes)
     for warning in warnings:
         print(warning)
     if not hits:
+        if degraded:
+            print(f"find: 未命中 {needle!r},但本次查询有降级层——**未命中不等于不存在**")
+            for note in degraded:
+                print(f"  - 降级: {note}")
+            print("  查过(部分降级): cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 memory/*.md")
+            print(f"  文件记忆目录: {args.file_memory_dir}")
+            print("  复查: 等并发写者 checkpoint/退出后重跑,或修好报错的那一层,再信这个结论")
+            return 1
         print(f"find: no layer has {needle!r}")
         print("  查过: cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 memory/*.md")
         print(f"  文件记忆目录: {args.file_memory_dir}")
         print("  换个词试全文搜索: python cc_memory/mem.py search <关键词>")
         return 1
     print(f"find: {len(hits)} hit(s) for {needle!r}")
+    if degraded:
+        print("  (注意:有降级层,下面这份清单可能不全)")
+        for note in degraded:
+            print(f"  - 降级: {note}")
     width = max(len(hit[0]) for hit in hits)
     for layer, locator, how in hits:
         print(f"- {layer.ljust(width)}  {locator}")
