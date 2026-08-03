@@ -494,16 +494,26 @@ def test_a_bare_basename_file_line_reference_to_a_nested_file_is_not_judged(
     assert flags(build(checked)["candidates"]) == [("dead_symbol_ref", "GUIDE.md", "main.py:99")]
 
 
-def test_a_trailing_slash_directory_reference_keeps_its_absent_by_design_allowlist(
-    tmp_path: Path,
+@pytest.mark.parametrize("reference", ["data/generated/", "data/generated"])
+def test_a_directory_reference_keeps_its_absent_by_design_allowlist_with_or_without_the_slash(
+    tmp_path: Path, reference: str
 ) -> None:
+    """The slash-less shape is the same claim, so it gets the same allowlist.
+
+    It also has to be the same for the self check: an allowlisted path is
+    deliberately never consulted, so if only one shape were allowlisted the
+    other would be re-checked against a directory that is absent by design and
+    turn every machine that has one into a refusal.
+    """
     root = make_repo(
         tmp_path,
-        documents={"GUIDE.md": "# Guide\n\nNever commit `data/generated/`.\n"},
+        documents={"GUIDE.md": f"# Guide\n\nNever commit `{reference}`.\n"},
     )
     report = build(root)
     assert report["candidates"] == []
     assert report["metadata"]["suppression_counts"]["absent_by_design"] == 1
+    (root / "data" / "generated").mkdir(parents=True)
+    assert build(root)["candidates"] == []
 
 
 # --------------------------------------------------------------------------
@@ -851,6 +861,76 @@ def test_a_staged_deletion_of_an_in_scope_document_hard_refuses(tmp_path: Path) 
     message = str(excinfo.value)
     assert "deleted in the index" in message
     assert "NEWCOMER.md" in message
+
+
+def test_a_staged_rename_of_a_symbol_source_out_of_the_globs_hard_refuses(
+    tmp_path: Path,
+) -> None:
+    """A rename is a deletion at the old path, and ``git mv`` is routine.
+
+    Neither end of the rename is in the truth set: the old path left the index
+    before the scope was built, and the new path does not match the symbol
+    globs — so the symbol quietly disappears from the universe.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nCall `existing_symbol()` to parse.\n"},
+        extra_files={"src/other.py": "def other_symbol() -> int:\n    return 2\n"},
+    )
+    assert build(root)["candidates"] == []
+    _git(root, "mv", "src/thing.py", "scripts/moved_thing.py")
+    assert _git(root, "diff", "--cached", "--name-only", "--diff-filter=D", "-z", "HEAD") == ""
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "src/thing.py" in str(excinfo.value)
+
+
+def test_a_staged_rename_of_an_in_scope_document_out_of_scope_hard_refuses(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(tmp_path, documents={"NEWCOMER.md": "# Newcomer\n\nHello.\n"})
+    assert flags(build(root)["candidates"]) == [
+        ("unregistered_doc", "NEWCOMER.md", "NEWCOMER.md")
+    ]
+    # notes/** is declared out of scope, so after the rename neither end is a
+    # scanned document and the finding evaporates with a clean status line.
+    _git(root, "mv", "NEWCOMER.md", "notes/NEWCOMER.md")
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "NEWCOMER.md" in str(excinfo.value)
+
+
+def test_an_ignored_file_created_at_a_referenced_path_hard_refuses(tmp_path: Path) -> None:
+    """``.gitignore`` is committed, so this needs no attacker — only a build."""
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nRun `scripts/ignored_tool.py` first.\n"},
+        extra_files={".gitignore": "scripts/ignored_tool.py\n"},
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/ignored_tool.py")
+    ]
+    (root / "scripts" / "ignored_tool.py").write_text("print(3)\n", encoding="utf-8")
+    assert _git(root, "status", "--porcelain") == ""
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "scripts/ignored_tool.py" in str(excinfo.value)
+
+
+def test_a_created_empty_directory_at_a_referenced_path_hard_refuses(tmp_path: Path) -> None:
+    """Git never records an empty directory, so status can never report one."""
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nOutputs land in `scripts/vanished_dir/`.\n"},
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/vanished_dir/")
+    ]
+    (root / "scripts" / "vanished_dir").mkdir()
+    assert _git(root, "status", "--porcelain") == ""
+    with pytest.raises(scan.SelfCheckRefusal) as excinfo:
+        build(root)
+    assert "scripts/vanished_dir" in str(excinfo.value)
 
 
 def test_an_assume_unchanged_document_hard_refuses(tmp_path: Path) -> None:

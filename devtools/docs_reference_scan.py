@@ -224,14 +224,51 @@ def _assume_unchanged_paths(root: Path) -> tuple[str, ...]:
 
 
 def _staged_removals(root: Path) -> tuple[str, ...]:
-    """Paths deleted from the index relative to HEAD.
+    """Paths that left the index relative to HEAD: deletions and rename sources.
 
     These cannot be caught by comparing against index-derived truth sources:
     the object is already gone from the index by the time the scope is
     resolved, so it never enters the truth set in the first place.
+
+    A rename counts as a removal at its old path, and this is not an exotic
+    case — ``git mv`` is routine.  ``git mv src/thing.py
+    scripts/moved_thing.py`` takes a symbol source out of the symbol globs:
+    the old path is gone from the index, the new path matches nothing, so the
+    symbol silently disappears from the universe while ``git status`` shows a
+    tidy ``R`` record and nothing else notices.  ``--name-status`` is required
+    to see it — with ``--name-only`` a rename prints only its destination.
     """
-    raw = _run_git(root, ["diff", "--cached", "--name-only", "--diff-filter=D", "-z", "HEAD"])
-    return tuple(sorted(set(_parse_nul_paths(raw))))
+    raw = _run_git(
+        root,
+        ["diff", "--cached", "--name-status", "--diff-filter=DR", "-M", "-z", "HEAD"],
+    )
+    fields = [os.fsdecode(item) for item in raw.split(b"\0")]
+    while fields and fields[-1] == "":
+        fields.pop()
+    gone: list[str] = []
+    index = 0
+    while index < len(fields):
+        status = fields[index]
+        index += 1
+        if status.startswith("R"):
+            # ``R<score>\0<source>\0<destination>``; only the source left.
+            if index + 1 >= len(fields):
+                raise DocScanError("git diff rename record is missing a path")
+            gone.append(fields[index])
+            index += 2
+            continue
+        if status.startswith("D"):
+            if index >= len(fields):
+                raise DocScanError("git diff deletion record is missing its path")
+            gone.append(fields[index])
+            index += 1
+            continue
+        raise DocScanError(f"unexpected staged change status: {status!r}")
+    return tuple(sorted(set(gone)))
+
+
+def _is_rename_record(status: str) -> bool:
+    return status[:1] in {"R", "C"} or status[1:2] in {"R", "C"}
 
 
 def _parse_porcelain(raw: bytes) -> tuple[tuple[str, str], ...]:
@@ -250,7 +287,7 @@ def _parse_porcelain(raw: bytes) -> tuple[tuple[str, str], ...]:
         status = decoded[:2]
         path = decoded[3:]
         records.append((status, path))
-        if status[0] in {"R", "C"} or status[1] in {"R", "C"}:
+        if _is_rename_record(status):
             if index >= len(items):
                 raise DocScanError("git status rename record is missing its origin path")
             records.append((status, os.fsdecode(items[index])))
@@ -1035,15 +1072,20 @@ class DocumentScanner:
         deliberately excluded: the registry declares that whether they exist on
         a given machine is not a property of the document citing them, so the
         scan's answer does not depend on them either.
+
+        A trailing slash is dropped so that a directory reference and the
+        directory itself are one entry: the re-check compares this set against
+        index paths, which never carry one.
         """
-        if not relpath:
+        normalized = relpath.rstrip("/")
+        if not normalized:
             return
-        if relpath in self.external_artifacts:
+        if normalized in self.external_artifacts:
             return
         for prefix in self.absent_prefixes:
-            if relpath == prefix or relpath.startswith(prefix):
+            if normalized == prefix.rstrip("/") or normalized.startswith(prefix):
                 return
-        self.consulted.add(relpath)
+        self.consulted.add(normalized)
 
     def _suppressed_by_context(self, context: str) -> bool:
         lowered = context.lower()
@@ -1095,10 +1137,20 @@ class DocumentScanner:
         return path in self.tracked_set
 
     def _allowlisted_absent(self, token: str) -> str | None:
+        """Which allowlist, if any, says this path's absence proves nothing.
+
+        The trailing slash is normalised away.  ``data/checkpoints`` and
+        ``data/checkpoints/`` are the same directory, and a document that omits
+        the slash is making the same claim; letting the shapes disagree would
+        both report a false dead path and make the report depend on whether
+        this machine happens to have run a campaign.  The same predicate is
+        used by ``_consult`` so that the two can never drift apart.
+        """
         if token in self.external_artifacts:
             return "external_artifact_allowlist"
+        trimmed = token.rstrip("/")
         for prefix in self.absent_prefixes:
-            if token == prefix or token.startswith(prefix):
+            if trimmed == prefix.rstrip("/") or token.startswith(prefix):
                 return "absent_by_design"
         return None
 
@@ -1537,8 +1589,9 @@ class WorktreeState:
 
     @property
     def uncommitted_paths(self) -> frozenset[str]:
-        paths = {path for _status, path in self.records}
+        paths = {path.rstrip("/") for _status, path in self.records}
         paths.update(self.staged_removals)
+        paths.discard("")
         return frozenset(paths)
 
 
@@ -1549,12 +1602,20 @@ def capture_worktree_state(root: Path) -> WorktreeState:
     asking whether the tree is clean cannot see a staged deletion: the deleted
     object left the index before the scope was built, so it never became a
     truth source that a dirty check could flag.
+
+    ``--ignored`` is not optional here.  ``.gitignore`` is a committed file, so
+    an ignored path is not an attacker's construction: a build output landing
+    at a path some document cites changes what the scan answers while leaving
+    ``git status`` completely empty.
     """
     return WorktreeState(
         branch=_run_git(root, ["rev-parse", "--abbrev-ref", "HEAD"]).decode("utf-8").strip(),
         head=_run_git(root, ["rev-parse", "HEAD"]).decode("utf-8").strip(),
         records=_parse_porcelain(
-            _run_git(root, ["status", "--porcelain=v1", "-z", "--untracked-files=all"])
+            _run_git(
+                root,
+                ["status", "--porcelain=v1", "-z", "--untracked-files=all", "--ignored"],
+            )
         ),
         staged_removals=_staged_removals(root),
         assume_unchanged=_assume_unchanged_paths(root),
@@ -1564,9 +1625,10 @@ def capture_worktree_state(root: Path) -> WorktreeState:
 _VERIFIED_BY = (
     "git rev-parse --abbrev-ref HEAD",
     "git rev-parse HEAD",
-    "git status --porcelain=v1 -z --untracked-files=all",
-    "git diff --cached --name-only --diff-filter=D -z HEAD",
+    "git status --porcelain=v1 -z --untracked-files=all --ignored",
+    "git diff --cached --name-status --diff-filter=DR -M -z HEAD",
     "git ls-files -v -z",
+    "git ls-files --cached -z (worktree presence vs index for every consulted path)",
 )
 
 
@@ -1625,7 +1687,7 @@ def run_self_check(
     include = registry.include_globs
     exclude = registry.exclude_globs
     for status, path in state.records:
-        if status == "??":
+        if status in {"??", "!!"}:
             if (
                 path.endswith(".md")
                 and any(_glob_match(path, pattern) for pattern in include)
@@ -1635,6 +1697,12 @@ def run_self_check(
             continue
         if path in truth_sources:
             dirty.append(path)
+            continue
+        # Both ends of a rename record are judged by shape, because neither end
+        # need be in the truth set: the source has left the index and the
+        # destination may have landed outside every glob.
+        if _is_rename_record(status) and _is_truth_source_shaped(path, registry):
+            dirty.append(path)
     if dirty:
         raise SelfCheckRefusal(
             "refusing to generate a report: scanned truth sources have uncommitted changes: "
@@ -1642,8 +1710,8 @@ def run_self_check(
         )
     if untracked_in_scope:
         raise SelfCheckRefusal(
-            "refusing to generate a report: untracked documents fall inside the scan scope: "
-            f"{sorted(set(untracked_in_scope))[:10]!r}"
+            "refusing to generate a report: untracked or ignored documents fall inside the "
+            f"scan scope: {sorted(set(untracked_in_scope))[:10]!r}"
         )
     removed = [path for path in state.staged_removals if _is_truth_source_shaped(path, registry)]
     if removed:
@@ -1670,8 +1738,37 @@ def run_self_check(
     return preconditions, frozenset(truth_sources)
 
 
+def _tracked_directories(tracked: Sequence[str]) -> frozenset[str]:
+    """Every directory the index implies, so a directory can be asked about."""
+    directories: set[str] = set()
+    for path in tracked:
+        parts = path.split("/")
+        for depth in range(1, len(parts)):
+            directories.add("/".join(parts[:depth]))
+    return frozenset(directories)
+
+
+def _worktree_disagrees_with_index(
+    root: Path, path: str, tracked_set: frozenset[str], tracked_directories: frozenset[str]
+) -> bool:
+    """Does the working tree answer a question the index answers differently?
+
+    ``git status`` is not a complete account of the working tree.  It says
+    nothing about a path ``.gitignore`` covers, and it can say nothing at all
+    about an empty directory, because git does not record directories.  Both
+    change what the scan sees — an ignored build output appearing at a cited
+    path, or ``mkdir`` alone resurrecting a dead directory reference — so the
+    presence question is asked directly instead of being inferred from status.
+    """
+    known = path in tracked_set or path in tracked_directories
+    return (root / path).exists() != known
+
+
 def verify_consulted_state_is_committed(
-    root: Path, before: WorktreeState, consulted: frozenset[str]
+    root: Path,
+    before: WorktreeState,
+    consulted: frozenset[str],
+    tracked: Sequence[str],
 ) -> dict[str, Any]:
     """Re-run the dirty check over everything the scan actually read.
 
@@ -1701,9 +1798,23 @@ def verify_consulted_state_is_committed(
             "refusing to publish a report: filesystem state consulted by the scan is not "
             f"committed: {touched[:10]!r}"
         )
+    tracked_set = frozenset(tracked)
+    tracked_directories = _tracked_directories(tracked)
+    unrepresented = sorted(
+        path
+        for path in consulted
+        if _worktree_disagrees_with_index(root, path, tracked_set, tracked_directories)
+    )
+    if unrepresented:
+        raise SelfCheckRefusal(
+            "refusing to publish a report: filesystem state consulted by the scan is present "
+            "in the working tree but not in the index (or the reverse): "
+            f"{unrepresented[:10]!r}"
+        )
     return {
         "consulted_path_count": len(consulted),
         "reverified_after_scan": True,
+        "worktree_presence_matches_index": True,
         "verified_by": list(_VERIFIED_BY),
     }
 
@@ -1773,7 +1884,9 @@ def build_report(root: Path) -> dict[str, Any]:
         flag_counts[finding.flag] += 1
 
     consulted = frozenset(scanner.consulted) | truth_sources
-    preconditions["consulted_paths"] = verify_consulted_state_is_committed(root, state, consulted)
+    preconditions["consulted_paths"] = verify_consulted_state_is_committed(
+        root, state, consulted, tracked
+    )
 
     return {
         "schema_version": REPORT_SCHEMA_VERSION,
