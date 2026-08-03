@@ -1,8 +1,8 @@
 ---
 id: memory-three-layer-coexistence-decided
 kind: decision
-title: 记忆三层互补共存已定调:cc_memory/vnext/harness 分工 + 冻结=按条 archive-on-promotion(非整库冻/迁)
-summary: 2026-06-30 统一三处文档并定调:cc_memory(全量可查 pull,仍现役可写,带图+语义)+ vnext cards(主动推送精选)+ harness(索引/反射/resume)三层【互补共存】,不是新旧替代、整库迁移非目标。"冻结"=按条 archive-on-promotion(某条做成卡→archive cc_memory 源条目防漂移;图枢纽条目留薄"图锚/指针节点"保边)。新记忆先进 cc_memory 收件箱,达"必须每回合推送"门槛才晋升成卡;不给 vnext 补通用低摩擦写入(摩擦=质量闸)。问"旧库冻没冻/还能不能写/这条写哪/为什么还往 cc_memory 写/要不要迁进 vnext"按此答。
+title: 记忆分层定调(2026-08-03 owner 修订):两层活跃 + cc_memory 整库冻成只读档案
+summary: 2026-08-03 owner 修订:cc_memory 整库冻结为只读档案,收件箱地位移交文件记忆层——现在是「两层活跃(文件记忆 + vnext cards)+ 一层档案(cc_memory)」,06-30 那句「仍现役、可写」与「整库冻非目标」就此作废。以下为 06-30 原定调,除写入分工外仍然有效:统一三处文档并定调:cc_memory(全量可查 pull,仍现役可写,带图+语义)+ vnext cards(主动推送精选)+ harness(索引/反射/resume)三层【互补共存】,不是新旧替代、整库迁移非目标。"冻结"=按条 archive-on-promotion(某条做成卡→archive cc_memory 源条目防漂移;图枢纽条目留薄"图锚/指针节点"保边)。新记忆先进 cc_memory 收件箱,达"必须每回合推送"门槛才晋升成卡;不给 vnext 补通用低摩擦写入(摩擦=质量闸)。问"旧库冻没冻/还能不能写/这条写哪/为什么还往 cc_memory 写/要不要迁进 vnext"按此答。
 scope:
   domains: [memory-layer-authority, cc-memory-freeze]
   paths: []
@@ -11,12 +11,14 @@ status: active
 priority: P1
 triggers:
   intents: [memory-layer-authority, cc-memory-write-allowed, freeze-status, memory-write-location]
-  keywords: [冻只读, 整库只读, 旧 cc_memory 能不能写, 旧库还能写吗, 旧的不是只读, authoritative, 双活, 迁移真相源, 三层并存, 三层共存, cc_memory 冻, 这条写哪, 为什么还往 cc_memory 写, 往 cc_memory 写, 迁进 vnext, cc_memory 迁, archive-on-promotion, 按条 archive, 图锚]
+  keywords: [两层活跃, 一层档案, 文件记忆层, 收件箱, 冻只读, 整库只读, 旧 cc_memory 能不能写, 旧库还能写吗, 旧的不是只读, authoritative, 双活, 迁移真相源, 三层并存, 三层共存, cc_memory 冻, 这条写哪, 为什么还往 cc_memory 写, 往 cc_memory 写, 迁进 vnext, cc_memory 迁, archive-on-promotion, 按条 archive, 图锚]
   negative_keywords: []
   paths: []
   symbols: []
   error_regex: []
   examples:
+    - 现在新记忆写哪层
+    - cc_memory 到底冻没冻、还能不能写
     - 旧 cc_memory 不是冻只读了吗,为什么还往里写
     - v-next 上线后旧库是整库只读、还是还能写
     - 这条要写旧 cc_memory 还是 v-next 卡
@@ -34,10 +36,21 @@ provenance:
     - "CLAUDE.md 'Collaboration memory (cc_memory)' 与 'Active card memory (cc_memory_vnext)' 两节(2026-06-30 已对齐:互补共存、非冻只读)"
     - "记忆系统-3/记忆系统-架构总览与三层分工-20260630.md(三层分工+archive-on-promotion+图锚)"
     - "记忆系统-3/记忆系统-vnext方案-统一版-20260630.md(三份方案稿合并,冻结口径修正)"
-updated_at: "2026-06-30"
+    - "owner 2026-08-03 拍板:cc_memory 整库冻结为只读档案,新记忆统一进文件记忆层(推翻 06-30 的『仍现役可写』与『整库冻非目标』)"
+    - "2026-08-03 普查报告 §3.4/§3.6:cc_memory 仅 11 条 entries、07-14 起实际停写;三层写入路由税与跨层找卡病是冻结的直接理由"
+updated_at: "2026-08-03"
 ---
+> **2026-08-03 owner 修订(以此为准)**:cc_memory **整库冻结为只读档案**。分层现在是「**两层活跃 + 一层档案**」:
+> ① **文件记忆层**(`~/.claude/projects/-home-zhuran24-zmd-pj/memory/`)= 新记忆的收件箱,从 cc_memory 手里接过来的;
+> ② **vnext `cards/`** = 主动推送精选层(不变);
+> ③ **cc_memory** = 只读档案,只供考古(`search` / `read --body` / `impact` / 跨层 `find`)。写命令保留只为档案订正,每次会先提醒一句、不拦。
+>
+> 直接作废的两条 06-30 口径:「旧 cc_memory 仍现役、可写」和「整库冻结非目标」。理由(普查 §3.4/§3.6):cc_memory 只剩 11 条 entries、07-14 起实际停写,却仍占着收件箱名分,于是每记一条都要先付「写哪层」的路由税,写完下次又跨层找不到。收件箱一交出去,这个问题类别整个消失。
+>
+> **没被推翻的部分**:边与 impact 图永久留 cc_memory(vnext 结构上吞不下),所以档案不是垃圾堆——`impact` 仍然是查牵连面的地方;按条 archive-on-promotion 作为**档案内部**的整理手法依然成立。以下为 06-30 原文,除①的"可写/收件箱"已被上面改写外仍然有效。
+
 记忆是**三层互补共存**(不是新旧替代,整库迁移非目标):
-① 旧 `cc_memory`(SQLite)= 全量、低摩擦的可查历史库 + 写入收件箱,**仍现役、可写**,带图(边)+ 语义检索(pull,需主动 search);
+① 旧 `cc_memory`(SQLite)= 全量、低摩擦的可查历史库 + 写入收件箱,~~**仍现役、可写**~~(**08-03 作废,见上**),带图(边)+ 语义检索(pull,需主动 search);
 ② v-next `cards/` = 主动推送精选层,每轮按相关性注入完整内容,只放"必须每回合提醒的稳定知识"(push);
 ③ harness `*.md` = SessionStart 加载的轻层(跨库索引 / always-visible 行为反射 / volatile resume 锚)。
 
