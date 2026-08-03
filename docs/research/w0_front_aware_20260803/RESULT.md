@@ -327,7 +327,8 @@ fail-closed、把机器证据搬进 git、把 `.artifacts` 根登记进治理台
 | `26a0cbe` | 生成器冒烟测试的墙钟闸 2 s → 30 s，消掉并发假红 | `preflight_c3_stability_20260803T212945Z.log` |
 | `d61acd1` | 记账：端口语义冲突记录、21 号更正文书、L2–L4 改口径、收据勘误（§9） | `preflight_c4_docs_20260803T213246Z.log` |
 | `29252c8` | 代码：receipt 第五门 fail-closed、审计自证隔离、generic_io 进管线、预门矛盾断言 | `preflight_c5_failclosed_20260803T214903Z.log` |
-| 本笔 | 证据耐久 + 治理登记 + 本节 | `preflight_c6_evidence_20260803T215915Z.log` |
+| `d0fe0ff` | 证据耐久 + 治理登记 + 本节 | `preflight_c6_evidence_20260803T215915Z.log` |
+| 本笔 | 措辞收尾（本表补全 + 章程 §5 一处措辞） | `preflight_c7_wording_20260803T220347Z.log` |
 
 每笔提交前在 worktree 内跑一次 `preflight_gate.py --full`，日志一笔一个文件、真实时间戳、
 不复制（§9.1 的缺口从本批起不再产生）。

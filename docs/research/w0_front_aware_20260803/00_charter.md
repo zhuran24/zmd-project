@@ -248,7 +248,8 @@ cap = max over pairs with both sides non-empty of max(n_X, n_Y)
 **必要投影极兼收等价变换**：`T-ARCHETYPE-COLLAPSE` 自述可行性等价，仍登在必要投影极。
 §0b v2.3-2 立这一极本是给"上界证明用的松弛"，等价强于必要、放进来是 sound 的，
 但按层做筛选时会取到比预期更强的东西——所以本表的括注是判读的一部分，不是修辞。
-`T-CAPABILITY-BUCKET` 曾按"无损抽象"登记，实测它不是等价而是松弛，见下一条。
+`T-CAPABILITY-BUCKET` 则不是等价变换而是松弛——bucket 对**单体**的能力是无损的，
+但那个能力量本身没有跨体同时性检查，见下一条。
 
 **未证义务：`O-FRONT-SIMULTANEITY`（G1 转绿前必须补上）**
 
