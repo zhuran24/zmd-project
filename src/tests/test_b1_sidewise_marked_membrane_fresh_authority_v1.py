@@ -13,11 +13,18 @@ from types import ModuleType, SimpleNamespace
 
 import pytest
 
+from src.tests.track_b_archive_locator_v1 import ArchiveLocatorError, resolve_archive_roots
+
 
 ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727"
-B0 = Path("/home/zhuran24/zmd-pj-codex-baselines/track-b-b0-1190-20260721")
-B1 = Path("/home/zhuran24/zmd-pj-codex-baselines/track-b-b1-sidewise-membrane-20260724")
+ARCHIVE_LOCATOR_PATH = Path(__file__).resolve().with_name("track_b_archive_locators_v1.json")
+ARCHIVE_ROOTS = resolve_archive_roots(
+    "track_b_b0_1190_20260721",
+    "track_b_b1_sidewise_membrane_20260724",
+)
+B0 = ARCHIVE_ROOTS["track_b_b0_1190_20260721"]
+B1 = ARCHIVE_ROOTS["track_b_b1_sidewise_membrane_20260724"]
 SMM2_RUN = (
     B1
     / ".artifacts/track_b_b1_sidewise_marked_membrane_strict_20260724"
@@ -1205,12 +1212,48 @@ def test_formal_namespace_and_closeout_paths_are_fixed(runner: ModuleType) -> No
     assert runner.FORMAL_OUTPUT_DIR == "formal-a004"
 
 
+def test_archive_locator_unmounted_fails_closed_with_exact_recovery_message() -> None:
+    with pytest.raises(ArchiveLocatorError) as caught:
+        resolve_archive_roots(
+            "track_b_b0_1190_20260721",
+            mount_check=lambda _path: False,
+        )
+    message = str(caught.value)
+    assert "R21_TRACK_B_ARCHIVE_UNAVAILABLE" in message
+    assert str(ARCHIVE_LOCATOR_PATH) in message
+    assert "Mount point: /mnt/wd_external" in message
+    assert "findmnt -T /mnt/wd_external" in message
+    assert "no skip/xfail fallback is permitted" in message
+
+
+def test_archive_locator_key_artifact_hash_drift_fails_closed(tmp_path: Path) -> None:
+    locator = json.loads(ARCHIVE_LOCATOR_PATH.read_text(encoding="utf-8"))
+    strict_instance = locator["entries"]["track_b_b0_1190_20260721"]["key_artifacts"]["strict_instance"]
+    strict_instance["sha256"] = "0" * 64
+    drifted_locator = tmp_path / "track-b-archive-locators-drifted.json"
+    drifted_locator.write_text(
+        json.dumps(locator, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ArchiveLocatorError) as caught:
+        resolve_archive_roots(
+            "track_b_b0_1190_20260721",
+            locator_path=drifted_locator,
+        )
+    message = str(caught.value)
+    assert "R21_TRACK_B_ARCHIVE_IDENTITY_DRIFT" in message
+    assert "role=track_b_b0_1190_20260721" in message
+    assert "artifact=strict_instance" in message
+    assert "expected size=92201, sha256=" + "0" * 64 in message
+    assert "observed size=92201, sha256=e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849c" in message
+    assert str(drifted_locator) in message
+
+
 def test_historical_inputs_are_copied_exclusively_and_composed(
     tmp_path: Path,
     orchestrator: ModuleType,
 ) -> None:
-    if not all(path.is_dir() for path in (B0, SMM2_RUN, SMM3_RUN)):
-        pytest.skip("immutable SMM2/SMM3 history is unavailable")
     source_inputs = orchestrator.validate_expected_inputs(
         source_root=B0,
         smm2_run=SMM2_RUN,
@@ -1262,8 +1305,6 @@ def test_old_upper_is_replayed_only_from_fresh_snapshots(
     tmp_path: Path,
     orchestrator: ModuleType,
 ) -> None:
-    if not all(path.is_dir() for path in (B0, SMM2_RUN, SMM3_RUN)):
-        pytest.skip("immutable R4 history is unavailable")
     source_inputs = orchestrator.validate_expected_inputs(
         source_root=B0,
         smm2_run=SMM2_RUN,
@@ -1322,8 +1363,6 @@ def test_old_upper_source_mode_anchor_fails_closed(
     monkeypatch: pytest.MonkeyPatch,
     orchestrator: ModuleType,
 ) -> None:
-    if not all(path.is_dir() for path in (B0, SMM2_RUN, SMM3_RUN)):
-        pytest.skip("immutable R4 history is unavailable")
     real_identity = orchestrator.identity
 
     def drifted_identity(path: Path, label: str) -> dict[str, object]:
@@ -1353,8 +1392,6 @@ def test_remaining_historical_mode_anchors_fail_closed(
     monkeypatch: pytest.MonkeyPatch,
     orchestrator: ModuleType,
 ) -> None:
-    if not all(path.is_dir() for path in (B0, SMM2_RUN, SMM3_RUN)):
-        pytest.skip("immutable SMM2/SMM3 history is unavailable")
     real_identity = orchestrator.identity
 
     def drifted_identity(path: Path, label: str) -> dict[str, object]:

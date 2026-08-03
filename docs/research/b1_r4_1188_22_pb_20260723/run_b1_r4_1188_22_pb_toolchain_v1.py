@@ -32,6 +32,8 @@ from types import ModuleType
 from typing import Any, Iterator
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
 SCHEMA_VERSION = "b1_r4_1188_22_pb_toolchain_run_v1"
 RESOURCE_SCHEMA = "b1_r4_1188_22_pb_resource_monitor_v1"
 SEMANTICS = "b1_r4_1188_22_complete_oriented_lex_better_band_given_a004_admitted_lemmas_v1"
@@ -69,12 +71,11 @@ EXPECTED_ROUNDINGSAT_REVISION = "d4edbf7908a9bb951fd181940919e0f3ac7ab1ee"
 EXPECTED_VERIPB_PATH = Path("/home/zhuran24/.cargo/bin/veripb")
 EXPECTED_VERIPB_SHA256 = "a0c72df075b924af3b698ae808f86d3b55067168534397a0cc3d49594777b971"
 EXPECTED_VERIPB_VERSION = "3.0.2"
-EXPECTED_PYTHON_PATH = Path("/home/zhuran24/zmd-pj-codex/.venv-uvbolt-backup/bin/python3.13")
+EXPECTED_PYTHON_PATH = PROJECT_ROOT / ".venv-uvbolt-backup/bin/python"
 EXPECTED_PYTHON_SHA256 = "74fceb0fdd29c31cf066ac8d92465975ea4ac8592308d7c888e26a70092d8eeb"
 EXPECTED_PROJECT_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
 ARTIFACT_EXCLUSION = ".artifacts/track_b_b1_r4_1188_22_pb_20260723/**"
 
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
 ARTIFACT_ROOT = PROJECT_ROOT / ".artifacts" / "track_b_b1_r4_1188_22_pb_20260723"
 SINGLETON_LOCK_NAME = "zmd_pj_prod_scale_solver.lock"
 ATTEMPT_MARKER_NAME = "formal_attempt_a001.reservation.json"

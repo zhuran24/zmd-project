@@ -11,10 +11,13 @@ from typing import Any
 
 import pytest
 
+from src.tests.track_b_archive_locator_v1 import resolve_archive_roots
+
 
 ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727"
-B0 = Path("/home/zhuran24/zmd-pj-codex-baselines/track-b-b0-1190-20260721")
+ARCHIVE_ROOTS = resolve_archive_roots("track_b_b0_1190_20260721")
+B0 = ARCHIVE_ROOTS["track_b_b0_1190_20260721"]
 OLD_FORMAL = (
     B0
     / ".artifacts/track_b_b1_r4_1188_22_pb_20260723"
@@ -67,9 +70,11 @@ def fresh_history(
     tmp_path_factory: pytest.TempPathFactory,
 ) -> dict[str, Any]:
     sources = historical_sources(verifier)
-    missing = [str(path) for path in (*sources.values(), VERIPB) if not path.is_file()]
-    if missing:
-        pytest.skip(f"SMM4 immutable history/tool is unavailable: {missing}")
+    missing_history = [str(path) for path in sources.values() if not path.is_file()]
+    if missing_history:
+        pytest.fail(f"SMM4 immutable archive history is unavailable: {missing_history}", pytrace=False)
+    if not VERIPB.is_file():
+        pytest.fail(f"local VeriPB tool is unavailable: {VERIPB}", pytrace=False)
     root = tmp_path_factory.mktemp("smm4-old-upper-fresh")
     paths: dict[str, Path] = {}
     pins: dict[str, dict[str, Any]] = {}

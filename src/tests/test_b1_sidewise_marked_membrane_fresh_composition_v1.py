@@ -9,11 +9,17 @@ import sys
 
 import pytest
 
+from src.tests.track_b_archive_locator_v1 import resolve_archive_roots
+
 
 ROOT = Path(__file__).resolve().parents[2]
 RESEARCH = ROOT / "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727"
-B0 = Path("/home/zhuran24/zmd-pj-codex-baselines/track-b-b0-1190-20260721")
-B1 = Path("/home/zhuran24/zmd-pj-codex-baselines/track-b-b1-sidewise-membrane-20260724")
+ARCHIVE_ROOTS = resolve_archive_roots(
+    "track_b_b0_1190_20260721",
+    "track_b_b1_sidewise_membrane_20260724",
+)
+B0 = ARCHIVE_ROOTS["track_b_b0_1190_20260721"]
+B1 = ARCHIVE_ROOTS["track_b_b1_sidewise_membrane_20260724"]
 SMM2 = (
     B1
     / ".artifacts/track_b_b1_sidewise_marked_membrane_strict_20260724"
@@ -51,7 +57,7 @@ def load_gate():
 def require_history() -> None:
     missing = [str(path) for path in HISTORICAL_PATHS.values() if not path.is_file()]
     if missing:
-        pytest.skip(f"SMM4 immutable history is unavailable: {missing}")
+        pytest.fail(f"SMM4 immutable archive history is unavailable: {missing}", pytrace=False)
 
 
 def historical_inputs(gate):

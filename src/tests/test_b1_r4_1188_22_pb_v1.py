@@ -819,7 +819,7 @@ def test_build_attempt_is_lowest_fresh_direct_child_and_sealed(
         )
 
     invocation, resolved = encoder._fixed_python()
-    assert invocation == Path("/home/zhuran24/zmd-pj-codex/.venv-uvbolt-backup/bin/python3.13")
+    assert invocation == PROJECT_ROOT / ".venv-uvbolt-backup/bin/python"
     assert invocation.is_symlink()
     assert resolved.is_file()
 
@@ -919,7 +919,7 @@ def test_runner_pins_tools_python_and_resource_contract(
     assert runner.BUILD_OUTPUT_RE.fullmatch("build-a001-20260723T171500Z-398f8725")
     assert not runner.BUILD_OUTPUT_RE.fullmatch("build-a000-20260723T171500Z-398f8725")
     assert not runner.BUILD_OUTPUT_RE.fullmatch("build-a002-20260723T171500Z-398f8725")
-    assert runner.EXPECTED_PYTHON_PATH == Path("/home/zhuran24/zmd-pj-codex/.venv-uvbolt-backup/bin/python3.13")
+    assert runner.EXPECTED_PYTHON_PATH == PROJECT_ROOT / ".venv-uvbolt-backup/bin/python"
     assert runner.EXPECTED_PYTHON_SHA256 == "74fceb0fdd29c31cf066ac8d92465975ea4ac8592308d7c888e26a70092d8eeb"
     assert runner.EXPECTED_ROUNDINGSAT_SHA256 == "08bb2542bcf09d99366f35e6fcfc7c79e002eca360ab9da027944c719fa3f8bf"
     assert runner.EXPECTED_VERIPB_SHA256 == "a0c72df075b924af3b698ae808f86d3b55067168534397a0cc3d49594777b971"

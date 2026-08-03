@@ -351,13 +351,6 @@ def _head_drifted_from_witness_pin() -> str | None:
     return None
 
 
-def _missing_r4_external_brain_handoff_artifacts() -> str | None:
-    target = PROJECT_ROOT / ".artifacts" / "track_b_r4_external_brain_handoff_20260722"
-    if not target.exists():
-        return f"fixture missing: {target.relative_to(PROJECT_ROOT)} (Track B research artifact, not in git)"
-    return None
-
-
 def _missing_noncert_cuts_ab_trust_artifacts() -> str | None:
     target = PROJECT_ROOT / ".artifacts" / "noncert_cuts_ab_trust_20260723"
     if not target.exists():
@@ -383,22 +376,6 @@ _TRACK_B_NODEID_GUARDS: dict[str, "callable[[], str | None]"] = {
     "test_b1_r4_1188_22_pb_v1.py::test_gate_rejects_variable_map_orientation_or_bool_id": _head_drifted_from_track_b_pin,
     "test_b1_r4_1188_22_pb_v1.py::test_target_schemas_and_a004_complete_replay": _head_drifted_from_track_b_pin,
     "test_b1_r4_1188_22_pb_v1.py::test_translation_outputs_refuse_overwrite_and_symlink": _head_drifted_from_track_b_pin,
-    # Artifact-absent: external-brain-handoff replay reads .artifacts/ bytes.
-    "test_r4_external_brain_handoff_v1.py::test_every_downstream_stage_carries_exact_selected_receipt_identity": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_incomplete_ledger_missing_report_and_failed_verdict_are_closed": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_live_source_identity_replay_is_exact_and_path_substitution_is_closed": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_package_manifest_seal_path_and_symlink_canaries_fail_closed": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_package_manifest_sha_dag_and_exact_attachment_control": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_partial_response_publication_writes_archive_incomplete": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_post_seal_and_no_overwrite_are_closed": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_receipt_symlink_alias_is_rejected": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_receipt_tamper_fails_semantic_replay": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_receipts_are_append_only_siblings_and_do_not_change_package": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_response_is_opaque_byte_exact_and_canonical_numbering_is_no_overwrite": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_selected_identity_drift_closes_ledger_and_admission": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_selected_receipt_path_and_readme_require_exact_identity": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_semantically_equivalent_receipt_replacement_closes_detached_identity_gate": _missing_r4_external_brain_handoff_artifacts,
-    "test_r4_external_brain_handoff_v1.py::test_sha_self_cycle_canary_fails_closed": _missing_r4_external_brain_handoff_artifacts,
     # noncert-cuts A/B trust (merged 2026-07-25): same two failure modes.
     # HEAD-pin: repository-head replay asserts the codex worktree HEAD.
     "test_noncert_cuts_ab16_campaign_bootstrap_v1.py::test_repository_head_executes_the_same_pinned_git_fd": _head_drifted_from_track_b_pin,

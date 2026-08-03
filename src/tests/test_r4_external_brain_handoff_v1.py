@@ -17,11 +17,20 @@ import zipfile
 
 import pytest
 
+from src.tests.track_b_archive_locator_v1 import resolve_archive_roots
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RESEARCH_DIR = PROJECT_ROOT / "docs/research/r4_external_brain_handoff_20260722"
-W2D_ROOT = Path("/home/zhuran24/zmd-pj-codex-baselines/witness-ea407fa-20260720")
-W2D_FORBIDDEN_ROOT = Path("/home/zhuran24/zmd-pj-codex-worktrees/witness-ea407fa-20260720")
+ARCHIVE_ROOTS = resolve_archive_roots(
+    "archived_project_zmd_pj_codex_20260801",
+    "track_b_b0_1190_20260721",
+    "witness_ea407fa_20260720",
+)
+ARCHIVED_PROJECT_ROOT = ARCHIVE_ROOTS["archived_project_zmd_pj_codex_20260801"]
+TRACK_B_B0_ROOT = ARCHIVE_ROOTS["track_b_b0_1190_20260721"]
+W2D_ROOT = ARCHIVE_ROOTS["witness_ea407fa_20260720"]
+W2D_FORBIDDEN_ROOT = W2D_ROOT.parent / ".r21-forbidden-worktree-witness-ea407fa-20260720"
 W2D_HEAD = "ea407fafaff56333bcf18066cecf890f0ef0c6da"
 EXPECTED_ATTACHMENTS = [
     "attachments/strict-trio.zip",
@@ -35,6 +44,59 @@ SELECTED_RECEIPT_PATH = "verifications/independent-a002-20260722T0845Z/receipt.j
 SELECTED_RECEIPT_SHA256 = "cbbefb4d288e4f2e8f624f7f1b9f87c7f678622738184f831226b6436b0840f4"
 
 
+def _rebased_static_path(module: ModuleType, role: str, path: Path) -> Path:
+    if role in {"b0.readme", "b1_r1.readme", "b1_r2.readme"}:
+        return path
+    if role == "core_plan":
+        return module.CORE_PLAN
+    if role.startswith("w2d."):
+        return module.W2D_REPORT_DIR / path.name
+    if role.startswith("b0."):
+        return module.B0_RUN / path.name
+    if role.startswith("b1_r1."):
+        return module.B1_R1_RUN / path.name
+    if role == "b1_r2.complete_event":
+        return module.B1_R2_RUN / "status-events" / path.name
+    if role.startswith("b1_r2."):
+        return module.B1_R2_RUN / path.name
+    return path
+
+
+def _rebase_archive_inputs(module: ModuleType) -> ModuleType:
+    """Redirect historical test inputs without rewriting sealed source records."""
+
+    if hasattr(module, "W2D_ROOT"):
+        module.W2D_ROOT = W2D_ROOT
+        module.W2D_FORBIDDEN_ROOT = W2D_FORBIDDEN_ROOT
+        module.W2D_REPORT_DIR = W2D_ROOT / "docs/research/witness_constructor_20260717/07_routing_aware"
+    if hasattr(module, "CORE_PLAN"):
+        module.CORE_PLAN = ARCHIVED_PROJECT_ROOT / "核心计划书.md"
+    if hasattr(module, "B0_RUN"):
+        module.B0_RUN = TRACK_B_B0_ROOT / ".artifacts/track_b_b0_1190_34/formal-a001-20260721T221107Z-398f8725"
+        module.B1_R1_RUN = (
+            TRACK_B_B0_ROOT
+            / ".artifacts/track_b_b1_q_membrane_halo_20260722/run-20260722T0902-nGEfoW"
+        )
+        module.B1_R2_RUN = (
+            TRACK_B_B0_ROOT
+            / ".artifacts/track_b_b1_conditional_halo_20260722/run-20260722T015946Z-zkMRiF"
+            / "scan/diagnostic-corpus-v2"
+        )
+    if hasattr(module, "FIXED_PYTHON"):
+        module.FIXED_PYTHON = PROJECT_ROOT / ".venv-uvbolt-backup/bin/python"
+    if hasattr(module, "EXPECTED_STATIC_SOURCES"):
+        module.EXPECTED_STATIC_SOURCES = tuple(
+            (role, _rebased_static_path(module, role, path), digest)
+            for role, path, digest in module.EXPECTED_STATIC_SOURCES
+        )
+    if hasattr(module, "EXPECTED_PATH"):
+        module.EXPECTED_PATH = {
+            role: _rebased_static_path(module, role, path)
+            for role, path in module.EXPECTED_PATH.items()
+        }
+    return module
+
+
 def _load_module(name: str, filename: str) -> ModuleType:
     path = RESEARCH_DIR / filename
     spec = importlib.util.spec_from_file_location(name, path)
@@ -42,7 +104,7 @@ def _load_module(name: str, filename: str) -> ModuleType:
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
-    return module
+    return _rebase_archive_inputs(module)
 
 
 @pytest.fixture(scope="module")
@@ -220,6 +282,7 @@ def test_fixed_submission_surface_questions_and_authority_identities(
     assert builder.W2D_FORBIDDEN_ROOT == verifier.W2D_FORBIDDEN_ROOT == W2D_FORBIDDEN_ROOT
     assert builder.W2D_HEAD == verifier.W2D_HEAD == W2D_HEAD
     assert builder.W2D_ROOT != builder.W2D_FORBIDDEN_ROOT
+    assert not W2D_FORBIDDEN_ROOT.exists()
     pinned = {role: digest for role, _path, digest in builder.EXPECTED_STATIC_SOURCES}
     assert pinned == verifier.EXPECTED_SHA
     assert {role for role, _path in builder.DYNAMIC_SOURCES} == verifier.DYNAMIC_ROLES

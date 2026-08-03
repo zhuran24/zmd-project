@@ -24,6 +24,7 @@ SOURCE_SCHEMA = "r4_handoff_source_identities_v1"
 BUILD_SCHEMA = "r4_handoff_build_record_v1"
 ATTACHMENT_SCHEMA = "r4_handoff_attachment_list_v1"
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
+EXPECTED_PYTHON_PATH = PROJECT_ROOT / ".venv-uvbolt-backup/bin/python"
 W2D_ROOT = Path("/home/zhuran24/zmd-pj-codex-baselines/witness-ea407fa-20260720")
 W2D_FORBIDDEN_ROOT = Path("/home/zhuran24/zmd-pj-codex-worktrees/witness-ea407fa-20260720")
 W2D_HEAD = "ea407fafaff56333bcf18066cecf890f0ef0c6da"
@@ -591,7 +592,7 @@ def _verification_payload(run_dir: Path, verification_id: str) -> dict[str, Any]
             and build.get("free_bytes_before_build", 0) >= 10_737_418_240
             and isinstance(python_record, Mapping)
             and set(python_record) == {"executable", "version"}
-            and python_record.get("executable") == "/home/zhuran24/zmd-pj-codex/.venv-uvbolt-backup/bin/python3.13"
+            and python_record.get("executable") == str(EXPECTED_PYTHON_PATH)
             and isinstance(python_record.get("version"), str)
             and python_record.get("version", "").startswith("3.13.")
             and not _contains_forbidden_key(build, frozenset(forbidden))

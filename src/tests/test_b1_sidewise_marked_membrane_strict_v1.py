@@ -9,12 +9,23 @@ import sys
 
 import pytest
 
+from src.tests.track_b_archive_locator_v1 import resolve_archive_roots
+
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_ROOT = Path("/home/zhuran24/zmd-pj-codex-baselines/track-b-b0-1190-20260721")
 RESEARCH = ROOT / "docs/research/b1_sidewise_marked_membrane_strict_20260724"
-STRICT = SOURCE_ROOT / "docs/research/cleanroom_rederivation_20260718" / "strict/external/problem_instance.json"
-RUN = ROOT / ".artifacts/track_b_b1_sidewise_marked_membrane_strict_20260724" / "run-20260723T161302Z-SMM2"
+ARCHIVE_ROOTS = resolve_archive_roots(
+    "track_b_b0_1190_20260721",
+    "track_b_b1_sidewise_membrane_20260724",
+)
+B0 = ARCHIVE_ROOTS["track_b_b0_1190_20260721"]
+B1 = ARCHIVE_ROOTS["track_b_b1_sidewise_membrane_20260724"]
+STRICT = B0 / "docs/research/cleanroom_rederivation_20260718" / "strict/external/problem_instance.json"
+RUN = (
+    B1
+    / ".artifacts/track_b_b1_sidewise_marked_membrane_strict_20260724"
+    / "run-20260723T161302Z-SMM2"
+)
 
 
 def load(name: str):
@@ -44,7 +55,7 @@ def file_id(path: Path) -> dict:
 
 def require_authority_run() -> None:
     if not RUN.is_dir():
-        pytest.skip("no local no-overwrite authority run")
+        pytest.fail(f"SMM2 immutable archive authority run is unavailable: {RUN}", pytrace=False)
 
 
 def test_primary_strict_entity_budget_and_band_delta() -> None:
