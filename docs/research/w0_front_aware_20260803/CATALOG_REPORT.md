@@ -24,7 +24,7 @@
 | 输出目录 | `/home/zhuran24/zmd-pj/.artifacts/w0_front_aware_20260803/g1_run/` |
 | 参数 | `--budget-seconds 5400 --target-seconds 2 --solutions-per-target 3 --workers 4 --seed 0` |
 | 实测 wall | 5404.8 s |
-| Python / OR-Tools | 3.13.13 / 9.15.6755 |
+| Python / OR-Tools | 3.13.13 / 9.15.6755（环境实测；manifest 的 `versions.ortools` 记的是 `unknown`，成因见 `RESULT.md` §9.3） |
 | manifest sha256 | `dbcb32efc9e93fb2532c331e0acb4ac2e0e78cf140ad111f2560fda176534005` |
 
 各 region class catalog 文件 sha256：
@@ -223,9 +223,14 @@ evaluator 一过，只剩 2 台活的、面积 50。
    - 或者松掉一条充分限制（登记表里的 `R-*`），但那要重走三极性登记，
      且新档位下 §4 的预门要重算。
 5. `CORE` 承载 0 台是已证事实（54 个目标全部无 pose），不必重测。
-6. 独立审计器 `front_viability_audit.py` 与生成链零共享代码，
-   `--self-test` 通过（两个 toy 几何 PASS、第二格突变被拒、15 条 issue code）；
-   它对真实 W0 剖面重生成的固定家具与 `g1_region_model` 的 219 / 66 格逐格相等。
+6. 独立审计器 `front_viability_audit.py` 与生成链**零共享代码**（不 import 任何 `g1_*` 模块，
+   AST 钉死在 stdlib 白名单上），`--self-test` 通过（两个 toy 几何 PASS、第二格突变被拒、
+   15 条 issue code）；它对真实 W0 剖面重生成的固定家具与 `g1_region_model` 的 219 / 66 格逐格相等。
+   **"零共享代码"目前只被这样检查**：它自己重实现 `side_fronts` / `legal_modes` / `footprint`，
+   与仓库 `src/placement/placement_generator` 的绑定是**间接**的——靠
+   `src/tests/test_w0_g1_expand.py::test_the_independent_audit_only_faults_the_census`
+   在两套推导不一致时报 `front_offset_violation`。直接把审计器钉到 `placement_generator` 上
+   （它已经在读 `rules/canonical_rules.json`）会关掉最后一条共享盲区路径，本批未做。
    乙段的任何 G1 输出都应当过它一遍。
 
 ---
@@ -239,5 +244,8 @@ env -u PYTHONPATH -u PYTHONHOME /home/zhuran24/zmd-pj/.venv-uvbolt-backup/bin/py
   --budget-seconds 5400 --target-seconds 2 --solutions-per-target 3 --workers 4 --seed 0
 ```
 
-`--seed 0` 固定 CP-SAT 随机种子，菜单顺序是纯函数，预算闸切在确定的名次上，
-所以同参数重跑得到同一份 catalog。
+`--seed 0` 固定 CP-SAT 随机种子，菜单顺序是纯函数。**但预算闸是墙钟闸**
+（`g1_pattern_generator.py` 的预算检查按 wall time 切），所以它切在第几个名次取决于机器速度：
+本次运行里 `LEFT_J3` 只尝试了 220 个目标，其余八类各 221 个（§3 表「已尝试」列）。
+**复现口径是 per-machine，不是 per-parameter**：同机同参数可复现，换机器要按 manifest 里
+逐类的 `attempted` 前缀对齐才谈得上"同一份 catalog"。

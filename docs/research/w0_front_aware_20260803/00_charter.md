@@ -24,6 +24,11 @@ owner 2026-08-03 拍板：W0 下界主线按 **17 号处方**转向 front-aware 
 
 因此旧 pinned-seed、D6 class swap、单纯延长 routing 时间不再占用主要计算预算。
 
+**分支名与开线书不一致的成因**：开线书要求 `codex/w0-front-aware-g1-20260803`，
+实际分支是 `w0/front-aware-g1-20260803`。08-03 起额度驱动改了路由（实施改由 wf/opus 走、
+codex 只坐审查席），前缀随之从 `codex/` 换成线名 `w0/`。base 仍是开线书指定的 main `0dcb531`，
+未并回 main。
+
 ---
 
 ## 2. 三道门（G1 / G2 / G3）
@@ -68,7 +73,7 @@ component direction obstruction——不得只返回笼统的整图不可行。
 
 | §0b 角色 | G1 | G2 | G3 |
 |---|---|---|---|
-| **① 切分（三档形态）** | 健全影子：端口 front 合法性 + class 计数——**不依赖任何路由决策即可求值**。精确本体留给 G3 | 影子：通用 SCC 可达性，不依赖商品绑定 | **精确本体**：独立 strict checker 逐谓词终审 |
+| **① 切分（三档形态）** | 健全影子：端口 front 合法性 + class 计数——**不依赖任何路由决策即可求值**。精确本体留给 G3。**此门在影子之上还叠加了 R-\* 充分限制，因此它的 INFEASIBLE 不可作必要条件之否定** | 影子：通用 SCC 可达性，不依赖商品绑定 | **精确本体**：独立 strict checker 逐谓词终审 |
 | **② 住址（三腿）** | 尺寸：196 格局部 CP-SAT ×N + 千级 master；传播力：class 计数是全局算术律、传播极强；机器兼容：CP-SAT 原生 | 固定 G1 几何后退化为图问题 | stdlib checker，无求解器 |
 | **③ 管线序（便宜→贵）** | **最便宜**：pattern 评估毫秒级，master 秒~分钟级 | 中：SCC 构造分钟级 | 最贵，但只跑漏斗底部的幸存者 |
 | **④ 下游验证人** | 早期拒绝**带证书**（master 的 assumption core / 审计的 issue code）；早期放行是**暂定** | 同上，失败原因必须具名 | **终审**：零 issue + 复算 ≥(42,6) 才动 ledger |
@@ -102,6 +107,39 @@ r_out = Σ_c slots(outputs[c])
 **执行形态**：`src/tests/test_w0_g1_port_semantics.py` 对每个 mandatory operation 断言
 本线推导结果 == `src.models.port_binding.routing_visible_port_demands(op, frozenset())`。
 任何一行不等 = 测试红、批停。这条测试就是本条款本身。
+
+### 本条与开线书字面条款冲突，按 repo demand SSOT 执行
+
+开线书（`.artifacts/w0_front_aware_20260803/opening_brief.md` 第 21–27 行）把类需求写死为
+「`canonical_rules.json` recipes 的**商品种类数**」：3x3 全部 1 进 1 出 ×132、5x5 全部 1 进 1 出 ×49、
+6x4 全部 2 进 1 出 ×38。**本线没有照字面执行**，而是按开线书同时给出的「强制 repo 端口语义」
+取实测语义 = **slot 数**。三处源码证据，都可当场复算：
+
+- `src/models/port_binding.py` 的 `routing_visible_port_demands` 明写 `req_in` = 输入侧
+  slot 计数总和（`sum(input_slots.values())`）——这是仓库的 demand SSOT；
+- `src/preprocess/operation_profiles.py` 的 `_rate_to_slots` = ⌈rate / belt_capacity_per_tick⌉；
+- 实测 `crusher_sandleaf` 的 outputs 是 `{"sandleaf_powder": 3}`：**1 个商品种类、3 个 slot**。
+
+种类数比真需求**更弱**，照它放行的几何在 G3 必死。slot 九行表是**健全且更紧**的必要条件——
+凡它判死的身位，种类数语义下同样死；差别只在放行面，不在死刑面。更正文书见
+`../cleanroom_rederivation_20260718/21_w0_port_semantics_correction_20260803.md`。
+
+**必须主动点破的巧合**：按 slot 推出的九行表逐行等于 17 号文书的 `operation_classes`
+（3L 109 / 3I2 6 / 3O2 6 / 3O3 11 / 5L 32 / 5O2 17 / 6G 32 / 6F 3 / 6B 3），而开线书禁止沿用那张表。
+本线从未读过它：类表由 `g1_port_semantics.derive_class_table` 从冻结 rules 现场推导，
+辩护是 `src/tests/test_w0_g1_port_semantics.py` 的逐 operation 断言。
+**结论相同不等于依据相同**——巧合摆在这里，判读权在 owner。
+
+### generic-input/output 侧的容量核算
+
+`data/preprocessed/generic_io_requirements.json`（sha256 `ad5125b5…c44e`）要求
+**52 个 generic output slot**（blue_iron_ore 34 + source_ore 18）与 **2 个 generic input slot**
+（qiaoyu_capsule 1 + valley_battery 1）。固定家具（§6，不是决策）供给：
+46 个 boundary_storage_port 口 + protocol_core 的 6 个输出口 = **52 个 output 口**，
+core 的 **14 个 input 口** ≥ 2。两侧都被覆盖，且 output 侧**一格不剩**——
+`R-CORE-FRONT-RESERVE` 把这 66 个口前格全部留空，正是这条核算的执行形态。
+`run_g1.py` 每次运行都重算这条核算并把该文件的 sha256 绑进 `config.json` 与 `receipt.json`；
+覆盖不成立就 fail-closed，不进 master。
 
 ### 九行类表
 
@@ -157,7 +195,10 @@ cap = max over pairs with both sides non-empty of max(n_X, n_Y)
 | `M6_4i1o`      | M6_i4    | 6I3, 6I4 |
 | `M6_5i1o`      | M6_i5    | 6I3, 6I4, 6I5 |
 
-两处更正都是"推导而非转抄"直接换来的。是否另发 21 号更正文书 = owner 事项（推荐发，一页）。
+两处更正都是"推导而非转抄"直接换来的。更正 1 已另发文书：
+`../cleanroom_rederivation_20260718/21_w0_port_semantics_correction_20260803.md`
+（更正范围只限 19 号第 4 步对 repo 语义的刻画；19 号的 seed 死刑结论不受影响，
+且在两种语义下都成立）。19 号本体一个字节未改，反向指针由本节与 21 号承担。
 
 ---
 
@@ -172,7 +213,7 @@ cap = max over pairs with both sides non-empty of max(n_X, n_Y)
 | `T-PORT-SLOTS` | 精确语义 | G1/G3 | `g1_port_semantics.CLASS_TABLE` |
 | `T-FRONT-FREE` | 精确语义 | G1/G3 | `g1_pattern_evaluator.is_front_usable` |
 | `T-DEAD-BODY` | **必要投影** | G1 | `g1_pattern_evaluator.dead_for_any_actual_class` |
-| `T-CAPABILITY-BUCKET` | **必要投影**（无损抽象） | G1 | `g1_port_semantics.BUCKET_SERVABLE` |
+| `T-CAPABILITY-BUCKET` | **必要投影**（跨体同时性未证：是松弛，不是等价） | G1 | `g1_port_semantics.BUCKET_SERVABLE` |
 | `T-ARCHETYPE-COLLAPSE` | **必要投影**（等价变换） | G1 | `g1_exact_cover_master.COLLAPSE_EQUIVALENCE`（乙段） |
 | `T-SUPPLY-CEILING` | **必要投影**（算术上界） | G1 | `g1_exact_cover_master.bucket_supply_ceiling`（乙段） |
 | `T-EMPTY-PATTERN` | 精确语义（词汇完备性） | G1 | `g1_exact_cover_master.EMPTY_PATTERN`（乙段） |
@@ -203,6 +244,29 @@ cap = max over pairs with both sides non-empty of max(n_X, n_Y)
 - `T-POLE-MINIMAL` 在乙段是**全局**跑的：`R-POWER-LOCAL` 是买来给 master 省约束的每区限制，
   板面一旦成型，邻区的杆本来就可能已经覆盖到某台机器，而仓库的不冗余谓词管的是整板。
   删杆只会让格子变自由，因此不可能作废任何 front 见证或缩小孔洞。
+
+**必要投影极兼收等价变换**：`T-ARCHETYPE-COLLAPSE` 自述可行性等价，仍登在必要投影极。
+§0b v2.3-2 立这一极本是给"上界证明用的松弛"，等价强于必要、放进来是 sound 的，
+但按层做筛选时会取到比预期更强的东西——所以本表的括注是判读的一部分，不是修辞。
+`T-CAPABILITY-BUCKET` 曾按"无损抽象"登记，实测它不是等价而是松弛，见下一条。
+
+**未证义务：`O-FRONT-SIMULTANEITY`（G1 转绿前必须补上）**
+
+`g1_pattern_evaluator.evaluate_body` 逐体独立数自由 front 格；evaluator、master、几何展开、
+独立审计四处**都没有**要求同一 pattern 的所有 body 能*同时*取到互不相同的 active front 格。
+这不是边角：L0 ∪ L1-dense 的 258 个 CLEAN pattern 里，有 207 个至少有一个自由 front 格
+同时是 2–3 个 body 的 front 格。
+
+读仓库，这种共享**很可能**合法：`src/models/routing_subproblem.py` 的
+`_duplicate_terminal_front_keys` 只拦 `(front cell, terminal_dir, commodity, port_type)`
+四元组重复，而贴同一格的两个 body 朝外方向必然相反、`terminal_dir` 不同。但"很可能合法"
+不是证明，本线也没有做 distinct-representatives 检查。后果分两面：
+
+- 对本批的 `INFEASIBLE` **无影响**——模型比真规则更宽，宽模型无解是更强的陈述；
+- G1 一旦转绿，PASS 就会携带这条未证断言。转绿前二选一：给 `evaluate_pattern` 加
+  distinct-representatives 检查，或把上面的合法性论证补成证明并登记进本表。
+
+机器可读镜像在 `derived_theorems.json` 的 `open_obligations`。
 
 **「带前件条件 cut」一层在 G1 为空**，理由必须写明：本线 shadow-only，不向任何 master 输出学习 cut；
 生成器内部的 nogood 只在单次子解生命周期内存在、不导出、不跨 antecedent 复用，
@@ -251,10 +315,12 @@ reserved 口前格 + 孔洞落在**同一个**分量里」，而不是「全图�
 
 ## 7. 甲段实测结论
 
-### CORE 区域承载 0 台制造机（CP-SAT 证明 OPTIMAL）
+### CORE 区域承载 0 台制造机（pose 枚举为空，`status: NO_POSE`）
 
 `R-CORE-FRONT-RESERVE` 把 core 的 20 个口前格全部留空后，CORE 区域（usable 70）的自由空间只剩
 宽 2 的环带与被 reserved 格切断的底带，放不下任何 3×3 本体。**219 台机器必须挤进其余 24 个区域。**
+证据形态是 pose 枚举返回空集（`catalog/manifest.json` 的 CORE 记 `"status": "NO_POSE"`），
+CP-SAT 一次都没跑——54 个目标全部无 pose，比"求解器证 OPTIMAL"更早一层。
 
 ### 算术预门：面积上不排除，但余量只有 67 格
 
@@ -296,10 +362,11 @@ front 格名义上空着实际够不着。这也解释了 catalog 里 `rejected_
 
 ## 7b. 乙段实测结论（摘要，全文见 `RESULT.md`）
 
-**G1 终态 = INFEASIBLE**，升级梯走到 L1（两轮），L2–L4 按算术排除、L5 按开线书停下交 owner。
+**G1 终态 = INFEASIBLE**，升级梯走到 L1（两轮）；**L2–L4 未跑、未被排除**，L5 按开线书停下交 owner。
 
 - L0（甲段 catalog）：master 0.2 s `INFEASIBLE`，删除法极小核 = 九个非 CORE 的 `assume_cover`
-  + `assume_total_bodies`；无求解器预门独立给出同一件事——总台数上界 210 < 219。
+  + `assume_total_bodies`（在 21 个具名 family 上极小；C2a 桶守恒是无条件张贴的、从不进删除候选）；
+  无求解器预门独立给出同一件事——总台数上界 210 < 219。
 - **9 台不是几何墙**：219 台摊到 24 个可用区域是 9.125 台/区，而两份 catalog 最密都是 9 台。
   直接向 CLEAN 的密集目标提问，找到了 **10 台的合法 pattern**——上限是 `H-TARGET-MENU`
   的排序产物（10 台以上的目标排在几百名开外）。因此给菜单加了 `min_bodies` **过滤器**
@@ -307,8 +374,9 @@ front 格名义上空着实际够不着。这也解释了 catalog 里 `rejected_
 - L1 并集（L0 ∪ 深挖轮 ∪ 密集轮，按签名并集）：总台数闸破了（244 ≥ 219），
   但 body 面积上界 3,113 < 3,325，核相应移到 `assume_class[5L]/[6I3]/[6I5]`——
   密集 pattern 几乎全靠 3×3 堆出来。
-- 病灶定位：不是几何允许多少（松弛上界 3,392，slack 67），是**生成器造得出多少**
-  （3,113，比松弛上界低 279）。差额的原因甲段与本批探测一致：密度顶上去时自由空间碎掉。
+- 判读：现有 catalog 的**直接**短板是生成密度（造得出 3,113，比松弛上界 3,392 低 279）；
+  但松弛上界 3,392 ≥ 3,325 只是**没排除**几何，并不证明这个限制档位在连通性下装得下 3,325。
+  竞争假设「这套 R-\* 档位本身面积就不够」未被排除，见 `RESULT.md` §1/§3。
   本批试过给松弛模型补单商品流连通性以拿到更紧的健全上界，300 s 内连平凡界都没证下来——
   负结果，如实记录。
 
