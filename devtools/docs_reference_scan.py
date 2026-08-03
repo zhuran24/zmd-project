@@ -102,6 +102,11 @@ _PATH_CHARS_RE = re.compile(r"^[0-9A-Za-z_./#*?+\-㐀-鿿]+$")
 _SUFFIX_RE = re.compile(r"^\.[A-Za-z0-9]+$")
 _ANCHOR_DEDUP_SUFFIX_RE = re.compile(r"-\d+$")
 _SETEXT_UNDERLINE_RE = re.compile(r"^\s{0,3}(?:=+|-+)\s*$")
+# Any anchor this scanner does not model: an ``<a>`` tag at all, or any tag
+# carrying an ``id``.  Case-insensitive, because HTML is — ``<A ID="x">`` is
+# every bit as real a target as ``<a id="x">``.  No whitespace is allowed after
+# ``<`` so that prose comparisons such as ``area < a`` are not read as markup.
+_HTML_ANCHOR_RE = re.compile(r"<a\b|<[A-Za-z][A-Za-z0-9-]*\b[^<>]*\bid\s*=", re.IGNORECASE)
 
 _TRAILING_PUNCTUATION = "，。、；：！？）】」》,;:!?)]}>”’"
 _LEADING_PUNCTUATION = "（【「《([{<“‘"
@@ -777,7 +782,8 @@ class ParsedDocument:
     tokens: tuple[Token, ...]
     contexts: tuple[str, ...]
     fenced_lines: int
-    section_references: tuple[tuple[int, str, str], ...]
+    # (line number, document token, token kind, section identifier)
+    section_references: tuple[tuple[int, str, str, str], ...]
 
 
 def _read_text(path: Path, relpath: str) -> str:
@@ -787,32 +793,46 @@ def _read_text(path: Path, relpath: str) -> str:
         raise DocScanError(f"cannot read document {relpath}: {exc}") from exc
 
 
-def parse_document(root: Path, relpath: str) -> ParsedDocument:
-    text = _read_text(root / relpath, relpath)
-    lines = tuple(text.split("\n"))
+def _prose_line_flags(lines: Sequence[str]) -> tuple[tuple[bool, ...], int]:
+    """Which lines are prose, and how many are fence or fenced.
 
-    # The fence state machine treats ``` and ~~~ as one delimiter and does not
-    # remember which one opened a block, so an unpaired or mixed fence would
-    # silently skip the rest of the document.  Measured across all 537 subject
-    # documents no file has an odd fence count, so this does not bite today —
-    # but the failure mode is silent under-reporting, not a visible error.
+    The fence state machine treats ``` and ~~~ as one delimiter and does not
+    remember which one opened a block, so an unpaired or mixed fence would
+    silently skip the rest of the document.  Measured across all 537 subject
+    documents no file has an odd fence count, so this does not bite today —
+    but the failure mode is silent under-reporting, not a visible error.
+
+    Every reader of a document goes through here.  A fenced line is a sample of
+    something, not a claim about this repository, and that has to hold for the
+    document being scanned *and* for the document being scanned into: a
+    ``## Ghost`` heading inside a code sample is not an anchor anyone can link
+    to, and an ``<a href>`` inside one is not an anchor this document offers.
+    """
     inside_fence = False
-    prose_flags: list[bool] = []
+    flags: list[bool] = []
     fenced_lines = 0
     for line in lines:
         if _FENCE_RE.match(line):
             inside_fence = not inside_fence
-            prose_flags.append(False)
+            flags.append(False)
             fenced_lines += 1
             continue
-        prose_flags.append(not inside_fence)
+        flags.append(not inside_fence)
         if inside_fence:
             fenced_lines += 1
+    return tuple(flags), fenced_lines
+
+
+def parse_document(root: Path, relpath: str) -> ParsedDocument:
+    text = _read_text(root / relpath, relpath)
+    lines = tuple(text.split("\n"))
+
+    prose_flags, fenced_lines = _prose_line_flags(lines)
 
     contexts = _build_contexts(lines, prose_flags)
 
     tokens: list[Token] = []
-    section_references: list[tuple[int, str, str]] = []
+    section_references: list[tuple[int, str, str, str]] = []
     for index, line in enumerate(lines):
         if not prose_flags[index]:
             continue
@@ -828,10 +848,13 @@ def parse_document(root: Path, relpath: str) -> ParsedDocument:
             )
         tokens.extend(code_tokens)
         for section_match in _SECTION_RE.finditer(line):
-            document_token = _preceding_markdown_token(code_tokens, section_match.start())
-            if document_token is None:
+            preceding = _preceding_markdown_token(code_tokens, section_match.start())
+            if preceding is None:
                 continue
-            section_references.append((line_number, document_token, section_match.group("section")))
+            document_token, token_kind = preceding
+            section_references.append(
+                (line_number, document_token, token_kind, section_match.group("section"))
+            )
 
     return ParsedDocument(
         relpath=relpath,
@@ -843,21 +866,25 @@ def parse_document(root: Path, relpath: str) -> ParsedDocument:
     )
 
 
-def _preceding_markdown_token(tokens: Sequence[Token], column: int) -> str | None:
-    """The nearest document named to the left of a ``§`` marker.
+def _preceding_markdown_token(
+    tokens: Sequence[Token], column: int
+) -> tuple[str, str] | None:
+    """The nearest document named to the left of a ``§`` marker, and its kind.
 
     Sorting matters: tokens are collected inline-code-first and then
     link-target, so list order is not left-to-right order, and a line naming
-    both would otherwise attribute the section to the wrong document.
+    both would otherwise attribute the section to the wrong document.  The kind
+    travels with the token because it decides how the reference resolves —
+    link syntax follows the citing document, prose does not.
     """
-    best: str | None = None
+    best: tuple[str, str] | None = None
     for token in sorted(tokens, key=lambda item: item.column):
         if token.column - 1 > column:
             continue
         normalized = _normalize_path_token(token.text)
         if normalized is None or not normalized.endswith(".md"):
             continue
-        best = normalized
+        best = (normalized, token.kind)
     return best
 
 
@@ -928,14 +955,23 @@ def _normalize_relative(token: str) -> str | None:
     return "/".join(parts) + ("/" if token.endswith("/") else "")
 
 
-def _document_candidates(relpath: str, token: str) -> tuple[str, ...]:
-    """Where a Markdown link in ``relpath`` may point, most likely first.
+def _document_candidates(
+    relpath: str, token: str, *, allow_root_fallback: bool
+) -> tuple[str, ...]:
+    """Where a reference in ``relpath`` may point, most likely first.
 
-    Markdown resolves a relative link against the *citing* document, so that
-    order comes first; the repository root is kept as a fallback because this
-    repository's prose also cites root-relative paths in link syntax.  Getting
-    the order backwards silently resolves ``docs/GUIDE.md`` → ``PLAN.md`` to
-    the root file and misses a real dead link to ``docs/PLAN.md``.
+    A Markdown link resolves against the *citing* document, full stop: a
+    browser reading ``docs/GUIDE.md`` follows ``[plan](PLAN.md)`` to
+    ``docs/PLAN.md`` and shows a 404 if that file is missing.  Quietly falling
+    back to the root file swallows exactly that dead link, so a link with no
+    root-relative shape gets one candidate and no second chance.
+
+    Prose is the other half, and it is not a link.  ``PROJECT_LOCK.md §1A``
+    or ``docs/项目说明/00_master_roadmap.md`` written inside a nested document
+    names a repository path, not a sibling file — reading those relatively
+    would manufacture dead references out of ordinary sentences.  So the caller
+    decides: link syntax without a repository-root shape gets the strict rule,
+    everything else keeps the root as a fallback behind the local candidate.
     """
     candidates: list[str] = []
     parent = PurePosixPath(relpath).parent
@@ -943,6 +979,8 @@ def _document_candidates(relpath: str, token: str) -> tuple[str, ...]:
         local = _normalize_relative(f"{parent}/{token}")
         if local is not None:
             candidates.append(local)
+        if not allow_root_fallback:
+            return tuple(candidates)
     root_relative = _normalize_relative(token)
     if root_relative is not None and root_relative not in candidates:
         candidates.append(root_relative)
@@ -1180,8 +1218,14 @@ class DocumentScanner:
             )
         return self._heading_cache[relpath]
 
-    def _resolve_document(self, relpath: str, token: str) -> str | None:
-        for candidate in _document_candidates(relpath, token):
+    def _resolve_document(self, relpath: str, token: str, kind: str) -> str | None:
+        # Link syntax gets Markdown's own rule; a repository-root shape (the
+        # token starts at a tracked top-level directory) is unambiguous either
+        # way, and prose keeps the root fallback.
+        allow_root_fallback = kind != "link_target" or self._is_repo_path_token(token)
+        for candidate in _document_candidates(
+            relpath, token, allow_root_fallback=allow_root_fallback
+        ):
             self._consult(candidate)
             if (self.root / candidate).is_file():
                 return candidate
@@ -1411,7 +1455,7 @@ class DocumentScanner:
             # resolved to one file, so it is not a format-explicit reference.
             self.suppressions.not_format_explicit += 1
             return None
-        resolved = self._resolve_document(relpath, target)
+        resolved = self._resolve_document(relpath, target, token.kind)
         if resolved is None:
             if self._suppressed_by_context(context):
                 self.suppressions.context_marker += 1
@@ -1455,9 +1499,11 @@ class DocumentScanner:
         self, relpath: str, document_class: str, document: ParsedDocument
     ) -> list[Finding]:
         findings: list[Finding] = []
-        for line_number, target_token, section in document.section_references:
+        for line_number, target_token, target_kind, section in document.section_references:
             context = document.contexts[line_number - 1]
-            resolved = self._resolve_document(relpath, target_token.partition("#")[0])
+            resolved = self._resolve_document(
+                relpath, target_token.partition("#")[0], target_kind
+            )
             if resolved is None:
                 continue
             anchors = self._anchors(resolved)
@@ -1500,9 +1546,12 @@ class AnchorIndex:
 
 def _anchor_index(text: str) -> AnchorIndex:
     lines = text.split("\n")
+    prose_flags, _fenced = _prose_line_flags(lines)
     slugs: set[str] = set()
     sections: set[str] = set()
-    for line in lines:
+    for index, line in enumerate(lines):
+        if not prose_flags[index]:
+            continue
         match = _HEADING_RE.match(line)
         if match is None:
             continue
@@ -1512,19 +1561,36 @@ def _anchor_index(text: str) -> AnchorIndex:
     return AnchorIndex(
         slugs=frozenset(slugs),
         sections=frozenset(sections),
-        checkable=_anchors_are_checkable(lines, text),
+        checkable=_anchors_are_checkable(lines, prose_flags),
     )
 
 
-def _anchors_are_checkable(lines: Sequence[str], text: str) -> bool:
-    if "<a " in text or "{#" in text:
-        return False
-    for index in range(1, len(lines)):
-        previous = lines[index - 1]
-        if not previous.strip() or _HEADING_RE.match(previous):
+def _anchors_are_checkable(lines: Sequence[str], prose_flags: Sequence[bool]) -> bool:
+    """May this document's anchors be judged at all?
+
+    Only ATX headings are modelled, so anything that mints an anchor target by
+    another route — a hand-written HTML ``id``/``name``, an attribute block, a
+    Setext heading — means there are targets this scanner cannot see, and the
+    honest answer becomes "this document exists" and nothing more.  The probe
+    stays deliberately generous, because a missed dead anchor costs nothing and
+    a false one costs the reader's trust in every other finding: any tag with
+    an ``id``, in any case, is enough.  It is also fence-aware, for the same
+    reason the anchor index is — HTML shown inside a code sample is not markup
+    this document offers, and treating it as such would hand every document
+    with an HTML example a blanket exemption.
+    """
+    for index, line in enumerate(lines):
+        if not prose_flags[index]:
             continue
-        underline = lines[index].strip()
-        if len(underline) >= 3 and _SETEXT_UNDERLINE_RE.match(lines[index]):
+        if _HTML_ANCHOR_RE.search(line) or "{#" in line:
+            return False
+        if index == 0:
+            continue
+        previous = lines[index - 1]
+        if not prose_flags[index - 1] or not previous.strip() or _HEADING_RE.match(previous):
+            continue
+        underline = line.strip()
+        if len(underline) >= 3 and _SETEXT_UNDERLINE_RE.match(line):
             return False  # a Setext heading, which this scanner does not model
     return True
 

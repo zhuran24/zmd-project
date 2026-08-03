@@ -353,6 +353,88 @@ def test_setext_headings_switch_off_anchor_checking_but_not_missing_document_che
     assert flags(report["candidates"]) == [("dead_doc_anchor", "GUIDE.md", "PLAN.md#x")]
 
 
+def test_a_heading_inside_a_fenced_block_is_not_an_anchor(tmp_path: Path) -> None:
+    """A ``## Ghost`` line inside a code sample is sample text, not a heading.
+
+    Counting it produces a false negative in the quietest possible way: the
+    dead fragment simply never gets reported.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "HISTORY.md": "# History\n\n```markdown\n## Ghost\n```\n\n## 1. real\n",
+            "GUIDE.md": "# Guide\n\nSee [the record](HISTORY.md#ghost).\n",
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [("dead_doc_anchor", "GUIDE.md", "HISTORY.md#ghost")]
+    assert report["candidates"][0]["signals"] == ["referenced_heading_anchor_does_not_exist"]
+
+
+def test_a_section_number_inside_a_fenced_block_is_not_a_section_anchor(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={
+            "HISTORY.md": "# History\n\n```\n## 9Z. sample\n```\n\n## 1. real\n",
+            "GUIDE.md": "# Guide\n\nBoundary in `HISTORY.md` §9Z.\n",
+        },
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "HISTORY.md §9Z")
+    ]
+
+
+def test_an_html_anchor_inside_a_fenced_block_does_not_switch_anchor_checking_off(
+    tmp_path: Path,
+) -> None:
+    """An ``<a href>`` in a code sample is not an anchor this document offers.
+
+    Treating it as one hands any document that shows HTML in a fence a blanket
+    exemption, so every real dead anchor in it disappears.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "HISTORY.md": '# History\n\n```html\n<a href="https://example.invalid">x</a>\n```\n',
+            "GUIDE.md": "# Guide\n\nSee [the record](HISTORY.md#no-such-heading).\n",
+        },
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "HISTORY.md#no-such-heading")
+    ]
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        '<A id="legacy">legacy</A>',
+        '<a name="legacy"></a>',
+        '<span id="legacy">legacy</span>',
+        '<div ID="legacy"></div>',
+        "## Legacy {#legacy}",
+    ],
+)
+def test_a_hand_written_html_anchor_switches_anchor_checking_off(
+    tmp_path: Path, markup: str
+) -> None:
+    """The probe is deliberately generous: any anchor it cannot model silences it.
+
+    Case and tag name are not the point — an ``id`` attribute anywhere means
+    the document offers targets this scanner does not see, and answering
+    "that anchor does not exist" would then be a false positive.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "HISTORY.md": f"# History\n\n{markup}\n\n## 1. real\n",
+            "GUIDE.md": "# Guide\n\nSee [the record](HISTORY.md#legacy).\n",
+        },
+    )
+    assert build(root)["candidates"] == []
+
+
 def test_a_relative_link_resolves_against_the_citing_document_before_the_root(
     tmp_path: Path,
 ) -> None:
@@ -368,6 +450,51 @@ def test_a_relative_link_resolves_against_the_citing_document_before_the_root(
     report = build(root)
     assert flags(report["candidates"]) == [("dead_doc_anchor", "docs/GUIDE2.md", "PLAN.md §1")]
     assert report["candidates"][0]["evidence"]["detail"]["target"] == "docs/PLAN.md"
+
+
+def test_a_relative_link_whose_local_target_is_missing_is_dead_and_does_not_reach_the_root(
+    tmp_path: Path,
+) -> None:
+    """Standard Markdown resolves a link against the citing document — only.
+
+    Falling back to the repository root when the local target is missing means
+    the scanner silently answers a different question than the reader's
+    browser does, and swallows exactly the dead link a reader would hit.
+    """
+    root = make_repo(
+        tmp_path,
+        registry=_docs_registry(),
+        documents={
+            "PLAN.md": "# Plan\n\n## 1. root only\n",
+            "docs/GUIDE2.md": "# Nested guide\n\nSee [the plan](PLAN.md#1-root-only).\n",
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_doc_anchor", "docs/GUIDE2.md", "PLAN.md#1-root-only")
+    ]
+    assert report["candidates"][0]["signals"] == ["referenced_document_does_not_exist"]
+    assert report["candidates"][0]["evidence"]["detail"]["target"] == "PLAN.md"
+
+
+def test_a_prose_mention_of_a_root_document_still_resolves_against_the_root(
+    tmp_path: Path,
+) -> None:
+    """Prose is not a link, so Markdown's relative rule does not apply to it.
+
+    ``PROJECT_LOCK.md §1A`` written inside a nested document names the file at
+    the repository root; reading it as a sibling of the citing document would
+    manufacture a dead reference out of ordinary prose.
+    """
+    root = make_repo(
+        tmp_path,
+        registry=_docs_registry(),
+        documents={
+            "PLAN.md": "# Plan\n\n## 1. root only\n",
+            "docs/GUIDE2.md": "# Nested guide\n\nRuling recorded in `PLAN.md` §1.\n",
+        },
+    )
+    assert build(root)["candidates"] == []
 
 
 def test_a_parent_relative_markdown_link_is_scanned(tmp_path: Path) -> None:
