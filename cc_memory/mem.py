@@ -28,6 +28,23 @@ MEM_DIR = Path(__file__).resolve().parent
 DEFAULT_DB = MEM_DIR / "memory.db"
 DEFAULT_EXPORT = MEM_DIR / "exports" / "MEMORY.md"
 SCHEMA_VERSION = 3
+# --- cross-layer find -------------------------------------------------------
+# Three memory layers, three stores, and until 2026-08-03 no way to ask "which
+# layer is this id in?" — the 2026-08-03 usage census counted 22 `unknown node`
+# dead ends plus one 40-minute hunt for a card that lived one layer over.
+# `mem.py find <id>` walks all three; `read`/`search` misses point at it.
+VNEXT_CARDS_DIR = ROOT / "cc_memory_vnext" / "cards"
+# The file-memory layer is Claude Code's own auto-memory. It does not live in the
+# repo: CC derives the directory from the project path (/home/zhuran24/zmd-pj ->
+# -home-zhuran24-zmd-pj) and exposes no lookup API, so the path is a constant
+# here. Move the repo or change machines and this line must move with it; a
+# missing directory only costs `find` one layer, it is never an error.
+FILE_MEMORY_DIR = Path.home() / ".claude" / "projects" / "-home-zhuran24-zmd-pj" / "memory"
+CROSS_LAYER_FIND_HINT = (
+    "提示: 记忆分三层各有各的库,这一层没有 != 没记过 —— "
+    "跨层查找: python cc_memory/mem.py find <id>"
+)
+FIND_ID_RE = re.compile(r"^\s*id\s*:\s*['\"]?([A-Za-z0-9][\w.-]*)", re.MULTILINE)
 HARD_EDGE_TYPES = {"DEPENDS_ON", "DERIVED_FROM", "SUPERSEDES", "CONTRADICTS"}
 ALL_EDGE_TYPES = HARD_EDGE_TYPES | {"MENTIONS", "RELATED_TO", "SUPPORTS", "PROJECTS_TO"}
 MAX_EXPORT_BYTES = 24_576
@@ -2510,6 +2527,7 @@ def cmd_search(args: argparse.Namespace) -> int:
         print(f"{typ}:{node_id} — {s}")
     if not rows:
         print("no matches")
+        print(CROSS_LAYER_FIND_HINT)
     return 0
 
 
@@ -2519,6 +2537,7 @@ def cmd_read(args: argparse.Namespace) -> int:
     resolved = resolve_node(con, args.node)
     if not resolved:
         print(f"unknown node: {args.node}")
+        print(CROSS_LAYER_FIND_HINT)
         return 1
     typ, node_id = resolved
     print(f"# {typ}:{node_id}")
@@ -2555,6 +2574,86 @@ def cmd_read(args: argparse.Namespace) -> int:
         print(f"- d{depth} {st}:{sid} via {e['source_type']}:{e['source_id']} --{e['edge_type']}--> {e['target_type']}:{e['target_id']}")
     if len(impacts) > args.limit:
         print(f"... {len(impacts) - args.limit} more")
+    return 0
+
+
+def _find_display_path(path: Path) -> str:
+    """Repo-relative when inside the repo, absolute otherwise (file memory lives outside)."""
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def _find_in_cc_memory(db: Path, needle: str, limit: int) -> list[tuple[str, str, str]]:
+    """Read-only id lookup in the SQLite layer. Never opens the db for writing."""
+    hits: list[tuple[str, str, str]] = []
+    db = Path(db)
+    if not db.exists():
+        return hits
+    con = connect_readonly(db)
+    try:
+        resolved = resolve_node(con, needle)
+        if resolved:
+            typ, node_id = resolved
+            hits.append(("cc_memory", f"{typ}:{node_id}", f"python cc_memory/mem.py read {node_id} --body"))
+        like = f"%{norm(needle)}%"
+        for table, typ in (("facts", "fact"), ("entries", "entry")):
+            rows = con.execute(f"SELECT id FROM {table} WHERE id LIKE ? ORDER BY id LIMIT ?", (like, limit))
+            for row in rows:
+                locator = f"{typ}:{row['id']}"
+                if all(hit[1] != locator for hit in hits):
+                    hits.append(("cc_memory", locator, f"python cc_memory/mem.py read {row['id']} --body"))
+    finally:
+        con.close()
+    return hits
+
+
+def _find_in_markdown_dir(directory: Path, needle: str, layer: str, limit: int) -> list[tuple[str, str, str]]:
+    """Match `*.md` by filename stem or by a frontmatter `id:` line."""
+    hits: list[tuple[str, str, str]] = []
+    directory = Path(directory)
+    if not directory.is_dir():
+        return hits
+    wanted = norm(needle)
+    for path in sorted(directory.glob("*.md")):
+        stem = path.stem.lower()
+        matched = wanted == stem or wanted in stem
+        if not matched:
+            try:
+                head = path.read_text(encoding="utf-8", errors="replace")[:2048]
+            except OSError:
+                continue
+            match = FIND_ID_RE.search(head)
+            matched = bool(match) and match.group(1).lower() == wanted
+        if matched:
+            hits.append((layer, _find_display_path(path), f"读全文: cat {_find_display_path(path)}"))
+        if len(hits) >= limit:
+            break
+    return hits
+
+
+def cmd_find(args: argparse.Namespace) -> int:
+    """Locate an id across all three memory layers (read-only, writes nothing)."""
+    needle = str(args.node).strip()
+    if not needle:
+        print("find: empty id")
+        return 1
+    hits: list[tuple[str, str, str]] = []
+    hits.extend(_find_in_cc_memory(args.db, needle, args.limit))
+    hits.extend(_find_in_markdown_dir(Path(args.cards_dir), needle, "cc_memory_vnext", args.limit))
+    hits.extend(_find_in_markdown_dir(Path(args.file_memory_dir), needle, "file_memory", args.limit))
+    if not hits:
+        print(f"find: no layer has {needle!r}")
+        print("  查过: cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 memory/*.md")
+        print(f"  文件记忆目录: {args.file_memory_dir}")
+        print("  换个词试全文搜索: python cc_memory/mem.py search <关键词>")
+        return 1
+    print(f"find: {len(hits)} hit(s) for {needle!r}")
+    width = max(len(hit[0]) for hit in hits)
+    for layer, locator, how in hits:
+        print(f"- {layer.ljust(width)}  {locator}")
+        print(f"    {how}")
     return 0
 
 
@@ -3172,6 +3271,16 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--include-soft", action="store_true")
     sp.add_argument("--limit", type=int, default=50)
     sp.set_defaults(func=cmd_read)
+
+    sp = sub.add_parser(
+        "find",
+        help="跨层定位一个 id: cc_memory 节点 / vnext cards/*.md / 文件记忆 memory/*.md(只读)",
+    )
+    sp.add_argument("node", help="节点 id、卡片 id 或文件名片段")
+    sp.add_argument("--cards-dir", type=Path, default=VNEXT_CARDS_DIR)
+    sp.add_argument("--file-memory-dir", type=Path, default=FILE_MEMORY_DIR)
+    sp.add_argument("--limit", type=int, default=20, help="每层最多报几条")
+    sp.set_defaults(func=cmd_find)
 
     sp = sub.add_parser("impact")
     sp.add_argument("node")
