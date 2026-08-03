@@ -202,8 +202,12 @@ cap = max over pairs with both sides non-empty of max(n_X, n_Y)
 
 **固定家具**（不是决策，承自 W0 framework）：46 个 boundary_storage_port（左基线 23 个
 anchor `(0,1+3k)` 1×3、下基线 23 个 anchor `(1+3k,0)` 3×1，零间隙）+ 1 个 protocol_core
-（anchor `(3,59)`、9×9、orientation 1 = framework 的 `inputs_east_west`）。共 219 格，`(0,0)` 自由。
+（anchor `(3,59)`、9×9、orientation 1 = framework 的 `inputs_east_west`）。共 219 格。
 其口前格 46 + 20 = 66 格由 `R-CORE-FRONT-RESERVE` 全部留空。
+
+`(0,0)` 不被任何固定家具占，但两条零间隙基线把它的两个邻格都占满，因此它是一个**永久孤立的
+自由格**——空板的 body-free 空间就已经是 2 个连通分量。连通性判据据此写成「全部 active front +
+reserved 口前格 + 孔洞落在**同一个**分量里」，而不是「全图只有一个分量」。
 
 **十个 region class**（按 (fixed mask, reserved mask) 的平移等价类归并；`usable = 196 − fixed − reserved`）：
 

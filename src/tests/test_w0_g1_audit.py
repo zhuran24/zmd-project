@@ -349,6 +349,77 @@ def test_unusable_input_is_a_distinct_exit_code(tmp_path: Path) -> None:
     assert not (tmp_path / "out.json").exists()
 
 
+def test_real_w0_profile_agrees_with_the_region_model() -> None:
+    """[26c] The audit's own 70x70 construction equals the region model's.
+
+    Two independently written derivations of the same pinned framework: the audit
+    regenerates the fixed furniture from ``W0_PINNED_SPEC``, the region model
+    builds it from the framework description.  They must agree cell for cell --
+    219 body cells and 66 reserved front cells -- or one of them is wrong.
+
+    Also pins the empty-board baseline stage B will start from: with no
+    placements the only complaints are the missing census and the missing hole,
+    and cell (0,0) is a permanently isolated free cell (the zero-gap boundary
+    baselines wall it off), which is why the connectivity check requires the
+    *anchors* to share one component rather than requiring a single component.
+    """
+    import g1_region_model as rm
+
+    spec = fva.W0_PINNED_SPEC
+    geometry = {
+        "schema": fva.GEOMETRY_SCHEMA,
+        "authority": {
+            "is_authoritative": False,
+            "carries_bound": False,
+            "ledger_effect": "none",
+        },
+        "layout_profile": {
+            "profile_id": fva.W0_PROFILE_ID,
+            "grid": [70, 70],
+            "fixed_furniture_spec": spec,
+        },
+        "fixed_furniture": fva.regenerate_fixed_furniture(spec, (70, 70)),
+        "placements": [],
+        "power_poles": [],
+        "hole": None,
+    }
+    rules = json.loads((PROJECT_ROOT / "rules/canonical_rules.json").read_text(encoding="utf-8"))
+    instances = json.loads(
+        (PROJECT_ROOT / "data/preprocessed/mandatory_exact_instances.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    report = fva.audit(geometry, rules, instances)
+
+    audit_cells = {
+        (item["anchor"][0] + dx, item["anchor"][1] + dy)
+        for item in geometry["fixed_furniture"]
+        for dx in range(item["size"][0])
+        for dy in range(item["size"][1])
+    }
+    audit_fronts = {
+        (cell[0], cell[1])
+        for item in geometry["fixed_furniture"]
+        for cell in item["front_cells"]
+    }
+    assert audit_cells == set(rm.FIXED_CELLS)
+    assert len(audit_cells) == 219
+    assert audit_fronts == set(rm.FIXED_FRONT_CELLS)
+    assert len(audit_fronts) == 66
+
+    assert report["issue_codes"] == ["class_census_mismatch", "hole_invalid"]
+    assert report["summary"]["fixed_furniture"] == 47
+    assert report["summary"]["reserved_front_cells"] == 66
+    assert report["summary"]["free_space"] == {
+        "components": 2,          # the board plus the walled-off corner cell
+        "size": 4900 - 219,
+        "anchor_components": 1,
+    }
+    assert sum(
+        row["count"] for row in report["summary"]["class_table"].values()
+    ) == 219
+
+
 def test_class_table_derivation_agrees_with_the_line_module() -> None:
     """[26b] The audit's independent re-derivation reproduces the real table.
 
