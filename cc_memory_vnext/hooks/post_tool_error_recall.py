@@ -35,6 +35,36 @@ def response_text(payload: dict) -> str:
     return text[-RESPONSE_TAIL_CHARS:]
 
 
+def build_error_blob(payload: dict) -> str:
+    """The exact text card `error_regex` patterns are matched against.
+
+    Shape, in order, and cards depend on it literally:
+
+        # cwd: <payload.cwd>        <- omitted when the payload has no cwd
+        $ <tool_input.command>      <- omitted when the tool had no command
+        <tail of tool_response>
+
+    Why the command line (2026-07-03 review): a bare phrase like "no matches"
+    is emitted by half the tools in the repo, so cards anchor on the command
+    that produced it.
+
+    Why the cwd line (2026-08-03 review): the command alone cannot say *which
+    working copy* the work happened in — `python cc_memory/mem.py search x` is
+    byte-identical in the main repo and inside `.claude/worktrees/…`, and that
+    distinction is the only thing the feature-branch-stale card can actually
+    tell apart. Changing this shape means changing every card anchored on it;
+    `tests/test_error_recall_triggers.py` pins both directions.
+    """
+    errors_text = response_text(payload)
+    if not errors_text:
+        return ""
+    tool_input = payload.get("tool_input") or {}
+    command = str(tool_input.get("command") or "") if isinstance(tool_input, dict) else ""
+    cwd = str(payload.get("cwd") or "")
+    header = f"# cwd: {cwd}\n" if cwd else ""
+    return f"{header}$ {command}\n{errors_text}" if command else f"{header}{errors_text}"
+
+
 def load_ledger(path: Path) -> set[str]:
     try:
         return set(json.loads(path.read_text(encoding="utf-8")))
@@ -58,15 +88,11 @@ def main() -> int:
     try:
         import zmem
 
-        errors_text = response_text(payload)
-        if not errors_text:
+        error_blob = build_error_blob(payload)
+        if not error_blob:
             return 0
-
         tool_input = payload.get("tool_input") or {}
         command = str(tool_input.get("command") or "") if isinstance(tool_input, dict) else ""
-        # 把命令前缀拼进 errors 文本,让卡的 error_regex 能锚定命令语境
-        # (例: mem\.py[\s\S]*no match),避免裸短语误触发(2026-07-03 审查)。
-        error_blob = (f"$ {command}\n{errors_text}" if command else errors_text)
 
         index = zmem.load_index(zmem.DEFAULT_INDEX_PATH)
 
