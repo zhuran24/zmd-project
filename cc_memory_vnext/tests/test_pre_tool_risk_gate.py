@@ -16,6 +16,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import tempfile
 import time
 import types
 import uuid
@@ -237,16 +238,25 @@ def test_known_safe_shapes_not_over_blocked(rg, cmd):
     assert _shell(rg, cmd) == ("allow", "no-dangerous-shape")
 
 
-def test_directory_pathspec_is_broad(rg, tmp_path):
-    """git commit -- <目录> 会打包目录下别人的 staged 残留 → 按宽 pathspec 查。"""
-    (tmp_path / "src").mkdir()
-    _probe(rg, procs=1, recent=False, staged=["src/leftover.py"])
-    rg._MULTI_SESSION_CACHE = None
-    rg._captured.clear()
-    try:
-        rg.check_shell("git commit -m x -- src", "t-dir", str(tmp_path), "X:\\f.jsonl")
-    except _Exit:
-        pass
+def test_directory_pathspec_is_broad(rg):
+    """git commit -- <目录> 会打包目录下别人的 staged 残留 → 按宽 pathspec 查。
+
+    cwd 必须落在 `.claude/worktrees/` 之外:gate 对 worktree 内的提交整体放行
+    (`in_worktree`,hooks/pre_tool_risk_gate.py),而 pytest 的 tmp_path 跟着
+    `--basetemp` 走——从一个 worktree 里跑、basetemp 又设在该 worktree 下时,
+    tmp_path 自己就带上了 `/.claude/worktrees/`,这条用例会假红。用系统临时目录
+    把 cwd 与 basetemp 解耦。
+    """
+    with tempfile.TemporaryDirectory() as neutral:
+        cwd = Path(neutral)
+        (cwd / "src").mkdir()
+        _probe(rg, procs=1, recent=False, staged=["src/leftover.py"])
+        rg._MULTI_SESSION_CACHE = None
+        rg._captured.clear()
+        try:
+            rg.check_shell("git commit -m x -- src", "t-dir", str(cwd), "X:\\f.jsonl")
+        except _Exit:
+            pass
     decision, got = rg._captured["out"]
     assert decision == "deny" and got.startswith("git-commit-stale-staged")
 
