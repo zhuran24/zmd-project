@@ -28,6 +28,23 @@ MEM_DIR = Path(__file__).resolve().parent
 DEFAULT_DB = MEM_DIR / "memory.db"
 DEFAULT_EXPORT = MEM_DIR / "exports" / "MEMORY.md"
 SCHEMA_VERSION = 3
+# --- cross-layer find -------------------------------------------------------
+# Three memory layers, three stores, and until 2026-08-03 no way to ask "which
+# layer is this id in?" — the 2026-08-03 usage census counted 22 `unknown node`
+# dead ends plus one 40-minute hunt for a card that lived one layer over.
+# `mem.py find <id>` walks all three; `read`/`search` misses point at it.
+VNEXT_CARDS_DIR = ROOT / "cc_memory_vnext" / "cards"
+# The file-memory layer is Claude Code's own auto-memory. It does not live in the
+# repo: CC derives the directory from the project path (/home/zhuran24/zmd-pj ->
+# -home-zhuran24-zmd-pj) and exposes no lookup API, so the path is a constant
+# here. Move the repo or change machines and this line must move with it; a
+# missing directory only costs `find` one layer, it is never an error.
+FILE_MEMORY_DIR = Path.home() / ".claude" / "projects" / "-home-zhuran24-zmd-pj" / "memory"
+CROSS_LAYER_FIND_HINT = (
+    "提示: 记忆分三层各有各的库,这一层没有 != 没记过 —— "
+    "跨层查找: python cc_memory/mem.py find <id>"
+)
+FIND_ID_RE = re.compile(r"^\s*id\s*:\s*['\"]?([A-Za-z0-9][\w.-]*)", re.MULTILINE)
 HARD_EDGE_TYPES = {"DEPENDS_ON", "DERIVED_FROM", "SUPERSEDES", "CONTRADICTS"}
 ALL_EDGE_TYPES = HARD_EDGE_TYPES | {"MENTIONS", "RELATED_TO", "SUPPORTS", "PROJECTS_TO"}
 MAX_EXPORT_BYTES = 24_576
@@ -246,7 +263,14 @@ def connect(db: Path = DEFAULT_DB) -> sqlite3.Connection:
 
 
 def connect_readonly(db: Path = DEFAULT_DB) -> sqlite3.Connection:
-    """Open the memory DB for diagnostics that must not mutate SQLite state."""
+    """Open the memory DB for diagnostics that must not mutate SQLite state.
+
+    `mode=ro` blocks writes to the *data*, not to the filesystem: opening a
+    WAL-mode database this way still creates `memory.db-wal` / `memory.db-shm`
+    beside it, and on a read-only directory it fails outright with "attempt to
+    write a readonly database". Callers that need a genuinely zero-footprint
+    read want `connect_immutable()`.
+    """
     db = Path(db)
     if not db.exists():
         raise SystemExit(f"memory db not found: {db}")
@@ -254,6 +278,76 @@ def connect_readonly(db: Path = DEFAULT_DB) -> sqlite3.Connection:
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
     return con
+
+
+def connect_immutable(db: Path) -> sqlite3.Connection:
+    """Open the memory DB with zero filesystem footprint (`mode=ro&immutable=1`).
+
+    Why `immutable=1` and not a bare `mode=ro`, measured 2026-08-03 on a
+    WAL-mode database matching production shape:
+
+    * `mode=ro`   -> creates `memory.db-wal` (0 B) and `memory.db-shm` (32 KB);
+                    on a 0555 directory it raises OperationalError
+                    "attempt to write a readonly database".
+    * `immutable=1` -> no sidecar files at all, and it reads fine out of a 0555
+                    directory. SQLite is told the file cannot change, so it skips
+                    locking and the shared-memory index entirely.
+
+    Why `mode=ro` is nevertheless kept in the URI (2026-08-03 review, measured):
+    `immutable=1` **alone does not imply read-only at open time**. Pointed at a
+    path that does not exist it happily *creates* a 0-byte file and answers
+    `SELECT 1`; `mode=ro&immutable=1` raises "unable to open database file" and
+    creates nothing. `_find_in_cc_memory` checks `exists()` first, but that is a
+    TOCTOU window — a purely read-only locator must not be able to write a file
+    even if it loses the race.
+
+    There is **no fallback opener**. An earlier version fell back to a bare
+    `mode=ro` when the immutable open failed, which put the sidecar writes and
+    the read-only-directory failure right back — exactly what this function
+    exists to avoid. If the immutable open fails the error propagates:
+    `cmd_find` degrades that one layer, says so, and marks the whole result as
+    degraded so a miss is not read as "not there".
+
+    The remaining tradeoff is real and one-directional: `immutable=1` skips the
+    WAL, so rows a *concurrent writer* has committed but not yet checkpointed
+    are invisible (same probe: the immutable reader saw the checkpointed row
+    only, the `mode=ro` reader saw both). `find` handles that honestly rather
+    than silently — see `live_wal_note()` and `cmd_find`. Anything that must see
+    live writes (`connect()`, or `connect_readonly()` for diagnostics run beside
+    a writer) must not use this opener.
+    """
+    db = Path(db)
+    uri = db.resolve().as_uri() + "?mode=ro&immutable=1"
+    con = sqlite3.connect(uri, uri=True)
+    try:
+        con.execute("SELECT 1")
+    except sqlite3.Error:
+        con.close()
+        raise
+    con.row_factory = sqlite3.Row
+    return con
+
+
+def live_wal_note(db: Path) -> str | None:
+    """Is there a non-empty WAL beside `db` that an immutable read cannot see?
+
+    A cleanly closed SQLite database has no `-wal` file at all (the last
+    connection checkpoints and removes it). A non-empty one means some writer is
+    holding the database open with committed-but-uncheckpointed rows — the exact
+    rows `connect_immutable()` is blind to. That makes "not found" inconclusive,
+    so `find` has to say so out loud.
+    """
+    wal = Path(str(db) + "-wal")
+    try:
+        size = wal.stat().st_size
+    except OSError:
+        return None
+    if size <= 0:
+        return None
+    return (
+        f"cc_memory 层跳过了 live WAL({wal.name} 有 {size} 字节未 checkpoint):"
+        "只读 immutable 打开看不到并发写者刚提交、还没落主库的行"
+    )
 
 
 def jdump(value: Any) -> str:
@@ -2510,6 +2604,7 @@ def cmd_search(args: argparse.Namespace) -> int:
         print(f"{typ}:{node_id} — {s}")
     if not rows:
         print("no matches")
+        print(CROSS_LAYER_FIND_HINT)
     return 0
 
 
@@ -2519,6 +2614,7 @@ def cmd_read(args: argparse.Namespace) -> int:
     resolved = resolve_node(con, args.node)
     if not resolved:
         print(f"unknown node: {args.node}")
+        print(CROSS_LAYER_FIND_HINT)
         return 1
     typ, node_id = resolved
     print(f"# {typ}:{node_id}")
@@ -2555,6 +2651,146 @@ def cmd_read(args: argparse.Namespace) -> int:
         print(f"- d{depth} {st}:{sid} via {e['source_type']}:{e['source_id']} --{e['edge_type']}--> {e['target_type']}:{e['target_id']}")
     if len(impacts) > args.limit:
         print(f"... {len(impacts) - args.limit} more")
+    return 0
+
+
+def _find_display_path(path: Path) -> str:
+    """Repo-relative when inside the repo, absolute otherwise (file memory lives outside)."""
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def _find_in_cc_memory(
+    db: Path, needle: str, limit: int
+) -> tuple[list[tuple[str, str, str]], list[str]]:
+    """Read-only id lookup in the SQLite layer; returns (hits, degradation notes).
+
+    Uses `connect_immutable()` so the lookup leaves nothing behind at all — not
+    even the `-wal`/`-shm` sidecars a plain `mode=ro` open creates, and not even
+    a 0-byte database when the path does not exist — and still works when the
+    directory itself is read-only. See that function for the concurrent-writer
+    tradeoff this buys, and `live_wal_note()` for how we own up to it.
+    """
+    hits: list[tuple[str, str, str]] = []
+    db = Path(db)
+    if not db.exists():
+        return hits, []
+    notes = [note for note in (live_wal_note(db),) if note]
+    con = connect_immutable(db)
+    try:
+        resolved = resolve_node(con, needle)
+        if resolved:
+            typ, node_id = resolved
+            hits.append(("cc_memory", f"{typ}:{node_id}", f"python cc_memory/mem.py read {node_id} --body"))
+        like = f"%{norm(needle)}%"
+        for table, typ in (("facts", "fact"), ("entries", "entry")):
+            rows = con.execute(f"SELECT id FROM {table} WHERE id LIKE ? ORDER BY id LIMIT ?", (like, limit))
+            for row in rows:
+                locator = f"{typ}:{row['id']}"
+                if all(hit[1] != locator for hit in hits):
+                    hits.append(("cc_memory", locator, f"python cc_memory/mem.py read {row['id']} --body"))
+    finally:
+        con.close()
+    return hits, notes
+
+
+def _find_in_markdown_dir(directory: Path, needle: str, layer: str, limit: int) -> list[tuple[str, str, str]]:
+    """Match `*.md` by filename stem or by a frontmatter `id:` line."""
+    hits: list[tuple[str, str, str]] = []
+    directory = Path(directory)
+    if not directory.is_dir():
+        return hits
+    wanted = norm(needle)
+    for path in sorted(directory.glob("*.md")):
+        stem = path.stem.lower()
+        matched = wanted == stem or wanted in stem
+        if not matched:
+            try:
+                head = path.read_text(encoding="utf-8", errors="replace")[:2048]
+            except OSError:
+                continue
+            match = FIND_ID_RE.search(head)
+            matched = bool(match) and match.group(1).lower() == wanted
+        if matched:
+            hits.append((layer, _find_display_path(path), f"读全文: cat {_find_display_path(path)}"))
+        if len(hits) >= limit:
+            break
+    return hits
+
+
+def cmd_find(args: argparse.Namespace) -> int:
+    """Locate an id across all three memory layers (read-only, writes nothing).
+
+    Walking all three layers is the *point* of this command — the 40-minute hunt
+    it exists to prevent was someone looking in one layer, believing the miss,
+    and stopping. So each layer gets its own guard: a layer that blows up
+    degrades to one warning line and the other two still report. A shared
+    try/except would have let a corrupt `memory.db` hide a card that was sitting
+    in `cc_memory_vnext/cards/` the whole time.
+
+    **A degraded miss is not a complete miss** (2026-08-03 review, measured: with
+    a writer holding uncheckpointed rows, `find` printed "no layer has 'x'" for a
+    row that existed). A locator whose whole value is "believe this miss" must
+    never present a partial sweep as a full one, so any layer that failed or that
+    was read with a known blind spot is named, and the miss is labelled
+    inconclusive. The exit code stays 1 either way — 0 would claim a hit that
+    does not exist — but the wording has to be honest about which of the two
+    kinds of miss this was.
+    """
+    needle = str(args.node).strip()
+    if not needle:
+        print("find: empty id")
+        return 1
+    hits: list[tuple[str, str, str]] = []
+    warnings: list[str] = []
+    degraded: list[str] = []
+    layers: list[tuple[str, Any]] = [
+        ("cc_memory", lambda: _find_in_cc_memory(args.db, needle, args.limit)),
+        (
+            "cc_memory_vnext",
+            lambda: (_find_in_markdown_dir(Path(args.cards_dir), needle, "cc_memory_vnext", args.limit), []),
+        ),
+        (
+            "file_memory",
+            lambda: (_find_in_markdown_dir(Path(args.file_memory_dir), needle, "file_memory", args.limit), []),
+        ),
+    ]
+    for label, probe in layers:
+        try:
+            layer_hits, layer_notes = probe()
+        except (Exception, SystemExit) as exc:  # noqa: BLE001 - one bad layer must not hide the others
+            warnings.append(f"! {label} 层查不了,已跳过(其余层照常): {type(exc).__name__}: {exc}")
+            degraded.append(f"{label} 层整层没查成({type(exc).__name__})")
+            continue
+        hits.extend(layer_hits)
+        degraded.extend(layer_notes)
+    for warning in warnings:
+        print(warning)
+    if not hits:
+        if degraded:
+            print(f"find: 未命中 {needle!r},但本次查询有降级层——**未命中不等于不存在**")
+            for note in degraded:
+                print(f"  - 降级: {note}")
+            print("  查过(部分降级): cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 memory/*.md")
+            print(f"  文件记忆目录: {args.file_memory_dir}")
+            print("  复查: 等并发写者 checkpoint/退出后重跑,或修好报错的那一层,再信这个结论")
+            return 1
+        print(f"find: no layer has {needle!r}")
+        print("  查过: cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 memory/*.md")
+        print(f"  文件记忆目录: {args.file_memory_dir}")
+        print("  换个词试全文搜索: python cc_memory/mem.py search <关键词>")
+        return 1
+    print(f"find: {len(hits)} hit(s) for {needle!r}")
+    if degraded:
+        print("  (注意:有降级层,下面这份清单可能不全)")
+        for note in degraded:
+            print(f"  - 降级: {note}")
+    width = max(len(hit[0]) for hit in hits)
+    for layer, locator, how in hits:
+        print(f"- {layer.ljust(width)}  {locator}")
+        print(f"    {how}")
     return 0
 
 
@@ -3172,6 +3408,16 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--include-soft", action="store_true")
     sp.add_argument("--limit", type=int, default=50)
     sp.set_defaults(func=cmd_read)
+
+    sp = sub.add_parser(
+        "find",
+        help="跨层定位一个 id: cc_memory 节点 / vnext cards/*.md / 文件记忆 memory/*.md(只读)",
+    )
+    sp.add_argument("node", help="节点 id、卡片 id 或文件名片段")
+    sp.add_argument("--cards-dir", type=Path, default=VNEXT_CARDS_DIR)
+    sp.add_argument("--file-memory-dir", type=Path, default=FILE_MEMORY_DIR)
+    sp.add_argument("--limit", type=int, default=20, help="每层最多报几条")
+    sp.set_defaults(func=cmd_find)
 
     sp = sub.add_parser("impact")
     sp.add_argument("node")
