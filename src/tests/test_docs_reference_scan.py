@@ -252,15 +252,43 @@ def test_dead_doc_anchor_is_a_candidate_for_a_missing_section_anchor(tmp_path: P
     assert report["candidates"][0]["signals"] == ["referenced_section_anchor_does_not_exist"]
 
 
-def test_dead_commit_hash_is_a_candidate_when_the_commit_cannot_be_resolved(
-    tmp_path: Path,
-) -> None:
+def test_dead_commit_hash_is_reported_but_never_as_a_candidate(tmp_path: Path) -> None:
+    """The flag still fires; it just cannot ask anybody to edit a document.
+
+    This repository is a delivery copy with a rebuilt history, so a hash that
+    ``git`` cannot resolve says nothing about the document citing it.  The
+    finding is kept because the count is worth publishing, and demoted because
+    acting on it would mean deleting the narrative trail.
+    """
     root = make_repo(
         tmp_path,
         documents={"GUIDE.md": "# Guide\n\nLanded in `fee1dead` on main.\n"},
     )
     report = build(root)
-    assert flags(report["candidates"]) == [("dead_commit_hash", "GUIDE.md", "fee1dead")]
+    assert report["candidates"] == []
+    assert flags(report["fyi"]) == [("dead_commit_hash", "GUIDE.md", "fee1dead")]
+    assert report["fyi"][0]["safety_lock"] == {
+        "locked": True,
+        "reasons": [scan.DEAD_COMMIT_HASH_FYI_REASON],
+    }
+    assert report["metadata"]["flag_counts"]["dead_commit_hash"] == 1
+
+
+def test_a_living_document_still_yields_candidates_for_the_other_flags(
+    tmp_path: Path,
+) -> None:
+    """The commit demotion is one flag wide, not a blanket amnesty."""
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": "# Guide\n\nLanded in `fee1dead`; run `scripts/vanished_tool.py`.\n"
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/vanished_tool.py")
+    ]
+    assert flags(report["fyi"]) == [("dead_commit_hash", "GUIDE.md", "fee1dead")]
 
 
 def test_unregistered_document_in_scope_is_caught(tmp_path: Path) -> None:
@@ -687,6 +715,77 @@ def test_every_registered_suppression_marker_actually_suppresses(
     report = build(root)
     assert report["candidates"] == []
     assert report["metadata"]["suppression_counts"]["context_marker"] == 1
+
+
+def test_a_symbol_introduced_as_a_design_target_is_suppressed(tmp_path: Path) -> None:
+    """The exact shape from ``10_phase_1_5_plan.md:12`` on the first real scan.
+
+    ``设计 X() 统一入口`` names something the plan exists in order to build.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": "# Guide\n\n设计 `build_bstate_from_production_inputs()` 统一入口, 覆盖:\n",
+        },
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["planning_context"] == 1
+    assert report["metadata"]["suppression_counts"]["context_marker"] == 0
+
+
+def test_a_path_scheduled_for_a_later_phase_is_suppressed(tmp_path: Path) -> None:
+    """The exact shape from ``17_workflow_telemetry.md:95`` on the first real scan."""
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": (
+                "# Guide\n\naggregate 工具:\n"
+                "- `scripts/analyze_cut_store_telemetry.py` (Phase 1.3 加) — 跨 worker 合并\n"
+            ),
+        },
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["planning_context"] == 1
+
+
+def test_planning_language_on_the_line_above_suppresses_the_reference(
+    tmp_path: Path,
+) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\n下一批计划新增:\n- `scripts/not_yet_here.py`\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["planning_context"] == 1
+
+
+def test_planning_language_further_up_the_paragraph_does_not_suppress(
+    tmp_path: Path,
+) -> None:
+    """The planning window is two lines wide on purpose.
+
+    Removal markers may excuse a whole paragraph, because a paragraph about
+    deletion is unambiguous.  Planning vocabulary is ordinary prose, so a
+    mention three lines up must not launder a genuinely broken reference.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": (
+                "# Guide\n\n这一节记的是计划外的既有实现。\n"
+                "中间隔一行说明。\n"
+                "正文提到 `scripts/vanished_tool.py` 仍在用。\n"
+            ),
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/vanished_tool.py")
+    ]
+    assert report["metadata"]["suppression_counts"]["planning_context"] == 0
 
 
 def test_an_external_artifact_path_is_allowlisted_even_though_it_is_absent(

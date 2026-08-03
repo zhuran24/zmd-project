@@ -32,6 +32,14 @@ format-explicit reference is skipped, a reference whose surrounding paragraph is
 already talking about removal/history is suppressed, and paths that are absent by
 design (external artifacts, generated proof outputs) are allowlisted.
 
+Two further calibrations came from the first real scan (2026-08-03), where all
+eight candidates turned out to be structural rather than defects: a reference
+introduced as planned or scheduled work is suppressed, because naming an unbuilt
+object is what a plan document is *for*; and ``dead_commit_hash`` no longer
+reaches the candidate list at all, because this delivery copy's git history was
+rebuilt and every hash any document cites predates that rebuild.  Both are one
+constant away from being reverted if the premise stops holding.
+
 Threat model and known boundaries
 ---------------------------------
 
@@ -187,6 +195,26 @@ FLAGS = (
     "unregistered_doc",
 )
 
+# ``dead_commit_hash`` is kept, but it can no longer reach the candidate list.
+#
+# This checkout is a delivery copy whose git history was rebuilt, so *every*
+# commit reference in it names an object that was never in this object database.
+# CLAUDE.md states it outright: the hashes cited in the documents "are the
+# original machine's history — narrative clues only, not something ``git show``
+# can resolve".  The first real scan (2026-08-03) produced exactly that shape:
+# all six candidates were pre-rebuild hashes in living documents, none of them a
+# document defect, and rewriting the documents to remove them would destroy the
+# narrative trail on purpose.
+#
+# So the flag is demoted repository-wide rather than deleted.  Deleting it would
+# throw away a count worth publishing, and would also throw away the ability to
+# notice if this premise ever stops holding — a repository with a real history
+# would want the candidates back, and that is one constant away.
+DEAD_COMMIT_HASH_IS_FYI_ONLY = True
+DEAD_COMMIT_HASH_FYI_REASON = (
+    "this_delivery_copy_rebuilt_its_git_history_so_every_cited_commit_is_narrative"
+)
+
 _MATCH_SELECTORS = ("path", "prefix", "glob", "paths")
 
 _STDLIB_MODULES = frozenset(sys.stdlib_module_names)
@@ -218,6 +246,49 @@ _HTML_ANCHOR_RE = re.compile(r"<a\b|<[A-Za-z][A-Za-z0-9-]*\b[^<>]*\bid\s*=", re.
 
 _TRAILING_PUNCTUATION = "，。、；：！？）】」》,;:!?)]}>”’"
 _LEADING_PUNCTUATION = "（【「《([{<“‘"
+
+# Planning context: the reference names something that does not exist *yet*.
+#
+# A plan document is supposed to name objects the repository has not built.
+# "设计 `build_bstate_from_production_inputs()` 统一入口" and
+# "`scripts/analyze_cut_store_telemetry.py` (Phase 1.3 加)" are both correct
+# writing, and both produced a candidate on the first real scan (2026-08-03).
+# Left alone, every planning document is a permanent false-positive generator,
+# which is the one thing that destroys a scanner's usefulness as a baseline.
+#
+# The registry's ``context_suppression_markers`` cover the mirror image — a
+# reference the document itself calls dead — and they match against the whole
+# paragraph plus its heading.  Planning words are far more common than
+# removal words, so they get a deliberately tighter window: the citing line and
+# the line above it, nothing more.  A paragraph that merely mentions planning
+# somewhere does not excuse a broken reference three lines down.
+#
+# These live here rather than in the registry because one of them has to be a
+# pattern, not a substring: "(Phase 1.3 加)" is a family, not a phrase.
+_PLANNING_MARKERS = (
+    "设计",
+    "计划",
+    "规划",
+    "将加",
+    "将新增",
+    "待建",
+    "待加",
+    "待新增",
+    "待实现",
+    "尚未实现",
+    "尚未建",
+    "拟建",
+    "拟加",
+    "拟新增",
+    "planned",
+    "to be added",
+    "to be built",
+    "not yet built",
+)
+# ``(Phase 1.3 加)``, ``Phase 2 新增``, ``phase 1.5+ 起`` — a scheduled addition.
+_PLANNING_PHASE_RE = re.compile(
+    r"phase\s*[0-9]+(?:\.[0-9]+)*\+?\s*(?:加|新增|添加|起|才有|add)", re.IGNORECASE
+)
 
 
 class DocScanError(RuntimeError):
@@ -893,6 +964,31 @@ class ParsedDocument:
     # (line number, document token, token kind, section identifier)
     section_references: tuple[tuple[int, str, str, str], ...]
 
+    def context_at(self, line: int) -> ReferenceContext:
+        """The two suppression windows for a reference on ``line``."""
+        index = line - 1
+        start = max(0, index - 1)
+        return ReferenceContext(
+            block=self.contexts[index],
+            nearby="\n".join(self.lines[start : index + 1]),
+        )
+
+
+@dataclass(frozen=True)
+class ReferenceContext:
+    """What surrounds a reference, in the two widths the two rules use.
+
+    ``block`` is the inherited window — the paragraph plus its nearest heading —
+    and it feeds the registry's removal markers, where a whole paragraph about
+    deletion really does excuse every reference inside it.  ``nearby`` is the
+    citing line and the one above it, and it feeds the planning markers, whose
+    vocabulary is common enough that a paragraph-wide match would suppress
+    references the document never claimed were unbuilt.
+    """
+
+    block: str
+    nearby: str
+
 
 def _read_text(path: Path, relpath: str) -> str:
     try:
@@ -1128,6 +1224,11 @@ def _to_item(finding: Finding, line_text: str) -> dict[str, Any]:
         reasons.append("historical_evidence_class_never_yields_a_change_candidate")
     if finding.document_class == "locked":
         reasons.append("locked_class_is_never_a_scan_subject")
+    if DEAD_COMMIT_HASH_IS_FYI_ONLY and finding.flag == "dead_commit_hash":
+        # Repository-wide demotion, see the constant's comment: the history this
+        # checkout carries is not the history the documents were written against.
+        locked = True
+        reasons.append(DEAD_COMMIT_HASH_FYI_REASON)
     return {
         "item_id": _item_id(finding),
         "layer": LAYER,
@@ -1155,6 +1256,11 @@ def _to_item(finding: Finding, line_text: str) -> dict[str, Any]:
 @dataclass
 class Suppressions:
     context_marker: int = 0
+    # Planning language is counted apart from the registry's removal markers:
+    # they answer different questions ("this is gone" vs "this is not built
+    # yet"), they match against different windows, and a reader tuning either
+    # word list needs to see which one is doing the work.
+    planning_context: int = 0
     external_artifact_allowlist: int = 0
     absent_by_design: int = 0
     not_format_explicit: int = 0
@@ -1170,6 +1276,7 @@ class Suppressions:
     def as_dict(self) -> dict[str, int]:
         return {
             "context_marker": self.context_marker,
+            "planning_context": self.planning_context,
             "external_artifact_allowlist": self.external_artifact_allowlist,
             "absent_by_design": self.absent_by_design,
             "not_format_explicit": self.not_format_explicit,
@@ -1233,9 +1340,25 @@ class DocumentScanner:
                 return
         self.consulted.add(normalized)
 
-    def _suppressed_by_context(self, context: str) -> bool:
-        lowered = context.lower()
-        return any(marker.lower() in lowered for marker in self.markers)
+    def _suppressed_by_context(self, context: ReferenceContext) -> bool:
+        """Whether this reference is excused, counting *why* on the way out.
+
+        Two independent rules, each with its own window and its own counter.
+        Both are pure under-reporting: a suppressed reference is simply not
+        reported, so a marker that fires too eagerly costs coverage, never
+        correctness.
+        """
+        lowered = context.block.lower()
+        if any(marker.lower() in lowered for marker in self.markers):
+            self.suppressions.context_marker += 1
+            return True
+        nearby = context.nearby.lower()
+        if any(marker in nearby for marker in _PLANNING_MARKERS) or _PLANNING_PHASE_RE.search(
+            context.nearby
+        ):
+            self.suppressions.planning_context += 1
+            return True
+        return False
 
     def _path_exists(self, token: str) -> bool:
         if "*" in token or "?" in token:
@@ -1350,7 +1473,7 @@ class DocumentScanner:
         hash_candidates: list[Finding] = []
 
         for token in document.tokens:
-            context = document.contexts[token.line - 1]
+            context = document.context_at(token.line)
             produced = self._scan_token(relpath, document_class, token, context)
             if produced is None:
                 continue
@@ -1364,7 +1487,7 @@ class DocumentScanner:
         return document, findings, hash_candidates
 
     def _scan_token(
-        self, relpath: str, document_class: str, token: Token, context: str
+        self, relpath: str, document_class: str, token: Token, context: ReferenceContext
     ) -> tuple[str, Finding] | None:
         raw = token.text.strip()
 
@@ -1409,7 +1532,7 @@ class DocumentScanner:
         return self._scan_repo_path(relpath, document_class, token, context, target)
 
     def _scan_repo_path(
-        self, relpath: str, document_class: str, token: Token, context: str, normalized: str
+        self, relpath: str, document_class: str, token: Token, context: ReferenceContext, normalized: str
     ) -> tuple[str, Finding] | None:
         # Allowlist first, so that an allowlisted path is never even consulted:
         # whether it happens to exist on this machine must not enter the
@@ -1424,7 +1547,6 @@ class DocumentScanner:
         if self._path_exists(normalized):
             return None
         if self._suppressed_by_context(context):
-            self.suppressions.context_marker += 1
             return None
         return (
             "plain",
@@ -1445,7 +1567,7 @@ class DocumentScanner:
         relpath: str,
         document_class: str,
         token: Token,
-        context: str,
+        context: ReferenceContext,
         match: re.Match[str],
     ) -> tuple[str, Finding] | None:
         target = match.group("path")
@@ -1461,13 +1583,11 @@ class DocumentScanner:
         line_count = self._line_count(target)
         if line_count is None:
             if self._suppressed_by_context(context):
-                self.suppressions.context_marker += 1
                 return None
             signals = ("referenced_source_file_does_not_exist",)
             detail: dict[str, Any] = {"target": target, "start": start, "end": end}
         elif start < 1 or end < start or end > line_count:
             if self._suppressed_by_context(context):
-                self.suppressions.context_marker += 1
                 return None
             signals = ("referenced_line_range_is_outside_the_file",)
             detail = {"target": target, "start": start, "end": end, "file_line_count": line_count}
@@ -1492,7 +1612,7 @@ class DocumentScanner:
         relpath: str,
         document_class: str,
         token: Token,
-        context: str,
+        context: ReferenceContext,
         match: re.Match[str],
     ) -> tuple[str, Finding] | None:
         name = match.group("name")
@@ -1509,7 +1629,6 @@ class DocumentScanner:
         if name in self.symbols or name in _BUILTIN_NAMES or name in self.symbol_ignore:
             return None
         if self._suppressed_by_context(context):
-            self.suppressions.context_marker += 1
             return None
         return (
             "plain",
@@ -1526,7 +1645,7 @@ class DocumentScanner:
         )
 
     def _scan_commit_hash(
-        self, relpath: str, document_class: str, token: Token, context: str, raw: str
+        self, relpath: str, document_class: str, token: Token, context: ReferenceContext, raw: str
     ) -> tuple[str, Finding] | None:
         if raw in self.known_hashes:
             self.suppressions.commit_hash_registered_known_historical += 1
@@ -1538,7 +1657,6 @@ class DocumentScanner:
             self.suppressions.commit_hash_in_non_living_document += 1
             return None
         if self._suppressed_by_context(context):
-            self.suppressions.context_marker += 1
             return None
         return (
             "commit",
@@ -1555,7 +1673,7 @@ class DocumentScanner:
         )
 
     def _scan_document_reference(
-        self, relpath: str, document_class: str, token: Token, context: str, normalized: str
+        self, relpath: str, document_class: str, token: Token, context: ReferenceContext, normalized: str
     ) -> tuple[str, Finding] | None:
         target, _, fragment = normalized.partition("#")
         if "*" in target or "?" in target:
@@ -1566,7 +1684,6 @@ class DocumentScanner:
         resolved = self._resolve_document(relpath, target, token.kind)
         if resolved is None:
             if self._suppressed_by_context(context):
-                self.suppressions.context_marker += 1
                 return None
             return (
                 "plain",
@@ -1587,7 +1704,6 @@ class DocumentScanner:
         if not anchors.checkable or _fragment_is_live(fragment, anchors):
             return None
         if self._suppressed_by_context(context):
-            self.suppressions.context_marker += 1
             return None
         return (
             "plain",
@@ -1608,7 +1724,7 @@ class DocumentScanner:
     ) -> list[Finding]:
         findings: list[Finding] = []
         for line_number, target_token, target_kind, section in document.section_references:
-            context = document.contexts[line_number - 1]
+            context = document.context_at(line_number)
             resolved = self._resolve_document(
                 relpath, target_token.partition("#")[0], target_kind
             )
@@ -1618,7 +1734,6 @@ class DocumentScanner:
             if not anchors.checkable or section.lower() in anchors.sections:
                 continue
             if self._suppressed_by_context(context):
-                self.suppressions.context_marker += 1
                 continue
             findings.append(
                 Finding(
