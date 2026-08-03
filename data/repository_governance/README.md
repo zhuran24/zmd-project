@@ -32,6 +32,19 @@ by two rules with different classes is a **structural error**, not a first-match
 order carries no meaning, so a broad rule cannot silently reclassify the documents below it.
 Redundant rules that agree on the class are fine.
 
+One more thing to know before reading a scan report: its fail-closed self check is built for a
+**cooperative operator**, and it says so. Every report carries `metadata.threat_model` and
+`metadata.self_check_scope`, and `truth_sources_clean` means "clean for the object classes listed
+under `covers`" — not "this checkout is globally consistent". The check catches what ordinary work
+produces: uncommitted edits to anything the scan read, untracked and ignored files, staged deletions
+and renames, empty directories, `assume-unchanged`. It does not catch a repository somebody built to
+fool it — a tracked symlink standing in for the registry, git routing environment variables, a
+hardlinked report destination, a clean filter, submodule internals. Those are listed one line each
+in the report and explained in full (shape, consequence, and what closing each would take) in the
+`devtools/docs_reference_scan.py` module docstring. Leaving them open is the standing owner ruling
+of 2026-07-06 — hardening that only stops a deliberate insider waits for the release point and is
+not a closure prerequisite — so the honest move is to publish the boundary, not to imply it away.
+
 ## `code_assets.json` — code asset ledger
 
 `code_assets.json` and its adjacent schema are the repository code-asset governance ledger. The

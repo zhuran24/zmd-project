@@ -1200,6 +1200,56 @@ def test_a_legal_nested_report_target_under_prune_is_written(tmp_path: Path) -> 
 
 
 # --------------------------------------------------------------------------
+# the report says which adversary it was built for
+# --------------------------------------------------------------------------
+
+
+def test_every_report_publishes_its_threat_model_and_self_check_scope(
+    tmp_path: Path,
+) -> None:
+    """A ``clean`` verdict has to arrive with the scope it ranges over.
+
+    Without it the report reads as "this checkout is consistent", which is a
+    wider claim than the self check makes: it is built for a cooperative
+    operator, and the paths it cannot see are a deliberate, owner-ruled
+    deferral rather than an accident.
+    """
+    root = make_repo(tmp_path)
+    metadata = build(root)["metadata"]
+    assert metadata["threat_model"] == scan.THREAT_MODEL == "cooperative-operator"
+    scope = metadata["self_check_scope"]
+    assert scope == scan.SELF_CHECK_SCOPE
+    assert scope["covers"] == list(scan.SELF_CHECK_COVERS)
+    assert scope["does_not_cover"] == list(scan.SELF_CHECK_DOES_NOT_COVER)
+    assert scope["covers"] and scope["does_not_cover"]
+    assert not set(scope["covers"]) & set(scope["does_not_cover"])
+    assert "not a claim" in scope["truth_sources_clean_means"]
+    assert "2026-07-06" in scope["deferred_by"]
+    preconditions = metadata["preconditions"]
+    assert preconditions["truth_sources_clean"] is True
+    assert preconditions["truth_sources_clean_scope"] == "metadata.self_check_scope"
+
+
+def test_the_module_docstring_carries_the_threat_model_boundary_section() -> None:
+    """A structural pin: the published list and the prose cannot drift apart.
+
+    The report names each uncovered class in one line; the docstring is where a
+    reader finds its shape, its consequence and what closing it would take.  If
+    a future edit drops one from either side, this fails rather than quietly
+    narrowing what the report admits to.
+    """
+    # Wrapping is a formatting choice, so the pin is on the words, not the
+    # line breaks the docstring happens to carry today.
+    docstring = " ".join((scan.__doc__ or "").split())
+    assert "Threat model and known boundaries" in docstring
+    assert "cooperative operator" in docstring
+    assert "deliberate-insider-hardening-deferred-to-release" in docstring
+    assert "2026-07-06" in docstring
+    for boundary in scan.SELF_CHECK_DOES_NOT_COVER:
+        assert boundary in docstring, boundary
+
+
+# --------------------------------------------------------------------------
 # shared output contract
 # --------------------------------------------------------------------------
 

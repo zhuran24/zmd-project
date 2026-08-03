@@ -31,6 +31,72 @@ dead-reference postmortem apply to every flag: prose that is not a
 format-explicit reference is skipped, a reference whose surrounding paragraph is
 already talking about removal/history is suppressed, and paths that are absent by
 design (external artifacts, generated proof outputs) are allowlisted.
+
+Threat model and known boundaries
+---------------------------------
+
+The self check is built for a **cooperative operator**: it catches the tree
+states that ordinary work produces — an edit nobody committed, a build output
+landing where a document points, ``git mv``, a stray untracked file, an ignored
+one, an empty directory, ``assume-unchanged``.  It is *not* a defence against
+somebody who is deliberately arranging the repository to fool it.  That line is
+an owner ruling, not an oversight: hardening that only stops a deliberate
+insider was deferred to the release point on 2026-07-06, on the reasoning that
+a slip or an outside tamper is already stopped by the byte-level floors, while
+structural anchors and TOCTOU work only matter against an adversary who can
+perform the sealing ritual faithfully.  The card is
+``deliberate-insider-hardening-deferred-to-release``.
+
+So the report says what it is: ``metadata.threat_model`` and
+``metadata.self_check_scope`` are published with every scan, and
+``truth_sources_clean`` means "clean for the object classes listed there" — not
+"this checkout is globally consistent".  The known ways in, each of which needs
+a repository somebody built for the purpose:
+
+* **a tracked symlink at the registry path** — the registry location is a
+  constant and must be tracked, but a committed ``120000`` entry there can point
+  at a mutable file outside the repository.  Effect: document classes, and
+  therefore which documents may yield candidates at all, are decided from
+  content no reviewer ever saw, with ``git status`` empty throughout.  To close
+  it: ``lstat`` the registry and require a regular file.
+* **registry bytes are not compared with the committed blob** — the file is read
+  from the working tree.  Effect: same as above by a shorter route.  To close
+  it: read ``HEAD:<registry>`` through ``git cat-file`` and compare, or refuse
+  when they differ.
+* **git routing environment variables** — ``_run_git`` inherits the environment
+  whole, so ``GIT_DIR``/``GIT_WORK_TREE``/``GIT_INDEX_FILE`` can bind every self
+  check to a second, clean repository while ``--repo-root`` reads a third tree.
+  Effect: the report records the trusted HEAD and claims clean while its
+  findings come from somewhere else.  To close it: scrub those variables from
+  the subprocess environment and assert ``git rev-parse --show-toplevel``
+  matches ``--repo-root``.
+* **a hardlinked report destination** — ``O_NOFOLLOW`` stops a symlink, not a
+  second name for the same inode.  Effect: the report's bytes land on a tracked
+  file (or one outside the repository) with a zero exit.  To close it: require
+  ``st_nlink == 1``, or write to a fresh temporary name and rename.
+* **an ancestor directory swapped between the check and the write** —
+  ``O_NOFOLLOW`` protects the final component only.  Effect: with the right
+  timing the report escapes ``.prune/``.  To close it: walk the path with
+  ``O_DIRECTORY|O_NOFOLLOW`` file descriptors and write via ``openat``.
+* **a tracked symlink whose target lives outside the repository** — presence and
+  content are read through it, and git reports only the link itself.  Effect: a
+  finding can be shaped by a file the index cannot describe.  To close it: treat
+  a symlinked consulted path as unverifiable and refuse.
+* **submodule internals** — a superproject reports the gitlink, not the dirty
+  file inside.  Effect: anchors and line counts read from a submodule can change
+  under a clean status.  To close it: run the dirty check recursively.
+* **a .gitattributes clean filter** — the scan reads raw worktree bytes while
+  the index holds the filtered form, so the two can legitimately differ.
+  Effect: a document can produce findings from bytes that are not what is
+  committed, with status clean.  To close it: compare each consulted file
+  against ``git cat-file blob`` rather than trusting status.
+
+One last entry in ``does_not_cover`` is nobody's adversary — it is plain
+under-coverage, listed for the same reason: **a glob reference, whose consulted
+prefix is checked instead of its matches**.  ``src/cuts/*.py`` records the
+prefix ``src/cuts/``, so a file that only the glob itself would match is never
+compared path-for-path, and the exact intersection with ``git status`` can miss
+it.  To close it: expand the glob and consult every match.
 """
 
 from __future__ import annotations
@@ -65,6 +131,48 @@ GENERATOR_VERSION = "1"
 REQUIRED_BRANCH = "main"
 LAYER = "docs"
 CONFIDENCE = "deterministic"
+
+# What the self check is built to stop, and what it is not.  Published with
+# every report so that "clean" is never read as a wider claim than it is; see
+# the threat-model section of the module docstring for each item's shape,
+# consequence and closing move.
+THREAT_MODEL = "cooperative-operator"
+
+SELF_CHECK_COVERS = (
+    "uncommitted edits to any scanned document, the registry or a symbol source",
+    "uncommitted edits to any other filesystem path the scan consulted",
+    "untracked and ignored paths inside the scan scope or at a consulted path",
+    "staged deletions and staged rename sources",
+    "worktree presence disagreeing with the index at a consulted path",
+    "assume-unchanged and skip-worktree marks, which switch every dirty check off",
+    "the checkout moving between the start of the scan and the write",
+)
+
+SELF_CHECK_DOES_NOT_COVER = (
+    "a tracked symlink at the registry path",
+    "registry bytes are not compared with the committed blob",
+    "git routing environment variables",
+    "a hardlinked report destination",
+    "an ancestor directory swapped between the check and the write",
+    "a tracked symlink whose target lives outside the repository",
+    "submodule internals",
+    "a .gitattributes clean filter",
+    "a glob reference, whose consulted prefix is checked instead of its matches",
+)
+
+SELF_CHECK_SCOPE: dict[str, Any] = {
+    "covers": list(SELF_CHECK_COVERS),
+    "does_not_cover": list(SELF_CHECK_DOES_NOT_COVER),
+    "truth_sources_clean_means": (
+        "clean for the object classes under 'covers' only; it is not a claim that this "
+        "checkout is globally consistent"
+    ),
+    "deferred_by": (
+        "owner ruling 2026-07-06: hardening that only stops a deliberate insider is "
+        "deferred to the release point and is not a closure prerequisite"
+    ),
+    "documented_in": f"{GENERATOR} module docstring, section 'Threat model and known boundaries'",
+}
 
 DOCUMENT_CLASSES = ("locked", "historical", "living")
 SUBJECT_CLASSES = frozenset({"historical", "living"})
@@ -1791,6 +1899,9 @@ def run_self_check(
         "observed_branch": state.branch,
         "head_commit": state.head,
         "truth_sources_clean": True,
+        # The boolean above is not a global consistency claim; the scope entry
+        # says which object classes it ranges over and which it cannot see.
+        "truth_sources_clean_scope": "metadata.self_check_scope",
         "truth_source_kinds": [
             "registered scan-scope documents",
             "doc class registry",
@@ -1965,6 +2076,8 @@ def build_report(root: Path) -> dict[str, Any]:
             "applies_nothing": (
                 "This report authorizes no edit; nothing in the repository consumes it."
             ),
+            "threat_model": THREAT_MODEL,
+            "self_check_scope": dict(SELF_CHECK_SCOPE),
             "preconditions": preconditions,
             "registry": {"path": registry.relpath, "sha256": registry.sha256},
             "scope": {
