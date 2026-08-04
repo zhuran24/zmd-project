@@ -94,7 +94,8 @@ paradigm 教训可迁移、具体算术不可迁移。
   strict 过滤后缺口 576（catalog 口径，非 strict 全 pattern 空间的健全缺口；raw strict
   探测描述性合计 2,834、缺 491），且 strict 是否正确读法本身待定（G2 可拼接性问题）。
 - 三条可走的路（互不排斥）：①便宜补证（边界七族带孔探测臂——**已收官**：七族齐停
-  101，BOTTOM_I1/LEFT_J3 证 OPTIMAL=101，首证 valid≪packing；证据根
+  101，BOTTOM_I1/LEFT_J3 的 loose valid 天花板证死=101（strict ≤101），较面积账级
+  上界读数 129/134 虚高 28–33 格——账虚高已证、「真能装 129」未证；证据根
   `.artifacts/w0_probe_hole_20260804/`）；②B 侧证书机器（一档 Lagrangian 版，
   先做 pricing 界质量便宜实验再决定开工）；③22 号新路线试点（先补三处承重洞的
   便宜前置检查，其第一道门本身就是分钟级 LP）。
