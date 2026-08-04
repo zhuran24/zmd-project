@@ -1,3 +1,8 @@
+> 【2026-08-03 追注】本文第 4 步「GPT 类划分与 repo 语义不符（按商品种类数）」的判断
+> **已被更正**：repo demand SSOT 实为 slot 数（⌈rate/belt⌉），GPT 九类表与之逐行相同。
+> 更正全文见同目录 `21_w0_port_semantics_correction_20260803.md`；本文其余结论
+> （seed 死刑，两种语义下均成立）不受影响。正文按史料纪律保持原样。
+
 # 19 号：W0 pinned seed「先天绑不上端口」死刑指控的独立复算（2026-08-03）
 
 **性质**：research-only 复算记录。不产生任何 bound/witness/soundness claim；
