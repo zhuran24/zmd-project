@@ -239,3 +239,91 @@ def test_external_artifact_check_runs_with_safe_path_environment() -> None:
 
     assert completed.returncode == 0, completed.stderr
     assert "external artifact check passed" in completed.stdout
+
+
+# --------------------------------------------------------------------------
+# memory lane (2026-08-03 剪枝 v2 P2 对抗审查修复批)
+# --------------------------------------------------------------------------
+
+
+def _memory_lane_run(monkeypatch, tmp_path, *, present: tuple[str, ...]):
+    """Run check_memory_tests against a synthetic project root.
+
+    ``PROJECT_ROOT`` is the only thing swapped, so the directory-existence
+    decision under test is the real one.
+    """
+    for relative in present:
+        (tmp_path / relative).mkdir(parents=True)
+    monkeypatch.setattr(preflight_gate, "PROJECT_ROOT", tmp_path)
+    observed: dict[str, object] = {}
+
+    def fake_run(command, **kwargs):
+        observed["command"] = list(command)
+        return _FakeCompletedProcess(0, "2 passed in 0.01s\n")
+
+    monkeypatch.setattr(preflight_gate.subprocess, "run", fake_run)
+    gate = preflight_gate.GateResult()
+    preflight_gate.check_memory_tests(gate, always=True)
+    return gate, observed
+
+
+def test_a_missing_memory_test_root_blocks_the_gate(monkeypatch, tmp_path) -> None:
+    """一个根没了 = BLOCK。
+
+    旧写法只有两个根**同时**消失才 warn 一句，少一个连话都不说，退出码 0：
+    删掉 / rename / checkout 不全，那一半测试就悄悄不跑了，而这条 lane 的
+    全部意义就是「它们真的跑了」。
+    """
+    gate, observed = _memory_lane_run(monkeypatch, tmp_path, present=("cc_memory/tests",))
+
+    assert gate.exit_code == 1
+    assert any("cc_memory_vnext/tests" in blocker for blocker in gate.blockers)
+    assert "command" not in observed, "缺根时不该还去跑 pytest"
+
+
+def test_both_memory_test_roots_missing_blocks_rather_than_warns(monkeypatch, tmp_path) -> None:
+    gate, _ = _memory_lane_run(monkeypatch, tmp_path, present=())
+
+    assert gate.exit_code == 1
+    assert not gate.warnings, "旧行为是 warn + exit 0，那正是这条要拦的"
+    for root in preflight_gate.MEMORY_TEST_DIRS:
+        assert any(root in blocker for blocker in gate.blockers), root
+
+
+def test_both_memory_test_roots_present_runs_the_lane(monkeypatch, tmp_path) -> None:
+    gate, observed = _memory_lane_run(
+        monkeypatch, tmp_path, present=preflight_gate.MEMORY_TEST_DIRS
+    )
+
+    assert gate.exit_code == 0
+    assert gate.blockers == []
+    command = observed["command"]
+    for root in preflight_gate.MEMORY_TEST_DIRS:
+        assert root in command, root
+
+
+def test_each_memory_lane_call_gets_its_own_basetemp(monkeypatch, tmp_path) -> None:
+    """固定名字的 basetemp 会被并发的另一次门禁删掉重建。
+
+    pytest 启动时清理自己的 basetemp，所以两次并发调用共享一个目录 = 先起的
+    那个进程正在用的 tmp_path 凭空消失，报出与被测代码无关的假红。同机并发跑
+    门禁是常态（多窗口 / wf 并发）。
+    """
+    seen: list[str] = []
+    for relative in preflight_gate.MEMORY_TEST_DIRS:
+        (tmp_path / relative).mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr(preflight_gate, "PROJECT_ROOT", tmp_path)
+
+    def fake_run(command, **kwargs):
+        seen.append(command[command.index("--basetemp") + 1])
+        return _FakeCompletedProcess(0, "2 passed in 0.01s\n")
+
+    monkeypatch.setattr(preflight_gate.subprocess, "run", fake_run)
+    for _ in range(3):
+        preflight_gate.check_memory_tests(preflight_gate.GateResult(), always=True)
+
+    assert len(seen) == 3
+    assert len(set(seen)) == 3, seen
+    for path in seen:
+        assert str(tmp_path / ".pytest_tmp") in path
+        assert preflight_gate.Path(path).parent.is_dir(), "父目录必须仍被预建"

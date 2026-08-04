@@ -29,6 +29,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -853,9 +854,25 @@ def check_memory_tests(gate: GateResult, *, always: bool) -> None:
     - 独立 basetemp：pytest.ini 的全局 `--basetemp=.pytest_tmp` 会被并发 pytest
       互删，而本 lane 常常跟主 lane 同时在跑。
     - 只在动到 cc_memory*/ 时进 staged 范围；--full / --ci 一律跑。
+
+    两个目录任一不存在 = BLOCK，不是 warning（2026-08-03 对抗审查
+    missing-memory-test-roots）。这条 lane 的全部意义是「这些测试真的被跑
+    了」，而删掉一个目录、把它 rename 走、或者在 checkout 里根本没拉下来，
+    都会让缺失的那半悄悄消失；旧写法只有两个目录**同时**消失才 warn 一句、
+    退出码照样 0，少一个则连一句话都没有。缺目录只可能是两种情况——真删了
+    （那要先改这里的登记），或者树不完整（那这次门禁本来就不该算数）——两
+    种都该拦。
     """
     scope_note = "全量" if always else "staged 触及 cc_memory*/"
     print(f"\n[memory] 记忆层测试 lane（{scope_note}，串行，-p no:randomly）")
+
+    missing = [target for target in MEMORY_TEST_DIRS if not (PROJECT_ROOT / target).is_dir()]
+    if missing:
+        gate.block(
+            f"记忆层测试根缺失: {', '.join(missing)} — 这条 lane 守着活 hook，"
+            "少一个根就等于那一半没人跑；真要下线先改 MEMORY_TEST_DIRS"
+        )
+        return
 
     if not always:
         touched = [
@@ -867,14 +884,16 @@ def check_memory_tests(gate: GateResult, *, always: bool) -> None:
             gate.ok("记忆层未改动，跳过记忆测试 lane")
             return
 
-    existing = [target for target in MEMORY_TEST_DIRS if (PROJECT_ROOT / target).is_dir()]
-    if not existing:
-        gate.warn("记忆层测试目录不存在，跳过")
-        return
+    existing = list(MEMORY_TEST_DIRS)
 
     # pytest 只建 basetemp 本身，父目录不存在就整批 setup error（144 条 ERROR、
     # 报告里看起来像测试真的坏了）——在干净 checkout / 新 worktree 上必然发生。
-    basetemp = PROJECT_ROOT / ".pytest_tmp" / "memory_gate"
+    #
+    # 目录名带 pid + 时间戳：固定名字的 basetemp 会被并发的另一次 preflight
+    # 当场删掉重建（pytest 启动时清理自己的 basetemp），先起的那个进程正在用
+    # 的 tmp_path 就凭空消失、报出与被测代码无关的假红。同一台机器上并发跑
+    # 门禁是常态（多窗口 / wf 并发），所以每次调用给自己一个唯一目录。
+    basetemp = PROJECT_ROOT / ".pytest_tmp" / f"memory_gate_{os.getpid()}_{time.time_ns()}"
     basetemp.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         sys.executable,
