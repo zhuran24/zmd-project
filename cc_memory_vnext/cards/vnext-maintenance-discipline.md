@@ -42,7 +42,7 @@ updated_at: "2026-07-10"
 
 1. **补一条金标准 frame** 到 `cc_memory_vnext/eval/regression.jsonl`:从这次**真实发生**的信号(owner 的原话、踩坑的场景)构造一个 `{prompt, intents, domains, expected_cards}`,声明"遇到这种话,该出现哪张卡"。**禁止照卡片的 scope.paths/symbols 反填**(否则是规则考自己=自欺)。
 2. **补/改一张卡** `cc_memory_vnext/cards/*.md`:把这条知识写成卡(或更新已有卡的触发器),让它在那种场景下能被 force-inject。
-3. **跑 `python cc_memory_vnext/zmem.py build-index && zmem eval`** 确认新 frame 通过、且没把别的搞坏(25/25 这类全绿)。
+3. **跑 `python cc_memory_vnext/zmem.py build-index && zmem eval`** 确认新 frame 通过、且没把别的搞坏(25/25 这类全绿)。**build-index 必须在【主树】跑**——08-03 实锤:各批在 worktree 里改卡 eval 绿后合并,主树 `.index` 停在 07-19 半个月没重建,P2.2 清空的退役 error_regex 在活 hook 里一直没生效(卡是真相源、hook 消费的是编译缓存);凡合并了改卡的批,主树验收必含 build-index+eval。
 
 ### 入卡门槛(owner 2026-07-10):小错误不入卡,防噪声累积
 触发一的"新知识"有门槛——**执行层的一次性小失误不入卡**(例:某次该用 wf 编排却手动发了两个 Agent)。owner 原话:"如果每个小错误都放进去的话噪声会越来越多的"。够格入卡的是:真决策(owner 拍板/方向变更)、真教训(会反复犯的坑、需大量调查才定位的根因)、纠正背后的**通用判断标准**。判据:下个会话不知道这条会不会付出真实代价?不会→别入卡,当场改正就完。宁可少记一条小事,不让 L0/召回面被噪声稀释。
