@@ -31,13 +31,17 @@ free-cell bitmap, one crossing variable per seam position) is upgrade rung L3 an
 is not implemented here; reaching for it would mean the fixed stub layout was the
 binding restriction, which is a finding, not a detail.
 
-Registered gap (2026-08-04 review): the composition argument above additionally
-requires every live stub of a pattern to share ONE free component (the charter's
-registered R-PAT-CONN semantics).  The shipped evaluator implements the weaker
-union-of-stub-components reading, so C4 = zero constraints is currently NOT
-backed for witness purposes (855 of 2,593 shipped patterns have multiple
-stub-bearing components).  No effect on this batch's INFEASIBLE results
-(strengthening only deletes columns); must be closed before any G1 green.
+Registered gap -- CLOSED 2026-08-04 (fix-and-rerun batch).  The composition
+argument above additionally requires every live stub of a pattern to share ONE
+free component (the charter's registered R-PAT-CONN semantics).  The 2026-08-04
+review found the shipped evaluator implementing the weaker
+union-of-stub-components reading, so C4 = zero constraints was not backed for
+witness purposes (855 of 2,593 shipped patterns had multiple stub-bearing
+components); that had no effect on the batch's INFEASIBLE results, because
+strengthening only deletes columns.  ``g1_pattern_evaluator.portal_component``
+now floods from one canonical root and the generator carries the same
+restriction as an in-model single-source flow certificate, so every pattern a
+catalog can contain has one corridor and the composition argument holds again.
 See docs/research/w0_front_aware_20260803/CONSULT_VERDICT_20260804.md.
 
 The empty pattern (T-EMPTY-PATTERN)

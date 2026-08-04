@@ -20,13 +20,14 @@
   "open_obligations": [
     {
       "id": "O-FRONT-SIMULTANEITY",
-      "statement": "Capability is computed per body. Nothing in the evaluator, the master, the expansion or the audit requires that all bodies of one pattern can take pairwise distinct active front cells at the same time, and 207 of the 258 CLEAN patterns in L0 union L1-dense have at least one free front cell shared by two or three bodies. The repository probably allows exactly this sharing -- src/models/routing_subproblem._duplicate_terminal_front_keys only blocks a repeated (front cell, terminal_dir, commodity, port_type) quadruple, and two bodies adjacent to one cell necessarily face it from opposite directions -- but that argument is not a proof and no distinct-representatives check exists.",
+      "statement": "Capability is computed per body. Nothing in the evaluator, the master, the expansion or the audit requires that all bodies of one pattern can take pairwise distinct active front cells at the same time, and 207 of the 258 CLEAN patterns in L0 union L1-dense have at least one free front cell shared by two or three bodies. The repository probably allows exactly this sharing -- src/models/routing_subproblem._duplicate_terminal_front_keys only blocks a repeated (front cell, terminal_dir, commodity, port_type) quadruple, and two bodies adjacent to one cell necessarily face it from opposite directions -- but that argument is not a proof. Since 2026-08-04 the G1 gate carries a per-run discharge check (run_g1.check_front_simultaneity) and clause six makes PASS unreachable while this obligation is open; the obligation stays registered because the check discharges one geometry at a time, which is not the same as proving the assumption away.",
       "affects": ["T-CAPABILITY-BUCKET", "R-PAT-CONN"],
       "effect_on_this_batch": "none: the model is more permissive than the real rule, so an INFEASIBLE under it is the stronger statement",
       "must_close_before": "any G1 PASS",
       "closure_options": [
-        "add a distinct-representatives check to g1_pattern_evaluator.evaluate_pattern",
-        "prove the sharing-is-legal argument against the repository and register it as a theorem here"
+        "per run: exhibit a system of distinct representatives over the run's own geometry -- implemented as run_g1.check_front_simultaneity, wired into gate clause six (open_obligations_discharged), fail-closed",
+        "once and for all: prove the sharing-is-legal argument against the repository and register it as a theorem here",
+        "or make it structural: add a distinct-representatives check to g1_pattern_evaluator.evaluate_pattern so no pattern without a witness can enter a catalog"
       ]
     }
   ],
@@ -142,12 +143,12 @@
     {
       "id": "R-PAT-CONN",
       "layer": "sufficient_restriction",
-      "statement": "A free front counts only if it lies in the region's portal-connected component; the reserved fixed-furniture fronts must lie there too.",
+      "statement": "Every live portal stub, every reserved fixed-furniture front, every active front and every hole cell of one pattern lie in ONE 4-connected free component.",
       "gates": ["G1", "G2"],
       "code_anchor": "g1_pattern_evaluator.portal_component",
       "stage": "A",
       "source": "this line",
-      "note": "2026-08-04 review: the anchor returns the UNION of all stub-bearing components (multi-source BFS); the shipped check in evaluate_pattern therefore implements a reading weaker than this statement (855/2593 shipped patterns have multiple stub-bearing components). Strengthening only deletes columns, so the G1 INFEASIBLE results stand; implementation and registered semantics must converge before any G1 green. See CONSULT_VERDICT_20260804.md."
+      "note": "CONVERGED 2026-08-04 (fix-and-rerun batch). History: the 2026-08-04 review found the anchor returning the UNION of all stub-bearing components (multi-source BFS), so the shipped check in evaluate_pattern implemented a reading weaker than this statement (855/2593 shipped patterns had multiple stub-bearing components); strengthening only deletes columns, so the G1 INFEASIBLE results stand. The anchor now floods from a single canonical root (g1_pattern_evaluator.component_root) and the generator carries the same restriction as a single-source flow certificate inside its CP-SAT model, so no consumer can see the union reading any more. See CONSULT_VERDICT_20260804.md and 00_charter.md section 6."
     },
     {
       "id": "R-POWER-LOCAL",

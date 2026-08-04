@@ -1,4 +1,4 @@
-"""W0 G1 stage B: the five-clause gate verdict.
+"""W0 G1 stage B: the six-clause gate verdict.
 
 research-only.  Nothing here produces or consumes a bound.
 
@@ -17,6 +17,7 @@ neither a PASS nor a receipt behind.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -91,6 +92,13 @@ def _bundle() -> Dict[str, Any]:
             "returncode": 0,
         },
         "root_closure_error": None,
+        "obligations": {
+            "registry_sha256": "f" * 64,
+            "obligations": [
+                {"id": "O-FRONT-SIMULTANEITY", "discharged": True, "detail": {}}
+            ],
+            "all_discharged": True,
+        },
     }
 
 
@@ -104,11 +112,12 @@ def _verdict(bundle: Dict[str, Any]) -> Dict[str, Any]:
         bundle["audit"],
         bundle["observation"],
         root_closure_error=bundle["root_closure_error"],
+        obligations=bundle["obligations"],
     )
 
 
 def test_a_clean_bundle_reaches_pass() -> None:
-    """[G1] All five clauses green, so the run is PASS."""
+    """[G1] All six clauses green, so the run is PASS."""
     clauses = _verdict(_bundle())
     for name in run_g1.GATE_CLAUSES:
         assert clauses[name]["ok"] is True, (name, clauses[name])
@@ -262,6 +271,265 @@ def test_non_terminal_masters_name_their_own_stopping_state(
     bundle["geometry_sha256"] = None
     clauses = _verdict(bundle)
     assert run_g1._terminal_state(bundle["master"], clauses) == expected
+
+
+# --------------------------------------------------------------------------
+# clause six: no PASS before the registry's obligations are discharged
+# --------------------------------------------------------------------------
+
+
+def test_pass_is_impossible_while_an_open_obligation_stands() -> None:
+    """[G12, RED LINE] The charter's "must close before any G1 PASS", executable.
+
+    Everything else about the run is perfect; only the obligation is open.  The
+    verdict has to be ``OBLIGATION_OPEN`` -- a BLOCK/repair terminal -- and never
+    ``PASS``.  Asserted twice on purpose, because clause six is enforced twice:
+    once as a precondition inside ``_terminal_state`` and once as a member of the
+    conjunction, and a single lock is one careless edit from no lock.
+    """
+    bundle = _bundle()
+    bundle["obligations"] = {
+        "registry_sha256": "f" * 64,
+        "obligations": [
+            {"id": "O-FRONT-SIMULTANEITY", "discharged": False, "detail": {}}
+        ],
+        "all_discharged": False,
+    }
+    clauses = _verdict(bundle)
+    clause = clauses[run_g1.GATE_CLAUSES[5]]
+    assert clause["ok"] is False
+    assert clause["open_obligation_ids"] == ["O-FRONT-SIMULTANEITY"]
+    assert run_g1._terminal_state(bundle["master"], clauses) == run_g1.OBLIGATION_OPEN
+
+    # Lock 2: the conjunction cannot see six greens either.
+    for name in run_g1.GATE_CLAUSES[:5]:
+        assert clauses[name]["ok"] is True
+    assert not all(entry["ok"] for entry in clauses.values())
+
+    # And exhaustively: over every combination of the other five clauses, an open
+    # obligation never produces PASS.  There is no arrangement of the rest of the
+    # run that buys its way past clause six.
+    master = {"status": "FEASIBLE"}
+    for bits in range(1 << 5):
+        trial = {
+            name: {"ok": bool(bits & (1 << index))}
+            for index, name in enumerate(run_g1.GATE_CLAUSES[:5])
+        }
+        trial[run_g1.GATE_CLAUSES[5]] = {"ok": False}
+        assert run_g1._terminal_state(master, trial) != "PASS", bits
+
+
+def test_every_open_obligation_needs_an_implemented_check(tmp_path: Path) -> None:
+    """[G13] A newly registered obligation blocks PASS by itself.
+
+    The gate reads the obligation list from the registry rather than keeping its
+    own copy, and an id with no entry in ``OBLIGATION_CHECKS`` is reported as not
+    discharged.  So the failure direction of "someone added an obligation and
+    forgot the check" is closed, not open.
+    """
+    registry = json.loads(run_g1.REGISTRY_PATH.read_text(encoding="utf-8"))
+    registry["open_obligations"].append(
+        {
+            "id": "O-INVENTED-FOR-THIS-TEST",
+            "statement": "a registered obligation nobody implemented a check for",
+            "affects": ["R-PAT-CONN"],
+            "effect_on_this_batch": "none",
+            "must_close_before": "any G1 PASS",
+            "closure_options": ["implement it", "prove it"],
+        }
+    )
+    path = tmp_path / "derived_theorems.json"
+    path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+
+    report = run_g1.discharge_open_obligations(None, registry_path=path)
+    assert report["all_discharged"] is False
+    invented = next(
+        item for item in report["obligations"] if item["id"] == "O-INVENTED-FOR-THIS-TEST"
+    )
+    assert invented["checker"] is None
+    assert "no discharge check is implemented" in invented["detail"]["reason"]
+
+
+def test_the_shipped_registry_obligation_is_wired_to_a_check() -> None:
+    """[G13b] The other direction: the ids in the registry are the ids we check."""
+    registry = json.loads(run_g1.REGISTRY_PATH.read_text(encoding="utf-8"))
+    registered = {entry["id"] for entry in registry["open_obligations"]}
+    assert registered, "the obligation list must not silently empty out"
+    assert registered <= set(run_g1.OBLIGATION_CHECKS), registered
+    report = run_g1.discharge_open_obligations(None)
+    assert report["all_discharged"] is False, "no geometry, nothing discharged"
+    assert report["registry_sha256"]
+
+
+class _CountingRegistry:
+    """A registry path that hands out *different* bytes on every read.
+
+    Stands in for the file changing between two reads.  The gate is allowed
+    exactly one read, so only ``payloads[0]`` may ever be seen; a second read is
+    the TOCTOU window itself and shows up here as a different obligation list
+    behind an already-published digest.
+    """
+
+    def __init__(self, *payloads: bytes) -> None:
+        self.payloads = list(payloads)
+        self.reads = 0
+
+    def _next(self) -> bytes:
+        payload = self.payloads[min(self.reads, len(self.payloads) - 1)]
+        self.reads += 1
+        return payload
+
+    def read_bytes(self) -> bytes:
+        return self._next()
+
+    def read_text(self, encoding: str = "utf-8") -> str:
+        return self._next().decode(encoding)
+
+    def __str__(self) -> str:  # the report records the path it answered to
+        return "<counting registry>"
+
+
+def test_the_registry_is_read_once_so_the_digest_matches_what_was_parsed() -> None:
+    """[G13d] Clause six hashes and parses **one** byte string, not two reads.
+
+    Hashing the file and then parsing the file again is a window: between the two
+    reads the registry can change, and the report would then publish a digest of
+    bytes it did not decide against -- exactly the evidence-provenance failure
+    this line is built to refuse.  The stub below makes the window visible: its
+    second read carries an obligation the first does not.
+    """
+    shipped = run_g1.REGISTRY_PATH.read_bytes()
+    swapped = json.loads(shipped.decode("utf-8"))
+    swapped["open_obligations"] = [
+        {
+            "id": "O-SNUCK-IN-BETWEEN-THE-READS",
+            "statement": "an obligation that only the second read would see",
+            "affects": ["R-PAT-CONN"],
+            "effect_on_this_batch": "none",
+            "must_close_before": "any G1 PASS",
+            "closure_options": ["never appear"],
+        }
+    ]
+    stub = _CountingRegistry(shipped, (json.dumps(swapped) + "\n").encode("utf-8"))
+
+    report = run_g1.discharge_open_obligations(None, registry_path=stub)  # type: ignore[arg-type]
+
+    assert stub.reads == 1, "the registry may be read exactly once"
+    assert report["registry_sha256"] == hashlib.sha256(shipped).hexdigest()
+    ids = {item["id"] for item in report["obligations"]}
+    assert "O-SNUCK-IN-BETWEEN-THE-READS" not in ids
+    assert ids == {
+        entry["id"] for entry in json.loads(shipped.decode("utf-8"))["open_obligations"]
+    }
+
+
+def test_an_unreadable_obligation_list_is_fatal_not_a_green_clause(
+    tmp_path: Path,
+) -> None:
+    """[G13c] Two ways to lose the list, two fail-closed answers.
+
+    Deleting the key is structural damage and raises; emptying the list is
+    reported as "open", because the line's contract test says the list may not
+    silently empty out, so an empty one is a lost list rather than a finished
+    proof.  Neither one may read as "nothing to discharge, clause six green".
+    """
+    registry = json.loads(run_g1.REGISTRY_PATH.read_text(encoding="utf-8"))
+
+    del registry["open_obligations"]
+    gone = tmp_path / "no_key.json"
+    gone.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+    with pytest.raises(run_g1.ObligationOpen, match="open_obligations"):
+        run_g1.discharge_open_obligations(None, registry_path=gone)
+
+    registry["open_obligations"] = []
+    emptied = tmp_path / "empty_list.json"
+    emptied.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+    report = run_g1.discharge_open_obligations(None, registry_path=emptied)
+    assert report["all_discharged"] is False
+    assert report["obligations"] == []
+
+
+# --- the discharge check itself ------------------------------------------
+
+
+def _geometry(placements: List[Dict[str, Any]], walls: List[Dict[str, Any]]) -> Dict[str, Any]:
+    return {
+        "fixed_furniture": walls,
+        "placements": placements,
+        "power_poles": [],
+        "hole": None,
+    }
+
+
+def _placement(anchor: List[int], mode: str, class_id: str, fronts) -> Dict[str, Any]:
+    active_in, active_out = fronts
+    return {
+        "template": "manufacturing_3x3",
+        "orientation": 0,
+        "anchor": anchor,
+        "size": [3, 3],
+        "mode": mode,
+        "operation_class": class_id,
+        "active_input_fronts": active_in,
+        "active_output_fronts": active_out,
+    }
+
+
+def test_front_simultaneity_is_discharged_by_an_explicit_witness() -> None:
+    """[G14] Two bodies sharing a front row still have distinct representatives.
+
+    The obligation is not "no body may share a candidate cell" -- it is "all
+    bodies can take *pairwise distinct* cells at once".  Here both bodies want
+    the row y = 13; there are three cells in it and one slot each, so a witness
+    exists and the check says so.
+    """
+    geometry = _geometry(
+        [
+            _placement([10, 10], "TB", "3L", ([[10, 13]], [[10, 9]])),
+            _placement([10, 14], "BT", "3L", ([[10, 13]], [[10, 17]])),
+        ],
+        [],
+    )
+    report = run_g1.check_front_simultaneity(geometry)
+    assert report["discharged"] is True, report
+    assert report["front_slots_demanded"] == 4
+    assert report["front_slots_matched"] == 4
+    assert report["candidate_cells_wanted_by_several_bodies"] == 3
+    chosen = [tuple(cell) for cell in report["witness"].values()]
+    assert len(chosen) == len(set(chosen)), "a witness with a repeat is not a witness"
+
+
+def test_front_simultaneity_blocks_when_the_shared_row_is_oversubscribed() -> None:
+    """[G14b] Four input slots, three shared cells: no witness, so PASS is blocked.
+
+    Both bodies face the row ``y = 13`` and both are class ``3I2``, which wants
+    two inputs each.  Three cells cannot carry four distinct representatives, so
+    the check reports "not discharged" -- and says in as many words that this is
+    the absence of a witness, not a proof that the sharing is illegal.  This is
+    the shape of the obligation itself: per-body capability is satisfied (each
+    body sees three free fronts), and only the simultaneity fails.
+    """
+    geometry = _geometry(
+        [
+            _placement([10, 10], "TB", "3I2", ([[10, 13], [11, 13]], [[10, 9]])),
+            _placement([10, 14], "BT", "3I2", ([[10, 13], [11, 13]], [[10, 17]])),
+        ],
+        [],
+    )
+    report = run_g1.check_front_simultaneity(geometry)
+    assert report["discharged"] is False, report
+    assert report["front_slots_demanded"] == 6
+    assert report["front_slots_matched"] == 5
+    assert len(report["unmatched_slots"]) == 1
+    assert report["recorded_active_fronts_off_corridor"] == []
+    assert "not a proof that the sharing is illegal" in report["reading"]
+
+
+def test_front_simultaneity_needs_a_geometry_at_all() -> None:
+    """[G14c] No geometry, no witness -- and therefore no discharge."""
+    report = run_g1.check_front_simultaneity(None)
+    assert report["discharged"] is False
+    assert "no geometry" in report["reason"]
 
 
 # --------------------------------------------------------------------------
