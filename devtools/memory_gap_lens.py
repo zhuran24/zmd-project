@@ -22,9 +22,12 @@ own ``metadata.preconditions`` rather than implying a check that never ran.
 or edits a card, and ``verify`` emits one advisory report rather than something a
 second tool could consume.  A human who wants a candidate to become memory
 retypes the write command, and that command does not read this report.
-``test_no_apply_path`` pins this by AST: the only mutating syscall in the module
-is the single ``os.open`` inside :func:`write_report`, and every report path
-constant is rooted at ``.prune/``.
+``test_no_apply_path`` pins this by AST, as a **closed whitelist**: every call in
+the module whose leaf name belongs to the filesystem, process or database
+families is matched against an exact ``(call, enclosing function)`` table, so a
+writing verb nobody thought to blacklist — ``Path.touch`` was the one that got
+through the earlier deny-list — fails the test by not being on the list.  Every
+report path constant is rooted at ``.prune/``.
 
 Standard library plus the repository's own strict JSON decoder, read-only against
 every scanned object, no network.
@@ -225,11 +228,26 @@ def vnext_snapshot(directory: Path) -> dict[str, Any]:
 
 
 def archive_snapshot(db_path: Path) -> dict[str, Any]:
-    """Entry titles of the frozen cc_memory archive, over a read-only connection."""
+    """Entry titles of the frozen cc_memory archive, over a footprint-free read.
+
+    ``mode=ro&immutable=1`` rather than a bare ``mode=ro``, following the
+    precedent measured in ``cc_memory/mem.py:connect_immutable`` on 2026-08-03: a
+    bare read-only open of a WAL-mode database still creates ``memory.db-wal``
+    and ``memory.db-shm`` beside it, so a tool that claims to change nothing it
+    reads would leave two files behind on every run.  ``immutable=1`` skips
+    locking and the shared-memory index entirely and writes nothing.  ``mode=ro``
+    stays in the URI because ``immutable=1`` alone will happily create a 0-byte
+    file at a path that does not exist.
+
+    The one thing ``immutable=1`` costs — rows a concurrent writer committed but
+    has not checkpointed are invisible — does not apply here: the archive layer
+    is frozen read-only (owner ruling 2026-08-03), so there is no concurrent
+    writer whose WAL could hold rows this read would miss.
+    """
     if not db_path.is_file():
         return {"db_path": str(db_path), "status": "no_data", "entries": [],
                 "reason": "archive database not present"}
-    connection = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    connection = sqlite3.connect(f"{db_path.resolve().as_uri()}?mode=ro&immutable=1", uri=True)
     try:
         rows = connection.execute("select id, title, status from entries order by id").fetchall()
     except sqlite3.Error as exc:
@@ -345,11 +363,24 @@ def locate_quote(path: Path, quote: Any) -> str:
     A transcript is JSON per line, so a quote taken from a session is matched
     against the raw line text — the same bytes the seat was shown — and never
     against a decoded field.
+
+    The length floor counts stripped characters while the match still uses the
+    quote verbatim.  Measured against ``MIN_QUOTE_CHARS`` on the raw string, a
+    quote of twenty spaces cleared the floor and then matched the indentation of
+    almost any source line, so a hallucinated candidate could hand itself a
+    locator and land.  A quote carries evidence only through the text in it, so
+    the floor counts text; the byte-match stays verbatim because trimming the
+    string a seat submitted would be landing a quote it never made.
     """
     if not isinstance(quote, str):
         raise CandidateRejected("evidence quote is not a string")
-    if len(quote) < MIN_QUOTE_CHARS:
-        raise CandidateRejected(f"evidence quote is shorter than {MIN_QUOTE_CHARS} characters")
+    trimmed = quote.strip()
+    if not trimmed:
+        raise CandidateRejected("evidence quote is blank, which is shorter than "
+                                f"{MIN_QUOTE_CHARS} characters of actual text")
+    if len(trimmed) < MIN_QUOTE_CHARS:
+        raise CandidateRejected(f"evidence quote is shorter than {MIN_QUOTE_CHARS} characters "
+                                "once surrounding whitespace is stripped")
     text = _read_text(path)
     for number, line in enumerate(text.split("\n"), start=1):
         if quote in line:
@@ -374,6 +405,49 @@ def layer_object_keys(*, file_memory_dir: Path, vnext_cards_dir: Path,
     }
 
 
+def is_utf8_encodable(value: Any) -> bool:
+    """False only for a string holding an unpaired surrogate."""
+    if not isinstance(value, str):
+        return True
+    try:
+        value.encode("utf-8")
+    except UnicodeEncodeError:
+        return False
+    return True
+
+
+def first_unencodable_location(value: Any, where: str = "candidate") -> str | None:
+    """Where an unpaired surrogate sits inside a candidate, or ``None``.
+
+    ``"\\ud800"`` is valid JSON and survives :func:`loads_strict_json`, because
+    Python strings may hold an unpaired surrogate; UTF-8 cannot encode one.  Left
+    alone it travels the whole way through verification and detonates at the
+    report write instead, which is the wrong place for it to fail — see
+    :func:`write_report`.  Landing it as a candidate-level drop keeps the failure
+    where every other bad candidate fails: this one candidate, with a reason, and
+    the rest of the run intact.
+
+    Keys are walked as well as values: a surrogate in an unknown key would ride
+    into ``unvalidated_field_names`` and reach the report the same way.
+    """
+    if isinstance(value, str):
+        return None if is_utf8_encodable(value) else where
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if not is_utf8_encodable(key):
+                return f"{where} key {key.encode('utf-8', 'backslashreplace').decode('ascii')!r}"
+            found = first_unencodable_location(item, f"{where}.{key}" if isinstance(key, str) else where)
+            if found is not None:
+                return found
+        return None
+    if isinstance(value, list):
+        for position, item in enumerate(value):
+            found = first_unencodable_location(item, f"{where}[{position}]")
+            if found is not None:
+                return found
+    return None
+
+
 def _require_text(candidate: dict[str, Any], field: str) -> str:
     value = candidate.get(field)
     if not isinstance(value, str) or not value.strip():
@@ -387,6 +461,10 @@ def verify_candidate(candidate: Any, *, roots: Sequence[Path], keys: dict[str, s
     """One candidate, landed against reality, or :class:`CandidateRejected`."""
     if not isinstance(candidate, dict):
         raise CandidateRejected("candidate is not a JSON object")
+    unencodable = first_unencodable_location(candidate)
+    if unencodable is not None:
+        raise CandidateRejected(f"{unencodable} holds an unpaired surrogate, which is not encodable "
+                                "as UTF-8 and so cannot appear in a report")
     kind, layer = candidate.get("kind"), candidate.get("object_layer")
     if kind not in KINDS:
         raise CandidateRejected(f"kind must be one of {KINDS}, got {kind!r}")
@@ -463,13 +541,20 @@ def build_candidate_report(candidates_path: Path, *, root: Path = ROOT,
         except CandidateRejected as exc:
             fields = candidate if isinstance(candidate, dict) else {}
             claim = fields.get("claim")
-            dropped.append({"index": position, "reason": str(exc), "kind": fields.get("kind"),
-                            "object_layer": fields.get("object_layer"),
-                            "claim": claim if isinstance(claim, str) else None})
+            # The echo is of rejected input, so it is filtered the same way the
+            # rejection was: a candidate dropped for an unpaired surrogate must
+            # not carry that surrogate back out through its own drop record.
+            dropped.append({"index": position, "reason": str(exc),
+                            "kind": fields.get("kind") if is_utf8_encodable(fields.get("kind")) else None,
+                            "object_layer": (fields.get("object_layer")
+                                             if is_utf8_encodable(fields.get("object_layer")) else None),
+                            "claim": claim if isinstance(claim, str) and is_utf8_encodable(claim) else None})
 
     landing = {"checks": ["evidence path exists and is inside the allowed roots",
-                          f"evidence quote of at least {MIN_QUOTE_CHARS} characters appears verbatim",
-                          "a CORRECT candidate names an object that exists in the layer it claims"],
+                          f"evidence quote of at least {MIN_QUOTE_CHARS} non-whitespace characters "
+                          "appears verbatim",
+                          "a CORRECT candidate names an object that exists in the layer it claims",
+                          "no field holds an unpaired surrogate"],
                "allowed_roots": [str(path) for path in roots],
                "failure_policy": "any failed check drops the whole candidate"}
     source = {"path": str(candidates_path), "submitted_count": len(document),
@@ -531,19 +616,39 @@ def resolve_report_destination(root: Path, relpath: str) -> Path:
 
 
 def write_report(root: Path, report: dict[str, Any], *, relpath: str) -> Path:
+    """Serialise first, open second, so a bad report cannot destroy a good one.
+
+    ``O_TRUNC`` empties the destination the moment the file is opened, so any
+    failure after that point leaves a truncated report behind.  Encoding is the
+    one step here that can fail on the report's own content — a string holding an
+    unpaired surrogate is not encodable as UTF-8 — and encoding it before the
+    open moves that failure in front of the truncation: the previous report is
+    still whole, and the caller gets a :class:`GapLensError` instead of an
+    unhandled ``UnicodeEncodeError``.
+
+    :func:`verify_candidate` already drops a candidate carrying one, so this is
+    the second of two layers rather than the only one: it also covers a surrogate
+    arriving from somewhere no candidate check looks, such as an undecodable
+    filename picked up by the transcript listing.
+    """
     destination = resolve_report_destination(root, relpath)
     parent = destination.parent
     parent.mkdir(parents=True, exist_ok=True)
     if parent.is_symlink() or not parent.is_dir():
         raise GapLensError(f"report directory is not a plain directory: {parent}")
     payload = json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    try:
+        encoded = payload.encode("utf-8")
+    except UnicodeEncodeError as exc:
+        raise GapLensError(f"report content is not encodable as UTF-8, so nothing was written "
+                           f"to {destination}: {exc}") from exc
     flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | getattr(os, "O_NOFOLLOW", 0)
     try:
         handle = os.open(destination, flags, 0o644)
     except OSError as exc:
         raise GapLensError(f"cannot open report destination {destination}: {exc}") from exc
-    with os.fdopen(handle, "w", encoding="utf-8") as stream:
-        stream.write(payload)
+    with os.fdopen(handle, "wb") as stream:
+        stream.write(encoded)
     return destination
 
 

@@ -15,6 +15,7 @@ absence of an apply path by AST rather than by intention.
 from __future__ import annotations
 
 import ast
+import collections
 import json
 import os
 import sqlite3
@@ -61,8 +62,15 @@ def _touched(path: Path, days_ago: float) -> Path:
 
 
 def _archive_db(path: Path, entries: tuple[tuple[str, str], ...]) -> Path:
+    """A WAL-mode archive, because the real ``cc_memory/memory.db`` is one.
+
+    The journal mode is not decoration: a plain ``mode=ro`` open of a WAL
+    database creates ``-wal`` and ``-shm`` beside it, and a rollback-journal
+    fixture would have hidden that from every test in this file.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(path)
+    connection.execute("PRAGMA journal_mode=WAL")
     with connection:
         connection.execute("CREATE TABLE entries(id TEXT PRIMARY KEY, title TEXT NOT NULL, "
                            "body TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'active')")
@@ -70,6 +78,11 @@ def _archive_db(path: Path, entries: tuple[tuple[str, str], ...]) -> Path:
                                entries)
     connection.close()
     return path
+
+
+def _sidecars(db_path: Path) -> list[Path]:
+    """The two files SQLite drops beside a WAL database when it is opened for real."""
+    return [db_path.parent / f"{db_path.name}{suffix}" for suffix in ("-wal", "-shm")]
 
 
 @pytest.fixture()
@@ -224,6 +237,33 @@ def test_assemble_refuses_on_an_untracked_card(world: dict[str, Any]) -> None:
         _assemble(world)
 
 
+def test_assemble_reads_the_archive_without_leaving_sidecars(world: dict[str, Any]) -> None:
+    """A tool that claims to change nothing must not deposit two files per run.
+
+    A bare ``mode=ro`` open of a WAL database creates ``memory.db-wal`` and
+    ``memory.db-shm`` next to it — which is a write, into the frozen archive
+    layer's own directory, on every ``assemble`` and every ``verify``.  Same
+    finding and same fix as ``cc_memory/mem.py:connect_immutable``.
+    """
+    database = world["archive_db"]
+    assert not any(path.exists() for path in _sidecars(database)), "fixture starts clean"
+
+    package = _assemble(world)
+
+    assert package["metadata"]["counts"]["archive_entries"] == 2, "the archive really was read"
+    assert [path for path in _sidecars(database) if path.exists()] == []
+
+
+def test_verify_reads_the_archive_without_leaving_sidecars(world: dict[str, Any], tmp_path: Path) -> None:
+    database = world["archive_db"]
+    candidate = _candidate(kind="CORRECT", object_layer=lens.LAYER_ARCHIVE,
+                           object_id="frozen-archive-map-20260803",
+                           evidence=[{"path": str(world["card_path"]), "quote": QUOTE}])
+    report = _verify(world, [candidate], tmp_path)
+    assert report["metadata"]["accepted_count"] == 1, "the archive keys really were read"
+    assert [path for path in _sidecars(database) if path.exists()] == []
+
+
 def test_assemble_declares_what_its_self_check_does_not_cover(world: dict[str, Any]) -> None:
     metadata = _assemble(world)["metadata"]
     assert metadata["preconditions"]["in_repository_objects_clean"] is True
@@ -290,6 +330,88 @@ def test_verify_drops_a_missing_path_a_wrong_quote_and_a_short_quote(world: dict
     assert f"shorter than {lens.MIN_QUOTE_CHARS}" in reasons[2]
     assert [item["claim"] for item in report["dropped"]] == [item["claim"] for item in submitted[:3]]
     assert report["candidates"][0]["claim"] == "lands cleanly"
+
+
+def test_verify_drops_a_whitespace_only_quote(world: dict[str, Any], tmp_path: Path) -> None:
+    """Twenty spaces cleared the raw-length floor and then matched almost anything.
+
+    The floor exists so that a locator means something.  Measured on the raw
+    string it did not: a quote of ``MIN_QUOTE_CHARS`` spaces passed it and then
+    found a verbatim match in the indentation of any sufficiently indented line,
+    so a candidate with no evidence at all could hand itself a ``path:line`` and
+    land.  The floor now counts stripped characters.
+    """
+    indented = _write(world["memory_dir"] / "deeply-indented.md",
+                      f"---\nname: deeply-indented\n---\n{' ' * 40}nested value\n")
+    submitted = [
+        _candidate(claim="props itself up on source indentation",
+                   evidence=[{"path": str(indented), "quote": " " * lens.MIN_QUOTE_CHARS}]),
+        _candidate(claim="pads a genuinely short quote out to the floor",
+                   evidence=[{"path": str(indented), "quote": f"{' ' * 30}nested"}]),
+    ]
+    report = _verify(world, submitted, tmp_path)
+    assert report["metadata"]["accepted_count"] == 0
+    reasons = {item["index"]: item["reason"] for item in report["metadata"]["drop_reasons"]}
+    assert "blank" in reasons[0] and f"shorter than {lens.MIN_QUOTE_CHARS}" in reasons[0]
+    assert f"shorter than {lens.MIN_QUOTE_CHARS}" in reasons[1] and "whitespace is stripped" in reasons[1]
+
+
+def test_verify_still_matches_a_padded_quote_byte_for_byte(world: dict[str, Any], tmp_path: Path) -> None:
+    """The floor counts stripped characters; the match stays verbatim.
+
+    Trimming the string a seat submitted before matching it would land a quote
+    the seat never made, so the two operations stay separate: padding that a real
+    line carries is matched, padding that it does not carry is a miss.
+    """
+    padded = f"   {QUOTE}   "
+    carrier = _write(world["memory_dir"] / "padded.md", f"---\nname: padded\n---\n{padded}\n")
+    submitted = [
+        _candidate(claim="the padding is really in the line", evidence=[{"path": str(carrier),
+                                                                        "quote": padded}]),
+        _candidate(claim="the padding is not in this line", evidence=[{"path": str(world["card_path"]),
+                                                                       "quote": padded}]),
+    ]
+    report = _verify(world, submitted, tmp_path)
+    assert report["metadata"]["accepted_count"] == 1
+    assert report["candidates"][0]["evidence"][0]["quote"] == padded, "the quote is stored unmodified"
+    assert report["candidates"][0]["evidence"][0]["locator"] == f"{carrier}:4"
+    assert "does not appear verbatim" in report["metadata"]["drop_reasons"][0]["reason"]
+
+
+def test_verify_drops_a_candidate_holding_an_unpaired_surrogate(world: dict[str, Any],
+                                                                tmp_path: Path) -> None:
+    """``"\\ud800"`` is valid JSON, is a valid Python string, and is not UTF-8.
+
+    It used to travel the whole way through verification and detonate at the
+    report write with an unhandled ``UnicodeEncodeError``, taking the previous
+    report with it.  Now it is what it always was — one bad candidate — and the
+    surrounding run finishes.
+    """
+    evidence = json.dumps([{"path": str(world["card_path"]), "quote": QUOTE}])
+    lone = "\\ud800"
+    submitted = ("[" + ", ".join(
+        f'{{"kind": "ADD", "object_layer": "file_memory", "claim": {claim}, '
+        f'"evidence": {ev}, "proposed_action": {action}}}'
+        for claim, ev, action in (
+            (f'"a claim ending in {lone}"', evidence, '"write a card"'),
+            ('"a clean claim"', evidence, f'"an action ending in {lone}"'),
+            ('"a clean claim"', f'[{{"path": {json.dumps(str(world["card_path"]))}, '
+                                f'"quote": "{QUOTE}{lone}"}}]', '"write a card"'),
+            ('"a clean claim"', evidence, '"write a card"'),
+        )) + "]")
+
+    report = _verify(world, submitted, tmp_path)
+
+    assert report["metadata"]["accepted_count"] == 1
+    assert report["metadata"]["dropped_count"] == 3
+    reasons = {item["index"]: item["reason"] for item in report["metadata"]["drop_reasons"]}
+    assert set(reasons) == {0, 1, 2}
+    assert all("unpaired surrogate" in reason for reason in reasons.values())
+    assert "candidate.claim" in reasons[0]
+    assert "candidate.proposed_action" in reasons[1]
+    assert "candidate.evidence[0].quote" in reasons[2]
+    assert report["dropped"][0]["claim"] is None, "the drop record must not carry the surrogate back out"
+    json.dumps(report, ensure_ascii=False).encode("utf-8")
 
 
 def test_verify_drops_evidence_outside_the_allowed_roots(world: dict[str, Any], tmp_path: Path) -> None:
@@ -455,6 +577,46 @@ def test_report_destination_refuses_a_symlinked_component(tmp_path: Path) -> Non
     assert "symlink" in str(caught.value)
 
 
+def test_write_report_serialises_before_it_truncates(tmp_path: Path) -> None:
+    """``O_TRUNC`` empties the destination at open, so encoding has to come first.
+
+    Encoding is the one step that can fail on the report's own content.  Behind
+    the open it destroyed the previous report on its way out; in front of it the
+    previous report is untouched and the caller sees a ``GapLensError``.
+    """
+    destination = _write(tmp_path / lens.EVIDENCE_RELPATH, '{"previous": "report"}\n')
+    before = destination.read_bytes()
+
+    with pytest.raises(lens.GapLensError) as caught:
+        lens.write_report(tmp_path, {"claim": "\ud800"}, relpath=lens.EVIDENCE_RELPATH)
+
+    assert "not encodable as UTF-8" in str(caught.value)
+    assert destination.read_bytes() == before, "the previous report survived the failed write"
+
+    lens.write_report(tmp_path, {"claim": "a report that encodes"}, relpath=lens.EVIDENCE_RELPATH)
+    assert json.loads(destination.read_text(encoding="utf-8")) == {"claim": "a report that encodes"}
+
+
+def test_cli_survives_a_surrogate_candidate_without_losing_the_previous_report(
+        world: dict[str, Any], tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    """End to end: the crash that truncated a report to zero bytes is now a drop."""
+    previous = _write(world["repo"] / lens.CANDIDATES_RELPATH, '{"previous": "report"}\n')
+    candidates = tmp_path / "seat_output.json"
+    candidates.write_text('[{"kind": "ADD", "object_layer": "file_memory", "claim": "a claim", '
+                          f'"evidence": [{{"path": {json.dumps(str(world["card_path"]))}, '
+                          f'"quote": "{QUOTE}"}}], "proposed_action": "\\ud800"}}]', encoding="utf-8")
+
+    code = lens.main(["--repo-root", str(world["repo"]), "--file-memory-dir", str(world["memory_dir"]),
+                      "--transcript-dir", str(world["transcripts"]), "verify", str(candidates)])
+
+    assert code == 0
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["accepted"] == 0 and summary["dropped"] == 1
+    written = json.loads(previous.read_text(encoding="utf-8"))
+    assert written["schema_version"] == lens.CANDIDATES_SCHEMA_VERSION
+    assert "unpaired surrogate" in written["metadata"]["drop_reasons"][0]["reason"]
+
+
 def test_cli_writes_both_reports_under_prune(world: dict[str, Any], tmp_path: Path,
                                              capsys: pytest.CaptureFixture[str]) -> None:
     common = ["--repo-root", str(world["repo"]), "--file-memory-dir", str(world["memory_dir"]),
@@ -529,30 +691,123 @@ def _function(tree: ast.Module, name: str) -> ast.FunctionDef:
                 if isinstance(node, ast.FunctionDef) and node.name == name)
 
 
-def test_no_apply_path() -> None:
-    """No mutating call exists outside the single sanctioned report write.
+def _calls_by_owner(tree: ast.Module) -> collections.Counter[tuple[str, str]]:
+    """Every call in the module as ``(leaf name, enclosing function) -> count``.
 
-    A promise in a docstring is not a structural guarantee, so this reads the
-    module's own syntax tree: the writing verbs a card-editing tool would need
-    are absent entirely, and the three calls that do touch the filesystem all sit
-    inside :func:`write_report`.
+    The leaf name is what a deny-list or an allow-list can actually see: an AST
+    cannot tell ``os.open`` from ``socket.open`` without resolving imports, so
+    the enclosing function is carried as a second key.  That is what stops a
+    sanctioned call from being quietly relocated: ``os.open`` is allowed *inside
+    write_report*, not in the module at large.
+    """
+    counted: collections.Counter[tuple[str, str]] = collections.Counter()
+
+    def descend(node: ast.AST, owner: str) -> None:
+        for child in ast.iter_child_nodes(node):
+            inner = child.name if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)) else owner
+            if isinstance(child, ast.Call):
+                if isinstance(child.func, ast.Attribute):
+                    counted[(child.func.attr, owner)] += 1
+                elif isinstance(child.func, ast.Name):
+                    counted[(child.func.id, owner)] += 1
+            descend(child, inner)
+
+    descend(tree, "<module>")
+    return counted
+
+
+# Every call name that could write to the filesystem, start a process or change a
+# database, gathered by family rather than by what this module happens to use.
+# Membership here does not accuse a call of anything: it only means the call must
+# appear in _SANCTIONED_SENSITIVE_CALLS to be allowed to exist.
+_SENSITIVE_CALL_NAMES = frozenset({
+    # os: file and directory mutation
+    "open", "fdopen", "close", "closerange", "write", "writev", "pwrite", "writelines", "truncate",
+    "ftruncate", "remove", "unlink", "rename", "renames", "replace", "rmdir", "removedirs", "mkdir",
+    "makedirs", "link", "symlink", "chmod", "lchmod", "chown", "lchown", "utime", "mknod", "mkfifo",
+    "umask", "chdir", "chroot", "sendfile", "copy_file_range", "dup", "dup2", "pipe",
+    # os: process control and code execution
+    "system", "popen", "fork", "forkpty", "kill", "killpg", "abort", "startfile", "posix_spawn",
+    "execv", "execve", "execvp", "execvpe", "execl", "execle", "execlp", "spawnv", "spawnl",
+    "exec", "eval", "__import__",
+    # pathlib: the write half of Path
+    "touch", "write_text", "write_bytes", "symlink_to", "hardlink_to",
+    # shutil
+    "copy", "copy2", "copyfile", "copyfileobj", "copymode", "copystat", "copytree", "move", "rmtree",
+    "make_archive", "unpack_archive",
+    # subprocess
+    "run", "call", "check_call", "check_output", "Popen", "communicate", "getoutput",
+    "getstatusoutput",
+    # tempfile
+    "NamedTemporaryFile", "TemporaryFile", "SpooledTemporaryFile", "TemporaryDirectory", "mkstemp",
+    "mkdtemp", "mktemp",
+    # sqlite3
+    "connect", "cursor", "execute", "executemany", "executescript", "commit", "rollback", "backup",
+    "create_function", "set_trace_callback",
+})
+
+# The closed list.  Anything sensitive that is not exactly here fails the test,
+# including a sanctioned call that moved to another function.
+_SANCTIONED_SENSITIVE_CALLS = {
+    ("connect", "archive_snapshot"): 1,   # sqlite3.connect, mode=ro&immutable=1
+    ("execute", "archive_snapshot"): 1,   # one select, pinned separately below
+    ("close", "archive_snapshot"): 1,     # closing that connection
+    ("run", "run_self_check"): 1,         # subprocess.run, git status, pinned separately below
+    ("mkdir", "write_report"): 1,         # .prune/ itself
+    ("open", "write_report"): 1,          # os.open of the one report destination
+    ("fdopen", "write_report"): 1,        # wrapping that descriptor
+    ("write", "write_report"): 1,         # the one write in the module
+}
+
+
+def test_no_apply_path() -> None:
+    """No mutating call exists outside the sanctioned report write — by allow-list.
+
+    A promise in a docstring is not a structural guarantee, and neither is a
+    deny-list: the earlier version of this test named the writing verbs it could
+    think of, and a mutation adding ``path.touch()`` in a fresh function passed
+    all four structural tests.  A deny-list can only catch what someone already
+    thought of, which is the wrong shape for a pin that has to survive future
+    edits by people who have not read it.
+
+    So the direction is inverted.  Every call in the module is classified by leaf
+    name; every call landing in the filesystem, process or database families must
+    match ``_SANCTIONED_SENSITIVE_CALLS`` exactly, count and enclosing function
+    included.  A new sensitive call fails by not being listed, and a sanctioned
+    one fails if it moves.
     """
     tree = _module_tree()
-    module_calls = _called_names(tree)
-    forbidden = {"write_text", "write_bytes", "unlink", "rmdir", "rmtree", "rename", "replace", "remove",
-                 "copy", "copy2", "copyfile", "move", "symlink", "link", "truncate", "chmod", "system",
-                 "popen", "execv", "check_call", "check_output", "commit", "executemany", "executescript"}
-    assert forbidden.isdisjoint(module_calls)
+    observed = {key: count for key, count in _calls_by_owner(tree).items()
+                if key[0] in _SENSITIVE_CALL_NAMES}
+    assert observed == _SANCTIONED_SENSITIVE_CALLS
 
-    writer = _called_names(_function(tree, "write_report"))
-    for verb in ("open", "fdopen", "mkdir"):
-        assert module_calls.count(verb) == 1, f"{verb} may only be called once, inside write_report"
-        assert verb in writer
-    assert "resolve_report_destination" in writer
+    assert "resolve_report_destination" in _called_names(_function(tree, "write_report"))
 
     for node in ast.walk(tree):
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             assert node.func.id != "open", "the builtin open() is never used"
+
+
+def test_the_allow_list_catches_a_writing_verb_nobody_blacklisted() -> None:
+    """The mutation that got through the deny-list, run against the allow-list.
+
+    Without this the allow-list is only asserted to pass on the code as written,
+    which is exactly what the deny-list also did.  The probe is the one that
+    escaped: a filesystem write, in a function of its own, using a verb
+    (``Path.touch``) that no hand-written forbidden set had listed.
+    """
+    source = Path(lens.__file__).read_text(encoding="utf-8")
+    mutant = ast.parse(source + "\n\ndef _latent_outside_prune_write(path: Path) -> None:\n"
+                                "    path.touch()\n")
+    observed = {key: count for key, count in _calls_by_owner(mutant).items()
+                if key[0] in _SENSITIVE_CALL_NAMES}
+    assert observed != _SANCTIONED_SENSITIVE_CALLS
+    assert observed.get(("touch", "_latent_outside_prune_write")) == 1
+
+    relocated = ast.parse(source.replace("def write_report(", "def _write_report_moved("))
+    moved = {key: count for key, count in _calls_by_owner(relocated).items()
+             if key[0] in _SENSITIVE_CALL_NAMES}
+    assert moved != _SANCTIONED_SENSITIVE_CALLS, "a sanctioned call may not change owner unnoticed"
 
 
 def test_every_report_path_constant_is_rooted_at_prune() -> None:
@@ -581,7 +836,7 @@ def test_the_only_database_traffic_is_a_select() -> None:
             assert isinstance(argument, ast.Constant) and isinstance(argument.value, str)
             statements.append(argument.value)
     assert statements and all(text.lower().startswith("select ") for text in statements)
-    assert "mode=ro" in Path(lens.__file__).read_text(encoding="utf-8")
+    assert "?mode=ro&immutable=1" in Path(lens.__file__).read_text(encoding="utf-8")
 
 
 def test_the_only_subprocess_is_a_read_only_git_status() -> None:
