@@ -1,0 +1,100 @@
+{
+  "schema": "w0_rstar_pricetag_delivery_validation_v1",
+  "authority": false,
+  "ledger_effect": "none",
+  "report": {
+    "nine_numbered_sections": true,
+    "nine_price_blocks": true,
+    "nine_premise_blocks": true,
+    "nine_retreat_blocks": true,
+    "nine_experiment_blocks": true,
+    "authority_false_present": true,
+    "both_baseline_hashes_present": true,
+    "no_em_dash_in_authored_report": true,
+    "untagged_prose_lines": []
+  },
+  "theorem_patch": {
+    "original_theorem_count": 23,
+    "fragment_count": 9,
+    "original_fields_unchanged": true,
+    "authority_unchanged": true
+  },
+  "slack_patch": {
+    "new_unconditional_rows": 2,
+    "new_g1_conditional_rows": 5,
+    "patched_unconditional_total": 7,
+    "patched_g1_total": 11
+  },
+  "experiments": {
+    "experiment_sections": true,
+    "proposition_blocks": true,
+    "pseudocode_blocks": true,
+    "constant_tables": true,
+    "budget_blocks": true,
+    "outcome_blocks": true,
+    "hashes_present": true,
+    "no_em_dash": true
+  },
+  "arithmetic": {
+    "body_removed": 1169408,
+    "front_increment_removed": 386560,
+    "portal_weighted_removed": 176088,
+    "core_pole_anchors_recovered": 8,
+    "hole_witnesses_h0": 4601025,
+    "boundary_arrangements": 47,
+    "power_cross_region_relations": 165600
+  },
+  "applicator": {
+    "idempotent_byte_check": true
+  },
+  "files": {
+    "03_slack_audit_table.patched.md": {
+      "bytes": 17457,
+      "sha256": "575cdbd8e54dfcf491f7d7a52124386706a283f3914c45ef8b1c621d32fb6e49"
+    },
+    "04_derived_theorems.patched.json": {
+      "bytes": 35706,
+      "sha256": "dcf658a86f72ce60e9cf04285b4d64f9d5f710bfb3926cc365b326ac54038fd0"
+    },
+    "README.md": {
+      "bytes": 2172,
+      "sha256": "61c21979eb8cc204abe9da115a15a99b043c0c49e41bc46cae6e8767cb132d63"
+    },
+    "RSTAR_PRICETAG_REPORT.md": {
+      "bytes": 42456,
+      "sha256": "add7f4f51035ff25700636a4617dbf5beeb18462adb03f60b12b5f4bac9def51"
+    },
+    "apply_price_tag_patches.py": {
+      "bytes": 5773,
+      "sha256": "55ed99cc6994a387f5e08a1eddea974929c625be524e2b4b05b50996f961b15b"
+    },
+    "patch_A_total_table.md": {
+      "bytes": 10335,
+      "sha256": "6ff9c6e418b102edc2c2c2a89a1e62ac9eb09d32056a17168e5669f069962a63"
+    },
+    "patch_B_04_derived_theorems.merge.json": {
+      "bytes": 18684,
+      "sha256": "5b76cb86374b4df9e3c381125001ec6c3efd95a6e1364c6080ecb5ebb2448f95"
+    },
+    "patch_C_03_slack_audit_rows.merge.json": {
+      "bytes": 5460,
+      "sha256": "3c44e81dd99ec13c5a3764314eaf4635b7ad53bcb1a7f72f79c879e842d3777d"
+    },
+    "patch_D_experiment_specs.md": {
+      "bytes": 22123,
+      "sha256": "7a30a7caa9e18e27c272dfe626b748992fe28b0f6f5cd87538584f558abee135"
+    },
+    "price_tag_arithmetic_audit.py": {
+      "bytes": 16817,
+      "sha256": "1239fbc94ea101a22bcebd5048a350658b9be8b343c0f80abeeac333d656754f"
+    },
+    "price_tag_arithmetic_results.json": {
+      "bytes": 5253,
+      "sha256": "4e9e22957251b9bca60c7fc2b83d478f0b0ff7d0932833f8a23a270f8d81486c"
+    },
+    "validate_delivery.py": {
+      "bytes": 10062,
+      "sha256": "54b8c21f5bc0c8e5caccf7f0ba0a4ed45b0286c3b91ed88d7534976f7e573306"
+    }
+  }
+}

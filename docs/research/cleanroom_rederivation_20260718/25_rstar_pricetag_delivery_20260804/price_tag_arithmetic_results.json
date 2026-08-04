@@ -1,0 +1,192 @@
+{
+  "baseline_hashes": {
+    "data/preprocessed/mandatory_exact_instances.json": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
+    "rules/canonical_rules.json": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05"
+  },
+  "body_and_front": {
+    "mandatory_instance_pose_incidences": {
+      "after_body_in_region": 2670360,
+      "after_front_in_region": 2283800,
+      "baseline": 3839768,
+      "body_plus_front_removed": 1555968,
+      "body_plus_front_removed_ratio": 0.40522448231247304,
+      "body_removed": 1169408,
+      "body_removed_ratio": 0.3045517333338889,
+      "front_increment_removed": 386560,
+      "front_increment_removed_ratio": 0.1447595080813074
+    },
+    "per_template": {
+      "M3": {
+        "baseline": 17952,
+        "body_in_region_keep": 13920,
+        "body_in_region_removed": 4032,
+        "front_in_region_keep": 12000,
+        "front_increment_removed": 1920
+      },
+      "M5": {
+        "baseline": 16896,
+        "body_in_region_keep": 9600,
+        "body_in_region_removed": 7296,
+        "front_in_region_keep": 8000,
+        "front_increment_removed": 1600
+      },
+      "M6": {
+        "baseline": 16900,
+        "body_in_region_keep": 9540,
+        "body_in_region_removed": 7360,
+        "front_in_region_keep": 8100,
+        "front_increment_removed": 1440
+      },
+      "POLE": {
+        "baseline": 4761,
+        "body_in_region_keep": 4225,
+        "body_in_region_removed": 536
+      }
+    }
+  },
+  "boundary_layout": {
+    "current_kept": 1,
+    "excluded": 46,
+    "one_arm_23_disjoint_length3_sets": 24,
+    "one_arm_with_corner": 23,
+    "one_arm_without_corner": 1,
+    "protocol_core_baseline_poses": 7688,
+    "protocol_core_current_kept": 1,
+    "protocol_core_excluded": 7687,
+    "protocol_core_region_contained_poses_if_body_rule_extended": 1800,
+    "two_arm_nonoverlapping_geometric_arrangements": 47
+  },
+  "hole_rectangle_witness_domain": {
+    "all_original_min_side_ge_6": 4601025,
+    "all_shapes_6_to_14_inside_one_region": 50625,
+    "current_6x7_or_7x6_inside_one_region": 3600,
+    "removed": 4597425,
+    "retained_ratio": 0.0007824343488679153,
+    "same_shape_anywhere": 8320,
+    "same_shape_crossing_exactly_one_seam": 3760,
+    "same_shape_crossing_two_perpendicular_seams": 960,
+    "same_shape_removed_by_seam_rule": 4720
+  },
+  "portal_and_core_masks": {
+    "core_front_overreserve_with_other_current_masks": {
+      "manufacturing_pose_counts": {
+        "M3": {
+          "exact_54_front_semantics": 0,
+          "reserve_all_66": 0
+        },
+        "M5": {
+          "exact_54_front_semantics": 0,
+          "reserve_all_66": 0
+        },
+        "M6": {
+          "exact_54_front_semantics": 0,
+          "reserve_all_66": 0
+        }
+      },
+      "pole_anchors_exact_54_front_semantics": 28,
+      "pole_anchors_recovered": 8,
+      "pole_anchors_reserve_all_66": 20,
+      "recovered_anchor_coordinates": [
+        [
+          1,
+          60
+        ],
+        [
+          1,
+          63
+        ],
+        [
+          1,
+          66
+        ],
+        [
+          12,
+          59
+        ],
+        [
+          12,
+          60
+        ],
+        [
+          12,
+          64
+        ],
+        [
+          12,
+          65
+        ],
+        [
+          12,
+          66
+        ]
+      ]
+    },
+    "live_stubs": {
+      "board_rim": 20,
+      "internal": 160,
+      "live": 180,
+      "nominal": 200,
+      "swallowed_by_fixed_body": 20
+    },
+    "manufacturing_single_pose_domain": {
+      "per_template": {
+        "M3": {
+          "after_stubs": 10256,
+          "before_stubs": 10952,
+          "recovered_if_only_rim_stubs_removed": 72,
+          "removed_by_stubs": 696
+        },
+        "M5": {
+          "after_stubs": 6176,
+          "before_stubs": 7220,
+          "recovered_if_only_rim_stubs_removed": 108,
+          "removed_by_stubs": 1044
+        },
+        "M6": {
+          "after_stubs": 6428,
+          "before_stubs": 7298,
+          "recovered_if_only_rim_stubs_removed": 90,
+          "removed_by_stubs": 870
+        }
+      },
+      "weighted_after_stubs": 1900680,
+      "weighted_before_stubs": 2076768,
+      "weighted_recovered_if_only_rim_stubs_removed": 18216,
+      "weighted_removed": 176088,
+      "weighted_removed_ratio": 0.08478944205611796
+    },
+    "pole_single_pose_domain": {
+      "after_stubs": 3623,
+      "before_stubs": 3888,
+      "recovered_if_only_rim_stubs_removed": 28,
+      "removed_by_stubs": 265,
+      "removed_ratio": 0.06815843621399177
+    }
+  },
+  "power_relation_domain": {
+    "anchors_with_cross_region_reach": 3600,
+    "anchors_with_no_coverage_reach_into_another_region": 625,
+    "cross_region_incidences": 165600,
+    "cross_region_ratio": 0.2944,
+    "diagonal_neighbor_incidences": 14400,
+    "one_axis_same_region_incidences": [
+      126,
+      126,
+      126,
+      126,
+      126
+    ],
+    "one_axis_total_coverage_incidences": [
+      141,
+      156,
+      156,
+      156,
+      141
+    ],
+    "orthogonal_neighbor_incidences": 151200,
+    "region_contained_pole_anchors": 4225,
+    "same_region_incidences": 396900,
+    "total_pole_anchor_covered_cell_incidences": 562500
+  },
+  "schema": "w0_rstar_price_tag_arithmetic_audit_v1"
+}
