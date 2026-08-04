@@ -102,6 +102,59 @@ def test_the_hook_module_docstring_records_the_freeze() -> None:
     assert "read-only archive since 2026-08-03" in text
 
 
+# --- 1b. 类型化渲染:pinned 行不再透传档案自己的 free-form 摘要 -----------------
+
+
+@pytest.mark.parametrize("interpreter", INTERPRETERS)
+def test_the_pinned_lines_render_the_typed_title(tmp_path: Path, interpreter: str) -> None:
+    """真库的 pinned 条目按 `id — title` 渲染,标题就是 entries.title 那一列。"""
+    context = _context(_run(_stage(tmp_path), interpreter))
+    assert "- `memory-runtime-protocol` — Slim memory runtime protocol" in context
+
+
+@pytest.mark.parametrize("interpreter", INTERPRETERS)
+def test_the_old_write_protocol_never_reaches_the_session(
+    tmp_path: Path, interpreter: str
+) -> None:
+    """冻结前写的 index_summary 还在库里(档案是史料,不改),但不许被注进会话。
+
+    `memory-runtime-protocol` 的摘要原文是「新会话 boot;查询 search/read
+    --body/--semantic;改记忆 impact/read → set-fact/add-entry --force(订正)/
+    supersede(真取代)→ finalize」——整句都是旧写协议,渲染在冻结横幅底下就成了
+    当前指令。这条钉住它不再出现(2026-08-03 对抗审查 stale-pinned-session-payload)。
+    """
+    context = _context(_run(_stage(tmp_path), interpreter))
+    for stale in ("新会话 boot", "--semantic", "set-fact", "add-entry", "supersede"):
+        assert stale not in context, stale
+
+
+def test_a_pinned_entry_whose_summary_is_an_instruction_renders_only_its_title(
+    tmp_path: Path,
+) -> None:
+    """合成一条摘要写满写命令的 pinned 条目,证明这条守卫真的会咬。"""
+    hook = _stage(tmp_path)
+    connection = sqlite3.connect(hook.parent.parent / "memory.db")
+    connection.execute(
+        "INSERT OR REPLACE INTO entries "
+        "(id, title, body, status, pinned, metadata_json, created_at, updated_at) "
+        "VALUES (?, ?, ?, 'active', 1, ?, ?, ?)",
+        (
+            "aaa-probe-entry",
+            "probe title only",
+            "先跑 boot 再 set-fact --force 然后 add-entry",
+            json.dumps({"index_summary": "新会话 boot;set-fact/add-entry --force;--semantic"}),
+            "2026-08-03T00:00:00Z",
+            "2026-08-03T00:00:00Z",
+        ),
+    )
+    connection.commit()
+    connection.close()
+    context = _context(_run(hook))
+    assert "- `aaa-probe-entry` — probe title only" in context
+    for stale in ("新会话 boot", "set-fact", "add-entry", "--semantic"):
+        assert stale not in context, stale
+
+
 # --- 2. fail-open ------------------------------------------------------------
 
 
@@ -143,6 +196,108 @@ def test_an_unimportable_mem_module_is_silent_and_zero(tmp_path: Path) -> None:
     result = _run(hook)
     assert result.returncode == 0
     assert result.stdout == ""
+
+
+@pytest.mark.parametrize("interpreter", INTERPRETERS)
+def test_a_shadowed_stdlib_module_beside_the_hook_never_runs(
+    tmp_path: Path, interpreter: str
+) -> None:
+    """hook 自己的目录被踢出 sys.path,`hooks/json.py` 压根轮不到被 import。
+
+    以脚本方式跑 hook 时,Python 把 hook 所在目录放在 sys.path 最前面,所以
+    `cc_memory/hooks/json.py` 会先于标准库被 import。旧版本这个 import 在任何
+    guard 之外,一个 RuntimeError 就让 SessionStart 拿到 rc=1 + traceback
+    (2026-08-03 对抗审查 sessionstart-fail-open)。现在两道防线:路径先被摘掉
+    (这条),摘不掉时还有 fail-open 边界兜底(下一条)。
+    """
+    hook = _stage(tmp_path)
+    (hook.parent / "json.py").write_text(
+        "raise RuntimeError('shadowed stdlib module reached')\n", encoding="utf-8"
+    )
+    result = _run(hook, interpreter)
+    assert result.returncode == 0, result.stderr
+    assert result.stderr == ""
+    assert "shadowed stdlib module reached" not in result.stderr
+    assert "additionalContext" in result.stdout, "正常注入不该被这个投毒文件影响"
+
+
+@pytest.mark.parametrize("interpreter", INTERPRETERS)
+def test_a_failing_import_inside_the_guard_is_silent_and_zero(
+    tmp_path: Path, interpreter: str
+) -> None:
+    """import 本身也在 fail-open 边界里。
+
+    `PYTHONPATH` 排在标准库前面、又不是 hook 自己的目录,所以路径加固摘不掉
+    它——正好用来证明边界(而不是加固)在托底:`sqlite3` import 直接炸,进程
+    仍必须 rc=0 且不打印。
+    """
+    hook = _stage(tmp_path)
+    poison = tmp_path / "poison"
+    poison.mkdir()
+    (poison / "sqlite3.py").write_text(
+        "raise RuntimeError('poisoned sqlite3 reached')\n", encoding="utf-8"
+    )
+    import os
+
+    env = dict(os.environ, PYTHONPATH=str(poison))
+    result = subprocess.run(
+        [interpreter, str(hook)], capture_output=True, text=True, env=env, timeout=60
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == ""
+    assert result.stderr == ""
+
+
+@pytest.mark.parametrize("interpreter", INTERPRETERS)
+def test_a_mem_module_raising_system_exit_is_silent_and_zero(
+    tmp_path: Path, interpreter: str
+) -> None:
+    """`SystemExit` 继承 BaseException,旧的 `except Exception` 漏它。
+
+    mem.py 是被 exec_module 真跑起来的仓库内文件,它抛 SystemExit(23) 会原样
+    穿过旧 guard,让 hook 用攻击者选定的退出码结束。
+    """
+    hook = _stage(tmp_path)
+    (hook.parent.parent / "mem.py").write_text("raise SystemExit(23)\n", encoding="utf-8")
+    result = _run(hook, interpreter)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == ""
+
+
+@pytest.mark.parametrize("interpreter", INTERPRETERS)
+def test_a_mem_module_raising_a_bare_base_exception_is_silent_and_zero(
+    tmp_path: Path, interpreter: str
+) -> None:
+    """SystemExit 只是最干净的一例,任何 BaseException 子类都要被吞掉。"""
+    hook = _stage(tmp_path)
+    (hook.parent.parent / "mem.py").write_text(
+        "class Boom(BaseException):\n    pass\n\n\nraise Boom('not an Exception')\n",
+        encoding="utf-8",
+    )
+    result = _run(hook, interpreter)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == ""
+
+
+def test_only_sys_is_imported_outside_the_fail_open_boundary() -> None:
+    """顶层只留 `import sys`——它是唯一不可能被仓库内文件顶掉的模块。
+
+    这条打在源码结构上:边界的正确性靠「guard 之外没有可失败的代码」,不是靠
+    上面那几条恰好想到的触发式。
+    """
+    import ast
+
+    tree = ast.parse(HOOK_PATH.read_text(encoding="utf-8"))
+    top_level_imports = [
+        node for node in tree.body if isinstance(node, (ast.Import, ast.ImportFrom))
+    ]
+    names = sorted(
+        alias.name for node in top_level_imports if isinstance(node, ast.Import) for alias in node.names
+    )
+    assert names == ["sys"], names
+    assert not [node for node in top_level_imports if isinstance(node, ast.ImportFrom)]
+    assigned = [node for node in tree.body if isinstance(node, (ast.Assign, ast.AnnAssign))]
+    assert assigned == [], "顶层不许再算路径常量,它们要在 guard 里算"
 
 
 def test_an_ascii_only_terminal_does_not_break_the_chinese_payload(tmp_path: Path) -> None:
