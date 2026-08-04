@@ -4,10 +4,14 @@
 > **双 ledger**：`U=(1188,18)` 本线不碰；`L=absent`，本批**没有登记任何值**，也没有资格登记。
 > **基线**：分支 `w0/front-aware-g1-20260803`，起点 main `0dcb531`。
 > 解释器 `.venv-uvbolt-backup/bin/python`（3.13.13），CP-SAT 9.15.6755，workers ≤ 4，同时刻至多一个 solve。
+> **文档分区**：§1–§9 是 08-03 乙段收口的记录，§10 是 08-03 修复批，§11 是 08-04
+> fix-and-rerun 批（strict 语义收敛后的全量重跑，终态止损）。**§1–§9 的一切列数、
+> 面积数、缺口数都是 loose 连通读法下的 08-03 快照**，当前口径见 §11.3；
+> G1 终态两轮与本批一致（`INFEASIBLE`），没有被改写过。
 
 ---
 
-## 1. G1 终态
+## 1. G1 终态（08-03 两轮；strict 重跑后的当前口径见 §11）
 
 **`INFEASIBLE`**，升级梯走到 **L1**（两轮，见 §4/§5）；**L2–L4 未跑、未被排除**（§6），L5 按开线书不做。
 
@@ -210,7 +214,10 @@ new best valid: 10 bodies
 "凑得出 219 台，但凑不出 5L / 6I3 / 6I5 那一份"。
 
 **这是本批最有信息量的一步**：它把"catalog 薄"这个笼统说法拆成了两个可分别测量的量，
-并且证明了第一个量可以用瞄准解决、第二个量不能。
+并且证明了第一个量（总台数）可以用瞄准解决。第二个量（面积）**本轮协议没有解决**——
+L1-a 每族只跑完菜单前 25 个名次（§5.1，预算被深度吃掉），面积预门在这种受限搜索下仍
+判 SHORT。这是**受限搜索的读数**，不是"面积量不能用瞄准解决"的结论
+（2026-08-04 复核订正：初版把受限搜索写成了决断性结论）。
 
 ---
 
@@ -385,3 +392,232 @@ live checker 因此从「计数漂移」变成 PASS——那个漂移是甲/乙�
   按义务写明在 G1 转绿前必须二选一补上。本批选了登记，不选改判据——改判据会动 catalog
   的准入语义，那是重跑 G1 的量级。
 - **L2 与任何 G1 重跑。** 按修复批任务书不做，等 owner 知悉本批结论后另立批。
+
+---
+
+## 11. fix-and-rerun 批（2026-08-04）：strict 语义收敛 + 全量重跑，终态 **止损**
+
+任务书 `.artifacts/w0_fixrerun_20260804/opening_brief.md`（v2.1）。分支
+`w0/fixrerun-20260804`，起点 main `cf13b3c`。做的事：把 §4 口径注里那条「实现是 loose、
+登记是 strict」的欠账修掉，把连通性从后置过滤搬进生成模型，修 `:431` 的带孔预算错口径，
+把 `O-FRONT-SIMULTANEITY` 做成 G1 PASS 的 fail-closed 前置，然后按旧协议全量重生成
+catalog 并重跑 master。
+
+**终态**：任务书 §0 四分里的 **止损**——strict 语义直产的 catalog 供给 2,544 < 3,325，
+预门在 master 之前就判 SHORT，master 重跑仍 `INFEASIBLE`。止损的含义与不含义见 §11.6。
+
+### 11.1 七步执行记录（九笔提交）
+
+| # | 提交 | 内容 | preflight 收据（`.artifacts/w0_fixrerun_20260804/`） |
+|---|---|---|---|
+| 1 | `4497e05` | 步骤 1：`R-PAT-CONN` 实现收敛到登记的 strict 语义（单根分量）——evaluator 的 `portal_component` 从多源 BFS 并集改为单源、anchor 判据随之收紧；charter 与 `derived_theorems.json` 同步 | `preflight_c1_evaluator_strict.log` |
+| 2 | `3fd3f98` | 步骤 2：带孔 target 预算判据改**动态 maxK**（`hole_forced_free_credit`），不再按 42 硬扣 | `preflight_c2_hole_budget_maxk.log` |
+| 3 | `682d337` | 步骤 3：连通性内聚进生成器 CP-SAT（单源流证书，根 = `min(live_stubs)`，与 evaluator 的 `component_root` 同规则），剥落路径废除 | `preflight_c3_inmodel_connectivity.log` |
+| 4 | `8a039ed` | 步骤 5：`O-FRONT-SIMULTANEITY` 关闭检查 + gate 第六条 clause，且它是 `_terminal_state` 的硬前置（义务未关时终态只能是 `OBLIGATION_OPEN`，拼不出 PASS） | `preflight_c4_obligation_failclosed.log` |
+| 5 | `523dcd8` | 复核修复：义务登记表单次读取，摘要与解析同源同字节 | `preflight_c5_registry_single_read.log` |
+| 6 | `76c8c14` | 复核修复：补真正的离走廊孔洞 fixture（`R-PAT-CONN` + `R-HOLE-IN-REGION` 双违例） | `preflight_c6_off_corridor_hole_fixture.log` |
+| 7 | `ec3cdd6` | 复核修复：in-model 筛除量改**配对 loose 对照解**，`corridor_tax` 降级为 fail-closed 不变量 | `preflight_c7_inmodel_paired_control.log` |
+| 8 | `abc41f2` | 复核修复：`NO_POSE` / `NO_HOLE_POSE` 从 `targets_unproved` 拆出 | `preflight_c8_no_candidate_split.log` |
+| 9 | `af51fdf` | 文档精度：对照解计入共享 admission clock 显式化、`NO_HOLE_POSE` 注释改「未运行 solver」 | `preflight_c9_doc_precision.log` |
+
+表里九笔覆盖任务书的步骤 1/2/3/5 与复核修复；**步骤 4（catalog 全量重生成）与步骤 6
+（master 重跑）是运行不是提交**，收据在 §11.2 与 §11.4；步骤 7（文书收尾）= 本章 +
+`PROBE_REPORT.md` §四 + `CONSULT_VERDICT_20260804.md` §三勘误注 +
+`STOPLOSS_CHECKPOINT_20260804.md`。
+
+九份收据各是一次独立运行（staged 范围，结果 `PASSED`，pytest 1,544 passed；真实时间戳，
+不复制）。**措辞订正（08-04 复核）**：初版写「18 项检查全 OK」不字面成立——日志按
+`[n/18]` 编号（18 是声明的总项数），实际打印 15 个编号段、20 条 `OK`；能报告的是
+overall `PASSED`。首轮四笔经 codex 复核
+**BLOCK**（1 high 3 low），修复轮四笔经复验 **PASS_WITH_NOTES**，low-3 由主线自修。
+g1 全套 407 passed（`g1_suite_after_fixes.log`，复验席独立重跑同绿）。
+`--full` 两次是 **BLOCKED**，唯一阻塞项是既存的 r4 fixture 环境态（18 errors，全部
+`test_r4_external_brain_handoff_v1.py`；本批前基线同红、base-vs-head 字节同），
+记在 §11.7 欠账 3，不记本批账。
+
+**步骤 2 的动态 maxK 实测值**（`hole_forced_free_credit`，本批运行口径 `spine=false`）：
+CLEAN 2、边界七族与 CORNER 各 4、CORE 0；同函数在 `spine=true` 下给 13–16，
+所以它必须是算出来的、不能写常量。
+
+**步骤 3 的形态选择**：单源流，根取 `min(live_stubs)`。移植探测臂建模时**没有**照抄
+loose 臂的多源 flow——多源等于把并集语义原样搬进模型，那样重跑等于白跑。
+
+### 11.2 三跑协议（参数逐一复原自旧三份 manifest 的 `config` 块）
+
+| | L0 | L1a | L1b |
+|---|---|---|---|
+| `budget_seconds` | 5,400 | 5,400 | 5,400 |
+| `target_seconds` | 2.0 | 2.0 | 5.0 |
+| `solutions_per_target` | 3 | 20 | 8 |
+| `max_targets` | 无 | 80 | 无 |
+| `min_bodies` | 1 | 1 | 10 |
+| 实测 wall | 5,401.0 s | 2,315.9 s | 5,403.9 s |
+
+三跑共用：`workers=4`、`seed=0`、`spine=false`、`ceiling_seconds=30`、
+`max_derived_subsets=3`、十族全跑。串行，每时刻至多一个 solve。
+冻结输入：`rules/canonical_rules.json`（17,510 B，`5012845367e2…`）、
+`data/preprocessed/mandatory_exact_instances.json`（88,261 B，`545b98c2b4f9…`）。
+求解器 9.15.6755 / Python 3.13.13——**新 run root 记的是真实版本号**，
+§9.3 记的 `cpsat_version: "unknown"` 缺陷在本批产物上不复现。
+
+产物：`.artifacts/w0_fixrerun_20260804/regen/{L0,L1a,L1b}/catalog/`，
+并集 **760 签名**（逐族 78/85/85/85/46/0/109/101/69/102），master 收 **770 列**
+（每族另加一条现场合成的空 pattern）。
+
+### 11.3 供给账：strict 直产 vs 旧 loose（逐族最好 body 面积，单位格）
+
+同一把尺子先量旧并集验刻度：旧 loose 三份 catalog 复算得 3,113 / 1,672 签名 /
+最小孔损 19@BOTTOM_I3——与台账逐字一致，量具可信。
+
+| 区域族 | 区数 | 旧 loose best（08-03） | **新 strict best（08-04）** | 旧 loose 带孔 best | 新 strict 带孔 best |
+|---|---|---|---|---|---|
+| BOTTOM_I1 | 1 | 126 | **117** | 100 | 86 |
+| BOTTOM_I2 | 1 | 119 | **117** | 95 | 92 |
+| BOTTOM_I3 | 1 | 119 | **117** | 100 | 86 |
+| BOTTOM_I4 | 1 | 125 | **111** | 100 | 91 |
+| CLEAN | 16 | 134 | **103** | 104 | 86 |
+| CORNER | 1 | 110 | **107** | 85 | 83 |
+| LEFT_J1 | 1 | 125 | **108** | 100 | 92 |
+| LEFT_J2 | 1 | 125 | **110** | 101 | 85 |
+| LEFT_J3 | 1 | 120 | **109** | 95 | 86 |
+| CORE | 1 | 0 | 0 | — | — |
+| **无孔基线合计** | | **3,113** | **2,544** | | |
+| **计最小孔损后** | | 3,094（−19@BOTTOM_I3） | **2,528**（−16@LEFT_J1） | | |
+| **对 3,325 的缺口** | | 212 | **781** | | |
+
+对照口径三条，别混：旧 **loose** 直产 3,113（缺 212）；旧 catalog 事后按 strict 重滤
+2,749（缺 576；`PROBE_REPORT.md` §一 量化锚与 `CONSULT_VERDICT_20260804.md` §六）；
+本批 strict **直产** 2,544（缺 781）。
+重滤只删列，直产是换了模型重新找——两者不是同一个量，直产更低不等于实现变差
+（判读见 §11.6）。
+
+台数账：strict 并集的 **count supply ceiling 241 ≥ 需求 219**（计最小孔损 2@CORNER 后
+239）——**ceiling 高于需求 20，count 预门不触发**。这个 20 不是 class-feasible master
+的余量：ceiling 逐族独立取最好 pattern 相乘，故意高估，只有 ceiling < demand 才是结论。
+
+真正短的是面积与 **M6 模板供给 34 < 需求 38**（`master/pre_gate.json` 的
+`__template:M6__`，合并的是 6I3 + 6I4 + 6I5 的总需求 32+3+3）。它与 master 不可行核里
+那条 `assume_class[6I3]` 是**两个相关但不等同的 6×4 供给信号**（08-04 复核订正，初版写
+「同一件事」）：同一份 pre_gate 里 6I3 单类 ceiling 63 ≥ 需求 32、并不 short；而删除核
+只留 6I3，表达的是「九个 cover + 总台数 + 6I3」这一组充分矛盾，不是预门那条合并短缺。
+
+### 11.4 master 收据（run root `.artifacts/w0_fixrerun_20260804/regen/gate_union/`）
+
+- 无求解器预门 `T-SUPPLY-CEILING`：`SHORT`，三条短缺 `__body_area__` 2,544、
+  `__body_area_with_hole__` 2,528、`__template:M6__` 34（需求 38）。
+- master：`INFEASIBLE`，solver wall 0.123 s、deterministic 0.271 s、1,472 branches；
+  规模 787 变量 / 29 约束 / 770 列。
+- 不可行核（删除法，21 族 21 次求解 0.953 s，`proved_minimal: true`，无 undecided）：
+  九个非 CORE 的 `assume_cover[*]` + `assume_total_bodies` + **`assume_class[6I3]`**。
+  与 08-03 的 L1 并集核相比，`assume_class[5L]`、`assume_class[6I5]` 退出、`6I3` 留下。
+- gate：`verdict: NOT_PASSED`、`terminal_state: INFEASIBLE`；第五条 receipt 闭合
+  `ok: true`（写 receipt 前后各验一次）；第六条 `ok: false`——`O-FRONT-SIMULTANEITY`
+  保持未 discharge，理由是 `"no geometry: the master produced nothing to check"`。
+  **这是 fail-closed 的正确形态**：master 没产出几何，义务就没有可核对的对象，
+  于是它开着；开着的义务使 PASS 结构上不可达。义务登记表 sha256 `b6c449c4…` 进 gate
+  与 receipt。
+
+### 11.5 报警计量三表（任务书步骤 4 的三个语义各不相同的表）
+
+**表①·in-model 筛除量 = 配对 loose 对照解**（旧的 `corridor_tax` 计量已废：它在 accept
+路径上按构造恒零，是 fail-soft 零）。做法：每个被 strict **证明**不可行的 target，用同
+预算、同模型、只把连通性换回 loose 读法再解一次。
+
+| 跑 | strict 证死 target | 其中 loose 也证死 | **loose 可解（= 连通税）** | loose 未判 | 对照解耗时 |
+|---|---|---|---|---|---|
+| L0 | 417 | 402 | **0** | 15 | 260.6 s |
+| L1a | 119 | 119 | **0** | 0 | 60.7 s |
+| L1b | 626 | 569 | **0** | 57 | 580.7 s |
+
+**「loose 可解」一栏三跑全零**（08-04 复核重写；初版把 72 个 loose 未判并进了否定结论，
+是「UNKNOWN 当否定」的复发）。逐项能说的：
+
+- **loose 可解 = 0**（417+119+626 = 1,162 个 strict 证死 target 里一个都没有）；
+- **loose 也证死 = 1,090**（402+119+569）——只对这 1,090 个能排除「strict 连通性是
+  **唯一**死因」；
+- **loose 未判 = 72**（L0 15 + L1b 57；L1b 逐族 I1 8 / I2 10 / I3 5 / I4 7 / J1 8 /
+  J2 9 / J3 7，CLEAN 0、CORNER 3）。manifest 自己写明 `loose_unproved` 「says nothing」，
+  这 72 个既不能记进连通税、也不能记进「连通税为零」。
+
+所以本批的准确口径是：**当前没有坐实的连通性独杀案例，但「连通税严格为零」未证**。
+另注：「loose 也证死」只排除唯一死因，**不构成**对死因是「面积/装载」的积极鉴定——
+本批没有做死因归属实验，初版那句「死因全是面积/装载」一并撤回。
+
+**表②·postcheck divergence**：三跑十族 30 个格子全 **0**。它是「solver 产出的 spec 被
+evaluator 拒绝」的分歧计数，strict 内聚正确时应恒 0；非零会当场 `GeneratorBlocked`，
+所以落盘的 catalog 必然带 0——这条要读成「没有反证」，不是「已证等价」。
+
+**表③·retired path 状态**：`strip_dead_bodies`、`post_filter_connectivity_reject`、
+`corridor_tax_meter` 三条路径 2026-08-04 **显式废除**（manifest 的 `retired_paths` 逐条
+写明废除理由），不是静默留一个 0 冒充「没发生」。
+
+**预算截断的量**（同一份 manifest 的 `target_status_counts`）：L0 未判 1,260、L1a 465、
+L1b 788；`targets_no_candidate` 54/54/0（CORE 的 `NO_POSE`，已从未判里拆出）。
+其中 L0 的 CLEAN 一族 251 个 target 里 **193 个未判**。
+
+### 11.6 判读：BUDGET_CENSORED，不是 strict-G1 家族死刑
+
+**能说的**：在本批的三跑协议（每 target 2–5 s、总预算 5,400 s/跑）下，strict 语义的
+catalog 拼不满普查——供给 2,544 对需求 3,325。这是**关于本协议预算下这份 catalog** 的
+读数（`BUDGET_CENSORED`）。
+
+**不能说的**：不能读成「strict 限制档位下不存在能拼满的 catalog」，更不能读成
+「strict-G1 家族死刑」。禁外推的三条佐证：
+
+1. **未判带巨大**：L0 CLEAN 251 个目标里 193 个未判（§11.5）。缺口最敏感的正是 CLEAN
+   （×16），而它恰是被截断最狠的一族。
+2. **同族已有更好的实测值**：strict 专用探测臂在 480 s 内为 CLEAN 找到 **120**
+   （`probe_20260803/raw/result_CLEAN_strict.json`），而本批 catalog 的 CLEAN best 只有
+   **103**。两者的 `R-PAT-CONN` **判据同级**（08-04 复核订正，初版误写「探测臂略松」）：
+   归档的 `probe_20260803/code/area_probe.py`（`:129` 起）同样把 fixed front、live stub、
+   active front 与孔洞格全部钉进**单源**分量；用当前 evaluator 重读九份 strict probe
+   witness 9/9 通过，CLEAN 120 的 violations 为空。两者的差是**搜索目标、target-menu
+   与预算产物**：探测臂无 target menu、单族定向搜索 480 s，catalog 那一跑的 5,400 s
+   要摊给十族上千个目标、CLEAN 只分到其中一小块——17 格的差指向预算分配，
+   不是语义天花板。
+3. **没有坐实的连通性独杀案例**（§11.5 表①）：1,162 个 strict 证死目标里 loose 可解 = 0、
+   loose 也证死 1,090。若 strict 语义本身是那堵墙，配对对照里应当出现「loose 可解、
+   strict 证死」的成批例子，实测一个没有。**但这不等于「连通税为零」已证**——还有 72 个
+   loose 未判，且「loose 也证死」只排除唯一死因、不鉴定死因。
+
+**把两条实测线合起来的描述性读数**（逐族取 catalog 与 strict 探测臂的较大者：
+CLEAN 120、I1 118、I2/I3/I4/J1 117、J2 116、J3 110、CORNER 109）= **2,841，仍缺 484**。
+这行是**实测找到值的合计，不是上界**（两条线是同一 strict 判据下的两个搜索目标、
+两份预算产物，见上条第 2 点），所以它只说明「今天两条线加起来已经找到的量级」离 3,325
+还有 484 格；既不证明装不下，也不保证加预算能补上。
+
+**证据等级标记**：2,544 / 2,528 / 241 / 760 / 三跑计量数字 = manifest 与 run root 实数；
+138、120、103 等 = 预算内找到值（找到 ≠ 极限）；146/134/118/85/101 = 机器证过的上界或
+证死值；「本协议预算下拼不满」= 本批结论；「strict 装不下」= **未证，不得引用**。
+
+### 11.7 登记欠账（`.artifacts/w0_fixrerun_20260804/acceptance_20260804.md` 收编）
+
+1. **G13d 历史机制测试保真度**：`_CountingRegistry` stub 缺 `__fspath__`，放回修前代码
+   得到的是 `TypeError` 而不是 `reads==2` 的偷渡复现（生产漏洞与修复本身已被真实文件
+   替换探针双向坐实，不受影响）；`_generic_io_contract` 无同形对抗测试。
+2. **范围外两处同形 parse/digest TOCTOU**：`g1_exact_cover_master.load_catalogs`
+   (`:279`/`:297`)、`front_viability_audit.py` (`:1120`/`:1129`)。早于本批，research-only。
+3. **`--full` 的唯一阻塞项 = 既存 r4 fixture 环境态**（W2D detached 仓依赖），三重证据
+   隔离，归 r4 线自查。
+4. **计量三表新形态**已在 §11.5 落章（本条即其兑现）。
+5. **`CONSULT_VERDICT_20260804.md` §三 杆容量数字勘误**：已落该文书 §三勘误注
+   （「≈40 根」是估计值冒充容量，正确形态是条件上界 ≤36 / ≤34）。
+6. **「bound 从未离开天花板」的作用域纪律**：该断言只对**无孔三族**成立，已落
+   `PROBE_REPORT.md` §四。
+7. **四份文书的 08-04 验伤复核已回流**（codex 只读对抗席，3 high / 5 medium / 7 low）：
+   两处证据等级混用（72 个 loose UNKNOWN 并进否定结论、两个 incumbent 之差当「孔洞真实
+   代价」）已在 §11.5/§11.6 与 `PROBE_REPORT.md` §一/§4.1 逐处改口径；band14 slit 不变量、
+   模型 B `a=1` 净耗、9→11 类分配计数三处算术订正落 `CONSULT_VERDICT_20260804.md` §三。
+   **未闭合的一条**：三个咨询包的「已发出、回复未到」只有本地成形/导出证据（包目录与
+   三份 7z），外发动作本身没有工具级收据，四份文书里一律标为 owner-reported。
+
+### 11.8 本批没做、也不该被读成做了的事
+
+- **没有登记任何界**：`U=(1188,18)` 一字节未动，`L` 仍是 absent。所有产物
+  `authority.carries_bound=false`、`ledger_effect="none"`。
+- **没有松绑任何 `R-*`**、没有建证明机、没有试点 22 号路线、没有实现 G2——按任务书
+  §1「明确不做」，止损后只带判读与价签交 owner。
+- **没有加预算硬闯**：任务书写死「止损 = 停，不加预算硬闯」。加深预算属于 owner 决策，
+  四条路的价签与默认建议在 `STOPLOSS_CHECKPOINT_20260804.md`。
+- **没有碰 certified 面**：改动只落在 `docs/research/w0_front_aware_20260803/` 与
+  `src/tests/`。

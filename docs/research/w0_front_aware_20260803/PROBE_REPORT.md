@@ -11,6 +11,8 @@
 > 校验脚本 `code/verify_equivalence.py`），逐族定向搜索最大 valid 面积。
 > **措辞纪律**：除注明「证 OPTIMAL」外，一切数字都是「预算内找到的最好」，
 > 找到 ≠ 极限；本报告不含任何关于 benchmark 的断言。
+> **§四** 是 2026-08-04 fix-and-rerun 批的回填：带孔臂角色的交接，以及
+> 「bound 从未离开天花板」这句话的作用域纪律。
 
 ## 一、两臂终值（机身面积/格）
 
@@ -26,7 +28,7 @@
 | LEFT_J3 | 134 | 126(7台,420s) | 110(7台,240s) |
 | CORNER | 118 | 110(7台,900s) | 109(7台,300s) |
 | CORE | 0 (NO_POSE) | — | — |
-| CLEAN 带孔 | ≤144（算术上界*） | 110(7台,600s)→孔洞真实代价 28 格 | — |
+| CLEAN 带孔 | ≤144（算术上界*） | 110(7台,600s)；对无孔 138 的 **observed found-best gap = 28**（两个预算内 incumbent 之差，**非**孔洞真实代价/上界/下界，见 §4.1） | — |
 | CORNER 带孔 | 85（证 OPTIMAL） | **85，证 OPTIMAL**（其孔压住 4 个 reserved 格，机器算的） | — |
 | 边界七族 带孔 | I1/J3：loose valid 上限 **101 证 OPTIMAL**（phase-B target 102 INFEASIBLE；strict ≤101；余五族未证） | 全部 101(6台,420s；08-04 补测) | — |
 
@@ -35,8 +37,10 @@
 （CLEAN 误得 142），2026-08-04 勘误（23 号指控④坐实）。逐族修正值：CLEAN ≤144、
 BOTTOM_I1/I2/I4·LEFT_J1/J2 ≤129、BOTTOM_I3/LEFT_J3 ≤130、CORNER ≤116。另一列更强的
 在手上界是 CP-SAT phase-A `best_objective_bound`：CLEAN 146 / 边界 134 / CORNER 118 /
-CLEAN 带孔 129 / CORNER 带孔 85——各族 252–540s 预算内 bound **从未离开 packing ceiling**
-（这是「上界侧啃不动」的第一手证据，任何对偶界/列生成路线都要先面对它）。
+CLEAN 带孔 129 / CORNER 带孔 85——**无孔三族**（loose / strict / packing 同族）各 252–540s
+预算内 bound **从未离开 packing ceiling**（这是「上界侧啃不动」的第一手证据，任何
+对偶界/列生成路线都要先面对它）。**带孔臂不在这句话的作用域内**——它们的 bound 真动过，
+逐条见 §四。
 
 结构性观察：①**边界七族在互不通信的独立搜索里全部精确停在 126**（构成均为 7 台）；
 ②CLEAN 自 t=74s 达 138 后至 900s 零前进；③evaluator 读法下全部最好 pattern 的
@@ -44,7 +48,9 @@ CLEAN 带孔 129 / CORNER 带孔 85——各族 252–540s 预算内 bound **从
 真问题（G2 可拼接性取决于哪种读法，已作 Q5 递交外脑咨询）。量化锚（2026-08-04 复算）：
 三份 catalog 合计 2,593 个入册 pattern 中 **855 个（33%）**自由空间为多个含桩分量；
 strict 读法只删列不加列（现有三份 catalog 供给合计 3,113 → 2,749，catalog 口径），
-两轮 INFEASIBLE 不受影响。
+两轮 INFEASIBLE 不受影响。**状态（截至 2026-08-04）：读法分歧已闭合**——evaluator 已
+收敛到登记的 strict 单源语义并全量重生成 catalog（`RESULT.md` §11.1 步骤 1/3、§11.3）；
+本节文字保留 08-03 夜的时点口径作史料。
 
 ## 二、闭合算术（对机身需求 3,325 格）——2026-08-04 勘误版
 
@@ -69,11 +75,13 @@ strict 读法只删列不加列（现有三份 catalog 供给合计 3,113 → 2,
   （健全上界并非没有——packing 146/134/118、证死 85/101 都在手——缺的是紧到能把
   分支总和压到 <3,325 的那种，现最紧总和 3,359），推翻它仍缺超过平台的构造——
   两者已递外脑（23 号已回：给列生成对偶界路线，复核见 `CONSULT_VERDICT_20260804.md`）。
-- **同一算术错误的代码落点（登记欠账，不热修）**：`g1_pattern_generator.py:431`
-  的带孔 target 预算判据用同一错口径，把 CLEAN 带孔 target 卡在机身 ≤142——机身
-  143/144 档带孔 pattern 按构造不可生成（真实候选损失）。修复=重生成级动作
-  （catalog 可达集变化），挂下一批；探测臂 `area_probe.py` 无 target menu，本报告
-  全部实测数不受影响。
+- **同一算术错误的代码落点**：`g1_pattern_generator.py:431` 的带孔 target 预算判据用
+  同一错口径，把 CLEAN 带孔 target 卡在机身 ≤142——机身 143/144 档带孔 pattern 按构造
+  不可生成（真实候选损失）。修复=重生成级动作（catalog 可达集变化）；探测臂
+  `area_probe.py` 无 target menu，本报告全部实测数不受影响。
+  **状态（截至 2026-08-04）：已闭合**——本条与 evaluator 的 loose→strict 语义收敛
+  都由 08-04 fix-and-rerun 批做掉并全量重跑（`:431` 改动态 maxK，见 `RESULT.md` §11.1
+  步骤 2 与 §11.4）。本报告初版写的「挂下一批」是 2026-08-03 夜的时点措辞，保留作史料。
 
 ## 三、已知盲区（原样声明）
 
@@ -88,3 +96,44 @@ strict 读法只会 ≤101）、同族 packing 级上界读数 129/134——**�
 129/134 是**上界非可行 witness**，故已证命题=「面积账对真实天花板至少虚高 28 格」，
 **不是**「真能装 129」；健全分支穷举仍不闭合（各分支 ≥3,359 > 3,325）。带孔手算上界的初版式 `usable − 42 − 4` 属重复扣减，
 正确式 = `196 − |fixed| − |R∪H| − 4`。
+
+## 四、两条后续纪律（2026-08-04 fix-and-rerun 批回填）
+
+### 4.1 带孔臂的角色已由重生成线接力
+
+> **措辞撤回（2026-08-04 验伤回流）**：§一 初版把 CLEAN 无孔 138 与带孔 110 的差写成
+> 「孔洞真实代价 28 格」，是「找到值当真实代价」的证据等级混用，**撤回**。两条臂都是
+> `FEASIBLE` + UNKNOWN 收尾（无孔 best 138 / bound 146、带孔 best 110 / bound 129），
+> 所以 28 只是**两个预算内 incumbent 的差**；按现有上下界，两个模型最优值之差只能被
+> 粗略夹在 **9..36**（138−129 到 146−110）之间，不是精确 28。现行措辞 =
+> **observed found-best gap = 28**，不承担任何代价/上界/下界含义。
+
+本报告的带孔臂（CLEAN/CORNER 两族 + `w0_probe_hole_20260804` 的边界七族）是**探测**
+产物：无 target menu、逐族定向搜索，用来测量带孔与无孔两条搜索线的实测落差。2026-08-04 的
+fix-and-rerun 批把 strict 连通语义内聚进生成器后**直接产出了带孔 pattern**，孔洞代价
+从此由 catalog 自己的数字承担（逐族 strict 带孔 best 83–92 格，最小孔损 16@LEFT_J1，
+对照旧 loose catalog 的 19@BOTTOM_I3；证据 `.artifacts/w0_fixrerun_20260804/regen/`
+三份 `catalog/manifest.json` 与 `RESULT.md` §11.3）。
+
+**本报告的 101 证死引用不变**：BOTTOM_I1 与 LEFT_J3 的 loose valid 天花板证死 = 101
+（phase-B target 102 `INFEASIBLE`，strict 读法只会 ≤101），它是机器证死，
+不因 catalog 重生成而改变；catalog 的带孔数字是「预算内找到的最好」，两者不同级，
+不可互相顶替。
+
+### 4.2 「bound 从未离开天花板」只对无孔三族成立
+
+该断言的作用域是 **loose / strict / packing 三条无孔臂**。带孔臂的 phase-A
+`best_objective_bound` 真的动过（原始锚点 = `probe_20260803/raw/result_*.json`
+与 `.artifacts/w0_probe_hole_20260804/raw/result_*_hole.json` 的 `phases[0].bound`）：
+
+| 臂 | packing ceiling | 带孔 phase-A bound | 状态 |
+|---|---|---|---|
+| CLEAN 带孔 | 146 | **129** | FEASIBLE（best 110，360 s） |
+| CORNER 带孔 | 118 | **85** | **OPTIMAL**（bound == best，124 s） |
+| BOTTOM_I1 带孔 | 134 | **129** | FEASIBLE（best 101，252 s；phase-B 证死 102） |
+| BOTTOM_I4 带孔 | 134 | **129** | FEASIBLE（best 101，256 s） |
+| 其余**五个**边界带孔臂（I2 / I3 / J1 / J2 / J3） | 134 | 134 | FEASIBLE（bound 未离开天花板） |
+
+所以「上界侧啃不动」这句话必须带作用域：**孔洞约束是目前唯一被实测确认能让 CP-SAT
+自己把 bound 压下来的结构**（CORNER 带孔甚至压到证 OPTIMAL）。凡后续文书引用这句，
+一律带「无孔三族」限定。
