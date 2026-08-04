@@ -31,6 +31,15 @@ free-cell bitmap, one crossing variable per seam position) is upgrade rung L3 an
 is not implemented here; reaching for it would mean the fixed stub layout was the
 binding restriction, which is a finding, not a detail.
 
+Registered gap (2026-08-04 review): the composition argument above additionally
+requires every live stub of a pattern to share ONE free component (the charter's
+registered R-PAT-CONN semantics).  The shipped evaluator implements the weaker
+union-of-stub-components reading, so C4 = zero constraints is currently NOT
+backed for witness purposes (855 of 2,593 shipped patterns have multiple
+stub-bearing components).  No effect on this batch's INFEASIBLE results
+(strengthening only deletes columns); must be closed before any G1 green.
+See docs/research/w0_front_aware_20260803/CONSULT_VERDICT_20260804.md.
+
 The empty pattern (T-EMPTY-PATTERN)
 -----------------------------------
 The stage A generator only ever emitted targets with at least one body, so its

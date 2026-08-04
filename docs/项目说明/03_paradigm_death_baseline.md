@@ -63,10 +63,10 @@
 **lever**:
 - **cand C Phase 0** — 20-inst 8/8 metric GO, 唯一真换 master variable basis 方向 ✅ [[project-cand-c-column-generation-phase0-go]]
 - **cand C Phase 1** (4-ramp) — 5/20/40/80 inst 全 GO ✅ [[project-cand-c-phase1-go]]
-- **cand C Phase 2 v3 — 160/266 INFEASIBLE** — A1/A2/A3 3 fallback paradigm 全 land 但 160/266 实测仍 INFEASIBLE. [[v14-review-findings]] cand_c_phase2_v3
+- **cand C Phase 2 v3 — 160/266 INFEASIBLE** — A1/A2/A3 3 fallback paradigm 全 land 但 160/266 实测仍 INFEASIBLE. 证据=legacy 副本 `docs/research/cand_c_column_generation_phase2_20260521/phase2_results.json`（160/266 均 `exit_reason=rmp_INFEASIBLE_at_iter_0`；副本在 `/mnt/wd_external/codex-upload/zmd-20260606-203821/zmd`。原 `[[v14-review-findings]]` 引用是断链：该卡不存在，且当年原话即"cand C Phase 2 无 memory, 见 git commit history"——2026-08-04 考古订正）
 
 **数学根据失败的层**:
-- **Root cause 2** (Class E): 96% utilization 几何死结. valley4_protocol_core 70×70 + 266 mandatory = 4800/4900 cells ≈ 98% (4800/4900). boundary_storage_port × perimeter trap: 46 pose × 3 cells = 138 cells 必 100% saturation. cand C column gen 数学 sound 但底层几何不变.
+- **Root cause 2** (Class E): 96% utilization 几何死结. valley4_protocol_core 70×70 + 266 mandatory = 4800/4900 cells ≈ 98%（「96% utilization」沿用历史专名，数值口径以 4800/4900 ≈ 98% 为准——2026-08-04 订正原括号内自相矛盾）. boundary_storage_port × perimeter trap: 46 pose × 3 cells = 138 cells 必 100% saturation. cand C column gen 数学 sound 但底层几何不变.
 
 **教训**: paradigm 数学 sound 不等于 instance 可行. 项目 instance 几何是 fundamental constraint, 任何 paradigm 在 instance 真 INFEASIBLE 时都 INFEASIBLE. column gen 是 master basis 改而不是 instance 改, 不能改 instance 几何.
 

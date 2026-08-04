@@ -62,7 +62,7 @@ cand C 系列 — column generation paradigm 设计完备但撞 96% utilization 
 |---|---|---|---|
 | cand C Phase 0 GO | 5-21 | [[project_cand_c_column_generation_phase0_go]] | 20-inst 8/8 metric GO, 唯一真换 master variable basis 方向 ✅ Phase 0 GO |
 | cand C Phase 1 GO (4-ramp) | 5-21 | [[project_cand_c_phase1_go]] | 5/20/40/80 inst 全 GO, m10 sound 性维持, m9 proxy dual 跨所有 ramp 0% ✅ Phase 1 GO |
-| cand C Phase 2 v3 — 160/266 INFEASIBLE | 5-21 | [[v14-review-findings]] 内 cand_c_phase2_v3 | A1/A2/A3 3 fallback paradigm 全 land 但 160/266 实测仍 INFEASIBLE. 96% utilization 几何死结 |
+| cand C Phase 2 v3 — 160/266 INFEASIBLE | 5-21 | legacy 副本 `docs/research/cand_c_column_generation_phase2_20260521/phase2_results.json`（原 `[[v14-review-findings]]` 引用为断链，2026-08-04 订正） | A1/A2/A3 3 fallback paradigm 全 land 但 160/266 实测仍 INFEASIBLE. 96% utilization 几何死结 |
 
 ### Class F — 早期/其他死路
 

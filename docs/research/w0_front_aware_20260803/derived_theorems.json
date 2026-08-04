@@ -146,7 +146,8 @@
       "gates": ["G1", "G2"],
       "code_anchor": "g1_pattern_evaluator.portal_component",
       "stage": "A",
-      "source": "this line"
+      "source": "this line",
+      "note": "2026-08-04 review: the anchor returns the UNION of all stub-bearing components (multi-source BFS); the shipped check in evaluate_pattern therefore implements a reading weaker than this statement (855/2593 shipped patterns have multiple stub-bearing components). Strengthening only deletes columns, so the G1 INFEASIBLE results stand; implementation and registered semantics must converge before any G1 green. See CONSULT_VERDICT_20260804.md."
     },
     {
       "id": "R-POWER-LOCAL",
