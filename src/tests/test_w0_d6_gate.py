@@ -30,15 +30,22 @@ STRICT_PATH = (
     / "external"
     / "problem_instance.json"
 )
-FRAMEWORK_PATH = Path("/home/zhuran24/下载/w0回复/1/W0_power_cycle_domino_framework_v1.json")
-SEED_PATH = Path("/home/zhuran24/下载/w0回复/1/W0_geometry_only_seed_v1.json")
+_W0_RECON = (
+    PROJECT_ROOT
+    / "docs"
+    / "research"
+    / "cleanroom_rederivation_20260718"
+    / "15_w0_recon_artifacts"
+)
+FRAMEWORK_PATH = _W0_RECON / "W0_power_cycle_domino_framework_v1.json"
+SEED_PATH = _W0_RECON / "W0_geometry_only_seed_v1.json"
 
 STRICT_SHA256 = "e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849c"
 FRAMEWORK_SHA256 = "db6046cf598f9b5738b7f8950c91ea31834e8214e7e07995175b71eb04bdbb89"
 SEED_SHA256 = "18c72669105f486bf54a2665bd74d1ff952ce2eeb39b28a7b30d5ce8d5d2f5f1"
 LEGACY_UNBOUND_SHA256 = "295bfef9b2681193e3a9cc085c479a960f87de0131abfbdfacb676479bdb2aa5"
-PROJECT_LOCK_SHA256 = "a2ec971f687c04966e8329868b4eab05aaa3c9fd9ad71a96f0ab79df85b92559"
-ANTECEDENT_SHA256 = "94f72b64d687b02894b06b16c71375ea65bff5e608248d891b1d466bfbd8c6e7"
+PROJECT_LOCK_SHA256 = "64a6802446de075293e32c6607d24cfe872d2070b6cd66f4e53cb275483aa69a"
+ANTECEDENT_SHA256 = "7de91e645d0a92d03f9593e8af20be43be8147f406a98e9accaea6ed7080b78d"
 SEED_HINTS_SHA256 = "4de8e250dbafcb80b65de3b6443a0800fa7366b0ace826c72087c28452db8ef3"
 
 

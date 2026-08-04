@@ -125,12 +125,28 @@ successor 因 `PROJECT_LOCK.md` 新增 AB16 research-only cohort，改钉
 `e8130589effaa332122260b44df9aed367cdb9d1bc96ca17b24a1075007a24b3`，
 同一数学 profile 的静态 antecedent fixture 为
 `3d40e1318b631119ca5314f31443b91dbada2d5a1125e3f8da7c4c3dcf8db394`。
-当前 checked-in successor 随 AB16 formal selected-loader、pathname transport、
-no-overwrite socket retirement、完整链/inode watch 线性化边界及 pinned full-preflight
-临时目录回收合同加固改钉
-`a2ec971f687c04966e8329868b4eab05aaa3c9fd9ad71a96f0ab79df85b92559`，
-对应静态 antecedent fixture 为
-`94f72b64d687b02894b06b16c71375ea65bff5e608248d891b1d466bfbd8c6e7`。
+当前 checked-in successor 为
+`64a6802446de075293e32c6607d24cfe872d2070b6cd66f4e53cb275483aa69a`（2026-08-03
+AB16 收官后版本），对应静态 antecedent fixture 为
+`7de91e645d0a92d03f9593e8af20be43be8147f406a98e9accaea6ed7080b78d`。
+
+> **2026-08-03 订正**：本段原钉
+> `a2ec971f687c04966e8329868b4eab05aaa3c9fd9ad71a96f0ab79df85b92559` 为「当前
+> checked-in successor」，但该字节**从未存在于本仓库任何一次 `PROJECT_LOCK.md`
+> 提交**（51 个历史版本逐一 sha256 比对，零命中；也不等于被 revert 的 `62bc65f`
+> 时点值 `114ea93e…`）——它是 codex 自治期在某个未落地状态下算出的幻影，且被
+> 同批钉进 `run_d6_research.py`/`replay_d6_certificate.py`/`d6_joint_completion_gate.py`
+> 与两个 `src/tests/test_w0_d6_*.py`。因为那两个测试的外部输入路径同时写错
+> （`~/下载/w0回复/` 实为 `~/下载/gpt回复/`），11 条测试自落地起始终 `skip`，
+> 这个指向虚空的运行门禁从未被执行到。订正=改钉当前真实 checked-in 字节；
+> 安全性依据：D6 历史 root 绑定的 `e8130589…`（commit `57c8b352`）到当前
+> `64a68024…` 的全部 lock 改动（110 插入/123 删除）**均在 AB16 段**，§3B 的
+> 「W0 D6 research-only artifact protocol boundary」条款逐字未变，新版头部亦明写
+> `prior certified, W0, P1.2, and Stage B boundaries unchanged`。历史 root 的
+> 绑定值 `e8130589…` 不变（下段「不迁移、不补写」照旧）。静态 antecedent fixture
+> 随之从 `94f72b64…` 改钉 `7de91e64…`——这是下段所述「identity 变化只来自 lock
+> scalar」的机械连锁（`build_d6_antecedent` 把 lock sha 放进 `protocol` 参与
+> canonical hash），已用门禁解释器独立重算复核，非新的 solver 结果。
 这些变更只影响未来 W0 run 的 source/lock 闭包；不迁移、不补写也不重新解释
 上述历史 root。identity 变化只来自 lock scalar，不是新的 solver 结果。
 
