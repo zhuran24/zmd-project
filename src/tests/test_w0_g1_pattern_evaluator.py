@@ -358,12 +358,81 @@ def test_portal_component_floods_from_one_canonical_root() -> None:
     assert ev.portal_component(free, ((9, 9),)) == frozenset()
 
 
+#: A CLEAN pattern with a real off-corridor hole.  Three bodies fill column
+#: ``u = 1`` from ``v = 0`` to ``v = 13`` (4x6 at (1,0), 3x3 at (1,6), 5x5 at
+#: (1,9)), which cuts the region in two: the corridor is the 14-cell column
+#: ``u = 0``, because the root is the smallest live stub (0,6) and that is where
+#: it lives.  The 6x7 hole at (7,6) sits entirely in the *other* piece -- every
+#: one of its 42 cells is body-free and inside the region, so the only thing
+#: wrong with it is that it is off the corridor.  That is the case the test name
+#: has always claimed and the fixture never built.
+_OFF_CORRIDOR_HOLE = HoleSpec(local_anchor=(7, 6), width=6, height=7)
+_WALLED_HOLE_PATTERN = PatternSpec(
+    region_class="CLEAN",
+    bodies=(
+        BodySpec(bid=0, template="manufacturing_6x4", orientation=1, local_anchor=(1, 0)),
+        BodySpec(bid=1, template="manufacturing_3x3", orientation=0, local_anchor=(1, 6)),
+        BodySpec(bid=2, template="manufacturing_5x5", orientation=0, local_anchor=(1, 9)),
+    ),
+    poles=(PoleSpec(local_anchor=(6, 4)),),
+    hole=_OFF_CORRIDOR_HOLE,
+)
+
+
 def test_a_hole_off_the_corridor_is_rejected() -> None:
-    """[16c] R-HOLE-IN-REGION rides on the same single component."""
-    pattern = _clean_pattern(hole=HoleSpec(local_anchor=(6, 7), width=7, height=6))
-    assert ev.evaluate_pattern(pattern).ok
-    walled = ev.evaluate_pattern(_SPLIT_PATTERN)
+    """[16c] R-HOLE-IN-REGION rides on the same single component.
+
+    The hole here is legal in every other respect -- it is checked below against
+    the same hole in an unwalled pattern, which is accepted -- so the rejection
+    can only come from "not on the pattern's one corridor".  R-PAT-CONN fires at
+    the same time and that is not an accident of the fixture: a wall that puts
+    the hole in a second pocket also puts six live stubs there, and there is no
+    way to strand the hole without stranding something the corridor owns.
+    """
+    walled = ev.evaluate_pattern(_WALLED_HOLE_PATTERN)
+    assert "R-HOLE-IN-REGION" in walled.violations
     assert "R-PAT-CONN" in walled.violations
+
+    # The geometry behind those two names, spelled out so the fixture cannot rot
+    # into "some pattern that happens to fail".
+    hole_cells = set(_OFF_CORRIDOR_HOLE.cells)
+    assert hole_cells <= set(walled.free_cells), "the hole is not blocked by a body"
+    assert not hole_cells & set(walled.component), "and lies wholly off the corridor"
+    assert set(walled.component) == {(0, v) for v in range(14)}
+    from g1_region_model import REGION_CLASSES
+
+    stranded = {
+        stub
+        for stub in REGION_CLASSES["CLEAN"].live_stubs
+        if stub not in walled.component
+    }
+    assert stranded == {(6, 0), (7, 0), (6, 13), (7, 13), (13, 6), (13, 7)}
+
+    # The wall's three bodies are dead too -- each has one side of every pair in
+    # each piece -- which is what a body that cuts a corridor in two always is.
+    assert set(walled.violations) == {
+        "R-PAT-CONN",
+        "R-HOLE-IN-REGION",
+        "T-DEAD-BODY-ZERO",
+    }
+
+    # Control: the very same hole, in a pattern that does not wall the region.
+    unwalled = ev.evaluate_pattern(
+        PatternSpec(
+            region_class="CLEAN",
+            bodies=(
+                BodySpec(
+                    bid=0, template="manufacturing_3x3", orientation=0, local_anchor=(1, 1)
+                ),
+            ),
+            poles=(PoleSpec(local_anchor=(5, 5)),),
+            hole=_OFF_CORRIDOR_HOLE,
+        )
+    )
+    assert unwalled.ok, unwalled.violations
+
+    # And the older split fixture, which strands stubs but has no hole at all.
+    assert "R-PAT-CONN" in ev.evaluate_pattern(_SPLIT_PATTERN).violations
 
 
 def test_pattern_without_power_is_rejected() -> None:
