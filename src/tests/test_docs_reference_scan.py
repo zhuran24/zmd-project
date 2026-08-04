@@ -252,15 +252,43 @@ def test_dead_doc_anchor_is_a_candidate_for_a_missing_section_anchor(tmp_path: P
     assert report["candidates"][0]["signals"] == ["referenced_section_anchor_does_not_exist"]
 
 
-def test_dead_commit_hash_is_a_candidate_when_the_commit_cannot_be_resolved(
-    tmp_path: Path,
-) -> None:
+def test_dead_commit_hash_is_reported_but_never_as_a_candidate(tmp_path: Path) -> None:
+    """The flag still fires; it just cannot ask anybody to edit a document.
+
+    This repository is a delivery copy with a rebuilt history, so a hash that
+    ``git`` cannot resolve says nothing about the document citing it.  The
+    finding is kept because the count is worth publishing, and demoted because
+    acting on it would mean deleting the narrative trail.
+    """
     root = make_repo(
         tmp_path,
         documents={"GUIDE.md": "# Guide\n\nLanded in `fee1dead` on main.\n"},
     )
     report = build(root)
-    assert flags(report["candidates"]) == [("dead_commit_hash", "GUIDE.md", "fee1dead")]
+    assert report["candidates"] == []
+    assert flags(report["fyi"]) == [("dead_commit_hash", "GUIDE.md", "fee1dead")]
+    assert report["fyi"][0]["safety_lock"] == {
+        "locked": True,
+        "reasons": [scan.DEAD_COMMIT_HASH_FYI_REASON],
+    }
+    assert report["metadata"]["flag_counts"]["dead_commit_hash"] == 1
+
+
+def test_a_living_document_still_yields_candidates_for_the_other_flags(
+    tmp_path: Path,
+) -> None:
+    """The commit demotion is one flag wide, not a blanket amnesty."""
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": "# Guide\n\nLanded in `fee1dead`; run `scripts/vanished_tool.py`.\n"
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/vanished_tool.py")
+    ]
+    assert flags(report["fyi"]) == [("dead_commit_hash", "GUIDE.md", "fee1dead")]
 
 
 def test_unregistered_document_in_scope_is_caught(tmp_path: Path) -> None:
@@ -687,6 +715,148 @@ def test_every_registered_suppression_marker_actually_suppresses(
     report = build(root)
     assert report["candidates"] == []
     assert report["metadata"]["suppression_counts"]["context_marker"] == 1
+
+
+def test_a_symbol_introduced_as_a_design_target_stays_out_of_the_candidates(
+    tmp_path: Path,
+) -> None:
+    """The exact shape from ``10_phase_1_5_plan.md:12`` on the first real scan.
+
+    ``设计 X() 统一入口`` names something the plan exists in order to build, so
+    it must not be proposed as a cleanup candidate.  Since 2026-08-03 it is
+    still *reported*, in the FYI section — see the demotion tests below.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": "# Guide\n\n设计 `build_bstate_from_production_inputs()` 统一入口, 覆盖:\n",
+        },
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["planning_context"] == 1
+    assert report["metadata"]["suppression_counts"]["context_marker"] == 0
+
+
+def test_a_path_scheduled_for_a_later_phase_stays_out_of_the_candidates(
+    tmp_path: Path,
+) -> None:
+    """The exact shape from ``17_workflow_telemetry.md:95`` on the first real scan."""
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": (
+                "# Guide\n\naggregate 工具:\n"
+                "- `scripts/analyze_cut_store_telemetry.py` (Phase 1.3 加) — 跨 worker 合并\n"
+            ),
+        },
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["planning_context"] == 1
+
+
+def test_a_planning_marked_reference_is_demoted_to_fyi_not_deleted(
+    tmp_path: Path,
+) -> None:
+    """Demotion, not deletion (2026-08-03 对抗审查 SCANNERS-DIFF-001).
+
+    A rule this loose must not be able to remove evidence: the item stays in
+    the report, locked, carrying ``planning_suppressed`` so a reader can filter
+    on exactly the references a planning word excused.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": "# Guide\n\n设计 `build_bstate_from_production_inputs()` 统一入口, 覆盖:\n",
+        },
+    )
+    report = build(root)
+    assert flags(report["fyi"]) == [
+        ("dead_symbol_ref", "GUIDE.md", "build_bstate_from_production_inputs()")
+    ]
+    item = report["fyi"][0]
+    assert "planning_suppressed" in item["signals"]
+    assert item["safety_lock"]["locked"] is True
+    assert any("not_built_yet" in reason for reason in item["safety_lock"]["reasons"])
+    assert report["metadata"]["fyi_count"] == 1
+
+
+def test_ordinary_prose_using_a_planning_word_still_reports_the_dead_symbol(
+    tmp_path: Path,
+) -> None:
+    """``设计`` is a plain noun, and the rule is a raw substring test.
+
+    ``现有运行时设计继续调用 X()`` is present-tense prose about existing code.
+    Before the demotion this sentence deleted a genuine ``dead_symbol_ref``
+    outright; changing the single word ``设计`` to ``实现`` brought it back.
+    Now both wordings report the reference — one as a candidate, one as FYI.
+    """
+    design = make_repo(
+        tmp_path,
+        name="design",
+        documents={"GUIDE.md": "# Guide\n\n现有运行时设计继续调用 `vanished_runtime_gate()` 处理请求。\n"},
+    )
+    implementation = make_repo(
+        tmp_path,
+        name="implementation",
+        documents={"GUIDE.md": "# Guide\n\n现有运行时实现继续调用 `vanished_runtime_gate()` 处理请求。\n"},
+    )
+    design_report = build(design)
+    implementation_report = build(implementation)
+
+    expected = [("dead_symbol_ref", "GUIDE.md", "vanished_runtime_gate()")]
+    assert flags(design_report["fyi"]) == expected
+    assert "planning_suppressed" in design_report["fyi"][0]["signals"]
+    assert flags(implementation_report["candidates"]) == expected
+    assert implementation_report["metadata"]["suppression_counts"]["planning_context"] == 0
+
+
+def test_planning_language_on_the_line_above_no_longer_reaches_the_reference(
+    tmp_path: Path,
+) -> None:
+    """The window is the citing line and nothing else (2026-08-03).
+
+    A heading or a neighbouring sentence must not speak for a reference it
+    never names.  The cost is deliberate and one-directional: a genuine
+    "next batch adds:" list loses its excuse and produces candidates, which a
+    reader can dismiss — the reverse mistake removed evidence.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\n下一批计划新增:\n- `scripts/not_yet_here.py`\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/not_yet_here.py")
+    ]
+    assert report["metadata"]["suppression_counts"]["planning_context"] == 0
+
+
+def test_planning_language_further_up_the_paragraph_does_not_suppress(
+    tmp_path: Path,
+) -> None:
+    """The planning window is one line wide on purpose.
+
+    Removal markers may excuse a whole paragraph, because a paragraph about
+    deletion is unambiguous.  Planning vocabulary is ordinary prose, so a
+    mention further up must not launder a genuinely broken reference.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": (
+                "# Guide\n\n这一节记的是计划外的既有实现。\n"
+                "中间隔一行说明。\n"
+                "正文提到 `scripts/vanished_tool.py` 仍在用。\n"
+            ),
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("dead_repo_path", "GUIDE.md", "scripts/vanished_tool.py")
+    ]
+    assert report["metadata"]["suppression_counts"]["planning_context"] == 0
 
 
 def test_an_external_artifact_path_is_allowlisted_even_though_it_is_absent(
@@ -1247,6 +1417,44 @@ def test_the_module_docstring_carries_the_threat_model_boundary_section() -> Non
     assert "2026-07-06" in docstring
     for boundary in scan.SELF_CHECK_DOES_NOT_COVER:
         assert boundary in docstring, boundary
+
+
+def test_the_module_docstring_owns_the_dead_commit_hash_demotion_as_a_decision() -> None:
+    """The repository-wide ``dead_commit_hash`` FYI demotion is accepted, not missed.
+
+    The 2026-08-03 adversarial review filed it as a defect: a mistyped hash can
+    never become a candidate.  That is true and it is the chosen behaviour —
+    this flag's true-positive count in this repository is zero, and design v2
+    §3d-bis retires a heuristic with no true positives rather than sharpening
+    it.  The declaration lives in the docstring so a future reader meets the
+    reasoning instead of rediscovering the gap, and this test keeps it there.
+    """
+    docstring = " ".join((scan.__doc__ or "").split())
+    assert "Accepted by design, not a boundary to close" in docstring
+    assert "true-positive count in this repository is **zero**" in docstring
+    assert "3d-bis" in docstring
+    assert "DEAD_COMMIT_HASH_IS_FYI_ONLY" in docstring
+    # The demotion is only tolerable because nothing disappears.
+    assert "still appears in the ``fyi`` section" in docstring
+
+
+def test_a_mistyped_commit_hash_is_still_visible_in_the_fyi_section(
+    tmp_path: Path,
+) -> None:
+    """The half of the accepted design that has to keep working.
+
+    Demotion is defensible only while the item stays readable.  A hash nobody
+    registered still shows up, with its byte-exact source line, so a reader
+    scanning FYI meets new typos.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nSee `deadbee1234` for the rationale.\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == []
+    assert flags(report["fyi"]) == [("dead_commit_hash", "GUIDE.md", "deadbee1234")]
+    assert report["fyi"][0]["evidence"]["line_text"] == "See `deadbee1234` for the rationale."
 
 
 # --------------------------------------------------------------------------

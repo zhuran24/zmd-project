@@ -10,7 +10,7 @@ Preflight gate — 提交前自动门禁检查。
 当前检查面：
     冻结/外部制品、禁止路径、AI 与 exact/exploratory 隔离、调研覆盖、行尾、
     secret、artifact boundary、Phase review gate、P1.2 obligations、
-    strong-status allowlist、mypy、ruff 与 pytest lanes。
+    strong-status allowlist、mypy、ruff、pytest lanes 与记忆层测试 lane。
 
     旧的文档主体投影/文档树脚本已退役，本 gate 不运行
     scripts/sync_doc_subjects.py、scripts/check_doc_tree_completeness.py 或 cc_context workflow。
@@ -29,6 +29,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -837,6 +838,101 @@ def check_slow_tests(gate: GateResult, *, require_collection: bool = False) -> N
             gate.warn(msg)
 
 
+MEMORY_TEST_DIRS = ("cc_memory/tests", "cc_memory_vnext/tests")
+MEMORY_SCOPE_PREFIXES = ("cc_memory/", "cc_memory_vnext/")
+
+
+def check_memory_tests(gate: GateResult, *, always: bool) -> None:
+    """记忆层测试 lane：cc_memory + cc_memory_vnext 两个目录。
+
+    这两个目录 2026-08-03 之前不被任何门收集（普查 §3.6）——200+ 条测试守着活
+    hook（SessionStart 注入 / UserPromptSubmit / PreToolUse 高危闸），改坏了没有
+    任何机械会说话。快 lane 只跑 `src/tests/`，所以它们必须有自己的一条。
+
+    与既有 pytest lane 的三点差异，都是被这两个目录的性质逼出来的：
+    - 不并行（-n）：这里大量用例真起子进程跑 hook，xdist 叠加只会互相挤。
+    - 独立 basetemp：pytest.ini 的全局 `--basetemp=.pytest_tmp` 会被并发 pytest
+      互删，而本 lane 常常跟主 lane 同时在跑。
+    - 只在动到 cc_memory*/ 时进 staged 范围；--full / --ci 一律跑。
+
+    两个目录任一不存在 = BLOCK，不是 warning（2026-08-03 对抗审查
+    missing-memory-test-roots）。这条 lane 的全部意义是「这些测试真的被跑
+    了」，而删掉一个目录、把它 rename 走、或者在 checkout 里根本没拉下来，
+    都会让缺失的那半悄悄消失；旧写法只有两个目录**同时**消失才 warn 一句、
+    退出码照样 0，少一个则连一句话都没有。缺目录只可能是两种情况——真删了
+    （那要先改这里的登记），或者树不完整（那这次门禁本来就不该算数）——两
+    种都该拦。
+    """
+    scope_note = "全量" if always else "staged 触及 cc_memory*/"
+    print(f"\n[memory] 记忆层测试 lane（{scope_note}，串行，-p no:randomly）")
+
+    missing = [target for target in MEMORY_TEST_DIRS if not (PROJECT_ROOT / target).is_dir()]
+    if missing:
+        gate.block(
+            f"记忆层测试根缺失: {', '.join(missing)} — 这条 lane 守着活 hook，"
+            "少一个根就等于那一半没人跑；真要下线先改 MEMORY_TEST_DIRS"
+        )
+        return
+
+    if not always:
+        touched = [
+            path
+            for path in get_staged_files()
+            if any(path.startswith(prefix) for prefix in MEMORY_SCOPE_PREFIXES)
+        ]
+        if not touched:
+            gate.ok("记忆层未改动，跳过记忆测试 lane")
+            return
+
+    existing = list(MEMORY_TEST_DIRS)
+
+    # pytest 只建 basetemp 本身，父目录不存在就整批 setup error（144 条 ERROR、
+    # 报告里看起来像测试真的坏了）——在干净 checkout / 新 worktree 上必然发生。
+    #
+    # 目录名带 pid + 时间戳：固定名字的 basetemp 会被并发的另一次 preflight
+    # 当场删掉重建（pytest 启动时清理自己的 basetemp），先起的那个进程正在用
+    # 的 tmp_path 就凭空消失、报出与被测代码无关的假红。同一台机器上并发跑
+    # 门禁是常态（多窗口 / wf 并发），所以每次调用给自己一个唯一目录。
+    basetemp = PROJECT_ROOT / ".pytest_tmp" / f"memory_gate_{os.getpid()}_{time.time_ns()}"
+    basetemp.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [
+        sys.executable,
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "--no-header",
+        "-p",
+        "no:randomly",
+        "--basetemp",
+        str(basetemp),
+        *existing,
+    ]
+    timeout = max(1, int(300 * _TIMEOUT_SCALE))
+    try:
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=timeout
+        )
+    except subprocess.TimeoutExpired:
+        gate.block(f"pytest (memory) 超时 (>{timeout}s)")
+        return
+    except FileNotFoundError:
+        gate.warn("pytest 不可用，跳过记忆层测试")
+        return
+
+    last_lines = [line for line in result.stdout.splitlines() if line.strip()][-3:]
+    summary_line = last_lines[-1] if last_lines else ""
+    if result.returncode == 0:
+        gate.ok(f"pytest (memory): {summary_line}")
+        return
+    if result.returncode == 5:
+        gate.block("pytest (memory): 未收集到测试 — 记忆 lane 形同虚设")
+        return
+    gate.block(f"pytest (memory) 失败 (exit={result.returncode}): {summary_line}")
+    for line in result.stdout.splitlines()[-10:]:
+        print(f"         {line}")
+
+
 def run_gate(
     *,
     full: bool = False,
@@ -883,6 +979,9 @@ def run_gate(
             check_tests(gate, full=False)
         else:
             check_tests(gate, full=False)
+
+        # 记忆层 lane 挂在最后，既有 step 的顺序与语义一个没动。
+        check_memory_tests(gate, always=full or ci)
 
     print("\n" + "=" * 60)
     verdict = "BLOCKED" if gate.blockers else ("PASSED (with warnings)" if gate.warnings else "PASSED")
