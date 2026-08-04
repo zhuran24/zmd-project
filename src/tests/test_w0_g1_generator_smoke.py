@@ -149,6 +149,7 @@ def test_generate_reload_round_trip(tmp_path: Path) -> None:
         workers=4,
         seed=0,
         max_targets=1,
+        max_bodies=3,
         region_classes=("CLEAN",),
     )
     manifest = gen.generate_catalog(config, output_dir=tmp_path, progress=False)
@@ -156,8 +157,14 @@ def test_generate_reload_round_trip(tmp_path: Path) -> None:
     assert manifest["schema"] == "w0_g1_catalog_manifest_v1"
     assert manifest["authority"]["carries_bound"] is False
     entry = manifest["catalogs"]["CLEAN"]
-    assert entry["patterns"] >= 1, "one centre-band target must yield a pattern"
+    assert entry["patterns"] >= 1, "the top sparse target must yield a pattern"
     assert entry["complete"] is False, "a one-target run is a truncated menu"
+
+    # Alarm meters travel with the catalog, and meter 2 is zero on a written one.
+    meters = entry["stats"]["alarm_meters"]
+    assert meters["postcheck_divergence"]["count"] == 0
+    assert "strip_dead_bodies" in meters["retired_paths"]
+    assert manifest["connectivity"]["enforced"] == "in_model"
 
     catalog_path = tmp_path / "catalog" / "CLEAN.json"
     payload = load_strict(catalog_path)
@@ -229,6 +236,149 @@ def test_derived_subsets_only_remove_bodies() -> None:
         assert {b.local_anchor for b in child.bodies} < {
             b.local_anchor for b in spec.bodies
         }
+
+
+# --------------------------------------------------------------------------
+# connectivity is in the model, not a post-filter
+# --------------------------------------------------------------------------
+
+
+def test_connectivity_certificate_is_single_source() -> None:
+    """[3a] Two anchors in two pockets is infeasible, not "one component each".
+
+    Directly on the certificate, with a hand-made free space: cells (0,0)-(0,1)
+    and (5,0)-(5,1) are two 4-disconnected pairs.  A multi-source flow would send
+    a unit into each pair and report FEASIBLE -- that is exactly the loose
+    reading.  With one root, asking both pairs to be on the corridor is
+    unsatisfiable.
+    """
+    from ortools.sat.python import cp_model
+
+    cells = [(0, 0), (0, 1), (5, 0), (5, 1)]
+
+    def build(demanded):
+        model = cp_model.CpModel()
+        conn = {cell: model.new_bool_var(f"c{cell}") for cell in cells}
+        root = gen._add_connectivity_certificate(model, conn, [(5, 0), (0, 0)])
+        assert root == (0, 0), "the root is min(live_stubs), not the first listed"
+        for cell in demanded:
+            model.add(conn[cell] == 1)
+        solver = cp_model.CpSolver()
+        solver.parameters.max_time_in_seconds = 10.0
+        solver.parameters.num_workers = 2
+        return solver.status_name(solver.solve(model))
+
+    assert build([(0, 0), (0, 1)]) in {"OPTIMAL", "FEASIBLE"}
+    assert build([(0, 0), (5, 0)]) == "INFEASIBLE"
+    # The far pocket alone is unreachable from the root, so it cannot be lit up
+    # even on its own.
+    assert build([(5, 1)]) == "INFEASIBLE"
+
+
+def test_solved_targets_survive_the_evaluator_unchanged() -> None:
+    """[3b] Alarm meter 2: the model and the post-check are the same restriction.
+
+    Every spec the solver returns is re-evaluated from scratch.  Under the old
+    post-filter design a large share of them came back invalid (that was the
+    design); now a single invalid one is an implementation bug, so this test
+    asserts the strong form -- all of them, no exceptions, on real solves.
+    """
+    region = REGION_CLASSES["CLEAN"]
+    menu = [t for t in gen.build_target_menu(region, max_bodies=3)][:4]
+    poses = gen.enumerate_body_poses(region)
+    poles = gen.enumerate_pole_poses(region)
+    holes = gen.enumerate_hole_poses(region)
+    config = gen.GeneratorConfig(target_seconds=10.0, workers=4, solutions_per_target=1)
+
+    solved = 0
+    for target in menu:
+        specs, _elapsed, _status = gen._solve_target(
+            region, target, poses, poles, holes, config
+        )
+        for spec in specs:
+            evaluation = ev.evaluate_pattern(spec)
+            assert evaluation.ok, (target.as_json(), evaluation.violations)
+            assert ev.dead_for_any_actual_class(evaluation.bodies) == 0
+            solved += 1
+    assert solved >= 1, "the sparse head of the menu must still be solvable"
+
+
+def test_postcheck_divergence_blocks_instead_of_being_counted() -> None:
+    """[3c] Alarm meter 2 fails closed: a divergence raises, it does not tally.
+
+    A pattern with no pole violates R-POWER-LOCAL, which the model cannot
+    produce.  Handed in as solver output it must stop the run; handed in as a
+    derived subset -- an ordinary guess -- it is merely refused and counted.
+    """
+    from g1_pattern_schema import BodySpec, PatternSpec
+
+    broken = PatternSpec(
+        region_class="CLEAN",
+        bodies=(
+            BodySpec(bid=0, template="manufacturing_3x3", orientation=0, local_anchor=(1, 1)),
+        ),
+        poles=(),
+        hole=None,
+    )
+    accumulator = gen.CatalogAccumulator(region_class="CLEAN")
+    stats = gen.GeneratorStats()
+    with pytest.raises(gen.GeneratorBlocked, match="postcheck divergence"):
+        gen._accept(broken, accumulator, stats, {}, from_solver=True)
+    assert stats.postcheck_divergence == 1
+
+    tolerant = gen.GeneratorStats()
+    assert gen._accept(broken, accumulator, tolerant, {}, from_solver=False) is None
+    assert tolerant.postcheck_divergence == 0
+    assert tolerant.derived_rejected == 1
+
+
+def test_corridor_tax_measures_what_the_strict_reading_costs() -> None:
+    """[3d] Alarm meter 1 is a cost, and it is zero when nothing was lost."""
+    from g1_pattern_schema import BodySpec, PatternSpec, PoleSpec
+
+    plain = PatternSpec(
+        region_class="CLEAN",
+        bodies=(
+            BodySpec(bid=0, template="manufacturing_3x3", orientation=0, local_anchor=(1, 1)),
+            BodySpec(bid=1, template="manufacturing_3x3", orientation=0, local_anchor=(1, 9)),
+        ),
+        poles=(PoleSpec(local_anchor=(4, 5)),),
+        hole=None,
+    )
+    evaluation = ev.evaluate_pattern(plain)
+    assert evaluation.ok
+    assert gen.corridor_tax(evaluation) == 0
+
+    # A wall along y = 1..5 cuts row 0 off, taking twelve bottom fronts and the
+    # 5x5's two right-hand fronts with it: fourteen front cells the retired
+    # reading would have counted.
+    walled = PatternSpec(
+        region_class="CLEAN",
+        bodies=(
+            BodySpec(bid=0, template="manufacturing_5x5", orientation=0, local_anchor=(0, 1)),
+            BodySpec(bid=1, template="manufacturing_3x3", orientation=0, local_anchor=(5, 1)),
+            BodySpec(bid=2, template="manufacturing_3x3", orientation=0, local_anchor=(8, 1)),
+            BodySpec(bid=3, template="manufacturing_3x3", orientation=0, local_anchor=(11, 1)),
+        ),
+        poles=(PoleSpec(local_anchor=(6, 6)),),
+        hole=None,
+    )
+    cut = ev.evaluate_pattern(walled)
+    assert "R-PAT-CONN" in cut.violations
+    assert gen.corridor_tax(cut) == 14
+
+
+def test_retired_paths_announce_themselves() -> None:
+    """[3e] Alarm meter 3: a retired path is declared, never a silent zero."""
+    assert "strip_dead_bodies" in gen.RETIRED_PATHS
+    assert "post_filter_connectivity_reject" in gen.RETIRED_PATHS
+    for reason in gen.RETIRED_PATHS.values():
+        assert reason.startswith("retired 2026-08-04:"), reason
+    assert not hasattr(gen, "strip_dead_bodies"), "the retired path must be gone"
+    stats = gen.GeneratorStats().as_json()
+    assert "stripped_to_smaller" not in stats, "a pinned-at-zero counter is worse"
+    assert "rejected_connectivity" not in stats
+    assert stats["alarm_meters"]["retired_paths"] == dict(gen.RETIRED_PATHS)
 
 
 def test_generator_never_writes_outside_its_output_directory(tmp_path: Path) -> None:

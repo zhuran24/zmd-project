@@ -372,6 +372,13 @@ evaluator 还要求这些格落在自由空间分量里；密度顶到 ceiling �
 front 格名义上空着实际够不着。这也解释了 catalog 里 `rejected_dead_body = 0`
 而 `stripped_to_smaller` 高达 168–238：死体不是被拒绝，是被剥掉。
 
+> **本段是历史读数（2026-08-04 fix-and-rerun 批前）**。该批把「建模内 front 代理弱于
+> evaluator 存活判据」这条根因直接消掉：能力约束改写在 `conn`（自由**且**在唯一走廊上）
+> 而非「未被占用」，连通性成为模型硬约束，因此求解出的目标不可能再含死体，
+> 剥落路径 `strip_dead_bodies` 与其计数器 `stripped_to_smaller` 一并废除（见生成器的
+> `RETIRED_PATHS`，运行 manifest 里逐条列出，不留恒零计数器冒充「没发生」）。
+> 本段引用的 168–238 属于旧机制的读数，重生成后的 catalog 不再有这一栏。
+
 完整数字与乙段加深方向见 `CATALOG_REPORT.md`。
 
 ## 7b. 乙段实测结论（摘要，全文见 `RESULT.md`）
