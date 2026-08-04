@@ -51,18 +51,82 @@ def test_core_region_admits_no_manufacturing_body() -> None:
 
 
 def test_target_menu_is_deterministic_and_area_feasible() -> None:
-    """H-TARGET-MENU: same order every time, never over the free budget."""
+    """H-TARGET-MENU: same order every time, never over the free budget.
+
+    The hole is charged ``42 - maxK``: forced-free cells are body-free anyway, so
+    the part of the hole that lands on them costs the packing budget nothing.
+    The old assertion charged a flat 42 and therefore locked in the over-strict
+    filter it was supposed to be guarding.
+    """
     region = REGION_CLASSES["CLEAN"]
     first = gen.build_target_menu(region)
     second = gen.build_target_menu(region)
     assert [t.as_json() for t in first] == [t.as_json() for t in second]
     assert first, "the menu must not be empty"
     budget = region.usable
+    credit = gen.hole_forced_free_credit(region, spine=gen.BATCH_RUN_SPINE)
     for target in first:
         area = sum(
             gen.TEMPLATE_AREAS[template] * count for template, _level, count in target.counts
         )
-        assert area + 4 + (42 if target.hole else 0) <= budget
+        assert area + 4 + (gen.HOLE_CELLS - credit if target.hole else 0) <= budget
+
+
+def test_hole_budget_credit_is_recomputed_per_class_and_per_lane() -> None:
+    """[2b] ``maxK`` is measured from the masks, never a written-down constant.
+
+    The recomputation is done here the long way -- intersect every legal hole
+    placement with the forced-free set -- so the test fails if the production
+    helper starts short-cutting.  The batch's operating lane is pinned at the
+    same time: ``spine=False`` is what every number in this batch means.
+    """
+    assert gen.BATCH_RUN_SPINE is False
+    assert gen.GeneratorConfig().spine is gen.BATCH_RUN_SPINE
+    assert gen.HOLE_CELLS == 42
+
+    expected_off = {"CLEAN": 2, "CORNER": 4, "BOTTOM_I1": 4, "LEFT_J3": 4, "CORE": 0}
+    for name, region in REGION_CLASSES.items():
+        forced = gen._forced_free(region, spine=False)
+        brute = max(
+            (
+                len(
+                    {
+                        (anchor[0] + dx, anchor[1] + dy)
+                        for dx in range(width)
+                        for dy in range(height)
+                    }
+                    & forced
+                )
+                for anchor, width, height in gen.enumerate_hole_poses(region)
+            ),
+            default=0,
+        )
+        assert gen.hole_forced_free_credit(region, spine=False) == brute, name
+        if name in expected_off:
+            assert brute == expected_off[name], name
+        # The hard-spine lane forces a whole row and column free, so the credit
+        # can only grow -- and the CLI still has to be able to ask for it.
+        assert gen.hole_forced_free_credit(region, spine=True) >= brute, name
+
+    # A concrete consequence: with the credit applied, CLEAN admits menu targets
+    # a flat 42-cell charge rejected.
+    clean = REGION_CLASSES["CLEAN"]
+    credit = gen.hole_forced_free_credit(clean, spine=False)
+    assert credit > 0
+    budget = clean.usable
+    with_credit = [t for t in gen.build_target_menu(clean) if t.hole]
+    recovered = [
+        target
+        for target in with_credit
+        if sum(
+            gen.TEMPLATE_AREAS[template] * count
+            for template, _level, count in target.counts
+        )
+        + 4
+        + gen.HOLE_CELLS
+        > budget
+    ]
+    assert recovered, "the credit must actually let targets back into the menu"
 
 
 def test_generate_reload_round_trip(tmp_path: Path) -> None:

@@ -104,12 +104,15 @@ __all__ = [
     "TARGET_MENU",
     "FRONT_PROXY_OBJECTIVE",
     "SPINE_LANE",
+    "BATCH_RUN_SPINE",
+    "HOLE_CELLS",
     "Pose",
     "Target",
     "GeneratorConfig",
     "enumerate_body_poses",
     "enumerate_pole_poses",
     "enumerate_hole_poses",
+    "hole_forced_free_credit",
     "build_target_menu",
     "generate_catalog",
     "measure_packing_ceiling",
@@ -135,6 +138,13 @@ FRONT_PROXY_OBJECTIVE = "H-GEN-OBJECTIVE"
 #: constant stays as the registered anchor and as the knob to re-run the A/B.
 SPINE_LANE = "H-SPINE-LANE"
 SPINE_OBJECTIVE_WEIGHT = 0
+
+#: The batch's operating reading for the hard spine lane.  ``H-SPINE-LANE`` was
+#: measured and switched off (see ``SPINE_LANE``), and every number this batch
+#: quotes -- menu sizes, hole budgets, the per-class ``maxK`` credits -- is a
+#: ``spine = False`` number.  The CLI keeps ``--hard-spine`` so the A/B can be
+#: re-run, but a run that flips it is a different run and has to say so.
+BATCH_RUN_SPINE = False
 
 #: Capability levels per template, derived from the class table: a body at level
 #: ``L`` has ``max(r_in, r_out) <= L`` reachable, so the levels are exactly the
@@ -211,7 +221,7 @@ class GeneratorConfig:
     max_derived_subsets: int = 3
     workers: int = 4
     seed: int = 0
-    spine: bool = False
+    spine: bool = BATCH_RUN_SPINE
     max_targets: Optional[int] = None
     min_bodies: int = 1
     ceiling_seconds: float = 30.0
@@ -362,6 +372,34 @@ def enumerate_pole_poses(region: RegionClass, *, spine: bool = False) -> Tuple[C
     return tuple(anchors)
 
 
+def hole_forced_free_credit(region: RegionClass, *, spine: bool) -> int:
+    """``maxK``: how many of a hole's 42 cells can be paid for by forced-free cells.
+
+    A hole must be body-free, and so must every reserved cell (and, on the hard
+    spine lane, every spine cell).  Where the two overlap the hole costs the
+    packing budget nothing, so the area filter in ``build_target_menu`` may
+    credit the overlap back.  The credit is the *maximum* overlap over the legal
+    hole placements of this region class: any smaller value would drop targets
+    that are in fact placeable, which is exactly the bug this replaces (the
+    filter used to charge the full 42 cells unconditionally).
+
+    Computed, never written down.  With ``spine=False`` it is 2 for ``CLEAN``,
+    4 for the boundary and corner classes and 0 for ``CORE`` (which admits no
+    hole pose at all); with ``spine=True`` it reaches 13-16.  Hard-coding either
+    row would silently mis-filter the moment a mask or the lane changed.
+    """
+    forced = _forced_free(region, spine=spine)
+    best = 0
+    for anchor, width, height in enumerate_hole_poses(region):
+        cells = {
+            (anchor[0] + dx, anchor[1] + dy)
+            for dx in range(width)
+            for dy in range(height)
+        }
+        best = max(best, len(cells & forced))
+    return best
+
+
 def enumerate_hole_poses(region: RegionClass) -> Tuple[Tuple[Cell, int, int], ...]:
     """Hole placements that avoid fixed furniture.  Reserved cells are body-free
     anyway, so a hole may legally overlap them."""
@@ -384,6 +422,9 @@ def enumerate_hole_poses(region: RegionClass) -> Tuple[Tuple[Cell, int, int], ..
 
 
 REGION_CELLS_LOCAL = REGION_SIZE * REGION_SIZE
+#: The G1 hole vocabulary is a 6x7 or a 7x6 rectangle, so a hole is always 42
+#: cells.  Derived from ``enumerate_hole_poses``' shape list, not typed twice.
+HOLE_CELLS = 6 * 7
 
 _GLOBAL_SHARE: Dict[str, float] = {
     template: sum(row.count for row in CLASS_TABLE if row.template == template) / 25.0
@@ -403,6 +444,11 @@ def build_target_menu(
     the global 132 / 49 / 38 census.  Centre-band targets are therefore generated
     first and a budget cut-off leaves a deterministic, reproducible prefix.
 
+    The hole is charged ``42 - maxK`` cells, not 42: forced-free cells are body
+    free whether or not the hole covers them, so the overlap is already paid for
+    (``hole_forced_free_credit``).  Charging the full 42 dropped targets that fit,
+    which is the whole reason this batch re-generates the catalog.
+
     ``min_bodies`` drops every target below a body count (stage B knob, default 1
     = no filter).  The proportional-share ordering is right when the question is
     "what does an average region look like" and wrong when it is "can a region
@@ -413,6 +459,8 @@ def build_target_menu(
     intact and makes the aimed run a separate, nameable pass.
     """
     budget = REGION_CELLS_LOCAL - len(region.fixed_local) - len(_forced_free(region, spine=spine))
+    # The hole overlaps forced-free cells for free; see ``hole_forced_free_credit``.
+    hole_cost = HOLE_CELLS - hole_forced_free_credit(region, spine=spine)
     share = {
         template: _GLOBAL_SHARE[template] * (region.usable / 188.0)
         for template in MANUFACTURING_TEMPLATES
@@ -428,7 +476,7 @@ def build_target_menu(
                 if area > budget:
                     continue
                 for hole in (False, True):
-                    if hole and area + 42 > budget:
+                    if hole and area + hole_cost > budget:
                         continue
                     for profile in ("min", "max"):
                         counts = []
