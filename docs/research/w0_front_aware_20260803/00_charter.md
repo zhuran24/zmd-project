@@ -293,8 +293,8 @@ reserved 口前格 + 孔洞落在**同一个**分量里」，而不是「全图�
 > **勘误注（2026-08-04 复核，23 号指控③坐实）**：上句是登记语义；实现（
 > `g1_pattern_evaluator.portal_component`，多源 BFS）实际取的是**所有含 live 桩分量的并集**，
 > 只保证每个 anchor 落在某个含桩分量、不保证互相同分量——实测三份 catalog 2,593 个入册
-> pattern 中 855 个（33%）自由空间为多个含桩分量。补强到登记语义只删列不加列（供给上界
-> 3,113 → 2,749），G1 两轮 INFEASIBLE 不受影响；但下文 R-PORTAL-FIXED 的「逐 pattern 连通
+> pattern 中 855 个（33%）自由空间为多个含桩分量。补强到登记语义只删列不加列（现有
+> catalog 供给合计 3,113 → 2,749，catalog 口径），G1 两轮 INFEASIBLE 不受影响；但下文 R-PORTAL-FIXED 的「逐 pattern 连通
 > ⇒ 全图自由空间连通」组合论证**仅在登记（strict）语义下成立**，G1 转绿（witness 方向）前
 > 必须关此欠账。复核记录见 `CONSULT_VERDICT_20260804.md`。
 
