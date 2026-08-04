@@ -85,7 +85,7 @@ strict 模板的格坐标比对）。死亡名单适用性①②站得住（①�
 > 本节初版把咨询包早期版本的数字直接抄了进来，其中三处证据等级或口径不对，现全部
 > 收紧；第二轮验伤又推翻两处（本注第 3 条与末条）。证据 = `w0_band22_holes` 咨询包
 > （owner-reported 已发出；归档 `w0_band22_holes_20260804.7z`，
-> sha256 `730d38c7f4c37a7b0757fb8d8565550070d0ba5b2c8e539eb2a89523b6b0ee77`）的
+> sha256 v2 `d0e01f687ef85a2255e4b5c082441c56f4591e37881826f7a421e6943355c428`；初版 `730d38c7…` 含三处数字错误（band14 slit 恒11/模型B一律25/9种分配），经二轮验伤订正后重封，见本节明细注）的
 > `02_audit_three_holes.md` 与可跑断言脚本 `05_recompute_check.py` / `05_recompute_output.txt`
 > （包内自带证据等级声明：全部是算术，无 placement/routing/power witness，未跑 strict
 > checker，因此一切容量数都是**条件上界**）。
