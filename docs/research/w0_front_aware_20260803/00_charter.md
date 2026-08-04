@@ -41,13 +41,15 @@ codex 只坐审查席），前缀随之从 `codex/` 换成线名 `w0/`。base �
 
 **硬指标**（17 号原文）：`dead_for_any_actual_class = 0`，且所有 operation class 计数精确匹配。
 
-**判定**（`run_g1.py gate`，五条全绿才算 PASS）：
+**判定**（`run_g1.py gate`，六条全绿才算 PASS）：
 
 1. exact-cover master 返回 `OPTIMAL` 或 `FEASIBLE`，且其记录的 catalog manifest sha256 与实际 catalog 一致；
 2. expansion 成功、杆集合已做包含极小化、`g1_geometry.json` 通过严格 schema 解析；
 3. 独立审计 `verdict == "PASS"` 且 `issues == []`；
 4. 审计在独立子进程（`python -I -S -B`，ortools 不可 import）跑出，其 `inputs.geometry.sha256` 等于门自己算的几何 sha256；
-5. run receipt 闭合。
+5. run receipt 闭合；
+6. **登记表的未证义务全部在本次运行的产物上关闭**（2026-08-04 加，见 §5 的关闭机制）——
+   未关则终态 `OBLIGATION_OPEN`，属 BLOCK/返修，不是科学终态。
 
 **G1 PASS 不登记任何下界。** 它只说明"这份几何过了便宜的必要条件"。
 
@@ -264,8 +266,21 @@ cap = max over pairs with both sides non-empty of max(n_X, n_Y)
 不是证明，本线也没有做 distinct-representatives 检查。后果分两面：
 
 - 对本批的 `INFEASIBLE` **无影响**——模型比真规则更宽，宽模型无解是更强的陈述；
-- G1 一旦转绿，PASS 就会携带这条未证断言。转绿前二选一：给 `evaluate_pattern` 加
-  distinct-representatives 检查，或把上面的合法性论证补成证明并登记进本表。
+- G1 一旦转绿，PASS 就会携带这条未证断言。
+
+**关闭机制（2026-08-04 fix-and-rerun 批落地）**：本条的「G1 转绿前必须补上」以前只是
+一句话，`run_g1.py` 的门判并不读它——义务开着也能判 PASS，按顺序即门序那是违章。
+现在门多一条 clause 六 `open_obligations_discharged`：从 `derived_theorems.json` 读
+`open_obligations` 清单，逐条查 `run_g1.OBLIGATION_CHECKS` 里的关闭检查并在**本批自产的
+几何**上跑；**清单里没有对应检查的义务一律记作未关**，所以「新登记了义务却忘了写检查」
+这个方向是关死的。本条的检查是 `run_g1.check_front_simultaneity`：按 master 的类分配给
+每台机身要 `r_in + r_out` 个槽位，候选是该模式对应边上「body-free 且与本几何 active front
+同一自由分量」的口前格，跑二部图匹配；**匹配成功 = 拿出一份显式的同时性见证**（这正是义务
+要的东西），匹配不成 = 没有见证，**不等于**证明共享非法。判读上 clause 六还被 `_terminal_state`
+当**前置**再查一次（未关 → 终态 `OBLIGATION_OPEN`，属 §0 的 BLOCK/返修终态、不是科学终态），
+两把锁是刻意冗余：只留一把，一次改动就没了。
+
+义务本身仍留在登记表里：per-run 见证关的是「这一份几何」，不是把假设证没了。
 
 机器可读镜像在 `derived_theorems.json` 的 `open_obligations`。
 
@@ -417,7 +432,7 @@ front 格名义上空着实际够不着。这也解释了 catalog 里 `rejected_
 | `front_viability_audit.py` | 独立复核器（stdlib-only、可 `-I -S -B`、15 条 issue code） |
 | `g1_exact_cover_master.py` | exact-cover master（C1–C5）、空 pattern 合成、供给预门、删除法不可行核 |
 | `g1_expand_solution.py` | master 解 → 70×70 几何：类指派、全局杆极小化、provisional 实例、`g1_geometry.json` |
-| `run_g1.py` | 六个子命令的编排器；独占 run root + receipt 闭合；G1 五条判定 |
+| `run_g1.py` | 六个子命令的编排器；独占 run root + receipt 闭合；G1 六条判定（含未证义务 fail-closed 前置） |
 | `CATALOG_REPORT.md` | 甲段交接物：catalog 规模与算术预门结论 |
 | `RESULT.md` | 乙段收口：G1 终态、机器证据、升级梯走到哪档 |
 

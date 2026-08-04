@@ -9,7 +9,7 @@ Six subcommands, in pipeline order::
     solve      exact-cover master over a frozen catalog
     expand     master answer -> full 70x70 geometry
     audit      independent front-viability audit, in an isolated child process
-    gate       precheck -> solve -> expand -> audit -> the five-clause G1 verdict
+    gate       precheck -> solve -> expand -> audit -> the six-clause G1 verdict
 
 Everything except ``generate`` writes into an **exclusively created** run root via
 ``devtools.research_run_contract``: the directory must not already exist, every
@@ -18,7 +18,7 @@ identity graph plus root-closure check together say "this directory is exactly
 these files and nothing else".  A run that cannot close its root is a run whose
 evidence cannot be trusted, so the closure check is fatal, not advisory.
 
-The G1 verdict (charter section 2) is PASS only when all five hold:
+The G1 verdict (charter section 2) is PASS only when all six hold:
 
 1. the master returned OPTIMAL or FEASIBLE and the catalog digests it recorded
    match the catalog actually on disk;
@@ -31,7 +31,21 @@ The G1 verdict (charter section 2) is PASS only when all five hold:
    digest this process computed;
 5. the run root closes: it contains exactly the artifacts this run wrote, checked
    *before* any receipt exists, and the receipt is removed again if the check
-   after writing it fails.
+   after writing it fails;
+6. **every open obligation of the registry is discharged on this run's own
+   artifacts.**  The registry says ``must_close_before: any G1 PASS``; until
+   2026-08-04 nothing in this file read that field, so a PASS could be minted
+   with the obligation still open.  Clause six closes that: the obligation list
+   is read from ``derived_theorems.json``, each id is looked up in
+   ``OBLIGATION_CHECKS``, and an id with no implemented check counts as *not*
+   discharged.  Registering a new obligation therefore blocks PASS by itself,
+   which is the direction a fail-closed gate has to fail.
+
+Clause six is additionally a hard precondition of ``_terminal_state``, not only
+one more ``ok`` flag in the conjunction: a run whose obligations are open reports
+``OBLIGATION_OPEN`` and can never spell PASS, whatever the other clauses say.
+That is a BLOCK/repair terminal in the charter's four-way split, never a science
+terminal -- it says the gate is not entitled to an opinion yet.
 
 Anything else is "G1 not passed" and the stopping report rules of charter
 section 9 apply -- in particular the wording stays inside *this catalog, this
@@ -78,15 +92,23 @@ from g1_exact_cover_master import (  # noqa: E402
     solve_master,
 )
 from g1_expand_solution import expand_master_solution, summarise  # noqa: E402
+from g1_pattern_evaluator import (  # noqa: E402
+    modes_for,
+    pole_cells,
+    side_front_cells,
+)
 from g1_pattern_schema import (  # noqa: E402
     canonical_json_bytes,
     load_strict,
     sha256_of_bytes,
 )
 from g1_port_semantics import (  # noqa: E402
+    CLASS_BY_ID,
     CLASS_TABLE,
     DEFAULT_INSTANCES_PATH,
     DEFAULT_RULES_PATH,
+    GRID_HEIGHT,
+    GRID_WIDTH,
     TEMPLATE_SIZES,
 )
 from g1_region_model import (  # noqa: E402
@@ -99,12 +121,20 @@ __all__ = [
     "AUDIT_SCRIPT",
     "DEFAULT_GENERIC_IO_PATH",
     "GATE_CLAUSES",
+    "OBLIGATION_CHECKS",
+    "REGISTRY_PATH",
     "GenericIoContractError",
+    "ObligationOpen",
     "RunPaths",
+    "check_front_simultaneity",
+    "discharge_open_obligations",
     "main",
 ]
 
 AUDIT_SCRIPT = _HERE / "front_viability_audit.py"
+
+#: The machine-readable theorem/obligation registry this gate answers to.
+REGISTRY_PATH = _HERE / "derived_theorems.json"
 
 #: The frozen generic-IO contract: how many resource-source slots the board has to
 #: offer and how many final-product sink slots it has to absorb.  Consumed and
@@ -113,7 +143,7 @@ DEFAULT_GENERIC_IO_PATH = (
     _REPO_ROOT / "data" / "preprocessed" / "generic_io_requirements.json"
 )
 
-#: The five clauses of the G1 verdict, in the charter's order.  Reported one by
+#: The six clauses of the G1 verdict, in the charter's order.  Reported one by
 #: one so a failure names itself instead of collapsing into "not PASS".
 GATE_CLAUSES: Tuple[str, ...] = (
     "master_terminal_and_catalog_bound",
@@ -121,11 +151,26 @@ GATE_CLAUSES: Tuple[str, ...] = (
     "independent_audit_clean",
     "audit_isolated_and_digest_bound",
     "receipt_closed",
+    "open_obligations_discharged",
 )
+
+#: The terminal state a run reports when clause six is not satisfied.  Not a
+#: science terminal: it says the gate may not speak, not that the geometry is bad.
+OBLIGATION_OPEN = "OBLIGATION_OPEN"
 
 
 class GenericIoContractError(RuntimeError):
     """Fail-closed: the pinned furniture cannot carry the frozen generic-IO contract."""
+
+
+class ObligationOpen(RuntimeError):
+    """Fail-closed: the obligation registry itself cannot be read as a list.
+
+    Raised only for structural damage -- the ``open_obligations`` key missing or
+    not a list.  An obligation that is *present and undischarged* is a clause-six
+    failure, reported in the gate document; a registry the gate cannot read at all
+    is not something to report a verdict about.
+    """
 
 
 @dataclass(frozen=True)
@@ -213,6 +258,298 @@ def _generic_io_contract(path: Path) -> Dict[str, Any]:
             f"the pinned furniture cannot carry the generic-IO contract: {report}"
         )
     return report
+
+
+# --------------------------------------------------------------------------
+# clause six: discharging the registry's open obligations
+# --------------------------------------------------------------------------
+
+
+def _board_free_cells(geometry: Mapping[str, Any]) -> set:
+    """Every board cell no facility body and no pole occupies.
+
+    Recomputed from the geometry rather than carried alongside it, for the same
+    reason the audit recomputes it: a number that travels with the artifact it
+    describes is not evidence about that artifact.
+    """
+    occupied: set = set()
+    for item in geometry["fixed_furniture"]:
+        anchor_x, anchor_y = int(item["anchor"][0]), int(item["anchor"][1])
+        width, height = int(item["size"][0]), int(item["size"][1])
+        for dx in range(width):
+            for dy in range(height):
+                occupied.add((anchor_x + dx, anchor_y + dy))
+    for placement in geometry["placements"]:
+        anchor_x, anchor_y = int(placement["anchor"][0]), int(placement["anchor"][1])
+        width, height = int(placement["size"][0]), int(placement["size"][1])
+        for dx in range(width):
+            for dy in range(height):
+                occupied.add((anchor_x + dx, anchor_y + dy))
+    for pole in geometry["power_poles"]:
+        anchor = (int(pole["anchor"][0]), int(pole["anchor"][1]))
+        occupied.update(pole_cells(anchor))
+    return {
+        (x, y)
+        for x in range(GRID_WIDTH)
+        for y in range(GRID_HEIGHT)
+        if (x, y) not in occupied
+    }
+
+
+def _component_of(free: set, seeds: Sequence[Tuple[int, int]]) -> set:
+    """The 4-connected free component holding ``seeds[0]`` (empty if none)."""
+    roots = [cell for cell in seeds if cell in free]
+    if not roots:
+        return set()
+    stack = [min(roots)]
+    seen = set(stack)
+    while stack:
+        x, y = stack.pop()
+        for neighbour in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            if neighbour in free and neighbour not in seen:
+                seen.add(neighbour)
+                stack.append(neighbour)
+    return seen
+
+
+def _match_distinct_representatives(
+    demands: Sequence[Tuple[str, Tuple[Tuple[int, int], ...]]]
+) -> Dict[str, Optional[Tuple[int, int]]]:
+    """Kuhn's algorithm: one distinct cell per demand, or ``None`` where it fails.
+
+    Deterministic -- demands are processed in the order given and each demand's
+    candidates in sorted order -- so the same geometry always yields the same
+    witness, which is what makes the witness quotable.  Written iteratively
+    because the augmenting path can be as long as the number of demands (574 at
+    full census), and a recursive version would be one interpreter default away
+    from a RecursionError inside a gate.
+    """
+    candidates = {label: tuple(sorted(cells)) for label, cells in demands}
+    holder_of: Dict[Tuple[int, int], str] = {}
+    cell_of: Dict[str, Tuple[int, int]] = {}
+
+    def augment(start: str) -> bool:
+        visited: set = set()
+        reached_by: Dict[Tuple[int, int], str] = {}
+        stack: List[Tuple[str, List[Tuple[int, int]]]] = [
+            (start, list(candidates[start]))
+        ]
+        while stack:
+            label, pending = stack[-1]
+            cell: Optional[Tuple[int, int]] = None
+            while pending:
+                option = pending.pop(0)
+                if option in visited:
+                    continue
+                visited.add(option)
+                cell = option
+                break
+            if cell is None:
+                stack.pop()
+                continue
+            reached_by[cell] = label
+            holder = holder_of.get(cell)
+            if holder is None:
+                # Free cell: walk the alternating chain back to ``start``.
+                while True:
+                    owner = reached_by[cell]
+                    previous = cell_of.get(owner)
+                    holder_of[cell] = owner
+                    cell_of[owner] = cell
+                    if previous is None:
+                        return True
+                    cell = previous
+            stack.append((holder, list(candidates[holder])))
+        return False
+
+    for label, _cells in demands:
+        augment(label)
+    return {label: cell_of.get(label) for label, _cells in demands}
+
+
+def check_front_simultaneity(geometry: Optional[Mapping[str, Any]]) -> Dict[str, Any]:
+    """Discharge ``O-FRONT-SIMULTANEITY`` on one expanded geometry.
+
+    The obligation: capability is computed per body, and nothing downstream
+    requires that all bodies can take **pairwise distinct** active front cells at
+    the same time.  The registry offers two ways to close it; this is the first
+    one -- an actual distinct-representatives check -- run on the batch's own
+    product, because the answer depends on the master's class assignment and so
+    cannot be settled ahead of the solve.
+
+    Each placed body demands ``r_in`` input slots and ``r_out`` output slots from
+    its assigned operation class.  A slot may be filled by any front cell on the
+    matching side of the recorded mode that is body-free **and on the same
+    free-space corridor as the geometry's active fronts** -- restricting to the
+    corridor is what keeps the witness honest, because a cell no belt can reach
+    is not a representative.  A perfect matching is an explicit simultaneous
+    assignment, so finding one *proves* the obligation for this geometry; failing
+    to find one proves nothing either way and therefore blocks the gate.
+
+    Conservative on purpose: the check answers "is there a witness", never "the
+    sharing is illegal".
+    """
+    report: Dict[str, Any] = {
+        "obligation": "O-FRONT-SIMULTANEITY",
+        "method": "distinct representatives (bipartite matching) over the run's geometry",
+        "discharged": False,
+    }
+    if geometry is None:
+        report["reason"] = "no geometry: the master produced nothing to check"
+        return report
+
+    free = _board_free_cells(geometry)
+    seeds: List[Tuple[int, int]] = []
+    for placement in geometry["placements"]:
+        for key in ("active_input_fronts", "active_output_fronts"):
+            for cell in placement[key]:
+                seeds.append((int(cell[0]), int(cell[1])))
+    corridor = _component_of(free, sorted(seeds))
+    off_corridor = sorted(cell for cell in seeds if cell not in corridor)
+
+    demands: List[Tuple[str, Tuple[Tuple[int, int], ...]]] = []
+    shared_candidates: Dict[Tuple[int, int], int] = {}
+    for index, placement in enumerate(geometry["placements"]):
+        template = str(placement["template"])
+        orientation = int(placement["orientation"])
+        anchor = (int(placement["anchor"][0]), int(placement["anchor"][1]))
+        mode_id = str(placement["mode"])
+        row = CLASS_BY_ID[str(placement["operation_class"])]
+        spec = next(
+            (item for item in modes_for(template, orientation) if item.mode == mode_id),
+            None,
+        )
+        if spec is None:
+            report["reason"] = (
+                f"placement {index} records mode {mode_id!r}, which {template} at "
+                f"orientation {orientation} does not offer"
+            )
+            return report
+        for side, count, kind in (
+            (spec.in_side, row.r_in, "in"),
+            (spec.out_side, row.r_out, "out"),
+        ):
+            pool = tuple(
+                cell
+                for cell in side_front_cells(template, orientation, anchor, side)
+                if cell in corridor
+            )
+            for cell in pool:
+                shared_candidates[cell] = shared_candidates.get(cell, 0) + 1
+            for slot in range(count):
+                demands.append((f"{index}:{kind}:{slot}", pool))
+
+    matched = _match_distinct_representatives(demands)
+    unmatched = sorted(label for label, cell in matched.items() if cell is None)
+    shared = sorted(cell for cell, uses in shared_candidates.items() if uses > 1)
+
+    report.update(
+        {
+            "discharged": not unmatched and not off_corridor,
+            "bodies": len(geometry["placements"]),
+            "front_slots_demanded": len(demands),
+            "front_slots_matched": len(demands) - len(unmatched),
+            "unmatched_slots": unmatched[:20],
+            "recorded_active_fronts_off_corridor": [list(c) for c in off_corridor[:20]],
+            "candidate_cells_wanted_by_several_bodies": len(shared),
+            "witness_sha256": sha256_of_bytes(
+                canonical_json_bytes(
+                    {
+                        label: None if cell is None else [cell[0], cell[1]]
+                        for label, cell in sorted(matched.items())
+                    }
+                )
+            ),
+            "reading": (
+                "A full matching is an explicit simultaneous choice of pairwise "
+                "distinct active fronts, which is exactly what the obligation "
+                "asks for. An incomplete matching is not a proof that the "
+                "sharing is illegal -- it is the absence of a witness, and the "
+                "gate refuses to pass without one."
+            ),
+        }
+    )
+    report["witness"] = {
+        label: None if cell is None else [cell[0], cell[1]]
+        for label, cell in sorted(matched.items())
+    }
+    return report
+
+
+#: obligation id -> the function that may discharge it.  An id in the registry
+#: with no entry here is *not* discharged, so registering an obligation blocks
+#: PASS until someone writes its check.
+OBLIGATION_CHECKS: Dict[str, Any] = {
+    "O-FRONT-SIMULTANEITY": check_front_simultaneity,
+}
+
+
+def discharge_open_obligations(
+    geometry: Optional[Mapping[str, Any]], *, registry_path: Path = REGISTRY_PATH
+) -> Dict[str, Any]:
+    """Clause six: read the registry's obligations and try to discharge each one.
+
+    The registry is the authority on *which* obligations exist -- this file does
+    not keep its own list, because a second list is a list that drifts.  The
+    registry is digest-bound into the report so a run states which version of the
+    obligation set it answered to.
+    """
+    payload = registry_path.read_bytes()
+    registry = load_strict(registry_path)
+    raw = registry.get("open_obligations") if isinstance(registry, Mapping) else None
+    if not isinstance(raw, list):
+        raise ObligationOpen(
+            f"{registry_path} carries no open_obligations list; the gate cannot "
+            "decide clause six against a registry it cannot read"
+        )
+    entries = list(raw)
+    results: List[Dict[str, Any]] = []
+    for entry in entries:
+        obligation_id = str(entry["id"])
+        checker = OBLIGATION_CHECKS.get(obligation_id)
+        if checker is None:
+            results.append(
+                {
+                    "id": obligation_id,
+                    "must_close_before": str(entry["must_close_before"]),
+                    "checker": None,
+                    "discharged": False,
+                    "detail": {
+                        "reason": (
+                            "no discharge check is implemented for this "
+                            "obligation; a registered obligation blocks PASS "
+                            "until one is"
+                        )
+                    },
+                }
+            )
+            continue
+        detail = checker(geometry)
+        results.append(
+            {
+                "id": obligation_id,
+                "must_close_before": str(entry["must_close_before"]),
+                "checker": f"run_g1.{checker.__name__}",
+                "discharged": bool(detail.get("discharged")),
+                "detail": detail,
+            }
+        )
+    return {
+        "schema": "w0_g1_obligation_discharge_v1",
+        "registry": str(registry_path),
+        "registry_sha256": sha256_of_bytes(payload),
+        "obligations": results,
+        "all_discharged": bool(results) and all(item["discharged"] for item in results),
+        "reading": (
+            "The registry says these must close before any G1 PASS. Clause six "
+            "is the mechanism that makes that sentence executable: PASS is "
+            "unreachable while any of them is open, and an obligation with no "
+            "implemented check counts as open. An empty obligation list also "
+            "counts as open -- the line's own contract test says the list must "
+            "not silently empty out, so an empty one is a missing list, not a "
+            "finished proof."
+        ),
+    }
 
 
 def _catalog_digests(catalog_dirs: Sequence[Path]) -> Dict[str, str]:
@@ -337,6 +674,7 @@ def _gate_verdict(
     observation: Mapping[str, Any],
     *,
     root_closure_error: Optional[str],
+    obligations: Mapping[str, Any],
 ) -> Dict[str, Any]:
     clauses: Dict[str, Any] = {}
     recorded = master.get("catalogs") or {}
@@ -432,11 +770,40 @@ def _gate_verdict(
             "post-receipt closure check fails"
         ),
     }
+    # Clause six: the registry's own "must close before any G1 PASS" field, made
+    # executable.  It is also read directly by ``_terminal_state``, so a future
+    # edit that drops it out of this conjunction still cannot mint a PASS.
+    clauses[GATE_CLAUSES[5]] = {
+        "ok": bool(obligations.get("all_discharged")),
+        "registry_sha256": obligations.get("registry_sha256"),
+        "open_obligation_ids": [
+            str(item["id"])
+            for item in obligations.get("obligations", ())
+            if not item.get("discharged")
+        ],
+        "discharged_obligation_ids": [
+            str(item["id"])
+            for item in obligations.get("obligations", ())
+            if item.get("discharged")
+        ],
+        "decided_by": (
+            "derived_theorems.json open_obligations, each discharged on this "
+            "run's own artifacts; an obligation with no implemented check "
+            "counts as open"
+        ),
+    }
     return clauses
 
 
 def _terminal_state(master: Mapping[str, Any], clauses: Mapping[str, Any]) -> str:
-    """Terminal state from all five clauses."""
+    """Terminal state from all six clauses.
+
+    Clause six is a *precondition*, checked before the conjunction: an open
+    obligation makes PASS unreachable no matter what the rest of the run looks
+    like.  The redundancy with ``all(...)`` below is deliberate -- the charter
+    says no G1 PASS may carry an unproved assumption, and one lock on that is one
+    edit away from none.
+    """
     if master.get("status") == "SCALE_ABORT":
         return "SCALE_ABORT"
     if master.get("status") == "INFEASIBLE":
@@ -445,6 +812,8 @@ def _terminal_state(master: Mapping[str, Any], clauses: Mapping[str, Any]) -> st
         return "UNKNOWN"
     if not clauses[GATE_CLAUSES[2]]["ok"]:
         return "AUDIT_FAIL"
+    if not clauses.get(GATE_CLAUSES[5], {}).get("ok"):
+        return OBLIGATION_OPEN
     return "PASS" if all(entry.get("ok") for entry in clauses.values()) else "GATE_FAIL"
 
 
@@ -779,6 +1148,13 @@ def cmd_gate(args: argparse.Namespace) -> int:
         run.write("audit/g1_audit.json", "audit", audit_report)
         run.write("audit/child_process.json", "audit_process", observation)
 
+    # Clause six before clause five: the obligation discharge is an artifact of
+    # this run, so it has to be written into the root *before* the root is asked
+    # whether it closes.
+    obligations = discharge_open_obligations(geometry)
+    run.mkdir("obligations")
+    run.write("obligations/discharge.json", "obligation_discharge", obligations)
+
     # Clause five is settled here, on the last root state before gate.json is
     # written and long before any receipt exists.
     root_closure_error = run.closure_error()
@@ -791,6 +1167,7 @@ def cmd_gate(args: argparse.Namespace) -> int:
         audit_report,
         observation,
         root_closure_error=root_closure_error,
+        obligations=obligations,
     )
     terminal = _terminal_state(master, clauses)
     gate_doc = {
@@ -804,6 +1181,11 @@ def cmd_gate(args: argparse.Namespace) -> int:
         "verdict": "PASS" if terminal == "PASS" else "NOT_PASSED",
         "verdict_is_conditional_on_receipt": terminal == "PASS",
         "clauses": clauses,
+        "open_obligations": {
+            "registry_sha256": obligations["registry_sha256"],
+            "all_discharged": obligations["all_discharged"],
+            "ids": [str(item["id"]) for item in obligations["obligations"]],
+        },
         "master_status": master["status"],
         "infeasibility_core": master.get("infeasibility_core"),
         "scale": master["scale"],
@@ -827,6 +1209,7 @@ def cmd_gate(args: argparse.Namespace) -> int:
                 "master_status": master["status"],
                 "infeasibility_core": master.get("infeasibility_core"),
                 "generic_io_sha256": generic_io["sha256"],
+                "open_obligations_all_discharged": obligations["all_discharged"],
                 "gate_clause_five": (
                     "closed: the root matched this run's own artifact manifest "
                     "before this receipt was written, and again after"
