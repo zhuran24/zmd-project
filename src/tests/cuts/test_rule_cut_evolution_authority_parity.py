@@ -2,7 +2,8 @@
 
 These tests bind the authority-sensitive runtime surfaces to exact authorized
 bytes.  Five production surfaces remain at the 398f872 baseline;
-preflight_gate.py is pinned to the timeout-scale-only successor from 8292983,
+preflight_gate.py is pinned to the memory-lane additive successor (2026-08-03,
+剪枝 v2 P2), which supersedes the timeout-scale-only successor from 8292983;
 and PROJECT_LOCK.md is pinned to the W0 D6 plus AB16 research-only protocol
 successor.
 The new semantic/family specifications may be imported by tests and by one
@@ -53,10 +54,14 @@ _BASELINE_SURFACE_SHA256 = {
     "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
 }
 
-# 8292983 authorizes only the preflight secret-scan timeout-scale successor.
+# The authorized preflight successor is the memory-lane additive one
+# (2026-08-03, 剪枝 v2 P2): the gate gained a memory-layer pytest lane, and that
+# lane's blocking-on-missing-roots and per-run basetemp fixes.  It supersedes
+# 8292983's secret-scan timeout-scale successor, which the surface no longer
+# carries alone.
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
-    "scripts/preflight_gate.py": "c38fdc7eda47d231ebbaf64a7f221c7a19e9ee1934c71c1253563c7e921c8562",
+    "scripts/preflight_gate.py": "ddc75270ecd9023947104ac6379e58a43d366802b039a0958738175f061a177d",
 }
 
 _P1_2_SINK_SHA256 = {
