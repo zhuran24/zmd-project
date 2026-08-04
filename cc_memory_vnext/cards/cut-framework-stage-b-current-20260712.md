@@ -2,7 +2,7 @@
 id: cut-framework-stage-b-current-20260712
 kind: status
 title: cut framework 当前态(2026-07-12):Stage B B0-B5b+批D+修复批α/α2 全落地;F1/F6/F7=typed lowering 唯一写 master 通路;F5=shadow-only 无 lowering(真 adapter 在 verifier 前 fail-closed);F2/F3/F4/F9=LEGACY_DIAGNOSTIC registry 拒绝;gate 仍 unsafe/default-off 待 B6 owner
-summary: 取代 M3/M4 时期三张旧卡的当前态。Stage B B0-B5b 已全部完成(typed 平台+三族纵切+B5a wiring cut-over+B5b AST lockdown),另加批D(RFC-002 F5 独立 verifier)、修复批 α/α2(pre-promotion 信任根硬化+master 写入面锁定)、B6 前置工程批(session-bundle session 级所有权+F-05 alias 一跳+sink 注册 owner won't-do)与批E RFC-003(编排层 semantic dedup+严格非消费 JSONL ledger+family 参数开关,owner 批准重生成 waiver)。F1/F6/F7=COMPILABLE,唯一写 master 通路=typed registry→resolver(ModelScopeBinding 唯一构造)→step_8_apply_to_master→typed_apply(调 master _lower_*);F5 只产 ShadowValidated、无 ConstraintPlan/lowering、结构上改不了 master(B5a 物理删除旧 apply 分支;独立 verifier 已落地但真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed,可达性哨兵钉死);F2/F3/F4/F9=LEGACY_DIAGNOSTIC 在 typed 单入口 registry 边界拒绝(旧「step_8 NotImplementedError fallback」机制已随 B5a 退役——别再按它规划);F8 retired。EXACT_CUT_FRAMEWORK_ATTACH 仍在 certified unsafe-map/default-off。开放项=批C(PIC-4+生产层 PIC-5+RFC-003 门6 prod A/B)、B6 owner 手动门、F5 转正批(非 flip 前置)。机器口径:sinks 67、cuts 833(07d04b3 快照)、slow 24 登记→31 实例。
+summary: 取代 M3/M4 时期三张旧卡的当前态。Stage B B0-B5b 已全部完成(typed 平台+三族纵切+B5a wiring cut-over+B5b AST lockdown),另加批D(RFC-002 F5 独立 verifier)、修复批 α/α2(pre-promotion 信任根硬化+master 写入面锁定)、B6 前置工程批(session-bundle session 级所有权+F-05 alias 一跳+sink 注册 owner won't-do)与批E RFC-003(编排层 semantic dedup+严格非消费 JSONL ledger+family 参数开关,owner 批准重生成 waiver)。F1/F6/F7=COMPILABLE,唯一写 master 通路=typed registry→resolver(ModelScopeBinding 唯一构造)→step_8_apply_to_master→typed_apply(调 master _lower_*);F5 只产 ShadowValidated、无 ConstraintPlan/lowering、结构上改不了 master(B5a 物理删除旧 apply 分支;独立 verifier 已落地但真实 adapter 因 frozen tuple/list 形态差异在 verifier 前 fail-closed,可达性哨兵钉死);F2/F3/F4/F9=LEGACY_DIAGNOSTIC 在 typed 单入口 registry 边界拒绝(旧「step_8 NotImplementedError fallback」机制已随 B5a 退役——别再按它规划);F8 retired。EXACT_CUT_FRAMEWORK_ATTACH 仍在 certified unsafe-map/default-off。开放项=批C(PIC-4+生产层 PIC-5+RFC-003 门6 prod A/B)、B6 owner 手动门、F5 转正批(非 flip 前置)。机器口径:sinks 67、cuts 833(07d04b3 快照)、slow 24 登记→31 实例。**08-03 订正(见正文尾段):批C 已收官、prod 形态 gap 已修(bf9649a)、ab16 十六臂零有机激活收官——B6 前置数据=无有机暴露证据,开放项只剩 B6 手动门与 F5 转正批。**
 scope:
   domains:
     - p1-3-master-cut-integration
@@ -71,7 +71,7 @@ provenance:
     - "src/tests/cuts/test_f5_independent_verifier.py(真 adapter 可达性哨兵:verifier 前 fail-closed)"
     - "docs/research/cut_framework_review_gpt56pro_20260710/03_stage_b_implementation_spec.md(B0-B6 批次序列+07-12 F02/F09 审计校准)"
     - "docs/research/cut_framework_review_gpt56pro_20260710/05_batch_alpha_prepromotion_hardening_spec.md(α/α2 执行记录+双审裁决)"
-updated_at: "2026-07-12"
+updated_at: "2026-08-03"
 ---
 **cut framework 当前态(2026-07-12,批E 后 HEAD `1c2c1ab`;本卡取代 M3/M4 时期口径)**:
 
@@ -82,3 +82,8 @@ updated_at: "2026-07-12"
 - **门**:`EXACT_CUT_FRAMEWORK_ATTACH` 仍在 certified unsafe-map、default-off,双入口红测在位。
 - **开放项(到 promotion;07-13 晚批C 执行日+owner 四项拍板后口径)**:①**批C 收尾** = 矩阵零头(rollback 演练/多 rect 序列/oracle 开销测量/prod 层注入式演习点,~2-3h,07-14 白天清)——核心 A/B 矩阵 07-13 已收官(3 尺寸×on/off+复跑 7 点:证明面逐位等价×3 对+复现+跨尺寸一致,cap=1500 口径,cell.json 首批落地;判定口径 owner 已裁「两条腿」:无害性用 cap 矩阵、门6「触发>0」格用注入式演习、自然触发降观测项);②**B6 owner 手动门**(unsafe map 翻转+红测预期翻转+checker 登记+lock 授权改写;07 规格多跳 alias 张力已消解——owner 07-13 裁「一跳为界」、多跳归发布时点防内鬼桶,订正注在 07 号规格 §3.3);③**F5 转正批**(批D 规格 §5 五项;**非 flip 前置**,lock:492;排期 owner 已裁「B6 先走、F5 紧随不合批」)。批C 执行日工程沉淀:binding↔routing 枚举循环 F-6 定案+三 reseal 批(`cf76bed`/`34cb0aa`/`9deec8f`),`EXACT_B1_BINDING_ALT_CAP` 现为 certified 合法轮数预算(fail-closed UNKNOWN,F-BL-R3-01 背书)。
 - **机器口径(07-12)**:checker 15 obligations/67 sinks;strong-status 65/83;cuts 833;slow 24 登记→31 实例。批次提交里的 cuts N 是当时快照。
+
+**2026-08-03 现势订正(就地订正,依 validity 注「开放项收窄非 supersede」;查漏镜头首跑抓出本卡停在 07-13 口径)**:
+- **批C 及其收尾已全部收官**(07-13/14):核心 A/B 矩阵+零头清账完成;07-14 头号发现「prod 形态 gap」(F1/F6 投影严格标量 vs frozen int orientation→整条 attach prod fail-closed)**已修**——台账#8 prod 形态适配批 `bf9649a`,三调用点对称翻转 `master_scalar_coercions=True`,详见文件记忆卡 projection-must-mirror-live-master-not-stricter。上段「批C 收尾 07-14 白天清」等待办描述已成史料。
+- **ab16(cut 信任 A/B 16 臂,07-20~08-03 codex 自治期)收官**:16/16 臂 BUDGET_CENSORED_UNKNOWN+**零有机激活**——机制不是 cut 坏了,是 cap 口径下 binding_infeasible 信号结构上到不了(批C F-6 枚举循环定案的直接推论,见文件记忆卡 cut-trigger-never-organic-mechanism);无可归因 runtime 改善;奉 owner 停止令停,自治期尾部提交 `62bc65f` 已 revert 止血。
+- **开放项现口径**:①**B6 owner 手动门**——仍待 owner,且前置数据变为「无有机暴露证据」(ab16 结果削弱 flip 论证,评估时必带触发机制卡);②**F5 转正批**(非 flip 前置)不变。批C 从开放项清除。

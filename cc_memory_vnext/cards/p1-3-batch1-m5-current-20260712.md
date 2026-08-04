@@ -2,7 +2,7 @@
 id: p1-3-batch1-m5-current-20260712
 kind: status
 title: Batch1/M5/M6 当前态(2026-07-12):1A-1F 全落地;C1=certified 默认编码;供电可行布局存在性已关闭(完整产品默认 OPTIMAL@649.1s);M5 A/B 已解锁并完成首轮归因——剩性能调优与 prod-scale campaign,不是可行性/授权问题
-summary: 取代 M5/Batch0/M6 三张旧卡的当前态。Batch 1 六子批 1A-1F 全部落地;C1 power-pole pose-bool/cov 编码已是 certified 默认(master_model c1_power_pole_representation 默认 True,S4 blocker 保证非 C1 即拒)。完整 266 实例+6×6 ghost 已有 OPTIMAL 解——M6 的「供电可行布局存在性 OPEN」已关闭。M5:「默认参数病态」已证伪(smoke#4 实死于当时 42G 硬帽+禁 swap 条款,双变量混杂误读;C1 出解时刻有 ~60G 级固有内存尖峰),修订内存条款下四组参数全部 OPTIMAL、完整产品默认 fixed+p3+s3 OPTIMAL@649.1s;A/B 已解锁并完成首轮归因,不再存在「待 owner 拍板」。剩余=性能调优优先级+production-scale campaign 实测(PIC-4/5),别再重复申请 owner 拍板、恢复已删 witness 路径、或把性能当可行性 blocker。铁律保留:prod-scale master solve 一次只跑一个(47.7GB 机双并发必 OOM);内存采样 ≤1s+VmHWM+VmSwap。
+summary: 取代 M5/Batch0/M6 三张旧卡的当前态。Batch 1 六子批 1A-1F 全部落地;C1 power-pole pose-bool/cov 编码已是 certified 默认(master_model c1_power_pole_representation 默认 True,S4 blocker 保证非 C1 即拒)。完整 266 实例+6×6 ghost 已有 OPTIMAL 解——M6 的「供电可行布局存在性 OPEN」已关闭。M5:「默认参数病态」已证伪(smoke#4 实死于当时 42G 硬帽+禁 swap 条款,双变量混杂误读;C1 出解时刻有 ~60G 级固有内存尖峰),修订内存条款下四组参数全部 OPTIMAL、完整产品默认 fixed+p3+s3 OPTIMAL@649.1s;A/B 已解锁并完成首轮归因,不再存在「待 owner 拍板」。剩余=性能调优优先级+production-scale campaign 实测(PIC-4/5),别再重复申请 owner 拍板、恢复已删 witness 路径、或把性能当可行性 blocker。铁律保留:prod-scale master solve 一次只跑一个(47.7GB 机双并发必 OOM);内存采样 ≤1s+VmHWM+VmSwap。**08-03 订正(见正文尾段):「已有 OPTIMAL 解」跑于 front 错位语义+旧候选池(07-18 事故前),引用必须带「front 修正前口径」条件——存在性结论待现行池复验,预期方向不变但数字是模型误差品。**
 scope:
   domains:
     - p1-3-batch1
@@ -61,7 +61,7 @@ provenance:
     - "src/models/master_model.py:2298,2315,2630(c1_power_pole_representation 默认 True)"
     - "docs/research/p1_3_m5_convergence_20260708/m5_ab_param_bisect_20260711.md:15-33(四组均 OPTIMAL;产品默认 fixed+p3+s3 OPTIMAL@649.1s;smoke#4 死因=42G+禁 swap)"
     - "docs/项目说明/00_master_roadmap.md §0(1A-1F 全落地;PIC-7 归因关闭)"
-updated_at: "2026-07-12"
+updated_at: "2026-08-03"
 ---
 **Batch 1 / M5 / M6 当前态(2026-07-12;本卡取代三张旧诊断/判决卡的「当前开放项」口径)**:
 
@@ -70,3 +70,5 @@ updated_at: "2026-07-12"
 - **M5「默认参数病态」已证伪**:smoke#4 之死实因当时 42G 硬帽+禁 swap 条款(C1 出解时刻有 **~60G 级固有内存尖峰**,RSS>42G+swap 18G),不是参数病态;修订条款(62G 帽+swap 允许)下四组参数全部 OPTIMAL,参数只造成 wall 差异(+3.6%~+27.8%),完整产品默认 fixed+p3+s3 **OPTIMAL@649.1s**。**A/B 已解锁并完成首轮归因,不存在「待 owner 拍板」**;PIC-7 已关闭。
 - **剩余工作的正确定性**:性能调优优先级 + production-scale campaign 实测(PIC-4/PIC-5 生产层)。**不要**:重复申请 owner 拍板、恢复已删除的 witness 路径、把 +26% wall 之类性能注记当可行性 blocker。
 - **铁律保留**(从旧卡并入,继续有效):**prod-scale master solve 一次只跑一个**——47.7GB 机上双并发必 OOM(Windows 侧实测双杀);42G 帽+禁 swap 必死;内存采样纪律 ≤1s 间隔 + 读 VmHWM/VmSwap(30s 采样会把 60G 尖峰看成「温和」)。
+
+**2026-08-03 现势订正(就地订正;查漏镜头首跑抓出头条结论缺前提条件)**:「完整 266 实例+6×6 ghost 已有 OPTIMAL 解」的判定跑于 **2026-07-11,即 front 错位语义+旧候选池之下**。07-18 front P0 事故(机械查体外第 2 格 vs 游戏真语义第 1 格,见文件记忆卡 front-offset-incident-20260718)双向污染当时全部 front 相关结论,批1-批5+域修正 82,829 落地后候选池已重冻结(现行 `f05b1291`)。**该存在性结论未在现行池下重跑——引用本卡头条时必须带「front 修正前口径」条件**。方向性预期不变(front 事故定谳原则=最优解从未变、旧数字是模型误差品;且修正放宽了第 1 格语义,可行域只增不减,存在性预期更稳),但「已关闭」的严格口径=待现行池复验。M5 参数/内存条款结论不受影响(与 front 语义无关)。
