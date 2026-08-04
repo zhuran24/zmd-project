@@ -142,12 +142,12 @@
     {
       "id": "R-PAT-CONN",
       "layer": "sufficient_restriction",
-      "statement": "A free front counts only if it lies in the region's portal-connected component; the reserved fixed-furniture fronts must lie there too.",
+      "statement": "Every live portal stub, every reserved fixed-furniture front, every active front and every hole cell of one pattern lie in ONE 4-connected free component.",
       "gates": ["G1", "G2"],
       "code_anchor": "g1_pattern_evaluator.portal_component",
       "stage": "A",
       "source": "this line",
-      "note": "2026-08-04 review: the anchor returns the UNION of all stub-bearing components (multi-source BFS); the shipped check in evaluate_pattern therefore implements a reading weaker than this statement (855/2593 shipped patterns have multiple stub-bearing components). Strengthening only deletes columns, so the G1 INFEASIBLE results stand; implementation and registered semantics must converge before any G1 green. See CONSULT_VERDICT_20260804.md."
+      "note": "CONVERGED 2026-08-04 (fix-and-rerun batch). History: the 2026-08-04 review found the anchor returning the UNION of all stub-bearing components (multi-source BFS), so the shipped check in evaluate_pattern implemented a reading weaker than this statement (855/2593 shipped patterns had multiple stub-bearing components); strengthening only deletes columns, so the G1 INFEASIBLE results stand. The anchor now floods from a single canonical root (g1_pattern_evaluator.component_root) and the generator carries the same restriction as a single-source flow certificate inside its CP-SAT model, so no consumer can see the union reading any more. See CONSULT_VERDICT_20260804.md and 00_charter.md section 6."
     },
     {
       "id": "R-POWER-LOCAL",

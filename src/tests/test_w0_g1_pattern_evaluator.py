@@ -280,6 +280,92 @@ def test_pattern_blocking_a_portal_stub_is_rejected() -> None:
     assert "R-PORTAL-FIXED" in evaluation.violations
 
 
+#: A CLEAN pattern whose free space splits into **two** stub-bearing components.
+#: The four bodies wall off row ``y = 0`` (which keeps the south stubs (6,0) and
+#: (7,0)) from everything above it (which keeps the other six stubs).  Under the
+#: retired multi-source reading ``portal_component`` returned the union of both
+#: pockets and this pattern evaluated as legal; under the registered reading it
+#: is an R-PAT-CONN violation.  Every cell here is checked by the assertions
+#: below, so the fixture cannot rot into "some pattern that happens to fail".
+_SPLIT_PATTERN = PatternSpec(
+    region_class="CLEAN",
+    bodies=(
+        BodySpec(bid=0, template="manufacturing_5x5", orientation=0, local_anchor=(0, 1)),
+        BodySpec(bid=1, template="manufacturing_3x3", orientation=0, local_anchor=(5, 1)),
+        BodySpec(bid=2, template="manufacturing_3x3", orientation=0, local_anchor=(8, 1)),
+        BodySpec(bid=3, template="manufacturing_3x3", orientation=0, local_anchor=(11, 1)),
+    ),
+    poles=(PoleSpec(local_anchor=(6, 6)),),
+    hole=None,
+)
+
+
+def _free_components(free: frozenset) -> list[set]:
+    remaining = set(free)
+    found: list[set] = []
+    while remaining:
+        seed = next(iter(remaining))
+        remaining.discard(seed)
+        component = {seed}
+        stack = [seed]
+        while stack:
+            u, v = stack.pop()
+            for neighbour in ((u + 1, v), (u - 1, v), (u, v + 1), (u, v - 1)):
+                if neighbour in remaining:
+                    remaining.discard(neighbour)
+                    component.add(neighbour)
+                    stack.append(neighbour)
+        found.append(component)
+    return found
+
+
+def test_two_stub_bearing_components_are_an_r_pat_conn_violation() -> None:
+    """[14b] R-PAT-CONN strict: one corridor, not "one corridor per stub".
+
+    Red before green: with the multi-source flood this exact pattern evaluated
+    ``ok`` -- every live stub trivially lay in *some* stub-bearing component, so
+    the check could not fire.  The premise of the test is asserted first (the
+    free space really does split, and both halves really do hold live stubs), so
+    a future change that merges the halves turns this into a loud failure rather
+    than a silent tautology.
+    """
+    from g1_region_model import REGION_CLASSES
+
+    evaluation = ev.evaluate_pattern(_SPLIT_PATTERN)
+    components = _free_components(evaluation.free_cells)
+    stubs = set(REGION_CLASSES["CLEAN"].live_stubs)
+    hosting = [component for component in components if component & stubs]
+    assert len(components) == 2, [len(c) for c in components]
+    assert len(hosting) == 2, "the premise is two stub-bearing pockets"
+
+    assert "R-PAT-CONN" in evaluation.violations
+    assert not evaluation.ok
+    # The returned component is one pocket, never the union of the two.
+    assert evaluation.component in {frozenset(c) for c in hosting}
+    assert len(evaluation.component) < len(evaluation.free_cells)
+
+
+def test_portal_component_floods_from_one_canonical_root() -> None:
+    """[14c] ``portal_component`` is single-source and deterministic."""
+    free = frozenset({(0, 0), (0, 1), (5, 5), (5, 6)})
+    seeds = ((5, 5), (0, 0))
+    assert ev.component_root(free, seeds) == (0, 0)
+    assert ev.portal_component(free, seeds) == frozenset({(0, 0), (0, 1)})
+    # Same free space, same seeds, same answer -- order of ``seeds`` is irrelevant.
+    assert ev.portal_component(free, ((0, 0), (5, 5))) == ev.portal_component(free, seeds)
+    # No free seed at all: empty corridor, and the caller reports R-PAT-CONN.
+    assert ev.component_root(free, ((9, 9),)) is None
+    assert ev.portal_component(free, ((9, 9),)) == frozenset()
+
+
+def test_a_hole_off_the_corridor_is_rejected() -> None:
+    """[16c] R-HOLE-IN-REGION rides on the same single component."""
+    pattern = _clean_pattern(hole=HoleSpec(local_anchor=(6, 7), width=7, height=6))
+    assert ev.evaluate_pattern(pattern).ok
+    walled = ev.evaluate_pattern(_SPLIT_PATTERN)
+    assert "R-PAT-CONN" in walled.violations
+
+
 def test_pattern_without_power_is_rejected() -> None:
     evaluation = ev.evaluate_pattern(_clean_pattern(poles=()))
     assert "R-POWER-LOCAL" in evaluation.violations

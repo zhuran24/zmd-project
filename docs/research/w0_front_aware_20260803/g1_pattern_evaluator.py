@@ -20,9 +20,22 @@ front cell directly from the edge-normal arithmetic and
 and never adds a delta.  ``src/tests/test_w0_g1_pattern_evaluator.py`` pins the
 first-cell result and explicitly asserts the second cell is *not* used.
 
+R-PAT-CONN semantics (strict, converged 2026-08-04)
+---------------------------------------------------
+The registered reading is: **every** live portal stub, **every** reserved
+fixed-furniture front, every active front and every hole cell of one pattern lie
+in **one** 4-connected free component.  Until the fix-and-rerun batch the shipped
+code flooded from all live stubs at once, which returns the *union* of every
+stub-bearing component and therefore only checks "each anchor sits in some
+stub-bearing component" -- a strictly weaker reading (855 of the 2,593 shipped
+patterns had several stub-bearing components).  ``portal_component`` now floods
+from a single canonical root, so the union reading is not expressible any more
+and the composition argument of ``R-PORTAL-FIXED`` (per-pattern connectivity =>
+board-wide free-space connectivity) is supported again.
+
 Registered restrictions enforced here
 -------------------------------------
-``R-PAT-CONN``     free fronts must lie in the portal-connected component
+``R-PAT-CONN``     one free component holds every stub, front and hole cell
 ``R-POWER-LOCAL``  every body is covered by a pole of its own region
 ``T-DEAD-BODY``    a body serving no class is a dead body; patterns forbid them
 ``T-CAPABILITY-BUCKET``  bucket abstraction, lossless (see ``g1_port_semantics``)
@@ -74,6 +87,7 @@ __all__ = [
     "body_cells",
     "side_front_cells",
     "is_front_usable",
+    "component_root",
     "portal_component",
     "power_local_ok",
     "dead_for_any_actual_class",
@@ -217,8 +231,10 @@ def is_front_usable(
     """T-FRONT-FREE plus R-FRONT-IN-REGION plus R-PAT-CONN.
 
     A front counts only if it is inside its own region (so the master needs no
-    seam variable), body-free, and reachable from the region's portal stubs (so
-    the belt that will use it is on the global corridor).
+    seam variable), body-free, and inside ``component`` -- the *one* stub-rooted
+    free component of the pattern (see ``portal_component``).  Because the
+    component is now single-rooted, "this front is usable" and "this front shares
+    a corridor with every other active front" are the same statement.
     """
     u, v = cell
     if not (0 <= u < REGION_SIZE and 0 <= v < REGION_SIZE):
@@ -228,17 +244,41 @@ def is_front_usable(
     return cell in component
 
 
+def component_root(
+    free_cells: Iterable[Cell], seeds: Iterable[Cell]
+) -> Optional[Cell]:
+    """The single canonical root of the pattern's corridor, or ``None``.
+
+    The root is the ``(x, y)``-smallest free seed.  Deterministic and
+    root-independent as a *decision*: R-PAT-CONN asks whether all anchors share
+    one component, and that question has the same answer whichever anchor the
+    flood starts from.  Fixing the root is what makes the check strict.
+    """
+    free = set(free_cells)
+    candidates = sorted(cell for cell in seeds if cell in free)
+    return candidates[0] if candidates else None
+
+
 def portal_component(
     free_cells: Iterable[Cell], seeds: Iterable[Cell]
 ) -> FrozenSet[Cell]:
-    """The 4-connected component of ``free_cells`` reachable from ``seeds``.
+    """R-PAT-CONN, registered (strict) semantics: **one** free component.
 
-    ``seeds`` are the region's live portal stubs.  R-PAT-CONN additionally
-    requires every reserved fixed-furniture front to land in this component; the
-    caller checks that.
+    ``seeds`` are the region's live portal stubs.  The flood starts from the
+    single canonical root (``component_root``), never from all seeds at once: a
+    multi-source flood returns the *union* of every stub-bearing component, and
+    "each anchor is in some stub-bearing component" is trivially true of every
+    live stub, which is how the shipped check ended up weaker than the charter
+    text it claimed to enforce (2026-08-04 review).  With one root, a stub or a
+    reserved front in a different pocket is simply not in the returned set and
+    the caller's membership test fails -- which is the whole point.
+
+    Empty seeds, or seeds that are all occupied, yield the empty set; the caller
+    reports that as R-PAT-CONN (and R-PORTAL-FIXED reports the occupation).
     """
     free = set(free_cells)
-    frontier = deque(cell for cell in seeds if cell in free)
+    root = component_root(free, seeds)
+    frontier: deque[Cell] = deque() if root is None else deque([root])
     seen: Set[Cell] = set(frontier)
     while frontier:
         u, v = frontier.popleft()
@@ -559,6 +599,10 @@ def evaluate_pattern(
     if any(cell in frozen_occupied for cell in fixed_fronts):
         violations.append("R-CORE-FRONT-RESERVE")
 
+    # R-PAT-CONN, strict: one component holds every live stub, every reserved
+    # fixed-furniture front, every active front (via ``is_front_usable``) and the
+    # hole.  An anchor that is *occupied* is R-PORTAL-FIXED / R-CORE-FRONT-RESERVE
+    # business, so only free anchors are asked to share the corridor here.
     component = portal_component(free_cells, live_stubs)
     anchors = set(live_stubs) | set(fixed_fronts)
     if any(cell not in component for cell in anchors if cell in free_cells):
