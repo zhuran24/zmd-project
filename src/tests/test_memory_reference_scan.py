@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import os
+import sqlite3
 import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
@@ -194,13 +195,64 @@ def test_a_wikilink_that_resolves_is_not_reported(world: dict[str, Path]) -> Non
     assert report["metadata"]["flag_counts"]["dangling_wikilink"] == 0
 
 
-def test_the_two_layers_resolve_wikilinks_against_their_own_cards(world: dict[str, Path]) -> None:
-    """A vnext id does not satisfy a file-memory link, or the reverse."""
+def test_a_link_from_one_layer_to_another_is_not_dangling(world: dict[str, Path]) -> None:
+    """Cross-layer links are the normal shape, not a defect.
+
+    Resolving a link only within the citing card's own layer reported 14
+    healthy links as dangling on 2026-08-03 — every one of them a file-memory
+    card pointing at a real vnext card — which left the flag with no signal
+    value.  Both directions must resolve.
+    """
     _vnext_card(world["cards"], "alpha")
-    _file_card(world["memory"], "beta", body="see [[seed-card]]")
+    _file_card(world["memory"], "beta", body="see [[seed-card]] and [[alpha]]")
     _index(world["memory"], ["alpha", "beta"])
     commit_cards(world, when="2026-01-02T00:00:00+00:00")
     report = build(world)
+    assert report["metadata"]["flag_counts"]["dangling_wikilink"] == 0
+
+
+def test_a_link_to_an_archived_cc_memory_entry_is_not_dangling(world: dict[str, Path]) -> None:
+    """The frozen archive is the third link target, read without a footprint."""
+    database = world["root"] / scan.ARCHIVE_DB_RELPATH
+    database.parent.mkdir(parents=True, exist_ok=True)
+    connection = sqlite3.connect(database)
+    try:
+        connection.execute("create table entries (id text primary key)")
+        connection.execute("create table facts (id text primary key)")
+        connection.execute("insert into entries values ('archived-entry')")
+        connection.execute("insert into facts values ('fact-archived')")
+        connection.commit()
+    finally:
+        connection.close()
+    _file_card(world["memory"], "beta", body="see [[archived-entry]] and [[fact-archived]]")
+    _index(world["memory"], ["alpha", "beta"])
+    commit_cards(world, when="2026-01-02T00:00:00+00:00")
+    report = build(world)
+    assert report["metadata"]["flag_counts"]["dangling_wikilink"] == 0
+    assert report["metadata"]["sources"]["archive_read_status"] == "read"
+    assert report["metadata"]["sources"]["archive_id_count"] == 2
+    assert not list(database.parent.glob("memory.db-*")), "the read left sidecar files behind"
+
+
+def test_a_link_to_nothing_at_all_still_dangles(world: dict[str, Path]) -> None:
+    """Widening the search must not silence the flag it was widened for."""
+    _vnext_card(world["cards"], "alpha")
+    _file_card(world["memory"], "beta", body="see [[not-in-any-layer]]")
+    _index(world["memory"], ["alpha", "beta"])
+    commit_cards(world, when="2026-01-02T00:00:00+00:00")
+    report = build(world)
+    assert flags(report["fyi"]) == [("dangling_wikilink", "beta.md")]
+    assert report["fyi"][0]["signals"] == ["wikilink_target_is_not_a_card_in_any_memory_layer"]
+
+
+def test_an_absent_archive_degrades_instead_of_failing_the_scan(world: dict[str, Path]) -> None:
+    """One missing layer must over-report, never crash or under-report."""
+    assert not (world["root"] / scan.ARCHIVE_DB_RELPATH).exists()
+    _file_card(world["memory"], "beta", body="see [[archived-entry]]")
+    _index(world["memory"], ["alpha", "beta"])
+    report = build(world)
+    assert report["metadata"]["sources"]["archive_read_status"] == "absent"
+    assert report["metadata"]["sources"]["archive_id_count"] == 0
     assert flags(report["fyi"]) == [("dangling_wikilink", "beta.md")]
 
 

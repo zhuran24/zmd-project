@@ -104,6 +104,7 @@ import hashlib
 import json
 import os
 import re
+import sqlite3
 import stat
 import subprocess
 import sys
@@ -128,6 +129,7 @@ DEFAULT_FILE_MEMORY_DIR = Path.home() / ".claude/projects/-home-zhuran24-zmd-pj/
 DEFAULT_TRANSCRIPT_DIR = Path.home() / ".claude/projects/-home-zhuran24-zmd-pj"
 VNEXT_CARDS_RELPATH = "cc_memory_vnext/cards"
 ACTIVATION_LEDGER_RELPATH = "cc_memory_vnext/logs/activation_decisions.jsonl"
+ARCHIVE_DB_RELPATH = "cc_memory/memory.db"
 
 INDEX_FILENAME = "MEMORY.md"
 
@@ -338,25 +340,68 @@ def scan_index_integrity(directory: Path, cards: dict[str, Card], entries: Seque
     return findings
 
 
-def scan_wikilinks(cards: dict[str, Card], *, layer: str, aliases: set[str]) -> list[Finding]:
+def load_archive_ids(db_path: Path) -> tuple[set[str], str]:
+    """Node ids of the frozen cc_memory archive, over a footprint-free read.
+
+    ``mode=ro&immutable=1`` rather than a bare ``mode=ro``, following the
+    precedent measured in ``cc_memory/mem.py:connect_immutable`` on 2026-08-03:
+    a bare read-only open of a WAL-mode database still creates ``memory.db-wal``
+    and ``memory.db-shm`` beside it, and this scanner claims to change nothing
+    it reads.  ``mode=ro`` stays in the URI because ``immutable=1`` alone will
+    create a 0-byte file at a path that does not exist.
+
+    Returns ``(ids, status)``.  An unreadable archive degrades to an empty set
+    with a status the report records, rather than failing the scan: the archive
+    is one of three link targets, and losing it makes ``dangling_wikilink``
+    over-report rather than under-report.
+    """
+    if not db_path.is_file():
+        return set(), "absent"
+    try:
+        connection = sqlite3.connect(f"{db_path.resolve().as_uri()}?mode=ro&immutable=1", uri=True)
+    except sqlite3.Error as error:
+        return set(), f"unreadable: {type(error).__name__}"
+    try:
+        ids: set[str] = set()
+        for table in ("entries", "facts"):
+            try:
+                ids.update(str(row[0]) for row in connection.execute(f"select id from {table}"))
+            except sqlite3.Error:
+                continue
+        return ids, "read"
+    finally:
+        connection.close()
+
+
+def scan_wikilinks(
+    cards: dict[str, Card], *, layer: str, aliases: set[str], other_layers: set[str]
+) -> list[Finding]:
     """Dangling ``[[name]]`` links, locked to FYI at the source.
 
     The v2 design calls these a mark worth recording rather than an error, so
     the lock is set here instead of being left to a reader's judgement.
+
+    A link counts as resolved when any of the three memory layers holds it, not
+    just the one the citing card lives in.  Cross-layer links are the normal
+    shape here — a file-memory card pointing at a vnext card, or at an archived
+    cc_memory entry, is the system working as intended — so resolving only
+    within the citing layer reported 14 healthy links as dangling on 2026-08-03
+    and left the flag with no signal value.
     """
     findings: list[Finding] = []
+    known = aliases | other_layers
     for key, card in sorted(cards.items()):
         seen: set[str] = set()
         for number, line in enumerate(card.body.split("\n"), start=1):
             for match in _WIKILINK_RE.finditer(line):
                 target = match.group(1).strip()
-                if not target or target in aliases or target in seen:
+                if not target or target in known or target in seen:
                     continue
                 seen.add(target)
                 findings.append(Finding(
                     flag="dangling_wikilink", layer=layer, subject=key,
                     locator=f"{card.path.name}:{number}:{target}",
-                    signals=("wikilink_target_is_not_a_card_in_this_layer",),
+                    signals=("wikilink_target_is_not_a_card_in_any_memory_layer",),
                     evidence={"card": card.path.name, "line": number, "target": target,
                               "line_text": line.strip()[:400]},
                     locked=True,
@@ -808,8 +853,16 @@ def build_report(
     findings.extend(scan_index_integrity(file_memory_dir, file_cards, entries))
 
     file_aliases = set(file_cards) | {card.path.stem for card in file_cards.values()}
-    findings.extend(scan_wikilinks(file_cards, layer=LAYER_FILE, aliases=file_aliases))
-    findings.extend(scan_wikilinks(vnext_cards, layer=LAYER_VNEXT, aliases=set(vnext_cards)))
+    vnext_aliases = set(vnext_cards)
+    archive_ids, archive_status = load_archive_ids(root / ARCHIVE_DB_RELPATH)
+    findings.extend(scan_wikilinks(
+        file_cards, layer=LAYER_FILE, aliases=file_aliases,
+        other_layers=vnext_aliases | archive_ids,
+    ))
+    findings.extend(scan_wikilinks(
+        vnext_cards, layer=LAYER_VNEXT, aliases=vnext_aliases,
+        other_layers=file_aliases | archive_ids,
+    ))
 
     never_read, vnext_status = scan_never_read(root, vnext_cards, ledger)
     findings.extend(never_read)
@@ -843,6 +896,8 @@ def build_report(
                 "file_memory_dir": str(file_memory_dir), "file_memory_index": str(index_path),
                 "file_memory_card_count": len(file_cards), "file_memory_index_entry_count": len(entries),
                 "vnext_cards_dir": str(vnext_dir), "vnext_card_count": len(vnext_cards),
+                "archive_db": str(root / ARCHIVE_DB_RELPATH), "archive_id_count": len(archive_ids),
+                "archive_read_status": archive_status,
                 "transcript_dir": str(transcript_dir),
                 "transcripts_scanned": promise_stats["transcripts_scanned"],
                 "promises_found": len(promises), "said_card_window_days": window_days,
