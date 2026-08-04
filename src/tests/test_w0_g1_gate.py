@@ -17,6 +17,7 @@ neither a PASS nor a receipt behind.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -358,6 +359,68 @@ def test_the_shipped_registry_obligation_is_wired_to_a_check() -> None:
     report = run_g1.discharge_open_obligations(None)
     assert report["all_discharged"] is False, "no geometry, nothing discharged"
     assert report["registry_sha256"]
+
+
+class _CountingRegistry:
+    """A registry path that hands out *different* bytes on every read.
+
+    Stands in for the file changing between two reads.  The gate is allowed
+    exactly one read, so only ``payloads[0]`` may ever be seen; a second read is
+    the TOCTOU window itself and shows up here as a different obligation list
+    behind an already-published digest.
+    """
+
+    def __init__(self, *payloads: bytes) -> None:
+        self.payloads = list(payloads)
+        self.reads = 0
+
+    def _next(self) -> bytes:
+        payload = self.payloads[min(self.reads, len(self.payloads) - 1)]
+        self.reads += 1
+        return payload
+
+    def read_bytes(self) -> bytes:
+        return self._next()
+
+    def read_text(self, encoding: str = "utf-8") -> str:
+        return self._next().decode(encoding)
+
+    def __str__(self) -> str:  # the report records the path it answered to
+        return "<counting registry>"
+
+
+def test_the_registry_is_read_once_so_the_digest_matches_what_was_parsed() -> None:
+    """[G13d] Clause six hashes and parses **one** byte string, not two reads.
+
+    Hashing the file and then parsing the file again is a window: between the two
+    reads the registry can change, and the report would then publish a digest of
+    bytes it did not decide against -- exactly the evidence-provenance failure
+    this line is built to refuse.  The stub below makes the window visible: its
+    second read carries an obligation the first does not.
+    """
+    shipped = run_g1.REGISTRY_PATH.read_bytes()
+    swapped = json.loads(shipped.decode("utf-8"))
+    swapped["open_obligations"] = [
+        {
+            "id": "O-SNUCK-IN-BETWEEN-THE-READS",
+            "statement": "an obligation that only the second read would see",
+            "affects": ["R-PAT-CONN"],
+            "effect_on_this_batch": "none",
+            "must_close_before": "any G1 PASS",
+            "closure_options": ["never appear"],
+        }
+    ]
+    stub = _CountingRegistry(shipped, (json.dumps(swapped) + "\n").encode("utf-8"))
+
+    report = run_g1.discharge_open_obligations(None, registry_path=stub)  # type: ignore[arg-type]
+
+    assert stub.reads == 1, "the registry may be read exactly once"
+    assert report["registry_sha256"] == hashlib.sha256(shipped).hexdigest()
+    ids = {item["id"] for item in report["obligations"]}
+    assert "O-SNUCK-IN-BETWEEN-THE-READS" not in ids
+    assert ids == {
+        entry["id"] for entry in json.loads(shipped.decode("utf-8"))["open_obligations"]
+    }
 
 
 def test_an_unreadable_obligation_list_is_fatal_not_a_green_clause(

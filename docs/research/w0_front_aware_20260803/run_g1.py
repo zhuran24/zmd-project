@@ -100,6 +100,7 @@ from g1_pattern_evaluator import (  # noqa: E402
 from g1_pattern_schema import (  # noqa: E402
     canonical_json_bytes,
     load_strict,
+    loads_strict,
     sha256_of_bytes,
 )
 from g1_port_semantics import (  # noqa: E402
@@ -223,8 +224,10 @@ def _generic_io_contract(path: Path) -> Dict[str, Any]:
     a constant that fails means the restriction level is dead before the master
     runs.  Fail-closed: a shortfall raises instead of being filed as a finding.
     """
+    # Same single-read rule as ``discharge_open_obligations``: the reported
+    # sha256/size and the parsed contract come from one read of one byte string.
     payload = path.read_bytes()
-    document = load_strict(path)
+    document = loads_strict(payload.decode("utf-8"))
     if not isinstance(document, Mapping):  # pragma: no cover - strict loader shape
         raise GenericIoContractError(f"{path} is not a JSON object")
     required_outputs = sum(
@@ -494,8 +497,13 @@ def discharge_open_obligations(
     registry is digest-bound into the report so a run states which version of the
     obligation set it answered to.
     """
+    # One read, one set of bytes: the digest this report publishes and the
+    # obligation list it decided against are the *same* bytes.  Reading the file
+    # twice (hash it, then parse it) leaves a window in which the second read can
+    # see a different file, and the report would then swear to a digest that no
+    # longer describes what the gate looked at.
     payload = registry_path.read_bytes()
-    registry = load_strict(registry_path)
+    registry = loads_strict(payload.decode("utf-8"))
     raw = registry.get("open_obligations") if isinstance(registry, Mapping) else None
     if not isinstance(raw, list):
         raise ObligationOpen(
