@@ -11,7 +11,8 @@
 1. `boot` 顶部有冻结横幅(日期 + 新记忆去文件记忆层 + 读侧照常),且旧推销文案
    (「Semantic + rerank retrieval」整节、「main win」、suggest-before-adding)
    已经不再打印;
-2. 每条写命令执行前打一行醒目提醒到 stderr,**且不阻断**(退出码照常、写入照常);
+2. 每条写命令执行前打一行醒目提醒到 stderr,**且不阻断**(退出码照常、写入照常),
+   `init --reset`(清空整个档案)也在内;
 3. `finalize` 不打提醒——它是收口动作,重复提醒只会训练读者跳过这行。
 
 全部跑在 tmp 库副本上:真实 `cc_memory/memory.db` 一个字节都不碰(用例自证)。
@@ -19,6 +20,7 @@
 from __future__ import annotations
 
 import shutil
+import sqlite3
 import subprocess
 import sys
 from pathlib import Path
@@ -110,6 +112,59 @@ def test_the_warning_goes_to_stderr_not_into_the_parsed_output(
     assert "冻结为只读档案" not in result.stdout
 
 
+def test_init_reset_warns_before_dropping_the_archive(sandbox: tuple[Path, Path]) -> None:
+    """`init --reset` 是这个 CLI 能对档案做的最狠的一件事,它必须先提醒。
+
+    它 drop 掉并重建全部受管表——4 facts / 11 entries / 14 edges 归零——而第一版
+    ARCHIVE_WRITE_COMMANDS 恰恰漏了它,于是唯一最具破坏性的写路径成了全 CLI 里
+    唯一不提醒的那条(2026-08-03 对抗审查 archive-init-warning-bypass)。
+    """
+    database, _ = sandbox
+
+    def _counts() -> dict[str, int]:
+        connection = sqlite3.connect(database)
+        try:
+            return {
+                table: connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+                for table in ("facts", "entries", "edges")
+            }
+        finally:
+            connection.close()
+
+    before = _counts()
+    assert sum(before.values()) > 0, "样本库本来就是空的话这条测不出东西"
+    result = _mem(sandbox, "init", "--reset")
+    assert result.returncode == 0, result.stderr
+    assert "冻结为只读档案" in result.stderr, result.stderr
+    assert "2026-08-03" in result.stderr
+    # 提醒是 advisory,不阻断:reset 照样发生。
+    assert sum(_counts().values()) == 0
+
+
+def test_plain_init_also_warns_because_it_is_the_same_write_command(
+    sandbox: tuple[Path, Path],
+) -> None:
+    """登记按函数对象走,所以 `init`(不带 --reset)也提醒——宁可多说一句。"""
+    result = _mem(sandbox, "init")
+    assert result.returncode == 0, result.stderr
+    assert "冻结为只读档案" in result.stderr
+
+
+def test_boot_read_first_lines_render_titles_not_archive_prose(
+    sandbox: tuple[Path, Path],
+) -> None:
+    """boot 的 Read first 段也停止透传 index_summary(与 SessionStart hook 同批)。
+
+    `memory-runtime-protocol` 的摘要是冻结前写的旧写协议(boot / --semantic /
+    set-fact / add-entry),打在冻结横幅底下就是当前指令。整段改成 `id — title`。
+    """
+    stdout = _mem(sandbox, "boot").stdout
+    read_first = stdout.split("## Read first", 1)[1].split("## Commands", 1)[0]
+    assert "- `memory-runtime-protocol` — Slim memory runtime protocol" in read_first
+    for stale in ("新会话 boot", "--semantic", "set-fact", "add-entry", "supersede"):
+        assert stale not in read_first, stale
+
+
 def test_finalize_is_the_closing_action_and_does_not_warn(sandbox: tuple[Path, Path]) -> None:
     result = _mem(sandbox, "finalize", "--no-gpu")
     assert result.returncode == 0, result.stderr
@@ -123,7 +178,11 @@ def test_the_read_side_never_warns(sandbox: tuple[Path, Path], command: str) -> 
 
 
 def test_the_named_write_commands_are_all_in_the_registered_set() -> None:
-    """按函数对象登记,改子命令名字掉不出去;这里核对点名的五条都在。"""
+    """按函数对象登记,改子命令名字掉不出去;这里核对点名的五条 + `init` 都在。
+
+    `init` 是 2026-08-03 对抗审查补进来的:它带 `--reset` 会清空整个档案,却是
+    第一版登记里唯一漏掉的写命令。
+    """
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("mem_under_test_freeze", MEM_PATH)
@@ -132,7 +191,14 @@ def test_the_named_write_commands_are_all_in_the_registered_set() -> None:
     try:
         spec.loader.exec_module(module)
         registered = module.ARCHIVE_WRITE_COMMANDS
-        for name in ("cmd_add_entry", "cmd_set_fact", "cmd_add_event", "cmd_propose", "cmd_supersede"):
+        for name in (
+            "cmd_init",
+            "cmd_add_entry",
+            "cmd_set_fact",
+            "cmd_add_event",
+            "cmd_propose",
+            "cmd_supersede",
+        ):
             assert getattr(module, name) in registered, name
         assert module.cmd_finalize not in registered
         assert module.cmd_boot not in registered

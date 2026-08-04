@@ -667,6 +667,22 @@ def node_summary(con: sqlite3.Connection, typ: str, node_id: str) -> str:
     return short(meta.get("index_summary") or meta.get("description") or row["body"], 160)
 
 
+def pinned_index_line(row: sqlite3.Row) -> str:
+    """One pinned entry rendered from typed read-only columns only.
+
+    ``node_summary`` reaches for ``index_summary`` / ``description`` / the body
+    — free-form prose written under the pre-freeze write protocol.  The pinned
+    ``memory-runtime-protocol`` summary, for instance, still instructs the
+    reader to run ``boot``, use ``--semantic`` and mutate the archive with
+    ``set-fact`` / ``add-entry``.  Printed under the freeze banner, that reads
+    as current instruction.  The archive rows are historical evidence and are
+    left alone; the two index renderers (this one and the SessionStart hook)
+    stop carrying their prose instead.  Full text stays one ``read <id>
+    --body`` away.
+    """
+    return f"- `{row['id']}` — {' '.join(str(row['title'] or '').split())}".rstrip(" —")
+
+
 STOPWORDS = {
     "the", "and", "for", "that", "with", "this", "from", "into", "have", "not", "are", "you", "but", "can", "then",
     "shall", "should", "would", "could", "when", "before", "after", "entry", "fact", "memory", "system", "python",
@@ -2580,7 +2596,7 @@ def cmd_boot(args: argparse.Namespace) -> int:
     if not pinned:
         print("- no pinned entries yet; run search or add-entry")
     for r in pinned:
-        print(f"- `{r['id']}` — {node_summary(con, 'entry', r['id'])}")
+        print(pinned_index_line(r))
     print("")
     print("## Commands (read side — what this archive is for now)")
     print("- `python cc_memory/mem.py search \"query\"`")
@@ -3578,8 +3594,15 @@ def make_parser() -> argparse.ArgumentParser:
 # set.  ``finalize`` is deliberately absent: it is the closing action for a
 # revision that already got warned about, and warning again would only train the
 # reader to skip the line.
+#
+# ``init`` is in the set because ``init --reset`` drops and recreates every
+# managed table — the single most destructive thing this CLI can do to the
+# frozen archive, and the one that was missing from the first cut of this list
+# (2026-08-03 对抗审查 FD-INIT-*).  It stays advisory like the rest: the archive
+# still has to be recoverable, so the warning informs rather than blocks.
 ARCHIVE_WRITE_COMMANDS = frozenset(
     {
+        cmd_init,
         cmd_add_entry,
         cmd_set_fact,
         cmd_add_event,
