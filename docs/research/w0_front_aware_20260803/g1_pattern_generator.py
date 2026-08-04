@@ -1324,7 +1324,11 @@ def generate_catalog(
     The budget admits targets; a target that is admitted also pays for its paired
     loose control solve when the strict model proves it infeasible, so the true
     ceiling is ``budget_seconds`` plus at most one ``target_seconds`` per
-    proved-infeasible target.  ``control_solve_seconds`` is reported separately
+    proved-infeasible target.  Control time advances the same admission clock,
+    so it can reduce how many later targets are attempted -- that truncation is
+    visible in ``complete`` and the attempted counts, never silent.  The paired
+    counts are therefore exact on the attempted, proved-infeasible subset, not a
+    census of the whole menu.  ``control_solve_seconds`` is reported separately
     from ``solve_seconds`` so the two are never confused for one another.
     """
     started = time.monotonic()
@@ -1413,9 +1417,10 @@ def generate_catalog(
             else:
                 stats.strict_infeasible_loose_unproved += 1
         elif status in NO_CANDIDATE_STATUSES:
-            # No model was built at all: this target has no candidate pose (or no
-            # legal hole placement) to give the solver.  A structural emptiness,
-            # not a timeout and not a proof -- see NO_CANDIDATE_STATUSES.
+            # The solver never ran: this target has no candidate pose (NO_POSE
+            # builds no model) or no legal hole placement (NO_HOLE_POSE stops
+            # after model construction).  A structural emptiness, not a timeout
+            # and not a proof -- see NO_CANDIDATE_STATUSES.
             stats.targets_no_candidate += 1
         else:
             # Ran out of time.  Emphatically *not* the same statement, and kept
