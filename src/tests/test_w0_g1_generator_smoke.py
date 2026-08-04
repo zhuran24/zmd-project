@@ -515,6 +515,65 @@ def test_the_in_model_filter_is_measured_by_a_paired_loose_control(
     assert manifest["connectivity"]["enforced"] == "in_model"
 
 
+def test_an_empty_candidate_set_is_not_filed_as_a_timeout(tmp_path: Path) -> None:
+    """[3f] Four target outcomes, four counters -- no status covers for another.
+
+    ``CORE`` admits no body pose at all, so every one of its targets comes back
+    ``NO_POSE`` without a solver ever running.  That is neither a proof of
+    infeasibility nor a timeout, and rolling it into ``targets_unproved`` (which
+    is what the aggregate used to do) would have reported "the solver ran out of
+    time" for runs where no model was ever built.  The four counters also have to
+    add up to the number of targets attempted, so nothing can be double-counted
+    or quietly dropped either.
+    """
+    config = gen.GeneratorConfig(
+        budget_seconds=30.0,
+        target_seconds=1.0,
+        ceiling_seconds=1.0,
+        solutions_per_target=1,
+        max_derived_subsets=0,
+        max_targets=3,
+        region_classes=("CORE",),
+    )
+    manifest = gen.generate_catalog(config, output_dir=tmp_path, progress=False)
+    entry = manifest["catalogs"]["CORE"]["stats"]
+    meter = entry["alarm_meters"]["in_model_filter"]
+
+    attempted = entry["targets_attempted"]
+    assert attempted == 3
+    assert meter["targets_no_candidate"] == attempted
+    assert meter["targets_unproved"] == 0
+    assert meter["targets_infeasible"] == 0
+    assert meter["target_status_counts"] == {"NO_POSE": attempted}
+    assert (
+        entry["targets_feasible"]
+        + meter["targets_infeasible"]
+        + meter["targets_unproved"]
+        + meter["targets_no_candidate"]
+        == attempted
+    ), "every attempted target lands in exactly one of the four counters"
+    # The other empty-candidate status is unreachable from the region classes
+    # (every class that admits a body also admits a hole), so it is pinned here
+    # on the function that produces it rather than left untested.
+    hole_target = gen.Target(
+        region_class="CLEAN",
+        counts=(("manufacturing_3x3", 1, 1),),
+        hole=True,
+        profile="min",
+    )
+    region = REGION_CLASSES["CLEAN"]
+    specs, _elapsed, status = gen._solve_target(
+        region,
+        hole_target,
+        gen.enumerate_body_poses(region),
+        gen.enumerate_pole_poses(region),
+        (),
+        config,
+    )
+    assert (specs, status) == ([], "NO_HOLE_POSE")
+    assert status in gen.NO_CANDIDATE_STATUSES
+
+
 def test_retired_paths_announce_themselves() -> None:
     """[3e] Alarm meter 3: a retired path is declared, never a silent zero."""
     assert "strip_dead_bodies" in gen.RETIRED_PATHS

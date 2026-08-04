@@ -149,6 +149,7 @@ __all__ = [
     "STRICT_READING",
     "LOOSE_READING",
     "READINGS",
+    "NO_CANDIDATE_STATUSES",
     "HOLE_CELLS",
     "RETIRED_PATHS",
     "GeneratorBlocked",
@@ -198,6 +199,14 @@ STRICT_READING = "strict"
 #: discarded rather than returned, so no loose pattern can reach a catalog.
 LOOSE_READING = "loose"
 READINGS: Tuple[str, ...] = (STRICT_READING, LOOSE_READING)
+
+#: Statuses ``_solve_target`` returns *without asking the solver anything*: the
+#: target has no candidate pose at all (no body pose of the wanted templates and
+#: levels, or -- for a hole target -- no legal hole placement).  They are neither
+#: a proof of infeasibility nor a timeout, and they are counted apart from both:
+#: rolling them into ``targets_unproved`` made "the solver ran out of time" and
+#: "no model was ever built" read as the same number.
+NO_CANDIDATE_STATUSES: Tuple[str, ...] = ("NO_POSE", "NO_HOLE_POSE")
 
 #: The batch's operating reading for the hard spine lane.  ``H-SPINE-LANE`` was
 #: measured and switched off (see ``SPINE_LANE``), and every number this batch
@@ -375,6 +384,7 @@ class GeneratorStats:
     # meter 1
     targets_infeasible: int = 0
     targets_unproved: int = 0
+    targets_no_candidate: int = 0
     target_status_counts: Dict[str, int] = field(default_factory=dict)
     # meter 1, paired loose control (one solve per strict-proved-infeasible target)
     strict_infeasible_loose_feasible: int = 0
@@ -401,6 +411,7 @@ class GeneratorStats:
                 "in_model_filter": {
                     "targets_infeasible": self.targets_infeasible,
                     "targets_unproved": self.targets_unproved,
+                    "targets_no_candidate": self.targets_no_candidate,
                     "target_status_counts": dict(sorted(self.target_status_counts.items())),
                     "loose_control": {
                         "strict_infeasible_loose_feasible": (
@@ -420,8 +431,12 @@ class GeneratorStats:
                     "reading": (
                         "targets_infeasible = the solver PROVED no pattern exists "
                         "for that target; targets_unproved = it ran out of time "
-                        "and proved nothing. The two are never added together and "
-                        "a timeout is never reported as a ceiling. Every "
+                        "and proved nothing; targets_no_candidate = there was no "
+                        "candidate pose (or no legal hole placement) to build a "
+                        "model from, so no solver ran. The three are never added "
+                        "together, a timeout is never reported as a ceiling, and "
+                        "an empty candidate set never hides inside a timeout. "
+                        "Every "
                         "strict-PROVED-infeasible target is then re-solved once "
                         "under the retired loose reading with the same per-target "
                         "budget: strict_infeasible_loose_feasible is the number of "
@@ -1397,6 +1412,11 @@ def generate_catalog(
                 stats.strict_infeasible_loose_infeasible += 1
             else:
                 stats.strict_infeasible_loose_unproved += 1
+        elif status in NO_CANDIDATE_STATUSES:
+            # No model was built at all: this target has no candidate pose (or no
+            # legal hole placement) to give the solver.  A structural emptiness,
+            # not a timeout and not a proof -- see NO_CANDIDATE_STATUSES.
+            stats.targets_no_candidate += 1
         else:
             # Ran out of time.  Emphatically *not* the same statement, and kept
             # in its own counter so no reader can read a timeout as a proof.
