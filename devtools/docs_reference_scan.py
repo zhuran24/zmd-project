@@ -34,11 +34,19 @@ design (external artifacts, generated proof outputs) are allowlisted.
 
 Two further calibrations came from the first real scan (2026-08-03), where all
 eight candidates turned out to be structural rather than defects: a reference
-introduced as planned or scheduled work is suppressed, because naming an unbuilt
-object is what a plan document is *for*; and ``dead_commit_hash`` no longer
-reaches the candidate list at all, because this delivery copy's git history was
-rebuilt and every hash any document cites predates that rebuild.  Both are one
-constant away from being reverted if the premise stops holding.
+whose own line announces it as planned or scheduled work is demoted to FYI,
+because naming an unbuilt object is what a plan document is *for*; and
+``dead_commit_hash`` no longer reaches the candidate list at all, because this
+delivery copy's git history was rebuilt and every hash any document cites
+predates that rebuild.  Both are one constant away from being reverted if the
+premise stops holding.
+
+Neither calibration is allowed to make a reference disappear.  That distinction
+is the whole of the 2026-08-03 adversarial-review fix: the planning rule is a
+substring test over ordinary vocabulary (``设计`` is a plain noun), so it will
+sometimes fire on prose that announces nothing, and a rule that loose must cost
+an extra FYI line rather than a swallowed candidate.  Only the registry's
+curated removal markers still drop a reference outright.
 
 Threat model and known boundaries
 ---------------------------------
@@ -105,6 +113,27 @@ prefix is checked instead of its matches**.  ``src/cuts/*.py`` records the
 prefix ``src/cuts/``, so a file that only the glob itself would match is never
 compared path-for-path, and the exact intersection with ``git status`` can miss
 it.  To close it: expand the glob and consult every match.
+
+Accepted by design, not a boundary to close
+-------------------------------------------
+
+**``dead_commit_hash`` is FYI-only repository-wide, so a mistyped hash is never
+a candidate.**  The 2026-08-03 adversarial review is right that this loses the
+flag's ability to accuse: in a checkout with a real history, a typo'd hash and a
+pre-rebuild hash are indistinguishable to this rule, and the demotion covers
+both.  It is still the right call here, and the review's own evidence says so —
+this flag's historical true-positive count in this repository is **zero**, and
+all six of its first-scan hits were pre-rebuild narrative references that no
+document should be edited to remove.  Per the batch's convergence rule (design
+v2 §3d-bis: a heuristic with no true positives is retired, not sharpened), a
+rule that would have to grow a history model to be right about six known
+false positives is not worth the model.
+
+What the demotion does *not* do is hide anything: every unresolvable hash,
+including a fresh typo, still appears in the ``fyi`` section with its byte-exact
+source line.  A reader scanning FYI sees new ones.  Reverting is one constant —
+``DEAD_COMMIT_HASH_IS_FYI_ONLY`` — and the premise that would justify it is
+stated at that constant: this delivery copy's git history was rebuilt.
 """
 
 from __future__ import annotations
@@ -119,7 +148,7 @@ import re
 import stat
 import subprocess
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path, PurePosixPath
@@ -256,12 +285,26 @@ _LEADING_PUNCTUATION = "（【「《([{<“‘"
 # Left alone, every planning document is a permanent false-positive generator,
 # which is the one thing that destroys a scanner's usefulness as a baseline.
 #
-# The registry's ``context_suppression_markers`` cover the mirror image — a
-# reference the document itself calls dead — and they match against the whole
-# paragraph plus its heading.  Planning words are far more common than
-# removal words, so they get a deliberately tighter window: the citing line and
-# the line above it, nothing more.  A paragraph that merely mentions planning
-# somewhere does not excuse a broken reference three lines down.
+# What this rule may and may not do changed on 2026-08-03 (adversarial review
+# SCANNERS-DIFF-001).  ``设计`` is an ordinary Chinese noun, and the rule is a
+# raw substring test, so the sentence "现有运行时设计继续调用
+# ``vanished_runtime_gate()``" — plain present-tense prose about existing code —
+# made a genuinely dead symbol vanish from the report entirely.  Change one
+# word to ``实现`` and the same reference comes back as a candidate.  A
+# suppression rule that a common noun can trip must not be able to delete
+# evidence, so it no longer deletes any: a planning-marked reference is
+# **demoted to FYI**, visible with ``planning_suppressed`` among its signals,
+# and the reader decides.  Over-firing now costs one extra FYI line instead of
+# one swallowed candidate.
+#
+# The window tightened at the same time.  The registry's
+# ``context_suppression_markers`` cover the mirror image — a reference the
+# document itself calls dead — and they match against the whole paragraph plus
+# its heading.  Planning words get the narrowest window there is: **the citing
+# line, and nothing else**.  The line above it used to count, which meant a
+# heading or an unrelated neighbouring sentence could speak for a reference it
+# never mentioned.  A plan that really is announcing an unbuilt object names it
+# in the same sentence.
 #
 # These live here rather than in the registry because one of them has to be a
 # pattern, not a substring: "(Phase 1.3 加)" is a family, not a phrase.
@@ -965,13 +1008,9 @@ class ParsedDocument:
     section_references: tuple[tuple[int, str, str, str], ...]
 
     def context_at(self, line: int) -> ReferenceContext:
-        """The two suppression windows for a reference on ``line``."""
+        """The two context windows for a reference on ``line``."""
         index = line - 1
-        start = max(0, index - 1)
-        return ReferenceContext(
-            block=self.contexts[index],
-            nearby="\n".join(self.lines[start : index + 1]),
-        )
+        return ReferenceContext(block=self.contexts[index], citing_line=self.lines[index])
 
 
 @dataclass(frozen=True)
@@ -980,14 +1019,14 @@ class ReferenceContext:
 
     ``block`` is the inherited window — the paragraph plus its nearest heading —
     and it feeds the registry's removal markers, where a whole paragraph about
-    deletion really does excuse every reference inside it.  ``nearby`` is the
-    citing line and the one above it, and it feeds the planning markers, whose
-    vocabulary is common enough that a paragraph-wide match would suppress
-    references the document never claimed were unbuilt.
+    deletion really does excuse every reference inside it.  ``citing_line`` is
+    exactly the line the reference is on, and it feeds the planning markers,
+    whose vocabulary is common enough (``设计`` is a plain noun) that any wider
+    window lets an unrelated neighbouring sentence speak for the reference.
     """
 
     block: str
-    nearby: str
+    citing_line: str
 
 
 def _read_text(path: Path, relpath: str) -> str:
@@ -1196,6 +1235,12 @@ def _document_candidates(
 # --------------------------------------------------------------------------
 
 
+PLANNING_SUPPRESSED_SIGNAL = "planning_suppressed"
+PLANNING_SUPPRESSED_REASON = (
+    "the_citing_line_announces_this_as_not_built_yet_so_it_is_shown_but_not_proposed"
+)
+
+
 @dataclass(frozen=True)
 class Finding:
     flag: str
@@ -1206,6 +1251,11 @@ class Finding:
     reference: str
     signals: tuple[str, ...]
     detail: dict[str, Any]
+    # The citing line carries planning language.  Kept on the finding rather
+    # than resolved at construction so that the flag-specific checks stay
+    # ignorant of it: they decide whether there is something to report, this
+    # decides how loudly.
+    planning_marked: bool = False
 
 
 def _item_id(finding: Finding) -> str:
@@ -1229,11 +1279,19 @@ def _to_item(finding: Finding, line_text: str) -> dict[str, Any]:
         # checkout carries is not the history the documents were written against.
         locked = True
         reasons.append(DEAD_COMMIT_HASH_FYI_REASON)
+    signals = list(finding.signals)
+    if finding.planning_marked:
+        # Demotion, not deletion — see the ``_PLANNING_MARKERS`` comment.  The
+        # signal is the machine-readable half: a reader filtering the FYI
+        # section on it gets exactly the references a planning word excused.
+        locked = True
+        signals.append(PLANNING_SUPPRESSED_SIGNAL)
+        reasons.append(PLANNING_SUPPRESSED_REASON)
     return {
         "item_id": _item_id(finding),
         "layer": LAYER,
         "flag": finding.flag,
-        "signals": list(finding.signals),
+        "signals": signals,
         "safety_lock": {"locked": locked, "reasons": reasons},
         "confidence": CONFIDENCE,
         "evidence": {
@@ -1259,7 +1317,10 @@ class Suppressions:
     # Planning language is counted apart from the registry's removal markers:
     # they answer different questions ("this is gone" vs "this is not built
     # yet"), they match against different windows, and a reader tuning either
-    # word list needs to see which one is doing the work.
+    # word list needs to see which one is doing the work.  Note the asymmetry
+    # since 2026-08-03: ``context_marker`` counts references dropped from the
+    # report, ``planning_context`` counts references *demoted to FYI* and still
+    # present, each carrying the ``planning_suppressed`` signal.
     planning_context: int = 0
     external_artifact_allowlist: int = 0
     absent_by_design: int = 0
@@ -1341,24 +1402,32 @@ class DocumentScanner:
         self.consulted.add(normalized)
 
     def _suppressed_by_context(self, context: ReferenceContext) -> bool:
-        """Whether this reference is excused, counting *why* on the way out.
+        """Whether the document itself already says this reference is dead.
 
-        Two independent rules, each with its own window and its own counter.
-        Both are pure under-reporting: a suppressed reference is simply not
-        reported, so a marker that fires too eagerly costs coverage, never
-        correctness.
+        The registry's markers match the whole paragraph plus its heading, and
+        they are the one rule that still *drops* a reference: a paragraph about
+        a removal really does excuse every reference inside it, and the words
+        (``removed``, ``已删``) are registry-curated rather than ordinary
+        vocabulary.  Planning language is judged separately by
+        :meth:`_planning_marked`, and it demotes instead of dropping.
         """
         lowered = context.block.lower()
         if any(marker.lower() in lowered for marker in self.markers):
             self.suppressions.context_marker += 1
             return True
-        nearby = context.nearby.lower()
-        if any(marker in nearby for marker in _PLANNING_MARKERS) or _PLANNING_PHASE_RE.search(
-            context.nearby
-        ):
-            self.suppressions.planning_context += 1
-            return True
         return False
+
+    def _planning_marked(self, context: ReferenceContext) -> bool:
+        """Does the citing line itself announce this as not-built-yet work?
+
+        Window is one line on purpose, and the answer only ever demotes a
+        finding to FYI — see the ``_PLANNING_MARKERS`` comment for why this rule
+        is not allowed to delete anything.
+        """
+        lowered = context.citing_line.lower()
+        return any(marker in lowered for marker in _PLANNING_MARKERS) or bool(
+            _PLANNING_PHASE_RE.search(context.citing_line)
+        )
 
     def _path_exists(self, token: str) -> bool:
         if "*" in token or "?" in token:
@@ -1478,6 +1547,7 @@ class DocumentScanner:
             if produced is None:
                 continue
             kind, finding = produced
+            finding = self._apply_planning_demotion(finding, context)
             if kind == "commit":
                 hash_candidates.append(finding)
             else:
@@ -1485,6 +1555,21 @@ class DocumentScanner:
 
         findings.extend(self._scan_section_references(relpath, document_class, document))
         return document, findings, hash_candidates
+
+    def _apply_planning_demotion(
+        self, finding: Finding, context: ReferenceContext
+    ) -> Finding:
+        """Mark a finding whose citing line announces unbuilt work.
+
+        The mark is applied here, after the flag-specific checks decided there
+        was something to report, so the counter measures the same population it
+        always did: references that would otherwise be candidates.  The
+        difference is that they now reach the report.
+        """
+        if not self._planning_marked(context):
+            return finding
+        self.suppressions.planning_context += 1
+        return replace(finding, planning_marked=True)
 
     def _scan_token(
         self, relpath: str, document_class: str, token: Token, context: ReferenceContext
@@ -1736,15 +1821,18 @@ class DocumentScanner:
             if self._suppressed_by_context(context):
                 continue
             findings.append(
-                Finding(
-                    flag="dead_doc_anchor",
-                    document=relpath,
-                    document_class=document_class,
-                    line=line_number,
-                    column=1,
-                    reference=f"{target_token} §{section}",
-                    signals=("referenced_section_anchor_does_not_exist",),
-                    detail={"target": resolved, "section": section},
+                self._apply_planning_demotion(
+                    Finding(
+                        flag="dead_doc_anchor",
+                        document=relpath,
+                        document_class=document_class,
+                        line=line_number,
+                        column=1,
+                        reference=f"{target_token} §{section}",
+                        signals=("referenced_section_anchor_does_not_exist",),
+                        detail={"target": resolved, "section": section},
+                    ),
+                    context,
                 )
             )
         return findings
