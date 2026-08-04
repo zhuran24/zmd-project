@@ -131,7 +131,7 @@ proof 输入被字节级 hash 钉死（`scripts/preflight_gate.py` 的 `FROZEN_A
 **活跃两层 + 档案一层**（owner 2026-08-03 拍板收敛）：
 
 - **新记忆写文件记忆层**：`~/.claude/projects/-home-zhuran24-zmd-pj/memory/`（CC 自带 auto-memory，`MEMORY.md` 是索引、每张卡一个 `.md`）。它是现在的收件箱。
-- `cc_memory_vnext/`（push 型主动卡片层，活跃）：`python cc_memory_vnext/zmem.py verify|build-index|context|eval`。卡片 `cards/*.md` 是真相源，`.index/` 是可重建缓存。
+- `cc_memory_vnext/`（push 型主动卡片层，活跃）：`python cc_memory_vnext/zmem.py verify|build-index|context|eval`。卡片 `cards/*.md` 是真相源，`.index/` 是可重建缓存——**活 hook 消费的是 `.index` 编译缓存，凡改卡（含合并改卡的分支）必须在主树跑 `build-index`，否则改动不生效**（08-03 实锤：退役正则因此半月仍活）。
 - `cc_memory/`（SQLite）**2026-08-03 起冻结为只读档案**（owner 拍板）：只读不写，考古用 `python cc_memory/mem.py search|read <id> --body|impact <id>`。**`find <id>` 是跨三层入口**（一个 id 在哪层，它替你查完再答）。写命令（`add-entry`/`set-fact`/…）保留、只为档案订正，跑之前会打一行提醒不会拦；订正后照旧 `finalize` 收口，`exports/MEMORY.md` 是生成视图别手改。memory.db 有意进 git。
-- 两个 advisory 扫描器（只读、无 apply 通路，报告落 `.prune/`）：`python devtools/memory_reference_scan.py`（记忆层完整性）、`python devtools/docs_reference_scan.py scan`（文档引用完整性）。
+- 三个 advisory 工具（只读、无 apply 通路，报告落 `.prune/`）：`python devtools/memory_reference_scan.py`（记忆层完整性）、`python devtools/docs_reference_scan.py scan`（文档引用完整性）、`python devtools/memory_gap_lens.py assemble|verify <候选json>`（查漏镜头确定性外壳：assemble 出证据包给 LLM 座席，座席产出经 verify 落地核验——引文逐字比对，幻觉候选整条 drop）。稳态基线：两扫描器 0 候选（memory 侧另有 9 条已核 said_card 静态底噪），新增才是信号。
 - 两层的 hook 接线在 `.claude/settings.local.json`（SessionStart/UserPromptSubmit/PostToolUse/Stop）。
