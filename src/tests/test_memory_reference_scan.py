@@ -327,7 +327,17 @@ def test_a_card_written_before_the_promise_does_not_satisfy_it(world: dict[str, 
     assert report["metadata"]["flag_counts"]["said_card_unwritten"] == 1
 
 
-def test_a_promise_made_in_a_thinking_block_still_counts(world: dict[str, Path]) -> None:
+def test_a_promise_made_only_in_a_thinking_block_is_not_a_promise(
+    world: dict[str, Path],
+) -> None:
+    """Deliberation is not a commitment (2026-08-03 对抗审查 provenance)。
+
+    Reasoning about whether a card is worth writing — and concluding no — used
+    to produce a candidate accusing the session of breaking a promise it never
+    made.  The narrowing is real and deliberate: a promise made only while
+    thinking and then kept silently is now missed, which costs less than a false
+    accusation from the file's one heuristic flag.
+    """
     record = json.dumps(
         {
             "type": "assistant",
@@ -339,8 +349,114 @@ def test_a_promise_made_in_a_thinking_block_still_counts(world: dict[str, Path])
     )
     _write(world["transcripts"] / "session-b.jsonl", record + "\n")
     report = build(world)
-    assert report["metadata"]["sources"]["promises_found"] == 1
+    assert report["metadata"]["sources"]["promises_found"] == 0
+    assert report["metadata"]["flag_counts"]["said_card_unwritten"] == 0
+    stats = report["metadata"]["sources"]["promise_collection"]
+    assert stats["records_matching_a_phrase"] == 1
+    assert stats["excluded_not_assistant_reply_text"] == 1
+
+
+def test_a_user_turn_quoting_the_phrase_is_not_a_promise(world: dict[str, Path]) -> None:
+    """A quotation, and especially a negation, is not a commitment by anyone.
+
+    A user turn carries ``message.content`` as a bare string — exactly the shape
+    the old reader accepted without asking whose turn it was — so every time the
+    operator wrote "别说『这个坑值得进记忆』就完了" the scanner logged a promise
+    against the assistant.
+    """
+    record = json.dumps(
+        {
+            "type": "user",
+            "timestamp": PROMISE_AT,
+            "sessionId": "session-c",
+            "message": {
+                "role": "user",
+                "content": f"我并没有说「{PROMISE}」,这是引用不是承诺。",
+            },
+        },
+        ensure_ascii=False,
+    )
+    _write(world["transcripts"] / "session-c.jsonl", record + "\n")
+    report = build(world)
+    assert report["metadata"]["sources"]["promises_found"] == 0
+    assert report["metadata"]["flag_counts"]["said_card_unwritten"] == 0
+    assert report["metadata"]["sources"]["promise_collection"][
+        "excluded_not_assistant_reply_text"
+    ] == 1
+
+
+def test_a_promise_about_this_systems_own_governance_files_is_excluded(
+    world: dict[str, Path],
+) -> None:
+    """Snake-eating-its-tail: an eval fixture saying the phrase is not a promise.
+
+    Same exclusion surface the error-recall hook uses (P2.2), same reason — the
+    prune system reading its own design notes, card bodies, tests and eval
+    fixtures generates promise-shaped text forever.
+    """
+    quoted = f"跑 cc_memory_vnext/eval/regression.jsonl 时样本里写着「{PROMISE}」,那是评测文本。"
+    _transcript(world["transcripts"], "session-d", [(PROMISE_AT, quoted)])
+    report = build(world)
+    assert report["metadata"]["sources"]["promises_found"] == 0
+    assert report["metadata"]["flag_counts"]["said_card_unwritten"] == 0
+    stats = report["metadata"]["sources"]["promise_collection"]
+    assert stats["excluded_governance_context"] == 1
+    assert "cc_memory_vnext/eval" in stats["governance_exclusion_markers"]
+
+
+def test_the_governance_markers_match_the_error_recall_hook(world: dict[str, Path]) -> None:
+    """Two copies of one rule, kept honest by comparison rather than by import.
+
+    The scanners share the rule and deliberately not the code; this test is what
+    makes "deliberately" true instead of "accidentally divergent".
+    """
+    import importlib.util
+
+    hook_path = (
+        Path(__file__).resolve().parents[2]
+        / "cc_memory_vnext"
+        / "hooks"
+        / "post_tool_error_recall.py"
+    )
+    spec = importlib.util.spec_from_file_location("recall_hook_under_test", hook_path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["recall_hook_under_test"] = module
+    try:
+        spec.loader.exec_module(module)
+        assert set(scan.GOVERNANCE_PATH_MARKERS) == set(module.GOVERNANCE_MARKERS)
+    finally:
+        sys.modules.pop("recall_hook_under_test", None)
+
+
+def test_a_promise_in_a_subagent_transcript_is_read(world: dict[str, Path]) -> None:
+    """Transcript enumeration is recursive (2026-08-03 对抗审查 nested-transcript)。
+
+    The real directory has 59 files at the top level and 1100 in the tree:
+    subagent and workflow sessions live in subdirectories, and a subagent that
+    said it would write a card and did not is precisely what this flag is for.
+    """
+    nested = world["transcripts"] / "subagent" / "deeper"
+    _transcript(nested, "session-nested", [(PROMISE_AT, PROMISE)])
+    report = build(world)
+    sources = report["metadata"]["sources"]
+    assert sources["transcripts_scanned"] == 1
+    assert sources["promise_collection"]["transcripts_in_subdirectories"] == 1
     assert report["metadata"]["flag_counts"]["said_card_unwritten"] == 1
+    said = [item for item in report["candidates"] if item["flag"] == "said_card_unwritten"]
+    assert said[0]["evidence"]["transcript"] == "subagent/deeper/session-nested.jsonl"
+
+
+def test_a_nested_and_a_top_level_transcript_say_the_same_thing(
+    world: dict[str, Path],
+) -> None:
+    """The PoC's exact control: identical bytes, two locations, one answer."""
+    _transcript(world["transcripts"], "top", [(PROMISE_AT, PROMISE)])
+    top_only = build(world)["metadata"]["flag_counts"]["said_card_unwritten"]
+    (world["transcripts"] / "top.jsonl").unlink()
+    _transcript(world["transcripts"] / "workflow", "top", [(PROMISE_AT, PROMISE)])
+    nested_only = build(world)["metadata"]["flag_counts"]["said_card_unwritten"]
+    assert top_only == nested_only == 1
 
 
 def test_a_transcript_with_no_promise_costs_nothing(world: dict[str, Path]) -> None:
@@ -392,6 +508,74 @@ def test_the_module_docstring_carries_the_threat_model_boundary_section() -> Non
     assert "Threat model and known boundaries" in doc
     assert "cooperative-operator" in doc
     assert "half of what it scans lives outside" in doc
+
+
+def test_the_declared_but_unclosed_boundaries_are_named_with_their_ruling() -> None:
+    """The 乙组 declaration: four ways in, left open on the 2026-07-06 ruling.
+
+    Each was confirmed by the 2026-08-03 adversarial review and each needs a
+    filesystem somebody arranged on purpose, so it falls under the owner ruling
+    that defers insider-only hardening to the release point.  Declaring them is
+    the obligation; this test is what stops the declaration from quietly
+    shrinking while the gaps stay.
+    """
+    doc = " ".join((scan.__doc__ or "").split())
+    assert "Known boundaries, declared rather than closed" in doc
+    assert "2026-07-06" in doc
+    assert "deliberate-insider-hardening-deferred-to-release" in doc
+    for boundary in (
+        "a hardlinked report destination",
+        "an ancestor directory swapped between the check and the write",
+        "``assume-unchanged`` and ``skip-worktree`` marks",
+        "cards changing between the self check and the read",
+    ):
+        assert boundary in doc, boundary
+    # Every declared boundary also has to reach the report, so a reader who
+    # never opens this file still sees the shape of the claim.
+    published = scan.SELF_CHECK_SCOPE["does_not_cover"]
+    for entry in (
+        "assume-unchanged and skip-worktree marks, which switch every dirty check off",
+        "a card changing between the self check and the read",
+        "a hardlinked report destination",
+        "an ancestor directory swapped between the check and the write",
+    ):
+        assert entry in published, entry
+
+
+def test_an_ignored_card_file_refuses_the_report(world: dict[str, Path]) -> None:
+    """The closed half of ``hidden-dirty-card-claim``.
+
+    The card loader reads ``*.md`` off the filesystem, so an ignored card is
+    read like any other; git's default status view does not mention it.  The
+    combination let uncommitted bytes shape the findings under an explicit
+    ``in_repository_cards_clean: true``.
+    """
+    _write(world["root"] / ".gitignore", "logs/\ncc_memory_vnext/cards/hidden-*.md\n")
+    _git(world["root"], "add", "-A")
+    _git(world["root"], "commit", "-q", "-m", "ignore hidden cards")
+    _vnext_card(world["cards"], "hidden-ignored", body="see [[nowhere-card]]")
+    assert subprocess.run(
+        ["git", *GIT_ENV_ARGS, "status", "--porcelain"],
+        cwd=str(world["root"]), capture_output=True, text=True, check=True,
+    ).stdout.strip() == "", "前提:普通 git status 看不见它,否则这条测的不是这个洞"
+    with pytest.raises(scan.SelfCheckRefusal):
+        build(world)
+
+
+def test_an_untracked_card_file_refuses_the_report(world: dict[str, Path]) -> None:
+    """Same command, the other half: ``--untracked-files=all``."""
+    _vnext_card(world["cards"], "untracked-card")
+    with pytest.raises(scan.SelfCheckRefusal):
+        build(world)
+
+
+def test_the_self_check_publishes_the_git_command_it_trusted(
+    world: dict[str, Path],
+) -> None:
+    preconditions = build(world)["metadata"]["preconditions"]
+    assert preconditions["verified_by"] == scan.SELF_CHECK_GIT_COMMAND
+    assert "--ignored" in preconditions["verified_by"]
+    assert "--untracked-files=all" in preconditions["verified_by"]
 
 
 def test_an_uncommitted_vnext_card_refuses_the_report(world: dict[str, Path]) -> None:

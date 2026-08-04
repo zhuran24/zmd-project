@@ -20,7 +20,11 @@ such in every item it emits.
   card appeared inside the window.  This is the heuristic, and it is here
   because it has a documented true positive: a card declared worth writing on
   2026-07-12 was written on 2026-08-02, and the pitfall it describes was stepped
-  in four times in between.
+  in four times in between.  Only the **assistant's own reply text** counts as a
+  promise: user turns (a quotation or a negation is not a commitment) and
+  ``thinking`` blocks (deliberation is not a commitment) are excluded, as is any
+  quote naming one of this system's own governance surfaces.  See
+  ``_text_blocks`` for the trade that exclusion makes.
 
 Pure standard library, read-only against every scanned object, no LLM, no
 network.  The only thing it writes is its own report under ``.prune/``, and the
@@ -56,6 +60,41 @@ repository**.  The file-memory directory and the transcripts are under
 ``~/.claude/``, which git knows nothing about, so "clean" is claimed for the
 in-repository half — the vnext cards — and nothing else.  The rest is read as
 found on disk, with no committed baseline, and the report says so.
+
+Known boundaries, declared rather than closed
+---------------------------------------------
+
+Each of these came out of the 2026-08-03 adversarial review, each needs a
+repository or filesystem somebody arranged on purpose, and each is left open
+under the same 2026-07-06 owner ruling that governs the docs adapter:
+insider-only hardening is deferred to the release point and is not a condition
+of closing this line.  The card is
+``deliberate-insider-hardening-deferred-to-release``.  They are listed here and
+in ``metadata.self_check_scope.does_not_cover`` so that "clean" is never read as
+a wider claim than it is.
+
+* **a hardlinked report destination** — the write primitive opens the
+  destination with ``O_TRUNC | O_NOFOLLOW``, which stops a symlink but not a
+  second name for the same inode.  Effect: the report's bytes land on a tracked
+  file, or one outside the repository, with a zero exit.  To close it: require
+  ``st_nlink == 1``, or write a fresh temporary name and rename over it.
+* **an ancestor directory swapped between the check and the write** —
+  ``resolve_report_destination`` walks each component and refuses a symlink,
+  then ``write_report`` opens by path.  ``O_NOFOLLOW`` protects the final
+  component only, so with the right timing the report escapes ``.prune/``.  To
+  close it: walk the path with ``O_DIRECTORY|O_NOFOLLOW`` descriptors and write
+  through ``openat``.
+* **``assume-unchanged`` and ``skip-worktree`` marks** — one
+  ``git update-index --assume-unchanged`` on a card makes git report a clean
+  worktree no matter what the file says, so the self check passes while the
+  scan reads uncommitted bytes.  This is the half of ``hidden-dirty-card-claim``
+  that stays open; the ignored/untracked half is closed (see
+  :func:`run_self_check`).  To close it: read ``git ls-files -v -z`` and refuse
+  on any lowercase status letter or ``S``, as the docs adapter does.
+* **cards changing between the self check and the read** — the check runs once
+  up front and the card files are read afterwards, so a write landing in
+  between is described by a report that already claimed clean.  To close it:
+  re-verify the consulted set after the scan, as the docs adapter does.
 """
 
 from __future__ import annotations
@@ -99,16 +138,24 @@ LAYER_TRANSCRIPT = "transcript"
 FLAGS = ("orphan_card", "dangling_index_entry", "dangling_wikilink", "never_read_card", "said_card_unwritten")
 
 SELF_CHECK_SCOPE: dict[str, Any] = {
-    "covers": ["uncommitted edits to the in-repository vnext card directory"],
+    "covers": [
+        "uncommitted edits to the in-repository vnext card directory",
+        "untracked and ignored files inside that directory",
+    ],
     "does_not_cover": [
         "the file-memory directory and its index: outside the repository, no committed baseline",
         "the transcript directory, same reason",
         "the injection ledger, which is a git-ignored append-only log",
+        "assume-unchanged and skip-worktree marks, which switch every dirty check off",
+        "a card changing between the self check and the read",
+        "a hardlinked report destination",
+        "an ancestor directory swapped between the check and the write",
         "anything a deliberate insider arranges, per the cooperative-operator model",
     ],
     "clean_means": "clean for the in-repository half only; the rest is read as found on disk",
     "deferred_by": "owner ruling 2026-07-06: insider-only hardening is deferred to the release point",
-    "documented_in": f"{GENERATOR} module docstring, section 'Threat model and known boundaries'",
+    "documented_in": f"{GENERATOR} module docstring, sections 'Threat model and known boundaries' "
+                     "and 'Known boundaries, declared rather than closed'",
 }
 
 # "I should write a card about this" in the phrasings this operator actually
@@ -437,12 +484,32 @@ class Promise:
 
 
 def _text_blocks(record: dict[str, Any]) -> Iterator[str]:
-    """Assistant/user prose out of one transcript record, thinking blocks included.
+    """The assistant's own spoken reply text, and nothing else.
 
-    A promise to write a card is made as often in thinking as in the reply.
+    Provenance is the whole point of this filter (2026-08-03 adversarial review
+    ``promise-provenance-self-trigger``).  A promise is something the assistant
+    *said it would do*, so two other sources have to be excluded even though
+    they contain the same words:
+
+    * **user turns** — the operator quoting or negating a phrase ("I did not
+      promise to 'write a memory card about X'") is not a commitment by anyone.
+      The old reader took ``message.content`` as a bare string, which is exactly
+      the shape a user turn has, so every quotation became a promise.
+    * **``thinking`` blocks** — deliberation is not a commitment.  Reasoning
+      out loud about whether a card is worth writing, and concluding no, used to
+      produce a candidate accusing the session of breaking a promise it never
+      made.  This is a real narrowing: a promise made only in thinking and then
+      kept silently is now missed.  That trade is deliberate — the flag is
+      already the file's one heuristic, and a false accusation costs more than a
+      missed one.
+
+    The exclusion is stated in the module docstring and published in
+    ``metadata.sources.promise_provenance``.
     """
     message = record.get("message")
     if not isinstance(message, dict):
+        return
+    if message.get("role") != "assistant":
         return
     content = message.get("content")
     if isinstance(content, str):
@@ -451,10 +518,9 @@ def _text_blocks(record: dict[str, Any]) -> Iterator[str]:
     for block in content if isinstance(content, list) else ():
         if not isinstance(block, dict):
             continue
-        for field in ("text", "thinking"):
-            value = block.get(field)
-            if isinstance(value, str) and value:
-                yield value
+        value = block.get("text")
+        if isinstance(value, str) and value:
+            yield value
 
 
 def _quote_around(text: str, index: int, *, width: int = 160) -> str:
@@ -462,19 +528,84 @@ def _quote_around(text: str, index: int, *, width: int = 160) -> str:
     return text[start : index + width // 2].replace("\n", " ").strip()
 
 
-def collect_promises(transcript_dir: Path) -> tuple[list[Promise], int]:
-    """Every "I will write a card" line in the retained transcripts.
+def _transcript_label(root: Path, path: Path) -> str:
+    """How a transcript is named in a finding, now that they nest.
+
+    A bare filename stopped being unique once subdirectories were included, and
+    a locator that cannot be reopened is not evidence.
+    """
+    try:
+        return path.relative_to(root).as_posix()
+    except ValueError:
+        return path.name
+
+
+# The prune system's own governance surfaces.  A promise-shaped sentence that
+# comes from one of these is the system reading itself: an eval fixture, a card
+# body, a test, or this batch's own design notes.  Same marker shape as the
+# error-recall hook's ``governance_target`` (P2.2, ``cc_memory_vnext/hooks/
+# post_tool_error_recall.py``) -- directory paths with a slash, so ordinary
+# source paths cannot collide -- and deliberately a separate copy: the two
+# scanners share the rule, not the code, so one refactor cannot widen the
+# other's blast radius.  ``test_the_governance_markers_match_the_hook`` keeps
+# the two lists from drifting.
+GOVERNANCE_PATH_MARKERS = (
+    "cc_memory_vnext/eval",
+    "cc_memory_vnext/cards",
+    "cc_memory_vnext/tests",
+    "cc_memory/tests",
+    ".artifacts/prune_v2_",
+)
+
+
+def governance_context(text: str) -> str | None:
+    """Which governance surface this promise-shaped sentence is talking about.
+
+    ``None`` when it is talking about ordinary work.  Matching is on the quoted
+    window rather than the whole record: a long session that merely touched a
+    card file earlier should still have its real promises read.
+    """
+    haystack = text.replace("\\", "/")
+    for marker in GOVERNANCE_PATH_MARKERS:
+        if marker in haystack:
+            return marker
+    return None
+
+
+def collect_promises(transcript_dir: Path) -> tuple[list[Promise], dict[str, Any]]:
+    """Every "I will write a card" line the assistant actually said.
 
     A raw substring test on the undecoded line skips the JSON parse for almost
     all of a half-gigabyte of transcripts; survivors are parsed properly.
+
+    Enumeration is **recursive** (2026-08-03 adversarial review
+    ``nested-transcript-omission``).  The transcript directory has 59 files at
+    its top level and 1100 in the tree: subagent and workflow sessions get their
+    own subdirectories, and those are the sessions this flag most wants to read,
+    because a subagent that says it will write a card and does not is exactly
+    the missed-promise shape the flag exists for.  The old direct-child glob saw
+    none of them while the module docstring claimed retained-transcript
+    coverage.
+
+    Returns the promises plus a stats dict that the report publishes verbatim,
+    so "how many did you read, and what did you drop" is answerable from the
+    report instead of from this source.
     """
     if not transcript_dir.is_dir():
         raise MemoryScanError(f"transcript directory does not exist: {transcript_dir}")
     raw_patterns = [pattern.encode("utf-8") for pattern in SAID_CARD_PATTERNS]
     promises: list[Promise] = []
     scanned = 0
-    for path in sorted(transcript_dir.glob("*.jsonl")):
+    nested = 0
+    matched_records = 0
+    excluded_not_assistant_text = 0
+    excluded_governance_context = 0
+    for path in sorted(transcript_dir.rglob("*.jsonl")):
+        if not path.is_file():
+            continue
         scanned += 1
+        if path.parent != transcript_dir:
+            nested += 1
         with path.open("rb") as stream:
             for raw in stream:
                 if not any(pattern in raw for pattern in raw_patterns):
@@ -488,14 +619,43 @@ def collect_promises(transcript_dir: Path) -> tuple[list[Promise], int]:
                 moment = _parse_timestamp(str(record.get("timestamp", "")))
                 if moment is None:
                     continue
-                for text in _text_blocks(record):
+                matched_records += 1
+                blocks = list(_text_blocks(record))
+                if not blocks:
+                    excluded_not_assistant_text += 1
+                    continue
+                for text in blocks:
                     for pattern in SAID_CARD_PATTERNS:
                         index = text.find(pattern)
                         if index < 0:
                             continue
-                        promises.append(Promise(path.name, str(record.get("sessionId", "")), moment,
-                                                pattern, _quote_around(text, index)))
-    return promises, scanned
+                        quote = _quote_around(text, index)
+                        marker = governance_context(quote)
+                        if marker is not None:
+                            excluded_governance_context += 1
+                            continue
+                        promises.append(Promise(
+                            _transcript_label(transcript_dir, path),
+                            str(record.get("sessionId", "")),
+                            moment,
+                            pattern,
+                            quote,
+                        ))
+    stats = {
+        "transcripts_scanned": scanned,
+        "transcripts_in_subdirectories": nested,
+        "records_matching_a_phrase": matched_records,
+        "excluded_not_assistant_reply_text": excluded_not_assistant_text,
+        "excluded_governance_context": excluded_governance_context,
+        "promises_kept": len(promises),
+        "enumeration": "recursive (rglob) over *.jsonl, subagent sessions included",
+        "promise_provenance": (
+            "assistant-role reply text only; user turns and thinking blocks are "
+            "excluded, so a promise made only while thinking is missed on purpose"
+        ),
+        "governance_exclusion_markers": list(GOVERNANCE_PATH_MARKERS),
+    }
+    return promises, stats
 
 
 @dataclass(frozen=True)
@@ -576,14 +736,35 @@ def scan_said_card_unwritten(promises: Sequence[Promise], arrivals: Sequence[Car
 # --------------------------------------------------------------------------
 
 
+SELF_CHECK_GIT_COMMAND = (
+    "git status --porcelain=v1 --untracked-files=all --ignored -- <cards>"
+)
+
+
 def run_self_check(root: Path, cards_relpath: str) -> dict[str, Any]:
     """Fail closed on an uncommitted in-repository card, declare the rest.
 
     Same spirit as the docs adapter — a report must not be shaped by bytes
     nobody committed — but only half the subject matter is in the repository, so
     the check reports which half it covered rather than implying it covered all.
+
+    ``--untracked-files=all --ignored`` is not optional (2026-08-03 adversarial
+    review ``hidden-dirty-card-claim``, and the same fix the docs adapter took
+    in P1.2).  The card loader enumerates ``*.md`` off the filesystem, while
+    git's default status view says nothing about a path ``.gitignore`` covers.
+    A single ignored card file therefore changed the findings while the report
+    printed ``in_repository_cards_clean: true``.  ``.gitignore`` is committed,
+    so an ignored path here is ordinary developer state rather than an
+    attacker's construction — which is exactly why it has to be visible.
+
+    Still not covered, and declared rather than closed: ``assume-unchanged`` /
+    ``skip-worktree`` marks, which switch every git dirty check off at once.
+    See the module docstring's known-boundaries section.
     """
-    args = ["git", "-C", str(root), "status", "--porcelain", "--", cards_relpath]
+    args = [
+        "git", "-C", str(root), "status", "--porcelain=v1",
+        "--untracked-files=all", "--ignored", "--", cards_relpath,
+    ]
     try:
         completed = subprocess.run(args, capture_output=True, text=True, timeout=60)
     except (OSError, subprocess.SubprocessError) as exc:
@@ -593,10 +774,11 @@ def run_self_check(root: Path, cards_relpath: str) -> dict[str, Any]:
     dirty = [line for line in completed.stdout.split("\n") if line.strip()]
     if dirty:
         raise SelfCheckRefusal(
-            f"{cards_relpath} has uncommitted changes, so a report would describe bytes "
-            f"nobody committed: {'; '.join(entry.strip() for entry in dirty[:5])}"
+            f"{cards_relpath} has uncommitted, untracked or ignored files, so a report would "
+            f"describe bytes nobody committed: {'; '.join(entry.strip() for entry in dirty[:5])}"
         )
     return {"in_repository_cards_clean": True, "checked_path": cards_relpath,
+            "verified_by": SELF_CHECK_GIT_COMMAND,
             "out_of_repository_objects_are_read_as_found": True}
 
 
@@ -632,7 +814,7 @@ def build_report(
     never_read, vnext_status = scan_never_read(root, vnext_cards, ledger)
     findings.extend(never_read)
 
-    promises, transcripts_scanned = collect_promises(transcript_dir)
+    promises, promise_stats = collect_promises(transcript_dir)
     arrivals = card_arrivals(root, file_cards, vnext_cards)
     findings.extend(scan_said_card_unwritten(promises, arrivals, window_days=window_days))
 
@@ -661,8 +843,10 @@ def build_report(
                 "file_memory_dir": str(file_memory_dir), "file_memory_index": str(index_path),
                 "file_memory_card_count": len(file_cards), "file_memory_index_entry_count": len(entries),
                 "vnext_cards_dir": str(vnext_dir), "vnext_card_count": len(vnext_cards),
-                "transcript_dir": str(transcript_dir), "transcripts_scanned": transcripts_scanned,
+                "transcript_dir": str(transcript_dir),
+                "transcripts_scanned": promise_stats["transcripts_scanned"],
                 "promises_found": len(promises), "said_card_window_days": window_days,
+                "promise_collection": dict(promise_stats),
             },
             "never_read_card_status": [vnext_status, file_memory_never_read_status(file_memory_dir)],
             "flag_counts": flag_counts,
