@@ -1,0 +1,146 @@
+{
+  "bound_events": [
+    {
+      "bound_scaled": 136.0,
+      "raw_bound_scaled": null,
+      "source": "explicit",
+      "t": 0.0
+    }
+  ],
+  "bound_samples": [
+    {
+      "bound_scaled": 136.0,
+      "t": 0.0
+    },
+    {
+      "bound_scaled": 136.0,
+      "t": 1.0
+    },
+    {
+      "bound_scaled": 136.0,
+      "t": 2.0
+    },
+    {
+      "bound_scaled": 136.0,
+      "t": 5.0
+    }
+  ],
+  "bucket_weights_scaled": {
+    "M3_1i1o": -3,
+    "M3_1i2o+2i1o": -3,
+    "M3_1i3o+2i1o": 9,
+    "M5_1i1o": -5,
+    "M5_1i2o": 25,
+    "M6_3i1o": -6,
+    "M6_4i1o": -6,
+    "M6_5i1o": 24
+  },
+  "build_wall_seconds": 0.148537,
+  "cap_source": "explicit",
+  "certified_objective_bound": 136.0,
+  "certified_objective_bound_scaled": 136.0,
+  "dual": "D2_SLACK_EDGE_SELECTIVE",
+  "epsilon_bound": 0.0,
+  "epsilon_bound_scaled": 0.0,
+  "family": "CORNER",
+  "final_validation": {
+    "actual_bucket_counts": {
+      "M3_1i3o+2i1o": 2
+    },
+    "actual_ge_credited": true,
+    "actual_objective_scaled": 38,
+    "body_count": 2,
+    "credited_bucket_counts": {
+      "M3_1i3o+2i1o": 2
+    },
+    "credited_objective_scaled": 38,
+    "evaluator_ok": true,
+    "evaluator_violations": [],
+    "independent_audit_issues": [],
+    "independent_audit_ok": true,
+    "pole_count_after_minimization": 1,
+    "single_component": true
+  },
+  "hole": true,
+  "incumbent_events": [
+    {
+      "credited_bucket_counts": {},
+      "objective_scaled": 20.0,
+      "t": 1.026864
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i3o+2i1o": 1
+      },
+      "objective_scaled": 29.0,
+      "t": 1.785454
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i3o+2i1o": 2
+      },
+      "objective_scaled": 38.0,
+      "t": 2.689179
+    }
+  ],
+  "lambda_scaled": -20,
+  "max_poles": null,
+  "model_signature_sha256": "8d0b248cc7fcd8bcfc17109f2cf1c6a1337d3cfa06a4c0d0e293a3fc0276f6fe",
+  "model_size": {
+    "all_semantic_body_pose_literals": 2044,
+    "bucket_count_variables": 8,
+    "connectivity_literals": 170,
+    "constraints": 9019,
+    "directed_flow_variables": 624,
+    "hole_literals": 112,
+    "kept_body_pose_literals": 748,
+    "kept_levels": {
+      "manufacturing_3x3": [
+        3
+      ],
+      "manufacturing_5x5": [
+        2
+      ],
+      "manufacturing_6x4": [
+        5
+      ]
+    },
+    "occupancy_literals": 170,
+    "pole_literals": 123,
+    "source_variables": 1,
+    "variables": 1956
+  },
+  "mu_scaled": {
+    "3I2": 12,
+    "3L": 12,
+    "3O2": 12,
+    "3O3": 0,
+    "5L": 30,
+    "5O2": 0,
+    "6I3": 30,
+    "6I4": 30,
+    "6I5": 0
+  },
+  "objective_cap_scaled": 136,
+  "objective_value": 38.0,
+  "objective_value_scaled": 38.0,
+  "pi_scaled": 136,
+  "raw_objective_bound": 136.0,
+  "raw_objective_bound_scaled": 136.0,
+  "relaxed": false,
+  "research_only": true,
+  "runtime": {
+    "bundle": "/mnt/data/w0_pricing_bound_exp_20260804/pricing_exp/11_runnable",
+    "ortools": "9.15.6755",
+    "python": "3.13.5"
+  },
+  "scale": 1,
+  "schema_version": 2,
+  "seconds_limit": 5.0,
+  "seed": 0,
+  "solve_wall_seconds": 5.011434,
+  "status": "FEASIBLE",
+  "strict": true,
+  "wall_seconds": 5.162231,
+  "workers": 4
+}
