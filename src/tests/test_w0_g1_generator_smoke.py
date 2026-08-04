@@ -243,6 +243,26 @@ def test_derived_subsets_only_remove_bodies() -> None:
 # --------------------------------------------------------------------------
 
 
+def _certificate_status(demanded, *, reading: str) -> str:
+    """Solve the bare certificate over two 4-disconnected pairs of cells."""
+    from ortools.sat.python import cp_model
+
+    cells = [(0, 0), (0, 1), (5, 0), (5, 1)]
+    model = cp_model.CpModel()
+    conn = {cell: model.new_bool_var(f"c{cell}") for cell in cells}
+    sources = gen._add_connectivity_certificate(
+        model, conn, [(5, 0), (0, 0)], reading=reading
+    )
+    expected = ((0, 0),) if reading == gen.STRICT_READING else ((0, 0), (5, 0))
+    assert sources == expected, "sources are sorted, and strict keeps only the first"
+    for cell in demanded:
+        model.add(conn[cell] == 1)
+    solver = cp_model.CpSolver()
+    solver.parameters.max_time_in_seconds = 10.0
+    solver.parameters.num_workers = 2
+    return solver.status_name(solver.solve(model))
+
+
 def test_connectivity_certificate_is_single_source() -> None:
     """[3a] Two anchors in two pockets is infeasible, not "one component each".
 
@@ -252,27 +272,28 @@ def test_connectivity_certificate_is_single_source() -> None:
     reading.  With one root, asking both pairs to be on the corridor is
     unsatisfiable.
     """
-    from ortools.sat.python import cp_model
-
-    cells = [(0, 0), (0, 1), (5, 0), (5, 1)]
-
-    def build(demanded):
-        model = cp_model.CpModel()
-        conn = {cell: model.new_bool_var(f"c{cell}") for cell in cells}
-        root = gen._add_connectivity_certificate(model, conn, [(5, 0), (0, 0)])
-        assert root == (0, 0), "the root is min(live_stubs), not the first listed"
-        for cell in demanded:
-            model.add(conn[cell] == 1)
-        solver = cp_model.CpSolver()
-        solver.parameters.max_time_in_seconds = 10.0
-        solver.parameters.num_workers = 2
-        return solver.status_name(solver.solve(model))
-
-    assert build([(0, 0), (0, 1)]) in {"OPTIMAL", "FEASIBLE"}
-    assert build([(0, 0), (5, 0)]) == "INFEASIBLE"
+    strict = gen.STRICT_READING
+    assert _certificate_status([(0, 0), (0, 1)], reading=strict) in {"OPTIMAL", "FEASIBLE"}
+    assert _certificate_status([(0, 0), (5, 0)], reading=strict) == "INFEASIBLE"
     # The far pocket alone is unreachable from the root, so it cannot be lit up
     # even on its own.
-    assert build([(5, 1)]) == "INFEASIBLE"
+    assert _certificate_status([(5, 1)], reading=strict) == "INFEASIBLE"
+
+
+def test_the_loose_control_reading_is_the_retired_one() -> None:
+    """[3a2] The control arm differs from the registered arm in exactly one way.
+
+    Same certificate, same cells, sources switched from "the smallest live stub"
+    to "every live stub": the two pockets that the registered reading refuses are
+    accepted, which is the retired union-of-components reading and nothing else.
+    That is what makes the paired control solve a measurement of the corridor
+    constraint rather than of some other difference between two models.
+    """
+    loose = gen.LOOSE_READING
+    assert _certificate_status([(0, 0), (5, 0)], reading=loose) in {"OPTIMAL", "FEASIBLE"}
+    assert _certificate_status([(5, 1)], reading=loose) in {"OPTIMAL", "FEASIBLE"}
+    with pytest.raises(ValueError, match="unknown R-PAT-CONN reading"):
+        _certificate_status([(0, 0)], reading="whatever")
 
 
 def test_solved_targets_survive_the_evaluator_unchanged() -> None:
@@ -332,8 +353,17 @@ def test_postcheck_divergence_blocks_instead_of_being_counted() -> None:
     assert tolerant.derived_rejected == 1
 
 
-def test_corridor_tax_measures_what_the_strict_reading_costs() -> None:
-    """[3d] Alarm meter 1 is a cost, and it is zero when nothing was lost."""
+def test_loose_only_fronts_is_a_fail_closed_invariant_not_a_meter() -> None:
+    """[3d] The retired accept-side meter is now a check that can only fail closed.
+
+    Two halves.  First the quantity itself still measures something real: on the
+    walled pattern -- which the evaluator refuses -- fourteen body fronts are
+    reachable only under the retired reading.  Second, on the path it actually
+    runs (accepted patterns) it is 0 by construction, which is why it is no
+    longer a meter: an accepted pattern has every stub inside the one rooted
+    component, so a non-zero reading would mean the evaluator drifted, and that
+    goes through the ``GeneratorBlocked`` door rather than into a counter.
+    """
     from g1_pattern_schema import BodySpec, PatternSpec, PoleSpec
 
     plain = PatternSpec(
@@ -347,7 +377,7 @@ def test_corridor_tax_measures_what_the_strict_reading_costs() -> None:
     )
     evaluation = ev.evaluate_pattern(plain)
     assert evaluation.ok
-    assert gen.corridor_tax(evaluation) == 0
+    assert gen.loose_only_fronts(evaluation) == 0
 
     # A wall along y = 1..5 cuts row 0 off, taking twelve bottom fronts and the
     # 5x5's two right-hand fronts with it: fourteen front cells the retired
@@ -365,19 +395,141 @@ def test_corridor_tax_measures_what_the_strict_reading_costs() -> None:
     )
     cut = ev.evaluate_pattern(walled)
     assert "R-PAT-CONN" in cut.violations
-    assert gen.corridor_tax(cut) == 14
+    assert gen.loose_only_fronts(cut) == 14
+
+    # The door: an accepted pattern that somehow paid a loose-only front stops
+    # the run the same way a post-check divergence does.  The invariant cannot be
+    # violated for real -- ``evaluation.ok`` implies 0 -- so the probe is faked
+    # here, which is the only way to exercise the branch at all.
+    accumulator = gen.CatalogAccumulator(region_class="CLEAN")
+    stats = gen.GeneratorStats()
+    original = gen.loose_only_fronts
+    try:
+        gen.loose_only_fronts = lambda _evaluation: 3  # type: ignore[assignment]
+        with pytest.raises(gen.GeneratorBlocked, match="loose-only fronts"):
+            gen._accept(plain, accumulator, stats, {}, from_solver=True)
+    finally:
+        gen.loose_only_fronts = original  # type: ignore[assignment]
+    assert stats.postcheck_divergence == 0, "this is the other door, not that one"
+    assert not accumulator.by_signature, "nothing may be filed on the way out"
+
+
+def _walled_region():
+    """A region class whose *pinned* furniture splits it into two pockets.
+
+    Column ``u = 6`` is fixed furniture from ``v = 0`` to ``v = 13``, so the free
+    space is two 4-disconnected halves and each half keeps live portal stubs:
+    (0,6) and (0,7) west, (13,6), (13,7), (7,0) and (7,13) east of the wall.  No
+    packing can put them on one corridor -- the wall is not a decision -- so
+    *every* target of this class is strict-infeasible, while the loose reading
+    (one source per stub) is happy to call the two halves a corridor.
+
+    That is the cleanest possible instance of what alarm meter 1 measures: a
+    target removed by the single-corridor reading and by nothing else.  It is a
+    fixture region rather than a shipped one because in the ten real classes the
+    same situation only appears deep inside dense targets, where proving strict
+    infeasibility costs minutes -- and a meter has to be tested on a model that
+    finishes in milliseconds.
+    """
+    from g1_region_model import RegionClass
+
+    return RegionClass(
+        name="WALLED_FIXTURE",
+        regions=((0, 0),),
+        fixed_local=frozenset((6, v) for v in range(14)),
+        reserved_local=frozenset(),
+    )
+
+
+def test_the_in_model_filter_is_measured_by_a_paired_loose_control(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """[3g] Alarm meter 1 counts on the *rejected* side, through the real driver.
+
+    Red before green.  The retired meter recounted fronts on every **accepted**
+    pattern, and an accepted pattern pays no loose-only front by construction --
+    so on a run like this one, where nothing is accepted at all, it read 0 no
+    matter how much the restriction cost.  The replacement re-solves every
+    strict-proved-infeasible target once under the loose reading, which is the
+    only side of the run where the cost is visible.
+
+    Everything below ``generate_catalog`` is the production path: the menu, the
+    ceiling probe, the strict solve, the pairing branch, the accounting and the
+    manifest.  Only the region class is a fixture, and it is one because the
+    phenomenon has to be reproducible in milliseconds (see ``_walled_region``).
+    """
+    region = _walled_region()
+    monkeypatch.setitem(gen.REGION_CLASSES, region.name, region)
+    monkeypatch.setattr(
+        gen, "REGION_CLASS_ORDER", tuple(gen.REGION_CLASS_ORDER) + (region.name,)
+    )
+
+    # The premise, asserted rather than assumed: two pockets, both with stubs.
+    free = {
+        (u, v) for u in range(14) for v in range(14) if (u, v) not in region.fixed_local
+    }
+    west = {cell for cell in free if cell[0] < 6}
+    east = {cell for cell in free if cell[0] > 6}
+    assert west | east == free, "the wall is the whole column"
+    stubs = set(region.live_stubs)
+    assert stubs & west and stubs & east, "each pocket keeps live stubs"
+
+    config = gen.GeneratorConfig(
+        budget_seconds=60.0,
+        target_seconds=10.0,
+        ceiling_seconds=5.0,
+        solutions_per_target=1,
+        max_derived_subsets=0,
+        max_targets=1,
+        max_bodies=1,
+        region_classes=(region.name,),
+    )
+    manifest = gen.generate_catalog(config, output_dir=tmp_path, progress=False)
+
+    entry = manifest["catalogs"][region.name]
+    stats = entry["stats"]
+    meter = stats["alarm_meters"]["in_model_filter"]
+    control = meter["loose_control"]
+
+    assert stats["targets_attempted"] == 1
+    assert stats["targets_feasible"] == 0
+    assert meter["targets_infeasible"] == 1, "the strict solve must PROVE it, not time out"
+    assert control["strict_infeasible_loose_feasible"] == 1
+    assert control["strict_infeasible_loose_infeasible"] == 0
+    assert control["strict_infeasible_loose_unproved"] == 0
+    assert set(control["control_status_counts"]) <= {"OPTIMAL", "FEASIBLE"}
+    assert control["control_solve_seconds"] > 0
+
+    # The old shape's blind spot, stated as an assertion: this run accepts no
+    # pattern at all, so every accept-side counter is structurally zero here.
+    assert entry["patterns"] == 0
+    assert stats["solutions_found"] == 0
+    assert stats["alarm_meters"]["postcheck_divergence"]["count"] == 0
+
+    # A loose solution exists -- that is what the control just proved -- and none
+    # of them may ever reach a catalog.
+    written = json.loads(
+        (tmp_path / "catalog" / f"{region.name}.json").read_text(encoding="utf-8")
+    )
+    assert written["patterns"] == []
+    assert manifest["connectivity"]["enforced"] == "in_model"
 
 
 def test_retired_paths_announce_themselves() -> None:
     """[3e] Alarm meter 3: a retired path is declared, never a silent zero."""
     assert "strip_dead_bodies" in gen.RETIRED_PATHS
     assert "post_filter_connectivity_reject" in gen.RETIRED_PATHS
+    assert "corridor_tax_meter" in gen.RETIRED_PATHS
     for reason in gen.RETIRED_PATHS.values():
-        assert reason.startswith("retired 2026-08-04:"), reason
+        assert reason.startswith("retired 2026-08-04"), reason
     assert not hasattr(gen, "strip_dead_bodies"), "the retired path must be gone"
+    assert not hasattr(gen, "corridor_tax"), "the retired meter must be gone"
     stats = gen.GeneratorStats().as_json()
     assert "stripped_to_smaller" not in stats, "a pinned-at-zero counter is worse"
     assert "rejected_connectivity" not in stats
+    meter_one = stats["alarm_meters"]["in_model_filter"]
+    for gone in ("corridor_tax_front_cells", "patterns_paying_corridor_tax"):
+        assert gone not in meter_one, "the fail-soft-zero counter must not linger"
     assert stats["alarm_meters"]["retired_paths"] == dict(gen.RETIRED_PATHS)
 
 

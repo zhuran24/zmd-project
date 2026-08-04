@@ -73,6 +73,14 @@ construction and a non-zero value is an implementation bug, not a finding.
 Because a solved target can no longer contain a dead body, the strip-and-derive
 recovery path is retired; see ``RETIRED_PATHS``.
 
+What the restriction costs is measured on the *rejected* side.  Every target the
+strict model proves infeasible is re-solved once, same budget, same everything,
+with the certificate's sources switched to the loose reading; the three-way tally
+{loose feasible, loose infeasible, loose unproved} is alarm meter 1.  Measuring
+it on the accepted side instead is the shape this batch removed: an accepted
+pattern pays no corridor tax by construction, so that counter read zero on the
+production path no matter what the constraint cost (``RETIRED_PATHS``).
+
 Runtime contract: stdlib + ortools.  Single solve at a time, workers <= 4, tiny
 models (196 cells plus ~700 flow arcs).  A prod-scale memory profile here would
 mean the model is wrong -- stop rather than push through.
@@ -138,6 +146,9 @@ __all__ = [
     "FRONT_PROXY_OBJECTIVE",
     "SPINE_LANE",
     "BATCH_RUN_SPINE",
+    "STRICT_READING",
+    "LOOSE_READING",
+    "READINGS",
     "HOLE_CELLS",
     "RETIRED_PATHS",
     "GeneratorBlocked",
@@ -151,7 +162,8 @@ __all__ = [
     "build_target_menu",
     "generate_catalog",
     "measure_packing_ceiling",
-    "corridor_tax",
+    "loose_control_status",
+    "loose_only_fronts",
     "derive_subsets",
 ]
 
@@ -176,6 +188,16 @@ FRONT_PROXY_OBJECTIVE = "H-GEN-OBJECTIVE"
 #: the registered anchor and as the knob to re-run the A/B.
 SPINE_LANE = "H-SPINE-LANE"
 SPINE_OBJECTIVE_WEIGHT = 0
+
+#: The registered R-PAT-CONN reading: one corridor, rooted at one stub.  The only
+#: reading a catalog is ever generated under.
+STRICT_READING = "strict"
+#: The retired R-PAT-CONN reading: the union of every stub-bearing component.  It
+#: exists in exactly one place -- the paired control solve that measures what the
+#: strict reading costs (``loose_control_status``) -- and its solutions are
+#: discarded rather than returned, so no loose pattern can reach a catalog.
+LOOSE_READING = "loose"
+READINGS: Tuple[str, ...] = (STRICT_READING, LOOSE_READING)
 
 #: The batch's operating reading for the hard spine lane.  ``H-SPINE-LANE`` was
 #: measured and switched off (see ``SPINE_LANE``), and every number this batch
@@ -299,6 +321,18 @@ RETIRED_PATHS: Dict[str, str] = {
         "patterns (rejected_connectivity).  It is now in-model; the evaluator "
         "re-check that replaced it is postcheck_divergence, which must be 0."
     ),
+    "corridor_tax_meter": (
+        "retired 2026-08-04 (review fix): the in-model filter used to be metered "
+        "per *accepted* pattern, by recounting its fronts under the retired loose "
+        "reading (corridor_tax / corridor_tax_front_cells / "
+        "patterns_paying_corridor_tax).  On the accept path that count is 0 by "
+        "construction -- an accepted pattern has every stub in the one rooted "
+        "component -- so the meter read zero on the production path whatever the "
+        "restriction cost: fail-soft zero.  The measurement moved to a paired "
+        "loose control solve on the rejected side (alarm meter 1, loose_control); "
+        "what remains of the old counter is the fail-closed invariant "
+        "loose_only_fronts, which raises GeneratorBlocked instead of tallying."
+    ),
 }
 
 
@@ -318,10 +352,10 @@ class GeneratorStats:
     The three meters are deliberately separate quantities and are never summed:
 
     1. ``in_model_filter`` -- what the strict connectivity constraint costs
-       *inside* the CP model (the "corridor tax").  Measured per accepted pattern
-       by recounting its fronts under the retired multi-source reading and taking
-       the difference, plus the count of targets that the strict model could not
-       satisfy at all.  This is a cost, not an error.
+       *inside* the CP model.  Measured by a **paired control solve**: every
+       target the strict model proved infeasible is re-solved once under the
+       retired loose reading, and the three-way tally of that control is the
+       measurement (``loose_control``).  This is a cost, not an error.
     2. ``postcheck_divergence`` -- solver-produced specs the evaluator refuses.
        Zero by the exactness argument in the module docstring; any non-zero value
        raises ``GeneratorBlocked`` on the spot.
@@ -341,9 +375,13 @@ class GeneratorStats:
     # meter 1
     targets_infeasible: int = 0
     targets_unproved: int = 0
-    corridor_tax_front_cells: int = 0
-    patterns_paying_corridor_tax: int = 0
     target_status_counts: Dict[str, int] = field(default_factory=dict)
+    # meter 1, paired loose control (one solve per strict-proved-infeasible target)
+    strict_infeasible_loose_feasible: int = 0
+    strict_infeasible_loose_infeasible: int = 0
+    strict_infeasible_loose_unproved: int = 0
+    control_solve_seconds: float = 0.0
+    control_status_counts: Dict[str, int] = field(default_factory=dict)
     # meter 2
     postcheck_divergence: int = 0
 
@@ -364,17 +402,35 @@ class GeneratorStats:
                     "targets_infeasible": self.targets_infeasible,
                     "targets_unproved": self.targets_unproved,
                     "target_status_counts": dict(sorted(self.target_status_counts.items())),
-                    "corridor_tax_front_cells": self.corridor_tax_front_cells,
-                    "patterns_paying_corridor_tax": self.patterns_paying_corridor_tax,
+                    "loose_control": {
+                        "strict_infeasible_loose_feasible": (
+                            self.strict_infeasible_loose_feasible
+                        ),
+                        "strict_infeasible_loose_infeasible": (
+                            self.strict_infeasible_loose_infeasible
+                        ),
+                        "strict_infeasible_loose_unproved": (
+                            self.strict_infeasible_loose_unproved
+                        ),
+                        "control_solve_seconds": round(self.control_solve_seconds, 3),
+                        "control_status_counts": dict(
+                            sorted(self.control_status_counts.items())
+                        ),
+                    },
                     "reading": (
-                        "corridor tax = front cells the retired multi-source "
-                        "reading would have counted and the registered "
-                        "single-corridor reading does not. targets_infeasible = "
-                        "the solver PROVED no pattern exists for that target; "
-                        "targets_unproved = it ran out of time and proved "
-                        "nothing. The two are never added together and a "
-                        "timeout is never reported as a ceiling. All of this is "
-                        "the cost of the restriction, not an error."
+                        "targets_infeasible = the solver PROVED no pattern exists "
+                        "for that target; targets_unproved = it ran out of time "
+                        "and proved nothing. The two are never added together and "
+                        "a timeout is never reported as a ceiling. Every "
+                        "strict-PROVED-infeasible target is then re-solved once "
+                        "under the retired loose reading with the same per-target "
+                        "budget: strict_infeasible_loose_feasible is the number of "
+                        "targets the single-corridor reading -- and nothing else "
+                        "in the model -- removed, i.e. the in-model filter itself. "
+                        "loose_infeasible means the target was dead anyway and "
+                        "loose_unproved means the control timed out and says "
+                        "nothing. This is the cost of the restriction, not an "
+                        "error."
                     ),
                 },
                 "postcheck_divergence": {
@@ -651,19 +707,28 @@ def _add_connectivity_certificate(
     live_stubs: Sequence[Cell],
     *,
     corridor_capacity: Optional[int] = None,
-) -> Optional[Cell]:
-    """R-PAT-CONN, part 2: a single-commodity flow proves ``conn`` is one piece.
+    reading: str = STRICT_READING,
+) -> Tuple[Cell, ...]:
+    """R-PAT-CONN, part 2: a single-commodity flow proves ``conn`` hangs together.
 
-    One unit of flow is delivered to every ``conn`` cell from **one** source --
-    the ``(x, y)``-smallest live stub, matching
-    ``g1_pattern_evaluator.component_root``.  Flow may only travel between cells
-    that are both on the corridor, so a ``conn`` cell that is not 4-connected to
-    the root cannot be served and the model is infeasible.
+    One unit of flow is delivered to every ``conn`` cell from the model's
+    sources.  Flow may only travel between cells that are both on the corridor,
+    so a ``conn`` cell that is not 4-connected to a source cannot be served and
+    the model is infeasible.
 
-    Sourcing from every stub at once would certify the *union* of the
-    stub-bearing components instead -- the loose reading -- so the single root is
-    load bearing, not a simplification.  Returns the root it used (``None`` when
-    the class has no live stub at all, which no G1 region class has).
+    ``reading`` picks the sources, and that single choice *is* the difference
+    between the two readings of R-PAT-CONN:
+
+    * ``"strict"`` (the registered semantics, and the only reading the catalog is
+      ever generated under) sources from **one** stub -- the ``(x, y)``-smallest
+      live stub, matching ``g1_pattern_evaluator.component_root``.  One root is
+      what makes the model say "one corridor".
+    * ``"loose"`` (the retired semantics, kept only for the paired control solve
+      in ``loose_control_status``) sources from every live stub at once, which
+      certifies the *union* of the stub-bearing components.
+
+    Returns the sources it used (empty when the class has no live stub at all,
+    which no G1 region class has).
 
     ``corridor_capacity`` is an upper bound on ``|conn|``; the caller knows one
     that is much tighter than "every cell", because the target fixes the body
@@ -672,13 +737,19 @@ def _add_connectivity_certificate(
     neighbour-support constraint is redundant against the flow but propagates far
     earlier, which is the difference between a two-second solve and a timeout.
     """
+    if reading not in READINGS:
+        raise ValueError(f"unknown R-PAT-CONN reading: {reading!r}")
     cells = sorted(conn)
     if not cells:
-        return None
-    root = min(live_stubs) if live_stubs else None
+        return ()
+    ordered_stubs = sorted(live_stubs)
+    sources: Tuple[Cell, ...] = tuple(
+        ordered_stubs[:1] if reading == STRICT_READING else ordered_stubs
+    )
+    source_set = set(sources)
     capacity = len(cells) if corridor_capacity is None else max(1, corridor_capacity)
     for cell in cells:
-        if cell == root:
+        if cell in source_set:
             continue
         support = [conn[n] for n in _neighbours(cell) if n in conn]
         model.add(conn[cell] <= sum(support))
@@ -692,18 +763,19 @@ def _add_connectivity_certificate(
     for (tail, head), variable in arcs.items():
         model.add(variable <= capacity * conn[tail])
         model.add(variable <= capacity * conn[head])
-    source = (
-        model.new_int_var(0, capacity, "corridor_source") if root is not None else None
-    )
+    injections: Dict[Cell, Any] = {
+        cell: model.new_int_var(0, capacity, f"corridor_source_{cell[0]}_{cell[1]}")
+        for cell in sources
+    }
     for cell in cells:
         inflow = [arcs[(n, cell)] for n in _neighbours(cell) if (n, cell) in arcs]
         outflow = [arcs[(cell, n)] for n in _neighbours(cell) if (cell, n) in arcs]
-        injected = [source] if (root is not None and cell == root) else []
+        injected = [injections[cell]] if cell in injections else []
         model.add(sum(inflow) + sum(injected) - sum(outflow) == conn[cell])
-    if root is None:  # pragma: no cover - every G1 region class has live stubs
+    if not sources:  # pragma: no cover - every G1 region class has live stubs
         for cell in cells:
             model.add(conn[cell] == 0)
-    return root
+    return sources
 
 
 def _solve_target(
@@ -713,7 +785,19 @@ def _solve_target(
     pole_anchors: Sequence[Cell],
     hole_poses: Sequence[Tuple[Cell, int, int]],
     config: GeneratorConfig,
+    *,
+    reading: str = STRICT_READING,
+    max_solutions: Optional[int] = None,
 ) -> Tuple[List[PatternSpec], float, str]:
+    """Solve one target under one reading of R-PAT-CONN.
+
+    ``reading`` selects the connectivity certificate's sources and nothing else:
+    the packing, the capability requirement, the hole and the power rule are the
+    same constraints in both, which is what makes the loose run a *control* for
+    the strict one rather than a different experiment.  ``max_solutions``
+    overrides ``config.solutions_per_target`` (the control only ever needs the
+    first status).
+    """
     from ortools.sat.python import cp_model
 
     wanted: Dict[Tuple[str, int], int] = {
@@ -831,6 +915,7 @@ def _solve_target(
         conn,
         live_stubs,
         corridor_capacity=len(used) - body_area - POLE_SIZE * POLE_SIZE,
+        reading=reading,
     )
 
     # H-GEN-OBJECTIVE.  Body area is fixed by the target, so ``sum(used)`` varies
@@ -862,7 +947,8 @@ def _solve_target(
     # target: later rounds are deliberately constrained to avoid the solutions
     # already returned, so their INFEASIBLE says "no more", not "none".
     first_status = "NOT_SOLVED"
-    for attempt in range(max(1, config.solutions_per_target)):
+    rounds = config.solutions_per_target if max_solutions is None else max_solutions
+    for attempt in range(max(1, rounds)):
         start = time.monotonic()
         status = solver.solve(model)
         elapsed += time.monotonic() - start
@@ -902,6 +988,47 @@ def _solve_target(
         ]
         model.add_bool_or([literal.negated() for literal in literals])
     return found, elapsed, first_status
+
+
+def loose_control_status(
+    region: RegionClass,
+    target: Target,
+    poses: Sequence[Pose],
+    pole_anchors: Sequence[Cell],
+    hole_poses: Sequence[Tuple[Cell, int, int]],
+    config: GeneratorConfig,
+) -> Tuple[str, float]:
+    """Alarm meter 1: re-run one *strict-infeasible* target under the loose reading.
+
+    This is the whole in-model filter measurement.  It is asked only about
+    targets the strict model **proved** infeasible, so it runs entirely on the
+    rejected side: there is no accept branch it could be starved by, and no
+    solution of it can be silently zero-valued the way a per-accepted-pattern
+    counter can (that was the fail-soft shape this replaced -- see
+    ``RETIRED_PATHS['corridor_tax_meter']``).
+
+    Same target, same poses, same per-target budget, one solve.  The only
+    difference is the connectivity certificate's sources.  So
+
+        strict INFEASIBLE and loose FEASIBLE  =>  the single-corridor reading,
+        and nothing else in the model, is what removed this target.
+
+    The returned specs are dropped on the floor here rather than handed back:
+    a loose-reading pattern is not catalog material under any circumstances, and
+    the safest way to say that is for the loose solver's output to have nowhere
+    to go.
+    """
+    _specs, elapsed, status = _solve_target(
+        region,
+        target,
+        poses,
+        pole_anchors,
+        hole_poses,
+        config,
+        reading=LOOSE_READING,
+        max_solutions=1,
+    )
+    return status, elapsed
 
 
 def measure_packing_ceiling(
@@ -1007,14 +1134,23 @@ def measure_packing_ceiling(
 # --------------------------------------------------------------------------
 
 
-def corridor_tax(evaluation: PatternEvaluation) -> int:
-    """Alarm meter 1: front cells the retired loose reading would have counted.
+def loose_only_fronts(evaluation: PatternEvaluation) -> int:
+    """Invariant probe: body fronts that only the retired loose reading would count.
 
-    The registered reading admits one corridor; the retired one admitted the
-    union of every stub-bearing free component.  The difference, counted over the
-    pattern's own body fronts, is what the strict restriction costs this pattern.
-    It is measured here rather than inferred from a second solve, so it is
-    available on every run at no solver cost.
+    Not a meter.  It used to be one (``corridor_tax``), and that was the wrong
+    shape: it was called after ``evaluation.ok``, and an ``ok`` pattern has every
+    live stub inside the one rooted component, so the loose flood and the strict
+    component are the same set and the count is **0 by construction**.  A meter
+    that can only ever read 0 on the path it runs on measures nothing while
+    looking like a measurement -- the fail-soft-zero shape.  The real
+    measurement is now the paired loose control solve (``loose_control_status``).
+
+    What is left is worth keeping as a *check*: "an accepted pattern pays no
+    loose-only front" is a real statement about the evaluator's semantics, and if
+    the evaluator ever drifted back towards the multi-source reading this is the
+    first place it would show.  So a non-zero value on an accepted pattern goes
+    through the same door as a post-check divergence -- ``GeneratorBlocked``,
+    fail closed, no counter.
     """
     region = REGION_CLASSES[evaluation.spec.region_class]
     free = set(evaluation.free_cells)
@@ -1146,10 +1282,16 @@ def _accept(
         else:
             stats.rejected_other += 1
         return None
-    tax = corridor_tax(evaluation)
-    if tax:
-        stats.corridor_tax_front_cells += tax
-        stats.patterns_paying_corridor_tax += 1
+    leaked = loose_only_fronts(evaluation)
+    if leaked:
+        raise GeneratorBlocked(
+            "loose-only fronts on an accepted pattern: the evaluator called this "
+            f"pattern valid, yet {leaked} of its front cells are reachable only "
+            "under the retired multi-source reading, so its 'one corridor' is not "
+            "one corridor. Same door as a post-check divergence -- an "
+            f"implementation defect, not a finding. spec={spec.as_json()!r} "
+            f"meta={dict(meta)!r}"
+        )
     if accumulator.offer(evaluation, meta):
         return evaluation
     stats.duplicate_signatures += 1
@@ -1162,7 +1304,14 @@ def generate_catalog(
     output_dir: Path,
     progress: bool = True,
 ) -> Dict[str, object]:
-    """Run the whole menu under one global wall-clock budget and write catalogs."""
+    """Run the whole menu under one global wall-clock budget and write catalogs.
+
+    The budget admits targets; a target that is admitted also pays for its paired
+    loose control solve when the strict model proves it infeasible, so the true
+    ceiling is ``budget_seconds`` plus at most one ``target_seconds`` per
+    proved-infeasible target.  ``control_solve_seconds`` is reported separately
+    from ``solve_seconds`` so the two are never confused for one another.
+    """
     started = time.monotonic()
     accumulators: Dict[str, CatalogAccumulator] = {}
     stats_by_class: Dict[str, GeneratorStats] = {}
@@ -1228,8 +1377,26 @@ def generate_catalog(
             stats.targets_feasible += 1
         elif status == "INFEASIBLE":
             # Alarm meter 1: proved to have no pattern under the strict corridor.
-            # Counted, not repaired -- it is the restriction's price.
+            # Counted, not repaired -- it is the restriction's price.  The price
+            # is then *measured* by one paired control solve of the same target
+            # under the retired loose reading: a target that the loose model can
+            # satisfy was removed by the single-corridor reading and nothing
+            # else.  Only PROVED infeasibility is paired -- a strict timeout
+            # proves nothing, so pairing it would manufacture a number.
             stats.targets_infeasible += 1
+            control_status, control_elapsed = loose_control_status(
+                region, target, pose_cache[name], pole_cache[name], hole_cache[name], config
+            )
+            stats.control_solve_seconds += control_elapsed
+            stats.control_status_counts[control_status] = (
+                stats.control_status_counts.get(control_status, 0) + 1
+            )
+            if control_status in ("OPTIMAL", "FEASIBLE"):
+                stats.strict_infeasible_loose_feasible += 1
+            elif control_status == "INFEASIBLE":
+                stats.strict_infeasible_loose_infeasible += 1
+            else:
+                stats.strict_infeasible_loose_unproved += 1
         else:
             # Ran out of time.  Emphatically *not* the same statement, and kept
             # in its own counter so no reader can read a timeout as a proof.
@@ -1329,10 +1496,16 @@ def generate_catalog(
             "enforced": "in_model",
             "certificate": "single-commodity flow rooted at one live portal stub",
             "root_rule": "min(live_stubs), matching g1_pattern_evaluator.component_root",
+            "control_reading": (
+                "same model, sources = every live stub (the retired union-of-"
+                "components reading); run only on strict-proved-infeasible "
+                "targets and its solutions are discarded, never catalogued"
+            ),
             "reading": (
                 "R-PAT-CONN is a hard constraint of every target model, not a "
                 "post-filter. The evaluator re-check is a divergence detector "
-                "(alarm meter 2), not the gate."
+                "(alarm meter 2), not the gate. What the constraint costs is the "
+                "paired loose control solve (alarm meter 1, per class)."
             ),
         },
     }
