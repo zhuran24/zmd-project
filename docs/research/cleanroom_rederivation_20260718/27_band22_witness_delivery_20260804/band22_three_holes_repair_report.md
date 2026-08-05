@@ -1,5 +1,17 @@
 # 14 条交替极性制造带构造：三处承重洞的坐标级修补
 
+> **⚠ SUPERSEDED（2026-08-05，空地语义裁决）**：本文书及本目录的见证
+> （`band22_repaired_design_witness_not_checker_schema.json`）与交付清单，均在
+> **宽松 ghost 语义**（V88：空矩形只排设施、允许路由穿孔）下成立。owner 2026-08-05
+> 裁定空矩形=什么都不能有（`docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md`）；
+> 本见证孔 `H=[1,6]×[51,57]` 内含 **22 格路由 + 4 个端口 front**，严格语义下
+> **登记资格已暂停**。同日 strict-hole 探针进一步证明本骨架不可修复：定理 A（孔不得
+> 与 x=1 列/y=1 行相交，本孔压 x=1）与 5×5 列账 48<49 两枪独立致死
+> （`.artifacts/band22_strict_hole_probe_20260805/PROBE_REPORT.md`，含 §9 更正）。
+> 文中「孔迁 band12 重用 `x=1` 返回列/`x=2` riser 省地」手法在严格语义下整体作废。
+> 重设计走 96 个列账活口配置线（`.artifacts/band22_strict_redesign_pack_20260805/`）。
+> 正文以下保留为史料，一字未改。
+>
 > 本文是设计咨询材料，不是 authoritative strict checker 证书，也不构成最优性证书。
 
 ## 0. 结论与证据边界

@@ -54,7 +54,10 @@ band 范式中带高 ≤5，任何 6×7 孔必跨 ≥1 条走廊行（band22 的
    相应测试与 obligations 核对。
 2. band22 严格语义重设计（改道+搬口+重绑定；候选=带新约束的咨询包）。
 3. 既往文书「孔 42 格全自由」表述勘误（CONSULT_VERDICT、08-04 夜汇报口径）
-   ——挂正式门收官文书更新轮。
+   ——挂正式门收官文书更新轮。**已完成（08-05 收官轮）**：
+   `CONSULT_VERDICT_TRIPLE_20260804.md` 头部勘误横幅 +
+   `27_band22_witness_delivery_20260804/band22_three_holes_repair_report.md`
+   SUPERSEDED 横幅（覆盖同目录见证 JSON 与交付清单），正文史料未改字。
 4. G1 目录的 hole 语义按同口径复查（线已停，仅记账不阻断）。
 5. `rules/canonical_rules.json` 是否补写 emptiness 定义 = frozen 工件变更，
    走 freeze-ritual，与挂账 1 同批评估。

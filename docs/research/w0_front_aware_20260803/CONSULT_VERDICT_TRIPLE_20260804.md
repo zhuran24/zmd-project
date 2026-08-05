@@ -1,5 +1,16 @@
 # W0 外脑回件合并裁决 + 当晚落地读数（2026-08-04）
 
+> **⚠ 勘误（2026-08-05，空地语义裁决）**：本文书对 27/28 号 band22 见证的复核背书
+> （「孔 H 与机身交集 0、合规」「`H` 就是该布局的全图最大合法空矩形」「(42,6)【实测】」
+> 及「08-04 夜升级两笔」的孔洞相关表述）全部是在**裁决前的宽松 ghost 语义**下做出的
+> （V88：空矩形只排设施、允许路由穿孔）。owner 2026-08-05 裁定空矩形=什么都不能有
+> （`docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md`）；
+> 该见证孔内实含 **22 格路由**（见证自报 `hole.route_overlap_cells: 22`——本文书两轮
+> 复核均未把该字段读进表述，检讨已记档）**+ 4 个端口 front 落孔**。严格语义下
+> (42,6) 登记资格已暂停，V0-A 骨架随后被 strict-hole 探针判死（定理 A + 5×5 列账
+> 48<49，两枪独立；见 `.artifacts/band22_strict_hole_probe_20260805/PROBE_REPORT.md`）。
+> 本文书其余部分（25/26 号裁决、G1/G2 读数、L 入账条件的 strict checker 前置）不受影响。
+>
 > **性质**：research-only；`authority` 恒 false；本文书不登记任何界，
 > `U=(1188,18)`（conditional）与 `L=absent` 一字未动，不触碰 cut / production /
 > certified 状态，也不触碰 `PROJECT_LOCK.md` 的任何 `F-*`/`PCR-*`/`CUT-*` 条款。
