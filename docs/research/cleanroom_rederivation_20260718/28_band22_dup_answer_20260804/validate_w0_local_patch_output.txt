@@ -1,0 +1,7 @@
+PATCH_VALIDATION: PASS
+manufacturing counts: 3x3=132, 5x5=49, 6x4=38
+core fronts: 20 exact, active inputs=2, active outputs=6
+route cells=1132, one directed route cycle length=1048, route_union_hole=1157
+fixed_body_area=3544
+area pole upper=49, optimistic band-internal slot upper=38
+NOT CHECKED: power coverage, operation binding, full strict connectivity
