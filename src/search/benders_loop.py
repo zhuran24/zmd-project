@@ -59,6 +59,7 @@ from typing import (
     Callable,
     Dict,
     FrozenSet,
+    Iterable,
     Iterator,
     List,
     Mapping,
@@ -112,6 +113,7 @@ from src.models.master_model import (
     load_project_data_from_texts,
 )
 from src.models.routing_subproblem import (
+    GHOST_RESERVED_OWNER_ID,
     RoutingGrid,
     RoutingPlacementCore,
     RoutingSubproblem,
@@ -150,6 +152,31 @@ _EXACT_ROUTING_PRECHECK_VERIFIED_STATUSES = frozenset(
 )
 
 
+# Ids that name something other than a placed facility, and therefore have no
+# master pose literal to put into a conflict set.  "ghost_pick" is the solution
+# marker for the selected rect; GHOST_RESERVED_OWNER_ID is the owner-map label
+# strict emptiness puts on the ghost cells themselves.
+_GHOST_NON_FACILITY_CONFLICT_IDS = frozenset({"ghost_pick", GHOST_RESERVED_OWNER_ID})
+
+
+def _blocked_port_has_ghost_blocker(blocked_port: Mapping[str, Any]) -> bool:
+    """Return whether the hole itself is part of why this port is blocked.
+
+    Such a blockage is a fact about the current anchor only.  Any cut built from
+    it would be applied with no ghost condition attached and would then prune
+    layouts that are perfectly routable under another anchor.
+    """
+
+    candidate_ids: List[Any] = [blocked_port.get("instance_id")]
+    candidate_ids.extend(blocked_port.get("placement_level_conflict_set", []) or [])
+    candidate_ids.extend(blocked_port.get("blocking_instance_ids", []) or [])
+    return any(
+        str(instance_id) in _GHOST_NON_FACILITY_CONFLICT_IDS
+        for instance_id in candidate_ids
+        if instance_id is not None
+    )
+
+
 def _routing_precheck_blocked_ports_well_formed(value: Any) -> bool:
     """Return whether front_blocked blocked_ports can carry cut evidence."""
 
@@ -166,10 +193,23 @@ def _routing_precheck_blocked_ports_well_formed(value: Any) -> bool:
         instance_id = blocked_port.get("instance_id")
         if instance_id is not None and not isinstance(instance_id, str):
             return False
+        if str(instance_id) in _GHOST_NON_FACILITY_CONFLICT_IDS:
+            # The blocked port belongs to a facility; the ghost owns no port.
+            return False
         blocking_instance_ids = blocked_port.get("blocking_instance_ids", [])
         if not isinstance(blocking_instance_ids, list):
             return False
         if any(not isinstance(instance_id, str) for instance_id in blocking_instance_ids):
+            return False
+        if any(
+            str(instance_id) in _GHOST_NON_FACILITY_CONFLICT_IDS
+            for instance_id in blocking_instance_ids
+        ) and not any(
+            str(instance_id) in _GHOST_NON_FACILITY_CONFLICT_IDS
+            for instance_id in conflict_set
+        ):
+            # A ghost blocker that never reaches the conflict set would let the
+            # cut path mistake an anchor-local blockage for a facility one.
             return False
         for cell_key in ("port_cell", "front_cell"):
             if cell_key not in blocked_port:
@@ -6157,6 +6197,105 @@ class LBBDController:
             return set()
         return set(context[3])
 
+    def _ghost_cells_from_solution_marker(
+        self,
+        raw_pick: Any,
+        ghost_domains: Sequence[Any],
+    ) -> Optional[Set[Tuple[int, int]]]:
+        """Resolve the ghost cells named by ``solution["ghost_pick"]``.
+
+        Reads the domain record rather than recomputing anchor + w x h, so there
+        is no second geometry derivation to drift from the master's.  Any shape
+        the checks below do not fully account for is fail-closed (``None``).
+        """
+
+        if not isinstance(raw_pick, Mapping):
+            return None
+        if str(raw_pick.get("facility_type")) != "ghost_rect":
+            return None
+        try:
+            rect_idx = int(raw_pick["pose_idx"])
+        except (KeyError, TypeError, ValueError):
+            return None
+        if rect_idx < 0 or rect_idx >= len(ghost_domains):
+            return None
+        domain = ghost_domains[rect_idx]
+        if not isinstance(domain, Mapping):
+            return None
+
+        domain_anchor = domain.get("anchor")
+        pick_anchor = raw_pick.get("anchor")
+        if not isinstance(domain_anchor, Mapping) or not isinstance(pick_anchor, Mapping):
+            return None
+        try:
+            anchor_x = int(domain_anchor["x"])
+            anchor_y = int(domain_anchor["y"])
+            if int(pick_anchor["x"]) != anchor_x or int(pick_anchor["y"]) != anchor_y:
+                return None
+            cells = {(int(c[0]), int(c[1])) for c in domain.get("cells") or []}
+        except (KeyError, TypeError, ValueError):
+            return None
+        if not cells:
+            return None
+
+        ghost_rect = getattr(self.master, "ghost_rect", None)
+        if ghost_rect is not None:
+            try:
+                ghost_w = int(ghost_rect[0])
+                ghost_h = int(ghost_rect[1])
+            except (TypeError, ValueError, IndexError):
+                return None
+            if ghost_w <= 0 or ghost_h <= 0:
+                return None
+            expected = {
+                (anchor_x + dx, anchor_y + dy)
+                for dx in range(ghost_w)
+                for dy in range(ghost_h)
+            }
+            if cells != expected:
+                return None
+        elif min(x for x, _y in cells) != anchor_x or min(
+            y for _x, y in cells
+        ) != anchor_y:
+            return None
+        return cells
+
+    def _strict_ghost_occupancy(
+        self,
+        solution: Mapping[str, Any],
+    ) -> Optional[Set[Tuple[int, int]]]:
+        """Return the ghost cells that strict emptiness adds to occupancy.
+
+        This is the only ghost source the certified routing domain reads.  It
+        resolves from the layout being routed rather than from the live solver:
+        ``extract_solution`` always stamps ``ghost_pick`` when the master has a
+        ghost domain, whereas the solver handle is dropped every time a cut is
+        applied, so the marker is the provenance that actually travels with the
+        layout.
+
+        A master with no ghost domain has no hole, so the answer is the empty
+        set.  Once a domain exists the marker must resolve: answering with an
+        empty set on a broken context would silently restore the pre-2026-08-05
+        loose semantics at exactly the moment the geometry is least trustworthy.
+        ``None`` is that fail-closed signal and the caller must raise UNKNOWN.
+        """
+
+        ghost_domains = list(getattr(self.master, "_ghost_domains", None) or [])
+        raw_pick = solution.get("ghost_pick") if isinstance(solution, Mapping) else None
+        if not ghost_domains:
+            # A marker with no domain behind it is malformed input, not the
+            # absence of a hole.
+            return None if raw_pick is not None else set()
+
+        cells = self._ghost_cells_from_solution_marker(raw_pick, ghost_domains)
+        if cells is None:
+            return None
+        context = self._selected_ghost_context()
+        if context is not None and set(context[3]) != cells:
+            # The live literal and the routed layout disagree about the hole.
+            return None
+        return cells
+
     def _selected_ghost_anchor(self) -> Optional[Tuple[int, Any, Mapping[str, Any]]]:
         # 返回 (rect_idx, u_var, anchor_dict) 给 power infeasible cut 当 condition
         # — 让 cut 只在当前 ghost anchor 下生效, 不过切 ghost B 下合法解.
@@ -6526,8 +6665,33 @@ class LBBDController:
 
         enumerated_bindings = 0
         routing_attempts = 0
-        occupied_cells = self._extract_occupied_cells(solution)
-        occupied_owner_by_cell = self._extract_occupied_owner_by_cell(solution)
+        strict_ghost_cells = self._strict_ghost_occupancy(solution)
+        if strict_ghost_cells is None:
+            self.last_proof_summary = {
+                "mode": "certified_exact",
+                "benders_iterations": iteration,
+                "master_status": "FEASIBLE",
+                "binding_status": str(getattr(binding_model, "status", "BUILT")),
+                "diagnostic_flow_status": diagnostic_flow_status,
+                "enumerated_bindings": enumerated_bindings,
+                "routing_attempts": routing_attempts,
+                "subproblem_status_contract_violation": (
+                    "strict_ghost_occupancy_unresolved"
+                ),
+                "master_follow_up": "fail_closed_unknown",
+                **self._exact_warm_start_summary(),
+                **self._subproblem_reuse_summary(),
+                **self._exact_cut_ladder_summary(),
+            }
+            return RUN_STATUS_UNKNOWN, None
+        occupied_cells = self._extract_occupied_cells(
+            solution,
+            ghost_cells=strict_ghost_cells,
+        )
+        occupied_owner_by_cell = self._extract_occupied_owner_by_cell(
+            solution,
+            ghost_cells=strict_ghost_cells,
+        )
         routing_placement_core: Optional[RoutingPlacementCore] = None
         empty_binding_domain_instances = list(
             getattr(binding_model, "extract_empty_binding_domain_instances", lambda: [])()
@@ -7381,6 +7545,8 @@ class LBBDController:
                     )
                     blocker_ids: Set[str] = set()
                     for bp in routing_precheck_summary.get("blocked_ports", []):
+                        if _blocked_port_has_ghost_blocker(bp):
+                            continue
                         for iid in bp.get("placement_level_conflict_set", []):
                             blocker_ids.add(str(iid))
                         primary = bp.get("instance_id")
@@ -7416,6 +7582,11 @@ class LBBDController:
                 for blocked_port in routing_precheck_summary.get("blocked_ports", []):
                     if _skip_per_port_loop:
                         break
+                    if _blocked_port_has_ghost_blocker(blocked_port):
+                        # Covers all three cut shapes below (lazy demand, cell
+                        # pattern, instance nogood) at one point.  Only the last
+                        # one would fail closed on its own.
+                        continue
                     delegate = self.master._coordinate_delegate
                     if _b1_use_lazy_demand and delegate is not None:
                         # identify pose owner — instance_id is direct field in routing output
@@ -8065,10 +8236,13 @@ class LBBDController:
     def _extract_occupied_owner_by_cell(
         self,
         solution: Mapping[str, Mapping[str, Any]],
+        *,
+        ghost_cells: Iterable[Tuple[int, int]],
     ) -> Dict[Tuple[int, int], str]:
         owner_by_cell: Dict[Tuple[int, int], str] = {}
         for instance_id, solution_entry in solution.items():
-            # V88: ghost_pick is the empty rectangle marker, not an occupier.
+            # ghost_pick carries the rect index, not a facility pose; the hole's
+            # own cells come in below under the reserved owner id.
             if str(instance_id) == "ghost_pick":
                 continue
             pose_idx = int(solution_entry["pose_idx"])
@@ -8076,15 +8250,23 @@ class LBBDController:
             pose = self.master.facility_pools[facility_type][pose_idx]
             for cell in pose.get("occupied_cells", []):
                 owner_by_cell[(int(cell[0]), int(cell[1]))] = str(instance_id)
+        for cell in ghost_cells:
+            # A body inside the hole would breach master geometry; keep the
+            # facility attribution in that case rather than papering over it.
+            owner_by_cell.setdefault(
+                (int(cell[0]), int(cell[1])), GHOST_RESERVED_OWNER_ID
+            )
         return owner_by_cell
 
     def _extract_occupied_cells(
         self,
         solution: Mapping[str, Mapping[str, Any]],
+        *,
+        ghost_cells: Iterable[Tuple[int, int]],
     ) -> Set[Tuple[int, int]]:
         occupied_cells: Set[Tuple[int, int]] = set()
         for instance_id, solution_entry in solution.items():
-            # V88: ghost_pick is the empty rectangle marker, not an occupier.
+            # ghost_pick carries the rect index, not a facility pose.
             if str(instance_id) == "ghost_pick":
                 continue
             pose_idx = int(solution_entry["pose_idx"])
@@ -8092,6 +8274,9 @@ class LBBDController:
             pose = self.master.facility_pools[facility_type][pose_idx]
             for cell in pose.get("occupied_cells", []):
                 occupied_cells.add((int(cell[0]), int(cell[1])))
+        # Strict emptiness (owner adjudication 2026-08-05): belts and bridges
+        # read the same obstacle set as bodies do, so the hole goes in here.
+        occupied_cells.update((int(cell[0]), int(cell[1])) for cell in ghost_cells)
         return occupied_cells
 
     def _binding_has_alternatives(self, binding_model: PortBindingModel) -> bool:
@@ -8252,6 +8437,11 @@ class LBBDController:
                 return {}
             instance_id = raw_instance_id.strip()
             if not instance_id:
+                return {}
+            if instance_id in _GHOST_NON_FACILITY_CONFLICT_IDS:
+                # The hole has no pose literal.  Dropping the whole cut is the
+                # conservative answer: a missing cut costs iterations, whereas a
+                # ghost-derived cut applied to every anchor costs the optimum.
                 return {}
             if instance_id in conflict_set:
                 continue

@@ -80,8 +80,15 @@ def test_boundary_port_precheck_does_not_treat_connector_cells_as_ghost_blockers
     # anchor (1, 1) is index 1 * 2 + 1 = 3.  It leaves all left-edge port
     # occupied cells at x=0 and all bottom-edge occupied cells at y=0 outside
     # the ghost, so the boundary ports can still pack the required 46 slots.
-    # Connector cells at x=1 / y=1 lie in the ghost, but those cells are routing
-    # terminals, not facility footprint cells in the certified master contract.
+    #
+    # Connector cells at x=1 / y=1 do lie in the ghost.  Under the strict
+    # emptiness ruling (owner 2026-08-05) that is no longer legal — but this
+    # screen keeps ignoring them on purpose.  It is an optimistic anchor-level
+    # filter: letting through more anchors than are truly feasible only means
+    # under-pruning, and the strict rejection happens downstream in the routing
+    # domain.  Tightening it here would prune the anchor domain itself and needs
+    # its own soundness argument, so the loose reading is frozen deliberately
+    # and this assertion is the freeze.
     assert payload["screen_pass_anchor_count"] > 0
     assert 3 in payload["screen_pass_anchor_indices"]
     assert set(screen_spec["interval_records_by_family"]["left"][0]["blocking_cells"]) == set(

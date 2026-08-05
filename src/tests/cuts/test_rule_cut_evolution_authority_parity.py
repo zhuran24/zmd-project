@@ -59,15 +59,22 @@ _BASELINE_SURFACE_SHA256 = {
 # lane's blocking-on-missing-roots and per-run basetemp fixes.  It supersedes
 # 8292983's secret-scan timeout-scale successor, which the surface no longer
 # carries alone.
+#
+# The authorized benders_loop successor is the strict empty-rectangle batch
+# (2026-08-05): ghost cells join the routing occupancy set, and blocked ports
+# attributed to the hole stop minting unconditional cuts.  The authority is the
+# owner's empty-rectangle semantics adjudication of the same date, not the cut
+# framework — nothing in the cut lifecycle wiring moved.
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
     "scripts/preflight_gate.py": "ddc75270ecd9023947104ac6379e58a43d366802b039a0958738175f061a177d",
+    "src/search/benders_loop.py": "a8f7aa3b6e25d247be4ea636b7e42ecb9100b46a188ab454748b575dad1fedd9",
 }
 
 _P1_2_SINK_SHA256 = {
     "src/cuts/lifecycle.py": "9b944572c3bc787317a2e9bfaaf4e3ce472ba8fd953269772b24535bbef1ac1a",
     "src/cuts/typed_platform.py": "cce881457c63647dbba58750e1c4884351a31987057ac72b9cd0aeecaf44b45b",
-    "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
+    "src/search/benders_loop.py": "a8f7aa3b6e25d247be4ea636b7e42ecb9100b46a188ab454748b575dad1fedd9",
 }
 
 _WIRE_FIELDS = {

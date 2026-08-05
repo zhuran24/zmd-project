@@ -36,6 +36,19 @@ ROUTING_DOMAIN_VERIFIED_STATUSES = (
 )
 ROUTING_DOMAIN_MISSING_STATUS = "MISSING_STATUS"
 
+# Strict empty-rectangle semantics (owner adjudication 2026-08-05): the ghost
+# rect must hold nothing at all — no facility body, no belt, no bridge.  Ghost
+# cells therefore enter ``occupied_cells`` like any other obstacle, and carry
+# this reserved owner id in ``occupied_owner_by_cell``.
+#
+# The id is deliberately chosen so that no placement solution can ever contain
+# it as a key.  Blocked-port attribution that names the ghost then dead-ends at
+# ``LBBDController._build_conflict_from_instance_ids``, which finds no master
+# literal and drops the whole cut.  That is the intended v1 behaviour: a cut
+# derived from *this* hole carries no ghost condition, so applying it would also
+# forbid layouts that are legal under a different anchor.
+GHOST_RESERVED_OWNER_ID = "__ghost_rect__"
+
 
 RouteStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
 PhysicalStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
@@ -125,6 +138,18 @@ def _cell_neighbors(cell: Tuple[int, int]) -> List[Tuple[int, int]]:
         if 0 <= nx < GRID_W and 0 <= ny < GRID_H:
             neighbors.append((nx, ny))
     return neighbors
+
+
+def ghost_owned_cells(
+    occupied_owner_by_cell: Optional[Mapping[Tuple[int, int], str]],
+) -> Set[Tuple[int, int]]:
+    """Return the cells an owner map attributes to the empty rectangle."""
+
+    return {
+        (int(cell[0]), int(cell[1]))
+        for cell, owner in dict(occupied_owner_by_cell or {}).items()
+        if str(owner) == GHOST_RESERVED_OWNER_ID
+    }
 
 
 def _in_grid_cell(cell: Tuple[int, int]) -> bool:
@@ -686,7 +711,9 @@ class RoutingGrid:
         for ps in port_specs:
             self.port_cells.add((int(ps["x"]), int(ps["y"])))
 
-        self.routable_cells = self.free_cells | self.port_cells
+        self.routable_cells = self.free_cells | (
+            self.port_cells - ghost_owned_cells(self.occupied_owner_by_cell)
+        )
 
     @classmethod
     def from_placement_core(
@@ -704,7 +731,12 @@ class RoutingGrid:
             (int(ps["x"]), int(ps["y"]))
             for ps in grid.port_specs
         }
-        grid.routable_cells = grid.free_cells | grid.port_cells
+        # A port cell is normally the free front/belt cell, so the union is a
+        # no-op; it only matters when the cell is occupied.  Ghost cells stay
+        # out — routing may not reach a terminal parked inside the hole.
+        grid.routable_cells = grid.free_cells | (
+            grid.port_cells - ghost_owned_cells(grid.occupied_owner_by_cell)
+        )
         return grid
 
     def neighbors(self, x: int, y: int) -> List[Tuple[int, int, str]]:

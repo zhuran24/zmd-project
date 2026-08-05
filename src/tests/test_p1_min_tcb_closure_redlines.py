@@ -36,11 +36,17 @@ from src.tests.test_exact_contract import _build_toy_exact_project
 from src.tests.test_p1_2_supervisor_pr1 import _run_toy_candidate_proposal
 
 
+# Re-pinned 2026-08-05 for the strict empty-rectangle batch.  Two things moved
+# in the toy records and nothing else: ``certified_exact_source_tree`` (every
+# src/ or scripts/ edit rebinds it) and ``routing_occupancy_digest`` (ghost cells
+# now carry a reserved owner, which is what makes the digest differ between two
+# anchors).  The layout, statuses, cut list and solution digest are byte-for-byte
+# what they were, and the toy still seals to CERTIFIED.
 GOLDEN_CANDIDATE_REPLAY_RECORDS_DIGEST = (
-    "ca11b6a67474bc9138a2badbb7e45b9e502284ff6c7fcd49ff12caaa2fde9801"
+    "10fa45f702419a4644442fc8ac9856504e5f39ef0a74a6821b6dee8413e4376a"
 )
 GOLDEN_FIXED_WITNESS_PROJECTION_DIGEST = (
-    "5b3c0d6d3e6d0ff7bc18cb8b77469684791a1ede09da47a18c53bd1225f564c4"
+    "38623fa27e36c5566813d2f8701902cc246da960dfa61cb7882d32823429af7b"
 )
 GOLDEN_TERMINAL_FRONTIER_EVIDENCE_DIGEST = (
     "9ad6f5d08fe9ccc940f284f27e47f2ecdcab996ba505dee18d1db67480d86f6e"

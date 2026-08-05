@@ -18,6 +18,7 @@ from src.models.binding_subproblem import (
     load_generic_input_slots_by_operation,
 )
 from src.models.routing_subproblem import (
+    GHOST_RESERVED_OWNER_ID,
     RoutingPlacementCore,
     RoutingSubproblem,
     run_exact_routing_precheck,
@@ -1260,6 +1261,7 @@ def verify_terminal_fixed_witness(
         occupied_owner_by_cell, occupied_cells = _extract_pose_resolved_occupancy(
             solution=solution,
             facility_pools=facility_pools,
+            ghost_cells=_ghost_cells(identity.ghost_rect),
         )
 
         budget = _FixedWitnessSolveBudget()
@@ -1757,7 +1759,17 @@ def _extract_pose_resolved_occupancy(
     *,
     solution: Mapping[str, Any],
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    ghost_cells: Sequence[Sequence[int]],
 ) -> Tuple[Dict[Tuple[int, int], str], set[Tuple[int, int]]]:
+    """Resolve the witness occupancy under strict empty-rectangle semantics.
+
+    ``ghost_cells`` joins the obstacle set alongside facility bodies (owner
+    adjudication 2026-08-05), so the terminal verifier reads the same domain the
+    live routing subproblem does.  Carrying the ghost in the owner map, not just
+    the cell set, is what makes ``_routing_occupancy_digest`` differ between two
+    anchors — without it one digest could vouch for two different holes.
+    """
+
     owner_by_cell: Dict[Tuple[int, int], str] = {}
     occupied_cells: set[Tuple[int, int]] = set()
     for instance_id, raw_entry in solution.items():
@@ -1779,6 +1791,12 @@ def _extract_pose_resolved_occupancy(
                 raise ValueError("duplicate occupied cell in terminal witness")
             owner_by_cell[cell] = str(instance_id)
             occupied_cells.add(cell)
+    for raw_cell in ghost_cells:
+        cell = (int(raw_cell[0]), int(raw_cell[1]))
+        if cell in owner_by_cell:
+            raise ValueError("facility body overlaps the empty rectangle")
+        owner_by_cell[cell] = GHOST_RESERVED_OWNER_ID
+        occupied_cells.add(cell)
     return owner_by_cell, occupied_cells
 
 
@@ -1798,6 +1816,14 @@ def _connector_body_exclusion_violation(
     legacy reject-code string keeps the historical "connector" wording
     (pinned by tests/history); do not read it as port+delta semantics.
 
+    Ghost scope (strict emptiness batch 2026-08-05): the owner map now labels
+    the empty rectangle's cells, but this backstop keeps reading bodies only.
+    A port cell inside the hole is already rejected upstream, by the routing
+    precheck in ``_verify_binding_routing_alternatives`` running on the
+    ghost-inclusive placement core; duplicating it here would only rename the
+    reject code.  The check stays body-scoped on purpose so its legacy reject
+    string keeps meaning what it says.
+
     Obligation note (I1 scope, incident survey): I1's independent
     reverification rebuilds binding WITHOUT routing context (front-clean
     by construction) and does NOT re-verify routing front_blocked nogoods
@@ -1815,7 +1841,7 @@ def _connector_body_exclusion_violation(
         if x < 0 or y < 0 or x >= grid_w or y >= grid_h:
             continue
         owner = occupied_owner_by_cell.get(connector_cell)
-        if owner is not None:
+        if owner is not None and owner != GHOST_RESERVED_OWNER_ID:
             return "terminal_fixed_witness_connector_cell_occupied_by_other_body"
     return None
 

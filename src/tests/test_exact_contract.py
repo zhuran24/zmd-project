@@ -730,6 +730,50 @@ def test_certified_campaign_hashes_bind_exact_source_tree(tmp_path: Path) -> Non
     assert hashes[CERTIFIED_EXACT_SOURCE_DIGEST_KEY] == compute_certified_exact_source_digest()
 
 
+def _fake_ghost_pick(master, solution: dict) -> dict | None:
+    """Reproduce the ghost marker that a real extract_solution() stamps.
+
+    Tests below replace ``solve``/``extract_solution``, so nothing populates the
+    live solver.  Strict empty-rectangle semantics resolve the hole from this
+    marker, so a fake layout without one reads as "hole unstated" and the
+    controller fails closed.  Picking a domain disjoint from the placed bodies
+    matches what the master's own no-overlap constraint would have produced.
+    """
+
+    domains = getattr(master, "_ghost_domains", None) or []
+    if not domains:
+        return None
+    body_cells: set[tuple[int, int]] = set()
+    for entry in solution.values():
+        pose = master.facility_pools[str(entry["facility_type"])][int(entry["pose_idx"])]
+        body_cells.update(
+            (int(cell[0]), int(cell[1])) for cell in pose.get("occupied_cells", [])
+        )
+    for rect_idx, domain in enumerate(domains):
+        cells = {(int(cell[0]), int(cell[1])) for cell in domain.get("cells") or []}
+        if not cells or cells & body_cells:
+            continue
+        anchor = dict(domain["anchor"])
+        return {
+            "instance_id": "ghost_pick",
+            "facility_type": "ghost_rect",
+            "pose_idx": int(rect_idx),
+            "pose_id": f"ghost_anchor::{anchor['x']},{anchor['y']}",
+            "anchor": anchor,
+            "is_mandatory": False,
+            "bound_type": "ghost_rect",
+            "solve_mode": getattr(master, "solve_mode", "certified_exact"),
+        }
+    return None
+
+
+def _with_fake_ghost_pick(master, solution: dict) -> dict:
+    ghost_pick = _fake_ghost_pick(master, solution)
+    if ghost_pick is not None:
+        solution["ghost_pick"] = ghost_pick
+    return solution
+
+
 def _build_multi_pose_exact_project(
     project_root: Path,
     *,
@@ -6356,14 +6400,14 @@ def test_binding_domain_empty_generates_singleton_cut_and_continues_master_loop(
     def fake_extract_solution(self):
         pose_idx = 0 if int(getattr(self, "_test_solve_calls", 0)) <= 1 else 1
         pose = self.facility_pools["tiny_facility"][pose_idx]
-        return {
+        return _with_fake_ghost_pick(self, {
             "tiny_001": {
                 "pose_idx": pose_idx,
                 "pose_id": pose["pose_id"],
                 "anchor": dict(pose["anchor"]),
                 "facility_type": "tiny_facility",
             }
-        }
+        })
 
     class FakeBindingModel:
         def __init__(self, placement_solution, *args, **kwargs):
@@ -6504,14 +6548,14 @@ def test_rab_empty_domain_controller_wiring_thin_fallback_guard(
     def fake_extract_solution(self):
         pose_idx = 0 if int(getattr(self, "_test_solve_calls", 0)) <= 1 else 1
         pose = self.facility_pools["tiny_facility"][pose_idx]
-        return {
+        return _with_fake_ghost_pick(self, {
             "tiny_001": {
                 "pose_idx": pose_idx,
                 "pose_id": pose["pose_id"],
                 "anchor": dict(pose["anchor"]),
                 "facility_type": "tiny_facility",
             }
-        }
+        })
 
     class FakeRabBindingModel:
         def __init__(self, placement_solution, *args, **kwargs):
@@ -6661,7 +6705,7 @@ def test_routing_front_blocked_c1_optional_conflict_emits_exact_safe_cut(
             "anchor": dict(pole_pose["anchor"]),
             "facility_type": "power_pole",
         }
-        return solution
+        return _with_fake_ghost_pick(self, solution)
 
     class FakeBindingModel:
         def __init__(self, placement_solution, *args, **kwargs):
@@ -6779,14 +6823,14 @@ def test_relaxed_disconnected_only_rejects_binding_selection_without_persisted_c
 
     def fake_extract_solution(self):
         pose = self.facility_pools["tiny_facility"][0]
-        return {
+        return _with_fake_ghost_pick(self, {
             "tiny_001": {
                 "pose_idx": 0,
                 "pose_id": pose["pose_id"],
                 "anchor": dict(pose["anchor"]),
                 "facility_type": "tiny_facility",
             }
-        }
+        })
 
     class FakeBindingModel:
         def __init__(self, *args, **kwargs):
@@ -6922,14 +6966,14 @@ def test_exact_mode_reports_routing_shrink_stats(monkeypatch, tmp_path: Path) ->
 
     def fake_extract_solution(self):
         pose = self.facility_pools["tiny_facility"][0]
-        return {
+        return _with_fake_ghost_pick(self, {
             "tiny_001": {
                 "pose_idx": 0,
                 "pose_id": pose["pose_id"],
                 "anchor": dict(pose["anchor"]),
                 "facility_type": "tiny_facility",
             }
-        }
+        })
 
     class FakeBindingModel:
         def __init__(self, *args, **kwargs):

@@ -527,7 +527,7 @@ def validate_layout_structure(
       witness's (a silent pool-order shift would otherwise feed the gates a
       layout nobody vetted);
     * bodies are inside the grid and pairwise disjoint;
-    * the ghost rectangle contains no facility body.
+    * the ghost rectangle contains no facility body and no routing terminal.
 
     Master hard constraints beyond geometry (power coverage, optional caps,
     placement rules) are covered by ``validate_master_feasibility``.
@@ -676,6 +676,36 @@ def validate_layout_structure(
     }
     for cell in sorted(ghost_cells & set(occupied_owner)):
         fail("ghost_rect_contains_body", cell=list(cell), owner=occupied_owner[cell])
+
+    # Strict emptiness (owner adjudication 2026-08-05): nothing at all may sit
+    # in the hole, belts included.  Stored port coordinates are front/belt cells
+    # by identity semantics, so a terminal inside the ghost is a guaranteed
+    # routing cell inside the ghost.  The certified gates would reject this
+    # anyway — several stages later, as an opaque ``front_blocked``.  Saying so
+    # here costs nothing and names the actual instance.
+    ghost_terminal_owner: Dict[Tuple[int, int], str] = {}
+    for instance_id, entry in solution.items():
+        iid = str(instance_id)
+        facility_type = str(entry.get("facility_type", ""))
+        pose_idx = entry.get("pose_idx")
+        pool = facility_pools.get(facility_type) or []
+        if not isinstance(pose_idx, int) or pose_idx < 0 or pose_idx >= len(pool):
+            continue
+        pose = pool[pose_idx]
+        for field in ("input_port_cells", "output_port_cells"):
+            for port in pose.get(field, []) or []:
+                try:
+                    cell = (int(port["x"]), int(port["y"]))
+                except (KeyError, TypeError, ValueError):
+                    continue
+                if cell in ghost_cells:
+                    ghost_terminal_owner.setdefault(cell, f"{iid}.{field}")
+    for cell in sorted(ghost_terminal_owner):
+        fail(
+            "ghost_rect_contains_routing_terminal",
+            cell=list(cell),
+            owner=ghost_terminal_owner[cell],
+        )
 
     return {
         "ok": not problems,
