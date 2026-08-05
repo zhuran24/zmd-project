@@ -16,7 +16,9 @@ R 是 G 内轴向矩形；π(i) 是 instance i 的候选 pose
 (2) 任意两个 instance 的 occupied_cells 不重叠
 (3) 每个 instance 的 placement_rule 成立
 (4) port binding feasible，且 generic slot exact-count 成立
-(5) routing feasible，即每个 routed commodity 的 source/sink fronts 满足有向连通
+(5) routing feasible，即每个 routed commodity 的 source/sink fronts 满足有向连通，
+    且所有 route cell ∈ G ∖ R（空矩形内不得有任何物流件；owner 2026-08-05 空地语义
+    裁决之甲案落地——「空」由 (1)∧(5) 联合保证：(1) 排设施机身，(5) 排路由占用）
 (6) power coverage feasible，即受电设施被真实存在的供电桩几何覆盖（覆盖=**相交**语义:footprint 与塔覆盖区 ≥1 格重叠即算覆盖,owner 2026-07-07 裁定;非全包含 containment）
 ```
 

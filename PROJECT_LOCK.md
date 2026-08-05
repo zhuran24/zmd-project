@@ -74,7 +74,12 @@ checks as certified proof"）。
   `__unused__`，不得提交残缺 provider map）。binding INFEASIBLE → `benders_loop.py:5989`（routing 穷尽同走 `:7117`）落 nogood、不
   certify。**精度边界**：证「端口槽『个数』= 需求声明『个数』」（0/1 计数等式），**不证**每口离散吞吐
   速率（见 B）。
-- **(5) routing feasible = belts 能连（连通可行，NOT 吞吐）** — `benders_loop.py:6973-6990`
+- **(5) routing feasible = belts 能连（连通可行，NOT 吞吐）+ 严格空地（所有 route cell ∈ G ∖ R）**
+  — 后半句为 owner 2026-08-05 空矩形语义裁决（空矩形内不得有任何物流件，含 elevated bridge；
+  裁决文书 `docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md`，
+  甲案：新条件挂本谓词、谓词 (1) 的 all_cells 定义不动，「空」由 (1)∧(5) 联合保证；
+  实现锚 = ghost 格并入路由占用集，`benders_loop._strict_ghost_occupancy` 唯一取数、
+  fail-closed，落地提交 f16a22c）— `benders_loop.py:6973-6990`
   在 routing `FEASIBLE` 后只产生求解层 `RUN_STATUS_CERTIFIED` 候选判决，且**不读任何吞吐/容量量**。
   该判决不是 durable terminal/publication authority：`outer_search.py:855-954` 只能提交
   `CANDIDATE_PROPOSED`，最终必须经 `ExactCampaign.supervisor_seal()` 和中央发布器。证的精确语义 =
