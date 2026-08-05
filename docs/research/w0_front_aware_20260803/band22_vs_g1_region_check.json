@@ -1,0 +1,59 @@
+{
+  "check_kind": "one_way_necessary_condition_rejection",
+  "check_scope": "checks R-BODY-IN-REGION / R-FRONT-IN-REGION / R-HOLE-IN-REGION / R-BOUNDARY-LAYOUT only; does NOT check catalog membership, pattern-level feasibility, or recompute fronts (witness port.front is trusted here)",
+  "region_size": 14,
+  "region_partition": "T[i,j] = [14i,14i+13] x [14j,14j+13]",
+  "witness_variant": "V0-A",
+  "mandatory_bodies": 266,
+  "mandatory_body_area": 3544,
+  "decision_bodies": 219,
+  "fixed_furniture_bodies": 47,
+  "bodies_straddling_region_boundary": 85,
+  "decision_bodies_straddling_region_boundary": 78,
+  "fixed_furniture_straddling_region_boundary": 7,
+  "bodies_straddling_by_template": {
+    "manufacturing_6x4": 18,
+    "manufacturing_3x3": 38,
+    "manufacturing_5x5": 22,
+    "boundary_storage_port": 6,
+    "protocol_core": 1
+  },
+  "poles": 25,
+  "poles_straddling_region_boundary": 2,
+  "straddling_pole_ids": [
+    "pole_15",
+    "pole_16"
+  ],
+  "hole_box": [
+    1,
+    51,
+    6,
+    57
+  ],
+  "hole_straddles_region_boundary": true,
+  "active_fronts": 628,
+  "active_fronts_outside_anchor_region": 84,
+  "active_fronts_outside_anchor_region_by_role": {
+    "decision": 78,
+    "fixed_furniture": 6
+  },
+  "fronts_outside_region_whose_body_is_in_one_room": 19,
+  "bodies_with_front_only_violation": 18,
+  "witness_boundary_anchors_matching_g1_fixed_furniture": 23,
+  "witness_boundary_anchors": 46,
+  "g1_core_anchor": [
+    3,
+    59
+  ],
+  "witness_core_anchor": [
+    60,
+    36
+  ],
+  "rejected_by_restrictions": [
+    "R-BODY-IN-REGION",
+    "R-FRONT-IN-REGION",
+    "R-HOLE-IN-REGION",
+    "R-BOUNDARY-LAYOUT"
+  ],
+  "verdict": "NOT_EXPRESSIBLE_IN_G1_CATALOG"
+}
