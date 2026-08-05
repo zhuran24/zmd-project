@@ -126,9 +126,13 @@ successor 因 `PROJECT_LOCK.md` 新增 AB16 research-only cohort，改钉
 同一数学 profile 的静态 antecedent fixture 为
 `3d40e1318b631119ca5314f31443b91dbada2d5a1125e3f8da7c4c3dcf8db394`。
 当前 checked-in successor 为
-`64a6802446de075293e32c6607d24cfe872d2070b6cd66f4e53cb275483aa69a`（2026-08-03
-AB16 收官后版本），对应静态 antecedent fixture 为
-`7de91e645d0a92d03f9593e8af20be43be8147f406a98e9accaea6ed7080b78d`。
+`aeadef3aded03099d18580a05454c90af11a4dd6859d7798516ced73d2df2b42`（2026-08-05
+严格空地修复批 + 谓词甲案 + canonical emptiness freeze-ritual 后版本），对应静态
+antecedent fixture 为
+`6efaff3e15cf1e6b173e244ff26f79d55dd78a0988162f34079191630aa7a8a0`。
+上一代 successor 为 `64a6802446de075293e32c6607d24cfe872d2070b6cd66f4e53cb275483aa69a`
+（2026-08-03 AB16 收官后版本，antecedent fixture
+`7de91e645d0a92d03f9593e8af20be43be8147f406a98e9accaea6ed7080b78d`）。
 
 > **2026-08-03 订正**：本段原钉
 > `a2ec971f687c04966e8329868b4eab05aaa3c9fd9ad71a96f0ab79df85b92559` 为「当前
