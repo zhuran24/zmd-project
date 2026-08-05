@@ -1,0 +1,516 @@
+{
+  "metadata": {
+    "schema": "industrial-planner-native-registry/v1",
+    "source": "IndustrialPlanner native registry snapshot",
+    "upstream_branch": "v3",
+    "upstream_head": "7b946c16e3a0e9004b65391c1dd86abe6130cc29",
+    "blueprint_schema_version": 4,
+    "device_id_schema_version": 4,
+    "generated_by": "src/adapters/industrial_planner/native_registry_build.py",
+    "notes": "Native (schemaVersion 4) counterpart of the 2026-03-28 legacy registry snapshot. The legacy registry files stay authoritative for the v1 intermediate representation and are not replaced by this file."
+  },
+  "definition_ids": [
+    "belt_straight_1x1",
+    "belt_turn_ccw_1x1",
+    "belt_turn_cw_1x1",
+    "cmpt_mc_1",
+    "dismantler_1",
+    "dumper_1",
+    "filling_pd_mc_1",
+    "furnance_1",
+    "gas_pump_1",
+    "gas_reactor_1",
+    "gas_storager_1",
+    "grinder_1",
+    "hydro_planter_1",
+    "liquid_cleaner_1",
+    "liquid_filling_pd_mc_1",
+    "liquid_furnance_1",
+    "liquid_purifier_1",
+    "liquid_purifier_1_gas",
+    "liquid_storager_1",
+    "loader_1",
+    "log_admission",
+    "log_connector",
+    "log_converger",
+    "log_hongs_bus",
+    "log_hongs_bus_source",
+    "log_splitter",
+    "miner_2",
+    "miner_3",
+    "miner_4",
+    "mix_pool_1",
+    "mix_pool_2",
+    "pipe_admission",
+    "pipe_connector",
+    "pipe_converger",
+    "pipe_splitter",
+    "pipe_straight_1x1",
+    "pipe_turn_ccw_1x1",
+    "pipe_turn_cw_1x1",
+    "planter_1",
+    "power_diffuser_1",
+    "power_sta_1",
+    "seedcol_1",
+    "shaper_1",
+    "shaper_1_gas",
+    "sp_hub_1",
+    "storager_1",
+    "thickener_1",
+    "tools_asm_mc_1",
+    "transmuter_1_gastrans",
+    "transmuter_1_liquidtrans",
+    "transmuter_2_gastrans",
+    "transmuter_2_solidtrans",
+    "udpipe_loader_1",
+    "udpipe_loader_2",
+    "udpipe_unloader_1",
+    "udpipe_unloader_2",
+    "unloader_1",
+    "vaporizer_1",
+    "water_pump_1",
+    "water_purifier_node_1",
+    "winder_1",
+    "xiranite_oven_1"
+  ],
+  "bases": [
+    {
+      "id": "stm_hongs_3",
+      "name": "盈天台建设站",
+      "placeableArea": {
+        "width": 50,
+        "height": 50
+      },
+      "outerRing": {
+        "top": 10,
+        "right": 10,
+        "bottom": 10,
+        "left": 10
+      },
+      "builtinEntities": []
+    },
+    {
+      "id": "valley4_infra_outpost",
+      "name": "基建前站",
+      "placeableArea": {
+        "width": 40,
+        "height": 40
+      },
+      "outerRing": {
+        "top": 5,
+        "right": 5,
+        "bottom": 5,
+        "left": 5
+      },
+      "builtinEntities": [
+        {
+          "id": "valley4_bus_seg_x_0",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 0,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_1",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 8,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_2",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 16,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_3",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 24,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_4",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 32,
+            "y": -4
+          },
+          "rotation": 90
+        }
+      ]
+    },
+    {
+      "id": "valley4_protocol_core",
+      "name": "协议核心区",
+      "placeableArea": {
+        "width": 70,
+        "height": 70
+      },
+      "outerRing": {
+        "top": 5,
+        "right": 5,
+        "bottom": 5,
+        "left": 5
+      },
+      "builtinEntities": [
+        {
+          "id": "valley4_bus_source",
+          "definitionId": "log_hongs_bus_source",
+          "position": {
+            "x": -4,
+            "y": -4
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_x_0",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 0,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_1",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 8,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_2",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 16,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_3",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 24,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_4",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 32,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_5",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 40,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_6",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 48,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_7",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 56,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_8",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 64,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_y_0",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 0
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_y_1",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 8
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_y_2",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 16
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_y_3",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 24
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_y_4",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 32
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_y_5",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 40
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_y_6",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 48
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_y_7",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 56
+          },
+          "rotation": 0
+        },
+        {
+          "id": "valley4_bus_seg_y_8",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": -4,
+            "y": 64
+          },
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "id": "valley4_rebuilt_command",
+      "name": "重建指挥部",
+      "placeableArea": {
+        "width": 40,
+        "height": 40
+      },
+      "outerRing": {
+        "top": 5,
+        "right": 5,
+        "bottom": 5,
+        "left": 5
+      },
+      "builtinEntities": [
+        {
+          "id": "valley4_bus_seg_x_0",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 0,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_1",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 8,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_2",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 16,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_3",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 24,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_4",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 32,
+            "y": -4
+          },
+          "rotation": 90
+        }
+      ]
+    },
+    {
+      "id": "valley4_refugee_shelter",
+      "name": "难民暂居处",
+      "placeableArea": {
+        "width": 40,
+        "height": 40
+      },
+      "outerRing": {
+        "top": 5,
+        "right": 5,
+        "bottom": 5,
+        "left": 5
+      },
+      "builtinEntities": [
+        {
+          "id": "valley4_bus_seg_x_0",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 0,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_1",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 8,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_2",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 16,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_3",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 24,
+            "y": -4
+          },
+          "rotation": 90
+        },
+        {
+          "id": "valley4_bus_seg_x_4",
+          "definitionId": "log_hongs_bus",
+          "position": {
+            "x": 32,
+            "y": -4
+          },
+          "rotation": 90
+        }
+      ]
+    },
+    {
+      "id": "wuling_heart_repair_station",
+      "name": "心脏修缮站",
+      "placeableArea": {
+        "width": 50,
+        "height": 50
+      },
+      "outerRing": {
+        "top": 10,
+        "right": 10,
+        "bottom": 10,
+        "left": 10
+      },
+      "builtinEntities": []
+    },
+    {
+      "id": "wuling_protocol_core",
+      "name": "协议核心区",
+      "placeableArea": {
+        "width": 80,
+        "height": 80
+      },
+      "outerRing": {
+        "top": 10,
+        "right": 10,
+        "bottom": 10,
+        "left": 10
+      },
+      "builtinEntities": []
+    },
+    {
+      "id": "wuling_tianwangping_aid",
+      "name": "天王坪援建点",
+      "placeableArea": {
+        "width": 50,
+        "height": 50
+      },
+      "outerRing": {
+        "top": 10,
+        "right": 10,
+        "bottom": 10,
+        "left": 10
+      },
+      "builtinEntities": []
+    }
+  ],
+  "admission_rate": {
+    "windows_per_minute": 6,
+    "per_minute_limit_caps": {
+      "log_admission": 30,
+      "pipe_admission": 120
+    },
+    "source": "upstream src/shared/blueprint-device-id-migration.ts:8-12; src/domain/registry/types/logistics-constants.ts:18"
+  }
+}
