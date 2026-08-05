@@ -19,9 +19,16 @@
 | baseId | `valley4_protocol_core`（70×70） |
 | blueprintVersion | `1`（schema `industrial-planner-blueprint`，version `1.0`） |
 
-同目录下另有 `export_summary.json`（全部统计口径）、`validation_report.json` / `.md`、
-`validation_errors_full.json`、`hub_attribution_verdict.json`、
-`band22_canonical_blueprint.intermediate.json`（canonical 中间件，供后续 schema v3 重导出复用）。
+同目录下另有：
+
+- `export_summary.json` —— 全部统计口径（含流向修正前后的对比数字）
+- `validation_report.json` / `.md`、`validation_errors_full.json` —— 离线校验产出
+- `hub_attribution_verdict.json`、`hub_attribution_errors_as_shipped.json`、`registry_without_hub/`
+  —— 把校验错误归因到地基枢纽的机器证据
+- `band22_canonical_blueprint.intermediate.json` —— canonical 中间件，供后续 schema v3 重导出复用
+- `stock_exporter_output_no_flow_correction/` —— 未加流向修正的导出器原始产出，仅作对照
+  （**不要拿它导入**，见下文流向修正一节）
+- `preflight.log` —— 本次提交的 staged 门禁日志
 
 ---
 
