@@ -29,7 +29,10 @@ CANDIDATE_POSES_RELATIVE_PATH = Path("data/preprocessed/candidate_placements.jso
 
 EXPECTED_SHA256 = {
     "strict_instance": "e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849c",
-    "canonical_rules": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+    # 2026-08-05 freeze-ritual: globals.empty_rectangle gained the owner-adjudicated
+    # emptiness definition.  Purely additive metadata — grid, templates, recipes and
+    # targets are byte-identical, so every count/geometry below is unaffected.
+    "canonical_rules": "c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5",
     "mandatory_instances": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
     "generic_io": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e",
     "candidate_poses": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",

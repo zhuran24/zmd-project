@@ -27,8 +27,8 @@ The exact path consumes and hash-binds, among other project inputs:
 - `data/preprocessed/generic_io_requirements.json`;
 - proof-bearing source and obligation material named by the campaign contract.
 
-The current frozen pins are `canonical_rules.json` at 17,510 bytes / SHA256
-`5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`,
+The current frozen pins are `canonical_rules.json` at 18,137 bytes / SHA256
+`c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5`,
 `preprocess_plan.json` at 1,383 bytes / SHA256
 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`, and
 `candidate_placements.json` at 54,467,709 bytes / SHA256

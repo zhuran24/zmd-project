@@ -109,8 +109,8 @@ P1.2 OPEN-GATE、独立 whole-layout reverify、中央公开发布器和生产 s
 
 ## 1.7 输入与规模
 
-当前冻结输入是 `rules/canonical_rules.json` 17,510 字节 / SHA256
-`5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05`、
+当前冻结输入是 `rules/canonical_rules.json` 18,137 字节 / SHA256
+`c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5`、
 `rules/preprocess_plan.json` 1,383 字节 / SHA256
 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`，以及
 `data/preprocessed/candidate_placements.json` 54,467,709 字节 / SHA256

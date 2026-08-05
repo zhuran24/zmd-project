@@ -19,7 +19,14 @@
     },
     "empty_rectangle": {
       "objective": "max_lex_area_min_side",
-      "min_side_admissibility": 6
+      "min_side_admissibility": 6,
+      "emptiness": "no_occupant_of_any_kind",
+      "emptiness_adjudication": {
+        "decided_on": "2026-08-05",
+        "authority": "owner_manual_adjudication",
+        "source_doc": "docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md",
+        "statement": "No occupant of any kind may intersect the target empty rectangle: facility bodies, power poles, belts, cross-junction/bridge components and every other logistics part are forbidden. 'Empty' means completely clear ground; the earlier permissive reading that admitted routing components inside the rectangle is void."
+      }
     }
   },
   "routing_rules": {

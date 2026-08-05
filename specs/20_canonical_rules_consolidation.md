@@ -20,6 +20,7 @@ Current split:
   - `production_targets`
   - `commodity_metadata`
   - `globals.empty_rectangle.objective` and `globals.empty_rectangle.min_side_admissibility` for project-bound certified publication admissibility
+  - `globals.empty_rectangle.emptiness` (+ its `emptiness_adjudication` provenance object) for what "empty" means: no occupant of any kind, owner-adjudicated 2026-08-05
 - `preprocess_plan.json`
   - cycle groups
   - utility operations

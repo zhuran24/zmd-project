@@ -60,4 +60,9 @@ band 范式中带高 ≤5，任何 6×7 孔必跨 ≥1 条走廊行（band22 的
    SUPERSEDED 横幅（覆盖同目录见证 JSON 与交付清单），正文史料未改字。
 4. G1 目录的 hole 语义按同口径复查（线已停，仅记账不阻断）。
 5. `rules/canonical_rules.json` 是否补写 emptiness 定义 = frozen 工件变更，
-   走 freeze-ritual，与挂账 1 同批评估。
+   走 freeze-ritual，与挂账 1 同批评估。**已完成（08-05 freeze-ritual 批）**：
+   `globals.empty_rectangle` 新增 `emptiness: "no_occupant_of_any_kind"` +
+   `emptiness_adjudication` 出处对象（schema 与 pydantic 双侧 required）；
+   pin 由 17,510 B / `5012845367e2…` 改为 18,137 B / `c3666d78d5dd…`，
+   派生 preprocess 工件字节未变。注意这只是把定义写进规则文件，**挂账 1 的
+   认证链实现修复仍未做**。

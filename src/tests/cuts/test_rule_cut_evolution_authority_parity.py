@@ -54,11 +54,13 @@ _BASELINE_SURFACE_SHA256 = {
     "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
 }
 
-# The authorized preflight successor is the memory-lane additive one
-# (2026-08-03, 剪枝 v2 P2): the gate gained a memory-layer pytest lane, and that
-# lane's blocking-on-missing-roots and per-run basetemp fixes.  It supersedes
-# 8292983's secret-scan timeout-scale successor, which the surface no longer
-# carries alone.
+# The authorized preflight successor is the canonical-emptiness freeze-ritual one
+# (2026-08-05): FROZEN_ARTIFACTS re-pins rules/canonical_rules.json after
+# globals.empty_rectangle gained the owner-adjudicated emptiness definition.  Only
+# the pinned digest moved; no gate logic changed.  It supersedes the memory-lane
+# additive successor (2026-08-03, 剪枝 v2 P2 — memory-layer pytest lane plus its
+# blocking-on-missing-roots and per-run basetemp fixes), which in turn superseded
+# 8292983's secret-scan timeout-scale successor.
 #
 # The authorized benders_loop successor is the strict empty-rectangle batch
 # (2026-08-05): ghost cells join the routing occupancy set, and blocked ports
@@ -67,7 +69,7 @@ _BASELINE_SURFACE_SHA256 = {
 # framework — nothing in the cut lifecycle wiring moved.
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
-    "scripts/preflight_gate.py": "ddc75270ecd9023947104ac6379e58a43d366802b039a0958738175f061a177d",
+    "scripts/preflight_gate.py": "c92139da391c750b8a12a74d8d8f34a6fd686e575e8d714e1f76a133301c10ec",
     "src/search/benders_loop.py": "a8f7aa3b6e25d247be4ea636b7e42ecb9100b46a188ab454748b575dad1fedd9",
 }
 

@@ -99,7 +99,9 @@
           "type": "object",
           "required": [
             "objective",
-            "min_side_admissibility"
+            "min_side_admissibility",
+            "emptiness",
+            "emptiness_adjudication"
           ],
           "properties": {
             "objective": {
@@ -111,6 +113,40 @@
             "min_side_admissibility": {
               "type": "integer",
               "minimum": 1
+            },
+            "emptiness": {
+              "type": "string",
+              "enum": [
+                "no_occupant_of_any_kind"
+              ]
+            },
+            "emptiness_adjudication": {
+              "type": "object",
+              "required": [
+                "decided_on",
+                "authority",
+                "source_doc",
+                "statement"
+              ],
+              "properties": {
+                "decided_on": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "authority": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_doc": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "statement": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false

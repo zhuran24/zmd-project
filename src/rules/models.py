@@ -46,9 +46,20 @@ class LogisticsConfig(StrictBaseModel):
     machine_min_clearance_cells: int = Field(..., ge=0)
 
 
+class EmptyRectangleAdjudication(StrictBaseModel):
+    """空矩形语义的 owner 裁决出处（谁、何时、依据哪份文书）。"""
+
+    decided_on: str
+    authority: str
+    source_doc: str
+    statement: str
+
+
 class EmptyRectangleConfig(StrictBaseModel):
     objective: Literal["max_lex_area_min_side"]
     min_side_admissibility: int = Field(..., ge=1)
+    emptiness: Literal["no_occupant_of_any_kind"]
+    emptiness_adjudication: EmptyRectangleAdjudication
 
 
 class GlobalsConfig(StrictBaseModel):
