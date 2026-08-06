@@ -1,0 +1,1392 @@
+diff --git a/docs/research/mixflow_surgery_20260806/DESIGN.md b/docs/research/mixflow_surgery_20260806/DESIGN.md
+new file mode 100644
+index 0000000..85abae1
+--- /dev/null
++++ b/docs/research/mixflow_surgery_20260806/DESIGN.md
+@@ -0,0 +1,325 @@
++# 混流表达手术设计（mixflow-surgery，2026-08-06）
++
++> 状态：设计稿 v1（骨架已对齐主线程 / 实现进行中）。本线是残余 #7「模型混流表达」的
++> 施工线；上游依据 = `.artifacts/axiom_analysis_20260806/` 的侦察文书（SOURCE_FRONT_
++> UNLOCK_RECON）与 owner 终审公理系（AXIOM_KERNEL_PROPOSAL）。
++>
++> **接入边界**：本分支（mixflow-surgery）改动 `src/models/routing_subproblem.py`
++> （V99 close-kernel floor 内文件）。分支上**不做 reseal**：pin 链测试红是预期内，
++> 接入 main 时由主线程统一走 freeze-ritual + 外审。外审材料见同目录
++> `EXTERNAL_REVIEW_BRIEF.md`。
++
++## 0. 一句话结论
++
++use 变量从「继承整个物理件图样」改为「商品自己的子图样」，物理层 48 态字典与
++AtMostOne 容量一字不动，两层之间用「方向侧覆盖约束」缝合；sink front 地面纯流从
++涌现排他改为**显式生成期排除**。U-02（合流后分流）由此从结构性 INFEASIBLE 变为
++可表达，机器输入口门口纯流铁律保持，连通性谓词的复验器**零改动**且语义变得更忠实。
++
++## 1. 现状与死因（一手确认，2026-08-06 本线实读）
++
++### 1.1 当前变量结构
++
++- `phys_vars[(x, y, layer, flow_in, flow_out, component_type)]`：物理件状态。
++  图样字典（`_iter_state_patterns`）：L0 = belt（1进1出，进≠出，12 态）+
++  splitter（1进2/3出，16 态）+ merger（2/3进1出，16 态）共 44 态；L1 = bridge
++  直穿 4 态。合计 48 态（= R-03/R-04 的封闭字典）。
++- `use_vars[(x, y, layer, flow_in, flow_out, commodity)]`：商品占用。**key 里的
++  flow_in/flow_out 就是 phys 的完整图样**——`use ≤ phys[同 key 图样]`（:1066）、
++  `phys = max(uses)`（:1075）。
++- 每格每层 `AddAtMostOne(phys)`（:1122）；L0/L1 互斥、垂直直穿豁免（:1124-1143）。
++
++### 1.2 U-02 的精确死因
++
++同向共乘一条直带**今天就是合法的**（A、B 两个 use 挂同一条 belt phys，模型接受；
++`extract_routes` 的 `uses` 列表天生支持多商品）。死的是合流点与分流点：
++
++- **合流点**：phys 必须是 merger `{W,S}→E`，则 A 的 use key 也是 `{W,S}→E`——
++  模型强迫 A 声明「我也从 S 进」。predecessor 约束（:1259）在 S 侧找不到 A 的
++  发送者 → A 的 use 强制 0 → INFEASIBLE。
++- **分流点**：phys 是 splitter `W→{N,E}`，A、B 都被迫声明双出口，A 被迫流进
++  B 的支路，支路尽头没有 A 的去处，successor 链（:1221）逐级强制 0 → INFEASIBLE。
++
++死因一句话：**use 的 key 语义是「物理件图样」而不是「商品自己的流向」**，分流点上
++模型没有任何变量记「哪种货走哪条边」。这与侦察文书 §2 的判断一致，但更精确：不是
++「缺机制」，是「use 变量的粒度选错了」。
++
++### 1.3 排他的涌现机制（为什么手术必须显式补纯流约束）
++
++现状下别家货完全上不了终端格地面：终端格 phys 被 adherence（:1297，sum==1）钉成
++带端口方向的图样，别家货要用这格就得采纳同一完整图样，而它对端口方向的出/入边
++过不了 successor/predecessor 的域检查（机身格不在活跃域）→ 强制 0。**手术把 use
++从完整图样解耦后，这个涌现排他就消失了**——别家货可以用一个不含端口方向的子图样
++搭上终端格的 splitter/merger。对 source front 这正是 owner 要的解锁；对 sink front
++这是污染漏洞（内容盲物理件会把别家货轮进机器口），必须显式补回。见 §4。
++
++## 2. 分流点商品去向：两个候选结构（成败点，单独成节）
++
++> 主线程对齐点 1：分流点上「A 货走东、B 货走南」需要模型能对同一物理件的不同
++> 出边按商品分流。两个候选结构与约束数量级如下。记号：C=商品数，N=单商品活跃格数
++> （生产规模 ~10^3 量级/商品），P=每格每层图样数（L0 44 / L1 4）。
++
++### 2.1 候选 A：商品子图样 use 变量（选定方案）
++
++**变量**：use key 改为 `(x, y, layer, c_flow_in, c_flow_out, commodity)`，其中
++`(c_flow_in, c_flow_out)` 是**该商品自己**经过这格的图样，取值域 = 同一张 48 态
++字典（商品自己也可以 split/merge——多 sink 分发 / 多 source 汇集，今天已有）。
++phys 变量、字典、容量、桥互斥全部不动。
++
++**分流点语义**：A 在分流格的 use = `W→{N}`，B 的 use = `W→{E}`，phys = splitter
++`W→{N,E}`。**「哪种货走哪条边」直接写在各自 use 的 key 里**——去向不是推断出来
++的，是变量本身。
++
++**缝合约束**（新增，替换 `use ≤ phys[key]` 与 `phys = max(uses)`）：
++
++1. **覆盖**：对每个 use u、其每个进侧 d：`u ≤ Σ phys[P: d ∈ P.flow_in]`；出侧
++   同理。配合 AtMostOne(phys)，被选中的唯一 phys 必须同时覆盖所有活跃 use 的
++   全部侧 ⇒ phys 图样 ⊇ 商品子图样并集。并集不在字典里（如 2进2出）⇒ 自动
++   不可满足 ⇒ **可表达域天然限于物理可实现域**，无需额外禁令。
++2. **精确侧**（反方向）：对每个 phys P、其每个侧 d：`P ≤ Σ use[该侧被某商品
++   使用]`。钉死 phys 图样 = 并集（不多不少）：抽取出的硬件最小化，且并集定图样
++   在字典内**唯一**（1进1出=belt、1进多出=splitter、多进1出=merger），抽取器
++   可确定性反查。
++3. **商品态唯一**：每 (格, 层, 商品) `AddAtMostOne(use)`。消除同商品「两条 belt
++   use」与「一个 merger use」的双重表示（边平衡本会排掉前者，显式唯一化把搜索
++   空间也剪掉）。
++
++**约束数量级**：use 变量数与今天同阶（同一字典、同一 per-commodity 局部支撑
++剪枝）；phys 变量略增（并集支撑 ⊇ 单商品支撑，混流区多出跨商品拼合图样）。
++新约束：覆盖 ≤ 4×|use|，精确侧 ≤ 4×|phys|，唯一化 = 格×层×商品 个 AtMostOne
++——全部线性于变量数，替换掉的 `use≤phys`（1×|use|）与 MaxEquality（1×|phys|）
++也是线性。**净变化 = 常数因子 ~3 的轻量线性约束增量，无新变量类**。
++
++**下游机器零改动清单**：successor/predecessor（:1221/:1259）、有向边平衡
++（:1169）、port adherence（:1297）、连通复验器（:1710）、source-side 割
++（:1654）、nogood（:1821）——全部按 `(cell, dir, commodity)` 索引或按
++RouteStateKey 遍历，key 结构不变、flow 语义从「物理图样」变「商品流向」后
++**这些约束的语义反而首次变得逐字正确**（今天它们在混流态上是靠图样碰撞连带
++杀掉的）。域构建 `analyze_exact_routing_domain` 是纯格集合几何，不碰图样，
++零改动（侦察文书 §5 预警的「commodity_active_cells 语义会变」经实读排除：
++共乘段本来就在同一自由连通分量里，每个商品的活跃域已覆盖）。
++
++### 2.2 候选 B：per-commodity 出入边布尔（流量守恒式）
++
++**变量**：`f[c, cell, layer, d]`（c 从 d 侧进）与 `g[c, cell, layer, d]`（c 从
++d 侧出），每格每层每商品 8 个布尔；商品在格上的行为由度约束表达（出现 ⇒ |in|≥1
++且 |out|≥1；|in|≥2 ⇒ |out|=1；|out|≥2 ⇒ |in|=1——后两条在候选 A 里由字典自动
++保证，这里要显式 reify）。phys 层同样用覆盖约束缝合（或改成 per-side channel
++变量 + 组件类型合法性约束）。
++
++**数量级**：变量少 ~5 倍（8 vs 44/格/层/商品）；但度约束需要 reified 逻辑
++（比线性覆盖贵），且**全部下游机器都要重写**——adherence/继承/边平衡/复验器/
++割/抽取器全按图样态 key 工作，B 等于把 routing 子问题重写一遍。复验器重写 =
++soundness 审计面翻倍（正是侦察文书警告的「_validate_selected_route_connectivity
++混流下需重写」的那个世界线）。
++
++### 2.3 判决
++
++**选 A**。理由排序：①认证机器审计面最小（复验器/割/adherence 零改动是最强的
++soundness 论据——见 brief §自攻1）；②48 态字典保持物理真相权威，模型-canonical
++对账仍然逐态可查；③变量数同阶、约束线性增量，生产 build 40s 的预算里是常数
++因子扰动（实测数字见 §7，落地后回填）。B 保留为**性能后备**：若生产规模实测
++build/solve 爆预算，B 的变量瘦身值得再评（届时复验器重写的审计成本单独立项）。
++
++## 3. 手术清单（候选 A 的落地改法）
++
++`src/models/routing_subproblem.py` 内完成，无新模块（routing 是 certified gate
++本体，平行新模块 = 分叉封印面 + 漂移风险，比原地手术更险）：
++
++1. `_create_routing_variables` 重写为两遍生成：
++   - Pass 1：算每 (格, 层, 侧) 的支撑商品集（复用 `_incoming_dir_supported` /
++     `_outgoing_dir_supported` 逐商品判定）。
++   - Pass 2a：phys 生成——字典图样的每个侧都有**某**商品支撑才建变量（今天
++     phys 只在「某商品全图样支撑」时才建；新规则严格更宽，多出来的正是跨商品
++     拼合态）。
++   - Pass 2b：use 生成——per 商品，图样每个侧都被**该商品**支撑才建（与今天
++     同规则），另加 sink-front 纯流排除（§4）。
++2. 新增 `_add_phys_coverage_constraints`：§2.1 的覆盖 + 精确侧 + 商品态唯一，
++   替换 `use ≤ phys` 与 `AddMaxEquality`。`_use_to_phys_key`/`_phys_uses` 退役。
++3. `extract_routes` 改组队方式：selected use 按 (格, 层) 分组，反查该格唯一
++   selected phys（AtMostOne 保证 ≤1）。输出 schema 不变：顶层 flow_in/flow_out
++   仍是 phys 图样（生产 serializer 只读顶层），`uses` 列表里每条的 flow_in/
++   flow_out 从「重复 phys 图样」变为「商品子图样」——语义更准，形状兼容。
++4. 纯流约束（§4）：sink front 排除表在生成期应用 + 哨兵测试钉死。
++5. 其余约束函数（capacity/bridge/continuity/edge-balance/adherence/hint/复验器/
++   割/nogood）**逐字不动**。
++
++## 4. 纯流与门口语义（owner 公理系的落点）
++
++| 位置 | 手术后语义 | 依据 |
++|---|---|---|
++| sink front（机器输入口门口格）地面 | **对别家商品全排除**（生成期不建 use 变量，结构上不可能）。理由：adherence 钉死这格 phys 永远含通往端口的出边，物理件内容盲，任何共located 地面商品的货都会被轮进机器口 = 污染。涌现排他改显式排除，语义等价、强度不降。**多 owner 细则**：一格是多个 sink 端口的 front 时，owner 商品集为单元素（含同商品双端口对脸）→ 按上排除别家；owner 商品集 ≥2 个异商品 → **地面全排**（任何单商品在场都无法同时满足两家 adherence，且任何两家共存的子图样并集必含双端口出边=内容盲双向灌门）。设计期发现：只排非 owner 在异商品双 owner 格上有洞（a 的 `W→send_a` + b 的 `W→send_b` 会拼出 splitter 合法覆盖），必须全排。今天该几何也是 INFEASIBLE（successor 域检查杀），语义保持。 | A9/#1 污染链、#8(a)、owner「输入口门口纯流铁律」 |
++| sink front 地面·同商品 | 不排除：A 自己的终端带、A 送达并继续（splitter `X→{port,N}`）照旧合法（今天已合法）。 | 同商品终端豁免（现状 :1233/:1271） |
++| sink front L1 | 不排除：别家商品垂直借道照旧（P1 已实测 FEASIBLE，本手术不碰）。 | A5d、OWN-M23 |
++| source front（输出口门口格）地面 | **解锁**：别家商品可共乘/汇入（如 merger `{port侧, W}→N` = 借输出道当干线的入口形态）。别家商品仍不可能声明「从端口收货」或「向端口送货」——predecessor/successor 的 per-commodity 端口豁免只对端口所属商品成立，别家的这类边在域检查即强制 0（现状代码，零改动）。 | owner 08-06 定谳 #8(c)「输出口门口过境安全」 |
++| 地面垂直交叉 | 仍不可能（并集 2进2出不在字典）——这是物理，不是政策；交叉走 L1（现状）。 | A6a |
++| 速率 | 不进模型。共乘段「各流之和 ≤1 件/tick、汇流 2s CD 最坏减半」是 owner 附注的游戏速率账，认证谓词不含吞吐（LOCK §1A B 块），归 P2.0。 | A7、W-CONN-01「非吞吐」 |
++
++特殊几何自检（设计期推演，均得正确行为）：
++- 两个**异商品** sink 共享同一 front 格（对脸机器）：互相排除 → 双 adherence
++  失败 → INFEASIBLE。正确：两边门口互灌，无解法。今天也是 INFEASIBLE。
++- **同商品** source front 即 sink front（A 机出口直喂 A' 机入口，中间一格）：
++  belt `{port_in}→{port_out}` 一态满足双 adherence，合法（今天已合法）。
++- 两个**异商品** source 共享 front 格（对脸输出）：merger `{recv_a, recv_b}→X`
++  = 双输出汇成混流干线，手术后 FEASIBLE（今天 INFEASIBLE）——正是 owner 定谳
++  安全的形态，差分测试 #4 的素材。
++
++## 5. Soundness 论证草案（放宽方向为何不产生假 CERTIFIED）
++
++完整版（含自攻）在 `EXTERNAL_REVIEW_BRIEF.md`，此处存骨架：
++
++1. **单调性**：旧可行解 ⊆ 新可行解（旧解里每个 use 的完整图样在新模型中是
++   合法子图样，覆盖/精确侧/唯一化全满足）。放宽只发生在「新增可行解」上，
++   下列 2-5 论证新增解仍满足谓词 (5) 的 canonical 语义。
++2. **物理合法性不放宽**：phys 层约束逐字不动；精确侧约束保证被选 phys =
++   子图样并集 ∈ 48 态字典。任何新可行解的硬件层都是今天也合法的硬件层。
++3. **连通性谓词照证**：谓词 (5) 的 canonical 定义（W-CONN-01）按商品量词化
++   （每 sink front 可达自某 source front、每 source front 达某 sink front、
++   允许多岛、非吞吐）。复验器 `_validate_selected_route_connectivity` 按
++   RouteStateKey 建 per-commodity 图——手术后 key 里的 flow 就是商品流向，
++   复验器在混流解上第一次逐字正确（今天它「正确」是因为混流态根本到不了它
++   面前）。CP-SAT FEASIBLE 后仍需全局复验通过才接受，双保险不变。
++4. **污染语义不放宽**：sink front 地面排除从涌现变显式，强度不降（哨兵测试
++   钉死）；端口边的商品归属检查零改动。
++5. **真实放宽点只有两个**，均有 owner 定谳背书：(a) source front 地面共乘
++   （08-06 定谳过境安全）；(b) 中段合流/分流（canonical `mixed_commodity_flow`
++   本就写宽、模型此前过严——本手术是**向 canonical 对齐**，不是越过它）。
++6. **残余严格面**（比 canonical 严、方向安全=只可能拒真不可能纳伪）：
++   sink front 纯流显式排除先于 canonical 修正批（W-PENDING-01 终端条款）落地
++   ——模型先行、canonical 待补，与 owner 公理一致；core 14 进的门口混流解锁
++   （U-01，WarehouseSink 不拒收 ⇒ 游戏安全）**不在本手术范围**，保持保守。
++7. **中心自攻点**（外审主攻方向，brief §自攻详述）：内容盲 splitter 不会按
++   商品分拣——模型声明的「A 走北 B 走东」在裸 splitter 动力学下不成立。
++   三层答辩：①谓词 (5) 从未证送达动力学（非吞吐、LOCK 明示 out-of-scope），
++   静态连通性命题本身为真；②今天的纯车道模型「恰好」蕴含正确送达，手术后
++   这个**隐含**性质消失——这是诚实披露的语义变化，不是谓词回归；③游戏 v1.1
++   存在准入口（1×1 直行、按 itemId 筛，canonical 刻意不建模但玩家可放置），
++   分拣结构 owner 已游戏实测（OWN-M08），declared split 的支路加准入口即可
++   实现分拣，且 per-commodity 连通性恰好保证 #21 的吸收前提（每支路终点是
++   该商品自己的 sink）。残余实现细节：准入口只直 ⇒ 支路上需存在直行格——
++   原型不强制、列为外审开放问题。
++
++## 6. 差分测试组（已落地全绿，2026-08-06 实测）
++
++模块 `src/tests/test_routing_mixflow.py`，13 例全绿（0.2s）。手造小网格 spec
++全部对齐 DIR_DELTA 数学系（N=y+1）；走廊场景把自由格钉成显式集合，逼出共乘段
++（开阔网格会绕行、证不了任何事）。术前/术后完整对照表与坐标见
++`EXTERNAL_REVIEW_BRIEF.md` §4，摘要：
++
++1. **U-02 复活** ✅ INFEASIBLE→FEASIBLE，抽取证明分流去向记录在变量 key 里。
++2. **污染哨兵** ✅ 三个几何全保持 INFEASIBLE：门口转弯（字典墙）、**门口分流**
++   （并集字典合法、唯一防线=显式排除——真正的变异检测哨兵）、多 owner 门口格。
++   **变异自证两层**：源码级双移除变体 → 3 哨兵齐红、还原复绿；常驻
++   monkeypatch 中和测试（守卫失效时场景必须翻 FEASIBLE）钉死守卫承重性。
++   设计教训：最初的转弯哨兵（2a）其实被字典挡住、测不出守卫承重——变异检测
++   哨兵必须选「除守卫外全合法」的几何。
++3. **语义不回归** ✅ 既有 9 文件 125 例绿。其中 2 个 fixture 需合法化（原几何
++   把异商品双 sink 共located 同一 front 格同向 = placement 不可能的虚构，旧模型
++   曾放行其混灌——潜伏接受面，详见 brief §4.1）；2 个 error 为 basetemp 环境
++   噪声（预建目录即过，与手术无关）。
++4. **source front 共乘** ✅ INFEASIBLE→FEASIBLE，a 输出门口格 merger 双商品
++   共存（owner 定谳的解锁形态）。
++5. **回归面** ✅ 垂直桥交叉、单商品分流结构不变；连通复验器接受混流解且
++   failure_count=0；每个抽取件 phys 图样 == uses 侧并集（最小硬件不变量）。
++
++## 7. 构建成本账（生产 build 40s 预算，proxy 实测）
++
++**基准装置**：70×70、256 个 3×3 机体 pitch-4 点阵（宽1走廊）、19 商品、
++一体一口（商品轮转、out/in 交替）——刻意构造的最坏形态：全部走廊被全部商品
++共享、terminal-core 剥叶剥不掉任何格。老模型 = `git show 5af80d0` 平行模块，
++同实例同进程对测。脚本 `bench_mixflow_prodscale.py`（scratchpad，报告存档）。
++
++**第一轮（覆盖/精确侧按行展开求和的朴素实现）——不合格，已返工**：
++
++| 指标 | 术前 5af80d0 | 术后朴素版 |
++|---|---|---|
++| use vars | 980,444 | 974,648（纯流排除净减）|
++| phys vars | 53,444 | 53,444（本形态并集支撑=单商品支撑，零增）|
++| constraints | 3,999,723 | 5,842,158（+46%，符合 §2.1 线性估计）|
++| build | 19.6s | **46.7s（2.4×，超预算）** |
++| solve（120s 帽）| INFEASIBLE @27.7s | TIMEOUT（可行域变大后不可行证明变难）|
++
++教训：约束**行数**线性 ≠ proto **项数**线性——朴素版每条 use/phys 行各自展开
++一遍 phys/use 求和，proto 里塞进数千万项。返工：按 (格,层,方向,进出) 聚合出
++侧指示布尔（`phys_side == Σphys含该侧`（AtMostOne 下 Σ∈{0,1}，等式良型）、
++`use_side == OR(use含该侧)`），覆盖/精确侧全部降为两文字蕴含。语义严格等价，
++差分测试 13 例复绿。
++
++**第二轮（聚合版，交付形态，2026-08-06 实测）**：
++
++| 指标 | 术前 5af80d0 | 术后聚合版 |
++|---|---|---|
++| use vars | 980,444 | 974,648 |
++| phys vars | 53,444 | 53,444 |
++| constraints | 3,999,723 | 5,898,352（行多但大宗为两文字蕴含）|
++| build | 19.5s | **20.6s（+5.6%，达标）** |
++| solve（120s 帽）| INFEASIBLE @27.7s | TIMEOUT |
++
++**解读注记**：
++- build 成本账收口：聚合版把 2.4× 压回 +5.6%，40s 预算内是真扰动。
++- solve 残余差距如实报告：在这个**不可行边界的对抗性最坏 proxy**（19 商品
++  抢宽1走廊、剥叶失效）上，老模型 27.7s 穷尽证明 INFEASIBLE，新模型 120s
++  内出不了结论——可行域放大后不可行证明必然变难，这是表达力扩展的固有
++  代价，不是实现缺陷。6 商品变体同构复现（老 6.5s INFEASIBLE / 新 60s
++  TIMEOUT；build 6.4s vs 7.0s 齐平），说明该差距随商品数缩放存在、非 19
++  商品特有。真实生产候选的 solve 表现要在 benders 环境实测（**接入批
++  必做项**，与 PIC 性能测同批）。
++- 本 proxy 上 phys 零增/纯流排除净减 use——「变量同阶」的设计判断被实测
++  坐实；成本全部来自约束项数（第一轮教训）与搜索难度（solve 残余）。
++
++## 7b. 兼容面台账（侦察实测，2026-08-06）
++
++- **认证链无 routing 独立重实现**：`candidate_proof_replay` 零 routing 引用；
++  `independent_infeasibility_reverifier` 只重建 binding（routing 走保守 UNKNOWN
++  策略）；`pr2_l0_fixed_witness_core` / `terminal_fixed_witness_verifier` 重新
++  调用生产 `RoutingSubproblem`（`check_phase_review_gate.py:920` 源码扫描强制
++  且有测试钉着）。**手术兼容义务 = 构造签名、solve 状态串、build_stats 既有
++  字段名保持稳定**（本手术全部满足：新增字段只增不改）。
++- **patch_routing_core**（唯一独立重实现，diagnostic-only、无 parity 测试）：
++  其 docstring 自认未实现混流共享、预告需按 phys/use 拆层重构。本手术不碰
++  （F-SND-001 同文件，按任务书不碰就不修，挂 promotion 前置清单）。
++- **witness 线欠账（可执行粒度，挂接入批）**：
++  `docs/research/witness_constructor_20260717/07_routing_aware/route_adapter.py:300-301`
++  断言每条 use 的 flow 与 phys 图样**严格相等**——混流路由会 USES_MISMATCH
++  fail-closed。本批不改（单商品见证 use==phys 仍成立不回归；混流见证拒真不
++  纳伪方向安全）。**混流见证投产前必须**：把 :300 的逐条相等断言改为
++  per-commodity 校验——use 集合按商品聚合去重后，(a) 每条 use 的 flow 侧 ⊆
++  phys 侧，(b) 全体 use 的侧并集 == phys 侧，(c) 每商品至多一条 use；并同步
++  更新 `src/tests/test_witness_route_adapter.py:351/:359` 的错位注入用例。
++  owner/主线程 2026-08-06 批准挂接入批。
++- **extract_routes 生产零调用**（benders_loop 只读 build_stats + 状态串），
++  唯一真实调用方 = witness 线 `fixed_geometry_router.py:958`。输出 dict 形状
++  不变（顶层 flow = phys 图样，`uses` 变商品子图样）。
++- **sha pin（接入 reseal 用，本分支不动）**：obligation
++  `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS`
++  （`data/proof_obligations/p1_2_proof_obligations.json:1445-1457`）与
++  `scripts/check_p1_2_proof_obligations.py:13000` 双份
++  `source_sha256=7554b0f2…`；reseal 按 LF 字节 `git show HEAD:<file>|sha256sum`。
++  另 `test_topology_hint_isolation.py:81-93` 扫描本文件正文，禁出现 topology
++  hint 模块名（手术注释避开该词面）。
++
++## 7c. 开放问题（接入批设计题，主线程 2026-08-06 定调）
++
++1. **门控开关形态**：混流表达是否做成开关——certified 求解路径**默认关**
++   （保住不可行证明速度，§7 的 solve 残余差距即动机）、见证验收/研究路径开
++   （吃表达力红利）。若走此形态：开关属 `EXACT_*` env 闭合白名单
++   （deny-unknown），接入批必须连 allowlist/lock/tests 同批动。
++2. **source-side 割在混流 incumbent 上的回退**（600s 探针发现）：6 商品
++   proxy 上新模型 600s 内 guard rejected=4、cuts_added=0——四个局部闭合
++   incumbent 全被全局连通复验拒掉，但 `_add_source_side_connectivity_cut`
++   的自检全部回退成整解 nogood（弱割）。割机器是前混流时代写的；混流
++   incumbent 下自检哪条失败、能否修出真割，接入批查 telemetry 定位。
++   守卫环「拒-割-重解」在生产规模的收敛速度取决于此。
++3. **600s 探针终态**：instance 在混流语义下 600s 无结论（非「慢不可行」
++   实锤——CP-SAT 持续产出候选、复验持续拒，更像「慢可行+弱割」形态）。
++
++## 8. 雷区处置记录
++
++- `patch_routing_core.py:583-585`（F-SND-001 双重 front 偏移）：本手术不触碰
++  PCR 面（改动仅 routing_subproblem.py），按任务书「不碰就不修」，留 promotion
++  前置清单。
++- `analyze_exact_routing_domain`：实读结论零改动（§2.1），D2/PCR 抑制义务不被
++  本手术牵动。
++- `_validate_selected_route_connectivity`：零改动（§2.1）；侦察文书的「需重写」
++  预警对应的是候选 B 世界线。
++- reseal/pin 链：本分支不动，接入时主线程统一 freeze-ritual。
+diff --git a/docs/research/mixflow_surgery_20260806/EXTERNAL_REVIEW_BRIEF.md b/docs/research/mixflow_surgery_20260806/EXTERNAL_REVIEW_BRIEF.md
+new file mode 100644
+index 0000000..7fb6b23
+--- /dev/null
++++ b/docs/research/mixflow_surgery_20260806/EXTERNAL_REVIEW_BRIEF.md
+@@ -0,0 +1,176 @@
++# 外审材料：routing 混流表达扩展（mixflow-surgery）
++
++> 状态：底稿 v1（随 DESIGN.md 同步生长；实现与差分测试数字落地后补全 §4）。
++> 本方向是 soundness 敏感面（放宽 certified gate 的可行域），接入 main 前必须
++> 通过外部对抗审查。审查对象 = 本分支对 `src/models/routing_subproblem.py` 的
++> 改动 + 本文的论证链。
++
++## 1. 审什么（一段话给外审席）
++
++routing 子问题是 certified 链的谓词 (5)（路由连通性）gate。现状模型让每个商品的
++use 变量继承整个物理件图样，导致「多商品共乘一段带再分开」结构性 INFEASIBLE
++（模型比 canonical 严——已在案登记的保真缺口）。本手术把 use 改为商品子图样、
++用方向侧覆盖约束缝合物理层，**扩大 routing 的可行域**。请对抗式回答：**这个扩大
++会不会让一个不该 CERTIFIED 的布局拿到 CERTIFIED？** 附带审查：机器输入口门口
++纯流（污染铁律）在新结构下是否仍然结构性成立。
++
++## 2. 改动摘要（细节见 DESIGN.md §2-§4）
++
++- use key：`(x,y,layer,phys 完整图样,commodity)` → `(x,y,layer,商品子图样,commodity)`。
++- 新约束：覆盖（use 每侧 ≤ 含该侧 phys 之和）+ 精确侧（phys 每侧 ≤ 用该侧 use
++  之和）+ 每格每层每商品至多一态。替换 `use≤phys`、`phys=max(uses)`。
++- phys 层（48 态字典、AtMostOne 容量、桥互斥）逐字不动。
++- sink front 地面对别家商品：涌现排他 → 生成期显式排除（结构上不可能）。
++  多 owner 细则：一格挂多个异商品 sink 端口时地面全排（任何共存组合都构成
++  内容盲双向灌门；同商品多端口 front 不受影响）。
++- source front 地面对别家商品：解锁（owner 08-06 定谳「输出口门口过境安全」）。
++- 连通复验器、source-side 割、adherence、continuity、边平衡：零改动。
++
++## 3. Soundness 主张与自攻
++
++### 主张 M1：单调放宽 + 新增解物理合法
++
++旧可行解全部保留（旧 use 图样 = 合法子图样特例）。新增解的物理层被精确侧约束
++钉为「子图样并集 ∈ 48 态字典」，任何新增解的硬件都是现状模型同样接受的硬件。
++**攻击面**：覆盖约束的每侧独立性——是否存在「侧侧都被覆盖但整体图样不被单一
++phys 覆盖」的漏洞？答辩：AtMostOne(phys) 下每格每层至多一个 phys 为真，每条
++覆盖约束的右侧求和只剩该 phys 一项，故所有侧的覆盖由**同一个** phys 同时满足，
++并集覆盖是逐侧覆盖的合取。请外审验证这个论证在 CP-SAT 编码下无洞（特别是
++phys 全 0 时 use 被迫全 0 的边界）。
++
++### 主张 M2：谓词 (5) 在混流下照证（中心自攻点）
++
++canonical 定义（W-CONN-01）：per 商品，每个 sink front 可达自某 source front、
++每个 source front 能到某 sink front；允许多岛；**明文非吞吐保证**。
++
++- 复验器 `_validate_selected_route_connectivity` 按 RouteStateKey 建 per-commodity
++  有向图、CP-SAT FEASIBLE 后独立全局复验，代码零改动。手术后 key 的 flow 字段
++  就是商品自身流向，复验器语义**更忠实**（现状下混流态从来到不了复验器面前，
++  它的「按单商品分量走」从未被混流解检验过）。
++- **自攻 2a（最强攻击）：内容盲分流器不会分拣。** 模型声明「A 走北、B 走东」，
++  但游戏分流器按轮转推货不读类型：裸 splitter 下 A 的货也会被轮进东支路。
++  静态连通性命题（存在按商品标注的路径图，其物理件序列合法且方向相容）为真，
++  但「货真的只到声明的地方」不成立。
++
++  **具体反例（坐标级，外审的靶）**：取 U-02 场景（`test_routing_mixflow.py`
++  `_sc_u02_merge_then_split`，DIR_DELTA 数学系 N=y+1）。a 源 front (3,2)、
++  b 源 front (3,4)，两流在 (4,3) merger 汇合，共乘 (5,3)→(6,3)，(6,3) 是
++  splitter W→{N,S}：模型声明 b 走 N（经 (6,4) 到 b-sink front (7,4)）、a 走 S
++  （经 (6,2) 到 a-sink front (7,2)）。**裸 splitter 动力学**：(6,3) 轮转不读
++  类型，混流带上的 a 件会被轮进北支路 → 沿 (6,4)→(7,4) 抵达 b 的机器输入口
++  → b 机缓存空窗吞入 a 件（A9 收货不看配方）→ 污染（能加工→错产物续污染
++  下游；不能→槽位死锁）。模型的门口纯流约束在**静态标注**层被满足（(7,4)
++  格上只有 b 的 use），但动力学送达不随静态标注走——这正是本次放宽让
++  「静态连通 ⇒ 正确送达」失效的最小完整机理链。
++  **物理兑现方案（答辩③的写实）**：在北支路的直行格 (6,4) 放准入口
++  （itemId=b）、南支路 (6,2)……注意 (6,2) 是弯带（N→E），准入口只直、须放
++  在其后的直行段如 (7,2) 前——本例 (7,2) 即终端格，恰为直行（W→E），可放。
++  错入北支路的 a 件被 (6,4) 准入口拒收、留在 (6,3) 由轮转送回南支路
++  （OWN-M08 实测机制）；per-commodity 连通性保证每型货都有自己的支路可去
++  （#21 吸收前提）。本例同时示范了 Q3 的实体内容：每条 de-mix 支路需要
++  一个直行格放准入口，a 支路的直行格恰好只剩终端格——若终端格也须保留为
++  普通带，该布局的分拣兑现失败。这就是 Q3 要外审裁决的真实缝隙。
++
++  三层答辩：
++  1. 谓词 (5) 从未主张送达动力学——「非吞吐保证」是 canonical 逐字条款，
++     LOCK §1A B 块把吞吐/离散容量流明示 OUT-OF-SCOPE。命题本身无假。
++  2. **诚实披露的语义弱化**：现状纯车道模型下「静态连通 ⇒ 每件到货类型正确」
++     恰好成立（车道有类型，到哪都是对的货）；手术后这个**隐含**性质在含
++     de-mix 分流的解上消失。这不是谓词回归（谓词文本与复验器判定不变），但
++     certified 布局的「可直接照建即工作」直觉弱化为「可照建即连通」。请外审
++     裁决：这个弱化是否需要升级为谓词文本修订或 scope 声明（我们的建议：随
++     W-PENDING-01 canonical 修正批加 scope 声明，不改谓词）。
++  3. **游戏侧可实现性背书**（非证明义务，缓解 2 的实践担忧）：游戏 v1.1 存在
++     准入口（1×1、直行、按 itemId 筛；canonical 刻意不建模但玩家可放）。
++     declared split 支路加准入口 = owner 游戏实测过的分拣结构（OWN-M08）；
++     per-commodity 连通性恰好满足 #21 分拣终端定理的吸收前提（每支路终点是
++     该商品自己的 sink，错货被准入口挡回、由分流器轮到自己的支路）。残余
++     缝隙：准入口只直 ⇒ 支路需有直行格可放，原型不强制——外审开放问题 Q3。
++- **自攻 2b：复验器的邻接构造在子图样 key 下是否漏边/多边？** 邻接按「key 的
++  flow_out 方向 × 邻格同商品 flow_in 反向」连边，与子图样语义严格一致。请
++  外审重点核 `_terminal_nodes_by_front_for_keys`（终端节点识别，GROUND 限定）
++  与 source-side 割自检 `_self_check_source_side_connectivity_cut` 在混流解上
++  的正确性（割是 INFEASIBLE 方向的机器，割错 = 丢真解 = 影响最优性主张）。
++
++### 主张 M3：污染铁律不放宽
++
++sink front 地面别家 use 生成期即不存在（结构排除 > 约束排除）；端口边商品归属
++由 per-commodity 端口豁免把守（零改动：别家商品对端口方向的边在域检查即强制 0）。
++**攻击面**：涌现排他是否覆盖了显式排除表没覆盖的第三种到达方式？已推演的
++边界几何（对脸异商品 sink、同商品 source→sink 直喂、对脸双 source）结论见
++DESIGN.md §4 自检表。哨兵测试（§4 差分组 2）钉死回归。请外审构造我们没想到的
++到达方式（如经 L1 下桥点、经 source front 解锁面迂回）。
++
++### 主张 M4：INFEASIBLE 方向不受污染（cut 安全）
++
++routing 的 INFEASIBLE 会经 independent reverifier 变成 layout 级 nogood cut。
++手术是纯放宽：旧 INFEASIBLE ⊇ 新 INFEASIBLE，**新模型说 INFEASIBLE 的场景旧
++模型也说 INFEASIBLE**……此蕴含只在「约束系确实单调放宽」时成立——请外审
++核对唯一化约束（AddAtMostOne per 格层商品）不构成对旧解的收紧（答辩：旧解
++每格层商品本就恰一个 use 态，唯一化在旧解域上恒真）。
++
++## 4. 差分测试证据（2026-08-06 实测，`src/tests/test_routing_mixflow.py` 13 例全绿）
++
++| # | 场景（坐标见测试模块 scenario builders）| 手术前实测 | 手术后实测 |
++|---|---|---|---|
++| 1 | U-02 合流后分流（双源汇入宽1走廊再分开）| INFEASIBLE | **FEASIBLE**；抽取证明分流去向记录在变量里：merger (4,3) uses=[b:N→E, a:S→E]，splitter (6,3) uses=[b:W→N, a:W→S] |
++| 2a | 门口转弯过境（b 须在 a 的 sink front 转弯）| INFEASIBLE | INFEASIBLE（字典墙：并集 2进2出不存在 + L1 只直）|
++| 2b | **门口分流过境**（b 共乘 a 车道、在 a 门口格剥离北去；并集= splitter W→{E,N} 字典合法，唯一防线=显式排除）| INFEASIBLE | INFEASIBLE（纯流守卫）|
++| 2c | 多 owner 门口格（异商品双 sink 对脸共享 front）| INFEASIBLE | INFEASIBLE（多 owner 全排）|
++| 3 | 既有测试面（9 文件 125 例：routing/p0 soundness/front identity/d2/rab-sep/wireless-sink/witness adapter/patch core/topology isolation）| 绿 | **绿**（2 个 fixture 需合法化，见 §4.1；2 个 error 为 basetemp 环境噪声与手术无关）|
++| 4 | source front 共乘（b 在 a 输出门口格汇入干线）| INFEASIBLE | **FEASIBLE**；门口格 merger uses=[a:W→N, b:S→N] |
++| 回归 | 垂直桥交叉 / 单商品分流 / 连通复验器接受混流解 / phys==uses 侧并集 | FEASIBLE | FEASIBLE（结构不变）|
++
++**哨兵变异自证（两层）**：
++- 源码级双移除（`_mixflow_ground_banned` 恒 False 变体）：3 个哨兵齐红
++  （2b 翻 FEASIBLE、白盒 key 存在性、2c 翻 FEASIBLE），还原后 13/13 复绿——
++  显式排除是唯一防线且哨兵承重，非摆设。
++- 常驻自动化：`test_door_split_sentinel_is_load_bearing` /
++  `test_multi_owner_sentinel_is_load_bearing` 用 monkeypatch 中和守卫断言场景
++  翻 FEASIBLE——守卫将来被静默削弱时这两条会立即抓红。
++
++### 4.1 附带发现：旧模型的潜伏混灌接受面（外审注意，方向有利）
++
++既有 `test_two_commodities_can_share_same_straight_belt_phys` 与
++`test_same_axis_l0_l1_crossing_is_infeasible` 的 fixture 把两种商品的 sink 端口
++共located 在同一 front 格同一朝向（如 iron_sink 与 copper_sink 同在 (3,0) dir W）。
++该几何 placement 不可能（两机体须重叠），但**旧模型接受它**——同图样 use 可共选，
++两种商品经同一条终端带混灌进端口，旧的涌现排他对「同向同图样」终端不设防。
++手术的多 owner 全排把这个潜伏接受面关掉（新模型 INFEASIBLE），两个 fixture 已
++合法化重写（意图不变：共享直带/同轴叠层，测试内注释注明）。**对外审的意义**：
++本手术在这一角上比旧模型更严，是污染语义的净收紧，与「放宽产生假 CERTIFIED」
++的担忧方向相反。
++
++**不可达性论证（条款级）——该几何为何不可能出现在任何生产解里**：
++「两个异商品 sink 端口共 front 格同终端向」按来源穷分三支，每支被一条上游
++条款挡死：
++1. **同一物理口被绑两个商品**：binding 层每个物理口至多绑一个商品
++   （generic-input 合同按实体端口建模、B-01 单商品制——W-GAP-01 登记的
++   表达力缺口正以「每口一商品」为前提），port_specs 进 routing 前一口一条。
++2. **两个不同实例的端口**：identity front 语义下 stored 坐标即 front 格，
++   端口的机身侧格 = front − DIR_DELTA[dir]；同 front 同 dir ⇒ 两实例的机身
++   侧格是**同一格** ⇒ 机身重叠 ⇒ 认证谓词 (2)「两两不重叠」在 master 层
++   直接排除。
++3. **同一实例的两个端口**：设备口位是 registry 级冻结事实
++   （`mandatory_exact_instances.json`，口数=边长、一格一口一朝向），不存在
++   同格同向双口的设备。
++诚实注记：routing 层自己的 `_duplicate_terminal_front_keys` 守卫按
++(front, terminal_dir, **commodity**, type) 键控，只抓同商品重复——跨商品
++共located 在 routing 层此前**无守卫**，不可达性完全靠上游三条；手术后的
++多 owner 全排使 routing 层首次独立拒绝该几何（纵深防御补齐）。结论：旧模型
++的这个接受面只能被手造测试 fixture 触达，任何经 placement+binding 产生的
++生产输入都到不了它——不存在「被污染的历史解」（另一重保险：认证链至今
++从未 mint 过 CERTIFIED，正常链终点是 CANDIDATE_PROPOSED）。
++
++## 5. 外审开放问题清单
++
++- **Q1**：M1 的逐侧覆盖合取论证在 CP-SAT 布尔编码下是否有洞。
++- **Q2**：M2 自攻 2a 的裁决——「静态连通不再蕴含正确送达」需不需要谓词文本/
++  scope 动作，还是随 canonical 修正批的 scope 声明即可。
++- **Q3**：准入口只直的实现细节要不要上升为模型约束（每个 de-mix 支路至少一个
++  直行格）。我们的倾向：不上升（谓词不含送达），列 P2.0 设计守则。
++- **Q4**：M3 请外审构造绕过显式排除表的到达路径。
++- **Q5**：唯一化约束与边平衡的交互在 L0+L1 跨层边计数上是否仍然排除幻影
++  splitter（DESIGN.md §2.1 下游零改动清单的边平衡行）。
++- **Q6**：core 14 进保持保守排除（U-01 不在本手术范围）——外审确认这个范围
++  切分不引入不一致。
+diff --git a/src/models/routing_subproblem.py b/src/models/routing_subproblem.py
+index 7efa863..4ebda48 100644
+--- a/src/models/routing_subproblem.py
++++ b/src/models/routing_subproblem.py
+@@ -3,6 +3,14 @@ Exact grid-routing subproblem.
+ 
+ This version keeps the exact state semantics, but shrinks the routing core to the
+ commodity-scoped terminal-connected domain before building CP-SAT variables.
++
++Mixflow surgery (2026-08-06): commodity use states carry the commodity's own
++sub-pattern instead of copying the physical component's whole pattern, so
++multiple commodities can legally share one belt segment and part ways at
++splitter/merger cells.  The physical layer (closed pattern dictionary, per
++cell/layer AtMostOne, bridge exclusivity) is unchanged; side-coverage
++constraints couple the two layers, and machine-input front cells keep an
++explicit ground-purity exclusion (pollution ironclad).
+ """
+ 
+ from __future__ import annotations
+@@ -50,6 +58,11 @@ ROUTING_DOMAIN_MISSING_STATUS = "MISSING_STATUS"
+ GHOST_RESERVED_OWNER_ID = "__ghost_rect__"
+ 
+ 
++# Mixflow surgery (2026-08-06): a RouteStateKey's flow_in/flow_out describe the
++# keyed commodity's OWN movement through the cell (its sub-pattern), no longer a
++# copy of the physical component's whole pattern.  The physical layer keeps the
++# closed 48-state dictionary; the coupling lives in the side-coverage
++# constraints (_add_phys_coverage_constraints).
+ RouteStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
+ PhysicalStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
+ 
+@@ -749,7 +762,15 @@ class RoutingGrid:
+ 
+ 
+ class RoutingSubproblem:
+-    """CP-SAT routing model with belt / splitter / merger / bridge states."""
++    """CP-SAT routing model with belt / splitter / merger / bridge states.
++
++    Two variable layers: ``phys_vars`` select at most one physical component
++    state per cell/layer from the closed pattern dictionary; ``use_vars``
++    select, per commodity, that commodity's own movement sub-pattern through
++    the cell.  Side-coverage constraints force the selected component to carry
++    exactly the union of the selected sub-pattern sides, which keeps every
++    expressible commodity composition physically realizable by construction.
++    """
+ 
+     def __init__(
+         self,
+@@ -772,8 +793,11 @@ class RoutingSubproblem:
+         # commodity route states, which are now the use layer.
+         self.r_vars = self.use_vars
+         self.phys_vars: Dict[PhysicalStateKey, Any] = {}
+-        self._use_to_phys_key: Dict[RouteStateKey, PhysicalStateKey] = {}
+-        self._phys_uses: Dict[PhysicalStateKey, List[Any]] = defaultdict(list)
++        self._phys_in_by_cell_layer_dir: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
++        self._phys_out_by_cell_layer_dir: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
++        self._use_in_by_cell_layer_dir: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
++        self._use_out_by_cell_layer_dir: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
++        self._use_by_cell_layer_commodity: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
+         self._phys_by_cell_layer: Dict[Tuple[int, int, int], List[Any]] = defaultdict(list)
+         self._phys_keys_by_cell: Dict[Tuple[int, int], List[PhysicalStateKey]] = defaultdict(list)
+         self._use_by_cell_layer_dir_out_commodity: Dict[
+@@ -805,6 +829,7 @@ class RoutingSubproblem:
+         self._duplicate_terminal_front_keys = _duplicate_terminal_front_keys(self.grid.port_specs)
+         self._source_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
+         self._sink_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
++        self._sink_front_commodities: Dict[Tuple[int, int], Set[str]] = defaultdict(set)
+         self._index_port_fronts()
+         self._patterns_by_layer = {
+             layer: list(self._iter_state_patterns(layer))
+@@ -838,6 +863,7 @@ class RoutingSubproblem:
+             else:
+                 send_dir = DIR_OPP[direction]
+                 self._sink_port_fronts[(fx, fy, send_dir, commodity)] += 1
++                self._sink_front_commodities[(fx, fy)].add(commodity)
+ 
+     def build(self, time_limit: float = 60.0):
+         del time_limit
+@@ -879,6 +905,7 @@ class RoutingSubproblem:
+             return
+ 
+         self._create_routing_variables()
++        self._add_phys_coverage_constraints()
+         self._add_obstacle_exclusion()
+         self._add_capacity_constraints()
+         self._add_bridge_constraints()
+@@ -1006,13 +1033,111 @@ class RoutingSubproblem:
+             for direction in flow_out
+         )
+ 
++    def _mixflow_ground_banned(self, x: int, y: int, commodity: str) -> bool:
++        """Sink-front ground purity (pollution ironclad, owner axiom 2026-08-06).
++
++        Ground states at a machine-input front cell exist only for that port's
++        own commodity.  Physical components are content-blind: any co-located
++        ground state of another commodity would let the shared component feed
++        foreign items into the machine input port (A9/#1 pollution chain).  In
++        the pre-surgery whole-pattern model this exclusion was emergent (the
++        shared use key collided with the terminal domain guards); with
++        per-commodity sub-pattern keys it must be explicit, and generation-time
++        exclusion makes it structural: the variables do not exist.
++
++        Multi-owner rule: if a cell is the sink front of two *different*
++        commodities, all ground states are banned outright — no single
++        commodity can satisfy both adherence rows, and any cross-commodity
++        pair of sub-patterns would union into a component carrying both
++        port-bound output sides (content-blind double ingestion).  A cell
++        whose sink ports all belong to one commodity (including same-commodity
++        facing pairs) keeps that commodity fully functional.
++        """
++
++        owners = self._sink_front_commodities.get((x, y))
++        if not owners:
++            return False
++        if len(owners) > 1:
++            return True
++        return commodity not in owners
++
+     def _create_routing_variables(self):
+         state_counter = defaultdict(int)
+         local_pattern_pruned_states = 0
++        purity_excluded_cell_layers = 0
++
++        # Pass 1: per-(cell, layer, direction) side support.  A commodity
++        # contributes support exactly where the pre-surgery model would have
++        # allowed it to route (same per-commodity predicates), minus the
++        # explicit sink-front ground exclusion.
++        in_support: Dict[Tuple[int, int, int, str], Set[str]] = defaultdict(set)
++        out_support: Dict[Tuple[int, int, int, str], Set[str]] = defaultdict(set)
++        all_active_cells: Set[Tuple[int, int]] = set()
++        for commodity in self.commodities:
++            active_cells = self._commodity_active_cells.get(commodity, set())
++            all_active_cells |= active_cells
++            for (x, y) in active_cells:
++                for layer in LAYERS:
++                    if layer == GROUND_LAYER and self._mixflow_ground_banned(x, y, commodity):
++                        continue
++                    for direction in DIRECTIONS:
++                        if self._incoming_dir_supported(x, y, layer, direction, commodity):
++                            in_support[(x, y, layer, direction)].add(commodity)
++                        if self._outgoing_dir_supported(x, y, layer, direction, commodity):
++                            out_support[(x, y, layer, direction)].add(commodity)
++
++        # Pass 2a: physical component states.  Union support — every side of
++        # the pattern must be feedable/drainable by *some* commodity.  This is
++        # strictly wider than the pre-surgery per-commodity whole-pattern rule;
++        # the extra states are exactly the cross-commodity composites (e.g. a
++        # merger whose input sides belong to different commodities).
++        for (x, y) in sorted(all_active_cells):
++            for layer in LAYERS:
++                for pattern in self._patterns_by_layer[layer]:
++                    flow_in = tuple(pattern["flow_in"])
++                    flow_out = tuple(pattern["flow_out"])
++                    component_type = str(pattern["component_type"])
++                    if not all(in_support.get((x, y, layer, d)) for d in flow_in):
++                        continue
++                    if not all(out_support.get((x, y, layer, d)) for d in flow_out):
++                        continue
+ 
++                    phys_key: PhysicalStateKey = (
++                        x,
++                        y,
++                        layer,
++                        flow_in,
++                        flow_out,
++                        component_type,
++                    )
++                    phys_var = self.model.NewBoolVar(
++                        f"phys_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{component_type}"
++                    )
++                    self.phys_vars[phys_key] = phys_var
++                    self._phys_meta[phys_key] = {
++                        "flow_in": flow_in,
++                        "flow_out": flow_out,
++                        "component_type": component_type,
++                    }
++                    self._phys_by_cell_layer[(x, y, layer)].append(phys_var)
++                    self._phys_keys_by_cell[(x, y)].append(phys_key)
++                    if layer == ELEVATED_LAYER:
++                        self._l1_phys_vars[(x, y)].append(phys_var)
++                    for d_in in flow_in:
++                        self._phys_in_by_cell_layer_dir[(x, y, layer, d_in)].append(phys_var)
++                    for d_out in flow_out:
++                        self._phys_out_by_cell_layer_dir[(x, y, layer, d_out)].append(phys_var)
++
++        # Pass 2b: per-commodity sub-pattern use states.  The key's flow sides
++        # describe THIS commodity's own movement through the cell; coupling to
++        # the physical layer moved from key identity to the side-coverage
++        # constraints (_add_phys_coverage_constraints).
+         for commodity in self.commodities:
+             for (x, y) in sorted(self._commodity_active_cells.get(commodity, set())):
+                 for layer in LAYERS:
++                    if layer == GROUND_LAYER and self._mixflow_ground_banned(x, y, commodity):
++                        purity_excluded_cell_layers += 1
++                        continue
+                     for pattern in self._patterns_by_layer[layer]:
+                         flow_in = tuple(pattern["flow_in"])
+                         flow_out = tuple(pattern["flow_out"])
+@@ -1028,55 +1153,157 @@ class RoutingSubproblem:
+                             local_pattern_pruned_states += 1
+                             continue
+ 
+-                        phys_key: PhysicalStateKey = (
+-                            x,
+-                            y,
+-                            layer,
+-                            flow_in,
+-                            flow_out,
+-                            component_type,
+-                        )
+-                        if phys_key not in self.phys_vars:
+-                            phys_var = self.model.NewBoolVar(
+-                                f"phys_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{component_type}"
+-                            )
+-                            self.phys_vars[phys_key] = phys_var
+-                            self._phys_meta[phys_key] = {
+-                                "flow_in": flow_in,
+-                                "flow_out": flow_out,
+-                                "component_type": component_type,
+-                            }
+-                            self._phys_by_cell_layer[(x, y, layer)].append(phys_var)
+-                            self._phys_keys_by_cell[(x, y)].append(phys_key)
+-                            if layer == ELEVATED_LAYER:
+-                                self._l1_phys_vars[(x, y)].append(phys_var)
+-
+                         use_var = self.model.NewBoolVar(
+                             f"use_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{commodity}"
+                         )
+                         key: RouteStateKey = (x, y, layer, flow_in, flow_out, commodity)
+                         self.use_vars[key] = use_var
+-                        self._use_to_phys_key[key] = phys_key
+-                        self._phys_uses[phys_key].append(use_var)
+                         self._state_meta[key] = {
+                             "flow_in": flow_in,
+                             "flow_out": flow_out,
+                             "component_type": component_type,
+                         }
+-                        self.model.Add(use_var <= self.phys_vars[phys_key])
+                         for d_out in flow_out:
+                             self._use_by_cell_layer_dir_out_commodity[(x, y, layer, d_out, commodity)].append(use_var)
+                             self._use_by_cell_dir_out_commodity[(x, y, d_out, commodity)].append(use_var)
++                            self._use_out_by_cell_layer_dir[(x, y, layer, d_out)].append(use_var)
+                         for d_in in flow_in:
+                             self._use_by_cell_layer_dir_in_commodity[(x, y, layer, d_in, commodity)].append(use_var)
+                             self._use_by_cell_dir_in_commodity[(x, y, d_in, commodity)].append(use_var)
++                            self._use_in_by_cell_layer_dir[(x, y, layer, d_in)].append(use_var)
++                        self._use_by_cell_layer_commodity[(x, y, layer, commodity)].append(use_var)
+                         state_counter[(layer, component_type)] += 1
+ 
+-        for phys_key, use_vars in self._phys_uses.items():
+-            self.model.AddMaxEquality(self.phys_vars[phys_key], use_vars)
+-
++        self.build_stats["mixflow"] = {
++            "purity_excluded_cell_layers": int(purity_excluded_cell_layers),
++            "multi_owner_sink_fronts": sorted(
++                [int(cx), int(cy)]
++                for (cx, cy), owners in self._sink_front_commodities.items()
++                if len(owners) > 1
++            ),
++        }
+         self._record_state_space_stats(state_counter, local_pattern_pruned_states)
+ 
++    def _add_phys_coverage_constraints(self):
++        """Couple commodity sub-pattern states to the physical layer.
++
++        Replaces the pre-surgery ``use <= phys[same key]`` + ``phys ==
++        max(uses)`` identity coupling (mixflow surgery 2026-08-06):
++
++        1. Side coverage: an active use needs, for each of its flow sides, a
++           physical state at the same cell/layer carrying that side.  Together
++           with the per-cell/layer AtMostOne over physical states, the single
++           selected component must carry *all* selected sides simultaneously —
++           its pattern is a superset of the union of selected sub-patterns.
++           Unions outside the closed pattern dictionary are therefore
++           unsatisfiable: the expressible domain stays inside the physically
++           realizable domain with no extra prohibition.
++        2. Exact sides: a selected physical state may not carry a side that no
++           selected use claims.  This pins the component pattern to exactly
++           the union (minimal hardware; within the dictionary the union
++           determines pattern and component type uniquely) and forces phys to
++           0 where no use is selected (successor of the retired max-equality).
++        3. Per-commodity state uniqueness: at most one sub-pattern per
++           commodity per cell/layer.  A commodity's own split/merge is a
++           single splitter/merger sub-pattern, never two parallel single-lane
++           states (directed-edge balance would reject the duplicated
++           representation anyway; the explicit row removes it from the search
++           space).
++        """
++
++        coverage_rows = 0
++        exact_side_rows = 0
++        uniqueness_rows = 0
++
++        # Aggregated side indicators (build-cost containment, measured on the
++        # 256-body/19-commodity proxy: expanding the phys/use sums per row put
++        # tens of millions of terms into the proto and made build 2.4x slower).
++        # One boolean per (cell, layer, direction, io-side):
++        #   phys_side == sum(phys states carrying that side)   [sum in {0,1}
++        #     by the per-cell/layer AtMostOne, so the equality is well-typed]
++        #   use_side  == OR(use states claiming that side)
++        # Coverage and exact-side rows then become two-literal implications.
++        phys_side_in: Dict[Tuple[int, int, int, str], Any] = {}
++        phys_side_out: Dict[Tuple[int, int, int, str], Any] = {}
++        use_side_in: Dict[Tuple[int, int, int, str], Any] = {}
++        use_side_out: Dict[Tuple[int, int, int, str], Any] = {}
++
++        def _side_var(cache, source_index, side_key, kind, aggregate):
++            var = cache.get(side_key)
++            if var is not None:
++                return var
++            x, y, layer, direction = side_key
++            var = self.model.NewBoolVar(f"{kind}_{x}_{y}_{layer}_{direction}")
++            members = source_index.get(side_key, [])
++            if not members:
++                self.model.Add(var == 0)
++            elif aggregate == "sum":
++                self.model.Add(var == sum(members))
++            else:
++                self.model.AddMaxEquality(var, members)
++            cache[side_key] = var
++            return var
++
++        for key, use_var in self.use_vars.items():
++            x, y, layer, flow_in, flow_out, _commodity = key
++            for d_in in flow_in:
++                side = _side_var(
++                    phys_side_in,
++                    self._phys_in_by_cell_layer_dir,
++                    (x, y, layer, d_in),
++                    "physin",
++                    "sum",
++                )
++                self.model.AddImplication(use_var, side)
++                coverage_rows += 1
++            for d_out in flow_out:
++                side = _side_var(
++                    phys_side_out,
++                    self._phys_out_by_cell_layer_dir,
++                    (x, y, layer, d_out),
++                    "physout",
++                    "sum",
++                )
++                self.model.AddImplication(use_var, side)
++                coverage_rows += 1
++
++        for phys_key, phys_var in self.phys_vars.items():
++            x, y, layer, flow_in, flow_out, _component_type = phys_key
++            for d_in in flow_in:
++                side = _side_var(
++                    use_side_in,
++                    self._use_in_by_cell_layer_dir,
++                    (x, y, layer, d_in),
++                    "usein",
++                    "max",
++                )
++                self.model.AddImplication(phys_var, side)
++                exact_side_rows += 1
++            for d_out in flow_out:
++                side = _side_var(
++                    use_side_out,
++                    self._use_out_by_cell_layer_dir,
++                    (x, y, layer, d_out),
++                    "useout",
++                    "max",
++                )
++                self.model.AddImplication(phys_var, side)
++                exact_side_rows += 1
++
++        for use_vars_for_commodity in self._use_by_cell_layer_commodity.values():
++            if len(use_vars_for_commodity) > 1:
++                self.model.AddAtMostOne(use_vars_for_commodity)
++                uniqueness_rows += 1
++
++        self.build_stats["phys_coverage"] = {
++            "coverage_rows": int(coverage_rows),
++            "exact_side_rows": int(exact_side_rows),
++            "uniqueness_rows": int(uniqueness_rows),
++            "side_indicator_vars": int(
++                len(phys_side_in) + len(phys_side_out) + len(use_side_in) + len(use_side_out)
++            ),
++        }
++
+     def _record_state_space_stats(
+         self,
+         state_counter: Mapping[Tuple[int, str], int],
+@@ -1996,15 +2223,29 @@ class RoutingSubproblem:
+         ):
+             return []
+ 
+-        routes_by_phys: Dict[PhysicalStateKey, List[RouteStateKey]] = defaultdict(list)
++        if self._solver is None:
++            return []
++
++        # Mixflow surgery: uses no longer key-share the physical pattern.
++        # Group by cell/layer; capacity AtMostOne guarantees a single selected
++        # physical state per group, and the exact-side rows guarantee every
++        # selected physical state carries at least one selected use.
++        selected_phys_by_cell_layer: Dict[Tuple[int, int, int], PhysicalStateKey] = {}
++        for phys_key, phys_var in self.phys_vars.items():
++            if self._solver.Value(phys_var) != 1:
++                continue
++            selected_phys_by_cell_layer[(phys_key[0], phys_key[1], phys_key[2])] = phys_key
++
++        uses_by_cell_layer: Dict[Tuple[int, int, int], List[RouteStateKey]] = defaultdict(list)
+         for key, var in self.use_vars.items():
+-            if self._solver is None or self._solver.Value(var) != 1:
++            if self._solver.Value(var) != 1:
+                 continue
+-            routes_by_phys[self._use_to_phys_key[key]].append(key)
++            uses_by_cell_layer[(key[0], key[1], key[2])].append(key)
+ 
+         routes = []
+-        for phys_key, use_keys in sorted(routes_by_phys.items()):
++        for _cell_layer, phys_key in sorted(selected_phys_by_cell_layer.items()):
+             x, y, layer, flow_in, flow_out, component_type = phys_key
++            use_keys = uses_by_cell_layer.get((x, y, layer), [])
+             uses = [
+                 {
+                     "commodity": str(commodity),
+diff --git a/src/tests/test_routing.py b/src/tests/test_routing.py
+index 1e725a8..0f2387d 100644
+--- a/src/tests/test_routing.py
++++ b/src/tests/test_routing.py
+@@ -208,7 +208,14 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
+     sys.path.insert(0, str(project_root))
+     from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+ 
+-    allowed = {(1, 0), (2, 0), (3, 0)}
++    # Mixflow surgery fixture legalization (2026-08-06): the original fixture
++    # co-located BOTH commodities' sink ports on one front cell with the same
++    # terminal direction — placement-impossible geometry (the two bodies would
++    # overlap) that the pre-surgery model happened to accept and the sink-front
++    # ground-purity exclusion now correctly rejects (pollution ironclad).  The
++    # test intent — two commodities sharing one straight belt phys, both uses
++    # recorded — is preserved on a legal merge/share/split corridor.
++    allowed = {(1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (2, 1), (4, 3)}
+     occupied = {
+         (x, y)
+         for x in range(70)
+@@ -216,10 +223,10 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
+         if (x, y) not in allowed
+     }
+     port_specs = [
+-        {"instance_id": "iron_src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "iron"},
+-        {"instance_id": "iron_sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "iron"},
+-        {"instance_id": "copper_src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "copper"},
+-        {"instance_id": "copper_sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "copper"},
++        {"instance_id": "iron_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "iron"},
++        {"instance_id": "iron_sink", "x": 5, "y": 2, "dir": "W", "type": "in", "commodity": "iron"},
++        {"instance_id": "copper_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "copper"},
++        {"instance_id": "copper_sink", "x": 4, "y": 3, "dir": "S", "type": "in", "commodity": "copper"},
+     ]
+     routing = RoutingSubproblem(
+         RoutingGrid(occupied, port_specs),
+@@ -229,9 +236,16 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
+     routing.build()
+ 
+     selected = {
+-        (x, 0, 0, ("W",), ("E",), commodity)
+-        for x in (1, 2, 3)
+-        for commodity in ("iron", "copper")
++        (1, 2, 0, ("W",), ("E",), "iron"),
++        (2, 2, 0, ("W",), ("E",), "iron"),
++        (3, 2, 0, ("W",), ("E",), "iron"),
++        (4, 2, 0, ("W",), ("E",), "iron"),
++        (5, 2, 0, ("W",), ("E",), "iron"),
++        (2, 1, 0, ("S",), ("N",), "copper"),
++        (2, 2, 0, ("S",), ("E",), "copper"),
++        (3, 2, 0, ("W",), ("E",), "copper"),
++        (4, 2, 0, ("W",), ("N",), "copper"),
++        (4, 3, 0, ("S",), ("N",), "copper"),
+     }
+     _force_exact_route_states(routing, selected)
+ 
+@@ -246,7 +260,7 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
+             {"commodity": "iron", "flow_in": ["W"], "flow_out": ["E"]},
+         ]
+     }
+-    assert shared_cells == allowed
++    assert shared_cells == {(3, 2)}
+ 
+ 
+ def test_perpendicular_l0_l1_crossing_is_feasible(project_root):
+@@ -296,7 +310,12 @@ def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
+     sys.path.insert(0, str(project_root))
+     from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+ 
+-    allowed = {(1, 2), (2, 2), (3, 2)}
++    # Mixflow surgery fixture legalization (2026-08-06): same fictional
++    # co-located different-commodity terminals as the shared-belt test above;
++    # rebuilt on legal geometry.  Intent preserved: coal riding an L1 bridge
++    # on the SAME axis as ore's L0 straight belt at (2,2) must be INFEASIBLE
++    # (same-axis stacking has no crossing exemption).
++    allowed = {(1, 1), (1, 2), (2, 2), (3, 2), (4, 2), (3, 3)}
+     occupied = {
+         (x, y)
+         for x in range(70)
+@@ -305,9 +324,9 @@ def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
+     }
+     port_specs = [
+         {"instance_id": "ore_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
+-        {"instance_id": "ore_sink", "x": 3, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
+-        {"instance_id": "coal_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "coal"},
+-        {"instance_id": "coal_sink", "x": 3, "y": 2, "dir": "W", "type": "in", "commodity": "coal"},
++        {"instance_id": "ore_sink", "x": 4, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
++        {"instance_id": "coal_src", "x": 1, "y": 1, "dir": "N", "type": "out", "commodity": "coal"},
++        {"instance_id": "coal_sink", "x": 3, "y": 3, "dir": "S", "type": "in", "commodity": "coal"},
+     ]
+     routing = RoutingSubproblem(
+         RoutingGrid(occupied, port_specs),
+@@ -320,9 +339,12 @@ def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
+         (1, 2, 0, ("W",), ("E",), "ore"),
+         (2, 2, 0, ("W",), ("E",), "ore"),
+         (3, 2, 0, ("W",), ("E",), "ore"),
+-        (1, 2, 0, ("W",), ("E",), "coal"),
++        (4, 2, 0, ("W",), ("E",), "ore"),
++        (1, 1, 0, ("S",), ("N",), "coal"),
++        (1, 2, 0, ("S",), ("E",), "coal"),
+         (2, 2, 1, ("W",), ("E",), "coal"),
+-        (3, 2, 0, ("W",), ("E",), "coal"),
++        (3, 2, 0, ("W",), ("N",), "coal"),
++        (3, 3, 0, ("S",), ("N",), "coal"),
+     }
+     _force_exact_route_states(routing, selected)
+ 
+diff --git a/src/tests/test_routing_mixflow.py b/src/tests/test_routing_mixflow.py
+new file mode 100644
+index 0000000..ec32285
+--- /dev/null
++++ b/src/tests/test_routing_mixflow.py
+@@ -0,0 +1,348 @@
++"""Mixflow surgery differential tests (2026-08-06).
++
++Scenario geometry uses the DIR_DELTA math convention (N = y+1) and identity
++front semantics (the stored port coordinate IS the front/belt cell).  Corridor
++scenarios occupy every cell outside an explicit free set so commodities cannot
++route around the structure under test — an open grid would prove nothing.
++
++Groups:
++- unlocks: merge-then-split (U-02) and source-front co-riding flip from the
++  pre-surgery structural INFEASIBLE to FEASIBLE, with per-commodity
++  sub-pattern routes recorded in the extraction;
++- pollution sentinels: machine-input front cells stay pure on ground.  The
++  guard-off mutation tests prove the explicit exclusion is load-bearing (the
++  scenarios flip FEASIBLE when `_mixflow_ground_banned` is neutralized), so
++  the sentinels cannot rot into vacuous assertions;
++- regressions: pre-surgery FEASIBLE structures stay FEASIBLE, and the
++  physical layer stays exactly the union of the commodity sub-patterns.
++"""
++
++from typing import Dict, List, Sequence, Set, Tuple
++
++import pytest
++
++from src.models.routing_subproblem import (
++    GRID_H,
++    GRID_W,
++    RoutingGrid,
++    RoutingSubproblem,
++    analyze_exact_routing_domain,
++)
++
++Cell = Tuple[int, int]
++
++
++def _occupied_except(free_cells: Sequence[Cell]) -> Set[Cell]:
++    free = set(free_cells)
++    return {(x, y) for x in range(GRID_W) for y in range(GRID_H) if (x, y) not in free}
++
++
++def _build(free_cells: Sequence[Cell], port_specs: List[Dict], commodities: List[str]) -> RoutingSubproblem:
++    grid = RoutingGrid(_occupied_except(free_cells), port_specs)
++    analysis = analyze_exact_routing_domain(grid)
++    assert analysis["status"] == "feasible", analysis
++    routing = RoutingSubproblem(grid, commodities, domain_analysis=analysis)
++    routing.build()
++    return routing
++
++
++def _solve(routing: RoutingSubproblem) -> str:
++    return routing.solve(time_limit=30.0)
++
++
++def _routes_by_cell_layer(routing: RoutingSubproblem) -> Dict[Tuple[int, int, int], Dict]:
++    return {(r["x"], r["y"], r["layer"]): r for r in routing.extract_routes()}
++
++
++def _use_flows(route: Dict) -> Dict[str, Tuple[Tuple[str, ...], Tuple[str, ...]]]:
++    return {
++        u["commodity"]: (tuple(u["flow_in"]), tuple(u["flow_out"]))
++        for u in route["uses"]
++    }
++
++
++# ---------------------------------------------------------------------------
++# Scenario builders
++# ---------------------------------------------------------------------------
++
++def _sc_u02_merge_then_split():
++    """Two sources merge onto a width-1 shared corridor, then split apart."""
++    free = [
++        (3, 2), (4, 2),          # a: source spur
++        (3, 4), (4, 4),          # b: source spur
++        (4, 3), (5, 3), (6, 3),  # shared corridor: merge at (4,3), split at (6,3)
++        (6, 2), (7, 2),          # a: exit spur to its sink
++        (6, 4), (7, 4),          # b: exit spur to its sink
++    ]
++    ports = [
++        {"x": 3, "y": 2, "dir": "E", "commodity": "a", "type": "out", "instance_id": "srcA"},
++        {"x": 3, "y": 4, "dir": "E", "commodity": "b", "type": "out", "instance_id": "srcB"},
++        {"x": 7, "y": 2, "dir": "W", "commodity": "a", "type": "in", "instance_id": "sinkA"},
++        {"x": 7, "y": 4, "dir": "W", "commodity": "b", "type": "in", "instance_id": "sinkB"},
++    ]
++    return free, ports, ["a", "b"]
++
++
++def _sc_source_front_coride():
++    """b joins a's output lane AT a's source front cell (owner-ruled safe)."""
++    free = [
++        (3, 3), (3, 4),          # b: source spur from the south
++        (3, 5),                  # a's source front — b merges here
++        (3, 6), (3, 7),          # shared lane north; split at (3,7)
++        (2, 7),                  # a: sink front (west exit)
++        (3, 8),                  # b: sink front (north exit)
++    ]
++    ports = [
++        {"x": 3, "y": 5, "dir": "E", "commodity": "a", "type": "out", "instance_id": "srcA"},
++        {"x": 3, "y": 3, "dir": "N", "commodity": "b", "type": "out", "instance_id": "srcB"},
++        {"x": 2, "y": 7, "dir": "E", "commodity": "a", "type": "in", "instance_id": "sinkA"},
++        {"x": 3, "y": 8, "dir": "S", "commodity": "b", "type": "in", "instance_id": "sinkB"},
++    ]
++    return free, ports, ["a", "b"]
++
++
++def _sc_door_corner_transit():
++    """b would have to TURN on a's sink front cell; L1 bridges are straight."""
++    free = [
++        (5, 3), (5, 4), (5, 5),  # a: lane south->north; sink front F=(5,5)
++        (4, 5),                  # b: source front, west of F
++        (5, 6),                  # b: sink front, north of F
++    ]
++    ports = [
++        {"x": 5, "y": 3, "dir": "N", "commodity": "a", "type": "out", "instance_id": "srcA"},
++        {"x": 5, "y": 5, "dir": "W", "commodity": "a", "type": "in", "instance_id": "sinkA"},
++        {"x": 4, "y": 5, "dir": "E", "commodity": "b", "type": "out", "instance_id": "srcB"},
++        {"x": 5, "y": 6, "dir": "S", "commodity": "b", "type": "in", "instance_id": "sinkB"},
++    ]
++    return free, ports, ["a", "b"]
++
++
++def _sc_door_split_transit():
++    """b co-rides a's lane and wants to peel off north AT a's sink front.
++
++    The side union at the door cell is splitter W→{E,N} — a legal dictionary
++    pattern — so the explicit ground-purity exclusion is the ONLY wall between
++    this structure and a content-blind splitter feeding b's items into a's
++    machine.  This is the mutation-detecting pollution sentinel.
++    """
++    free = [
++        (2, 5), (3, 5),          # a: source front + shared lane cell
++        (3, 4),                  # b: source front, merging into the lane at (3,5)
++        (4, 5),                  # F: a's sink front (b would split N here)
++        (4, 6),                  # b: sink front, north of F
++    ]
++    ports = [
++        {"x": 2, "y": 5, "dir": "E", "commodity": "a", "type": "out", "instance_id": "srcA"},
++        {"x": 4, "y": 5, "dir": "W", "commodity": "a", "type": "in", "instance_id": "sinkA"},
++        {"x": 3, "y": 4, "dir": "N", "commodity": "b", "type": "out", "instance_id": "srcB"},
++        {"x": 4, "y": 6, "dir": "S", "commodity": "b", "type": "in", "instance_id": "sinkB"},
++    ]
++    return free, ports, ["a", "b"]
++
++
++def _sc_multi_owner_sink_front():
++    """Two different-commodity sink ports face the same front cell F=(5,5).
++
++    Without the multi-owner full ban, a's N→E and b's N→W terminals would
++    union into splitter N→{E,W}: a content-blind component alternately feeding
++    both machines from a mixed lane.  Must stay INFEASIBLE.
++    """
++    free = [
++        (5, 7),                  # a: source front (north end)
++        (4, 6),                  # b: source front (west spur into (5,6))
++        (5, 6),                  # shared feed cell (b merges here)
++        (5, 5),                  # F: sink front of BOTH a (body east) and b (body west)
++    ]
++    ports = [
++        {"x": 5, "y": 7, "dir": "S", "commodity": "a", "type": "out", "instance_id": "srcA"},
++        {"x": 4, "y": 6, "dir": "E", "commodity": "b", "type": "out", "instance_id": "srcB"},
++        {"x": 5, "y": 5, "dir": "W", "commodity": "a", "type": "in", "instance_id": "sinkA"},
++        {"x": 5, "y": 5, "dir": "E", "commodity": "b", "type": "in", "instance_id": "sinkB"},
++    ]
++    return free, ports, ["a", "b"]
++
++
++def _sc_perpendicular_bridge_cross():
++    free = [
++        (3, 5), (4, 5), (5, 5), (6, 5), (7, 5),  # a: horizontal lane W->E
++        (5, 3), (5, 4), (5, 6), (5, 7),          # b: vertical lane S->N
++    ]
++    ports = [
++        {"x": 3, "y": 5, "dir": "E", "commodity": "a", "type": "out", "instance_id": "srcA"},
++        {"x": 7, "y": 5, "dir": "W", "commodity": "a", "type": "in", "instance_id": "sinkA"},
++        {"x": 5, "y": 3, "dir": "N", "commodity": "b", "type": "out", "instance_id": "srcB"},
++        {"x": 5, "y": 7, "dir": "S", "commodity": "b", "type": "in", "instance_id": "sinkB"},
++    ]
++    return free, ports, ["a", "b"]
++
++
++def _sc_single_commodity_split():
++    free = [
++        (3, 5), (4, 5),
++        (5, 5),
++        (5, 6), (5, 7),
++        (5, 4), (5, 3),
++    ]
++    ports = [
++        {"x": 3, "y": 5, "dir": "E", "commodity": "a", "type": "out", "instance_id": "srcA"},
++        {"x": 5, "y": 7, "dir": "S", "commodity": "a", "type": "in", "instance_id": "sinkA1"},
++        {"x": 5, "y": 3, "dir": "N", "commodity": "a", "type": "in", "instance_id": "sinkA2"},
++    ]
++    return free, ports, ["a"]
++
++
++def _neutralize_purity_guard(monkeypatch):
++    monkeypatch.setattr(
++        RoutingSubproblem,
++        "_mixflow_ground_banned",
++        lambda self, x, y, commodity: False,
++    )
++
++
++# ---------------------------------------------------------------------------
++# Unlocks (pre-surgery: structural INFEASIBLE)
++# ---------------------------------------------------------------------------
++
++def test_u02_merge_then_split_feasible():
++    routing = _build(*_sc_u02_merge_then_split())
++    assert _solve(routing) == "FEASIBLE"
++
++    routes = _routes_by_cell_layer(routing)
++    merge = routes[(4, 3, 0)]
++    assert merge["component_type"] == "merger"
++    merge_flows = _use_flows(merge)
++    assert merge_flows["a"] == (("S",), ("E",))
++    assert merge_flows["b"] == (("N",), ("E",))
++
++    split_key = (6, 3, 0)
++    if split_key in routes and routes[split_key]["component_type"] == "splitter":
++        split_flows = _use_flows(routes[split_key])
++        # per-commodity destinations are recorded in the variables themselves
++        assert split_flows["a"] == (("W",), ("S",))
++        assert split_flows["b"] == (("W",), ("N",))
++    else:
++        # the solver may bridge part of the corridor on L1; the split then
++        # happens on the ground cell that both commodities still share
++        ground_splits = [
++            r for r in routes.values()
++            if r["layer"] == 0 and r["component_type"] == "splitter"
++        ]
++        assert ground_splits, routes
++
++
++def test_u02_split_destinations_are_disjoint():
++    routing = _build(*_sc_u02_merge_then_split())
++    assert _solve(routing) == "FEASIBLE"
++    for route in routing.extract_routes():
++        flows = _use_flows(route)
++        if len(flows) < 2:
++            continue
++        # every commodity's sub-pattern sides are a subset of the phys sides
++        for flow_in, flow_out in flows.values():
++            assert set(flow_in) <= set(route["flow_in"])
++            assert set(flow_out) <= set(route["flow_out"])
++
++
++def test_source_front_coride_feasible():
++    routing = _build(*_sc_source_front_coride())
++    assert _solve(routing) == "FEASIBLE"
++
++    routes = _routes_by_cell_layer(routing)
++    door = routes[(3, 5, 0)]
++    assert door["component_type"] == "merger"
++    door_flows = _use_flows(door)
++    assert door_flows["a"] == (("W",), ("N",))   # a receives from its port (west body)
++    assert door_flows["b"] == (("S",), ("N",))   # b transits/merges at the door
++    assert sorted(door["commodities"]) == ["a", "b"]
++
++
++# ---------------------------------------------------------------------------
++# Pollution sentinels (machine-input front purity, owner ironclad)
++# ---------------------------------------------------------------------------
++
++def test_door_corner_transit_stays_infeasible():
++    routing = _build(*_sc_door_corner_transit())
++    assert _solve(routing) == "INFEASIBLE"
++
++
++def test_door_split_transit_stays_infeasible():
++    routing = _build(*_sc_door_split_transit())
++    assert _solve(routing) == "INFEASIBLE"
++
++
++def test_no_foreign_ground_states_at_sink_front():
++    routing = _build(*_sc_door_split_transit())
++    foreign_ground_keys = [
++        key
++        for key in routing.use_vars
++        if (key[0], key[1]) == (4, 5) and key[2] == 0 and key[5] == "b"
++    ]
++    assert foreign_ground_keys == []
++
++
++def test_door_split_sentinel_is_load_bearing(monkeypatch):
++    """Mutation self-verification: with the purity guard neutralized the door
++    split scenario MUST flip FEASIBLE — proving the explicit exclusion is the
++    only wall (the sentinel would catch its silent removal)."""
++    _neutralize_purity_guard(monkeypatch)
++    routing = _build(*_sc_door_split_transit())
++    assert _solve(routing) == "FEASIBLE"
++
++
++def test_multi_owner_sink_front_stays_infeasible():
++    routing = _build(*_sc_multi_owner_sink_front())
++    assert _solve(routing) == "INFEASIBLE"
++    assert routing.build_stats["mixflow"]["multi_owner_sink_fronts"] == [[5, 5]]
++
++
++def test_multi_owner_sentinel_is_load_bearing(monkeypatch):
++    _neutralize_purity_guard(monkeypatch)
++    routing = _build(*_sc_multi_owner_sink_front())
++    assert _solve(routing) == "FEASIBLE"
++
++
++# ---------------------------------------------------------------------------
++# Regressions (pre-surgery FEASIBLE must stay FEASIBLE)
++# ---------------------------------------------------------------------------
++
++def test_perpendicular_bridge_cross_stays_feasible():
++    routing = _build(*_sc_perpendicular_bridge_cross())
++    assert _solve(routing) == "FEASIBLE"
++
++
++def test_single_commodity_split_stays_feasible():
++    routing = _build(*_sc_single_commodity_split())
++    assert _solve(routing) == "FEASIBLE"
++    routes = routing.extract_routes()
++    assert any(r["component_type"] == "splitter" for r in routes)
++
++
++def test_phys_pattern_equals_union_of_use_sides():
++    """Exact-side rows: every extracted component carries exactly the union of
++    its commodities' sub-pattern sides (minimal hardware invariant)."""
++    for builder in (
++        _sc_u02_merge_then_split,
++        _sc_source_front_coride,
++        _sc_perpendicular_bridge_cross,
++        _sc_single_commodity_split,
++    ):
++        routing = _build(*builder())
++        assert _solve(routing) == "FEASIBLE"
++        for route in routing.extract_routes():
++            flows = _use_flows(route)
++            assert flows, route
++            in_union: Set[str] = set()
++            out_union: Set[str] = set()
++            for flow_in, flow_out in flows.values():
++                in_union |= set(flow_in)
++                out_union |= set(flow_out)
++            assert in_union == set(route["flow_in"]), route
++            assert out_union == set(route["flow_out"]), route
++
++
++def test_connectivity_validator_accepts_mixflow_solution():
++    routing = _build(*_sc_u02_merge_then_split())
++    assert _solve(routing) == "FEASIBLE"
++    connected, summary = routing._validate_selected_route_connectivity(routing._solver)
++    assert connected, summary
++    assert summary["failure_count"] == 0
