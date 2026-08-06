@@ -27,23 +27,33 @@ BASELINE_COUNTS = {
 # test modules and nine research modules under docs/research/, hence +10 test and
 # +9 historical_evidence over the 0dcb531 snapshot.
 CURRENT_BASE_COUNTS = {
-    "active_implementation": 386,
-    "test": 660,
-    "common_infrastructure": 478,
+    "active_implementation": 390,
+    "test": 670,
+    "common_infrastructure": 480,
     "authoritative_input": 4,
     "enforcement_control": 10,
-    "historical_evidence": 455,
+    "historical_evidence": 473,
     "retirement_candidate": 19,
 }
 EXPECTED_READ_ONLY_HISTORICAL_EVIDENCE_ROOTS = {
     ".artifacts/ab16_arms_20260802/": "failed_campaign_history",
     ".artifacts/ab16_slimdown_20260801/": "research_evidence",
     ".artifacts/adapt_batch_gates/": "research_evidence",
+    ".artifacts/band22_admission_sim_20260805/": "research_evidence",
+    ".artifacts/band22_faithful_sim_20260805/": "research_evidence",
+    ".artifacts/band22_flow_account_20260805/": "research_evidence",
+    ".artifacts/band22_headless_sim_20260805/": "research_evidence",
+    ".artifacts/band22_strict_hole_probe_20260805/": "research_evidence",
+    ".artifacts/band22_strict_redesign_pack_20260805/": "research_evidence",
+    ".artifacts/band22_strict_redesign_replies_20260805/": "research_evidence",
     ".artifacts/batch_c_leftovers_20260714/": "failed_campaign_history",
     ".artifacts/cleanroom_r3_adversarial/": "research_evidence",
     ".artifacts/h20_row_power_oracle_20260803/": "research_evidence",
+    ".artifacts/ip_adapter_v3_20260805/": "research_evidence",
     ".artifacts/merge_codex_20260801/": "research_evidence",
     ".artifacts/rab_drill_20260716/": "research_evidence",
+    ".artifacts/w0_consult_packs_20260804/": "research_evidence",
+    ".artifacts/w0_fixrerun_20260804/": "research_evidence",
     ".artifacts/w0_front_aware_20260803/": "research_evidence",
 }
 
@@ -525,7 +535,7 @@ def test_affected_selector_cannot_reintroduce_an_evidence_target() -> None:
 
 def test_source_discovery_implementations_agree_and_exclude_devtools() -> None:
     receipt = assets._source_discovery_receipt()
-    assert receipt["path_count"] == 800
+    assert receipt["path_count"] == 804
     assert receipt["devtools_paths"] == []
     assert len(receipt["sha256"]) == 64
 
