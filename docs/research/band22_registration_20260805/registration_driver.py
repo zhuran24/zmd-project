@@ -143,6 +143,7 @@ RESEARCH_ONLY_DISCLAIMER = (
     "only ExactCampaign.supervisor_seal() can mint a durable CERTIFIED and it "
     "is not on this code path."
 )
+CONTROLLER_SEARCH_BOUNDARY = "Witness binding/routes are provenance only; official controller independently searches binding/routing."
 
 EXIT_OK = 0
 EXIT_RUN_FAILURE = 1
@@ -474,12 +475,22 @@ def _resolve_run_dir(out_dir: Path, tag: str) -> Tuple[Optional[Path], Optional[
 # --------------------------------------------------------------------------
 # witness loading + structural validation
 # --------------------------------------------------------------------------
+def verify_witness_snapshot_identity(provenance_sha: Any, adapter_sha: Any) -> None:
+    if not isinstance(provenance_sha, str) or adapter_sha != provenance_sha:
+        raise ValueError("witness bytes drifted between provenance and the immutable adapter snapshot")
+
+
 def load_witness_solution(path: Path) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Any]]:
     from src.io.strict_json import load_strict_json
 
     payload = load_strict_json(path)
     if not isinstance(payload, Mapping):
         raise ValueError(f"{path} is not a JSON object")
+    if "witness_schema_version" in payload:
+        if payload.get("witness_schema_version") != "band22-witness/2":
+            raise ValueError(f"{path}: unsupported witness_schema_version {payload.get('witness_schema_version')!r}")
+        from docs.research.band22_registration_20260805.band22_v2_adapter import load_band22_v2_witness
+        return load_band22_v2_witness(path, project_root=PROJECT_ROOT)
     raw_solution = payload.get("solution")
     if not isinstance(raw_solution, Mapping):
         raise ValueError(f"{path}: missing 'solution' object")
@@ -496,6 +507,8 @@ def load_witness_solution(path: Path) -> Tuple[Dict[str, Dict[str, Any]], Dict[s
     meta = {
         "path": str(path),
         "sha256": _sha256_file(path),
+        "witness_schema_version": None,
+        "schema_dispatch": "legacy_solution",
         "schema_note": payload.get("schema_note"),
         "pose_idx_basis": payload.get("pose_idx_basis"),
         "facility_count": payload.get("facility_count"),
@@ -513,6 +526,8 @@ def validate_layout_structure(
     ghost_h: int,
     ghost_anchor_x: int,
     ghost_anchor_y: int,
+    active_terminal_cells: Optional[Sequence[Any]] = None,
+    route_component_cells: Optional[Sequence[Any]] = None,
 ) -> Dict[str, Any]:
     """Source-owned fixed-layout structural validator (fail-closed).
 
@@ -527,7 +542,8 @@ def validate_layout_structure(
       witness's (a silent pool-order shift would otherwise feed the gates a
       layout nobody vetted);
     * bodies are inside the grid and pairwise disjoint;
-    * the ghost rectangle contains no facility body and no routing terminal.
+    * the ghost rectangle contains no facility body, active terminal, or route
+      component.  Merely possible pose ports are telemetry, not blockers.
 
     Master hard constraints beyond geometry (power coverage, optional caps,
     placement rules) are covered by ``validate_master_feasibility``.
@@ -677,15 +693,30 @@ def validate_layout_structure(
     for cell in sorted(ghost_cells & set(occupied_owner)):
         fail("ghost_rect_contains_body", cell=list(cell), owner=occupied_owner[cell])
 
-    # Strict emptiness (owner adjudication 2026-08-05): nothing at all may sit
-    # in the hole, belts included.  Stored port coordinates are front/belt cells
-    # by identity semantics, so a terminal inside the ghost is a guaranteed
-    # routing cell inside the ghost.  The certified gates would reject this
-    # anyway — several stages later, as an opaque ``front_blocked``.  Saying so
-    # here costs nothing and names the actual instance.
-    ghost_terminal_owner: Dict[Tuple[int, int], str] = {}
+    def audited_cells(values: Optional[Sequence[Any]], kind: str) -> Set[Tuple[int, int]]:
+        cells: Set[Tuple[int, int]] = set()
+        for index, raw in enumerate(values or []):
+            try:
+                if len(raw) != 2:
+                    raise ValueError
+                cell = int(raw[0]), int(raw[1])
+            except (KeyError, TypeError, ValueError):
+                fail(f"malformed_{kind}", index=index)
+                continue
+            cells.add(cell)
+        for cell in sorted(cells & ghost_cells):
+            fail(f"ghost_rect_contains_{kind}", cell=list(cell))
+        return cells
+
+    active_cells = audited_cells(active_terminal_cells, "active_terminal")
+    audited_cells(route_component_cells, "route_component")
+
+    # PROJECT_LOCK.md:404: a physical port that binding may leave inactive does
+    # not make its pose infeasible.  Keep all selected-pose candidate ports as
+    # audit telemetry, but only the adapter-projected active terminals above are
+    # required to stay outside the hole.
+    candidate_ports_in_ghost: List[Tuple[int, int]] = []
     for instance_id, entry in solution.items():
-        iid = str(instance_id)
         facility_type = str(entry.get("facility_type", ""))
         pose_idx = entry.get("pose_idx")
         pool = facility_pools.get(facility_type) or []
@@ -699,13 +730,7 @@ def validate_layout_structure(
                 except (KeyError, TypeError, ValueError):
                     continue
                 if cell in ghost_cells:
-                    ghost_terminal_owner.setdefault(cell, f"{iid}.{field}")
-    for cell in sorted(ghost_terminal_owner):
-        fail(
-            "ghost_rect_contains_routing_terminal",
-            cell=list(cell),
-            owner=ghost_terminal_owner[cell],
-        )
+                    candidate_ports_in_ghost.append(cell)
 
     return {
         "ok": not problems,
@@ -715,6 +740,8 @@ def validate_layout_structure(
         "optional_entries": len(optional_ids),
         "body_cells": len(occupied_owner),
         "ghost_cells": len(ghost_cells),
+        "candidate_physical_ports_inside_ghost": len(candidate_ports_in_ghost),
+        "inactive_candidate_ports_inside_ghost": None if active_terminal_cells is None else sum(cell not in active_cells for cell in candidate_ports_in_ghost),
         "problem_count": len(problems),
         "problems": problems[:50],
     }
@@ -753,6 +780,27 @@ def build_ghost_pick(
     }
 
 
+def resolve_live_ghost_domain_index(master: Any, *, anchor_x: int, anchor_y: int) -> int:
+    """Resolve the live gate index; terminal fixed-witness consumers require the distinct unfiltered identity."""
+    u_vars = getattr(master, "u_vars", {}) or {}
+    ghost_domains = list(getattr(master, "_ghost_domains", []) or [])
+    if not u_vars or not ghost_domains:
+        raise ValueError("the built master has no live ghost anchor domain")
+    matches: List[int] = []
+    for idx in u_vars:
+        if isinstance(idx, bool) or not isinstance(idx, int) or not 0 <= idx < len(ghost_domains):
+            raise ValueError(f"invalid live ghost-domain index: {idx!r}")
+        anchor = (ghost_domains[idx] or {}).get("anchor") or {}
+        if (int(anchor.get("x", -1)), int(anchor.get("y", -1))) == (anchor_x, anchor_y):
+            matches.append(idx)
+    if len(matches) != 1:
+        raise ValueError(
+            f"ghost anchor ({anchor_x},{anchor_y}) matched {len(matches)} "
+            "entries in the live ghost domain"
+        )
+    return matches[0]
+
+
 # --------------------------------------------------------------------------
 # master feasibility on the fixed layout
 # --------------------------------------------------------------------------
@@ -788,12 +836,6 @@ def validate_master_feasibility(
         "status": None,
         "time_limit_seconds": float(time_limit_seconds),
     }
-
-    log.emit("master_validation", "build_start")
-    t0 = time.perf_counter()
-    master.build()
-    record["build_seconds"] = round(time.perf_counter() - t0, 3)
-    log.emit("master_validation", "build_done", seconds=record["build_seconds"])
 
     delegate = getattr(master, "_coordinate_delegate", None)
     if delegate is None:
@@ -1075,6 +1117,9 @@ class GateWallClockExceeded(Exception):
     """--max-gate-wall-seconds fired: the gate stage is censored, not failed."""
 
 
+class RequestedStageStop(Exception): ...
+
+
 # --------------------------------------------------------------------------
 # verdict
 # --------------------------------------------------------------------------
@@ -1132,6 +1177,7 @@ def classify_verdict(
     harness_exception: Optional[str],
     wall_clock_censored_at: Optional[float] = None,
     master_validation: Optional[Mapping[str, Any]] = None,
+    stop_after: str = "gates",
 ) -> Dict[str, Any]:
     """Controller-status-first classification.
 
@@ -1160,13 +1206,30 @@ def classify_verdict(
     if harness_exception is not None:
         return _verdict("HARNESS_ERROR", harness_exception)
 
+    if stop_after == "intake":
+        return _verdict("INTAKE_ACCEPTED", "intake, mapping, ghost identity and structure passed")
+
     if master_validation is not None and not bool(master_validation.get("confirmed")):
+        master_status = str(master_validation.get("status"))
+        if master_status == "UNKNOWN":
+            return _verdict(
+                "UNKNOWN_CENSORED", "fixed master budget exhausted; gates were not run",
+                censored=True, stage="master_validation",
+                at_seconds=float(master_validation.get("time_limit_seconds", 0.0)),
+            )
+        if master_status == "INFEASIBLE":
+            return _verdict("MASTER_INFEASIBLE", "official fixed-layout master returned INFEASIBLE")
+        if master_status == "MODEL_INVALID":
+            return _verdict("UNKNOWN_STATUS_CONTRACT_VIOLATION", "fixed master returned MODEL_INVALID")
         return _verdict(
             "UNKNOWN_LAYOUT_NOT_MASTER_VALIDATED",
             "the fixed layout did not pass the official master feasibility "
             f"check (status={master_validation.get('status')}); no gate verdict "
             "may be attributed to it",
         )
+
+    if stop_after == "master":
+        return _verdict("MASTER_FEASIBLE", "fully pinned official master is feasible")
 
     if contract_violation:
         return _verdict(
@@ -1398,6 +1461,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ghost-h", type=int, default=DEFAULT_GHOST_H)
     parser.add_argument("--ghost-anchor-x", type=int, default=DEFAULT_GHOST_ANCHOR_X)
     parser.add_argument("--ghost-anchor-y", type=int, default=DEFAULT_GHOST_ANCHOR_Y)
+    parser.add_argument("--stop-after", choices=("intake", "master", "gates"), default="gates")
     parser.add_argument(
         "--binding-seconds",
         type=float,
@@ -1495,6 +1559,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if args.memory_sample_interval <= 0:
         print("--memory-sample-interval must be positive", file=sys.stderr, flush=True)
         return EXIT_USAGE
+    if args.skip_master_validation and args.stop_after != "gates":
+        print("--skip-master-validation requires --stop-after gates", file=sys.stderr, flush=True)
+        return EXIT_USAGE
 
     # --- audit BEFORE anything is created ------------------------------------
     audit_before = _audit_snapshot()
@@ -1541,6 +1608,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         ),
         "research_only": True,
         "research_only_disclaimer": RESEARCH_ONLY_DISCLAIMER,
+        "requested_stop_after": args.stop_after,
         "run_uuid": run_uuid,
         "run_dir": str(run_dir),
         "started_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -1577,6 +1645,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     wall_clock_censored_at: Optional[float] = None
     master_validation: Optional[Dict[str, Any]] = None
     gate_returned_solution: Optional[bool] = None
+    completed_stage = "none"
     exit_code = EXIT_OK
 
     try:
@@ -1585,22 +1654,40 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         result["witness"] = witness_meta
         log.emit("witness", "loaded", instances=len(solution))
 
-        ghost_pick = build_ghost_pick(
+        v2_input = witness_meta.get("witness_schema_version") == "band22-witness/2"
+        if v2_input:
+            verify_witness_snapshot_identity(result["provenance"].get("witness_sha256"), witness_meta.get("sha256"))
+        v2_ghost = witness_meta.get("ghost") if v2_input else None
+        if v2_input and not isinstance(v2_ghost, Mapping):
+            raise ValueError("v2 adapter did not return its derived ghost geometry")
+        ghost_fields = (("w", "ghost_w"), ("h", "ghost_h"), ("anchor_x", "ghost_anchor_x"), ("anchor_y", "ghost_anchor_y"))
+        explicit_flags = {value.split("=", 1)[0] for value in argv}
+        ghost_flags = {f"--{arg_name.replace('_', '-')}" for _, arg_name in ghost_fields}
+        if v2_input and explicit_flags & ghost_flags:
+            raise ValueError("v2 ghost geometry is witness-derived; CLI ghost overrides are forbidden")
+        if v2_input:
+            for key, arg_name in ghost_fields:
+                setattr(args, arg_name, int(v2_ghost[key]))
+        result["ghost"].update({key: int(getattr(args, arg_name)) for key, arg_name in ghost_fields})
+
+        canonical_ghost_pick = build_ghost_pick(
             ghost_w=args.ghost_w,
             ghost_h=args.ghost_h,
             anchor_x=args.ghost_anchor_x,
             anchor_y=args.ghost_anchor_y,
         )
-        result["ghost"]["pose_idx"] = ghost_pick["pose_idx"]
-        result["ghost"]["pose_idx_source"] = (
+        canonical_ghost_idx = int(canonical_ghost_pick["pose_idx"])
+        if v2_input and int(v2_ghost["canonical_unfiltered_ghost_idx"]) != canonical_ghost_idx:
+            raise ValueError("v2 adapter canonical ghost identity disagrees with official formula")
+        result["ghost"]["canonical_unfiltered_ghost_idx"] = canonical_ghost_idx
+        result["ghost"]["canonical_unfiltered_ghost_idx_source"] = (
             "src/search/pr2_l0_fixed_witness_core.py "
             "_expected_unfiltered_ghost_anchor_index"
         )
-        log.emit("ghost_pick", "computed", pose_idx=ghost_pick["pose_idx"])
+        log.emit("ghost_pick", "canonical_computed", pose_idx=canonical_ghost_idx)
 
-        from src.models.cut_manager import CutManager
         from src.models.master_model import MasterPlacementModel
-        from src.search.benders_loop import ExactSearchSession, LBBDController
+        from src.search.benders_loop import ExactSearchSession
 
         result["env_audit"]["owned_knob_classification"] = _classify_owned_env()
 
@@ -1611,6 +1698,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         result["session_build_seconds"] = session_seconds
         result["artifact_hashes"] = _jsonable(session.artifact_hashes)
         log.emit("session", "build_done", seconds=session_seconds)
+        if v2_input:
+            from docs.research.band22_registration_20260805.band22_v2_adapter import verify_against_session_pins
+
+            verify_against_session_pins(witness_meta.get("actual_source_hashes") or {}, session.artifact_hashes)
+            result["v2_source_hash_session_pin_match"] = True
+            result["v2_binding_projection"] = witness_meta.get("binding_projection")
 
         anchor_filter = (
             [(int(args.ghost_anchor_x), int(args.ghost_anchor_y))]
@@ -1624,9 +1717,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             ghost_rect=(int(args.ghost_w), int(args.ghost_h)),
             ghost_anchor_filter=anchor_filter,
         )
+        master.build()
         master_seconds = round(time.perf_counter() - t1, 3)
         result["master_build_seconds"] = master_seconds
         log.emit("master", "build_done", seconds=master_seconds)
+
+        gate_ghost_idx = resolve_live_ghost_domain_index(
+            master, anchor_x=int(args.ghost_anchor_x), anchor_y=int(args.ghost_anchor_y)
+        )
+        result["ghost"]["gate_ghost_domain_idx"] = gate_ghost_idx
+        gate_ghost_pick = dict(canonical_ghost_pick)
+        gate_ghost_pick["pose_idx"] = gate_ghost_idx
+        log.emit("ghost_pick", "live_resolved", pose_idx=gate_ghost_idx)
 
         structure = validate_layout_structure(
             solution=solution,
@@ -1635,6 +1737,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             ghost_h=int(args.ghost_h),
             ghost_anchor_x=int(args.ghost_anchor_x),
             ghost_anchor_y=int(args.ghost_anchor_y),
+            active_terminal_cells=witness_meta.get("active_terminal_cells"),
+            route_component_cells=witness_meta.get("route_component_cells"),
         )
         result["layout_structure_check"] = structure
         log.emit(
@@ -1650,7 +1754,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 f"({structure['problem_count']} problems); refusing to feed the "
                 "official gates a layout that is not a well-formed master solution"
             )
+        completed_stage = "intake"
 
+        if args.stop_after == "intake":
+            raise RequestedStageStop
         if args.skip_master_validation:
             master_validation = {
                 "mode": "skipped",
@@ -1669,17 +1776,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 log=log,
             )
         result["master_feasibility_check"] = master_validation
+        completed_stage = "master"
+        if args.stop_after == "master" or (
+            not bool(master_validation.get("confirmed"))
+            and not args.skip_master_validation
+        ):
+            raise RequestedStageStop
 
-        if not bool(master_validation.get("confirmed")) and not args.skip_master_validation:
-            raise RuntimeError(
-                "the fixed layout did not pass the official master feasibility "
-                f"check (status={master_validation.get('status')}: "
-                f"{master_validation.get('reason')}); the gates are not run on an "
-                "unvalidated layout"
-            )
+        from src.models.cut_manager import CutManager
+        from src.search.benders_loop import LBBDController
 
         gate_solution: Dict[str, Any] = dict(solution)
-        gate_solution["ghost_pick"] = ghost_pick
+        gate_solution["ghost_pick"] = gate_ghost_pick
 
         result["scratch_checkpoint_dir"] = str(scratch)
         controller = LBBDController(
@@ -1734,10 +1842,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         gate_seconds = round(time.perf_counter() - t2, 3)
         result["gate_wall_seconds"] = gate_seconds
         log.emit("gates", "done", seconds=gate_seconds, status=controller_status)
+        completed_stage = "gates"
 
         raw_proof_summary = getattr(controller, "last_proof_summary", None) or {}
         proof_summary = _jsonable(raw_proof_summary)
         proof_summary_full = _jsonable(raw_proof_summary, max_depth=64, max_list=None)
+    except RequestedStageStop:
+        pass
     except Exception as exc:  # noqa: BLE001 — driver-level failure
         harness_exception = f"{type(exc).__name__}: {exc}"
         controller_status = controller_status or "DRIVER_EXCEPTION"
@@ -1755,6 +1866,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         harness_exception=harness_exception,
         wall_clock_censored_at=wall_clock_censored_at,
         master_validation=master_validation,
+        stop_after=str(args.stop_after),
     )
     if verdict["verdict"] == "HARNESS_ERROR":
         exit_code = EXIT_RUN_FAILURE
@@ -1778,6 +1890,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         exit_code = EXIT_RUN_FAILURE
 
     result["controller_return_status"] = controller_status
+    result["completed_stage"] = completed_stage
     result["harness_exception"] = harness_exception
     result["proof_summary"] = proof_summary
     result["proof_summary_truncation_note"] = (
@@ -1823,13 +1936,23 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     # and the exit code are all decided.
     receipt = {
         "receipt": "band22_registration_driver",
+        "receipt_version": "band22-registration-driver/2",
         "run_uuid": run_uuid,
         "tag": args.tag,
+        "witness_schema_version": (result.get("witness") or {}).get("witness_schema_version"),
+        "requested_stop_after": args.stop_after,
+        "completed_stage": completed_stage,
         "finished_utc": result["finished_utc"],
         "exit_code": exit_code,
         "verdict": verdict["verdict"],
         "censored": verdict["censored"],
         "censored_stage": verdict["censored_stage"],
+        "censored_at_seconds": verdict.get("censored_at_seconds"),
+        "verdict_reason": verdict.get("reason"),
+        "gate_ghost_domain_idx": result["ghost"].get("gate_ghost_domain_idx"),
+        "canonical_unfiltered_ghost_idx": result["ghost"].get("canonical_unfiltered_ghost_idx"),
+        "v2_binding_projection": result.get("v2_binding_projection"),
+        "controller_search_boundary": CONTROLLER_SEARCH_BOUNDARY,
         "controller_return_status": controller_status,
         "binding_status": proof_summary.get("binding_status"),
         "routing_status": proof_summary.get("routing_status"),

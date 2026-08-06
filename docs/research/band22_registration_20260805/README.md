@@ -1,437 +1,273 @@
-# band22 witness → official gate ingestion driver (2026-08-05)
+# band22 v2 witness → official binding/routing gates
 
-`registration_driver.py` takes an externally produced 291-facility layout — the
-band22 witness, already registered onto official candidate-pool poses by the
-alignment probe — validates it against the project's own master model, and then
-runs it through the **binding** and **routing** certification gates. It answers
-one question and only one:
+**Status:** CURRENT research-only adapter contract
 
-> Does the official certified-path machinery accept this fixed layout as a
-> master-feasible, bindable, routable placement?
+**Updated:** 2026-08-05
 
-It is **research-only**. It cannot produce `CANDIDATE_PROPOSED` and it cannot
-produce a durable `CERTIFIED`. See "Legality" below.
+**Validation boundary:** this batch runs the v2 intake/structure rung only. Fixed-master and
+binding/routing results require separate later rungs and must not be inferred from intake success.
 
----
+## Current validated state
 
-## What it runs
+The 2026-08-05 local-time R2 intake run completed under the guarded ladder with verdict
+`INTAKE_ACCEPTED`, exit code `0`, and no censoring. Its authoritative ladder receipt is:
 
-Three stages, in order, each fail-closed. A stage that does not pass stops the
-run; the next stage is never fed an unvalidated input.
+```text
+.artifacts/band22_registration_20260805/
+  ladder-r2-intake-final-20260806T033117Z-6c70aec7/LADDER_RECEIPT.json
+```
 
-| # | stage | code |
+The run registered all 266 mandatory instances plus 23 poles, matched all 219 manufacturing
+binding-domain expectations, and recorded the exact generic accounting `2 active + 12 __unused__`
+inputs and 52 active outputs. The structure check found no violation and reported all 11 R2
+candidate ports inside the hole as inactive telemetry. The live/canonical ghost indices were
+respectively `0` and `225`; source hashes matched the current session pins and the side-effect audit
+was clean. The ladder pin, driver provenance, adapter snapshot, and post-rung witness hash all equal
+`2118debd1f4b9618eb1d672738a1949a5ca52167c16b38a27735f9c75f78ae41`.
+
+Driver wall time was 41.91 seconds, wrapper wall time was 43.12 seconds, sampled `VmHWM` was
+3961.3 MiB, and sampled swap peak was 0. The outer receipt records the acquired prod-scale lock,
+`MemoryMax=24G`, and `MemorySwapMax=0`.
+
+This receipt contains no fixed-master feasibility result and no binding/routing result: rung 2 and
+rung 3 are explicitly unattempted, `master_feasibility_check` and gate timing are absent, and all
+controller/binding/routing statuses are null.
+
+This directory adapts one external `band22-witness/2` placement to the repository's official
+candidate-pool identities, then admits it through a strictly serial three-rung ladder:
+
+1. v2 intake, source-pin verification, pool registration, binding projection, route-schema audit,
+   strict-hole structure check, and live/canonical ghost-index resolution;
+2. the official master with every placement literal fixed to the witness, solved only for feasibility;
+3. the official `LBBDController._run_exact_binding_and_routing` binding/routing gate.
+
+The workflow is research-only. It does not construct a campaign, write a proposal marker, call
+`supervisor_seal()`, invoke a publisher, or create a durable `CERTIFIED`. An in-memory controller
+return named `CERTIFIED` is recorded only as a gate result.
+
+## Claim boundary
+
+The adapter registers the fixed placement and records what the witness says about active ports and
+route components. It does not inject the witness's binding or route as an official fixed solution.
+The controller independently searches its own binding domain and routing model.
+
+Consequently, a successful rung 3 would establish only that the same fixed placement has some
+officially accepted binding and route. It would not establish that those choices are byte-for-byte
+identical to the witness-authored projection or route, and it would not certify throughput,
+optimality, publication eligibility, or a production result.
+
+## Inputs
+
+### Primary: R2
+
+The ladder default is the complete R2 delivery:
+
+```text
+.artifacts/band22_strict_redesign_replies_20260805/
+  r2_strict_empty_v2/band22_strict_empty_v2_delivery/
+  band22_strict_witness_v2.json
+```
+
+Its hole is derived from inclusive ranges, not trusted as independent metadata:
+`x=[3,9]`, `y=[30,35]`, anchor `(3,30)`, width `7`, height `6`, area `42`, short side `6`.
+
+### Backup: R1
+
+R1 is an entire-witness fallback only:
+
+```text
+.artifacts/band22_strict_redesign_replies_20260805/
+  r1_strict42/strict42_band22_v2_delivery/strict42_witness_v2.json
+```
+
+Its hole is `x=[32,38]`, `y=[64,69]`, anchor `(32,64)`, width `7`, height `6`.
+Selecting R1 requires a fresh ladder and fresh receipts. A run never switches witnesses between
+rungs, and no placement, port projection, pole set, or route component may be spliced between R1
+and R2.
+
+### Legacy compatibility
+
+A top-level `witness_schema_version` is version-authoritative: only the exact value
+`band22-witness/2` is accepted. An unknown version is rejected even if the object also contains a
+legacy `solution` field, preventing downgrade dispatch. A versionless object with a `solution`
+mapping follows the retained legacy path.
+
+Legacy ingestion remains traceable historical compatibility. It does not acquire the v2 adapter's
+active-terminal, route-component, or binding-projection evidence merely by passing the old shape.
+
+## v2 adapter contract
+
+`band22_v2_adapter.py` reads the witness as one immutable byte snapshot and decodes strict JSON:
+duplicate keys and non-finite numbers are rejected. It independently snapshots and hashes the
+official pool, mandatory-instance, rules, and generic-I/O artifacts. The actual hashes consumed by
+the adapter must then equal the hashes recorded by the current `ExactSearchSession`; a witness's
+own `source_hashes` object is provenance only and cannot authorize stale bytes.
+
+The mandatory placement set is flattened from:
+
+- 46 `facilities.boundary_ports` entries;
+- one `facilities.protocol_core` object;
+- 219 `facilities.manufacturing` entries.
+
+Those 266 IDs must equal the 266 IDs in
+`data/preprocessed/mandatory_exact_instances.json` exactly. `operation_type` always comes from that
+artifact. Power poles are separately resolved by a unique official pole pose at the same anchor and
+become `pose_optional::power_pole::<pose_id>` entries.
+
+Every facility pose is resolved inside its own facility pool by the full tuple
+`(facility_type, anchor_x, anchor_y, orientation, port_mode)`. `pose_id` is not a global key: its
+string is reused across pools.
+
+| witness family/mode | official `(orientation, port_mode)` |
+|---|---|
+| boundary / `bottom_boundary` | `(1, bottom_base)` |
+| boundary / `left_boundary` | `(0, left_base)` |
+| manufacturing / `north_to_south` | `(0, TB)` |
+| manufacturing / `south_to_north` | `(0, BT)` |
+| 6×4 manufacturing / `west_to_east` | `(1, LR)` |
+| core / `inputs_east_west` | `(1, core_TB_out)` |
+
+Zero or multiple matches are contract failures. The same rule applies to every pole-anchor lookup.
+
+For each of the 219 manufacturing instances, the adapter compares the witness active-port multiset
+with every entry returned by `enumerate_pose_level_port_bindings()` and requires exactly one match.
+The receipt stores the selected normalized domain entry as an expectation for later comparison.
+Generic-slot accounting is separate and exact: two input slots are assigned, twelve are
+`__unused__`, and all 52 required generic-output slots are assigned. The nested facility ports and
+the top-level `active_ports` carrier must agree as an exact duplicate-free multiset.
+
+`route_components` are structural provenance only. Coordinates must be unique and in-grid; the only
+accepted component kinds are `straight`, `turn`, `merger`, and `splitter`; direction sets and arity
+must be well formed; cross or multi-input/multi-output crossing shapes are rejected. These records
+are never presented as an official fixed route.
+
+## f16 strict-hole semantics
+
+The current authority is the strict-empty ruling recorded in `PROJECT_LOCK.md`: hole cells must
+contain none of the following:
+
+- a selected facility body, including a power pole;
+- an active terminal/front;
+- any route component, on ground or elevated layers.
+
+The official routing path restores ghost cells into its occupied/free-grid exclusion through the
+strict ghost provenance. Failure to recover that provenance fails closed; logistics may not pass
+through the hole.
+
+This does not make every physical port printed on a candidate pose active. `PROJECT_LOCK.md` §404
+requires the opposite distinction: a binding may leave physical ports unused, so an inactive
+candidate port inside the hole is not itself an occupant and cannot reject the placement. R2 has 11
+such inactive candidate ports; they are a regression sample and are reported as telemetry. If any
+one of those coordinates becomes an active terminal, the structure rung rejects it.
+
+The pre-f16 claims that `ghost_pick` was routing-inert or that belts could cross the hole are
+superseded and must not be used for current runs.
+
+## Ghost dual-index contract
+
+Two integer identities coexist and must never be aliased:
+
+| field | meaning | consumer |
 |---|---|---|
-| 1 | structural validation | `validate_layout_structure` in this driver |
-| 2 | master feasibility | `src/models/master_model.py` `MasterPlacementModel` — a copy of the official model with every placement literal pinned to the witness, solved for feasibility |
-| 3 | binding + routing gates | `src/models/binding_subproblem.py` `PortBindingModel`; `src/models/routing_subproblem.py` `RoutingSubproblem` (its `solve()` runs `_validate_selected_route_connectivity` as a whole-layout re-verification after CP-SAT FEASIBLE) |
+| `gate_ghost_domain_idx` | index in the built master's live, possibly anchor-filtered `_ghost_domains` | fixed-master pins and official gate solution marker |
+| `canonical_unfiltered_ghost_idx` | identity in the complete unfiltered 70×70 anchor domain | receipt/provenance and terminal fixed-witness interfaces |
 
-**Stage 1 — structural validation.** Every mandatory instance of
-`master.source_instances` must be present exactly once and no unknown instance
-id may appear; the outer key must equal `entry.instance_id`; facility and
-operation types must agree with the instance (mandatory) or with
-`POSE_LEVEL_OPTIONAL_OPERATIONS` (pose-level optional); every `pose_idx` must
-dereference to a pool pose whose `pose_id` and `anchor` equal the witness's;
-bodies must be inside the grid and pairwise disjoint; the ghost rectangle must
-contain no facility body.
+With the default singleton anchor filter, the live gate index is `0`. The canonical unfiltered
+identity is `225` for R2 (`3 × 65 + 30`) and `2144` for R1 (`32 × 65 + 64`). Even when an unfiltered
+build makes the numbers happen to coincide, consumers must select the field by contract rather than
+by numeric equality.
 
-**Stage 2 — master feasibility.** The gates read a layout; they never check
-that the layout satisfies the master's own hard constraints — power coverage,
-optional caps, placement rules, the ghost-body exclusion
-(`master_model.py:4914-4917`). So the witness is *pinned into the official
-master model*: each mandatory group's slot `(x, y, mode)` triple, the C1
-per-pose power-pole booleans (`_create_c1_power_pole_pose_vars` — under the C1
-representation the delegate has no power_pole slot specs at all), every other
-pose-level optional slot (required first, then residual, with unused residual
-slots forced inactive) and the ghost anchor variable.
+## Serial ladder
 
-The pins are applied to a **copy** of the official model proto as domain
-restrictions, with the objective and any stored hints cleared, and that copy is
-solved for feasibility with a fresh `CpSolver`. Three consequences, all
-deliberate: the live master object the gates later read is untouched; the
-master's optimization path plays no part in a feasibility question; and a pin
-whose value lies outside the variable's own domain is caught and reported as
-`PIN_OUTSIDE_VARIABLE_DOMAIN` rather than being written in — writing it would
-*widen* the domain and hide the very violation being looked for. Slot ordering
-mirrors `CoordinateExactMasterDelegate.apply_solution_hint` (poses sorted by
-`_pose_sort_key`, the order the slot symmetry-breaking `order_key` monotonicity
-expects). After a FEASIBLE/OPTIMAL solve every pinned variable is read back and
-must equal its pin; any divergence means the pinning is not binding what it
-claims to bind, and the run stops.
+`run_ladder.py` creates a fresh no-overwrite ladder root, pins one witness path and SHA-256 for the
+whole invocation, and runs independent receipted rungs in order. Before each rung and after each
+child result, it requires the current bytes, adapter snapshot, and driver provenance to match that
+same pin.
 
-Anything other than OPTIMAL/FEASIBLE ends the run before the gates. Passing
-`--skip-master-validation` is allowed for diagnostics but then every verdict is
-forced to `UNKNOWN_LAYOUT_NOT_MASTER_VALIDATED`.
+| rung | driver selector | admission to next rung |
+|---:|---|---|
+| 1 | `--stop-after intake` | exact `INTAKE_ACCEPTED`, uncensored, exit 0 |
+| 2 | `--stop-after master` | exact `MASTER_FEASIBLE`, uncensored, exit 0 |
+| 3 | `--stop-after gates` | always terminal |
 
-**Stage 3 — the gates.** Both are driven through the *official* orchestrator
-method `LBBDController._run_exact_binding_and_routing(iteration, solution,
-diagnostic_flow_status)`, not a re-implementation. That method is the entire
-path from a placement solution to a gate verdict: binding model construction
-from the frozen snapshots, binding solve, `extract_port_specs()`, routing-grid
-construction, routing precheck, routing solve, connectivity re-verification,
-binding-alternative enumeration on routing INFEASIBLE, and the
-`last_proof_summary` bookkeeping. Calling it verbatim is the point — hand-wiring
-those steps would mean the gate verdict was about bytes the harness authored
-rather than bytes the verified chain produced.
+A censored result, infeasibility, contract violation, harness error, invalid audit, missing receipt,
+or any other terminal verdict stops the ladder. There is no automatic retry, budget increase, R1
+fallback, or next-rung execution after censoring.
 
-The master **search** is never run: `max_iterations=1`, the layout is given, and
-the only master solve is the pinned feasibility check of stage 2.
-
-This is the fixed-layout sibling of
-`docs/research/p1_3_m5_convergence_20260708/m5_cell_runner.py`: same
-session→master→`LBBDController` construction, same clean-room env discipline,
-but `run_with_status()` (which searches) is replaced by validation + a single
-gate call.
-
----
-
-## Verdict discipline: the controller is the authority
-
-`_run_exact_binding_and_routing` has many paths where the inner
-`binding_status` / `routing_status` pair looks conclusive but the official
-return value is still `UNKNOWN`:
-
-- both gates FEASIBLE, but power-pole dominance normalization fails →
-  `RUN_STATUS_UNKNOWN` (`benders_loop.py:7766-7786`);
-- binding INFEASIBLE, but the whole-layout nogood was refused because the
-  independent infeasibility re-verifier did not confirm →
-  `RUN_STATUS_UNKNOWN` (`benders_loop.py:6784-6791`);
-- routing exhausted, same refusal → `RUN_STATUS_UNKNOWN`
-  (`benders_loop.py:7990-7997`).
-
-So the driver classifies from the returned controller status first:
-
-| requirement | rule |
-|---|---|
-| any conclusion | master feasibility confirmed, no harness exception, no `subproblem_status_contract_violation` |
-| positive (`BOTH_GATES_FEASIBLE`) | controller returned `CERTIFIED` **and** returned a non-empty solution **and** binding/routing both FEASIBLE |
-| negative (`BINDING_INFEASIBLE`, `ROUTING_REJECTED_ALL_BINDINGS`) | controller returned `master_cut_added_continue` **and** `independent_infeasibility_reverifier.confirmed is true` |
-| official `UNKNOWN` | always reported as an `UNKNOWN_*` verdict, whatever the inner statuses say |
-
-`src/tests/test_band22_registration_driver_verdict_v1.py` pins this, including
-the three counterexamples that the earlier status-only classifier got wrong
-(UNKNOWN + FEASIBLE/FEASIBLE, UNKNOWN + INFEASIBLE, UNKNOWN + EXHAUSTED/
-ALL_INFEASIBLE).
-
-Censoring is bookkeeping, not failure, but only a real budget stop counts as
-censoring: `binding_subproblem.py:1412-1416` collapses every non-FEASIBLE,
-non-INFEASIBLE CP-SAT status (including `MODEL_INVALID`) into the string
-`"TIMEOUT"`, so the driver reads the raw `solver_status` back out. A `TIMEOUT`
-whose raw status is not `UNKNOWN` is reported as
-`UNKNOWN_STATUS_CONTRACT_VIOLATION`, not as a censored budget hit.
-
-### Verdicts
-
-| verdict | meaning |
-|---|---|
-| `BOTH_GATES_FEASIBLE` | master-feasible layout, controller returned CERTIFIED with a solution, binding FEASIBLE **and** routing FEASIBLE including the whole-layout connectivity re-check. A gate result, not a certification |
-| `BINDING_INFEASIBLE` | binding rejected the layout and the independent re-verifier confirmed it |
-| `ROUTING_REJECTED_ALL_BINDINGS` | binding alternatives exhausted, routing rejected all of them, independent re-verifier confirmed |
-| `UNKNOWN_CENSORED` | a budget/cap/wall-clock guard fired — **nothing is proved in either direction** |
-| `UNKNOWN_LAYOUT_NOT_MASTER_VALIDATED` | stage 2 was skipped or did not confirm |
-| `UNKNOWN_STATUS_CONTRACT_VIOLATION` | a subproblem reported a status its contract does not allow |
-| `UNKNOWN_LOOP_WANTED_A_NEW_LAYOUT` / `UNKNOWN_OTHER` | inconclusive; read `proof_summary` |
-| `HARNESS_ERROR` | the driver or the gate call raised; `harness_exception` has type and message; exit code 1 |
-| `INVALIDATED_SIDE_EFFECT_AUDIT` | the run touched the proof-output tree; the pre-audit verdict is preserved under `verdict_before_audit` but must not be used |
-
----
-
-## Input
-
-Default `--solution`:
-`.artifacts/w0_fixrerun_20260804/band22_alignment/registration_placement_solution.json`
-
-291 entries of the shape `{instance_id, facility_type, operation_type, pose_idx,
-pose_id, anchor}` — 266 mandatory instances plus 25 `pose_optional::power_pole::…`
-poles. `pose_idx` indexes `data/preprocessed/candidate_placements.json`
-(`facility_pools[<type>]`, list order; the frozen 54,467,709-byte artifact). A
-witness carrying its own `ghost_pick` is rejected: the driver computes it.
-
-### ghost_pick
-
-The band22 hole is 6×7 at anchor (1, 51) — cells x∈[1,6], y∈[51,57] — per
-`.artifacts/w0_fixrerun_20260804/band22_alignment/max_empty_rect_for_this_placement.json`.
-
-Its `pose_idx` is **computed, never hand-written**, by importing
-`_expected_unfiltered_ghost_anchor_index` from
-`src/search/pr2_l0_fixed_witness_core.py` (the same function the terminal
-witness verifier checks against). For 70×70 / 6×7 / (1,51) that yields
-`1 * (70-7+1) + 51 = 115`.
-
-`ghost_pick` is inert for both gates by construction — `_extract_occupied_cells`
-and `_extract_occupied_owner_by_cell` skip it, `PortBindingModel` records it as
-an ignored non-facility placement marker, and the power-pole normalization
-special-cases it. That is precisely why the ghost predicate has to be checked
-somewhere else, and it is: structurally in stage 1 and as a master constraint in
-stage 2.
-
-**Semantics note.** The certified ghost predicate is *no facility body* inside
-the rectangle; belts are not bodies. The routing gate's free-cell domain is the
-grid minus facility bodies, so routed belts may legitimately cross the ghost
-(the alignment probe measured 22 such cells for this witness). The driver does
-not add a ghost exclusion to routing — doing so would make the harness
-*stricter than the live chain*, which is its own class of bug.
-
----
-
-## Running it
-
-Short/diagnostic runs can be started directly:
+Run only the intake rung:
 
 ```bash
-env -u PYTHONPATH -u PYTHONHOME /home/zhuran24/zmd-pj/.venv-uvbolt-backup/bin/python \
-  docs/research/band22_registration_20260805/registration_driver.py \
-  --tag smoke --binding-seconds 20 --routing-seconds 10 \
-  --binding-alt-cap 3 --max-gate-wall-seconds 300
+.venv/bin/python docs/research/band22_registration_20260805/run_ladder.py \
+  --tag r2-intake --max-rung 1
 ```
 
-Anything long goes through the cgroup wrapper (next section). The driver
-refuses to start if **any** `EXACT_*` variable is inherited — run it under
-`env -u …` or the wrapper.
-
-### Options that matter
-
-| flag | default | meaning |
-|---|---|---|
-| `--binding-seconds` | 600 | CP-SAT limit **per binding solve** |
-| `--routing-seconds` | 600 | CP-SAT limit **per routing solve** |
-| `--master-validation-seconds` | 600 | CP-SAT limit for the pinned master feasibility solve |
-| `--skip-master-validation` | off | diagnostic only; forces `UNKNOWN_LAYOUT_NOT_MASTER_VALIDATED` |
-| `--binding-alt-cap` | 0 (off) | `EXACT_B1_BINDING_ALT_CAP`; caps the binding-alternative enumeration loop |
-| `--max-gate-wall-seconds` | 0 (off) | best-effort in-process SIGALRM guard around the gate stage |
-| `--workers` | 1 | `EXACT_CP_SAT_WORKERS` |
-| `--ghost-anchor-filter` / `--no-ghost-anchor-filter` | on | build the master ghost domain for the one witness anchor only |
-| `--memory-sample-interval` | 0.5 | seconds between memory samples (clamped ≤ 1.0) |
-
-**Why a wall-clock guard exists, and why it is not the envelope.** The per-solve
-budgets do not bound the gate stage: when routing rejects a binding the loop
-adds a nogood and asks binding for another one, and that cycle is unbounded.
-`--binding-alt-cap` and `--max-gate-wall-seconds` bound it, and both are
-bookkept as *censored*, never as a verdict. But a Python `SIGALRM` cannot
-interrupt a native CP-SAT call and its exception can be swallowed by a broad
-`except Exception` in official code, so it is a convenience, not a boundary. The
-boundary is the cgroup.
-
-**Why the ghost anchor filter is on by default.** The full domain for a 6×7 rect
-is 65×64 = 4160 anchors, and building it costs real time and RAM. The layout
-under test fixes the ghost anchor anyway (stage 2 constrains the ghost variable
-to the witness anchor), so narrowing the domain to that same anchor cannot
-change this layout's satisfiability — it only saves build cost. The choice is
-recorded as `ghost.anchor_filter_applied`. It is not a certified-search
-configuration and must not be reused as one; the driver never sets
-`EXACT_MASTER_GHOST_ANCHOR_FILTER`.
-
-### Resource envelope (`run_guarded.sh`)
-
-The memory sampler observes; it does not limit. The M5/C1 lesson was that a soft
-cap does not stop an OOM and a coarse sampler reports a 60 GB spike as "gentle"
-(`docs/research/p1_3_m5_convergence_20260708/notes_phase1.md:120`,
-`m5_c1_memory_attribution_20260710.md:129`). So a real run goes through the
-wrapper, which puts the whole process tree in a transient systemd scope:
+Run the complete ladder with explicit budgets:
 
 ```bash
-docs/research/band22_registration_20260805/run_guarded.sh \
-  --tag full --outer-seconds 21600 --memory-max 24G -- \
+.venv/bin/python docs/research/band22_registration_20260805/run_ladder.py \
+  --tag r2-official-gates --max-rung 3 \
+  --master-validation-seconds 600 \
   --binding-seconds 600 --routing-seconds 600 \
-  --master-validation-seconds 1800 --max-gate-wall-seconds 20400
+  --max-gate-wall-seconds 20400 --outer-seconds 21600
 ```
 
-It sets `MemoryMax`, `MemorySwapMax=0` and `RuntimeMaxSec`, unsets every
-inherited `EXACT_*`, refuses to start unless the inner
-`--max-gate-wall-seconds` is at least 600 s below `--outer-seconds` (so the
-driver still has time to write its result, fsync it and land its receipt), and
-writes its own `*.OUTER_RECEIPT.json` afterwards. If the inner process was
-OOM-killed or hit `RuntimeMaxSec` it never wrote a receipt of its own, and the
-outer receipt records `state: FAILED_*` — which is the only correct reading of
-"no verdict exists for this run".
+Every rung goes through `run_guarded.sh`. The wrapper takes a nonblocking repository-wide singleton
+lock at `/run/user/$UID/zmd-pj-prod-scale-solve.lock`, records the holder identity in its outer
+receipt, and fails closed on contention. Its default resource envelope remains `MemoryMax=24G` and
+`MemorySwapMax=0`.
 
----
+Direct driver invocations are diagnostic surfaces; a long or production-scale-shaped run must use
+the guarded ladder or wrapper. All Python entry points use `.venv/bin/python`.
 
-## Output
+## Budgets and censoring
 
-Every run creates a **fresh unique directory**
-`.artifacts/band22_registration_20260805/<tag>-<utc>-<uuid8>/`. Nothing
-pre-existing is ever overwritten or unlinked. `--out-dir` must resolve to
-`.artifacts/band22_registration_20260805` or a subdirectory of it, and `--tag`
-must be a strict leaf name (`[A-Za-z0-9][A-Za-z0-9._-]{0,63}`) — both are
-enforced, so no argument can steer a write or a delete into `data/checkpoints`
-or `data/solutions`. `TMPDIR`/`TEMP`/`TMP` and `tempfile.tempdir` are
-re-pointed into the run directory as well, so no library temp file (CutManager's
-`benders_cuts.jsonl` included) can land outside it.
+Binding and routing defaults are 600 seconds per solve. They are not a bound on the entire
+alternative-enumeration loop, so the gate wall cap and the wrapper's outer runtime cap remain
+separate explicit parameters.
 
-| file | content |
-|---|---|
-| `<tag>_result.json` | the full record (atomic: temp file + fsync + `os.replace` + dir fsync) |
-| `<tag>_stages.json` | stage timeline only |
-| `<tag>_memory.jsonl` | one line per memory sample: `VmRSS` / `VmHWM` / `VmSwap` / `VmPeak` in kB |
-| `<tag>_proof_summary_full.json` | the controller's `last_proof_summary`, untruncated |
-| `<tag>.DONE` | terminal receipt (JSON), written last |
-| `scratch/` | the `CutManager` checkpoint dir for this run |
-| `scratch_tmp/` | this run's `TMPDIR` |
+The official binding/routing first-run cost for the current v2 fixed witness is not known. A prior
+M5 run taking at least 33 hours belongs to a different layout and path: it is a risk warning, not an
+estimate that can be transferred here. This workflow makes no promise that the current run will be
+far shorter than 33 hours.
 
-`<tag>.LATEST` in the parent directory points at the newest run directory for
-that tag; the run directory itself is the authority.
+A fixed-master, binding, routing, alternative-cap, or driver-wall budget stop is
+`UNKNOWN_CENSORED`: it proves neither feasibility nor infeasibility, and the ladder stops. An OOM or
+outer `RuntimeMaxSec` kill that prevents the inner receipt is not a censored solver verdict; it means
+no verdict exists for that rung.
 
-The **receipt** is the completion protocol. It is written atomically after the
-verdict, the side-effect audit and the exit code are all decided, and carries:
-`run_uuid`, `exit_code`, `verdict`, `censored`, `controller_return_status`,
-binding/routing statuses, `master_feasibility_confirmed`,
-`side_effect_audit_clean`, `harness_exception`, `result_path`,
-`result_sha256`, `vm_hwm_mb`, `vm_swap_peak_mb`, `total_wall_seconds`. Absence
-of a receipt means the run died without a verdict — check the outer receipt.
+## Receipts and output
 
-`<tag>_result.json` carries, among others:
+Runtime output stays under `.artifacts/band22_registration_20260805/`. Each driver invocation creates
+a unique run directory, writes a hashed result JSON, and atomically lands `<tag>.DONE` last. Together
+the result and terminal receipt record:
 
-- `provenance` — `run_uuid`, full `argv`, driver path + SHA-256, witness path +
-  SHA-256, interpreter, OR-Tools version, platform, git HEAD and dirty state.
-  (The certified source digest in `exact_campaign.py:300` covers root `*.py`,
-  `src/` and `scripts/` only; this driver lives under `docs/research/`, so
-  `provenance.driver_sha256` is the binding record for it.)
-- `env_audit` — inherited `EXACT_*` (always empty; a non-empty set aborts before
-  anything is modified) and how the official allowlists classify the two owned
-  knobs
-- `verdict` — `{verdict, censored, censored_stage, censored_at_seconds, reason}`
-- `layout_structure_check`, `master_feasibility_check`
-- `gate_results` — binding/routing statuses plus the **raw** CP-SAT statuses,
-  `enumerated_bindings`, `routing_attempts`,
-  `independent_infeasibility_reverifier`, `subproblem_status_contract_violation`
-- `proof_summary` — the controller's `last_proof_summary`, depth/length coerced.
-  Truncation is explicit: a truncated list becomes
-  `{"__truncated__": "max_list", "original_length": N, "kept": 200, "items": […]}`.
-  The untruncated dump is `<tag>_proof_summary_full.json`
-- `memory` — sidecar path, sample interval, `vm_hwm_mb`, `vm_swap_peak_mb`,
-  and `observation_only: true`
-- `side_effect_audit`, `session_build_seconds`, `master_build_seconds`,
-  `gate_wall_seconds`, `total_wall_seconds`, `exit_code`
-- `artifact_hashes` — the frozen-artifact snapshot the session was built from
+- input schema, immutable witness identity, source identities, and route-schema audit in the result;
+- the v2 binding projection and independent-controller boundary in both the result and `.DONE`;
+- `gate_ghost_domain_idx` and `canonical_unfiltered_ghost_idx` as separate fields;
+- completed/requested stage, verdict, censoring stage/budget, and controller return;
+- fixed-master and gate summaries when those stages were actually run;
+- wall time, sampled `VmHWM`, swap peak, and the side-effect audit result.
 
-### Exit codes
+The ladder lands one `LADDER_RECEIPT.json` containing every rung's attempted state, verdict,
+duration, `VmHWM`, censoring fields, continuation decision, and a terminal stop reason. A rung not
+run is explicitly listed as unattempted.
 
-`0` verdict computed and the audit is clean · `1` harness error, gate exception
-or a dirty side-effect audit · `2` usage/containment/env refusal (nothing was
-run and no run directory holds a partial answer).
+The wrapper writes a separate no-overwrite outer receipt even if the inner process is killed. An
+inner `.DONE` receipt is authoritative for a driver verdict; a convenience `.LATEST` pointer is not.
 
----
+## Side-effect and authority boundaries
 
-## Legality
+The driver snapshots `data/checkpoints`, `data/solutions`, and `data/blueprints` before and after the
+run. Any change invalidates the verdict. `CutManager`, when rung 3 is reached, receives only a
+run-local scratch directory. All temporary paths are redirected under the fresh run directory.
 
-- No campaign object is constructed and no campaign API is called: no `save()`,
-  no `mark_campaign_stopped()`, no `supervisor_seal()`, no publisher, and no
-  proposal marker — so neither `CANDIDATE_PROPOSED` nor a durable `CERTIFIED`
-  can be produced. (`ExactCampaign` *is* pulled in transitively by importing
-  `benders_loop`; the claim is that no mutation or mint API on it is on this
-  code path, not that the name never enters the process.)
-- When both gates pass, `_run_exact_binding_and_routing` *returns* the in-memory
-  string `"CERTIFIED"`. The driver records it verbatim as
-  `controller_return_status` next to `research_only_disclaimer`, which states
-  plainly that it is a function return value and not a certification. Do not
-  quote that field without the disclaimer.
-- `CutManager` is given `scratch/` inside the run directory; `data/checkpoints`
-  is never passed to it and cannot be reached by argument.
-- `side_effect_audit` snapshots the recursive entry list and mtimes of
-  `data/checkpoints`, `data/solutions` and `data/blueprints` **before anything
-  is created** and again **after every artifact has landed**, so both stale-file
-  deletion and late writes are inside the audited window. A dirty audit
-  overrides the verdict (`INVALIDATED_SIDE_EFFECT_AUDIT`) and the exit code.
-- Env: the certified *operational* allowlist is an allowlist for production
-  entry points, not a research-output whitelist — several allowlisted knobs
-  (`EXACT_BINDING_DUMP_STATE`, `EXACT_SUBPROBLEM_REPEAT_LOG_DIR`, …) make
-  official code write telemetry outside this driver's audited tree. So the
-  driver keeps its own narrow contract: it owns exactly `EXACT_CP_SAT_WORKERS`
-  and `EXACT_B1_BINDING_ALT_CAP`, sets them itself, and **fails closed on any
-  inherited `EXACT_*` variable before modifying anything**.
+The driver rejects inherited `EXACT_*` variables before mutation and owns only the worker and
+binding-alternative-cap controls it sets itself. It never calls the master search loop; rung 2 solves
+only a copy of the official master with every relevant literal pinned.
 
----
+## Superseded v1 evidence
 
-## Operational hardening
-
-1. **Invisible progress.** `PYTHONUNBUFFERED=1` is re-asserted in-process, every
-   stage line is flushed, and the controller's heartbeat callback is wired to
-   the same printer — so binding build, binding solve, routing precheck, routing
-   build and routing solve all stream live as `gate.<stage>:<event>`.
-2. **"Is it dead or thinking?"** The terminal receipt (`<tag>.DONE`) is the
-   completion signal, and it is written only after the verdict, audit and exit
-   code are fixed. If the process dies first there is no receipt — and the
-   wrapper's outer receipt says why.
-3. **Memory.** A daemon thread samples `/proc/self/status` at ≤ 1 s, tracking
-   `VmHWM` and `VmSwap` peaks. That is observation; the limit is the cgroup in
-   `run_guarded.sh`.
-
----
-
-## Smoke test (binding + routing-precheck only)
-
-The pipeline was exercised with deliberately tiny budgets and a binding-
-alternative cap of 3. This is a **binding/precheck smoke**: the cap stopped
-enumeration while every candidate binding was still being rejected by the
-routing *precheck*, so `routing_attempts` was 0, `routing_summary` was null, and
-CP-SAT routing, the connectivity guard and the whole-layout re-verification were
-never entered. It proves the wiring up to that point, nothing more.
-
-```bash
-env -u PYTHONPATH -u PYTHONHOME /home/zhuran24/zmd-pj/.venv-uvbolt-backup/bin/python \
-  docs/research/band22_registration_20260805/registration_driver.py \
-  --tag smoke2 --binding-seconds 20 --routing-seconds 10 \
-  --binding-alt-cap 3 --max-gate-wall-seconds 300 \
-  --master-validation-seconds 900
-```
-
-Result:
-`.artifacts/band22_registration_20260805/smoke6-20260805T142200Z-aab86cdc/`
-(ortools 9.15.6755, HEAD `4960bcd`).
-
-    verdict            UNKNOWN_CENSORED (binding_alternative_enumeration @ cap 3)
-    exit code          0
-    structural check   ok — 266/266 mandatory, 25 optional poles, 3644 body
-                       cells, 0 problems, ghost 42 cells body-free
-    master feasibility OPTIMAL in 1.14s, 6104 pinned variables
-                       (incl. 4761 C1 power-pole booleans), 0 pin divergences
-    binding_status     ALT_CAP_REACHED (raw CP-SAT status OPTIMAL)
-    routing_status     PRECHECK_FRONT_BLOCKED, routing_attempts 0
-    ghost pose_idx     115 (filtered domain rect_idx 0)
-    side_effect_audit  clean
-    timings            session 30.0s, master build 9.5s, master validation
-                       1.1s, gates 0.19s, total 41.2s
-    VmHWM              4.35 GB, VmSwap 0
-
-The master feasibility result is worth stating on its own: the band22 witness
-**is** a feasible master placement — power coverage, optional caps, placement
-rules and the 6×7 ghost-body exclusion at (1,51) all hold with every placement
-literal pinned. That is a fact about the layout, not a gate verdict.
-
-The verdict is censored by design — the cap was set to 3 so the smoke would
-finish quickly — and it says **nothing** about whether the layout is bindable or
-routable.
-
-One observation the smoke surfaced, worth carrying into the real run but not a
-conclusion: all three enumerated bindings (3 in ~0.16 s) were rejected by the routing precheck
-with `status: front_blocked`, and the blockers were the witness's own power
-poles sitting on the front cell of a port the binding gate had activated (e.g.
-`refinery_steel_016` port (53,61) direction N, blocked by
-`pose_optional::power_pole::p_x53_y61_o0_m_omni`). The alignment probe had
-already counted 11 such pole-on-front collisions but classified them as
-*inactive* ports, which official semantics permit. Whether these become live
-front-blocks under every binding, or whether some untried binding avoids them,
-is exactly what an uncapped run has to answer.
-
-A run that actually exercises routing (`routing_attempts >= 1`, a non-empty
-`routing_summary`, routing build/solve and connectivity-guard telemetry) has not
-been produced yet.
-
-### Real run
-
-Uncapped binding alternatives, full budgets, cgroup-bounded, detached:
-
-```bash
-setsid nohup docs/research/band22_registration_20260805/run_guarded.sh \
-  --tag full --outer-seconds 21600 --memory-max 24G -- \
-  --binding-seconds 600 --routing-seconds 600 \
-  --master-validation-seconds 1800 --max-gate-wall-seconds 20400 \
-  > .artifacts/band22_registration_20260805/full.outer.driver.log 2>&1 &
-```
-
-The binding-alternative loop has no natural bound. In the smoke it turned over
-about 20 rejected bindings per second, all rejected at the precheck before
-CP-SAT routing ever ran; once a binding survives the precheck, each routing
-solve can cost up to `--routing-seconds` instead. Whatever budget the run hits,
-the result is `UNKNOWN_CENSORED` with the stage and budget recorded — never a
-rejection.
+Earlier smoke/full directories in `.artifacts/band22_registration_20260805/` used the legacy aligned
+`.solution` input and pre-f16 interpretation. They remain historical evidence for those exact bytes,
+but they do not establish R2 intake, fixed-master feasibility, binding feasibility, or routing
+feasibility. Current v2 status must be read only from a v2 driver/ladder receipt.

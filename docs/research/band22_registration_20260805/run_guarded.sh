@@ -17,10 +17,11 @@
 # default check below demands >= 600s) so the driver can still write its
 # result, fsync it and land its terminal receipt.
 set -u -o pipefail
+umask 077
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$HERE/../../.." && pwd)"
-PY="$ROOT/.venv-uvbolt-backup/bin/python"
+PY="$ROOT/.venv/bin/python"
 OUT_ROOT="$ROOT/.artifacts/band22_registration_20260805"
 
 TAG="full"
@@ -44,6 +45,12 @@ fi
 if ! command -v systemd-run >/dev/null 2>&1; then
   echo "systemd-run is required: this wrapper IS the resource envelope" >&2; exit 2
 fi
+if ! command -v flock >/dev/null 2>&1; then
+  echo "flock is required: prod-scale solves must hold the global mutex" >&2; exit 2
+fi
+if ! [[ "$OUTER_SECONDS" =~ ^[1-9][0-9]*$ ]]; then
+  echo "--outer-seconds must be a positive integer" >&2; exit 2
+fi
 
 # The inner gate guard must expire before the outer runtime limit.
 INNER_GUARD=0
@@ -65,11 +72,47 @@ fi
 
 mkdir -p "$OUT_ROOT"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-UNIT="band22reg-${TAG}-${STAMP}"
+UNIT="band22reg-${TAG}-${STAMP}-$$"
 OUTER_LOG="$OUT_ROOT/${UNIT}.outer.log"
 OUTER_RECEIPT="$OUT_ROOT/${UNIT}.OUTER_RECEIPT.json"
+LOCK_PATH="/run/user/$UID/zmd-pj-prod-scale-solve.lock"
+LOCK_STARTED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-echo "unit=$UNIT memory_max=$MEMORY_MAX outer_seconds=$OUTER_SECONDS" | tee "$OUTER_LOG"
+if [[ ! -d "/run/user/$UID" || -L "$LOCK_PATH" ]]; then
+  echo "prod-scale lock path is unavailable or unsafe: $LOCK_PATH" >&2; exit 2
+fi
+exec {LOCK_FD}<>"$LOCK_PATH" || {
+  echo "cannot open prod-scale lock: $LOCK_PATH" >&2; exit 2;
+}
+if ! flock -n "$LOCK_FD"; then
+  HOLDER="$(tr '\n' ' ' < "$LOCK_PATH" 2>/dev/null || true)"
+  [[ -n "$HOLDER" ]] || HOLDER="holder identity unavailable"
+  echo "prod-scale lock busy: $LOCK_PATH; holder: $HOLDER" >&2
+  exit 2
+fi
+: > "$LOCK_PATH"
+printf 'pid=%s unit=%s tag=%s started_utc=%s\n' \
+  "$$" "$UNIT" "$TAG" "$LOCK_STARTED" >&"$LOCK_FD"
+
+if [[ -e "$OUTER_LOG" || -e "$OUTER_RECEIPT" ]]; then
+  echo "refusing to overwrite outer artifact for unit $UNIT" >&2; exit 2
+fi
+: > "$OUTER_LOG"
+
+DRIVER_OUT_DIR="$OUT_ROOT"
+for ((i = 0; i < ${#DRIVER_ARGS[@]}; i++)); do
+  case "${DRIVER_ARGS[$i]}" in
+    --out-dir) DRIVER_OUT_DIR="${DRIVER_ARGS[$((i + 1))]:-$OUT_ROOT}" ;;
+    --out-dir=*) DRIVER_OUT_DIR="${DRIVER_ARGS[$i]#--out-dir=}" ;;
+  esac
+done
+[[ "$DRIVER_OUT_DIR" = /* ]] || DRIVER_OUT_DIR="$ROOT/$DRIVER_OUT_DIR"
+DRIVER_OUT_DIR="$(readlink -m -- "$DRIVER_OUT_DIR")"
+LATEST_PTR="$DRIVER_OUT_DIR/${TAG}.LATEST"
+LATEST_BEFORE=""
+[[ -f "$LATEST_PTR" ]] && IFS= read -r LATEST_BEFORE < "$LATEST_PTR"
+
+echo "unit=$UNIT memory_max=$MEMORY_MAX outer_seconds=$OUTER_SECONDS" | tee -a "$OUTER_LOG"
 
 STARTED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 systemd-run --user --scope --unit="$UNIT" \
@@ -83,37 +126,54 @@ systemd-run --user --scope --unit="$UNIT" \
 RC=$?
 FINISHED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-LATEST_PTR="$OUT_ROOT/${TAG}.LATEST"
 RUN_DIR=""
-[[ -f "$LATEST_PTR" ]] && RUN_DIR="$(cat "$LATEST_PTR")"
+[[ -f "$LATEST_PTR" ]] && IFS= read -r RUN_DIR < "$LATEST_PTR"
 INNER_RECEIPT=""
-[[ -n "$RUN_DIR" && -f "$RUN_DIR/${TAG}.DONE" ]] && INNER_RECEIPT="$RUN_DIR/${TAG}.DONE"
+if [[ -n "$RUN_DIR" && "$RUN_DIR" != "$LATEST_BEFORE" && -f "$RUN_DIR/${TAG}.DONE" ]]; then
+  INNER_RECEIPT="$RUN_DIR/${TAG}.DONE"
+fi
 
 # 137 = SIGKILL (the OOM killer or RuntimeMaxSec), 124/143 = SIGTERM paths.
 STATE="COMPLETED"
 if [[ -z "$INNER_RECEIPT" ]]; then STATE="FAILED_NO_INNER_RECEIPT"; fi
 if [[ $RC -ne 0 && $RC -ne 1 ]]; then STATE="FAILED_SIGNAL_OR_LIMIT"; fi
 
-python3 - "$OUTER_RECEIPT" <<EOF
-import json, sys
-json.dump({
+if ! "$PY" - "$OUTER_RECEIPT" "$UNIT" "$STATE" "$RC" "$STARTED" \
+    "$FINISHED" "$MEMORY_MAX" "$OUTER_SECONDS" "$INNER_RECEIPT" "$RUN_DIR" \
+    "$OUTER_LOG" "$LOCK_PATH" "$$" "$LOCK_STARTED" "$TAG" <<'PY'
+import json, os, sys
+payload = {
     "receipt": "band22_registration_outer",
-    "unit": "$UNIT",
-    "state": "$STATE",
-    "exit_code": $RC,
-    "started_utc": "$STARTED",
-    "finished_utc": "$FINISHED",
-    "memory_max": "$MEMORY_MAX",
+    "unit": sys.argv[2],
+    "state": sys.argv[3],
+    "exit_code": int(sys.argv[4]),
+    "started_utc": sys.argv[5],
+    "finished_utc": sys.argv[6],
+    "memory_max": sys.argv[7],
     "memory_swap_max": "0",
-    "runtime_max_sec": $OUTER_SECONDS,
-    "inner_receipt": "$INNER_RECEIPT",
-    "run_dir": "$RUN_DIR",
-    "outer_log": "$OUTER_LOG",
+    "runtime_max_sec": int(sys.argv[8]),
+    "inner_receipt": sys.argv[9],
+    "run_dir": sys.argv[10],
+    "outer_log": sys.argv[11],
+    "prod_scale_singleton": {
+        "path": sys.argv[12], "acquired": True,
+        "holder": {"pid": int(sys.argv[13]), "unit": sys.argv[2],
+                   "tag": sys.argv[15], "started_utc": sys.argv[14]},
+    },
     "note": ("state FAILED_* means the inner driver never landed a terminal "
              "receipt (OOM kill, RuntimeMaxSec, or signal): no verdict exists "
              "for this run"),
-}, open(sys.argv[1], "w"), ensure_ascii=False, indent=2)
-EOF
+}
+with open(sys.argv[1], "x", encoding="utf-8") as handle:
+    json.dump(payload, handle, ensure_ascii=False, indent=2)
+    handle.write("\n")
+    handle.flush()
+    os.fsync(handle.fileno())
+PY
+then
+  echo "failed to land no-overwrite outer receipt: $OUTER_RECEIPT" >&2
+  exit 2
+fi
 
 echo "outer receipt: $OUTER_RECEIPT (state=$STATE rc=$RC)"
 exit $RC
