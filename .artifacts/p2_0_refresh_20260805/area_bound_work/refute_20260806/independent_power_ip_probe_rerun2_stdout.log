@@ -1,0 +1,10 @@
+inputs_sha256 {'rules/canonical_rules.json': 'c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5', 'data/preprocessed/mandatory_exact_instances.json': '545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6', '.artifacts/p2_0_refresh_20260805/area_bound_work/ob4_pole_lower_bound_receipt.json': 'd6c44dff4e0ea3414e70f98a64ff5fdf8e915e7a067c39a22b5fef7163c83071'}
+mandatory_powered [('manufacturing_3x3', 132, {'w': 3, 'h': 3}, True), ('manufacturing_5x5', 49, {'w': 5, 'h': 5}, True), ('manufacturing_6x4', 38, {'w': 6, 'h': 4}, True)]
+candidate_by_shape {('manufacturing_3x3', 3, 3): 180, ('manufacturing_5x5', 5, 5): 220, ('manufacturing_6x4', 4, 6): 220, ('manufacturing_6x4', 6, 4): 220}
+candidate_total 840
+all_anchor_subset_check {'anchors': 4761, 'actual_pairs': 3373800, 'max_actual_candidates': 840, 'anchors_reaching_full_universe': 2401}
+scip_unconstrained {'objective': 396, 'best_bound': 396.0, 'tally': {('manufacturing_5x5', 5, 5): 12, ('manufacturing_6x4', 4, 6): 2, ('manufacturing_6x4', 6, 4): 2}}
+scip_inventory_capped {'objective': 396, 'best_bound': 396.0, 'tally': {('manufacturing_5x5', 5, 5): 12, ('manufacturing_6x4', 4, 6): 2, ('manufacturing_6x4', 6, 4): 2}}
+archived_witness {'area': 396, 'counts': {'manufacturing_5x5': 12, 'manufacturing_6x4': 4}, 'interior_anchor': (20, 20)}
+powered_body_and_pmin {'powered_body': 3325, 'K': 396, 'P_min': 9}
+audit_receipt /home/zhuran24/zmd-pj/.artifacts/p2_0_refresh_20260805/area_bound_work/refute_20260806/independent_power_ip_probe_receipt.json

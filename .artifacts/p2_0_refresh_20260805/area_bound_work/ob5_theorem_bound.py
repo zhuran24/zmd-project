@@ -87,12 +87,13 @@ def main() -> None:
         "area_bounds": {
             "unconditional_model_strict": {
                 "A_le": A_uncond,
-                "chain": f"A <= {budget} - {pole_cells}*{P_min} - ceil({L}/2)={R_uncond}",
+                "chain": f"A <= {budget} - {pole_cells}*{P_min} - {R_uncond} = {A_uncond}"
+                         f"（R >= ceil(L/2) >= {R_uncond}，因 L >= {L}；对更大的真实 L 界只会更紧）",
                 "grade": "【严格·模型内】（交叉最宽松口径：每格 2 state 无条件允许）",
             },
             "single_layer_conditional": {
                 "A_le": A_single,
-                "chain": f"A <= {budget} - {pole_cells}*{P_min} - {L}",
+                "chain": f"A <= {budget} - {pole_cells}*{P_min} - {L} = {A_single}（R >= L >= {L}）",
                 "grade": "【条件·待 OB6】（需证交叉密度上界；owner 定谳垂直交叉双满速真实存在）",
             },
             "finals_included_variant": {

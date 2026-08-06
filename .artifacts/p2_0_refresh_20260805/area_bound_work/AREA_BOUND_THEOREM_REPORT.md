@@ -1,4 +1,4 @@
-# 流量面积上界定理报告（flowbound 线，2026-08-06，v4 = refute 席修正版）
+# 流量面积上界定理报告（flowbound 线，2026-08-06，v5 = 二轮复核修正版）
 
 > **语义标签（OB7，通篇有效）**：本文一切结论都在 **P2.0 第七谓词语义**下
 > （钉死 `production_targets` + 严格空地 + 吞吐守恒 + 循环稳态）。与在案六谓词
@@ -8,8 +8,11 @@
 > **修订记录**：v1-v3（提交 88c0911）含 front-state 下界 L≥308 与「第七谓词改变最优解」
 > 结论，2026-08-06 经 codex refute 席对抗审查：**front-state 核心引理被 canonical
 > splitter/merger 反例驳倒**（材料与本线亲手复跑记录在 `refute_20260806/`），
-> 「改变最优解」为上界对上界的过推。v4 撤下两者，基座退回容量计数——
-> 本版每一格都是站得住的，代价是结论更弱。
+> 「改变最优解」为上界对上界的过推。v4 撤下两者，基座退回容量计数。
+> **v5（二轮复核，54b5ebd 后）**：核心界 1167/1015/1014 经独立复算+SCIP 重跑确认保级；
+> 修掉三处公式假等号、G1 匹配形式（四口 merger 反例 ⇒ 超边 packing）、G1×OB6 量化
+> （X ≤ ⌊(L−H)/2⌋）、G5/G6 措辞、补证路径 (c) 过推、SCIP 收据 provenance、
+> 前提 1–8 自包含内嵌。二轮探针材料入 `refute_20260806/`。
 
 ## 0. TL;DR
 
@@ -44,10 +47,19 @@
 - **OB6 部分**：形式化 + 对抗例（§6），量化仍开放；新增一条未开发耦合杠杆（分/合流格不可交叉）。
 - **OB7**：语义标签通篇执行。
 
-## 2. 前提栏
+## 2. 前提栏（自包含；MEMO §0.3 不在提交树内，此表为全量内嵌）
 
-继承 MEMO §0.3 前提 1–8（tick=2s、带容量 30 件/分钟/格/层跨商品聚合、slot=ceil(rate)、
-每格位≤2 state、is_solid_z、front state 强制、production_targets 权威、严格空地）。
+| # | 前提 | 出处 | 等级 |
+|---|---|---|---|
+| 前提 1 | tick = 2.0 秒 ⇒ 30 tick/分钟 | `rules/canonical_rules.json` `globals.time.tick_interval_seconds` | 【精确】frozen |
+| 前提 2 | 带容量 = 1 件/tick/格/层（= 30 件/分钟），跨商品聚合 | 同上 `globals.logistics.belt_capacity_per_tick`；owner 08-05 游戏内坐实 30 件/分钟 | 【精确】frozen +【owner 定谳】 |
+| 前提 3 | 端口吞吐上限 = 1 件/tick/slot；slots = ceil(rate/belt) | 同上 `port_max_throughput_per_tick` + `src/preprocess/operation_profiles.py:65-77` `_rate_to_slots`（本批回源） | 【精确】frozen |
+| 前提 4 | 每 (cell, layer) 至多 1 个 physical state；layer ∈ {ground, elevated} ⇒ 每格 ≤ 2 件/tick | `src/models/routing_subproblem.py:1122` `AddAtMostOne`（本批回源）+ canonical `routing_rules.layers` | 【精确】 |
+| 前提 5 | 全部设施模板 `is_solid_z: true` ⇒ 机身两层都不可布线 | canonical `facility_templates.*` | 【精确】frozen |
+| 前提 6 | 每条被路由物流至少占 1 个 route state（源/汇 front 必须有 state） | `src/models/routing_subproblem.py:1570-1572`（missing_source/sink_fronts）+ `:1710` 复验（本批回源）；游戏侧 owner 定谳「贴脸死、隔 1 格通」（07-18 / 08-05 附录二#1） | 【精确】模型内 +【owner 定谳】 |
+| 前提 7 | 需求权威 = `production_targets`（valley 3.0 / qiaoyu 2.75 满速线） | canonical `production_targets` | 【精确】frozen |
+| 前提 8 | 空矩形内不得存在任何占地物（设施/电杆/带/桥/一切物流件） | canonical `globals.empty_rectangle.emptiness_adjudication` + `docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md`（owner 08-05 裁决） | 【精确】owner 定谳 |
+
 本文额外显式使用：
 
 | # | 前提 | 出处 | 等级 |
@@ -82,11 +94,12 @@
   唯一确定（OB1 高斯消元非奇异；前提 7/9/10 排除仓库桥与损耗旁路）。
   **术语精确化（refute 席修正）**：canonical 配方图**不是 DAG**（buckwheat/sandleaf
   两个种子 SCC）；唯一的是**聚合活动向量与逐商品聚合吞吐**，不是逐条路径流。
-  任何达标稳态的聚合吞吐 = 唯一解（超产只会更大）⇒ 进路由图流量 ≥ F_route = 9,135 件/分钟。
+  任何达标稳态的聚合吞吐 = 唯一解 ⇒ 进路由图流量 ≥ F_route = 9,135 件/分钟。
 - **[C] 容量计数**【严格】：每件过 ≥1 个 route state（前提 6 + OB3）、每 state ≤ 30 件/分钟
   （前提 2）⇒ state 数 L ≥ ⌈9135/30⌉ = 305。
 - **[D] 足迹**【严格（无条件口径）】：每格 ≤2 state（前提 4；且前提 13 坐实 2 state/格
-  是真实机制而非建模伪影）⇒ R ≥ ⌈L/2⌉ = 153。**单层口径 R ≥ L 是【条件·待 OB6】**。
+  是真实机制而非建模伪影）⇒ R ≥ ⌈L/2⌉ ≥ 153（只知 L ≥ 305；真实 L 更大时界只会更紧）。
+  **单层口径 R ≥ L 是【条件·待 OB6】**。
 - **[E] 电杆**【精确】：P ≥ 9（定理 3，下）。
 
 ### 定理 2（front-state 下界）——已撤下（REFUTED）
@@ -128,13 +141,21 @@ K=396 一致**，收据 `refute_20260806/independent_power_ip_probe_receipt.json
 front 计数路线已死（§5.4 第 3 条），幸存的攻法必须换形式：
 - **流量加权的口计数会塌回容量计数**（一个 state 服务多口时，其吞吐帽 30 件/分钟
   已在 [C] 里记账），所以「数口」本身没有免费增量；
-- 任何复活的 front 型下界必须写成「口集合 − 共享超图上的最大匹配/覆盖亏损」的形式，
-  且**逐个构造先过 refute 探针的模型验证**（探针 harness 就在 `refute_20260806/`，
-  可直接改造成候选引理的自动验证器）；
-- **未开发耦合杠杆【推断】**：`bridge_mechanics.can_overlap_splitter_merger=false` ⇒
-  凡用 splitter/merger 压缩口的格**不能再当交叉格**——「口压缩」与「交叉堆叠」
-  在同一格上互斥。这条把 G1 与 OB6 耦合：对抗方省 state 的每一步都在损失交叉容量。
-  形式化后有望同时压两个口径，是 refute 后最值得先试的方向。
+- 任何复活的 front 型下界的正确形式是**顶点不交超边 packing 的最大权亏损**：
+  L ≥ |P| − max Σ_{e∈packing} (|e|−1)（权 w(e)=|e|−1；或等价的最小可行超边覆盖）。
+  普通匹配形式「|P| − 最大匹配 ν」**不成立**——二轮 followup 探针的四口 merger 反例：
+  ports=4、ν=1 ⇒ |P|−ν=3，实际 1 个 state 吃下全部四口
+  （`refute_20260806/followup_g_ledger_probe_stdout.log` dense_hyperedge，本线复跑复现）。
+  超边可行性定义必须显式包含：方向相容（state 的入/出边集合）、同商品（前提 12 门口排他）、
+  front 几何（各口机身可同时相邻该格）、容量（≤30 件/分钟）、真实 physical-state 词汇兼容
+  （belt/splitter/merger/bridge）。候选引理**逐个先过探针 harness**（`refute_20260806/`）。
+- **G1×OB6 耦合杠杆（局部互斥已证 SOUND，量化开放）**：
+  `bridge_mechanics.can_overlap_splitter_merger=false` ⇒ splitter/merger 格不能再当交叉格
+  （二轮探针四场景钉死：splitter+垂直 L1、merger+垂直 L1、直带+平行 L1 全 INFEASIBLE，
+  仅直带+垂直 L1 可行）。设 H = splitter/merger 物理格数，则
+  **X ≤ ⌊(L−H)/2⌋、R ≥ ⌈(L+H)/2⌉**。注意「每省一个 state 就损一个交叉格」**不成立**；
+  真正的 open gap 是 H 与端口节省量的**联合下界**（对抗方要压 L 必须付出多少 H）——
+  量化它才能把这条杠杆兑成数字，是 refute 后最值得先试的方向。
 
 ### G2 路径长度 ℓ̄
 敏感度（精确值，`ob5_theorem_bound_receipt.json` sensitivity 表）：
@@ -159,15 +180,19 @@ band22 实测平均最近生产者距离 22.25 格，真实布局远离紧例，
 若 P2.0 谓词最终把终品交付计入路由，白拿回单层 1 格。
 
 ### G5 电杆-路由互动
-电杆机身算 body、会堵口 front（07-18 定谳）；杆必须站在机群里（覆盖窗要交机身）⇒
-杆周边格与路由预算冲突。预期 ΔA 小（个位数），排最后。
+电杆机身算 body、会堵口 front（07-18 定谳）；**承担覆盖指派的杆**必须站在机群里
+（覆盖窗要交其名下受电机身；冗余杆不受此约束）⇒ 这部分杆的周边格与路由预算冲突。
+预期 ΔA 小（个位数），排最后。
 
 ### G6 割集/Farkas 证书化（v2 B 档格式的落点）
-**定理 1 链**是行族的非负组合：行族 = {17 条聚合守恒行（[B]）、每 state 容量行 ≤30（[C]）、
-每格 ≤2 state 行（[D]）、格位分账行（[A]）、覆盖指派行（定理 3）}。把**这条链**写成
-static-flow-with-lift + row-family manifest 是工程化（预期一个批次）——「无数学缺口」
-的声明**仅限此链**；v1-v3 曾把 front 行族（614 行：产口 306 + 耗口 308）也算进去，
-该行族已随引理撤下。真正的研究缺口在把 G1/G3 的几何论证也压进行族（割集行）。
+**定理 1 链**由行族组合而成：行族 = {17 条聚合守恒行（[B]）、每 state 容量行 ≤30（[C]）、
+每格 ≤2 state 行（[D]）、格位分账行（[A]）、覆盖指派行（定理 3）}。
+**注意它不是纯 Farkas 非负组合**——链里有三处整数取整（L ≥ ⌈304.5⌉、P ≥ ⌈3325/396⌉、
+R ≥ ⌈L/2⌉），证书要么显式携带 Chvátal-Gomory/整数舍入行，要么把 L≥305 与 P≥9
+当作外部已验证的 input cut 挂进 manifest（后者更贴 v2 B 档现有格式）。
+在此口径下写成 static-flow-with-lift + row-family manifest 是工程化（预期一个批次）。
+v1-v3 曾把 front 行族（614 行：产口 306 + 耗口 308）也算进去，该行族已随引理撤下。
+真正的研究缺口在把 G1/G3 的几何论证也压进行族（割集行）。
 
 ### 5.4 已证无效的路线（防重踩，负结果归档）
 
@@ -192,11 +217,13 @@ static-flow-with-lift + row-family manifest 是工程化（预期一个批次）
 **已定谳事实**（前提 13）：同格双通道 = 单格垂直交叉件（无坡道），垂直双流各自满速
 真实存在；平行双流物理不可能。⇒ 每格容量 2 件/tick 只在交叉格兑现。
 
-**形式化**：令 X = 交叉格数（2 state 的格），则 R = L − X ≥ 305 − X，
-A ≤ 1356 − 4P − L + X。单层口径 ⟺ X = 0；无条件口径 ⟺ X ≤ ⌊L/2⌋ = 152。
+**形式化**：令 X = 交叉格数（2 state 的格）。结构约束是 X ≤ ⌊L/2⌋（对布局的**真实** L，
+不是 305——L=306 的布局允许 X=153）；无条件主界不引用任何 X 的数值上界，
+而是经 R = L − X ≥ ⌈L/2⌉ ≥ 153 直接得出。单层口径 ⟺ X = 0。
 **OB6 的任务 = 布局无关地上界 X**。现状：开放。对抗例 2（网格城）表明纯计数不行；
 可用杠杆：(i) 交叉格不能是弯道/分合流器/桥转弯（canonical `bridge_mechanics` 四禁令）
-——**特别地，G1 的耦合杠杆：口压缩用的 splitter/merger 格天然非交叉格**；
+——**特别地 G1×OB6 耦合（局部互斥二轮探针已证 SOUND）：设 H = splitter/merger 物理格数，
+X ≤ ⌊(L−H)/2⌋、R ≥ ⌈(L+H)/2⌉**，H 与端口节省量的联合下界是 open gap；
 (ii) 交叉的两条通道都要有来源与去处——46 个边界口全在左/下边界
 （`placement_rule left_or_bottom_boundary`）给了方向结构。
 **当前正确姿势：引用无条件口径 1167；单层 1015 必须带【条件·待 OB6】标签。**
@@ -210,7 +237,8 @@ U=(1188,18) conditional 是六谓词语义（吞吐 OUT-OF-SCOPE）的上界，�
 refute 席指出为过推：上界对上界推不出最优值变化——OPT_P2.0 ≤ 1167 与
 OPT_六谓词 ≤ 1188 完全可以同时等于同一个值；当前 L=absent，两侧都没有下界）。
 补证路径（任一即可闭合）：(a) 拿到六谓词最优 witness 且其 A > 1167，再证它
-P2.0-不可行；(b) 六谓词侧建立 lower bound > 1167；(c) P2.0-complete 求解直接出最优。
+P2.0-不可行；(b) 六谓词侧建立 lower bound > 1167；(c) **两侧**（六谓词与 P2.0）
+complete 求解并比较——单侧 P2.0-complete 只定 OPT_P2.0 自身，不闭合比较问题。
 min_side 维度本文未触碰。
 
 ## 8. 复跑索引（全部数字的唯一来源）

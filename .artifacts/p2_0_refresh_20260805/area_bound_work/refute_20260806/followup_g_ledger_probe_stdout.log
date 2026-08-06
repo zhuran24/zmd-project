@@ -1,0 +1,13 @@
+{
+  "dense_hyperedge": {
+    "actual_states": 1,
+    "ordinary_matching": 1,
+    "ports": 4,
+    "ports_minus_matching": 3,
+    "required_savings_weight": 3
+  },
+  "merger_plus_perpendicular_L1": "INFEASIBLE",
+  "splitter_plus_perpendicular_L1": "INFEASIBLE",
+  "straight_plus_parallel_L1": "INFEASIBLE",
+  "straight_plus_perpendicular_L1": "OPTIMAL"
+}
