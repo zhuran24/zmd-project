@@ -24,7 +24,14 @@
 
 一手 probe（U-02）显示：两商品「合流后再分流」在当前 use/phys 结构下**结构性
 INFEASIBLE**——分流点上没有按商品区分去向的机制。所以即便把终端格对别家货
-「放开」，别家货也上不了那条带。**解锁 source front 地面共乘的前置是先解决 #7
+「放开」，别家货也上不了那条带。
+
+> **勘误（08-06 晚，mixflow 手术线一手实读）**：死因比本节措辞更窄——use 变量
+> key 直接继承整个 phys 图样，**同向共乘直带在现结构下已经合法**；结构性
+> INFEASIBLE 只发生在合流/分流点（合流图样迫使商品声明不存在的入边 →
+> predecessor 强制 0）。「共乘上不了带」的旧措辞过宽。手术设计据此瞄准
+> 合流/分流点的 key 解耦（商品子图样 use），见 worktree 分支 mixflow-surgery
+> 的 `docs/research/mixflow_surgery_20260806/DESIGN.md`。**解锁 source front 地面共乘的前置是先解决 #7
 （混流表达扩展）**，那是 use-var 结构手术（sealed 面、freeze-ritual、soundness
 敏感方向须外审），不是删一个守卫。
 
