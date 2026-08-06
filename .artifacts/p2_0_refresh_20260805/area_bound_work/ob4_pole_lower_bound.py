@@ -3,14 +3,17 @@
 
 论证结构（布局无关）：
   1. 谓词 6：每个 needs_power 设施必须被某根电杆的覆盖窗（12×12，anchor−5..anchor+6，
-     canonical semantics.power_coverage_stencil）覆盖；模型判据 = 覆盖窗与设施包围盒相交
-     （src/master/exact_coordinate_master.py 的 stencil-bbox 相交语义；若模型判据更严，
-     本上界只会更松，结论仍安全）。
+     canonical semantics.power_coverage_stencil，rules/canonical_rules.json:100-110 与 :460-471）
+     覆盖；模型判据真身 = src/models/exact_coordinate_master.py:6182-6197 的四不等式
+     矩形相交测试（覆盖矩形 × 设施 footprint bbox，一格共享即算；exact 性由
+     :5993-6028 的全矩形 footprint 守卫保证，C1 witness 路径 :6679- 用逐格 coverer OR
+     通道等价表达）。若模型判据更严，本上界只会更松，结论仍安全。
   2. 把每个受电设施指派给任意一根覆盖它的电杆 ⇒ 每根电杆名下的设施两两不重叠、
      且包围盒都与该杆的 12×12 窗相交、且都不与杆身（2×2）重叠。
   3. 定义 K = 满足 2 的设施集合的机身格数最大值（对固定窗的装填最优化）。
      则 P · K ≥ 受电机身总格数 3,325 ⇒ P ≥ ceil(3325/K)。
-  4. K 用 CP-SAT 精确求解（≈960 个候选位姿、484 格互斥），必须 OPTIMAL 才算数。
+  4. K 用 CP-SAT 精确求解（实际 840 个候选位姿、484 格互斥），必须 OPTIMAL 才算数；
+     外部互证 = refute 席 SCIP 双档复算（无帽/普查帽两档同 K=396，refute_20260806/）。
 
 与旧弱下界的关系：MEMO §3.3 用「设施全落在 24×24=576 窗」的松计数得 P≥6。
 本脚本把 576 换成真实装填最优值 K（几何上 22×22 dilated 区域 + 相交约束 + 杆身占位），
@@ -117,7 +120,7 @@ def main() -> None:
         for i in range(len(cands)) if solver.value(b[i])
     ]
 
-    # ---------- 见证独立复验（不信任求解器展开，逐格重查） ----------
+    # ---------- 见证自检（同脚本进程逐格重查，不信任求解器展开） ----------
     used_cells: set[tuple[int, int]] = set()
     witness_area = 0
     for c in chosen:
@@ -140,9 +143,9 @@ def main() -> None:
         "ob": "OB4",
         "semantics_label": "P2.0 第七谓词语义配套（P 下界本身与吞吐无关，六谓词语义同样成立）",
         "date": "2026-08-06",
-        "stencil_source": "rules/canonical_rules.json semantics.power_coverage_stencil "
-                          "(12×12, anchor−5..anchor+6, 2×2 杆身) —— 与 "
-                          "src/master/exact_coordinate_master.py 运行时语义核对记录见报告",
+        "stencil_source": "rules/canonical_rules.json:100-110 与 :460-471（stencil 12×12）；"
+                          "运行时判据真身 = src/models/exact_coordinate_master.py:6182-6197"
+                          "（四不等式矩形相交），全矩形守卫 :5993-6028，C1 witness :6679-",
         "argument": "指派论证：每受电设施指派给一根覆盖杆 ⇒ 单杆名下设施互斥且包围盒交其 12×12 窗"
                     " ⇒ 单杆覆盖机身 ≤ K（CP-SAT 装填最优）⇒ P ≥ ceil(3325/K)",
         "K_single_pole_max_covered_body_cells": K,
@@ -150,7 +153,10 @@ def main() -> None:
         "K_candidates": len(cands),
         "powered_body_cells": powered_body,
         "P_min": P_min,
-        "witness_independent_recheck": "逐格重查通过：互斥 / 不压杆身 / 逐台交窗 / 面积==K",
+        "witness_selfcheck": "同脚本进程逐格重查通过：互斥 / 不压杆身 / 逐台交窗 / 面积==K"
+                             "（非独立进程；独立互证见 external_cross_check）",
+        "external_cross_check": "refute 席 SCIP 双档复算 K=396 一致（无库存帽/普查帽），"
+                                "收据 refute_20260806/independent_power_ip_probe_receipt.json",
         "previous_weak_bounds": {
             "memo_24x24_576": {"area": weak_576, "P_min": math.ceil(powered_body / weak_576),
                                "note": "MEMO §3.3 原口径（最大边 6 两侧加满）"},
@@ -172,7 +178,7 @@ def main() -> None:
         json.dump(receipt, f, ensure_ascii=False, indent=1)
 
     print("=== OB4 电杆真下界 ===")
-    print(f"单杆覆盖机身上限 K = {K}（{status_name}；候选位姿 {len(cands)}；见证独立复验通过）")
+    print(f"单杆覆盖机身上限 K = {K}（{status_name}；候选位姿 {len(cands)}；见证同进程自检通过，SCIP 外部互证见 refute_20260806/）")
     print(f"受电机身 = {powered_body} ⇒ P_min = ceil({powered_body}/{K}) = {P_min}"
           f"（对照：MEMO 576 口径 P≥{receipt['previous_weak_bounds']['memo_24x24_576']['P_min']}，"
           f"484 膨胀口径 P≥{receipt['previous_weak_bounds']['dilation_22x22_484']['P_min']}）")

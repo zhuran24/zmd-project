@@ -2,128 +2,59 @@
  "ob": "OB5（总定理收据）",
  "semantics_label": "P2.0 第七谓词语义（钉死 production_targets + 严格空地 + 吞吐守恒）。与在案六谓词 U=(1188,18) conditional 语义不同、并存不互斥，禁止混写。",
  "date": "2026-08-06",
+ "revision": "v4（refute 席修正版：front-state 引理撤下，基座退回容量计数 L≥305）",
  "component_receipts": {
   "F_route_9135": "ob1_flow_caliber_receipt.json",
   "bodies_3544_budget_1356": "ob2_body_budget_receipt.json",
   "P_min_9": "ob4_pole_lower_bound_receipt.json",
-  "slots_620": "ob5_slot_census_receipt.json"
+  "slot_census_diagnostic_only": "ob5_slot_census_receipt.json（MEMO 互证/诊断用，不进本界）"
  },
- "state_lower_bounds": {
+ "state_lower_bound": {
   "L_capacity_counting": 305,
-  "L_front_state_matching": 308,
-  "L_used": 308,
-  "matching_detail": {
-   "formulation": "L ≥ Σ_c max(#out_c, #in_c)，#side_c = Σ_op ceil(x_op·q)（端口最小数）。核心引理：一个 route state 至多充当 1 个产口 front 与 1 个耗口 front（belt 方向性 + 通道死端于机身 + 门口排他 ⇒ 同商品才可共享），故逐商品 front state ≥ max(out,in)。鲁棒性：对『多开口摊薄速率』（多一口 ⇒ 至少多一 front state）、『机器间占空集中』与『slot 不均分』（端口最小数取 ceil(x·q) 已是这两个自由度下的最小值，口容量 1 件/tick 硬帽）全部免疫。",
-   "v1_overcount_note": "v1 曾用 slot×机器数 得 L≥313——被『占空集中到 floor(x) 台』反例攻破（多算 5），本版 308 为修正值。",
-   "per_commodity": {
-    "blue_iron_block": {
-     "out_ports_min": 34,
-     "in_ports_min": 34,
-     "states_min": 34
-    },
-    "blue_iron_ore": {
-     "out_ports_min": 34,
-     "in_ports_min": 34,
-     "states_min": 34
-    },
-    "blue_iron_powder": {
-     "out_ports_min": 34,
-     "in_ports_min": 34,
-     "states_min": 34
-    },
-    "buckwheat": {
-     "out_ports_min": 11,
-     "in_ports_min": 12,
-     "states_min": 12
-    },
-    "buckwheat_powder": {
-     "out_ports_min": 11,
-     "in_ports_min": 11,
-     "states_min": 11
-    },
-    "buckwheat_seed": {
-     "out_ports_min": 11,
-     "in_ports_min": 11,
-     "states_min": 11
-    },
-    "dense_blue_iron_powder": {
-     "out_ports_min": 17,
-     "in_ports_min": 17,
-     "states_min": 17
-    },
-    "dense_source_powder": {
-     "out_ports_min": 9,
-     "in_ports_min": 9,
-     "states_min": 9
-    },
-    "fine_buckwheat_powder": {
-     "out_ports_min": 6,
-     "in_ports_min": 6,
-     "states_min": 6
-    },
-    "sandleaf": {
-     "out_ports_min": 21,
-     "in_ports_min": 22,
-     "states_min": 22
-    },
-    "sandleaf_powder": {
-     "out_ports_min": 32,
-     "in_ports_min": 32,
-     "states_min": 32
-    },
-    "sandleaf_seed": {
-     "out_ports_min": 21,
-     "in_ports_min": 21,
-     "states_min": 21
-    },
-    "source_ore": {
-     "out_ports_min": 18,
-     "in_ports_min": 18,
-     "states_min": 18
-    },
-    "source_powder": {
-     "out_ports_min": 18,
-     "in_ports_min": 18,
-     "states_min": 18
-    },
-    "steel_block": {
-     "out_ports_min": 17,
-     "in_ports_min": 17,
-     "states_min": 17
-    },
-    "steel_bottle": {
-     "out_ports_min": 6,
-     "in_ports_min": 6,
-     "states_min": 6
-    },
-    "steel_part": {
-     "out_ports_min": 6,
-     "in_ports_min": 6,
-     "states_min": 6
-    }
-   }
-  }
+  "L_if_finals_included": 306
  },
  "area_bounds": {
   "unconditional_model_strict": {
-   "A_le": 1166,
-   "chain": "A <= 1356 - 4*9 - ceil(308/2)=154",
+   "A_le": 1167,
+   "chain": "A <= 1356 - 4*9 - ceil(305/2)=153",
    "grade": "【严格·模型内】（交叉最宽松口径：每格 2 state 无条件允许）"
   },
   "single_layer_conditional": {
-   "A_le": 1012,
-   "chain": "A <= 1356 - 4*9 - 308",
+   "A_le": 1015,
+   "chain": "A <= 1356 - 4*9 - 305",
    "grade": "【条件·待 OB6】（需证交叉密度上界；owner 定谳垂直交叉双满速真实存在）"
   },
-  "capacity_only_for_reference": {
-   "unconditional": 1167,
-   "single_layer": 1015,
-   "note": "不用 C2 匹配、只用 C1 容量计数的对照值（= MEMO §3.3 口径 + P_min 升级）"
+  "finals_included_variant": {
+   "A_single_le": 1014,
+   "A_uncond_le": 1167,
+   "note": "G4 对照：终品计入路由则 L≥306，单层收紧 1 格、无条件不变（扣终品口径的全部保守代价）"
   }
+ },
+ "refuted_route_archive": {
+  "claim": "front-state 下界 L≥308（引理：一个 route state ≤1 产口 front + 1 耗口 front）",
+  "verdict": "REFUTED（refute 席 2026-08-06；canonical splitter/merger gadget，绑定模型 FEASIBLE；本线亲手复跑复现）",
+  "evidence": "refute_20260806/（探针+收据+复跑记录）",
+  "premise_error": "把 route state 当成单向直通道；splitter/merger state 有多入/多出边，可同时服务最多 4 个相邻口"
  },
  "sensitivity": {
   "per_extra_pole": -4,
-  "per_extra_state": "单层 −1 / 无条件 −0.5 格",
-  "per_unit_mean_path_length": "ℓ̄ 每 +1 ⇒ 所需 state +ceil(304.5) ⇒ 单层 A −305"
+  "per_extra_state": "单层 −1 格；无条件按奇偶交替 −1/0 格（R=ceil(L/2)）",
+  "mean_path_length_table": {
+   "1": {
+    "L_ge": 305,
+    "A_single_le": 1015,
+    "A_uncond_le": 1167
+   },
+   "2": {
+    "L_ge": 609,
+    "A_single_le": 711,
+    "A_uncond_le": 1015
+   },
+   "3": {
+    "L_ge": 914,
+    "A_single_le": 406,
+    "A_uncond_le": 863
+   }
+  }
  }
 }

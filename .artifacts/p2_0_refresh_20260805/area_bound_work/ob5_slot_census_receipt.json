@@ -24,7 +24,7 @@
   }
  },
  "cross_check": "574/568/401/52 与 MEMO §2.1 引理 1 逐数字断言相符（本脚本独立从 canonical 重导）",
- "usage_caveat": "本普查是均分 slot 模型（前提 3）的口径，用于 MEMO 互证与 gap 分析。端口『最小』数不是 slots×机器数：亚满占空 op 可占空集中，最小值 = ceil(x_op·q)——定理收据 ob5_theorem_bound_receipt.json 用的是后者，勿混用（v1 曾因此超算 5 个 state）。",
+ "usage_caveat": "本普查是均分 slot 模型（前提 3）的口径，仅用于 MEMO 引理 1 互证与诊断，不进面积上界。两个历史坑：①端口最小数不是 slots×机器数（亚满 op 可占空集中，最小值 = ceil(x_op·q)，v1 曾超算 5 个 state）；②基于口 front 计数的 state 下界（v2/v3 的 L≥308）整条已被 refute 席 splitter/merger 反例驳倒（见 refute_20260806/），现行上界只用容量计数 L≥305。",
  "per_stream": [
   {
    "operation": "crusher_blue_iron",

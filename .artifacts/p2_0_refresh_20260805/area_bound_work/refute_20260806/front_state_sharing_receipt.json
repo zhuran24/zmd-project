@@ -1,0 +1,737 @@
+{
+  "verdict": "REFUTED",
+  "refuted_claim": "one route state serves at most one producer front and at most one consumer front",
+  "git_head": "eea45ae9b0d76bd66a11ba1316fce82f172639e9",
+  "probe_sha256": "de8b0c2e58bf2530e8aca7e69186e9c91e8b3eb8f7c4b1225b7fe706dcd20d2f",
+  "input_sha256": {
+    "src/models/routing_subproblem.py": "7554b0f24176b86104095ee47b8ec8ed5dfc4098c3df2f661231b0cf2f0ae718",
+    "src/models/binding_subproblem.py": "1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9",
+    "src/models/port_binding.py": "9ed6c34873c5d8e3f7640a8507021e48ca2d850de2edc429482f3699700adc53",
+    "src/models/routing_binding_context.py": "9f9e4d058a561ca570f3c4fd7f5d5095a1bcff558e0608408b0760fc7609f7c2",
+    "rules/canonical_rules.json": "c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5",
+    "data/preprocessed/candidate_placements.json": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
+    ".artifacts/p2_0_refresh_20260805/area_bound_work/AREA_BOUND_THEOREM_REPORT.md": "335330993b160b931b1ec0c06e15fe253f9f3ee0a315636c4bcdfb1c9a76f20a",
+    ".artifacts/p2_0_refresh_20260805/area_bound_work/ob5_slot_census.py": "76e316b02e726a9b6905442363866b7ef8b667ab22e19b04b258b48dab4d4944",
+    ".artifacts/p2_0_refresh_20260805/area_bound_work/ob5_theorem_bound.py": "db062d795e8372f7310157581fcb1a453f84ddae00021bc7e8dc5fe491f0d319",
+    ".artifacts/p2_0_refresh_20260805/area_bound_work/ob1_flow_caliber_receipt.json": "dbb2471016f0c75201a57f535baea60028f7a6695e0b764592dcfbf647f17ee9",
+    ".artifacts/p2_0_refresh_20260805/area_bound_work/ob5_theorem_bound_receipt.json": "6a51a4bb87d5e9d2c495e08794e0eb564e10f3168637d95393bb8ebed270afc8"
+  },
+  "canonical_geometry": [
+    {
+      "operation": "planter_buckwheat",
+      "template": "manufacturing_5x5",
+      "pose_idx": 7793,
+      "binding_idx_before_front_filter": 4,
+      "pose_id": "p_x30_y31_o0_m_LR",
+      "anchor": {
+        "x": 30,
+        "y": 31
+      },
+      "occupied_bbox": [
+        30,
+        31,
+        34,
+        35
+      ],
+      "target_port": {
+        "type": "output",
+        "commodity": "buckwheat",
+        "x": 35,
+        "y": 35,
+        "dir": "E"
+      },
+      "active_ports": [
+        {
+          "type": "input",
+          "commodity": "buckwheat_seed",
+          "x": 29,
+          "y": 31,
+          "dir": "W"
+        },
+        {
+          "type": "output",
+          "commodity": "buckwheat",
+          "x": 35,
+          "y": 35,
+          "dir": "E"
+        }
+      ]
+    },
+    {
+      "operation": "crusher_buckwheat",
+      "template": "manufacturing_3x3",
+      "pose_idx": 8851,
+      "binding_idx_before_front_filter": 6,
+      "pose_id": "p_x33_y36_o0_m_BT",
+      "anchor": {
+        "x": 33,
+        "y": 36
+      },
+      "occupied_bbox": [
+        33,
+        36,
+        35,
+        38
+      ],
+      "target_port": {
+        "type": "input",
+        "commodity": "buckwheat",
+        "x": 35,
+        "y": 35,
+        "dir": "S"
+      },
+      "active_ports": [
+        {
+          "type": "input",
+          "commodity": "buckwheat",
+          "x": 35,
+          "y": 35,
+          "dir": "S"
+        },
+        {
+          "type": "output",
+          "commodity": "buckwheat_powder",
+          "x": 33,
+          "y": 39,
+          "dir": "N"
+        },
+        {
+          "type": "output",
+          "commodity": "buckwheat_powder",
+          "x": 34,
+          "y": 39,
+          "dir": "N"
+        }
+      ]
+    },
+    {
+      "operation": "seed_collector_buckwheat",
+      "template": "manufacturing_5x5",
+      "pose_idx": 9086,
+      "binding_idx_before_front_filter": 0,
+      "pose_id": "p_x35_y30_o0_m_TB",
+      "anchor": {
+        "x": 35,
+        "y": 30
+      },
+      "occupied_bbox": [
+        35,
+        30,
+        39,
+        34
+      ],
+      "target_port": {
+        "type": "input",
+        "commodity": "buckwheat",
+        "x": 35,
+        "y": 35,
+        "dir": "N"
+      },
+      "active_ports": [
+        {
+          "type": "input",
+          "commodity": "buckwheat",
+          "x": 35,
+          "y": 35,
+          "dir": "N"
+        },
+        {
+          "type": "output",
+          "commodity": "buckwheat_seed",
+          "x": 35,
+          "y": 29,
+          "dir": "S"
+        },
+        {
+          "type": "output",
+          "commodity": "buckwheat_seed",
+          "x": 36,
+          "y": 29,
+          "dir": "S"
+        }
+      ]
+    }
+  ],
+  "binding_activation": {
+    "status": "FEASIBLE",
+    "selected_domain_indices_after_front_filter": {
+      "planter_buckwheat_001": 0,
+      "crusher_buckwheat_001": 0,
+      "seed_collector_buckwheat_001": 0
+    },
+    "routing_aware_filter_stats": {
+      "enabled": true,
+      "raw_patterns_total": 84,
+      "filtered_patterns_total": 58,
+      "front_blocked_patterns_pruned": 26,
+      "empty_filtered_owners": [],
+      "unattributed_rejection_owners": [],
+      "generic_output_slots_pre_filter": 0,
+      "generic_output_slots_post_filter": 0,
+      "generic_input_slots_pre_filter": 0,
+      "generic_input_slots_post_filter": 0
+    },
+    "placement": {
+      "planter_buckwheat_001": {
+        "facility_type": "manufacturing_5x5",
+        "pose_idx": 7793
+      },
+      "crusher_buckwheat_001": {
+        "facility_type": "manufacturing_3x3",
+        "pose_idx": 8851
+      },
+      "seed_collector_buckwheat_001": {
+        "facility_type": "manufacturing_5x5",
+        "pose_idx": 9086
+      }
+    },
+    "front_specs": [
+      {
+        "instance_id": "planter_buckwheat_001",
+        "x": 35,
+        "y": 35,
+        "dir": "E",
+        "type": "out",
+        "commodity": "buckwheat"
+      },
+      {
+        "instance_id": "crusher_buckwheat_001",
+        "x": 35,
+        "y": 35,
+        "dir": "S",
+        "type": "in",
+        "commodity": "buckwheat"
+      },
+      {
+        "instance_id": "seed_collector_buckwheat_001",
+        "x": 35,
+        "y": 35,
+        "dir": "N",
+        "type": "in",
+        "commodity": "buckwheat"
+      }
+    ],
+    "all_extracted_port_specs": [
+      {
+        "instance_id": "planter_buckwheat_001",
+        "x": 29,
+        "y": 31,
+        "dir": "W",
+        "type": "in",
+        "commodity": "buckwheat_seed"
+      },
+      {
+        "instance_id": "planter_buckwheat_001",
+        "x": 35,
+        "y": 35,
+        "dir": "E",
+        "type": "out",
+        "commodity": "buckwheat"
+      },
+      {
+        "instance_id": "crusher_buckwheat_001",
+        "x": 35,
+        "y": 35,
+        "dir": "S",
+        "type": "in",
+        "commodity": "buckwheat"
+      },
+      {
+        "instance_id": "crusher_buckwheat_001",
+        "x": 33,
+        "y": 39,
+        "dir": "N",
+        "type": "out",
+        "commodity": "buckwheat_powder"
+      },
+      {
+        "instance_id": "crusher_buckwheat_001",
+        "x": 34,
+        "y": 39,
+        "dir": "N",
+        "type": "out",
+        "commodity": "buckwheat_powder"
+      },
+      {
+        "instance_id": "seed_collector_buckwheat_001",
+        "x": 35,
+        "y": 35,
+        "dir": "N",
+        "type": "in",
+        "commodity": "buckwheat"
+      },
+      {
+        "instance_id": "seed_collector_buckwheat_001",
+        "x": 35,
+        "y": 29,
+        "dir": "S",
+        "type": "out",
+        "commodity": "buckwheat_seed"
+      },
+      {
+        "instance_id": "seed_collector_buckwheat_001",
+        "x": 36,
+        "y": 29,
+        "dir": "S",
+        "type": "out",
+        "commodity": "buckwheat_seed"
+      }
+    ]
+  },
+  "routing_gadgets": [
+    {
+      "name": "canonical_buckwheat_one_source_two_opposite_sinks",
+      "status": "FEASIBLE",
+      "domain_status": "feasible",
+      "duplicate_terminal_front_keys": [],
+      "body_side_cells": {
+        "planter_buckwheat_001": [
+          34,
+          35
+        ],
+        "crusher_buckwheat_001": [
+          35,
+          36
+        ],
+        "seed_collector_buckwheat_001": [
+          35,
+          34
+        ]
+      },
+      "port_specs": [
+        {
+          "instance_id": "planter_buckwheat_001",
+          "x": 35,
+          "y": 35,
+          "dir": "E",
+          "type": "out",
+          "commodity": "buckwheat"
+        },
+        {
+          "instance_id": "crusher_buckwheat_001",
+          "x": 35,
+          "y": 35,
+          "dir": "S",
+          "type": "in",
+          "commodity": "buckwheat"
+        },
+        {
+          "instance_id": "seed_collector_buckwheat_001",
+          "x": 35,
+          "y": 35,
+          "dir": "N",
+          "type": "in",
+          "commodity": "buckwheat"
+        }
+      ],
+      "selected_physical_route_count": 1,
+      "selected_route": {
+        "x": 35,
+        "y": 35,
+        "layer": 0,
+        "type": "splitter",
+        "component_type": "splitter",
+        "commodities": [
+          "buckwheat"
+        ],
+        "uses": [
+          {
+            "commodity": "buckwheat",
+            "flow_in": [
+              "W"
+            ],
+            "flow_out": [
+              "N",
+              "S"
+            ]
+          }
+        ],
+        "flow_in": [
+          "W"
+        ],
+        "flow_out": [
+          "N",
+          "S"
+        ],
+        "flow": {
+          "flow_in": [
+            "W"
+          ],
+          "flow_out": [
+            "N",
+            "S"
+          ]
+        },
+        "commodity": "buckwheat",
+        "dir_in": "W"
+      },
+      "source_fronts_served_by_same_state": [
+        {
+          "instance_id": "planter_buckwheat_001",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "E",
+          "terminal_direction": "W"
+        }
+      ],
+      "sink_fronts_served_by_same_state": [
+        {
+          "instance_id": "crusher_buckwheat_001",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "S",
+          "terminal_direction": "N"
+        },
+        {
+          "instance_id": "seed_collector_buckwheat_001",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "N",
+          "terminal_direction": "S"
+        }
+      ],
+      "port_adherence": {
+        "exact_links": 3,
+        "blocked_ports": 0,
+        "ports": 3
+      },
+      "connectivity": {
+        "selected_route_states": 1,
+        "checked_commodities": 1,
+        "failure_count": 0,
+        "failures": []
+      }
+    },
+    {
+      "name": "minimal_two_opposite_sources_one_sink",
+      "status": "FEASIBLE",
+      "domain_status": "feasible",
+      "duplicate_terminal_front_keys": [],
+      "body_side_cells": {
+        "producer_west": [
+          34,
+          35
+        ],
+        "producer_east": [
+          36,
+          35
+        ],
+        "consumer_north": [
+          35,
+          36
+        ]
+      },
+      "port_specs": [
+        {
+          "instance_id": "producer_west",
+          "x": 35,
+          "y": 35,
+          "dir": "E",
+          "type": "out",
+          "commodity": "buckwheat"
+        },
+        {
+          "instance_id": "producer_east",
+          "x": 35,
+          "y": 35,
+          "dir": "W",
+          "type": "out",
+          "commodity": "buckwheat"
+        },
+        {
+          "instance_id": "consumer_north",
+          "x": 35,
+          "y": 35,
+          "dir": "S",
+          "type": "in",
+          "commodity": "buckwheat"
+        }
+      ],
+      "selected_physical_route_count": 1,
+      "selected_route": {
+        "x": 35,
+        "y": 35,
+        "layer": 0,
+        "type": "merger",
+        "component_type": "merger",
+        "commodities": [
+          "buckwheat"
+        ],
+        "uses": [
+          {
+            "commodity": "buckwheat",
+            "flow_in": [
+              "E",
+              "W"
+            ],
+            "flow_out": [
+              "N"
+            ]
+          }
+        ],
+        "flow_in": [
+          "E",
+          "W"
+        ],
+        "flow_out": [
+          "N"
+        ],
+        "flow": {
+          "flow_in": [
+            "E",
+            "W"
+          ],
+          "flow_out": [
+            "N"
+          ]
+        },
+        "commodity": "buckwheat",
+        "dir_out": "N"
+      },
+      "source_fronts_served_by_same_state": [
+        {
+          "instance_id": "producer_west",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "E",
+          "terminal_direction": "W"
+        },
+        {
+          "instance_id": "producer_east",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "W",
+          "terminal_direction": "E"
+        }
+      ],
+      "sink_fronts_served_by_same_state": [
+        {
+          "instance_id": "consumer_north",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "S",
+          "terminal_direction": "N"
+        }
+      ],
+      "port_adherence": {
+        "exact_links": 3,
+        "blocked_ports": 0,
+        "ports": 3
+      },
+      "connectivity": {
+        "selected_route_states": 1,
+        "checked_commodities": 1,
+        "failure_count": 0,
+        "failures": []
+      }
+    },
+    {
+      "name": "dense_three_sources_one_sink",
+      "status": "FEASIBLE",
+      "domain_status": "feasible",
+      "duplicate_terminal_front_keys": [],
+      "body_side_cells": {
+        "producer_west": [
+          34,
+          35
+        ],
+        "producer_east": [
+          36,
+          35
+        ],
+        "producer_south": [
+          35,
+          34
+        ],
+        "consumer_north": [
+          35,
+          36
+        ]
+      },
+      "port_specs": [
+        {
+          "instance_id": "producer_west",
+          "x": 35,
+          "y": 35,
+          "dir": "E",
+          "type": "out",
+          "commodity": "buckwheat"
+        },
+        {
+          "instance_id": "producer_east",
+          "x": 35,
+          "y": 35,
+          "dir": "W",
+          "type": "out",
+          "commodity": "buckwheat"
+        },
+        {
+          "instance_id": "producer_south",
+          "x": 35,
+          "y": 35,
+          "dir": "N",
+          "type": "out",
+          "commodity": "buckwheat"
+        },
+        {
+          "instance_id": "consumer_north",
+          "x": 35,
+          "y": 35,
+          "dir": "S",
+          "type": "in",
+          "commodity": "buckwheat"
+        }
+      ],
+      "selected_physical_route_count": 1,
+      "selected_route": {
+        "x": 35,
+        "y": 35,
+        "layer": 0,
+        "type": "merger",
+        "component_type": "merger",
+        "commodities": [
+          "buckwheat"
+        ],
+        "uses": [
+          {
+            "commodity": "buckwheat",
+            "flow_in": [
+              "S",
+              "E",
+              "W"
+            ],
+            "flow_out": [
+              "N"
+            ]
+          }
+        ],
+        "flow_in": [
+          "S",
+          "E",
+          "W"
+        ],
+        "flow_out": [
+          "N"
+        ],
+        "flow": {
+          "flow_in": [
+            "S",
+            "E",
+            "W"
+          ],
+          "flow_out": [
+            "N"
+          ]
+        },
+        "commodity": "buckwheat",
+        "dir_out": "N"
+      },
+      "source_fronts_served_by_same_state": [
+        {
+          "instance_id": "producer_west",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "E",
+          "terminal_direction": "W"
+        },
+        {
+          "instance_id": "producer_east",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "W",
+          "terminal_direction": "E"
+        },
+        {
+          "instance_id": "producer_south",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "N",
+          "terminal_direction": "S"
+        }
+      ],
+      "sink_fronts_served_by_same_state": [
+        {
+          "instance_id": "consumer_north",
+          "front": [
+            35,
+            35
+          ],
+          "port_dir": "S",
+          "terminal_direction": "N"
+        }
+      ],
+      "port_adherence": {
+        "exact_links": 4,
+        "blocked_ports": 0,
+        "ports": 4
+      },
+      "connectivity": {
+        "selected_route_states": 1,
+        "checked_commodities": 1,
+        "failure_count": 0,
+        "failures": []
+      }
+    }
+  ],
+  "rate_and_bound_effect": {
+    "buckwheat_per_tick": {
+      "producer_planter": "11",
+      "consumer_crusher": "11/2",
+      "consumer_seed_collector": "11/2",
+      "consumer_residuals": [
+        "1/2",
+        "1/2"
+      ],
+      "shared_splitter_total": "1",
+      "report_in_port_min": 12,
+      "counterexample_sink_front_states": 11
+    },
+    "same_defect_sandleaf": {
+      "report_in_port_min": 22,
+      "counterexample_sink_front_states": 21
+    },
+    "report_L_front": 308,
+    "directly_corrected_front_count": 306,
+    "directly_corrected_by_commodity": {
+      "blue_iron_block": 34,
+      "blue_iron_ore": 34,
+      "blue_iron_powder": 34,
+      "buckwheat": 11,
+      "buckwheat_powder": 11,
+      "buckwheat_seed": 11,
+      "dense_blue_iron_powder": 17,
+      "dense_source_powder": 9,
+      "fine_buckwheat_powder": 6,
+      "sandleaf": 21,
+      "sandleaf_powder": 32,
+      "sandleaf_seed": 21,
+      "source_ore": 18,
+      "source_powder": 18,
+      "steel_block": 17,
+      "steel_bottle": 6,
+      "steel_part": 6
+    },
+    "fallback_area_if_other_report_inputs_hold": {
+      "unconditional": 1167,
+      "single_layer_conditional": 1014
+    }
+  }
+}

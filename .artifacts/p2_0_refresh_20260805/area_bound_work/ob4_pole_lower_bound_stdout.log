@@ -1,5 +1,5 @@
 === OB4 电杆真下界 ===
-单杆覆盖机身上限 K = 396（OPTIMAL；候选位姿 840；见证独立复验通过）
+单杆覆盖机身上限 K = 396（OPTIMAL；候选位姿 840；见证同进程自检通过，SCIP 外部互证见 refute_20260806/）
 受电机身 = 3325 ⇒ P_min = ceil(3325/396) = 9（对照：MEMO 576 口径 P≥6，484 膨胀口径 P≥7）
 最优装填构成: {'manufacturing_5x5(5x5)': 12, 'manufacturing_6x4(4x6)': 2, 'manufacturing_6x4(6x4)': 2}
 receipt -> /home/zhuran24/zmd-pj/.artifacts/p2_0_refresh_20260805/area_bound_work/ob4_pole_lower_bound_receipt.json

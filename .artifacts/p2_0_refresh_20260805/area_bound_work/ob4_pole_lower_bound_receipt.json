@@ -2,14 +2,15 @@
  "ob": "OB4",
  "semantics_label": "P2.0 第七谓词语义配套（P 下界本身与吞吐无关，六谓词语义同样成立）",
  "date": "2026-08-06",
- "stencil_source": "rules/canonical_rules.json semantics.power_coverage_stencil (12×12, anchor−5..anchor+6, 2×2 杆身) —— 与 src/master/exact_coordinate_master.py 运行时语义核对记录见报告",
+ "stencil_source": "rules/canonical_rules.json:100-110 与 :460-471（stencil 12×12）；运行时判据真身 = src/models/exact_coordinate_master.py:6182-6197（四不等式矩形相交），全矩形守卫 :5993-6028，C1 witness :6679-",
  "argument": "指派论证：每受电设施指派给一根覆盖杆 ⇒ 单杆名下设施互斥且包围盒交其 12×12 窗 ⇒ 单杆覆盖机身 ≤ K（CP-SAT 装填最优）⇒ P ≥ ceil(3325/K)",
  "K_single_pole_max_covered_body_cells": 396,
  "K_solver_status": "OPTIMAL",
  "K_candidates": 840,
  "powered_body_cells": 3325,
  "P_min": 9,
- "witness_independent_recheck": "逐格重查通过：互斥 / 不压杆身 / 逐台交窗 / 面积==K",
+ "witness_selfcheck": "同脚本进程逐格重查通过：互斥 / 不压杆身 / 逐台交窗 / 面积==K（非独立进程；独立互证见 external_cross_check）",
+ "external_cross_check": "refute 席 SCIP 双档复算 K=396 一致（无库存帽/普查帽），收据 refute_20260806/independent_power_ip_probe_receipt.json",
  "previous_weak_bounds": {
   "memo_24x24_576": {
    "area": 576,
