@@ -1,0 +1,31 @@
+# 第四轮包组装说明（给主线自己，非 reviewer 材料）
+
+**发包前置（硬序）**：owner 完成公理审阅（`.artifacts/axiom_analysis_20260806/
+AXIOM_REVIEW_FOR_OWNER.md` 五件把关项给出裁定）→ 按裁定改写任务书规则段
+（占位段替换；若 owner 解锁输出口过境则硬约束 6 改写并把新自由度扩为双向）→
+打包 → owner 传。
+
+## 打包清单（沿用 band22 严格重设计包框架）
+
+1. `00_TASK_BRIEF.md`（本目录草稿替换规则段后的终版）
+2. 冻结输入：`rules/canonical_rules.json`（c3666d78…；若 canonical 修正批先落地
+   则用新版+新 sha，任务书语义随之）、`rules/preprocess_plan.json`、
+   `data/preprocessed/mandatory_exact_instances.json`、`generic_io_requirements.json`
+3. 速率表：`rate_lemma_recompute.py` 的输出表（17 残道逐条+满率口径）
+4. 见证 schema：沿用 `band22_strict_witness_v2.json` 结构说明（上轮包的 schema 章）
+   +本轮新增字段无；坐标系注记（N=y+1）
+5. 上轮死因分析：任务书内嵌（已写）；不附上轮见证本体（避免锚定）
+6. 几何账本：候选池引用（f05b1291…）或按上轮包的几何摘要形态
+7. MANIFEST.sha256
+8. 独立成包，不与外审包混（受众不同：设计任务 vs 审计任务）
+
+## 验收管线（收到回件后）
+
+1. 独立重算（上轮 codex_reverify 同款：几何/端口/供电/孔严格性）
+2. ④路 driver 全阶梯：intake → 固定 master → 官方 binding/routing 门
+   （budgets 沿用；RAB 开关按需）——**本轮预期 rung3 可过**（死因已修）
+3. 叙述层按交付合同验数字（脚本复算 vs 报告数字）
+
+## 变更记录
+
+- 2026-08-06 备料稿立（规则段占位）。触发：owner 拍板第四轮开工+「先确定再找」。
