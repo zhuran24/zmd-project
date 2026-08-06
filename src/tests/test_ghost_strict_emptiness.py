@@ -22,9 +22,14 @@ from types import SimpleNamespace
 from typing import Any, Dict, List, Mapping, Sequence, Set, Tuple
 
 import pytest
+from ortools.sat.python import cp_model
 
 from src.search import benders_loop as bl
+from src.search import d2_separator as d2_sep
+from src.search import patch_conflict_separator as pcr_sep
 from src.search import pr2_l0_fixed_witness_core as fw
+from src.search import routing_deletion_core_minimizer as deletion_core
+from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
 from src.models.routing_subproblem import (
     GHOST_RESERVED_OWNER_ID,
     RoutingGrid,
@@ -638,3 +643,428 @@ def test_witness_connector_backstop_stays_body_scoped() -> None:
         )
         == "terminal_fixed_witness_connector_cell_occupied_by_other_body"
     )
+
+
+# ---------------------------------------------------------------------------
+# TST-GHOST-001 patch 3 — every optional front-blocked cut surface stays silent
+# ---------------------------------------------------------------------------
+
+
+_OPTIONAL_FRONT_BLOCKED_CUT_ENVS = (
+    "EXACT_USE_POSE_BOOL_MASTER",
+    "EXACT_B1_DELETION_CORE_CUT",
+    "EXACT_B1_LAZY_DEMAND_CUT",
+    "EXACT_B1_D2_COMMODITY_FLOW",
+    "EXACT_B1_D2_FLOW_SECONDS",
+    "EXACT_B1_PATCH_ROUTING_CORE",
+    "EXACT_B1_PATCH_ROUTING_CORE_TOP_K",
+    "EXACT_B1_PATCH_ROUTING_CORE_SECONDS",
+    "EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS",
+    "EXACT_B1_PATCH_ROUTING_CORE_QX_CAP",
+    "EXACT_B1_PATCH_ROUTING_CORE_MAX_CELLS",
+    "EXACT_MASTER_GHOST_ANCHOR_FILTER",
+)
+
+
+@pytest.mark.parametrize(
+    "surface",
+    [
+        pytest.param("deletion-core", id="deletion-core"),
+        pytest.param("lazy-demand", id="lazy-demand"),
+        pytest.param("cell-pattern", id="cell-pattern"),
+        pytest.param("d2", id="d2"),
+        pytest.param("pcr", id="pcr"),
+    ],
+)
+def test_ghost_blocked_port_emits_no_cut_on_enabled_surface(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    surface: str,
+) -> None:
+    """A ghost-local failure must not escape through any optional cut surface.
+
+    The D2 and PCR cases run their real separators.  PCR alone fixes candidate
+    selection to one ghost-local patch so the real patch CP-SAT is exercised
+    instead of vacuously returning with zero candidates.
+
+    Deletion-core has one deliberate distinction: its body-only oracle returns
+    the full fallback core, so the real PoseBool sink is called once with
+    ``ghost_pick`` and atomically returns False before ``model.Add``.  The
+    invariant is zero emitted constraint/cut, not zero attempted method calls.
+    """
+
+    for env_name in _OPTIONAL_FRONT_BLOCKED_CUT_ENVS:
+        monkeypatch.delenv(env_name, raising=False)
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+
+    if surface == "deletion-core":
+        monkeypatch.setenv("EXACT_B1_DELETION_CORE_CUT", "1")
+    elif surface == "lazy-demand":
+        monkeypatch.setenv("EXACT_B1_LAZY_DEMAND_CUT", "1")
+    elif surface == "d2":
+        monkeypatch.setenv("EXACT_B1_D2_COMMODITY_FLOW", "1")
+        monkeypatch.setenv("EXACT_B1_D2_FLOW_SECONDS", "1")
+    elif surface == "pcr":
+        monkeypatch.setenv("EXACT_B1_PATCH_ROUTING_CORE", "1")
+        monkeypatch.setenv("EXACT_B1_PATCH_ROUTING_CORE_TOP_K", "1")
+        monkeypatch.setenv("EXACT_B1_PATCH_ROUTING_CORE_SECONDS", "2")
+        monkeypatch.setenv("EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS", "1")
+        monkeypatch.setenv("EXACT_B1_PATCH_ROUTING_CORE_QX_CAP", "4")
+        monkeypatch.setenv("EXACT_B1_PATCH_ROUTING_CORE_MAX_CELLS", "100")
+        monkeypatch.setenv(
+            "EXACT_MASTER_GHOST_ANCHOR_FILTER",
+            f"{_GHOST_ANCHOR[0]},{_GHOST_ANCHOR[1]}",
+        )
+
+    ghost_port = {
+        "instance_id": "i",
+        "x": _GHOST_ANCHOR[0] + 1,
+        "y": _GHOST_ANCHOR[1] + 1,
+        "dir": "E",
+        "type": "out",
+        "commodity": "ore",
+    }
+    pose = {
+        "occupied_cells": [[0, 0]],
+        "input_port_cells": [],
+        "output_port_cells": [dict(ghost_port)],
+    }
+    master = _ghost_master(
+        facility_pools={"T": [pose]},
+        source_instances=[{"instance_id": "i", "facility_type": "T"}],
+    )
+    master.model = cp_model.CpModel()
+    master.build_stats = {}
+    master._last_solution = object()
+    master._status = "OPTIMAL"
+
+    delegate = PoseBoolExactMasterDelegate(master)
+    delegate._group_id_by_instance = {"i": "g"}
+    delegate.x_vars = {("g", 0): master.model.NewBoolVar("i_pose_0")}
+    master._coordinate_delegate = delegate
+
+    monkeypatch.setattr(_FakeBindingModel, "port_specs", [ghost_port])
+    monkeypatch.setattr(bl, "PortBindingModel", _FakeBindingModel)
+    monkeypatch.setattr(bl, "RoutingSubproblem", _FakeRoutingSubproblem)
+
+    direct_sink_calls: List[Dict[str, Any]] = []
+    persisted_sink_calls: List[Dict[str, Any]] = []
+    whole_layout_calls: List[Dict[str, Any]] = []
+    separator_results: List[Any] = []
+    ghost_guard_results: List[bool] = []
+
+    original_add_benders_cut = delegate.add_benders_cut
+
+    def spy_add_benders_cut(
+        conflict_set: Mapping[str, int],
+        *,
+        condition_lits: Sequence[Any] = (),
+    ) -> bool:
+        before = len(master.model.Proto().constraints)
+        outcome = original_add_benders_cut(
+            conflict_set,
+            condition_lits=condition_lits,
+        )
+        direct_sink_calls.append(
+            {
+                "name": "add_benders_cut",
+                "conflict_set": dict(conflict_set),
+                "outcome": outcome,
+                "constraint_delta": len(master.model.Proto().constraints) - before,
+            }
+        )
+        return outcome
+
+    def spy_bool_sink(name: str) -> Any:
+        def sink(*args: Any, **kwargs: Any) -> bool:
+            direct_sink_calls.append({"name": name, "args": args, "kwargs": kwargs})
+            return True
+
+        return sink
+
+    def spy_patch_sink(*args: Any, **kwargs: Any) -> Dict[str, Any]:
+        direct_sink_calls.append(
+            {"name": "add_patch_routing_core_cut", "args": args, "kwargs": kwargs}
+        )
+        return {"added": True, "signature_lift_counts": [], "total_pose_terms": 0}
+
+    monkeypatch.setattr(delegate, "add_benders_cut", spy_add_benders_cut)
+    monkeypatch.setattr(
+        delegate,
+        "add_routing_port_lazy_demand_cut",
+        spy_bool_sink("add_routing_port_lazy_demand_cut"),
+    )
+    monkeypatch.setattr(
+        delegate,
+        "add_routing_port_blocking_cell_cut",
+        spy_bool_sink("add_routing_port_blocking_cell_cut"),
+    )
+    monkeypatch.setattr(delegate, "add_patch_routing_core_cut", spy_patch_sink)
+
+    original_ghost_guard = bl._blocked_port_has_ghost_blocker
+
+    def tracked_ghost_guard(blocked_port: Mapping[str, Any]) -> bool:
+        outcome = original_ghost_guard(blocked_port)
+        ghost_guard_results.append(outcome)
+        return outcome
+
+    monkeypatch.setattr(bl, "_blocked_port_has_ghost_blocker", tracked_ghost_guard)
+
+    if surface == "deletion-core":
+        original_minimize = deletion_core.minimize_routing_front_blocked_core
+
+        def tracked_minimize(**kwargs: Any) -> Any:
+            outcome = original_minimize(**kwargs)
+            separator_results.append(outcome)
+            return outcome
+
+        monkeypatch.setattr(
+            deletion_core,
+            "minimize_routing_front_blocked_core",
+            tracked_minimize,
+        )
+    elif surface == "d2":
+        original_d2 = d2_sep.run_d2_separation
+
+        def tracked_d2(**kwargs: Any) -> Any:
+            outcome = original_d2(**kwargs)
+            separator_results.append(outcome)
+            return outcome
+
+        monkeypatch.setattr(d2_sep, "run_d2_separation", tracked_d2)
+    elif surface == "pcr":
+        def one_ghost_local_candidate(**kwargs: Any) -> List[Any]:
+            assert kwargs["ghost_anchor"] == _GHOST_ANCHOR
+            assert kwargs["ghost_size"] == (_GHOST_W, _GHOST_H)
+            return [
+                pcr_sep._PatchCandidateRecord(
+                    patch_id="ghost_local_probe",
+                    cells=frozenset(_GHOST_CELLS),
+                    kind="ghost_local_probe",
+                    score=1.0,
+                    source_witness={"ghost_local_probe": True},
+                )
+            ]
+
+        original_pcr = pcr_sep.run_patch_conflict_separation
+
+        def tracked_pcr(**kwargs: Any) -> Any:
+            outcome = original_pcr(**kwargs)
+            separator_results.append(outcome)
+            return outcome
+
+        monkeypatch.setattr(pcr_sep, "select_patch_candidates", one_ghost_local_candidate)
+        monkeypatch.setattr(pcr_sep, "run_patch_conflict_separation", tracked_pcr)
+
+    controller = _controller(master, tmp_path)
+    monkeypatch.setattr(
+        controller,
+        "_add_exact_persisted_nogood",
+        lambda **kwargs: persisted_sink_calls.append(dict(kwargs)) or True,
+    )
+    monkeypatch.setattr(
+        controller,
+        "_add_exact_whole_layout_nogood",
+        lambda **kwargs: whole_layout_calls.append(dict(kwargs)) or True,
+    )
+
+    initial_constraint_count = len(master.model.Proto().constraints)
+    initial_solver = master._solver
+    initial_last_solution = master._last_solution
+    initial_status = master._status
+    solution = _solution_with_ghost()
+    solution["i"]["operation_type"] = "test_operation"
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution=solution,
+        diagnostic_flow_status="not_run",
+    )
+
+    assert status == bl.RUN_STATUS_UNKNOWN
+    assert result is None
+    assert ghost_guard_results and all(ghost_guard_results)
+    assert persisted_sink_calls == []
+    assert whole_layout_calls == []
+    assert controller.generated_exact_safe_cuts == []
+    assert controller._fine_grained_exact_safe_cut_count == 0
+    assert controller._routing_front_blocked_cut_count == 0
+    assert len(master.model.Proto().constraints) == initial_constraint_count
+    assert master.build_stats == {}
+    assert master._solver is initial_solver
+    assert master._last_solution is initial_last_solution
+    assert master._status == initial_status
+    assert controller.last_proof_summary["routing_status"] == "PRECHECK_FRONT_BLOCKED"
+    assert controller.last_proof_summary["master_follow_up"] == "cut_stall"
+
+    if surface == "deletion-core":
+        assert len(separator_results) == 1
+        assert separator_results[0].abort_reason == "fallback_no_deletion"
+        assert direct_sink_calls == [
+            {
+                "name": "add_benders_cut",
+                "conflict_set": {"i": 0, "ghost_pick": 0},
+                "outcome": False,
+                "constraint_delta": 0,
+            }
+        ]
+    else:
+        assert direct_sink_calls == []
+
+    if surface == "d2":
+        assert len(separator_results) == 1
+        assert separator_results[0].cut_added is False
+        assert separator_results[0].d2_status == "MODEL_INVALID"
+        assert separator_results[0].d2_total_vars == 0
+        assert (
+            separator_results[0].reason
+            == "routing_precheck_feasible_not_certified_for_d2_cut"
+        )
+    elif surface == "pcr":
+        assert len(separator_results) == 1
+        assert separator_results[0].cut_added is False
+        assert separator_results[0].candidates_evaluated == 1
+        assert separator_results[0].patch_results[0]["status"] == "FEASIBLE"
+
+
+# ---------------------------------------------------------------------------
+# TST-GHOST-001 patch 4 — terminal entry consumes ghost-inclusive occupancy
+# ---------------------------------------------------------------------------
+
+
+def test_terminal_fixed_witness_e2e_demotes_port_inside_ghost(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The terminal verifier must not certify a binding whose port is in the hole.
+
+    The lightweight routing stand-in is deliberately FEASIBLE.  It is never
+    reached under strict semantics, but makes a regression at the terminal
+    ``ghost_cells=`` ingestion point project to CERTIFIED instead of being hidden
+    behind another fail-closed rejection.
+    """
+
+    ghost_pose_idx = fw._expected_unfiltered_ghost_anchor_index(
+        grid_w=GRID_W,
+        grid_h=GRID_H,
+        ghost_w=_GHOST_W,
+        ghost_h=_GHOST_H,
+        anchor_x=_GHOST_ANCHOR[0],
+        anchor_y=_GHOST_ANCHOR[1],
+    )
+    assert ghost_pose_idx is not None
+
+    solution: Dict[str, Any] = {
+        "i": {"facility_type": "T", "pose_idx": 0},
+        "ghost_pick": _ghost_pick(pose_idx=ghost_pose_idx),
+    }
+    state = {
+        "final_result": {
+            "ghost_rect": {
+                "w": _GHOST_W,
+                "h": _GHOST_H,
+                "area": _GHOST_W * _GHOST_H,
+                "anchor_x": _GHOST_ANCHOR[0],
+                "anchor_y": _GHOST_ANCHOR[1],
+            },
+            "placement_solution": {"i": dict(solution["i"])},
+        },
+        "candidates": {
+            f"{_GHOST_W}x{_GHOST_H}": {
+                "ghost_rect": {
+                    "w": _GHOST_W,
+                    "h": _GHOST_H,
+                    "area": _GHOST_W * _GHOST_H,
+                },
+                "status": "CERTIFIED",
+                "solution": solution,
+                fw.CANDIDATE_PROOF_FIELD: {
+                    "solution_digest": fw.canonical_digest(solution),
+                },
+            }
+        },
+    }
+
+    ghost_port = {
+        "instance_id": "i",
+        "x": _GHOST_ANCHOR[0] + 1,
+        "y": _GHOST_ANCHOR[1] + 1,
+        "dir": "E",
+        "type": "out",
+        "commodity": "ore",
+    }
+    monkeypatch.setattr(_FakeBindingModel, "port_specs", [ghost_port])
+    monkeypatch.setattr(fw, "PortBindingModel", _FakeBindingModel)
+    monkeypatch.setattr(fw, "_load_grid_dimensions", lambda _root: (GRID_W, GRID_H))
+    monkeypatch.setattr(
+        fw,
+        "_load_facility_pools",
+        lambda _root: {"T": [{"occupied_cells": [[0, 0]]}]},
+    )
+    monkeypatch.setattr(
+        fw,
+        "_load_mandatory_instances",
+        lambda _root: [
+            {
+                "instance_id": "i",
+                "facility_type": "T",
+                "is_mandatory": True,
+            }
+        ],
+    )
+    monkeypatch.setattr(
+        fw,
+        "load_generic_io_requirements",
+        lambda **_kwargs: {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        },
+    )
+
+    class FeasibleRoutingSubproblem:
+        solve_calls = 0
+
+        def __init__(
+            self,
+            placement_core: RoutingPlacementCore,
+            port_specs: Sequence[Mapping[str, Any]],
+        ) -> None:
+            self.grid = SimpleNamespace(
+                port_specs=[dict(spec) for spec in port_specs],
+                occupied_owner_by_cell=dict(placement_core.occupied_owner_by_cell),
+            )
+            self.build_stats: Dict[str, Any] = {}
+
+        @classmethod
+        def from_placement_core(
+            cls,
+            placement_core: RoutingPlacementCore,
+            port_specs: Sequence[Mapping[str, Any]],
+            *_args: Any,
+            **_kwargs: Any,
+        ) -> "FeasibleRoutingSubproblem":
+            return cls(placement_core, port_specs)
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, *args: Any, **kwargs: Any) -> str:
+            type(self).solve_calls += 1
+            return "FEASIBLE"
+
+    monkeypatch.setattr(fw, "RoutingSubproblem", FeasibleRoutingSubproblem)
+
+    verdict = fw.verify_terminal_fixed_witness(
+        state=state,
+        project_root=tmp_path,
+        serialized_state_bytes=fw.canonical_state_bytes_for_fixed_witness(state),
+    )
+
+    assert verdict.publishable is False
+    assert verdict.projected_status == "UNPROVEN"
+    assert verdict.projected_status != "CERTIFIED"
+    assert verdict.reason == "terminal_fixed_witness_routing_precheck_not_feasible"
+    assert verdict.binding_status == "FEASIBLE"
+    assert verdict.routing_status == "front_blocked"
+    assert verdict.details["routing_precheck_status"] == "front_blocked"
+    assert FeasibleRoutingSubproblem.solve_calls == 0
