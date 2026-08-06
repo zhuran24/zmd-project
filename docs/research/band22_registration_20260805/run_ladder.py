@@ -47,6 +47,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--outer-seconds", type=int, default=21600)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--binding-alt-cap", type=int, default=0)
+    parser.add_argument("--routing-aware-binding", action="store_true")
     return parser
 
 def main(argv: list[str] | None = None) -> int:
@@ -87,6 +88,8 @@ def main(argv: list[str] | None = None) -> int:
                    "--binding-seconds", str(args.binding_seconds), "--routing-seconds", str(args.routing_seconds),
                    "--max-gate-wall-seconds", str(args.max_gate_wall_seconds), "--workers", str(args.workers),
                    "--binding-alt-cap", str(args.binding_alt_cap)]
+        if args.routing_aware_binding:
+            command.append("--routing-aware-binding")
         env = {key: value for key, value in os.environ.items() if not key.startswith("EXACT_") and key not in {"PYTHONPATH", "PYTHONHOME"}}
         wrapper_started = os.times().elapsed
         with (rung_parent / "guarded.log").open("xb") as log:
@@ -157,6 +160,7 @@ def main(argv: list[str] | None = None) -> int:
         "binding_seconds": args.binding_seconds, "routing_seconds": args.routing_seconds,
         "max_gate_wall_seconds": args.max_gate_wall_seconds, "outer_seconds": args.outer_seconds,
         "workers": args.workers, "binding_alt_cap": args.binding_alt_cap,
+        "routing_aware_binding": bool(args.routing_aware_binding),
         "memory_max": "24G", "memory_swap_max": "0"}, "rungs": rung_records,
         "peak_vm_hwm_mb": peak, "terminal": {"reason": stop_reason, "exit_code": exit_code,
         "verdict": last.get("verdict"), "censored": last.get("censored")},

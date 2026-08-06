@@ -131,9 +131,13 @@ GRID_H = 70
 
 TAG_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 
-# The only two EXACT_* knobs this driver owns. Everything else inherited from
+# The only EXACT_* knobs this driver owns. Everything else inherited from
 # the environment is a hard error (see _enforce_env_hygiene).
-OWNED_ENV_KNOBS = ("EXACT_CP_SAT_WORKERS", "EXACT_B1_BINDING_ALT_CAP")
+OWNED_ENV_KNOBS = (
+    "EXACT_CP_SAT_WORKERS",
+    "EXACT_B1_BINDING_ALT_CAP",
+    "EXACT_B1_ROUTING_AWARE_BINDING",
+)
 
 RESEARCH_ONLY_DISCLAIMER = (
     "research-only gate ingestion. No campaign, no proposal marker, no "
@@ -1506,6 +1510,17 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--routing-aware-binding",
+        action="store_true",
+        help=(
+            "EXACT_B1_ROUTING_AWARE_BINDING=1 — let the official binding model "
+            "filter port choices through the routing-aware context (certified-"
+            "allowlisted channel). On a pinned layout the context is static, so "
+            "this collapses the blind binding-alternative enumeration that "
+            "otherwise ping-pongs against routing_precheck front_blocked"
+        ),
+    )
+    parser.add_argument(
         "--max-gate-wall-seconds",
         type=float,
         default=0.0,
@@ -1594,6 +1609,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     os.environ["EXACT_CP_SAT_WORKERS"] = str(int(args.workers))
     if args.binding_alt_cap > 0:
         os.environ["EXACT_B1_BINDING_ALT_CAP"] = str(int(args.binding_alt_cap))
+    if args.routing_aware_binding:
+        os.environ["EXACT_B1_ROUTING_AWARE_BINDING"] = "1"
+    else:
+        os.environ.pop("EXACT_B1_ROUTING_AWARE_BINDING", None)
 
     log = StageLog()
     sampler = MemorySampler(memory_path, args.memory_sample_interval, log)
@@ -1624,6 +1643,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             "master_validation_seconds": float(args.master_validation_seconds),
             "workers": int(args.workers),
             "binding_alt_cap": int(args.binding_alt_cap),
+            "routing_aware_binding": bool(args.routing_aware_binding),
             "max_gate_wall_seconds": float(args.max_gate_wall_seconds),
             "max_gate_wall_seconds_note": (
                 "best-effort SIGALRM only; the hard envelope is run_guarded.sh"
