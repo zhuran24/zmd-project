@@ -21,6 +21,8 @@ use 变量继承整个物理件图样，导致「多商品共乘一段带再分�
   之和）+ 每格每层每商品至多一态。替换 `use≤phys`、`phys=max(uses)`。
 - phys 层（48 态字典、AtMostOne 容量、桥互斥）逐字不动。
 - sink front 地面对别家商品：涌现排他 → 生成期显式排除（结构上不可能）。
+  多 owner 细则：一格挂多个异商品 sink 端口时地面全排（任何共存组合都构成
+  内容盲双向灌门；同商品多端口 front 不受影响）。
 - source front 地面对别家商品：解锁（owner 08-06 定谳「输出口门口过境安全」）。
 - 连通复验器、source-side 割、adherence、continuity、边平衡：零改动。
 
@@ -138,6 +140,27 @@ routing 的 INFEASIBLE 会经 independent reverifier 变成 layout 级 nogood cu
 合法化重写（意图不变：共享直带/同轴叠层，测试内注释注明）。**对外审的意义**：
 本手术在这一角上比旧模型更严，是污染语义的净收紧，与「放宽产生假 CERTIFIED」
 的担忧方向相反。
+
+**不可达性论证（条款级）——该几何为何不可能出现在任何生产解里**：
+「两个异商品 sink 端口共 front 格同终端向」按来源穷分三支，每支被一条上游
+条款挡死：
+1. **同一物理口被绑两个商品**：binding 层每个物理口至多绑一个商品
+   （generic-input 合同按实体端口建模、B-01 单商品制——W-GAP-01 登记的
+   表达力缺口正以「每口一商品」为前提），port_specs 进 routing 前一口一条。
+2. **两个不同实例的端口**：identity front 语义下 stored 坐标即 front 格，
+   端口的机身侧格 = front − DIR_DELTA[dir]；同 front 同 dir ⇒ 两实例的机身
+   侧格是**同一格** ⇒ 机身重叠 ⇒ 认证谓词 (2)「两两不重叠」在 master 层
+   直接排除。
+3. **同一实例的两个端口**：设备口位是 registry 级冻结事实
+   （`mandatory_exact_instances.json`，口数=边长、一格一口一朝向），不存在
+   同格同向双口的设备。
+诚实注记：routing 层自己的 `_duplicate_terminal_front_keys` 守卫按
+(front, terminal_dir, **commodity**, type) 键控，只抓同商品重复——跨商品
+共located 在 routing 层此前**无守卫**，不可达性完全靠上游三条；手术后的
+多 owner 全排使 routing 层首次独立拒绝该几何（纵深防御补齐）。结论：旧模型
+的这个接受面只能被手造测试 fixture 触达，任何经 placement+binding 产生的
+生产输入都到不了它——不存在「被污染的历史解」（另一重保险：认证链至今
+从未 mint 过 CERTIFIED，正常链终点是 CANDIDATE_PROPOSED）。
 
 ## 5. 外审开放问题清单
 
