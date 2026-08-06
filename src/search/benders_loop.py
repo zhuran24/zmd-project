@@ -6215,7 +6215,7 @@ class LBBDController:
             return None
         try:
             rect_idx = int(raw_pick["pose_idx"])
-        except (KeyError, TypeError, ValueError):
+        except (IndexError, KeyError, OverflowError, TypeError, ValueError):
             return None
         if rect_idx < 0 or rect_idx >= len(ghost_domains):
             return None
@@ -6233,7 +6233,7 @@ class LBBDController:
             if int(pick_anchor["x"]) != anchor_x or int(pick_anchor["y"]) != anchor_y:
                 return None
             cells = {(int(c[0]), int(c[1])) for c in domain.get("cells") or []}
-        except (KeyError, TypeError, ValueError):
+        except (IndexError, KeyError, OverflowError, TypeError, ValueError):
             return None
         if not cells:
             return None
@@ -6243,7 +6243,7 @@ class LBBDController:
             try:
                 ghost_w = int(ghost_rect[0])
                 ghost_h = int(ghost_rect[1])
-            except (TypeError, ValueError, IndexError):
+            except (IndexError, KeyError, OverflowError, TypeError, ValueError):
                 return None
             if ghost_w <= 0 or ghost_h <= 0:
                 return None
@@ -6283,17 +6283,36 @@ class LBBDController:
         ghost_domains = list(getattr(self.master, "_ghost_domains", None) or [])
         raw_pick = solution.get("ghost_pick") if isinstance(solution, Mapping) else None
         if not ghost_domains:
-            # A marker with no domain behind it is malformed input, not the
-            # absence of a hole.
-            return None if raw_pick is not None else set()
+            if raw_pick is not None:
+                # A marker with no domain behind it is malformed input, not the
+                # absence of a hole.
+                return None
+            if getattr(self.master, "ghost_rect", None) is not None:
+                # Ghost is configured on the master yet no domain was built to
+                # answer with — a broken state, not a hole-free layout.
+                # Answering with an empty set here would silently restore the
+                # loose semantics exactly when the machinery is known missing.
+                return None
+            return set()
 
         cells = self._ghost_cells_from_solution_marker(raw_pick, ghost_domains)
         if cells is None:
             return None
         context = self._selected_ghost_context()
-        if context is not None and set(context[3]) != cells:
-            # The live literal and the routed layout disagree about the hole.
+        if context is not None:
+            if set(context[3]) != cells:
+                # The live literal and the routed layout disagree about the hole.
+                return None
+            return cells
+        if getattr(self.master, "_solver", None) is not None:
+            # The solver handle is still live yet the selected context did not
+            # resolve (ambiguous selection, malformed domain).  Trusting the
+            # marker alone would skip the only cross-check tying it to the live
+            # selection — fail closed instead.
             return None
+        # Solver handle dropped (a cut was applied): the marker is the
+        # provenance that travels with the layout, and it already passed the
+        # full domain-record checks above.
         return cells
 
     def _selected_ghost_anchor(self) -> Optional[Tuple[int, Any, Mapping[str, Any]]]:
@@ -7586,6 +7605,13 @@ class LBBDController:
                         # Covers all three cut shapes below (lazy demand, cell
                         # pattern, instance nogood) at one point.  Only the last
                         # one would fail closed on its own.
+                        # Erratum 2026-08-06 (flagged by two independent external
+                        # reviews): this suppressor does NOT cover the D2 / PCR
+                        # emission sites, whose calls precede this loop.  Their
+                        # current safety comes from the certified closed env
+                        # allowlist blocking those paths structurally; enabling
+                        # either surface (promotion) first requires a direct
+                        # ghost-suppression guard or per-surface sentinel there.
                         continue
                     delegate = self.master._coordinate_delegate
                     if _b1_use_lazy_demand and delegate is not None:

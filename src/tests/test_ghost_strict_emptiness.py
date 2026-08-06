@@ -236,14 +236,93 @@ def test_strict_ghost_occupancy_fails_closed_when_live_literal_disagrees(
 
 
 def test_strict_ghost_occupancy_empty_without_ghost_machinery(tmp_path: Path) -> None:
-    """A master with no ghost domain has no hole — that is not a fail-open."""
+    """A master with no ghost configured at all has no hole — not a fail-open."""
+
+    master = _ghost_master()
+    master.u_vars = {}
+    master._ghost_domains = []
+    master.ghost_rect = None
+    controller = _controller(master, tmp_path)
+    assert controller._strict_ghost_occupancy({"i": {"facility_type": "T"}}) == set()
+    # A marker with no domain to resolve it against is malformed input.
+    assert controller._strict_ghost_occupancy(_solution_with_ghost()) is None
+
+
+def test_strict_ghost_occupancy_fails_closed_when_domains_missing_but_ghost_configured(
+    tmp_path: Path,
+) -> None:
+    """ghost_rect configured + empty domains = broken state, never "no hole".
+
+    Answering with an empty set here is indistinguishable from a hole-free
+    layout — the exact silent fallback to loose semantics the external review
+    flagged (round-2/3 fail-closed finding).
+    """
 
     master = _ghost_master()
     master.u_vars = {}
     master._ghost_domains = []
     controller = _controller(master, tmp_path)
-    assert controller._strict_ghost_occupancy({"i": {"facility_type": "T"}}) == set()
-    # A marker with no domain to resolve it against is malformed input.
+    assert controller._strict_ghost_occupancy({"i": {"facility_type": "T"}}) is None
+
+
+def test_strict_ghost_occupancy_fails_closed_when_live_context_unreadable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Solver handle present but context unresolvable → marker alone is not enough."""
+
+    controller = _controller(_ghost_master(), tmp_path)
+    monkeypatch.setattr(
+        bl.LBBDController, "_selected_ghost_context", lambda self: None
+    )
+    assert controller._strict_ghost_occupancy(_solution_with_ghost()) is None
+
+
+def test_strict_ghost_occupancy_trusts_marker_after_solver_handle_dropped(
+    tmp_path: Path,
+) -> None:
+    """After a cut is applied the solver handle is dropped; the fully-checked
+    marker is the provenance that travels with the layout and must keep
+    resolving — failing closed here would kill every post-cut iteration."""
+
+    master = _ghost_master()
+    master._solver = None
+    controller = _controller(master, tmp_path)
+    assert controller._strict_ghost_occupancy(_solution_with_ghost()) == _GHOST_CELLS
+
+
+@pytest.mark.parametrize(
+    "poison",
+    [
+        pytest.param(
+            lambda master: master._ghost_domains[0].update(
+                {"cells": [[10]] + master._ghost_domains[0]["cells"][1:]}
+            ),
+            id="short-cell-sequence-indexerror",
+        ),
+        pytest.param(
+            lambda master: master._ghost_domains[0].update(
+                {"cells": [[float("inf"), 10]] + master._ghost_domains[0]["cells"][1:]}
+            ),
+            id="infinite-coordinate-overflowerror",
+        ),
+        pytest.param(
+            lambda master: setattr(master, "ghost_rect", {"w": 3}),
+            id="mapping-ghost-rect-keyerror",
+        ),
+    ],
+)
+def test_strict_ghost_occupancy_normalizes_malformed_domain_exceptions(
+    tmp_path: Path, poison: Any
+) -> None:
+    """Malformed ghost geometry must project to None, never raise (fail-stop →
+    normalized fail-closed; external review round-3 hardening point)."""
+
+    master = _ghost_master()
+    poison(master)
+    # Drop the live handle so the marker path (the one that parses the domain
+    # record) is the code under test.
+    master._solver = None
+    controller = _controller(master, tmp_path)
     assert controller._strict_ghost_occupancy(_solution_with_ghost()) is None
 
 

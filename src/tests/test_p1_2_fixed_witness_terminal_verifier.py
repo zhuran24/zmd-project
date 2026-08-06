@@ -850,6 +850,126 @@ def test_fixed_witness_alternative_binding_timeout_fails_closed(
     assert len(binding.nogoods) == 1
 
 
+def test_fixed_witness_rejects_routing_grid_occupancy_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """TOCTOU sentinel: the routing grid's owner map must byte-match the one the
+    witness digested up front (`_routing_occupancy_digest` recomputation at the
+    second comparison site).  A grid that drifts — here one extra cell smuggled
+    in after digesting — must be rejected, never routed.  Mutation audit
+    2026-08-06 found this comparison unreachable by every prior test (M11)."""
+
+    root = _build_tiny_project(tmp_path / "project")
+    state = _state()
+
+    class DriftBindingModel:
+        def __init__(self, *_args: Any, **_kwargs: Any) -> None:
+            self.binding_vars = {"choice": {0: object()}}
+            self.generic_input_vars: dict[str, Any] = {}
+            self.generic_output_vars: dict[str, Any] = {}
+
+        def build(self) -> None:
+            pass
+
+        def solve(self, *, time_limit_seconds: float) -> str:
+            assert 0.0 < time_limit_seconds <= 600.0
+            return "FEASIBLE"
+
+        def extract_selection(self) -> dict[str, Any]:
+            return {
+                "binding_choice": {"choice": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict[str, Any]]:
+            return [
+                {
+                    "instance_id": "tiny_001",
+                    "x": 1,
+                    "y": 0,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": "ore",
+                }
+            ]
+
+        def add_nogood_cut(self, selection: Mapping[str, Any]) -> None:
+            pass
+
+    class DriftedGridRoutingSubproblem:
+        def __init__(self, placement_core: Any, port_specs: Any) -> None:
+            drifted = dict(placement_core.occupied_owner_by_cell)
+            drifted[(63, 63)] = "smuggled_after_digest"
+            self.grid = type(
+                "Grid",
+                (),
+                {
+                    "port_specs": list(port_specs),
+                    "occupied_owner_by_cell": drifted,
+                },
+            )()
+            self.build_stats: dict[str, Any] = {}
+
+        @classmethod
+        def from_placement_core(
+            cls,
+            placement_core: Any,
+            port_specs: Any,
+            *_args: Any,
+            **_kwargs: Any,
+        ):
+            return cls(placement_core, port_specs)
+
+        def build(self) -> None:
+            self.build_stats = {}
+
+        def solve(self, *, time_limit: float) -> str:
+            raise AssertionError("a drifted grid must never reach the solver")
+
+    def feasible_precheck(**_kwargs: Any) -> dict[str, Any]:
+        analysis = {
+            "status": "feasible",
+            "binding_selection_safe_reject": False,
+            "blocked_ports": [],
+            "disconnected_commodities": [],
+        }
+        return {**analysis, "_analysis": analysis}
+
+    monkeypatch.setattr(
+        fixed_witness_core_module, "PortBindingModel", DriftBindingModel
+    )
+    monkeypatch.setattr(
+        fixed_witness_core_module, "RoutingSubproblem", DriftedGridRoutingSubproblem
+    )
+    monkeypatch.setattr(
+        fixed_witness_core_module, "run_exact_routing_precheck", feasible_precheck
+    )
+
+    verdict = verify_terminal_fixed_witness(
+        state=state,
+        project_root=root,
+        serialized_state_bytes=canonical_state_bytes_for_fixed_witness(state),
+    )
+
+    assert verdict.publishable is False
+    assert verdict.projected_status == "UNPROVEN"
+    assert verdict.reason == "terminal_fixed_witness_routing_occupancy_mismatch"
+
+
+def test_routing_occupancy_digest_forks_on_owner_identity() -> None:
+    """Same cells, different owner → digests must differ.  The owner string is a
+    load-bearing digest field (M12): dropping or constant-folding it would let
+    one digest vouch for two different occupancy attributions."""
+
+    cells_a = {(0, 0): "tiny_001", (1, 1): "tiny_002"}
+    cells_b = {(0, 0): "tiny_001", (1, 1): "tiny_999"}
+    assert fixed_witness_core_module._routing_occupancy_digest(
+        cells_a
+    ) != fixed_witness_core_module._routing_occupancy_digest(cells_b)
+
+
 def test_fixed_witness_routing_timeout_fails_closed_without_enumeration(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

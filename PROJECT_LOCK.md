@@ -708,9 +708,13 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   The production readiness gate and `scripts/run_campaign_linux.sh` both still block when the env var is set; do not bypass them until pole alternatives is implemented and re-audited.
 
 - **Whole-layout nogood independent reverify (I1, implemented in current worktree)**:
-  `benders_loop.py::_reverify_whole_layout_infeasibility_before_cut` (current call path around `:8279`) calls
-  `independent_infeasibility_reverifier.reverify_whole_layout_infeasibility()` before a
-  proof-bearing whole-layout nogood may be added. The reverifier rebuilds the relevant binding or
+  `benders_loop.py::LBBDController._add_exact_whole_layout_nogood` — the single
+  whole-layout nogood entry point — calls
+  `independent_infeasibility_reverifier.reverify_whole_layout_infeasibility()` inline before a
+  proof-bearing whole-layout nogood may be added. (Erratum 2026-08-06, flagged by two
+  independent external reviews: an earlier revision of this entry cited a nonexistent
+  helper `_reverify_whole_layout_infeasibility_before_cut` and a stale line number; the
+  reference is now by symbol only.) The reverifier rebuilds the relevant binding or
   routing question through its own entry point; `confirmed=false`, a feasible divergence, malformed
   evidence, or an exception yields `UNKNOWN`/no cut. This closes the previously registered
   “same solver attests its own whole-layout conflict” implementation gap and is sealed by

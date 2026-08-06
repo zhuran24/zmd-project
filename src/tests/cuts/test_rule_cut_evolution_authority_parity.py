@@ -40,7 +40,7 @@ from src.cuts.typed_platform import (
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _BASELINE_COMMIT = "398f8725c770f3c36408adebe9448a890ed886fe"
-_PROJECT_LOCK_SHA256 = "aeadef3aded03099d18580a05454c90af11a4dd6859d7798516ced73d2df2b42"
+_PROJECT_LOCK_SHA256 = "10c3f7b9174974e84271bb1dc44df35e84fb73c5d65af0df68545c4b2c3fd82a"
 
 # Historical hashes for the six pre-existing Python surfaces touched during
 # the abandoned runtime-wiring attempt.  Five remain byte-identical to
@@ -70,13 +70,13 @@ _BASELINE_SURFACE_SHA256 = {
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
     "scripts/preflight_gate.py": "c92139da391c750b8a12a74d8d8f34a6fd686e575e8d714e1f76a133301c10ec",
-    "src/search/benders_loop.py": "a8f7aa3b6e25d247be4ea636b7e42ecb9100b46a188ab454748b575dad1fedd9",
+    "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
 }
 
 _P1_2_SINK_SHA256 = {
     "src/cuts/lifecycle.py": "9b944572c3bc787317a2e9bfaaf4e3ce472ba8fd953269772b24535bbef1ac1a",
     "src/cuts/typed_platform.py": "cce881457c63647dbba58750e1c4884351a31987057ac72b9cd0aeecaf44b45b",
-    "src/search/benders_loop.py": "a8f7aa3b6e25d247be4ea636b7e42ecb9100b46a188ab454748b575dad1fedd9",
+    "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
 }
 
 _WIRE_FIELDS = {
