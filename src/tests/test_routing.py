@@ -208,7 +208,14 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
     sys.path.insert(0, str(project_root))
     from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
 
-    allowed = {(1, 0), (2, 0), (3, 0)}
+    # Mixflow surgery fixture legalization (2026-08-06): the original fixture
+    # co-located BOTH commodities' sink ports on one front cell with the same
+    # terminal direction — placement-impossible geometry (the two bodies would
+    # overlap) that the pre-surgery model happened to accept and the sink-front
+    # ground-purity exclusion now correctly rejects (pollution ironclad).  The
+    # test intent — two commodities sharing one straight belt phys, both uses
+    # recorded — is preserved on a legal merge/share/split corridor.
+    allowed = {(1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (2, 1), (4, 3)}
     occupied = {
         (x, y)
         for x in range(70)
@@ -216,10 +223,10 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
         if (x, y) not in allowed
     }
     port_specs = [
-        {"instance_id": "iron_src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "iron"},
-        {"instance_id": "iron_sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "iron"},
-        {"instance_id": "copper_src", "x": 1, "y": 0, "dir": "E", "type": "out", "commodity": "copper"},
-        {"instance_id": "copper_sink", "x": 3, "y": 0, "dir": "W", "type": "in", "commodity": "copper"},
+        {"instance_id": "iron_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "iron"},
+        {"instance_id": "iron_sink", "x": 5, "y": 2, "dir": "W", "type": "in", "commodity": "iron"},
+        {"instance_id": "copper_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "copper"},
+        {"instance_id": "copper_sink", "x": 4, "y": 3, "dir": "S", "type": "in", "commodity": "copper"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(occupied, port_specs),
@@ -229,9 +236,16 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
     routing.build()
 
     selected = {
-        (x, 0, 0, ("W",), ("E",), commodity)
-        for x in (1, 2, 3)
-        for commodity in ("iron", "copper")
+        (1, 2, 0, ("W",), ("E",), "iron"),
+        (2, 2, 0, ("W",), ("E",), "iron"),
+        (3, 2, 0, ("W",), ("E",), "iron"),
+        (4, 2, 0, ("W",), ("E",), "iron"),
+        (5, 2, 0, ("W",), ("E",), "iron"),
+        (2, 1, 0, ("S",), ("N",), "copper"),
+        (2, 2, 0, ("S",), ("E",), "copper"),
+        (3, 2, 0, ("W",), ("E",), "copper"),
+        (4, 2, 0, ("W",), ("N",), "copper"),
+        (4, 3, 0, ("S",), ("N",), "copper"),
     }
     _force_exact_route_states(routing, selected)
 
@@ -246,7 +260,7 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
             {"commodity": "iron", "flow_in": ["W"], "flow_out": ["E"]},
         ]
     }
-    assert shared_cells == allowed
+    assert shared_cells == {(3, 2)}
 
 
 def test_perpendicular_l0_l1_crossing_is_feasible(project_root):
@@ -296,7 +310,12 @@ def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
     sys.path.insert(0, str(project_root))
     from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
 
-    allowed = {(1, 2), (2, 2), (3, 2)}
+    # Mixflow surgery fixture legalization (2026-08-06): same fictional
+    # co-located different-commodity terminals as the shared-belt test above;
+    # rebuilt on legal geometry.  Intent preserved: coal riding an L1 bridge
+    # on the SAME axis as ore's L0 straight belt at (2,2) must be INFEASIBLE
+    # (same-axis stacking has no crossing exemption).
+    allowed = {(1, 1), (1, 2), (2, 2), (3, 2), (4, 2), (3, 3)}
     occupied = {
         (x, y)
         for x in range(70)
@@ -305,9 +324,9 @@ def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
     }
     port_specs = [
         {"instance_id": "ore_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "ore"},
-        {"instance_id": "ore_sink", "x": 3, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
-        {"instance_id": "coal_src", "x": 1, "y": 2, "dir": "E", "type": "out", "commodity": "coal"},
-        {"instance_id": "coal_sink", "x": 3, "y": 2, "dir": "W", "type": "in", "commodity": "coal"},
+        {"instance_id": "ore_sink", "x": 4, "y": 2, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "coal_src", "x": 1, "y": 1, "dir": "N", "type": "out", "commodity": "coal"},
+        {"instance_id": "coal_sink", "x": 3, "y": 3, "dir": "S", "type": "in", "commodity": "coal"},
     ]
     routing = RoutingSubproblem(
         RoutingGrid(occupied, port_specs),
@@ -320,9 +339,12 @@ def test_same_axis_l0_l1_crossing_is_infeasible(project_root):
         (1, 2, 0, ("W",), ("E",), "ore"),
         (2, 2, 0, ("W",), ("E",), "ore"),
         (3, 2, 0, ("W",), ("E",), "ore"),
-        (1, 2, 0, ("W",), ("E",), "coal"),
+        (4, 2, 0, ("W",), ("E",), "ore"),
+        (1, 1, 0, ("S",), ("N",), "coal"),
+        (1, 2, 0, ("S",), ("E",), "coal"),
         (2, 2, 1, ("W",), ("E",), "coal"),
-        (3, 2, 0, ("W",), ("E",), "coal"),
+        (3, 2, 0, ("W",), ("N",), "coal"),
+        (3, 3, 0, ("S",), ("N",), "coal"),
     }
     _force_exact_route_states(routing, selected)
 

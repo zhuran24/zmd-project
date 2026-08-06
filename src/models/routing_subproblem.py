@@ -3,6 +3,14 @@ Exact grid-routing subproblem.
 
 This version keeps the exact state semantics, but shrinks the routing core to the
 commodity-scoped terminal-connected domain before building CP-SAT variables.
+
+Mixflow surgery (2026-08-06): commodity use states carry the commodity's own
+sub-pattern instead of copying the physical component's whole pattern, so
+multiple commodities can legally share one belt segment and part ways at
+splitter/merger cells.  The physical layer (closed pattern dictionary, per
+cell/layer AtMostOne, bridge exclusivity) is unchanged; side-coverage
+constraints couple the two layers, and machine-input front cells keep an
+explicit ground-purity exclusion (pollution ironclad).
 """
 
 from __future__ import annotations
@@ -50,6 +58,11 @@ ROUTING_DOMAIN_MISSING_STATUS = "MISSING_STATUS"
 GHOST_RESERVED_OWNER_ID = "__ghost_rect__"
 
 
+# Mixflow surgery (2026-08-06): a RouteStateKey's flow_in/flow_out describe the
+# keyed commodity's OWN movement through the cell (its sub-pattern), no longer a
+# copy of the physical component's whole pattern.  The physical layer keeps the
+# closed 48-state dictionary; the coupling lives in the side-coverage
+# constraints (_add_phys_coverage_constraints).
 RouteStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
 PhysicalStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
 
@@ -749,7 +762,15 @@ class RoutingGrid:
 
 
 class RoutingSubproblem:
-    """CP-SAT routing model with belt / splitter / merger / bridge states."""
+    """CP-SAT routing model with belt / splitter / merger / bridge states.
+
+    Two variable layers: ``phys_vars`` select at most one physical component
+    state per cell/layer from the closed pattern dictionary; ``use_vars``
+    select, per commodity, that commodity's own movement sub-pattern through
+    the cell.  Side-coverage constraints force the selected component to carry
+    exactly the union of the selected sub-pattern sides, which keeps every
+    expressible commodity composition physically realizable by construction.
+    """
 
     def __init__(
         self,
@@ -772,8 +793,11 @@ class RoutingSubproblem:
         # commodity route states, which are now the use layer.
         self.r_vars = self.use_vars
         self.phys_vars: Dict[PhysicalStateKey, Any] = {}
-        self._use_to_phys_key: Dict[RouteStateKey, PhysicalStateKey] = {}
-        self._phys_uses: Dict[PhysicalStateKey, List[Any]] = defaultdict(list)
+        self._phys_in_by_cell_layer_dir: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
+        self._phys_out_by_cell_layer_dir: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
+        self._use_in_by_cell_layer_dir: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
+        self._use_out_by_cell_layer_dir: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
+        self._use_by_cell_layer_commodity: Dict[Tuple[int, int, int, str], List[Any]] = defaultdict(list)
         self._phys_by_cell_layer: Dict[Tuple[int, int, int], List[Any]] = defaultdict(list)
         self._phys_keys_by_cell: Dict[Tuple[int, int], List[PhysicalStateKey]] = defaultdict(list)
         self._use_by_cell_layer_dir_out_commodity: Dict[
@@ -805,6 +829,7 @@ class RoutingSubproblem:
         self._duplicate_terminal_front_keys = _duplicate_terminal_front_keys(self.grid.port_specs)
         self._source_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
         self._sink_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
+        self._sink_front_commodities: Dict[Tuple[int, int], Set[str]] = defaultdict(set)
         self._index_port_fronts()
         self._patterns_by_layer = {
             layer: list(self._iter_state_patterns(layer))
@@ -838,6 +863,7 @@ class RoutingSubproblem:
             else:
                 send_dir = DIR_OPP[direction]
                 self._sink_port_fronts[(fx, fy, send_dir, commodity)] += 1
+                self._sink_front_commodities[(fx, fy)].add(commodity)
 
     def build(self, time_limit: float = 60.0):
         del time_limit
@@ -879,6 +905,7 @@ class RoutingSubproblem:
             return
 
         self._create_routing_variables()
+        self._add_phys_coverage_constraints()
         self._add_obstacle_exclusion()
         self._add_capacity_constraints()
         self._add_bridge_constraints()
@@ -1006,13 +1033,111 @@ class RoutingSubproblem:
             for direction in flow_out
         )
 
+    def _mixflow_ground_banned(self, x: int, y: int, commodity: str) -> bool:
+        """Sink-front ground purity (pollution ironclad, owner axiom 2026-08-06).
+
+        Ground states at a machine-input front cell exist only for that port's
+        own commodity.  Physical components are content-blind: any co-located
+        ground state of another commodity would let the shared component feed
+        foreign items into the machine input port (A9/#1 pollution chain).  In
+        the pre-surgery whole-pattern model this exclusion was emergent (the
+        shared use key collided with the terminal domain guards); with
+        per-commodity sub-pattern keys it must be explicit, and generation-time
+        exclusion makes it structural: the variables do not exist.
+
+        Multi-owner rule: if a cell is the sink front of two *different*
+        commodities, all ground states are banned outright — no single
+        commodity can satisfy both adherence rows, and any cross-commodity
+        pair of sub-patterns would union into a component carrying both
+        port-bound output sides (content-blind double ingestion).  A cell
+        whose sink ports all belong to one commodity (including same-commodity
+        facing pairs) keeps that commodity fully functional.
+        """
+
+        owners = self._sink_front_commodities.get((x, y))
+        if not owners:
+            return False
+        if len(owners) > 1:
+            return True
+        return commodity not in owners
+
     def _create_routing_variables(self):
         state_counter = defaultdict(int)
         local_pattern_pruned_states = 0
+        purity_excluded_cell_layers = 0
 
+        # Pass 1: per-(cell, layer, direction) side support.  A commodity
+        # contributes support exactly where the pre-surgery model would have
+        # allowed it to route (same per-commodity predicates), minus the
+        # explicit sink-front ground exclusion.
+        in_support: Dict[Tuple[int, int, int, str], Set[str]] = defaultdict(set)
+        out_support: Dict[Tuple[int, int, int, str], Set[str]] = defaultdict(set)
+        all_active_cells: Set[Tuple[int, int]] = set()
+        for commodity in self.commodities:
+            active_cells = self._commodity_active_cells.get(commodity, set())
+            all_active_cells |= active_cells
+            for (x, y) in active_cells:
+                for layer in LAYERS:
+                    if layer == GROUND_LAYER and self._mixflow_ground_banned(x, y, commodity):
+                        continue
+                    for direction in DIRECTIONS:
+                        if self._incoming_dir_supported(x, y, layer, direction, commodity):
+                            in_support[(x, y, layer, direction)].add(commodity)
+                        if self._outgoing_dir_supported(x, y, layer, direction, commodity):
+                            out_support[(x, y, layer, direction)].add(commodity)
+
+        # Pass 2a: physical component states.  Union support — every side of
+        # the pattern must be feedable/drainable by *some* commodity.  This is
+        # strictly wider than the pre-surgery per-commodity whole-pattern rule;
+        # the extra states are exactly the cross-commodity composites (e.g. a
+        # merger whose input sides belong to different commodities).
+        for (x, y) in sorted(all_active_cells):
+            for layer in LAYERS:
+                for pattern in self._patterns_by_layer[layer]:
+                    flow_in = tuple(pattern["flow_in"])
+                    flow_out = tuple(pattern["flow_out"])
+                    component_type = str(pattern["component_type"])
+                    if not all(in_support.get((x, y, layer, d)) for d in flow_in):
+                        continue
+                    if not all(out_support.get((x, y, layer, d)) for d in flow_out):
+                        continue
+
+                    phys_key: PhysicalStateKey = (
+                        x,
+                        y,
+                        layer,
+                        flow_in,
+                        flow_out,
+                        component_type,
+                    )
+                    phys_var = self.model.NewBoolVar(
+                        f"phys_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{component_type}"
+                    )
+                    self.phys_vars[phys_key] = phys_var
+                    self._phys_meta[phys_key] = {
+                        "flow_in": flow_in,
+                        "flow_out": flow_out,
+                        "component_type": component_type,
+                    }
+                    self._phys_by_cell_layer[(x, y, layer)].append(phys_var)
+                    self._phys_keys_by_cell[(x, y)].append(phys_key)
+                    if layer == ELEVATED_LAYER:
+                        self._l1_phys_vars[(x, y)].append(phys_var)
+                    for d_in in flow_in:
+                        self._phys_in_by_cell_layer_dir[(x, y, layer, d_in)].append(phys_var)
+                    for d_out in flow_out:
+                        self._phys_out_by_cell_layer_dir[(x, y, layer, d_out)].append(phys_var)
+
+        # Pass 2b: per-commodity sub-pattern use states.  The key's flow sides
+        # describe THIS commodity's own movement through the cell; coupling to
+        # the physical layer moved from key identity to the side-coverage
+        # constraints (_add_phys_coverage_constraints).
         for commodity in self.commodities:
             for (x, y) in sorted(self._commodity_active_cells.get(commodity, set())):
                 for layer in LAYERS:
+                    if layer == GROUND_LAYER and self._mixflow_ground_banned(x, y, commodity):
+                        purity_excluded_cell_layers += 1
+                        continue
                     for pattern in self._patterns_by_layer[layer]:
                         flow_in = tuple(pattern["flow_in"])
                         flow_out = tuple(pattern["flow_out"])
@@ -1028,54 +1153,104 @@ class RoutingSubproblem:
                             local_pattern_pruned_states += 1
                             continue
 
-                        phys_key: PhysicalStateKey = (
-                            x,
-                            y,
-                            layer,
-                            flow_in,
-                            flow_out,
-                            component_type,
-                        )
-                        if phys_key not in self.phys_vars:
-                            phys_var = self.model.NewBoolVar(
-                                f"phys_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{component_type}"
-                            )
-                            self.phys_vars[phys_key] = phys_var
-                            self._phys_meta[phys_key] = {
-                                "flow_in": flow_in,
-                                "flow_out": flow_out,
-                                "component_type": component_type,
-                            }
-                            self._phys_by_cell_layer[(x, y, layer)].append(phys_var)
-                            self._phys_keys_by_cell[(x, y)].append(phys_key)
-                            if layer == ELEVATED_LAYER:
-                                self._l1_phys_vars[(x, y)].append(phys_var)
-
                         use_var = self.model.NewBoolVar(
                             f"use_{x}_{y}_{layer}_{_dirs_tag(flow_in)}_{_dirs_tag(flow_out)}_{commodity}"
                         )
                         key: RouteStateKey = (x, y, layer, flow_in, flow_out, commodity)
                         self.use_vars[key] = use_var
-                        self._use_to_phys_key[key] = phys_key
-                        self._phys_uses[phys_key].append(use_var)
                         self._state_meta[key] = {
                             "flow_in": flow_in,
                             "flow_out": flow_out,
                             "component_type": component_type,
                         }
-                        self.model.Add(use_var <= self.phys_vars[phys_key])
                         for d_out in flow_out:
                             self._use_by_cell_layer_dir_out_commodity[(x, y, layer, d_out, commodity)].append(use_var)
                             self._use_by_cell_dir_out_commodity[(x, y, d_out, commodity)].append(use_var)
+                            self._use_out_by_cell_layer_dir[(x, y, layer, d_out)].append(use_var)
                         for d_in in flow_in:
                             self._use_by_cell_layer_dir_in_commodity[(x, y, layer, d_in, commodity)].append(use_var)
                             self._use_by_cell_dir_in_commodity[(x, y, d_in, commodity)].append(use_var)
+                            self._use_in_by_cell_layer_dir[(x, y, layer, d_in)].append(use_var)
+                        self._use_by_cell_layer_commodity[(x, y, layer, commodity)].append(use_var)
                         state_counter[(layer, component_type)] += 1
 
-        for phys_key, use_vars in self._phys_uses.items():
-            self.model.AddMaxEquality(self.phys_vars[phys_key], use_vars)
-
+        self.build_stats["mixflow"] = {
+            "purity_excluded_cell_layers": int(purity_excluded_cell_layers),
+            "multi_owner_sink_fronts": sorted(
+                [int(cx), int(cy)]
+                for (cx, cy), owners in self._sink_front_commodities.items()
+                if len(owners) > 1
+            ),
+        }
         self._record_state_space_stats(state_counter, local_pattern_pruned_states)
+
+    def _add_phys_coverage_constraints(self):
+        """Couple commodity sub-pattern states to the physical layer.
+
+        Replaces the pre-surgery ``use <= phys[same key]`` + ``phys ==
+        max(uses)`` identity coupling (mixflow surgery 2026-08-06):
+
+        1. Side coverage: an active use needs, for each of its flow sides, a
+           physical state at the same cell/layer carrying that side.  Together
+           with the per-cell/layer AtMostOne over physical states, the single
+           selected component must carry *all* selected sides simultaneously —
+           its pattern is a superset of the union of selected sub-patterns.
+           Unions outside the closed pattern dictionary are therefore
+           unsatisfiable: the expressible domain stays inside the physically
+           realizable domain with no extra prohibition.
+        2. Exact sides: a selected physical state may not carry a side that no
+           selected use claims.  This pins the component pattern to exactly
+           the union (minimal hardware; within the dictionary the union
+           determines pattern and component type uniquely) and forces phys to
+           0 where no use is selected (successor of the retired max-equality).
+        3. Per-commodity state uniqueness: at most one sub-pattern per
+           commodity per cell/layer.  A commodity's own split/merge is a
+           single splitter/merger sub-pattern, never two parallel single-lane
+           states (directed-edge balance would reject the duplicated
+           representation anyway; the explicit row removes it from the search
+           space).
+        """
+
+        coverage_rows = 0
+        exact_side_rows = 0
+        uniqueness_rows = 0
+
+        for key, use_var in self.use_vars.items():
+            x, y, layer, flow_in, flow_out, _commodity = key
+            for d_in in flow_in:
+                self.model.Add(
+                    use_var <= sum(self._phys_in_by_cell_layer_dir.get((x, y, layer, d_in), []))
+                )
+                coverage_rows += 1
+            for d_out in flow_out:
+                self.model.Add(
+                    use_var <= sum(self._phys_out_by_cell_layer_dir.get((x, y, layer, d_out), []))
+                )
+                coverage_rows += 1
+
+        for phys_key, phys_var in self.phys_vars.items():
+            x, y, layer, flow_in, flow_out, _component_type = phys_key
+            for d_in in flow_in:
+                self.model.Add(
+                    phys_var <= sum(self._use_in_by_cell_layer_dir.get((x, y, layer, d_in), []))
+                )
+                exact_side_rows += 1
+            for d_out in flow_out:
+                self.model.Add(
+                    phys_var <= sum(self._use_out_by_cell_layer_dir.get((x, y, layer, d_out), []))
+                )
+                exact_side_rows += 1
+
+        for use_vars_for_commodity in self._use_by_cell_layer_commodity.values():
+            if len(use_vars_for_commodity) > 1:
+                self.model.AddAtMostOne(use_vars_for_commodity)
+                uniqueness_rows += 1
+
+        self.build_stats["phys_coverage"] = {
+            "coverage_rows": int(coverage_rows),
+            "exact_side_rows": int(exact_side_rows),
+            "uniqueness_rows": int(uniqueness_rows),
+        }
 
     def _record_state_space_stats(
         self,
@@ -1996,15 +2171,29 @@ class RoutingSubproblem:
         ):
             return []
 
-        routes_by_phys: Dict[PhysicalStateKey, List[RouteStateKey]] = defaultdict(list)
-        for key, var in self.use_vars.items():
-            if self._solver is None or self._solver.Value(var) != 1:
+        if self._solver is None:
+            return []
+
+        # Mixflow surgery: uses no longer key-share the physical pattern.
+        # Group by cell/layer; capacity AtMostOne guarantees a single selected
+        # physical state per group, and the exact-side rows guarantee every
+        # selected physical state carries at least one selected use.
+        selected_phys_by_cell_layer: Dict[Tuple[int, int, int], PhysicalStateKey] = {}
+        for phys_key, phys_var in self.phys_vars.items():
+            if self._solver.Value(phys_var) != 1:
                 continue
-            routes_by_phys[self._use_to_phys_key[key]].append(key)
+            selected_phys_by_cell_layer[(phys_key[0], phys_key[1], phys_key[2])] = phys_key
+
+        uses_by_cell_layer: Dict[Tuple[int, int, int], List[RouteStateKey]] = defaultdict(list)
+        for key, var in self.use_vars.items():
+            if self._solver.Value(var) != 1:
+                continue
+            uses_by_cell_layer[(key[0], key[1], key[2])].append(key)
 
         routes = []
-        for phys_key, use_keys in sorted(routes_by_phys.items()):
+        for _cell_layer, phys_key in sorted(selected_phys_by_cell_layer.items()):
             x, y, layer, flow_in, flow_out, component_type = phys_key
+            use_keys = uses_by_cell_layer.get((x, y, layer), [])
             uses = [
                 {
                     "commodity": str(commodity),
