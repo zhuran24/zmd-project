@@ -83,7 +83,7 @@ def _rebase_archive_inputs(module: ModuleType) -> ModuleType:
             / "scan/diagnostic-corpus-v2"
         )
     if hasattr(module, "FIXED_PYTHON"):
-        module.FIXED_PYTHON = PROJECT_ROOT / ".venv-uvbolt-backup/bin/python"
+        module.FIXED_PYTHON = PROJECT_ROOT / ".venv/bin/python"
     if hasattr(module, "EXPECTED_STATIC_SOURCES"):
         module.EXPECTED_STATIC_SOURCES = tuple(
             (role, _rebased_static_path(module, role, path), digest)
