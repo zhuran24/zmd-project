@@ -1,0 +1,6 @@
+=== OB5 面积上界总定理 ===
+L（state 下界）: 容量 305 / front-state Σmax 308 → 取 308
+无条件【严格·模型内】: A ≤ 1356 − 4·9 − ⌈308/2⌉ = 1166
+单层【条件·待OB6】  : A ≤ 1356 − 4·9 − 308 = 1012
+对照（仅容量计数）  : 无条件 1167 / 单层 1015
+receipt -> /home/zhuran24/zmd-pj/.artifacts/p2_0_refresh_20260805/area_bound_work/ob5_theorem_bound_receipt.json

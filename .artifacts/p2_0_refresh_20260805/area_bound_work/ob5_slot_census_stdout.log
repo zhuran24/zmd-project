@@ -1,0 +1,6 @@
+=== OB5 slot 普查 ===
+制造机 slot 总数 = 574（进路由 568，扣终品输出 6）
+满带宽进路由 slot = 401；外部源饱和 slot 当量 = 52 {'blue_iron_ore': 34, 'source_ore': 18}
+满带宽合计 = 453；亚满带宽进路由 slot = 167
+亚满带宽残余分布（1−r_slot 件/tick -> slot 数）: {'1/12': 90, '1/22': 77}
+receipt -> /home/zhuran24/zmd-pj/.artifacts/p2_0_refresh_20260805/area_bound_work/ob5_slot_census_receipt.json

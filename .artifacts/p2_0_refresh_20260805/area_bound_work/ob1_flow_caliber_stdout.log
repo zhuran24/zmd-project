@@ -1,0 +1,9 @@
+=== OB1 三口径（件/分钟，Fraction 精确） ===
+(a) F_100      = 9246   (flow_account 互证: True)
+(b) F_balanced = 290691/32 (= 9084.09375; flow_account 经 over_C 互证: True; json 里 '9084' 是 4 位有效数字显示值)
+(c) F_target   = 18339/2  F_route = 9135  ← 选定口径
+    扣除终品: {'qiaoyu_capsule': '33/2', 'valley_battery': '18'}
+占空组: 满速 170 台 / 11-12 27 台 / 21-22 22 台
+单层格位下界 ceil(F_route/30) = 305（含终品则 306）
+双层格位下界 = 153
+receipt -> /home/zhuran24/zmd-pj/.artifacts/p2_0_refresh_20260805/area_bound_work/ob1_flow_caliber_receipt.json
