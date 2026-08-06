@@ -1,0 +1,473 @@
+{
+  "$schema": "./canonical_rules.schema.json",
+  "metadata": {
+    "version": "1.2.0",
+    "description": "Canonical static rules, preprocess recipe truth, production targets, and facility templates for Arknights: Endfield. Certified runtime still consumes frozen data/preprocessed artifacts."
+  },
+  "globals": {
+    "grid": {
+      "width": 70,
+      "height": 70
+    },
+    "time": {
+      "tick_interval_seconds": 2.0
+    },
+    "logistics": {
+      "belt_capacity_per_tick": 1.0,
+      "port_max_throughput_per_tick": 1.0,
+      "machine_min_clearance_cells": 1
+    },
+    "empty_rectangle": {
+      "objective": "max_lex_area_min_side",
+      "min_side_admissibility": 6,
+      "emptiness": "no_occupant_of_any_kind",
+      "emptiness_adjudication": {
+        "decided_on": "2026-08-05",
+        "authority": "owner_manual_adjudication",
+        "source_doc": "docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md",
+        "statement": "No occupant of any kind may intersect the target empty rectangle: facility bodies, power poles, belts, cross-junction/bridge components and every other logistics part are forbidden. 'Empty' means completely clear ground; the earlier permissive reading that admitted routing components inside the rectangle is void."
+      }
+    }
+  },
+  "routing_rules": {
+    "layers": {
+      "ground": 0,
+      "elevated": 1
+    },
+    "bridge_mechanics": {
+      "can_overlap_solid": false,
+      "can_overlap_straight_belt": true,
+      "can_overlap_curved_belt": false,
+      "can_overlap_splitter_merger": false,
+      "can_turn": false
+    }
+  },
+  "facility_templates": {
+    "manufacturing_3x3": {
+      "dimensions": {
+        "w": 3,
+        "h": 3
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "is_solid_z": true,
+      "port_rule": "opposite_parallel_sides"
+    },
+    "manufacturing_5x5": {
+      "dimensions": {
+        "w": 5,
+        "h": 5
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "is_solid_z": true,
+      "port_rule": "opposite_parallel_sides"
+    },
+    "manufacturing_6x4": {
+      "dimensions": {
+        "w": 6,
+        "h": 4
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "is_solid_z": true,
+      "port_rule": "long_sides"
+    },
+    "protocol_core": {
+      "dimensions": {
+        "w": 9,
+        "h": 9
+      },
+      "rotatable": true,
+      "needs_power": false,
+      "is_solid_z": true,
+      "port_rule": "core_specific",
+      "core_limits": {
+        "max_outputs": 6,
+        "max_inputs": 14
+      }
+    },
+    "protocol_storage_box": {
+      "dimensions": {
+        "w": 3,
+        "h": 3
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "is_solid_z": true,
+      "port_rule": "opposite_parallel_sides"
+    },
+    "power_pole": {
+      "dimensions": {
+        "w": 2,
+        "h": 2
+      },
+      "rotatable": false,
+      "needs_power": false,
+      "is_solid_z": true,
+      "port_rule": "none",
+      "power_coverage_radius": 5
+    },
+    "boundary_storage_port": {
+      "dimensions": {
+        "w": 1,
+        "h": 3
+      },
+      "rotatable": true,
+      "needs_power": false,
+      "is_solid_z": true,
+      "port_rule": "inward_facing",
+      "placement_rule": "left_or_bottom_boundary"
+    }
+  },
+  "recipes": {
+    "packaging_battery": {
+      "template": "manufacturing_6x4",
+      "ticks_per_cycle": 5,
+      "inputs": {
+        "dense_source_powder": 15,
+        "steel_part": 10
+      },
+      "outputs": {
+        "valley_battery": 1
+      }
+    },
+    "filling_capsule": {
+      "template": "manufacturing_6x4",
+      "ticks_per_cycle": 5,
+      "inputs": {
+        "fine_buckwheat_powder": 10,
+        "steel_bottle": 10
+      },
+      "outputs": {
+        "qiaoyu_capsule": 1
+      }
+    },
+    "parts_maker": {
+      "template": "manufacturing_3x3",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "steel_block": 1
+      },
+      "outputs": {
+        "steel_part": 1
+      }
+    },
+    "molding_bottle": {
+      "template": "manufacturing_3x3",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "steel_block": 2
+      },
+      "outputs": {
+        "steel_bottle": 1
+      }
+    },
+    "grinder_dense_source": {
+      "template": "manufacturing_6x4",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "source_powder": 2,
+        "sandleaf_powder": 1
+      },
+      "outputs": {
+        "dense_source_powder": 1
+      }
+    },
+    "grinder_fine_buckwheat": {
+      "template": "manufacturing_6x4",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "buckwheat_powder": 2,
+        "sandleaf_powder": 1
+      },
+      "outputs": {
+        "fine_buckwheat_powder": 1
+      }
+    },
+    "grinder_dense_blue_iron": {
+      "template": "manufacturing_6x4",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "blue_iron_powder": 2,
+        "sandleaf_powder": 1
+      },
+      "outputs": {
+        "dense_blue_iron_powder": 1
+      }
+    },
+    "refinery_steel": {
+      "template": "manufacturing_3x3",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "dense_blue_iron_powder": 1
+      },
+      "outputs": {
+        "steel_block": 1
+      }
+    },
+    "refinery_blue_iron": {
+      "template": "manufacturing_3x3",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "blue_iron_ore": 1
+      },
+      "outputs": {
+        "blue_iron_block": 1
+      }
+    },
+    "crusher_source": {
+      "template": "manufacturing_3x3",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "source_ore": 1
+      },
+      "outputs": {
+        "source_powder": 1
+      }
+    },
+    "crusher_blue_iron": {
+      "template": "manufacturing_3x3",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "blue_iron_block": 1
+      },
+      "outputs": {
+        "blue_iron_powder": 1
+      }
+    },
+    "crusher_buckwheat": {
+      "template": "manufacturing_3x3",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "buckwheat": 1
+      },
+      "outputs": {
+        "buckwheat_powder": 2
+      }
+    },
+    "crusher_sandleaf": {
+      "template": "manufacturing_3x3",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "sandleaf": 1
+      },
+      "outputs": {
+        "sandleaf_powder": 3
+      }
+    },
+    "seed_collector_buckwheat": {
+      "template": "manufacturing_5x5",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "buckwheat": 1
+      },
+      "outputs": {
+        "buckwheat_seed": 2
+      }
+    },
+    "seed_collector_sandleaf": {
+      "template": "manufacturing_5x5",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "sandleaf": 1
+      },
+      "outputs": {
+        "sandleaf_seed": 2
+      }
+    },
+    "planter_buckwheat": {
+      "template": "manufacturing_5x5",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "buckwheat_seed": 1
+      },
+      "outputs": {
+        "buckwheat": 1
+      }
+    },
+    "planter_sandleaf": {
+      "template": "manufacturing_5x5",
+      "ticks_per_cycle": 1,
+      "inputs": {
+        "sandleaf_seed": 1
+      },
+      "outputs": {
+        "sandleaf": 1
+      }
+    }
+  },
+  "production_targets": {
+    "valley_battery": {
+      "mode": "equivalent_full_speed_lines",
+      "value": 3.0,
+      "final_recipe_id": "packaging_battery"
+    },
+    "qiaoyu_capsule": {
+      "mode": "equivalent_full_speed_lines",
+      "value": 2.75,
+      "final_recipe_id": "filling_capsule"
+    }
+  },
+  "commodity_metadata": {
+    "valley_battery": {
+      "source_kind": "internal_only",
+      "sink_kind": "generic_input",
+      "cycle_group": null
+    },
+    "qiaoyu_capsule": {
+      "source_kind": "internal_only",
+      "sink_kind": "generic_input",
+      "cycle_group": null
+    },
+    "dense_source_powder": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "steel_part": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "fine_buckwheat_powder": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "steel_bottle": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "steel_block": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "source_powder": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "sandleaf_powder": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "buckwheat_powder": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "dense_blue_iron_powder": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "blue_iron_powder": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "source_ore": {
+      "source_kind": "external_boundary",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "blue_iron_ore": {
+      "source_kind": "external_boundary",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "blue_iron_block": {
+      "source_kind": "internal_only",
+      "sink_kind": "none",
+      "cycle_group": null
+    },
+    "buckwheat": {
+      "source_kind": "cycle_internal",
+      "sink_kind": "none",
+      "cycle_group": "buckwheat_cycle"
+    },
+    "buckwheat_seed": {
+      "source_kind": "cycle_internal",
+      "sink_kind": "none",
+      "cycle_group": "buckwheat_cycle"
+    },
+    "sandleaf": {
+      "source_kind": "cycle_internal",
+      "sink_kind": "none",
+      "cycle_group": "sandleaf_cycle"
+    },
+    "sandleaf_seed": {
+      "source_kind": "cycle_internal",
+      "sink_kind": "none",
+      "cycle_group": "sandleaf_cycle"
+    }
+  },
+  "semantics": {
+    "_note": "Descriptive, machine-anchored clarifications for external review / proof-audience alignment. NOT consumed by the demand solver, instance builder, placement generator, or any certified solve path. Editing keys here changes only this file's frozen hash (freeze-ritual), never the derived preprocess artifacts. Predicate IDs refer to the 6 CERTIFIED predicates in PROJECT_LOCK.md.",
+    "boundary_placement": {
+      "applies_to": "facility_templates.boundary_storage_port",
+      "placement_rule": "left_or_bottom_boundary",
+      "statement": "The left/bottom boundary lane INCLUDES the (0,0) corner: both the left-baseline vertical poses and the bottom-baseline horizontal poses admit the corner anchor. The candidate domain enumerates all such poses and MUST NOT pre-delete mutually-exclusive corner poses during generation; mutual exclusion is enforced downstream by cell-exclusivity in the master, not by pruning the candidate pool.",
+      "generator": "src/placement/placement_generator.py:gen_boundary_ports"
+    },
+    "routing_cross_junction": {
+      "applies_to": "routing_rules.layers, routing_rules.bridge_mechanics",
+      "statement": "The 'elevated'/L1 and 'ground'/L0 layers are a MODELING representation of a single-cell cross-junction component (two mutually perpendicular straight through-channels sharing one cell). There is no physical ramp, elevation, or layer transition. The two channels may carry DIFFERENT commodities but must be perpendicular when co-located; a bridge cannot turn (can_turn=false) and cannot host a non-straight component on the same cell.",
+      "clarifies": "The prior 'elevated bridge' wording was read literally as a 3D ramp; it is not."
+    },
+    "mixed_commodity_flow": {
+      "applies_to": "routing_rules",
+      "statement": "A single physical belt / routing component may be SHARED by multiple commodities. Commodity mixing on one component is allowed. Throughput / bandwidth / discrete capacity remain OUT-OF-SCOPE (PROJECT_LOCK.md 1A B): the certified predicates constrain connectivity and geometry only, not flow volume."
+    },
+    "connectivity_quantifier": {
+      "applies_to": "certified_predicate_5_routing_connectivity",
+      "statement": "Predicate 5 ('routing connectivity') means: per commodity, every SINK front is reachable from SOME source front AND every SOURCE front can reach SOME sink front. Multiple independent connected islands of the same commodity are ALLOWED. It is NOT a single-spanning-component requirement and NOT a throughput guarantee."
+    },
+    "machine_min_clearance": {
+      "applies_to": "globals.logistics.machine_min_clearance_cells",
+      "predicate_status": "non_predicate",
+      "statement": "machine_min_clearance_cells is NOT one of the 6 CERTIFIED predicates. Adjudicated meaning (re-adjudicated 2026-07-18, front-offset incident, owner in-game tests: zero-gap dead / one-gap routes / a 1-cell belt is legal / two opposite ports may share the middle cell): the stored port coordinate in candidate placements IS the front/belt cell itself — the first cell outside the facility body along the outward normal; an in-use port requires THAT cell to accept a belt, i.e. it must be in-grid and not occupied by any facility body (power poles count as body and block; belts do NOT block — belt/belt co-location on the front cell is governed solely by routing_cross_junction: perpendicular straight channels may cross, a turning or parallel same-axis foreign belt blocks the port). Enforced via identity front-cell modeling — NOT as 'port + direction offset' (the pre-2026-07-18 one-cell-offset misreading that checked the second cell outside the body), and NOT as a generic N-cell moat around every machine body. Machine bodies may touch; there is no body-to-body clearance requirement. Repeated external reviews misread it as body-clearance; it is not.",
+      "adjudication_ref": "PROJECT_LOCK.md B-4 + F-RT-R2-01/R3-01 + F-FRONT-INC-01; incident file docs/research/front_offset_incident_20260718/00_incident_survey_and_fix_plan.md"
+    },
+    "warehouse_bridge_exclusion": {
+      "applies_to": "certified_predicate_5_routing_connectivity",
+      "adjudicated": "2026-07-18 owner production-line argument (rules_audit_20260718/00 §3.3)",
+      "statement": "The in-game 'warehouse bridge' (any commodity submitted to the warehouse via protocol storage box or hub inputs can physically re-emerge from hub outputs AND boundary pickup ports) is REAL game mechanics but is EXCLUDED as a legal wiring structure in this model: re-emitting intermediates crowds the output capacity of blue-iron/source ore, whose output rates directly bound final-product throughput, making the bridge non-viable under the 3.0/2.75-line production targets. Therefore the direct-connection connectivity model (every intermediate commodity must be belt-routed from a producer port to a consumer port; the warehouse is not a routing shortcut) is the adjudicated modeling choice. If the production targets ever change, this exclusion must be re-adjudicated.",
+      "authority": "owner production-line argument; upstream simulators model the bridge and cannot adjudicate viability"
+    },
+    "protocol_storage_box_wireless": {
+      "applies_to": "facility_templates.protocol_storage_box, preprocess_plan.utility_operations.box_sink",
+      "adjudicated": "2026-07-18 owner in-game tests, five answers (rules_audit_20260718/00 §3.1)",
+      "statement": "The protocol storage box has REAL physical ports identical in shape to manufacturing_3x3 (3 inputs on one side, 3 outputs on the opposite side, four orientation modes) and requires power. The 'wireless' segment exists ONLY from box to warehouse: with power and its default-on switch, the box flushes its 6 cache slots into the warehouse every 10s. Products must be belt-routed into the box's physical input ports (or directly into hub inputs); there is no produce-side wireless pickup. The box's output ports exist and are legally idle in this production line (an unconnected output port does not claim its front cell). Cache-slot dual-role timing behavior is throughput-scope and OUT-OF-SCOPE.",
+      "supersedes": "the pre-2026-07-18 'omni_wireless black hole' reading (zero physical ports, wireless product consumption)"
+    },
+    "power_source_note": {
+      "applies_to": "facility_templates.protocol_core, facility_templates.power_pole, certified_predicate_6_power_coverage",
+      "adjudicated": "2026-07-18 owner in-game tests (rules_audit_20260718/00 §3.4)",
+      "statement": "The hub (protocol core) IS the base's power source; power poles draw from the hub unconditionally at any distance and re-broadcast coverage; the hub itself has no coverage range and needs no power; generators live in another base (power budget externalized). The modeled predicate 'a powered facility must be covered by some pole stencil' is therefore effect-equivalent to game mechanics (the mandatory hub makes every pole powered), and no wiring/link constraint is modeled for poles.",
+      "clarifies": "predicate 6 semantics unchanged; this note records WHY pole-only coverage is faithful"
+    },
+    "item_admission_port_exclusion": {
+      "applies_to": "routing_rules",
+      "adjudicated": "2026-07-18 owner + upstream cross-check (rules_audit_20260718/00 §3.7)",
+      "statement": "The 1x1 item admission port (straight pass-through with item filtering) exists in game v1.1 but is deliberately NOT modeled: geometrically and for connectivity it is equivalent to a straight belt (any cell that admits it admits a straight belt), and its filtering function is throughput-scope (OUT-OF-SCOPE). Omitting it cannot exclude any feasible layout and cannot admit any infeasible one.",
+      "authority": "safe-exclusion argument; no candidate pool or predicate consumes it"
+    },
+    "power_coverage_stencil": {
+      "applies_to": "facility_templates.power_pole",
+      "power_coverage_radius": 5,
+      "anchor_footprint": { "w": 2, "h": 2 },
+      "coverage_shape": {
+        "kind": "axis_aligned_square",
+        "width": 12,
+        "height": 12,
+        "definition": "For a 2x2 pole anchored at (x,y): covered cells are X in [x-5, x+6], Y in [y-5, y+6], clipped to the 70x70 grid."
+      },
+      "generator": "src/placement/placement_generator.py:gen_power_pole"
+    }
+  }
+}
