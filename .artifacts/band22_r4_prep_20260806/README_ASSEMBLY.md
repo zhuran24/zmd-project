@@ -35,3 +35,10 @@ AXIOM_REVIEW_FOR_OWNER.md` 五件把关项给出裁定）→ 按裁定改写任�
   `band22_r4_design_20260806.7z`（sha 6b5ca808…）落 ~/下载/zmd-咨询包，解包抽验过。
   组包时发现上轮包 06 是严格空语义条款前旧快照（ERRATA E-05，实害零，本轮已换正版）。
   模型侧 source front 解锁 = 独立 freeze-ritual 批（sealed 面），不阻塞本轮。
+
+- 2026-08-06 傍晚：**验收管线预检通过**——④路 driver 用上轮 strict42 见证走 intake 段
+  smoke：INTAKE_ACCEPTED / exit 0（session build 30.5s、master build 9.7s、ghost
+  identity+结构全过，收据 band22-registration-driver/2 正常）。driver 测试 42/42 绿。
+  产物在 `.artifacts/band22_registration_20260805/r4_driver_precheck_20260806/`。
+  r4 回件到达可直接跑全阶梯（rung3 预期可过）。注：driver 真身在
+  `docs/research/band22_registration_20260805/`（.rgignore 投影区，fd 需 --no-ignore）。
