@@ -298,6 +298,21 @@ build/solve 爆预算，B 的变量瘦身值得再评（届时复验器重写的
   另 `test_topology_hint_isolation.py:81-93` 扫描本文件正文，禁出现 topology
   hint 模块名（手术注释避开该词面）。
 
+## 7c. 开放问题（接入批设计题，主线程 2026-08-06 定调）
+
+1. **门控开关形态**：混流表达是否做成开关——certified 求解路径**默认关**
+   （保住不可行证明速度，§7 的 solve 残余差距即动机）、见证验收/研究路径开
+   （吃表达力红利）。若走此形态：开关属 `EXACT_*` env 闭合白名单
+   （deny-unknown），接入批必须连 allowlist/lock/tests 同批动。
+2. **source-side 割在混流 incumbent 上的回退**（600s 探针发现）：6 商品
+   proxy 上新模型 600s 内 guard rejected=4、cuts_added=0——四个局部闭合
+   incumbent 全被全局连通复验拒掉，但 `_add_source_side_connectivity_cut`
+   的自检全部回退成整解 nogood（弱割）。割机器是前混流时代写的；混流
+   incumbent 下自检哪条失败、能否修出真割，接入批查 telemetry 定位。
+   守卫环「拒-割-重解」在生产规模的收敛速度取决于此。
+3. **600s 探针终态**：instance 在混流语义下 600s 无结论（非「慢不可行」
+   实锤——CP-SAT 持续产出候选、复验持续拒，更像「慢可行+弱割」形态）。
+
 ## 8. 雷区处置记录
 
 - `patch_routing_core.py:583-585`（F-SND-001 双重 front 偏移）：本手术不触碰
