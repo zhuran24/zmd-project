@@ -37,12 +37,12 @@
       }
     },
     "expected_current_class_counts": {
-      "active_implementation": 386,
-      "test": 660,
-      "common_infrastructure": 478,
+      "active_implementation": 390,
+      "test": 670,
+      "common_infrastructure": 480,
       "authoritative_input": 4,
       "enforcement_control": 10,
-      "historical_evidence": 455,
+      "historical_evidence": 473,
       "retirement_candidate": 19
     },
     "conditional_current_assets": [
@@ -52,11 +52,11 @@
       }
     ],
     "certified_exact_source_baseline": {
-      "measured_on": "2026-07-28",
-      "commit": "201c1988243951e16473af15f5d670ab11edf964",
-      "path_count": 800,
-      "path_tuple_sha256": "56e11a22c73ba5a791e4d5b7b8a3ce9fa995a9b7fc43b60ab09bf608cb901905",
-      "source_digest": "98bf303e701abaf3deb05dbb90f0f09fbd1b775360d1de7f8903ce5bd6f6a9f9"
+      "measured_on": "2026-08-06",
+      "commit": "a90e9bb2bf44257b5ed3407c12f8a61ce76d43ef",
+      "path_count": 804,
+      "path_tuple_sha256": "24fc86f0a9641e13f954e05b55414ac52f9c08f485dc4440cb3ca09d0f901540",
+      "source_digest": "d5a5dc51519b2b93678a340699b722578c8fd67fcddb883ec7d4d8e090cf10a3"
     }
   },
   "code_selector": {
@@ -137,6 +137,55 @@
       "rationale": "Batch-gate adaptation, full-gate, slow-lane, and interpreter comparison receipts."
     },
     {
+      "path": ".artifacts/band22_admission_sim_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "band22 准入口分拣仿真四变体、harness 归档与终判读证据。"
+    },
+    {
+      "path": ".artifacts/band22_faithful_sim_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "band22 忠实映射仿真运行与判据证据。"
+    },
+    {
+      "path": ".artifacts/band22_flow_account_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "band22 静态流量账探针结果与主线复算报告。"
+    },
+    {
+      "path": ".artifacts/band22_headless_sim_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "band22 无头仿真早期运行证据。"
+    },
+    {
+      "path": ".artifacts/band22_strict_hole_probe_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "严格空地孔位探针证据。"
+    },
+    {
+      "path": ".artifacts/band22_strict_redesign_pack_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "严格语义重设计咨询包装配材料。"
+    },
+    {
+      "path": ".artifacts/band22_strict_redesign_replies_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "GPT Pro 三份严格 (42,6) 见证回件解包与三席独立验伤全套证据。"
+    },
+    {
       "path": ".artifacts/batch_c_leftovers_20260714/",
       "nature": "failed_campaign_history",
       "content_treatment": "non_code_asset",
@@ -158,6 +207,13 @@
       "rationale": "H20 row-power oracle, independent checker, receipts, and bounded research result."
     },
     {
+      "path": ".artifacts/ip_adapter_v3_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "IndustrialPlanner v3 适配器实验证据。"
+    },
+    {
       "path": ".artifacts/merge_codex_20260801/",
       "nature": "research_evidence",
       "content_treatment": "non_code_asset",
@@ -170,6 +226,20 @@
       "content_treatment": "non_code_asset",
       "mutation_expectation": "read_only_preserve_in_place",
       "rationale": "RAB drill control, resource, memory, and execution evidence."
+    },
+    {
+      "path": ".artifacts/w0_consult_packs_20260804/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "W0 咨询包装配与回件证据（08-04）。"
+    },
+    {
+      "path": ".artifacts/w0_fixrerun_20260804/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "W0 修复重跑与 M5 互核证据（08-04）。"
     },
     {
       "path": ".artifacts/w0_front_aware_20260803/",
