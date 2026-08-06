@@ -3,8 +3,8 @@
   "gate_id": "phase_1_2_spike_close",
   "phase": "Phase 1.2 spike close",
   "status": "closed_manual_owner_decision",
-  "updated_at": "2026-07-07",
-  "summary": "P1.2 owner-closed and P1.3 opened on 2026-07-07 by explicit owner_manual_decision, after three consecutive clean closeout external-review rounds (permission-structure, math-semantics, TCB-line-honesty axes; all zero above-TCB soundness findings). v99 remains the approved review anchor. Owner clean-review count remains outside the repo.",
+  "updated_at": "2026-08-06",
+  "summary": "P1.2 re-closed on 2026-08-06 by explicit owner decision after the strict empty-rectangle semantics repair batch (f16a22c family), three external review rounds converging to two independent PASS_WITH_FINDINGS verdicts (F-03 terminal-chain closure confirmed by both), and the 2026-08-06 seal batch (a08ee02: ghost-helper fail-closed hardening, exception normalization, M11/M12 sentinels, LOCK I1 erratum, full reseal). The original 2026-07-07 close decision is preserved in informational_history. v99 remains the approved review anchor. Owner clean-review count remains outside the repo (owner ruled the streak restarts from zero under the new semantics).",
   "current_review_anchor": "v99_p1_2_close_kernel_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
@@ -27,17 +27,18 @@
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
     "current_review_anchor": "v99_p1_2_close_kernel_sealing",
-    "note": "Owner closed P1.2 and opened P1.3 on 2026-07-07 after three consecutive clean closeout external-review rounds. The repo intentionally does not record or compute the clean-review count (0/3..3/3); the owner keeps it outside the repo. v99 remains the approved review anchor."
+    "note": "Owner re-closed P1.2 on 2026-08-06 after the strict-semantics repair line and seal batch; original 2026-07-07 close preserved in informational_history. The repo intentionally does not record or compute the clean-review count; the owner keeps it outside the repo (restarted from zero per owner ruling)."
   },
   "owner_manual_decision": {
     "p1_3b_entry_allowed": true,
     "counting_authority": "owner_manual_count_outside_repo",
-    "decision_id": "owner-p1-2-close-p1-3-open-20260707",
+    "decision_id": "owner-p1-2-reclose-20260806",
     "decided_by": "zhuran24",
-    "decided_at": "2026-07-07",
-    "decision_note": "Owner formally declares P1.2 complete and P1.3 open, after three consecutive clean closeout external-review rounds (permission-structure, math-semantics, and TCB-line-honesty axes; all triaged to zero above-TCB soundness findings). Clean-review count is owner-maintained outside the repo.",
+    "decided_at": "2026-08-06",
+    "decision_note": "Owner re-closes P1.2 after the empty-rectangle strict-semantics repair line: repair batch f16a22c + patches (five-surface sentinels, terminal E2E), three external review rounds (BLOCK -> PASS_WITH_FINDINGS + evidence-gap BLOCK -> dual PASS_WITH_FINDINGS with F-03 terminal-chain closure confirmed independently twice), and the 2026-08-06 seal batch a08ee02 with full reseal (dual structural checkers green, pin-chain tests 69/69, full gate PASSED, slow soundness lane green). Remaining external findings are confirmed unreachable on the certified path (PCR double-offset: promotion blocker; documented in round3_verdicts archive). Owner approval given in-session on 2026-08-06 (explicit go for re-close + seal batch); clean-review streak restarts from zero per owner ruling, maintained outside the repo as before.",
     "acknowledges_repo_does_not_prove_clean_count": true,
-    "acknowledges_owner_verified_three_clean_reviews": true
+    "acknowledges_owner_verified_three_clean_reviews": true,
+    "supersedes_decision_id": "owner-p1-2-close-p1-3-open-20260707"
   },
   "next_phase_entry": {
     "phase": "P1.3 production master integration (machine compatibility id: p1_3b)",
@@ -391,6 +392,17 @@
         "data/proof_obligations/p1_2_proof_obligations.json",
         "scripts/check_p1_2_proof_obligations.py",
         "src/tests/test_p1_2_proof_obligations.py"
+      ]
+    },
+    {
+      "package": "strict_empty_semantics_repair_and_seal_batch_20260806",
+      "classification": "owner_reclose_after_semantics_change_and_reseal",
+      "summary": "2026-08-05 owner semantics adjudication (empty rectangle = nothing at all inside) changed the certified predicate (variant A on predicate 5), triggering the repair batch and reopening the close claim via source_sha256 drift. Three external review rounds converged to dual PASS_WITH_FINDINGS (F-03 closure confirmed twice, independently). The 2026-08-06 seal batch (a08ee02) closed the review-named hardening items and completed the reseal chain. Owner re-closed with the streak restarted from zero (count maintained outside the repo).",
+      "evidence_paths": [
+        ".artifacts/ghost_strict_fix_20260805/round3_verdicts_20260806/",
+        ".artifacts/ghost_strict_fix_20260805/mutation_manifests_20260806/",
+        ".artifacts/preflight_full_sealbatch_20260806.log",
+        ".artifacts/preflight_slow_sealbatch_20260806.log"
       ]
     }
   ],
