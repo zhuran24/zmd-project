@@ -1,12 +1,29 @@
 #!/usr/bin/env python3
 """细流段厚度探针：逐商品求「最集中路由下最薄的段有多厚」。
 
-`split_free_probe.py` 已证 6 种商品在任何最小车道分配下都**必然**出现分流。
-本探针问下一个问题：这些被迫的细流段最厚能做到多厚？
+⚠ **勘误二轮（20260807，外审份4 + 核签）——本探针的前提与措辞都已被后续批次订正，
+   但脚本本体刻意不改**（printed strings 与 receipt 字段一改，归档的
+   `maxmin_segment_stdout.log` / `maxmin_segment_receipt.json` 就失效；它们是历史件）。
+   读它的输出前必须知道两件事：
+
+   1. **它把每台机器的占空写死成均摊**（复用 `split_free_probe.py` 的 `solve_duty()`，
+      同染 `split_free_probe.py:97` 的硬编码）。所以下面「已证 6 种商品必然分流」这句
+      **已被 `refute_round1/REJUDGE_REPORT.md` §2 撤销**：放开台间占空后四例翻案，
+      连续计数只证明 **buckwheat 与 sandleaf 两种**必然分支，且带前件（当前 mandatory
+      counts + 经当前 route graph + warehouse-bridge 排除 + 当前端口容量与精确计数语义）。
+      本探针输出的 m_k 表（1/3、7/22、14/33、4/11）同样只是**均摊约定下**的值。
+   2. **输出里的「混流窗口」一律读作「速率兼容对」**（外审 D-05 / 核签 ACCEPT）：
+      `m_j + m_k ≤ cap` 只说明**速率上排除不了**两种商品共道，**不构造几何共址、
+      不证明任何合法布局真的混流、也不推出任何布局违反 P1**。
+
+   订正后的正文见 `../P2_0_SPECIALIZED_DESIGN_V1.md` §2.4 与 §7.1、
+   `refute_round1/REJUDGE_REPORT.md` §3、以及 `../ERRATA_ROUND2_CHECKLIST.md`。
+
+本探针问的问题：这些被迫的细流段最厚能做到多厚？
 
 记 m_k = max over 路由 min over 段 (该段速率)。若对任意两种中间品 j,k 都有
 m_j + m_k > 1（带容量），则即使存在分流，两种中间品仍然装不进同一格
-——纯流强制以**修复后的形式**幸存。反之则真有混流窗口。
+——纯流强制以**修复后的形式**幸存。反之则存在速率兼容对。
 
 建模（逐商品，端口级运输问题 + 车道数变量，整数化后精确）：
   w[p][q] ≥ 0  产口 p 送往耗口 q 的流量

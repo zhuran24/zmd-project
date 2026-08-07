@@ -1,0 +1,9 @@
+buckwheat: producer_lanes=11, consumer_lanes=12, deficit=1, forced_split=True
+sandleaf: producer_lanes=21, consumer_lanes=22, deficit=1, forced_split=True
+free-duty denominator counterexample:
+ duties= 13/14,19/21,11/12,11/12,11/12,11/12
+ sum= 11/2  all_660_integral= False
+ scaled_by_660= 4290/7,4180/7,605,605,605,605
+crusher_buckwheat continuous upper: min residual <= 5/6; uniform attains 5/6
+crusher_sandleaf continuous upper: min residual <= 19/22; uniform attains 19/22
+seed_collector_sandleaf continuous upper: min residual <= 10/11; uniform attains 10/11

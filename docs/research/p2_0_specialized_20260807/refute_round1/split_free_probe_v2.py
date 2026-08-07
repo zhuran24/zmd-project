@@ -7,8 +7,18 @@
 可以是「5 台满速 + 1 台半速」而不是「6 台各 11/12」；把 duty 换成后者，
 steel_block 的耗道从 18 掉到 17 = 产道 17，v1 的鸽巢就没了。
 
-v1 还有第二个缺陷：它**逐商品独立判**，而 duty 是机器级共享变量——一台机器的 duty
-一动，它消费和产出的所有商品口速率同时动。所以必须整网联立。
+关于「逐商品独立判」：它**逐商品独立判**，而 duty 是机器级共享变量——一台机器的 duty
+一动，它消费和产出的所有商品口速率同时动。所以**正见证**必须整网联立（Part C）。
+（勘误二轮 20260807，外审 R-02 / 核签 ACCEPT：原写「v1 还有**第二个缺陷**」不精确——
+在 v1 自己固定均摊 duty 的前件内，逐商品判定没有额外耦合缺陷；它只是放开 duty 后
+正见证不能拼接的理由。**全称的负证明**仍可逐商品独立做。）
+
+⚠ **本脚本输出里的「混流窗口」/「共道窗口」一律读作「速率兼容对」**（勘误二轮，
+   外审 D-05 / 核签 ACCEPT）：两条不同中间品的段速率之和 ≤ 带容量，只说明**速率上
+   排除不了**它们共道，**不构造几何共址、不证明任何合法布局真的混流、也不推出任何
+   布局违反 P1**。printed strings 与 receipt 字段刻意保持原样——改了归档的
+   `split_free_probe_v2_stdout.log` / `_receipt.json` 就失效。订正后的正文见
+   `REJUDGE_REPORT.md` §3 定理 2 与 `../ERRATA_ROUND2_CHECKLIST.md`。
 
 本探针做四件事（全部 Fraction 精确，零浮点）：
 
@@ -22,9 +32,10 @@ v1 还有第二个缺陷：它**逐商品独立判**，而 duty 是机器级共�
           可行性，核对 Part B/C 的结论。
 
   Part E  副产物：canonical `semantics.rate_lemma_scope` 的残道速率集合同样是在均摊
-          约定下算的（`docs/research/canonical_batch_20260807/rate_lemma_recompute.py:36`
-          `per_machine_runs = runs / machines`）。本探针在同一残道定义下重算见证分配的
-          残道集合，检查引理结论是否仍成立。
+          约定下算的（`docs/research/canonical_batch_20260807/rate_lemma_recompute.py:34`
+          `util = runs / machines` 与 `:37` `per_machine_runs = runs / machines`；
+          勘误二轮 20260807 行号订正：原引 `:36`，实为 `full_rate += 1`，与均摊无关）。
+          本探针在同一残道定义下重算见证分配的残道集合，检查引理结论是否仍成立。
 
   Part F  每 operation 的「最大化最小残道速率」——回答「均摊是不是纯流强制的最优约定」。
 

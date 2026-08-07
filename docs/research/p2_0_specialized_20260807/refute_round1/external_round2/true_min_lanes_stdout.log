@@ -1,0 +1,13 @@
+制造端口车道数：逐项下界合计=568  均摊=574  阶梯=568
+加 52 源口 + 2 终品汇口：下界=622  均摊=628  阶梯=622
+
+逐项下界 != 均摊 或 != 阶梯 的端口：
+  crusher_buckwheat          out buckwheat_powder         下界= 11 均摊= 12 阶梯= 11
+  crusher_sandleaf           out sandleaf_powder          下界= 32 均摊= 33 阶梯= 32
+  grinder_fine_buckwheat     in  buckwheat_powder         下界= 11 均摊= 12 阶梯= 11
+  molding_bottle             in  steel_block              下界= 11 均摊= 12 阶梯= 11
+  seed_collector_buckwheat   out buckwheat_seed           下界= 11 均摊= 12 阶梯= 11
+  seed_collector_sandleaf    out sandleaf_seed            下界= 21 均摊= 22 阶梯= 21
+
+阶梯是否处处达到逐项下界: True
+⇒ 全网总车道数在所有合法占空分配上的可达最小值 = 622（阶梯达到），不是 616。

@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """前件 (ii) 的可实现性探针：逐商品判定「无分流（merge-only）车道路由」是否存在。
 
+⚠ **这是 v1，已被 `refute_round1/split_free_probe_v2.py` 取代，保留为历史件、刻意不改。**
+   致命前提在 `:97`：`duty = {op: x[op] / n_op[op] ...}` 把每台机器的占空写死成**均摊**，
+   而 owner 2026-08-07 指出台间分配是布局自己挑的自由度（42 维多胞形）。放开占空后
+   **六例判决里四例翻案**（steel_block / buckwheat_seed / sandleaf_seed / sandleaf_powder），
+   必然分支的商品占路由流量从 37% 降到 10.5%——详见 `refute_round1/REJUDGE_REPORT.md` §2。
+   本脚本的一切输出都只在**均摊约定内**成立。
+   （勘误二轮 20260807：printed strings 与 receipt 字段刻意不改，改了归档的
+   `split_free_probe_stdout.log` / `split_free_probe_receipt.json` 就失效。）
+
 **为什么要问这个**：canonical `semantics.rate_lemma_scope` 的纯流强制断言
 「中间品的逐道残余速率两两之和 > 1 车道容量 ⇒ 任两种中间品不得共用一条带道」。
 该断言比较的是**端口侧**车道速率。但一条车道从产口走到耗口的途中允许经 splitter
