@@ -73,7 +73,8 @@ def main() -> None:
         "semantics_label": "P2.0 第七谓词语义（钉死 production_targets + 严格空地 + 吞吐守恒）。"
                            "与在案六谓词 U=(1188,18) conditional 语义不同、并存不互斥，禁止混写。",
         "date": "2026-08-06",
-        "revision": "v4（refute 席修正版：front-state 引理撤下，基座退回容量计数 L≥305）",
+        "revision": "v6（三轮复核修正版；与报告版本号统一。v4=一轮撤引理退回 L≥305，"
+                    "v5=二轮收敛修正，v6=三轮定义/引用级修正——数值自 v4 起未变）",
         "component_receipts": {
             "F_route_9135": "ob1_flow_caliber_receipt.json",
             "bodies_3544_budget_1356": "ob2_body_budget_receipt.json",
@@ -120,7 +121,7 @@ def main() -> None:
     with open(OUT, "w") as f:
         json.dump(receipt, f, ensure_ascii=False, indent=1)
 
-    print("=== OB5 面积上界总定理（v4，refute 修正版） ===")
+    print("=== OB5 面积上界总定理（v6，三轮复核修正版） ===")
     print(f"L（state 下界）: 容量计数 {L}（终品计入口径 {L_incl_finals}）")
     print(f"无条件【严格·模型内】: A ≤ {budget} − {pole_cells}·{P_min} − ⌈{L}/2⌉ = {A_uncond}")
     print(f"单层【条件·待OB6】  : A ≤ {budget} − {pole_cells}·{P_min} − {L} = {A_single}")

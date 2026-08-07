@@ -1,0 +1,48 @@
+{
+  "aggregate_items_per_tick": "1",
+  "candidate_bindings": [
+    {
+      "bbox": [
+        30,
+        31,
+        35,
+        34
+      ],
+      "commodity": "fine_buckwheat_powder",
+      "direction": "N",
+      "front": [
+        35,
+        35
+      ],
+      "operation": "grinder_fine_buckwheat",
+      "pose_id": "p_x30_y31_o0_m_BT",
+      "pose_index": 3961,
+      "residual_output_items_per_tick": "1/2"
+    },
+    {
+      "bbox": [
+        32,
+        35,
+        34,
+        37
+      ],
+      "commodity": "steel_bottle",
+      "direction": "E",
+      "front": [
+        35,
+        35
+      ],
+      "operation": "molding_bottle",
+      "pose_id": "p_x32_y35_o0_m_LR",
+      "pose_index": 8581,
+      "residual_output_items_per_tick": "1/2"
+    }
+  ],
+  "front": [
+    35,
+    35
+  ],
+  "mixed_source_hyperedge_is_locally_feasible": true,
+  "one_tick_capacity": "1",
+  "pairwise_body_disjoint": true
+}

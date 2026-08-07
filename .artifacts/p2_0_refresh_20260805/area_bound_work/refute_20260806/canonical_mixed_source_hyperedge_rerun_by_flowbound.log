@@ -1,0 +1,15 @@
+      ],
+      "operation": "molding_bottle",
+      "pose_id": "p_x32_y35_o0_m_LR",
+      "pose_index": 8581,
+      "residual_output_items_per_tick": "1/2"
+    }
+  ],
+  "front": [
+    35,
+    35
+  ],
+  "mixed_source_hyperedge_is_locally_feasible": true,
+  "one_tick_capacity": "1",
+  "pairwise_body_disjoint": true
+}

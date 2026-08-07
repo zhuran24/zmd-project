@@ -1,4 +1,4 @@
-# 流量面积上界定理报告（flowbound 线，2026-08-06，v5 = 二轮复核修正版）
+# 流量面积上界定理报告（flowbound 线，2026-08-06，v6 = 三轮复核修正版）
 
 > **语义标签（OB7，通篇有效）**：本文一切结论都在 **P2.0 第七谓词语义**下
 > （钉死 `production_targets` + 严格空地 + 吞吐守恒 + 循环稳态）。与在案六谓词
@@ -13,6 +13,11 @@
 > 修掉三处公式假等号、G1 匹配形式（四口 merger 反例 ⇒ 超边 packing）、G1×OB6 量化
 > （X ≤ ⌊(L−H)/2⌋）、G5/G6 措辞、补证路径 (c) 过推、SCIP 收据 provenance、
 > 前提 1–8 自包含内嵌。二轮探针材料入 `refute_20260806/`。
+> **v6（三轮复核，1375cac 后）**：数值链三轮三验全 SOUND；修四项定义/引用级——
+> G1「普通 cover 等价」改精确覆盖/分割（重叠 cover 反例）+ 端口计数改符号 Q；
+> 超边「同商品」要素被 canonical 混流反例驳倒（source-only 超边须允许跨商品，
+> sink 保持纯流；该反例由 mixflow 线成果构造）；前提 6 行号勘误至真身
+> `:1297-1329`/`:1744-1794`；版本号三处统一 v6。三轮探针材料入 `refute_20260806/`。
 
 ## 0. TL;DR
 
@@ -27,8 +32,10 @@
 | slot 普查（诊断用，不进上界） | 574/568/401/52 | 【精确】 | `ob5_slot_census_receipt.json` |
 | front-state 下界 L≥308 | **REFUTED** | 负结果归档 §5.4 | `refute_20260806/` |
 
-对 MEMO §3.3 粗算的净升级：三处粗算全部升格为脚本收据；**P_min 6→9**（A 收紧 12 格）；
-面积上界从「粗算 ~1179（双层最宽松）」变为**严格链 1167**。
+对 P2.0 复活备忘 §3.3 粗算（`.artifacts/p2_0_refresh_20260805/MEMO.md`，主线产物、
+截至本文提交未入 git 树——引用时以该路径工作树副本为准）的净升级：三处粗算全部升格为
+脚本收据；**P_min 6→9**（A 收紧 12 格）；面积上界从「粗算 ~1179（双层最宽松）」变为
+**严格链 1167**。
 计划书预言「单层 ~950–1,100 档」：单层口径 1,015 接近预言档上沿，但它是条件结论
 （依赖 OB6 交叉密度上界）；无条件档位是 1,167。
 
@@ -39,8 +46,8 @@
   4 位有效数字显示值（经 `F_balanced_over_C=302.803125` 无损互证）。
 - **OB2 完成**：3,544 = 132×9+38×24+49×25+1×81+46×3 模板表驱动复算；受电机身 3,325。
 - **OB3 引用**：每件 ≥1 route state 已闭（owner 08-05 附录二#1 零格交接「贴脸死、隔 1 格通」+
-  模型 `src/models/routing_subproblem.py:1570-1572` missing_source_fronts/missing_sink_fronts、
-  `:1710` `_validate_selected_route_connectivity`——本批回源核实仍在）。
+  模型真身 `src/models/routing_subproblem.py:1297-1329` `_add_port_adherence` 逐端口 exact-one、
+  `:1744-1794` missing-selected-front 复验——三轮回源勘误后钉准）。
 - **OB4 完成**：单杆覆盖装填 IP（K=396 OPTIMAL；refute 席 SCIP 双档复算一致）⇒ P ≥ 9。
 - **OB5 主体**：定理 1 严格链落地 + gap 结构台账（§5）+ 三条已证无效路线归档（§5.4，
   其中 front-state 引理由 refute 席驳倒）。
@@ -56,7 +63,7 @@
 | 前提 3 | 端口吞吐上限 = 1 件/tick/slot；slots = ceil(rate/belt) | 同上 `port_max_throughput_per_tick` + `src/preprocess/operation_profiles.py:65-77` `_rate_to_slots`（本批回源） | 【精确】frozen |
 | 前提 4 | 每 (cell, layer) 至多 1 个 physical state；layer ∈ {ground, elevated} ⇒ 每格 ≤ 2 件/tick | `src/models/routing_subproblem.py:1122` `AddAtMostOne`（本批回源）+ canonical `routing_rules.layers` | 【精确】 |
 | 前提 5 | 全部设施模板 `is_solid_z: true` ⇒ 机身两层都不可布线 | canonical `facility_templates.*` | 【精确】frozen |
-| 前提 6 | 每条被路由物流至少占 1 个 route state（源/汇 front 必须有 state） | `src/models/routing_subproblem.py:1570-1572`（missing_source/sink_fronts）+ `:1710` 复验（本批回源）；游戏侧 owner 定谳「贴脸死、隔 1 格通」（07-18 / 08-05 附录二#1） | 【精确】模型内 +【owner 定谳】 |
+| 前提 6 | 每条被路由物流至少占 1 个 route state（每个 active 端口的 front 恰绑一个 state） | **真身 = `src/models/routing_subproblem.py:1297-1329` `_add_port_adherence`（逐端口 `sum(vars_for_port) == 1` exact-one）+ `:1744-1794` missing-selected-front 复验**（三轮回源勘误；`:1570-1572` 只查 front 集合非空、`:1710` 只是复验入口）；游戏侧 owner 定谳「贴脸死、隔 1 格通」（07-18 / 08-05 附录二#1） | 【精确】模型内 +【owner 定谳】 |
 | 前提 7 | 需求权威 = `production_targets`（valley 3.0 / qiaoyu 2.75 满速线） | canonical `production_targets` | 【精确】frozen |
 | 前提 8 | 空矩形内不得存在任何占地物（设施/电杆/带/桥/一切物流件） | canonical `globals.empty_rectangle.emptiness_adjudication` + `docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md`（owner 08-05 裁决） | 【精确】owner 定谳 |
 
@@ -141,14 +148,25 @@ K=396 一致**，收据 `refute_20260806/independent_power_ip_probe_receipt.json
 front 计数路线已死（§5.4 第 3 条），幸存的攻法必须换形式：
 - **流量加权的口计数会塌回容量计数**（一个 state 服务多口时，其吞吐帽 30 件/分钟
   已在 [C] 里记账），所以「数口」本身没有免费增量；
-- 任何复活的 front 型下界的正确形式是**顶点不交超边 packing 的最大权亏损**：
-  L ≥ |P| − max Σ_{e∈packing} (|e|−1)（权 w(e)=|e|−1；或等价的最小可行超边覆盖）。
-  普通匹配形式「|P| − 最大匹配 ν」**不成立**——二轮 followup 探针的四口 merger 反例：
-  ports=4、ν=1 ⇒ |P|−ν=3，实际 1 个 state 吃下全部四口
+- 任何复活的 front 型下界的正确形式：记 **Q = active route-required 端口出现次数**
+  （避免与电杆数 P 撞名），则 **L ≥ Q − max Σ_{e∈packing} (|e|−1)**（顶点不交超边
+  packing 的最大权，w(e)=|e|−1），等价于**最小精确覆盖（超边分割）**——端口 exact-one
+  （`src/models/routing_subproblem.py:1297-1329` `_add_port_adherence`）意味着每个端口
+  恰属一个 state，是分割不是覆盖。**普通（可重叠）覆盖不等价**——反例：可行边
+  {a}、{a,b,c}、{c,d,e}：普通 cover 最小 2（两条三元边重叠于 c），但分割最小 3
+  （= packing 公式 5−2）。普通匹配形式「Q − 最大匹配 ν」也**不成立**——二轮四口
+  merger 反例：ports=4、ν=1 ⇒ Q−ν=3，实际 1 个 state 吃下全部四口
   （`refute_20260806/followup_g_ledger_probe_stdout.log` dense_hyperedge，本线复跑复现）。
-  超边可行性定义必须显式包含：方向相容（state 的入/出边集合）、同商品（前提 12 门口排他）、
-  front 几何（各口机身可同时相邻该格）、容量（≤30 件/分钟）、真实 physical-state 词汇兼容
-  （belt/splitter/merger/bridge）。候选引理**逐个先过探针 harness**（`refute_20260806/`）。
+  **超边定义 = 一个 physical state 可同时服务的完整 terminal-incidence 集合**，
+  可行性要素：方向相容（state 的入/出边集合）、front 几何（各口机身可同时相邻该格）、
+  容量（≤30 件/分钟）、真实 physical-state 词汇兼容（belt/splitter/merger/bridge）、
+  以及**商品约束的正确形态（三轮修正）**：sink front 必须商品纯流（前提 12 门口排他），
+  但 **source-only 超边必须允许跨商品**——canonical `mixed_commodity_flow` 允许一件
+  物流件混载多商品，三轮 refute 席给出 canonical 局部反例（grinder_fine_buckwheat
+  pose 3961 + molding_bottle pose 8581 两机身不交、同 front (35,35) 的两个异商品产口，
+  binding FEASIBLE、残流 1/2+1/2=1 合容量；本线复跑复现，`refute_20260806/` 三轮件）。
+  「同商品」作为超边全局要素是**错的**（该错由 mixflow 线的混流成果击中）。
+  候选引理**逐个先过探针 harness**（`refute_20260806/`）。
 - **G1×OB6 耦合杠杆（局部互斥已证 SOUND，量化开放）**：
   `bridge_mechanics.can_overlap_splitter_merger=false` ⇒ splitter/merger 格不能再当交叉格
   （二轮探针四场景钉死：splitter+垂直 L1、merger+垂直 L1、直带+平行 L1 全 INFEASIBLE，
@@ -188,8 +206,9 @@ band22 实测平均最近生产者距离 22.25 格，真实布局远离紧例，
 **定理 1 链**由行族组合而成：行族 = {17 条聚合守恒行（[B]）、每 state 容量行 ≤30（[C]）、
 每格 ≤2 state 行（[D]）、格位分账行（[A]）、覆盖指派行（定理 3）}。
 **注意它不是纯 Farkas 非负组合**——链里有三处整数取整（L ≥ ⌈304.5⌉、P ≥ ⌈3325/396⌉、
-R ≥ ⌈L/2⌉），证书要么显式携带 Chvátal-Gomory/整数舍入行，要么把 L≥305 与 P≥9
-当作外部已验证的 input cut 挂进 manifest（后者更贴 v2 B 档现有格式）。
+R ≥ ⌈L/2⌉），证书要么显式携带 Chvátal-Gomory/整数舍入行，要么把 **L≥305、P≥9、R≥153
+三条**都当作外部已验证的 input cut 挂进 manifest（若只挂前两条，R≥153 那一步必须保留
+一道 CG 推理行——三处取整一处都不能漏）。后者更贴 v2 B 档现有格式。
 在此口径下写成 static-flow-with-lift + row-family manifest 是工程化（预期一个批次）。
 v1-v3 曾把 front 行族（614 行：产口 306 + 耗口 308）也算进去，该行族已随引理撤下。
 真正的研究缺口在把 G1/G3 的几何论证也压进行族（割集行）。
