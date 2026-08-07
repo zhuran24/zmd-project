@@ -371,3 +371,6 @@ canonical A7 原文只写了**输入**方向：
 8. **只用了三个规则源。** 主线程指定的三源（canonical / 公理系文书 / 记忆卡）我逐字过完了，另外主动加了 `MFG_SLOT_PARAMS`、`PORT_SEMANTICS_REVERDICT_A`、`rules_audit_20260718/00`、`preprocess_plan.json` 与三份 preprocessed 工件。`VERIFICATION_ANNEX_20260806.md`（57KB，三席验证意见原文）与 `DOC_MEMORY_FIXLIST_20260806.md` **我没有读**——里面可能有本轮该收的规则细节。这是本清点最大的一块已知未覆盖面。
 
 9. **owner 口述规则的引用等级。** 本文引用的 owner 裁定全部转引自记忆卡与公理提案，没有回到原始对话记录。公理提案 §0 自己写着「owner 明言历史对账『每次都会落下东西』——本文任何『已穷尽』口吻按此打折」，这条打折同样适用于本文书。
+
+---
+**§7.3 悬案销账（2026-08-07 晚，sim-blind-packager 席）**：buckwheat = `item_plant_moss_1`（荞花）已定——判据非配方结构（确同构）而是 i18n 显示名与终产物链闭合（moss_1=荞花 → `item_bottled_rec_hp_3`=精选荞愈胶囊 ↔ qiaoyu_capsule；moss_2=柑实 → 罐头链）。sandleaf = `item_plant_moss_3`（砂叶）、valley_battery = `item_proc_battery_3` 同时确认。T-1 核对自此有确定商品身份锚。
