@@ -1,4 +1,4 @@
-# 流量面积上界定理报告（flowbound 线，2026-08-06，v6 = 三轮复核修正版）
+# 流量面积上界定理报告（flowbound 线，2026-08-06，v7 = 四轮复核修正版）
 
 > **语义标签（OB7，通篇有效）**：本文一切结论都在 **P2.0 第七谓词语义**下
 > （钉死 `production_targets` + 严格空地 + 吞吐守恒 + 循环稳态）。与在案六谓词
@@ -18,6 +18,10 @@
 > 超边「同商品」要素被 canonical 混流反例驳倒（source-only 超边须允许跨商品，
 > sink 保持纯流；该反例由 mixflow 线成果构造）；前提 6 行号勘误至真身
 > `:1297-1329`/`:1744-1794`；版本号三处统一 v6。三轮探针材料入 `refute_20260806/`。
+> **v7（四轮复核，dc74622 后）**：G1 等价性闭合——formal singleton 增广 E⁺（安全放松），
+> 「任意 packing 公式」对未增广族限定为较弱安全下界；反例边集与入库探针对齐
+> （全部 singleton + 两条三元边）；mixed-source 耐久脚本补真实 PortBindingModel 自证
+> （FEASIBLE 复现）；README 按实测修 PYTHONPATH 注记。数值自 v4 起未变。
 
 ## 0. TL;DR
 
@@ -149,12 +153,20 @@ front 计数路线已死（§5.4 第 3 条），幸存的攻法必须换形式�
 - **流量加权的口计数会塌回容量计数**（一个 state 服务多口时，其吞吐帽 30 件/分钟
   已在 [C] 里记账），所以「数口」本身没有免费增量；
 - 任何复活的 front 型下界的正确形式：记 **Q = active route-required 端口出现次数**
-  （避免与电杆数 P 撞名），则 **L ≥ Q − max Σ_{e∈packing} (|e|−1)**（顶点不交超边
-  packing 的最大权，w(e)=|e|−1），等价于**最小精确覆盖（超边分割）**——端口 exact-one
-  （`src/models/routing_subproblem.py:1297-1329` `_add_port_adherence`）意味着每个端口
-  恰属一个 state，是分割不是覆盖。**普通（可重叠）覆盖不等价**——反例：可行边
-  {a}、{a,b,c}、{c,d,e}：普通 cover 最小 2（两条三元边重叠于 c），但分割最小 3
-  （= packing 公式 5−2）。普通匹配形式「Q − 最大匹配 ν」也**不成立**——二轮四口
+  （避免与电杆数 P 撞名），超边族 E = 可行 terminal-incidence 集合，并**显式增广
+  E⁺ = E ∪ {每个 q∈Q 的 formal singleton 边}**——singleton 物理恒可行（给该口配一个
+  专属 front state），增广是安全放松。端口 exact-one
+  （`src/models/routing_subproblem.py:1297-1329` `_add_port_adherence`）⇒ 任何布局的
+  state 集合在 Q 上诱导一个 E⁺-**精确分割**；反向，E⁺ 的任何顶点不交 packing 都可用
+  singleton 边（w=0）补全成精确分割、总权不变。故
+  **L ≥ Q − max Σ_{e∈packing⊆E⁺} (|e|−1)**（w(e)=|e|−1），且该式 **= E⁺ 的最小精确
+  覆盖（超边分割）**。两个不等价警告（四轮复核钉死）：
+  ①**等价只对增广族 E⁺ 成立**——对未增广的 E，任意 packing 未必可扩展成分割，
+  「任意 packing」公式只是较弱但仍安全的下界；
+  ②**普通（可重叠）覆盖不等价**——反例（与入库探针 `hypergraph_packing_audit.py` 一致）：
+  Q={a,…,e}，E⁺ = 全部 singleton 边 + {a,b,c} + {c,d,e}：普通 cover 最小 2
+  （两条三元边重叠于 c），最小精确分割 = 3（{a,b,c}+{d}+{e}）= packing 公式 5−2。
+  普通匹配形式「Q − 最大匹配 ν」也**不成立**——二轮四口
   merger 反例：ports=4、ν=1 ⇒ Q−ν=3，实际 1 个 state 吃下全部四口
   （`refute_20260806/followup_g_ledger_probe_stdout.log` dense_hyperedge，本线复跑复现）。
   **超边定义 = 一个 physical state 可同时服务的完整 terminal-incidence 集合**，
