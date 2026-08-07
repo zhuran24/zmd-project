@@ -1,8 +1,15 @@
-# 混流表达手术设计（mixflow-surgery，2026-08-06）
+# 混流表达手术设计（mixflow-surgery，2026-08-06；de-mix 禁令 2026-08-07）
 
-> 状态：设计稿 v1（骨架已对齐主线程 / 实现进行中）。本线是残余 #7「模型混流表达」的
-> 施工线；上游依据 = `.artifacts/axiom_analysis_20260806/` 的侦察文书（SOURCE_FRONT_
-> UNLOCK_RECON）与 owner 终审公理系（AXIOM_KERNEL_PROPOSAL）。
+> 状态：设计稿 v2。v1（2026-08-06）的手术本体经外审判 **BLOCK**（finding B-01：
+> de-mix 解在内容盲物理件下纳伪，且存在无准入口槽位的 4 格反例）。owner
+> 2026-08-07 拍板取三修复方案中的 **③保守禁止 de-mix**，本文 §9 是该批的落地
+> 记录，并订正 §5 与 §6 中已被外审推翻或已过时的条款。**§9 与本文其余部分冲突
+> 时以 §9 为准。**
+>
+> 本线是残余 #7「模型混流表达」的施工线；上游依据 = `.artifacts/axiom_analysis_
+> 20260806/` 的侦察文书（SOURCE_FRONT_UNLOCK_RECON）与 owner 终审公理系
+> （AXIOM_KERNEL_PROPOSAL）。外审判决全文见
+> `.artifacts/mixflow_review_pack_20260806/verdict_20260807/`。
 >
 > **接入边界**：本分支（mixflow-surgery）改动 `src/models/routing_subproblem.py`
 > （V99 close-kernel floor 内文件）。分支上**不做 reseal**：pin 链测试红是预期内，
@@ -15,6 +22,12 @@ use 变量从「继承整个物理件图样」改为「商品自己的子图样�
 AtMostOne 容量一字不动，两层之间用「方向侧覆盖约束」缝合；sink front 地面纯流从
 涌现排他改为**显式生成期排除**。U-02（合流后分流）由此从结构性 INFEASIBLE 变为
 可表达，机器输入口门口纯流铁律保持，连通性谓词的复验器**零改动**且语义变得更忠实。
+
+> **v2 订正（2026-08-07）**：上段是 v1 的结论。③ 落地后，「按商品分道」被显式
+> 禁止——合流与共乘仍可表达，但分流点上所有在场商品必须共享全部出边。实测后果
+> 是 U-02 这类「合流再分开」的实例整体 INFEASIBLE，且在当前 sink-front 排他范围
+> 内**混流格在任何能送达的解里都不可达**（§9.5）。本手术因此当前是纯基建，
+> 表达力红利要等 U-01 才兑现。
 
 ## 1. 现状与死因（一手确认，2026-08-06 本线实读）
 
@@ -166,6 +179,11 @@ build/solve 爆预算，B 的变量瘦身值得再评（届时复验器重写的
 
 ## 5. Soundness 论证草案（放宽方向为何不产生假 CERTIFIED）
 
+> **⚠ 本节是 v1 的论证，已被外审部分推翻，保留作史料。** 第 1 条的「纯放宽」
+> 是**假命题**（外审 F-02 逐字驳倒，见 §9.4 的带前提改写）；第 7 条的三层答辩
+> 被外审 B-01 判为不足（4 格反例封死了「总能补准入口」这条腿）。当前有效的
+> soundness 论证在 §9.3。
+
 完整版（含自攻）在 `EXTERNAL_REVIEW_BRIEF.md`，此处存骨架：
 
 1. **单调性**：旧可行解 ⊆ 新可行解（旧解里每个 use 的完整图样在新模型中是
@@ -200,6 +218,10 @@ build/solve 爆预算，B 的变量瘦身值得再评（届时复验器重写的
    原型不强制、列为外审开放问题。
 
 ## 6. 差分测试组（已落地全绿，2026-08-06 实测）
+
+> **⚠ 本节记的是 ③ 落地前的判定。** 第 1、4 条（U-02 复活、source front 共乘）
+> 已在 ③ 下重判为 INFEASIBLE，第 2 条的哨兵承重性已转移到 de-mix 禁令。当前
+> 测试组（20 例）与逐条重判见 §9.7。
 
 模块 `src/tests/test_routing_mixflow.py`，13 例全绿（0.2s）。手造小网格 spec
 全部对齐 DIR_DELTA 数学系（N=y+1）；走廊场景把自由格钉成显式集合，逼出共乘段
@@ -323,3 +345,233 @@ build/solve 爆预算，B 的变量瘦身值得再评（届时复验器重写的
 - `_validate_selected_route_connectivity`：零改动（§2.1）；侦察文书的「需重写」
   预警对应的是候选 B 世界线。
 - reseal/pin 链：本分支不动，接入时主线程统一 freeze-ritual。
+
+## 9. ③ 保守禁 de-mix（外审 BLOCK 修复批，2026-08-07）
+
+### 9.1 判决与选择
+
+外审 2026-08-06 判 BLOCK，唯一 Blocker 是 **B-01**：内容盲 splitter 不按商品
+分拣，模型却允许在同一物理件上声明「a 走一支、b 走另一支」；外审并构造了只有
+4 个自由格的反例——两条分流支路都只剩一个转弯终端格，**根本没有直行格可放
+v1 §5.7 所依赖的准入口**，该实例术前 INFEASIBLE、术后 FEASIBLE、术后的全局连通
+复验器仍返回 `failure_count=0`。外审给的三条修复路（显式建模 filter / 独立
+realization gate / 保守禁 de-mix）中，owner 2026-08-07 拍板取 **③保守禁止
+de-mix**，依据是需求侧定谳：混流的收益场景只有「终品共道」「借道过境」两类、
+全是共乘不分道型，de-mix 的收益场景为零。①（filter 建模）存档不排期，
+②（realization gate）出局。
+
+### 9.2 约束形态与不变量
+
+`_add_demix_ban_constraints`（`src/models/routing_subproblem.py`），在
+`_add_phys_coverage_constraints` 之后接线。逐条 use 变量发行两文字蕴含：
+
+```
+use[x, y, layer, *, flow_out, c]  ⟹  ¬phys_side_out[x, y, layer, d]
+                                     对每个 d ∉ flow_out
+```
+
+即**被选中的商品子图样禁止该格物理件携带任何它没声明的出边**。复用 §7 返工
+时建的聚合侧指示布尔，**零新变量类**。
+
+- **行域剪枝**：只对「该 (格,层) 存在多出侧（splitter）状态且 d 属于其出侧」
+  的方向发行。若携带出侧 d 的 phys 状态全是单出侧，则 `phys_side_out[d]=1`
+  已把被选件的出侧集合钉成 `{d}`，覆盖约束又逼 use 的出侧落在其中——该行被
+  既有约束蕴含，可略。L1 只有直行 1进1出 bridge，**零行**。
+- **得到的不变量**：配合精确侧约束（phys 侧 = 全体 use 侧并集），每格每层
+  **所有在场商品的出侧集合 ≡ phys 出侧集合**。进侧仍逐商品自由——物理件不
+  决定货从哪来，合流点（多进一出）因此完好。
+
+保留面（一格未误伤，测试逐条钉死）：同商品分流（单商品在场时每行皆恒真）、
+混流共乘直带（唯一出侧、全体声明）、合流点汇入、L1 垂直借道。
+
+### 9.3 soundness 论证（当前有效版，替代 §5.1/§5.7）
+
+由 9.2 的不变量：商品 c 在场的每一格，它声明的出边 = 该格物理件的全部物理出边。
+successor 约束又要求每条声明出边或者通向 c **自己**的 sink 端口（终端豁免按
+商品键控），或者在邻格有 c 的接收态。于是 **c 的在场格集合对物理后继封闭**：
+内容盲轮转推货沿物理边传播，永远走不出静态声明面。再叠加 sink front 地面排他
+（别家商品在门口格不生成变量），错货抵达异商品机器输入口在结构上不可能。
+
+这正是外审 B-01 要的性质，且论证不依赖准入口是否存在——外审 4 格反例的致命点
+（支路上没有直行格）因此不再是缝隙：模型压根不产生需要准入口的解。
+
+**已攻的最强缝隙：按层分道。** `_use_by_cell_dir_in_commodity` 是按**格**而非
+(格,层) 索引的，所以地面件的出边可以被邻格的 L1 bridge 接收——两商品若能在邻格
+一个走 L0 一个走 L1，就在没有任何 splitter 的情况下分了道，禁令看不见。答辩：
+两商品从同一侧进入邻格，L1 bridge 只直行 ⇒ 其轴由进侧唯一确定；桥互斥
+（`_add_bridge_constraints`）只在「L0 是直带且与 L1 轴**垂直**」时放行共存，而
+同侧进入的 L0 直带必与该 L1 同轴，转弯带则根本不是直带 ⇒ 两种情况都被互斥掉。
+**实测坐实**（探针 `.artifacts/mixflow_demix_ban_20260807/probe_layer_escape.py`，
+几何 = a/b 在 (5,5) 合流、(6,5) 必须分开）：
+
+| | 自由求解 | 追加「某格上 a 与 b 分处不同层」强制行 |
+|---|---|---|
+| 禁令开 | INFEASIBLE | INFEASIBLE |
+| 禁令关 | FEASIBLE（(6,5) splitter 分道）| INFEASIBLE |
+
+最后一格是关键读数：**按层分道即使在禁令关闭时也不可行**，说明堵住它的是桥互斥
+（既有条款、本手术零改动），不是禁令——这条逃逸路径独立于本批就已封死。
+
+**两道墙的分工（本批自查推翻过一次，范围必须说准）。** 在门口格剥离别家货本身
+就是一次 de-mix（owner 朝端口出、搭车者朝别处出），而别家商品又不可能声明朝端口
+的出边（端口背后是机身占用格，`_outgoing_dir_supported` 不成立、变量不生成）
+——所以在两个**分道型**污染几何（门口分流、异向多 owner 门口格）上，禁令单独就
+足以拒掉，只中和守卫它们仍 INFEASIBLE，守卫在这两处已不是唯一防线（对应的两条
+承重哨兵因此改为同时中和两道墙）。
+
+**但守卫没有被完全取代。** 本批一度写成「已被吞并」，自查时被自己的探针推翻：
+BRIEF §4.1 登记的那个几何——两个异商品 sink 端口共 front 格且**同一终端方向**
+（也是外审 F-02 的复现实例）——全程没有任何 splitter，**禁令发行零行**、完全
+vacuous，守卫的多 owner 全排是唯一防线。注意
+`_duplicate_terminal_front_keys`（`:190-242`）的重复键**含 commodity**，所以
+「异商品同 front 同终端向」不会被它当重复口挡掉，确实会进模型。实测（探针
+`.artifacts/mixflow_demix_ban_20260807/probe_guard_still_needed.py`，实例
+`free={(1,0),(2,0),(3,0)}`、iron/copper 源同在 (1,0) dir E、汇同在 (3,0) dir W）：
+
+| | 禁令开（`demix_ban.rows == 0`）| 禁令关 |
+|---|---|---|
+| 守卫开 | INFEASIBLE | INFEASIBLE |
+| 守卫关 | **FEASIBLE**：三格全是 belt，每格 uses=[copper, iron] 双商品共乘，一条混流带同时灌两台机器 | FEASIBLE |
+
+**结论：禁令管「分道」，守卫管「同向共 front 的混灌」，两堵墙谁也不能删。**
+常驻台账拆成两条：`test_demix_ban_subsumes_purity_guard_on_split_geometries`
+（分道型上只中和守卫仍 INFEASIBLE）与
+`test_purity_guard_is_load_bearing_on_same_direction_multi_owner`（同向型上只
+中和守卫即翻 FEASIBLE——守卫承重的真哨兵）。这也是 U-01 的直接前置：将来要解锁
+仓储口/核心口混流准入，要拆的正是守卫这堵墙，拆之前必须先回答「同向共 front
+混灌靠什么挡」。
+
+### 9.4 M4 单调性订正（外审 F-02，BLOCK 解除条件 4）
+
+v1 的「手术是纯放宽 ⇒ 新 INFEASIBLE 蕴含旧 INFEASIBLE」在 `RoutingSubproblem`
+的**全 API 域上字面为假**，外审已复现最小反例（`free={(1,0),(2,0),(3,0)}`、
+iron/copper 的 source 同在 (1,0) dir E、sink 同在 (3,0) dir W：BEFORE FEASIBLE /
+AFTER INFEASIBLE，收紧来自多 owner 地面全排）。改写为带前提的命题：
+
+> 对满足 placement/binding 可达性不变量的**生产输入**，旧可行解均可嵌入新模型；
+> 额外的多 owner 收紧只拒绝游戏非法或上游不可达的输入。
+
+③ 落地后还要再加一条：**de-mix 禁令是无条件的净收紧**。所以术后模型相对术前
+既有放宽面（进侧自由 = 合流/共乘可表达）也有收紧面（多 owner 门口 + de-mix），
+两个方向同时存在，**任何依赖「旧模型曾 INFEASIBLE」来论证 layout cut 安全的
+代码或文档，都必须显式携带上述生产输入前提**，不得再引用全域单调性。
+
+### 9.5 收益面实测：混流的送达面已清零（本批最重要的发现）
+
+③ 的代价不是「少了 de-mix 这一种解法」，而是**在当前 sink-front 排他范围内，
+混流格在任何能送达的可行解里都不可达**。链条（推导为主，走廊型实测佐证）：
+
+1. 混流格上两商品的出侧集合相同（9.2 不变量）⇒ 后继格集合相同 ⇒ 由 successor
+   约束，两商品的下游闭包完全共享，**从混流点起一路同行**；
+2. 每个商品最终必须在自己的 sink front 经端口终端豁免收尾（port adherence 强制
+   该 use 恰为 1）；
+3. 在 a 的 sink front 上，b 要么被 `_mixflow_ground_banned` 挡掉，要么（守卫中和
+   时）无法声明朝 a 机身的出边——而不变量逼它必须声明。矛盾。
+
+**证据等级**：上面三步是**推导**（对模型条款的演绎），下表是**实测佐证**，不是
+独立证明。探针方法可复述：给已建好的模型追加一行「至少存在一个 (格,层) 上有两
+种商品同时在场」再求解——UNSAT 即表示该实例的任何可行解都不含混流格。
+
+| 实例 | 强制混流格 + 禁令开 | 对照：禁令关 |
+|---|---|---|
+| U-02 宽1走廊（30s）| INFEASIBLE | FEASIBLE（merger + 共乘带 + splitter 三形态齐全）|
+| source-front 共乘走廊（30s）| INFEASIBLE | FEASIBLE |
+| 4×4 全自由空场（300s）| INFEASIBLE | — |
+| 5×5 全自由空场（600s）| **TIMEOUT（无结论）** | — |
+
+**如实报告**：空场越大，UNSAT 证明越难，5×5 就已经跑不出结论。所以「混流格不
+可达」这条**以 1-3 步的推导为主证据**，实测只在走廊型（= 生产实际形态，pitch-4
+点阵留下的就是宽1走廊）与最小空场上把它坐实。另有一个推导覆盖不到的退化角：
+纯浮空环（两商品在一个与端口无关的闭环上互相支撑）在局部约束下不违反任何条款，
+连通复验器也只查 sink 可达性——它可能作为无意义的附着物出现在某个可行解里，
+但它不承载任何送达，不影响上面的结论。
+
+所以本批的准确说法不是「零代价」，而是**零代价也零净收益**：手术留下的是基建
+（per-commodity 子图样 key + 覆盖/精确侧缝合 + 侧指示布尔），表达面上合流与共乘
+确实活着（禁令关闭的对照组逐条抽取证明），但送达面要等 **U-01**（仓储口/核心口
+混流准入，DESIGN v1 §5.6 明示不在本手术范围）落地才可能兑现。接入批要不要为
+它开门控开关，应当按这个账重算。
+
+### 9.6 性能三点对照（生产规模 proxy，脚本进仓）
+
+脚本 `docs/research/mixflow_surgery_20260806/bench_mixflow_prodscale.py`（外审
+F-04 item 1 要的可复验件，**现在在仓库里**），同一 fixture、同一进程内三臂对测；
+`pre` 臂从 `git show 5af80d0:src/models/routing_subproblem.py` 加载。复跑：
+
+```
+python docs/research/mixflow_surgery_20260806/bench_mixflow_prodscale.py --solve-seconds 120
+```
+
+fixture = §7 那套对抗性最坏 proxy（70×70、256 个 3×3 机体 pitch-4 点阵、宽1
+走廊、19 商品、一体一口），`pre` 臂的四个数字与 §7 记录逐项对上（980,444 use /
+53,444 phys / 3,999,723 约束 / build 19.5s、solve INFEASIBLE@27.7s），可确认是
+同一装置。
+
+| 指标 | 术前 5af80d0 | 术后（无禁令）| 术后 + ③ |
+|---|---|---|---|
+| use vars | 980,444 | 974,396 | 974,396 |
+| phys vars | 53,444 | 53,444 | 53,444 |
+| constraints | 3,999,723 | 5,897,344 | 7,888,989（禁令 1,991,645 行，全两文字）|
+| **build** | **19.84s** | **20.67s（+4.2%）** | **23.88s（+20.4% / 较术后 +15.5%）** |
+| solve（120s 帽）| INFEASIBLE @28.3s | **TIMEOUT** | **INFEASIBLE @113.9s** |
+
+（2026-08-07 空载复跑，与首轮 19.9/20.73/24.26s、28.0/TIMEOUT/115.7s 一致；
+原始 JSON 落盘 `.artifacts/mixflow_demix_ban_20260807/`。）
+
+两条解读：
+
+- **build 仍在 40s 预算内**：禁令加 199 万行，代价 ~3.2s。全部是两文字蕴含，
+  走 CP-SAT 的二元蕴含图，单价极低（对比 §7 第一轮教训：同样量级的行数如果按
+  朴素求和展开会把 build 顶到 2.4×）。
+- **solve 反而修回来了**：§7 记的「术后 120s 内出不了结论」是可行域放大的固有
+  代价，而 ③ 把可行域收回去，这个最坏 proxy 上重新在 120s 内证出 INFEASIBLE。
+  也就是说 ③ 消掉的正是 §7c 开放问题 1（默认关开关）的主要动机。**但**这只是
+  单实例单跑的对抗 proxy，不是启用门槛——外审 F-04 要的量化阈值、分层语料、多
+  seed/worker 重复仍属接入批。
+
+### 9.7 测试组重判与哨兵两层自证（BLOCK 解除条件 3）
+
+`src/tests/test_routing_mixflow.py` 从 13 例扩到 **22 例全绿**；逐条重判：
+
+| §6 原条目 | ③ 后 | 落点 |
+|---|---|---|
+| 1 U-02 复活（FEASIBLE）| **INFEASIBLE** | `test_u02_merge_then_split_now_infeasible`；中和对照 `test_u02_mutation_control_shows_merge_and_coride_expressible` 证明 merger / 共乘带 / splitter 三形态都还在，被拒的只是第三种 |
+| 4 source front 共乘（FEASIBLE）| **INFEASIBLE** | `test_source_front_coride_now_infeasible` + 中和对照 |
+| 2b 门口分流哨兵 | INFEASIBLE（不变）| 承重方从纯流守卫转到禁令，见 §9.3 与 `test_demix_ban_subsumes_purity_guard_on_split_geometries` |
+| 2a/2c 门口转弯 / 异向多 owner | INFEASIBLE（不变）| 原样 |
+| — 新增 | INFEASIBLE | 同向多 owner 门口格（BRIEF §4.1 / 外审 F-02 实例）进常驻负测，并配守卫的**真**承重哨兵——那处禁令零行，只中和守卫即翻 FEASIBLE |
+| 回归组 | FEASIBLE（不变）| 垂直桥交叉、单商品分流、phys==uses 侧并集、连通复验器 |
+| — 新增 | — | 4 格反例负测 + 中和对照；行域剪枝两条（宽1走廊零行、L1 无多出侧态）；`test_every_present_commodity_claims_all_outgoing_sides`（§9.2 不变量的解级读数）|
+
+树内其余测试：`src/tests/test_routing.py` 31 例全绿，其中
+`test_two_commodities_can_share_same_straight_belt_phys` 的端到端路线在 (4,2)
+分道，已按新语义拆成「主张 INFEASIBLE」+「中和对照恢复原断言」两条——共乘直带
+本身一格未被误伤（forcing helper 的成员断言即是子图样变量仍存在的白盒证据）。
+
+**哨兵两层自证**：
+
+- **常驻**：`test_demix_no_filter_slot_counterexample_is_infeasible` 把外审 4 格
+  反例钉成负测；`test_demix_ban_is_load_bearing` 用 monkeypatch 中和禁令，断言
+  它翻 FEASIBLE、抽取件正是外审报告的 (6,5) splitter（a:W→E / b:W→N）、且全局
+  连通复验器仍 `failure_count=0`——即**逐字复现外审观察**，证明除禁令外无人拦得住。
+- **源码级双移除**（2026-08-07 实测，两个独立变体）：①删 `build()` 里的调用点、
+  ②保留调用点但掏空方法体。两次结果**逐条相同**：5 条 de-mix 哨兵齐红
+  （`test_demix_no_filter_slot_counterexample_is_infeasible` /
+  `test_u02_merge_then_split_now_infeasible` / `test_source_front_coride_now_infeasible` /
+  `test_demix_ban_subsumes_purity_guard_on_split_geometries` /
+  `test_two_commodities_sharing_a_belt_then_demixing_is_infeasible`），而
+  `test_same_direction_multi_owner_front_stays_infeasible` **两次都保持绿**
+  ——这条阴性对照正是 §9.3 分工的独立证据：那处几何靠的是守卫，禁令在场与否
+  它都拦得住。还原后 sha256 逐字一致（`c1b8486…`）、6/6 复绿。日志
+  `.artifacts/mixflow_demix_ban_20260807/mutation_verify.log`。
+
+### 9.8 六条解除条件对照
+
+| # | 外审条件 | 本批状态 |
+|---|---|---|
+| 1 | certified 路径默认关闭本手术，研究路径与认证状态严格分离 | **属接入批**。本分支不接 certified 开关；门控开关形态仍是 §7c 开放问题 1，且属 `EXACT_*` 闭合白名单，必须与 allowlist/lock/tests 同批动。**但开关的两条动机都被 ③ 抽掉了**：不可行证明速度已修回（§9.6），可行域放大的 soundness 风险已由禁令消除（§9.3），而混流红利在 U-01 前本来就是零（§9.5）——接入批应先决定「还要不要开关」，别默认照抄 v1 的设计。|
+| 2 | 修复 de-mix 语义（三选一）| **本批已闭**：取 ③ 禁 de-mix，§9.2 约束 + §9.3 论证 + §9.7 双层哨兵。|
+| 3 | 4 格无 filter 槽位反例进常驻负测；不再只复验静态标签图 | **本批已闭**（负测 + 中和对照）。「真实物品传播复验」在 ③ 下由 §9.3 的封闭性论证替代：模型不再产生需要物品级复验的解。|
+| 4 | 修正 M4 单调性论证，明确生产输入前提与多 owner 收紧 | **本批已闭**：§9.4；并在 §5 顶部标注 v1 论证作废。|
+| 5 | 性能脚本、原始日志、固定 corpus、量化阈值、timeout/fallback fail-closed 端到端测试 | **部分闭**：脚本进仓 + 三点数字可复跑（§9.6）。量化阈值、分层语料、多 seed/worker 重复、拒绝循环与模型增长上限、TIMEOUT 永不被解释为 INFEASIBLE 的端到端测试——**属接入批**（与 PIC 性能测同批）。|
+| 6 | witness adapter 子图样兼容后，抽取结果须含/引用实现 de-mix 所需的物理构件证明 | **前提已消失**：③ 下不存在 de-mix 解，无物理构件需要证明。adapter 的子图样兼容欠账本身仍在（§7b 的 `route_adapter.py:300-301` 逐条相等断言），**属接入批**，方向仍是拒真不纳伪。|

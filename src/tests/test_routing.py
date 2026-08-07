@@ -202,12 +202,7 @@ def test_bridge_overlap_rejects_same_axis_l0_l1_crossing(project_root):
     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
 
 
-def test_two_commodities_can_share_same_straight_belt_phys(project_root):
-    import sys
-
-    sys.path.insert(0, str(project_root))
-    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
-
+def _shared_belt_corridor():
     # Mixflow surgery fixture legalization (2026-08-06): the original fixture
     # co-located BOTH commodities' sink ports on one front cell with the same
     # terminal direction — placement-impossible geometry (the two bodies would
@@ -228,13 +223,8 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
         {"instance_id": "copper_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "copper"},
         {"instance_id": "copper_sink", "x": 4, "y": 3, "dir": "S", "type": "in", "commodity": "copper"},
     ]
-    routing = RoutingSubproblem(
-        RoutingGrid(occupied, port_specs),
-        ["iron", "copper"],
-        domain_analysis=_tiny_domain_analysis({"iron": allowed, "copper": allowed}),
-    )
-    routing.build()
-
+    # iron runs the lane west to east; copper merges in at (2,2), co-rides the
+    # shared straight belt at (3,2), then peels north at (4,2).
     selected = {
         (1, 2, 0, ("W",), ("E",), "iron"),
         (2, 2, 0, ("W",), ("E",), "iron"),
@@ -247,7 +237,60 @@ def test_two_commodities_can_share_same_straight_belt_phys(project_root):
         (4, 2, 0, ("W",), ("N",), "copper"),
         (4, 3, 0, ("S",), ("N",), "copper"),
     }
+    return allowed, occupied, port_specs, selected
+
+
+def _build_shared_belt_routing(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+
+    allowed, occupied, port_specs, selected = _shared_belt_corridor()
+    routing = RoutingSubproblem(
+        RoutingGrid(occupied, port_specs),
+        ["iron", "copper"],
+        domain_analysis=_tiny_domain_analysis({"iron": allowed, "copper": allowed}),
+    )
+    routing.build()
+    # The membership assert inside the helper is itself the expressibility
+    # check: every per-commodity sub-pattern above — including both commodities
+    # co-riding the same straight belt at (3,2) — must exist as a variable.
     _force_exact_route_states(routing, selected)
+    return routing
+
+
+def test_two_commodities_sharing_a_belt_then_demixing_is_infeasible(project_root):
+    """De-mix ban (external review B-01 repair, owner ruling 2026-08-07).
+
+    The shared straight belt at (3,2) is still expressible — the forcing helper
+    asserts all ten sub-pattern variables exist — but this route separates the
+    two commodities at (4,2): a content-blind splitter W->{E,N} with iron
+    declared east and copper declared north.  Real splitters do not read item
+    types, so that declaration is unrealizable and the ban rejects it.
+    """
+    routing = _build_shared_belt_routing(project_root)
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+
+
+def test_two_commodities_can_share_same_straight_belt_phys(project_root, monkeypatch):
+    """Mutation control: the de-mix ban is the only thing rejecting the route.
+
+    With the ban neutralized the original assertion holds unchanged — one belt
+    phys at (3,2) carrying both commodities' sub-patterns — which is what pins
+    down that the ban targets the split at (4,2) and not co-riding itself.
+    """
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingSubproblem
+
+    monkeypatch.setattr(
+        RoutingSubproblem,
+        "_add_demix_ban_constraints",
+        lambda self: None,
+    )
+    routing = _build_shared_belt_routing(project_root)
 
     assert routing.solve(time_limit=5.0) == "FEASIBLE"
     shared_cells = {

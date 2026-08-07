@@ -809,6 +809,12 @@ class RoutingSubproblem:
         self._use_by_cell_dir_out_commodity: Dict[Tuple[int, int, str, str], List[Any]] = defaultdict(list)
         self._use_by_cell_dir_in_commodity: Dict[Tuple[int, int, str, str], List[Any]] = defaultdict(list)
         self._l1_phys_vars: Dict[Tuple[int, int], List[Any]] = defaultdict(list)
+        # Aggregated per-(cell, layer, direction) side indicators, shared by the
+        # coverage/exact-side rows and the de-mix ban.
+        self._phys_side_in_vars: Dict[Tuple[int, int, int, str], Any] = {}
+        self._phys_side_out_vars: Dict[Tuple[int, int, int, str], Any] = {}
+        self._use_side_in_vars: Dict[Tuple[int, int, int, str], Any] = {}
+        self._use_side_out_vars: Dict[Tuple[int, int, int, str], Any] = {}
         self._phys_meta: Dict[PhysicalStateKey, Dict[str, Any]] = {}
         self._state_meta: Dict[RouteStateKey, Dict[str, Any]] = {}
         self._solver: Optional[cp_model.CpSolver] = None
@@ -906,6 +912,7 @@ class RoutingSubproblem:
 
         self._create_routing_variables()
         self._add_phys_coverage_constraints()
+        self._add_demix_ban_constraints()
         self._add_obstacle_exclusion()
         self._add_capacity_constraints()
         self._add_bridge_constraints()
@@ -1215,40 +1222,11 @@ class RoutingSubproblem:
         exact_side_rows = 0
         uniqueness_rows = 0
 
-        # Aggregated side indicators (build-cost containment, measured on the
-        # 256-body/19-commodity proxy: expanding the phys/use sums per row put
-        # tens of millions of terms into the proto and made build 2.4x slower).
-        # One boolean per (cell, layer, direction, io-side):
-        #   phys_side == sum(phys states carrying that side)   [sum in {0,1}
-        #     by the per-cell/layer AtMostOne, so the equality is well-typed]
-        #   use_side  == OR(use states claiming that side)
-        # Coverage and exact-side rows then become two-literal implications.
-        phys_side_in: Dict[Tuple[int, int, int, str], Any] = {}
-        phys_side_out: Dict[Tuple[int, int, int, str], Any] = {}
-        use_side_in: Dict[Tuple[int, int, int, str], Any] = {}
-        use_side_out: Dict[Tuple[int, int, int, str], Any] = {}
-
-        def _side_var(cache, source_index, side_key, kind, aggregate):
-            var = cache.get(side_key)
-            if var is not None:
-                return var
-            x, y, layer, direction = side_key
-            var = self.model.NewBoolVar(f"{kind}_{x}_{y}_{layer}_{direction}")
-            members = source_index.get(side_key, [])
-            if not members:
-                self.model.Add(var == 0)
-            elif aggregate == "sum":
-                self.model.Add(var == sum(members))
-            else:
-                self.model.AddMaxEquality(var, members)
-            cache[side_key] = var
-            return var
-
         for key, use_var in self.use_vars.items():
             x, y, layer, flow_in, flow_out, _commodity = key
             for d_in in flow_in:
-                side = _side_var(
-                    phys_side_in,
+                side = self._side_indicator(
+                    self._phys_side_in_vars,
                     self._phys_in_by_cell_layer_dir,
                     (x, y, layer, d_in),
                     "physin",
@@ -1257,8 +1235,8 @@ class RoutingSubproblem:
                 self.model.AddImplication(use_var, side)
                 coverage_rows += 1
             for d_out in flow_out:
-                side = _side_var(
-                    phys_side_out,
+                side = self._side_indicator(
+                    self._phys_side_out_vars,
                     self._phys_out_by_cell_layer_dir,
                     (x, y, layer, d_out),
                     "physout",
@@ -1270,8 +1248,8 @@ class RoutingSubproblem:
         for phys_key, phys_var in self.phys_vars.items():
             x, y, layer, flow_in, flow_out, _component_type = phys_key
             for d_in in flow_in:
-                side = _side_var(
-                    use_side_in,
+                side = self._side_indicator(
+                    self._use_side_in_vars,
                     self._use_in_by_cell_layer_dir,
                     (x, y, layer, d_in),
                     "usein",
@@ -1280,8 +1258,8 @@ class RoutingSubproblem:
                 self.model.AddImplication(phys_var, side)
                 exact_side_rows += 1
             for d_out in flow_out:
-                side = _side_var(
-                    use_side_out,
+                side = self._side_indicator(
+                    self._use_side_out_vars,
                     self._use_out_by_cell_layer_dir,
                     (x, y, layer, d_out),
                     "useout",
@@ -1300,8 +1278,128 @@ class RoutingSubproblem:
             "exact_side_rows": int(exact_side_rows),
             "uniqueness_rows": int(uniqueness_rows),
             "side_indicator_vars": int(
-                len(phys_side_in) + len(phys_side_out) + len(use_side_in) + len(use_side_out)
+                len(self._phys_side_in_vars)
+                + len(self._phys_side_out_vars)
+                + len(self._use_side_in_vars)
+                + len(self._use_side_out_vars)
             ),
+        }
+
+    def _side_indicator(
+        self,
+        cache: Dict[Tuple[int, int, int, str], Any],
+        source_index: Mapping[Tuple[int, int, int, str], List[Any]],
+        side_key: Tuple[int, int, int, str],
+        kind: str,
+        aggregate: str,
+    ):
+        """Memoized per-(cell, layer, direction) side indicator boolean.
+
+        Build-cost containment (measured on the 256-body/19-commodity proxy:
+        expanding the phys/use sums per row put tens of millions of terms into
+        the proto and made build 2.4x slower).  One boolean per side:
+
+            phys_side == sum(phys states carrying that side)   [the sum is in
+              {0,1} by the per-cell/layer AtMostOne, so the equality is
+              well-typed]
+            use_side  == OR(use states claiming that side)
+
+        Coverage, exact-side and de-mix rows then all become two-literal
+        implications.
+        """
+
+        var = cache.get(side_key)
+        if var is not None:
+            return var
+        x, y, layer, direction = side_key
+        var = self.model.NewBoolVar(f"{kind}_{x}_{y}_{layer}_{direction}")
+        members = source_index.get(side_key, [])
+        if not members:
+            self.model.Add(var == 0)
+        elif aggregate == "sum":
+            self.model.Add(var == sum(members))
+        else:
+            self.model.AddMaxEquality(var, members)
+        cache[side_key] = var
+        return var
+
+    def _add_demix_ban_constraints(self):
+        """Forbid per-commodity de-mix on a shared physical component.
+
+        External review 2026-08-06 (finding B-01) blocked the unrestricted
+        surgery: physical components are content-blind round-robin hardware,
+        so a solution declaring "commodity a leaves east, commodity b leaves
+        north" on one splitter is not realizable — the splitter does not read
+        item types, and the reviewer exhibited a 4-free-cell instance where
+        both post-split branches are corner terminals, leaving nowhere to
+        place the straight-only in-game item filter that would be needed to
+        make the declared sorting real.  Owner ruling 2026-08-07 selected the
+        conservative repair: no de-mix at all until filters are modelled.
+
+        The row says: a selected commodity sub-pattern forbids its cell's
+        physical component from carrying any outgoing side the sub-pattern
+        does not itself claim.
+
+            use[x, y, layer, *, flow_out, c] => not phys_side_out[x, y, layer, d]
+            for every direction d not in flow_out
+
+        Together with the exact-side rows (phys sides == union of use sides)
+        this pins, for every cell and layer, EVERY present commodity's
+        outgoing side set to exactly the component's outgoing side set.  The
+        static per-commodity graph therefore carries every physical outgoing
+        edge at every cell where the commodity is present, so a commodity's
+        presence set is closed under physical successors: content-blind
+        round-robin propagation can never leave the declared face.  That is
+        the delivery-soundness property the whole-pattern model got for free
+        and the sub-pattern model has to state.
+
+        What is deliberately NOT constrained:
+
+        - incoming sides stay per-commodity, so merge points ({W,S}->E with a
+          arriving from W and b from S) remain expressible — the component
+          does not decide where items come from, and only one outgoing side
+          exists to agree on;
+        - straight co-riding (one outgoing side, all commodities claim it) is
+          untouched;
+        - single-commodity splitting is untouched: with one commodity present
+          the exact-side rows already make phys sides equal that commodity's
+          sides, so every row here is vacuous.
+
+        Row scope: only directions carried by some multi-output (splitter)
+        state at the cell/layer can produce a violation.  If every physical
+        state carrying side d is single-output, then phys_side_out[d] forces
+        the selected component's outgoing set to {d}, and coverage already
+        forces the selected use's outgoing set into it — the row would be
+        implied.  The elevated layer holds only straight 1-in/1-out bridges,
+        so it contributes no rows at all.
+        """
+
+        multi_out_dirs: Dict[Tuple[int, int, int], Set[str]] = defaultdict(set)
+        for phys_key in self.phys_vars:
+            x, y, layer, _flow_in, flow_out, _component_type = phys_key
+            if len(flow_out) >= 2:
+                multi_out_dirs[(x, y, layer)].update(flow_out)
+
+        demix_rows = 0
+        for key, use_var in self.use_vars.items():
+            x, y, layer, _flow_in, flow_out, _commodity = key
+            banned_dirs = multi_out_dirs.get((x, y, layer))
+            if not banned_dirs:
+                continue
+            for direction in sorted(banned_dirs - set(flow_out)):
+                side = self._side_indicator(
+                    self._phys_side_out_vars,
+                    self._phys_out_by_cell_layer_dir,
+                    (x, y, layer, direction),
+                    "physout",
+                    "sum",
+                )
+                self.model.AddImplication(use_var, side.Not())
+                demix_rows += 1
+
+        self.build_stats["demix_ban"] = {
+            "rows": int(demix_rows),
+            "multi_out_cell_layers": int(len(multi_out_dirs)),
         }
 
     def _record_state_space_stats(

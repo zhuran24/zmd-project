@@ -1,6 +1,20 @@
 # 外审材料：routing 混流表达扩展（mixflow-surgery）
 
-> 状态：底稿 v1（随 DESIGN.md 同步生长；实现与差分测试数字落地后补全 §4）。
+> **⚠ 状态：v1 底稿，已被 2026-08-06 外审判 BLOCK，整篇作已审史料保留。**
+> 判决全文 `.artifacts/mixflow_review_pack_20260806/verdict_20260807/
+> EXTERNAL_REVIEW_RESULT_20260806.md`。两处必须带着读的订正：
+>
+> - **M2 自攻 2a 的三层答辩不成立**（Blocker B-01）。外审构造了只有 4 个自由格的
+>   反例，两条分流支路都只剩转弯终端格，**没有直行格可放准入口**——本文
+>   §M2 第 3 层「declared split 支路加准入口即可实现」被证伪。owner 2026-08-07
+>   拍板改用 ③保守禁止 de-mix，落地记录见 `DESIGN.md` §9。
+> - **M4 的「纯放宽」是假命题**（F-02），必须带生产输入前提读，见下方 M4 节内的
+>   订正块与 `DESIGN.md` §9.4。
+>
+> 本文其余部分（M1 逐侧覆盖、M3 污染铁律、§4.1 潜伏接受面、§4.2 不可达性论证）
+> 经外审复核未发现洞，继续有效。
+>
+> 原状态：底稿 v1（随 DESIGN.md 同步生长；实现与差分测试数字落地后补全 §4）。
 > 本方向是 soundness 敏感面（放宽 certified gate 的可行域），接入 main 前必须
 > 通过外部对抗审查。审查对象 = 本分支对 `src/models/routing_subproblem.py` 的
 > 改动 + 本文的论证链。
@@ -102,6 +116,18 @@ DESIGN.md §4 自检表。哨兵测试（§4 差分组 2）钉死回归。请外
 到达方式（如经 L1 下桥点、经 source front 解锁面迂回）。
 
 ### 主张 M4：INFEASIBLE 方向不受污染（cut 安全）
+
+> **⚠ 订正（外审 F-02 成立，2026-08-07）：下段的「纯放宽」在 `RoutingSubproblem`
+> 的全 API 域上字面为假。** 外审复现的最小反例：`free={(1,0),(2,0),(3,0)}`、
+> iron 与 copper 的 source 同在 (1,0) dir E、sink 同在 (3,0) dir W —— BEFORE
+> FEASIBLE、AFTER INFEASIBLE，收紧来自多 owner 地面全排。③ 落地后又多一个
+> 无条件收紧面（de-mix 禁令）。改写成带前提的命题：
+>
+> > 对满足 placement/binding 可达性不变量的**生产输入**，旧可行解均可嵌入新
+> > 模型；额外的多 owner 收紧与 de-mix 禁令只拒绝游戏非法或上游不可达的输入。
+>
+> **任何依赖「旧模型曾 INFEASIBLE」来论证 layout cut 安全的代码或文档，都必须
+> 显式携带这个生产输入前提**，不得再引用全域单调性。详见 `DESIGN.md` §9.4。
 
 routing 的 INFEASIBLE 会经 independent reverifier 变成 layout 级 nogood cut。
 手术是纯放宽：旧 INFEASIBLE ⊇ 新 INFEASIBLE，**新模型说 INFEASIBLE 的场景旧
