@@ -1457,6 +1457,14 @@ class PortBindingModel:
         保留同源调用防口径漂移）；②实际绑定的 generic-input 实体槽导出为
         routed sink port spec（旧 routing_free/virtual 跳过已删——槽自带
         坐标；``__unused__`` 槽仍不导出）；③generic 输出槽照常导出。
+
+        U-01 (2026-08-07): 每条 spec 另带 ``operation_type``——收货方跑哪个
+        operation，取自本模型已核验过的实例表（``_resolve_instance``，与
+        profile 的 facility_type 已在建域期对账、不一致 fail-closed）。routing
+        用它经冻结的 preprocess_plan 判口岸类别，决定 sink front 地面混流准入
+        （``routing_subproblem.classify_sink_receiver``）。它是**事实**不是策略，
+        且**不进证据面**：``_normalize_port_specs`` 的六字段白名单会把它剥掉，
+        所以 ``port_specs_digest`` 与已发布的 ``active_port_specs`` 逐字不变。
         """
         if self._status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             return []
@@ -1475,6 +1483,8 @@ class PortBindingModel:
             domain = self.binding_domains.get(instance_id, [])
             if binding_idx < 0 or binding_idx >= len(domain):
                 continue
+            instance = self._resolve_instance(instance_id) or {}
+            operation_type = str(instance.get("operation_type", ""))
             for side_key in ("input_ports", "output_ports"):
                 for port in domain[binding_idx][side_key]:
                     commodity = str(port["commodity"])
@@ -1490,6 +1500,7 @@ class PortBindingModel:
                             "dir": str(port["dir"]),
                             "type": "in" if side_key == "input_ports" else "out",
                             "commodity": commodity,
+                            "operation_type": operation_type,
                         }
                     )
 
@@ -1506,6 +1517,7 @@ class PortBindingModel:
                     "dir": slot["dir"],
                     "type": slot["type"],
                     "commodity": commodity,
+                    "operation_type": str(slot.get("operation_type", "")),
                 }
             )
 
@@ -1524,6 +1536,12 @@ class PortBindingModel:
                     "dir": slot["dir"],
                     "type": slot["type"],
                     "commodity": commodity,
+                    "operation_type": str(
+                        (self._resolve_instance(str(slot["instance_id"])) or {}).get(
+                            "operation_type",
+                            "",
+                        )
+                    ),
                 }
             )
 

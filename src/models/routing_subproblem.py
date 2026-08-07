@@ -58,6 +58,82 @@ ROUTING_DOMAIN_MISSING_STATUS = "MISSING_STATUS"
 GHOST_RESERVED_OWNER_ID = "__ghost_rect__"
 
 
+# Port-class admission (U-01, owner ruling 2026-08-06 "口岸三分法"; axiom kernel
+# A4 with derivations #1/#2/#3/#12).  A sink port's mixflow admission depends on
+# what receives the goods, not on the belt:
+#
+#   * manufacturing machines feed recipe slots.  A foreign item entering an
+#     input slot has no consumption path (A9: receiving ignores the recipe,
+#     processing requires it) and A1 forbids it leaving again — permanent
+#     poisoning, or a wrong-recipe run that pollutes downstream.  Ground purity
+#     at those front cells is the wall;
+#   * the wired warehouse port (protocol_core's 14 inputs) routes every landing
+#     through WarehouseSink into the per-type warehouse slot, which is
+#     pre-locked per item type and practically unbounded — any registered type
+#     lands, nothing is refused, nothing jams (#3/#12).  A foreign item that a
+#     content-blind component pushes into such a port is *stored*, not
+#     poisoned, so ground purity buys nothing there;
+#   * the protocol storage box mixes too, but only in 6 independent single-slot
+#     groups (#2): once the 6 slots are occupied the box jams regardless of how
+#     many types are involved, and the jam behaviour is not adjudicated to a
+#     modellable level.  Bounded mixing is deliberately NOT treated as unbounded
+#     mixing here — boxes keep the machine-class wall (see OPEN_REVIEW_QUESTIONS
+#     "箱口准入的语义前提").
+#
+# Only facility types listed here relax; everything else, including anything
+# unknown, keeps the pre-U-01 exclusion.
+WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES = frozenset({"protocol_core"})
+
+SINK_RECEIVER_CLASS_MACHINE = "machine"
+SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM = "warehouse_system"
+
+_SINK_RECEIVER_CLASS_BY_OPERATION: Dict[str, str] = {}
+
+
+def classify_sink_receiver(operation_type: Any) -> str:
+    """Classify a sink port's receiver from hash-bound operation profiles.
+
+    A port spec carries only the *fact* — which operation the receiving
+    instance runs, stamped by ``BindingSubproblem.extract_port_specs`` from the
+    frozen instance table.  The admission *policy* is resolved here by looking
+    that operation up in ``OPERATION_PORT_PROFILES``, which is derived from the
+    frozen ``rules/preprocess_plan.json`` (``utility_operations`` gives
+    protocol_core / box_sink / boundary_io their facility types; every recipe
+    operation gets its manufacturing template).  No instance list lives in this
+    module, and the classification cannot drift from the pinned plan.
+
+    Every failure path — missing field, unknown operation, unloadable profile
+    table — returns the machine class, i.e. keeps the exclusion.  Widening is
+    therefore impossible by omission; it takes an operation name that the
+    frozen plan itself maps to a warehouse-system facility.
+    """
+
+    operation = str(operation_type or "")
+    if not operation:
+        return SINK_RECEIVER_CLASS_MACHINE
+    cached = _SINK_RECEIVER_CLASS_BY_OPERATION.get(operation)
+    if cached is not None:
+        return cached
+
+    facility_type = ""
+    try:
+        from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+
+        profile = OPERATION_PORT_PROFILES.get(operation)
+        if profile is not None:
+            facility_type = str(profile.facility_type)
+    except Exception:
+        facility_type = ""
+
+    resolved = (
+        SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM
+        if facility_type in WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES
+        else SINK_RECEIVER_CLASS_MACHINE
+    )
+    _SINK_RECEIVER_CLASS_BY_OPERATION[operation] = resolved
+    return resolved
+
+
 # Mixflow surgery (2026-08-06): a RouteStateKey's flow_in/flow_out describe the
 # keyed commodity's OWN movement through the cell (its sub-pattern), no longer a
 # copy of the physical component's whole pattern.  The physical layer keeps the
@@ -836,6 +912,7 @@ class RoutingSubproblem:
         self._source_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
         self._sink_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
         self._sink_front_commodities: Dict[Tuple[int, int], Set[str]] = defaultdict(set)
+        self._sink_front_receiver_classes: Dict[Tuple[int, int], Set[str]] = defaultdict(set)
         self._index_port_fronts()
         self._patterns_by_layer = {
             layer: list(self._iter_state_patterns(layer))
@@ -870,6 +947,9 @@ class RoutingSubproblem:
                 send_dir = DIR_OPP[direction]
                 self._sink_port_fronts[(fx, fy, send_dir, commodity)] += 1
                 self._sink_front_commodities[(fx, fy)].add(commodity)
+                self._sink_front_receiver_classes[(fx, fy)].add(
+                    classify_sink_receiver(ps.get("operation_type"))
+                )
 
     def build(self, time_limit: float = 60.0):
         del time_limit
@@ -1041,16 +1121,17 @@ class RoutingSubproblem:
         )
 
     def _mixflow_ground_banned(self, x: int, y: int, commodity: str) -> bool:
-        """Sink-front ground purity (pollution ironclad, owner axiom 2026-08-06).
+        """Sink-front ground purity, forked by receiving port class (U-01).
 
-        Ground states at a machine-input front cell exist only for that port's
-        own commodity.  Physical components are content-blind: any co-located
-        ground state of another commodity would let the shared component feed
-        foreign items into the machine input port (A9/#1 pollution chain).  In
-        the pre-surgery whole-pattern model this exclusion was emergent (the
-        shared use key collided with the terminal domain guards); with
-        per-commodity sub-pattern keys it must be explicit, and generation-time
-        exclusion makes it structural: the variables do not exist.
+        Ground states at a *machine* input front cell exist only for that
+        port's own commodity.  Physical components are content-blind: any
+        co-located ground state of another commodity would let the shared
+        component feed foreign items into the machine input port (A9/#1
+        pollution chain).  In the pre-surgery whole-pattern model this
+        exclusion was emergent (the shared use key collided with the terminal
+        domain guards); with per-commodity sub-pattern keys it must be
+        explicit, and generation-time exclusion makes it structural: the
+        variables do not exist.
 
         Multi-owner rule: if a cell is the sink front of two *different*
         commodities, all ground states are banned outright — no single
@@ -1059,10 +1140,28 @@ class RoutingSubproblem:
         port-bound output sides (content-blind double ingestion).  A cell
         whose sink ports all belong to one commodity (including same-commodity
         facing pairs) keeps that commodity fully functional.
+
+        U-01 fork (owner 口岸三分法, 2026-08-06): the paragraphs above are the
+        *machine* rule and they are unchanged.  Where every sink port fronting
+        the cell is a warehouse-system port (see
+        ``WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES``), the pollution premise is
+        false: a foreign item pushed through such a port is written into the
+        per-type warehouse slot and stored (#3/#12), so there is nothing to
+        keep out and no reason to spend the multi-owner blanket ban either.
+        Boxes are bounded mixers (#2) and stay on the machine rule; so does any
+        port whose receiver could not be classified, which is why
+        ``classify_sink_receiver`` fails closed.
+
+        A cell mixing classes — some machine port, some warehouse port fronting
+        the same cell — keeps the machine rule.  One poisonable receiver is
+        enough to need the wall, and the wall is cell-level.
         """
 
         owners = self._sink_front_commodities.get((x, y))
         if not owners:
+            return False
+        receiver_classes = self._sink_front_receiver_classes.get((x, y))
+        if receiver_classes and receiver_classes <= {SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM}:
             return False
         if len(owners) > 1:
             return True
@@ -1187,6 +1286,24 @@ class RoutingSubproblem:
                 [int(cx), int(cy)]
                 for (cx, cy), owners in self._sink_front_commodities.items()
                 if len(owners) > 1
+            ),
+            # U-01 audit surface: which sink fronts the receiving-port class
+            # relaxed, and how many sink fronts stayed on the machine rule.
+            "warehouse_system_sink_fronts": sorted(
+                [int(cx), int(cy)]
+                for (cx, cy), classes in self._sink_front_receiver_classes.items()
+                if classes and classes <= {SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM}
+            ),
+            "machine_rule_sink_fronts": int(
+                sum(
+                    1
+                    for (cx, cy) in self._sink_front_commodities
+                    if not (
+                        self._sink_front_receiver_classes.get((cx, cy))
+                        and self._sink_front_receiver_classes[(cx, cy)]
+                        <= {SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM}
+                    )
+                )
             ),
         }
         self._record_state_space_stats(state_counter, local_pattern_pruned_states)
