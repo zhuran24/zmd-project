@@ -225,19 +225,25 @@ def _sc_same_direction_multi_owner_front(iron_sink_op=None, copper_sink_op=None)
     return free, ports, ["iron", "copper"]
 
 
-def _sc_adjacent_warehouse_ports_coride():
-    """Two commodities co-ride one lane and get off at ADJACENT core inputs.
+def _sc_adjacent_warehouse_ports_coride(final_sink_op=_CORE_OPERATION):
+    """Two commodities co-ride one lane and get off one at a time.
 
     This is the shape U-01 was commissioned to unlock: finished goods sharing a
-    belt into the wired warehouse ports.  The core body sits east of the lane,
-    its two neighbouring input ports front on (4,5) [b] and (4,6) [a]; both
+    belt into the wired warehouse ports.  Bodies sit east of the lane; b's port
+    fronts on (4,5) and a rides past it to its own port on (4,6).  Both
     upstream producers inject from the west.
 
-    Getting off at (4,5) while the other commodity rides on is geometrically a
-    de-mix — the component there must be splitter S→{N,E} — so the ban rejects
-    it no matter what the ground guard says.  Kept as a permanent negative with
-    a mutation control, because it is the evidence that U-01's guard fork alone
-    buys no delivery surface (`DESIGN.md` §10.4).
+    Getting off at (4,5) while a rides on IS a de-mix — the component there must
+    be splitter S->{N,E} — so under the plain ban this is INFEASIBLE regardless
+    of the ground guard (measured, `DESIGN.md` §10.4).  What makes it legal is
+    the drain closure: every physical path out of (4,5) ends in a warehouse
+    port, so a's items being pushed east into the core are stored, not eaten by
+    a machine.
+
+    `final_sink_op` switches what a's own port at (4,6) is.  Pointing it at a
+    machine turns this into the pollution geometry: the closure at (4,6) is
+    forced false and the falsity propagates back to (4,5), so the same de-mix
+    must be rejected.  That pair is the whole soundness claim in two instances.
     """
     free = [(4, 3), (4, 4), (4, 5), (4, 6)]
     ports = [
@@ -245,8 +251,8 @@ def _sc_adjacent_warehouse_ports_coride():
         {"x": 4, "y": 4, "dir": "E", "commodity": "b", "type": "out", "instance_id": "srcB"},
         {"x": 4, "y": 5, "dir": "W", "commodity": "b", "type": "in", "instance_id": "core1",
          "operation_type": _CORE_OPERATION},
-        {"x": 4, "y": 6, "dir": "W", "commodity": "a", "type": "in", "instance_id": "core1",
-         "operation_type": _CORE_OPERATION},
+        {"x": 4, "y": 6, "dir": "W", "commodity": "a", "type": "in", "instance_id": "sinkA",
+         "operation_type": final_sink_op},
     ]
     return free, ports, ["a", "b"]
 
@@ -378,7 +384,13 @@ def test_demix_ban_leaves_split_free_geometry_untouched():
     """
     routing = _build(*_sc_straight_corridor())
     assert _solve(routing) == "FEASIBLE"
-    assert routing.build_stats["demix_ban"] == {"rows": 0, "multi_out_cell_layers": 0}
+    assert routing.build_stats["demix_ban"] == {
+        "rows": 0,
+        "multi_out_cell_layers": 0,
+        # No warehouse port in this scenario, so no drain variables exist and
+        # every row the ban would emit is the plain two-literal form.
+        "drain_excusable_rows": 0,
+    }
 
 
 def test_elevated_layer_carries_no_multi_output_state():
@@ -728,43 +740,26 @@ def test_warehouse_relaxation_is_load_bearing_on_the_policy_set(monkeypatch):
     assert _solve(_build(*_sc_same_direction_multi_owner_front(_BOX_OPERATION, _BOX_OPERATION))) == "FEASIBLE"
 
 
-def test_adjacent_warehouse_ports_coride_stays_infeasible_under_the_ban():
-    """U-01's commissioned red-line geometry — still closed, and why.
+def test_warehouse_drain_unlocks_coride_dropoff():
+    """The delivery surface U-01 was commissioned for, now reachable.
 
-    Two commodities co-ride one lane into two adjacent core inputs.  The guard
-    is fully out of the way (the build stats below prove the fork relaxed both
-    front cells and excluded nothing), yet the instance is INFEASIBLE: getting
-    off at (4,5) while the other rides on needs splitter S→{N,E}, and the
-    de-mix ban forbids a present commodity from leaving a physical outgoing
-    side unclaimed.
-
-    So the guard fork alone buys no delivery surface; the delivery surface is
-    gated by the ban, not by the guard.  `DESIGN.md` §10.4 carries the analysis
-    and the design sketch for what a sound relaxation would take.
+    Two commodities share one lane; b gets off into a wired warehouse port at
+    (4,5) while a rides on to its own warehouse port at (4,6).  The component at
+    (4,5) is a splitter and the declaration is a de-mix, so the plain ban
+    rejects it — what makes it legal is that every physical path out of (4,5)
+    ends in a warehouse port, so a's items that the content-blind splitter
+    pushes east are *stored*, not fed to a machine.
     """
     routing = _build(*_sc_adjacent_warehouse_ports_coride())
     stats = routing.build_stats["mixflow"]
     assert stats["warehouse_system_sink_fronts"] == [[4, 5], [4, 6]]
-    assert stats["machine_rule_sink_fronts"] == 0
     assert stats["purity_excluded_cell_layers"] == 0
-    assert _solve(routing) == "INFEASIBLE"
+    assert routing.build_stats["warehouse_drain"]["cells"] > 0
+    assert routing.build_stats["demix_ban"]["drain_excusable_rows"] > 0
 
-
-def test_adjacent_warehouse_ports_coride_mutation_control(monkeypatch):
-    """Control for the negative above: the ban is the wall, and it is the only
-    one left standing there.
-
-    With the ban neutralized the same instance is FEASIBLE and the extracted
-    solution contains the co-riding merge at (4,4) plus the de-mix splitter at
-    (4,5) — i.e. the shape U-01 was meant to deliver, reachable only once the
-    ban is refined.  Without this control the negative above could rot into a
-    vacuous assertion about a geometry that never worked for other reasons.
-    """
-    _neutralize_demix_ban(monkeypatch)
-    routing = _build(*_sc_adjacent_warehouse_ports_coride())
     assert _solve(routing) == "FEASIBLE"
-
     routes = _routes_by_cell_layer(routing)
+
     merge = routes[(4, 4, 0)]
     assert merge["component_type"] == "merger"
     assert _use_flows(merge) == {"a": (("S",), ("N",)), "b": (("W",), ("N",))}
@@ -776,3 +771,96 @@ def test_adjacent_warehouse_ports_coride_mutation_control(monkeypatch):
     connected, summary = routing._validate_selected_route_connectivity(routing._solver)
     assert connected, summary
     assert summary["failure_count"] == 0
+
+
+def test_drain_closure_rejects_dropoff_whose_lane_ends_at_a_machine():
+    """The pollution twin of the test above — one port changed, verdict flips.
+
+    a's own port at (4,6) is a machine now.  Its port-ward side points at the
+    machine body, which is off-domain and is not a warehouse exit, so the
+    closure is forced false at (4,6); the falsity propagates back along the lane
+    to (4,5), where the de-mix therefore stays banned.  Physically this is
+    exactly external review finding B-01: the content-blind splitter would push
+    b's items north into a's machine.
+    """
+    routing = _build(*_sc_adjacent_warehouse_ports_coride(_MACHINE_OPERATION))
+    assert _solve(routing) == "INFEASIBLE"
+
+
+def test_warehouse_drain_propagation_is_load_bearing(monkeypatch):
+    """Mutation self-verification of the propagation rows.
+
+    Neutralizing propagation (the closure variables stay, unconstrained) must
+    flip the pollution geometry above to FEASIBLE and admit exactly the split
+    the reviewer objected to — proof that the rows, not something else, are what
+    rejects it.  Neutralizing them must NOT be needed for the legal geometry.
+    """
+    original = RoutingSubproblem._add_warehouse_drain_constraints
+
+    def _vars_only(self):
+        original(self)
+        # Drop every propagation row by rebuilding the variables in a fresh
+        # model-free state: re-issue unconstrained booleans under the same keys.
+        for cell in list(self._wh_drain_vars):
+            self._wh_drain_vars[cell] = self.model.NewBoolVar(f"whdrain_free_{cell[0]}_{cell[1]}")
+
+    monkeypatch.setattr(RoutingSubproblem, "_add_warehouse_drain_constraints", _vars_only)
+    routing = _build(*_sc_adjacent_warehouse_ports_coride(_MACHINE_OPERATION))
+    assert _solve(routing) == "FEASIBLE"
+
+    split = _routes_by_cell_layer(routing)[(4, 5, 0)]
+    assert split["component_type"] == "splitter"
+    assert _use_flows(split) == {"a": (("S",), ("N",)), "b": (("S",), ("E",))}
+
+
+def test_warehouse_drain_is_load_bearing_for_the_unlock(monkeypatch):
+    """The other direction: without the closure the unlock does not happen.
+
+    With `_add_warehouse_drain_constraints` a no-op there are no closure
+    variables, every ban row falls back to the plain two-literal form, and the
+    legal co-ride/drop-off geometry goes back to INFEASIBLE — i.e. the unlock is
+    carried by this mechanism and not by the U-01 guard fork alone.
+    """
+    monkeypatch.setattr(
+        RoutingSubproblem,
+        "_add_warehouse_drain_constraints",
+        lambda self: self.build_stats.__setitem__("warehouse_drain", {"cells": 0}),
+    )
+    routing = _build(*_sc_adjacent_warehouse_ports_coride())
+    assert routing.build_stats["demix_ban"]["drain_excusable_rows"] == 0
+    assert _solve(routing) == "INFEASIBLE"
+
+
+def test_drain_exit_requires_the_body_cell_to_be_off_domain():
+    """A port whose body cell is routable must not count as an absorbing exit.
+
+    Malformed inputs (a probe fixture with exactly this defect turned up in the
+    de-mix batch's evidence) make the same side both "the port" and "an edge
+    into a free cell".  Treating it as absorbing would let goods leave the
+    closure unchecked, so `_is_warehouse_drain_exit` demands an off-domain
+    neighbour and this scenario keeps propagating instead.
+    """
+    free = [(4, 5), (5, 5), (6, 5)]
+    ports = [
+        # a is produced east of the lane and consumed by a core port at (4,5)
+        # whose body would be (5,5) — a cell that carries routing variables,
+        # so "the port" and "an edge into (5,5)" are the same physical side.
+        {"x": 6, "y": 5, "dir": "W", "commodity": "a", "type": "out", "instance_id": "srcA"},
+        {"x": 4, "y": 5, "dir": "W", "commodity": "a", "type": "in", "instance_id": "core1",
+         "operation_type": _CORE_OPERATION},
+    ]
+    routing = _build(free, ports, ["a"])
+    assert (5, 5) in routing._wh_drain_vars, "fixture must make the body cell routable"
+    assert routing._is_warehouse_drain_exit(4, 5, "E") is False
+
+    # Sanity: the same side IS an absorbing exit once the body is off-domain.
+    faithful = _build(
+        [(4, 5), (3, 5)],
+        [
+            {"x": 3, "y": 5, "dir": "W", "commodity": "a", "type": "out", "instance_id": "srcA"},
+            {"x": 4, "y": 5, "dir": "W", "commodity": "a", "type": "in", "instance_id": "core1",
+             "operation_type": _CORE_OPERATION},
+        ],
+        ["a"],
+    )
+    assert faithful._is_warehouse_drain_exit(4, 5, "E") is True

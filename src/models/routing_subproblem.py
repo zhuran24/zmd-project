@@ -913,6 +913,12 @@ class RoutingSubproblem:
         self._sink_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
         self._sink_front_commodities: Dict[Tuple[int, int], Set[str]] = defaultdict(set)
         self._sink_front_receiver_classes: Dict[Tuple[int, int], Set[str]] = defaultdict(set)
+        # Per-(cell, send direction) receiver classes.  The cell-level map above
+        # drives the ground-purity fork; the drain closure needs side
+        # granularity, because "this outgoing side ends in a warehouse" is a
+        # property of one side, not of the cell.
+        self._sink_side_receiver_classes: Dict[Tuple[int, int, str], Set[str]] = defaultdict(set)
+        self._wh_drain_vars: Dict[Tuple[int, int], Any] = {}
         self._index_port_fronts()
         self._patterns_by_layer = {
             layer: list(self._iter_state_patterns(layer))
@@ -945,11 +951,11 @@ class RoutingSubproblem:
                 self._source_port_fronts[(fx, fy, recv_dir, commodity)] += 1
             else:
                 send_dir = DIR_OPP[direction]
+                receiver_class = classify_sink_receiver(ps.get("operation_type"))
                 self._sink_port_fronts[(fx, fy, send_dir, commodity)] += 1
                 self._sink_front_commodities[(fx, fy)].add(commodity)
-                self._sink_front_receiver_classes[(fx, fy)].add(
-                    classify_sink_receiver(ps.get("operation_type"))
-                )
+                self._sink_front_receiver_classes[(fx, fy)].add(receiver_class)
+                self._sink_side_receiver_classes[(fx, fy, send_dir)].add(receiver_class)
 
     def build(self, time_limit: float = 60.0):
         del time_limit
@@ -992,6 +998,7 @@ class RoutingSubproblem:
 
         self._create_routing_variables()
         self._add_phys_coverage_constraints()
+        self._add_warehouse_drain_constraints()
         self._add_demix_ban_constraints()
         self._add_obstacle_exclusion()
         self._add_capacity_constraints()
@@ -1440,6 +1447,130 @@ class RoutingSubproblem:
         cache[side_key] = var
         return var
 
+    def _is_warehouse_drain_exit(self, x: int, y: int, direction: str) -> bool:
+        """Is this outgoing side an exit that absorbs anything safely?
+
+        True only when the side carries at least one sink port, every sink port
+        on it is a warehouse-system receiver, AND the neighbour cell is outside
+        the routing domain.
+
+        The last clause looks redundant — a port's body cell is a facility body
+        and therefore occupied — but it is load-bearing against malformed
+        inputs.  If a caller hands over a port whose body cell is routable, the
+        same side is simultaneously "the port" and "an ordinary edge into a free
+        cell", and treating it as an absorbing exit would let goods leave the
+        drain closure unchecked.  Requiring the neighbour to be off-domain means
+        a malformed instance falls back to ordinary propagation instead of
+        silently opening a hole.  (A probe fixture with exactly this defect was
+        found in the de-mix batch's evidence; see DESIGN.md section 10.7.)
+        """
+
+        classes = self._sink_side_receiver_classes.get((x, y, direction))
+        if not classes or classes != {SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM}:
+            return False
+        dx, dy = DIR_DELTA[direction]
+        return (x + dx, y + dy) not in self._wh_drain_vars
+
+    def _add_warehouse_drain_constraints(self):
+        """Mark the cells from which goods can only ever reach warehouse ports.
+
+        U-01 second half.  The de-mix ban (section 9.2) is what makes a
+        commodity's presence set closed under physical successors, and that
+        closure is what proves content-blind round-robin can never feed a
+        machine input port.  But the ban is stated globally, so it also forbids
+        the one shape the owner's port taxonomy says is safe: finished goods
+        sharing a lane and getting off one at a time into wired warehouse ports.
+        Peeling one commodity off while the others ride on IS a de-mix — the
+        component there must be a splitter — so no relaxation of the ground
+        purity guard alone can express it (measured; DESIGN.md section 10.4).
+
+        ``wh_drain[cell]`` says: every physical outgoing path leaving this cell
+        ends in a warehouse-system port.  Inside such a region the ban may be
+        lifted, because the property the ban exists to guarantee — no item ever
+        reaches a poisonable receiver — is guaranteed by the region instead:
+
+            wh_drain[c] AND phys_side_out[c, layer, d]
+                => d is an absorbing warehouse exit at c, OR wh_drain[neighbour]
+
+        A side whose neighbour is off-domain and which is not an absorbing exit
+        forces ``wh_drain[c]`` false.  Machine input fronts are therefore
+        excluded automatically: their port-ward side points at the machine body,
+        which is occupied, so it is off-domain and not a warehouse exit.  The
+        falsity then propagates backwards, cell by cell, along every path that
+        could deliver an item to that machine.
+
+        The variable is keyed by CELL, not by (cell, layer).  A physical
+        outgoing side crosses to the neighbouring *cell*, and which of the
+        neighbour's two layers receives it is itself part of the solution
+        (``_use_by_cell_dir_in_commodity`` is indexed by cell for exactly this
+        reason).  Requiring both layers of the neighbour to be drain is the
+        conservative reading and sidesteps the cross-layer question entirely.
+
+        Cycles: a closed loop of drain cells satisfies every row above without
+        any path "ending" anywhere.  That is deliberate — the invariant this
+        encodes is "no item reaches a poisonable receiver", not "every item
+        arrives somewhere".  Circulating goods violate no certified predicate
+        (throughput and blocking are out of scope, PROJECT_LOCK section 1A block
+        B).  The rows are pure implications, so the solver may take the greatest
+        fixpoint and mark such a loop drain; see ``_add_warehouse_drain_acyclicity``
+        for the optional stronger form.
+
+        No warehouse-system sink port anywhere means no variables and no rows:
+        instances made only of machine ports keep the pre-U-01 model verbatim.
+        """
+
+        if not any(
+            classes == {SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM}
+            for classes in self._sink_side_receiver_classes.values()
+        ):
+            self.build_stats["warehouse_drain"] = {
+                "cells": 0,
+                "propagation_rows": 0,
+                "forced_false_rows": 0,
+                "absorbing_exits": 0,
+                "reason": "no_warehouse_system_sink_port",
+            }
+            return
+
+        for (x, y) in sorted({(cx, cy) for (cx, cy, _layer) in self._phys_by_cell_layer}):
+            self._wh_drain_vars[(x, y)] = self.model.NewBoolVar(f"whdrain_{x}_{y}")
+
+        propagation_rows = 0
+        forced_false_rows = 0
+        absorbing_exits = 0
+        for (x, y, layer), _phys_vars in sorted(self._phys_by_cell_layer.items()):
+            drain_var = self._wh_drain_vars.get((x, y))
+            if drain_var is None:
+                continue
+            for direction in DIRECTIONS:
+                if not self._phys_out_by_cell_layer_dir.get((x, y, layer, direction)):
+                    continue
+                if self._is_warehouse_drain_exit(x, y, direction):
+                    absorbing_exits += 1
+                    continue
+                side = self._side_indicator(
+                    self._phys_side_out_vars,
+                    self._phys_out_by_cell_layer_dir,
+                    (x, y, layer, direction),
+                    "physout",
+                    "sum",
+                )
+                dx, dy = DIR_DELTA[direction]
+                neighbour_drain = self._wh_drain_vars.get((x + dx, y + dy))
+                if neighbour_drain is None:
+                    self.model.AddBoolOr([drain_var.Not(), side.Not()])
+                    forced_false_rows += 1
+                else:
+                    self.model.AddBoolOr([drain_var.Not(), side.Not(), neighbour_drain])
+                    propagation_rows += 1
+
+        self.build_stats["warehouse_drain"] = {
+            "cells": int(len(self._wh_drain_vars)),
+            "propagation_rows": int(propagation_rows),
+            "forced_false_rows": int(forced_false_rows),
+            "absorbing_exits": int(absorbing_exits),
+        }
+
     def _add_demix_ban_constraints(self):
         """Forbid per-commodity de-mix on a shared physical component.
 
@@ -1480,7 +1611,14 @@ class RoutingSubproblem:
           untouched;
         - single-commodity splitting is untouched: with one commodity present
           the exact-side rows already make phys sides equal that commodity's
-          sides, so every row here is vacuous.
+          sides, so every row here is vacuous;
+        - de-mix inside a warehouse-drain closure (U-01, 2026-08-07): where
+          every physical path out of the cell ends in a warehouse-system port,
+          the row carries ``wh_drain[cell]`` as a third literal and can be
+          satisfied by it.  The property this ban exists to enforce is not
+          "commodities never part ways" but "content-blind hardware never feeds
+          a poisonable receiver"; inside such a closure the second is true
+          without the first.  See ``_add_warehouse_drain_constraints``.
 
         Row scope: only directions carried by some multi-output (splitter)
         state at the cell/layer can produce a violation.  If every physical
@@ -1498,11 +1636,13 @@ class RoutingSubproblem:
                 multi_out_dirs[(x, y, layer)].update(flow_out)
 
         demix_rows = 0
+        drain_excused_rows = 0
         for key, use_var in self.use_vars.items():
             x, y, layer, _flow_in, flow_out, _commodity = key
             banned_dirs = multi_out_dirs.get((x, y, layer))
             if not banned_dirs:
                 continue
+            drain_var = self._wh_drain_vars.get((x, y))
             for direction in sorted(banned_dirs - set(flow_out)):
                 side = self._side_indicator(
                     self._phys_side_out_vars,
@@ -1511,12 +1651,21 @@ class RoutingSubproblem:
                     "physout",
                     "sum",
                 )
-                self.model.AddImplication(use_var, side.Not())
+                if drain_var is None:
+                    self.model.AddImplication(use_var, side.Not())
+                else:
+                    # U-01: de-mixing is allowed exactly where every physical
+                    # path out of this cell ends in a warehouse-system port.
+                    # The closure, not the per-cell claim, is what keeps
+                    # content-blind hardware away from poisonable receivers.
+                    self.model.AddBoolOr([use_var.Not(), side.Not(), drain_var])
+                    drain_excused_rows += 1
                 demix_rows += 1
 
         self.build_stats["demix_ban"] = {
             "rows": int(demix_rows),
             "multi_out_cell_layers": int(len(multi_out_dirs)),
+            "drain_excusable_rows": int(drain_excused_rows),
         }
 
     def _record_state_space_stats(
