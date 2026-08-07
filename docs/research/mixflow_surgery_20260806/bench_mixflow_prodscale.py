@@ -18,11 +18,15 @@ Four arms, all built in one process against one fixture:
     post+3      the shipped model (option 3, conservative de-mix ban)
     post+3+u01  same, with every sink port declared a wired warehouse port so
                 the U-01 receiver-class fork relaxes all of them
+    post+3+u01+drain     the drain closure on top (de-mix excusable inside a
+                warehouse-only closure), acyclicity disabled
+    post+3+u01+drain+dag same, with the rank-based acyclicity rows
 
-The u01 arm is an upper bound on the fork's cost, not a layout: it declares all
-128 sink ports as core inputs, where the real base has exactly one core with 14.
-Its point is to show what removing the sink-front ground exclusion costs when it
-is removed everywhere at once.
+The u01 arms are an upper bound on the cost, not a layout: they declare all 128
+sink ports as core inputs, where the real base has exactly one core with 14.
+Their point is to show what removing the sink-front ground exclusion and adding
+the closure cost when applied everywhere at once.  The last two arms are split
+so the price of forbidding cyclic closures is a separate number.
 
 Usage:
     python docs/research/mixflow_surgery_20260806/bench_mixflow_prodscale.py \
@@ -133,10 +137,24 @@ def run_arm(
     commodities,
     solve_seconds: float,
     disable_demix_ban: bool,
+    disable_drain: bool = False,
+    disable_acyclicity: bool = False,
 ) -> Dict[str, Any]:
     saved = getattr(module.RoutingSubproblem, "_add_demix_ban_constraints", None)
+    saved_drain = getattr(module.RoutingSubproblem, "_add_warehouse_drain_constraints", None)
+    saved_acyclic = getattr(module.RoutingSubproblem, "_add_warehouse_drain_acyclicity", None)
     if disable_demix_ban and saved is not None:
         module.RoutingSubproblem._add_demix_ban_constraints = lambda self: None
+    if disable_drain and saved_drain is not None:
+        module.RoutingSubproblem._add_warehouse_drain_constraints = (
+            lambda self: self.build_stats.__setitem__("warehouse_drain", {"cells": 0})
+        )
+    if disable_acyclicity and saved_acyclic is not None:
+        module.RoutingSubproblem._add_warehouse_drain_acyclicity = (
+            lambda self: self.build_stats.__setitem__(
+                "warehouse_drain_acyclicity", {"ranks": 0, "rows": 0}
+            )
+        )
     try:
         grid = module.RoutingGrid(occupied, ports)
         analysis = module.analyze_exact_routing_domain(grid)
@@ -163,6 +181,10 @@ def run_arm(
                     "warehouse_system_sink_fronts", []
                 )
             ),
+            "warehouse_drain": routing.build_stats.get("warehouse_drain"),
+            "warehouse_drain_acyclicity": routing.build_stats.get(
+                "warehouse_drain_acyclicity"
+            ),
         }
         if solve_seconds > 0:
             t1 = time.perf_counter()
@@ -172,6 +194,10 @@ def run_arm(
     finally:
         if disable_demix_ban and saved is not None:
             module.RoutingSubproblem._add_demix_ban_constraints = saved
+        if disable_drain and saved_drain is not None:
+            module.RoutingSubproblem._add_warehouse_drain_constraints = saved_drain
+        if disable_acyclicity and saved_acyclic is not None:
+            module.RoutingSubproblem._add_warehouse_drain_acyclicity = saved_acyclic
 
 
 def main() -> int:
@@ -215,6 +241,27 @@ def main() -> int:
             run_arm(
                 live,
                 "post+3+u01",
+                occupied,
+                stamp_warehouse_sinks(ports),
+                commodities,
+                args.solve_seconds,
+                False,
+                disable_drain=True,
+                disable_acyclicity=True,
+            ),
+            run_arm(
+                live,
+                "post+3+u01+drain",
+                occupied,
+                stamp_warehouse_sinks(ports),
+                commodities,
+                args.solve_seconds,
+                False,
+                disable_acyclicity=True,
+            ),
+            run_arm(
+                live,
+                "post+3+u01+drain+dag",
                 occupied,
                 stamp_warehouse_sinks(ports),
                 commodities,
