@@ -127,9 +127,9 @@
 
 ---
 
-## 9. 已知登记漂移（欠账；订正不在本页职权内）
+## 9. 已知登记漂移与机制欠账（订正不在本页职权内）
 
-| # | 漂移 | 现行以谁为准 |
+| # | 漂移/欠账 | 现行以谁为准 |
 |---|---|---|
 | A1 | 三处对 P1.2 关门的记述停在上一次关门：`CLAUDE.md` 大图 §4、`docs/项目说明/06_current_status.md` 头部发布结论行、`docs/项目说明/00_master_roadmap.md` §0 | `data/review_gates/phase_1_2_spike_close.json` |
 | A3 | 文件记忆卡 `empty-rectangle-strict-semantics` 内记的 canonical 字节身份停在中间代 | `scripts/preflight_gate.py` `FROZEN_ARTIFACTS` |
@@ -137,6 +137,7 @@
 | A5 | `docs/项目说明/06_current_status.md` 的状态日期早于最近数批（严格空矩形语义落地、canonical 公理 kernel 批、面积上界转正、U-01/mixflow 批） | 比它新的进展在台账 §0a |
 | A6 | `PCR patch_routing_core._add_port_adherence` 仍用旧 `port + DIR_DELTA` 偏移（front 事故点名禁止的形态），属 LEGACY_DIAGNOSTIC 面漏网；当前 HEAD 由 closed allowlist 挡住不可达，归 PCR / pose-bool promotion 的**前置硬阻断** | 源码 `src/models/patch_routing_core.py:569` + `PROJECT_LOCK.md` |
 | A7 | `PROJECT_LOCK.md` §1A 把谓词外延与 soundness 定义的出处引成 `01_overview` 的「§1.1/§1.3」，但本仓 §1.3 标题是「当前求解与发布链」，命题文本实际在 §1.2 —— 节号指称漂移，条款实质不受影响 | `docs/项目说明/01_overview.md` 实际章节结构 |
+| A9 | 无时态手册（26/27/28）的**内容现势性**无机械体检：就地更新只有各页头部「同批更新」纪律在管；两个扫描器只查引用完整性不查内容是否过时；查漏镜头现役范围=记忆层、未覆盖 docs 手册。补法=查漏镜头 docs 适配扩到 26-28（未来剪枝批） | 各页头部纪律 + 台账 P4 行 |
 
 ---
 

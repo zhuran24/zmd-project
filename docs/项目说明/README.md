@@ -1,7 +1,7 @@
 # `docs/项目说明/` 项目书
 
-本目录有 29 个专题文档，加本 README，共 30 个 Markdown 文件。它同时包含当前说明、数学背景、
-历史复盘和未来计划，不能把每个文件都当成同等级的现状 authority。
+本目录有 29 个编号专题文档（00-28）与 3 份未编号历史稿，加本 README 共 33 个 Markdown 文件。
+它同时包含当前说明、数学背景、历史复盘和未来计划，不能把每个文件都当成同等级的现状 authority。
 
 ## 当前权威与历史入口
 
@@ -14,6 +14,10 @@
    历史快照；仅用于追溯当时的 IMPLEMENTED/OPEN/PARTIAL 与 P1.2 scope exclusion，
    不是当前 authority。
 6. 其余 phase plan / historical review / research 文档：设计或历史上下文，不能覆盖上述现状。
+
+另有**无时态速查层**（全篇现在时、就地更新、零权威）作为日常查阅入口：`26_rules_handbook.md`
+（游戏规则现行理解）、`27_status_dashboard.md`（现状坐标仪表盘）、`28_pitfalls_and_sop.md`
+（坑册+SOP）。承重用途一律回上表权威物读原文。
 
 截至 2026-08-01，P1.2 已由 owner 显式 `owner_manual_decision` 关闭
 （`closed_manual_owner_decision`，`p1_3b_entry_allowed=true`），P1.3 已开放。当前研究账本为
