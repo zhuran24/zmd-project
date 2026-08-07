@@ -1,0 +1,10 @@
+[Routing Model] build 0.0s
+[Routing Model] build 0.0s
+before_status: INFEASIBLE
+after_status: FEASIBLE
+after_connectivity: {'connected': True, 'summary': {'selected_route_states': 6, 'checked_commodities': 2, 'failure_count': 0, 'failures': []}}
+after_routes:
+{'x': 5, 'y': 5, 'layer': 0, 'type': 'merger', 'component_type': 'merger', 'commodities': ['a', 'b'], 'uses': [{'commodity': 'b', 'flow_in': ['S'], 'flow_out': ['E']}, {'commodity': 'a', 'flow_in': ['W'], 'flow_out': ['E']}], 'flow_in': ['S', 'W'], 'flow_out': ['E'], 'flow': {'flow_in': ['S', 'W'], 'flow_out': ['E']}, 'dir_out': 'E'}
+{'x': 6, 'y': 5, 'layer': 0, 'type': 'splitter', 'component_type': 'splitter', 'commodities': ['a', 'b'], 'uses': [{'commodity': 'a', 'flow_in': ['W'], 'flow_out': ['E']}, {'commodity': 'b', 'flow_in': ['W'], 'flow_out': ['N']}], 'flow_in': ['W'], 'flow_out': ['N', 'E'], 'flow': {'flow_in': ['W'], 'flow_out': ['N', 'E']}, 'dir_in': 'W'}
+{'x': 6, 'y': 6, 'layer': 0, 'type': 'belt', 'component_type': 'belt', 'commodities': ['b'], 'uses': [{'commodity': 'b', 'flow_in': ['S'], 'flow_out': ['W']}], 'flow_in': ['S'], 'flow_out': ['W'], 'flow': {'flow_in': ['S'], 'flow_out': ['W']}, 'commodity': 'b', 'dir_in': 'S', 'dir_out': 'W'}
+{'x': 7, 'y': 5, 'layer': 0, 'type': 'belt', 'component_type': 'belt', 'commodities': ['a'], 'uses': [{'commodity': 'a', 'flow_in': ['W'], 'flow_out': ['N']}], 'flow_in': ['W'], 'flow_out': ['N'], 'flow': {'flow_in': ['W'], 'flow_out': ['N']}, 'commodity': 'a', 'dir_in': 'W', 'dir_out': 'N'}
