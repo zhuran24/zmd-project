@@ -616,6 +616,13 @@ def test_every_present_commodity_claims_all_outgoing_sides():
     same union.  So a commodity's declared outgoing edges are exactly the
     component's physical outgoing edges wherever it is present — content-blind
     round-robin propagation cannot leave the declared face.
+
+    Scope (U-01, 2026-08-07): this holds OUTSIDE warehouse-drain closures, which
+    is where all three scenarios below live — none of them has a warehouse-system
+    port, so no closure variable is even created.  Inside a closure the invariant
+    is deliberately given up and replaced by a weaker one that is still enough:
+    goods cannot reach a poisonable receiver (`DESIGN.md` §11.3).  Do not read
+    this test as a global property of the shipped model.
     """
     for builder in (
         _sc_straight_corridor,
