@@ -14,7 +14,7 @@ scope:
     - docs/research/p1_3_m5_convergence_20260708
   symbols:
     - c1_power_pole_representation
-status: active
+status: superseded
 priority: P0
 validity:
   until: "下一轮改变 Batch1/M5 结论的实测(prod-scale campaign 实测、性能调优批、内存条款修订)落地之前本卡为当前态"
@@ -63,6 +63,8 @@ provenance:
     - "docs/项目说明/00_master_roadmap.md §0(1A-1F 全落地;PIC-7 归因关闭)"
 updated_at: "2026-08-05"
 ---
+> **Superseded 2026-08-07(剪枝 P4 首批定点大修:三层订正地层压实为单层现态)**:当前态见 `p1-3-batch1-m5-current-20260805`。本卡仅作历史地层保留(07-12 正文 + 08-03 现势订正 + 08-05 复验终局三层原样保存),不再参与 active recall;**本卡 summary 头条与正文首段是压实前的旧口径,与文末两段订正相反,单读任何一层都会得出错误现态**——需要现态一律读新卡。
+
 **Batch 1 / M5 / M6 当前态(2026-07-12;本卡取代三张旧诊断/判决卡的「当前开放项」口径)**:
 
 - **Batch 1(1A-1F)全部落地**:C1 pose-bool cov-channel 编码转正为 certified 默认(`c1_power_pole_representation` 默认 `True`,S4 blocker 保证 certified 路径非 C1 即拒)、cov 通道+witness cell(1B)、解级 power-pole dominance 剪杆进 sealed(1C)、第 15 条 proof obligation 入册(1E)、生产内存条款(1F)。**没有「1D 待开工」**。
