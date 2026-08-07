@@ -82,3 +82,9 @@ round-19 给 checker +769 行/新语义门后,凡"跑完整 checker"的测试全
 等这些步骤时把等待器/超时阈值按上述放宽;进程活着且 CPU 在持续消耗 = 在正常跑,别 kill。
 
 背景:外审 relay 流程本身(codex 本地审修 → GPT Pro relay、owner 仓库外手动跑、回传 union+triage)见 README 第 4/6 章;原项目 AGENTS.md 的 relay UI 约束**未随交付副本迁入**,故这条操作规程记在本卡。
+
+== Linux/CachyOS 侧变体（2026-08-07 首跑实测 + owner 两条纠正）==
+本侧无 PowerShell：用 `wl-copy`/`wl-paste`（Wayland+KDE，Klipper 历史），写后回读验证、条间隔 ≥700ms 照旧。
+1. **owner 要的是包本体不是路径**（08-07 纠正一）：文件条目用 `printf 'file://<绝对路径>\r\n' | wl-copy --type text/uri-list` 写入——贴进浏览器变附件。当前（最新）条目保证带 uri-list 语义；从历史回挑旧文件条目可能降级成 `file://` 文字，届时让 owner 用 Dolphin 复制该 zip 兜底。
+2. **每条提示词开头必须带编号标签**（08-07 纠正二，常设）：格式 `【提示词 N · 主题】`+空行，**直接写进 PROMPT 文件顶部**（历史预览才分得清条目；对评审无害）。以后组包时 PROMPT 文件出生即带标签，不再事后补。
+3. 条目排布按「包、词」成对、使用序：倒序写入（词N、包N、…、词首用、包首用），历史顶→底 = 包₁、词₁、包₂、词₂…，且当前剪贴板恰是第一个要用的包。
