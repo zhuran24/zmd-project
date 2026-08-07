@@ -35,15 +35,33 @@ from typing import Dict, List, Sequence, Set, Tuple
 
 import pytest
 
+from src.models import routing_subproblem as routing_module
 from src.models.routing_subproblem import (
     GRID_H,
     GRID_W,
+    SINK_RECEIVER_CLASS_MACHINE,
+    SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM,
     RoutingGrid,
     RoutingSubproblem,
     analyze_exact_routing_domain,
+    classify_sink_receiver,
 )
 
 Cell = Tuple[int, int]
+
+# Operation names that exist in the frozen inputs: `_CORE_OPERATION` and
+# `_BOX_OPERATION` are `rules/preprocess_plan.json` utility operations,
+# `_MACHINE_OPERATION` is a recipe from the canonical rules.  Tests name real
+# operations so the scenarios exercise the production classification path
+# rather than the fail-closed default.
+_MACHINE_OPERATION = "crusher_blue_iron"
+_CORE_OPERATION = "protocol_core"
+_BOX_OPERATION = "box_sink"
+# A name the frozen plan does not know.  Scenarios use it so the classifier's
+# fail-closed default is pinned by a solved instance, not only by a unit
+# assertion — a mutation that resolved unknown operations to the warehouse
+# class has to turn a pollution sentinel red, not just a lookup test.
+_UNKNOWN_OPERATION = "protocol_core_evil"
 
 
 def _occupied_except(free_cells: Sequence[Cell]) -> Set[Cell]:
@@ -176,7 +194,7 @@ def _sc_multi_owner_sink_front():
     return free, ports, ["a", "b"]
 
 
-def _sc_same_direction_multi_owner_front():
+def _sc_same_direction_multi_owner_front(iron_sink_op=None, copper_sink_op=None):
     """Two commodities' sink ports on ONE front cell with the SAME terminal
     direction — `EXTERNAL_REVIEW_BRIEF.md` §4.1's latent mixed-ingestion hole,
     and the reviewer's own F-02 reproduction instance.
@@ -184,8 +202,14 @@ def _sc_same_direction_multi_owner_front():
     `_duplicate_terminal_front_keys` keys on commodity too, so two ports of
     *different* commodities sharing a front cell and direction are not caught
     as duplicate ports; they reach the model.  No splitter appears anywhere in
-    this geometry, so the de-mix ban emits zero rows — the multi-owner ground
-    ban is the only wall stopping one mixed lane from feeding both machines.
+    this geometry, so the de-mix ban emits zero rows — the ground ban is the
+    only wall stopping one mixed lane from feeding both receivers.
+
+    U-01 makes that wall depend on WHAT receives: the optional operation
+    arguments stamp the receiving instances' operation types, exactly as
+    `BindingSubproblem.extract_port_specs` does in production.  Left unset the
+    specs carry no operation at all, which is the fail-closed shape (machine
+    rule) and reproduces the pre-U-01 behaviour verbatim.
     """
     free = [(1, 0), (2, 0), (3, 0)]
     ports = [
@@ -194,7 +218,37 @@ def _sc_same_direction_multi_owner_front():
         {"x": 3, "y": 0, "dir": "W", "commodity": "iron", "type": "in", "instance_id": "ironSink"},
         {"x": 3, "y": 0, "dir": "W", "commodity": "copper", "type": "in", "instance_id": "copperSink"},
     ]
+    if iron_sink_op is not None:
+        ports[2]["operation_type"] = iron_sink_op
+    if copper_sink_op is not None:
+        ports[3]["operation_type"] = copper_sink_op
     return free, ports, ["iron", "copper"]
+
+
+def _sc_adjacent_warehouse_ports_coride():
+    """Two commodities co-ride one lane and get off at ADJACENT core inputs.
+
+    This is the shape U-01 was commissioned to unlock: finished goods sharing a
+    belt into the wired warehouse ports.  The core body sits east of the lane,
+    its two neighbouring input ports front on (4,5) [b] and (4,6) [a]; both
+    upstream producers inject from the west.
+
+    Getting off at (4,5) while the other commodity rides on is geometrically a
+    de-mix — the component there must be splitter S→{N,E} — so the ban rejects
+    it no matter what the ground guard says.  Kept as a permanent negative with
+    a mutation control, because it is the evidence that U-01's guard fork alone
+    buys no delivery surface (`DESIGN.md` §10.4).
+    """
+    free = [(4, 3), (4, 4), (4, 5), (4, 6)]
+    ports = [
+        {"x": 4, "y": 3, "dir": "E", "commodity": "a", "type": "out", "instance_id": "srcA"},
+        {"x": 4, "y": 4, "dir": "E", "commodity": "b", "type": "out", "instance_id": "srcB"},
+        {"x": 4, "y": 5, "dir": "W", "commodity": "b", "type": "in", "instance_id": "core1",
+         "operation_type": _CORE_OPERATION},
+        {"x": 4, "y": 6, "dir": "W", "commodity": "a", "type": "in", "instance_id": "core1",
+         "operation_type": _CORE_OPERATION},
+    ]
+    return free, ports, ["a", "b"]
 
 
 def _sc_perpendicular_bridge_cross():
@@ -433,13 +487,30 @@ def test_demix_ban_subsumes_purity_guard_on_split_geometries(monkeypatch):
     assert _solve(_build(*_sc_multi_owner_sink_front())) == "INFEASIBLE"
 
 
-def test_same_direction_multi_owner_front_stays_infeasible():
-    routing = _build(*_sc_same_direction_multi_owner_front())
+@pytest.mark.parametrize(
+    "sink_op",
+    [None, "", _UNKNOWN_OPERATION, _MACHINE_OPERATION, _BOX_OPERATION],
+    ids=["absent", "empty", "unknown_operation", "machine", "protocol_box"],
+)
+def test_same_direction_multi_owner_front_stays_infeasible(sink_op):
+    """Machine-rule receivers keep the wall after the U-01 fork.
+
+    Every machine-rule shape must stay closed: specs carrying no operation at
+    all, an empty one, an operation the frozen plan does not know (all three
+    are the fail-closed default), real manufacturing operations, and protocol
+    boxes (bounded mixers, deliberately not relaxed in phase 1).
+    """
+    routing = _build(*_sc_same_direction_multi_owner_front(sink_op, sink_op))
     assert _solve(routing) == "INFEASIBLE"
 
 
-def test_purity_guard_is_load_bearing_on_same_direction_multi_owner(monkeypatch):
-    """The wall the de-mix ban does NOT subsume.
+@pytest.mark.parametrize(
+    "sink_op",
+    [None, "", _UNKNOWN_OPERATION, _MACHINE_OPERATION, _BOX_OPERATION],
+    ids=["absent", "empty", "unknown_operation", "machine", "protocol_box"],
+)
+def test_purity_guard_is_load_bearing_on_same_direction_multi_owner(monkeypatch, sink_op):
+    """The wall the de-mix ban does NOT subsume, per receiver class.
 
     Same-direction multi-owner fronts contain no splitter at all, so the ban
     emits zero rows and is vacuous on them.  Neutralizing the guard alone must
@@ -448,9 +519,14 @@ def test_purity_guard_is_load_bearing_on_same_direction_multi_owner(monkeypatch)
     `EXTERNAL_REVIEW_BRIEF.md` §4.1 recorded as the pre-surgery model's latent
     acceptance.  The two walls divide the work: the ban stops de-mixing, the
     guard stops same-direction mixed ingestion.  Neither may be deleted.
+
+    Running it per receiver class is what keeps the U-01 fork honest: each
+    machine-rule branch — the three fail-closed shapes, a real machine, a box —
+    has to be carrying its geometry on its own, not inheriting closure from a
+    neighbouring branch.
     """
     _neutralize_purity_guard(monkeypatch)
-    routing = _build(*_sc_same_direction_multi_owner_front())
+    routing = _build(*_sc_same_direction_multi_owner_front(sink_op, sink_op))
     assert routing.build_stats["demix_ban"]["rows"] == 0
     assert _solve(routing) == "FEASIBLE"
 
@@ -549,3 +625,154 @@ def test_connectivity_validator_accepts_post_ban_solutions():
         connected, summary = routing._validate_selected_route_connectivity(routing._solver)
         assert connected, summary
         assert summary["failure_count"] == 0
+
+
+# ---------------------------------------------------------------------------
+# U-01 port-class admission fork (owner 口岸三分法, 2026-08-06)
+# ---------------------------------------------------------------------------
+
+def test_sink_receiver_classification_comes_from_the_frozen_plan():
+    """Classification provenance, and the fail-closed shape of every gap.
+
+    `protocol_core` and `box_sink` are `rules/preprocess_plan.json` utility
+    operations; the assertion below reads their facility types back out of the
+    profile table rather than restating them, so a plan edit that re-labelled a
+    facility would surface here instead of silently re-classifying ports.
+    """
+    from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+
+    assert OPERATION_PORT_PROFILES[_CORE_OPERATION].facility_type == "protocol_core"
+    assert OPERATION_PORT_PROFILES[_BOX_OPERATION].facility_type == "protocol_storage_box"
+    assert (
+        OPERATION_PORT_PROFILES[_CORE_OPERATION].facility_type
+        in routing_module.WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES
+    )
+    assert (
+        OPERATION_PORT_PROFILES[_BOX_OPERATION].facility_type
+        not in routing_module.WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES
+    )
+
+    assert classify_sink_receiver(_CORE_OPERATION) == SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM
+    for widening_attempt in (
+        _MACHINE_OPERATION,      # a real machine
+        _BOX_OPERATION,          # bounded mixer, phase-1 conservative
+        "boundary_io",           # 0 inputs, never a sink front anyway
+        _UNKNOWN_OPERATION,      # a name the frozen plan does not know
+        "",
+        None,
+    ):
+        assert classify_sink_receiver(widening_attempt) == SINK_RECEIVER_CLASS_MACHINE
+
+
+def test_warehouse_system_front_admits_foreign_ground_states():
+    """The fork's actual unlock: no exclusion at an all-warehouse sink front.
+
+    Same geometry as the machine-rule sentinel above, with both receivers
+    declared as core inputs.  A foreign item a content-blind belt pushes into
+    a wired warehouse port is written to that item's own warehouse slot and
+    stored (#3/#12) — there is nothing to keep out, so the cell generates
+    ground states for both commodities and one mixed belt feeds both ports.
+    """
+    routing = _build(*_sc_same_direction_multi_owner_front(_CORE_OPERATION, _CORE_OPERATION))
+    stats = routing.build_stats["mixflow"]
+    assert stats["warehouse_system_sink_fronts"] == [[3, 0]]
+    assert stats["machine_rule_sink_fronts"] == 0
+    assert stats["purity_excluded_cell_layers"] == 0
+
+    assert _solve(routing) == "FEASIBLE"
+    for route in routing.extract_routes():
+        assert route["component_type"] == "belt"
+        assert sorted(_use_flows(route)) == ["copper", "iron"]
+
+
+@pytest.mark.parametrize(
+    "iron_op,copper_op",
+    [
+        (_CORE_OPERATION, _MACHINE_OPERATION),
+        (_CORE_OPERATION, _BOX_OPERATION),
+        (_CORE_OPERATION, None),
+    ],
+    ids=["core_plus_machine", "core_plus_box", "core_plus_unclassified"],
+)
+def test_mixed_class_front_keeps_the_machine_rule(iron_op, copper_op):
+    """One poisonable receiver on the cell is enough to keep the wall.
+
+    The exclusion is cell-level — a component feeding a shared front cell
+    cannot feed one port selectively — so a cell mixing receiver classes gets
+    the strictest applicable rule.
+    """
+    routing = _build(*_sc_same_direction_multi_owner_front(iron_op, copper_op))
+    assert routing.build_stats["mixflow"]["warehouse_system_sink_fronts"] == []
+    assert _solve(routing) == "INFEASIBLE"
+
+
+def test_warehouse_relaxation_is_load_bearing_on_the_policy_set(monkeypatch):
+    """Mutation self-verification of the fork itself, from the policy side.
+
+    The box front stays closed because `protocol_storage_box` is absent from
+    `WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES`.  Adding it must flip the very same
+    instance FEASIBLE — proof that the phase-1 box decision is carried by that
+    set and not by some unrelated constraint that would keep boxes closed even
+    if the set were widened by accident.
+    """
+    scenario = _sc_same_direction_multi_owner_front(_BOX_OPERATION, _BOX_OPERATION)
+    assert _solve(_build(*scenario)) == "INFEASIBLE"
+
+    monkeypatch.setattr(
+        routing_module,
+        "WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES",
+        frozenset({"protocol_core", "protocol_storage_box"}),
+    )
+    monkeypatch.setattr(routing_module, "_SINK_RECEIVER_CLASS_BY_OPERATION", {})
+    assert classify_sink_receiver(_BOX_OPERATION) == SINK_RECEIVER_CLASS_WAREHOUSE_SYSTEM
+    assert _solve(_build(*_sc_same_direction_multi_owner_front(_BOX_OPERATION, _BOX_OPERATION))) == "FEASIBLE"
+
+
+def test_adjacent_warehouse_ports_coride_stays_infeasible_under_the_ban():
+    """U-01's commissioned red-line geometry — still closed, and why.
+
+    Two commodities co-ride one lane into two adjacent core inputs.  The guard
+    is fully out of the way (the build stats below prove the fork relaxed both
+    front cells and excluded nothing), yet the instance is INFEASIBLE: getting
+    off at (4,5) while the other rides on needs splitter S→{N,E}, and the
+    de-mix ban forbids a present commodity from leaving a physical outgoing
+    side unclaimed.
+
+    So the guard fork alone buys no delivery surface; the delivery surface is
+    gated by the ban, not by the guard.  `DESIGN.md` §10.4 carries the analysis
+    and the design sketch for what a sound relaxation would take.
+    """
+    routing = _build(*_sc_adjacent_warehouse_ports_coride())
+    stats = routing.build_stats["mixflow"]
+    assert stats["warehouse_system_sink_fronts"] == [[4, 5], [4, 6]]
+    assert stats["machine_rule_sink_fronts"] == 0
+    assert stats["purity_excluded_cell_layers"] == 0
+    assert _solve(routing) == "INFEASIBLE"
+
+
+def test_adjacent_warehouse_ports_coride_mutation_control(monkeypatch):
+    """Control for the negative above: the ban is the wall, and it is the only
+    one left standing there.
+
+    With the ban neutralized the same instance is FEASIBLE and the extracted
+    solution contains the co-riding merge at (4,4) plus the de-mix splitter at
+    (4,5) — i.e. the shape U-01 was meant to deliver, reachable only once the
+    ban is refined.  Without this control the negative above could rot into a
+    vacuous assertion about a geometry that never worked for other reasons.
+    """
+    _neutralize_demix_ban(monkeypatch)
+    routing = _build(*_sc_adjacent_warehouse_ports_coride())
+    assert _solve(routing) == "FEASIBLE"
+
+    routes = _routes_by_cell_layer(routing)
+    merge = routes[(4, 4, 0)]
+    assert merge["component_type"] == "merger"
+    assert _use_flows(merge) == {"a": (("S",), ("N",)), "b": (("W",), ("N",))}
+
+    split = routes[(4, 5, 0)]
+    assert split["component_type"] == "splitter"
+    assert _use_flows(split) == {"a": (("S",), ("N",)), "b": (("S",), ("E",))}
+
+    connected, summary = routing._validate_selected_route_connectivity(routing._solver)
+    assert connected, summary
+    assert summary["failure_count"] == 0
