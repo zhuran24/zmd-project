@@ -48,7 +48,7 @@
 
 | Path | Status | 说明 |
 |---|---|---|
-| `rules/canonical_rules.json` | CURRENT_CODE_ALIGNED | canonical rule truth；18,137 bytes / SHA256 `c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5` |
+| `rules/canonical_rules.json` | CURRENT_CODE_ALIGNED | canonical rule truth；40,371 bytes / SHA256 `b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca` |
 | `rules/preprocess_plan.json` | CURRENT_CODE_ALIGNED | additive preprocess plan，不能覆盖 recipe/target/commodity truth；1,383 bytes / SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee` |
 | `data/preprocessed/mandatory_exact_instances.json` | CURRENT_CODE_ALIGNED | mandatory instances |
 | `data/preprocessed/generic_io_requirements.json` | CURRENT_CODE_ALIGNED | validated generic I/O requirements |

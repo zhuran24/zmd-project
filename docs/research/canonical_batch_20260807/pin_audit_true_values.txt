@@ -1,0 +1,22 @@
+== pin-face true-value audit (python import, not grep) ==
+worktree: /home/zhuran24/zmd-pj/.claude/worktrees/agent-a1e5174b682fe3427
+actual canonical_rules.json: size=40371 sha256=b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca
+preflight.FROZEN_ARTIFACTS[canonical] = B675FB6A1CDAE7920F90ABF63E59AA76EA8DF37AE8A8C5D5D15B10B94218C4CA
+contract.LOCKED_EXACT_ARTIFACT_SHA256[canonical_rules] = b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca
+contract.LOCKED_EXACT_ARTIFACT_SIZE_BYTES = {'candidate_placements': 54467709}
+witness strict_contract.EXPECTED_SHA256[canonical_rules] = b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca
+ALL CANONICAL PIN FACES MATCH ACTUAL BYTES
+
+== LOCK succession chain true-value audit ==
+actual PROJECT_LOCK.md sha256 = e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343
+parity._PROJECT_LOCK_SHA256 = e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343
+d6_joint_completion_gate: lock pin = e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343
+replay_d6_certificate: lock pin = e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343
+run_d6_research: lock pin = e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343
+test_w0_d6_gate: lock=e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343 antecedent=1ade6fc7f783e033e272b07a4270522db1739b50af3c5efee58d84fedc830d26
+test_w0_d6_replay: lock pin present = True
+actual checker sha = ebb72f66824772c4b8adde3eca6c6360bf64d658f6d00183a1d5189c6a9f23ea ; in obligations JSON = True
+actual contract sha = 0fb1a6507e4b3b8f21a186189b0e129b5537b386278bf0b19a4ac8178da9119b ; in obligations JSON = True
+checker V99 map holds actual contract sha = True
+actual preflight sha = 468eb896857ff2546b97c0238d213d92d182a53c44cb19041ece3f5e2dda7846 ; in parity protected map = True
+LOCK/CONTRACT/CHECKER/PREFLIGHT CHAIN ALL MATCH ACTUAL BYTES

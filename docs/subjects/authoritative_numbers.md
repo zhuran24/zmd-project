@@ -10,7 +10,7 @@
 
 冻结工件与当前语义（2026-07-18 实测）：
 
-- `canonical_rules.json`：18,137 bytes，SHA256 `c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5`。
+- `canonical_rules.json`：40,371 bytes，SHA256 `b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca`。
 - `preprocess_plan.json`：1,383 bytes，SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`。
 - `candidate_placements.json`：54,467,709 bytes，SHA256 `f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`。`a914…` 45,774,305 bytes、`adcc…` 45,773,799 bytes、`d5e3…` 53,594,995 bytes 与 `78e2…` 53,595,501 bytes 仅属 superseded、hash-incompatible 历史链。
 - `box_sink` 为 3 个物理输入/3 个物理输出，mandatory core 为 14 个物理输入/6 个物理输出；generic-input 成品必须路由到 provider physical input。当前需求 2 已被真实 mandatory core 覆盖，所以 provider-aware、instance-aware box lower bound 为 0。
