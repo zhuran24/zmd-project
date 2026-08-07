@@ -421,6 +421,36 @@ def card_search_text(card: Card) -> str:
     )
 
 
+def cards_digest(file_digests: dict[str, str]) -> str:
+    """Fold ``{card file name: sha256 of its text}`` into one corpus fingerprint."""
+    return sha256_text(stable_json(file_digests))
+
+
+def cards_digest_from_dir(cards_dir: Path) -> str:
+    """Corpus fingerprint read straight off disk — no YAML, no card validation.
+
+    Content, not mtime: `git checkout` and `git stash` rewrite mtimes without
+    touching content, so an mtime comparison would cry stale on every branch
+    switch and get muted within a week. Raw text, not parsed cards: this runs
+    on the live hook path, where one malformed card must not be able to turn a
+    staleness check into an exception.
+    """
+    return cards_digest(
+        {path.name: sha256_text(path.read_text(encoding="utf-8")) for path in cards_dir.glob("*.md")}
+    )
+
+
+def cards_digest_from_cards(cards: list[Card]) -> str:
+    """Same fingerprint, computed from already-loaded cards (build side).
+
+    ``Card.digest`` is the sha256 of the very bytes ``cards_digest_from_dir``
+    re-reads, so the two agree by construction. Every card counts, not just the
+    active ones the index compiles: retiring a superseded card is a cards/ edit
+    and should be visible as one.
+    """
+    return cards_digest({Path(card.path).name: card.digest for card in cards})
+
+
 def build_index_data(cards: list[Card]) -> dict[str, Any]:
     errors = verify_cards(cards)
     if errors:
@@ -444,6 +474,13 @@ def build_index_data(cards: list[Card]) -> dict[str, Any]:
         "schema_version": SCHEMA_VERSION,
         "packet_version": PACKET_VERSION,
         "cards_dir": str(DEFAULT_CARDS_DIR),
+        # Additive on purpose — SCHEMA_VERSION deliberately does NOT move for
+        # this field. `load_index` rejects a version mismatch outright, so a
+        # bump would make every already-built index fail to load and take the
+        # live hook down until someone rebuilt it. An index without the key is
+        # still perfectly usable; it just cannot prove it is current, which is
+        # what `index_staleness_reason` then says out loud.
+        "cards_digest": cards_digest_from_cards(cards),
         "cards": index_cards,
     }
 
@@ -460,6 +497,59 @@ def load_index(path: Path) -> dict[str, Any]:
     if data.get("schema_version") != SCHEMA_VERSION:
         raise ZmemError(f"index schema mismatch in {path}")
     return data
+
+
+def load_index_if_readable(path: Path) -> dict[str, Any] | None:
+    """The index as it stands, or None when there is nothing usable to compare."""
+    try:
+        return load_index(path)
+    except (ZmemError, ValueError, OSError):
+        return None
+
+
+def index_staleness_reason(index: dict[str, Any], cards_dir: Path) -> str | None:
+    """None while the index still mirrors cards/; a human reason once it does not."""
+    recorded = str(index.get("cards_digest") or "")
+    if not recorded:
+        return "index carries no cards_digest, so it cannot prove it is current"
+    current = cards_digest_from_dir(cards_dir)
+    if current != recorded:
+        return f"cards/ is at {current[:12]} but the index was built from {recorded[:12]}"
+    return None
+
+
+def stale_index_warning(index: dict[str, Any] | None, cards_dir: Path) -> str:
+    """One advisory line when the compiled cache has fallen behind cards/; else "".
+
+    Two properties this must keep, both paid for in blood:
+
+    * It never rebuilds. cards/ is the truth source and recompiling it is an
+      owner action, never a side effect of somebody reading memory — no layer
+      of this system has an auto-apply path.
+    * It never raises. Both live hooks shell out to `context --format text`,
+      and a checker that throws there costs more than the staleness it reports,
+      so every failure mode degrades to silence: no warning, same exit code,
+      same packet. Under-reporting is the acceptable direction.
+
+    Why it exists at all: on 2026-08-03 a card was edited without a rebuild and
+    the hook kept injecting the superseded rule for half a month. The fix at the
+    time was a line of prose in CLAUDE.md, which no machine reads.
+    """
+    if not isinstance(index, dict):
+        return ""
+    try:
+        reason = index_staleness_reason(index, Path(cards_dir))
+    except Exception:
+        return ""
+    if reason is None:
+        return ""
+    # One wording for both exits: `verify` does no recall of its own, so it must
+    # not say "the recall above".
+    return (
+        f"!! STALE INDEX: {reason}; hooks inject recall out of this cache, "
+        "so injected cards may be out of date. "
+        "Run: python cc_memory_vnext/zmem.py build-index"
+    )
 
 
 def frame_from_args(args: argparse.Namespace) -> dict[str, Any]:
@@ -908,6 +998,9 @@ def filter_layers(packet: dict[str, Any], requested: list[str]) -> dict[str, Any
 
 def format_packet_text(packet: dict[str, Any]) -> str:
     lines = ["# zmem context packet", f"version: {packet['packet_version']}", f"frame_digest: {packet['frame_digest']}"]
+    # Warnings ride above the layers: text format is what both live hooks inject,
+    # and a line buried under 40 cards is a line nobody reads.
+    lines.extend(normalize_list(packet.get("warnings")))
     for layer in ("L0", "L1", "L2"):
         items = packet["layers"].get(layer, [])
         lines.append("")
@@ -935,9 +1028,19 @@ def cmd_verify(args: argparse.Namespace) -> int:
         print(f"VERIFY FAIL: {len(errors)} error(s)")
         for error in errors:
             print(error)
-        return 1
-    print(f"VERIFY OK: {len(cards)} card(s)")
-    return 0
+        exit_code = 1
+    else:
+        print(f"VERIFY OK: {len(cards)} card(s)")
+        exit_code = 0
+
+    # Staleness is reported, never scored: verify's verdict is about card
+    # quality, and a cache that needs recompiling says nothing about whether the
+    # cards are well-formed. It prints on both verdicts because "cards broken
+    # AND cache behind" is exactly the state you most want spelled out.
+    warning = stale_index_warning(load_index_if_readable(Path(args.index)), Path(args.cards_dir))
+    if warning:
+        print(warning)
+    return exit_code
 
 
 def cmd_build_index(args: argparse.Namespace) -> int:
@@ -983,6 +1086,10 @@ def append_activation_log(path: str, frame: dict[str, Any], packet: dict[str, An
             "prompt_len": len(prompt),
             "intents": normalize_list(frame.get("intents")),
             "domains": normalize_list(frame.get("domains")),
+            # Records whether this injection was served off a stale cache, so the
+            # question "how long has it been serving the old rule" is answerable
+            # afterwards instead of only noticeable live.
+            "stale_index": bool(packet.get("warnings")),
             "injected": [
                 {
                     "id": item.get("id"),
@@ -1013,6 +1120,12 @@ def cmd_context(args: argparse.Namespace) -> int:
     except (ZmemError, json.JSONDecodeError) as exc:
         print(f"CONTEXT FAIL: {exc}", file=sys.stderr)
         return 1
+
+    # Advisory only. The key is absent when the cache is current, so a fresh
+    # packet stays byte-identical to what JSON consumers already parse.
+    warning = stale_index_warning(index, Path(args.cards_dir))
+    if warning:
+        packet["warnings"] = [warning]
 
     if getattr(args, "log", None):
         append_activation_log(args.log, frame, packet)
@@ -1153,6 +1266,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     verify = sub.add_parser("verify", help="validate card schema and reconciliation gates")
     verify.add_argument("--cards-dir", default=str(DEFAULT_CARDS_DIR))
+    verify.add_argument("--index", default=str(DEFAULT_INDEX_PATH), help="index checked for staleness (advisory)")
     verify.set_defaults(func=cmd_verify)
 
     build = sub.add_parser("build-index", help="compile cards into a deterministic offline index")

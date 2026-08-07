@@ -201,6 +201,7 @@
 **E2 改了卡不跑 `build-index` = 改动不生效**
 机制：卡片 `cc_memory_vnext/cards/*.md` 是真相源，但**活 hook 消费的是 `.index` 编译缓存**。在 worktree 里改卡、eval 绿、合并回主树，主树 `.index` 不重建的话，改动可以半个月不生效（已退役的正则照旧在活 hook 里拦人）。
 正确形态：凡合并了改卡的批，主树验收必含 `python cc_memory_vnext/zmem.py build-index` 与 `python cc_memory_vnext/zmem.py eval`。**`build-index` 必须在主树跑**，worktree 里跑不算。
+机械守卫：`.index` 内嵌卡语料内容指纹（`cards_digest`，内容级、不受 git checkout 的 mtime 抖动影响），与 cards/ 不符时 `context`/`verify` 打 `!! STALE INDEX` 警告行并提示重建——advisory-only 不自动重建、hook 路径异常静默降级；activation log 同步记 `stale_index` 位，可事后追溯陈旧服务了多久。守卫测试在 `cc_memory_vnext/tests/test_index_staleness_guard.py`（memory lane 收集）。警告只兜底，纪律照旧。
 详情：卡 `vnext-maintenance-discipline`（vnext）。
 
 **E3 只读打开 SQLite 会留写足迹**
