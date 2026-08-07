@@ -11,11 +11,18 @@ corridor is shared by every commodity and terminal-core peeling cannot remove a
 single cell, so it is deliberately the worst shape for the surgery, not a
 typical one.
 
-Three arms, all built in one process against one fixture:
+Four arms, all built in one process against one fixture:
 
-    pre     the pre-surgery whole-pattern model (`git show <ref>:<path>`)
-    post    the surgery without the de-mix ban (ban method neutralized)
-    post+3  the shipped model (option 3, conservative de-mix ban)
+    pre         the pre-surgery whole-pattern model (`git show <ref>:<path>`)
+    post        the surgery without the de-mix ban (ban method neutralized)
+    post+3      the shipped model (option 3, conservative de-mix ban)
+    post+3+u01  same, with every sink port declared a wired warehouse port so
+                the U-01 receiver-class fork relaxes all of them
+
+The u01 arm is an upper bound on the fork's cost, not a layout: it declares all
+128 sink ports as core inputs, where the real base has exactly one core with 14.
+Its point is to show what removing the sink-front ground exclusion costs when it
+is removed everywhere at once.
 
 Usage:
     python docs/research/mixflow_surgery_20260806/bench_mixflow_prodscale.py \
@@ -100,6 +107,24 @@ def build_fixture(module, pitch: int, body: int, commodity_count: int, per_axis:
     return occupied, ports, commodities, len(origins)
 
 
+def stamp_warehouse_sinks(ports: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Copy `ports`, declaring every sink port a wired warehouse (core) input.
+
+    Production stamps `operation_type` in `BindingSubproblem.extract_port_specs`
+    from the frozen instance table; the fixture is synthetic, so the arm stamps
+    it directly.  `protocol_core` is the one operation the frozen
+    `rules/preprocess_plan.json` maps to a warehouse-system facility type.
+    """
+
+    stamped = []
+    for port in ports:
+        copy = dict(port)
+        if str(copy.get("type")) == "in":
+            copy["operation_type"] = "protocol_core"
+        stamped.append(copy)
+    return stamped
+
+
 def run_arm(
     module,
     name: str,
@@ -129,6 +154,15 @@ def run_arm(
             "phys_vars": len(routing.phys_vars),
             "constraints": len(routing.model.Proto().constraints),
             "demix_ban": routing.build_stats.get("demix_ban"),
+            "mixflow": {
+                key: routing.build_stats.get("mixflow", {}).get(key)
+                for key in ("purity_excluded_cell_layers", "machine_rule_sink_fronts")
+            },
+            "warehouse_system_sink_fronts": len(
+                routing.build_stats.get("mixflow", {}).get(
+                    "warehouse_system_sink_fronts", []
+                )
+            ),
         }
         if solve_seconds > 0:
             t1 = time.perf_counter()
@@ -178,6 +212,15 @@ def main() -> int:
             run_arm(pre, "pre", occupied, ports, commodities, args.solve_seconds, False),
             run_arm(live, "post", occupied, ports, commodities, args.solve_seconds, True),
             run_arm(live, "post+3", occupied, ports, commodities, args.solve_seconds, False),
+            run_arm(
+                live,
+                "post+3+u01",
+                occupied,
+                stamp_warehouse_sinks(ports),
+                commodities,
+                args.solve_seconds,
+                False,
+            ),
         ],
     }
     print(json.dumps(report, indent=2))
