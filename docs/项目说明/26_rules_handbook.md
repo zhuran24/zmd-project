@@ -15,7 +15,7 @@
 | 1' | `docs/项目说明/01_overview.md` §1.1（六谓词外延）、§1.2（`CERTIFIED` 证什么） | **谓词外延本身**。`PROJECT_LOCK.md` §1A 自己写明：若与 `01_overview` 的谓词外延冲突，以那两节为准、§1A 须 re-sync（§1A 引的节号是「§1.1/§1.3」，本仓 §1.3 实为发布链图——指称漂移登记见 `docs/项目说明/27_status_dashboard.md` §9） |
 | 2 | `rules/canonical_rules.json`（字节级冻结件） | admissibility、游戏语义裁决条款、`semantics.axiom_kernel` 公理系 |
 | 3 | `rules/preprocess_plan.json`（冻结件） | generic-input 合同的槽位声明（`utility_operations`） |
-| 4 | `docs/项目说明/00_master_roadmap.md` §0b | 归属判据 / 方法论操作卡（主席文件，只读） |
+| 4 | `docs/项目说明/00_master_roadmap.md` §0b | 归属判据 / 方法论操作卡。台账是**追加式账本**；§0b 持续演进，引用时不钉版本号。**改动本页所述状态的批，同样要在台账 §0a 留行** |
 | — | 本页 | 索引 |
 
 ### 0.2 三条引用纪律（违反过、都留了病例）
@@ -74,7 +74,7 @@
 
 | 口类 | 现行判据（一句） | 混流终止安全性 | canonical 键 |
 |---|---|---|---|
-| **(1) 有线仓储口** — `protocol_core` 的 14 个实体输入，本模型里**唯一**的有线仓库输入侧 | 按商品在仓库侧逐类型开槽，容量实际不可达 | **无限混吃安全** | `mixed_commodity_flow.terminal_clause` class (1) |
+| **(1) 有线仓储口** — `protocol_core` 的 14 个实体输入，本模型里**唯一**的有线仓库输入侧 | 按商品在仓库侧逐类型开槽，容量实际不可达 | **对「已在仓库注册槽位的商品」（warehouse-registered）无限混吃安全**——canonical 原文的限定词，不是无条件全商品。**当前 19 种商品全部在册**（仓库对每种商品有编译期预锁槽，公理 A4），故该前提在本项目里**真空满足**；未来若出现未注册商品，这条不自动成立 | `mixed_commodity_flow.terminal_clause` class (1)；公理 A4 |
 | **(2) 协议箱** | **有界混吃**：6 个**独立单槽组**，一槽一种商品，**同一商品可占多槽**；堵塞**当且仅当 6 槽全占，与涉及多少种商品无关**（界写在**槽数**，刻意不写在商品种类数）。断电则 10 s 冲刷不跑、占用槽永不清空 | 在所述界内安全 | `protocol_storage_box_wireless.slot_count_clause` |
 | **(3) 机器口** | **无内容选择权**，进料是配方盲的。错货落进缓存槽后没有消耗通道，**永久占死**（边守恒 + 无回退） | **不安全** | `terminal_clause` class (3)；公理 A9 / A1 / A3 |
 
@@ -93,8 +93,10 @@
 
 **分类标签是旧推理语境下缓存的结论，不携带"界在什么参数下可达"。** 引用任何类别前必须回原始参数拼一次账。样板：协议箱在本产线里的**堵塞判据物理不可达**——
 
-- 格数账（**只依赖已入册条款**）：箱 3 个实体输入口（`protocol_storage_box_wireless.statement`），纯流喂养下最多 3 种商品同时进箱 ⇒ 最多占 3 槽 < 6 槽 ⇒ 6 槽全占的堵塞判据到不了。
-- 件数账（**依赖尚未入册的单槽容量参数，见 §11 欠账**）：3 口 × 1 件/2 s（`globals.logistics.belt_capacity_per_tick` + `globals.time.tick_interval_seconds`）× 10 s 冲刷周期 ⇒ 每周期进货 ≤ 15 件，远小于缓存总量且每周期清零。
+- 格数账（**条件式，两条前提都尚未入册，见 §11 欠账**）：**在 fill-first（同种商品占满一槽后才开新槽）＋ 单槽容量参数两条前提下**，箱 3 个实体输入口（`protocol_storage_box_wireless.statement`）同时最多喂 3 种商品 ⇒ 最多占 3 槽 < 6 槽 ⇒ 6 槽全占的堵塞判据到不了。
+  **⚠ 前提缺一不可**：已入册条款给的上界是 **6 槽不是 3 槽**——`slot_count_clause` 与公理 A3 明写「**同一商品可占多槽**、界写在槽数」，所以「3 种商品 ⇒ 最多占 3 槽」**推不出来**，必须显式挂上 fill-first 前提。
+  【待核】旧文写的「纯流喂养」引自速率引理，而 `semantics.rate_lemma_scope` 的**两条前件（满产 + 最小道数分配约定）在本账里未清偿**，故本条不再以它为前提，只保留上面两条显式前提。
+- 件数账（**同样依赖尚未入册的单槽容量参数，见 §11 欠账**）：3 口 × 1 件/2 s（`globals.logistics.belt_capacity_per_tick` + `globals.time.tick_interval_seconds`）× 10 s 冲刷周期 ⇒ 每周期进货 ≤ 15 件，远小于缓存总量且每周期清零。
 
 **尺子的边界**：可达性审计**不能用来删 fail-closed 守卫**。判别一句话——**问这条限制的危险条件由谁保证不可达**：由物理 / 冻结数据保证的，限制在描述不存在的东西 ⇒ 可删；**由这条限制自己保证的，它就是那个保证，删了保证就没了** ⇒ 必留。出处：文件记忆卡 `classification-labels-hide-parameters`。
 
@@ -228,7 +230,7 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 | 退役读法 | 现行读法 | 谁点名退役 |
 |---|---|---|
 | 协议箱"每窗口至多 6 **种**商品" | **槽数口径**：6 槽全占才堵，与商品种类数无关 | `semantics.protocol_storage_box_wireless.slot_count_clause`（明写 "an example, not a bound"） |
-| "箱 = 有界吸收体 ⇒ 可能堵 ⇒ 不能当汇流区终点" | 堵塞判据在本产线**物理不可达**（§4.1 格数账） | 记忆卡 `classification-labels-hide-parameters`；canonical 措辞改判见 §11 欠账 |
+| "箱 = 有界吸收体 ⇒ 可能堵 ⇒ 不能当汇流区终点" | 堵塞判据在本产线**物理不可达**（§4.1 格数账） | **条件性退役，不是无条件**：论据依赖 §11 的两条未入册前提（fill-first + 单槽容量）；已入册条款本身只给「6 槽全占才堵」的界。记忆卡 `classification-labels-hide-parameters`；canonical 措辞改判见 §11 欠账 |
 | "错货不放行进支线 ⇒ 非门口堵塞" | **没有下一条出边就队头阻塞** | `semantics.item_admission_port_exclusion.rationale_restated` (c) 分拣终点定理 |
 | "限制口是官方分拣解法，直接解混料绝症" | **建模必要性 = 零**（速率引理 + 仓库口天然混吃 + 分拣终点定理） | `semantics.item_admission_port_exclusion.rationale_restated` |
 | "模型的 front 排他 = 模型比游戏严" | **翻案**：sink-front 排他是对机器口污染的**正确保守编码**；写宽的是混流条款，已由终端条款补齐 | `mixed_commodity_flow.terminal_clause`；`docs/research/canonical_batch_20260807/PORT_SEMANTICS_REVERDICT_A_20260806.md` |
@@ -246,7 +248,7 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 
 **canonical 措辞欠账（挂 freeze-ritual 批，本页不执行）**：
 
-- 缓存槽 **fill-first** 前提（同种商品占满一槽后才开新槽）的明文，以及**单槽容量参数**——目前只在推导史里，未入 canonical；§4.1 的**件数账依赖它**，格数账不依赖。
+- 缓存槽 **fill-first** 前提（同种商品占满一槽后才开新槽）的明文，以及**单槽容量参数**——目前只在推导史里，未入 canonical。**§4.1 的格数账与件数账都依赖它们**：已入册条款（`slot_count_clause` + 公理 A3）允许同一商品占多槽，界在 6 槽，所以没有 fill-first 就得不到「3 种商品 ⇒ 最多 3 槽」。
 - 协议箱由 `terminal_clause` class (2) 提升为 **drain 终点**的措辞改判（裁决已在手）。
 
 **模型完整性欠账**：

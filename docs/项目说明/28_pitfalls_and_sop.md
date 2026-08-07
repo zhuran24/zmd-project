@@ -366,9 +366,10 @@
 `PROJECT_LOCK.md` 不是普通文档，改它（哪怕只更新一行引用）必须走完整条链，否则一大批测试红：
 
 - **3 处测试 pin**：`src/tests/cuts/test_rule_cut_evolution_authority_parity.py` 的 `_PROJECT_LOCK_SHA256`、`src/tests/test_w0_d6_gate.py` 的 `PROJECT_LOCK_SHA256`、`src/tests/test_w0_d6_replay.py` 的 `EXPECTED_PROJECT_LOCK_SHA256`；
-- **3 个 D6 研究脚本常量**：`docs/research/w0_power_cycle_domino_d6_20260728/` 下 `run_d6_research.py` / `replay_d6_certificate.py` / `d6_joint_completion_gate.py` 各自的 `EXPECTED_PROJECT_LOCK_SHA256`（runner 对活文件做 hash 校验，不更就 SHA256_MISMATCH 拒跑）；
+- **3 个 D6 研究脚本常量**（**常量名不统一，别按一个名字去搜**）：`docs/research/w0_power_cycle_domino_d6_20260728/` 下 `run_d6_research.py` 与 `replay_d6_certificate.py` 是 `EXPECTED_PROJECT_LOCK_SHA256`，`d6_joint_completion_gate.py` 是 `PROJECT_LOCK_SHA256`（**无 `EXPECTED_` 前缀**）。三者里**只有 `run_d6_research.py` 对活的 `PROJECT_LOCK.md` 做 hash 校验**（它把常量喂给 `devtools/research_run_contract.py` 的 `read_stable_snapshot`，对不上就抛 `ResearchRunContractError("SHA256_MISMATCH")` 拒跑，见 `devtools/research_run_contract.py:433`）；另外两个只把常量嵌进 antecedent / protocol-identity 载荷，不读活文件，但值不更会让下游身份哈希对不上；
 - **+1 派生环**：D6 antecedent 内嵌 lock sha，所以 gate 测试里的 antecedent 哈希要用 gate 模块**重建重算**（加载模块跑 antecedent 构造函数，再对 canonical-json 字节取 sha），不能手填；同时 `docs/research/w0_power_cycle_domino_d6_20260728/README.md` 的继承段记新一代。
 - **改完跑**：parity + `src/tests/test_w0_d6_gate.py` + `src/tests/test_w0_d6_replay.py` 三个文件全绿再提交。
+- **实操判据：排查全不全一律按 `sha` 值 `git grep`，不是按常量名。** 常量名在各处不统一（上一条就是实例），按名字搜必漏；按上一代 sha 的字面值搜能一次找全所有钉点，包括测试、研究脚本、文档展示 pin 与 README 继承段。
 - **清单会增长，以 `git grep` 实测为准**；命中的 `docs/research/` 脚本先按 C4 判定是活契约还是史料门（史料门形态的旧代 lock pin 确实存在，别顺手改）。
 
 **同型清单（不止文件 sha）**：canonical sha、解释器路径（验证器 + test fixture 钉的 venv 路径）、外部根路径类常量——修任何环境身份之前先 `git grep` 老身份字符串找 pin 面。

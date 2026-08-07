@@ -45,7 +45,7 @@
 | F2 / F3 / F4 / F9 | **LEGACY_DIAGNOSTIC**，在 typed 单入口的 registry 边界即拒绝（不是 step_8 `NotImplementedError` fallback——那机制早已退役） |
 | F8 | retired |
 | attach 开关 | `EXACT_CUT_FRAMEWORK_ATTACH` 在 certified unsafe-map 内、default-off；certified 路径双重禁用 |
-| 剩余开放项 | **B6 owner 手动门** + F5 转正批（F5 修复不是 flip 的前置） |
+| 剩余开放项 | **B6 owner 手动门** + **`PROJECT_LOCK.md` 列举的生产层前置**（PIC-4/PIC-5 的 production-campaign 层等；**清单不止这两项，且以 `PROJECT_LOCK.md:700` 那条 bullet 为准**，本页刻意不复刻——复刻就是第二真相源。口径分歧见 §8 #9 行）+ F5 转正批（F5 修复不是 flip 的前置） |
 
 权威：`PROJECT_LOCK.md` + `CLAUDE.md` 大图 §2；卡层当前态 `cc_memory_vnext/cards/cut-framework-stage-b-current-20260712.md`。
 
@@ -58,7 +58,7 @@
 | 边 | 值 | 引用时必须带的前提 |
 |---|---|---|
 | 上界 U | `(1188, 18)`，**conditional** | 授权源只有 SMM4 最终 detached receipt 与 immutable closeout（两者 `upper_bound_update_authorized=true`）；内部 formal receipt 即使 `VERIFIED`/UNSAT 也**不是**账本授权源。它只更新 research upper ledger，**不建立** `(1188,18)` attainability、全局最优、整例不可行、任何下界、production `CERTIFIED` |
-| 下界 L | **absent** | W2b 没有通过其 HEAD/input-pinned 验收链的 content-addressed layout；band22 三个孔位互异的严格 `(42,6)` 见证在门口混流的修正语义下**真死**（三份设计全绕不开门口混流），④路登记线已关闭 |
+| 下界 L | **absent** | W2b 没有通过其 HEAD/input-pinned 验收链的 content-addressed layout；**band22 三见证（R1/R2/R3）真死**——其路网依赖「分流器筛货 / 机器挑货」假语义，在门口混流的修正语义下三份独立设计全绕不开门口混流（终裁原话，见下方权威行），④路登记线已关闭 |
 
 - 权威：`docs/项目说明/06_current_status.md`「当前结论摘要」首两条；U 的条件文本在 `docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md`，本页不复刻。band22 终态见 `.artifacts/band22_registration_20260805/coupling_verdict_20260806/REVERDICT_A_REVISED_20260806.md`。
 - **真墙 = binding↔routing 枚举循环**（不是 master 求不动）。出处：文件记忆卡 `first-certified-reduces-to-4-small-instances`。
@@ -144,9 +144,8 @@
 
 ## 10. 线程分工
 
-- **主线前沿（W0 / 求解方向线）= 左线程的活**，本线不做。
-- **本线做欠账 / 基建 / 剪枝类**（不影响左线即可；登记欠账类顺手做没问题）。
-- **跨线交付 = 把结果写成一段话交 owner，由 owner 转给左线程**，不直接抢线。
+- **分工是条件式的，前提 = 确实存在左 / 右双线并行编排**（owner 口径见卡 `branch-resume-topology-wf-inheritance`）。**在该前提下**：主线前沿（W0 / 求解方向线）归左线，欠账 / 基建 / 剪枝类归另一线（不影响左线即可；登记欠账类顺手做没问题）；**跨线交付 = 把结果写成一段话交 owner，由 owner 转给对面线**，不直接抢线。
+- **当前是否处于该编排、你是哪一线，问 owner 或看台账 §0a——本页不判定。** 不在双线编排下时，上面这条分工不适用，别拿它当「这活不归我」的理由。
 - 配套拓扑纪律：`/branch` 会把"主线程"身份连同活 workflow / shell / monitor 一起搬给分支线程，原线程被关；resume 原线程后**别动 `.claude/worktrees/` 下任何目录**，也别用 journal 续跑那个 wf（会造出撞车副本）。
 - 出处：文件记忆卡 `branch-resume-topology-wf-inheritance`（owner 口径）。
 
