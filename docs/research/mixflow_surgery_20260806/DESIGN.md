@@ -969,28 +969,55 @@ wh_drain[c] ∧ phys_side_out[c, layer, d]  ⟹  rank[邻格] < rank[c]
 
 ### 11.5 箱口：条件已论证，实现留二期
 
-owner 2026-08-07 补充裁决级游戏参数：**协议箱每 10s 无线传送一次全部缓存格内容**
-（写入本文参数节，canonical 追加挂下一批 freeze-ritual）。结合已有参数（6 槽 ×
-50 件/槽，`MFG_SLOT_PARAMS_20260806.md`）：清空能力 1,800 件/分钟 vs 3 输入口物理
-上限 90 件/分钟 = 20 倍裕量 ⇒ 件数/速率维度免检，**真约束只剩种类维度：每 10s
-窗口至多 6 种**。
+**参数（owner 2026-08-07 重申）**：协议箱在**通电**且默认开关打开时，每 **10s** 把
+6 个缓存格的全部内容无线提交进仓库。**这条不是新增参数——它已经在 canonical 里**：
+`semantics.protocol_storage_box_wireless`（main）原文「with power and its default-on
+switch, the box flushes its 6 cache slots into the warehouse every 10s」。所以没有
+「追加挂下批 freeze-ritual」这件事要做。
 
-据此箱口本可作为条件准入（箱入 drain 终点集 + 一条「该箱汇流区内商品种类 ≤6」的
-静态计数约束）。**本批不做**，两个理由：
+#### 11.5.1 「区内种类 ≤6」是错的条件——canonical 已点名退役该读法
 
-1. **工程代价不小**。直觉上可以在箱的 3 个 front 格上数商品种类（~19 个 reified
-   布尔 + 一条基数行，极便宜）——**但这不 sound**：汇流区内禁令被放开，商品的在场
-   集合不再对物理后继封闭，一个在区内上游、箱 front 格上不在场的商品照样会被内容盲
-   件轮进箱。要正确算，必须按**区内到该箱的可达性**求种类和，那是**按箱索引的新
-   可达性变量类 + 传播**（|箱| × |格| 量级布尔），是第二个新机制，不是顺手。
-2. **正当性依赖速率层前提**。「≤6 种 ⇒ 不堵」要用到「每窗最多 15 件 ≪ 单槽 50 件
-   ⇒ 每种货每窗恰占 1 槽」，这是 A7 的速率账。A7 明文要求「任何用 A7 升格认证结论
-   都需先落 canonical scope 声明（W-PENDING-01、RT-03）」，而这里的方向是**放宽**
-   ——用未落地的速率前提支撑放宽，正是纳伪风险那一侧。
+本节初稿按「6 槽 ⇒ 每 10s 窗口至多 6 **种**」写过一版条件准入。**那是错的**，订正如下。
 
-所以第一期箱口维持机器口规则（`WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES` 不含
-`protocol_storage_box`），且该保守决定由策略集变异哨兵承重（§10.5）。条件准入的
-完整设计与两条前提列在 `OPEN_REVIEW_QUESTIONS.md` Q14。
+main 的 `protocol_storage_box_wireless.slot_count_clause`（2026-08-06 owner 裁决）原文：
+6 槽是 **6 个独立单槽组**（组内排他真空、不跨组），一槽一商品，**同一商品可占多槽**，
+箱阻塞当且仅当 6 槽全占，**「REGARDLESS of how many commodity types are involved」**，
+并明确「the earlier **'six different commodities' phrasing was an example, not a
+bound**」。**两种商品照样能占满 6 槽。** 所以种类计数既不充分也不必要，它是 canonical
+点名作废的那个量。任何「≤6 种」的静态检查都是在检查一个已经不存在的条件。
+
+#### 11.5.2 箱其实有一条更强的论证，但它是 owner 裁决面的动作
+
+让机器口不安全的根本机制是**永久占用**：A9 的 intake recipe-blind + A1 的 no return
+⇒ 非配方件落进缓存槽后没有消费通道，**永远**占死那个槽。箱没有这个机制——10s flush
+无条件清空全部槽，而供电由**认证谓词 6** 保证（A8：不通电就不 flush，而谓词 6 要求
+被供电设施落在电杆覆盖里）。**所以箱结构上不可能被毒死。** 剩下的「6 槽占满」是阻塞，
+属吞吐层，`PROJECT_LOCK.md` §1A B 明列 out-of-scope；且阻塞的后果要么是上游原地等待
+（A1），要么是内容盲分流器把货拨到另一条支路——**而汇流区闭包不变量保证每一条支路都
+仍在闭包内**（§11.3），所以拨到哪都到不了可中毒的收货方。
+
+**但这条论证需要一个我无权做的动作**：canonical 的 `mixed_commodity_flow.terminal_clause`
+把箱放在 class (2)「BOUNDED mixed absorber」，与 class (1)「structurally non-rejecting」
+**并列而非等同**，安全判据写成「terminates at class (1)，**or within the stated bound at
+class (2)**」。把箱放进 drain 终点集 = 在模型里把 class (2) 提升成 class (1)。
+**这是裁决面的 promotion，属 owner。**
+
+#### 11.5.3 而且当前红利必然是零
+
+266 个 mandatory 实例里**没有一个协议箱**（manufacturing_3x3 ×132、manufacturing_5x5
+×49、boundary_storage_port ×46、manufacturing_6x4 ×38、protocol_core ×1）。箱是
+pose-optional（`binding_subproblem.py` 的 `POSE_OPTIONAL_OPERATION_BY_TEMPLATE`），
+下界 0，没有任何约束迫使实例化。**所以箱进 drain 终点集，和守卫分叉一样（§10.4），
+当前生产几何下的放宽面是空集。**
+
+#### 11.5.4 一期结论
+
+箱口维持机器口规则（`WAREHOUSE_SYSTEM_SINK_FACILITY_TYPES` 不含
+`protocol_storage_box`），该保守决定由策略集变异哨兵承重（§10.5）。二期的任务不是
+「实现种类计数」，而是**请 owner 裁决 class (2) → drain 终点的 promotion**（论证走
+§11.5.2 的不可毒死，不走计数）。若 owner 拍了，实现确实顺手：终点白名单 + 污染孪生
+箱口版 + 哨兵，**不需要新变量类**。两条前提与完整设计列在 `OPEN_REVIEW_QUESTIONS.md`
+Q14。
 
 ### 11.6 测试与两层自证
 
@@ -1156,3 +1183,114 @@ sound**——无环时 rank 严格下降必须终止于吸收出口，所以每�
   区不存在（`_add_warehouse_drain_constraints` 走 `no_warehouse_system_sink_port`
   早退），于是汇流区开出的解在这类复验下**必然**被判 INFEASIBLE。方向仍是拒真不纳伪，
   但红利与复验之间的这条缝比 §10.6 时宽得多，接入批必须处置。
+
+### 11.11 P2.0 线转来的速率侧边界（**描述性收窄，不是放松模型防御的许可**）
+
+P2.0 特化设计稿（`docs/research/p2_0_specialized_20260807/`，`86a2760`）给本线转来一条净输入。
+先说**证据等级**：该稿是研究层设计稿，其自列欠账 #1 是「未过独立 refute 席」，所以下面
+的数字按【设计稿自产、机器可复跑、未过对抗席】读。
+
+**它说了什么**（该稿 §2.1/§2.4/§7.1，机器复算，`rate_table.py` + 两个 CP-SAT 探针）：
+
+- 逐口车道分解下，574 个制造端口 slot 里 **464 条是满带宽车道**，两两共道合法（速率和
+  ≤ 1 件/tick）的对**只有 3 对**，且两侧全是终品。**涉及中间品的合法共道对 = 0。**
+- 但网络级纯流**不成立**：6 种中间品（buckwheat / sandleaf / steel_block /
+  buckwheat_seed / sandleaf_seed / sandleaf_powder）在任何最小车道分配下都**必然分流**
+  （三例鸽巢 + 三例 CP-SAT INFEASIBLE，六例全部手算复核）。被迫切细的细流段上，
+  **15 对不同中间品**的共道在速率上无法被排除。
+- 合起来：**混流只可能出现在分流细流段，主干道全部逐口纯流**——而细流段恰恰是分流器
+  下游，也正是 de-mix 与污染最危险的地方。
+
+**为什么这条**不能**用来放松本批任何防御**（这是本节存在的主要理由）：
+
+1. **certified routing 模型里没有速率**。它不建流量变量、不知道产能目标，admissible
+   的布局集合与「哪些商品对在速率上能共道」完全无关。所以上面那条收窄描述的是
+   **哪些布局在速率上现实**，不是**模型接受哪些布局**。
+2. **canonical 明文禁止这种升格**。`rate_lemma_scope.usage_rule`（main，`fab718a`）：
+   任何倚靠该引理的叙事升格「must cite this entry AND **discharge both preconditions**」，
+   而前件 (ii) 是最小车道约定，原文「a layout that deliberately spreads one commodity
+   over more lanes to dilute per-lane rates **leaves this precondition family and the
+   lemma asserts nothing about it**」。**certified 求解器搜的正是全部布局，包括故意摊开
+   车道的**，模型不强制最小车道 ⇒ 前件 (ii) 在 certified 语境下不可 discharge。
+3. P2.0 §2.2 证明了 fill-first 是最小车道分配下单条车道速率的**下确界**，所以**逐口**
+   纯流强制与车道约定无关——这是一条加固，但它加固的是逐口层面；§2.4 同时证明严格读法
+   （车道条数处处最小）的**前件族是空的**，引理在其上真空。两者合起来：**逐口层面稳，
+   网络层面无。** 收窄止步于描述。
+
+**它对本批的正确用法只有一个**：外审若问「wh_drain 放开的混流形态在真实基地里到底会不会
+出现」，答案是**会，但只在细流段**（15 对中间品窗口）。这提高了本批红利的现实相关性，
+**不降低**任何证明义务。
+
+**一处顺带的精度修正，直接打到本批红利几何上**（该稿 §2.3）：canonical
+`rate_lemma_scope` 写「the only lanes on which commodity mixing remains rate-legal are
+the final-product terminal segments」，实测两条终品的**全流**车道之和 = 11/20 + 3/5 =
+**23/20 > 1，一格装不下**。可混流的是**未完全汇聚**的子段（产口侧 3 条 11/60 + 3 条
+1/5，任取和 ≤ 1 的子集，最多 5 条 = 57/60）。**所以 §11.6 那个「两终品共乘一格进相邻
+仓储口」的红利几何，在满产速率下只对未完全汇聚的子段成立，不对汇聚后的终端段成立。**
+这不改变红利的正确性（连通性谓词与速率无关），但引用红利时别说成「终品段随便混」。
+
+**转来的第三条属别人的作业面，记在这里只为不丢**：canonical
+`item_admission_port_exclusion` 的理由 (a) 建议从「中间道上没有东西可分拣」精确到
+「中间品的**最小车道**之间没有东西可分拣」。裁决结论不受影响（另有独立的 (b)(c) 两条
+支撑，都不依赖速率算术）。**这是 canonical 面的文档级精度补丁，属 P2.0 实现批的 Q7，
+本批不改**——而且本工作树的 `rules/canonical_rules.json` 还是 `fab718a` 之前的版本
+（§11.12），本来也没资格改它。
+
+### 11.11b open_yard 装置缺陷已修（team-lead #3 拍板）
+
+§10.7 记的那个不忠实探针装置（③ 批 `open_yard_8x8`，四个端口的设施机身格落在声明为
+全自由的院子里）已按 team-lead 2026-08-07 拍板修好：原装置改名保留为
+`open_yard_8x8_UNFAITHFUL_body_inside_yard` 并附缺陷说明，`open_yard_8x8` 换成机身落在
+院子外的忠实版，原文件与原输出另存 `.orig_20260807`。两版同跑对照与完整记录在
+`.artifacts/mixflow_demix_ban_20260807/CORRECTION_open_yard_fixture_20260807.md`。
+
+**③ 批的结论没有被这个缺陷伤到**：承重对照「ban=ON 挡住混流 / ban=OFF 放行」两版同向。
+差别只有一处，而且是往好的方向——忠实版在 ban=OFF 且**不强制**时就自发出混流格（缺陷版
+要强制才出），所以忠实版是更强的探针。被这个缺陷真正误导过的只有 U-01 一度以为的「守卫
+分叉红利」，那条在发现当场撤回、从未进入交付文档。
+
+### 11.12 接入批 checklist（硬前置，逐条带出处）
+
+本批**刻意不 reseal、不接线**。下面是接入批开工前必须逐条清掉的硬前置，写在这里免得
+散在各节里被漏掉。
+
+**前置 1：本工作树的 canonical 落后于 main，接入必须当 freeze-ritual 处理。**
+本分支基线 `fb76e15` **早于** canonical 公理 kernel 批 `fab718a`；`git merge-base
+--is-ancestor fab718a HEAD` 判 **NO**，`rules/canonical_rules.json` 与 main 相差
+**+67/−10 行**。那是**被字节级 hash 钉死的冻结工件**。§11.5、§11.11 里所有 canonical
+引用都是从 `main` 读的，不是从本工作树。接入批的 rebase 因此**不是普通合并**，要走
+完整 freeze-ritual（pin sha 按 LF 字节算、重跑两个 checker、提交 pathspec 覆盖全集）。
+落到本批的实际影响：新落地的 `mixed_commodity_flow.terminal_clause` 正是本批实现的
+口岸三分法的 canonical 版，接入时要逐条对齐措辞，特别是 class (2) 的 bound 是**槽数**
+不是种类数（§11.5.1）。
+
+**前置 2：口数-性能扫描臂，触发条件是「箱口被实际实例化」而不是「箱口被放开」。**
+team-lead 2026-08-07 拍板把 14/28/56/128 的扫描臂定为箱口二期 / 接入批的硬前置
+（§11.9 只有两点，转折点未测）。**触发条件要按 §11.5.3 收紧**：箱当前零实例、下界 0，
+放开一个零实例的口**不改变吸收出口数**，性能曲线不动。真正让口数从 14 变大的是箱**被
+实例化**（那要么 `production_targets` 上调、要么核心 14 口容量被占满）。所以 checklist
+条目应写成「**箱口实例数下界 > 0 之前不需要扫描臂；一旦 > 0，扫描臂是接线前置**」。
+
+**前置 3：门控粒度要显式判。** §11.10 条件 1 已展开；本批建议「汇流区单独可关」。
+
+**前置 4：条件 6 的缝要处置。** 反建 routing 的消费者拿不到 `operation_type` 时汇流区
+整个不存在（早退 `no_warehouse_system_sink_port`），汇流区开出的解在这类复验下必然被
+判 INFEASIBLE（§11.10 条件 6）。
+
+**前置 5（本批发现的隐藏耦合，最容易被将来的人踩）**：箱口二期若要用「drain 区内只
+可能是终品」这条特化论证，**别把它建在 no-orphan 复验上**。canonical 的
+`axiom_kernel.model_stricter_faces` 把「routing reverification's extra no-orphan /
+selected-source-reaches-sink conditions」**登记为模型比裁决过的游戏语义更严的面**，而
+canonical 谓词 5（`connectivity_quantifier`）**不含** no-orphan。`model_stricter_faces`
+按定义是将来可能被放开的清单（同条目里 source-front 那个面已被 owner 标成 confirmed
+over-strict、解锁另开批）。**把一个放开的 soundness 押在一个登记在册的待放开面上，将来
+谁去对齐 no-orphan，箱口就静默失去正当性。**
+
+好消息是同一结论有一条**不依赖** no-orphan 的更强支点，接入批直接用它：
+`binding_subproblem.py:1175` 的 `generic_commodities = sorted(self.required_generic_inputs.keys())`
+把仓储系口的商品域**构造性地**钉死为 `required_generic_inputs` 的键集，加一个
+`__unused__` 哨兵（`:1178`），而 `__unused__` 槽不导出 port spec（`:1510`、`:1527`）。
+当前 `generic_io_requirements.json` 的该键集 = `{qiaoyu_capsule: 1, valley_battery: 1}`
+（元数据原话「sink slots for **final products**」）。**所以「以仓储系口为 sink 的商品只
+可能是终品」不是数据巧合、也不需要连通性论证——它是绑定域的构造事实。** 中间品连候选
+资格都没有。这条支点只依赖冻结工件与一行代码，不依赖任何「模型比游戏严」的面。
