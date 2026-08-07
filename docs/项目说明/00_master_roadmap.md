@@ -529,7 +529,7 @@ Q1p partial-assignment 完备性（缺数学对象）、S_global 收敛性定理
 | 9 | **PIC-4/PIC-5 证据口径**(文档扫描 07-17 暴露) | 待表态。roadmap 管理口径认为批C 收尾后只剩 B6;但 PROJECT_LOCK 口径仍把 PIC-4/PIC-5 列为 B6 硬前置,而仓库里尚无「prod 形态修复后 APPLIED>0 且完整走完失活/回滚」的归档证据(批C 演习全部 0 cut 生成于形态 gap 修复前) | 要么正式接受现有 harness 层证据充分,要么 B6 前补做一发 prod 注入演习归档 |
 | 10 | **front-clear lift 默认值翻转** | 待过夜长跑判读(07-17 晨)。当前维持 default-OFF;lift 语义三面实证正确、OFF 零回归,但 ON 在 30min×单 worker 下 fixed/automatic 均解不动 6×6 锚点;presolve off 已确认为 lift-ON 必要操作配方 | `rab_sep_promotion_20260716/06` 终判;翻转=owner 手动门 |
 | 11 | **研究线调参演习 go/no-go** | 待拍板。未测杠杆=portfolio×多 worker(内存外推 55-100G,本机余量存疑)/小时级长预算(首发在跑)/warm-hint 工程;赌注=lift-ON master 证出 INFEASIBLE 即锚点合法上界证书 | 决定研究线下一步火力投放 |
-| 12 | **canonical 修正批（四件套：终端条款+速率引理 scope+限制口理由重述+单口单商品 scope）** | 内容 08-06 集齐（口岸三分法终版口径；箱条款按槽数非类型数措辞，防再写宽——公理系分析 P2 条）；`mixed_commodity_flow`（:422-425）已定谳写宽、`item_admission_port_exclusion`（:454-458）理由过时结论保留 | freeze-ritual 级，待 owner；建议与公理系 kernel 提案（`.artifacts/axiom_analysis_20260806/`）一并裁定形状 |
+| 12 | **canonical 修正批（四件套+公理 kernel 合批）** | ✅ **08-07 落地收官**（owner 拍板合批；worktree freeze-ritual 完整连锁 2ea99eb+27969ca，合入 main `fab718a`，main 双 gate 绿）：kernel=semantics.axiom_kernel（A1-A11）+四件套+箱槽数口径+7 条旧条款推导注记；canonical 40,371B/b675fb6a…；`mixed_commodity_flow` 与 `item_admission_port_exclusion` 两处随批修正 | 完成；4 条文本审查问题攒 GPT Pro 包 |
 
 ## 5. 风险对照（2026-07-02 瓶颈审计 7 条硬骨头 → 本图位置）
 
@@ -552,7 +552,7 @@ promotion（F1/F6/F7 typed lowering 已落、F5 shadow-only，只待 B6 owner �
 | **01 号 §1.4 / 02 号多处** | F5 旧口径、CutScope 旧 schema（pre-B5a）、source digest 字段列表过时 | ⏳ 待深修批（math-heavy，含 02 号 §3 全族现状矩阵重写）——07-17 扫描清单存 `.artifacts/doc_sweep_20260717/` |
 | 研究文书（doc15 开篇 relay 注记、F-6/①′/命题N-UBC 消歧注） | 会话泄漏与命名消歧类 | ⏳ 低危，随各文书下次实质修订搭车 |
 | 05 号 Q14/Q1、12 号、08/13 号 | （07-05 处置未变） | 已加注/史料化标注，不动 |
-| rules/canonical_rules.json :422-425/:454-458 | 混流无例外条款已定谳写宽；限制口省略理由已判过时（结论保留） | ⏳ 冻结件不就地改；随 §4 #12 canonical 修正批走 owner+freeze-ritual |
+| rules/canonical_rules.json :422-425/:454-458 | 混流无例外条款已定谳写宽；限制口省略理由已判过时（结论保留） | ✅ 08-07 已随 §4 #12 canonical 修正批落地（fab718a，terminal_clause/rationale_restated 两条目承接） |
 
 ## 7. 阅读入口（新会话/新协作者按此序）
 
@@ -607,3 +607,4 @@ promotion（F1/F6/F7 typed lowering 已落、F5 shadow-only，只待 B6 owner �
 | 08-07 | **mixflow 外审判决 BLOCK（zmd-3 GPT Pro，已归档 verdict_20260807/）**：B-01 Blocker=de-mix 解游戏动力学纳伪+**4 格反例封死准入口兜底**（两支路全转弯终端格无直行位，术后 FEASIBLE+复验 failure_count=0，反例脚本随判决交付）；编码层清白（独立穷举 469 组合全匹配/300 随机单商品回归零收窄/sink-front 四边界全过/Q1 Q5 Q6 无洞）；F-02「纯放宽」须改带前提命题；F-03 测试把伪解护成预期须加负例；F-04 性能启用门槛量化清单。**解除条件六条**（certified 默认关+de-mix 三选一【显式 filter/realization gate/禁 de-mix】+4 格反例入常驻负测+M4 改写+性能语料+witness 构件证明）。与我方中心自攻同向但更深——「总能补准入口」被证伪。接入批形状随 owner 三选一。 | owner 定 de-mix 修复路线 |
 - 2026-08-07：**mixflow ③保守禁 de-mix 修复批完工验收**（owner 晨拍板③；worktree mixflow-surgery fb76e15，**未合并未 reseal**）。①约束 `_add_demix_ban_constraints` 零新变量两文字蕴含+两层变异自证哨兵；外审 4 格反例入常驻负测，mixflow 22+routing 31 全绿；codex 独立对抗复核 **claim holds**（3448 组 solver 探针+层攻击四向+mutation control）。②基准（同装置对照）：build 19.84→23.88s，solve 帽 120s 下不可行证明 28.3s→术后 TIMEOUT→③修回 113.9s（残余 4 倍差距）。③**混流送达面清零坐实**（走廊/4×4 强制混流 UNSAT；5×5 600s 无结论如实记）：③批=基建+堵洞，红利挂 U-01（仓储口/核心口混流准入，前置=先答「同向共 front 混灌靠什么挡」——两道墙分工发现，`_mixflow_ground_banned` 守卫在该几何是唯一防线）。④六解除条件闭 2/3/4、部分 5，1/6 属接入批；待审 6 问攒 GPT Pro（OPEN_REVIEW_QUESTIONS.md）。**接入决策待 owner**：合入+门控关死 vs worktree 封存等 U-01。证据 `.artifacts/mixflow_demix_ban_20260807/`。
 - 2026-08-07：owner 拍板两项——①③批接入取**封存等 U-01 一起接**（省一次 reseal，main 不背零收益复杂度）；②**U-01（仓储系口混流准入）即刻立项开工**（opus 单席接棒 mixflow worktree，基线 fb76e15）。
+| 08-07 | **canonical 公理 kernel+四件套修正批收官**：owner 晨拍板合批 → Fable 单席 worktree freeze-ritual（canonical 18,137B/c3666d78→40,371B/b675fb6a 纯 additive；kernel=semantics.axiom_kernel A1-A11+裁决级输入+model_stricter_faces；四件套=terminal_clause/rate_lemma_scope/rationale_restated/port_commodity_scope；箱 slot_count_clause；reseal 连锁=canonical 17 直接 pin+contract/checker/preflight/LOCK 四链含 antecedent 重算）→ 合入 main `fab718a` → **main 双 gate 绿**（首轮双红=主线程 setsid 漏 venv 的环境假红，r2 用 .venv 复跑 full=0/slow=0）。§4 #12 与缺口表 :555 行同日销账。4 条 canonical 文本审查问题攒 GPT Pro 包（A2 保真/边界仓储口三分法域/rate_lemma fail-closed 前件/model_stricter_faces 误读空间） | `docs/research/canonical_batch_20260807/`（RESEAL_MANIFEST/双 gate log/pin 真值审计/定谳存档 7 件） |
