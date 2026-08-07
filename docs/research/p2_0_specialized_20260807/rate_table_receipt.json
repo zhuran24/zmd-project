@@ -1,0 +1,1131 @@
+{
+ "artifact": "p2_0_specialized_rate_table",
+ "date": "2026-08-07",
+ "semantics_label": "P2.0 第七谓词特化语义（钉死 production_targets + 最小车道分配前件）；与在案六谓词 U=(1188,18) conditional 并存不互斥",
+ "constants": {
+  "tick_interval_seconds": "2",
+  "belt_capacity_per_tick": "1",
+  "port_max_throughput_per_tick": "1",
+  "belt_capacity_items_per_min": "30"
+ },
+ "table_A_per_commodity": {
+  "blue_iron_block": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "34",
+   "consumption_per_tick": "34",
+   "routed_flow_per_tick": "34",
+   "routed_flow_per_min": "1020",
+   "min_lanes_global": 34
+  },
+  "blue_iron_ore": {
+   "role": "external_boundary",
+   "cycle_group": null,
+   "production_per_tick": "0",
+   "consumption_per_tick": "34",
+   "routed_flow_per_tick": "34",
+   "routed_flow_per_min": "1020",
+   "min_lanes_global": 34
+  },
+  "blue_iron_powder": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "34",
+   "consumption_per_tick": "34",
+   "routed_flow_per_tick": "34",
+   "routed_flow_per_min": "1020",
+   "min_lanes_global": 34
+  },
+  "buckwheat": {
+   "role": "internal",
+   "cycle_group": "buckwheat_cycle",
+   "production_per_tick": "11",
+   "consumption_per_tick": "11",
+   "routed_flow_per_tick": "11",
+   "routed_flow_per_min": "330",
+   "min_lanes_global": 11
+  },
+  "buckwheat_powder": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "11",
+   "consumption_per_tick": "11",
+   "routed_flow_per_tick": "11",
+   "routed_flow_per_min": "330",
+   "min_lanes_global": 11
+  },
+  "buckwheat_seed": {
+   "role": "internal",
+   "cycle_group": "buckwheat_cycle",
+   "production_per_tick": "11",
+   "consumption_per_tick": "11",
+   "routed_flow_per_tick": "11",
+   "routed_flow_per_min": "330",
+   "min_lanes_global": 11
+  },
+  "dense_blue_iron_powder": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "17",
+   "consumption_per_tick": "17",
+   "routed_flow_per_tick": "17",
+   "routed_flow_per_min": "510",
+   "min_lanes_global": 17
+  },
+  "dense_source_powder": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "9",
+   "consumption_per_tick": "9",
+   "routed_flow_per_tick": "9",
+   "routed_flow_per_min": "270",
+   "min_lanes_global": 9
+  },
+  "fine_buckwheat_powder": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "11/2",
+   "consumption_per_tick": "11/2",
+   "routed_flow_per_tick": "11/2",
+   "routed_flow_per_min": "165",
+   "min_lanes_global": 6
+  },
+  "qiaoyu_capsule": {
+   "role": "final_generic_input",
+   "cycle_group": null,
+   "production_per_tick": "11/20",
+   "consumption_per_tick": "0",
+   "routed_flow_per_tick": "11/20",
+   "routed_flow_per_min": "33/2",
+   "min_lanes_global": 1
+  },
+  "sandleaf": {
+   "role": "internal",
+   "cycle_group": "sandleaf_cycle",
+   "production_per_tick": "21",
+   "consumption_per_tick": "21",
+   "routed_flow_per_tick": "21",
+   "routed_flow_per_min": "630",
+   "min_lanes_global": 21
+  },
+  "sandleaf_powder": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "63/2",
+   "consumption_per_tick": "63/2",
+   "routed_flow_per_tick": "63/2",
+   "routed_flow_per_min": "945",
+   "min_lanes_global": 32
+  },
+  "sandleaf_seed": {
+   "role": "internal",
+   "cycle_group": "sandleaf_cycle",
+   "production_per_tick": "21",
+   "consumption_per_tick": "21",
+   "routed_flow_per_tick": "21",
+   "routed_flow_per_min": "630",
+   "min_lanes_global": 21
+  },
+  "source_ore": {
+   "role": "external_boundary",
+   "cycle_group": null,
+   "production_per_tick": "0",
+   "consumption_per_tick": "18",
+   "routed_flow_per_tick": "18",
+   "routed_flow_per_min": "540",
+   "min_lanes_global": 18
+  },
+  "source_powder": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "18",
+   "consumption_per_tick": "18",
+   "routed_flow_per_tick": "18",
+   "routed_flow_per_min": "540",
+   "min_lanes_global": 18
+  },
+  "steel_block": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "17",
+   "consumption_per_tick": "17",
+   "routed_flow_per_tick": "17",
+   "routed_flow_per_min": "510",
+   "min_lanes_global": 17
+  },
+  "steel_bottle": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "11/2",
+   "consumption_per_tick": "11/2",
+   "routed_flow_per_tick": "11/2",
+   "routed_flow_per_min": "165",
+   "min_lanes_global": 6
+  },
+  "steel_part": {
+   "role": "internal",
+   "cycle_group": null,
+   "production_per_tick": "6",
+   "consumption_per_tick": "6",
+   "routed_flow_per_tick": "6",
+   "routed_flow_per_min": "180",
+   "min_lanes_global": 6
+  },
+  "valley_battery": {
+   "role": "final_generic_input",
+   "cycle_group": null,
+   "production_per_tick": "3/5",
+   "consumption_per_tick": "0",
+   "routed_flow_per_tick": "3/5",
+   "routed_flow_per_min": "18",
+   "min_lanes_global": 1
+  }
+ },
+ "aggregate": {
+  "F_target_per_tick": "6113/20",
+  "F_target_per_min": "18339/2",
+  "F_route_per_tick": "609/2",
+  "F_route_per_min": "9135",
+  "cross_check_ob1": {
+   "ob1_F_route_items_per_min": "9135",
+   "this_F_route_items_per_min": "9135",
+   "F_route_agrees": true,
+   "ob1_F_target_items_per_min": "18339/2",
+   "this_F_target_items_per_min": "18339/2",
+   "F_target_agrees": true
+  }
+ },
+ "duty_solution": {
+  "machine_equivalents_x": {
+   "crusher_blue_iron": "34",
+   "crusher_buckwheat": "11/2",
+   "crusher_sandleaf": "21/2",
+   "crusher_source": "18",
+   "filling_capsule": "11/4",
+   "grinder_dense_blue_iron": "17",
+   "grinder_dense_source": "9",
+   "grinder_fine_buckwheat": "11/2",
+   "molding_bottle": "11/2",
+   "packaging_battery": "3",
+   "parts_maker": "6",
+   "planter_buckwheat": "11",
+   "planter_sandleaf": "21",
+   "refinery_blue_iron": "34",
+   "refinery_steel": "17",
+   "seed_collector_buckwheat": "11/2",
+   "seed_collector_sandleaf": "21/2"
+  },
+  "mandatory_counts_n": {
+   "crusher_blue_iron": 34,
+   "crusher_buckwheat": 6,
+   "crusher_sandleaf": 11,
+   "crusher_source": 18,
+   "filling_capsule": 3,
+   "grinder_dense_blue_iron": 17,
+   "grinder_dense_source": 9,
+   "grinder_fine_buckwheat": 6,
+   "molding_bottle": 6,
+   "packaging_battery": 3,
+   "parts_maker": 6,
+   "planter_buckwheat": 11,
+   "planter_sandleaf": 21,
+   "refinery_blue_iron": 34,
+   "refinery_steel": 17,
+   "seed_collector_buckwheat": 6,
+   "seed_collector_sandleaf": 11
+  },
+  "duty": {
+   "crusher_blue_iron": "1",
+   "crusher_buckwheat": "11/12",
+   "crusher_sandleaf": "21/22",
+   "crusher_source": "1",
+   "filling_capsule": "11/12",
+   "grinder_dense_blue_iron": "1",
+   "grinder_dense_source": "1",
+   "grinder_fine_buckwheat": "11/12",
+   "molding_bottle": "11/12",
+   "packaging_battery": "1",
+   "parts_maker": "1",
+   "planter_buckwheat": "1",
+   "planter_sandleaf": "1",
+   "refinery_blue_iron": "1",
+   "refinery_steel": "1",
+   "seed_collector_buckwheat": "11/12",
+   "seed_collector_sandleaf": "21/22"
+  },
+  "machines_at_full_duty": 170,
+  "machines_total": 219
+ },
+ "table_B_port_lane_decomposition": [
+  {
+   "operation": "crusher_blue_iron",
+   "side": "in",
+   "commodity": "blue_iron_block",
+   "machines": 34,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 34
+  },
+  {
+   "operation": "crusher_blue_iron",
+   "side": "out",
+   "commodity": "blue_iron_powder",
+   "machines": 34,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 34
+  },
+  {
+   "operation": "crusher_buckwheat",
+   "side": "in",
+   "commodity": "buckwheat",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/12",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "11/12",
+   "slots_total": 6
+  },
+  {
+   "operation": "crusher_buckwheat",
+   "side": "out",
+   "commodity": "buckwheat_powder",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/6",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "5/6",
+   "slots_total": 12
+  },
+  {
+   "operation": "crusher_sandleaf",
+   "side": "in",
+   "commodity": "sandleaf",
+   "machines": 11,
+   "duty": "21/22",
+   "rate_per_machine_per_tick": "21/22",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "21/22",
+   "slots_total": 11
+  },
+  {
+   "operation": "crusher_sandleaf",
+   "side": "out",
+   "commodity": "sandleaf_powder",
+   "machines": 11,
+   "duty": "21/22",
+   "rate_per_machine_per_tick": "63/22",
+   "slots_per_machine": 3,
+   "full_lanes_per_machine": 2,
+   "residual_lane_rate": "19/22",
+   "slots_total": 33
+  },
+  {
+   "operation": "crusher_source",
+   "side": "in",
+   "commodity": "source_ore",
+   "machines": 18,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 18
+  },
+  {
+   "operation": "crusher_source",
+   "side": "out",
+   "commodity": "source_powder",
+   "machines": 18,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 18
+  },
+  {
+   "operation": "filling_capsule",
+   "side": "in",
+   "commodity": "fine_buckwheat_powder",
+   "machines": 3,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/6",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "5/6",
+   "slots_total": 6
+  },
+  {
+   "operation": "filling_capsule",
+   "side": "in",
+   "commodity": "steel_bottle",
+   "machines": 3,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/6",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "5/6",
+   "slots_total": 6
+  },
+  {
+   "operation": "filling_capsule",
+   "side": "out",
+   "commodity": "qiaoyu_capsule",
+   "machines": 3,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/60",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "11/60",
+   "slots_total": 3
+  },
+  {
+   "operation": "grinder_dense_blue_iron",
+   "side": "in",
+   "commodity": "blue_iron_powder",
+   "machines": 17,
+   "duty": "1",
+   "rate_per_machine_per_tick": "2",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "1",
+   "slots_total": 34
+  },
+  {
+   "operation": "grinder_dense_blue_iron",
+   "side": "in",
+   "commodity": "sandleaf_powder",
+   "machines": 17,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 17
+  },
+  {
+   "operation": "grinder_dense_blue_iron",
+   "side": "out",
+   "commodity": "dense_blue_iron_powder",
+   "machines": 17,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 17
+  },
+  {
+   "operation": "grinder_dense_source",
+   "side": "in",
+   "commodity": "sandleaf_powder",
+   "machines": 9,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 9
+  },
+  {
+   "operation": "grinder_dense_source",
+   "side": "in",
+   "commodity": "source_powder",
+   "machines": 9,
+   "duty": "1",
+   "rate_per_machine_per_tick": "2",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "1",
+   "slots_total": 18
+  },
+  {
+   "operation": "grinder_dense_source",
+   "side": "out",
+   "commodity": "dense_source_powder",
+   "machines": 9,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 9
+  },
+  {
+   "operation": "grinder_fine_buckwheat",
+   "side": "in",
+   "commodity": "buckwheat_powder",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/6",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "5/6",
+   "slots_total": 12
+  },
+  {
+   "operation": "grinder_fine_buckwheat",
+   "side": "in",
+   "commodity": "sandleaf_powder",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/12",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "11/12",
+   "slots_total": 6
+  },
+  {
+   "operation": "grinder_fine_buckwheat",
+   "side": "out",
+   "commodity": "fine_buckwheat_powder",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/12",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "11/12",
+   "slots_total": 6
+  },
+  {
+   "operation": "molding_bottle",
+   "side": "in",
+   "commodity": "steel_block",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/6",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "5/6",
+   "slots_total": 12
+  },
+  {
+   "operation": "molding_bottle",
+   "side": "out",
+   "commodity": "steel_bottle",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/12",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "11/12",
+   "slots_total": 6
+  },
+  {
+   "operation": "packaging_battery",
+   "side": "in",
+   "commodity": "dense_source_powder",
+   "machines": 3,
+   "duty": "1",
+   "rate_per_machine_per_tick": "3",
+   "slots_per_machine": 3,
+   "full_lanes_per_machine": 2,
+   "residual_lane_rate": "1",
+   "slots_total": 9
+  },
+  {
+   "operation": "packaging_battery",
+   "side": "in",
+   "commodity": "steel_part",
+   "machines": 3,
+   "duty": "1",
+   "rate_per_machine_per_tick": "2",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "1",
+   "slots_total": 6
+  },
+  {
+   "operation": "packaging_battery",
+   "side": "out",
+   "commodity": "valley_battery",
+   "machines": 3,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1/5",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1/5",
+   "slots_total": 3
+  },
+  {
+   "operation": "parts_maker",
+   "side": "in",
+   "commodity": "steel_block",
+   "machines": 6,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 6
+  },
+  {
+   "operation": "parts_maker",
+   "side": "out",
+   "commodity": "steel_part",
+   "machines": 6,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 6
+  },
+  {
+   "operation": "planter_buckwheat",
+   "side": "in",
+   "commodity": "buckwheat_seed",
+   "machines": 11,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 11
+  },
+  {
+   "operation": "planter_buckwheat",
+   "side": "out",
+   "commodity": "buckwheat",
+   "machines": 11,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 11
+  },
+  {
+   "operation": "planter_sandleaf",
+   "side": "in",
+   "commodity": "sandleaf_seed",
+   "machines": 21,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 21
+  },
+  {
+   "operation": "planter_sandleaf",
+   "side": "out",
+   "commodity": "sandleaf",
+   "machines": 21,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 21
+  },
+  {
+   "operation": "refinery_blue_iron",
+   "side": "in",
+   "commodity": "blue_iron_ore",
+   "machines": 34,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 34
+  },
+  {
+   "operation": "refinery_blue_iron",
+   "side": "out",
+   "commodity": "blue_iron_block",
+   "machines": 34,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 34
+  },
+  {
+   "operation": "refinery_steel",
+   "side": "in",
+   "commodity": "dense_blue_iron_powder",
+   "machines": 17,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 17
+  },
+  {
+   "operation": "refinery_steel",
+   "side": "out",
+   "commodity": "steel_block",
+   "machines": 17,
+   "duty": "1",
+   "rate_per_machine_per_tick": "1",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "1",
+   "slots_total": 17
+  },
+  {
+   "operation": "seed_collector_buckwheat",
+   "side": "in",
+   "commodity": "buckwheat",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/12",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "11/12",
+   "slots_total": 6
+  },
+  {
+   "operation": "seed_collector_buckwheat",
+   "side": "out",
+   "commodity": "buckwheat_seed",
+   "machines": 6,
+   "duty": "11/12",
+   "rate_per_machine_per_tick": "11/6",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "5/6",
+   "slots_total": 12
+  },
+  {
+   "operation": "seed_collector_sandleaf",
+   "side": "in",
+   "commodity": "sandleaf",
+   "machines": 11,
+   "duty": "21/22",
+   "rate_per_machine_per_tick": "21/22",
+   "slots_per_machine": 1,
+   "full_lanes_per_machine": 0,
+   "residual_lane_rate": "21/22",
+   "slots_total": 11
+  },
+  {
+   "operation": "seed_collector_sandleaf",
+   "side": "out",
+   "commodity": "sandleaf_seed",
+   "machines": 11,
+   "duty": "21/22",
+   "rate_per_machine_per_tick": "21/11",
+   "slots_per_machine": 2,
+   "full_lanes_per_machine": 1,
+   "residual_lane_rate": "10/11",
+   "slots_total": 22
+  }
+ ],
+ "table_C_lane_sharing": {
+  "distinct_lane_rates": [
+   {
+    "rate": "11/60",
+    "lane_count": 3,
+    "commodities": [
+     "qiaoyu_capsule"
+    ]
+   },
+   {
+    "rate": "1/5",
+    "lane_count": 3,
+    "commodities": [
+     "valley_battery"
+    ]
+   },
+   {
+    "rate": "5/6",
+    "lane_count": 30,
+    "commodities": [
+     "buckwheat_powder",
+     "buckwheat_seed",
+     "fine_buckwheat_powder",
+     "steel_block",
+     "steel_bottle"
+    ]
+   },
+   {
+    "rate": "19/22",
+    "lane_count": 11,
+    "commodities": [
+     "sandleaf_powder"
+    ]
+   },
+   {
+    "rate": "10/11",
+    "lane_count": 11,
+    "commodities": [
+     "sandleaf_seed"
+    ]
+   },
+   {
+    "rate": "11/12",
+    "lane_count": 30,
+    "commodities": [
+     "buckwheat",
+     "fine_buckwheat_powder",
+     "sandleaf_powder",
+     "steel_bottle"
+    ]
+   },
+   {
+    "rate": "21/22",
+    "lane_count": 22,
+    "commodities": [
+     "sandleaf"
+    ]
+   },
+   {
+    "rate": "1",
+    "lane_count": 464,
+    "commodities": [
+     "blue_iron_block",
+     "blue_iron_ore",
+     "blue_iron_powder",
+     "buckwheat",
+     "buckwheat_powder",
+     "buckwheat_seed",
+     "dense_blue_iron_powder",
+     "dense_source_powder",
+     "fine_buckwheat_powder",
+     "sandleaf",
+     "sandleaf_powder",
+     "sandleaf_seed",
+     "source_ore",
+     "source_powder",
+     "steel_block",
+     "steel_bottle",
+     "steel_part"
+    ]
+   }
+  ],
+  "total_lanes": 574,
+  "pairwise": [
+   {
+    "rate_a": "11/60",
+    "rate_b": "11/60",
+    "sum": "11/30",
+    "co_resident_legal": true,
+    "both_sides_terminal_only": true
+   },
+   {
+    "rate_a": "11/60",
+    "rate_b": "1/5",
+    "sum": "23/60",
+    "co_resident_legal": true,
+    "both_sides_terminal_only": true
+   },
+   {
+    "rate_a": "11/60",
+    "rate_b": "5/6",
+    "sum": "61/60",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "11/60",
+    "rate_b": "19/22",
+    "sum": "691/660",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "11/60",
+    "rate_b": "10/11",
+    "sum": "721/660",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "11/60",
+    "rate_b": "11/12",
+    "sum": "11/10",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "11/60",
+    "rate_b": "21/22",
+    "sum": "751/660",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "11/60",
+    "rate_b": "1",
+    "sum": "71/60",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "1/5",
+    "rate_b": "1/5",
+    "sum": "2/5",
+    "co_resident_legal": true,
+    "both_sides_terminal_only": true
+   },
+   {
+    "rate_a": "1/5",
+    "rate_b": "5/6",
+    "sum": "31/30",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "1/5",
+    "rate_b": "19/22",
+    "sum": "117/110",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "1/5",
+    "rate_b": "10/11",
+    "sum": "61/55",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "1/5",
+    "rate_b": "11/12",
+    "sum": "67/60",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "1/5",
+    "rate_b": "21/22",
+    "sum": "127/110",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "1/5",
+    "rate_b": "1",
+    "sum": "6/5",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "5/6",
+    "rate_b": "5/6",
+    "sum": "5/3",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "5/6",
+    "rate_b": "19/22",
+    "sum": "56/33",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "5/6",
+    "rate_b": "10/11",
+    "sum": "115/66",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "5/6",
+    "rate_b": "11/12",
+    "sum": "7/4",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "5/6",
+    "rate_b": "21/22",
+    "sum": "59/33",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "5/6",
+    "rate_b": "1",
+    "sum": "11/6",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "19/22",
+    "rate_b": "19/22",
+    "sum": "19/11",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "19/22",
+    "rate_b": "10/11",
+    "sum": "39/22",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "19/22",
+    "rate_b": "11/12",
+    "sum": "235/132",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "19/22",
+    "rate_b": "21/22",
+    "sum": "20/11",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "19/22",
+    "rate_b": "1",
+    "sum": "41/22",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "10/11",
+    "rate_b": "10/11",
+    "sum": "20/11",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "10/11",
+    "rate_b": "11/12",
+    "sum": "241/132",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "10/11",
+    "rate_b": "21/22",
+    "sum": "41/22",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "10/11",
+    "rate_b": "1",
+    "sum": "21/11",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "11/12",
+    "rate_b": "11/12",
+    "sum": "11/6",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "11/12",
+    "rate_b": "21/22",
+    "sum": "247/132",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "11/12",
+    "rate_b": "1",
+    "sum": "23/12",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "21/22",
+    "rate_b": "21/22",
+    "sum": "21/11",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "21/22",
+    "rate_b": "1",
+    "sum": "43/22",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   },
+   {
+    "rate_a": "1",
+    "rate_b": "1",
+    "sum": "2",
+    "co_resident_legal": false,
+    "both_sides_terminal_only": false
+   }
+  ],
+  "intermediate_pure_flow_forcing": {
+   "claim": "任何速率之和 ≤ 1 的车道对，其两侧车道的商品必须全部是终端成品",
+   "counterexamples": 0,
+   "verified": true
+  },
+  "terminal_full_merge": {
+   "rates": {
+    "qiaoyu_capsule": "11/20",
+    "valley_battery": "3/5"
+   },
+   "sum": "23/20",
+   "legal_on_one_cell": false,
+   "note": "两条终品**全流**车道之和；若 > cap，则 canonical rate_lemma_scope 里「终端成品段可混流」只对**未完全汇聚**的子段成立，最后一段不成立"
+  }
+ },
+ "table_D_min_lanes": {
+  "per_commodity": {
+   "blue_iron_block": 34,
+   "blue_iron_ore": 34,
+   "blue_iron_powder": 34,
+   "buckwheat": 11,
+   "buckwheat_powder": 11,
+   "buckwheat_seed": 11,
+   "dense_blue_iron_powder": 17,
+   "dense_source_powder": 9,
+   "fine_buckwheat_powder": 6,
+   "qiaoyu_capsule": 1,
+   "sandleaf": 21,
+   "sandleaf_powder": 32,
+   "sandleaf_seed": 21,
+   "source_ore": 18,
+   "source_powder": 18,
+   "steel_block": 17,
+   "steel_bottle": 6,
+   "steel_part": 6,
+   "valley_battery": 1
+  },
+  "total_all_commodities": 308,
+  "total_excluding_finals": 306,
+  "note": "L_k = ceil(F_k / belt_cap)：这是**全局**最小车道数（允许跨机器汇聚）；表 B 的 slots_total 是**逐端口**车道数（模型内由 binding 钉死）。两者的差 = 前件 (ii) 真正起作用的自由度所在。"
+ },
+ "table_E_row_estimates": {
+  "grid_cells": 4900,
+  "cell_layer_slots": 9800,
+  "commodities_total": 19,
+  "commodities_excluding_finals": 17,
+  "row_family_P1_purity_upper_bound": {
+   "form": "每 (cell, layer)：Σ_{k∈中间品} u[c,l,k] ≤ 1",
+   "rows_upper_bound": 9800,
+   "coeff": "全部 1（纯组合行，无有理系数）",
+   "note": "上界按整棋盘算；实际只需在候选 free cell 上建行，机身 3,544 格与空矩形 A 格不建行"
+  },
+  "row_family_P2_terminal_capacity": {
+   "form": "每 (cell, layer)：Σ_{k∈终品} ρ_k·u[c,l,k] ≤ cap（有理系数）",
+   "rows_upper_bound": 9800,
+   "integerized_multiplier_lcm": 20
+  },
+  "row_family_P3_per_commodity_congestion": {
+   "form": "每商品 k：在 k 占用的格子上存在容量 cap 的单商品流（割集/最大流）",
+   "count": 19,
+   "note": "不是静态行，是每商品一个单商品流可行性子问题；不可行证书 = 最小割（组合，非 Farkas）"
+  },
+  "port_slots_total_from_recipes": 574,
+  "all_lane_rate_common_denominator": 660
+ }
+}
