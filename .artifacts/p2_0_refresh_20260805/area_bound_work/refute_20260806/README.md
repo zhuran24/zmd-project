@@ -15,7 +15,7 @@
 | `canonical_mixed_source_hyperedge.py` / `.log` / `_rerun_by_flowbound.log` | **三轮探针**：canonical 局部反例——grinder_fine_buckwheat pose 3961 + molding_bottle pose 8581 两机身不交、同 front (35,35) 的两个**异商品**产口，binding FEASIBLE、残流 1/2+1/2=1 合容量 ⇒ 超边定义的「同商品」全局要素被驳倒（source-only 超边须允许跨商品，依据 canonical `mixed_commodity_flow`；sink front 仍须纯流）。脚本自注根路径、无需 PYTHONPATH。**四轮起耐久副本由本线补真实 PortBindingModel 自证段**（原探针只验口存在性/互斥/容量，binding FEASIBLE 当时由 refute 席独立复验；原始输出见 `.log`，自证版输出见 `_rerun_by_flowbound.log`：status=FEASIBLE、两异商品 out spec 同现 front） |
 | `hypergraph_packing_audit.py` | **三轮探针**：G1「普通 cover 等价」审计——重叠 cover 反例（**全部 singleton 边** + {a,b,c} + {c,d,e}：普通 cover=2、最小精确分割=packing 公式=3），坐实端口 exact-one 下正确对象是增广族 E⁺ 的精确覆盖/超边分割 |
 | `eplus_equivalence_audit.py` / `.log` / `_rerun_by_flowbound.log` | **五轮探针**：E⁺ 组合恒等式（Q − max packing 权 = E⁺ 最小精确分割）**穷举验证**——全部 2,048 个四顶点超边族逐一成立（eplus_identity=True，脚本 sha256 前缀 cd8f880d）。本线复跑复现 |
-| `formal_singleton_physical_counterexample.py` / `.log` / `_rerun_by_flowbound.log` | **五轮探针**：「singleton 物理恒可行」证伪——真模型构造：棋盘占满只剩共享 front (35,35)，binding+routing FEASIBLE 下唯一 physical state 必须同时服务两个 terminal incidence，专属 singleton state 不存在（physical_singleton_exists=False）；formal singleton 作为 w=0 completion edge 的松弛仍安全（只弱化 RHS）。本线复跑复现。需 PYTHONPATH |
+| `formal_singleton_physical_counterexample.py` / `.log` / `_rerun_by_flowbound.log` | **五轮探针**：「singleton 物理恒可行」证伪——真模型构造：棋盘占满只剩共享 front (35,35)，合成端口直驱 routing FEASIBLE（该探针未跑 PortBindingModel）下唯一 physical state 必须同时服务两个 terminal incidence，专属 singleton state 不存在（physical_singleton_exists=False）；formal singleton 作为 w=0 completion edge 的松弛仍安全（只弱化 RHS）。本线复跑复现。需 PYTHONPATH |
 
 对报告的影响与修正见上级目录 `AREA_BOUND_THEOREM_REPORT.md` §5.4（负结果归档）、
-§5 G1/G1×OB6（二轮修正后的正确形式）与修订记录。
+§5 G1/G1×OB6（五轮修正后的当前形式）与修订记录。

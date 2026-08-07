@@ -41,6 +41,13 @@
 | slot 普查（诊断用，不进上界） | 574/568/401/52 | 【精确】 | `ob5_slot_census_receipt.json` |
 | front-state 下界 L≥308 | **REFUTED** | 负结果归档 §5.4 | `refute_20260806/` |
 
+**引用解析约定（承重落档后）**：本文正文中的收据/脚本短文件名（如
+`ob5_theorem_bound_receipt.json`）与 `refute_20260806/` 均指
+`.artifacts/p2_0_refresh_20260805/area_bound_work/` 目录下的 git-tracked 文件
+（refute 材料在其 `refute_20260806/` 子目录）；§8 复跑索引给出完整路径。
+材料留驻原位以保脚本内部路径与历次收据互引不动，本文是唯一权威文本
+（原位置留 stub 指针）。
+
 对 P2.0 复活备忘 §3.3 粗算（`.artifacts/p2_0_refresh_20260805/MEMO.md`，主线产物、
 截至本文提交未入 git 树——引用时以该路径工作树副本为准）的净升级：三处粗算全部升格为
 脚本收据；**P_min 6→9**（A 收紧 12 格）；面积上界从「粗算 ~1179（双层最宽松）」变为
@@ -308,4 +315,8 @@ refute 席材料（反例探针、SCIP 互证、本线复跑记录）：`refute_
    同时攻两个口径；任何 front 型候选引理先过 `refute_20260806/` 探针 harness 验证；
 2. **G6 证书工程化**（定理 1 链 → row-family manifest）：无数学缺口，一个批次；
 3. **G2 路径长度**：与 1 合流（同一批几何论证双产出）；
-4. 修订版过 refute 席复核后再入 docs/research/ 转正（本文当前状态：待复核）。
+4. ~~修订版过 refute 席复核后再入 docs/research/ 转正~~ **已通过第六轮终核**
+   （六轮对抗审查：初判驳倒 → 逐轮收敛 → 终判可转正；数值链六轮六验；
+   判决全文与探针耐久于 `refute_20260806/`）。refute 席正式身份确认：
+   「P2.0 语义 research upper ledger：A≤1167 无条件 / A≤1015 单层【条件·待 OB6】」，
+   本文以承重身份落档 `docs/research/p2_0_area_bound_20260806/`。
