@@ -480,6 +480,9 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
             "dir": "N",
             "type": "out",
             "commodity": "source_ore",
+            # U-01: specs carry the receiving/emitting instance's operation so
+            # routing can classify the port's receiver against the frozen plan.
+            "operation_type": "protocol_core",
         }
     ]
     assert {
@@ -731,6 +734,7 @@ def test_pose_bool_saturated_generic_output_keeps_final_output_front_visible() -
             "dir": "N",
             "type": "out",
             "commodity": "source_ore",
+            "operation_type": "boundary_io",
         },
         {
             "instance_id": "b2",
@@ -739,6 +743,7 @@ def test_pose_bool_saturated_generic_output_keeps_final_output_front_visible() -
             "dir": "N",
             "type": "out",
             "commodity": "source_ore",
+            "operation_type": "boundary_io",
         },
     ]
     assert {

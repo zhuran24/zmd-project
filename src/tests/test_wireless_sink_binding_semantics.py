@@ -159,6 +159,9 @@ def test_box_sink_bound_slots_emit_routing_sink_specs() -> None:
             "dir": slot["dir"],
             "type": "in",
             "commodity": commodity,
+            # U-01: the emitted sink spec names the receiving operation, which
+            # is how routing tells a box apart from a wired warehouse port.
+            "operation_type": "box_sink",
         } in port_specs
 
 
