@@ -48,7 +48,7 @@ python scripts/restore_external_artifacts.py candidate_placements --source <file
 
 - **preflight 退出码只有 0/1**。`GateResult.exit_code`（`scripts/preflight_gate.py:123-145`）没有返回 2 的分支；源码模块 docstring 已同步为 0/1。
 - **`--full` ≠ 全部测试**：仍带 `-m "not slow"`。改认证核心（producer/seal/publish/checker）后必须单独跑 `--slow-tests`，否则慢 soundness 测试是盲区。
-- `@slow` 不是散落的装饰器，而是**集中登记**在 `src/tests/conftest.py` 的 `_SLOW_TEST_NODEIDS` 集合（2026-07-12 为 24 条字面 nodeid，参数化后 `-m slow` 收集 31 个实例——「登记条数」与「收集实例数」是两个口径，别混）。新写 ≥8s 的慢测试必须去 conftest 登记，否则会被 fast lane 意外跑到；retune 用无并发串行的 `-m slow --durations` 全量扫描，别在有并发 pytest 时测时长（会挤出假红/虚高）。
+- `@slow` 不是散落的装饰器，而是**集中登记**在 `src/tests/conftest.py` 的 `_SLOW_TEST_NODEIDS` 集合（登记条数以 conftest 实测为准，2026-08-07 实测 26 条字面 nodeid；参数化后 `-m slow` 收集的实例数是另一个口径，别拿两者互对）。新写 ≥8s 的慢测试必须去 conftest 登记，否则会被 fast lane 意外跑到；retune 用无并发串行的 `-m slow --durations` 全量扫描，别在有并发 pytest 时测时长（会挤出假红/虚高）。
 - `pytest.ini` 的全局 `--basetemp=.pytest_tmp` 意味着**并发跑 pytest 会互删临时目录**——多窗口/并发时各自覆盖 `--basetemp` 为独立子目录。
 - `requirements.txt` 声明了 `pytest-randomly` 但当前环境未必装了它；想稳定复现顺序永远显式加 `-p no:randomly`。
 - `candidate_placements.json` 缺失时部分测试（`test_binding.py`、`test_routing.py` 的一些用例）会在 fixture 阶段抛 `FileNotFoundError` 硬失败而非优雅 skip——排查"一批测试莫名 error"先查这个工件在不在。
