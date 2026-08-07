@@ -864,3 +864,70 @@ def test_drain_exit_requires_the_body_cell_to_be_off_domain():
         ["a"],
     )
     assert faithful._is_warehouse_drain_exit(4, 5, "E") is True
+
+
+def _sc_drain_loop():
+    """A geometry where a drain closure containing a cycle is expressible.
+
+    a enters at (3,5) and is consumed by a core port on (5,6); the four cells
+    (4,5)->(5,5)->(5,6)->(4,6)->(4,5) can additionally carry a closed loop whose
+    every state is in the 48-pattern dictionary — (4,5) merger, (5,5) belt,
+    (5,6) splitter (loop side plus the port side), (4,6) belt.  The loop's only
+    exit is the absorbing core port, so the closure rows alone are happy to call
+    all four cells drain.
+    """
+    free = [(3, 5), (4, 5), (5, 5), (5, 6), (4, 6)]
+    ports = [
+        {"x": 3, "y": 5, "dir": "E", "commodity": "a", "type": "out", "instance_id": "srcA"},
+        {"x": 5, "y": 6, "dir": "W", "commodity": "a", "type": "in", "instance_id": "core1",
+         "operation_type": _CORE_OPERATION},
+    ]
+    return free, ports, ["a"]
+
+
+_DRAIN_LOOP_SIDES = (((4, 5), "E"), ((5, 5), "N"), ((5, 6), "W"), ((4, 6), "S"))
+
+
+def _force_drain_loop(routing: RoutingSubproblem) -> None:
+    for (x, y), direction in _DRAIN_LOOP_SIDES:
+        side = routing._side_indicator(
+            routing._phys_side_out_vars,
+            routing._phys_out_by_cell_layer_dir,
+            (x, y, 0, direction),
+            "physout",
+            "sum",
+        )
+        routing.model.Add(side == 1)
+        routing.model.Add(routing._wh_drain_vars[(x, y)] == 1)
+
+
+def test_drain_acyclicity_rejects_a_looping_closure(monkeypatch):
+    """Differential: the rank rows are what forbid a cyclic drain closure.
+
+    Forcing the four loop sides and marking all four cells drain is satisfiable
+    for the closure rows on their own — a loop needs no exit to satisfy pure
+    implications — and the ranks are what reject it.  Both controls matter: the
+    unforced instance stays FEASIBLE with ranks on, so acyclicity is not
+    quietly rejecting ordinary solutions.
+    """
+    unforced = _build(*_sc_drain_loop())
+    assert unforced.build_stats["warehouse_drain_acyclicity"]["rows"] > 0
+    assert _solve(unforced) == "FEASIBLE"
+
+    forced = _build(*_sc_drain_loop())
+    _force_drain_loop(forced)
+    assert _solve(forced) == "INFEASIBLE"
+
+    monkeypatch.setattr(RoutingSubproblem, "_add_warehouse_drain_acyclicity", lambda self: None)
+    without_ranks = _build(*_sc_drain_loop())
+    _force_drain_loop(without_ranks)
+    assert _solve(without_ranks) == "FEASIBLE"
+
+
+def test_drain_acyclicity_vanishes_without_a_claimed_closure():
+    """Every rank row is conditioned on `wh_drain`, so a machine-only instance
+    carries the mechanism at zero cost and U-01 stays a pure relaxation."""
+    routing = _build(*_sc_straight_corridor())
+    assert routing.build_stats["warehouse_drain"]["cells"] == 0
+    assert routing.build_stats["warehouse_drain_acyclicity"] == {"ranks": 0, "rows": 0}
+    assert _solve(routing) == "FEASIBLE"

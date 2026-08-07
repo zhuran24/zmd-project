@@ -919,6 +919,7 @@ class RoutingSubproblem:
         # property of one side, not of the cell.
         self._sink_side_receiver_classes: Dict[Tuple[int, int, str], Set[str]] = defaultdict(set)
         self._wh_drain_vars: Dict[Tuple[int, int], Any] = {}
+        self._wh_drain_rank_vars: Dict[Tuple[int, int], Any] = {}
         self._index_port_fronts()
         self._patterns_by_layer = {
             layer: list(self._iter_state_patterns(layer))
@@ -999,6 +1000,7 @@ class RoutingSubproblem:
         self._create_routing_variables()
         self._add_phys_coverage_constraints()
         self._add_warehouse_drain_constraints()
+        self._add_warehouse_drain_acyclicity()
         self._add_demix_ban_constraints()
         self._add_obstacle_exclusion()
         self._add_capacity_constraints()
@@ -1569,6 +1571,73 @@ class RoutingSubproblem:
             "propagation_rows": int(propagation_rows),
             "forced_false_rows": int(forced_false_rows),
             "absorbing_exits": int(absorbing_exits),
+        }
+
+    def _add_warehouse_drain_acyclicity(self):
+        """Force drain closures to be acyclic (rank strictly decreases on flow).
+
+        The closure rows on their own are pure implications, so a loop of drain
+        cells with no way out satisfies them vacuously and the solver may mark
+        it drain.  Nothing unsound follows — items circulating on a closed belt
+        loop reach no receiver at all, let alone a poisonable one, and
+        throughput/blocking are out of certified scope (PROJECT_LOCK section 1A
+        block B).  It is, however, a shape a reviewer has to be talked out of,
+        and the cheapest way to not have that argument is to make it
+        unexpressible:
+
+            wh_drain[c] AND phys_side_out[c, layer, d]
+                => rank[neighbour] < rank[c]
+
+        for every propagating side.  Absorbing warehouse exits carry no row (the
+        goods leave the grid there), and sides whose neighbour is off-domain
+        already force the closure false.
+
+        Every row is conditioned on ``wh_drain[c]``, so the whole mechanism
+        vanishes when no closure is claimed.  U-01 therefore stays a pure
+        relaxation of the shipped ban: setting every closure variable false
+        recovers the pre-U-01 model exactly, rank rows included.
+        """
+
+        if not self._wh_drain_vars:
+            self.build_stats["warehouse_drain_acyclicity"] = {"ranks": 0, "rows": 0}
+            return
+
+        cell_count = len(self._wh_drain_vars)
+        ranks = {
+            (x, y): self.model.NewIntVar(0, cell_count - 1, f"whrank_{x}_{y}")
+            for (x, y) in self._wh_drain_vars
+        }
+
+        rows = 0
+        for (x, y, layer) in sorted(self._phys_by_cell_layer):
+            drain_var = self._wh_drain_vars.get((x, y))
+            if drain_var is None:
+                continue
+            for direction in DIRECTIONS:
+                if not self._phys_out_by_cell_layer_dir.get((x, y, layer, direction)):
+                    continue
+                if self._is_warehouse_drain_exit(x, y, direction):
+                    continue
+                dx, dy = DIR_DELTA[direction]
+                neighbour = (x + dx, y + dy)
+                if neighbour not in ranks:
+                    continue
+                side = self._side_indicator(
+                    self._phys_side_out_vars,
+                    self._phys_out_by_cell_layer_dir,
+                    (x, y, layer, direction),
+                    "physout",
+                    "sum",
+                )
+                self.model.Add(ranks[neighbour] + 1 <= ranks[(x, y)]).OnlyEnforceIf(
+                    [drain_var, side]
+                )
+                rows += 1
+
+        self._wh_drain_rank_vars = ranks
+        self.build_stats["warehouse_drain_acyclicity"] = {
+            "ranks": int(len(ranks)),
+            "rows": int(rows),
         }
 
     def _add_demix_ban_constraints(self):
