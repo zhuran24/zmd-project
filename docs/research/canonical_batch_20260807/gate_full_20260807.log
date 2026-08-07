@@ -1,0 +1,62 @@
+============================================================
+Preflight Gate — 提交前门禁检查
+============================================================
+模式: full
+变更范围: staged
+
+[1/18] 冻结/外部制品 hash 校验
+  OK     rules/canonical_rules.json
+  OK     rules/preprocess_plan.json
+  OK     data/preprocessed/mandatory_exact_instances.json
+  OK     data/preprocessed/generic_io_requirements.json
+  OK     data/preprocessed/candidate_placements.json restored external artifact
+
+[2/18] 外部大制品 contract 检查
+  OK     external artifact check passed: data/preprocessed/candidate_placements.json verified
+
+[3/18] 禁止路径写入检查
+  OK     无 staged 文件（或不在 git 仓库中）
+
+[4/18] AI 安全合同检查
+  OK     已扫描 4 个 AI 模块文件，无禁止引用
+
+[5/18] 精确/探索边界隔离检查
+  OK     无 staged 文件
+
+[6/18] 调研产物 audit 覆盖检查
+  OK     本次提交未修改路线图 / INDEX
+
+[9/18] 行尾策略检查
+  OK     line-ending policy check passed: 37 files checked
+
+[10/18] 发布安全 secret scan
+  OK     repo secret scan passed: 3540 candidate text paths checked
+
+[12/18] 历史证据/生成制品边界检查
+  OK     artifact boundary check passed: 115 tracked .artifacts files declared
+
+[13/18] Phase review close-gate 状态一致性检查
+  OK     phase_1_2_spike_close: status=closed_manual_owner_decision, anchor=v99_p1_2_close_kernel_sealing, next_allowed=True, counting_authority=owner_manual_count_outside_repo
+
+[14/18] P1.2 proof obligation consolidation 检查
+  OK     P1.2 proof obligation check passed: 15 obligations anchored; 67 proof-bearing sink files sealed
+
+[15/18] P1.2 strong-status write allowlist 检查
+  OK     strong-status write allowlist check passed: 65 registered AST node(s), 83 allowlist entry(ies)
+
+[16/18] mypy 静态类型 (core lifecycle)
+  OK     mypy: Success: no issues found in 13 source files
+
+[17/18] ruff 静态检查
+  OK     ruff: All checks passed!
+
+[18/18] 测试门禁（全量 · 跳过 @slow）
+  OK     pytest (全量 · 跳过 @slow): 7232 passed, 126 skipped in 192.50s (0:03:12)
+
+[memory] 记忆层测试 lane（全量，串行，-p no:randomly）
+  OK     pytest (memory): 265 passed, 2 skipped, 7 subtests passed in 15.11s
+
+============================================================
+结果: PASSED
+统计: 20 passed
+============================================================
