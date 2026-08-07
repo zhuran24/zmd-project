@@ -29,10 +29,13 @@ CANDIDATE_POSES_RELATIVE_PATH = Path("data/preprocessed/candidate_placements.jso
 
 EXPECTED_SHA256 = {
     "strict_instance": "e08a163336edf73e1b5c866034a73662a98870bbcd90a8bba4e8f7b32fca849c",
-    # 2026-08-05 freeze-ritual: globals.empty_rectangle gained the owner-adjudicated
-    # emptiness definition.  Purely additive metadata — grid, templates, recipes and
-    # targets are byte-identical, so every count/geometry below is unaffected.
-    "canonical_rules": "c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5",
+    # 2026-08-07 freeze-ritual: semantics gained the axiom kernel chapter plus the
+    # four-item amendment batch (terminal clause / rate-lemma scope / admission-port
+    # rationale restatement / port-commodity scope).  Purely additive semantics
+    # metadata — grid, templates, recipes and targets are byte-identical, so every
+    # count/geometry below is unaffected.  (2026-08-05 predecessor: emptiness
+    # definition, same additive-only property.)
+    "canonical_rules": "b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca",
     "mandatory_instances": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
     "generic_io": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e",
     "candidate_poses": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",

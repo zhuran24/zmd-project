@@ -40,7 +40,7 @@ from src.cuts.typed_platform import (
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _BASELINE_COMMIT = "398f8725c770f3c36408adebe9448a890ed886fe"
-_PROJECT_LOCK_SHA256 = "10c3f7b9174974e84271bb1dc44df35e84fb73c5d65af0df68545c4b2c3fd82a"
+_PROJECT_LOCK_SHA256 = "e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343"
 
 # Historical hashes for the six pre-existing Python surfaces touched during
 # the abandoned runtime-wiring attempt.  Five remain byte-identical to
@@ -54,10 +54,13 @@ _BASELINE_SURFACE_SHA256 = {
     "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
 }
 
-# The authorized preflight successor is the canonical-emptiness freeze-ritual one
-# (2026-08-05): FROZEN_ARTIFACTS re-pins rules/canonical_rules.json after
-# globals.empty_rectangle gained the owner-adjudicated emptiness definition.  Only
-# the pinned digest moved; no gate logic changed.  It supersedes the memory-lane
+# The authorized preflight successor is the canonical axiom-kernel freeze-ritual
+# one (2026-08-07): FROZEN_ARTIFACTS re-pins rules/canonical_rules.json after
+# semantics gained the axiom kernel chapter plus the four-item amendment batch
+# (terminal clause / rate-lemma scope / admission-port rationale restatement /
+# port-commodity scope), all additive.  Only the pinned digest moved; no gate
+# logic changed.  It supersedes the canonical-emptiness successor (2026-08-05,
+# owner-adjudicated emptiness definition), which superseded the memory-lane
 # additive successor (2026-08-03, 剪枝 v2 P2 — memory-layer pytest lane plus its
 # blocking-on-missing-roots and per-run basetemp fixes), which in turn superseded
 # 8292983's secret-scan timeout-scale successor.
@@ -69,7 +72,7 @@ _BASELINE_SURFACE_SHA256 = {
 # framework — nothing in the cut lifecycle wiring moved.
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
-    "scripts/preflight_gate.py": "c92139da391c750b8a12a74d8d8f34a6fd686e575e8d714e1f76a133301c10ec",
+    "scripts/preflight_gate.py": "468eb896857ff2546b97c0238d213d92d182a53c44cb19041ece3f5e2dda7846",
     "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
 }
 

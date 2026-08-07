@@ -13020,7 +13020,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
-    'src/search/certified_artifact_contract.py': '2fee2970de469ef89b0f2048489eec7a369c931d968be11c35073c9a16772075',
+    'src/search/certified_artifact_contract.py': '0fb1a6507e4b3b8f21a186189b0e129b5537b386278bf0b19a4ac8178da9119b',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': '9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',

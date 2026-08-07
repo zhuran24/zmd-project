@@ -126,15 +126,19 @@ successor 因 `PROJECT_LOCK.md` 新增 AB16 research-only cohort，改钉
 同一数学 profile 的静态 antecedent fixture 为
 `3d40e1318b631119ca5314f31443b91dbada2d5a1125e3f8da7c4c3dcf8db394`。
 当前 checked-in successor 为
-`10c3f7b9174974e84271bb1dc44df35e84fb73c5d65af0df68545c4b2c3fd82a`（2026-08-06
+`e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343`（2026-08-07
+canonical axiom-kernel freeze-ritual：LOCK 内 canonical_rules pin 随公理 kernel 章节
++ 四件套修正批重钉，LOCK 其余条款字节未动），对应静态 antecedent fixture 为
+`1ade6fc7f783e033e272b07a4270522db1739b50af3c5efee58d84fedc830d26`。
+上一代 successor 为 `10c3f7b9174974e84271bb1dc44df35e84fb73c5d65af0df68545c4b2c3fd82a`（2026-08-06
 封印批：LOCK I1 条目勘误——幻影 helper 名与旧行号改为符号引用，外审二/三轮共同
-点名），对应静态 antecedent fixture 为
-`eafeb6b2d75e06558b870f97b3b9690720cf6f51d3760ddbc4be09fbf9f2685f`。
-上一代 successor 为 `aeadef3aded03099d18580a05454c90af11a4dd6859d7798516ced73d2df2b42`
+点名，antecedent fixture
+`eafeb6b2d75e06558b870f97b3b9690720cf6f51d3760ddbc4be09fbf9f2685f`）。
+更早一代 successor 为 `aeadef3aded03099d18580a05454c90af11a4dd6859d7798516ced73d2df2b42`
 （2026-08-05 严格空地修复批 + 谓词甲案 + canonical emptiness freeze-ritual 后版本，
 antecedent fixture
 `6efaff3e15cf1e6b173e244ff26f79d55dd78a0988162f34079191630aa7a8a0`）。
-更早一代 successor 为 `64a6802446de075293e32c6607d24cfe872d2070b6cd66f4e53cb275483aa69a`
+再早一代 successor 为 `64a6802446de075293e32c6607d24cfe872d2070b6cd66f4e53cb275483aa69a`
 （2026-08-03 AB16 收官后版本，antecedent fixture
 `7de91e645d0a92d03f9593e8af20be43be8147f406a98e9accaea6ed7080b78d`）。
 

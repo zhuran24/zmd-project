@@ -184,7 +184,7 @@ def test_generate_reload_round_trip(tmp_path: Path) -> None:
     manifest_payload = load_strict(tmp_path / "catalog" / "manifest.json")
     assert manifest_payload["catalogs"]["CLEAN"]["sha256"] == entry["sha256"]
     assert manifest_payload["frozen_inputs"]["rules"]["sha256"] == (
-        "c3666d78d5dd1329514c7813be9f91f09cb3ce7b94907ef5b6ce746c9bcbbbd5"
+        "b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca"
     )
 
 
