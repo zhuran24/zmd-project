@@ -5,6 +5,30 @@
 **状态**：设计规格。本批只读仓库、只写本目录，未改 `rules/canonical_rules.json`、`src/`、`scripts/`、锁面文件，未跑 git 提交。落地由后续各批执行。
 **输入**：本目录 `failure_taxonomy_and_requirements.md`（52 病例 / R-01…R-33 / K-1…K-8）、`canonical_anatomy.md`、`DESIGN_rule_form.md`、`DESIGN_reasoning_process.md`、`REFUTE_rule_form.md`（5 FATAL / 13 MAJOR / 7 MINOR）、`REFUTE_reasoning_process.md`（4 FATAL / 14 MAJOR / 8 MINOR，判决 BLOCK）。
 
+## 【R3 修订说明】（20260807，份5外审 + 核签书）
+
+本文书已过第三轮修订（R3）。上游是 `.artifacts/gpt_pro_review_batch_20260807/verdict/fen5/` 的份 5 外审回件（22 项发现）与本仓核签书 `ADJUDICATION_fen5.md`（15 ACCEPT / 7 PARTIAL / 0 整条 REFUTE）。**本轮落地的是批 A（形式基座）与批 B（撤销过强声明），两批都是纯文书、零 freeze-ritual、零代码；批 C（机制加固）未落，凡属批 C 的项在正文标"挂批 C"。**
+
+**(R3-b) 废止裸层号，改稳定类型名**〔P-21 直接收 / CONCERN-07〕——本文书原用的 `L0/L1/L2/L3` 与 `FIRST_PRINCIPLES_DESIGN.md` 原用的 `L0/L1/L2/L3` **同名反义**（本稿 L2 = 派生闭包，那稿 L2 = 公理；本稿 L3 = 投影视图，那稿 L3 = 定理）。两版按裸层号合并**必然错层**，而 `DIFF_VERDICT.md` §5 的合并建议此前正是用裸层号写的。R3 起：
+
+| 稳定类型名 | 本稿原层号 | `FIRST_PRINCIPLES_DESIGN.md` 原层号 |
+|---|---|---|
+| `SOLVER_INPUT` | L0 求解器事实 | 含在其 L1 |
+| `PROBLEM_CLAIM` | 混在 L0（`globals.empty_rectangle.objective` 等） | L0 问题 |
+| `GAME_PARAMETER` | L0 的一部分 | L1 参数 |
+| `GAME_AXIOM` | L1 裁决的一部分（A1–A11） | L2 公理 |
+| `OWNER_RULING_EVENT` | L1 裁决的一部分 | 档案层的裁决条目 |
+| `DERIVED_THEOREM` | L2 派生闭包 | L3 定理 |
+| `GENERATED_VIEW` | L3 投影视图 | （R3 前无） |
+| `MODEL_CORRESPONDENCE` | 无独立层（`model_faces` 只是发现物登记册） | 对应表三个行集 |
+| `HISTORICAL_SNAPSHOT` | 无独立层 | 档案层的冻结快照 |
+
+**层号此后仅可作为本 schema 版本内的显示序号**；任何跨文书引用必须使用类型名 + `schema_version`。正文里保留的 `Lx` 一律读作"本稿显示序号"，**不得跨文书传递**。
+
+**(R3-c) 留痕约定**：R3 的每处改动带 `R3` 标注；被替换的旧文以 `> **superseded（R3 …）**` 块原样保存，不静默覆盖。
+
+---
+
 ## 【覆盖层声明】
 
 按本方案 §4.4 的闭合层枚举自量（这是本方案第一次自用，也是对 REFUTE_reasoning N-08「本稿未按自己的规格出凭据」的应答）：
@@ -26,7 +50,7 @@
 
 owner 08-07 两枪指向同一件事：**规则的载体没有位置放「使这条规则成立的东西」，推理流程没有一步强制去找它。**本方案给出的终态是四句话：
 
-1. **规则分四层**：求解器事实（L0，冻结）/ 裁决（L1，冻结，`semantics` 区改造对象）/ 派生闭包（L2，tracked 不冻结，自动失效）/ 投影视图（L3，可重生，非权威）。
+1. **规则分四层**〔R3 起用稳定类型名，裸层号只作本稿显示序号〕：`SOLVER_INPUT`（冻结）/ `OWNER_RULING_EVENT` + `GAME_AXIOM`（冻结，`semantics` 区改造对象）/ `DERIVED_THEOREM`（tracked 不冻结，自动失效）/ `GENERATED_VIEW`（可重生，非权威）。
 2. **推理走八步**：批型判定 → 参数账 → 可达性尺子 → 前件卫生 → 裁决包 → 连锁重写 → 双向保真验收 → 饱和扫描。每步有凭据节名、验收判据、失败后果、停机判据。
 3. **审计对象从一类变三类**：孔审计（非法的进得来吗，已有）+ 墙审计（合法的进得去吗，新建）+ **界审计（在册限制的界在物理参数下够得着吗，新建）**。第三类是今日第一枪的真正对症装置——两份对抗稿都实证了：墙审计抓不到箱案。
 4. **落地分八批**：批 0（当天上线，纯模板）→ 批 1（纯工具）→ 批 2/3/4（freeze-ritual 三批）→ 批 5（埋点）→ 批 6（三类审计首轮）→ 批 7（收敛）。零 freeze-ritual 的止血排在最前，两枪的止血在批 0 与批 2 全部到位。
@@ -77,7 +101,8 @@ owner 当场用直觉命中一例并验算成立——**5 满 1 半条件定理*
 三条落地义务：
 
 1. **派生规则是一等登记对象**——必带完整前提集与层级，前提变更可追溯失效；不再散在批次文书里当一段话。
-2. **承重结论出厂前对其前提集跑组合扫描至饱和**——不再产出新规则为止。
+2. **承重结论出厂前对其前提集跑组合扫描**，跑到 pairwise 不再产出新结晶为止，状态记 **`PAIRWISE_FIXED_POINT_INCOMPLETE`**；**承重的闭包结论另交对相应理论完备的求解器取 UNSAT core / proof object**〔R3·B1，见 §4.8〕。
+   > **superseded（R3 20260807，BLOCK-13）**：原写"跑组合扫描**至饱和**——不再产出新规则为止"。pairwise 零新结晶**不等于**饱和，三前提反例见 §4.8；**本方案自己的旗舰样板（5 满 1 半，五前提塌点）就在 pairwise 可达域之外**。
 3. **塌点（自由度被组合钉死）显式上报**，哪怕当前用不上；正结晶（新结构特征）与负结晶（某危险条件的取值集合塌成空集）都要报。
 
 **为什么这是止血而不是锦上添花**：箱堵塞判据不可达 = 入量账 × 容量账两条基础规则的一次组合，三周没有任何人做这步验算；不是没人仔细，是没有任何清单要求把入量和容量放进同一次运算。
@@ -121,7 +146,7 @@ owner 当场用直觉命中一例并验算成立——**5 满 1 半条件定理*
 | **D-04** | `model_faces.candidates`（拒真席收件箱）放进 canonical ⇒ 补线的主装置被 ritual 成本掐死 | **修** | §3.6：`candidates` 全部落 L2 `rules/derived/`；只有 owner 裁定后的 `stricter` / `looser` 面进 canonical，与设计自己的「L2 → L1 晋级」通道一致 |
 | **D-05** | C-15 回测失败：`≥1 条 convention` 的存在性判据被**已经在册的那条**前件满足（`rate_lemma_scope.statement` 已写 `(ii) minimal-lane-allocation convention`） | **修** | §3.3：换成有界的**分母覆盖率**——`allocation_choices[]` 必须覆盖算术里出现的每一个分母，不是「≥1 条」。与流程侧 §4.4 的聚合问是同一判据的两侧（§5 焊接表） |
 | **F-01** | 批型自述是整套协议的唯一总开关，无人复核，且有一个七步全免的批型（工程/基建批） | **修** | §4.0：批型升为第 0 步，Plan 席逐条件项留痕；fail-closed 兜底（触及可行集/证据链/被承重结论引用的语义面或工件字节 ⇒ 一律不算工程批）；refute 席第 0 攻击面 = 批型判定 |
-| **F-02** | 旗舰样板（箱案参数账）依据 canonical 已退役的读法，且在 MISSING 下写死结论 | **修**（合稿席现场复核**指控成立**，见 §2.5-①） | §4.2 样板重做：结论栏改**待核**；原样板作为负面教材保留。**并按诚实口径回执 owner 第一枪**：箱堵塞判据的「槽数维度」当前判定是**待核**，不是「不可达」；owner 的裁决结论（箱=汇流区合法终点）不受影响，它另有独立支撑（10 s flush 无条件清空 ⇒ 结构上不可毒死） |
+| **F-02** | 旗舰样板（箱案参数账）依据 canonical 已退役的读法，且在 MISSING 下写死结论 | **修**（合稿席现场复核**指控成立**，见 §2.5-①） | §4.2 样板重做；原样板作为负面教材保留。**〔R3·B6 订正〕结论栏不是「待核」，是「不可达」**——统一判读见 §4.2 的 R3 块：件数维度无条件成立，槽数维度 conditional on「单槽容量 50 落入冻结件」。owner 的裁决结论（箱=汇流区合法终点）不受影响，它另有独立支撑（10 s flush 无条件清空 ⇒ 结构上不可毒死） |
 | **F-03** | 拒真侧两步无验收判据、无失败后果；「找不到实例」是零成本合法终态 | **修** | §4.7：搜索面留痕表（把空手而归变成有界断言）+ 两步各补验收判据小节 + 失败后果（与参数账同强度）+ 异源化（登记复核归收批席/refute 席）+ bootstrap 规则（墙台账 v1 前出厂的证明类结论，过严面栏强制 `NOT_ESTABLISHED`，不许空、不许「无」） |
 | **F-04** | fail-closed 计数器是唯一必须改 `src/` 的要求，落不进四卡点，且没有任何批型会触发埋点 | **修** | §4.9：**承认第五卡点 —— 被测码内的报警/计量埋点**（变异哨兵、拒绝率上报、fail-closed 计数、反向哨兵同属此类），并给它有界的义务边界与欠账登记；C-24/C-47 的覆盖强度在批 5 落地前如实降为「部分」 |
 
@@ -183,6 +208,9 @@ owner 当场用直觉命中一例并验算成立——**5 满 1 半条件定理*
 
 1. **`slot_count_clause` 原文**：`"...blocks exactly when its 6 slots are all occupied, REGARDLESS of how many commodity types are involved - bounded mixed absorption with the bound stated in SLOTS, deliberately not in commodity types"`，`adjudicated` 栏另写「the earlier 'six different commodities' phrasing was an **example, not a bound**」。⇒ **REFUTE_reasoning F-02(a) 成立**：流程稿旗舰样板的收官步（「纯流喂养种类 ≤ 3 < 6 ⇒ 不可达」）用的正是 08-06 owner 明文废掉的读法。
 2. **`AXIOM_KERNEL_PROPOSAL_20260806.md:115`** 逐字写着「**6 个独立单槽组×50**」与「同种物品可占多组（**P2 待判**）」。⇒ M-04 成立（单槽容量的答案在仓库里，只是不在 canonical 里）；且 F-02(b) 成立（样板把一条在案待判项判成了对自己结论有利的那一边）。
+   > **〔R3 订正，B6〕本条读到的字节是真的，从它推出的结论是错的。**「P2 待判」这一句是**该文件漏翻的陈旧副本**——同一条裁决 owner 已于 **2026-08-06** 定谳（fill-first），三个登记处只更新了两处（记忆卡、canonical `slot_count_clause.adjudicated`），本条读的正是没更新的第三处。**所以 M-04 仍成立**（单槽容量 50 的 provenance 确实只在批次文书里，那是②项欠账），**F-02(b) 需重述**：原样板确实缺依据（它当时无权把 P2 判向任一边），但**它猜的那一边事后被证明是对的**——错的是依据强度，不是结论。本条本身因此成为病例 **C-53** 的第一手证据：**一次以"机器复核"为名、实为读到陈旧副本的降级**。
+
+
 3. **`rate_lemma_recompute.py:34/:37`**：`util = runs / machines`、`per_machine_runs = runs / machines`。⇒ M-01 成立，C-15 的均摊前件确实活在复算脚本里，六问的六个动词没有一个会让人去读它。
 4. **`ruling_level_inputs` 与 `model_stricter_faces` 类型均为 `str`**。⇒ M-09 成立，`canonical_anatomy.md` §5「显式、闭合，形态良好」的表述作废；结构样板改 `emptiness_adjudication`。
 5. **`test_helpers_power_cover_stencil.py:100`** 读 `rules["semantics"]["power_coverage_stencil"]`。⇒ D-08 成立，「semantics 零消费方」的正确表述是「无 solve-path 消费方，但已有一条 canonical↔实现的等值哨兵」。
@@ -195,16 +223,20 @@ owner 当场用直觉命中一例并验算成立——**5 满 1 半条件定理*
 
 ### 3.1 四层
 
-| 层 | 内容 | 载体 | 权威 | 失效语义 |
-|---|---|---|---|---|
-| **L0 求解器事实** | `globals` / `facility_templates` / `recipes` / `production_targets` / `commodity_metadata` / `routing_rules` | `rules/canonical_rules.json`（本方案不动其字段集） | owner 游戏实测 > 模拟器规则层 | 不失效，只被取代 |
-| **L1 裁决** | 公理 A1–A11、owner 裁决、条目化规则语句、实体参数镜像、双向面登记 | 同文件的 `semantics` 区（改造对象） | owner 裁决 / 公理 | 不自动失效，只被显式取代 |
-| **L2 派生闭包** | 派生规则/定理/界/结晶点/不可达性、拒真候选面、能力册、界可达性台账 | `rules/derived/`（tracked，**不进 `FROZEN_ARTIFACTS`**，一条目一文件） | 前提集 + 推导 + 可复跑收据 | **自动失效**：前提指纹不符 ⇒ `STALE` |
-| **L3 投影视图** | 实体参数表、参数反向索引、条目-谓词矩阵、三类台账投影、能力覆盖率、闭包图 | `docs/generated/`（tracked，可重生） | **无**，每个数字带 L0/L1/L2 出处路径 | currency 测试强制同步 |
+| 稳定类型名〔R3〕 | 本稿显示序号 | 内容 | 载体 | 权威 | 失效语义 |
+|---|---|---|---|---|---|
+| **`SOLVER_INPUT`**（含 `GAME_PARAMETER`、`PROBLEM_CLAIM`） | L0 | `globals` / `facility_templates` / `recipes` / `production_targets` / `commodity_metadata` / `routing_rules` | `rules/canonical_rules.json`（本方案不动其字段集） | owner 游戏实测 > 模拟器规则层 | 不失效，只被取代 |
+| **`GAME_AXIOM` + `OWNER_RULING_EVENT`** | L1 | 公理 A1–A11、owner 裁决、条目化规则语句、实体参数镜像（**R3 改 `GENERATED_PROJECTION`**，见 §3.5）、双向面登记 | 同文件的 `semantics` 区（改造对象） | owner 裁决 / 公理 | 不自动失效，只被显式取代 |
+| **`DERIVED_THEOREM`** | L2 | 派生规则/定理/界/结晶点/不可达性、拒真候选面、能力册、界可达性台账 | `rules/derived/`（tracked，**不进 `FROZEN_ARTIFACTS`**，一条目一文件） | 前提集 + 推导 + 可复跑收据 | **自动失效**：前提指纹不符 ⇒ `STALE` |
+| **`GENERATED_VIEW`** | L3 | 实体参数表、参数反向索引、条目-谓词矩阵、三类台账投影、能力覆盖率、闭包图 | `docs/generated/`（tracked，可重生） | **无**，每个数字带上游类型的出处路径 | currency 测试强制同步 |
+
+> **〔R3·A4 / CONCERN-07〕**：本表原来只用裸层号。**与 `FIRST_PRINCIPLES_DESIGN.md` 的同名层号反义**（映射全表见【R3 修订说明】(R3-b)），按裸层号跨文书引用必然错层——`DIFF_VERDICT.md` §5 的合并建议此前就是这么写的，已同步改。
+>
+> **本表还漏掉一个类型**：`MODEL_CORRESPONDENCE`（按模型约束分行的正当表 + 按游戏自由度分行的覆盖账）在本稿里**没有承载位**——`model_faces` 只登记已被发现并经 owner 裁定的面，是发现物的登记册，不是模型约束的全集索引。这是 `DIFF_VERDICT.md` 分歧 4 的内容，核签书 §7.2 判**方向维持**（正当表可以先建，行判读暂时全部停在"未清欠账"，**不必等 WLOG 组合定理**）。
 
 L2 不进冻结件的三条理由（对抗席核实成立，保留）：节拍不匹配（高频可撤销的产出付不起固定 reseal 底价，结果是没人跑扫描）、权威等级不同（混排必然重演证据等级混用）、冻结文件表达不了条目级自动失效。
 
-**层间接口**：L2 前提集只能指向 L0 / L1 / 更低层级的 L2；L1 引用 L2 只能通过晋级（owner 裁决或外审定谳后 additive 写进 L1，L2 原条目标 `PROMOTED`）。**禁止 L1 把活的 L2 条目当前提**——否则冻结层的正确性挂在非冻结层上。
+**层间接口**〔R3 用类型名重写〕：`DERIVED_THEOREM` 的前提集只能指向 `SOLVER_INPUT` / `GAME_AXIOM` / `OWNER_RULING_EVENT` / 更低层级的 `DERIVED_THEOREM`；`GAME_AXIOM` 引用 `DERIVED_THEOREM` 只能通过晋级（owner 裁决或外审定谳后 additive 写进冻结层，原派生条目标 `PROMOTED`）。**禁止冻结层把活的派生条目当前提**——否则冻结层的正确性挂在非冻结层上。
 
 ### 3.2 L1 条目字段集
 
@@ -261,14 +293,16 @@ L2 不进冻结件的三条理由（对抗席核实成立，保留）：节拍�
 
 1. **`condition` 形式化**（D-02②）。散文 condition 无法被 checker 或扫描器消费，`verdict` 就只是一句声明。形式化后 checker 能对 `computation` 做**独立重算**。
 2. **`NOT_ASSESSED` 禁令改口径**（D-02③）：不看 `scope`/`direction`，改为「**凡 statement 断言了数值界或阻塞条件的条目一律禁 `NOT_ASSESSED`**」。原口径（certified ∧ stricter）对游戏语义类条款天然不适用，而箱条款正是这一类——按原口径它可以合法写 `direction: exact` + `NOT_ASSESSED` 绿灯通过。
-3. **新增 `open_premise_refs`**：判定依赖的在案待判项。箱案的正确形态是 `verdict: conditional` + `open_premise_refs: ["同种物品填槽纪律（P2 待判）"]`，不是 `unreachable`。
+3. **新增 `open_premise_refs`**：判定依赖的在案待判项。**〔R3·B6 订正〕箱案的正确形态是两维分列**：件数维度 `verdict: unreachable`（**无条件**，`open_premise_refs: []`）+ 槽数维度 `verdict: conditional`、`open_premise_refs: ["单槽容量 50 的仓内 provenance（冻结件缺）"]`。统一判读与两条待判项的处置见 §4.2 的 R3 块。
+   > **superseded（R3 20260807，份5外审+核签，BLOCK-10 / P-11 拒收）**：原文写"箱案的正确形态是 `verdict: conditional` + `open_premise_refs: ["同种物品填槽纪律（P2 待判）"]`，**不是 `unreachable`**"。**填槽纪律那一项已作废**——owner 2026-08-06 已定谳 fill-first，本方案的机器复核当时读到的是 `AXIOM_KERNEL_PROPOSAL.md` 漏翻的陈旧副本（这正是病例 C-53 本身）。
 
 ### 3.5 实体参数镜像与 provenance 门槛
 
 `semantics.entities.<facility>` 一实体一条目，字段固定（几何 / 口 / buffer / cycle / `missing[]` / 每个非镜像字段的 `source`）。三条规则：
 
 1. **`missing[]` 必填、可为空数组、不得省略。**缺项写进 `missing`，不是不写。
-2. **与 L0 重叠的字段是镜像，双向等值**（多一个字段、少一个字段都红）。
+2. **与 `SOLVER_INPUT` 重叠的字段是 `GENERATED_PROJECTION`：由 `facility_templates` 机器生成，不手维护**〔**R3 改写，核签书 §10 C11 / BLOCK-11**〕。生成件必须携带 `source_id@release`、`source_digest`、`generator_digest`；**手改即红**（手改把一份投影降级成一条无依据的转述）。currency 测试从"双向等值"改为"重生成后 byte-identical"。
+   > **superseded（R3 20260807，份5外审+核签，BLOCK-11 附带）**：原文写"**与 L0 重叠的字段是镜像，双向等值**（多一个字段、少一个字段都红）"。它与 `FIRST_PRINCIPLES_DESIGN.md` 补-13 硬冲突（那条原本禁止同一事实出现两次），而两版的对勘**漏掉了这处冲突**。核签书 §7.3 订正了外审的处方："取消镜像"不对——`FINAL:271` 规定的是**机器校验**的镜像，不是纯手工；正确处置是**改成生成**（`GENERATED_PROJECTION`），既保住机器校验的价值，又不再有第二份需要人维护的当前权威。四类表示的定义见 `FIRST_PRINCIPLES_DESIGN.md` 补-13 的 R3 改写。
 3. **provenance 门槛（新增，D-16）**：**进冻结件的每个承重量必须能在仓内复验**——vendored 抽取产物 + 抽取脚本 + 收据 + 上游 commit，并配一条与 `src/adapters/industrial_planner/*.json` 同族的 currency 检查。做不到就留在 L2，不进冻结件。
 
 第 3 条是本方案对「第四份拷贝」问题的答案。实测：`facility_templates` 只有五个键，承重参数一个都不在里面；箱的口数另存于冻结的 `preprocess_plan.json`（`box_sink.generic_input_slots = 3`，且语义还不同——generic slot ≠ 物理口）；buffer/cycle 来自未 vendored 的模拟器源码快照，仓内 vendored 的 `device_type_registry.json` 实测无 slot/capacity/flush 字段。**一个进冻结件的承重数字，在仓内无法复验**，就是把 C-12 的形态搬进了冻结件。口数与 `preprocess_plan` 建显式对照字段（含差异说明），checker 断言两者关系而非相等。
@@ -289,7 +323,7 @@ L2 不进冻结件的三条理由（对抗席核实成立，保留）：节拍�
 
 条目字段：`id` / `level` / `kind`（`theorem|bound|impossibility|unreachability|structural_feature|parameter_derivation`）/ `statement` / `scope` / `premises[]` / `premise_fingerprint` / `derivation{method, receipt, recompute_cmd}` / `crystallization{free_variable, collapsed_to, detector}` / `direction` / `status` / `sentinel`。
 
-- **层级可机械计算**：`level = 1 + max(前提 level)`，L0/L1 记 0。给饱和扫描一个终止判据。
+- **层级可机械计算**：`level = 1 + max(前提 level)`，`SOLVER_INPUT` / `GAME_AXIOM` / `OWNER_RULING_EVENT` 记 0。它给扫描一个**深度**判据〔R3：**不是**"已扫尽"判据，见 §4.8〕。
 - **状态机**（D-11/D-10）：`UNREVIEWED`（扫描默认产出）→ 过拒真/反例席 → `ACTIVE` → 前提指纹不符自动转 `STALE` → `RETIRED` / `SUPERSEDED` / `PROMOTED`。
 - **分级失效**（D-10，修反向棘轮）：①指纹不符**自动**转 `STALE`（数据更新，不红）；②只有 `STALE` 且**有 consumers** 时才阻断该批；③`UNREVIEWED` 不计入阻断集。否则 canonical 改一个 `globals` 参数，所有引用它的 ACTIVE 条目当场红，而 L2 由扫描自动增殖——canonical 批的成本会随 L2 规模线性增长，与本方案目标相反。
 - **`kind: unreachability` 是 X-9 空档的正向承载位**（箱堵塞判据、cut 触发条件同归此类），也是界审计的沉淀位。
@@ -394,13 +428,42 @@ L1 命中的量权威等级封顶为「批次文书」，不得直接支撑 cert
 
 **样板（重做，箱案）**：
 
-| 标签 | 判据 | 算式 | 结论 | 未声明前件 |
+| 标签 | 判据 | 算式 | 结论〔R3 订正〕 | 未声明前件 |
 |---|---|---|---|---|
-| class(2) BOUNDED mixed absorber（`semantics.mixed_commodity_flow.terminal_clause`） | 「6 槽全占时堵，**与商品种类数无关**」（`slot_count_clause`，08-06 owner 裁决明文：'six different commodities' 是例子不是界） | 件数维度：3 口 × 1 件/tick ÷ 2.0 s × 10 s = **15 件/冲刷周期** vs 容量 6×50 = **300 件**；槽数维度：**取决于填槽纪律** | **待核** | ①同种物品的后续件是填满已开槽才另开新槽，还是可直接另开新槽（`AXIOM_KERNEL_PROPOSAL_20260806.md:115` 明记「P2 待判」）；②单槽容量 50 的仓内 provenance |
+| class(2) BOUNDED mixed absorber（`semantics.mixed_commodity_flow.terminal_clause`） | 「6 槽全占时堵，**与商品种类数无关**」（`slot_count_clause`，08-06 owner 裁决明文：'six different commodities' 是例子不是界） | 件数维度：3 口 × 1 件/tick ÷ 2.0 s × 10 s = **15 件/冲刷周期** vs 容量 6×50 = **300 件**；槽数维度：fill-first 下满不了 50 就开不出第二槽，而 10 s 冲刷无条件清空 | **不可达**（件数维度**无条件**；槽数维度 **conditional on**「单槽容量 50 落入冻结件」） | ②单槽容量 50 的仓内 provenance（**仍成立**）。〔①填槽纪律待判 —— **已作废**〕 |
 
-量子行：物理入口 3（散文，`protocol_storage_box_wireless.statement`）/ 单口速率 1 件·tick⁻¹（字段，`globals.logistics`）/ tick 2.0 s（字段，`globals.time`）/ 冲刷周期 10 s（散文）/ 槽数 6（散文）/ 单槽容量 50（**批次文书**，`AXIOM_KERNEL_PROPOSAL_20260806.md:115`，非冻结件，L1 级命中）。
+量子行：物理入口 3（散文，`protocol_storage_box_wireless.statement`）/ 单口速率 1 件·tick⁻¹（字段，`globals.logistics`）/ tick 2.0 s（字段，`globals.time`）/ 冲刷周期 10 s（散文）/ 槽数 6（散文）/ 单槽容量 50（**批次文书**，`AXIOM_KERNEL_PROPOSAL_20260806.md:115`，非冻结件，阶梯 L1 级命中）/ **填槽纪律 fill-first（owner 2026-08-06 裁决，canonical `slot_count_clause.adjudicated` 字段）**。
 
-**这张表的正确结论是待核，不是「限制多余」**，因为槽数维度依赖一条在案待判项——若新件可直接另开新槽，6 件即可占满 6 槽，而每 10 s 进货可达 15 件 ⇒ 危险条件**可达**。原样板把这条待判项判成了对自己结论有利的那一边，作为负面教材保留在稿内：**参数都在手上、账也拼了，仍然可以用一条退役读法收官**——这正是参数账必须配「未声明前件」列与量词问的理由。
+#### 〔R3·B6〕C-17 统一判读（核签书 §4.4；**外审 P-11 拒收**）
+
+外审 P-11 提议把 C-17 三处登记统一标 `UNRESOLVED_IN_REVIEW_PACKAGE`。**本仓拒收该处方**——真相在仓内**完全可解析**，实测三条独立证据：
+
+1. **git 时序**：本文件入库于 `8ad9c80`，`FIRST_PRINCIPLES_DESIGN.md` 与 `DIFF_VERDICT.md` 入库于**更晚的** `cc12e9a`。**本文件是陈旧的那一份，不是并列的一份。**
+2. **`00_master_roadmap.md` 08-07 台账行**（`c7f7e70`）逐字记载：三个登记处两处已更新，`AXIOM_KERNEL_PROPOSAL.md` 实体表与推导 #2 两行漏翻仍挂「待判」，**重设计批机器复核恰读陈旧登记 ⇒ 把已判报成待判**；已修，箱堵塞判据「物理不可达」判决恢复。
+3. **canonical 字节**：`semantics.protocol_storage_box_wireless.slot_count_clause.adjudicated` 实测写着 `"2026-08-06 owner (same-commodity multi-slot occupancy confirmed as a direct consequence of the cache-slot axiom; the earlier 'six different commodities' phrasing was an example, not a bound)"`。
+
+**按 P-11 把三份统一标 `UNRESOLVED`，等于让陈旧副本把正确副本拉平**——这正是 C-53 的失效形态（传播层缺陷把一条已生效的 owner 裁决降级成开放问题），也正是本次重设计要消灭的那个病。
+
+**ACCEPT 的是它的过程指控**：审查包里**零原件**（无 canonical、无 owner 裁决记录、无 roadmap 行、无 commit）。我们知道答案，却没发证据，于是审查只能判 `UNRESOLVED`。这与 CONCERN-05 是同一条，处方是 `EVIDENCE_MANIFEST`（挂批 C，**优先级应提到最前**）。
+
+**统一判读（三个登记处此后一律照此写，逐字）**：
+
+> **C-17 = 不可达。**
+> **件数维度无条件成立**：3 口 × 1 件·tick⁻¹ ÷ 2.0 s × 10 s = **15 件/冲刷周期** vs **6 × 50 = 300 件**容量。
+> **槽数维度 conditional on「单槽容量 50 落入冻结件」**：填槽纪律（同种货填满已开槽才另开新槽）已于 **2026-08-06 由 owner 定谳**，满不了 50 就开不出第二槽，而 10 s 冲刷无条件清空。
+
+**两条待判项的处置**：
+
+| 项 | 原状态 | R3 判 |
+|---|---|---|
+| **①同种物品填槽纪律** | 本方案 §8 挂「待判」 | **已作废** —— owner 08-06 已定谳 fill-first |
+| **②单槽容量 50 的仓内 provenance** | 本方案 §8 挂「待判」 | **仍成立** —— owner 口述、冻结件缺；挂 freeze-ritual 批。这正是补-11 与 CONCERN-02 要治的形态：**owner 口述的最高权威事实，按四件 provenance 门槛进不了理论文书**（处方 = P-12 的 `oneOf` 四型 provenance，挂批 C，核签书判它是**性价比最高的一项**——它当场解锁这条在案欠账） |
+
+> **superseded（R3 20260807，份5外审+核签，BLOCK-10）**：本样板的结论栏原写 **「待核」**，并附一段"**这张表的正确结论是待核，不是「限制多余」**，因为槽数维度依赖一条在案待判项——若新件可直接另开新槽，6 件即可占满 6 槽，而每 10 s 进货可达 15 件 ⇒ 危险条件**可达**"。**那个"若"已被 owner 08-06 的裁决关掉**，本方案当时读的是漏翻的陈旧副本。
+>
+> **但原样板作为负面教材的价值不变，且现在有了第二重**：第一重是"**参数都在手上、账也拼了，仍然可以用一条退役读法收官**"（原样板犯的）；第二重是"**改正一条退役读法时，可能读到另一份陈旧副本，从而把已判的报成待判**"（本方案自己犯的，= C-53）。两重合起来说明的是同一件事：**传播层的缺陷不挑方向，它既能让你放过错的，也能让你推翻对的。**
+
+**这正是参数账必须配「未声明前件」列与量词问的理由**——两次失效都发生在"前件是什么、它现在是什么状态"这一格上。
 
 owner 的裁决结论（箱 = 汇流区合法终点）不受影响：它另有独立支撑——10 s flush 无条件清空 ⇒ 结构上不可毒死，即便瞬时堵门也 ≤10 s 自愈。**受影响的只是「用哪一层论证去支撑它」。**
 
@@ -518,7 +581,7 @@ owner 的裁决结论（箱 = 汇流区合法终点）不受影响：它另有�
 
 **职责**：公理 II 的流程落点。**凭据**：`【饱和扫描收据】`。
 
-**三层圈定**：层 0 种子集 = 本结论前提集 + 本批新入账的参数/规则；层 1 邻域 = 资源账邻接（九行账目行）+ 实体邻接（同实体/同商品/同端口/同谓词）；层 2 及以上只在层 1 产出新结晶时展开（回灌重跑），默认深度上限 3 轮，到顶未饱和则**登记「未扫尽」**。
+**三层圈定**：层 0 种子集 = 本结论前提集 + 本批新入账的参数/规则；层 1 邻域 = 资源账邻接（九行账目行）+ 实体邻接（同实体/同商品/同端口/同谓词）；层 2 及以上只在层 1 产出新结晶时展开（回灌重跑），默认深度上限 3 轮，到顶则**登记 `NOT_EXHAUSTIVE`**〔R3：原写"到顶未饱和则登记「未扫尽」"，措辞隐含"没到顶 = 饱和"，见 §4.8 的停机判据改写〕。
 
 **组合阶数**：只做 pairwise + 结晶回灌，不做全 k 元。塌点几乎总是两本账相乘/相除/取奇偶产生的（箱案 = 入量账 × 容量账；5 满 1 半 = 总量账 × 两档量化账），三元以上通过回灌后再 pairwise 达到。
 
@@ -526,7 +589,19 @@ owner 的裁决结论（箱 = 汇流区合法终点）不受影响：它另有�
 
 **产出登记**：一律进 L2 `rules/derived/`（单一家，M-08），状态 `UNREVIEWED`，须过拒真/反例席才转 `ACTIVE`（§1.4）。
 
-**停机判据**：一轮 pairwise 零新结晶 = 饱和；深度到顶 = 未扫尽。`saturation_runs[]` 记 `{scope, started, rounds, new_entries[], reviewed_count, terminated_by}`；**`terminated_by: budget` 不得被引用为「已饱和」**。
+**停机判据**〔**R3·B1 全面改写，P-17 直接收 / BLOCK-13**〕：一轮 pairwise 零新结晶 ⇒ 状态 **`PAIRWISE_FIXED_POINT_INCOMPLETE`**，**不是"饱和"**；深度到顶 ⇒ `NOT_EXHAUSTIVE`；预算到顶 ⇒ `UNKNOWN`。`saturation_runs[]` 记 `{scope, started, rounds, new_entries[], reviewed_count, terminated_by}`；**`terminated_by: budget` 不得被引用为「已饱和」**，且**三个状态都不得写成"饱和""子空间已扫尽""无更多定理"**。
+
+> **superseded（R3 20260807，份5外审+核签，BLOCK-13，核签判 ACCEPT 全额）**：本行原逐字写 **"一轮 pairwise 零新结晶 **= 饱和**；深度到顶 = 未扫尽"**。
+
+**三前提反例（数学上平凡）**：取 `x ≥ 0`、`y ≥ 0`、`x + y ≤ −1`。**任意两条**的可行域都是二维非空——不发生本节"塌点三问"②定义的三种降维（连续→有限档、有限档→单点、集合→空集），所以一轮 pairwise **零新结晶**，按原文规定停机并报"饱和"。**而三条的合取为空集**——漏掉的恰恰是**最强的负结晶**，而本节自己明写"负结晶（危险条件塌成空集）都要报""负结晶直接喂给可达性尺子步与界审计"。**扫描漏掉的正是它自己最看重的那一类产出。**
+
+**回灌救不了**：本节规定"三元以上通过回灌后再 pairwise 达到"，但回灌的**输入是"新结晶"**；反例里没有任何一对结晶，所以回灌池为空，**第一轮即到达固定点**。
+
+**核签书加重的一条（与 owner 的规则派生闭包公理直接相关）**：本方案 §1.3 用作旗舰样板的 **5 满 1 半条件定理**是**五前提塌点**——钢瓶总量 5.5 / 带容量 1 件·tick⁻¹ / 配方 2:1 / 免分流目标约束 / 六台全开，**五条来自不同派生层级的前提合起来**才把占空逼进两档。**设计的旗舰样板本身就在 pairwise 的可达范围之外，而设计却用 pairwise 当停机判据。**三前提结晶不是构造出来的病理例，**它是这个项目已经发生过的类**。
+
+**pairwise 扫描的正确定位 = 猜想生成与优先级启发（HEURISTIC）**，**不得**作为"无更多定理"或"子空间已饱和"的证据。
+
+**承重闭包结论必须交给对相应理论完备的求解器或 proof checker**，取得 **UNSAT core / 模型 / proof object**（LP / SMT / 有限域穷举 / 伪布尔）。**本仓有现成载体，不是新建**：`certside/sidecar/runner.py` 的 **OPB → RoundingSat(proof) → veripb** 链，其 `fail-closed` 按**结论行 anchored 唯一匹配**判定（**刻意不用退出码**——veripb 失败 exit 0、RoundingSat UNSAT exit 1，见该文件头注 `:3-4`）。这条链已经产出过 **PB-03 `(1326,34)` residual-band UNSAT** 的机器可验证书。这同时是 `FIRST_PRINCIPLES_DESIGN.md` §1.9 R3 改写里"机器检查能力第 3 类"的在案实例——**把承重闭包交给完备求解器不是一件做不到的事**，本仓已经做过。
 
 **验收**：收据含层 1 全集清单；有关对逐条判定，无关对以补集形式表达（完备性由全集清单保证，不由 200 行「无关」保证，M-13②）；停机判据到没到写明；未判条数进方向暴露栏。
 **诚实边界**：扫描跑在算术层，几何层（带子能不能拐、格位够不够）扫不出；需要游戏实测的语义、需要仓库外知识的同样扫不出。收据必须写明「本轮扫描的层」——这本身就是覆盖层声明的一个实例。
@@ -574,7 +649,22 @@ owner 的裁决结论（箱 = 汇流区合法终点）不受影响：它另有�
 
 **轻量档**（有牌可打的降级比无牌可打的全套更可能被真的执行）：凭据只填必填格、饱和扫描只跑一轮 pairwise 不回灌、拒真侧只填搜索面留痕表不做实例构造。**轻量档批不得出厂证明类结论**，只能出叙述层结论。
 
-**四条反退化条款**：触发矩阵是硬的（不满足触发条件的步不许要求填，也不许「顺手都填一下」）；每步给预算且节尾记 `耗时/填表人`（N-06 给了数据源）；退化信号常设监测（某步连续三批「不适用」> 70% ⇒ 触发条件回炉；同一句理由跨批复制 ⇒ 收批席抽查）；**加不出停机判据的检查不许进**。
+**四条反退化条款**：触发矩阵是硬的（不满足触发条件的步不许要求填，也不许「顺手都填一下」）；每步给预算且节尾记 `耗时/填表人`（N-06 给了数据源）；退化信号常设监测（某步连续三批「不适用」> 70% ⇒ 触发条件回炉；同一句理由跨批复制 ⇒ 收批席抽查）；**加不出完备停机判据的检查不许当硬门进——但它可能仍是一条必须登记的义务**〔**R3·B3 改写，P-02 改造后收 / BLOCK-02**〕。
+
+第四条按四态判：
+
+| # | 情形 | 处置 | 落哪个既有台账 |
+|---|---|---|---|
+| **A** | 推不出（无法从目标或经验风险推出） | **删** | — |
+| **B** | 必要 + **完备停机判据** | **收，实现为硬检查** | 正常行 |
+| **C** | 必要，但只有**半判定 / 预算内搜索 / 不完备算法** | **保留义务**，输出 `PASS`/`FAIL`/**`UNKNOWN`**；`UNKNOWN` 阻断无条件 certified 结论（只能出 conditional） | 既有 **`未核`** 格（界台账 / 能力册第三态） |
+| **D** | 必要，但**当前无可执行判据** | **登记为开放证明义务**，写明阻断的命题范围 | 既有 **开放欠账台账**（§4.6，含到期日 / 负责人 / **阻断范围**） |
+
+> **superseded（R3 20260807，份5外审+核签，BLOCK-02）**：第四条原逐字写"**加不出停机判据的检查不许进**"，与 `FIRST_PRINCIPLES_DESIGN.md` §1.9 的三格表第二格是同一条。份 5 外审指出它会把"必要但当前不可判定的义务"整条删掉。**停机判据决定的是检查器能否给出 `PASS`，不决定证明义务是否存在。**
+>
+> **C/D 两档并进既有词表与既有台账，不新造第二套开放态**（核签书 §5 重写②：新造一套会当场违反单一权威原则）。本方案已有的开放态承载位：界台账的 `NOT_ASSESSED` + 欠账号、能力册的"未核（给探针）"、`reachability.verdict` 的 `conditional` + `open_premise_refs`、开放欠账台账的阻断范围——**C 落前三个，D 落最后一个。**
+>
+> **核签书同时把这一项的定性从"结构重写"降为"编辑级改动"**（成本：两段文字 + 一次词表对齐），因为三格表只在两处出现，且四种开放态词全稿已有。
 
 ---
 
@@ -606,10 +696,10 @@ owner 的裁决结论（箱 = 汇流区合法终点）不受影响：它另有�
 | **批 0** | **纯文档/模板，零 freeze-ritual，当天可上线** | ①三条消费侧闸（§3.8）；②八步模板 v1（含聚合问、闭合层枚举、批型判定留痕、两级参数账 + 九行对表、MISSING 三级阶梯、保证方受控词表六选一、搜索面留痕表、fail-closed 二选一）；③席位清单改写（refute 五攻击面各自产出形式 + 分席矩阵 + 拒真席便宜通道）；④外发登记台账建册 + 首批数据（本批自己的 GPT Pro 包）；⑤开放欠账台账建册 + 首批数据（C-08 四个 call site、埋点欠账、canonical 措辞两笔） | ①五份文件存在且两张台账首批数据非空；②**本批自己按新模板出一份完整凭据**（自量，N-08）；③随机取三份历史承重文书回测：三条消费侧闸各至少命中一次（不命中说明闸写空了） |
 | **批 1** | **纯工具，tracked，不动冻结件** | ①`OWN-M*`/`SIM-*`/`W-*` 编号纯抽取索引表（append-only）；②vendored 注册表 × `facility_templates` 差集对账脚本（30 行级）；③L2 `rules/derived/` 立架（schema + 一条目一文件 + `UNREVIEWED` 状态机 + 指纹规范化规格 + currency 测试 + `_authority` 头 + 打包名单）；④L3 视图生成器 V1–V6 + currency 测试 + 非权威头部 | ①索引表条数与 `rg` 实测一致（实测在册 M01–M24 + M27 + M29，缺 M25/M26/M28 须如实记为缺口）；②差集脚本产出首份清单且至少命中 `item_log_admission` / `item_pipe_admission`（C-06 类当天可命中）；③currency 测试的**变异自证**：手改一个 L2 前提取值 ⇒ 测试转红；④V2 的代码列头部有「非完备」标注；⑤指纹在两台机器/两次会话重算一致 |
 | **批 2** | **freeze-ritual 第一批（止血批），纯加键** | `premises[]` / `allocation_choices[]` / `reachability`（形式化 condition）/ `parameters[]` / `parameter_fingerprint` / `id` / `scope` / `direction` / `implementation_anchors[]` / `parity_sentinel` / `_derivation_matrix` / `_epoch`（降级标记）；schema 宽进（新字段若出现必须合法，不设 required）+ 条目分三类；schema sha 钉进测试常量；**与已挂账的 canonical 措辞修改合批**（C-15 REJUDGE 措辞、C-17 箱条款措辞） | ①旧字段逐字段 **byte-identical**（08-07 批同款机器 diff）；②**八段 byte-identical**；③**两个 schema 执行点**都跑通（`preprocess_context` + `placement_generator`）；④离线断言「现行 canonical 字节 × 新 schema = 通过」先跑、后提交；⑤17 处直接 pin + 连锁 B/C/D 逐条留痕（`RESEAL_MANIFEST`）；⑥形态 checker 以 **advisory** 上线，产出首份违规清单 |
-| **批 3** | **freeze-ritual 搬迁批，字段级、机器可验** | `required` 全开；`applies_to` 拆三字段；`predicate_status` 13/13；`model_faces` 结构化（只装 owner 已裁的 stricter/looser）；`semantics.entities` 实体镜像（**只装可在仓内复验的量**，其余留 L2） | ①旧值 → 新位置**逐项机器断言相等**；②镜像与 `facility_templates` **双向等值** checker 通过；③八段 byte-identical；④provenance 门槛 checker：每个承重量有 vendored 抽取产物 + 脚本 + 收据 + 上游 commit，否则该量不得出现在冻结件；⑤`consumers` 由 L3 生成且 currency 测试通过（canonical 内零 consumers 字段） |
+| **批 3** | **freeze-ritual 搬迁批，字段级、机器可验** | `required` 全开；`applies_to` 拆三字段；`predicate_status` 13/13；`model_faces` 结构化（只装 owner 已裁的 stricter/looser）；`semantics.entities` 改为 **`GENERATED_PROJECTION`**（由 `facility_templates` 生成，**只装可在仓内复验的量**，其余留 `DERIVED_THEOREM` 层）〔R3·A3〕 | ①旧值 → 新位置**逐项机器断言相等**；②**重生成后 byte-identical**（〔R3·A3〕原写"镜像与 `facility_templates` **双向等值** checker 通过"；生成件不需要双向等值检查，它需要的是可重生性 + 三个 digest 在场）；③八段 byte-identical；④provenance 门槛 checker：每个承重量有 vendored 抽取产物 + 脚本 + 收据 + 上游 commit，否则该量不得出现在冻结件；⑤`consumers` 由 L3 生成且 currency 测试通过（canonical 内零 consumers 字段） |
 | **批 4** | **freeze-ritual 改写批，不可机器验，条目数 ≤3** | 三处父句原地改写（`terminal_clause` / `slot_count_clause` / `rationale_restated`）+ `superseded_readings[]` | **前置：owner 先裁「是否撤销 08-07 的 additive 形状决策」**；①逐条目双席裁决记录 + owner 确认，**不冒充机器验证**；②改写前后由两个独立席位各自陈述「这句话的当前结论是什么」，两份一致才提交；③八段 byte-identical |
 | **批 5** | **埋点批（第五卡点）** | fail-closed 计数器 + 理由码；剥落/降级计入拒绝率；删限制的反向哨兵；高危条款的 canonical↔实现 parity sentinel（按 `power_coverage_stencil` 先例） | ①每个新增计数器过**变异自证**（改 fail-open ⇒ 用例转红）；②生产口径跑一次，「真零 vs 无埋点」在报告里可区分；③存量欠账清单条数下降且下降量与本批改动面一致；④parity sentinel 按既有质量线（守卫是唯一防线的几何 + 自产字节 + 物理可实现） |
-| **批 6** | **三类审计首轮** | 墙审计首轮（路 1 + 路 5 + 路 2）、**界审计首轮**（全部带数值界/阻塞条件的条款）、孔审计沿用现行；证书方向暴露栏接线 | ①三张台账 v1 落 L2；②墙台账每行三态无空；不可表达项带实例并按规模估计降序排；③**界台账每行有 verdict 或 `NOT_ASSESSED` + 欠账号**，`open_premise_refs` 非空的行标 `conditional`；④路 3/4「本轮未覆盖」写进覆盖层声明；⑤bootstrap 回扫：首轮前出厂的证明类结论逐条补方向暴露栏；⑥**箱案在界台账里有一行，且其 verdict 与本方案 §4.2 样板一致（`conditional` + 待判项）** |
+| **批 6** | **三类审计首轮** | 墙审计首轮（路 1 + 路 5 + 路 2）、**界审计首轮**（全部带数值界/阻塞条件的条款）、孔审计沿用现行；证书方向暴露栏接线 | ①三张台账 v1 落 L2；②墙台账每行三态无空；不可表达项带实例并按规模估计降序排；③**界台账每行有 verdict 或 `NOT_ASSESSED` + 欠账号**，`open_premise_refs` 非空的行标 `conditional`；④路 3/4「本轮未覆盖」写进覆盖层声明；⑤bootstrap 回扫：首轮前出厂的证明类结论逐条补方向暴露栏；⑥**箱案在界台账里有两行（件数维度 / 槽数维度），且 verdict 与本方案 §4.2 的 R3 统一判读一致**：件数维度 `unreachable` + `open_premise_refs: []`；槽数维度 `conditional` + `open_premise_refs: ["单槽容量 50 的仓内 provenance"]`〔R3·B6 订正，原写"有一行，`conditional` + 待判项"〕 |
 | **批 7** | **freeze-ritual 收敛批** | `provenance` 统一，旧七字段（`adjudicated`/`authority`/`supersedes`/`clarifies`/`source_doc`/`adopted`/`adjudication_ref`）退役 | ①旧字段值 → 新对象映射表逐项机器比对；②白名单去掉旧字段名；③八段 byte-identical |
 
 **并行关系**：批 0 / 批 1 / 批 5 / 批 6 不动 canonical，与批 2/3/4/7 可并行，不占 freeze-ritual 窗口。三次 canonical 批应尽量与其他线的 canonical 需求合批——底价付一次。
@@ -628,7 +718,7 @@ owner 的裁决结论（箱 = 汇流区合法终点）不受影响：它另有�
 |---|---|---|---|
 | C-15 均摊前件 | 挡 | **挡**（机位订正） | 聚合问 + `allocation_choices` 直接命中 `runs / machines`；原稿把 C-15 的机位写成 C-16 的位置（给定 r），已订正 |
 | C-16 审查落错层 | 挡 | **挡**（条件：闭合层枚举） | 自由文本版不可证伪；闭合枚举后勾「审了」是可指控断言 |
-| C-17 箱堵塞判据 | 挡（三步独立命中） | **挡**（条件：批 0 消费侧闸 + 批 6 界台账） | 原「三步独立」不成立（三步悬在同一缺失参数与同一词形判定）；真正起作用的是消费侧闸（界未核的条款不得作承重前提）与界审计 |
+| C-17 箱堵塞判据 | 挡（三步独立命中） | **挡**（条件：批 0 消费侧闸 + 批 6 界台账） | 原「三步独立」不成立（三步悬在同一缺失参数与同一词形判定）；真正起作用的是消费侧闸（界未核的条款不得作承重前提）与界审计。**〔R3·B6〕本行说的是"装置挡不挡得住"，不是 C-17 的判读**——判读见 §4.2 的 R3 统一块（不可达；件数无条件、槽数 conditional on 单槽容量 50 落冻结件） |
 | C-08 实现侧不跟 | 挡 | **挡**（条件：开放欠账台账的阻断范围） | 名单不是瓶颈，阻断才是 |
 | C-24 软失败零信号 | 挡 | **部分 → 批 5 后挡** | 计数器落地前无数据源 |
 | C-47 剥落绊线恒零 | 挡 | **部分 → 批 5 后挡** | 同上 |
@@ -675,7 +765,8 @@ owner 的裁决结论（箱 = 汇流区合法终点）不受影响：它另有�
 **未清的欠账（本方案自己制造的）**：
 
 - `canonical_anatomy.md` §5 关于 `ruling_level_inputs` 「显式、闭合、形态良好」的表述已被推翻（§2.5-④），**两份设计稿沿用了它**（形态稿已自行订正，流程稿 §9 复合表未订正）。三份文件的头注订正挂在本批的连锁账上，本批只登记不擅改（跨席位文书）。
-- 箱案的两条待判项（同种物品填槽纪律、单槽容量 50 的仓内 provenance）已进 owner 裁决包，未决。**在它们决之前，任何引用「箱堵塞判据不可达」的下游结论都应被视为待核**——这包括 U-01 席的箱口限制「多余、二期删」判定与定理 #21「箱只是有界吸收」的引用。这条已经是一次实际的连锁重写触发，负责人与到期日随批 0 的开放欠账台账落地。
+- 箱案的待判项〔**R3·B6 订正**〕：**①同种物品填槽纪律 —— 已作废**（owner 2026-08-06 已定谳 fill-first，本方案当时读到的是漏翻的陈旧副本，= 病例 C-53）；**②单槽容量 50 的仓内 provenance —— 仍成立**（owner 口述、冻结件缺，挂 freeze-ritual 批）。**统一判读见 §4.2 的 R3 块：C-17 = 不可达，件数维度无条件，槽数维度 conditional on ②。**
+  > **superseded（R3 20260807，BLOCK-10）**：原文写"**在它们决之前，任何引用「箱堵塞判据不可达」的下游结论都应被视为待核**——这包括 U-01 席的箱口限制「多余、二期删」判定与定理 #21「箱只是有界吸收」的引用"。①已作废后，该"视为待核"的范围**收窄到只由②支撑的那部分**：件数维度的结论不受②影响（核签书 §4.4）。**但下游那两条引用仍要重核，理由换了**——定理 #21「箱只是有界吸收」的问题不在 C-17，而在**该分类标签的界物理不可达**（3 口 × 10 s 冲刷 vs 6 格，在案记忆卡 `classification-labels-hide-parameters`）；U-01 席的「多余、二期删」判定同理，属删限制三签里的可达性签，须按 §4.3 重跑。**这仍是一次实际的连锁重写触发**，负责人与到期日随批 0 的开放欠账台账落地。
 - 本方案对 §0b 操作卡、过堂表、余量审计表的三处改动**未经 owner 认可**，§4.9 的卡点表在认可前应标「待认可」。
 
 ---
