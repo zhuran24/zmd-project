@@ -34,11 +34,11 @@ such in every item it emits.
   quote naming one of this system's own governance surfaces.  See
   ``_text_blocks`` for the trade that exclusion makes.
 
-Pure standard library, read-only against every scanned object, no LLM, no
-network.  The only thing it writes is its own report under ``.prune/``, and the
-write primitive enforces that.  Nothing consumes the report and producing it
-authorises no edit.  It is deliberately thin: the layers it scans hold tens of
-files, and a scanner that outgrows its subject stops being maintained.
+Read-only against every scanned object, no LLM, no network.  The only thing it
+writes is its own report under ``.prune/``, and the write primitive enforces
+that.  Nothing consumes the report and producing it authorises no edit.  It is
+deliberately thin: the layers it scans hold tens of files, and a scanner that
+outgrows its subject stops being maintained.
 
 Honesty about ``never_read_card``
 ---------------------------------
@@ -121,13 +121,15 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterator, Sequence
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 
 REPORT_DIR_RELPATH = ".prune"
 REPORT_RELPATH = ".prune/memory_reference_report.json"
 REPORT_SCHEMA_VERSION = "prune_memory_reference_report_v1"
 GENERATOR = "devtools/memory_reference_scan.py"
-GENERATOR_VERSION = "1"
+GENERATOR_VERSION = "2"
 
 THREAT_MODEL = "cooperative-operator"
 CONFIDENCE_DETERMINISTIC = "deterministic"
@@ -146,6 +148,11 @@ INDEX_FILENAME = "MEMORY.md"
 LAYER_FILE = "memory_file"
 LAYER_VNEXT = "memory_vnext"
 LAYER_TRANSCRIPT = "transcript"
+
+ARRIVAL_SOURCE_GIT = "git"
+ARRIVAL_SOURCE_FRONTMATTER = "frontmatter"
+ARRIVAL_SOURCE_MTIME = "mtime"
+ARRIVAL_SOURCES = (ARRIVAL_SOURCE_GIT, ARRIVAL_SOURCE_FRONTMATTER, ARRIVAL_SOURCE_MTIME)
 
 FLAGS = ("orphan_card", "dangling_index_entry", "dangling_wikilink", "never_read_card", "said_card_unwritten")
 
@@ -233,8 +240,9 @@ def _read_text(path: Path) -> str:
 def parse_frontmatter(text: str) -> dict[str, str]:
     """Top-level scalar keys of a leading ``---`` block, nothing deeper.
 
-    Four string lookups do not justify a YAML dependency, so nested structure is
-    skipped rather than half-understood.
+    The integrity lookups here intentionally remain flat.  The one nested field
+    needed for arrival time is parsed independently by
+    :func:`frontmatter_modified_at` so these existing semantics do not widen.
     """
     lines = text.split("\n")
     if not lines or lines[0].strip() != "---":
@@ -530,19 +538,79 @@ def read_injection_ledger(path: Path) -> tuple[set[str], datetime | None, dateti
     return injected, first, last, lines
 
 
-def git_added_at(root: Path, path: Path) -> datetime | None:
-    """When a tracked file first appeared, or ``None`` if git cannot say."""
-    args = ["git", "-C", str(root), "log", "--diff-filter=A", "--format=%aI", "-1", "--", str(path)]
+def frontmatter_modified_at(text: str) -> datetime | None:
+    """Parse ``metadata.modified`` from a leading frontmatter block.
+
+    A missing delimiter or field, malformed YAML, a non-mapping metadata value,
+    or an invalid ISO timestamp returns ``None`` so callers can fall back to
+    mtime without turning an advisory scan into an error.
+    """
+    lines = text.split("\n")
+    if not lines or lines[0].strip() != "---":
+        return None
+    closing = next((index for index, line in enumerate(lines[1:], start=1) if line.strip() == "---"), None)
+    if closing is None:
+        return None
+    try:
+        frontmatter = yaml.safe_load("\n".join(lines[1:closing]))
+    except yaml.YAMLError:
+        return None
+    if not isinstance(frontmatter, dict):
+        return None
+    metadata = frontmatter.get("metadata")
+    if not isinstance(metadata, dict) or metadata.get("modified") is None:
+        return None
+    return _parse_timestamp(str(metadata["modified"]))
+
+
+def git_first_added_times(root: Path, cards_dir: Path) -> dict[Path, datetime]:
+    """Map every tracked card path to its earliest author date in one git call.
+
+    Git history is advisory input here: a non-repository root, a missing git
+    executable, a timeout, malformed output, or a path with no add record all
+    produce an empty/partial map.  ``card_arrivals`` then records an mtime
+    fallback instead of failing the whole report.
+    """
+    if not (root / ".git").exists():
+        return {}
+    try:
+        pathspec = cards_dir.resolve().relative_to(root.resolve()).as_posix()
+    except (OSError, ValueError):
+        pathspec = str(cards_dir)
+    args = [
+        "git", "-C", str(root), "log", "--diff-filter=A", "--no-renames",
+        "--format=%H|%aI", "--name-only", "--", pathspec,
+    ]
     try:
         completed = subprocess.run(args, capture_output=True, text=True, timeout=30)
-    except (OSError, subprocess.SubprocessError):
-        return None
-    if completed.returncode != 0 or not completed.stdout.strip():
-        return None
-    return _parse_timestamp(completed.stdout.strip().split("\n")[0])
+    except (OSError, subprocess.SubprocessError, UnicodeError):
+        return {}
+    if completed.returncode != 0:
+        return {}
+
+    arrivals: dict[Path, datetime] = {}
+    commit_at: datetime | None = None
+    for line in completed.stdout.splitlines():
+        header = line.split("|", 1)
+        if len(header) == 2 and re.fullmatch(r"[0-9a-fA-F]+", header[0]):
+            commit_at = _parse_timestamp(header[1])
+            continue
+        if not line or commit_at is None:
+            continue
+        path = (root / line).resolve()
+        previous = arrivals.get(path)
+        if previous is None or commit_at < previous:
+            arrivals[path] = commit_at
+    return arrivals
 
 
-def scan_never_read(root: Path, cards: dict[str, Card], ledger_path: Path) -> tuple[list[Finding], dict[str, Any]]:
+def scan_never_read(
+    root: Path,
+    cards: dict[str, Card],
+    ledger_path: Path,
+    *,
+    git_arrivals: dict[Path, datetime] | None = None,
+) -> tuple[list[Finding], dict[str, Any]]:
     injected, first, last, lines = read_injection_ledger(ledger_path)
     if not lines:
         return [], {"status": "no_data", "layer": LAYER_VNEXT, "missing_ledger": str(ledger_path),
@@ -550,10 +618,13 @@ def scan_never_read(root: Path, cards: dict[str, Card], ledger_path: Path) -> tu
     window = {"ledger": str(ledger_path), "ledger_first_entry": first.isoformat() if first else None,
               "ledger_last_entry": last.isoformat() if last else None}
     findings: list[Finding] = []
+    if git_arrivals is None:
+        cards_dir = next(iter(cards.values())).path.parent if cards else root / VNEXT_CARDS_RELPATH
+        git_arrivals = git_first_added_times(root, cards_dir)
     for key, card in sorted(cards.items()):
         if key in injected:
             continue
-        added = git_added_at(root, card.path)
+        added = git_arrivals.get(card.path.resolve())
         # A card older than the ledger may well have been read before the ledger
         # existed, and no amount of reading it now would show up.  Only a card
         # the ledger fully covers can be a candidate.
@@ -787,27 +858,48 @@ class CardArrival:
     tokens: frozenset[str]
 
 
-def card_arrivals(root: Path, file_cards: dict[str, Card], vnext_cards: dict[str, Card]) -> list[CardArrival]:
-    """When each live card appeared, with the topic words it is about.
+def card_arrivals(
+    root: Path,
+    file_cards: dict[str, Card],
+    vnext_cards: dict[str, Card],
+    *,
+    git_arrivals: dict[Path, datetime] | None = None,
+) -> tuple[list[CardArrival], dict[str, int]]:
+    """When each live card appeared and which durable source supplied it.
 
-    vnext cards are tracked, so git dates them; file-memory cards are outside
-    the repository, so mtime is the only date on offer.  An edited file-memory
-    card therefore looks newer than it is, which can only suppress a candidate,
-    never invent one.
+    Repository cards use their earliest git author date and file-memory cards
+    use ``metadata.modified``.  Either layer falls back to mtime when its
+    preferred source cannot answer; the returned counters make every such
+    fallback visible in the report.
     """
     arrivals: list[CardArrival] = []
+    sources = {source: 0 for source in ARRIVAL_SOURCES}
     for key, card in file_cards.items():
-        try:
-            moment: datetime | None = datetime.fromtimestamp(card.path.stat().st_mtime, tz=timezone.utc)
-        except OSError:
-            continue
-        if moment is not None:
-            arrivals.append(CardArrival(LAYER_FILE, key, moment, frozenset(topic_tokens(f"{key} {card.display}"))))
+        moment = frontmatter_modified_at(card.body)
+        source = ARRIVAL_SOURCE_FRONTMATTER
+        if moment is None:
+            source = ARRIVAL_SOURCE_MTIME
+            try:
+                moment = datetime.fromtimestamp(card.path.stat().st_mtime, tz=timezone.utc)
+            except OSError:
+                continue
+        sources[source] += 1
+        arrivals.append(CardArrival(LAYER_FILE, key, moment, frozenset(topic_tokens(f"{key} {card.display}"))))
+    if git_arrivals is None:
+        cards_dir = next(iter(vnext_cards.values())).path.parent if vnext_cards else root / VNEXT_CARDS_RELPATH
+        git_arrivals = git_first_added_times(root, cards_dir)
     for key, card in vnext_cards.items():
-        moment = git_added_at(root, card.path)
-        if moment is not None:
-            arrivals.append(CardArrival(LAYER_VNEXT, key, moment, frozenset(topic_tokens(f"{key} {card.display}"))))
-    return arrivals
+        moment = git_arrivals.get(card.path.resolve())
+        source = ARRIVAL_SOURCE_GIT
+        if moment is None:
+            source = ARRIVAL_SOURCE_MTIME
+            try:
+                moment = datetime.fromtimestamp(card.path.stat().st_mtime, tz=timezone.utc)
+            except OSError:
+                continue
+        sources[source] += 1
+        arrivals.append(CardArrival(LAYER_VNEXT, key, moment, frozenset(topic_tokens(f"{key} {card.display}"))))
+    return arrivals, sources
 
 
 def scan_said_card_unwritten(promises: Sequence[Promise], arrivals: Sequence[CardArrival], *,
@@ -983,14 +1075,19 @@ def build_report(
         other_layers=file_aliases | archive_ids,
     ))
 
-    never_read, vnext_status = scan_never_read(root, vnext_cards, ledger)
+    git_arrivals = git_first_added_times(root, vnext_dir)
+    never_read, vnext_status = scan_never_read(
+        root, vnext_cards, ledger, git_arrivals=git_arrivals,
+    )
     findings.extend(never_read)
 
     promises, promise_stats = collect_promises(transcript_dir)
     # Current namespace only: a promise made in *this* project's transcripts is
     # kept by a card landing in *this* project's inbox.  Counting a neighbour's
     # card as the fulfilment would silently suppress candidates here.
-    arrivals = card_arrivals(root, file_cards, vnext_cards)
+    arrivals, arrival_sources = card_arrivals(
+        root, file_cards, vnext_cards, git_arrivals=git_arrivals,
+    )
     findings.extend(scan_said_card_unwritten(promises, arrivals, window_days=window_days))
 
     findings.sort(key=lambda item: (item.layer, item.flag, item.subject, item.locator))
@@ -1003,6 +1100,7 @@ def build_report(
 
     return {
         "schema_version": REPORT_SCHEMA_VERSION,
+        "arrival_source": arrival_sources,
         "metadata": {
             "generator": GENERATOR,
             "generator_version": GENERATOR_VERSION,

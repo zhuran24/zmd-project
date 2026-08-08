@@ -59,8 +59,16 @@ def _touched(path: Path, when: str) -> Path:
     return path
 
 
-def _file_card(directory: Path, name: str, *, body: str = "body", description: str = "") -> Path:
-    front = f"---\nname: {name}\ndescription: \"{description}\"\n---\n"
+def _file_card(
+    directory: Path,
+    name: str,
+    *,
+    body: str = "body",
+    description: str = "",
+    modified: str | None = None,
+) -> Path:
+    metadata = f"metadata:\n  modified: {modified}\n" if modified is not None else ""
+    front = f"---\nname: {name}\ndescription: \"{description}\"\n{metadata}---\n"
     return _write(directory / f"{name}.md", front + body + "\n")
 
 
@@ -524,6 +532,179 @@ def test_a_vnext_card_added_in_the_window_can_also_keep_a_promise(world: dict[st
     commit_cards(world, when="2026-07-13T00:00:00+00:00")
     report = build(world)
     assert report["metadata"]["flag_counts"]["said_card_unwritten"] == 0
+
+
+def test_vnext_arrival_uses_earliest_git_add_after_readd_and_mtime_rewrite(
+    world: dict[str, Path],
+) -> None:
+    """Git first-add survives both a later re-add and a metadata-only rewrite."""
+    _transcript(world["transcripts"], "session-a", [(PROMISE_AT, PROMISE)])
+    card = _vnext_card(world["cards"], "pkill-argv-self-match-pitfall", title="pkill -f 自杀坑")
+    commit_cards(world, when="2026-07-13T00:00:00+00:00")
+
+    relative = card.relative_to(world["root"]).as_posix()
+    _git(world["root"], "rm", "-q", "--", relative)
+    _git(world["root"], "commit", "-q", "-m", "remove card", when="2026-07-20T00:00:00+00:00")
+    card = _vnext_card(world["cards"], "pkill-argv-self-match-pitfall", title="pkill -f 自杀坑")
+    commit_cards(world, when="2026-08-02T00:00:00+00:00")
+    _touched(card, "2099-01-01T00:00:00+00:00")
+
+    report = build(world)
+    assert report["metadata"]["flag_counts"]["said_card_unwritten"] == 0
+    assert scan.git_first_added_times(world["root"], world["cards"])[card.resolve()] == datetime(
+        2026, 7, 13, tzinfo=timezone.utc,
+    )
+    assert report["arrival_source"] == {"git": 2, "frontmatter": 0, "mtime": 1}
+
+
+def test_file_arrival_uses_frontmatter_modified_after_mtime_rewrite(world: dict[str, Path]) -> None:
+    _transcript(world["transcripts"], "session-a", [(PROMISE_AT, PROMISE)])
+    card = _file_card(
+        world["memory"],
+        "pkill-argv-self-match-pitfall",
+        description="pkill -f 自杀坑",
+        modified="2026-07-13T00:00:00Z",
+    )
+    _touched(card, "2099-01-01T00:00:00+00:00")
+    _index(world["memory"], ["alpha", "pkill-argv-self-match-pitfall"])
+
+    report = build(world)
+    assert report["metadata"]["flag_counts"]["said_card_unwritten"] == 0
+    assert report["arrival_source"] == {"git": 1, "frontmatter": 1, "mtime": 1}
+
+
+def test_both_primary_arrival_sources_fall_back_to_mtime_and_are_counted(tmp_path: Path) -> None:
+    root = tmp_path / "not-a-repository"
+    file_dir = root / "file-cards"
+    vnext_dir = root / "vnext-cards"
+    file_card = _touched(_file_card(file_dir, "file-fallback"), "2026-07-13T00:00:00+00:00")
+    vnext_card = _touched(_vnext_card(vnext_dir, "vnext-fallback"), "2026-07-14T00:00:00+00:00")
+
+    arrivals, sources = scan.card_arrivals(
+        root,
+        scan.load_cards(file_dir, layer=scan.LAYER_FILE, key_field="name"),
+        scan.load_cards(vnext_dir, layer=scan.LAYER_VNEXT, key_field="id"),
+    )
+
+    assert {arrival.key: arrival.at for arrival in arrivals} == {
+        file_card.stem: datetime(2026, 7, 13, tzinfo=timezone.utc),
+        vnext_card.stem: datetime(2026, 7, 14, tzinfo=timezone.utc),
+    }
+    assert sources == {"git": 0, "frontmatter": 0, "mtime": 2}
+    assert not (root / ".git").exists()
+
+
+def test_vnext_path_without_an_add_record_falls_back_to_mtime(tmp_path: Path) -> None:
+    root = tmp_path / "repo"
+    root.mkdir()
+    _git(root, "init", "-b", "main", "-q")
+    _write(root / "README.md", "fixture\n")
+    _git(root, "add", "README.md")
+    _git(root, "commit", "-q", "-m", "seed", when="2026-01-01T00:00:00+00:00")
+    vnext_dir = root / scan.VNEXT_CARDS_RELPATH
+    card = _touched(_vnext_card(vnext_dir, "no-add-record"), "2026-07-13T00:00:00+00:00")
+
+    arrivals, sources = scan.card_arrivals(
+        root,
+        {},
+        scan.load_cards(vnext_dir, layer=scan.LAYER_VNEXT, key_field="id"),
+    )
+
+    assert arrivals[0].at == datetime(2026, 7, 13, tzinfo=timezone.utc)
+    assert arrivals[0].key == card.stem
+    assert sources == {"git": 0, "frontmatter": 0, "mtime": 1}
+
+
+def test_invalid_frontmatter_modified_falls_back_to_mtime_and_counts_source(tmp_path: Path) -> None:
+    root = tmp_path / "plain"
+    file_dir = root / "file-cards"
+    card = _touched(
+        _file_card(file_dir, "bad-modified", modified="not-an-iso-timestamp"),
+        "2026-07-13T00:00:00+00:00",
+    )
+
+    arrivals, sources = scan.card_arrivals(
+        root,
+        scan.load_cards(file_dir, layer=scan.LAYER_FILE, key_field="name"),
+        {},
+        git_arrivals={},
+    )
+
+    assert arrivals[0].at == datetime(2026, 7, 13, tzinfo=timezone.utc)
+    assert arrivals[0].key == card.stem
+    assert sources == {"git": 0, "frontmatter": 0, "mtime": 1}
+
+
+def test_malformed_frontmatter_falls_back_to_mtime_instead_of_using_a_partial_parse(tmp_path: Path) -> None:
+    root = tmp_path / "plain"
+    file_dir = root / "file-cards"
+    card = _touched(
+        _write(
+            file_dir / "malformed.md",
+            "---\nname: malformed\nmetadata:\n  modified: 2099-01-01T00:00:00Z\nbroken: [\n---\nbody\n",
+        ),
+        "2026-07-13T00:00:00+00:00",
+    )
+
+    arrivals, sources = scan.card_arrivals(
+        root,
+        scan.load_cards(file_dir, layer=scan.LAYER_FILE, key_field="name"),
+        {},
+        git_arrivals={},
+    )
+
+    assert arrivals[0].at == datetime(2026, 7, 13, tzinfo=timezone.utc)
+    assert arrivals[0].key == card.stem
+    assert sources == {"git": 0, "frontmatter": 0, "mtime": 1}
+
+
+def test_git_unavailable_falls_back_to_mtime_without_raising(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = tmp_path / "repo"
+    (root / ".git").mkdir(parents=True)
+    vnext_dir = root / scan.VNEXT_CARDS_RELPATH
+    card = _touched(_vnext_card(vnext_dir, "git-unavailable"), "2026-07-13T00:00:00+00:00")
+
+    def unavailable(*args: Any, **kwargs: Any) -> None:
+        raise FileNotFoundError("git unavailable in fixture")
+
+    monkeypatch.setattr(scan.subprocess, "run", unavailable)
+    arrivals, sources = scan.card_arrivals(
+        root,
+        {},
+        scan.load_cards(vnext_dir, layer=scan.LAYER_VNEXT, key_field="id"),
+    )
+
+    assert arrivals[0].at == datetime(2026, 7, 13, tzinfo=timezone.utc)
+    assert arrivals[0].key == card.stem
+    assert sources == {"git": 0, "frontmatter": 0, "mtime": 1}
+
+
+def test_vnext_arrival_history_is_loaded_once_for_the_directory(
+    world: dict[str, Path],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _vnext_card(world["cards"], "second-card")
+    _vnext_card(world["cards"], "third-card")
+    commit_cards(world, when="2026-07-13T00:00:00+00:00")
+    real_run = subprocess.run
+    calls: list[list[str]] = []
+
+    def recording_run(args: list[str], *run_args: Any, **run_kwargs: Any) -> subprocess.CompletedProcess[str]:
+        calls.append(args)
+        return real_run(args, *run_args, **run_kwargs)
+
+    monkeypatch.setattr(scan.subprocess, "run", recording_run)
+    report = build(world)
+    log_calls = [args for args in calls if "log" in args]
+
+    assert len(log_calls) == 1
+    assert "--diff-filter=A" in log_calls[0]
+    assert "--name-only" in log_calls[0]
+    assert log_calls[0][-1] == scan.VNEXT_CARDS_RELPATH
+    assert report["arrival_source"]["git"] == 3
 
 
 # --------------------------------------------------------------------------
