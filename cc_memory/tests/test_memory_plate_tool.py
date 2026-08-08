@@ -6,13 +6,15 @@
   1. 写出口硬判据：`--out` 指向 `.claude/projects/*/memory` 命名空间、或指向被读取的
      记忆目录本身/其内部/其祖先，一律 exit 2 且不创建任何目录。
   2. 排序：新卡头插（截断切尾保头 ⇒ 新卡必须活下来），旧卡保基线相对序。
-  3. title 回退：缺 title 时用 name。
+  3. compile 行优先级：title 字段 > 无 title 卡的现存索引原行 > name 回退。
   4. 水位算术：JS 字符 = UTF-16 code unit（星平面字符算 2 个），200 行上限，>80% 报警。
   5. migrate-plan 四类对账分类。
+  6. apply 只定点改卡片的 title/description/正文追加，默认 dry-run，commit 必须先外部备份。
+  7. compile --write-index 只原子替换同目录 MEMORY.md，不能借此写卡。
 
 变异自证：把工具源码复制一份并注入变异，用 `MEMORY_PLATE_TOOL` 环境变量指向变异体重跑
-本文件即可（见 `_tool_path`）——工具席已用它跑过 3 个变异（守卫拆除 / 头插改尾插 /
-UTF-16 计数改 len），每个都被对应测试逮住。
+本文件即可（见 `_tool_path`）。受控写测试钉住目标守卫、外部备份、原子替换和 title 插入，
+使这些约束的退化变异稳定变红。
 """
 
 from __future__ import annotations
@@ -24,6 +26,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_TOOL = REPO_ROOT / "devtools" / "memory_plate_tool.py"
@@ -89,10 +92,38 @@ def write_index(memory_dir: Path, rows: list[tuple[str, str, str]]) -> Path:
     return path
 
 
+def write_proposals(path: Path, cards: list[dict[str, str]]) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps({"cards": cards}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def file_snapshot(directory: Path) -> dict[str, tuple[str, bytes, int, int]]:
+    snapshot: dict[str, tuple[str, bytes, int, int]] = {}
+    for path in [directory, *sorted(directory.rglob("*"))]:
+        relative = "." if path == directory else path.relative_to(directory).as_posix()
+        kind = "dir" if path.is_dir() else "file"
+        content = b"" if path.is_dir() else path.read_bytes()
+        info = path.stat()
+        snapshot[relative] = (kind, content, info.st_mtime_ns, info.st_ino)
+    return snapshot
+
+
 @pytest.fixture()
 def memory_dir(tmp_path: Path) -> Path:
     d = tmp_path / "cards"
     d.mkdir()
+    return d
+
+
+@pytest.fixture()
+def cc_memory_dir(tmp_path: Path) -> Path:
+    """不含 .claude 的假命名空间，钉住受控目标的通用尾部形状。"""
+    d = tmp_path / "projects" / "-fake-project" / "memory"
+    d.mkdir(parents=True)
     return d
 
 
@@ -236,6 +267,7 @@ def test_title_falls_back_to_name_when_missing(memory_dir: Path) -> None:
     res = run_tool("compile", "--memory-dir", str(memory_dir))
 
     assert "- [card-y](card-y.md) — 钩子" in res.stdout
+    assert "1 张卡缺 title 且无现存索引行，已回退 name" in res.stdout
 
 
 def test_missing_title_is_debt_not_hard_error(memory_dir: Path) -> None:
@@ -453,3 +485,631 @@ def test_validate_json_report(memory_dir: Path, tmp_path: Path) -> None:
     payload = json.loads((out / "validate_report.json").read_text(encoding="utf-8"))
     assert payload[0]["filename"] == "ok.md"
     assert payload[0]["hard"] == []
+
+
+# --------------------------------------------------------------------------------------
+# 7. apply 受控写卡
+# --------------------------------------------------------------------------------------
+
+
+def test_apply_dry_run_emits_diff_and_preserves_bytes_and_mtime(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    card = write_card(cc_memory_dir, "dry")
+    sentinel_ns = 1_700_000_000_123_456_789
+    os.utime(card, ns=(sentinel_ns, sentinel_ns))
+    proposals = write_proposals(
+        tmp_path / "dry-proposals.json",
+        [
+            {
+                "file": "dry.md",
+                "title": "Dry 标题",
+                "description": "新描述: 仍是预览",
+                "body_addendum": "## 追加段\n\n只在 diff 中出现。\n",
+            }
+        ],
+    )
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool("apply", "--memory-dir", str(cc_memory_dir), "--proposals", str(proposals))
+
+    assert res.returncode == 0, res.stderr
+    assert "--- a/dry.md" in res.stdout
+    assert "+++ b/dry.md" in res.stdout
+    assert "@@" in res.stdout
+    assert '+title: "Dry 标题"' in res.stdout
+    assert "dry-run：未写入任何文件" in res.stdout
+    assert file_snapshot(cc_memory_dir) == before
+    assert card.stat().st_mtime_ns == sentinel_ns
+
+
+def test_apply_commit_changes_only_allowed_bytes_and_makes_restorable_backup(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    raw = (
+        "---\n"
+        "name: precise\n"
+        "description: '旧: 描述'   \n"
+        "metadata:\n"
+        "    node_type: memory\n"
+        "    type: project\n"
+        '    originSessionId: "session-1"\n'
+        "    nested:\n"
+        "      description: '嵌套字段不得改'\n"
+        "---\n\n"
+        "正文里的 description: 也不得改。\n"
+    )
+    card = write_card(cc_memory_dir, "precise", raw=raw)
+    before = card.read_bytes()
+    before_inode = card.stat().st_ino
+    title = "精确标题"
+    description = '新描述: 含 "引号"；中文标点'
+    addendum = "## 新段\n\n追加内容。\n"
+    proposals = write_proposals(
+        tmp_path / "precise-proposals.json",
+        [
+            {
+                "file": "precise.md",
+                "title": title,
+                "description": description,
+                "body_addendum": addendum,
+            }
+        ],
+    )
+    backup_dir = tmp_path / "backups" / "apply-precise"
+    expected = raw.replace(
+        "name: precise\n",
+        f"name: precise\ntitle: {json.dumps(title, ensure_ascii=False)}\n",
+        1,
+    ).replace(
+        "description: '旧: 描述'   \n",
+        f"description: {json.dumps(description, ensure_ascii=False)}\n",
+        1,
+    )
+    expected = (expected + "\n" + addendum).encode("utf-8")
+
+    with card.open("rb") as old_handle:
+        res = run_tool(
+            "apply",
+            "--memory-dir",
+            str(cc_memory_dir),
+            "--proposals",
+            str(proposals),
+            "--commit",
+            "--backup-dir",
+            str(backup_dir),
+        )
+        assert res.returncode == 0, res.stderr
+        assert old_handle.read() == before, "os.replace 后旧文件描述符必须仍看到改前 inode"
+
+    assert card.read_bytes() == expected, "只允许 title/description/正文追加三处差异"
+    assert card.stat().st_ino != before_inode, "受控写必须通过临时文件 + os.replace 更换 inode"
+    assert (backup_dir / "precise.md").read_bytes() == before
+    assert sorted(path.name for path in cc_memory_dir.iterdir()) == ["precise.md"]
+    assert "改卡=1" in res.stdout
+    assert "新增 title=1" in res.stdout
+    assert "追加正文段=1" in res.stdout
+    assert f"备份目录={backup_dir.resolve()}" in res.stdout
+
+    card.write_bytes((backup_dir / "precise.md").read_bytes())
+    assert card.read_bytes() == before, "外部备份必须能逐字节还原原卡"
+
+
+def test_apply_existing_title_and_complex_description_round_trip(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    card = write_card(cc_memory_dir, "quoted", title="旧标题", description="旧描述")
+    description = '路径 C:\\tmp: 他说 "你好"；中文标点：保留'
+    title = '标题: "双引号"'
+    proposals = write_proposals(
+        tmp_path / "quoted-proposals.json",
+        [{"file": str(card), "title": title, "description": description}],
+    )
+    backup_dir = tmp_path / "quoted-backup"
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 0, res.stderr
+    text = card.read_text(encoding="utf-8")
+    assert f"description: {json.dumps(description, ensure_ascii=False)}" in text
+    fm_text = text.split("---\n", 2)[1]
+    parsed = yaml.safe_load(fm_text)
+    assert parsed["title"] == title
+    assert parsed["description"] == description
+    assert text.count("\ntitle:") == 1
+    assert "新增 title=0" in res.stdout
+
+    validated = run_tool("validate", "--memory-dir", str(cc_memory_dir))
+    assert validated.returncode == 0, validated.stdout
+    assert "迁移欠账卡数: 0" in validated.stdout
+
+
+def test_apply_missing_card_fails_full_preflight_without_writes(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    write_card(cc_memory_dir, "existing")
+    proposals = write_proposals(
+        tmp_path / "missing-proposals.json",
+        [
+            {"file": "existing.md", "title": "会改", "description": "会改"},
+            {"file": "missing.md", "title": "不存在", "description": "不存在"},
+        ],
+    )
+    backup_dir = tmp_path / "missing-backup"
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert "REFUSED" in res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+    assert not backup_dir.exists()
+
+
+def test_apply_non_namespace_target_is_refused_without_writes(
+    memory_dir: Path, tmp_path: Path
+) -> None:
+    write_card(memory_dir, "plain")
+    proposals = write_proposals(
+        tmp_path / "plain-proposals.json",
+        [{"file": "plain.md", "title": "T", "description": "D"}],
+    )
+    backup_dir = tmp_path / "plain-backup"
+    before = file_snapshot(memory_dir)
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(memory_dir) == before
+    assert not backup_dir.exists()
+
+
+def test_apply_commit_requires_backup_dir_without_writes(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    write_card(cc_memory_dir, "no-backup")
+    proposals = write_proposals(
+        tmp_path / "no-backup-proposals.json",
+        [{"file": "no-backup.md", "title": "T", "description": "D"}],
+    )
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+
+
+def test_apply_backup_inside_namespace_is_refused_without_writes(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    write_card(cc_memory_dir, "inside")
+    proposals = write_proposals(
+        tmp_path / "inside-proposals.json",
+        [{"file": "inside.md", "title": "T", "description": "D"}],
+    )
+    forbidden_backup = cc_memory_dir / "backups"
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(forbidden_backup),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+    assert not forbidden_backup.exists()
+
+
+def test_apply_backup_in_another_memory_namespace_is_refused(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    write_card(cc_memory_dir, "source")
+    proposals = write_proposals(
+        tmp_path / "other-namespace-proposals.json",
+        [{"file": "source.md", "title": "T", "description": "D"}],
+    )
+    other_memory = tmp_path / "projects" / "-other-project" / "memory"
+    other_memory.mkdir(parents=True)
+    source_before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(other_memory),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(cc_memory_dir) == source_before
+    assert list(other_memory.iterdir()) == []
+
+
+def test_apply_existing_file_outside_target_is_refused(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    write_card(cc_memory_dir, "inside")
+    outside_dir = tmp_path / "outside"
+    outside = write_card(outside_dir, "outside")
+    proposals = write_proposals(
+        tmp_path / "outside-proposals.json",
+        [{"file": str(outside), "title": "T", "description": "D"}],
+    )
+    backup_dir = tmp_path / "outside-backup"
+    inside_before = file_snapshot(cc_memory_dir)
+    outside_before = outside.read_bytes()
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(cc_memory_dir) == inside_before
+    assert outside.read_bytes() == outside_before
+    assert not backup_dir.exists()
+
+
+@pytest.mark.parametrize("field", ["title", "description"])
+def test_apply_rejects_multiline_plate_values_without_writes(
+    cc_memory_dir: Path, tmp_path: Path, field: str
+) -> None:
+    write_card(cc_memory_dir, "single-line")
+    proposal = {"file": "single-line.md", "title": "T", "description": "D"}
+    proposal[field] = "第一行\n第二行"
+    proposals = write_proposals(tmp_path / f"multiline-{field}.json", [proposal])
+    backup_dir = tmp_path / f"multiline-{field}-backup"
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert "单行字符串" in res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+    assert not backup_dir.exists()
+
+
+def test_apply_refuses_existing_backup_without_overwriting_it(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    write_card(cc_memory_dir, "collision")
+    proposals = write_proposals(
+        tmp_path / "collision-proposals.json",
+        [{"file": "collision.md", "title": "T", "description": "D"}],
+    )
+    backup_dir = tmp_path / "collision-backup"
+    backup_dir.mkdir()
+    existing_backup = backup_dir / "collision.md"
+    existing_backup.write_bytes(b"older trusted backup\n")
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+    assert existing_backup.read_bytes() == b"older trusted backup\n"
+
+
+def test_apply_rejects_memory_index_without_writes(cc_memory_dir: Path, tmp_path: Path) -> None:
+    write_card(cc_memory_dir, "card")
+    write_index(cc_memory_dir, [("Card", "card.md", "old")])
+    proposals = write_proposals(
+        tmp_path / "index-proposals.json",
+        [{"file": "MEMORY.md", "title": "越权", "description": "越权"}],
+    )
+    backup_dir = tmp_path / "index-apply-backup"
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+    assert not backup_dir.exists()
+
+
+# --------------------------------------------------------------------------------------
+# 8. compile --write-index 受控写索引
+# --------------------------------------------------------------------------------------
+
+
+def test_compile_without_write_index_preserves_index_bytes_and_mtime(
+    cc_memory_dir: Path
+) -> None:
+    write_card(cc_memory_dir, "preview", title="Preview", description="new")
+    index_path = write_index(cc_memory_dir, [("Old", "preview.md", "old")])
+    sentinel_ns = 1_700_000_001_123_456_789
+    os.utime(index_path, ns=(sentinel_ns, sentinel_ns))
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool("compile", "--memory-dir", str(cc_memory_dir))
+
+    assert res.returncode == 0, res.stderr
+    assert "- [Preview](preview.md) — new" in res.stdout
+    assert file_snapshot(cc_memory_dir) == before
+    assert index_path.stat().st_mtime_ns == sentinel_ns
+
+
+def test_compile_preserves_raw_index_line_for_untitled_card_in_preview_and_write_index(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    titled = write_card(
+        cc_memory_dir,
+        "titled",
+        title="字段中文标题",
+        description="字段 description",
+    )
+    legacy = write_card(
+        cc_memory_dir,
+        "legacy",
+        title=None,
+        description="卡内 description 不得覆盖人工 hook",
+    )
+    fresh = write_card(
+        cc_memory_dir,
+        "fresh",
+        title=None,
+        description="全新卡 description",
+    )
+    preserved_line = '- [人工中文标题](legacy.md)    —   人工 hook：标点 "原样"  '
+    old_index = (
+        "# Memory Index\n"
+        "- [应被 title 字段覆盖](titled.md) — 旧 hook\n"
+        f"{preserved_line}\n"
+    ).encode("utf-8")
+    index_path = cc_memory_dir / "MEMORY.md"
+    index_path.write_bytes(old_index)
+    expected_index = (
+        "# Memory Index\n"
+        "- [fresh](fresh.md) — 全新卡 description\n"
+        "- [字段中文标题](titled.md) — 字段 description\n"
+        f"{preserved_line}\n"
+    ).encode("utf-8")
+    hint = "[compile] 提示：1 张卡缺 title 且无现存索引行，已回退 name\n"
+    before_preview = file_snapshot(cc_memory_dir)
+
+    preview = run_tool("compile", "--memory-dir", str(cc_memory_dir))
+
+    assert preview.returncode == 0, preview.stderr
+    preview_legacy_lines = [
+        line for line in preview.stdout.encode("utf-8").splitlines(keepends=True) if b"(legacy.md)" in line
+    ]
+    assert preview_legacy_lines == [
+        preserved_line.encode("utf-8") + b"\n"
+    ], "无 title 的既有卡必须逐字节复用原索引行"
+    assert preview.stdout.encode("utf-8") == expected_index + hint.encode("utf-8")
+    assert file_snapshot(cc_memory_dir) == before_preview, "普通 compile 必须保持卡片与索引零写入"
+
+    card_state = {
+        path.name: (path.read_bytes(), path.stat().st_mtime_ns, path.stat().st_ino)
+        for path in (titled, legacy, fresh)
+    }
+    backup_dir = tmp_path / "priority-backup"
+    written = run_tool(
+        "compile",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--write-index",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert written.returncode == 0, written.stderr
+    assert written.stdout.encode("utf-8") == expected_index + hint.encode("utf-8")
+    assert index_path.read_bytes() == expected_index
+    written_legacy_lines = [
+        line for line in index_path.read_bytes().splitlines(keepends=True) if b"(legacy.md)" in line
+    ]
+    assert written_legacy_lines == [preserved_line.encode("utf-8") + b"\n"]
+    assert (backup_dir / "MEMORY.md").read_bytes() == old_index
+    for path in (titled, legacy, fresh):
+        assert (path.read_bytes(), path.stat().st_mtime_ns, path.stat().st_ino) == card_state[path.name]
+
+    js_chars, lines = _watermark_numbers(written.stderr)
+    expected_text = expected_index.decode("utf-8")
+    assert js_chars == len(expected_text.encode("utf-16-le")) // 2
+    assert lines == len(expected_text.splitlines())
+
+
+def test_compile_write_index_changes_only_index_and_backs_up_old_bytes(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    card_a = write_card(cc_memory_dir, "a", title="A", description="da")
+    card_b = write_card(cc_memory_dir, "b", title="B", description="db")
+    index_path = write_index(cc_memory_dir, [("Old B", "b.md", "old-b")])
+    old_index = index_path.read_bytes()
+    old_index_inode = index_path.stat().st_ino
+    card_state = {
+        path.name: (path.read_bytes(), path.stat().st_mtime_ns, path.stat().st_ino)
+        for path in (card_a, card_b)
+    }
+    original_members = sorted(path.name for path in cc_memory_dir.iterdir())
+    backup_dir = tmp_path / "compile-backup"
+
+    with index_path.open("rb") as old_handle:
+        res = run_tool(
+            "compile",
+            "--memory-dir",
+            str(cc_memory_dir),
+            "--write-index",
+            "--backup-dir",
+            str(backup_dir),
+        )
+        assert res.returncode == 0, res.stderr
+        assert old_handle.read() == old_index
+
+    assert index_path.read_bytes() == res.stdout.encode("utf-8")
+    assert index_path.stat().st_ino != old_index_inode
+    assert (backup_dir / "MEMORY.md").read_bytes() == old_index
+    assert sorted(path.name for path in cc_memory_dir.iterdir()) == original_members
+    for path in (card_a, card_b):
+        assert (path.read_bytes(), path.stat().st_mtime_ns, path.stat().st_ino) == card_state[path.name]
+
+    js_chars, lines = _watermark_numbers(res.stderr)
+    assert js_chars == len(res.stdout.encode("utf-16-le")) // 2
+    assert lines == len(res.stdout.splitlines())
+    assert "/ 25000" in res.stderr
+    assert "/ 200" in res.stderr
+    assert "已原子写入" in res.stderr
+
+
+def test_compile_write_index_non_namespace_target_is_refused(
+    memory_dir: Path, tmp_path: Path
+) -> None:
+    write_card(memory_dir, "plain", title="P")
+    write_index(memory_dir, [("P", "plain.md", "old")])
+    backup_dir = tmp_path / "compile-plain-backup"
+    out_dir = tmp_path / "must-not-be-created"
+    before = file_snapshot(memory_dir)
+
+    res = run_tool(
+        "compile",
+        "--memory-dir",
+        str(memory_dir),
+        "--write-index",
+        "--backup-dir",
+        str(backup_dir),
+        "--out",
+        str(out_dir),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(memory_dir) == before
+    assert not backup_dir.exists()
+    assert not out_dir.exists(), "受控写安全预检必须早于普通 --out 的 mkdir"
+
+
+def test_compile_write_index_requires_backup_dir_without_writes(
+    cc_memory_dir: Path
+) -> None:
+    write_card(cc_memory_dir, "card", title="Card")
+    write_index(cc_memory_dir, [("Old", "card.md", "old")])
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool("compile", "--memory-dir", str(cc_memory_dir), "--write-index")
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+
+
+def test_compile_write_index_rejects_backup_inside_namespace(
+    cc_memory_dir: Path
+) -> None:
+    write_card(cc_memory_dir, "card", title="Card")
+    write_index(cc_memory_dir, [("Old", "card.md", "old")])
+    forbidden_backup = cc_memory_dir / "compile-backup"
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "compile",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--write-index",
+        "--backup-dir",
+        str(forbidden_backup),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+    assert not forbidden_backup.exists()
+
+
+def test_compile_write_index_cannot_use_out_to_target_card(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    card = write_card(cc_memory_dir, "card", title="Card")
+    write_index(cc_memory_dir, [("Old", "card.md", "old")])
+    backup_dir = tmp_path / "compile-card-backup"
+    before = file_snapshot(cc_memory_dir)
+
+    res = run_tool(
+        "compile",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--write-index",
+        "--backup-dir",
+        str(backup_dir),
+        "--out",
+        str(card),
+    )
+
+    assert res.returncode == 2, res.stderr
+    assert "不得与普通产物通道 --out 同用" in res.stderr
+    assert file_snapshot(cc_memory_dir) == before
+    assert not backup_dir.exists()
