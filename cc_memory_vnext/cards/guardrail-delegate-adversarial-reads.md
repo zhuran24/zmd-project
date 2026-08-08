@@ -88,3 +88,7 @@ provenance:
 
 == 判据 ==
 leader=Fable5 时:一段内容若"很长 + 满是绕过/篡改/exec 字样"或整个发布面工作,默认进子代理。leader=Opus 时:发布面归 leader 直接做,只有纯数学面才派(Fable5)子代理。写审计提示词的受众纪律见 [[review-prompt-audience-purity]];外审剪贴板 staging 规程见 [[relay-review-clipboard-staging]]。
+
+== 更新 2026-08-08（跨层对账 G-10/G-11 订正）==
+
+上文「leader 换 Opus」与「只保留 Fable5 子代理做纯数学面（无须再问）」两条已过时：现行主循环模型=Fable 本尊；**任何 Fable 子代理（数学面与否）都要先问 owner**（08-07 硬规矩，权威=文件层 ultracode-fable-spawn-discipline）。本卡核心机制（对抗性语料进独立上下文子代理、主线程只留结论）不受影响、仍现行。
