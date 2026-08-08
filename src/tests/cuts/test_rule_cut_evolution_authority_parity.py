@@ -56,7 +56,17 @@ _BASELINE_SURFACE_SHA256 = {
     "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
 }
 
-# The authorized preflight successor is the memory-card verify gate one
+# The authorized preflight successor is the memory-index closed-loop one
+# (2026-08-08, 单门牌化落地收尾): the memory lane gained a `check-index` step
+# between `zmem verify` and its pytest block — it byte-compares the file-layer
+# `MEMORY.md` against what the cards compile to, warns (never blocks) on drift,
+# and stays silent when the memory directory is absent (CI, stripped review
+# copies).  The authority is the same memory-system meeting adjudication
+# (.artifacts/memsys_meeting_20260808/FINAL_VERDICT.md §5b); the change is
+# memory-lane additive only, advisory-only, no proof-lane gate logic moved.
+# It supersedes the memory-card verify gate successor (2026-08-08,
+# 0cd7b9112c244685f7d0dcf037a75c9eb435ca73e8867c57c6656777e714ac01), which was
+# the memory-card verify gate one
 # (2026-08-08, 记忆系统复查会议批③ M-21): check_memory_cards runs
 # `zmem.py verify` inside the memory lane before its pytest block — a card
 # error blocks, a missing verifier blocks, a stale-index line warns.  The
@@ -86,7 +96,7 @@ _BASELINE_SURFACE_SHA256 = {
 # framework — nothing in the cut lifecycle wiring moved.
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
-    "scripts/preflight_gate.py": "0cd7b9112c244685f7d0dcf037a75c9eb435ca73e8867c57c6656777e714ac01",
+    "scripts/preflight_gate.py": "c81a4abc6d7dde56e49e2e71d90a0ee574e0adb4da194c386e31f86f2aa830ef",
     "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
 }
 
