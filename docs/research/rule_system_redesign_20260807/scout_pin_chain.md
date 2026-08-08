@@ -2,6 +2,9 @@
 
 > 只读侦察转述，**非权威**——承重引用前回源核对 file:line。fp-derivation 席派出、主线程存档。
 > 原始任务输出已随会话临时区回收，本文件为唯一存续副本。
+> **本文快照于 `b675fb6a` 代**（2026-08-07）。全篇的字节值与 sha 是那一代的实测值、刻意保持不动；
+> 2026-08-08 批已把 canonical 推进到 `c3fc3a34` / 59,989 B，现行 pin 面读 `PROJECT_LOCK.md` 与
+> `scripts/preflight_gate.py`。另：本文列的 pin 站点数在 08-08 批实测为 **18 处**（本文按 08-07 代计数）。
 
 ## 1. `rules/canonical_rules.json` 直接 pin 面（现值 40,371 B / `b675fb6a…`）
 

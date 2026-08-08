@@ -75,10 +75,12 @@
 | 口类 | 现行判据（一句） | 混流终止安全性 | canonical 键 |
 |---|---|---|---|
 | **(1) 有线仓储口** — `protocol_core` 的 14 个实体输入，本模型里**唯一**的有线仓库输入侧 | 按商品在仓库侧逐类型开槽，容量实际不可达 | **对「已在仓库注册槽位的商品」（warehouse-registered）无限混吃安全**——canonical 原文的限定词，不是无条件全商品。**当前 19 种商品全部在册**（仓库对每种商品有编译期预锁槽，公理 A4），故该前提在本项目里**真空满足**；未来若出现未注册商品，这条不自动成立 | `mixed_commodity_flow.terminal_clause` class (1)；公理 A4 |
-| **(2) 协议箱** | **有界混吃**：6 个**独立单槽组**，一槽一种商品，**同一商品可占多槽**；堵塞**当且仅当 6 槽全占，与涉及多少种商品无关**（界写在**槽数**，刻意不写在商品种类数）。断电则 10 s 冲刷不跑、占用槽永不清空 | 在所述界内安全 | `protocol_storage_box_wireless.slot_count_clause` |
+| **(2) 协议箱** | **有界吸收体，但界是执行不变量、不是静态计数**：6 个**独立单槽组**、每组 1 槽容量 **50**（`cache_parameters`），一槽一种商品，**同一商品可占多槽**（fill-first：占满一组才开下一组）。一件到货能不能落地，取决于**有没有一个可用组**——已定型到该商品且未满，或仍空着可动态定型。所以**「占了几槽」和「有几种商品」都不是完整的堵塞判据**：`occupied ≠ full`。对一件没有任何组能接的商品，堵塞**当且仅当 6 槽全占，与涉及多少种商品无关**（界写在**槽数**，刻意不写在商品种类数）。断电则 10 s 冲刷不跑、占用槽永不清空 | **不是无条件安全**：必须另行论证**逐次到货接收不变量**——每次落地之前至少有一个可用且未满的组。class (2) 身份本身、商品种类数，都不构成清偿。**本冻结实例已 discharge**（owner 2026-08-07：每周期 ≤ 15 件 ≪ 300 静态容量、纯流种类 ≤ 3 < 6 组、每周期清零、≤ 10 s 内瞬时滞留必散、永不中毒），故箱在本实例里是合法混流终点。⚠ **这是实例级 discharge，不是类级规则改变**——别的布局必须自己清偿 | `protocol_storage_box_wireless.slot_count_clause`（含 `cache_parameters` / `blocking_reachability_note`）；实例级 discharge 记在 `mixed_commodity_flow.terminal_clause` |
 | **(3) 机器口** | **无内容选择权**，进料是配方盲的。错货落进缓存槽后没有消耗通道，**永久占死**（边守恒 + 无回退） | **不安全** | `terminal_clause` class (3)；公理 A9 / A1 / A3 |
 
-**终端条款一句话**：一段混流只有在终止于 class (1) 的结构性不拒收终点、或终止于 class (2) 的所述界内时才是安全的。
+**终端条款一句话**：一段混流**无条件安全只有 class (1) 一处**；终止于 class (2) 要另行清偿逐次到货接收不变量（本冻结实例已清偿，别的布局不自动继承）；终止于 class (3) 不安全。
+
+**三分法的定义域**：它**只覆盖被建模的物理接收口**。只出不进的口、以及压根没有物理输入口的设施，都不在这个划分里——**边界仓储口就是这一类**（0 进 1 出的仓库取货源，`rules/preprocess_plan.json` 的 `boundary_io`），**不是** class (1) 终端。所以 class (1) 在本模型里只有协议核心的 14 个实体输入一家。
 
 **两个常被走私混淆的行为，严格区分**：
 
@@ -93,10 +95,12 @@
 
 **分类标签是旧推理语境下缓存的结论，不携带"界在什么参数下可达"。** 引用任何类别前必须回原始参数拼一次账。样板：协议箱在本产线里的**堵塞判据物理不可达**——
 
-- 格数账（**条件式，两条前提都尚未入册，见 §11 欠账**）：**在 fill-first（同种商品占满一槽后才开新槽）＋ 单槽容量参数两条前提下**，箱 3 个实体输入口（`protocol_storage_box_wireless.statement`）同时最多喂 3 种商品 ⇒ 最多占 3 槽 < 6 槽 ⇒ 6 槽全占的堵塞判据到不了。
-  **⚠ 前提缺一不可**：已入册条款给的上界是 **6 槽不是 3 槽**——`slot_count_clause` 与公理 A3 明写「**同一商品可占多槽**、界写在槽数」，所以「3 种商品 ⇒ 最多占 3 槽」**推不出来**，必须显式挂上 fill-first 前提。
-  【待核】旧文写的「纯流喂养」引自速率引理，而 `semantics.rate_lemma_scope` 的**两条前件（满产 + 最小道数分配约定）在本账里未清偿**，故本条不再以它为前提，只保留上面两条显式前提。
-- 件数账（**同样依赖尚未入册的单槽容量参数，见 §11 欠账**）：3 口 × 1 件/2 s（`globals.logistics.belt_capacity_per_tick` + `globals.time.tick_interval_seconds`）× 10 s 冲刷周期 ⇒ 每周期进货 ≤ 15 件，远小于缓存总量且每周期清零。
+- 格数账（**条件式**；两条前提已于 2026-08-08 批入册 `protocol_storage_box_wireless.slot_count_clause.cache_parameters`——`slot_capacity: 50` / `group_count: 6`，fill-first 与落位顺序写在同一个 `statement` 里）：**在 fill-first（同种商品占满一槽后才开新槽）＋ 单槽容量 50 两条前提下**，箱 3 个实体输入口（`protocol_storage_box_wireless.statement`）同时最多喂 3 种商品 ⇒ 最多占 3 槽 < 6 槽 ⇒ 6 槽全占的堵塞判据到不了。
+  **⚠ 前提缺一不可**：条款给的上界是 **6 槽不是 3 槽**——`slot_count_clause` 与公理 A3 明写「**同一商品可占多槽**、界写在槽数」，所以「3 种商品 ⇒ 最多占 3 槽」**推不出来**，必须显式挂上 fill-first 前提。
+  **⚠ 这条腿还压着一个模型面**：「3 口 ⇒ 最多 3 种」用的是模型的 **destination-front 单商品排他**（`model_stricter_faces` 第 (1) 项）。因此本腿的定性是 **current-model theorem，不是关于已定谳游戏语义的断言**；按 `model_stricter_faces_usage_rule`，它必须点名这个依赖，且该面一旦解锁就作废重证。canonical 原文：`slot_count_clause.blocking_reachability_note` 的 leg (a) 与 Status 段。
+  **⚠ 另有一条不依赖该面的腿**（owner 2026-08-07）：本实例能到仓储线的商品**只有 2 种终品**，而通往 6 槽全占的唯一理论路径是「一条混流带在 10 s 窗内送来 ≥ 7 种」——这个前提在本实例里**根本凑不出来**。这条腿不碰模型面，格数账因此不再唯一依赖过严面 (1)。
+  【待核】旧文写的「纯流喂养」引自速率引理，而 `semantics.rate_lemma_scope` 的**两条前件（满产 + 最小道数分配约定）在本账里未清偿**，故本条不再以它为前提，只保留上面的显式前提。
+- 件数账（单槽容量参数同样已入册）：3 口 × 1 件/2 s（`globals.logistics.belt_capacity_per_tick` + `globals.time.tick_interval_seconds`）× 10 s 冲刷周期 ⇒ 每周期进货 ≤ 15 件。**到货率这一步是无条件的**；说它「远小于缓存」那一步是拿 15 去比 **6 × 50 = 300** 的静态容量（连单槽 50 都不到），所以这一步依赖已登记的容量参数。每周期清零。
 
 **尺子的边界**：可达性审计**不能用来删 fail-closed 守卫**。判别一句话——**问这条限制的危险条件由谁保证不可达**：由物理 / 冻结数据保证的，限制在描述不存在的东西 ⇒ 可删；**由这条限制自己保证的，它就是那个保证，删了保证就没了** ⇒ 必留。出处：文件记忆卡 `classification-labels-hide-parameters`。
 
@@ -165,7 +169,7 @@
 | 仓库桥 | 中间产物经箱 / 中枢进仓库后能从中枢出口和边界取货口再出来——**游戏机制真实，但被排除为合法布线结构**（会挤占蓝铁 / 源石的输出产能）。**这条绑定在冻结的产量目标上，产量目标一变必须重裁** | `semantics.warehouse_bridge_exclusion`；属 `axiom_kernel.ruling_level_inputs` |
 | 供电 | 中枢**就是**基地电源、自身无覆盖范围也不需供电；电线杆无条件从中枢取电并广播；发电在别的基地（电力预算外部化）。故"受电设施须被某根杆的覆盖模板盖住"与游戏机制效果等价，**不建模任何连线约束** | `semantics.power_source_note` |
 | 供电覆盖几何 | 2×2 杆锚点，12×12 轴对齐方形覆盖（按 `power_coverage_radius` 展开、裁到网格内）；覆盖 = **相交**语义（机身与覆盖区 ≥1 格重叠即算），**不是包含** | `semantics.power_coverage_stencil`；`01_overview` §1.1 谓词 (6) |
-| 物品准入口（限制口） | 游戏里存在，**刻意不建模——这半句在现役 main 下仍成立**：几何上等价于一条直带（能放它的格就能放直带），条款 authority 前提「无候选池或谓词消费它」当前满足。⚠ 但**「建模必要性 = 零」的三腿重述已动摇**：速率腿缺占空前件（见下行速率引理两前件纪律）、分拣终点腿仅在「两种货可去同一终端」时成立（模拟器判例：异终端分拣不可替代，且分拣零吞吐税），仅存仓库口混吃一腿。worktree 中未接入的 de-mix 禁令是**第一个消费该豁免的谓词**，接入即踩断 authority 前提——处置 owner 已定（先放着＝维持现状，随系统性梳理/墙审计首轮回桌，准入口为种子案例） | `semantics.item_admission_port_exclusion`；判例 `.artifacts/gpt_pro_review_batch_20260807/verdict/fen2/SIM_JUDGE_D1.md`；决策页同目录 `ADJUDICATION_fen2.md` B1 |
+| 物品准入口（限制口） | 游戏里存在，**刻意不建模——这半句在现役 main 下仍成立**：几何上等价于一条直带（能放它的格就能放直带）。**2026-08-08 批已把该条款的 authority 改写成条件式**：「无候选池或谓词消费它」不再是常驻权威，而是**当下的偶然状态**——任何"禁止只有筛选口才能实现的事"的谓词都算消费它，接入之日 authority **当场失效**、豁免必须连同 statement 重裁（canonical `item_admission_port_exclusion.authority`）。同批已把这个省略面登记进 `model_stricter_faces` **第 (6) 项**（本批把它从无条件 safe-exclusion 定理**降格**为显式的认证 scope 限制，并写明 de-mix 禁令不得再拿本条款当正当性来源）。⚠ 另，**「建模必要性 = 零」的三腿重述已动摇**：速率腿缺占空前件（见下行速率引理两前件纪律）、分拣终点腿仅在「两种货可去同一终端」时成立（模拟器判例：异终端分拣不可替代，且分拣零吞吐税），仅存仓库口混吃一腿。worktree 中未接入的 de-mix 禁令是**第一个消费该豁免的谓词**，接入即踩断 authority 前提——处置 owner 已定（先放着＝维持现状，随系统性梳理/墙审计首轮回桌，准入口为种子案例） | `semantics.item_admission_port_exclusion`；判例 `.artifacts/gpt_pro_review_batch_20260807/verdict/fen2/SIM_JUDGE_D1.md`；决策页同目录 `ADJUDICATION_fen2.md` B1 |
 | 速率引理 | **带两条前件**：(i) 冻结产量目标下满产；(ii) 最小道数分配约定。**缺前件不得引用**。在前件下：中间产物的每道残余速率两两之和 > 1 ⇒ 中间产物不得共道；**唯一在速率上合法的混流域 = 终品进有线仓储口的终端段** | `semantics.rate_lemma_scope`（含 `usage_rule`：任何把 front 排他读成 WLOG 而非"仅保守"的叙事升格，必须引用本条并逐条清偿两前件） |
 | 端口商品域 | binding 模型是**槽—单商品**制：每个端口槽恰载一种商品。裁决过的游戏语义允许有线仓储口同时吸多种，模型表达不了——这条 scope 声明就是为了让这个表达力缺口不被静默读成完全一般性 | `semantics.port_commodity_scope` |
 | 公理系 | `semantics` 全节的语义地基 = **11 条公理 A1–A11**；节内其他条目都是其上的**定理或 owner 裁决**，各自带 `axiom_derivation` 反指回来。公理不改变任何认证谓词 | `semantics.axiom_kernel.axioms`；存档全文 `docs/research/canonical_batch_20260807/AXIOM_KERNEL_PROPOSAL_20260806.md` |
@@ -175,7 +179,12 @@
 
 ## 8. `model_stricter_faces` = 完整性欠账台账
 
-**是什么**：`rules/canonical_rules.json` → `semantics.axiom_kernel.model_stricter_faces` 是**唯一**登记处，专记"certified 模型比裁决过的游戏语义**更严**"的面。在册各条都是保守的、都不 unsound，但**按定义是待放开清单**。
+**是什么**：`rules/canonical_rules.json` → `semantics.axiom_kernel.model_stricter_faces` 是**唯一**登记处，专记"certified 模型比裁决过的游戏语义**更严**"的面。在册各条都是保守的、都不 unsound，但**按定义是待放开清单**。**2026-08-08 批起在册 6 项**（此前 4 项，新增第 (5) 项 `warehouse_bridge_exclusion`、第 (6) 项准入口省略面），且各项已编号。
+
+**同批新增两条兄弟键，引用前必读**：
+
+- `model_stricter_faces_usage_rule`——这个台账是**模型欠账与认证 scope 的账本，不是游戏语义前提的来源**。在册面可以拿来描述当前受限模型，**但不得用来证明关于游戏语义的定理，也不得用来支撑全游戏 lex 最优性主张**。任何依赖在册面的 current-model theorem **必须点名这个依赖**，且该面一解锁就作废重证（样板见 §4.1 格数账 leg (a)）。
+- `model_stricter_faces_completeness`——本台账被要求对"已知会移除某条游戏行为的模型限制"**穷尽**。**不在册 ≠ 等价**；新发现的面必须**先登记，再**用于 certified 求解或最优性叙事。
 
 **怎么查**（本页刻意不抄在册条目——它会随放开批变动）：
 
@@ -230,9 +239,9 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 | 退役读法 | 现行读法 | 谁点名退役 |
 |---|---|---|
 | 协议箱"每窗口至多 6 **种**商品" | **槽数口径**：6 槽全占才堵，与商品种类数无关 | `semantics.protocol_storage_box_wireless.slot_count_clause`（明写 "an example, not a bound"） |
-| "箱 = 有界吸收体 ⇒ 可能堵 ⇒ 不能当汇流区终点" | 堵塞判据在本产线**物理不可达**（§4.1 格数账） | **条件性退役，不是无条件**：论据依赖 §11 的两条未入册前提（fill-first + 单槽容量）；已入册条款本身只给「6 槽全占才堵」的界。记忆卡 `classification-labels-hide-parameters`；canonical 措辞改判见 §11 欠账 |
+| "箱 = 有界吸收体 ⇒ 可能堵 ⇒ 不能当汇流区终点" | 堵塞判据在本产线**物理不可达**（§4.1 格数账） | **条件性退役，不是无条件**：论据的两条前提（fill-first + 单槽容量 50）2026-08-08 批已入册 `slot_count_clause.cache_parameters`，但账本身仍是条件式的——类级条款只给「6 槽全占才堵」的界，本实例的清偿以 `terminal_clause` 的实例级 discharge 注为准。记忆卡 `classification-labels-hide-parameters` |
 | "错货不放行进支线 ⇒ 非门口堵塞" | **没有下一条出边就队头阻塞** | `semantics.item_admission_port_exclusion.rationale_restated` (c) 分拣终点定理 |
-| "限制口是官方分拣解法，直接解混料绝症" | **刻意不建模在现役 main 仍成立**（安全排除账完好）；但「必要性 = 零」的三腿仅存仓库口混吃一腿（速率腿缺占空前件、分拣终点腿限两货同终端），处置 owner 已定＝先放着、随墙审计首轮回桌 | `semantics.item_admission_port_exclusion`；本页 §7 准入口行 |
+| "限制口是官方分拣解法，直接解混料绝症" | **刻意不建模在现役 main 仍成立**，但**安全排除账已降格**：2026-08-08 批把它从无条件 safe-exclusion 定理改成显式的认证 scope 限制，authority 改为**条件式**（谓词一接入即失效），省略面登记为 `model_stricter_faces` 第 (6) 项。「必要性 = 零」的三腿仅存仓库口混吃一腿（速率腿缺占空前件、分拣终点腿限两货同终端）。处置 owner 已定＝先放着、随墙审计首轮回桌 | `semantics.item_admission_port_exclusion`（`.authority`）；`axiom_kernel.model_stricter_faces` (6)；本页 §7 准入口行 |
 | "模型的 front 排他 = 模型比游戏严" | **翻案**：sink-front 排他是对机器口污染的**正确保守编码**；写宽的是混流条款，已由终端条款补齐 | `mixed_commodity_flow.terminal_clause`；`docs/research/canonical_batch_20260807/PORT_SEMANTICS_REVERDICT_A_20260806.md` |
 | 空矩形宽松读法（路由可穿 ghost） | **严格**：什么都不能有 | `globals.empty_rectangle.emptiness_adjudication`（明写旧宽松读法 void） |
 | 协议箱 = "无线全向零口黑洞" | 实体 3 进 3 出、需电；无线仅箱 → 仓库段 | `protocol_storage_box_wireless.supersedes` |
@@ -246,10 +255,10 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 
 ## 11. 已登记欠账与【待核】
 
-**canonical 措辞欠账（挂 freeze-ritual 批，本页不执行）**：
+**canonical 措辞欠账**：**两条已于 2026-08-08 批结清**，记在此处以备回查——
 
-- 缓存槽 **fill-first** 前提（同种商品占满一槽后才开新槽）的明文，以及**单槽容量参数**——目前只在推导史里，未入 canonical。**§4.1 的格数账与件数账都依赖它们**：已入册条款（`slot_count_clause` + 公理 A3）允许同一商品占多槽，界在 6 槽，所以没有 fill-first 就得不到「3 种商品 ⇒ 最多 3 槽」。
-- 协议箱由 `terminal_clause` class (2) 提升为 **drain 终点**的措辞改判（裁决已在手）。
+- ~~缓存槽 **fill-first** 前提（同种商品占满一槽后才开新槽）的明文，以及**单槽容量参数**未入 canonical~~ ⇒ **已结清**：入册为 `protocol_storage_box_wireless.slot_count_clause.cache_parameters`（`slot_capacity: 50` / `group_count: 6`，fill-first 与落位顺序写在同一 `statement`，另带 `provenance` 与 `evidence_grade`）。§4.1 的两本账现在有明文条款可引。
+- ~~协议箱由 `terminal_clause` class (2) 提升为 **drain 终点**的措辞改判~~ ⇒ **已结清，但落法与原议不同**：**类级规则一个字没动**（class (2) 仍是需清偿接收不变量的有界吸收体），改判落成 `mixed_commodity_flow.terminal_clause` 里的**实例级 discharge 注**——只对冻结的 266 实例集断言不变量已清偿，别的布局不继承。见 §4 class (2) 行。
 
 **模型完整性欠账**：
 

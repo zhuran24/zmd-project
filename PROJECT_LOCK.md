@@ -265,7 +265,7 @@ The certified path is grounded in:
 
 The current exact-source pins are:
 
-- `rules/canonical_rules.json`: size `40,371`, SHA256 `b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca`;
+- `rules/canonical_rules.json`: size `59,989`, SHA256 `c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0`;
 - `rules/preprocess_plan.json`: size `1,383`, SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`;
 - `data/preprocessed/candidate_placements.json`: size `54,467,709`, SHA256 `f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`.
   The 53,595,501-byte / `78e2bcf0777db8523aa767ee689ba7c3e65ecf7ecc20642627876d8d42fa3fef`

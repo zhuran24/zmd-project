@@ -173,7 +173,7 @@ The certified path is grounded in frozen inputs whose bytes are hash-pinned by t
 
 | Artifact | Role | Size (Codex, bytes) | SHA256 (Codex, upper-hex) |
 |---|---|---:|---|
-| `rules/canonical_rules.json` | canonical recipes / targets / commodity roles / objective (`min_side_admissibility=6`) | 40,371 | `B675FB6A1CDAE7920F90ABF63E59AA76EA8DF37AE8A8C5D5D15B10B94218C4CA` |
+| `rules/canonical_rules.json` | canonical recipes / targets / commodity roles / objective (`min_side_admissibility=6`) | 59,989 | `C3FC3A34E67B2321048A8861A9B178C744361698A838039B0361287C9FB542C0` |
 | `rules/preprocess_plan.json` | additive overlay only (cycle groups / utility operations) | 1,383 | `5C669C4FA48D2ED77A3283F06C1D5F97F7542C92253C41BA31FBABA0B313C4EE` |
 | `data/preprocessed/mandatory_exact_instances.json` | 266 frozen mandatory instances | 88,261 | `545B98C2B4F96643F1346B423EDF2DC8E300A0C815B6CF821776CEED03CD4CD6` |
 | `data/preprocessed/generic_io_requirements.json` | frozen generic I/O demand (outputs 34+18=52, inputs 1+1) | 561 | `AD5125B50E607A7F3F3BF0B54FEA64F93EDF87CEDB62E8D24F5590E1C895C44E` |

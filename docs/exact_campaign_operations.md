@@ -82,8 +82,8 @@ markers. A supervisor seal always rereads canonical disk state rather than trust
 
 The current frozen campaign inputs include:
 
-- `rules/canonical_rules.json`: `40,371` bytes, SHA256
-  `b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca`;
+- `rules/canonical_rules.json`: `59,989` bytes, SHA256
+  `c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0`;
 - `rules/preprocess_plan.json`: `1,383` bytes, SHA256
   `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`;
 - `data/preprocessed/candidate_placements.json`: `54,467,709` bytes, SHA256

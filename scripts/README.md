@@ -44,8 +44,8 @@ Important focused checks include:
 - `check_cc_memory_consistency.py`: runs only when cc_memory is in the selected change scope;
 - `check_external_artifacts.py`: validates the artifact manifest and current presence/bytes.
 
-Current frozen inputs include `canonical_rules.json` at 40,371 bytes / SHA256
-`b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca`, `preprocess_plan.json`
+Current frozen inputs include `canonical_rules.json` at 59,989 bytes / SHA256
+`c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0`, `preprocess_plan.json`
 at 1,383 bytes / SHA256 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`,
 and `candidate_placements.json` at 54,467,709 bytes / SHA256
 `f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3`. The 45,774,305-byte

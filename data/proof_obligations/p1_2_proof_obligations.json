@@ -1013,7 +1013,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "ebb72f66824772c4b8adde3eca6c6360bf64d658f6d00183a1d5189c6a9f23ea",
+        "source_sha256": "8c80708625727b1b567a4bfcf062d72820d1a965442b50dad9e4e08ff7c73bb4",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1030,7 +1030,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "0fb1a6507e4b3b8f21a186189b0e129b5537b386278bf0b19a4ac8178da9119b",
+        "source_sha256": "06ed35fce3f77fa94662c49a03186db824f57b9bf33ed8872893465f5352b315",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

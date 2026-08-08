@@ -84,7 +84,7 @@
 ## 5. 冻结工件与 freeze-ritual
 
 - **清单与 pin 的运行时权威**：`scripts/preflight_gate.py` 的 `FROZEN_ARTIFACTS` / `EXTERNAL_FROZEN_ARTIFACTS`；runtime 侧另有 `src/search/certified_artifact_contract.py` 的源码常量。判据以这两处为准。
-- **识别用短标签**（只为一眼认出"是不是同一代"，**不是校验值**；全值、字节数与拒绝判据以上两处为准）：`canonical_rules.json` = `b675fb6a…` / `preprocess_plan.json` = `5c669c4f…` / `mandatory_exact_instances.json` = `545b98c2…` / `generic_io_requirements.json` = `ad5125b5…` / `candidate_placements.json` = `f05b1291…`。前四个是仓内跟踪件，本页作者已逐个 `sha256` 核过与 `preflight_gate.py` 常量一致；第五个是外部大工件，lightweight checkout 允许缺失，短标签抄自 `EXTERNAL_FROZEN_ARTIFACTS`。
+- **识别用短标签**（只为一眼认出"是不是同一代"，**不是校验值**；全值、字节数与拒绝判据以上两处为准）：`canonical_rules.json` = `c3fc3a34…` / `preprocess_plan.json` = `5c669c4f…` / `mandatory_exact_instances.json` = `545b98c2…` / `generic_io_requirements.json` = `ad5125b5…` / `candidate_placements.json` = `f05b1291…`。前四个是仓内跟踪件，本页作者已逐个 `sha256` 核过与 `preflight_gate.py` 常量一致；第五个是外部大工件，lightweight checkout 允许缺失，短标签抄自 `EXTERNAL_FROZEN_ARTIFACTS`。
 - `candidate_placements.json` 缺失时 certified 跑之前必须恢复并验字节（`scripts/check_external_artifacts.py` / `scripts/restore_external_artifacts.py`）。缺它还会让部分测试在 fixture 阶段硬失败而非 skip。
 - 改任一冻结件 = **freeze-ritual**（更新 pin → 重生成依赖产物 → 重跑 gate）；改 close-kernel sealed 文件还要走完整 reseal 连锁，**checker 自钉最后**。`PROJECT_LOCK.md` 自身另有 6+1 处 pin 继承链（3 测试 + 3 个 D6 研究脚本 + antecedent 重算），出处：文件记忆卡 `project-lock-sha-succession-chain`。操作步骤见 `docs/项目说明/28_pitfalls_and_sop.md` SOP-1 / SOP-2。
 - superseded 的历史 hash 链必须被 `artifact_hash_mismatch` **拒绝**，绝不"好心"更新 expected hash。清单在 `CLAUDE.md` 冻结件节。
@@ -94,9 +94,9 @@
 ## 6. 规则语义现状（一行指路）
 
 - 游戏规则的现行理解归 `docs/项目说明/26_rules_handbook.md`；条款权威是 `rules/canonical_rules.json`，卡与研究文书只是推导史。
-- 公理系已入 canonical：`semantics.axiom_kernel`（`axioms` 11 条 + `scope_premises` + `ruling_level_inputs` + `model_stricter_faces`）。
-- **完整性欠账的唯一登记处 = `semantics.axiom_kernel.model_stricter_faces`**：登记"模型比裁决语义严"的各面，按一等审计面对待。理由是双向保真公理——对全局最优证书而言，过严就是假证书，而过严限制**永不自曝报警**。在册面会随放开批变动，**读原键、不读任何转述**。
-- 待写入 canonical、挂 freeze-ritual 批的条款：箱的 fill-first 明文与单槽容量、箱 class 措辞改判（「有界吸收体」的堵塞判据物理不可达）。出处见台账 §0a 对应行与 §4 #12 之后的挂账。
+- 公理系已入 canonical：`semantics.axiom_kernel`（`axioms` 11 条 + `scope_premises` + `ruling_level_inputs` + `model_stricter_faces` + `model_stricter_faces_usage_rule` + `model_stricter_faces_completeness`）。
+- **完整性欠账的唯一登记处 = `semantics.axiom_kernel.model_stricter_faces`**：登记"模型比裁决语义严"的各面，按一等审计面对待。理由是双向保真公理——对全局最优证书而言，过严就是假证书，而过严限制**永不自曝报警**。在册面会随放开批变动，**读原键、不读任何转述**。同键旁的 `_usage_rule` 规定在册面**只能描述当前受限模型、不得当游戏语义前提**（依赖它的 current-model theorem 必须点名依赖），`_completeness` 规定本台账必须穷尽、**不在册 ≠ 等价**。
+- 箱的 fill-first 明文与单槽容量参数**已入 canonical**（`protocol_storage_box_wireless.slot_count_clause.cache_parameters`）；箱的 class 措辞改判也已落地，但**落法是实例级 discharge 注**（写在 `mixed_commodity_flow.terminal_clause`，只对冻结的 266 实例集成立），**类级规则未动**。准入口豁免同批降格为条件式 authority ＋ `model_stricter_faces` 第 (6) 项。细节读 `26_rules_handbook.md` §4 / §4.1 / §11。
 
 ---
 
@@ -119,7 +119,7 @@
 |---|---|---|---|
 | 阶段手动门（P1.2 close / P1.3 entry） | 已关 / 已开 | 无需动作；任何绿灯都不得改写为关门动作 | `data/review_gates/phase_1_2_spike_close.json` |
 | B6 cut promotion 手动门 | **未授权** | **维持不动**：前置数据 = 无有机暴露证据（零激活是 cap 口径的结构后果）；换实验设计拿到激活证据再议 | 台账 §0a「owner 五项拍板」行；卡 `cut-trigger-never-organic-mechanism` |
-| canonical 条款修正（任何一笔） | 有待写内容在挂账（§6 末行） | **攒批合批**走完整 freeze-ritual，不零敲碎打 | 台账 §4 #12 与其后挂账行 |
+| canonical 条款修正（任何一笔） | 上一笔挂账已由 08-08 批结清（§6 末行）；新的待写内容按老规矩继续挂 | **攒批合批**走完整 freeze-ritual，不零敲碎打 | 台账 §4 #12 与其后挂账行 |
 | PIC-4/PIC-5 证据口径（#9） | 待表态：管理口径认为只剩 B6，`PROJECT_LOCK.md` 口径仍把它列为 B6 硬前置，而仓库无「prod 形态修复后 APPLIED>0 且走完失活 / 回滚」的归档证据 | 二选一，本页不替 owner 选：正式接受 harness 层证据，或 B6 前补做一发 prod 注入演习归档 | 台账 §4 #9 |
 | front-clear lift 默认值翻转（#10） | 维持 default-OFF | **维持 OFF**：语义三面实证正确、OFF 零回归，但 ON 解不动锚点 | 台账 §4 #10 |
 | 研究线调参演习 go/no-go（#11） | 待拍板 | 决定研究线火力投放，需 owner 定；本机内存余量存疑是硬约束（见 §4） | 台账 §4 #11 |

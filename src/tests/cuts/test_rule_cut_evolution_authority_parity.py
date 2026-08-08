@@ -40,7 +40,7 @@ from src.cuts.typed_platform import (
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _BASELINE_COMMIT = "398f8725c770f3c36408adebe9448a890ed886fe"
-_PROJECT_LOCK_SHA256 = "e12b41d672aada38911d3f485fc866f14157959c166d1882dbbf62181568a343"
+_PROJECT_LOCK_SHA256 = "105cd3794034f583232254d8645bd5b43a6b0bc7c2046799efd8cb745590f2d3"
 
 # Historical hashes for the six pre-existing Python surfaces touched during
 # the abandoned runtime-wiring attempt.  Five remain byte-identical to
@@ -54,16 +54,20 @@ _BASELINE_SURFACE_SHA256 = {
     "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
 }
 
-# The authorized preflight successor is the canonical axiom-kernel freeze-ritual
-# one (2026-08-07): FROZEN_ARTIFACTS re-pins rules/canonical_rules.json after
-# semantics gained the axiom kernel chapter plus the four-item amendment batch
-# (terminal clause / rate-lemma scope / admission-port rationale restatement /
-# port-commodity scope), all additive.  Only the pinned digest moved; no gate
-# logic changed.  It supersedes the canonical-emptiness successor (2026-08-05,
-# owner-adjudicated emptiness definition), which superseded the memory-lane
-# additive successor (2026-08-03, 剪枝 v2 P2 — memory-layer pytest lane plus its
-# blocking-on-missing-roots and per-run basetemp fixes), which in turn superseded
-# 8292983's secret-scan timeout-scale successor.
+# The authorized preflight successor is the canonical semantics-amendment
+# freeze-ritual one (2026-08-08): FROZEN_ARTIFACTS re-pins
+# rules/canonical_rules.json after the semantics block gained the sorting-terminal
+# theorem, the terminal-clause instance discharge, the protocol-box cache
+# parameters, the conditional admission-port authority and the fifth/sixth
+# model_stricter_faces entries.  Only the pinned digest moved; no gate logic
+# changed.  It supersedes the axiom-kernel successor (2026-08-07,
+# 468eb896857ff2546b97c0238d213d92d182a53c44cb19041ece3f5e2dda7846 — axiom kernel
+# chapter plus the four-item amendment batch), which superseded the
+# canonical-emptiness successor (2026-08-05, owner-adjudicated emptiness
+# definition), which superseded the memory-lane additive successor (2026-08-03,
+# 剪枝 v2 P2 — memory-layer pytest lane plus its blocking-on-missing-roots and
+# per-run basetemp fixes), which in turn superseded 8292983's secret-scan
+# timeout-scale successor.
 #
 # The authorized benders_loop successor is the strict empty-rectangle batch
 # (2026-08-05): ghost cells join the routing occupancy set, and blocked ports
@@ -72,7 +76,7 @@ _BASELINE_SURFACE_SHA256 = {
 # framework — nothing in the cut lifecycle wiring moved.
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
-    "scripts/preflight_gate.py": "468eb896857ff2546b97c0238d213d92d182a53c44cb19041ece3f5e2dda7846",
+    "scripts/preflight_gate.py": "8c2e5bf3cfa419b32e8f543b4d64c6fa687a290b3a703947f89318846735f3ef",
     "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
 }
 

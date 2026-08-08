@@ -60,7 +60,7 @@ _TIMEOUT_SCALE = _resolve_timeout_scale()
 BASELINE_PATH = PROJECT_ROOT / "scripts" / "preflight_baseline.json"
 
 FROZEN_ARTIFACTS = {
-    "rules/canonical_rules.json": "B675FB6A1CDAE7920F90ABF63E59AA76EA8DF37AE8A8C5D5D15B10B94218C4CA",
+    "rules/canonical_rules.json": "C3FC3A34E67B2321048A8861A9B178C744361698A838039B0361287C9FB542C0",
     # R6-F-01: the plan feeds runtime operation profiles / binding utility slots,
     # so it is hash-bound like the canonical rules (also in campaign hash closure).
     "rules/preprocess_plan.json": "5C669C4FA48D2ED77A3283F06C1D5F97F7542C92253C41BA31FBABA0B313C4EE",

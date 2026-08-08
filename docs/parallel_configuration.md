@@ -39,8 +39,8 @@ A conservative 48GB profile is `parallel_processes=4`, `master=4`, `local_capaci
 
 ## Current artifact prerequisite
 
-Before a certified run, verify `rules/canonical_rules.json` at 40,371 bytes / SHA256
-`b675fb6a1cdae7920f90abf63e59aa76ea8df37ae8a8c5d5d15b10b94218c4ca`,
+Before a certified run, verify `rules/canonical_rules.json` at 59,989 bytes / SHA256
+`c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0`,
 `rules/preprocess_plan.json` at 1,383 bytes / SHA256
 `5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee`, and
 `data/preprocessed/candidate_placements.json` at 54,467,709 bytes / SHA256

@@ -334,6 +334,11 @@
 适用面：`rules/canonical_rules.json`、`rules/preprocess_plan.json`、`data/preprocessed/mandatory_exact_instances.json`、`data/preprocessed/generic_io_requirements.json`、`data/preprocessed/candidate_placements.json`（清单权威 = `scripts/preflight_gate.py` 的 `FROZEN_ARTIFACTS` / `EXTERNAL_FROZEN_ARTIFACTS`，runtime 侧另有 `src/search/certified_artifact_contract.py` 的源码常量）、以及 close-kernel V99 名单里的源文件。**本页不抄任何 sha / 字节数。**
 
 1. **判定 pin 面**。用 `git grep`（不是裸 rg，见 C3）搜旧值，大小写不敏感；集合类用 python 真值打印。分三堆记账：代码 / 测试运行时 pin、文档展示 pin、**史料门 / replay 门（故意留旧值，不改，见 C4）**。样板台账见 `docs/research/canonical_batch_20260807/RESEAL_MANIFEST.md`。
+
+   **canonical 这条 pin 面的三个实测常识**（都被现场咬过，别照抄旧清单——旧清单只会更短）：
+   - **必改站点是 18 处**（4 处活代码/测试 + 14 处文档）。历史上两份现成清单都漏：一份只列 14 处，另一份列 17 处（漏了 `docs/项目说明/27_status_dashboard.md`，它是后加的）。**照抄任何一份旧清单都会漏**，每批重新 `git grep` 数。
+   - **两处是大写 sha**：`scripts/preflight_gate.py` 的 `FROZEN_ARTIFACTS`，以及 `README.md` 的冻结工件表格行。只 grep 小写必漏这两处 ⇒ 扫描一律 `-i`。
+   - **一处活代码被 `.rgignore` 藏起来**：`docs/research/witness_constructor_20260717/07_routing_aware/strict_contract.py`。仓库的 `.rgignore` 把 `docs/research/**/*.py` 整类投影出 rg 默认结果，但这个文件被 `src/tests/test_witness_campaign.py` / `test_witness_shelf_constructor.py` 真导入执行，**是活契约不是史料**。用 `git grep`，或 `rg --no-ignore --hidden` 并**排除 `.claude/worktrees/`**（别的会话副本）与 `.git/`。
 2. **先清 ruff**。要改的源文件先 `ruff check <file>` 全绿，避免 reseal 中途被逼二次改码（C5）。
 3. **改字节**。tracked 文件一律用 Edit 工具（保 LF，见 B6）。
 4. **重生成依赖派生产物**——或者机器验证「派生工件字节不变」并写明理由（例如新增内容全落在不被 solver 消费的段内、八段逐字节比对 identical）。别口头断言，留验证输出。
