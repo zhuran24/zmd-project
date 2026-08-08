@@ -192,7 +192,10 @@ def test_missing_zmem_stays_fail_open(tmp_path):
     hook = _tree(tmp_path, None)  # 没有 zmem.py
     proc = _run(hook, _payload("真人问题"))
     assert proc.returncode == 0
-    assert proc.stdout == b""
+    # 2026-08-08 起 stdout 不再是空的:包没了,但 OFF 行顶上来(M-05)。
+    # 「静默」是这条链原来的病,不是它的契约——契约只有 exit 0。
+    assert b"MEMORY RECALL OFF" in proc.stdout
+    assert b"zmem context packet" not in proc.stdout
     assert b"skipped" in proc.stderr
 
 
@@ -200,7 +203,8 @@ def test_zmem_nonzero_exit_stays_fail_open(tmp_path):
     hook = _tree(tmp_path, FAKE_ZMEM_FAILS)
     proc = _run(hook, _payload("真人问题"))
     assert proc.returncode == 0
-    assert proc.stdout == b""
+    assert b"MEMORY RECALL OFF" in proc.stdout
+    assert b"zmem context packet" not in proc.stdout
     assert b"skipped" in proc.stderr
 
 

@@ -14,7 +14,7 @@
 - **真相源 = 人读卡片 `cards/*.md`**(YAML frontmatter + 正文)+ git history 当 byte 级审计轨。
 - **索引/嵌入 = 可重建缓存**(`.index/`,gitignored,删了能重建)。彻底告别 SQLite 当真相源。
 - **召回 = 确定性激活**(trigger / scope 集合匹配,**0 模型、无 LLM**),reranker 降级、不当裁判。
-- **hook 强注入**(SessionStart 注 L0 / UserPromptSubmit 编 L0+L1 **含 `--enrich-frame` 确定性富化**),不靠模型自觉 boot。**2026-07-03 起补齐工具侧通道**(治「回合中途衍生操作不触发注入」缺口,按 `design/recall-trigger-discussion-20260628.md` 四层 + `design/observable-commitment-gate-20260628.md` 地基):PostToolUse 撞错召回(error_regex→additionalContext)、PostToolUse 影子测量(只记不注)、PreToolUse 高危窄门(绝对 deny + 「默认阻止→自查→120s 重发确认」+ ZMEM_PROOF 解锁)、`zmem search` 吐 `ZMEM_PROOF`。**注意:hook 脚本生效与否取决于 `.claude/settings.local.json` 接线(该文件不入 git)——脚本在库里 ≠ 事件流里已挂上,核对以 settings 实际注册为准。
+- **hook 强注入**(SessionStart 注 L0 / UserPromptSubmit 编 L0+L1 **含 `--enrich-frame` 确定性富化**),不靠模型自觉 boot。**2026-07-03 起补齐工具侧通道**(治「回合中途衍生操作不触发注入」缺口,按 `design/recall-trigger-discussion-20260628.md` 四层 + `design/observable-commitment-gate-20260628.md` 地基):PostToolUse 撞错召回(error_regex→additionalContext)、PostToolUse 影子测量(只记不注)、PreToolUse 高危窄门(绝对 deny + 「默认阻止→自查→120s 重发确认」+ ZMEM_PROOF 解锁)、`zmem search` 吐 `ZMEM_PROOF`。**注意:hook 脚本生效与否取决于 `.claude/settings.local.json` 接线(该文件不入 git)——脚本在库里 ≠ 事件流里已挂上,核对以 settings 实际注册为准(跑 `zmem.py check-wiring`,见 §3.1)。注入链本身是 fail-open 的,但 2026-08-08 起**不再静默**:任何一环失败都会打一行 `!! MEMORY RECALL OFF: <原因>` 顶替消失的包,并往 `logs/activation_decisions.jsonl` 追一条 `{"event":"recall_failure",...}`(退出码仍恒为 0)。
 - **召回可测**:金标准回归集来自真实事故 / owner 纠正史,`eval` 跑 StrictHitRate,CI 可 fail-closed。
 
 ### 分层
@@ -32,7 +32,16 @@ python cc_memory_vnext/zmem.py verify          # 校验卡片 schema + 调和闸
 python cc_memory_vnext/zmem.py build-index     # 卡片 → 确定性离线索引
 python cc_memory_vnext/zmem.py context --require-index --layers L0,L1 --frame-json '{"prompt":"..."}'
 python cc_memory_vnext/zmem.py eval            # 跑金标准回归(StrictHitRate)
+python cc_memory_vnext/zmem.py check-wiring    # 只读自检:本 checkout 的 hook 接线在不在(见 §3.1)
 ```
+
+### 3.1 hook 接线:模板在库里,活配置不在
+
+整套系统靠 `.claude/settings.local.json` 里的 hook 条目才会跑,而 `.gitignore:94` 把 `.claude/` 整目录忽略——**脚本随仓库走、发动脚本的那份声明不走**。新 clone / 交付副本拿到手,记忆系统默认是死的,且一声不吭。
+
+- `hooks/WIRING.template.json` 是那份声明的 tracked 脱敏拷贝(只含记忆系统条目,机器绝对路径换成 `{REPO_ROOT}` 占位符)。接一台新机器:把它的 `hooks` 对象**合并**进 `.claude/settings.local.json`(没有就建成 `{"hooks": {...}}`),把 `{REPO_ROOT}` 全部替换成本仓绝对路径。注意是合并不是覆盖——同一份 settings 里还挂着别家 hook(codegraph 索引守卫、latest.md 欠账守卫、auto-continue),别抄丢。
+- `zmem.py check-wiring` 比对模板与本机 settings,三态:接线缺失 / 命令路径漂移(同时打期望与实际两侧)/ 一致。**它是灯不是闸**:只读、退出码永远 0、异常吞成一行降级说明,任何门禁都不许拿它的判决分叉。比对口径只有 `(event, matcher, command)`,`timeout`/`async` 这类调参和模板没列的别家 hook 一律无视。
+- 改接线时模板要同批更新;`tests/test_hook_wiring_template.py` 钉住"模板点名的脚本必须真存在",防它随脚本改名烂成一份照抄出死接线的废纸。
 
 ## 4. 卡片 schema(verify 强制)
 

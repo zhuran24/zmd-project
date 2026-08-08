@@ -1,0 +1,115 @@
+{
+  "_note": [
+    "Tracked template for the memory system's hook wiring. NOT the live config.",
+    "The live config is .claude/settings.local.json, which .gitignore:94 excludes,",
+    "so a fresh clone or a delivery copy arrives with the hook scripts present but",
+    "nothing wired: memory is off, silently. This file is the missing declaration.",
+    "",
+    "To wire a new checkout: merge the \"hooks\" object below into",
+    ".claude/settings.local.json (create it as {\"hooks\": {...}} if absent),",
+    "replacing every {REPO_ROOT} with this repo's absolute path.",
+    "Then check it with:  python cc_memory_vnext/zmem.py check-wiring",
+    "",
+    "Memory-system entries only. Other hooks live in the same settings file",
+    "(codegraph index guard, latest.md debt guard, auto-continue, structured",
+    "output inject); they are out of scope here and must not be dropped when you",
+    "merge. check-wiring likewise only reports on the entries listed here and is",
+    "advisory: it never edits settings and always exits 0."
+  ],
+  "_repo_root_placeholder": "{REPO_ROOT}",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory_vnext/hooks/session_start.py\"",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory/hooks/cc_memory_readfirst.py\"",
+            "timeout": 25
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory_vnext/hooks/user_prompt_submit.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory_vnext/hooks/pre_tool_risk_gate.py\"",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory_vnext/hooks/pre_tool_risk_gate.py\"",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory_vnext/hooks/pre_tool_risk_gate.py\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory/hooks/cc_mem_hook.py\" post-tool",
+            "timeout": 900,
+            "async": true,
+            "asyncRewake": true
+          },
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory_vnext/hooks/post_tool_error_recall.py\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"{REPO_ROOT}/cc_memory/hooks/cc_mem_hook.py\" stop",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

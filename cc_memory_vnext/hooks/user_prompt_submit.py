@@ -24,10 +24,24 @@ which drives this file as a real CLI subprocess with hostile stdin, a hostile
 environment and a hostile stand-in `zmem.py` — not by monkeypatching
 `subprocess.run`, which is exactly what let the 2026-08-03 review find every one
 of them still live.
+
+Fail-open is kept, but as of 2026-08-08 it is no longer *silent*. Every one of
+those exits now leaves two marks (`tests/test_recall_failure_visibility.py`):
+
+* one `!! MEMORY RECALL OFF: <reason>` line on stdout — the packet is gone but
+  this line takes its place, so "recall died" stops looking exactly like
+  "nothing matched this prompt" (production zero-injection baseline is 32-37%,
+  which is where every failure used to hide);
+* one `{"event": "recall_failure", ...}` record appended to the activation log,
+  so the rate is answerable afterwards instead of only noticeable live.
+
+Neither can change the exit code: the stdout line goes out first, the log write
+swallows everything, and both sit inside the same fail-open net.
 """
 
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import re
@@ -39,6 +53,13 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 ZMEM = ROOT / "zmem.py"
+ACTIVATION_LOG = ROOT / "logs" / "activation_decisions.jsonl"
+
+HOOK_NAME = "UserPromptSubmit"
+
+# The visible half of the fail-open contract. Grep-stable literal: tests, the
+# sibling SessionStart hook and anybody reading a transcript all key off it.
+RECALL_OFF_PREFIX = "!! MEMORY RECALL OFF"
 
 # Wall-clock budget for the zmem child. This hook sits directly in front of the
 # user's prompt, so a child that hangs must cost a bounded pause and nothing
@@ -134,6 +155,57 @@ def _write(stream: Any, text: str) -> None:
     except Exception:
         # Closed/broken stdout is still not a reason to fail a prompt.
         return
+
+
+def _one_line(text: str, limit: int = 240) -> str:
+    """Squash anything into one bounded line; the OFF line must stay one line."""
+    collapsed = " ".join(str(text).split())
+    if len(collapsed) <= limit:
+        return collapsed
+    return collapsed[: limit - 3] + "..."
+
+
+def _append_activation_record(record: dict[str, Any]) -> bool:
+    """Append one JSON line to the activation log, swallowing every failure.
+
+    Deliberately a copy of `zmem.append_jsonl`'s contract rather than an import
+    of it: "zmem could not be imported / is broken" is one of the very failures
+    this record exists to report, and this hook must stay importable with
+    nothing but the standard library. Same reason the OFF-line helpers below are
+    duplicated in `session_start.py` instead of shared through a sibling module
+    — a shared module that goes missing takes both hooks down at *import* time,
+    before any `except` in here can run.
+    """
+    try:
+        ACTIVATION_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with ACTIVATION_LOG.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+        return True
+    except Exception:
+        return False
+
+
+def recall_off(reason: str) -> None:
+    """Announce that this turn got no memory packet, and record why.
+
+    stdout first, log second, and on purpose: an unwritable log must not be able
+    to take the visible line with it. Pure ASCII so it survives `LC_ALL=C`.
+    """
+    detail = _one_line(reason) or "unknown failure"
+    _write(
+        sys.stdout,
+        f"{RECALL_OFF_PREFIX}: {detail}; no memory packet was injected this turn "
+        "(the !! STALE INDEX check is off too). "
+        "Diagnose: python cc_memory_vnext/zmem.py verify",
+    )
+    _append_activation_record(
+        {
+            "event": "recall_failure",
+            "ts": datetime.datetime.now().isoformat(timespec="seconds"),
+            "hook": HOOK_NAME,
+            "reason": detail,
+        }
+    )
 
 
 def _read_stdin() -> str:
@@ -237,16 +309,19 @@ def _run(payload: dict[str, Any]) -> int:
         "--format",
         "text",
         "--log",
-        str(ROOT / "logs" / "activation_decisions.jsonl"),
+        str(ACTIVATION_LOG),
         "--frame-json",
         json.dumps(frame, ensure_ascii=False),
     ]
     result = run_zmem(cmd)
     if result is None:
         _write(sys.stderr, "zmem UserPromptSubmit skipped: zmem child could not be run")
+        recall_off("zmem child could not be run (missing interpreter, bad argv, or it hung past the timeout)")
         return 0
     if result.returncode != 0:
-        _write(sys.stderr, f"zmem UserPromptSubmit skipped: {(result.stderr or '').strip()}")
+        stderr = (result.stderr or "").strip()
+        _write(sys.stderr, f"zmem UserPromptSubmit skipped: {stderr}")
+        recall_off(f"zmem exited {result.returncode}: {stderr or 'no stderr'}")
         return 0
     _write(sys.stdout, (result.stdout or "").strip())
     return 0
@@ -255,9 +330,15 @@ def _run(payload: dict[str, Any]) -> int:
 def main() -> int:
     try:
         return _run(payload_from_raw(_read_stdin()))
-    except BaseException:  # noqa: BLE001 - fail-open is this hook's entire contract
+    except BaseException as exc:  # noqa: BLE001 - fail-open is this hook's entire contract
         # Deliberately wider than `Exception`: a hook that fails a prompt is
-        # worse than a hook that injects nothing, whatever the cause.
+        # worse than a hook that injects nothing, whatever the cause. The OFF
+        # line gets its own net because "the announcement of the failure also
+        # failed" must still not cost a non-zero exit.
+        try:
+            recall_off(f"the {HOOK_NAME} hook itself raised {type(exc).__name__}: {exc}")
+        except BaseException:
+            pass
         return 0
 
 

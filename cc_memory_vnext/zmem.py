@@ -33,6 +33,9 @@ ROOT = Path(__file__).resolve().parent
 DEFAULT_CARDS_DIR = ROOT / "cards"
 DEFAULT_INDEX_PATH = ROOT / ".index" / "cards_index.json"
 DEFAULT_EVAL_PATH = ROOT / "eval" / "regression.jsonl"
+DEFAULT_WIRING_TEMPLATE = ROOT / "hooks" / "WIRING.template.json"
+DEFAULT_SETTINGS_PATH = ROOT.parent / ".claude" / "settings.local.json"
+REPO_ROOT_PLACEHOLDER = "{REPO_ROOT}"
 
 SCHEMA_VERSION = "zmem-card-v1-mvp0"
 PACKET_VERSION = "zmem-packet-v1-mvp0"
@@ -1260,6 +1263,162 @@ def cmd_eval(args: argparse.Namespace) -> int:
     return 0
 
 
+# --- hook wiring check (advisory) --------------------------------------------
+# The whole memory system runs off hook entries in `.claude/settings.local.json`,
+# and `.gitignore:94` excludes `.claude/`. So the scripts travel with the repo
+# while the declaration that runs them does not: a fresh clone or a delivery copy
+# has memory switched off and says nothing about it. `hooks/WIRING.template.json`
+# is the tracked declaration; this command is the machine that compares it with
+# what is actually wired here.
+#
+# Advisory in the strong sense: read-only, exit code always 0, every exception
+# swallowed into one degraded line. It is a lamp, not a gate — nothing in this
+# repo may branch on its verdict.
+
+
+@dataclass(frozen=True)
+class HookWiringEntry:
+    """One (event, matcher, command) triple, flattened out of a settings tree."""
+
+    event: str
+    matcher: str
+    command: str
+
+
+_HOOK_SCRIPT_RE = re.compile(r'"?([^"\s]+\.py)"?')
+
+
+def normalize_hook_command(command: str) -> str:
+    """Quote style and whitespace runs are not wiring differences."""
+    return " ".join(str(command).replace('"', "").replace("'", "").split())
+
+
+def hook_command_signature(command: str) -> tuple[str, str]:
+    """(script basename, trailing args) — identity of a wiring slot.
+
+    Pairing on the basename plus the args is what separates a *drifted* entry
+    ("the same hook, wired from a stale path") from a *missing* one, and the args
+    are load-bearing: `cc_mem_hook.py post-tool` and `cc_mem_hook.py stop` share a
+    basename and are two different hooks.
+    """
+    normalized = normalize_hook_command(command)
+    match = _HOOK_SCRIPT_RE.search(normalized)
+    if match is None:
+        return (normalized, "")
+    return (Path(match.group(1)).name, normalized[match.end() :].strip())
+
+
+def flatten_hook_wiring(hooks: dict[str, Any]) -> list[HookWiringEntry]:
+    """Settings-shaped `{event: [{matcher?, hooks: [{type, command}]}]}` -> triples."""
+    entries: list[HookWiringEntry] = []
+    for event, groups in hooks.items():
+        if not isinstance(groups, list):
+            continue
+        for group in groups:
+            group_data = as_dict(group)
+            matcher = str(group_data.get("matcher") or "")
+            for hook in group_data.get("hooks") or ():
+                hook_data = as_dict(hook)
+                command = hook_data.get("command")
+                if hook_data.get("type", "command") != "command" or not nonempty_str(command):
+                    continue
+                entries.append(HookWiringEntry(str(event), matcher, str(command)))
+    return entries
+
+
+def expand_repo_root(command: str, repo_root: str) -> str:
+    return command.replace(REPO_ROOT_PLACEHOLDER, repo_root)
+
+
+def compare_hook_wiring(
+    expected: list[HookWiringEntry], actual: list[HookWiringEntry]
+) -> tuple[int, list[str]]:
+    """(matched count, issue lines). Only the listed entries are ever reported.
+
+    Deliberately blind to `timeout` / `async` / `asyncRewake` and to hooks the
+    template does not list: the question this answers is "is the memory system
+    wired here", not "does this settings file match mine".
+    """
+    by_event: dict[str, list[HookWiringEntry]] = defaultdict(list)
+    for entry in actual:
+        by_event[entry.event].append(entry)
+
+    matched = 0
+    issues: list[str] = []
+    for want in expected:
+        pool = by_event.get(want.event, [])
+        want_norm = normalize_hook_command(want.command)
+        if any(
+            entry.matcher == want.matcher and normalize_hook_command(entry.command) == want_norm
+            for entry in pool
+        ):
+            matched += 1
+            continue
+        signature = hook_command_signature(want.command)
+        near = [entry for entry in pool if hook_command_signature(entry.command) == signature]
+        label = f"{want.event} [{want.matcher or '*'}]"
+        if near:
+            issues.append(f"  DRIFT   {label} expected: {want.command}")
+            for entry in near:
+                issues.append(f"          {' ' * len(label)} found [{entry.matcher or '*'}]: {entry.command}")
+        else:
+            issues.append(f"  MISSING {label} {want.command}")
+    return matched, issues
+
+
+def cmd_check_wiring(args: argparse.Namespace) -> int:
+    try:
+        template_path = Path(args.template)
+        settings_path = Path(args.settings)
+        repo_root = str(Path(args.repo_root).resolve()) if args.repo_root else str(ROOT.parent)
+
+        template = json.loads(template_path.read_text(encoding="utf-8"))
+        expected = [
+            HookWiringEntry(entry.event, entry.matcher, expand_repo_root(entry.command, repo_root))
+            for entry in flatten_hook_wiring(as_dict(template.get("hooks")))
+        ]
+        if not expected:
+            print(f"WIRING CHECK UNAVAILABLE: {template_path} declares no hook entries")
+            return 0
+
+        hint = (
+            f"Fix: merge the entries from {template_path} into {settings_path}, "
+            f"replacing {REPO_ROOT_PLACEHOLDER} with {repo_root}."
+        )
+        if not settings_path.is_file():
+            print(
+                f"WIRING MISSING: no settings file at {settings_path}, so none of the "
+                f"{len(expected)} memory hook entries are wired in this checkout — "
+                "memory recall is off here."
+            )
+            print(hint)
+            return 0
+
+        settings = json.loads(settings_path.read_text(encoding="utf-8"))
+        actual = flatten_hook_wiring(as_dict(settings.get("hooks")))
+        matched, issues = compare_hook_wiring(expected, actual)
+        if not issues:
+            print(f"WIRING OK: {matched}/{len(expected)} memory hook entries match {template_path}")
+            return 0
+        if matched == 0:
+            print(
+                f"WIRING MISSING: {settings_path} carries none of the {len(expected)} "
+                "memory hook entries — memory recall is off here."
+            )
+        else:
+            print(
+                f"WIRING DRIFT: {matched}/{len(expected)} memory hook entries match "
+                f"{template_path}; the rest are listed below (advisory, nothing was changed)."
+            )
+        for line in issues:
+            print(line)
+        print(hint)
+        return 0
+    except Exception as exc:  # noqa: BLE001 - advisory command, never a gate
+        print(f"WIRING CHECK UNAVAILABLE: {type(exc).__name__}: {exc}")
+        return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="zmem", description="zmem MVP-0 card compiler")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -1300,6 +1459,19 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_argument("--require-index", action="store_true")
     search.add_argument("--proof-log", default=str(ROOT / "logs" / "proofs.jsonl"))
     search.set_defaults(func=cmd_search)
+
+    wiring = sub.add_parser(
+        "check-wiring",
+        help="advisory: is the memory system's hook wiring present in this checkout (exit 0 always)",
+    )
+    wiring.add_argument("--template", default=str(DEFAULT_WIRING_TEMPLATE))
+    wiring.add_argument("--settings", default=str(DEFAULT_SETTINGS_PATH))
+    wiring.add_argument(
+        "--repo-root",
+        default="",
+        help=f"value substituted for {REPO_ROOT_PLACEHOLDER} in the template (default: this repo)",
+    )
+    wiring.set_defaults(func=cmd_check_wiring)
 
     eval_cmd = sub.add_parser("eval", help="run activation regression frames")
     eval_cmd.add_argument("--cards-dir", default=str(DEFAULT_CARDS_DIR))
