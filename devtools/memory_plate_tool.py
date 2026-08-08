@@ -28,8 +28,9 @@
 排序（FINAL_VERDICT §1/§4，C7 反转）：注入截断是**切尾保头**，所以新卡必须在前——
 以现有 MEMORY.md 行序为基线，已在索引的卡保持相对顺序，不在索引的新卡头插。
 
-水位（FINAL_VERDICT §1，M-02 降级为监测项）：`eoe=25000` 的单位是 JS 字符
-（UTF-16 code unit，`len(s.encode('utf-16-le')) // 2`），另有 200 行上限；>80% 报警。
+水位（FINAL_VERDICT §1，M-02 降级为监测项）：字符上限运行时从环境变量或
+Claude Code 补丁 sidecar 解析，无可信动态来源时回退上游 `eoe=25000`。单位是 JS 字符
+（UTF-16 code unit，`len(s.encode('utf-16-le')) // 2`），上游行数上限为 200；>80% 报警。
 """
 
 from __future__ import annotations
@@ -44,6 +45,7 @@ import stat
 import sys
 import tempfile
 from dataclasses import dataclass, field
+from functools import cache
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
@@ -60,8 +62,12 @@ INDEX_HEADER = "# Memory Index"
 ALLOWED_TYPES = ("user", "feedback", "project", "reference")
 
 # 注入水位（JS 字符 = UTF-16 code unit；行数）
-JS_CHAR_LIMIT = 25_000
-LINE_LIMIT = 200
+STOCK_JS_CHAR_LIMIT = 25_000
+STOCK_LINE_LIMIT = 200
+MEMORY_INDEX_JS_CHAR_LIMIT_ENV = "MEMORY_INDEX_JS_CHAR_LIMIT"
+MEMORY_INDEX_LINE_LIMIT_ENV = "MEMORY_INDEX_LINE_LIMIT"
+MEMORY_INDEX_CAP_SIDECAR = Path.home() / ".claude" / "cc-patch" / "memory-index-cap.json"
+CLAUDE_LAUNCHER_PATH = Path.home() / ".local" / "bin" / "claude"
 WATERMARK_WARN_RATIO = 0.80
 
 # 对账覆盖率阈值：>= 该值视作「被对方完全覆盖」
@@ -73,6 +79,146 @@ CLASS_DESC_RICHER = "description更富(建议反向)"
 CLASS_HUMAN = "两边各有对方没有的(需人裁)"
 
 INDEX_LINE_RE = re.compile(r"^- \[(?P<title>.*?)\]\((?P<file>[^)]+)\)(?:\s+—\s+(?P<hook>.*))?$")
+
+
+@dataclass(frozen=True)
+class InjectionCaps:
+    js_char_limit: int
+    line_limit: int
+    source: str
+    js_source: str = field(repr=False)
+    line_source: str = field(repr=False)
+
+
+def _positive_env_int(name: str) -> int | None:
+    raw = os.environ.get(name)
+    if raw is None:
+        return None
+    try:
+        value = int(raw)
+    except ValueError as exc:
+        raise ValueError(f"{name} 必须是正整数，实际为 {raw!r}") from exc
+    if value <= 0:
+        raise ValueError(f"{name} 必须是正整数，实际为 {raw!r}")
+    return value
+
+
+def _stock_injection_caps(reason: str) -> InjectionCaps:
+    js_source = f"默认 {STOCK_JS_CHAR_LIMIT}（{reason}）"
+    return InjectionCaps(
+        js_char_limit=STOCK_JS_CHAR_LIMIT,
+        line_limit=STOCK_LINE_LIMIT,
+        source=js_source,
+        js_source=js_source,
+        line_source=f"默认 {STOCK_LINE_LIMIT}（{reason}）",
+    )
+
+
+def _resolve_live_claude_binary_path() -> Path:
+    """解析当前 launcher 指向的客户端二进制；是 `readlink -f` 的 Path 等价物。"""
+    return CLAUDE_LAUNCHER_PATH.expanduser().resolve()
+
+
+def _sidecar_positive_int(payload: dict[str, Any], key: str) -> int:
+    value = payload.get(key)
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        raise ValueError(f"sidecar {key} 不是正整数")
+    return value
+
+
+def _resolve_sidecar_caps() -> InjectionCaps:
+    try:
+        raw = MEMORY_INDEX_CAP_SIDECAR.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return _stock_injection_caps("未找到 sidecar")
+    except (OSError, UnicodeError):
+        return _stock_injection_caps("sidecar 无法读取")
+
+    try:
+        payload = json.loads(raw)
+    except (json.JSONDecodeError, UnicodeError):
+        return _stock_injection_caps("sidecar 是无效 JSON")
+    if not isinstance(payload, dict):
+        return _stock_injection_caps("sidecar 根节点不是 JSON object")
+
+    try:
+        js_char_limit = _sidecar_positive_int(payload, "js_char_limit")
+        line_limit = _sidecar_positive_int(payload, "line_limit")
+        binary_size = _sidecar_positive_int(payload, "binary_size")
+        binary_mtime_ns = _sidecar_positive_int(payload, "binary_mtime_ns")
+        binary_value = payload["binary"]
+        if not isinstance(binary_value, str) or not binary_value:
+            raise ValueError("sidecar binary 不是非空字符串")
+        recorded_binary = Path(binary_value).expanduser().resolve()
+    except (KeyError, OSError, RuntimeError, ValueError):
+        return _stock_injection_caps("sidecar 字段无效")
+
+    try:
+        live_binary = _resolve_live_claude_binary_path()
+        # 只 stat 297MB 客户端，绝不为了取上限读它的内容。
+        live_stat = os.stat(live_binary)
+    except (OSError, RuntimeError):
+        return _stock_injection_caps("sidecar 无法核验：活客户端二进制不存在或无权 stat")
+
+    if (
+        recorded_binary != live_binary
+        or live_stat.st_size != binary_size
+        or live_stat.st_mtime_ns != binary_mtime_ns
+    ):
+        return _stock_injection_caps("sidecar 陈旧：二进制已变，可能被 cc-patch 回退或已升级")
+
+    source = f"客户端补丁 sidecar ({recorded_binary.name})"
+    return InjectionCaps(
+        js_char_limit=js_char_limit,
+        line_limit=line_limit,
+        source=source,
+        js_source=source,
+        line_source=source,
+    )
+
+
+@cache
+def _resolve_injection_caps() -> InjectionCaps:
+    """每进程解析一次活客户端的注入上限；env 按字段覆盖 sidecar/上游默认。"""
+    env_js_char_limit = _positive_env_int(MEMORY_INDEX_JS_CHAR_LIMIT_ENV)
+    env_line_limit = _positive_env_int(MEMORY_INDEX_LINE_LIMIT_ENV)
+
+    if env_js_char_limit is not None and env_line_limit is not None:
+        js_source = f"环境变量 {MEMORY_INDEX_JS_CHAR_LIMIT_ENV}"
+        line_source = f"环境变量 {MEMORY_INDEX_LINE_LIMIT_ENV}"
+        return InjectionCaps(
+            js_char_limit=env_js_char_limit,
+            line_limit=env_line_limit,
+            source=f"{js_source}、{MEMORY_INDEX_LINE_LIMIT_ENV}",
+            js_source=js_source,
+            line_source=line_source,
+        )
+
+    base = _resolve_sidecar_caps()
+    if env_js_char_limit is None and env_line_limit is None:
+        return base
+    if env_js_char_limit is not None:
+        return InjectionCaps(
+            js_char_limit=env_js_char_limit,
+            line_limit=base.line_limit,
+            source=(
+                f"JS 字符上限：环境变量 {MEMORY_INDEX_JS_CHAR_LIMIT_ENV}；"
+                f"行数上限：{base.line_source}"
+            ),
+            js_source=f"环境变量 {MEMORY_INDEX_JS_CHAR_LIMIT_ENV}",
+            line_source=base.line_source,
+        )
+    assert env_line_limit is not None
+    return InjectionCaps(
+        js_char_limit=base.js_char_limit,
+        line_limit=env_line_limit,
+        source=(
+            f"JS 字符上限：{base.js_source}；"
+            f"行数上限：环境变量 {MEMORY_INDEX_LINE_LIMIT_ENV}"
+        ),
+        js_source=base.js_source,
+        line_source=f"环境变量 {MEMORY_INDEX_LINE_LIMIT_ENV}",
+    )
 
 
 # --------------------------------------------------------------------------------------
@@ -429,21 +575,25 @@ class Watermark:
 
     @property
     def char_ratio(self) -> float:
-        return self.js_chars / JS_CHAR_LIMIT
+        return self.js_chars / _resolve_injection_caps().js_char_limit
 
     @property
     def line_ratio(self) -> float:
-        return self.lines / LINE_LIMIT
+        return self.lines / _resolve_injection_caps().line_limit
 
     @property
     def warn(self) -> bool:
         return self.char_ratio > WATERMARK_WARN_RATIO or self.line_ratio > WATERMARK_WARN_RATIO
 
     def report_lines(self, label: str) -> list[str]:
+        caps = _resolve_injection_caps()
+        # 本仓刚立的纪律：判据取自哪里必须进报告；先例是
+        # devtools/memory_reference_scan.py 在报告中统计 arrival_source。
         out = [
             f"{label}:",
-            f"  JS 字符 (UTF-16 code unit): {self.js_chars} / {JS_CHAR_LIMIT}  = {self.char_ratio * 100:.1f}%",
-            f"  行数:                       {self.lines} / {LINE_LIMIT}  = {self.line_ratio * 100:.1f}%",
+            f"  JS 字符 (UTF-16 code unit): {self.js_chars} / {caps.js_char_limit}  = "
+            f"{self.char_ratio * 100:.1f}%（上限来源：{caps.source}）",
+            f"  行数:                       {self.lines} / {caps.line_limit}  = {self.line_ratio * 100:.1f}%",
             f"  UTF-8 字节 (仅参考):        {self.utf8_bytes}",
         ]
         if self.warn:
@@ -1049,6 +1199,8 @@ def compile_index(cards: Sequence[Card], baseline: Sequence[IndexEntry]) -> tupl
 
 
 def cmd_compile(args: argparse.Namespace) -> int:
+    # 环境旋钮非法必须在 mkdir/备份/替换任何输出前 fail-loud。
+    _resolve_injection_caps()
     index_backup_dir: Path | None = None
     old_index: bytes | None = None
     index_device: int | None = None
@@ -1171,6 +1323,7 @@ def _write_index_diff_group(label: str, items: Sequence[str]) -> None:
 
 
 def _index_watermark_line(watermark: Watermark) -> str:
+    caps = _resolve_injection_caps()
     warning = (
         f"；!! WATERMARK WARNING: 已越 {WATERMARK_WARN_RATIO * 100:.0f}% 警戒线"
         if watermark.warn
@@ -1178,9 +1331,9 @@ def _index_watermark_line(watermark: Watermark) -> str:
     )
     return (
         "INDEX WATERMARK: "
-        f"JS 字符 (UTF-16 code unit) {watermark.js_chars} / {JS_CHAR_LIMIT} = "
-        f"{watermark.char_ratio * 100:.1f}%；"
-        f"行数 {watermark.lines} / {LINE_LIMIT} = {watermark.line_ratio * 100:.1f}%；"
+        f"JS 字符 (UTF-16 code unit) {watermark.js_chars} / {caps.js_char_limit} = "
+        f"{watermark.char_ratio * 100:.1f}%（上限来源：{caps.source}）；"
+        f"行数 {watermark.lines} / {caps.line_limit} = {watermark.line_ratio * 100:.1f}%；"
         f"UTF-8 字节 {watermark.utf8_bytes}{warning}"
     )
 
@@ -1205,6 +1358,8 @@ def _index_repair_command(memory_dir: Path, index_path: Path) -> str:
 
 def cmd_check_index(args: argparse.Namespace) -> int:
     """只读核对现存索引；运行时异常按 advisory 约定降级为 exit 0。"""
+    # 配置错误不属于 advisory；放在宽泛异常兜底外，防止非法 env 被吞掉。
+    _resolve_injection_caps()
     try:
         memory_dir = args.memory_dir.expanduser()
         index_path = (args.index or (memory_dir / INDEX_FILENAME)).expanduser()
@@ -1475,6 +1630,8 @@ def _md_cell(text: str, limit: int = 60) -> str:
 
 
 def cmd_migrate_plan(args: argparse.Namespace) -> int:
+    # 环境旋钮非法必须在普通 --out 可能 mkdir 前 fail-loud。
+    _resolve_injection_caps()
     memory_dir = args.memory_dir.expanduser()
     out_dir = _prepare_out_dir(args.out, memory_dir)
     threshold = args.coverage_threshold

@@ -20,11 +20,13 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import subprocess
 import sys
 from pathlib import Path
+from types import ModuleType
 
 import pytest
 import yaml
@@ -39,9 +41,13 @@ def _tool_path() -> Path:
     return Path(override) if override else DEFAULT_TOOL
 
 
-def run_tool(*args: str) -> subprocess.CompletedProcess[str]:
+def run_tool(
+    *args: str, extra_env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[str]:
     env = dict(os.environ)
     env.pop("PYTHONPATH", None)
+    if extra_env is not None:
+        env.update(extra_env)
     return subprocess.run(
         [sys.executable, str(_tool_path()), *args],
         capture_output=True,
@@ -49,6 +55,20 @@ def run_tool(*args: str) -> subprocess.CompletedProcess[str]:
         env=env,
         cwd=str(REPO_ROOT),
     )
+
+
+@pytest.fixture()
+def tool_module(monkeypatch: pytest.MonkeyPatch) -> ModuleType:
+    """从当前 MEMORY_PLATE_TOOL 加载 fresh module，让解析器测试也能杀死变异副本。"""
+    module_name = "_memory_plate_tool_under_test"
+    spec = importlib.util.spec_from_file_location(module_name, _tool_path())
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    monkeypatch.setitem(sys.modules, module_name, module)
+    spec.loader.exec_module(module)
+    monkeypatch.delenv("MEMORY_INDEX_JS_CHAR_LIMIT", raising=False)
+    monkeypatch.delenv("MEMORY_INDEX_LINE_LIMIT", raising=False)
+    return module
 
 
 def write_card(
@@ -383,6 +403,134 @@ def test_apply_dual_title_prefers_top_level_and_reports_one_conflict(
 # --------------------------------------------------------------------------------------
 
 
+def _write_cap_sidecar(
+    sidecar: Path,
+    binary: Path,
+    *,
+    js_char_limit: int = 40_000,
+    line_limit: int = 200,
+) -> None:
+    binary_stat = os.stat(binary)
+    sidecar.write_text(
+        json.dumps(
+            {
+                "js_char_limit": js_char_limit,
+                "line_limit": line_limit,
+                "binary": str(binary.resolve()),
+                "binary_size": binary_stat.st_size,
+                "binary_mtime_ns": binary_stat.st_mtime_ns,
+                "patched_by": "patch-cc-memory-index-cap.py",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_injection_caps_env_override_is_cached(
+    tool_module: ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv("MEMORY_INDEX_JS_CHAR_LIMIT", "31000")
+    monkeypatch.setenv("MEMORY_INDEX_LINE_LIMIT", "321")
+
+    first = tool_module._resolve_injection_caps()
+
+    assert first.js_char_limit == 31_000
+    assert first.line_limit == 321
+    assert "MEMORY_INDEX_JS_CHAR_LIMIT" in first.source
+    assert "MEMORY_INDEX_LINE_LIMIT" in first.source
+    monkeypatch.setenv("MEMORY_INDEX_JS_CHAR_LIMIT", "32000")
+    assert tool_module._resolve_injection_caps() is first, "同一进程只允许解析一次"
+
+    tool_module._resolve_injection_caps.cache_clear()
+    monkeypatch.delenv("MEMORY_INDEX_LINE_LIMIT")
+    monkeypatch.setattr(tool_module, "MEMORY_INDEX_CAP_SIDECAR", tmp_path / "missing.json")
+    partial = tool_module._resolve_injection_caps()
+    assert partial.js_char_limit == 32_000
+    assert partial.line_limit == 200
+    assert partial.source == (
+        "JS 字符上限：环境变量 MEMORY_INDEX_JS_CHAR_LIMIT；"
+        "行数上限：默认 200（未找到 sidecar）"
+    )
+
+
+def test_invalid_injection_cap_env_is_fail_loud(
+    tool_module: ModuleType, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for name, raw in (
+        ("MEMORY_INDEX_JS_CHAR_LIMIT", "not-an-integer"),
+        ("MEMORY_INDEX_LINE_LIMIT", "0"),
+    ):
+        monkeypatch.setenv(name, raw)
+        tool_module._resolve_injection_caps.cache_clear()
+        with pytest.raises(ValueError, match=name):
+            tool_module._resolve_injection_caps()
+        monkeypatch.delenv(name)
+
+
+def test_injection_caps_uses_matching_sidecar(
+    tool_module: ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    binary = tmp_path / "versions" / "2.1.226"
+    binary.parent.mkdir()
+    binary.write_bytes(b"fake patched client")
+    sidecar = tmp_path / "memory-index-cap.json"
+    _write_cap_sidecar(sidecar, binary)
+    monkeypatch.setattr(tool_module, "MEMORY_INDEX_CAP_SIDECAR", sidecar)
+    monkeypatch.setattr(tool_module, "_resolve_live_claude_binary_path", lambda: binary.resolve())
+
+    caps = tool_module._resolve_injection_caps()
+
+    assert caps.js_char_limit == 40_000
+    assert caps.line_limit == 200
+    assert caps.source == "客户端补丁 sidecar (2.1.226)"
+
+
+def test_stale_sidecar_falls_back_to_stock_caps(
+    tool_module: ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    binary = tmp_path / "versions" / "2.1.226"
+    binary.parent.mkdir()
+    binary.write_bytes(b"fake patched client")
+    sidecar = tmp_path / "memory-index-cap.json"
+    _write_cap_sidecar(sidecar, binary)
+    before = os.stat(binary)
+    os.utime(binary, ns=(before.st_atime_ns, before.st_mtime_ns + 1_000_000))
+    monkeypatch.setattr(tool_module, "MEMORY_INDEX_CAP_SIDECAR", sidecar)
+    monkeypatch.setattr(tool_module, "_resolve_live_claude_binary_path", lambda: binary.resolve())
+
+    caps = tool_module._resolve_injection_caps()
+
+    assert caps.js_char_limit == 25_000
+    assert caps.line_limit == 200
+    assert "陈旧" in caps.source
+
+
+def test_missing_sidecar_uses_stock_caps(
+    tool_module: ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(tool_module, "MEMORY_INDEX_CAP_SIDECAR", tmp_path / "missing.json")
+
+    caps = tool_module._resolve_injection_caps()
+
+    assert caps.js_char_limit == 25_000
+    assert caps.line_limit == 200
+    assert caps.source == "默认 25000（未找到 sidecar）"
+
+
+def test_malformed_sidecar_uses_stock_caps(
+    tool_module: ModuleType, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sidecar = tmp_path / "memory-index-cap.json"
+    sidecar.write_text("{ definitely not JSON", encoding="utf-8")
+    monkeypatch.setattr(tool_module, "MEMORY_INDEX_CAP_SIDECAR", sidecar)
+
+    caps = tool_module._resolve_injection_caps()
+
+    assert caps.js_char_limit == 25_000
+    assert caps.line_limit == 200
+    assert "无效 JSON" in caps.source
+
+
 def _watermark_numbers(text: str) -> tuple[int, int]:
     js = lines = -1
     for line in text.splitlines():
@@ -405,6 +553,7 @@ def test_js_char_count_uses_utf16_code_units(memory_dir: Path) -> None:
     assert js == expected
     assert js == len(res.stdout) + 1, "emoji 必须比 Python 字符数多算 1"
     assert lines == 2
+    assert "上限来源：" in res.stderr
 
 
 def test_watermark_warns_just_above_eighty_percent(memory_dir: Path) -> None:
@@ -414,7 +563,9 @@ def test_watermark_warns_just_above_eighty_percent(memory_dir: Path) -> None:
     write_card(memory_dir, "big", title="T", description="漢" * target)
     write_index(memory_dir, [])
 
-    res = run_tool("compile", "--memory-dir", str(memory_dir))
+    res = run_tool(
+        "compile", "--memory-dir", str(memory_dir), extra_env=STOCK_CAP_ENV
+    )
     js, _ = _watermark_numbers(res.stderr)
 
     assert js > JS_LIMIT * 0.8
@@ -422,7 +573,9 @@ def test_watermark_warns_just_above_eighty_percent(memory_dir: Path) -> None:
 
     # 对照臂：少 3 个字符就不该报警
     write_card(memory_dir, "big", title="T", description="漢" * (target - 3))
-    res2 = run_tool("compile", "--memory-dir", str(memory_dir))
+    res2 = run_tool(
+        "compile", "--memory-dir", str(memory_dir), extra_env=STOCK_CAP_ENV
+    )
     js2, _ = _watermark_numbers(res2.stderr)
     assert js2 <= JS_LIMIT * 0.8
     assert "WATERMARK WARNING" not in res2.stderr
@@ -433,7 +586,9 @@ def test_watermark_warns_on_line_count(memory_dir: Path) -> None:
         write_card(memory_dir, f"c{i:03d}", description="d")
     write_index(memory_dir, [])
 
-    res = run_tool("compile", "--memory-dir", str(memory_dir))
+    res = run_tool(
+        "compile", "--memory-dir", str(memory_dir), extra_env=STOCK_CAP_ENV
+    )
     js, lines = _watermark_numbers(res.stderr)
 
     assert lines == 162
@@ -442,6 +597,11 @@ def test_watermark_warns_on_line_count(memory_dir: Path) -> None:
 
 
 JS_LIMIT = 25_000
+# 这些断言故意钉上游 25000/200；显式 env 隔离开发机 sidecar/补丁状态。
+STOCK_CAP_ENV = {
+    "MEMORY_INDEX_JS_CHAR_LIMIT": str(JS_LIMIT),
+    "MEMORY_INDEX_LINE_LIMIT": "200",
+}
 
 
 # --------------------------------------------------------------------------------------
@@ -663,7 +823,7 @@ def test_apply_commit_changes_only_allowed_bytes_and_makes_restorable_backup(
         f"description: {json.dumps(description, ensure_ascii=False)}\n",
         1,
     )
-    expected = (expected + "\n" + addendum).encode("utf-8")
+    expected_bytes = (expected + "\n" + addendum).encode("utf-8")
 
     with card.open("rb") as old_handle:
         res = run_tool(
@@ -679,7 +839,7 @@ def test_apply_commit_changes_only_allowed_bytes_and_makes_restorable_backup(
         assert res.returncode == 0, res.stderr
         assert old_handle.read() == before, "os.replace 后旧文件描述符必须仍看到改前 inode"
 
-    assert card.read_bytes() == expected, "只允许 title/description/正文追加三处差异"
+    assert card.read_bytes() == expected_bytes, "只允许 title/description/正文追加三处差异"
     assert card.stat().st_ino != before_inode, "受控写必须通过临时文件 + os.replace 更换 inode"
     assert (backup_dir / "precise.md").read_bytes() == before
     assert sorted(path.name for path in cc_memory_dir.iterdir()) == ["precise.md"]
@@ -1207,6 +1367,7 @@ def test_compile_write_index_changes_only_index_and_backs_up_old_bytes(
             "--write-index",
             "--backup-dir",
             str(backup_dir),
+            extra_env=STOCK_CAP_ENV,
         )
         assert res.returncode == 0, res.stderr
         assert old_handle.read() == old_index
@@ -1332,6 +1493,26 @@ def test_check_index_exact_match_returns_zero(memory_dir: Path) -> None:
     assert res.returncode == 0, res.stdout + res.stderr
     assert "INDEX OK: 1 张卡 / 1 行，与编译输出逐字节一致" in res.stdout
     assert "INDEX WATERMARK:" in res.stdout
+    assert "上限来源：" in res.stdout
+
+
+def test_check_index_invalid_env_is_not_advisory_degraded(memory_dir: Path) -> None:
+    write_card(memory_dir, "match", title="匹配门牌", description="匹配描述")
+    write_index(memory_dir, [("匹配门牌", "match.md", "匹配描述")])
+
+    res = run_tool(
+        "check-index",
+        "--memory-dir",
+        str(memory_dir),
+        extra_env={
+            "MEMORY_INDEX_JS_CHAR_LIMIT": "not-an-integer",
+            "MEMORY_INDEX_LINE_LIMIT": "200",
+        },
+    )
+
+    assert res.returncode != 0
+    assert "MEMORY_INDEX_JS_CHAR_LIMIT" in res.stderr
+    assert "INDEX DEGRADED" not in res.stdout
 
 
 def test_check_index_card_missing_from_index_returns_one(memory_dir: Path) -> None:
