@@ -132,6 +132,12 @@ proof 输入被字节级 hash 钉死（`scripts/preflight_gate.py` 的 `FROZEN_A
 **活跃两层 + 档案一层**（owner 2026-08-03 拍板收敛）：
 
 - **新记忆写文件记忆层**：`~/.claude/projects/-home-zhuran24-zmd-pj/memory/`（CC 自带 auto-memory，`MEMORY.md` 是索引、每张卡一个 `.md`）。它是现在的收件箱。
+  - **写卡形态（2026-08-08 单门牌化后）**：frontmatter 写 `name` / **`title`（中文标题）** / `description`，**别再手写 `MEMORY.md` 索引行**——索引由 `title+description` 机械编译生成。`description` 是**唯一门牌**，既要有机制/why，也要有终态/翻案（旧的「description=出生机制、索引行=追记时间线」两块地层已合并），控制在 180-200 字。
+  - **写完卡跑编译**（这一步是闭环的一部分，漏了新卡就不在索引里 = 不可召回）：
+    `python devtools/memory_plate_tool.py compile --memory-dir ~/.claude/projects/-home-zhuran24-zmd-pj/memory --write-index --backup-dir <仓外目录>`
+    过渡期兼容：卡若没有 `title` 字段，编译器**原样保留**它在现存 `MEMORY.md` 里那一行（不会把人写的中文标题降级成英文 slug）。
+  - 批量改卡走 `memory_plate_tool.py apply --proposals <json>`（默认 dry-run，`--commit` 强制外部 `--backup-dir`、原子替换、只许动 title/description 与追加正文段）。**批量操作的输入天然是快照，而本目录随时有并发写方——落笔前必须拿快照与现文逐字节 diff，变动过的卡一律重取门牌**（08-08 实锤：一张卡在快照后被结论反转式改写，差点把已翻案的错版回写成门牌）。
+  - **注入水位**：索引按 **25,000 JS 字符（UTF-16 单位）+ 200 行**双上限截断，且**切尾保头**（超限先丢最老的卡）——所以新卡头插。`compile` 每次打水位，>80% 报警（2026-08-08 迁移后 82.4%）。
 - `cc_memory_vnext/`（push 型主动卡片层，活跃）：`python cc_memory_vnext/zmem.py verify|build-index|context|eval`。卡片 `cards/*.md` 是真相源，`.index/` 是可重建缓存——**活 hook 消费的是 `.index` 编译缓存，凡改卡（含合并改卡的分支）必须在主树跑 `build-index`，否则改动不生效**（08-03 实锤：退役正则因此半月仍活；现另有机械兜底——index 陈旧时 `context`/`verify` 打 `!! STALE INDEX` 警告，advisory-only 不自动重建，纪律照旧）。
 - `cc_memory/`（SQLite）**2026-08-03 起冻结为只读档案**（owner 拍板）：只读不写，考古用 `python cc_memory/mem.py search|read <id> --body|impact <id>`。**`find <id>` 是跨三层入口**（一个 id 在哪层，它替你查完再答）。写命令（`add-entry`/`set-fact`/…）保留、只为档案订正，跑之前会打一行提醒不会拦；订正后照旧 `finalize` 收口，`exports/MEMORY.md` 是生成视图别手改。memory.db 有意进 git。
 - 三个 advisory 工具（只读、无 apply 通路，报告落 `.prune/`）：`python devtools/memory_reference_scan.py`（记忆层完整性）、`python devtools/docs_reference_scan.py scan`（文档引用完整性）、`python devtools/memory_gap_lens.py assemble|verify <候选json>`（查漏镜头确定性外壳：assemble 出证据包给 LLM 座席，座席产出经 verify 落地核验——引文逐字比对，幻觉候选整条 drop）。稳态基线：两扫描器 0 候选（memory 侧另有 9 条已核 said_card 静态底噪），新增才是信号。

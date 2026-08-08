@@ -204,6 +204,12 @@
 机械守卫：`.index` 内嵌卡语料内容指纹（`cards_digest`，内容级、不受 git checkout 的 mtime 抖动影响），与 cards/ 不符时 `context`/`verify` 打 `!! STALE INDEX` 警告行并提示重建——advisory-only 不自动重建、hook 路径异常静默降级；activation log 同步记 `stale_index` 位，可事后追溯陈旧服务了多久。守卫测试在 `cc_memory_vnext/tests/test_index_staleness_guard.py`（memory lane 收集）。警告只兜底，纪律照旧。
 详情：卡 `vnext-maintenance-discipline`（vnext）。
 
+**E2b 文件层写完卡不跑编译 = 新卡不在索引里 = 不可召回**
+机制：2026-08-08 单门牌化后，文件层的 `MEMORY.md`（每会话自动注入的那份索引）**由 `title+description` 机械编译生成**，不再手写。写了卡不跑编译，这张卡就不在注入索引里——和 E2 是同一族病（真相源与编译缓存脱节），只是换到文件层。
+正确形态：写卡（`name`/`title`/`description`）→ `python devtools/memory_plate_tool.py compile --memory-dir <memory目录> --write-index --backup-dir <仓外目录>`。过渡期卡若无 `title`，编译器原样保留其现存索引行（不降级成英文 slug）。批量改卡走 `apply --proposals`（默认 dry-run，`--commit` 强制外部备份+原子替换，越权写卡/写索引一律 fail-closed）。
+两条一起记的纪律：①**批量改卡的输入天然是快照**，本目录随时有并发写方——落笔前拿快照与现文逐字节 diff，变动过的卡一律重取门牌（08-08 实锤：一张卡在快照后被结论反转式改写）；②**注入索引按 25,000 JS 字符 + 200 行截断且切尾保头**，所以新卡头插、`compile` 每次打水位（>80% 报警）。
+详情：`CLAUDE.md` 记忆系统节；`.artifacts/memsys_meeting_20260808/FINAL_VERDICT.md`。
+
 **E3 只读打开 SQLite 会留写足迹**
 机制：裸 `mode=ro` 打开 WAL 库仍会在库文件旁创建 `-wal`/`-shm` 侧车——对「零写足迹」要求的冻结档案来说，只读工具留下了写痕迹。
 正确形态：连接串必须 `file:...?mode=ro&immutable=1`（`uri=True`）；权威参照实现是 `cc_memory/mem.py` 的 `connect_immutable`；验收断言钉零侧车（`not list(db.parent.glob("memory.db-*"))`）。
