@@ -10,7 +10,7 @@ Preflight gate — 提交前自动门禁检查。
 当前检查面：
     冻结/外部制品、禁止路径、AI 与 exact/exploratory 隔离、调研覆盖、行尾、
     secret、artifact boundary、Phase review gate、P1.2 obligations、
-    strong-status allowlist、mypy、ruff、pytest lanes 与记忆层测试 lane。
+    strong-status allowlist、mypy、ruff、pytest lanes 与记忆层 lane（卡校验、索引闭环、测试）。
 
     旧的文档主体投影/文档树脚本已退役，本 gate 不运行
     scripts/sync_doc_subjects.py、scripts/check_doc_tree_completeness.py 或 cc_context workflow。
@@ -841,6 +841,8 @@ def check_slow_tests(gate: GateResult, *, require_collection: bool = False) -> N
 MEMORY_TEST_DIRS = ("cc_memory/tests", "cc_memory_vnext/tests")
 MEMORY_SCOPE_PREFIXES = ("cc_memory/", "cc_memory_vnext/")
 MEMORY_CARD_VERIFIER = "cc_memory_vnext/zmem.py"
+MEMORY_PLATE_TOOL = "devtools/memory_plate_tool.py"
+MEMORY_INDEX_DIR = Path.home() / ".claude" / "projects" / "-home-zhuran24-zmd-pj" / "memory"
 
 
 def check_memory_cards(gate: GateResult) -> None:
@@ -904,6 +906,56 @@ def check_memory_cards(gate: GateResult) -> None:
             break
 
 
+def check_memory_index(gate: GateResult) -> None:
+    """Advisory-only check that the injected MEMORY.md matches its cards."""
+    memory_dir = MEMORY_INDEX_DIR
+    if not memory_dir.is_dir():
+        return
+
+    script = PROJECT_ROOT / MEMORY_PLATE_TOOL
+    if not script.is_file():
+        gate.warn(f"check-index 工具缺失: {MEMORY_PLATE_TOOL}")
+        return
+
+    timeout = max(1, int(60 * _TIMEOUT_SCALE))
+    try:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                "check-index",
+                "--memory-dir",
+                str(memory_dir),
+            ],
+            capture_output=True,
+            text=True,
+            cwd=str(PROJECT_ROOT),
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        gate.warn(f"check-index 超时 (>{timeout}s)，advisory 检查已降级")
+        return
+    except OSError as exc:
+        gate.warn(f"check-index 无法启动，advisory 检查已降级: {exc}")
+        return
+
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    stderr_lines = [line for line in result.stderr.splitlines() if line.strip()]
+    headline = lines[0] if lines else (stderr_lines[0] if stderr_lines else "无输出")
+    if result.returncode != 0:
+        gate.warn(f"check-index: {headline}")
+        for line in lines[1:]:
+            print(f"         {line}")
+        for line in stderr_lines[:3]:
+            print(f"         {line}")
+        return
+
+    if headline.startswith("INDEX OK:"):
+        gate.ok(f"check-index: {headline}")
+    else:
+        print(f"  INFO   check-index: {headline}")
+
+
 def check_memory_tests(gate: GateResult, *, always: bool) -> None:
     """记忆层测试 lane：cc_memory + cc_memory_vnext 两个目录。
 
@@ -946,10 +998,11 @@ def check_memory_tests(gate: GateResult, *, always: bool) -> None:
             gate.ok("记忆层未改动，跳过记忆测试 lane")
             return
 
-    # 卡片先于测试：它便宜（一次 fork、~0.3s），而且两边红是两件不同的事
-    # ——测试红 = 读卡的机器坏了，verify 红 = 卡本身坏了。放在 pytest 的
-    # 早退分支之前，一次门禁就能同时说出来。
+    # 卡片与注入索引先于测试：两者都便宜，而且三者是三件不同的事——
+    # 测试红 = 读卡机器坏了，verify 红 = 卡本身坏了，check-index 黄 = 该重编了。
+    # 放在 pytest 的早退分支之前，一次门禁就能同时说出来。
     check_memory_cards(gate)
+    check_memory_index(gate)
 
     existing = list(MEMORY_TEST_DIRS)
 

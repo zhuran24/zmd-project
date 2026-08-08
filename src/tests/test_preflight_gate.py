@@ -258,6 +258,11 @@ def _memory_lane_run(
     present: tuple[str, ...],
     verifier: bool = True,
     verify_result: tuple[int, str] = (0, "VERIFY OK: 53 card(s)\n"),
+    index_dir_present: bool = False,
+    index_result: tuple[int, str] = (
+        0,
+        "INDEX OK: 53 张卡 / 53 行，与编译输出逐字节一致\n",
+    ),
 ):
     """Run check_memory_tests against a synthetic project root.
 
@@ -265,8 +270,9 @@ def _memory_lane_run(
     decision under test is the real one.  ``verifier`` decides whether the
     card verifier exists in that root, and ``verify_result`` is what it says;
     the pytest half always passes, so a red lane can only come from the half
-    the test is about.  ``observed["commands"]`` keeps every argv the lane
-    launched, in order — the lane runs two subprocesses now.
+    the test is about.  ``index_dir_present`` controls whether the advisory
+    check-index subprocess applies.  ``observed["commands"]`` keeps every argv
+    the lane launched, in order.
     """
     for relative in present:
         (tmp_path / relative).mkdir(parents=True)
@@ -274,7 +280,14 @@ def _memory_lane_run(
         script = tmp_path / preflight_gate.MEMORY_CARD_VERIFIER
         script.parent.mkdir(parents=True, exist_ok=True)
         script.write_text("", encoding="utf-8")
+    plate_tool = tmp_path / preflight_gate.MEMORY_PLATE_TOOL
+    plate_tool.parent.mkdir(parents=True, exist_ok=True)
+    plate_tool.write_text("", encoding="utf-8")
+    index_dir = tmp_path / "live-memory"
+    if index_dir_present:
+        index_dir.mkdir()
     monkeypatch.setattr(preflight_gate, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(preflight_gate, "MEMORY_INDEX_DIR", index_dir)
     observed: dict[str, object] = {}
     commands: list[list[str]] = []
     observed["commands"] = commands
@@ -283,6 +296,9 @@ def _memory_lane_run(
         commands.append(list(command))
         if "verify" in command:
             code, output = verify_result
+            return _FakeCompletedProcess(code, output)
+        if "check-index" in command:
+            code, output = index_result
             return _FakeCompletedProcess(code, output)
         observed["command"] = list(command)
         return _FakeCompletedProcess(0, "2 passed in 0.01s\n")
@@ -339,6 +355,7 @@ def test_each_memory_lane_call_gets_its_own_basetemp(monkeypatch, tmp_path) -> N
     for relative in preflight_gate.MEMORY_TEST_DIRS:
         (tmp_path / relative).mkdir(parents=True, exist_ok=True)
     monkeypatch.setattr(preflight_gate, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(preflight_gate, "MEMORY_INDEX_DIR", tmp_path / "missing-memory")
 
     def fake_run(command, **kwargs):
         if "--basetemp" in command:
@@ -437,6 +454,7 @@ def test_the_card_verifier_is_skipped_with_the_rest_of_the_lane(monkeypatch, tmp
     script.parent.mkdir(parents=True, exist_ok=True)
     script.write_text("", encoding="utf-8")
     monkeypatch.setattr(preflight_gate, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(preflight_gate, "MEMORY_INDEX_DIR", tmp_path / "missing-memory")
     monkeypatch.setattr(preflight_gate, "get_staged_files", lambda: ["src/main.py"])
     commands: list[list[str]] = []
 
@@ -450,3 +468,63 @@ def test_the_card_verifier_is_skipped_with_the_rest_of_the_lane(monkeypatch, tmp
 
     assert gate.exit_code == 0
     assert commands == []
+
+
+# --------------------------------------------------------------------------
+# memory lane: compiled MEMORY.md advisory closure (2026-08-08)
+# --------------------------------------------------------------------------
+
+
+def test_memory_index_check_silently_skips_missing_memory_dir(monkeypatch, tmp_path) -> None:
+    gate, observed = _memory_lane_run(
+        monkeypatch,
+        tmp_path,
+        present=preflight_gate.MEMORY_TEST_DIRS,
+        index_dir_present=False,
+    )
+
+    assert gate.exit_code == 0
+    assert gate.warnings == []
+    assert gate.blockers == []
+    assert not [command for command in observed["commands"] if "check-index" in command]
+
+
+def test_stale_memory_index_warns_without_blocking(monkeypatch, tmp_path) -> None:
+    gate, observed = _memory_lane_run(
+        monkeypatch,
+        tmp_path,
+        present=preflight_gate.MEMORY_TEST_DIRS,
+        index_dir_present=True,
+        index_result=(
+            1,
+            "INDEX MISMATCH: stale\n"
+            "卡有而索引缺（忘了编译，最危险）: 1\n"
+            "  - forgotten.md\n",
+        ),
+    )
+
+    assert gate.exit_code == 0
+    assert gate.blockers == []
+    assert any("INDEX MISMATCH" in warning for warning in gate.warnings)
+    assert any("pytest (memory)" in line for line in gate.passed)
+    assert len([command for command in observed["commands"] if "check-index" in command]) == 1
+
+
+def test_current_memory_index_passes_without_warning_after_verify(monkeypatch, tmp_path) -> None:
+    gate, observed = _memory_lane_run(
+        monkeypatch,
+        tmp_path,
+        present=preflight_gate.MEMORY_TEST_DIRS,
+        index_dir_present=True,
+    )
+
+    assert gate.exit_code == 0
+    assert gate.warnings == []
+    assert gate.blockers == []
+    assert any("check-index: INDEX OK:" in line for line in gate.passed)
+
+    commands = observed["commands"]
+    verify_position = next(i for i, command in enumerate(commands) if "verify" in command)
+    check_index_position = next(i for i, command in enumerate(commands) if "check-index" in command)
+    pytest_position = next(i for i, command in enumerate(commands) if "--basetemp" in command)
+    assert verify_position < check_index_position < pytest_position

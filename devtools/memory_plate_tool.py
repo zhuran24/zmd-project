@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """单门牌化 v2.0 工具（批② 工具席交付物，2026-08-08）。
 
-四个子命令，**全部默认只读**：
+五个子命令，**全部默认只读**：
 
   validate       逐卡校验 frontmatter schema（硬错 / 迁移欠账 / 提示 三栏）
   compile        由卡片 frontmatter 确定性编译 MEMORY.md 内容（保序 + 新卡头插）
+  check-index    逐字节核对现存 MEMORY.md 与 compile 的期望输出
   migrate-plan   干跑：索引行 [标题]/— hook 段 与 frontmatter 的逐卡对账方案
   apply          干跑：定点更新卡片 title/description，并可追加正文段
 
@@ -38,6 +39,7 @@ import difflib
 import json
 import os
 import re
+import shlex
 import stat
 import sys
 import tempfile
@@ -377,11 +379,9 @@ class IndexEntry:
     raw: str
 
 
-def parse_index(index_path: Path) -> tuple[list[IndexEntry], list[tuple[int, str]]]:
-    """返回 (条目, 无法解析的行)。索引缺失视作空索引。"""
-    if not index_path.is_file():
-        return [], []
-    lines = index_path.read_text(encoding="utf-8").splitlines()
+def parse_index_text(text: str) -> tuple[list[IndexEntry], list[tuple[int, str]]]:
+    """从同一份文本快照解析索引，返回 (条目, 无法解析的行)。"""
+    lines = text.splitlines()
     entries: list[IndexEntry] = []
     bad: list[tuple[int, str]] = []
     for lineno, line in enumerate(lines, start=1):
@@ -402,6 +402,13 @@ def parse_index(index_path: Path) -> tuple[list[IndexEntry], list[tuple[int, str
             )
         )
     return entries, bad
+
+
+def parse_index(index_path: Path) -> tuple[list[IndexEntry], list[tuple[int, str]]]:
+    """返回 (条目, 无法解析的行)。索引缺失视作空索引。"""
+    if not index_path.is_file():
+        return [], []
+    return parse_index_text(index_path.read_text(encoding="utf-8"))
 
 
 # --------------------------------------------------------------------------------------
@@ -1133,6 +1140,168 @@ def cmd_compile(args: argparse.Namespace) -> int:
 
 
 # --------------------------------------------------------------------------------------
+# check-index：只读逐字节闭环检查
+# --------------------------------------------------------------------------------------
+
+
+INDEX_DIFF_PREVIEW_LIMIT = 5
+
+
+def _index_entries_by_file(entries: Sequence[IndexEntry]) -> dict[str, list[IndexEntry]]:
+    by_file: dict[str, list[IndexEntry]] = {}
+    for entry in entries:
+        by_file.setdefault(entry.filename, []).append(entry)
+    return by_file
+
+
+def _unique_filenames(entries: Sequence[IndexEntry]) -> list[str]:
+    return list(dict.fromkeys(entry.filename for entry in entries))
+
+
+def _short_index_line(line: str, limit: int = 180) -> str:
+    return line if len(line) <= limit else line[: limit - 1] + "…"
+
+
+def _write_index_diff_group(label: str, items: Sequence[str]) -> None:
+    sys.stdout.write(f"{label}: {len(items)}\n")
+    for item in items[:INDEX_DIFF_PREVIEW_LIMIT]:
+        sys.stdout.write(f"  - {item}\n")
+    if len(items) > INDEX_DIFF_PREVIEW_LIMIT:
+        sys.stdout.write(f"  - … 另有 {len(items) - INDEX_DIFF_PREVIEW_LIMIT} 条\n")
+
+
+def _index_watermark_line(watermark: Watermark) -> str:
+    warning = (
+        f"；!! WATERMARK WARNING: 已越 {WATERMARK_WARN_RATIO * 100:.0f}% 警戒线"
+        if watermark.warn
+        else ""
+    )
+    return (
+        "INDEX WATERMARK: "
+        f"JS 字符 (UTF-16 code unit) {watermark.js_chars} / {JS_CHAR_LIMIT} = "
+        f"{watermark.char_ratio * 100:.1f}%；"
+        f"行数 {watermark.lines} / {LINE_LIMIT} = {watermark.line_ratio * 100:.1f}%；"
+        f"UTF-8 字节 {watermark.utf8_bytes}{warning}"
+    )
+
+
+def _index_repair_command(memory_dir: Path, index_path: Path) -> str:
+    default_index = memory_dir / INDEX_FILENAME
+    argv = [
+        "env",
+        "-u",
+        "PYTHONPATH",
+        sys.executable,
+        str(Path(__file__).resolve()),
+        "compile",
+        "--memory-dir",
+        str(memory_dir),
+    ]
+    if index_path != default_index:
+        argv.extend(("--baseline-index", str(index_path)))
+    argv.extend(("--write-index", "--backup-dir"))
+    return " ".join(shlex.quote(part) for part in argv) + " <仓外目录>"
+
+
+def cmd_check_index(args: argparse.Namespace) -> int:
+    """只读核对现存索引；运行时异常按 advisory 约定降级为 exit 0。"""
+    try:
+        memory_dir = args.memory_dir.expanduser()
+        index_path = (args.index or (memory_dir / INDEX_FILENAME)).expanduser()
+        if not memory_dir.is_dir():
+            sys.stdout.write(f"INDEX N/A: 记忆目录不存在或不是目录: {memory_dir}\n")
+            return 0
+        if not index_path.is_file():
+            sys.stdout.write(f"INDEX N/A: 索引不存在或不是文件: {index_path}\n")
+            return 0
+
+        actual_bytes = index_path.read_bytes()
+        actual_text = actual_bytes.decode("utf-8")
+        cards = load_cards(memory_dir)
+        baseline, bad = parse_index_text(actual_text)
+        expected_text, _ = compile_index(cards, baseline)
+        expected_bytes = expected_text.encode("utf-8")
+        watermark = measure(expected_text)
+
+        if actual_bytes == expected_bytes:
+            sys.stdout.write(
+                f"INDEX OK: {len(cards)} 张卡 / {len(baseline)} 行，与编译输出逐字节一致\n"
+            )
+            sys.stdout.write(_index_watermark_line(watermark) + "\n")
+            return 0
+
+        expected_entries, expected_bad = parse_index_text(expected_text)
+        actual_by_file = _index_entries_by_file(baseline)
+        expected_by_file = _index_entries_by_file(expected_entries)
+        disk_files = {card.filename for card in cards}
+        actual_files = set(actual_by_file)
+
+        missing_from_index = [
+            card.filename
+            for card in order_cards(cards, baseline)
+            if card.filename not in actual_files
+        ]
+        missing_from_cards = [
+            filename for filename in _unique_filenames(baseline) if filename not in disk_files
+        ]
+        changed_lines = [
+            filename
+            for filename in _unique_filenames(expected_entries)
+            if filename in disk_files
+            and filename in actual_by_file
+            and [entry.raw for entry in actual_by_file[filename]]
+            != [entry.raw for entry in expected_by_file[filename]]
+        ]
+
+        sys.stdout.write(
+            f"INDEX MISMATCH: {index_path} 与按卡片编译的期望索引逐字节不一致\n"
+        )
+        _write_index_diff_group("卡有而索引缺（忘了编译，最危险）", missing_from_index)
+        _write_index_diff_group("索引有而卡不存在（删卡没重编）", missing_from_cards)
+        sys.stdout.write(f"同一卡但行内容不同（手改过或卡改了没重编）: {len(changed_lines)}\n")
+        for filename in changed_lines[:INDEX_DIFF_PREVIEW_LIMIT]:
+            sys.stdout.write(f"  - {filename}\n")
+            sys.stdout.write(
+                "      索引: "
+                + " | ".join(_short_index_line(entry.raw) for entry in actual_by_file[filename])
+                + "\n"
+            )
+            sys.stdout.write(
+                "      编译: "
+                + " | ".join(_short_index_line(entry.raw) for entry in expected_by_file[filename])
+                + "\n"
+            )
+        if len(changed_lines) > INDEX_DIFF_PREVIEW_LIMIT:
+            sys.stdout.write(
+                f"  - … 另有 {len(changed_lines) - INDEX_DIFF_PREVIEW_LIMIT} 条\n"
+            )
+
+        if bad:
+            preview = ", ".join(f"第 {lineno} 行 {line!r}" for lineno, line in bad[:3])
+            sys.stdout.write(f"其他结构差异: {len(bad)} 条现存索引行无法解析；{preview}\n")
+        elif expected_bad or not (missing_from_index or missing_from_cards or changed_lines):
+            sys.stdout.write(
+                "其他逐字节差异: 索引头、行序、重复行、空白、编码、换行或文件末尾不一致\n"
+            )
+
+        sys.stdout.write(f"修复命令: {_index_repair_command(memory_dir, index_path)}\n")
+        if index_path != memory_dir / INDEX_FILENAME:
+            sys.stdout.write(
+                "注意: compile --write-index 只替换 <memory-dir>/MEMORY.md；"
+                "--index 指向的自定义文件仍须由调用方只读核对后另行处理。\n"
+            )
+        sys.stdout.write(_index_watermark_line(watermark) + "\n")
+        return 1
+    except (Exception, SystemExit) as exc:
+        detail = " ".join(str(exc).splitlines()) or repr(exc)
+        sys.stdout.write(
+            f"INDEX DEGRADED: check-index 只读检查异常，advisory 跳过: "
+            f"{type(exc).__name__}: {detail}\n"
+        )
+        return 0
+
+
+# --------------------------------------------------------------------------------------
 # migrate-plan：门牌对账
 # --------------------------------------------------------------------------------------
 
@@ -1498,7 +1667,7 @@ def cmd_migrate_plan(args: argparse.Namespace) -> int:
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="memory_plate_tool",
-        description="单门牌化 v2.0：文件记忆层门牌校验 / 编译 / 迁移干跑 / 受控应用（默认只读）",
+        description="单门牌化 v2.0：文件记忆层门牌校验 / 编译 / 索引闭环 / 迁移干跑 / 受控应用（默认只读）",
     )
     sub = p.add_subparsers(dest="command", required=True)
 
@@ -1540,6 +1709,21 @@ def build_parser() -> argparse.ArgumentParser:
         help="--write-index 必填；必须位于任何 memory 命名空间之外",
     )
     sp_c.set_defaults(func=cmd_compile)
+
+    sp_i = sub.add_parser("check-index", help="只读核对 MEMORY.md 与 compile 期望输出")
+    sp_i.add_argument(
+        "--memory-dir",
+        type=Path,
+        default=DEFAULT_MEMORY_DIR,
+        help=f"记忆卡目录，默认 {DEFAULT_MEMORY_DIR}",
+    )
+    sp_i.add_argument(
+        "--index",
+        type=Path,
+        default=None,
+        help="待核对索引，默认 <memory-dir>/MEMORY.md",
+    )
+    sp_i.set_defaults(func=cmd_check_index)
 
     sp_m = sub.add_parser("migrate-plan", help="索引行 × frontmatter 逐卡对账干跑")
     add_common(sp_m)

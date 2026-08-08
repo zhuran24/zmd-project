@@ -11,6 +11,7 @@
   5. migrate-plan 四类对账分类。
   6. apply 只定点改卡片的 title/description/正文追加，默认 dry-run，commit 必须先外部备份。
   7. compile --write-index 只原子替换同目录 MEMORY.md，不能借此写卡。
+  8. check-index 逐字节核对编译闭环，所有路径保持只读，异常 advisory 降级。
 
 变异自证：把工具源码复制一份并注入变异，用 `MEMORY_PLATE_TOOL` 环境变量指向变异体重跑
 本文件即可（见 `_tool_path`）。受控写测试钉住目标守卫、外部备份、原子替换和 title 插入，
@@ -1309,3 +1310,129 @@ def test_compile_write_index_cannot_use_out_to_target_card(
     assert "不得与普通产物通道 --out 同用" in res.stderr
     assert file_snapshot(cc_memory_dir) == before
     assert not backup_dir.exists()
+
+
+# --------------------------------------------------------------------------------------
+# 9. check-index 只读闭环
+# --------------------------------------------------------------------------------------
+
+
+def test_check_index_exact_match_returns_zero(memory_dir: Path) -> None:
+    write_card(memory_dir, "match", title="匹配门牌", description="匹配描述")
+    index_path = write_index(memory_dir, [("匹配门牌", "match.md", "匹配描述")])
+
+    res = run_tool(
+        "check-index",
+        "--memory-dir",
+        str(memory_dir),
+        "--index",
+        str(index_path),
+    )
+
+    assert res.returncode == 0, res.stdout + res.stderr
+    assert "INDEX OK: 1 张卡 / 1 行，与编译输出逐字节一致" in res.stdout
+    assert "INDEX WATERMARK:" in res.stdout
+
+
+def test_check_index_card_missing_from_index_returns_one(memory_dir: Path) -> None:
+    write_card(memory_dir, "indexed", title="已入索引", description="已有")
+    write_card(memory_dir, "forgotten", title="忘编译门牌", description="最危险")
+    write_index(memory_dir, [("已入索引", "indexed.md", "已有")])
+
+    res = run_tool("check-index", "--memory-dir", str(memory_dir))
+
+    assert res.returncode == 1, res.stdout + res.stderr
+    assert "卡有而索引缺（忘了编译，最危险）: 1" in res.stdout
+    assert "forgotten.md" in res.stdout
+    assert "--write-index --backup-dir <仓外目录>" in res.stdout
+
+
+def test_check_index_orphan_index_entry_returns_one(memory_dir: Path) -> None:
+    write_card(memory_dir, "kept", title="保留门牌", description="仍在")
+    write_index(
+        memory_dir,
+        [("保留门牌", "kept.md", "仍在"), ("孤儿门牌", "ghost.md", "卡已删除")],
+    )
+
+    res = run_tool("check-index", "--memory-dir", str(memory_dir))
+
+    assert res.returncode == 1, res.stdout + res.stderr
+    assert "索引有而卡不存在（删卡没重编）: 1" in res.stdout
+    assert "ghost.md" in res.stdout
+
+
+def test_check_index_changed_raw_line_returns_one(memory_dir: Path) -> None:
+    write_card(memory_dir, "edited", title="同一门牌", description="同一描述")
+    index_path = memory_dir / "MEMORY.md"
+    index_path.write_text(
+        "# Memory Index\n- [同一门牌](edited.md)    —   同一描述  \n",
+        encoding="utf-8",
+    )
+
+    res = run_tool("check-index", "--memory-dir", str(memory_dir))
+
+    assert res.returncode == 1, res.stdout + res.stderr
+    assert "同一卡但行内容不同（手改过或卡改了没重编）: 1" in res.stdout
+    assert "edited.md" in res.stdout
+    assert "索引:" in res.stdout
+    assert "编译:" in res.stdout
+
+
+def test_check_index_missing_index_is_not_applicable(memory_dir: Path) -> None:
+    write_card(memory_dir, "card", title="门牌", description="描述")
+    before = file_snapshot(memory_dir)
+
+    res = run_tool("check-index", "--memory-dir", str(memory_dir))
+
+    assert res.returncode == 0, res.stdout + res.stderr
+    assert res.stdout.splitlines() == [
+        f"INDEX N/A: 索引不存在或不是文件: {memory_dir / 'MEMORY.md'}"
+    ]
+    assert file_snapshot(memory_dir) == before
+    assert not (memory_dir / "MEMORY.md").exists()
+
+
+def test_check_index_preserves_all_bytes_and_mtimes(memory_dir: Path) -> None:
+    card_path = write_card(memory_dir, "readonly", title="卡内门牌", description="卡内描述")
+    index_path = write_index(memory_dir, [("旧门牌", "readonly.md", "旧描述")])
+    card_ns = 1_700_000_002_123_456_789
+    index_ns = 1_700_000_003_123_456_789
+    directory_ns = 1_700_000_004_123_456_789
+    os.utime(card_path, ns=(card_ns, card_ns))
+    os.utime(index_path, ns=(index_ns, index_ns))
+    os.utime(memory_dir, ns=(directory_ns, directory_ns))
+    before = file_snapshot(memory_dir)
+
+    res = run_tool("check-index", "--memory-dir", str(memory_dir))
+
+    assert res.returncode == 1, res.stdout + res.stderr
+    assert file_snapshot(memory_dir) == before
+    assert card_path.stat().st_mtime_ns == card_ns
+    assert index_path.stat().st_mtime_ns == index_ns
+    assert memory_dir.stat().st_mtime_ns == directory_ns
+
+
+def test_check_index_missing_memory_dir_is_not_applicable(tmp_path: Path) -> None:
+    missing = tmp_path / "does-not-exist"
+
+    res = run_tool("check-index", "--memory-dir", str(missing))
+
+    assert res.returncode == 0, res.stdout + res.stderr
+    assert res.stdout.splitlines() == [
+        f"INDEX N/A: 记忆目录不存在或不是目录: {missing}"
+    ]
+    assert not missing.exists()
+
+
+def test_check_index_invalid_utf8_degrades_without_writes(memory_dir: Path) -> None:
+    write_card(memory_dir, "card", title="门牌", description="描述")
+    (memory_dir / "MEMORY.md").write_bytes(b"\xff\xfe\x00")
+    before = file_snapshot(memory_dir)
+
+    res = run_tool("check-index", "--memory-dir", str(memory_dir))
+
+    assert res.returncode == 0, res.stdout + res.stderr
+    assert len(res.stdout.splitlines()) == 1
+    assert "INDEX DEGRADED:" in res.stdout
+    assert "UnicodeDecodeError" in res.stdout
+    assert file_snapshot(memory_dir) == before
