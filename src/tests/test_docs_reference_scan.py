@@ -152,6 +152,7 @@ def make_repo(
     documents: Mapping[str, str] | None = None,
     registry: Mapping[str, Any] | None = None,
     extra_files: Mapping[str, str] | None = None,
+    untracked_files: Mapping[str, str] | None = None,
     name: str = "repo",
 ) -> Path:
     root = tmp_path / name
@@ -173,6 +174,12 @@ def make_repo(
 
     _git(root, "add", "-A")
     _git(root, "commit", "-q", "-m", "fixture")
+
+    # Written after the commit on purpose: these are the files that exist here
+    # and would not exist in a clone, which is the whole subject of the
+    # ``untracked_repo_path`` flag.
+    for relpath, content in (untracked_files or {}).items():
+        _write(root, relpath, content)
     return root
 
 
@@ -908,6 +915,189 @@ def test_an_external_artifact_file_line_reference_is_counted_against_the_allowli
     counts = report["metadata"]["suppression_counts"]
     assert counts["external_artifact_allowlist"] == 1
     assert counts["absent_by_design"] == 0
+
+
+# --------------------------------------------------------------------------
+# which document a § marker is written against
+# --------------------------------------------------------------------------
+
+
+def test_a_section_marker_is_attributed_only_across_a_qualifier_run(tmp_path: Path) -> None:
+    """Adjacency, not "last ``.md`` token on the line", decides attribution.
+
+    One line can hold paragraphs of unrelated meaning — a Markdown table row is
+    one line — so the nearest document name to the left of a ``§`` is often not
+    the document that ``§`` belongs to.  Looking the section up in the wrong
+    document produces a dead-anchor accusation nobody wrote, which is how this
+    rule was caught (2026-08-08 governance review).
+    """
+    attributed = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nBackground in `HISTORY.md` §9.\n"},
+        name="attributed",
+    )
+    assert flags(build(attributed)["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "HISTORY.md §9")
+    ]
+
+    separated = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": "# Guide\n\nBackground in `HISTORY.md`（病理与分诊数据）；§9 A10 covers the rest.\n"
+        },
+        name="separated",
+    )
+    assert build(separated)["candidates"] == []
+
+
+def test_a_section_marker_in_another_table_cell_is_not_attributed(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": (
+                "# Guide\n\n"
+                "| doc | note |\n"
+                "| --- | --- |\n"
+                "| `HISTORY.md` | dashboard §9 has the rest |\n"
+            )
+        },
+    )
+    assert build(root)["candidates"] == []
+
+
+def test_a_section_chain_stays_attributed_to_the_document_that_opened_it(
+    tmp_path: Path,
+) -> None:
+    """``§1/§2/§3`` is one list about one document, not three referents."""
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nRead `HISTORY.md` §1/§8/§9 in order.\n"},
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "HISTORY.md §8"),
+        ("dead_doc_anchor", "GUIDE.md", "HISTORY.md §9"),
+    ]
+
+
+def test_a_version_qualifier_does_not_break_a_section_attribution(tmp_path: Path) -> None:
+    """```spec.md` v3 §3`` names a revision of the same document."""
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nSee `HISTORY.md` v3.2 §9 for the rule.\n"},
+    )
+    assert flags(build(root)["candidates"]) == [
+        ("dead_doc_anchor", "GUIDE.md", "HISTORY.md §9")
+    ]
+
+
+# --------------------------------------------------------------------------
+# untracked_repo_path: the reference resolves here and nowhere else
+# --------------------------------------------------------------------------
+
+
+def test_an_uncommitted_cited_file_is_a_candidate_even_under_the_absent_allowlist(
+    tmp_path: Path,
+) -> None:
+    """The alarm has to reach *through* the absent-by-design allowlist.
+
+    That allowlist answers "may this path be missing on this machine", and
+    answering yes is exactly what has kept anyone from noticing the other
+    question: the file is here, was never committed, and nobody who clones the
+    repository gets it.  Put the check after the allowlist and this population
+    is invisible — which is the state this test was written against.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nEvidence in `data/generated/run.json`.\n"},
+        untracked_files={"data/generated/run.json": "{}\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("untracked_repo_path", "GUIDE.md", "data/generated/run.json")
+    ]
+    item = report["candidates"][0]
+    assert item["signals"] == ["referenced_path_is_not_tracked_so_a_clone_will_not_have_it"]
+    assert item["evidence"]["detail"]["target"] == "data/generated/run.json"
+    assert report["metadata"]["suppression_counts"]["absent_by_design"] == 0
+
+
+def test_a_gitignored_cited_path_is_not_an_untracked_repo_path(tmp_path: Path) -> None:
+    """``.gitignore`` is the repository saying it will never carry this.
+
+    A document naming ``data/generated/run.json`` as the place output lands is
+    describing a convention, not pointing at a file somebody forgot to commit,
+    so the flag must not fire — while the older absent-by-design suppression
+    still does its job.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nOutput lands in `data/generated/run.json`.\n"},
+        extra_files={".gitignore": "data/generated/\n"},
+        untracked_files={"data/generated/run.json": "{}\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["suppression_counts"]["absent_by_design"] == 1
+
+
+def test_a_committed_cited_path_is_never_an_untracked_repo_path(tmp_path: Path) -> None:
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nRun `scripts/real_tool.py` first.\n"},
+    )
+    report = build(root)
+    assert report["candidates"] == []
+    assert report["metadata"]["flag_counts"]["untracked_repo_path"] == 0
+
+
+def test_an_uncommitted_cited_document_outranks_its_missing_anchor(tmp_path: Path) -> None:
+    """No clone gets the document, so which headings it has is moot."""
+    root = make_repo(
+        tmp_path,
+        documents={"GUIDE.md": "# Guide\n\nSee [notes](data/generated/notes.md#gone).\n"},
+        untracked_files={"data/generated/notes.md": "# Notes\n\n## Here\n"},
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("untracked_repo_path", "GUIDE.md", "data/generated/notes.md#gone")
+    ]
+    assert report["candidates"][0]["evidence"]["detail"]["target"] == "data/generated/notes.md"
+
+
+def test_a_directory_reference_is_untracked_only_when_nothing_under_it_is_tracked(
+    tmp_path: Path,
+) -> None:
+    """One committed file under the directory and a clone does get the directory.
+
+    ``mixed/`` is the case that decides whether the index is consulted at all.
+    ``git status`` names files, never directories, so the only way to answer a
+    directory reference is to look for uncommitted files underneath — and a
+    directory that holds both kinds would answer yes to that alone.  It is the
+    shape the real ``.artifacts/`` has: 115 tracked files and thousands of
+    uncommitted ones, and a clone does get the directory.
+    """
+    root = make_repo(
+        tmp_path,
+        documents={
+            "GUIDE.md": (
+                "# Guide\n\n"
+                "Fresh evidence in `data/generated/fresh/`, older in `data/generated/kept/`,\n"
+                "both kinds in `data/generated/mixed/`.\n"
+            )
+        },
+        extra_files={
+            "data/generated/kept/receipt.json": "{}\n",
+            "data/generated/mixed/committed.json": "{}\n",
+        },
+        untracked_files={
+            "data/generated/fresh/receipt.json": "{}\n",
+            "data/generated/mixed/fresh.json": "{}\n",
+        },
+    )
+    report = build(root)
+    assert flags(report["candidates"]) == [
+        ("untracked_repo_path", "GUIDE.md", "data/generated/fresh/")
+    ]
 
 
 def test_prose_and_fenced_code_are_not_format_explicit_references(tmp_path: Path) -> None:

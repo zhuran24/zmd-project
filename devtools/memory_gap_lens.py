@@ -18,6 +18,13 @@ deterministic, so the deterministic parts sit on both sides of it:
 Only ``assemble`` carries the clean-tree gate (§0.6); ``verify`` says so in its
 own ``metadata.preconditions`` rather than implying a check that never ran.
 
+The file-memory layer means **every** ``~/.claude/projects/*/memory`` namespace
+by default (2026-08-08).  One was hard-coded here, so a seat could neither be
+shown nor allowed to cite the 148 cards living in the other five, and a
+``CORRECT`` naming one of them was dropped as a hallucination — the tool's blind
+spot talking, not the seat.  ``--file-memory-dir`` still means exactly the
+directory it names, so a fixture is never contaminated by its neighbours.
+
 **There is no apply path and there will not be one** (§0.3).  Nothing here writes
 or edits a card, and ``verify`` emits one advisory report rather than something a
 second tool could consume.  A human who wants a candidate to become memory
@@ -86,6 +93,8 @@ EVIDENCE_SCHEMA_VERSION = "prune_memory_gap_evidence_v1"
 CANDIDATES_SCHEMA_VERSION = "prune_memory_gap_candidates_v1"
 
 DEFAULT_FILE_MEMORY_DIR = Path.home() / ".claude/projects/-home-zhuran24-zmd-pj/memory"
+FILE_MEMORY_NAMESPACE_GLOB = "*/memory"
+NAMESPACE_CURRENT = "current"
 DEFAULT_TRANSCRIPT_DIR = Path.home() / ".claude/projects/-home-zhuran24-zmd-pj"
 VNEXT_CARDS_RELPATH = "cc_memory_vnext/cards"
 CC_MEMORY_DB_RELPATH = "cc_memory/memory.db"
@@ -193,7 +202,40 @@ def parse_frontmatter(text: str) -> dict[str, str]:
     return fields
 
 
-def file_memory_snapshot(directory: Path) -> dict[str, Any]:
+def file_memory_dirs(current: Path) -> list[tuple[Path, str]]:
+    """Every ``~/.claude/projects/*/memory``, current namespace first, each tagged.
+
+    Independent implementation of the rule in ``cc_memory/mem.py`` (2026-08-06)
+    and in the reference scanner: one hard-coded namespace left 148 cards
+    invisible to every tool the memory system has.  Expansion only fires when
+    the directory really is a CC namespace (``<...>/projects/<ns>/memory``);
+    any other directory is used alone, so a fixture path can never drag in its
+    neighbours.
+    """
+    current = Path(current)
+    dirs: list[tuple[Path, str]] = []
+    seen: set[str] = set()
+    if current.is_dir():
+        dirs.append((current, NAMESPACE_CURRENT))
+        seen.add(os.path.realpath(current))
+    projects_root = current.parent.parent
+    if current.name == "memory" and projects_root.name == "projects":
+        for sibling in sorted(projects_root.glob(FILE_MEMORY_NAMESPACE_GLOB)):
+            real = os.path.realpath(sibling)
+            if sibling.is_dir() and real not in seen:
+                seen.add(real)
+                dirs.append((sibling, sibling.parent.name))
+    return dirs
+
+
+def resolve_file_memory_dirs(file_memory_dir: Path | None) -> list[tuple[Path, str]]:
+    """``None`` means the whole default surface; a path means exactly that path."""
+    if file_memory_dir is None:
+        return file_memory_dirs(DEFAULT_FILE_MEMORY_DIR)
+    return [(Path(file_memory_dir), NAMESPACE_CURRENT)]
+
+
+def file_memory_snapshot(directory: Path, namespace: str = NAMESPACE_CURRENT) -> dict[str, Any]:
     """Index lines verbatim plus one pointer record per card.  No card bodies."""
     index_path = directory / INDEX_FILENAME
     if not directory.is_dir():
@@ -204,15 +246,52 @@ def file_memory_snapshot(directory: Path) -> dict[str, Any]:
     for number, line in enumerate(_read_text(index_path).split("\n"), start=1):
         match = _INDEX_ENTRY_RE.match(line)
         if match is not None:
-            index_lines.append({"line": number, "text": line, "target": match.group("target").strip()})
+            index_lines.append({"line": number, "text": line, "target": match.group("target").strip(),
+                                "namespace": namespace})
     cards = []
     for path in sorted(directory.glob("*.md")):
         if path.name == INDEX_FILENAME:
             continue
         front = parse_frontmatter(_read_text(path))
         cards.append({"name": front.get("name") or path.stem, "description": front.get("description", ""),
-                      "mtime_utc": _mtime_utc(path), "path": str(path)})
-    return {"index_path": str(index_path), "index_lines": index_lines, "cards": cards}
+                      "mtime_utc": _mtime_utc(path), "path": str(path), "namespace": namespace})
+    return {"index_path": str(index_path), "index_lines": index_lines, "cards": cards,
+            "namespace": namespace}
+
+
+def file_memory_snapshots(dirs: Sequence[tuple[Path, str]]) -> dict[str, Any]:
+    """One merged file-memory snapshot across namespaces.
+
+    The current namespace stays fail-closed — it is the inbox this project
+    writes to, and a missing directory or index there is a broken system.  A
+    neighbour that cannot be read is recorded by name and skipped rather than
+    taking the whole assembly down with it: a seat that gets no evidence at all
+    because another project's inbox is mid-edit has been given nothing useful.
+
+    Shape is additive against the single-namespace snapshot it replaces —
+    ``index_path``/``index_lines``/``cards`` keep their meaning, every element
+    gains ``namespace``, and the per-namespace roll-up rides alongside.
+    """
+    merged: dict[str, Any] = {"index_path": None, "index_lines": [], "cards": [], "namespaces": []}
+    for directory, namespace in dirs:
+        if namespace == NAMESPACE_CURRENT:
+            snapshot = file_memory_snapshot(directory, namespace)
+        else:
+            try:
+                snapshot = file_memory_snapshot(directory, namespace)
+            except GapLensError as exc:
+                merged["namespaces"].append({"namespace": namespace, "directory": str(directory),
+                                             "unreadable": str(exc)})
+                continue
+        if merged["index_path"] is None:
+            merged["index_path"] = snapshot["index_path"]
+        merged["index_lines"].extend(snapshot["index_lines"])
+        merged["cards"].extend(snapshot["cards"])
+        merged["namespaces"].append({"namespace": namespace, "directory": str(directory),
+                                     "index_path": snapshot["index_path"],
+                                     "index_line_count": len(snapshot["index_lines"]),
+                                     "card_count": len(snapshot["cards"])})
+    return merged
 
 
 def vnext_snapshot(directory: Path) -> dict[str, Any]:
@@ -307,13 +386,15 @@ def _metadata(now: datetime | None, extra: dict[str, Any]) -> dict[str, Any]:
 # assemble: the evidence package a seat is fed
 
 
-def build_evidence(*, root: Path = ROOT, file_memory_dir: Path = DEFAULT_FILE_MEMORY_DIR,
+def build_evidence(*, root: Path = ROOT, file_memory_dir: Path | None = None,
                    vnext_cards_dir: Path | None = None, archive_db: Path | None = None,
                    transcript_dir: Path = DEFAULT_TRANSCRIPT_DIR,
                    window_days: int = DEFAULT_TRANSCRIPT_WINDOW_DAYS,
                    prior_report: Path | None = None, now: datetime | None = None) -> dict[str, Any]:
+    """``file_memory_dir=None`` reads every namespace; naming one reads that one."""
+    namespaces = resolve_file_memory_dirs(file_memory_dir)
     preconditions = run_self_check(root)
-    file_memory = file_memory_snapshot(file_memory_dir)
+    file_memory = file_memory_snapshots(namespaces)
     vnext = vnext_snapshot(vnext_cards_dir if vnext_cards_dir is not None else root / VNEXT_CARDS_RELPATH)
     archive = archive_snapshot(archive_db if archive_db is not None else root / CC_MEMORY_DB_RELPATH)
     transcripts = transcript_listing(transcript_dir, window_days=window_days, now=now)
@@ -324,7 +405,9 @@ def build_evidence(*, root: Path = ROOT, file_memory_dir: Path = DEFAULT_FILE_ME
         prior["report"] = loads_strict_json(_read_text(prior_path))
 
     counts = {"file_memory_index_lines": len(file_memory["index_lines"]),
-              "file_memory_cards": len(file_memory["cards"]), "vnext_cards": len(vnext["cards"]),
+              "file_memory_cards": len(file_memory["cards"]),
+              "file_memory_namespaces": len(file_memory["namespaces"]),
+              "vnext_cards": len(vnext["cards"]),
               "archive_entries": len(archive["entries"]),
               "transcripts_in_window": len(transcripts["files"]),
               "deterministic_prior_present": prior["present"]}
@@ -340,9 +423,19 @@ def build_evidence(*, root: Path = ROOT, file_memory_dir: Path = DEFAULT_FILE_ME
 # verify: landing a seat's candidates against reality
 
 
-def allowed_evidence_roots(root: Path, transcript_dir: Path, file_memory_dir: Path) -> tuple[Path, ...]:
-    """The only trees an ``evidence.path`` may name."""
-    return tuple(dict.fromkeys(path.resolve() for path in (root, transcript_dir, file_memory_dir)))
+def allowed_evidence_roots(
+    root: Path, transcript_dir: Path, file_memory_dirs_: Sequence[Path]
+) -> tuple[Path, ...]:
+    """The only trees an ``evidence.path`` may name.
+
+    Every scanned namespace is in, and only scanned ones: a seat may quote a
+    card it was shown, and the roots are derived from the same resolution the
+    evidence package used, so the two can never disagree about what "shown"
+    meant.
+    """
+    return tuple(
+        dict.fromkeys(path.resolve() for path in (root, transcript_dir, *file_memory_dirs_))
+    )
 
 
 def resolve_evidence_path(raw: Any, roots: Sequence[Path]) -> Path:
@@ -390,10 +483,15 @@ def locate_quote(path: Path, quote: Any) -> str:
     raise CandidateRejected(f"evidence quote does not appear verbatim in {path}")
 
 
-def layer_object_keys(*, file_memory_dir: Path, vnext_cards_dir: Path,
+def layer_object_keys(*, file_memory_dirs_: Sequence[tuple[Path, str]], vnext_cards_dir: Path,
                       archive_db: Path) -> dict[str, set[str]]:
-    """Every name by which a real object in each layer may legitimately be cited."""
-    file_cards = file_memory_snapshot(file_memory_dir)
+    """Every name by which a real object in each layer may legitimately be cited.
+
+    Pooled across namespaces: a ``CORRECT`` candidate naming a card that lives
+    in another inbox names a real object, and dropping it as a hallucination
+    would be the scanner's blind spot talking, not the seat's.
+    """
+    file_cards = file_memory_snapshots(file_memory_dirs_)
     archive = archive_snapshot(archive_db)
     return {
         LAYER_FILE: {card["name"] for card in file_cards["cards"]}
@@ -523,15 +621,19 @@ def load_candidate_document(path: Path) -> list[Any]:
 
 
 def build_candidate_report(candidates_path: Path, *, root: Path = ROOT,
-                           file_memory_dir: Path = DEFAULT_FILE_MEMORY_DIR,
+                           file_memory_dir: Path | None = None,
                            vnext_cards_dir: Path | None = None, archive_db: Path | None = None,
                            transcript_dir: Path = DEFAULT_TRANSCRIPT_DIR,
                            now: datetime | None = None) -> dict[str, Any]:
+    """``file_memory_dir=None`` verifies against every namespace; naming one uses that one."""
     vnext_dir = vnext_cards_dir if vnext_cards_dir is not None else root / VNEXT_CARDS_RELPATH
     database = archive_db if archive_db is not None else root / CC_MEMORY_DB_RELPATH
+    namespaces = resolve_file_memory_dirs(file_memory_dir)
     document = load_candidate_document(candidates_path)
-    roots = allowed_evidence_roots(root, transcript_dir, file_memory_dir)
-    keys = layer_object_keys(file_memory_dir=file_memory_dir, vnext_cards_dir=vnext_dir, archive_db=database)
+    roots = allowed_evidence_roots(root, transcript_dir, [path for path, _ in namespaces])
+    keys = layer_object_keys(
+        file_memory_dirs_=namespaces, vnext_cards_dir=vnext_dir, archive_db=database
+    )
 
     accepted: list[dict[str, Any]] = []
     dropped: list[dict[str, Any]] = []
@@ -658,7 +760,11 @@ def write_report(root: Path, report: dict[str, Any], *, relpath: str) -> Path:
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0] if __doc__ else None)
     parser.add_argument("--repo-root", default=str(ROOT))
-    parser.add_argument("--file-memory-dir", default=str(DEFAULT_FILE_MEMORY_DIR))
+    parser.add_argument(
+        "--file-memory-dir",
+        default=None,
+        help="use only this inbox; omitted, every ~/.claude/projects/*/memory namespace is used",
+    )
     parser.add_argument("--vnext-cards-dir", default=None)
     parser.add_argument("--archive-db", default=None)
     parser.add_argument("--transcript-dir", default=str(DEFAULT_TRANSCRIPT_DIR))
@@ -678,7 +784,8 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
     root = Path(args.repo_root).resolve()
-    common: dict[str, Any] = {"root": root, "file_memory_dir": Path(args.file_memory_dir),
+    common: dict[str, Any] = {"root": root,
+              "file_memory_dir": Path(args.file_memory_dir) if args.file_memory_dir else None,
               "vnext_cards_dir": Path(args.vnext_cards_dir) if args.vnext_cards_dir else None,
               "archive_db": Path(args.archive_db) if args.archive_db else None,
               "transcript_dir": Path(args.transcript_dir)}

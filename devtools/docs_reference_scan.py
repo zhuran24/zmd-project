@@ -48,6 +48,18 @@ sometimes fire on prose that announces nothing, and a rule that loose must cost
 an extra FYI line rather than a swallowed candidate.  Only the registry's
 curated removal markers still drop a reference outright.
 
+``untracked_repo_path`` (2026-08-08) asks the one question the other flags
+structurally cannot.  Every one of them resolves a reference against *this*
+working tree, so a file that is present here and was never committed reads as
+perfectly alive — while for everyone who clones the repository the sentence
+points at nothing.  The flag names that gap directly: a tracked document citing
+a path git neither tracks nor ignores.  Ignored paths are excluded on purpose,
+because ``.gitignore`` is the repository declaring it will never carry them, and
+the flag is asked *before* the absent-by-design allowlist, which would otherwise
+suppress exactly the population worth seeing (``.artifacts/`` evidence roots are
+partly tracked, so an uncommitted one there is an omission, not a machine
+property).
+
 Threat model and known boundaries
 ---------------------------------
 
@@ -218,6 +230,7 @@ CANDIDATE_CLASSES = frozenset({"living", UNREGISTERED_CLASS})
 
 FLAGS = (
     "dead_repo_path",
+    "untracked_repo_path",
     "dead_symbol_ref",
     "dead_doc_anchor",
     "dead_commit_hash",
@@ -260,6 +273,18 @@ _SYMBOL_RE = re.compile(
 )
 _COMMIT_HASH_RE = re.compile(r"^[0-9a-f]{7,40}$")
 _SECTION_RE = re.compile(r"§\s*(?P<section>[0-9A-Za-z]+(?:[.\-][0-9A-Za-z]+)*)")
+# What may sit between a document token and a ``§`` that still belongs to it.
+# Closing punctuation and list separators, further ``§`` markers (a chain such
+# as ``§1/§1A/§2`` is one reference list about one document), and a version
+# qualifier, which names a revision of the same document rather than a new
+# referent — the repository really does write ``\`spec.md\` v3 §3 §4``.
+# Anything else is prose, and prose between the two means the section belongs
+# to whatever that prose is talking about.
+_SECTION_LINK_SEPARATORS = r"[\s`'\"”’」》）)\]:：,，、/&]"
+_SECTION_ATTRIBUTION_GAP_RE = re.compile(
+    rf"^{_SECTION_LINK_SEPARATORS}*"
+    rf"(?:(?:§\s*[0-9A-Za-z][0-9A-Za-z.\-]*|[Vv][0-9][0-9.]*){_SECTION_LINK_SEPARATORS}*)*$"
+)
 # Section suffixes are letters, either case: this repository's most cited
 # headings are ``## 1A.``, ``## 2B.``, ``### 3C.`` alongside ``### 0b.``.
 _HEADING_NUMBER_RE = re.compile(r"^(?P<id>[0-9]+[A-Za-z]?(?:\.[0-9]+[A-Za-z]?)*)[.．]?(?:\s|$)")
@@ -1091,7 +1116,7 @@ def parse_document(root: Path, relpath: str) -> ParsedDocument:
             )
         tokens.extend(code_tokens)
         for section_match in _SECTION_RE.finditer(line):
-            preceding = _preceding_markdown_token(code_tokens, section_match.start())
+            preceding = _preceding_markdown_token(code_tokens, section_match.start(), line)
             if preceding is None:
                 continue
             document_token, token_kind = preceding
@@ -1110,25 +1135,47 @@ def parse_document(root: Path, relpath: str) -> ParsedDocument:
 
 
 def _preceding_markdown_token(
-    tokens: Sequence[Token], column: int
+    tokens: Sequence[Token], column: int, line: str
 ) -> tuple[str, str] | None:
-    """The nearest document named to the left of a ``§`` marker, and its kind.
+    """The document a ``§`` marker is written against, and its kind.
 
     Sorting matters: tokens are collected inline-code-first and then
     link-target, so list order is not left-to-right order, and a line naming
     both would otherwise attribute the section to the wrong document.  The kind
     travels with the token because it decides how the reference resolves —
     link syntax follows the citing document, prose does not.
+
+    Nearest-to-the-left is not on its own an attribution, and treating it as one
+    is what the 2026-08-08 governance review caught.  A document's name and a
+    section number can be paragraphs of meaning apart on one line — a table row
+    is one line — so the last ``.md`` token before a ``§`` is frequently not the
+    document that ``§`` belongs to.  The live case was a roadmap row whose final
+    cell reads ```.artifacts/…/note.md`（病理/分诊数据/…）；§9 A10``, where
+    ``§9`` means the status dashboard's ``§9``, named in an earlier cell: the
+    scanner looked ``§9`` up inside the note, did not find it, and reported a
+    dead anchor that was never written.
+
+    So the gap between the two is read as well, and only a *qualifier run* may
+    fill it — see ``_SECTION_ATTRIBUTION_GAP_RE``.  This deliberately trades
+    coverage for precision: on this repository roughly a third of same-line
+    pairs stop being attributed, and every one of them is a pair a reader would
+    have had to check by hand anyway.  Silence is the safe direction here, since
+    a misattributed section is looked up in the wrong document and comes back
+    missing — a false accusation, not a missed one.
     """
-    best: tuple[str, str] | None = None
-    for token in sorted(tokens, key=lambda item: item.column):
+    for token in sorted(tokens, key=lambda item: item.column, reverse=True):
         if token.column - 1 > column:
             continue
         normalized = _normalize_path_token(token.text)
         if normalized is None or not normalized.endswith(".md"):
             continue
-        best = (normalized, token.kind)
-    return best
+        gap = line[token.column - 1 + len(token.text) : column]
+        if not _SECTION_ATTRIBUTION_GAP_RE.match(gap):
+            # The nearest document does not carry it, and a document further
+            # left carries it even less.
+            return None
+        return (normalized, token.kind)
+    return None
 
 
 def _build_contexts(lines: Sequence[str], prose_flags: Sequence[bool]) -> tuple[str, ...]:
@@ -1350,12 +1397,23 @@ class Suppressions:
 
 
 class DocumentScanner:
-    def __init__(self, root: Path, registry: Registry, scope: Scope, tracked: Sequence[str]) -> None:
+    def __init__(
+        self,
+        root: Path,
+        registry: Registry,
+        scope: Scope,
+        tracked: Sequence[str],
+        untracked: Sequence[str] = (),
+    ) -> None:
         self.root = root
         self.registry = registry
         self.scope = scope
         self.tracked = tuple(tracked)
         self.tracked_set = set(tracked)
+        self.tracked_directories = _tracked_directories(tracked)
+        self.untracked_paths = frozenset(
+            path.rstrip("/") for path in untracked if path.rstrip("/")
+        )
         self.top_level_dirs = {path.split("/", 1)[0] for path in tracked if "/" in path}
         reference_scan = registry.reference_scan
         self.markers = tuple(reference_scan["context_suppression_markers"])
@@ -1492,6 +1550,99 @@ class DocumentScanner:
                 return "absent_by_design"
         return None
 
+    def _is_untracked_in_worktree(self, token: str) -> bool:
+        """Is this path here but absent from the index — i.e. absent from a clone?
+
+        The set comes from the pre-scan ``git status --untracked-files=all
+        --ignored`` snapshot, filtered to the ``??`` records.  That is the exact
+        population this judgement is about: present in *this* working tree, not
+        in the index, and not covered by ``.gitignore``.  Ignored paths (``!!``)
+        are deliberately excluded — a path ``.gitignore`` names is one the
+        repository has declared it will never carry, so a document citing
+        ``data/checkpoints/`` is describing a convention, not pointing at a file
+        it forgot to commit.
+
+        Deriving the answer from that one snapshot rather than from ``stat`` is
+        what keeps the self check whole: no new filesystem read enters the
+        report's dependency set, so nothing here has to be re-verified by
+        :func:`verify_consulted_state_is_committed` (which could not verify it
+        anyway — see the ``_consult`` allowlist).
+        """
+        trimmed = token.rstrip("/")
+        if not trimmed:
+            return False
+        if trimmed in self.untracked_paths:
+            return True
+        # Everything below answers the same question for a *directory*, which
+        # ``git status`` never names — it reports files.  Asking whether an
+        # uncommitted file lives underneath is what makes ``.artifacts/run/``
+        # answerable at all, and the index check is the half that keeps the
+        # answer honest: one tracked file under the directory and a clone does
+        # get the directory, so the reference resolves there.  ``.artifacts/``
+        # itself is the live case — 115 tracked files and thousands of
+        # uncommitted ones.
+        #
+        # A tracked *file* needs no such guard: it is not a ``??`` record, and
+        # nothing is nested under it, so both tests below already say no.
+        if trimmed in self.tracked_directories:
+            return False
+        prefix = f"{trimmed}/"
+        return any(path.startswith(prefix) for path in self.untracked_paths)
+
+    def _untracked_finding(
+        self,
+        relpath: str,
+        document_class: str,
+        token: Token,
+        context: ReferenceContext,
+        target: str,
+    ) -> tuple[str, Finding] | None:
+        """A tracked document citing a path git does not carry.
+
+        Every scan subject comes out of the index, so the citing document is
+        tracked by construction: whoever clones this repository gets the
+        sentence and does not get the file it points at.  On this machine the
+        reference resolves, which is why neither ``dead_repo_path`` nor
+        ``dead_doc_anchor`` can see it — they ask whether the path exists, and
+        here it does.
+
+        The population this reaches is small and specific.  For a path the
+        registry does *not* allowlist, an untracked file sitting at a cited
+        path already stops the whole report:
+        :func:`verify_consulted_state_is_committed` refuses when a consulted
+        path is in the working tree but not in the index.  What survives to here
+        is what the allowlists agreed not to consult — ``.artifacts/`` evidence
+        roots above all, which are partly tracked, so "this run directory was
+        never committed" is a fact about the citing document rather than about
+        the machine.
+
+        That refusal is also why the ``_consult`` call below is load-bearing
+        rather than bookkeeping.  This check runs before the older ones and
+        returns early, so without it a non-allowlisted path would drop out of
+        the consulted set and the hard refusal would quietly become a soft
+        finding — the strictly weaker answer, for exactly the population where
+        the strict one is the point.  ``_consult`` excludes allowlisted paths
+        itself, so both outcomes stay as they were.
+        """
+        self._consult(target.rstrip("/"))
+        if not self._is_untracked_in_worktree(target):
+            return None
+        if self._suppressed_by_context(context):
+            return None
+        return (
+            "plain",
+            Finding(
+                flag="untracked_repo_path",
+                document=relpath,
+                document_class=document_class,
+                line=token.line,
+                column=token.column,
+                reference=token.text.strip(),
+                signals=("referenced_path_is_not_tracked_so_a_clone_will_not_have_it",),
+                detail={"target": target, "token_kind": token.kind},
+            ),
+        )
+
     def _line_count(self, relpath: str) -> int | None:
         self._consult(relpath)
         if relpath not in self._line_count_cache:
@@ -1626,6 +1777,13 @@ class DocumentScanner:
         if allow == "external_artifact_allowlist":
             self.suppressions.external_artifact_allowlist += 1
             return None
+        # Before the absent-by-design suppression, not after.  That allowlist
+        # answers "may this be missing here", and answering yes is what stops
+        # anyone from ever noticing the different question this asks: whether
+        # the path is missing *everywhere else*.
+        untracked = self._untracked_finding(relpath, document_class, token, context, normalized)
+        if untracked is not None:
+            return untracked
         if allow == "absent_by_design":
             self.suppressions.absent_by_design += 1
             return None
@@ -1783,6 +1941,11 @@ class DocumentScanner:
                     detail={"target": target},
                 ),
             )
+        # Asked before the fragment: if a clone does not get the document at
+        # all, which of its headings exist here is not the reader's problem.
+        untracked = self._untracked_finding(relpath, document_class, token, context, resolved)
+        if untracked is not None:
+            return untracked
         if not fragment:
             return None
         anchors = self._anchors(resolved)
@@ -2212,7 +2375,13 @@ def build_report(root: Path) -> dict[str, Any]:
     scope = resolve_scope(registry, tracked)
     preconditions, truth_sources = run_self_check(root, registry, scope, tracked, state)
 
-    scanner = DocumentScanner(root, registry, scope, tracked)
+    scanner = DocumentScanner(
+        root,
+        registry,
+        scope,
+        tracked,
+        untracked=[path for status, path in state.records if status == "??"],
+    )
     findings: list[Finding] = []
     commit_findings: list[Finding] = []
     line_texts: dict[tuple[str, int], str] = {}

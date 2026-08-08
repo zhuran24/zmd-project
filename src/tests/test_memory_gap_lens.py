@@ -853,3 +853,109 @@ def test_the_module_declares_its_threat_model_and_boundaries() -> None:
     assert "cooperative-operator" in docstring and "2026-07-06" in docstring
     assert "no apply path" in docstring
     assert lens.SELF_CHECK_SCOPE["does_not_cover"] and lens.THREAT_MODEL == "cooperative-operator"
+
+
+# --------------------------------------------------------------------------
+# every namespace, not just this project's (2026-08-08)
+# --------------------------------------------------------------------------
+
+
+@pytest.fixture
+def namespaces(tmp_path: Path, monkeypatch) -> dict[str, Path]:
+    """Two CC namespaces in the shape the discovery rule insists on."""
+    projects = tmp_path / "projects"
+    current = projects / "-home-zhuran24-zmd-pj" / "memory"
+    neighbour = projects / "-home-zhuran24-other" / "memory"
+    _write(current / "MEMORY.md", "# Memory Index\n- [alpha](alpha.md) — alpha\n")
+    _write(current / "alpha.md", f"---\nname: alpha\ndescription: \"alpha\"\n---\n{BODY_MARKER}\n")
+    _write(neighbour / "MEMORY.md", "# Memory Index\n- [beta](beta.md) — beta\n")
+    _write(neighbour / "beta.md",
+           f"---\nname: beta\ndescription: \"beta\"\n---\n{BODY_MARKER}\n{QUOTE}\n")
+    monkeypatch.setattr(lens, "DEFAULT_FILE_MEMORY_DIR", current)
+    return {"current": current, "neighbour": neighbour, "beta": neighbour / "beta.md"}
+
+
+def test_the_default_surface_is_every_namespace(world: dict[str, Any], namespaces: dict[str, Path]) -> None:
+    evidence = _assemble(world, file_memory_dir=None)
+
+    assert evidence["metadata"]["counts"]["file_memory_namespaces"] == 2
+    assert evidence["metadata"]["counts"]["file_memory_cards"] == 2
+    assert {entry["namespace"] for entry in evidence["file_memory"]["namespaces"]} == {
+        "current", "-home-zhuran24-other"
+    }
+    assert {card["namespace"] for card in evidence["file_memory"]["cards"]} == {
+        "current", "-home-zhuran24-other"
+    }
+
+
+def test_an_explicit_directory_uses_only_that_directory(
+    world: dict[str, Any], namespaces: dict[str, Path]
+) -> None:
+    evidence = _assemble(world, file_memory_dir=namespaces["current"])
+
+    assert evidence["metadata"]["counts"]["file_memory_namespaces"] == 1
+    assert evidence["metadata"]["counts"]["file_memory_cards"] == 1
+
+
+def test_a_candidate_naming_a_neighbour_card_lands(
+    world: dict[str, Any], namespaces: dict[str, Path], tmp_path: Path
+) -> None:
+    """跨命名空间的卡是真实存在的对象。
+
+    只认本项目那一个收件箱时,座席引用邻居的卡会被当幻觉整条 drop——那是扫描器
+    的盲区在说话,不是座席在编。证据路径的白名单和对象名池必须一起扩。
+    """
+    report = _verify(
+        world,
+        [_candidate(kind="CORRECT", object_layer=lens.LAYER_FILE, object_id="beta",
+                    evidence=[{"path": str(namespaces["beta"]), "quote": QUOTE}])],
+        tmp_path,
+        file_memory_dir=None,
+    )
+
+    assert report["metadata"]["dropped_count"] == 0
+    assert report["metadata"]["accepted_count"] == 1
+
+
+def test_a_candidate_naming_a_neighbour_card_is_dropped_when_only_one_inbox_is_read(
+    world: dict[str, Any], namespaces: dict[str, Path], tmp_path: Path
+) -> None:
+    """对照臂:这正是扩面前的行为,也是「显式一个目录」仍该有的行为。"""
+    report = _verify(
+        world,
+        [_candidate(kind="CORRECT", object_layer=lens.LAYER_FILE, object_id="beta",
+                    evidence=[{"path": str(namespaces["beta"]), "quote": QUOTE}])],
+        tmp_path,
+        file_memory_dir=namespaces["current"],
+    )
+
+    assert report["metadata"]["accepted_count"] == 0
+    assert report["metadata"]["dropped_count"] == 1
+
+
+def test_an_unreadable_neighbour_is_recorded_rather_than_fatal(
+    world: dict[str, Any], namespaces: dict[str, Path]
+) -> None:
+    """邻居收件箱缺索引不该让本项目的证据包整包组不出来。"""
+    (namespaces["neighbour"] / "MEMORY.md").unlink()
+    evidence = _assemble(world, file_memory_dir=None)
+
+    entries = {entry["namespace"]: entry for entry in evidence["file_memory"]["namespaces"]}
+    assert "unreadable" in entries["-home-zhuran24-other"]
+    assert evidence["metadata"]["counts"]["file_memory_cards"] == 1
+
+
+def test_this_namespace_still_fails_closed_without_an_index(
+    world: dict[str, Any], namespaces: dict[str, Path]
+) -> None:
+    (namespaces["current"] / "MEMORY.md").unlink()
+    with pytest.raises(lens.GapLensError):
+        _assemble(world, file_memory_dir=None)
+
+
+def test_the_discovery_rule_only_expands_a_real_namespace_shape(tmp_path: Path) -> None:
+    plain = tmp_path / "memory"
+    plain.mkdir()
+    (tmp_path / "sibling" / "memory").mkdir(parents=True)
+
+    assert lens.file_memory_dirs(plain) == [(plain, lens.NAMESPACE_CURRENT)]

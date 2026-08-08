@@ -6,9 +6,17 @@ the same question one layer over: does the memory system's own bookkeeping hold
 together?  Five flags, four plain lookups and exactly one heuristic, marked as
 such in every item it emits.
 
-* ``orphan_card`` — a card file exists in the file-memory directory but
-  ``MEMORY.md`` has no index line for it.  The index is the only surface a
-  session sees at startup, so an unindexed card is invisible to its reader.
+* ``orphan_card`` — a card file exists in a file-memory directory but that
+  directory's ``MEMORY.md`` has no index line for it.  The index is the only
+  surface a session sees at startup, so an unindexed card is invisible to its
+  reader.  "That directory's" is load-bearing: the default surface is every
+  ``~/.claude/projects/*/memory`` namespace (2026-08-08 — one namespace was
+  hard-coded here, leaving 148 cards in the other five outside every machine
+  the memory system has), and each namespace is judged against its own index.
+  A card in another project's inbox is not in this project's index by design;
+  comparing across namespaces would report all 148 as orphans, which is a
+  category error rather than a finding.  Findings from another namespace are
+  reported as FYI, since they are real but are not this repository's cleanup.
 * ``dangling_index_entry`` — the mirror image: an index line pointing at a file
   that is not there.
 * ``dangling_wikilink`` — a ``[[name]]`` with no card behind it.  FYI-only by
@@ -126,6 +134,8 @@ CONFIDENCE_DETERMINISTIC = "deterministic"
 CONFIDENCE_HEURISTIC = "heuristic"
 
 DEFAULT_FILE_MEMORY_DIR = Path.home() / ".claude/projects/-home-zhuran24-zmd-pj/memory"
+FILE_MEMORY_NAMESPACE_GLOB = "*/memory"
+NAMESPACE_CURRENT = "current"
 DEFAULT_TRANSCRIPT_DIR = Path.home() / ".claude/projects/-home-zhuran24-zmd-pj"
 VNEXT_CARDS_RELPATH = "cc_memory_vnext/cards"
 ACTIVATION_LEDGER_RELPATH = "cc_memory_vnext/logs/activation_decisions.jsonl"
@@ -243,6 +253,37 @@ def parse_frontmatter(text: str) -> dict[str, str]:
     return fields
 
 
+def file_memory_dirs(current: Path) -> list[tuple[Path, str]]:
+    """Every ``~/.claude/projects/*/memory``, current namespace first, each tagged.
+
+    Independent implementation of the rule ``cc_memory/mem.py::_file_memory_dirs``
+    landed on 2026-08-06: one namespace was hard-coded there too, and 153 cards
+    in the other five were outside every search surface the system had.  The
+    scanners share the rule and deliberately not the code, for the same reason
+    the two report writers do — a shared helper would let one adapter's refactor
+    move another one's scan surface.
+
+    Expansion only fires when the directory really looks like a CC namespace
+    (``<...>/projects/<ns>/memory``).  Any other directory is scanned alone:
+    pointing the flag at a test fixture must never drag in whatever sits beside
+    it, and a caller that named one directory asked about one directory.
+    """
+    current = Path(current)
+    dirs: list[tuple[Path, str]] = []
+    seen: set[str] = set()
+    if current.is_dir():
+        dirs.append((current, NAMESPACE_CURRENT))
+        seen.add(os.path.realpath(current))
+    projects_root = current.parent.parent
+    if current.name == "memory" and projects_root.name == "projects":
+        for sibling in sorted(projects_root.glob(FILE_MEMORY_NAMESPACE_GLOB)):
+            real = os.path.realpath(sibling)
+            if sibling.is_dir() and real not in seen:
+                seen.add(real)
+                dirs.append((sibling, sibling.parent.name))
+    return dirs
+
+
 def load_cards(directory: Path, *, layer: str, key_field: str) -> dict[str, Card]:
     """Every ``*.md`` in a card directory, keyed the way that layer cites them.
 
@@ -316,26 +357,61 @@ def _item(finding: Finding) -> dict[str, Any]:
     }
 
 
-def scan_index_integrity(directory: Path, cards: dict[str, Card], entries: Sequence[IndexEntry]) -> list[Finding]:
+def scan_index_integrity(
+    directory: Path,
+    cards: dict[str, Card],
+    entries: Sequence[IndexEntry],
+    *,
+    namespace: str = NAMESPACE_CURRENT,
+) -> list[Finding]:
+    """Cards without an index line, and index lines without a card.
+
+    ``entries`` must be *this* namespace's own ``MEMORY.md``.  Comparing one
+    namespace's cards against another's index is what would turn every card in
+    the other five namespaces into an orphan — 148 of them here — which is not
+    a finding, it is a category error: a card in another project's inbox has
+    never had any business in this project's index.
+
+    A finding from another namespace is real but is not this repository's
+    cleanup work, so it is locked to FYI, and its locator carries the namespace
+    so that two namespaces holding a card of the same name stay distinguishable
+    (the item id is derived from layer/flag/subject/locator).  The current
+    namespace's locators are left exactly as they were, so its item ids are
+    comparable with every report written before this.
+    """
     findings: list[Finding] = []
+    other = namespace != NAMESPACE_CURRENT
+    lock_reasons = (
+        ("card_belongs_to_another_project_namespace_so_it_is_not_this_repository_s_bookkeeping",)
+        if other
+        else ()
+    )
+
+    def locate(name: str) -> str:
+        return f"{namespace}:{name}" if other else name
+
     indexed = {entry.target for entry in entries}
     for key, card in sorted(cards.items()):
         if card.path.name in indexed:
             continue
         findings.append(Finding(
-            flag="orphan_card", layer=LAYER_FILE, subject=key, locator=card.path.name,
+            flag="orphan_card", layer=LAYER_FILE, subject=key, locator=locate(card.path.name),
             signals=("card_file_has_no_line_in_the_memory_index",),
             evidence={"card": card.path.name, "index": str(directory / INDEX_FILENAME),
+                      "namespace": namespace,
                       "detail": "unindexed cards are invisible at session start"},
+            locked=other, lock_reasons=lock_reasons,
         ))
     for entry in entries:
         if (directory / entry.target).is_file():
             continue
         findings.append(Finding(
             flag="dangling_index_entry", layer=LAYER_FILE, subject=entry.target,
-            locator=f"{INDEX_FILENAME}:{entry.line}",
+            locator=locate(f"{INDEX_FILENAME}:{entry.line}"),
             signals=("index_line_points_at_a_file_that_does_not_exist",),
-            evidence={"index_line": entry.line, "title": entry.title, "target": entry.target},
+            evidence={"index_line": entry.line, "title": entry.title, "target": entry.target,
+                      "namespace": namespace},
+            locked=other, lock_reasons=lock_reasons,
         ))
     return findings
 
@@ -830,14 +906,27 @@ def run_self_check(root: Path, cards_relpath: str) -> dict[str, Any]:
 def build_report(
     *,
     root: Path = ROOT,
-    file_memory_dir: Path = DEFAULT_FILE_MEMORY_DIR,
+    file_memory_dir: Path | None = None,
     vnext_cards_dir: Path | None = None,
     transcript_dir: Path = DEFAULT_TRANSCRIPT_DIR,
     activation_ledger: Path | None = None,
     window_days: int = 3,
 ) -> dict[str, Any]:
+    """``file_memory_dir=None`` scans every namespace; naming one scans that one.
+
+    The default surface is every ``~/.claude/projects/*/memory``, because the
+    single hard-coded namespace this scanner shipped with left 148 cards in the
+    other five outside every machine the memory system has.  Naming a directory
+    explicitly still means exactly that directory: fixtures and one-off
+    investigations must be able to ask about one inbox.
+    """
     vnext_dir = vnext_cards_dir if vnext_cards_dir is not None else root / VNEXT_CARDS_RELPATH
     ledger = activation_ledger if activation_ledger is not None else root / ACTIVATION_LEDGER_RELPATH
+    namespaces = (
+        file_memory_dirs(DEFAULT_FILE_MEMORY_DIR)
+        if file_memory_dir is None
+        else [(file_memory_dir, NAMESPACE_CURRENT)]
+    )
 
     try:
         relative_cards = str(vnext_dir.resolve().relative_to(root.resolve()))
@@ -845,16 +934,46 @@ def build_report(
         relative_cards = str(vnext_dir)
     preconditions = run_self_check(root, relative_cards)
 
-    file_cards = load_cards(file_memory_dir, layer=LAYER_FILE, key_field="name")
-    index_path, entries = load_index(file_memory_dir)
-    vnext_cards = load_cards(vnext_dir, layer=LAYER_VNEXT, key_field="id")
-
     findings: list[Finding] = []
-    findings.extend(scan_index_integrity(file_memory_dir, file_cards, entries))
+    file_aliases: set[str] = set()
+    namespace_sources: list[dict[str, Any]] = []
+    file_cards: dict[str, Card] = {}
+    index_path: Path | None = None
+    for directory, namespace in namespaces:
+        cards = load_cards(directory, layer=LAYER_FILE, key_field="name")
+        if namespace == NAMESPACE_CURRENT:
+            # The current inbox stays fail-closed: it is the one this repository
+            # writes to, and a missing index there is a broken system, not a
+            # neighbour's business.
+            namespace_index, entries = load_index(directory)
+            file_cards = cards
+            index_path = namespace_index
+        else:
+            try:
+                namespace_index, entries = load_index(directory)
+            except MemoryScanError:
+                # A neighbour without an index is not a reason to stop reporting
+                # on this repository.  Treating it as an empty index is not a
+                # skip: every card in it then shows up as the orphan it is.
+                namespace_index, entries = None, ()
+        findings.extend(scan_index_integrity(directory, cards, entries, namespace=namespace))
+        # Aliases pool across namespaces on purpose: a wikilink naming a card
+        # that lives in another inbox resolves for a reader (`mem.py find` is
+        # cross-namespace), so calling it dangling would be false.
+        file_aliases |= set(cards) | {card.path.stem for card in cards.values()}
+        namespace_sources.append({
+            "namespace": namespace, "directory": str(directory),
+            "index": str(namespace_index) if namespace_index else None,
+            "card_count": len(cards), "index_entry_count": len(entries),
+        })
 
-    file_aliases = set(file_cards) | {card.path.stem for card in file_cards.values()}
+    vnext_cards = load_cards(vnext_dir, layer=LAYER_VNEXT, key_field="id")
     vnext_aliases = set(vnext_cards)
     archive_ids, archive_status = load_archive_ids(root / ARCHIVE_DB_RELPATH)
+    # Only this namespace's card bodies are judged, while every namespace's card
+    # names feed `aliases`.  The asymmetry is the point: another project's prose
+    # is not this report's business, but a link of ours naming a card that lives
+    # over there does resolve, and calling it dangling would be false.
     findings.extend(scan_wikilinks(
         file_cards, layer=LAYER_FILE, aliases=file_aliases,
         other_layers=vnext_aliases | archive_ids,
@@ -868,6 +987,9 @@ def build_report(
     findings.extend(never_read)
 
     promises, promise_stats = collect_promises(transcript_dir)
+    # Current namespace only: a promise made in *this* project's transcripts is
+    # kept by a card landing in *this* project's inbox.  Counting a neighbour's
+    # card as the fulfilment would silently suppress candidates here.
     arrivals = card_arrivals(root, file_cards, vnext_cards)
     findings.extend(scan_said_card_unwritten(promises, arrivals, window_days=window_days))
 
@@ -893,8 +1015,15 @@ def build_report(
             "self_check_scope": dict(SELF_CHECK_SCOPE),
             "preconditions": preconditions,
             "sources": {
-                "file_memory_dir": str(file_memory_dir), "file_memory_index": str(index_path),
-                "file_memory_card_count": len(file_cards), "file_memory_index_entry_count": len(entries),
+                "file_memory_dir": str(namespace_sources[0]["directory"]),
+                "file_memory_index": str(index_path),
+                "file_memory_card_count": len(file_cards),
+                "file_memory_index_entry_count": namespace_sources[0]["index_entry_count"],
+                "file_memory_namespaces": namespace_sources,
+                "file_memory_namespace_count": len(namespace_sources),
+                "file_memory_cards_all_namespaces": sum(
+                    entry["card_count"] for entry in namespace_sources
+                ),
                 "vnext_cards_dir": str(vnext_dir), "vnext_card_count": len(vnext_cards),
                 "archive_db": str(root / ARCHIVE_DB_RELPATH), "archive_id_count": len(archive_ids),
                 "archive_read_status": archive_status,
@@ -903,7 +1032,10 @@ def build_report(
                 "promises_found": len(promises), "said_card_window_days": window_days,
                 "promise_collection": dict(promise_stats),
             },
-            "never_read_card_status": [vnext_status, file_memory_never_read_status(file_memory_dir)],
+            "never_read_card_status": [
+                vnext_status,
+                file_memory_never_read_status(Path(namespace_sources[0]["directory"])),
+            ],
             "flag_counts": flag_counts,
             "candidate_count": len(candidates),
             "fyi_count": len(fyi),
@@ -976,7 +1108,11 @@ def write_report(root: Path, report: dict[str, Any], *, relpath: str = REPORT_RE
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0] if __doc__ else None)
     parser.add_argument("--repo-root", default=str(ROOT))
-    parser.add_argument("--file-memory-dir", default=str(DEFAULT_FILE_MEMORY_DIR))
+    parser.add_argument(
+        "--file-memory-dir",
+        default=None,
+        help="scan only this inbox; omitted, every ~/.claude/projects/*/memory namespace is scanned",
+    )
     parser.add_argument("--vnext-cards-dir", default=None)
     parser.add_argument("--transcript-dir", default=str(DEFAULT_TRANSCRIPT_DIR))
     parser.add_argument("--activation-ledger", default=None)
@@ -996,7 +1132,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         resolve_report_destination(root, args.output)
         report = build_report(
             root=root,
-            file_memory_dir=Path(args.file_memory_dir),
+            file_memory_dir=Path(args.file_memory_dir) if args.file_memory_dir else None,
             vnext_cards_dir=Path(args.vnext_cards_dir) if args.vnext_cards_dir else None,
             transcript_dir=Path(args.transcript_dir),
             activation_ledger=Path(args.activation_ledger) if args.activation_ledger else None,

@@ -840,6 +840,68 @@ def check_slow_tests(gate: GateResult, *, require_collection: bool = False) -> N
 
 MEMORY_TEST_DIRS = ("cc_memory/tests", "cc_memory_vnext/tests")
 MEMORY_SCOPE_PREFIXES = ("cc_memory/", "cc_memory_vnext/")
+MEMORY_CARD_VERIFIER = "cc_memory_vnext/zmem.py"
+
+
+def check_memory_cards(gate: GateResult) -> None:
+    """`zmem verify` — the cards themselves, not the code that reads them.
+
+    The memory tests next door prove the card *machinery* behaves; nothing in
+    this gate has ever read the cards.  They are the truth source the live
+    SessionStart / UserPromptSubmit hooks compile and inject, and `verify` is
+    what says a card is well formed: schema shape, one active status card per
+    domain, no duplicate ids, no undeclared conflict between two active cards
+    in the same scope.  A card that fails it is a card the hooks will happily
+    keep serving, so the check belongs where a broken one gets stopped.
+
+    Card errors are the whole point, so a non-zero exit blocks.  A stale
+    `.index` only warns: the compiled cache being behind the cards says nothing
+    about whether the cards are right — but it does mean an edit is not live
+    yet, which is the exact shape of the half-month bug where a retired regex
+    kept firing (2026-08-03), so it is worth a line rather than silence.
+    """
+    script = PROJECT_ROOT / MEMORY_CARD_VERIFIER
+    if not script.is_file():
+        gate.block(
+            f"记忆卡校验器缺失: {MEMORY_CARD_VERIFIER} — 这条 lane 的另一半"
+            "（卡片本身对不对）就没人跑了；真要下线先改 MEMORY_CARD_VERIFIER"
+        )
+        return
+
+    timeout = max(1, int(60 * _TIMEOUT_SCALE))
+    try:
+        result = subprocess.run(
+            [sys.executable, str(script), "verify"],
+            capture_output=True,
+            text=True,
+            cwd=str(PROJECT_ROOT),
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        gate.block(f"zmem verify 超时 (>{timeout}s)")
+        return
+    except FileNotFoundError:
+        gate.block("zmem verify 无法启动 (解释器不可用)")
+        return
+
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    headline = lines[0] if lines else ""
+    if result.returncode != 0:
+        gate.block(f"zmem verify 失败 (exit={result.returncode}): {headline}")
+        for line in lines[:10]:
+            print(f"         {line}")
+        if result.stderr.strip():
+            print(f"         {result.stderr.strip().splitlines()[0]}")
+        return
+
+    gate.ok(f"zmem verify: {headline}")
+    for line in lines:
+        if "STALE INDEX" in line:
+            gate.warn(
+                f"记忆索引落后于卡片: {line} — 活 hook 读的是 .index 编译缓存，"
+                "改完卡必须在主树跑 build-index，否则改动不生效"
+            )
+            break
 
 
 def check_memory_tests(gate: GateResult, *, always: bool) -> None:
@@ -883,6 +945,11 @@ def check_memory_tests(gate: GateResult, *, always: bool) -> None:
         if not touched:
             gate.ok("记忆层未改动，跳过记忆测试 lane")
             return
+
+    # 卡片先于测试：它便宜（一次 fork、~0.3s），而且两边红是两件不同的事
+    # ——测试红 = 读卡的机器坏了，verify 红 = 卡本身坏了。放在 pytest 的
+    # 早退分支之前，一次门禁就能同时说出来。
+    check_memory_cards(gate)
 
     existing = list(MEMORY_TEST_DIRS)
 

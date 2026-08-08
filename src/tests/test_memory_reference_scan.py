@@ -720,3 +720,156 @@ def test_timedelta_import_is_used_for_the_window() -> None:
     )
     assert scan.scan_said_card_unwritten([promise], [arrival], window_days=3)
     assert not scan.scan_said_card_unwritten([promise], [arrival], window_days=30)
+
+
+# --------------------------------------------------------------------------
+# every namespace, not just this project's (2026-08-08)
+# --------------------------------------------------------------------------
+
+
+@pytest.fixture
+def namespaces(tmp_path: Path, monkeypatch) -> dict[str, Path]:
+    """Two CC namespaces side by side, in the shape the discovery rule requires.
+
+    `~/.claude/projects/<ns>/memory` — the parent-of-parent must be literally
+    named ``projects``, or the expansion does not fire.  That guard is what
+    stops a fixture path from dragging in its neighbours.
+    """
+    projects = tmp_path / "projects"
+    current = projects / "-home-zhuran24-zmd-pj" / "memory"
+    neighbour = projects / "-home-zhuran24-other" / "memory"
+    current.mkdir(parents=True)
+    neighbour.mkdir(parents=True)
+    _file_card(current, "alpha")
+    _index(current, ["alpha"])
+    _file_card(neighbour, "beta")
+    _file_card(neighbour, "gamma")
+    _index(neighbour, ["beta", "gamma"])
+    monkeypatch.setattr(scan, "DEFAULT_FILE_MEMORY_DIR", current)
+    return {"projects": projects, "current": current, "neighbour": neighbour}
+
+
+def _namespace_sources(report: dict[str, Any]) -> dict[str, int]:
+    return {
+        entry["namespace"]: entry["card_count"]
+        for entry in report["metadata"]["sources"]["file_memory_namespaces"]
+    }
+
+
+def test_the_default_surface_is_every_namespace(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """One hard-coded namespace left 148 cards outside every machine we have."""
+    report = build(world, file_memory_dir=None)
+
+    assert _namespace_sources(report) == {"current": 1, "-home-zhuran24-other": 2}
+    assert report["metadata"]["sources"]["file_memory_cards_all_namespaces"] == 3
+
+
+def test_a_neighbour_card_is_judged_against_its_own_index(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """本条是防刷屏的那道闸。
+
+    别的命名空间的卡不在**本项目**的 MEMORY.md 里是常态,不是孤儿——拿本项目
+    的索引去对照它们,148 张卡会整批变成"候选",而那不是发现,是类目错误。
+    """
+    report = build(world, file_memory_dir=None)
+
+    assert report["metadata"]["flag_counts"]["orphan_card"] == 0
+    assert flags(report["candidates"]) == []
+    assert flags(report["fyi"]) == []
+
+
+def test_a_real_neighbour_orphan_is_reported_as_fyi_with_its_namespace(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """邻居真有孤儿卡要报出来,但那是人家的清理工作,不进本仓候选。"""
+    _file_card(namespaces["neighbour"], "delta")
+    report = build(world, file_memory_dir=None)
+
+    assert report["metadata"]["flag_counts"]["orphan_card"] == 1
+    assert flags(report["candidates"]) == []
+    orphan = [item for item in report["fyi"] if item["flag"] == "orphan_card"]
+    assert len(orphan) == 1
+    assert orphan[0]["evidence"]["namespace"] == "-home-zhuran24-other"
+    assert orphan[0]["safety_lock"]["locked"] is True
+
+
+def test_the_same_card_name_in_two_namespaces_gets_two_item_ids(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """item_id 从 layer/flag/subject/locator 算出来,同名卡不带命名空间会撞成一条。"""
+    _file_card(namespaces["current"], "twin")
+    _file_card(namespaces["neighbour"], "twin")
+    report = build(world, file_memory_dir=None)
+
+    orphans = [
+        item
+        for item in report["candidates"] + report["fyi"]
+        if item["flag"] == "orphan_card" and item["evidence"]["card"] == "twin.md"
+    ]
+    assert len(orphans) == 2
+    assert len({item["item_id"] for item in orphans}) == 2
+
+
+def test_an_orphan_in_this_namespace_is_still_a_candidate(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """扩面不许把本项目自己的孤儿也降级。"""
+    _file_card(namespaces["current"], "unindexed")
+    report = build(world, file_memory_dir=None)
+
+    assert flags(report["candidates"]) == [("orphan_card", "unindexed.md")]
+    assert report["candidates"][0]["evidence"]["namespace"] == "current"
+
+
+def test_an_explicit_directory_scans_only_that_directory(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """点名一个目录 = 只问那一个,夹具永远不该被邻居污染。"""
+    report = build(world, file_memory_dir=namespaces["current"])
+
+    assert _namespace_sources(report) == {"current": 1}
+
+
+def test_a_wikilink_to_a_neighbour_card_is_not_dangling(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """跨命名空间的链接对读者是通的(`mem.py find` 就是跨层查),报 dangling 是假阳。"""
+    _file_card(namespaces["current"], "linker", body="see [[beta]]")
+    _index(namespaces["current"], ["alpha", "linker"])
+    report = build(world, file_memory_dir=None)
+
+    assert report["metadata"]["flag_counts"]["dangling_wikilink"] == 0
+
+
+def test_a_neighbour_without_an_index_reports_its_cards_instead_of_stopping(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """邻居缺索引不是静默跳过:把它当空索引,里面的卡就都以孤儿身份现身。"""
+    (namespaces["neighbour"] / scan.INDEX_FILENAME).unlink()
+    report = build(world, file_memory_dir=None)
+
+    assert report["metadata"]["flag_counts"]["orphan_card"] == 2
+    assert flags(report["candidates"]) == []
+    assert {item["evidence"]["namespace"] for item in report["fyi"] if item["flag"] == "orphan_card"} == {
+        "-home-zhuran24-other"
+    }
+
+
+def test_this_namespace_still_fails_closed_without_an_index(
+    world: dict[str, Path], namespaces: dict[str, Path]
+) -> None:
+    """本项目自己的收件箱缺索引是系统坏了,不是邻居的事——照旧硬失败。"""
+    (namespaces["current"] / scan.INDEX_FILENAME).unlink()
+    with pytest.raises(scan.MemoryScanError):
+        build(world, file_memory_dir=None)
+
+
+def test_the_discovery_rule_only_expands_a_real_namespace_shape(tmp_path: Path) -> None:
+    plain = tmp_path / "memory"
+    plain.mkdir()
+    (tmp_path / "sibling" / "memory").mkdir(parents=True)
+
+    assert scan.file_memory_dirs(plain) == [(plain, scan.NAMESPACE_CURRENT)]

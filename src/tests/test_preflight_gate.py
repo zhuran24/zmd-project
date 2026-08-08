@@ -8,9 +8,14 @@ from scripts import preflight_gate
 
 
 class _FakeCompletedProcess:
-    def __init__(self, returncode: int, stdout: str = "") -> None:
+    def __init__(self, returncode: int, stdout: str = "", stderr: str = "") -> None:
         self.returncode = returncode
         self.stdout = stdout
+        # A real CompletedProcess from these lanes always carries both streams
+        # (they all pass capture_output=True), and at least one checked path
+        # only ever reports on stderr: `zmem verify` prints a card that will
+        # not even load there, with stdout empty.
+        self.stderr = stderr
 
 
 def _assert_secret_scan_timeout(monkeypatch, *, scale: float, expected_timeout: int) -> None:
@@ -246,18 +251,39 @@ def test_external_artifact_check_runs_with_safe_path_environment() -> None:
 # --------------------------------------------------------------------------
 
 
-def _memory_lane_run(monkeypatch, tmp_path, *, present: tuple[str, ...]):
+def _memory_lane_run(
+    monkeypatch,
+    tmp_path,
+    *,
+    present: tuple[str, ...],
+    verifier: bool = True,
+    verify_result: tuple[int, str] = (0, "VERIFY OK: 53 card(s)\n"),
+):
     """Run check_memory_tests against a synthetic project root.
 
     ``PROJECT_ROOT`` is the only thing swapped, so the directory-existence
-    decision under test is the real one.
+    decision under test is the real one.  ``verifier`` decides whether the
+    card verifier exists in that root, and ``verify_result`` is what it says;
+    the pytest half always passes, so a red lane can only come from the half
+    the test is about.  ``observed["commands"]`` keeps every argv the lane
+    launched, in order — the lane runs two subprocesses now.
     """
     for relative in present:
         (tmp_path / relative).mkdir(parents=True)
+    if verifier:
+        script = tmp_path / preflight_gate.MEMORY_CARD_VERIFIER
+        script.parent.mkdir(parents=True, exist_ok=True)
+        script.write_text("", encoding="utf-8")
     monkeypatch.setattr(preflight_gate, "PROJECT_ROOT", tmp_path)
     observed: dict[str, object] = {}
+    commands: list[list[str]] = []
+    observed["commands"] = commands
 
     def fake_run(command, **kwargs):
+        commands.append(list(command))
+        if "verify" in command:
+            code, output = verify_result
+            return _FakeCompletedProcess(code, output)
         observed["command"] = list(command)
         return _FakeCompletedProcess(0, "2 passed in 0.01s\n")
 
@@ -315,7 +341,8 @@ def test_each_memory_lane_call_gets_its_own_basetemp(monkeypatch, tmp_path) -> N
     monkeypatch.setattr(preflight_gate, "PROJECT_ROOT", tmp_path)
 
     def fake_run(command, **kwargs):
-        seen.append(command[command.index("--basetemp") + 1])
+        if "--basetemp" in command:
+            seen.append(command[command.index("--basetemp") + 1])
         return _FakeCompletedProcess(0, "2 passed in 0.01s\n")
 
     monkeypatch.setattr(preflight_gate.subprocess, "run", fake_run)
@@ -327,3 +354,99 @@ def test_each_memory_lane_call_gets_its_own_basetemp(monkeypatch, tmp_path) -> N
     for path in seen:
         assert str(tmp_path / ".pytest_tmp") in path
         assert preflight_gate.Path(path).parent.is_dir(), "父目录必须仍被预建"
+
+
+# --------------------------------------------------------------------------
+# memory lane: the cards themselves (M-21, 2026-08-08)
+# --------------------------------------------------------------------------
+
+
+def test_the_memory_lane_runs_the_card_verifier(monkeypatch, tmp_path) -> None:
+    """卡片是活 hook 的真相源，此前没有任何门读过它们。"""
+    gate, observed = _memory_lane_run(
+        monkeypatch, tmp_path, present=preflight_gate.MEMORY_TEST_DIRS
+    )
+
+    assert gate.exit_code == 0
+    verify_calls = [command for command in observed["commands"] if "verify" in command]
+    assert len(verify_calls) == 1, observed["commands"]
+    assert verify_calls[0][1].endswith(preflight_gate.MEMORY_CARD_VERIFIER)
+    assert verify_calls[0][2] == "verify"
+    assert any("zmem verify" in line for line in gate.passed)
+
+
+def test_a_card_error_blocks_the_gate(monkeypatch, tmp_path) -> None:
+    """verify 非零 = 卡真有错，这条 lane 的意义就是不让它过去。"""
+    gate, _ = _memory_lane_run(
+        monkeypatch,
+        tmp_path,
+        present=preflight_gate.MEMORY_TEST_DIRS,
+        verify_result=(1, "VERIFY FAIL: 2 error(s)\ncards/a.md: duplicate id x\n"),
+    )
+
+    assert gate.exit_code == 1
+    assert any("zmem verify 失败" in blocker for blocker in gate.blockers)
+
+
+def test_a_card_error_is_not_masked_by_green_memory_tests(monkeypatch, tmp_path) -> None:
+    """两半是两件事：读卡的机器好好的，不代表卡是对的。
+
+    pytest 那一半在这个 fixture 里恒绿，所以红只可能来自 verify——把卡校验
+    放在 pytest 之后（或放进它的早退分支之后）就会被这条抓到。
+    """
+    gate, observed = _memory_lane_run(
+        monkeypatch,
+        tmp_path,
+        present=preflight_gate.MEMORY_TEST_DIRS,
+        verify_result=(1, "VERIFY FAIL: 1 error(s)\n"),
+    )
+
+    assert any("pytest (memory)" in line for line in gate.passed)
+    assert gate.exit_code == 1
+
+
+def test_a_missing_card_verifier_blocks_rather_than_skips(monkeypatch, tmp_path) -> None:
+    """与缺测试根同理：静默跳过 = 这一半没人跑，而门禁还报绿。"""
+    gate, observed = _memory_lane_run(
+        monkeypatch, tmp_path, present=preflight_gate.MEMORY_TEST_DIRS, verifier=False
+    )
+
+    assert gate.exit_code == 1
+    assert any(preflight_gate.MEMORY_CARD_VERIFIER in blocker for blocker in gate.blockers)
+    assert not [command for command in observed["commands"] if "verify" in command]
+
+
+def test_a_stale_card_index_warns_without_blocking(monkeypatch, tmp_path) -> None:
+    """陈旧 .index 不是卡错，但它意味着改动还没生效。"""
+    gate, _ = _memory_lane_run(
+        monkeypatch,
+        tmp_path,
+        present=preflight_gate.MEMORY_TEST_DIRS,
+        verify_result=(0, "VERIFY OK: 53 card(s)\n!! STALE INDEX: cards changed since build\n"),
+    )
+
+    assert gate.exit_code == 0
+    assert any("STALE INDEX" in warning for warning in gate.warnings)
+
+
+def test_the_card_verifier_is_skipped_with_the_rest_of_the_lane(monkeypatch, tmp_path) -> None:
+    """staged 范围没碰 cc_memory*/ 时，整条 lane（含卡校验）一起跳。"""
+    for relative in preflight_gate.MEMORY_TEST_DIRS:
+        (tmp_path / relative).mkdir(parents=True)
+    script = tmp_path / preflight_gate.MEMORY_CARD_VERIFIER
+    script.parent.mkdir(parents=True, exist_ok=True)
+    script.write_text("", encoding="utf-8")
+    monkeypatch.setattr(preflight_gate, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(preflight_gate, "get_staged_files", lambda: ["src/main.py"])
+    commands: list[list[str]] = []
+
+    def fake_run(command, **kwargs):
+        commands.append(list(command))
+        return _FakeCompletedProcess(0, "")
+
+    monkeypatch.setattr(preflight_gate.subprocess, "run", fake_run)
+    gate = preflight_gate.GateResult()
+    preflight_gate.check_memory_tests(gate, always=False)
+
+    assert gate.exit_code == 0
+    assert commands == []

@@ -397,6 +397,48 @@ def verify_cards(cards: list[Card]) -> list[str]:
     return errors
 
 
+def conflict_advisories(cards: list[Card]) -> list[str]:
+    """Active cards that occupy the same ground without saying how they relate.
+
+    The error-path check next door buckets by :func:`scope_key`, which is exact
+    equality of ``domains`` *and* ``paths`` *and* ``symbols``.  Nothing in this
+    deck has ever matched it — two cards about the same subject virtually never
+    list byte-identical scope triples — so the check has been decoration since
+    it was written.  The relaxed bucket is the ledger's prescription: same
+    ``kind``, and the domain sets intersect.
+
+    It reports and does not judge, and that separation is deliberate.  The
+    relaxed criterion is loose enough to catch ordinary neighbours — two
+    ``decision`` cards that both touch ``certified-exact`` are not in conflict,
+    they are two decisions about a big subject — so promoting it to an error
+    would fail a gate on the strength of a bucket, and the gate it now feeds
+    (preflight's memory lane) would go red on cards nobody has looked at yet.
+    Sorting real collisions from neighbours is a reading job; this hands over
+    the shortlist.  Deciding to tighten it, or to promote it, is one call site
+    away in :func:`cmd_verify`.
+    """
+    active = [card for card in cards if card.status == ACTIVE_STATUS]
+    advisories: list[str] = []
+    for index, left in enumerate(sorted(active, key=lambda card: card.id)):
+        left_domains = set(normalize_list(as_dict(left.meta.get("scope")).get("domains")))
+        for right in sorted(active, key=lambda card: card.id)[index + 1 :]:
+            if left.kind != right.kind:
+                continue
+            shared = left_domains & set(
+                normalize_list(as_dict(right.meta.get("scope")).get("domains"))
+            )
+            if not shared:
+                continue
+            if has_relation_to(left, right.id) or has_relation_to(right, left.id):
+                continue
+            domains = ", ".join(sorted(shared))
+            advisories.append(
+                f"advisory: {left.id} / {right.id} — two active {left.kind} cards share "
+                f"domain(s) [{domains}]; declare supersedes/contradicts, or narrow the scope"
+            )
+    return advisories
+
+
 def card_search_text(card: Card) -> str:
     triggers = as_dict(card.meta.get("triggers"))
     scope = as_dict(card.meta.get("scope"))
@@ -1036,6 +1078,21 @@ def cmd_verify(args: argparse.Namespace) -> int:
         print(f"VERIFY OK: {len(cards)} card(s)")
         exit_code = 0
 
+    # Same rule as staleness below: reported, never scored. See
+    # conflict_advisories for why this bucket is a shortlist and not a verdict.
+    advisories = conflict_advisories(cards)
+    if advisories:
+        limit = getattr(args, "conflict_limit", 0)
+        shown = advisories if limit <= 0 else advisories[:limit]
+        print(f"CONFLICT ADVISORY: {len(advisories)} active same-kind overlapping pair(s)")
+        for advisory in shown:
+            print(advisory)
+        if len(shown) < len(advisories):
+            print(
+                f"advisory: … {len(advisories) - len(shown)} more; "
+                "--conflict-limit 0 lists them all"
+            )
+
     # Staleness is reported, never scored: verify's verdict is about card
     # quality, and a cache that needs recompiling says nothing about whether the
     # cards are well-formed. It prints on both verdicts because "cards broken
@@ -1110,6 +1167,205 @@ def append_activation_log(path: str, frame: dict[str, Any], packet: dict[str, An
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
     except Exception:
         return
+
+
+DEFAULT_ACTIVATION_LOG = ROOT / "logs" / "activation_decisions.jsonl"
+ANALYZE_TOP_CARDS = 10
+
+
+def analyze_activation_log(raw_lines: list[str], active_ids: list[str] | None) -> dict[str, Any]:
+    """Summarise the activation log.  Pure, so the shaping is testable directly.
+
+    Two kinds of record share the file and they must not share a denominator.
+    A *decision* is one injection attempt that ran to completion; an *event*
+    (``recall_failure``, added 2026-08-08) is an attempt that never got that
+    far, so it has no ``injected`` list at all.  Counting events as decisions
+    would deflate the zero-injection rate exactly when recall is broken —
+    the reading that matters most.
+
+    ``active_ids`` is the card roster used for the never-injected list.  It is
+    optional because this command must survive a cards directory it cannot
+    read; ``None`` means the list is simply not offered.
+    """
+    decisions = 0
+    zero_injection = 0
+    events: dict[str, int] = defaultdict(int)
+    event_reasons: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    reasons: dict[str, int] = defaultdict(int)
+    layers: dict[str, int] = defaultdict(int)
+    per_card: dict[str, int] = defaultdict(int)
+    injections = 0
+    stale_true = 0
+    stale_field_present = 0
+    unparsable = 0
+    timestamps: list[str] = []
+
+    for raw in raw_lines:
+        line = raw.strip()
+        if not line:
+            continue
+        try:
+            record = json.loads(line)
+        except (ValueError, TypeError):
+            unparsable += 1
+            continue
+        if not isinstance(record, dict):
+            unparsable += 1
+            continue
+        stamp = record.get("ts")
+        if isinstance(stamp, str) and stamp:
+            timestamps.append(stamp)
+
+        event = record.get("event")
+        if event is not None:
+            name = str(event)
+            events[name] += 1
+            event_reasons[name][str(record.get("reason") or "unspecified")] += 1
+            continue
+
+        decisions += 1
+        if "stale_index" in record:
+            stale_field_present += 1
+            if record.get("stale_index") is True:
+                stale_true += 1
+        injected = record.get("injected")
+        if not isinstance(injected, list) or not injected:
+            zero_injection += 1
+            continue
+        for item in injected:
+            if not isinstance(item, dict):
+                unparsable += 1
+                continue
+            injections += 1
+            reasons[str(item.get("reason") or "unspecified")] += 1
+            layers[str(item.get("layer") or "unspecified")] += 1
+            per_card[str(item.get("id") or "unspecified")] += 1
+
+    never_injected: list[str] | None = None
+    if active_ids is not None:
+        never_injected = sorted(set(active_ids) - set(per_card))
+
+    return {
+        "decisions": decisions,
+        "zero_injection_decisions": zero_injection,
+        "zero_injection_rate": (zero_injection / decisions) if decisions else 0.0,
+        "injections": injections,
+        "reasons": dict(sorted(reasons.items(), key=lambda kv: (-kv[1], kv[0]))),
+        "layers": dict(sorted(layers.items(), key=lambda kv: (-kv[1], kv[0]))),
+        "top_cards": sorted(per_card.items(), key=lambda kv: (-kv[1], kv[0]))[:ANALYZE_TOP_CARDS],
+        "distinct_cards_injected": len(per_card),
+        "never_injected_active_cards": never_injected,
+        "active_card_count": None if active_ids is None else len(set(active_ids)),
+        "stale_index_true": stale_true,
+        "stale_index_field_present": stale_field_present,
+        "events": dict(sorted(events.items(), key=lambda kv: (-kv[1], kv[0]))),
+        "event_reasons": {
+            name: dict(sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])))
+            for name, counts in sorted(event_reasons.items())
+        },
+        "first_ts": min(timestamps) if timestamps else None,
+        "last_ts": max(timestamps) if timestamps else None,
+        "unparsable_records": unparsable,
+    }
+
+
+def format_activation_analysis(summary: dict[str, Any], log_path: str) -> str:
+    lines = [f"ACTIVATION LOG: {log_path}"]
+    window = (
+        f"{summary['first_ts']} .. {summary['last_ts']}"
+        if summary["first_ts"]
+        else "(no timestamped records)"
+    )
+    lines.append(f"  window            : {window}")
+    lines.append(
+        f"  decisions         : {summary['decisions']}"
+        f"  (zero-injection {summary['zero_injection_decisions']}"
+        f" = {summary['zero_injection_rate'] * 100:.1f}%)"
+    )
+    lines.append(
+        f"  injections        : {summary['injections']}"
+        f" across {summary['distinct_cards_injected']} distinct card(s)"
+    )
+    lines.append(
+        f"  stale_index=true  : {summary['stale_index_true']}"
+        f"  (field present on {summary['stale_index_field_present']} decision(s))"
+    )
+    if summary["unparsable_records"]:
+        lines.append(f"  unparsable        : {summary['unparsable_records']}")
+
+    lines.append("  reasons:")
+    if summary["reasons"]:
+        for reason, count in summary["reasons"].items():
+            lines.append(f"    {count:>6}  {reason}")
+    else:
+        lines.append("    (none)")
+
+    lines.append("  layers:")
+    if summary["layers"]:
+        for layer, count in summary["layers"].items():
+            lines.append(f"    {count:>6}  {layer}")
+    else:
+        lines.append("    (none)")
+
+    lines.append(f"  top {ANALYZE_TOP_CARDS} cards:")
+    if summary["top_cards"]:
+        for card_id, count in summary["top_cards"]:
+            lines.append(f"    {count:>6}  {card_id}")
+    else:
+        lines.append("    (none)")
+
+    never = summary["never_injected_active_cards"]
+    if never is None:
+        lines.append("  never-injected active cards: (card roster unreadable)")
+    else:
+        lines.append(
+            f"  never-injected active cards: {len(never)} of {summary['active_card_count']}"
+        )
+        for card_id in never:
+            lines.append(f"    {card_id}")
+
+    lines.append("  events (not decisions):")
+    if summary["events"]:
+        for name, count in summary["events"].items():
+            lines.append(f"    {count:>6}  {name}")
+            for reason, reason_count in summary["event_reasons"].get(name, {}).items():
+                lines.append(f"            {reason_count:>4}  {reason}")
+    else:
+        lines.append("    (none)")
+    return "\n".join(lines)
+
+
+def cmd_analyze_log(args: argparse.Namespace) -> int:
+    """Read-only telemetry summary.  Never a gate: exit code is always 0.
+
+    ~1600 records had accumulated with nothing that reads them, so every
+    question they answer ("which cards never fire", "how often is recall
+    silently off") was being answered by guessing.  This is the reader.  It
+    writes nothing, and every failure degrades to one line and a zero exit —
+    an analysis tool that can fail a caller is a tool people stop running.
+    """
+    log_path = Path(getattr(args, "log", None) or DEFAULT_ACTIVATION_LOG)
+    try:
+        raw_lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError as exc:
+        print(f"ANALYZE UNAVAILABLE: cannot read {log_path}: {type(exc).__name__}: {exc}")
+        return 0
+
+    active_ids: list[str] | None
+    try:
+        active_ids = [
+            card.id for card in load_cards(Path(args.cards_dir)) if card.status == ACTIVE_STATUS
+        ]
+    except Exception as exc:  # noqa: BLE001 - read-only summary, never a gate
+        print(f"ANALYZE NOTE: card roster unavailable ({type(exc).__name__}: {exc})")
+        active_ids = None
+
+    try:
+        summary = analyze_activation_log(raw_lines, active_ids)
+        print(format_activation_analysis(summary, str(log_path)))
+    except Exception as exc:  # noqa: BLE001 - read-only summary, never a gate
+        print(f"ANALYZE UNAVAILABLE: {type(exc).__name__}: {exc}")
+    return 0
 
 
 def cmd_context(args: argparse.Namespace) -> int:
@@ -1426,6 +1682,12 @@ def build_parser() -> argparse.ArgumentParser:
     verify = sub.add_parser("verify", help="validate card schema and reconciliation gates")
     verify.add_argument("--cards-dir", default=str(DEFAULT_CARDS_DIR))
     verify.add_argument("--index", default=str(DEFAULT_INDEX_PATH), help="index checked for staleness (advisory)")
+    verify.add_argument(
+        "--conflict-limit",
+        type=int,
+        default=20,
+        help="how many conflict advisories to print (0 = all); advisories never affect the verdict",
+    )
     verify.set_defaults(func=cmd_verify)
 
     build = sub.add_parser("build-index", help="compile cards into a deterministic offline index")
@@ -1472,6 +1734,14 @@ def build_parser() -> argparse.ArgumentParser:
         help=f"value substituted for {REPO_ROOT_PLACEHOLDER} in the template (default: this repo)",
     )
     wiring.set_defaults(func=cmd_check_wiring)
+
+    analyze = sub.add_parser(
+        "analyze-log",
+        help="read-only summary of the activation telemetry log (exit 0 always)",
+    )
+    analyze.add_argument("--log", default=str(DEFAULT_ACTIVATION_LOG))
+    analyze.add_argument("--cards-dir", default=str(DEFAULT_CARDS_DIR))
+    analyze.set_defaults(func=cmd_analyze_log)
 
     eval_cmd = sub.add_parser("eval", help="run activation regression frames")
     eval_cmd.add_argument("--cards-dir", default=str(DEFAULT_CARDS_DIR))
