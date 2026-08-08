@@ -165,7 +165,7 @@
 | 仓库桥 | 中间产物经箱 / 中枢进仓库后能从中枢出口和边界取货口再出来——**游戏机制真实，但被排除为合法布线结构**（会挤占蓝铁 / 源石的输出产能）。**这条绑定在冻结的产量目标上，产量目标一变必须重裁** | `semantics.warehouse_bridge_exclusion`；属 `axiom_kernel.ruling_level_inputs` |
 | 供电 | 中枢**就是**基地电源、自身无覆盖范围也不需供电；电线杆无条件从中枢取电并广播；发电在别的基地（电力预算外部化）。故"受电设施须被某根杆的覆盖模板盖住"与游戏机制效果等价，**不建模任何连线约束** | `semantics.power_source_note` |
 | 供电覆盖几何 | 2×2 杆锚点，12×12 轴对齐方形覆盖（按 `power_coverage_radius` 展开、裁到网格内）；覆盖 = **相交**语义（机身与覆盖区 ≥1 格重叠即算），**不是包含** | `semantics.power_coverage_stencil`；`01_overview` §1.1 谓词 (6) |
-| 物品准入口（限制口） | 游戏里存在，**刻意不建模——这半句在现役 main 下仍成立**：几何上等价于一条直带（能放它的格就能放直带），条款 authority 前提「无候选池或谓词消费它」当前满足。⚠ 但**「建模必要性 = 零」的三腿重述已动摇**：速率腿缺占空前件（见下行速率引理两前件纪律）、分拣终点腿仅在「两种货可去同一终端」时成立（模拟器判例：异终端分拣不可替代，且分拣零吞吐税），仅存仓库口混吃一腿。worktree 中未接入的 de-mix 禁令是**第一个消费该豁免的谓词**，接入即踩断 authority 前提——处置待 owner B1 拍板（维持禁令＋登记过严面欠账 / 建模过滤槽） | `semantics.item_admission_port_exclusion`；判例 `.artifacts/gpt_pro_review_batch_20260807/verdict/fen2/SIM_JUDGE_D1.md`；决策页同目录 `ADJUDICATION_fen2.md` B1 |
+| 物品准入口（限制口） | 游戏里存在，**刻意不建模——这半句在现役 main 下仍成立**：几何上等价于一条直带（能放它的格就能放直带），条款 authority 前提「无候选池或谓词消费它」当前满足。⚠ 但**「建模必要性 = 零」的三腿重述已动摇**：速率腿缺占空前件（见下行速率引理两前件纪律）、分拣终点腿仅在「两种货可去同一终端」时成立（模拟器判例：异终端分拣不可替代，且分拣零吞吐税），仅存仓库口混吃一腿。worktree 中未接入的 de-mix 禁令是**第一个消费该豁免的谓词**，接入即踩断 authority 前提——处置 owner 已定（先放着＝维持现状，随系统性梳理/墙审计首轮回桌，准入口为种子案例） | `semantics.item_admission_port_exclusion`；判例 `.artifacts/gpt_pro_review_batch_20260807/verdict/fen2/SIM_JUDGE_D1.md`；决策页同目录 `ADJUDICATION_fen2.md` B1 |
 | 速率引理 | **带两条前件**：(i) 冻结产量目标下满产；(ii) 最小道数分配约定。**缺前件不得引用**。在前件下：中间产物的每道残余速率两两之和 > 1 ⇒ 中间产物不得共道；**唯一在速率上合法的混流域 = 终品进有线仓储口的终端段** | `semantics.rate_lemma_scope`（含 `usage_rule`：任何把 front 排他读成 WLOG 而非"仅保守"的叙事升格，必须引用本条并逐条清偿两前件） |
 | 端口商品域 | binding 模型是**槽—单商品**制：每个端口槽恰载一种商品。裁决过的游戏语义允许有线仓储口同时吸多种，模型表达不了——这条 scope 声明就是为了让这个表达力缺口不被静默读成完全一般性 | `semantics.port_commodity_scope` |
 | 公理系 | `semantics` 全节的语义地基 = **11 条公理 A1–A11**；节内其他条目都是其上的**定理或 owner 裁决**，各自带 `axiom_derivation` 反指回来。公理不改变任何认证谓词 | `semantics.axiom_kernel.axioms`；存档全文 `docs/research/canonical_batch_20260807/AXIOM_KERNEL_PROPOSAL_20260806.md` |
@@ -232,7 +232,7 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 | 协议箱"每窗口至多 6 **种**商品" | **槽数口径**：6 槽全占才堵，与商品种类数无关 | `semantics.protocol_storage_box_wireless.slot_count_clause`（明写 "an example, not a bound"） |
 | "箱 = 有界吸收体 ⇒ 可能堵 ⇒ 不能当汇流区终点" | 堵塞判据在本产线**物理不可达**（§4.1 格数账） | **条件性退役，不是无条件**：论据依赖 §11 的两条未入册前提（fill-first + 单槽容量）；已入册条款本身只给「6 槽全占才堵」的界。记忆卡 `classification-labels-hide-parameters`；canonical 措辞改判见 §11 欠账 |
 | "错货不放行进支线 ⇒ 非门口堵塞" | **没有下一条出边就队头阻塞** | `semantics.item_admission_port_exclusion.rationale_restated` (c) 分拣终点定理 |
-| "限制口是官方分拣解法，直接解混料绝症" | **刻意不建模在现役 main 仍成立**（安全排除账完好）；但「必要性 = 零」的三腿仅存仓库口混吃一腿（速率腿缺占空前件、分拣终点腿限两货同终端），处置待 owner B1 | `semantics.item_admission_port_exclusion`；本页 §7 准入口行 |
+| "限制口是官方分拣解法，直接解混料绝症" | **刻意不建模在现役 main 仍成立**（安全排除账完好）；但「必要性 = 零」的三腿仅存仓库口混吃一腿（速率腿缺占空前件、分拣终点腿限两货同终端），处置 owner 已定＝先放着、随墙审计首轮回桌 | `semantics.item_admission_port_exclusion`；本页 §7 准入口行 |
 | "模型的 front 排他 = 模型比游戏严" | **翻案**：sink-front 排他是对机器口污染的**正确保守编码**；写宽的是混流条款，已由终端条款补齐 | `mixed_commodity_flow.terminal_clause`；`docs/research/canonical_batch_20260807/PORT_SEMANTICS_REVERDICT_A_20260806.md` |
 | 空矩形宽松读法（路由可穿 ghost） | **严格**：什么都不能有 | `globals.empty_rectangle.emptiness_adjudication`（明写旧宽松读法 void） |
 | 协议箱 = "无线全向零口黑洞" | 实体 3 进 3 出、需电；无线仅箱 → 仓库段 | `protocol_storage_box_wireless.supersedes` |
