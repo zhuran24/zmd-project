@@ -260,8 +260,7 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 - ~~缓存槽 **fill-first** 前提（同种商品占满一槽后才开新槽）的明文，以及**单槽容量参数**未入 canonical~~ ⇒ **已结清**：入册为 `protocol_storage_box_wireless.slot_count_clause.cache_parameters`（`slot_capacity: 50` / `group_count: 6`，fill-first 与落位顺序写在同一 `statement`，另带 `provenance` 与 `evidence_grade`）。§4.1 的两本账现在有明文条款可引。
 - ~~协议箱由 `terminal_clause` class (2) 提升为 **drain 终点**的措辞改判~~ ⇒ **已结清，但落法与原议不同**：**类级规则一个字没动**（class (2) 仍是需清偿接收不变量的有界吸收体），改判落成 `mixed_commodity_flow.terminal_clause` 里的**实例级 discharge 注**——只对冻结的 266 实例集断言不变量已清偿，别的布局不继承。见 §4 class (2) 行。
 - **证据等级两句订正（新欠，挂下一次动 canonical 的批；owner 2026-08-08 深夜两笔口述定谳）**：①`cache_parameters.evidence_grade` 里 capacity-50 现归模拟器级——**错级**，owner 已答「条款」，应升 owner 口述定谳级（错级根因＝落地批沿用了份6 对勘书早于 08-07「口述即定谳」权威裁定的过时框架；declaration-order 落位机制的精度**仍留**模拟器级不动）。②`terminal_clause.adjudicated` 前提 (ii) 存货口半边的「EXTRAPOLATED FROM THE SIMULATOR … NOT owner-adjudicated」——owner 已定谳「仓库存货口与取货口只能放在仓库基线上，条款」，该半边升 owner 定谳级，X1 关案四前提全齐。两句都是**保守方向的错级**（低估口述权威、不危及 soundness），故不单独走 reseal、随下批 canonical 顺手改。
-
-**模型完整性欠账**：
+- **fen8 核签两笔（挂同一下批；出处 `.artifacts/gpt_pro_review_batch_20260808/verdict/fen8/ADJUDICATION_fen8.md` ⑦）**：①「**每台物理机只承担一个 operation**」是 266 台账（逐 operation Σceil）的**未登记承重前提**——若同机型可跨 operation 合并，台数下界变 ceil(Σ)、恰差 2 台/34 格（grinder_1 与 seedcol_1 各 1）；核签席已用推理关在**已建模域内关闭**（合并机单输出槽组⇒输出必混流⇒需分拣⇒唯一分拣器件=准入口=面 (6) 省略对象），故 266 零拒真，但该前提须补登——推荐登记为 A9＋终端分类 (3)＋面 (6) 的**派生后果**（非独立限制）；34 格同时是**面 (6) 省略代价在 mandatory 侧的精确上界**，喂墙审计种子案例。②`terminal_clause` 里「3 口×1 件/2s⇒15 件/周期」的下层前提「逐口 0.5/s」**必须显式挂 A7**（owner 游戏侧带宽＋一口至多一带几何），禁写成「模拟器注册表如此声明」——E-24 实证注册表层**根本没有**端口吞吐字段（逐口 0.5/s 的出处是引擎=速率抽象层）。数字均不变。
 
 - `src/models/patch_routing_core.py:569` `_add_port_adherence` 的 front 偏移残留（§5，不可达，挂 PCR / pose-bool promotion 前置）。
 - **source-front 排他 = confirmed over-strict**，已在 `model_stricter_faces` 在册；解锁走**独立的 sealed-face 批**，刻意不并入其他 freeze-ritual。
