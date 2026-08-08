@@ -51,7 +51,7 @@ provenance:
   op: record
   reason: owner 2026-07-03 拍板把 reseal 级半可信对手纳入 close-kernel 防护目标;两份独立终裁(triage)都据此推荐 NOT CLEAN → round-20。
   evidence:
-    - "2026-07-03:pr2-5 round-19 外审 triage 终裁 NOT CLEAN;owner 拍板'防'(纳入半可信 reseal 对手),三块新门覆盖不对称缺口判 must-fix、走 round-20。"
+    - "2026-07-03:pr2-5 round-19 本地 triage 终裁 NOT CLEAN（08-08 订正：非外审）;owner 拍板'防'(纳入半可信 reseal 对手),三块新门覆盖不对称缺口判 must-fix、走 round-20。"
   updated_at: "2026-07-04"
 ---
 close-kernel 结构门"防谁"的定性决定(owner 2026-07-03 拍板)。判某个外审发现是 must-fix 还是可归入残余时,先看这条。
@@ -67,7 +67,7 @@ close-kernel 结构门(父门运行时闸 + 结构 checker + 两者互为镜像�
 == 它明确/推翻了什么 ==
 - round-19 引入三块新结构门,但它们之间**覆盖不对称、且有一块缺顶层兜底**:①一侧镜像判定器比另一侧**更宽**(更宽的一侧是负责"要不要放行"的那一侧,方向危险);②共享的顶层绑定枚举**漏认若干顶层绑定语法**;③承载 witness 直呼的运行时文件一侧**没有**另一块已有的顶层封闭世界兜底,只靠绑定计数。
 - 这些缺口的性质是"**新块覆盖不完整/边界画错**"——即某类顶层语法形态的重绑,能在镜像不对称处或无兜底处**漏判**、从而在忠实 reseal 之后仍让门放行。**不是**"语言本身不可闭合"的那种残余。
-- 因此它们判 **must-fix**,**不**归入已显式登记的三类"接受残余"(见下)。据此第 13 轮外审 triage 定 **NOT CLEAN → round-20**。(round-20 已完成并合入 main `6e06922`;外审循环随后由 owner 画线停止。)
+- 因此它们判 **must-fix**,**不**归入已显式登记的三类"接受残余"(见下)。据此**本地两路 triage**（08-08 订正：原记「第 13 轮外审 triage」不实——round-19/20 是本地收口、外审未再发，见 README:581 与 `5ff31ac`/`2413cc2`）定 **NOT CLEAN → round-20**。(round-20 已完成并合入 main `6e06922`;外审循环随后由 owner 画线停止。)
 
 （受众纪律:本卡只做定性,**不记录任何具体的重绑/绕过/exec 构造**——那些是对抗性 payload,详见 [[guardrail-delegate-adversarial-reads]] 的上下文卫生纪律。)
 
