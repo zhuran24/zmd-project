@@ -338,3 +338,158 @@ def test_file_memory_dir_constant_points_at_the_real_layer():
         assert mod.VNEXT_CARDS_DIR == ROOT / "cc_memory_vnext" / "cards"
     finally:
         sys.modules.pop("mem_under_test_find", None)
+
+
+# --- M-01 2026-08-08:文件记忆层不是一个目录,是一堆命名空间 -------------------
+#
+# CC 按「项目路径的写法」各开一个命名空间,所以同一摊活从 ~/claude pj/zmd 干和从
+# ~/zmd-pj 干,卡片落进两个平级目录。08-08 普查:本机 6 个 ~/.claude/projects/*/
+# memory/,234 张卡里 153 张在当前命名空间之外(最大的一个 117 张,五月 cand-C
+# 考古就在里面,08-04 为找不到它花过真金白银)。find 是唯一的跨层入口,它只扫一个
+# 目录 = 那 153 张卡根本不在搜索面上,而 find 的未命中还长得像权威结论。
+#
+# 夹具用假 HOME 走真 CLI:`Path.home()` 在 POSIX 上认 HOME 环境变量,模块常量
+# FILE_MEMORY_DIR 是 import 时算的,所以子进程里换 HOME 就等于换掉整个文件记忆层
+# ——不 mock、不改被测码,和生产同一条路径。
+
+
+CURRENT_NS = "-home-zhuran24-zmd-pj"
+ORPHAN_NS = "-home-zhuran24-claude-pj-zmd"
+
+
+@pytest.fixture()
+def fake_home(tmp_path):
+    """假 HOME:两个命名空间,当前的一张卡 + 孤儿的一张卡(用真实的下划线命名)。"""
+    home = tmp_path / "home"
+    projects = home / ".claude" / "projects"
+    current = projects / CURRENT_NS / "memory"
+    orphan = projects / ORPHAN_NS / "memory"
+    third = projects / "-home-zhuran24-claude-pj-pj1" / "memory"
+    for d in (current, orphan, third):
+        d.mkdir(parents=True)
+    (current / "in-current-namespace.md").write_text("# 当前命名空间\n", encoding="utf-8")
+    (current / "both-namespaces.md").write_text("# 当前的同名卡\n", encoding="utf-8")
+    # 117 张孤儿卡全是 snake_case;当前命名空间全是 kebab-case。
+    (orphan / "project_cand_c_column_generation_phase0_go.md").write_text(
+        "# 五月 cand-C 考古\n", encoding="utf-8"
+    )
+    (orphan / "both_namespaces.md").write_text("# 孤儿的同名卡\n", encoding="utf-8")
+    # 文件名与 frontmatter id 不一致、且 id 是 snake_case:走 id 行那条分支
+    (orphan / "renamed_orphan_card.md").write_text(
+        "---\nid: snake_id_not_in_filename\n---\n正文\n", encoding="utf-8"
+    )
+    (third / "only_in_third_namespace.md").write_text("# 第三个命名空间\n", encoding="utf-8")
+    return {"home": home, "current": current, "orphan": orphan, "third": third}
+
+
+def _find_with_home(fake_home, tmp_path, needle, *extra):
+    """真 CLI + 假 HOME + 不传 --file-memory-dir(走模块默认常量)。"""
+    env = dict(os.environ, HOME=str(fake_home["home"]))
+    env.pop("PYTHONPATH", None)
+    return subprocess.run(
+        [
+            sys.executable,
+            str(MEM),
+            "--db",
+            str(tmp_path / "no-such.db"),
+            "find",
+            needle,
+            "--cards-dir",
+            str(tmp_path / "no-such-cards"),
+            *extra,
+        ],
+        capture_output=True,
+        text=True,
+        timeout=60,
+        env=env,
+    )
+
+
+def test_find_reaches_cards_in_an_orphan_namespace(fake_home, tmp_path):
+    """承重:当前命名空间之外的卡必须能被找到,否则 153 张卡等于不存在。"""
+    result = _find_with_home(fake_home, tmp_path, "project_cand_c_column_generation_phase0_go")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "project_cand_c_column_generation_phase0_go.md" in result.stdout
+    assert ORPHAN_NS in result.stdout
+
+
+def test_orphan_hits_are_labelled_with_their_namespace(fake_home, tmp_path):
+    """命中要带来源:分不清「我现在写进去的收件箱」和「五月的旧库」就等于没找到。"""
+    result = _find_with_home(fake_home, tmp_path, "project_cand_c_column_generation_phase0_go")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert f"[orphan:{ORPHAN_NS}]" in result.stdout
+    assert "[current]" not in result.stdout
+
+
+def test_current_namespace_hits_are_labelled_current(fake_home, tmp_path):
+    result = _find_with_home(fake_home, tmp_path, "in-current-namespace")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "[current]" in result.stdout
+    assert "orphan:" not in result.stdout
+
+
+def test_current_namespace_sorts_before_orphans(fake_home, tmp_path):
+    """同名卡两边都有时,当前命名空间那张必须排在前面。"""
+    result = _find_with_home(fake_home, tmp_path, "both-namespaces")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "[current]" in result.stdout and f"[orphan:{ORPHAN_NS}]" in result.stdout
+    assert result.stdout.index("[current]") < result.stdout.index(f"[orphan:{ORPHAN_NS}]")
+
+
+def test_find_sweeps_every_namespace_not_just_two(fake_home, tmp_path):
+    result = _find_with_home(fake_home, tmp_path, "only_in_third_namespace")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "-home-zhuran24-claude-pj-pj1" in result.stdout
+
+
+def test_snake_case_cards_match_by_their_own_name(fake_home, tmp_path):
+    """`norm()` 把 `_` 折成 `-`,只 norm 针不 norm 文件名 = snake_case 卡用任何拼写
+    都找不到(117 张孤儿卡全是 snake_case)。两边都要 norm。"""
+    hyphen = _find_with_home(fake_home, tmp_path, "project-cand-c-column-generation-phase0-go")
+    assert hyphen.returncode == 0, hyphen.stdout + hyphen.stderr
+    assert "project_cand_c_column_generation_phase0_go.md" in hyphen.stdout
+    underscore = _find_with_home(fake_home, tmp_path, "project_cand_c_column_generation_phase0_go")
+    assert underscore.returncode == 0, underscore.stdout + underscore.stderr
+    assert "project_cand_c_column_generation_phase0_go.md" in underscore.stdout
+
+
+def test_snake_case_frontmatter_id_matches_too(fake_home, tmp_path):
+    """文件名对不上时靠 frontmatter `id:` 找 —— 那条分支也得两边都 norm。"""
+    result = _find_with_home(fake_home, tmp_path, "snake-id-not-in-filename")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "renamed_orphan_card.md" in result.stdout
+
+
+def test_miss_text_owns_up_to_how_many_namespaces_were_swept(fake_home, tmp_path):
+    result = _find_with_home(fake_home, tmp_path, "nothing-anywhere-at-all")
+    assert result.returncode == 1
+    assert "个其他命名空间已同扫" in result.stdout
+
+
+def test_explicit_file_memory_dir_override_is_not_expanded(layers, tmp_path):
+    """`--file-memory-dir` 指到别处时只扫那一个目录 —— 不许顺手把它的邻居也拖进来。
+
+    否则拿 tmp 夹具跑测试会扫到别的会话的 basetemp,结果不确定。
+    """
+    sibling = layers["file_memory"].parent / "memory"
+    sibling.mkdir()
+    (sibling / "should-not-be-found.md").write_text("# 邻居\n", encoding="utf-8")
+    result = _find(layers, "should-not-be-found")
+    assert result.returncode == 1, result.stdout
+    assert "should-not-be-found.md" not in result.stdout
+
+
+def test_file_memory_layer_limit_is_a_layer_budget_not_a_per_dir_budget(fake_home, tmp_path):
+    """`--limit` 是「每层最多报几条」;扩成多命名空间后不能变成「每个目录 N 条」。
+
+    夹具刻意造成 2 + 4 而不是 4 + 4:第一个目录必须**吃不满**预算,否则外层那句
+    `if len(hits) >= limit: break` 会替真正的承重件(`limit - len(hits)`)挡住变异,
+    用例就变成钉 break 而不是钉预算算术(M1-E 实测存活过一次)。
+    """
+    for i in range(2):
+        (fake_home["current"] / f"budget-card-{i}.md").write_text("# x\n", encoding="utf-8")
+    for i in range(4):
+        (fake_home["orphan"] / f"budget_card_{i}.md").write_text("# x\n", encoding="utf-8")
+    result = _find_with_home(fake_home, tmp_path, "budget-card", "--limit", "3")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert result.stdout.splitlines()[0].startswith("find: 3 hit(s)"), result.stdout

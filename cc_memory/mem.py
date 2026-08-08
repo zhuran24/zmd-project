@@ -40,6 +40,15 @@ VNEXT_CARDS_DIR = ROOT / "cc_memory_vnext" / "cards"
 # here. Move the repo or change machines and this line must move with it; a
 # missing directory only costs `find` one layer, it is never an error.
 FILE_MEMORY_DIR = Path.home() / ".claude" / "projects" / "-home-zhuran24-zmd-pj" / "memory"
+# ...but "the" directory is a lie, and that lie hid 153 cards. CC mints one
+# namespace *per spelling of the project path*, so the same work done from
+# ~/claude pj/zmd (Windows-era) and from ~/zmd-pj (now) writes into two sibling
+# directories. 2026-08-08 census on this machine: 6 namespaces under
+# ~/.claude/projects/*/memory/, 234 cards total, only 81 in the current one —
+# the 117-card `-home-zhuran24-claude-pj-zmd` namespace (May cand-C archaeology,
+# hunted for real money on 08-04) was completely off the search surface. `find`
+# sweeps every namespace and labels where each hit came from.
+FILE_MEMORY_NAMESPACE_GLOB = "*/memory"
 CROSS_LAYER_FIND_HINT = (
     "提示: 记忆分三层各有各的库,这一层没有 != 没记过 —— "
     "跨层查找: python cc_memory/mem.py find <id>"
@@ -2687,9 +2696,50 @@ def _find_display_path(path: Path) -> str:
         return str(path)
 
 
+def _file_memory_dirs(current: Path) -> list[tuple[Path, str]]:
+    """Every `~/.claude/projects/*/memory/`, current namespace first, each tagged.
+
+    Tags are `current` and `orphan:<namespace dir name>` — a hit's value collapses
+    if you cannot tell "the inbox I write to" from "a namespace nobody has opened
+    since May", so the source rides along with the hit instead of being inferred
+    from the path.
+
+    Expansion only fires when the directory really looks like a CC namespace
+    (`<...>/projects/<ns>/memory`). Any other `--file-memory-dir` is scanned
+    alone: pointing the flag at a tmp fixture must never drag in whatever else
+    happens to sit beside it.
+    """
+    current = Path(current)
+    dirs: list[tuple[Path, str]] = []
+    seen: set[str] = set()
+    if current.is_dir():
+        dirs.append((current, "current"))
+        seen.add(os.path.realpath(current))
+    projects_root = current.parent.parent
+    if current.name == "memory" and projects_root.name == "projects":
+        for sibling in sorted(projects_root.glob(FILE_MEMORY_NAMESPACE_GLOB)):
+            real = os.path.realpath(sibling)
+            if sibling.is_dir() and real not in seen:
+                seen.add(real)
+                dirs.append((sibling, f"orphan:{sibling.parent.name}"))
+    return dirs
+
+
+def _find_in_file_memory(current: Path, needle: str, limit: int) -> list[tuple[str, str, str, str]]:
+    """File-memory layer across all namespaces; `limit` is the layer's budget."""
+    hits: list[tuple[str, str, str, str]] = []
+    for directory, source in _file_memory_dirs(current):
+        if len(hits) >= limit:
+            break
+        hits.extend(
+            _find_in_markdown_dir(directory, needle, "file_memory", limit - len(hits), source=source)
+        )
+    return hits
+
+
 def _find_in_cc_memory(
     db: Path, needle: str, limit: int
-) -> tuple[list[tuple[str, str, str]], list[str]]:
+) -> tuple[list[tuple[str, str, str, str]], list[str]]:
     """Read-only id lookup in the SQLite layer; returns (hits, degradation notes).
 
     Uses `connect_immutable()` so the lookup leaves nothing behind at all — not
@@ -2698,7 +2748,7 @@ def _find_in_cc_memory(
     directory itself is read-only. See that function for the concurrent-writer
     tradeoff this buys, and `live_wal_note()` for how we own up to it.
     """
-    hits: list[tuple[str, str, str]] = []
+    hits: list[tuple[str, str, str, str]] = []
     db = Path(db)
     if not db.exists():
         return hits, []
@@ -2708,28 +2758,41 @@ def _find_in_cc_memory(
         resolved = resolve_node(con, needle)
         if resolved:
             typ, node_id = resolved
-            hits.append(("cc_memory", f"{typ}:{node_id}", f"python cc_memory/mem.py read {node_id} --body"))
+            hits.append(("cc_memory", f"{typ}:{node_id}", f"python cc_memory/mem.py read {node_id} --body", ""))
         like = f"%{norm(needle)}%"
         for table, typ in (("facts", "fact"), ("entries", "entry")):
             rows = con.execute(f"SELECT id FROM {table} WHERE id LIKE ? ORDER BY id LIMIT ?", (like, limit))
             for row in rows:
                 locator = f"{typ}:{row['id']}"
                 if all(hit[1] != locator for hit in hits):
-                    hits.append(("cc_memory", locator, f"python cc_memory/mem.py read {row['id']} --body"))
+                    hits.append(("cc_memory", locator, f"python cc_memory/mem.py read {row['id']} --body", ""))
     finally:
         con.close()
     return hits, notes
 
 
-def _find_in_markdown_dir(directory: Path, needle: str, layer: str, limit: int) -> list[tuple[str, str, str]]:
-    """Match `*.md` by filename stem or by a frontmatter `id:` line."""
-    hits: list[tuple[str, str, str]] = []
+def _find_in_markdown_dir(
+    directory: Path, needle: str, layer: str, limit: int, source: str = ""
+) -> list[tuple[str, str, str, str]]:
+    """Match `*.md` by filename stem or by a frontmatter `id:` line.
+
+    `source` is a provenance tag printed next to the hit (see `_file_memory_dirs`);
+    layers with a single store leave it empty.
+    """
+    hits: list[tuple[str, str, str, str]] = []
     directory = Path(directory)
     if not directory.is_dir():
         return hits
     wanted = norm(needle)
     for path in sorted(directory.glob("*.md")):
-        stem = path.stem.lower()
+        # Both sides go through `norm`, which folds `_` to `-`. The old code
+        # normalised only the needle and compared against a raw `.lower()` stem,
+        # so a snake_case card was unreachable by *any* spelling of its own name:
+        # `norm("project_cand_c_…")` is `project-cand-c-…`, which is not a
+        # substring of `project_cand_c_…`. Invisible while every card in the
+        # current namespace was kebab-case; all 117 cards in the
+        # `-home-zhuran24-claude-pj-zmd` namespace are snake_case.
+        stem = norm(path.stem)
         matched = wanted == stem or wanted in stem
         if not matched:
             try:
@@ -2737,9 +2800,9 @@ def _find_in_markdown_dir(directory: Path, needle: str, layer: str, limit: int) 
             except OSError:
                 continue
             match = FIND_ID_RE.search(head)
-            matched = bool(match) and match.group(1).lower() == wanted
+            matched = match is not None and norm(match.group(1)) == wanted
         if matched:
-            hits.append((layer, _find_display_path(path), f"读全文: cat {_find_display_path(path)}"))
+            hits.append((layer, _find_display_path(path), f"读全文: cat {_find_display_path(path)}", source))
         if len(hits) >= limit:
             break
     return hits
@@ -2747,6 +2810,12 @@ def _find_in_markdown_dir(directory: Path, needle: str, layer: str, limit: int) 
 
 def cmd_find(args: argparse.Namespace) -> int:
     """Locate an id across all three memory layers (read-only, writes nothing).
+
+    "Three layers" is really three *stores*, and the file-memory store is itself
+    a set of per-project-path namespaces — so this walks every
+    `~/.claude/projects/*/memory/`, not just the current one, and tags each hit
+    with where it came from (`current` / `orphan:<ns>`). See `_file_memory_dirs`
+    for the 153-card blind spot that motivated it.
 
     Walking all three layers is the *point* of this command — the 40-minute hunt
     it exists to prevent was someone looking in one layer, believing the miss,
@@ -2768,18 +2837,18 @@ def cmd_find(args: argparse.Namespace) -> int:
     if not needle:
         print("find: empty id")
         return 1
-    hits: list[tuple[str, str, str]] = []
+    hits: list[tuple[str, str, str, str]] = []
     warnings: list[str] = []
     degraded: list[str] = []
     layers: list[tuple[str, Any]] = [
-        ("cc_memory", lambda: _find_in_cc_memory(args.db, needle, args.limit)),
+        ("cc_memory", lambda: (_find_in_cc_memory(args.db, needle, args.limit))),
         (
             "cc_memory_vnext",
             lambda: (_find_in_markdown_dir(Path(args.cards_dir), needle, "cc_memory_vnext", args.limit), []),
         ),
         (
             "file_memory",
-            lambda: (_find_in_markdown_dir(Path(args.file_memory_dir), needle, "file_memory", args.limit), []),
+            lambda: (_find_in_file_memory(Path(args.file_memory_dir), needle, args.limit), []),
         ),
     ]
     for label, probe in layers:
@@ -2793,18 +2862,27 @@ def cmd_find(args: argparse.Namespace) -> int:
         degraded.extend(layer_notes)
     for warning in warnings:
         print(warning)
+    try:  # 只是给未命中文案报个"扫了几个命名空间",炸了也不能改变结论
+        orphan_count = sum(
+            1 for _d, source in _file_memory_dirs(Path(args.file_memory_dir)) if source != "current"
+        )
+    except Exception:  # noqa: BLE001
+        orphan_count = 0
+    file_memory_note = f"  文件记忆目录: {args.file_memory_dir}"
+    if orphan_count:
+        file_memory_note += f" (+{orphan_count} 个其他命名空间已同扫)"
     if not hits:
         if degraded:
             print(f"find: 未命中 {needle!r},但本次查询有降级层——**未命中不等于不存在**")
             for note in degraded:
                 print(f"  - 降级: {note}")
-            print("  查过(部分降级): cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 memory/*.md")
-            print(f"  文件记忆目录: {args.file_memory_dir}")
+            print("  查过(部分降级): cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 ~/.claude/projects/*/memory/*.md")
+            print(file_memory_note)
             print("  复查: 等并发写者 checkpoint/退出后重跑,或修好报错的那一层,再信这个结论")
             return 1
         print(f"find: no layer has {needle!r}")
-        print("  查过: cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 memory/*.md")
-        print(f"  文件记忆目录: {args.file_memory_dir}")
+        print("  查过: cc_memory(entries/facts id) / cc_memory_vnext cards/*.md / 文件记忆 ~/.claude/projects/*/memory/*.md")
+        print(file_memory_note)
         print("  换个词试全文搜索: python cc_memory/mem.py search <关键词>")
         return 1
     print(f"find: {len(hits)} hit(s) for {needle!r}")
@@ -2813,8 +2891,9 @@ def cmd_find(args: argparse.Namespace) -> int:
         for note in degraded:
             print(f"  - 降级: {note}")
     width = max(len(hit[0]) for hit in hits)
-    for layer, locator, how in hits:
-        print(f"- {layer.ljust(width)}  {locator}")
+    for layer, locator, how, source in hits:
+        tag = f"  [{source}]" if source else ""
+        print(f"- {layer.ljust(width)}  {locator}{tag}")
         print(f"    {how}")
     return 0
 
@@ -3436,7 +3515,7 @@ def make_parser() -> argparse.ArgumentParser:
 
     sp = sub.add_parser(
         "find",
-        help="跨层定位一个 id: cc_memory 节点 / vnext cards/*.md / 文件记忆 memory/*.md(只读)",
+        help="跨层定位一个 id: cc_memory 节点 / vnext cards/*.md / 文件记忆 ~/.claude/projects/*/memory/*.md 全命名空间(只读)",
     )
     sp.add_argument("node", help="节点 id、卡片 id 或文件名片段")
     sp.add_argument("--cards-dir", type=Path, default=VNEXT_CARDS_DIR)
